@@ -1,60 +1,144 @@
-Return-Path: <SRS0=cL3S=UW=zx2c4.com=Jason@kernel.org>
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH v3 10/10] xtensa: use fallback for random_get_entropy() instead of zero
-Date: Tue, 12 Apr 2022 19:27:54 +0200
-Message-Id: <20220412172754.149498-11-Jason@zx2c4.com>
-In-Reply-To: <20220412172754.149498-1-Jason@zx2c4.com>
-References: <20220412172754.149498-1-Jason@zx2c4.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from out02.mta.xmission.com ([166.70.13.232])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nkYUR-00Cq5O-2S
+ for linux-um@lists.infradead.org; Fri, 29 Apr 2022 21:49:29 +0000
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+Date: Fri, 29 Apr 2022 16:48:35 -0500
+Message-Id: <20220429214837.386518-10-ebiederm@xmission.com>
+In-Reply-To: <87k0b7v9yk.fsf_-_@email.froward.int.ebiederm.org>
+References: <87k0b7v9yk.fsf_-_@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, tglx@linutronix.de, arnd@arndb.de
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Theodore Ts'o <tytso@mit.edu>, Dominik Brodowski <linux@dominikbrodowski.net>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "David S . Miller" <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, John Stultz <john.stultz@linaro.org>, Stephen Boyd <sboyd@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org, linux-xtensa@linux-xtensa.org
-List-ID: <linux-um.lists.infradead.org>
+Subject: [PATCH v2 10/12] ptrace: Only return signr from ptrace_stop if it was
+ provided
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-kernel@vger.kernel.org
+Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
 
-In the event that random_get_entropy() can't access a cycle counter or
-similar, falling back to returning 0 is really not the best we can do.
-Instead, at least calling random_get_entropy_fallback() would be
-preferable, because that always needs to return _something_, even
-falling back to jiffies eventually. It's not as though
-random_get_entropy_fallback() is super high precision or guaranteed to
-be entropic, but basically anything that's not zero all the time is
-better than returning zero all the time.
+In ptrace_stop a ptrace_unlink or SIGKILL can occur either after
+siglock is dropped or after tasklist_lock is dropped.  At either point
+the result can be that ptrace will continue and not stop at schedule.
 
-This is accomplished by just including the asm-generic code like on
-other architectures, which means we can get rid of the empty stub
-function here.
+This means that there are cases where the current logic fails to handle
+the fact that ptrace_stop did not actually stop, and can potentially
+cause ptrace_report_syscall to attempt to deliver a signal.
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Max Filippov <jcmvbkbc@gmail.com>
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Instead of attempting to detect in ptrace_stop when it fails to
+stop update ptrace_resume and ptrace_detach to set a flag to indicate
+that the signal to continue with has be set.   Use that
+new flag to decided how to set return signal.
+
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 ---
- arch/xtensa/include/asm/timex.h | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ include/linux/sched/jobctl.h |  2 ++
+ kernel/ptrace.c              |  5 +++++
+ kernel/signal.c              | 12 ++++++------
+ 3 files changed, 13 insertions(+), 6 deletions(-)
 
-diff --git a/arch/xtensa/include/asm/timex.h b/arch/xtensa/include/asm/timex.h
-index 233ec75e60c6..3f2462f2d027 100644
---- a/arch/xtensa/include/asm/timex.h
-+++ b/arch/xtensa/include/asm/timex.h
-@@ -29,10 +29,6 @@
+diff --git a/include/linux/sched/jobctl.h b/include/linux/sched/jobctl.h
+index d556c3425963..2ff1bcd63cf4 100644
+--- a/include/linux/sched/jobctl.h
++++ b/include/linux/sched/jobctl.h
+@@ -20,6 +20,7 @@ struct task_struct;
+ #define JOBCTL_LISTENING_BIT	22	/* ptracer is listening for events */
+ #define JOBCTL_TRAP_FREEZE_BIT	23	/* trap for cgroup freezer */
+ #define JOBCTL_PTRACE_FROZEN_BIT	24	/* frozen for ptrace */
++#define JOBCTL_PTRACE_SIGNR_BIT	25	/* ptrace signal number */
  
- extern unsigned long ccount_freq;
+ #define JOBCTL_STOP_DEQUEUED	(1UL << JOBCTL_STOP_DEQUEUED_BIT)
+ #define JOBCTL_STOP_PENDING	(1UL << JOBCTL_STOP_PENDING_BIT)
+@@ -30,6 +31,7 @@ struct task_struct;
+ #define JOBCTL_LISTENING	(1UL << JOBCTL_LISTENING_BIT)
+ #define JOBCTL_TRAP_FREEZE	(1UL << JOBCTL_TRAP_FREEZE_BIT)
+ #define JOBCTL_PTRACE_FROZEN	(1UL << JOBCTL_PTRACE_FROZEN_BIT)
++#define JOBCTL_PTRACE_SIGNR	(1UL << JOBCTL_PTRACE_SIGNR_BIT)
  
--typedef unsigned long long cycles_t;
--
--#define get_cycles()	(0)
--
- void local_timer_setup(unsigned cpu);
- 
- /*
-@@ -59,4 +55,6 @@ static inline void set_linux_timer (unsigned long ccompare)
- 	xtensa_set_sr(ccompare, SREG_CCOMPARE + LINUX_TIMER);
- }
- 
-+#include <asm-generic/timex.h>
+ #define JOBCTL_TRAP_MASK	(JOBCTL_TRAP_STOP | JOBCTL_TRAP_NOTIFY)
+ #define JOBCTL_PENDING_MASK	(JOBCTL_STOP_PENDING | JOBCTL_TRAP_MASK)
+diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+index c1c99e8be147..d80222251f60 100644
+--- a/kernel/ptrace.c
++++ b/kernel/ptrace.c
+@@ -596,7 +596,11 @@ static int ptrace_detach(struct task_struct *child, unsigned int data)
+ 	 * tasklist_lock avoids the race with wait_task_stopped(), see
+ 	 * the comment in ptrace_resume().
+ 	 */
++	spin_lock(&child->sighand->siglock);
+ 	child->exit_code = data;
++	child->jobctl |= JOBCTL_PTRACE_SIGNR;
++	spin_unlock(&child->sighand->siglock);
 +
- #endif	/* _XTENSA_TIMEX_H */
+ 	__ptrace_detach(current, child);
+ 	write_unlock_irq(&tasklist_lock);
+ 
+@@ -883,6 +887,7 @@ static int ptrace_resume(struct task_struct *child, long request,
+ 	 */
+ 	spin_lock_irq(&child->sighand->siglock);
+ 	child->exit_code = data;
++	child->jobctl |= JOBCTL_PTRACE_SIGNR;
+ 	wake_up_state(child, __TASK_TRACED);
+ 	spin_unlock_irq(&child->sighand->siglock);
+ 
+diff --git a/kernel/signal.c b/kernel/signal.c
+index 5cf268982a7e..7cb27a27290a 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -2193,7 +2193,6 @@ static int ptrace_stop(int exit_code, int why, int clear_code,
+ 	__acquires(&current->sighand->siglock)
+ {
+ 	bool gstop_done = false;
+-	bool read_code = true;
+ 
+ 	if (arch_ptrace_stop_needed()) {
+ 		/*
+@@ -2299,9 +2298,6 @@ static int ptrace_stop(int exit_code, int why, int clear_code,
+ 
+ 		/* tasklist protects us from ptrace_freeze_traced() */
+ 		__set_current_state(TASK_RUNNING);
+-		read_code = false;
+-		if (clear_code)
+-			exit_code = 0;
+ 		read_unlock(&tasklist_lock);
+ 	}
+ 
+@@ -2311,14 +2307,18 @@ static int ptrace_stop(int exit_code, int why, int clear_code,
+ 	 * any signal-sending on another CPU that wants to examine it.
+ 	 */
+ 	spin_lock_irq(&current->sighand->siglock);
+-	if (read_code)
++	/* Did userspace perhaps provide a signal to resume with? */
++	if (current->jobctl & JOBCTL_PTRACE_SIGNR)
+ 		exit_code = current->exit_code;
++	else if (clear_code)
++		exit_code = 0;
++
+ 	current->last_siginfo = NULL;
+ 	current->ptrace_message = 0;
+ 	current->exit_code = 0;
+ 
+ 	/* LISTENING can be set only during STOP traps, clear it */
+-	current->jobctl &= ~(JOBCTL_LISTENING | JOBCTL_PTRACE_FROZEN);
++	current->jobctl &= ~(JOBCTL_LISTENING | JOBCTL_PTRACE_FROZEN | JOBCTL_PTRACE_SIGNR);
+ 
+ 	/*
+ 	 * Queued signals ignored us while we were stopped for tracing.
 -- 
-2.35.1
+2.35.3
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
