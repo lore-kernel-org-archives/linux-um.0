@@ -1,624 +1,149 @@
-Return-Path: <linux-pm-owner@vger.kernel.org>
-From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Subject: [PATCH 21/30] panic: Introduce the panic pre-reboot notifier list
-Date: Wed, 27 Apr 2022 19:49:15 -0300
-Message-Id: <20220427224924.592546-22-gpiccoli@igalia.com>
-In-Reply-To: <20220427224924.592546-1-gpiccoli@igalia.com>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Message-ID: <50178dfb-8e94-f35f-09c3-22fe197550ef@igalia.com>
+Date: Fri, 29 Apr 2022 17:38:08 -0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-To: akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, gpiccoli@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, Alex Elder <elder@kernel.org>, Alexander Gordeev <agordeev@linux.ibm.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Bjorn Andersson <bjorn.andersson@linaro.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Chris Zankel <chris@zankel.net>, Christian Borntraeger <borntraeger@linux.ibm.com>, Corey Minyard <minyard@acm.org>, Dexuan Cui <decui@microsoft.com>, "H. Peter Anvin" <hpa@zytor.com>, Haiyang Zhang <haiyangz@microsoft.com>, Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, James Morse <james.morse@arm.com>, Johannes Berg <johannes@sipsolutions.net>, "K. Y. Srinivasan" <kys@microsoft.com>, Mathieu Poirier <mathieu.poirier@linaro.org>, Matt Turner <mattst88@gmail.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Paul Mackerras <paulus@samba.org>, Pavel Machek <pavel@ucw.cz>, Richard Henderson <rth@twiddle.net>, Richard Weinberger <richard@nod.at>, Robert Richter <rric@kernel.org>, Stefano Stabellini <sstabellini@kernel.org>, Stephen Hemminger <sthemmin@microsoft.com>, Sven Schnelle <svens@linux.ibm.com>, Tony Luck <tony.luck@intel.com>, Vasily Gorbik <gor@linux.ibm.com>, Wei Liu <wei.liu@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+Subject: Re: [PATCH 24/30] panic: Refactor the panic path
+Content-Language: en-US
+References: <20220427224924.592546-1-gpiccoli@igalia.com>
+ <20220427224924.592546-25-gpiccoli@igalia.com>
+ <PH0PR21MB30252C55EB4F97F3D78021BDD7FC9@PH0PR21MB3025.namprd21.prod.outlook.com>
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <PH0PR21MB30252C55EB4F97F3D78021BDD7FC9@PH0PR21MB3025.namprd21.prod.outlook.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: "Michael Kelley (LINUX)" <mikelley@microsoft.com>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "bhe@redhat.com" <bhe@redhat.com>, "pmladek@suse.com" <pmladek@suse.com>, "kexec@lists.infradead.org" <kexec@lists.infradead.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "bcm-kernel-feedback-list@broadcom.com" <bcm-kernel-feedback-list@broadcom.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>, "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>, "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>, "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "openipmi-developer@lists.sourceforge.net" <openipmi-developer@lists.sourceforge.net>, "rcu@vger.kernel.org" <rcu@vger.kernel.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>, "x86@kernel.org" <x86@kernel.org>, "kernel-dev@igalia.com" <kernel-dev@igalia.com>, "kernel@gpiccoli.net" <kernel@gpiccoli.net>, "halves@canonical.com" <halves@canonical.com>, "fabiomirmar@gmail.com" <fabiomirmar@gmail.com>, "alejandro.j.jimenez@oracle.com" <alejandro.j.jimenez@oracle.com>, "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>, "arnd@arndb.de" <arnd@arndb.de>, "bp@alien8.de" <bp@alien8.de>, "corbet@lwn.net" <corbet@lwn.net>, "d.hatayama@jp.fujitsu.com" <d.hatayama@jp.fujitsu.com>, "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "dyoung@redhat.com" <dyoung@redhat.com>, "feng.tang@intel.com" <feng.tang@intel.com>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "hidehiro.kawai.ez@hitachi.com" <hidehiro.kawai.ez@hitachi.com>, "jgross@suse.com" <jgross@suse.com>, "john.ogness@linutronix.de" <john.ogness@linutronix.de>, "keescook@chromium.org" <keescook@chromium.org>, "luto@kernel.org" <luto@kernel.org>, "mhiramat@kernel.org" <mhiramat@kernel.org>, "mingo@redhat.com" <mingo@redhat.com>, "paulmck@kernel.org" <paulmck@kernel.org>, "peterz@infradead.org" <peterz@infradead.org>, "rostedt@goodmis.org" <rostedt@goodmis.org>, "senozhatsky@chromium.org" <senozhatsky@chromium.org>, "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>, "tglx@linutronix.de" <tglx@linutronix.de>, "vgoyal@redhat.com" <vgoyal@redhat.com>, vkuznets <vkuznets@redhat.com>, "will@kernel.org" <will@kernel.org>
 
-This patch renames the panic_notifier_list to panic_pre_reboot_list;
-the idea is that a subsequent patch will refactor the panic path
-in order to better split the notifiers, running some of them very
-early, some of them not so early [but still before kmsg_dump()] and
-finally, the rest should execute late, after kdump. The latter ones
-are now in the panic pre-reboot list - the name comes from the idea
-that these notifiers execute before panic() attempts rebooting the
-machine (if that option is set).
+On 29/04/2022 14:53, Michael Kelley (LINUX) wrote:
+> From: Guilherme G. Piccoli <gpiccoli@igalia.com> Sent: Wednesday, April 27, 2022 3:49 PM
+>> [...]
+>> +	panic_notifiers_level=
+>> +			[KNL] Set the panic notifiers execution order.
+>> +			Format: <unsigned int>
+>> +			We currently have 4 lists of panic notifiers; based
+>> +			on the functionality and risk (for panic success) the
+>> +			callbacks are added in a given list. The lists are:
+>> +			- hypervisor/FW notification list (low risk);
+>> +			- informational list (low/medium risk);
+>> +			- pre_reboot list (higher risk);
+>> +			- post_reboot list (only run late in panic and after
+>> +			kdump, not configurable for now).
+>> +			This parameter defines the ordering of the first 3
+>> +			lists with regards to kdump; the levels determine
+>> +			which set of notifiers execute before kdump. The
+>> +			accepted levels are:
+>> +			0: kdump is the first thing to run, NO list is
+>> +			executed before kdump.
+>> +			1: only the hypervisor list is executed before kdump.
+>> +			2 (default level): the hypervisor list and (*if*
+>> +			there's any kmsg_dumper defined) the informational
+>> +			list are executed before kdump.
+>> +			3: both the hypervisor and the informational lists
+>> +			(always) execute before kdump.
+> 
+> I'm not clear on why level 2 exists.  What is the scenario where
+> execution of the info list before kdump should be conditional on the
+> existence of a kmsg_dumper?   Maybe the scenario is described
+> somewhere in the patch set and I just missed it.
+> 
 
-We also took the opportunity to clean-up useless header inclusions,
-improve some notifier block declarations (e.g. in ibmasm/heartbeat.c)
-and more important, change some priorities - we hereby set 2 notifiers
-to run late in the list [iss_panic_event() and the IPMI panic_event()]
-due to the risks they offer (may not return, for example).
-Proper documentation is going to be provided in a subsequent patch,
-that effectively refactors the panic path.
+Hi Michael, thanks for your review/consideration. So, this idea started
+kind of some time ago. It all started with a need of exposing more
+information on kernel log *before* kdump and *before* pstore -
+specifically, we're talking about panic_print. But this cause some
+reactions, Baoquan was very concerned with that [0]. Soon after, I've
+proposed a panic notifiers filter (orthogonal) approach, to which Petr
+suggested instead doing a major refactor [1] - it finally is alive in
+the form of this series.
 
-Cc: Alex Elder <elder@kernel.org>
-Cc: Alexander Gordeev <agordeev@linux.ibm.com>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc: Chris Zankel <chris@zankel.net>
-Cc: Christian Borntraeger <borntraeger@linux.ibm.com>
-Cc: Corey Minyard <minyard@acm.org>
-Cc: Dexuan Cui <decui@microsoft.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Haiyang Zhang <haiyangz@microsoft.com>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc: James Morse <james.morse@arm.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: Juergen Gross <jgross@suse.com>
-Cc: "K. Y. Srinivasan" <kys@microsoft.com>
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Matt Turner <mattst88@gmail.com>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: Max Filippov <jcmvbkbc@gmail.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: Pavel Machek <pavel@ucw.cz>
-Cc: Richard Henderson <rth@twiddle.net>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Robert Richter <rric@kernel.org>
-Cc: Stefano Stabellini <sstabellini@kernel.org>
-Cc: Stephen Hemminger <sthemmin@microsoft.com>
-Cc: Sven Schnelle <svens@linux.ibm.com>
-Cc: Tony Luck <tony.luck@intel.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Wei Liu <wei.liu@kernel.org>
-Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
----
+The theory behind the level 2 is to allow a scenario of kdump with the
+minimum amount of notifiers - what is the point in printing more
+information if the user doesn't care, since it's going to kdump? Now, if
+there is a kmsg dumper, it means that there is likely some interest in
+collecting information, and that might as well be required before the
+potential kdump (which is my case, hence the proposal on [0]).
 
-Notice that, with this name change, out-of-tree code that relies in the global
-exported "panic_notifier_list" will fail to build. We could easily keep the
-retro-compatibility by making the old symbol to still exist and point to the
-pre_reboot list (or even, keep the old naming).
+Instead of forcing one of the two behaviors (level 1 or level 3), we
+have a middle-term/compromise: if there's interest in collecting such
+data (in the form of a kmsg dumper), we then execute the informational
+notifiers before kdump. If not, why to increase (even slightly) the risk
+for kdump?
 
-But our design choice was to allow the breakage, making users rethink their
-notifiers, adding them in the list that fits best. If that wasn't a good
-decision, we're open to change it, of course.
-Thanks in advance for the review!
+I'm OK in removing the level 2 if people prefer, but I don't feel it's a
+burden, quite opposite - seems a good way to accommodate the somewhat
+antagonistic ideas (jump to kdump ASAP vs collecting more info in the
+panicked kernel log).
 
- arch/alpha/kernel/setup.c             |  4 ++--
- arch/parisc/kernel/pdc_chassis.c      |  3 +--
- arch/powerpc/kernel/setup-common.c    |  2 +-
- arch/s390/kernel/ipl.c                |  4 ++--
- arch/um/drivers/mconsole_kern.c       |  2 +-
- arch/um/kernel/um_arch.c              |  2 +-
- arch/x86/xen/enlighten.c              |  2 +-
- arch/xtensa/platforms/iss/setup.c     |  4 ++--
- drivers/char/ipmi/ipmi_msghandler.c   | 12 +++++++-----
- drivers/edac/altera_edac.c            |  3 +--
- drivers/hv/vmbus_drv.c                |  4 ++--
- drivers/leds/trigger/ledtrig-panic.c  |  3 +--
- drivers/misc/ibmasm/heartbeat.c       | 16 +++++++++-------
- drivers/net/ipa/ipa_smp2p.c           |  5 ++---
- drivers/parisc/power.c                |  4 ++--
- drivers/remoteproc/remoteproc_core.c  |  6 ++++--
- drivers/s390/char/con3215.c           |  2 +-
- drivers/s390/char/con3270.c           |  2 +-
- drivers/s390/char/sclp_con.c          |  2 +-
- drivers/s390/char/sclp_vt220.c        |  2 +-
- drivers/staging/olpc_dcon/olpc_dcon.c |  6 ++++--
- drivers/video/fbdev/hyperv_fb.c       |  4 ++--
- include/linux/panic_notifier.h        |  2 +-
- kernel/panic.c                        |  9 ++++-----
- 24 files changed, 54 insertions(+), 51 deletions(-)
+[0] https://lore.kernel.org/lkml/20220126052246.GC2086@MiWiFi-R3L-srv/
 
-diff --git a/arch/alpha/kernel/setup.c b/arch/alpha/kernel/setup.c
-index d88bdf852753..8ace0d7113b6 100644
---- a/arch/alpha/kernel/setup.c
-+++ b/arch/alpha/kernel/setup.c
-@@ -472,8 +472,8 @@ setup_arch(char **cmdline_p)
- 	}
- 
- 	/* Register a call for panic conditions. */
--	atomic_notifier_chain_register(&panic_notifier_list,
--			&alpha_panic_block);
-+	atomic_notifier_chain_register(&panic_pre_reboot_list,
-+					&alpha_panic_block);
- 
- #ifndef alpha_using_srm
- 	/* Assume that we've booted from SRM if we haven't booted from MILO.
-diff --git a/arch/parisc/kernel/pdc_chassis.c b/arch/parisc/kernel/pdc_chassis.c
-index da154406d368..0fd8d87fb4f9 100644
---- a/arch/parisc/kernel/pdc_chassis.c
-+++ b/arch/parisc/kernel/pdc_chassis.c
-@@ -22,7 +22,6 @@
- #include <linux/kernel.h>
- #include <linux/panic_notifier.h>
- #include <linux/reboot.h>
--#include <linux/notifier.h>
- #include <linux/cache.h>
- #include <linux/proc_fs.h>
- #include <linux/seq_file.h>
-@@ -135,7 +134,7 @@ void __init parisc_pdc_chassis_init(void)
- 				PDC_CHASSIS_VER);
- 
- 		/* initialize panic notifier chain */
--		atomic_notifier_chain_register(&panic_notifier_list,
-+		atomic_notifier_chain_register(&panic_pre_reboot_list,
- 				&pdc_chassis_panic_block);
- 
- 		/* initialize reboot notifier chain */
-diff --git a/arch/powerpc/kernel/setup-common.c b/arch/powerpc/kernel/setup-common.c
-index d04b8bf8dbc7..3518bebc10ad 100644
---- a/arch/powerpc/kernel/setup-common.c
-+++ b/arch/powerpc/kernel/setup-common.c
-@@ -762,7 +762,7 @@ void __init setup_panic(void)
- 
- 	/* Low-level platform-specific routines that should run on panic */
- 	if (ppc_md.panic)
--		atomic_notifier_chain_register(&panic_notifier_list,
-+		atomic_notifier_chain_register(&panic_pre_reboot_list,
- 					       &ppc_panic_block);
- }
- 
-diff --git a/arch/s390/kernel/ipl.c b/arch/s390/kernel/ipl.c
-index 1cc85b8ff42e..4a88c5bb6e15 100644
---- a/arch/s390/kernel/ipl.c
-+++ b/arch/s390/kernel/ipl.c
-@@ -2034,7 +2034,7 @@ static int on_panic_notify(struct notifier_block *self,
- 			   unsigned long event, void *data)
- {
- 	do_panic();
--	return NOTIFY_OK;
-+	return NOTIFY_DONE;
- }
- 
- static struct notifier_block on_panic_nb = {
-@@ -2069,7 +2069,7 @@ void __init setup_ipl(void)
- 		/* We have no info to copy */
- 		break;
- 	}
--	atomic_notifier_chain_register(&panic_notifier_list, &on_panic_nb);
-+	atomic_notifier_chain_register(&panic_pre_reboot_list, &on_panic_nb);
- }
- 
- void s390_reset_system(void)
-diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconsole_kern.c
-index 2ea0421bcc3f..21c13b4e24a3 100644
---- a/arch/um/drivers/mconsole_kern.c
-+++ b/arch/um/drivers/mconsole_kern.c
-@@ -855,7 +855,7 @@ static struct notifier_block panic_exit_notifier = {
- 
- static int add_notifier(void)
- {
--	atomic_notifier_chain_register(&panic_notifier_list,
-+	atomic_notifier_chain_register(&panic_pre_reboot_list,
- 			&panic_exit_notifier);
- 	return 0;
- }
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 4485b1a7c8e4..fc6e443299da 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -257,7 +257,7 @@ static struct notifier_block panic_exit_notifier = {
- 
- void uml_finishsetup(void)
- {
--	atomic_notifier_chain_register(&panic_notifier_list,
-+	atomic_notifier_chain_register(&panic_pre_reboot_list,
- 				       &panic_exit_notifier);
- 
- 	uml_postsetup();
-diff --git a/arch/x86/xen/enlighten.c b/arch/x86/xen/enlighten.c
-index 30c6e986a6cd..d4f4de239a21 100644
---- a/arch/x86/xen/enlighten.c
-+++ b/arch/x86/xen/enlighten.c
-@@ -290,7 +290,7 @@ static struct notifier_block xen_panic_block = {
- 
- int xen_panic_handler_init(void)
- {
--	atomic_notifier_chain_register(&panic_notifier_list, &xen_panic_block);
-+	atomic_notifier_chain_register(&panic_pre_reboot_list, &xen_panic_block);
- 	return 0;
- }
- 
-diff --git a/arch/xtensa/platforms/iss/setup.c b/arch/xtensa/platforms/iss/setup.c
-index d3433e1bb94e..eeeeb6cff6bd 100644
---- a/arch/xtensa/platforms/iss/setup.c
-+++ b/arch/xtensa/platforms/iss/setup.c
-@@ -13,7 +13,6 @@
-  */
- #include <linux/init.h>
- #include <linux/kernel.h>
--#include <linux/notifier.h>
- #include <linux/panic_notifier.h>
- #include <linux/printk.h>
- #include <linux/string.h>
-@@ -53,6 +52,7 @@ iss_panic_event(struct notifier_block *this, unsigned long event, void *ptr)
- 
- static struct notifier_block iss_panic_block = {
- 	.notifier_call = iss_panic_event,
-+	.priority = INT_MIN, /* run as late as possible, may not return */
- };
- 
- void __init platform_setup(char **p_cmdline)
-@@ -81,5 +81,5 @@ void __init platform_setup(char **p_cmdline)
- 		}
- 	}
- 
--	atomic_notifier_chain_register(&panic_notifier_list, &iss_panic_block);
-+	atomic_notifier_chain_register(&panic_pre_reboot_list, &iss_panic_block);
- }
-diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
-index c59265146e9c..6c4770949c01 100644
---- a/drivers/char/ipmi/ipmi_msghandler.c
-+++ b/drivers/char/ipmi/ipmi_msghandler.c
-@@ -25,7 +25,6 @@
- #include <linux/slab.h>
- #include <linux/ipmi.h>
- #include <linux/ipmi_smi.h>
--#include <linux/notifier.h>
- #include <linux/init.h>
- #include <linux/proc_fs.h>
- #include <linux/rcupdate.h>
-@@ -5375,10 +5374,13 @@ static int ipmi_register_driver(void)
- 	return rv;
- }
- 
-+/*
-+ * we should execute this panic callback late, since it involves
-+ * a complex call-chain and panic() runs in atomic context.
-+ */
- static struct notifier_block panic_block = {
- 	.notifier_call	= panic_event,
--	.next		= NULL,
--	.priority	= 200	/* priority: INT_MAX >= x >= 0 */
-+	.priority	= INT_MIN + 1,
- };
- 
- static int ipmi_init_msghandler(void)
-@@ -5406,7 +5408,7 @@ static int ipmi_init_msghandler(void)
- 	timer_setup(&ipmi_timer, ipmi_timeout, 0);
- 	mod_timer(&ipmi_timer, jiffies + IPMI_TIMEOUT_JIFFIES);
- 
--	atomic_notifier_chain_register(&panic_notifier_list, &panic_block);
-+	atomic_notifier_chain_register(&panic_pre_reboot_list, &panic_block);
- 
- 	initialized = true;
- 
-@@ -5438,7 +5440,7 @@ static void __exit cleanup_ipmi(void)
- 	if (initialized) {
- 		destroy_workqueue(remove_work_wq);
- 
--		atomic_notifier_chain_unregister(&panic_notifier_list,
-+		atomic_notifier_chain_unregister(&panic_pre_reboot_list,
- 						 &panic_block);
- 
- 		/*
-diff --git a/drivers/edac/altera_edac.c b/drivers/edac/altera_edac.c
-index e7e8e624a436..4890e9cba6fb 100644
---- a/drivers/edac/altera_edac.c
-+++ b/drivers/edac/altera_edac.c
-@@ -16,7 +16,6 @@
- #include <linux/kernel.h>
- #include <linux/mfd/altera-sysmgr.h>
- #include <linux/mfd/syscon.h>
--#include <linux/notifier.h>
- #include <linux/of_address.h>
- #include <linux/of_irq.h>
- #include <linux/of_platform.h>
-@@ -2163,7 +2162,7 @@ static int altr_edac_a10_probe(struct platform_device *pdev)
- 		int dberror, err_addr;
- 
- 		edac->panic_notifier.notifier_call = s10_edac_dberr_handler;
--		atomic_notifier_chain_register(&panic_notifier_list,
-+		atomic_notifier_chain_register(&panic_pre_reboot_list,
- 					       &edac->panic_notifier);
- 
- 		/* Printout a message if uncorrectable error previously. */
-diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
-index 901b97034308..3717c323aa36 100644
---- a/drivers/hv/vmbus_drv.c
-+++ b/drivers/hv/vmbus_drv.c
-@@ -1622,7 +1622,7 @@ static int vmbus_bus_init(void)
- 	 * Always register the vmbus unload panic notifier because we
- 	 * need to shut the VMbus channel connection on panic.
- 	 */
--	atomic_notifier_chain_register(&panic_notifier_list,
-+	atomic_notifier_chain_register(&panic_pre_reboot_list,
- 			       &hyperv_panic_vmbus_unload_block);
- 
- 	vmbus_request_offers();
-@@ -2851,7 +2851,7 @@ static void __exit vmbus_exit(void)
- 	 * The vmbus panic notifier is always registered, hence we should
- 	 * also unconditionally unregister it here as well.
- 	 */
--	atomic_notifier_chain_unregister(&panic_notifier_list,
-+	atomic_notifier_chain_unregister(&panic_pre_reboot_list,
- 					&hyperv_panic_vmbus_unload_block);
- 
- 	free_page((unsigned long)hv_panic_page);
-diff --git a/drivers/leds/trigger/ledtrig-panic.c b/drivers/leds/trigger/ledtrig-panic.c
-index 64abf2e91608..34fd5170723f 100644
---- a/drivers/leds/trigger/ledtrig-panic.c
-+++ b/drivers/leds/trigger/ledtrig-panic.c
-@@ -7,7 +7,6 @@
- 
- #include <linux/kernel.h>
- #include <linux/init.h>
--#include <linux/notifier.h>
- #include <linux/panic_notifier.h>
- #include <linux/leds.h>
- #include "../leds.h"
-@@ -64,7 +63,7 @@ static long led_panic_blink(int state)
- 
- static int __init ledtrig_panic_init(void)
- {
--	atomic_notifier_chain_register(&panic_notifier_list,
-+	atomic_notifier_chain_register(&panic_pre_reboot_list,
- 				       &led_trigger_panic_nb);
- 
- 	led_trigger_register_simple("panic", &trigger);
-diff --git a/drivers/misc/ibmasm/heartbeat.c b/drivers/misc/ibmasm/heartbeat.c
-index 59c9a0d95659..d6acae88b722 100644
---- a/drivers/misc/ibmasm/heartbeat.c
-+++ b/drivers/misc/ibmasm/heartbeat.c
-@@ -8,7 +8,6 @@
-  * Author: Max Asböck <amax@us.ibm.com>
-  */
- 
--#include <linux/notifier.h>
- #include <linux/panic_notifier.h>
- #include "ibmasm.h"
- #include "dot_command.h"
-@@ -24,7 +23,7 @@ static int suspend_heartbeats = 0;
-  * In the case of a panic the interrupt handler continues to work and thus
-  * continues to respond to heartbeats, making the service processor believe
-  * the OS is still running and thus preventing a reboot.
-- * To prevent this from happening a callback is added the panic_notifier_list.
-+ * To prevent this from happening a callback is added in a panic notifier list.
-  * Before responding to a heartbeat the driver checks if a panic has happened,
-  * if yes it suspends heartbeat, causing the service processor to reboot as
-  * expected.
-@@ -32,20 +31,23 @@ static int suspend_heartbeats = 0;
- static int panic_happened(struct notifier_block *n, unsigned long val, void *v)
- {
- 	suspend_heartbeats = 1;
--	return 0;
-+	return NOTIFY_DONE;
- }
- 
--static struct notifier_block panic_notifier = { panic_happened, NULL, 1 };
-+static struct notifier_block panic_notifier = {
-+	.notifier_call = panic_happened,
-+};
- 
- void ibmasm_register_panic_notifier(void)
- {
--	atomic_notifier_chain_register(&panic_notifier_list, &panic_notifier);
-+	atomic_notifier_chain_register(&panic_pre_reboot_list,
-+					&panic_notifier);
- }
- 
- void ibmasm_unregister_panic_notifier(void)
- {
--	atomic_notifier_chain_unregister(&panic_notifier_list,
--			&panic_notifier);
-+	atomic_notifier_chain_unregister(&panic_pre_reboot_list,
-+					&panic_notifier);
- }
- 
- 
-diff --git a/drivers/net/ipa/ipa_smp2p.c b/drivers/net/ipa/ipa_smp2p.c
-index 211233612039..92cdf6e0637c 100644
---- a/drivers/net/ipa/ipa_smp2p.c
-+++ b/drivers/net/ipa/ipa_smp2p.c
-@@ -7,7 +7,6 @@
- #include <linux/types.h>
- #include <linux/device.h>
- #include <linux/interrupt.h>
--#include <linux/notifier.h>
- #include <linux/panic_notifier.h>
- #include <linux/pm_runtime.h>
- #include <linux/soc/qcom/smem.h>
-@@ -138,13 +137,13 @@ static int ipa_smp2p_panic_notifier_register(struct ipa_smp2p *smp2p)
- 	smp2p->panic_notifier.notifier_call = ipa_smp2p_panic_notifier;
- 	smp2p->panic_notifier.priority = INT_MAX;	/* Do it early */
- 
--	return atomic_notifier_chain_register(&panic_notifier_list,
-+	return atomic_notifier_chain_register(&panic_pre_reboot_list,
- 					      &smp2p->panic_notifier);
- }
- 
- static void ipa_smp2p_panic_notifier_unregister(struct ipa_smp2p *smp2p)
- {
--	atomic_notifier_chain_unregister(&panic_notifier_list,
-+	atomic_notifier_chain_unregister(&panic_pre_reboot_list,
- 					 &smp2p->panic_notifier);
- }
- 
-diff --git a/drivers/parisc/power.c b/drivers/parisc/power.c
-index 8512884de2cf..5bb0868f5f08 100644
---- a/drivers/parisc/power.c
-+++ b/drivers/parisc/power.c
-@@ -233,7 +233,7 @@ static int __init power_init(void)
- 	}
- 
- 	/* Register a call for panic conditions. */
--	atomic_notifier_chain_register(&panic_notifier_list,
-+	atomic_notifier_chain_register(&panic_pre_reboot_list,
- 			&parisc_panic_block);
- 
- 	return 0;
-@@ -243,7 +243,7 @@ static void __exit power_exit(void)
- {
- 	kthread_stop(power_task);
- 
--	atomic_notifier_chain_unregister(&panic_notifier_list,
-+	atomic_notifier_chain_unregister(&panic_pre_reboot_list,
- 			&parisc_panic_block);
- 
- 	pdc_soft_power_button(0);
-diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-index c510125769b9..24799ff239e6 100644
---- a/drivers/remoteproc/remoteproc_core.c
-+++ b/drivers/remoteproc/remoteproc_core.c
-@@ -2795,12 +2795,14 @@ static int rproc_panic_handler(struct notifier_block *nb, unsigned long event,
- static void __init rproc_init_panic(void)
- {
- 	rproc_panic_nb.notifier_call = rproc_panic_handler;
--	atomic_notifier_chain_register(&panic_notifier_list, &rproc_panic_nb);
-+	atomic_notifier_chain_register(&panic_pre_reboot_list,
-+				       &rproc_panic_nb);
- }
- 
- static void __exit rproc_exit_panic(void)
- {
--	atomic_notifier_chain_unregister(&panic_notifier_list, &rproc_panic_nb);
-+	atomic_notifier_chain_unregister(&panic_pre_reboot_list,
-+					 &rproc_panic_nb);
- }
- 
- static int __init remoteproc_init(void)
-diff --git a/drivers/s390/char/con3215.c b/drivers/s390/char/con3215.c
-index 192198bd3dc4..07379dd3f1f3 100644
---- a/drivers/s390/char/con3215.c
-+++ b/drivers/s390/char/con3215.c
-@@ -867,7 +867,7 @@ static int __init con3215_init(void)
- 		raw3215[0] = NULL;
- 		return -ENODEV;
- 	}
--	atomic_notifier_chain_register(&panic_notifier_list, &on_panic_nb);
-+	atomic_notifier_chain_register(&panic_pre_reboot_list, &on_panic_nb);
- 	register_reboot_notifier(&on_reboot_nb);
- 	register_console(&con3215);
- 	return 0;
-diff --git a/drivers/s390/char/con3270.c b/drivers/s390/char/con3270.c
-index 476202f3d8a0..e79bf3e7bde3 100644
---- a/drivers/s390/char/con3270.c
-+++ b/drivers/s390/char/con3270.c
-@@ -645,7 +645,7 @@ con3270_init(void)
- 	condev->cline->len = 0;
- 	con3270_create_status(condev);
- 	condev->input = alloc_string(&condev->freemem, 80);
--	atomic_notifier_chain_register(&panic_notifier_list, &on_panic_nb);
-+	atomic_notifier_chain_register(&panic_pre_reboot_list, &on_panic_nb);
- 	register_reboot_notifier(&on_reboot_nb);
- 	register_console(&con3270);
- 	return 0;
-diff --git a/drivers/s390/char/sclp_con.c b/drivers/s390/char/sclp_con.c
-index e5d947c763ea..7ca9d4c45d60 100644
---- a/drivers/s390/char/sclp_con.c
-+++ b/drivers/s390/char/sclp_con.c
-@@ -288,7 +288,7 @@ sclp_console_init(void)
- 	timer_setup(&sclp_con_timer, sclp_console_timeout, 0);
- 
- 	/* enable printk-access to this driver */
--	atomic_notifier_chain_register(&panic_notifier_list, &on_panic_nb);
-+	atomic_notifier_chain_register(&panic_pre_reboot_list, &on_panic_nb);
- 	register_reboot_notifier(&on_reboot_nb);
- 	register_console(&sclp_console);
- 	return 0;
-diff --git a/drivers/s390/char/sclp_vt220.c b/drivers/s390/char/sclp_vt220.c
-index a32f34a1c6d2..97cf9e290c28 100644
---- a/drivers/s390/char/sclp_vt220.c
-+++ b/drivers/s390/char/sclp_vt220.c
-@@ -838,7 +838,7 @@ sclp_vt220_con_init(void)
- 	if (rc)
- 		return rc;
- 	/* Attach linux console */
--	atomic_notifier_chain_register(&panic_notifier_list, &on_panic_nb);
-+	atomic_notifier_chain_register(&panic_pre_reboot_list, &on_panic_nb);
- 	register_reboot_notifier(&on_reboot_nb);
- 	register_console(&sclp_vt220_console);
- 	return 0;
-diff --git a/drivers/staging/olpc_dcon/olpc_dcon.c b/drivers/staging/olpc_dcon/olpc_dcon.c
-index 7284cb4ac395..cb50471f2246 100644
---- a/drivers/staging/olpc_dcon/olpc_dcon.c
-+++ b/drivers/staging/olpc_dcon/olpc_dcon.c
-@@ -653,7 +653,8 @@ static int dcon_probe(struct i2c_client *client, const struct i2c_device_id *id)
- 	}
- 
- 	register_reboot_notifier(&dcon->reboot_nb);
--	atomic_notifier_chain_register(&panic_notifier_list, &dcon_panic_nb);
-+	atomic_notifier_chain_register(&panic_pre_reboot_list,
-+				       &dcon_panic_nb);
- 
- 	return 0;
- 
-@@ -676,7 +677,8 @@ static int dcon_remove(struct i2c_client *client)
- 	struct dcon_priv *dcon = i2c_get_clientdata(client);
- 
- 	unregister_reboot_notifier(&dcon->reboot_nb);
--	atomic_notifier_chain_unregister(&panic_notifier_list, &dcon_panic_nb);
-+	atomic_notifier_chain_unregister(&panic_pre_reboot_list,
-+					 &dcon_panic_nb);
- 
- 	free_irq(DCON_IRQ, dcon);
- 
-diff --git a/drivers/video/fbdev/hyperv_fb.c b/drivers/video/fbdev/hyperv_fb.c
-index f3494b868a64..ec21e63592be 100644
---- a/drivers/video/fbdev/hyperv_fb.c
-+++ b/drivers/video/fbdev/hyperv_fb.c
-@@ -1253,7 +1253,7 @@ static int hvfb_probe(struct hv_device *hdev,
- 	 */
- 	par->hvfb_panic_nb.notifier_call = hvfb_on_panic;
- 	par->hvfb_panic_nb.priority = INT_MIN + 10,
--	atomic_notifier_chain_register(&panic_notifier_list,
-+	atomic_notifier_chain_register(&panic_pre_reboot_list,
- 				       &par->hvfb_panic_nb);
- 
- 	return 0;
-@@ -1276,7 +1276,7 @@ static int hvfb_remove(struct hv_device *hdev)
- 	struct fb_info *info = hv_get_drvdata(hdev);
- 	struct hvfb_par *par = info->par;
- 
--	atomic_notifier_chain_unregister(&panic_notifier_list,
-+	atomic_notifier_chain_unregister(&panic_pre_reboot_list,
- 					 &par->hvfb_panic_nb);
- 
- 	par->update = false;
-diff --git a/include/linux/panic_notifier.h b/include/linux/panic_notifier.h
-index 7364a346bcb0..7912aacbc0e5 100644
---- a/include/linux/panic_notifier.h
-+++ b/include/linux/panic_notifier.h
-@@ -5,9 +5,9 @@
- #include <linux/notifier.h>
- #include <linux/types.h>
- 
--extern struct atomic_notifier_head panic_notifier_list;
- extern struct atomic_notifier_head panic_hypervisor_list;
- extern struct atomic_notifier_head panic_info_list;
-+extern struct atomic_notifier_head panic_pre_reboot_list;
- 
- extern bool crash_kexec_post_notifiers;
- 
-diff --git a/kernel/panic.c b/kernel/panic.c
-index 73ca1bc44e30..a9d43b98b05b 100644
---- a/kernel/panic.c
-+++ b/kernel/panic.c
-@@ -69,16 +69,15 @@ EXPORT_SYMBOL_GPL(panic_timeout);
- #define PANIC_PRINT_ALL_CPU_BT		0x00000040
- unsigned long panic_print;
- 
--ATOMIC_NOTIFIER_HEAD(panic_notifier_list);
--
--EXPORT_SYMBOL(panic_notifier_list);
--
- ATOMIC_NOTIFIER_HEAD(panic_hypervisor_list);
- EXPORT_SYMBOL(panic_hypervisor_list);
- 
- ATOMIC_NOTIFIER_HEAD(panic_info_list);
- EXPORT_SYMBOL(panic_info_list);
- 
-+ATOMIC_NOTIFIER_HEAD(panic_pre_reboot_list);
-+EXPORT_SYMBOL(panic_pre_reboot_list);
-+
- static long no_blink(int state)
- {
- 	return 0;
-@@ -295,7 +294,7 @@ void panic(const char *fmt, ...)
- 	 */
- 	atomic_notifier_call_chain(&panic_hypervisor_list, PANIC_NOTIFIER, buf);
- 	atomic_notifier_call_chain(&panic_info_list, PANIC_NOTIFIER, buf);
--	atomic_notifier_call_chain(&panic_notifier_list, PANIC_NOTIFIER, buf);
-+	atomic_notifier_call_chain(&panic_pre_reboot_list, PANIC_NOTIFIER, buf);
- 
- 	panic_print_sys_info(false);
- 
--- 
-2.36.0
+[1] https://lore.kernel.org/lkml/YfPxvzSzDLjO5ldp@alley/
 
+
+>[...]
+>> +	 * Based on the level configured (smaller than 4), we clear the
+>> +	 * proper bits in "panic_notifiers_bits". Notice that this bitfield
+>> +	 * is initialized with all notifiers set.
+>> +	 */
+>> +	switch (panic_notifiers_level) {
+>> +	case 3:
+>> +		clear_bit(PN_PRE_REBOOT_BIT, &panic_notifiers_bits);
+>> +		break;
+>> +	case 2:
+>> +		clear_bit(PN_PRE_REBOOT_BIT, &panic_notifiers_bits);
+>> +
+>> +		if (!kmsg_has_dumpers())
+>> +			clear_bit(PN_INFO_BIT, &panic_notifiers_bits);
+>> +		break;
+>> +	case 1:
+>> +		clear_bit(PN_PRE_REBOOT_BIT, &panic_notifiers_bits);
+>> +		clear_bit(PN_INFO_BIT, &panic_notifiers_bits);
+>> +		break;
+>> +	case 0:
+>> +		clear_bit(PN_PRE_REBOOT_BIT, &panic_notifiers_bits);
+>> +		clear_bit(PN_INFO_BIT, &panic_notifiers_bits);
+>> +		clear_bit(PN_HYPERVISOR_BIT, &panic_notifiers_bits);
+>> +		break;
+>> +	}
+> 
+> I think the above switch statement could be done as follows:
+> 
+> if (panic_notifiers_level <= 3)
+> 	clear_bit(PN_PRE_REBOOT_BIT, &panic_notifiers_bits);
+> if (panic_notifiers_level <= 2)
+> 	if (!kmsg_has_dumpers())
+> 		clear_bit(PN_INFO_BIT, &panic_notifiers_bits);
+> if (panic_notifiers_level <=1)
+> 	clear_bit(PN_INFO_BIT, &panic_notifiers_bits);
+> if (panic_notifiers_level == 0)
+> 	clear_bit(PN_HYPERVISOR_BIT, &panic_notifiers_bits);
+> 
+> That's about half the lines of code.  It's somewhat a matter of style,
+> so treat this as just a suggestion to consider.  I just end up looking
+> for a better solution when I see the same line of code repeated
+> 3 or 4 times!
+> 
+
+It's a good idea - I liked your code. The switch seems more
+natural/explicit for me, even duplicating some lines, but in case more
+people prefer your way, I can definitely change the code - thanks for
+the suggestion.
+Cheers,
+
+
+Guilherme
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
