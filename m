@@ -1,16 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ams.source.kernel.org ([145.40.68.75])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ncGgl-008UY4-RA
- for linux-um@lists.infradead.org; Thu, 07 Apr 2022 01:11:57 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.16 07/30] um: Cleanup syscall_handler_t
- definition/cast, fix warning
-Date: Wed,  6 Apr 2022 21:11:17 -0400
-Message-Id: <20220407011140.113856-7-sashal@kernel.org>
-In-Reply-To: <20220407011140.113856-1-sashal@kernel.org>
-References: <20220407011140.113856-1-sashal@kernel.org>
+Message-ID: <79472351-c6ce-a060-ef24-f64b6dce1637@igalia.com>
+Date: Fri, 29 Apr 2022 11:01:59 -0300
 MIME-Version: 1.0
+Subject: Re: [PATCH 09/30] coresight: cpu-debug: Replace mutex with
+ mutex_trylock on panic notifier
+Content-Language: en-US
+References: <20220427224924.592546-1-gpiccoli@igalia.com>
+ <20220427224924.592546-10-gpiccoli@igalia.com>
+ <3cafe4fd-8a0b-2633-44a3-2995abd6c38c@arm.com>
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <3cafe4fd-8a0b-2633-44a3-2995abd6c38c@arm.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,63 +18,40 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: David Gow <davidgow@google.com>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, viro@zeniv.linux.org.uk, linux-um@lists.infradead.org
+To: Suzuki K Poulose <suzuki.poulose@arm.com>, akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, Leo Yan <leo.yan@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Mike Leach <mike.leach@linaro.org>
 
-RnJvbTogRGF2aWQgR293IDxkYXZpZGdvd0Bnb29nbGUuY29tPgoKWyBVcHN0cmVhbSBjb21taXQg
-ZjRmMDNmMjk5YTU2Y2U0ZDczYzU0MzFlMDMyN2IzYjZjYjU1ZWJiOSBdCgpUaGUgc3lzY2FsbF9o
-YW5kbGVyX3QgdHlwZSBmb3IgeDg2XzY0IHdhcyBkZWZpbmVkIGFzICdsb25nICgqKSh2b2lkKScs
-CmJ1dCBhbHdheXMgY2FzdCB0byAnbG9uZyAoKikobG9uZywgbG9uZywgbG9uZywgbG9uZywgbG9u
-ZywgbG9uZyknIGJlZm9yZQp1c2UuIFRoaXMgbm93IHRyaWdnZXJzIGEgd2FybmluZyAoc2VlIGJl
-bG93KS4KCkRlZmluZSBzeXNjYWxsX2hhbmRsZXJfdCBhcyB0aGUgbGF0dGVyIGluc3RlYWQsIGFu
-ZCByZW1vdmUgdGhlIGNhc3QuClRoaXMgc2ltcGxpZmllcyB0aGUgY29kZSwgYW5kIGZpeGVzIHRo
-ZSB3YXJuaW5nLgoKV2FybmluZzoKSW4gZmlsZSBpbmNsdWRlZCBmcm9tIC4uL2FyY2gvdW0vaW5j
-bHVkZS9hc20vcHJvY2Vzc29yLWdlbmVyaWMuaDoxMwogICAgICAgICAgICAgICAgIGZyb20gLi4v
-YXJjaC94ODYvdW0vYXNtL3Byb2Nlc3Nvci5oOjQxCiAgICAgICAgICAgICAgICAgZnJvbSAuLi9p
-bmNsdWRlL2xpbnV4L3JjdXBkYXRlLmg6MzAKICAgICAgICAgICAgICAgICBmcm9tIC4uL2luY2x1
-ZGUvbGludXgvcmN1bGlzdC5oOjExCiAgICAgICAgICAgICAgICAgZnJvbSAuLi9pbmNsdWRlL2xp
-bnV4L3BpZC5oOjUKICAgICAgICAgICAgICAgICBmcm9tIC4uL2luY2x1ZGUvbGludXgvc2NoZWQu
-aDoxNAogICAgICAgICAgICAgICAgIGZyb20gLi4vaW5jbHVkZS9saW51eC9wdHJhY2UuaDo2CiAg
-ICAgICAgICAgICAgICAgZnJvbSAuLi9hcmNoL3VtL2tlcm5lbC9za2FzL3N5c2NhbGwuYzo3Ogou
-Li9hcmNoL3VtL2tlcm5lbC9za2FzL3N5c2NhbGwuYzogSW4gZnVuY3Rpb24g4oCYaGFuZGxlX3N5
-c2NhbGzigJk6Ci4uL2FyY2gveDg2L3VtL3NoYXJlZC9zeXNkZXAvc3lzY2FsbHNfNjQuaDoxODox
-MTogd2FybmluZzogY2FzdCBiZXR3ZWVuIGluY29tcGF0aWJsZSBmdW5jdGlvbiB0eXBlcyBmcm9t
-IOKAmGxvbmcgaW50ICgqKSh2b2lkKeKAmSB0byDigJhsb25nIGludCAoKikobG9uZyBpbnQsICBs
-b25nIGludCwgIGxvbmcgaW50LCAgbG9uZyBpbnQsICBsb25nIGludCwgIGxvbmcgaW50KeKAmSBb
-Ci1XY2FzdC1mdW5jdGlvbi10eXBlXQogICAxOCB8ICAgICAgICAgKCgobG9uZyAoKikobG9uZywg
-bG9uZywgbG9uZywgbG9uZywgbG9uZywgbG9uZykpIFwKICAgICAgfCAgICAgICAgICAgXgouLi9h
-cmNoL3g4Ni91bS9hc20vcHRyYWNlLmg6MzY6NjI6IG5vdGU6IGluIGRlZmluaXRpb24gb2YgbWFj
-cm8g4oCYUFRfUkVHU19TRVRfU1lTQ0FMTF9SRVRVUk7igJkKICAgMzYgfCAjZGVmaW5lIFBUX1JF
-R1NfU0VUX1NZU0NBTExfUkVUVVJOKHIsIHJlcykgKFBUX1JFR1NfQVgocikgPSAocmVzKSkKICAg
-ICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgXn5+Ci4uL2FyY2gvdW0va2VybmVsL3NrYXMvc3lzY2FsbC5jOjQ2OjMzOiBub3Rl
-OiBpbiBleHBhbnNpb24gb2YgbWFjcm8g4oCYRVhFQ1VURV9TWVNDQUxM4oCZCiAgIDQ2IHwgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBFWEVDVVRFX1NZU0NBTEwoc3lzY2FsbCwgcmVn
-cykpOwogICAgICB8ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXn5+fn5+fn5+fn5+
-fn5+CgpTaWduZWQtb2ZmLWJ5OiBEYXZpZCBHb3cgPGRhdmlkZ293QGdvb2dsZS5jb20+ClNpZ25l
-ZC1vZmYtYnk6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+ClNpZ25lZC1vZmYt
-Ynk6IFNhc2hhIExldmluIDxzYXNoYWxAa2VybmVsLm9yZz4KLS0tCiBhcmNoL3g4Ni91bS9zaGFy
-ZWQvc3lzZGVwL3N5c2NhbGxzXzY0LmggfCA1ICsrLS0tCiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNl
-cnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2FyY2gveDg2L3VtL3NoYXJl
-ZC9zeXNkZXAvc3lzY2FsbHNfNjQuaCBiL2FyY2gveDg2L3VtL3NoYXJlZC9zeXNkZXAvc3lzY2Fs
-bHNfNjQuaAppbmRleCA4YTdkNWUxZGE5OGUuLjFlNjg3NWI0ZmZkOCAxMDA2NDQKLS0tIGEvYXJj
-aC94ODYvdW0vc2hhcmVkL3N5c2RlcC9zeXNjYWxsc182NC5oCisrKyBiL2FyY2gveDg2L3VtL3No
-YXJlZC9zeXNkZXAvc3lzY2FsbHNfNjQuaApAQCAtMTAsMTMgKzEwLDEyIEBACiAjaW5jbHVkZSA8
-bGludXgvbXNnLmg+CiAjaW5jbHVkZSA8bGludXgvc2htLmg+CiAKLXR5cGVkZWYgbG9uZyBzeXNj
-YWxsX2hhbmRsZXJfdCh2b2lkKTsKK3R5cGVkZWYgbG9uZyBzeXNjYWxsX2hhbmRsZXJfdChsb25n
-LCBsb25nLCBsb25nLCBsb25nLCBsb25nLCBsb25nKTsKIAogZXh0ZXJuIHN5c2NhbGxfaGFuZGxl
-cl90ICpzeXNfY2FsbF90YWJsZVtdOwogCiAjZGVmaW5lIEVYRUNVVEVfU1lTQ0FMTChzeXNjYWxs
-LCByZWdzKSBcCi0JKCgobG9uZyAoKikobG9uZywgbG9uZywgbG9uZywgbG9uZywgbG9uZywgbG9u
-ZykpIFwKLQkgICgqc3lzX2NhbGxfdGFibGVbc3lzY2FsbF0pKShVUFRfU1lTQ0FMTF9BUkcxKCZy
-ZWdzLT5yZWdzKSwgXAorCSgoKCpzeXNfY2FsbF90YWJsZVtzeXNjYWxsXSkpKFVQVF9TWVNDQUxM
-X0FSRzEoJnJlZ3MtPnJlZ3MpLCBcCiAJCSAJCSAgICAgIFVQVF9TWVNDQUxMX0FSRzIoJnJlZ3Mt
-PnJlZ3MpLCBcCiAJCQkJICAgICAgVVBUX1NZU0NBTExfQVJHMygmcmVncy0+cmVncyksIFwKIAkJ
-CQkgICAgICBVUFRfU1lTQ0FMTF9BUkc0KCZyZWdzLT5yZWdzKSwgXAotLSAKMi4zNS4xCgoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFp
-bGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
+On 28/04/2022 05:11, Suzuki K Poulose wrote:
+> Hi Guilherme,
+> [...] 
+> How would you like to proceed with queuing this ? I am happy
+> either way. In case you plan to push this as part of this
+> series (I don't see any potential conflicts) :
+> 
+> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+
+Thanks for your review Suzuki, much appreciated!
+
+About your question, I'm not sure yet - in case the core changes would
+take a while (like if community find them polemic, require many changes,
+etc) I might split this series in 2 parts, the fixes part vs the
+improvements per se. Either way, a V2 is going to happen for sure, and
+in that moment, I'll let you know what I think it's best.
+
+But either way, any choice you prefer is fine by me as well (like if you
+want to merge it now or postpone to get merged in the future), this is
+not an urgent fix I think =)
+Cheers,
+
+
+Guilherme
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
