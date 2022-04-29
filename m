@@ -1,171 +1,335 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Message-ID: <2787b476-6366-1c83-db80-0393da417497@igalia.com>
-Date: Fri, 29 Apr 2022 19:35:09 -0300
-MIME-Version: 1.0
-Subject: Re: [PATCH 16/30] drivers/hv/vmbus, video/hyperv_fb: Untangle and
+Return-Path: <linux-pm-owner@vger.kernel.org>
+From: "Michael Kelley (LINUX)" <mikelley@microsoft.com>
+Subject: RE: [PATCH 16/30] drivers/hv/vmbus, video/hyperv_fb: Untangle and
  refactor Hyper-V panic notifiers
-Content-Language: en-US
+Date: Fri, 29 Apr 2022 17:16:59 +0000
+Message-ID: <PH0PR21MB30250C9246FFF36AFB1DFDECD7FC9@PH0PR21MB3025.namprd21.prod.outlook.com>
 References: <20220427224924.592546-1-gpiccoli@igalia.com>
  <20220427224924.592546-17-gpiccoli@igalia.com>
- <PH0PR21MB30250C9246FFF36AFB1DFDECD7FC9@PH0PR21MB3025.namprd21.prod.outlook.com>
-From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-In-Reply-To: <PH0PR21MB30250C9246FFF36AFB1DFDECD7FC9@PH0PR21MB3025.namprd21.prod.outlook.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+In-Reply-To: <20220427224924.592546-17-gpiccoli@igalia.com>
+Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Michael Kelley (LINUX)" <mikelley@microsoft.com>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "bhe@redhat.com" <bhe@redhat.com>, "pmladek@suse.com" <pmladek@suse.com>, "kexec@lists.infradead.org" <kexec@lists.infradead.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "bcm-kernel-feedback-list@broadcom.com" <bcm-kernel-feedback-list@broadcom.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>, "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>, "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>, "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "openipmi-developer@lists.sourceforge.net" <openipmi-developer@lists.sourceforge.net>, "rcu@vger.kernel.org" <rcu@vger.kernel.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>, "x86@kernel.org" <x86@kernel.org>, "kernel-dev@igalia.com" <kernel-dev@igalia.com>, "kernel@gpiccoli.net" <kernel@gpiccoli.net>, "halves@canonical.com" <halves@canonical.com>, "fabiomirmar@gmail.com" <fabiomirmar@gmail.com>, "alejandro.j.jimenez@oracle.com" <alejandro.j.jimenez@oracle.com>, "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>, "arnd@arndb.de" <arnd@arndb.de>, "bp@alien8.de" <bp@alien8.de>, "corbet@lwn.net" <corbet@lwn.net>, "d.hatayama@jp.fujitsu.com" <d.hatayama@jp.fujitsu.com>, "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "dyoung@redhat.com" <dyoung@redhat.com>, "feng.tang@intel.com" <feng.tang@intel.com>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "hidehiro.kawai.ez@hitachi.com" <hidehiro.kawai.ez@hitachi.com>, "jgross@suse.com" <jgross@suse.com>, "john.ogness@linutronix.de" <john.ogness@linutronix.de>, "keescook@chromium.org" <keescook@chromium.org>, "luto@kernel.org" <luto@kernel.org>, "mhiramat@kernel.org" <mhiramat@kernel.org>, "mingo@redhat.com" <mingo@redhat.com>, "paulmck@kernel.org" <paulmck@kernel.org>, "peterz@infradead.org" <peterz@infradead.org>, "rostedt@goodmis.org" <rostedt@goodmis.org>, "senozhatsky@chromium.org" <senozhatsky@chromium.org>, "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>, "tglx@linutronix.de" <tglx@linutronix.de>, "vgoyal@redhat.com" <vgoyal@redhat.com>, vkuznets <vkuznets@redhat.com>, "will@kernel.org" <will@kernel.org>, Andrea Parri <parri.andrea@gmail.com>, Dexuan Cui <decui@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, KY Srinivasan <kys@microsoft.com>, Stephen Hemminger <sthemmin@microsoft.com>, Tianyu Lan <Tianyu.Lan@microsoft.com>, Wei Liu <wei.liu@kernel.org>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+To: "Guilherme G. Piccoli" <gpiccoli@igalia.com>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "bhe@redhat.com" <bhe@redhat.com>, "pmladek@suse.com" <pmladek@suse.com>, "kexec@lists.infradead.org" <kexec@lists.infradead.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "bcm-kernel-feedback-list@broadcom.com" <bcm-kernel-feedback-list@broadcom.com>, "coresight@lists.linaro.org" <coresight@lists.linaro.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>, "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>, "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>, "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "openipmi-developer@lists.sourceforge.net" <openipmi-developer@lists.sourceforge.net>, "rcu@vger.kernel.org" <rcu@vger.kernel.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>, "x86@kernel.org" <x86@kernel.org>, "kernel-dev@igalia.com" <kernel-dev@igalia.com>, "kernel@gpiccoli.net" <kernel@gpiccoli.net>, "halves@canonical.com" <halves@canonical.com>, "fabiomirmar@gmail.com" <fabiomirmar@gmail.com>, "alejandro.j.jimenez@oracle.com" <alejandro.j.jimenez@oracle.com>, "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>, "arnd@arndb.de" <arnd@arndb.de>, "bp@alien8.de" <bp@alien8.de>, "corbet@lwn.net" <corbet@lwn.net>, "d.hatayama@jp.fujitsu.com" <d.hatayama@jp.fujitsu.com>, "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "dyoung@redhat.com" <dyoung@redhat.com>, "feng.tang@intel.com" <feng.tang@intel.com>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "hidehiro.kawai.ez@hitachi.com" <hidehiro.kawai.ez@hitachi.com>, "jgross@suse.com" <jgross@suse.com>, "john.ogness@linutronix.de" <john.ogness@linutronix.de>, "keescook@chromium.org" <keescook@chromium.org>, "luto@kernel.org" <luto@kernel.org>, "mhiramat@kernel.org" <mhiramat@kernel.org>, "mingo@redhat.com" <mingo@redhat.com>, "paulmck@kernel.org" <paulmck@kernel.org>, "peterz@infradead.org" <peterz@infradead.org>, "rostedt@goodmis.org" <rostedt@goodmis.org>, "senozhatsky@chromium.org" <senozhatsky@chromium.org>, "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>, "tglx@linutronix.de" <tglx@linutronix.de>, "vgoyal@redhat.com" <vgoyal@redhat.com>, vkuznets <vkuznets@redhat.com>, "will@kernel.org" <will@kernel.org>, Andrea Parri <parri.andrea@gmail.com>, Dexuan Cui <decui@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, KY Srinivasan <kys@microsoft.com>, Stephen Hemminger <sthemmin@microsoft.com>, Tianyu Lan <Tianyu.Lan@microsoft.com>, Wei Liu <wei.liu@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-Hi Michael, first of all thanks for the great review, much appreciated.
-Some comments inline below:
+From: Guilherme G. Piccoli <gpiccoli@igalia.com> Sent: Wednesday, April 27,=
+ 2022 3:49 PM
+>=20
+> Currently Hyper-V guests are among the most relevant users of the panic
+> infrastructure, like panic notifiers, kmsg dumpers, etc. The reasons rely
+> both in cleaning-up procedures (closing a hypervisor <-> guest connection=
+,
+> disabling a paravirtualized timer) as well as to data collection (sending
+> panic information to the hypervisor) and framebuffer management.
+>=20
+> The thing is: some notifiers are related to others, ordering matters, som=
+e
+> functionalities are duplicated and there are lots of conditionals behind
+> sending panic information to the hypervisor. This patch, as part of an
+> effort to clean-up the panic notifiers mechanism and better document
+> things, address some of the issues/complexities of Hyper-V panic handling
+> through the following changes:
+>=20
+> (a) We have die and panic notifiers on vmbus_drv.c and both have goals of
+> sending panic information to the hypervisor, though the panic notifier is
+> also responsible for a cleaning-up procedure.
+>=20
+> This commit clears the code by splitting the panic notifier in two, one
+> for closing the vmbus connection whereas the other is only for sending
+> panic info to hypervisor. With that, it was possible to merge the die and
+> panic notifiers in a single/well-documented function, and clear some
+> conditional complexities on sending such information to the hypervisor.
+>=20
+> (b) The new panic notifier created after (a) is only doing a single thing=
+:
+> cleaning the vmbus connection. This procedure might cause a delay (due to
+> hypervisor I/O completion), so we postpone that to run late. But more
+> relevant: this *same* vmbus unloading happens in the crash_shutdown()
+> handler, so if kdump is set, we can safely skip this panic notifier and
+> defer such clean-up to the kexec crash handler.
 
-On 29/04/2022 14:16, Michael Kelley (LINUX) wrote:
-> [...]
->> hypervisor I/O completion), so we postpone that to run late. But more
->> relevant: this *same* vmbus unloading happens in the crash_shutdown()
->> handler, so if kdump is set, we can safely skip this panic notifier and
->> defer such clean-up to the kexec crash handler.
-> 
-> While the last sentence is true for Hyper-V on x86/x64, it's not true for
-> Hyper-V on ARM64.  x86/x64 has the 'machine_ops' data structure
-> with the ability to provide a custom crash_shutdown() function, which
-> Hyper-V does in the form of hv_machine_crash_shutdown().  But ARM64
-> has no mechanism to provide such a custom function that will eventually
-> do the needed vmbus_initiate_unload() before running kdump.
-> 
-> I'm not immediately sure what the best solution is for ARM64.  At this
-> point, I'm just pointing out the problem and will think about the tradeoffs
-> for various possible solutions.  Please do the same yourself. :-)
-> 
+While the last sentence is true for Hyper-V on x86/x64, it's not true for
+Hyper-V on ARM64.  x86/x64 has the 'machine_ops' data structure
+with the ability to provide a custom crash_shutdown() function, which
+Hyper-V does in the form of hv_machine_crash_shutdown().  But ARM64
+has no mechanism to provide such a custom function that will eventually
+do the needed vmbus_initiate_unload() before running kdump.
 
-Oh, you're totally right! I just assumed ARM64 would the the same, my
-bad. Just to propose some alternatives, so you/others can also discuss
-here and we can reach a consensus about the trade-offs:
+I'm not immediately sure what the best solution is for ARM64.  At this
+point, I'm just pointing out the problem and will think about the tradeoffs
+for various possible solutions.  Please do the same yourself. :-)
 
-(a) We could forget about this change, and always do the clean-up here,
-not relying in machine_crash_shutdown().
-Pro: really simple, behaves the same as it is doing currently.
-Con: less elegant/concise, doesn't allow arm64 customization.
+>=20
+> (c) There is also a Hyper-V framebuffer panic notifier, which relies in
+> doing a vmbus operation that demands a valid connection. So, we must
+> order this notifier with the panic notifier from vmbus_drv.c, in order to
+> guarantee that the framebuffer code executes before the vmbus connection
+> is unloaded.
 
-(b) Add a way to allow ARM64 customization of shutdown crash handler.
-Pro: matches x86, more customizable, improves arm64 arch code.
-Con: A tad more complex.
+Patch 21 of this set puts the Hyper-V FB panic notifier on the pre_reboot
+notifier list, which means it won't execute before the VMbus connection
+unload in the case of kdump.   This notifier is making sure that Hyper-V
+is notified about the last updates made to the frame buffer before the
+panic, so maybe it needs to be put on the hypervisor notifier list.  It
+sends a message to Hyper-V over its existing VMbus channel, but it
+does not wait for a reply.  It does, however, obtain a spin lock on the
+ring buffer used to communicate with Hyper-V.   Unless someone has
+a better suggestion, I'm inclined to take the risk of blocking on that
+spin lock.
 
-Also, a question that came-up: if ARM64 has no way of calling special
-crash shutdown handler, how can you execute hv_stimer_cleanup() and
-hv_synic_disable_regs() there? Or are they not required in ARM64?
+>=20
+> Also, this commit removes a useless header.
+>=20
+> Although there is code rework and re-ordering, we expect that this change
+> has no functional regressions but instead optimize the path and increase
+> panic reliability on Hyper-V. This was tested on Hyper-V with success.
+>=20
+> Fixes: 792f232d57ff ("Drivers: hv: vmbus: Fix potential crash on module u=
+nload")
+> Fixes: 74347a99e73a ("x86/Hyper-V: Unload vmbus channel in hv panic callb=
+ack")
 
+The "Fixes:" tags imply that these changes should be backported to older
+longterm kernel versions, which I don't think is the case.  There is a
+dependency on Patch 14 of your series where PANIC_NOTIFIER is
+introduced.
 
->>
->> (c) There is also a Hyper-V framebuffer panic notifier, which relies in
->> doing a vmbus operation that demands a valid connection. So, we must
->> order this notifier with the panic notifier from vmbus_drv.c, in order to
->> guarantee that the framebuffer code executes before the vmbus connection
->> is unloaded.
-> 
-> Patch 21 of this set puts the Hyper-V FB panic notifier on the pre_reboot
-> notifier list, which means it won't execute before the VMbus connection
-> unload in the case of kdump.   This notifier is making sure that Hyper-V
-> is notified about the last updates made to the frame buffer before the
-> panic, so maybe it needs to be put on the hypervisor notifier list.  It
-> sends a message to Hyper-V over its existing VMbus channel, but it
-> does not wait for a reply.  It does, however, obtain a spin lock on the
-> ring buffer used to communicate with Hyper-V.   Unless someone has
-> a better suggestion, I'm inclined to take the risk of blocking on that
-> spin lock.
+> Cc: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+> Cc: Dexuan Cui <decui@microsoft.com>
+> Cc: Haiyang Zhang <haiyangz@microsoft.com>
+> Cc: "K. Y. Srinivasan" <kys@microsoft.com>
+> Cc: Michael Kelley <mikelley@microsoft.com>
+> Cc: Stephen Hemminger <sthemmin@microsoft.com>
+> Cc: Tianyu Lan <Tianyu.Lan@microsoft.com>
+> Cc: Wei Liu <wei.liu@kernel.org>
+> Tested-by: Fabio A M Martins <fabiomirmar@gmail.com>
+> Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
+> ---
+>=20
+> Special thanks to Michael Kelley for the good information about the Hyper=
+-V
+> panic path in email threads some months ago, and to Fabio for the testing
+> performed.
+>=20
+> Michael and all Microsoft folks: a careful analysis to double-check our c=
+hanges
+> and assumptions here is really appreciated, this code is complex and intr=
+icate,
+> it is possible some corner case might have been overlooked.
+>=20
+> Thanks in advance!
+>=20
+>  drivers/hv/vmbus_drv.c          | 109 ++++++++++++++++++++------------
+>  drivers/video/fbdev/hyperv_fb.c |   8 +++
+>  2 files changed, 76 insertions(+), 41 deletions(-)
+>=20
+> diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
+> index 14de17087864..f37f12d48001 100644
+> --- a/drivers/hv/vmbus_drv.c
+> +++ b/drivers/hv/vmbus_drv.c
+> @@ -24,11 +24,11 @@
+>  #include <linux/sched/task_stack.h>
+>=20
+>  #include <linux/delay.h>
+> -#include <linux/notifier.h>
+>  #include <linux/panic_notifier.h>
+>  #include <linux/ptrace.h>
+>  #include <linux/screen_info.h>
+>  #include <linux/kdebug.h>
+> +#include <linux/kexec.h>
+>  #include <linux/efi.h>
+>  #include <linux/random.h>
+>  #include <linux/kernel.h>
+> @@ -68,51 +68,75 @@ static int hyperv_report_reg(void)
+>  	return !sysctl_record_panic_msg || !hv_panic_page;
+>  }
+>=20
+> -static int hyperv_panic_event(struct notifier_block *nb, unsigned long v=
+al,
+> +/*
+> + * The panic notifier below is responsible solely for unloading the
+> + * vmbus connection, which is necessary in a panic event. But notice
+> + * that this same unloading procedure is executed in the Hyper-V
+> + * crash_shutdown() handler [see hv_crash_handler()], which basically
+> + * means that we can postpone its execution if we have kdump set,
+> + * since it will run the crash_shutdown() handler anyway. Even more
+> + * intrincated is the relation of this notifier with Hyper-V framebuffer
 
-The logic behind that was: when kdump is set, we'd skip the vmbus
-disconnect on notifiers, deferring that to crash_shutdown(), logic this
-one refuted in the above discussion on ARM64 (one more Pro argument to
-the idea of refactoring aarch64 code to allow a custom crash shutdown
-handler heh). But you're right, for the default level 2, we skip the
-pre_reboot notifiers on kdump, effectively skipping this notifier.
+s/intrincated/intricate/
 
-Some ideas of what we can do here:
+> + * panic notifier - we need vmbus connection alive there in order to
+> + * succeed, so we need to order both with each other [for reference see
+> + * hvfb_on_panic()] - this is done using notifiers' priorities.
+> + */
+> +static int hv_panic_vmbus_unload(struct notifier_block *nb, unsigned lon=
+g val,
+>  			      void *args)
+> +{
+> +	if (!kexec_crash_loaded())
 
-I) we could change the framebuffer notifier to rely on trylocks, instead
-of risking a lockup scenario, and with that, we can execute it before
-the vmbus disconnect in the hypervisor list;
+I'm not clear on the purpose of this condition.  I think it means
+we will skip the vmbus_initiate_unload() if a panic occurs in the
+kdump kernel.  Is there a reason a panic in the kdump kernel
+should be treated differently?  Or am I misunderstanding?
 
-II) we ignore the hypervisor notifier in case of kdump _by default_, and
-if the users don't want that, they can always set the panic notifier
-level to 4 and run all notifiers prior to kdump; would that be terrible
-you think? Kdump users might don't care about the framebuffer...
+> +		vmbus_initiate_unload(true);
+> +
+> +	return NOTIFY_DONE;
+> +}
+> +static struct notifier_block hyperv_panic_vmbus_unload_block =3D {
+> +	.notifier_call	=3D hv_panic_vmbus_unload,
+> +	.priority	=3D INT_MIN + 1, /* almost the latest one to execute */
+> +};
+> +
+> +/*
+> + * The following callback works both as die and panic notifier; its
+> + * goal is to provide panic information to the hypervisor unless the
+> + * kmsg dumper is gonna be used [see hv_kmsg_dump()], which provides
+> + * more information but is not always available.
+> + *
+> + * Notice that both the panic/die report notifiers are registered only
+> + * if we have the capability HV_FEATURE_GUEST_CRASH_MSR_AVAILABLE set.
+> + */
+> +static int hv_die_panic_notify_crash(struct notifier_block *nb,
+> +				     unsigned long val, void *args)
+>  {
+>  	struct pt_regs *regs;
+> +	bool is_die;
+>=20
+> -	vmbus_initiate_unload(true);
+> -
+> -	/*
+> -	 * Hyper-V should be notified only once about a panic.  If we will be
+> -	 * doing hv_kmsg_dump() with kmsg data later, don't do the notification
+> -	 * here.
+> -	 */
+> -	if (ms_hyperv.misc_features & HV_FEATURE_GUEST_CRASH_MSR_AVAILABLE
+> -	    && hyperv_report_reg()) {
+> +	/* Don't notify Hyper-V unless we have a die oops event or panic. */
+> +	switch (val) {
+> +	case DIE_OOPS:
+> +		is_die =3D true;
+> +		regs =3D ((struct die_args *)args)->regs;
+> +		break;
+> +	case PANIC_NOTIFIER:
+> +		is_die =3D false;
+>  		regs =3D current_pt_regs();
+> -		hyperv_report_panic(regs, val, false);
+> -	}
+> -	return NOTIFY_DONE;
+> -}
+> -
+> -static int hyperv_die_event(struct notifier_block *nb, unsigned long val=
+,
+> -			    void *args)
+> -{
+> -	struct die_args *die =3D args;
+> -	struct pt_regs *regs =3D die->regs;
+> -
+> -	/* Don't notify Hyper-V if the die event is other than oops */
+> -	if (val !=3D DIE_OOPS)
+> +		break;
+> +	default:
+>  		return NOTIFY_DONE;
+> +	}
+>=20
+>  	/*
+> -	 * Hyper-V should be notified only once about a panic.  If we will be
+> -	 * doing hv_kmsg_dump() with kmsg data later, don't do the notification
+> -	 * here.
+> +	 * Hyper-V should be notified only once about a panic/die. If we will
+> +	 * be calling hv_kmsg_dump() later with kmsg data, don't do the
+> +	 * notification here.
+>  	 */
+>  	if (hyperv_report_reg())
+> -		hyperv_report_panic(regs, val, true);
+> +		hyperv_report_panic(regs, val, is_die);
+> +
+>  	return NOTIFY_DONE;
+>  }
+> -
+> -static struct notifier_block hyperv_die_block =3D {
+> -	.notifier_call =3D hyperv_die_event,
+> +static struct notifier_block hyperv_die_report_block =3D {
+> +	.notifier_call =3D hv_die_panic_notify_crash,
+>  };
+> -static struct notifier_block hyperv_panic_block =3D {
+> -	.notifier_call =3D hyperv_panic_event,
+> +static struct notifier_block hyperv_panic_report_block =3D {
+> +	.notifier_call =3D hv_die_panic_notify_crash,
+>  };
+>=20
+>  static const char *fb_mmio_name =3D "fb_range";
+> @@ -1589,16 +1613,17 @@ static int vmbus_bus_init(void)
+>  		if (hyperv_crash_ctl & HV_CRASH_CTL_CRASH_NOTIFY_MSG)
+>  			hv_kmsg_dump_register();
+>=20
+> -		register_die_notifier(&hyperv_die_block);
+> +		register_die_notifier(&hyperv_die_report_block);
+> +		atomic_notifier_chain_register(&panic_notifier_list,
+> +						&hyperv_panic_report_block);
+>  	}
+>=20
+>  	/*
+> -	 * Always register the panic notifier because we need to unload
+> -	 * the VMbus channel connection to prevent any VMbus
+> -	 * activity after the VM panics.
+> +	 * Always register the vmbus unload panic notifier because we
+> +	 * need to shut the VMbus channel connection on panic.
+>  	 */
+>  	atomic_notifier_chain_register(&panic_notifier_list,
+> -			       &hyperv_panic_block);
+> +			       &hyperv_panic_vmbus_unload_block);
+>=20
+>  	vmbus_request_offers();
+>=20
+> @@ -2817,15 +2842,17 @@ static void __exit vmbus_exit(void)
+>=20
+>  	if (ms_hyperv.misc_features & HV_FEATURE_GUEST_CRASH_MSR_AVAILABLE) {
+>  		kmsg_dump_unregister(&hv_kmsg_dumper);
+> -		unregister_die_notifier(&hyperv_die_block);
+> +		unregister_die_notifier(&hyperv_die_report_block);
+> +		atomic_notifier_chain_unregister(&panic_notifier_list,
+> +						&hyperv_panic_report_block);
+>  	}
+>=20
+>  	/*
+> -	 * The panic notifier is always registered, hence we should
+> +	 * The vmbus panic notifier is always registered, hence we should
+>  	 * also unconditionally unregister it here as well.
+>  	 */
+>  	atomic_notifier_chain_unregister(&panic_notifier_list,
+> -					 &hyperv_panic_block);
+> +					&hyperv_panic_vmbus_unload_block);
+>=20
+>  	free_page((unsigned long)hv_panic_page);
+>  	unregister_sysctl_table(hv_ctl_table_hdr);
+> diff --git a/drivers/video/fbdev/hyperv_fb.c b/drivers/video/fbdev/hyperv=
+_fb.c
+> index c8e0ea27caf1..f3494b868a64 100644
+> --- a/drivers/video/fbdev/hyperv_fb.c
+> +++ b/drivers/video/fbdev/hyperv_fb.c
+> @@ -1244,7 +1244,15 @@ static int hvfb_probe(struct hv_device *hdev,
+>  	par->fb_ready =3D true;
+>=20
+>  	par->synchronous_fb =3D false;
+> +
+> +	/*
+> +	 * We need to be sure this panic notifier runs _before_ the
+> +	 * vmbus disconnect, so order it by priority. It must execute
+> +	 * before the function hv_panic_vmbus_unload() [drivers/hv/vmbus_drv.c]=
+,
+> +	 * which is almost at the end of list, with priority =3D INT_MIN + 1.
+> +	 */
+>  	par->hvfb_panic_nb.notifier_call =3D hvfb_on_panic;
+> +	par->hvfb_panic_nb.priority =3D INT_MIN + 10,
+>  	atomic_notifier_chain_register(&panic_notifier_list,
+>  				       &par->hvfb_panic_nb);
+>=20
+> --
+> 2.36.0
 
-III) we go with approach (b) above and refactor arm64 code to allow the
-custom crash handler on kdump time, then [with point (I) above] the
-logic proposed in this series is still valid - seems more and more the
-most correct/complete solution.
-
-In any case, I guess we should avoid workarounds if possible and do the
-things the best way we can, to encompass all (or almost all) the
-possible scenarios and don't force things on users (like enforcing panic
-notifier level 4 for Hyper-V or something like this...)
-
-More feedback from you / Hyper-V folks is pretty welcome about this.
-
-
-> 
->> [...]
-> The "Fixes:" tags imply that these changes should be backported to older
-> longterm kernel versions, which I don't think is the case.  There is a
-> dependency on Patch 14 of your series where PANIC_NOTIFIER is
-> introduced.
-> 
-
-Oh, this was more related with archeology of the kernel. When I'm
-investigating stuff, I really want to understand why code was added and
-that usually require some time git blaming stuff, so having that pronto
-in the commit message is a bonus.
-
-But of course we don't need to use the Fixes tag for that, easy to only
-mention it in the text. A secondary benefit by using this tag is to
-indicate this is a _real fix_ to some code, and not an improvement, but
-as you say, I agree we shouldn't backport it to previous releases having
-or not the Fixes tag (AFAIK it's not mandatory to backport stuff with
-Fixes tag).
-
-
->> [...]
->> + * intrincated is the relation of this notifier with Hyper-V framebuffer
-> 
-> s/intrincated/intricate/
-
-Thanks, fixed in V2!
-
-
->
->> [...]
->> +static int hv_panic_vmbus_unload(struct notifier_block *nb, unsigned long val,
->>  			      void *args)
->> +{
->> +	if (!kexec_crash_loaded())
-> 
-> I'm not clear on the purpose of this condition.  I think it means
-> we will skip the vmbus_initiate_unload() if a panic occurs in the
-> kdump kernel.  Is there a reason a panic in the kdump kernel
-> should be treated differently?  Or am I misunderstanding?
-
-This is really related with the point discussed in the top of this
-response - I assumed both ARM64/x86_64 would behave the same and
-disconnect the vmbus through the custom crash handler when kdump is set,
-so worth skipping it here in the notifier. But that's not true for ARM64
-as you pointed, so this guard against kexec is really part of the
-decision/discussion on what to do with ARM64 heh
-
-Cheers!
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
