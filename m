@@ -1,13 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Tue, 10 May 2022 17:28:40 +0200
-From: Petr Mladek <pmladek@suse.com>
+Message-ID: <af03a6ef-6b92-31cd-72d4-47b82bc47f87@igalia.com>
+Date: Mon, 2 May 2022 12:50:35 -0300
+MIME-Version: 1.0
 Subject: Re: [PATCH 15/30] bus: brcmstb_gisb: Clean-up panic/die notifiers
-Message-ID: <YnqEqDnMfUgC4dM6@alley>
+Content-Language: en-US
 References: <20220427224924.592546-1-gpiccoli@igalia.com>
  <20220427224924.592546-16-gpiccoli@igalia.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220427224924.592546-16-gpiccoli@igalia.com>
+ <eaf3a893-00dd-8717-202e-911b395670e1@gmail.com>
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <eaf3a893-00dd-8717-202e-911b395670e1@gmail.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,58 +21,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Cc: akpm@linux-foundation.org, bhe@redhat.com, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, Brian Norris <computersforpeace@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>
+To: Florian Fainelli <f.fainelli@gmail.com>, akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, Brian Norris <computersforpeace@gmail.com>
 
-On Wed 2022-04-27 19:49:09, Guilherme G. Piccoli wrote:
-> This patch improves the panic/die notifiers in this driver by
-> making use of a passed "id" instead of comparing pointer
-> address; also, it removes an useless prototype declaration
-> and unnecessary header inclusion.
+On 02/05/2022 12:38, Florian Fainelli wrote:
+> [...] 
 > 
-> This is part of a panic notifiers refactor - this notifier in
-> the future will be moved to a new list, that encompass the
-> information notifiers only.
+> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 > 
-> --- a/drivers/bus/brcmstb_gisb.c
-> +++ b/drivers/bus/brcmstb_gisb.c
-> @@ -347,25 +346,14 @@ static irqreturn_t brcmstb_gisb_bp_handler(int irq, void *dev_id)
->  /*
->   * Dump out gisb errors on die or panic.
->   */
-> -static int dump_gisb_error(struct notifier_block *self, unsigned long v,
-> -			   void *p);
-> -
-> -static struct notifier_block gisb_die_notifier = {
-> -	.notifier_call = dump_gisb_error,
-> -};
-> -
-> -static struct notifier_block gisb_panic_notifier = {
-> -	.notifier_call = dump_gisb_error,
-> -};
-> -
->  static int dump_gisb_error(struct notifier_block *self, unsigned long v,
->  			   void *p)
->  {
->  	struct brcmstb_gisb_arb_device *gdev;
-> -	const char *reason = "panic";
-> +	const char *reason = "die";
->  
-> -	if (self == &gisb_die_notifier)
-> -		reason = "die";
-> +	if (v == PANIC_NOTIFIER)
-> +		reason = "panic";
+> Not sure if the Fixes tag is warranted however as this is a clean up, 
+> and not really fixing a bug.
 
-IMHO, the check of the @self parameter was the proper solution.
+Perfect, thanks Florian. I'll add your ACK and remove the fixes tag in V2.
+Cheers,
 
-"gisb_die_notifier" list uses @val from enum die_val.
-"gisb_panic_notifier" list uses @val from enum panic_notifier_val.
 
-These are unrelated types. It might easily break when
-someone defines the same constant also in enum die_val.
-
-Best Regards,
-Petr
+Guilherme
 
 _______________________________________________
 linux-um mailing list
