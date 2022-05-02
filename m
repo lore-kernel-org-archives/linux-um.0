@@ -1,12 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nlYGg-001all-Fz
- for linux-um@lists.infradead.org; Mon, 02 May 2022 15:47:26 +0000
-Date: Mon, 2 May 2022 17:47:08 +0200
+ id 1nlY9L-001YyC-6Q
+ for linux-um@lists.infradead.org; Mon, 02 May 2022 15:39:51 +0000
+Date: Mon, 2 May 2022 17:39:35 +0200
 From: Oleg Nesterov <oleg@redhat.com>
 Subject: Re: [PATCH v2 07/12] ptrace: Don't change __state
-Message-ID: <20220502154708.GE17276@redhat.com>
+Message-ID: <20220502153934.GD17276@redhat.com>
 References: <87k0b7v9yk.fsf_-_@email.froward.int.ebiederm.org>
  <20220429214837.386518-7-ebiederm@xmission.com>
 MIME-Version: 1.0
@@ -29,33 +29,52 @@ Cc: linux-kernel@vger.kernel.org, rjw@rjwysocki.net, mingo@kernel.org, vincent.g
 
 On 04/29, Eric W. Biederman wrote:
 >
->  static void ptrace_unfreeze_traced(struct task_struct *task)
+> Stop playing with tsk->__state to remove TASK_WAKEKILL while a ptrace
+> command is executing.
+
+Eric, I'll read this patch and the rest of this series tomorrow.
+Somehow I failed to force myself to read yet another version after
+weekend ;)
+
+plus I don't really understand this one...
+
+>  #define TASK_KILLABLE			(TASK_WAKEKILL | TASK_UNINTERRUPTIBLE)
+>  #define TASK_STOPPED			(TASK_WAKEKILL | __TASK_STOPPED)
+> -#define TASK_TRACED			(TASK_WAKEKILL | __TASK_TRACED)
+> +#define TASK_TRACED			__TASK_TRACED
+...
+>  static inline void signal_wake_up(struct task_struct *t, bool resume)
 >  {
-> -	if (READ_ONCE(task->__state) != __TASK_TRACED)
-> -		return;
-> -
-> -	WARN_ON(!task->ptrace || task->parent != current);
-> +	unsigned long flags;
+> -	signal_wake_up_state(t, resume ? TASK_WAKEKILL : 0);
+> +	unsigned int state = 0;
+> +	if (resume) {
+> +		state = TASK_WAKEKILL;
+> +		if (!(t->jobctl & JOBCTL_PTRACE_FROZEN))
+> +			state |= __TASK_TRACED;
+> +	}
+> +	signal_wake_up_state(t, state);
+
+Can't understand why is this better than the previous version which removed
+TASK_WAKEKILL if resume... Looks a bit strange to me. But again, I didn't
+look at the next patches yet.
+
+> @@ -2209,11 +2209,8 @@ static int ptrace_stop(int exit_code, int why, int clear_code,
+>  		spin_lock_irq(&current->sighand->siglock);
+>  	}
 >
->  	/*
-> -	 * PTRACE_LISTEN can allow ptrace_trap_notify to wake us up remotely.
-> -	 * Recheck state under the lock to close this race.
-> +	 * The child may be awake and may have cleared
-> +	 * JOBCTL_PTRACE_FROZEN (see ptrace_resume).  The child will
-> +	 * not set JOBCTL_PTRACE_FROZEN or enter __TASK_TRACED anew.
->  	 */
-> -	spin_lock_irq(&task->sighand->siglock);
-> -	if (READ_ONCE(task->__state) == __TASK_TRACED) {
-> +	if (lock_task_sighand(task, &flags)) {
-> +		task->jobctl &= ~JOBCTL_PTRACE_FROZEN;
+> -	/*
+> -	 * schedule() will not sleep if there is a pending signal that
+> -	 * can awaken the task.
+> -	 */
+> -	set_special_state(TASK_TRACED);
+> +	if (!__fatal_signal_pending(current))
+> +		set_special_state(TASK_TRACED);
 
-Well, I think that the fast-path
+This is where I stuck. This probably makes sense, but what does it buy
+for this particular patch?
 
-	if (!(task->jobctl & JOBCTL_PTRACE_FROZEN))
-		return;
-
-at the start makes sense, we can avoid lock_task_sighand() if the tracee
-was resumed.
+And if we check __fatal_signal_pending(), why can't ptrace_stop() simply
+return ?
 
 Oleg.
 
