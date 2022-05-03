@@ -1,163 +1,143 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: "Michael Kelley (LINUX)" <mikelley@microsoft.com>
-Subject: RE: [PATCH 16/30] drivers/hv/vmbus, video/hyperv_fb: Untangle and
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Message-ID: <92dee5a0-f04e-f352-1e22-f990818ca06a@igalia.com>
+Date: Tue, 3 May 2022 15:57:32 -0300
+MIME-Version: 1.0
+Subject: Re: [PATCH 16/30] drivers/hv/vmbus, video/hyperv_fb: Untangle and
  refactor Hyper-V panic notifiers
-Date: Tue, 3 May 2022 18:13:52 +0000
-Message-ID: <PH0PR21MB3025A46643EEDA6B14AC1ECED7C09@PH0PR21MB3025.namprd21.prod.outlook.com>
+Content-Language: en-US
 References: <20220427224924.592546-1-gpiccoli@igalia.com>
  <20220427224924.592546-17-gpiccoli@igalia.com>
  <PH0PR21MB30250C9246FFF36AFB1DFDECD7FC9@PH0PR21MB3025.namprd21.prod.outlook.com>
  <2787b476-6366-1c83-db80-0393da417497@igalia.com>
-In-Reply-To: <2787b476-6366-1c83-db80-0393da417497@igalia.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-To: "Guilherme G. Piccoli" <gpiccoli@igalia.com>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "bhe@redhat.com" <bhe@redhat.com>, "pmladek@suse.com" <pmladek@suse.com>, "kexec@lists.infradead.org" <kexec@lists.infradead.org>
+ <PH0PR21MB3025A46643EEDA6B14AC1ECED7C09@PH0PR21MB3025.namprd21.prod.outlook.com>
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <PH0PR21MB3025A46643EEDA6B14AC1ECED7C09@PH0PR21MB3025.namprd21.prod.outlook.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: "Michael Kelley (LINUX)" <mikelley@microsoft.com>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "bhe@redhat.com" <bhe@redhat.com>, "pmladek@suse.com" <pmladek@suse.com>, "kexec@lists.infradead.org" <kexec@lists.infradead.org>
 Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "bcm-kernel-feedback-list@broadcom.com" <bcm-kernel-feedback-list@broadcom.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>, "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>, "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>, "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "openipmi-developer@lists.sourceforge.net" <openipmi-developer@lists.sourceforge.net>, "rcu@vger.kernel.org" <rcu@vger.kernel.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>, "x86@kernel.org" <x86@kernel.org>, "kernel-dev@igalia.com" <kernel-dev@igalia.com>, "kernel@gpiccoli.net" <kernel@gpiccoli.net>, "halves@canonical.com" <halves@canonical.com>, "fabiomirmar@gmail.com" <fabiomirmar@gmail.com>, "alejandro.j.jimenez@oracle.com" <alejandro.j.jimenez@oracle.com>, "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>, "arnd@arndb.de" <arnd@arndb.de>, "bp@alien8.de" <bp@alien8.de>, "corbet@lwn.net" <corbet@lwn.net>, "d.hatayama@jp.fujitsu.com" <d.hatayama@jp.fujitsu.com>, "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "dyoung@redhat.com" <dyoung@redhat.com>, "feng.tang@intel.com" <feng.tang@intel.com>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "hidehiro.kawai.ez@hitachi.com" <hidehiro.kawai.ez@hitachi.com>, "jgross@suse.com" <jgross@suse.com>, "john.ogness@linutronix.de" <john.ogness@linutronix.de>, "keescook@chromium.org" <keescook@chromium.org>, "luto@kernel.org" <luto@kernel.org>, "mhiramat@kernel.org" <mhiramat@kernel.org>, "mingo@redhat.com" <mingo@redhat.com>, "paulmck@kernel.org" <paulmck@kernel.org>, "peterz@infradead.org" <peterz@infradead.org>, "rostedt@goodmis.org" <rostedt@goodmis.org>, "senozhatsky@chromium.org" <senozhatsky@chromium.org>, "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>, "tglx@linutronix.de" <tglx@linutronix.de>, "vgoyal@redhat.com" <vgoyal@redhat.com>, vkuznets <vkuznets@redhat.com>, "will@kernel.org" <will@kernel.org>, Andrea Parri <parri.andrea@gmail.com>, Dexuan Cui <decui@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, KY Srinivasan <kys@microsoft.com>, Stephen Hemminger <sthemmin@microsoft.com>, Tianyu Lan <Tianyu.Lan@microsoft.com>, Wei Liu <wei.liu@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
 
-RnJvbTogR3VpbGhlcm1lIEcuIFBpY2NvbGkgPGdwaWNjb2xpQGlnYWxpYS5jb20+IFNlbnQ6IEZy
-aWRheSwgQXByaWwgMjksIDIwMjIgMzozNSBQTQ0KPiANCj4gSGkgTWljaGFlbCwgZmlyc3Qgb2Yg
-YWxsIHRoYW5rcyBmb3IgdGhlIGdyZWF0IHJldmlldywgbXVjaCBhcHByZWNpYXRlZC4NCj4gU29t
-ZSBjb21tZW50cyBpbmxpbmUgYmVsb3c6DQo+IA0KPiBPbiAyOS8wNC8yMDIyIDE0OjE2LCBNaWNo
-YWVsIEtlbGxleSAoTElOVVgpIHdyb3RlOg0KPiA+IFsuLi5dDQo+ID4+IGh5cGVydmlzb3IgSS9P
-IGNvbXBsZXRpb24pLCBzbyB3ZSBwb3N0cG9uZSB0aGF0IHRvIHJ1biBsYXRlLiBCdXQgbW9yZQ0K
-PiA+PiByZWxldmFudDogdGhpcyAqc2FtZSogdm1idXMgdW5sb2FkaW5nIGhhcHBlbnMgaW4gdGhl
-IGNyYXNoX3NodXRkb3duKCkNCj4gPj4gaGFuZGxlciwgc28gaWYga2R1bXAgaXMgc2V0LCB3ZSBj
-YW4gc2FmZWx5IHNraXAgdGhpcyBwYW5pYyBub3RpZmllciBhbmQNCj4gPj4gZGVmZXIgc3VjaCBj
-bGVhbi11cCB0byB0aGUga2V4ZWMgY3Jhc2ggaGFuZGxlci4NCj4gPg0KPiA+IFdoaWxlIHRoZSBs
-YXN0IHNlbnRlbmNlIGlzIHRydWUgZm9yIEh5cGVyLVYgb24geDg2L3g2NCwgaXQncyBub3QgdHJ1
-ZSBmb3INCj4gPiBIeXBlci1WIG9uIEFSTTY0LiAgeDg2L3g2NCBoYXMgdGhlICdtYWNoaW5lX29w
-cycgZGF0YSBzdHJ1Y3R1cmUNCj4gPiB3aXRoIHRoZSBhYmlsaXR5IHRvIHByb3ZpZGUgYSBjdXN0
-b20gY3Jhc2hfc2h1dGRvd24oKSBmdW5jdGlvbiwgd2hpY2gNCj4gPiBIeXBlci1WIGRvZXMgaW4g
-dGhlIGZvcm0gb2YgaHZfbWFjaGluZV9jcmFzaF9zaHV0ZG93bigpLiAgQnV0IEFSTTY0DQo+ID4g
-aGFzIG5vIG1lY2hhbmlzbSB0byBwcm92aWRlIHN1Y2ggYSBjdXN0b20gZnVuY3Rpb24gdGhhdCB3
-aWxsIGV2ZW50dWFsbHkNCj4gPiBkbyB0aGUgbmVlZGVkIHZtYnVzX2luaXRpYXRlX3VubG9hZCgp
-IGJlZm9yZSBydW5uaW5nIGtkdW1wLg0KPiA+DQo+ID4gSSdtIG5vdCBpbW1lZGlhdGVseSBzdXJl
-IHdoYXQgdGhlIGJlc3Qgc29sdXRpb24gaXMgZm9yIEFSTTY0LiAgQXQgdGhpcw0KPiA+IHBvaW50
-LCBJJ20ganVzdCBwb2ludGluZyBvdXQgdGhlIHByb2JsZW0gYW5kIHdpbGwgdGhpbmsgYWJvdXQg
-dGhlIHRyYWRlb2Zmcw0KPiA+IGZvciB2YXJpb3VzIHBvc3NpYmxlIHNvbHV0aW9ucy4gIFBsZWFz
-ZSBkbyB0aGUgc2FtZSB5b3Vyc2VsZi4gOi0pDQo+ID4NCj4gDQo+IE9oLCB5b3UncmUgdG90YWxs
-eSByaWdodCEgSSBqdXN0IGFzc3VtZWQgQVJNNjQgd291bGQgdGhlIHRoZSBzYW1lLCBteQ0KPiBi
-YWQuIEp1c3QgdG8gcHJvcG9zZSBzb21lIGFsdGVybmF0aXZlcywgc28geW91L290aGVycyBjYW4g
-YWxzbyBkaXNjdXNzDQo+IGhlcmUgYW5kIHdlIGNhbiByZWFjaCBhIGNvbnNlbnN1cyBhYm91dCB0
-aGUgdHJhZGUtb2ZmczoNCj4gDQo+IChhKSBXZSBjb3VsZCBmb3JnZXQgYWJvdXQgdGhpcyBjaGFu
-Z2UsIGFuZCBhbHdheXMgZG8gdGhlIGNsZWFuLXVwIGhlcmUsDQo+IG5vdCByZWx5aW5nIGluIG1h
-Y2hpbmVfY3Jhc2hfc2h1dGRvd24oKS4NCj4gUHJvOiByZWFsbHkgc2ltcGxlLCBiZWhhdmVzIHRo
-ZSBzYW1lIGFzIGl0IGlzIGRvaW5nIGN1cnJlbnRseS4NCj4gQ29uOiBsZXNzIGVsZWdhbnQvY29u
-Y2lzZSwgZG9lc24ndCBhbGxvdyBhcm02NCBjdXN0b21pemF0aW9uLg0KPiANCj4gKGIpIEFkZCBh
-IHdheSB0byBhbGxvdyBBUk02NCBjdXN0b21pemF0aW9uIG9mIHNodXRkb3duIGNyYXNoIGhhbmRs
-ZXIuDQo+IFBybzogbWF0Y2hlcyB4ODYsIG1vcmUgY3VzdG9taXphYmxlLCBpbXByb3ZlcyBhcm02
-NCBhcmNoIGNvZGUuDQo+IENvbjogQSB0YWQgbW9yZSBjb21wbGV4Lg0KPiANCj4gQWxzbywgYSBx
-dWVzdGlvbiB0aGF0IGNhbWUtdXA6IGlmIEFSTTY0IGhhcyBubyB3YXkgb2YgY2FsbGluZyBzcGVj
-aWFsDQo+IGNyYXNoIHNodXRkb3duIGhhbmRsZXIsIGhvdyBjYW4geW91IGV4ZWN1dGUgaHZfc3Rp
-bWVyX2NsZWFudXAoKSBhbmQNCj4gaHZfc3luaWNfZGlzYWJsZV9yZWdzKCkgdGhlcmU/IE9yIGFy
-ZSB0aGV5IG5vdCByZXF1aXJlZCBpbiBBUk02ND8NCj4gDQoNCk15IHN1Z2dlc3Rpb24gaXMgdG8g
-ZG8gKGEpIGZvciBub3cuICBJIHN1c3BlY3QgKGIpIGNvdWxkIGJlIGEgbW9yZQ0KZXh0ZW5kZWQg
-ZGlzY3Vzc2lvbiBhbmQgSSB3b3VsZG4ndCB3YW50IHlvdXIgcGF0Y2ggc2V0IHRvIGdldCBoZWxk
-DQp1cCBvbiB0aGF0IGRpc2N1c3Npb24uICBJIGRvbid0IGtub3cgd2hhdCB0aGUgc2Vuc2Ugb2Yg
-dGhlIEFSTTY0DQptYWludGFpbmVycyB3b3VsZCBiZSB0b3dhcmQgKGIpLiAgVGhleSBoYXZlIHRy
-aWVkIHRvIGF2b2lkIHBpY2tpbmcNCnVwIGNvZGUgd2FydHMgbGlrZSBoYXZlIGFjY3VtdWxhdGVk
-IG9uIHRoZSB4ODYveDY0IHNpZGUgb3ZlciB0aGUNCnllYXJzLCBhbmQgSSBhZ3JlZSB3aXRoIHRo
-YXQgZWZmb3J0LiAgQnV0IGFzIG1vcmUgYW5kIHZhcmllZA0KaHlwZXJ2aXNvcnMgYmVjb21lIGF2
-YWlsYWJsZSBmb3IgQVJNNjQsIGl0IHNlZW1zIGxpa2UgYSBmcmFtZXdvcmsNCmZvciBzdXBwb3J0
-aW5nIGEgY3VzdG9tIHNodXRkb3duIGhhbmRsZXIgbWF5IGJlY29tZSBuZWNlc3NhcnkuDQpCdXQg
-dGhhdCBjb3VsZCB0YWtlIGEgbGl0dGxlIHRpbWUuDQoNCllvdSBhcmUgcmlnaHQgYWJvdXQgaHZf
-c3RpbWVyX2NsZWFudXAoKSBhbmQgaHZfc3luaWNfZGlzYWJsZV9yZWdzKCkuDQpXZSBhcmUgbm90
-IHJ1bm5pbmcgdGhlc2Ugd2hlbiBhIHBhbmljIG9jY3VycyBvbiBBUk02NCwgYW5kIHdlDQpzaG91
-bGQgYmUsIHRob3VnaCB0aGUgcmlzayBpcyBzbWFsbC4gICBXZSB3aWxsIHB1cnN1ZSAoYikgYW5k
-IGFkZA0KdGhlc2UgYWRkaXRpb25hbCBjbGVhbnVwcyBhcyBwYXJ0IG9mIHRoYXQuICBCdXQgYWdh
-aW4sIEkgd291bGQgc3VnZ2VzdA0KZG9pbmcgKGEpIGZvciBub3csIGFuZCB3ZSB3aWxsIHN3aXRj
-aCBiYWNrIHRvIHlvdXIgc29sdXRpb24gb25jZQ0KKGIpIGlzIGluIHBsYWNlLg0KDQo+IA0KPiA+
-Pg0KPiA+PiAoYykgVGhlcmUgaXMgYWxzbyBhIEh5cGVyLVYgZnJhbWVidWZmZXIgcGFuaWMgbm90
-aWZpZXIsIHdoaWNoIHJlbGllcyBpbg0KPiA+PiBkb2luZyBhIHZtYnVzIG9wZXJhdGlvbiB0aGF0
-IGRlbWFuZHMgYSB2YWxpZCBjb25uZWN0aW9uLiBTbywgd2UgbXVzdA0KPiA+PiBvcmRlciB0aGlz
-IG5vdGlmaWVyIHdpdGggdGhlIHBhbmljIG5vdGlmaWVyIGZyb20gdm1idXNfZHJ2LmMsIGluIG9y
-ZGVyIHRvDQo+ID4+IGd1YXJhbnRlZSB0aGF0IHRoZSBmcmFtZWJ1ZmZlciBjb2RlIGV4ZWN1dGVz
-IGJlZm9yZSB0aGUgdm1idXMgY29ubmVjdGlvbg0KPiA+PiBpcyB1bmxvYWRlZC4NCj4gPg0KPiA+
-IFBhdGNoIDIxIG9mIHRoaXMgc2V0IHB1dHMgdGhlIEh5cGVyLVYgRkIgcGFuaWMgbm90aWZpZXIg
-b24gdGhlIHByZV9yZWJvb3QNCj4gPiBub3RpZmllciBsaXN0LCB3aGljaCBtZWFucyBpdCB3b24n
-dCBleGVjdXRlIGJlZm9yZSB0aGUgVk1idXMgY29ubmVjdGlvbg0KPiA+IHVubG9hZCBpbiB0aGUg
-Y2FzZSBvZiBrZHVtcC4gICBUaGlzIG5vdGlmaWVyIGlzIG1ha2luZyBzdXJlIHRoYXQgSHlwZXIt
-Vg0KPiA+IGlzIG5vdGlmaWVkIGFib3V0IHRoZSBsYXN0IHVwZGF0ZXMgbWFkZSB0byB0aGUgZnJh
-bWUgYnVmZmVyIGJlZm9yZSB0aGUNCj4gPiBwYW5pYywgc28gbWF5YmUgaXQgbmVlZHMgdG8gYmUg
-cHV0IG9uIHRoZSBoeXBlcnZpc29yIG5vdGlmaWVyIGxpc3QuICBJdA0KPiA+IHNlbmRzIGEgbWVz
-c2FnZSB0byBIeXBlci1WIG92ZXIgaXRzIGV4aXN0aW5nIFZNYnVzIGNoYW5uZWwsIGJ1dCBpdA0K
-PiA+IGRvZXMgbm90IHdhaXQgZm9yIGEgcmVwbHkuICBJdCBkb2VzLCBob3dldmVyLCBvYnRhaW4g
-YSBzcGluIGxvY2sgb24gdGhlDQo+ID4gcmluZyBidWZmZXIgdXNlZCB0byBjb21tdW5pY2F0ZSB3
-aXRoIEh5cGVyLVYuICAgVW5sZXNzIHNvbWVvbmUgaGFzDQo+ID4gYSBiZXR0ZXIgc3VnZ2VzdGlv
-biwgSSdtIGluY2xpbmVkIHRvIHRha2UgdGhlIHJpc2sgb2YgYmxvY2tpbmcgb24gdGhhdA0KPiA+
-IHNwaW4gbG9jay4NCj4gDQo+IFRoZSBsb2dpYyBiZWhpbmQgdGhhdCB3YXM6IHdoZW4ga2R1bXAg
-aXMgc2V0LCB3ZSdkIHNraXAgdGhlIHZtYnVzDQo+IGRpc2Nvbm5lY3Qgb24gbm90aWZpZXJzLCBk
-ZWZlcnJpbmcgdGhhdCB0byBjcmFzaF9zaHV0ZG93bigpLCBsb2dpYyB0aGlzDQo+IG9uZSByZWZ1
-dGVkIGluIHRoZSBhYm92ZSBkaXNjdXNzaW9uIG9uIEFSTTY0IChvbmUgbW9yZSBQcm8gYXJndW1l
-bnQgdG8NCj4gdGhlIGlkZWEgb2YgcmVmYWN0b3JpbmcgYWFyY2g2NCBjb2RlIHRvIGFsbG93IGEg
-Y3VzdG9tIGNyYXNoIHNodXRkb3duDQo+IGhhbmRsZXIgaGVoKS4gQnV0IHlvdSdyZSByaWdodCwg
-Zm9yIHRoZSBkZWZhdWx0IGxldmVsIDIsIHdlIHNraXAgdGhlDQo+IHByZV9yZWJvb3Qgbm90aWZp
-ZXJzIG9uIGtkdW1wLCBlZmZlY3RpdmVseSBza2lwcGluZyB0aGlzIG5vdGlmaWVyLg0KPiANCj4g
-U29tZSBpZGVhcyBvZiB3aGF0IHdlIGNhbiBkbyBoZXJlOg0KPiANCj4gSSkgd2UgY291bGQgY2hh
-bmdlIHRoZSBmcmFtZWJ1ZmZlciBub3RpZmllciB0byByZWx5IG9uIHRyeWxvY2tzLCBpbnN0ZWFk
-DQo+IG9mIHJpc2tpbmcgYSBsb2NrdXAgc2NlbmFyaW8sIGFuZCB3aXRoIHRoYXQsIHdlIGNhbiBl
-eGVjdXRlIGl0IGJlZm9yZQ0KPiB0aGUgdm1idXMgZGlzY29ubmVjdCBpbiB0aGUgaHlwZXJ2aXNv
-ciBsaXN0Ow0KDQpJIHRoaW5rIHdlIGhhdmUgdG8gZG8gdGhpcyBhcHByb2FjaCBmb3Igbm93Lg0K
-DQo+IA0KPiBJSSkgd2UgaWdub3JlIHRoZSBoeXBlcnZpc29yIG5vdGlmaWVyIGluIGNhc2Ugb2Yg
-a2R1bXAgX2J5IGRlZmF1bHRfLCBhbmQNCj4gaWYgdGhlIHVzZXJzIGRvbid0IHdhbnQgdGhhdCwg
-dGhleSBjYW4gYWx3YXlzIHNldCB0aGUgcGFuaWMgbm90aWZpZXINCj4gbGV2ZWwgdG8gNCBhbmQg
-cnVuIGFsbCBub3RpZmllcnMgcHJpb3IgdG8ga2R1bXA7IHdvdWxkIHRoYXQgYmUgdGVycmlibGUN
-Cj4geW91IHRoaW5rPyBLZHVtcCB1c2VycyBtaWdodCBkb24ndCBjYXJlIGFib3V0IHRoZSBmcmFt
-ZWJ1ZmZlci4uLg0KPiANCj4gSUlJKSB3ZSBnbyB3aXRoIGFwcHJvYWNoIChiKSBhYm92ZSBhbmQg
-cmVmYWN0b3IgYXJtNjQgY29kZSB0byBhbGxvdyB0aGUNCj4gY3VzdG9tIGNyYXNoIGhhbmRsZXIg
-b24ga2R1bXAgdGltZSwgdGhlbiBbd2l0aCBwb2ludCAoSSkgYWJvdmVdIHRoZQ0KPiBsb2dpYyBw
-cm9wb3NlZCBpbiB0aGlzIHNlcmllcyBpcyBzdGlsbCB2YWxpZCAtIHNlZW1zIG1vcmUgYW5kIG1v
-cmUgdGhlDQo+IG1vc3QgY29ycmVjdC9jb21wbGV0ZSBzb2x1dGlvbi4NCg0KQnV0IGV2ZW4gd2hl
-bi9pZiB3ZSBnZXQgYXBwcm9hY2ggKGIpIGltcGxlbWVudGVkLCBoYXZpbmcgdGhlDQpmcmFtZWJ1
-ZmZlciBub3RpZmllciBvbiB0aGUgcHJlX3JlYm9vdCBsaXN0IGlzIHN0aWxsIHRvbyBsYXRlIHdp
-dGggdGhlDQpkZWZhdWx0IG9mIHBhbmljX25vdGlmaWVyX2xldmVsID0gMi4gIFRoZSBrZHVtcCBw
-YXRoIHdpbGwgcmVzZXQgdGhlDQpWTWJ1cyBjb25uZWN0aW9uIGFuZCB0aGVuIHRoZSBmcmFtZWJ1
-ZmZlciBub3RpZmllciB3b24ndCB3b3JrLg0KDQo+IA0KPiBJbiBhbnkgY2FzZSwgSSBndWVzcyB3
-ZSBzaG91bGQgYXZvaWQgd29ya2Fyb3VuZHMgaWYgcG9zc2libGUgYW5kIGRvIHRoZQ0KPiB0aGlu
-Z3MgdGhlIGJlc3Qgd2F5IHdlIGNhbiwgdG8gZW5jb21wYXNzIGFsbCAob3IgYWxtb3N0IGFsbCkg
-dGhlDQo+IHBvc3NpYmxlIHNjZW5hcmlvcyBhbmQgZG9uJ3QgZm9yY2UgdGhpbmdzIG9uIHVzZXJz
-IChsaWtlIGVuZm9yY2luZyBwYW5pYw0KPiBub3RpZmllciBsZXZlbCA0IGZvciBIeXBlci1WIG9y
-IHNvbWV0aGluZyBsaWtlIHRoaXMuLi4pDQo+IA0KPiBNb3JlIGZlZWRiYWNrIGZyb20geW91IC8g
-SHlwZXItViBmb2xrcyBpcyBwcmV0dHkgd2VsY29tZSBhYm91dCB0aGlzLg0KPiANCj4gDQo+ID4N
-Cj4gPj4gWy4uLl0NCj4gPiBUaGUgIkZpeGVzOiIgdGFncyBpbXBseSB0aGF0IHRoZXNlIGNoYW5n
-ZXMgc2hvdWxkIGJlIGJhY2twb3J0ZWQgdG8gb2xkZXINCj4gPiBsb25ndGVybSBrZXJuZWwgdmVy
-c2lvbnMsIHdoaWNoIEkgZG9uJ3QgdGhpbmsgaXMgdGhlIGNhc2UuICBUaGVyZSBpcyBhDQo+ID4g
-ZGVwZW5kZW5jeSBvbiBQYXRjaCAxNCBvZiB5b3VyIHNlcmllcyB3aGVyZSBQQU5JQ19OT1RJRklF
-UiBpcw0KPiA+IGludHJvZHVjZWQuDQo+ID4NCj4gDQo+IE9oLCB0aGlzIHdhcyBtb3JlIHJlbGF0
-ZWQgd2l0aCBhcmNoZW9sb2d5IG9mIHRoZSBrZXJuZWwuIFdoZW4gSSdtDQo+IGludmVzdGlnYXRp
-bmcgc3R1ZmYsIEkgcmVhbGx5IHdhbnQgdG8gdW5kZXJzdGFuZCB3aHkgY29kZSB3YXMgYWRkZWQg
-YW5kDQo+IHRoYXQgdXN1YWxseSByZXF1aXJlIHNvbWUgdGltZSBnaXQgYmxhbWluZyBzdHVmZiwg
-c28gaGF2aW5nIHRoYXQgcHJvbnRvDQo+IGluIHRoZSBjb21taXQgbWVzc2FnZSBpcyBhIGJvbnVz
-Lg0KPiANCj4gQnV0IG9mIGNvdXJzZSB3ZSBkb24ndCBuZWVkIHRvIHVzZSB0aGUgRml4ZXMgdGFn
-IGZvciB0aGF0LCBlYXN5IHRvIG9ubHkNCj4gbWVudGlvbiBpdCBpbiB0aGUgdGV4dC4gQSBzZWNv
-bmRhcnkgYmVuZWZpdCBieSB1c2luZyB0aGlzIHRhZyBpcyB0bw0KPiBpbmRpY2F0ZSB0aGlzIGlz
-IGEgX3JlYWwgZml4XyB0byBzb21lIGNvZGUsIGFuZCBub3QgYW4gaW1wcm92ZW1lbnQsIGJ1dA0K
-PiBhcyB5b3Ugc2F5LCBJIGFncmVlIHdlIHNob3VsZG4ndCBiYWNrcG9ydCBpdCB0byBwcmV2aW91
-cyByZWxlYXNlcyBoYXZpbmcNCj4gb3Igbm90IHRoZSBGaXhlcyB0YWcgKEFGQUlLIGl0J3Mgbm90
-IG1hbmRhdG9yeSB0byBiYWNrcG9ydCBzdHVmZiB3aXRoDQo+IEZpeGVzIHRhZykuDQo+IA0KPiAN
-Cj4gPj4gWy4uLl0NCj4gPj4gKyAqIGludHJpbmNhdGVkIGlzIHRoZSByZWxhdGlvbiBvZiB0aGlz
-IG5vdGlmaWVyIHdpdGggSHlwZXItViBmcmFtZWJ1ZmZlcg0KPiA+DQo+ID4gcy9pbnRyaW5jYXRl
-ZC9pbnRyaWNhdGUvDQo+IA0KPiBUaGFua3MsIGZpeGVkIGluIFYyIQ0KPiANCj4gDQo+ID4NCj4g
-Pj4gWy4uLl0NCj4gPj4gK3N0YXRpYyBpbnQgaHZfcGFuaWNfdm1idXNfdW5sb2FkKHN0cnVjdCBu
-b3RpZmllcl9ibG9jayAqbmIsIHVuc2lnbmVkIGxvbmcgdmFsLA0KPiA+PiAgCQkJICAgICAgdm9p
-ZCAqYXJncykNCj4gPj4gK3sNCj4gPj4gKwlpZiAoIWtleGVjX2NyYXNoX2xvYWRlZCgpKQ0KPiA+
-DQo+ID4gSSdtIG5vdCBjbGVhciBvbiB0aGUgcHVycG9zZSBvZiB0aGlzIGNvbmRpdGlvbi4gIEkg
-dGhpbmsgaXQgbWVhbnMNCj4gPiB3ZSB3aWxsIHNraXAgdGhlIHZtYnVzX2luaXRpYXRlX3VubG9h
-ZCgpIGlmIGEgcGFuaWMgb2NjdXJzIGluIHRoZQ0KPiA+IGtkdW1wIGtlcm5lbC4gIElzIHRoZXJl
-IGEgcmVhc29uIGEgcGFuaWMgaW4gdGhlIGtkdW1wIGtlcm5lbA0KPiA+IHNob3VsZCBiZSB0cmVh
-dGVkIGRpZmZlcmVudGx5PyAgT3IgYW0gSSBtaXN1bmRlcnN0YW5kaW5nPw0KPiANCj4gVGhpcyBp
-cyByZWFsbHkgcmVsYXRlZCB3aXRoIHRoZSBwb2ludCBkaXNjdXNzZWQgaW4gdGhlIHRvcCBvZiB0
-aGlzDQo+IHJlc3BvbnNlIC0gSSBhc3N1bWVkIGJvdGggQVJNNjQveDg2XzY0IHdvdWxkIGJlaGF2
-ZSB0aGUgc2FtZSBhbmQNCj4gZGlzY29ubmVjdCB0aGUgdm1idXMgdGhyb3VnaCB0aGUgY3VzdG9t
-IGNyYXNoIGhhbmRsZXIgd2hlbiBrZHVtcCBpcyBzZXQsDQo+IHNvIHdvcnRoIHNraXBwaW5nIGl0
-IGhlcmUgaW4gdGhlIG5vdGlmaWVyLiBCdXQgdGhhdCdzIG5vdCB0cnVlIGZvciBBUk02NA0KPiBh
-cyB5b3UgcG9pbnRlZCwgc28gdGhpcyBndWFyZCBhZ2FpbnN0IGtleGVjIGlzIHJlYWxseSBwYXJ0
-IG9mIHRoZQ0KPiBkZWNpc2lvbi9kaXNjdXNzaW9uIG9uIHdoYXQgdG8gZG8gd2l0aCBBUk02NCBo
-ZWgNCg0KQnV0IG5vdGUgdGhhdCB2bWJ1c19pbml0aWF0ZV91bmxvYWQoKSBhbHJlYWR5IGhhcyBh
-IGd1YXJkIGJ1aWx0LWluLg0KSWYgdGhlIGludGVudCBvZiB0aGlzIHRlc3QgaXMganVzdCBhcyBh
-IGd1YXJkIGFnYWluc3QgcnVubmluZyB0d2ljZSwNCnRoZW4gaXQgaXNuJ3QgbmVlZGVkLg0KDQo+
-IA0KPiBDaGVlcnMhDQo=
+On 03/05/2022 15:13, Michael Kelley (LINUX) wrote:
+> [...]
+>> (a) We could forget about this change, and always do the clean-up here,
+>> not relying in machine_crash_shutdown().
+>> Pro: really simple, behaves the same as it is doing currently.
+>> Con: less elegant/concise, doesn't allow arm64 customization.
+>>
+>> (b) Add a way to allow ARM64 customization of shutdown crash handler.
+>> Pro: matches x86, more customizable, improves arm64 arch code.
+>> Con: A tad more complex.
+>>
+>> Also, a question that came-up: if ARM64 has no way of calling special
+>> crash shutdown handler, how can you execute hv_stimer_cleanup() and
+>> hv_synic_disable_regs() there? Or are they not required in ARM64?
+>>
+> 
+> My suggestion is to do (a) for now.  I suspect (b) could be a more
+> extended discussion and I wouldn't want your patch set to get held
+> up on that discussion.  I don't know what the sense of the ARM64
+> maintainers would be toward (b).  They have tried to avoid picking
+> up code warts like have accumulated on the x86/x64 side over the
+> years, and I agree with that effort.  But as more and varied
+> hypervisors become available for ARM64, it seems like a framework
+> for supporting a custom shutdown handler may become necessary.
+> But that could take a little time.
+> 
+> You are right about hv_stimer_cleanup() and hv_synic_disable_regs().
+> We are not running these when a panic occurs on ARM64, and we
+> should be, though the risk is small.   We will pursue (b) and add
+> these additional cleanups as part of that.  But again, I would suggest
+> doing (a) for now, and we will switch back to your solution once
+> (b) is in place.
+> 
+
+Thanks again Michael, I'll stick with (a) for now. I'll check with ARM64
+community about that, and I might even try to implement something in
+parallel (if you are not already working on that - lemme know please),
+so we don't get stuck here. As you said, I feel that this is more and
+more relevant as the number of panic/crash/kexec scenarios tend to
+increase in ARM64.
+
+
+>> [...]
+>> Some ideas of what we can do here:
+>>
+>> I) we could change the framebuffer notifier to rely on trylocks, instead
+>> of risking a lockup scenario, and with that, we can execute it before
+>> the vmbus disconnect in the hypervisor list;
+> 
+> I think we have to do this approach for now.
+> 
+>>
+>> II) we ignore the hypervisor notifier in case of kdump _by default_, and
+>> if the users don't want that, they can always set the panic notifier
+>> level to 4 and run all notifiers prior to kdump; would that be terrible
+>> you think? Kdump users might don't care about the framebuffer...
+>>
+>> III) we go with approach (b) above and refactor arm64 code to allow the
+>> custom crash handler on kdump time, then [with point (I) above] the
+>> logic proposed in this series is still valid - seems more and more the
+>> most correct/complete solution.
+> 
+> But even when/if we get approach (b) implemented, having the
+> framebuffer notifier on the pre_reboot list is still too late with the
+> default of panic_notifier_level = 2.  The kdump path will reset the
+> VMbus connection and then the framebuffer notifier won't work.
+> 
+
+OK, perfect! I'll work something along these lines in V2, allowing the
+FB notifier to always run in the hypervisor list before the vmbus unload
+mechanism.
+
+
+>> [...]
+>>>> +static int hv_panic_vmbus_unload(struct notifier_block *nb, unsigned long val,
+>>>>  			      void *args)
+>>>> +{
+>>>> +	if (!kexec_crash_loaded())
+>>>
+>>> I'm not clear on the purpose of this condition.  I think it means
+>>> we will skip the vmbus_initiate_unload() if a panic occurs in the
+>>> kdump kernel.  Is there a reason a panic in the kdump kernel
+>>> should be treated differently?  Or am I misunderstanding?
+>>
+>> This is really related with the point discussed in the top of this
+>> response - I assumed both ARM64/x86_64 would behave the same and
+>> disconnect the vmbus through the custom crash handler when kdump is set,
+>> so worth skipping it here in the notifier. But that's not true for ARM64
+>> as you pointed, so this guard against kexec is really part of the
+>> decision/discussion on what to do with ARM64 heh
+> 
+> But note that vmbus_initiate_unload() already has a guard built-in.
+> If the intent of this test is just as a guard against running twice,
+> then it isn't needed.
+
+Since we're going to avoid relying in the custom crash_shutdown(), due
+to the lack of ARM64 support for now, this check will be removed in V2.
+
+Its purpose was to skip the notifier *proactively* in case kexec is set,
+given that...once kexec happens, the custom crash_shutdown() would run
+the same function (wrong assumption for ARM64, my bad).
+
+Postponing that slightly would maybe gain us some time while the
+hypervisor finish its work, so we'd delay less in the vmbus unload path
+- that was the rationale behind this check.
+
+
+Cheers!
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
