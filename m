@@ -1,60 +1,165 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Message-ID: <260dccd8-a4f6-882c-8767-5bc27576df14@igalia.com>
-Date: Mon, 9 May 2022 11:25:06 -0300
-MIME-Version: 1.0
-Subject: Re: [PATCH 24/30] panic: Refactor the panic path
-Content-Language: en-US
-From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: "Michael Kelley (LINUX)" <mikelley@microsoft.com>
+Subject: RE: [PATCH 24/30] panic: Refactor the panic path
+Date: Tue, 3 May 2022 17:31:43 +0000
+Message-ID: <PH0PR21MB302570C9407F80AAD09E209ED7C09@PH0PR21MB3025.namprd21.prod.outlook.com>
 References: <20220427224924.592546-1-gpiccoli@igalia.com>
  <20220427224924.592546-25-gpiccoli@igalia.com>
- <4fe85e9c-4e96-e9d5-9fd8-f062bafcda4f@infradead.org>
- <7518924e-5bb4-e6e9-0e3e-3f5cb03bf946@igalia.com>
-In-Reply-To: <7518924e-5bb4-e6e9-0e3e-3f5cb03bf946@igalia.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+ <PH0PR21MB30252C55EB4F97F3D78021BDD7FC9@PH0PR21MB3025.namprd21.prod.outlook.com>
+ <50178dfb-8e94-f35f-09c3-22fe197550ef@igalia.com>
+In-Reply-To: <50178dfb-8e94-f35f-09c3-22fe197550ef@igalia.com>
+Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-kernel@vger.kernel.org, bhe@redhat.com, akpm@linux-foundation.org, bcm-kernel-feedback-list@broadcom.com, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, kexec@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, pmladek@suse.com
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+To: "Guilherme G. Piccoli" <gpiccoli@igalia.com>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "bhe@redhat.com" <bhe@redhat.com>, "pmladek@suse.com" <pmladek@suse.com>, "kexec@lists.infradead.org" <kexec@lists.infradead.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "bcm-kernel-feedback-list@broadcom.com" <bcm-kernel-feedback-list@broadcom.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>, "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>, "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>, "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "openipmi-developer@lists.sourceforge.net" <openipmi-developer@lists.sourceforge.net>, "rcu@vger.kernel.org" <rcu@vger.kernel.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>, "x86@kernel.org" <x86@kernel.org>, "kernel-dev@igalia.com" <kernel-dev@igalia.com>, "kernel@gpiccoli.net" <kernel@gpiccoli.net>, "halves@canonical.com" <halves@canonical.com>, "fabiomirmar@gmail.com" <fabiomirmar@gmail.com>, "alejandro.j.jimenez@oracle.com" <alejandro.j.jimenez@oracle.com>, "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>, "arnd@arndb.de" <arnd@arndb.de>, "bp@alien8.de" <bp@alien8.de>, "corbet@lwn.net" <corbet@lwn.net>, "d.hatayama@jp.fujitsu.com" <d.hatayama@jp.fujitsu.com>, "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "dyoung@redhat.com" <dyoung@redhat.com>, "feng.tang@intel.com" <feng.tang@intel.com>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "hidehiro.kawai.ez@hitachi.com" <hidehiro.kawai.ez@hitachi.com>, "jgross@suse.com" <jgross@suse.com>, "john.ogness@linutronix.de" <john.ogness@linutronix.de>, "keescook@chromium.org" <keescook@chromium.org>, "luto@kernel.org" <luto@kernel.org>, "mhiramat@kernel.org" <mhiramat@kernel.org>, "mingo@redhat.com" <mingo@redhat.com>, "paulmck@kernel.org" <paulmck@kernel.org>, "peterz@infradead.org" <peterz@infradead.org>, "rostedt@goodmis.org" <rostedt@goodmis.org>, "senozhatsky@chromium.org" <senozhatsky@chromium.org>, "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>, "tglx@linutronix.de" <tglx@linutronix.de>, "vgoyal@redhat.com" <vgoyal@redhat.com>, vkuznets <vkuznets@redhat.com>, "will@kernel.org" <will@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-On 29/04/2022 13:04, Guilherme G. Piccoli wrote:
-> On 27/04/2022 21:28, Randy Dunlap wrote:
->>
->>
->> On 4/27/22 15:49, Guilherme G. Piccoli wrote:
->>> +	crash_kexec_post_notifiers
->>> +			This was DEPRECATED - users should always prefer the
->>
->> 			This is DEPRECATED - users should always prefer the
->>
->>> +			parameter "panic_notifiers_level" - check its entry
->>> +			in this documentation for details on how it works.
->>> +			Setting this parameter is exactly the same as setting
->>> +			"panic_notifiers_level=4".
->>
-> 
-> Thanks Randy, for your suggestion - but I confess I couldn't understand
-> it properly. It's related to spaces/tabs, right? What you suggest me to
-> change in this formatting? Just by looking the email I can't parse.
-> 
+From: Guilherme G. Piccoli <gpiccoli@igalia.com> Sent: Friday, April 29, 20=
+22 1:38 PM
+>=20
+> On 29/04/2022 14:53, Michael Kelley (LINUX) wrote:
+> > From: Guilherme G. Piccoli <gpiccoli@igalia.com> Sent: Wednesday, April=
+ 27, 2022
+> 3:49 PM
+> >> [...]
+> >> +	panic_notifiers_level=3D
+> >> +			[KNL] Set the panic notifiers execution order.
+> >> +			Format: <unsigned int>
+> >> +			We currently have 4 lists of panic notifiers; based
+> >> +			on the functionality and risk (for panic success) the
+> >> +			callbacks are added in a given list. The lists are:
+> >> +			- hypervisor/FW notification list (low risk);
+> >> +			- informational list (low/medium risk);
+> >> +			- pre_reboot list (higher risk);
+> >> +			- post_reboot list (only run late in panic and after
+> >> +			kdump, not configurable for now).
+> >> +			This parameter defines the ordering of the first 3
+> >> +			lists with regards to kdump; the levels determine
+> >> +			which set of notifiers execute before kdump. The
+> >> +			accepted levels are:
+> >> +			0: kdump is the first thing to run, NO list is
+> >> +			executed before kdump.
+> >> +			1: only the hypervisor list is executed before kdump.
+> >> +			2 (default level): the hypervisor list and (*if*
+> >> +			there's any kmsg_dumper defined) the informational
+> >> +			list are executed before kdump.
+> >> +			3: both the hypervisor and the informational lists
+> >> +			(always) execute before kdump.
+> >
+> > I'm not clear on why level 2 exists.  What is the scenario where
+> > execution of the info list before kdump should be conditional on the
+> > existence of a kmsg_dumper?   Maybe the scenario is described
+> > somewhere in the patch set and I just missed it.
+> >
+>=20
+> Hi Michael, thanks for your review/consideration. So, this idea started
+> kind of some time ago. It all started with a need of exposing more
+> information on kernel log *before* kdump and *before* pstore -
+> specifically, we're talking about panic_print. But this cause some
+> reactions, Baoquan was very concerned with that [0]. Soon after, I've
+> proposed a panic notifiers filter (orthogonal) approach, to which Petr
+> suggested instead doing a major refactor [1] - it finally is alive in
+> the form of this series.
+>=20
+> The theory behind the level 2 is to allow a scenario of kdump with the
+> minimum amount of notifiers - what is the point in printing more
+> information if the user doesn't care, since it's going to kdump? Now, if
+> there is a kmsg dumper, it means that there is likely some interest in
+> collecting information, and that might as well be required before the
+> potential kdump (which is my case, hence the proposal on [0]).
+>=20
+> Instead of forcing one of the two behaviors (level 1 or level 3), we
+> have a middle-term/compromise: if there's interest in collecting such
+> data (in the form of a kmsg dumper), we then execute the informational
+> notifiers before kdump. If not, why to increase (even slightly) the risk
+> for kdump?
+>=20
+> I'm OK in removing the level 2 if people prefer, but I don't feel it's a
+> burden, quite opposite - seems a good way to accommodate the somewhat
+> antagonistic ideas (jump to kdump ASAP vs collecting more info in the
+> panicked kernel log).
+>=20
+> [0] https://lore.kernel.org/lkml/20220126052246.GC2086@MiWiFi-R3L-srv/
+>=20
+> [1] https://lore.kernel.org/lkml/YfPxvzSzDLjO5ldp@alley/
+>=20
+
+To me, it's a weak correlation between having a kmsg dumper, and
+wanting or not wanting the info level output to come before kdump.
+Hyper-V is one of only a few places that register a kmsg dumper, so most
+Linux instances outside of Hyper-V guest (and PowerPC systems?) will have
+the info level output after kdump.  It seems like anyone who cared strongly
+about the info level output would set the panic_notifier_level to 1 or to 3
+so that the result is more deterministic.  But that's just my opinion, and
+it's probably an opinion that is not as well informed on the topic as some
+others in the discussion. So keeping things as in your patch set is not a
+show-stopper for me.
+
+However, I would request a clarification in the documentation.   The
+panic_notifier_level affects not only the hypervisor, informational,
+and pre_reboot lists, but it also affects panic_print_sys_info() and
+kmsg_dump().  Specifically, at level 1, panic_print_sys_info() and
+kmsg_dump() will not be run before kdump.  At level 3, they will
+always be run before kdump.  Your documentation above mentions
+"informational lists" (plural), which I take to vaguely include
+kmsg_dump() and panic_print_sys_info(), but being explicit about
+the effect would be better.
+
+Michael
+
+>=20
+> >[...]
+> >> +	 * Based on the level configured (smaller than 4), we clear the
+> >> +	 * proper bits in "panic_notifiers_bits". Notice that this bitfield
+> >> +	 * is initialized with all notifiers set.
+> >> +	 */
+> >> +	switch (panic_notifiers_level) {
+> >> +	case 3:
+> >> +		clear_bit(PN_PRE_REBOOT_BIT, &panic_notifiers_bits);
+> >> +		break;
+> >> +	case 2:
+> >> +		clear_bit(PN_PRE_REBOOT_BIT, &panic_notifiers_bits);
+> >> +
+> >> +		if (!kmsg_has_dumpers())
+> >> +			clear_bit(PN_INFO_BIT, &panic_notifiers_bits);
+> >> +		break;
+> >> +	case 1:
+> >> +		clear_bit(PN_PRE_REBOOT_BIT, &panic_notifiers_bits);
+> >> +		clear_bit(PN_INFO_BIT, &panic_notifiers_bits);
+> >> +		break;
+> >> +	case 0:
+> >> +		clear_bit(PN_PRE_REBOOT_BIT, &panic_notifiers_bits);
+> >> +		clear_bit(PN_INFO_BIT, &panic_notifiers_bits);
+> >> +		clear_bit(PN_HYPERVISOR_BIT, &panic_notifiers_bits);
+> >> +		break;
+> >> +	}
+> >
+> > I think the above switch statement could be done as follows:
+> >
+> > if (panic_notifiers_level <=3D 3)
+> > 	clear_bit(PN_PRE_REBOOT_BIT, &panic_notifiers_bits);
+> > if (panic_notifiers_level <=3D 2)
+> > 	if (!kmsg_has_dumpers())
+> > 		clear_bit(PN_INFO_BIT, &panic_notifiers_bits);
+> > if (panic_notifiers_level <=3D1)
+> > 	clear_bit(PN_INFO_BIT, &panic_notifiers_bits);
+> > if (panic_notifiers_level =3D=3D 0)
+> > 	clear_bit(PN_HYPERVISOR_BIT, &panic_notifiers_bits);
+> >
+> > That's about half the lines of code.  It's somewhat a matter of style,
+> > so treat this as just a suggestion to consider.  I just end up looking
+> > for a better solution when I see the same line of code repeated
+> > 3 or 4 times!
+> >
+>=20
+> It's a good idea - I liked your code. The switch seems more
+> natural/explicit for me, even duplicating some lines, but in case more
+> people prefer your way, I can definitely change the code - thanks for
+> the suggestion.
 > Cheers,
-> 
-> 
+>=20
+>=20
 > Guilherme
-
-Complete lack of attention from me, apologies!
-The suggestions was s/was/is - already fixed for V2, thanks Randy.
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
