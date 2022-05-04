@@ -1,13 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Mon, 16 May 2022 16:11:06 +0200
-From: Petr Mladek <pmladek@suse.com>
-Subject: Re: [PATCH 20/30] panic: Add the panic informational notifier list
-Message-ID: <YoJbeuTNBXOIypSH@alley>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
- <20220427224924.592546-21-gpiccoli@igalia.com>
+Received: from out03.mta.xmission.com ([166.70.13.233])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nmNga-00D6V0-S6
+ for linux-um@lists.infradead.org; Wed, 04 May 2022 22:41:35 +0000
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+Date: Wed,  4 May 2022 17:40:52 -0500
+Message-Id: <20220504224058.476193-5-ebiederm@xmission.com>
+In-Reply-To: <87k0b0apne.fsf_-_@email.froward.int.ebiederm.org>
+References: <87k0b0apne.fsf_-_@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220427224924.592546-21-gpiccoli@igalia.com>
+Subject: [PATCH v3 05/11] ptrace: Remove arch_ptrace_attach
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,44 +22,169 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Cc: akpm@linux-foundation.org, bhe@redhat.com, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Catalin Marinas <catalin.marinas@arm.com>, Florian Fainelli <f.fainelli@gmail.com>, Frederic Weisbecker <frederic@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Hari Bathini <hbathini@linux.ibm.com>, Joel Fernandes <joel@joelfernandes.org>, Jonathan Hunter <jonathanh@nvidia.com>, Josh Triplett <josh@joshtriplett.org>, Lai Jiangshan <jiangshanlai@gmail.com>, Leo Yan <leo.yan@linaro.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Mathieu Poirier <mathieu.poirier@linaro.org>, Michael Ellerman <mpe@ellerman.id.au>, Mike Leach <mike.leach@linaro.org>, Mikko Perttunen <mperttunen@nvidia.com>, Neeraj Upadhyay <quic_neeraju@quicinc.com>, Nicholas Piggin <npiggin@gmail.com>, Paul Mackerras <paulus@samba.org>, Suzuki K Poulose <suzuki.poulose@arm.com>, Thierry Reding <thierry.reding@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: linux-kernel@vger.kernel.org
+Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
 
-On Wed 2022-04-27 19:49:14, Guilherme G. Piccoli wrote:
-> The goal of this new panic notifier is to allow its users to
-> register callbacks to run earlier in the panic path than they
-> currently do. This aims at informational mechanisms, like dumping
-> kernel offsets and showing device error data (in case it's simple
-> registers reading, for example) as well as mechanisms to disable
-> log flooding (like hung_task detector / RCU warnings) and the
-> tracing dump_on_oops (when enabled).
-> 
-> Any (non-invasive) information that should be provided before
-> kmsg_dump() as well as log flooding preventing code should fit
-> here, as long it offers relatively low risk for kdump.
-> 
-> For now, the patch is almost a no-op, although it changes a bit
-> the ordering in which some panic notifiers are executed - specially
-> affected by this are the notifiers responsible for disabling the
-> hung_task detector / RCU warnings, which now run first. In a
-> subsequent patch, the panic path will be refactored, then the
-> panic informational notifiers will effectively run earlier,
-> before ksmg_dump() (and usually before kdump as well).
-> 
-> We also defer documenting it all properly in the subsequent
-> refactor patch. Finally, while at it, we removed some useless
-> header inclusions too.
-> 
-> Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
+The last remaining implementation of arch_ptrace_attach is ia64's
+ptrace_attach_sync_user_rbs which was added at the end of 2007 in
+commit aa91a2e90044 ("[IA64] Synchronize RBS on PTRACE_ATTACH").
 
-All notifiers moved in this patch seems to fit well the "info"
-notifier list. The patch looks good from this POV.
+Reading the comments and examining the code ptrace_attach_sync_user_rbs
+has the sole purpose of saving registers to the stack when ptrace_attach
+changes TASK_STOPPED to TASK_TRACED.  In all other cases arch_ptrace_stop
+takes care of the register saving.
 
-I still have to review the rest of the patches to see if it
-is complete.
+In commit d79fdd6d96f4 ("ptrace: Clean transitions between TASK_STOPPED and TRACED")
+modified ptrace_attach to wake up the thread and enter ptrace_stop normally even
+when the thread starts out stopped.
 
-Best Regards,
-Petr
+This makes ptrace_attach_sync_user_rbs completely unnecessary.  So just
+remove it.
+
+Cc: linux-ia64@vger.kernel.org
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+ arch/ia64/include/asm/ptrace.h |  4 ---
+ arch/ia64/kernel/ptrace.c      | 57 ----------------------------------
+ kernel/ptrace.c                | 18 -----------
+ 3 files changed, 79 deletions(-)
+
+diff --git a/arch/ia64/include/asm/ptrace.h b/arch/ia64/include/asm/ptrace.h
+index a10a498eede1..402874489890 100644
+--- a/arch/ia64/include/asm/ptrace.h
++++ b/arch/ia64/include/asm/ptrace.h
+@@ -139,10 +139,6 @@ static inline long regs_return_value(struct pt_regs *regs)
+   #define arch_ptrace_stop_needed() \
+ 	(!test_thread_flag(TIF_RESTORE_RSE))
+ 
+-  extern void ptrace_attach_sync_user_rbs (struct task_struct *);
+-  #define arch_ptrace_attach(child) \
+-	ptrace_attach_sync_user_rbs(child)
+-
+   #define arch_has_single_step()  (1)
+   #define arch_has_block_step()   (1)
+ 
+diff --git a/arch/ia64/kernel/ptrace.c b/arch/ia64/kernel/ptrace.c
+index a19acd9f5e1f..a45f529046c3 100644
+--- a/arch/ia64/kernel/ptrace.c
++++ b/arch/ia64/kernel/ptrace.c
+@@ -617,63 +617,6 @@ void ia64_sync_krbs(void)
+ 	unw_init_running(do_sync_rbs, ia64_sync_kernel_rbs);
+ }
+ 
+-/*
+- * After PTRACE_ATTACH, a thread's register backing store area in user
+- * space is assumed to contain correct data whenever the thread is
+- * stopped.  arch_ptrace_stop takes care of this on tracing stops.
+- * But if the child was already stopped for job control when we attach
+- * to it, then it might not ever get into ptrace_stop by the time we
+- * want to examine the user memory containing the RBS.
+- */
+-void
+-ptrace_attach_sync_user_rbs (struct task_struct *child)
+-{
+-	int stopped = 0;
+-	struct unw_frame_info info;
+-
+-	/*
+-	 * If the child is in TASK_STOPPED, we need to change that to
+-	 * TASK_TRACED momentarily while we operate on it.  This ensures
+-	 * that the child won't be woken up and return to user mode while
+-	 * we are doing the sync.  (It can only be woken up for SIGKILL.)
+-	 */
+-
+-	read_lock(&tasklist_lock);
+-	if (child->sighand) {
+-		spin_lock_irq(&child->sighand->siglock);
+-		if (READ_ONCE(child->__state) == TASK_STOPPED &&
+-		    !test_and_set_tsk_thread_flag(child, TIF_RESTORE_RSE)) {
+-			set_notify_resume(child);
+-
+-			WRITE_ONCE(child->__state, TASK_TRACED);
+-			stopped = 1;
+-		}
+-		spin_unlock_irq(&child->sighand->siglock);
+-	}
+-	read_unlock(&tasklist_lock);
+-
+-	if (!stopped)
+-		return;
+-
+-	unw_init_from_blocked_task(&info, child);
+-	do_sync_rbs(&info, ia64_sync_user_rbs);
+-
+-	/*
+-	 * Now move the child back into TASK_STOPPED if it should be in a
+-	 * job control stop, so that SIGCONT can be used to wake it up.
+-	 */
+-	read_lock(&tasklist_lock);
+-	if (child->sighand) {
+-		spin_lock_irq(&child->sighand->siglock);
+-		if (READ_ONCE(child->__state) == TASK_TRACED &&
+-		    (child->signal->flags & SIGNAL_STOP_STOPPED)) {
+-			WRITE_ONCE(child->__state, TASK_STOPPED);
+-		}
+-		spin_unlock_irq(&child->sighand->siglock);
+-	}
+-	read_unlock(&tasklist_lock);
+-}
+-
+ /*
+  * Write f32-f127 back to task->thread.fph if it has been modified.
+  */
+diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+index ccc4b465775b..da30dcd477a0 100644
+--- a/kernel/ptrace.c
++++ b/kernel/ptrace.c
+@@ -1285,10 +1285,6 @@ int ptrace_request(struct task_struct *child, long request,
+ 	return ret;
+ }
+ 
+-#ifndef arch_ptrace_attach
+-#define arch_ptrace_attach(child)	do { } while (0)
+-#endif
+-
+ SYSCALL_DEFINE4(ptrace, long, request, long, pid, unsigned long, addr,
+ 		unsigned long, data)
+ {
+@@ -1297,8 +1293,6 @@ SYSCALL_DEFINE4(ptrace, long, request, long, pid, unsigned long, addr,
+ 
+ 	if (request == PTRACE_TRACEME) {
+ 		ret = ptrace_traceme();
+-		if (!ret)
+-			arch_ptrace_attach(current);
+ 		goto out;
+ 	}
+ 
+@@ -1310,12 +1304,6 @@ SYSCALL_DEFINE4(ptrace, long, request, long, pid, unsigned long, addr,
+ 
+ 	if (request == PTRACE_ATTACH || request == PTRACE_SEIZE) {
+ 		ret = ptrace_attach(child, request, addr, data);
+-		/*
+-		 * Some architectures need to do book-keeping after
+-		 * a ptrace attach.
+-		 */
+-		if (!ret)
+-			arch_ptrace_attach(child);
+ 		goto out_put_task_struct;
+ 	}
+ 
+@@ -1455,12 +1443,6 @@ COMPAT_SYSCALL_DEFINE4(ptrace, compat_long_t, request, compat_long_t, pid,
+ 
+ 	if (request == PTRACE_ATTACH || request == PTRACE_SEIZE) {
+ 		ret = ptrace_attach(child, request, addr, data);
+-		/*
+-		 * Some architectures need to do book-keeping after
+-		 * a ptrace attach.
+-		 */
+-		if (!ret)
+-			arch_ptrace_attach(child);
+ 		goto out_put_task_struct;
+ 	}
+ 
+-- 
+2.35.3
+
 
 _______________________________________________
 linux-um mailing list
