@@ -1,14 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Tue, 10 May 2022 17:16:01 +0200
-From: Petr Mladek <pmladek@suse.com>
-Subject: Re: [PATCH 14/30] panic: Properly identify the panic event to the
- notifiers' callbacks
-Message-ID: <YnqBsXBImU64PAOL@alley>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
- <20220427224924.592546-15-gpiccoli@igalia.com>
+Received: from out02.mta.xmission.com ([166.70.13.232])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nmNgv-00D6jx-QS
+ for linux-um@lists.infradead.org; Wed, 04 May 2022 22:41:55 +0000
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+Date: Wed,  4 May 2022 17:40:57 -0500
+Message-Id: <20220504224058.476193-10-ebiederm@xmission.com>
+In-Reply-To: <87k0b0apne.fsf_-_@email.froward.int.ebiederm.org>
+References: <87k0b0apne.fsf_-_@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220427224924.592546-15-gpiccoli@igalia.com>
+Subject: [PATCH v3 10/11] ptrace: Always take siglock in ptrace_resume
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -21,57 +22,54 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Cc: akpm@linux-foundation.org, bhe@redhat.com, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
 
-On Wed 2022-04-27 19:49:08, Guilherme G. Piccoli wrote:
-> The notifiers infrastructure provides a way to pass an "id" to the
-> callbacks to determine what kind of event happened, i.e., what is
-> the reason behind they getting called.
-> 
-> The panic notifier currently pass 0, but this is soon to be
-> used in a multi-targeted notifier, so let's pass a meaningful
-> "id" over there.
->
-> Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
-> ---
->  include/linux/panic_notifier.h | 5 +++++
->  kernel/panic.c                 | 2 +-
->  2 files changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/panic_notifier.h b/include/linux/panic_notifier.h
-> index 41e32483d7a7..07dced83a783 100644
-> --- a/include/linux/panic_notifier.h
-> +++ b/include/linux/panic_notifier.h
-> @@ -9,4 +9,9 @@ extern struct atomic_notifier_head panic_notifier_list;
->  
->  extern bool crash_kexec_post_notifiers;
->  
-> +enum panic_notifier_val {
-> +	PANIC_UNUSED,
-> +	PANIC_NOTIFIER = 0xDEAD,
-> +};
+Make code analysis simpler and future changes easier by
+always taking siglock in ptrace_resume.
 
-Hmm, this looks like a hack. PANIC_UNUSED will never be used.
-All notifiers will be always called with PANIC_NOTIFIER.
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+ kernel/ptrace.c | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
-The @val parameter is normally used when the same notifier_list
-is used in different situations.
+diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+index 83ed28262708..36a5b7a00d2f 100644
+--- a/kernel/ptrace.c
++++ b/kernel/ptrace.c
+@@ -837,8 +837,6 @@ static long ptrace_get_rseq_configuration(struct task_struct *task,
+ static int ptrace_resume(struct task_struct *child, long request,
+ 			 unsigned long data)
+ {
+-	bool need_siglock;
+-
+ 	if (!valid_signal(data))
+ 		return -EIO;
+ 
+@@ -874,18 +872,11 @@ static int ptrace_resume(struct task_struct *child, long request,
+ 	 * Note that we need siglock even if ->exit_code == data and/or this
+ 	 * status was not reported yet, the new status must not be cleared by
+ 	 * wait_task_stopped() after resume.
+-	 *
+-	 * If data == 0 we do not care if wait_task_stopped() reports the old
+-	 * status and clears the code too; this can't race with the tracee, it
+-	 * takes siglock after resume.
+ 	 */
+-	need_siglock = data && !thread_group_empty(current);
+-	if (need_siglock)
+-		spin_lock_irq(&child->sighand->siglock);
++	spin_lock_irq(&child->sighand->siglock);
+ 	child->exit_code = data;
+ 	wake_up_state(child, __TASK_TRACED);
+-	if (need_siglock)
+-		spin_unlock_irq(&child->sighand->siglock);
++	spin_unlock_irq(&child->sighand->siglock);
+ 
+ 	return 0;
+ }
+-- 
+2.35.3
 
-But you are going to use it when the same notifier is used
-in more lists. This is normally distinguished by the @nh
-(atomic_notifier_head) parameter.
-
-IMHO, it is a bad idea. First, it would confuse people because
-it does not follow the original design of the parameters.
-Second, the related code must be touched anyway when
-the notifier is moved into another list so it does not
-help much.
-
-Or do I miss anything, please?
-
-Best Regards,
-Petr
 
 _______________________________________________
 linux-um mailing list
