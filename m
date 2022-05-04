@@ -1,21 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out01.mta.xmission.com ([166.70.13.231])
+Received: from out02.mta.xmission.com ([166.70.13.232])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nmgB0-00HKSO-Qh
- for linux-um@lists.infradead.org; Thu, 05 May 2022 18:26:12 +0000
+ id 1nmNfv-00D6H1-G7
+ for linux-um@lists.infradead.org; Wed, 04 May 2022 22:40:52 +0000
 From: "Eric W. Biederman" <ebiederm@xmission.com>
 References: <20220421150248.667412396@infradead.org>
  <20220421150654.817117821@infradead.org>
  <87czhap9dy.fsf@email.froward.int.ebiederm.org>
  <878rrrh32q.fsf_-_@email.froward.int.ebiederm.org>
  <87k0b7v9yk.fsf_-_@email.froward.int.ebiederm.org>
- <87k0b0apne.fsf_-_@email.froward.int.ebiederm.org>
-Date: Thu, 05 May 2022 13:25:57 -0500
-In-Reply-To: <87k0b0apne.fsf_-_@email.froward.int.ebiederm.org> (Eric
- W. Biederman's message of "Wed, 04 May 2022 17:39:33 -0500")
-Message-ID: <87a6bv6dl6.fsf_-_@email.froward.int.ebiederm.org>
+Date: Wed, 04 May 2022 17:39:33 -0500
+In-Reply-To: <87k0b7v9yk.fsf_-_@email.froward.int.ebiederm.org> (Eric
+ W. Biederman's message of "Fri, 29 Apr 2022 16:46:59 -0500")
+Message-ID: <87k0b0apne.fsf_-_@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
-Subject: [PATCH v4 0/12] ptrace: cleaning up ptrace_stop
+Subject: [PATCH v3 0/11] ptrace: cleaning up ptrace_stop
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -43,13 +42,13 @@ that contains just those problems I see good solutions to that I believe
 are ready.
 
 A couple of issues have been pointed but I think this parred back set of
-changes is still on the right track.  The biggest change in v4 is the
-split of "ptrace: Admit ptrace_stop can generate spuriuos SIGTRAPs" into
-two patches because the dependency I thought exited between two
-different changes did not exist.  The rest of the changes are minor
-tweaks to "ptrace: Admit ptrace_stop can generate spuriuos SIGTRAPs";
-removing an always true branch, and adding an early  test to see if the
-ptracer had gone, before TASK_TRAPPING was set.
+changes is still on the right track.  The biggest change in v3 is that
+instead of trying to prevent sending a spurious SIGTRAP when the tracer
+dies with the tracee in ptrace_report_syscall, I have modified the code
+to just stop trying.  While I still have taken TASK_WAKEKILL out of
+TASK_TRACED I have implemented simpler logic in signal_wake_up.  Further
+I have followed Oleg's advice and exit early from ptrace_stop if a fatal
+signal is pending.
 
 This set of changes should support Peter's freezer rewrite, and with the
 addition of changing wait_task_inactive(TASK_TRACED) to be
@@ -59,10 +58,13 @@ races or issues to be concerned about from the ptrace side.
 More work is needed to support PREEMPT_RT, but these changes get things
 closer.
 
-This set of changes continues to look like it will provide a firm
-foundation for solving the PREEMPT_RT and freezer challenges.
+I believe this set of changes will provide a firm foundation for solving
+the PREEMPT_RT and freezer challenges.
 
-Eric W. Biederman (11):
+With fewer lines added and more lines removed this set of changes looks
+like it is moving in a good direction.
+
+Eric W. Biederman (10):
       signal: Rename send_signal send_signal_locked
       signal: Replace __group_send_sig_info with send_signal_locked
       ptrace/um: Replace PT_DTRACE with TIF_SINGLESTEP
@@ -70,7 +72,6 @@ Eric W. Biederman (11):
       ptrace: Remove arch_ptrace_attach
       signal: Use lockdep_assert_held instead of assert_spin_locked
       ptrace: Reimplement PTRACE_KILL by always sending SIGKILL
-      ptrace: Document that wait_task_inactive can't fail
       ptrace: Admit ptrace_stop can generate spuriuos SIGTRAPs
       ptrace: Don't change __state
       ptrace: Always take siglock in ptrace_resume
@@ -94,11 +95,11 @@ Peter Zijlstra (1):
  include/linux/sched/jobctl.h      |   8 +++
  include/linux/sched/signal.h      |  20 ++++--
  include/linux/signal.h            |   3 +-
- kernel/ptrace.c                   |  87 ++++++++---------------
+ kernel/ptrace.c                   |  87 ++++++++----------------
  kernel/sched/core.c               |   5 +-
- kernel/signal.c                   | 140 +++++++++++++++++---------------------
+ kernel/signal.c                   | 135 +++++++++++++++++---------------------
  kernel/time/posix-cpu-timers.c    |   6 +-
- 20 files changed, 140 insertions(+), 240 deletions(-)
+ 20 files changed, 138 insertions(+), 237 deletions(-)
 
 Eric
 
