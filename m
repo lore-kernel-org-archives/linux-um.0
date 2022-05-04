@@ -1,13 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Tue, 10 May 2022 13:40:14 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH 23/30] printk: kmsg_dump: Introduce helper to inform
- number of dumpers
-Message-ID: <20220510134014.3923ccba@gandalf.local.home>
-In-Reply-To: <20220427224924.592546-24-gpiccoli@igalia.com>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
- <20220427224924.592546-24-gpiccoli@igalia.com>
+Received: from out03.mta.xmission.com ([166.70.13.233])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nmNge-00D6XW-QK
+ for linux-um@lists.infradead.org; Wed, 04 May 2022 22:41:38 +0000
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+Date: Wed,  4 May 2022 17:40:53 -0500
+Message-Id: <20220504224058.476193-6-ebiederm@xmission.com>
+In-Reply-To: <87k0b0apne.fsf_-_@email.froward.int.ebiederm.org>
+References: <87k0b0apne.fsf_-_@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
+Subject: [PATCH v3 06/11] signal: Use lockdep_assert_held instead of
+ assert_spin_locked
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,30 +23,46 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Cc: akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
 
-On Wed, 27 Apr 2022 19:49:17 -0300
-"Guilherme G. Piccoli" <gpiccoli@igalia.com> wrote:
+The distinction is that assert_spin_locked() checks if the lock is
+held *by*anyone* whereas lockdep_assert_held() asserts the current
+context holds the lock.  Also, the check goes away if you build
+without lockdep.
 
-> Currently we don't have a way to check if there are dumpers set,
-> except counting the list members maybe. This patch introduces a very
-> simple helper to provide this information, by just keeping track of
-> registered/unregistered kmsg dumpers. It's going to be used on the
-> panic path in the subsequent patch.
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/Ympr/+PX4XgT/UKU@hirez.programming.kicks-ass.net
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+ kernel/signal.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-FYI, it is considered "bad form" to reference in the change log "this
-patch". We know this is a patch. The change log should just talk about what
-is being done. So can you reword your change logs (you do this is almost
-every patch). Here's what I would reword the above to be:
+diff --git a/kernel/signal.c b/kernel/signal.c
+index 72d96614effc..3fd2ce133387 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -884,7 +884,7 @@ static int check_kill_permission(int sig, struct kernel_siginfo *info,
+ static void ptrace_trap_notify(struct task_struct *t)
+ {
+ 	WARN_ON_ONCE(!(t->ptrace & PT_SEIZED));
+-	assert_spin_locked(&t->sighand->siglock);
++	lockdep_assert_held(&t->sighand->siglock);
+ 
+ 	task_set_jobctl_pending(t, JOBCTL_TRAP_NOTIFY);
+ 	ptrace_signal_wake_up(t, t->jobctl & JOBCTL_LISTENING);
+@@ -1079,7 +1079,7 @@ static int __send_signal_locked(int sig, struct kernel_siginfo *info,
+ 	int override_rlimit;
+ 	int ret = 0, result;
+ 
+-	assert_spin_locked(&t->sighand->siglock);
++	lockdep_assert_held(&t->sighand->siglock);
+ 
+ 	result = TRACE_SIGNAL_IGNORED;
+ 	if (!prepare_signal(sig, t, force))
+-- 
+2.35.3
 
- Currently we don't have a way to check if there are dumpers set, except
- perhaps by counting the list members. Introduce a very simple helper to
- provide this information, by just keeping track of registered/unregistered
- kmsg dumpers. This will simplify the refactoring of the panic path.
-
-
--- Steve
 
 _______________________________________________
 linux-um mailing list
