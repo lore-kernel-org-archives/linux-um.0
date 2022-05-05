@@ -1,20 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from us-smtp-delivery-74.mimecast.com ([170.10.133.74])
+Received: from out01.mta.xmission.com ([166.70.13.231])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nmfvy-00HFNc-SU
- for linux-um@lists.infradead.org; Thu, 05 May 2022 18:10:40 +0000
-Date: Thu, 5 May 2022 20:10:27 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-Subject: Re: [PATCH v3 08/11] ptrace: Admit ptrace_stop can generate spuriuos
- SIGTRAPs
-Message-ID: <20220505181027.GA14011@redhat.com>
+ id 1nmffp-00H9kP-NJ
+ for linux-um@lists.infradead.org; Thu, 05 May 2022 17:53:59 +0000
+From: "Eric W. Biederman" <ebiederm@xmission.com>
 References: <87k0b0apne.fsf_-_@email.froward.int.ebiederm.org>
  <20220504224058.476193-8-ebiederm@xmission.com>
  <20220505152801.GC13929@redhat.com>
- <87zgjv6f2u.fsf@email.froward.int.ebiederm.org>
+Date: Thu, 05 May 2022 12:53:45 -0500
+In-Reply-To: <20220505152801.GC13929@redhat.com> (Oleg Nesterov's message of
+ "Thu, 5 May 2022 17:28:03 +0200")
+Message-ID: <87zgjv6f2u.fsf@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87zgjv6f2u.fsf@email.froward.int.ebiederm.org>
+Subject: Re: [PATCH v3 08/11] ptrace: Admit ptrace_stop can generate
+ spuriuos SIGTRAPs
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -27,18 +26,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Eric W. Biederman" <ebiederm@xmission.com>
+To: Oleg Nesterov <oleg@redhat.com>
 Cc: linux-kernel@vger.kernel.org, rjw@rjwysocki.net, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org
 
-On 05/05, Eric W. Biederman wrote:
+Oleg Nesterov <oleg@redhat.com> writes:
+
+> On 05/04, Eric W. Biederman wrote:
+>>
+>> -static int ptrace_stop(int exit_code, int why, int clear_code,
+>> -			unsigned long message, kernel_siginfo_t *info)
+>> +static int ptrace_stop(int exit_code, int why, unsigned long message,
+>> +		       kernel_siginfo_t *info)
 >
-> So I vote for deleting code, and making ptrace_stop easier to reason
-> about.
+> Forgot to mention... but in general I like this change.
+>
+> In particular, I like the fact it kills the ugly "int clear_code" arg
+> which looks as if it solves the problems with the exiting tracer, but
+> actually it doesn't. And we do not really care, imo.
 
-Yes, yes, agreed.
+Further either this change is necessary or we need to take siglock in
+the !current->ptrace path in "ptrace: Don't change __state" so that
+JOBCTL_TRACED can be cleared.
 
-Oleg.
+So I vote for deleting code, and making ptrace_stop easier to reason
+about.
 
+Eric
 
 _______________________________________________
 linux-um mailing list
