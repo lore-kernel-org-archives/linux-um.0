@@ -1,18 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mout.kundenserver.de ([217.72.192.74])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nmh6r-00HUPz-BW
- for linux-um@lists.infradead.org; Thu, 05 May 2022 19:26:04 +0000
-Date: Thu, 5 May 2022 21:25:20 +0200
-From: Nicolas Schier <nicolas@fjasle.eu>
-Subject: Re: [PATCH v3 01/15] modpost: mitigate false-negatives for static
+From: Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH v3 01/15] modpost: mitigate false-negatives for static
  EXPORT_SYMBOL checks
-Message-ID: <YnQkoFahOeUVpZhj@fjasle.eu>
+Date: Thu,  5 May 2022 16:22:30 +0900
+Message-Id: <20220505072244.1155033-2-masahiroy@kernel.org>
+In-Reply-To: <20220505072244.1155033-1-masahiroy@kernel.org>
 References: <20220505072244.1155033-1-masahiroy@kernel.org>
- <20220505072244.1155033-2-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220505072244.1155033-2-masahiroy@kernel.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -21,77 +15,125 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Peter Zijlstra <peterz@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org, linux-s390@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>, Sami Tolvanen <samitolvanen@google.com>, Kees Cook <keescook@chromium.org>
+To: linux-kbuild@vger.kernel.org
+Cc: clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org, Nicolas Schier a <nicolas@fjasle.eu>, Ard Biesheuvel <ardb@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Peter Zijlstra <peterz@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org, linux-s390@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>, Sami Tolvanen <samitolvanen@google.com>, Kees Cook <keescook@chromium.org>, Masahiro Yamada <masahiroy@kernel.org>
 
-T24gVGh1LCBNYXkgMDUsIDIwMjIgYXQgMDQ6MjI6MzBQTSArMDkwMCBNYXNhaGlybyBZYW1hZGEg
-d3JvdGU6Cj4gVGhlICdzdGF0aWMnIHNwZWNpZmllciBhbmQgRVhQT1JUX1NZTUJPTCgpIGFyZSBh
-biBvZGQgY29tYmluYXRpb24uCj4gCj4gU2luY2UgY29tbWl0IDE1YmZjMjM0OGQ1NCAoIm1vZHBv
-c3Q6IGNoZWNrIGZvciBzdGF0aWMgRVhQT1JUX1NZTUJPTCoKPiBmdW5jdGlvbnMiKSwgbW9kcG9z
-dCB0cmllcyB0byBkZXRlY3QgaXQsIGJ1dCB0aGVyZSBhcmUgZmFsc2UgbmVnYXRpdmVzLgo+IAo+
-IEhlcmUgaXMgdGhlIHNhbXBsZSBjb2RlLgo+IAo+IFtTYW1wbGUgMV0KPiAKPiAgIE1ha2VmaWxl
-Ogo+IAo+ICAgICBvYmotbSArPSBteW1vZDEubyBteW1vZDIubwo+IAo+ICAgbXltb2QxLmM6Cj4g
-Cj4gICAgICNpbmNsdWRlIDxsaW51eC9leHBvcnQuaD4KPiAgICAgI2luY2x1ZGUgPGxpbnV4L21v
-ZHVsZS5oPgo+ICAgICBzdGF0aWMgdm9pZCBmb28odm9pZCkge30KPiAgICAgRVhQT1JUX1NZTUJP
-TChmb28pOwo+ICAgICBNT0RVTEVfTElDRU5TRSgiR1BMIik7Cj4gCj4gICBteW1vZDIuYzoKPiAK
-PiAgICAgI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPgo+ICAgICB2b2lkIGZvbyh2b2lkKSB7fQo+
-ICAgICBNT0RVTEVfTElDRU5TRSgiR1BMIik7Cj4gCj4gbXltb2QxIGV4cG9ydHMgdGhlIHN0YXRp
-YyBzeW1ib2wgJ2ZvbycsIGJ1dCBtb2Rwb3N0IGNhbm5vdCBjYXRjaCBpdAo+IGJlY2F1c2UgaXQg
-aXMgZm9vbGVkIGJ5IHRoZSBzYW1lIG5hbWUgc3ltYm9sIGluIGFub3RoZXIgbW9kdWxlLCBteW1v
-ZDIuCj4gKFdpdGhvdXQgbXltb2QyLCBtb2Rwb3N0IGNhbiBkZXRlY3QgdGhlIGVycm9yIGluIG15
-bW9kMSkKPiAKPiBmaW5kX3N5bWJvbCgpIHJldHVybnMgdGhlIGZpcnN0IHN5bWJvbCBmb3VuZCBp
-biB0aGUgaGFzaCB0YWJsZSB3aXRoIHRoZQo+IGdpdmVuIG5hbWUuIFRoaXMgaGFzaCB0YWJsZSBp
-cyBnbG9iYWwsIHNvIGl0IG1heSByZXR1cm4gYSBzeW1ib2wgZnJvbQo+IGFuIHVucmVsYXRlZCBt
-b2R1bGUuIFNvLCBhIGdsb2JhbCBzeW1ib2wgaW4gYSBtb2R1bGUgbWF5IHVuc2V0IHRoZQo+ICdp
-c19zdGF0aWMnIGZsYWcgb2YgYW5vdGhlciBtb2R1bGUuCj4gCj4gVG8gbWl0aWdhdGUgdGhpcyBp
-c3N1ZSwgYWRkIHN5bV9maW5kX3dpdGhfbW9kdWxlKCksIHdoaWNoIHJlY2VpdmVzIHRoZQo+IG1v
-ZHVsZSBwb2ludGVyIGFzIHRoZSBzZWNvbmQgYXJndW1lbnQuIElmIG5vbi1OVUxMIHBvaW50ZXIg
-aXMgcGFzc2VkLCBpdAo+IHJldHVybnMgdGhlIHN5bWJvbCBpbiB0aGUgc3BlY2lmaWVkIG1vZHVs
-ZS4gSWYgTlVMTCBpcyBwYXNzZWQsIGl0IGlzCj4gZXF1aXZhbGVudCB0byBmaW5kX21vZHVsZSgp
-Lgo+IAo+IFBsZWFzZSBub3RlIHRoZXJlIGFyZSBzdGlsbCBmYWxzZSBwb3NpdGl2ZXMgaW4gdGhl
-IGNvbXBvc2l0ZSBtb2R1bGUsCj4gbGlrZSBiZWxvdyAob3Igd2hlbiBib3RoIGFyZSBidWlsdC1p
-bikuIEkgaGF2ZSBubyBpZGVhIGhvdyB0byBkbyB0aGlzCj4gY29ycmVjdGx5Lgo+IAo+IFtTYW1w
-bGUgMl0gIChub3QgZml4ZWQgYnkgdGhpcyBjb21taXQpCj4gCj4gICBNYWtlZmlsZToKPiAgICAg
-b2JqLW0gKz0gbXltb2Qubwo+ICAgICBteW1vZC1vYmpzIDo9IG15bW9kMS5vIG15bW9kMi5vCj4g
-Cj4gU2lnbmVkLW9mZi1ieTogTWFzYWhpcm8gWWFtYWRhIDxtYXNhaGlyb3lAa2VybmVsLm9yZz4K
-PiAtLS0KCkkgbGlrZSB0aGUgZGV0YWlsZWQgY29tbWl0IGRlc2NyaXB0aW9uIQoKUmV2aWV3ZWQt
-Ynk6IE5pY29sYXMgU2NoaWVyIDxuaWNvbGFzQGZqYXNsZS5ldT4KCj4gCj4gKG5vIGNoYW5nZXMg
-c2luY2UgdjIpCj4gCj4gQ2hhbmdlcyBpbiB2MjoKPiAgIC0gUmVuYW1lIHRoZSBuZXcgZnVuYyB0
-byBzeW1fZmluZF93aXRoX21vZHVsZSgpCj4gCj4gIHNjcmlwdHMvbW9kL21vZHBvc3QuYyB8IDE0
-ICsrKysrKysrKystLS0tCj4gIDEgZmlsZSBjaGFuZ2VkLCAxMCBpbnNlcnRpb25zKCspLCA0IGRl
-bGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9zY3JpcHRzL21vZC9tb2Rwb3N0LmMgYi9zY3Jp
-cHRzL21vZC9tb2Rwb3N0LmMKPiBpbmRleCBiNjA1ZjRhNTg3NTkuLmE1NWZhMmI4OGE5YSAxMDA2
-NDQKPiAtLS0gYS9zY3JpcHRzL21vZC9tb2Rwb3N0LmMKPiArKysgYi9zY3JpcHRzL21vZC9tb2Rw
-b3N0LmMKPiBAQCAtMjcyLDcgKzI3Miw3IEBAIHN0YXRpYyB2b2lkIHN5bV9hZGRfdW5yZXNvbHZl
-ZChjb25zdCBjaGFyICpuYW1lLCBzdHJ1Y3QgbW9kdWxlICptb2QsIGJvb2wgd2VhaykKPiAgCWxp
-c3RfYWRkX3RhaWwoJnN5bS0+bGlzdCwgJm1vZC0+dW5yZXNvbHZlZF9zeW1ib2xzKTsKPiAgfQo+
-ICAKPiAtc3RhdGljIHN0cnVjdCBzeW1ib2wgKmZpbmRfc3ltYm9sKGNvbnN0IGNoYXIgKm5hbWUp
-Cj4gK3N0YXRpYyBzdHJ1Y3Qgc3ltYm9sICpzeW1fZmluZF93aXRoX21vZHVsZShjb25zdCBjaGFy
-ICpuYW1lLCBzdHJ1Y3QgbW9kdWxlICptb2QpCj4gIHsKPiAgCXN0cnVjdCBzeW1ib2wgKnM7Cj4g
-IAo+IEBAIC0yODEsMTIgKzI4MSwxNyBAQCBzdGF0aWMgc3RydWN0IHN5bWJvbCAqZmluZF9zeW1i
-b2woY29uc3QgY2hhciAqbmFtZSkKPiAgCQluYW1lKys7Cj4gIAo+ICAJZm9yIChzID0gc3ltYm9s
-aGFzaFt0ZGJfaGFzaChuYW1lKSAlIFNZTUJPTF9IQVNIX1NJWkVdOyBzOyBzID0gcy0+bmV4dCkg
-ewo+IC0JCWlmIChzdHJjbXAocy0+bmFtZSwgbmFtZSkgPT0gMCkKPiArCQlpZiAoc3RyY21wKHMt
-Pm5hbWUsIG5hbWUpID09IDAgJiYgKCFtb2QgfHwgcy0+bW9kdWxlID09IG1vZCkpCj4gIAkJCXJl
-dHVybiBzOwo+ICAJfQo+ICAJcmV0dXJuIE5VTEw7Cj4gIH0KPiAgCj4gK3N0YXRpYyBzdHJ1Y3Qg
-c3ltYm9sICpmaW5kX3N5bWJvbChjb25zdCBjaGFyICpuYW1lKQo+ICt7Cj4gKwlyZXR1cm4gc3lt
-X2ZpbmRfd2l0aF9tb2R1bGUobmFtZSwgTlVMTCk7Cj4gK30KPiArCj4gIHN0cnVjdCBuYW1lc3Bh
-Y2VfbGlzdCB7Cj4gIAlzdHJ1Y3QgbGlzdF9oZWFkIGxpc3Q7Cj4gIAljaGFyIG5hbWVzcGFjZVtd
-Owo+IEBAIC0yMDYzLDggKzIwNjgsOSBAQCBzdGF0aWMgdm9pZCByZWFkX3N5bWJvbHMoY29uc3Qg
-Y2hhciAqbW9kbmFtZSkKPiAgCj4gIAkJaWYgKGJpbmQgPT0gU1RCX0dMT0JBTCB8fCBiaW5kID09
-IFNUQl9XRUFLKSB7Cj4gIAkJCXN0cnVjdCBzeW1ib2wgKnMgPQo+IC0JCQkJZmluZF9zeW1ib2wo
-cmVtb3ZlX2RvdChpbmZvLnN0cnRhYiArCj4gLQkJCQkJCSAgICAgICBzeW0tPnN0X25hbWUpKTsK
-PiArCQkJCXN5bV9maW5kX3dpdGhfbW9kdWxlKHJlbW92ZV9kb3QoaW5mby5zdHJ0YWIgKwo+ICsJ
-CQkJCQkJCXN5bS0+c3RfbmFtZSksCj4gKwkJCQkJCSAgICAgbW9kKTsKPiAgCj4gIAkJCWlmIChz
-KQo+ICAJCQkJcy0+aXNfc3RhdGljID0gZmFsc2U7Cj4gLS0gCj4gMi4zMi4wCgotLSAKZXBvc3R8
-eG1wcDogbmljb2xhc0BmamFzbGUuZXUgICAgICAgICAgaXJjOi8vb2Z0Yy5uZXQvbnNjCuKGsyBn
-cGc6IDE4ZWQgNTJkYiBlMzRmIDg2MGUgZTlmYiAgYzgyYiA3ZDk3IDA5MzIgNTVhMCBjZTdmCiAg
-ICAgLS0gZnJ5a3RlbiBmb3IgaGVycmVuIGVyIG9wcGhhdiB0aWwga3VubnNrYXAgLS0KCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxp
-bmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
+The 'static' specifier and EXPORT_SYMBOL() are an odd combination.
+
+Since commit 15bfc2348d54 ("modpost: check for static EXPORT_SYMBOL*
+functions"), modpost tries to detect it, but there are false negatives.
+
+Here is the sample code.
+
+[Sample 1]
+
+  Makefile:
+
+    obj-m += mymod1.o mymod2.o
+
+  mymod1.c:
+
+    #include <linux/export.h>
+    #include <linux/module.h>
+    static void foo(void) {}
+    EXPORT_SYMBOL(foo);
+    MODULE_LICENSE("GPL");
+
+  mymod2.c:
+
+    #include <linux/module.h>
+    void foo(void) {}
+    MODULE_LICENSE("GPL");
+
+mymod1 exports the static symbol 'foo', but modpost cannot catch it
+because it is fooled by the same name symbol in another module, mymod2.
+(Without mymod2, modpost can detect the error in mymod1)
+
+find_symbol() returns the first symbol found in the hash table with the
+given name. This hash table is global, so it may return a symbol from
+an unrelated module. So, a global symbol in a module may unset the
+'is_static' flag of another module.
+
+To mitigate this issue, add sym_find_with_module(), which receives the
+module pointer as the second argument. If non-NULL pointer is passed, it
+returns the symbol in the specified module. If NULL is passed, it is
+equivalent to find_module().
+
+Please note there are still false positives in the composite module,
+like below (or when both are built-in). I have no idea how to do this
+correctly.
+
+[Sample 2]  (not fixed by this commit)
+
+  Makefile:
+    obj-m += mymod.o
+    mymod-objs := mymod1.o mymod2.o
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+(no changes since v2)
+
+Changes in v2:
+  - Rename the new func to sym_find_with_module()
+
+ scripts/mod/modpost.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+index b605f4a58759..a55fa2b88a9a 100644
+--- a/scripts/mod/modpost.c
++++ b/scripts/mod/modpost.c
+@@ -272,7 +272,7 @@ static void sym_add_unresolved(const char *name, struct module *mod, bool weak)
+ 	list_add_tail(&sym->list, &mod->unresolved_symbols);
+ }
+ 
+-static struct symbol *find_symbol(const char *name)
++static struct symbol *sym_find_with_module(const char *name, struct module *mod)
+ {
+ 	struct symbol *s;
+ 
+@@ -281,12 +281,17 @@ static struct symbol *find_symbol(const char *name)
+ 		name++;
+ 
+ 	for (s = symbolhash[tdb_hash(name) % SYMBOL_HASH_SIZE]; s; s = s->next) {
+-		if (strcmp(s->name, name) == 0)
++		if (strcmp(s->name, name) == 0 && (!mod || s->module == mod))
+ 			return s;
+ 	}
+ 	return NULL;
+ }
+ 
++static struct symbol *find_symbol(const char *name)
++{
++	return sym_find_with_module(name, NULL);
++}
++
+ struct namespace_list {
+ 	struct list_head list;
+ 	char namespace[];
+@@ -2063,8 +2068,9 @@ static void read_symbols(const char *modname)
+ 
+ 		if (bind == STB_GLOBAL || bind == STB_WEAK) {
+ 			struct symbol *s =
+-				find_symbol(remove_dot(info.strtab +
+-						       sym->st_name));
++				sym_find_with_module(remove_dot(info.strtab +
++								sym->st_name),
++						     mod);
+ 
+ 			if (s)
+ 				s->is_static = false;
+-- 
+2.32.0
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
