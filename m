@@ -1,15 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Message-ID: <65f24bc5-2211-0139-ee12-b2608e81ceb1@igalia.com>
-Date: Mon, 9 May 2022 10:09:21 -0300
+Received: from out03.mta.xmission.com ([166.70.13.233])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nmgCa-00HKw2-8N
+ for linux-um@lists.infradead.org; Thu, 05 May 2022 18:27:49 +0000
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+Date: Thu,  5 May 2022 13:26:44 -0500
+Message-Id: <20220505182645.497868-11-ebiederm@xmission.com>
+In-Reply-To: <87a6bv6dl6.fsf_-_@email.froward.int.ebiederm.org>
+References: <87a6bv6dl6.fsf_-_@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 09/30] coresight: cpu-debug: Replace mutex with
- mutex_trylock on panic notifier
-Content-Language: en-US
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
- <20220427224924.592546-10-gpiccoli@igalia.com>
- <3cafe4fd-8a0b-2633-44a3-2995abd6c38c@arm.com>
-From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-In-Reply-To: <3cafe4fd-8a0b-2633-44a3-2995abd6c38c@arm.com>
+Subject: [PATCH v4 11/12] ptrace: Always take siglock in ptrace_resume
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,50 +22,54 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Suzuki K Poulose <suzuki.poulose@arm.com>, akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, Leo Yan <leo.yan@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Mike Leach <mike.leach@linaro.org>
+To: linux-kernel@vger.kernel.org
+Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
 
-On 28/04/2022 05:11, Suzuki K Poulose wrote:
-> Hi Guilherme,
-> 
-> On 27/04/2022 23:49, Guilherme G. Piccoli wrote:
->> The panic notifier infrastructure executes registered callbacks when
->> a panic event happens - such callbacks are executed in atomic context,
->> with interrupts and preemption disabled in the running CPU and all other
->> CPUs disabled. That said, mutexes in such context are not a good idea.
->>
->> This patch replaces a regular mutex with a mutex_trylock safer approach;
->> given the nature of the mutex used in the driver, it should be pretty
->> uncommon being unable to acquire such mutex in the panic path, hence
->> no functional change should be observed (and if it is, that would be
->> likely a deadlock with the regular mutex).
->>
->> Fixes: 2227b7c74634 ("coresight: add support for CPU debug module")
->> Cc: Leo Yan <leo.yan@linaro.org>
->> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Cc: Mike Leach <mike.leach@linaro.org>
->> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->> Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
-> 
-> How would you like to proceed with queuing this ? I am happy
-> either way. In case you plan to push this as part of this
-> series (I don't see any potential conflicts) :
-> 
-> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Make code analysis simpler and future changes easier by
+always taking siglock in ptrace_resume.
 
-Hi Suzuki, some other maintainers are taking the patches to their next
-branches for example. I'm working on V2, and I guess in the end would be
-nice to reduce the size of the series a bit.
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+ kernel/ptrace.c | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
-So, do you think you could pick this one for your coresight/next branch
-(or even for rc cycle, your call - this is really a fix)?
-This way, I won't re-submit this one in V2, since it's gonna be merged
-already in your branch.
+diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+index 83ed28262708..36a5b7a00d2f 100644
+--- a/kernel/ptrace.c
++++ b/kernel/ptrace.c
+@@ -837,8 +837,6 @@ static long ptrace_get_rseq_configuration(struct task_struct *task,
+ static int ptrace_resume(struct task_struct *child, long request,
+ 			 unsigned long data)
+ {
+-	bool need_siglock;
+-
+ 	if (!valid_signal(data))
+ 		return -EIO;
+ 
+@@ -874,18 +872,11 @@ static int ptrace_resume(struct task_struct *child, long request,
+ 	 * Note that we need siglock even if ->exit_code == data and/or this
+ 	 * status was not reported yet, the new status must not be cleared by
+ 	 * wait_task_stopped() after resume.
+-	 *
+-	 * If data == 0 we do not care if wait_task_stopped() reports the old
+-	 * status and clears the code too; this can't race with the tracee, it
+-	 * takes siglock after resume.
+ 	 */
+-	need_siglock = data && !thread_group_empty(current);
+-	if (need_siglock)
+-		spin_lock_irq(&child->sighand->siglock);
++	spin_lock_irq(&child->sighand->siglock);
+ 	child->exit_code = data;
+ 	wake_up_state(child, __TASK_TRACED);
+-	if (need_siglock)
+-		spin_unlock_irq(&child->sighand->siglock);
++	spin_unlock_irq(&child->sighand->siglock);
+ 
+ 	return 0;
+ }
+-- 
+2.35.3
 
-Thanks in advance,
-
-
-Guilherme
 
 _______________________________________________
 linux-um mailing list
