@@ -1,20 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from smtp1.axis.com ([195.60.68.17])
+Received: from out01.mta.xmission.com ([166.70.13.231])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ntRs2-007e71-KE
- for linux-um@lists.infradead.org; Tue, 24 May 2022 10:34:37 +0000
-Date: Tue, 24 May 2022 12:34:28 +0200
-From: Vincent Whitchurch <vincent.whitchurch@axis.com>
-Subject: Re: [PATCH] UML: add support for KASAN under x86_64
-Message-ID: <20220524103423.GA13239@axis.com>
-References: <20200226004608.8128-1-trishalfonso@google.com>
- <CAKFsvULd7w21T_nEn8QiofQGMovFBmi94dq2W_-DOjxf5oD-=w@mail.gmail.com>
- <4b8c1696f658b4c6c393956734d580593b55c4c0.camel@sipsolutions.net>
- <CAKFsvULGSQRx3hL8HgbYbEt_8GOorZj96CoMVhx6sw=xWEwSwA@mail.gmail.com>
- <1fb57ec2a830deba664379f3e0f480e08e6dec2f.camel@sipsolutions.net>
+ id 1nmgCU-00HKrT-52
+ for linux-um@lists.infradead.org; Thu, 05 May 2022 18:27:44 +0000
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+Date: Thu,  5 May 2022 13:26:42 -0500
+Message-Id: <20220505182645.497868-9-ebiederm@xmission.com>
+In-Reply-To: <87a6bv6dl6.fsf_-_@email.froward.int.ebiederm.org>
+References: <87a6bv6dl6.fsf_-_@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1fb57ec2a830deba664379f3e0f480e08e6dec2f.camel@sipsolutions.net>
+Subject: [PATCH v4 09/12] ptrace: Admit ptrace_stop can generate spuriuos
+ SIGTRAPs
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -27,157 +23,203 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Patricia Alfonso <trishalfonso@google.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, anton.ivanov@cambridgegreys.com, Andrey Ryabinin <aryabinin@virtuozzo.com>, Dmitry Vyukov <dvyukov@google.com>, Brendan Higgins <brendanhiggins@google.com>, David Gow <davidgow@google.com>, kasan-dev <kasan-dev@googlegroups.com>, LKML <linux-kernel@vger.kernel.org>, linux-um@lists.infradead.org
+To: linux-kernel@vger.kernel.org
+Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
 
-On Wed, Mar 11, 2020 at 11:44:37PM +0100, Johannes Berg wrote:
-> On Wed, 2020-03-11 at 15:32 -0700, Patricia Alfonso wrote:
-> > I'll need some time to investigate these all myself. Having just
-> > gotten my first module to run about an hour ago, any more information
-> > about how you got these errors would be helpful so I can try to
-> > reproduce them on my own.
-> 
-> See the other emails, I was basically just loading random modules. In my
-> case cfg80211, mac80211, mac80211-hwsim - those are definitely available
-> without any (virtio) hardware requirements, so you could use them.
-> 
-> Note that doing a bunch of vmalloc would likely result in similar
-> issues, since the module and vmalloc space is the same on UML.
+Long ago and far away there was a BUG_ON at the start of ptrace_stop
+that did "BUG_ON(!(current->ptrace & PT_PTRACED));" [1].  The BUG_ON
+had never triggered but examination of the code showed that the BUG_ON
+could actually trigger.  To complement removing the BUG_ON an attempt
+to better handle the race was added.
 
-Old thread, but I had a look at this the other day and I think I got it
-working.  Since the entire shadow area is mapped at init, we don't need
-to do any mappings later.
+The code detected the tracer had gone away and did not call
+do_notify_parent_cldstop.  The code also attempted to prevent
+ptrace_report_syscall from sending spurious SIGTRAPs when the tracer
+went away.
 
-It works both with and without KASAN_VMALLOC.  KASAN_STACK works too
-after I disabled sanitization of the stacktrace code.  All kasan kunit
-tests pass and the test_kasan.ko module works too.
+The code to detect when the tracer had gone away before sending a
+signal to tracer was a legitimate fix and continues to work to this
+date.
 
-Delta patch against Patricia's is below.  The CONFIG_UML checks need to
-be replaced with something more appropriate (new config? __weak
-functions?) and the free functions should probably be hooked up to
-madvise(MADV_DONTNEED) so we discard unused pages in the shadow mapping.
+The code to prevent sending spurious SIGTRAPs is a failure.  At the
+time and until today the code only catches it when the tracer goes
+away after siglock is dropped and before read_lock is acquired.  If
+the tracer goes away after read_lock is dropped a spurious SIGTRAP can
+still be sent to the tracee.  The tracer going away after read_lock
+is dropped is the far likelier case as it is the bigger window.
 
-Note that there's a KASAN stack-out-of-bounds splat on startup when just
-booting UML.  That looks like a real (17-year-old) bug, I've posted a
-fix for that:
+Given that the attempt to prevent the generation of a SIGTRAP was a
+failure and continues to be a failure remove the code that attempts to
+do that.  This simplifies the code in ptrace_stop and makes
+ptrace_stop much easier to reason about.
 
- https://lore.kernel.org/lkml/20220523140403.2361040-1-vincent.whitchurch@axis.com/
+To successfully deal with the tracer going away, all of the tracer's
+instrumentation of the child would need to be removed, and reliably
+detecting when the tracer has set a signal to continue with would need
+to be implemented.
 
-8<-----------
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index a1bd8c07ce14..5f3a4d25d57e 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -12,6 +12,7 @@ config UML
- 	select ARCH_NO_PREEMPT
- 	select HAVE_ARCH_AUDITSYSCALL
- 	select HAVE_ARCH_KASAN if X86_64
-+	select HAVE_ARCH_KASAN_VMALLOC if HAVE_ARCH_KASAN
- 	select HAVE_ARCH_SECCOMP_FILTER
- 	select HAVE_ASM_MODVERSIONS
- 	select HAVE_UID16
-@@ -223,7 +224,7 @@ config UML_TIME_TRAVEL_SUPPORT
- config KASAN_SHADOW_OFFSET
- 	hex
- 	depends on KASAN
--	default 0x7fff8000
-+	default 0x100000000000
- 	help
- 	  This is the offset at which the ~2.25TB of shadow memory is
- 	  mapped and used by KASAN for memory debugging. This can be any
-diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
-index 1c2d4b29a3d4..a089217e2f0e 100644
---- a/arch/um/kernel/Makefile
-+++ b/arch/um/kernel/Makefile
-@@ -27,6 +27,9 @@ obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
- obj-$(CONFIG_STACKTRACE) += stacktrace.o
- obj-$(CONFIG_GENERIC_PCI_IOMAP) += ioport.o
- 
-+KASAN_SANITIZE_stacktrace.o := n
-+KASAN_SANITIZE_sysrq.o := n
-+
- USER_OBJS := config.o
- 
- include arch/um/scripts/Makefile.rules
-diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
-index 7c3196c297f7..a32cfce53efb 100644
---- a/arch/um/kernel/mem.c
-+++ b/arch/um/kernel/mem.c
-@@ -33,7 +33,7 @@ void kasan_init(void)
- }
- 
- static void (*kasan_init_ptr)(void)
--__section(.kasan_init) __used
-+__section(".kasan_init") __used
- = kasan_init;
- #endif
- 
-diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
-index 1113cf5fea25..1f3e620188a2 100644
---- a/lib/Kconfig.kasan
-+++ b/lib/Kconfig.kasan
-@@ -152,7 +152,7 @@ config KASAN_STACK
- 	bool "Enable stack instrumentation (unsafe)" if CC_IS_CLANG && !COMPILE_TEST
- 	depends on KASAN_GENERIC || KASAN_SW_TAGS
- 	depends on !ARCH_DISABLE_KASAN_INLINE
--	default y if CC_IS_GCC && !UML
-+	default y if CC_IS_GCC
- 	help
- 	  The LLVM stack address sanitizer has a know problem that
- 	  causes excessive stack usage in a lot of functions, see
-diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
-index a4f07de21771..d8c518bd0e7d 100644
---- a/mm/kasan/shadow.c
-+++ b/mm/kasan/shadow.c
-@@ -295,8 +295,14 @@ int kasan_populate_vmalloc(unsigned long addr, unsigned long size)
- 		return 0;
- 
- 	shadow_start = (unsigned long)kasan_mem_to_shadow((void *)addr);
--	shadow_start = ALIGN_DOWN(shadow_start, PAGE_SIZE);
- 	shadow_end = (unsigned long)kasan_mem_to_shadow((void *)addr + size);
-+
-+	if (IS_ENABLED(CONFIG_UML)) {
-+		__memset(kasan_mem_to_shadow((void *)addr), KASAN_VMALLOC_INVALID, shadow_end - shadow_start);
-+		return 0;
-+	}
-+
-+	shadow_start = ALIGN_DOWN(shadow_start, PAGE_SIZE);
- 	shadow_end = ALIGN(shadow_end, PAGE_SIZE);
- 
- 	ret = apply_to_page_range(&init_mm, shadow_start,
-@@ -466,6 +472,10 @@ void kasan_release_vmalloc(unsigned long start, unsigned long end,
- 
- 	if (shadow_end > shadow_start) {
- 		size = shadow_end - shadow_start;
-+		if (IS_ENABLED(CONFIG_UML)) {
-+			__memset(shadow_start, KASAN_SHADOW_INIT, shadow_end - shadow_start);
-+			return;
-+		}
- 		apply_to_existing_page_range(&init_mm,
- 					     (unsigned long)shadow_start,
- 					     size, kasan_depopulate_vmalloc_pte,
-@@ -531,6 +541,11 @@ int kasan_alloc_module_shadow(void *addr, size_t size, gfp_t gfp_mask)
- 	if (WARN_ON(!PAGE_ALIGNED(shadow_start)))
- 		return -EINVAL;
- 
-+	if (IS_ENABLED(CONFIG_UML)) {
-+		__memset((void *)shadow_start, KASAN_SHADOW_INIT, shadow_size);
-+		return 0;
-+	}
-+
- 	ret = __vmalloc_node_range(shadow_size, 1, shadow_start,
- 			shadow_start + shadow_size,
- 			GFP_KERNEL,
-@@ -554,6 +569,9 @@ int kasan_alloc_module_shadow(void *addr, size_t size, gfp_t gfp_mask)
- 
- void kasan_free_module_shadow(const struct vm_struct *vm)
+[1] 66519f549ae5 ("[PATCH] fix ptracer death race yielding bogus BUG_ON")
+History-Tree: https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+ kernel/signal.c | 92 ++++++++++++++++++++-----------------------------
+ 1 file changed, 38 insertions(+), 54 deletions(-)
+
+diff --git a/kernel/signal.c b/kernel/signal.c
+index 3fd2ce133387..d2d0c753156c 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -2187,13 +2187,12 @@ static void do_notify_parent_cldstop(struct task_struct *tsk,
+  * with.  If the code did not stop because the tracer is gone,
+  * the stop signal remains unchanged unless clear_code.
+  */
+-static int ptrace_stop(int exit_code, int why, int clear_code,
+-			unsigned long message, kernel_siginfo_t *info)
++static int ptrace_stop(int exit_code, int why, unsigned long message,
++		       kernel_siginfo_t *info)
+ 	__releases(&current->sighand->siglock)
+ 	__acquires(&current->sighand->siglock)
  {
-+	if (IS_ENABLED(CONFIG_UML))
-+		return;
+ 	bool gstop_done = false;
+-	bool read_code = true;
+ 
+ 	if (arch_ptrace_stop_needed()) {
+ 		/*
+@@ -2212,7 +2211,14 @@ static int ptrace_stop(int exit_code, int why, int clear_code,
+ 	/*
+ 	 * schedule() will not sleep if there is a pending signal that
+ 	 * can awaken the task.
++	 *
++	 * After this point ptrace_signal_wake_up will clear TASK_TRACED
++	 * if ptrace_unlink happens.  Handle previous ptrace_unlinks
++	 * here to prevent ptrace_stop sleeping in schedule.
+ 	 */
++	if (!current->ptrace)
++		return exit_code;
 +
- 	if (vm->flags & VM_KASAN)
- 		vfree(kasan_mem_to_shadow(vm->addr));
+ 	set_special_state(TASK_TRACED);
+ 
+ 	/*
+@@ -2259,54 +2265,33 @@ static int ptrace_stop(int exit_code, int why, int clear_code,
+ 
+ 	spin_unlock_irq(&current->sighand->siglock);
+ 	read_lock(&tasklist_lock);
+-	if (likely(current->ptrace)) {
+-		/*
+-		 * Notify parents of the stop.
+-		 *
+-		 * While ptraced, there are two parents - the ptracer and
+-		 * the real_parent of the group_leader.  The ptracer should
+-		 * know about every stop while the real parent is only
+-		 * interested in the completion of group stop.  The states
+-		 * for the two don't interact with each other.  Notify
+-		 * separately unless they're gonna be duplicates.
+-		 */
++	/*
++	 * Notify parents of the stop.
++	 *
++	 * While ptraced, there are two parents - the ptracer and
++	 * the real_parent of the group_leader.  The ptracer should
++	 * know about every stop while the real parent is only
++	 * interested in the completion of group stop.  The states
++	 * for the two don't interact with each other.  Notify
++	 * separately unless they're gonna be duplicates.
++	 */
++	if (current->ptrace)
+ 		do_notify_parent_cldstop(current, true, why);
+-		if (gstop_done && ptrace_reparented(current))
+-			do_notify_parent_cldstop(current, false, why);
++	if (gstop_done && (!current->ptrace || ptrace_reparented(current)))
++		do_notify_parent_cldstop(current, false, why);
+ 
+-		/*
+-		 * Don't want to allow preemption here, because
+-		 * sys_ptrace() needs this task to be inactive.
+-		 *
+-		 * XXX: implement read_unlock_no_resched().
+-		 */
+-		preempt_disable();
+-		read_unlock(&tasklist_lock);
+-		cgroup_enter_frozen();
+-		preempt_enable_no_resched();
+-		freezable_schedule();
+-		cgroup_leave_frozen(true);
+-	} else {
+-		/*
+-		 * By the time we got the lock, our tracer went away.
+-		 * Don't drop the lock yet, another tracer may come.
+-		 *
+-		 * If @gstop_done, the ptracer went away between group stop
+-		 * completion and here.  During detach, it would have set
+-		 * JOBCTL_STOP_PENDING on us and we'll re-enter
+-		 * TASK_STOPPED in do_signal_stop() on return, so notifying
+-		 * the real parent of the group stop completion is enough.
+-		 */
+-		if (gstop_done)
+-			do_notify_parent_cldstop(current, false, why);
+-
+-		/* tasklist protects us from ptrace_freeze_traced() */
+-		__set_current_state(TASK_RUNNING);
+-		read_code = false;
+-		if (clear_code)
+-			exit_code = 0;
+-		read_unlock(&tasklist_lock);
+-	}
++	/*
++	 * Don't want to allow preemption here, because
++	 * sys_ptrace() needs this task to be inactive.
++	 *
++	 * XXX: implement read_unlock_no_resched().
++	 */
++	preempt_disable();
++	read_unlock(&tasklist_lock);
++	cgroup_enter_frozen();
++	preempt_enable_no_resched();
++	freezable_schedule();
++	cgroup_leave_frozen(true);
+ 
+ 	/*
+ 	 * We are back.  Now reacquire the siglock before touching
+@@ -2314,8 +2299,7 @@ static int ptrace_stop(int exit_code, int why, int clear_code,
+ 	 * any signal-sending on another CPU that wants to examine it.
+ 	 */
+ 	spin_lock_irq(&current->sighand->siglock);
+-	if (read_code)
+-		exit_code = current->exit_code;
++	exit_code = current->exit_code;
+ 	current->last_siginfo = NULL;
+ 	current->ptrace_message = 0;
+ 	current->exit_code = 0;
+@@ -2343,7 +2327,7 @@ static int ptrace_do_notify(int signr, int exit_code, int why, unsigned long mes
+ 	info.si_uid = from_kuid_munged(current_user_ns(), current_uid());
+ 
+ 	/* Let the debugger run.  */
+-	return ptrace_stop(exit_code, why, 1, message, &info);
++	return ptrace_stop(exit_code, why, message, &info);
  }
+ 
+ int ptrace_notify(int exit_code, unsigned long message)
+@@ -2515,7 +2499,7 @@ static void do_jobctl_trap(void)
+ 				 CLD_STOPPED, 0);
+ 	} else {
+ 		WARN_ON_ONCE(!signr);
+-		ptrace_stop(signr, CLD_STOPPED, 0, 0, NULL);
++		ptrace_stop(signr, CLD_STOPPED, 0, NULL);
+ 	}
+ }
+ 
+@@ -2568,7 +2552,7 @@ static int ptrace_signal(int signr, kernel_siginfo_t *info, enum pid_type type)
+ 	 * comment in dequeue_signal().
+ 	 */
+ 	current->jobctl |= JOBCTL_STOP_DEQUEUED;
+-	signr = ptrace_stop(signr, CLD_TRAPPED, 0, 0, info);
++	signr = ptrace_stop(signr, CLD_TRAPPED, 0, info);
+ 
+ 	/* We're back.  Did the debugger cancel the sig?  */
+ 	if (signr == 0)
+-- 
+2.35.3
+
 
 _______________________________________________
 linux-um mailing list
