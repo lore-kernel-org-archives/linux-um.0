@@ -1,15 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out03.mta.xmission.com ([166.70.13.233])
+Received: from mout.kundenserver.de ([212.227.126.130])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nmgCa-00HKw2-8N
- for linux-um@lists.infradead.org; Thu, 05 May 2022 18:27:49 +0000
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-Date: Thu,  5 May 2022 13:26:44 -0500
-Message-Id: <20220505182645.497868-11-ebiederm@xmission.com>
-In-Reply-To: <87a6bv6dl6.fsf_-_@email.froward.int.ebiederm.org>
-References: <87a6bv6dl6.fsf_-_@email.froward.int.ebiederm.org>
+ id 1nmi4U-000Ay2-Ib
+ for linux-um@lists.infradead.org; Thu, 05 May 2022 20:27:42 +0000
+Date: Thu, 5 May 2022 22:27:04 +0200
+From: Nicolas Schier <nicolas@fjasle.eu>
+Subject: Re: [PATCH v3 12/15] modpost: simplify the ->is_static initialization
+Message-ID: <YnQzGMfWqnP6CMir@fjasle.eu>
+References: <20220505072244.1155033-1-masahiroy@kernel.org>
+ <20220505072244.1155033-13-masahiroy@kernel.org>
 MIME-Version: 1.0
-Subject: [PATCH v4 11/12] ptrace: Always take siglock in ptrace_resume
+Content-Disposition: inline
+In-Reply-To: <20220505072244.1155033-13-masahiroy@kernel.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,54 +24,59 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Peter Zijlstra <peterz@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org, linux-s390@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>, Sami Tolvanen <samitolvanen@google.com>, Kees Cook <keescook@chromium.org>
 
-Make code analysis simpler and future changes easier by
-always taking siglock in ptrace_resume.
+On Thu, May 05, 2022 at 04:22:41PM +0900 Masahiro Yamada wrote:
+> ->is_static is set to true at allocation, then to false if the symbol
+> comes from the dump file.
+> 
+> It is simpler to use !mod->from_dump as the init value.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+> (no changes since v2)
+> 
+> Changes in v2:
+>   - New patch
+> 
+>  scripts/mod/modpost.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+> index e07542a90fc6..4edd5b223f49 100644
+> --- a/scripts/mod/modpost.c
+> +++ b/scripts/mod/modpost.c
+> @@ -242,7 +242,7 @@ static struct symbol *alloc_symbol(const char *name)
+>  
+>  	memset(s, 0, sizeof(*s));
+>  	strcpy(s->name, name);
+> -	s->is_static = true;
+> +
+>  	return s;
+>  }
+>  
+> @@ -376,6 +376,7 @@ static struct symbol *sym_add_exported(const char *name, struct module *mod,
+>  
+>  	s = alloc_symbol(name);
+>  	s->module = mod;
+> +	s->is_static = !mod->from_dump;
+>  	s->is_gpl_only = gpl_only;
+>  	list_add_tail(&s->list, &mod->exported_symbols);
+>  	hash_add_symbol(s);
+> @@ -2523,7 +2524,6 @@ static void read_dump(const char *fname)
+>  			mod->from_dump = true;
+>  		}
+>  		s = sym_add_exported(symname, mod, gpl_only);
+> -		s->is_static = false;
+>  		sym_set_crc(s, crc);
+>  		sym_update_namespace(symname, namespace);
+>  	}
+> -- 
+> 2.32.0
 
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
----
- kernel/ptrace.c | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
-
-diff --git a/kernel/ptrace.c b/kernel/ptrace.c
-index 83ed28262708..36a5b7a00d2f 100644
---- a/kernel/ptrace.c
-+++ b/kernel/ptrace.c
-@@ -837,8 +837,6 @@ static long ptrace_get_rseq_configuration(struct task_struct *task,
- static int ptrace_resume(struct task_struct *child, long request,
- 			 unsigned long data)
- {
--	bool need_siglock;
--
- 	if (!valid_signal(data))
- 		return -EIO;
- 
-@@ -874,18 +872,11 @@ static int ptrace_resume(struct task_struct *child, long request,
- 	 * Note that we need siglock even if ->exit_code == data and/or this
- 	 * status was not reported yet, the new status must not be cleared by
- 	 * wait_task_stopped() after resume.
--	 *
--	 * If data == 0 we do not care if wait_task_stopped() reports the old
--	 * status and clears the code too; this can't race with the tracee, it
--	 * takes siglock after resume.
- 	 */
--	need_siglock = data && !thread_group_empty(current);
--	if (need_siglock)
--		spin_lock_irq(&child->sighand->siglock);
-+	spin_lock_irq(&child->sighand->siglock);
- 	child->exit_code = data;
- 	wake_up_state(child, __TASK_TRACED);
--	if (need_siglock)
--		spin_unlock_irq(&child->sighand->siglock);
-+	spin_unlock_irq(&child->sighand->siglock);
- 
- 	return 0;
- }
--- 
-2.35.3
-
+Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
 
 _______________________________________________
 linux-um mailing list
