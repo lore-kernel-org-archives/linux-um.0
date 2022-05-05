@@ -1,17 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from galois.linutronix.de ([193.142.43.55])
+Received: from mout.kundenserver.de ([212.227.17.10])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nlQpX-000COH-JB
- for linux-um@lists.infradead.org; Mon, 02 May 2022 07:50:53 +0000
-Date: Mon, 2 May 2022 09:50:44 +0200
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [PATCH v2 01/12] signal: Rename send_signal send_signal_locked
-Message-ID: <Ym+NVG2kxgkaN3lb@linutronix.de>
-References: <87k0b7v9yk.fsf_-_@email.froward.int.ebiederm.org>
- <20220429214837.386518-1-ebiederm@xmission.com>
+ id 1nmhd7-0003xt-DR
+ for linux-um@lists.infradead.org; Thu, 05 May 2022 19:59:25 +0000
+Date: Thu, 5 May 2022 21:58:52 +0200
+From: Nicolas Schier <nicolas@fjasle.eu>
+Subject: Re: [PATCH v3 03/15] modpost: merge
+ add_{intree_flag,retpoline,staging_flag} to add_header
+Message-ID: <YnQsfA8kHDDpnBcU@fjasle.eu>
+References: <20220505072244.1155033-1-masahiroy@kernel.org>
+ <20220505072244.1155033-4-masahiroy@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20220429214837.386518-1-ebiederm@xmission.com>
+In-Reply-To: <20220505072244.1155033-4-masahiroy@kernel.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,19 +25,73 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: linux-kernel@vger.kernel.org, rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Peter Zijlstra <peterz@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org, linux-s390@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>, Sami Tolvanen <samitolvanen@google.com>, Kees Cook <keescook@chromium.org>
 
-On 2022-04-29 16:48:26 [-0500], Eric W. Biederman wrote:
-> Rename send_signal send_signal_locked and make to make
-
-s@to make@@
-
-> it usable outside of signal.c.
+On Thu, May 05, 2022 at 04:22:32PM +0900 Masahiro Yamada wrote:
+> add_intree_flag(), add_retpoline(), and add_staging_flag() are small
+> enough to be merged into add_header().
 > 
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+> Changes in v3:
+>   - New patch
+> 
+>  scripts/mod/modpost.c | 25 +++++++------------------
+>  1 file changed, 7 insertions(+), 18 deletions(-)
+> 
+> diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+> index ebd80c77fa03..ae8e4a4dcfd2 100644
+> --- a/scripts/mod/modpost.c
+> +++ b/scripts/mod/modpost.c
+> @@ -2200,25 +2200,17 @@ static void add_header(struct buffer *b, struct module *mod)
+>  			      "#endif\n");
+>  	buf_printf(b, "\t.arch = MODULE_ARCH_INIT,\n");
+>  	buf_printf(b, "};\n");
+> -}
+>  
+> -static void add_intree_flag(struct buffer *b, int is_intree)
+> -{
+> -	if (is_intree)
+> +	if (!external_module)
+>  		buf_printf(b, "\nMODULE_INFO(intree, \"Y\");\n");
+> -}
+>  
+> -/* Cannot check for assembler */
+> -static void add_retpoline(struct buffer *b)
+> -{
+> -	buf_printf(b, "\n#ifdef CONFIG_RETPOLINE\n");
+> -	buf_printf(b, "MODULE_INFO(retpoline, \"Y\");\n");
+> -	buf_printf(b, "#endif\n");
+> -}
+> +	buf_printf(b,
+> +		   "\n"
+> +		   "#ifdef CONFIG_RETPOLINE\n"
+> +		   "MODULE_INFO(retpoline, \"Y\");\n"
+> +		   "#endif\n");
+>  
+> -static void add_staging_flag(struct buffer *b, const char *name)
+> -{
+> -	if (strstarts(name, "drivers/staging"))
+> +	if (strstarts(mod->name, "drivers/staging"))
+>  		buf_printf(b, "\nMODULE_INFO(staging, \"Y\");\n");
+>  }
+>  
+> @@ -2544,9 +2536,6 @@ int main(int argc, char **argv)
+>  		check_exports(mod);
+>  
+>  		add_header(&buf, mod);
+> -		add_intree_flag(&buf, !external_module);
+> -		add_retpoline(&buf);
+> -		add_staging_flag(&buf, mod->name);
+>  		add_versions(&buf, mod);
+>  		add_depends(&buf, mod);
+>  		add_moddevtable(&buf, mod);
+> -- 
+> 2.32.0
 
-Sebastian
+Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
 
 _______________________________________________
 linux-um mailing list
