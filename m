@@ -1,16 +1,11 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Message-ID: <12b5a753-c0f1-9da5-f269-483384752837@igalia.com>
-Date: Tue, 3 May 2022 15:06:15 -0300
+From: Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH v3 13/15] modpost: use hlist for hash table implementation
+Date: Thu,  5 May 2022 16:22:42 +0900
+Message-Id: <20220505072244.1155033-14-masahiroy@kernel.org>
+In-Reply-To: <20220505072244.1155033-1-masahiroy@kernel.org>
+References: <20220505072244.1155033-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 24/30] panic: Refactor the panic path
-Content-Language: en-US
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
- <20220427224924.592546-25-gpiccoli@igalia.com>
- <PH0PR21MB30252C55EB4F97F3D78021BDD7FC9@PH0PR21MB3025.namprd21.prod.outlook.com>
- <50178dfb-8e94-f35f-09c3-22fe197550ef@igalia.com>
- <PH0PR21MB302570C9407F80AAD09E209ED7C09@PH0PR21MB3025.namprd21.prod.outlook.com>
-From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-In-Reply-To: <PH0PR21MB302570C9407F80AAD09E209ED7C09@PH0PR21MB3025.namprd21.prod.outlook.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,63 +18,208 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Michael Kelley (LINUX)" <mikelley@microsoft.com>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "bhe@redhat.com" <bhe@redhat.com>, "pmladek@suse.com" <pmladek@suse.com>, "kexec@lists.infradead.org" <kexec@lists.infradead.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "bcm-kernel-feedback-list@broadcom.com" <bcm-kernel-feedback-list@broadcom.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>, "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>, "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>, "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "openipmi-developer@lists.sourceforge.net" <openipmi-developer@lists.sourceforge.net>, "rcu@vger.kernel.org" <rcu@vger.kernel.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>, "x86@kernel.org" <x86@kernel.org>, "kernel-dev@igalia.com" <kernel-dev@igalia.com>, "kernel@gpiccoli.net" <kernel@gpiccoli.net>, "halves@canonical.com" <halves@canonical.com>, "fabiomirmar@gmail.com" <fabiomirmar@gmail.com>, "alejandro.j.jimenez@oracle.com" <alejandro.j.jimenez@oracle.com>, "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>, "arnd@arndb.de" <arnd@arndb.de>, "bp@alien8.de" <bp@alien8.de>, "corbet@lwn.net" <corbet@lwn.net>, "d.hatayama@jp.fujitsu.com" <d.hatayama@jp.fujitsu.com>, "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "dyoung@redhat.com" <dyoung@redhat.com>, "feng.tang@intel.com" <feng.tang@intel.com>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "hidehiro.kawai.ez@hitachi.com" <hidehiro.kawai.ez@hitachi.com>, "jgross@suse.com" <jgross@suse.com>, "john.ogness@linutronix.de" <john.ogness@linutronix.de>, "keescook@chromium.org" <keescook@chromium.org>, "luto@kernel.org" <luto@kernel.org>, "mhiramat@kernel.org" <mhiramat@kernel.org>, "mingo@redhat.com" <mingo@redhat.com>, "paulmck@kernel.org" <paulmck@kernel.org>, "peterz@infradead.org" <peterz@infradead.org>, "rostedt@goodmis.org" <rostedt@goodmis.org>, "senozhatsky@chromium.org" <senozhatsky@chromium.org>, "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>, "tglx@linutronix.de" <tglx@linutronix.de>, "vgoyal@redhat.com" <vgoyal@redhat.com>, vkuznets <vkuznets@redhat.com>, "will@kernel.org" <will@kernel.org>
+To: linux-kbuild@vger.kernel.org
+Cc: clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org, Nicolas Schier a <nicolas@fjasle.eu>, Ard Biesheuvel <ardb@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Peter Zijlstra <peterz@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org, linux-s390@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>, Sami Tolvanen <samitolvanen@google.com>, Kees Cook <keescook@chromium.org>, Masahiro Yamada <masahiroy@kernel.org>
 
-On 03/05/2022 14:31, Michael Kelley (LINUX) wrote:
-> [...]
-> 
-> To me, it's a weak correlation between having a kmsg dumper, and
-> wanting or not wanting the info level output to come before kdump.
-> Hyper-V is one of only a few places that register a kmsg dumper, so most
-> Linux instances outside of Hyper-V guest (and PowerPC systems?) will have
-> the info level output after kdump.  It seems like anyone who cared strongly
-> about the info level output would set the panic_notifier_level to 1 or to 3
-> so that the result is more deterministic.  But that's just my opinion, and
-> it's probably an opinion that is not as well informed on the topic as some
-> others in the discussion. So keeping things as in your patch set is not a
-> show-stopper for me.
-> 
-> However, I would request a clarification in the documentation.   The
-> panic_notifier_level affects not only the hypervisor, informational,
-> and pre_reboot lists, but it also affects panic_print_sys_info() and
-> kmsg_dump().  Specifically, at level 1, panic_print_sys_info() and
-> kmsg_dump() will not be run before kdump.  At level 3, they will
-> always be run before kdump.  Your documentation above mentions
-> "informational lists" (plural), which I take to vaguely include
-> kmsg_dump() and panic_print_sys_info(), but being explicit about
-> the effect would be better.
-> 
-> Michael
+Import hlist macros from include/linux/list.h to implement the hash
+table in a more generic way.
 
-Thanks again Michael, to express your points and concerns - great idea
-of documentation improvement here, I'll do that for V2, for sure.
+While I was here, I increased the hash table size from 1024 to 8192
+to decrease the hash collision.
 
-The idea of "defaulting" to skip the info list on kdump (if no
-kmsg_dump() is set) is again a mechanism that aims at accommodating all
-users and concerns of antagonistic goals, kdump vs notifier lists.
+I moved ARRAY_SIZE() from file2alias.c to modpost.h because it is needed
+in modpost.c as well.
 
-Before this patch set, by default no notifier executed before kdump. So,
-the "pendulum"  was strongly on kdump side, and clearly this was a
-sub-optimal decision - proof of that is that both Hyper-V / PowerPC code
-forcibly set the "crash_kexec_post_notifiers". The goal here is to have
-a more lightweight list that by default runs before kdump, a secondary
-list that only runs before kdump if there's usage for that (either user
-sets that or kmsg_dumper set is considered a valid user), and the
-remaining notifiers run by default only after kdump, all of that very
-customizable through the levels idea.
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-Now, one thing we could do to improve consistency for the hyper-v case:
-having a kmsg_dump_once() helper, and *for Hyper-V only*, call it on the
-hypervisor list, within the info notifier (that would be moved to
-hypervisor list, ofc).
-Let's wait for more feedback on that, just throwing some ideas in order
-we can have everyone happy with the end-result!
+(no changes since v2)
 
-Cheers,
+Changes in v2:
+  - Move to the end of the series because this is now optional
 
+ scripts/mod/file2alias.c |  2 --
+ scripts/mod/list.h       | 52 ++++++++++++++++++++++++++++++++++++++++
+ scripts/mod/modpost.c    | 39 +++++++++++++++---------------
+ scripts/mod/modpost.h    |  2 ++
+ 4 files changed, 73 insertions(+), 22 deletions(-)
 
-Guilherme
+diff --git a/scripts/mod/file2alias.c b/scripts/mod/file2alias.c
+index 5258247d78ac..e8a9c6816fec 100644
+--- a/scripts/mod/file2alias.c
++++ b/scripts/mod/file2alias.c
+@@ -734,8 +734,6 @@ static int do_vio_entry(const char *filename, void *symval,
+ 	return 1;
+ }
+ 
+-#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+-
+ static void do_input(char *alias,
+ 		     kernel_ulong_t *arr, unsigned int min, unsigned int max)
+ {
+diff --git a/scripts/mod/list.h b/scripts/mod/list.h
+index a924a6c4aa4d..c60dbaa70d6b 100644
+--- a/scripts/mod/list.h
++++ b/scripts/mod/list.h
+@@ -210,4 +210,56 @@ static inline int list_empty(const struct list_head *head)
+ 	     !list_entry_is_head(pos, head, member);			\
+ 	     pos = n, n = list_next_entry(n, member))
+ 
++/*
++ * Double linked lists with a single pointer list head.
++ * Mostly useful for hash tables where the two pointer list head is
++ * too wasteful.
++ * You lose the ability to access the tail in O(1).
++ */
++
++struct hlist_head {
++	struct hlist_node *first;
++};
++
++struct hlist_node {
++	struct hlist_node *next, **pprev;
++};
++
++/**
++ * hlist_add_head - add a new entry at the beginning of the hlist
++ * @n: new entry to be added
++ * @h: hlist head to add it after
++ *
++ * Insert a new entry after the specified head.
++ * This is good for implementing stacks.
++ */
++static inline void hlist_add_head(struct hlist_node *n, struct hlist_head *h)
++{
++	struct hlist_node *first = h->first;
++
++	n->next = first;
++	if (first)
++		first->pprev = &n->next;
++	h->first = n;
++	n->pprev = &h->first;
++}
++
++#define hlist_entry(ptr, type, member) container_of(ptr, type, member)
++
++#define hlist_entry_safe(ptr, type, member) \
++	({ typeof(ptr) ____ptr = (ptr); \
++	   ____ptr ? hlist_entry(____ptr, type, member) : NULL; \
++	})
++
++/**
++ * hlist_for_each_entry	- iterate over list of given type
++ * @pos:	the type * to use as a loop cursor.
++ * @head:	the head for your list.
++ * @member:	the name of the hlist_node within the struct.
++ */
++#define hlist_for_each_entry(pos, head, member)				\
++	for (pos = hlist_entry_safe((head)->first, typeof(*(pos)), member);\
++	     pos;							\
++	     pos = hlist_entry_safe((pos)->member.next, typeof(*(pos)), member))
++
+ #endif /* LIST_H */
+diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+index 4edd5b223f49..7f7e0818940f 100644
+--- a/scripts/mod/modpost.c
++++ b/scripts/mod/modpost.c
+@@ -199,13 +199,8 @@ static struct module *new_module(const char *modname)
+ 	return mod;
+ }
+ 
+-/* A hash of all exported symbols,
+- * struct symbol is also used for lists of unresolved symbols */
+-
+-#define SYMBOL_HASH_SIZE 1024
+-
+ struct symbol {
+-	struct symbol *next;
++	struct hlist_node hash_node;	/* link to the hash table */
+ 	struct list_head list;	/* link to module::exported_symbols or module::unresolved_symbols */
+ 	struct module *module;
+ 	char *namespace;
+@@ -217,8 +212,6 @@ struct symbol {
+ 	char name[];
+ };
+ 
+-static struct symbol *symbolhash[SYMBOL_HASH_SIZE];
+-
+ /* This is based on the hash algorithm from gdbm, via tdb */
+ static inline unsigned int tdb_hash(const char *name)
+ {
+@@ -232,6 +225,21 @@ static inline unsigned int tdb_hash(const char *name)
+ 	return (1103515243 * value + 12345);
+ }
+ 
++/* useful hash macros */
++#define hash_head(table, key)		(&(table)[tdb_hash(key) % ARRAY_SIZE(table)])
++
++#define hash_add_symbol(sym, table)	hlist_add_head(&(sym)->hash_node, \
++						       hash_head(table, (sym)->name))
++
++#define hash_for_matched_symbol(sym, table, key) \
++	hlist_for_each_entry(sym, hash_head(table, key), hash_node) \
++		if (!strcmp(sym->name, key))
++
++#define HASHTABLE_DECLARE(name, size)	struct hlist_head name[size]
++
++/* hash table of all exported symbols */
++HASHTABLE_DECLARE(exported_symbols, 8192);
++
+ /**
+  * Allocate a new symbols for use in the hash of exported symbols or
+  * the list of unresolved symbols per module
+@@ -246,15 +254,6 @@ static struct symbol *alloc_symbol(const char *name)
+ 	return s;
+ }
+ 
+-/* For the hash of exported symbols */
+-static void hash_add_symbol(struct symbol *sym)
+-{
+-	unsigned int hash;
+-
+-	hash = tdb_hash(sym->name) % SYMBOL_HASH_SIZE;
+-	sym->next = symbolhash[hash];
+-	symbolhash[hash] = sym;
+-}
+ 
+ static void sym_add_unresolved(const char *name, struct module *mod, bool weak)
+ {
+@@ -274,8 +273,8 @@ static struct symbol *sym_find_with_module(const char *name, struct module *mod)
+ 	if (name[0] == '.')
+ 		name++;
+ 
+-	for (s = symbolhash[tdb_hash(name) % SYMBOL_HASH_SIZE]; s; s = s->next) {
+-		if (strcmp(s->name, name) == 0 && (!mod || s->module == mod))
++	hash_for_matched_symbol(s, exported_symbols, name) {
++		if (!mod || s->module == mod)
+ 			return s;
+ 	}
+ 	return NULL;
+@@ -379,7 +378,7 @@ static struct symbol *sym_add_exported(const char *name, struct module *mod,
+ 	s->is_static = !mod->from_dump;
+ 	s->is_gpl_only = gpl_only;
+ 	list_add_tail(&s->list, &mod->exported_symbols);
+-	hash_add_symbol(s);
++	hash_add_symbol(s, exported_symbols);
+ 
+ 	return s;
+ }
+diff --git a/scripts/mod/modpost.h b/scripts/mod/modpost.h
+index 2e8c897e0953..0cd8eec6f59b 100644
+--- a/scripts/mod/modpost.h
++++ b/scripts/mod/modpost.h
+@@ -14,6 +14,8 @@
+ #include "list.h"
+ #include "elfconfig.h"
+ 
++#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
++
+ /* On BSD-alike OSes elf.h defines these according to host's word size */
+ #undef ELF_ST_BIND
+ #undef ELF_ST_TYPE
+-- 
+2.32.0
+
 
 _______________________________________________
 linux-um mailing list
