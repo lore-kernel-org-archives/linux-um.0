@@ -1,15 +1,10 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from andre.telenet-ops.be ([2a02:1800:120:4::f00:15])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nlQGP-0008ET-KL
- for linux-um@lists.infradead.org; Mon, 02 May 2022 07:14:36 +0000
-Date: Mon, 2 May 2022 09:14:19 +0200 (CEST)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Build regressions/improvements in v5.18-rc5
-In-Reply-To: <20220502065353.2658957-1-geert@linux-m68k.org>
-Message-ID: <alpine.DEB.2.22.394.2205020912140.658493@ramsan.of.borg>
-References: <CAHk-=wjUhfhaes6_hMYDQFTbGjkmA-j2ZSeXZ32H66ufRfYrmQ@mail.gmail.com>
- <20220502065353.2658957-1-geert@linux-m68k.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH v3 05/15] kbuild: generate a list of objects in vmlinux
+Date: Thu,  5 May 2022 16:22:34 +0900
+Message-Id: <20220505072244.1155033-6-masahiroy@kernel.org>
+In-Reply-To: <20220505072244.1155033-1-masahiroy@kernel.org>
+References: <20220505072244.1155033-1-masahiroy@kernel.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -19,66 +14,63 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, linux-rdma@vger.kernel.org, linux-mips@vger.kernel.org
+To: linux-kbuild@vger.kernel.org
+Cc: clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org, Nicolas Schier a <nicolas@fjasle.eu>, Ard Biesheuvel <ardb@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Peter Zijlstra <peterz@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org, linux-s390@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>, Sami Tolvanen <samitolvanen@google.com>, Kees Cook <keescook@chromium.org>, Masahiro Yamada <masahiroy@kernel.org>
 
-On Mon, 2 May 2022, Geert Uytterhoeven wrote:
-> JFYI, when comparing v5.18-rc5[1] to v5.18-rc4[3], the summaries are:
->  - build errors: +6/-21
+A *.mod file lists the member objects of a module, but vmlinux does
+not have such a file to list out all the member objects.
 
-6 error regressions:
-   + /kisskb/src/arch/sh/kernel/machvec.c: error: array subscript 'struct sh_machine_vector[0]' is partly outside array bounds of 'long int[1]' [-Werror=array-bounds]:  => 105:33
+Generate this list to allow modpost to know all the member objects.
 
-sh4-gcc11/se7750_defconfig
-sh4-gcc11/sh-defconfig
-sh4-gcc11/se7619_defconfig
-sh4-gcc11/sh-allmodconfig
-sh4-gcc11/sh-allyesconfig
-sh4-gcc11/sh-allnoconfig
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Reviewed-by: Nicolas Schier <nicolas@fjasle.eu>
+---
 
-gcc-11 fallout
+(no changes since v2)
 
-   + /kisskb/src/drivers/infiniband/sw/rdmavt/qp.c: error: 'struct cpuinfo_um' has no member named 'x86_cache_size':  => 88:22
-   + /kisskb/src/drivers/infiniband/sw/rdmavt/qp.c: error: control reaches end of non-void function [-Werror=return-type]:  => 89:1
-   + /kisskb/src/drivers/infiniband/sw/rdmavt/qp.c: error: implicit declaration of function '__copy_user_nocache' [-Werror=implicit-function-declaration]:  => 100:2
+Changes in v2:
+  - Move '> .vmlinux.objs' to the outside of the loop (Nicolas)
+  - Clean up .vmlinux.objs explicitly
 
-um-x86_64/um-all{yes,no}config
+ scripts/link-vmlinux.sh | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-   + /kisskb/src/include/linux/sh_intc.h: error: division 'sizeof (void *) / sizeof (void)' does not compute the number of array elements [-Werror=sizeof-pointer-div]:  => 100:63
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index 20f44504a644..eceb3ee7ec06 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -311,6 +311,7 @@ cleanup()
+ 	rm -f vmlinux.map
+ 	rm -f vmlinux.o
+ 	rm -f .vmlinux.d
++	rm -f .vmlinux.objs
+ }
+ 
+ # Use "make V=1" to debug this script
+@@ -342,6 +343,16 @@ ${MAKE} -f "${srctree}/scripts/Makefile.build" obj=init need-builtin=1
+ modpost_link vmlinux.o
+ objtool_link vmlinux.o
+ 
++# Generate the list of objects in vmlinux
++for f in ${KBUILD_VMLINUX_OBJS} ${KBUILD_VMLINUX_LIBS}; do
++	case ${f} in
++	*.a)
++		${AR} t ${f} ;;
++	*)
++		echo ${f} ;;
++	esac
++done > .vmlinux.objs
++
+ # modpost vmlinux.o to check for section mismatches
+ ${MAKE} -f "${srctree}/scripts/Makefile.modpost" MODPOST_VMLINUX=1
+ 
+-- 
+2.32.0
 
-v5.18-rc5/sh4-gcc11/se7750_defconfig
-v5.18-rc5/sh4-gcc11/sh-defconfig
-v5.18-rc5/sh4-gcc11/se7619_defconfig
-v5.18-rc5/sh4-gcc11/sh-allmodconfig
-v5.18-rc5/sh4-gcc11/sh-allyesconfig
-v5.18-rc5/sh4-gcc11/sh-allnoconfig
-
-gcc-10/11 fallout, seen before for sh4-gcc10/se7750_defconfig and sh4-gcc10/se7619_defconfig
-
-   + {standard input}: Error: branch to a symbol in another ISA mode:  => 1295
-
-mips-gcc11/micro32r2_defconfig
-mips-gcc11/micro32r2el_defconfig
-
-gcc-11 fallout
-
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/672c0c5173427e6b3e2a9bbb7be51ceeec78093a/ (all 138 configs)
-> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/af2d861d4cd2a4da5137f795ee3509e6f944a25b/ (96 out of 138 configs)
-
-Gr{oetje,eeting}s,
-
- 						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
- 							    -- Linus Torvalds
 
 _______________________________________________
 linux-um mailing list
