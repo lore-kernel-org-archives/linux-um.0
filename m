@@ -1,17 +1,22 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from dfw.source.kernel.org ([139.178.84.217])
+Received: from conssluserg-02.nifty.com ([210.131.2.81])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nn6hZ-005Go8-KR
- for linux-um@lists.infradead.org; Fri, 06 May 2022 22:45:34 +0000
-Date: Fri, 6 May 2022 15:45:28 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-Subject: Re: [PATCH v3 00/15] kbuild: yet another series of cleanups
- (modpost, LTO, MODULE_REL_CRCS)
-Message-ID: <YnWlCH2tfr5YMb1/@dev-arch.thelio-3990X>
-References: <20220505072244.1155033-1-masahiroy@kernel.org>
+ id 1nmegS-00Gvto-Bo
+ for linux-um@lists.infradead.org; Thu, 05 May 2022 16:50:33 +0000
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com
+ [209.85.216.42]) (authenticated)
+ by conssluserg-02.nifty.com with ESMTP id 245Go9ZQ000920
+ for <linux-um@lists.infradead.org>; Fri, 6 May 2022 01:50:09 +0900
+Received: by mail-pj1-f42.google.com with SMTP id o69so4703064pjo.3
+ for <linux-um@lists.infradead.org>; Thu, 05 May 2022 09:50:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
+References: <20220505072244.1155033-1-masahiroy@kernel.org>
 In-Reply-To: <20220505072244.1155033-1-masahiroy@kernel.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Fri, 6 May 2022 01:49:00 +0900
+Message-ID: <CAK7LNATnCOKcbFXDY2Qik=6AJ31fQLKO+NW6fD-xY-muV5UQ-A@mail.gmail.com>
+Subject: Re: [PATCH v3 00/15] kbuild: yet another series of cleanups (modpost, 
+ LTO, MODULE_REL_CRCS)
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,58 +29,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org, Nicolas Schier a <nicolas@fjasle.eu>, Ard Biesheuvel <ardb@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Peter Zijlstra <peterz@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org, linux-s390@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>, Sami Tolvanen <samitolvanen@google.com>, Kees Cook <keescook@chromium.org>
+To: Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Cc: clang-built-linux <clang-built-linux@googlegroups.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Nicolas Schier a <nicolas@fjasle.eu>, Ard Biesheuvel <ardb@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Peter Zijlstra <peterz@infradead.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-um@lists.infradead.org, linux-s390 <linux-s390@vger.kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, Sami Tolvanen <samitolvanen@google.com>, Kees Cook <keescook@chromium.org>
 
-Hi Masahiro,
-
-On Thu, May 05, 2022 at 04:22:29PM +0900, Masahiro Yamada wrote:
-> 
+On Thu, May 5, 2022 at 4:24 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+>
 > This is the third batch of cleanups in this development cycle.
-> 
-> Major changes in v3:
-> 
->  - Generate symbol CRCs as C code, and remove CONFIG_MODULE_REL_CRCS.
-> 
-> Major changes in v2:
-> 
->  - V1 did not work with CONFIG_MODULE_REL_CRCS.
->    I fixed this for v2.
-> 
->  - Reflect some review comments in v1
-> 
->  - Refactor the code more
-> 
->  - Avoid too long argument error
-> 
-> 
-> Masahiro Yamada (15):
->   modpost: mitigate false-negatives for static EXPORT_SYMBOL checks
->   modpost: change the license of EXPORT_SYMBOL to bool type
->   modpost: merge add_{intree_flag,retpoline,staging_flag} to add_header
->   modpost: move *.mod.c generation to write_mod_c_files()
->   kbuild: generate a list of objects in vmlinux
->   kbuild: record symbol versions in *.cmd files
->   modpost: extract symbol versions from *.cmd files
->   kbuild: link symbol CRCs at final link, removing
->     CONFIG_MODULE_REL_CRCS
->   kbuild: stop merging *.symversions
->   genksyms: adjust the output format to modpost
->   kbuild: do not create *.prelink.o for Clang LTO or IBT
->   modpost: simplify the ->is_static initialization
->   modpost: use hlist for hash table implementation
->   kbuild: make built-in.a rule robust against too long argument error
->   kbuild: make *.mod rule robust against too long argument error
 
-I merged this series into mainline and tested an Arch Linux
-x86_64 configuration and Fedora aarch64 configuration with ThinLTO and
-saw no new warnings or issues. Modules loaded just fine in QEMU for Arch
-Linux and I did not notice any boot issues or warnings.
 
-Tested-by: Nathan Chancellor <nathan@kernel.org>
+This series is available at:
+git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
+lto-cleanup-v3
 
-Cheers,
-Nathan
+
+
+
+
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
 
 _______________________________________________
 linux-um mailing list
