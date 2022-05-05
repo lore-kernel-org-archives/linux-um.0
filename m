@@ -1,15 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-yw1-x1149.google.com ([2607:f8b0:4864:20::1149])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nuf87-000nXQ-Jv
-	for linux-um@lists.infradead.org; Fri, 27 May 2022 18:56:12 +0000
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-3031c87a192so42915267b3.6
-        for <linux-um@lists.infradead.org>; Fri, 27 May 2022 11:56:07 -0700 (PDT)
-Date: Fri, 27 May 2022 11:55:59 -0700
-Message-Id: <20220527185600.1236769-1-davidgow@google.com>
-Mime-Version: 1.0
-Subject: [PATCH v2 1/2] mm: Add PAGE_ALIGN_DOWN macro
-From: David Gow <davidgow@google.com>
+Received: from us-smtp-delivery-74.mimecast.com ([170.10.133.74])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nmfvy-00HFNc-SU
+ for linux-um@lists.infradead.org; Thu, 05 May 2022 18:10:40 +0000
+Date: Thu, 5 May 2022 20:10:27 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+Subject: Re: [PATCH v3 08/11] ptrace: Admit ptrace_stop can generate spuriuos
+ SIGTRAPs
+Message-ID: <20220505181027.GA14011@redhat.com>
+References: <87k0b0apne.fsf_-_@email.froward.int.ebiederm.org>
+ <20220504224058.476193-8-ebiederm@xmission.com>
+ <20220505152801.GC13929@redhat.com>
+ <87zgjv6f2u.fsf@email.froward.int.ebiederm.org>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <87zgjv6f2u.fsf@email.froward.int.ebiederm.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,43 +27,17 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Vincent Whitchurch <vincent.whitchurch@axis.com>, Johannes Berg <johannes@sipsolutions.net>, Patricia Alfonso <trishalfonso@google.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, anton.ivanov@cambridgegreys.com, Dmitry Vyukov <dvyukov@google.com>, Brendan Higgins <brendanhiggins@google.com>, Andrew Morton <akpm@linux-foundation.org>, Andrey Konovalov <andreyknvl@gmail.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>
-Cc: David Gow <davidgow@google.com>, kasan-dev <kasan-dev@googlegroups.com>, linux-um@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>, Daniel Latypov <dlatypov@google.com>, linux-mm@kvack.org
+To: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: linux-kernel@vger.kernel.org, rjw@rjwysocki.net, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org
 
-This is just the same as PAGE_ALIGN(), but rounds the address down, not
-up.
+On 05/05, Eric W. Biederman wrote:
+>
+> So I vote for deleting code, and making ptrace_stop easier to reason
+> about.
 
-Suggested-by: Dmitry Vyukov <dvyukov@google.com>
-Signed-off-by: David Gow <davidgow@google.com>
----
+Yes, yes, agreed.
 
-Note: there is no v1 of this patch, it's just part of v2 of the
-UML/KASAN series.
-
-There are almost certainly lots of places where this macro should be
-used: just look for ALIGN_DOWN(..., PAGE_SIZE). I haven't gone through
-to try to replace them all.
-
----
- include/linux/mm.h | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index e34edb775334..e68731f0ef20 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -221,6 +221,9 @@ int overcommit_policy_handler(struct ctl_table *, int, void *, size_t *,
- /* to align the pointer to the (next) page boundary */
- #define PAGE_ALIGN(addr) ALIGN(addr, PAGE_SIZE)
- 
-+/* to align the pointer to the (prev) page boundary */
-+#define PAGE_ALIGN_DOWN(addr) ALIGN_DOWN(addr, PAGE_SIZE)
-+
- /* test whether an address (unsigned long or pointer) is aligned to PAGE_SIZE */
- #define PAGE_ALIGNED(addr)	IS_ALIGNED((unsigned long)(addr), PAGE_SIZE)
- 
--- 
-2.36.1.124.g0e6072fb45-goog
+Oleg.
 
 
 _______________________________________________
