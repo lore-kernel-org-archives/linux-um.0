@@ -1,11 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH v3 12/15] modpost: simplify the ->is_static initialization
-Date: Thu,  5 May 2022 16:22:41 +0900
-Message-Id: <20220505072244.1155033-13-masahiroy@kernel.org>
-In-Reply-To: <20220505072244.1155033-1-masahiroy@kernel.org>
-References: <20220505072244.1155033-1-masahiroy@kernel.org>
+Received: from out01.mta.xmission.com ([166.70.13.231])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nmgCF-00HKgh-0d
+ for linux-um@lists.infradead.org; Thu, 05 May 2022 18:27:28 +0000
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+Date: Thu,  5 May 2022 13:26:38 -0500
+Message-Id: <20220505182645.497868-5-ebiederm@xmission.com>
+In-Reply-To: <87a6bv6dl6.fsf_-_@email.froward.int.ebiederm.org>
+References: <87a6bv6dl6.fsf_-_@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
+Subject: [PATCH v4 05/12] ptrace: Remove arch_ptrace_attach
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,56 +22,168 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kbuild@vger.kernel.org
-Cc: clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org, Nicolas Schier a <nicolas@fjasle.eu>, Ard Biesheuvel <ardb@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Peter Zijlstra <peterz@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org, linux-s390@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>, Sami Tolvanen <samitolvanen@google.com>, Kees Cook <keescook@chromium.org>, Masahiro Yamada <masahiroy@kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
 
-->is_static is set to true at allocation, then to false if the symbol
-comes from the dump file.
+The last remaining implementation of arch_ptrace_attach is ia64's
+ptrace_attach_sync_user_rbs which was added at the end of 2007 in
+commit aa91a2e90044 ("[IA64] Synchronize RBS on PTRACE_ATTACH").
 
-It is simpler to use !mod->from_dump as the init value.
+Reading the comments and examining the code ptrace_attach_sync_user_rbs
+has the sole purpose of saving registers to the stack when ptrace_attach
+changes TASK_STOPPED to TASK_TRACED.  In all other cases arch_ptrace_stop
+takes care of the register saving.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+In commit d79fdd6d96f4 ("ptrace: Clean transitions between TASK_STOPPED and TRACED")
+modified ptrace_attach to wake up the thread and enter ptrace_stop normally even
+when the thread starts out stopped.
+
+This makes ptrace_attach_sync_user_rbs completely unnecessary.  So just
+remove it.
+
+Cc: linux-ia64@vger.kernel.org
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 ---
+ arch/ia64/include/asm/ptrace.h |  4 ---
+ arch/ia64/kernel/ptrace.c      | 57 ----------------------------------
+ kernel/ptrace.c                | 18 -----------
+ 3 files changed, 79 deletions(-)
 
-(no changes since v2)
-
-Changes in v2:
-  - New patch
-
- scripts/mod/modpost.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index e07542a90fc6..4edd5b223f49 100644
---- a/scripts/mod/modpost.c
-+++ b/scripts/mod/modpost.c
-@@ -242,7 +242,7 @@ static struct symbol *alloc_symbol(const char *name)
+diff --git a/arch/ia64/include/asm/ptrace.h b/arch/ia64/include/asm/ptrace.h
+index a10a498eede1..402874489890 100644
+--- a/arch/ia64/include/asm/ptrace.h
++++ b/arch/ia64/include/asm/ptrace.h
+@@ -139,10 +139,6 @@ static inline long regs_return_value(struct pt_regs *regs)
+   #define arch_ptrace_stop_needed() \
+ 	(!test_thread_flag(TIF_RESTORE_RSE))
  
- 	memset(s, 0, sizeof(*s));
- 	strcpy(s->name, name);
--	s->is_static = true;
-+
- 	return s;
+-  extern void ptrace_attach_sync_user_rbs (struct task_struct *);
+-  #define arch_ptrace_attach(child) \
+-	ptrace_attach_sync_user_rbs(child)
+-
+   #define arch_has_single_step()  (1)
+   #define arch_has_block_step()   (1)
+ 
+diff --git a/arch/ia64/kernel/ptrace.c b/arch/ia64/kernel/ptrace.c
+index a19acd9f5e1f..a45f529046c3 100644
+--- a/arch/ia64/kernel/ptrace.c
++++ b/arch/ia64/kernel/ptrace.c
+@@ -617,63 +617,6 @@ void ia64_sync_krbs(void)
+ 	unw_init_running(do_sync_rbs, ia64_sync_kernel_rbs);
  }
  
-@@ -376,6 +376,7 @@ static struct symbol *sym_add_exported(const char *name, struct module *mod,
+-/*
+- * After PTRACE_ATTACH, a thread's register backing store area in user
+- * space is assumed to contain correct data whenever the thread is
+- * stopped.  arch_ptrace_stop takes care of this on tracing stops.
+- * But if the child was already stopped for job control when we attach
+- * to it, then it might not ever get into ptrace_stop by the time we
+- * want to examine the user memory containing the RBS.
+- */
+-void
+-ptrace_attach_sync_user_rbs (struct task_struct *child)
+-{
+-	int stopped = 0;
+-	struct unw_frame_info info;
+-
+-	/*
+-	 * If the child is in TASK_STOPPED, we need to change that to
+-	 * TASK_TRACED momentarily while we operate on it.  This ensures
+-	 * that the child won't be woken up and return to user mode while
+-	 * we are doing the sync.  (It can only be woken up for SIGKILL.)
+-	 */
+-
+-	read_lock(&tasklist_lock);
+-	if (child->sighand) {
+-		spin_lock_irq(&child->sighand->siglock);
+-		if (READ_ONCE(child->__state) == TASK_STOPPED &&
+-		    !test_and_set_tsk_thread_flag(child, TIF_RESTORE_RSE)) {
+-			set_notify_resume(child);
+-
+-			WRITE_ONCE(child->__state, TASK_TRACED);
+-			stopped = 1;
+-		}
+-		spin_unlock_irq(&child->sighand->siglock);
+-	}
+-	read_unlock(&tasklist_lock);
+-
+-	if (!stopped)
+-		return;
+-
+-	unw_init_from_blocked_task(&info, child);
+-	do_sync_rbs(&info, ia64_sync_user_rbs);
+-
+-	/*
+-	 * Now move the child back into TASK_STOPPED if it should be in a
+-	 * job control stop, so that SIGCONT can be used to wake it up.
+-	 */
+-	read_lock(&tasklist_lock);
+-	if (child->sighand) {
+-		spin_lock_irq(&child->sighand->siglock);
+-		if (READ_ONCE(child->__state) == TASK_TRACED &&
+-		    (child->signal->flags & SIGNAL_STOP_STOPPED)) {
+-			WRITE_ONCE(child->__state, TASK_STOPPED);
+-		}
+-		spin_unlock_irq(&child->sighand->siglock);
+-	}
+-	read_unlock(&tasklist_lock);
+-}
+-
+ /*
+  * Write f32-f127 back to task->thread.fph if it has been modified.
+  */
+diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+index ccc4b465775b..da30dcd477a0 100644
+--- a/kernel/ptrace.c
++++ b/kernel/ptrace.c
+@@ -1285,10 +1285,6 @@ int ptrace_request(struct task_struct *child, long request,
+ 	return ret;
+ }
  
- 	s = alloc_symbol(name);
- 	s->module = mod;
-+	s->is_static = !mod->from_dump;
- 	s->is_gpl_only = gpl_only;
- 	list_add_tail(&s->list, &mod->exported_symbols);
- 	hash_add_symbol(s);
-@@ -2523,7 +2524,6 @@ static void read_dump(const char *fname)
- 			mod->from_dump = true;
- 		}
- 		s = sym_add_exported(symname, mod, gpl_only);
--		s->is_static = false;
- 		sym_set_crc(s, crc);
- 		sym_update_namespace(symname, namespace);
+-#ifndef arch_ptrace_attach
+-#define arch_ptrace_attach(child)	do { } while (0)
+-#endif
+-
+ SYSCALL_DEFINE4(ptrace, long, request, long, pid, unsigned long, addr,
+ 		unsigned long, data)
+ {
+@@ -1297,8 +1293,6 @@ SYSCALL_DEFINE4(ptrace, long, request, long, pid, unsigned long, addr,
+ 
+ 	if (request == PTRACE_TRACEME) {
+ 		ret = ptrace_traceme();
+-		if (!ret)
+-			arch_ptrace_attach(current);
+ 		goto out;
  	}
+ 
+@@ -1310,12 +1304,6 @@ SYSCALL_DEFINE4(ptrace, long, request, long, pid, unsigned long, addr,
+ 
+ 	if (request == PTRACE_ATTACH || request == PTRACE_SEIZE) {
+ 		ret = ptrace_attach(child, request, addr, data);
+-		/*
+-		 * Some architectures need to do book-keeping after
+-		 * a ptrace attach.
+-		 */
+-		if (!ret)
+-			arch_ptrace_attach(child);
+ 		goto out_put_task_struct;
+ 	}
+ 
+@@ -1455,12 +1443,6 @@ COMPAT_SYSCALL_DEFINE4(ptrace, compat_long_t, request, compat_long_t, pid,
+ 
+ 	if (request == PTRACE_ATTACH || request == PTRACE_SEIZE) {
+ 		ret = ptrace_attach(child, request, addr, data);
+-		/*
+-		 * Some architectures need to do book-keeping after
+-		 * a ptrace attach.
+-		 */
+-		if (!ret)
+-			arch_ptrace_attach(child);
+ 		goto out_put_task_struct;
+ 	}
+ 
 -- 
-2.32.0
+2.35.3
 
 
 _______________________________________________
