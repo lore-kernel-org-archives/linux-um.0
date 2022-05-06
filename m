@@ -1,11 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH v3 07/15] modpost: extract symbol versions from *.cmd files
-Date: Thu,  5 May 2022 16:22:36 +0900
-Message-Id: <20220505072244.1155033-8-masahiroy@kernel.org>
-In-Reply-To: <20220505072244.1155033-1-masahiroy@kernel.org>
-References: <20220505072244.1155033-1-masahiroy@kernel.org>
+Received: from ivanoab7.miniserver.com ([37.128.132.42]
+ helo=www.kot-begemot.co.uk)
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nmzIY-003trc-IM
+ for linux-um@lists.infradead.org; Fri, 06 May 2022 14:51:17 +0000
+Subject: Re: [PATCH] um: line: use separate IRQs per line
+References: <20220506154612.c8ccdc2fe91f.Idae14b9661fd047f8cac695f0d95e321da70955b@changeid>
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Message-ID: <0be846bc-e486-d81f-0e95-f9490350f740@kot-begemot.co.uk>
+Date: Fri, 6 May 2022 15:30:01 +0100
 MIME-Version: 1.0
+In-Reply-To: <20220506154612.c8ccdc2fe91f.Idae14b9661fd047f8cac695f0d95e321da70955b@changeid>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -14,313 +20,260 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kbuild@vger.kernel.org
-Cc: clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org, Nicolas Schier a <nicolas@fjasle.eu>, Ard Biesheuvel <ardb@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Peter Zijlstra <peterz@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org, linux-s390@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>, Sami Tolvanen <samitolvanen@google.com>, Kees Cook <keescook@chromium.org>, Masahiro Yamada <masahiroy@kernel.org>
+To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>, Jouni Malinen <j@w1.fi>
 
-Currently, CONFIG_MODVERSIONS needs extra link to embed the symbol
-versions into ELF objects. Then, modpost extracts the version CRCs
-from them.
 
-The following figures show how it currently works, and how I am trying
-to change it.
 
-Current implementation
-======================
-                                                           |----------|
-                 embed CRC      -------------------------->| final    |
-      $(CC)        $(LD)       /  |---------|              | link for |
-  *.c ------> *.o -------> *.o -->| modpost |              | vmlinux  |
-                     /            |         |-- *.mod.c -->| or       |
-     genksyms       /             |---------|              | module   |
-  *.c ------> *.symversions                                |----------|
-
-Genksyms outputs the calculated CRCs in the form of linker script
-(*.symversions), which is used by $(LD) to update the object.
-
-If CONFIG_LTO_CLANG=y, the build process becomes much more complex.
-Embedding the CRCs is postponed until the LLVM bitcode is converted
-into ELF, creating another intermediate *.prelink.o.
-
-However, this complexity is unneeded. There is no reason why we must
-embed version CRCs in objects so early.
-
-There is final link stage for vmlinux (scripts/link-vmlinux.sh) and
-modules (scripts/Makefile.modfinal). We can link CRCs at the very last
-moment.
-
-New implementation
-==================
-                                                           |----------|
-                   --------------------------------------->| final    |
-      $(CC)       /    |---------|                         | link for |
-  *.c ------> *.o ---->|         |                         | vmlinux  |
-                       | modpost |--- .vmlinux-symver.c -->| or       |
-     genksyms          |         |--- *.mod.c ------------>| module   |
-  *.c ------> *.cmd -->|---------|                         |----------|
-
-Pass the symbol versions to modpost as separate text data, which are
-available in *.cmd files.
-
-This commit changes modpost to extract CRCs from *.cmd files instead of
-from ELF objects.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
-(no changes since v2)
-
-Changes in v2:
-  - Simplify the implementation (parse .cmd files after ELF)
-
- scripts/mod/modpost.c | 177 ++++++++++++++++++++++++++++++------------
- 1 file changed, 129 insertions(+), 48 deletions(-)
-
-diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index 78a7107fcc40..92ee1f454e29 100644
---- a/scripts/mod/modpost.c
-+++ b/scripts/mod/modpost.c
-@@ -383,19 +383,10 @@ static struct symbol *sym_add_exported(const char *name, struct module *mod,
- 	return s;
- }
- 
--static void sym_set_crc(const char *name, unsigned int crc)
-+static void sym_set_crc(struct symbol *sym, unsigned int crc)
- {
--	struct symbol *s = find_symbol(name);
--
--	/*
--	 * Ignore stand-alone __crc_*, which might be auto-generated symbols
--	 * such as __*_veneer in ARM ELF.
--	 */
--	if (!s)
--		return;
--
--	s->crc = crc;
--	s->crc_valid = true;
-+	sym->crc = crc;
-+	sym->crc_valid = true;
- }
- 
- static void *grab_file(const char *filename, size_t *size)
-@@ -618,33 +609,6 @@ static int ignore_undef_symbol(struct elf_info *info, const char *symname)
- 	return 0;
- }
- 
--static void handle_modversion(const struct module *mod,
--			      const struct elf_info *info,
--			      const Elf_Sym *sym, const char *symname)
--{
--	unsigned int crc;
--
--	if (sym->st_shndx == SHN_UNDEF) {
--		warn("EXPORT symbol \"%s\" [%s%s] version generation failed, symbol will not be versioned.\n"
--		     "Is \"%s\" prototyped in <asm/asm-prototypes.h>?\n",
--		     symname, mod->name, mod->is_vmlinux ? "" : ".ko",
--		     symname);
--
--		return;
--	}
--
--	if (sym->st_shndx == SHN_ABS) {
--		crc = sym->st_value;
--	} else {
--		unsigned int *crcp;
--
--		/* symbol points to the CRC in the ELF object */
--		crcp = sym_get_data(info, sym);
--		crc = TO_NATIVE(*crcp);
--	}
--	sym_set_crc(symname, crc);
--}
--
- static void handle_symbol(struct module *mod, struct elf_info *info,
- 			  const Elf_Sym *sym, const char *symname)
- {
-@@ -1955,6 +1919,102 @@ static char *remove_dot(char *s)
- 	return s;
- }
- 
-+/*
-+ * The CRCs are recorded in .*.cmd files in the form of:
-+ * #SYMVER <name> <crc>
-+ */
-+static void extract_crcs_for_object(const char *object, struct module *mod)
-+{
-+	char cmd_file[PATH_MAX];
-+	char *buf, *p;
-+	const char *base;
-+	int dirlen, ret;
-+
-+	base = strrchr(object, '/');
-+	if (base) {
-+		base++;
-+		dirlen = base - object;
-+	} else {
-+		dirlen = 0;
-+		base = object;
-+	}
-+
-+	ret = snprintf(cmd_file, sizeof(cmd_file), "%.*s.%s.cmd",
-+		       dirlen, object, base);
-+	if (ret >= sizeof(cmd_file)) {
-+		error("%s: too long path was truncated\n", cmd_file);
-+		return;
-+	}
-+
-+	buf = read_text_file(cmd_file);
-+	p = buf;
-+
-+	while ((p = strstr(p, "\n#SYMVER "))) {
-+		char *name;
-+		size_t namelen;
-+		unsigned int crc;
-+		struct symbol *sym;
-+
-+		name = p + strlen("\n#SYMVER ");
-+
-+		p = strchr(name, ' ');
-+		if (!p)
-+			break;
-+
-+		namelen = p - name;
-+		p++;
-+
-+		if (!isdigit(*p))
-+			continue;	/* skip this line */
-+
-+		crc = strtol(p, &p, 0);
-+		if (*p != '\n')
-+			continue;	/* skip this line */
-+
-+		name[namelen] = '\0';
-+
-+		sym = sym_find_with_module(name, mod);
-+		if (!sym) {
-+			warn("Skip the version for unexported symbol \"%s\" [%s%s]\n",
-+			     name, mod->name, mod->is_vmlinux ? "" : ".ko");
-+			continue;
-+		}
-+		sym_set_crc(sym, crc);
-+	}
-+
-+	free(buf);
-+}
-+
-+/*
-+ * The symbol versions (CRC) are recorded in the .*.cmd files.
-+ * Parse them to retrieve CRCs for the current module.
-+ */
-+static void mod_set_crcs(struct module *mod)
-+{
-+	char objlist[PATH_MAX];
-+	char *buf, *p, *obj;
-+	int ret;
-+
-+	if (mod->is_vmlinux) {
-+		strcpy(objlist, ".vmlinux.objs");
-+	} else {
-+		/* objects for a module are listed in the *.mod file. */
-+		ret = snprintf(objlist, sizeof(objlist), "%s.mod", mod->name);
-+		if (ret >= sizeof(objlist)) {
-+			error("%s: too long path was truncated\n", objlist);
-+			return;
-+		}
-+	}
-+
-+	buf = read_text_file(objlist);
-+	p = buf;
-+
-+	while ((obj = strsep(&p, "\n")) && obj[0])
-+		extract_crcs_for_object(obj, mod);
-+
-+	free(buf);
-+}
-+
- static void read_symbols(const char *modname)
- {
- 	const char *symname;
-@@ -2015,9 +2075,6 @@ static void read_symbols(const char *modname)
- 		if (strstarts(symname, "__kstrtabns_"))
- 			sym_update_namespace(symname + strlen("__kstrtabns_"),
- 					     sym_get_data(&info, sym));
--		if (strstarts(symname, "__crc_"))
--			handle_modversion(mod, &info, sym,
--					  symname + strlen("__crc_"));
- 	}
- 
- 	// check for static EXPORT_SYMBOL_* functions && global vars
-@@ -2046,12 +2103,17 @@ static void read_symbols(const char *modname)
- 
- 	parse_elf_finish(&info);
- 
--	/* Our trick to get versioning for module struct etc. - it's
--	 * never passed as an argument to an exported function, so
--	 * the automatic versioning doesn't pick it up, but it's really
--	 * important anyhow */
--	if (modversions)
-+	if (modversions) {
-+		/*
-+		 * Our trick to get versioning for module struct etc. - it's
-+		 * never passed as an argument to an exported function, so
-+		 * the automatic versioning doesn't pick it up, but it's really
-+		 * important anyhow
-+		 */
- 		sym_add_unresolved("module_layout", mod, false);
-+
-+		mod_set_crcs(mod);
-+	}
- }
- 
- static void read_symbols_from_files(const char *filename)
-@@ -2214,6 +2276,23 @@ static void add_header(struct buffer *b, struct module *mod)
- 		buf_printf(b, "\nMODULE_INFO(staging, \"Y\");\n");
- }
- 
-+static void check_symversions(struct module *mod)
-+{
-+	struct symbol *sym;
-+
-+	if (!modversions)
-+		return;
-+
-+	list_for_each_entry(sym, &mod->exported_symbols, list) {
-+		if (!sym->crc_valid) {
-+			warn("EXPORT symbol \"%s\" [%s%s] version generation failed, symbol will not be versioned.\n"
-+			     "Is \"%s\" prototyped in <asm/asm-prototypes.h>?\n",
-+			     sym->name, mod->name, mod->is_vmlinux ? "" : ".ko",
-+			     sym->name);
-+		}
-+	}
-+}
-+
- /**
-  * Record CRCs for unresolved symbols
-  **/
-@@ -2429,7 +2508,7 @@ static void read_dump(const char *fname)
- 		}
- 		s = sym_add_exported(symname, mod, gpl_only);
- 		s->is_static = false;
--		sym_set_crc(symname, crc);
-+		sym_set_crc(s, crc);
- 		sym_update_namespace(symname, namespace);
- 	}
- 	free(buf);
-@@ -2554,6 +2633,8 @@ int main(int argc, char **argv)
- 		if (mod->from_dump)
- 			continue;
- 
-+		check_symversions(mod);
-+
- 		if (!mod->is_vmlinux)
- 			write_mod_c_file(mod);
- 	}
+On 06/05/2022 14:46, Johannes Berg wrote:
+> From: Johannes Berg <johannes.berg@intel.com>
+> 
+> Today, all possible serial lines (ssl*=) as well as all
+> possible consoles (con*=) each share a single interrupt
+> (with a fixed number) with others of the same type.
+> 
+> Now, if you have two lines, say ssl0 and ssl1, and one
+> of them is connected to an fd you cannot read (e.g. a
+> file), but the other gets a read interrupt, then both
+> of them get the interrupt since it's shared. Then, the
+> read() call will return EOF, since it's a file being
+> written and there's nothing to read (at least not at
+> the current offset, at the end).
+> 
+> Unfortunately, this is treated as a read error, and we
+> close this line, losing all the possible output.
+> 
+> It might be possible to work around this and make the
+> IRQ sharing work, however, now that we have dynamically
+> allocated IRQs that are easy to use, simply use that to
+> achieve separating between the events; then there's no
+> interrupt for that line and we never attempt the read
+> in the first place, thus not closing the line.
+> 
+> This manifested itself in the wifi hostap/hwsim tests
+> where the parallel script communicates via one serial
+> console and the kernel messages go to another (a file)
+> and sending data on the communication console caused
+> the kernel messages to stop flowing into the file.
+> 
+> Reported-by: Jouni Malinen <j@w1.fi>
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+> ---
+>   arch/um/drivers/chan_kern.c     | 10 +++++-----
+>   arch/um/drivers/line.c          | 22 +++++++++++++---------
+>   arch/um/drivers/line.h          |  4 ++--
+>   arch/um/drivers/ssl.c           |  2 --
+>   arch/um/drivers/stdio_console.c |  2 --
+>   arch/um/include/asm/irq.h       | 22 +++++++++-------------
+>   6 files changed, 29 insertions(+), 33 deletions(-)
+> 
+> diff --git a/arch/um/drivers/chan_kern.c b/arch/um/drivers/chan_kern.c
+> index 62997055c454..26a702a06515 100644
+> --- a/arch/um/drivers/chan_kern.c
+> +++ b/arch/um/drivers/chan_kern.c
+> @@ -133,7 +133,7 @@ static void line_timer_cb(struct work_struct *work)
+>   	struct line *line = container_of(work, struct line, task.work);
+>   
+>   	if (!line->throttled)
+> -		chan_interrupt(line, line->driver->read_irq);
+> +		chan_interrupt(line, line->read_irq);
+>   }
+>   
+>   int enable_chan(struct line *line)
+> @@ -195,9 +195,9 @@ void free_irqs(void)
+>   		chan = list_entry(ele, struct chan, free_list);
+>   
+>   		if (chan->input && chan->enabled)
+> -			um_free_irq(chan->line->driver->read_irq, chan);
+> +			um_free_irq(chan->line->read_irq, chan);
+>   		if (chan->output && chan->enabled)
+> -			um_free_irq(chan->line->driver->write_irq, chan);
+> +			um_free_irq(chan->line->write_irq, chan);
+>   		chan->enabled = 0;
+>   	}
+>   }
+> @@ -215,9 +215,9 @@ static void close_one_chan(struct chan *chan, int delay_free_irq)
+>   		spin_unlock_irqrestore(&irqs_to_free_lock, flags);
+>   	} else {
+>   		if (chan->input && chan->enabled)
+> -			um_free_irq(chan->line->driver->read_irq, chan);
+> +			um_free_irq(chan->line->read_irq, chan);
+>   		if (chan->output && chan->enabled)
+> -			um_free_irq(chan->line->driver->write_irq, chan);
+> +			um_free_irq(chan->line->write_irq, chan);
+>   		chan->enabled = 0;
+>   	}
+>   	if (chan->ops->close != NULL)
+> diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
+> index 8febf95da96e..02b0befd6763 100644
+> --- a/arch/um/drivers/line.c
+> +++ b/arch/um/drivers/line.c
+> @@ -139,7 +139,7 @@ static int flush_buffer(struct line *line)
+>   		count = line->buffer + LINE_BUFSIZE - line->head;
+>   
+>   		n = write_chan(line->chan_out, line->head, count,
+> -			       line->driver->write_irq);
+> +			       line->write_irq);
+>   		if (n < 0)
+>   			return n;
+>   		if (n == count) {
+> @@ -156,7 +156,7 @@ static int flush_buffer(struct line *line)
+>   
+>   	count = line->tail - line->head;
+>   	n = write_chan(line->chan_out, line->head, count,
+> -		       line->driver->write_irq);
+> +		       line->write_irq);
+>   
+>   	if (n < 0)
+>   		return n;
+> @@ -195,7 +195,7 @@ int line_write(struct tty_struct *tty, const unsigned char *buf, int len)
+>   		ret = buffer_data(line, buf, len);
+>   	else {
+>   		n = write_chan(line->chan_out, buf, len,
+> -			       line->driver->write_irq);
+> +			       line->write_irq);
+>   		if (n < 0) {
+>   			ret = n;
+>   			goto out_up;
+> @@ -215,7 +215,7 @@ void line_throttle(struct tty_struct *tty)
+>   {
+>   	struct line *line = tty->driver_data;
+>   
+> -	deactivate_chan(line->chan_in, line->driver->read_irq);
+> +	deactivate_chan(line->chan_in, line->read_irq);
+>   	line->throttled = 1;
+>   }
+>   
+> @@ -224,7 +224,7 @@ void line_unthrottle(struct tty_struct *tty)
+>   	struct line *line = tty->driver_data;
+>   
+>   	line->throttled = 0;
+> -	chan_interrupt(line, line->driver->read_irq);
+> +	chan_interrupt(line, line->read_irq);
+>   }
+>   
+>   static irqreturn_t line_write_interrupt(int irq, void *data)
+> @@ -260,19 +260,23 @@ int line_setup_irq(int fd, int input, int output, struct line *line, void *data)
+>   	int err;
+>   
+>   	if (input) {
+> -		err = um_request_irq(driver->read_irq, fd, IRQ_READ,
+> -				     line_interrupt, IRQF_SHARED,
+> +		err = um_request_irq(UM_IRQ_ALLOC, fd, IRQ_READ,
+> +				     line_interrupt, 0,
+>   				     driver->read_irq_name, data);
+>   		if (err < 0)
+>   			return err;
+> +
+> +		line->read_irq = err;
+>   	}
+>   
+>   	if (output) {
+> -		err = um_request_irq(driver->write_irq, fd, IRQ_WRITE,
+> -				     line_write_interrupt, IRQF_SHARED,
+> +		err = um_request_irq(UM_IRQ_ALLOC, fd, IRQ_WRITE,
+> +				     line_write_interrupt, 0,
+>   				     driver->write_irq_name, data);
+>   		if (err < 0)
+>   			return err;
+> +
+> +		line->write_irq = err;
+>   	}
+>   
+>   	return 0;
+> diff --git a/arch/um/drivers/line.h b/arch/um/drivers/line.h
+> index bdb16b96e76f..f15be75a3bf3 100644
+> --- a/arch/um/drivers/line.h
+> +++ b/arch/um/drivers/line.h
+> @@ -23,9 +23,7 @@ struct line_driver {
+>   	const short minor_start;
+>   	const short type;
+>   	const short subtype;
+> -	const int read_irq;
+>   	const char *read_irq_name;
+> -	const int write_irq;
+>   	const char *write_irq_name;
+>   	struct mc_device mc;
+>   	struct tty_driver *driver;
+> @@ -35,6 +33,8 @@ struct line {
+>   	struct tty_port port;
+>   	int valid;
+>   
+> +	int read_irq, write_irq;
+> +
+>   	char *init_str;
+>   	struct list_head chan_list;
+>   	struct chan *chan_in, *chan_out;
+> diff --git a/arch/um/drivers/ssl.c b/arch/um/drivers/ssl.c
+> index 41eae2e8fb65..8514966778d5 100644
+> --- a/arch/um/drivers/ssl.c
+> +++ b/arch/um/drivers/ssl.c
+> @@ -47,9 +47,7 @@ static struct line_driver driver = {
+>   	.minor_start 		= 64,
+>   	.type 		 	= TTY_DRIVER_TYPE_SERIAL,
+>   	.subtype 	 	= 0,
+> -	.read_irq 		= SSL_IRQ,
+>   	.read_irq_name 		= "ssl",
+> -	.write_irq 		= SSL_WRITE_IRQ,
+>   	.write_irq_name 	= "ssl-write",
+>   	.mc  = {
+>   		.list		= LIST_HEAD_INIT(driver.mc.list),
+> diff --git a/arch/um/drivers/stdio_console.c b/arch/um/drivers/stdio_console.c
+> index e8b762f4d8c2..489d5a746ed3 100644
+> --- a/arch/um/drivers/stdio_console.c
+> +++ b/arch/um/drivers/stdio_console.c
+> @@ -53,9 +53,7 @@ static struct line_driver driver = {
+>   	.minor_start 		= 0,
+>   	.type 		 	= TTY_DRIVER_TYPE_CONSOLE,
+>   	.subtype 	 	= SYSTEM_TYPE_CONSOLE,
+> -	.read_irq 		= CONSOLE_IRQ,
+>   	.read_irq_name 		= "console",
+> -	.write_irq 		= CONSOLE_WRITE_IRQ,
+>   	.write_irq_name 	= "console-write",
+>   	.mc  = {
+>   		.list		= LIST_HEAD_INIT(driver.mc.list),
+> diff --git a/arch/um/include/asm/irq.h b/arch/um/include/asm/irq.h
+> index e187c789369d..749dfe8512e8 100644
+> --- a/arch/um/include/asm/irq.h
+> +++ b/arch/um/include/asm/irq.h
+> @@ -4,19 +4,15 @@
+>   
+>   #define TIMER_IRQ		0
+>   #define UMN_IRQ			1
+> -#define CONSOLE_IRQ		2
+> -#define CONSOLE_WRITE_IRQ	3
+> -#define UBD_IRQ			4
+> -#define UM_ETH_IRQ		5
+> -#define SSL_IRQ			6
+> -#define SSL_WRITE_IRQ		7
+> -#define ACCEPT_IRQ		8
+> -#define MCONSOLE_IRQ		9
+> -#define WINCH_IRQ		10
+> -#define SIGIO_WRITE_IRQ 	11
+> -#define TELNETD_IRQ 		12
+> -#define XTERM_IRQ 		13
+> -#define RANDOM_IRQ 		14
+> +#define UBD_IRQ			2
+> +#define UM_ETH_IRQ		3
+> +#define ACCEPT_IRQ		4
+> +#define MCONSOLE_IRQ		5
+> +#define WINCH_IRQ		6
+> +#define SIGIO_WRITE_IRQ 	7
+> +#define TELNETD_IRQ 		8
+> +#define XTERM_IRQ 		9
+> +#define RANDOM_IRQ 		10
+>   
+>   #ifdef CONFIG_UML_NET_VECTOR
+>   
+> 
+Acked-By: anton ivanov <anton.ivanov@cambridgegreys.com>
 -- 
-2.32.0
-
+Anton R. Ivanov
+https://www.kot-begemot.co.uk/
 
 _______________________________________________
 linux-um mailing list
