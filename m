@@ -1,16 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out03.mta.xmission.com ([166.70.13.233])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nmgCC-00HKfD-Ct
- for linux-um@lists.infradead.org; Thu, 05 May 2022 18:27:26 +0000
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-Date: Thu,  5 May 2022 13:26:37 -0500
-Message-Id: <20220505182645.497868-4-ebiederm@xmission.com>
-In-Reply-To: <87a6bv6dl6.fsf_-_@email.froward.int.ebiederm.org>
-References: <87a6bv6dl6.fsf_-_@email.froward.int.ebiederm.org>
+Message-ID: <1f26f6b4-4d33-6291-31c2-5cb68a5be829@linux.ibm.com>
+Date: Fri, 6 May 2022 14:56:58 +0200
 MIME-Version: 1.0
-Subject: [PATCH v4 04/12] ptrace/xtensa: Replace PT_SINGLESTEP with
- TIF_SINGLESTEP
+Subject: Re: [PATCH 07/11] dasd: don't set the discard_alignment queue limit
+Content-Language: en-US
+References: <20220418045314.360785-1-hch@lst.de>
+ <20220418045314.360785-8-hch@lst.de>
+From: =?UTF-8?Q?Jan_H=c3=b6ppner?= <hoeppner@linux.ibm.com>
+In-Reply-To: <20220418045314.360785-8-hch@lst.de>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,95 +16,37 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>, stable@vger.kernel.org
+To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc: Richard Weinberger <richard@nod.at>, Johannes Berg <johannes@sipsolutions.net>, Josef Bacik <josef@toxicpanda.com>, "Md. Haris Iqbal" <haris.iqbal@ionos.com>, Jack Wang <jinpu.wang@ionos.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>, Mike Snitzer <snitzer@kernel.org>, Song Liu <song@kernel.org>, Stefan Haberland <sth@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, linux-um@lists.infradead.org, linux-block@vger.kernel.org, nbd@other.debian.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-raid@vger.kernel.org, linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, dm-devel@redhat.com
 
-xtensa is the last user of the PT_SINGLESTEP flag.  Changing tsk->ptrace in
-user_enable_single_step and user_disable_single_step without locking could
-potentiallly cause problems.
-
-So use a thread info flag instead of a flag in tsk->ptrace.  Use TIF_SINGLESTEP
-that xtensa already had defined but unused.
-
-Remove the definitions of PT_SINGLESTEP and PT_BLOCKSTEP as they have no more users.
-
-Cc: stable@vger.kernel.org
-Acked-by: Max Filippov <jcmvbkbc@gmail.com>
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
----
- arch/xtensa/kernel/ptrace.c | 4 ++--
- arch/xtensa/kernel/signal.c | 4 ++--
- include/linux/ptrace.h      | 6 ------
- 3 files changed, 4 insertions(+), 10 deletions(-)
-
-diff --git a/arch/xtensa/kernel/ptrace.c b/arch/xtensa/kernel/ptrace.c
-index 323c678a691f..b952e67cc0cc 100644
---- a/arch/xtensa/kernel/ptrace.c
-+++ b/arch/xtensa/kernel/ptrace.c
-@@ -225,12 +225,12 @@ const struct user_regset_view *task_user_regset_view(struct task_struct *task)
- 
- void user_enable_single_step(struct task_struct *child)
- {
--	child->ptrace |= PT_SINGLESTEP;
-+	set_tsk_thread_flag(child, TIF_SINGLESTEP);
- }
- 
- void user_disable_single_step(struct task_struct *child)
- {
--	child->ptrace &= ~PT_SINGLESTEP;
-+	clear_tsk_thread_flag(child, TIF_SINGLESTEP);
- }
- 
- /*
-diff --git a/arch/xtensa/kernel/signal.c b/arch/xtensa/kernel/signal.c
-index 6f68649e86ba..ac50ec46c8f1 100644
---- a/arch/xtensa/kernel/signal.c
-+++ b/arch/xtensa/kernel/signal.c
-@@ -473,7 +473,7 @@ static void do_signal(struct pt_regs *regs)
- 		/* Set up the stack frame */
- 		ret = setup_frame(&ksig, sigmask_to_save(), regs);
- 		signal_setup_done(ret, &ksig, 0);
--		if (current->ptrace & PT_SINGLESTEP)
-+		if (test_thread_flag(TIF_SINGLESTEP))
- 			task_pt_regs(current)->icountlevel = 1;
- 
- 		return;
-@@ -499,7 +499,7 @@ static void do_signal(struct pt_regs *regs)
- 	/* If there's no signal to deliver, we just restore the saved mask.  */
- 	restore_saved_sigmask();
- 
--	if (current->ptrace & PT_SINGLESTEP)
-+	if (test_thread_flag(TIF_SINGLESTEP))
- 		task_pt_regs(current)->icountlevel = 1;
- 	return;
- }
-diff --git a/include/linux/ptrace.h b/include/linux/ptrace.h
-index 4c06f9f8ef3f..c952c5ba8fab 100644
---- a/include/linux/ptrace.h
-+++ b/include/linux/ptrace.h
-@@ -46,12 +46,6 @@ extern int ptrace_access_vm(struct task_struct *tsk, unsigned long addr,
- #define PT_EXITKILL		(PTRACE_O_EXITKILL << PT_OPT_FLAG_SHIFT)
- #define PT_SUSPEND_SECCOMP	(PTRACE_O_SUSPEND_SECCOMP << PT_OPT_FLAG_SHIFT)
- 
--/* single stepping state bits (used on ARM and PA-RISC) */
--#define PT_SINGLESTEP_BIT	31
--#define PT_SINGLESTEP		(1<<PT_SINGLESTEP_BIT)
--#define PT_BLOCKSTEP_BIT	30
--#define PT_BLOCKSTEP		(1<<PT_BLOCKSTEP_BIT)
--
- extern long arch_ptrace(struct task_struct *child, long request,
- 			unsigned long addr, unsigned long data);
- extern int ptrace_readdata(struct task_struct *tsk, unsigned long src, char __user *dst, int len);
--- 
-2.35.3
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gMTgvMDQvMjAyMiAwNjo1MywgQ2hyaXN0b3BoIEhlbGx3aWcgd3JvdGU6Cj4gVGhlIGRpc2Nh
+cmRfYWxpZ25tZW50IHF1ZXVlIGxpbWl0IGlzIG5hbWVkIGEgYml0IG1pc2xlYWRpbmcgbWVhbnMg
+dGhlCj4gb2Zmc2V0IGludG8gdGhlIGJsb2NrIGRldmljZSBhdCB3aGljaCB0aGUgZGlzY2FyZCBn
+cmFudWxhcml0eSBzdGFydHMuCj4gU2V0dGluZyBpdCB0byBQQUdFX1NJWkUgd2hpbGUgdGhlIGRp
+c2NhcmQgZ3JhbnVsYXJpdHkgaXMgdGhlIGJsb2NrIHNpemUKPiB0aGF0IGlzIHNtYWxsZXIgb3Ig
+dGhlIHNhbWUgYXMgUEFHRV9TSVpFIGFzIGRvbmUgYnkgZGFzZCBpcyBtb3N0bHkKPiBoYXJtbGVz
+cyBidXQgYWxzbyB1c2VsZXNzLgo+IAo+IFNpZ25lZC1vZmYtYnk6IENocmlzdG9waCBIZWxsd2ln
+IDxoY2hAbHN0LmRlPgoKQWNrZWQtYnk6IEphbiBIw7ZwcG5lciA8aG9lcHBuZXJAbGludXguaWJt
+LmNvbT4KClNvcnJ5IGZvciBhIHJhdGhlciBsYXRlIGFuc3dlci4gSSBzYXcgdGhhdCBKZW5zIGFs
+cmVhZHkgYXBwbGllZAp0aGUgcGF0Y2hlcyBzbyBpdCdzIGZpbmUgd2hlbiB0aGUgQWNrIGlzbid0
+IGFkZGVkIGFueW1vcmUuCldhbnRlZCB0byBzZW5kIGl0IGFueXdheSBzbyB0aGF0IHlvdSBrbm93
+IHdlJ3JlIGF3YXJlIG9mIGl0LgoKPiAtLS0KPiAgZHJpdmVycy9zMzkwL2Jsb2NrL2Rhc2RfZmJh
+LmMgfCAxIC0KPiAgMSBmaWxlIGNoYW5nZWQsIDEgZGVsZXRpb24oLSkKPiAKPiBkaWZmIC0tZ2l0
+IGEvZHJpdmVycy9zMzkwL2Jsb2NrL2Rhc2RfZmJhLmMgYi9kcml2ZXJzL3MzOTAvYmxvY2svZGFz
+ZF9mYmEuYwo+IGluZGV4IDhiZDU2NjVkYjkxOTguLjYwYmU3ZjdiZjJkMTYgMTAwNjQ0Cj4gLS0t
+IGEvZHJpdmVycy9zMzkwL2Jsb2NrL2Rhc2RfZmJhLmMKPiArKysgYi9kcml2ZXJzL3MzOTAvYmxv
+Y2svZGFzZF9mYmEuYwo+IEBAIC03ODIsNyArNzgyLDYgQEAgc3RhdGljIHZvaWQgZGFzZF9mYmFf
+c2V0dXBfYmxrX3F1ZXVlKHN0cnVjdCBkYXNkX2Jsb2NrICpibG9jaykKPiAgCWJsa19xdWV1ZV9z
+ZWdtZW50X2JvdW5kYXJ5KHEsIFBBR0VfU0laRSAtIDEpOwo+ICAKPiAgCXEtPmxpbWl0cy5kaXNj
+YXJkX2dyYW51bGFyaXR5ID0gbG9naWNhbF9ibG9ja19zaXplOwo+IC0JcS0+bGltaXRzLmRpc2Nh
+cmRfYWxpZ25tZW50ID0gUEFHRV9TSVpFOwo+ICAKPiAgCS8qIENhbGN1bGF0ZSBtYXhfZGlzY2Fy
+ZF9zZWN0b3JzIGFuZCBtYWtlIGl0IFBBR0UgYWxpZ25lZCAqLwo+ICAJbWF4X2J5dGVzID0gVVNI
+UlRfTUFYICogbG9naWNhbF9ibG9ja19zaXplOwoKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0
+cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vbGludXgtdW0K
 
