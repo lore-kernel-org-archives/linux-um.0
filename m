@@ -1,27 +1,22 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-oi1-x235.google.com ([2607:f8b0:4864:20::235])
+Received: from conssluserg-02.nifty.com ([210.131.2.81])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nlwyB-007A0a-Fw
- for linux-um@lists.infradead.org; Tue, 03 May 2022 18:09:56 +0000
-Received: by mail-oi1-x235.google.com with SMTP id m25so5082494oih.2
- for <linux-um@lists.infradead.org>; Tue, 03 May 2022 11:09:55 -0700 (PDT)
-Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com.
- [209.85.167.173]) by smtp.gmail.com with ESMTPSA id
- v4-20020a9d4e84000000b006060322124bsm4267882otk.27.2022.05.03.11.09.54
- for <linux-um@lists.infradead.org>
- (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
- Tue, 03 May 2022 11:09:54 -0700 (PDT)
-Received: by mail-oi1-f173.google.com with SMTP id l16so11739158oil.6
- for <linux-um@lists.infradead.org>; Tue, 03 May 2022 11:09:54 -0700 (PDT)
+ id 1nnlfr-00AsnO-Lo
+ for linux-um@lists.infradead.org; Sun, 08 May 2022 18:30:33 +0000
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com
+ [209.85.210.169]) (authenticated)
+ by conssluserg-02.nifty.com with ESMTP id 248IU6qL008759
+ for <linux-um@lists.infradead.org>; Mon, 9 May 2022 03:30:06 +0900
+Received: by mail-pf1-f169.google.com with SMTP id 204so7680090pfx.3
+ for <linux-um@lists.infradead.org>; Sun, 08 May 2022 11:30:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
- <20220427224924.592546-5-gpiccoli@igalia.com>
-In-Reply-To: <20220427224924.592546-5-gpiccoli@igalia.com>
-From: Evan Green <evgreen@chromium.org>
-Date: Tue, 3 May 2022 11:03:37 -0700
-Message-ID: <CAE=gft5Pq25L4KFoPWbftkPF-JN1ex2yws77mMJ4GQnn9W0L2g@mail.gmail.com>
-Subject: Re: [PATCH 04/30] firmware: google: Convert regular spinlock into
- trylock on panic path
+References: <20220505072244.1155033-1-masahiroy@kernel.org>
+In-Reply-To: <20220505072244.1155033-1-masahiroy@kernel.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Mon, 9 May 2022 03:28:55 +0900
+Message-ID: <CAK7LNAQg2JG2DAuRJmNLryDh_o_PoFUXnJ+6C=-AE+NXZy9pTg@mail.gmail.com>
+Subject: Re: [PATCH v3 00/15] kbuild: yet another series of cleanups (modpost, 
+ LTO, MODULE_REL_CRCS)
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -34,66 +29,90 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, Linux PM <linux-pm@vger.kernel.org>, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>, Jonathan Corbet <corbet@lwn.net>, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, Kees Cook <keescook@chromium.org>, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, Alan Stern <stern@rowland.harvard.edu>, Thomas Gleixner <tglx@linutronix.de>, vgoyal@redhat.com, vkuznets@redhat.com, Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, David Gow <davidgow@google.com>, Julius Werner <jwerner@chromium.org>
+To: Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Cc: clang-built-linux <clang-built-linux@googlegroups.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Nicolas Schier a <nicolas@fjasle.eu>, Ard Biesheuvel <ardb@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Peter Zijlstra <peterz@infradead.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-um@lists.infradead.org, linux-s390 <linux-s390@vger.kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, Sami Tolvanen <samitolvanen@google.com>, Kees Cook <keescook@chromium.org>
 
-On Wed, Apr 27, 2022 at 3:51 PM Guilherme G. Piccoli
-<gpiccoli@igalia.com> wrote:
+On Thu, May 5, 2022 at 4:24 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
 >
-> Currently the gsmi driver registers a panic notifier as well as
-> reboot and die notifiers. The callbacks registered are called in
-> atomic and very limited context - for instance, panic disables
-> preemption, local IRQs and all other CPUs that aren't running the
-> current panic function.
 >
-> With that said, taking a spinlock in this scenario is a
-> dangerous invitation for a deadlock scenario. So, we fix
-> that in this commit by changing the regular spinlock with
-> a trylock, which is a safer approach.
+> This is the third batch of cleanups in this development cycle.
 >
-> Fixes: 74c5b31c6618 ("driver: Google EFI SMI")
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> Cc: David Gow <davidgow@google.com>
-> Cc: Evan Green <evgreen@chromium.org>
-> Cc: Julius Werner <jwerner@chromium.org>
-> Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
-> ---
->  drivers/firmware/google/gsmi.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+> Major changes in v3:
 >
-> diff --git a/drivers/firmware/google/gsmi.c b/drivers/firmware/google/gsmi.c
-> index adaa492c3d2d..b01ed02e4a87 100644
-> --- a/drivers/firmware/google/gsmi.c
-> +++ b/drivers/firmware/google/gsmi.c
-> @@ -629,7 +629,10 @@ static int gsmi_shutdown_reason(int reason)
->         if (saved_reason & (1 << reason))
->                 return 0;
+>  - Generate symbol CRCs as C code, and remove CONFIG_MODULE_REL_CRCS.
 >
-> -       spin_lock_irqsave(&gsmi_dev.lock, flags);
-> +       if (!spin_trylock_irqsave(&gsmi_dev.lock, flags)) {
-> +               rc = -EBUSY;
-> +               goto out;
-> +       }
+> Major changes in v2:
+>
+>  - V1 did not work with CONFIG_MODULE_REL_CRCS.
+>    I fixed this for v2.
+>
+>  - Reflect some review comments in v1
+>
+>  - Refactor the code more
+>
+>  - Avoid too long argument error
+>
+>
+> Masahiro Yamada (15):
+>   modpost: mitigate false-negatives for static EXPORT_SYMBOL checks
+>   modpost: change the license of EXPORT_SYMBOL to bool type
+>   modpost: merge add_{intree_flag,retpoline,staging_flag} to add_header
+>   modpost: move *.mod.c generation to write_mod_c_files()
+>   kbuild: generate a list of objects in vmlinux
+>   kbuild: record symbol versions in *.cmd files
+>   modpost: extract symbol versions from *.cmd files
+>   kbuild: link symbol CRCs at final link, removing
+>     CONFIG_MODULE_REL_CRCS
+>   kbuild: stop merging *.symversions
+>   genksyms: adjust the output format to modpost
+>   kbuild: do not create *.prelink.o for Clang LTO or IBT
+>   modpost: simplify the ->is_static initialization
+>   modpost: use hlist for hash table implementation
+>   kbuild: make built-in.a rule robust against too long argument error
+>   kbuild: make *.mod rule robust against too long argument error
 
-gsmi_shutdown_reason() is a common function called in other scenarios
-as well, like reboot and thermal trip, where it may still make sense
-to wait to acquire a spinlock. Maybe we should add a parameter to
-gsmi_shutdown_reason() so that you can get your change on panic, but
-we don't convert other callbacks into try-fail scenarios causing us to
-miss logs.
 
-Though thinking more about it, is this really a Good Change (TM)? The
-spinlock itself already disables interrupts, meaning the only case
-where this change makes a difference is if the panic happens from
-within the function that grabbed the spinlock (in which case the
-callback is also likely to panic), or in an NMI that panics within
-that window. The downside of this change is that if one core was
-politely working through an event with the lock held, and another core
-panics, we now might lose the panic log, even though it probably would
-have gone through fine assuming the other core has a chance to
-continue.
+Only 03-06 were applied.
 
--Evan
+I will send v4 for the rest.
+(I rewrote the static EXPORT checks).
+
+>
+>  arch/powerpc/Kconfig         |   1 -
+>  arch/s390/Kconfig            |   1 -
+>  arch/um/Kconfig              |   1 -
+>  include/asm-generic/export.h |  22 +-
+>  include/linux/export.h       |  30 +--
+>  include/linux/symversion.h   |  13 +
+>  init/Kconfig                 |   4 -
+>  kernel/module.c              |  10 +-
+>  scripts/Kbuild.include       |   4 +
+>  scripts/Makefile.build       | 118 +++------
+>  scripts/Makefile.lib         |   7 -
+>  scripts/Makefile.modfinal    |   5 +-
+>  scripts/Makefile.modpost     |   9 +-
+>  scripts/genksyms/genksyms.c  |  18 +-
+>  scripts/link-vmlinux.sh      |  46 ++--
+>  scripts/mod/file2alias.c     |   2 -
+>  scripts/mod/list.h           |  52 ++++
+>  scripts/mod/modpost.c        | 449 ++++++++++++++++++++---------------
+>  scripts/mod/modpost.h        |   2 +
+>  19 files changed, 402 insertions(+), 392 deletions(-)
+>  create mode 100644 include/linux/symversion.h
+>
+> --
+> 2.32.0
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20220505072244.1155033-1-masahiroy%40kernel.org.
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
 
 _______________________________________________
 linux-um mailing list
