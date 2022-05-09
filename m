@@ -1,13 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Thu, 12 May 2022 16:03:10 +0200
-From: Petr Mladek <pmladek@suse.com>
+Message-ID: <92e03ebf-6a64-69dc-bf16-9552b9fedad8@igalia.com>
+Date: Mon, 9 May 2022 13:39:21 -0300
+MIME-Version: 1.0
 Subject: Re: [PATCH 24/30] panic: Refactor the panic path
-Message-ID: <Yn0TnsWVxCcdB2yO@alley>
+Content-Language: en-US
 References: <20220427224924.592546-1-gpiccoli@igalia.com>
  <20220427224924.592546-25-gpiccoli@igalia.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220427224924.592546-25-gpiccoli@igalia.com>
+ <TYAPR01MB6507D01F5694BC33628BB7DB95C69@TYAPR01MB6507.jpnprd01.prod.outlook.com>
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <TYAPR01MB6507D01F5694BC33628BB7DB95C69@TYAPR01MB6507.jpnprd01.prod.outlook.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,390 +21,152 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Cc: akpm@linux-foundation.org, bhe@redhat.com, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org
+To: "d.hatayama@fujitsu.com" <d.hatayama@fujitsu.com>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "bhe@redhat.com" <bhe@redhat.com>, "pmladek@suse.com" <pmladek@suse.com>, "kexec@lists.infradead.org" <kexec@lists.infradead.org>, Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>, "mikelley@microsoft.com" <mikelley@microsoft.com>, Hari Bathini <hbathini@linux.ibm.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "bcm-kernel-feedback-list@broadcom.com" <bcm-kernel-feedback-list@broadcom.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>, "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>, "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>, "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "openipmi-developer@lists.sourceforge.net" <openipmi-developer@lists.sourceforge.net>, "rcu@vger.kernel.org" <rcu@vger.kernel.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>, "x86@kernel.org" <x86@kernel.org>, "kernel-dev@igalia.com" <kernel-dev@igalia.com>, "kernel@gpiccoli.net" <kernel@gpiccoli.net>, "halves@canonical.com" <halves@canonical.com>, "fabiomirmar@gmail.com" <fabiomirmar@gmail.com>, "alejandro.j.jimenez@oracle.com" <alejandro.j.jimenez@oracle.com>, "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>, "arnd@arndb.de" <arnd@arndb.de>, "bp@alien8.de" <bp@alien8.de>, "corbet@lwn.net" <corbet@lwn.net>, "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "dyoung@redhat.com" <dyoung@redhat.com>, "feng.tang@intel.com" <feng.tang@intel.com>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "hidehiro.kawai.ez@hitachi.com" <hidehiro.kawai.ez@hitachi.com>, "jgross@suse.com" <jgross@suse.com>, "john.ogness@linutronix.de" <john.ogness@linutronix.de>, "keescook@chromium.org" <keescook@chromium.org>, "luto@kernel.org" <luto@kernel.org>, "mhiramat@kernel.org" <mhiramat@kernel.org>, "mingo@redhat.com" <mingo@redhat.com>, "paulmck@kernel.org" <paulmck@kernel.org>, "peterz@infradead.org" <peterz@infradead.org>, "rostedt@goodmis.org" <rostedt@goodmis.org>, "senozhatsky@chromium.org" <senozhatsky@chromium.org>, "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>, "tglx@linutronix.de" <tglx@linutronix.de>, "vgoyal@redhat.com" <vgoyal@redhat.com>, "vkuznets@redhat.com" <vkuznets@redhat.com>, "will@kernel.org" <will@kernel.org>
 
-Hello,
+Hey Hatayma, thanks for your great analysis and no need for apologies!
 
-first, I am sorry for stepping into the discussion so late.
-I was busy with some other stuff and this patchset is far
-from trivial.
+I'll comment/respond properly inline below, just noticing here that I've
+CCed Mark and Marc (from the ARM64 perspective), Michael (Hyper-V
+perspective) and Hari (PowerPC perspective), besides the usual suspects
+as Petr, Baoquan, etc.
 
-Second, thanks a lot for putting so much effort into it.
-Most of the changes look pretty good, especially all
-the fixes of particular notifiers and split into
-four lists.
-
-Though this patch will need some more love. See below
-for more details.
-
-
-On Wed 2022-04-27 19:49:18, Guilherme G. Piccoli wrote:
-> The panic() function is somewhat convoluted - a lot of changes were
-> made over the years, adding comments that might be misleading/outdated
-> now, it has a code structure that is a bit complex to follow, with
-> lots of conditionals, for example. The panic notifier list is something
-> else - a single list, with multiple callbacks of different purposes,
-> that run in a non-deterministic order and may affect hardly kdump
-> reliability - see the "crash_kexec_post_notifiers" workaround-ish flag.
+On 09/05/2022 12:16, d.hatayama@fujitsu.com wrote:
+> Sorry for the delayed response. Unfortunately, I had 10 days holidays
+> until yesterday...
+> [...] 
+>> +                       We currently have 4 lists of panic notifiers; based
+>> +                       on the functionality and risk (for panic success) the
+>> +                       callbacks are added in a given list. The lists are:
+>> +                       - hypervisor/FW notification list (low risk);
+>> +                       - informational list (low/medium risk);
+>> +                       - pre_reboot list (higher risk);
+>> +                       - post_reboot list (only run late in panic and after
+>> +                       kdump, not configurable for now).
+>> +                       This parameter defines the ordering of the first 3
+>> +                       lists with regards to kdump; the levels determine
+>> +                       which set of notifiers execute before kdump. The
+>> +                       accepted levels are:
+>> +                       0: kdump is the first thing to run, NO list is
+>> +                       executed before kdump.
+>> +                       1: only the hypervisor list is executed before kdump.
+>> +                       2 (default level): the hypervisor list and (*if*
 > 
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -3784,6 +3791,33 @@
->  			timeout < 0: reboot immediately
->  			Format: <timeout>
->  
-> +	panic_notifiers_level=
-> +			[KNL] Set the panic notifiers execution order.
-> +			Format: <unsigned int>
-> +			We currently have 4 lists of panic notifiers; based
-> +			on the functionality and risk (for panic success) the
-> +			callbacks are added in a given list. The lists are:
-> +			- hypervisor/FW notification list (low risk);
-> +			- informational list (low/medium risk);
-> +			- pre_reboot list (higher risk);
-> +			- post_reboot list (only run late in panic and after
-> +			kdump, not configurable for now).
-> +			This parameter defines the ordering of the first 3
-> +			lists with regards to kdump; the levels determine
-> +			which set of notifiers execute before kdump. The
-> +			accepted levels are:
-
-This talks only about kdump. The reality is much more complicated.
-The level affect the order of:
-
-    + notifiers vs. kdump
-    + notifiers vs. crash_dump
-    + crash_dump vs. kdump
-
-There might theoretically many variants of the ordering of kdump,
-crash_dump, and the 4 notifier list. Some variants do not make
-much sense. You choose 5 variants and tried to select them by
-a level number.
-
-The question is if we really could easily describe the meaning this
-way. It is not only about a "level" of notifiers before kdump. It is
-also about the ordering of crash_dump vs. kdump. IMHO, "level"
-semantic does not fit there.
-
-Maybe more parameters might be easier to understand the effect.
-Anyway, we first need to agree on the chosen variants.
-I am going to discuss it more in the code, see below.
-
-
-
-> +			0: kdump is the first thing to run, NO list is
-> +			executed before kdump.
-> +			1: only the hypervisor list is executed before kdump.
-> +			2 (default level): the hypervisor list and (*if*
-> +			there's any kmsg_dumper defined) the informational
-> +			list are executed before kdump.
-> +			3: both the hypervisor and the informational lists
-> +			(always) execute before kdump.
-> +			4: the 3 lists (hypervisor, info and pre_reboot)
-> +			execute before kdump - this behavior is analog to the
-> +			deprecated parameter "crash_kexec_post_notifiers".
-> +
->  	panic_print=	Bitmask for printing system info when panic happens.
->  			User can chose combination of the following bits:
->  			bit 0: print all tasks info
-> --- a/kernel/panic.c
-> +++ b/kernel/panic.c
-> @@ -183,6 +195,112 @@ static void panic_print_sys_info(bool console_flush)
->  		ftrace_dump(DUMP_ALL);
->  }
->  
-> +/*
-> + * Helper that accumulates all console flushing routines executed on panic.
-> + */
-> +static void console_flushing(void)
-> +{
-> +#ifdef CONFIG_VT
-> +	unblank_screen();
-> +#endif
-> +	console_unblank();
-> +
-> +	/*
-> +	 * In this point, we may have disabled other CPUs, hence stopping the
-> +	 * CPU holding the lock while still having some valuable data in the
-> +	 * console buffer.
-> +	 *
-> +	 * Try to acquire the lock then release it regardless of the result.
-> +	 * The release will also print the buffers out. Locks debug should
-> +	 * be disabled to avoid reporting bad unlock balance when panic()
-> +	 * is not being called from OOPS.
-> +	 */
-> +	debug_locks_off();
-> +	console_flush_on_panic(CONSOLE_FLUSH_PENDING);
-> +
-> +	panic_print_sys_info(true);
-> +}
-> +
-> +#define PN_HYPERVISOR_BIT	0
-> +#define PN_INFO_BIT		1
-> +#define PN_PRE_REBOOT_BIT	2
-> +#define PN_POST_REBOOT_BIT	3
-> +
-> +/*
-> + * Determine the order of panic notifiers with regards to kdump.
-> + *
-> + * This function relies in the "panic_notifiers_level" kernel parameter
-> + * to determine how to order the notifiers with regards to kdump. We
-> + * have currently 5 levels. For details, please check the kernel docs for
-> + * "panic_notifiers_level" at Documentation/admin-guide/kernel-parameters.txt.
-> + *
-> + * Default level is 2, which means the panic hypervisor and informational
-> + * (unless we don't have any kmsg_dumper) lists will execute before kdump.
-> + */
-> +static void order_panic_notifiers_and_kdump(void)
-> +{
-> +	/*
-> +	 * The parameter "crash_kexec_post_notifiers" is deprecated, but
-> +	 * valid. Users that set it want really all panic notifiers to
-> +	 * execute before kdump, so it's effectively the same as setting
-> +	 * the panic notifiers level to 4.
-> +	 */
-> +	if (panic_notifiers_level >= 4 || crash_kexec_post_notifiers)
-> +		return;
-> +
-> +	/*
-> +	 * Based on the level configured (smaller than 4), we clear the
-> +	 * proper bits in "panic_notifiers_bits". Notice that this bitfield
-> +	 * is initialized with all notifiers set.
-> +	 */
-> +	switch (panic_notifiers_level) {
-> +	case 3:
-> +		clear_bit(PN_PRE_REBOOT_BIT, &panic_notifiers_bits);
-> +		break;
-> +	case 2:
-> +		clear_bit(PN_PRE_REBOOT_BIT, &panic_notifiers_bits);
-> +
-> +		if (!kmsg_has_dumpers())
-> +			clear_bit(PN_INFO_BIT, &panic_notifiers_bits);
-> +		break;
-> +	case 1:
-> +		clear_bit(PN_PRE_REBOOT_BIT, &panic_notifiers_bits);
-> +		clear_bit(PN_INFO_BIT, &panic_notifiers_bits);
-> +		break;
-> +	case 0:
-> +		clear_bit(PN_PRE_REBOOT_BIT, &panic_notifiers_bits);
-> +		clear_bit(PN_INFO_BIT, &panic_notifiers_bits);
-> +		clear_bit(PN_HYPERVISOR_BIT, &panic_notifiers_bits);
-> +		break;
-> +	}
-> +}
->
-> +/*
-> + * Set of helpers to execute the panic notifiers only once.
-> + * Just the informational notifier cares about the return.
-> + */
-> +static inline bool notifier_run_once(struct atomic_notifier_head head,
-> +				     char *buf, long bit)
-> +{
-> +	if (test_and_change_bit(bit, &panic_notifiers_bits)) {
-> +		atomic_notifier_call_chain(&head, PANIC_NOTIFIER, buf);
-> +		return true;
-> +	}
-> +	return false;
-> +}
-
-Here is the code using the above functions. It helps to discuss
-the design and logic.
-
-<kernel/panic.c>
-	order_panic_notifiers_and_kdump();
-
-	/* If no level, we should kdump ASAP. */
-	if (!panic_notifiers_level)
-		__crash_kexec(NULL);
-
-	crash_smp_send_stop();
-	panic_notifier_hypervisor_once(buf);
-
-	if (panic_notifier_info_once(buf))
-		kmsg_dump(KMSG_DUMP_PANIC);
-
-	panic_notifier_pre_reboot_once(buf);
-
-	__crash_kexec(NULL);
-
-	panic_notifier_hypervisor_once(buf);
-
-	if (panic_notifier_info_once(buf))
-		kmsg_dump(KMSG_DUMP_PANIC);
-
-	panic_notifier_pre_reboot_once(buf);
-</kernel/panic.c>
-
-I have to say that the logic is very unclear. Almost all
-functions are called twice:
-
-   + __crash_kexec()
-   + kmsg_dump()
-   + panic_notifier_hypervisor_once()
-   + panic_notifier_pre_reboot_once()
-   + panic_notifier_info_once()
-
-It is pretty hard to find what functions are always called in the same
-order and where the order can be inverted.
-
-The really used code path is defined by order_panic_notifiers_and_kdump()
-that encodes "level" into "bits". The bits are then flipped in
-panic_notifier_*_once() calls that either do something or not.
-kmsg_dump() is called according to the bit flip.
-
-It is an interesting approach. I guess that you wanted to avoid too
-many if/then/else levels in panic(). But honestly, it looks like
-a black magic to me.
-
-IMHO, it is always easier to follow if/then/else logic than using
-a translation table that requires additional bit flips when
-a value is used more times.
-
-Also I guess that it is good proof that "level" abstraction does
-not fit here. Normal levels would not need this kind of magic.
-
-
-OK, the question is how to make it better. Let's start with
-a clear picture of the problem:
-
-1. panic() has basically two funtions:
-
-      + show/store debug information (optional ways and amount)
-      + do something with the system (reboot, stay hanged)
-
-
-2. There are 4 ways how to show/store the information:
-
-      + tell hypervisor to store what it is interested about
-      + crash_dump
-      + kmsg_dump()
-      + consoles
-
-  , where crash_dump and consoles are special:
-
-     + crash_dump does not return. Instead it ends up with reboot.
-
-     + Consoles work transparently. They just need an extra flush
-       before reboot or staying hanged.
-
-
-3. The various notifiers do things like:
-
-     + tell hypervisor about the crash
-     + print more information (also stop watchdogs)
-     + prepare system for reboot (touch some interfaces)
-     + prepare system for staying hanged (blinking)
-
-   Note that it pretty nicely matches the 4 notifier lists.
-
-
-Now, we need to decide about the ordering. The main area is how
-to store the debug information. Consoles are transparent so
-the quesition is about:
-
-     + hypervisor
-     + crash_dump
-     + kmsg_dump
-
-Some people need none and some people want all. There is a
-risk that system might hung at any stage. This why people want to
-make the order configurable.
-
-But crash_dump() does not return when it succeeds. And kmsg_dump()
-users havn't complained about hypervisor problems yet. So, that
-two variants might be enough:
-
-    + crash_dump (hypervisor, kmsg_dump as fallback)
-    + hypervisor, kmsg_dump, crash_dump
-
-One option "panic_prefer_crash_dump" should be enough.
-And the code might look like:
-
-void panic()
-{
-[...]
-	dump_stack();
-	kgdb_panic(buf);
-
-	< ---  here starts the reworked code --- >
-
-	/* crash dump is enough when enabled and preferred. */
-	if (panic_prefer_crash_dump)
-		__crash_kexec(NULL);
-
-	/* Stop other CPUs and focus on handling the panic state. */
-	if (has_kexec_crash_image)
-		crash_smp_send_stop();
-	else
-		smp_send_stop()
-
-	/* Notify hypervisor about the system panic. */
-	atomic_notifier_call_chain(&panic_hypervisor_list, 0, NULL);
-
-	/*
-	 * No need to risk extra info when there is no kmsg dumper
-	 * registered.
-	 */
-	if (!has_kmsg_dumper())
-		__crash_kexec(NULL);
-
-	/* Add extra info from different subsystems. */
-	atomic_notifier_call_chain(&panic_info_list, 0, NULL);
-
-	kmsg_dump(KMSG_DUMP_PANIC);
-	__crash_kexec(NULL);
-
-	/* Flush console */
-	unblank_screen();
-	console_unblank();
-	debug_locks_off();
-	console_flush_on_panic(CONSOLE_FLUSH_PENDING);
-
-	if (panic_timeout > 0) {
-		delay()
-	}
-
-	/*
-	 * Prepare system for eventual reboot and allow custom
-	 * reboot handling.
-	 */
-	atomic_notifier_call_chain(&panic_reboot_list, 0, NULL);
-
-	if (panic_timeout != 0) {
-		reboot();
-	}
-
-	/*
-	 * Prepare system for the infinite waiting, for example,
-	 * setup blinking.
-	 */
-	atomic_notifier_call_chain(&panic_loop_list, 0, NULL);
-
-	infinite_loop();
-}
-
-
-__crash_kexec() is there 3 times but otherwise the code looks
-quite straight forward.
-
-Note 1: I renamed the two last notifier list. The name 'post-reboot'
-	did sound strange from the logical POV ;-)
-
-Note 2: We have to avoid the possibility to call "reboot" list
-	before kmsg_dump(). All callbacks providing info
-	have to be in the info list. It a callback combines
-	info and reboot functionality then it should be split.
-
-	There must be another way to calm down problematic
-	info callbacks. And it has to be solved when such
-	a problem is reported. Is there any known issue, please?
-
-It is possible that I have missed something important.
-But I would really like to make the logic as simple as possible.
-
-Best Regards,
-Petr
+> Hmmm, why are you trying to change default setting?
+> 
+> Based on the current design of kdump, it's natural to put what the
+> handlers for these level 1 and level 2 handlers do in
+> machine_crash_shutdown(), as these are necessary by default, right?
+> 
+> Or have you already tried that and figured out it's difficult in some
+> reason and reached the current design? If so, why is that difficult?
+> Could you point to if there is already such discussion online?
+> 
+> kdump is designed to perform as little things as possible before
+> transferring the execution to the 2nd kernel in order to increase
+> reliability. Just detour to panic() increases risks of kdump failure
+> in the sense of increasing the executed codes in the abnormal
+> situation, which is very the note in the explanation of
+> crash_kexec_post_notifiers.
+> 
+> Also, the current implementation of crash_kexec_post_notifiers uses
+> the panic notifier, but this is not from the technical
+> reason. Ideally, it should have been implemented in the context of
+> crash_kexec() independently of panic().
+> 
+> That is, it looks to me that, in addition to changing design of panic
+> notifier, you are trying to integrate shutdown code of the crash kexec
+> and the panic paths. If so, this is a big design change for kdump.
+> I'm concerned about increase of reliability. I'd like you to discuss
+> them carefully.
+
+From my understanding (specially based on both these threads [0] and
+[1]), 3 facts are clear and quite complex in nature:
+
+(a) Currently, the panic notifier list is a "no man's land" - it's a
+mess, all sort of callbacks are added there, some of them are extremely
+risk for breaking kdump, others are quite safe (like setting a
+variable). Petr's details in thread [0] are really clear and express in
+great way how confusing and conflicting the panic notifiers goals are.
+
+(b) In order to "address" problems in the antagonistic goals of
+notifiers (see point (a) above and thread [0]), we have this
+quirk/workaround called "crash_kexec_post_notifiers". This is useful,
+but (almost as for attesting how this is working as band-aid over
+complex and fundamental issues) see the following commits:
+
+a11589563e96 ("x86/Hyper-V: Report crash register data or kmsg before
+running crash kernel")
+
+06e629c25daa ("powerpc/fadump: Fix inaccurate CPU state info in vmcore
+generated with panic")
+
+They hardcode such workaround, because they *need* some notifiers'
+callbacks. But notice they *don't need all of them*, only some important
+ones (that usually are good considering the risk, it's a good
+cost/benefit). Since we currently have an all-or-nothing behavior for
+the panic notifiers, both PowerPC and Hyper-V end-up bringing all of
+them to run before kdump due to the lack of flexibility, increasing a
+lot the risk of failure for kdump.
+
+(c) To add on top of all such complexity, we don't have a custom
+machine_crash_shutdown() handler for some architectures like ARM64, and
+the feeling is that's not right to add a bunch of callbacks / complexity
+in such architecture code, specially since we have the notifiers
+infrastructure in the kernel. I've recently started a discussion about
+that with ARM64 community, please take a look in [1].
+
+With that said, we can use (a) + (b) + (c) to justify our argument here:
+the panic notifiers should be refactored! We need to try to encompass
+the antagonistic goals of kdump (wants to be the first thing to run,
+early as possible) VS. the notifiers that are necessary, even before
+kdump (like Hyper-V / PowerPC fadump ones, but there are more of these,
+the FW/hypervisors notifiers).
+
+I guarantee to you we cannot make 100% of people happy - the
+panic-related areas like kdump, etc are full of trade-offs. We improve
+something, other stuff breaks. This series attempts to clearly
+distribute the notifiers in 3 buckets, and introduces a level setting
+that tunes such buckets to run before or after the kdump in a highly
+flexible way, trying to make the most users happy and capable of tuning
+their systems.
+
+I understand that likely setting the notifiers to 0 would make kdump
+maintainers happy, because we'd keep the same behavior as before.
+But..then we make PPC / Hyper-V and some other users unsatisfied. Level
+2 seems to me a good compromise. I'm willing to add a KConfig option to
+allow distros to hard set their defaults - that might make sense to
+legacy distros as older RHEL / CentOS or server-only distros.
+
+Finally, you mention about integrating the crash shutdown and the panic
+paths - I'm not officially doing that, but I see that they are very
+related and all cases I've ever seen in the last 3-4 years I've been
+working with kdump, it was triggered from panic, from settings "panic_on_X".
+
+I understand we have the regular kexec path (!kdump), some notifiers
+might make sense in both paths, and in this case we could duplicate them
+(one callback, 2 notifier lists) and control against double execution. I
+tried doing that in patch 16 of this series (Hyper-V stuff), but due to
+the lack of ARM64 custom crash shutdown handler, I couldn't. We can
+think in some alternatives, and improve these (naturally)
+connected/related paths, but this is not the goal of this specific
+series. I'm hereby trying to improve/clarify the panic (and kdump) path,
+not the pure kexec path.
+
+Let me know if I can clarify more specific points you have or if there
+are flaws in my logic - I appreciate the discussions/reviews.
+Cheers,
+
+
+Guilherme
+
+
+
+[0] "notifier/panic: Introduce panic_notifier_filter" -
+https://lore.kernel.org/lkml/YfPxvzSzDLjO5ldp@alley/
+
+[1] "Should arm64 have a custom crash shutdown handler?" -
+https://lore.kernel.org/lkml/427a8277-49f0-4317-d6c3-4a15d7070e55@igalia.com/
 
 _______________________________________________
 linux-um mailing list
