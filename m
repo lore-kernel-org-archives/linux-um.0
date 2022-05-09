@@ -1,16 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out03.mta.xmission.com ([166.70.13.233])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nmNgW-00D6St-Lo
- for linux-um@lists.infradead.org; Wed, 04 May 2022 22:41:30 +0000
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-Date: Wed,  4 May 2022 17:40:51 -0500
-Message-Id: <20220504224058.476193-4-ebiederm@xmission.com>
-In-Reply-To: <87k0b0apne.fsf_-_@email.froward.int.ebiederm.org>
-References: <87k0b0apne.fsf_-_@email.froward.int.ebiederm.org>
+Message-ID: <e4c71307-d59c-fec8-1fef-f67b86d5fb07@igalia.com>
+Date: Mon, 9 May 2022 13:26:10 -0300
 MIME-Version: 1.0
-Subject: [PATCH v3 04/11] ptrace/xtensa: Replace PT_SINGLESTEP with
- TIF_SINGLESTEP
+Subject: Re: [PATCH 09/30] coresight: cpu-debug: Replace mutex with
+ mutex_trylock on panic notifier
+Content-Language: en-US
+References: <20220427224924.592546-1-gpiccoli@igalia.com>
+ <20220427224924.592546-10-gpiccoli@igalia.com>
+ <3cafe4fd-8a0b-2633-44a3-2995abd6c38c@arm.com>
+ <65f24bc5-2211-0139-ee12-b2608e81ceb1@igalia.com>
+ <d9ec6f31-6125-0723-b7d7-5898abeb3289@arm.com>
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <d9ec6f31-6125-0723-b7d7-5898abeb3289@arm.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,88 +24,18 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>, stable@vger.kernel.org
+To: Suzuki K Poulose <suzuki.poulose@arm.com>, akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, Leo Yan <leo.yan@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Mike Leach <mike.leach@linaro.org>
 
-xtensa is the last user of the PT_SINGLESTEP flag.  Changing tsk->ptrace in
-user_enable_single_step and user_disable_single_step without locking could
-potentiallly cause problems.
+On 09/05/2022 13:14, Suzuki K Poulose wrote:
+> [...]> 
+> I have queued this to coresight/next.
+> 
+> Thanks
+> Suzuki
 
-So use a thread info flag instead of a flag in tsk->ptrace.  Use TIF_SINGLESTEP
-that xtensa already had defined but unused.
 
-Remove the definitions of PT_SINGLESTEP and PT_BLOCKSTEP as they have no more users.
-
-Cc: stable@vger.kernel.org
-Acked-by: Max Filippov <jcmvbkbc@gmail.com>
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
----
- arch/xtensa/kernel/ptrace.c | 4 ++--
- arch/xtensa/kernel/signal.c | 4 ++--
- include/linux/ptrace.h      | 6 ------
- 3 files changed, 4 insertions(+), 10 deletions(-)
-
-diff --git a/arch/xtensa/kernel/ptrace.c b/arch/xtensa/kernel/ptrace.c
-index 323c678a691f..b952e67cc0cc 100644
---- a/arch/xtensa/kernel/ptrace.c
-+++ b/arch/xtensa/kernel/ptrace.c
-@@ -225,12 +225,12 @@ const struct user_regset_view *task_user_regset_view(struct task_struct *task)
- 
- void user_enable_single_step(struct task_struct *child)
- {
--	child->ptrace |= PT_SINGLESTEP;
-+	set_tsk_thread_flag(child, TIF_SINGLESTEP);
- }
- 
- void user_disable_single_step(struct task_struct *child)
- {
--	child->ptrace &= ~PT_SINGLESTEP;
-+	clear_tsk_thread_flag(child, TIF_SINGLESTEP);
- }
- 
- /*
-diff --git a/arch/xtensa/kernel/signal.c b/arch/xtensa/kernel/signal.c
-index 6f68649e86ba..ac50ec46c8f1 100644
---- a/arch/xtensa/kernel/signal.c
-+++ b/arch/xtensa/kernel/signal.c
-@@ -473,7 +473,7 @@ static void do_signal(struct pt_regs *regs)
- 		/* Set up the stack frame */
- 		ret = setup_frame(&ksig, sigmask_to_save(), regs);
- 		signal_setup_done(ret, &ksig, 0);
--		if (current->ptrace & PT_SINGLESTEP)
-+		if (test_thread_flag(TIF_SINGLESTEP))
- 			task_pt_regs(current)->icountlevel = 1;
- 
- 		return;
-@@ -499,7 +499,7 @@ static void do_signal(struct pt_regs *regs)
- 	/* If there's no signal to deliver, we just restore the saved mask.  */
- 	restore_saved_sigmask();
- 
--	if (current->ptrace & PT_SINGLESTEP)
-+	if (test_thread_flag(TIF_SINGLESTEP))
- 		task_pt_regs(current)->icountlevel = 1;
- 	return;
- }
-diff --git a/include/linux/ptrace.h b/include/linux/ptrace.h
-index 4c06f9f8ef3f..c952c5ba8fab 100644
---- a/include/linux/ptrace.h
-+++ b/include/linux/ptrace.h
-@@ -46,12 +46,6 @@ extern int ptrace_access_vm(struct task_struct *tsk, unsigned long addr,
- #define PT_EXITKILL		(PTRACE_O_EXITKILL << PT_OPT_FLAG_SHIFT)
- #define PT_SUSPEND_SECCOMP	(PTRACE_O_SUSPEND_SECCOMP << PT_OPT_FLAG_SHIFT)
- 
--/* single stepping state bits (used on ARM and PA-RISC) */
--#define PT_SINGLESTEP_BIT	31
--#define PT_SINGLESTEP		(1<<PT_SINGLESTEP_BIT)
--#define PT_BLOCKSTEP_BIT	30
--#define PT_BLOCKSTEP		(1<<PT_BLOCKSTEP_BIT)
--
- extern long arch_ptrace(struct task_struct *child, long request,
- 			unsigned long addr, unsigned long data);
- extern int ptrace_readdata(struct task_struct *tsk, unsigned long src, char __user *dst, int len);
--- 
-2.35.3
-
+Thanks a lot Suzuki!
 
 _______________________________________________
 linux-um mailing list
