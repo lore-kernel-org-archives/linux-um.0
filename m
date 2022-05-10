@@ -1,16 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out03.mta.xmission.com ([166.70.13.233])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nrSYt-004Bly-UM
- for linux-um@lists.infradead.org; Wed, 18 May 2022 22:54:37 +0000
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-Date: Wed, 18 May 2022 17:53:40 -0500
-Message-Id: <20220518225355.784371-1-ebiederm@xmission.com>
-In-Reply-To: <871qwq5ucx.fsf_-_@email.froward.int.ebiederm.org>
-References: <871qwq5ucx.fsf_-_@email.froward.int.ebiederm.org>
+Message-ID: <24a56892-adb3-809c-8c35-b5b5f001c283@igalia.com>
+Date: Tue, 10 May 2022 17:11:08 -0300
 MIME-Version: 1.0
-Subject: [PATCH 01/16] signal/alpha: Remove unused definition of
- TASK_REAL_PARENT
+Subject: Re: [PATCH 01/30] x86/crash,reboot: Avoid re-disabling VMX in all
+ CPUs on crash/restart
+Content-Language: en-US
+References: <20220427224924.592546-1-gpiccoli@igalia.com>
+ <20220427224924.592546-2-gpiccoli@igalia.com> <Ynk40U/KA+hLBZRC@google.com>
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <Ynk40U/KA+hLBZRC@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,36 +21,124 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, Robert OCallahan <roc@pernos.co>, Kyle Huey <khuey@pernos.co>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Jason Wessel <jason.wessel@windriver.com>, Daniel Thompson <daniel.thompson@linaro.org>, Douglas Anderson <dianders@chromium.org>, Douglas Miller <dougmill@linux.vnet.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, "Eric W. Biederman" <ebiederm@xmission.com>, linux-alpha@vger.kernel.org
+To: Sean Christopherson <seanjc@google.com>
+Cc: akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, "David P . Reed" <dpreed@deepplum.com>, Paolo Bonzini <pbonzini@redhat.com>
 
-Rather than update this defition when I move tsk->real_parent into
-signal_struct remove it now.
+On 09/05/2022 12:52, Sean Christopherson wrote:
+> I find the shortlog to be very confusing, the bug has nothing to do with disabling
+> VMX and I distinctly remember wrapping VMXOFF with exception fixup to prevent doom
+> if VMX is already disabled :-).  The issue is really that nmi_shootdown_cpus() doesn't
+> play nice with being called twice.
+> 
 
-Cc: Richard Henderson <rth@twiddle.net>
-Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Cc: Matt Turner <mattst88@gmail.com>
-Cc: linux-alpha@vger.kernel.org
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
----
- arch/alpha/kernel/asm-offsets.c | 1 -
- 1 file changed, 1 deletion(-)
+Hey Sean, OK - I agree with you, the issue is really about the double
+list addition.
 
-diff --git a/arch/alpha/kernel/asm-offsets.c b/arch/alpha/kernel/asm-offsets.c
-index 2e125e5c1508..0fca99dc5757 100644
---- a/arch/alpha/kernel/asm-offsets.c
-+++ b/arch/alpha/kernel/asm-offsets.c
-@@ -21,7 +21,6 @@ void foo(void)
- 
-         DEFINE(TASK_BLOCKED, offsetof(struct task_struct, blocked));
-         DEFINE(TASK_CRED, offsetof(struct task_struct, cred));
--        DEFINE(TASK_REAL_PARENT, offsetof(struct task_struct, real_parent));
-         DEFINE(TASK_GROUP_LEADER, offsetof(struct task_struct, group_leader));
-         DEFINE(TASK_TGID, offsetof(struct task_struct, tgid));
-         BLANK();
--- 
-2.35.3
+> [...]
+> 
+> Call stacks for the two callers would be very, very helpful.
+> [...]
 
+> This feels like were just adding more duct tape to the mess.  nmi_shootdown() is
+> still unsafe for more than one caller, and it takes a _lot_ of staring and searching
+> to understand that crash_smp_send_stop() is invoked iff CONFIG_KEXEC_CORE=y, i.e.
+> that it will call smp_ops.crash_stop_other_cpus() and not just smp_send_stop().
+> 
+> Rather than shared a flag between two relatively unrelated functions, what if we
+> instead disabling virtualization in crash_nmi_callback() and then turn the reboot
+> call into a nop if an NMI shootdown has already occurred?  That will also add a
+> bit of documentation about multiple shootdowns not working.
+> 
+> And I believe there's also a lurking bug in native_machine_emergency_restart() that
+> can be fixed with cleanup.  SVM can also block INIT and so should be disabled during
+> an emergency reboot.
+> 
+> The attached patches are compile tested only.  If they seem sane, I'll post an
+> official mini series.
+
+Thanks Sean, it makes sense - my patch is more a "band-aid" whereas
+yours fixes it in a more generic way. Confess I found the logic of your
+patch complex, but as you said, it requires a *lot* of code analysis to
+understand these multiple shutdown patches, the problem is complicated
+by nature heh
+
+I've tested your patch 0001 and it works well for all cases [0], so go
+ahead and submit the miniseries, feel free to add:
+
+Reported-and-tested-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
+
+
+I've read patch 0002 and it makes sense to me as well, a good proactive
+bug fix =)
+
+With that said, I'll of course drop this one from V2 of this series.
+Cheers,
+
+
+Guilherme
+
+
+
+
+[0]
+A summary of my tests and the code paths that the panic shutdown take
+depending on some conditions:
+
+New function that disables VMX/SVM: cpu_crash_disable_virtualization()
+[should be executed in every online CPU on shutdown)
+
+The panic path triggers the following call stacks depending on kdump and
+post_notifiers:
+
+
+(1) kexec/kdump + !crash_kexec_post_notifiers
+->machine_crash_shutdown()
+----.crash_shutdown() <custom handler>
+------native_machine_crash_shutdown() [all custom handlers except Xen PV
+call the native generic function]
+--------crash_smp_send_stop()
+----------kdump_nmi_shootdown_cpus()
+------------nmi_shootdown_cpus(kdump_nmi_callback)
+--------------crash_nmi_callback()
+----------------kdump_nmi_callback()
+------------------cpu_crash_disable_virtualization()
+
+
+(2) kexec/kdump + crash_kexec_post_notifiers
+->crash_smp_send_stop()
+----kdump_nmi_shootdown_cpus()
+------nmi_shootdown_cpus(kdump_nmi_callback)
+--------crash_nmi_callback()
+----------kdump_nmi_callback()
+------------cpu_crash_disable_virtualization()
+
+After this path, will execute machine_crash_shutdown() but
+crash_smp_send_stop()
+is guarded against double execution. Also, emergency restart calls
+emergency_vmx_disable_all() .
+
+
+(3) !kexec/kdump + crash_kexec_post_notifiers
+
+Same as (2)
+
+
+(4) !kexec/kdump + !crash_kexec_post_notifiers
+-> smp_send_stop()
+----native_stop_other_cpus()
+------apic_send_IPI_allbutself(REBOOT_VECTOR)
+--------sysvec_reboot
+----------cpu_emergency_vmxoff() <if the IPI approach succeeded, CPU
+stopped here>
+
+If not:
+------register_stop_handler()
+--------apic_send_IPI_allbutself(NMI_VECTOR)
+----------smp_stop_nmi_callback()
+------------cpu_emergency_vmxoff()
+
+After that, emergency_vmx_disable_all() gets called in the emergency
+restart path as well.
 
 _______________________________________________
 linux-um mailing list
