@@ -1,21 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ntqSt-00B9PP-PQ
-	for linux-um@lists.infradead.org; Wed, 25 May 2022 12:50:18 +0000
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com [209.85.218.70])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 038973F1AA
-	for <linux-um@lists.infradead.org>; Wed, 25 May 2022 12:50:08 +0000 (UTC)
-Received: by mail-ej1-f70.google.com with SMTP id bt15-20020a170906b14f00b006fe9c3afbc2so7779730ejb.17
-        for <linux-um@lists.infradead.org>; Wed, 25 May 2022 05:50:08 -0700 (PDT)
-From: Juerg Haefliger <juerg.haefliger@canonical.com>
-Subject: [PATCH 0/2] um: Kconfig: Style cleanups
-Date: Wed, 25 May 2022 14:49:59 +0200
-Message-Id: <20220525125001.47009-1-juerg.haefliger@canonical.com>
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1noRtD-002lh8-Fn
+ for linux-um@lists.infradead.org; Tue, 10 May 2022 15:35:08 +0000
+Date: Tue, 10 May 2022 17:34:53 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+Subject: Re: [PATCH v4 10/12] ptrace: Don't change __state
+Message-ID: <20220510153452.GA23707@redhat.com>
+References: <87a6bv6dl6.fsf_-_@email.froward.int.ebiederm.org>
+ <20220505182645.497868-10-ebiederm@xmission.com>
+ <20220510142202.GB23277@redhat.com>
+ <87ee11wh6b.fsf@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <87ee11wh6b.fsf@email.froward.int.ebiederm.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -28,23 +26,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, linux-um@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, Juerg Haefliger <juerg.haefliger@canonical.com>
+To: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: linux-kernel@vger.kernel.org, rjw@rjwysocki.net, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org
 
-The convention for indentation seems to be a single tab. Help text is
-further indented by an additional two whitespaces. Fix the lines that
-violate these rules.
+On 05/10, Eric W. Biederman wrote:
+>
+> > But I still think that a lockless
+> >
+> > 	if (!(task->jobctl & JOBCTL_PTRACE_FROZEN))
+> > 		return;
+> >
+> > check at the start of ptrace_unfreeze_traced() makes sense to avoid
+> > lock_task_sighand() if possible.
+> >
+> > And ptrace_resume() can probably clear JOBCTL_PTRACE_FROZEN along with
+> > JOBCTL_TRACED to make this optimization work better. The same for
+> > ptrace_signal_wake_up().
+>
+> What do you have that suggests that taking siglock there is a problem?
 
-Juerg Haefliger (2):
-  um: Kconfig: Fix indentation
-  um/drivers: Kconfig: Fix indentation
+Not necessarily a problem, but this optimization is free. If the tracee
+was resumed, it can compete for siglock with debugger.
 
- arch/um/Kconfig         |  2 +-
- arch/um/drivers/Kconfig | 54 ++++++++++++++++++++---------------------
- 2 files changed, 28 insertions(+), 28 deletions(-)
+> What you propose will definitely work as an incremental change, and
+> in an incremental change we can explain why doing the stupid simple
+> thing is not good enough.
 
--- 
-2.32.0
+OK.
+
+Oleg.
 
 
 _______________________________________________
