@@ -1,13 +1,24 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Wed, 11 May 2022 13:45:41 +0200
-From: Petr Mladek <pmladek@suse.com>
-Subject: Re: [PATCH 17/30] tracing: Improve panic/die notifiers
-Message-ID: <20220511114541.GC26047@pathway.suse.cz>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
- <20220427224924.592546-18-gpiccoli@igalia.com>
+Received: from out03.mta.xmission.com ([166.70.13.233])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nosYc-008Sb0-7U
+ for linux-um@lists.infradead.org; Wed, 11 May 2022 20:03:39 +0000
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+References: <20220421150248.667412396@infradead.org>
+ <20220421150654.817117821@infradead.org>
+ <87czhap9dy.fsf@email.froward.int.ebiederm.org>
+ <878rrrh32q.fsf_-_@email.froward.int.ebiederm.org>
+ <87k0b7v9yk.fsf_-_@email.froward.int.ebiederm.org>
+ <87k0b0apne.fsf_-_@email.froward.int.ebiederm.org>
+ <87a6bv6dl6.fsf_-_@email.froward.int.ebiederm.org>
+ <20220510141119.GA23277@redhat.com>
+ <87lev9xy3n.fsf@email.froward.int.ebiederm.org>
+Date: Wed, 11 May 2022 15:00:12 -0500
+In-Reply-To: <87lev9xy3n.fsf@email.froward.int.ebiederm.org> (Eric
+ W. Biederman's message of "Tue, 10 May 2022 09:26:36 -0500")
+Message-ID: <87zgjnsuur.fsf@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220427224924.592546-18-gpiccoli@igalia.com>
+Subject: Re: [PATCH v4 0/12] ptrace: cleaning up ptrace_stop
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,71 +31,49 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Cc: akpm@linux-foundation.org, bhe@redhat.com, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: linux-kernel@vger.kernel.org, rjw@rjwysocki.net, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Jann Horn <jannh@google.com>, Kees Cook <keescook@chromium.org>, linux-ia64@vger.kernel.org
 
-On Wed 2022-04-27 19:49:11, Guilherme G. Piccoli wrote:
-> Currently the tracing dump_on_oops feature is implemented
-> through separate notifiers, one for die/oops and the other
-> for panic. With the addition of panic notifier "id", this
-> patch makes use of such "id" to unify both functions.
-> 
-> It also comments the function and changes the priority of the
-> notifier blocks, in order they run early compared to other
-> notifiers, to prevent useless trace data (like the callback
-> names for the other notifiers). Finally, we also removed an
-> unnecessary header inclusion.
-> 
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -9767,38 +9766,46 @@ static __init int tracer_init_tracefs(void)
->  
->  fs_initcall(tracer_init_tracefs);
->  
-> -static int trace_panic_handler(struct notifier_block *this,
-> -			       unsigned long event, void *unused)
-> +/*
-> + * The idea is to execute the following die/panic callback early, in order
-> + * to avoid showing irrelevant information in the trace (like other panic
-> + * notifier functions); we are the 2nd to run, after hung_task/rcu_stall
-> + * warnings get disabled (to prevent potential log flooding).
-> + */
-> +static int trace_die_panic_handler(struct notifier_block *self,
-> +				unsigned long ev, void *unused)
->  {
-> -	if (ftrace_dump_on_oops)
-> +	int do_dump;
-> +
-> +	if (!ftrace_dump_on_oops)
-> +		return NOTIFY_DONE;
-> +
-> +	switch (ev) {
-> +	case DIE_OOPS:
-> +		do_dump = 1;
-> +		break;
-> +	case PANIC_NOTIFIER:
-> +		do_dump = 1;
-> +		break;
+"Eric W. Biederman" <ebiederm@xmission.com> writes:
 
-DIE_OOPS and PANIC_NOTIFIER are from different enum.
-It feels like comparing apples with oranges here.
+> Oleg Nesterov <oleg@redhat.com> writes:
+>
+>> On 05/05, Eric W. Biederman wrote:
+>>>
+>>> Eric W. Biederman (11):
+>>>       signal: Rename send_signal send_signal_locked
+>>>       signal: Replace __group_send_sig_info with send_signal_locked
+>>>       ptrace/um: Replace PT_DTRACE with TIF_SINGLESTEP
+>>>       ptrace/xtensa: Replace PT_SINGLESTEP with TIF_SINGLESTEP
+>>>       ptrace: Remove arch_ptrace_attach
+>>>       signal: Use lockdep_assert_held instead of assert_spin_locked
+>>>       ptrace: Reimplement PTRACE_KILL by always sending SIGKILL
+>>>       ptrace: Document that wait_task_inactive can't fail
+>>>       ptrace: Admit ptrace_stop can generate spuriuos SIGTRAPs
+>>>       ptrace: Don't change __state
+>>>       ptrace: Always take siglock in ptrace_resume
+>>>
+>>> Peter Zijlstra (1):
+>>>       sched,signal,ptrace: Rework TASK_TRACED, TASK_STOPPED state
+>>
+>> OK, lgtm.
+>>
+>> Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+>>
+>>
+>> I still dislike you removed TASK_WAKEKILL from TASK_TRACED, but I can't
+>> find a good argument against it ;) and yes, this is subjective.
+>
+> Does anyone else have any comments on this patchset?
+>
+> If not I am going to apply this to a branch and get it into linux-next.
 
-IMHO, the proper way to unify the two notifiers is
-a check of the @self parameter. Something like:
+Thank you all.
 
-static int trace_die_panic_handler(struct notifier_block *self,
-				unsigned long ev, void *unused)
-{
-	if (self == trace_die_notifier && val != DIE_OOPS)
-		goto out;
+I have pushed this to my ptrace_stop-cleanup-for-v5.19 branch
+and placed the branch in linux-next.
 
-	ftrace_dump(ftrace_dump_on_oops);
-out:
-	return NOTIFY_DONE;
-}
-
-Best Regards,
-Petr
+Eric
 
 _______________________________________________
 linux-um mailing list
