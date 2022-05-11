@@ -1,15 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pl1-x649.google.com ([2607:f8b0:4864:20::649])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nuIce-00FeVJ-7E
-	for linux-um@lists.infradead.org; Thu, 26 May 2022 18:54:14 +0000
-Received: by mail-pl1-x649.google.com with SMTP id j13-20020a170902da8d00b00161d78a9e3eso1505557plx.17
-        for <linux-um@lists.infradead.org>; Thu, 26 May 2022 11:54:10 -0700 (PDT)
-Date: Thu, 26 May 2022 11:54:02 -0700
-Message-Id: <20220526185402.955870-1-davidgow@google.com>
-Mime-Version: 1.0
-Subject: [PATCH] arch: um: Fix build for statically linked UML w/ constructors
-From: David Gow <davidgow@google.com>
+Message-ID: <37190938-8133-aafa-ea4a-e50f574dd73b@igalia.com>
+Date: Wed, 11 May 2022 17:10:06 -0300
+MIME-Version: 1.0
+Subject: Re: [PATCH 10/30] alpha: Clean-up the panic notifier code
+Content-Language: en-US
+References: <20220427224924.592546-1-gpiccoli@igalia.com>
+ <20220427224924.592546-11-gpiccoli@igalia.com>
+ <f6def662-5742-b3a8-544f-bf15c636d83d@igalia.com> <YnpzpkfuwzJYbPYj@alley>
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <YnpzpkfuwzJYbPYj@alley>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,42 +21,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>
-Cc: David Gow <davidgow@google.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+To: Petr Mladek <pmladek@suse.com>
+Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, rth@gcc.gnu.org, akpm@linux-foundation.org, linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, bhe@redhat.com, kexec@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org
 
-If CONFIG_CONSTUCTORS is enabled on a statically linked
-(CONFIG_STATIC_LINK=y) build of UML, the build fails due to the
-.eh_frame section being both used and discarded:
+On 10/05/2022 11:16, Petr Mladek wrote:
+> [...]
+> Yeah, it is pretty strange behavior.
+> 
+> I looked into the history. This notifier was added into the alpha code
+> in 2.4.0-test2pre2. In this historic code, the default panic() code
+> either rebooted after a timeout or ended in a infinite loop. There
+> was not crasdump at that times.
+> 
+> The notifier allowed to change the behavior. There were 3 notifiers:
+> 
+>    + mips and mips64 ended with blinking in panic()
+>    + alpha did __halt() in this srm case
+> 
+> They both still do this. I guess that it is some historic behavior
+> that people using these architectures are used to.
+> 
+> Anyway, it makes sense to do this as the last notifier after
+> dumping other information.
+> 
+> Reviewed-by: Petr Mladek <pmladek@suse.com>
+> 
+> Best Regards,
+> Petr
 
-ERROR:root:`.eh_frame' referenced in section `.text' of /usr/lib/gcc/x86_64-linux-gnu/11/crtbeginT.o: defined in discarded section `.eh_frame' of /usr/lib/gcc/x86_64-linux-gnu/11/crtbeginT.o
-`.eh_frame' referenced in section `.text' of /usr/lib/gcc/x86_64-linux-gnu/11/crtbeginT.o: defined in discarded section `.eh_frame' of /usr/lib/gcc/x86_64-linux-gnu/11/crtbeginT.o
-
-Instead, keep the .eh_frame section, as we do in dyn.lds.S for
-dynamically linked UML.
-
-This can be reproduced with:
-./tools/testing/kunit/kunit.py run --kconfig_add CONFIG_STATIC_LINK=y --kconfig_add CONFIG_GCOV_KERNEL=y --kconfig_add CONFIG_DEBUG_FS=y
-
-Signed-off-by: David Gow <davidgow@google.com>
----
- arch/um/kernel/uml.lds.S | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
-index 7a8e2b123e29..71a59b8adbdc 100644
---- a/arch/um/kernel/uml.lds.S
-+++ b/arch/um/kernel/uml.lds.S
-@@ -95,6 +95,7 @@ SECTIONS
-   }
- 
-   .got           : { *(.got.plt) *(.got) }
-+  .eh_frame       : { KEEP (*(.eh_frame)) }
-   .dynamic       : { *(.dynamic) }
-   .tdata	  : { *(.tdata .tdata.* .gnu.linkonce.td.*) }
-   .tbss		  : { *(.tbss .tbss.* .gnu.linkonce.tb.*) *(.tcommon) }
--- 
-2.36.1.124.g0e6072fb45-goog
-
+Thanks a bunch for the review - added your tag for V2 =)
 
 _______________________________________________
 linux-um mailing list
