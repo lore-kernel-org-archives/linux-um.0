@@ -1,21 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from wp530.webpack.hosteurope.de ([2a01:488:42:1000:50ed:8234::])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nrvoA-00AiEL-3f
- for linux-um@lists.infradead.org; Fri, 20 May 2022 06:08:19 +0000
-Message-ID: <e9597cbc-cabb-facf-deb6-662d40cf16a3@leemhuis.info>
-Date: Fri, 20 May 2022 08:08:01 +0200
+Message-ID: <178a456d-3961-9bc2-83d2-2b9457d45fbd@igalia.com>
+Date: Sun, 15 May 2022 19:12:55 -0300
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/1] um: fix error return code in winch_tramp()
+Subject: Re: [PATCH 11/30] um: Improve panic notifiers consistency and ordering
 Content-Language: en-US
-References: <20210508032239.2177-1-thunder.leizhen@huawei.com>
- <Yjt31seiNv18HYrf@dev-arch.thelio-3990X>
- <1b03d888-cea3-3e6f-087f-daeb5642a975@leemhuis.info>
- <1087614384.239493.1649583213699.JavaMail.zimbra@nod.at>
- <YlRp9KR1mp3/4Txo@thelio-3990X>
- <1287561645.244713.1649702724736.JavaMail.zimbra@nod.at>
-From: Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <1287561645.244713.1649702724736.JavaMail.zimbra@nod.at>
+References: <20220427224924.592546-1-gpiccoli@igalia.com>
+ <20220427224924.592546-12-gpiccoli@igalia.com> <Ynp2hRodh04K3pzK@alley>
+ <4b003501-f5c3-cd66-d222-88d98c93e141@igalia.com>
+ <1760d499824f9ef053af7a8dac04b48ab7d7fd3d.camel@sipsolutions.net>
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <1760d499824f9ef053af7a8dac04b48ab7d7fd3d.camel@sipsolutions.net>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +18,54 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@nod.at>, Nathan Chancellor <nathan@kernel.org>
-Cc: Thorsten Leemhuis <regressions@leemhuis.info>, Zhen Lei <thunder.leizhen@huawei.com>, Jeff Dike <jdike@addtoit.com>, anton ivanov <anton.ivanov@cambridgegreys.com>, Andrew Morton <akpm@linux-foundation.org>, Eduard-Gabriel Munteanu <maxdamage@aladin.ro>, linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, regressions <regressions@lists.linux.dev>
+To: Johannes Berg <johannes@sipsolutions.net>, Petr Mladek <pmladek@suse.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Richard Weinberger <richard@nod.at>
+Cc: akpm@linux-foundation.org, bhe@redhat.com, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org
 
-T24gMTEuMDQuMjIgMjA6NDUsIFJpY2hhcmQgV2VpbmJlcmdlciB3cm90ZToKPiAtLS0tLSBVcnNw
-csO8bmdsaWNoZSBNYWlsIC0tLS0tCj4+IFZvbjogIk5hdGhhbiBDaGFuY2VsbG9yIiA8bmF0aGFu
-QGtlcm5lbC5vcmc+Cj4+IEkgYXR0ZW1wdGVkIHRvIHByaW50IG91dCB0aGUgZXJyb3IgY29kZSBi
-dXQgaXQgc2VlbXMgbGlrZSB0aGVyZSBpcyBubwo+PiBvdXRwdXQgaW4gdGhlIGNvbnNvbGUgYWZ0
-ZXIgInJlYm9vdDogU3lzdGVtIGhhbHRlZCIuIElmIEkgYWRkIGFuCj4+IHVuY29uZGl0aW9uYWwg
-cHJpbnQgcmlnaHQgYmVmb3JlIHRoZSBjYWxsIHRvIG9zX3NldF9mZF9ibG9jaygpLCBJIHNlZSBp
-dAo+PiBkdXJpbmcgc3RhcnQgdXAgYnV0IEkgZG8gbm90IHNlZSBpdCBkdXJpbmcgc2h1dGRvd24u
-IElzIHRoZXJlIHNvbWUgd2F5Cj4+IHRvIHNlZSB0aGF0IGNvbnNvbGUgb3V0cHV0IGR1cmluZyBz
-aHV0ZG93bj8KPiAKPiBJIHRoaW5rIGluIHRoaXMgY2FzZSB0aGUgZWFzaWVzdCB3YXkgaXMgYXR0
-YWNoaW5nIGdkYiB3aXRoIGEgYnJlYWtwb2ludC4KCkkgbm90aWNlZCB0aGlzIGluIG15IGxpc3Qg
-b2Ygb3BlbiByZWdyZXNzaW9ucy4gSXQgc2VlbXMgdGhlcmUgd2Fzbid0IGFueQpwcm9ncmVzcyB0
-byBnZXQgdGhpcyByZWdyZXNzaW9uIGZpeGVkIChwbGVhc2UgbGV0IG1lIGtub3cgaW4gY2FzZSBJ
-Cm1pc3NlZCBzb21ldGhpbmcpLCBidXQgSSBndWVzcyBub2JvZHkgY29uc2lkZXJlZCBpdCB1cmdl
-bnQgd2hpY2ggaXMKbGlrZWx5IG5vdCB0aGF0IG11Y2ggb2YgYSBwcm9ibGVtIGluIHRoaXMgY2Fz
-ZS4gSGVuY2UgSSdtIG1vdmluZyB0aGlzIHRvCnRoZSBiYWNrLWJ1cm5lcjoKCiNyZWd6Ym90IGJh
-Y2tidXJuZXI6IHNwZWNpYWwgY2FzZSBhbmQgVU1MIGEgbGVpc3VyZSBwdXJzdWl0IGZvciB0aGUK
-bWFpbnRhaW5lcgoKQ2lhbywgVGhvcnN0ZW4gKHdlYXJpbmcgaGlzICd0aGUgTGludXgga2VybmVs
-J3MgcmVncmVzc2lvbiB0cmFja2VyJyBoYXQpCgpQLlMuOiBBcyB0aGUgTGludXgga2VybmVsJ3Mg
-cmVncmVzc2lvbiB0cmFja2VyIEkgZGVhbCB3aXRoIGEgbG90IG9mCnJlcG9ydHMgYW5kIHNvbWV0
-aW1lcyBtaXNzIHNvbWV0aGluZyBpbXBvcnRhbnQgd2hlbiB3cml0aW5nIG1haWxzIGxpa2UKdGhp
-cy4gSWYgdGhhdCdzIHRoZSBjYXNlIGhlcmUsIGRvbid0IGhlc2l0YXRlIHRvIHRlbGwgbWUgaW4g
-YSBwdWJsaWMKcmVwbHksIGl0J3MgaW4gZXZlcnlvbmUncyBpbnRlcmVzdCB0byBzZXQgdGhlIHB1
-YmxpYyByZWNvcmQgc3RyYWlnaHQuCgoKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5m
-cmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
-bnV4LXVtCg==
+On 13/05/2022 11:44, Johannes Berg wrote:
+> [...]
+>> Maybe Anton / Johannes / Richard could give their opinions - appreciate
+>> that, I'm not attached to the priority here, it's more about users'
+>> common usage of UML I can think of...
+> 
+> It's hard to say ... In a sense I'm not sure it matters?
+> 
+> OTOH something like the ftrace dump notifier (kernel/trace/trace.c)
+> might still be useful to run before the mconsole and coredump ones, even
+> if you could probably use gdb to figure out the information.
+> 
+> Personally, I don't have a scenario where I'd care about the trace
+> buffers though, and most of the others I found would seem irrelevant
+> (drivers that aren't even compiled, hung tasks won't really happen since
+> we exit immediately, and similar.)
+> 
+> johannes
+
+Thanks Johannes, I agree with you.
+
+We don't have great ordering now, one thing we need to enforce is the
+order between the 2 UML notifiers, and this patch is doing that..trying
+to order against other callbacks like the ftrace dumper is messy in the
+current code.
+
+OTOH if this patch set is accepted at some point, we'll likely have 3
+lists, and with that we can improve ordering a lot - this notifier for
+instance would run in the pre-reboot list, *after* the ftrace dumper (if
+a kmsg dumper is set).
+
+So, my intention is to keep this patch as is for V2 (with some changes
+Johannes suggested before), unless Petr or the other maintainers want
+something different.
+Cheers,
+
+
+Guilherme
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
