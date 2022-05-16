@@ -1,15 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out03.mta.xmission.com ([166.70.13.233])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nrSZH-004C0s-Kg
- for linux-um@lists.infradead.org; Wed, 18 May 2022 22:55:00 +0000
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-Date: Wed, 18 May 2022 17:53:48 -0500
-Message-Id: <20220518225355.784371-9-ebiederm@xmission.com>
-In-Reply-To: <871qwq5ucx.fsf_-_@email.froward.int.ebiederm.org>
-References: <871qwq5ucx.fsf_-_@email.froward.int.ebiederm.org>
+Message-ID: <90133fbb-2b5e-e7cd-e1fc-1f74e8bcd388@igalia.com>
+Date: Mon, 16 May 2022 13:14:17 -0300
 MIME-Version: 1.0
-Subject: [PATCH 09/16] ptrace: In ptrace_setsiginfo deal with invalid si_signo
+Subject: Re: [PATCH 18/30] notifier: Show function names on notifier routines
+ if DEBUG_NOTIFIERS is set
+Content-Language: en-US
+References: <20220427224924.592546-1-gpiccoli@igalia.com>
+ <20220427224924.592546-19-gpiccoli@igalia.com>
+ <9f44aae6-ec00-7ede-ec19-6e67ceb74510@huawei.com>
+ <20220510132922.61883db0@gandalf.local.home>
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <20220510132922.61883db0@gandalf.local.home>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,47 +23,26 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, Robert OCallahan <roc@pernos.co>, Kyle Huey <khuey@pernos.co>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Jason Wessel <jason.wessel@windriver.com>, Daniel Thompson <daniel.thompson@linaro.org>, Douglas Anderson <dianders@chromium.org>, Douglas Miller <dougmill@linux.vnet.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, "Eric W. Biederman" <ebiederm@xmission.com>
+To: Steven Rostedt <rostedt@goodmis.org>, Xiaoming Ni <nixiaoming@huawei.com>
+Cc: akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, Arjan van de Ven <arjan@linux.intel.com>, Cong Wang <xiyou.wangcong@gmail.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Valentin Schneider <valentin.schneider@arm.com>
 
-If the tracer calls PTRACE_SETSIGINFO it only has an effect if the
-tracee is stopped in ptrace_signal.
+On 10/05/2022 14:29, Steven Rostedt wrote:
+> [...]
+> Also, don't sprinkle #ifdef in C code. Instead:
+> 
+> 	if (IS_ENABLED(CONFIG_DEBUG_NOTIFIERS))
+> 		pr_info("notifers: regsiter %ps()\n",
+> 			n->notifer_call);
+> 
+> 
+> Or define a print macro at the start of the C file that is a nop if it is
+> not defined, and use the macro.
 
-When one of PTRACE_DETACH, PTRACE_SINGLESTEP, PTRACE_SINGLEBLOCK,
-PTRACE_SYSEMU, PTRACE_SYSEMU_SINGLESTEP, PTRACE_SYSCALL, or
-PTRACE_CONT pass in a signel number to continue with the kernel
-validates that signal number and the ptrace_signal verifies the signal
-number matches the si_signo, before the siginfo is used.
+Thanks, I'll go with the IS_ENABLED() idea in V2 - appreciate the hint.
+Cheers,
 
-As the signal number to continue with is verified to be a valid signal
-number the signal number in si_signo must be a valid signal number.
 
-Make this obvious and avoid needing checks later by immediately
-clearing siginfo if si_signo is not valid.
-
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
----
- kernel/ptrace.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/ptrace.c b/kernel/ptrace.c
-index a24eed725cec..a0a07d140751 100644
---- a/kernel/ptrace.c
-+++ b/kernel/ptrace.c
-@@ -716,7 +716,9 @@ static int ptrace_setsiginfo(struct task_struct *child, const kernel_siginfo_t *
- 	if (unlikely(!child->last_siginfo))
- 		return -EINVAL;
- 
--	copy_siginfo(child->last_siginfo, info);
-+	clear_siginfo(child->last_siginfo);
-+	if (valid_signal(info->si_signo))
-+		copy_siginfo(child->last_siginfo, info);
- 	return 0;
- }
- 
--- 
-2.35.3
-
+Guilherme
 
 _______________________________________________
 linux-um mailing list
