@@ -1,15 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out03.mta.xmission.com ([166.70.13.233])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nmgCX-00HKta-DP
- for linux-um@lists.infradead.org; Thu, 05 May 2022 18:27:47 +0000
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-Date: Thu,  5 May 2022 13:26:43 -0500
-Message-Id: <20220505182645.497868-10-ebiederm@xmission.com>
-In-Reply-To: <87a6bv6dl6.fsf_-_@email.froward.int.ebiederm.org>
-References: <87a6bv6dl6.fsf_-_@email.froward.int.ebiederm.org>
+Message-ID: <cfc89eba-1079-6c80-4806-1fb8af1404f1@igalia.com>
+Date: Mon, 16 May 2022 13:08:15 -0300
 MIME-Version: 1.0
-Subject: [PATCH v4 10/12] ptrace: Don't change __state
+Subject: Re: [PATCH 22/30] panic: Introduce the panic post-reboot notifier list
+Content-Language: en-US
+References: <20220427224924.592546-1-gpiccoli@igalia.com>
+ <20220427224924.592546-23-gpiccoli@igalia.com> <YoJjpBrz34QO+rn9@alley>
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <YoJjpBrz34QO+rn9@alley>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,200 +20,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
+To: Petr Mladek <pmladek@suse.com>
+Cc: akpm@linux-foundation.org, bhe@redhat.com, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>, Heiko Carstens <hca@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>
 
-Stop playing with tsk->__state to remove TASK_WAKEKILL while a ptrace
-command is executing.
+On 16/05/2022 11:45, Petr Mladek wrote:
+> [...]
+> 
+> The patch looks good to me. I would just suggest two changes.
+> 
+> 1. I would rename the list to "panic_loop_list" instead of
+>    "panic_post_reboot_list".
+> 
+>    It will be more clear that it includes things that are
+>    needed before panic() enters the infinite loop.
+> 
+> 
+> 2. I would move all the notifiers that enable blinking here.
+> 
+>    The blinking should be done only during the infinite
+>    loop when there is nothing else to do. If we enable
+>    earlier then it might disturb/break more important
+>    functionality (dumping information, reboot).
+> 
 
-Instead remove TASK_WAKEKILL from the definition of TASK_TRACED, and
-implement a new jobctl flag TASK_PTRACE_FROZEN.  This new flag is set
-in jobctl_freeze_task and cleared when ptrace_stop is awoken or in
-jobctl_unfreeze_task (when ptrace_stop remains asleep).
-
-In signal_wake_up add __TASK_TRACED to state along with TASK_WAKEKILL
-when the wake up is for a fatal signal.  Skip adding __TASK_TRACED
-when TASK_PTRACE_FROZEN is not set.  This has the same effect as
-changing TASK_TRACED to __TASK_TRACED as all of the wake_ups that use
-TASK_KILLABLE go through signal_wake_up.
-
-Handle a ptrace_stop being called with a pending fatal signal.
-Previously it would have been handled by schedule simply failing to
-sleep.  As TASK_WAKEKILL is no longer part of TASK_TRACED schedule
-will sleep with a fatal_signal_pending.   The code in signal_wake_up
-guarantees that the code will be awaked by any fatal signal that
-codes after TASK_TRACED is set.
-
-Previously the __state value of __TASK_TRACED was changed to
-TASK_RUNNING when woken up or back to TASK_TRACED when the code was
-left in ptrace_stop.  Now when woken up ptrace_stop now clears
-JOBCTL_PTRACE_FROZEN and when left sleeping ptrace_unfreezed_traced
-clears JOBCTL_PTRACE_FROZEN.
-
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
----
- include/linux/sched.h        |  2 +-
- include/linux/sched/jobctl.h |  2 ++
- include/linux/sched/signal.h |  5 +++--
- kernel/ptrace.c              | 21 ++++++++-------------
- kernel/sched/core.c          |  5 +----
- kernel/signal.c              | 14 ++++++--------
- 6 files changed, 21 insertions(+), 28 deletions(-)
-
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index d5e3c00b74e1..610f2fdb1e2c 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -103,7 +103,7 @@ struct task_group;
- /* Convenience macros for the sake of set_current_state: */
- #define TASK_KILLABLE			(TASK_WAKEKILL | TASK_UNINTERRUPTIBLE)
- #define TASK_STOPPED			(TASK_WAKEKILL | __TASK_STOPPED)
--#define TASK_TRACED			(TASK_WAKEKILL | __TASK_TRACED)
-+#define TASK_TRACED			__TASK_TRACED
- 
- #define TASK_IDLE			(TASK_UNINTERRUPTIBLE | TASK_NOLOAD)
- 
-diff --git a/include/linux/sched/jobctl.h b/include/linux/sched/jobctl.h
-index fa067de9f1a9..d556c3425963 100644
---- a/include/linux/sched/jobctl.h
-+++ b/include/linux/sched/jobctl.h
-@@ -19,6 +19,7 @@ struct task_struct;
- #define JOBCTL_TRAPPING_BIT	21	/* switching to TRACED */
- #define JOBCTL_LISTENING_BIT	22	/* ptracer is listening for events */
- #define JOBCTL_TRAP_FREEZE_BIT	23	/* trap for cgroup freezer */
-+#define JOBCTL_PTRACE_FROZEN_BIT	24	/* frozen for ptrace */
- 
- #define JOBCTL_STOP_DEQUEUED	(1UL << JOBCTL_STOP_DEQUEUED_BIT)
- #define JOBCTL_STOP_PENDING	(1UL << JOBCTL_STOP_PENDING_BIT)
-@@ -28,6 +29,7 @@ struct task_struct;
- #define JOBCTL_TRAPPING		(1UL << JOBCTL_TRAPPING_BIT)
- #define JOBCTL_LISTENING	(1UL << JOBCTL_LISTENING_BIT)
- #define JOBCTL_TRAP_FREEZE	(1UL << JOBCTL_TRAP_FREEZE_BIT)
-+#define JOBCTL_PTRACE_FROZEN	(1UL << JOBCTL_PTRACE_FROZEN_BIT)
- 
- #define JOBCTL_TRAP_MASK	(JOBCTL_TRAP_STOP | JOBCTL_TRAP_NOTIFY)
- #define JOBCTL_PENDING_MASK	(JOBCTL_STOP_PENDING | JOBCTL_TRAP_MASK)
-diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
-index 3c8b34876744..e66948abbee4 100644
---- a/include/linux/sched/signal.h
-+++ b/include/linux/sched/signal.h
-@@ -435,9 +435,10 @@ extern void calculate_sigpending(void);
- 
- extern void signal_wake_up_state(struct task_struct *t, unsigned int state);
- 
--static inline void signal_wake_up(struct task_struct *t, bool resume)
-+static inline void signal_wake_up(struct task_struct *t, bool fatal)
- {
--	signal_wake_up_state(t, resume ? TASK_WAKEKILL : 0);
-+	fatal = fatal && !(t->jobctl & JOBCTL_PTRACE_FROZEN);
-+	signal_wake_up_state(t, fatal ? TASK_WAKEKILL | __TASK_TRACED : 0);
- }
- static inline void ptrace_signal_wake_up(struct task_struct *t, bool resume)
- {
-diff --git a/kernel/ptrace.c b/kernel/ptrace.c
-index 05953ac9f7bd..83ed28262708 100644
---- a/kernel/ptrace.c
-+++ b/kernel/ptrace.c
-@@ -197,7 +197,7 @@ static bool ptrace_freeze_traced(struct task_struct *task)
- 	spin_lock_irq(&task->sighand->siglock);
- 	if (task_is_traced(task) && !looks_like_a_spurious_pid(task) &&
- 	    !__fatal_signal_pending(task)) {
--		WRITE_ONCE(task->__state, __TASK_TRACED);
-+		task->jobctl |= JOBCTL_PTRACE_FROZEN;
- 		ret = true;
- 	}
- 	spin_unlock_irq(&task->sighand->siglock);
-@@ -207,23 +207,19 @@ static bool ptrace_freeze_traced(struct task_struct *task)
- 
- static void ptrace_unfreeze_traced(struct task_struct *task)
- {
--	if (READ_ONCE(task->__state) != __TASK_TRACED)
--		return;
--
--	WARN_ON(!task->ptrace || task->parent != current);
-+	unsigned long flags;
- 
- 	/*
--	 * PTRACE_LISTEN can allow ptrace_trap_notify to wake us up remotely.
--	 * Recheck state under the lock to close this race.
-+	 * The child may be awake and may have cleared
-+	 * JOBCTL_PTRACE_FROZEN (see ptrace_resume).  The child will
-+	 * not set JOBCTL_PTRACE_FROZEN or enter __TASK_TRACED anew.
- 	 */
--	spin_lock_irq(&task->sighand->siglock);
--	if (READ_ONCE(task->__state) == __TASK_TRACED) {
-+	if (lock_task_sighand(task, &flags)) {
-+		task->jobctl &= ~JOBCTL_PTRACE_FROZEN;
- 		if (__fatal_signal_pending(task))
- 			wake_up_state(task, __TASK_TRACED);
--		else
--			WRITE_ONCE(task->__state, TASK_TRACED);
-+		unlock_task_sighand(task, &flags);
- 	}
--	spin_unlock_irq(&task->sighand->siglock);
- }
- 
- /**
-@@ -256,7 +252,6 @@ static int ptrace_check_attach(struct task_struct *child, bool ignore_state)
- 	 */
- 	read_lock(&tasklist_lock);
- 	if (child->ptrace && child->parent == current) {
--		WARN_ON(READ_ONCE(child->__state) == __TASK_TRACED);
- 		/*
- 		 * child->sighand can't be NULL, release_task()
- 		 * does ptrace_unlink() before __exit_signal().
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index d575b4914925..3c351707e830 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -6304,10 +6304,7 @@ static void __sched notrace __schedule(unsigned int sched_mode)
- 
- 	/*
- 	 * We must load prev->state once (task_struct::state is volatile), such
--	 * that:
--	 *
--	 *  - we form a control dependency vs deactivate_task() below.
--	 *  - ptrace_{,un}freeze_traced() can change ->state underneath us.
-+	 * that we form a control dependency vs deactivate_task() below.
- 	 */
- 	prev_state = READ_ONCE(prev->__state);
- 	if (!(sched_mode & SM_MASK_PREEMPT) && prev_state) {
-diff --git a/kernel/signal.c b/kernel/signal.c
-index d2d0c753156c..a58b68a2d3c6 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -2209,14 +2209,12 @@ static int ptrace_stop(int exit_code, int why, unsigned long message,
- 	}
- 
- 	/*
--	 * schedule() will not sleep if there is a pending signal that
--	 * can awaken the task.
--	 *
--	 * After this point ptrace_signal_wake_up will clear TASK_TRACED
--	 * if ptrace_unlink happens.  Handle previous ptrace_unlinks
--	 * here to prevent ptrace_stop sleeping in schedule.
-+	 * After this point ptrace_signal_wake_up or signal_wake_up
-+	 * will clear TASK_TRACED if ptrace_unlink happens or a fatal
-+	 * signal comes in.  Handle previous ptrace_unlinks and fatal
-+	 * signals here to prevent ptrace_stop sleeping in schedule.
- 	 */
--	if (!current->ptrace)
-+	if (!current->ptrace || __fatal_signal_pending(current))
- 		return exit_code;
- 
- 	set_special_state(TASK_TRACED);
-@@ -2305,7 +2303,7 @@ static int ptrace_stop(int exit_code, int why, unsigned long message,
- 	current->exit_code = 0;
- 
- 	/* LISTENING can be set only during STOP traps, clear it */
--	current->jobctl &= ~JOBCTL_LISTENING;
-+	current->jobctl &= ~(JOBCTL_LISTENING | JOBCTL_PTRACE_FROZEN);
- 
- 	/*
- 	 * Queued signals ignored us while we were stopped for tracing.
--- 
-2.35.3
-
+Perfect, I agree with you. I'll change both points in V2 =)
 
 _______________________________________________
 linux-um mailing list
