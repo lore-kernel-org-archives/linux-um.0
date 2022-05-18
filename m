@@ -1,17 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pg1-x530.google.com ([2607:f8b0:4864:20::530])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nuraF-001jEp-JV
-	for linux-um@lists.infradead.org; Sat, 28 May 2022 08:14:05 +0000
-Received: by mail-pg1-x530.google.com with SMTP id e66so5802900pgc.8
-        for <linux-um@lists.infradead.org>; Sat, 28 May 2022 01:14:01 -0700 (PDT)
-From: Yu-Jen Chang <arthurchang09@gmail.com>
-Subject: [PATCH 1/2] x86/lib: Optimize memchr()
-Date: Sat, 28 May 2022 16:12:35 +0800
-Message-Id: <20220528081236.3020-2-arthurchang09@gmail.com>
-In-Reply-To: <20220528081236.3020-1-arthurchang09@gmail.com>
-References: <20220528081236.3020-1-arthurchang09@gmail.com>
+Received: from out03.mta.xmission.com ([166.70.13.233])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nrSZe-004CI4-RN
+ for linux-um@lists.infradead.org; Wed, 18 May 2022 22:55:24 +0000
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+Date: Wed, 18 May 2022 17:53:54 -0500
+Message-Id: <20220518225355.784371-15-ebiederm@xmission.com>
+In-Reply-To: <871qwq5ucx.fsf_-_@email.froward.int.ebiederm.org>
+References: <871qwq5ucx.fsf_-_@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
+Subject: [PATCH 15/16] ptrace: Use siglock instead of tasklist_lock in
+ ptrace_check_attach
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,89 +19,92 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: ak@linux.intel.com, jdike@linux.intel.com
-Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, keescook@chromium.org, linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, linux-um@lists.infradead.org, jserv@ccns.ncku.edu.tw, Yu-Jen Chang <arthurchang09@gmail.com>
+To: linux-kernel@vger.kernel.org
+Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, Robert OCallahan <roc@pernos.co>, Kyle Huey <khuey@pernos.co>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Jason Wessel <jason.wessel@windriver.com>, Daniel Thompson <daniel.thompson@linaro.org>, Douglas Anderson <dianders@chromium.org>, Douglas Miller <dougmill@linux.vnet.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, "Eric W. Biederman" <ebiederm@xmission.com>
 
-VGhlIG9yaWdpbmFsIGFzc2VtYmx5IHZlcnNpb24gb2YgbWVtY2hyKCkgaXMgaW1wbGVtZW50ZWQg
-d2l0aAp0aGUgYnl0ZS13aXNlIGNvbXBhcmluZyB0ZWNobmlxdWUsIHdoaWNoIGRvZXMgbm90IGZ1
-bGx5CnVzZSA2NC1iaXRzIHJlZ2lzdGVycyBpbiB4ODZfNjQgQ1BVLiBXZSB1c2Ugd29yZC13aWRl
-CmNvbXBhcmluZyBzbyB0aGF0IDggY2hhcmFjdGVycyBjYW4gYmUgY29tcGFyZWQgYXQgdGhlIHNh
-bWUgdGltZQpvbiB4ODZfNjQgQ1BVLiBGaXJzdCB3ZSBhbGlnbiB0aGUgaW5wdXQgYW5kIHRoZW4g
-dXNlIHdvcmQtd2lzZQpjb21wYXJpbmcgdG8gZmluZCB0aGUgZmlyc3QgNjQtYml0IHdvcmQgdGhh
-dCBjb250YWluIHRoZSB0YXJnZXQuClNlY29uZGx5LCB3ZSBjb21wYXJlIGV2ZXJ5IGJ5dGUgaW4g
-dGhlIHdvcmQgYW5kIGdldCB0aGUgb3V0cHV0LgoKV2UgY3JlYXRlIHR3byBmaWxlcyB0byBtZWFz
-dXJlIHRoZSBwZXJmb3JtYW5jZS4gVGhlIGZpcnN0IGZpbGUKY29udGFpbnMgb24gYXZlcmFnZSAx
-MCBjaGFyYWN0ZXJzIGFoZWFkIHRoZSB0YXJnZXQgY2hhcmFjdGVyLgpUaGUgc2Vjb25kIGZpbGUg
-Y29udGFpbnMgYXQgbGVhc3QgMTAwMCBjaGFyYWN0ZXJzIGFoZWFkIHRoZQp0YXJnZXQgY2hhcmFj
-dGVyLiBPdXIgaW1wbGVtZW50YXRpb24gb2Yg4oCcbWVtY2hyKCnigJ0gaXMgc2xpZ2h0bHkKYmV0
-dGVyIGluIHRoZSBmaXJzdCB0ZXN0IGFuZCBuZWFybHkgNHggZmFzdGVyIHRoYW4gdGhlIG9yZ2lu
-YWwKaW1wbGVtZW50YXRpb24gaW4gdGhlIHNlY29uZCB0ZXN0LgoKU2lnbmVkLW9mZi1ieTogWXUt
-SmVuIENoYW5nIDxhcnRodXJjaGFuZzA5QGdtYWlsLmNvbT4KU2lnbmVkLW9mZi1ieTogQ2hpbmct
-Q2h1biAoSmltKSBIdWFuZyA8anNlcnZAY2Nucy5uY2t1LmVkdS50dz4KLS0tCiBhcmNoL3g4Ni9p
-bmNsdWRlL2FzbS9zdHJpbmdfNjQuaCB8ICAzICsrCiBhcmNoL3g4Ni9saWIvTWFrZWZpbGUgICAg
-ICAgICAgICB8ICAxICsKIGFyY2gveDg2L2xpYi9zdHJpbmdfNjQuYyAgICAgICAgIHwgNzggKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysKIDMgZmlsZXMgY2hhbmdlZCwgODIgaW5zZXJ0
-aW9ucygrKQogY3JlYXRlIG1vZGUgMTAwNjQ0IGFyY2gveDg2L2xpYi9zdHJpbmdfNjQuYwoKZGlm
-ZiAtLWdpdCBhL2FyY2gveDg2L2luY2x1ZGUvYXNtL3N0cmluZ182NC5oIGIvYXJjaC94ODYvaW5j
-bHVkZS9hc20vc3RyaW5nXzY0LmgKaW5kZXggNmU0NTA4MjdmLi5lZGNlNjU3ZTAgMTAwNjQ0Ci0t
-LSBhL2FyY2gveDg2L2luY2x1ZGUvYXNtL3N0cmluZ182NC5oCisrKyBiL2FyY2gveDg2L2luY2x1
-ZGUvYXNtL3N0cmluZ182NC5oCkBAIC0xNCw2ICsxNCw5IEBACiBleHRlcm4gdm9pZCAqbWVtY3B5
-KHZvaWQgKnRvLCBjb25zdCB2b2lkICpmcm9tLCBzaXplX3QgbGVuKTsKIGV4dGVybiB2b2lkICpf
-X21lbWNweSh2b2lkICp0bywgY29uc3Qgdm9pZCAqZnJvbSwgc2l6ZV90IGxlbik7CiAKKyNkZWZp
-bmUgX19IQVZFX0FSQ0hfTUVNQ0hSCitleHRlcm4gdm9pZCAqbWVtY2hyKGNvbnN0IHZvaWQgKmNz
-LCBpbnQgYywgc2l6ZV90IGxlbmd0aCk7CisKICNkZWZpbmUgX19IQVZFX0FSQ0hfTUVNU0VUCiB2
-b2lkICptZW1zZXQodm9pZCAqcywgaW50IGMsIHNpemVfdCBuKTsKIHZvaWQgKl9fbWVtc2V0KHZv
-aWQgKnMsIGludCBjLCBzaXplX3Qgbik7CmRpZmYgLS1naXQgYS9hcmNoL3g4Ni9saWIvTWFrZWZp
-bGUgYi9hcmNoL3g4Ni9saWIvTWFrZWZpbGUKaW5kZXggZjc2NzQ3ODYyLi40ZDUzMGU1NTkgMTAw
-NjQ0Ci0tLSBhL2FyY2gveDg2L2xpYi9NYWtlZmlsZQorKysgYi9hcmNoL3g4Ni9saWIvTWFrZWZp
-bGUKQEAgLTY5LDUgKzY5LDYgQEAgZWxzZQogICAgICAgICBsaWIteSArPSBjbGVhcl9wYWdlXzY0
-Lm8gY29weV9wYWdlXzY0Lm8KICAgICAgICAgbGliLXkgKz0gbWVtbW92ZV82NC5vIG1lbXNldF82
-NC5vCiAgICAgICAgIGxpYi15ICs9IGNvcHlfdXNlcl82NC5vCisgICAgICAgIGxpYi15ICs9IHN0
-cmluZ182NC5vCiAJbGliLXkgKz0gY21weGNoZzE2Yl9lbXUubwogZW5kaWYKZGlmZiAtLWdpdCBh
-L2FyY2gveDg2L2xpYi9zdHJpbmdfNjQuYyBiL2FyY2gveDg2L2xpYi9zdHJpbmdfNjQuYwpuZXcg
-ZmlsZSBtb2RlIDEwMDY0NAppbmRleCAwMDAwMDAwMDAuLjRlMDY3ZDViZQotLS0gL2Rldi9udWxs
-CisrKyBiL2FyY2gveDg2L2xpYi9zdHJpbmdfNjQuYwpAQCAtMCwwICsxLDc4IEBACisvLyBTUERY
-LUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMAorI2luY2x1ZGUgPGxpbnV4L3N0cmluZy5oPgor
-I2luY2x1ZGUgPGxpbnV4L2V4cG9ydC5oPgorI2luY2x1ZGUgPGxpbnV4L2FsaWduLmg+CisKKy8q
-IEhvdyBtYW55IGJ5dGVzIGFyZSBsb2FkZWQgZWFjaCBpdGVyYXRpb24gb2YgdGhlIHdvcmQgY29w
-eSBsb29wICovCisjZGVmaW5lIExCTE9DS1NJWkUgKHNpemVvZihsb25nKSkKKworI2lmZGVmIF9f
-SEFWRV9BUkNIX01FTUNIUgorCit2b2lkICptZW1jaHIoY29uc3Qgdm9pZCAqY3MsIGludCBjLCBz
-aXplX3QgbGVuZ3RoKQoreworCWNvbnN0IHVuc2lnbmVkIGNoYXIgKnNyYyA9IChjb25zdCB1bnNp
-Z25lZCBjaGFyICopY3MsIGQgPSBjOworCisJd2hpbGUgKCFJU19BTElHTkVEKChsb25nKXNyYywg
-c2l6ZW9mKGxvbmcpKSkgeworCQlpZiAoIWxlbmd0aC0tKQorCQkJcmV0dXJuIE5VTEw7CisJCWlm
-ICgqc3JjID09IGQpCisJCQlyZXR1cm4gKHZvaWQgKilzcmM7CisJCXNyYysrOworCX0KKwlpZiAo
-bGVuZ3RoID49IExCTE9DS1NJWkUpIHsKKwkJdW5zaWduZWQgbG9uZyBtYXNrID0gZCA8PCA4IHwg
-ZDsKKwkJdW5zaWduZWQgaW50IGkgPSAzMjsKKwkJbG9uZyB4b3IsIGRhdGE7CisJCWNvbnN0IGxv
-bmcgY29uc3RhID0gMHhGRUZFRkVGRUZFRkVGRUZGLAorCQkJICAgY29uc3RiID0gMHg4MDgwODA4
-MDgwODA4MDgwOworCisJCS8qCisJCSAqIENyZWF0ZSBhIDgtYnl0ZXMgbWFzayBmb3Igd29yZC13
-aXNlIGNvbXBhcmluZy4KKwkJICogRm9yIGV4YW1wbGUsIGEgbWFzayBmb3IgJ2EnIGlzIDB4NjE2
-MTYxNjE2MTYxNjE2MS4KKwkJICovCisKKwkJbWFzayB8PSBtYXNrIDw8IDE2OworCQlmb3IgKGkg
-PSAzMjsgaSA8IExCTE9DS1NJWkUgKiA4OyBpIDw8PSAxKQorCQkJbWFzayB8PSBtYXNrIDw8IGk7
-CisJCS8qCisJCSAqIFdlIHBlcmZvcm0gd29yZC13aXNlIGNvbXBhcmluZyB3aXRoIGZvbGxvd2lu
-ZyBvcGVyYXRpb246CisJCSAqCTEuIFBlcmZvcm0geG9yIG9uIHRoZSBsb25nIHdvcmQgQHNyYyBh
-bmQgQG1hc2sKKwkJICoJICAgYW5kIHB1dCBpbnRvIEB4b3IuCisJCSAqCTIuIEFkZCBAeG9yIHdp
-dGggQGNvbnN0YS4KKwkJICoJMy4gfkB4b3IgJiBAY29uc3RiLgorCQkgKgk0LiBQZXJmb3JtICYg
-d2l0aCB0aGUgcmVzdWx0IG9mIHN0ZXAgMiBhbmQgMy4KKwkJICoKKwkJICogU3RlcCAxIGNyZWF0
-ZXMgYSBieXRlIHdoaWNoIGlzIDAgaW4gdGhlIGxvbmcgd29yZCBpZgorCQkgKiB0aGVyZSBpcyBh
-dCBsZWFzdCBvbmUgdGFyZ2V0IGJ5dGUgaW4gaXQuCisJCSAqCisJCSAqIFN0ZXAgMiB0byBTdGVw
-IDQgZmluZCBpZiB0aGVyZSBpcyBhIGJ5dGUgd2l0aCAwIGluCisJCSAqIHRoZSBsb25nIHdvcmQu
-CisJCSAqLworCQlhc20gdm9sYXRpbGUoIjE6XG5cdCIKKwkJCSAgICAgIm1vdnEgKCUwKSwlMVxu
-XHQiCisJCQkgICAgICJ4b3JxICU2LCUxXG5cdCIKKwkJCSAgICAgImxlYSAoJTEsJTQpLCAlMlxu
-XHQiCisJCQkgICAgICJub3RxICUxXG5cdCIKKwkJCSAgICAgImFuZHEgJTUsJTFcblx0IgorCQkJ
-ICAgICAidGVzdHEgJTEsJTJcblx0IgorCQkJICAgICAiam5lIDJmXG5cdCIKKwkJCSAgICAgImFk
-ZCAkOCwlMFxuXHQiCisJCQkgICAgICJzdWIgJDgsJTNcblx0IgorCQkJICAgICAiY21wICQ3LCUz
-XG5cdCIKKwkJCSAgICAgImphIDFiXG5cdCIKKwkJCSAgICAgIjI6XG5cdCIKKwkJCSAgICAgOiAi
-PUQiKHNyYyksICI9ciIoeG9yKSwgIj1yIihkYXRhKSwgIj1yIihsZW5ndGgpCisJCQkgICAgIDog
-InIiKGNvbnN0YSksICJyIihjb25zdGIpLCAiciIobWFzayksICIwIihzcmMpLAorCQkJICAgICAg
-ICIxIih4b3IpLCAiMiIoZGF0YSksICIzIihsZW5ndGgpCisJCQkgICAgIDogIm1lbW9yeSIsICJj
-YyIpOworCX0KKworCXdoaWxlIChsZW5ndGgtLSkgeworCQlpZiAoKnNyYyA9PSBkKQorCQkJcmV0
-dXJuICh2b2lkICopc3JjOworCQlzcmMrKzsKKwl9CisJcmV0dXJuIE5VTEw7Cit9CitFWFBPUlRf
-U1lNQk9MKG1lbWNocik7CisjZW5kaWYKLS0gCjIuMjUuMQoKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11
-bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vbGludXgtdW0K
+Now that siglock protects tsk->parent and tsk->ptrace there is no need
+to grab tasklist_lock in ptrace_check_attach.  The siglock can handle
+all of the locking needs of ptrace_check_attach.
+
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+ kernel/ptrace.c | 23 +++++++++--------------
+ 1 file changed, 9 insertions(+), 14 deletions(-)
+
+diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+index 77dfdb3d1ced..fa65841bbdbe 100644
+--- a/kernel/ptrace.c
++++ b/kernel/ptrace.c
+@@ -194,17 +194,14 @@ static bool ptrace_freeze_traced(struct task_struct *task)
+ {
+ 	bool ret = false;
+ 
+-	/* Lockless, nobody but us can set this flag */
+ 	if (task->jobctl & JOBCTL_LISTENING)
+ 		return ret;
+ 
+-	spin_lock_irq(&task->sighand->siglock);
+ 	if (task_is_traced(task) && !looks_like_a_spurious_pid(task) &&
+ 	    !__fatal_signal_pending(task)) {
+ 		task->jobctl |= JOBCTL_PTRACE_FROZEN;
+ 		ret = true;
+ 	}
+-	spin_unlock_irq(&task->sighand->siglock);
+ 
+ 	return ret;
+ }
+@@ -240,32 +237,30 @@ static void ptrace_unfreeze_traced(struct task_struct *task)
+  * state.
+  *
+  * CONTEXT:
+- * Grabs and releases tasklist_lock and @child->sighand->siglock.
++ * Grabs and releases @child->sighand->siglock.
+  *
+  * RETURNS:
+  * 0 on success, -ESRCH if %child is not ready.
+  */
+ static int ptrace_check_attach(struct task_struct *child, bool ignore_state)
+ {
++	unsigned long flags;
+ 	int ret = -ESRCH;
+ 
+ 	/*
+-	 * We take the read lock around doing both checks to close a
++	 * We take the siglock around doing both checks to close a
+ 	 * possible race where someone else was tracing our child and
+ 	 * detached between these two checks.  After this locked check,
+ 	 * we are sure that this is our traced child and that can only
+ 	 * be changed by us so it's not changing right after this.
+ 	 */
+-	read_lock(&tasklist_lock);
+-	if (child->ptrace && child->parent == current) {
+-		/*
+-		 * child->sighand can't be NULL, release_task()
+-		 * does ptrace_unlink() before __exit_signal().
+-		 */
+-		if (ignore_state || ptrace_freeze_traced(child))
+-			ret = 0;
++	if (lock_task_sighand(child, &flags)) {
++		if (child->ptrace && child->parent == current) {
++			if (ignore_state || ptrace_freeze_traced(child))
++				ret = 0;
++		}
++		unlock_task_sighand(child, &flags);
+ 	}
+-	read_unlock(&tasklist_lock);
+ 
+ 	if (!ret && !ignore_state &&
+ 	    WARN_ON_ONCE(!wait_task_inactive(child, __TASK_TRACED)))
+-- 
+2.35.3
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
