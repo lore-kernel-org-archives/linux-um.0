@@ -1,16 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from out02.mta.xmission.com ([166.70.13.232])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nrSZa-004CFa-U6
- for linux-um@lists.infradead.org; Wed, 18 May 2022 22:55:20 +0000
+ id 1nrSZT-004C9R-2Q
+ for linux-um@lists.infradead.org; Wed, 18 May 2022 22:55:12 +0000
 From: "Eric W. Biederman" <ebiederm@xmission.com>
-Date: Wed, 18 May 2022 17:53:53 -0500
-Message-Id: <20220518225355.784371-14-ebiederm@xmission.com>
+Date: Wed, 18 May 2022 17:53:51 -0500
+Message-Id: <20220518225355.784371-12-ebiederm@xmission.com>
 In-Reply-To: <871qwq5ucx.fsf_-_@email.froward.int.ebiederm.org>
 References: <871qwq5ucx.fsf_-_@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
-Subject: [PATCH 14/16] signal: Protect parent child relationships by childs
- siglock
+Subject: [PATCH 12/16] ptrace: Stop protecting ptrace_set_signr with
+ tasklist_lock
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -26,130 +26,65 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-kernel@vger.kernel.org
 Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, Robert OCallahan <roc@pernos.co>, Kyle Huey <khuey@pernos.co>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Jason Wessel <jason.wessel@windriver.com>, Daniel Thompson <daniel.thompson@linaro.org>, Douglas Anderson <dianders@chromium.org>, Douglas Miller <dougmill@linux.vnet.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, "Eric W. Biederman" <ebiederm@xmission.com>
 
-The functions ptrace_stop and do_signal_stop have to drop siglock
-and grab tasklist_lock because the parent/child relation ship
-is guarded by tasklist_lock and not siglock.
+Now that ptrace_set_signr no longer sets task->exit_code the race
+documented in commit b72c186999e6 ("ptrace: fix race between
+ptrace_resume() and wait_task_stopped()") is no longer possible, as
+task->exit_code is only updated by wait during a ptrace_stop.
 
-Simplify things by additionally guarding the parent/child relationship
-with siglock.  This just requires a little bit of code motion.
-
-After this change tsk->parent, tsk->real_parent, tsk->ptracer_cred
-are all protected by tsk->siglock.
-
-The fields tsk->sibling and tsk->ptrace_entry are mostly protected by
-tsk->siglock.  The field tsk->ptrace_entry is not protected by siglock
-when tsk->ptrace_entry is reused as the dead task list.  The field
-tsk->sibling is not protected by siglock when children are reparented
-because their original parent dies.
-
-The field tsk->ptrace is protected by siglock except for the options
-which may change without siglock being held.
+As there is no possibilty of a race and ptrace_freeze_traced is
+all of the protection ptrace_set_signr needs to operate without
+contention move ptrace_set_signr outside of tasklist_lock
+and remove the documentation about the race that is no more.
 
 Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 ---
- kernel/exit.c   |  4 ++++
- kernel/fork.c   | 12 ++++++------
- kernel/ptrace.c |  9 +++++----
- 3 files changed, 15 insertions(+), 10 deletions(-)
+ kernel/ptrace.c | 19 ++++---------------
+ 1 file changed, 4 insertions(+), 15 deletions(-)
 
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 0e26f73c49ac..bad434b23c48 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -643,11 +643,15 @@ static void forget_original_parent(struct task_struct *father,
- 
- 	reaper = find_new_reaper(father, reaper);
- 	list_for_each_entry(p, &father->children, sibling) {
-+		spin_lock(&p->sighand->siglock);
- 		for_each_thread(p, t) {
- 			RCU_INIT_POINTER(t->real_parent, reaper);
- 			BUG_ON((!t->ptrace) != (rcu_access_pointer(t->parent) == father));
- 			if (likely(!t->ptrace))
- 				t->parent = t->real_parent;
-+		}
-+		spin_unlock(&p->sighand->siglock);
-+		for_each_thread(p, t) {
- 			if (t->pdeath_signal)
- 				group_send_sig_info(t->pdeath_signal,
- 						    SEND_SIG_NOINFO, t,
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 9796897560ab..841021da69f3 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -2367,6 +2367,12 @@ static __latent_entropy struct task_struct *copy_process(
- 	 */
- 	write_lock_irq(&tasklist_lock);
- 
-+	klp_copy_process(p);
-+
-+	sched_core_fork(p);
-+
-+	spin_lock(&current->sighand->siglock);
-+
- 	/* CLONE_PARENT re-uses the old parent */
- 	if (clone_flags & (CLONE_PARENT|CLONE_THREAD)) {
- 		p->real_parent = current->real_parent;
-@@ -2381,12 +2387,6 @@ static __latent_entropy struct task_struct *copy_process(
- 		p->exit_signal = args->exit_signal;
- 	}
- 
--	klp_copy_process(p);
--
--	sched_core_fork(p);
--
--	spin_lock(&current->sighand->siglock);
--
- 	/*
- 	 * Copy seccomp details explicitly here, in case they were changed
- 	 * before holding sighand lock.
 diff --git a/kernel/ptrace.c b/kernel/ptrace.c
-index fbadd2f21f09..77dfdb3d1ced 100644
+index e0ecb1536dfc..d0527b6e2b29 100644
 --- a/kernel/ptrace.c
 +++ b/kernel/ptrace.c
-@@ -123,13 +123,12 @@ void __ptrace_unlink(struct task_struct *child)
- 	clear_task_syscall_work(child, SYSCALL_EMU);
- #endif
+@@ -595,17 +595,14 @@ static int ptrace_detach(struct task_struct *child, unsigned int data)
+ 	/* Architecture-specific hardware disable .. */
+ 	ptrace_disable(child);
  
-+	spin_lock(&child->sighand->siglock);
- 	child->parent = child->real_parent;
- 	list_del_init(&child->ptrace_entry);
- 	old_cred = child->ptracer_cred;
- 	child->ptracer_cred = NULL;
- 	put_cred(old_cred);
--
--	spin_lock(&child->sighand->siglock);
- 	child->ptrace = 0;
++	ptrace_set_signr(child, data);
++
+ 	write_lock_irq(&tasklist_lock);
  	/*
- 	 * Clear all pending traps and TRAPPING.  TRAPPING should be
-@@ -441,15 +440,15 @@ static int ptrace_attach(struct task_struct *task, long request,
- 	if (task->ptrace)
- 		goto unlock_tasklist;
- 
-+	spin_lock(&task->sighand->siglock);
- 	task->ptrace = flags;
- 
- 	ptrace_link(task, current);
- 
- 	/* SEIZE doesn't trap tracee on attach */
- 	if (!seize)
--		send_sig_info(SIGSTOP, SEND_SIG_PRIV, task);
-+		send_signal_locked(SIGSTOP, SEND_SIG_PRIV, task, PIDTYPE_PID);
- 
--	spin_lock(&task->sighand->siglock);
- 
- 	/*
- 	 * If the task is already STOPPED, set JOBCTL_TRAP_STOP and
-@@ -517,8 +516,10 @@ static int ptrace_traceme(void)
- 		 * pretend ->real_parent untraces us right after return.
- 		 */
- 		if (!ret && !(current->real_parent->flags & PF_EXITING)) {
-+			spin_lock(&current->sighand->siglock);
- 			current->ptrace = PT_PTRACED;
- 			ptrace_link(current, current->real_parent);
-+			spin_unlock(&current->sighand->siglock);
- 		}
- 	}
+ 	 * We rely on ptrace_freeze_traced(). It can't be killed and
+ 	 * untraced by another thread, it can't be a zombie.
+ 	 */
+ 	WARN_ON(!child->ptrace || child->exit_state);
+-	/*
+-	 * tasklist_lock avoids the race with wait_task_stopped(), see
+-	 * the comment in ptrace_resume().
+-	 */
+-	ptrace_set_signr(child, data);
+ 	__ptrace_detach(current, child);
  	write_unlock_irq(&tasklist_lock);
+ 
+@@ -869,17 +866,9 @@ static int ptrace_resume(struct task_struct *child, long request,
+ 		user_disable_single_step(child);
+ 	}
+ 
+-	/*
+-	 * Change ->exit_code and ->state under siglock to avoid the race
+-	 * with wait_task_stopped() in between; a non-zero ->exit_code will
+-	 * wrongly look like another report from tracee.
+-	 *
+-	 * Note that we need siglock even if ->exit_code == data and/or this
+-	 * status was not reported yet, the new status must not be cleared by
+-	 * wait_task_stopped() after resume.
+-	 */
+-	spin_lock_irq(&child->sighand->siglock);
+ 	ptrace_set_signr(child, data);
++
++	spin_lock_irq(&child->sighand->siglock);
+ 	child->jobctl &= ~JOBCTL_TRACED;
+ 	wake_up_state(child, __TASK_TRACED);
+ 	spin_unlock_irq(&child->sighand->siglock);
 -- 
 2.35.3
 
