@@ -1,13 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from galois.linutronix.de ([193.142.43.55])
+Received: from mail-pj1-x102d.google.com ([2607:f8b0:4864:20::102d])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nrx96-00B5qc-7Q
- for linux-um@lists.infradead.org; Fri, 20 May 2022 07:34:02 +0000
-Date: Fri, 20 May 2022 09:33:46 +0200
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [PATCH 00/16] ptrace: cleanups and calling do_cldstop with only
- siglock
-Message-ID: <YodEWlfo4kFd8+mt@linutronix.de>
+ id 1nrv7Z-00AauZ-Bi
+ for linux-um@lists.infradead.org; Fri, 20 May 2022 05:24:19 +0000
+Received: by mail-pj1-x102d.google.com with SMTP id
+ oe17-20020a17090b395100b001df77d29587so10547038pjb.2
+ for <linux-um@lists.infradead.org>; Thu, 19 May 2022 22:24:12 -0700 (PDT)
+MIME-Version: 1.0
 References: <20220421150248.667412396@infradead.org>
  <20220421150654.817117821@infradead.org>
  <87czhap9dy.fsf@email.froward.int.ebiederm.org>
@@ -16,9 +15,15 @@ References: <20220421150248.667412396@infradead.org>
  <87k0b0apne.fsf_-_@email.froward.int.ebiederm.org>
  <87a6bv6dl6.fsf_-_@email.froward.int.ebiederm.org>
  <871qwq5ucx.fsf_-_@email.froward.int.ebiederm.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <871qwq5ucx.fsf_-_@email.froward.int.ebiederm.org>
+ <CALWUPBdFDLuT7JaNGSJ_UXbHf8y9uKdC-SkAqzd=FQC0MX4nNQ@mail.gmail.com>
+ <YoXhfGGPKnT/YFC1@linutronix.de>
+ <8735h54cur.fsf@email.froward.int.ebiederm.org>
+In-Reply-To: <8735h54cur.fsf@email.froward.int.ebiederm.org>
+From: Kyle Huey <khuey@pernos.co>
+Date: Thu, 19 May 2022 22:24:00 -0700
+Message-ID: <CALWUPBdPO0ccBpFjQ-Lb5GsD=DcBw8ZyVwYVhLdpSeCcu2BSEg@mail.gmail.com>
+Subject: Re: [PATCH 00/16] ptrace: cleanups and calling do_cldstop with only
+ siglock
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -27,45 +32,106 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: linux-kernel@vger.kernel.org, rjw@rjwysocki.net, oleg@redhat.com, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Jann Horn <jannh@google.com>, Kees Cook <keescook@chromium.org>, linux-ia64@vger.kernel.org, Robert O'Callahan <roc@pernos.co>, Kyle Huey <khuey@pernos.co>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Jason Wessel <jason.wessel@windriver.com>, Daniel Thompson <daniel.thompson@linaro.org>, Douglas Anderson <dianders@chromium.org>, Douglas Miller <dougmill@linux.vnet.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, LKML <linux-kernel@vger.kernel.org>, rjw@rjwysocki.net, oleg@redhat.com, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Jann Horn <jannh@google.com>, Kees Cook <keescook@chromium.org>, linux-ia64@vger.kernel.org, Robert O'Callahan <roc@pernos.co>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Jason Wessel <jason.wessel@windriver.com>, Daniel Thompson <daniel.thompson@linaro.org>, Douglas Anderson <dianders@chromium.org>, Douglas Miller <dougmill@linux.vnet.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>
 
-T24gMjAyMi0wNS0xOCAxNzo0OTo1MCBbLTA1MDBdLCBFcmljIFcuIEJpZWRlcm1hbiB3cm90ZToK
-PiAKPiBGb3IgcHRyYWNlX3N0b3AgdG8gd29yayBvbiBQUkVFTVRfUlQgbm8gc3BpbmxvY2tzIGNh
-biBiZSB0YWtlbiBvbmNlCj4gcHRyYWNlX2ZyZWV6ZV90cmFjZWQgaGFzIGNvbXBsZXRlZCBzdWNj
-ZXNzZnVsbHkuICBXaGljaCBmdW5kYW1lbnRhbGx5Cj4gbWVhbnMgdGhlIGxvY2sgZGFuY2Ugb2Yg
-ZHJvcHBpbmcgc2lnbG9jayBhbmQgZ3JhYmJpbmcgdGFza2xpc3RfbG9jayBkb2VzCj4gbm90IHdv
-cmsgb24gUFJFRU1QVF9SVC4gIFNvIEkgaGF2ZSB3b3JrZWQgdGhyb3VnaCB3aGF0IGlzIG5lY2Vz
-c2FyeSBzbwo+IHRoYXQgdGFza2xpc3RfbG9jayBkb2VzIG5vdCBuZWVkIHRvIGJlIGdyYWJiZWQg
-aW4gcHRyYWNlX3N0b3AgYWZ0ZXIKPiBzaWdsb2NrIGlzIGRyb3BwZWQuCuKApgpJdCB0b29rIG1l
-IGEgd2hpbGUgdG8gcmVhbGlzZSB0aGF0IHRoaXMgaXMgYSBmb2xsb3ctdXAgSSBzb21laG93IGFz
-c3VtZWQKdGhhdCB5b3UgYWRkZWQgYSBmZXcgcGF0Y2hlcyBvbiB0b3AuIE1pZ2h0IGhhdmUgYmVl
-biB0aGUgeWVzdGVyZGF5J3MKaGVhdC4gYjQgYWxzbyByZWZ1c2VkIHRvIGRvd25sb2FkIHRoaXMg
-c2VyaWVzIGJlY2F1c2UgdGhlIHY0IGluIHRoaXMKdGhyZWFkIGxvb2tlZCBuZXdlcuKApiBBbnl3
-YXkuIEJvdGggc2VyaWVzIGFwcGxpZWQ6Cgp8ID09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-CnwgV0FSTklORzogc3VzcGljaW91cyBSQ1UgdXNhZ2UKfCA1LjE4LjAtcmM3KyAjMTYgTm90IHRh
-aW50ZWQKfCAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQp8IGluY2x1ZGUvbGludXgvcHRy
-YWNlLmg6MTIwIHN1c3BpY2lvdXMgcmN1X2RlcmVmZXJlbmNlX2NoZWNrKCkgdXNhZ2UhCnwKfCBv
-dGhlciBpbmZvIHRoYXQgbWlnaHQgaGVscCB1cyBkZWJ1ZyB0aGlzOgp8CnwgcmN1X3NjaGVkdWxl
-cl9hY3RpdmUgPSAyLCBkZWJ1Z19sb2NrcyA9IDEKfCAyIGxvY2tzIGhlbGQgYnkgc3NkZC8xNzM0
-Ogp8ICAjMDogZmZmZjg4ODAwZWFhNjkxOCAoJnNpZ2hhbmQtPnNpZ2xvY2spey4uLi59LXsyOjJ9
-LCBhdDogbG9ja19wYXJlbnRzX3NpZ2xvY2tzKzB4ZjAvMHgzYjAKfCAgIzE6IGZmZmY4ODgwMGVh
-YTcxZDggKCZzaWdoYW5kLT5zaWdsb2NrLzIpey4uLi59LXsyOjJ9LCBhdDogbG9ja19wYXJlbnRz
-X3NpZ2xvY2tzKzB4MTE1LzB4M2IwCnwKfCBzdGFjayBiYWNrdHJhY2U6CnwgQ1BVOiAyIFBJRDog
-MTczNCBDb21tOiBzc2RkIE5vdCB0YWludGVkIDUuMTguMC1yYzcrICMxNgp8IEhhcmR3YXJlIG5h
-bWU6IFFFTVUgU3RhbmRhcmQgUEMgKFEzNSArIElDSDksIDIwMDkpLCBCSU9TIDEuMTYuMC1kZWJp
-YW4tMS4xNi4wLTQgMDQvMDEvMjAxNAp8IENhbGwgVHJhY2U6CnwgIDxUQVNLPgp8ICBkdW1wX3N0
-YWNrX2x2bCsweDQ1LzB4NWEKfCAgdW5sb2NrX3BhcmVudHNfc2lnbG9ja3MrMHhiNi8weGMwCnwg
-IHB0cmFjZV9zdG9wKzB4YjkvMHgzOTAKfCAgZ2V0X3NpZ25hbCsweDUxYy8weDhkMAp8ICBhcmNo
-X2RvX3NpZ25hbF9vcl9yZXN0YXJ0KzB4MzEvMHg3NTAKfCAgZXhpdF90b191c2VyX21vZGVfcHJl
-cGFyZSsweDE1Ny8weDIyMAp8ICBpcnFlbnRyeV9leGl0X3RvX3VzZXJfbW9kZSsweDUvMHg1MAp8
-ICBhc21fc3lzdmVjX2FwaWNfdGltZXJfaW50ZXJydXB0KzB4MTIvMHgyMAoKVGhhdCBpcyBwdHJh
-Y2VfcGFyZW50KCkgaW4gdW5sb2NrX3BhcmVudHNfc2lnbG9ja3MoKS4KClNlYmFzdGlhbgoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFp
-bGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
+On Thu, May 19, 2022 at 11:05 AM Eric W. Biederman
+<ebiederm@xmission.com> wrote:
+>
+> Sebastian Andrzej Siewior <bigeasy@linutronix.de> writes:
+>
+> > On 2022-05-18 20:26:05 [-0700], Kyle Huey wrote:
+> >> Is there a git branch somewhere I can pull to test this? It doesn't apply
+> >> cleanly to Linus's tip.
+> >
+> > https://kernel.googlesource.com/pub/scm/linux/kernel/git/ebiederm/user-namespace.git ptrace_stop-cleanup-for-v5.19
+>
+> Yes that is the branch this all applies to.
+>
+> This is my second round of cleanups this cycle for this code.
+> I just keep finding little things that deserve to be changed,
+> when I am working on the more substantial issues.
+>
+> Eric
+
+When running the rr test suite, I see hangs like this
+
+[  812.151505] watchdog: BUG: soft lockup - CPU#3 stuck for 548s!
+[condvar_stress-:12152]
+[  812.151529] Modules linked in: snd_hda_codec_realtek
+snd_hda_codec_generic ledtrig_audio rfcomm cmac algif_hash
+algif_skcipher af_alg bnep dm_crypt intel_rapl_msr mei_hdcp
+snd_hda_codec_
+hdmi intel_rapl_common snd_hda_intel x86_pkg_temp_thermal
+snd_intel_dspcfg snd_intel_sdw_acpi nls_iso8859_1 intel_powerclamp
+snd_hda_codec coretemp snd_hda_core snd_hwdep snd_pcm rtl8723be
+btcoexist snd_seq_midi snd_seq_midi_event rtl8723_common kvm_intel
+rtl_pci snd_rawmidi rtlwifi btusb btrtl btbcm snd_seq kvm mac80211
+btintel btmtk snd_seq_device rapl bluetooth snd_timer i
+ntel_cstate hp_wmi cfg80211 serio_raw snd platform_profile
+ecdh_generic mei_me sparse_keymap efi_pstore wmi_bmof ee1004 joydev
+input_leds ecc libarc4 soundcore mei acpi_pad mac_hid sch_fq_c
+odel ipmi_devintf ipmi_msghandler msr vhost_vsock
+vmw_vsock_virtio_transport_common vsock vhost_net vhost vhost_iotlb
+tap vhci_hcd usbip_core parport_pc ppdev lp parport ip_tables x_tables
+autofs4 btrfs blake2b_generic xor raid6_pq zstd_compress
+[  812.151570]  libcrc32c hid_generic usbhid hid i915 drm_buddy
+i2c_algo_bit ttm drm_dp_helper cec rc_core crct10dif_pclmul
+drm_kms_helper crc32_pclmul syscopyarea ghash_clmulni_intel sysfi
+llrect sysimgblt fb_sys_fops aesni_intel crypto_simd cryptd r8169
+psmouse drm i2c_i801 realtek ahci i2c_smbus xhci_pci libahci
+xhci_pci_renesas wmi video
+[  812.151584] CPU: 3 PID: 12152 Comm: condvar_stress- Tainted: G
+    I  L    5.18.0-rc1+ #2
+[  812.151586] Hardware name: HP 750-280st/2B4B, BIOS A0.11 02/24/2016
+[  812.151587] RIP: 0010:_raw_spin_unlock_irq+0x15/0x40
+[  812.151591] Code: df e8 3f 1f 4a ff 90 5b 5d c3 66 66 2e 0f 1f 84
+00 00 00 00 00 0f 1f 44 00 00 55 48 89 e5 c6 07 00 0f 1f 00 fb 0f 1f
+44 00 00 <bf> 01 00 00 00 e8 41 95 46 ff 65 8b 05 9
+a c1 9a 5f 85 c0 74 02 5d
+[  812.151593] RSP: 0018:ffffa863c246bd70 EFLAGS: 00000246
+[  812.151594] RAX: ffff8bc0913f6400 RBX: ffff8bc0913f6400 RCX: 0000000000000000
+[  812.151595] RDX: 0000000000000002 RSI: 00000000000a0013 RDI: ffff8bc089b63180
+[  812.151596] RBP: ffffa863c246bd70 R08: ffff8bc0811d6b40 R09: ffff8bc089b63180
+[  812.151597] R10: 0000000000000000 R11: 0000000000000004 R12: ffff8bc0913f6400
+[  812.151597] R13: ffff8bc089b63180 R14: ffff8bc0913f6400 R15: ffffa863c246be68
+[  812.151598] FS:  00007f612dda5700(0000) GS:ffff8bc7e24c0000(0000)
+knlGS:0000000000000000
+[  812.151599] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  812.151600] CR2: 000055e70715692e CR3: 000000010b4e8005 CR4: 00000000003706e4
+[  812.151601] Call Trace:
+[  812.151602]  <TASK>
+[  812.151604]  do_signal_stop+0x228/0x260
+[  812.151606]  get_signal+0x43a/0x8e0
+[  812.151608]  arch_do_signal_or_restart+0x37/0x7d0
+[  812.151610]  ? __this_cpu_preempt_check+0x13/0x20
+[  812.151612]  ? __perf_event_task_sched_in+0x81/0x230
+[  812.151616]  ? __this_cpu_preempt_check+0x13/0x20
+[  812.151617]  exit_to_user_mode_prepare+0x130/0x1a0
+[  812.151620]  syscall_exit_to_user_mode+0x26/0x40
+[  812.151621]  ret_from_fork+0x15/0x30
+[  812.151623] RIP: 0033:0x7f612dfcd125
+[  812.151625] Code: 48 85 ff 74 3d 48 85 f6 74 38 48 83 ee 10 48 89
+4e 08 48 89 3e 48 89 d7 4c 89 c2 4d 89 c8 4c 8b 54 24 08 b8 38 00 00
+00 0f 05 <48> 85 c0 7c 13 74 01 c3 31 ed 58 5f ff d
+0 48 89 c7 b8 3c 00 00 00
+[  812.151626] RSP: 002b:00007f612dda4fb0 EFLAGS: 00000246 ORIG_RAX:
+0000000000000038
+[  812.151628] RAX: 0000000000000000 RBX: 00007f612dda5700 RCX: ffffffffffffffff
+[  812.151628] RDX: 00007f612dda59d0 RSI: 00007f612dda4fb0 RDI: 00000000003d0f00
+[  812.151629] RBP: 00007ffd59ad20b0 R08: 00007f612dda5700 R09: 00007f612dda5700
+[  812.151630] R10: 00007f612dda59d0 R11: 0000000000000246 R12: 00007ffd59ad20ae
+[  812.151631] R13: 00007ffd59ad20af R14: 00007ffd59ad20b0 R15: 00007f612dda4fc0
+[  812.151632]  </TASK>
+
+- Kyle
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
