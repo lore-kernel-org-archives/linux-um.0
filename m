@@ -1,11 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH v3 04/15] modpost: move *.mod.c generation to
- write_mod_c_files()
-Date: Thu,  5 May 2022 16:22:33 +0900
-Message-Id: <20220505072244.1155033-5-masahiroy@kernel.org>
-In-Reply-To: <20220505072244.1155033-1-masahiroy@kernel.org>
-References: <20220505072244.1155033-1-masahiroy@kernel.org>
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
+ helo=sipsolutions.net)
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1ns6hG-00Dyg4-Ag
+ for linux-um@lists.infradead.org; Fri, 20 May 2022 17:45:55 +0000
+From: Johannes Berg <johannes@sipsolutions.net>
+Subject: [PATCH] um: chan_user: fix winch_tramp() return value
+Date: Fri, 20 May 2022 19:45:36 +0200
+Message-Id: <20220520194536.1acbb414a2d1.I1d71bab01d45f7f8e446df6e98547a7989338208@changeid>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -19,113 +21,67 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kbuild@vger.kernel.org
-Cc: clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org, Nicolas Schier a <nicolas@fjasle.eu>, Ard Biesheuvel <ardb@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Peter Zijlstra <peterz@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org, linux-s390@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>, Sami Tolvanen <samitolvanen@google.com>, Kees Cook <keescook@chromium.org>, Masahiro Yamada <masahiroy@kernel.org>
+To: linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>, Nathan Chancellor <nathan@kernel.org>
 
-A later commit will add more code to this list_for_each_entry loop.
+From: Johannes Berg <johannes.berg@intel.com>
 
-Before that, move the loop body into a separate helper function.
+The previous fix here was only partially correct, it did
+result in returning a proper error value in case of error,
+but it also clobbered the pid that we need to return from
+this function (not just zero for success).
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+As a result, it returned 0 here, but later this is treated
+as a pid and used to kill the process, but since it's now
+0 we kill(0, SIGKILL), which makes UML kill itself rather
+than just the helper thread.
+
+Fix that and make it more obvious by using a separate
+variable for the pid.
+
+Fixes: ccf1236ecac4 ("um: fix error return code in winch_tramp()")
+Reported-and-tested-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
+ arch/um/drivers/chan_user.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-Changes in v3:
-  - New patch
-
- scripts/mod/modpost.c | 56 ++++++++++++++++++++++++-------------------
- 1 file changed, 31 insertions(+), 25 deletions(-)
-
-diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index ae8e4a4dcfd2..78a7107fcc40 100644
---- a/scripts/mod/modpost.c
-+++ b/scripts/mod/modpost.c
-@@ -2347,6 +2347,34 @@ static void write_if_changed(struct buffer *b, const char *fname)
- 	write_buf(b, fname);
- }
- 
-+/* do sanity checks, and generate *.mod.c file */
-+static void write_mod_c_file(struct module *mod)
-+{
-+	struct buffer buf = { };
-+	char fname[PATH_MAX];
-+	int ret;
-+
-+	check_modname_len(mod);
-+	check_exports(mod);
-+
-+	add_header(&buf, mod);
-+	add_versions(&buf, mod);
-+	add_depends(&buf, mod);
-+	add_moddevtable(&buf, mod);
-+	add_srcversion(&buf, mod);
-+
-+	ret = snprintf(fname, sizeof(fname), "%s.mod.c", mod->name);
-+	if (ret >= sizeof(fname)) {
-+		error("%s: too long path was truncated\n", fname);
-+		goto free;
-+	}
-+
-+	write_if_changed(&buf, fname);
-+
-+free:
-+	free(buf.p);
-+}
-+
- /* parse Module.symvers file. line format:
-  * 0x12345678<tab>symbol<tab>module<tab>export<tab>namespace
-  **/
-@@ -2462,7 +2490,6 @@ struct dump_list {
- int main(int argc, char **argv)
+diff --git a/arch/um/drivers/chan_user.c b/arch/um/drivers/chan_user.c
+index 6040817c036f..25727ed648b7 100644
+--- a/arch/um/drivers/chan_user.c
++++ b/arch/um/drivers/chan_user.c
+@@ -220,7 +220,7 @@ static int winch_tramp(int fd, struct tty_port *port, int *fd_out,
+ 		       unsigned long *stack_out)
  {
- 	struct module *mod;
--	struct buffer buf = { };
- 	char *missing_namespace_deps = NULL;
- 	char *dump_write = NULL, *files_source = NULL;
- 	int opt;
-@@ -2524,30 +2551,11 @@ int main(int argc, char **argv)
- 		read_symbols_from_files(files_source);
+ 	struct winch_data data;
+-	int fds[2], n, err;
++	int fds[2], n, err, pid;
+ 	char c;
  
- 	list_for_each_entry(mod, &modules, list) {
--		char fname[PATH_MAX];
--		int ret;
--
--		if (mod->is_vmlinux || mod->from_dump)
--			continue;
--
--		buf.pos = 0;
--
--		check_modname_len(mod);
--		check_exports(mod);
--
--		add_header(&buf, mod);
--		add_versions(&buf, mod);
--		add_depends(&buf, mod);
--		add_moddevtable(&buf, mod);
--		add_srcversion(&buf, mod);
--
--		ret = snprintf(fname, sizeof(fname), "%s.mod.c", mod->name);
--		if (ret >= sizeof(fname)) {
--			error("%s: too long path was truncated\n", fname);
-+		if (mod->from_dump)
- 			continue;
--		}
- 
--		write_if_changed(&buf, fname);
-+		if (!mod->is_vmlinux)
-+			write_mod_c_file(mod);
+ 	err = os_pipe(fds, 1, 1);
+@@ -238,8 +238,9 @@ static int winch_tramp(int fd, struct tty_port *port, int *fd_out,
+ 	 * problem with /dev/net/tun, which if held open by this
+ 	 * thread, prevents the TUN/TAP device from being reused.
+ 	 */
+-	err = run_helper_thread(winch_thread, &data, CLONE_FILES, stack_out);
+-	if (err < 0) {
++	pid = run_helper_thread(winch_thread, &data, CLONE_FILES, stack_out);
++	if (pid < 0) {
++		err = pid;
+ 		printk(UM_KERN_ERR "fork of winch_thread failed - errno = %d\n",
+ 		       -err);
+ 		goto out_close;
+@@ -263,7 +264,7 @@ static int winch_tramp(int fd, struct tty_port *port, int *fd_out,
+ 		goto out_close;
  	}
  
- 	if (missing_namespace_deps)
-@@ -2563,7 +2571,5 @@ int main(int argc, char **argv)
- 		warn("suppressed %u unresolved symbol warnings because there were too many)\n",
- 		     nr_unresolved - MAX_UNRESOLVED_REPORTS);
+-	return err;
++	return pid;
  
--	free(buf.p);
--
- 	return error_occurred ? 1 : 0;
- }
+  out_close:
+ 	close(fds[1]);
 -- 
-2.32.0
+2.36.1
 
 
 _______________________________________________
