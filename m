@@ -1,14 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2]
- helo=sipsolutions.net)
+Received: from dfw.source.kernel.org ([139.178.84.217])
  by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ns6HG-00DsNV-Ex
- for linux-um@lists.infradead.org; Fri, 20 May 2022 17:19:04 +0000
-Message-ID: <32824a71109fe3387d582abbf56601fb08bdc9ef.camel@sipsolutions.net>
+ id 1ns4yd-00DMEH-AK
+ for linux-um@lists.infradead.org; Fri, 20 May 2022 15:55:44 +0000
+Date: Fri, 20 May 2022 08:55:40 -0700
+From: Nathan Chancellor <nathan@kernel.org>
 Subject: Re: [PATCH 1/1] um: fix error return code in winch_tramp()
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Fri, 20 May 2022 19:18:28 +0200
-In-Reply-To: <Yoe5/HwL9DXhaw7Z@dev-arch.thelio-3990X>
+Message-ID: <Yoe5/HwL9DXhaw7Z@dev-arch.thelio-3990X>
 References: <20210508032239.2177-1-thunder.leizhen@huawei.com>
  <Yjt31seiNv18HYrf@dev-arch.thelio-3990X>
  <1b03d888-cea3-3e6f-087f-daeb5642a975@leemhuis.info>
@@ -16,8 +14,9 @@ References: <20210508032239.2177-1-thunder.leizhen@huawei.com>
  <YlRp9KR1mp3/4Txo@thelio-3990X>
  <1287561645.244713.1649702724736.JavaMail.zimbra@nod.at>
  <e9597cbc-cabb-facf-deb6-662d40cf16a3@leemhuis.info>
- <Yoe5/HwL9DXhaw7Z@dev-arch.thelio-3990X>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <e9597cbc-cabb-facf-deb6-662d40cf16a3@leemhuis.info>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -26,58 +25,44 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Nathan Chancellor <nathan@kernel.org>, Thorsten Leemhuis <regressions@leemhuis.info>
+To: Thorsten Leemhuis <regressions@leemhuis.info>
 Cc: Richard Weinberger <richard@nod.at>, Zhen Lei <thunder.leizhen@huawei.com>, Jeff Dike <jdike@addtoit.com>, anton ivanov <anton.ivanov@cambridgegreys.com>, Andrew Morton <akpm@linux-foundation.org>, Eduard-Gabriel Munteanu <maxdamage@aladin.ro>, linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, regressions <regressions@lists.linux.dev>
 
-T24gRnJpLCAyMDIyLTA1LTIwIGF0IDA4OjU1IC0wNzAwLCBOYXRoYW4gQ2hhbmNlbGxvciB3cm90
-ZToKPiBPbiBGcmksIE1heSAyMCwgMjAyMiBhdCAwODowODowMUFNICswMjAwLCBUaG9yc3RlbiBM
-ZWVtaHVpcyB3cm90ZToKPiA+IE9uIDExLjA0LjIyIDIwOjQ1LCBSaWNoYXJkIFdlaW5iZXJnZXIg
-d3JvdGU6Cj4gPiA+IC0tLS0tIFVyc3Byw7xuZ2xpY2hlIE1haWwgLS0tLS0KPiA+ID4gPiBWb246
-ICJOYXRoYW4gQ2hhbmNlbGxvciIgPG5hdGhhbkBrZXJuZWwub3JnPgo+ID4gPiA+IEkgYXR0ZW1w
-dGVkIHRvIHByaW50IG91dCB0aGUgZXJyb3IgY29kZSBidXQgaXQgc2VlbXMgbGlrZSB0aGVyZSBp
-cyBubwo+ID4gPiA+IG91dHB1dCBpbiB0aGUgY29uc29sZSBhZnRlciAicmVib290OiBTeXN0ZW0g
-aGFsdGVkIi4gSWYgSSBhZGQgYW4KPiA+ID4gPiB1bmNvbmRpdGlvbmFsIHByaW50IHJpZ2h0IGJl
-Zm9yZSB0aGUgY2FsbCB0byBvc19zZXRfZmRfYmxvY2soKSwgSSBzZWUgaXQKPiA+ID4gPiBkdXJp
-bmcgc3RhcnQgdXAgYnV0IEkgZG8gbm90IHNlZSBpdCBkdXJpbmcgc2h1dGRvd24uIElzIHRoZXJl
-IHNvbWUgd2F5Cj4gPiA+ID4gdG8gc2VlIHRoYXQgY29uc29sZSBvdXRwdXQgZHVyaW5nIHNodXRk
-b3duPwo+ID4gPiAKPiA+ID4gSSB0aGluayBpbiB0aGlzIGNhc2UgdGhlIGVhc2llc3Qgd2F5IGlz
-IGF0dGFjaGluZyBnZGIgd2l0aCBhIGJyZWFrcG9pbnQuCj4gPiAKPiA+IEkgbm90aWNlZCB0aGlz
-IGluIG15IGxpc3Qgb2Ygb3BlbiByZWdyZXNzaW9ucy4gSXQgc2VlbXMgdGhlcmUgd2Fzbid0IGFu
-eQo+ID4gcHJvZ3Jlc3MgdG8gZ2V0IHRoaXMgcmVncmVzc2lvbiBmaXhlZCAocGxlYXNlIGxldCBt
-ZSBrbm93IGluIGNhc2UgSQo+ID4gbWlzc2VkIHNvbWV0aGluZyksIGJ1dCBJIGd1ZXNzIG5vYm9k
-eSBjb25zaWRlcmVkIGl0IHVyZ2VudCB3aGljaCBpcwo+ID4gbGlrZWx5IG5vdCB0aGF0IG11Y2gg
-b2YgYSBwcm9ibGVtIGluIHRoaXMgY2FzZS4KPiAKPiBZZXMsIHNvcnJ5LCBJIHRyaWVkIHRvIGdl
-dCBnZGIgdG8gcmV2ZWFsIHNvbWV0aGluZyBidXQgSSBjb3VsZG4ndCBnZXQgaXQKPiB0byB3b3Jr
-IHRoZW4gSSBoYWQgdG8gbW92ZSBvbnRvIG90aGVyIHdvcmsuIFdlIGhhdmUgd29ya2VkIGFyb3Vu
-ZCB0aGlzCj4gZm9yIHRoZSB0aW1lIGJlaW5nIGJ1dCBpdCB3b3VsZCBzdGlsbCBiZSBuaWNlIHRv
-IGZpZ3VyZSBvdXQgd2hhdCBpcwo+IGdvaW5nIG9uIGhlcmU7IEkgYW0ganVzdCBub3Qgc3VyZSB3
-aGVuIEkgYW0gZ29pbmcgdG8gaGF2ZSB0aW1lIHRvCj4gcGFydGljaXBhdGUgaW4gdGhhdCBwcm9j
-ZXNzLgo+IAoKVGhpcyBmaXhlcyBpdCBmb3IgbWUsIGNhbiB5b3UgY2hlY2sgaXQ/CgpkaWZmIC0t
-Z2l0IGEvYXJjaC91bS9kcml2ZXJzL2NoYW5fdXNlci5jIGIvYXJjaC91bS9kcml2ZXJzL2NoYW5f
-dXNlci5jCmluZGV4IDYwNDA4MTdjMDM2Zi4uMjU3MjdlZDY0OGI3IDEwMDY0NAotLS0gYS9hcmNo
-L3VtL2RyaXZlcnMvY2hhbl91c2VyLmMKKysrIGIvYXJjaC91bS9kcml2ZXJzL2NoYW5fdXNlci5j
-CkBAIC0yMjAsNyArMjIwLDcgQEAgc3RhdGljIGludCB3aW5jaF90cmFtcChpbnQgZmQsIHN0cnVj
-dCB0dHlfcG9ydCAqcG9ydCwgaW50ICpmZF9vdXQsCiAJCSAgICAgICB1bnNpZ25lZCBsb25nICpz
-dGFja19vdXQpCiB7CiAJc3RydWN0IHdpbmNoX2RhdGEgZGF0YTsKLQlpbnQgZmRzWzJdLCBuLCBl
-cnI7CisJaW50IGZkc1syXSwgbiwgZXJyLCBwaWQ7CiAJY2hhciBjOwogCiAJZXJyID0gb3NfcGlw
-ZShmZHMsIDEsIDEpOwpAQCAtMjM4LDggKzIzOCw5IEBAIHN0YXRpYyBpbnQgd2luY2hfdHJhbXAo
-aW50IGZkLCBzdHJ1Y3QgdHR5X3BvcnQgKnBvcnQsIGludCAqZmRfb3V0LAogCSAqIHByb2JsZW0g
-d2l0aCAvZGV2L25ldC90dW4sIHdoaWNoIGlmIGhlbGQgb3BlbiBieSB0aGlzCiAJICogdGhyZWFk
-LCBwcmV2ZW50cyB0aGUgVFVOL1RBUCBkZXZpY2UgZnJvbSBiZWluZyByZXVzZWQuCiAJICovCi0J
-ZXJyID0gcnVuX2hlbHBlcl90aHJlYWQod2luY2hfdGhyZWFkLCAmZGF0YSwgQ0xPTkVfRklMRVMs
-IHN0YWNrX291dCk7Ci0JaWYgKGVyciA8IDApIHsKKwlwaWQgPSBydW5faGVscGVyX3RocmVhZCh3
-aW5jaF90aHJlYWQsICZkYXRhLCBDTE9ORV9GSUxFUywgc3RhY2tfb3V0KTsKKwlpZiAocGlkIDwg
-MCkgeworCQllcnIgPSBwaWQ7CiAJCXByaW50ayhVTV9LRVJOX0VSUiAiZm9yayBvZiB3aW5jaF90
-aHJlYWQgZmFpbGVkIC0gZXJybm8gPSAlZFxuIiwKIAkJICAgICAgIC1lcnIpOwogCQlnb3RvIG91
-dF9jbG9zZTsKQEAgLTI2Myw3ICsyNjQsNyBAQCBzdGF0aWMgaW50IHdpbmNoX3RyYW1wKGludCBm
-ZCwgc3RydWN0IHR0eV9wb3J0ICpwb3J0LCBpbnQgKmZkX291dCwKIAkJZ290byBvdXRfY2xvc2U7
-CiAJfQogCi0JcmV0dXJuIGVycjsKKwlyZXR1cm4gcGlkOwogCiAgb3V0X2Nsb3NlOgogCWNsb3Nl
-KGZkc1sxXSk7CgoKS2luZCBvZiBvYnZpb3VzLCByZWFsbHkuIDopCgpqb2hhbm5lcwoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGlu
-ZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
+On Fri, May 20, 2022 at 08:08:01AM +0200, Thorsten Leemhuis wrote:
+> On 11.04.22 20:45, Richard Weinberger wrote:
+> > ----- Urspr=FCngliche Mail -----
+> >> Von: "Nathan Chancellor" <nathan@kernel.org>
+> >> I attempted to print out the error code but it seems like there is no
+> >> output in the console after "reboot: System halted". If I add an
+> >> unconditional print right before the call to os_set_fd_block(), I see =
+it
+> >> during start up but I do not see it during shutdown. Is there some way
+> >> to see that console output during shutdown?
+> > =
+
+> > I think in this case the easiest way is attaching gdb with a breakpoint.
+> =
+
+> I noticed this in my list of open regressions. It seems there wasn't any
+> progress to get this regression fixed (please let me know in case I
+> missed something), but I guess nobody considered it urgent which is
+> likely not that much of a problem in this case.
+
+Yes, sorry, I tried to get gdb to reveal something but I couldn't get it
+to work then I had to move onto other work. We have worked around this
+for the time being but it would still be nice to figure out what is
+going on here; I am just not sure when I am going to have time to
+participate in that process.
+
+Cheers,
+Nathan
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
