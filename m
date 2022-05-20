@@ -1,537 +1,448 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: Miguel Ojeda <ojeda@kernel.org>
-Subject: [PATCH v7 00/25] Rust support
-Date: Mon, 23 May 2022 04:01:13 +0200
-Message-Id: <20220523020209.11810-1-ojeda@kernel.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mga05.intel.com ([192.55.52.43])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1ns5MF-00DWuE-K3
+ for linux-um@lists.infradead.org; Fri, 20 May 2022 16:20:11 +0000
+Date: Sat, 21 May 2022 00:19:05 +0800
+From: kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH 16/16] signal: Always call do_notify_parent_cldstop with
+ siglock held
+Message-ID: <202205210010.E4Hyn2kD-lkp@intel.com>
+References: <20220518225355.784371-16-ebiederm@xmission.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-To: Linus Torvalds <torvalds@linux-foundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, Jarkko Sakkinen <jarkko@kernel.org>, Miguel Ojeda <ojeda@kernel.org>, kunit-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org, linux-gpio@vger.kernel.org, linux-kbuild@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-perf-users@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org, live-patching@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <20220518225355.784371-16-ebiederm@xmission.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: "Eric W. Biederman" <ebiederm@xmission.com>, linux-kernel@vger.kernel.org
+Cc: kbuild-all@lists.01.org, rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, Robert OCallahan <roc@pernos.co>, Kyle Huey <khuey@pernos.co>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Jason Wessel <jason.wessel@windriver.com>, Daniel Thompson <daniel.thompson@linaro.org>
+
+Hi "Eric,
+
+Thank you for the patch! Perhaps something to improve:
+
+[auto build test WARNING on next-20220518]
+[cannot apply to linux/master powerpc/next wireless-next/main wireless/main linus/master v5.18-rc7 v5.18-rc6 v5.18-rc5 v5.18-rc7]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Eric-W-Biederman/signal-alpha-Remove-unused-definition-of-TASK_REAL_PARENT/20220519-065947
+base:    736ee37e2e8eed7fe48d0a37ee5a709514d478b3
+config: parisc-randconfig-s032-20220519 (https://download.01.org/0day-ci/archive/20220521/202205210010.E4Hyn2kD-lkp@intel.com/config)
+compiler: hppa-linux-gcc (GCC) 11.3.0
+reproduce:
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # apt-get install sparse
+        # sparse version: v0.6.4-dirty
+        # https://github.com/intel-lab-lkp/linux/commit/4b66a617bf6d095d33fe43e9dbcfdf2e0de9fb29
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Eric-W-Biederman/signal-alpha-Remove-unused-definition-of-TASK_REAL_PARENT/20220519-065947
+        git checkout 4b66a617bf6d095d33fe43e9dbcfdf2e0de9fb29
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=parisc SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag where applicable
+Reported-by: kernel test robot <lkp@intel.com>
+
+
+sparse warnings: (new ones prefixed by >>)
+   kernel/signal.c: note: in included file (through arch/parisc/include/uapi/asm/signal.h, arch/parisc/include/asm/signal.h, include/uapi/linux/signal.h, ...):
+   include/uapi/asm-generic/signal-defs.h:83:29: sparse: sparse: multiple address spaces given
+   kernel/signal.c:195:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:195:31: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:195:31: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:198:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:198:33: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:198:33: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:480:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:480:9: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:480:9: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:484:34: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:484:34: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:484:34: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:542:53: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct k_sigaction *ka @@     got struct k_sigaction [noderef] __rcu * @@
+   kernel/signal.c:542:53: sparse:     expected struct k_sigaction *ka
+   kernel/signal.c:542:53: sparse:     got struct k_sigaction [noderef] __rcu *
+   include/uapi/asm-generic/signal-defs.h:83:29: sparse: sparse: multiple address spaces given
+   kernel/signal.c:1261:9: sparse: sparse: no member 'ip' in struct pt_regs
+   kernel/signal.c:1267:29: sparse: sparse: no member 'ip' in struct pt_regs
+   kernel/signal.c:1267:29: sparse: sparse: cast from unknown type
+   kernel/signal.c:1267:29: sparse: sparse: cannot dereference this type
+   kernel/signal.c:1267:29: sparse: sparse: no member 'ip' in struct pt_regs
+   kernel/signal.c:1267:29: sparse: sparse: cast from unknown type
+   kernel/signal.c:1267:29: sparse: sparse: no member 'ip' in struct pt_regs
+   kernel/signal.c:1267:29: sparse: sparse: cast from unknown type
+   kernel/signal.c:1267:29: sparse: sparse: cannot dereference this type
+   kernel/signal.c:1267:29: sparse: sparse: no member 'ip' in struct pt_regs
+   kernel/signal.c:1267:29: sparse: sparse: cast from unknown type
+   kernel/signal.c:1267:29: sparse: sparse: no member 'ip' in struct pt_regs
+   kernel/signal.c:1267:29: sparse: sparse: cast from unknown type
+   kernel/signal.c:1267:29: sparse: sparse: cannot dereference this type
+   kernel/signal.c:1267:29: sparse: sparse: no member 'ip' in struct pt_regs
+   kernel/signal.c:1267:29: sparse: sparse: cast from unknown type
+   kernel/signal.c:1267:29: sparse: sparse: no member 'ip' in struct pt_regs
+   kernel/signal.c:1267:29: sparse: sparse: cast from unknown type
+   kernel/signal.c:1267:29: sparse: sparse: cannot dereference this type
+   kernel/signal.c:1267:29: sparse: sparse: no member 'ip' in struct pt_regs
+   kernel/signal.c:1267:29: sparse: sparse: cast from unknown type
+   kernel/signal.c:1267:29: sparse: sparse: cannot dereference this type
+   kernel/signal.c:1267:29: sparse: sparse: no member 'ip' in struct pt_regs
+   kernel/signal.c:1267:29: sparse: sparse: cast from unknown type
+   kernel/signal.c:1267:29: sparse: sparse: incompatible types for 'case' statement
+   kernel/signal.c:1267:29: sparse: sparse: incompatible types for 'case' statement
+   kernel/signal.c:1267:29: sparse: sparse: incompatible types for 'case' statement
+   kernel/signal.c:1267:29: sparse: sparse: incompatible types for 'case' statement
+   kernel/signal.c:1328:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:1328:9: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:1328:9: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:1329:16: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct k_sigaction *action @@     got struct k_sigaction [noderef] __rcu * @@
+   kernel/signal.c:1329:16: sparse:     expected struct k_sigaction *action
+   kernel/signal.c:1329:16: sparse:     got struct k_sigaction [noderef] __rcu *
+   kernel/signal.c:1349:34: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:1349:34: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:1349:34: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:1938:36: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:1938:36: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:1938:36: sparse:     got struct spinlock [noderef] __rcu *
+>> kernel/signal.c:2048:46: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sighand_struct *m_sighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
+   kernel/signal.c:2048:46: sparse:     expected struct sighand_struct *m_sighand
+   kernel/signal.c:2048:46: sparse:     got struct sighand_struct [noderef] __rcu *sighand
+   kernel/signal.c:2057:24: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct *parent @@     got struct task_struct [noderef] __rcu *real_parent @@
+   kernel/signal.c:2057:24: sparse:     expected struct task_struct *parent
+   kernel/signal.c:2057:24: sparse:     got struct task_struct [noderef] __rcu *real_parent
+   kernel/signal.c:2087:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>> kernel/signal.c:2087:21: sparse:    struct task_struct [noderef] __rcu *
+>> kernel/signal.c:2087:21: sparse:    struct task_struct *
+>> kernel/signal.c:2117:40: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct task_struct *parent @@     got struct task_struct [noderef] __rcu *real_parent @@
+   kernel/signal.c:2117:40: sparse:     expected struct task_struct *parent
+   kernel/signal.c:2117:40: sparse:     got struct task_struct [noderef] __rcu *real_parent
+   kernel/signal.c:2119:46: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sighand_struct *m_sighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
+   kernel/signal.c:2119:46: sparse:     expected struct sighand_struct *m_sighand
+   kernel/signal.c:2119:46: sparse:     got struct sighand_struct [noderef] __rcu *sighand
+>> kernel/signal.c:2120:50: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sighand_struct *p_sighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
+   kernel/signal.c:2120:50: sparse:     expected struct sighand_struct *p_sighand
+   kernel/signal.c:2120:50: sparse:     got struct sighand_struct [noderef] __rcu *sighand
+>> kernel/signal.c:2125:58: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sighand_struct *t_sighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
+   kernel/signal.c:2125:58: sparse:     expected struct sighand_struct *t_sighand
+   kernel/signal.c:2125:58: sparse:     got struct sighand_struct [noderef] __rcu *sighand
+   kernel/signal.c:2171:44: sparse: sparse: cast removes address space '__rcu' of expression
+   kernel/signal.c:2190:65: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *tsk @@     got struct task_struct [noderef] __rcu *parent @@
+   kernel/signal.c:2190:65: sparse:     expected struct task_struct *tsk
+   kernel/signal.c:2190:65: sparse:     got struct task_struct [noderef] __rcu *parent
+   kernel/signal.c:2191:40: sparse: sparse: cast removes address space '__rcu' of expression
+   kernel/signal.c:2209:14: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct sighand_struct *psig @@     got struct sighand_struct [noderef] __rcu *[noderef] __rcu sighand @@
+   kernel/signal.c:2209:14: sparse:     expected struct sighand_struct *psig
+   kernel/signal.c:2209:14: sparse:     got struct sighand_struct [noderef] __rcu *[noderef] __rcu sighand
+   kernel/signal.c:2238:53: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected struct task_struct *t @@     got struct task_struct [noderef] __rcu *parent @@
+   kernel/signal.c:2238:53: sparse:     expected struct task_struct *t
+   kernel/signal.c:2238:53: sparse:     got struct task_struct [noderef] __rcu *parent
+   kernel/signal.c:2239:34: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *parent @@     got struct task_struct [noderef] __rcu *parent @@
+   kernel/signal.c:2239:34: sparse:     expected struct task_struct *parent
+   kernel/signal.c:2239:34: sparse:     got struct task_struct [noderef] __rcu *parent
+   kernel/signal.c:2269:24: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct *parent @@     got struct task_struct [noderef] __rcu *parent @@
+   kernel/signal.c:2269:24: sparse:     expected struct task_struct *parent
+   kernel/signal.c:2269:24: sparse:     got struct task_struct [noderef] __rcu *parent
+   kernel/signal.c:2272:24: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct *parent @@     got struct task_struct [noderef] __rcu *real_parent @@
+   kernel/signal.c:2272:24: sparse:     expected struct task_struct *parent
+   kernel/signal.c:2272:24: sparse:     got struct task_struct [noderef] __rcu *real_parent
+   kernel/signal.c:2307:17: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct sighand_struct *sighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
+   kernel/signal.c:2307:17: sparse:     expected struct sighand_struct *sighand
+   kernel/signal.c:2307:17: sparse:     got struct sighand_struct [noderef] __rcu *sighand
+   kernel/signal.c:2341:41: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:2341:41: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:2341:41: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:2343:39: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:2343:39: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:2343:39: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:2428:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:2428:33: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:2428:33: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:2440:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:2440:31: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:2440:31: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:2479:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:2479:31: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:2479:31: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:2481:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:2481:33: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:2481:33: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:2584:41: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:2584:41: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:2584:41: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:2599:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:2599:33: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:2599:33: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:2656:41: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:2656:41: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:2656:41: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:2668:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:2668:33: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:2668:33: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:2726:49: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sighand_struct *sighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
+   kernel/signal.c:2726:49: sparse:     expected struct sighand_struct *sighand
+   kernel/signal.c:2726:49: sparse:     got struct sighand_struct [noderef] __rcu *sighand
+   kernel/signal.c:3052:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:3052:27: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:3052:27: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:3081:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:3081:29: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:3081:29: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:3138:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:3138:27: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:3138:27: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:3140:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:3140:29: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:3140:29: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:3291:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:3291:31: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:3291:31: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:3294:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:3294:33: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:3294:33: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:3683:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:3683:27: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:3683:27: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:3695:37: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:3695:37: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:3695:37: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:3700:35: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:3700:35: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:3700:35: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:3705:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:3705:29: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:3705:29: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:4159:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:4159:31: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:4159:31: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:4171:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:4171:33: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:4171:33: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/signal.c:4189:11: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct k_sigaction *k @@     got struct k_sigaction [noderef] __rcu * @@
+   kernel/signal.c:4189:11: sparse:     expected struct k_sigaction *k
+   kernel/signal.c:4189:11: sparse:     got struct k_sigaction [noderef] __rcu *
+   kernel/signal.c:4191:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/signal.c:4191:25: sparse:     expected struct spinlock [usertype] *lock
+   kernel/signal.c:4191:25: sparse:     got struct spinlock [noderef] __rcu *
+
+vim +2048 kernel/signal.c
+
+  1934	
+  1935	void sigqueue_free(struct sigqueue *q)
+  1936	{
+  1937		unsigned long flags;
+> 1938		spinlock_t *lock = &current->sighand->siglock;
+  1939	
+  1940		BUG_ON(!(q->flags & SIGQUEUE_PREALLOC));
+  1941		/*
+  1942		 * We must hold ->siglock while testing q->list
+  1943		 * to serialize with collect_signal() or with
+  1944		 * __exit_signal()->flush_sigqueue().
+  1945		 */
+  1946		spin_lock_irqsave(lock, flags);
+  1947		q->flags &= ~SIGQUEUE_PREALLOC;
+  1948		/*
+  1949		 * If it is queued it will be freed when dequeued,
+  1950		 * like the "regular" sigqueue.
+  1951		 */
+  1952		if (!list_empty(&q->list))
+  1953			q = NULL;
+  1954		spin_unlock_irqrestore(lock, flags);
+  1955	
+  1956		if (q)
+  1957			__sigqueue_free(q);
+  1958	}
+  1959	
+  1960	int send_sigqueue(struct sigqueue *q, struct pid *pid, enum pid_type type)
+  1961	{
+  1962		int sig = q->info.si_signo;
+  1963		struct sigpending *pending;
+  1964		struct task_struct *t;
+  1965		unsigned long flags;
+  1966		int ret, result;
+  1967	
+  1968		BUG_ON(!(q->flags & SIGQUEUE_PREALLOC));
+  1969	
+  1970		ret = -1;
+  1971		rcu_read_lock();
+  1972		t = pid_task(pid, type);
+  1973		if (!t || !likely(lock_task_sighand(t, &flags)))
+  1974			goto ret;
+  1975	
+  1976		ret = 1; /* the signal is ignored */
+  1977		result = TRACE_SIGNAL_IGNORED;
+  1978		if (!prepare_signal(sig, t, false))
+  1979			goto out;
+  1980	
+  1981		ret = 0;
+  1982		if (unlikely(!list_empty(&q->list))) {
+  1983			/*
+  1984			 * If an SI_TIMER entry is already queue just increment
+  1985			 * the overrun count.
+  1986			 */
+  1987			BUG_ON(q->info.si_code != SI_TIMER);
+  1988			q->info.si_overrun++;
+  1989			result = TRACE_SIGNAL_ALREADY_PENDING;
+  1990			goto out;
+  1991		}
+  1992		q->info.si_overrun = 0;
+  1993	
+  1994		signalfd_notify(t, sig);
+  1995		pending = (type != PIDTYPE_PID) ? &t->signal->shared_pending : &t->pending;
+  1996		list_add_tail(&q->list, &pending->list);
+  1997		sigaddset(&pending->signal, sig);
+  1998		complete_signal(sig, t, type);
+  1999		result = TRACE_SIGNAL_DELIVERED;
+  2000	out:
+  2001		trace_signal_generate(sig, &q->info, t, type != PIDTYPE_PID, result);
+  2002		unlock_task_sighand(t, &flags);
+  2003	ret:
+  2004		rcu_read_unlock();
+  2005		return ret;
+  2006	}
+  2007	
+  2008	/**
+  2009	 * lock_parents_siglocks - Take current, real_parent, and parent's siglock
+  2010	 * @lock_tracer: The tracers siglock is needed.
+  2011	 *
+  2012	 * There is no natural ordering to these locks so they must be sorted
+  2013	 * before being taken.
+  2014	 *
+  2015	 * There are two complicating factors here:
+  2016	 * - The locks live in sighand and sighand can be arbitrarily shared
+  2017	 * - parent and real_parent can change when current's siglock is unlocked.
+  2018	 *
+  2019	 * To deal with this first the all of the sighand pointers are
+  2020	 * gathered under current's siglock, and the sighand pointers are
+  2021	 * sorted.  As siglock lives inside of sighand this also sorts the
+  2022	 * siglock's by address.
+  2023	 *
+  2024	 * Then the siglocks are taken in order dropping current's siglock if
+  2025	 * necessary.
+  2026	 *
+  2027	 * Finally if parent and real_parent have not changed return.
+  2028	 * If they either parent has changed drop their locks and try again.
+  2029	 *
+  2030	 * Changing sighand is an infrequent and somewhat expensive operation
+  2031	 * (unshare or exec) and so even in the worst case this loop
+  2032	 * should not loop too many times before all of the proper locks are
+  2033	 * taken in order.
+  2034	 *
+  2035	 * CONTEXT:
+  2036	 * Must be called with @current->sighand->siglock held
+  2037	 *
+  2038	 * RETURNS:
+  2039	 * current's, real_parent's, and parent's siglock held.
+  2040	 */
+  2041	static void lock_parents_siglocks(bool lock_tracer)
+  2042		__releases(&current->sighand->siglock)
+  2043		__acquires(&current->sighand->siglock)
+  2044		__acquires(&current->real_parent->sighand->siglock)
+  2045		__acquires(&current->parent->sighand->siglock)
+  2046	{
+  2047		struct task_struct *me = current;
+> 2048		struct sighand_struct *m_sighand = me->sighand;
+  2049	
+  2050		lockdep_assert_held(&m_sighand->siglock);
+  2051	
+  2052		rcu_read_lock();
+  2053		for (;;) {
+  2054			struct task_struct *parent, *tracer;
+  2055			struct sighand_struct *p_sighand, *t_sighand, *s1, *s2, *s3;
+  2056	
+  2057			parent = me->real_parent;
+  2058			tracer = ptrace_parent(me);
+  2059			if (!tracer || !lock_tracer)
+  2060				tracer = parent;
+  2061	
+  2062			p_sighand = rcu_dereference(parent->sighand);
+  2063			t_sighand = rcu_dereference(tracer->sighand);
+  2064	
+  2065			/* Sort the sighands so that s1 >= s2 >= s3 */
+  2066			s1 = m_sighand;
+  2067			s2 = p_sighand;
+  2068			s3 = t_sighand;
+  2069			if (s1 > s2)
+  2070				swap(s1, s2);
+  2071			if (s1 > s3)
+  2072				swap(s1, s3);
+  2073			if (s2 > s3)
+  2074				swap(s2, s3);
+  2075	
+  2076			/* Take the locks in order */
+  2077			if (s1 != m_sighand) {
+  2078				spin_unlock(&m_sighand->siglock);
+  2079				spin_lock(&s1->siglock);
+  2080			}
+  2081			if (s1 != s2)
+  2082				spin_lock_nested(&s2->siglock, 1);
+  2083			if (s2 != s3)
+  2084				spin_lock_nested(&s3->siglock, 2);
+  2085	
+  2086			/* Verify the proper locks are held */
+> 2087			if (likely((s1 == m_sighand) ||
+  2088				   ((me->real_parent == parent) &&
+  2089				    (me->parent == tracer) &&
+  2090				    (parent->sighand == p_sighand) &&
+  2091				    (tracer->sighand == t_sighand)))) {
+  2092				break;
+  2093			}
+  2094	
+  2095			/* Drop all but current's siglock */
+  2096			if (p_sighand != m_sighand)
+  2097				spin_unlock(&p_sighand->siglock);
+  2098			if (t_sighand != p_sighand)
+  2099				spin_unlock(&t_sighand->siglock);
+  2100	
+  2101			/*
+  2102			 * Since [pt]_sighand will likely change if we go
+  2103			 * around, and m_sighand is the only one held, make sure
+  2104			 * it is subclass-0, since the above 's1 != m_sighand'
+  2105			 * clause very much relies on that.
+  2106			 */
+  2107			lock_set_subclass(&m_sighand->siglock.dep_map, 0, _RET_IP_);
+  2108		}
+  2109		rcu_read_unlock();
+  2110	}
+  2111	
+  2112	static void unlock_parents_siglocks(bool unlock_tracer)
+  2113		__releases(&current->real_parent->sighand->siglock)
+  2114		__releases(&current->parent->sighand->siglock)
+  2115	{
+  2116		struct task_struct *me = current;
+> 2117		struct task_struct *parent = me->real_parent;
+  2118		struct task_struct *tracer = ptrace_parent(me);
+  2119		struct sighand_struct *m_sighand = me->sighand;
+> 2120		struct sighand_struct *p_sighand = parent->sighand;
+  2121	
+  2122		if (p_sighand != m_sighand)
+  2123			spin_unlock(&p_sighand->siglock);
+  2124		if (tracer && unlock_tracer) {
+> 2125			struct sighand_struct *t_sighand = tracer->sighand;
+  2126			if (t_sighand != p_sighand)
+  2127				spin_unlock(&t_sighand->siglock);
+  2128		}
+  2129	}
+  2130	
 
-Rust support
-
-This is the patch series (v7) to add support for Rust as a second
-language to the Linux kernel.
-
-If you are interested in following this effort, please join us in
-the mailing list at:
-
-    rust-for-linux@vger.kernel.org
-
-and take a look at the project itself at:
-
-    https://github.com/Rust-for-Linux
-
-As usual, special thanks go to ISRG (Internet Security Research
-Group) and Google for their financial support on this endeavor.
-
-Cheers,
-Miguel
-
---
-
-# Rust support
-
-This cover letter explains the major changes and updates done since
-the previous ones. For those, please see:
-
-    RFC: https://lore.kernel.org/lkml/20210414184604.23473-1-ojeda@kernel.org/
-    v1:  https://lore.kernel.org/lkml/20210704202756.29107-1-ojeda@kernel.org/
-    v2:  https://lore.kernel.org/lkml/20211206140313.5653-1-ojeda@kernel.org/
-    v3:  https://lore.kernel.org/lkml/20220117053349.6804-1-ojeda@kernel.org/
-    v4:  https://lore.kernel.org/lkml/20220212130410.6901-1-ojeda@kernel.org/
-    v5:  https://lore.kernel.org/lkml/20220317181032.15436-1-ojeda@kernel.org/
-    v6:  https://lore.kernel.org/lkml/20220507052451.12890-1-ojeda@kernel.org/
-
-This is a small round to address the comments made in v6 plus a few
-related changes:
-
-  - Added `%pA` to `Documentation/core-api/printk-formats.rst`.
-
-  - Added `checkpatch.pl` patch to search for `%pA` in C code.
-
-  - Added `checkpatch.pl` patch to enable language-independent checks.
-
-  - Added UML (x86_64) support, for KUnit (thanks David Gow!).
-
-  - Added inline licensing information ("Apache-2.0 OR MIT") in
-    the commit message of the `alloc` patch, as well as in
-    `rust/alloc/README.md` in the following patch.
-
-  - Added SPDX license identifiers to `Documentation/rust/`.
-
-  - Reformatted `Documentation/rust/arch-support.rst` list table
-    into simple table.
-
-  - Removed logo from documentation patch; used Linux GIF one for
-    the Rust generated docs in its place (to be replaced with
-    the SVG one once available).
-
-  - Used `"GPL"` instead of `"GPL v2"` for the `license` field of the
-    `module!` macro.
-
-  - Moved `module_misc_device!` macro in `samples/rust/rust_random.rs`
-    to the top of the file in `samples/rust/` for consistency.
-
-  - Sorted `#include` lists in `rust/kernel/bindings_helper.h`
-    and `rust/helpers.c`.
-
-  - Fixed some English typos.
-
-  - Made the patches more `checkpatch.pl`-clean overall.
-
-  - Picked up Reviewed-by and Acked-by tags.
-
-
-## Patch series status
-
-The Rust support is still to be considered experimental. However,
-support is good enough that kernel developers can start working on the
-Rust abstractions for subsystems and write drivers and other modules.
-
-The current series has just arrived in `linux-next`, as usual.
-Similarly, the preview docs for this series can be seen at:
-
-    https://rust-for-linux.github.io/docs/kernel/
-
-As usual, please see the following link for the live list of unstable
-Rust features we are using:
-
-    https://github.com/Rust-for-Linux/linux/issues/2
-
-
-## Conferences, meetings and liaisons
-
-We would like to remind everyone about the Rust MC (microconference)
-of LPC 2022 (Linux Plumbers Conference):
-
-    https://lpc.events/event/16/contributions/1159/
-
-The Rust MC intends to cover talks and discussions on both Rust for
-Linux as well as other non-kernel Rust topics. The Call for Proposals
-is open!
-
-
-## Acknowledgements
-
-The signatures in the main commits correspond to the people that
-wrote code that has ended up in them at the present time. For details
-on contributions to code and discussions, please see our repository:
-
-    https://github.com/Rust-for-Linux/linux
-
-However, we would like to give credit to everyone that has contributed
-in one way or another to the Rust for Linux project. Since the
-previous cover letter:
-
-  - Kees Cook for his reviews of some of the v6 patches.
-
-  - David Gow and Brendan Higgins for their reviews of the KUnit
-    prerequisite patch and their feedback.
-
-  - Jonathan Corbet and Akira Yokosawa for their review of the
-    documentation patch and feedback on documentation rules.
-
-  - Gary Guo for working on improvements to the Rust compiler that
-    could make our `static_assert!` macro applicable in more cases.
-
-  - bjorn3 for working on making `rustc_parse_format` compile on
-    a stable Rust compiler so that it may be used by lightweight
-    formatting systems (for instance, by the kernel).
-
-  - As usual, bjorn3 and Gary Guo for all the input on Rust compiler
-    details, reviews and suggestions.
-
-  - Esteban Blanc, Arthur Cohen and Martin Schmidt for rebasing their
-    SPI abstraction work.
-
-  - Maciej Falkowski for continuing his work on the Samsung Exynos
-    TRNG driver and the required abstractions around it, such as
-    adding `delay`, `ktime` and `iopoll` abstractions, new methods
-    to `platform::Device` and run-time power management abstractions.
-
-  - Yuheng Su for working on cleaning up the `Module::init` interface.
-
-  - Peng Hao for working on wrapping `mm_struct`.
-
-  - Sergio González Collado for continuing his work on the GitHub CI
-    problem matchers.
-
-  - Wei Liu for taking the time to answer questions from newcomers
-    in Zulip.
-
-  - Philip Li, Yujie Liu et al. for continuing their work on adding
-    Rust support to the Intel 0DAY/LKP kernel test robot.
-
-  - Philip Herron and Arthur Cohen (and his supporters Open Source
-    Security and Embecosm) et al. for their ongoing work on GCC Rust.
-
-  - Antoni Boucher (and his supporters) et al. for their ongoing
-    work on `rustc_codegen_gcc`.
-
-  - Mats Larsen, Marc Poulhiès et al. for their ongoing work on
-    improving Rust support in Compiler Explorer.
-
-  - Many folks that have reported issues, tested the project,
-    helped spread the word, joined discussions and contributed in
-    other ways!
-
-Please see also the acknowledgements on the previous cover letters.
-
-
-Boqun Feng (1):
-  kallsyms: avoid hardcoding the buffer size
-
-Gary Guo (2):
-  rust: add `build_error` crate
-  vsprintf: add new `%pA` format specifier
-
-Miguel Ojeda (18):
-  kallsyms: support "big" kernel symbols
-  kallsyms: increase maximum kernel symbol length to 512
-  kunit: take `kunit_assert` as `const`
-  rust: add C helpers
-  rust: add `compiler_builtins` crate
-  rust: import upstream `alloc` crate
-  rust: adapt `alloc` crate to the kernel
-  rust: add `macros` crate
-  rust: export generated symbols
-  scripts: checkpatch: diagnose uses of `%pA` in the C side
-  scripts: checkpatch: enable language-independent checks for Rust
-  scripts: add `rustdoc_test_{builder,gen}.py` scripts
-  scripts: add `generate_rust_analyzer.py` scripts
-  scripts: decode_stacktrace: demangle Rust symbols
-  docs: add Rust documentation
-  Kbuild: add Rust support
-  samples: add Rust examples
-  MAINTAINERS: Rust
-
-Wedson Almeida Filho (4):
-  rust: add `kernel` crate's `sync` module
-  rust: add `kernel` crate
-  [RFC] drivers: gpio: PrimeCell PL061 in Rust
-  [RFC] drivers: android: Binder IPC in Rust
-
- .gitignore                                   |    5 +
- .rustfmt.toml                                |   12 +
- Documentation/core-api/printk-formats.rst    |   10 +
- Documentation/doc-guide/kernel-doc.rst       |    3 +
- Documentation/index.rst                      |    1 +
- Documentation/kbuild/kbuild.rst              |   17 +
- Documentation/kbuild/makefiles.rst           |   50 +-
- Documentation/process/changes.rst            |   41 +
- Documentation/rust/arch-support.rst          |   25 +
- Documentation/rust/coding-guidelines.rst     |  216 ++
- Documentation/rust/general-information.rst   |   79 +
- Documentation/rust/index.rst                 |   22 +
- Documentation/rust/quick-start.rst           |  232 ++
- MAINTAINERS                                  |   15 +
- Makefile                                     |  175 +-
- arch/Kconfig                                 |    6 +
- arch/arm/Kconfig                             |    1 +
- arch/arm64/Kconfig                           |    1 +
- arch/powerpc/Kconfig                         |    1 +
- arch/riscv/Kconfig                           |    1 +
- arch/riscv/Makefile                          |    5 +
- arch/um/Kconfig                              |    1 +
- arch/x86/Kconfig                             |    1 +
- arch/x86/Makefile                            |   14 +
- drivers/android/Kconfig                      |    6 +
- drivers/android/Makefile                     |    2 +
- drivers/android/allocation.rs                |  266 ++
- drivers/android/context.rs                   |   80 +
- drivers/android/defs.rs                      |   99 +
- drivers/android/node.rs                      |  476 +++
- drivers/android/process.rs                   |  960 +++++
- drivers/android/range_alloc.rs               |  189 +
- drivers/android/rust_binder.rs               |  111 +
- drivers/android/thread.rs                    |  870 +++++
- drivers/android/transaction.rs               |  326 ++
- drivers/gpio/Kconfig                         |    8 +
- drivers/gpio/Makefile                        |    1 +
- drivers/gpio/gpio_pl061_rust.rs              |  370 ++
- include/kunit/test.h                         |    2 +-
- include/linux/kallsyms.h                     |    2 +-
- include/linux/spinlock.h                     |   25 +-
- include/uapi/linux/android/binder.h          |   28 +-
- init/Kconfig                                 |   45 +-
- kernel/kallsyms.c                            |   26 +-
- kernel/livepatch/core.c                      |    4 +-
- lib/Kconfig.debug                            |  155 +
- lib/kunit/test.c                             |    4 +-
- lib/vsprintf.c                               |   13 +
- rust/.gitignore                              |   10 +
- rust/Makefile                                |  398 +++
- rust/alloc/README.md                         |   33 +
- rust/alloc/alloc.rs                          |  438 +++
- rust/alloc/borrow.rs                         |  498 +++
- rust/alloc/boxed.rs                          | 2007 +++++++++++
- rust/alloc/collections/mod.rs                |  156 +
- rust/alloc/fmt.rs                            |  601 ++++
- rust/alloc/lib.rs                            |  226 ++
- rust/alloc/macros.rs                         |  127 +
- rust/alloc/raw_vec.rs                        |  567 +++
- rust/alloc/slice.rs                          | 1282 +++++++
- rust/alloc/str.rs                            |  632 ++++
- rust/alloc/string.rs                         | 2869 +++++++++++++++
- rust/alloc/vec/drain.rs                      |  186 +
- rust/alloc/vec/drain_filter.rs               |  145 +
- rust/alloc/vec/into_iter.rs                  |  356 ++
- rust/alloc/vec/is_zero.rs                    |  106 +
- rust/alloc/vec/mod.rs                        | 3362 ++++++++++++++++++
- rust/alloc/vec/partial_eq.rs                 |   49 +
- rust/alloc/vec/set_len_on_drop.rs            |   30 +
- rust/alloc/vec/spec_extend.rs                |  174 +
- rust/bindgen_parameters                      |   17 +
- rust/build_error.rs                          |   29 +
- rust/compiler_builtins.rs                    |   57 +
- rust/exports.c                               |   20 +
- rust/helpers.c                               |  644 ++++
- rust/kernel/allocator.rs                     |   65 +
- rust/kernel/amba.rs                          |  257 ++
- rust/kernel/bindings.rs                      |   47 +
- rust/kernel/bindings_helper.h                |   46 +
- rust/kernel/build_assert.rs                  |   82 +
- rust/kernel/c_types.rs                       |  119 +
- rust/kernel/chrdev.rs                        |  207 ++
- rust/kernel/clk.rs                           |   79 +
- rust/kernel/cred.rs                          |   46 +
- rust/kernel/device.rs                        |  546 +++
- rust/kernel/driver.rs                        |  442 +++
- rust/kernel/error.rs                         |  565 +++
- rust/kernel/file.rs                          |  860 +++++
- rust/kernel/gpio.rs                          |  478 +++
- rust/kernel/hwrng.rs                         |  242 ++
- rust/kernel/io_buffer.rs                     |  153 +
- rust/kernel/io_mem.rs                        |  275 ++
- rust/kernel/iov_iter.rs                      |   81 +
- rust/kernel/irq.rs                           |  411 +++
- rust/kernel/kasync.rs                        |    6 +
- rust/kernel/kasync/net.rs                    |  322 ++
- rust/kernel/kunit.rs                         |   91 +
- rust/kernel/lib.rs                           |  261 ++
- rust/kernel/linked_list.rs                   |  247 ++
- rust/kernel/miscdev.rs                       |  291 ++
- rust/kernel/mm.rs                            |  149 +
- rust/kernel/module_param.rs                  |  498 +++
- rust/kernel/net.rs                           |  392 ++
- rust/kernel/net/filter.rs                    |  447 +++
- rust/kernel/of.rs                            |   63 +
- rust/kernel/pages.rs                         |  144 +
- rust/kernel/platform.rs                      |  223 ++
- rust/kernel/power.rs                         |  118 +
- rust/kernel/prelude.rs                       |   36 +
- rust/kernel/print.rs                         |  405 +++
- rust/kernel/random.rs                        |   42 +
- rust/kernel/raw_list.rs                      |  361 ++
- rust/kernel/rbtree.rs                        |  563 +++
- rust/kernel/revocable.rs                     |  161 +
- rust/kernel/security.rs                      |   38 +
- rust/kernel/static_assert.rs                 |   38 +
- rust/kernel/std_vendor.rs                    |  160 +
- rust/kernel/str.rs                           |  597 ++++
- rust/kernel/sync.rs                          |  161 +
- rust/kernel/sync/arc.rs                      |  503 +++
- rust/kernel/sync/condvar.rs                  |  138 +
- rust/kernel/sync/guard.rs                    |  169 +
- rust/kernel/sync/locked_by.rs                |  111 +
- rust/kernel/sync/mutex.rs                    |  153 +
- rust/kernel/sync/nowait.rs                   |  188 +
- rust/kernel/sync/revocable.rs                |  250 ++
- rust/kernel/sync/rwsem.rs                    |  197 +
- rust/kernel/sync/seqlock.rs                  |  202 ++
- rust/kernel/sync/smutex.rs                   |  295 ++
- rust/kernel/sync/spinlock.rs                 |  360 ++
- rust/kernel/sysctl.rs                        |  199 ++
- rust/kernel/task.rs                          |  175 +
- rust/kernel/types.rs                         |  679 ++++
- rust/kernel/user_ptr.rs                      |  175 +
- rust/macros/helpers.rs                       |   79 +
- rust/macros/lib.rs                           |   94 +
- rust/macros/module.rs                        |  631 ++++
- samples/Kconfig                              |    2 +
- samples/Makefile                             |    1 +
- samples/rust/Kconfig                         |  140 +
- samples/rust/Makefile                        |   16 +
- samples/rust/hostprogs/.gitignore            |    3 +
- samples/rust/hostprogs/Makefile              |    5 +
- samples/rust/hostprogs/a.rs                  |    7 +
- samples/rust/hostprogs/b.rs                  |    5 +
- samples/rust/hostprogs/single.rs             |   12 +
- samples/rust/rust_chrdev.rs                  |   50 +
- samples/rust/rust_minimal.rs                 |   35 +
- samples/rust/rust_miscdev.rs                 |  143 +
- samples/rust/rust_module_parameters.rs       |   69 +
- samples/rust/rust_netfilter.rs               |   54 +
- samples/rust/rust_platform.rs                |   22 +
- samples/rust/rust_print.rs                   |   54 +
- samples/rust/rust_random.rs                  |   60 +
- samples/rust/rust_semaphore.rs               |  171 +
- samples/rust/rust_semaphore_c.c              |  212 ++
- samples/rust/rust_stack_probing.rs           |   36 +
- samples/rust/rust_sync.rs                    |   93 +
- scripts/.gitignore                           |    1 +
- scripts/Kconfig.include                      |    6 +-
- scripts/Makefile                             |    3 +
- scripts/Makefile.build                       |   60 +
- scripts/Makefile.debug                       |   10 +
- scripts/Makefile.host                        |   34 +-
- scripts/Makefile.lib                         |   12 +
- scripts/Makefile.modfinal                    |    8 +-
- scripts/cc-version.sh                        |   12 +-
- scripts/checkpatch.pl                        |    8 +-
- scripts/decode_stacktrace.sh                 |   14 +
- scripts/generate_rust_analyzer.py            |  134 +
- scripts/generate_rust_target.rs              |  227 ++
- scripts/is_rust_module.sh                    |   13 +
- scripts/kallsyms.c                           |   47 +-
- scripts/kconfig/confdata.c                   |   75 +
- scripts/min-tool-version.sh                  |    6 +
- scripts/rust-is-available-bindgen-libclang.h |    2 +
- scripts/rust-is-available.sh                 |  158 +
- scripts/rustdoc_test_builder.py              |   59 +
- scripts/rustdoc_test_gen.py                  |  164 +
- tools/include/linux/kallsyms.h               |    2 +-
- tools/lib/perf/include/perf/event.h          |    2 +-
- tools/lib/symbol/kallsyms.h                  |    2 +-
- 182 files changed, 37614 insertions(+), 69 deletions(-)
- create mode 100644 .rustfmt.toml
- create mode 100644 Documentation/rust/arch-support.rst
- create mode 100644 Documentation/rust/coding-guidelines.rst
- create mode 100644 Documentation/rust/general-information.rst
- create mode 100644 Documentation/rust/index.rst
- create mode 100644 Documentation/rust/quick-start.rst
- create mode 100644 drivers/android/allocation.rs
- create mode 100644 drivers/android/context.rs
- create mode 100644 drivers/android/defs.rs
- create mode 100644 drivers/android/node.rs
- create mode 100644 drivers/android/process.rs
- create mode 100644 drivers/android/range_alloc.rs
- create mode 100644 drivers/android/rust_binder.rs
- create mode 100644 drivers/android/thread.rs
- create mode 100644 drivers/android/transaction.rs
- create mode 100644 drivers/gpio/gpio_pl061_rust.rs
- create mode 100644 rust/.gitignore
- create mode 100644 rust/Makefile
- create mode 100644 rust/alloc/README.md
- create mode 100644 rust/alloc/alloc.rs
- create mode 100644 rust/alloc/borrow.rs
- create mode 100644 rust/alloc/boxed.rs
- create mode 100644 rust/alloc/collections/mod.rs
- create mode 100644 rust/alloc/fmt.rs
- create mode 100644 rust/alloc/lib.rs
- create mode 100644 rust/alloc/macros.rs
- create mode 100644 rust/alloc/raw_vec.rs
- create mode 100644 rust/alloc/slice.rs
- create mode 100644 rust/alloc/str.rs
- create mode 100644 rust/alloc/string.rs
- create mode 100644 rust/alloc/vec/drain.rs
- create mode 100644 rust/alloc/vec/drain_filter.rs
- create mode 100644 rust/alloc/vec/into_iter.rs
- create mode 100644 rust/alloc/vec/is_zero.rs
- create mode 100644 rust/alloc/vec/mod.rs
- create mode 100644 rust/alloc/vec/partial_eq.rs
- create mode 100644 rust/alloc/vec/set_len_on_drop.rs
- create mode 100644 rust/alloc/vec/spec_extend.rs
- create mode 100644 rust/bindgen_parameters
- create mode 100644 rust/build_error.rs
- create mode 100644 rust/compiler_builtins.rs
- create mode 100644 rust/exports.c
- create mode 100644 rust/helpers.c
- create mode 100644 rust/kernel/allocator.rs
- create mode 100644 rust/kernel/amba.rs
- create mode 100644 rust/kernel/bindings.rs
- create mode 100644 rust/kernel/bindings_helper.h
- create mode 100644 rust/kernel/build_assert.rs
- create mode 100644 rust/kernel/c_types.rs
- create mode 100644 rust/kernel/chrdev.rs
- create mode 100644 rust/kernel/clk.rs
- create mode 100644 rust/kernel/cred.rs
- create mode 100644 rust/kernel/device.rs
- create mode 100644 rust/kernel/driver.rs
- create mode 100644 rust/kernel/error.rs
- create mode 100644 rust/kernel/file.rs
- create mode 100644 rust/kernel/gpio.rs
- create mode 100644 rust/kernel/hwrng.rs
- create mode 100644 rust/kernel/io_buffer.rs
- create mode 100644 rust/kernel/io_mem.rs
- create mode 100644 rust/kernel/iov_iter.rs
- create mode 100644 rust/kernel/irq.rs
- create mode 100644 rust/kernel/kasync.rs
- create mode 100644 rust/kernel/kasync/net.rs
- create mode 100644 rust/kernel/kunit.rs
- create mode 100644 rust/kernel/lib.rs
- create mode 100644 rust/kernel/linked_list.rs
- create mode 100644 rust/kernel/miscdev.rs
- create mode 100644 rust/kernel/mm.rs
- create mode 100644 rust/kernel/module_param.rs
- create mode 100644 rust/kernel/net.rs
- create mode 100644 rust/kernel/net/filter.rs
- create mode 100644 rust/kernel/of.rs
- create mode 100644 rust/kernel/pages.rs
- create mode 100644 rust/kernel/platform.rs
- create mode 100644 rust/kernel/power.rs
- create mode 100644 rust/kernel/prelude.rs
- create mode 100644 rust/kernel/print.rs
- create mode 100644 rust/kernel/random.rs
- create mode 100644 rust/kernel/raw_list.rs
- create mode 100644 rust/kernel/rbtree.rs
- create mode 100644 rust/kernel/revocable.rs
- create mode 100644 rust/kernel/security.rs
- create mode 100644 rust/kernel/static_assert.rs
- create mode 100644 rust/kernel/std_vendor.rs
- create mode 100644 rust/kernel/str.rs
- create mode 100644 rust/kernel/sync.rs
- create mode 100644 rust/kernel/sync/arc.rs
- create mode 100644 rust/kernel/sync/condvar.rs
- create mode 100644 rust/kernel/sync/guard.rs
- create mode 100644 rust/kernel/sync/locked_by.rs
- create mode 100644 rust/kernel/sync/mutex.rs
- create mode 100644 rust/kernel/sync/nowait.rs
- create mode 100644 rust/kernel/sync/revocable.rs
- create mode 100644 rust/kernel/sync/rwsem.rs
- create mode 100644 rust/kernel/sync/seqlock.rs
- create mode 100644 rust/kernel/sync/smutex.rs
- create mode 100644 rust/kernel/sync/spinlock.rs
- create mode 100644 rust/kernel/sysctl.rs
- create mode 100644 rust/kernel/task.rs
- create mode 100644 rust/kernel/types.rs
- create mode 100644 rust/kernel/user_ptr.rs
- create mode 100644 rust/macros/helpers.rs
- create mode 100644 rust/macros/lib.rs
- create mode 100644 rust/macros/module.rs
- create mode 100644 samples/rust/Kconfig
- create mode 100644 samples/rust/Makefile
- create mode 100644 samples/rust/hostprogs/.gitignore
- create mode 100644 samples/rust/hostprogs/Makefile
- create mode 100644 samples/rust/hostprogs/a.rs
- create mode 100644 samples/rust/hostprogs/b.rs
- create mode 100644 samples/rust/hostprogs/single.rs
- create mode 100644 samples/rust/rust_chrdev.rs
- create mode 100644 samples/rust/rust_minimal.rs
- create mode 100644 samples/rust/rust_miscdev.rs
- create mode 100644 samples/rust/rust_module_parameters.rs
- create mode 100644 samples/rust/rust_netfilter.rs
- create mode 100644 samples/rust/rust_platform.rs
- create mode 100644 samples/rust/rust_print.rs
- create mode 100644 samples/rust/rust_random.rs
- create mode 100644 samples/rust/rust_semaphore.rs
- create mode 100644 samples/rust/rust_semaphore_c.c
- create mode 100644 samples/rust/rust_stack_probing.rs
- create mode 100644 samples/rust/rust_sync.rs
- create mode 100755 scripts/generate_rust_analyzer.py
- create mode 100644 scripts/generate_rust_target.rs
- create mode 100755 scripts/is_rust_module.sh
- create mode 100644 scripts/rust-is-available-bindgen-libclang.h
- create mode 100755 scripts/rust-is-available.sh
- create mode 100755 scripts/rustdoc_test_builder.py
- create mode 100755 scripts/rustdoc_test_gen.py
-
-
-base-commit: 4b0986a3613c92f4ec1bdc7f60ec66fea135991f
 -- 
-2.36.1
+0-DAY CI Kernel Test Service
+https://01.org/lkp
 
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
