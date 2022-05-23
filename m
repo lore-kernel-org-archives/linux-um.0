@@ -1,90 +1,51 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out01.mta.xmission.com ([166.70.13.231])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nrSZ2-004BqF-LW
- for linux-um@lists.infradead.org; Wed, 18 May 2022 22:54:46 +0000
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-Date: Wed, 18 May 2022 17:53:44 -0500
-Message-Id: <20220518225355.784371-5-ebiederm@xmission.com>
-In-Reply-To: <871qwq5ucx.fsf_-_@email.froward.int.ebiederm.org>
-References: <871qwq5ucx.fsf_-_@email.froward.int.ebiederm.org>
+Return-Path: <dinguyen@kernel.org>
+Message-ID: <8e440c28-d4b9-2fc6-0294-f77544264d5c@kernel.org>
+Date: Mon, 23 May 2022 08:58:16 -0500
 MIME-Version: 1.0
-Subject: [PATCH 05/16] ptrace: Remove dead code from __ptrace_detach
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+Subject: Re: [PATCH v4 06/11] nios2: use fallback for random_get_entropy()
+ instead of zero
+Content-Language: en-US
+References: <20220413115411.21489-1-Jason@zx2c4.com>
+ <20220413115411.21489-7-Jason@zx2c4.com>
+From: Dinh Nguyen <dinguyen@kernel.org>
+In-Reply-To: <20220413115411.21489-7-Jason@zx2c4.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, Robert OCallahan <roc@pernos.co>, Kyle Huey <khuey@pernos.co>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Jason Wessel <jason.wessel@windriver.com>, Daniel Thompson <daniel.thompson@linaro.org>, Douglas Anderson <dianders@chromium.org>, Douglas Miller <dougmill@linux.vnet.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, "Eric W. Biederman" <ebiederm@xmission.com>
-
-Ever since commit 28d838cc4dfe ("Fix ptrace self-attach rule") it has
-been impossible to attach another thread in the same thread group.
-
-Remove the code from __ptrace_detach that was trying to support
-detaching from a thread in the same thread group.  The code is
-dead and I can not make sense of what it is trying to do.
-
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
----
- kernel/ptrace.c | 24 +++---------------------
- 1 file changed, 3 insertions(+), 21 deletions(-)
-
-diff --git a/kernel/ptrace.c b/kernel/ptrace.c
-index 328a34a99124..ca0e47691229 100644
---- a/kernel/ptrace.c
-+++ b/kernel/ptrace.c
-@@ -526,19 +526,6 @@ static int ptrace_traceme(void)
- 	return ret;
- }
- 
--/*
-- * Called with irqs disabled, returns true if childs should reap themselves.
-- */
--static int ignoring_children(struct sighand_struct *sigh)
--{
--	int ret;
--	spin_lock(&sigh->siglock);
--	ret = (sigh->action[SIGCHLD-1].sa.sa_handler == SIG_IGN) ||
--	      (sigh->action[SIGCHLD-1].sa.sa_flags & SA_NOCLDWAIT);
--	spin_unlock(&sigh->siglock);
--	return ret;
--}
--
- /*
-  * Called with tasklist_lock held for writing.
-  * Unlink a traced task, and clean it up if it was a traced zombie.
-@@ -565,14 +552,9 @@ static bool __ptrace_detach(struct task_struct *tracer, struct task_struct *p)
- 
- 	dead = !thread_group_leader(p);
- 
--	if (!dead && thread_group_empty(p)) {
--		if (!same_thread_group(p->real_parent, tracer))
--			dead = do_notify_parent(p, p->exit_signal);
--		else if (ignoring_children(tracer->sighand)) {
--			__wake_up_parent(p, tracer);
--			dead = true;
--		}
--	}
-+	if (!dead && thread_group_empty(p))
-+		dead = do_notify_parent(p, p->exit_signal);
-+
- 	/* Mark it as in the process of being reaped. */
- 	if (dead)
- 		p->exit_state = EXIT_DEAD;
--- 
-2.35.3
+To: "Jason A. Donenfeld" <Jason@zx2c4.com>, linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org, tglx@linutronix.de, arnd@arndb.de
+Cc: Theodore Ts'o <tytso@mit.edu>, Dominik Brodowski <linux@dominikbrodowski.net>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, "David S . Miller" <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, John Stultz <john.stultz@linaro.org>, Stephen Boyd <sboyd@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org, linux-xtensa@linux-xtensa.org
+List-ID: <linux-um.lists.infradead.org>
 
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+
+On 4/13/22 06:54, Jason A. Donenfeld wrote:
+> In the event that random_get_entropy() can't access a cycle counter or
+> similar, falling back to returning 0 is really not the best we can do.
+> Instead, at least calling random_get_entropy_fallback() would be
+> preferable, because that always needs to return _something_, even
+> falling back to jiffies eventually. It's not as though
+> random_get_entropy_fallback() is super high precision or guaranteed to
+> be entropic, but basically anything that's not zero all the time is
+> better than returning zero all the time.
+> 
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Dinh Nguyen <dinguyen@kernel.org>
+> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+> ---
+>   arch/nios2/include/asm/timex.h | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/nios2/include/asm/timex.h b/arch/nios2/include/asm/timex.h
+> index a769f871b28d..d9a3f426cdda 100644
+> --- a/arch/nios2/include/asm/timex.h
+> +++ b/arch/nios2/include/asm/timex.h
+> @@ -9,4 +9,6 @@ typedef unsigned long cycles_t;
+>   
+>   extern cycles_t get_cycles(void);
+>   
+> +#define random_get_entropy() (((unsigned long)get_cycles()) ?: random_get_entropy_fallback())
+> +
+>   #endif
+
+Acked-by: Dinh Nguyen <dinguyen@kernel.org>
 
