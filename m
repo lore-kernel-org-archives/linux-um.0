@@ -1,18 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nlXBh-001PSz-8C
- for linux-um@lists.infradead.org; Mon, 02 May 2022 14:38:13 +0000
-Date: Mon, 2 May 2022 16:37:51 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-Subject: Re: [PATCH v2 06/12] ptrace: Reimplement PTRACE_KILL by always
- sending SIGKILL
-Message-ID: <20220502143750.GC17276@redhat.com>
-References: <87k0b7v9yk.fsf_-_@email.froward.int.ebiederm.org>
- <20220429214837.386518-6-ebiederm@xmission.com>
+Message-ID: <0dda86c0-3a54-8c70-d1e7-18bbb4d41bab@igalia.com>
+Date: Mon, 23 May 2022 17:40:07 -0300
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220429214837.386518-6-ebiederm@xmission.com>
+Subject: Re: [PATCH 12/30] parisc: Replace regular spinlock with spin_trylock
+ on panic path
+Content-Language: en-US
+References: <20220427224924.592546-1-gpiccoli@igalia.com>
+ <20220427224924.592546-13-gpiccoli@igalia.com>
+ <6a7c924a-54a9-c5ea-8a9d-3ea92987b436@gmx.de>
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <6a7c924a-54a9-c5ea-8a9d-3ea92987b436@gmx.de>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -25,45 +22,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: linux-kernel@vger.kernel.org, rjw@rjwysocki.net, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>
+To: Helge Deller <deller@gmx.de>
+Cc: linux-kernel@vger.kernel.org, kexec@lists.infradead.org, pmladek@suse.com, bhe@redhat.com, akpm@linux-foundation.org, bcm-kernel-feedback-list@broadcom.com, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
 
-On 04/29, Eric W. Biederman wrote:
->
-> Call send_sig_info in PTRACE_KILL instead of ptrace_resume.  Calling
-> ptrace_resume is not safe to call if the task has not been stopped
-> with ptrace_freeze_traced.
+On 28/04/2022 13:55, Helge Deller wrote:
+> [...]
+> You may add:
+> Acked-by: Helge Deller <deller@gmx.de> # parisc
+> 
+> Helge
 
-Oh, I was never, never able to understand why do we have PTRACE_KILL
-and what should it actually do.
+Hi Helge, do you think would be possible to still pick this one for
+v5.19 or do you prefer to hold for the next release?
 
-I suggested many times to simply remove it but OK, we probably can't
-do this.
+I'm working on V2, so if it's merged for 5.19 I won't send it again.
+Thanks,
 
-> --- a/kernel/ptrace.c
-> +++ b/kernel/ptrace.c
-> @@ -1238,7 +1238,7 @@ int ptrace_request(struct task_struct *child, long request,
->  	case PTRACE_KILL:
->  		if (child->exit_state)	/* already dead */
->  			return 0;
-> -		return ptrace_resume(child, request, SIGKILL);
-> +		return send_sig_info(SIGKILL, SEND_SIG_NOINFO, child);
 
-Note that currently ptrace(PTRACE_KILL) can never fail (yes, yes, it
-is unsafe), but send_sig_info() can. If we do not remove PTRACE_KILL,
-then I'd suggest
-
-	case PTRACE_KILL:
-		if (!child->exit_state)
-			send_sig_info(SIGKILL);
-		return 0;
-
-to make this change a bit more compatible.
-
-Also, please remove the note about PTRACE_KILL in set_task_blockstep().
-
-Oleg.
-
+Guilherme
 
 _______________________________________________
 linux-um mailing list
