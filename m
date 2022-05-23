@@ -1,13 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Tue, 10 May 2022 13:29:22 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH 18/30] notifier: Show function names on notifier
- routines if DEBUG_NOTIFIERS is set
-Message-ID: <20220510132922.61883db0@gandalf.local.home>
-In-Reply-To: <9f44aae6-ec00-7ede-ec19-6e67ceb74510@huawei.com>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
- <20220427224924.592546-19-gpiccoli@igalia.com>
- <9f44aae6-ec00-7ede-ec19-6e67ceb74510@huawei.com>
+Received: from smtp2.axis.com ([195.60.68.18])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1nt8fX-004dCu-IM
+ for linux-um@lists.infradead.org; Mon, 23 May 2022 14:04:25 +0000
+From: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Subject: [PATCH] um: Fix out-of-bounds read in LDT setup
+Date: Mon, 23 May 2022 16:04:03 +0200
+Message-ID: <20220523140403.2361040-1-vincent.whitchurch@axis.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -21,40 +20,73 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Xiaoming Ni <nixiaoming@huawei.com>
-Cc: "Guilherme G. Piccoli" <gpiccoli@igalia.com>, akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, Arjan van de Ven <arjan@linux.intel.com>, Cong Wang <xiyou.wangcong@gmail.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Valentin Schneider <valentin.schneider@arm.com>
+To: richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net
+Cc: kernel@axis.com, x86@kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Vincent Whitchurch <vincent.whitchurch@axis.com>
 
-On Thu, 28 Apr 2022 09:01:13 +0800
-Xiaoming Ni <nixiaoming@huawei.com> wrote:
+syscall_stub_data() expects the data_count parameter to be the number of
+longs, not bytes.
 
-> > +#ifdef CONFIG_DEBUG_NOTIFIERS
-> > +	{
-> > +		char sym_name[KSYM_NAME_LEN];
-> > +
-> > +		pr_info("notifiers: registered %s()\n",
-> > +			notifier_name(n, sym_name));
-> > +	}  
-> 
-> Duplicate Code.
-> 
-> Is it better to use __func__ and %pS?
-> 
-> pr_info("%s: %pS\n", __func__, n->notifier_call);
-> 
-> 
-> > +#endif
+ ==================================================================
+ BUG: KASAN: stack-out-of-bounds in syscall_stub_data+0x70/0xe0
+ Read of size 128 at addr 000000006411f6f0 by task swapper/1
 
-Also, don't sprinkle #ifdef in C code. Instead:
+ CPU: 0 PID: 1 Comm: swapper Not tainted 5.18.0+ #18
+ Call Trace:
+  show_stack.cold+0x166/0x2a7
+  __dump_stack+0x3a/0x43
+  dump_stack_lvl+0x1f/0x27
+  print_report.cold+0xdb/0xf81
+  kasan_report+0x119/0x1f0
+  kasan_check_range+0x3a3/0x440
+  memcpy+0x52/0x140
+  syscall_stub_data+0x70/0xe0
+  write_ldt_entry+0xac/0x190
+  init_new_ldt+0x515/0x960
+  init_new_context+0x2c4/0x4d0
+  mm_init.constprop.0+0x5ed/0x760
+  mm_alloc+0x118/0x170
+  0x60033f48
+  do_one_initcall+0x1d7/0x860
+  0x60003e7b
+  kernel_init+0x6e/0x3d4
+  new_thread_handler+0x1e7/0x2c0
 
-	if (IS_ENABLED(CONFIG_DEBUG_NOTIFIERS))
-		pr_info("notifers: regsiter %ps()\n",
-			n->notifer_call);
+ The buggy address belongs to stack of task swapper/1
+  and is located at offset 64 in frame:
+  init_new_ldt+0x0/0x960
 
+ This frame has 2 objects:
+  [32, 40) 'addr'
+  [64, 80) 'desc'
+ ==================================================================
 
-Or define a print macro at the start of the C file that is a nop if it is
-not defined, and use the macro.
+Fixes: 858259cf7d1c443c83 ("uml: maintain own LDT entries")
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+---
+ arch/x86/um/ldt.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
--- Steve
+diff --git a/arch/x86/um/ldt.c b/arch/x86/um/ldt.c
+index 3ee234b6234d..255a44dd415a 100644
+--- a/arch/x86/um/ldt.c
++++ b/arch/x86/um/ldt.c
+@@ -23,9 +23,11 @@ static long write_ldt_entry(struct mm_id *mm_idp, int func,
+ {
+ 	long res;
+ 	void *stub_addr;
++
++	BUILD_BUG_ON(sizeof(*desc) % sizeof(long));
++
+ 	res = syscall_stub_data(mm_idp, (unsigned long *)desc,
+-				(sizeof(*desc) + sizeof(long) - 1) &
+-				    ~(sizeof(long) - 1),
++				sizeof(*desc) / sizeof(long),
+ 				addr, &stub_addr);
+ 	if (!res) {
+ 		unsigned long args[] = { func,
+-- 
+2.34.1
+
 
 _______________________________________________
 linux-um mailing list
