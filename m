@@ -1,12 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH v3 03/15] modpost: merge add_{intree_flag, retpoline,
- staging_flag} to add_header
-Date: Thu,  5 May 2022 16:22:32 +0900
-Message-Id: <20220505072244.1155033-4-masahiroy@kernel.org>
-In-Reply-To: <20220505072244.1155033-1-masahiroy@kernel.org>
-References: <20220505072244.1155033-1-masahiroy@kernel.org>
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+ by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+ id 1ntWRw-008RbH-OQ
+ for linux-um@lists.infradead.org; Tue, 24 May 2022 15:27:58 +0000
+Date: Tue, 24 May 2022 17:27:25 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+Subject: Re: [PATCH 08/16] ptrace: Only populate last_siginfo from ptrace
+Message-ID: <20220524152725.GE14347@redhat.com>
+References: <871qwq5ucx.fsf_-_@email.froward.int.ebiederm.org>
+ <20220518225355.784371-8-ebiederm@xmission.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20220518225355.784371-8-ebiederm@xmission.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,70 +24,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kbuild@vger.kernel.org
-Cc: clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org, Nicolas Schier a <nicolas@fjasle.eu>, Ard Biesheuvel <ardb@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Peter Zijlstra <peterz@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org, linux-s390@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>, Sami Tolvanen <samitolvanen@google.com>, Kees Cook <keescook@chromium.org>, Masahiro Yamada <masahiroy@kernel.org>
+To: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: linux-kernel@vger.kernel.org, rjw@rjwysocki.net, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, Robert OCallahan <roc@pernos.co>, Kyle Huey <khuey@pernos.co>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Jason Wessel <jason.wessel@windriver.com>, Daniel Thompson <daniel.thompson@linaro.org>, Douglas Anderson <dianders@chromium.org>, Douglas Miller <dougmill@linux.vnet.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>
 
-add_intree_flag(), add_retpoline(), and add_staging_flag() are small
-enough to be merged into add_header().
+On 05/18, Eric W. Biederman wrote:
+>
+> The code in ptrace_signal to populate siginfo if the signal number
+> changed is buggy.  If the tracer contined the tracee using
+> ptrace_detach it is guaranteed to use the real_parent (or possibly a
+> new tracer) but definitely not the origional tracer to populate si_pid
+> and si_uid.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+I guess nobody cares. As the comment says
 
-Changes in v3:
-  - New patch
+	 If the debugger wanted something
+	 specific in the siginfo structure then it should
+	 have updated *info via PTRACE_SETSIGINFO.
 
- scripts/mod/modpost.c | 25 +++++++------------------
- 1 file changed, 7 insertions(+), 18 deletions(-)
+otherwise I don't think si_pid/si_uid have any value.
 
-diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index ebd80c77fa03..ae8e4a4dcfd2 100644
---- a/scripts/mod/modpost.c
-+++ b/scripts/mod/modpost.c
-@@ -2200,25 +2200,17 @@ static void add_header(struct buffer *b, struct module *mod)
- 			      "#endif\n");
- 	buf_printf(b, "\t.arch = MODULE_ARCH_INIT,\n");
- 	buf_printf(b, "};\n");
--}
- 
--static void add_intree_flag(struct buffer *b, int is_intree)
--{
--	if (is_intree)
-+	if (!external_module)
- 		buf_printf(b, "\nMODULE_INFO(intree, \"Y\");\n");
--}
- 
--/* Cannot check for assembler */
--static void add_retpoline(struct buffer *b)
--{
--	buf_printf(b, "\n#ifdef CONFIG_RETPOLINE\n");
--	buf_printf(b, "MODULE_INFO(retpoline, \"Y\");\n");
--	buf_printf(b, "#endif\n");
--}
-+	buf_printf(b,
-+		   "\n"
-+		   "#ifdef CONFIG_RETPOLINE\n"
-+		   "MODULE_INFO(retpoline, \"Y\");\n"
-+		   "#endif\n");
- 
--static void add_staging_flag(struct buffer *b, const char *name)
--{
--	if (strstarts(name, "drivers/staging"))
-+	if (strstarts(mod->name, "drivers/staging"))
- 		buf_printf(b, "\nMODULE_INFO(staging, \"Y\");\n");
- }
- 
-@@ -2544,9 +2536,6 @@ int main(int argc, char **argv)
- 		check_exports(mod);
- 
- 		add_header(&buf, mod);
--		add_intree_flag(&buf, !external_module);
--		add_retpoline(&buf);
--		add_staging_flag(&buf, mod->name);
- 		add_versions(&buf, mod);
- 		add_depends(&buf, mod);
- 		add_moddevtable(&buf, mod);
--- 
-2.32.0
+However the patch looks fine to me, just the word "buggy" looks a bit
+too strong imo.
+
+Oleg.
 
 
 _______________________________________________
