@@ -1,12 +1,8 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1ntPxf-007Ecz-QZ
- for linux-um@lists.infradead.org; Tue, 24 May 2022 08:32:18 +0000
-Date: Tue, 24 May 2022 16:32:03 +0800
-From: Baoquan He <bhe@redhat.com>
+Date: Tue, 24 May 2022 10:01:12 +0200
+From: Petr Mladek <pmladek@suse.com>
 Subject: Re: [PATCH 24/30] panic: Refactor the panic path
-Message-ID: <YoyYAz6jOShsfzbM@MiWiFi-R3L-srv>
+Message-ID: <YoyQyHHfhIIXSX0U@alley>
 References: <20220427224924.592546-1-gpiccoli@igalia.com>
  <20220427224924.592546-25-gpiccoli@igalia.com>
  <Yn0TnsWVxCcdB2yO@alley>
@@ -29,9 +25,9 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Cc: Petr Mladek <pmladek@suse.com>, "michael Kelley (LINUX)" <mikelley@microsoft.com>, Dave Young <dyoung@redhat.com>, d.hatayama@jp.fujitsu.com, akpm@linux-foundation.org, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, dave.hansen@linux.intel.com, feng.tang@intel.com, gregkh@linuxfoundation.org, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org
+Cc: Baoquan He <bhe@redhat.com>, "michael Kelley (LINUX)" <mikelley@microsoft.com>, Dave Young <dyoung@redhat.com>, d.hatayama@jp.fujitsu.com, akpm@linux-foundation.org, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, dave.hansen@linux.intel.com, feng.tang@intel.com, gregkh@linuxfoundation.org, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org
 
-On 05/20/22 at 08:23am, Guilherme G. Piccoli wrote:
+On Fri 2022-05-20 08:23:33, Guilherme G. Piccoli wrote:
 > On 19/05/2022 20:45, Baoquan He wrote:
 > > [...]
 > >> I really appreciate the summary skill you have, to convert complex
@@ -66,69 +62,6 @@ On 05/20/22 at 08:23am, Guilherme G. Piccoli wrote:
 > execution of their relevant notifiers (like the vmbus disconnect,
 > specially in arm64 that has no custom machine_crash_shutdown, or the
 > fadump case in ppc). This led to more risk in kdump.
-
-Firstly, kdump is not always the first thing. In any use case, if kdump
-kernel is not loaded, it's not the first thing at all. Not to mention
-if crash_kexec_post_notifiers is specified.
-
-if kdump kernel is loaded, kdump has been executing firslty, since it
-was added into kenrel/panic(); Until 2014, Masa added crash_kexec_post_notifiers
-kernel parameter to make panic notifiers be able to execute before kdump
-if specified.
-
-	commit dc009d92435f99498cbc579ce76bf28e837e2c14
-	Author: Eric W. Biederman <ebiederm@xmission.com>
-	Date:   Sat Jun 25 14:57:52 2005 -0700
-	
-	    [PATCH] kexec: add kexec syscalls
- 
-	commit f06e5153f4ae2e2f3b0300f0e260e40cb7fefd45
-	Author: Masami Hiramatsu <masami.hiramatsu.pt@hitachi.com>
-	Date:   Fri Jun 6 14:37:07 2014 -0700
-	
-	    kernel/panic.c: add "crash_kexec_post_notifiers" option for kdump after panic_notifers
-
-Changing this will cause regression. During these years, nobody ever doubt
-kdump should execute firstly if crashkernel is reserved and kdump kernel is
-loaded. That's not saying we can't change
-this, but need a convincing justification.
-
-Secondly, even with the notifiers' split, we can't guarantee people will
-absolutely add notifiers into right list in the future. Letting kdump
-execute behind lists by default will put kdump into risk.
-
-For example, you replied to Hatamata saying you have been working with
-kdump in the last 3, 4 years, and you have have been working on these
-panic notifiers refactoring issue in the recent months. However, in your
-refactoring patches of introducing hypervisor/info/pre-reboot, I noticed
-you acked the suggestion from Petr that several notifiers need be moved to
-correct position. So even you can't make sure these, how can other people
-be able to recognize which list should be 100% appropriate when they try
-to register one notifier for their sub-component?
-
-At last, I am wondering why fadump matters. I don't know in which case
-people wants to load kdump kernel, but expect to trigger crash fadump.
-Power people need consider this carefully and makes some change. Fadump
-just borrows the crashkernel reservation mechanism. If fadump would rather
-take risk to run all panic notifiers, whether fadump really needs them
-or not, then execute crash_fadump(), that's powerpc's business.
-
-As for Hyper-V, if it enforces to terminate VMbus connection, no matter
-it's kdump or not, why not taking it out of panic notifiers list and
-execute it before kdump unconditionally. Below is abstracted from
-Michael's words.
-
-https://lore.kernel.org/all/MWHPR21MB15933573F5C81C5250BF6A1CD75E9@MWHPR21MB1593.namprd21.prod.outlook.com/T/#u
-=======
-I looked at the code again, and should revise my previous comments
-somewhat.   The Hyper-V resets that I described indeed must be done
-prior to kexec'ing the kdump kernel.   Most such resets are actually
-done via __crash_kexec() -> machine_crash_shutdown(), not via the
-panic notifier. However, the Hyper-V panic notifier must terminate the
-VMbus connection, because that must be done even if kdump is not
-being invoked.  See commit 74347a99e73.
-=======
-
 > 
 > The thing is: with the notifiers' split, we tried to keep only the most
 > relevant/necessary stuff in this first list, things that ultimately
@@ -138,13 +71,39 @@ being invoked.  See commit 74347a99e73.
 > trying to accommodate the antagonistic goals of hypervisors that need
 > some clean-up (even for kdump to work) VS. kdump users, that wish a
 > "pristine" system reboot ASAP after the crash.
-> 
-> Cheers,
-> 
-> 
-> Guilherme
-> 
 
+Good question. I wonder if Baoquan knows about problems caused by the
+particular notifiers that will end up in the hypervisor list. Note
+that there will be some shuffles and the list will be slightly
+different in V2.
+
+Anyway, I see four possible solutions:
+
+  1. The most conservative approach is to keep the current behavior
+     and call kdump first by default.
+
+  2. A medium conservative approach to change the default default
+     behavior and call hypervisor and eventually the info notifiers
+     before kdump. There still would be the possibility to call kdump
+     first by the command line parameter.
+
+  3. Remove the possibility to call kdump first completely. It would
+     assume that all the notifiers in the info list are super safe
+     or that they make kdump actually more safe.
+
+  4. Create one more notifier list for operations that always should
+     be called before crash_dump.
+
+Regarding the extra notifier list (4th solution). It is not clear to
+me whether it would be always called even before hypervisor list or
+when kdump is not enabled. We must not over-engineer it.
+
+2nd proposal looks like a good compromise. But maybe we could do
+this change few releases later. The notifiers split is a big
+change on its own.
+
+Best Regards,
+Petr
 
 _______________________________________________
 linux-um mailing list
