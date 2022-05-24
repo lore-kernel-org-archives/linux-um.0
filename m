@@ -1,17 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-yw1-x114a.google.com ([2607:f8b0:4864:20::114a])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nuf87-000nXU-3I
-	for linux-um@lists.infradead.org; Fri, 27 May 2022 18:56:13 +0000
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-2fb7cb07885so45598907b3.23
-        for <linux-um@lists.infradead.org>; Fri, 27 May 2022 11:56:10 -0700 (PDT)
-Date: Fri, 27 May 2022 11:56:00 -0700
-In-Reply-To: <20220527185600.1236769-1-davidgow@google.com>
-Message-Id: <20220527185600.1236769-2-davidgow@google.com>
-Mime-Version: 1.0
-References: <20220527185600.1236769-1-davidgow@google.com>
-Subject: [PATCH v2 2/2] UML: add support for KASAN under x86_64
-From: David Gow <davidgow@google.com>
+Date: Tue, 24 May 2022 10:04:51 +0200
+From: Petr Mladek <pmladek@suse.com>
+Subject: Re: [PATCH 19/30] panic: Add the panic hypervisor notifier list
+Message-ID: <YoyRo6gJrr4lsFpD@alley>
+References: <20220427224924.592546-1-gpiccoli@igalia.com>
+ <20220427224924.592546-20-gpiccoli@igalia.com>
+ <YoJZVZl/MH0KiE/J@alley>
+ <ad082ce7-db50-13bb-3dbb-9b595dfa78be@igalia.com>
+ <YoOpyW1+q+Z5as78@alley>
+ <d72b9aab-675c-ac89-b73a-b1de4a0b722d@igalia.com>
+ <81878a67-21f1-fee8-1add-f381bc8b05df@broadcom.com>
+ <edbaa4fa-561c-6f5e-f2ab-43ae68acaede@igalia.com>
+ <d1cc0bee-2a98-0c2e-8796-6fb7fae6b803@broadcom.com>
+ <0fac8c71-6f18-d15c-23f5-075dbc45f3f9@igalia.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <0fac8c71-6f18-d15c-23f5-075dbc45f3f9@igalia.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,412 +28,48 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Vincent Whitchurch <vincent.whitchurch@axis.com>, Johannes Berg <johannes@sipsolutions.net>, Patricia Alfonso <trishalfonso@google.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, anton.ivanov@cambridgegreys.com, Dmitry Vyukov <dvyukov@google.com>, Brendan Higgins <brendanhiggins@google.com>, Andrew Morton <akpm@linux-foundation.org>, Andrey Konovalov <andreyknvl@gmail.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>
-Cc: kasan-dev <kasan-dev@googlegroups.com>, linux-um@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>, Daniel Latypov <dlatypov@google.com>, linux-mm@kvack.org, David Gow <davidgow@google.com>
+To: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Cc: Scott Branden <scott.branden@broadcom.com>, Sebastian Reichel <sre@kernel.org>, Florian Fainelli <f.fainelli@gmail.com>, Desmond yan <desmond.yan@broadcom.com>, David Gow <davidgow@google.com>, Evan Green <evgreen@chromium.org>, Julius Werner <jwerner@chromium.org>, bcm-kernel-feedback-list@broadcom.com, linux-pm@vger.kernel.org, akpm@linux-foundation.org, bhe@redhat.com, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, Alexander Gordeev <agordeev@linux.ibm.com>, Andrea Parri <parri.andrea@gmail.com>, Ard Biesheuvel <ardb@kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Brian Norris <computersforpeace@gmail.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Christophe JAILLET <christophe.jaillet@wanadoo.fr>, "David S. Miller" <davem@davemloft.net>, Dexuan Cui <decui@microsoft.com>, Doug Berger <opendmb@gmail.com>, Haiyang Zhang <haiyangz@microsoft.com>, Hari Bathini <hbathini@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Justin Chen <justinpopo6@gmail.com>, "K. Y. Srinivasan" <kys@microsoft.com>, Lee Jones <lee.jones@linaro.org>, Markus Mayer <mmayer@broadcom.com>, Michael Ellerman <mpe@ellerman.id.au>, Mihai Carabas <mihai.carabas@oracle.com>, Nicholas Piggin <npiggin@gmail.com>, Paul Mackerras <paulus@samba.org>, Pavel Machek <pavel@ucw.cz>, Shile Zhang <shile.zhang@linux.alibaba.com>, Stephen Hemminger <sthemmin@microsoft.com>, Sven Schnelle <svens@linux.ibm.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Tianyu Lan <Tianyu.Lan@microsoft.com>, Vasily Gorbik <gor@linux.ibm.com>, Wang ShaoBo <bobo.shaobowang@huawei.com>, Wei Liu <wei.liu@kernel.org>, zhenwei pi <pizhenwei@bytedance.com>
 
-From: Patricia Alfonso <trishalfonso@google.com>
+On Mon 2022-05-23 11:56:12, Guilherme G. Piccoli wrote:
+> On 19/05/2022 16:20, Scott Branden wrote:
+> > [...] 
+> >> Hi Scott / Desmond, thanks for the detailed answer! Is this adapter
+> >> designed to run in x86 only or you have other architectures' use cases?
+> > The adapter may be used in any PCIe design that supports DMA.
+> > So it may be possible to run in arm64 servers.
+> >>
+> >> [...]
+> >> With that said, and given this is a lightweight notifier that ideally
+> >> should run ASAP, I'd keep this one in the hypervisor list. We can
+> >> "adjust" the semantic of this list to include lightweight notifiers that
+> >> reset adapters.
+> > Sounds the best to keep system operating as tested today.
+> >>
+> >> With that said, Petr has a point - not always such list is going to be
+> >> called before kdump. So, that makes me think in another idea: what if we
+> >> have another list, but not on panic path, but instead in the custom
+> >> crash_shutdown()? Drivers could add callbacks there that must execute
+> >> before kexec/kdump, no matter what.
+> > It may be beneficial for some other drivers but for our use we would 
+> > then need to register for the panic path and the crash_shutdown path. 
+> > We notify the VK card for 2 purposes: one to stop DMA so memory stop 
+> > changing during a kdump.  And also to get the card into a good state so 
+> > resets happen cleanly.
+> 
+> Thanks Scott! With that, I guess it's really better to keep this
+> notifier in this hypervisor/early list - I'm planning to do that for V2.
+> Unless Petr or somebody has strong feelings against that, of course.
 
-Make KASAN run on User Mode Linux on x86_64.
+I am fine with it because we do not have a better solution at the
+moment.
 
-The UML-specific KASAN initializer uses mmap to map the roughly 2.25TB
-of shadow memory to the location defined by KASAN_SHADOW_OFFSET.
-kasan_init() utilizes constructors to initialize KASAN before main().
+It might be a good candidate for the 5th notifier list mentioned
+in the thread https://lore.kernel.org/r/YoyQyHHfhIIXSX0U@alley .
+But I am not sure if the 5th list is worth the complexity.
 
-The location of the KASAN shadow memory, starting at
-KASAN_SHADOW_OFFSET, can be configured using the KASAN_SHADOW_OFFSET
-option. UML uses roughly 18TB of address space, and KASAN requires 1/8th
-of this. The default location of this offset is 0x100000000000, which
-keeps it out-of-the-way even on UML setups with more "physical" memory.
-
-For low-memory setups, 0x7fff8000 can be used instead, which fits in an
-immediate and is therefore faster, as suggested by Dmitry Vyukov. There
-is usually enough free space at this location; however, it is a config
-option so that it can be easily changed if needed.
-
-Note that, unlike KASAN on other architectures, vmalloc allocations
-still use the shadow memory allocated upfront, rather than allocating
-and free-ing it per-vmalloc allocation.
-
-Also note that, while UML supports both KASAN in inline mode
-(CONFIG_KASAN_INLINE) and static linking (CONFIG_STATIC_LINK), it does
-not support both at the same time.
-
-Signed-off-by: Patricia Alfonso <trishalfonso@google.com>
-Co-developed-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
-Signed-off-by: David Gow <davidgow@google.com>
----
-
-This is v2 of the KASAN/UML port. It should be ready to go.
-
-It does benefit significantly from the following patches:
-- Bugfix for memory corruption, needed for KASAN_STACK support:
-https://lore.kernel.org/lkml/20220523140403.2361040-1-vincent.whitchurch@axis.com/
-- Fix CONFIG_CONSTRUCTORS on static linked kernels:
-https://lore.kernel.org/all/20220526185402.955870-1-davidgow@google.com/
-- Improve callstack reporting for Tiny RCU:
-https://lore.kernel.org/all/20220527170743.04c21d235467.I1f79da0f90fb9b557ec34932136c656bc64b8fbf@changeid/
-
-Changes since RFC v3:
-https://lore.kernel.org/all/20220526010111.755166-1-davidgow@google.com/
-- No longer print "KernelAddressSanitizer initialized" (Johannes)
-- Document the reason for the CONFIG_UML checks in shadow.c (Dmitry)
-- Support static builds via kasan_arch_is_ready() (Dmitry)
-- Get rid of a redundant call to kasam_mem_to_shadow() (Dmitry)
-- Use PAGE_ALIGN and the new PAGE_ALIGN_DOWN macros (Dmitry)
-- Reinstate missing arch/um/include/asm/kasan.h file (Johannes)
-
-Changes since v1:
-https://lore.kernel.org/all/20200226004608.8128-1-trishalfonso@google.com/
-- Include several fixes from Vincent Whitchurch:
-https://lore.kernel.org/all/20220525111756.GA15955@axis.com/
-- Support for KASAN_VMALLOC, by changing the way
-  kasan_{populate,release}_vmalloc work to update existing shadow
-  memory, rather than allocating anything new.
-- A similar fix for modules' shadow memory.
-- Support for KASAN_STACK
-  - This requires the bugfix here:
-https://lore.kernel.org/lkml/20220523140403.2361040-1-vincent.whitchurch@axis.com/
-  - Plus a couple of files excluded from KASAN.
-- Revert the default shadow offset to 0x100000000000
-  - This was breaking when mem=1G for me, at least.
-- A few minor fixes to linker sections and scripts.
-  - I've added one to dyn.lds.S on top of the ones Vincent added.
-
-
----
- arch/um/Kconfig                  | 15 +++++++++++++
- arch/um/Makefile                 |  6 ++++++
- arch/um/include/asm/common.lds.S |  2 ++
- arch/um/include/asm/kasan.h      | 37 ++++++++++++++++++++++++++++++++
- arch/um/kernel/Makefile          |  3 +++
- arch/um/kernel/dyn.lds.S         |  6 +++++-
- arch/um/kernel/mem.c             | 19 ++++++++++++++++
- arch/um/os-Linux/mem.c           | 22 +++++++++++++++++++
- arch/um/os-Linux/user_syms.c     |  4 ++--
- arch/x86/um/Makefile             |  3 ++-
- arch/x86/um/vdso/Makefile        |  3 +++
- mm/kasan/shadow.c                | 36 +++++++++++++++++++++++++++++--
- 12 files changed, 150 insertions(+), 6 deletions(-)
- create mode 100644 arch/um/include/asm/kasan.h
-
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 4d398b80aea8..c28ea5c89381 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -11,6 +11,8 @@ config UML
- 	select ARCH_HAS_STRNLEN_USER
- 	select ARCH_NO_PREEMPT
- 	select HAVE_ARCH_AUDITSYSCALL
-+	select HAVE_ARCH_KASAN if X86_64
-+	select HAVE_ARCH_KASAN_VMALLOC if HAVE_ARCH_KASAN
- 	select HAVE_ARCH_SECCOMP_FILTER
- 	select HAVE_ASM_MODVERSIONS
- 	select HAVE_UID16
-@@ -219,6 +221,19 @@ config UML_TIME_TRAVEL_SUPPORT
- 
- 	  It is safe to say Y, but you probably don't need this.
- 
-+config KASAN_SHADOW_OFFSET
-+	hex
-+	depends on KASAN
-+	default 0x100000000000
-+	help
-+	  This is the offset at which the ~2.25TB of shadow memory is
-+	  mapped and used by KASAN for memory debugging. This can be any
-+	  address that has at least KASAN_SHADOW_SIZE(total address space divided
-+	  by 8) amount of space so that the KASAN shadow memory does not conflict
-+	  with anything. The default is 0x100000000000, which works even if mem is
-+	  set to a large value. On low-memory systems, try 0x7fff8000, as it fits
-+	  into the immediate of most instructions, improving performance.
-+
- endmenu
- 
- source "arch/um/drivers/Kconfig"
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index f2fe63bfd819..a98405f4ecb8 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -75,6 +75,12 @@ USER_CFLAGS = $(patsubst $(KERNEL_DEFINES),,$(patsubst -I%,,$(KBUILD_CFLAGS))) \
- 		-D_FILE_OFFSET_BITS=64 -idirafter $(srctree)/include \
- 		-idirafter $(objtree)/include -D__KERNEL__ -D__UM_HOST__
- 
-+# Kernel config options are not included in USER_CFLAGS, but the option for KASAN
-+# should be included if the KASAN config option was set.
-+ifdef CONFIG_KASAN
-+	USER_CFLAGS+=-DCONFIG_KASAN=y
-+endif
-+
- #This will adjust *FLAGS accordingly to the platform.
- include $(srctree)/$(ARCH_DIR)/Makefile-os-$(OS)
- 
-diff --git a/arch/um/include/asm/common.lds.S b/arch/um/include/asm/common.lds.S
-index eca6c452a41b..fd481ac371de 100644
---- a/arch/um/include/asm/common.lds.S
-+++ b/arch/um/include/asm/common.lds.S
-@@ -83,6 +83,8 @@
-   }
-   .init_array : {
- 	__init_array_start = .;
-+	*(.kasan_init)
-+	*(.init_array.*)
- 	*(.init_array)
- 	__init_array_end = .;
-   }
-diff --git a/arch/um/include/asm/kasan.h b/arch/um/include/asm/kasan.h
-new file mode 100644
-index 000000000000..0d6547f4ec85
---- /dev/null
-+++ b/arch/um/include/asm/kasan.h
-@@ -0,0 +1,37 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __ASM_UM_KASAN_H
-+#define __ASM_UM_KASAN_H
-+
-+#include <linux/init.h>
-+#include <linux/const.h>
-+
-+#define KASAN_SHADOW_OFFSET _AC(CONFIG_KASAN_SHADOW_OFFSET, UL)
-+
-+/* used in kasan_mem_to_shadow to divide by 8 */
-+#define KASAN_SHADOW_SCALE_SHIFT 3
-+
-+#ifdef CONFIG_X86_64
-+#define KASAN_HOST_USER_SPACE_END_ADDR 0x00007fffffffffffUL
-+/* KASAN_SHADOW_SIZE is the size of total address space divided by 8 */
-+#define KASAN_SHADOW_SIZE ((KASAN_HOST_USER_SPACE_END_ADDR + 1) >> \
-+			KASAN_SHADOW_SCALE_SHIFT)
-+#else
-+#error "KASAN_SHADOW_SIZE is not defined for this sub-architecture"
-+#endif /* CONFIG_X86_64 */
-+
-+#define KASAN_SHADOW_START (KASAN_SHADOW_OFFSET)
-+#define KASAN_SHADOW_END (KASAN_SHADOW_START + KASAN_SHADOW_SIZE)
-+
-+#ifdef CONFIG_KASAN
-+void kasan_init(void);
-+void kasan_map_memory(void *start, unsigned long len);
-+extern int kasan_um_is_ready;
-+
-+#ifdef CONFIG_STATIC_LINK
-+#define kasan_arch_is_ready() (kasan_um_is_ready)
-+#endif
-+#else
-+static inline void kasan_init(void) { }
-+#endif /* CONFIG_KASAN */
-+
-+#endif /* __ASM_UM_KASAN_H */
-diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
-index 1c2d4b29a3d4..a089217e2f0e 100644
---- a/arch/um/kernel/Makefile
-+++ b/arch/um/kernel/Makefile
-@@ -27,6 +27,9 @@ obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
- obj-$(CONFIG_STACKTRACE) += stacktrace.o
- obj-$(CONFIG_GENERIC_PCI_IOMAP) += ioport.o
- 
-+KASAN_SANITIZE_stacktrace.o := n
-+KASAN_SANITIZE_sysrq.o := n
-+
- USER_OBJS := config.o
- 
- include arch/um/scripts/Makefile.rules
-diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
-index 2f2a8ce92f1e..2b7fc5b54164 100644
---- a/arch/um/kernel/dyn.lds.S
-+++ b/arch/um/kernel/dyn.lds.S
-@@ -109,7 +109,11 @@ SECTIONS
-      be empty, which isn't pretty.  */
-   . = ALIGN(32 / 8);
-   .preinit_array     : { *(.preinit_array) }
--  .init_array     : { *(.init_array) }
-+  .init_array     : {
-+    *(.kasan_init)
-+    *(.init_array.*)
-+    *(.init_array)
-+  }
-   .fini_array     : { *(.fini_array) }
-   .data           : {
-     INIT_TASK_DATA(KERNEL_STACK_SIZE)
-diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
-index 15295c3237a0..276a1f0b91f1 100644
---- a/arch/um/kernel/mem.c
-+++ b/arch/um/kernel/mem.c
-@@ -18,6 +18,25 @@
- #include <kern_util.h>
- #include <mem_user.h>
- #include <os.h>
-+#include <linux/sched/task.h>
-+
-+#ifdef CONFIG_KASAN
-+int kasan_um_is_ready;
-+void kasan_init(void)
-+{
-+	/*
-+	 * kasan_map_memory will map all of the required address space and
-+	 * the host machine will allocate physical memory as necessary.
-+	 */
-+	kasan_map_memory((void *)KASAN_SHADOW_START, KASAN_SHADOW_SIZE);
-+	init_task.kasan_depth = 0;
-+	kasan_um_is_ready = true;
-+}
-+
-+static void (*kasan_init_ptr)(void)
-+__section(".kasan_init") __used
-+= kasan_init;
-+#endif
- 
- /* allocated in paging_init, zeroed in mem_init, and unchanged thereafter */
- unsigned long *empty_zero_page = NULL;
-diff --git a/arch/um/os-Linux/mem.c b/arch/um/os-Linux/mem.c
-index 3c1b77474d2d..8530b2e08604 100644
---- a/arch/um/os-Linux/mem.c
-+++ b/arch/um/os-Linux/mem.c
-@@ -17,6 +17,28 @@
- #include <init.h>
- #include <os.h>
- 
-+/*
-+ * kasan_map_memory - maps memory from @start with a size of @len.
-+ * The allocated memory is filled with zeroes upon success.
-+ * @start: the start address of the memory to be mapped
-+ * @len: the length of the memory to be mapped
-+ *
-+ * This function is used to map shadow memory for KASAN in uml
-+ */
-+void kasan_map_memory(void *start, size_t len)
-+{
-+	if (mmap(start,
-+		 len,
-+		 PROT_READ|PROT_WRITE,
-+		 MAP_FIXED|MAP_ANONYMOUS|MAP_PRIVATE|MAP_NORESERVE,
-+		 -1,
-+		 0) == MAP_FAILED) {
-+		os_info("Couldn't allocate shadow memory: %s\n.",
-+			strerror(errno));
-+		exit(1);
-+	}
-+}
-+
- /* Set by make_tempfile() during early boot. */
- static char *tempdir = NULL;
- 
-diff --git a/arch/um/os-Linux/user_syms.c b/arch/um/os-Linux/user_syms.c
-index 715594fe5719..cb667c9225ab 100644
---- a/arch/um/os-Linux/user_syms.c
-+++ b/arch/um/os-Linux/user_syms.c
-@@ -27,10 +27,10 @@ EXPORT_SYMBOL(strstr);
- #ifndef __x86_64__
- extern void *memcpy(void *, const void *, size_t);
- EXPORT_SYMBOL(memcpy);
--#endif
--
- EXPORT_SYMBOL(memmove);
- EXPORT_SYMBOL(memset);
-+#endif
-+
- EXPORT_SYMBOL(printf);
- 
- /* Here, instead, I can provide a fake prototype. Yes, someone cares: genksyms.
-diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
-index ba5789c35809..f778e37494ba 100644
---- a/arch/x86/um/Makefile
-+++ b/arch/x86/um/Makefile
-@@ -28,7 +28,8 @@ else
- 
- obj-y += syscalls_64.o vdso/
- 
--subarch-y = ../lib/csum-partial_64.o ../lib/memcpy_64.o ../entry/thunk_64.o
-+subarch-y = ../lib/csum-partial_64.o ../lib/memcpy_64.o ../entry/thunk_64.o \
-+	../lib/memmove_64.o ../lib/memset_64.o
- 
- endif
- 
-diff --git a/arch/x86/um/vdso/Makefile b/arch/x86/um/vdso/Makefile
-index 5943387e3f35..8c0396fd0e6f 100644
---- a/arch/x86/um/vdso/Makefile
-+++ b/arch/x86/um/vdso/Makefile
-@@ -3,6 +3,9 @@
- # Building vDSO images for x86.
- #
- 
-+# do not instrument on vdso because KASAN is not compatible with user mode
-+KASAN_SANITIZE			:= n
-+
- # Prevents link failures: __sanitizer_cov_trace_pc() is not linked in.
- KCOV_INSTRUMENT                := n
- 
-diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
-index a4f07de21771..c993d99116f2 100644
---- a/mm/kasan/shadow.c
-+++ b/mm/kasan/shadow.c
-@@ -295,9 +295,29 @@ int kasan_populate_vmalloc(unsigned long addr, unsigned long size)
- 		return 0;
- 
- 	shadow_start = (unsigned long)kasan_mem_to_shadow((void *)addr);
--	shadow_start = ALIGN_DOWN(shadow_start, PAGE_SIZE);
- 	shadow_end = (unsigned long)kasan_mem_to_shadow((void *)addr + size);
--	shadow_end = ALIGN(shadow_end, PAGE_SIZE);
-+
-+	/*
-+	 * User Mode Linux maps enough shadow memory for all of physical memory
-+	 * at boot, so doesn't need to allocate more on vmalloc, just clear it.
-+	 *
-+	 * If another architecture chooses to go down the same path, we should
-+	 * replace this check for CONFIG_UML with something more generic, such
-+	 * as:
-+	 * - A CONFIG_KASAN_NO_SHADOW_ALLOC option, which architectures could set
-+	 * - or, a way of having architecture-specific versions of these vmalloc
-+	 *   and module shadow memory allocation options.
-+	 *
-+	 * For the time being, though, this check works. The remaining CONFIG_UML
-+	 * checks in this file exist for the same reason.
-+	 */
-+	if (IS_ENABLED(CONFIG_UML)) {
-+		__memset((void *)shadow_start, KASAN_VMALLOC_INVALID, shadow_end - shadow_start);
-+		return 0;
-+	}
-+
-+	shadow_start = PAGE_ALIGN_DOWN(shadow_start);
-+	shadow_end = PAGE_ALIGN(shadow_end);
- 
- 	ret = apply_to_page_range(&init_mm, shadow_start,
- 				  shadow_end - shadow_start,
-@@ -466,6 +486,10 @@ void kasan_release_vmalloc(unsigned long start, unsigned long end,
- 
- 	if (shadow_end > shadow_start) {
- 		size = shadow_end - shadow_start;
-+		if (IS_ENABLED(CONFIG_UML)) {
-+			__memset(shadow_start, KASAN_SHADOW_INIT, shadow_end - shadow_start);
-+			return;
-+		}
- 		apply_to_existing_page_range(&init_mm,
- 					     (unsigned long)shadow_start,
- 					     size, kasan_depopulate_vmalloc_pte,
-@@ -531,6 +555,11 @@ int kasan_alloc_module_shadow(void *addr, size_t size, gfp_t gfp_mask)
- 	if (WARN_ON(!PAGE_ALIGNED(shadow_start)))
- 		return -EINVAL;
- 
-+	if (IS_ENABLED(CONFIG_UML)) {
-+		__memset((void *)shadow_start, KASAN_SHADOW_INIT, shadow_size);
-+		return 0;
-+	}
-+
- 	ret = __vmalloc_node_range(shadow_size, 1, shadow_start,
- 			shadow_start + shadow_size,
- 			GFP_KERNEL,
-@@ -554,6 +583,9 @@ int kasan_alloc_module_shadow(void *addr, size_t size, gfp_t gfp_mask)
- 
- void kasan_free_module_shadow(const struct vm_struct *vm)
- {
-+	if (IS_ENABLED(CONFIG_UML))
-+		return;
-+
- 	if (vm->flags & VM_KASAN)
- 		vfree(kasan_mem_to_shadow(vm->addr));
- }
--- 
-2.36.1.124.g0e6072fb45-goog
-
+Best Regards,
+Petr
 
 _______________________________________________
 linux-um mailing list
