@@ -1,11 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-lj1-x232.google.com ([2a00:1450:4864:20::232])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1ntzRo-00Crs4-NN
+	for linux-um@lists.infradead.org; Wed, 25 May 2022 22:25:46 +0000
+Received: by mail-lj1-x232.google.com with SMTP id r3so19118021ljd.7
+        for <linux-um@lists.infradead.org>; Wed, 25 May 2022 15:25:42 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220523020209.11810-1-ojeda@kernel.org> <20220523020209.11810-22-ojeda@kernel.org>
- <CAKwvOdn+9qORm8UpDGnPXxiK7B7P_TW5CtXv1+8qkv7UvQr3hQ@mail.gmail.com>
-In-Reply-To: <CAKwvOdn+9qORm8UpDGnPXxiK7B7P_TW5CtXv1+8qkv7UvQr3hQ@mail.gmail.com>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Mon, 30 May 2022 15:39:51 +0200
-Message-ID: <CANiq72n2bU3LSGu-4v66nif_95EVq--z2X_F2V7JBPU8v=h8EA@mail.gmail.com>
+In-Reply-To: <20220523020209.11810-22-ojeda@kernel.org>
+From: Nick Desaulniers <ndesaulniers@google.com>
+Date: Wed, 25 May 2022 15:25:28 -0700
+Message-ID: <CAKwvOdn+9qORm8UpDGnPXxiK7B7P_TW5CtXv1+8qkv7UvQr3hQ@mail.gmail.com>
 Subject: Re: [PATCH v7 21/25] Kbuild: add Rust support
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -19,127 +24,182 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Masahiro Yamada <masahiroy@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, rust-for-linux <rust-for-linux@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, Jarkko Sakkinen <jarkko@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Finn Behrens <me@kloenk.de>, Adam Bratschi-Kaye <ark.email@gmail.com>, Wedson Almeida Filho <wedsonaf@google.com>, Michael Ellerman <mpe@ellerman.id.au>, Sven Van Asbroeck <thesven73@gmail.com>, Gary Guo <gary@garyguo.net>, Boris-Chengbiao Zhou <bobo1239@web.de>, Boqun Feng <boqun.feng@gmail.com>, Douglas Su <d0u9.su@outlook.com>, Dariusz Sosnowski <dsosnowski@dsosnowski.pl>, Antonio Terceiro <antonio.terceiro@linaro.org>, Daniel Xu <dxu@dxuuu.xyz>, Miguel Cano <macanroj@gmail.com>, David Gow <davidgow@google.com>, Michal Marek <michal.lkml@markovi.net>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-riscv <linux-riscv@lists.infradead.org>, linux-um@lists.infradead.org
+To: Miguel Ojeda <ojeda@kernel.org>, Masahiro Yamada <masahiroy@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, Jarkko Sakkinen <jarkko@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Finn Behrens <me@kloenk.de>, Adam Bratschi-Kaye <ark.email@gmail.com>, Wedson Almeida Filho <wedsonaf@google.com>, Michael Ellerman <mpe@ellerman.id.au>, Sven Van Asbroeck <thesven73@gmail.com>, Gary Guo <gary@garyguo.net>, Boris-Chengbiao Zhou <bobo1239@web.de>, Boqun Feng <boqun.feng@gmail.com>, Douglas Su <d0u9.su@outlook.com>, Dariusz Sosnowski <dsosnowski@dsosnowski.pl>, Antonio Terceiro <antonio.terceiro@linaro.org>, Daniel Xu <dxu@dxuuu.xyz>, Miguel Cano <macanroj@gmail.com>, David Gow <davidgow@google.com>, Michal Marek <michal.lkml@markovi.net>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, linux-kbuild@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org
 
-On Thu, May 26, 2022 at 12:25 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
+On Sun, May 22, 2022 at 7:04 PM Miguel Ojeda <ojeda@kernel.org> wrote:
 >
-> Is there a reason to not just turn clippy on always? Might be nicer to
-> start off with good practices by default. :^)
-
-The idea crossed my mind too [1], but sadly Clippy disables some
-optimizations and in general is not intended to be used for normal
-compilation [2].
-
-[1] https://github.com/rust-lang/rust-clippy/issues/8035
-[2] https://github.com/rust-lang/rust-clippy/pull/8037
-
-> Are there *.rmeta directories that we _don't_ want to remove via `make
-> mrproper`? I'm curious why *.rmeta isn't just part of MRPROPER_FILES?
-
-Putting them in `MRPROPER_FILES` would mean only those in a given
-directory are removed (e.g. the root one), but the idea here is to
-find them anywhere in the tree, since in the future we may have
-library crates in different parts of the tree.
-
-However, I am not sure I understand your first question in relation
-with the second one -- if we put them in `MRPROPER_FILES`, that would
-remove less, not more.
-
-> I don't think we need to repeat dir/* here again for rust. The
-> existing targets listed above (outside this hunk) make sense in both
-> contexts.
-
-The idea here is to document the differences (e.g. `RUSTFMT`) and that
-we may have other targets in the future that do not apply to C (e.g.
-MIR dump, if that happens to be useful).
-
-But maybe I can fit that in the normal place and make it still look
-good... I will give it a try.
-
-> Does rustc really use .i as a conventional suffix for macro expanded
-> sources? (The C compiler might use the -x flag to override the guess
-
-It is not a conventional suffix at all as far as I am aware.
-
-Maybe we should use a different one to aid editors and users anyway,
-e.g. `.rsi`, similar to `.mi` for Objective-C `.m` files.
-
-> it would make based on the file extension; I'm curious if rustc can
-> ingest .i files or will it warn?)
-
-The macro expanded output is not intended to be used as a compilable
-input, but as a debugging aid only. I can note this there.
-
-Having said that, `rustc` accepts the "preprocessed" output in the
-sense that it will just treat them as normal source files (no flag
-needed, and e.g. both `.i` and `.rsi` work); however, it may give new
-diagnostics or may require extra flags to enable some compiler
-features.
-
-From a quick test, I managed to compile a "preprocessed" Rust kernel
-module with only command-line changes. But if we really wanted to
-support this, we would need to ask upstream Rust to actually support
-it.
-
-> Are these two kconfigs used anywhere?
-
-Not for the moment, but it could still be useful when getting
-`.config` reports (and we could add it to `LINUX_COMPILER` etc. in the
-future).
-
-> How does enabling or disabling debug info work for rustc? I may have
-> missed it, but I was surprised to see no additional flags getting
-> passed to rustc based on CONFIG_DEBUG info.
-
-`-Cdebuginfo=` is the one; by default there is no debug info and that
-option enables it (i.e. it is not just the level but the enablement
-too).
-
-(Note that in userspace, when compiling a common program, you will get
-some debug info coming from the standard library and other
-dependencies).
-
-> Ah, that explains the host rust build infra.  Bravo! Hard coding the
-> target files was my major concern last I looked at the series. I'm
-> very happy to see it be generated properly from .config!
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -120,6 +120,15 @@ endif
 >
-> I haven't actually reviewed this yet, but it makes me significantly
-> more confident in the series to see this approach added. Good job
-> whoever wrote this.
+>  export KBUILD_CHECKSRC
+>
+> +# Enable "clippy" (a linter) as part of the Rust compilation.
+> +#
+> +# Use 'make CLIPPY=1' to enable it.
+> +ifeq ("$(origin CLIPPY)", "command line")
+> +  KBUILD_CLIPPY := $(CLIPPY)
+> +endif
 
-Thanks! I thought Rust would be a nice option for writing hostprogs,
-though of course for the moment only programs that can assume Rust is
-there may use it.
+Is there a reason to not just turn clippy on always? Might be nicer to
+start off with good practices by default. :^)
 
-Note that non-x86 specific options need to be handled properly still
-(e.g. move things between the arch Makefiles and the hostprog as
-needed).
+> @@ -1494,7 +1588,8 @@ MRPROPER_FILES += include/config include/generated          \
+>                   certs/signing_key.pem \
+>                   certs/x509.genkey \
+>                   vmlinux-gdb.py \
+> -                 *.spec
+> +                 *.spec \
+> +                 rust/target.json rust/libmacros.so
+>
+>  # clean - Delete most, but leave enough to build external modules
+>  #
+> @@ -1519,6 +1614,9 @@ $(mrproper-dirs):
+>
+>  mrproper: clean $(mrproper-dirs)
+>         $(call cmd,rmfiles)
+> +       @find . $(RCS_FIND_IGNORE) \
+> +               \( -name '*.rmeta' \) \
+> +               -type f -print | xargs rm -f
 
-I would still want to see compilers come to some kind of common format
-for this as we discussed other times, but... :)
+Are there *.rmeta directories that we _don't_ want to remove via `make
+mrproper`? I'm curious why *.rmeta isn't just part of MRPROPER_FILES?
 
-> Does `$(READELF) -p .comment foo.o` print anything about which
-> compiler was used? That seems less brittle IMO.
+>
+>  # distclean
+>  #
+> @@ -1606,6 +1704,23 @@ help:
+>         @echo  '  kselftest-merge   - Merge all the config dependencies of'
+>         @echo  '                      kselftest to existing .config.'
+>         @echo  ''
+> +       @echo  'Rust targets:'
+> +       @echo  '  rustavailable   - Checks whether the Rust toolchain is'
+> +       @echo  '                    available and, if not, explains why.'
+> +       @echo  '  rustfmt         - Reformat all the Rust code in the kernel'
+> +       @echo  '  rustfmtcheck    - Checks if all the Rust code in the kernel'
+> +       @echo  '                    is formatted, printing a diff otherwise.'
+> +       @echo  '  rustdoc         - Generate Rust documentation'
+> +       @echo  '                    (requires kernel .config)'
+> +       @echo  '  rusttest        - Runs the Rust tests'
+> +       @echo  '                    (requires kernel .config; downloads external repos)'
+> +       @echo  '  rust-analyzer   - Generate rust-project.json rust-analyzer support file'
+> +       @echo  '                    (requires kernel .config)'
+> +       @echo  '  dir/file.[os]   - Build specified target only'
+> +       @echo  '  dir/file.i      - Build macro expanded source, similar to C preprocessing'
+> +       @echo  '                    (run with RUSTFMT=n to skip reformatting if needed)'
+> +       @echo  '  dir/file.ll     - Build the LLVM assembly file'
 
-Currently, `rustc` does not add a `.comment` section; but we could
-ask, I sent [3].
+I don't think we need to repeat dir/* here again for rust. The
+existing targets listed above (outside this hunk) make sense in both
+contexts.
 
-If debug info is enabled, another way is using the `DW_AT_language`
-attribute, like `pahole` will be doing for a new option we need [4].
-However, we would still need a way for the other case.
+Does rustc really use .i as a conventional suffix for macro expanded
+sources? (The C compiler might use the -x flag to override the guess
+it would make based on the file extension; I'm curious if rustc can
+ingest .i files or will it warn?)
 
-In any case, I am not sure something like `.comment` is less or more
-brittle -- compilers could in theory change it (e.g. not emitting it),
-while adding a symbol is something we control. So different kinds of
-brittleness.
+> diff --git a/init/Kconfig b/init/Kconfig
+> index ddcbefe535e9..3457cf596588 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> +config RUSTC_VERSION_TEXT
+> +       string
+> +       depends on RUST
+> +       default $(shell,command -v $(RUSTC) >/dev/null 2>&1 && $(RUSTC) --version || echo n)
+> +
+> +config BINDGEN_VERSION_TEXT
+> +       string
+> +       depends on RUST
+> +       default $(shell,command -v $(BINDGEN) >/dev/null 2>&1 && $(BINDGEN) --version || echo n)
 
-[3] https://github.com/rust-lang/rust/pull/97550
-[4] https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?id=8ee363790b7437283c53090a85a9fec2f0b0fbc4
+Are these two kconfigs used anywhere?
 
-Cheers,
-Miguel
+> diff --git a/scripts/Kconfig.include b/scripts/Kconfig.include
+> index 0496efd6e117..83e850321eb6 100644
+> --- a/scripts/Kconfig.include
+> +++ b/scripts/Kconfig.include
+> @@ -36,12 +36,12 @@ ld-option = $(success,$(LD) -v $(1))
+>  as-instr = $(success,printf "%b\n" "$(1)" | $(CC) $(CLANG_FLAGS) -c -x assembler -o /dev/null -)
+>
+>  # check if $(CC) and $(LD) exist
+> -$(error-if,$(failure,command -v $(CC)),compiler '$(CC)' not found)
+> +$(error-if,$(failure,command -v $(CC)),C compiler '$(CC)' not found)
+
+Not that it's important to do so, but a couple hunks s/compiler/C
+compiler/. Those _could_ probably get submitted ahead of this, but not
+important to do so.
+
+> diff --git a/scripts/Makefile.debug b/scripts/Makefile.debug
+> index 9f39b0130551..fe87389d52c0 100644
+> --- a/scripts/Makefile.debug
+> +++ b/scripts/Makefile.debug
+> @@ -1,4 +1,5 @@
+>  DEBUG_CFLAGS   :=
+> +DEBUG_RUSTFLAGS        :=
+>
+>  ifdef CONFIG_DEBUG_INFO_SPLIT
+>  DEBUG_CFLAGS   += -gsplit-dwarf
+> @@ -10,6 +11,12 @@ ifndef CONFIG_AS_IS_LLVM
+>  KBUILD_AFLAGS  += -Wa,-gdwarf-2
+>  endif
+>
+> +ifdef CONFIG_DEBUG_INFO_REDUCED
+> +DEBUG_RUSTFLAGS += -Cdebuginfo=1
+> +else
+> +DEBUG_RUSTFLAGS += -Cdebuginfo=2
+> +endif
+> +
+
+How does enabling or disabling debug info work for rustc? I may have
+missed it, but I was surprised to see no additional flags getting
+passed to rustc based on CONFIG_DEBUG info.
+
+> diff --git a/scripts/generate_rust_target.rs b/scripts/generate_rust_target.rs
+> new file mode 100644
+> index 000000000000..c146a3407183
+> --- /dev/null
+> +++ b/scripts/generate_rust_target.rs
+
+Ah, that explains the host rust build infra.  Bravo! Hard coding the
+target files was my major concern last I looked at the series. I'm
+very happy to see it be generated properly from .config!
+
+I haven't actually reviewed this yet, but it makes me significantly
+more confident in the series to see this approach added. Good job
+whoever wrote this.
+
+> diff --git a/scripts/is_rust_module.sh b/scripts/is_rust_module.sh
+> new file mode 100755
+> index 000000000000..277a64d07f22
+> --- /dev/null
+> +++ b/scripts/is_rust_module.sh
+> @@ -0,0 +1,13 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# is_rust_module.sh module.ko
+> +#
+> +# Returns `0` if `module.ko` is a Rust module, `1` otherwise.
+> +
+> +set -e
+> +
+> +# Using the `16_` prefix ensures other symbols with the same substring
+> +# are not picked up (even if it would be unlikely). The last part is
+> +# used just in case LLVM decides to use the `.` suffix.
+> +${NM} "$*" | grep -qE '^[0-9a-fA-F]+ r _R[^[:space:]]+16___IS_RUST_MODULE[^[:space:]]*$'
+
+Does `$(READELF) -p .comment foo.o` print anything about which
+compiler was used? That seems less brittle IMO.
+
+---
+
+Modulo the RUST_OPT_LEVEL_SIMILAR_AS_CHOSEN_FOR_C which I'm not a fan
+of, this is looking good to me. Masahiro, what are your thoughts on
+the build system support?
+-- 
+Thanks,
+~Nick Desaulniers
 
 _______________________________________________
 linux-um mailing list
