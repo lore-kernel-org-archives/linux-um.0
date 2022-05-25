@@ -1,16 +1,23 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out03.mta.xmission.com ([166.70.13.233])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nmNge-00D6XW-QK
- for linux-um@lists.infradead.org; Wed, 04 May 2022 22:41:38 +0000
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-Date: Wed,  4 May 2022 17:40:53 -0500
-Message-Id: <20220504224058.476193-6-ebiederm@xmission.com>
-In-Reply-To: <87k0b0apne.fsf_-_@email.froward.int.ebiederm.org>
-References: <87k0b0apne.fsf_-_@email.froward.int.ebiederm.org>
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1ntqSt-00B9PO-KN
+	for linux-um@lists.infradead.org; Wed, 25 May 2022 12:50:17 +0000
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id B08DC3FBC8
+	for <linux-um@lists.infradead.org>; Wed, 25 May 2022 12:50:09 +0000 (UTC)
+Received: by mail-ed1-f72.google.com with SMTP id q12-20020a056402040c00b0042a84f9939dso14854144edv.7
+        for <linux-um@lists.infradead.org>; Wed, 25 May 2022 05:50:09 -0700 (PDT)
+From: Juerg Haefliger <juerg.haefliger@canonical.com>
+Subject: [PATCH 2/2] um/drivers: Kconfig: Fix indentation
+Date: Wed, 25 May 2022 14:50:01 +0200
+Message-Id: <20220525125001.47009-3-juerg.haefliger@canonical.com>
+In-Reply-To: <20220525125001.47009-1-juerg.haefliger@canonical.com>
+References: <20220525125001.47009-1-juerg.haefliger@canonical.com>
 MIME-Version: 1.0
-Subject: [PATCH v3 06/11] signal: Use lockdep_assert_held instead of
- assert_spin_locked
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,45 +30,109 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
+To: richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, linux-um@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, Juerg Haefliger <juerg.haefliger@canonical.com>
 
-The distinction is that assert_spin_locked() checks if the lock is
-held *by*anyone* whereas lockdep_assert_held() asserts the current
-context holds the lock.  Also, the check goes away if you build
-without lockdep.
+The convention for indentation seems to be a single tab. Help text is
+further indented by an additional two whitespaces. Fix the lines that
+violate these rules.
 
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/Ympr/+PX4XgT/UKU@hirez.programming.kicks-ass.net
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Signed-off-by: Juerg Haefliger <juerg.haefliger@canonical.com>
 ---
- kernel/signal.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/um/drivers/Kconfig | 54 ++++++++++++++++++++---------------------
+ 1 file changed, 27 insertions(+), 27 deletions(-)
 
-diff --git a/kernel/signal.c b/kernel/signal.c
-index 72d96614effc..3fd2ce133387 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -884,7 +884,7 @@ static int check_kill_permission(int sig, struct kernel_siginfo *info,
- static void ptrace_trap_notify(struct task_struct *t)
- {
- 	WARN_ON_ONCE(!(t->ptrace & PT_SEIZED));
--	assert_spin_locked(&t->sighand->siglock);
-+	lockdep_assert_held(&t->sighand->siglock);
+diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
+index f145842c40b9..27e09e421d50 100644
+--- a/arch/um/drivers/Kconfig
++++ b/arch/um/drivers/Kconfig
+@@ -236,37 +236,37 @@ config UML_NET_VECTOR
+ 	depends on UML_NET
+ 	select MAY_HAVE_RUNTIME_DEPS
+ 	help
+-	This User-Mode Linux network driver uses multi-message send
+-	and receive functions. The host running the UML guest must have
+-	a linux kernel version above 3.0 and a libc version > 2.13.
+-	This driver provides tap, raw, gre and l2tpv3 network transports
+-	with up to 4 times higher network throughput than the UML network
+-	drivers.
++	  This User-Mode Linux network driver uses multi-message send
++	  and receive functions. The host running the UML guest must have
++	  a linux kernel version above 3.0 and a libc version > 2.13.
++	  This driver provides tap, raw, gre and l2tpv3 network transports
++	  with up to 4 times higher network throughput than the UML network
++	  drivers.
  
- 	task_set_jobctl_pending(t, JOBCTL_TRAP_NOTIFY);
- 	ptrace_signal_wake_up(t, t->jobctl & JOBCTL_LISTENING);
-@@ -1079,7 +1079,7 @@ static int __send_signal_locked(int sig, struct kernel_siginfo *info,
- 	int override_rlimit;
- 	int ret = 0, result;
+ config UML_NET_VDE
+ 	bool "VDE transport (obsolete)"
+ 	depends on UML_NET
+ 	select MAY_HAVE_RUNTIME_DEPS
+ 	help
+-	This User-Mode Linux network transport allows one or more running
+-	UMLs on a single host to communicate with each other and also
+-	with the rest of the world using Virtual Distributed Ethernet,
+-	an improved fork of uml_switch.
++	  This User-Mode Linux network transport allows one or more running
++	  UMLs on a single host to communicate with each other and also
++	  with the rest of the world using Virtual Distributed Ethernet,
++	  an improved fork of uml_switch.
  
--	assert_spin_locked(&t->sighand->siglock);
-+	lockdep_assert_held(&t->sighand->siglock);
+-	You must have libvdeplug installed in order to build the vde
+-	transport into UML.
++	  You must have libvdeplug installed in order to build the vde
++	  transport into UML.
  
- 	result = TRACE_SIGNAL_IGNORED;
- 	if (!prepare_signal(sig, t, force))
+-	To use this form of networking, you will need to run vde_switch
+-	on the host.
++	  To use this form of networking, you will need to run vde_switch
++	  on the host.
+ 
+-	For more information, see <http://wiki.virtualsquare.org/>
+-	That site has a good overview of what VDE is and also examples
+-	of the UML command line to use to enable VDE networking.
++	  For more information, see <http://wiki.virtualsquare.org/>
++	  That site has a good overview of what VDE is and also examples
++	  of the UML command line to use to enable VDE networking.
+ 
+-	NOTE: THIS TRANSPORT IS DEPRECATED AND WILL BE REMOVED SOON!!! Please
+-	migrate to UML_NET_VECTOR.
++	  NOTE: THIS TRANSPORT IS DEPRECATED AND WILL BE REMOVED SOON!!! Please
++	  migrate to UML_NET_VECTOR.
+ 
+-	If unsure, say N.
++	  If unsure, say N.
+ 
+ config UML_NET_MCAST
+ 	bool "Multicast transport (obsolete)"
+@@ -296,19 +296,19 @@ config UML_NET_PCAP
+ 	depends on UML_NET
+ 	select MAY_HAVE_RUNTIME_DEPS
+ 	help
+-	The pcap transport makes a pcap packet stream on the host look
+-	like an ethernet device inside UML.  This is useful for making
+-	UML act as a network monitor for the host.  You must have libcap
+-	installed in order to build the pcap transport into UML.
++	  The pcap transport makes a pcap packet stream on the host look
++	  like an ethernet device inside UML.  This is useful for making
++	  UML act as a network monitor for the host.  You must have libcap
++	  installed in order to build the pcap transport into UML.
+ 
+ 	  For more information, see
+ 	  <http://user-mode-linux.sourceforge.net/old/networking.html>  That site
+ 	  has examples of the UML command line to use to enable this option.
+ 
+-	NOTE: THIS TRANSPORT IS DEPRECATED AND WILL BE REMOVED SOON!!! Please
+-	migrate to UML_NET_VECTOR.
++	  NOTE: THIS TRANSPORT IS DEPRECATED AND WILL BE REMOVED SOON!!! Please
++	  migrate to UML_NET_VECTOR.
+ 
+-	If unsure, say N.
++	  If unsure, say N.
+ 
+ config UML_NET_SLIRP
+ 	bool "SLiRP transport (obsolete)"
 -- 
-2.35.3
+2.32.0
 
 
 _______________________________________________
