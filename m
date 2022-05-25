@@ -1,18 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nlSz8-000lMu-PM
- for linux-um@lists.infradead.org; Mon, 02 May 2022 10:08:57 +0000
-Date: Mon, 2 May 2022 12:08:49 +0200
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [PATCH v2 10/12] ptrace: Only return signr from ptrace_stop if
- it was provided
-Message-ID: <Ym+tsRcP2TQLcpJF@linutronix.de>
-References: <87k0b7v9yk.fsf_-_@email.froward.int.ebiederm.org>
- <20220429214837.386518-10-ebiederm@xmission.com>
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1ntrHE-00BHQi-Gv
+	for linux-um@lists.infradead.org; Wed, 25 May 2022 13:42:18 +0000
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com [209.85.128.70])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 0A1DE3F044
+	for <linux-um@lists.infradead.org>; Wed, 25 May 2022 13:42:15 +0000 (UTC)
+Received: by mail-wm1-f70.google.com with SMTP id k5-20020a05600c1c8500b003974c5d636dso2877694wms.1
+        for <linux-um@lists.infradead.org>; Wed, 25 May 2022 06:42:15 -0700 (PDT)
+From: Juerg Haefliger <juerg.haefliger@canonical.com>
+Subject: [PATCH] x86/um: Kconfig: Fix indentation
+Date: Wed, 25 May 2022 15:42:11 +0200
+Message-Id: <20220525134211.54417-1-juerg.haefliger@canonical.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20220429214837.386518-10-ebiederm@xmission.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -25,28 +28,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: linux-kernel@vger.kernel.org, rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org
+To: richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, linux-um@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, Juerg Haefliger <juerg.haefliger@canonical.com>
 
-On 2022-04-29 16:48:35 [-0500], Eric W. Biederman wrote:
-> In ptrace_stop a ptrace_unlink or SIGKILL can occur either after
-> siglock is dropped or after tasklist_lock is dropped.  At either point
-> the result can be that ptrace will continue and not stop at schedule.
-> 
-> This means that there are cases where the current logic fails to handle
-> the fact that ptrace_stop did not actually stop, and can potentially
-> cause ptrace_report_syscall to attempt to deliver a signal.
-> 
-> Instead of attempting to detect in ptrace_stop when it fails to
-> stop update ptrace_resume and ptrace_detach to set a flag to indicate
-      ,
-> that the signal to continue with has be set.   Use that
-                                       been
-> new flag to decided how to set return signal.
-> 
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+The convention for indentation seems to be a single tab. Help text is
+further indented by an additional two whitespaces. Fix the lines that
+violate these rules.
 
-Sebastian
+Signed-off-by: Juerg Haefliger <juerg.haefliger@canonical.com>
+---
+ arch/x86/um/Kconfig | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/arch/x86/um/Kconfig b/arch/x86/um/Kconfig
+index 1bcd42c53039..186f13268401 100644
+--- a/arch/x86/um/Kconfig
++++ b/arch/x86/um/Kconfig
+@@ -32,12 +32,12 @@ config 3_LEVEL_PGTABLES
+ 	bool "Three-level pagetables" if !64BIT
+ 	default 64BIT
+ 	help
+-	Three-level pagetables will let UML have more than 4G of physical
+-	memory.  All the memory that can't be mapped directly will be treated
+-	as high memory.
++	  Three-level pagetables will let UML have more than 4G of physical
++	  memory.  All the memory that can't be mapped directly will be treated
++	  as high memory.
+ 
+-	However, this it experimental on 32-bit architectures, so if unsure say
+-	N (on x86-64 it's automatically enabled, instead, as it's safe there).
++	  However, this it experimental on 32-bit architectures, so if unsure say
++	  N (on x86-64 it's automatically enabled, instead, as it's safe there).
+ 
+ config ARCH_HAS_SC_SIGNALS
+ 	def_bool !64BIT
+-- 
+2.32.0
+
 
 _______________________________________________
 linux-um mailing list
