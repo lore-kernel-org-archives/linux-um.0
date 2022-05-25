@@ -1,11 +1,19 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH v3 10/15] genksyms: adjust the output format to modpost
-Date: Thu,  5 May 2022 16:22:39 +0900
-Message-Id: <20220505072244.1155033-11-masahiroy@kernel.org>
-In-Reply-To: <20220505072244.1155033-1-masahiroy@kernel.org>
-References: <20220505072244.1155033-1-masahiroy@kernel.org>
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1nts0i-00BQNG-Fe
+	for linux-um@lists.infradead.org; Wed, 25 May 2022 14:29:17 +0000
+Date: Wed, 25 May 2022 16:28:46 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+Subject: Re: [PATCH 07/16] signal: Wake up the designated parent
+Message-ID: <20220525142845.GA2687@redhat.com>
+References: <871qwq5ucx.fsf_-_@email.froward.int.ebiederm.org>
+ <20220518225355.784371-7-ebiederm@xmission.com>
+ <20220524132553.GD14347@redhat.com>
+ <20220524162808.GF14347@redhat.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20220524162808.GF14347@redhat.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,66 +26,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kbuild@vger.kernel.org
-Cc: clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org, Nicolas Schier a <nicolas@fjasle.eu>, Ard Biesheuvel <ardb@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, Peter Zijlstra <peterz@infradead.org>, linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org, linux-s390@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>, Sami Tolvanen <samitolvanen@google.com>, Kees Cook <keescook@chromium.org>, Masahiro Yamada <masahiroy@kernel.org>
+To: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: linux-kernel@vger.kernel.org, rjw@rjwysocki.net, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, Robert OCallahan <roc@pernos.co>, Kyle Huey <khuey@pernos.co>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Jason Wessel <jason.wessel@windriver.com>, Daniel Thompson <daniel.thompson@linaro.org>, Douglas Anderson <dianders@chromium.org>, Douglas Miller <dougmill@linux.vnet.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>
 
-Make genksyms output symbol versions in the format modpost expects,
-so the 'sed' is unneeded.
+On 05/24, Oleg Nesterov wrote:
+>
+> On 05/24, Oleg Nesterov wrote:
+> >
+> > I fail to understand this patch...
+> >
+> > On 05/18, Eric W. Biederman wrote:
+> > >
+> > > Today if a process is ptraced only the ptracer will ever be woken up in
+> > > wait
+> >
+> > and why is this wrong?
+> >
+> > > Fixes: 75b95953a569 ("job control: Add @for_ptrace to do_notify_parent_cldstop()")
+> >
+> > how does this change fix 75b95953a569?
+>
+> OK, I guess you mean the 2nd do_notify_parent_cldstop() in ptrace_stop(),
+> the problematic case is current->ptrace == T. Right?
+>
+> I dislike this patch anyway, but let me think more about it.
 
-This commit makes *.symversions completely unneeded.
+OK, now that I understand the problem, the patch doesn't look bad to me,
+although I'd ask to make the changelog more clear.
 
-I will keep *.symversions in .gitignore and 'make clean' for a while.
-Otherwise, some people might be upset with 'git status'.
+After this change __wake_up_parent() can't accept any "parent" from
+p->parent thread group, but all callers look fine except ptrace_detach().
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
-(no changes since v2)
-
-Changes in v2:
-  - New patch
-
- scripts/Makefile.build      | 6 ------
- scripts/genksyms/genksyms.c | 3 +--
- 2 files changed, 1 insertion(+), 8 deletions(-)
-
-diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index dff9220135c4..461998a2ad2b 100644
---- a/scripts/Makefile.build
-+++ b/scripts/Makefile.build
-@@ -165,16 +165,10 @@ ifdef CONFIG_MODVERSIONS
- # o modpost will extract versions from that file and create *.c files that will
- #   be compiled and linked to the kernel and/or modules.
- 
--genksyms_format := __crc_\(.*\) = \(.*\);
--
- gen_symversions =								\
- 	if $(NM) $@ 2>/dev/null | grep -q __ksymtab; then			\
- 		$(call cmd_gensymtypes_$(1),$(KBUILD_SYMTYPES),$(@:.o=.symtypes)) \
--		    > $@.symversions;						\
--		sed -n 's/$(genksyms_format)/$(pound)SYMVER \1 \2/p' $@.symversions \
- 			>> $(dot-target).cmd;					\
--	else									\
--		rm -f $@.symversions;						\
- 	fi
- 
- cmd_gen_symversions_c =	$(call gen_symversions,c)
-diff --git a/scripts/genksyms/genksyms.c b/scripts/genksyms/genksyms.c
-index 6e6933ae7911..f5dfdb9d80e9 100644
---- a/scripts/genksyms/genksyms.c
-+++ b/scripts/genksyms/genksyms.c
-@@ -680,8 +680,7 @@ void export_symbol(const char *name)
- 		if (flag_dump_defs)
- 			fputs(">\n", debugfile);
- 
--		/* Used as a linker script. */
--		printf("__crc_%s = 0x%08lx;\n", name, crc);
-+		printf("#SYMVER %s 0x%08lx\n", name, crc);
- 	}
- }
- 
--- 
-2.32.0
+Oleg.
 
 
 _______________________________________________
