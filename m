@@ -1,15 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out02.mta.xmission.com ([166.70.13.232])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nmgCP-00HKns-25
- for linux-um@lists.infradead.org; Thu, 05 May 2022 18:27:38 +0000
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-Date: Thu,  5 May 2022 13:26:41 -0500
-Message-Id: <20220505182645.497868-8-ebiederm@xmission.com>
-In-Reply-To: <87a6bv6dl6.fsf_-_@email.froward.int.ebiederm.org>
-References: <87a6bv6dl6.fsf_-_@email.froward.int.ebiederm.org>
-MIME-Version: 1.0
-Subject: [PATCH v4 08/12] ptrace: Document that wait_task_inactive can't fail
+Received: from mail-pl1-x649.google.com ([2607:f8b0:4864:20::649])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1nuIce-00FeVJ-7E
+	for linux-um@lists.infradead.org; Thu, 26 May 2022 18:54:14 +0000
+Received: by mail-pl1-x649.google.com with SMTP id j13-20020a170902da8d00b00161d78a9e3eso1505557plx.17
+        for <linux-um@lists.infradead.org>; Thu, 26 May 2022 11:54:10 -0700 (PDT)
+Date: Thu, 26 May 2022 11:54:02 -0700
+Message-Id: <20220526185402.955870-1-davidgow@google.com>
+Mime-Version: 1.0
+Subject: [PATCH] arch: um: Fix build for statically linked UML w/ constructors
+From: David Gow <davidgow@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,72 +22,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
+To: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>
+Cc: David Gow <davidgow@google.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
 
-After ptrace_freeze_traced succeeds it is known that the the tracee
-has a __state value of __TASK_TRACED and that no __ptrace_unlink will
-happen because the tracer is waiting for the tracee, and the tracee is
-in ptrace_stop.
+If CONFIG_CONSTUCTORS is enabled on a statically linked
+(CONFIG_STATIC_LINK=y) build of UML, the build fails due to the
+.eh_frame section being both used and discarded:
 
-The function ptrace_freeze_traced can succeed at any point after
-ptrace_stop has set TASK_TRACED and dropped siglock.  The read_lock on
-tasklist_lock only excludes ptrace_attach.
+ERROR:root:`.eh_frame' referenced in section `.text' of /usr/lib/gcc/x86_64-linux-gnu/11/crtbeginT.o: defined in discarded section `.eh_frame' of /usr/lib/gcc/x86_64-linux-gnu/11/crtbeginT.o
+`.eh_frame' referenced in section `.text' of /usr/lib/gcc/x86_64-linux-gnu/11/crtbeginT.o: defined in discarded section `.eh_frame' of /usr/lib/gcc/x86_64-linux-gnu/11/crtbeginT.o
 
-This means that the !current->ptrace which executes under a read_lock
-of tasklist_lock will never see a ptrace_freeze_trace as the tracer
-must have gone away before the tasklist_lock was taken and
-ptrace_attach can not occur until the read_lock is dropped.  As
-ptrace_freeze_traced depends upon ptrace_attach running before it can
-run that excludes ptrace_freeze_traced until __state is set to
-TASK_RUNNING.  This means that task_is_traced will fail in
-ptrace_freeze_attach and ptrace_freeze_attached will fail.
+Instead, keep the .eh_frame section, as we do in dyn.lds.S for
+dynamically linked UML.
 
-On the current->ptrace branch of ptrace_stop which will be reached any
-time after ptrace_freeze_traced has succeed it is known that __state
-is __TASK_TRACED and schedule() will be called with that state.
+This can be reproduced with:
+./tools/testing/kunit/kunit.py run --kconfig_add CONFIG_STATIC_LINK=y --kconfig_add CONFIG_GCOV_KERNEL=y --kconfig_add CONFIG_DEBUG_FS=y
 
-Use a WARN_ON_ONCE to document that wait_task_inactive(TASK_TRACED)
-should never fail.  Remove the stale comment about may_ptrace_stop.
-
-Strictly speaking this is not true because if PREEMPT_RT is enabled
-wait_task_inactive can fail because __state can be changed.  I don't
-see this as a problem as the ptrace code is currently broken on
-PREMPT_RT, and this is one of the issues.  Failing and warning when
-the assumptions of the code are broken is good.
-
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Signed-off-by: David Gow <davidgow@google.com>
 ---
- kernel/ptrace.c | 14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
+ arch/um/kernel/uml.lds.S | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/ptrace.c b/kernel/ptrace.c
-index 7105821595bc..05953ac9f7bd 100644
---- a/kernel/ptrace.c
-+++ b/kernel/ptrace.c
-@@ -266,17 +266,9 @@ static int ptrace_check_attach(struct task_struct *child, bool ignore_state)
- 	}
- 	read_unlock(&tasklist_lock);
+diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
+index 7a8e2b123e29..71a59b8adbdc 100644
+--- a/arch/um/kernel/uml.lds.S
++++ b/arch/um/kernel/uml.lds.S
+@@ -95,6 +95,7 @@ SECTIONS
+   }
  
--	if (!ret && !ignore_state) {
--		if (!wait_task_inactive(child, __TASK_TRACED)) {
--			/*
--			 * This can only happen if may_ptrace_stop() fails and
--			 * ptrace_stop() changes ->state back to TASK_RUNNING,
--			 * so we should not worry about leaking __TASK_TRACED.
--			 */
--			WARN_ON(READ_ONCE(child->__state) == __TASK_TRACED);
--			ret = -ESRCH;
--		}
--	}
-+	if (!ret && !ignore_state &&
-+	    WARN_ON_ONCE(!wait_task_inactive(child, __TASK_TRACED)))
-+		ret = -ESRCH;
- 
- 	return ret;
- }
+   .got           : { *(.got.plt) *(.got) }
++  .eh_frame       : { KEEP (*(.eh_frame)) }
+   .dynamic       : { *(.dynamic) }
+   .tdata	  : { *(.tdata .tdata.* .gnu.linkonce.td.*) }
+   .tbss		  : { *(.tbss .tbss.* .gnu.linkonce.tb.*) *(.tcommon) }
 -- 
-2.35.3
+2.36.1.124.g0e6072fb45-goog
 
 
 _______________________________________________
