@@ -1,19 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-lj1-x22b.google.com ([2a00:1450:4864:20::22b])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nuZrd-00075q-TN
-	for linux-um@lists.infradead.org; Fri, 27 May 2022 13:18:51 +0000
-Received: by mail-lj1-x22b.google.com with SMTP id 1so4917056ljp.8
-        for <linux-um@lists.infradead.org>; Fri, 27 May 2022 06:18:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220525111756.GA15955@axis.com> <20220526010111.755166-1-davidgow@google.com>
- <e2339dcea553f9121f2d3aad29f7428c2060f25f.camel@sipsolutions.net>
- <CACT4Y+ZVrx9VudKV5enB0=iMCBCEVzhCAu_pmxBcygBZP_yxfg@mail.gmail.com> <6fa1ebe49b8d574fb1c82aefeeb54439d9c98750.camel@sipsolutions.net>
-In-Reply-To: <6fa1ebe49b8d574fb1c82aefeeb54439d9c98750.camel@sipsolutions.net>
-From: Dmitry Vyukov <dvyukov@google.com>
-Date: Fri, 27 May 2022 15:18:34 +0200
-Message-ID: <CACT4Y+bhBMDn80u=W8VBbn4uZg1oD8zsE3RJJC-YJRS2i8Q2oA@mail.gmail.com>
+	id 1nuZoY-0006kl-N5
+	for linux-um@lists.infradead.org; Fri, 27 May 2022 13:15:40 +0000
+Message-ID: <6fa1ebe49b8d574fb1c82aefeeb54439d9c98750.camel@sipsolutions.net>
 Subject: Re: [RFC PATCH v3] UML: add support for KASAN under x86_64
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Fri, 27 May 2022 15:15:33 +0200
+In-Reply-To: <CACT4Y+ZVrx9VudKV5enB0=iMCBCEVzhCAu_pmxBcygBZP_yxfg@mail.gmail.com>
+References: <20220525111756.GA15955@axis.com>
+	 <20220526010111.755166-1-davidgow@google.com>
+	 <e2339dcea553f9121f2d3aad29f7428c2060f25f.camel@sipsolutions.net>
+	 <CACT4Y+ZVrx9VudKV5enB0=iMCBCEVzhCAu_pmxBcygBZP_yxfg@mail.gmail.com>
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -26,105 +25,96 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
+To: Dmitry Vyukov <dvyukov@google.com>
 Cc: David Gow <davidgow@google.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Patricia Alfonso <trishalfonso@google.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, anton.ivanov@cambridgegreys.com, Brendan Higgins <brendanhiggins@google.com>, kasan-dev <kasan-dev@googlegroups.com>, linux-um@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>, Daniel Latypov <dlatypov@google.com>
 
-On Fri, 27 May 2022 at 15:15, Johannes Berg <johannes@sipsolutions.net> wrote:
->
-> On Fri, 2022-05-27 at 15:09 +0200, Dmitry Vyukov wrote:
-> > > I did note (this is more for kasan-dev@) that the "freed by" is fairly
-> > > much useless when using kfree_rcu(), it might be worthwhile to annotate
-> > > that somehow, so the stack trace is recorded by kfree_rcu() already,
-> > > rather than just showing the RCU callback used for that.
-> >
-> > KASAN is doing it for several years now, see e.g.:
-> > https://groups.google.com/g/syzkaller-bugs/c/eTW9zom4O2o/m/_v7cOo2RFwAJ
-> >
->
-> Hm. It didn't for me:
+On Fri, 2022-05-27 at 15:09 +0200, Dmitry Vyukov wrote:
+> > I did note (this is more for kasan-dev@) that the "freed by" is fairly
+> > much useless when using kfree_rcu(), it might be worthwhile to annotate
+> > that somehow, so the stack trace is recorded by kfree_rcu() already,
+> > rather than just showing the RCU callback used for that.
+> 
+> KASAN is doing it for several years now, see e.g.:
+> https://groups.google.com/g/syzkaller-bugs/c/eTW9zom4O2o/m/_v7cOo2RFwAJ
+> 
 
-Please post a full report with line numbers and kernel version.
+Hm. It didn't for me:
 
-> > BUG: KASAN: use-after-free in ieee80211_vif_use_reserved_context+0x32d/0x40f [mac80211]
-> > Read of size 4 at addr 0000000065c73340 by task kworker/u2:1/17
->
-> Yes.
->
-> > CPU: 0 PID: 17 Comm: kworker/u2:1 Tainted: G           O      5.18.0-rc1 #5
-> > Workqueue: phy0 ieee80211_chswitch_work [mac80211]
-> > Stack:
-> >  60ba783f 00000000 10000c268f4e 60ba783f
-> >  60e60847 70dc9928 719f6e99 00000000
-> >  71883b20 60bb0b42 60bb0b19 65c73340
-> > Call Trace:
-> >  [<600447ea>] show_stack+0x13e/0x14d
-> >  [<60bb0b42>] dump_stack_lvl+0x29/0x2e
-> >  [<602ef7c0>] print_report+0x15d/0x60b
-> >  [<602efdc0>] kasan_report+0x98/0xbd
-> >  [<602f0cc2>] __asan_report_load4_noabort+0x1b/0x1d
-> >  [<719f6e99>] ieee80211_vif_use_reserved_context+0x32d/0x40f [mac80211]
->
-> This is the user, it just got freed during a function call a few lines
-> up.
->
-> > Allocated by task 16:
-> >  save_stack_trace+0x2e/0x30
-> >  stack_trace_save+0x81/0x9b
-> >  kasan_save_stack+0x2d/0x54
-> >  kasan_set_track+0x34/0x3e
-> >  ____kasan_kmalloc+0x8d/0x99
-> >  __kasan_kmalloc+0x10/0x12
-> >  __kmalloc+0x1f6/0x20b
-> >  ieee80211_alloc_chanctx+0xdc/0x35f [mac80211]
->
-> This makes sense too.
->
-> > Freed by task 8:
-> >  save_stack_trace+0x2e/0x30
-> >  stack_trace_save+0x81/0x9b
-> >  kasan_save_stack+0x2d/0x54
-> >  kasan_set_track+0x34/0x3e
-> >  kasan_set_free_info+0x33/0x44
-> >  ____kasan_slab_free+0x12b/0x149
-> >  __kasan_slab_free+0x19/0x1b
-> >  slab_free_freelist_hook+0x10b/0x16a
-> >  kfree+0x10d/0x1fa
-> >  kvfree+0x38/0x3a
-> >  rcu_process_callbacks+0x2c5/0x349
->
-> This is the RCU callback.
->
-> > Last potentially related work creation:
-> >  save_stack_trace+0x2e/0x30
-> >  stack_trace_save+0x81/0x9b
-> >  kasan_save_stack+0x2d/0x54
-> >  __kasan_record_aux_stack+0xd5/0xe2
-> >  kasan_record_aux_stack_noalloc+0x12/0x14
-> >  insert_work+0x50/0xd7
-> >  __queue_work+0x805/0x95c
-> >  queue_work_on+0xba/0x131
-> >  call_usermodehelper_exec+0x242/0x361
-> >  kobject_uevent_env+0xe46/0xeaf
-> >  kobject_uevent+0x12/0x14
-> >  driver_register+0x37e/0x38d
-> >  pcie_port_service_register+0x19d/0x1a5
->
-> This stuff is completely unrelated.
->
-> > The buggy address belongs to the object at 0000000065c73300
-> >  which belongs to the cache kmalloc-192 of size 192
-> > The buggy address is located 64 bytes inside of
-> >  192-byte region [0000000065c73300, 0000000065c733c0)
-> >
->
-> and that's it?
->
-> johannes
->
-> --
-> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/6fa1ebe49b8d574fb1c82aefeeb54439d9c98750.camel%40sipsolutions.net.
+> BUG: KASAN: use-after-free in ieee80211_vif_use_reserved_context+0x32d/0x40f [mac80211]
+> Read of size 4 at addr 0000000065c73340 by task kworker/u2:1/17
+
+Yes.
+
+> CPU: 0 PID: 17 Comm: kworker/u2:1 Tainted: G           O      5.18.0-rc1 #5
+> Workqueue: phy0 ieee80211_chswitch_work [mac80211]
+> Stack:
+>  60ba783f 00000000 10000c268f4e 60ba783f
+>  60e60847 70dc9928 719f6e99 00000000
+>  71883b20 60bb0b42 60bb0b19 65c73340
+> Call Trace:
+>  [<600447ea>] show_stack+0x13e/0x14d
+>  [<60bb0b42>] dump_stack_lvl+0x29/0x2e
+>  [<602ef7c0>] print_report+0x15d/0x60b
+>  [<602efdc0>] kasan_report+0x98/0xbd
+>  [<602f0cc2>] __asan_report_load4_noabort+0x1b/0x1d
+>  [<719f6e99>] ieee80211_vif_use_reserved_context+0x32d/0x40f [mac80211]
+
+This is the user, it just got freed during a function call a few lines
+up.
+
+> Allocated by task 16:
+>  save_stack_trace+0x2e/0x30
+>  stack_trace_save+0x81/0x9b
+>  kasan_save_stack+0x2d/0x54
+>  kasan_set_track+0x34/0x3e
+>  ____kasan_kmalloc+0x8d/0x99
+>  __kasan_kmalloc+0x10/0x12
+>  __kmalloc+0x1f6/0x20b
+>  ieee80211_alloc_chanctx+0xdc/0x35f [mac80211]
+
+This makes sense too.
+
+> Freed by task 8:
+>  save_stack_trace+0x2e/0x30
+>  stack_trace_save+0x81/0x9b
+>  kasan_save_stack+0x2d/0x54
+>  kasan_set_track+0x34/0x3e
+>  kasan_set_free_info+0x33/0x44
+>  ____kasan_slab_free+0x12b/0x149
+>  __kasan_slab_free+0x19/0x1b
+>  slab_free_freelist_hook+0x10b/0x16a
+>  kfree+0x10d/0x1fa
+>  kvfree+0x38/0x3a
+>  rcu_process_callbacks+0x2c5/0x349
+
+This is the RCU callback.
+
+> Last potentially related work creation:
+>  save_stack_trace+0x2e/0x30
+>  stack_trace_save+0x81/0x9b
+>  kasan_save_stack+0x2d/0x54
+>  __kasan_record_aux_stack+0xd5/0xe2
+>  kasan_record_aux_stack_noalloc+0x12/0x14
+>  insert_work+0x50/0xd7
+>  __queue_work+0x805/0x95c
+>  queue_work_on+0xba/0x131
+>  call_usermodehelper_exec+0x242/0x361
+>  kobject_uevent_env+0xe46/0xeaf
+>  kobject_uevent+0x12/0x14
+>  driver_register+0x37e/0x38d
+>  pcie_port_service_register+0x19d/0x1a5
+
+This stuff is completely unrelated.
+
+> The buggy address belongs to the object at 0000000065c73300
+>  which belongs to the cache kmalloc-192 of size 192
+> The buggy address is located 64 bytes inside of
+>  192-byte region [0000000065c73300, 0000000065c733c0)
+> 
+
+and that's it?
+
+johannes
 
 _______________________________________________
 linux-um mailing list
