@@ -1,21 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123])
+Received: from mail-yw1-x112b.google.com ([2607:f8b0:4864:20::112b])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ntrHE-00BHQi-Gv
-	for linux-um@lists.infradead.org; Wed, 25 May 2022 13:42:18 +0000
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com [209.85.128.70])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 0A1DE3F044
-	for <linux-um@lists.infradead.org>; Wed, 25 May 2022 13:42:15 +0000 (UTC)
-Received: by mail-wm1-f70.google.com with SMTP id k5-20020a05600c1c8500b003974c5d636dso2877694wms.1
-        for <linux-um@lists.infradead.org>; Wed, 25 May 2022 06:42:15 -0700 (PDT)
-From: Juerg Haefliger <juerg.haefliger@canonical.com>
-Subject: [PATCH] x86/um: Kconfig: Fix indentation
-Date: Wed, 25 May 2022 15:42:11 +0200
-Message-Id: <20220525134211.54417-1-juerg.haefliger@canonical.com>
+	id 1nuU3Y-00GpOV-RV
+	for linux-um@lists.infradead.org; Fri, 27 May 2022 07:06:46 +0000
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-300312ba5e2so38827777b3.0
+        for <linux-um@lists.infradead.org>; Fri, 27 May 2022 00:06:41 -0700 (PDT)
 MIME-Version: 1.0
+References: <20220422140602.26dfa3ae90d2.I741c6239fb1423fe4ce6eb00f5dcce360c01a700@changeid>
+In-Reply-To: <20220422140602.26dfa3ae90d2.I741c6239fb1423fe4ce6eb00f5dcce360c01a700@changeid>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Fri, 27 May 2022 09:06:30 +0200
+Message-ID: <CAFLxGvw_dOjpciRggiVsHJEpQJsfeAZnoNmDE_XqP9GEG5DZMA@mail.gmail.com>
+Subject: Re: [PATCH v2] um: x86: print RIP with symbol
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,50 +20,57 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, linux-um@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, Juerg Haefliger <juerg.haefliger@canonical.com>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-um <linux-um@lists.infradead.org>, Johannes Berg <johannes.berg@intel.com>
 
-The convention for indentation seems to be a single tab. Help text is
-further indented by an additional two whitespaces. Fix the lines that
-violate these rules.
-
-Signed-off-by: Juerg Haefliger <juerg.haefliger@canonical.com>
----
- arch/x86/um/Kconfig | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/arch/x86/um/Kconfig b/arch/x86/um/Kconfig
-index 1bcd42c53039..186f13268401 100644
---- a/arch/x86/um/Kconfig
-+++ b/arch/x86/um/Kconfig
-@@ -32,12 +32,12 @@ config 3_LEVEL_PGTABLES
- 	bool "Three-level pagetables" if !64BIT
- 	default 64BIT
- 	help
--	Three-level pagetables will let UML have more than 4G of physical
--	memory.  All the memory that can't be mapped directly will be treated
--	as high memory.
-+	  Three-level pagetables will let UML have more than 4G of physical
-+	  memory.  All the memory that can't be mapped directly will be treated
-+	  as high memory.
- 
--	However, this it experimental on 32-bit architectures, so if unsure say
--	N (on x86-64 it's automatically enabled, instead, as it's safe there).
-+	  However, this it experimental on 32-bit architectures, so if unsure say
-+	  N (on x86-64 it's automatically enabled, instead, as it's safe there).
- 
- config ARCH_HAS_SC_SIGNALS
- 	def_bool !64BIT
--- 
-2.32.0
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gRnJpLCBBcHIgMjIsIDIwMjIgYXQgMjowNiBQTSBKb2hhbm5lcyBCZXJnIDxqb2hhbm5lc0Bz
+aXBzb2x1dGlvbnMubmV0PiB3cm90ZToKPgo+IEZyb206IEpvaGFubmVzIEJlcmcgPGpvaGFubmVz
+LmJlcmdAaW50ZWwuY29tPgo+Cj4gVGhpcyBpcyBub3Qgb25seSBuaWNlciB0byByZWFkIGJ5IGRl
+ZmF1bHQsIGJ1dCBhbHNvIGxldHMKPiBkZWNvZGVfc3RhY2t0cmFjZS5zaCB3b3JrIG9uIGl0LCBy
+YXRoZXIgdGhhbiByZW1vdmluZyBpdC4KPgo+IFNpZ25lZC1vZmYtYnk6IEpvaGFubmVzIEJlcmcg
+PGpvaGFubmVzLmJlcmdAaW50ZWwuY29tPgo+IC0tLQo+IHYyOiBwdXQgYmFjayAlbHggSSBhY2Np
+ZGVudGFsbHkgZHJvcHBlZCBsb29raW5nIGF0IHg4Ngo+IC0tLQo+ICBhcmNoL3g4Ni91bS9zeXNy
+cV82NC5jIHwgMiArLQo+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRp
+b24oLSkKPgo+IGRpZmYgLS1naXQgYS9hcmNoL3g4Ni91bS9zeXNycV82NC5jIGIvYXJjaC94ODYv
+dW0vc3lzcnFfNjQuYwo+IGluZGV4IDkwM2FkOTFiNjI0Zi4uYWM0ZmZlNGE0Mzk2IDEwMDY0NAo+
+IC0tLSBhL2FyY2gveDg2L3VtL3N5c3JxXzY0LmMKPiArKysgYi9hcmNoL3g4Ni91bS9zeXNycV82
+NC5jCj4gQEAgLTE5LDcgKzE5LDcgQEAgdm9pZCBzaG93X3JlZ3Moc3RydWN0IHB0X3JlZ3MgKnJl
+Z3MpCj4gICAgICAgICBwcmludF9tb2R1bGVzKCk7Cj4gICAgICAgICBwcmludGsoS0VSTl9JTkZP
+ICJQaWQ6ICVkLCBjb21tOiAlLjIwcyAlcyAlc1xuIiwgdGFza19waWRfbnIoY3VycmVudCksCj4g
+ICAgICAgICAgICAgICAgIGN1cnJlbnQtPmNvbW0sIHByaW50X3RhaW50ZWQoKSwgaW5pdF91dHNu
+YW1lKCktPnJlbGVhc2UpOwo+IC0gICAgICAgcHJpbnRrKEtFUk5fSU5GTyAiUklQOiAlMDRseDpb
+PCUwMTZseD5dXG4iLCBQVF9SRUdTX0NTKHJlZ3MpICYgMHhmZmZmLAo+ICsgICAgICAgcHJpbnRr
+KEtFUk5fSU5GTyAiUklQOiAlMDRseDolcFNcbiIsIFBUX1JFR1NfQ1MocmVncykgJiAweGZmZmYs
+Cj4gICAgICAgICAgICAgICAgUFRfUkVHU19JUChyZWdzKSk7Cj4gICAgICAgICBwcmludGsoS0VS
+Tl9JTkZPICJSU1A6ICUwMTZseCAgRUZMQUdTOiAlMDhseFxuIiwgUFRfUkVHU19TUChyZWdzKSwK
+PiAgICAgICAgICAgICAgICBQVF9SRUdTX0VGTEFHUyhyZWdzKSk7CgpUaGlzIHRyaWdnZXJzIHRo
+ZSBmb2xsb3dpbmcgd2FybmluZyBoZXJlIHdpdGggZ2NjIDcuNToKCkluIGZpbGUgaW5jbHVkZWQg
+ZnJvbSAuL2luY2x1ZGUvbGludXgva2VybmVsLmg6Mjk6MCwKICAgICAgICAgICAgICAgIGZyb20g
+YXJjaC94ODYvdW0vc3lzcnFfNjQuYzo3OgphcmNoL3g4Ni91bS9zeXNycV82NC5jOiBJbiBmdW5j
+dGlvbiDigJhzaG93X3JlZ3PigJk6Ci4vaW5jbHVkZS9saW51eC9rZXJuX2xldmVscy5oOjU6MTg6
+IHdhcm5pbmc6IGZvcm1hdCDigJglcOKAmSBleHBlY3RzCmFyZ3VtZW50IG9mIHR5cGUg4oCYdm9p
+ZCAq4oCZLCBidXQgYXJndW1lbnQgMyBoYXMgdHlwZSDigJhsb25nIHVuc2lnbmVkIGludOKAmQpb
+LVdmb3JtYXQ9XQojZGVmaW5lIEtFUk5fU09IICJcMDAxIiAgLyogQVNDSUkgU3RhcnQgT2YgSGVh
+ZGVyICovCiAgICAgICAgICAgICAgICAgXgouL2luY2x1ZGUvbGludXgvcHJpbnRrLmg6NDE4OjEx
+OiBub3RlOiBpbiBkZWZpbml0aW9uIG9mIG1hY3JvCuKAmHByaW50a19pbmRleF93cmFw4oCZCiAg
+X3BfZnVuYyhfZm10LCAjI19fVkFfQVJHU19fKTsgICAgXAogICAgICAgICAgXn5+fgphcmNoL3g4
+Ni91bS9zeXNycV82NC5jOjIyOjI6IG5vdGU6IGluIGV4cGFuc2lvbiBvZiBtYWNybyDigJhwcmlu
+dGvigJkKIHByaW50ayhLRVJOX0lORk8gIlJJUDogJTA0bHg6JXBTXG4iLCBQVF9SRUdTX0NTKHJl
+Z3MpICYgMHhmZmZmLAogXn5+fn5+Ci4vaW5jbHVkZS9saW51eC9rZXJuX2xldmVscy5oOjE0OjE5
+OiBub3RlOiBpbiBleHBhbnNpb24gb2YgbWFjcm8g4oCYS0VSTl9TT0jigJkKI2RlZmluZSBLRVJO
+X0lORk8gS0VSTl9TT0ggIjYiIC8qIGluZm9ybWF0aW9uYWwgKi8KICAgICAgICAgICAgICAgICAg
+Xn5+fn5+fn4KYXJjaC94ODYvdW0vc3lzcnFfNjQuYzoyMjo5OiBub3RlOiBpbiBleHBhbnNpb24g
+b2YgbWFjcm8g4oCYS0VSTl9JTkZP4oCZCiBwcmludGsoS0VSTl9JTkZPICJSSVA6ICUwNGx4OiVw
+U1xuIiwgUFRfUkVHU19DUyhyZWdzKSAmIDB4ZmZmZiwKICAgICAgICBefn5+fn5+fn4KYXJjaC94
+ODYvdW0vc3lzcnFfNjQuYzoyMjozMjogbm90ZTogZm9ybWF0IHN0cmluZyBpcyBkZWZpbmVkIGhl
+cmUKIHByaW50ayhLRVJOX0lORk8gIlJJUDogJTA0bHg6JXBTXG4iLCBQVF9SRUdTX0NTKHJlZ3Mp
+ICYgMHhmZmZmLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICB+XgogICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAlbGQKCi0tIApUaGFua3MsCi8vcmljaGFyZAoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0
+CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
 
