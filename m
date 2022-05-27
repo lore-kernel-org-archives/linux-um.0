@@ -1,12 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nvML1-004JZ2-Vg
-	for linux-um@lists.infradead.org; Sun, 29 May 2022 17:04:25 +0000
-Message-ID: <1a4e51a4d2ed51e7ae1ff55bd4da6a47fad7c0bf.camel@sipsolutions.net>
+	id 1nugMB-000uhj-SN
+	for linux-um@lists.infradead.org; Fri, 27 May 2022 20:14:49 +0000
+Message-ID: <de38a6b852d31cbe123d033965dbd9b662d29a76.camel@sipsolutions.net>
 Subject: Re: [PATCH v2 2/2] UML: add support for KASAN under x86_64
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Sun, 29 May 2022 19:04:08 +0200
+Date: Fri, 27 May 2022 22:14:37 +0200
 In-Reply-To: <20220527185600.1236769-2-davidgow@google.com>
 References: <20220527185600.1236769-1-davidgow@google.com>
 	 <20220527185600.1236769-2-davidgow@google.com>
@@ -28,37 +28,74 @@ Cc: kasan-dev <kasan-dev@googlegroups.com>, linux-um@lists.infradead.org, LKML <
 
 On Fri, 2022-05-27 at 11:56 -0700, David Gow wrote:
 > 
-> The UML-specific KASAN initializer uses mmap to map the roughly 2.25TB
+> This is v2 of the KASAN/UML port. It should be ready to go.
 
-You say 2.25TB here, and
- 
-> +config KASAN_SHADOW_OFFSET
-> +	hex
-> +	depends on KASAN
-> +	default 0x100000000000
-> +	help
-> +	  This is the offset at which the ~2.25TB of shadow memory is
+Nice, thanks a lot! :)
 
-here too, of course.
+> It does benefit significantly from the following patches:
+> - Bugfix for memory corruption, needed for KASAN_STACK support:
+> https://lore.kernel.org/lkml/20220523140403.2361040-1-vincent.whitchurch@axis.com/
 
-But I notice that I get ~16TB address space use when running,
+Btw, oddly enough, I don't seem to actually see this (tried gcc 10.3 and
+11.3 so far) - is there anything you know about compiler versions
+related to this perhaps? Or clang only?
 
-> +/* used in kasan_mem_to_shadow to divide by 8 */
-> +#define KASAN_SHADOW_SCALE_SHIFT 3
+The kasan_stack_oob test passes though, and generally 45 tests pass and
+10 are skipped.
+
+
+> +# Kernel config options are not included in USER_CFLAGS, but the
+> option for KASAN
+> +# should be included if the KASAN config option was set.
+> +ifdef CONFIG_KASAN
+> +	USER_CFLAGS+=-DCONFIG_KASAN=y
+> +endif
+> 
+
+I'm not sure that's (still?) necessary - you don't #ifdef on it anywhere
+in the user code; perhaps the original intent had been to #ifdef
+kasan_map_memory()?
+
+
+> +++ b/arch/um/os-Linux/user_syms.c
+> @@ -27,10 +27,10 @@ EXPORT_SYMBOL(strstr);
+>  #ifndef __x86_64__
+>  extern void *memcpy(void *, const void *, size_t);
+>  EXPORT_SYMBOL(memcpy);
+> -#endif
+> -
+>  EXPORT_SYMBOL(memmove);
+>  EXPORT_SYMBOL(memset);
+> +#endif
 > +
-> +#ifdef CONFIG_X86_64
-> +#define KASAN_HOST_USER_SPACE_END_ADDR 0x00007fffffffffffUL
-> +/* KASAN_SHADOW_SIZE is the size of total address space divided by 8 */
-> +#define KASAN_SHADOW_SIZE ((KASAN_HOST_USER_SPACE_END_ADDR + 1) >> \
-> +			KASAN_SHADOW_SCALE_SHIFT)
+>  EXPORT_SYMBOL(printf);
+>  
+>  /* Here, instead, I can provide a fake prototype. Yes, someone cares: genksyms.
+> diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
+> index ba5789c35809..f778e37494ba 100644
+> --- a/arch/x86/um/Makefile
+> +++ b/arch/x86/um/Makefile
+> @@ -28,7 +28,8 @@ else
+>  
+>  obj-y += syscalls_64.o vdso/
+>  
+> -subarch-y = ../lib/csum-partial_64.o ../lib/memcpy_64.o ../entry/thunk_64.o
+> +subarch-y = ../lib/csum-partial_64.o ../lib/memcpy_64.o ../entry/thunk_64.o \
+> +	../lib/memmove_64.o ../lib/memset_64.o
 
-because this ends up being 0x100000000000, i.e. 16 TiB.
+I wonder if we should make these two changes contingent on KASAN too, I
+seem to remember that we had some patches from Anton flying around at
+some point to use glibc string routines, since they can be even more
+optimised (we're in user space, after all).
 
-Is that intentional? Was something missed? Maybe
-KASAN_HOST_USER_SPACE_END_ADDR was too big?
+But I suppose for now this doesn't really matter, and even if we did use
+them, they'd come from libasan anyway?
 
-It doesn't really matter, but I guess then the documentation should be
-updated.
+
+Anyway, looks good to me, not sure the little not above about the user
+cflags matters.
+
+Reviewed-by: Johannes Berg <johannes@sipsolutions.net>
 
 johannes
 
