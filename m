@@ -1,12 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nuZez-0005zB-V3
-	for linux-um@lists.infradead.org; Fri, 27 May 2022 13:05:47 +0000
-Message-ID: <e2339dcea553f9121f2d3aad29f7428c2060f25f.camel@sipsolutions.net>
+	id 1nuXKu-00HNrj-PG
+	for linux-um@lists.infradead.org; Fri, 27 May 2022 10:36:54 +0000
+Message-ID: <69af5884316c279102fe64d654326de946463641.camel@sipsolutions.net>
 Subject: Re: [RFC PATCH v3] UML: add support for KASAN under x86_64
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Fri, 27 May 2022 15:05:35 +0200
+Date: Fri, 27 May 2022 12:36:37 +0200
 In-Reply-To: <20220526010111.755166-1-davidgow@google.com>
 References: <20220525111756.GA15955@axis.com>
 	 <20220526010111.755166-1-davidgow@google.com>
@@ -27,17 +27,23 @@ To: David Gow <davidgow@google.com>, Vincent Whitchurch <vincent.whitchurch@axis
 Cc: kasan-dev <kasan-dev@googlegroups.com>, linux-um@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>, Daniel Latypov <dlatypov@google.com>
 
 On Wed, 2022-05-25 at 18:01 -0700, David Gow wrote:
-> From: Patricia Alfonso <trishalfonso@google.com>
 > 
-> Make KASAN run on User Mode Linux on x86_64.
+> ---
+>  arch/um/Kconfig                  | 15 +++++++++++++++
+>  arch/um/Makefile                 |  6 ++++++
+>  arch/um/include/asm/common.lds.S |  2 ++
+>  arch/um/kernel/Makefile          |  3 +++
+>  arch/um/kernel/dyn.lds.S         |  6 +++++-
+>  arch/um/kernel/mem.c             | 18 ++++++++++++++++++
+>  arch/um/os-Linux/mem.c           | 22 ++++++++++++++++++++++
+>  arch/um/os-Linux/user_syms.c     |  4 ++--
+>  arch/x86/um/Makefile             |  3 ++-
+>  arch/x86/um/vdso/Makefile        |  3 +++
+>  mm/kasan/shadow.c                | 20 +++++++++++++++++++-
+> 
 
-FWIW, I just added this to my virtual lab which I use as CI tests, and
-it immediately found a use-after-free bug in mac80211!
-
-I did note (this is more for kasan-dev@) that the "freed by" is fairly
-much useless when using kfree_rcu(), it might be worthwhile to annotate
-that somehow, so the stack trace is recorded by kfree_rcu() already,
-rather than just showing the RCU callback used for that.
+Btw, it looks like you also forgot to git add the (new) file
+arch/um/include/asm/kasan.h from Patricia's patch?
 
 johannes
 
