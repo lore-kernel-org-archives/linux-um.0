@@ -1,85 +1,50 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Message-ID: <dccb35f9-8fff-8b53-3b31-fbe55b2781c0@igalia.com>
-Date: Tue, 3 May 2022 14:56:27 -0300
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Message-ID: <ff750d43-fda1-7330-f9ec-3a03bb0e10da@linux.intel.com>
+Date: Sat, 28 May 2022 18:10:48 -0700
 MIME-Version: 1.0
-Subject: Re: [PATCH 19/30] panic: Add the panic hypervisor notifier list
+Subject: Re: [PATCH 0/2] x86: Optimize memchr() for x86-64
 Content-Language: en-US
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
- <20220427224924.592546-20-gpiccoli@igalia.com>
- <PH0PR21MB30256260CCF4CAB713BBB11ED7FC9@PH0PR21MB3025.namprd21.prod.outlook.com>
- <0147d038-571b-0802-c210-ccd4d52cd5dd@igalia.com>
- <PH0PR21MB30257E4E6E16BB8FFDE8F312D7C09@PH0PR21MB3025.namprd21.prod.outlook.com>
-From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-In-Reply-To: <PH0PR21MB30257E4E6E16BB8FFDE8F312D7C09@PH0PR21MB3025.namprd21.prod.outlook.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Michael Kelley (LINUX)" <mikelley@microsoft.com>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "bhe@redhat.com" <bhe@redhat.com>, "pmladek@suse.com" <pmladek@suse.com>, "kexec@lists.infradead.org" <kexec@lists.infradead.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "bcm-kernel-feedback-list@broadcom.com" <bcm-kernel-feedback-list@broadcom.com>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>, "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>, "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>, "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "openipmi-developer@lists.sourceforge.net" <openipmi-developer@lists.sourceforge.net>, "rcu@vger.kernel.org" <rcu@vger.kernel.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>, "x86@kernel.org" <x86@kernel.org>, "kernel-dev@igalia.com" <kernel-dev@igalia.com>, "kernel@gpiccoli.net" <kernel@gpiccoli.net>, "halves@canonical.com" <halves@canonical.com>, "fabiomirmar@gmail.com" <fabiomirmar@gmail.com>, "alejandro.j.jimenez@oracle.com" <alejandro.j.jimenez@oracle.com>, "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>, "arnd@arndb.de" <arnd@arndb.de>, "bp@alien8.de" <bp@alien8.de>, "corbet@lwn.net" <corbet@lwn.net>, "d.hatayama@jp.fujitsu.com" <d.hatayama@jp.fujitsu.com>, "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "dyoung@redhat.com" <dyoung@redhat.com>, "feng.tang@intel.com" <feng.tang@intel.com>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "hidehiro.kawai.ez@hitachi.com" <hidehiro.kawai.ez@hitachi.com>, "jgross@suse.com" <jgross@suse.com>, "john.ogness@linutronix.de" <john.ogness@linutronix.de>, "keescook@chromium.org" <keescook@chromium.org>, "luto@kernel.org" <luto@kernel.org>, "mhiramat@kernel.org" <mhiramat@kernel.org>, "mingo@redhat.com" <mingo@redhat.com>, "paulmck@kernel.org" <paulmck@kernel.org>, "peterz@infradead.org" <peterz@infradead.org>, "rostedt@goodmis.org" <rostedt@goodmis.org>, "senozhatsky@chromium.org" <senozhatsky@chromium.org>, "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>, "tglx@linutronix.de" <tglx@linutronix.de>, "vgoyal@redhat.com" <vgoyal@redhat.com>, vkuznets <vkuznets@redhat.com>, "will@kernel.org" <will@kernel.org>, Alexander Gordeev <agordeev@linux.ibm.com>, Andrea Parri <parri.andrea@gmail.com>, Ard Biesheuvel <ardb@kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Brian Norris <computersforpeace@gmail.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Christophe JAILLET <christophe.jaillet@wanadoo.fr>, David Gow <davidgow@google.com>, "David S. Miller" <davem@davemloft.net>, Dexuan Cui <decui@microsoft.com>, Doug Berger <opendmb@gmail.com>, Evan Green <evgreen@chromium.org>, Florian Fainelli <f.fainelli@gmail.com>, Haiyang Zhang <haiyangz@microsoft.com>, Hari Bathini <hbathini@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Julius Werner <jwerner@chromium.org>, Justin Chen <justinpopo6@gmail.com>, KY Srinivasan <kys@microsoft.com>, Lee Jones <lee.jones@linaro.org>, Markus Mayer <mmayer@broadcom.com>, Michael Ellerman <mpe@ellerman.id.au>, Mihai Carabas <mihai.carabas@oracle.com>, Nicholas Piggin <npiggin@gmail.com>, Paul Mackerras <paulus@samba.org>, Pavel Machek <pavel@ucw.cz>, Scott Branden <scott.branden@broadcom.com>, Sebastian Reichel <sre@kernel.org>, Shile Zhang <shile.zhang@linux.alibaba.com>, Stephen Hemminger <sthemmin@microsoft.com>, Sven Schnelle <svens@linux.ibm.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Tianyu Lan <Tianyu.Lan@microsoft.com>, Vasily Gorbik <gor@linux.ibm.com>, Wang ShaoBo <bobo.shaobowang@huawei.com>, Wei Liu <wei.liu@kernel.org>, zhenwei pi <pizhenwei@bytedance.com>
-
-On 03/05/2022 14:44, Michael Kelley (LINUX) wrote:
-> [...]
->>
->> Hi Michael, thanks for your feedback! I agree that your idea could work,
->> but...there is one downside: imagine the kmsg_dump() approach is not set
->> in some Hyper-V guest, then we would rely in the regular notification
->> mechanism [hv_die_panic_notify_crash()], right?
->> But...you want then to run this notifier in the informational list,
->> which...won't execute *by default* before kdump if no kmsg_dump() is
->> set. So, this logic is convoluted when you mix it with the default level
->> concept + kdump.
-> 
-> Yes, you are right.  But to me that speaks as much to the linkage
-> between the informational list and kmsg_dump() being the core
-> problem.  But as I described in my reply to Patch 24, I can live with
-> the linkage as-is.
-
-Thanks for the feedback Michael!
-
-> [...] 
->> I feel the panic notification mechanism does really fit with a
->> hypervisor list, it's a good match with the nature of the list, which
->> aims at informing the panic notification to the hypervisor/FW.
->> Of course we can modify it if you prefer...but please take into account
->> the kdump case and how it complicates the logic.
-> 
-> I agree that the runtime effect of one list vs. the other is nil.  The
-> code works and can stay as you written it.
-> 
-> I was trying to align from a conceptual standpoint.  It was a bit
-> unexpected that one path would be on the hypervisor list, and the
-> other path effectively on the informational list.  When I see
-> conceptual mismatches like that, I tend to want to understand why,
-> and if there is something more fundamental that is out-of-whack.
-> 
-
-Totally agree with you here, I am like that as well - try to really
-understand the details, this is very important specially in this patch
-set, since it's a refactor and affects every user of the notifiers
-infrastructure.
-
-Again, just to double-say it: feel free to suggest any change for the
-Hyper-V portion (might as well for any patch in the series, indeed) -
-you and the other Hyper-V maintainers own this code and I'd be glad to
-align with your needs, you are honor citizens in the panic notifiers
-area, being one the most heavy users for that =)
-
-Cheers,
+References: <20220528081236.3020-1-arthurchang09@gmail.com>
+From: Andi Kleen <ak@linux.intel.com>
+In-Reply-To: <20220528081236.3020-1-arthurchang09@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: 8bit
+To: Yu-Jen Chang <arthurchang09@gmail.com>, jdike@linux.intel.com
+Cc: tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, keescook@chromium.org, linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, linux-um@lists.infradead.org, jserv@ccns.ncku.edu.tw
+List-ID: <linux-um.lists.infradead.org>
 
 
-Guilherme
+On 5/28/2022 1:12 AM, Yu-Jen Chang wrote:
+> *** BLURB HERE ***
+> These patch series add an optimized "memchr()" for x86-64 and
+> USER-MODE LINUX (UML).
+>   
+> There exists an assemebly implementation for x86-32. However,
+> for x86-64, there isn't any optimized version. We implement word-wise
+> comparison so that 8 characters can be compared at the same time on
+> x86-64 CPU. The optimized “memchr()” is nearly 4x faster than the
+> orginal implementation for long strings.
+>
+> We test the optimized “memchr()” in UML and also recompile the 5.18
+> Kernel with the optimized “memchr()”. They run correctly.
+>
+> In this patch we add a new file "string_64.c", which only contains
+> "memchr()". We can add more optimized string functions in it in the
+> future.
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+Are there any workloads that care? From a quick grep I don't see any 
+that look performance critical.
+
+It would be good to describe what you optimized it for. For example 
+optimization for small input strings is quite different than large 
+strings. I don't know what is more common in the kernel.
+
+I assume you ran it through some existing test suites for memchr (like 
+glibc etc.) for correctness testing?
+
+(bugs in optimized string functions are often subtle, it might be also 
+worth trying some randomized testing comparing against a known reference)
+
+-Andi
+
 
