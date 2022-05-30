@@ -1,17 +1,27 @@
-Return-Path: <hca@linux.ibm.com>
-Date: Tue, 31 May 2022 09:59:37 +0200
-From: Heiko Carstens <hca@linux.ibm.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Date: Mon, 30 May 2022 23:26:09 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
 Subject: Re: [PATCH v5] mm: Avoid unnecessary page fault retires on shared
  memory types
-Message-ID: <YpXK6VO8y6ZQlimG@osiris>
+Message-ID: <YpVEgWHzzH3ZtVzA@shell.armlinux.org.uk>
 References: <20220530183450.42886-1-peterx@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20220530183450.42886-1-peterx@redhat.com>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Peter Xu <peterx@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, Ingo Molnar <mingo@redhat.com>, Vasily Gorbik <gor@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org, Stafford Horne <shorne@gmail.com>, "David S . Miller" <davem@davemloft.net>, Johannes Berg <johannes@sipsolutions.net>, Brian Cain <bcain@quicinc.com>, x86@kernel.org, linux-parisc@vger.kernel.org, Richard Henderson <rth@twiddle.net>, Christian Borntraeger <borntraeger@linux.ibm.com>, Richard Weinberger <richard@nod.at>, linux-hexagon@vger.kernel.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Thomas Gleixner <tglx@linutronix.de>, Janosch Frank <frankja@linux.ibm.com>, Albert Ou <aou@eecs.berkeley.edu>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Dave Hansen <dave.hansen@linux.intel.com>, linux-ia64@vger.kernel.org, Borislav Petkov <bp@alien8.de>, Russell King <linux@armlinux.org.uk>, Sven Schnelle <svens@linux.ibm.com>, Andrea Arcangeli <aarcange@redhat.com>, "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>, Al Viro <viro@zeniv.linux.org.uk>, Alexander Gordeev <agordeev@linux.ibm.com>, Peter Zijlstra <peterz@infradead.org>, Alistair Popple <apopple@nvidia.com>, Jonas Bonn <jonas@southpole.se>, sparclinux@vger.kernel.org, linux-csky@vger.kernel.org, Will Deacon <will@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Vlastimil Babka <vbabka@suse.cz>, linux-um@lists.infradead.org, Michal Simek <monstr@monstr.eu>, Matt Turner <mattst88@gmail.com>, linux-m68k@lists.linux-m68k.org, Paul Mackerras <paulus@samba.org>, linux-xtensa@linux-xtensa.org, Geert Uytterhoeven <geert@linux-m68k.org>, David Hildenbrand <david@redhat.com>, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, Nicholas Piggin <npiggin@gmail.com>, Palmer Dabbelt <palmer@dabbelt.com>, Michael Ellerman <mpe@ellerman.id.au>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Paul Walmsley <paul.walmsley@sifive.com>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Chris Zankel <chris@zankel.net>, Hugh Dickins <hughd@google.com>, Vineet Gupta <vgupta@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Rich Felker <dalias@libc.org>, "H . Peter Anvin" <hpa@zytor.com>, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-riscv@lists.infradead.org, Johannes Weiner <hannes@cmpxchg.org>, Andy Lutomirski <luto@kernel.org>, Max Filippov <jcmvbkbc@gmail.com>, Guo Ren <guoren@kernel.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-snps-arc@lists.infradead.org, linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org, Helge Deller <deller@gmx.de>, Yoshinori Sato <ysato@users.sourceforge.jp>, Ingo Molnar <mingo@kernel.org>
-List-ID: <linux-um.lists.infradead.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, Ingo Molnar <mingo@redhat.com>, Vasily Gorbik <gor@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org, Stafford Horne <shorne@gmail.com>, "David S . Miller" <davem@davemloft.net>, Johannes Berg <johannes@sipsolutions.net>, Brian Cain <bcain@quicinc.com>, x86@kernel.org, linux-parisc@vger.kernel.org, Richard Henderson <rth@twiddle.net>, Christian Borntraeger <borntraeger@linux.ibm.com>, Richard Weinberger <richard@nod.at>, linux-hexagon@vger.kernel.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Thomas Gleixner <tglx@linutronix.de>, Janosch Frank <frankja@linux.ibm.com>, Albert Ou <aou@eecs.berkeley.edu>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Dave Hansen <dave.hansen@linux.intel.com>, linux-ia64@vger.kernel.org, Borislav Petkov <bp@alien8.de>, Sven Schnelle <svens@linux.ibm.com>, Andrea Arcangeli <aarcange@redhat.com>, "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>, Al Viro <viro@zeniv.linux.org.uk>, Alexander Gordeev <agordeev@linux.ibm.com>, Peter Zijlstra <peterz@infradead.org>, Alistair Popple <apopple@nvidia.com>, Jonas Bonn <jonas@southpole.se>, sparclinux@vger.kernel.org, linux-csky@vger.kernel.org, Will Deacon <will@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Vlastimil Babka <vbabka@suse.cz>, linux-um@lists.infradead.org, Michal Simek <monstr@monstr.eu>, Matt Turner <mattst88@gmail.com>, linux-m68k@lists.linux-m68k.org, Paul Mackerras <paulus@samba.org>, linux-xtensa@linux-xtensa.org, Geert Uytterhoeven <geert@linux-m68k.org>, David Hildenbrand <david@redhat.com>, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, Nicholas Piggin <npiggin@gmail.com>, Palmer Dabbelt <palmer@dabbelt.com>, Michael Ellerman <mpe@ellerman.id.au>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Paul Walmsley <paul.walmsley@sifive.com>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Chris Zankel <chris@zankel.net>, Hugh Dickins <hughd@google.com>, Vineet Gupta <vgupta@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Rich Felker <dalias@libc.org>, "H . Peter Anvin" <hpa@zytor.com>, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-riscv@lists.infradead.org, Heiko Carstens <hca@linux.ibm.com>, Johannes Weiner <hannes@cmpxchg.org>, Andy Lutomirski <luto@kernel.org>, Max Filippov <jcmvbkbc@gmail.com>, Guo Ren <guoren@kernel.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-snps-arc@lists.infradead.org, linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org, Helge Deller <deller@gmx.de>, Yoshinori Sato <ysato@users.sourceforge.jp>, Ingo Molnar <mingo@kernel.org>
 
 On Mon, May 30, 2022 at 02:34:50PM -0400, Peter Xu wrote:
 > I observed that for each of the shared file-backed page faults, we're very
@@ -74,40 +84,35 @@ On Mon, May 30, 2022 at 02:34:50PM -0400, Peter Xu wrote:
 > Reviewed-by: Alistair Popple <apopple@nvidia.com>
 > Reviewed-by: Ingo Molnar <mingo@kernel.org>
 > Signed-off-by: Peter Xu <peterx@redhat.com>
-> ---
-...
->  arch/s390/mm/fault.c          | 12 ++++++++++++
-> diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
-> index e173b6187ad5..973dcd05c293 100644
-> --- a/arch/s390/mm/fault.c
-> +++ b/arch/s390/mm/fault.c
-> @@ -433,6 +433,17 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
->  			goto out_up;
->  		goto out;
->  	}
-> +
-> +	/* The fault is fully completed (including releasing mmap lock) */
-> +	if (fault & VM_FAULT_COMPLETED) {
-> +		if (gmap) {
-> +			mmap_read_lock(mm);
-> +			goto out_gmap;
-> +		}
-> +		fault = 0;
-> +		goto out;
-> +	}
-> +
->  	if (unlikely(fault & VM_FAULT_ERROR))
->  		goto out_up;
->  
-> @@ -452,6 +463,7 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
->  		mmap_read_lock(mm);
->  		goto retry;
->  	}
-> +out_gmap:
->  	if (IS_ENABLED(CONFIG_PGSTE) && gmap) {
->  		address =  __gmap_link(gmap, current->thread.gmap_addr,
->  				       address);
 
-FWIW:
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
+For:
+
+> diff --git a/arch/arm/mm/fault.c b/arch/arm/mm/fault.c
+> index a062e07516dd..46cccd6bf705 100644
+> --- a/arch/arm/mm/fault.c
+> +++ b/arch/arm/mm/fault.c
+> @@ -322,6 +322,10 @@ do_page_fault(unsigned long addr, unsigned int fsr, struct pt_regs *regs)
+>  		return 0;
+>  	}
+>  
+> +	/* The fault is fully completed (including releasing mmap lock) */
+> +	if (fault & VM_FAULT_COMPLETED)
+> +		return 0;
+> +
+>  	if (!(fault & VM_FAULT_ERROR)) {
+>  		if (fault & VM_FAULT_RETRY) {
+>  			flags |= FAULT_FLAG_TRIED;
+
+Acked-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+
+Thanks!
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
