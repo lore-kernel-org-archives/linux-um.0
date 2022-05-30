@@ -1,16 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out01.mta.xmission.com ([166.70.13.231])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nmNh0-00D6nA-0b
- for linux-um@lists.infradead.org; Wed, 04 May 2022 22:41:59 +0000
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-Date: Wed,  4 May 2022 17:40:58 -0500
-Message-Id: <20220504224058.476193-11-ebiederm@xmission.com>
-In-Reply-To: <87k0b0apne.fsf_-_@email.froward.int.ebiederm.org>
-References: <87k0b0apne.fsf_-_@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
-Subject: [PATCH v3 11/11] sched, signal, ptrace: Rework TASK_TRACED,
- TASK_STOPPED state
+References: <20220523020209.11810-1-ojeda@kernel.org> <20220523020209.11810-22-ojeda@kernel.org>
+ <CAKwvOdn+9qORm8UpDGnPXxiK7B7P_TW5CtXv1+8qkv7UvQr3hQ@mail.gmail.com>
+In-Reply-To: <CAKwvOdn+9qORm8UpDGnPXxiK7B7P_TW5CtXv1+8qkv7UvQr3hQ@mail.gmail.com>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Mon, 30 May 2022 15:39:51 +0200
+Message-ID: <CANiq72n2bU3LSGu-4v66nif_95EVq--z2X_F2V7JBPU8v=h8EA@mail.gmail.com>
+Subject: Re: [PATCH v7 21/25] Kbuild: add Rust support
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,229 +19,127 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, "Eric W . Biederman" <ebiederm@xmission.com>
+To: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Masahiro Yamada <masahiroy@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, rust-for-linux <rust-for-linux@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, Jarkko Sakkinen <jarkko@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Finn Behrens <me@kloenk.de>, Adam Bratschi-Kaye <ark.email@gmail.com>, Wedson Almeida Filho <wedsonaf@google.com>, Michael Ellerman <mpe@ellerman.id.au>, Sven Van Asbroeck <thesven73@gmail.com>, Gary Guo <gary@garyguo.net>, Boris-Chengbiao Zhou <bobo1239@web.de>, Boqun Feng <boqun.feng@gmail.com>, Douglas Su <d0u9.su@outlook.com>, Dariusz Sosnowski <dsosnowski@dsosnowski.pl>, Antonio Terceiro <antonio.terceiro@linaro.org>, Daniel Xu <dxu@dxuuu.xyz>, Miguel Cano <macanroj@gmail.com>, David Gow <davidgow@google.com>, Michal Marek <michal.lkml@markovi.net>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-riscv <linux-riscv@lists.infradead.org>, linux-um@lists.infradead.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+On Thu, May 26, 2022 at 12:25 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> Is there a reason to not just turn clippy on always? Might be nicer to
+> start off with good practices by default. :^)
 
-Currently ptrace_stop() / do_signal_stop() rely on the special states
-TASK_TRACED and TASK_STOPPED resp. to keep unique state. That is, this
-state exists only in task->__state and nowhere else.
+The idea crossed my mind too [1], but sadly Clippy disables some
+optimizations and in general is not intended to be used for normal
+compilation [2].
 
-There's two spots of bother with this:
+[1] https://github.com/rust-lang/rust-clippy/issues/8035
+[2] https://github.com/rust-lang/rust-clippy/pull/8037
 
- - PREEMPT_RT has task->saved_state which complicates matters,
-   meaning task_is_{traced,stopped}() needs to check an additional
-   variable.
+> Are there *.rmeta directories that we _don't_ want to remove via `make
+> mrproper`? I'm curious why *.rmeta isn't just part of MRPROPER_FILES?
 
- - An alternative freezer implementation that itself relies on a
-   special TASK state would loose TASK_TRACED/TASK_STOPPED and will
-   result in misbehaviour.
+Putting them in `MRPROPER_FILES` would mean only those in a given
+directory are removed (e.g. the root one), but the idea here is to
+find them anywhere in the tree, since in the future we may have
+library crates in different parts of the tree.
 
-As such, add additional state to task->jobctl to track this state
-outside of task->__state.
+However, I am not sure I understand your first question in relation
+with the second one -- if we put them in `MRPROPER_FILES`, that would
+remove less, not more.
 
-NOTE: this doesn't actually fix anything yet, just adds extra state.
+> I don't think we need to repeat dir/* here again for rust. The
+> existing targets listed above (outside this hunk) make sense in both
+> contexts.
 
---EWB
-  * didn't add a unnecessary newline in signal.h
-  * Update t->jobctl in signal_wake_up and ptrace_signal_wake_up
-    instead of in signal_wake_up_state.  This prevents the clearing
-    of TASK_STOPPED and TASK_TRACED from getting lost.
-  * Added warnings if JOBCTL_STOPPED or JOBCTL_TRACED are not cleared
+The idea here is to document the differences (e.g. `RUSTFMT`) and that
+we may have other targets in the future that do not apply to C (e.g.
+MIR dump, if that happens to be useful).
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20220421150654.757693825@infradead.org
-Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
----
- include/linux/sched.h        |  8 +++-----
- include/linux/sched/jobctl.h |  6 ++++++
- include/linux/sched/signal.h | 19 +++++++++++++++----
- kernel/ptrace.c              | 16 +++++++++++++---
- kernel/signal.c              | 10 ++++++++--
- 5 files changed, 45 insertions(+), 14 deletions(-)
+But maybe I can fit that in the normal place and make it still look
+good... I will give it a try.
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 610f2fdb1e2c..cbe5c899599c 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -118,11 +118,9 @@ struct task_group;
- 
- #define task_is_running(task)		(READ_ONCE((task)->__state) == TASK_RUNNING)
- 
--#define task_is_traced(task)		((READ_ONCE(task->__state) & __TASK_TRACED) != 0)
--
--#define task_is_stopped(task)		((READ_ONCE(task->__state) & __TASK_STOPPED) != 0)
--
--#define task_is_stopped_or_traced(task)	((READ_ONCE(task->__state) & (__TASK_STOPPED | __TASK_TRACED)) != 0)
-+#define task_is_traced(task)		((READ_ONCE(task->jobctl) & JOBCTL_TRACED) != 0)
-+#define task_is_stopped(task)		((READ_ONCE(task->jobctl) & JOBCTL_STOPPED) != 0)
-+#define task_is_stopped_or_traced(task)	((READ_ONCE(task->jobctl) & (JOBCTL_STOPPED | JOBCTL_TRACED)) != 0)
- 
- /*
-  * Special states are those that do not use the normal wait-loop pattern. See
-diff --git a/include/linux/sched/jobctl.h b/include/linux/sched/jobctl.h
-index d556c3425963..68876d0a7ef9 100644
---- a/include/linux/sched/jobctl.h
-+++ b/include/linux/sched/jobctl.h
-@@ -21,6 +21,9 @@ struct task_struct;
- #define JOBCTL_TRAP_FREEZE_BIT	23	/* trap for cgroup freezer */
- #define JOBCTL_PTRACE_FROZEN_BIT	24	/* frozen for ptrace */
- 
-+#define JOBCTL_STOPPED_BIT	26	/* do_signal_stop() */
-+#define JOBCTL_TRACED_BIT	27	/* ptrace_stop() */
-+
- #define JOBCTL_STOP_DEQUEUED	(1UL << JOBCTL_STOP_DEQUEUED_BIT)
- #define JOBCTL_STOP_PENDING	(1UL << JOBCTL_STOP_PENDING_BIT)
- #define JOBCTL_STOP_CONSUME	(1UL << JOBCTL_STOP_CONSUME_BIT)
-@@ -31,6 +34,9 @@ struct task_struct;
- #define JOBCTL_TRAP_FREEZE	(1UL << JOBCTL_TRAP_FREEZE_BIT)
- #define JOBCTL_PTRACE_FROZEN	(1UL << JOBCTL_PTRACE_FROZEN_BIT)
- 
-+#define JOBCTL_STOPPED		(1UL << JOBCTL_STOPPED_BIT)
-+#define JOBCTL_TRACED		(1UL << JOBCTL_TRACED_BIT)
-+
- #define JOBCTL_TRAP_MASK	(JOBCTL_TRAP_STOP | JOBCTL_TRAP_NOTIFY)
- #define JOBCTL_PENDING_MASK	(JOBCTL_STOP_PENDING | JOBCTL_TRAP_MASK)
- 
-diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
-index e66948abbee4..07ba3404fcde 100644
---- a/include/linux/sched/signal.h
-+++ b/include/linux/sched/signal.h
-@@ -294,8 +294,10 @@ static inline int kernel_dequeue_signal(void)
- static inline void kernel_signal_stop(void)
- {
- 	spin_lock_irq(&current->sighand->siglock);
--	if (current->jobctl & JOBCTL_STOP_DEQUEUED)
-+	if (current->jobctl & JOBCTL_STOP_DEQUEUED) {
-+		current->jobctl |= JOBCTL_STOPPED;
- 		set_special_state(TASK_STOPPED);
-+	}
- 	spin_unlock_irq(&current->sighand->siglock);
- 
- 	schedule();
-@@ -437,12 +439,21 @@ extern void signal_wake_up_state(struct task_struct *t, unsigned int state);
- 
- static inline void signal_wake_up(struct task_struct *t, bool fatal)
- {
--	fatal = fatal && !(t->jobctl & JOBCTL_PTRACE_FROZEN);
--	signal_wake_up_state(t, fatal ? TASK_WAKEKILL | __TASK_TRACED : 0);
-+	unsigned int state = 0;
-+	if (fatal && !(t->jobctl & JOBCTL_PTRACE_FROZEN)) {
-+		t->jobctl &= ~(JOBCTL_STOPPED | JOBCTL_TRACED);
-+		state = TASK_WAKEKILL | __TASK_TRACED;
-+	}
-+	signal_wake_up_state(t, state);
- }
- static inline void ptrace_signal_wake_up(struct task_struct *t, bool resume)
- {
--	signal_wake_up_state(t, resume ? __TASK_TRACED : 0);
-+	unsigned int state = 0;
-+	if (resume) {
-+		t->jobctl &= ~JOBCTL_TRACED;
-+		state = __TASK_TRACED;
-+	}
-+	signal_wake_up_state(t, state);
- }
- 
- void task_join_group_stop(struct task_struct *task);
-diff --git a/kernel/ptrace.c b/kernel/ptrace.c
-index 36a5b7a00d2f..328a34a99124 100644
---- a/kernel/ptrace.c
-+++ b/kernel/ptrace.c
-@@ -185,7 +185,12 @@ static bool looks_like_a_spurious_pid(struct task_struct *task)
- 	return true;
- }
- 
--/* Ensure that nothing can wake it up, even SIGKILL */
-+/*
-+ * Ensure that nothing can wake it up, even SIGKILL
-+ *
-+ * A task is switched to this state while a ptrace operation is in progress;
-+ * such that the ptrace operation is uninterruptible.
-+ */
- static bool ptrace_freeze_traced(struct task_struct *task)
- {
- 	bool ret = false;
-@@ -216,8 +221,10 @@ static void ptrace_unfreeze_traced(struct task_struct *task)
- 	 */
- 	if (lock_task_sighand(task, &flags)) {
- 		task->jobctl &= ~JOBCTL_PTRACE_FROZEN;
--		if (__fatal_signal_pending(task))
-+		if (__fatal_signal_pending(task)) {
-+			task->jobctl &= ~TASK_TRACED;
- 			wake_up_state(task, __TASK_TRACED);
-+		}
- 		unlock_task_sighand(task, &flags);
- 	}
- }
-@@ -462,8 +469,10 @@ static int ptrace_attach(struct task_struct *task, long request,
- 	 * in and out of STOPPED are protected by siglock.
- 	 */
- 	if (task_is_stopped(task) &&
--	    task_set_jobctl_pending(task, JOBCTL_TRAP_STOP | JOBCTL_TRAPPING))
-+	    task_set_jobctl_pending(task, JOBCTL_TRAP_STOP | JOBCTL_TRAPPING)) {
-+		task->jobctl &= ~JOBCTL_STOPPED;
- 		signal_wake_up_state(task, __TASK_STOPPED);
-+	}
- 
- 	spin_unlock(&task->sighand->siglock);
- 
-@@ -875,6 +884,7 @@ static int ptrace_resume(struct task_struct *child, long request,
- 	 */
- 	spin_lock_irq(&child->sighand->siglock);
- 	child->exit_code = data;
-+	child->jobctl &= ~JOBCTL_TRACED;
- 	wake_up_state(child, __TASK_TRACED);
- 	spin_unlock_irq(&child->sighand->siglock);
- 
-diff --git a/kernel/signal.c b/kernel/signal.c
-index e0b416b21ad3..80108017783d 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -762,7 +762,10 @@ static int dequeue_synchronous_signal(kernel_siginfo_t *info)
-  */
- void signal_wake_up_state(struct task_struct *t, unsigned int state)
- {
-+	lockdep_assert_held(&t->sighand->siglock);
-+
- 	set_tsk_thread_flag(t, TIF_SIGPENDING);
-+
- 	/*
- 	 * TASK_WAKEKILL also means wake it up in the stopped/traced/killable
- 	 * case. We don't check t->state here because there is a race with it
-@@ -930,9 +933,10 @@ static bool prepare_signal(int sig, struct task_struct *p, bool force)
- 		for_each_thread(p, t) {
- 			flush_sigqueue_mask(&flush, &t->pending);
- 			task_clear_jobctl_pending(t, JOBCTL_STOP_PENDING);
--			if (likely(!(t->ptrace & PT_SEIZED)))
-+			if (likely(!(t->ptrace & PT_SEIZED))) {
-+				t->jobctl &= ~JOBCTL_STOPPED;
- 				wake_up_state(t, __TASK_STOPPED);
--			else
-+			} else
- 				ptrace_trap_notify(t);
- 		}
- 
-@@ -2218,6 +2222,7 @@ static int ptrace_stop(int exit_code, int why, unsigned long message,
- 		return exit_code;
- 
- 	set_special_state(TASK_TRACED);
-+	current->jobctl |= JOBCTL_TRACED;
- 
- 	/*
- 	 * We're committing to trapping.  TRACED should be visible before
-@@ -2437,6 +2442,7 @@ static bool do_signal_stop(int signr)
- 		if (task_participate_group_stop(current))
- 			notify = CLD_STOPPED;
- 
-+		current->jobctl |= JOBCTL_STOPPED;
- 		set_special_state(TASK_STOPPED);
- 		spin_unlock_irq(&current->sighand->siglock);
- 
--- 
-2.35.3
+> Does rustc really use .i as a conventional suffix for macro expanded
+> sources? (The C compiler might use the -x flag to override the guess
 
+It is not a conventional suffix at all as far as I am aware.
+
+Maybe we should use a different one to aid editors and users anyway,
+e.g. `.rsi`, similar to `.mi` for Objective-C `.m` files.
+
+> it would make based on the file extension; I'm curious if rustc can
+> ingest .i files or will it warn?)
+
+The macro expanded output is not intended to be used as a compilable
+input, but as a debugging aid only. I can note this there.
+
+Having said that, `rustc` accepts the "preprocessed" output in the
+sense that it will just treat them as normal source files (no flag
+needed, and e.g. both `.i` and `.rsi` work); however, it may give new
+diagnostics or may require extra flags to enable some compiler
+features.
+
+From a quick test, I managed to compile a "preprocessed" Rust kernel
+module with only command-line changes. But if we really wanted to
+support this, we would need to ask upstream Rust to actually support
+it.
+
+> Are these two kconfigs used anywhere?
+
+Not for the moment, but it could still be useful when getting
+`.config` reports (and we could add it to `LINUX_COMPILER` etc. in the
+future).
+
+> How does enabling or disabling debug info work for rustc? I may have
+> missed it, but I was surprised to see no additional flags getting
+> passed to rustc based on CONFIG_DEBUG info.
+
+`-Cdebuginfo=` is the one; by default there is no debug info and that
+option enables it (i.e. it is not just the level but the enablement
+too).
+
+(Note that in userspace, when compiling a common program, you will get
+some debug info coming from the standard library and other
+dependencies).
+
+> Ah, that explains the host rust build infra.  Bravo! Hard coding the
+> target files was my major concern last I looked at the series. I'm
+> very happy to see it be generated properly from .config!
+>
+> I haven't actually reviewed this yet, but it makes me significantly
+> more confident in the series to see this approach added. Good job
+> whoever wrote this.
+
+Thanks! I thought Rust would be a nice option for writing hostprogs,
+though of course for the moment only programs that can assume Rust is
+there may use it.
+
+Note that non-x86 specific options need to be handled properly still
+(e.g. move things between the arch Makefiles and the hostprog as
+needed).
+
+I would still want to see compilers come to some kind of common format
+for this as we discussed other times, but... :)
+
+> Does `$(READELF) -p .comment foo.o` print anything about which
+> compiler was used? That seems less brittle IMO.
+
+Currently, `rustc` does not add a `.comment` section; but we could
+ask, I sent [3].
+
+If debug info is enabled, another way is using the `DW_AT_language`
+attribute, like `pahole` will be doing for a new option we need [4].
+However, we would still need a way for the other case.
+
+In any case, I am not sure something like `.comment` is less or more
+brittle -- compilers could in theory change it (e.g. not emitting it),
+while adding a symbol is something we control. So different kinds of
+brittleness.
+
+[3] https://github.com/rust-lang/rust/pull/97550
+[4] https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?id=8ee363790b7437283c53090a85a9fec2f0b0fbc4
+
+Cheers,
+Miguel
 
 _______________________________________________
 linux-um mailing list
