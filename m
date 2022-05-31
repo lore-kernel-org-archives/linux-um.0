@@ -1,16 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out03.mta.xmission.com ([166.70.13.233])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nmgCI-00HKjc-RV
- for linux-um@lists.infradead.org; Thu, 05 May 2022 18:27:32 +0000
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-Date: Thu,  5 May 2022 13:26:39 -0500
-Message-Id: <20220505182645.497868-6-ebiederm@xmission.com>
-In-Reply-To: <87a6bv6dl6.fsf_-_@email.froward.int.ebiederm.org>
-References: <87a6bv6dl6.fsf_-_@email.froward.int.ebiederm.org>
+Received: from mx2.uni-rostock.de ([139.30.22.72])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1nvztE-00AMNe-Kd
+	for linux-um@lists.infradead.org; Tue, 31 May 2022 11:18:23 +0000
+From: Benjamin Beichler <benjamin.beichler@uni-rostock.de>
+Subject: [PATCH] um: remove straying parenthesis
+Date: Tue, 31 May 2022 11:17:39 +0000
+Message-ID: <20220531111740.899162-1-benjamin.beichler@uni-rostock.de>
 MIME-Version: 1.0
-Subject: [PATCH v4 06/12] signal: Use lockdep_assert_held instead of
- assert_spin_locked
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,46 +20,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
+To: jdike@addtoit.com, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Benjamin Beichler <benjamin.beichler@uni-rostock.de>
+Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
 
-The distinction is that assert_spin_locked() checks if the lock is
-held *by*anyone* whereas lockdep_assert_held() asserts the current
-context holds the lock.  Also, the check goes away if you build
-without lockdep.
-
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/Ympr/+PX4XgT/UKU@hirez.programming.kicks-ass.net
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+Fixes: e3a33af812c6 ("um: fix and optimize xor select template for CONFIG64 and timetravel mode")
+Signed-off-by: Benjamin Beichler <benjamin.beichler@uni-rostock.de>
 ---
- kernel/signal.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/um/include/asm/xor.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/signal.c b/kernel/signal.c
-index 72d96614effc..3fd2ce133387 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -884,7 +884,7 @@ static int check_kill_permission(int sig, struct kernel_siginfo *info,
- static void ptrace_trap_notify(struct task_struct *t)
- {
- 	WARN_ON_ONCE(!(t->ptrace & PT_SEIZED));
--	assert_spin_locked(&t->sighand->siglock);
-+	lockdep_assert_held(&t->sighand->siglock);
+diff --git a/arch/um/include/asm/xor.h b/arch/um/include/asm/xor.h
+index 22b39de73c24..647fae200c5d 100644
+--- a/arch/um/include/asm/xor.h
++++ b/arch/um/include/asm/xor.h
+@@ -18,7 +18,7 @@
+ #undef XOR_SELECT_TEMPLATE
+ /* pick an arbitrary one - measuring isn't possible with inf-cpu */
+ #define XOR_SELECT_TEMPLATE(x)	\
+-	(time_travel_mode == TT_MODE_INFCPU ? TT_CPU_INF_XOR_DEFAULT : x))
++	(time_travel_mode == TT_MODE_INFCPU ? TT_CPU_INF_XOR_DEFAULT : x)
+ #endif
  
- 	task_set_jobctl_pending(t, JOBCTL_TRAP_NOTIFY);
- 	ptrace_signal_wake_up(t, t->jobctl & JOBCTL_LISTENING);
-@@ -1079,7 +1079,7 @@ static int __send_signal_locked(int sig, struct kernel_siginfo *info,
- 	int override_rlimit;
- 	int ret = 0, result;
- 
--	assert_spin_locked(&t->sighand->siglock);
-+	lockdep_assert_held(&t->sighand->siglock);
- 
- 	result = TRACE_SIGNAL_IGNORED;
- 	if (!prepare_signal(sig, t, force))
+ #endif
 -- 
-2.35.3
-
+2.25.1
 
 _______________________________________________
 linux-um mailing list
