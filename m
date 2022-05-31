@@ -1,65 +1,113 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Mon, 16 May 2022 16:56:41 +0200
-From: Petr Mladek <pmladek@suse.com>
-Subject: Re: [PATCH 25/30] panic, printk: Add console flush parameter and
- convert panic_print to a notifier
-Message-ID: <YoJmKYLzPZqCDDim@alley>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
- <20220427224924.592546-26-gpiccoli@igalia.com>
+Return-Path: <hca@linux.ibm.com>
+Date: Tue, 31 May 2022 09:59:37 +0200
+From: Heiko Carstens <hca@linux.ibm.com>
+Subject: Re: [PATCH v5] mm: Avoid unnecessary page fault retires on shared
+ memory types
+Message-ID: <YpXK6VO8y6ZQlimG@osiris>
+References: <20220530183450.42886-1-peterx@redhat.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220427224924.592546-26-gpiccoli@igalia.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Cc: akpm@linux-foundation.org, bhe@redhat.com, kexec@lists.infradead.org, linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org, linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org, linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org, sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org
+In-Reply-To: <20220530183450.42886-1-peterx@redhat.com>
+To: Peter Xu <peterx@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, Ingo Molnar <mingo@redhat.com>, Vasily Gorbik <gor@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org, Stafford Horne <shorne@gmail.com>, "David S . Miller" <davem@davemloft.net>, Johannes Berg <johannes@sipsolutions.net>, Brian Cain <bcain@quicinc.com>, x86@kernel.org, linux-parisc@vger.kernel.org, Richard Henderson <rth@twiddle.net>, Christian Borntraeger <borntraeger@linux.ibm.com>, Richard Weinberger <richard@nod.at>, linux-hexagon@vger.kernel.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Thomas Gleixner <tglx@linutronix.de>, Janosch Frank <frankja@linux.ibm.com>, Albert Ou <aou@eecs.berkeley.edu>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Dave Hansen <dave.hansen@linux.intel.com>, linux-ia64@vger.kernel.org, Borislav Petkov <bp@alien8.de>, Russell King <linux@armlinux.org.uk>, Sven Schnelle <svens@linux.ibm.com>, Andrea Arcangeli <aarcange@redhat.com>, "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>, Al Viro <viro@zeniv.linux.org.uk>, Alexander Gordeev <agordeev@linux.ibm.com>, Peter Zijlstra <peterz@infradead.org>, Alistair Popple <apopple@nvidia.com>, Jonas Bonn <jonas@southpole.se>, sparclinux@vger.kernel.org, linux-csky@vger.kernel.org, Will Deacon <will@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Vlastimil Babka <vbabka@suse.cz>, linux-um@lists.infradead.org, Michal Simek <monstr@monstr.eu>, Matt Turner <mattst88@gmail.com>, linux-m68k@lists.linux-m68k.org, Paul Mackerras <paulus@samba.org>, linux-xtensa@linux-xtensa.org, Geert Uytterhoeven <geert@linux-m68k.org>, David Hildenbrand <david@redhat.com>, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, Nicholas Piggin <npiggin@gmail.com>, Palmer Dabbelt <palmer@dabbelt.com>, Michael Ellerman <mpe@ellerman.id.au>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Paul Walmsley <paul.walmsley@sifive.com>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Chris Zankel <chris@zankel.net>, Hugh Dickins <hughd@google.com>, Vineet Gupta <vgupta@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Rich Felker <dalias@libc.org>, "H . Peter Anvin" <hpa@zytor.com>, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-riscv@lists.infradead.org, Johannes Weiner <hannes@cmpxchg.org>, Andy Lutomirski <luto@kernel.org>, Max Filippov <jcmvbkbc@gmail.com>, Guo Ren <guoren@kernel.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-snps-arc@lists.infradead.org, linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org, Helge Deller <deller@gmx.de>, Yoshinori Sato <ysato@users.sourceforge.jp>, Ingo Molnar <mingo@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-On Wed 2022-04-27 19:49:19, Guilherme G. Piccoli wrote:
-> Currently the parameter "panic_print" relies in a function called
-> directly on panic path; one of the flags the users can set for
-> panic_print triggers a console replay mechanism, to show the
-> entire kernel log buffer (from the beginning) in a panic event.
+On Mon, May 30, 2022 at 02:34:50PM -0400, Peter Xu wrote:
+> I observed that for each of the shared file-backed page faults, we're very
+> likely to retry one more time for the 1st write fault upon no page.  It's
+> because we'll need to release the mmap lock for dirty rate limit purpose
+> with balance_dirty_pages_ratelimited() (in fault_dirty_shared_page()).
 > 
-> Two problems with that: the dual nature of the panic_print
-> isn't really appropriate, the function was originally meant
-> to allow users dumping system information on panic events,
-> and was "overridden" to also force a console flush of the full
-> kernel log buffer. It also turns the code a bit more complex
-> and duplicate than it needs to be.
+> Then after that throttling we return VM_FAULT_RETRY.
 > 
-> This patch proposes 2 changes: first, we decouple panic_print
-> from the console flushing mechanism, in the form of a new kernel
-> core parameter (panic_console_replay); we kept the functionality
-> on panic_print to avoid userspace breakage, although we comment
-> in both code and documentation that this panic_print usage is
-> deprecated.
+> We did that probably because VM_FAULT_RETRY is the only way we can return
+> to the fault handler at that time telling it we've released the mmap lock.
 > 
-> We converted panic_print function to a panic notifier too, adding
-> it on the panic informational notifier list, executed as the final
-> callback. This allows a more clear code and makes sense, as
-> panic_print_sys_info() is really a panic-time only function.
-> We also moved its code to kernel/printk.c, it seems to make more
-> sense given it's related to printing stuff.
+> However that's not ideal because it's very likely the fault does not need
+> to be retried at all since the pgtable was well installed before the
+> throttling, so the next continuous fault (including taking mmap read lock,
+> walk the pgtable, etc.) could be in most cases unnecessary.
+> 
+> It's not only slowing down page faults for shared file-backed, but also add
+> more mmap lock contention which is in most cases not needed at all.
+> 
+> To observe this, one could try to write to some shmem page and look at
+> "pgfault" value in /proc/vmstat, then we should expect 2 counts for each
+> shmem write simply because we retried, and vm event "pgfault" will capture
+> that.
+> 
+> To make it more efficient, add a new VM_FAULT_COMPLETED return code just to
+> show that we've completed the whole fault and released the lock.  It's also
+> a hint that we should very possibly not need another fault immediately on
+> this page because we've just completed it.
+> 
+> This patch provides a ~12% perf boost on my aarch64 test VM with a simple
+> program sequentially dirtying 400MB shmem file being mmap()ed and these are
+> the time it needs:
+> 
+>   Before: 650.980 ms (+-1.94%)
+>   After:  569.396 ms (+-1.38%)
+> 
+> I believe it could help more than that.
+> 
+> We need some special care on GUP and the s390 pgfault handler (for gmap
+> code before returning from pgfault), the rest changes in the page fault
+> handlers should be relatively straightforward.
+> 
+> Another thing to mention is that mm_account_fault() does take this new
+> fault as a generic fault to be accounted, unlike VM_FAULT_RETRY.
+> 
+> I explicitly didn't touch hmm_vma_fault() and break_ksm() because they do
+> not handle VM_FAULT_RETRY even with existing code, so I'm literally keeping
+> them as-is.
+> 
+> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> Acked-by: Vineet Gupta <vgupta@kernel.org>
+> Acked-by: Guo Ren <guoren@kernel.org>
+> Acked-by: Max Filippov <jcmvbkbc@gmail.com>
+> Acked-by: Christian Borntraeger <borntraeger@linux.ibm.com>
+> Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> Reviewed-by: Alistair Popple <apopple@nvidia.com>
+> Reviewed-by: Ingo Molnar <mingo@kernel.org>
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
+...
+>  arch/s390/mm/fault.c          | 12 ++++++++++++
+> diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
+> index e173b6187ad5..973dcd05c293 100644
+> --- a/arch/s390/mm/fault.c
+> +++ b/arch/s390/mm/fault.c
+> @@ -433,6 +433,17 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
+>  			goto out_up;
+>  		goto out;
+>  	}
+> +
+> +	/* The fault is fully completed (including releasing mmap lock) */
+> +	if (fault & VM_FAULT_COMPLETED) {
+> +		if (gmap) {
+> +			mmap_read_lock(mm);
+> +			goto out_gmap;
+> +		}
+> +		fault = 0;
+> +		goto out;
+> +	}
+> +
+>  	if (unlikely(fault & VM_FAULT_ERROR))
+>  		goto out_up;
+>  
+> @@ -452,6 +463,7 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
+>  		mmap_read_lock(mm);
+>  		goto retry;
+>  	}
+> +out_gmap:
+>  	if (IS_ENABLED(CONFIG_PGSTE) && gmap) {
+>  		address =  __gmap_link(gmap, current->thread.gmap_addr,
+>  				       address);
 
-I really like both changes. Just please split it them into two
-patchset. I mean one patch for the new "panic_console_replay"
-parameter and 2nd that moves "printk_info" into the notifier.
-
-Best Regards,
-Petr
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+FWIW:
+Acked-by: Heiko Carstens <hca@linux.ibm.com>
 
