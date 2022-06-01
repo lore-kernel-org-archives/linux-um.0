@@ -1,15 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out01.mta.xmission.com ([166.70.13.231])
- by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
- id 1nmgCF-00HKgh-0d
- for linux-um@lists.infradead.org; Thu, 05 May 2022 18:27:28 +0000
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-Date: Thu,  5 May 2022 13:26:38 -0500
-Message-Id: <20220505182645.497868-5-ebiederm@xmission.com>
-In-Reply-To: <87a6bv6dl6.fsf_-_@email.froward.int.ebiederm.org>
-References: <87a6bv6dl6.fsf_-_@email.froward.int.ebiederm.org>
+Received: from mail-il1-x12a.google.com ([2607:f8b0:4864:20::12a])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1nwHNm-00E1qx-3d
+	for linux-um@lists.infradead.org; Wed, 01 Jun 2022 05:59:03 +0000
+Received: by mail-il1-x12a.google.com with SMTP id r3so560360ilt.8
+        for <linux-um@lists.infradead.org>; Tue, 31 May 2022 22:59:01 -0700 (PDT)
 MIME-Version: 1.0
-Subject: [PATCH v4 05/12] ptrace: Remove arch_ptrace_attach
+References: <20220528081236.3020-1-arthurchang09@gmail.com>
+ <20220528081236.3020-2-arthurchang09@gmail.com> <8b480c85f53c4f3b88bf99ba585e8768@AcuMS.aculab.com>
+In-Reply-To: <8b480c85f53c4f3b88bf99ba585e8768@AcuMS.aculab.com>
+From: Yu-Jen Chang <arthurchang09@gmail.com>
+Date: Wed, 1 Jun 2022 13:58:49 +0800
+Message-ID: <CAD4RrFOHaE0NKjPHw3RaUSrD6vZwnpHbY01bcO3emkoia2of6Q@mail.gmail.com>
+Subject: Re: [PATCH 1/2] x86/lib: Optimize memchr()
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,176 +21,181 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, "Eric W. Biederman" <ebiederm@xmission.com>
+To: David Laight <David.Laight@aculab.com>
+Cc: "ak@linux.intel.com" <ak@linux.intel.com>, "jdike@linux.intel.com" <jdike@linux.intel.com>, "tglx@linutronix.de" <tglx@linutronix.de>, "mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>, "keescook@chromium.org" <keescook@chromium.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>, "richard@nod.at" <richard@nod.at>, "anton.ivanov@cambridgegreys.com" <anton.ivanov@cambridgegreys.com>, "johannes@sipsolutions.net" <johannes@sipsolutions.net>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "jserv@ccns.ncku.edu.tw" <jserv@ccns.ncku.edu.tw>
 
-The last remaining implementation of arch_ptrace_attach is ia64's
-ptrace_attach_sync_user_rbs which was added at the end of 2007 in
-commit aa91a2e90044 ("[IA64] Synchronize RBS on PTRACE_ATTACH").
-
-Reading the comments and examining the code ptrace_attach_sync_user_rbs
-has the sole purpose of saving registers to the stack when ptrace_attach
-changes TASK_STOPPED to TASK_TRACED.  In all other cases arch_ptrace_stop
-takes care of the register saving.
-
-In commit d79fdd6d96f4 ("ptrace: Clean transitions between TASK_STOPPED and TRACED")
-modified ptrace_attach to wake up the thread and enter ptrace_stop normally even
-when the thread starts out stopped.
-
-This makes ptrace_attach_sync_user_rbs completely unnecessary.  So just
-remove it.
-
-Cc: linux-ia64@vger.kernel.org
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
----
- arch/ia64/include/asm/ptrace.h |  4 ---
- arch/ia64/kernel/ptrace.c      | 57 ----------------------------------
- kernel/ptrace.c                | 18 -----------
- 3 files changed, 79 deletions(-)
-
-diff --git a/arch/ia64/include/asm/ptrace.h b/arch/ia64/include/asm/ptrace.h
-index a10a498eede1..402874489890 100644
---- a/arch/ia64/include/asm/ptrace.h
-+++ b/arch/ia64/include/asm/ptrace.h
-@@ -139,10 +139,6 @@ static inline long regs_return_value(struct pt_regs *regs)
-   #define arch_ptrace_stop_needed() \
- 	(!test_thread_flag(TIF_RESTORE_RSE))
- 
--  extern void ptrace_attach_sync_user_rbs (struct task_struct *);
--  #define arch_ptrace_attach(child) \
--	ptrace_attach_sync_user_rbs(child)
--
-   #define arch_has_single_step()  (1)
-   #define arch_has_block_step()   (1)
- 
-diff --git a/arch/ia64/kernel/ptrace.c b/arch/ia64/kernel/ptrace.c
-index a19acd9f5e1f..a45f529046c3 100644
---- a/arch/ia64/kernel/ptrace.c
-+++ b/arch/ia64/kernel/ptrace.c
-@@ -617,63 +617,6 @@ void ia64_sync_krbs(void)
- 	unw_init_running(do_sync_rbs, ia64_sync_kernel_rbs);
- }
- 
--/*
-- * After PTRACE_ATTACH, a thread's register backing store area in user
-- * space is assumed to contain correct data whenever the thread is
-- * stopped.  arch_ptrace_stop takes care of this on tracing stops.
-- * But if the child was already stopped for job control when we attach
-- * to it, then it might not ever get into ptrace_stop by the time we
-- * want to examine the user memory containing the RBS.
-- */
--void
--ptrace_attach_sync_user_rbs (struct task_struct *child)
--{
--	int stopped = 0;
--	struct unw_frame_info info;
--
--	/*
--	 * If the child is in TASK_STOPPED, we need to change that to
--	 * TASK_TRACED momentarily while we operate on it.  This ensures
--	 * that the child won't be woken up and return to user mode while
--	 * we are doing the sync.  (It can only be woken up for SIGKILL.)
--	 */
--
--	read_lock(&tasklist_lock);
--	if (child->sighand) {
--		spin_lock_irq(&child->sighand->siglock);
--		if (READ_ONCE(child->__state) == TASK_STOPPED &&
--		    !test_and_set_tsk_thread_flag(child, TIF_RESTORE_RSE)) {
--			set_notify_resume(child);
--
--			WRITE_ONCE(child->__state, TASK_TRACED);
--			stopped = 1;
--		}
--		spin_unlock_irq(&child->sighand->siglock);
--	}
--	read_unlock(&tasklist_lock);
--
--	if (!stopped)
--		return;
--
--	unw_init_from_blocked_task(&info, child);
--	do_sync_rbs(&info, ia64_sync_user_rbs);
--
--	/*
--	 * Now move the child back into TASK_STOPPED if it should be in a
--	 * job control stop, so that SIGCONT can be used to wake it up.
--	 */
--	read_lock(&tasklist_lock);
--	if (child->sighand) {
--		spin_lock_irq(&child->sighand->siglock);
--		if (READ_ONCE(child->__state) == TASK_TRACED &&
--		    (child->signal->flags & SIGNAL_STOP_STOPPED)) {
--			WRITE_ONCE(child->__state, TASK_STOPPED);
--		}
--		spin_unlock_irq(&child->sighand->siglock);
--	}
--	read_unlock(&tasklist_lock);
--}
--
- /*
-  * Write f32-f127 back to task->thread.fph if it has been modified.
-  */
-diff --git a/kernel/ptrace.c b/kernel/ptrace.c
-index ccc4b465775b..da30dcd477a0 100644
---- a/kernel/ptrace.c
-+++ b/kernel/ptrace.c
-@@ -1285,10 +1285,6 @@ int ptrace_request(struct task_struct *child, long request,
- 	return ret;
- }
- 
--#ifndef arch_ptrace_attach
--#define arch_ptrace_attach(child)	do { } while (0)
--#endif
--
- SYSCALL_DEFINE4(ptrace, long, request, long, pid, unsigned long, addr,
- 		unsigned long, data)
- {
-@@ -1297,8 +1293,6 @@ SYSCALL_DEFINE4(ptrace, long, request, long, pid, unsigned long, addr,
- 
- 	if (request == PTRACE_TRACEME) {
- 		ret = ptrace_traceme();
--		if (!ret)
--			arch_ptrace_attach(current);
- 		goto out;
- 	}
- 
-@@ -1310,12 +1304,6 @@ SYSCALL_DEFINE4(ptrace, long, request, long, pid, unsigned long, addr,
- 
- 	if (request == PTRACE_ATTACH || request == PTRACE_SEIZE) {
- 		ret = ptrace_attach(child, request, addr, data);
--		/*
--		 * Some architectures need to do book-keeping after
--		 * a ptrace attach.
--		 */
--		if (!ret)
--			arch_ptrace_attach(child);
- 		goto out_put_task_struct;
- 	}
- 
-@@ -1455,12 +1443,6 @@ COMPAT_SYSCALL_DEFINE4(ptrace, compat_long_t, request, compat_long_t, pid,
- 
- 	if (request == PTRACE_ATTACH || request == PTRACE_SEIZE) {
- 		ret = ptrace_attach(child, request, addr, data);
--		/*
--		 * Some architectures need to do book-keeping after
--		 * a ptrace attach.
--		 */
--		if (!ret)
--			arch_ptrace_attach(child);
- 		goto out_put_task_struct;
- 	}
- 
--- 
-2.35.3
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+RGF2aWQgTGFpZ2h0IDxEYXZpZC5MYWlnaHRAYWN1bGFiLmNvbT4g5pa8IDIwMjLlubQ15pyIMzDm
+l6Ug6YCx5LiAIOS4i+WNiDQ6MTDlr6vpgZPvvJoKPgo+IEZyb206IFl1LUplbiBDaGFuZwo+ID4g
+U2VudDogMjggTWF5IDIwMjIgMDk6MTMKPiA+Cj4gPiBUaGUgb3JpZ2luYWwgYXNzZW1ibHkgdmVy
+c2lvbiBvZiBtZW1jaHIoKSBpcyBpbXBsZW1lbnRlZCB3aXRoCj4gPiB0aGUgYnl0ZS13aXNlIGNv
+bXBhcmluZyB0ZWNobmlxdWUsIHdoaWNoIGRvZXMgbm90IGZ1bGx5Cj4gPiB1c2UgNjQtYml0cyBy
+ZWdpc3RlcnMgaW4geDg2XzY0IENQVS4gV2UgdXNlIHdvcmQtd2lkZQo+ID4gY29tcGFyaW5nIHNv
+IHRoYXQgOCBjaGFyYWN0ZXJzIGNhbiBiZSBjb21wYXJlZCBhdCB0aGUgc2FtZSB0aW1lCj4gPiBv
+biB4ODZfNjQgQ1BVLiBGaXJzdCB3ZSBhbGlnbiB0aGUgaW5wdXQgYW5kIHRoZW4gdXNlIHdvcmQt
+d2lzZQo+ID4gY29tcGFyaW5nIHRvIGZpbmQgdGhlIGZpcnN0IDY0LWJpdCB3b3JkIHRoYXQgY29u
+dGFpbiB0aGUgdGFyZ2V0Lgo+ID4gU2Vjb25kbHksIHdlIGNvbXBhcmUgZXZlcnkgYnl0ZSBpbiB0
+aGUgd29yZCBhbmQgZ2V0IHRoZSBvdXRwdXQuCj4gPgo+ID4gV2UgY3JlYXRlIHR3byBmaWxlcyB0
+byBtZWFzdXJlIHRoZSBwZXJmb3JtYW5jZS4gVGhlIGZpcnN0IGZpbGUKPiA+IGNvbnRhaW5zIG9u
+IGF2ZXJhZ2UgMTAgY2hhcmFjdGVycyBhaGVhZCB0aGUgdGFyZ2V0IGNoYXJhY3Rlci4KPiA+IFRo
+ZSBzZWNvbmQgZmlsZSBjb250YWlucyBhdCBsZWFzdCAxMDAwIGNoYXJhY3RlcnMgYWhlYWQgdGhl
+Cj4gPiB0YXJnZXQgY2hhcmFjdGVyLiBPdXIgaW1wbGVtZW50YXRpb24gb2Yg4oCcbWVtY2hyKCni
+gJ0gaXMgc2xpZ2h0bHkKPiA+IGJldHRlciBpbiB0aGUgZmlyc3QgdGVzdCBhbmQgbmVhcmx5IDR4
+IGZhc3RlciB0aGFuIHRoZSBvcmdpbmFsCj4gPiBpbXBsZW1lbnRhdGlvbiBpbiB0aGUgc2Vjb25k
+IHRlc3QuCj4gPgo+ID4gU2lnbmVkLW9mZi1ieTogWXUtSmVuIENoYW5nIDxhcnRodXJjaGFuZzA5
+QGdtYWlsLmNvbT4KPiA+IFNpZ25lZC1vZmYtYnk6IENoaW5nLUNodW4gKEppbSkgSHVhbmcgPGpz
+ZXJ2QGNjbnMubmNrdS5lZHUudHc+Cj4gPiAtLS0KPiA+ICBhcmNoL3g4Ni9pbmNsdWRlL2FzbS9z
+dHJpbmdfNjQuaCB8ICAzICsrCj4gPiAgYXJjaC94ODYvbGliL01ha2VmaWxlICAgICAgICAgICAg
+fCAgMSArCj4gPiAgYXJjaC94ODYvbGliL3N0cmluZ182NC5jICAgICAgICAgfCA3OCArKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKwo+ID4gIDMgZmlsZXMgY2hhbmdlZCwgODIgaW5zZXJ0
+aW9ucygrKQo+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBhcmNoL3g4Ni9saWIvc3RyaW5nXzY0LmMK
+PiA+Cj4gLi4uCj4gPiBkaWZmIC0tZ2l0IGEvYXJjaC94ODYvbGliL3N0cmluZ182NC5jIGIvYXJj
+aC94ODYvbGliL3N0cmluZ182NC5jCj4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+ID4gaW5kZXgg
+MDAwMDAwMDAwLi40ZTA2N2Q1YmUKPiA+IC0tLSAvZGV2L251bGwKPiA+ICsrKyBiL2FyY2gveDg2
+L2xpYi9zdHJpbmdfNjQuYwo+ID4gQEAgLTAsMCArMSw3OCBAQAo+ID4gKy8vIFNQRFgtTGljZW5z
+ZS1JZGVudGlmaWVyOiBHUEwtMi4wCj4gPiArI2luY2x1ZGUgPGxpbnV4L3N0cmluZy5oPgo+ID4g
+KyNpbmNsdWRlIDxsaW51eC9leHBvcnQuaD4KPiA+ICsjaW5jbHVkZSA8bGludXgvYWxpZ24uaD4K
+PiA+ICsKPiA+ICsvKiBIb3cgbWFueSBieXRlcyBhcmUgbG9hZGVkIGVhY2ggaXRlcmF0aW9uIG9m
+IHRoZSB3b3JkIGNvcHkgbG9vcCAqLwo+ID4gKyNkZWZpbmUgTEJMT0NLU0laRSAoc2l6ZW9mKGxv
+bmcpKQo+ID4gKwo+ID4gKyNpZmRlZiBfX0hBVkVfQVJDSF9NRU1DSFIKPiA+ICsKPiA+ICt2b2lk
+ICptZW1jaHIoY29uc3Qgdm9pZCAqY3MsIGludCBjLCBzaXplX3QgbGVuZ3RoKQo+ID4gK3sKPiA+
+ICsgICAgIGNvbnN0IHVuc2lnbmVkIGNoYXIgKnNyYyA9IChjb25zdCB1bnNpZ25lZCBjaGFyICop
+Y3MsIGQgPSBjOwo+Cj4gWW91IGRvbid0IG5lZWQgdGhlIGNhc3QuCj4KPiA+ICsKPiA+ICsgICAg
+IHdoaWxlICghSVNfQUxJR05FRCgobG9uZylzcmMsIHNpemVvZihsb25nKSkpIHsKPiA+ICsgICAg
+ICAgICAgICAgaWYgKCFsZW5ndGgtLSkKPiA+ICsgICAgICAgICAgICAgICAgICAgICByZXR1cm4g
+TlVMTDsKPiA+ICsgICAgICAgICAgICAgaWYgKCpzcmMgPT0gZCkKPiA+ICsgICAgICAgICAgICAg
+ICAgICAgICByZXR1cm4gKHZvaWQgKilzcmM7Cj4gPiArICAgICAgICAgICAgIHNyYysrOwo+ID4g
+KyAgICAgfQo+Cj4gVGhlcmUgaXMgbm8gcG9pbnQgYWxpZ25pbmcgdGhlIGFkZHJlc3MuCj4gT24g
+dGVzdHMgSSd2ZSBkb25lIG1pc2FsaWduZWQgcmVhZHMgZG9uJ3QgZXZlbiB0YWtlIGFuIGV4dHJh
+Cj4gY2xvY2sgLSBldmVuIGlmIHlvdSBnZXQgdGhlIGNwdSBkb2luZyB0d28gcmVhZHMvY2xvY2su
+Cj4gRXZlbiBpZiB0aGV5IGRpZCB0aGUgY29kZSBpc24ndCBtZW1vcnkgbGltaXRlZC4KPgo+ID4g
+KyAgICAgaWYgKGxlbmd0aCA+PSBMQkxPQ0tTSVpFKSB7Cj4gPiArICAgICAgICAgICAgIHVuc2ln
+bmVkIGxvbmcgbWFzayA9IGQgPDwgOCB8IGQ7Cj4gPiArICAgICAgICAgICAgIHVuc2lnbmVkIGlu
+dCBpID0gMzI7Cj4gPiArICAgICAgICAgICAgIGxvbmcgeG9yLCBkYXRhOwo+ID4gKyAgICAgICAg
+ICAgICBjb25zdCBsb25nIGNvbnN0YSA9IDB4RkVGRUZFRkVGRUZFRkVGRiwKPiA+ICsgICAgICAg
+ICAgICAgICAgICAgICAgICBjb25zdGIgPSAweDgwODA4MDgwODA4MDgwODA7Cj4gPiArCj4gPiAr
+ICAgICAgICAgICAgIC8qCj4gPiArICAgICAgICAgICAgICAqIENyZWF0ZSBhIDgtYnl0ZXMgbWFz
+ayBmb3Igd29yZC13aXNlIGNvbXBhcmluZy4KPiA+ICsgICAgICAgICAgICAgICogRm9yIGV4YW1w
+bGUsIGEgbWFzayBmb3IgJ2EnIGlzIDB4NjE2MTYxNjE2MTYxNjE2MS4KPiA+ICsgICAgICAgICAg
+ICAgICovCj4gPiArCj4gPiArICAgICAgICAgICAgIG1hc2sgfD0gbWFzayA8PCAxNjsKPiA+ICsg
+ICAgICAgICAgICAgZm9yIChpID0gMzI7IGkgPCBMQkxPQ0tTSVpFICogODsgaSA8PD0gMSkKPiA+
+ICsgICAgICAgICAgICAgICAgICAgICBtYXNrIHw9IG1hc2sgPDwgaTsKPgo+IEdpdmVuIHRoYXQg
+Y29uc3RhL2Igb25seSBzdXBwb3J0IDY0IGJpdCB3aHkgdGhlIGxvb3AuCj4gSnVzdCBkbyBtYXNr
+IHw9IG1hc2sgPDwgMzIuCj4gSSdkIGFsc28gcHV0IGFsbCAzIGNhbGN1bGF0aW9ucyB0b2dldGhl
+ciAtIG5vdCBoaWRlIG9uZQo+IGluIHRoZSBpbml0aWFsaXNlci4KPgo+ID4gKyAgICAgICAgICAg
+ICAvKgo+ID4gKyAgICAgICAgICAgICAgKiBXZSBwZXJmb3JtIHdvcmQtd2lzZSBjb21wYXJpbmcg
+d2l0aCBmb2xsb3dpbmcgb3BlcmF0aW9uOgo+ID4gKyAgICAgICAgICAgICAgKiAgICAgIDEuIFBl
+cmZvcm0geG9yIG9uIHRoZSBsb25nIHdvcmQgQHNyYyBhbmQgQG1hc2sKPiA+ICsgICAgICAgICAg
+ICAgICogICAgICAgICBhbmQgcHV0IGludG8gQHhvci4KPiA+ICsgICAgICAgICAgICAgICogICAg
+ICAyLiBBZGQgQHhvciB3aXRoIEBjb25zdGEuCj4gPiArICAgICAgICAgICAgICAqICAgICAgMy4g
+fkB4b3IgJiBAY29uc3RiLgo+ID4gKyAgICAgICAgICAgICAgKiAgICAgIDQuIFBlcmZvcm0gJiB3
+aXRoIHRoZSByZXN1bHQgb2Ygc3RlcCAyIGFuZCAzLgo+ID4gKyAgICAgICAgICAgICAgKgo+ID4g
+KyAgICAgICAgICAgICAgKiBTdGVwIDEgY3JlYXRlcyBhIGJ5dGUgd2hpY2ggaXMgMCBpbiB0aGUg
+bG9uZyB3b3JkIGlmCj4gPiArICAgICAgICAgICAgICAqIHRoZXJlIGlzIGF0IGxlYXN0IG9uZSB0
+YXJnZXQgYnl0ZSBpbiBpdC4KPiA+ICsgICAgICAgICAgICAgICoKPiA+ICsgICAgICAgICAgICAg
+ICogU3RlcCAyIHRvIFN0ZXAgNCBmaW5kIGlmIHRoZXJlIGlzIGEgYnl0ZSB3aXRoIDAgaW4KPiA+
+ICsgICAgICAgICAgICAgICogdGhlIGxvbmcgd29yZC4KPiA+ICsgICAgICAgICAgICAgICovCj4g
+PiArICAgICAgICAgICAgIGFzbSB2b2xhdGlsZSgiMTpcblx0Igo+ID4gKyAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIm1vdnEgKCUwKSwlMVxuXHQiCj4gPiArICAgICAgICAgICAgICAgICAgICAg
+ICAgICAieG9ycSAlNiwlMVxuXHQiCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAibGVh
+ICglMSwlNCksICUyXG5cdCIKPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICJub3RxICUx
+XG5cdCIKPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICJhbmRxICU1LCUxXG5cdCIKPiA+
+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICJ0ZXN0cSAlMSwlMlxuXHQiCj4gPiArICAgICAg
+ICAgICAgICAgICAgICAgICAgICAiam5lIDJmXG5cdCIKPiA+ICsgICAgICAgICAgICAgICAgICAg
+ICAgICAgICJhZGQgJDgsJTBcblx0Igo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgInN1
+YiAkOCwlM1xuXHQiCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAiY21wICQ3LCUzXG5c
+dCIKPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICJqYSAxYlxuXHQiCj4gPiArICAgICAg
+ICAgICAgICAgICAgICAgICAgICAiMjpcblx0Igo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAg
+ICAgOiAiPUQiKHNyYyksICI9ciIoeG9yKSwgIj1yIihkYXRhKSwgIj1yIihsZW5ndGgpCj4KPiBX
+aHkgY29uc3RyYWluIHNyYyB0byAlcmRpPwoKQXQgZmlyc3QgSSB0cnkgdG8gdXNlIHNvbWUgaW5z
+dHJ1Y3Rpb25zIHJlbGF0ZWQgdG8gJXJkaSwgYnV0IEkgcmVhbGl6ZQp0aGF0IEkgd29uJ3QgdXNl
+IHRoZXNlIGluc3RydWN0aW9ucy4gSXQgaXMgdW5uZWNlc3NhcnkgdG8gY29uc3RyYWluCnNyYyB0
+byAlcmRpLgoKPgo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgOiAiciIoY29uc3RhKSwg
+InIiKGNvbnN0YiksICJyIihtYXNrKSwgIjAiKHNyYyksCj4gPiArICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICIxIih4b3IpLCAiMiIoZGF0YSksICIzIihsZW5ndGgpCj4KPiBVc2UgIityIiBp
+biB0aGUgb3V0cHV0cyBpbnN0ZWFkIG9mIHJlc3BlY2lmeWluZyB0aGUgYXJncy4KPiBJJ2QgYWxz
+byBzdWdnZXN0IHVzaW5nIG5hbWVkIGFyZ3VtZW50cyAtIG11Y2ggZWFzaWVyIHRvIHJlYWQuCj4K
+PiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgIDogIm1lbW9yeSIsICJjYyIpOwo+Cj4gRG9l
+c24ndCB0aGUgY29tcGlsZXIgZ2VuZXJhdGUgbXVjaCB0aGUgc2FtZSBjb2RlPwo+IFlvdSBzaG91
+bGQgYWxzbyBiZSBhYmxlIHRvIGNvZGUgd2l0aG91dCBuZWVkaW5nIGFkZCwgc3ViIGFuZCBjbXAK
+PiBhdCB0aGUgZW5kIG9mIHRoZSBsb29wLgo+IElmIHlvdSB1c2UgbmVnYXRpdmUgb2Zmc2V0cyBm
+cm9tIHRoZSBlbmQgb2YgdGhlIGJ1ZmZlcgo+IHRoZSBsb29wIGNhbiBiZSBhIHNpbmdsZSBhZGQg
+YW5kIGpuei4KPgo+ICAgICAgICAgRGF2aWQKPgo+ID4gKyAgICAgfQo+ID4gKwo+ID4gKyAgICAg
+d2hpbGUgKGxlbmd0aC0tKSB7Cj4gPiArICAgICAgICAgICAgIGlmICgqc3JjID09IGQpCj4gPiAr
+ICAgICAgICAgICAgICAgICAgICAgcmV0dXJuICh2b2lkICopc3JjOwo+ID4gKyAgICAgICAgICAg
+ICBzcmMrKzsKPiA+ICsgICAgIH0KPiA+ICsgICAgIHJldHVybiBOVUxMOwo+ID4gK30KPiA+ICtF
+WFBPUlRfU1lNQk9MKG1lbWNocik7Cj4gPiArI2VuZGlmCj4gPiAtLQo+ID4gMi4yNS4xCj4KPiAt
+Cj4gUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0s
+IE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLCj4gUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChX
+YWxlcykKCkkgcmVtb3ZlIHRoZSBhbGlnbmluZyBhZGRyZXNzIHBhcnQuIE9uIG15IHRlc3RzIHRo
+ZSBwZXJmb3JtYW5jZSBhcmUgc2ltaWxhci4KSGVyZSBJIHJld3JpdGUgdGhlIGFzc2VtYmx5IHVz
+aW5nIG5hbWVkIGFyZ3VtZW50cyBhbmQgSSByZWR1Y2Ugb25lIGluc3RydWN0aW9uCmluIHRoZSBs
+b29wIGJ5IGFkZGluZyB0d28gcGFyYW1ldGVycywgd2hpY2ggYXJlICAnZW5kJyBhbmQgJ2RzdCcu
+CidlbmQnIHN0b3JlcyB0aGUKYWRkcmVzcyBvZiB0aGUgZW5kIG9mIHRoZSBzdHJpbmcuICdkc3Qn
+IHN0b3JlcyB0aGUgYWRkcmVzcyBvZiB0aGUgZW5kCm9mIHdvcmQtd2lzZQpjb21wYXJpc29uLiBB
+cyBhIHJlc3VsdCwgd2hlbiAnc3JjJyBpcyBlcXVhbCB0byAnZHN0JywgdGhlIG51bWJlciBvZiBy
+ZW1haW5pbmcKY2hhcmFjdGVycyBpcyBsZXNzIHRoYW4gOC4gVGhlIGZvbGxvd2luZyB3aGlsZSBs
+b29wIHdpbGwgZmluZCBpZiB0aGUKdGFyZ2V0IGNoYXJhY3RlciBpcwppbiB0aGVzZSByZW1haW5p
+bmcgY2hhcmFjdGVycy4KCk9uIG15IHRlc3QgdGhlIHBlcmZvcm1hbmNlIGlzIHNpbWlsYXIgd2l0
+aCB0aGUgbXkgb3JpZ2luYWwgaW1wbGVtZW50YXRpb24uIE9ubHkKYSBsaXR0bGUgYml0IGZhc3Qg
+d2hlbiBnb2luZyB0aHJvdWdoIGEgdmVyeSBsb25nIHN0cmluZywgd2hpY2ggY29udGFpbnMgMTI4
+KjEwMjQKY2hhcmFjdGVycyBhbmQgdGhlIHRhcmdldCBjaGFyYWN0ZXIgaXMgbmVhciB0aGUgZW5k
+IG9mIHRoZSBzdHJpbmcuCgpJIGFsc28gZXhwbGFpbiBob3cgY29uc3RhIGFuZCBjb25zdGIgd29y
+ayBjbGVhcmx5IGluIHRoZSBjb21tZW50cy4gSG9wZSB0aGF0IGl0CmhlbHBzIHVuZGVyc3RhbmRp
+bmcuCgpUaGUgZm9sbG93aW5nIGNvZGUgaXMgd2hhdCBJIGNoYW5nZS4KCnZvaWQgKm1lbWNocihj
+b25zdCB2b2lkICpjcywgaW50IGMsIHNpemVfdCBsZW5ndGgpCnsKICAgICBjb25zdCB1bnNpZ25l
+ZCBjaGFyICpzcmMgPSAoY29uc3QgdW5zaWduZWQgY2hhciAqKWNzOwogICAgIGNvbnN0IHVuc2ln
+bmVkIGNoYXIgKmVuZCA9IHNyYyArIGxlbmd0aDsKCiAgICAgaWYgKGxlbmd0aCA+PSBMQkxPQ0tT
+SVpFKSB7CiAgICAgICAgICAgICB1bnNpZ25lZCBsb25nIG1hc2sgPSBjIDw8IDggfCBjOwogICAg
+ICAgICAgICAgbG9uZyB4b3IsIGRhdGE7CiAgICAgICAgICAgICBjb25zdCBsb25nIGNvbnN0YSA9
+IDB4RkVGRUZFRkVGRUZFRkVGRiwKICAgICAgICAgICAgICAgICAgICAgICAgY29uc3RiID0gMHg4
+MDgwODA4MDgwODA4MDgwOwogICAgICAgICAgICAgY29uc3QgdW5zaWduZWQgY2hhciAqZHN0ID0g
+KGNvbnN0IHVuc2lnbmVkIGNoYXIgKilzcmMgKwogICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIChsZW5ndGggJiAweEZGRkZGRkZGRkZGRkZGRjgpOwoKICAgICAg
+ICAgICAgIC8qCiAgICAgICAgICAgICAgKiBDcmVhdGUgYSA4LWJ5dGVzIG1hc2sgZm9yIHdvcmQt
+d2lzZSBjb21wYXJpbmcuCiAgICAgICAgICAgICAgKiBGb3IgZXhhbXBsZSwgYSBtYXNrIGZvciAn
+YScgaXMgMHg2MTYxNjE2MTYxNjE2MTYxLgogICAgICAgICAgICAgICovCgogICAgICAgICAgICAg
+bWFzayB8PSBtYXNrIDw8IDE2OwogICAgICAgICAgICAgbWFzayB8PSBtYXNrIDw8IDMyOwogICAg
+ICAgICAgICAgLyoKICAgICAgICAgICAgICAqIFdlIHBlcmZvcm0gd29yZC13aXNlIGNvbXBhcmlu
+ZyB3aXRoIGZvbGxvd2luZyBvcGVyYXRpb246CiAgICAgICAgICAgICAgKiAxLiBQZXJmb3JtIHhv
+ciBvbiB0aGUgbG9uZyB3b3JkIEBzcmMgYW5kIEBtYXNrCiAgICAgICAgICAgICAgKiAgICBhbmQg
+cHV0IGludG8gQHhvci4KICAgICAgICAgICAgICAqIDIuIEFkZCBAeG9yIHdpdGggQGNvbnN0YS4K
+ICAgICAgICAgICAgICAqIDMuIH5AeG9yICYgQGNvbnN0Yi4KICAgICAgICAgICAgICAqIDQuIFBl
+cmZvcm0gJiB3aXRoIHRoZSByZXN1bHQgb2Ygc3RlcCAyIGFuZCAzLgogICAgICAgICAgICAgICoK
+ICAgICAgICAgICAgICAqIElmIHRoZXJlIGlzIGEgemVybyBieXRlIGluIEB4b3IsIHN0ZXAgMiB0
+dXJucyBpdCBpbnRvCiAgICAgICAgICAgICAgKiAweEZGLiBUaGVuIHN0ZXAgMyBhbmQgNCB0dXJu
+IGl0IGludG8gMHg4MC4KICAgICAgICAgICAgICAqCiAgICAgICAgICAgICAgKiBJZiB0aGVyZSBp
+cyBhIG5vbmUtemVybyBieXRlIGluIEB4b3IsIGxldCBrCiAgICAgICAgICAgICAgKiAoMCA8PSBr
+IDw9IDcpIGJlIHRoZSBsb3dlc3QgMSBpbiB0aGlzIGJ5dGUuIFRoZSBsb3dlc3QKICAgICAgICAg
+ICAgICAqIGsgYml0cyBhcmUgMC4gQWZ0ZXIgc3RlcCAyLCB0aGUgYnl0ZSBlbmRzIGluIGEgc2lu
+Z2xlCiAgICAgICAgICAgICAgKiBiaXQgb2YgdmFsdWUgMC4gU3RlcCAzIGFuZCA0IHR1cm5zIHRo
+aXMgYnl0ZSBpbnRvIGsKICAgICAgICAgICAgICAqIGJpdHMgb2YgMSwgd2hpY2ggaXMgMl5rIC0g
+MSwgYXQgZmlyc3QuIFRoZW4gJiBAY29uc3RiCiAgICAgICAgICAgICAgKiBtYWtlcyBpdCBpbnRv
+IDAuCiAgICAgICAgICAgICAgKgogICAgICAgICAgICAgICogU3RlcCAyIHRvIFN0ZXAgNCBmaW5k
+IGlmIHRoZXJlIGlzIGEgYnl0ZSB3aXRoIDAgaW4KICAgICAgICAgICAgICAqIHRoZSBsb25nIHdv
+cmQuCiAgICAgICAgICAgICAgKi8KICAgICAgICAgICAgICBhc20gdm9sYXRpbGUoIjE6XG5cdCIK
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICJtb3ZxICglW3NyY10pLCVbeG9yXVxuXHQiCiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAieG9ycSAlW21hc2tdLCVbeG9yXVxuXHQiCiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAibGVhICglW3hvcl0sJVtjb25zdF9hXSksICVbdG1wXVxu
+XHQiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAibm90cSAlW3hvcl1cblx0IgogICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgImFuZHEgJVtjb25zdF9iXSwlW3hvcl1cblx0IgogICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgInRlc3RxICVbeG9yXSwlW3RtcF1cblx0IgogICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgImpueiAyZlxuXHQiCiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAiYWRkICQ4LCVbc3JjXVxuXHQiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAiY21wICVb
+c3JjXSwgJVtkc3RdXG5cdCIKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJqYSAxYlxuXHQi
+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAiMjpcblx0IgogICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgOgogICAgICAgICAgICAgICAgICAgICAgICAgICAgW3NyY10gIityIihzcmMpLCBb
+eG9yXSAiK3IiKHhvciksIFt0bXBdICIrciIoZGF0YSkKICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIDogW2NvbnN0X2FdICJyIihjb25zdGEpLCBbY29uc3RfYl0gInIiKGNvbnN0YiksCiAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIFttYXNrXSAiciIobWFzayksIFtkc3RdICJyIihkc3Qp
+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICA6ICJtZW1vcnkiLCAiY2MiKTsKICAgICAgICB9
+CgogICAgICAgIHdoaWxlIChzcmMgPD0gZW5kKSB7CiAgICAgICAgICAgICBpZiAoKnNyYyA9PSBk
+KQogICAgICAgICAgICAgICAgICAgICByZXR1cm4gKHZvaWQgKilzcmM7CiAgICAgICAgICAgICBz
+cmMrKzsKICAgICAgICB9CiAgICAgICAgcmV0dXJuIE5VTEw7Cn0KClRoYW5rcywKWXUtSmVuIENo
+YW5nCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51
+eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlz
+dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
 
