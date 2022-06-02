@@ -1,19 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mx2.uni-rostock.de ([139.30.22.72])
+Received: from mx1.uni-rostock.de ([139.30.22.71])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyXW9-0077Zq-61
-	for linux-um@lists.infradead.org; Tue, 07 Jun 2022 11:37:03 +0000
-Message-ID: <aca42356-757d-1475-84a0-6835a90538ba@uni-rostock.de>
-Date: Tue, 7 Jun 2022 13:36:54 +0200
+	id 1nwgGN-002E5b-ET
+	for linux-um@lists.infradead.org; Thu, 02 Jun 2022 08:33:06 +0000
+Message-ID: <679ce219-d6f8-88a3-2aef-9de506b624ad@uni-rostock.de>
+Date: Thu, 2 Jun 2022 10:32:57 +0200
 MIME-Version: 1.0
-Subject: Re: [PATCH] um: read multiple msg from virtio slave request fd
-Content-Language: de-DE
 From: Benjamin Beichler <Benjamin.Beichler@uni-rostock.de>
+Subject: Re: [PATCH] um: read multiple msg from virtio slave request fd
 References: <20220601153722.181427-1-benjamin.beichler@uni-rostock.de>
  <360edf352f888f4607e0411df8a994aa087e9db4.camel@sipsolutions.net>
- <679ce219-d6f8-88a3-2aef-9de506b624ad@uni-rostock.de>
- <4310108d-9cf9-645b-48cf-f8d0b979f96e@uni-rostock.de>
-In-Reply-To: <4310108d-9cf9-645b-48cf-f8d0b979f96e@uni-rostock.de>
+Content-Language: de-DE
+In-Reply-To: <360edf352f888f4607e0411df8a994aa087e9db4.camel@sipsolutions.net>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,40 +20,81 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4788137415914303298=="
+Content-Type: multipart/mixed; boundary="===============5272145275636877048=="
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Johannes Berg <johannes@sipsolutions.net>, jdike@addtoit.com, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
 
---===============4788137415914303298==
+--===============5272145275636877048==
 Content-Language: de-DE
 Content-Type: multipart/signed; protocol="application/pkcs7-signature";
-	micalg=sha-256; boundary="------------ms030401070709030108000409"
+	micalg=sha-256; boundary="------------ms080608090402030207000403"
 
---------------ms030401070709030108000409
+--------------ms080608090402030207000403
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-Sorry for the cluttered HTML-Email, I hoped I trained my thunderbird to 
-do the right thing, but it didn't.
+Am 01.06.2022 um 19:13 schrieb Johannes Berg:
+> On Wed, 2022-06-01 at 15:37 +0000, Benjamin Beichler wrote:
+>
+> Hmm. How did you run into this=3F Why would a device send many messages
+> and not wait for ACK, but the kernel side actually waits for ACK=3F What
+> would the use case for that be=3F Seems a bit odd, if both wait for ACK
+> there shouldn't be an issue=3F
+>
+> Anyway, I guess I don't mind fixing this regardless of whether I see a
+> use case where it could happen :-)
 
-Am 07.06.2022 um 13:32 schrieb Benjamin Beichler:
-> Am 02.06.2022 um 10:32 schrieb Benjamin Beichler:
->> Am 01.06.2022 um 19:13 schrieb Johannes Berg: 
->>>
->>> prefer to keep the + on the previous line.
->>>
->> It slightly hits the 80 column restriction, but I would also prefer 
->> not to break. :-D
+Here is my (admittedly maybe odd) case:
+
+I want to use hwsim over virtio with UML but without time travel (as a 
+precursor for a later version with TT)
+
+I modified wmediumd to strip out the scheduler dependency and wrote a 
+very simple simulation, which simply forwards all frames to all radios. 
+Furthermore, I use the usfstl "loop" as main driver to poll all fds 
+without time travel. This leads to the situation, that when a msg is put 
+on the RX-ring of an uml instance, which also sent concurrently a kick 
+(e.g., also trying to send a frame), this creates a deadlock. In the 
+original wmediumd this was handled by kind of a hack, calling the loop 
+implementation to answer the kick, before sending out a call msg. I need 
+to rip out this workaround, because without the usfstl scheduler, it 
+created a deep recursion of the loop implementation with additional 
+problems.
+
+Nonetheless, even if this would be kind of an optimization: it is 
+feasible to wait for the ACK asynchronously, as long as it arrives in 
+the same point of simulation time (or as you called it calender). For 
+many uml-instances, which could easily run in parallel, this allows an 
+easier implementation (at least in my planning :-) ). Of course, it 
+would be hard to distinguish, which call-request was acked, but at the 
+end wmediumd (and I also plan to do so) simply aborts when the ack is 
+negative, so the actual corresponding call is not that important to know.
+
 >
-> Now I got your hint, and made it this way in the v2.
+> This code changed a bit, you should rebase onto the uml tree's for-next
+> branch.
+My bad, I was not expecting someone to change something it that corner 
+of the kernel, I only used the latest master and not the next. I will 
+redo the patch with ease.
 >
->>> That said, my attempt at rebasing this made it all fail completely,
->>> maybe you have better luck :)
-> Actually, because of your patch I needed to change my logic a bit 
-> (especially need to handle EAGAIN properly), which slowed me down a 
-> bit, but now it does the right thing.
+>> +=09while (1) {
+>> +=09=09if (vhost=5Fuser=5Frecv=5Freq(vu=5Fdev, &msg.msg,
+>> +=09=09=09=09=09sizeof(msg.msg.payload)
+>> +=09=09=09=09=09+ sizeof(msg.extra=5Fpayload)))
+> prefer to keep the + on the previous line.
+>
+It slightly hits the 80 column restriction, but I would also prefer not 
+to break. :-D
+> That said, my attempt at rebasing this made it all fail completely,
+> maybe you have better luck :)
+>
+> johannes
+>
+kind regards
+
+Benjamin
 
 -- 
 M.Sc. Benjamin Beichler
@@ -71,10 +110,10 @@ Richard-Wagner-Stra=C3=9Fe 31
 Deutschland/Germany
 
 phone: +49 (0) 381 498 - 7278
-email: Benjamin.Beichler@uni-rostock.de
-www: http://www.imd.uni-rostock.de/
+email:Benjamin.Beichler@uni-rostock.de
+www:http://www.imd.uni-rostock.de/
 
---------------ms030401070709030108000409
+--------------ms080608090402030207000403
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -164,8 +203,8 @@ ggQLMIIEBwIBATCBnjCBjTELMAkGA1UEBhMCREUxRTBDBgNVBAoMPFZlcmVpbiB6dXIgRm9l
 cmRlcnVuZyBlaW5lcyBEZXV0c2NoZW4gRm9yc2NodW5nc25ldHplcyBlLiBWLjEQMA4GA1UE
 CwwHREZOLVBLSTElMCMGA1UEAwwcREZOLVZlcmVpbiBHbG9iYWwgSXNzdWluZyBDQQIMJLUF
 Or7DT1PAbUHrMA0GCWCGSAFlAwQCAQUAoIICPTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMjA2MDcxMTM2NTVaMC8GCSqGSIb3DQEJBDEiBCArh5zdafCM
-WSjbvewbIyWnJLYiSiFNl2EvnZ1ZyspFTjBsBgkqhkiG9w0BCQ8xXzBdMAsGCWCGSAFlAwQB
+MBwGCSqGSIb3DQEJBTEPFw0yMjA2MDIwODMyNThaMC8GCSqGSIb3DQEJBDEiBCCfB90s2qMc
+7YMO2NM4fzGg3ljRd40c8wNne8e7hvPsnjBsBgkqhkiG9w0BCQ8xXzBdMAsGCWCGSAFlAwQB
 KjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwDgYIKoZIhvcNAwICAgCAMA0GCCqGSIb3DQMC
 AgFAMAcGBSsOAwIHMA0GCCqGSIb3DQMCAgEoMIGvBgkrBgEEAYI3EAQxgaEwgZ4wgY0xCzAJ
 BgNVBAYTAkRFMUUwQwYDVQQKDDxWZXJlaW4genVyIEZvZXJkZXJ1bmcgZWluZXMgRGV1dHNj
@@ -174,17 +213,17 @@ HERGTi1WZXJlaW4gR2xvYmFsIElzc3VpbmcgQ0ECDCS1BTq+w09TwG1B6zCBsQYLKoZIhvcN
 AQkQAgsxgaGggZ4wgY0xCzAJBgNVBAYTAkRFMUUwQwYDVQQKDDxWZXJlaW4genVyIEZvZXJk
 ZXJ1bmcgZWluZXMgRGV1dHNjaGVuIEZvcnNjaHVuZ3NuZXR6ZXMgZS4gVi4xEDAOBgNVBAsM
 B0RGTi1QS0kxJTAjBgNVBAMMHERGTi1WZXJlaW4gR2xvYmFsIElzc3VpbmcgQ0ECDCS1BTq+
-w09TwG1B6zANBgkqhkiG9w0BAQEFAASCAQBGE0AeOyO9lH/yh2YUaBJf4By+2rmUNHN1E46o
-yCyhjSyzfqzyHPBx2d0LzIIaHUtlK7zBnqBY/20wCWe8qsNZc7YGgHXAqPv3z48SSYRq/WRE
-nRymw3GrCNctoSKF2jv38F37n96PLQwpAlfVQZx9v/AHP11WR2aE26nQrUOJvgL589u4rGjD
-q/fQu2SWSkwOA/uJKMlLBcG2uSSoNMa00ZdHEeIR0S+LtWHN9Pj5qqp/DHqq2SXyngtlht2E
-46YI7bkYQEdSwZlQ7Ic3xMMG6dlpXAM2oHNTeKD/vXvAKAiqIpNvNbZzxfrbjJGF6Kr1iMAq
-CenapRWzTvFAgzdtAAAAAAAA
---------------ms030401070709030108000409--
+w09TwG1B6zANBgkqhkiG9w0BAQEFAASCAQBt3Pip45uVG6DzqwgqBxdn9aRDx8EowmnpbWqb
+rKJCseYK3ae1UZgjBpfBMphVcUVvke9yI1REw7dMr2oxjWS0tvZlikBKjrGwo/dWD+0P/Nh5
+pzj6nXYSlq+YrawdQS95fRmREav19mVCdXZoB+pzy/3uwW2rzzcqqdIIK+s9hFtpActKPhRG
+bqBYLXG2SHe55/Mz0q/X9ZO04zMZld1u3tq5Q6Sp6FIgZ/yxQJXvrj/ljPqvzdSJGviO87c/
+Pvq3++jRyQcxQ+PcrmWK11msySKkpgp+aMB3/J+0NPgpNgzAW6FdRYnbVhtjYstM4dYidml/
+SBuDtdz7DXLYjSzaAAAAAAAA
+--------------ms080608090402030207000403--
 
 
 
---===============4788137415914303298==
+--===============5272145275636877048==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -195,7 +234,7 @@ linux-um mailing list
 linux-um@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-um
 
---===============4788137415914303298==--
+--===============5272145275636877048==--
 
 
 
