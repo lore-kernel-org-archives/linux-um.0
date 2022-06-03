@@ -1,14 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+Received: from lithops.sigma-star.at ([195.201.40.130])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nxFAd-0092BX-CR
-	for linux-um@lists.infradead.org; Fri, 03 Jun 2022 21:49:28 +0000
-Subject: Re: [GIT PULL] UML updates for v5.19-rc1
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <1471475855.130153.1654260450880.JavaMail.zimbra@nod.at>
-References: <1471475855.130153.1654260450880.JavaMail.zimbra@nod.at>
-Message-Id: <165429296469.7657.17002862535144154299.pr-tracker-bot@kernel.org>
-Date: Fri, 03 Jun 2022 21:49:24 +0000
+	id 1nx6iC-007Tui-K6
+	for linux-um@lists.infradead.org; Fri, 03 Jun 2022 12:47:34 +0000
+Date: Fri, 3 Jun 2022 14:47:30 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <1471475855.130153.1654260450880.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] UML updates for v5.19-rc1
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,26 +16,62 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@nod.at>
-Cc: torvalds <torvalds@linux-foundation.org>, linux-kernel <linux-kernel@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>
+To: torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>
 
-The pull request you sent on Fri, 3 Jun 2022 14:47:30 +0200 (CEST):
+Linus,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.19-rc1
+The following changes since commit 42226c989789d8da4af1de0c31070c96726d990c:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4e583ff9df9126e275c32c6ecff54b0316fe1dee
+  Linux 5.18-rc7 (2022-05-15 18:08:58 -0700)
 
-Thank you!
+are available in the Git repository at:
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linus-5.19-rc1
+
+for you to fetch changes up to 2a4a62a14be1947fa945c5c11ebf67326381a568:
+
+  um: Fix out-of-bounds read in LDT setup (2022-05-27 09:03:41 +0200)
+
+----------------------------------------------------------------
+This pull request contains the following changes for UML:
+
+- Various cleanups and fixes: xterm, serial line, time travel
+- Set ARCH_HAS_GCOV_PROFILE_ALL
+
+----------------------------------------------------------------
+Johannes Berg (6):
+      um: xterm: Make default terminal emulator configurable
+      um: daemon: Make default socket configurable
+      um: Use asm-generic/dma-mapping.h
+      um: line: Use separate IRQs per line
+      um: virtio_uml: Fix broken device handling in time-travel
+      um: chan_user: Fix winch_tramp() return value
+
+Vincent Whitchurch (2):
+      um: Enable ARCH_HAS_GCOV_PROFILE_ALL
+      um: Fix out-of-bounds read in LDT setup
+
+ arch/um/Kconfig                 |  1 +
+ arch/um/drivers/Kconfig         | 15 +++++++++++++++
+ arch/um/drivers/Makefile        |  2 ++
+ arch/um/drivers/chan_kern.c     | 10 +++++-----
+ arch/um/drivers/chan_user.c     |  9 +++++----
+ arch/um/drivers/daemon_kern.c   |  2 +-
+ arch/um/drivers/line.c          | 22 +++++++++++++---------
+ arch/um/drivers/line.h          |  4 ++--
+ arch/um/drivers/ssl.c           |  2 --
+ arch/um/drivers/stdio_console.c |  2 --
+ arch/um/drivers/virtio_uml.c    | 33 +++++++++++++++++++++++----------
+ arch/um/drivers/xterm.c         |  7 ++++---
+ arch/um/include/asm/Kbuild      |  1 +
+ arch/um/include/asm/irq.h       | 22 +++++++++-------------
+ arch/x86/um/ldt.c               |  6 ++++--
+ 15 files changed, 85 insertions(+), 53 deletions(-)
 
 _______________________________________________
 linux-um mailing list
