@@ -1,21 +1,21 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-vs1-xe31.google.com ([2607:f8b0:4864:20::e31])
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyLxa-0037yu-Dt
-	for linux-um@lists.infradead.org; Mon, 06 Jun 2022 23:16:36 +0000
-Received: by mail-vs1-xe31.google.com with SMTP id e11so605778vsh.13
-        for <linux-um@lists.infradead.org>; Mon, 06 Jun 2022 16:16:31 -0700 (PDT)
-Date: Mon, 6 Jun 2022 18:16:15 -0500
-From: Glenn Washburn <development@efficientek.com>
-Subject: Re: [PATCH 0/4] um: Assorted console related fixes
-Message-ID: <20220606181615.0467c5fa@crass-HP-ZBook-15-G2>
-In-Reply-To: <CAFLxGvyxugU=kQLpWbpaaggskmw5NXkp3hkpppwyqLQLec8Xbg@mail.gmail.com>
-References: <20220101215810.13260-1-richard@nod.at>
-	<1f5276f9b2950d34eec89004d2a2322a06145d2b.1646802841.development@efficientek.com>
-	<367534223.127621.1646814902625.JavaMail.zimbra@nod.at>
-	<20220310122156.6de90000@crass-HP-ZBook-15-G2>
-	<CAFLxGvyxugU=kQLpWbpaaggskmw5NXkp3hkpppwyqLQLec8Xbg@mail.gmail.com>
+	id 1nyb79-008HIi-4E
+	for linux-um@lists.infradead.org; Tue, 07 Jun 2022 15:27:28 +0000
+Date: Tue, 7 Jun 2022 17:26:54 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+Subject: Re: [PATCH 07/16] signal: Wake up the designated parent
+Message-ID: <20220607152627.GA10192@redhat.com>
+References: <871qwq5ucx.fsf_-_@email.froward.int.ebiederm.org>
+ <20220518225355.784371-7-ebiederm@xmission.com>
+ <20220524132553.GD14347@redhat.com>
+ <20220524162808.GF14347@redhat.com>
+ <20220525142845.GA2687@redhat.com>
+ <87a6ap30lh.fsf@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <87a6ap30lh.fsf@email.froward.int.ebiederm.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,80 +24,58 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Reply-To: development@efficientek.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-um <linux-um@lists.infradead.org>, Johannes Berg <johannes@sipsolutions.net>
+To: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: linux-kernel@vger.kernel.org, rjw@rjwysocki.net, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, Robert OCallahan <roc@pernos.co>, Kyle Huey <khuey@pernos.co>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Jason Wessel <jason.wessel@windriver.com>, Daniel Thompson <daniel.thompson@linaro.org>, Douglas Anderson <dianders@chromium.org>, Douglas Miller <dougmill@linux.vnet.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>
 
-T24gTW9uLCA0IEFwciAyMDIyIDIzOjQxOjI5ICswMjAwClJpY2hhcmQgV2VpbmJlcmdlciA8cmlj
-aGFyZC53ZWluYmVyZ2VyQGdtYWlsLmNvbT4gd3JvdGU6Cgo+IEdsZW5uLAo+IAo+IE9uIFRodSwg
-TWFyIDEwLCAyMDIyIGF0IDc6MjIgUE0gR2xlbm4gV2FzaGJ1cm4KPiA8ZGV2ZWxvcG1lbnRAZWZm
-aWNpZW50ZWsuY29tPiB3cm90ZToKPiA+Cj4gPiBPbiBXZWQsIDkgTWFyIDIwMjIgMDk6MzU6MDIg
-KzAxMDAgKENFVCkKPiA+IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+IHdyb3Rl
-Ogo+ID4KPiA+ID4gLS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+ID4gPiA+PiBUaGlz
-IHNlcmllcyBmaXhlcyB0aGUgY29uc29sZSBleGl0IGNvZGUgdG8gbWFrZSBzdXJlIFVNTAo+ID4g
-PiA+PiB1bmRvZXMgZXZlcnl0aGluZyBpdCBjaGFuZ2VkIG9uIHRoZSBob3N0IHNpZGUuCj4gPiA+
-ID4KPiA+ID4gPiBJIGdhdmUgdGhpcyBhIHJ1biBob3BpbmcgaXQgd291bGQgZml4IHRoZSBpc3N1
-ZXMgSSdtIHNlZWluZyB3aXRoIHRoZSBjb25zb2xlCj4gPiA+ID4gZ2V0dGluZyBtZXNzZWQgdXAg
-d2hlbiBVTUwgZXhpdHMgdmlhIGhhbHQgaW4gdGhlIGd1ZXN0LiBFY2hvIGlzIHR1cm5lZCBvZmYK
-PiA+ID4gPiBhbmQgbG9va3MgbGlrZSBjYXJyaWFnZSByZXR1cm4gZG9lc24ndCB3b3JrIGVpdGhl
-ci4gSSdtIHVzaW5nICJyZXNldCIgdG8gZ2V0Cj4gPiA+ID4gdGhlIHRlcm1pbmFsIGJhY2sgdG8g
-aXRzIHByZXZpb3VzIHN0YXRlLiBVbmZvcnR1bmF0ZWx5IHRoaXMgcGF0Y2ggc2VyaWVzIGRpZAo+
-ID4gPiA+IG5vdCBmaXggdGhpcyBpc3N1ZS4KPiA+ID4gPgo+ID4gPiA+IEknbSBub3Qgc2F5aW5n
-IHRoYXQgdGhlc2UgYXJlbid0IHZhbGlkIGZpeGVzLiBCdXQgaXQgZG9lcyBhcHBlYXIgdGhhdCB0
-aGVzZQo+ID4gPiA+IGNoYW5nZXMgZG9uJ3QgbWFrZSBzdXJlIHRoYXQgImV2ZXJ5dGhpbmciIGNo
-YW5nZWQgb24gdGhlIGhvc3Qgc2lkZSBpcyB1bmRvbmUuCj4gPiA+Cj4gPiA+IFNvIHdoZW4geW91
-IGNvbXBhcmUgInN0dHkgLWEiIGJlZm9yZSBhbmQgYWZ0ZXIgdGhlIGRhbWFuZ2UgeW91IHN0aWxs
-IHNlZSBkaWZmZXJlbmNlcz8KPiA+ID4gUGxlYXNlIGFsc28gY29tcGFyZSB0aGUgZmxhZ3Mgb2Yg
-L3Byb2MvJCQvZmRpbmZvL3swLDEsMn0KPiA+Cj4gPiBIZXJlJ3MgYSBkaWZmIG9mIHRoZSBiZWZv
-cmUgYW5kIGFmdGVyOgo+ID4gLS0gL3RtcC91bWwtY29uc29sZS5iZWZvcmUub3V0IDIwMjItMDMt
-MTAgMTg6MTI6NTQuMDQ5MTcxNjUwICswMDAwCj4gPiArKysgL3RtcC91bWwtY29uc29sZS5hZnRl
-ci5vdXQgIDIwMjItMDMtMTAgMTg6MTM6MjAuNzExNjMwMjgxICswMDAwCj4gPiBAQCAtMywyMCAr
-MywyMCBAQAo+ID4gIGVvbDIgPSA8dW5kZWY+OyBzd3RjaCA9IDx1bmRlZj47IHN0YXJ0ID0gXlE7
-IHN0b3AgPSBeUzsgc3VzcCA9IF5aOyBycHJudCA9IF5SOwo+ID4gIHdlcmFzZSA9IF5XOyBsbmV4
-dCA9IF5WOyBkaXNjYXJkID0gXk87IG1pbiA9IDE7IHRpbWUgPSAwOwo+ID4gIC1wYXJlbmIgLXBh
-cm9kZCAtY21zcGFyIGNzOCBodXBjbCAtY3N0b3BiIGNyZWFkIC1jbG9jYWwgLWNydHNjdHMKPiA+
-IC0taWduYnJrIGJya2ludCBpZ25wYXIgLXBhcm1yayAtaW5wY2sgLWlzdHJpcCAtaW5sY3IgLWln
-bmNyIGljcm5sIGl4b24gLWl4b2ZmCj4gPiArLWlnbmJyayAtYnJraW50IGlnbnBhciAtcGFybXJr
-IC1pbnBjayAtaXN0cmlwIC1pbmxjciAtaWduY3IgLWljcm5sIC1peG9uIC1peG9mZgo+ID4gIC1p
-dWNsYyAtaXhhbnkgaW1heGJlbCAtaXV0ZjgKPiA+IC1vcG9zdCAtb2xjdWMgLW9jcm5sIG9ubGNy
-IC1vbm9jciAtb25scmV0IC1vZmlsbCAtb2ZkZWwgbmwwIGNyMCB0YWIwIGJzMCB2dDAgZmYwCj4g
-PiAtaXNpZyBpY2Fub24gLWlleHRlbiBlY2hvIGVjaG9lIGVjaG9rIC1lY2hvbmwgLW5vZmxzaCAt
-eGNhc2UgLXRvc3RvcCAtZWNob3BydAo+ID4gKy1vcG9zdCAtb2xjdWMgLW9jcm5sIG9ubGNyIC1v
-bm9jciAtb25scmV0IC1vZmlsbCAtb2ZkZWwgbmwwIGNyMCB0YWIwIGJzMCB2dDAgZmYwCj4gPiAr
-LWlzaWcgLWljYW5vbiAtaWV4dGVuIC1lY2hvIGVjaG9lIGVjaG9rIC1lY2hvbmwgLW5vZmxzaCAt
-eGNhc2UgLXRvc3RvcCAtZWNob3BydAo+ID4gIGVjaG9jdGwgZWNob2tlIC1mbHVzaG8gLWV4dHBy
-b2MKPiA+ICAvcHJvYy8zMzgzMzIzL2ZkaW5mby8wOjE6cG9zOiAgMAo+ID4gLS9wcm9jLzMzODMz
-MjMvZmRpbmZvLzA6MjpmbGFnczogICAgICAgIDAxMjAwMDIKPiA+ICsvcHJvYy8zMzgzMzIzL2Zk
-aW5mby8wOjI6ZmxhZ3M6ICAgICAgICAwMTI0MDAyCj4gPiAgL3Byb2MvMzM4MzMyMy9mZGluZm8v
-MDozOm1udF9pZDogICAgICAgNjEwNAo+ID4gIC9wcm9jLzMzODMzMjMvZmRpbmZvLzA6NDppbm86
-ICAyNAo+ID4gIC9wcm9jLzMzODMzMjMvZmRpbmZvLzE6MTpwb3M6ICAwCj4gPiAtL3Byb2MvMzM4
-MzMyMy9mZGluZm8vMToyOmZsYWdzOiAgICAgICAgMDEyMDAwMgo+ID4gKy9wcm9jLzMzODMzMjMv
-ZmRpbmZvLzE6MjpmbGFnczogICAgICAgIDAxMjQwMDIKPiA+ICAvcHJvYy8zMzgzMzIzL2ZkaW5m
-by8xOjM6bW50X2lkOiAgICAgICA2MTA0Cj4gPiAgL3Byb2MvMzM4MzMyMy9mZGluZm8vMTo0Omlu
-bzogIDI0Cj4gPiAgL3Byb2MvMzM4MzMyMy9mZGluZm8vMjoxOnBvczogIDAKPiA+IC0vcHJvYy8z
-MzgzMzIzL2ZkaW5mby8yOjI6ZmxhZ3M6ICAgICAgICAwMTIwMDAyCj4gPiArL3Byb2MvMzM4MzMy
-My9mZGluZm8vMjoyOmZsYWdzOiAgICAgICAgMDEyNDAwMgo+ID4gIC9wcm9jLzMzODMzMjMvZmRp
-bmZvLzI6MzptbnRfaWQ6ICAgICAgIDYxMDQKPiA+ICAvcHJvYy8zMzgzMzIzL2ZkaW5mby8yOjQ6
-aW5vOiAgMjQKPiA+Cj4gPiBJdCBsb29rcyBsaWtlIHRoZXNlIHdlcmUgbm90IHJlc2V0OiBicmtp
-biBpY3JubCBpeG9uIG9wb3N0IGlzaWcgaWNhbm9uIGVjaG8KPiA+Cj4gPiBPcmlnaW5hbGx5IEkg
-d2FzIGFwcGx5aW5nIHRoaXMgcGF0Y2ggc2VyaWVzIHRvIDUuMTYuMTIgYW5kIHNlZWluZyB0aGlz
-IGlzc3VlLgo+ID4gQnV0IEkgdGhpcyBvdXRwdXQgaXMgZnJvbSBhcHBseWluZyB0aGUgcGF0Y2gg
-c2VyaWVzIHRvIDUuMTctcmM3LCBpZiB0aGF0IG1hdHRlcnMuIFRoYW5rcyBmb3IgbG9va2luZyB0
-IHRoaXMuCj4gCj4gSG1tLiBMb29rcyBsaWtlIHRoZSBjbGVhbnVwIGZ1bmN0aW9uIGlzIG5ldmVy
-IGNhbGxlZC4KPiBDYW4geW91IHZlcmlmeSB3aGV0aGVyIHVtbF9jb25zb2xlX2V4aXQoKSBydW5z
-IGF0IGV4aXQgdGltZT8KClNvcnJ5IGFib3V0IHRoZSBkZWxheS4gSSBkb24ndCB0aGluayB0aGF0
-IHVtbF9jb25zb2xlX2V4aXQoKSBpcyBnZXR0aW5nCnJ1bi4gSSdtIHRlc3RpbmcgdGhpcyBieSBy
-dW5uaW5nIGEgVU1MIGluc3RhbmNlIHdoaWNoIGhhcyBiZWVuIGNvbXBpbGVkCndpdGggLWdnZGIz
-LiBUaGVuIGF0dGFjaCB0byB0aGUgcnVubmluZyBwcm9jZXNzIHZpYSBHREIuIFNldCBhCmJyZWFr
-cG9pbnQgb24gdW1sX2NvbnNvbGVfZXhpdCgpLCB0aGVuIGRvIGEgc2h1dGRvd24vaGFsdCAoc3lz
-Y2FsbApyZWJvb3QoMHg0MzIxZmVkYykpLiBHREIgc2F5cyB0aGF0IHRoZSBwcm9jZXNzIHdhcyB0
-ZXJtaW5hdGVkIHdpdGgKU0lHS0lMTCwgd2hpY2ggSSdtIGd1ZXNzaW5nIGlzIHdoeSB1bWxfY29u
-c29sZV9leGl0KCkgaXMgbm90IHJ1bi4KCkdsZW5uCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlz
-dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2xpbnV4LXVtCg==
+On 06/06, Eric W. Biederman wrote:
+>
+> Which if I have had enough sleep reduces this patch to just:
+>
+> diff --git a/kernel/exit.c b/kernel/exit.c
+> index f072959fcab7..c8156366b722 100644
+> --- a/kernel/exit.c
+> +++ b/kernel/exit.c
+> @@ -1431,8 +1431,10 @@ static int child_wait_callback(wait_queue_entry_t *wait, unsigned mode,
+>         if (!eligible_pid(wo, p))
+>                 return 0;
+>
+> -       if ((wo->wo_flags & __WNOTHREAD) && wait->private != p->parent)
+> -               return 0;
+> +       if ((wo->wo_flags & __WNOTHREAD) &&
+> +           (wait->private != p->parent) &&
+> +           (wait->private != p->real_parent))
+> +                       return 0;
+>
+>         return default_wake_function(wait, mode, sync, key);
+>  }
+>
+>
+> I think that solves the issue without missing wake-ups without adding
+> any more.
+
+Agreed, and looks much simpler.
+
+> For the same set of reasons it looks like the __wake_up_parent in
+> __ptrace_detach is just simply dead code.  I don't think there is a case
+> where when !ptrace_reparented the thread that is the real_parent can
+> sleep in do_wait when the thread that was calling ptrace could not.
+
+Yes... this doesn't really differ from the case when one thread reaps
+a natural child and another thread sleep in do_wait().
+
+> That needs a very close look to confirm.
+
+Yes.
+
+Oleg.
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
