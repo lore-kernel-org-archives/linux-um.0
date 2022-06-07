@@ -1,18 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o3dVI-005Vqp-Q0
-	for linux-um@lists.infradead.org; Tue, 21 Jun 2022 13:01:14 +0000
-Date: Tue, 21 Jun 2022 15:00:21 +0200
-From: Alexander Gordeev <agordeev@linux.ibm.com>
-Subject: Re: [PATCH v4 12/12] sched,signal,ptrace: Rework TASK_TRACED,
- TASK_STOPPED state
-Message-ID: <YrHA5UkJLornOdCz@li-4a3a4a4c-28e5-11b2-a85c-a8d192c6f089.ibm.com>
-References: <87a6bv6dl6.fsf_-_@email.froward.int.ebiederm.org>
- <20220505182645.497868-12-ebiederm@xmission.com>
-Content-Type: multipart/mixed; boundary="N4j0vMBA8JArVaRj"
-Content-Disposition: inline
-In-Reply-To: <20220505182645.497868-12-ebiederm@xmission.com>
+	id 1nydNL-008hWz-TY
+	for linux-um@lists.infradead.org; Tue, 07 Jun 2022 17:52:21 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.18 51/68] um: line: Use separate IRQs per line
+Date: Tue,  7 Jun 2022 13:48:17 -0400
+Message-Id: <20220607174846.477972-51-sashal@kernel.org>
+In-Reply-To: <20220607174846.477972-1-sashal@kernel.org>
+References: <20220607174846.477972-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,152 +18,263 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: linux-kernel@vger.kernel.org, rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Johannes Berg <johannes.berg@intel.com>, Jouni Malinen <j@w1.fi>, anton ivanov <anton.ivanov@cambridgegreys.com>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, johannes@sipsolutions.net, jcmvbkbc@gmail.com, borntraeger@linux.ibm.com, siglesias@igalia.com, dsterba@suse.com, gregkh@linuxfoundation.org, jirislaby@kernel.org, linux-um@lists.infradead.org
 
+From: Johannes Berg <johannes.berg@intel.com>
 
---N4j0vMBA8JArVaRj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 
+[ Upstream commit d5a9597d6916a76663085db984cb8fe97f0a5c56 ]
 
-On Thu, May 05, 2022 at 01:26:45PM -0500, Eric W. Biederman wrote:
-> From: Peter Zijlstra <peterz@infradead.org>
-> 
-> Currently ptrace_stop() / do_signal_stop() rely on the special states
-> TASK_TRACED and TASK_STOPPED resp. to keep unique state. That is, this
-> state exists only in task->__state and nowhere else.
-> 
-> There's two spots of bother with this:
-> 
->  - PREEMPT_RT has task->saved_state which complicates matters,
->    meaning task_is_{traced,stopped}() needs to check an additional
->    variable.
-> 
->  - An alternative freezer implementation that itself relies on a
->    special TASK state would loose TASK_TRACED/TASK_STOPPED and will
->    result in misbehaviour.
-> 
-> As such, add additional state to task->jobctl to track this state
-> outside of task->__state.
-> 
-> NOTE: this doesn't actually fix anything yet, just adds extra state.
-> 
-> --EWB
->   * didn't add a unnecessary newline in signal.h
->   * Update t->jobctl in signal_wake_up and ptrace_signal_wake_up
->     instead of in signal_wake_up_state.  This prevents the clearing
->     of TASK_STOPPED and TASK_TRACED from getting lost.
->   * Added warnings if JOBCTL_STOPPED or JOBCTL_TRACED are not cleared
+Today, all possible serial lines (ssl*=) as well as all
+possible consoles (con*=) each share a single interrupt
+(with a fixed number) with others of the same type.
 
-Hi Eric, Peter,
+Now, if you have two lines, say ssl0 and ssl1, and one
+of them is connected to an fd you cannot read (e.g. a
+file), but the other gets a read interrupt, then both
+of them get the interrupt since it's shared. Then, the
+read() call will return EOF, since it's a file being
+written and there's nothing to read (at least not at
+the current offset, at the end).
 
-On s390 this patch triggers warning at kernel/ptrace.c:272 when
-kill_child testcase from strace tool is repeatedly used (the source
-is attached for reference):
+Unfortunately, this is treated as a read error, and we
+close this line, losing all the possible output.
 
-while :; do
-	strace -f -qq -e signal=none -e trace=sched_yield,/kill ./kill_child
-done
+It might be possible to work around this and make the
+IRQ sharing work, however, now that we have dynamically
+allocated IRQs that are easy to use, simply use that to
+achieve separating between the events; then there's no
+interrupt for that line and we never attempt the read
+in the first place, thus not closing the line.
 
-It normally takes few minutes to cause the warning in -rc3, but FWIW
-it hits almost immediately for ptrace_stop-cleanup-for-v5.19 tag of
-git://git.kernel.org/pub/scm/linux/kernel/git/ebiederm/user-namespace.
+This manifested itself in the wifi hostap/hwsim tests
+where the parallel script communicates via one serial
+console and the kernel messages go to another (a file)
+and sending data on the communication console caused
+the kernel messages to stop flowing into the file.
 
-Commit 7b0fe1367ef2 ("ptrace: Document that wait_task_inactive can't
-fail") suggests this WARN_ON_ONCE() is not really expected, yet we
-observe a child in __TASK_TRACED state. Could you please comment here?
+Reported-by: Jouni Malinen <j@w1.fi>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Acked-By: anton ivanov <anton.ivanov@cambridgegreys.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/um/drivers/chan_kern.c     | 10 +++++-----
+ arch/um/drivers/line.c          | 22 +++++++++++++---------
+ arch/um/drivers/line.h          |  4 ++--
+ arch/um/drivers/ssl.c           |  2 --
+ arch/um/drivers/stdio_console.c |  2 --
+ arch/um/include/asm/irq.h       | 22 +++++++++-------------
+ 6 files changed, 29 insertions(+), 33 deletions(-)
 
-Thanks!
+diff --git a/arch/um/drivers/chan_kern.c b/arch/um/drivers/chan_kern.c
+index 62997055c454..26a702a06515 100644
+--- a/arch/um/drivers/chan_kern.c
++++ b/arch/um/drivers/chan_kern.c
+@@ -133,7 +133,7 @@ static void line_timer_cb(struct work_struct *work)
+ 	struct line *line = container_of(work, struct line, task.work);
+ 
+ 	if (!line->throttled)
+-		chan_interrupt(line, line->driver->read_irq);
++		chan_interrupt(line, line->read_irq);
+ }
+ 
+ int enable_chan(struct line *line)
+@@ -195,9 +195,9 @@ void free_irqs(void)
+ 		chan = list_entry(ele, struct chan, free_list);
+ 
+ 		if (chan->input && chan->enabled)
+-			um_free_irq(chan->line->driver->read_irq, chan);
++			um_free_irq(chan->line->read_irq, chan);
+ 		if (chan->output && chan->enabled)
+-			um_free_irq(chan->line->driver->write_irq, chan);
++			um_free_irq(chan->line->write_irq, chan);
+ 		chan->enabled = 0;
+ 	}
+ }
+@@ -215,9 +215,9 @@ static void close_one_chan(struct chan *chan, int delay_free_irq)
+ 		spin_unlock_irqrestore(&irqs_to_free_lock, flags);
+ 	} else {
+ 		if (chan->input && chan->enabled)
+-			um_free_irq(chan->line->driver->read_irq, chan);
++			um_free_irq(chan->line->read_irq, chan);
+ 		if (chan->output && chan->enabled)
+-			um_free_irq(chan->line->driver->write_irq, chan);
++			um_free_irq(chan->line->write_irq, chan);
+ 		chan->enabled = 0;
+ 	}
+ 	if (chan->ops->close != NULL)
+diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
+index 8febf95da96e..02b0befd6763 100644
+--- a/arch/um/drivers/line.c
++++ b/arch/um/drivers/line.c
+@@ -139,7 +139,7 @@ static int flush_buffer(struct line *line)
+ 		count = line->buffer + LINE_BUFSIZE - line->head;
+ 
+ 		n = write_chan(line->chan_out, line->head, count,
+-			       line->driver->write_irq);
++			       line->write_irq);
+ 		if (n < 0)
+ 			return n;
+ 		if (n == count) {
+@@ -156,7 +156,7 @@ static int flush_buffer(struct line *line)
+ 
+ 	count = line->tail - line->head;
+ 	n = write_chan(line->chan_out, line->head, count,
+-		       line->driver->write_irq);
++		       line->write_irq);
+ 
+ 	if (n < 0)
+ 		return n;
+@@ -195,7 +195,7 @@ int line_write(struct tty_struct *tty, const unsigned char *buf, int len)
+ 		ret = buffer_data(line, buf, len);
+ 	else {
+ 		n = write_chan(line->chan_out, buf, len,
+-			       line->driver->write_irq);
++			       line->write_irq);
+ 		if (n < 0) {
+ 			ret = n;
+ 			goto out_up;
+@@ -215,7 +215,7 @@ void line_throttle(struct tty_struct *tty)
+ {
+ 	struct line *line = tty->driver_data;
+ 
+-	deactivate_chan(line->chan_in, line->driver->read_irq);
++	deactivate_chan(line->chan_in, line->read_irq);
+ 	line->throttled = 1;
+ }
+ 
+@@ -224,7 +224,7 @@ void line_unthrottle(struct tty_struct *tty)
+ 	struct line *line = tty->driver_data;
+ 
+ 	line->throttled = 0;
+-	chan_interrupt(line, line->driver->read_irq);
++	chan_interrupt(line, line->read_irq);
+ }
+ 
+ static irqreturn_t line_write_interrupt(int irq, void *data)
+@@ -260,19 +260,23 @@ int line_setup_irq(int fd, int input, int output, struct line *line, void *data)
+ 	int err;
+ 
+ 	if (input) {
+-		err = um_request_irq(driver->read_irq, fd, IRQ_READ,
+-				     line_interrupt, IRQF_SHARED,
++		err = um_request_irq(UM_IRQ_ALLOC, fd, IRQ_READ,
++				     line_interrupt, 0,
+ 				     driver->read_irq_name, data);
+ 		if (err < 0)
+ 			return err;
++
++		line->read_irq = err;
+ 	}
+ 
+ 	if (output) {
+-		err = um_request_irq(driver->write_irq, fd, IRQ_WRITE,
+-				     line_write_interrupt, IRQF_SHARED,
++		err = um_request_irq(UM_IRQ_ALLOC, fd, IRQ_WRITE,
++				     line_write_interrupt, 0,
+ 				     driver->write_irq_name, data);
+ 		if (err < 0)
+ 			return err;
++
++		line->write_irq = err;
+ 	}
+ 
+ 	return 0;
+diff --git a/arch/um/drivers/line.h b/arch/um/drivers/line.h
+index bdb16b96e76f..f15be75a3bf3 100644
+--- a/arch/um/drivers/line.h
++++ b/arch/um/drivers/line.h
+@@ -23,9 +23,7 @@ struct line_driver {
+ 	const short minor_start;
+ 	const short type;
+ 	const short subtype;
+-	const int read_irq;
+ 	const char *read_irq_name;
+-	const int write_irq;
+ 	const char *write_irq_name;
+ 	struct mc_device mc;
+ 	struct tty_driver *driver;
+@@ -35,6 +33,8 @@ struct line {
+ 	struct tty_port port;
+ 	int valid;
+ 
++	int read_irq, write_irq;
++
+ 	char *init_str;
+ 	struct list_head chan_list;
+ 	struct chan *chan_in, *chan_out;
+diff --git a/arch/um/drivers/ssl.c b/arch/um/drivers/ssl.c
+index 41eae2e8fb65..8514966778d5 100644
+--- a/arch/um/drivers/ssl.c
++++ b/arch/um/drivers/ssl.c
+@@ -47,9 +47,7 @@ static struct line_driver driver = {
+ 	.minor_start 		= 64,
+ 	.type 		 	= TTY_DRIVER_TYPE_SERIAL,
+ 	.subtype 	 	= 0,
+-	.read_irq 		= SSL_IRQ,
+ 	.read_irq_name 		= "ssl",
+-	.write_irq 		= SSL_WRITE_IRQ,
+ 	.write_irq_name 	= "ssl-write",
+ 	.mc  = {
+ 		.list		= LIST_HEAD_INIT(driver.mc.list),
+diff --git a/arch/um/drivers/stdio_console.c b/arch/um/drivers/stdio_console.c
+index e8b762f4d8c2..489d5a746ed3 100644
+--- a/arch/um/drivers/stdio_console.c
++++ b/arch/um/drivers/stdio_console.c
+@@ -53,9 +53,7 @@ static struct line_driver driver = {
+ 	.minor_start 		= 0,
+ 	.type 		 	= TTY_DRIVER_TYPE_CONSOLE,
+ 	.subtype 	 	= SYSTEM_TYPE_CONSOLE,
+-	.read_irq 		= CONSOLE_IRQ,
+ 	.read_irq_name 		= "console",
+-	.write_irq 		= CONSOLE_WRITE_IRQ,
+ 	.write_irq_name 	= "console-write",
+ 	.mc  = {
+ 		.list		= LIST_HEAD_INIT(driver.mc.list),
+diff --git a/arch/um/include/asm/irq.h b/arch/um/include/asm/irq.h
+index e187c789369d..749dfe8512e8 100644
+--- a/arch/um/include/asm/irq.h
++++ b/arch/um/include/asm/irq.h
+@@ -4,19 +4,15 @@
+ 
+ #define TIMER_IRQ		0
+ #define UMN_IRQ			1
+-#define CONSOLE_IRQ		2
+-#define CONSOLE_WRITE_IRQ	3
+-#define UBD_IRQ			4
+-#define UM_ETH_IRQ		5
+-#define SSL_IRQ			6
+-#define SSL_WRITE_IRQ		7
+-#define ACCEPT_IRQ		8
+-#define MCONSOLE_IRQ		9
+-#define WINCH_IRQ		10
+-#define SIGIO_WRITE_IRQ 	11
+-#define TELNETD_IRQ 		12
+-#define XTERM_IRQ 		13
+-#define RANDOM_IRQ 		14
++#define UBD_IRQ			2
++#define UM_ETH_IRQ		3
++#define ACCEPT_IRQ		4
++#define MCONSOLE_IRQ		5
++#define WINCH_IRQ		6
++#define SIGIO_WRITE_IRQ 	7
++#define TELNETD_IRQ 		8
++#define XTERM_IRQ 		9
++#define RANDOM_IRQ 		10
+ 
+ #ifdef CONFIG_UML_NET_VECTOR
+ 
+-- 
+2.35.1
 
---N4j0vMBA8JArVaRj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="kill_child.c"
-
-/*
- * Check for the corner case that previously lead to segfault
- * due to an attempt to access unitialised tcp->s_ent.
- *
- * 13994 ????( <unfinished ...>
- * ...
- * 13994 <... ???? resumed>) = ?
- *
- * Copyright (c) 2019 The strace developers.
- * All rights reserved.
- *
- * SPDX-License-Identifier: GPL-2.0-or-later
- */
-
-#include "tests.h"
-
-#include <sched.h>
-#include <signal.h>
-#include <unistd.h>
-#include <sys/mman.h>
-#include <sys/wait.h>
-
-#define ITERS    10000
-#define SC_ITERS 10000
-
-int
-main(void)
-{
-	volatile sig_atomic_t *const mem =
-		mmap(NULL, get_page_size(), PROT_READ | PROT_WRITE,
-		     MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-	if (mem == MAP_FAILED)
-		perror_msg_and_fail("mmap");
-
-	for (unsigned int i = 0; i < ITERS; ++i) {
-		mem[0] = mem[1] = 0;
-
-		const pid_t pid = fork();
-		if (pid < 0)
-			perror_msg_and_fail("fork");
-
-		if (!pid) {
-			/* wait for the parent */
-			while (!mem[0])
-				;
-			/* let the parent know we are running */
-			mem[1] = 1;
-
-			for (unsigned int j = 0; j < SC_ITERS; j++)
-				sched_yield();
-
-			pause();
-			return 0;
-		}
-
-		/* let the child know we are running */
-		mem[0] = 1;
-		/* wait for the child */
-		while (!mem[1])
-			;
-
-		if (kill(pid, SIGKILL))
-			perror_msg_and_fail("kill");
-		if (wait(NULL) != pid)
-			perror_msg_and_fail("wait");
-	}
-
-	return 0;
-}
-
---N4j0vMBA8JArVaRj
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 linux-um mailing list
 linux-um@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-um
-
---N4j0vMBA8JArVaRj--
-
-
 
