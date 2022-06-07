@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131])
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o4ZVJ-00HVFP-SE
-	for linux-um@lists.infradead.org; Fri, 24 Jun 2022 02:57:07 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v10 17/41] virtio_ring: packed: introduce vring_free_packed
-Date: Fri, 24 Jun 2022 10:55:57 +0800
-Message-Id: <20220624025621.128843-18-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
-References: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
+	id 1nydQ8-008j2o-Ay
+	for linux-um@lists.infradead.org; Tue, 07 Jun 2022 17:55:14 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.17 45/60] um: line: Use separate IRQs per line
+Date: Tue,  7 Jun 2022 13:52:42 -0400
+Message-Id: <20220607175259.478835-45-sashal@kernel.org>
+In-Reply-To: <20220607175259.478835-1-sashal@kernel.org>
+References: <20220607175259.478835-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,52 +22,255 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Johannes Berg <johannes.berg@intel.com>, Jouni Malinen <j@w1.fi>, anton ivanov <anton.ivanov@cambridgegreys.com>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, johannes@sipsolutions.net, siglesias@igalia.com, dsterba@suse.com, jcmvbkbc@gmail.com, jirislaby@kernel.org, gregkh@linuxfoundation.org, linux-um@lists.infradead.org
 
-Free the structure struct vring_vritqueue_packed.
+From: Johannes Berg <johannes.berg@intel.com>
 
-Subsequent patches require it.
+[ Upstream commit d5a9597d6916a76663085db984cb8fe97f0a5c56 ]
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Today, all possible serial lines (ssl*=) as well as all
+possible consoles (con*=) each share a single interrupt
+(with a fixed number) with others of the same type.
+
+Now, if you have two lines, say ssl0 and ssl1, and one
+of them is connected to an fd you cannot read (e.g. a
+file), but the other gets a read interrupt, then both
+of them get the interrupt since it's shared. Then, the
+read() call will return EOF, since it's a file being
+written and there's nothing to read (at least not at
+the current offset, at the end).
+
+Unfortunately, this is treated as a read error, and we
+close this line, losing all the possible output.
+
+It might be possible to work around this and make the
+IRQ sharing work, however, now that we have dynamically
+allocated IRQs that are easy to use, simply use that to
+achieve separating between the events; then there's no
+interrupt for that line and we never attempt the read
+in the first place, thus not closing the line.
+
+This manifested itself in the wifi hostap/hwsim tests
+where the parallel script communicates via one serial
+console and the kernel messages go to another (a file)
+and sending data on the communication console caused
+the kernel messages to stop flowing into the file.
+
+Reported-by: Jouni Malinen <j@w1.fi>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Acked-By: anton ivanov <anton.ivanov@cambridgegreys.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/virtio/virtio_ring.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ arch/um/drivers/chan_kern.c     | 10 +++++-----
+ arch/um/drivers/line.c          | 22 +++++++++++++---------
+ arch/um/drivers/line.h          |  4 ++--
+ arch/um/drivers/ssl.c           |  2 --
+ arch/um/drivers/stdio_console.c |  2 --
+ arch/um/include/asm/irq.h       | 22 +++++++++-------------
+ 6 files changed, 29 insertions(+), 33 deletions(-)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 1ba00e73d601..a72b929f51fb 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -1807,6 +1807,27 @@ static struct vring_desc_extra *vring_alloc_desc_extra(unsigned int num)
- 	return desc_extra;
+diff --git a/arch/um/drivers/chan_kern.c b/arch/um/drivers/chan_kern.c
+index 62997055c454..26a702a06515 100644
+--- a/arch/um/drivers/chan_kern.c
++++ b/arch/um/drivers/chan_kern.c
+@@ -133,7 +133,7 @@ static void line_timer_cb(struct work_struct *work)
+ 	struct line *line = container_of(work, struct line, task.work);
+ 
+ 	if (!line->throttled)
+-		chan_interrupt(line, line->driver->read_irq);
++		chan_interrupt(line, line->read_irq);
  }
  
-+static void vring_free_packed(struct vring_virtqueue_packed *vring,
-+			      struct virtio_device *vdev)
-+{
-+	if (vring->vring.desc)
-+		vring_free_queue(vdev, vring->ring_size_in_bytes,
-+				 vring->vring.desc, vring->ring_dma_addr);
+ int enable_chan(struct line *line)
+@@ -195,9 +195,9 @@ void free_irqs(void)
+ 		chan = list_entry(ele, struct chan, free_list);
+ 
+ 		if (chan->input && chan->enabled)
+-			um_free_irq(chan->line->driver->read_irq, chan);
++			um_free_irq(chan->line->read_irq, chan);
+ 		if (chan->output && chan->enabled)
+-			um_free_irq(chan->line->driver->write_irq, chan);
++			um_free_irq(chan->line->write_irq, chan);
+ 		chan->enabled = 0;
+ 	}
+ }
+@@ -215,9 +215,9 @@ static void close_one_chan(struct chan *chan, int delay_free_irq)
+ 		spin_unlock_irqrestore(&irqs_to_free_lock, flags);
+ 	} else {
+ 		if (chan->input && chan->enabled)
+-			um_free_irq(chan->line->driver->read_irq, chan);
++			um_free_irq(chan->line->read_irq, chan);
+ 		if (chan->output && chan->enabled)
+-			um_free_irq(chan->line->driver->write_irq, chan);
++			um_free_irq(chan->line->write_irq, chan);
+ 		chan->enabled = 0;
+ 	}
+ 	if (chan->ops->close != NULL)
+diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
+index 8febf95da96e..02b0befd6763 100644
+--- a/arch/um/drivers/line.c
++++ b/arch/um/drivers/line.c
+@@ -139,7 +139,7 @@ static int flush_buffer(struct line *line)
+ 		count = line->buffer + LINE_BUFSIZE - line->head;
+ 
+ 		n = write_chan(line->chan_out, line->head, count,
+-			       line->driver->write_irq);
++			       line->write_irq);
+ 		if (n < 0)
+ 			return n;
+ 		if (n == count) {
+@@ -156,7 +156,7 @@ static int flush_buffer(struct line *line)
+ 
+ 	count = line->tail - line->head;
+ 	n = write_chan(line->chan_out, line->head, count,
+-		       line->driver->write_irq);
++		       line->write_irq);
+ 
+ 	if (n < 0)
+ 		return n;
+@@ -195,7 +195,7 @@ int line_write(struct tty_struct *tty, const unsigned char *buf, int len)
+ 		ret = buffer_data(line, buf, len);
+ 	else {
+ 		n = write_chan(line->chan_out, buf, len,
+-			       line->driver->write_irq);
++			       line->write_irq);
+ 		if (n < 0) {
+ 			ret = n;
+ 			goto out_up;
+@@ -215,7 +215,7 @@ void line_throttle(struct tty_struct *tty)
+ {
+ 	struct line *line = tty->driver_data;
+ 
+-	deactivate_chan(line->chan_in, line->driver->read_irq);
++	deactivate_chan(line->chan_in, line->read_irq);
+ 	line->throttled = 1;
+ }
+ 
+@@ -224,7 +224,7 @@ void line_unthrottle(struct tty_struct *tty)
+ 	struct line *line = tty->driver_data;
+ 
+ 	line->throttled = 0;
+-	chan_interrupt(line, line->driver->read_irq);
++	chan_interrupt(line, line->read_irq);
+ }
+ 
+ static irqreturn_t line_write_interrupt(int irq, void *data)
+@@ -260,19 +260,23 @@ int line_setup_irq(int fd, int input, int output, struct line *line, void *data)
+ 	int err;
+ 
+ 	if (input) {
+-		err = um_request_irq(driver->read_irq, fd, IRQ_READ,
+-				     line_interrupt, IRQF_SHARED,
++		err = um_request_irq(UM_IRQ_ALLOC, fd, IRQ_READ,
++				     line_interrupt, 0,
+ 				     driver->read_irq_name, data);
+ 		if (err < 0)
+ 			return err;
 +
-+	if (vring->vring.driver)
-+		vring_free_queue(vdev, vring->event_size_in_bytes,
-+				 vring->vring.driver,
-+				 vring->driver_event_dma_addr);
++		line->read_irq = err;
+ 	}
+ 
+ 	if (output) {
+-		err = um_request_irq(driver->write_irq, fd, IRQ_WRITE,
+-				     line_write_interrupt, IRQF_SHARED,
++		err = um_request_irq(UM_IRQ_ALLOC, fd, IRQ_WRITE,
++				     line_write_interrupt, 0,
+ 				     driver->write_irq_name, data);
+ 		if (err < 0)
+ 			return err;
 +
-+	if (vring->vring.device)
-+		vring_free_queue(vdev, vring->event_size_in_bytes,
-+				 vring->vring.device,
-+				 vring->device_event_dma_addr);
++		line->write_irq = err;
+ 	}
+ 
+ 	return 0;
+diff --git a/arch/um/drivers/line.h b/arch/um/drivers/line.h
+index bdb16b96e76f..f15be75a3bf3 100644
+--- a/arch/um/drivers/line.h
++++ b/arch/um/drivers/line.h
+@@ -23,9 +23,7 @@ struct line_driver {
+ 	const short minor_start;
+ 	const short type;
+ 	const short subtype;
+-	const int read_irq;
+ 	const char *read_irq_name;
+-	const int write_irq;
+ 	const char *write_irq_name;
+ 	struct mc_device mc;
+ 	struct tty_driver *driver;
+@@ -35,6 +33,8 @@ struct line {
+ 	struct tty_port port;
+ 	int valid;
+ 
++	int read_irq, write_irq;
 +
-+	kfree(vring->desc_state);
-+	kfree(vring->desc_extra);
-+}
-+
- static struct virtqueue *vring_create_virtqueue_packed(
- 	unsigned int index,
- 	unsigned int num,
+ 	char *init_str;
+ 	struct list_head chan_list;
+ 	struct chan *chan_in, *chan_out;
+diff --git a/arch/um/drivers/ssl.c b/arch/um/drivers/ssl.c
+index 41eae2e8fb65..8514966778d5 100644
+--- a/arch/um/drivers/ssl.c
++++ b/arch/um/drivers/ssl.c
+@@ -47,9 +47,7 @@ static struct line_driver driver = {
+ 	.minor_start 		= 64,
+ 	.type 		 	= TTY_DRIVER_TYPE_SERIAL,
+ 	.subtype 	 	= 0,
+-	.read_irq 		= SSL_IRQ,
+ 	.read_irq_name 		= "ssl",
+-	.write_irq 		= SSL_WRITE_IRQ,
+ 	.write_irq_name 	= "ssl-write",
+ 	.mc  = {
+ 		.list		= LIST_HEAD_INIT(driver.mc.list),
+diff --git a/arch/um/drivers/stdio_console.c b/arch/um/drivers/stdio_console.c
+index e8b762f4d8c2..489d5a746ed3 100644
+--- a/arch/um/drivers/stdio_console.c
++++ b/arch/um/drivers/stdio_console.c
+@@ -53,9 +53,7 @@ static struct line_driver driver = {
+ 	.minor_start 		= 0,
+ 	.type 		 	= TTY_DRIVER_TYPE_CONSOLE,
+ 	.subtype 	 	= SYSTEM_TYPE_CONSOLE,
+-	.read_irq 		= CONSOLE_IRQ,
+ 	.read_irq_name 		= "console",
+-	.write_irq 		= CONSOLE_WRITE_IRQ,
+ 	.write_irq_name 	= "console-write",
+ 	.mc  = {
+ 		.list		= LIST_HEAD_INIT(driver.mc.list),
+diff --git a/arch/um/include/asm/irq.h b/arch/um/include/asm/irq.h
+index e187c789369d..749dfe8512e8 100644
+--- a/arch/um/include/asm/irq.h
++++ b/arch/um/include/asm/irq.h
+@@ -4,19 +4,15 @@
+ 
+ #define TIMER_IRQ		0
+ #define UMN_IRQ			1
+-#define CONSOLE_IRQ		2
+-#define CONSOLE_WRITE_IRQ	3
+-#define UBD_IRQ			4
+-#define UM_ETH_IRQ		5
+-#define SSL_IRQ			6
+-#define SSL_WRITE_IRQ		7
+-#define ACCEPT_IRQ		8
+-#define MCONSOLE_IRQ		9
+-#define WINCH_IRQ		10
+-#define SIGIO_WRITE_IRQ 	11
+-#define TELNETD_IRQ 		12
+-#define XTERM_IRQ 		13
+-#define RANDOM_IRQ 		14
++#define UBD_IRQ			2
++#define UM_ETH_IRQ		3
++#define ACCEPT_IRQ		4
++#define MCONSOLE_IRQ		5
++#define WINCH_IRQ		6
++#define SIGIO_WRITE_IRQ 	7
++#define TELNETD_IRQ 		8
++#define XTERM_IRQ 		9
++#define RANDOM_IRQ 		10
+ 
+ #ifdef CONFIG_UML_NET_VECTOR
+ 
 -- 
-2.31.0
+2.35.1
 
 
 _______________________________________________
