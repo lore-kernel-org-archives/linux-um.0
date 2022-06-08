@@ -1,95 +1,69 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o4ZVg-00HVdD-T4
-	for linux-um@lists.infradead.org; Fri, 24 Jun 2022 02:57:30 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v10 27/41] virtio: allow to unbreak/break virtqueue individually
-Date: Fri, 24 Jun 2022 10:56:07 +0800
-Message-Id: <20220624025621.128843-28-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
-References: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
+Return-Path: <peterz@infradead.org>
+Message-ID: <20220608144517.948600553@infradead.org>
+Date: Wed, 08 Jun 2022 16:27:55 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH 32/36] ftrace: WARN on rcuidle
+References: <20220608142723.103523089@infradead.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+Content-Type: text/plain; charset=UTF-8
+To: peterz@infradead.org
+Cc: rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@kernel.org, linux@armlinux.org.uk, ulli.kroll@googlemail.com, linus.walleij@linaro.org, shawnguo@kernel.org, Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com, tony@atomide.com, khilman@kernel.org, catalin.marinas@arm.com, will@kernel.org, guoren@kernel.org, bcain@quicinc.com, chenhuacai@kernel.org, kernel@xen0n.name, geert@linux-m68k.org, sammy@sammy.net, monstr@monstr.eu, tsbogend@alpha.franken.de, dinguyen@kernel.org, jonas@southpole.se, stefan.kristiansson@saunalahti.fi, shorne@gmail.com, James.Bottomley@HansenPartnership.com, deller@gmx.de, mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org, paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com, borntraeger@linux.ibm.com, svens@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, acme@kernel.org, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org, namhyung@kernel.org, jgross@suse.com, srivatsa@csail.mit.edu, amakhalov@vmware.com, pv-drivers@vmware.com, boris.ostrovsky@oracle.com, chris@zankel.net, jcmvbkbc@gmail.com, rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz, gregkh@linuxfoundation.org, mturquette@baylibre.com, sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org, sudeep.holla@arm.com, agross@kernel.org, bjorn.andersson@linaro.org, anup@brainfault.org, thierry.reding@gmail.com, jonathanh@nvidia.com, jacob.jun.pan@linux.intel.com, Arnd Bergmann <arnd@arndb.de>, yury.norov@gmail.com, andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk, rostedt@goodmis.org, pmladek@suse.com, senozhatsky@chromium.org, john.ogness@linutronix.de, paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com, josh@joshtriplett.org, mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com, joel@joelfernandes.org, juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, jpoimboe@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-xtensa@linux-xtensa.org, linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org, linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-This patch allows the new introduced
-__virtqueue_break()/__virtqueue_unbreak() to break/unbreak the
-virtqueue.
+CONFIG_GENERIC_ENTRY disallows any and all tracing when RCU isn't
+enabled.
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+XXX if s390 (the only other GENERIC_ENTRY user as of this writing)
+isn't comfortable with this, we could switch to
+HAVE_NOINSTR_VALIDATION which is x86_64 only atm.
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- drivers/virtio/virtio_ring.c | 24 ++++++++++++++++++++++++
- include/linux/virtio.h       |  3 +++
- 2 files changed, 27 insertions(+)
+ include/linux/tracepoint.h |   13 ++++++++++++-
+ kernel/trace/trace.c       |    3 +++
+ 2 files changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 6ba6519c264b..4f24df0eb2d5 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -2709,6 +2709,30 @@ unsigned int virtqueue_get_vring_size(struct virtqueue *_vq)
- }
- EXPORT_SYMBOL_GPL(virtqueue_get_vring_size);
+--- a/include/linux/tracepoint.h
++++ b/include/linux/tracepoint.h
+@@ -178,6 +178,16 @@ static inline struct tracepoint *tracepo
+ #endif /* CONFIG_HAVE_STATIC_CALL */
  
-+/*
-+ * This function should only be called by the core, not directly by the driver.
+ /*
++ * CONFIG_GENERIC_ENTRY archs are expected to have sanitized entry and idle
++ * code that disallow any/all tracing/instrumentation when RCU isn't watching.
 + */
-+void __virtqueue_break(struct virtqueue *_vq)
-+{
-+	struct vring_virtqueue *vq = to_vvq(_vq);
-+
-+	/* Pairs with READ_ONCE() in virtqueue_is_broken(). */
-+	WRITE_ONCE(vq->broken, true);
-+}
-+EXPORT_SYMBOL_GPL(__virtqueue_break);
++#ifdef CONFIG_GENERIC_ENTRY
++#define RCUIDLE_COND(rcuidle)	(rcuidle)
++#else
++#define RCUIDLE_COND(rcuidle)	(rcuidle && in_nmi())
++#endif
 +
 +/*
-+ * This function should only be called by the core, not directly by the driver.
-+ */
-+void __virtqueue_unbreak(struct virtqueue *_vq)
-+{
-+	struct vring_virtqueue *vq = to_vvq(_vq);
-+
-+	/* Pairs with READ_ONCE() in virtqueue_is_broken(). */
-+	WRITE_ONCE(vq->broken, false);
-+}
-+EXPORT_SYMBOL_GPL(__virtqueue_unbreak);
-+
- bool virtqueue_is_broken(struct virtqueue *_vq)
- {
- 	struct vring_virtqueue *vq = to_vvq(_vq);
-diff --git a/include/linux/virtio.h b/include/linux/virtio.h
-index 1272566adec6..dc474a0d48d1 100644
---- a/include/linux/virtio.h
-+++ b/include/linux/virtio.h
-@@ -138,6 +138,9 @@ bool is_virtio_device(struct device *dev);
- void virtio_break_device(struct virtio_device *dev);
- void __virtio_unbreak_device(struct virtio_device *dev);
+  * it_func[0] is never NULL because there is at least one element in the array
+  * when the array itself is non NULL.
+  */
+@@ -189,7 +199,8 @@ static inline struct tracepoint *tracepo
+ 			return;						\
+ 									\
+ 		/* srcu can't be used from NMI */			\
+-		WARN_ON_ONCE(rcuidle && in_nmi());			\
++		if (WARN_ON_ONCE(RCUIDLE_COND(rcuidle)))		\
++			return;						\
+ 									\
+ 		/* keep srcu and sched-rcu usage consistent */		\
+ 		preempt_disable_notrace();				\
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -3104,6 +3104,9 @@ void __trace_stack(struct trace_array *t
+ 		return;
+ 	}
  
-+void __virtqueue_break(struct virtqueue *_vq);
-+void __virtqueue_unbreak(struct virtqueue *_vq);
++	if (WARN_ON_ONCE(IS_ENABLED(CONFIG_GENERIC_ENTRY)))
++		return;
 +
- void virtio_config_changed(struct virtio_device *dev);
- #ifdef CONFIG_PM_SLEEP
- int virtio_device_freeze(struct virtio_device *dev);
--- 
-2.31.0
+ 	/*
+ 	 * When an NMI triggers, RCU is enabled via rcu_nmi_enter(),
+ 	 * but if the above rcu_is_watching() failed, then the NMI
 
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
