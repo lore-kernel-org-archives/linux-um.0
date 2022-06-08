@@ -1,174 +1,69 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o4ZUp-00HUjL-V7
-	for linux-um@lists.infradead.org; Fri, 24 Jun 2022 02:56:37 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v10 00/41] virtio pci support VIRTIO_F_RING_RESET
-Date: Fri, 24 Jun 2022 10:55:40 +0800
-Message-Id: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
+Return-Path: <peterz@infradead.org>
+Message-ID: <20220608144517.885263942@infradead.org>
+Date: Wed, 08 Jun 2022 16:27:54 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH 31/36] cpuidle,acpi: Make noinstr clean
+References: <20220608142723.103523089@infradead.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+Content-Type: text/plain; charset=UTF-8
+To: peterz@infradead.org
+Cc: rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@kernel.org, linux@armlinux.org.uk, ulli.kroll@googlemail.com, linus.walleij@linaro.org, shawnguo@kernel.org, Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com, tony@atomide.com, khilman@kernel.org, catalin.marinas@arm.com, will@kernel.org, guoren@kernel.org, bcain@quicinc.com, chenhuacai@kernel.org, kernel@xen0n.name, geert@linux-m68k.org, sammy@sammy.net, monstr@monstr.eu, tsbogend@alpha.franken.de, dinguyen@kernel.org, jonas@southpole.se, stefan.kristiansson@saunalahti.fi, shorne@gmail.com, James.Bottomley@HansenPartnership.com, deller@gmx.de, mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org, paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com, borntraeger@linux.ibm.com, svens@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, acme@kernel.org, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org, namhyung@kernel.org, jgross@suse.com, srivatsa@csail.mit.edu, amakhalov@vmware.com, pv-drivers@vmware.com, boris.ostrovsky@oracle.com, chris@zankel.net, jcmvbkbc@gmail.com, rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz, gregkh@linuxfoundation.org, mturquette@baylibre.com, sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org, sudeep.holla@arm.com, agross@kernel.org, bjorn.andersson@linaro.org, anup@brainfault.org, thierry.reding@gmail.com, jonathanh@nvidia.com, jacob.jun.pan@linux.intel.com, Arnd Bergmann <arnd@arndb.de>, yury.norov@gmail.com, andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk, rostedt@goodmis.org, pmladek@suse.com, senozhatsky@chromium.org, john.ogness@linutronix.de, paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com, josh@joshtriplett.org, mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com, joel@joelfernandes.org, juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, jpoimboe@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-xtensa@linux-xtensa.org, linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org, linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-The virtio spec already supports the virtio queue reset function. This patch set
-is to add this function to the kernel. The relevant virtio spec information is
-here:
+vmlinux.o: warning: objtool: io_idle+0xc: call to __inb.isra.0() leaves .noinstr.text section
+vmlinux.o: warning: objtool: acpi_idle_enter+0xfe: call to num_online_cpus() leaves .noinstr.text section
+vmlinux.o: warning: objtool: acpi_idle_enter+0x115: call to acpi_idle_fallback_to_c1.isra.0() leaves .noinstr.text section
 
-    https://github.com/oasis-tcs/virtio-spec/issues/124
-    https://github.com/oasis-tcs/virtio-spec/issues/139
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ arch/x86/include/asm/shared/io.h |    4 ++--
+ drivers/acpi/processor_idle.c    |    2 +-
+ include/linux/cpumask.h          |    4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-Also regarding MMIO support for queue reset, I plan to support it after this
-patch is passed.
-
-This patch set implements the refactoring of vring. Finally, the
-virtuque_resize() interface is provided based on the reset function of the
-transport layer.
-
-Test environment:
-    Host: 4.19.91
-    Qemu: QEMU emulator version 6.2.50 (with vq reset support)
-    Test Cmd:  ethtool -G eth1 rx $1 tx $2; ethtool -g eth1
-
-    The default is split mode, modify Qemu virtio-net to add PACKED feature to test
-    packed mode.
-
-Qemu code:
-    https://github.com/fengidri/qemu/compare/89f3bfa3265554d1d591ee4d7f1197b6e3397e84...master
-
-In order to simplify the review of this patch set, the function of reusing
-the old buffers after resize will be introduced in subsequent patch sets.
-
-Please review. Thanks.
-
-v10:
-  1. on top of the harden vring IRQ
-  2. factor out split and packed from struct vring_virtqueue
-  3. some suggest from @Jason Wang
-
-v9:
-  1. Provide a virtqueue_resize() interface directly
-  2. A patch set including vring resize, virtio pci reset, virtio-net resize
-  3. No more separate structs
-
-v8:
-  1. Provide a virtqueue_reset() interface directly
-  2. Split the two patch sets, this is the first part
-  3. Add independent allocation helper for allocating state, extra
-
-v7:
-  1. fix #6 subject typo
-  2. fix #6 ring_size_in_bytes is uninitialized
-  3. check by: make W=12
-
-v6:
-  1. virtio_pci: use synchronize_irq(irq) to sync the irq callbacks
-  2. Introduce virtqueue_reset_vring() to implement the reset of vring during
-     the reset process. May use the old vring if num of the vq not change.
-  3. find_vqs() support sizes to special the max size of each vq
-
-v5:
-  1. add virtio-net support set_ringparam
-
-v4:
-  1. just the code of virtio, without virtio-net
-  2. Performing reset on a queue is divided into these steps:
-    1. reset_vq: reset one vq
-    2. recycle the buffer from vq by virtqueue_detach_unused_buf()
-    3. release the ring of the vq by vring_release_virtqueue()
-    4. enable_reset_vq: re-enable the reset queue
-  3. Simplify the parameters of enable_reset_vq()
-  4. add container structures for virtio_pci_common_cfg
-
-v3:
-  1. keep vq, irq unreleased
-
-*** BLURB HERE ***
-
-Xuan Zhuo (41):
-  remoteproc: rename len of rpoc_vring to num
-  virtio: add helper virtqueue_get_vring_max_size()
-  virtio: struct virtio_config_ops add callbacks for queue_reset
-  virtio_ring: update the document of the virtqueue_detach_unused_buf
-    for queue reset
-  virtio_ring: remove the arg vq of vring_alloc_desc_extra()
-  virtio_ring: extract the logic of freeing vring
-  virtio_ring: split vring_virtqueue
-  virtio_ring: introduce virtqueue_init()
-  virtio_ring: split: introduce vring_free_split()
-  virtio_ring: split: extract the logic of alloc queue
-  virtio_ring: split: extract the logic of alloc state and extra
-  virtio_ring: split: extract the logic of attach vring
-  virtio_ring: split: extract the logic of vring init
-  virtio_ring: split: introduce virtqueue_reinit_split()
-  virtio_ring: split: reserve vring_align, may_reduce_num
-  virtio_ring: split: introduce virtqueue_resize_split()
-  virtio_ring: packed: introduce vring_free_packed
-  virtio_ring: packed: extract the logic of alloc queue
-  virtio_ring: packed: extract the logic of alloc state and extra
-  virtio_ring: packed: extract the logic of attach vring
-  virtio_ring: packed: extract the logic of vring init
-  virtio_ring: packed: introduce virtqueue_reinit_packed()
-  virtio_ring: packed: introduce virtqueue_resize_packed()
-  virtio_ring: introduce virtqueue_resize()
-  virtio_pci: struct virtio_pci_common_cfg add queue_notify_data
-  virtio: queue_reset: add VIRTIO_F_RING_RESET
-  virtio: allow to unbreak/break virtqueue individually
-  virtio_pci: update struct virtio_pci_common_cfg
-  virtio_pci: introduce helper to get/set queue reset
-  virtio_pci: extract the logic of active vq for modern pci
-  virtio_pci: support VIRTIO_F_RING_RESET
-  virtio: find_vqs() add arg sizes
-  virtio_pci: support the arg sizes of find_vqs()
-  virtio_mmio: support the arg sizes of find_vqs()
-  virtio: add helper virtio_find_vqs_ctx_size()
-  virtio_net: set the default max ring size by find_vqs()
-  virtio_net: get ringparam by virtqueue_get_vring_max_size()
-  virtio_net: split free_unused_bufs()
-  virtio_net: support rx queue resize
-  virtio_net: support tx queue resize
-  virtio_net: support set_ringparam
-
- arch/um/drivers/virtio_uml.c             |   3 +-
- drivers/net/virtio_net.c                 | 209 +++++-
- drivers/platform/mellanox/mlxbf-tmfifo.c |   3 +
- drivers/remoteproc/remoteproc_core.c     |   4 +-
- drivers/remoteproc/remoteproc_virtio.c   |  13 +-
- drivers/s390/virtio/virtio_ccw.c         |   4 +
- drivers/virtio/virtio_mmio.c             |  11 +-
- drivers/virtio/virtio_pci_common.c       |  32 +-
- drivers/virtio/virtio_pci_common.h       |   3 +-
- drivers/virtio/virtio_pci_legacy.c       |   8 +-
- drivers/virtio/virtio_pci_modern.c       | 157 ++++-
- drivers/virtio/virtio_pci_modern_dev.c   |  39 ++
- drivers/virtio/virtio_ring.c             | 794 +++++++++++++++++------
- drivers/virtio/virtio_vdpa.c             |   3 +
- include/linux/remoteproc.h               |   4 +-
- include/linux/virtio.h                   |   9 +
- include/linux/virtio_config.h            |  38 +-
- include/linux/virtio_pci_modern.h        |   2 +
- include/uapi/linux/virtio_config.h       |   7 +-
- include/uapi/linux/virtio_pci.h          |  14 +
- 20 files changed, 1063 insertions(+), 294 deletions(-)
-
---
-2.31.0
+--- a/arch/x86/include/asm/shared/io.h
++++ b/arch/x86/include/asm/shared/io.h
+@@ -5,13 +5,13 @@
+ #include <linux/types.h>
+ 
+ #define BUILDIO(bwl, bw, type)						\
+-static inline void __out##bwl(type value, u16 port)			\
++static __always_inline void __out##bwl(type value, u16 port)		\
+ {									\
+ 	asm volatile("out" #bwl " %" #bw "0, %w1"			\
+ 		     : : "a"(value), "Nd"(port));			\
+ }									\
+ 									\
+-static inline type __in##bwl(u16 port)					\
++static __always_inline type __in##bwl(u16 port)				\
+ {									\
+ 	type value;							\
+ 	asm volatile("in" #bwl " %w1, %" #bw "0"			\
+--- a/drivers/acpi/processor_idle.c
++++ b/drivers/acpi/processor_idle.c
+@@ -593,7 +593,7 @@ static int acpi_idle_play_dead(struct cp
+ 	return 0;
+ }
+ 
+-static bool acpi_idle_fallback_to_c1(struct acpi_processor *pr)
++static __always_inline bool acpi_idle_fallback_to_c1(struct acpi_processor *pr)
+ {
+ 	return IS_ENABLED(CONFIG_HOTPLUG_CPU) && !pr->flags.has_cst &&
+ 		!(acpi_gbl_FADT.flags & ACPI_FADT_C2_MP_SUPPORTED);
+--- a/include/linux/cpumask.h
++++ b/include/linux/cpumask.h
+@@ -908,9 +908,9 @@ static inline const struct cpumask *get_
+  * concurrent CPU hotplug operations unless invoked from a cpuhp_lock held
+  * region.
+  */
+-static inline unsigned int num_online_cpus(void)
++static __always_inline unsigned int num_online_cpus(void)
+ {
+-	return atomic_read(&__num_online_cpus);
++	return arch_atomic_read(&__num_online_cpus);
+ }
+ #define num_possible_cpus()	cpumask_weight(cpu_possible_mask)
+ #define num_present_cpus()	cpumask_weight(cpu_present_mask)
 
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
