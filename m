@@ -1,207 +1,153 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6RdM-009w7j-K6
-	for linux-um@lists.infradead.org; Wed, 29 Jun 2022 06:57:11 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v11 01/40] virtio: add helper virtqueue_get_vring_max_size()
-Date: Wed, 29 Jun 2022 14:56:17 +0800
-Message-Id: <20220629065656.54420-2-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
-References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
+Return-Path: <peterz@infradead.org>
+Message-ID: <20220608144516.743744529@infradead.org>
+Date: Wed, 08 Jun 2022 16:27:36 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH 13/36] cpuidle,dt: Push RCU-idle into driver
+References: <20220608142723.103523089@infradead.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+Content-Type: text/plain; charset=UTF-8
+To: peterz@infradead.org
+Cc: rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@kernel.org, linux@armlinux.org.uk, ulli.kroll@googlemail.com, linus.walleij@linaro.org, shawnguo@kernel.org, Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com, tony@atomide.com, khilman@kernel.org, catalin.marinas@arm.com, will@kernel.org, guoren@kernel.org, bcain@quicinc.com, chenhuacai@kernel.org, kernel@xen0n.name, geert@linux-m68k.org, sammy@sammy.net, monstr@monstr.eu, tsbogend@alpha.franken.de, dinguyen@kernel.org, jonas@southpole.se, stefan.kristiansson@saunalahti.fi, shorne@gmail.com, James.Bottomley@HansenPartnership.com, deller@gmx.de, mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org, paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com, borntraeger@linux.ibm.com, svens@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, acme@kernel.org, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org, namhyung@kernel.org, jgross@suse.com, srivatsa@csail.mit.edu, amakhalov@vmware.com, pv-drivers@vmware.com, boris.ostrovsky@oracle.com, chris@zankel.net, jcmvbkbc@gmail.com, rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz, gregkh@linuxfoundation.org, mturquette@baylibre.com, sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org, sudeep.holla@arm.com, agross@kernel.org, bjorn.andersson@linaro.org, anup@brainfault.org, thierry.reding@gmail.com, jonathanh@nvidia.com, jacob.jun.pan@linux.intel.com, Arnd Bergmann <arnd@arndb.de>, yury.norov@gmail.com, andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk, rostedt@goodmis.org, pmladek@suse.com, senozhatsky@chromium.org, john.ogness@linutronix.de, paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com, josh@joshtriplett.org, mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com, joel@joelfernandes.org, juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, jpoimboe@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-xtensa@linux-xtensa.org, linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org, linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-Record the maximum queue num supported by the device.
+Doing RCU-idle outside the driver, only to then temporarily enable it
+again before going idle is daft.
 
-virtio-net can display the maximum (supported by hardware) ring size in
-ethtool -g eth0.
+Notably: this converts all dt_init_idle_driver() and
+__CPU_PM_CPU_IDLE_ENTER() users for they are inextrably intertwined.
 
-When the subsequent patch implements vring reset, it can judge whether
-the ring size passed by the driver is legal based on this.
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/um/drivers/virtio_uml.c             |  1 +
- drivers/platform/mellanox/mlxbf-tmfifo.c |  2 ++
- drivers/remoteproc/remoteproc_virtio.c   |  2 ++
- drivers/s390/virtio/virtio_ccw.c         |  3 +++
- drivers/virtio/virtio_mmio.c             |  2 ++
- drivers/virtio/virtio_pci_legacy.c       |  2 ++
- drivers/virtio/virtio_pci_modern.c       |  2 ++
- drivers/virtio/virtio_ring.c             | 14 ++++++++++++++
- drivers/virtio/virtio_vdpa.c             |  2 ++
- include/linux/virtio.h                   |  2 ++
- 10 files changed, 32 insertions(+)
+ arch/arm/mach-omap2/cpuidle34xx.c    |    4 ++--
+ drivers/acpi/processor_idle.c        |    2 ++
+ drivers/cpuidle/cpuidle-arm.c        |    1 +
+ drivers/cpuidle/cpuidle-big_little.c |    8 ++++++--
+ drivers/cpuidle/cpuidle-psci.c       |    1 +
+ drivers/cpuidle/cpuidle-qcom-spm.c   |    1 +
+ drivers/cpuidle/cpuidle-riscv-sbi.c  |    1 +
+ drivers/cpuidle/dt_idle_states.c     |    2 +-
+ include/linux/cpuidle.h              |    4 ++++
+ 9 files changed, 19 insertions(+), 5 deletions(-)
 
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index 82ff3785bf69..e719af8bdf56 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -958,6 +958,7 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
- 		goto error_create;
+--- a/drivers/acpi/processor_idle.c
++++ b/drivers/acpi/processor_idle.c
+@@ -1200,6 +1200,8 @@ static int acpi_processor_setup_lpi_stat
+ 		state->target_residency = lpi->min_residency;
+ 		if (lpi->arch_flags)
+ 			state->flags |= CPUIDLE_FLAG_TIMER_STOP;
++		if (lpi->entry_method == ACPI_CSTATE_FFH)
++			state->flags |= CPUIDLE_FLAG_RCU_IDLE;
+ 		state->enter = acpi_idle_lpi_enter;
+ 		drv->safe_state_index = i;
  	}
- 	vq->priv = info;
-+	vq->num_max = num;
- 	num = virtqueue_get_vring_size(vq);
+--- a/drivers/cpuidle/cpuidle-arm.c
++++ b/drivers/cpuidle/cpuidle-arm.c
+@@ -53,6 +53,7 @@ static struct cpuidle_driver arm_idle_dr
+ 	 * handler for idle state index 0.
+ 	 */
+ 	.states[0] = {
++		.flags			= CPUIDLE_FLAG_RCU_IDLE,
+ 		.enter                  = arm_enter_idle_state,
+ 		.exit_latency           = 1,
+ 		.target_residency       = 1,
+--- a/drivers/cpuidle/cpuidle-big_little.c
++++ b/drivers/cpuidle/cpuidle-big_little.c
+@@ -64,7 +64,8 @@ static struct cpuidle_driver bl_idle_lit
+ 		.enter			= bl_enter_powerdown,
+ 		.exit_latency		= 700,
+ 		.target_residency	= 2500,
+-		.flags			= CPUIDLE_FLAG_TIMER_STOP,
++		.flags			= CPUIDLE_FLAG_TIMER_STOP |
++					  CPUIDLE_FLAG_RCU_IDLE,
+ 		.name			= "C1",
+ 		.desc			= "ARM little-cluster power down",
+ 	},
+@@ -85,7 +86,8 @@ static struct cpuidle_driver bl_idle_big
+ 		.enter			= bl_enter_powerdown,
+ 		.exit_latency		= 500,
+ 		.target_residency	= 2000,
+-		.flags			= CPUIDLE_FLAG_TIMER_STOP,
++		.flags			= CPUIDLE_FLAG_TIMER_STOP |
++					  CPUIDLE_FLAG_RCU_IDLE,
+ 		.name			= "C1",
+ 		.desc			= "ARM big-cluster power down",
+ 	},
+@@ -124,11 +126,13 @@ static int bl_enter_powerdown(struct cpu
+ 				struct cpuidle_driver *drv, int idx)
+ {
+ 	cpu_pm_enter();
++	rcu_idle_enter();
  
- 	if (vu_dev->protocol_features &
-diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
-index 38800e86ed8a..1ae3c56b66b0 100644
---- a/drivers/platform/mellanox/mlxbf-tmfifo.c
-+++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
-@@ -959,6 +959,8 @@ static int mlxbf_tmfifo_virtio_find_vqs(struct virtio_device *vdev,
- 			goto error;
- 		}
+ 	cpu_suspend(0, bl_powerdown_finisher);
  
-+		vq->num_max = vring->num;
-+
- 		vqs[i] = vq;
- 		vring->vq = vq;
- 		vq->priv = vring;
-diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
-index d43d74733f0a..0f7706e23eb9 100644
---- a/drivers/remoteproc/remoteproc_virtio.c
-+++ b/drivers/remoteproc/remoteproc_virtio.c
-@@ -125,6 +125,8 @@ static struct virtqueue *rp_find_vq(struct virtio_device *vdev,
- 		return ERR_PTR(-ENOMEM);
- 	}
+ 	/* signals the MCPM core that CPU is out of low power state */
+ 	mcpm_cpu_powered_up();
++	rcu_idle_exit();
  
-+	vq->num_max = num;
-+
- 	rvring->vq = vq;
- 	vq->priv = rvring;
+ 	cpu_pm_exit();
  
-diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
-index 161d3b141f0d..6b86d0280d6b 100644
---- a/drivers/s390/virtio/virtio_ccw.c
-+++ b/drivers/s390/virtio/virtio_ccw.c
-@@ -530,6 +530,9 @@ static struct virtqueue *virtio_ccw_setup_vq(struct virtio_device *vdev,
- 		err = -ENOMEM;
- 		goto out_err;
- 	}
-+
-+	vq->num_max = info->num;
-+
- 	/* it may have been reduced */
- 	info->num = virtqueue_get_vring_size(vq);
+--- a/drivers/cpuidle/cpuidle-psci.c
++++ b/drivers/cpuidle/cpuidle-psci.c
+@@ -357,6 +357,7 @@ static int psci_idle_init_cpu(struct dev
+ 	 * PSCI idle states relies on architectural WFI to be represented as
+ 	 * state index 0.
+ 	 */
++	drv->states[0].flags = CPUIDLE_FLAG_RCU_IDLE;
+ 	drv->states[0].enter = psci_enter_idle_state;
+ 	drv->states[0].exit_latency = 1;
+ 	drv->states[0].target_residency = 1;
+--- a/drivers/cpuidle/cpuidle-qcom-spm.c
++++ b/drivers/cpuidle/cpuidle-qcom-spm.c
+@@ -72,6 +72,7 @@ static struct cpuidle_driver qcom_spm_id
+ 	.owner = THIS_MODULE,
+ 	.states[0] = {
+ 		.enter			= spm_enter_idle_state,
++		.flags			= CPUIDLE_FLAG_RCU_IDLE,
+ 		.exit_latency		= 1,
+ 		.target_residency	= 1,
+ 		.power_usage		= UINT_MAX,
+--- a/drivers/cpuidle/cpuidle-riscv-sbi.c
++++ b/drivers/cpuidle/cpuidle-riscv-sbi.c
+@@ -332,6 +332,7 @@ static int sbi_cpuidle_init_cpu(struct d
+ 	drv->cpumask = (struct cpumask *)cpumask_of(cpu);
  
-diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
-index 083ff1eb743d..a20d5a6b5819 100644
---- a/drivers/virtio/virtio_mmio.c
-+++ b/drivers/virtio/virtio_mmio.c
-@@ -403,6 +403,8 @@ static struct virtqueue *vm_setup_vq(struct virtio_device *vdev, unsigned int in
- 		goto error_new_virtqueue;
- 	}
+ 	/* RISC-V architectural WFI to be represented as state index 0. */
++	drv->states[0].flags = CPUIDLE_FLAG_RCU_IDLE;
+ 	drv->states[0].enter = sbi_cpuidle_enter_state;
+ 	drv->states[0].exit_latency = 1;
+ 	drv->states[0].target_residency = 1;
+--- a/drivers/cpuidle/dt_idle_states.c
++++ b/drivers/cpuidle/dt_idle_states.c
+@@ -77,7 +77,7 @@ static int init_state_node(struct cpuidl
+ 	if (err)
+ 		desc = state_node->name;
  
-+	vq->num_max = num;
-+
- 	/* Activate the queue */
- 	writel(virtqueue_get_vring_size(vq), vm_dev->base + VIRTIO_MMIO_QUEUE_NUM);
- 	if (vm_dev->version == 1) {
-diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virtio_pci_legacy.c
-index a5e5721145c7..2257f1b3d8ae 100644
---- a/drivers/virtio/virtio_pci_legacy.c
-+++ b/drivers/virtio/virtio_pci_legacy.c
-@@ -135,6 +135,8 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 	if (!vq)
- 		return ERR_PTR(-ENOMEM);
- 
-+	vq->num_max = num;
-+
- 	q_pfn = virtqueue_get_desc_addr(vq) >> VIRTIO_PCI_QUEUE_ADDR_SHIFT;
- 	if (q_pfn >> 32) {
- 		dev_err(&vp_dev->pci_dev->dev,
-diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
-index 623906b4996c..e7e0b8c850f6 100644
---- a/drivers/virtio/virtio_pci_modern.c
-+++ b/drivers/virtio/virtio_pci_modern.c
-@@ -218,6 +218,8 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 	if (!vq)
- 		return ERR_PTR(-ENOMEM);
- 
-+	vq->num_max = num;
-+
- 	/* activate the queue */
- 	vp_modern_set_queue_size(mdev, index, virtqueue_get_vring_size(vq));
- 	vp_modern_queue_address(mdev, index, virtqueue_get_desc_addr(vq),
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index a5ec724c01d8..4cac600856ad 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -2385,6 +2385,20 @@ void vring_transport_features(struct virtio_device *vdev)
- }
- EXPORT_SYMBOL_GPL(vring_transport_features);
- 
-+/**
-+ * virtqueue_get_vring_max_size - return the max size of the virtqueue's vring
-+ * @_vq: the struct virtqueue containing the vring of interest.
-+ *
-+ * Returns the max size of the vring.
-+ *
-+ * Unlike other operations, this need not be serialized.
-+ */
-+unsigned int virtqueue_get_vring_max_size(struct virtqueue *_vq)
-+{
-+	return _vq->num_max;
-+}
-+EXPORT_SYMBOL_GPL(virtqueue_get_vring_max_size);
-+
- /**
-  * virtqueue_get_vring_size - return the size of the virtqueue's vring
-  * @_vq: the struct virtqueue containing the vring of interest.
-diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
-index c40f7deb6b5a..9670cc79371d 100644
---- a/drivers/virtio/virtio_vdpa.c
-+++ b/drivers/virtio/virtio_vdpa.c
-@@ -183,6 +183,8 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
- 		goto error_new_virtqueue;
- 	}
- 
-+	vq->num_max = max_num;
-+
- 	/* Setup virtqueue callback */
- 	cb.callback = callback ? virtio_vdpa_virtqueue_cb : NULL;
- 	cb.private = info;
-diff --git a/include/linux/virtio.h b/include/linux/virtio.h
-index d8fdf170637c..a82620032e43 100644
---- a/include/linux/virtio.h
-+++ b/include/linux/virtio.h
-@@ -31,6 +31,7 @@ struct virtqueue {
- 	struct virtio_device *vdev;
- 	unsigned int index;
- 	unsigned int num_free;
-+	unsigned int num_max;
- 	void *priv;
- };
- 
-@@ -80,6 +81,7 @@ bool virtqueue_enable_cb_delayed(struct virtqueue *vq);
- 
- void *virtqueue_detach_unused_buf(struct virtqueue *vq);
- 
-+unsigned int virtqueue_get_vring_max_size(struct virtqueue *vq);
- unsigned int virtqueue_get_vring_size(struct virtqueue *vq);
- 
- bool virtqueue_is_broken(struct virtqueue *vq);
--- 
-2.31.0
+-	idle_state->flags = 0;
++	idle_state->flags = CPUIDLE_FLAG_RCU_IDLE;
+ 	if (of_property_read_bool(state_node, "local-timer-stop"))
+ 		idle_state->flags |= CPUIDLE_FLAG_TIMER_STOP;
+ 	/*
+--- a/include/linux/cpuidle.h
++++ b/include/linux/cpuidle.h
+@@ -282,14 +282,18 @@ extern s64 cpuidle_governor_latency_req(
+ 	int __ret = 0;							\
+ 									\
+ 	if (!idx) {							\
++		rcu_idle_enter();					\
+ 		cpu_do_idle();						\
++		rcu_idle_exit();					\
+ 		return idx;						\
+ 	}								\
+ 									\
+ 	if (!is_retention)						\
+ 		__ret =  cpu_pm_enter();				\
+ 	if (!__ret) {							\
++		rcu_idle_enter();					\
+ 		__ret = low_level_idle_enter(state);			\
++		rcu_idle_exit();					\
+ 		if (!is_retention)					\
+ 			cpu_pm_exit();					\
+ 	}								\
 
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
