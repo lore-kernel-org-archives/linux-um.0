@@ -1,15 +1,23 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+Received: from mail-pf1-x42c.google.com ([2607:f8b0:4864:20::42c])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nydQ8-008j2o-Ay
-	for linux-um@lists.infradead.org; Tue, 07 Jun 2022 17:55:14 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.17 45/60] um: line: Use separate IRQs per line
-Date: Tue,  7 Jun 2022 13:52:42 -0400
-Message-Id: <20220607175259.478835-45-sashal@kernel.org>
-In-Reply-To: <20220607175259.478835-1-sashal@kernel.org>
-References: <20220607175259.478835-1-sashal@kernel.org>
+	id 1nzOK0-003sZd-Q3
+	for linux-um@lists.infradead.org; Thu, 09 Jun 2022 20:00:02 +0000
+Received: by mail-pf1-x42c.google.com with SMTP id y196so21975909pfb.6
+        for <linux-um@lists.infradead.org>; Thu, 09 Jun 2022 12:59:59 -0700 (PDT)
 MIME-Version: 1.0
+References: <20220421150248.667412396@infradead.org> <20220421150654.817117821@infradead.org>
+ <87czhap9dy.fsf@email.froward.int.ebiederm.org> <878rrrh32q.fsf_-_@email.froward.int.ebiederm.org>
+ <87k0b7v9yk.fsf_-_@email.froward.int.ebiederm.org> <87k0b0apne.fsf_-_@email.froward.int.ebiederm.org>
+ <87a6bv6dl6.fsf_-_@email.froward.int.ebiederm.org> <871qwq5ucx.fsf_-_@email.froward.int.ebiederm.org>
+ <CALWUPBdFDLuT7JaNGSJ_UXbHf8y9uKdC-SkAqzd=FQC0MX4nNQ@mail.gmail.com>
+ <YoXhfGGPKnT/YFC1@linutronix.de> <8735h54cur.fsf@email.froward.int.ebiederm.org>
+ <CALWUPBdPO0ccBpFjQ-Lb5GsD=DcBw8ZyVwYVhLdpSeCcu2BSEg@mail.gmail.com> <877d5t4vqj.fsf@email.froward.int.ebiederm.org>
+In-Reply-To: <877d5t4vqj.fsf@email.froward.int.ebiederm.org>
+From: Kyle Huey <khuey@pernos.co>
+Date: Thu, 9 Jun 2022 12:59:39 -0700
+Message-ID: <CALWUPBe2T1-CVpuQ1tVrCZRB6uDK+rPBKqr=yxV+3n37ZrTpWA@mail.gmail.com>
+Subject: Re: [PATCH 00/16] ptrace: cleanups and calling do_cldstop with only siglock
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,256 +30,123 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Johannes Berg <johannes.berg@intel.com>, Jouni Malinen <j@w1.fi>, anton ivanov <anton.ivanov@cambridgegreys.com>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, johannes@sipsolutions.net, siglesias@igalia.com, dsterba@suse.com, jcmvbkbc@gmail.com, jirislaby@kernel.org, gregkh@linuxfoundation.org, linux-um@lists.infradead.org
+To: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, LKML <linux-kernel@vger.kernel.org>, rjw@rjwysocki.net, oleg@redhat.com, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Jann Horn <jannh@google.com>, Kees Cook <keescook@chromium.org>, linux-ia64@vger.kernel.org, Robert O'Callahan <roc@pernos.co>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Jason Wessel <jason.wessel@windriver.com>, Daniel Thompson <daniel.thompson@linaro.org>, Douglas Anderson <dianders@chromium.org>, Douglas Miller <dougmill@linux.vnet.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>
 
-From: Johannes Berg <johannes.berg@intel.com>
+On Mon, Jun 6, 2022 at 9:12 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>
+> Kyle Huey <khuey@pernos.co> writes:
+>
+> > On Thu, May 19, 2022 at 11:05 AM Eric W. Biederman
+> > <ebiederm@xmission.com> wrote:
+> >>
+> >> Sebastian Andrzej Siewior <bigeasy@linutronix.de> writes:
+> >>
+> >> > On 2022-05-18 20:26:05 [-0700], Kyle Huey wrote:
+> >> >> Is there a git branch somewhere I can pull to test this? It doesn't apply
+> >> >> cleanly to Linus's tip.
+> >> >
+> >> > https://kernel.googlesource.com/pub/scm/linux/kernel/git/ebiederm/user-namespace.git ptrace_stop-cleanup-for-v5.19
+> >>
+> >> Yes that is the branch this all applies to.
+> >>
+> >> This is my second round of cleanups this cycle for this code.
+> >> I just keep finding little things that deserve to be changed,
+> >> when I am working on the more substantial issues.
+> >>
+> >> Eric
+> >
+> > When running the rr test suite, I see hangs like this
+>
+> Thanks.  I will dig into this.
+>
+> Is there an easy way I can run the rr test suite to see if I can
+> reproduce this myself?
 
-[ Upstream commit d5a9597d6916a76663085db984cb8fe97f0a5c56 ]
+It should be a straight forward
+1. https://github.com/rr-debugger/rr.git
+2. mkdir obj-rr && cd obj-rr
+3. cmake ../rr
+4. make -jN
+5. make check
 
-Today, all possible serial lines (ssl*=) as well as all
-possible consoles (con*=) each share a single interrupt
-(with a fixed number) with others of the same type.
+If you have trouble with it feel free to email me off list.
 
-Now, if you have two lines, say ssl0 and ssl1, and one
-of them is connected to an fd you cannot read (e.g. a
-file), but the other gets a read interrupt, then both
-of them get the interrupt since it's shared. Then, the
-read() call will return EOF, since it's a file being
-written and there's nothing to read (at least not at
-the current offset, at the end).
+- Kyle
 
-Unfortunately, this is treated as a read error, and we
-close this line, losing all the possible output.
-
-It might be possible to work around this and make the
-IRQ sharing work, however, now that we have dynamically
-allocated IRQs that are easy to use, simply use that to
-achieve separating between the events; then there's no
-interrupt for that line and we never attempt the read
-in the first place, thus not closing the line.
-
-This manifested itself in the wifi hostap/hwsim tests
-where the parallel script communicates via one serial
-console and the kernel messages go to another (a file)
-and sending data on the communication console caused
-the kernel messages to stop flowing into the file.
-
-Reported-by: Jouni Malinen <j@w1.fi>
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Acked-By: anton ivanov <anton.ivanov@cambridgegreys.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/um/drivers/chan_kern.c     | 10 +++++-----
- arch/um/drivers/line.c          | 22 +++++++++++++---------
- arch/um/drivers/line.h          |  4 ++--
- arch/um/drivers/ssl.c           |  2 --
- arch/um/drivers/stdio_console.c |  2 --
- arch/um/include/asm/irq.h       | 22 +++++++++-------------
- 6 files changed, 29 insertions(+), 33 deletions(-)
-
-diff --git a/arch/um/drivers/chan_kern.c b/arch/um/drivers/chan_kern.c
-index 62997055c454..26a702a06515 100644
---- a/arch/um/drivers/chan_kern.c
-+++ b/arch/um/drivers/chan_kern.c
-@@ -133,7 +133,7 @@ static void line_timer_cb(struct work_struct *work)
- 	struct line *line = container_of(work, struct line, task.work);
- 
- 	if (!line->throttled)
--		chan_interrupt(line, line->driver->read_irq);
-+		chan_interrupt(line, line->read_irq);
- }
- 
- int enable_chan(struct line *line)
-@@ -195,9 +195,9 @@ void free_irqs(void)
- 		chan = list_entry(ele, struct chan, free_list);
- 
- 		if (chan->input && chan->enabled)
--			um_free_irq(chan->line->driver->read_irq, chan);
-+			um_free_irq(chan->line->read_irq, chan);
- 		if (chan->output && chan->enabled)
--			um_free_irq(chan->line->driver->write_irq, chan);
-+			um_free_irq(chan->line->write_irq, chan);
- 		chan->enabled = 0;
- 	}
- }
-@@ -215,9 +215,9 @@ static void close_one_chan(struct chan *chan, int delay_free_irq)
- 		spin_unlock_irqrestore(&irqs_to_free_lock, flags);
- 	} else {
- 		if (chan->input && chan->enabled)
--			um_free_irq(chan->line->driver->read_irq, chan);
-+			um_free_irq(chan->line->read_irq, chan);
- 		if (chan->output && chan->enabled)
--			um_free_irq(chan->line->driver->write_irq, chan);
-+			um_free_irq(chan->line->write_irq, chan);
- 		chan->enabled = 0;
- 	}
- 	if (chan->ops->close != NULL)
-diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
-index 8febf95da96e..02b0befd6763 100644
---- a/arch/um/drivers/line.c
-+++ b/arch/um/drivers/line.c
-@@ -139,7 +139,7 @@ static int flush_buffer(struct line *line)
- 		count = line->buffer + LINE_BUFSIZE - line->head;
- 
- 		n = write_chan(line->chan_out, line->head, count,
--			       line->driver->write_irq);
-+			       line->write_irq);
- 		if (n < 0)
- 			return n;
- 		if (n == count) {
-@@ -156,7 +156,7 @@ static int flush_buffer(struct line *line)
- 
- 	count = line->tail - line->head;
- 	n = write_chan(line->chan_out, line->head, count,
--		       line->driver->write_irq);
-+		       line->write_irq);
- 
- 	if (n < 0)
- 		return n;
-@@ -195,7 +195,7 @@ int line_write(struct tty_struct *tty, const unsigned char *buf, int len)
- 		ret = buffer_data(line, buf, len);
- 	else {
- 		n = write_chan(line->chan_out, buf, len,
--			       line->driver->write_irq);
-+			       line->write_irq);
- 		if (n < 0) {
- 			ret = n;
- 			goto out_up;
-@@ -215,7 +215,7 @@ void line_throttle(struct tty_struct *tty)
- {
- 	struct line *line = tty->driver_data;
- 
--	deactivate_chan(line->chan_in, line->driver->read_irq);
-+	deactivate_chan(line->chan_in, line->read_irq);
- 	line->throttled = 1;
- }
- 
-@@ -224,7 +224,7 @@ void line_unthrottle(struct tty_struct *tty)
- 	struct line *line = tty->driver_data;
- 
- 	line->throttled = 0;
--	chan_interrupt(line, line->driver->read_irq);
-+	chan_interrupt(line, line->read_irq);
- }
- 
- static irqreturn_t line_write_interrupt(int irq, void *data)
-@@ -260,19 +260,23 @@ int line_setup_irq(int fd, int input, int output, struct line *line, void *data)
- 	int err;
- 
- 	if (input) {
--		err = um_request_irq(driver->read_irq, fd, IRQ_READ,
--				     line_interrupt, IRQF_SHARED,
-+		err = um_request_irq(UM_IRQ_ALLOC, fd, IRQ_READ,
-+				     line_interrupt, 0,
- 				     driver->read_irq_name, data);
- 		if (err < 0)
- 			return err;
-+
-+		line->read_irq = err;
- 	}
- 
- 	if (output) {
--		err = um_request_irq(driver->write_irq, fd, IRQ_WRITE,
--				     line_write_interrupt, IRQF_SHARED,
-+		err = um_request_irq(UM_IRQ_ALLOC, fd, IRQ_WRITE,
-+				     line_write_interrupt, 0,
- 				     driver->write_irq_name, data);
- 		if (err < 0)
- 			return err;
-+
-+		line->write_irq = err;
- 	}
- 
- 	return 0;
-diff --git a/arch/um/drivers/line.h b/arch/um/drivers/line.h
-index bdb16b96e76f..f15be75a3bf3 100644
---- a/arch/um/drivers/line.h
-+++ b/arch/um/drivers/line.h
-@@ -23,9 +23,7 @@ struct line_driver {
- 	const short minor_start;
- 	const short type;
- 	const short subtype;
--	const int read_irq;
- 	const char *read_irq_name;
--	const int write_irq;
- 	const char *write_irq_name;
- 	struct mc_device mc;
- 	struct tty_driver *driver;
-@@ -35,6 +33,8 @@ struct line {
- 	struct tty_port port;
- 	int valid;
- 
-+	int read_irq, write_irq;
-+
- 	char *init_str;
- 	struct list_head chan_list;
- 	struct chan *chan_in, *chan_out;
-diff --git a/arch/um/drivers/ssl.c b/arch/um/drivers/ssl.c
-index 41eae2e8fb65..8514966778d5 100644
---- a/arch/um/drivers/ssl.c
-+++ b/arch/um/drivers/ssl.c
-@@ -47,9 +47,7 @@ static struct line_driver driver = {
- 	.minor_start 		= 64,
- 	.type 		 	= TTY_DRIVER_TYPE_SERIAL,
- 	.subtype 	 	= 0,
--	.read_irq 		= SSL_IRQ,
- 	.read_irq_name 		= "ssl",
--	.write_irq 		= SSL_WRITE_IRQ,
- 	.write_irq_name 	= "ssl-write",
- 	.mc  = {
- 		.list		= LIST_HEAD_INIT(driver.mc.list),
-diff --git a/arch/um/drivers/stdio_console.c b/arch/um/drivers/stdio_console.c
-index e8b762f4d8c2..489d5a746ed3 100644
---- a/arch/um/drivers/stdio_console.c
-+++ b/arch/um/drivers/stdio_console.c
-@@ -53,9 +53,7 @@ static struct line_driver driver = {
- 	.minor_start 		= 0,
- 	.type 		 	= TTY_DRIVER_TYPE_CONSOLE,
- 	.subtype 	 	= SYSTEM_TYPE_CONSOLE,
--	.read_irq 		= CONSOLE_IRQ,
- 	.read_irq_name 		= "console",
--	.write_irq 		= CONSOLE_WRITE_IRQ,
- 	.write_irq_name 	= "console-write",
- 	.mc  = {
- 		.list		= LIST_HEAD_INIT(driver.mc.list),
-diff --git a/arch/um/include/asm/irq.h b/arch/um/include/asm/irq.h
-index e187c789369d..749dfe8512e8 100644
---- a/arch/um/include/asm/irq.h
-+++ b/arch/um/include/asm/irq.h
-@@ -4,19 +4,15 @@
- 
- #define TIMER_IRQ		0
- #define UMN_IRQ			1
--#define CONSOLE_IRQ		2
--#define CONSOLE_WRITE_IRQ	3
--#define UBD_IRQ			4
--#define UM_ETH_IRQ		5
--#define SSL_IRQ			6
--#define SSL_WRITE_IRQ		7
--#define ACCEPT_IRQ		8
--#define MCONSOLE_IRQ		9
--#define WINCH_IRQ		10
--#define SIGIO_WRITE_IRQ 	11
--#define TELNETD_IRQ 		12
--#define XTERM_IRQ 		13
--#define RANDOM_IRQ 		14
-+#define UBD_IRQ			2
-+#define UM_ETH_IRQ		3
-+#define ACCEPT_IRQ		4
-+#define MCONSOLE_IRQ		5
-+#define WINCH_IRQ		6
-+#define SIGIO_WRITE_IRQ 	7
-+#define TELNETD_IRQ 		8
-+#define XTERM_IRQ 		9
-+#define RANDOM_IRQ 		10
- 
- #ifdef CONFIG_UML_NET_VECTOR
- 
--- 
-2.35.1
-
+> Thanks,
+> Eric
+>
+> >
+> > [  812.151505] watchdog: BUG: soft lockup - CPU#3 stuck for 548s!
+> > [condvar_stress-:12152]
+> > [  812.151529] Modules linked in: snd_hda_codec_realtek
+> > snd_hda_codec_generic ledtrig_audio rfcomm cmac algif_hash
+> > algif_skcipher af_alg bnep dm_crypt intel_rapl_msr mei_hdcp
+> > snd_hda_codec_
+> > hdmi intel_rapl_common snd_hda_intel x86_pkg_temp_thermal
+> > snd_intel_dspcfg snd_intel_sdw_acpi nls_iso8859_1 intel_powerclamp
+> > snd_hda_codec coretemp snd_hda_core snd_hwdep snd_pcm rtl8723be
+> > btcoexist snd_seq_midi snd_seq_midi_event rtl8723_common kvm_intel
+> > rtl_pci snd_rawmidi rtlwifi btusb btrtl btbcm snd_seq kvm mac80211
+> > btintel btmtk snd_seq_device rapl bluetooth snd_timer i
+> > ntel_cstate hp_wmi cfg80211 serio_raw snd platform_profile
+> > ecdh_generic mei_me sparse_keymap efi_pstore wmi_bmof ee1004 joydev
+> > input_leds ecc libarc4 soundcore mei acpi_pad mac_hid sch_fq_c
+> > odel ipmi_devintf ipmi_msghandler msr vhost_vsock
+> > vmw_vsock_virtio_transport_common vsock vhost_net vhost vhost_iotlb
+> > tap vhci_hcd usbip_core parport_pc ppdev lp parport ip_tables x_tables
+> > autofs4 btrfs blake2b_generic xor raid6_pq zstd_compress
+> > [  812.151570]  libcrc32c hid_generic usbhid hid i915 drm_buddy
+> > i2c_algo_bit ttm drm_dp_helper cec rc_core crct10dif_pclmul
+> > drm_kms_helper crc32_pclmul syscopyarea ghash_clmulni_intel sysfi
+> > llrect sysimgblt fb_sys_fops aesni_intel crypto_simd cryptd r8169
+> > psmouse drm i2c_i801 realtek ahci i2c_smbus xhci_pci libahci
+> > xhci_pci_renesas wmi video
+> > [  812.151584] CPU: 3 PID: 12152 Comm: condvar_stress- Tainted: G
+> >     I  L    5.18.0-rc1+ #2
+> > [  812.151586] Hardware name: HP 750-280st/2B4B, BIOS A0.11 02/24/2016
+> > [  812.151587] RIP: 0010:_raw_spin_unlock_irq+0x15/0x40
+> > [  812.151591] Code: df e8 3f 1f 4a ff 90 5b 5d c3 66 66 2e 0f 1f 84
+> > 00 00 00 00 00 0f 1f 44 00 00 55 48 89 e5 c6 07 00 0f 1f 00 fb 0f 1f
+> > 44 00 00 <bf> 01 00 00 00 e8 41 95 46 ff 65 8b 05 9
+> > a c1 9a 5f 85 c0 74 02 5d
+> > [  812.151593] RSP: 0018:ffffa863c246bd70 EFLAGS: 00000246
+> > [  812.151594] RAX: ffff8bc0913f6400 RBX: ffff8bc0913f6400 RCX: 0000000000000000
+> > [  812.151595] RDX: 0000000000000002 RSI: 00000000000a0013 RDI: ffff8bc089b63180
+> > [  812.151596] RBP: ffffa863c246bd70 R08: ffff8bc0811d6b40 R09: ffff8bc089b63180
+> > [  812.151597] R10: 0000000000000000 R11: 0000000000000004 R12: ffff8bc0913f6400
+> > [  812.151597] R13: ffff8bc089b63180 R14: ffff8bc0913f6400 R15: ffffa863c246be68
+> > [  812.151598] FS:  00007f612dda5700(0000) GS:ffff8bc7e24c0000(0000)
+> > knlGS:0000000000000000
+> > [  812.151599] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [  812.151600] CR2: 000055e70715692e CR3: 000000010b4e8005 CR4: 00000000003706e4
+> > [  812.151601] Call Trace:
+> > [  812.151602]  <TASK>
+> > [  812.151604]  do_signal_stop+0x228/0x260
+> > [  812.151606]  get_signal+0x43a/0x8e0
+> > [  812.151608]  arch_do_signal_or_restart+0x37/0x7d0
+> > [  812.151610]  ? __this_cpu_preempt_check+0x13/0x20
+> > [  812.151612]  ? __perf_event_task_sched_in+0x81/0x230
+> > [  812.151616]  ? __this_cpu_preempt_check+0x13/0x20
+> > [  812.151617]  exit_to_user_mode_prepare+0x130/0x1a0
+> > [  812.151620]  syscall_exit_to_user_mode+0x26/0x40
+> > [  812.151621]  ret_from_fork+0x15/0x30
+> > [  812.151623] RIP: 0033:0x7f612dfcd125
+> > [  812.151625] Code: 48 85 ff 74 3d 48 85 f6 74 38 48 83 ee 10 48 89
+> > 4e 08 48 89 3e 48 89 d7 4c 89 c2 4d 89 c8 4c 8b 54 24 08 b8 38 00 00
+> > 00 0f 05 <48> 85 c0 7c 13 74 01 c3 31 ed 58 5f ff d
+> > 0 48 89 c7 b8 3c 00 00 00
+> > [  812.151626] RSP: 002b:00007f612dda4fb0 EFLAGS: 00000246 ORIG_RAX:
+> > 0000000000000038
+> > [  812.151628] RAX: 0000000000000000 RBX: 00007f612dda5700 RCX: ffffffffffffffff
+> > [  812.151628] RDX: 00007f612dda59d0 RSI: 00007f612dda4fb0 RDI: 00000000003d0f00
+> > [  812.151629] RBP: 00007ffd59ad20b0 R08: 00007f612dda5700 R09: 00007f612dda5700
+> > [  812.151630] R10: 00007f612dda59d0 R11: 0000000000000246 R12: 00007ffd59ad20ae
+> > [  812.151631] R13: 00007ffd59ad20af R14: 00007ffd59ad20b0 R15: 00007f612dda4fc0
+> > [  812.151632]  </TASK>
+> >
+> > - Kyle
 
 _______________________________________________
 linux-um mailing list
