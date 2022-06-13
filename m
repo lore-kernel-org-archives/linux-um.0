@@ -1,142 +1,52 @@
-Return-Path: <openrisc-bounces@lists.librecores.org>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V6 12/26] hexagon/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Date: Thu, 30 Jun 2022 10:46:16 +0530
-Message-Id: <20220630051630.1718927-13-anshuman.khandual@arm.com>
-In-Reply-To: <20220630051630.1718927-1-anshuman.khandual@arm.com>
-References: <20220630051630.1718927-1-anshuman.khandual@arm.com>
+Return-Path: <peterz@infradead.org>
+Date: Mon, 13 Jun 2022 10:41:27 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 21/36] x86/tdx: Remove TDX_HCALL_ISSUE_STI
+Message-ID: <Yqb4N3iwh1X7378o@hirez.programming.kicks-ass.net>
+References: <20220608142723.103523089@infradead.org>
+ <20220608144517.251109029@infradead.org>
+ <CAJhGHyCnu_BsKf5STMMJKMWm0NVZ8qXT8Qh=BhhCjSSgwchL3Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
- <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
-List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
-List-Post: <mailto:openrisc@lists.librecores.org>
-List-Help: <mailto:openrisc-request@lists.librecores.org?subject=help>
-List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
- <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
-Errors-To: openrisc-bounces@lists.librecores.org
-Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
-To: linux-mm@kvack.org, akpm@linux-foundation.org
-Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, Brian Cain <bcain@codeaurora.org>, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, Brian Cain <bcain@quicinc.com>, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJhGHyCnu_BsKf5STMMJKMWm0NVZ8qXT8Qh=BhhCjSSgwchL3Q@mail.gmail.com>
+To: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Richard Henderson <rth@twiddle.net>, ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@kernel.org, linux@armlinux.org.uk, ulli.kroll@googlemail.com, linus.walleij@linaro.org, shawnguo@kernel.org, Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com, tony@atomide.com, khilman@kernel.org, catalin.marinas@arm.com, Will Deacon <will@kernel.org>, guoren@kernel.org, bcain@quicinc.com, Huacai Chen <chenhuacai@kernel.org>, kernel@xen0n.name, geert@linux-m68k.org, sammy@sammy.net, monstr@monstr.eu, tsbogend@alpha.franken.de, dinguyen@kernel.org, jonas@southpole.se, stefan.kristiansson@saunalahti.fi, shorne@gmail.com, James.Bottomley@hansenpartnership.com, deller@gmx.de, Michael Ellerman <mpe@ellerman.id.au>, benh@kernel.crashing.org, paulus@samba.org, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com, borntraeger@linux.ibm.com, svens@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net, Richard Weinberger <richard@nod.at>, anton.ivanov@cambridgegreys.com, Johannes Berg <johannes@sipsolutions.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, acme <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, jolsa@kernel.org, Namhyung Kim <namhyung@kernel.org>, Juergen Gross <jgross@suse.com>, srivatsa@csail.mit.edu, amakhalov@vmware.com, VMware Inc <pv-drivers@vmware.com>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, chris@zankel.net, jcmvbkbc@gmail.com, rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz, gregkh@linuxfoundation.org, mturquette@baylibre.com, sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org, sudeep.holla@arm.com, agross@kernel.org, bjorn.andersson@linaro.org, Anup Patel <anup@brainfault.org>, thierry.reding@gmail.com, jonathanh@nvidia.com, jacob.jun.pan@linux.intel.com, Arnd Bergmann <arnd@arndb.de>, yury.norov@gmail.com, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, linux@rasmusvillemoes.dk, rostedt@goodmis.org, pmladek@suse.com, senozhatsky@chromium.org, john.ogness@linutronix.de, paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com, josh@joshtriplett.org, mathieu.desnoyers@efficios.com, joel@joelfernandes.org, juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, jpoimboe@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-xtensa@linux-xtensa.org, linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org, linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org, Isaku Yamahata <isaku.yamahata@gmail.com>, kirill.shutemov@linux.intel.com
 List-ID: <linux-um.lists.infradead.org>
 
-This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
-vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
-up a private and static protection_map[] array. Subsequently all __SXXX and
-__PXXX macros can be dropped which are no longer needed.
+On Mon, Jun 13, 2022 at 04:26:01PM +0800, Lai Jiangshan wrote:
+> On Wed, Jun 8, 2022 at 10:48 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > Now that arch_cpu_idle() is expected to return with IRQs disabled,
+> > avoid the useless STI/CLI dance.
+> >
+> > Per the specs this is supposed to work, but nobody has yet relied up
+> > this behaviour so broken implementations are possible.
+> 
+> I'm totally newbie here.
+> 
+> The point of safe_halt() is that STI must be used and be used
+> directly before HLT to enable IRQ during the halting and stop
+> the halting if there is any IRQ.
 
-Cc: Brian Cain <bcain@codeaurora.org>
-Cc: linux-hexagon@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Acked-by: Brian Cain <bcain@quicinc.com>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- arch/hexagon/Kconfig               |  1 +
- arch/hexagon/include/asm/pgtable.h | 27 -------------------
- arch/hexagon/mm/init.c             | 42 ++++++++++++++++++++++++++++++
- 3 files changed, 43 insertions(+), 27 deletions(-)
+Correct; on real hardware. But this is virt...
 
-diff --git a/arch/hexagon/Kconfig b/arch/hexagon/Kconfig
-index 54eadf265178..bc4ceecd0588 100644
---- a/arch/hexagon/Kconfig
-+++ b/arch/hexagon/Kconfig
-@@ -6,6 +6,7 @@ config HEXAGON
- 	def_bool y
- 	select ARCH_32BIT_OFF_T
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
-+	select ARCH_HAS_VM_GET_PAGE_PROT
- 	select ARCH_NO_PREEMPT
- 	select DMA_GLOBAL_POOL
- 	# Other pending projects/to-do items.
-diff --git a/arch/hexagon/include/asm/pgtable.h b/arch/hexagon/include/asm/pgtable.h
-index 0610724d6a28..f7048c18b6f9 100644
---- a/arch/hexagon/include/asm/pgtable.h
-+++ b/arch/hexagon/include/asm/pgtable.h
-@@ -126,33 +126,6 @@ extern unsigned long _dflt_cache_att;
-  */
- #define CACHEDEF	(CACHE_DEFAULT << 6)
- 
--/* Private (copy-on-write) page protections. */
--#define __P000 __pgprot(_PAGE_PRESENT | _PAGE_USER | CACHEDEF)
--#define __P001 __pgprot(_PAGE_PRESENT | _PAGE_USER | _PAGE_READ | CACHEDEF)
--#define __P010 __P000	/* Write-only copy-on-write */
--#define __P011 __P001	/* Read/Write copy-on-write */
--#define __P100 __pgprot(_PAGE_PRESENT | _PAGE_USER | \
--			_PAGE_EXECUTE | CACHEDEF)
--#define __P101 __pgprot(_PAGE_PRESENT | _PAGE_USER | _PAGE_EXECUTE | \
--			_PAGE_READ | CACHEDEF)
--#define __P110 __P100	/* Write/execute copy-on-write */
--#define __P111 __P101	/* Read/Write/Execute, copy-on-write */
--
--/* Shared page protections. */
--#define __S000 __P000
--#define __S001 __P001
--#define __S010 __pgprot(_PAGE_PRESENT | _PAGE_USER | \
--			_PAGE_WRITE | CACHEDEF)
--#define __S011 __pgprot(_PAGE_PRESENT | _PAGE_USER | _PAGE_READ | \
--			_PAGE_WRITE | CACHEDEF)
--#define __S100 __pgprot(_PAGE_PRESENT | _PAGE_USER | \
--			_PAGE_EXECUTE | CACHEDEF)
--#define __S101 __P101
--#define __S110 __pgprot(_PAGE_PRESENT | _PAGE_USER | \
--			_PAGE_EXECUTE | _PAGE_WRITE | CACHEDEF)
--#define __S111 __pgprot(_PAGE_PRESENT | _PAGE_USER | _PAGE_READ | \
--			_PAGE_EXECUTE | _PAGE_WRITE | CACHEDEF)
--
- extern pgd_t swapper_pg_dir[PTRS_PER_PGD];  /* located in head.S */
- 
- /*  HUGETLB not working currently  */
-diff --git a/arch/hexagon/mm/init.c b/arch/hexagon/mm/init.c
-index 3167a3b5c97b..146115c9de61 100644
---- a/arch/hexagon/mm/init.c
-+++ b/arch/hexagon/mm/init.c
-@@ -234,3 +234,45 @@ void __init setup_arch_memory(void)
- 	 *  which is called by start_kernel() later on in the process
- 	 */
- }
-+
-+static const pgprot_t protection_map[16] = {
-+	[VM_NONE]					= __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+								   CACHEDEF),
-+	[VM_READ]					= __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+								   _PAGE_READ | CACHEDEF),
-+	[VM_WRITE]					= __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+								   CACHEDEF),
-+	[VM_WRITE | VM_READ]				= __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+								   _PAGE_READ | CACHEDEF),
-+	[VM_EXEC]					= __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+								   _PAGE_EXECUTE | CACHEDEF),
-+	[VM_EXEC | VM_READ]				= __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+								   _PAGE_EXECUTE | _PAGE_READ |
-+								   CACHEDEF),
-+	[VM_EXEC | VM_WRITE]				= __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+								   _PAGE_EXECUTE | CACHEDEF),
-+	[VM_EXEC | VM_WRITE | VM_READ]			= __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+								   _PAGE_EXECUTE | _PAGE_READ |
-+								   CACHEDEF),
-+	[VM_SHARED]                                     = __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+								   CACHEDEF),
-+	[VM_SHARED | VM_READ]				= __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+								   _PAGE_READ | CACHEDEF),
-+	[VM_SHARED | VM_WRITE]				= __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+								   _PAGE_WRITE | CACHEDEF),
-+	[VM_SHARED | VM_WRITE | VM_READ]		= __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+								   _PAGE_READ | _PAGE_WRITE |
-+								   CACHEDEF),
-+	[VM_SHARED | VM_EXEC]				= __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+								   _PAGE_EXECUTE | CACHEDEF),
-+	[VM_SHARED | VM_EXEC | VM_READ]			= __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+								   _PAGE_EXECUTE | _PAGE_READ |
-+								   CACHEDEF),
-+	[VM_SHARED | VM_EXEC | VM_WRITE]		= __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+								   _PAGE_EXECUTE | _PAGE_WRITE |
-+								   CACHEDEF),
-+	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= __pgprot(_PAGE_PRESENT | _PAGE_USER |
-+								   _PAGE_READ | _PAGE_EXECUTE |
-+								   _PAGE_WRITE | CACHEDEF)
-+};
-+DECLARE_VM_GET_PAGE_PROT
--- 
-2.25.1
+> In TDX case, STI must be used directly before the hypercall.
+> Otherwise, no IRQ can come and the vcpu would be stalled forever.
+> 
+> Although the hypercall has an "irq_disabled" argument.
+> But the hypervisor doesn't (and can't) touch the IRQ flags no matter
+> what the "irq_disabled" argument is.  The IRQ is not enabled during
+> the halting if the IRQ is disabled before the hypercall even if
+> irq_disabled=false.
 
+All we need the VMM to do is wake the vCPU, and it can do that,
+irrespective of the guest's IF.
+
+So the VMM can (and does) know if there's an interrupt pending, and
+that's all that's needed to wake from this hypercall. Once the vCPU is
+back up and running again, we'll eventually set IF again and the pending
+interrupt will get delivered and all's well.
+
+Think of this like MWAIT with ECX[0] set if you will.
 
