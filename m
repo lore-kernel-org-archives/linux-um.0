@@ -1,161 +1,40 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Subject: Re: [PATCH 29/36] cpuidle,xenpv: Make more PARAVIRT_XXL noinstr clean
+Return-Path: <namit@vmware.com>
+From: Nadav Amit <namit@vmware.com>
+Subject: Re: [Pv-drivers] [PATCH 29/36] cpuidle,	xenpv: Make more PARAVIRT_XXL
+ noinstr clean
+Date: Mon, 13 Jun 2022 19:23:13 +0000
+Message-ID: <BAE566A0-AEA3-493E-8AC5-912C795BF1DE@vmware.com>
 References: <20220608142723.103523089@infradead.org>
  <20220608144517.759631860@infradead.org>
-From: "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-Message-ID: <510b9b68-7d53-7d4d-5a05-37fbd199eb4b@csail.mit.edu>
-Date: Mon, 13 Jun 2022 20:48:49 +0200
-MIME-Version: 1.0
-In-Reply-To: <20220608144517.759631860@infradead.org>
-Content-Type: text/plain; charset=utf-8
+ <510b9b68-7d53-7d4d-5a05-37fbd199eb4b@csail.mit.edu>
+In-Reply-To: <510b9b68-7d53-7d4d-5a05-37fbd199eb4b@csail.mit.edu>
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@kernel.org, linux@armlinux.org.uk, ulli.kroll@googlemail.com, linus.walleij@linaro.org, shawnguo@kernel.org, Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com, tony@atomide.com, khilman@kernel.org, catalin.marinas@arm.com, will@kernel.org, guoren@kernel.org, bcain@quicinc.com, chenhuacai@kernel.org, kernel@xen0n.name, geert@linux-m68k.org, sammy@sammy.net, monstr@monstr.eu, tsbogend@alpha.franken.de, dinguyen@kernel.org, jonas@southpole.se, stefan.kristiansson@saunalahti.fi, shorne@gmail.com, James.Bottomley@HansenPartnership.com, deller@gmx.de, mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org, paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com, borntraeger@linux.ibm.com, svens@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, acme@kernel.org, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org, namhyung@kernel.org, jgross@suse.com, amakhalov@vmware.com, pv-drivers@vmware.com, boris.ostrovsky@oracle.com, chris@zankel.net, jcmvbkbc@gmail.com, rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz, gregkh@linuxfoundation.org, mturquette@baylibre.com, sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org, sudeep.holla@arm.com, agross@kernel.org, bjorn.andersson@linaro.org, anup@brainfault.org, thierry.reding@gmail.com, jonathanh@nvidia.com, jacob.jun.pan@linux.intel.com, Arnd Bergmann <arnd@arndb.de>, yury.norov@gmail.com, andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk, rostedt@goodmis.org, pmladek@suse.com, senozhatsky@chromium.org, john.ogness@linutronix.de, paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com, josh@joshtriplett.org, mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com, joel@joelfernandes.org, juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, jpoimboe@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-xtensa@linux-xtensa.org, linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org, linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <342EB95D035E904BB3A2D5C393810F2D@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+To: "srivatsa@csail.mit.edu" <srivatsa@csail.mit.edu>
+Cc: Peter Zijlstra <peterz@infradead.org>, "juri.lelli@redhat.com" <juri.lelli@redhat.com>, "rafael@kernel.org" <rafael@kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, "linus.walleij@linaro.org" <linus.walleij@linaro.org>, "bsegall@google.com" <bsegall@google.com>, "guoren@kernel.org" <guoren@kernel.org>, "pavel@ucw.cz" <pavel@ucw.cz>, "agordeev@linux.ibm.com" <agordeev@linux.ibm.com>, "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>, "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>, "mpe@ellerman.id.au" <mpe@ellerman.id.au>, "chenhuacai@kernel.org" <chenhuacai@kernel.org>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, "agross@kernel.org" <agross@kernel.org>, "geert@linux-m68k.org" <geert@linux-m68k.org>, "linux-imx@nxp.com" <linux-imx@nxp.com>, Catalin Marinas <catalin.marinas@arm.com>, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>, "mattst88@gmail.com" <mattst88@gmail.com>, "borntraeger@linux.ibm.com" <borntraeger@linux.ibm.com>, "mturquette@baylibre.com" <mturquette@baylibre.com>, "sammy@sammy.net" <sammy@sammy.net>, "pmladek@suse.com" <pmladek@suse.com>, "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>, Sascha Hauer <s.hauer@pengutronix.de>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "acme@kernel.org" <acme@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>, "rth@twiddle.net" <rth@twiddle.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, LKML <linux-kernel@vger.kernel.org>, "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>, "senozhatsky@chromium.org" <senozhatsky@chromium.org>, "svens@linux.ibm.com" <svens@linux.ibm.com>, "jolsa@kernel.org" <jolsa@kernel.org>, "paulus@samba.org" <paulus@samba.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, Linux Virtualization <virtualization@lists.linux-foundation.org>, "James.Bottomley@hansenpartnership.com" <James.Bottomley@HansenPartnership.com>, "jcmvbkbc@gmail.com" <jcmvbkbc@gmail.com>, "thierry.reding@gmail.com" <thierry.reding@gmail.com>, "kernel@xen0n.name" <kernel@xen0n.name>, "quic_neeraju@quicinc.com" <quic_neeraju@quicinc.com>, linux-s390 <linux-s390@vger.kernel.org>, "vschneid@redhat.com" <vschneid@redhat.com>, "john.ogness@linutronix.de" <john.ogness@linutronix.de>, "ysato@users.sourceforge.jp" <ysato@users.sourceforge.jp>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "festevam@gmail.com" <festevam@gmail.com>, "deller@gmx.de" <deller@gmx.de>, "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>, "jonathanh@nvidia.com" <jonathanh@nvidia.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, "frederic@kernel.org" <frederic@kernel.org>, "lenb@kernel.org" <lenb@kernel.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "kernel@pengutronix.de" <kernel@pengutronix.de>, "gor@linux.ibm.com" <gor@linux.ibm.com>, "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, "shorne@gmail.com" <shorne@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "chris@zankel.net" <chris@zankel.net>, "sboyd@kernel.org" <sboyd@kernel.org>, "dinguyen@kernel.org" <dinguyen@kernel.org>, "bristot@redhat.com" <bristot@redhat.com>, "alexander.shishkin@linux.intel.com" <alexander.shishkin@linux.intel.com>, "lpieralisi@kernel.org" <lpieralisi@kernel.org>, "linux@rasmusvillemoes.dk" <linux@rasmusvillemoes.dk>, "joel@joelfernandes.org" <joel@joelfernandes.org>, Will Deacon <will@kernel.org>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, "khilman@kernel.org" <khilman@kernel.org>, "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>, Pv-drivers <Pv-drivers@vmware.com>, "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>, Mel Gorman <mgorman@suse.de>, "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>, Arnd Bergmann <arnd@arndb.de>, "ulli.kroll@googlemail.com" <ulli.kroll@googlemail.com>, "vgupta@kernel.org" <vgupta@kernel.org>, "josh@joshtriplett.org" <josh@joshtriplett.org>, Steven Rostedt <rostedt@goodmis.org>, "rcu@vger.kernel.org" <rcu@vger.kernel.org>, Borislav Petkov <bp@alien8.de>, "bcain@quicinc.com" <bcain@quicinc.com>, "tsbogend@alpha.franken.de" <tsbogend@alpha.franken.de>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "sudeep.holla@arm.com" <sudeep.holla@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>, "davem@davemloft.net" <davem@davemloft.net>, "dalias@libc.org" <dalias@libc.org>, "tony@atomide.com" <tony@atomide.com>, "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>, "H. Peter Anvin" <hpa@zytor.com>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "jonas@southpole.se" <jonas@southpole.se>, "yury.norov@gmail.com" <yury.norov@gmail.com>, "richard@nod.at" <richard@nod.at>, X86 ML <x86@kernel.org>, "linux@armlinux.org.uk" <linux@armlinux.org.uk>, Ingo Molnar <mingo@redhat.com>, "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>, "paulmck@kernel.org" <paulmck@kernel.org>, "hca@linux.ibm.com" <hca@linux.ibm.com>, "stefan.kristiansson@saunalahti.fi" <stefan.kristiansson@saunalahti.fi>, "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>, "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "namhyung@kernel.org" <namhyung@kernel.org>, "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>, "jpoimboe@kernel.org" <jpoimboe@kernel.org>, Juergen Gross <jgross@suse.com>, "monstr@monstr.eu" <monstr@monstr.eu>, "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>, "palmer@dabbelt.com" <palmer@dabbelt.com>, "anup@brainfault.org" <anup@brainfault.org>, "ink@jurassic.park.msu.ru" <ink@jurassic.park.msu.ru>, "johannes@sipsolutions.net" <johannes@sipsolutions.net>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
 List-ID: <linux-um.lists.infradead.org>
 
-On 6/8/22 4:27 PM, Peter Zijlstra wrote:
-> vmlinux.o: warning: objtool: acpi_idle_enter_s2idle+0xde: call to wbinvd() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: default_idle+0x4: call to arch_safe_halt() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: xen_safe_halt+0xa: call to HYPERVISOR_sched_op.constprop.0() leaves .noinstr.text section
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-
-Reviewed-by: Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
-
-
-Regards,
-Srivatsa
-VMware Photon OS
-
-> ---
->  arch/x86/include/asm/paravirt.h      |    6 ++++--
->  arch/x86/include/asm/special_insns.h |    4 ++--
->  arch/x86/include/asm/xen/hypercall.h |    2 +-
->  arch/x86/kernel/paravirt.c           |   14 ++++++++++++--
->  arch/x86/xen/enlighten_pv.c          |    2 +-
->  arch/x86/xen/irq.c                   |    2 +-
->  6 files changed, 21 insertions(+), 9 deletions(-)
-> 
-> --- a/arch/x86/include/asm/paravirt.h
-> +++ b/arch/x86/include/asm/paravirt.h
-> @@ -168,7 +168,7 @@ static inline void __write_cr4(unsigned
->  	PVOP_VCALL1(cpu.write_cr4, x);
->  }
->  
-> -static inline void arch_safe_halt(void)
-> +static __always_inline void arch_safe_halt(void)
->  {
->  	PVOP_VCALL0(irq.safe_halt);
->  }
-> @@ -178,7 +178,9 @@ static inline void halt(void)
->  	PVOP_VCALL0(irq.halt);
->  }
->  
-> -static inline void wbinvd(void)
-> +extern noinstr void pv_native_wbinvd(void);
-> +
-> +static __always_inline void wbinvd(void)
->  {
->  	PVOP_ALT_VCALL0(cpu.wbinvd, "wbinvd", ALT_NOT(X86_FEATURE_XENPV));
->  }
-> --- a/arch/x86/include/asm/special_insns.h
-> +++ b/arch/x86/include/asm/special_insns.h
-> @@ -115,7 +115,7 @@ static inline void wrpkru(u32 pkru)
->  }
->  #endif
->  
-> -static inline void native_wbinvd(void)
-> +static __always_inline void native_wbinvd(void)
->  {
->  	asm volatile("wbinvd": : :"memory");
->  }
-> @@ -179,7 +179,7 @@ static inline void __write_cr4(unsigned
->  	native_write_cr4(x);
->  }
->  
-> -static inline void wbinvd(void)
-> +static __always_inline void wbinvd(void)
->  {
->  	native_wbinvd();
->  }
-> --- a/arch/x86/include/asm/xen/hypercall.h
-> +++ b/arch/x86/include/asm/xen/hypercall.h
-> @@ -382,7 +382,7 @@ MULTI_stack_switch(struct multicall_entr
->  }
->  #endif
->  
-> -static inline int
-> +static __always_inline int
->  HYPERVISOR_sched_op(int cmd, void *arg)
->  {
->  	return _hypercall2(int, sched_op, cmd, arg);
-> --- a/arch/x86/kernel/paravirt.c
-> +++ b/arch/x86/kernel/paravirt.c
-> @@ -233,6 +233,11 @@ static noinstr void pv_native_set_debugr
->  	native_set_debugreg(regno, val);
->  }
->  
-> +noinstr void pv_native_wbinvd(void)
-> +{
-> +	native_wbinvd();
-> +}
-> +
->  static noinstr void pv_native_irq_enable(void)
->  {
->  	native_irq_enable();
-> @@ -242,6 +247,11 @@ static noinstr void pv_native_irq_disabl
->  {
->  	native_irq_disable();
->  }
-> +
-> +static noinstr void pv_native_safe_halt(void)
-> +{
-> +	native_safe_halt();
-> +}
->  #endif
->  
->  enum paravirt_lazy_mode paravirt_get_lazy_mode(void)
-> @@ -273,7 +283,7 @@ struct paravirt_patch_template pv_ops =
->  	.cpu.read_cr0		= native_read_cr0,
->  	.cpu.write_cr0		= native_write_cr0,
->  	.cpu.write_cr4		= native_write_cr4,
-> -	.cpu.wbinvd		= native_wbinvd,
-> +	.cpu.wbinvd		= pv_native_wbinvd,
->  	.cpu.read_msr		= native_read_msr,
->  	.cpu.write_msr		= native_write_msr,
->  	.cpu.read_msr_safe	= native_read_msr_safe,
-> @@ -307,7 +317,7 @@ struct paravirt_patch_template pv_ops =
->  	.irq.save_fl		= __PV_IS_CALLEE_SAVE(native_save_fl),
->  	.irq.irq_disable	= __PV_IS_CALLEE_SAVE(pv_native_irq_disable),
->  	.irq.irq_enable		= __PV_IS_CALLEE_SAVE(pv_native_irq_enable),
-> -	.irq.safe_halt		= native_safe_halt,
-> +	.irq.safe_halt		= pv_native_safe_halt,
->  	.irq.halt		= native_halt,
->  #endif /* CONFIG_PARAVIRT_XXL */
->  
-> --- a/arch/x86/xen/enlighten_pv.c
-> +++ b/arch/x86/xen/enlighten_pv.c
-> @@ -1019,7 +1019,7 @@ static const typeof(pv_ops) xen_cpu_ops
->  
->  		.write_cr4 = xen_write_cr4,
->  
-> -		.wbinvd = native_wbinvd,
-> +		.wbinvd = pv_native_wbinvd,
->  
->  		.read_msr = xen_read_msr,
->  		.write_msr = xen_write_msr,
-> --- a/arch/x86/xen/irq.c
-> +++ b/arch/x86/xen/irq.c
-> @@ -24,7 +24,7 @@ noinstr void xen_force_evtchn_callback(v
->  	(void)HYPERVISOR_xen_version(0, NULL);
->  }
->  
-> -static void xen_safe_halt(void)
-> +static noinstr void xen_safe_halt(void)
->  {
->  	/* Blocking includes an implicit local_irq_enable(). */
->  	if (HYPERVISOR_sched_op(SCHEDOP_block, NULL) != 0)
-> 
-> 
+T24gSnVuIDEzLCAyMDIyLCBhdCAxMTo0OCBBTSwgU3JpdmF0c2EgUy4gQmhhdCA8c3JpdmF0c2FA
+Y3NhaWwubWl0LmVkdT4gd3JvdGU6DQoNCj4g4pqgIEV4dGVybmFsIEVtYWlsDQo+IA0KPiBPbiA2
+LzgvMjIgNDoyNyBQTSwgUGV0ZXIgWmlqbHN0cmEgd3JvdGU6DQo+PiB2bWxpbnV4Lm86IHdhcm5p
+bmc6IG9ianRvb2w6IGFjcGlfaWRsZV9lbnRlcl9zMmlkbGUrMHhkZTogY2FsbCB0byB3YmludmQo
+KSBsZWF2ZXMgLm5vaW5zdHIudGV4dCBzZWN0aW9uDQo+PiB2bWxpbnV4Lm86IHdhcm5pbmc6IG9i
+anRvb2w6IGRlZmF1bHRfaWRsZSsweDQ6IGNhbGwgdG8gYXJjaF9zYWZlX2hhbHQoKSBsZWF2ZXMg
+Lm5vaW5zdHIudGV4dCBzZWN0aW9uDQo+PiB2bWxpbnV4Lm86IHdhcm5pbmc6IG9ianRvb2w6IHhl
+bl9zYWZlX2hhbHQrMHhhOiBjYWxsIHRvIEhZUEVSVklTT1Jfc2NoZWRfb3AuY29uc3Rwcm9wLjAo
+KSBsZWF2ZXMgLm5vaW5zdHIudGV4dCBzZWN0aW9uDQo+PiANCj4+IFNpZ25lZC1vZmYtYnk6IFBl
+dGVyIFppamxzdHJhIChJbnRlbCkgPHBldGVyekBpbmZyYWRlYWQub3JnPg0KPiANCj4gUmV2aWV3
+ZWQtYnk6IFNyaXZhdHNhIFMuIEJoYXQgKFZNd2FyZSkgPHNyaXZhdHNhQGNzYWlsLm1pdC5lZHU+
+DQo+IA0KPj4gDQo+PiAtc3RhdGljIGlubGluZSB2b2lkIHdiaW52ZCh2b2lkKQ0KPj4gK2V4dGVy
+biBub2luc3RyIHZvaWQgcHZfbmF0aXZlX3diaW52ZCh2b2lkKTsNCj4+ICsNCj4+ICtzdGF0aWMg
+X19hbHdheXNfaW5saW5lIHZvaWQgd2JpbnZkKHZvaWQpDQo+PiB7DQo+PiAgICAgIFBWT1BfQUxU
+X1ZDQUxMMChjcHUud2JpbnZkLCAid2JpbnZkIiwgQUxUX05PVChYODZfRkVBVFVSRV9YRU5QVikp
+Ow0KPj4gfQ0KDQpJIGd1ZXNzIGl0IGlzIHlldCBhbm90aGVyIGluc3RhbmNlIG9mIHdyb25nIGFj
+Y291bnRpbmcgb2YgR0NDIGZvcg0KdGhlIGFzc2VtYmx5IGJsb2Nrc+KAmSB3ZWlnaHQuIEkgZ3Vl
+c3MgaXQgaXMgbm90IGEgc29sdXRpb24gZm9yIG9sZGVyDQpHQ0NzLCBidXQgcHJlc3VtYWJseSBf
+X19fUFZPUF9BTFRfQ0FMTCgpIGFuZCBmcmllbmRzIHNob3VsZCBoYXZlDQp1c2VkIGFzbV9pbmxp
+bmUgb3Igc29tZSBuZXcg4oCcYXNtX3ZvbGF0aWxlX2lubGluZeKAnSB2YXJpYW50Lg0KDQo=
 
