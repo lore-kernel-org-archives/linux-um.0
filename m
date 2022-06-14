@@ -1,137 +1,68 @@
-Return-Path: <openrisc-bounces@lists.librecores.org>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V4 09/26] loongarch/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Date: Fri, 24 Jun 2022 10:13:22 +0530
-Message-Id: <20220624044339.1533882-10-anshuman.khandual@arm.com>
-In-Reply-To: <20220624044339.1533882-1-anshuman.khandual@arm.com>
-References: <20220624044339.1533882-1-anshuman.khandual@arm.com>
+Return-Path: <linux-clk-owner@vger.kernel.org>
+Date: Tue, 14 Jun 2022 17:53:25 +0100
+From: Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH 15/36] cpuidle,cpu_pm: Remove RCU fiddling from
+ cpu_pm_{enter,exit}()
+Message-ID: <Yqi9BTTnlbcUsD5c@FVFF77S0Q05N>
+References: <20220608142723.103523089@infradead.org>
+ <20220608144516.871305980@infradead.org>
+ <YqiznJL7qB9uSQ9c@FVFF77S0Q05N>
+ <Yqi6Zp+DTm22dLB9@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
- <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
-List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
-List-Post: <mailto:openrisc@lists.librecores.org>
-List-Help: <mailto:openrisc-request@lists.librecores.org?subject=help>
-List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
- <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
-Errors-To: openrisc-bounces@lists.librecores.org
-Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
-To: linux-mm@kvack.org
-Cc: Huacai Chen <chenhuacai@kernel.org>, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, WANG Xuerui <kernel@xen0n.name>, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Yqi6Zp+DTm22dLB9@hirez.programming.kicks-ass.net>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@kernel.org, linux@armlinux.org.uk, ulli.kroll@googlemail.com, linus.walleij@linaro.org, shawnguo@kernel.org, Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com, tony@atomide.com, khilman@kernel.org, catalin.marinas@arm.com, will@kernel.org, guoren@kernel.org, bcain@quicinc.com, chenhuacai@kernel.org, kernel@xen0n.name, geert@linux-m68k.org, sammy@sammy.net, monstr@monstr.eu, tsbogend@alpha.franken.de, dinguyen@kernel.org, jonas@southpole.se, stefan.kristiansson@saunalahti.fi, shorne@gmail.com, James.Bottomley@hansenpartnership.com, deller@gmx.de, mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org, paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com, borntraeger@linux.ibm.com, svens@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, acme@kernel.org, alexander.shishkin@linux.intel.com, jolsa@kernel.org, namhyung@kernel.org, jgross@suse.com, srivatsa@csail.mit.edu, amakhalov@vmware.com, pv-drivers@vmware.com, boris.ostrovsky@oracle.com, chris@zankel.net, jcmvbkbc@gmail.com, rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz, gregkh@linuxfoundation.org, mturquette@baylibre.com, sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org, sudeep.holla@arm.com, agross@kernel.org, bjorn.andersson@linaro.org, anup@brainfault.org, thierry.reding@gmail.com, jonathanh@nvidia.com, jacob.jun.pan@linux.intel.com, Arnd Bergmann <arnd@arndb.de>, yury.norov@gmail.com, andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk, rostedt@goodmis.org, pmladek@suse.com, senozhatsky@chromium.org, john.ogness@linutronix.de, paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com, josh@joshtriplett.org, mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com, joel@joelfernandes.org, juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, jpoimboe@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-xtensa@linux-xtensa.org, linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org, linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org
 List-ID: <linux-um.lists.infradead.org>
 
-This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
-vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
-up a private and static protection_map[] array. Subsequently all __SXXX and
-__PXXX macros can be dropped which are no longer needed.
+On Tue, Jun 14, 2022 at 06:42:14PM +0200, Peter Zijlstra wrote:
+> On Tue, Jun 14, 2022 at 05:13:16PM +0100, Mark Rutland wrote:
+> > On Wed, Jun 08, 2022 at 04:27:38PM +0200, Peter Zijlstra wrote:
+> > > All callers should still have RCU enabled.
+> > 
+> > IIUC with that true we should be able to drop the RCU_NONIDLE() from
+> > drivers/perf/arm_pmu.c, as we only needed that for an invocation via a pm
+> > notifier.
+> > 
+> > I should be able to give that a spin on some hardware.
+> > 
+> > > 
+> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > > ---
+> > >  kernel/cpu_pm.c |    9 ---------
+> > >  1 file changed, 9 deletions(-)
+> > > 
+> > > --- a/kernel/cpu_pm.c
+> > > +++ b/kernel/cpu_pm.c
+> > > @@ -30,16 +30,9 @@ static int cpu_pm_notify(enum cpu_pm_eve
+> > >  {
+> > >  	int ret;
+> > >  
+> > > -	/*
+> > > -	 * This introduces a RCU read critical section, which could be
+> > > -	 * disfunctional in cpu idle. Copy RCU_NONIDLE code to let RCU know
+> > > -	 * this.
+> > > -	 */
+> > > -	rcu_irq_enter_irqson();
+> > >  	rcu_read_lock();
+> > >  	ret = raw_notifier_call_chain(&cpu_pm_notifier.chain, event, NULL);
+> > >  	rcu_read_unlock();
+> > > -	rcu_irq_exit_irqson();
+> > 
+> > To make this easier to debug, is it worth adding an assertion that RCU is
+> > watching here? e.g.
+> > 
+> > 	RCU_LOCKDEP_WARN(!rcu_is_watching(),
+> > 			 "cpu_pm_notify() used illegally from EQS");
+> > 
+> 
+> My understanding is that rcu_read_lock() implies something along those
+> lines when PROVE_RCU.
 
-Cc: Huacai Chen <chenhuacai@kernel.org>
-Cc: WANG Xuerui <kernel@xen0n.name>
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- arch/loongarch/Kconfig                    |  1 +
- arch/loongarch/include/asm/pgtable-bits.h | 19 ----------
- arch/loongarch/mm/cache.c                 | 46 +++++++++++++++++++++++
- 3 files changed, 47 insertions(+), 19 deletions(-)
+Ah, duh. Given that:
 
-diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-index 1920d52653b4..fd07b8e760ee 100644
---- a/arch/loongarch/Kconfig
-+++ b/arch/loongarch/Kconfig
-@@ -9,6 +9,7 @@ config LOONGARCH
- 	select ARCH_HAS_ACPI_TABLE_UPGRADE	if ACPI
- 	select ARCH_HAS_PHYS_TO_DMA
- 	select ARCH_HAS_PTE_SPECIAL
-+	select ARCH_HAS_VM_GET_PAGE_PROT
- 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
- 	select ARCH_INLINE_READ_LOCK if !PREEMPTION
- 	select ARCH_INLINE_READ_LOCK_BH if !PREEMPTION
-diff --git a/arch/loongarch/include/asm/pgtable-bits.h b/arch/loongarch/include/asm/pgtable-bits.h
-index 3badd112d9ab..9ca147a29bab 100644
---- a/arch/loongarch/include/asm/pgtable-bits.h
-+++ b/arch/loongarch/include/asm/pgtable-bits.h
-@@ -83,25 +83,6 @@
- 				 _PAGE_GLOBAL | _PAGE_KERN |  _CACHE_SUC)
- #define PAGE_KERNEL_WUC __pgprot(_PAGE_PRESENT | __READABLE | __WRITEABLE | \
- 				 _PAGE_GLOBAL | _PAGE_KERN |  _CACHE_WUC)
--
--#define __P000 __pgprot(_CACHE_CC | _PAGE_USER | _PAGE_PROTNONE | _PAGE_NO_EXEC | _PAGE_NO_READ)
--#define __P001 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT | _PAGE_NO_EXEC)
--#define __P010 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT | _PAGE_NO_EXEC)
--#define __P011 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT | _PAGE_NO_EXEC)
--#define __P100 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT)
--#define __P101 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT)
--#define __P110 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT)
--#define __P111 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT)
--
--#define __S000 __pgprot(_CACHE_CC | _PAGE_USER | _PAGE_PROTNONE | _PAGE_NO_EXEC | _PAGE_NO_READ)
--#define __S001 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT | _PAGE_NO_EXEC)
--#define __S010 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE)
--#define __S011 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE)
--#define __S100 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT)
--#define __S101 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT)
--#define __S110 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT | _PAGE_WRITE)
--#define __S111 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT | _PAGE_WRITE)
--
- #ifndef __ASSEMBLY__
- 
- #define pgprot_noncached pgprot_noncached
-diff --git a/arch/loongarch/mm/cache.c b/arch/loongarch/mm/cache.c
-index 9e5ce5aa73f7..aa4ea357ea44 100644
---- a/arch/loongarch/mm/cache.c
-+++ b/arch/loongarch/mm/cache.c
-@@ -139,3 +139,49 @@ void cpu_cache_init(void)
- 
- 	shm_align_mask = PAGE_SIZE - 1;
- }
-+
-+static pgprot_t protection_map[16] __ro_after_init = {
-+	[VM_NONE]					= __pgprot(_CACHE_CC | _PAGE_USER |
-+								   _PAGE_PROTNONE | _PAGE_NO_EXEC |
-+								   _PAGE_NO_READ),
-+	[VM_READ]					= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT |
-+								   _PAGE_NO_EXEC),
-+	[VM_WRITE]					= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT |
-+								   _PAGE_NO_EXEC),
-+	[VM_WRITE | VM_READ]				= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT |
-+								   _PAGE_NO_EXEC),
-+	[VM_EXEC]					= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT),
-+	[VM_EXEC | VM_READ]				= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT),
-+	[VM_EXEC | VM_WRITE]				= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT),
-+	[VM_EXEC | VM_WRITE | VM_READ]			= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT),
-+	[VM_SHARED]					= __pgprot(_CACHE_CC | _PAGE_USER |
-+								   _PAGE_PROTNONE | _PAGE_NO_EXEC |
-+								   _PAGE_NO_READ),
-+	[VM_SHARED | VM_READ]				= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT |
-+								   _PAGE_NO_EXEC),
-+	[VM_SHARED | VM_WRITE]				= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT |
-+								   _PAGE_NO_EXEC | _PAGE_WRITE),
-+	[VM_SHARED | VM_WRITE | VM_READ]		= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT |
-+								   _PAGE_NO_EXEC | _PAGE_WRITE),
-+	[VM_SHARED | VM_EXEC]				= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT),
-+	[VM_SHARED | VM_EXEC | VM_READ]			= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT),
-+	[VM_SHARED | VM_EXEC | VM_WRITE]		= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT |
-+								   _PAGE_WRITE),
-+	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT |
-+								   _PAGE_WRITE)
-+};
-+DECLARE_VM_GET_PAGE_PROT
--- 
-2.25.1
+Acked-by: Mark Rutland <mark.rutland@arm.com>
 
+Mark.
 
