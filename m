@@ -1,127 +1,76 @@
-Return-Path: <openrisc-bounces@lists.librecores.org>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V6 23/26] arm/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Date: Thu, 30 Jun 2022 10:46:27 +0530
-Message-Id: <20220630051630.1718927-24-anshuman.khandual@arm.com>
-In-Reply-To: <20220630051630.1718927-1-anshuman.khandual@arm.com>
-References: <20220630051630.1718927-1-anshuman.khandual@arm.com>
+Return-Path: <SRS0=jzGX=WW=paulmck-ThinkPad-P17-Gen-1.home=paulmck@kernel.org>
+Date: Tue, 14 Jun 2022 17:44:12 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH 16/36] rcu: Fix rcu_idle_exit()
+Message-ID: <20220615004412.GA5766@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20220608142723.103523089@infradead.org>
+ <20220608144516.935970247@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
- <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
-List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
-List-Post: <mailto:openrisc@lists.librecores.org>
-List-Help: <mailto:openrisc-request@lists.librecores.org?subject=help>
-List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
- <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
-Errors-To: openrisc-bounces@lists.librecores.org
-Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
-To: linux-mm@kvack.org, akpm@linux-foundation.org
-Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, Russell King <linux@armlinux.org.uk>, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Arnd Bergmann <arnd@arndb.de>, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220608144516.935970247@infradead.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@kernel.org, linux@armlinux.org.uk, ulli.kroll@googlemail.com, linus.walleij@linaro.org, shawnguo@kernel.org, Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com, tony@atomide.com, khilman@kernel.org, catalin.marinas@arm.com, will@kernel.org, guoren@kernel.org, bcain@quicinc.com, chenhuacai@kernel.org, kernel@xen0n.name, geert@linux-m68k.org, sammy@sammy.net, monstr@monstr.eu, tsbogend@alpha.franken.de, dinguyen@kernel.org, jonas@southpole.se, stefan.kristiansson@saunalahti.fi, shorne@gmail.com, James.Bottomley@HansenPartnership.com, deller@gmx.de, mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org, paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com, borntraeger@linux.ibm.com, svens@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, acme@kernel.org, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org, namhyung@kernel.org, jgross@suse.com, srivatsa@csail.mit.edu, amakhalov@vmware.com, pv-drivers@vmware.com, boris.ostrovsky@oracle.com, chris@zankel.net, jcmvbkbc@gmail.com, rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz, gregkh@linuxfoundation.org, mturquette@baylibre.com, sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org, sudeep.holla@arm.com, agross@kernel.org, bjorn.andersson@linaro.org, anup@brainfault.org, thierry.reding@gmail.com, jonathanh@nvidia.com, jacob.jun.pan@linux.intel.com, Arnd Bergmann <arnd@arndb.de>, yury.norov@gmail.com, andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk, rostedt@goodmis.org, pmladek@suse.com, senozhatsky@chromium.org, john.ogness@linutronix.de, frederic@kernel.org, quic_neeraju@quicinc.com, josh@joshtriplett.org, mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com, joel@joelfernandes.org, juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, jpoimboe@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-xtensa@linux-xtensa.org, linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org, linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org
 List-ID: <linux-um.lists.infradead.org>
 
-This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
-vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
-up a private and static protection_map[] array. Subsequently all __SXXX and
-__PXXX macros can be dropped which are no longer needed.
+On Wed, Jun 08, 2022 at 04:27:39PM +0200, Peter Zijlstra wrote:
+> Current rcu_idle_exit() is terminally broken because it uses
+> local_irq_{save,restore}(), which are traced which uses RCU.
+> 
+> However, now that all the callers are sure to have IRQs disabled, we
+> can remove these calls.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Acked-by: Paul E. McKenney <paulmck@kernel.org>
 
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- arch/arm/Kconfig                   |  1 +
- arch/arm/include/asm/pgtable.h     | 17 -----------------
- arch/arm/lib/uaccess_with_memcpy.c |  2 +-
- arch/arm/mm/mmu.c                  | 20 ++++++++++++++++++++
- 4 files changed, 22 insertions(+), 18 deletions(-)
+We have some fun conflicts between this series and Frederic's context-tracking
+series.  But it looks like these can be resolved by:
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 7630ba9cb6cc..e153b6d4fc5b 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -24,6 +24,7 @@ config ARM
- 	select ARCH_HAS_SYNC_DMA_FOR_CPU if SWIOTLB || !MMU
- 	select ARCH_HAS_TEARDOWN_DMA_OPS if MMU
- 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
-+	select ARCH_HAS_VM_GET_PAGE_PROT
- 	select ARCH_HAVE_CUSTOM_GPIO_H
- 	select ARCH_HAVE_NMI_SAFE_CMPXCHG if CPU_V7 || CPU_V7M || CPU_V6K
- 	select ARCH_HAS_GCOV_PROFILE_ALL
-diff --git a/arch/arm/include/asm/pgtable.h b/arch/arm/include/asm/pgtable.h
-index cd1f84bb40ae..78a532068fec 100644
---- a/arch/arm/include/asm/pgtable.h
-+++ b/arch/arm/include/asm/pgtable.h
-@@ -137,23 +137,6 @@ extern pgprot_t phys_mem_access_prot(struct file *file, unsigned long pfn,
-  *  2) If we could do execute protection, then read is implied
-  *  3) write implies read permissions
+1.	A patch on top of Frederic's series that provides the old rcu_*()
+	names for the functions now prefixed with ct_*() such as
+	ct_idle_exit().
+
+2.	Another patch on top of Frederic's series that takes the
+	changes remaining from this patch, shown below.  Frederic's
+	series uses raw_local_irq_save() and raw_local_irq_restore(),
+	which can then be removed.
+
+Or is there a better way to do this?
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit f64cee8c159e9863a74594efe3d33fb513a6a7b5
+Author: Peter Zijlstra <peterz@infradead.org>
+Date:   Tue Jun 14 17:24:43 2022 -0700
+
+    context_tracking: Interrupts always disabled for ct_idle_exit()
+    
+    Now that the idle-loop cleanups have ensured that rcu_idle_exit() is
+    always invoked with interrupts disabled, remove the interrupt disabling
+    in favor of a debug check.
+    
+    Signed-off-by: Peter Zijlstra <peterz@infradead.org>
+    Cc: Frederic Weisbecker <frederic@kernel.org>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/context_tracking.c b/kernel/context_tracking.c
+index 1da44803fd319..99310cf5b0254 100644
+--- a/kernel/context_tracking.c
++++ b/kernel/context_tracking.c
+@@ -332,11 +332,8 @@ EXPORT_SYMBOL_GPL(ct_idle_enter);
   */
--#define __P000  __PAGE_NONE
--#define __P001  __PAGE_READONLY
--#define __P010  __PAGE_COPY
--#define __P011  __PAGE_COPY
--#define __P100  __PAGE_READONLY_EXEC
--#define __P101  __PAGE_READONLY_EXEC
--#define __P110  __PAGE_COPY_EXEC
--#define __P111  __PAGE_COPY_EXEC
+ void noinstr ct_idle_exit(void)
+ {
+-	unsigned long flags;
 -
--#define __S000  __PAGE_NONE
--#define __S001  __PAGE_READONLY
--#define __S010  __PAGE_SHARED
--#define __S011  __PAGE_SHARED
--#define __S100  __PAGE_READONLY_EXEC
--#define __S101  __PAGE_READONLY_EXEC
--#define __S110  __PAGE_SHARED_EXEC
--#define __S111  __PAGE_SHARED_EXEC
- 
- #ifndef __ASSEMBLY__
- /*
-diff --git a/arch/arm/lib/uaccess_with_memcpy.c b/arch/arm/lib/uaccess_with_memcpy.c
-index c30b689bec2e..14eecaaf295f 100644
---- a/arch/arm/lib/uaccess_with_memcpy.c
-+++ b/arch/arm/lib/uaccess_with_memcpy.c
-@@ -237,7 +237,7 @@ static int __init test_size_treshold(void)
- 	if (!dst_page)
- 		goto no_dst;
- 	kernel_ptr = page_address(src_page);
--	user_ptr = vmap(&dst_page, 1, VM_IOREMAP, __pgprot(__P010));
-+	user_ptr = vmap(&dst_page, 1, VM_IOREMAP, __pgprot(__PAGE_COPY));
- 	if (!user_ptr)
- 		goto no_vmap;
- 
-diff --git a/arch/arm/mm/mmu.c b/arch/arm/mm/mmu.c
-index 5e2be37a198e..2722abddd725 100644
---- a/arch/arm/mm/mmu.c
-+++ b/arch/arm/mm/mmu.c
-@@ -405,6 +405,26 @@ void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, pgprot_t prot)
- 	local_flush_tlb_kernel_range(vaddr, vaddr + PAGE_SIZE);
+-	raw_local_irq_save(flags);
++	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) && !raw_irqs_disabled());
+ 	ct_kernel_enter(false, RCU_DYNTICKS_IDX - CONTEXT_IDLE);
+-	raw_local_irq_restore(flags);
  }
+ EXPORT_SYMBOL_GPL(ct_idle_exit);
  
-+static pgprot_t protection_map[16] __ro_after_init = {
-+	[VM_NONE]					= __PAGE_NONE,
-+	[VM_READ]					= __PAGE_READONLY,
-+	[VM_WRITE]					= __PAGE_COPY,
-+	[VM_WRITE | VM_READ]				= __PAGE_COPY,
-+	[VM_EXEC]					= __PAGE_READONLY_EXEC,
-+	[VM_EXEC | VM_READ]				= __PAGE_READONLY_EXEC,
-+	[VM_EXEC | VM_WRITE]				= __PAGE_COPY_EXEC,
-+	[VM_EXEC | VM_WRITE | VM_READ]			= __PAGE_COPY_EXEC,
-+	[VM_SHARED]					= __PAGE_NONE,
-+	[VM_SHARED | VM_READ]				= __PAGE_READONLY,
-+	[VM_SHARED | VM_WRITE]				= __PAGE_SHARED,
-+	[VM_SHARED | VM_WRITE | VM_READ]		= __PAGE_SHARED,
-+	[VM_SHARED | VM_EXEC]				= __PAGE_READONLY_EXEC,
-+	[VM_SHARED | VM_EXEC | VM_READ]			= __PAGE_READONLY_EXEC,
-+	[VM_SHARED | VM_EXEC | VM_WRITE]		= __PAGE_SHARED_EXEC,
-+	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= __PAGE_SHARED_EXEC
-+};
-+DECLARE_VM_GET_PAGE_PROT
-+
- /*
-  * Adjust the PMD section entries according to the CPU in use.
-  */
--- 
-2.25.1
-
 
