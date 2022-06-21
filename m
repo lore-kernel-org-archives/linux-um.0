@@ -1,15 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42])
+Received: from sym.noone.org ([178.63.92.236] helo=sym2.noone.org)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o4ZV0-00HUpV-Kd
-	for linux-um@lists.infradead.org; Fri, 24 Jun 2022 02:56:48 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v10 06/41] virtio_ring: extract the logic of freeing vring
-Date: Fri, 24 Jun 2022 10:55:46 +0800
-Message-Id: <20220624025621.128843-7-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
-References: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
-MIME-Version: 1.0
+	id 1o3b0k-004qBN-LF
+	for linux-um@lists.infradead.org; Tue, 21 Jun 2022 10:21:31 +0000
+From: Tobias Klauser <tklauser@distanz.ch>
+Subject: [PATCH] um: remove unused mm_copy_segments
+Date: Tue, 21 Jun 2022 12:21:18 +0200
+Message-Id: <20220621102118.15803-1-tklauser@distanz.ch>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,64 +15,42 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+To: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
 
-Introduce vring_free() to free the vring of vq.
+It was already removed by commit c17c02040bf0 ("arch: remove unused
+*_segments() macros/functions") but seems to have been accidentally
+reintroduced by commit 0500871f21b2 ("Construct init thread stack in the
+linker script rather than by union"). Remove it for good.
 
-Subsequent patches will use vring_free() alone.
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
+Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
 ---
- drivers/virtio/virtio_ring.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+ arch/um/include/asm/processor-generic.h | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 1376956040d9..9338c01df1bf 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -2285,14 +2285,10 @@ struct virtqueue *vring_new_virtqueue(unsigned int index,
- }
- EXPORT_SYMBOL_GPL(vring_new_virtqueue);
- 
--void vring_del_virtqueue(struct virtqueue *_vq)
-+static void vring_free(struct virtqueue *_vq)
+diff --git a/arch/um/include/asm/processor-generic.h b/arch/um/include/asm/processor-generic.h
+index 6a4fe8b4e686..d0fc1862da95 100644
+--- a/arch/um/include/asm/processor-generic.h
++++ b/arch/um/include/asm/processor-generic.h
+@@ -59,11 +59,6 @@ static inline void release_thread(struct task_struct *task)
  {
- 	struct vring_virtqueue *vq = to_vvq(_vq);
- 
--	spin_lock(&vq->vq.vdev->vqs_list_lock);
--	list_del(&_vq->list);
--	spin_unlock(&vq->vq.vdev->vqs_list_lock);
--
- 	if (vq->we_own_ring) {
- 		if (vq->packed_ring) {
- 			vring_free_queue(vq->vq.vdev,
-@@ -2323,6 +2319,18 @@ void vring_del_virtqueue(struct virtqueue *_vq)
- 		kfree(vq->split.desc_state);
- 		kfree(vq->split.desc_extra);
- 	}
-+}
-+
-+void vring_del_virtqueue(struct virtqueue *_vq)
-+{
-+	struct vring_virtqueue *vq = to_vvq(_vq);
-+
-+	spin_lock(&vq->vq.vdev->vqs_list_lock);
-+	list_del(&_vq->list);
-+	spin_unlock(&vq->vq.vdev->vqs_list_lock);
-+
-+	vring_free(_vq);
-+
- 	kfree(vq);
  }
- EXPORT_SYMBOL_GPL(vring_del_virtqueue);
+ 
+-static inline void mm_copy_segments(struct mm_struct *from_mm,
+-				    struct mm_struct *new_mm)
+-{
+-}
+-
+ /*
+  * User space process size: 3GB (default).
+  */
 -- 
-2.31.0
+2.36.1
 
 
 _______________________________________________
