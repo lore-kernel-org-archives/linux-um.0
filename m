@@ -1,108 +1,66 @@
-Return-Path: <openrisc-bounces@lists.librecores.org>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V5 08/26] microblaze/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Date: Mon, 27 Jun 2022 10:28:15 +0530
-Message-Id: <20220627045833.1590055-9-anshuman.khandual@arm.com>
-In-Reply-To: <20220627045833.1590055-1-anshuman.khandual@arm.com>
-References: <20220627045833.1590055-1-anshuman.khandual@arm.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from madras.collabora.co.uk ([46.235.227.172])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1o4Igb-00EDke-Pb
+	for linux-um@lists.infradead.org; Thu, 23 Jun 2022 08:59:39 +0000
+From: Christopher Obbard <chris.obbard@collabora.com>
+Subject: [PATCH] um: random: Don't initialise hwrng struct with zero
+Date: Thu, 23 Jun 2022 09:58:42 +0100
+Message-Id: <20220623085842.238829-1-chris.obbard@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
- <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
-List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
-List-Post: <mailto:openrisc@lists.librecores.org>
-List-Help: <mailto:openrisc-request@lists.librecores.org?subject=help>
-List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
- <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
-Errors-To: openrisc-bounces@lists.librecores.org
-Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
-To: linux-mm@kvack.org
-Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, Michal Simek <monstr@monstr.eu>, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: linux-um@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, kernel@collabora.com, Christopher Obbard <chris.obbard@collabora.com>, kernel test robot <lkp@intel.com>
 
-This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
-vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
-up a private and static protection_map[] array. Subsequently all __SXXX and
-__PXXX macros can be dropped which are no longer needed.
+Initialising the hwrng struct with zeros causes a
+compile-time sparse warning:
 
-Cc: Michal Simek <monstr@monstr.eu>
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+ $ ARCH=um make -j10 W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
+ ...
+ CHECK   arch/um/drivers/random.c
+ arch/um/drivers/random.c:31:31: sparse: warning: Using plain integer as NULL pointer
+
+Fix the warning by not initialising the hwrng struct
+with zeros as it is initialised anyway during module
+init.
+
+Fixes: 72d3e093afae ("um: random: Register random as hwrng-core device")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Christopher Obbard <chris.obbard@collabora.com>
 ---
- arch/microblaze/Kconfig               |  1 +
- arch/microblaze/include/asm/pgtable.h | 17 -----------------
- arch/microblaze/mm/init.c             | 20 ++++++++++++++++++++
- 3 files changed, 21 insertions(+), 17 deletions(-)
+ arch/um/drivers/random.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/microblaze/Kconfig b/arch/microblaze/Kconfig
-index 8cf429ad1c84..15f91ba8a0c4 100644
---- a/arch/microblaze/Kconfig
-+++ b/arch/microblaze/Kconfig
-@@ -7,6 +7,7 @@ config MICROBLAZE
- 	select ARCH_HAS_GCOV_PROFILE_ALL
- 	select ARCH_HAS_SYNC_DMA_FOR_CPU
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
-+	select ARCH_HAS_VM_GET_PAGE_PROT
- 	select ARCH_MIGHT_HAVE_PC_PARPORT
- 	select ARCH_WANT_IPC_PARSE_VERSION
- 	select BUILDTIME_TABLE_SORT
-diff --git a/arch/microblaze/include/asm/pgtable.h b/arch/microblaze/include/asm/pgtable.h
-index 0c72646370e1..ba348e997dbb 100644
---- a/arch/microblaze/include/asm/pgtable.h
-+++ b/arch/microblaze/include/asm/pgtable.h
-@@ -204,23 +204,6 @@ extern pte_t *va_to_pte(unsigned long address);
-  * We consider execute permission the same as read.
-  * Also, write permissions imply read permissions.
+diff --git a/arch/um/drivers/random.c b/arch/um/drivers/random.c
+index 433a3f8f2ef3..32b3341fe970 100644
+--- a/arch/um/drivers/random.c
++++ b/arch/um/drivers/random.c
+@@ -28,7 +28,7 @@
+  * protects against a module being loaded twice at the same time.
   */
--#define __P000	PAGE_NONE
--#define __P001	PAGE_READONLY_X
--#define __P010	PAGE_COPY
--#define __P011	PAGE_COPY_X
--#define __P100	PAGE_READONLY
--#define __P101	PAGE_READONLY_X
--#define __P110	PAGE_COPY
--#define __P111	PAGE_COPY_X
--
--#define __S000	PAGE_NONE
--#define __S001	PAGE_READONLY_X
--#define __S010	PAGE_SHARED
--#define __S011	PAGE_SHARED_X
--#define __S100	PAGE_READONLY
--#define __S101	PAGE_READONLY_X
--#define __S110	PAGE_SHARED
--#define __S111	PAGE_SHARED_X
+ static int random_fd = -1;
+-static struct hwrng hwrng = { 0, };
++static struct hwrng hwrng;
+ static DECLARE_COMPLETION(have_data);
  
- #ifndef __ASSEMBLY__
- /*
-diff --git a/arch/microblaze/mm/init.c b/arch/microblaze/mm/init.c
-index f4e503461d24..353fabdfcbc5 100644
---- a/arch/microblaze/mm/init.c
-+++ b/arch/microblaze/mm/init.c
-@@ -285,3 +285,23 @@ void * __ref zalloc_maybe_bootmem(size_t size, gfp_t mask)
- 
- 	return p;
- }
-+
-+static const pgprot_t protection_map[16] = {
-+	[VM_NONE]					= PAGE_NONE,
-+	[VM_READ]					= PAGE_READONLY_X,
-+	[VM_WRITE]					= PAGE_COPY,
-+	[VM_WRITE | VM_READ]				= PAGE_COPY_X,
-+	[VM_EXEC]					= PAGE_READONLY,
-+	[VM_EXEC | VM_READ]				= PAGE_READONLY_X,
-+	[VM_EXEC | VM_WRITE]				= PAGE_COPY,
-+	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY_X,
-+	[VM_SHARED]					= PAGE_NONE,
-+	[VM_SHARED | VM_READ]				= PAGE_READONLY_X,
-+	[VM_SHARED | VM_WRITE]				= PAGE_SHARED,
-+	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED_X,
-+	[VM_SHARED | VM_EXEC]				= PAGE_READONLY,
-+	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY_X,
-+	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED,
-+	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED_X
-+};
-+DECLARE_VM_GET_PAGE_PROT
+ static int rng_dev_read(struct hwrng *rng, void *buf, size_t max, bool block)
 -- 
-2.25.1
+2.36.1
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
