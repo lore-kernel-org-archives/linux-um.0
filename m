@@ -1,66 +1,110 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from madras.collabora.co.uk ([46.235.227.172])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o4Igb-00EDke-Pb
-	for linux-um@lists.infradead.org; Thu, 23 Jun 2022 08:59:39 +0000
-From: Christopher Obbard <chris.obbard@collabora.com>
-Subject: [PATCH] um: random: Don't initialise hwrng struct with zero
-Date: Thu, 23 Jun 2022 09:58:42 +0100
-Message-Id: <20220623085842.238829-1-chris.obbard@collabora.com>
+Return-Path: <openrisc-bounces@lists.librecores.org>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH V4 18/26] s390/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+Date: Fri, 24 Jun 2022 10:13:31 +0530
+Message-Id: <20220624044339.1533882-19-anshuman.khandual@arm.com>
+In-Reply-To: <20220624044339.1533882-1-anshuman.khandual@arm.com>
+References: <20220624044339.1533882-1-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, kernel@collabora.com, Christopher Obbard <chris.obbard@collabora.com>, kernel test robot <lkp@intel.com>
+Content-Transfer-Encoding: 8bit
+List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
+List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
+List-Post: <mailto:openrisc@lists.librecores.org>
+List-Help: <mailto:openrisc-request@lists.librecores.org?subject=help>
+List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
+Errors-To: openrisc-bounces@lists.librecores.org
+Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
+To: linux-mm@kvack.org
+Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Vasily Gorbik <gor@linux.ibm.com>, Anshuman Khandual <anshuman.khandual@arm.com>, Heiko Carstens <hca@linux.ibm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org
+List-ID: <linux-um.lists.infradead.org>
 
-Initialising the hwrng struct with zeros causes a
-compile-time sparse warning:
+This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
+vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
+up a private and static protection_map[] array. Subsequently all __SXXX and
+__PXXX macros can be dropped which are no longer needed.
 
- $ ARCH=um make -j10 W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
- ...
- CHECK   arch/um/drivers/random.c
- arch/um/drivers/random.c:31:31: sparse: warning: Using plain integer as NULL pointer
-
-Fix the warning by not initialising the hwrng struct
-with zeros as it is initialised anyway during module
-init.
-
-Fixes: 72d3e093afae ("um: random: Register random as hwrng-core device")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Christopher Obbard <chris.obbard@collabora.com>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: linux-s390@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- arch/um/drivers/random.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/s390/Kconfig               |  1 +
+ arch/s390/include/asm/pgtable.h | 17 -----------------
+ arch/s390/mm/mmap.c             | 20 ++++++++++++++++++++
+ 3 files changed, 21 insertions(+), 17 deletions(-)
 
-diff --git a/arch/um/drivers/random.c b/arch/um/drivers/random.c
-index 433a3f8f2ef3..32b3341fe970 100644
---- a/arch/um/drivers/random.c
-+++ b/arch/um/drivers/random.c
-@@ -28,7 +28,7 @@
-  * protects against a module being loaded twice at the same time.
+diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+index 91c0b80a8bf0..c4481377ca83 100644
+--- a/arch/s390/Kconfig
++++ b/arch/s390/Kconfig
+@@ -81,6 +81,7 @@ config S390
+ 	select ARCH_HAS_SYSCALL_WRAPPER
+ 	select ARCH_HAS_UBSAN_SANITIZE_ALL
+ 	select ARCH_HAS_VDSO_DATA
++	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+ 	select ARCH_INLINE_READ_LOCK
+ 	select ARCH_INLINE_READ_LOCK_BH
+diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
+index a397b072a580..c63a05b5368a 100644
+--- a/arch/s390/include/asm/pgtable.h
++++ b/arch/s390/include/asm/pgtable.h
+@@ -424,23 +424,6 @@ static inline int is_module_addr(void *addr)
+  * implies read permission.
   */
- static int random_fd = -1;
--static struct hwrng hwrng = { 0, };
-+static struct hwrng hwrng;
- static DECLARE_COMPLETION(have_data);
+          /*xwr*/
+-#define __P000	PAGE_NONE
+-#define __P001	PAGE_RO
+-#define __P010	PAGE_RO
+-#define __P011	PAGE_RO
+-#define __P100	PAGE_RX
+-#define __P101	PAGE_RX
+-#define __P110	PAGE_RX
+-#define __P111	PAGE_RX
+-
+-#define __S000	PAGE_NONE
+-#define __S001	PAGE_RO
+-#define __S010	PAGE_RW
+-#define __S011	PAGE_RW
+-#define __S100	PAGE_RX
+-#define __S101	PAGE_RX
+-#define __S110	PAGE_RWX
+-#define __S111	PAGE_RWX
  
- static int rng_dev_read(struct hwrng *rng, void *buf, size_t max, bool block)
+ /*
+  * Segment entry (large page) protection definitions.
+diff --git a/arch/s390/mm/mmap.c b/arch/s390/mm/mmap.c
+index d545f5c39f7e..c745b545012b 100644
+--- a/arch/s390/mm/mmap.c
++++ b/arch/s390/mm/mmap.c
+@@ -188,3 +188,23 @@ void arch_pick_mmap_layout(struct mm_struct *mm, struct rlimit *rlim_stack)
+ 		mm->get_unmapped_area = arch_get_unmapped_area_topdown;
+ 	}
+ }
++
++static pgprot_t protection_map[16] __ro_after_init = {
++	[VM_NONE]					= PAGE_NONE,
++	[VM_READ]					= PAGE_RO,
++	[VM_WRITE]					= PAGE_RO,
++	[VM_WRITE | VM_READ]				= PAGE_RO,
++	[VM_EXEC]					= PAGE_RX,
++	[VM_EXEC | VM_READ]				= PAGE_RX,
++	[VM_EXEC | VM_WRITE]				= PAGE_RX,
++	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_RX,
++	[VM_SHARED]					= PAGE_NONE,
++	[VM_SHARED | VM_READ]				= PAGE_RO,
++	[VM_SHARED | VM_WRITE]				= PAGE_RW,
++	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_RW,
++	[VM_SHARED | VM_EXEC]				= PAGE_RX,
++	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_RX,
++	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_RWX,
++	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_RWX
++};
++DECLARE_VM_GET_PAGE_PROT
 -- 
-2.36.1
+2.25.1
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
