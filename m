@@ -1,64 +1,100 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o4ZW2-00HW1p-Rn
-	for linux-um@lists.infradead.org; Fri, 24 Jun 2022 02:57:52 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v10 37/41] virtio_net: get ringparam by virtqueue_get_vring_max_size()
-Date: Fri, 24 Jun 2022 10:56:17 +0800
-Message-Id: <20220624025621.128843-38-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
-References: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
+Return-Path: <openrisc-bounces@lists.librecores.org>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH V4 20/26] mips/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+Date: Fri, 24 Jun 2022 10:13:33 +0530
+Message-Id: <20220624044339.1533882-21-anshuman.khandual@arm.com>
+In-Reply-To: <20220624044339.1533882-1-anshuman.khandual@arm.com>
+References: <20220624044339.1533882-1-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+Content-Transfer-Encoding: 8bit
+List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
+List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
+List-Post: <mailto:openrisc@lists.librecores.org>
+List-Help: <mailto:openrisc-request@lists.librecores.org?subject=help>
+List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
+Errors-To: openrisc-bounces@lists.librecores.org
+Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
+To: linux-mm@kvack.org
+Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org
+List-ID: <linux-um.lists.infradead.org>
 
-Use virtqueue_get_vring_max_size() in virtnet_get_ringparam() to set
-tx,rx_max_pending.
+This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
+vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
+up a private and static protection_map[] array. Subsequently all __SXXX and
+__PXXX macros can be dropped which are no longer needed.
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- drivers/net/virtio_net.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/mips/Kconfig               |  1 +
+ arch/mips/include/asm/pgtable.h | 22 ----------------------
+ arch/mips/mm/cache.c            |  3 +++
+ 3 files changed, 4 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index c320d5e0bf6c..c3e2ab5704b4 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -2254,10 +2254,10 @@ static void virtnet_get_ringparam(struct net_device *dev,
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index db09d45d59ec..d0b7eb11ec81 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -14,6 +14,7 @@ config MIPS
+ 	select ARCH_HAS_STRNLEN_USER
+ 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
+ 	select ARCH_HAS_UBSAN_SANITIZE_ALL
++	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_HAS_GCOV_PROFILE_ALL
+ 	select ARCH_KEEP_MEMBLOCK
+ 	select ARCH_SUPPORTS_UPROBES
+diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
+index 374c6322775d..6caec386ad2f 100644
+--- a/arch/mips/include/asm/pgtable.h
++++ b/arch/mips/include/asm/pgtable.h
+@@ -41,28 +41,6 @@ struct vm_area_struct;
+  * by reasonable means..
+  */
+ 
+-/*
+- * Dummy values to fill the table in mmap.c
+- * The real values will be generated at runtime
+- */
+-#define __P000 __pgprot(0)
+-#define __P001 __pgprot(0)
+-#define __P010 __pgprot(0)
+-#define __P011 __pgprot(0)
+-#define __P100 __pgprot(0)
+-#define __P101 __pgprot(0)
+-#define __P110 __pgprot(0)
+-#define __P111 __pgprot(0)
+-
+-#define __S000 __pgprot(0)
+-#define __S001 __pgprot(0)
+-#define __S010 __pgprot(0)
+-#define __S011 __pgprot(0)
+-#define __S100 __pgprot(0)
+-#define __S101 __pgprot(0)
+-#define __S110 __pgprot(0)
+-#define __S111 __pgprot(0)
+-
+ extern unsigned long _page_cachable_default;
+ extern void __update_cache(unsigned long address, pte_t pte);
+ 
+diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
+index 7be7240f7703..11b3e7ddafd5 100644
+--- a/arch/mips/mm/cache.c
++++ b/arch/mips/mm/cache.c
+@@ -159,6 +159,9 @@ EXPORT_SYMBOL(_page_cachable_default);
+ 
+ #define PM(p)	__pgprot(_page_cachable_default | (p))
+ 
++static pgprot_t protection_map[16] __ro_after_init;
++DECLARE_VM_GET_PAGE_PROT
++
+ static inline void setup_protection_map(void)
  {
- 	struct virtnet_info *vi = netdev_priv(dev);
- 
--	ring->rx_max_pending = virtqueue_get_vring_size(vi->rq[0].vq);
--	ring->tx_max_pending = virtqueue_get_vring_size(vi->sq[0].vq);
--	ring->rx_pending = ring->rx_max_pending;
--	ring->tx_pending = ring->tx_max_pending;
-+	ring->rx_max_pending = virtqueue_get_vring_max_size(vi->rq[0].vq);
-+	ring->tx_max_pending = virtqueue_get_vring_max_size(vi->sq[0].vq);
-+	ring->rx_pending = virtqueue_get_vring_size(vi->rq[0].vq);
-+	ring->tx_pending = virtqueue_get_vring_size(vi->sq[0].vq);
- }
- 
- static bool virtnet_commit_rss_command(struct virtnet_info *vi)
+ 	protection_map[0]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
 -- 
-2.31.0
+2.25.1
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
