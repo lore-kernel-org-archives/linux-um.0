@@ -1,100 +1,189 @@
-Return-Path: <openrisc-bounces@lists.librecores.org>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V5 05/26] arm64/mm: Move protection_map[] inside the platform
-Date: Mon, 27 Jun 2022 10:28:12 +0530
-Message-Id: <20220627045833.1590055-6-anshuman.khandual@arm.com>
-In-Reply-To: <20220627045833.1590055-1-anshuman.khandual@arm.com>
-References: <20220627045833.1590055-1-anshuman.khandual@arm.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1o4ZUw-00HUoW-RN
+	for linux-um@lists.infradead.org; Fri, 24 Jun 2022 02:56:44 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v10 07/41] virtio_ring: split vring_virtqueue
+Date: Fri, 24 Jun 2022 10:55:47 +0800
+Message-Id: <20220624025621.128843-8-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
+References: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
- <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
-List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
-List-Post: <mailto:openrisc@lists.librecores.org>
-List-Help: <mailto:openrisc-request@lists.librecores.org?subject=help>
-List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
- <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
-Errors-To: openrisc-bounces@lists.librecores.org
-Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
-To: linux-mm@kvack.org
-Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, Will Deacon <will@kernel.org>, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: virtualization@lists.linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-This moves protection_map[] inside the platform and makes it a static.
+Separate the two inline structures(split and packed) from the structure
+vring_virtqueue.
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+In this way, we can use these two structures later to pass parameters
+and retain temporary variables.
+
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- arch/arm64/include/asm/pgtable-prot.h | 18 ------------------
- arch/arm64/mm/mmap.c                  | 21 +++++++++++++++++++++
- 2 files changed, 21 insertions(+), 18 deletions(-)
+ drivers/virtio/virtio_ring.c | 122 ++++++++++++++++++-----------------
+ 1 file changed, 63 insertions(+), 59 deletions(-)
 
-diff --git a/arch/arm64/include/asm/pgtable-prot.h b/arch/arm64/include/asm/pgtable-prot.h
-index 62e0ebeed720..9b165117a454 100644
---- a/arch/arm64/include/asm/pgtable-prot.h
-+++ b/arch/arm64/include/asm/pgtable-prot.h
-@@ -89,24 +89,6 @@ extern bool arm64_use_ng_mappings;
- #define PAGE_READONLY_EXEC	__pgprot(_PAGE_DEFAULT | PTE_USER | PTE_RDONLY | PTE_NG | PTE_PXN)
- #define PAGE_EXECONLY		__pgprot(_PAGE_DEFAULT | PTE_RDONLY | PTE_NG | PTE_PXN)
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 9338c01df1bf..973892606144 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -85,6 +85,67 @@ struct vring_desc_extra {
+ 	u16 next;			/* The next desc state in a list. */
+ };
  
--#define __P000  PAGE_NONE
--#define __P001  PAGE_READONLY
--#define __P010  PAGE_READONLY
--#define __P011  PAGE_READONLY
--#define __P100  PAGE_READONLY_EXEC	/* PAGE_EXECONLY if Enhanced PAN */
--#define __P101  PAGE_READONLY_EXEC
--#define __P110  PAGE_READONLY_EXEC
--#define __P111  PAGE_READONLY_EXEC
--
--#define __S000  PAGE_NONE
--#define __S001  PAGE_READONLY
--#define __S010  PAGE_SHARED
--#define __S011  PAGE_SHARED
--#define __S100  PAGE_READONLY_EXEC	/* PAGE_EXECONLY if Enhanced PAN */
--#define __S101  PAGE_READONLY_EXEC
--#define __S110  PAGE_SHARED_EXEC
--#define __S111  PAGE_SHARED_EXEC
--
- #endif /* __ASSEMBLY__ */
- 
- #endif /* __ASM_PGTABLE_PROT_H */
-diff --git a/arch/arm64/mm/mmap.c b/arch/arm64/mm/mmap.c
-index 78e9490f748d..8f5b7ce857ed 100644
---- a/arch/arm64/mm/mmap.c
-+++ b/arch/arm64/mm/mmap.c
-@@ -13,6 +13,27 @@
- #include <asm/cpufeature.h>
- #include <asm/page.h>
- 
-+static pgprot_t protection_map[16] __ro_after_init = {
-+	[VM_NONE]					= PAGE_NONE,
-+	[VM_READ]					= PAGE_READONLY,
-+	[VM_WRITE]					= PAGE_READONLY,
-+	[VM_WRITE | VM_READ]				= PAGE_READONLY,
-+	/* PAGE_EXECONLY if Enhanced PAN */
-+	[VM_EXEC]					= PAGE_READONLY_EXEC,
-+	[VM_EXEC | VM_READ]				= PAGE_READONLY_EXEC,
-+	[VM_EXEC | VM_WRITE]				= PAGE_READONLY_EXEC,
-+	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_READONLY_EXEC,
-+	[VM_SHARED]					= PAGE_NONE,
-+	[VM_SHARED | VM_READ]				= PAGE_READONLY,
-+	[VM_SHARED | VM_WRITE]				= PAGE_SHARED,
-+	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED,
-+	/* PAGE_EXECONLY if Enhanced PAN */
-+	[VM_SHARED | VM_EXEC]				= PAGE_READONLY_EXEC,
-+	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY_EXEC,
-+	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED_EXEC,
-+	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED_EXEC
++struct vring_virtqueue_split {
++	/* Actual memory layout for this queue. */
++	struct vring vring;
++
++	/* Last written value to avail->flags */
++	u16 avail_flags_shadow;
++
++	/*
++	 * Last written value to avail->idx in
++	 * guest byte order.
++	 */
++	u16 avail_idx_shadow;
++
++	/* Per-descriptor state. */
++	struct vring_desc_state_split *desc_state;
++	struct vring_desc_extra *desc_extra;
++
++	/* DMA address and size information */
++	dma_addr_t queue_dma_addr;
++	size_t queue_size_in_bytes;
 +};
 +
- /*
-  * You really shouldn't be using read() or write() on /dev/mem.  This might go
-  * away in the future.
++struct vring_virtqueue_packed {
++	/* Actual memory layout for this queue. */
++	struct {
++		unsigned int num;
++		struct vring_packed_desc *desc;
++		struct vring_packed_desc_event *driver;
++		struct vring_packed_desc_event *device;
++	} vring;
++
++	/* Driver ring wrap counter. */
++	bool avail_wrap_counter;
++
++	/* Device ring wrap counter. */
++	bool used_wrap_counter;
++
++	/* Avail used flags. */
++	u16 avail_used_flags;
++
++	/* Index of the next avail descriptor. */
++	u16 next_avail_idx;
++
++	/*
++	 * Last written value to driver->flags in
++	 * guest byte order.
++	 */
++	u16 event_flags_shadow;
++
++	/* Per-descriptor state. */
++	struct vring_desc_state_packed *desc_state;
++	struct vring_desc_extra *desc_extra;
++
++	/* DMA address and size information */
++	dma_addr_t ring_dma_addr;
++	dma_addr_t driver_event_dma_addr;
++	dma_addr_t device_event_dma_addr;
++	size_t ring_size_in_bytes;
++	size_t event_size_in_bytes;
++};
++
+ struct vring_virtqueue {
+ 	struct virtqueue vq;
+ 
+@@ -119,67 +180,10 @@ struct vring_virtqueue {
+ 
+ 	union {
+ 		/* Available for split ring */
+-		struct {
+-			/* Actual memory layout for this queue. */
+-			struct vring vring;
+-
+-			/* Last written value to avail->flags */
+-			u16 avail_flags_shadow;
+-
+-			/*
+-			 * Last written value to avail->idx in
+-			 * guest byte order.
+-			 */
+-			u16 avail_idx_shadow;
+-
+-			/* Per-descriptor state. */
+-			struct vring_desc_state_split *desc_state;
+-			struct vring_desc_extra *desc_extra;
+-
+-			/* DMA address and size information */
+-			dma_addr_t queue_dma_addr;
+-			size_t queue_size_in_bytes;
+-		} split;
++		struct vring_virtqueue_split split;
+ 
+ 		/* Available for packed ring */
+-		struct {
+-			/* Actual memory layout for this queue. */
+-			struct {
+-				unsigned int num;
+-				struct vring_packed_desc *desc;
+-				struct vring_packed_desc_event *driver;
+-				struct vring_packed_desc_event *device;
+-			} vring;
+-
+-			/* Driver ring wrap counter. */
+-			bool avail_wrap_counter;
+-
+-			/* Device ring wrap counter. */
+-			bool used_wrap_counter;
+-
+-			/* Avail used flags. */
+-			u16 avail_used_flags;
+-
+-			/* Index of the next avail descriptor. */
+-			u16 next_avail_idx;
+-
+-			/*
+-			 * Last written value to driver->flags in
+-			 * guest byte order.
+-			 */
+-			u16 event_flags_shadow;
+-
+-			/* Per-descriptor state. */
+-			struct vring_desc_state_packed *desc_state;
+-			struct vring_desc_extra *desc_extra;
+-
+-			/* DMA address and size information */
+-			dma_addr_t ring_dma_addr;
+-			dma_addr_t driver_event_dma_addr;
+-			dma_addr_t device_event_dma_addr;
+-			size_t ring_size_in_bytes;
+-			size_t event_size_in_bytes;
+-		} packed;
++		struct vring_virtqueue_packed packed;
+ 	};
+ 
+ 	/* How to notify other side. FIXME: commonalize hcalls! */
 -- 
-2.25.1
+2.31.0
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
