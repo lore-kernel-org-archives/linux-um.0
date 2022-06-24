@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43])
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6Re1-009wt3-Qz
-	for linux-um@lists.infradead.org; Wed, 29 Jun 2022 06:57:52 +0000
+	id 1o4ZVe-00HVVr-3h
+	for linux-um@lists.infradead.org; Fri, 24 Jun 2022 02:57:27 +0000
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v11 22/40] virtio_ring: introduce virtqueue_resize()
-Date: Wed, 29 Jun 2022 14:56:38 +0800
-Message-Id: <20220629065656.54420-23-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
-References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v10 24/41] virtio_ring: introduce virtqueue_resize()
+Date: Fri, 24 Jun 2022 10:56:04 +0800
+Message-Id: <20220624025621.128843-25-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
+References: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -46,10 +46,10 @@ Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
  2 files changed, 75 insertions(+)
 
 diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 4860787286db..5ec43607cc15 100644
+index d3b2139200fa..6ba6519c264b 100644
 --- a/drivers/virtio/virtio_ring.c
 +++ b/drivers/virtio/virtio_ring.c
-@@ -2542,6 +2542,78 @@ struct virtqueue *vring_create_virtqueue(
+@@ -2507,6 +2507,78 @@ struct virtqueue *vring_create_virtqueue(
  }
  EXPORT_SYMBOL_GPL(vring_create_virtqueue);
  
