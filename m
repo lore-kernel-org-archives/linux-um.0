@@ -1,12 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130])
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o4ZVp-00HVmp-RW
-	for linux-um@lists.infradead.org; Fri, 24 Jun 2022 02:57:40 +0000
+	id 1o4ZVg-00HVdD-T4
+	for linux-um@lists.infradead.org; Fri, 24 Jun 2022 02:57:30 +0000
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v10 31/41] virtio_pci: support VIRTIO_F_RING_RESET
-Date: Fri, 24 Jun 2022 10:56:11 +0800
-Message-Id: <20220624025621.128843-32-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v10 27/41] virtio: allow to unbreak/break virtqueue individually
+Date: Fri, 24 Jun 2022 10:56:07 +0800
+Message-Id: <20220624025621.128843-28-xuanzhuo@linux.alibaba.com>
 In-Reply-To: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
 References: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
@@ -25,205 +25,65 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: virtualization@lists.linux-foundation.org
 Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-This patch implements virtio pci support for QUEUE RESET.
-
-Performing reset on a queue is divided into these steps:
-
- 1. notify the device to reset the queue
- 2. recycle the buffer submitted
- 3. reset the vring (may re-alloc)
- 4. mmap vring to device, and enable the queue
-
-This patch implements virtio_reset_vq(), virtio_enable_resetq() in the
-pci scenario.
+This patch allows the new introduced
+__virtqueue_break()/__virtqueue_unbreak() to break/unbreak the
+virtqueue.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- drivers/virtio/virtio_pci_common.c | 12 +++-
- drivers/virtio/virtio_pci_modern.c | 92 ++++++++++++++++++++++++++++++
- drivers/virtio/virtio_ring.c       |  2 +
- include/linux/virtio.h             |  1 +
- 4 files changed, 104 insertions(+), 3 deletions(-)
+ drivers/virtio/virtio_ring.c | 24 ++++++++++++++++++++++++
+ include/linux/virtio.h       |  3 +++
+ 2 files changed, 27 insertions(+)
 
-diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
-index ca51fcc9daab..ad258a9d3b9f 100644
---- a/drivers/virtio/virtio_pci_common.c
-+++ b/drivers/virtio/virtio_pci_common.c
-@@ -214,9 +214,15 @@ static void vp_del_vq(struct virtqueue *vq)
- 	struct virtio_pci_vq_info *info = vp_dev->vqs[vq->index];
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&vp_dev->lock, flags);
--	list_del(&info->node);
--	spin_unlock_irqrestore(&vp_dev->lock, flags);
-+	/*
-+	 * If it fails during re-enable reset vq. This way we won't rejoin
-+	 * info->node to the queue. Prevent unexpected irqs.
-+	 */
-+	if (!vq->reset) {
-+		spin_lock_irqsave(&vp_dev->lock, flags);
-+		list_del(&info->node);
-+		spin_unlock_irqrestore(&vp_dev->lock, flags);
-+	}
- 
- 	vp_dev->del_vq(info);
- 	kfree(info);
-diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
-index 9041d9a41b7d..b0421f1954be 100644
---- a/drivers/virtio/virtio_pci_modern.c
-+++ b/drivers/virtio/virtio_pci_modern.c
-@@ -34,6 +34,9 @@ static void vp_transport_features(struct virtio_device *vdev, u64 features)
- 	if ((features & BIT_ULL(VIRTIO_F_SR_IOV)) &&
- 			pci_find_ext_capability(pci_dev, PCI_EXT_CAP_ID_SRIOV))
- 		__virtio_set_bit(vdev, VIRTIO_F_SR_IOV);
-+
-+	if (features & BIT_ULL(VIRTIO_F_RING_RESET))
-+		__virtio_set_bit(vdev, VIRTIO_F_RING_RESET);
- }
- 
- /* virtio config->finalize_features() implementation */
-@@ -199,6 +202,91 @@ static int vp_active_vq(struct virtqueue *vq, u16 msix_vec)
- 	return 0;
- }
- 
-+static int vp_modern_reset_vq(struct virtqueue *vq)
-+{
-+	struct virtio_pci_device *vp_dev = to_vp_device(vq->vdev);
-+	struct virtio_pci_modern_device *mdev = &vp_dev->mdev;
-+	struct virtio_pci_vq_info *info;
-+	unsigned long flags;
-+
-+	if (!virtio_has_feature(vq->vdev, VIRTIO_F_RING_RESET))
-+		return -ENOENT;
-+
-+	vp_modern_set_queue_reset(mdev, vq->index);
-+
-+	info = vp_dev->vqs[vq->index];
-+
-+	/* delete vq from irq handler */
-+	spin_lock_irqsave(&vp_dev->lock, flags);
-+	list_del(&info->node);
-+	spin_unlock_irqrestore(&vp_dev->lock, flags);
-+
-+	INIT_LIST_HEAD(&info->node);
-+
-+	/* For the case where vq has an exclusive irq, to prevent the irq from
-+	 * being received again and the pending irq, call synchronize_irq(), and
-+	 * break it.
-+	 *
-+	 * We can't use disable_irq() since it conflicts with the affinity
-+	 * managed IRQ that is used by some drivers. So this is done on top of
-+	 * IRQ hardening.
-+	 *
-+	 * In the scenario based on shared interrupts, vq will be searched from
-+	 * the queue virtqueues. Since the previous list_del() has been deleted
-+	 * from the queue, it is impossible for vq to be called in this case.
-+	 * There is no need to close the corresponding interrupt.
-+	 */
-+	if (vp_dev->per_vq_vectors && info->msix_vector != VIRTIO_MSI_NO_VECTOR) {
-+		__virtqueue_break(vq);
-+		synchronize_irq(pci_irq_vector(vp_dev->pci_dev, info->msix_vector));
-+	}
-+
-+	vq->reset = true;
-+
-+	return 0;
-+}
-+
-+static int vp_modern_enable_reset_vq(struct virtqueue *vq)
-+{
-+	struct virtio_pci_device *vp_dev = to_vp_device(vq->vdev);
-+	struct virtio_pci_modern_device *mdev = &vp_dev->mdev;
-+	struct virtio_pci_vq_info *info;
-+	unsigned long flags, index;
-+	int err;
-+
-+	if (!vq->reset)
-+		return -EBUSY;
-+
-+	index = vq->index;
-+	info = vp_dev->vqs[index];
-+
-+	if (vp_modern_get_queue_reset(mdev, index))
-+		return -EBUSY;
-+
-+	if (vp_modern_get_queue_enable(mdev, index))
-+		return -EBUSY;
-+
-+	err = vp_active_vq(vq, info->msix_vector);
-+	if (err)
-+		return err;
-+
-+	if (vq->callback) {
-+		spin_lock_irqsave(&vp_dev->lock, flags);
-+		list_add(&info->node, &vp_dev->virtqueues);
-+		spin_unlock_irqrestore(&vp_dev->lock, flags);
-+	} else {
-+		INIT_LIST_HEAD(&info->node);
-+	}
-+
-+	if (vp_dev->per_vq_vectors && info->msix_vector != VIRTIO_MSI_NO_VECTOR)
-+		__virtqueue_unbreak(vq);
-+
-+	vp_modern_set_queue_enable(&vp_dev->mdev, index, true);
-+	vq->reset = false;
-+
-+	return 0;
-+}
-+
- static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vector)
- {
- 	return vp_modern_config_vector(&vp_dev->mdev, vector);
-@@ -413,6 +501,8 @@ static const struct virtio_config_ops virtio_pci_config_nodev_ops = {
- 	.set_vq_affinity = vp_set_vq_affinity,
- 	.get_vq_affinity = vp_get_vq_affinity,
- 	.get_shm_region  = vp_get_shm_region,
-+	.reset_vq	 = vp_modern_reset_vq,
-+	.enable_reset_vq = vp_modern_enable_reset_vq,
- };
- 
- static const struct virtio_config_ops virtio_pci_config_ops = {
-@@ -431,6 +521,8 @@ static const struct virtio_config_ops virtio_pci_config_ops = {
- 	.set_vq_affinity = vp_set_vq_affinity,
- 	.get_vq_affinity = vp_get_vq_affinity,
- 	.get_shm_region  = vp_get_shm_region,
-+	.reset_vq	 = vp_modern_reset_vq,
-+	.enable_reset_vq = vp_modern_enable_reset_vq,
- };
- 
- /* the PCI probing function */
 diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 4f24df0eb2d5..d4a360462e26 100644
+index 6ba6519c264b..4f24df0eb2d5 100644
 --- a/drivers/virtio/virtio_ring.c
 +++ b/drivers/virtio/virtio_ring.c
-@@ -1986,6 +1986,7 @@ static struct virtqueue *vring_create_virtqueue_packed(
- 	vq->vq.vdev = vdev;
- 	vq->vq.name = name;
- 	vq->vq.index = index;
-+	vq->vq.reset = false;
- 	vq->we_own_ring = true;
- 	vq->notify = notify;
- 	vq->weak_barriers = weak_barriers;
-@@ -2457,6 +2458,7 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
- 	vq->vq.vdev = vdev;
- 	vq->vq.name = name;
- 	vq->vq.index = index;
-+	vq->vq.reset = false;
- 	vq->we_own_ring = false;
- 	vq->notify = notify;
- 	vq->weak_barriers = weak_barriers;
+@@ -2709,6 +2709,30 @@ unsigned int virtqueue_get_vring_size(struct virtqueue *_vq)
+ }
+ EXPORT_SYMBOL_GPL(virtqueue_get_vring_size);
+ 
++/*
++ * This function should only be called by the core, not directly by the driver.
++ */
++void __virtqueue_break(struct virtqueue *_vq)
++{
++	struct vring_virtqueue *vq = to_vvq(_vq);
++
++	/* Pairs with READ_ONCE() in virtqueue_is_broken(). */
++	WRITE_ONCE(vq->broken, true);
++}
++EXPORT_SYMBOL_GPL(__virtqueue_break);
++
++/*
++ * This function should only be called by the core, not directly by the driver.
++ */
++void __virtqueue_unbreak(struct virtqueue *_vq)
++{
++	struct vring_virtqueue *vq = to_vvq(_vq);
++
++	/* Pairs with READ_ONCE() in virtqueue_is_broken(). */
++	WRITE_ONCE(vq->broken, false);
++}
++EXPORT_SYMBOL_GPL(__virtqueue_unbreak);
++
+ bool virtqueue_is_broken(struct virtqueue *_vq)
+ {
+ 	struct vring_virtqueue *vq = to_vvq(_vq);
 diff --git a/include/linux/virtio.h b/include/linux/virtio.h
-index dc474a0d48d1..88f21796b1c3 100644
+index 1272566adec6..dc474a0d48d1 100644
 --- a/include/linux/virtio.h
 +++ b/include/linux/virtio.h
-@@ -33,6 +33,7 @@ struct virtqueue {
- 	unsigned int num_free;
- 	unsigned int num_max;
- 	void *priv;
-+	bool reset;
- };
+@@ -138,6 +138,9 @@ bool is_virtio_device(struct device *dev);
+ void virtio_break_device(struct virtio_device *dev);
+ void __virtio_unbreak_device(struct virtio_device *dev);
  
- int virtqueue_add_outbuf(struct virtqueue *vq,
++void __virtqueue_break(struct virtqueue *_vq);
++void __virtqueue_unbreak(struct virtqueue *_vq);
++
+ void virtio_config_changed(struct virtio_device *dev);
+ #ifdef CONFIG_PM_SLEEP
+ int virtio_device_freeze(struct virtio_device *dev);
 -- 
 2.31.0
 
