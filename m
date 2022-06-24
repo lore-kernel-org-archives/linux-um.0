@@ -1,12 +1,16 @@
 Return-Path: <openrisc-bounces@lists.librecores.org>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V5 15/26] nios2/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Date: Mon, 27 Jun 2022 10:28:22 +0530
-Message-Id: <20220627045833.1590055-16-anshuman.khandual@arm.com>
-In-Reply-To: <20220627045833.1590055-1-anshuman.khandual@arm.com>
-References: <20220627045833.1590055-1-anshuman.khandual@arm.com>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH V4 08/26] microblaze/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+Date: Fri, 24 Jun 2022 05:24:50 +0000
+Message-ID: <3cc86db1-d1fe-0fb7-1108-6062bdfdb0cd@csgroup.eu>
+References: <20220624044339.1533882-1-anshuman.khandual@arm.com>
+ <20220624044339.1533882-9-anshuman.khandual@arm.com>
+In-Reply-To: <20220624044339.1533882-9-anshuman.khandual@arm.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <C55664F560E7C74B8A9EB94CA7A1A527@FRAP264.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
  <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
 List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
@@ -16,94 +20,69 @@ List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
  <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
 Errors-To: openrisc-bounces@lists.librecores.org
 Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
-To: linux-mm@kvack.org
-Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>, linux-alpha@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org
+To: Anshuman Khandual <anshuman.khandual@arm.com>, "linux-mm@kvack.org" <linux-mm@kvack.org>
+Cc: "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>, "hch@infradead.org" <hch@infradead.org>, "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Michal Simek <monstr@monstr.eu>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-ID: <linux-um.lists.infradead.org>
 
-This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
-vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
-up a private and static protection_map[] array. Subsequently all __SXXX and
-__PXXX macros can be dropped which are no longer needed.
-
-Cc: Dinh Nguyen <dinguyen@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- arch/nios2/Kconfig               |  1 +
- arch/nios2/include/asm/pgtable.h | 16 ----------------
- arch/nios2/mm/init.c             | 20 ++++++++++++++++++++
- 3 files changed, 21 insertions(+), 16 deletions(-)
-
-diff --git a/arch/nios2/Kconfig b/arch/nios2/Kconfig
-index 4167f1eb4cd8..e0459dffd218 100644
---- a/arch/nios2/Kconfig
-+++ b/arch/nios2/Kconfig
-@@ -6,6 +6,7 @@ config NIOS2
- 	select ARCH_HAS_SYNC_DMA_FOR_CPU
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
- 	select ARCH_HAS_DMA_SET_UNCACHED
-+	select ARCH_HAS_VM_GET_PAGE_PROT
- 	select ARCH_NO_SWAP
- 	select COMMON_CLK
- 	select TIMER_OF
-diff --git a/arch/nios2/include/asm/pgtable.h b/arch/nios2/include/asm/pgtable.h
-index 262d0609268c..470516d4555e 100644
---- a/arch/nios2/include/asm/pgtable.h
-+++ b/arch/nios2/include/asm/pgtable.h
-@@ -40,24 +40,8 @@ struct mm_struct;
-  */
- 
- /* Remove W bit on private pages for COW support */
--#define __P000	MKP(0, 0, 0)
--#define __P001	MKP(0, 0, 1)
--#define __P010	MKP(0, 0, 0)	/* COW */
--#define __P011	MKP(0, 0, 1)	/* COW */
--#define __P100	MKP(1, 0, 0)
--#define __P101	MKP(1, 0, 1)
--#define __P110	MKP(1, 0, 0)	/* COW */
--#define __P111	MKP(1, 0, 1)	/* COW */
- 
- /* Shared pages can have exact HW mapping */
--#define __S000	MKP(0, 0, 0)
--#define __S001	MKP(0, 0, 1)
--#define __S010	MKP(0, 1, 0)
--#define __S011	MKP(0, 1, 1)
--#define __S100	MKP(1, 0, 0)
--#define __S101	MKP(1, 0, 1)
--#define __S110	MKP(1, 1, 0)
--#define __S111	MKP(1, 1, 1)
- 
- /* Used all over the kernel */
- #define PAGE_KERNEL __pgprot(_PAGE_PRESENT | _PAGE_CACHED | _PAGE_READ | \
-diff --git a/arch/nios2/mm/init.c b/arch/nios2/mm/init.c
-index 613fcaa5988a..ae24687d12ad 100644
---- a/arch/nios2/mm/init.c
-+++ b/arch/nios2/mm/init.c
-@@ -124,3 +124,23 @@ const char *arch_vma_name(struct vm_area_struct *vma)
- {
- 	return (vma->vm_start == KUSER_BASE) ? "[kuser]" : NULL;
- }
-+
-+static const pgprot_t protection_map[16] = {
-+	[VM_NONE]					= MKP(0, 0, 0),
-+	[VM_READ]					= MKP(0, 0, 1),
-+	[VM_WRITE]					= MKP(0, 0, 0),
-+	[VM_WRITE | VM_READ]				= MKP(0, 0, 1),
-+	[VM_EXEC]					= MKP(1, 0, 0),
-+	[VM_EXEC | VM_READ]				= MKP(1, 0, 1),
-+	[VM_EXEC | VM_WRITE]				= MKP(1, 0, 0),
-+	[VM_EXEC | VM_WRITE | VM_READ]			= MKP(1, 0, 1),
-+	[VM_SHARED]					= MKP(0, 0, 0),
-+	[VM_SHARED | VM_READ]				= MKP(0, 0, 1),
-+	[VM_SHARED | VM_WRITE]				= MKP(0, 1, 0),
-+	[VM_SHARED | VM_WRITE | VM_READ]		= MKP(0, 1, 1),
-+	[VM_SHARED | VM_EXEC]				= MKP(1, 0, 0),
-+	[VM_SHARED | VM_EXEC | VM_READ]			= MKP(1, 0, 1),
-+	[VM_SHARED | VM_EXEC | VM_WRITE]		= MKP(1, 1, 0),
-+	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= MKP(1, 1, 1)
-+};
-+DECLARE_VM_GET_PAGE_PROT
--- 
-2.25.1
-
+DQoNCkxlIDI0LzA2LzIwMjIgw6AgMDY6NDMsIEFuc2h1bWFuIEtoYW5kdWFsIGEgw6ljcml0wqA6
+DQo+IFRoaXMgZW5hYmxlcyBBUkNIX0hBU19WTV9HRVRfUEFHRV9QUk9UIG9uIHRoZSBwbGF0Zm9y
+bSBhbmQgZXhwb3J0cyBzdGFuZGFyZA0KPiB2bV9nZXRfcGFnZV9wcm90KCkgaW1wbGVtZW50YXRp
+b24gdmlhIERFQ0xBUkVfVk1fR0VUX1BBR0VfUFJPVCwgd2hpY2ggbG9va3MNCj4gdXAgYSBwcml2
+YXRlIGFuZCBzdGF0aWMgcHJvdGVjdGlvbl9tYXBbXSBhcnJheS4gU3Vic2VxdWVudGx5IGFsbCBf
+X1NYWFggYW5kDQo+IF9fUFhYWCBtYWNyb3MgY2FuIGJlIGRyb3BwZWQgd2hpY2ggYXJlIG5vIGxv
+bmdlciBuZWVkZWQuDQoNCkluIHRoaXMgcGF0Y2ggYW5kIGFsbCBmb2xsb3dpbmcgb25lcywgY2Fu
+J3QgcHJvdGVjdGlvbl9tYXBbXSBiZSBjb25zdCANCmluc3RlYWQgb2YgX19yb19hZnRlcl9pbml0
+ID8NCg0KPiANCj4gQ2M6IE1pY2hhbCBTaW1layA8bW9uc3RyQG1vbnN0ci5ldT4NCj4gQ2M6IGxp
+bnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4gU2lnbmVkLW9mZi1ieTogQW5zaHVtYW4gS2hh
+bmR1YWwgPGFuc2h1bWFuLmtoYW5kdWFsQGFybS5jb20+DQo+IC0tLQ0KPiAgIGFyY2gvbWljcm9i
+bGF6ZS9LY29uZmlnICAgICAgICAgICAgICAgfCAgMSArDQo+ICAgYXJjaC9taWNyb2JsYXplL2lu
+Y2x1ZGUvYXNtL3BndGFibGUuaCB8IDE3IC0tLS0tLS0tLS0tLS0tLS0tDQo+ICAgYXJjaC9taWNy
+b2JsYXplL21tL2luaXQuYyAgICAgICAgICAgICB8IDIwICsrKysrKysrKysrKysrKysrKysrDQo+
+ICAgMyBmaWxlcyBjaGFuZ2VkLCAyMSBpbnNlcnRpb25zKCspLCAxNyBkZWxldGlvbnMoLSkNCj4g
+DQo+IGRpZmYgLS1naXQgYS9hcmNoL21pY3JvYmxhemUvS2NvbmZpZyBiL2FyY2gvbWljcm9ibGF6
+ZS9LY29uZmlnDQo+IGluZGV4IDhjZjQyOWFkMWM4NC4uMTVmOTFiYThhMGM0IDEwMDY0NA0KPiAt
+LS0gYS9hcmNoL21pY3JvYmxhemUvS2NvbmZpZw0KPiArKysgYi9hcmNoL21pY3JvYmxhemUvS2Nv
+bmZpZw0KPiBAQCAtNyw2ICs3LDcgQEAgY29uZmlnIE1JQ1JPQkxBWkUNCj4gICAJc2VsZWN0IEFS
+Q0hfSEFTX0dDT1ZfUFJPRklMRV9BTEwNCj4gICAJc2VsZWN0IEFSQ0hfSEFTX1NZTkNfRE1BX0ZP
+Ul9DUFUNCj4gICAJc2VsZWN0IEFSQ0hfSEFTX1NZTkNfRE1BX0ZPUl9ERVZJQ0UNCj4gKwlzZWxl
+Y3QgQVJDSF9IQVNfVk1fR0VUX1BBR0VfUFJPVA0KPiAgIAlzZWxlY3QgQVJDSF9NSUdIVF9IQVZF
+X1BDX1BBUlBPUlQNCj4gICAJc2VsZWN0IEFSQ0hfV0FOVF9JUENfUEFSU0VfVkVSU0lPTg0KPiAg
+IAlzZWxlY3QgQlVJTERUSU1FX1RBQkxFX1NPUlQNCj4gZGlmZiAtLWdpdCBhL2FyY2gvbWljcm9i
+bGF6ZS9pbmNsdWRlL2FzbS9wZ3RhYmxlLmggYi9hcmNoL21pY3JvYmxhemUvaW5jbHVkZS9hc20v
+cGd0YWJsZS5oDQo+IGluZGV4IDBjNzI2NDYzNzBlMS4uYmEzNDhlOTk3ZGJiIDEwMDY0NA0KPiAt
+LS0gYS9hcmNoL21pY3JvYmxhemUvaW5jbHVkZS9hc20vcGd0YWJsZS5oDQo+ICsrKyBiL2FyY2gv
+bWljcm9ibGF6ZS9pbmNsdWRlL2FzbS9wZ3RhYmxlLmgNCj4gQEAgLTIwNCwyMyArMjA0LDYgQEAg
+ZXh0ZXJuIHB0ZV90ICp2YV90b19wdGUodW5zaWduZWQgbG9uZyBhZGRyZXNzKTsNCj4gICAgKiBX
+ZSBjb25zaWRlciBleGVjdXRlIHBlcm1pc3Npb24gdGhlIHNhbWUgYXMgcmVhZC4NCj4gICAgKiBB
+bHNvLCB3cml0ZSBwZXJtaXNzaW9ucyBpbXBseSByZWFkIHBlcm1pc3Npb25zLg0KPiAgICAqLw0K
+PiAtI2RlZmluZSBfX1AwMDAJUEFHRV9OT05FDQo+IC0jZGVmaW5lIF9fUDAwMQlQQUdFX1JFQURP
+TkxZX1gNCj4gLSNkZWZpbmUgX19QMDEwCVBBR0VfQ09QWQ0KPiAtI2RlZmluZSBfX1AwMTEJUEFH
+RV9DT1BZX1gNCj4gLSNkZWZpbmUgX19QMTAwCVBBR0VfUkVBRE9OTFkNCj4gLSNkZWZpbmUgX19Q
+MTAxCVBBR0VfUkVBRE9OTFlfWA0KPiAtI2RlZmluZSBfX1AxMTAJUEFHRV9DT1BZDQo+IC0jZGVm
+aW5lIF9fUDExMQlQQUdFX0NPUFlfWA0KPiAtDQo+IC0jZGVmaW5lIF9fUzAwMAlQQUdFX05PTkUN
+Cj4gLSNkZWZpbmUgX19TMDAxCVBBR0VfUkVBRE9OTFlfWA0KPiAtI2RlZmluZSBfX1MwMTAJUEFH
+RV9TSEFSRUQNCj4gLSNkZWZpbmUgX19TMDExCVBBR0VfU0hBUkVEX1gNCj4gLSNkZWZpbmUgX19T
+MTAwCVBBR0VfUkVBRE9OTFkNCj4gLSNkZWZpbmUgX19TMTAxCVBBR0VfUkVBRE9OTFlfWA0KPiAt
+I2RlZmluZSBfX1MxMTAJUEFHRV9TSEFSRUQNCj4gLSNkZWZpbmUgX19TMTExCVBBR0VfU0hBUkVE
+X1gNCj4gICANCj4gICAjaWZuZGVmIF9fQVNTRU1CTFlfXw0KPiAgIC8qDQo+IGRpZmYgLS1naXQg
+YS9hcmNoL21pY3JvYmxhemUvbW0vaW5pdC5jIGIvYXJjaC9taWNyb2JsYXplL21tL2luaXQuYw0K
+PiBpbmRleCBmNGU1MDM0NjFkMjQuLjMxNWZkNTAyNGYwMCAxMDA2NDQNCj4gLS0tIGEvYXJjaC9t
+aWNyb2JsYXplL21tL2luaXQuYw0KPiArKysgYi9hcmNoL21pY3JvYmxhemUvbW0vaW5pdC5jDQo+
+IEBAIC0yODUsMyArMjg1LDIzIEBAIHZvaWQgKiBfX3JlZiB6YWxsb2NfbWF5YmVfYm9vdG1lbShz
+aXplX3Qgc2l6ZSwgZ2ZwX3QgbWFzaykNCj4gICANCj4gICAJcmV0dXJuIHA7DQo+ICAgfQ0KPiAr
+DQo+ICtzdGF0aWMgcGdwcm90X3QgcHJvdGVjdGlvbl9tYXBbMTZdIF9fcm9fYWZ0ZXJfaW5pdCA9
+IHsNCj4gKwlbVk1fTk9ORV0JCQkJCT0gUEFHRV9OT05FLA0KPiArCVtWTV9SRUFEXQkJCQkJPSBQ
+QUdFX1JFQURPTkxZX1gsDQo+ICsJW1ZNX1dSSVRFXQkJCQkJPSBQQUdFX0NPUFksDQo+ICsJW1ZN
+X1dSSVRFIHwgVk1fUkVBRF0JCQkJPSBQQUdFX0NPUFlfWCwNCj4gKwlbVk1fRVhFQ10JCQkJCT0g
+UEFHRV9SRUFET05MWSwNCj4gKwlbVk1fRVhFQyB8IFZNX1JFQURdCQkJCT0gUEFHRV9SRUFET05M
+WV9YLA0KPiArCVtWTV9FWEVDIHwgVk1fV1JJVEVdCQkJCT0gUEFHRV9DT1BZLA0KPiArCVtWTV9F
+WEVDIHwgVk1fV1JJVEUgfCBWTV9SRUFEXQkJCT0gUEFHRV9DT1BZX1gsDQo+ICsJW1ZNX1NIQVJF
+RF0JCQkJCT0gUEFHRV9OT05FLA0KPiArCVtWTV9TSEFSRUQgfCBWTV9SRUFEXQkJCQk9IFBBR0Vf
+UkVBRE9OTFlfWCwNCj4gKwlbVk1fU0hBUkVEIHwgVk1fV1JJVEVdCQkJCT0gUEFHRV9TSEFSRUQs
+DQo+ICsJW1ZNX1NIQVJFRCB8IFZNX1dSSVRFIHwgVk1fUkVBRF0JCT0gUEFHRV9TSEFSRURfWCwN
+Cj4gKwlbVk1fU0hBUkVEIHwgVk1fRVhFQ10JCQkJPSBQQUdFX1JFQURPTkxZLA0KPiArCVtWTV9T
+SEFSRUQgfCBWTV9FWEVDIHwgVk1fUkVBRF0JCQk9IFBBR0VfUkVBRE9OTFlfWCwNCj4gKwlbVk1f
+U0hBUkVEIHwgVk1fRVhFQyB8IFZNX1dSSVRFXQkJPSBQQUdFX1NIQVJFRCwNCj4gKwlbVk1fU0hB
+UkVEIHwgVk1fRVhFQyB8IFZNX1dSSVRFIHwgVk1fUkVBRF0JPSBQQUdFX1NIQVJFRF9YDQo+ICt9
+Ow0KPiArREVDTEFSRV9WTV9HRVRfUEFHRV9QUk9U
 
