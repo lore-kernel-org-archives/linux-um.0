@@ -1,18 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out03.mta.xmission.com ([166.70.13.233])
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyL1J-002ycG-RM
-	for linux-um@lists.infradead.org; Mon, 06 Jun 2022 22:16:23 +0000
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-References: <871qwq5ucx.fsf_-_@email.froward.int.ebiederm.org>
-	<20220518225355.784371-8-ebiederm@xmission.com>
-	<20220524152725.GE14347@redhat.com>
-Date: Mon, 06 Jun 2022 17:16:01 -0500
-In-Reply-To: <20220524152725.GE14347@redhat.com> (Oleg Nesterov's message of
-	"Tue, 24 May 2022 17:27:25 +0200")
-Message-ID: <87pmjl1lr2.fsf@email.froward.int.ebiederm.org>
+	id 1o4ZVM-00HVJ6-Mc
+	for linux-um@lists.infradead.org; Fri, 24 Jun 2022 02:57:10 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v10 18/41] virtio_ring: packed: extract the logic of alloc queue
+Date: Fri, 24 Jun 2022 10:55:58 +0800
+Message-Id: <20220624025621.128843-19-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
+References: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 08/16] ptrace: Only populate last_siginfo from ptrace
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -25,43 +22,150 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: linux-kernel@vger.kernel.org, rjw@rjwysocki.net, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, Robert OCallahan <roc@pernos.co>, Kyle Huey <khuey@pernos.co>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Jason Wessel <jason.wessel@windriver.com>, Daniel Thompson <daniel.thompson@linaro.org>, Douglas Anderson <dianders@chromium.org>, Douglas Miller <dougmill@linux.vnet.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>
+To: virtualization@lists.linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-Oleg Nesterov <oleg@redhat.com> writes:
+Separate the logic of packed to create vring queue.
 
-> On 05/18, Eric W. Biederman wrote:
->>
->> The code in ptrace_signal to populate siginfo if the signal number
->> changed is buggy.  If the tracer contined the tracee using
->> ptrace_detach it is guaranteed to use the real_parent (or possibly a
->> new tracer) but definitely not the origional tracer to populate si_pid
->> and si_uid.
->
-> I guess nobody cares. As the comment says
->
-> 	 If the debugger wanted something
-> 	 specific in the siginfo structure then it should
-> 	 have updated *info via PTRACE_SETSIGINFO.
->
-> otherwise I don't think si_pid/si_uid have any value.
+For the convenience of passing parameters, add a structure
+vring_packed.
 
-No one has complained so it is clearly no one cares.  So it is
-definitely not a regression.  Or even anything that needs to be
-backported.
+This feature is required for subsequent virtuqueue reset vring.
 
-However si_pid and si_uid are defined with SI_USER are defined
-to be whomever sent the signal.  So I would argue by definition
-those values are wrong.
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+---
+ drivers/virtio/virtio_ring.c | 80 +++++++++++++++++++++++-------------
+ 1 file changed, 51 insertions(+), 29 deletions(-)
 
-> However the patch looks fine to me, just the word "buggy" looks a bit
-> too strong imo.
-
-I guess I am in general agreement.  Perhaps I can just say they values
-are wrong by definition?
-
-Eric
-
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index a72b929f51fb..4b1a7a940012 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -1828,19 +1828,10 @@ static void vring_free_packed(struct vring_virtqueue_packed *vring,
+ 	kfree(vring->desc_extra);
+ }
+ 
+-static struct virtqueue *vring_create_virtqueue_packed(
+-	unsigned int index,
+-	unsigned int num,
+-	unsigned int vring_align,
+-	struct virtio_device *vdev,
+-	bool weak_barriers,
+-	bool may_reduce_num,
+-	bool context,
+-	bool (*notify)(struct virtqueue *),
+-	void (*callback)(struct virtqueue *),
+-	const char *name)
++static int vring_alloc_queue_packed(struct vring_virtqueue_packed *vring,
++				    struct virtio_device *vdev,
++				    u32 num)
+ {
+-	struct vring_virtqueue *vq;
+ 	struct vring_packed_desc *ring;
+ 	struct vring_packed_desc_event *driver, *device;
+ 	dma_addr_t ring_dma_addr, driver_event_dma_addr, device_event_dma_addr;
+@@ -1852,7 +1843,11 @@ static struct virtqueue *vring_create_virtqueue_packed(
+ 				 &ring_dma_addr,
+ 				 GFP_KERNEL|__GFP_NOWARN|__GFP_ZERO);
+ 	if (!ring)
+-		goto err_ring;
++		goto err;
++
++	vring->vring.desc         = ring;
++	vring->ring_dma_addr      = ring_dma_addr;
++	vring->ring_size_in_bytes = ring_size_in_bytes;
+ 
+ 	event_size_in_bytes = sizeof(struct vring_packed_desc_event);
+ 
+@@ -1860,13 +1855,47 @@ static struct virtqueue *vring_create_virtqueue_packed(
+ 				   &driver_event_dma_addr,
+ 				   GFP_KERNEL|__GFP_NOWARN|__GFP_ZERO);
+ 	if (!driver)
+-		goto err_driver;
++		goto err;
++
++	vring->vring.driver          = driver;
++	vring->event_size_in_bytes   = event_size_in_bytes;
++	vring->driver_event_dma_addr = driver_event_dma_addr;
+ 
+ 	device = vring_alloc_queue(vdev, event_size_in_bytes,
+ 				   &device_event_dma_addr,
+ 				   GFP_KERNEL|__GFP_NOWARN|__GFP_ZERO);
+ 	if (!device)
+-		goto err_device;
++		goto err;
++
++	vring->vring.device          = device;
++	vring->device_event_dma_addr = device_event_dma_addr;
++
++	vring->vring.num    = num;
++
++	return 0;
++
++err:
++	vring_free_packed(vring, vdev);
++	return -ENOMEM;
++}
++
++static struct virtqueue *vring_create_virtqueue_packed(
++	unsigned int index,
++	unsigned int num,
++	unsigned int vring_align,
++	struct virtio_device *vdev,
++	bool weak_barriers,
++	bool may_reduce_num,
++	bool context,
++	bool (*notify)(struct virtqueue *),
++	void (*callback)(struct virtqueue *),
++	const char *name)
++{
++	struct vring_virtqueue_packed vring = {};
++	struct vring_virtqueue *vq;
++
++	if (vring_alloc_queue_packed(&vring, vdev, num))
++		goto err_ring;
+ 
+ 	vq = kmalloc(sizeof(*vq), GFP_KERNEL);
+ 	if (!vq)
+@@ -1885,17 +1914,14 @@ static struct virtqueue *vring_create_virtqueue_packed(
+ 	vq->indirect = virtio_has_feature(vdev, VIRTIO_RING_F_INDIRECT_DESC) &&
+ 		!context;
+ 
+-	vq->packed.ring_dma_addr = ring_dma_addr;
+-	vq->packed.driver_event_dma_addr = driver_event_dma_addr;
+-	vq->packed.device_event_dma_addr = device_event_dma_addr;
++	vq->packed.ring_dma_addr = vring.ring_dma_addr;
++	vq->packed.driver_event_dma_addr = vring.driver_event_dma_addr;
++	vq->packed.device_event_dma_addr = vring.device_event_dma_addr;
+ 
+-	vq->packed.ring_size_in_bytes = ring_size_in_bytes;
+-	vq->packed.event_size_in_bytes = event_size_in_bytes;
++	vq->packed.ring_size_in_bytes = vring.ring_size_in_bytes;
++	vq->packed.event_size_in_bytes = vring.event_size_in_bytes;
+ 
+-	vq->packed.vring.num = num;
+-	vq->packed.vring.desc = ring;
+-	vq->packed.vring.driver = driver;
+-	vq->packed.vring.device = device;
++	vq->packed.vring = vring.vring;
+ 
+ 	vq->packed.next_avail_idx = 0;
+ 	vq->packed.avail_wrap_counter = 1;
+@@ -1935,11 +1961,7 @@ static struct virtqueue *vring_create_virtqueue_packed(
+ err_desc_state:
+ 	kfree(vq);
+ err_vq:
+-	vring_free_queue(vdev, event_size_in_bytes, device, device_event_dma_addr);
+-err_device:
+-	vring_free_queue(vdev, event_size_in_bytes, driver, driver_event_dma_addr);
+-err_driver:
+-	vring_free_queue(vdev, ring_size_in_bytes, ring, ring_dma_addr);
++	vring_free_packed(&vring, vdev);
+ err_ring:
+ 	return NULL;
+ }
+-- 
+2.31.0
 
 
 _______________________________________________
