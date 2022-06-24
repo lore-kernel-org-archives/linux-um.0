@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from albert.telenet-ops.be ([2a02:1800:110:4::f00:1a])
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ny8im-000KCS-2I
-	for linux-um@lists.infradead.org; Mon, 06 Jun 2022 09:08:26 +0000
-Date: Mon, 6 Jun 2022 11:08:11 +0200 (CEST)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Build regressions/improvements in v5.19-rc1
-In-Reply-To: <20220606082201.2792145-1-geert@linux-m68k.org>
-Message-ID: <alpine.DEB.2.22.394.2206061104510.695137@ramsan.of.borg>
-References: <CAHk-=wgZt-YDSKfdyES2p6A_KJoG8DwQ0mb9CeS8jZYp+0Y2Rw@mail.gmail.com> <20220606082201.2792145-1-geert@linux-m68k.org>
+	id 1o4ZVX-00HVTv-Qr
+	for linux-um@lists.infradead.org; Fri, 24 Jun 2022 02:57:21 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v10 23/41] virtio_ring: packed: introduce virtqueue_resize_packed()
+Date: Fri, 24 Jun 2022 10:56:03 +0800
+Message-Id: <20220624025621.128843-24-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
+References: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -18,75 +18,70 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: Kees Cook <keescook@chromium.org>, nvdimm@lists.linux.dev, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linux-sh@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-scsi@vger.kernel.org, sparclinux@vger.kernel.org
+To: virtualization@lists.linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-On Mon, 6 Jun 2022, Geert Uytterhoeven wrote:
-> Below is the list of build error/warning regressions/improvements in
-> v5.19-rc1[1] compared to v5.18[2].
->
-> Summarized:
->  - build errors: +9/-10
+virtio ring packed supports resize.
 
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/f2906aa863381afb0015a9eb7fefad885d4e5a56/ (all 135 configs)
-> [2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/4b0986a3613c92f4ec1bdc7f60ec66fea135991f/ (131 out of 135 configs)
+Only after the new vring is successfully allocated based on the new num,
+we will release the old vring. In any case, an error is returned,
+indicating that the vring still points to the old vring.
 
-> 9 error regressions:
->  + /kisskb/src/arch/um/include/asm/page.h: error: too few arguments to function 'to_phys':  => 105:20
->  + /kisskb/src/drivers/nvdimm/pmem.c: error: conflicting types for 'to_phys':  => 48:20
->  + /kisskb/src/drivers/nvdimm/pmem.c: error: control reaches end of non-void function [-Werror=return-type]:  => 324:1
+In the case of an error, re-initialize(by virtqueue_reinit_packed()) the
+virtqueue to ensure that the vring can be used.
 
-um-x86_64/um-allyesconfig
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+---
+ drivers/virtio/virtio_ring.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
->  + /kisskb/src/arch/xtensa/kernel/entry.S: Error: unknown pseudo-op: `.bss':  => 2176
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 740b17550df5..d3b2139200fa 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -2016,6 +2016,35 @@ static struct virtqueue *vring_create_virtqueue_packed(
+ 	return NULL;
+ }
+ 
++static int virtqueue_resize_packed(struct virtqueue *_vq, u32 num)
++{
++	struct vring_virtqueue_packed vring = {};
++	struct vring_virtqueue *vq = to_vvq(_vq);
++	struct virtio_device *vdev = _vq->vdev;
++	int err;
++
++	if (vring_alloc_queue_packed(&vring, vdev, num))
++		goto err_ring;
++
++	err = vring_alloc_state_extra_packed(&vring);
++	if (err)
++		goto err_state_extra;
++
++	vring_free(&vq->vq);
++
++	virtqueue_init(vq, vring.vring.num);
++	virtqueue_vring_attach_packed(vq, &vring);
++	virtqueue_vring_init_packed(vq);
++
++	return 0;
++
++err_state_extra:
++	vring_free_packed(&vring, vdev);
++err_ring:
++	virtqueue_reinit_packed(vq);
++	return -ENOMEM;
++}
++
+ 
+ /*
+  * Generic functions and exported symbols.
+-- 
+2.31.0
 
-xtensa-gcc11/xtensa-allmodconfig
-
->  + /kisskb/src/drivers/tty/serial/sh-sci.c: error: unused variable 'sport' [-Werror=unused-variable]:  => 2655:26
-
-sh4-gcc11/se7619_defconfig
-sh4-gcc11/sh-allmodconfig
-
-Fix available
-https://lore.kernel.org/all/4ed0a7a0d3fa912a5b44c451884818f2c138ef42.1644914600.git.geert+renesas@glider.be
-
->  + /kisskb/src/include/linux/fortify-string.h: error: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror=attribute-warning]:  => 344:25
-
-powerpc-gcc11/ppc64_book3e_allmodconfig
-
->  + /kisskb/src/include/ufs/ufshci.h: error: initializer element is not constant:  => 245:36
-
-mipsel-gcc5/mips-allmodconfig
-powerpc-gcc5/powerpc-allmodconfig
-
-FTR, include/ufs/ufshci.h lacks a MAINTAINERS entry.
-
->  + error: relocation truncated to fit: R_SPARC_WDISP22 against `.init.text':  => (.head.text+0x5100), (.head.text+0x5040)
->  + error: relocation truncated to fit: R_SPARC_WDISP22 against symbol `leon_smp_cpu_startup' defined in .text section in arch/sparc/kernel/trampoline_32.o:  => (.init.text+0xa4)
-
-sparc64-gcc5/sparc-allmodconfig
-
-> 3 warning regressions:
-
->  + arch/m68k/configs/multi_defconfig: warning: symbol value 'm' invalid for ZPOOL:  => 61
->  + arch/m68k/configs/sun3_defconfig: warning: symbol value 'm' invalid for ZPOOL:  => 37
-
-Will be fixed by the m68k defconfig update for v5.20.
-
-Gr{oetje,eeting}s,
-
- 						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
- 							    -- Linus Torvalds
 
 _______________________________________________
 linux-um mailing list
