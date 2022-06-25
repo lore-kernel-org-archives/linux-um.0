@@ -1,78 +1,115 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6Rdg-009wPb-RM
-	for linux-um@lists.infradead.org; Wed, 29 Jun 2022 06:57:30 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v11 12/40] virtio_ring: split: introduce virtqueue_reinit_split()
-Date: Wed, 29 Jun 2022 14:56:28 +0800
-Message-Id: <20220629065656.54420-13-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
-References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
+Return-Path: <openrisc-bounces@lists.librecores.org>
+Date: Sat, 25 Jun 2022 13:04:55 +0900
+From: Stafford Horne <shorne@gmail.com>
+Subject: Re: [PATCH V4 10/26] openrisc/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+Message-ID: <YraJZ7OahapN5Y6z@antec>
+References: <20220624044339.1533882-1-anshuman.khandual@arm.com>
+ <20220624044339.1533882-11-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220624044339.1533882-11-anshuman.khandual@arm.com>
+List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
+List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
+List-Post: <mailto:openrisc@lists.librecores.org>
+List-Help: <mailto:openrisc-request@lists.librecores.org?subject=help>
+List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
+Errors-To: openrisc-bounces@lists.librecores.org
+Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
+To: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, christophe.leroy@csgroup.eu, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, Jonas Bonn <jonas@southpole.se>, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, linux-csky@vger.kernel.org, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org
+List-ID: <linux-um.lists.infradead.org>
 
-Introduce a function to initialize vq without allocating new ring,
-desc_state, desc_extra.
+On Fri, Jun 24, 2022 at 10:13:23AM +0530, Anshuman Khandual wrote:
+> This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
+> vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
+> up a private and static protection_map[] array. Subsequently all __SXXX and
+> __PXXX macros can be dropped which are no longer needed.
+> 
+> Cc: Jonas Bonn <jonas@southpole.se>
+> Cc: openrisc@lists.librecores.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>  arch/openrisc/Kconfig               |  1 +
+>  arch/openrisc/include/asm/pgtable.h | 18 ------------------
+>  arch/openrisc/mm/init.c             | 20 ++++++++++++++++++++
+>  3 files changed, 21 insertions(+), 18 deletions(-)
+> 
+> diff --git a/arch/openrisc/Kconfig b/arch/openrisc/Kconfig
+> index e814df4c483c..fe0dfb50eb86 100644
+> --- a/arch/openrisc/Kconfig
+> +++ b/arch/openrisc/Kconfig
+> @@ -10,6 +10,7 @@ config OPENRISC
+>  	select ARCH_HAS_DMA_SET_UNCACHED
+>  	select ARCH_HAS_DMA_CLEAR_UNCACHED
+>  	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
+> +	select ARCH_HAS_VM_GET_PAGE_PROT
+>  	select COMMON_CLK
+>  	select OF
+>  	select OF_EARLY_FLATTREE
+> diff --git a/arch/openrisc/include/asm/pgtable.h b/arch/openrisc/include/asm/pgtable.h
+> index c3abbf71e09f..dcae8aea132f 100644
+> --- a/arch/openrisc/include/asm/pgtable.h
+> +++ b/arch/openrisc/include/asm/pgtable.h
+> @@ -176,24 +176,6 @@ extern void paging_init(void);
+>  	__pgprot(_PAGE_ALL | _PAGE_SRE | _PAGE_SWE \
+>  		 | _PAGE_SHARED | _PAGE_DIRTY | _PAGE_EXEC | _PAGE_CI)
+>  
+> -#define __P000	PAGE_NONE
+> -#define __P001	PAGE_READONLY_X
+> -#define __P010	PAGE_COPY
+> -#define __P011	PAGE_COPY_X
+> -#define __P100	PAGE_READONLY
+> -#define __P101	PAGE_READONLY_X
+> -#define __P110	PAGE_COPY
+> -#define __P111	PAGE_COPY_X
+> -
+> -#define __S000	PAGE_NONE
+> -#define __S001	PAGE_READONLY_X
+> -#define __S010	PAGE_SHARED
+> -#define __S011	PAGE_SHARED_X
+> -#define __S100	PAGE_READONLY
+> -#define __S101	PAGE_READONLY_X
+> -#define __S110	PAGE_SHARED
+> -#define __S111	PAGE_SHARED_X
+> -
+>  /* zero page used for uninitialized stuff */
+>  extern unsigned long empty_zero_page[2048];
+>  #define ZERO_PAGE(vaddr) (virt_to_page(empty_zero_page))
+> diff --git a/arch/openrisc/mm/init.c b/arch/openrisc/mm/init.c
+> index 3a021ab6f1ae..a654b9dcba91 100644
+> --- a/arch/openrisc/mm/init.c
+> +++ b/arch/openrisc/mm/init.c
+> @@ -208,3 +208,23 @@ void __init mem_init(void)
+>  	mem_init_done = 1;
+>  	return;
+>  }
+> +
+> +static pgprot_t protection_map[16] __ro_after_init = {
+> +	[VM_NONE]					= PAGE_NONE,
+> +	[VM_READ]					= PAGE_READONLY_X,
+> +	[VM_WRITE]					= PAGE_COPY,
+> +	[VM_WRITE | VM_READ]				= PAGE_COPY_X,
+> +	[VM_EXEC]					= PAGE_READONLY,
+> +	[VM_EXEC | VM_READ]				= PAGE_READONLY_X,
+> +	[VM_EXEC | VM_WRITE]				= PAGE_COPY,
+> +	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY_X,
+> +	[VM_SHARED]					= PAGE_NONE,
+> +	[VM_SHARED | VM_READ]				= PAGE_READONLY_X,
+> +	[VM_SHARED | VM_WRITE]				= PAGE_SHARED,
+> +	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED_X,
+> +	[VM_SHARED | VM_EXEC]				= PAGE_READONLY,
+> +	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY_X,
+> +	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED,
+> +	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED_X
+> +};
+> +DECLARE_VM_GET_PAGE_PROT
 
-Subsequent patches will call this function after reset vq to
-reinitialize vq.
+Looks good.
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
----
- drivers/virtio/virtio_ring.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+Acked-by: Stafford Horne <shorne@gmail.com>
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 35540daaa1e7..4c8972da5423 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -958,6 +958,25 @@ static void virtqueue_vring_init_split(struct vring_virtqueue *vq)
- 	}
- }
- 
-+static void virtqueue_reinit_split(struct vring_virtqueue *vq)
-+{
-+	int size, i;
-+
-+	memset(vq->split.vring.desc, 0, vq->split.queue_size_in_bytes);
-+
-+	size = sizeof(struct vring_desc_state_split) * vq->split.vring.num;
-+	memset(vq->split.desc_state, 0, size);
-+
-+	size = sizeof(struct vring_desc_extra) * vq->split.vring.num;
-+	memset(vq->split.desc_extra, 0, size);
-+
-+	for (i = 0; i < vq->split.vring.num - 1; i++)
-+		vq->split.desc_extra[i].next = i + 1;
-+
-+	virtqueue_init(vq, vq->split.vring.num);
-+	virtqueue_vring_init_split(vq);
-+}
-+
- static void virtqueue_vring_attach_split(struct vring_virtqueue *vq,
- 					 struct vring_virtqueue_split *vring)
- {
--- 
-2.31.0
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
