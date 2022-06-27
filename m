@@ -1,19 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out01.mta.xmission.com ([166.70.13.231])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyKwE-002y47-KC
-	for linux-um@lists.infradead.org; Mon, 06 Jun 2022 22:11:09 +0000
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-References: <871qwq5ucx.fsf_-_@email.froward.int.ebiederm.org>
-	<20220518225355.784371-7-ebiederm@xmission.com>
-	<20220524132553.GD14347@redhat.com>
-	<20220524162808.GF14347@redhat.com> <20220525142845.GA2687@redhat.com>
-Date: Mon, 06 Jun 2022 17:10:02 -0500
-In-Reply-To: <20220525142845.GA2687@redhat.com> (Oleg Nesterov's message of
-	"Wed, 25 May 2022 16:28:46 +0200")
-Message-ID: <87a6ap30lh.fsf@email.froward.int.ebiederm.org>
+From: Brian Cain <bcain@quicinc.com>
+Subject: RE: [PATCH V5 12/26] hexagon/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+Date: Mon, 27 Jun 2022 14:32:29 +0000
+Message-ID: <SN6PR02MB4205D2460F6DB1F3C82999BDB8B99@SN6PR02MB4205.namprd02.prod.outlook.com>
+References: <20220627045833.1590055-1-anshuman.khandual@arm.com>
+ <20220627045833.1590055-13-anshuman.khandual@arm.com>
+In-Reply-To: <20220627045833.1590055-13-anshuman.khandual@arm.com>
+Content-Language: en-US
 MIME-Version: 1.0
-Subject: Re: [PATCH 07/16] signal: Wake up the designated parent
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -26,81 +20,157 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: linux-kernel@vger.kernel.org, rjw@rjwysocki.net, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, Robert OCallahan <roc@pernos.co>, Kyle Huey <khuey@pernos.co>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Jason Wessel <jason.wessel@windriver.com>, Daniel Thompson <daniel.thompson@linaro.org>, Douglas Anderson <dianders@chromium.org>, Douglas Miller <dougmill@linux.vnet.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>
+To: Anshuman Khandual <anshuman.khandual@arm.com>, "linux-mm@kvack.org" <linux-mm@kvack.org>
+Cc: "hch@infradead.org" <hch@infradead.org>, "christophe.leroy@csgroup.eu" <christophe.leroy@csgroup.eu>, Andrew Morton <akpm@linux-foundation.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Brian Cain <bcain@codeaurora.org>
 
-Oleg Nesterov <oleg@redhat.com> writes:
+> -----Original Message-----
+> From: Anshuman Khandual <anshuman.khandual@arm.com>
+...
+> WARNING: This email originated from outside of Qualcomm. Please be wary
+> of any links or attachments, and do not enable macros.
+> 
+> This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports
+> standard
+> vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT,
+> which looks
+> up a private and static protection_map[] array. Subsequently all __SXXX and
+> __PXXX macros can be dropped which are no longer needed.
+> 
+> Cc: Brian Cain <bcain@codeaurora.org>
+> Cc: linux-hexagon@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>  arch/hexagon/Kconfig               |  1 +
+>  arch/hexagon/include/asm/pgtable.h | 27 -------------------
+>  arch/hexagon/mm/init.c             | 42 ++++++++++++++++++++++++++++++
+>  3 files changed, 43 insertions(+), 27 deletions(-)
+> 
+> diff --git a/arch/hexagon/Kconfig b/arch/hexagon/Kconfig
+> index 54eadf265178..bc4ceecd0588 100644
+> --- a/arch/hexagon/Kconfig
+> +++ b/arch/hexagon/Kconfig
+> @@ -6,6 +6,7 @@ config HEXAGON
+>         def_bool y
+>         select ARCH_32BIT_OFF_T
+>         select ARCH_HAS_SYNC_DMA_FOR_DEVICE
+> +       select ARCH_HAS_VM_GET_PAGE_PROT
+>         select ARCH_NO_PREEMPT
+>         select DMA_GLOBAL_POOL
+>         # Other pending projects/to-do items.
+> diff --git a/arch/hexagon/include/asm/pgtable.h
+> b/arch/hexagon/include/asm/pgtable.h
+> index 0610724d6a28..f7048c18b6f9 100644
+> --- a/arch/hexagon/include/asm/pgtable.h
+> +++ b/arch/hexagon/include/asm/pgtable.h
+> @@ -126,33 +126,6 @@ extern unsigned long _dflt_cache_att;
+>   */
+>  #define CACHEDEF       (CACHE_DEFAULT << 6)
+> 
+> -/* Private (copy-on-write) page protections. */
+> -#define __P000 __pgprot(_PAGE_PRESENT | _PAGE_USER | CACHEDEF)
+> -#define __P001 __pgprot(_PAGE_PRESENT | _PAGE_USER | _PAGE_READ |
+> CACHEDEF)
+> -#define __P010 __P000  /* Write-only copy-on-write */
+> -#define __P011 __P001  /* Read/Write copy-on-write */
+> -#define __P100 __pgprot(_PAGE_PRESENT | _PAGE_USER | \
+> -                       _PAGE_EXECUTE | CACHEDEF)
+> -#define __P101 __pgprot(_PAGE_PRESENT | _PAGE_USER |
+> _PAGE_EXECUTE | \
+> -                       _PAGE_READ | CACHEDEF)
+> -#define __P110 __P100  /* Write/execute copy-on-write */
+> -#define __P111 __P101  /* Read/Write/Execute, copy-on-write */
+> -
+> -/* Shared page protections. */
+> -#define __S000 __P000
+> -#define __S001 __P001
+> -#define __S010 __pgprot(_PAGE_PRESENT | _PAGE_USER | \
+> -                       _PAGE_WRITE | CACHEDEF)
+> -#define __S011 __pgprot(_PAGE_PRESENT | _PAGE_USER | _PAGE_READ |
+> \
+> -                       _PAGE_WRITE | CACHEDEF)
+> -#define __S100 __pgprot(_PAGE_PRESENT | _PAGE_USER | \
+> -                       _PAGE_EXECUTE | CACHEDEF)
+> -#define __S101 __P101
+> -#define __S110 __pgprot(_PAGE_PRESENT | _PAGE_USER | \
+> -                       _PAGE_EXECUTE | _PAGE_WRITE | CACHEDEF)
+> -#define __S111 __pgprot(_PAGE_PRESENT | _PAGE_USER | _PAGE_READ |
+> \
+> -                       _PAGE_EXECUTE | _PAGE_WRITE | CACHEDEF)
+> -
+>  extern pgd_t swapper_pg_dir[PTRS_PER_PGD];  /* located in head.S */
+> 
+>  /*  HUGETLB not working currently  */
+> diff --git a/arch/hexagon/mm/init.c b/arch/hexagon/mm/init.c
+> index 3167a3b5c97b..146115c9de61 100644
+> --- a/arch/hexagon/mm/init.c
+> +++ b/arch/hexagon/mm/init.c
+> @@ -234,3 +234,45 @@ void __init setup_arch_memory(void)
+>          *  which is called by start_kernel() later on in the process
+>          */
+>  }
+> +
+> +static const pgprot_t protection_map[16] = {
+> +       [VM_NONE]                                       = __pgprot(_PAGE_PRESENT |
+> _PAGE_USER |
+> +                                                                  CACHEDEF),
+> +       [VM_READ]                                       = __pgprot(_PAGE_PRESENT |
+> _PAGE_USER |
+> +                                                                  _PAGE_READ | CACHEDEF),
+> +       [VM_WRITE]                                      = __pgprot(_PAGE_PRESENT |
+> _PAGE_USER |
+> +                                                                  CACHEDEF),
+> +       [VM_WRITE | VM_READ]                            = __pgprot(_PAGE_PRESENT |
+> _PAGE_USER |
+> +                                                                  _PAGE_READ | CACHEDEF),
+> +       [VM_EXEC]                                       = __pgprot(_PAGE_PRESENT |
+> _PAGE_USER |
+> +                                                                  _PAGE_EXECUTE | CACHEDEF),
+> +       [VM_EXEC | VM_READ]                             = __pgprot(_PAGE_PRESENT |
+> _PAGE_USER |
+> +                                                                  _PAGE_EXECUTE | _PAGE_READ |
+> +                                                                  CACHEDEF),
+> +       [VM_EXEC | VM_WRITE]                            = __pgprot(_PAGE_PRESENT |
+> _PAGE_USER |
+> +                                                                  _PAGE_EXECUTE | CACHEDEF),
+> +       [VM_EXEC | VM_WRITE | VM_READ]                  =
+> __pgprot(_PAGE_PRESENT | _PAGE_USER |
+> +                                                                  _PAGE_EXECUTE | _PAGE_READ |
+> +                                                                  CACHEDEF),
+> +       [VM_SHARED]                                     = __pgprot(_PAGE_PRESENT |
+> _PAGE_USER |
+> +                                                                  CACHEDEF),
+> +       [VM_SHARED | VM_READ]                           = __pgprot(_PAGE_PRESENT |
+> _PAGE_USER |
+> +                                                                  _PAGE_READ | CACHEDEF),
+> +       [VM_SHARED | VM_WRITE]                          = __pgprot(_PAGE_PRESENT |
+> _PAGE_USER |
+> +                                                                  _PAGE_WRITE | CACHEDEF),
+> +       [VM_SHARED | VM_WRITE | VM_READ]                =
+> __pgprot(_PAGE_PRESENT | _PAGE_USER |
+> +                                                                  _PAGE_READ | _PAGE_WRITE |
+> +                                                                  CACHEDEF),
+> +       [VM_SHARED | VM_EXEC]                           = __pgprot(_PAGE_PRESENT |
+> _PAGE_USER |
+> +                                                                  _PAGE_EXECUTE | CACHEDEF),
+> +       [VM_SHARED | VM_EXEC | VM_READ]                 =
+> __pgprot(_PAGE_PRESENT | _PAGE_USER |
+> +                                                                  _PAGE_EXECUTE | _PAGE_READ |
+> +                                                                  CACHEDEF),
+> +       [VM_SHARED | VM_EXEC | VM_WRITE]                =
+> __pgprot(_PAGE_PRESENT | _PAGE_USER |
+> +                                                                  _PAGE_EXECUTE | _PAGE_WRITE |
+> +                                                                  CACHEDEF),
+> +       [VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]      =
+> __pgprot(_PAGE_PRESENT | _PAGE_USER |
+> +                                                                  _PAGE_READ | _PAGE_EXECUTE |
+> +                                                                  _PAGE_WRITE | CACHEDEF)
+> +};
+> +DECLARE_VM_GET_PAGE_PROT
+> --
+> 2.25.1
 
-> On 05/24, Oleg Nesterov wrote:
->>
->> On 05/24, Oleg Nesterov wrote:
->> >
->> > I fail to understand this patch...
->> >
->> > On 05/18, Eric W. Biederman wrote:
->> > >
->> > > Today if a process is ptraced only the ptracer will ever be woken up in
->> > > wait
->> >
->> > and why is this wrong?
->> >
->> > > Fixes: 75b95953a569 ("job control: Add @for_ptrace to do_notify_parent_cldstop()")
->> >
->> > how does this change fix 75b95953a569?
->>
->> OK, I guess you mean the 2nd do_notify_parent_cldstop() in ptrace_stop(),
->> the problematic case is current->ptrace == T. Right?
->>
->> I dislike this patch anyway, but let me think more about it.
->
-> OK, now that I understand the problem, the patch doesn't look bad to me,
-> although I'd ask to make the changelog more clear.
-
-I will see what I can do.
-
-> After this change __wake_up_parent() can't accept any "parent" from
-> p->parent thread group, but all callers look fine except
-> ptrace_detach().
-
-Having looked at it a little more I think the change was too
-restrictive.  For the !ptrace_reparented case there are possibly
-two threads of the parent process that wait_consider_task will
-allow to wait even with __WNOTHREAD specified.  It is desirable
-to wake them both up.
-
-Which if I have had enough sleep reduces this patch to just:
-
-diff --git a/kernel/exit.c b/kernel/exit.c
-index f072959fcab7..c8156366b722 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -1431,8 +1431,10 @@ static int child_wait_callback(wait_queue_entry_t *wait, unsigned mode,
-        if (!eligible_pid(wo, p))
-                return 0;
- 
--       if ((wo->wo_flags & __WNOTHREAD) && wait->private != p->parent)
--               return 0;
-+       if ((wo->wo_flags & __WNOTHREAD) &&
-+           (wait->private != p->parent) &&
-+           (wait->private != p->real_parent))
-+                       return 0;
- 
-        return default_wake_function(wait, mode, sync, key);
- }
-
-
-I think that solves the issue without missing wake-ups without adding
-any more.
-
-For the same set of reasons it looks like the __wake_up_parent in
-__ptrace_detach is just simply dead code.  I don't think there is a case
-where when !ptrace_reparented the thread that is the real_parent can
-sleep in do_wait when the thread that was calling ptrace could not.
-
-That needs a very close look to confirm. 
-
-Eric
-
+Acked-by: Brian Cain <bcain@quicinc.com>
 
 _______________________________________________
 linux-um mailing list
