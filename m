@@ -1,12 +1,17 @@
 Return-Path: <openrisc-bounces@lists.librecores.org>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V4 15/26] nios2/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Date: Fri, 24 Jun 2022 10:13:28 +0530
-Message-Id: <20220624044339.1533882-16-anshuman.khandual@arm.com>
-In-Reply-To: <20220624044339.1533882-1-anshuman.khandual@arm.com>
-References: <20220624044339.1533882-1-anshuman.khandual@arm.com>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH V5 03/26] powerpc/mm: Move protection_map[] inside the
+ platform
+Date: Mon, 27 Jun 2022 05:49:44 +0000
+Message-ID: <78a5d6ed-d1b5-2007-5d45-9c307d565349@csgroup.eu>
+References: <20220627045833.1590055-1-anshuman.khandual@arm.com>
+ <20220627045833.1590055-4-anshuman.khandual@arm.com>
+In-Reply-To: <20220627045833.1590055-4-anshuman.khandual@arm.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4AB53177BF314F439E0C3F6AC2A7B43D@FRAP264.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
  <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
 List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
@@ -16,94 +21,77 @@ List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
  <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
 Errors-To: openrisc-bounces@lists.librecores.org
 Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
-To: linux-mm@kvack.org
-Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>, linux-alpha@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org
+To: Anshuman Khandual <anshuman.khandual@arm.com>, "linux-mm@kvack.org" <linux-mm@kvack.org>
+Cc: "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Paul Mackerras <paulus@samba.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>, "hch@infradead.org" <hch@infradead.org>, "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, Nicholas Piggin <npiggin@gmail.com>, "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>, "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Andrew Morton <akpm@linux-foundation.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-ID: <linux-um.lists.infradead.org>
 
-This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
-vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
-up a private and static protection_map[] array. Subsequently all __SXXX and
-__PXXX macros can be dropped which are no longer needed.
-
-Cc: Dinh Nguyen <dinguyen@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- arch/nios2/Kconfig               |  1 +
- arch/nios2/include/asm/pgtable.h | 16 ----------------
- arch/nios2/mm/init.c             | 20 ++++++++++++++++++++
- 3 files changed, 21 insertions(+), 16 deletions(-)
-
-diff --git a/arch/nios2/Kconfig b/arch/nios2/Kconfig
-index 4167f1eb4cd8..e0459dffd218 100644
---- a/arch/nios2/Kconfig
-+++ b/arch/nios2/Kconfig
-@@ -6,6 +6,7 @@ config NIOS2
- 	select ARCH_HAS_SYNC_DMA_FOR_CPU
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
- 	select ARCH_HAS_DMA_SET_UNCACHED
-+	select ARCH_HAS_VM_GET_PAGE_PROT
- 	select ARCH_NO_SWAP
- 	select COMMON_CLK
- 	select TIMER_OF
-diff --git a/arch/nios2/include/asm/pgtable.h b/arch/nios2/include/asm/pgtable.h
-index 262d0609268c..470516d4555e 100644
---- a/arch/nios2/include/asm/pgtable.h
-+++ b/arch/nios2/include/asm/pgtable.h
-@@ -40,24 +40,8 @@ struct mm_struct;
-  */
- 
- /* Remove W bit on private pages for COW support */
--#define __P000	MKP(0, 0, 0)
--#define __P001	MKP(0, 0, 1)
--#define __P010	MKP(0, 0, 0)	/* COW */
--#define __P011	MKP(0, 0, 1)	/* COW */
--#define __P100	MKP(1, 0, 0)
--#define __P101	MKP(1, 0, 1)
--#define __P110	MKP(1, 0, 0)	/* COW */
--#define __P111	MKP(1, 0, 1)	/* COW */
- 
- /* Shared pages can have exact HW mapping */
--#define __S000	MKP(0, 0, 0)
--#define __S001	MKP(0, 0, 1)
--#define __S010	MKP(0, 1, 0)
--#define __S011	MKP(0, 1, 1)
--#define __S100	MKP(1, 0, 0)
--#define __S101	MKP(1, 0, 1)
--#define __S110	MKP(1, 1, 0)
--#define __S111	MKP(1, 1, 1)
- 
- /* Used all over the kernel */
- #define PAGE_KERNEL __pgprot(_PAGE_PRESENT | _PAGE_CACHED | _PAGE_READ | \
-diff --git a/arch/nios2/mm/init.c b/arch/nios2/mm/init.c
-index 613fcaa5988a..9a3dd4c80d70 100644
---- a/arch/nios2/mm/init.c
-+++ b/arch/nios2/mm/init.c
-@@ -124,3 +124,23 @@ const char *arch_vma_name(struct vm_area_struct *vma)
- {
- 	return (vma->vm_start == KUSER_BASE) ? "[kuser]" : NULL;
- }
-+
-+static pgprot_t protection_map[16] __ro_after_init = {
-+	[VM_NONE]					= MKP(0, 0, 0),
-+	[VM_READ]					= MKP(0, 0, 1),
-+	[VM_WRITE]					= MKP(0, 0, 0),
-+	[VM_WRITE | VM_READ]				= MKP(0, 0, 1),
-+	[VM_EXEC]					= MKP(1, 0, 0),
-+	[VM_EXEC | VM_READ]				= MKP(1, 0, 1),
-+	[VM_EXEC | VM_WRITE]				= MKP(1, 0, 0),
-+	[VM_EXEC | VM_WRITE | VM_READ]			= MKP(1, 0, 1),
-+	[VM_SHARED]					= MKP(0, 0, 0),
-+	[VM_SHARED | VM_READ]				= MKP(0, 0, 1),
-+	[VM_SHARED | VM_WRITE]				= MKP(0, 1, 0),
-+	[VM_SHARED | VM_WRITE | VM_READ]		= MKP(0, 1, 1),
-+	[VM_SHARED | VM_EXEC]				= MKP(1, 0, 0),
-+	[VM_SHARED | VM_EXEC | VM_READ]			= MKP(1, 0, 1),
-+	[VM_SHARED | VM_EXEC | VM_WRITE]		= MKP(1, 1, 0),
-+	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= MKP(1, 1, 1)
-+};
-+DECLARE_VM_GET_PAGE_PROT
--- 
-2.25.1
-
+DQoNCkxlIDI3LzA2LzIwMjIgw6AgMDY6NTgsIEFuc2h1bWFuIEtoYW5kdWFsIGEgw6ljcml0wqA6
+DQo+IFRoaXMgbW92ZXMgcHJvdGVjdGlvbl9tYXBbXSBpbnNpZGUgdGhlIHBsYXRmb3JtIGFuZCB3
+aGlsZSBoZXJlLCBhbHNvIGVuYWJsZQ0KPiBBUkNIX0hBU19WTV9HRVRfUEFHRV9QUk9UIG9uIDMy
+IGJpdCBhbmQgbm9oYXNoIDY0IChha2EgYm9vazNlLzY0KSBwbGF0Zm9ybXMNCj4gdmlhIERFQ0xB
+UkVfVk1fR0VUX1BBR0VfUFJPVC4NCj4gDQo+IENjOiBNaWNoYWVsIEVsbGVybWFuIDxtcGVAZWxs
+ZXJtYW4uaWQuYXU+DQo+IENjOiBQYXVsIE1hY2tlcnJhcyA8cGF1bHVzQHNhbWJhLm9yZz4NCj4g
+Q2M6IE5pY2hvbGFzIFBpZ2dpbiA8bnBpZ2dpbkBnbWFpbC5jb20+DQo+IENjOiBsaW51eHBwYy1k
+ZXZAbGlzdHMub3psYWJzLm9yZw0KPiBDYzogbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0K
+PiBTaWduZWQtb2ZmLWJ5OiBBbnNodW1hbiBLaGFuZHVhbCA8YW5zaHVtYW4ua2hhbmR1YWxAYXJt
+LmNvbT4NCg0KUmV2aWV3ZWQtYnk6IENocmlzdG9waGUgTGVyb3kgPGNocmlzdG9waGUubGVyb3lA
+Y3Nncm91cC5ldT4NCg0KPiAtLS0NCj4gICBhcmNoL3Bvd2VycGMvS2NvbmZpZyAgICAgICAgICAg
+ICAgIHwgIDIgKy0NCj4gICBhcmNoL3Bvd2VycGMvaW5jbHVkZS9hc20vcGd0YWJsZS5oIHwgMjAg
+Ky0tLS0tLS0tLS0tLS0tLS0tLS0NCj4gICBhcmNoL3Bvd2VycGMvbW0vcGd0YWJsZS5jICAgICAg
+ICAgIHwgMjQgKysrKysrKysrKysrKysrKysrKysrKysrDQo+ICAgMyBmaWxlcyBjaGFuZ2VkLCAy
+NiBpbnNlcnRpb25zKCspLCAyMCBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9hcmNo
+L3Bvd2VycGMvS2NvbmZpZyBiL2FyY2gvcG93ZXJwYy9LY29uZmlnDQo+IGluZGV4IGMyY2UyZTYw
+YzhmMC4uMTAzNWQxNzJjN2RkIDEwMDY0NA0KPiAtLS0gYS9hcmNoL3Bvd2VycGMvS2NvbmZpZw0K
+PiArKysgYi9hcmNoL3Bvd2VycGMvS2NvbmZpZw0KPiBAQCAtMTQwLDcgKzE0MCw3IEBAIGNvbmZp
+ZyBQUEMNCj4gICAJc2VsZWN0IEFSQ0hfSEFTX1RJQ0tfQlJPQURDQVNUCQlpZiBHRU5FUklDX0NM
+T0NLRVZFTlRTX0JST0FEQ0FTVA0KPiAgIAlzZWxlY3QgQVJDSF9IQVNfVUFDQ0VTU19GTFVTSENB
+Q0hFDQo+ICAgCXNlbGVjdCBBUkNIX0hBU19VQlNBTl9TQU5JVElaRV9BTEwNCj4gLQlzZWxlY3Qg
+QVJDSF9IQVNfVk1fR0VUX1BBR0VfUFJPVAlpZiBQUENfQk9PSzNTXzY0DQo+ICsJc2VsZWN0IEFS
+Q0hfSEFTX1ZNX0dFVF9QQUdFX1BST1QNCj4gICAJc2VsZWN0IEFSQ0hfSEFWRV9OTUlfU0FGRV9D
+TVBYQ0hHDQo+ICAgCXNlbGVjdCBBUkNIX0tFRVBfTUVNQkxPQ0sNCj4gICAJc2VsZWN0IEFSQ0hf
+TUlHSFRfSEFWRV9QQ19QQVJQT1JUDQo+IGRpZmYgLS1naXQgYS9hcmNoL3Bvd2VycGMvaW5jbHVk
+ZS9hc20vcGd0YWJsZS5oIGIvYXJjaC9wb3dlcnBjL2luY2x1ZGUvYXNtL3BndGFibGUuaA0KPiBp
+bmRleCBkNTY0ZDBlY2Q0Y2QuLjMzZjRiZjhkMjJiMCAxMDA2NDQNCj4gLS0tIGEvYXJjaC9wb3dl
+cnBjL2luY2x1ZGUvYXNtL3BndGFibGUuaA0KPiArKysgYi9hcmNoL3Bvd2VycGMvaW5jbHVkZS9h
+c20vcGd0YWJsZS5oDQo+IEBAIC0yMCwyNSArMjAsNiBAQCBzdHJ1Y3QgbW1fc3RydWN0Ow0KPiAg
+ICNpbmNsdWRlIDxhc20vbm9oYXNoL3BndGFibGUuaD4NCj4gICAjZW5kaWYgLyogIUNPTkZJR19Q
+UENfQk9PSzNTICovDQo+ICAgDQo+IC0vKiBOb3RlIGR1ZSB0byB0aGUgd2F5IHZtIGZsYWdzIGFy
+ZSBsYWlkIG91dCwgdGhlIGJpdHMgYXJlIFhXUiAqLw0KPiAtI2RlZmluZSBfX1AwMDAJUEFHRV9O
+T05FDQo+IC0jZGVmaW5lIF9fUDAwMQlQQUdFX1JFQURPTkxZDQo+IC0jZGVmaW5lIF9fUDAxMAlQ
+QUdFX0NPUFkNCj4gLSNkZWZpbmUgX19QMDExCVBBR0VfQ09QWQ0KPiAtI2RlZmluZSBfX1AxMDAJ
+UEFHRV9SRUFET05MWV9YDQo+IC0jZGVmaW5lIF9fUDEwMQlQQUdFX1JFQURPTkxZX1gNCj4gLSNk
+ZWZpbmUgX19QMTEwCVBBR0VfQ09QWV9YDQo+IC0jZGVmaW5lIF9fUDExMQlQQUdFX0NPUFlfWA0K
+PiAtDQo+IC0jZGVmaW5lIF9fUzAwMAlQQUdFX05PTkUNCj4gLSNkZWZpbmUgX19TMDAxCVBBR0Vf
+UkVBRE9OTFkNCj4gLSNkZWZpbmUgX19TMDEwCVBBR0VfU0hBUkVEDQo+IC0jZGVmaW5lIF9fUzAx
+MQlQQUdFX1NIQVJFRA0KPiAtI2RlZmluZSBfX1MxMDAJUEFHRV9SRUFET05MWV9YDQo+IC0jZGVm
+aW5lIF9fUzEwMQlQQUdFX1JFQURPTkxZX1gNCj4gLSNkZWZpbmUgX19TMTEwCVBBR0VfU0hBUkVE
+X1gNCj4gLSNkZWZpbmUgX19TMTExCVBBR0VfU0hBUkVEX1gNCj4gLQ0KPiAgICNpZm5kZWYgX19B
+U1NFTUJMWV9fDQo+ICAgDQo+ICAgI2lmbmRlZiBNQVhfUFRSU19QRVJfUEdEDQo+IEBAIC03OSw2
+ICs2MCw3IEBAIGV4dGVybiB2b2lkIHBhZ2luZ19pbml0KHZvaWQpOw0KPiAgIHZvaWQgcG9raW5n
+X2luaXQodm9pZCk7DQo+ICAgDQo+ICAgZXh0ZXJuIHVuc2lnbmVkIGxvbmcgaW9yZW1hcF9ib3Q7
+DQo+ICtleHRlcm4gY29uc3QgcGdwcm90X3QgcHJvdGVjdGlvbl9tYXBbMTZdOw0KPiAgIA0KPiAg
+IC8qDQo+ICAgICoga2Vybl9hZGRyX3ZhbGlkIGlzIGludGVuZGVkIHRvIGluZGljYXRlIHdoZXRo
+ZXIgYW4gYWRkcmVzcyBpcyBhIHZhbGlkDQo+IGRpZmYgLS1naXQgYS9hcmNoL3Bvd2VycGMvbW0v
+cGd0YWJsZS5jIGIvYXJjaC9wb3dlcnBjL21tL3BndGFibGUuYw0KPiBpbmRleCBlNjE2NmI3MWQz
+NmQuLmNiMmRjZGIxOGY4ZSAxMDA2NDQNCj4gLS0tIGEvYXJjaC9wb3dlcnBjL21tL3BndGFibGUu
+Yw0KPiArKysgYi9hcmNoL3Bvd2VycGMvbW0vcGd0YWJsZS5jDQo+IEBAIC00NzIsMyArNDcyLDI3
+IEBAIHB0ZV90ICpfX2ZpbmRfbGludXhfcHRlKHBnZF90ICpwZ2RpciwgdW5zaWduZWQgbG9uZyBl
+YSwNCj4gICAJcmV0dXJuIHJldF9wdGU7DQo+ICAgfQ0KPiAgIEVYUE9SVF9TWU1CT0xfR1BMKF9f
+ZmluZF9saW51eF9wdGUpOw0KPiArDQo+ICsvKiBOb3RlIGR1ZSB0byB0aGUgd2F5IHZtIGZsYWdz
+IGFyZSBsYWlkIG91dCwgdGhlIGJpdHMgYXJlIFhXUiAqLw0KPiArY29uc3QgcGdwcm90X3QgcHJv
+dGVjdGlvbl9tYXBbMTZdID0gew0KPiArCVtWTV9OT05FXQkJCQkJPSBQQUdFX05PTkUsDQo+ICsJ
+W1ZNX1JFQURdCQkJCQk9IFBBR0VfUkVBRE9OTFksDQo+ICsJW1ZNX1dSSVRFXQkJCQkJPSBQQUdF
+X0NPUFksDQo+ICsJW1ZNX1dSSVRFIHwgVk1fUkVBRF0JCQkJPSBQQUdFX0NPUFksDQo+ICsJW1ZN
+X0VYRUNdCQkJCQk9IFBBR0VfUkVBRE9OTFlfWCwNCj4gKwlbVk1fRVhFQyB8IFZNX1JFQURdCQkJ
+CT0gUEFHRV9SRUFET05MWV9YLA0KPiArCVtWTV9FWEVDIHwgVk1fV1JJVEVdCQkJCT0gUEFHRV9D
+T1BZX1gsDQo+ICsJW1ZNX0VYRUMgfCBWTV9XUklURSB8IFZNX1JFQURdCQkJPSBQQUdFX0NPUFlf
+WCwNCj4gKwlbVk1fU0hBUkVEXQkJCQkJPSBQQUdFX05PTkUsDQo+ICsJW1ZNX1NIQVJFRCB8IFZN
+X1JFQURdCQkJCT0gUEFHRV9SRUFET05MWSwNCj4gKwlbVk1fU0hBUkVEIHwgVk1fV1JJVEVdCQkJ
+CT0gUEFHRV9TSEFSRUQsDQo+ICsJW1ZNX1NIQVJFRCB8IFZNX1dSSVRFIHwgVk1fUkVBRF0JCT0g
+UEFHRV9TSEFSRUQsDQo+ICsJW1ZNX1NIQVJFRCB8IFZNX0VYRUNdCQkJCT0gUEFHRV9SRUFET05M
+WV9YLA0KPiArCVtWTV9TSEFSRUQgfCBWTV9FWEVDIHwgVk1fUkVBRF0JCQk9IFBBR0VfUkVBRE9O
+TFlfWCwNCj4gKwlbVk1fU0hBUkVEIHwgVk1fRVhFQyB8IFZNX1dSSVRFXQkJPSBQQUdFX1NIQVJF
+RF9YLA0KPiArCVtWTV9TSEFSRUQgfCBWTV9FWEVDIHwgVk1fV1JJVEUgfCBWTV9SRUFEXQk9IFBB
+R0VfU0hBUkVEX1gNCj4gK307DQo+ICsNCj4gKyNpZm5kZWYgQ09ORklHX1BQQ19CT09LM1NfNjQN
+Cj4gK0RFQ0xBUkVfVk1fR0VUX1BBR0VfUFJPVA0KPiArI2VuZGlm
 
