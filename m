@@ -1,10 +1,10 @@
 Return-Path: <openrisc-bounces@lists.librecores.org>
 From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V6 18/26] s390/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Date: Thu, 30 Jun 2022 10:46:22 +0530
-Message-Id: <20220630051630.1718927-19-anshuman.khandual@arm.com>
-In-Reply-To: <20220630051630.1718927-1-anshuman.khandual@arm.com>
-References: <20220630051630.1718927-1-anshuman.khandual@arm.com>
+Subject: [PATCH V5 22/26] arc/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+Date: Mon, 27 Jun 2022 10:28:29 +0530
+Message-Id: <20220627045833.1590055-23-anshuman.khandual@arm.com>
+In-Reply-To: <20220627045833.1590055-1-anshuman.khandual@arm.com>
+References: <20220627045833.1590055-1-anshuman.khandual@arm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
@@ -16,8 +16,8 @@ List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
  <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
 Errors-To: openrisc-bounces@lists.librecores.org
 Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
-To: linux-mm@kvack.org, akpm@linux-foundation.org
-Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Vasily Gorbik <gor@linux.ibm.com>, Anshuman Khandual <anshuman.khandual@arm.com>, Heiko Carstens <hca@linux.ibm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+To: linux-mm@kvack.org
+Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, Vineet Gupta <vgupta@kernel.org>, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org
 List-ID: <linux-um.lists.infradead.org>
 
 This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
@@ -25,83 +25,83 @@ vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
 up a private and static protection_map[] array. Subsequently all __SXXX and
 __PXXX macros can be dropped which are no longer needed.
 
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: linux-s390@vger.kernel.org
+Cc: Vineet Gupta <vgupta@kernel.org>
+Cc: linux-snps-arc@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- arch/s390/Kconfig               |  1 +
- arch/s390/include/asm/pgtable.h | 17 -----------------
- arch/s390/mm/mmap.c             | 20 ++++++++++++++++++++
- 3 files changed, 21 insertions(+), 17 deletions(-)
+ arch/arc/Kconfig                          |  1 +
+ arch/arc/include/asm/pgtable-bits-arcv2.h | 18 ------------------
+ arch/arc/mm/mmap.c                        | 20 ++++++++++++++++++++
+ 3 files changed, 21 insertions(+), 18 deletions(-)
 
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index 91c0b80a8bf0..c4481377ca83 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -81,6 +81,7 @@ config S390
- 	select ARCH_HAS_SYSCALL_WRAPPER
- 	select ARCH_HAS_UBSAN_SANITIZE_ALL
- 	select ARCH_HAS_VDSO_DATA
+diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
+index 9e3653253ef2..8be56a5d8a9b 100644
+--- a/arch/arc/Kconfig
++++ b/arch/arc/Kconfig
+@@ -13,6 +13,7 @@ config ARC
+ 	select ARCH_HAS_SETUP_DMA_OPS
+ 	select ARCH_HAS_SYNC_DMA_FOR_CPU
+ 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
 +	select ARCH_HAS_VM_GET_PAGE_PROT
- 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
- 	select ARCH_INLINE_READ_LOCK
- 	select ARCH_INLINE_READ_LOCK_BH
-diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
-index a397b072a580..c63a05b5368a 100644
---- a/arch/s390/include/asm/pgtable.h
-+++ b/arch/s390/include/asm/pgtable.h
-@@ -424,23 +424,6 @@ static inline int is_module_addr(void *addr)
-  * implies read permission.
+ 	select ARCH_SUPPORTS_ATOMIC_RMW if ARC_HAS_LLSC
+ 	select ARCH_32BIT_OFF_T
+ 	select BUILDTIME_TABLE_SORT
+diff --git a/arch/arc/include/asm/pgtable-bits-arcv2.h b/arch/arc/include/asm/pgtable-bits-arcv2.h
+index 183d23bc1e00..b23be557403e 100644
+--- a/arch/arc/include/asm/pgtable-bits-arcv2.h
++++ b/arch/arc/include/asm/pgtable-bits-arcv2.h
+@@ -72,24 +72,6 @@
+  *     This is to enable COW mechanism
   */
-          /*xwr*/
--#define __P000	PAGE_NONE
--#define __P001	PAGE_RO
--#define __P010	PAGE_RO
--#define __P011	PAGE_RO
--#define __P100	PAGE_RX
--#define __P101	PAGE_RX
--#define __P110	PAGE_RX
--#define __P111	PAGE_RX
+ 	/* xwr */
+-#define __P000  PAGE_U_NONE
+-#define __P001  PAGE_U_R
+-#define __P010  PAGE_U_R	/* Pvt-W => !W */
+-#define __P011  PAGE_U_R	/* Pvt-W => !W */
+-#define __P100  PAGE_U_X_R	/* X => R */
+-#define __P101  PAGE_U_X_R
+-#define __P110  PAGE_U_X_R	/* Pvt-W => !W and X => R */
+-#define __P111  PAGE_U_X_R	/* Pvt-W => !W */
 -
--#define __S000	PAGE_NONE
--#define __S001	PAGE_RO
--#define __S010	PAGE_RW
--#define __S011	PAGE_RW
--#define __S100	PAGE_RX
--#define __S101	PAGE_RX
--#define __S110	PAGE_RWX
--#define __S111	PAGE_RWX
+-#define __S000  PAGE_U_NONE
+-#define __S001  PAGE_U_R
+-#define __S010  PAGE_U_W_R	/* W => R */
+-#define __S011  PAGE_U_W_R
+-#define __S100  PAGE_U_X_R	/* X => R */
+-#define __S101  PAGE_U_X_R
+-#define __S110  PAGE_U_X_W_R	/* X => R */
+-#define __S111  PAGE_U_X_W_R
+-
+ #ifndef __ASSEMBLY__
  
- /*
-  * Segment entry (large page) protection definitions.
-diff --git a/arch/s390/mm/mmap.c b/arch/s390/mm/mmap.c
-index d545f5c39f7e..5980ce348832 100644
---- a/arch/s390/mm/mmap.c
-+++ b/arch/s390/mm/mmap.c
-@@ -188,3 +188,23 @@ void arch_pick_mmap_layout(struct mm_struct *mm, struct rlimit *rlim_stack)
- 		mm->get_unmapped_area = arch_get_unmapped_area_topdown;
- 	}
+ #define pte_write(pte)		(pte_val(pte) & _PAGE_WRITE)
+diff --git a/arch/arc/mm/mmap.c b/arch/arc/mm/mmap.c
+index 722d26b94307..fce5fa2b4f52 100644
+--- a/arch/arc/mm/mmap.c
++++ b/arch/arc/mm/mmap.c
+@@ -74,3 +74,23 @@ arch_get_unmapped_area(struct file *filp, unsigned long addr,
+ 	info.align_offset = pgoff << PAGE_SHIFT;
+ 	return vm_unmapped_area(&info);
  }
 +
 +static const pgprot_t protection_map[16] = {
-+	[VM_NONE]					= PAGE_NONE,
-+	[VM_READ]					= PAGE_RO,
-+	[VM_WRITE]					= PAGE_RO,
-+	[VM_WRITE | VM_READ]				= PAGE_RO,
-+	[VM_EXEC]					= PAGE_RX,
-+	[VM_EXEC | VM_READ]				= PAGE_RX,
-+	[VM_EXEC | VM_WRITE]				= PAGE_RX,
-+	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_RX,
-+	[VM_SHARED]					= PAGE_NONE,
-+	[VM_SHARED | VM_READ]				= PAGE_RO,
-+	[VM_SHARED | VM_WRITE]				= PAGE_RW,
-+	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_RW,
-+	[VM_SHARED | VM_EXEC]				= PAGE_RX,
-+	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_RX,
-+	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_RWX,
-+	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_RWX
++	[VM_NONE]					= PAGE_U_NONE,
++	[VM_READ]					= PAGE_U_R,
++	[VM_WRITE]					= PAGE_U_R,
++	[VM_WRITE | VM_READ]				= PAGE_U_R,
++	[VM_EXEC]					= PAGE_U_X_R,
++	[VM_EXEC | VM_READ]				= PAGE_U_X_R,
++	[VM_EXEC | VM_WRITE]				= PAGE_U_X_R,
++	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_U_X_R,
++	[VM_SHARED]					= PAGE_U_NONE,
++	[VM_SHARED | VM_READ]				= PAGE_U_R,
++	[VM_SHARED | VM_WRITE]				= PAGE_U_W_R,
++	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_U_W_R,
++	[VM_SHARED | VM_EXEC]				= PAGE_U_X_R,
++	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_U_X_R,
++	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_U_X_W_R,
++	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_U_X_W_R
 +};
 +DECLARE_VM_GET_PAGE_PROT
 -- 
