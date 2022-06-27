@@ -1,10 +1,10 @@
 Return-Path: <openrisc-bounces@lists.librecores.org>
 From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V4 06/26] x86/mm: Move protection_map[] inside the platform
-Date: Fri, 24 Jun 2022 10:13:19 +0530
-Message-Id: <20220624044339.1533882-7-anshuman.khandual@arm.com>
-In-Reply-To: <20220624044339.1533882-1-anshuman.khandual@arm.com>
-References: <20220624044339.1533882-1-anshuman.khandual@arm.com>
+Subject: [PATCH V5 15/26] nios2/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+Date: Mon, 27 Jun 2022 10:28:22 +0530
+Message-Id: <20220627045833.1590055-16-anshuman.khandual@arm.com>
+In-Reply-To: <20220627045833.1590055-1-anshuman.khandual@arm.com>
+References: <20220627045833.1590055-1-anshuman.khandual@arm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
@@ -17,119 +17,92 @@ List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
 Errors-To: openrisc-bounces@lists.librecores.org
 Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
 To: linux-mm@kvack.org
-Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, Ingo Molnar <mingo@redhat.com>, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, Thomas Gleixner <tglx@linutronix.de>, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org
+Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>, linux-alpha@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org
 List-ID: <linux-um.lists.infradead.org>
 
-This moves protection_map[] inside the platform and makes it a static. This
-also defines a helper function add_encrypt_protection_map() that can update
-the protection_map[] array with pgprot_encrypted().
+This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
+vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
+up a private and static protection_map[] array. Subsequently all __SXXX and
+__PXXX macros can be dropped which are no longer needed.
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: x86@kernel.org
+Cc: Dinh Nguyen <dinguyen@kernel.org>
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- arch/x86/include/asm/pgtable_types.h | 19 -------------------
- arch/x86/mm/mem_encrypt_amd.c        |  7 +++----
- arch/x86/mm/pgprot.c                 | 27 +++++++++++++++++++++++++++
- 3 files changed, 30 insertions(+), 23 deletions(-)
+ arch/nios2/Kconfig               |  1 +
+ arch/nios2/include/asm/pgtable.h | 16 ----------------
+ arch/nios2/mm/init.c             | 20 ++++++++++++++++++++
+ 3 files changed, 21 insertions(+), 16 deletions(-)
 
-diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
-index bdaf8391e2e0..aa174fed3a71 100644
---- a/arch/x86/include/asm/pgtable_types.h
-+++ b/arch/x86/include/asm/pgtable_types.h
-@@ -230,25 +230,6 @@ enum page_cache_mode {
- 
- #endif	/* __ASSEMBLY__ */
- 
--/*         xwr */
--#define __P000	PAGE_NONE
--#define __P001	PAGE_READONLY
--#define __P010	PAGE_COPY
--#define __P011	PAGE_COPY
--#define __P100	PAGE_READONLY_EXEC
--#define __P101	PAGE_READONLY_EXEC
--#define __P110	PAGE_COPY_EXEC
--#define __P111	PAGE_COPY_EXEC
--
--#define __S000	PAGE_NONE
--#define __S001	PAGE_READONLY
--#define __S010	PAGE_SHARED
--#define __S011	PAGE_SHARED
--#define __S100	PAGE_READONLY_EXEC
--#define __S101	PAGE_READONLY_EXEC
--#define __S110	PAGE_SHARED_EXEC
--#define __S111	PAGE_SHARED_EXEC
--
- /*
-  * early identity mapping  pte attrib macros.
+diff --git a/arch/nios2/Kconfig b/arch/nios2/Kconfig
+index 4167f1eb4cd8..e0459dffd218 100644
+--- a/arch/nios2/Kconfig
++++ b/arch/nios2/Kconfig
+@@ -6,6 +6,7 @@ config NIOS2
+ 	select ARCH_HAS_SYNC_DMA_FOR_CPU
+ 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
+ 	select ARCH_HAS_DMA_SET_UNCACHED
++	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_NO_SWAP
+ 	select COMMON_CLK
+ 	select TIMER_OF
+diff --git a/arch/nios2/include/asm/pgtable.h b/arch/nios2/include/asm/pgtable.h
+index 262d0609268c..470516d4555e 100644
+--- a/arch/nios2/include/asm/pgtable.h
++++ b/arch/nios2/include/asm/pgtable.h
+@@ -40,24 +40,8 @@ struct mm_struct;
   */
-diff --git a/arch/x86/mm/mem_encrypt_amd.c b/arch/x86/mm/mem_encrypt_amd.c
-index f6d038e2cd8e..4b3ec87e8c7d 100644
---- a/arch/x86/mm/mem_encrypt_amd.c
-+++ b/arch/x86/mm/mem_encrypt_amd.c
-@@ -484,10 +484,10 @@ void __init early_set_mem_enc_dec_hypercall(unsigned long vaddr, int npages, boo
- 	enc_dec_hypercall(vaddr, npages, enc);
+ 
+ /* Remove W bit on private pages for COW support */
+-#define __P000	MKP(0, 0, 0)
+-#define __P001	MKP(0, 0, 1)
+-#define __P010	MKP(0, 0, 0)	/* COW */
+-#define __P011	MKP(0, 0, 1)	/* COW */
+-#define __P100	MKP(1, 0, 0)
+-#define __P101	MKP(1, 0, 1)
+-#define __P110	MKP(1, 0, 0)	/* COW */
+-#define __P111	MKP(1, 0, 1)	/* COW */
+ 
+ /* Shared pages can have exact HW mapping */
+-#define __S000	MKP(0, 0, 0)
+-#define __S001	MKP(0, 0, 1)
+-#define __S010	MKP(0, 1, 0)
+-#define __S011	MKP(0, 1, 1)
+-#define __S100	MKP(1, 0, 0)
+-#define __S101	MKP(1, 0, 1)
+-#define __S110	MKP(1, 1, 0)
+-#define __S111	MKP(1, 1, 1)
+ 
+ /* Used all over the kernel */
+ #define PAGE_KERNEL __pgprot(_PAGE_PRESENT | _PAGE_CACHED | _PAGE_READ | \
+diff --git a/arch/nios2/mm/init.c b/arch/nios2/mm/init.c
+index 613fcaa5988a..ae24687d12ad 100644
+--- a/arch/nios2/mm/init.c
++++ b/arch/nios2/mm/init.c
+@@ -124,3 +124,23 @@ const char *arch_vma_name(struct vm_area_struct *vma)
+ {
+ 	return (vma->vm_start == KUSER_BASE) ? "[kuser]" : NULL;
  }
- 
-+void add_encrypt_protection_map(void);
 +
- void __init sme_early_init(void)
- {
--	unsigned int i;
--
- 	if (!sme_me_mask)
- 		return;
- 
-@@ -496,8 +496,7 @@ void __init sme_early_init(void)
- 	__supported_pte_mask = __sme_set(__supported_pte_mask);
- 
- 	/* Update the protection map with memory encryption mask */
--	for (i = 0; i < ARRAY_SIZE(protection_map); i++)
--		protection_map[i] = pgprot_encrypted(protection_map[i]);
-+	add_encrypt_protection_map();
- 
- 	x86_platform.guest.enc_status_change_prepare = amd_enc_status_change_prepare;
- 	x86_platform.guest.enc_status_change_finish  = amd_enc_status_change_finish;
-diff --git a/arch/x86/mm/pgprot.c b/arch/x86/mm/pgprot.c
-index 763742782286..b867839b16aa 100644
---- a/arch/x86/mm/pgprot.c
-+++ b/arch/x86/mm/pgprot.c
-@@ -4,6 +4,33 @@
- #include <linux/mm.h>
- #include <asm/pgtable.h>
- 
-+static pgprot_t protection_map[16] __ro_after_init = {
-+	[VM_NONE]					= PAGE_NONE,
-+	[VM_READ]					= PAGE_READONLY,
-+	[VM_WRITE]					= PAGE_COPY,
-+	[VM_WRITE | VM_READ]				= PAGE_COPY,
-+	[VM_EXEC]					= PAGE_READONLY_EXEC,
-+	[VM_EXEC | VM_READ]				= PAGE_READONLY_EXEC,
-+	[VM_EXEC | VM_WRITE]				= PAGE_COPY_EXEC,
-+	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY_EXEC,
-+	[VM_SHARED]					= PAGE_NONE,
-+	[VM_SHARED | VM_READ]				= PAGE_READONLY,
-+	[VM_SHARED | VM_WRITE]				= PAGE_SHARED,
-+	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED,
-+	[VM_SHARED | VM_EXEC]				= PAGE_READONLY_EXEC,
-+	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY_EXEC,
-+	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED_EXEC,
-+	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED_EXEC
++static const pgprot_t protection_map[16] = {
++	[VM_NONE]					= MKP(0, 0, 0),
++	[VM_READ]					= MKP(0, 0, 1),
++	[VM_WRITE]					= MKP(0, 0, 0),
++	[VM_WRITE | VM_READ]				= MKP(0, 0, 1),
++	[VM_EXEC]					= MKP(1, 0, 0),
++	[VM_EXEC | VM_READ]				= MKP(1, 0, 1),
++	[VM_EXEC | VM_WRITE]				= MKP(1, 0, 0),
++	[VM_EXEC | VM_WRITE | VM_READ]			= MKP(1, 0, 1),
++	[VM_SHARED]					= MKP(0, 0, 0),
++	[VM_SHARED | VM_READ]				= MKP(0, 0, 1),
++	[VM_SHARED | VM_WRITE]				= MKP(0, 1, 0),
++	[VM_SHARED | VM_WRITE | VM_READ]		= MKP(0, 1, 1),
++	[VM_SHARED | VM_EXEC]				= MKP(1, 0, 0),
++	[VM_SHARED | VM_EXEC | VM_READ]			= MKP(1, 0, 1),
++	[VM_SHARED | VM_EXEC | VM_WRITE]		= MKP(1, 1, 0),
++	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= MKP(1, 1, 1)
 +};
-+
-+void add_encrypt_protection_map(void)
-+{
-+	unsigned int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(protection_map); i++)
-+		protection_map[i] = pgprot_encrypted(protection_map[i]);
-+}
-+
- pgprot_t vm_get_page_prot(unsigned long vm_flags)
- {
- 	unsigned long val = pgprot_val(protection_map[vm_flags &
++DECLARE_VM_GET_PAGE_PROT
 -- 
 2.25.1
 
