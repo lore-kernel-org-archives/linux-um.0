@@ -1,15 +1,27 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45])
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6ReX-009xWQ-LY
-	for linux-um@lists.infradead.org; Wed, 29 Jun 2022 06:58:24 +0000
+	id 1o6582-004piA-G0
+	for linux-um@lists.infradead.org; Tue, 28 Jun 2022 06:55:21 +0000
+Message-ID: <1656399270.5965908-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH v10 25/41] virtio_pci: struct virtio_pci_common_cfg add queue_notify_data
+Date: Tue, 28 Jun 2022 14:54:30 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v11 35/40] virtio_net: set the default max ring size by find_vqs()
-Date: Wed, 29 Jun 2022 14:56:51 +0800
-Message-Id: <20220629065656.54420-36-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
-References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
-MIME-Version: 1.0
+References: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
+ <20220624025621.128843-26-xuanzhuo@linux.alibaba.com>
+ <20220624025817-mutt-send-email-mst@kernel.org>
+ <CACGkMEseptD=45j3kQr0yciRxR679Jcig=292H07-RYC2vXmFQ@mail.gmail.com>
+ <20220627023841-mutt-send-email-mst@kernel.org>
+ <CACGkMEvy8xF2T_vubKeUEPC2aroO_fbB0Xe8nnxK4OBUgAS+Gw@mail.gmail.com>
+ <20220627034733-mutt-send-email-mst@kernel.org>
+ <CACGkMEtpjUBaUML=fEs5hR66rzNTBhBXOmfpzyXV1F-6BqvsGg@mail.gmail.com>
+ <20220627074723-mutt-send-email-mst@kernel.org>
+ <CACGkMEv0zdgG6SAaxRwkpObEFX_KRB1ovezNiHX+QXsYhE=qaQ@mail.gmail.com>
+ <20220628014309-mutt-send-email-mst@kernel.org>
+ <CACGkMEuzrmVsM5Xa3N_9n0-XOqyMAz65AON8oxkgmjnXb_bAFg@mail.gmail.com>
+ <20220628020832-mutt-send-email-mst@kernel.org>
+ <CACGkMEs4Ps6Jnbzrx+4Zju7SUfgu0aTACrLyqpqBcxsZP7YOkQ@mail.gmail.com>
+In-Reply-To: <CACGkMEs4Ps6Jnbzrx+4Zju7SUfgu0aTACrLyqpqBcxsZP7YOkQ@mail.gmail.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,133 +30,188 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+To: Jason Wang <jasowang@redhat.com>
+Cc: virtualization <virtualization@lists.linux-foundation.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev <netdev@vger.kernel.org>, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm <kvm@vger.kernel.org>, "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>, kangjie.xu@linux.alibaba.com, "Michael S. Tsirkin" <mst@redhat.com>
 
-Use virtio_find_vqs_ctx_size() to specify the maximum ring size of tx,
-rx at the same time.
+On Tue, 28 Jun 2022 14:12:13 +0800, Jason Wang <jasowang@redhat.com> wrote:
+> On Tue, Jun 28, 2022 at 2:10 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> >
+> > On Tue, Jun 28, 2022 at 02:07:28PM +0800, Jason Wang wrote:
+> > > On Tue, Jun 28, 2022 at 1:46 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > >
+> > > > On Tue, Jun 28, 2022 at 11:50:37AM +0800, Jason Wang wrote:
+> > > > > On Mon, Jun 27, 2022 at 7:53 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > > > >
+> > > > > > On Mon, Jun 27, 2022 at 04:14:20PM +0800, Jason Wang wrote:
+> > > > > > > On Mon, Jun 27, 2022 at 3:58 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > > > > > >
+> > > > > > > > On Mon, Jun 27, 2022 at 03:45:30PM +0800, Jason Wang wrote:
+> > > > > > > > > On Mon, Jun 27, 2022 at 2:39 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > > > > > > > >
+> > > > > > > > > > On Mon, Jun 27, 2022 at 10:30:42AM +0800, Jason Wang wrote:
+> > > > > > > > > > > On Fri, Jun 24, 2022 at 2:59 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > > > > > > > > > >
+> > > > > > > > > > > > On Fri, Jun 24, 2022 at 10:56:05AM +0800, Xuan Zhuo wrote:
+> > > > > > > > > > > > > Add queue_notify_data in struct virtio_pci_common_cfg, which comes from
+> > > > > > > > > > > > > here https://github.com/oasis-tcs/virtio-spec/issues/89
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > For not breaks uABI, add a new struct virtio_pci_common_cfg_notify.
+> > > > > > > > > > > >
+> > > > > > > > > > > > What exactly is meant by not breaking uABI?
+> > > > > > > > > > > > Users are supposed to be prepared for struct size to change ... no?
+> > > > > > > > > > >
+> > > > > > > > > > > Not sure, any doc for this?
+> > > > > > > > > > >
+> > > > > > > > > > > Thanks
+> > > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > > Well we have this:
+> > > > > > > > > >
+> > > > > > > > > >         The drivers SHOULD only map part of configuration structure
+> > > > > > > > > >         large enough for device operation.  The drivers MUST handle
+> > > > > > > > > >         an unexpectedly large \field{length}, but MAY check that \field{length}
+> > > > > > > > > >         is large enough for device operation.
+> > > > > > > > >
+> > > > > > > > > Yes, but that's the device/driver interface. What's done here is the
+> > > > > > > > > userspace/kernel.
+> > > > > > > > >
+> > > > > > > > > Userspace may break if it uses e.g sizeof(struct virtio_pci_common_cfg)?
+> > > > > > > > >
+> > > > > > > > > Thanks
+> > > > > > > >
+> > > > > > > > Hmm I guess there's risk... but then how are we going to maintain this
+> > > > > > > > going forward?  Add a new struct on any change?
+> > > > > > >
+> > > > > > > This is the way we have used it for the past 5 or more years. I don't
+> > > > > > > see why this must be handled in the vq reset feature.
+> > > > > > >
+> > > > > > > >Can we at least
+> > > > > > > > prevent this going forward somehow?
+> > > > > > >
+> > > > > > > Like have some padding?
+> > > > > > >
+> > > > > > > Thanks
+> > > > > >
+> > > > > > Maybe - this is what QEMU does ...
+> > > > >
+> > > > > Do you want this to be addressed in this series (it's already very huge anyhow)?
+> > > > >
+> > > > > Thanks
+> > > >
+> > > > Let's come up with a solution at least. QEMU does not seem to need the struct.
+> > >
+> > > If we want to implement it in Qemu we need that:
+> > >
+> > > https://github.com/fengidri/qemu/commit/39b79335cb55144d11a3b01f93d46cc73342c6bb
+> > >
+> > > > Let's just put
+> > > > it in virtio_pci_modern.h for now then?
+> > >
+> > > Does this mean userspace needs to define the struct by their own
+> > > instead of depending on the uapi in the future?
+> > >
+> > > Thanks
+> >
+> >
+> > $ git grep 'struct virtio_pci_common_cfg'
+> > include/standard-headers/linux/virtio_pci.h:struct virtio_pci_common_cfg {
+> > tests/qtest/libqos/virtio-pci-modern.c:                   offsetof(struct virtio_pci_common_cfg,
+> > tests/qtest/libqos/virtio-pci-modern.c:                       offsetof(struct virtio_pci_common_cfg, device_feature));
+> > tests/qtest/libqos/virtio-pci-modern.c:                   offsetof(struct virtio_pci_common_cfg,
+> > tests/qtest/libqos/virtio-pci-modern.c:                       offsetof(struct virtio_pci_common_cfg, device_feature));
+> > tests/qtest/libqos/virtio-pci-modern.c:                   offsetof(struct virtio_pci_common_cfg,
+> > tests/qtest/libqos/virtio-pci-modern.c:                   offsetof(struct virtio_pci_common_cfg,
+> > tests/qtest/libqos/virtio-pci-modern.c:                   offsetof(struct virtio_pci_common_cfg,
+> > tests/qtest/libqos/virtio-pci-modern.c:                   offsetof(struct virtio_pci_common_cfg,
+> > tests/qtest/libqos/virtio-pci-modern.c:                   offsetof(struct virtio_pci_common_cfg,
+> > tests/qtest/libqos/virtio-pci-modern.c:                       offsetof(struct virtio_pci_common_cfg, guest_feature));
+> > tests/qtest/libqos/virtio-pci-modern.c:                   offsetof(struct virtio_pci_common_cfg,
+> > tests/qtest/libqos/virtio-pci-modern.c:                       offsetof(struct virtio_pci_common_cfg, guest_feature));
+> > tests/qtest/libqos/virtio-pci-modern.c:                         offsetof(struct virtio_pci_common_cfg,
+> > tests/qtest/libqos/virtio-pci-modern.c:                          offsetof(struct virtio_pci_common_cfg,
+> > tests/qtest/libqos/virtio-pci-modern.c:                   offsetof(struct virtio_pci_common_cfg, queue_select),
+> > tests/qtest/libqos/virtio-pci-modern.c:                         offsetof(struct virtio_pci_common_cfg, queue_size));
+> > tests/qtest/libqos/virtio-pci-modern.c:                   offsetof(struct virtio_pci_common_cfg, queue_desc_lo),
+> > tests/qtest/libqos/virtio-pci-modern.c:                   offsetof(struct virtio_pci_common_cfg, queue_desc_hi),
+> > tests/qtest/libqos/virtio-pci-modern.c:                   offsetof(struct virtio_pci_common_cfg, queue_avail_lo),
+> > tests/qtest/libqos/virtio-pci-modern.c:                   offsetof(struct virtio_pci_common_cfg, queue_avail_hi),
+> > tests/qtest/libqos/virtio-pci-modern.c:                   offsetof(struct virtio_pci_common_cfg, queue_used_lo),
+> > tests/qtest/libqos/virtio-pci-modern.c:                   offsetof(struct virtio_pci_common_cfg, queue_used_hi),
+> > tests/qtest/libqos/virtio-pci-modern.c:                               offsetof(struct virtio_pci_common_cfg,
+> > tests/qtest/libqos/virtio-pci-modern.c:                   offsetof(struct virtio_pci_common_cfg, queue_enable), 1);
+> > tests/qtest/libqos/virtio-pci-modern.c:                   offsetof(struct virtio_pci_common_cfg, msix_config), entry);
+> > tests/qtest/libqos/virtio-pci-modern.c:                           offsetof(struct virtio_pci_common_cfg,
+> > tests/qtest/libqos/virtio-pci-modern.c:                   offsetof(struct virtio_pci_common_cfg, queue_msix_vector),
+> > tests/qtest/libqos/virtio-pci-modern.c:                           offsetof(struct virtio_pci_common_cfg,
+> >
+> >
+> > The only user of the struct is libqos and it just wants
+> > the offsets so can use macros just as well.
+>
+> Yes, so this way should be fine.
 
-                         | rx/tx ring size
--------------------------------------------
-speed == UNKNOWN or < 10G| 1024
-speed < 40G              | 4096
-speed >= 40G             | 8192
 
-Call virtnet_update_settings() once before calling init_vqs() to update
-speed.
+OK. I will fix in next version.
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
----
- drivers/net/virtio_net.c | 42 ++++++++++++++++++++++++++++++++++++----
- 1 file changed, 38 insertions(+), 4 deletions(-)
+Thanks.
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 8a5810bcb839..40532ecbe7fc 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -3208,6 +3208,29 @@ static unsigned int mergeable_min_buf_len(struct virtnet_info *vi, struct virtqu
- 		   (unsigned int)GOOD_PACKET_LEN);
- }
- 
-+static void virtnet_config_sizes(struct virtnet_info *vi, u32 *sizes)
-+{
-+	u32 i, rx_size, tx_size;
-+
-+	if (vi->speed == SPEED_UNKNOWN || vi->speed < SPEED_10000) {
-+		rx_size = 1024;
-+		tx_size = 1024;
-+
-+	} else if (vi->speed < SPEED_40000) {
-+		rx_size = 1024 * 4;
-+		tx_size = 1024 * 4;
-+
-+	} else {
-+		rx_size = 1024 * 8;
-+		tx_size = 1024 * 8;
-+	}
-+
-+	for (i = 0; i < vi->max_queue_pairs; i++) {
-+		sizes[rxq2vq(i)] = rx_size;
-+		sizes[txq2vq(i)] = tx_size;
-+	}
-+}
-+
- static int virtnet_find_vqs(struct virtnet_info *vi)
- {
- 	vq_callback_t **callbacks;
-@@ -3215,6 +3238,7 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
- 	int ret = -ENOMEM;
- 	int i, total_vqs;
- 	const char **names;
-+	u32 *sizes;
- 	bool *ctx;
- 
- 	/* We expect 1 RX virtqueue followed by 1 TX virtqueue, followed by
-@@ -3242,10 +3266,15 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
- 		ctx = NULL;
- 	}
- 
-+	sizes = kmalloc_array(total_vqs, sizeof(*sizes), GFP_KERNEL);
-+	if (!sizes)
-+		goto err_sizes;
-+
- 	/* Parameters for control virtqueue, if any */
- 	if (vi->has_cvq) {
- 		callbacks[total_vqs - 1] = NULL;
- 		names[total_vqs - 1] = "control";
-+		sizes[total_vqs - 1] = 64;
- 	}
- 
- 	/* Allocate/initialize parameters for send/receive virtqueues */
-@@ -3260,8 +3289,10 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
- 			ctx[rxq2vq(i)] = true;
- 	}
- 
--	ret = virtio_find_vqs_ctx(vi->vdev, total_vqs, vqs, callbacks,
--				  names, ctx, NULL);
-+	virtnet_config_sizes(vi, sizes);
-+
-+	ret = virtio_find_vqs_ctx_size(vi->vdev, total_vqs, vqs, callbacks,
-+				       names, sizes, ctx, NULL);
- 	if (ret)
- 		goto err_find;
- 
-@@ -3281,6 +3312,8 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
- 
- 
- err_find:
-+	kfree(sizes);
-+err_sizes:
- 	kfree(ctx);
- err_ctx:
- 	kfree(names);
-@@ -3630,6 +3663,9 @@ static int virtnet_probe(struct virtio_device *vdev)
- 		vi->curr_queue_pairs = num_online_cpus();
- 	vi->max_queue_pairs = max_queue_pairs;
- 
-+	virtnet_init_settings(dev);
-+	virtnet_update_settings(vi);
-+
- 	/* Allocate/initialize the rx/tx queues, and invoke find_vqs */
- 	err = init_vqs(vi);
- 	if (err)
-@@ -3642,8 +3678,6 @@ static int virtnet_probe(struct virtio_device *vdev)
- 	netif_set_real_num_tx_queues(dev, vi->curr_queue_pairs);
- 	netif_set_real_num_rx_queues(dev, vi->curr_queue_pairs);
- 
--	virtnet_init_settings(dev);
--
- 	if (virtio_has_feature(vdev, VIRTIO_NET_F_STANDBY)) {
- 		vi->failover = net_failover_create(vi->dev);
- 		if (IS_ERR(vi->failover)) {
--- 
-2.31.0
 
+>
+> Thanks
+>
+> >
+> >
+> > > >
+> > > > > >
+> > > > > > > >
+> > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > >
+> > > > > > > > > > >
+> > > > > > > > > > > >
+> > > > > > > > > > > >
+> > > > > > > > > > > > > Since I want to add queue_reset after queue_notify_data, I submitted
+> > > > > > > > > > > > > this patch first.
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > > > > > > > > > > > Acked-by: Jason Wang <jasowang@redhat.com>
+> > > > > > > > > > > > > ---
+> > > > > > > > > > > > >  include/uapi/linux/virtio_pci.h | 7 +++++++
+> > > > > > > > > > > > >  1 file changed, 7 insertions(+)
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > diff --git a/include/uapi/linux/virtio_pci.h b/include/uapi/linux/virtio_pci.h
+> > > > > > > > > > > > > index 3a86f36d7e3d..22bec9bd0dfc 100644
+> > > > > > > > > > > > > --- a/include/uapi/linux/virtio_pci.h
+> > > > > > > > > > > > > +++ b/include/uapi/linux/virtio_pci.h
+> > > > > > > > > > > > > @@ -166,6 +166,13 @@ struct virtio_pci_common_cfg {
+> > > > > > > > > > > > >       __le32 queue_used_hi;           /* read-write */
+> > > > > > > > > > > > >  };
+> > > > > > > > > > > > >
+> > > > > > > > > > > > > +struct virtio_pci_common_cfg_notify {
+> > > > > > > > > > > > > +     struct virtio_pci_common_cfg cfg;
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > > +     __le16 queue_notify_data;       /* read-write */
+> > > > > > > > > > > > > +     __le16 padding;
+> > > > > > > > > > > > > +};
+> > > > > > > > > > > > > +
+> > > > > > > > > > > > >  /* Fields in VIRTIO_PCI_CAP_PCI_CFG: */
+> > > > > > > > > > > > >  struct virtio_pci_cfg_cap {
+> > > > > > > > > > > > >       struct virtio_pci_cap cap;
+> > > > > > > > > > > > > --
+> > > > > > > > > > > > > 2.31.0
+> > > > > > > > > > > >
+> > > > > > > > > >
+> > > > > > > >
+> > > > > >
+> > > >
+> >
+>
 
 _______________________________________________
 linux-um mailing list
