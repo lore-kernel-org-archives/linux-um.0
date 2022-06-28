@@ -1,28 +1,22 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6432-004QWR-43
-	for linux-um@lists.infradead.org; Tue, 28 Jun 2022 05:46:06 +0000
-Received: by mail-wm1-f69.google.com with SMTP id c185-20020a1c35c2000000b0039db3e56c39so8384941wma.5
-        for <linux-um@lists.infradead.org>; Mon, 27 Jun 2022 22:46:00 -0700 (PDT)
-Date: Tue, 28 Jun 2022 01:45:51 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Subject: Re: [PATCH v10 25/41] virtio_pci: struct virtio_pci_common_cfg add
- queue_notify_data
-Message-ID: <20220628014309-mutt-send-email-mst@kernel.org>
-References: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
- <20220624025621.128843-26-xuanzhuo@linux.alibaba.com>
- <20220624025817-mutt-send-email-mst@kernel.org>
- <CACGkMEseptD=45j3kQr0yciRxR679Jcig=292H07-RYC2vXmFQ@mail.gmail.com>
- <20220627023841-mutt-send-email-mst@kernel.org>
- <CACGkMEvy8xF2T_vubKeUEPC2aroO_fbB0Xe8nnxK4OBUgAS+Gw@mail.gmail.com>
- <20220627034733-mutt-send-email-mst@kernel.org>
- <CACGkMEtpjUBaUML=fEs5hR66rzNTBhBXOmfpzyXV1F-6BqvsGg@mail.gmail.com>
- <20220627074723-mutt-send-email-mst@kernel.org>
- <CACGkMEv0zdgG6SAaxRwkpObEFX_KRB1ovezNiHX+QXsYhE=qaQ@mail.gmail.com>
+	id 1o62Fb-0045jt-1i
+	for linux-um@lists.infradead.org; Tue, 28 Jun 2022 03:50:56 +0000
+Received: by mail-lf1-f72.google.com with SMTP id cf10-20020a056512280a00b0047f5a295656so5628645lfb.15
+        for <linux-um@lists.infradead.org>; Mon, 27 Jun 2022 20:50:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CACGkMEv0zdgG6SAaxRwkpObEFX_KRB1ovezNiHX+QXsYhE=qaQ@mail.gmail.com>
-Content-Disposition: inline
+References: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
+ <20220624025621.128843-26-xuanzhuo@linux.alibaba.com> <20220624025817-mutt-send-email-mst@kernel.org>
+ <CACGkMEseptD=45j3kQr0yciRxR679Jcig=292H07-RYC2vXmFQ@mail.gmail.com>
+ <20220627023841-mutt-send-email-mst@kernel.org> <CACGkMEvy8xF2T_vubKeUEPC2aroO_fbB0Xe8nnxK4OBUgAS+Gw@mail.gmail.com>
+ <20220627034733-mutt-send-email-mst@kernel.org> <CACGkMEtpjUBaUML=fEs5hR66rzNTBhBXOmfpzyXV1F-6BqvsGg@mail.gmail.com>
+ <20220627074723-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20220627074723-mutt-send-email-mst@kernel.org>
+From: Jason Wang <jasowang@redhat.com>
+Date: Tue, 28 Jun 2022 11:50:37 +0800
+Message-ID: <CACGkMEv0zdgG6SAaxRwkpObEFX_KRB1ovezNiHX+QXsYhE=qaQ@mail.gmail.com>
+Subject: Re: [PATCH v10 25/41] virtio_pci: struct virtio_pci_common_cfg add queue_notify_data
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -35,113 +29,109 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Jason Wang <jasowang@redhat.com>
+To: "Michael S. Tsirkin" <mst@redhat.com>
 Cc: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, virtualization <virtualization@lists.linux-foundation.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev <netdev@vger.kernel.org>, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm <kvm@vger.kernel.org>, "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>, kangjie.xu@linux.alibaba.com
 
-On Tue, Jun 28, 2022 at 11:50:37AM +0800, Jason Wang wrote:
-> On Mon, Jun 27, 2022 at 7:53 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> >
-> > On Mon, Jun 27, 2022 at 04:14:20PM +0800, Jason Wang wrote:
-> > > On Mon, Jun 27, 2022 at 3:58 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> > > >
-> > > > On Mon, Jun 27, 2022 at 03:45:30PM +0800, Jason Wang wrote:
-> > > > > On Mon, Jun 27, 2022 at 2:39 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> > > > > >
-> > > > > > On Mon, Jun 27, 2022 at 10:30:42AM +0800, Jason Wang wrote:
-> > > > > > > On Fri, Jun 24, 2022 at 2:59 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> > > > > > > >
-> > > > > > > > On Fri, Jun 24, 2022 at 10:56:05AM +0800, Xuan Zhuo wrote:
-> > > > > > > > > Add queue_notify_data in struct virtio_pci_common_cfg, which comes from
-> > > > > > > > > here https://github.com/oasis-tcs/virtio-spec/issues/89
-> > > > > > > > >
-> > > > > > > > > For not breaks uABI, add a new struct virtio_pci_common_cfg_notify.
-> > > > > > > >
-> > > > > > > > What exactly is meant by not breaking uABI?
-> > > > > > > > Users are supposed to be prepared for struct size to change ... no?
+On Mon, Jun 27, 2022 at 7:53 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Mon, Jun 27, 2022 at 04:14:20PM +0800, Jason Wang wrote:
+> > On Mon, Jun 27, 2022 at 3:58 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > >
+> > > On Mon, Jun 27, 2022 at 03:45:30PM +0800, Jason Wang wrote:
+> > > > On Mon, Jun 27, 2022 at 2:39 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > > >
+> > > > > On Mon, Jun 27, 2022 at 10:30:42AM +0800, Jason Wang wrote:
+> > > > > > On Fri, Jun 24, 2022 at 2:59 PM Michael S. Tsirkin <mst@redhat.com> wrote:
 > > > > > > >
-> > > > > > > Not sure, any doc for this?
+> > > > > > > On Fri, Jun 24, 2022 at 10:56:05AM +0800, Xuan Zhuo wrote:
+> > > > > > > > Add queue_notify_data in struct virtio_pci_common_cfg, which comes from
+> > > > > > > > here https://github.com/oasis-tcs/virtio-spec/issues/89
+> > > > > > > >
+> > > > > > > > For not breaks uABI, add a new struct virtio_pci_common_cfg_notify.
 > > > > > > >
-> > > > > > > Thanks
+> > > > > > > What exactly is meant by not breaking uABI?
+> > > > > > > Users are supposed to be prepared for struct size to change ... no?
 > > > > > >
+> > > > > > Not sure, any doc for this?
 > > > > > >
-> > > > > > Well we have this:
-> > > > > >
-> > > > > >         The drivers SHOULD only map part of configuration structure
-> > > > > >         large enough for device operation.  The drivers MUST handle
-> > > > > >         an unexpectedly large \field{length}, but MAY check that \field{length}
-> > > > > >         is large enough for device operation.
+> > > > > > Thanks
 > > > > >
-> > > > > Yes, but that's the device/driver interface. What's done here is the
-> > > > > userspace/kernel.
 > > > > >
-> > > > > Userspace may break if it uses e.g sizeof(struct virtio_pci_common_cfg)?
+> > > > > Well we have this:
 > > > > >
-> > > > > Thanks
+> > > > >         The drivers SHOULD only map part of configuration structure
+> > > > >         large enough for device operation.  The drivers MUST handle
+> > > > >         an unexpectedly large \field{length}, but MAY check that \field{length}
+> > > > >         is large enough for device operation.
 > > > >
-> > > > Hmm I guess there's risk... but then how are we going to maintain this
-> > > > going forward?  Add a new struct on any change?
+> > > > Yes, but that's the device/driver interface. What's done here is the
+> > > > userspace/kernel.
+> > > >
+> > > > Userspace may break if it uses e.g sizeof(struct virtio_pci_common_cfg)?
+> > > >
+> > > > Thanks
 > > >
-> > > This is the way we have used it for the past 5 or more years. I don't
-> > > see why this must be handled in the vq reset feature.
-> > >
-> > > >Can we at least
-> > > > prevent this going forward somehow?
-> > >
-> > > Like have some padding?
-> > >
-> > > Thanks
+> > > Hmm I guess there's risk... but then how are we going to maintain this
+> > > going forward?  Add a new struct on any change?
 > >
-> > Maybe - this is what QEMU does ...
-> 
-> Do you want this to be addressed in this series (it's already very huge anyhow)?
-> 
-> Thanks
+> > This is the way we have used it for the past 5 or more years. I don't
+> > see why this must be handled in the vq reset feature.
+> >
+> > >Can we at least
+> > > prevent this going forward somehow?
+> >
+> > Like have some padding?
+> >
+> > Thanks
+>
+> Maybe - this is what QEMU does ...
 
-Let's come up with a solution at least. QEMU does not seem to need the struct. Let's just put
-it in virtio_pci_modern.h for now then?
+Do you want this to be addressed in this series (it's already very huge anyhow)?
 
-> >
-> > > >
-> > > >
-> > > > > >
-> > > > > >
+Thanks
+
+>
+> > >
+> > >
+> > > > >
+> > > > >
+> > > > >
 > > > > > >
 > > > > > > >
+> > > > > > >
+> > > > > > > > Since I want to add queue_reset after queue_notify_data, I submitted
+> > > > > > > > this patch first.
 > > > > > > > >
+> > > > > > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > > > > > > Acked-by: Jason Wang <jasowang@redhat.com>
+> > > > > > > > ---
+> > > > > > > >  include/uapi/linux/virtio_pci.h | 7 +++++++
+> > > > > > > >  1 file changed, 7 insertions(+)
 > > > > > > > >
-> > > > > > > > > Since I want to add queue_reset after queue_notify_data, I submitted
-> > > > > > > > > this patch first.
-> > > > > > > > >
-> > > > > > > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > > > > > > > > Acked-by: Jason Wang <jasowang@redhat.com>
-> > > > > > > > > ---
-> > > > > > > > >  include/uapi/linux/virtio_pci.h | 7 +++++++
-> > > > > > > > >  1 file changed, 7 insertions(+)
-> > > > > > > > >
-> > > > > > > > > diff --git a/include/uapi/linux/virtio_pci.h b/include/uapi/linux/virtio_pci.h
-> > > > > > > > > index 3a86f36d7e3d..22bec9bd0dfc 100644
-> > > > > > > > > --- a/include/uapi/linux/virtio_pci.h
-> > > > > > > > > +++ b/include/uapi/linux/virtio_pci.h
-> > > > > > > > > @@ -166,6 +166,13 @@ struct virtio_pci_common_cfg {
-> > > > > > > > >       __le32 queue_used_hi;           /* read-write */
-> > > > > > > > >  };
-> > > > > > > > >
-> > > > > > > > > +struct virtio_pci_common_cfg_notify {
-> > > > > > > > > +     struct virtio_pci_common_cfg cfg;
-> > > > > > > > > +
-> > > > > > > > > +     __le16 queue_notify_data;       /* read-write */
-> > > > > > > > > +     __le16 padding;
-> > > > > > > > > +};
-> > > > > > > > > +
-> > > > > > > > >  /* Fields in VIRTIO_PCI_CAP_PCI_CFG: */
-> > > > > > > > >  struct virtio_pci_cfg_cap {
-> > > > > > > > >       struct virtio_pci_cap cap;
-> > > > > > > > > --
-> > > > > > > > > 2.31.0
+> > > > > > > > diff --git a/include/uapi/linux/virtio_pci.h b/include/uapi/linux/virtio_pci.h
+> > > > > > > > index 3a86f36d7e3d..22bec9bd0dfc 100644
+> > > > > > > > --- a/include/uapi/linux/virtio_pci.h
+> > > > > > > > +++ b/include/uapi/linux/virtio_pci.h
+> > > > > > > > @@ -166,6 +166,13 @@ struct virtio_pci_common_cfg {
+> > > > > > > >       __le32 queue_used_hi;           /* read-write */
+> > > > > > > >  };
 > > > > > > > >
-> > > > > >
-> > > >
-> >
+> > > > > > > > +struct virtio_pci_common_cfg_notify {
+> > > > > > > > +     struct virtio_pci_common_cfg cfg;
+> > > > > > > > +
+> > > > > > > > +     __le16 queue_notify_data;       /* read-write */
+> > > > > > > > +     __le16 padding;
+> > > > > > > > +};
+> > > > > > > > +
+> > > > > > > >  /* Fields in VIRTIO_PCI_CAP_PCI_CFG: */
+> > > > > > > >  struct virtio_pci_cfg_cap {
+> > > > > > > >       struct virtio_pci_cap cap;
+> > > > > > > > --
+> > > > > > > > 2.31.0
+> > > > > > >
+> > > > >
+> > >
+>
 
 
 _______________________________________________
