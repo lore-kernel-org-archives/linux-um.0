@@ -1,122 +1,90 @@
-Return-Path: <openrisc-bounces@lists.librecores.org>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V5 02/26] mm/mmap: Define DECLARE_VM_GET_PAGE_PROT
-Date: Mon, 27 Jun 2022 10:28:09 +0530
-Message-Id: <20220627045833.1590055-3-anshuman.khandual@arm.com>
-In-Reply-To: <20220627045833.1590055-1-anshuman.khandual@arm.com>
-References: <20220627045833.1590055-1-anshuman.khandual@arm.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1o6Re1-009wpw-8D
+	for linux-um@lists.infradead.org; Wed, 29 Jun 2022 06:57:51 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v11 21/40] virtio_ring: packed: introduce virtqueue_resize_packed()
+Date: Wed, 29 Jun 2022 14:56:37 +0800
+Message-Id: <20220629065656.54420-22-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
+References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
- <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
-List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
-List-Post: <mailto:openrisc@lists.librecores.org>
-List-Help: <mailto:openrisc-request@lists.librecores.org?subject=help>
-List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
- <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
-Errors-To: openrisc-bounces@lists.librecores.org
-Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
-To: linux-mm@kvack.org
-Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: virtualization@lists.linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-This just converts the generic vm_get_page_prot() implementation into a new
-macro i.e DECLARE_VM_GET_PAGE_PROT which later can be used across platforms
-when enabling them with ARCH_HAS_VM_GET_PAGE_PROT. This does not create any
-functional change.
+virtio ring packed supports resize.
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
-Suggested-by: Christoph Hellwig <hch@infradead.org>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Only after the new vring is successfully allocated based on the new num,
+we will release the old vring. In any case, an error is returned,
+indicating that the vring still points to the old vring.
+
+In the case of an error, re-initialize(by virtqueue_reinit_packed()) the
+virtqueue to ensure that the vring can be used.
+
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- include/linux/pgtable.h | 28 ++++++++++++++++++++++++++++
- mm/mmap.c               | 26 +-------------------------
- 2 files changed, 29 insertions(+), 25 deletions(-)
+ drivers/virtio/virtio_ring.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index 3cdc16cfd867..014ee8f0fbaa 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -1689,4 +1689,32 @@ typedef unsigned int pgtbl_mod_mask;
- #define MAX_PTRS_PER_P4D PTRS_PER_P4D
- #endif
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 650f701a5480..4860787286db 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -2042,6 +2042,35 @@ static struct virtqueue *vring_create_virtqueue_packed(
+ 	return NULL;
+ }
  
-+/* description of effects of mapping type and prot in current implementation.
-+ * this is due to the limited x86 page protection hardware.  The expected
-+ * behavior is in parens:
-+ *
-+ * map_type	prot
-+ *		PROT_NONE	PROT_READ	PROT_WRITE	PROT_EXEC
-+ * MAP_SHARED	r: (no) no	r: (yes) yes	r: (no) yes	r: (no) yes
-+ *		w: (no) no	w: (no) no	w: (yes) yes	w: (no) no
-+ *		x: (no) no	x: (no) yes	x: (no) yes	x: (yes) yes
-+ *
-+ * MAP_PRIVATE	r: (no) no	r: (yes) yes	r: (no) yes	r: (no) yes
-+ *		w: (no) no	w: (no) no	w: (copy) copy	w: (no) no
-+ *		x: (no) no	x: (no) yes	x: (no) yes	x: (yes) yes
-+ *
-+ * On arm64, PROT_EXEC has the following behaviour for both MAP_SHARED and
-+ * MAP_PRIVATE (with Enhanced PAN supported):
-+ *								r: (no) no
-+ *								w: (no) no
-+ *								x: (yes) yes
-+ */
-+#define DECLARE_VM_GET_PAGE_PROT					\
-+pgprot_t vm_get_page_prot(unsigned long vm_flags)			\
-+{									\
-+		return protection_map[vm_flags &			\
-+			(VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)];	\
-+}									\
-+EXPORT_SYMBOL(vm_get_page_prot);
++static int virtqueue_resize_packed(struct virtqueue *_vq, u32 num)
++{
++	struct vring_virtqueue_packed vring = {};
++	struct vring_virtqueue *vq = to_vvq(_vq);
++	struct virtio_device *vdev = _vq->vdev;
++	int err;
 +
- #endif /* _LINUX_PGTABLE_H */
-diff --git a/mm/mmap.c b/mm/mmap.c
-index b01f0280bda2..b46d5e931bb3 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -81,26 +81,6 @@ static void unmap_region(struct mm_struct *mm,
- 		struct vm_area_struct *vma, struct vm_area_struct *prev,
- 		unsigned long start, unsigned long end);
++	if (vring_alloc_queue_packed(&vring, vdev, num))
++		goto err_ring;
++
++	err = vring_alloc_state_extra_packed(&vring);
++	if (err)
++		goto err_state_extra;
++
++	vring_free(&vq->vq);
++
++	virtqueue_init(vq, vring.vring.num);
++	virtqueue_vring_attach_packed(vq, &vring);
++	virtqueue_vring_init_packed(vq);
++
++	return 0;
++
++err_state_extra:
++	vring_free_packed(&vring, vdev);
++err_ring:
++	virtqueue_reinit_packed(vq);
++	return -ENOMEM;
++}
++
  
--/* description of effects of mapping type and prot in current implementation.
-- * this is due to the limited x86 page protection hardware.  The expected
-- * behavior is in parens:
-- *
-- * map_type	prot
-- *		PROT_NONE	PROT_READ	PROT_WRITE	PROT_EXEC
-- * MAP_SHARED	r: (no) no	r: (yes) yes	r: (no) yes	r: (no) yes
-- *		w: (no) no	w: (no) no	w: (yes) yes	w: (no) no
-- *		x: (no) no	x: (no) yes	x: (no) yes	x: (yes) yes
-- *
-- * MAP_PRIVATE	r: (no) no	r: (yes) yes	r: (no) yes	r: (no) yes
-- *		w: (no) no	w: (no) no	w: (copy) copy	w: (no) no
-- *		x: (no) no	x: (no) yes	x: (no) yes	x: (yes) yes
-- *
-- * On arm64, PROT_EXEC has the following behaviour for both MAP_SHARED and
-- * MAP_PRIVATE (with Enhanced PAN supported):
-- *								r: (no) no
-- *								w: (no) no
-- *								x: (yes) yes
-- */
- #ifdef __P000
- pgprot_t protection_map[16] __ro_after_init = {
- 	[VM_NONE]					= __P000,
-@@ -123,11 +103,7 @@ pgprot_t protection_map[16] __ro_after_init = {
- #endif
- 
- #ifndef CONFIG_ARCH_HAS_VM_GET_PAGE_PROT
--pgprot_t vm_get_page_prot(unsigned long vm_flags)
--{
--	return protection_map[vm_flags & (VM_READ|VM_WRITE|VM_EXEC|VM_SHARED)];
--}
--EXPORT_SYMBOL(vm_get_page_prot);
-+DECLARE_VM_GET_PAGE_PROT
- #endif	/* CONFIG_ARCH_HAS_VM_GET_PAGE_PROT */
- 
- static pgprot_t vm_pgprot_modify(pgprot_t oldprot, unsigned long vm_flags)
+ /*
+  * Generic functions and exported symbols.
 -- 
-2.25.1
+2.31.0
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
