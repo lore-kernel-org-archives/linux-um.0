@@ -1,110 +1,112 @@
-Return-Path: <openrisc-bounces@lists.librecores.org>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V4 13/26] parisc/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Date: Fri, 24 Jun 2022 10:13:26 +0530
-Message-Id: <20220624044339.1533882-14-anshuman.khandual@arm.com>
-In-Reply-To: <20220624044339.1533882-1-anshuman.khandual@arm.com>
-References: <20220624044339.1533882-1-anshuman.khandual@arm.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1o6ReE-009xAM-UY
+	for linux-um@lists.infradead.org; Wed, 29 Jun 2022 06:58:04 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v11 28/40] virtio_pci: introduce helper to get/set queue reset
+Date: Wed, 29 Jun 2022 14:56:44 +0800
+Message-Id: <20220629065656.54420-29-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
+References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
- <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
-List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
-List-Post: <mailto:openrisc@lists.librecores.org>
-List-Help: <mailto:openrisc-request@lists.librecores.org?subject=help>
-List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
- <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
-Errors-To: openrisc-bounces@lists.librecores.org
-Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
-To: linux-mm@kvack.org
-Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: virtualization@lists.linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
-vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
-up a private and static protection_map[] array. Subsequently all __SXXX and
-__PXXX macros can be dropped which are no longer needed.
+Introduce new helpers to implement queue reset and get queue reset
+status.
 
-Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc: linux-parisc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+ https://github.com/oasis-tcs/virtio-spec/issues/124
+ https://github.com/oasis-tcs/virtio-spec/issues/139
+
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- arch/parisc/Kconfig               |  1 +
- arch/parisc/include/asm/pgtable.h | 18 ------------------
- arch/parisc/mm/init.c             | 20 ++++++++++++++++++++
- 3 files changed, 21 insertions(+), 18 deletions(-)
+ drivers/virtio/virtio_pci_modern_dev.c | 35 ++++++++++++++++++++++++++
+ include/linux/virtio_pci_modern.h      |  2 ++
+ 2 files changed, 37 insertions(+)
 
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index 5f2448dc5a2b..90eabc846f81 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -11,6 +11,7 @@ config PARISC
- 	select ARCH_HAS_ELF_RANDOMIZE
- 	select ARCH_HAS_STRICT_KERNEL_RWX
- 	select ARCH_HAS_UBSAN_SANITIZE_ALL
-+	select ARCH_HAS_VM_GET_PAGE_PROT
- 	select ARCH_HAS_PTE_SPECIAL
- 	select ARCH_NO_SG_CHAIN
- 	select ARCH_SUPPORTS_HUGETLBFS if PA20
-diff --git a/arch/parisc/include/asm/pgtable.h b/arch/parisc/include/asm/pgtable.h
-index 69765a6dbe89..6a1899a9b420 100644
---- a/arch/parisc/include/asm/pgtable.h
-+++ b/arch/parisc/include/asm/pgtable.h
-@@ -271,24 +271,6 @@ extern void __update_cache(pte_t pte);
-  */
+diff --git a/drivers/virtio/virtio_pci_modern_dev.c b/drivers/virtio/virtio_pci_modern_dev.c
+index fa2a9445bb18..07415654247c 100644
+--- a/drivers/virtio/virtio_pci_modern_dev.c
++++ b/drivers/virtio/virtio_pci_modern_dev.c
+@@ -3,6 +3,7 @@
+ #include <linux/virtio_pci_modern.h>
+ #include <linux/module.h>
+ #include <linux/pci.h>
++#include <linux/delay.h>
  
- 	 /*xwr*/
--#define __P000  PAGE_NONE
--#define __P001  PAGE_READONLY
--#define __P010  __P000 /* copy on write */
--#define __P011  __P001 /* copy on write */
--#define __P100  PAGE_EXECREAD
--#define __P101  PAGE_EXECREAD
--#define __P110  __P100 /* copy on write */
--#define __P111  __P101 /* copy on write */
--
--#define __S000  PAGE_NONE
--#define __S001  PAGE_READONLY
--#define __S010  PAGE_WRITEONLY
--#define __S011  PAGE_SHARED
--#define __S100  PAGE_EXECREAD
--#define __S101  PAGE_EXECREAD
--#define __S110  PAGE_RWX
--#define __S111  PAGE_RWX
--
- 
- extern pgd_t swapper_pg_dir[]; /* declared in init_task.c */
- 
-diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
-index 0a81499dd35e..451f20f87711 100644
---- a/arch/parisc/mm/init.c
-+++ b/arch/parisc/mm/init.c
-@@ -871,3 +871,23 @@ void flush_tlb_all(void)
- 	spin_unlock(&sid_lock);
+ /*
+  * vp_modern_map_capability - map a part of virtio pci capability
+@@ -474,6 +475,40 @@ void vp_modern_set_status(struct virtio_pci_modern_device *mdev,
  }
- #endif
+ EXPORT_SYMBOL_GPL(vp_modern_set_status);
+ 
++/*
++ * vp_modern_get_queue_reset - get the queue reset status
++ * @mdev: the modern virtio-pci device
++ * @index: queue index
++ */
++int vp_modern_get_queue_reset(struct virtio_pci_modern_device *mdev, u16 index)
++{
++	struct virtio_pci_common_cfg __iomem *cfg = mdev->common;
 +
-+static pgprot_t protection_map[16] __ro_after_init = {
-+	[VM_NONE]					= PAGE_NONE,
-+	[VM_READ]					= PAGE_READONLY,
-+	[VM_WRITE]					= PAGE_NONE,
-+	[VM_WRITE | VM_READ]				= PAGE_READONLY,
-+	[VM_EXEC]					= PAGE_EXECREAD,
-+	[VM_EXEC | VM_READ]				= PAGE_EXECREAD,
-+	[VM_EXEC | VM_WRITE]				= PAGE_EXECREAD,
-+	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_EXECREAD,
-+	[VM_SHARED]					= PAGE_NONE,
-+	[VM_SHARED | VM_READ]				= PAGE_READONLY,
-+	[VM_SHARED | VM_WRITE]				= PAGE_WRITEONLY,
-+	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED,
-+	[VM_SHARED | VM_EXEC]				= PAGE_EXECREAD,
-+	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_EXECREAD,
-+	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_RWX,
-+	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_RWX
-+};
-+DECLARE_VM_GET_PAGE_PROT
++	vp_iowrite16(index, &cfg->queue_select);
++	return vp_ioread16(&cfg->queue_reset);
++}
++EXPORT_SYMBOL_GPL(vp_modern_get_queue_reset);
++
++/*
++ * vp_modern_set_queue_reset - reset the queue
++ * @mdev: the modern virtio-pci device
++ * @index: queue index
++ */
++void vp_modern_set_queue_reset(struct virtio_pci_modern_device *mdev, u16 index)
++{
++	struct virtio_pci_common_cfg __iomem *cfg = mdev->common;
++
++	vp_iowrite16(index, &cfg->queue_select);
++	vp_iowrite16(1, &cfg->queue_reset);
++
++	while (vp_ioread16(&cfg->queue_reset))
++		msleep(1);
++
++	while (vp_ioread16(&cfg->queue_enable))
++		msleep(1);
++}
++EXPORT_SYMBOL_GPL(vp_modern_set_queue_reset);
++
+ /*
+  * vp_modern_queue_vector - set the MSIX vector for a specific virtqueue
+  * @mdev: the modern virtio-pci device
+diff --git a/include/linux/virtio_pci_modern.h b/include/linux/virtio_pci_modern.h
+index beebc7a4a31d..ded01157f864 100644
+--- a/include/linux/virtio_pci_modern.h
++++ b/include/linux/virtio_pci_modern.h
+@@ -134,4 +134,6 @@ void __iomem * vp_modern_map_vq_notify(struct virtio_pci_modern_device *mdev,
+ 				       u16 index, resource_size_t *pa);
+ int vp_modern_probe(struct virtio_pci_modern_device *mdev);
+ void vp_modern_remove(struct virtio_pci_modern_device *mdev);
++int vp_modern_get_queue_reset(struct virtio_pci_modern_device *mdev, u16 index);
++void vp_modern_set_queue_reset(struct virtio_pci_modern_device *mdev, u16 index);
+ #endif
 -- 
-2.25.1
+2.31.0
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
