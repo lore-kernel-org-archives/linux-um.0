@@ -1,101 +1,66 @@
-Return-Path: <anshuman.khandual@arm.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V4 17/26] csky/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Date: Fri, 24 Jun 2022 10:13:30 +0530
-Message-Id: <20220624044339.1533882-18-anshuman.khandual@arm.com>
-In-Reply-To: <20220624044339.1533882-1-anshuman.khandual@arm.com>
-References: <20220624044339.1533882-1-anshuman.khandual@arm.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1o6RdY-009wE1-Q5
+	for linux-um@lists.infradead.org; Wed, 29 Jun 2022 06:57:22 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v11 07/40] virtio_ring: split: introduce vring_free_split()
+Date: Wed, 29 Jun 2022 14:56:23 +0800
+Message-Id: <20220629065656.54420-8-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
+References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: linux-mm@kvack.org
-Cc: hch@infradead.org, christophe.leroy@csgroup.eu, Anshuman Khandual <anshuman.khandual@arm.com>, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org, x86@kernel.org, openrisc@lists.librecores.org, linux-xtensa@linux-xtensa.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-parisc@vger.kernel.org, linux-alpha@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-um@lists.infradead.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: virtualization@lists.linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
-vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
-up a private and static protection_map[] array. Subsequently all __SXXX and
-__PXXX macros can be dropped which are no longer needed.
+Free the structure struct vring_vritqueue_split.
 
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-csky@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Subsequent patches require it.
+
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- arch/csky/Kconfig               |  1 +
- arch/csky/include/asm/pgtable.h | 18 ------------------
- arch/csky/mm/init.c             | 20 ++++++++++++++++++++
- 3 files changed, 21 insertions(+), 18 deletions(-)
+ drivers/virtio/virtio_ring.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
-index 21d72b078eef..588b8a9c68ed 100644
---- a/arch/csky/Kconfig
-+++ b/arch/csky/Kconfig
-@@ -6,6 +6,7 @@ config CSKY
- 	select ARCH_HAS_GCOV_PROFILE_ALL
- 	select ARCH_HAS_SYNC_DMA_FOR_CPU
- 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
-+	select ARCH_HAS_VM_GET_PAGE_PROT
- 	select ARCH_USE_BUILTIN_BSWAP
- 	select ARCH_USE_QUEUED_RWLOCKS
- 	select ARCH_WANT_FRAME_POINTERS if !CPU_CK610 && $(cc-option,-mbacktrace)
-diff --git a/arch/csky/include/asm/pgtable.h b/arch/csky/include/asm/pgtable.h
-index bbe245117777..229a5f4ad7fc 100644
---- a/arch/csky/include/asm/pgtable.h
-+++ b/arch/csky/include/asm/pgtable.h
-@@ -77,24 +77,6 @@
- #define MAX_SWAPFILES_CHECK() \
- 		BUILD_BUG_ON(MAX_SWAPFILES_SHIFT != 5)
- 
--#define __P000	PAGE_NONE
--#define __P001	PAGE_READ
--#define __P010	PAGE_READ
--#define __P011	PAGE_READ
--#define __P100	PAGE_READ
--#define __P101	PAGE_READ
--#define __P110	PAGE_READ
--#define __P111	PAGE_READ
--
--#define __S000	PAGE_NONE
--#define __S001	PAGE_READ
--#define __S010	PAGE_WRITE
--#define __S011	PAGE_WRITE
--#define __S100	PAGE_READ
--#define __S101	PAGE_READ
--#define __S110	PAGE_WRITE
--#define __S111	PAGE_WRITE
--
- extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
- #define ZERO_PAGE(vaddr)	(virt_to_page(empty_zero_page))
- 
-diff --git a/arch/csky/mm/init.c b/arch/csky/mm/init.c
-index bf2004aa811a..1bf7b2a748fd 100644
---- a/arch/csky/mm/init.c
-+++ b/arch/csky/mm/init.c
-@@ -197,3 +197,23 @@ void __init fixaddr_init(void)
- 	vaddr = __fix_to_virt(__end_of_fixed_addresses - 1) & PMD_MASK;
- 	fixrange_init(vaddr, vaddr + PMD_SIZE, swapper_pg_dir);
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 986dbd9294d6..49d61e412dc6 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -939,6 +939,16 @@ static void *virtqueue_detach_unused_buf_split(struct virtqueue *_vq)
+ 	return NULL;
  }
+ 
++static void vring_free_split(struct vring_virtqueue_split *vring,
++			     struct virtio_device *vdev)
++{
++	vring_free_queue(vdev, vring->queue_size_in_bytes, vring->vring.desc,
++			 vring->queue_dma_addr);
 +
-+static pgprot_t protection_map[16] __ro_after_init = {
-+	[VM_NONE]					= PAGE_NONE,
-+	[VM_READ]					= PAGE_READ,
-+	[VM_WRITE]					= PAGE_READ,
-+	[VM_WRITE | VM_READ]				= PAGE_READ,
-+	[VM_EXEC]					= PAGE_READ,
-+	[VM_EXEC | VM_READ]				= PAGE_READ,
-+	[VM_EXEC | VM_WRITE]				= PAGE_READ,
-+	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_READ,
-+	[VM_SHARED]					= PAGE_NONE,
-+	[VM_SHARED | VM_READ]				= PAGE_READ,
-+	[VM_SHARED | VM_WRITE]				= PAGE_WRITE,
-+	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_WRITE,
-+	[VM_SHARED | VM_EXEC]				= PAGE_READ,
-+	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READ,
-+	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_WRITE,
-+	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_WRITE
-+};
-+DECLARE_VM_GET_PAGE_PROT
++	kfree(vring->desc_state);
++	kfree(vring->desc_extra);
++}
++
+ static struct virtqueue *vring_create_virtqueue_split(
+ 	unsigned int index,
+ 	unsigned int num,
 -- 
-2.25.1
+2.31.0
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
