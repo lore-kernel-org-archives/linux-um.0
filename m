@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44])
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o4ZVH-00HVCG-Pq
-	for linux-um@lists.infradead.org; Fri, 24 Jun 2022 02:57:05 +0000
+	id 1o6Re7-009wyk-Bz
+	for linux-um@lists.infradead.org; Wed, 29 Jun 2022 06:57:57 +0000
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v10 16/41] virtio_ring: split: introduce virtqueue_resize_split()
-Date: Fri, 24 Jun 2022 10:55:56 +0800
-Message-Id: <20220624025621.128843-17-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
-References: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v11 24/40] virtio_pci: struct virtio_pci_common_cfg add queue_notify_data
+Date: Wed, 29 Jun 2022 14:56:40 +0800
+Message-Id: <20220629065656.54420-25-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
+References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -25,73 +25,44 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: virtualization@lists.linux-foundation.org
 Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-virtio ring split supports resize.
+Add queue_notify_data in struct virtio_pci_common_cfg, which comes from
+here https://github.com/oasis-tcs/virtio-spec/issues/89
 
-Only after the new vring is successfully allocated based on the new num,
-we will release the old vring. In any case, an error is returned,
-indicating that the vring still points to the old vring.
-
-In the case of an error, re-initialize(virtqueue_reinit_split()) the
-virtqueue to ensure that the vring can be used.
-
-In addition, vring_align, may_reduce_num are necessary for reallocating
-vring, so they are retained for creating vq.
+Since I want to add queue_reset after queue_notify_data, I submitted
+this patch first.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/virtio/virtio_ring.c | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+ include/linux/virtio_pci_modern.h | 2 ++
+ include/uapi/linux/virtio_pci.h   | 1 +
+ 2 files changed, 3 insertions(+)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 8738ec690621..1ba00e73d601 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -210,6 +210,7 @@ struct vring_virtqueue {
+diff --git a/include/linux/virtio_pci_modern.h b/include/linux/virtio_pci_modern.h
+index c4f7ffbacb4e..9f31dde46f57 100644
+--- a/include/linux/virtio_pci_modern.h
++++ b/include/linux/virtio_pci_modern.h
+@@ -29,6 +29,8 @@ struct virtio_pci_common_cfg {
+ 	__le32 queue_avail_hi;		/* read-write */
+ 	__le32 queue_used_lo;		/* read-write */
+ 	__le32 queue_used_hi;		/* read-write */
++	__le16 queue_notify_data;	/* read-write */
++	__le16 padding;
  };
  
- static struct vring_desc_extra *vring_alloc_desc_extra(unsigned int num);
-+static void vring_free(struct virtqueue *_vq);
+ struct virtio_pci_modern_device {
+diff --git a/include/uapi/linux/virtio_pci.h b/include/uapi/linux/virtio_pci.h
+index 247ec42af2c8..748b3eb62d2f 100644
+--- a/include/uapi/linux/virtio_pci.h
++++ b/include/uapi/linux/virtio_pci.h
+@@ -176,6 +176,7 @@ struct virtio_pci_cfg_cap {
+ #define VIRTIO_PCI_COMMON_Q_AVAILHI	44
+ #define VIRTIO_PCI_COMMON_Q_USEDLO	48
+ #define VIRTIO_PCI_COMMON_Q_USEDHI	52
++#define VIRTIO_PCI_COMMON_Q_NDATA	56
  
- /*
-  * Helpers.
-@@ -1109,6 +1110,37 @@ static struct virtqueue *vring_create_virtqueue_split(
- 	return vq;
- }
+ #endif /* VIRTIO_PCI_NO_MODERN */
  
-+static int virtqueue_resize_split(struct virtqueue *_vq, u32 num)
-+{
-+	struct vring_virtqueue *vq = to_vvq(_vq);
-+	struct vring_virtqueue_split vring = {};
-+	struct virtio_device *vdev = _vq->vdev;
-+	int err;
-+
-+	err = vring_alloc_queue_split(&vring, vdev, num, vq->split.vring_align,
-+				      vq->split.may_reduce_num);
-+	if (err)
-+		goto err;
-+
-+	err = vring_alloc_state_extra_split(&vring);
-+	if (err) {
-+		vring_free_split(&vring, vdev);
-+		goto err;
-+	}
-+
-+	vring_free(&vq->vq);
-+
-+	virtqueue_init(vq, vring.vring.num);
-+	virtqueue_vring_attach_split(vq, &vring);
-+	virtqueue_vring_init_split(vq);
-+
-+	return 0;
-+
-+err:
-+	virtqueue_reinit_split(vq);
-+	return -ENOMEM;
-+}
-+
- 
- /*
-  * Packed ring specific functions - *_packed().
 -- 
 2.31.0
 
