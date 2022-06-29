@@ -1,12 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56])
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6Rdr-009wZR-M9
-	for linux-um@lists.infradead.org; Wed, 29 Jun 2022 06:57:44 +0000
+	id 1o6Re0-009wnI-DS
+	for linux-um@lists.infradead.org; Wed, 29 Jun 2022 06:57:50 +0000
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v11 16/40] virtio_ring: packed: extract the logic of alloc queue
-Date: Wed, 29 Jun 2022 14:56:32 +0800
-Message-Id: <20220629065656.54420-17-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v11 20/40] virtio_ring: packed: introduce virtqueue_reinit_packed()
+Date: Wed, 29 Jun 2022 14:56:36 +0800
+Message-Id: <20220629065656.54420-21-xuanzhuo@linux.alibaba.com>
 In-Reply-To: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
 References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
@@ -25,145 +25,49 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: virtualization@lists.linux-foundation.org
 Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-Separate the logic of packed to create vring queue.
+Introduce a function to initialize vq without allocating new ring,
+desc_state, desc_extra.
 
-For the convenience of passing parameters, add a structure
-vring_packed.
-
-This feature is required for subsequent virtuqueue reset vring.
+Subsequent patches will call this function after reset vq to
+reinitialize vq.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- drivers/virtio/virtio_ring.c | 80 +++++++++++++++++++++++-------------
- 1 file changed, 51 insertions(+), 29 deletions(-)
+ drivers/virtio/virtio_ring.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
 diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 4f497b6f2d04..891257d9cdf8 100644
+index 2f58266539eb..650f701a5480 100644
 --- a/drivers/virtio/virtio_ring.c
 +++ b/drivers/virtio/virtio_ring.c
-@@ -1851,19 +1851,10 @@ static void vring_free_packed(struct vring_virtqueue_packed *vring,
- 	kfree(vring->desc_extra);
+@@ -1960,6 +1960,27 @@ static void virtqueue_vring_init_packed(struct vring_virtqueue *vq)
+ 	}
  }
  
--static struct virtqueue *vring_create_virtqueue_packed(
--	unsigned int index,
--	unsigned int num,
--	unsigned int vring_align,
--	struct virtio_device *vdev,
--	bool weak_barriers,
--	bool may_reduce_num,
--	bool context,
--	bool (*notify)(struct virtqueue *),
--	void (*callback)(struct virtqueue *),
--	const char *name)
-+static int vring_alloc_queue_packed(struct vring_virtqueue_packed *vring,
-+				    struct virtio_device *vdev,
-+				    u32 num)
- {
--	struct vring_virtqueue *vq;
- 	struct vring_packed_desc *ring;
- 	struct vring_packed_desc_event *driver, *device;
- 	dma_addr_t ring_dma_addr, driver_event_dma_addr, device_event_dma_addr;
-@@ -1875,7 +1866,11 @@ static struct virtqueue *vring_create_virtqueue_packed(
- 				 &ring_dma_addr,
- 				 GFP_KERNEL|__GFP_NOWARN|__GFP_ZERO);
- 	if (!ring)
--		goto err_ring;
-+		goto err;
++static void virtqueue_reinit_packed(struct vring_virtqueue *vq)
++{
++	int size, i;
 +
-+	vring->vring.desc         = ring;
-+	vring->ring_dma_addr      = ring_dma_addr;
-+	vring->ring_size_in_bytes = ring_size_in_bytes;
- 
- 	event_size_in_bytes = sizeof(struct vring_packed_desc_event);
- 
-@@ -1883,13 +1878,47 @@ static struct virtqueue *vring_create_virtqueue_packed(
- 				   &driver_event_dma_addr,
- 				   GFP_KERNEL|__GFP_NOWARN|__GFP_ZERO);
- 	if (!driver)
--		goto err_driver;
-+		goto err;
++	memset(vq->packed.vring.device, 0, vq->packed.event_size_in_bytes);
++	memset(vq->packed.vring.driver, 0, vq->packed.event_size_in_bytes);
++	memset(vq->packed.vring.desc, 0, vq->packed.ring_size_in_bytes);
 +
-+	vring->vring.driver          = driver;
-+	vring->event_size_in_bytes   = event_size_in_bytes;
-+	vring->driver_event_dma_addr = driver_event_dma_addr;
- 
- 	device = vring_alloc_queue(vdev, event_size_in_bytes,
- 				   &device_event_dma_addr,
- 				   GFP_KERNEL|__GFP_NOWARN|__GFP_ZERO);
- 	if (!device)
--		goto err_device;
-+		goto err;
++	size = sizeof(struct vring_desc_state_packed) * vq->packed.vring.num;
++	memset(vq->packed.desc_state, 0, size);
 +
-+	vring->vring.device          = device;
-+	vring->device_event_dma_addr = device_event_dma_addr;
++	size = sizeof(struct vring_desc_extra) * vq->packed.vring.num;
++	memset(vq->packed.desc_extra, 0, size);
 +
-+	vring->vring.num    = num;
++	for (i = 0; i < vq->packed.vring.num - 1; i++)
++		vq->packed.desc_extra[i].next = i + 1;
 +
-+	return 0;
-+
-+err:
-+	vring_free_packed(vring, vdev);
-+	return -ENOMEM;
++	virtqueue_init(vq, vq->packed.vring.num);
++	virtqueue_vring_init_packed(vq);
 +}
 +
-+static struct virtqueue *vring_create_virtqueue_packed(
-+	unsigned int index,
-+	unsigned int num,
-+	unsigned int vring_align,
-+	struct virtio_device *vdev,
-+	bool weak_barriers,
-+	bool may_reduce_num,
-+	bool context,
-+	bool (*notify)(struct virtqueue *),
-+	void (*callback)(struct virtqueue *),
-+	const char *name)
-+{
-+	struct vring_virtqueue_packed vring = {};
-+	struct vring_virtqueue *vq;
-+
-+	if (vring_alloc_queue_packed(&vring, vdev, num))
-+		goto err_ring;
- 
- 	vq = kmalloc(sizeof(*vq), GFP_KERNEL);
- 	if (!vq)
-@@ -1912,17 +1941,14 @@ static struct virtqueue *vring_create_virtqueue_packed(
- 	vq->indirect = virtio_has_feature(vdev, VIRTIO_RING_F_INDIRECT_DESC) &&
- 		!context;
- 
--	vq->packed.ring_dma_addr = ring_dma_addr;
--	vq->packed.driver_event_dma_addr = driver_event_dma_addr;
--	vq->packed.device_event_dma_addr = device_event_dma_addr;
-+	vq->packed.ring_dma_addr = vring.ring_dma_addr;
-+	vq->packed.driver_event_dma_addr = vring.driver_event_dma_addr;
-+	vq->packed.device_event_dma_addr = vring.device_event_dma_addr;
- 
--	vq->packed.ring_size_in_bytes = ring_size_in_bytes;
--	vq->packed.event_size_in_bytes = event_size_in_bytes;
-+	vq->packed.ring_size_in_bytes = vring.ring_size_in_bytes;
-+	vq->packed.event_size_in_bytes = vring.event_size_in_bytes;
- 
--	vq->packed.vring.num = num;
--	vq->packed.vring.desc = ring;
--	vq->packed.vring.driver = driver;
--	vq->packed.vring.device = device;
-+	vq->packed.vring = vring.vring;
- 
- 	vq->packed.next_avail_idx = 0;
- 	vq->packed.avail_wrap_counter = 1;
-@@ -1961,11 +1987,7 @@ static struct virtqueue *vring_create_virtqueue_packed(
- err_desc_state:
- 	kfree(vq);
- err_vq:
--	vring_free_queue(vdev, event_size_in_bytes, device, device_event_dma_addr);
--err_device:
--	vring_free_queue(vdev, event_size_in_bytes, driver, driver_event_dma_addr);
--err_driver:
--	vring_free_queue(vdev, ring_size_in_bytes, ring, ring_dma_addr);
-+	vring_free_packed(&vring, vdev);
- err_ring:
- 	return NULL;
- }
+ static struct virtqueue *vring_create_virtqueue_packed(
+ 	unsigned int index,
+ 	unsigned int num,
 -- 
 2.31.0
 
