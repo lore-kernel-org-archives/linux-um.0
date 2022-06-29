@@ -1,12 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45])
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6Re7-009wyk-Bz
-	for linux-um@lists.infradead.org; Wed, 29 Jun 2022 06:57:57 +0000
+	id 1o6Rdc-009wIk-GW
+	for linux-um@lists.infradead.org; Wed, 29 Jun 2022 06:57:27 +0000
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v11 24/40] virtio_pci: struct virtio_pci_common_cfg add queue_notify_data
-Date: Wed, 29 Jun 2022 14:56:40 +0800
-Message-Id: <20220629065656.54420-25-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v11 09/40] virtio_ring: split: extract the logic of alloc state and extra
+Date: Wed, 29 Jun 2022 14:56:25 +0800
+Message-Id: <20220629065656.54420-10-xuanzhuo@linux.alibaba.com>
 In-Reply-To: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
 References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
@@ -25,43 +25,134 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: virtualization@lists.linux-foundation.org
 Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-Add queue_notify_data in struct virtio_pci_common_cfg, which comes from
-here https://github.com/oasis-tcs/virtio-spec/issues/89
+Separate the logic of creating desc_state, desc_extra, and subsequent
+patches will call it independently.
 
-Since I want to add queue_reset after queue_notify_data, I submitted
-this patch first.
+Since only the structure vring is passed into __vring_new_virtqueue(),
+when creating the function vring_alloc_state_extra_split(), we prefer to
+use vring_virtqueue_split as a parameter, and it will be more convenient
+to pass vring_virtqueue_split to some subsequent functions.
+
+So a new vring_virtqueue_split variable is added in
+__vring_new_virtqueue().
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- include/linux/virtio_pci_modern.h | 2 ++
- include/uapi/linux/virtio_pci.h   | 1 +
- 2 files changed, 3 insertions(+)
+ drivers/virtio/virtio_ring.c | 58 +++++++++++++++++++++++++-----------
+ 1 file changed, 40 insertions(+), 18 deletions(-)
 
-diff --git a/include/linux/virtio_pci_modern.h b/include/linux/virtio_pci_modern.h
-index c4f7ffbacb4e..9f31dde46f57 100644
---- a/include/linux/virtio_pci_modern.h
-+++ b/include/linux/virtio_pci_modern.h
-@@ -29,6 +29,8 @@ struct virtio_pci_common_cfg {
- 	__le32 queue_avail_hi;		/* read-write */
- 	__le32 queue_used_lo;		/* read-write */
- 	__le32 queue_used_hi;		/* read-write */
-+	__le16 queue_notify_data;	/* read-write */
-+	__le16 padding;
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index a9ceb9c16c54..cedd340d6db7 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -204,6 +204,7 @@ struct vring_virtqueue {
+ #endif
  };
  
- struct virtio_pci_modern_device {
-diff --git a/include/uapi/linux/virtio_pci.h b/include/uapi/linux/virtio_pci.h
-index 247ec42af2c8..748b3eb62d2f 100644
---- a/include/uapi/linux/virtio_pci.h
-+++ b/include/uapi/linux/virtio_pci.h
-@@ -176,6 +176,7 @@ struct virtio_pci_cfg_cap {
- #define VIRTIO_PCI_COMMON_Q_AVAILHI	44
- #define VIRTIO_PCI_COMMON_Q_USEDLO	48
- #define VIRTIO_PCI_COMMON_Q_USEDHI	52
-+#define VIRTIO_PCI_COMMON_Q_NDATA	56
++static struct vring_desc_extra *vring_alloc_desc_extra(unsigned int num);
  
- #endif /* VIRTIO_PCI_NO_MODERN */
+ /*
+  * Helpers.
+@@ -939,6 +940,32 @@ static void *virtqueue_detach_unused_buf_split(struct virtqueue *_vq)
+ 	return NULL;
+ }
+ 
++static int vring_alloc_state_extra_split(struct vring_virtqueue_split *vring)
++{
++	struct vring_desc_state_split *state;
++	struct vring_desc_extra *extra;
++	u32 num = vring->vring.num;
++
++	state = kmalloc_array(num, sizeof(struct vring_desc_state_split), GFP_KERNEL);
++	if (!state)
++		goto err_state;
++
++	extra = vring_alloc_desc_extra(num);
++	if (!extra)
++		goto err_extra;
++
++	memset(state, 0, num * sizeof(struct vring_desc_state_split));
++
++	vring->desc_state = state;
++	vring->desc_extra = extra;
++	return 0;
++
++err_extra:
++	kfree(state);
++err_state:
++	return -ENOMEM;
++}
++
+ static void vring_free_split(struct vring_virtqueue_split *vring,
+ 			     struct virtio_device *vdev)
+ {
+@@ -2224,7 +2251,7 @@ EXPORT_SYMBOL_GPL(vring_interrupt);
+ 
+ /* Only available for split ring */
+ struct virtqueue *__vring_new_virtqueue(unsigned int index,
+-					struct vring vring,
++					struct vring _vring,
+ 					struct virtio_device *vdev,
+ 					bool weak_barriers,
+ 					bool context,
+@@ -2232,7 +2259,9 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
+ 					void (*callback)(struct virtqueue *),
+ 					const char *name)
+ {
++	struct vring_virtqueue_split vring = {};
+ 	struct vring_virtqueue *vq;
++	int err;
+ 
+ 	if (virtio_has_feature(vdev, VIRTIO_F_RING_PACKED))
+ 		return NULL;
+@@ -2261,7 +2290,7 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
+ 	vq->split.queue_dma_addr = 0;
+ 	vq->split.queue_size_in_bytes = 0;
+ 
+-	vq->split.vring = vring;
++	vq->split.vring = _vring;
+ 	vq->split.avail_flags_shadow = 0;
+ 	vq->split.avail_idx_shadow = 0;
+ 
+@@ -2273,30 +2302,23 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
+ 					vq->split.avail_flags_shadow);
+ 	}
+ 
+-	vq->split.desc_state = kmalloc_array(vring.num,
+-			sizeof(struct vring_desc_state_split), GFP_KERNEL);
+-	if (!vq->split.desc_state)
+-		goto err_state;
++	vring.vring = _vring;
+ 
+-	vq->split.desc_extra = vring_alloc_desc_extra(vring.num);
+-	if (!vq->split.desc_extra)
+-		goto err_extra;
++	err = vring_alloc_state_extra_split(&vring);
++	if (err) {
++		kfree(vq);
++		return NULL;
++	}
+ 
+-	memset(vq->split.desc_state, 0, vring.num *
+-			sizeof(struct vring_desc_state_split));
++	vq->split.desc_state = vring.desc_state;
++	vq->split.desc_extra = vring.desc_extra;
+ 
+-	virtqueue_init(vq, vq->split.vring.num);
++	virtqueue_init(vq, vring.vring.num);
+ 
+ 	spin_lock(&vdev->vqs_list_lock);
+ 	list_add_tail(&vq->vq.list, &vdev->vqs);
+ 	spin_unlock(&vdev->vqs_list_lock);
+ 	return &vq->vq;
+-
+-err_extra:
+-	kfree(vq->split.desc_state);
+-err_state:
+-	kfree(vq);
+-	return NULL;
+ }
+ EXPORT_SYMBOL_GPL(__vring_new_virtqueue);
  
 -- 
 2.31.0
