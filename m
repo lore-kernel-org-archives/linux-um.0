@@ -1,12 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57])
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6Rdc-009wIk-GW
-	for linux-um@lists.infradead.org; Wed, 29 Jun 2022 06:57:27 +0000
+	id 1o6ReI-009xD8-3q
+	for linux-um@lists.infradead.org; Wed, 29 Jun 2022 06:58:07 +0000
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v11 09/40] virtio_ring: split: extract the logic of alloc state and extra
-Date: Wed, 29 Jun 2022 14:56:25 +0800
-Message-Id: <20220629065656.54420-10-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v11 29/40] virtio_pci: extract the logic of active vq for modern pci
+Date: Wed, 29 Jun 2022 14:56:45 +0800
+Message-Id: <20220629065656.54420-30-xuanzhuo@linux.alibaba.com>
 In-Reply-To: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
 References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
@@ -25,135 +25,87 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: virtualization@lists.linux-foundation.org
 Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-Separate the logic of creating desc_state, desc_extra, and subsequent
-patches will call it independently.
-
-Since only the structure vring is passed into __vring_new_virtqueue(),
-when creating the function vring_alloc_state_extra_split(), we prefer to
-use vring_virtqueue_split as a parameter, and it will be more convenient
-to pass vring_virtqueue_split to some subsequent functions.
-
-So a new vring_virtqueue_split variable is added in
-__vring_new_virtqueue().
+Introduce vp_active_vq() to configure vring to backend after vq attach
+vring. And configure vq vector if necessary.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/virtio/virtio_ring.c | 58 +++++++++++++++++++++++++-----------
- 1 file changed, 40 insertions(+), 18 deletions(-)
+ drivers/virtio/virtio_pci_modern.c | 46 ++++++++++++++++++------------
+ 1 file changed, 28 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index a9ceb9c16c54..cedd340d6db7 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -204,6 +204,7 @@ struct vring_virtqueue {
- #endif
- };
- 
-+static struct vring_desc_extra *vring_alloc_desc_extra(unsigned int num);
- 
- /*
-  * Helpers.
-@@ -939,6 +940,32 @@ static void *virtqueue_detach_unused_buf_split(struct virtqueue *_vq)
- 	return NULL;
+diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
+index e7e0b8c850f6..9041d9a41b7d 100644
+--- a/drivers/virtio/virtio_pci_modern.c
++++ b/drivers/virtio/virtio_pci_modern.c
+@@ -176,6 +176,29 @@ static void vp_reset(struct virtio_device *vdev)
+ 	vp_synchronize_vectors(vdev);
  }
  
-+static int vring_alloc_state_extra_split(struct vring_virtqueue_split *vring)
++static int vp_active_vq(struct virtqueue *vq, u16 msix_vec)
 +{
-+	struct vring_desc_state_split *state;
-+	struct vring_desc_extra *extra;
-+	u32 num = vring->vring.num;
++	struct virtio_pci_device *vp_dev = to_vp_device(vq->vdev);
++	struct virtio_pci_modern_device *mdev = &vp_dev->mdev;
++	unsigned long index;
 +
-+	state = kmalloc_array(num, sizeof(struct vring_desc_state_split), GFP_KERNEL);
-+	if (!state)
-+		goto err_state;
++	index = vq->index;
 +
-+	extra = vring_alloc_desc_extra(num);
-+	if (!extra)
-+		goto err_extra;
++	/* activate the queue */
++	vp_modern_set_queue_size(mdev, index, virtqueue_get_vring_size(vq));
++	vp_modern_queue_address(mdev, index, virtqueue_get_desc_addr(vq),
++				virtqueue_get_avail_addr(vq),
++				virtqueue_get_used_addr(vq));
 +
-+	memset(state, 0, num * sizeof(struct vring_desc_state_split));
++	if (msix_vec != VIRTIO_MSI_NO_VECTOR) {
++		msix_vec = vp_modern_queue_vector(mdev, index, msix_vec);
++		if (msix_vec == VIRTIO_MSI_NO_VECTOR)
++			return -EBUSY;
++	}
 +
-+	vring->desc_state = state;
-+	vring->desc_extra = extra;
 +	return 0;
-+
-+err_extra:
-+	kfree(state);
-+err_state:
-+	return -ENOMEM;
 +}
 +
- static void vring_free_split(struct vring_virtqueue_split *vring,
- 			     struct virtio_device *vdev)
+ static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vector)
  {
-@@ -2224,7 +2251,7 @@ EXPORT_SYMBOL_GPL(vring_interrupt);
+ 	return vp_modern_config_vector(&vp_dev->mdev, vector);
+@@ -220,32 +243,19 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
  
- /* Only available for split ring */
- struct virtqueue *__vring_new_virtqueue(unsigned int index,
--					struct vring vring,
-+					struct vring _vring,
- 					struct virtio_device *vdev,
- 					bool weak_barriers,
- 					bool context,
-@@ -2232,7 +2259,9 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
- 					void (*callback)(struct virtqueue *),
- 					const char *name)
- {
-+	struct vring_virtqueue_split vring = {};
- 	struct vring_virtqueue *vq;
-+	int err;
+ 	vq->num_max = num;
  
- 	if (virtio_has_feature(vdev, VIRTIO_F_RING_PACKED))
- 		return NULL;
-@@ -2261,7 +2290,7 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
- 	vq->split.queue_dma_addr = 0;
- 	vq->split.queue_size_in_bytes = 0;
+-	/* activate the queue */
+-	vp_modern_set_queue_size(mdev, index, virtqueue_get_vring_size(vq));
+-	vp_modern_queue_address(mdev, index, virtqueue_get_desc_addr(vq),
+-				virtqueue_get_avail_addr(vq),
+-				virtqueue_get_used_addr(vq));
++	err = vp_active_vq(vq, msix_vec);
++	if (err)
++		goto err;
  
--	vq->split.vring = vring;
-+	vq->split.vring = _vring;
- 	vq->split.avail_flags_shadow = 0;
- 	vq->split.avail_idx_shadow = 0;
- 
-@@ -2273,30 +2302,23 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
- 					vq->split.avail_flags_shadow);
+ 	vq->priv = (void __force *)vp_modern_map_vq_notify(mdev, index, NULL);
+ 	if (!vq->priv) {
+ 		err = -ENOMEM;
+-		goto err_map_notify;
+-	}
+-
+-	if (msix_vec != VIRTIO_MSI_NO_VECTOR) {
+-		msix_vec = vp_modern_queue_vector(mdev, index, msix_vec);
+-		if (msix_vec == VIRTIO_MSI_NO_VECTOR) {
+-			err = -EBUSY;
+-			goto err_assign_vector;
+-		}
++		goto err;
  	}
  
--	vq->split.desc_state = kmalloc_array(vring.num,
--			sizeof(struct vring_desc_state_split), GFP_KERNEL);
--	if (!vq->split.desc_state)
--		goto err_state;
-+	vring.vring = _vring;
+ 	return vq;
  
--	vq->split.desc_extra = vring_alloc_desc_extra(vring.num);
--	if (!vq->split.desc_extra)
--		goto err_extra;
-+	err = vring_alloc_state_extra_split(&vring);
-+	if (err) {
-+		kfree(vq);
-+		return NULL;
-+	}
- 
--	memset(vq->split.desc_state, 0, vring.num *
--			sizeof(struct vring_desc_state_split));
-+	vq->split.desc_state = vring.desc_state;
-+	vq->split.desc_extra = vring.desc_extra;
- 
--	virtqueue_init(vq, vq->split.vring.num);
-+	virtqueue_init(vq, vring.vring.num);
- 
- 	spin_lock(&vdev->vqs_list_lock);
- 	list_add_tail(&vq->vq.list, &vdev->vqs);
- 	spin_unlock(&vdev->vqs_list_lock);
- 	return &vq->vq;
--
--err_extra:
--	kfree(vq->split.desc_state);
--err_state:
--	kfree(vq);
--	return NULL;
+-err_assign_vector:
+-	if (!mdev->notify_base)
+-		pci_iounmap(mdev->pci_dev, (void __iomem __force *)vq->priv);
+-err_map_notify:
++err:
+ 	vring_del_virtqueue(vq);
+ 	return ERR_PTR(err);
  }
- EXPORT_SYMBOL_GPL(__vring_new_virtqueue);
- 
 -- 
 2.31.0
 
