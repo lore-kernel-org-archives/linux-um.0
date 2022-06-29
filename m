@@ -1,111 +1,72 @@
-Return-Path: <openrisc-bounces@lists.librecores.org>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V5 14/26] alpha/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Date: Mon, 27 Jun 2022 10:28:21 +0530
-Message-Id: <20220627045833.1590055-15-anshuman.khandual@arm.com>
-In-Reply-To: <20220627045833.1590055-1-anshuman.khandual@arm.com>
-References: <20220627045833.1590055-1-anshuman.khandual@arm.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1o6ReH-009x9X-WB
+	for linux-um@lists.infradead.org; Wed, 29 Jun 2022 06:58:07 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v11 27/40] virtio_pci: struct virtio_pci_common_cfg add queue_reset
+Date: Wed, 29 Jun 2022 14:56:43 +0800
+Message-Id: <20220629065656.54420-28-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
+References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
- <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
-List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
-List-Post: <mailto:openrisc@lists.librecores.org>
-List-Help: <mailto:openrisc-request@lists.librecores.org?subject=help>
-List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
- <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
-Errors-To: openrisc-bounces@lists.librecores.org
-Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
-To: linux-mm@kvack.org
-Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, Richard Henderson <rth@twiddle.net>, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: virtualization@lists.linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
-vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
-up a private and static protection_map[] array. Subsequently all __SXXX and
-__PXXX macros can be dropped which are no longer needed.
+Add queue_reset in virtio_pci_common_cfg.
 
-Cc: Richard Henderson <rth@twiddle.net>
-Cc: linux-alpha@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+ https://github.com/oasis-tcs/virtio-spec/issues/124
+ https://github.com/oasis-tcs/virtio-spec/issues/139
+
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- arch/alpha/Kconfig               |  1 +
- arch/alpha/include/asm/pgtable.h | 17 -----------------
- arch/alpha/mm/init.c             | 22 ++++++++++++++++++++++
- 3 files changed, 23 insertions(+), 17 deletions(-)
+ include/linux/virtio_pci_modern.h | 2 +-
+ include/uapi/linux/virtio_pci.h   | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
-index 7d0d26b5b3f5..db1c8b329461 100644
---- a/arch/alpha/Kconfig
-+++ b/arch/alpha/Kconfig
-@@ -2,6 +2,7 @@
- config ALPHA
- 	bool
- 	default y
-+	select ARCH_HAS_VM_GET_PAGE_PROT
- 	select ARCH_32BIT_USTAT_F_TINODE
- 	select ARCH_MIGHT_HAVE_PC_PARPORT
- 	select ARCH_MIGHT_HAVE_PC_SERIO
-diff --git a/arch/alpha/include/asm/pgtable.h b/arch/alpha/include/asm/pgtable.h
-index 170451fde043..3ea9661c09ff 100644
---- a/arch/alpha/include/asm/pgtable.h
-+++ b/arch/alpha/include/asm/pgtable.h
-@@ -116,23 +116,6 @@ struct vm_area_struct;
-  * arch/alpha/mm/fault.c)
-  */
- 	/* xwr */
--#define __P000	_PAGE_P(_PAGE_FOE | _PAGE_FOW | _PAGE_FOR)
--#define __P001	_PAGE_P(_PAGE_FOE | _PAGE_FOW)
--#define __P010	_PAGE_P(_PAGE_FOE)
--#define __P011	_PAGE_P(_PAGE_FOE)
--#define __P100	_PAGE_P(_PAGE_FOW | _PAGE_FOR)
--#define __P101	_PAGE_P(_PAGE_FOW)
--#define __P110	_PAGE_P(0)
--#define __P111	_PAGE_P(0)
--
--#define __S000	_PAGE_S(_PAGE_FOE | _PAGE_FOW | _PAGE_FOR)
--#define __S001	_PAGE_S(_PAGE_FOE | _PAGE_FOW)
--#define __S010	_PAGE_S(_PAGE_FOE)
--#define __S011	_PAGE_S(_PAGE_FOE)
--#define __S100	_PAGE_S(_PAGE_FOW | _PAGE_FOR)
--#define __S101	_PAGE_S(_PAGE_FOW)
--#define __S110	_PAGE_S(0)
--#define __S111	_PAGE_S(0)
+diff --git a/include/linux/virtio_pci_modern.h b/include/linux/virtio_pci_modern.h
+index 9f31dde46f57..beebc7a4a31d 100644
+--- a/include/linux/virtio_pci_modern.h
++++ b/include/linux/virtio_pci_modern.h
+@@ -30,7 +30,7 @@ struct virtio_pci_common_cfg {
+ 	__le32 queue_used_lo;		/* read-write */
+ 	__le32 queue_used_hi;		/* read-write */
+ 	__le16 queue_notify_data;	/* read-write */
+-	__le16 padding;
++	__le16 queue_reset;		/* read-write */
+ };
  
- /*
-  * pgprot_noncached() is only for infiniband pci support, and a real
-diff --git a/arch/alpha/mm/init.c b/arch/alpha/mm/init.c
-index 7511723b7669..a155180d7a83 100644
---- a/arch/alpha/mm/init.c
-+++ b/arch/alpha/mm/init.c
-@@ -280,3 +280,25 @@ mem_init(void)
- 	high_memory = (void *) __va(max_low_pfn * PAGE_SIZE);
- 	memblock_free_all();
- }
-+
-+static const pgprot_t protection_map[16] = {
-+	[VM_NONE]					= _PAGE_P(_PAGE_FOE | _PAGE_FOW |
-+								  _PAGE_FOR),
-+	[VM_READ]					= _PAGE_P(_PAGE_FOE | _PAGE_FOW),
-+	[VM_WRITE]					= _PAGE_P(_PAGE_FOE),
-+	[VM_WRITE | VM_READ]				= _PAGE_P(_PAGE_FOE),
-+	[VM_EXEC]					= _PAGE_P(_PAGE_FOW | _PAGE_FOR),
-+	[VM_EXEC | VM_READ]				= _PAGE_P(_PAGE_FOW),
-+	[VM_EXEC | VM_WRITE]				= _PAGE_P(0),
-+	[VM_EXEC | VM_WRITE | VM_READ]			= _PAGE_P(0),
-+	[VM_SHARED]					= _PAGE_S(_PAGE_FOE | _PAGE_FOW |
-+								  _PAGE_FOR),
-+	[VM_SHARED | VM_READ]				= _PAGE_S(_PAGE_FOE | _PAGE_FOW),
-+	[VM_SHARED | VM_WRITE]				= _PAGE_S(_PAGE_FOE),
-+	[VM_SHARED | VM_WRITE | VM_READ]		= _PAGE_S(_PAGE_FOE),
-+	[VM_SHARED | VM_EXEC]				= _PAGE_S(_PAGE_FOW | _PAGE_FOR),
-+	[VM_SHARED | VM_EXEC | VM_READ]			= _PAGE_S(_PAGE_FOW),
-+	[VM_SHARED | VM_EXEC | VM_WRITE]		= _PAGE_S(0),
-+	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= _PAGE_S(0)
-+};
-+DECLARE_VM_GET_PAGE_PROT
+ struct virtio_pci_modern_device {
+diff --git a/include/uapi/linux/virtio_pci.h b/include/uapi/linux/virtio_pci.h
+index 748b3eb62d2f..4f0a8d86cb11 100644
+--- a/include/uapi/linux/virtio_pci.h
++++ b/include/uapi/linux/virtio_pci.h
+@@ -177,6 +177,7 @@ struct virtio_pci_cfg_cap {
+ #define VIRTIO_PCI_COMMON_Q_USEDLO	48
+ #define VIRTIO_PCI_COMMON_Q_USEDHI	52
+ #define VIRTIO_PCI_COMMON_Q_NDATA	56
++#define VIRTIO_PCI_COMMON_Q_RESET	58
+ 
+ #endif /* VIRTIO_PCI_NO_MODERN */
+ 
 -- 
-2.25.1
+2.31.0
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
