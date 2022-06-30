@@ -1,79 +1,102 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6Re0-009wnI-DS
-	for linux-um@lists.infradead.org; Wed, 29 Jun 2022 06:57:50 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v11 20/40] virtio_ring: packed: introduce virtqueue_reinit_packed()
-Date: Wed, 29 Jun 2022 14:56:36 +0800
-Message-Id: <20220629065656.54420-21-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
-References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
+Return-Path: <anshuman.khandual@arm.com>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH V6 17/26] csky/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+Date: Thu, 30 Jun 2022 10:46:21 +0530
+Message-Id: <20220630051630.1718927-18-anshuman.khandual@arm.com>
+In-Reply-To: <20220630051630.1718927-1-anshuman.khandual@arm.com>
+References: <20220630051630.1718927-1-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+Content-Transfer-Encoding: 8bit
+To: linux-mm@kvack.org, akpm@linux-foundation.org
+Cc: hch@infradead.org, christophe.leroy@csgroup.eu, Anshuman Khandual <anshuman.khandual@arm.com>, linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org, x86@kernel.org, openrisc@lists.librecores.org, linux-xtensa@linux-xtensa.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-parisc@vger.kernel.org, linux-alpha@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-um@lists.infradead.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>, Guo Ren <guoren@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-Introduce a function to initialize vq without allocating new ring,
-desc_state, desc_extra.
+This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
+vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
+up a private and static protection_map[] array. Subsequently all __SXXX and
+__PXXX macros can be dropped which are no longer needed.
 
-Subsequent patches will call this function after reset vq to
-reinitialize vq.
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-csky@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Acked-by: Guo Ren <guoren@kernel.org>
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- drivers/virtio/virtio_ring.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ arch/csky/Kconfig               |  1 +
+ arch/csky/include/asm/pgtable.h | 18 ------------------
+ arch/csky/mm/init.c             | 20 ++++++++++++++++++++
+ 3 files changed, 21 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 2f58266539eb..650f701a5480 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -1960,6 +1960,27 @@ static void virtqueue_vring_init_packed(struct vring_virtqueue *vq)
- 	}
- }
+diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
+index 21d72b078eef..588b8a9c68ed 100644
+--- a/arch/csky/Kconfig
++++ b/arch/csky/Kconfig
+@@ -6,6 +6,7 @@ config CSKY
+ 	select ARCH_HAS_GCOV_PROFILE_ALL
+ 	select ARCH_HAS_SYNC_DMA_FOR_CPU
+ 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
++	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_USE_BUILTIN_BSWAP
+ 	select ARCH_USE_QUEUED_RWLOCKS
+ 	select ARCH_WANT_FRAME_POINTERS if !CPU_CK610 && $(cc-option,-mbacktrace)
+diff --git a/arch/csky/include/asm/pgtable.h b/arch/csky/include/asm/pgtable.h
+index bbe245117777..229a5f4ad7fc 100644
+--- a/arch/csky/include/asm/pgtable.h
++++ b/arch/csky/include/asm/pgtable.h
+@@ -77,24 +77,6 @@
+ #define MAX_SWAPFILES_CHECK() \
+ 		BUILD_BUG_ON(MAX_SWAPFILES_SHIFT != 5)
  
-+static void virtqueue_reinit_packed(struct vring_virtqueue *vq)
-+{
-+	int size, i;
+-#define __P000	PAGE_NONE
+-#define __P001	PAGE_READ
+-#define __P010	PAGE_READ
+-#define __P011	PAGE_READ
+-#define __P100	PAGE_READ
+-#define __P101	PAGE_READ
+-#define __P110	PAGE_READ
+-#define __P111	PAGE_READ
+-
+-#define __S000	PAGE_NONE
+-#define __S001	PAGE_READ
+-#define __S010	PAGE_WRITE
+-#define __S011	PAGE_WRITE
+-#define __S100	PAGE_READ
+-#define __S101	PAGE_READ
+-#define __S110	PAGE_WRITE
+-#define __S111	PAGE_WRITE
+-
+ extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
+ #define ZERO_PAGE(vaddr)	(virt_to_page(empty_zero_page))
+ 
+diff --git a/arch/csky/mm/init.c b/arch/csky/mm/init.c
+index bf2004aa811a..bde7cabd23df 100644
+--- a/arch/csky/mm/init.c
++++ b/arch/csky/mm/init.c
+@@ -197,3 +197,23 @@ void __init fixaddr_init(void)
+ 	vaddr = __fix_to_virt(__end_of_fixed_addresses - 1) & PMD_MASK;
+ 	fixrange_init(vaddr, vaddr + PMD_SIZE, swapper_pg_dir);
+ }
 +
-+	memset(vq->packed.vring.device, 0, vq->packed.event_size_in_bytes);
-+	memset(vq->packed.vring.driver, 0, vq->packed.event_size_in_bytes);
-+	memset(vq->packed.vring.desc, 0, vq->packed.ring_size_in_bytes);
-+
-+	size = sizeof(struct vring_desc_state_packed) * vq->packed.vring.num;
-+	memset(vq->packed.desc_state, 0, size);
-+
-+	size = sizeof(struct vring_desc_extra) * vq->packed.vring.num;
-+	memset(vq->packed.desc_extra, 0, size);
-+
-+	for (i = 0; i < vq->packed.vring.num - 1; i++)
-+		vq->packed.desc_extra[i].next = i + 1;
-+
-+	virtqueue_init(vq, vq->packed.vring.num);
-+	virtqueue_vring_init_packed(vq);
-+}
-+
- static struct virtqueue *vring_create_virtqueue_packed(
- 	unsigned int index,
- 	unsigned int num,
++static const pgprot_t protection_map[16] = {
++	[VM_NONE]					= PAGE_NONE,
++	[VM_READ]					= PAGE_READ,
++	[VM_WRITE]					= PAGE_READ,
++	[VM_WRITE | VM_READ]				= PAGE_READ,
++	[VM_EXEC]					= PAGE_READ,
++	[VM_EXEC | VM_READ]				= PAGE_READ,
++	[VM_EXEC | VM_WRITE]				= PAGE_READ,
++	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_READ,
++	[VM_SHARED]					= PAGE_NONE,
++	[VM_SHARED | VM_READ]				= PAGE_READ,
++	[VM_SHARED | VM_WRITE]				= PAGE_WRITE,
++	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_WRITE,
++	[VM_SHARED | VM_EXEC]				= PAGE_READ,
++	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READ,
++	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_WRITE,
++	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_WRITE
++};
++DECLARE_VM_GET_PAGE_PROT
 -- 
-2.31.0
+2.25.1
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
