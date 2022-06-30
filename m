@@ -1,17 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from mail-wr1-x42f.google.com ([2a00:1450:4864:20::42f])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6ozW-00FqXp-DF
-	for linux-um@lists.infradead.org; Thu, 30 Jun 2022 07:53:37 +0000
+	id 1o6ozH-00FqXp-G7
+	for linux-um@lists.infradead.org; Thu, 30 Jun 2022 07:53:21 +0000
 Received: by mail-wr1-x42f.google.com with SMTP id v9so10385272wrp.7
-        for <linux-um@lists.infradead.org>; Thu, 30 Jun 2022 00:53:34 -0700 (PDT)
+        for <linux-um@lists.infradead.org>; Thu, 30 Jun 2022 00:53:15 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220527185600.1236769-1-davidgow@google.com> <20220527185600.1236769-2-davidgow@google.com>
- <1a4e51a4d2ed51e7ae1ff55bd4da6a47fad7c0bf.camel@sipsolutions.net>
-In-Reply-To: <1a4e51a4d2ed51e7ae1ff55bd4da6a47fad7c0bf.camel@sipsolutions.net>
+ <de38a6b852d31cbe123d033965dbd9b662d29a76.camel@sipsolutions.net>
+In-Reply-To: <de38a6b852d31cbe123d033965dbd9b662d29a76.camel@sipsolutions.net>
 From: David Gow <davidgow@google.com>
-Date: Thu, 30 Jun 2022 15:53:22 +0800
-Message-ID: <CABVgOSmcwGa4tw8EvuxbeOvrTLh8d7V3mFxGyj2spnqqWkFp9Q@mail.gmail.com>
+Date: Thu, 30 Jun 2022 15:53:02 +0800
+Message-ID: <CABVgOSkNqTAeJa=Z4pNYO=ati0qVsLe2uGUfn7yO_D2QfAzHyA@mail.gmail.com>
 Subject: Re: [PATCH v2 2/2] UML: add support for KASAN under x86_64
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -21,153 +21,114 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============1221865622617396408=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: Johannes Berg <johannes@sipsolutions.net>
 Cc: Vincent Whitchurch <vincent.whitchurch@axis.com>, Patricia Alfonso <trishalfonso@google.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Dmitry Vyukov <dvyukov@google.com>, Brendan Higgins <brendanhiggins@google.com>, Andrew Morton <akpm@linux-foundation.org>, Andrey Konovalov <andreyknvl@gmail.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>, kasan-dev <kasan-dev@googlegroups.com>, linux-um <linux-um@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, Daniel Latypov <dlatypov@google.com>, Linux Memory Management List <linux-mm@kvack.org>
 
---===============1221865622617396408==
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000000635f805e2a5919a"
-
---0000000000000635f805e2a5919a
-Content-Type: text/plain; charset="UTF-8"
-
-On Mon, May 30, 2022 at 1:04 AM Johannes Berg <johannes@sipsolutions.net> wrote:
+On Sat, May 28, 2022 at 4:14 AM Johannes Berg <johannes@sipsolutions.net> wrote:
 >
 > On Fri, 2022-05-27 at 11:56 -0700, David Gow wrote:
 > >
-> > The UML-specific KASAN initializer uses mmap to map the roughly 2.25TB
+> > This is v2 of the KASAN/UML port. It should be ready to go.
 >
-> You say 2.25TB here, and
+> Nice, thanks a lot! :)
 >
-> > +config KASAN_SHADOW_OFFSET
-> > +     hex
-> > +     depends on KASAN
-> > +     default 0x100000000000
-> > +     help
-> > +       This is the offset at which the ~2.25TB of shadow memory is
->
-> here too, of course.
->
-> But I notice that I get ~16TB address space use when running,
->
-> > +/* used in kasan_mem_to_shadow to divide by 8 */
-> > +#define KASAN_SHADOW_SCALE_SHIFT 3
-> > +
-> > +#ifdef CONFIG_X86_64
-> > +#define KASAN_HOST_USER_SPACE_END_ADDR 0x00007fffffffffffUL
-> > +/* KASAN_SHADOW_SIZE is the size of total address space divided by 8 */
-> > +#define KASAN_SHADOW_SIZE ((KASAN_HOST_USER_SPACE_END_ADDR + 1) >> \
-> > +                     KASAN_SHADOW_SCALE_SHIFT)
->
-> because this ends up being 0x100000000000, i.e. 16 TiB.
->
-> Is that intentional? Was something missed? Maybe
-> KASAN_HOST_USER_SPACE_END_ADDR was too big?
->
-> It doesn't really matter, but I guess then the documentation should be
-> updated.
 
-Whoops, the amount of shadow memory allocated was changed for v1 of
-this patch (it was ~2.25 TB in the original RFC). I've updated these
-comments in v3:
+Thanks for looking at this: I've finally had the time to go through
+this in detail again, and have sent out v3:
 https://lore.kernel.org/lkml/20220630074757.2739000-2-davidgow@google.com/
 
+> > It does benefit significantly from the following patches:
+> > - Bugfix for memory corruption, needed for KASAN_STACK support:
+> > https://lore.kernel.org/lkml/20220523140403.2361040-1-vincent.whitchurch@axis.com/
+>
+> Btw, oddly enough, I don't seem to actually see this (tried gcc 10.3 and
+> 11.3 so far) - is there anything you know about compiler versions
+> related to this perhaps? Or clang only?
+>
+> The kasan_stack_oob test passes though, and generally 45 tests pass and
+> 10 are skipped.
+>
+
+Given this patch has already been accepted, I dropped this comment
+from v3.  As you note, the issue didn't reproduce totally
+consistently.
+
+> > +# Kernel config options are not included in USER_CFLAGS, but the
+> > option for KASAN
+> > +# should be included if the KASAN config option was set.
+> > +ifdef CONFIG_KASAN
+> > +     USER_CFLAGS+=-DCONFIG_KASAN=y
+> > +endif
+> >
+>
+> I'm not sure that's (still?) necessary - you don't #ifdef on it anywhere
+> in the user code; perhaps the original intent had been to #ifdef
+> kasan_map_memory()?
+>
+
+I've got rid of this for v3, thanks.
+
+> > +++ b/arch/um/os-Linux/user_syms.c
+> > @@ -27,10 +27,10 @@ EXPORT_SYMBOL(strstr);
+> >  #ifndef __x86_64__
+> >  extern void *memcpy(void *, const void *, size_t);
+> >  EXPORT_SYMBOL(memcpy);
+> > -#endif
+> > -
+> >  EXPORT_SYMBOL(memmove);
+> >  EXPORT_SYMBOL(memset);
+> > +#endif
+> > +
+> >  EXPORT_SYMBOL(printf);
+> >
+> >  /* Here, instead, I can provide a fake prototype. Yes, someone cares: genksyms.
+> > diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
+> > index ba5789c35809..f778e37494ba 100644
+> > --- a/arch/x86/um/Makefile
+> > +++ b/arch/x86/um/Makefile
+> > @@ -28,7 +28,8 @@ else
+> >
+> >  obj-y += syscalls_64.o vdso/
+> >
+> > -subarch-y = ../lib/csum-partial_64.o ../lib/memcpy_64.o ../entry/thunk_64.o
+> > +subarch-y = ../lib/csum-partial_64.o ../lib/memcpy_64.o ../entry/thunk_64.o \
+> > +     ../lib/memmove_64.o ../lib/memset_64.o
+>
+> I wonder if we should make these two changes contingent on KASAN too, I
+> seem to remember that we had some patches from Anton flying around at
+> some point to use glibc string routines, since they can be even more
+> optimised (we're in user space, after all).
+>
+> But I suppose for now this doesn't really matter, and even if we did use
+> them, they'd come from libasan anyway?
+
+I had a quick look into this, and think it's probably best left as-is.
+I think it's better to have the same implementation of these
+functions, regardless of whether KASAN is enabled. And given that we
+need the explicit, separate instrumented and uninstrumented versions,
+we'd need some way of having one copy which came from libasan and one
+which was totally uninstrumented.
+
+But if the performance difference is really significant, we could
+always revisit it.
+
+
+>
+> Anyway, looks good to me, not sure the little not above about the user
+> cflags matters.
+>
+> Reviewed-by: Johannes Berg <johannes@sipsolutions.net>
+>
+
+Cheers,
 -- David
-
---0000000000000635f805e2a5919a
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-z/tQRXr3iPeVmZCr7nttMEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
-dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
-AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
-c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
-LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
-LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
-Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQAx+EQjLATc/sze
-VoZkH7OLz+/no1+y31x4BQ3wjW7lKfay9DAAVym896b7ECttSo95GEvS7pYMikzud57WypK7Bjpi
-ep8YLarLRDrvyyvBuYtyDrIewkuASHtV1oy5E6QZZe2VOxMm6e2oJnFFjbflot4A08D3SwqDwV0i
-OOYwT0BUtHYR/3903Dmdx5Alq+NDvUHDjozgo0f6oIkwDXT3yBV36utQ/jFisd36C8RD5mM+NFpu
-3aqLXARRbKtxw29ErCwulof2dcAonG7cd5j+gmS84sLhKU+BhL1OQVXnJ5tj7xZ5Ri5I23brcwk0
-lk/gWqfgs3ppT9Xk7zVit9q8MYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
-R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABh9LgIPnlfMFHR0Die8n7MA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCAC
-4kJdF+2X25TeKcgcUQweuNOfKBGXpRPTwPX85b92ATAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMjA2MzAwNzUzMzRaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
-BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAFOq49C9C+/7jAbmXMpO+
-lVoTeO5gA2h71wuh4Nu4Km6zxPF0/b55zj3dQmxiACPcxvEI6GVlR6zOF5icVoQP51kMwn1X2mOx
-hi6LROmQBljVaF33H+y2JVvlpIAJ+AzBv4vx9HxozNc7w2H4Rs0FVsrQZ7+r/ymZL1USwDMiinuV
-5vJyGjoPbAG3SMmuufGU9qpp4ly8LtN+x/g9uVSTnDSGB/D47pbqKQzDo5t8ZwyngmN6Jkyn4SIi
-+g75XK5RwkV97ESUsRyxIaW0EMEhoWXM6VFihvYUbrz1UcDLwR3MC06ifTgEyUvcK5e9COb3Dp0m
-Ik2JTZrTnHoanWgcgg==
---0000000000000635f805e2a5919a--
-
-
---===============1221865622617396408==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 linux-um mailing list
 linux-um@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-um
-
---===============1221865622617396408==--
-
 
