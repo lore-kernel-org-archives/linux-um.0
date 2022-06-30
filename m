@@ -1,92 +1,110 @@
-Return-Path: <peterz@infradead.org>
-Message-ID: <20220608144516.362668063@infradead.org>
-Date: Wed, 08 Jun 2022 16:27:30 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 07/36] cpuidle,tegra: Push RCU-idle into driver
-References: <20220608142723.103523089@infradead.org>
+Return-Path: <openrisc-bounces@lists.librecores.org>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH V6 25/26] sh/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+Date: Thu, 30 Jun 2022 10:46:29 +0530
+Message-Id: <20220630051630.1718927-26-anshuman.khandual@arm.com>
+In-Reply-To: <20220630051630.1718927-1-anshuman.khandual@arm.com>
+References: <20220630051630.1718927-1-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-To: peterz@infradead.org
-Cc: rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@kernel.org, linux@armlinux.org.uk, ulli.kroll@googlemail.com, linus.walleij@linaro.org, shawnguo@kernel.org, Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com, tony@atomide.com, khilman@kernel.org, catalin.marinas@arm.com, will@kernel.org, guoren@kernel.org, bcain@quicinc.com, chenhuacai@kernel.org, kernel@xen0n.name, geert@linux-m68k.org, sammy@sammy.net, monstr@monstr.eu, tsbogend@alpha.franken.de, dinguyen@kernel.org, jonas@southpole.se, stefan.kristiansson@saunalahti.fi, shorne@gmail.com, James.Bottomley@HansenPartnership.com, deller@gmx.de, mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org, paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com, borntraeger@linux.ibm.com, svens@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, acme@kernel.org, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org, namhyung@kernel.org, jgross@suse.com, srivatsa@csail.mit.edu, amakhalov@vmware.com, pv-drivers@vmware.com, boris.ostrovsky@oracle.com, chris@zankel.net, jcmvbkbc@gmail.com, rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz, gregkh@linuxfoundation.org, mturquette@baylibre.com, sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org, sudeep.holla@arm.com, agross@kernel.org, bjorn.andersson@linaro.org, anup@brainfault.org, thierry.reding@gmail.com, jonathanh@nvidia.com, jacob.jun.pan@linux.intel.com, Arnd Bergmann <arnd@arndb.de>, yury.norov@gmail.com, andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk, rostedt@goodmis.org, pmladek@suse.com, senozhatsky@chromium.org, john.ogness@linutronix.de, paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com, josh@joshtriplett.org, mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com, joel@joelfernandes.org, juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, jpoimboe@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-xtensa@linux-xtensa.org, linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org, linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org, rcu@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
+List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
+List-Post: <mailto:openrisc@lists.librecores.org>
+List-Help: <mailto:openrisc-request@lists.librecores.org?subject=help>
+List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
+Errors-To: openrisc-bounces@lists.librecores.org
+Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
+To: linux-mm@kvack.org, akpm@linux-foundation.org
+Cc: Rich Felker <dalias@libc.org>, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
 List-ID: <linux-um.lists.infradead.org>
 
-Doing RCU-idle outside the driver, only to then temporarily enable it
-again, at least twice, before going idle is daft.
+This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
+vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
+up a private and static protection_map[] array. Subsequently all __SXXX and
+__PXXX macros can be dropped which are no longer needed.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: Rich Felker <dalias@libc.org>
+Cc: linux-sh@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- drivers/cpuidle/cpuidle-tegra.c |   21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
+ arch/sh/Kconfig               |  1 +
+ arch/sh/include/asm/pgtable.h | 17 -----------------
+ arch/sh/mm/mmap.c             | 20 ++++++++++++++++++++
+ 3 files changed, 21 insertions(+), 17 deletions(-)
 
---- a/drivers/cpuidle/cpuidle-tegra.c
-+++ b/drivers/cpuidle/cpuidle-tegra.c
-@@ -180,9 +180,11 @@ static int tegra_cpuidle_state_enter(str
- 	}
+diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
+index 5f220e903e5a..91f3ea325388 100644
+--- a/arch/sh/Kconfig
++++ b/arch/sh/Kconfig
+@@ -12,6 +12,7 @@ config SUPERH
+ 	select ARCH_HAS_GCOV_PROFILE_ALL
+ 	select ARCH_HAS_PTE_SPECIAL
+ 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
++	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_HIBERNATION_POSSIBLE if MMU
+ 	select ARCH_MIGHT_HAVE_PC_PARPORT
+ 	select ARCH_WANT_IPC_PARSE_VERSION
+diff --git a/arch/sh/include/asm/pgtable.h b/arch/sh/include/asm/pgtable.h
+index d7ddb1ec86a0..6fb9ec54cf9b 100644
+--- a/arch/sh/include/asm/pgtable.h
++++ b/arch/sh/include/asm/pgtable.h
+@@ -89,23 +89,6 @@ static inline unsigned long phys_addr_mask(void)
+  * completely separate permission bits for user and kernel space.
+  */
+ 	 /*xwr*/
+-#define __P000	PAGE_NONE
+-#define __P001	PAGE_READONLY
+-#define __P010	PAGE_COPY
+-#define __P011	PAGE_COPY
+-#define __P100	PAGE_EXECREAD
+-#define __P101	PAGE_EXECREAD
+-#define __P110	PAGE_COPY
+-#define __P111	PAGE_COPY
+-
+-#define __S000	PAGE_NONE
+-#define __S001	PAGE_READONLY
+-#define __S010	PAGE_WRITEONLY
+-#define __S011	PAGE_SHARED
+-#define __S100	PAGE_EXECREAD
+-#define __S101	PAGE_EXECREAD
+-#define __S110	PAGE_RWX
+-#define __S111	PAGE_RWX
  
- 	local_fiq_disable();
--	RCU_NONIDLE(tegra_pm_set_cpu_in_lp2());
-+	tegra_pm_set_cpu_in_lp2();
- 	cpu_pm_enter();
+ typedef pte_t *pte_addr_t;
  
-+	rcu_idle_enter();
-+
- 	switch (index) {
- 	case TEGRA_C7:
- 		err = tegra_cpuidle_c7_enter();
-@@ -197,8 +199,10 @@ static int tegra_cpuidle_state_enter(str
- 		break;
- 	}
- 
-+	rcu_idle_exit();
-+
- 	cpu_pm_exit();
--	RCU_NONIDLE(tegra_pm_clear_cpu_in_lp2());
-+	tegra_pm_clear_cpu_in_lp2();
- 	local_fiq_enable();
- 
- 	return err ?: index;
-@@ -226,6 +230,7 @@ static int tegra_cpuidle_enter(struct cp
- 			       struct cpuidle_driver *drv,
- 			       int index)
+diff --git a/arch/sh/mm/mmap.c b/arch/sh/mm/mmap.c
+index 6a1a1297baae..46c1183493af 100644
+--- a/arch/sh/mm/mmap.c
++++ b/arch/sh/mm/mmap.c
+@@ -162,3 +162,23 @@ int valid_mmap_phys_addr_range(unsigned long pfn, size_t size)
  {
-+	bool do_rcu = drv->states[index].flags & CPUIDLE_FLAG_RCU_IDLE;
- 	unsigned int cpu = cpu_logical_map(dev->cpu);
- 	int ret;
- 
-@@ -233,9 +238,13 @@ static int tegra_cpuidle_enter(struct cp
- 	if (dev->states_usage[index].disable)
- 		return -1;
- 
--	if (index == TEGRA_C1)
-+	if (index == TEGRA_C1) {
-+		if (do_rcu)
-+			rcu_idle_enter();
- 		ret = arm_cpuidle_simple_enter(dev, drv, index);
--	else
-+		if (do_rcu)
-+			rcu_idle_exit();
-+	} else
- 		ret = tegra_cpuidle_state_enter(dev, index, cpu);
- 
- 	if (ret < 0) {
-@@ -285,7 +294,8 @@ static struct cpuidle_driver tegra_idle_
- 			.exit_latency		= 2000,
- 			.target_residency	= 2200,
- 			.power_usage		= 100,
--			.flags			= CPUIDLE_FLAG_TIMER_STOP,
-+			.flags			= CPUIDLE_FLAG_TIMER_STOP |
-+						  CPUIDLE_FLAG_RCU_IDLE,
- 			.name			= "C7",
- 			.desc			= "CPU core powered off",
- 		},
-@@ -295,6 +305,7 @@ static struct cpuidle_driver tegra_idle_
- 			.target_residency	= 10000,
- 			.power_usage		= 0,
- 			.flags			= CPUIDLE_FLAG_TIMER_STOP |
-+						  CPUIDLE_FLAG_RCU_IDLE   |
- 						  CPUIDLE_FLAG_COUPLED,
- 			.name			= "CC6",
- 			.desc			= "CPU cluster powered off",
-
+ 	return 1;
+ }
++
++static const pgprot_t protection_map[16] = {
++	[VM_NONE]					= PAGE_NONE,
++	[VM_READ]					= PAGE_READONLY,
++	[VM_WRITE]					= PAGE_COPY,
++	[VM_WRITE | VM_READ]				= PAGE_COPY,
++	[VM_EXEC]					= PAGE_EXECREAD,
++	[VM_EXEC | VM_READ]				= PAGE_EXECREAD,
++	[VM_EXEC | VM_WRITE]				= PAGE_COPY,
++	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY,
++	[VM_SHARED]					= PAGE_NONE,
++	[VM_SHARED | VM_READ]				= PAGE_READONLY,
++	[VM_SHARED | VM_WRITE]				= PAGE_WRITEONLY,
++	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED,
++	[VM_SHARED | VM_EXEC]				= PAGE_EXECREAD,
++	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_EXECREAD,
++	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_RWX,
++	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_RWX
++};
++DECLARE_VM_GET_PAGE_PROT
+-- 
+2.25.1
 
 
