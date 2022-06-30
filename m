@@ -1,124 +1,100 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out01.mta.xmission.com ([166.70.13.231])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1nyFFL-001xdP-Q7
-	for linux-um@lists.infradead.org; Mon, 06 Jun 2022 16:06:29 +0000
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-References: <871qwq5ucx.fsf_-_@email.froward.int.ebiederm.org>
-	<20220518225355.784371-5-ebiederm@xmission.com>
-	<20220524114250.GB14347@redhat.com> <20220525143303.GB2687@redhat.com>
-Date: Mon, 06 Jun 2022 11:06:01 -0500
-In-Reply-To: <20220525143303.GB2687@redhat.com> (Oleg Nesterov's message of
-	"Wed, 25 May 2022 16:33:03 +0200")
-Message-ID: <87ee014w0m.fsf@email.froward.int.ebiederm.org>
+Return-Path: <openrisc-bounces@lists.librecores.org>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH V6 20/26] mips/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+Date: Thu, 30 Jun 2022 10:46:24 +0530
+Message-Id: <20220630051630.1718927-21-anshuman.khandual@arm.com>
+In-Reply-To: <20220630051630.1718927-1-anshuman.khandual@arm.com>
+References: <20220630051630.1718927-1-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 05/16] ptrace: Remove dead code from __ptrace_detach
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: linux-kernel@vger.kernel.org, rjw@rjwysocki.net, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org, Robert OCallahan <roc@pernos.co>, Kyle Huey <khuey@pernos.co>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Jason Wessel <jason.wessel@windriver.com>, Daniel Thompson <daniel.thompson@linaro.org>, Douglas Anderson <dianders@chromium.org>, Douglas Miller <dougmill@linux.vnet.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>
+Content-Transfer-Encoding: 8bit
+List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
+List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
+List-Post: <mailto:openrisc@lists.librecores.org>
+List-Help: <mailto:openrisc-request@lists.librecores.org?subject=help>
+List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
+Errors-To: openrisc-bounces@lists.librecores.org
+Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
+To: linux-mm@kvack.org, akpm@linux-foundation.org
+Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+List-ID: <linux-um.lists.infradead.org>
 
-Oleg Nesterov <oleg@redhat.com> writes:
+This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
+vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
+up a private and static protection_map[] array. Subsequently all __SXXX and
+__PXXX macros can be dropped which are no longer needed.
 
-> On 05/24, Oleg Nesterov wrote:
->>
->> Sorry for delay.
->>
->> On 05/18, Eric W. Biederman wrote:
->> >
->> > Ever since commit 28d838cc4dfe ("Fix ptrace self-attach rule") it has
->> > been impossible to attach another thread in the same thread group.
->> >
->> > Remove the code from __ptrace_detach that was trying to support
->> > detaching from a thread in the same thread group.
->>
->> may be I am totally confused, but I think you misunderstood this code
->> and thus this patch is very wrong.
->>
->> The same_thread_group() check does NOT try to check if debugger and
->> tracee is in the same thread group, this is indeed impossible.
->>
->> We need this check to know if the tracee was ptrace_reparented() before
->> __ptrace_unlink() or not.
->>
->>
->> > -static int ignoring_children(struct sighand_struct *sigh)
->> > -{
->> > -	int ret;
->> > -	spin_lock(&sigh->siglock);
->> > -	ret = (sigh->action[SIGCHLD-1].sa.sa_handler == SIG_IGN) ||
->> > -	      (sigh->action[SIGCHLD-1].sa.sa_flags & SA_NOCLDWAIT);
->> > -	spin_unlock(&sigh->siglock);
->> > -	return ret;
->> > -}
->>
->> ...
->>
->> > @@ -565,14 +552,9 @@ static bool __ptrace_detach(struct task_struct *tracer, struct task_struct *p)
->> >
->> >  	dead = !thread_group_leader(p);
->> >
->> > -	if (!dead && thread_group_empty(p)) {
->> > -		if (!same_thread_group(p->real_parent, tracer))
->> > -			dead = do_notify_parent(p, p->exit_signal);
->> > -		else if (ignoring_children(tracer->sighand)) {
->> > -			__wake_up_parent(p, tracer);
->> > -			dead = true;
->> > -		}
->> > -	}
->>
->> So the code above does:
->>
->> 	- if !same_thread_group(p->real_parent, tracer), then the tracee was
->> 	  ptrace_reparented(), and now we need to notify its natural parent
->> 	  to let it know it has a zombie child.
->>
->> 	- otherwise, the tracee is our natural child, and it is actually dead.
->> 	  however, since we are going to reap this task, we need to wake up our
->> 	  sub-threads possibly sleeping on ->wait_chldexit wait_queue_head_t.
->>
->> See?
->>
->> > +	if (!dead && thread_group_empty(p))
->> > +		dead = do_notify_parent(p, p->exit_signal);
->>
->> No, this looks wrong. Or I missed something?
->
-> Yes, but...
->
-> That said, it seems that we do not need __wake_up_parent() if it was our
-> natural child?
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+ arch/mips/Kconfig               |  1 +
+ arch/mips/include/asm/pgtable.h | 22 ----------------------
+ arch/mips/mm/cache.c            |  3 +++
+ 3 files changed, 4 insertions(+), 22 deletions(-)
 
-Agreed on both counts.
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index db09d45d59ec..d0b7eb11ec81 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -14,6 +14,7 @@ config MIPS
+ 	select ARCH_HAS_STRNLEN_USER
+ 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
+ 	select ARCH_HAS_UBSAN_SANITIZE_ALL
++	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_HAS_GCOV_PROFILE_ALL
+ 	select ARCH_KEEP_MEMBLOCK
+ 	select ARCH_SUPPORTS_UPROBES
+diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
+index 374c6322775d..6caec386ad2f 100644
+--- a/arch/mips/include/asm/pgtable.h
++++ b/arch/mips/include/asm/pgtable.h
+@@ -41,28 +41,6 @@ struct vm_area_struct;
+  * by reasonable means..
+  */
+ 
+-/*
+- * Dummy values to fill the table in mmap.c
+- * The real values will be generated at runtime
+- */
+-#define __P000 __pgprot(0)
+-#define __P001 __pgprot(0)
+-#define __P010 __pgprot(0)
+-#define __P011 __pgprot(0)
+-#define __P100 __pgprot(0)
+-#define __P101 __pgprot(0)
+-#define __P110 __pgprot(0)
+-#define __P111 __pgprot(0)
+-
+-#define __S000 __pgprot(0)
+-#define __S001 __pgprot(0)
+-#define __S010 __pgprot(0)
+-#define __S011 __pgprot(0)
+-#define __S100 __pgprot(0)
+-#define __S101 __pgprot(0)
+-#define __S110 __pgprot(0)
+-#define __S111 __pgprot(0)
+-
+ extern unsigned long _page_cachable_default;
+ extern void __update_cache(unsigned long address, pte_t pte);
+ 
+diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
+index 7be7240f7703..11b3e7ddafd5 100644
+--- a/arch/mips/mm/cache.c
++++ b/arch/mips/mm/cache.c
+@@ -159,6 +159,9 @@ EXPORT_SYMBOL(_page_cachable_default);
+ 
+ #define PM(p)	__pgprot(_page_cachable_default | (p))
+ 
++static pgprot_t protection_map[16] __ro_after_init;
++DECLARE_VM_GET_PAGE_PROT
++
+ static inline void setup_protection_map(void)
+ {
+ 	protection_map[0]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+-- 
+2.25.1
 
-Hmm.  I see where the logic comes from.  The ignoring_children test and
-the __wake_up_parent are what do_notify_parent does when the parent
-ignores children.  Hmm.  I even see all of this document in the comment
-above __ptrace_detach.
-
-So I am just going to drop this change.
-
-> I'll recheck. Eric, I'll continue to read this series tomorrow, can't
-> concentrate on ptrace today.
-
-No worries.  This was entirely too close to the merge window so I
-dropped it all until today.
-
-Eric
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
