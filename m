@@ -1,17 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-wm1-x329.google.com ([2a00:1450:4864:20::329])
+Received: from mail-wr1-x42f.google.com ([2a00:1450:4864:20::42f])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6p0L-00Fqxq-M8
-	for linux-um@lists.infradead.org; Thu, 30 Jun 2022 07:54:27 +0000
-Received: by mail-wm1-x329.google.com with SMTP id o16-20020a05600c379000b003a02eaea815so2182970wmr.0
-        for <linux-um@lists.infradead.org>; Thu, 30 Jun 2022 00:54:25 -0700 (PDT)
+	id 1o6ozW-00FqXp-DF
+	for linux-um@lists.infradead.org; Thu, 30 Jun 2022 07:53:37 +0000
+Received: by mail-wr1-x42f.google.com with SMTP id v9so10385272wrp.7
+        for <linux-um@lists.infradead.org>; Thu, 30 Jun 2022 00:53:34 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220527185600.1236769-1-davidgow@google.com> <20220527185600.1236769-2-davidgow@google.com>
- <CA+fCnZe63vugPRbD3fVNGnTWbSvjd08g8coG3D71-=NtqpjOvQ@mail.gmail.com>
-In-Reply-To: <CA+fCnZe63vugPRbD3fVNGnTWbSvjd08g8coG3D71-=NtqpjOvQ@mail.gmail.com>
+ <1a4e51a4d2ed51e7ae1ff55bd4da6a47fad7c0bf.camel@sipsolutions.net>
+In-Reply-To: <1a4e51a4d2ed51e7ae1ff55bd4da6a47fad7c0bf.camel@sipsolutions.net>
 From: David Gow <davidgow@google.com>
-Date: Thu, 30 Jun 2022 15:54:12 +0800
-Message-ID: <CABVgOS=hW0Paz2EwV0dvJQLM9cT-YNBzEXmUJZZ8Db5PZr-5Qg@mail.gmail.com>
+Date: Thu, 30 Jun 2022 15:53:22 +0800
+Message-ID: <CABVgOSmcwGa4tw8EvuxbeOvrTLh8d7V3mFxGyj2spnqqWkFp9Q@mail.gmail.com>
 Subject: Re: [PATCH v2 2/2] UML: add support for KASAN under x86_64
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -21,166 +21,63 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0165491601977854821=="
+Content-Type: multipart/mixed; boundary="===============1221865622617396408=="
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Andrey Konovalov <andreyknvl@gmail.com>
-Cc: Vincent Whitchurch <vincent.whitchurch@axis.com>, Johannes Berg <johannes@sipsolutions.net>, Patricia Alfonso <trishalfonso@google.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Dmitry Vyukov <dvyukov@google.com>, Brendan Higgins <brendanhiggins@google.com>, Andrew Morton <akpm@linux-foundation.org>, Andrey Ryabinin <ryabinin.a.a@gmail.com>, kasan-dev <kasan-dev@googlegroups.com>, linux-um <linux-um@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, Daniel Latypov <dlatypov@google.com>, Linux Memory Management List <linux-mm@kvack.org>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Vincent Whitchurch <vincent.whitchurch@axis.com>, Patricia Alfonso <trishalfonso@google.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Dmitry Vyukov <dvyukov@google.com>, Brendan Higgins <brendanhiggins@google.com>, Andrew Morton <akpm@linux-foundation.org>, Andrey Konovalov <andreyknvl@gmail.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>, kasan-dev <kasan-dev@googlegroups.com>, linux-um <linux-um@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, Daniel Latypov <dlatypov@google.com>, Linux Memory Management List <linux-mm@kvack.org>
 
---===============0165491601977854821==
+--===============1221865622617396408==
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000ff429705e2a59394"
+	boundary="0000000000000635f805e2a5919a"
 
---000000000000ff429705e2a59394
+--0000000000000635f805e2a5919a
 Content-Type: text/plain; charset="UTF-8"
 
-On Tue, May 31, 2022 at 2:03 AM Andrey Konovalov <andreyknvl@gmail.com> wrote:
+On Mon, May 30, 2022 at 1:04 AM Johannes Berg <johannes@sipsolutions.net> wrote:
 >
-> On Fri, May 27, 2022 at 8:56 PM David Gow <davidgow@google.com> wrote:
-> >
-> > From: Patricia Alfonso <trishalfonso@google.com>
-> >
-> > Make KASAN run on User Mode Linux on x86_64.
+> On Fri, 2022-05-27 at 11:56 -0700, David Gow wrote:
 > >
 > > The UML-specific KASAN initializer uses mmap to map the roughly 2.25TB
-> > of shadow memory to the location defined by KASAN_SHADOW_OFFSET.
-> > kasan_init() utilizes constructors to initialize KASAN before main().
-> >
-> > The location of the KASAN shadow memory, starting at
-> > KASAN_SHADOW_OFFSET, can be configured using the KASAN_SHADOW_OFFSET
-> > option. UML uses roughly 18TB of address space, and KASAN requires 1/8th
-> > of this. The default location of this offset is 0x100000000000, which
-> > keeps it out-of-the-way even on UML setups with more "physical" memory.
-> >
-> > For low-memory setups, 0x7fff8000 can be used instead, which fits in an
-> > immediate and is therefore faster, as suggested by Dmitry Vyukov. There
-> > is usually enough free space at this location; however, it is a config
-> > option so that it can be easily changed if needed.
-> >
-> > Note that, unlike KASAN on other architectures, vmalloc allocations
-> > still use the shadow memory allocated upfront, rather than allocating
-> > and free-ing it per-vmalloc allocation.
-> >
-> > Also note that, while UML supports both KASAN in inline mode
-> > (CONFIG_KASAN_INLINE) and static linking (CONFIG_STATIC_LINK), it does
-> > not support both at the same time.
-> >
-> > Signed-off-by: Patricia Alfonso <trishalfonso@google.com>
-> > Co-developed-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
-> > Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
-> > Signed-off-by: David Gow <davidgow@google.com>
 >
-> Hi David,
+> You say 2.25TB here, and
 >
-> Thanks for working on this!
+> > +config KASAN_SHADOW_OFFSET
+> > +     hex
+> > +     depends on KASAN
+> > +     default 0x100000000000
+> > +     help
+> > +       This is the offset at which the ~2.25TB of shadow memory is
 >
-> > diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
-> > index a4f07de21771..c993d99116f2 100644
-> > --- a/mm/kasan/shadow.c
-> > +++ b/mm/kasan/shadow.c
-> > @@ -295,9 +295,29 @@ int kasan_populate_vmalloc(unsigned long addr, unsigned long size)
-> >                 return 0;
-> >
-> >         shadow_start = (unsigned long)kasan_mem_to_shadow((void *)addr);
-> > -       shadow_start = ALIGN_DOWN(shadow_start, PAGE_SIZE);
-> >         shadow_end = (unsigned long)kasan_mem_to_shadow((void *)addr + size);
-> > -       shadow_end = ALIGN(shadow_end, PAGE_SIZE);
+> here too, of course.
+>
+> But I notice that I get ~16TB address space use when running,
+>
+> > +/* used in kasan_mem_to_shadow to divide by 8 */
+> > +#define KASAN_SHADOW_SCALE_SHIFT 3
 > > +
-> > +       /*
-> > +        * User Mode Linux maps enough shadow memory for all of physical memory
-> > +        * at boot, so doesn't need to allocate more on vmalloc, just clear it.
+> > +#ifdef CONFIG_X86_64
+> > +#define KASAN_HOST_USER_SPACE_END_ADDR 0x00007fffffffffffUL
+> > +/* KASAN_SHADOW_SIZE is the size of total address space divided by 8 */
+> > +#define KASAN_SHADOW_SIZE ((KASAN_HOST_USER_SPACE_END_ADDR + 1) >> \
+> > +                     KASAN_SHADOW_SCALE_SHIFT)
 >
-> Should this say "for all of _virtual_ memory"?
+> because this ends up being 0x100000000000, i.e. 16 TiB.
 >
-> Otherwise, this is confusing. All KASAN-enabled architectures map
-> shadow for physical memory. And they still need map shadow for
-> vmalloc() separately. This is what kasan_populate_vmalloc() is for.
+> Is that intentional? Was something missed? Maybe
+> KASAN_HOST_USER_SPACE_END_ADDR was too big?
 >
+> It doesn't really matter, but I guess then the documentation should be
+> updated.
 
-Yup, this was a mistake on my part: the original RFC for KASAN/UML
-only allocated enough shadow memory to cover physical memory, but it
-was changed in v1 (which I'd forgotten).
-
-I've updated the comment in v3:
+Whoops, the amount of shadow memory allocated was changed for v1 of
+this patch (it was ~2.25 TB in the original RFC). I've updated these
+comments in v3:
 https://lore.kernel.org/lkml/20220630074757.2739000-2-davidgow@google.com/
 
-> > +        *
-> > +        * If another architecture chooses to go down the same path, we should
-> > +        * replace this check for CONFIG_UML with something more generic, such
-> > +        * as:
-> > +        * - A CONFIG_KASAN_NO_SHADOW_ALLOC option, which architectures could set
-> > +        * - or, a way of having architecture-specific versions of these vmalloc
-> > +        *   and module shadow memory allocation options.
->
-> I think this part above and the first sentence below belong to the
-> commit changelog, not to a comment.
->
-
-While I think there's _some_ sense in leaving this in the comment (as
-a bit of a reminder / TODO), given that the commit changelog is more
-ephemeral, I've moved it to the commit message for v3. This will be
-easy to find via git blame, while not cluttering the actual file, so
-seems an okay spot for it.
-
-Cheers,
 -- David
 
-
-
-> > +        *
-> > +        * For the time being, though, this check works. The remaining CONFIG_UML
-> > +        * checks in this file exist for the same reason.
-> > +        */
-> > +       if (IS_ENABLED(CONFIG_UML)) {
-> > +               __memset((void *)shadow_start, KASAN_VMALLOC_INVALID, shadow_end - shadow_start);
-> > +               return 0;
-> > +       }
-> > +
-> > +       shadow_start = PAGE_ALIGN_DOWN(shadow_start);
-> > +       shadow_end = PAGE_ALIGN(shadow_end);
-> >
-> >         ret = apply_to_page_range(&init_mm, shadow_start,
-> >                                   shadow_end - shadow_start,
-> > @@ -466,6 +486,10 @@ void kasan_release_vmalloc(unsigned long start, unsigned long end,
-> >
-> >         if (shadow_end > shadow_start) {
-> >                 size = shadow_end - shadow_start;
-> > +               if (IS_ENABLED(CONFIG_UML)) {
-> > +                       __memset(shadow_start, KASAN_SHADOW_INIT, shadow_end - shadow_start);
-> > +                       return;
-> > +               }
-> >                 apply_to_existing_page_range(&init_mm,
-> >                                              (unsigned long)shadow_start,
-> >                                              size, kasan_depopulate_vmalloc_pte,
-> > @@ -531,6 +555,11 @@ int kasan_alloc_module_shadow(void *addr, size_t size, gfp_t gfp_mask)
-> >         if (WARN_ON(!PAGE_ALIGNED(shadow_start)))
-> >                 return -EINVAL;
-> >
-> > +       if (IS_ENABLED(CONFIG_UML)) {
-> > +               __memset((void *)shadow_start, KASAN_SHADOW_INIT, shadow_size);
-> > +               return 0;
-> > +       }
-> > +
-> >         ret = __vmalloc_node_range(shadow_size, 1, shadow_start,
-> >                         shadow_start + shadow_size,
-> >                         GFP_KERNEL,
-> > @@ -554,6 +583,9 @@ int kasan_alloc_module_shadow(void *addr, size_t size, gfp_t gfp_mask)
-> >
-> >  void kasan_free_module_shadow(const struct vm_struct *vm)
-> >  {
-> > +       if (IS_ENABLED(CONFIG_UML))
-> > +               return;
-> > +
-> >         if (vm->flags & VM_KASAN)
-> >                 vfree(kasan_mem_to_shadow(vm->addr));
-> >  }
-> > --
-> > 2.36.1.124.g0e6072fb45-goog
-> >
->
-> Thanks!
-
---000000000000ff429705e2a59394
+--0000000000000635f805e2a5919a
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -247,20 +144,20 @@ OOYwT0BUtHYR/3903Dmdx5Alq+NDvUHDjozgo0f6oIkwDXT3yBV36utQ/jFisd36C8RD5mM+NFpu
 3aqLXARRbKtxw29ErCwulof2dcAonG7cd5j+gmS84sLhKU+BhL1OQVXnJ5tj7xZ5Ri5I23brcwk0
 lk/gWqfgs3ppT9Xk7zVit9q8MYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
 R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABh9LgIPnlfMFHR0Die8n7MA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCA8
-dJASzRdZfOM9mtHBhqflP7aBrs0/xvVtIUdMC3r85DAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMjA2MzAwNzU0MjRaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+MDIwAhABh9LgIPnlfMFHR0Die8n7MA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCAC
+4kJdF+2X25TeKcgcUQweuNOfKBGXpRPTwPX85b92ATAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMjA2MzAwNzUzMzRaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
 BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAYakGfvHtyZ4mETpJfNlS
-njRUqpN1/M/fQW/N1GCxRQqh/L56zkSnqSGAmJgSpYO5ZAKXMLyzMybVDqz/KV06EuuDObU0ASGf
-NpnEUXAPEb8Z3Lw1b0vhGfzBpI/VLS+9tCJ+aiY6VruXKZzs12fdGctTJQyvoUDgAVdEurtrlITa
-ZNMiqQMQ9oTdUCDY0Hjn33WAehp1wX2zm87b5yaLFvT3dNpoTUOc9I73wBwJHJldacAzY+sRsRHF
-JkFIz5S3tn7SypCbsfHfxpmiLjwnbvAID3xdaYMVh5B1o5caNzVe/uQqLP9pTvRPUtYy1Y6qBiKs
-w0Hn+2N9k/Ht945f8Q==
---000000000000ff429705e2a59394--
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAFOq49C9C+/7jAbmXMpO+
+lVoTeO5gA2h71wuh4Nu4Km6zxPF0/b55zj3dQmxiACPcxvEI6GVlR6zOF5icVoQP51kMwn1X2mOx
+hi6LROmQBljVaF33H+y2JVvlpIAJ+AzBv4vx9HxozNc7w2H4Rs0FVsrQZ7+r/ymZL1USwDMiinuV
+5vJyGjoPbAG3SMmuufGU9qpp4ly8LtN+x/g9uVSTnDSGB/D47pbqKQzDo5t8ZwyngmN6Jkyn4SIi
++g75XK5RwkV97ESUsRyxIaW0EMEhoWXM6VFihvYUbrz1UcDLwR3MC06ifTgEyUvcK5e9COb3Dp0m
+Ik2JTZrTnHoanWgcgg==
+--0000000000000635f805e2a5919a--
 
 
---===============0165491601977854821==
+--===============1221865622617396408==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -271,6 +168,6 @@ linux-um mailing list
 linux-um@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-um
 
---===============0165491601977854821==--
+--===============1221865622617396408==--
 
 
