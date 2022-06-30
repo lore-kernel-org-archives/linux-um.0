@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-yb1-xb4a.google.com ([2607:f8b0:4864:20::b4a])
+Received: from mail-yw1-x1149.google.com ([2607:f8b0:4864:20::1149])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6pEC-00FvZX-FL
-	for linux-um@lists.infradead.org; Thu, 30 Jun 2022 08:08:46 +0000
-Received: by mail-yb1-xb4a.google.com with SMTP id c7-20020a258807000000b0066d6839741eso3519046ybl.23
-        for <linux-um@lists.infradead.org>; Thu, 30 Jun 2022 01:08:39 -0700 (PDT)
-Date: Thu, 30 Jun 2022 16:08:33 +0800
-Message-Id: <20220630080834.2742777-1-davidgow@google.com>
+	id 1o6ouI-00FpHF-7G
+	for linux-um@lists.infradead.org; Thu, 30 Jun 2022 07:48:11 +0000
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-317f6128c86so148642077b3.22
+        for <linux-um@lists.infradead.org>; Thu, 30 Jun 2022 00:48:07 -0700 (PDT)
+Date: Thu, 30 Jun 2022 15:47:56 +0800
+Message-Id: <20220630074757.2739000-1-davidgow@google.com>
 Mime-Version: 1.0
-Subject: [PATCH v4 1/2] mm: Add PAGE_ALIGN_DOWN macro
+Subject: [PATCH v3 1/2] mm: Add PAGE_ALIGN_DOWN macro
 From: David Gow <davidgow@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -35,9 +35,6 @@ Acked-by: Andrew Morton <akpm@linux-foundation.org>
 
 Please take this patch as part of the UML tree, along with patch #2,
 thanks!
-
-No changes to this patch since v3 (just a minor issue with patch #2):
-https://lore.kernel.org/lkml/20220630074757.2739000-1-davidgow@google.com/
 
 Changes since v2:
 https://lore.kernel.org/lkml/20220527185600.1236769-1-davidgow@google.com/
