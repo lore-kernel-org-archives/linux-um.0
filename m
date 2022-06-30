@@ -1,197 +1,390 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6ReP-009xMW-DW
-	for linux-um@lists.infradead.org; Wed, 29 Jun 2022 06:58:15 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v11 32/40] virtio_pci: support the arg sizes of find_vqs()
-Date: Wed, 29 Jun 2022 14:56:48 +0800
-Message-Id: <20220629065656.54420-33-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
-References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
+Return-Path: <openrisc-bounces@lists.librecores.org>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH V6 26/26] mm/mmap: Drop ARCH_HAS_VM_GET_PAGE_PROT
+Date: Thu, 30 Jun 2022 10:46:30 +0530
+Message-Id: <20220630051630.1718927-27-anshuman.khandual@arm.com>
+In-Reply-To: <20220630051630.1718927-1-anshuman.khandual@arm.com>
+References: <20220630051630.1718927-1-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+Content-Transfer-Encoding: 8bit
+List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
+List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
+List-Post: <mailto:openrisc@lists.librecores.org>
+List-Help: <mailto:openrisc-request@lists.librecores.org?subject=help>
+List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
+Errors-To: openrisc-bounces@lists.librecores.org
+Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
+To: linux-mm@kvack.org, akpm@linux-foundation.org
+Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, Christoph Hellwig <hch@lst.de>, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+List-ID: <linux-um.lists.infradead.org>
 
-Virtio PCI supports new parameter sizes of find_vqs().
+Now all the platforms enable ARCH_HAS_GET_PAGE_PROT. They define and export
+own vm_get_page_prot() whether custom or standard DECLARE_VM_GET_PAGE_PROT.
+Hence there is no need for default generic fallback for vm_get_page_prot().
+Just drop this fallback and also ARCH_HAS_GET_PAGE_PROT mechanism.
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- drivers/virtio/virtio_pci_common.c | 18 ++++++++++--------
- drivers/virtio/virtio_pci_common.h |  1 +
- drivers/virtio/virtio_pci_legacy.c |  6 +++++-
- drivers/virtio/virtio_pci_modern.c | 10 +++++++---
- 4 files changed, 23 insertions(+), 12 deletions(-)
+ arch/alpha/Kconfig      |  1 -
+ arch/arc/Kconfig        |  1 -
+ arch/arm/Kconfig        |  1 -
+ arch/arm64/Kconfig      |  1 -
+ arch/csky/Kconfig       |  1 -
+ arch/hexagon/Kconfig    |  1 -
+ arch/ia64/Kconfig       |  1 -
+ arch/loongarch/Kconfig  |  1 -
+ arch/m68k/Kconfig       |  1 -
+ arch/microblaze/Kconfig |  1 -
+ arch/mips/Kconfig       |  1 -
+ arch/nios2/Kconfig      |  1 -
+ arch/openrisc/Kconfig   |  1 -
+ arch/parisc/Kconfig     |  1 -
+ arch/powerpc/Kconfig    |  1 -
+ arch/riscv/Kconfig      |  1 -
+ arch/s390/Kconfig       |  1 -
+ arch/sh/Kconfig         |  1 -
+ arch/sparc/Kconfig      |  1 -
+ arch/um/Kconfig         |  1 -
+ arch/x86/Kconfig        |  1 -
+ arch/xtensa/Kconfig     |  1 -
+ include/linux/mm.h      |  3 ---
+ mm/Kconfig              |  3 ---
+ mm/mmap.c               | 22 ----------------------
+ 25 files changed, 50 deletions(-)
 
-diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
-index 7ad734584823..00ad476a815d 100644
---- a/drivers/virtio/virtio_pci_common.c
-+++ b/drivers/virtio/virtio_pci_common.c
-@@ -174,6 +174,7 @@ static int vp_request_msix_vectors(struct virtio_device *vdev, int nvectors,
- static struct virtqueue *vp_setup_vq(struct virtio_device *vdev, unsigned int index,
- 				     void (*callback)(struct virtqueue *vq),
- 				     const char *name,
-+				     u32 size,
- 				     bool ctx,
- 				     u16 msix_vec)
+diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
+index db1c8b329461..7d0d26b5b3f5 100644
+--- a/arch/alpha/Kconfig
++++ b/arch/alpha/Kconfig
+@@ -2,7 +2,6 @@
+ config ALPHA
+ 	bool
+ 	default y
+-	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_32BIT_USTAT_F_TINODE
+ 	select ARCH_MIGHT_HAVE_PC_PARPORT
+ 	select ARCH_MIGHT_HAVE_PC_SERIO
+diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
+index 8be56a5d8a9b..9e3653253ef2 100644
+--- a/arch/arc/Kconfig
++++ b/arch/arc/Kconfig
+@@ -13,7 +13,6 @@ config ARC
+ 	select ARCH_HAS_SETUP_DMA_OPS
+ 	select ARCH_HAS_SYNC_DMA_FOR_CPU
+ 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
+-	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_SUPPORTS_ATOMIC_RMW if ARC_HAS_LLSC
+ 	select ARCH_32BIT_OFF_T
+ 	select BUILDTIME_TABLE_SORT
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index e153b6d4fc5b..7630ba9cb6cc 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -24,7 +24,6 @@ config ARM
+ 	select ARCH_HAS_SYNC_DMA_FOR_CPU if SWIOTLB || !MMU
+ 	select ARCH_HAS_TEARDOWN_DMA_OPS if MMU
+ 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
+-	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_HAVE_CUSTOM_GPIO_H
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG if CPU_V7 || CPU_V7M || CPU_V6K
+ 	select ARCH_HAS_GCOV_PROFILE_ALL
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 1652a9800ebe..7030bf3f8d6f 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -45,7 +45,6 @@ config ARM64
+ 	select ARCH_HAS_SYSCALL_WRAPPER
+ 	select ARCH_HAS_TEARDOWN_DMA_OPS if IOMMU_SUPPORT
+ 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
+-	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_HAS_ZONE_DMA_SET if EXPERT
+ 	select ARCH_HAVE_ELF_PROT
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
+index 588b8a9c68ed..21d72b078eef 100644
+--- a/arch/csky/Kconfig
++++ b/arch/csky/Kconfig
+@@ -6,7 +6,6 @@ config CSKY
+ 	select ARCH_HAS_GCOV_PROFILE_ALL
+ 	select ARCH_HAS_SYNC_DMA_FOR_CPU
+ 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
+-	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_USE_BUILTIN_BSWAP
+ 	select ARCH_USE_QUEUED_RWLOCKS
+ 	select ARCH_WANT_FRAME_POINTERS if !CPU_CK610 && $(cc-option,-mbacktrace)
+diff --git a/arch/hexagon/Kconfig b/arch/hexagon/Kconfig
+index bc4ceecd0588..54eadf265178 100644
+--- a/arch/hexagon/Kconfig
++++ b/arch/hexagon/Kconfig
+@@ -6,7 +6,6 @@ config HEXAGON
+ 	def_bool y
+ 	select ARCH_32BIT_OFF_T
+ 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
+-	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_NO_PREEMPT
+ 	select DMA_GLOBAL_POOL
+ 	# Other pending projects/to-do items.
+diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
+index 0510a5737711..cb93769a9f2a 100644
+--- a/arch/ia64/Kconfig
++++ b/arch/ia64/Kconfig
+@@ -12,7 +12,6 @@ config IA64
+ 	select ARCH_HAS_DMA_MARK_CLEAN
+ 	select ARCH_HAS_STRNCPY_FROM_USER
+ 	select ARCH_HAS_STRNLEN_USER
+-	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_MIGHT_HAVE_PC_PARPORT
+ 	select ARCH_MIGHT_HAVE_PC_SERIO
+ 	select ACPI
+diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
+index fd07b8e760ee..1920d52653b4 100644
+--- a/arch/loongarch/Kconfig
++++ b/arch/loongarch/Kconfig
+@@ -9,7 +9,6 @@ config LOONGARCH
+ 	select ARCH_HAS_ACPI_TABLE_UPGRADE	if ACPI
+ 	select ARCH_HAS_PHYS_TO_DMA
+ 	select ARCH_HAS_PTE_SPECIAL
+-	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
+ 	select ARCH_INLINE_READ_LOCK if !PREEMPTION
+ 	select ARCH_INLINE_READ_LOCK_BH if !PREEMPTION
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 49aa0cf13e96..936cce42ae9a 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -7,7 +7,6 @@ config M68K
+ 	select ARCH_HAS_CURRENT_STACK_POINTER
+ 	select ARCH_HAS_DMA_PREP_COHERENT if HAS_DMA && MMU && !COLDFIRE
+ 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE if HAS_DMA
+-	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
+ 	select ARCH_MIGHT_HAVE_PC_PARPORT if ISA
+ 	select ARCH_NO_PREEMPT if !COLDFIRE
+diff --git a/arch/microblaze/Kconfig b/arch/microblaze/Kconfig
+index 15f91ba8a0c4..8cf429ad1c84 100644
+--- a/arch/microblaze/Kconfig
++++ b/arch/microblaze/Kconfig
+@@ -7,7 +7,6 @@ config MICROBLAZE
+ 	select ARCH_HAS_GCOV_PROFILE_ALL
+ 	select ARCH_HAS_SYNC_DMA_FOR_CPU
+ 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
+-	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_MIGHT_HAVE_PC_PARPORT
+ 	select ARCH_WANT_IPC_PARSE_VERSION
+ 	select BUILDTIME_TABLE_SORT
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index d0b7eb11ec81..db09d45d59ec 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -14,7 +14,6 @@ config MIPS
+ 	select ARCH_HAS_STRNLEN_USER
+ 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
+ 	select ARCH_HAS_UBSAN_SANITIZE_ALL
+-	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_HAS_GCOV_PROFILE_ALL
+ 	select ARCH_KEEP_MEMBLOCK
+ 	select ARCH_SUPPORTS_UPROBES
+diff --git a/arch/nios2/Kconfig b/arch/nios2/Kconfig
+index e0459dffd218..4167f1eb4cd8 100644
+--- a/arch/nios2/Kconfig
++++ b/arch/nios2/Kconfig
+@@ -6,7 +6,6 @@ config NIOS2
+ 	select ARCH_HAS_SYNC_DMA_FOR_CPU
+ 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
+ 	select ARCH_HAS_DMA_SET_UNCACHED
+-	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_NO_SWAP
+ 	select COMMON_CLK
+ 	select TIMER_OF
+diff --git a/arch/openrisc/Kconfig b/arch/openrisc/Kconfig
+index fe0dfb50eb86..e814df4c483c 100644
+--- a/arch/openrisc/Kconfig
++++ b/arch/openrisc/Kconfig
+@@ -10,7 +10,6 @@ config OPENRISC
+ 	select ARCH_HAS_DMA_SET_UNCACHED
+ 	select ARCH_HAS_DMA_CLEAR_UNCACHED
+ 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
+-	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select COMMON_CLK
+ 	select OF
+ 	select OF_EARLY_FLATTREE
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index 891d82393957..fa400055b2d5 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -12,7 +12,6 @@ config PARISC
+ 	select ARCH_HAS_STRICT_KERNEL_RWX
+ 	select ARCH_HAS_STRICT_MODULE_RWX
+ 	select ARCH_HAS_UBSAN_SANITIZE_ALL
+-	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_HAS_PTE_SPECIAL
+ 	select ARCH_NO_SG_CHAIN
+ 	select ARCH_SUPPORTS_HUGETLBFS if PA20
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 1035d172c7dd..250b8658b2d4 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -140,7 +140,6 @@ config PPC
+ 	select ARCH_HAS_TICK_BROADCAST		if GENERIC_CLOCKEVENTS_BROADCAST
+ 	select ARCH_HAS_UACCESS_FLUSHCACHE
+ 	select ARCH_HAS_UBSAN_SANITIZE_ALL
+-	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+ 	select ARCH_KEEP_MEMBLOCK
+ 	select ARCH_MIGHT_HAVE_PC_PARPORT
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 583389d4e43a..32ffef9f6e5b 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -32,7 +32,6 @@ config RISCV
+ 	select ARCH_HAS_STRICT_MODULE_RWX if MMU && !XIP_KERNEL
+ 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
+ 	select ARCH_HAS_UBSAN_SANITIZE_ALL
+-	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_OPTIONAL_KERNEL_RWX if ARCH_HAS_STRICT_KERNEL_RWX
+ 	select ARCH_OPTIONAL_KERNEL_RWX_DEFAULT
+ 	select ARCH_STACKWALK
+diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+index c4481377ca83..91c0b80a8bf0 100644
+--- a/arch/s390/Kconfig
++++ b/arch/s390/Kconfig
+@@ -81,7 +81,6 @@ config S390
+ 	select ARCH_HAS_SYSCALL_WRAPPER
+ 	select ARCH_HAS_UBSAN_SANITIZE_ALL
+ 	select ARCH_HAS_VDSO_DATA
+-	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+ 	select ARCH_INLINE_READ_LOCK
+ 	select ARCH_INLINE_READ_LOCK_BH
+diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
+index 91f3ea325388..5f220e903e5a 100644
+--- a/arch/sh/Kconfig
++++ b/arch/sh/Kconfig
+@@ -12,7 +12,6 @@ config SUPERH
+ 	select ARCH_HAS_GCOV_PROFILE_ALL
+ 	select ARCH_HAS_PTE_SPECIAL
+ 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
+-	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_HIBERNATION_POSSIBLE if MMU
+ 	select ARCH_MIGHT_HAVE_PC_PARPORT
+ 	select ARCH_WANT_IPC_PARSE_VERSION
+diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
+index 09f868613a4d..9c1cce74953a 100644
+--- a/arch/sparc/Kconfig
++++ b/arch/sparc/Kconfig
+@@ -13,7 +13,6 @@ config 64BIT
+ config SPARC
+ 	bool
+ 	default y
+-	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_MIGHT_HAVE_PC_PARPORT if SPARC64 && PCI
+ 	select ARCH_MIGHT_HAVE_PC_SERIO
+ 	select DMA_OPS
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index 7fb43654e5b5..4ec22e156a2e 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -10,7 +10,6 @@ config UML
+ 	select ARCH_HAS_KCOV
+ 	select ARCH_HAS_STRNCPY_FROM_USER
+ 	select ARCH_HAS_STRNLEN_USER
+-	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_NO_PREEMPT
+ 	select HAVE_ARCH_AUDITSYSCALL
+ 	select HAVE_ARCH_SECCOMP_FILTER
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index be0b95e51df6..841e4843d0c4 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -94,7 +94,6 @@ config X86
+ 	select ARCH_HAS_SYNC_CORE_BEFORE_USERMODE
+ 	select ARCH_HAS_SYSCALL_WRAPPER
+ 	select ARCH_HAS_UBSAN_SANITIZE_ALL
+-	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_HAS_DEBUG_WX
+ 	select ARCH_HAS_ZONE_DMA_SET if EXPERT
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
+index 4c0d83520ff1..0b0f0172cced 100644
+--- a/arch/xtensa/Kconfig
++++ b/arch/xtensa/Kconfig
+@@ -11,7 +11,6 @@ config XTENSA
+ 	select ARCH_HAS_DMA_SET_UNCACHED if MMU
+ 	select ARCH_HAS_STRNCPY_FROM_USER if !KASAN
+ 	select ARCH_HAS_STRNLEN_USER
+-	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_USE_MEMTEST
+ 	select ARCH_USE_QUEUED_RWLOCKS
+ 	select ARCH_USE_QUEUED_SPINLOCKS
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 07b56995e0fe..4ccd29f6828f 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -424,9 +424,6 @@ extern unsigned int kobjsize(const void *objp);
+  * mapping from the currently active vm_flags protection bits (the
+  * low four bits) to a page protection mask..
+  */
+-#ifndef CONFIG_ARCH_HAS_VM_GET_PAGE_PROT
+-extern pgprot_t protection_map[16];
+-#endif
+ 
+ /*
+  * The default fault flags that should be used by most of the
+diff --git a/mm/Kconfig b/mm/Kconfig
+index 169e64192e48..f47d257a053b 100644
+--- a/mm/Kconfig
++++ b/mm/Kconfig
+@@ -951,9 +951,6 @@ config ARCH_HAS_CURRENT_STACK_POINTER
+ 	  register alias named "current_stack_pointer", this config can be
+ 	  selected.
+ 
+-config ARCH_HAS_VM_GET_PAGE_PROT
+-	bool
+-
+ config ARCH_HAS_PTE_DEVMAP
+ 	bool
+ 
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 2cc722e162fa..02d6889f0ef6 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -81,28 +81,6 @@ static void unmap_region(struct mm_struct *mm,
+ 		struct vm_area_struct *vma, struct vm_area_struct *prev,
+ 		unsigned long start, unsigned long end);
+ 
+-#ifndef CONFIG_ARCH_HAS_VM_GET_PAGE_PROT
+-pgprot_t protection_map[16] __ro_after_init = {
+-	[VM_NONE]					= __P000,
+-	[VM_READ]					= __P001,
+-	[VM_WRITE]					= __P010,
+-	[VM_WRITE | VM_READ]				= __P011,
+-	[VM_EXEC]					= __P100,
+-	[VM_EXEC | VM_READ]				= __P101,
+-	[VM_EXEC | VM_WRITE]				= __P110,
+-	[VM_EXEC | VM_WRITE | VM_READ]			= __P111,
+-	[VM_SHARED]					= __S000,
+-	[VM_SHARED | VM_READ]				= __S001,
+-	[VM_SHARED | VM_WRITE]				= __S010,
+-	[VM_SHARED | VM_WRITE | VM_READ]		= __S011,
+-	[VM_SHARED | VM_EXEC]				= __S100,
+-	[VM_SHARED | VM_EXEC | VM_READ]			= __S101,
+-	[VM_SHARED | VM_EXEC | VM_WRITE]		= __S110,
+-	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= __S111
+-};
+-DECLARE_VM_GET_PAGE_PROT
+-#endif	/* CONFIG_ARCH_HAS_VM_GET_PAGE_PROT */
+-
+ static pgprot_t vm_pgprot_modify(pgprot_t oldprot, unsigned long vm_flags)
  {
-@@ -186,7 +187,7 @@ static struct virtqueue *vp_setup_vq(struct virtio_device *vdev, unsigned int in
- 	if (!info)
- 		return ERR_PTR(-ENOMEM);
- 
--	vq = vp_dev->setup_vq(vp_dev, info, index, callback, name, ctx,
-+	vq = vp_dev->setup_vq(vp_dev, info, index, callback, name, size, ctx,
- 			      msix_vec);
- 	if (IS_ERR(vq))
- 		goto out_info;
-@@ -283,7 +284,7 @@ void vp_del_vqs(struct virtio_device *vdev)
- 
- static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned int nvqs,
- 		struct virtqueue *vqs[], vq_callback_t *callbacks[],
--		const char * const names[], bool per_vq_vectors,
-+		const char * const names[], u32 sizes[], bool per_vq_vectors,
- 		const bool *ctx,
- 		struct irq_affinity *desc)
- {
-@@ -326,8 +327,8 @@ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned int nvqs,
- 		else
- 			msix_vec = VP_MSIX_VQ_VECTOR;
- 		vqs[i] = vp_setup_vq(vdev, queue_idx++, callbacks[i], names[i],
--				     ctx ? ctx[i] : false,
--				     msix_vec);
-+				     sizes ? sizes[i] : 0,
-+				     ctx ? ctx[i] : false, msix_vec);
- 		if (IS_ERR(vqs[i])) {
- 			err = PTR_ERR(vqs[i]);
- 			goto error_find;
-@@ -357,7 +358,7 @@ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned int nvqs,
- 
- static int vp_find_vqs_intx(struct virtio_device *vdev, unsigned int nvqs,
- 		struct virtqueue *vqs[], vq_callback_t *callbacks[],
--		const char * const names[], const bool *ctx)
-+		const char * const names[], u32 sizes[], const bool *ctx)
- {
- 	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
- 	int i, err, queue_idx = 0;
-@@ -379,6 +380,7 @@ static int vp_find_vqs_intx(struct virtio_device *vdev, unsigned int nvqs,
- 			continue;
- 		}
- 		vqs[i] = vp_setup_vq(vdev, queue_idx++, callbacks[i], names[i],
-+				     sizes ? sizes[i] : 0,
- 				     ctx ? ctx[i] : false,
- 				     VIRTIO_MSI_NO_VECTOR);
- 		if (IS_ERR(vqs[i])) {
-@@ -402,15 +404,15 @@ int vp_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
- 	int err;
- 
- 	/* Try MSI-X with one vector per queue. */
--	err = vp_find_vqs_msix(vdev, nvqs, vqs, callbacks, names, true, ctx, desc);
-+	err = vp_find_vqs_msix(vdev, nvqs, vqs, callbacks, names, sizes, true, ctx, desc);
- 	if (!err)
- 		return 0;
- 	/* Fallback: MSI-X with one vector for config, one shared for queues. */
--	err = vp_find_vqs_msix(vdev, nvqs, vqs, callbacks, names, false, ctx, desc);
-+	err = vp_find_vqs_msix(vdev, nvqs, vqs, callbacks, names, sizes, false, ctx, desc);
- 	if (!err)
- 		return 0;
- 	/* Finally fall back to regular interrupts. */
--	return vp_find_vqs_intx(vdev, nvqs, vqs, callbacks, names, ctx);
-+	return vp_find_vqs_intx(vdev, nvqs, vqs, callbacks, names, sizes, ctx);
- }
- 
- const char *vp_bus_name(struct virtio_device *vdev)
-diff --git a/drivers/virtio/virtio_pci_common.h b/drivers/virtio/virtio_pci_common.h
-index a5ff838b85a5..c0448378b698 100644
---- a/drivers/virtio/virtio_pci_common.h
-+++ b/drivers/virtio/virtio_pci_common.h
-@@ -80,6 +80,7 @@ struct virtio_pci_device {
- 				      unsigned int idx,
- 				      void (*callback)(struct virtqueue *vq),
- 				      const char *name,
-+				      u32 size,
- 				      bool ctx,
- 				      u16 msix_vec);
- 	void (*del_vq)(struct virtio_pci_vq_info *info);
-diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virtio_pci_legacy.c
-index 2257f1b3d8ae..d75e5c4e637f 100644
---- a/drivers/virtio/virtio_pci_legacy.c
-+++ b/drivers/virtio/virtio_pci_legacy.c
-@@ -112,6 +112,7 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 				  unsigned int index,
- 				  void (*callback)(struct virtqueue *vq),
- 				  const char *name,
-+				  u32 size,
- 				  bool ctx,
- 				  u16 msix_vec)
- {
-@@ -125,10 +126,13 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 	if (!num || vp_legacy_get_queue_enable(&vp_dev->ldev, index))
- 		return ERR_PTR(-ENOENT);
- 
-+	if (!size || size > num)
-+		size = num;
-+
- 	info->msix_vector = msix_vec;
- 
- 	/* create the vring */
--	vq = vring_create_virtqueue(index, num,
-+	vq = vring_create_virtqueue(index, size,
- 				    VIRTIO_PCI_VRING_ALIGN, &vp_dev->vdev,
- 				    true, false, ctx,
- 				    vp_notify, callback, name);
-diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
-index 287cb3c2b55f..781e40d8ba0d 100644
---- a/drivers/virtio/virtio_pci_modern.c
-+++ b/drivers/virtio/virtio_pci_modern.c
-@@ -301,6 +301,7 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 				  unsigned int index,
- 				  void (*callback)(struct virtqueue *vq),
- 				  const char *name,
-+				  u32 size,
- 				  bool ctx,
- 				  u16 msix_vec)
- {
-@@ -318,15 +319,18 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 	if (!num || vp_modern_get_queue_enable(mdev, index))
- 		return ERR_PTR(-ENOENT);
- 
--	if (num & (num - 1)) {
--		dev_warn(&vp_dev->pci_dev->dev, "bad queue size %u", num);
-+	if (!size || size > num)
-+		size = num;
-+
-+	if (size & (size - 1)) {
-+		dev_warn(&vp_dev->pci_dev->dev, "bad queue size %u", size);
- 		return ERR_PTR(-EINVAL);
- 	}
- 
- 	info->msix_vector = msix_vec;
- 
- 	/* create the vring */
--	vq = vring_create_virtqueue(index, num,
-+	vq = vring_create_virtqueue(index, size,
- 				    SMP_CACHE_BYTES, &vp_dev->vdev,
- 				    true, true, ctx,
- 				    vp_notify, callback, name);
+ 	return pgprot_modify(oldprot, vm_get_page_prot(vm_flags));
 -- 
-2.31.0
+2.25.1
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
