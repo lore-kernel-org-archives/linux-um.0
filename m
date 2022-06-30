@@ -1,18 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-wr1-x42f.google.com ([2a00:1450:4864:20::42f])
+Received: from mail-yb1-xb4a.google.com ([2607:f8b0:4864:20::b4a])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6ozH-00FqXp-G7
-	for linux-um@lists.infradead.org; Thu, 30 Jun 2022 07:53:21 +0000
-Received: by mail-wr1-x42f.google.com with SMTP id v9so10385272wrp.7
-        for <linux-um@lists.infradead.org>; Thu, 30 Jun 2022 00:53:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220527185600.1236769-1-davidgow@google.com> <20220527185600.1236769-2-davidgow@google.com>
- <de38a6b852d31cbe123d033965dbd9b662d29a76.camel@sipsolutions.net>
-In-Reply-To: <de38a6b852d31cbe123d033965dbd9b662d29a76.camel@sipsolutions.net>
+	id 1o6pEC-00FvZX-FL
+	for linux-um@lists.infradead.org; Thu, 30 Jun 2022 08:08:46 +0000
+Received: by mail-yb1-xb4a.google.com with SMTP id c7-20020a258807000000b0066d6839741eso3519046ybl.23
+        for <linux-um@lists.infradead.org>; Thu, 30 Jun 2022 01:08:39 -0700 (PDT)
+Date: Thu, 30 Jun 2022 16:08:33 +0800
+Message-Id: <20220630080834.2742777-1-davidgow@google.com>
+Mime-Version: 1.0
+Subject: [PATCH v4 1/2] mm: Add PAGE_ALIGN_DOWN macro
 From: David Gow <davidgow@google.com>
-Date: Thu, 30 Jun 2022 15:53:02 +0800
-Message-ID: <CABVgOSkNqTAeJa=Z4pNYO=ati0qVsLe2uGUfn7yO_D2QfAzHyA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] UML: add support for KASAN under x86_64
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -25,107 +22,55 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Vincent Whitchurch <vincent.whitchurch@axis.com>, Patricia Alfonso <trishalfonso@google.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Dmitry Vyukov <dvyukov@google.com>, Brendan Higgins <brendanhiggins@google.com>, Andrew Morton <akpm@linux-foundation.org>, Andrey Konovalov <andreyknvl@gmail.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>, kasan-dev <kasan-dev@googlegroups.com>, linux-um <linux-um@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, Daniel Latypov <dlatypov@google.com>, Linux Memory Management List <linux-mm@kvack.org>
+To: Vincent Whitchurch <vincent.whitchurch@axis.com>, Johannes Berg <johannes@sipsolutions.net>, Patricia Alfonso <trishalfonso@google.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, anton.ivanov@cambridgegreys.com, Dmitry Vyukov <dvyukov@google.com>, Brendan Higgins <brendanhiggins@google.com>, Andrew Morton <akpm@linux-foundation.org>, Andrey Konovalov <andreyknvl@gmail.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: David Gow <davidgow@google.com>, kasan-dev <kasan-dev@googlegroups.com>, linux-um@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>, Daniel Latypov <dlatypov@google.com>, linux-mm@kvack.org, kunit-dev@googlegroups.com
 
-On Sat, May 28, 2022 at 4:14 AM Johannes Berg <johannes@sipsolutions.net> wrote:
->
-> On Fri, 2022-05-27 at 11:56 -0700, David Gow wrote:
-> >
-> > This is v2 of the KASAN/UML port. It should be ready to go.
->
-> Nice, thanks a lot! :)
->
+This is just the same as PAGE_ALIGN(), but rounds the address down, not
+up.
 
-Thanks for looking at this: I've finally had the time to go through
-this in detail again, and have sent out v3:
-https://lore.kernel.org/lkml/20220630074757.2739000-2-davidgow@google.com/
+Suggested-by: Dmitry Vyukov <dvyukov@google.com>
+Signed-off-by: David Gow <davidgow@google.com>
+Acked-by: Andrew Morton <akpm@linux-foundation.org>
+---
 
-> > It does benefit significantly from the following patches:
-> > - Bugfix for memory corruption, needed for KASAN_STACK support:
-> > https://lore.kernel.org/lkml/20220523140403.2361040-1-vincent.whitchurch@axis.com/
->
-> Btw, oddly enough, I don't seem to actually see this (tried gcc 10.3 and
-> 11.3 so far) - is there anything you know about compiler versions
-> related to this perhaps? Or clang only?
->
-> The kasan_stack_oob test passes though, and generally 45 tests pass and
-> 10 are skipped.
->
+Please take this patch as part of the UML tree, along with patch #2,
+thanks!
 
-Given this patch has already been accepted, I dropped this comment
-from v3.  As you note, the issue didn't reproduce totally
-consistently.
+No changes to this patch since v3 (just a minor issue with patch #2):
+https://lore.kernel.org/lkml/20220630074757.2739000-1-davidgow@google.com/
 
-> > +# Kernel config options are not included in USER_CFLAGS, but the
-> > option for KASAN
-> > +# should be included if the KASAN config option was set.
-> > +ifdef CONFIG_KASAN
-> > +     USER_CFLAGS+=-DCONFIG_KASAN=y
-> > +endif
-> >
->
-> I'm not sure that's (still?) necessary - you don't #ifdef on it anywhere
-> in the user code; perhaps the original intent had been to #ifdef
-> kasan_map_memory()?
->
+Changes since v2:
+https://lore.kernel.org/lkml/20220527185600.1236769-1-davidgow@google.com/
+- Add Andrew's Acked-by tag.
 
-I've got rid of this for v3, thanks.
+v2 was the first version of this patch (it having been introduced as
+part of v2 of the UML/KASAN series).
 
-> > +++ b/arch/um/os-Linux/user_syms.c
-> > @@ -27,10 +27,10 @@ EXPORT_SYMBOL(strstr);
-> >  #ifndef __x86_64__
-> >  extern void *memcpy(void *, const void *, size_t);
-> >  EXPORT_SYMBOL(memcpy);
-> > -#endif
-> > -
-> >  EXPORT_SYMBOL(memmove);
-> >  EXPORT_SYMBOL(memset);
-> > +#endif
-> > +
-> >  EXPORT_SYMBOL(printf);
-> >
-> >  /* Here, instead, I can provide a fake prototype. Yes, someone cares: genksyms.
-> > diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
-> > index ba5789c35809..f778e37494ba 100644
-> > --- a/arch/x86/um/Makefile
-> > +++ b/arch/x86/um/Makefile
-> > @@ -28,7 +28,8 @@ else
-> >
-> >  obj-y += syscalls_64.o vdso/
-> >
-> > -subarch-y = ../lib/csum-partial_64.o ../lib/memcpy_64.o ../entry/thunk_64.o
-> > +subarch-y = ../lib/csum-partial_64.o ../lib/memcpy_64.o ../entry/thunk_64.o \
-> > +     ../lib/memmove_64.o ../lib/memset_64.o
->
-> I wonder if we should make these two changes contingent on KASAN too, I
-> seem to remember that we had some patches from Anton flying around at
-> some point to use glibc string routines, since they can be even more
-> optimised (we're in user space, after all).
->
-> But I suppose for now this doesn't really matter, and even if we did use
-> them, they'd come from libasan anyway?
+There are almost certainly lots of places where this macro should be
+used: just look for ALIGN_DOWN(..., PAGE_SIZE). I haven't gone through
+to try to replace them all.
 
-I had a quick look into this, and think it's probably best left as-is.
-I think it's better to have the same implementation of these
-functions, regardless of whether KASAN is enabled. And given that we
-need the explicit, separate instrumented and uninstrumented versions,
-we'd need some way of having one copy which came from libasan and one
-which was totally uninstrumented.
+---
+ include/linux/mm.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-But if the performance difference is really significant, we could
-always revisit it.
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 9f44254af8ce..9abe5975ad11 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -221,6 +221,9 @@ int overcommit_policy_handler(struct ctl_table *, int, void *, size_t *,
+ /* to align the pointer to the (next) page boundary */
+ #define PAGE_ALIGN(addr) ALIGN(addr, PAGE_SIZE)
+ 
++/* to align the pointer to the (prev) page boundary */
++#define PAGE_ALIGN_DOWN(addr) ALIGN_DOWN(addr, PAGE_SIZE)
++
+ /* test whether an address (unsigned long or pointer) is aligned to PAGE_SIZE */
+ #define PAGE_ALIGNED(addr)	IS_ALIGNED((unsigned long)(addr), PAGE_SIZE)
+ 
+-- 
+2.37.0.rc0.161.g10f37bed90-goog
 
-
->
-> Anyway, looks good to me, not sure the little not above about the user
-> cflags matters.
->
-> Reviewed-by: Johannes Berg <johannes@sipsolutions.net>
->
-
-Cheers,
--- David
 
 _______________________________________________
 linux-um mailing list
