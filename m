@@ -1,15 +1,17 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44])
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o4ZVM-00HVJ6-Mc
-	for linux-um@lists.infradead.org; Fri, 24 Jun 2022 02:57:10 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v10 18/41] virtio_ring: packed: extract the logic of alloc queue
-Date: Fri, 24 Jun 2022 10:55:58 +0800
-Message-Id: <20220624025621.128843-19-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
-References: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
+	id 1o6nqd-00FXfx-A0
+	for linux-um@lists.infradead.org; Thu, 30 Jun 2022 06:40:21 +0000
+Received: by mail-lf1-f72.google.com with SMTP id r28-20020ac25c1c000000b004809e9d21e5so7490515lfp.18
+        for <linux-um@lists.infradead.org>; Wed, 29 Jun 2022 23:40:15 -0700 (PDT)
 MIME-Version: 1.0
+References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com> <20220629065656.54420-6-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220629065656.54420-6-xuanzhuo@linux.alibaba.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Thu, 30 Jun 2022 14:40:02 +0800
+Message-ID: <CACGkMEvfFV8w34=SiS4XFyEH5+EEkb9JqYg0t_rKpU1rRBMLiQ@mail.gmail.com>
+Subject: Re: [PATCH v11 05/40] virtio_ring: split vring_virtqueue
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,150 +24,164 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: virtualization <virtualization@lists.linux-foundation.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev <netdev@vger.kernel.org>, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm <kvm@vger.kernel.org>, "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>, kangjie.xu@linux.alibaba.com
 
-Separate the logic of packed to create vring queue.
+On Wed, Jun 29, 2022 at 2:57 PM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
+>
+> Separate the two inline structures(split and packed) from the structure
+> vring_virtqueue.
+>
+> In this way, we can use these two structures later to pass parameters
+> and retain temporary variables.
+>
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 
-For the convenience of passing parameters, add a structure
-vring_packed.
+Acked-by: Jason Wang <jasowang@redhat.com>
 
-This feature is required for subsequent virtuqueue reset vring.
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/virtio/virtio_ring.c | 80 +++++++++++++++++++++++-------------
- 1 file changed, 51 insertions(+), 29 deletions(-)
-
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index a72b929f51fb..4b1a7a940012 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -1828,19 +1828,10 @@ static void vring_free_packed(struct vring_virtqueue_packed *vring,
- 	kfree(vring->desc_extra);
- }
- 
--static struct virtqueue *vring_create_virtqueue_packed(
--	unsigned int index,
--	unsigned int num,
--	unsigned int vring_align,
--	struct virtio_device *vdev,
--	bool weak_barriers,
--	bool may_reduce_num,
--	bool context,
--	bool (*notify)(struct virtqueue *),
--	void (*callback)(struct virtqueue *),
--	const char *name)
-+static int vring_alloc_queue_packed(struct vring_virtqueue_packed *vring,
-+				    struct virtio_device *vdev,
-+				    u32 num)
- {
--	struct vring_virtqueue *vq;
- 	struct vring_packed_desc *ring;
- 	struct vring_packed_desc_event *driver, *device;
- 	dma_addr_t ring_dma_addr, driver_event_dma_addr, device_event_dma_addr;
-@@ -1852,7 +1843,11 @@ static struct virtqueue *vring_create_virtqueue_packed(
- 				 &ring_dma_addr,
- 				 GFP_KERNEL|__GFP_NOWARN|__GFP_ZERO);
- 	if (!ring)
--		goto err_ring;
-+		goto err;
-+
-+	vring->vring.desc         = ring;
-+	vring->ring_dma_addr      = ring_dma_addr;
-+	vring->ring_size_in_bytes = ring_size_in_bytes;
- 
- 	event_size_in_bytes = sizeof(struct vring_packed_desc_event);
- 
-@@ -1860,13 +1855,47 @@ static struct virtqueue *vring_create_virtqueue_packed(
- 				   &driver_event_dma_addr,
- 				   GFP_KERNEL|__GFP_NOWARN|__GFP_ZERO);
- 	if (!driver)
--		goto err_driver;
-+		goto err;
-+
-+	vring->vring.driver          = driver;
-+	vring->event_size_in_bytes   = event_size_in_bytes;
-+	vring->driver_event_dma_addr = driver_event_dma_addr;
- 
- 	device = vring_alloc_queue(vdev, event_size_in_bytes,
- 				   &device_event_dma_addr,
- 				   GFP_KERNEL|__GFP_NOWARN|__GFP_ZERO);
- 	if (!device)
--		goto err_device;
-+		goto err;
-+
-+	vring->vring.device          = device;
-+	vring->device_event_dma_addr = device_event_dma_addr;
-+
-+	vring->vring.num    = num;
-+
-+	return 0;
-+
-+err:
-+	vring_free_packed(vring, vdev);
-+	return -ENOMEM;
-+}
-+
-+static struct virtqueue *vring_create_virtqueue_packed(
-+	unsigned int index,
-+	unsigned int num,
-+	unsigned int vring_align,
-+	struct virtio_device *vdev,
-+	bool weak_barriers,
-+	bool may_reduce_num,
-+	bool context,
-+	bool (*notify)(struct virtqueue *),
-+	void (*callback)(struct virtqueue *),
-+	const char *name)
-+{
-+	struct vring_virtqueue_packed vring = {};
-+	struct vring_virtqueue *vq;
-+
-+	if (vring_alloc_queue_packed(&vring, vdev, num))
-+		goto err_ring;
- 
- 	vq = kmalloc(sizeof(*vq), GFP_KERNEL);
- 	if (!vq)
-@@ -1885,17 +1914,14 @@ static struct virtqueue *vring_create_virtqueue_packed(
- 	vq->indirect = virtio_has_feature(vdev, VIRTIO_RING_F_INDIRECT_DESC) &&
- 		!context;
- 
--	vq->packed.ring_dma_addr = ring_dma_addr;
--	vq->packed.driver_event_dma_addr = driver_event_dma_addr;
--	vq->packed.device_event_dma_addr = device_event_dma_addr;
-+	vq->packed.ring_dma_addr = vring.ring_dma_addr;
-+	vq->packed.driver_event_dma_addr = vring.driver_event_dma_addr;
-+	vq->packed.device_event_dma_addr = vring.device_event_dma_addr;
- 
--	vq->packed.ring_size_in_bytes = ring_size_in_bytes;
--	vq->packed.event_size_in_bytes = event_size_in_bytes;
-+	vq->packed.ring_size_in_bytes = vring.ring_size_in_bytes;
-+	vq->packed.event_size_in_bytes = vring.event_size_in_bytes;
- 
--	vq->packed.vring.num = num;
--	vq->packed.vring.desc = ring;
--	vq->packed.vring.driver = driver;
--	vq->packed.vring.device = device;
-+	vq->packed.vring = vring.vring;
- 
- 	vq->packed.next_avail_idx = 0;
- 	vq->packed.avail_wrap_counter = 1;
-@@ -1935,11 +1961,7 @@ static struct virtqueue *vring_create_virtqueue_packed(
- err_desc_state:
- 	kfree(vq);
- err_vq:
--	vring_free_queue(vdev, event_size_in_bytes, device, device_event_dma_addr);
--err_device:
--	vring_free_queue(vdev, event_size_in_bytes, driver, driver_event_dma_addr);
--err_driver:
--	vring_free_queue(vdev, ring_size_in_bytes, ring, ring_dma_addr);
-+	vring_free_packed(&vring, vdev);
- err_ring:
- 	return NULL;
- }
--- 
-2.31.0
+> ---
+>  drivers/virtio/virtio_ring.c | 116 ++++++++++++++++++-----------------
+>  1 file changed, 60 insertions(+), 56 deletions(-)
+>
+> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> index bb4e8ae09c9b..2806e033a651 100644
+> --- a/drivers/virtio/virtio_ring.c
+> +++ b/drivers/virtio/virtio_ring.c
+> @@ -85,6 +85,64 @@ struct vring_desc_extra {
+>         u16 next;                       /* The next desc state in a list. */
+>  };
+>
+> +struct vring_virtqueue_split {
+> +       /* Actual memory layout for this queue. */
+> +       struct vring vring;
+> +
+> +       /* Last written value to avail->flags */
+> +       u16 avail_flags_shadow;
+> +
+> +       /*
+> +        * Last written value to avail->idx in
+> +        * guest byte order.
+> +        */
+> +       u16 avail_idx_shadow;
+> +
+> +       /* Per-descriptor state. */
+> +       struct vring_desc_state_split *desc_state;
+> +       struct vring_desc_extra *desc_extra;
+> +
+> +       /* DMA address and size information */
+> +       dma_addr_t queue_dma_addr;
+> +       size_t queue_size_in_bytes;
+> +};
+> +
+> +struct vring_virtqueue_packed {
+> +       /* Actual memory layout for this queue. */
+> +       struct {
+> +               unsigned int num;
+> +               struct vring_packed_desc *desc;
+> +               struct vring_packed_desc_event *driver;
+> +               struct vring_packed_desc_event *device;
+> +       } vring;
+> +
+> +       /* Driver ring wrap counter. */
+> +       bool avail_wrap_counter;
+> +
+> +       /* Avail used flags. */
+> +       u16 avail_used_flags;
+> +
+> +       /* Index of the next avail descriptor. */
+> +       u16 next_avail_idx;
+> +
+> +       /*
+> +        * Last written value to driver->flags in
+> +        * guest byte order.
+> +        */
+> +       u16 event_flags_shadow;
+> +
+> +       /* Per-descriptor state. */
+> +       struct vring_desc_state_packed *desc_state;
+> +       struct vring_desc_extra *desc_extra;
+> +
+> +       /* DMA address and size information */
+> +       dma_addr_t ring_dma_addr;
+> +       dma_addr_t driver_event_dma_addr;
+> +       dma_addr_t device_event_dma_addr;
+> +       size_t ring_size_in_bytes;
+> +       size_t event_size_in_bytes;
+> +};
+> +
+>  struct vring_virtqueue {
+>         struct virtqueue vq;
+>
+> @@ -124,64 +182,10 @@ struct vring_virtqueue {
+>
+>         union {
+>                 /* Available for split ring */
+> -               struct {
+> -                       /* Actual memory layout for this queue. */
+> -                       struct vring vring;
+> -
+> -                       /* Last written value to avail->flags */
+> -                       u16 avail_flags_shadow;
+> -
+> -                       /*
+> -                        * Last written value to avail->idx in
+> -                        * guest byte order.
+> -                        */
+> -                       u16 avail_idx_shadow;
+> -
+> -                       /* Per-descriptor state. */
+> -                       struct vring_desc_state_split *desc_state;
+> -                       struct vring_desc_extra *desc_extra;
+> -
+> -                       /* DMA address and size information */
+> -                       dma_addr_t queue_dma_addr;
+> -                       size_t queue_size_in_bytes;
+> -               } split;
+> +               struct vring_virtqueue_split split;
+>
+>                 /* Available for packed ring */
+> -               struct {
+> -                       /* Actual memory layout for this queue. */
+> -                       struct {
+> -                               unsigned int num;
+> -                               struct vring_packed_desc *desc;
+> -                               struct vring_packed_desc_event *driver;
+> -                               struct vring_packed_desc_event *device;
+> -                       } vring;
+> -
+> -                       /* Driver ring wrap counter. */
+> -                       bool avail_wrap_counter;
+> -
+> -                       /* Avail used flags. */
+> -                       u16 avail_used_flags;
+> -
+> -                       /* Index of the next avail descriptor. */
+> -                       u16 next_avail_idx;
+> -
+> -                       /*
+> -                        * Last written value to driver->flags in
+> -                        * guest byte order.
+> -                        */
+> -                       u16 event_flags_shadow;
+> -
+> -                       /* Per-descriptor state. */
+> -                       struct vring_desc_state_packed *desc_state;
+> -                       struct vring_desc_extra *desc_extra;
+> -
+> -                       /* DMA address and size information */
+> -                       dma_addr_t ring_dma_addr;
+> -                       dma_addr_t driver_event_dma_addr;
+> -                       dma_addr_t device_event_dma_addr;
+> -                       size_t ring_size_in_bytes;
+> -                       size_t event_size_in_bytes;
+> -               } packed;
+> +               struct vring_virtqueue_packed packed;
+>         };
+>
+>         /* How to notify other side. FIXME: commonalize hcalls! */
+> --
+> 2.31.0
+>
 
 
 _______________________________________________
