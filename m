@@ -1,207 +1,305 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o4ZUr-00HUjq-K8
-	for linux-um@lists.infradead.org; Fri, 24 Jun 2022 02:56:39 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v10 02/41] virtio: add helper virtqueue_get_vring_max_size()
-Date: Fri, 24 Jun 2022 10:55:42 +0800
-Message-Id: <20220624025621.128843-3-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
-References: <20220624025621.128843-1-xuanzhuo@linux.alibaba.com>
+Return-Path: <openrisc-bounces@lists.librecores.org>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH V6 21/26] m68k/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+Date: Thu, 30 Jun 2022 10:46:25 +0530
+Message-Id: <20220630051630.1718927-22-anshuman.khandual@arm.com>
+In-Reply-To: <20220630051630.1718927-1-anshuman.khandual@arm.com>
+References: <20220630051630.1718927-1-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+Content-Transfer-Encoding: 8bit
+List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
+List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
+List-Post: <mailto:openrisc@lists.librecores.org>
+List-Help: <mailto:openrisc-request@lists.librecores.org?subject=help>
+List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
+Errors-To: openrisc-bounces@lists.librecores.org
+Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
+To: linux-mm@kvack.org, akpm@linux-foundation.org
+Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+List-ID: <linux-um.lists.infradead.org>
 
-Record the maximum queue num supported by the device.
+This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
+vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
+up a private and static protection_map[] array. Subsequently all __SXXX and
+__PXXX macros can be dropped which are no longer needed.
 
-virtio-net can display the maximum (supported by hardware) ring size in
-ethtool -g eth0.
-
-When the subsequent patch implements vring reset, it can judge whether
-the ring size passed by the driver is legal based on this.
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- arch/um/drivers/virtio_uml.c             |  1 +
- drivers/platform/mellanox/mlxbf-tmfifo.c |  2 ++
- drivers/remoteproc/remoteproc_virtio.c   |  2 ++
- drivers/s390/virtio/virtio_ccw.c         |  3 +++
- drivers/virtio/virtio_mmio.c             |  2 ++
- drivers/virtio/virtio_pci_legacy.c       |  2 ++
- drivers/virtio/virtio_pci_modern.c       |  2 ++
- drivers/virtio/virtio_ring.c             | 14 ++++++++++++++
- drivers/virtio/virtio_vdpa.c             |  2 ++
- include/linux/virtio.h                   |  2 ++
- 10 files changed, 32 insertions(+)
+ arch/m68k/Kconfig                        |  1 +
+ arch/m68k/include/asm/mcf_pgtable.h      | 54 -----------------------
+ arch/m68k/include/asm/motorola_pgtable.h | 22 ----------
+ arch/m68k/include/asm/sun3_pgtable.h     | 17 --------
+ arch/m68k/mm/mcfmmu.c                    | 55 ++++++++++++++++++++++++
+ arch/m68k/mm/motorola.c                  | 20 +++++++++
+ arch/m68k/mm/sun3mmu.c                   | 20 +++++++++
+ 7 files changed, 96 insertions(+), 93 deletions(-)
 
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index 82ff3785bf69..e719af8bdf56 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -958,6 +958,7 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
- 		goto error_create;
- 	}
- 	vq->priv = info;
-+	vq->num_max = num;
- 	num = virtqueue_get_vring_size(vq);
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 936cce42ae9a..49aa0cf13e96 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -7,6 +7,7 @@ config M68K
+ 	select ARCH_HAS_CURRENT_STACK_POINTER
+ 	select ARCH_HAS_DMA_PREP_COHERENT if HAS_DMA && MMU && !COLDFIRE
+ 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE if HAS_DMA
++	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG if RMW_INSNS
+ 	select ARCH_MIGHT_HAVE_PC_PARPORT if ISA
+ 	select ARCH_NO_PREEMPT if !COLDFIRE
+diff --git a/arch/m68k/include/asm/mcf_pgtable.h b/arch/m68k/include/asm/mcf_pgtable.h
+index 94f38d76e278..0e9c1b28dcab 100644
+--- a/arch/m68k/include/asm/mcf_pgtable.h
++++ b/arch/m68k/include/asm/mcf_pgtable.h
+@@ -91,60 +91,6 @@
+  * for use. In general, the bit positions are xwr, and P-items are
+  * private, the S-items are shared.
+  */
+-#define __P000		PAGE_NONE
+-#define __P001		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_READABLE)
+-#define __P010		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_WRITABLE)
+-#define __P011		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_READABLE \
+-				 | CF_PAGE_WRITABLE)
+-#define __P100		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_EXEC)
+-#define __P101		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_READABLE \
+-				 | CF_PAGE_EXEC)
+-#define __P110		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_WRITABLE \
+-				 | CF_PAGE_EXEC)
+-#define __P111		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_READABLE \
+-				 | CF_PAGE_WRITABLE \
+-				 | CF_PAGE_EXEC)
+-
+-#define __S000		PAGE_NONE
+-#define __S001		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_READABLE)
+-#define __S010		PAGE_SHARED
+-#define __S011		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_SHARED \
+-				 | CF_PAGE_READABLE)
+-#define __S100		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_EXEC)
+-#define __S101		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_READABLE \
+-				 | CF_PAGE_EXEC)
+-#define __S110		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_SHARED \
+-				 | CF_PAGE_EXEC)
+-#define __S111		__pgprot(CF_PAGE_VALID \
+-				 | CF_PAGE_ACCESSED \
+-				 | CF_PAGE_SHARED \
+-				 | CF_PAGE_READABLE \
+-				 | CF_PAGE_EXEC)
+-
+ #define PTE_MASK	PAGE_MASK
+ #define CF_PAGE_CHG_MASK (PTE_MASK | CF_PAGE_ACCESSED | CF_PAGE_DIRTY)
  
- 	if (vu_dev->protocol_features &
-diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
-index 38800e86ed8a..1ae3c56b66b0 100644
---- a/drivers/platform/mellanox/mlxbf-tmfifo.c
-+++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
-@@ -959,6 +959,8 @@ static int mlxbf_tmfifo_virtio_find_vqs(struct virtio_device *vdev,
- 			goto error;
- 		}
+diff --git a/arch/m68k/include/asm/motorola_pgtable.h b/arch/m68k/include/asm/motorola_pgtable.h
+index 7c9b56e2a750..63aaece0722f 100644
+--- a/arch/m68k/include/asm/motorola_pgtable.h
++++ b/arch/m68k/include/asm/motorola_pgtable.h
+@@ -83,28 +83,6 @@ extern unsigned long mm_cachebits;
+ #define PAGE_COPY_C	__pgprot(_PAGE_PRESENT | _PAGE_RONLY | _PAGE_ACCESSED)
+ #define PAGE_READONLY_C	__pgprot(_PAGE_PRESENT | _PAGE_RONLY | _PAGE_ACCESSED)
  
-+		vq->num_max = vring->num;
-+
- 		vqs[i] = vq;
- 		vring->vq = vq;
- 		vq->priv = vring;
-diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
-index d43d74733f0a..0f7706e23eb9 100644
---- a/drivers/remoteproc/remoteproc_virtio.c
-+++ b/drivers/remoteproc/remoteproc_virtio.c
-@@ -125,6 +125,8 @@ static struct virtqueue *rp_find_vq(struct virtio_device *vdev,
- 		return ERR_PTR(-ENOMEM);
- 	}
+-/*
+- * The m68k can't do page protection for execute, and considers that the same are read.
+- * Also, write permissions imply read permissions. This is the closest we can get..
+- */
+-#define __P000	PAGE_NONE_C
+-#define __P001	PAGE_READONLY_C
+-#define __P010	PAGE_COPY_C
+-#define __P011	PAGE_COPY_C
+-#define __P100	PAGE_READONLY_C
+-#define __P101	PAGE_READONLY_C
+-#define __P110	PAGE_COPY_C
+-#define __P111	PAGE_COPY_C
+-
+-#define __S000	PAGE_NONE_C
+-#define __S001	PAGE_READONLY_C
+-#define __S010	PAGE_SHARED_C
+-#define __S011	PAGE_SHARED_C
+-#define __S100	PAGE_READONLY_C
+-#define __S101	PAGE_READONLY_C
+-#define __S110	PAGE_SHARED_C
+-#define __S111	PAGE_SHARED_C
+-
+ #define pmd_pgtable(pmd) ((pgtable_t)pmd_page_vaddr(pmd))
  
-+	vq->num_max = num;
-+
- 	rvring->vq = vq;
- 	vq->priv = rvring;
+ /*
+diff --git a/arch/m68k/include/asm/sun3_pgtable.h b/arch/m68k/include/asm/sun3_pgtable.h
+index 5e4e753f0d24..9d919491765b 100644
+--- a/arch/m68k/include/asm/sun3_pgtable.h
++++ b/arch/m68k/include/asm/sun3_pgtable.h
+@@ -71,23 +71,6 @@
+  * protection settings, valid (implying read and execute) and writeable. These
+  * are as close as we can get...
+  */
+-#define __P000	PAGE_NONE
+-#define __P001	PAGE_READONLY
+-#define __P010	PAGE_COPY
+-#define __P011	PAGE_COPY
+-#define __P100	PAGE_READONLY
+-#define __P101	PAGE_READONLY
+-#define __P110	PAGE_COPY
+-#define __P111	PAGE_COPY
+-
+-#define __S000	PAGE_NONE
+-#define __S001	PAGE_READONLY
+-#define __S010	PAGE_SHARED
+-#define __S011	PAGE_SHARED
+-#define __S100	PAGE_READONLY
+-#define __S101	PAGE_READONLY
+-#define __S110	PAGE_SHARED
+-#define __S111	PAGE_SHARED
  
-diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
-index 97e51c34e6cf..cbcdba00e7e9 100644
---- a/drivers/s390/virtio/virtio_ccw.c
-+++ b/drivers/s390/virtio/virtio_ccw.c
-@@ -530,6 +530,9 @@ static struct virtqueue *virtio_ccw_setup_vq(struct virtio_device *vdev,
- 		err = -ENOMEM;
- 		goto out_err;
- 	}
-+
-+	vq->num_max = info->num;
-+
- 	/* it may have been reduced */
- 	info->num = virtqueue_get_vring_size(vq);
- 
-diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
-index c9bec3813e94..2e7cbbd21043 100644
---- a/drivers/virtio/virtio_mmio.c
-+++ b/drivers/virtio/virtio_mmio.c
-@@ -402,6 +402,8 @@ static struct virtqueue *vm_setup_vq(struct virtio_device *vdev, unsigned int in
- 		goto error_new_virtqueue;
- 	}
- 
-+	vq->num_max = num;
-+
- 	/* Activate the queue */
- 	writel(virtqueue_get_vring_size(vq), vm_dev->base + VIRTIO_MMIO_QUEUE_NUM);
- 	if (vm_dev->version == 1) {
-diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virtio_pci_legacy.c
-index a5e5721145c7..2257f1b3d8ae 100644
---- a/drivers/virtio/virtio_pci_legacy.c
-+++ b/drivers/virtio/virtio_pci_legacy.c
-@@ -135,6 +135,8 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 	if (!vq)
- 		return ERR_PTR(-ENOMEM);
- 
-+	vq->num_max = num;
-+
- 	q_pfn = virtqueue_get_desc_addr(vq) >> VIRTIO_PCI_QUEUE_ADDR_SHIFT;
- 	if (q_pfn >> 32) {
- 		dev_err(&vp_dev->pci_dev->dev,
-diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
-index 623906b4996c..e7e0b8c850f6 100644
---- a/drivers/virtio/virtio_pci_modern.c
-+++ b/drivers/virtio/virtio_pci_modern.c
-@@ -218,6 +218,8 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 	if (!vq)
- 		return ERR_PTR(-ENOMEM);
- 
-+	vq->num_max = num;
-+
- 	/* activate the queue */
- 	vp_modern_set_queue_size(mdev, index, virtqueue_get_vring_size(vq));
- 	vp_modern_queue_address(mdev, index, virtqueue_get_desc_addr(vq),
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 13a7348cedff..68f55336566c 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -2355,6 +2355,20 @@ void vring_transport_features(struct virtio_device *vdev)
+ /* Use these fake page-protections on PMDs. */
+ #define SUN3_PMD_VALID	(0x00000001)
+diff --git a/arch/m68k/mm/mcfmmu.c b/arch/m68k/mm/mcfmmu.c
+index 6f1f25125294..70aa0979e027 100644
+--- a/arch/m68k/mm/mcfmmu.c
++++ b/arch/m68k/mm/mcfmmu.c
+@@ -234,3 +234,58 @@ void steal_context(void)
+ 	destroy_context(mm);
  }
- EXPORT_SYMBOL_GPL(vring_transport_features);
  
-+/**
-+ * virtqueue_get_vring_max_size - return the max size of the virtqueue's vring
-+ * @_vq: the struct virtqueue containing the vring of interest.
-+ *
-+ * Returns the max size of the vring.
-+ *
-+ * Unlike other operations, this need not be serialized.
-+ */
-+unsigned int virtqueue_get_vring_max_size(struct virtqueue *_vq)
-+{
-+	return _vq->num_max;
-+}
-+EXPORT_SYMBOL_GPL(virtqueue_get_vring_max_size);
++static const pgprot_t protection_map[16] = {
++	[VM_NONE]					= PAGE_NONE,
++	[VM_READ]					= __pgprot(CF_PAGE_VALID |
++								   CF_PAGE_ACCESSED |
++								   CF_PAGE_READABLE),
++	[VM_WRITE]					= __pgprot(CF_PAGE_VALID |
++								   CF_PAGE_ACCESSED |
++								   CF_PAGE_WRITABLE),
++	[VM_WRITE | VM_READ]				= __pgprot(CF_PAGE_VALID |
++								   CF_PAGE_ACCESSED |
++								   CF_PAGE_READABLE |
++								   CF_PAGE_WRITABLE),
++	[VM_EXEC]					= __pgprot(CF_PAGE_VALID |
++								   CF_PAGE_ACCESSED |
++								   CF_PAGE_EXEC),
++	[VM_EXEC | VM_READ]				= __pgprot(CF_PAGE_VALID |
++								   CF_PAGE_ACCESSED |
++								   CF_PAGE_READABLE |
++								   CF_PAGE_EXEC),
++	[VM_EXEC | VM_WRITE]				= __pgprot(CF_PAGE_VALID |
++								   CF_PAGE_ACCESSED |
++								   CF_PAGE_WRITABLE |
++								   CF_PAGE_EXEC),
++	[VM_EXEC | VM_WRITE | VM_READ]			=  __pgprot(CF_PAGE_VALID |
++								    CF_PAGE_ACCESSED |
++								    CF_PAGE_READABLE |
++								    CF_PAGE_WRITABLE |
++								    CF_PAGE_EXEC),
++	[VM_SHARED]					= PAGE_NONE,
++	[VM_SHARED | VM_READ]				= __pgprot(CF_PAGE_VALID |
++								   CF_PAGE_ACCESSED |
++								   CF_PAGE_READABLE),
++	[VM_SHARED | VM_WRITE]				= PAGE_SHARED,
++	[VM_SHARED | VM_WRITE | VM_READ]		= __pgprot(CF_PAGE_VALID |
++								   CF_PAGE_ACCESSED |
++								   CF_PAGE_READABLE |
++								   CF_PAGE_SHARED),
++	[VM_SHARED | VM_EXEC]				= __pgprot(CF_PAGE_VALID |
++								   CF_PAGE_ACCESSED |
++								   CF_PAGE_EXEC),
++	[VM_SHARED | VM_EXEC | VM_READ]			= __pgprot(CF_PAGE_VALID |
++								   CF_PAGE_ACCESSED |
++								   CF_PAGE_READABLE |
++								   CF_PAGE_EXEC),
++	[VM_SHARED | VM_EXEC | VM_WRITE]		= __pgprot(CF_PAGE_VALID |
++								   CF_PAGE_ACCESSED |
++								   CF_PAGE_SHARED |
++								   CF_PAGE_EXEC),
++	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= __pgprot(CF_PAGE_VALID |
++								   CF_PAGE_ACCESSED |
++								   CF_PAGE_READABLE |
++								   CF_PAGE_SHARED |
++								   CF_PAGE_EXEC)
++};
++DECLARE_VM_GET_PAGE_PROT
+diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+index df7f797c908a..31fba64bc530 100644
+--- a/arch/m68k/mm/motorola.c
++++ b/arch/m68k/mm/motorola.c
+@@ -382,6 +382,26 @@ static void __init map_node(int node)
+ #endif
+ }
+ 
++static pgprot_t protection_map[16] __ro_after_init = {
++	[VM_NONE]					= PAGE_NONE_C,
++	[VM_READ]					= PAGE_READONLY_C,
++	[VM_WRITE]					= PAGE_COPY_C,
++	[VM_WRITE | VM_READ]				= PAGE_COPY_C,
++	[VM_EXEC]					= PAGE_READONLY_C,
++	[VM_EXEC | VM_READ]				= PAGE_READONLY_C,
++	[VM_EXEC | VM_WRITE]				= PAGE_COPY_C,
++	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY_C,
++	[VM_SHARED]					= PAGE_NONE_C,
++	[VM_SHARED | VM_READ]				= PAGE_READONLY_C,
++	[VM_SHARED | VM_WRITE]				= PAGE_SHARED_C,
++	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED_C,
++	[VM_SHARED | VM_EXEC]				= PAGE_READONLY_C,
++	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY_C,
++	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED_C,
++	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED_C
++};
++DECLARE_VM_GET_PAGE_PROT
 +
- /**
-  * virtqueue_get_vring_size - return the size of the virtqueue's vring
-  * @_vq: the struct virtqueue containing the vring of interest.
-diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
-index c40f7deb6b5a..9670cc79371d 100644
---- a/drivers/virtio/virtio_vdpa.c
-+++ b/drivers/virtio/virtio_vdpa.c
-@@ -183,6 +183,8 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
- 		goto error_new_virtqueue;
- 	}
+ /*
+  * paging_init() continues the virtual memory environment setup which
+  * was begun by the code in arch/head.S.
+diff --git a/arch/m68k/mm/sun3mmu.c b/arch/m68k/mm/sun3mmu.c
+index dad494224497..b619d0d4319c 100644
+--- a/arch/m68k/mm/sun3mmu.c
++++ b/arch/m68k/mm/sun3mmu.c
+@@ -95,3 +95,23 @@ void __init paging_init(void)
  
-+	vq->num_max = max_num;
+ 
+ }
 +
- 	/* Setup virtqueue callback */
- 	cb.callback = callback ? virtio_vdpa_virtqueue_cb : NULL;
- 	cb.private = info;
-diff --git a/include/linux/virtio.h b/include/linux/virtio.h
-index d8fdf170637c..a82620032e43 100644
---- a/include/linux/virtio.h
-+++ b/include/linux/virtio.h
-@@ -31,6 +31,7 @@ struct virtqueue {
- 	struct virtio_device *vdev;
- 	unsigned int index;
- 	unsigned int num_free;
-+	unsigned int num_max;
- 	void *priv;
- };
- 
-@@ -80,6 +81,7 @@ bool virtqueue_enable_cb_delayed(struct virtqueue *vq);
- 
- void *virtqueue_detach_unused_buf(struct virtqueue *vq);
- 
-+unsigned int virtqueue_get_vring_max_size(struct virtqueue *vq);
- unsigned int virtqueue_get_vring_size(struct virtqueue *vq);
- 
- bool virtqueue_is_broken(struct virtqueue *vq);
++static const pgprot_t protection_map[16] = {
++	[VM_NONE]					= PAGE_NONE,
++	[VM_READ]					= PAGE_READONLY,
++	[VM_WRITE]					= PAGE_COPY,
++	[VM_WRITE | VM_READ]				= PAGE_COPY,
++	[VM_EXEC]					= PAGE_READONLY,
++	[VM_EXEC | VM_READ]				= PAGE_READONLY,
++	[VM_EXEC | VM_WRITE]				= PAGE_COPY,
++	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY,
++	[VM_SHARED]					= PAGE_NONE,
++	[VM_SHARED | VM_READ]				= PAGE_READONLY,
++	[VM_SHARED | VM_WRITE]				= PAGE_SHARED,
++	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED,
++	[VM_SHARED | VM_EXEC]				= PAGE_READONLY,
++	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY,
++	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED,
++	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED
++};
++DECLARE_VM_GET_PAGE_PROT
 -- 
-2.31.0
+2.25.1
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
