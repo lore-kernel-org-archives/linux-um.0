@@ -1,16 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-io1-xd2c.google.com ([2607:f8b0:4864:20::d2c])
+Received: from mail-lj1-x232.google.com ([2a00:1450:4864:20::232])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oBMja-00EfNP-2Y
-	for linux-um@lists.infradead.org; Tue, 12 Jul 2022 20:43:56 +0000
-Received: by mail-io1-xd2c.google.com with SMTP id u20so9038408iob.8
-        for <linux-um@lists.infradead.org>; Tue, 12 Jul 2022 13:43:52 -0700 (PDT)
+	id 1o7E01-00468Y-22
+	for linux-um@lists.infradead.org; Fri, 01 Jul 2022 10:35:47 +0000
+Received: by mail-lj1-x232.google.com with SMTP id b23so2090991ljh.7
+        for <linux-um@lists.infradead.org>; Fri, 01 Jul 2022 03:35:43 -0700 (PDT)
 MIME-Version: 1.0
 References: <20220701091621.3022368-1-davidgow@google.com> <20220701091621.3022368-2-davidgow@google.com>
 In-Reply-To: <20220701091621.3022368-2-davidgow@google.com>
-From: Andrey Konovalov <andreyknvl@gmail.com>
-Date: Tue, 12 Jul 2022 22:43:41 +0200
-Message-ID: <CA+fCnZdRUDO5wB1UKCZxT=XkLR49rjntXGi9-3S5h6_LTyBc8g@mail.gmail.com>
+From: Dmitry Vyukov <dvyukov@google.com>
+Date: Fri, 1 Jul 2022 12:35:30 +0200
+Message-ID: <CACT4Y+ZxtoPdVHKoy+het63rym2F52YZehw=Ev+0YkGQ=7+7Vw@mail.gmail.com>
 Subject: Re: [PATCH v5 2/2] UML: add support for KASAN under x86_64
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -25,9 +25,9 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: David Gow <davidgow@google.com>
-Cc: Vincent Whitchurch <vincent.whitchurch@axis.com>, Johannes Berg <johannes@sipsolutions.net>, Patricia Alfonso <trishalfonso@google.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, anton.ivanov@cambridgegreys.com, Dmitry Vyukov <dvyukov@google.com>, Brendan Higgins <brendanhiggins@google.com>, Andrew Morton <akpm@linux-foundation.org>, Andrey Ryabinin <ryabinin.a.a@gmail.com>, kasan-dev <kasan-dev@googlegroups.com>, linux-um@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>, Daniel Latypov <dlatypov@google.com>, Linux Memory Management List <linux-mm@kvack.org>, kunit-dev@googlegroups.com
+Cc: Vincent Whitchurch <vincent.whitchurch@axis.com>, Johannes Berg <johannes@sipsolutions.net>, Patricia Alfonso <trishalfonso@google.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, anton.ivanov@cambridgegreys.com, Brendan Higgins <brendanhiggins@google.com>, Andrew Morton <akpm@linux-foundation.org>, Andrey Konovalov <andreyknvl@gmail.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>, kasan-dev <kasan-dev@googlegroups.com>, linux-um@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>, Daniel Latypov <dlatypov@google.com>, linux-mm@kvack.org, kunit-dev@googlegroups.com
 
-On Fri, Jul 1, 2022 at 11:16 AM David Gow <davidgow@google.com> wrote:
+On Fri, 1 Jul 2022 at 11:16, David Gow <davidgow@google.com> wrote:
 >
 > From: Patricia Alfonso <trishalfonso@google.com>
 >
@@ -67,6 +67,10 @@ On Fri, Jul 1, 2022 at 11:16 AM David Gow <davidgow@google.com> wrote:
 > Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
 > Signed-off-by: David Gow <davidgow@google.com>
 > Reviewed-by: Johannes Berg <johannes@sipsolutions.net>
+
+Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+
+
 > ---
 > This is v5 of the KASAN/UML port. It should be ready to go (this time,
 > for sure! :-))
@@ -435,8 +439,6 @@ On Fri, Jul 1, 2022 at 11:16 AM David Gow <davidgow@google.com> wrote:
 > --
 > 2.37.0.rc0.161.g10f37bed90-goog
 >
-
-Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
 
 _______________________________________________
 linux-um mailing list
