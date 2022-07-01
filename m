@@ -1,15 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-vs1-xe2c.google.com ([2607:f8b0:4864:20::e2c])
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o09G1-00Egn5-LB
-	for linux-um@lists.infradead.org; Sat, 11 Jun 2022 22:07:05 +0000
-Received: by mail-vs1-xe2c.google.com with SMTP id f13so2551678vsp.1
-        for <linux-um@lists.infradead.org>; Sat, 11 Jun 2022 15:07:00 -0700 (PDT)
-Date: Sat, 11 Jun 2022 17:06:49 -0500
-From: Glenn Washburn <development@efficientek.com>
-Subject: Undesirable preprocessor options passed when building modules
-Message-ID: <20220611170649.7cdf709f@crass-HP-ZBook-15-G2>
-MIME-Version: 1.0
+	id 1o7ANi-003FeD-OJ
+	for linux-um@lists.infradead.org; Fri, 01 Jul 2022 06:44:01 +0000
+Message-ID: <1656657816.4296634-2-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH v11 01/40] virtio: add helper virtqueue_get_vring_max_size()
+Date: Fri, 1 Jul 2022 14:43:36 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
+ <20220629065656.54420-2-xuanzhuo@linux.alibaba.com>
+ <CACGkMEuWK5i4pyvzN306v2ijstFQQbuspNCcNRJrw0kskvcozg@mail.gmail.com>
+In-Reply-To: <CACGkMEuWK5i4pyvzN306v2ijstFQQbuspNCcNRJrw0kskvcozg@mail.gmail.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,35 +19,205 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Reply-To: development@efficientek.com
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um <linux-um@lists.infradead.org>
-Cc: development@efficientek.com
+To: Jason Wang <jasowang@redhat.com>
+Cc: virtualization <virtualization@lists.linux-foundation.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev <netdev@vger.kernel.org>, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm <kvm@vger.kernel.org>, "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>, kangjie.xu@linux.alibaba.com
 
-Hi,
+On Thu, 30 Jun 2022 14:35:38 +0800, Jason Wang <jasowang@redhat.com> wrote:
+> On Wed, Jun 29, 2022 at 2:57 PM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
+> >
+> > Record the maximum queue num supported by the device.
+> >
+> > virtio-net can display the maximum (supported by hardware) ring size in
+> > ethtool -g eth0.
+> >
+> > When the subsequent patch implements vring reset, it can judge whether
+> > the ring size passed by the driver is legal based on this.
+> >
+> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > ---
+> >  arch/um/drivers/virtio_uml.c             |  1 +
+> >  drivers/platform/mellanox/mlxbf-tmfifo.c |  2 ++
+> >  drivers/remoteproc/remoteproc_virtio.c   |  2 ++
+> >  drivers/s390/virtio/virtio_ccw.c         |  3 +++
+> >  drivers/virtio/virtio_mmio.c             |  2 ++
+> >  drivers/virtio/virtio_pci_legacy.c       |  2 ++
+> >  drivers/virtio/virtio_pci_modern.c       |  2 ++
+> >  drivers/virtio/virtio_ring.c             | 14 ++++++++++++++
+> >  drivers/virtio/virtio_vdpa.c             |  2 ++
+> >  include/linux/virtio.h                   |  2 ++
+> >  10 files changed, 32 insertions(+)
+> >
+> > diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
+> > index 82ff3785bf69..e719af8bdf56 100644
+> > --- a/arch/um/drivers/virtio_uml.c
+> > +++ b/arch/um/drivers/virtio_uml.c
+> > @@ -958,6 +958,7 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
+> >                 goto error_create;
+> >         }
+> >         vq->priv = info;
+> > +       vq->num_max = num;
+> >         num = virtqueue_get_vring_size(vq);
+> >
+> >         if (vu_dev->protocol_features &
+> > diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
+> > index 38800e86ed8a..1ae3c56b66b0 100644
+> > --- a/drivers/platform/mellanox/mlxbf-tmfifo.c
+> > +++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
+> > @@ -959,6 +959,8 @@ static int mlxbf_tmfifo_virtio_find_vqs(struct virtio_device *vdev,
+> >                         goto error;
+> >                 }
+> >
+> > +               vq->num_max = vring->num;
+> > +
+> >                 vqs[i] = vq;
+> >                 vring->vq = vq;
+> >                 vq->priv = vring;
+> > diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
+> > index d43d74733f0a..0f7706e23eb9 100644
+> > --- a/drivers/remoteproc/remoteproc_virtio.c
+> > +++ b/drivers/remoteproc/remoteproc_virtio.c
+> > @@ -125,6 +125,8 @@ static struct virtqueue *rp_find_vq(struct virtio_device *vdev,
+> >                 return ERR_PTR(-ENOMEM);
+> >         }
+> >
+> > +       vq->num_max = num;
+> > +
+> >         rvring->vq = vq;
+> >         vq->priv = rvring;
+> >
+> > diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
+> > index 161d3b141f0d..6b86d0280d6b 100644
+> > --- a/drivers/s390/virtio/virtio_ccw.c
+> > +++ b/drivers/s390/virtio/virtio_ccw.c
+> > @@ -530,6 +530,9 @@ static struct virtqueue *virtio_ccw_setup_vq(struct virtio_device *vdev,
+> >                 err = -ENOMEM;
+> >                 goto out_err;
+> >         }
+> > +
+> > +       vq->num_max = info->num;
+> > +
+> >         /* it may have been reduced */
+> >         info->num = virtqueue_get_vring_size(vq);
+> >
+> > diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
+> > index 083ff1eb743d..a20d5a6b5819 100644
+> > --- a/drivers/virtio/virtio_mmio.c
+> > +++ b/drivers/virtio/virtio_mmio.c
+> > @@ -403,6 +403,8 @@ static struct virtqueue *vm_setup_vq(struct virtio_device *vdev, unsigned int in
+> >                 goto error_new_virtqueue;
+> >         }
+> >
+> > +       vq->num_max = num;
+> > +
+> >         /* Activate the queue */
+> >         writel(virtqueue_get_vring_size(vq), vm_dev->base + VIRTIO_MMIO_QUEUE_NUM);
+> >         if (vm_dev->version == 1) {
+> > diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virtio_pci_legacy.c
+> > index a5e5721145c7..2257f1b3d8ae 100644
+> > --- a/drivers/virtio/virtio_pci_legacy.c
+> > +++ b/drivers/virtio/virtio_pci_legacy.c
+> > @@ -135,6 +135,8 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
+> >         if (!vq)
+> >                 return ERR_PTR(-ENOMEM);
+> >
+> > +       vq->num_max = num;
+> > +
+> >         q_pfn = virtqueue_get_desc_addr(vq) >> VIRTIO_PCI_QUEUE_ADDR_SHIFT;
+> >         if (q_pfn >> 32) {
+> >                 dev_err(&vp_dev->pci_dev->dev,
+> > diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
+> > index 623906b4996c..e7e0b8c850f6 100644
+> > --- a/drivers/virtio/virtio_pci_modern.c
+> > +++ b/drivers/virtio/virtio_pci_modern.c
+> > @@ -218,6 +218,8 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
+> >         if (!vq)
+> >                 return ERR_PTR(-ENOMEM);
+> >
+> > +       vq->num_max = num;
+> > +
+> >         /* activate the queue */
+> >         vp_modern_set_queue_size(mdev, index, virtqueue_get_vring_size(vq));
+> >         vp_modern_queue_address(mdev, index, virtqueue_get_desc_addr(vq),
+> > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> > index a5ec724c01d8..4cac600856ad 100644
+> > --- a/drivers/virtio/virtio_ring.c
+> > +++ b/drivers/virtio/virtio_ring.c
+> > @@ -2385,6 +2385,20 @@ void vring_transport_features(struct virtio_device *vdev)
+> >  }
+> >  EXPORT_SYMBOL_GPL(vring_transport_features);
+> >
+> > +/**
+> > + * virtqueue_get_vring_max_size - return the max size of the virtqueue's vring
+> > + * @_vq: the struct virtqueue containing the vring of interest.
+> > + *
+> > + * Returns the max size of the vring.
+> > + *
+> > + * Unlike other operations, this need not be serialized.
+> > + */
+> > +unsigned int virtqueue_get_vring_max_size(struct virtqueue *_vq)
+> > +{
+> > +       return _vq->num_max;
+> > +}
+> > +EXPORT_SYMBOL_GPL(virtqueue_get_vring_max_size);
+> > +
+> >  /**
+> >   * virtqueue_get_vring_size - return the size of the virtqueue's vring
+> >   * @_vq: the struct virtqueue containing the vring of interest.
+> > diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
+> > index c40f7deb6b5a..9670cc79371d 100644
+> > --- a/drivers/virtio/virtio_vdpa.c
+> > +++ b/drivers/virtio/virtio_vdpa.c
+> > @@ -183,6 +183,8 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+> >                 goto error_new_virtqueue;
+> >         }
+> >
+> > +       vq->num_max = max_num;
+> > +
+> >         /* Setup virtqueue callback */
+> >         cb.callback = callback ? virtio_vdpa_virtqueue_cb : NULL;
+> >         cb.private = info;
+> > diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+> > index d8fdf170637c..a82620032e43 100644
+> > --- a/include/linux/virtio.h
+> > +++ b/include/linux/virtio.h
+> > @@ -31,6 +31,7 @@ struct virtqueue {
+> >         struct virtio_device *vdev;
+> >         unsigned int index;
+> >         unsigned int num_free;
+> > +       unsigned int num_max;
+>
+> A question, since we export virtqueue to drivers, this means they can
+> access vq->num_max directly.
+>
+> So we probably don't need a helper here.
 
-When building an out of tree module (I expect it happens in tree as
-well) for ARCH=um, I'm seeing options like -Dsetjmp=kernel_setjmp being
-sent to the compiler. This is causing the zfs[1] kernel module to fail
-to build because it uses a function internally called setjmp. Usually
-this wouldn't be a problem because both the definition and calls for
-setjmp would be renamed. However, setjmp is defined in an assembly file
-and so is not getting renamed, causing modpost to bork because it can't
-find the symbol named "kernel_setjmp".
+I think you are right.
 
-I've fixed this in the zfs code base by using "#undef setjmp" when
-CONFIG_UML_X86 is defined. But I'm thinking a better fix would be for
-the ARCH=um build to not send these name redefinitions in the first
-place. I'm thinking a possible solution is to only send those options
-to the compiler when not compiling module code or even better only code
-under arch/um. Or would this be too much of a pain to fix?
+Thanks.
 
-Glenn
-
-[1] https://zfsonlinux.org/
+>
+> Thanks
+>
+> >         void *priv;
+> >  };
+> >
+> > @@ -80,6 +81,7 @@ bool virtqueue_enable_cb_delayed(struct virtqueue *vq);
+> >
+> >  void *virtqueue_detach_unused_buf(struct virtqueue *vq);
+> >
+> > +unsigned int virtqueue_get_vring_max_size(struct virtqueue *vq);
+> >  unsigned int virtqueue_get_vring_size(struct virtqueue *vq);
+> >
+> >  bool virtqueue_is_broken(struct virtqueue *vq);
+> > --
+> > 2.31.0
+> >
+>
 
 _______________________________________________
 linux-um mailing list
