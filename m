@@ -1,15 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56])
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oGEug-009Lj0-4b
-	for linux-um@lists.infradead.org; Tue, 26 Jul 2022 07:23:32 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v13 30/42] virtio_pci: introduce helper to get/set queue reset
-Date: Tue, 26 Jul 2022 15:22:13 +0800
-Message-Id: <20220726072225.19884-31-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
-References: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
+	id 1o7D2h-003syp-HQ
+	for linux-um@lists.infradead.org; Fri, 01 Jul 2022 09:34:30 +0000
+Received: by mail-pl1-f197.google.com with SMTP id h18-20020a170902f55200b0016a4a78bd71so1207586plf.9
+        for <linux-um@lists.infradead.org>; Fri, 01 Jul 2022 02:34:25 -0700 (PDT)
+Message-ID: <10281add-4d72-efe6-e94d-1f19ced9cb27@redhat.com>
+Date: Fri, 1 Jul 2022 17:34:12 +0800
 MIME-Version: 1.0
+Subject: Re: [PATCH v11 24/40] virtio_pci: struct virtio_pci_common_cfg add
+ queue_notify_data
+References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
+ <20220629065656.54420-25-xuanzhuo@linux.alibaba.com>
+From: Jason Wang <jasowang@redhat.com>
+In-Reply-To: <20220629065656.54420-25-xuanzhuo@linux.alibaba.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,100 +23,42 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, virtualization@lists.linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-Introduce new helpers to implement queue reset and get queue reset
-status.
-
- https://github.com/oasis-tcs/virtio-spec/issues/124
- https://github.com/oasis-tcs/virtio-spec/issues/139
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
----
- drivers/virtio/virtio_pci_modern_dev.c | 39 ++++++++++++++++++++++++++
- include/linux/virtio_pci_modern.h      |  2 ++
- 2 files changed, 41 insertions(+)
-
-diff --git a/drivers/virtio/virtio_pci_modern_dev.c b/drivers/virtio/virtio_pci_modern_dev.c
-index fa2a9445bb18..869cb46bef96 100644
---- a/drivers/virtio/virtio_pci_modern_dev.c
-+++ b/drivers/virtio/virtio_pci_modern_dev.c
-@@ -3,6 +3,7 @@
- #include <linux/virtio_pci_modern.h>
- #include <linux/module.h>
- #include <linux/pci.h>
-+#include <linux/delay.h>
- 
- /*
-  * vp_modern_map_capability - map a part of virtio pci capability
-@@ -474,6 +475,44 @@ void vp_modern_set_status(struct virtio_pci_modern_device *mdev,
- }
- EXPORT_SYMBOL_GPL(vp_modern_set_status);
- 
-+/*
-+ * vp_modern_get_queue_reset - get the queue reset status
-+ * @mdev: the modern virtio-pci device
-+ * @index: queue index
-+ */
-+int vp_modern_get_queue_reset(struct virtio_pci_modern_device *mdev, u16 index)
-+{
-+	struct virtio_pci_modern_common_cfg __iomem *cfg;
-+
-+	cfg = (struct virtio_pci_modern_common_cfg __iomem *)mdev->common;
-+
-+	vp_iowrite16(index, &cfg->cfg.queue_select);
-+	return vp_ioread16(&cfg->queue_reset);
-+}
-+EXPORT_SYMBOL_GPL(vp_modern_get_queue_reset);
-+
-+/*
-+ * vp_modern_set_queue_reset - reset the queue
-+ * @mdev: the modern virtio-pci device
-+ * @index: queue index
-+ */
-+void vp_modern_set_queue_reset(struct virtio_pci_modern_device *mdev, u16 index)
-+{
-+	struct virtio_pci_modern_common_cfg __iomem *cfg;
-+
-+	cfg = (struct virtio_pci_modern_common_cfg __iomem *)mdev->common;
-+
-+	vp_iowrite16(index, &cfg->cfg.queue_select);
-+	vp_iowrite16(1, &cfg->queue_reset);
-+
-+	while (vp_ioread16(&cfg->queue_reset))
-+		msleep(1);
-+
-+	while (vp_ioread16(&cfg->cfg.queue_enable))
-+		msleep(1);
-+}
-+EXPORT_SYMBOL_GPL(vp_modern_set_queue_reset);
-+
- /*
-  * vp_modern_queue_vector - set the MSIX vector for a specific virtqueue
-  * @mdev: the modern virtio-pci device
-diff --git a/include/linux/virtio_pci_modern.h b/include/linux/virtio_pci_modern.h
-index 05123b9a606f..c4eeb79b0139 100644
---- a/include/linux/virtio_pci_modern.h
-+++ b/include/linux/virtio_pci_modern.h
-@@ -113,4 +113,6 @@ void __iomem * vp_modern_map_vq_notify(struct virtio_pci_modern_device *mdev,
- 				       u16 index, resource_size_t *pa);
- int vp_modern_probe(struct virtio_pci_modern_device *mdev);
- void vp_modern_remove(struct virtio_pci_modern_device *mdev);
-+int vp_modern_get_queue_reset(struct virtio_pci_modern_device *mdev, u16 index);
-+void vp_modern_set_queue_reset(struct virtio_pci_modern_device *mdev, u16 index);
- #endif
--- 
-2.31.0
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+CuWcqCAyMDIyLzYvMjkgMTQ6NTYsIFh1YW4gWmh1byDlhpnpgZM6Cj4gQWRkIHF1ZXVlX25vdGlm
+eV9kYXRhIGluIHN0cnVjdCB2aXJ0aW9fcGNpX2NvbW1vbl9jZmcsIHdoaWNoIGNvbWVzIGZyb20K
+PiBoZXJlIGh0dHBzOi8vZ2l0aHViLmNvbS9vYXNpcy10Y3MvdmlydGlvLXNwZWMvaXNzdWVzLzg5
+Cj4KPiBTaW5jZSBJIHdhbnQgdG8gYWRkIHF1ZXVlX3Jlc2V0IGFmdGVyIHF1ZXVlX25vdGlmeV9k
+YXRhLCBJIHN1Ym1pdHRlZAo+IHRoaXMgcGF0Y2ggZmlyc3QuCj4KPiBTaWduZWQtb2ZmLWJ5OiBY
+dWFuIFpodW8gPHh1YW56aHVvQGxpbnV4LmFsaWJhYmEuY29tPgo+IEFja2VkLWJ5OiBKYXNvbiBX
+YW5nIDxqYXNvd2FuZ0ByZWRoYXQuY29tPgo+IC0tLQo+ICAgaW5jbHVkZS9saW51eC92aXJ0aW9f
+cGNpX21vZGVybi5oIHwgMiArKwo+ICAgaW5jbHVkZS91YXBpL2xpbnV4L3ZpcnRpb19wY2kuaCAg
+IHwgMSArCj4gICAyIGZpbGVzIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKQo+Cj4gZGlmZiAtLWdp
+dCBhL2luY2x1ZGUvbGludXgvdmlydGlvX3BjaV9tb2Rlcm4uaCBiL2luY2x1ZGUvbGludXgvdmly
+dGlvX3BjaV9tb2Rlcm4uaAo+IGluZGV4IGM0ZjdmZmJhY2I0ZS4uOWYzMWRkZTQ2ZjU3IDEwMDY0
+NAo+IC0tLSBhL2luY2x1ZGUvbGludXgvdmlydGlvX3BjaV9tb2Rlcm4uaAo+ICsrKyBiL2luY2x1
+ZGUvbGludXgvdmlydGlvX3BjaV9tb2Rlcm4uaAo+IEBAIC0yOSw2ICsyOSw4IEBAIHN0cnVjdCB2
+aXJ0aW9fcGNpX2NvbW1vbl9jZmcgewo+ICAgCV9fbGUzMiBxdWV1ZV9hdmFpbF9oaTsJCS8qIHJl
+YWQtd3JpdGUgKi8KPiAgIAlfX2xlMzIgcXVldWVfdXNlZF9sbzsJCS8qIHJlYWQtd3JpdGUgKi8K
+PiAgIAlfX2xlMzIgcXVldWVfdXNlZF9oaTsJCS8qIHJlYWQtd3JpdGUgKi8KPiArCV9fbGUxNiBx
+dWV1ZV9ub3RpZnlfZGF0YTsJLyogcmVhZC13cml0ZSAqLwo+ICsJX19sZTE2IHBhZGRpbmc7Cj4g
+ICB9OwoKCkFzIHByZXZpb3VzIHBhdGNoLCBJIHRoaW5rIGl0J3MgYmV0dGVyIHRvIHNpbXBsZSBl
+bWJlZCB0aGUgdUFQSSAKc3RydWN0dXJlIGhlcmUuCgpUaGFua3MKCgo+ICAgCj4gICBzdHJ1Y3Qg
+dmlydGlvX3BjaV9tb2Rlcm5fZGV2aWNlIHsKPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS91YXBpL2xp
+bnV4L3ZpcnRpb19wY2kuaCBiL2luY2x1ZGUvdWFwaS9saW51eC92aXJ0aW9fcGNpLmgKPiBpbmRl
+eCAyNDdlYzQyYWYyYzguLjc0OGIzZWI2MmQyZiAxMDA2NDQKPiAtLS0gYS9pbmNsdWRlL3VhcGkv
+bGludXgvdmlydGlvX3BjaS5oCj4gKysrIGIvaW5jbHVkZS91YXBpL2xpbnV4L3ZpcnRpb19wY2ku
+aAo+IEBAIC0xNzYsNiArMTc2LDcgQEAgc3RydWN0IHZpcnRpb19wY2lfY2ZnX2NhcCB7Cj4gICAj
+ZGVmaW5lIFZJUlRJT19QQ0lfQ09NTU9OX1FfQVZBSUxISQk0NAo+ICAgI2RlZmluZSBWSVJUSU9f
+UENJX0NPTU1PTl9RX1VTRURMTwk0OAo+ICAgI2RlZmluZSBWSVJUSU9fUENJX0NPTU1PTl9RX1VT
+RURISQk1Mgo+ICsjZGVmaW5lIFZJUlRJT19QQ0lfQ09NTU9OX1FfTkRBVEEJNTYKPiAgIAo+ICAg
+I2VuZGlmIC8qIFZJUlRJT19QQ0lfTk9fTU9ERVJOICovCj4gICAKCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGlu
+dXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
 
