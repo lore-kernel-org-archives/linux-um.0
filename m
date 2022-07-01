@@ -1,15 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from baptiste.telenet-ops.be ([2a02:1800:120:4::f00:13])
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oDLX8-00BXv4-O6
-	for linux-um@lists.infradead.org; Mon, 18 Jul 2022 07:51:17 +0000
-Date: Mon, 18 Jul 2022 09:51:03 +0200 (CEST)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: Build regressions/improvements in v5.19-rc7
-In-Reply-To: <20220718074308.3801763-1-geert@linux-m68k.org>
-Message-ID: <alpine.DEB.2.22.394.2207180949260.949449@ramsan.of.borg>
-References: <CAHk-=wj63HHDU0MTRVKese5a4j82g3s3u4Ztno7=7Cj=cRRFFQ@mail.gmail.com> <20220718074308.3801763-1-geert@linux-m68k.org>
+	id 1o7D7u-003u8b-KU
+	for linux-um@lists.infradead.org; Fri, 01 Jul 2022 09:39:52 +0000
+Received: by mail-pj1-f71.google.com with SMTP id gi2-20020a17090b110200b001ecad6feb7cso2820670pjb.5
+        for <linux-um@lists.infradead.org>; Fri, 01 Jul 2022 02:39:48 -0700 (PDT)
+Message-ID: <494bcf3f-d42c-f05b-cbdb-d4ba834bd118@redhat.com>
+Date: Fri, 1 Jul 2022 17:39:35 +0800
 MIME-Version: 1.0
+Subject: Re: [PATCH v11 28/40] virtio_pci: introduce helper to get/set queue
+ reset
+References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
+ <20220629065656.54420-29-xuanzhuo@linux.alibaba.com>
+From: Jason Wang <jasowang@redhat.com>
+In-Reply-To: <20220629065656.54420-29-xuanzhuo@linux.alibaba.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,51 +23,65 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: linux-rdma@vger.kernel.org, linux-um@lists.infradead.org, linux-sh@vger.kernel.org
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, virtualization@lists.linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-On Mon, 18 Jul 2022, Geert Uytterhoeven wrote:
-> JFYI, when comparing v5.19-rc7[1] to v5.19-rc6[3], the summaries are:
->  - build errors: +11/-6
-
-   + /kisskb/src/drivers/infiniband/hw/qib/qib_wc_x86_64.c: error: 'X86_VENDOR_AMD' undeclared (first use in this function):  => 149:37
-   + /kisskb/src/drivers/infiniband/hw/qib/qib_wc_x86_64.c: error: 'struct cpuinfo_um' has no member named 'x86_vendor':  => 149:22
-   + /kisskb/src/drivers/infiniband/hw/qib/qib_wc_x86_64.c: error: control reaches end of non-void function [-Werror=return-type]:  => 150:1
-   + /kisskb/src/drivers/infiniband/sw/rdmavt/qp.c: error: 'struct cpuinfo_um' has no member named 'x86_cache_size':  => 88:22
-   + /kisskb/src/drivers/infiniband/sw/rdmavt/qp.c: error: control reaches end of non-void function [-Werror=return-type]:  => 89:1
-   + /kisskb/src/drivers/infiniband/sw/rdmavt/qp.c: error: implicit declaration of function '__copy_user_nocache' [-Werror=implicit-function-declaration]:  => 100:2
-
-um-x86_64/um-all{mod,yes}config
-(seen before in v5.18)
-
-   + {standard input}: Error: displacement to undefined symbol .L271 overflows 12-bit field:  => 1625
-   + {standard input}: Error: displacement to undefined symbol .L271 overflows 8-bit field :  => 1634
-   + {standard input}: Error: displacement to undefined symbol .L318 overflows 8-bit field :  => 1665, 1681, 1711, 1693
-   + {standard input}: Error: pcrel too far:  => 1657, 1667, 1629, 1685, 1649, 1655, 1635, 1698, 1618, 1644, 1695, 1705, 1676, 1673, 1670, 1660, 1686, 1656, 1702, 1672, 1700, 1609, 1632, 1684
-   + {standard input}: Error: unknown opcode:  => 1713
-
-sh4-gcc11/sh-allyesconfig
-
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/ff6992735ade75aae3e35d16b17da1008d753d28/ (all 135 configs)
-> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/32346491ddf24599decca06190ebca03ff9de7f8/ (all 135 configs)
-
-Gr{oetje,eeting}s,
-
- 						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
- 							    -- Linus Torvalds
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+CuWcqCAyMDIyLzYvMjkgMTQ6NTYsIFh1YW4gWmh1byDlhpnpgZM6Cj4gSW50cm9kdWNlIG5ldyBo
+ZWxwZXJzIHRvIGltcGxlbWVudCBxdWV1ZSByZXNldCBhbmQgZ2V0IHF1ZXVlIHJlc2V0Cj4gc3Rh
+dHVzLgo+Cj4gICBodHRwczovL2dpdGh1Yi5jb20vb2FzaXMtdGNzL3ZpcnRpby1zcGVjL2lzc3Vl
+cy8xMjQKPiAgIGh0dHBzOi8vZ2l0aHViLmNvbS9vYXNpcy10Y3MvdmlydGlvLXNwZWMvaXNzdWVz
+LzEzOQo+Cj4gU2lnbmVkLW9mZi1ieTogWHVhbiBaaHVvIDx4dWFuemh1b0BsaW51eC5hbGliYWJh
+LmNvbT4KCgpBY2tlZC1ieTogSmFzb24gV2FuZyA8amFzb3dhbmdAcmVkaGF0LmNvbT4KCgo+IC0t
+LQo+ICAgZHJpdmVycy92aXJ0aW8vdmlydGlvX3BjaV9tb2Rlcm5fZGV2LmMgfCAzNSArKysrKysr
+KysrKysrKysrKysrKysrKysrKwo+ICAgaW5jbHVkZS9saW51eC92aXJ0aW9fcGNpX21vZGVybi5o
+ICAgICAgfCAgMiArKwo+ICAgMiBmaWxlcyBjaGFuZ2VkLCAzNyBpbnNlcnRpb25zKCspCj4KPiBk
+aWZmIC0tZ2l0IGEvZHJpdmVycy92aXJ0aW8vdmlydGlvX3BjaV9tb2Rlcm5fZGV2LmMgYi9kcml2
+ZXJzL3ZpcnRpby92aXJ0aW9fcGNpX21vZGVybl9kZXYuYwo+IGluZGV4IGZhMmE5NDQ1YmIxOC4u
+MDc0MTU2NTQyNDdjIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvdmlydGlvL3ZpcnRpb19wY2lfbW9k
+ZXJuX2Rldi5jCj4gKysrIGIvZHJpdmVycy92aXJ0aW8vdmlydGlvX3BjaV9tb2Rlcm5fZGV2LmMK
+PiBAQCAtMyw2ICszLDcgQEAKPiAgICNpbmNsdWRlIDxsaW51eC92aXJ0aW9fcGNpX21vZGVybi5o
+Pgo+ICAgI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPgo+ICAgI2luY2x1ZGUgPGxpbnV4L3BjaS5o
+Pgo+ICsjaW5jbHVkZSA8bGludXgvZGVsYXkuaD4KPiAgIAo+ICAgLyoKPiAgICAqIHZwX21vZGVy
+bl9tYXBfY2FwYWJpbGl0eSAtIG1hcCBhIHBhcnQgb2YgdmlydGlvIHBjaSBjYXBhYmlsaXR5Cj4g
+QEAgLTQ3NCw2ICs0NzUsNDAgQEAgdm9pZCB2cF9tb2Rlcm5fc2V0X3N0YXR1cyhzdHJ1Y3Qgdmly
+dGlvX3BjaV9tb2Rlcm5fZGV2aWNlICptZGV2LAo+ICAgfQo+ICAgRVhQT1JUX1NZTUJPTF9HUEwo
+dnBfbW9kZXJuX3NldF9zdGF0dXMpOwo+ICAgCj4gKy8qCj4gKyAqIHZwX21vZGVybl9nZXRfcXVl
+dWVfcmVzZXQgLSBnZXQgdGhlIHF1ZXVlIHJlc2V0IHN0YXR1cwo+ICsgKiBAbWRldjogdGhlIG1v
+ZGVybiB2aXJ0aW8tcGNpIGRldmljZQo+ICsgKiBAaW5kZXg6IHF1ZXVlIGluZGV4Cj4gKyAqLwo+
+ICtpbnQgdnBfbW9kZXJuX2dldF9xdWV1ZV9yZXNldChzdHJ1Y3QgdmlydGlvX3BjaV9tb2Rlcm5f
+ZGV2aWNlICptZGV2LCB1MTYgaW5kZXgpCj4gK3sKPiArCXN0cnVjdCB2aXJ0aW9fcGNpX2NvbW1v
+bl9jZmcgX19pb21lbSAqY2ZnID0gbWRldi0+Y29tbW9uOwo+ICsKPiArCXZwX2lvd3JpdGUxNihp
+bmRleCwgJmNmZy0+cXVldWVfc2VsZWN0KTsKPiArCXJldHVybiB2cF9pb3JlYWQxNigmY2ZnLT5x
+dWV1ZV9yZXNldCk7Cj4gK30KPiArRVhQT1JUX1NZTUJPTF9HUEwodnBfbW9kZXJuX2dldF9xdWV1
+ZV9yZXNldCk7Cj4gKwo+ICsvKgo+ICsgKiB2cF9tb2Rlcm5fc2V0X3F1ZXVlX3Jlc2V0IC0gcmVz
+ZXQgdGhlIHF1ZXVlCj4gKyAqIEBtZGV2OiB0aGUgbW9kZXJuIHZpcnRpby1wY2kgZGV2aWNlCj4g
+KyAqIEBpbmRleDogcXVldWUgaW5kZXgKPiArICovCj4gK3ZvaWQgdnBfbW9kZXJuX3NldF9xdWV1
+ZV9yZXNldChzdHJ1Y3QgdmlydGlvX3BjaV9tb2Rlcm5fZGV2aWNlICptZGV2LCB1MTYgaW5kZXgp
+Cj4gK3sKPiArCXN0cnVjdCB2aXJ0aW9fcGNpX2NvbW1vbl9jZmcgX19pb21lbSAqY2ZnID0gbWRl
+di0+Y29tbW9uOwo+ICsKPiArCXZwX2lvd3JpdGUxNihpbmRleCwgJmNmZy0+cXVldWVfc2VsZWN0
+KTsKPiArCXZwX2lvd3JpdGUxNigxLCAmY2ZnLT5xdWV1ZV9yZXNldCk7Cj4gKwo+ICsJd2hpbGUg
+KHZwX2lvcmVhZDE2KCZjZmctPnF1ZXVlX3Jlc2V0KSkKPiArCQltc2xlZXAoMSk7Cj4gKwo+ICsJ
+d2hpbGUgKHZwX2lvcmVhZDE2KCZjZmctPnF1ZXVlX2VuYWJsZSkpCj4gKwkJbXNsZWVwKDEpOwo+
+ICt9Cj4gK0VYUE9SVF9TWU1CT0xfR1BMKHZwX21vZGVybl9zZXRfcXVldWVfcmVzZXQpOwo+ICsK
+PiAgIC8qCj4gICAgKiB2cF9tb2Rlcm5fcXVldWVfdmVjdG9yIC0gc2V0IHRoZSBNU0lYIHZlY3Rv
+ciBmb3IgYSBzcGVjaWZpYyB2aXJ0cXVldWUKPiAgICAqIEBtZGV2OiB0aGUgbW9kZXJuIHZpcnRp
+by1wY2kgZGV2aWNlCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvdmlydGlvX3BjaV9tb2Rl
+cm4uaCBiL2luY2x1ZGUvbGludXgvdmlydGlvX3BjaV9tb2Rlcm4uaAo+IGluZGV4IGJlZWJjN2E0
+YTMxZC4uZGVkMDExNTdmODY0IDEwMDY0NAo+IC0tLSBhL2luY2x1ZGUvbGludXgvdmlydGlvX3Bj
+aV9tb2Rlcm4uaAo+ICsrKyBiL2luY2x1ZGUvbGludXgvdmlydGlvX3BjaV9tb2Rlcm4uaAo+IEBA
+IC0xMzQsNCArMTM0LDYgQEAgdm9pZCBfX2lvbWVtICogdnBfbW9kZXJuX21hcF92cV9ub3RpZnko
+c3RydWN0IHZpcnRpb19wY2lfbW9kZXJuX2RldmljZSAqbWRldiwKPiAgIAkJCQkgICAgICAgdTE2
+IGluZGV4LCByZXNvdXJjZV9zaXplX3QgKnBhKTsKPiAgIGludCB2cF9tb2Rlcm5fcHJvYmUoc3Ry
+dWN0IHZpcnRpb19wY2lfbW9kZXJuX2RldmljZSAqbWRldik7Cj4gICB2b2lkIHZwX21vZGVybl9y
+ZW1vdmUoc3RydWN0IHZpcnRpb19wY2lfbW9kZXJuX2RldmljZSAqbWRldik7Cj4gK2ludCB2cF9t
+b2Rlcm5fZ2V0X3F1ZXVlX3Jlc2V0KHN0cnVjdCB2aXJ0aW9fcGNpX21vZGVybl9kZXZpY2UgKm1k
+ZXYsIHUxNiBpbmRleCk7Cj4gK3ZvaWQgdnBfbW9kZXJuX3NldF9xdWV1ZV9yZXNldChzdHJ1Y3Qg
+dmlydGlvX3BjaV9tb2Rlcm5fZGV2aWNlICptZGV2LCB1MTYgaW5kZXgpOwo+ICAgI2VuZGlmCgoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0g
+bWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmlu
+ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
 
