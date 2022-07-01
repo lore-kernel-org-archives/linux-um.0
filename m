@@ -1,15 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42])
+Received: from mail-pl1-x64a.google.com ([2607:f8b0:4864:20::64a])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oE02R-00HFkV-RK
-	for linux-um@lists.infradead.org; Wed, 20 Jul 2022 03:06:17 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v12 39/40] virtio_net: support tx queue resize
-Date: Wed, 20 Jul 2022 11:04:35 +0800
-Message-Id: <20220720030436.79520-40-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
-References: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
-MIME-Version: 1.0
+	id 1o7ClI-003ofQ-8a
+	for linux-um@lists.infradead.org; Fri, 01 Jul 2022 09:16:29 +0000
+Received: by mail-pl1-x64a.google.com with SMTP id s9-20020a170902ea0900b0016a4515b2e4so1164924plg.16
+        for <linux-um@lists.infradead.org>; Fri, 01 Jul 2022 02:16:27 -0700 (PDT)
+Date: Fri,  1 Jul 2022 17:16:19 +0800
+Message-Id: <20220701091621.3022368-1-davidgow@google.com>
+Mime-Version: 1.0
+Subject: [PATCH v5 1/2] mm: Add PAGE_ALIGN_DOWN macro
+From: David Gow <davidgow@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,99 +22,56 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+To: Vincent Whitchurch <vincent.whitchurch@axis.com>, Johannes Berg <johannes@sipsolutions.net>, Patricia Alfonso <trishalfonso@google.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, anton.ivanov@cambridgegreys.com, Dmitry Vyukov <dvyukov@google.com>, Brendan Higgins <brendanhiggins@google.com>, Andrew Morton <akpm@linux-foundation.org>, Andrey Konovalov <andreyknvl@gmail.com>, Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: David Gow <davidgow@google.com>, kasan-dev <kasan-dev@googlegroups.com>, linux-um@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>, Daniel Latypov <dlatypov@google.com>, linux-mm@kvack.org, kunit-dev@googlegroups.com
 
-This patch implements the resize function of the tx queues.
-Based on this function, it is possible to modify the ring num of the
-queue.
+This is just the same as PAGE_ALIGN(), but rounds the address down, not
+up.
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Suggested-by: Dmitry Vyukov <dvyukov@google.com>
+Signed-off-by: David Gow <davidgow@google.com>
+Acked-by: Andrew Morton <akpm@linux-foundation.org>
 ---
- drivers/net/virtio_net.c | 47 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+Please take this patch as part of the UML tree, along with patch #2,
+thanks!
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 1115a8b59a08..d1e6940b46d8 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -135,6 +135,9 @@ struct send_queue {
- 	struct virtnet_sq_stats stats;
+No changes to this patch since v4:
+https://lore.kernel.org/lkml/20220630080834.2742777-1-davidgow@google.com/
+
+No changes to this patch since v3 (just a minor issue with patch #2):
+https://lore.kernel.org/lkml/20220630074757.2739000-1-davidgow@google.com/
+
+Changes since v2:
+https://lore.kernel.org/lkml/20220527185600.1236769-1-davidgow@google.com/
+- Add Andrew's Acked-by tag.
+
+v2 was the first version of this patch (it having been introduced as
+part of v2 of the UML/KASAN series).
+
+There are almost certainly lots of places where this macro should be
+used: just look for ALIGN_DOWN(..., PAGE_SIZE). I haven't gone through
+to try to replace them all.
+
+---
+ include/linux/mm.h | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 9f44254af8ce..9abe5975ad11 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -221,6 +221,9 @@ int overcommit_policy_handler(struct ctl_table *, int, void *, size_t *,
+ /* to align the pointer to the (next) page boundary */
+ #define PAGE_ALIGN(addr) ALIGN(addr, PAGE_SIZE)
  
- 	struct napi_struct napi;
++/* to align the pointer to the (prev) page boundary */
++#define PAGE_ALIGN_DOWN(addr) ALIGN_DOWN(addr, PAGE_SIZE)
 +
-+	/* Record whether sq is in reset state. */
-+	bool reset;
- };
+ /* test whether an address (unsigned long or pointer) is aligned to PAGE_SIZE */
+ #define PAGE_ALIGNED(addr)	IS_ALIGNED((unsigned long)(addr), PAGE_SIZE)
  
- /* Internal representation of a receive virtqueue */
-@@ -279,6 +282,7 @@ struct padded_vnet_hdr {
- };
- 
- static void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *buf);
-+static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf);
- 
- static bool is_xdp_frame(void *ptr)
- {
-@@ -1603,6 +1607,11 @@ static void virtnet_poll_cleantx(struct receive_queue *rq)
- 		return;
- 
- 	if (__netif_tx_trylock(txq)) {
-+		if (sq->reset) {
-+			__netif_tx_unlock(txq);
-+			return;
-+		}
-+
- 		do {
- 			virtqueue_disable_cb(sq->vq);
- 			free_old_xmit_skbs(sq, true);
-@@ -1868,6 +1877,44 @@ static int virtnet_rx_resize(struct virtnet_info *vi,
- 	return err;
- }
- 
-+static int virtnet_tx_resize(struct virtnet_info *vi,
-+			     struct send_queue *sq, u32 ring_num)
-+{
-+	struct netdev_queue *txq;
-+	int err, qindex;
-+
-+	qindex = sq - vi->sq;
-+
-+	virtnet_napi_tx_disable(&sq->napi);
-+
-+	txq = netdev_get_tx_queue(vi->dev, qindex);
-+
-+	/* 1. wait all ximt complete
-+	 * 2. fix the race of netif_stop_subqueue() vs netif_start_subqueue()
-+	 */
-+	__netif_tx_lock_bh(txq);
-+
-+	/* Prevent rx poll from accessing sq. */
-+	sq->reset = true;
-+
-+	/* Prevent the upper layer from trying to send packets. */
-+	netif_stop_subqueue(vi->dev, qindex);
-+
-+	__netif_tx_unlock_bh(txq);
-+
-+	err = virtqueue_resize(sq->vq, ring_num, virtnet_sq_free_unused_buf);
-+	if (err)
-+		netdev_err(vi->dev, "resize tx fail: tx queue index: %d err: %d\n", qindex, err);
-+
-+	__netif_tx_lock_bh(txq);
-+	sq->reset = false;
-+	netif_tx_wake_queue(txq);
-+	__netif_tx_unlock_bh(txq);
-+
-+	virtnet_napi_tx_enable(vi, sq->vq, &sq->napi);
-+	return err;
-+}
-+
- /*
-  * Send command via the control virtqueue and check status.  Commands
-  * supported by the hypervisor, as indicated by feature bits, should
 -- 
-2.31.0
+2.37.0.rc0.161.g10f37bed90-goog
 
 
 _______________________________________________
