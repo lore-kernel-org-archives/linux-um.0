@@ -1,15 +1,22 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43])
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oIP67-00306A-5u
-	for linux-um@lists.infradead.org; Mon, 01 Aug 2022 06:40:18 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v14 34/42] virtio_pci: support the arg sizes of find_vqs()
-Date: Mon,  1 Aug 2022 14:38:54 +0800
-Message-Id: <20220801063902.129329-35-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
-References: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
+	id 1o8DIT-004Mn2-9n
+	for linux-um@lists.infradead.org; Mon, 04 Jul 2022 04:02:54 +0000
+Received: by mail-pj1-f72.google.com with SMTP id l15-20020a17090a660f00b001ef7b1d2289so2494084pjj.9
+        for <linux-um@lists.infradead.org>; Sun, 03 Jul 2022 21:02:50 -0700 (PDT)
+Message-ID: <fd85439f-8c94-e4f9-8500-811b3cf4c9ed@redhat.com>
+Date: Mon, 4 Jul 2022 12:02:35 +0800
 MIME-Version: 1.0
+Subject: Re: [PATCH v11 21/40] virtio_ring: packed: introduce
+ virtqueue_resize_packed()
+References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
+ <20220629065656.54420-22-xuanzhuo@linux.alibaba.com>
+ <de7cf56d-acbd-1a2b-2226-a9fdd89afb78@redhat.com>
+ <1656900812.860175-2-xuanzhuo@linux.alibaba.com>
+From: Jason Wang <jasowang@redhat.com>
+In-Reply-To: <1656900812.860175-2-xuanzhuo@linux.alibaba.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,180 +25,65 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com, virtualization@lists.linux-foundation.org
 
-Virtio PCI supports new parameter sizes of find_vqs().
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
----
- drivers/virtio/virtio_pci_common.c | 18 ++++++++++--------
- drivers/virtio/virtio_pci_common.h |  1 +
- drivers/virtio/virtio_pci_legacy.c |  6 +++++-
- drivers/virtio/virtio_pci_modern.c | 10 +++++++---
- 4 files changed, 23 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
-index 7ad734584823..00ad476a815d 100644
---- a/drivers/virtio/virtio_pci_common.c
-+++ b/drivers/virtio/virtio_pci_common.c
-@@ -174,6 +174,7 @@ static int vp_request_msix_vectors(struct virtio_device *vdev, int nvectors,
- static struct virtqueue *vp_setup_vq(struct virtio_device *vdev, unsigned int index,
- 				     void (*callback)(struct virtqueue *vq),
- 				     const char *name,
-+				     u32 size,
- 				     bool ctx,
- 				     u16 msix_vec)
- {
-@@ -186,7 +187,7 @@ static struct virtqueue *vp_setup_vq(struct virtio_device *vdev, unsigned int in
- 	if (!info)
- 		return ERR_PTR(-ENOMEM);
- 
--	vq = vp_dev->setup_vq(vp_dev, info, index, callback, name, ctx,
-+	vq = vp_dev->setup_vq(vp_dev, info, index, callback, name, size, ctx,
- 			      msix_vec);
- 	if (IS_ERR(vq))
- 		goto out_info;
-@@ -283,7 +284,7 @@ void vp_del_vqs(struct virtio_device *vdev)
- 
- static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned int nvqs,
- 		struct virtqueue *vqs[], vq_callback_t *callbacks[],
--		const char * const names[], bool per_vq_vectors,
-+		const char * const names[], u32 sizes[], bool per_vq_vectors,
- 		const bool *ctx,
- 		struct irq_affinity *desc)
- {
-@@ -326,8 +327,8 @@ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned int nvqs,
- 		else
- 			msix_vec = VP_MSIX_VQ_VECTOR;
- 		vqs[i] = vp_setup_vq(vdev, queue_idx++, callbacks[i], names[i],
--				     ctx ? ctx[i] : false,
--				     msix_vec);
-+				     sizes ? sizes[i] : 0,
-+				     ctx ? ctx[i] : false, msix_vec);
- 		if (IS_ERR(vqs[i])) {
- 			err = PTR_ERR(vqs[i]);
- 			goto error_find;
-@@ -357,7 +358,7 @@ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned int nvqs,
- 
- static int vp_find_vqs_intx(struct virtio_device *vdev, unsigned int nvqs,
- 		struct virtqueue *vqs[], vq_callback_t *callbacks[],
--		const char * const names[], const bool *ctx)
-+		const char * const names[], u32 sizes[], const bool *ctx)
- {
- 	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
- 	int i, err, queue_idx = 0;
-@@ -379,6 +380,7 @@ static int vp_find_vqs_intx(struct virtio_device *vdev, unsigned int nvqs,
- 			continue;
- 		}
- 		vqs[i] = vp_setup_vq(vdev, queue_idx++, callbacks[i], names[i],
-+				     sizes ? sizes[i] : 0,
- 				     ctx ? ctx[i] : false,
- 				     VIRTIO_MSI_NO_VECTOR);
- 		if (IS_ERR(vqs[i])) {
-@@ -402,15 +404,15 @@ int vp_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
- 	int err;
- 
- 	/* Try MSI-X with one vector per queue. */
--	err = vp_find_vqs_msix(vdev, nvqs, vqs, callbacks, names, true, ctx, desc);
-+	err = vp_find_vqs_msix(vdev, nvqs, vqs, callbacks, names, sizes, true, ctx, desc);
- 	if (!err)
- 		return 0;
- 	/* Fallback: MSI-X with one vector for config, one shared for queues. */
--	err = vp_find_vqs_msix(vdev, nvqs, vqs, callbacks, names, false, ctx, desc);
-+	err = vp_find_vqs_msix(vdev, nvqs, vqs, callbacks, names, sizes, false, ctx, desc);
- 	if (!err)
- 		return 0;
- 	/* Finally fall back to regular interrupts. */
--	return vp_find_vqs_intx(vdev, nvqs, vqs, callbacks, names, ctx);
-+	return vp_find_vqs_intx(vdev, nvqs, vqs, callbacks, names, sizes, ctx);
- }
- 
- const char *vp_bus_name(struct virtio_device *vdev)
-diff --git a/drivers/virtio/virtio_pci_common.h b/drivers/virtio/virtio_pci_common.h
-index a5ff838b85a5..c0448378b698 100644
---- a/drivers/virtio/virtio_pci_common.h
-+++ b/drivers/virtio/virtio_pci_common.h
-@@ -80,6 +80,7 @@ struct virtio_pci_device {
- 				      unsigned int idx,
- 				      void (*callback)(struct virtqueue *vq),
- 				      const char *name,
-+				      u32 size,
- 				      bool ctx,
- 				      u16 msix_vec);
- 	void (*del_vq)(struct virtio_pci_vq_info *info);
-diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virtio_pci_legacy.c
-index 2257f1b3d8ae..d75e5c4e637f 100644
---- a/drivers/virtio/virtio_pci_legacy.c
-+++ b/drivers/virtio/virtio_pci_legacy.c
-@@ -112,6 +112,7 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 				  unsigned int index,
- 				  void (*callback)(struct virtqueue *vq),
- 				  const char *name,
-+				  u32 size,
- 				  bool ctx,
- 				  u16 msix_vec)
- {
-@@ -125,10 +126,13 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 	if (!num || vp_legacy_get_queue_enable(&vp_dev->ldev, index))
- 		return ERR_PTR(-ENOENT);
- 
-+	if (!size || size > num)
-+		size = num;
-+
- 	info->msix_vector = msix_vec;
- 
- 	/* create the vring */
--	vq = vring_create_virtqueue(index, num,
-+	vq = vring_create_virtqueue(index, size,
- 				    VIRTIO_PCI_VRING_ALIGN, &vp_dev->vdev,
- 				    true, false, ctx,
- 				    vp_notify, callback, name);
-diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
-index be51ec849252..f7965c5dd36b 100644
---- a/drivers/virtio/virtio_pci_modern.c
-+++ b/drivers/virtio/virtio_pci_modern.c
-@@ -293,6 +293,7 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 				  unsigned int index,
- 				  void (*callback)(struct virtqueue *vq),
- 				  const char *name,
-+				  u32 size,
- 				  bool ctx,
- 				  u16 msix_vec)
- {
-@@ -310,15 +311,18 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 	if (!num || vp_modern_get_queue_enable(mdev, index))
- 		return ERR_PTR(-ENOENT);
- 
--	if (num & (num - 1)) {
--		dev_warn(&vp_dev->pci_dev->dev, "bad queue size %u", num);
-+	if (!size || size > num)
-+		size = num;
-+
-+	if (size & (size - 1)) {
-+		dev_warn(&vp_dev->pci_dev->dev, "bad queue size %u", size);
- 		return ERR_PTR(-EINVAL);
- 	}
- 
- 	info->msix_vector = msix_vec;
- 
- 	/* create the vring */
--	vq = vring_create_virtqueue(index, num,
-+	vq = vring_create_virtqueue(index, size,
- 				    SMP_CACHE_BYTES, &vp_dev->vdev,
- 				    true, true, ctx,
- 				    vp_notify, callback, name);
--- 
-2.31.0
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+CuWcqCAyMDIyLzcvNCAxMDoxMywgWHVhbiBaaHVvIOWGmemBkzoKPiBPbiBGcmksIDEgSnVsIDIw
+MjIgMTc6Mjc6NDggKzA4MDAsIEphc29uIFdhbmcgPGphc293YW5nQHJlZGhhdC5jb20+IHdyb3Rl
+Ogo+PiDlnKggMjAyMi82LzI5IDE0OjU2LCBYdWFuIFpodW8g5YaZ6YGTOgo+Pj4gdmlydGlvIHJp
+bmcgcGFja2VkIHN1cHBvcnRzIHJlc2l6ZS4KPj4+Cj4+PiBPbmx5IGFmdGVyIHRoZSBuZXcgdnJp
+bmcgaXMgc3VjY2Vzc2Z1bGx5IGFsbG9jYXRlZCBiYXNlZCBvbiB0aGUgbmV3IG51bSwKPj4+IHdl
+IHdpbGwgcmVsZWFzZSB0aGUgb2xkIHZyaW5nLiBJbiBhbnkgY2FzZSwgYW4gZXJyb3IgaXMgcmV0
+dXJuZWQsCj4+PiBpbmRpY2F0aW5nIHRoYXQgdGhlIHZyaW5nIHN0aWxsIHBvaW50cyB0byB0aGUg
+b2xkIHZyaW5nLgo+Pj4KPj4+IEluIHRoZSBjYXNlIG9mIGFuIGVycm9yLCByZS1pbml0aWFsaXpl
+KGJ5IHZpcnRxdWV1ZV9yZWluaXRfcGFja2VkKCkpIHRoZQo+Pj4gdmlydHF1ZXVlIHRvIGVuc3Vy
+ZSB0aGF0IHRoZSB2cmluZyBjYW4gYmUgdXNlZC4KPj4+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBYdWFu
+IFpodW8gPHh1YW56aHVvQGxpbnV4LmFsaWJhYmEuY29tPgo+Pj4gLS0tCj4+PiAgICBkcml2ZXJz
+L3ZpcnRpby92aXJ0aW9fcmluZy5jIHwgMjkgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysK
+Pj4+ICAgIDEgZmlsZSBjaGFuZ2VkLCAyOSBpbnNlcnRpb25zKCspCj4+Pgo+Pj4gZGlmZiAtLWdp
+dCBhL2RyaXZlcnMvdmlydGlvL3ZpcnRpb19yaW5nLmMgYi9kcml2ZXJzL3ZpcnRpby92aXJ0aW9f
+cmluZy5jCj4+PiBpbmRleCA2NTBmNzAxYTU0ODAuLjQ4NjA3ODcyODZkYiAxMDA2NDQKPj4+IC0t
+LSBhL2RyaXZlcnMvdmlydGlvL3ZpcnRpb19yaW5nLmMKPj4+ICsrKyBiL2RyaXZlcnMvdmlydGlv
+L3ZpcnRpb19yaW5nLmMKPj4+IEBAIC0yMDQyLDYgKzIwNDIsMzUgQEAgc3RhdGljIHN0cnVjdCB2
+aXJ0cXVldWUgKnZyaW5nX2NyZWF0ZV92aXJ0cXVldWVfcGFja2VkKAo+Pj4gICAgCXJldHVybiBO
+VUxMOwo+Pj4gICAgfQo+Pj4KPj4+ICtzdGF0aWMgaW50IHZpcnRxdWV1ZV9yZXNpemVfcGFja2Vk
+KHN0cnVjdCB2aXJ0cXVldWUgKl92cSwgdTMyIG51bSkKPj4+ICt7Cj4+PiArCXN0cnVjdCB2cmlu
+Z192aXJ0cXVldWVfcGFja2VkIHZyaW5nID0ge307Cj4+PiArCXN0cnVjdCB2cmluZ192aXJ0cXVl
+dWUgKnZxID0gdG9fdnZxKF92cSk7Cj4+PiArCXN0cnVjdCB2aXJ0aW9fZGV2aWNlICp2ZGV2ID0g
+X3ZxLT52ZGV2Owo+Pj4gKwlpbnQgZXJyOwo+Pj4gKwo+Pj4gKwlpZiAodnJpbmdfYWxsb2NfcXVl
+dWVfcGFja2VkKCZ2cmluZywgdmRldiwgbnVtKSkKPj4+ICsJCWdvdG8gZXJyX3Jpbmc7Cj4+PiAr
+Cj4+PiArCWVyciA9IHZyaW5nX2FsbG9jX3N0YXRlX2V4dHJhX3BhY2tlZCgmdnJpbmcpOwo+Pj4g
+KwlpZiAoZXJyKQo+Pj4gKwkJZ290byBlcnJfc3RhdGVfZXh0cmE7Cj4+PiArCj4+PiArCXZyaW5n
+X2ZyZWUoJnZxLT52cSk7Cj4+PiArCj4+PiArCXZpcnRxdWV1ZV9pbml0KHZxLCB2cmluZy52cmlu
+Zy5udW0pOwo+Pj4gKwl2aXJ0cXVldWVfdnJpbmdfYXR0YWNoX3BhY2tlZCh2cSwgJnZyaW5nKTsK
+Pj4+ICsJdmlydHF1ZXVlX3ZyaW5nX2luaXRfcGFja2VkKHZxKTsKPj4+ICsKPj4+ICsJcmV0dXJu
+IDA7Cj4+PiArCj4+PiArZXJyX3N0YXRlX2V4dHJhOgo+Pj4gKwl2cmluZ19mcmVlX3BhY2tlZCgm
+dnJpbmcsIHZkZXYpOwo+Pj4gK2Vycl9yaW5nOgo+Pj4gKwl2aXJ0cXVldWVfcmVpbml0X3BhY2tl
+ZCh2cSk7Cj4+Cj4+IFNvIGRlc2Nfc3RhdGUgYW5kIGRlc2NfZXh0cmEgaGFzIGJlZW4gZnJlZWQg
+dnJpbmdfZnJlZV9wYWNrZWQoKSB3aGVuCj4+IHZyaW5nX2FsbG9jX3N0YXRlX2V4dHJhX3BhY2tl
+ZCgpIGZhaWxzLiBXZSBtaWdodCBnZXQgdXNlLWFmdGVyLWZyZWUgaGVyZT8KPiB2cmluZ19mcmVl
+X3BhY2tlZCgpIGZyZWVzIHRoZSB0ZW1wb3Jhcnkgc3RydWN0dXJlIHZyaW5nLiBJdCBkb2VzIG5v
+dCBhZmZlY3QKPiBkZXNjX3N0YXRlIGFuZCBkZXNjX2V4dHJhIG9mIHZxLiBTbyBpdCBpcyBzYWZl
+LgoKCllvdSBhcmUgcmlnaHQuCgoKPgo+PiBBY3R1YWxseSwgSSB0aGluayBmb3IgcmVzaXplIHdl
+IG5lZWQKPj4KPj4gMSkgZGV0YWNoIG9sZAo+PiAyKSBhbGxvY2F0ZSBuZXcKPj4gMykgaWYgMikg
+c3VjY2VlZCwgYXR0YWNoIG5ldyBvdGhlcndpc2UgYXR0YWNoIG9sZAo+Cj4gVGhlIGltcGxlbWVu
+dGF0aW9uIGlzIG5vdzoKPgo+IDEuIGFsbG9jYXRlIG5ldwo+IDIuIGZyZWUgb2xkIChkZXRhY2gg
+b2xkKQo+IDMuIGF0dGFjaCBuZXcKPgo+IGVycm9yOgo+IDEuIGZyZWUgdGVtcG9yYXJ5Cj4gMi4g
+cmVpbml0IG9sZAo+Cj4gRG8geW91IHRoaW5rIHRoaXMgaXMgb2s/IFdlIG5lZWQgdG8gYWRkIGEg
+bmV3IHZhcmlhYmxlIHRvIHNhdmUgdGhlIG9sZCB2cmluZyBpbgo+IHRoZSBwcm9jZXNzIHlvdSBt
+ZW50aW9uZWQsIHRoZXJlIGlzIG5vdCBtdWNoIGRpZmZlcmVuY2UgaW4gb3RoZXIuCgoKWWVzLCBJ
+IHRoaW5rIHRoZSBjb2RlIGlzIGZpbmUuIEJ1dCBJJ2Qgc3VnZ2VzdCB0byByZW5hbWUgInZyaW5n
+IiB0byAKInZyaW5nX3BhY2tlZCIsIHRoaXMgc2ltcGxpZnkgdGhlIHJldmlld2Vycy4KCk90aGVy
+IHRoYW4gdGhpcywgeW91IGNhbiBhZGQ6CgpBY2tlZC1ieTogSmFzb24gV2FuZyA8amFzb3dhbmdA
+cmVkaGF0LmNvbT4KCgo+Cj4gVGhhbmtzLgo+Cj4KPj4gVGhpcyBzZWVtcyBtb3JlIGNsZWFyZXIg
+dGhhbiB0aGUgY3VycmVudCBsb2dpYz8KPj4KPj4gVGhhbmtzCj4+Cj4+Cj4+PiArCXJldHVybiAt
+RU5PTUVNOwo+Pj4gK30KPj4+ICsKPj4+Cj4+PiAgICAvKgo+Pj4gICAgICogR2VuZXJpYyBmdW5j
+dGlvbnMgYW5kIGV4cG9ydGVkIHN5bWJvbHMuCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3Rz
+LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9saW51eC11bQo=
 
