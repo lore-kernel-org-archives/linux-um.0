@@ -1,13 +1,16 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130])
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oE012-00HDuy-Ep
-	for linux-um@lists.infradead.org; Wed, 20 Jul 2022 03:04:51 +0000
+	id 1o8Bka-003WUd-15
+	for linux-um@lists.infradead.org; Mon, 04 Jul 2022 02:23:49 +0000
+Message-ID: <1656901409.0470793-4-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH v11 23/40] virtio_pci: move struct virtio_pci_common_cfg to virtio_pci_modern.h
+Date: Mon, 4 Jul 2022 10:23:29 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v12 00/40] virtio pci support VIRTIO_F_RING_RESET
-Date: Wed, 20 Jul 2022 11:03:56 +0800
-Message-Id: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
-MIME-Version: 1.0
+References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
+ <20220629065656.54420-24-xuanzhuo@linux.alibaba.com>
+ <f35fdd60-8f69-6004-dd00-62e5fe8a8856@redhat.com>
+In-Reply-To: <f35fdd60-8f69-6004-dd00-62e5fe8a8856@redhat.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -16,167 +19,84 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+To: Jason Wang <jasowang@redhat.com>
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com, virtualization@lists.linux-foundation.org
 
-The virtio spec already supports the virtio queue reset function. This patch set
-is to add this function to the kernel. The relevant virtio spec information is
-here:
-
-    https://github.com/oasis-tcs/virtio-spec/issues/124
-    https://github.com/oasis-tcs/virtio-spec/issues/139
-
-Also regarding MMIO support for queue reset, I plan to support it after this
-patch is passed.
-
-This patch set implements the refactoring of vring. Finally, the
-virtuque_resize() interface is provided based on the reset function of the
-transport layer.
-
-Test environment:
-    Host: 4.19.91
-    Qemu: QEMU emulator version 6.2.50 (with vq reset support)
-    Test Cmd:  ethtool -G eth1 rx $1 tx $2; ethtool -g eth1
-
-    The default is split mode, modify Qemu virtio-net to add PACKED feature to test
-    packed mode.
-
-Qemu code:
-    https://github.com/fengidri/qemu/compare/89f3bfa3265554d1d591ee4d7f1197b6e3397e84...master
-
-In order to simplify the review of this patch set, the function of reusing
-the old buffers after resize will be introduced in subsequent patch sets.
-
-Please review. Thanks.
-
-v12:
-  1. access vq->num_max directly without helper
-  2. rename the vq reset callbacks:
- 	     int (*disable_vq_and_reset)(struct virtqueue *vq);
- 	     int (*enable_vq_after_reset)(struct virtqueue *vq);
-
-  3. rename vring to vring_split, vring_packed
-  4. protect sq->reset by tx lock
-
-v11:
-  1. struct virtio_pci_common_cfg to virtio_pci_modern.h
-  2. conflict resolution
-
-v10:
-  1. on top of the harden vring IRQ
-  2. factor out split and packed from struct vring_virtqueue
-  3. some suggest from @Jason Wang
-
-v9:
-  1. Provide a virtqueue_resize() interface directly
-  2. A patch set including vring resize, virtio pci reset, virtio-net resize
-  3. No more separate structs
-
-v8:
-  1. Provide a virtqueue_reset() interface directly
-  2. Split the two patch sets, this is the first part
-  3. Add independent allocation helper for allocating state, extra
-
-v7:
-  1. fix #6 subject typo
-  2. fix #6 ring_size_in_bytes is uninitialized
-  3. check by: make W=12
-
-v6:
-  1. virtio_pci: use synchronize_irq(irq) to sync the irq callbacks
-  2. Introduce virtqueue_reset_vring() to implement the reset of vring during
-     the reset process. May use the old vring if num of the vq not change.
-  3. find_vqs() support sizes to special the max size of each vq
-
-v5:
-  1. add virtio-net support set_ringparam
-
-v4:
-  1. just the code of virtio, without virtio-net
-  2. Performing reset on a queue is divided into these steps:
-    1. reset_vq: reset one vq
-    2. recycle the buffer from vq by virtqueue_detach_unused_buf()
-    3. release the ring of the vq by vring_release_virtqueue()
-    4. enable_reset_vq: re-enable the reset queue
-  3. Simplify the parameters of enable_reset_vq()
-  4. add container structures for virtio_pci_common_cfg
-
-v3:
-  1. keep vq, irq unreleased
-
-Xuan Zhuo (40):
-  virtio: record the maximum queue num supported by the device.
-  virtio: struct virtio_config_ops add callbacks for queue_reset
-  virtio_ring: update the document of the virtqueue_detach_unused_buf
-    for queue reset
-  virtio_ring: extract the logic of freeing vring
-  virtio_ring: split vring_virtqueue
-  virtio_ring: introduce virtqueue_init()
-  virtio_ring: split: introduce vring_free_split()
-  virtio_ring: split: extract the logic of alloc queue
-  virtio_ring: split: extract the logic of alloc state and extra
-  virtio_ring: split: extract the logic of attach vring
-  virtio_ring: split: extract the logic of vring init
-  virtio_ring: split: introduce virtqueue_reinit_split()
-  virtio_ring: split: reserve vring_align, may_reduce_num
-  virtio_ring: split: introduce virtqueue_resize_split()
-  virtio_ring: packed: introduce vring_free_packed
-  virtio_ring: packed: extract the logic of alloc queue
-  virtio_ring: packed: extract the logic of alloc state and extra
-  virtio_ring: packed: extract the logic of attach vring
-  virtio_ring: packed: extract the logic of vring init
-  virtio_ring: packed: introduce virtqueue_reinit_packed()
-  virtio_ring: packed: introduce virtqueue_resize_packed()
-  virtio_ring: introduce virtqueue_resize()
-  virtio_pci: struct virtio_pci_common_cfg add queue_notify_data
-  virtio: allow to unbreak/break virtqueue individually
-  virtio: queue_reset: add VIRTIO_F_RING_RESET
-  virtio_ring: struct virtqueue introduce reset
-  virtio_pci: struct virtio_pci_common_cfg add queue_reset
-  virtio_pci: introduce helper to get/set queue reset
-  virtio_pci: extract the logic of active vq for modern pci
-  virtio_pci: support VIRTIO_F_RING_RESET
-  virtio: find_vqs() add arg sizes
-  virtio_pci: support the arg sizes of find_vqs()
-  virtio_mmio: support the arg sizes of find_vqs()
-  virtio: add helper virtio_find_vqs_ctx_size()
-  virtio_net: set the default max ring size by find_vqs()
-  virtio_net: get ringparam by virtqueue_get_vring_max_size()
-  virtio_net: split free_unused_bufs()
-  virtio_net: support rx queue resize
-  virtio_net: support tx queue resize
-  virtio_net: support set_ringparam
-
- arch/um/drivers/virtio_uml.c             |   3 +-
- drivers/net/virtio_net.c                 | 208 +++++-
- drivers/platform/mellanox/mlxbf-tmfifo.c |   3 +
- drivers/remoteproc/remoteproc_virtio.c   |   3 +
- drivers/s390/virtio/virtio_ccw.c         |   4 +
- drivers/virtio/virtio_mmio.c             |  11 +-
- drivers/virtio/virtio_pci_common.c       |  32 +-
- drivers/virtio/virtio_pci_common.h       |   3 +-
- drivers/virtio/virtio_pci_legacy.c       |   8 +-
- drivers/virtio/virtio_pci_modern.c       | 161 ++++-
- drivers/virtio/virtio_pci_modern_dev.c   |  39 ++
- drivers/virtio/virtio_ring.c             | 769 +++++++++++++++++------
- drivers/virtio/virtio_vdpa.c             |   3 +
- include/linux/virtio.h                   |  10 +
- include/linux/virtio_config.h            |  40 +-
- include/linux/virtio_pci_modern.h        |   9 +
- include/uapi/linux/virtio_config.h       |   7 +-
- include/uapi/linux/virtio_pci.h          |   2 +
- 18 files changed, 1038 insertions(+), 277 deletions(-)
-
---
-2.31.0
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gRnJpLCAxIEp1bCAyMDIyIDE3OjMzOjAwICswODAwLCBKYXNvbiBXYW5nIDxqYXNvd2FuZ0By
+ZWRoYXQuY29tPiB3cm90ZToKPgo+IOWcqCAyMDIyLzYvMjkgMTQ6NTYsIFh1YW4gWmh1byDlhpnp
+gZM6Cj4gPiBJbiBvcmRlciB0byBmYWNpbGl0YXRlIHRoZSBleHBhbnNpb24gb2YgdmlydGlvX3Bj
+aV9jb21tb25fY2ZnIGluIHRoZQo+ID4gZnV0dXJlLCBtb3ZlIGl0IGZyb20gdWFwaSB0byB2aXJ0
+aW9fcGNpX21vZGVybi5oLiBJbiB0aGlzIHdheSwgd2UgY2FuCj4gPiBmcmVlbHkgZXhwYW5kIHZp
+cnRpb19wY2lfY29tbW9uX2NmZyBpbiB0aGUgZnV0dXJlLgo+ID4KPiA+IE90aGVyIHByb2plY3Rz
+IHVzaW5nIHZpcnRpb19wY2lfY29tbW9uX2NmZyBpbiB1YXBpIG5lZWQgdG8gbWFpbnRhaW4gYQo+
+ID4gc2VwYXJhdGUgdmlydGlvX3BjaV9jb21tb25fY2ZnIG9yIHVzZSB0aGUgb2Zmc2V0IG1hY3Jv
+IGRlZmluZWQgaW4gdWFwaS4KPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBYdWFuIFpodW8gPHh1YW56
+aHVvQGxpbnV4LmFsaWJhYmEuY29tPgo+ID4gLS0tCj4gPiAgIGluY2x1ZGUvbGludXgvdmlydGlv
+X3BjaV9tb2Rlcm4uaCB8IDI2ICsrKysrKysrKysrKysrKysrKysrKysrKysrCj4gPiAgIGluY2x1
+ZGUvdWFwaS9saW51eC92aXJ0aW9fcGNpLmggICB8IDI2IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tCj4gPiAgIDIgZmlsZXMgY2hhbmdlZCwgMjYgaW5zZXJ0aW9ucygrKSwgMjYgZGVsZXRpb25z
+KC0pCj4gPgo+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvdmlydGlvX3BjaV9tb2Rlcm4u
+aCBiL2luY2x1ZGUvbGludXgvdmlydGlvX3BjaV9tb2Rlcm4uaAo+ID4gaW5kZXggZWIyYmQ5YjQw
+NzdkLi5jNGY3ZmZiYWNiNGUgMTAwNjQ0Cj4gPiAtLS0gYS9pbmNsdWRlL2xpbnV4L3ZpcnRpb19w
+Y2lfbW9kZXJuLmgKPiA+ICsrKyBiL2luY2x1ZGUvbGludXgvdmlydGlvX3BjaV9tb2Rlcm4uaAo+
+ID4gQEAgLTUsNiArNSwzMiBAQAo+ID4gICAjaW5jbHVkZSA8bGludXgvcGNpLmg+Cj4gPiAgICNp
+bmNsdWRlIDxsaW51eC92aXJ0aW9fcGNpLmg+Cj4gPgo+ID4gKy8qIEZpZWxkcyBpbiBWSVJUSU9f
+UENJX0NBUF9DT01NT05fQ0ZHOiAqLwo+ID4gK3N0cnVjdCB2aXJ0aW9fcGNpX2NvbW1vbl9jZmcg
+ewo+ID4gKwkvKiBBYm91dCB0aGUgd2hvbGUgZGV2aWNlLiAqLwo+ID4gKwlfX2xlMzIgZGV2aWNl
+X2ZlYXR1cmVfc2VsZWN0OwkvKiByZWFkLXdyaXRlICovCj4gPiArCV9fbGUzMiBkZXZpY2VfZmVh
+dHVyZTsJCS8qIHJlYWQtb25seSAqLwo+ID4gKwlfX2xlMzIgZ3Vlc3RfZmVhdHVyZV9zZWxlY3Q7
+CS8qIHJlYWQtd3JpdGUgKi8KPiA+ICsJX19sZTMyIGd1ZXN0X2ZlYXR1cmU7CQkvKiByZWFkLXdy
+aXRlICovCj4gPiArCV9fbGUxNiBtc2l4X2NvbmZpZzsJCS8qIHJlYWQtd3JpdGUgKi8KPiA+ICsJ
+X19sZTE2IG51bV9xdWV1ZXM7CQkvKiByZWFkLW9ubHkgKi8KPiA+ICsJX191OCBkZXZpY2Vfc3Rh
+dHVzOwkJLyogcmVhZC13cml0ZSAqLwo+ID4gKwlfX3U4IGNvbmZpZ19nZW5lcmF0aW9uOwkJLyog
+cmVhZC1vbmx5ICovCj4gPiArCj4gPiArCS8qIEFib3V0IGEgc3BlY2lmaWMgdmlydHF1ZXVlLiAq
+Lwo+ID4gKwlfX2xlMTYgcXVldWVfc2VsZWN0OwkJLyogcmVhZC13cml0ZSAqLwo+ID4gKwlfX2xl
+MTYgcXVldWVfc2l6ZTsJCS8qIHJlYWQtd3JpdGUsIHBvd2VyIG9mIDIuICovCj4gPiArCV9fbGUx
+NiBxdWV1ZV9tc2l4X3ZlY3RvcjsJLyogcmVhZC13cml0ZSAqLwo+ID4gKwlfX2xlMTYgcXVldWVf
+ZW5hYmxlOwkJLyogcmVhZC13cml0ZSAqLwo+ID4gKwlfX2xlMTYgcXVldWVfbm90aWZ5X29mZjsJ
+LyogcmVhZC1vbmx5ICovCj4gPiArCV9fbGUzMiBxdWV1ZV9kZXNjX2xvOwkJLyogcmVhZC13cml0
+ZSAqLwo+ID4gKwlfX2xlMzIgcXVldWVfZGVzY19oaTsJCS8qIHJlYWQtd3JpdGUgKi8KPiA+ICsJ
+X19sZTMyIHF1ZXVlX2F2YWlsX2xvOwkJLyogcmVhZC13cml0ZSAqLwo+ID4gKwlfX2xlMzIgcXVl
+dWVfYXZhaWxfaGk7CQkvKiByZWFkLXdyaXRlICovCj4gPiArCV9fbGUzMiBxdWV1ZV91c2VkX2xv
+OwkJLyogcmVhZC13cml0ZSAqLwo+ID4gKwlfX2xlMzIgcXVldWVfdXNlZF9oaTsJCS8qIHJlYWQt
+d3JpdGUgKi8KPiA+ICt9Owo+ID4gKwo+ID4gICBzdHJ1Y3QgdmlydGlvX3BjaV9tb2Rlcm5fZGV2
+aWNlIHsKPiA+ICAgCXN0cnVjdCBwY2lfZGV2ICpwY2lfZGV2Owo+ID4KPiA+IGRpZmYgLS1naXQg
+YS9pbmNsdWRlL3VhcGkvbGludXgvdmlydGlvX3BjaS5oIGIvaW5jbHVkZS91YXBpL2xpbnV4L3Zp
+cnRpb19wY2kuaAo+ID4gaW5kZXggM2E4NmYzNmQ3ZTNkLi4yNDdlYzQyYWYyYzggMTAwNjQ0Cj4g
+PiAtLS0gYS9pbmNsdWRlL3VhcGkvbGludXgvdmlydGlvX3BjaS5oCj4gPiArKysgYi9pbmNsdWRl
+L3VhcGkvbGludXgvdmlydGlvX3BjaS5oCj4gPiBAQCAtMTQwLDMyICsxNDAsNiBAQCBzdHJ1Y3Qg
+dmlydGlvX3BjaV9ub3RpZnlfY2FwIHsKPiA+ICAgCV9fbGUzMiBub3RpZnlfb2ZmX211bHRpcGxp
+ZXI7CS8qIE11bHRpcGxpZXIgZm9yIHF1ZXVlX25vdGlmeV9vZmYuICovCj4gPiAgIH07Cj4gPgo+
+ID4gLS8qIEZpZWxkcyBpbiBWSVJUSU9fUENJX0NBUF9DT01NT05fQ0ZHOiAqLwo+ID4gLXN0cnVj
+dCB2aXJ0aW9fcGNpX2NvbW1vbl9jZmcgewo+ID4gLQkvKiBBYm91dCB0aGUgd2hvbGUgZGV2aWNl
+LiAqLwo+ID4gLQlfX2xlMzIgZGV2aWNlX2ZlYXR1cmVfc2VsZWN0OwkvKiByZWFkLXdyaXRlICov
+Cj4gPiAtCV9fbGUzMiBkZXZpY2VfZmVhdHVyZTsJCS8qIHJlYWQtb25seSAqLwo+ID4gLQlfX2xl
+MzIgZ3Vlc3RfZmVhdHVyZV9zZWxlY3Q7CS8qIHJlYWQtd3JpdGUgKi8KPiA+IC0JX19sZTMyIGd1
+ZXN0X2ZlYXR1cmU7CQkvKiByZWFkLXdyaXRlICovCj4gPiAtCV9fbGUxNiBtc2l4X2NvbmZpZzsJ
+CS8qIHJlYWQtd3JpdGUgKi8KPiA+IC0JX19sZTE2IG51bV9xdWV1ZXM7CQkvKiByZWFkLW9ubHkg
+Ki8KPiA+IC0JX191OCBkZXZpY2Vfc3RhdHVzOwkJLyogcmVhZC13cml0ZSAqLwo+ID4gLQlfX3U4
+IGNvbmZpZ19nZW5lcmF0aW9uOwkJLyogcmVhZC1vbmx5ICovCj4gPiAtCj4gPiAtCS8qIEFib3V0
+IGEgc3BlY2lmaWMgdmlydHF1ZXVlLiAqLwo+ID4gLQlfX2xlMTYgcXVldWVfc2VsZWN0OwkJLyog
+cmVhZC13cml0ZSAqLwo+ID4gLQlfX2xlMTYgcXVldWVfc2l6ZTsJCS8qIHJlYWQtd3JpdGUsIHBv
+d2VyIG9mIDIuICovCj4gPiAtCV9fbGUxNiBxdWV1ZV9tc2l4X3ZlY3RvcjsJLyogcmVhZC13cml0
+ZSAqLwo+ID4gLQlfX2xlMTYgcXVldWVfZW5hYmxlOwkJLyogcmVhZC13cml0ZSAqLwo+ID4gLQlf
+X2xlMTYgcXVldWVfbm90aWZ5X29mZjsJLyogcmVhZC1vbmx5ICovCj4gPiAtCV9fbGUzMiBxdWV1
+ZV9kZXNjX2xvOwkJLyogcmVhZC13cml0ZSAqLwo+ID4gLQlfX2xlMzIgcXVldWVfZGVzY19oaTsJ
+CS8qIHJlYWQtd3JpdGUgKi8KPiA+IC0JX19sZTMyIHF1ZXVlX2F2YWlsX2xvOwkJLyogcmVhZC13
+cml0ZSAqLwo+ID4gLQlfX2xlMzIgcXVldWVfYXZhaWxfaGk7CQkvKiByZWFkLXdyaXRlICovCj4g
+PiAtCV9fbGUzMiBxdWV1ZV91c2VkX2xvOwkJLyogcmVhZC13cml0ZSAqLwo+ID4gLQlfX2xlMzIg
+cXVldWVfdXNlZF9oaTsJCS8qIHJlYWQtd3JpdGUgKi8KPiA+IC19Owo+ID4gLQo+Cj4KPiBJIHRo
+aW5rIGl0J3MgYmV0dGVyIG5vdCBkZWxldGUgdGhvc2UgZnJvbSB1QVBJLiBXZSBjYW4gZW1iZWQg
+dGhpcyBzdHJ1Y3QKPiBpbiB0aGUgcHJpdmF0ZSB2aXJpdG9fcGNpX21vZGVuLmggYW55aG93LgoK
+T0suCgpUaGFua3MuCgo+Cj4gVGhhbmtzCj4KPgo+ID4gICAvKiBGaWVsZHMgaW4gVklSVElPX1BD
+SV9DQVBfUENJX0NGRzogKi8KPiA+ICAgc3RydWN0IHZpcnRpb19wY2lfY2ZnX2NhcCB7Cj4gPiAg
+IAlzdHJ1Y3QgdmlydGlvX3BjaV9jYXAgY2FwOwo+CgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlz
+dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2xpbnV4LXVtCg==
 
