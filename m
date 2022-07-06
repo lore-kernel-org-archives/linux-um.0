@@ -1,86 +1,108 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oGEux-009M8E-NE
-	for linux-um@lists.infradead.org; Tue, 26 Jul 2022 07:23:51 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v13 40/42] virtio_net: support rx queue resize
-Date: Tue, 26 Jul 2022 15:22:23 +0800
-Message-Id: <20220726072225.19884-41-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
-References: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Date: Wed, 6 Jul 2022 12:11:15 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH v4 12/12] sched,signal,ptrace: Rework TASK_TRACED,
+ TASK_STOPPED state
+Message-ID: <YsVfw3dy7smrpEbn@hirez.programming.kicks-ass.net>
+References: <YrHA5UkJLornOdCz@li-4a3a4a4c-28e5-11b2-a85c-a8d192c6f089.ibm.com>
+ <877d5ajesi.fsf@email.froward.int.ebiederm.org>
+ <YrHgo8GKFPWwoBoJ@li-4a3a4a4c-28e5-11b2-a85c-a8d192c6f089.ibm.com>
+ <20220628191541.34a073fc@gandalf.local.home>
+ <yt9d5ykbekn3.fsf@linux.ibm.com>
+ <yt9dpmijcvu6.fsf@linux.ibm.com>
+ <YsSQRmCZSIQ1ewzo@worktop.programming.kicks-ass.net>
+ <yt9dsfneaczk.fsf@linux.ibm.com>
+ <YsVO1NU3bXGg9YJ3@worktop.programming.kicks-ass.net>
+ <yt9da69ma8wm.fsf@linux.ibm.com>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <yt9da69ma8wm.fsf@linux.ibm.com>
+To: Sven Schnelle <svens@linux.ibm.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Alexander Gordeev <agordeev@linux.ibm.com>, "Eric W. Biederman" <ebiederm@xmission.com>, linux-kernel@vger.kernel.org, rjw@rjwysocki.net, Oleg Nesterov <oleg@redhat.com>, mingo@kernel.org, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, mgorman@suse.de, bigeasy@linutronix.de, Will Deacon <will@kernel.org>, tj@kernel.org, linux-pm@vger.kernel.org, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-xtensa@linux-xtensa.org, Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, linux-ia64@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-This patch implements the resize function of the rx queues.
-Based on this function, it is possible to modify the ring num of the
-queue.
+On Wed, Jul 06, 2022 at 11:27:05AM +0200, Sven Schnelle wrote:
+> Peter Zijlstra <peterz@infradead.org> writes:
+> 
+> > On Wed, Jul 06, 2022 at 09:58:55AM +0200, Sven Schnelle wrote:
+> >
+> >> >> [   86.218551] kill_chi-343805    6d.... 79990141us : ptrace_stop: JOBCTL_TRACED already set, state=0 <------ valid combination of flags?
+> >> >
+> >> > Yeah, that's not supposed to be so. JOBCTL_TRACED is supposed to follow
+> >> > __TASK_TRACED for now. Set when __TASK_TRACED, cleared when
+> >> > TASK_RUNNING.
+> >> >
+> >> > Specifically {ptrace_,}signal_wake_up() in signal.h clear JOBCTL_TRACED
+> >> > when they would wake a __TASK_TRACED task.
+> >> 
+> >> try_to_wake_up() clears TASK_TRACED in this case because a signal
+> >> (SIGKILL) has to be delivered. As a test I put the following change
+> >> on top, and it "fixes" the problem:
+> >> 
+> >> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> >> index da0bf6fe9ecd..f2e0f5e70e77 100644
+> >> --- a/kernel/sched/core.c
+> >> +++ b/kernel/sched/core.c
+> >> @@ -4141,6 +4149,9 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+> >>          * TASK_WAKING such that we can unlock p->pi_lock before doing the
+> >>          * enqueue, such as ttwu_queue_wakelist().
+> >>          */
+> >> +       if (p->__state & TASK_TRACED)
+> >> +               trace_printk("clearing TASK_TRACED 2\n");
+> >> +       p->jobctl &= ~JOBCTL_TRACED;
+> >>         WRITE_ONCE(p->__state, TASK_WAKING);
+> >> 
+> >>         /*
+> >> 
+> >> There are several places where the state is changed from TASK_TRACED to
+> >> something else without clearing JOBCTL_TRACED.
+> >
+> > I'm having difficulty spotting them; I find:
+> >
+> > TASK_WAKEKILL: signal_wake_up()
+> > __TASK_TRACED: ptrace_signal_wake_up(), ptrace_unfreeze_traced(), ptrace_resume()
+> >
+> > And all those sites dutifully clear JOBCTL_TRACED.
+> >
+> > I'd be most interested in the calstack for the 'clearing TASK_TRACED 2'
+> > events to see where we miss a spot.
+> 
+> The calltrace is:
+> [    9.863613] Call Trace:
+> [    9.863616]  [<00000000d3105f0e>] try_to_wake_up+0xae/0x620
+> [    9.863620] ([<00000000d3106164>] try_to_wake_up+0x304/0x620)
+> [    9.863623]  [<00000000d30d1e46>] ptrace_unfreeze_traced+0x9e/0xa8
+> [    9.863629]  [<00000000d30d2ef0>] __s390x_sys_ptrace+0xc0/0x160
+> [    9.863633]  [<00000000d3c5d8f4>] __do_syscall+0x1d4/0x200
+> [    9.863678]  [<00000000d3c6c332>] system_call+0x82/0xb0
+> [    9.863685] Last Breaking-Event-Address:
+> [    9.863686]  [<00000000d3106176>] try_to_wake_up+0x316/0x620
+> [    9.863688] ---[ end trace 0000000000000000 ]---
+> 
+> ptrace_unfreeze_traced() is:
+> 
+> static void ptrace_unfreeze_traced(struct task_struct *task)
+> {
+>         unsigned long flags;
+> 
+>         /*
+>          * The child may be awake and may have cleared
+>          * JOBCTL_PTRACE_FROZEN (see ptrace_resume).  The child will
+>          * not set JOBCTL_PTRACE_FROZEN or enter __TASK_TRACED anew.
+>          */
+>         if (lock_task_sighand(task, &flags)) {
+>                 task->jobctl &= ~JOBCTL_PTRACE_FROZEN;
+>                 if (__fatal_signal_pending(task)) {
+>                         task->jobctl &= ~TASK_TRACED;
+> 
+> Looking at this, shouldn't the line above read task->jobctl &= ~JOBCTL_TRACED?
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
----
- drivers/net/virtio_net.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+YES! Absolutely.
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index fe4dc43c05a1..1115a8b59a08 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -278,6 +278,8 @@ struct padded_vnet_hdr {
- 	char padding[12];
- };
- 
-+static void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *buf);
-+
- static bool is_xdp_frame(void *ptr)
- {
- 	return (unsigned long)ptr & VIRTIO_XDP_FLAG;
-@@ -1846,6 +1848,26 @@ static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
- 	return NETDEV_TX_OK;
- }
- 
-+static int virtnet_rx_resize(struct virtnet_info *vi,
-+			     struct receive_queue *rq, u32 ring_num)
-+{
-+	int err, qindex;
-+
-+	qindex = rq - vi->rq;
-+
-+	napi_disable(&rq->napi);
-+
-+	err = virtqueue_resize(rq->vq, ring_num, virtnet_rq_free_unused_buf);
-+	if (err)
-+		netdev_err(vi->dev, "resize rx fail: rx queue index: %d err: %d\n", qindex, err);
-+
-+	if (!try_fill_recv(vi, rq, GFP_KERNEL))
-+		schedule_delayed_work(&vi->refill, 0);
-+
-+	virtnet_napi_enable(rq->vq, &rq->napi);
-+	return err;
-+}
-+
- /*
-  * Send command via the control virtqueue and check status.  Commands
-  * supported by the hypervisor, as indicated by feature bits, should
--- 
-2.31.0
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+>                         wake_up_state(task, __TASK_TRACED);
+>                 }
+>                 unlock_task_sighand(task, &flags);
+>         }
+> }
 
