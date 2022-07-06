@@ -1,143 +1,93 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oGEtz-009Kl0-Mj
-	for linux-um@lists.infradead.org; Tue, 26 Jul 2022 07:22:49 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v13 08/42] virtio_ring: split: __vring_new_virtqueue() accept struct vring_virtqueue_split
-Date: Tue, 26 Jul 2022 15:21:51 +0800
-Message-Id: <20220726072225.19884-9-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
-References: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
+Return-Path: <rjwysocki@gmail.com>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+References: <20220608142723.103523089@infradead.org> <20220608144516.998681585@infradead.org>
+In-Reply-To: <20220608144516.998681585@infradead.org>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 6 Jul 2022 15:59:21 +0200
+Message-ID: <CAJZ5v0jSfvUoReFHjA5A+brExnnEKidak-GnjTbY0CKoaWpGVQ@mail.gmail.com>
+Subject: Re: [PATCH 17/36] acpi_idle: Remove tracing
+Content-Type: text/plain; charset="UTF-8"
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@kernel.org, Russell King - ARM Linux <linux@armlinux.org.uk>, ulli.kroll@googlemail.com, Linus Walleij <linus.walleij@linaro.org>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Sascha Hauer <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, dl-linux-imx <linux-imx@nxp.com>, Tony Lindgren <tony@atomide.com>, Kevin Hilman <khilman@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>, bcain@quicinc.com, Huacai Chen <chenhuacai@kernel.org>, kernel@xen0n.name, Geert Uytterhoeven <geert@linux-m68k.org>, sammy@sammy.net, Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, dinguyen@kernel.org, jonas@southpole.se, stefan.kristiansson@saunalahti.fi, Stafford Horne <shorne@gmail.com>, James Bottomley <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, David Miller <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, anton.ivanov@cambridgegreys.com, Johannes Berg <johannes@sipsolutions.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, the arch/x86 maintainers <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, acme@kernel.org, Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, jolsa@kernel.org, namhyung@kernel.org, Juergen Gross <jgross@suse.com>, srivatsa@csail.mit.edu, amakhalov@vmware.com, pv-drivers@vmware.com, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Chris Zankel <chris@zankel.net>, jcmvbkbc@gmail.com, "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, Pavel Machek <pavel@ucw.cz>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, Lorenzo Pieralisi <lpieralisi@kernel.org>, Sudeep Holla <sudeep.holla@arm.com>, Andy Gross <agross@kernel.org>, Bjorn Andersson <bjorn.andersson@linaro.org>, Anup Patel <anup@brainfault.org>, Thierry Reding <thierry.reding@gmail.com>, Jon Hunter <jonathanh@nvidia.com>, Jacob Pan <jacob.jun.pan@linux.intel.com>, Arnd Bergmann <arnd@arndb.de>, Yury Norov <yury.norov@gmail.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>, Steven Rostedt <rostedt@goodmis.org>, Petr Mladek <pmladek@suse.com>, senozhatsky@chromium.org, John Ogness <john.ogness@linutronix.de>, "Paul E. McKenney" <paulmck@kernel.org>, Frederic Weisbecker <frederic@kernel.org>, quic_neeraju@quicinc.com, Josh Triplett <josh@joshtriplett.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, Joel Fernandes <joel@joelfernandes.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, Benjamin Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, vschneid@redhat.com, jpoimboe@kernel.org, linux-alpha@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-snps-arc@lists.infradead.org, Linux ARM <linux-arm-kernel@lists.infradead.org>, Linux OMAP Mailing List <linux-omap@vger.kernel.org>, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k <linux-m68k@lists.linux-m68k.org>, "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>, openrisc@lists.librecores.org, Parisc List <linux-parisc@vger.kernel.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-riscv <linux-riscv@lists.infradead.org>, linux-s390@vger.kernel.org, Linux-sh list <linux-sh@vger.kernel.org>, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-xtensa@linux-xtensa.org, ACPI Devel Maling List <linux-acpi@vger.kernel.org>, Linux PM <linux-pm@vger.kernel.org>, linux-clk <linux-clk@vger.kernel.org>, linux-arm-msm <linux-arm-msm@vger.kernel.org>, linux-tegra <linux-tegra@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>, rcu@vger.kernel.org
+List-ID: <linux-um.lists.infradead.org>
 
-__vring_new_virtqueue() instead accepts struct vring_virtqueue_split.
+On Wed, Jun 8, 2022 at 4:47 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> All the idle routines are called with RCU disabled, as such there must
+> not be any tracing inside.
+>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-The purpose of this is to pass more information into
-__vring_new_virtqueue() to make the code simpler and the structure
-cleaner.
+This actually does some additional code duplication cleanup which
+would be good to mention in the changelog.  Or even move to a separate
+patch for that matter.
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/virtio/virtio_ring.c | 29 +++++++++++++++--------------
- 1 file changed, 15 insertions(+), 14 deletions(-)
+Otherwise LGTM.
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 4e54ed7ee7fb..4d65c437d968 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -205,7 +205,7 @@ struct vring_virtqueue {
- };
- 
- static struct virtqueue *__vring_new_virtqueue(unsigned int index,
--					       struct vring vring,
-+					       struct vring_virtqueue_split *vring_split,
- 					       struct virtio_device *vdev,
- 					       bool weak_barriers,
- 					       bool context,
-@@ -959,6 +959,7 @@ static struct virtqueue *vring_create_virtqueue_split(
- 	void (*callback)(struct virtqueue *),
- 	const char *name)
- {
-+	struct vring_virtqueue_split vring_split = {};
- 	struct virtqueue *vq;
- 	void *queue = NULL;
- 	dma_addr_t dma_addr;
-@@ -994,10 +995,10 @@ static struct virtqueue *vring_create_virtqueue_split(
- 		return NULL;
- 
- 	queue_size_in_bytes = vring_size(num, vring_align);
--	vring_init(&vring, num, queue, vring_align);
-+	vring_init(&vring_split.vring, num, queue, vring_align);
- 
--	vq = __vring_new_virtqueue(index, vring, vdev, weak_barriers, context,
--				   notify, callback, name);
-+	vq = __vring_new_virtqueue(index, &vring_split, vdev, weak_barriers,
-+				   context, notify, callback, name);
- 	if (!vq) {
- 		vring_free_queue(vdev, queue_size_in_bytes, queue,
- 				 dma_addr);
-@@ -2206,7 +2207,7 @@ EXPORT_SYMBOL_GPL(vring_interrupt);
- 
- /* Only available for split ring */
- static struct virtqueue *__vring_new_virtqueue(unsigned int index,
--					       struct vring vring,
-+					       struct vring_virtqueue_split *vring_split,
- 					       struct virtio_device *vdev,
- 					       bool weak_barriers,
- 					       bool context,
-@@ -2243,7 +2244,7 @@ static struct virtqueue *__vring_new_virtqueue(unsigned int index,
- 	vq->split.queue_dma_addr = 0;
- 	vq->split.queue_size_in_bytes = 0;
- 
--	vq->split.vring = vring;
-+	vq->split.vring = vring_split->vring;
- 	vq->split.avail_flags_shadow = 0;
- 	vq->split.avail_idx_shadow = 0;
- 
-@@ -2255,19 +2256,19 @@ static struct virtqueue *__vring_new_virtqueue(unsigned int index,
- 					vq->split.avail_flags_shadow);
- 	}
- 
--	vq->split.desc_state = kmalloc_array(vring.num,
-+	vq->split.desc_state = kmalloc_array(vring_split->vring.num,
- 			sizeof(struct vring_desc_state_split), GFP_KERNEL);
- 	if (!vq->split.desc_state)
- 		goto err_state;
- 
--	vq->split.desc_extra = vring_alloc_desc_extra(vring.num);
-+	vq->split.desc_extra = vring_alloc_desc_extra(vring_split->vring.num);
- 	if (!vq->split.desc_extra)
- 		goto err_extra;
- 
--	memset(vq->split.desc_state, 0, vring.num *
-+	memset(vq->split.desc_state, 0, vring_split->vring.num *
- 			sizeof(struct vring_desc_state_split));
- 
--	virtqueue_init(vq, vq->split.vring.num);
-+	virtqueue_init(vq, vring_split->vring.num);
- 
- 	spin_lock(&vdev->vqs_list_lock);
- 	list_add_tail(&vq->vq.list, &vdev->vqs);
-@@ -2317,14 +2318,14 @@ struct virtqueue *vring_new_virtqueue(unsigned int index,
- 				      void (*callback)(struct virtqueue *vq),
- 				      const char *name)
- {
--	struct vring vring;
-+	struct vring_virtqueue_split vring_split = {};
- 
- 	if (virtio_has_feature(vdev, VIRTIO_F_RING_PACKED))
- 		return NULL;
- 
--	vring_init(&vring, num, pages, vring_align);
--	return __vring_new_virtqueue(index, vring, vdev, weak_barriers, context,
--				     notify, callback, name);
-+	vring_init(&vring_split.vring, num, pages, vring_align);
-+	return __vring_new_virtqueue(index, &vring_split, vdev, weak_barriers,
-+				     context, notify, callback, name);
- }
- EXPORT_SYMBOL_GPL(vring_new_virtqueue);
- 
--- 
-2.31.0
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+> ---
+>  drivers/acpi/processor_idle.c |   24 +++++++++++++-----------
+>  1 file changed, 13 insertions(+), 11 deletions(-)
+>
+> --- a/drivers/acpi/processor_idle.c
+> +++ b/drivers/acpi/processor_idle.c
+> @@ -108,8 +108,8 @@ static const struct dmi_system_id proces
+>  static void __cpuidle acpi_safe_halt(void)
+>  {
+>         if (!tif_need_resched()) {
+> -               safe_halt();
+> -               local_irq_disable();
+> +               raw_safe_halt();
+> +               raw_local_irq_disable();
+>         }
+>  }
+>
+> @@ -524,16 +524,21 @@ static int acpi_idle_bm_check(void)
+>         return bm_status;
+>  }
+>
+> -static void wait_for_freeze(void)
+> +static __cpuidle void io_idle(unsigned long addr)
+>  {
+> +       /* IO port based C-state */
+> +       inb(addr);
+> +
+>  #ifdef CONFIG_X86
+>         /* No delay is needed if we are in guest */
+>         if (boot_cpu_has(X86_FEATURE_HYPERVISOR))
+>                 return;
+>  #endif
+> -       /* Dummy wait op - must do something useless after P_LVL2 read
+> -          because chipsets cannot guarantee that STPCLK# signal
+> -          gets asserted in time to freeze execution properly. */
+> +       /*
+> +        * Dummy wait op - must do something useless after P_LVL2 read
+> +        * because chipsets cannot guarantee that STPCLK# signal
+> +        * gets asserted in time to freeze execution properly.
+> +        */
+>         inl(acpi_gbl_FADT.xpm_timer_block.address);
+>  }
+>
+> @@ -553,9 +558,7 @@ static void __cpuidle acpi_idle_do_entry
+>         } else if (cx->entry_method == ACPI_CSTATE_HALT) {
+>                 acpi_safe_halt();
+>         } else {
+> -               /* IO port based C-state */
+> -               inb(cx->address);
+> -               wait_for_freeze();
+> +               io_idle(cx->address);
+>         }
+>
+>         perf_lopwr_cb(false);
+> @@ -577,8 +580,7 @@ static int acpi_idle_play_dead(struct cp
+>                 if (cx->entry_method == ACPI_CSTATE_HALT)
+>                         safe_halt();
+>                 else if (cx->entry_method == ACPI_CSTATE_SYSTEMIO) {
+> -                       inb(cx->address);
+> -                       wait_for_freeze();
+> +                       io_idle(cx->address);
+>                 } else
+>                         return -ENODEV;
+>
+>
+>
 
