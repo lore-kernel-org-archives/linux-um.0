@@ -1,92 +1,30 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oGEuS-009LQI-Ry
-	for linux-um@lists.infradead.org; Tue, 26 Jul 2022 07:23:19 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v13 23/42] virtio_ring: packed: introduce virtqueue_resize_packed()
-Date: Tue, 26 Jul 2022 15:22:06 +0800
-Message-Id: <20220726072225.19884-24-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
-References: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Subject: Your message to linux-um awaits moderator approval
+From: linux-um-owner@lists.infradead.org
+Message-ID: <mailman.15613.1657100818.2536778.linux-um@lists.infradead.org>
+Date: Wed, 06 Jul 2022 02:46:58 -0700
+List-Id: <linux-um.lists.infradead.org>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+To: geert@linux-m68k.org
 
-virtio ring packed supports resize.
+Your mail to 'linux-um' with the subject
 
-Only after the new vring is successfully allocated based on the new num,
-we will release the old vring. In any case, an error is returned,
-indicating that the vring still points to the old vring.
+    Re: [PATCH 19/36] objtool/idle: Validate __cpuidle code as noinstr
 
-In the case of an error, re-initialize(by virtqueue_reinit_packed()) the
-virtqueue to ensure that the vring can be used.
+Is being held until the list moderator can review it for approval.
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
----
- drivers/virtio/virtio_ring.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+The reason it is being held:
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 7d4c444b5a9d..98bac8c389e8 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -2040,6 +2040,36 @@ static struct virtqueue *vring_create_virtqueue_packed(
- 	return NULL;
- }
- 
-+static int virtqueue_resize_packed(struct virtqueue *_vq, u32 num)
-+{
-+	struct vring_virtqueue_packed vring_packed = {};
-+	struct vring_virtqueue *vq = to_vvq(_vq);
-+	struct virtio_device *vdev = _vq->vdev;
-+	int err;
-+
-+	if (vring_alloc_queue_packed(&vring_packed, vdev, num))
-+		goto err_ring;
-+
-+	err = vring_alloc_state_extra_packed(&vring_packed);
-+	if (err)
-+		goto err_state_extra;
-+
-+	vring_free(&vq->vq);
-+
-+	virtqueue_vring_init_packed(&vring_packed, !!vq->vq.callback);
-+
-+	virtqueue_init(vq, vring_packed.vring.num);
-+	virtqueue_vring_attach_packed(vq, &vring_packed);
-+
-+	return 0;
-+
-+err_state_extra:
-+	vring_free_packed(&vring_packed, vdev);
-+err_ring:
-+	virtqueue_reinit_packed(vq);
-+	return -ENOMEM;
-+}
-+
- 
- /*
-  * Generic functions and exported symbols.
--- 
-2.31.0
+    Too many recipients to the message
 
+Either the message will get posted to the list, or you will receive
+notification of the moderator's decision.  If you would like to cancel
+this posting, please visit the following URL:
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+    http://lists.infradead.org/mailman/confirm/linux-um/5ecaf40d28a2ec8bb54c3adc2d527f7c7e5c3b39
+
 
