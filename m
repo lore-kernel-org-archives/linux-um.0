@@ -1,64 +1,114 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oD02L-005xut-6j
-	for linux-um@lists.infradead.org; Sun, 17 Jul 2022 08:54:02 +0000
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH v2] um: include sys/types.h for size_t
-Date: Sun, 17 Jul 2022 10:53:46 +0200
-Message-Id: <20220717085346.1525754-1-Jason@zx2c4.com>
-In-Reply-To: <20220713100029.163083-1-Jason@zx2c4.com>
-References: <20220713100029.163083-1-Jason@zx2c4.com>
+Return-Path: <openrisc-bounces@lists.librecores.org>
+Message-ID: <88328a82-7275-608e-46f2-4203df9d9fe6@kernel.org>
+Date: Mon, 11 Jul 2022 15:43:45 -0500
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
+Subject: Re: [PATCH V7 15/26] nios2/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+Content-Language: en-US
+References: <20220711070600.2378316-1-anshuman.khandual@arm.com>
+ <20220711070600.2378316-16-anshuman.khandual@arm.com>
+From: Dinh Nguyen <dinguyen@kernel.org>
+In-Reply-To: <20220711070600.2378316-16-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Johannes Berg <johannes@sipsolutions.net>
-
-Usually size_t comes from sys/types.h, not stddef.h. This code likely
-worked only because something else in its usage chain was pulling in
-sys/types.h. stddef.h is still required for NULL, however, so note this.
-
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
----
- arch/um/include/shared/user.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/um/include/shared/user.h b/arch/um/include/shared/user.h
-index dd4badffdeb3..bda66e5a9d4e 100644
---- a/arch/um/include/shared/user.h
-+++ b/arch/um/include/shared/user.h
-@@ -16,11 +16,12 @@
-  */
- #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
- 
--/* This is to get size_t */
-+/* This is to get size_t and NULL */
- #ifndef __UM_HOST__
- #include <linux/types.h>
- #else
- #include <stddef.h>
-+#include <sys/types.h>
- #endif
- 
- extern void panic(const char *fmt, ...)
--- 
-2.35.1
+List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
+List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
+List-Post: <mailto:openrisc@lists.librecores.org>
+List-Help: <mailto:openrisc-request@lists.librecores.org?subject=help>
+List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
+Errors-To: openrisc-bounces@lists.librecores.org
+Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
+To: Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org, akpm@linux-foundation.org
+Cc: linux-xtensa@linux-xtensa.org, linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, linux-um@lists.infradead.org, linux-mips@vger.kernel.org, christophe.leroy@csgroup.eu, linux-kernel@vger.kernel.org, hch@infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-csky@vger.kernel.org, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-snps-arc@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+List-ID: <linux-um.lists.infradead.org>
 
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+
+On 7/11/22 02:05, Anshuman Khandual wrote:
+> This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
+> vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
+> up a private and static protection_map[] array. Subsequently all __SXXX and
+> __PXXX macros can be dropped which are no longer needed.
+> 
+> Cc: Dinh Nguyen <dinguyen@kernel.org>
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>   arch/nios2/Kconfig               |  1 +
+>   arch/nios2/include/asm/pgtable.h | 16 ----------------
+>   arch/nios2/mm/init.c             | 20 ++++++++++++++++++++
+>   3 files changed, 21 insertions(+), 16 deletions(-)
+> 
+> diff --git a/arch/nios2/Kconfig b/arch/nios2/Kconfig
+> index 4167f1eb4cd8..e0459dffd218 100644
+> --- a/arch/nios2/Kconfig
+> +++ b/arch/nios2/Kconfig
+> @@ -6,6 +6,7 @@ config NIOS2
+>   	select ARCH_HAS_SYNC_DMA_FOR_CPU
+>   	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
+>   	select ARCH_HAS_DMA_SET_UNCACHED
+> +	select ARCH_HAS_VM_GET_PAGE_PROT
+>   	select ARCH_NO_SWAP
+>   	select COMMON_CLK
+>   	select TIMER_OF
+> diff --git a/arch/nios2/include/asm/pgtable.h b/arch/nios2/include/asm/pgtable.h
+> index 262d0609268c..470516d4555e 100644
+> --- a/arch/nios2/include/asm/pgtable.h
+> +++ b/arch/nios2/include/asm/pgtable.h
+> @@ -40,24 +40,8 @@ struct mm_struct;
+>    */
+>   
+>   /* Remove W bit on private pages for COW support */
+> -#define __P000	MKP(0, 0, 0)
+> -#define __P001	MKP(0, 0, 1)
+> -#define __P010	MKP(0, 0, 0)	/* COW */
+> -#define __P011	MKP(0, 0, 1)	/* COW */
+> -#define __P100	MKP(1, 0, 0)
+> -#define __P101	MKP(1, 0, 1)
+> -#define __P110	MKP(1, 0, 0)	/* COW */
+> -#define __P111	MKP(1, 0, 1)	/* COW */
+>   
+>   /* Shared pages can have exact HW mapping */
+> -#define __S000	MKP(0, 0, 0)
+> -#define __S001	MKP(0, 0, 1)
+> -#define __S010	MKP(0, 1, 0)
+> -#define __S011	MKP(0, 1, 1)
+> -#define __S100	MKP(1, 0, 0)
+> -#define __S101	MKP(1, 0, 1)
+> -#define __S110	MKP(1, 1, 0)
+> -#define __S111	MKP(1, 1, 1)
+>   
+>   /* Used all over the kernel */
+>   #define PAGE_KERNEL __pgprot(_PAGE_PRESENT | _PAGE_CACHED | _PAGE_READ | \
+> diff --git a/arch/nios2/mm/init.c b/arch/nios2/mm/init.c
+> index 613fcaa5988a..ae24687d12ad 100644
+> --- a/arch/nios2/mm/init.c
+> +++ b/arch/nios2/mm/init.c
+> @@ -124,3 +124,23 @@ const char *arch_vma_name(struct vm_area_struct *vma)
+>   {
+>   	return (vma->vm_start == KUSER_BASE) ? "[kuser]" : NULL;
+>   }
+> +
+> +static const pgprot_t protection_map[16] = {
+> +	[VM_NONE]					= MKP(0, 0, 0),
+> +	[VM_READ]					= MKP(0, 0, 1),
+> +	[VM_WRITE]					= MKP(0, 0, 0),
+> +	[VM_WRITE | VM_READ]				= MKP(0, 0, 1),
+> +	[VM_EXEC]					= MKP(1, 0, 0),
+> +	[VM_EXEC | VM_READ]				= MKP(1, 0, 1),
+> +	[VM_EXEC | VM_WRITE]				= MKP(1, 0, 0),
+> +	[VM_EXEC | VM_WRITE | VM_READ]			= MKP(1, 0, 1),
+> +	[VM_SHARED]					= MKP(0, 0, 0),
+> +	[VM_SHARED | VM_READ]				= MKP(0, 0, 1),
+> +	[VM_SHARED | VM_WRITE]				= MKP(0, 1, 0),
+> +	[VM_SHARED | VM_WRITE | VM_READ]		= MKP(0, 1, 1),
+> +	[VM_SHARED | VM_EXEC]				= MKP(1, 0, 0),
+> +	[VM_SHARED | VM_EXEC | VM_READ]			= MKP(1, 0, 1),
+> +	[VM_SHARED | VM_EXEC | VM_WRITE]		= MKP(1, 1, 0),
+> +	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= MKP(1, 1, 1)
+> +};
+> +DECLARE_VM_GET_PAGE_PROT
+
+Acked-by: Dinh Nguyen <dinguyen@kernel.org>
 
