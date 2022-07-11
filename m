@@ -1,113 +1,111 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Subject: [PATCH v2 00/13] The panic notifiers refactor strikes back - fixes/clean-ups
-Date: Tue, 19 Jul 2022 16:53:13 -0300
-Message-Id: <20220719195325.402745-1-gpiccoli@igalia.com>
+Return-Path: <openrisc-bounces@lists.librecores.org>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH V7 10/26] openrisc/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+Date: Mon, 11 Jul 2022 12:35:44 +0530
+Message-Id: <20220711070600.2378316-11-anshuman.khandual@arm.com>
+In-Reply-To: <20220711070600.2378316-1-anshuman.khandual@arm.com>
+References: <20220711070600.2378316-1-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org, netdev@vger.kernel.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, "Guilherme G. Piccoli" <gpiccoli@igalia.com>, bcm-kernel-feedback-list@broadcom.com, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-efi@vger.kernel.org, linux-parisc@vger.kernel.org, linux-um@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
+List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
+List-Post: <mailto:openrisc@lists.librecores.org>
+List-Help: <mailto:openrisc-request@lists.librecores.org?subject=help>
+List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
+Errors-To: openrisc-bounces@lists.librecores.org
+Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
+To: linux-mm@kvack.org, akpm@linux-foundation.org
+Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, Jonas Bonn <jonas@southpole.se>, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+List-ID: <linux-um.lists.infradead.org>
 
-Hi folks, this the second iteration of the panic notifiers refactor work,
-but limited to the fixes/clean-ups in the first moment. The (full) V1 is
-available at:
-https://lore.kernel.org/lkml/20220427224924.592546-1-gpiccoli@igalia.com/
+This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
+vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
+up a private and static protection_map[] array. Subsequently all __SXXX and
+__PXXX macros can be dropped which are no longer needed.
 
-The idea of splitting the series is that, originally we had a bunch of fixes
-followed by the notifiers refactor, but this second part (the effective
-refactor) is a bit "polemic", with reviews having antagonistic goals and some
-complexities  - it might be hard to achieve consensus.
-For the curious, here is a good summary of the conflicting views and some
-strategies we might take in the refactor V2:
-https://lore.kernel.org/lkml/0d084eed-4781-c815-29c7-ac62c498e216@igalia.com/
+Cc: Jonas Bonn <jonas@southpole.se>
+Cc: openrisc@lists.librecores.org
+Cc: linux-kernel@vger.kernel.org
+Acked-by: Stafford Horne <shorne@gmail.com>
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+ arch/openrisc/Kconfig               |  1 +
+ arch/openrisc/include/asm/pgtable.h | 18 ------------------
+ arch/openrisc/mm/init.c             | 20 ++++++++++++++++++++
+ 3 files changed, 21 insertions(+), 18 deletions(-)
 
-So splitting and sending only the simple fixes/clean-ups in a first moment
-makes sense, this way we don't prevent them to be discussed/merged/reworked
-while the more complex part is subject to scrutiny in a different (future)
-email thread.
-
-
-I've tried to test this series building for all affected architecture/drivers
-and also through some boot/runtime tests; below the test "matrix" used:
-
-Build tests (using cross-compilers): alpha, arm, arm64, parisc, um, x86_64.
-Boot/Runtime tests: x86_64 (Hyper-V and QEMU guests).
-
-Here is the link with the .config files used:
-https://people.igalia.com/gpiccoli/panic_notifiers_configs/5.19-rc7/
-(tried my best to build all the affected code).
-
-
-The series is based on 5.19-rc7; I'd like to ask that, if possible, maintainers
-take the patches here in their trees, since there is no need to merge the series
-as whole, patches are independent from each other.
-
-Regarding the CC strategy, I've tried to reduce a bit the list of CCed emails,
-given that it was huge in the first iteration. Hopefully I didn't forget
-anybody interested in the topic (my apologies if so).
-
-As usual, reviews / comments are always welcome, thanks in advance for them!
-Cheers,
-
-
-Guilherme
-
-
-
-
-Guilherme G. Piccoli (13):
-  ARM: Disable FIQs (but not IRQs) on CPUs shutdown paths
-  notifier: Add panic notifiers info and purge trailing whitespaces
-  firmware: google: Test spinlock on panic path to avoid lockups
-  soc: bcm: brcmstb: Document panic notifier action and remove useless header
-  alpha: Clean-up the panic notifier code
-  um: Improve panic notifiers consistency and ordering
-  parisc: Replace regular spinlock with spin_trylock on panic path
-  tracing: Improve panic/die notifiers
-  notifier: Show function names on notifier routines if DEBUG_NOTIFIERS is set
-  EDAC/altera: Skip the panic notifier if kdump is loaded
-  video/hyperv_fb: Avoid taking busy spinlock on panic path
-  drivers/hv/vmbus, video/hyperv_fb: Untangle and refactor Hyper-V panic notifiers
-  panic: Fixes the panic_print NMI backtrace setting
-
- arch/alpha/kernel/setup.c           |  36 ++++-----
- arch/arm/kernel/machine_kexec.c     |   2 +
- arch/arm/kernel/smp.c               |   5 +-
- arch/parisc/include/asm/pdc.h       |   1 +
- arch/parisc/kernel/firmware.c       |  27 ++++++-
- arch/um/drivers/mconsole_kern.c     |   7 +-
- arch/um/kernel/um_arch.c            |   8 +-
- drivers/edac/altera_edac.c          |  16 +++-
- drivers/firmware/google/gsmi.c      |   8 ++
- drivers/hv/ring_buffer.c            |  16 ++++
- drivers/hv/vmbus_drv.c              | 109 +++++++++++++++++-----------
- drivers/parisc/power.c              |  17 +++--
- drivers/soc/bcm/brcmstb/pm/pm-arm.c |  16 +++-
- drivers/video/fbdev/hyperv_fb.c     |  16 +++-
- include/linux/hyperv.h              |   2 +
- include/linux/notifier.h            |   8 +-
- kernel/notifier.c                   |  22 ++++--
- kernel/panic.c                      |  47 +++++++-----
- kernel/trace/trace.c                |  55 +++++++-------
- 19 files changed, 268 insertions(+), 150 deletions(-)
-
+diff --git a/arch/openrisc/Kconfig b/arch/openrisc/Kconfig
+index e814df4c483c..fe0dfb50eb86 100644
+--- a/arch/openrisc/Kconfig
++++ b/arch/openrisc/Kconfig
+@@ -10,6 +10,7 @@ config OPENRISC
+ 	select ARCH_HAS_DMA_SET_UNCACHED
+ 	select ARCH_HAS_DMA_CLEAR_UNCACHED
+ 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
++	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select COMMON_CLK
+ 	select OF
+ 	select OF_EARLY_FLATTREE
+diff --git a/arch/openrisc/include/asm/pgtable.h b/arch/openrisc/include/asm/pgtable.h
+index c3abbf71e09f..dcae8aea132f 100644
+--- a/arch/openrisc/include/asm/pgtable.h
++++ b/arch/openrisc/include/asm/pgtable.h
+@@ -176,24 +176,6 @@ extern void paging_init(void);
+ 	__pgprot(_PAGE_ALL | _PAGE_SRE | _PAGE_SWE \
+ 		 | _PAGE_SHARED | _PAGE_DIRTY | _PAGE_EXEC | _PAGE_CI)
+ 
+-#define __P000	PAGE_NONE
+-#define __P001	PAGE_READONLY_X
+-#define __P010	PAGE_COPY
+-#define __P011	PAGE_COPY_X
+-#define __P100	PAGE_READONLY
+-#define __P101	PAGE_READONLY_X
+-#define __P110	PAGE_COPY
+-#define __P111	PAGE_COPY_X
+-
+-#define __S000	PAGE_NONE
+-#define __S001	PAGE_READONLY_X
+-#define __S010	PAGE_SHARED
+-#define __S011	PAGE_SHARED_X
+-#define __S100	PAGE_READONLY
+-#define __S101	PAGE_READONLY_X
+-#define __S110	PAGE_SHARED
+-#define __S111	PAGE_SHARED_X
+-
+ /* zero page used for uninitialized stuff */
+ extern unsigned long empty_zero_page[2048];
+ #define ZERO_PAGE(vaddr) (virt_to_page(empty_zero_page))
+diff --git a/arch/openrisc/mm/init.c b/arch/openrisc/mm/init.c
+index 3a021ab6f1ae..d531ab82be12 100644
+--- a/arch/openrisc/mm/init.c
++++ b/arch/openrisc/mm/init.c
+@@ -208,3 +208,23 @@ void __init mem_init(void)
+ 	mem_init_done = 1;
+ 	return;
+ }
++
++static const pgprot_t protection_map[16] = {
++	[VM_NONE]					= PAGE_NONE,
++	[VM_READ]					= PAGE_READONLY_X,
++	[VM_WRITE]					= PAGE_COPY,
++	[VM_WRITE | VM_READ]				= PAGE_COPY_X,
++	[VM_EXEC]					= PAGE_READONLY,
++	[VM_EXEC | VM_READ]				= PAGE_READONLY_X,
++	[VM_EXEC | VM_WRITE]				= PAGE_COPY,
++	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY_X,
++	[VM_SHARED]					= PAGE_NONE,
++	[VM_SHARED | VM_READ]				= PAGE_READONLY_X,
++	[VM_SHARED | VM_WRITE]				= PAGE_SHARED,
++	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED_X,
++	[VM_SHARED | VM_EXEC]				= PAGE_READONLY,
++	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY_X,
++	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED,
++	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED_X
++};
++DECLARE_VM_GET_PAGE_PROT
 -- 
-2.37.1
+2.25.1
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
