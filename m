@@ -1,102 +1,164 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oIP5f-002zZV-9o
-	for linux-um@lists.infradead.org; Mon, 01 Aug 2022 06:39:49 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v14 20/42] virtio_ring: packed: extract the logic of vring init
-Date: Mon,  1 Aug 2022 14:38:40 +0800
-Message-Id: <20220801063902.129329-21-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
-References: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
+Return-Path: <openrisc-bounces@lists.librecores.org>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH V7 04/26] sparc/mm: Move protection_map[] inside the platform
+Date: Mon, 11 Jul 2022 12:35:38 +0530
+Message-Id: <20220711070600.2378316-5-anshuman.khandual@arm.com>
+In-Reply-To: <20220711070600.2378316-1-anshuman.khandual@arm.com>
+References: <20220711070600.2378316-1-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+Content-Transfer-Encoding: 8bit
+List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
+List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
+List-Post: <mailto:openrisc@lists.librecores.org>
+List-Help: <mailto:openrisc-request@lists.librecores.org?subject=help>
+List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
+Errors-To: openrisc-bounces@lists.librecores.org
+Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
+To: linux-mm@kvack.org, akpm@linux-foundation.org
+Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, Sam Ravnborg <sam@ravnborg.org>, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, "David S. Miller" <davem@davemloft.net>
+List-ID: <linux-um.lists.infradead.org>
 
-Separate the logic of initializing vring, and subsequent patches will
-call it separately.
+This moves protection_map[] inside the platform and while here, also enable
+ARCH_HAS_VM_GET_PAGE_PROT on 32 bit platforms via DECLARE_VM_GET_PAGE_PROT.
 
-This function completes the variable initialization of packed vring. It
-together with the logic of atatch constitutes the initialization of
-vring.
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: sparclinux@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- drivers/virtio/virtio_ring.c | 28 +++++++++++++++++-----------
- 1 file changed, 17 insertions(+), 11 deletions(-)
+ arch/sparc/Kconfig                  |  2 +-
+ arch/sparc/include/asm/pgtable_32.h | 19 -------------------
+ arch/sparc/include/asm/pgtable_64.h | 19 -------------------
+ arch/sparc/mm/init_32.c             | 20 ++++++++++++++++++++
+ arch/sparc/mm/init_64.c             |  3 +++
+ 5 files changed, 24 insertions(+), 39 deletions(-)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 533af061d009..a6f90e6e621b 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -1932,6 +1932,22 @@ static int vring_alloc_state_extra_packed(struct vring_virtqueue_packed *vring_p
- 	return -ENOMEM;
- }
+diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
+index ba449c47effd..09f868613a4d 100644
+--- a/arch/sparc/Kconfig
++++ b/arch/sparc/Kconfig
+@@ -13,6 +13,7 @@ config 64BIT
+ config SPARC
+ 	bool
+ 	default y
++	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_MIGHT_HAVE_PC_PARPORT if SPARC64 && PCI
+ 	select ARCH_MIGHT_HAVE_PC_SERIO
+ 	select DMA_OPS
+@@ -84,7 +85,6 @@ config SPARC64
+ 	select PERF_USE_VMALLOC
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+ 	select HAVE_C_RECORDMCOUNT
+-	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select HAVE_ARCH_AUDITSYSCALL
+ 	select ARCH_SUPPORTS_ATOMIC_RMW
+ 	select ARCH_SUPPORTS_DEBUG_PAGEALLOC
+diff --git a/arch/sparc/include/asm/pgtable_32.h b/arch/sparc/include/asm/pgtable_32.h
+index 4866625da314..8ff549004fac 100644
+--- a/arch/sparc/include/asm/pgtable_32.h
++++ b/arch/sparc/include/asm/pgtable_32.h
+@@ -64,25 +64,6 @@ void paging_init(void);
  
-+static void virtqueue_vring_init_packed(struct vring_virtqueue_packed *vring_packed,
-+					bool callback)
-+{
-+	vring_packed->next_avail_idx = 0;
-+	vring_packed->avail_wrap_counter = 1;
-+	vring_packed->event_flags_shadow = 0;
-+	vring_packed->avail_used_flags = 1 << VRING_PACKED_DESC_F_AVAIL;
-+
-+	/* No callback?  Tell other side not to bother us. */
-+	if (!callback) {
-+		vring_packed->event_flags_shadow = VRING_PACKED_EVENT_FLAG_DISABLE;
-+		vring_packed->vring.driver->flags =
-+			cpu_to_le16(vring_packed->event_flags_shadow);
-+	}
-+}
-+
- static struct virtqueue *vring_create_virtqueue_packed(
- 	unsigned int index,
- 	unsigned int num,
-@@ -1986,11 +2002,6 @@ static struct virtqueue *vring_create_virtqueue_packed(
+ extern unsigned long ptr_in_current_pgd;
  
- 	vq->packed.vring = vring_packed.vring;
- 
--	vq->packed.next_avail_idx = 0;
--	vq->packed.avail_wrap_counter = 1;
--	vq->packed.event_flags_shadow = 0;
--	vq->packed.avail_used_flags = 1 << VRING_PACKED_DESC_F_AVAIL;
+-/*         xwr */
+-#define __P000  PAGE_NONE
+-#define __P001  PAGE_READONLY
+-#define __P010  PAGE_COPY
+-#define __P011  PAGE_COPY
+-#define __P100  PAGE_READONLY
+-#define __P101  PAGE_READONLY
+-#define __P110  PAGE_COPY
+-#define __P111  PAGE_COPY
 -
- 	err = vring_alloc_state_extra_packed(&vring_packed);
- 	if (err)
- 		goto err_state_extra;
-@@ -2001,12 +2012,7 @@ static struct virtqueue *vring_create_virtqueue_packed(
- 	vq->packed.desc_state = vring_packed.desc_state;
- 	vq->packed.desc_extra = vring_packed.desc_extra;
+-#define __S000	PAGE_NONE
+-#define __S001	PAGE_READONLY
+-#define __S010	PAGE_SHARED
+-#define __S011	PAGE_SHARED
+-#define __S100	PAGE_READONLY
+-#define __S101	PAGE_READONLY
+-#define __S110	PAGE_SHARED
+-#define __S111	PAGE_SHARED
+-
+ /* First physical page can be anywhere, the following is needed so that
+  * va-->pa and vice versa conversions work properly without performance
+  * hit for all __pa()/__va() operations.
+diff --git a/arch/sparc/include/asm/pgtable_64.h b/arch/sparc/include/asm/pgtable_64.h
+index 4679e45c8348..a779418ceba9 100644
+--- a/arch/sparc/include/asm/pgtable_64.h
++++ b/arch/sparc/include/asm/pgtable_64.h
+@@ -187,25 +187,6 @@ bool kern_addr_valid(unsigned long addr);
+ #define _PAGE_SZHUGE_4U	_PAGE_SZ4MB_4U
+ #define _PAGE_SZHUGE_4V	_PAGE_SZ4MB_4V
  
--	/* No callback?  Tell other side not to bother us. */
--	if (!callback) {
--		vq->packed.event_flags_shadow = VRING_PACKED_EVENT_FLAG_DISABLE;
--		vq->packed.vring.driver->flags =
--			cpu_to_le16(vq->packed.event_flags_shadow);
--	}
-+	virtqueue_vring_init_packed(&vring_packed, !!callback);
+-/* These are actually filled in at boot time by sun4{u,v}_pgprot_init() */
+-#define __P000	__pgprot(0)
+-#define __P001	__pgprot(0)
+-#define __P010	__pgprot(0)
+-#define __P011	__pgprot(0)
+-#define __P100	__pgprot(0)
+-#define __P101	__pgprot(0)
+-#define __P110	__pgprot(0)
+-#define __P111	__pgprot(0)
+-
+-#define __S000	__pgprot(0)
+-#define __S001	__pgprot(0)
+-#define __S010	__pgprot(0)
+-#define __S011	__pgprot(0)
+-#define __S100	__pgprot(0)
+-#define __S101	__pgprot(0)
+-#define __S110	__pgprot(0)
+-#define __S111	__pgprot(0)
+-
+ #ifndef __ASSEMBLY__
  
- 	virtqueue_init(vq, num);
+ pte_t mk_pte_io(unsigned long, pgprot_t, int, unsigned long);
+diff --git a/arch/sparc/mm/init_32.c b/arch/sparc/mm/init_32.c
+index 1e9f577f084d..d88e774c8eb4 100644
+--- a/arch/sparc/mm/init_32.c
++++ b/arch/sparc/mm/init_32.c
+@@ -302,3 +302,23 @@ void sparc_flush_page_to_ram(struct page *page)
+ 		__flush_page_to_ram(vaddr);
+ }
+ EXPORT_SYMBOL(sparc_flush_page_to_ram);
++
++static const pgprot_t protection_map[16] = {
++	[VM_NONE]					= PAGE_NONE,
++	[VM_READ]					= PAGE_READONLY,
++	[VM_WRITE]					= PAGE_COPY,
++	[VM_WRITE | VM_READ]				= PAGE_COPY,
++	[VM_EXEC]					= PAGE_READONLY,
++	[VM_EXEC | VM_READ]				= PAGE_READONLY,
++	[VM_EXEC | VM_WRITE]				= PAGE_COPY,
++	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY,
++	[VM_SHARED]					= PAGE_NONE,
++	[VM_SHARED | VM_READ]				= PAGE_READONLY,
++	[VM_SHARED | VM_WRITE]				= PAGE_SHARED,
++	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED,
++	[VM_SHARED | VM_EXEC]				= PAGE_READONLY,
++	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY,
++	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED,
++	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED
++};
++DECLARE_VM_GET_PAGE_PROT
+diff --git a/arch/sparc/mm/init_64.c b/arch/sparc/mm/init_64.c
+index f6174df2d5af..d6faee23c77d 100644
+--- a/arch/sparc/mm/init_64.c
++++ b/arch/sparc/mm/init_64.c
+@@ -2634,6 +2634,9 @@ void vmemmap_free(unsigned long start, unsigned long end,
+ }
+ #endif /* CONFIG_SPARSEMEM_VMEMMAP */
  
++/* These are actually filled in at boot time by sun4{u,v}_pgprot_init() */
++static pgprot_t protection_map[16] __ro_after_init;
++
+ static void prot_init_common(unsigned long page_none,
+ 			     unsigned long page_shared,
+ 			     unsigned long page_copy,
 -- 
-2.31.0
+2.25.1
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
