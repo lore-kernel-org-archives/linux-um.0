@@ -1,8 +1,8 @@
 Return-Path: <openrisc-bounces@lists.librecores.org>
 From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V7 01/26] mm/mmap: Build protect protection_map[] with __P000
-Date: Mon, 11 Jul 2022 12:35:35 +0530
-Message-Id: <20220711070600.2378316-2-anshuman.khandual@arm.com>
+Subject: [PATCH V7 03/26] powerpc/mm: Move protection_map[] inside the platform
+Date: Mon, 11 Jul 2022 12:35:37 +0530
+Message-Id: <20220711070600.2378316-4-anshuman.khandual@arm.com>
 In-Reply-To: <20220711070600.2378316-1-anshuman.khandual@arm.com>
 References: <20220711070600.2378316-1-anshuman.khandual@arm.com>
 MIME-Version: 1.0
@@ -17,60 +17,109 @@ List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
 Errors-To: openrisc-bounces@lists.librecores.org
 Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
 To: linux-mm@kvack.org, akpm@linux-foundation.org
-Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, Christoph Hellwig <hch@lst.de>, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, Paul Mackerras <paulus@samba.org>, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, Nicholas Piggin <npiggin@gmail.com>, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
 List-ID: <linux-um.lists.infradead.org>
 
-Build protect generic protection_map[] array with __P000, so that it can be
-moved inside all the platforms one after the other. Otherwise there will be
-build failures during this process. CONFIG_ARCH_HAS_VM_GET_PAGE_PROT cannot
-be used for this purpose as only certain platforms enable this config now.
+This moves protection_map[] inside the platform and while here, also enable
+ARCH_HAS_VM_GET_PAGE_PROT on 32 bit and nohash 64 (aka book3e/64) platforms
+via DECLARE_VM_GET_PAGE_PROT.
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: linuxppc-dev@lists.ozlabs.org
 Cc: linux-kernel@vger.kernel.org
-Reviewed-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Suggested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- include/linux/mm.h | 2 ++
- mm/mmap.c          | 2 ++
- 2 files changed, 4 insertions(+)
+ arch/powerpc/Kconfig               |  2 +-
+ arch/powerpc/include/asm/pgtable.h | 20 +-------------------
+ arch/powerpc/mm/pgtable.c          | 24 ++++++++++++++++++++++++
+ 3 files changed, 26 insertions(+), 20 deletions(-)
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index cf3d0d673f6b..0ff0a1bad091 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -424,7 +424,9 @@ extern unsigned int kobjsize(const void *objp);
-  * mapping from the currently active vm_flags protection bits (the
-  * low four bits) to a page protection mask..
-  */
-+#ifdef __P000
- extern pgprot_t protection_map[16];
-+#endif
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 7aa12e88c580..40cdd1f2dbaf 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -140,7 +140,7 @@ config PPC
+ 	select ARCH_HAS_TICK_BROADCAST		if GENERIC_CLOCKEVENTS_BROADCAST
+ 	select ARCH_HAS_UACCESS_FLUSHCACHE
+ 	select ARCH_HAS_UBSAN_SANITIZE_ALL
+-	select ARCH_HAS_VM_GET_PAGE_PROT	if PPC_BOOK3S_64
++	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+ 	select ARCH_KEEP_MEMBLOCK
+ 	select ARCH_MIGHT_HAVE_PC_PARPORT
+diff --git a/arch/powerpc/include/asm/pgtable.h b/arch/powerpc/include/asm/pgtable.h
+index d564d0ecd4cd..33f4bf8d22b0 100644
+--- a/arch/powerpc/include/asm/pgtable.h
++++ b/arch/powerpc/include/asm/pgtable.h
+@@ -20,25 +20,6 @@ struct mm_struct;
+ #include <asm/nohash/pgtable.h>
+ #endif /* !CONFIG_PPC_BOOK3S */
+ 
+-/* Note due to the way vm flags are laid out, the bits are XWR */
+-#define __P000	PAGE_NONE
+-#define __P001	PAGE_READONLY
+-#define __P010	PAGE_COPY
+-#define __P011	PAGE_COPY
+-#define __P100	PAGE_READONLY_X
+-#define __P101	PAGE_READONLY_X
+-#define __P110	PAGE_COPY_X
+-#define __P111	PAGE_COPY_X
+-
+-#define __S000	PAGE_NONE
+-#define __S001	PAGE_READONLY
+-#define __S010	PAGE_SHARED
+-#define __S011	PAGE_SHARED
+-#define __S100	PAGE_READONLY_X
+-#define __S101	PAGE_READONLY_X
+-#define __S110	PAGE_SHARED_X
+-#define __S111	PAGE_SHARED_X
+-
+ #ifndef __ASSEMBLY__
+ 
+ #ifndef MAX_PTRS_PER_PGD
+@@ -79,6 +60,7 @@ extern void paging_init(void);
+ void poking_init(void);
+ 
+ extern unsigned long ioremap_bot;
++extern const pgprot_t protection_map[16];
  
  /*
-  * The default fault flags that should be used by most of the
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 61e6135c54ef..b01f0280bda2 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -101,6 +101,7 @@ static void unmap_region(struct mm_struct *mm,
-  *								w: (no) no
-  *								x: (yes) yes
-  */
-+#ifdef __P000
- pgprot_t protection_map[16] __ro_after_init = {
- 	[VM_NONE]					= __P000,
- 	[VM_READ]					= __P001,
-@@ -119,6 +120,7 @@ pgprot_t protection_map[16] __ro_after_init = {
- 	[VM_SHARED | VM_EXEC | VM_WRITE]		= __S110,
- 	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= __S111
- };
+  * kern_addr_valid is intended to indicate whether an address is a valid
+diff --git a/arch/powerpc/mm/pgtable.c b/arch/powerpc/mm/pgtable.c
+index e6166b71d36d..cb2dcdb18f8e 100644
+--- a/arch/powerpc/mm/pgtable.c
++++ b/arch/powerpc/mm/pgtable.c
+@@ -472,3 +472,27 @@ pte_t *__find_linux_pte(pgd_t *pgdir, unsigned long ea,
+ 	return ret_pte;
+ }
+ EXPORT_SYMBOL_GPL(__find_linux_pte);
++
++/* Note due to the way vm flags are laid out, the bits are XWR */
++const pgprot_t protection_map[16] = {
++	[VM_NONE]					= PAGE_NONE,
++	[VM_READ]					= PAGE_READONLY,
++	[VM_WRITE]					= PAGE_COPY,
++	[VM_WRITE | VM_READ]				= PAGE_COPY,
++	[VM_EXEC]					= PAGE_READONLY_X,
++	[VM_EXEC | VM_READ]				= PAGE_READONLY_X,
++	[VM_EXEC | VM_WRITE]				= PAGE_COPY_X,
++	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY_X,
++	[VM_SHARED]					= PAGE_NONE,
++	[VM_SHARED | VM_READ]				= PAGE_READONLY,
++	[VM_SHARED | VM_WRITE]				= PAGE_SHARED,
++	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED,
++	[VM_SHARED | VM_EXEC]				= PAGE_READONLY_X,
++	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY_X,
++	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED_X,
++	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED_X
++};
++
++#ifndef CONFIG_PPC_BOOK3S_64
++DECLARE_VM_GET_PAGE_PROT
 +#endif
- 
- #ifndef CONFIG_ARCH_HAS_VM_GET_PAGE_PROT
- pgprot_t vm_get_page_prot(unsigned long vm_flags)
 -- 
 2.25.1
 
