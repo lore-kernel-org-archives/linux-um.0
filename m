@@ -1,180 +1,113 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oGEtp-009KaQ-IW
-	for linux-um@lists.infradead.org; Tue, 26 Jul 2022 07:22:39 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v13 01/42] virtio: record the maximum queue num supported by the device.
-Date: Tue, 26 Jul 2022 15:21:44 +0800
-Message-Id: <20220726072225.19884-2-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
-References: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
+Return-Path: <openrisc-bounces@lists.librecores.org>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH V7 25/26] sh/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+Date: Mon, 11 Jul 2022 12:35:59 +0530
+Message-Id: <20220711070600.2378316-26-anshuman.khandual@arm.com>
+In-Reply-To: <20220711070600.2378316-1-anshuman.khandual@arm.com>
+References: <20220711070600.2378316-1-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+Content-Transfer-Encoding: 8bit
+List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
+List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
+List-Post: <mailto:openrisc@lists.librecores.org>
+List-Help: <mailto:openrisc-request@lists.librecores.org?subject=help>
+List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
+Errors-To: openrisc-bounces@lists.librecores.org
+Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
+To: linux-mm@kvack.org, akpm@linux-foundation.org
+Cc: Rich Felker <dalias@libc.org>, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+List-ID: <linux-um.lists.infradead.org>
 
-virtio-net can display the maximum (supported by hardware) ring size in
-ethtool -g eth0.
+This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
+vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
+up a private and static protection_map[] array. Subsequently all __SXXX and
+__PXXX macros can be dropped which are no longer needed.
 
-When the subsequent patch implements vring reset, it can judge whether
-the ring size passed by the driver is legal based on this.
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: Rich Felker <dalias@libc.org>
+Cc: linux-sh@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- arch/um/drivers/virtio_uml.c             | 1 +
- drivers/platform/mellanox/mlxbf-tmfifo.c | 2 ++
- drivers/remoteproc/remoteproc_virtio.c   | 2 ++
- drivers/s390/virtio/virtio_ccw.c         | 3 +++
- drivers/virtio/virtio_mmio.c             | 2 ++
- drivers/virtio/virtio_pci_legacy.c       | 2 ++
- drivers/virtio/virtio_pci_modern.c       | 2 ++
- drivers/virtio/virtio_vdpa.c             | 2 ++
- include/linux/virtio.h                   | 2 ++
- 9 files changed, 18 insertions(+)
+ arch/sh/Kconfig               |  1 +
+ arch/sh/include/asm/pgtable.h | 17 -----------------
+ arch/sh/mm/mmap.c             | 20 ++++++++++++++++++++
+ 3 files changed, 21 insertions(+), 17 deletions(-)
 
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index 82ff3785bf69..e719af8bdf56 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -958,6 +958,7 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
- 		goto error_create;
- 	}
- 	vq->priv = info;
-+	vq->num_max = num;
- 	num = virtqueue_get_vring_size(vq);
+diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
+index 5f220e903e5a..91f3ea325388 100644
+--- a/arch/sh/Kconfig
++++ b/arch/sh/Kconfig
+@@ -12,6 +12,7 @@ config SUPERH
+ 	select ARCH_HAS_GCOV_PROFILE_ALL
+ 	select ARCH_HAS_PTE_SPECIAL
+ 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
++	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_HIBERNATION_POSSIBLE if MMU
+ 	select ARCH_MIGHT_HAVE_PC_PARPORT
+ 	select ARCH_WANT_IPC_PARSE_VERSION
+diff --git a/arch/sh/include/asm/pgtable.h b/arch/sh/include/asm/pgtable.h
+index d7ddb1ec86a0..6fb9ec54cf9b 100644
+--- a/arch/sh/include/asm/pgtable.h
++++ b/arch/sh/include/asm/pgtable.h
+@@ -89,23 +89,6 @@ static inline unsigned long phys_addr_mask(void)
+  * completely separate permission bits for user and kernel space.
+  */
+ 	 /*xwr*/
+-#define __P000	PAGE_NONE
+-#define __P001	PAGE_READONLY
+-#define __P010	PAGE_COPY
+-#define __P011	PAGE_COPY
+-#define __P100	PAGE_EXECREAD
+-#define __P101	PAGE_EXECREAD
+-#define __P110	PAGE_COPY
+-#define __P111	PAGE_COPY
+-
+-#define __S000	PAGE_NONE
+-#define __S001	PAGE_READONLY
+-#define __S010	PAGE_WRITEONLY
+-#define __S011	PAGE_SHARED
+-#define __S100	PAGE_EXECREAD
+-#define __S101	PAGE_EXECREAD
+-#define __S110	PAGE_RWX
+-#define __S111	PAGE_RWX
  
- 	if (vu_dev->protocol_features &
-diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
-index 38800e86ed8a..1ae3c56b66b0 100644
---- a/drivers/platform/mellanox/mlxbf-tmfifo.c
-+++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
-@@ -959,6 +959,8 @@ static int mlxbf_tmfifo_virtio_find_vqs(struct virtio_device *vdev,
- 			goto error;
- 		}
+ typedef pte_t *pte_addr_t;
  
-+		vq->num_max = vring->num;
+diff --git a/arch/sh/mm/mmap.c b/arch/sh/mm/mmap.c
+index 6a1a1297baae..b82199878b45 100644
+--- a/arch/sh/mm/mmap.c
++++ b/arch/sh/mm/mmap.c
+@@ -19,6 +19,26 @@ unsigned long shm_align_mask = PAGE_SIZE - 1;	/* Sane caches */
+ EXPORT_SYMBOL(shm_align_mask);
+ 
+ #ifdef CONFIG_MMU
++static const pgprot_t protection_map[16] = {
++	[VM_NONE]					= PAGE_NONE,
++	[VM_READ]					= PAGE_READONLY,
++	[VM_WRITE]					= PAGE_COPY,
++	[VM_WRITE | VM_READ]				= PAGE_COPY,
++	[VM_EXEC]					= PAGE_EXECREAD,
++	[VM_EXEC | VM_READ]				= PAGE_EXECREAD,
++	[VM_EXEC | VM_WRITE]				= PAGE_COPY,
++	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY,
++	[VM_SHARED]					= PAGE_NONE,
++	[VM_SHARED | VM_READ]				= PAGE_READONLY,
++	[VM_SHARED | VM_WRITE]				= PAGE_WRITEONLY,
++	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED,
++	[VM_SHARED | VM_EXEC]				= PAGE_EXECREAD,
++	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_EXECREAD,
++	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_RWX,
++	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_RWX
++};
++DECLARE_VM_GET_PAGE_PROT
 +
- 		vqs[i] = vq;
- 		vring->vq = vq;
- 		vq->priv = vring;
-diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
-index d43d74733f0a..0f7706e23eb9 100644
---- a/drivers/remoteproc/remoteproc_virtio.c
-+++ b/drivers/remoteproc/remoteproc_virtio.c
-@@ -125,6 +125,8 @@ static struct virtqueue *rp_find_vq(struct virtio_device *vdev,
- 		return ERR_PTR(-ENOMEM);
- 	}
- 
-+	vq->num_max = num;
-+
- 	rvring->vq = vq;
- 	vq->priv = rvring;
- 
-diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
-index 161d3b141f0d..6b86d0280d6b 100644
---- a/drivers/s390/virtio/virtio_ccw.c
-+++ b/drivers/s390/virtio/virtio_ccw.c
-@@ -530,6 +530,9 @@ static struct virtqueue *virtio_ccw_setup_vq(struct virtio_device *vdev,
- 		err = -ENOMEM;
- 		goto out_err;
- 	}
-+
-+	vq->num_max = info->num;
-+
- 	/* it may have been reduced */
- 	info->num = virtqueue_get_vring_size(vq);
- 
-diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
-index 083ff1eb743d..a20d5a6b5819 100644
---- a/drivers/virtio/virtio_mmio.c
-+++ b/drivers/virtio/virtio_mmio.c
-@@ -403,6 +403,8 @@ static struct virtqueue *vm_setup_vq(struct virtio_device *vdev, unsigned int in
- 		goto error_new_virtqueue;
- 	}
- 
-+	vq->num_max = num;
-+
- 	/* Activate the queue */
- 	writel(virtqueue_get_vring_size(vq), vm_dev->base + VIRTIO_MMIO_QUEUE_NUM);
- 	if (vm_dev->version == 1) {
-diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virtio_pci_legacy.c
-index a5e5721145c7..2257f1b3d8ae 100644
---- a/drivers/virtio/virtio_pci_legacy.c
-+++ b/drivers/virtio/virtio_pci_legacy.c
-@@ -135,6 +135,8 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 	if (!vq)
- 		return ERR_PTR(-ENOMEM);
- 
-+	vq->num_max = num;
-+
- 	q_pfn = virtqueue_get_desc_addr(vq) >> VIRTIO_PCI_QUEUE_ADDR_SHIFT;
- 	if (q_pfn >> 32) {
- 		dev_err(&vp_dev->pci_dev->dev,
-diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
-index 623906b4996c..e7e0b8c850f6 100644
---- a/drivers/virtio/virtio_pci_modern.c
-+++ b/drivers/virtio/virtio_pci_modern.c
-@@ -218,6 +218,8 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 	if (!vq)
- 		return ERR_PTR(-ENOMEM);
- 
-+	vq->num_max = num;
-+
- 	/* activate the queue */
- 	vp_modern_set_queue_size(mdev, index, virtqueue_get_vring_size(vq));
- 	vp_modern_queue_address(mdev, index, virtqueue_get_desc_addr(vq),
-diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
-index c40f7deb6b5a..9670cc79371d 100644
---- a/drivers/virtio/virtio_vdpa.c
-+++ b/drivers/virtio/virtio_vdpa.c
-@@ -183,6 +183,8 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
- 		goto error_new_virtqueue;
- 	}
- 
-+	vq->num_max = max_num;
-+
- 	/* Setup virtqueue callback */
- 	cb.callback = callback ? virtio_vdpa_virtqueue_cb : NULL;
- 	cb.private = info;
-diff --git a/include/linux/virtio.h b/include/linux/virtio.h
-index d8fdf170637c..129bde7521e3 100644
---- a/include/linux/virtio.h
-+++ b/include/linux/virtio.h
-@@ -19,6 +19,7 @@
-  * @priv: a pointer for the virtqueue implementation to use.
-  * @index: the zero-based ordinal number for this queue.
-  * @num_free: number of elements we expect to be able to fit.
-+ * @num_max: the maximum number of elements supported by the device.
-  *
-  * A note on @num_free: with indirect buffers, each buffer needs one
-  * element in the queue, otherwise a buffer will need one element per
-@@ -31,6 +32,7 @@ struct virtqueue {
- 	struct virtio_device *vdev;
- 	unsigned int index;
- 	unsigned int num_free;
-+	unsigned int num_max;
- 	void *priv;
- };
- 
+ /*
+  * To avoid cache aliases, we map the shared page with same color.
+  */
 -- 
-2.31.0
+2.25.1
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
