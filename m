@@ -1,56 +1,110 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oBgOW-00664O-A8
-	for linux-um@lists.infradead.org; Wed, 13 Jul 2022 17:43:29 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id C893961D0C
-	for <linux-um@lists.infradead.org>; Wed, 13 Jul 2022 17:43:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F24E6C34114
-	for <linux-um@lists.infradead.org>; Wed, 13 Jul 2022 17:43:26 +0000 (UTC)
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 2a01a846 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO)
-	for <linux-um@lists.infradead.org>;
-	Wed, 13 Jul 2022 17:43:25 +0000 (UTC)
-Received: by mail-io1-f47.google.com with SMTP id y2so11532682ior.12
-        for <linux-um@lists.infradead.org>; Wed, 13 Jul 2022 10:43:25 -0700 (PDT)
+Return-Path: <openrisc-bounces@lists.librecores.org>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH V7 18/26] s390/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+Date: Mon, 11 Jul 2022 12:35:52 +0530
+Message-Id: <20220711070600.2378316-19-anshuman.khandual@arm.com>
+In-Reply-To: <20220711070600.2378316-1-anshuman.khandual@arm.com>
+References: <20220711070600.2378316-1-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date: Wed, 13 Jul 2022 19:43:13 +0200
-Message-ID: <CAHmME9qg8QhGWX=vZFpVndhkEStL37kU4smH7myqm0OpXsLiqA@mail.gmail.com>
-Subject: musl on uml - warning: relocation in read-only section `.ref.text'
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
+List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
+List-Post: <mailto:openrisc@lists.librecores.org>
+List-Help: <mailto:openrisc-request@lists.librecores.org?subject=help>
+List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
+ <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
+Errors-To: openrisc-bounces@lists.librecores.org
+Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
+To: linux-mm@kvack.org, akpm@linux-foundation.org
+Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Vasily Gorbik <gor@linux.ibm.com>, Anshuman Khandual <anshuman.khandual@arm.com>, Heiko Carstens <hca@linux.ibm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+List-ID: <linux-um.lists.infradead.org>
 
-In attempting to do a static build using a musl-based toolchain, I'm
-seeing this linker error:
+This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
+vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
+up a private and static protection_map[] array. Subsequently all __SXXX and
+__PXXX macros can be dropped which are no longer needed.
 
-/home/zx2c4/Projects/wireguard-linux/tools/testing/selftests/wireguard/qemu/build/um/x86_64-linux-musl-cross/bin/../lib/gcc/x86_64-linux-
-musl/11.2.1/../../../../x86_64-linux-musl/bin/ld: init/main.o:
-warning: relocation in read-only section `.ref.text'
-/home/zx2c4/Projects/wireguard-linux/tools/testing/selftests/wireguard/qemu/build/um/x86_64-linux-musl-cross/bin/../lib/gcc/x86_64-linux-
-musl/11.2.1/../../../../x86_64-linux-musl/bin/ld: read-only segment
-has dynamic relocations
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: linux-s390@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+ arch/s390/Kconfig               |  1 +
+ arch/s390/include/asm/pgtable.h | 17 -----------------
+ arch/s390/mm/mmap.c             | 20 ++++++++++++++++++++
+ 3 files changed, 21 insertions(+), 17 deletions(-)
 
-Wondering if anybody else has seen this with musl.
+diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+index 8cd9e56c629b..abc8be547354 100644
+--- a/arch/s390/Kconfig
++++ b/arch/s390/Kconfig
+@@ -81,6 +81,7 @@ config S390
+ 	select ARCH_HAS_SYSCALL_WRAPPER
+ 	select ARCH_HAS_UBSAN_SANITIZE_ALL
+ 	select ARCH_HAS_VDSO_DATA
++	select ARCH_HAS_VM_GET_PAGE_PROT
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+ 	select ARCH_INLINE_READ_LOCK
+ 	select ARCH_INLINE_READ_LOCK_BH
+diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
+index a397b072a580..c63a05b5368a 100644
+--- a/arch/s390/include/asm/pgtable.h
++++ b/arch/s390/include/asm/pgtable.h
+@@ -424,23 +424,6 @@ static inline int is_module_addr(void *addr)
+  * implies read permission.
+  */
+          /*xwr*/
+-#define __P000	PAGE_NONE
+-#define __P001	PAGE_RO
+-#define __P010	PAGE_RO
+-#define __P011	PAGE_RO
+-#define __P100	PAGE_RX
+-#define __P101	PAGE_RX
+-#define __P110	PAGE_RX
+-#define __P111	PAGE_RX
+-
+-#define __S000	PAGE_NONE
+-#define __S001	PAGE_RO
+-#define __S010	PAGE_RW
+-#define __S011	PAGE_RW
+-#define __S100	PAGE_RX
+-#define __S101	PAGE_RX
+-#define __S110	PAGE_RWX
+-#define __S111	PAGE_RWX
+ 
+ /*
+  * Segment entry (large page) protection definitions.
+diff --git a/arch/s390/mm/mmap.c b/arch/s390/mm/mmap.c
+index d545f5c39f7e..5980ce348832 100644
+--- a/arch/s390/mm/mmap.c
++++ b/arch/s390/mm/mmap.c
+@@ -188,3 +188,23 @@ void arch_pick_mmap_layout(struct mm_struct *mm, struct rlimit *rlim_stack)
+ 		mm->get_unmapped_area = arch_get_unmapped_area_topdown;
+ 	}
+ }
++
++static const pgprot_t protection_map[16] = {
++	[VM_NONE]					= PAGE_NONE,
++	[VM_READ]					= PAGE_RO,
++	[VM_WRITE]					= PAGE_RO,
++	[VM_WRITE | VM_READ]				= PAGE_RO,
++	[VM_EXEC]					= PAGE_RX,
++	[VM_EXEC | VM_READ]				= PAGE_RX,
++	[VM_EXEC | VM_WRITE]				= PAGE_RX,
++	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_RX,
++	[VM_SHARED]					= PAGE_NONE,
++	[VM_SHARED | VM_READ]				= PAGE_RO,
++	[VM_SHARED | VM_WRITE]				= PAGE_RW,
++	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_RW,
++	[VM_SHARED | VM_EXEC]				= PAGE_RX,
++	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_RX,
++	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_RWX,
++	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_RWX
++};
++DECLARE_VM_GET_PAGE_PROT
+-- 
+2.25.1
 
-Thanks,
-Jason
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
