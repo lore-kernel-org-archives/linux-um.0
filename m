@@ -1,15 +1,13 @@
 Return-Path: <openrisc-bounces@lists.librecores.org>
-Message-ID: <8a6ccbae-7d7c-6e08-cc28-eeb649f86112@arm.com>
-Date: Wed, 6 Jul 2022 11:27:59 +0530
-MIME-Version: 1.0
-Subject: Re: [PATCH V6 00/26] mm/mmap: Drop __SXXX/__PXXX macros from across
- platforms
-Content-Language: en-US
-References: <20220630051630.1718927-1-anshuman.khandual@arm.com>
 From: Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <20220630051630.1718927-1-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: [PATCH V7 07/26] mm/mmap: Build protect protection_map[] with
+ ARCH_HAS_VM_GET_PAGE_PROT
+Date: Mon, 11 Jul 2022 12:35:41 +0530
+Message-Id: <20220711070600.2378316-8-anshuman.khandual@arm.com>
+In-Reply-To: <20220711070600.2378316-1-anshuman.khandual@arm.com>
+References: <20220711070600.2378316-1-anshuman.khandual@arm.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
  <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
 List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
@@ -20,56 +18,60 @@ List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
 Errors-To: openrisc-bounces@lists.librecores.org
 Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
 To: linux-mm@kvack.org, akpm@linux-foundation.org
-Cc: linux-xtensa@linux-xtensa.org, linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, linux-um@lists.infradead.org, linux-mips@vger.kernel.org, christophe.leroy@csgroup.eu, linux-kernel@vger.kernel.org, hch@infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-csky@vger.kernel.org, linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-snps-arc@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
 List-ID: <linux-um.lists.infradead.org>
 
+Now that protection_map[] has been moved inside those platforms that enable
+ARCH_HAS_VM_GET_PAGE_PROT. Hence generic protection_map[] array now can be
+protected with CONFIG_ARCH_HAS_VM_GET_PAGE_PROT intead of __P000.
 
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+ include/linux/mm.h | 2 +-
+ mm/mmap.c          | 5 +----
+ 2 files changed, 2 insertions(+), 5 deletions(-)
 
-On 6/30/22 10:46, Anshuman Khandual wrote:
-> __SXXX/__PXXX macros is an unnecessary abstraction layer in creating the
-> generic protection_map[] array which is used for vm_get_page_prot(). This
-> abstraction layer can be avoided, if the platforms just define the array
-> protection_map[] for all possible vm_flags access permission combinations
-> and also export vm_get_page_prot() implementation.
-> 
-> This series drops __SXXX/__PXXX macros from across platforms in the tree.
-> First it build protects generic protection_map[] array with '#ifdef __P000'
-> and moves it inside platforms which enable ARCH_HAS_VM_GET_PAGE_PROT. Later
-> this build protects same array with '#ifdef ARCH_HAS_VM_GET_PAGE_PROT' and
-> moves inside remaining platforms while enabling ARCH_HAS_VM_GET_PAGE_PROT.
-> This adds a new macro DECLARE_VM_GET_PAGE_PROT defining the current generic
-> vm_get_page_prot(), in order for it to be reused on platforms that do not
-> require custom implementation. Finally, ARCH_HAS_VM_GET_PAGE_PROT can just
-> be dropped, as all platforms now define and export vm_get_page_prot(), via
-> looking up a private and static protection_map[] array. protection_map[]
-> data type has been changed as 'static const' on all platforms that do not
-> change it during boot.
-> 
-> This series applies on v5.19-rc4 and has been build tested for multiple
-> platforms. While here it has dropped off all previous tags from folks after
-> the current restructuring. Series common CC list has been expanded to cover
-> all impacted platforms for wider reach.
-> 
-> - Anshuman
-> 
-> Changes in V6:
-> 
-> - Converted protection_map[] array as 'static const' on sparc32 platform
-> - Rebased on v5.19-rc4
-> - Collected tags
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 0ff0a1bad091..07b56995e0fe 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -424,7 +424,7 @@ extern unsigned int kobjsize(const void *objp);
+  * mapping from the currently active vm_flags protection bits (the
+  * low four bits) to a page protection mask..
+  */
+-#ifdef __P000
++#ifndef CONFIG_ARCH_HAS_VM_GET_PAGE_PROT
+ extern pgprot_t protection_map[16];
+ #endif
+ 
+diff --git a/mm/mmap.c b/mm/mmap.c
+index b46d5e931bb3..2cc722e162fa 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -81,7 +81,7 @@ static void unmap_region(struct mm_struct *mm,
+ 		struct vm_area_struct *vma, struct vm_area_struct *prev,
+ 		unsigned long start, unsigned long end);
+ 
+-#ifdef __P000
++#ifndef CONFIG_ARCH_HAS_VM_GET_PAGE_PROT
+ pgprot_t protection_map[16] __ro_after_init = {
+ 	[VM_NONE]					= __P000,
+ 	[VM_READ]					= __P001,
+@@ -100,9 +100,6 @@ pgprot_t protection_map[16] __ro_after_init = {
+ 	[VM_SHARED | VM_EXEC | VM_WRITE]		= __S110,
+ 	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= __S111
+ };
+-#endif
+-
+-#ifndef CONFIG_ARCH_HAS_VM_GET_PAGE_PROT
+ DECLARE_VM_GET_PAGE_PROT
+ #endif	/* CONFIG_ARCH_HAS_VM_GET_PAGE_PROT */
+ 
+-- 
+2.25.1
 
-There are two linux-next based build fixes for this series (listed below), when
-vm_get_page_prot() gets redefined with !CONFIG_MMU. Platform vm_get_page_prot()
-is required only with CONFIG_MMU enabled, otherwise there is a generic fallback
-stub in include/linux/mm.h
-
-https://lore.kernel.org/all/20220705221411.3381797-1-jcmvbkbc@gmail.com/	[xtensa]
-https://lore.kernel.org/all/20220706054002.1936820-1-anshuman.khandual@arm.com/ [sh]
-
-It does not seem CONFIG_MMU can be disabled on other platforms thus exposing a build
-failure. But just to be on the safer side, should all vm_get_page_prot() be wrapped
-around with #ifdef CONFIG_MMU ? In that case will resend the series with above build
-fixes folded back in as well. Please do suggest. Thank you.
-
-- Anshuman
 
