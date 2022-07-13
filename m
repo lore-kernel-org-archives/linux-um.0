@@ -1,14 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56])
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oIP5f-002zWr-VM
-	for linux-um@lists.infradead.org; Mon, 01 Aug 2022 06:39:51 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v14 17/42] virtio_ring: packed: introduce vring_free_packed
-Date: Mon,  1 Aug 2022 14:38:37 +0800
-Message-Id: <20220801063902.129329-18-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
-References: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
+	id 1oBcq9-0049Bw-RP
+	for linux-um@lists.infradead.org; Wed, 13 Jul 2022 13:55:47 +0000
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: [PATCH] um: remove stray ) in macro expression
+Date: Wed, 13 Jul 2022 15:55:39 +0200
+Message-Id: <20220713135539.919429-1-Jason@zx2c4.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -18,62 +16,71 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+To: johannes@sipsolutions.net, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
 
-Free the structure struct vring_vritqueue_packed.
-
-Subsequent patches require it.
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
----
- drivers/virtio/virtio_ring.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
-
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 1852912d711e..2993d817871a 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -1832,6 +1832,28 @@ static struct vring_desc_extra *vring_alloc_desc_extra(unsigned int num)
- 	return desc_extra;
- }
- 
-+static void vring_free_packed(struct vring_virtqueue_packed *vring_packed,
-+			      struct virtio_device *vdev)
-+{
-+	if (vring_packed->vring.desc)
-+		vring_free_queue(vdev, vring_packed->ring_size_in_bytes,
-+				 vring_packed->vring.desc,
-+				 vring_packed->ring_dma_addr);
-+
-+	if (vring_packed->vring.driver)
-+		vring_free_queue(vdev, vring_packed->event_size_in_bytes,
-+				 vring_packed->vring.driver,
-+				 vring_packed->driver_event_dma_addr);
-+
-+	if (vring_packed->vring.device)
-+		vring_free_queue(vdev, vring_packed->event_size_in_bytes,
-+				 vring_packed->vring.device,
-+				 vring_packed->device_event_dma_addr);
-+
-+	kfree(vring_packed->desc_state);
-+	kfree(vring_packed->desc_extra);
-+}
-+
- static struct virtqueue *vring_create_virtqueue_packed(
- 	unsigned int index,
- 	unsigned int num,
--- 
-2.31.0
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+QSBjb21taXQgZXJyb25lb3VzbHkgYWRkZWQgYSBzdHJheSApLCBjYXVzaW5nIGNvbXBpbGUgZXJy
+b3JzOgoKSW4gZmlsZSBpbmNsdWRlZCBmcm9tIC9ob21lL3p4MmM0L1Byb2plY3RzL3dpcmVndWFy
+ZC1saW51eC9jcnlwdG8veG9yLmM6MTc6Ci9ob21lL3p4MmM0L1Byb2plY3RzL3dpcmVndWFyZC1s
+aW51eC9jcnlwdG8veG9yLmM6IEluIGZ1bmN0aW9uIOKAmHJlZ2lzdGVyX3hvcl9ibG9ja3PigJk6
+Ci9ob21lL3p4MmM0L1Byb2plY3RzL3dpcmVndWFyZC1saW51eC9hcmNoL3VtL2luY2x1ZGUvYXNt
+L3hvci5oOjIxOjc0OiBlcnJvcjogZXhwZWN0ZWQg4oCYO+KAmSBiZWZvcmUg4oCYKeKAmSB0b2tl
+bgogICAyMSB8ICAgICAgICAgKHRpbWVfdHJhdmVsX21vZGUgPT0gVFRfTU9ERV9JTkZDUFUgPyBU
+VF9DUFVfSU5GX1hPUl9ERUZBVUxUIDogeCkpCiAgICAgIHwgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIF4KL2hv
+bWUvengyYzQvUHJvamVjdHMvd2lyZWd1YXJkLWxpbnV4L2NyeXB0by94b3IuYzo2NjoyNzogbm90
+ZTogaW4gZXhwYW5zaW9uIG9mIG1hY3JvIOKAmFhPUl9TRUxFQ1RfVEVNUExBVEXigJkKICAgNjYg
+fCAgICAgICAgIGFjdGl2ZV90ZW1wbGF0ZSA9IFhPUl9TRUxFQ1RfVEVNUExBVEUoTlVMTCk7CiAg
+ICAgIHwgICAgICAgICAgICAgICAgICAgICAgICAgICBefn5+fn5+fn5+fn5+fn5+fn5+Ci9ob21l
+L3p4MmM0L1Byb2plY3RzL3dpcmVndWFyZC1saW51eC9hcmNoL3VtL2luY2x1ZGUvYXNtL3hvci5o
+OjIxOjc0OiBlcnJvcjogZXhwZWN0ZWQgc3RhdGVtZW50IGJlZm9yZSDigJgp4oCZIHRva2VuCiAg
+IDIxIHwgICAgICAgICAodGltZV90cmF2ZWxfbW9kZSA9PSBUVF9NT0RFX0lORkNQVSA/IFRUX0NQ
+VV9JTkZfWE9SX0RFRkFVTFQgOiB4KSkKICAgICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXgovaG9tZS96
+eDJjNC9Qcm9qZWN0cy93aXJlZ3VhcmQtbGludXgvY3J5cHRvL3hvci5jOjY2OjI3OiBub3RlOiBp
+biBleHBhbnNpb24gb2YgbWFjcm8g4oCYWE9SX1NFTEVDVF9URU1QTEFUReKAmQogICA2NiB8ICAg
+ICAgICAgYWN0aXZlX3RlbXBsYXRlID0gWE9SX1NFTEVDVF9URU1QTEFURShOVUxMKTsKICAgICAg
+fCAgICAgICAgICAgICAgICAgICAgICAgICAgIF5+fn5+fn5+fn5+fn5+fn5+fn4KL2hvbWUvengy
+YzQvUHJvamVjdHMvd2lyZWd1YXJkLWxpbnV4L2NyeXB0by94b3IuYzogSW4gZnVuY3Rpb24g4oCY
+Y2FsaWJyYXRlX3hvcl9ibG9ja3PigJk6Ci9ob21lL3p4MmM0L1Byb2plY3RzL3dpcmVndWFyZC1s
+aW51eC9hcmNoL3VtL2luY2x1ZGUvYXNtL3hvci5oOjIxOjc0OiBlcnJvcjogZXhwZWN0ZWQg4oCY
+O+KAmSBiZWZvcmUg4oCYKeKAmSB0b2tlbgogICAyMSB8ICAgICAgICAgKHRpbWVfdHJhdmVsX21v
+ZGUgPT0gVFRfTU9ERV9JTkZDUFUgPyBUVF9DUFVfSU5GX1hPUl9ERUZBVUxUIDogeCkpCiAgICAg
+IHwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIF4KL2hvbWUvengyYzQvUHJvamVjdHMvd2lyZWd1YXJkLWxpbnV4
+L2NyeXB0by94b3IuYzoxMjQ6MTk6IG5vdGU6IGluIGV4cGFuc2lvbiBvZiBtYWNybyDigJhYT1Jf
+U0VMRUNUX1RFTVBMQVRF4oCZCiAgMTI0IHwgICAgICAgICBmYXN0ZXN0ID0gWE9SX1NFTEVDVF9U
+RU1QTEFURShOVUxMKTsKICAgICAgfCAgICAgICAgICAgICAgICAgICBefn5+fn5+fn5+fn5+fn5+
+fn5+Ci9ob21lL3p4MmM0L1Byb2plY3RzL3dpcmVndWFyZC1saW51eC9hcmNoL3VtL2luY2x1ZGUv
+YXNtL3hvci5oOjIxOjc0OiBlcnJvcjogZXhwZWN0ZWQgc3RhdGVtZW50IGJlZm9yZSDigJgp4oCZ
+IHRva2VuCiAgIDIxIHwgICAgICAgICAodGltZV90cmF2ZWxfbW9kZSA9PSBUVF9NT0RFX0lORkNQ
+VSA/IFRUX0NQVV9JTkZfWE9SX0RFRkFVTFQgOiB4KSkKICAgICAgfCAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+XgovaG9tZS96eDJjNC9Qcm9qZWN0cy93aXJlZ3VhcmQtbGludXgvY3J5cHRvL3hvci5jOjEyNDox
+OTogbm90ZTogaW4gZXhwYW5zaW9uIG9mIG1hY3JvIOKAmFhPUl9TRUxFQ1RfVEVNUExBVEXigJkK
+ICAxMjQgfCAgICAgICAgIGZhc3Rlc3QgPSBYT1JfU0VMRUNUX1RFTVBMQVRFKE5VTEwpOwogICAg
+ICB8ICAgICAgICAgICAgICAgICAgIF5+fn5+fn5+fn5+fn5+fn5+fn4KICBDQyAgICAgIGZzL25h
+bWVpLm8KbWFrZVszXTogKioqIFsvaG9tZS96eDJjNC9Qcm9qZWN0cy93aXJlZ3VhcmQtbGludXgv
+c2NyaXB0cy9NYWtlZmlsZS5idWlsZDoyNDk6IGNyeXB0by94b3Iub10gRXJyb3IgMQptYWtlWzNd
+OiAqKiogV2FpdGluZyBmb3IgdW5maW5pc2hlZCBqb2JzLi4uLgoKRml4ZXM6IGUzYTMzYWY4MTJj
+NiAoInVtOiBmaXggYW5kIG9wdGltaXplIHhvciBzZWxlY3QgdGVtcGxhdGUgZm9yIENPTkZJRzY0
+IGFuZCB0aW1ldHJhdmVsIG1vZGUiKQpTaWduZWQtb2ZmLWJ5OiBKYXNvbiBBLiBEb25lbmZlbGQg
+PEphc29uQHp4MmM0LmNvbT4KLS0tCiBhcmNoL3VtL2luY2x1ZGUvYXNtL3hvci5oIHwgMiArLQog
+MSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0
+IGEvYXJjaC91bS9pbmNsdWRlL2FzbS94b3IuaCBiL2FyY2gvdW0vaW5jbHVkZS9hc20veG9yLmgK
+aW5kZXggMjJiMzlkZTczYzI0Li42NDdmYWUyMDBjNWQgMTAwNjQ0Ci0tLSBhL2FyY2gvdW0vaW5j
+bHVkZS9hc20veG9yLmgKKysrIGIvYXJjaC91bS9pbmNsdWRlL2FzbS94b3IuaApAQCAtMTgsNyAr
+MTgsNyBAQAogI3VuZGVmIFhPUl9TRUxFQ1RfVEVNUExBVEUKIC8qIHBpY2sgYW4gYXJiaXRyYXJ5
+IG9uZSAtIG1lYXN1cmluZyBpc24ndCBwb3NzaWJsZSB3aXRoIGluZi1jcHUgKi8KICNkZWZpbmUg
+WE9SX1NFTEVDVF9URU1QTEFURSh4KQlcCi0JKHRpbWVfdHJhdmVsX21vZGUgPT0gVFRfTU9ERV9J
+TkZDUFUgPyBUVF9DUFVfSU5GX1hPUl9ERUZBVUxUIDogeCkpCisJKHRpbWVfdHJhdmVsX21vZGUg
+PT0gVFRfTU9ERV9JTkZDUFUgPyBUVF9DUFVfSU5GX1hPUl9ERUZBVUxUIDogeCkKICNlbmRpZgog
+CiAjZW5kaWYKLS0gCjIuMzUuMQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRl
+YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
+dW0K
 
