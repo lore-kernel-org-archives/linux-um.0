@@ -1,30 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ivanoab7.miniserver.com ([37.128.132.42] helo=www.kot-begemot.co.uk)
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oBWpT-001GFM-CF
-	for linux-um@lists.infradead.org; Wed, 13 Jul 2022 07:30:41 +0000
-Received: from [192.168.18.6] (helo=jain.kot-begemot.co.uk)
-	by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>)
-	id 1oBWRG-0001yL-47
-	for linux-um@lists.infradead.org; Wed, 13 Jul 2022 07:05:42 +0000
-Received: from madding.kot-begemot.co.uk ([192.168.3.98])
-	by jain.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.94.2)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>)
-	id 1oBWR8-003MuX-4H
-	for linux-um@lists.infradead.org; Wed, 13 Jul 2022 08:05:35 +0100
-Message-ID: <d75a84b6-55d4-7c08-14c0-948e0a8e9e19@kot-begemot.co.uk>
-Date: Wed, 13 Jul 2022 08:05:30 +0100
-MIME-Version: 1.0
+	id 1oBWQj-0012Y8-Lb
+	for linux-um@lists.infradead.org; Wed, 13 Jul 2022 07:05:06 +0000
+Message-ID: <d2c55506bd0a93854320ce352a93303cf8080f48.camel@sipsolutions.net>
 Subject: Re: [PATCH] um: seed rng using host OS rng
-Content-Language: en-US
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Wed, 13 Jul 2022 09:05:03 +0200
+In-Reply-To: <20220712232738.77737-1-Jason@zx2c4.com>
 References: <20220712232738.77737-1-Jason@zx2c4.com>
- <d20a629c-8c15-ca8a-c34a-c5c084dbee03@cambridgegreys.com>
- <9a028efb77ae662fe8eabcf2ffb5a64214f07418.camel@sipsolutions.net>
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-In-Reply-To: <9a028efb77ae662fe8eabcf2ffb5a64214f07418.camel@sipsolutions.net>
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -33,41 +18,39 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
+To: "Jason A. Donenfeld" <Jason@zx2c4.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
 
-On 13/07/2022 08:03, Johannes Berg wrote:
-> On Wed, 2022-07-13 at 07:58 +0100, Anton Ivanov wrote:
->> IIRC UML RNG device reads directly from host.
-> Yes, but that's a /dev/hwrng device, so you still need some userspace to
-> feed entropy from that into /dev/random.
->
->> If you are using UMLs own /dev/random you are effectively using the host
->> one.
->> So unless I am mistaken, you need extra randomness only if you do not
->> have UMLs /dev/random compiled in.
-> No, neither of those is true.
+On Wed, 2022-07-13 at 01:27 +0200, Jason A. Donenfeld wrote:
+> 
+> +++ b/arch/um/include/shared/os.h
+> @@ -11,6 +11,12 @@
+>  #include <irq_user.h>
+>  #include <longjmp.h>
+>  #include <mm_id.h>
+> +/* This is to get size_t */
+> +#ifndef __UM_HOST__
+> +#include <linux/types.h>
+> +#else
+> +#include <stddef.h>
+> +#endif
+>  
+>  #define CATCH_EINTR(expr) while ((errno = 0, ((expr) < 0)) && (errno == EINTR))
+>  
+> @@ -243,6 +249,7 @@ extern void stack_protections(unsigned long address);
+>  extern int raw(int fd);
+>  extern void setup_machinename(char *machine_out);
+>  extern void setup_hostinfo(char *buf, int len);
+> +extern ssize_t os_getrandom(void *buf, size_t len, unsigned int flags);
 
-OK, Cool.
+For me, this doesn't compile, and per the man-page on my system, ssize_t
+requires <sys/types.h>, not <stddef.h>?
 
->
-> johannes
->
->
->
-> _______________________________________________
-> linux-um mailing list
-> linux-um@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-um
->
-
--- 
-Anton R. Ivanov
-https://www.kot-begemot.co.uk/
-
+johannes
 
 _______________________________________________
 linux-um mailing list
