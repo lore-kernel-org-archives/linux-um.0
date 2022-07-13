@@ -1,15 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from ivanoab7.miniserver.com ([37.128.132.42] helo=www.kot-begemot.co.uk)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oBWpc-001GJR-Pf
-	for linux-um@lists.infradead.org; Wed, 13 Jul 2022 07:30:50 +0000
-Message-ID: <0cef6aca-6e94-bc77-75a2-c017e6f87f7b@kot-begemot.co.uk>
-Date: Wed, 13 Jul 2022 08:06:52 +0100
+	id 1oBWpZ-001GHY-KQ
+	for linux-um@lists.infradead.org; Wed, 13 Jul 2022 07:30:47 +0000
+Message-ID: <d20a629c-8c15-ca8a-c34a-c5c084dbee03@cambridgegreys.com>
+Date: Wed, 13 Jul 2022 07:58:34 +0100
 MIME-Version: 1.0
 Subject: Re: [PATCH] um: seed rng using host OS rng
 Content-Language: en-US
 References: <20220712232738.77737-1-Jason@zx2c4.com>
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 In-Reply-To: <20220712232738.77737-1-Jason@zx2c4.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -135,11 +135,23 @@ On 13/07/2022 00:27, Jason A. Donenfeld wrote:
 >    * UML helper threads must not handle SIGWINCH/INT/TERM
 >    */
 
-Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+I am probably missing something here.
+
+IIRC UML RNG device reads directly from host.
+
+If you are using UMLs own /dev/random you are effectively using the host 
+one.
+
+So unless I am mistaken, you need extra randomness only if you do not 
+have UMLs /dev/random compiled in.
+
+Apologies for possible duplicates - I initially did not reply-all by 
+mistake.
 
 -- 
 Anton R. Ivanov
-https://www.kot-begemot.co.uk/
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
 _______________________________________________
 linux-um mailing list
