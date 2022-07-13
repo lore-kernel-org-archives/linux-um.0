@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from dfw.source.kernel.org ([139.178.84.217])
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oCzvi-005vhB-Gz
-	for linux-um@lists.infradead.org; Sun, 17 Jul 2022 08:47:12 +0000
+	id 1oBZ8W-002VZN-Q4
+	for linux-um@lists.infradead.org; Wed, 13 Jul 2022 09:58:30 +0000
 From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH v3] um: seed rng using host OS rng
-Date: Sun, 17 Jul 2022 10:46:52 +0200
-Message-Id: <20220717084652.1525087-1-Jason@zx2c4.com>
-In-Reply-To: <20220713095815.162741-1-Jason@zx2c4.com>
-References: <20220713095815.162741-1-Jason@zx2c4.com>
+Subject: [PATCH v2] um: seed rng using host OS rng
+Date: Wed, 13 Jul 2022 11:58:15 +0200
+Message-Id: <20220713095815.162741-1-Jason@zx2c4.com>
+In-Reply-To: <Ys6V//WUKvDu3sjs@zx2c4.com>
+References: <Ys6V//WUKvDu3sjs@zx2c4.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,8 +22,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, stable@vger.kernel.org, Johannes Berg <johannes@sipsolutions.net>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+To: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, johannes@sipsolutions.net
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, stable@vger.kernel.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
 UML generally does not provide access to special CPU instructions like
 RDRAND, and execution tends to be rather deterministic, with no real
@@ -41,58 +41,19 @@ way of CONFIG_TRUST_BOOTLOADER_RANDOMNESS=n or
 random.trust_bootloader=0. So seen from that perspective, this just
 makes UML act like other archs, which is positive in its own right.
 
-Additionally, wire up arch_get_random_{int,long}() in the same way, so
-that reseeds can also make use of the host RNG, controllable by
-CONFIG_TRUST_CPU_RANDOMNESS and random.trust_cpu, per usual.
-
 Cc: stable@vger.kernel.org
 Cc: Johannes Berg <johannes@sipsolutions.net>
 Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 ---
-Johannes - I need to take this through random.git, because it relies on
-some other changes living there. Is that okay with you? -Jason
+Changes v1->v2:
+- Include sys/types.h instead of stddef.h.
 
- arch/um/include/asm/archrandom.h | 27 +++++++++++++++++++++++++++
- arch/um/include/shared/os.h      |  7 +++++++
- arch/um/kernel/um_arch.c         |  8 ++++++++
- arch/um/os-Linux/util.c          |  6 ++++++
- 4 files changed, 48 insertions(+)
- create mode 100644 arch/um/include/asm/archrandom.h
+ arch/um/include/shared/os.h | 7 +++++++
+ arch/um/kernel/um_arch.c    | 8 ++++++++
+ arch/um/os-Linux/util.c     | 6 ++++++
+ 3 files changed, 21 insertions(+)
 
-diff --git a/arch/um/include/asm/archrandom.h b/arch/um/include/asm/archrandom.h
-new file mode 100644
-index 000000000000..fdfa53862eb1
---- /dev/null
-+++ b/arch/um/include/asm/archrandom.h
-@@ -0,0 +1,27 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __ASM_UM_ARCHRANDOM_H__
-+#define __ASM_UM_ARCHRANDOM_H__
-+
-+#include <os.h>
-+
-+static inline bool __must_check arch_get_random_long(unsigned long *v)
-+{
-+	return os_getrandom(v, sizeof(*v), 0) == sizeof(*v);
-+}
-+
-+static inline bool __must_check arch_get_random_int(unsigned int *v)
-+{
-+	return os_getrandom(v, sizeof(*v), 0) == sizeof(*v);
-+}
-+
-+static inline bool __must_check arch_get_random_seed_long(unsigned long *v)
-+{
-+	return false;
-+}
-+
-+static inline bool __must_check arch_get_random_seed_int(unsigned int *v)
-+{
-+	return false;
-+}
-+
-+#endif
 diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
 index fafde1d5416e..0df646c6651e 100644
 --- a/arch/um/include/shared/os.h
