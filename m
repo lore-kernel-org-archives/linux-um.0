@@ -1,15 +1,25 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132])
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oGEuX-009LWP-8A
-	for linux-um@lists.infradead.org; Tue, 26 Jul 2022 07:23:23 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v13 25/42] virtio_pci: struct virtio_pci_common_cfg add queue_notify_data
-Date: Tue, 26 Jul 2022 15:22:08 +0800
-Message-Id: <20220726072225.19884-26-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
-References: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
+	id 1oBgOW-00664O-A8
+	for linux-um@lists.infradead.org; Wed, 13 Jul 2022 17:43:29 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id C893961D0C
+	for <linux-um@lists.infradead.org>; Wed, 13 Jul 2022 17:43:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F24E6C34114
+	for <linux-um@lists.infradead.org>; Wed, 13 Jul 2022 17:43:26 +0000 (UTC)
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 2a01a846 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO)
+	for <linux-um@lists.infradead.org>;
+	Wed, 13 Jul 2022 17:43:25 +0000 (UTC)
+Received: by mail-io1-f47.google.com with SMTP id y2so11532682ior.12
+        for <linux-um@lists.infradead.org>; Wed, 13 Jul 2022 10:43:25 -0700 (PDT)
 MIME-Version: 1.0
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date: Wed, 13 Jul 2022 19:43:13 +0200
+Message-ID: <CAHmME9qg8QhGWX=vZFpVndhkEStL37kU4smH7myqm0OpXsLiqA@mail.gmail.com>
+Subject: musl on uml - warning: relocation in read-only section `.ref.text'
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,55 +32,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+To: linux-um@lists.infradead.org
 
-Add queue_notify_data in struct virtio_pci_common_cfg, which comes from
-here https://github.com/oasis-tcs/virtio-spec/issues/89
+In attempting to do a static build using a musl-based toolchain, I'm
+seeing this linker error:
 
-Since I want to add queue_reset after queue_notify_data, I submitted
-this patch first.
+/home/zx2c4/Projects/wireguard-linux/tools/testing/selftests/wireguard/qemu/build/um/x86_64-linux-musl-cross/bin/../lib/gcc/x86_64-linux-
+musl/11.2.1/../../../../x86_64-linux-musl/bin/ld: init/main.o:
+warning: relocation in read-only section `.ref.text'
+/home/zx2c4/Projects/wireguard-linux/tools/testing/selftests/wireguard/qemu/build/um/x86_64-linux-musl-cross/bin/../lib/gcc/x86_64-linux-
+musl/11.2.1/../../../../x86_64-linux-musl/bin/ld: read-only segment
+has dynamic relocations
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
----
- include/linux/virtio_pci_modern.h | 7 +++++++
- include/uapi/linux/virtio_pci.h   | 1 +
- 2 files changed, 8 insertions(+)
+Wondering if anybody else has seen this with musl.
 
-diff --git a/include/linux/virtio_pci_modern.h b/include/linux/virtio_pci_modern.h
-index eb2bd9b4077d..41f5a018bd94 100644
---- a/include/linux/virtio_pci_modern.h
-+++ b/include/linux/virtio_pci_modern.h
-@@ -5,6 +5,13 @@
- #include <linux/pci.h>
- #include <linux/virtio_pci.h>
- 
-+struct virtio_pci_modern_common_cfg {
-+	struct virtio_pci_common_cfg cfg;
-+
-+	__le16 queue_notify_data;	/* read-write */
-+	__le16 padding;
-+};
-+
- struct virtio_pci_modern_device {
- 	struct pci_dev *pci_dev;
- 
-diff --git a/include/uapi/linux/virtio_pci.h b/include/uapi/linux/virtio_pci.h
-index 3a86f36d7e3d..f5981a874481 100644
---- a/include/uapi/linux/virtio_pci.h
-+++ b/include/uapi/linux/virtio_pci.h
-@@ -202,6 +202,7 @@ struct virtio_pci_cfg_cap {
- #define VIRTIO_PCI_COMMON_Q_AVAILHI	44
- #define VIRTIO_PCI_COMMON_Q_USEDLO	48
- #define VIRTIO_PCI_COMMON_Q_USEDHI	52
-+#define VIRTIO_PCI_COMMON_Q_NDATA	56
- 
- #endif /* VIRTIO_PCI_NO_MODERN */
- 
--- 
-2.31.0
-
+Thanks,
+Jason
 
 _______________________________________________
 linux-um mailing list
