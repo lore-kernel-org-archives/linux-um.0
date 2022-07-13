@@ -1,14 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132])
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oGEuV-009LV4-Bx
-	for linux-um@lists.infradead.org; Tue, 26 Jul 2022 07:23:21 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v13 24/42] virtio_ring: introduce virtqueue_resize()
-Date: Tue, 26 Jul 2022 15:22:07 +0800
-Message-Id: <20220726072225.19884-25-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
-References: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
+	id 1oBayl-003Jju-0G
+	for linux-um@lists.infradead.org; Wed, 13 Jul 2022 11:56:32 +0000
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: [PATCH] um: add "noreboot" command line option for PANIC_TIMEOUT=-1 setups
+Date: Wed, 13 Jul 2022 13:56:17 +0200
+Message-Id: <20220713115617.493376-1-Jason@zx2c4.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,126 +20,60 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+To: johannes@sipsolutions.net, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
 
-Introduce virtqueue_resize() to implement the resize of vring.
-Based on these, the driver can dynamically adjust the size of the vring.
-For example: ethtool -G.
+QEMU has a -no-reboot option, which halts instead of reboots when the
+guest asks to reboot. This is invaluable when used with
+CONFIG_PANIC_TIMEOUT=-1 (and panic_on_warn), because it allows panics
+and warnings to be caught immediately in CI. Implement this in UML too,
+by way of a basic setup param.
 
-virtqueue_resize() implements resize based on the vq reset function. In
-case of failure to allocate a new vring, it will give up resize and use
-the original vring.
-
-During this process, if the re-enable reset vq fails, the vq can no
-longer be used. Although the probability of this situation is not high.
-
-The parameter recycle is used to recycle the buffer that is no longer
-used.
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 ---
- drivers/virtio/virtio_ring.c | 69 ++++++++++++++++++++++++++++++++++++
- include/linux/virtio.h       |  3 ++
- 2 files changed, 72 insertions(+)
+ arch/um/os-Linux/skas/process.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 98bac8c389e8..140b13693a98 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -2538,6 +2538,75 @@ struct virtqueue *vring_create_virtqueue(
+diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+index 87d3129e7362..0df2ebcc97c0 100644
+--- a/arch/um/os-Linux/skas/process.c
++++ b/arch/um/os-Linux/skas/process.c
+@@ -5,6 +5,7 @@
+  */
+ 
+ #include <stdlib.h>
++#include <stdbool.h>
+ #include <unistd.h>
+ #include <sched.h>
+ #include <errno.h>
+@@ -707,10 +708,24 @@ void halt_skas(void)
+ 	UML_LONGJMP(&initial_jmpbuf, INIT_JMP_HALT);
  }
- EXPORT_SYMBOL_GPL(vring_create_virtqueue);
  
-+/**
-+ * virtqueue_resize - resize the vring of vq
-+ * @_vq: the struct virtqueue we're talking about.
-+ * @num: new ring num
-+ * @recycle: callback for recycle the useless buffer
-+ *
-+ * When it is really necessary to create a new vring, it will set the current vq
-+ * into the reset state. Then call the passed callback to recycle the buffer
-+ * that is no longer used. Only after the new vring is successfully created, the
-+ * old vring will be released.
-+ *
-+ * Caller must ensure we don't call this with other virtqueue operations
-+ * at the same time (except where noted).
-+ *
-+ * Returns zero or a negative error.
-+ * 0: success.
-+ * -ENOMEM: Failed to allocate a new ring, fall back to the original ring size.
-+ *  vq can still work normally
-+ * -EBUSY: Failed to sync with device, vq may not work properly
-+ * -ENOENT: Transport or device not supported
-+ * -E2BIG/-EINVAL: num error
-+ * -EPERM: Operation not permitted
-+ *
-+ */
-+int virtqueue_resize(struct virtqueue *_vq, u32 num,
-+		     void (*recycle)(struct virtqueue *vq, void *buf))
++static bool noreboot;
++
++static int __init noreboot_cmd_param(char *str, int *add)
 +{
-+	struct vring_virtqueue *vq = to_vvq(_vq);
-+	struct virtio_device *vdev = vq->vq.vdev;
-+	void *buf;
-+	int err;
-+
-+	if (!vq->we_own_ring)
-+		return -EPERM;
-+
-+	if (num > vq->vq.num_max)
-+		return -E2BIG;
-+
-+	if (!num)
-+		return -EINVAL;
-+
-+	if ((vq->packed_ring ? vq->packed.vring.num : vq->split.vring.num) == num)
-+		return 0;
-+
-+	if (!vdev->config->disable_vq_and_reset)
-+		return -ENOENT;
-+
-+	if (!vdev->config->enable_vq_after_reset)
-+		return -ENOENT;
-+
-+	err = vdev->config->disable_vq_and_reset(_vq);
-+	if (err)
-+		return err;
-+
-+	while ((buf = virtqueue_detach_unused_buf(_vq)) != NULL)
-+		recycle(_vq, buf);
-+
-+	if (vq->packed_ring)
-+		err = virtqueue_resize_packed(_vq, num);
-+	else
-+		err = virtqueue_resize_split(_vq, num);
-+
-+	if (vdev->config->enable_vq_after_reset(_vq))
-+		return -EBUSY;
-+
-+	return err;
++	noreboot = true;
++	return 0;
 +}
-+EXPORT_SYMBOL_GPL(virtqueue_resize);
 +
- /* Only available for split ring */
- struct virtqueue *vring_new_virtqueue(unsigned int index,
- 				      unsigned int num,
-diff --git a/include/linux/virtio.h b/include/linux/virtio.h
-index 129bde7521e3..62e31bca5602 100644
---- a/include/linux/virtio.h
-+++ b/include/linux/virtio.h
-@@ -91,6 +91,9 @@ dma_addr_t virtqueue_get_desc_addr(struct virtqueue *vq);
- dma_addr_t virtqueue_get_avail_addr(struct virtqueue *vq);
- dma_addr_t virtqueue_get_used_addr(struct virtqueue *vq);
++__uml_setup("noreboot", noreboot_cmd_param,
++"noreboot\n"
++"    Rather than rebooting, exit always, akin to QEMU's -no-reboot option.\n"
++"    This is useful if you're using CONFIG_PANIC_TIMEOUT in order to catch\n"
++"    crashes in CI\n");
++
+ void reboot_skas(void)
+ {
+ 	block_signals_trace();
+-	UML_LONGJMP(&initial_jmpbuf, INIT_JMP_REBOOT);
++	UML_LONGJMP(&initial_jmpbuf, noreboot ? INIT_JMP_HALT : INIT_JMP_REBOOT);
+ }
  
-+int virtqueue_resize(struct virtqueue *vq, u32 num,
-+		     void (*recycle)(struct virtqueue *vq, void *buf));
-+
- /**
-  * virtio_device - representation of a device using virtio
-  * @index: unique position on the virtio bus
+ void __switch_mm(struct mm_id *mm_idp)
 -- 
-2.31.0
+2.35.1
 
 
 _______________________________________________
