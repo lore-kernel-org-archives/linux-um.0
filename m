@@ -1,85 +1,50 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oE02P-00HFeG-49
-	for linux-um@lists.infradead.org; Wed, 20 Jul 2022 03:06:14 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v12 38/40] virtio_net: support rx queue resize
-Date: Wed, 20 Jul 2022 11:04:34 +0800
-Message-Id: <20220720030436.79520-39-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
-References: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
+Return-Path: <chenhuacai@gmail.com>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+References: <20220712075255.1345991-1-chenhuacai@loongson.cn>
+ <20220712075255.1345991-3-chenhuacai@loongson.cn> <CAMuHMdUazqHLbc80vpZ+Msg9A3j5aPJ3fx+CdCG3kuWDSf8WSw@mail.gmail.com>
+ <CAAhV-H775jXMbcR9j=oLBuHo1PfFziZSUQWttJAEw20sUt+GAA@mail.gmail.com>
+ <CAMuHMdUHbepd974u5iox3BcOyo_Q2ZgT-znruk+WCt+HMQ_Lgw@mail.gmail.com>
+ <CAAhV-H78Fi0aE-h5MOgRa5L+Jt7D0wG0nLcYzx45jVney8T1BQ@mail.gmail.com>
+ <CAMuHMdVXFmKR4LuXHYRrSk3Q0VRqATGbsM512DxayWCPCE-wvg@mail.gmail.com>
+ <c8c959fa-f17d-f0dd-6a8d-e0b0ce622f3a@xen0n.name> <CAAhV-H6g5nLGJMz0ZsZqC5-73VSGffVdc6r0=3HHBo3Z8PQOBg@mail.gmail.com>
+ <CAK8P3a0GUPSYBai3Z9vzw0wrXGLFiik6hdY3zc6nQ6mQs7yHvQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a0GUPSYBai3Z9vzw0wrXGLFiik6hdY3zc6nQ6mQs7yHvQ@mail.gmail.com>
+From: Huacai Chen <chenhuacai@gmail.com>
+Date: Thu, 14 Jul 2022 15:39:13 +0800
+Message-ID: <CAAhV-H43QWXdaQuKvk+=BXA7LA6_p1aJb0qyXdhPhR_so_S0dA@mail.gmail.com>
+Subject: Re: [PATCH 3/6] M68K: cpuinfo: Fix a warning for CONFIG_CPUMASK_OFFSTACK
+Content-Type: text/plain; charset="UTF-8"
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: WANG Xuerui <kernel@xen0n.name>, Geert Uytterhoeven <geert@linux-m68k.org>, Huacai Chen <chenhuacai@loongson.cn>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Michal Simek <monstr@monstr.eu>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, loongarch@lists.linux.dev, Linux-Arch <linux-arch@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Guo Ren <guoren@kernel.org>, Jiaxun Yang <jiaxun.yang@flygoat.com>, "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>, Linux-sh list <linux-sh@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>, stable <stable@vger.kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-This patch implements the resize function of the rx queues.
-Based on this function, it is possible to modify the ring num of the
-queue.
+Hi, Arnd,
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/net/virtio_net.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+On Thu, Jul 14, 2022 at 2:59 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Thu, Jul 14, 2022 at 4:07 AM Huacai Chen <chenhuacai@gmail.com> wrote:
+> > On Tue, Jul 12, 2022 at 6:15 PM WANG Xuerui <kernel@xen0n.name> wrote:
+> > > On 2022/7/12 17:13, Geert Uytterhoeven wrote:
+> > >
+> > > But judging from the intent of this patch series (fixing WARNs on
+> > > certain configs), and that the triggering condition is currently
+> > > impossible on m68k (and other non-SMP) platforms, I think cleanups for
+> > > such arches could come as a separate patch series later. I think the
+> > > m68k refactoring is reasonable after all, due to my observation above,
+> > > but for the other non-SMP arches we may want to wait for the respective
+> > > maintainers' opinions.
+> >
+> > It seems that the best solution is only fix architectures with SMP
+> > support and leave others (m68k, microblaze, um) as is. :)
+>
+> I think it probably makes sense to do this as a combined cleanup patch,
+> which I can merge through the asm-generic tree, for all architectures
+> whose maintainer does not pick it up directly. For SMP architectures,
+> it's a bugfix that we probably want backported into stable kernels, while
+> for non-SMP targets it is just a minor cleanup for consistency.
+OK, I will send V2 later.
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index fe4dc43c05a1..1115a8b59a08 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -278,6 +278,8 @@ struct padded_vnet_hdr {
- 	char padding[12];
- };
- 
-+static void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *buf);
-+
- static bool is_xdp_frame(void *ptr)
- {
- 	return (unsigned long)ptr & VIRTIO_XDP_FLAG;
-@@ -1846,6 +1848,26 @@ static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
- 	return NETDEV_TX_OK;
- }
- 
-+static int virtnet_rx_resize(struct virtnet_info *vi,
-+			     struct receive_queue *rq, u32 ring_num)
-+{
-+	int err, qindex;
-+
-+	qindex = rq - vi->rq;
-+
-+	napi_disable(&rq->napi);
-+
-+	err = virtqueue_resize(rq->vq, ring_num, virtnet_rq_free_unused_buf);
-+	if (err)
-+		netdev_err(vi->dev, "resize rx fail: rx queue index: %d err: %d\n", qindex, err);
-+
-+	if (!try_fill_recv(vi, rq, GFP_KERNEL))
-+		schedule_delayed_work(&vi->refill, 0);
-+
-+	virtnet_napi_enable(rq->vq, &rq->napi);
-+	return err;
-+}
-+
- /*
-  * Send command via the control virtqueue and check status.  Commands
-  * supported by the hypervisor, as indicated by feature bits, should
--- 
-2.31.0
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+Huacai
+>
+>         Arnd
 
