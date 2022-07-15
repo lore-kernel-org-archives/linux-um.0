@@ -1,102 +1,81 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o7BzA-003dwX-JC
-	for linux-um@lists.infradead.org; Fri, 01 Jul 2022 08:26:48 +0000
-Received: by mail-pg1-f199.google.com with SMTP id a15-20020a65604f000000b00401a9baf7d5so993643pgp.0
-        for <linux-um@lists.infradead.org>; Fri, 01 Jul 2022 01:26:40 -0700 (PDT)
-Message-ID: <3e36e44f-1f37-ad02-eb89-833a0856ec4e@redhat.com>
-Date: Fri, 1 Jul 2022 16:26:25 +0800
+Return-Path: <linux-arch-owner@vger.kernel.org>
+Date: Sat, 16 Jul 2022 07:23:10 +0900
+From: Stafford Horne <shorne@gmail.com>
+Subject: Re: [RFC PATCH 2/2] asm-generic: Add new pci.h and use it
+Message-ID: <YtHozgXIkpyWHKth@antec>
+References: <20220714214657.2402250-1-shorne@gmail.com>
+ <20220714214657.2402250-3-shorne@gmail.com>
+ <CAK8P3a2_HKMf8nMcSkK1_jyCEHEdzz=YiRmPvN+ACbPTafXJzA@mail.gmail.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v11 08/40] virtio_ring: split: extract the logic of alloc
- queue
-References: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
- <20220629065656.54420-9-xuanzhuo@linux.alibaba.com>
-From: Jason Wang <jasowang@redhat.com>
-In-Reply-To: <20220629065656.54420-9-xuanzhuo@linux.alibaba.com>
-Content-Language: en-US
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a2_HKMf8nMcSkK1_jyCEHEdzz=YiRmPvN+ACbPTafXJzA@mail.gmail.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Bjorn Helgaas <bhelgaas@google.com>, Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-csky@vger.kernel.org, linux-riscv <linux-riscv@lists.infradead.org>, linux-um <linux-um@lists.infradead.org>, linux-pci <linux-pci@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>, David Woodhouse <dwmw2@infradead.org>
+List-ID: <linux-um.lists.infradead.org>
 
-CuWcqCAyMDIyLzYvMjkgMTQ6NTYsIFh1YW4gWmh1byDlhpnpgZM6Cj4gU2VwYXJhdGUgdGhlIGxv
-Z2ljIG9mIHNwbGl0IHRvIGNyZWF0ZSB2cmluZyBxdWV1ZS4KPgo+IFRoaXMgZmVhdHVyZSBpcyBy
-ZXF1aXJlZCBmb3Igc3Vic2VxdWVudCB2aXJ0dXF1ZXVlIHJlc2V0IHZyaW5nLgo+Cj4gU2lnbmVk
-LW9mZi1ieTogWHVhbiBaaHVvIDx4dWFuemh1b0BsaW51eC5hbGliYWJhLmNvbT4KPiAtLS0KPiAg
-IGRyaXZlcnMvdmlydGlvL3ZpcnRpb19yaW5nLmMgfCA2OCArKysrKysrKysrKysrKysrKysrKysr
-LS0tLS0tLS0tLS0tLS0KPiAgIDEgZmlsZSBjaGFuZ2VkLCA0MiBpbnNlcnRpb25zKCspLCAyNiBk
-ZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3ZpcnRpby92aXJ0aW9fcmluZy5j
-IGIvZHJpdmVycy92aXJ0aW8vdmlydGlvX3JpbmcuYwo+IGluZGV4IDQ5ZDYxZTQxMmRjNi4uYTlj
-ZWI5YzE2YzU0IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvdmlydGlvL3ZpcnRpb19yaW5nLmMKPiAr
-KysgYi9kcml2ZXJzL3ZpcnRpby92aXJ0aW9fcmluZy5jCj4gQEAgLTk0OSwyOCArOTQ5LDE5IEBA
-IHN0YXRpYyB2b2lkIHZyaW5nX2ZyZWVfc3BsaXQoc3RydWN0IHZyaW5nX3ZpcnRxdWV1ZV9zcGxp
-dCAqdnJpbmcsCj4gICAJa2ZyZWUodnJpbmctPmRlc2NfZXh0cmEpOwo+ICAgfQo+ICAgCj4gLXN0
-YXRpYyBzdHJ1Y3QgdmlydHF1ZXVlICp2cmluZ19jcmVhdGVfdmlydHF1ZXVlX3NwbGl0KAo+IC0J
-dW5zaWduZWQgaW50IGluZGV4LAo+IC0JdW5zaWduZWQgaW50IG51bSwKPiAtCXVuc2lnbmVkIGlu
-dCB2cmluZ19hbGlnbiwKPiAtCXN0cnVjdCB2aXJ0aW9fZGV2aWNlICp2ZGV2LAo+IC0JYm9vbCB3
-ZWFrX2JhcnJpZXJzLAo+IC0JYm9vbCBtYXlfcmVkdWNlX251bSwKPiAtCWJvb2wgY29udGV4dCwK
-PiAtCWJvb2wgKCpub3RpZnkpKHN0cnVjdCB2aXJ0cXVldWUgKiksCj4gLQl2b2lkICgqY2FsbGJh
-Y2spKHN0cnVjdCB2aXJ0cXVldWUgKiksCj4gLQljb25zdCBjaGFyICpuYW1lKQo+ICtzdGF0aWMg
-aW50IHZyaW5nX2FsbG9jX3F1ZXVlX3NwbGl0KHN0cnVjdCB2cmluZ192aXJ0cXVldWVfc3BsaXQg
-KnZyaW5nLAo+ICsJCQkJICAgc3RydWN0IHZpcnRpb19kZXZpY2UgKnZkZXYsCj4gKwkJCQkgICB1
-MzIgbnVtLAo+ICsJCQkJICAgdW5zaWduZWQgaW50IHZyaW5nX2FsaWduLAo+ICsJCQkJICAgYm9v
-bCBtYXlfcmVkdWNlX251bSkKPiAgIHsKPiAtCXN0cnVjdCB2aXJ0cXVldWUgKnZxOwo+ICAgCXZv
-aWQgKnF1ZXVlID0gTlVMTDsKPiAgIAlkbWFfYWRkcl90IGRtYV9hZGRyOwo+IC0Jc2l6ZV90IHF1
-ZXVlX3NpemVfaW5fYnl0ZXM7Cj4gLQlzdHJ1Y3QgdnJpbmcgdnJpbmc7Cj4gICAKPiAgIAkvKiBX
-ZSBhc3N1bWUgbnVtIGlzIGEgcG93ZXIgb2YgMi4gKi8KPiAgIAlpZiAobnVtICYgKG51bSAtIDEp
-KSB7Cj4gICAJCWRldl93YXJuKCZ2ZGV2LT5kZXYsICJCYWQgdmlydHF1ZXVlIGxlbmd0aCAldVxu
-IiwgbnVtKTsKPiAtCQlyZXR1cm4gTlVMTDsKPiArCQlyZXR1cm4gLUVJTlZBTDsKPiAgIAl9Cj4g
-ICAKPiAgIAkvKiBUT0RPOiBhbGxvY2F0ZSBlYWNoIHF1ZXVlIGNodW5rIGluZGl2aWR1YWxseSAq
-Lwo+IEBAIC05ODEsMTEgKzk3MiwxMSBAQCBzdGF0aWMgc3RydWN0IHZpcnRxdWV1ZSAqdnJpbmdf
-Y3JlYXRlX3ZpcnRxdWV1ZV9zcGxpdCgKPiAgIAkJaWYgKHF1ZXVlKQo+ICAgCQkJYnJlYWs7Cj4g
-ICAJCWlmICghbWF5X3JlZHVjZV9udW0pCj4gLQkJCXJldHVybiBOVUxMOwo+ICsJCQlyZXR1cm4g
-LUVOT01FTTsKPiAgIAl9Cj4gICAKPiAgIAlpZiAoIW51bSkKPiAtCQlyZXR1cm4gTlVMTDsKPiAr
-CQlyZXR1cm4gLUVOT01FTTsKPiAgIAo+ICAgCWlmICghcXVldWUpIHsKPiAgIAkJLyogVHJ5IHRv
-IGdldCBhIHNpbmdsZSBwYWdlLiBZb3UgYXJlIG15IG9ubHkgaG9wZSEgKi8KPiBAQCAtOTkzLDIx
-ICs5ODQsNDYgQEAgc3RhdGljIHN0cnVjdCB2aXJ0cXVldWUgKnZyaW5nX2NyZWF0ZV92aXJ0cXVl
-dWVfc3BsaXQoCj4gICAJCQkJCSAgJmRtYV9hZGRyLCBHRlBfS0VSTkVMfF9fR0ZQX1pFUk8pOwo+
-ICAgCX0KPiAgIAlpZiAoIXF1ZXVlKQo+IC0JCXJldHVybiBOVUxMOwo+ICsJCXJldHVybiAtRU5P
-TUVNOwo+ICsKPiArCXZyaW5nX2luaXQoJnZyaW5nLT52cmluZywgbnVtLCBxdWV1ZSwgdnJpbmdf
-YWxpZ24pOwo+ICAgCj4gLQlxdWV1ZV9zaXplX2luX2J5dGVzID0gdnJpbmdfc2l6ZShudW0sIHZy
-aW5nX2FsaWduKTsKPiAtCXZyaW5nX2luaXQoJnZyaW5nLCBudW0sIHF1ZXVlLCB2cmluZ19hbGln
-bik7Cj4gKwl2cmluZy0+cXVldWVfZG1hX2FkZHIgPSBkbWFfYWRkcjsKPiArCXZyaW5nLT5xdWV1
-ZV9zaXplX2luX2J5dGVzID0gdnJpbmdfc2l6ZShudW0sIHZyaW5nX2FsaWduKTsKPiArCj4gKwly
-ZXR1cm4gMDsKPiArfQo+ICsKPiArc3RhdGljIHN0cnVjdCB2aXJ0cXVldWUgKnZyaW5nX2NyZWF0
-ZV92aXJ0cXVldWVfc3BsaXQoCj4gKwl1bnNpZ25lZCBpbnQgaW5kZXgsCj4gKwl1bnNpZ25lZCBp
-bnQgbnVtLAo+ICsJdW5zaWduZWQgaW50IHZyaW5nX2FsaWduLAo+ICsJc3RydWN0IHZpcnRpb19k
-ZXZpY2UgKnZkZXYsCj4gKwlib29sIHdlYWtfYmFycmllcnMsCj4gKwlib29sIG1heV9yZWR1Y2Vf
-bnVtLAo+ICsJYm9vbCBjb250ZXh0LAo+ICsJYm9vbCAoKm5vdGlmeSkoc3RydWN0IHZpcnRxdWV1
-ZSAqKSwKPiArCXZvaWQgKCpjYWxsYmFjaykoc3RydWN0IHZpcnRxdWV1ZSAqKSwKPiArCWNvbnN0
-IGNoYXIgKm5hbWUpCj4gK3sKPiArCXN0cnVjdCB2cmluZ192aXJ0cXVldWVfc3BsaXQgdnJpbmcg
-PSB7fTsKPiArCXN0cnVjdCB2aXJ0cXVldWUgKnZxOwo+ICsJaW50IGVycjsKPiArCj4gKwllcnIg
-PSB2cmluZ19hbGxvY19xdWV1ZV9zcGxpdCgmdnJpbmcsIHZkZXYsIG51bSwgdnJpbmdfYWxpZ24s
-Cj4gKwkJCQkgICAgICBtYXlfcmVkdWNlX251bSk7Cj4gKwlpZiAoZXJyKQo+ICsJCXJldHVybiBO
-VUxMOwo+ICAgCj4gLQl2cSA9IF9fdnJpbmdfbmV3X3ZpcnRxdWV1ZShpbmRleCwgdnJpbmcsIHZk
-ZXYsIHdlYWtfYmFycmllcnMsIGNvbnRleHQsCj4gLQkJCQkgICBub3RpZnksIGNhbGxiYWNrLCBu
-YW1lKTsKPiArCXZxID0gX192cmluZ19uZXdfdmlydHF1ZXVlKGluZGV4LCB2cmluZy52cmluZywg
-dmRldiwgd2Vha19iYXJyaWVycywKPiArCQkJCSAgIGNvbnRleHQsIG5vdGlmeSwgY2FsbGJhY2ss
-IG5hbWUpOwo+ICAgCWlmICghdnEpIHsKPiAtCQl2cmluZ19mcmVlX3F1ZXVlKHZkZXYsIHF1ZXVl
-X3NpemVfaW5fYnl0ZXMsIHF1ZXVlLAo+IC0JCQkJIGRtYV9hZGRyKTsKPiArCQl2cmluZ19mcmVl
-X3NwbGl0KCZ2cmluZywgdmRldik7Cj4gICAJCXJldHVybiBOVUxMOwo+ICAgCX0KPiAgIAo+IC0J
-dG9fdnZxKHZxKS0+c3BsaXQucXVldWVfZG1hX2FkZHIgPSBkbWFfYWRkcjsKPiAtCXRvX3Z2cSh2
-cSktPnNwbGl0LnF1ZXVlX3NpemVfaW5fYnl0ZXMgPSBxdWV1ZV9zaXplX2luX2J5dGVzOwo+ICsJ
-dG9fdnZxKHZxKS0+c3BsaXQucXVldWVfZG1hX2FkZHIgPSB2cmluZy5xdWV1ZV9kbWFfYWRkcjsK
-CgpOaXQ6IGhhdmluZyB0d28gcXVldWVfZG1hX2FkZHIgc2VlbXMgcmVkdW5kYW50IChzbyBkaWQg
-cXVldWVfc2l6ZV9pbl9ieXRlcykuCgpUaGFua3MKCgo+ICsJdG9fdnZxKHZxKS0+c3BsaXQucXVl
-dWVfc2l6ZV9pbl9ieXRlcyA9IHZyaW5nLnF1ZXVlX3NpemVfaW5fYnl0ZXM7Cj4gICAJdG9fdnZx
-KHZxKS0+d2Vfb3duX3JpbmcgPSB0cnVlOwo+ICAgCj4gICAJcmV0dXJuIHZxOwoKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcg
-bGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
+On Fri, Jul 15, 2022 at 10:09:21AM +0200, Arnd Bergmann wrote:
+> On Thu, Jul 14, 2022 at 11:46 PM Stafford Horne <shorne@gmail.com> wrote:
+> >
+> > The asm/pci.h used for many newer architectures share similar
+> > definitions.  Move the common parts to asm-generic/pci.h to allow for
+> > sharing code.
+> 
+> This looks very nice, thanks for doing it!
+> 
+> > Two things to note are:
+> >
+> >  - isa_dma_bridge_buggy, traditionally this is defined in asm/dma.h but
+> >    these architectures avoid creating that file and add the definition
+> >    to asm/pci.h.
+> 
+> I would prefer if we could just kill off this variable for non-x86, as it's
+> only set to a nonzero value in two implementations that are both
+> x86-specific and most of the references are gone. That does not have
+> to be part of this series though, if you don't want to address it here, just
+> add a comment to the new pci.h file.
+
+I will look at it, maybe in a v3.
+
+> >  - ARCH_GENERIC_PCI_MMAP_RESOURCE, csky does not define this so we
+> >    undefine it after including asm-generic/pci.h.  Why doesn't csky
+> >    define it?
+> 
+> Adding David Woodhouse to Cc, as he introduced this interface. As I
+> understand it, this was meant as a replacement for the old
+> architecture specific pci_mmap_page_range interface, and is ideally
+> used everywhere.
+> 
+> It's probably something that slipped through the review of csky and
+> should have been there.
+> 
+> As an aside, it seems the pci_mmap_page_range() cleanup was
+> left almost complete, with sparc being the only one left after
+> David Miller found a problem with the generic code. Not sure if
+> this was ever resolved:
+> https://lore.kernel.org/lkml/1519887203.622.3.camel@infradead.org/t/#u
+
+I see, I will leave it foe now.
+
+> > +#ifndef PCIBIOS_MIN_IO
+> > +#define PCIBIOS_MIN_IO         0
+> > +#endif
+> > +
+> > +#define PCIBIOS_MIN_MEM                0
+> 
+> We should probably #ifdef both of these for consistency.
+
+OK.
+
+> > +static inline int pci_get_legacy_ide_irq(struct pci_dev *dev, int channel)
+> > +{
+> > +       /* no legacy ide irq support */
+> > +       return -ENODEV;
+> > +}
+> 
+> And this can just go away now, according to what we found.
+
+Yeah, that will be nice.
+
+-Stafford
 
