@@ -1,14 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57])
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oE01q-00HEv8-TI
-	for linux-um@lists.infradead.org; Wed, 20 Jul 2022 03:05:40 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v12 22/40] virtio_ring: introduce virtqueue_resize()
-Date: Wed, 20 Jul 2022 11:04:18 +0800
-Message-Id: <20220720030436.79520-23-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
-References: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
+	id 1oD1sb-006RGd-MS
+	for linux-um@lists.infradead.org; Sun, 17 Jul 2022 10:52:07 +0000
+Message-ID: <3a03bc428ebc5741494a3e05ee98f55be2bdd3ec.camel@sipsolutions.net>
+Subject: Re: [PATCH v4] um: seed rng using host OS rng
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Sun, 17 Jul 2022 12:51:58 +0200
+In-Reply-To: <20220717105051.1539173-1-Jason@zx2c4.com>
+References: <20220717084652.1525087-1-Jason@zx2c4.com>
+	 <20220717105051.1539173-1-Jason@zx2c4.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,126 +23,49 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+To: "Jason A. Donenfeld" <Jason@zx2c4.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Introduce virtqueue_resize() to implement the resize of vring.
-Based on these, the driver can dynamically adjust the size of the vring.
-For example: ethtool -G.
+On Sun, 2022-07-17 at 12:50 +0200, Jason A. Donenfeld wrote:
+> UML generally does not provide access to special CPU instructions like
+> RDRAND, and execution tends to be rather deterministic, with no real
+> hardware interrupts, making good randomness really very hard, if not
+> all together impossible. Not only is this a security eyebrow raiser, but
+> it's also quite annoying when trying to do various pieces of UML-based
+> automation that takes a long time to boot, if ever.
+> 
+> Fix this by trivially calling getrandom() in the host and using that
+> seed as "bootloader randomness", which initializes the rng immediately
+> at UML boot.
+> 
+> The old behavior can be restored the same way as on any other arch, by
+> way of CONFIG_TRUST_BOOTLOADER_RANDOMNESS=n or
+> random.trust_bootloader=0. So seen from that perspective, this just
+> makes UML act like other archs, which is positive in its own right.
+> 
+> Additionally, wire up arch_get_random_{int,long}() in the same way, so
+> that reseeds can also make use of the host RNG, controllable by
+> CONFIG_TRUST_CPU_RANDOMNESS and random.trust_cpu, per usual.
+> 
+> Cc: stable@vger.kernel.org
+> Cc: Johannes Berg <johannes@sipsolutions.net>
+> Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+> ---
+> Johannes - I need to take this through random.git, because it relies on
+> some other changes living there. Is that okay with you? -Jason
 
-virtqueue_resize() implements resize based on the vq reset function. In
-case of failure to allocate a new vring, it will give up resize and use
-the original vring.
+Sure, go ahead, thanks for doing this work!
 
-During this process, if the re-enable reset vq fails, the vq can no
-longer be used. Although the probability of this situation is not high.
+> Changes v3->v4:
+> - Don't include os.h, per Johannes' suggestion.
 
-The parameter recycle is used to recycle the buffer that is no longer
-used.
+Thanks.
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/virtio/virtio_ring.c | 69 ++++++++++++++++++++++++++++++++++++
- include/linux/virtio.h       |  3 ++
- 2 files changed, 72 insertions(+)
+Acked-by: Johannes Berg <johannes@sipsolutions.net>
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index b092914e9dcd..cf4379175163 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -2545,6 +2545,75 @@ struct virtqueue *vring_create_virtqueue(
- }
- EXPORT_SYMBOL_GPL(vring_create_virtqueue);
- 
-+/**
-+ * virtqueue_resize - resize the vring of vq
-+ * @_vq: the struct virtqueue we're talking about.
-+ * @num: new ring num
-+ * @recycle: callback for recycle the useless buffer
-+ *
-+ * When it is really necessary to create a new vring, it will set the current vq
-+ * into the reset state. Then call the passed callback to recycle the buffer
-+ * that is no longer used. Only after the new vring is successfully created, the
-+ * old vring will be released.
-+ *
-+ * Caller must ensure we don't call this with other virtqueue operations
-+ * at the same time (except where noted).
-+ *
-+ * Returns zero or a negative error.
-+ * 0: success.
-+ * -ENOMEM: Failed to allocate a new ring, fall back to the original ring size.
-+ *  vq can still work normally
-+ * -EBUSY: Failed to sync with device, vq may not work properly
-+ * -ENOENT: Transport or device not supported
-+ * -E2BIG/-EINVAL: num error
-+ * -EPERM: Operation not permitted
-+ *
-+ */
-+int virtqueue_resize(struct virtqueue *_vq, u32 num,
-+		     void (*recycle)(struct virtqueue *vq, void *buf))
-+{
-+	struct vring_virtqueue *vq = to_vvq(_vq);
-+	struct virtio_device *vdev = vq->vq.vdev;
-+	void *buf;
-+	int err;
-+
-+	if (!vq->we_own_ring)
-+		return -EPERM;
-+
-+	if (num > vq->vq.num_max)
-+		return -E2BIG;
-+
-+	if (!num)
-+		return -EINVAL;
-+
-+	if ((vq->packed_ring ? vq->packed.vring.num : vq->split.vring.num) == num)
-+		return 0;
-+
-+	if (!vdev->config->disable_vq_and_reset)
-+		return -ENOENT;
-+
-+	if (!vdev->config->enable_vq_after_reset)
-+		return -ENOENT;
-+
-+	err = vdev->config->disable_vq_and_reset(_vq);
-+	if (err)
-+		return err;
-+
-+	while ((buf = virtqueue_detach_unused_buf(_vq)) != NULL)
-+		recycle(_vq, buf);
-+
-+	if (vq->packed_ring)
-+		err = virtqueue_resize_packed(_vq, num);
-+	else
-+		err = virtqueue_resize_split(_vq, num);
-+
-+	if (vdev->config->enable_vq_after_reset(_vq))
-+		return -EBUSY;
-+
-+	return err;
-+}
-+EXPORT_SYMBOL_GPL(virtqueue_resize);
-+
- /* Only available for split ring */
- struct virtqueue *vring_new_virtqueue(unsigned int index,
- 				      unsigned int num,
-diff --git a/include/linux/virtio.h b/include/linux/virtio.h
-index 129bde7521e3..62e31bca5602 100644
---- a/include/linux/virtio.h
-+++ b/include/linux/virtio.h
-@@ -91,6 +91,9 @@ dma_addr_t virtqueue_get_desc_addr(struct virtqueue *vq);
- dma_addr_t virtqueue_get_avail_addr(struct virtqueue *vq);
- dma_addr_t virtqueue_get_used_addr(struct virtqueue *vq);
- 
-+int virtqueue_resize(struct virtqueue *vq, u32 num,
-+		     void (*recycle)(struct virtqueue *vq, void *buf));
-+
- /**
-  * virtio_device - representation of a device using virtio
-  * @index: unique position on the virtio bus
--- 
-2.31.0
 
+johannes
 
 _______________________________________________
 linux-um mailing list
