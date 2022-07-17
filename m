@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131])
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oGEu7-009Kuj-Vp
-	for linux-um@lists.infradead.org; Tue, 26 Jul 2022 07:22:57 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v13 12/42] virtio_ring: split: extract the logic of vring init
-Date: Tue, 26 Jul 2022 15:21:55 +0800
-Message-Id: <20220726072225.19884-13-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
-References: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
+	id 1oD02L-005xut-6j
+	for linux-um@lists.infradead.org; Sun, 17 Jul 2022 08:54:02 +0000
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: [PATCH v2] um: include sys/types.h for size_t
+Date: Sun, 17 Jul 2022 10:53:46 +0200
+Message-Id: <20220717085346.1525754-1-Jason@zx2c4.com>
+In-Reply-To: <20220713100029.163083-1-Jason@zx2c4.com>
+References: <20220713100029.163083-1-Jason@zx2c4.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,80 +22,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+To: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Johannes Berg <johannes@sipsolutions.net>
 
-Separate the logic of initializing vring, and subsequent patches will
-call it separately.
+Usually size_t comes from sys/types.h, not stddef.h. This code likely
+worked only because something else in its usage chain was pulling in
+sys/types.h. stddef.h is still required for NULL, however, so note this.
 
-This function completes the variable initialization of split vring. It
-together with the logic of atatch constitutes the initialization of
-vring.
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 ---
- drivers/virtio/virtio_ring.c | 31 +++++++++++++++++++++----------
- 1 file changed, 21 insertions(+), 10 deletions(-)
+ arch/um/include/shared/user.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 6c24b33ea186..ac973887484f 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -948,6 +948,25 @@ static void *virtqueue_detach_unused_buf_split(struct virtqueue *_vq)
- 	return NULL;
- }
+diff --git a/arch/um/include/shared/user.h b/arch/um/include/shared/user.h
+index dd4badffdeb3..bda66e5a9d4e 100644
+--- a/arch/um/include/shared/user.h
++++ b/arch/um/include/shared/user.h
+@@ -16,11 +16,12 @@
+  */
+ #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
  
-+static void virtqueue_vring_init_split(struct vring_virtqueue_split *vring_split,
-+				       struct vring_virtqueue *vq)
-+{
-+	struct virtio_device *vdev;
-+
-+	vdev = vq->vq.vdev;
-+
-+	vring_split->avail_flags_shadow = 0;
-+	vring_split->avail_idx_shadow = 0;
-+
-+	/* No callback?  Tell other side not to bother us. */
-+	if (!vq->vq.callback) {
-+		vring_split->avail_flags_shadow |= VRING_AVAIL_F_NO_INTERRUPT;
-+		if (!vq->event)
-+			vring_split->vring.avail->flags = cpu_to_virtio16(vdev,
-+					vring_split->avail_flags_shadow);
-+	}
-+}
-+
- static int vring_alloc_state_extra_split(struct vring_virtqueue_split *vring_split)
- {
- 	struct vring_desc_state_split *state;
-@@ -2299,16 +2318,6 @@ static struct virtqueue *__vring_new_virtqueue(unsigned int index,
- 	vq->split.queue_size_in_bytes = 0;
+-/* This is to get size_t */
++/* This is to get size_t and NULL */
+ #ifndef __UM_HOST__
+ #include <linux/types.h>
+ #else
+ #include <stddef.h>
++#include <sys/types.h>
+ #endif
  
- 	vq->split.vring = vring_split->vring;
--	vq->split.avail_flags_shadow = 0;
--	vq->split.avail_idx_shadow = 0;
--
--	/* No callback?  Tell other side not to bother us. */
--	if (!callback) {
--		vq->split.avail_flags_shadow |= VRING_AVAIL_F_NO_INTERRUPT;
--		if (!vq->event)
--			vq->split.vring.avail->flags = cpu_to_virtio16(vdev,
--					vq->split.avail_flags_shadow);
--	}
- 
- 	err = vring_alloc_state_extra_split(vring_split);
- 	if (err) {
-@@ -2319,6 +2328,8 @@ static struct virtqueue *__vring_new_virtqueue(unsigned int index,
- 	vq->split.desc_state = vring_split->desc_state;
- 	vq->split.desc_extra = vring_split->desc_extra;
- 
-+	virtqueue_vring_init_split(vring_split, vq);
-+
- 	virtqueue_init(vq, vring_split->vring.num);
- 
- 	spin_lock(&vdev->vqs_list_lock);
+ extern void panic(const char *fmt, ...)
 -- 
-2.31.0
+2.35.1
 
 
 _______________________________________________
