@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oD1rZ-006QzF-4x
-	for linux-um@lists.infradead.org; Sun, 17 Jul 2022 10:51:05 +0000
+	id 1oCzvi-005vhB-Gz
+	for linux-um@lists.infradead.org; Sun, 17 Jul 2022 08:47:12 +0000
 From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH v4] um: seed rng using host OS rng
-Date: Sun, 17 Jul 2022 12:50:51 +0200
-Message-Id: <20220717105051.1539173-1-Jason@zx2c4.com>
-In-Reply-To: <20220717084652.1525087-1-Jason@zx2c4.com>
-References: <20220717084652.1525087-1-Jason@zx2c4.com>
+Subject: [PATCH v3] um: seed rng using host OS rng
+Date: Sun, 17 Jul 2022 10:46:52 +0200
+Message-Id: <20220717084652.1525087-1-Jason@zx2c4.com>
+In-Reply-To: <20220713095815.162741-1-Jason@zx2c4.com>
+References: <20220713095815.162741-1-Jason@zx2c4.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -53,30 +53,24 @@ Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 Johannes - I need to take this through random.git, because it relies on
 some other changes living there. Is that okay with you? -Jason
 
-Changes v3->v4:
-- Don't include os.h, per Johannes' suggestion.
-
- arch/um/include/asm/archrandom.h | 30 ++++++++++++++++++++++++++++++
+ arch/um/include/asm/archrandom.h | 27 +++++++++++++++++++++++++++
  arch/um/include/shared/os.h      |  7 +++++++
  arch/um/kernel/um_arch.c         |  8 ++++++++
  arch/um/os-Linux/util.c          |  6 ++++++
- 4 files changed, 51 insertions(+)
+ 4 files changed, 48 insertions(+)
  create mode 100644 arch/um/include/asm/archrandom.h
 
 diff --git a/arch/um/include/asm/archrandom.h b/arch/um/include/asm/archrandom.h
 new file mode 100644
-index 000000000000..2f24cb96391d
+index 000000000000..fdfa53862eb1
 --- /dev/null
 +++ b/arch/um/include/asm/archrandom.h
-@@ -0,0 +1,30 @@
+@@ -0,0 +1,27 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +#ifndef __ASM_UM_ARCHRANDOM_H__
 +#define __ASM_UM_ARCHRANDOM_H__
 +
-+#include <linux/types.h>
-+
-+/* This is from <os.h>, but better not to #include that in a global header here. */
-+ssize_t os_getrandom(void *buf, size_t len, unsigned int flags);
++#include <os.h>
 +
 +static inline bool __must_check arch_get_random_long(unsigned long *v)
 +{
