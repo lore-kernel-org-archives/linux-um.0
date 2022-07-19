@@ -1,14 +1,8 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oE01i-00HEn2-Ou
-	for linux-um@lists.infradead.org; Wed, 20 Jul 2022 03:05:32 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v12 20/40] virtio_ring: packed: introduce virtqueue_reinit_packed()
-Date: Wed, 20 Jul 2022 11:04:16 +0800
-Message-Id: <20220720030436.79520-21-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
-References: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Subject: [PATCH v2 00/13] The panic notifiers refactor strikes back - fixes/clean-ups
+Date: Tue, 19 Jul 2022 16:53:13 -0300
+Message-Id: <20220719195325.402745-1-gpiccoli@igalia.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,54 +16,94 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+To: akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org, netdev@vger.kernel.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, "Guilherme G. Piccoli" <gpiccoli@igalia.com>, bcm-kernel-feedback-list@broadcom.com, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-efi@vger.kernel.org, linux-parisc@vger.kernel.org, linux-um@lists.infradead.org
 
-Introduce a function to initialize vq without allocating new ring,
-desc_state, desc_extra.
+Hi folks, this the second iteration of the panic notifiers refactor work,
+but limited to the fixes/clean-ups in the first moment. The (full) V1 is
+available at:
+https://lore.kernel.org/lkml/20220427224924.592546-1-gpiccoli@igalia.com/
 
-Subsequent patches will call this function after reset vq to
-reinitialize vq.
+The idea of splitting the series is that, originally we had a bunch of fixes
+followed by the notifiers refactor, but this second part (the effective
+refactor) is a bit "polemic", with reviews having antagonistic goals and some
+complexities  - it might be hard to achieve consensus.
+For the curious, here is a good summary of the conflicting views and some
+strategies we might take in the refactor V2:
+https://lore.kernel.org/lkml/0d084eed-4781-c815-29c7-ac62c498e216@igalia.com/
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/virtio/virtio_ring.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+So splitting and sending only the simple fixes/clean-ups in a first moment
+makes sense, this way we don't prevent them to be discussed/merged/reworked
+while the more complex part is subject to scrutiny in a different (future)
+email thread.
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 3bbeb385fb8c..5802cd373fd1 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -1963,6 +1963,27 @@ static void virtqueue_vring_init_packed(struct vring_virtqueue *vq)
- 	}
- }
- 
-+static void virtqueue_reinit_packed(struct vring_virtqueue *vq)
-+{
-+	int size, i;
-+
-+	memset(vq->packed.vring.device, 0, vq->packed.event_size_in_bytes);
-+	memset(vq->packed.vring.driver, 0, vq->packed.event_size_in_bytes);
-+	memset(vq->packed.vring.desc, 0, vq->packed.ring_size_in_bytes);
-+
-+	size = sizeof(struct vring_desc_state_packed) * vq->packed.vring.num;
-+	memset(vq->packed.desc_state, 0, size);
-+
-+	size = sizeof(struct vring_desc_extra) * vq->packed.vring.num;
-+	memset(vq->packed.desc_extra, 0, size);
-+
-+	for (i = 0; i < vq->packed.vring.num - 1; i++)
-+		vq->packed.desc_extra[i].next = i + 1;
-+
-+	virtqueue_init(vq, vq->packed.vring.num);
-+	virtqueue_vring_init_packed(vq);
-+}
-+
- static struct virtqueue *vring_create_virtqueue_packed(
- 	unsigned int index,
- 	unsigned int num,
+
+I've tried to test this series building for all affected architecture/drivers
+and also through some boot/runtime tests; below the test "matrix" used:
+
+Build tests (using cross-compilers): alpha, arm, arm64, parisc, um, x86_64.
+Boot/Runtime tests: x86_64 (Hyper-V and QEMU guests).
+
+Here is the link with the .config files used:
+https://people.igalia.com/gpiccoli/panic_notifiers_configs/5.19-rc7/
+(tried my best to build all the affected code).
+
+
+The series is based on 5.19-rc7; I'd like to ask that, if possible, maintainers
+take the patches here in their trees, since there is no need to merge the series
+as whole, patches are independent from each other.
+
+Regarding the CC strategy, I've tried to reduce a bit the list of CCed emails,
+given that it was huge in the first iteration. Hopefully I didn't forget
+anybody interested in the topic (my apologies if so).
+
+As usual, reviews / comments are always welcome, thanks in advance for them!
+Cheers,
+
+
+Guilherme
+
+
+
+
+Guilherme G. Piccoli (13):
+  ARM: Disable FIQs (but not IRQs) on CPUs shutdown paths
+  notifier: Add panic notifiers info and purge trailing whitespaces
+  firmware: google: Test spinlock on panic path to avoid lockups
+  soc: bcm: brcmstb: Document panic notifier action and remove useless header
+  alpha: Clean-up the panic notifier code
+  um: Improve panic notifiers consistency and ordering
+  parisc: Replace regular spinlock with spin_trylock on panic path
+  tracing: Improve panic/die notifiers
+  notifier: Show function names on notifier routines if DEBUG_NOTIFIERS is set
+  EDAC/altera: Skip the panic notifier if kdump is loaded
+  video/hyperv_fb: Avoid taking busy spinlock on panic path
+  drivers/hv/vmbus, video/hyperv_fb: Untangle and refactor Hyper-V panic notifiers
+  panic: Fixes the panic_print NMI backtrace setting
+
+ arch/alpha/kernel/setup.c           |  36 ++++-----
+ arch/arm/kernel/machine_kexec.c     |   2 +
+ arch/arm/kernel/smp.c               |   5 +-
+ arch/parisc/include/asm/pdc.h       |   1 +
+ arch/parisc/kernel/firmware.c       |  27 ++++++-
+ arch/um/drivers/mconsole_kern.c     |   7 +-
+ arch/um/kernel/um_arch.c            |   8 +-
+ drivers/edac/altera_edac.c          |  16 +++-
+ drivers/firmware/google/gsmi.c      |   8 ++
+ drivers/hv/ring_buffer.c            |  16 ++++
+ drivers/hv/vmbus_drv.c              | 109 +++++++++++++++++-----------
+ drivers/parisc/power.c              |  17 +++--
+ drivers/soc/bcm/brcmstb/pm/pm-arm.c |  16 +++-
+ drivers/video/fbdev/hyperv_fb.c     |  16 +++-
+ include/linux/hyperv.h              |   2 +
+ include/linux/notifier.h            |   8 +-
+ kernel/notifier.c                   |  22 ++++--
+ kernel/panic.c                      |  47 +++++++-----
+ kernel/trace/trace.c                |  55 +++++++-------
+ 19 files changed, 268 insertions(+), 150 deletions(-)
+
 -- 
-2.31.0
+2.37.1
 
 
 _______________________________________________
