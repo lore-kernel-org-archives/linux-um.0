@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57])
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oIP5G-002yzb-Sd
-	for linux-um@lists.infradead.org; Mon, 01 Aug 2022 06:39:26 +0000
+	id 1oE02K-00HFW6-QJ
+	for linux-um@lists.infradead.org; Wed, 20 Jul 2022 03:06:10 +0000
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v14 07/42] virtio_ring: split: stop __vring_new_virtqueue as export symbol
-Date: Mon,  1 Aug 2022 14:38:27 +0800
-Message-Id: <20220801063902.129329-8-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
-References: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v12 36/40] virtio_net: get ringparam by virtqueue_get_vring_max_size()
+Date: Wed, 20 Jul 2022 11:04:32 +0800
+Message-Id: <20220720030436.79520-37-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
+References: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -25,107 +25,34 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: virtualization@lists.linux-foundation.org
 Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-There is currently only one place to reference __vring_new_virtqueue()
-directly from the outside of virtio core. And here vring_new_virtqueue()
-can be used instead.
-
-Subsequent patches will modify __vring_new_virtqueue, so stop it as an
-export symbol for now.
+Use virtqueue_get_vring_max_size() in virtnet_get_ringparam() to set
+tx,rx_max_pending.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/virtio/virtio_ring.c | 25 ++++++++++++++++---------
- include/linux/virtio_ring.h  | 10 ----------
- tools/virtio/virtio_test.c   |  4 ++--
- 3 files changed, 18 insertions(+), 21 deletions(-)
+ drivers/net/virtio_net.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index a63ef2d99955..8ce6cc73d814 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -204,6 +204,14 @@ struct vring_virtqueue {
- #endif
- };
- 
-+static struct virtqueue *__vring_new_virtqueue(unsigned int index,
-+					       struct vring vring,
-+					       struct virtio_device *vdev,
-+					       bool weak_barriers,
-+					       bool context,
-+					       bool (*notify)(struct virtqueue *),
-+					       void (*callback)(struct virtqueue *),
-+					       const char *name);
- 
- /*
-  * Helpers.
-@@ -2195,14 +2203,14 @@ irqreturn_t vring_interrupt(int irq, void *_vq)
- EXPORT_SYMBOL_GPL(vring_interrupt);
- 
- /* Only available for split ring */
--struct virtqueue *__vring_new_virtqueue(unsigned int index,
--					struct vring vring,
--					struct virtio_device *vdev,
--					bool weak_barriers,
--					bool context,
--					bool (*notify)(struct virtqueue *),
--					void (*callback)(struct virtqueue *),
--					const char *name)
-+static struct virtqueue *__vring_new_virtqueue(unsigned int index,
-+					       struct vring vring,
-+					       struct virtio_device *vdev,
-+					       bool weak_barriers,
-+					       bool context,
-+					       bool (*notify)(struct virtqueue *),
-+					       void (*callback)(struct virtqueue *),
-+					       const char *name)
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 40532ecbe7fc..981ef8ea4d58 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -2254,10 +2254,10 @@ static void virtnet_get_ringparam(struct net_device *dev,
  {
- 	struct vring_virtqueue *vq;
+ 	struct virtnet_info *vi = netdev_priv(dev);
  
-@@ -2277,7 +2285,6 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
- 	kfree(vq);
- 	return NULL;
+-	ring->rx_max_pending = virtqueue_get_vring_size(vi->rq[0].vq);
+-	ring->tx_max_pending = virtqueue_get_vring_size(vi->sq[0].vq);
+-	ring->rx_pending = ring->rx_max_pending;
+-	ring->tx_pending = ring->tx_max_pending;
++	ring->rx_max_pending = vi->rq[0].vq->num_max;
++	ring->tx_max_pending = vi->sq[0].vq->num_max;
++	ring->rx_pending = virtqueue_get_vring_size(vi->rq[0].vq);
++	ring->tx_pending = virtqueue_get_vring_size(vi->sq[0].vq);
  }
--EXPORT_SYMBOL_GPL(__vring_new_virtqueue);
  
- struct virtqueue *vring_create_virtqueue(
- 	unsigned int index,
-diff --git a/include/linux/virtio_ring.h b/include/linux/virtio_ring.h
-index b485b13fa50b..8b8af1a38991 100644
---- a/include/linux/virtio_ring.h
-+++ b/include/linux/virtio_ring.h
-@@ -76,16 +76,6 @@ struct virtqueue *vring_create_virtqueue(unsigned int index,
- 					 void (*callback)(struct virtqueue *vq),
- 					 const char *name);
- 
--/* Creates a virtqueue with a custom layout. */
--struct virtqueue *__vring_new_virtqueue(unsigned int index,
--					struct vring vring,
--					struct virtio_device *vdev,
--					bool weak_barriers,
--					bool ctx,
--					bool (*notify)(struct virtqueue *),
--					void (*callback)(struct virtqueue *),
--					const char *name);
--
- /*
-  * Creates a virtqueue with a standard layout but a caller-allocated
-  * ring.
-diff --git a/tools/virtio/virtio_test.c b/tools/virtio/virtio_test.c
-index 23f142af544a..86a410ddcedd 100644
---- a/tools/virtio/virtio_test.c
-+++ b/tools/virtio/virtio_test.c
-@@ -102,8 +102,8 @@ static void vq_reset(struct vq_info *info, int num, struct virtio_device *vdev)
- 
- 	memset(info->ring, 0, vring_size(num, 4096));
- 	vring_init(&info->vring, num, info->ring, 4096);
--	info->vq = __vring_new_virtqueue(info->idx, info->vring, vdev, true,
--					 false, vq_notify, vq_callback, "test");
-+	info->vq = vring_new_virtqueue(info->idx, num, 4096, vdev, true, false,
-+				       info->ring, vq_notify, vq_callback, "test");
- 	assert(info->vq);
- 	info->vq->priv = info;
- }
+ static bool virtnet_commit_rss_command(struct virtnet_info *vi)
 -- 
 2.31.0
 
