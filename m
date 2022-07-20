@@ -1,12 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Message-ID: <c0f6bd83-bf1e-a373-425a-6a9ef941043f@infradead.org>
-Date: Mon, 11 Jul 2022 14:49:13 -0700
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1oE01o-00HEsy-2T
+	for linux-um@lists.infradead.org; Wed, 20 Jul 2022 03:05:37 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v12 21/40] virtio_ring: packed: introduce virtqueue_resize_packed()
+Date: Wed, 20 Jul 2022 11:04:17 +0800
+Message-Id: <20220720030436.79520-22-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
+References: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Subject: Re: linux-next: Tree for Jul 11 (uml)
-Content-Language: en-US
-References: <20220711211220.795af291@canb.auug.org.au>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20220711211220.795af291@canb.auug.org.au>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -19,64 +22,67 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Stephen Rothwell <sfr@canb.auug.org.au>, Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>
+To: virtualization@lists.linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
+virtio ring packed supports resize.
 
+Only after the new vring is successfully allocated based on the new num,
+we will release the old vring. In any case, an error is returned,
+indicating that the vring still points to the old vring.
 
-On 7/11/22 04:12, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Changes since 20220708:
-> 
+In the case of an error, re-initialize(by virtqueue_reinit_packed()) the
+virtqueue to ensure that the vring can be used.
 
-Since last week, building uml for i386 has had build warnings
-on allnoconfig, defconfig, and tinyconfig:
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
+---
+ drivers/virtio/virtio_ring.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-
-In file included from ../arch/um/include/asm/processor-generic.h:13,
-                 from ../arch/x86/um/asm/processor.h:41,
-                 from ../include/linux/rcupdate.h:30,
-                 from ../include/linux/rculist.h:11,
-                 from ../include/linux/pid.h:5,
-                 from ../include/linux/sched.h:14,
-                 from ../include/linux/ptrace.h:6,
-                 from ../arch/um/kernel/skas/syscall.c:7:
-../arch/um/kernel/skas/syscall.c: In function 'handle_syscall':
-../arch/x86/um/shared/sysdep/syscalls_32.h:14:10: warning: cast between incompatible function types from 'long int (*)(struct pt_regs)' to 'long int (*)(struct syscall_args)' [-Wcast-function-type]
-   14 |         ((long (*)(struct syscall_args)) \
-      |          ^
-../arch/x86/um/asm/ptrace.h:36:62: note: in definition of macro 'PT_REGS_SET_SYSCALL_RETURN'
-   36 | #define PT_REGS_SET_SYSCALL_RETURN(r, res) (PT_REGS_AX(r) = (res))
-      |                                                              ^~~
-../arch/um/kernel/skas/syscall.c:46:33: note: in expansion of macro 'EXECUTE_SYSCALL'
-   46 |                                 EXECUTE_SYSCALL(syscall, regs));
-      |                                 ^~~~~~~~~~~~~~~
-
-../arch/x86/um/tls_32.c: In function 'get_free_idx':
-../arch/x86/um/tls_32.c:68:13: warning: the comparison will always evaluate as 'true' for the address of 'tls_array' will never be NULL [-Waddress]
-   68 |         if (!t->arch.tls_array)
-      |             ^
-In file included from ../arch/x86/um/asm/processor.h:10,
-                 from ../include/linux/rcupdate.h:30,
-                 from ../include/linux/rculist.h:11,
-                 from ../include/linux/pid.h:5,
-                 from ../include/linux/sched.h:14,
-                 from ../arch/x86/um/tls_32.c:7:
-../arch/x86/um/asm/processor_32.h:22:31: note: 'tls_array' declared here
-   22 |         struct uml_tls_struct tls_array[GDT_ENTRY_TLS_ENTRIES];
-      |                               ^~~~~~~~~
-../arch/x86/um/tls_32.c: In function 'get_tls_entry':
-../arch/x86/um/tls_32.c:243:13: warning: the comparison will always evaluate as 'true' for the address of 'tls_array' will never be NULL [-Waddress]
-  243 |         if (!t->arch.tls_array)
-      |             ^
-../arch/x86/um/asm/processor_32.h:22:31: note: 'tls_array' declared here
-   22 |         struct uml_tls_struct tls_array[GDT_ENTRY_TLS_ENTRIES];
-      |                               ^~~~~~~~~
-
-
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 5802cd373fd1..b092914e9dcd 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -2045,6 +2045,35 @@ static struct virtqueue *vring_create_virtqueue_packed(
+ 	return NULL;
+ }
+ 
++static int virtqueue_resize_packed(struct virtqueue *_vq, u32 num)
++{
++	struct vring_virtqueue_packed vring_packed = {};
++	struct vring_virtqueue *vq = to_vvq(_vq);
++	struct virtio_device *vdev = _vq->vdev;
++	int err;
++
++	if (vring_alloc_queue_packed(&vring_packed, vdev, num))
++		goto err_ring;
++
++	err = vring_alloc_state_extra_packed(&vring_packed);
++	if (err)
++		goto err_state_extra;
++
++	vring_free(&vq->vq);
++
++	virtqueue_init(vq, vring_packed.vring.num);
++	virtqueue_vring_attach_packed(vq, &vring_packed);
++	virtqueue_vring_init_packed(vq);
++
++	return 0;
++
++err_state_extra:
++	vring_free_packed(&vring_packed, vdev);
++err_ring:
++	virtqueue_reinit_packed(vq);
++	return -ENOMEM;
++}
++
+ 
+ /*
+  * Generic functions and exported symbols.
 -- 
-~Randy
+2.31.0
+
 
 _______________________________________________
 linux-um mailing list
