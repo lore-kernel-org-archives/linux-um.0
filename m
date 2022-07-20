@@ -1,16 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-bn8nam11on2040.outbound.protection.outlook.com ([40.107.236.40] helo=NAM11-BN8-obe.outbound.protection.outlook.com)
+Received: from [43.155.65.254] (helo=smtpbg.qq.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oEZZX-00APTm-6p
-	for linux-um@lists.infradead.org; Thu, 21 Jul 2022 17:02:48 +0000
-From: Chaitanya Kulkarni <chaitanyak@nvidia.com>
-Subject: Re: [PATCH] ubd:do not initialise statics to 0.
-Date: Thu, 21 Jul 2022 17:02:40 +0000
-Message-ID: <7cafc7ad-be8f-4093-1df8-8bbae37308ad@nvidia.com>
-References: <20220720192916.7564-1-gaoxin@cdjrlc.com>
-In-Reply-To: <20220720192916.7564-1-gaoxin@cdjrlc.com>
-Content-Language: en-US
-Content-ID: <9ACBAE718C403043A89C48E62B6C9E69@namprd12.prod.outlook.com>
+	id 1oEFQe-009vPO-RA
+	for linux-um@lists.infradead.org; Wed, 20 Jul 2022 19:32:21 +0000
+From: Xin Gao <gaoxin@cdjrlc.com>
+Subject: [PATCH] ubd:do not initialise statics to 0.
+Date: Thu, 21 Jul 2022 03:29:16 +0800
+Message-Id: <20220720192916.7564-1-gaoxin@cdjrlc.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -24,18 +20,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Xin Gao <gaoxin@cdjrlc.com>, "richard@nod.at" <richard@nod.at>, "anton.ivanov@cambridgegreys.com" <anton.ivanov@cambridgegreys.com>, "johannes@sipsolutions.net" <johannes@sipsolutions.net>
-Cc: "axboe@kernel.dk" <axboe@kernel.dk>, "martin.petersen@oracle.com" <martin.petersen@oracle.com>, "hoeppner@linux.ibm.com" <hoeppner@linux.ibm.com>, Chaitanya Kulkarni <chaitanyak@nvidia.com>, "frederic.danis@collabora.com" <frederic.danis@collabora.com>, "mcgrof@kernel.org" <mcgrof@kernel.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net
+Cc: axboe@kernel.dk, martin.petersen@oracle.com, hoeppner@linux.ibm.com, kch@nvidia.com, frederic.danis@collabora.com, mcgrof@kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Xin Gao <gaoxin@cdjrlc.com>
 
-On 7/20/2022 12:29 PM, Xin Gao wrote:
-> do not initialise statics to 0.
-> 
-> Signed-off-by: Xin Gao <gaoxin@cdjrlc.com>
-> ---
+do not initialise statics to 0.
 
-Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
+Signed-off-by: Xin Gao <gaoxin@cdjrlc.com>
+---
+ arch/um/drivers/ubd_kern.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
--ck
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index c4344b67628d..ae2fb671ba72 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -1555,7 +1555,7 @@ static void do_io(struct io_thread_req *req, struct io_desc *desc)
+ int kernel_fd = -1;
+ 
+ /* Only changed by the io thread. XXX: currently unused. */
+-static int io_count = 0;
++static int io_count;
+ 
+ int io_thread(void *arg)
+ {
+-- 
+2.30.2
 
 
 _______________________________________________
