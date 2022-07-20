@@ -1,137 +1,102 @@
-Return-Path: <openrisc-bounces@lists.librecores.org>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V7 09/26] loongarch/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Date: Mon, 11 Jul 2022 12:35:43 +0530
-Message-Id: <20220711070600.2378316-10-anshuman.khandual@arm.com>
-In-Reply-To: <20220711070600.2378316-1-anshuman.khandual@arm.com>
-References: <20220711070600.2378316-1-anshuman.khandual@arm.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from out199-17.us.a.mail.aliyun.com ([47.90.199.17])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1oE01N-00HEHR-UV
+	for linux-um@lists.infradead.org; Wed, 20 Jul 2022 03:05:11 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v12 10/40] virtio_ring: split: extract the logic of attach vring
+Date: Wed, 20 Jul 2022 11:04:06 +0800
+Message-Id: <20220720030436.79520-11-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
+References: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
- <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
-List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
-List-Post: <mailto:openrisc@lists.librecores.org>
-List-Help: <mailto:openrisc-request@lists.librecores.org?subject=help>
-List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
- <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
-Errors-To: openrisc-bounces@lists.librecores.org
-Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
-To: linux-mm@kvack.org, akpm@linux-foundation.org
-Cc: Huacai Chen <chenhuacai@kernel.org>, linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, WANG Xuerui <kernel@xen0n.name>, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: virtualization@lists.linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
-vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
-up a private and static protection_map[] array. Subsequently all __SXXX and
-__PXXX macros can be dropped which are no longer needed.
+Separate the logic of attach vring, subsequent patches will call it
+separately.
 
-Cc: Huacai Chen <chenhuacai@kernel.org>
-Cc: WANG Xuerui <kernel@xen0n.name>
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Since the "struct vring_virtqueue_split split" is created on the
+stack and has been initialized to 0. So using
+split->queue_dma_addr/split->queue_size_in_bytes assignment for
+queue_dma_addr/queue_size_in_bytes can keep the same as the original
+code.
+
+On the other hand, subsequent patches can use the "struct
+vring_virtqueue_split split" obtained by vring_alloc_queue_split() to
+directly complete the attach operation.
+
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- arch/loongarch/Kconfig                    |  1 +
- arch/loongarch/include/asm/pgtable-bits.h | 19 ----------
- arch/loongarch/mm/cache.c                 | 46 +++++++++++++++++++++++
- 3 files changed, 47 insertions(+), 19 deletions(-)
+ drivers/virtio/virtio_ring.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-index 53a912befb62..ed55abcc3dbd 100644
---- a/arch/loongarch/Kconfig
-+++ b/arch/loongarch/Kconfig
-@@ -9,6 +9,7 @@ config LOONGARCH
- 	select ARCH_HAS_ACPI_TABLE_UPGRADE	if ACPI
- 	select ARCH_HAS_PHYS_TO_DMA
- 	select ARCH_HAS_PTE_SPECIAL
-+	select ARCH_HAS_VM_GET_PAGE_PROT
- 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
- 	select ARCH_INLINE_READ_LOCK if !PREEMPTION
- 	select ARCH_INLINE_READ_LOCK_BH if !PREEMPTION
-diff --git a/arch/loongarch/include/asm/pgtable-bits.h b/arch/loongarch/include/asm/pgtable-bits.h
-index 3badd112d9ab..9ca147a29bab 100644
---- a/arch/loongarch/include/asm/pgtable-bits.h
-+++ b/arch/loongarch/include/asm/pgtable-bits.h
-@@ -83,25 +83,6 @@
- 				 _PAGE_GLOBAL | _PAGE_KERN |  _CACHE_SUC)
- #define PAGE_KERNEL_WUC __pgprot(_PAGE_PRESENT | __READABLE | __WRITEABLE | \
- 				 _PAGE_GLOBAL | _PAGE_KERN |  _CACHE_WUC)
--
--#define __P000 __pgprot(_CACHE_CC | _PAGE_USER | _PAGE_PROTNONE | _PAGE_NO_EXEC | _PAGE_NO_READ)
--#define __P001 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT | _PAGE_NO_EXEC)
--#define __P010 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT | _PAGE_NO_EXEC)
--#define __P011 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT | _PAGE_NO_EXEC)
--#define __P100 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT)
--#define __P101 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT)
--#define __P110 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT)
--#define __P111 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT)
--
--#define __S000 __pgprot(_CACHE_CC | _PAGE_USER | _PAGE_PROTNONE | _PAGE_NO_EXEC | _PAGE_NO_READ)
--#define __S001 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT | _PAGE_NO_EXEC)
--#define __S010 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE)
--#define __S011 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE)
--#define __S100 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT)
--#define __S101 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT)
--#define __S110 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT | _PAGE_WRITE)
--#define __S111 __pgprot(_CACHE_CC | _PAGE_VALID | _PAGE_USER | _PAGE_PRESENT | _PAGE_WRITE)
--
- #ifndef __ASSEMBLY__
- 
- #define pgprot_noncached pgprot_noncached
-diff --git a/arch/loongarch/mm/cache.c b/arch/loongarch/mm/cache.c
-index 9e5ce5aa73f7..e8c68dcf6ab2 100644
---- a/arch/loongarch/mm/cache.c
-+++ b/arch/loongarch/mm/cache.c
-@@ -139,3 +139,49 @@ void cpu_cache_init(void)
- 
- 	shm_align_mask = PAGE_SIZE - 1;
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index ef2077e8b38d..b2dbbf68736b 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -940,6 +940,18 @@ static void *virtqueue_detach_unused_buf_split(struct virtqueue *_vq)
+ 	return NULL;
  }
+ 
++static void virtqueue_vring_attach_split(struct vring_virtqueue *vq,
++					 struct vring_virtqueue_split *vring_split)
++{
++	vq->split.queue_dma_addr = vring_split->queue_dma_addr;
++	vq->split.queue_size_in_bytes = vring_split->queue_size_in_bytes;
 +
-+static const pgprot_t protection_map[16] = {
-+	[VM_NONE]					= __pgprot(_CACHE_CC | _PAGE_USER |
-+								   _PAGE_PROTNONE | _PAGE_NO_EXEC |
-+								   _PAGE_NO_READ),
-+	[VM_READ]					= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT |
-+								   _PAGE_NO_EXEC),
-+	[VM_WRITE]					= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT |
-+								   _PAGE_NO_EXEC),
-+	[VM_WRITE | VM_READ]				= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT |
-+								   _PAGE_NO_EXEC),
-+	[VM_EXEC]					= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT),
-+	[VM_EXEC | VM_READ]				= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT),
-+	[VM_EXEC | VM_WRITE]				= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT),
-+	[VM_EXEC | VM_WRITE | VM_READ]			= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT),
-+	[VM_SHARED]					= __pgprot(_CACHE_CC | _PAGE_USER |
-+								   _PAGE_PROTNONE | _PAGE_NO_EXEC |
-+								   _PAGE_NO_READ),
-+	[VM_SHARED | VM_READ]				= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT |
-+								   _PAGE_NO_EXEC),
-+	[VM_SHARED | VM_WRITE]				= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT |
-+								   _PAGE_NO_EXEC | _PAGE_WRITE),
-+	[VM_SHARED | VM_WRITE | VM_READ]		= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT |
-+								   _PAGE_NO_EXEC | _PAGE_WRITE),
-+	[VM_SHARED | VM_EXEC]				= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT),
-+	[VM_SHARED | VM_EXEC | VM_READ]			= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT),
-+	[VM_SHARED | VM_EXEC | VM_WRITE]		= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT |
-+								   _PAGE_WRITE),
-+	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= __pgprot(_CACHE_CC | _PAGE_VALID |
-+								   _PAGE_USER | _PAGE_PRESENT |
-+								   _PAGE_WRITE)
-+};
-+DECLARE_VM_GET_PAGE_PROT
++	vq->split.vring = vring_split->vring;
++
++	vq->split.desc_state = vring_split->desc_state;
++	vq->split.desc_extra = vring_split->desc_extra;
++}
++
+ static int vring_alloc_state_extra_split(struct vring_virtqueue_split *vring_split)
+ {
+ 	struct vring_desc_state_split *state;
+@@ -2288,10 +2300,6 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
+ 	vq->indirect = virtio_has_feature(vdev, VIRTIO_RING_F_INDIRECT_DESC) &&
+ 		!context;
+ 
+-	vq->split.queue_dma_addr = 0;
+-	vq->split.queue_size_in_bytes = 0;
+-
+-	vq->split.vring = vring;
+ 	vq->split.avail_flags_shadow = 0;
+ 	vq->split.avail_idx_shadow = 0;
+ 
+@@ -2311,10 +2319,9 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
+ 		return NULL;
+ 	}
+ 
+-	vq->split.desc_state = vring.desc_state;
+-	vq->split.desc_extra = vring.desc_extra;
+-
+ 	virtqueue_init(vq, vring_split.vring.num);
++	virtqueue_vring_attach_split(vq, &vring_split);
++	virtqueue_vring_init_split(vq);
+ 
+ 	spin_lock(&vdev->vqs_list_lock);
+ 	list_add_tail(&vq->vq.list, &vdev->vqs);
 -- 
-2.25.1
+2.31.0
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
