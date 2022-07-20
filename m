@@ -1,12 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oBZAd-002WfQ-GJ
-	for linux-um@lists.infradead.org; Wed, 13 Jul 2022 10:00:40 +0000
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH] um: include sys/types.h instead of stddef.h for size_t
-Date: Wed, 13 Jul 2022 12:00:29 +0200
-Message-Id: <20220713100029.163083-1-Jason@zx2c4.com>
+	id 1oE01f-00HEjS-Se
+	for linux-um@lists.infradead.org; Wed, 20 Jul 2022 03:05:29 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v12 19/40] virtio_ring: packed: extract the logic of vring init
+Date: Wed, 20 Jul 2022 11:04:15 +0800
+Message-Id: <20220720030436.79520-20-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
+References: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -20,48 +22,75 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
+To: virtualization@lists.linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-Usually size_t comes from sys/types.h, not stddef.h. This code likely
-worked only because something else in its usage chain was pulling in
-sys/types.h.
+Separate the logic of initializing vring, and subsequent patches will
+call it separately.
 
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+This function completes the variable initialization of packed vring. It
+together with the logic of atatch constitutes the initialization of
+vring.
+
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- arch/um/include/shared/user.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/virtio/virtio_ring.c | 28 ++++++++++++++++------------
+ 1 file changed, 16 insertions(+), 12 deletions(-)
 
-diff --git a/arch/um/include/shared/user.h b/arch/um/include/shared/user.h
-index dd4badffdeb3..a0a8f0d19a85 100644
---- a/arch/um/include/shared/user.h
-+++ b/arch/um/include/shared/user.h
-@@ -13,21 +13,21 @@
-  * fancier, type-safe, definition.  Using that one would require
-  * copying too much infrastructure for my taste, so userspace files
-  * get less checking than kernel files.
-  */
- #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 19ed20d7d433..3bbeb385fb8c 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -1948,6 +1948,21 @@ static void virtqueue_vring_attach_packed(struct vring_virtqueue *vq,
+ 	vq->packed.desc_extra = vring_packed->desc_extra;
+ }
  
- /* This is to get size_t */
- #ifndef __UM_HOST__
- #include <linux/types.h>
- #else
--#include <stddef.h>
-+#include <sys/types.h>
- #endif
++static void virtqueue_vring_init_packed(struct vring_virtqueue *vq)
++{
++	vq->packed.next_avail_idx = 0;
++	vq->packed.avail_wrap_counter = 1;
++	vq->packed.event_flags_shadow = 0;
++	vq->packed.avail_used_flags = 1 << VRING_PACKED_DESC_F_AVAIL;
++
++	/* No callback?  Tell other side not to bother us. */
++	if (!vq->vq.callback) {
++		vq->packed.event_flags_shadow = VRING_PACKED_EVENT_FLAG_DISABLE;
++		vq->packed.vring.driver->flags =
++			cpu_to_le16(vq->packed.event_flags_shadow);
++	}
++}
++
+ static struct virtqueue *vring_create_virtqueue_packed(
+ 	unsigned int index,
+ 	unsigned int num,
+@@ -1988,24 +2003,13 @@ static struct virtqueue *vring_create_virtqueue_packed(
+ 	vq->indirect = virtio_has_feature(vdev, VIRTIO_RING_F_INDIRECT_DESC) &&
+ 		!context;
  
- extern void panic(const char *fmt, ...)
- 	__attribute__ ((format (printf, 1, 2)));
+-	vq->packed.next_avail_idx = 0;
+-	vq->packed.avail_wrap_counter = 1;
+-	vq->packed.event_flags_shadow = 0;
+-	vq->packed.avail_used_flags = 1 << VRING_PACKED_DESC_F_AVAIL;
+-
+ 	err = vring_alloc_state_extra_packed(&vring_packed);
+ 	if (err)
+ 		goto err_state_extra;
  
- /* Requires preincluding include/linux/kern_levels.h */
- #define UM_KERN_EMERG	KERN_EMERG
- #define UM_KERN_ALERT	KERN_ALERT
- #define UM_KERN_CRIT	KERN_CRIT
- #define UM_KERN_ERR	KERN_ERR
+ 	virtqueue_init(vq, num);
+ 	virtqueue_vring_attach_packed(vq, &vring_packed);
+-
+-	/* No callback?  Tell other side not to bother us. */
+-	if (!callback) {
+-		vq->packed.event_flags_shadow = VRING_PACKED_EVENT_FLAG_DISABLE;
+-		vq->packed.vring.driver->flags =
+-			cpu_to_le16(vq->packed.event_flags_shadow);
+-	}
++	virtqueue_vring_init_packed(vq);
+ 
+ 	spin_lock(&vdev->vqs_list_lock);
+ 	list_add_tail(&vq->vq.list, &vdev->vqs);
 -- 
-2.35.1
+2.31.0
 
 
 _______________________________________________
