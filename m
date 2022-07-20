@@ -1,13 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Thu, 14 Jul 2022 12:20:19 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH] um: Add missing apply_returns()
-Message-ID: <Ys/t45l/garIrD0u@worktop.programming.kicks-ass.net>
-References: <20220713223328.07016b70@canb.auug.org.au>
- <7b6077ec-4603-c177-b321-0eeaeefaec70@infradead.org>
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1oE02C-00HFM8-OO
+	for linux-um@lists.infradead.org; Wed, 20 Jul 2022 03:06:02 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v12 32/40] virtio_pci: support the arg sizes of find_vqs()
+Date: Wed, 20 Jul 2022 11:04:28 +0800
+Message-Id: <20220720030436.79520-33-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
+References: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <7b6077ec-4603-c177-b321-0eeaeefaec70@infradead.org>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,54 +22,173 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Linux Next Mailing List <linux-next@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>, x86@kernel.org
+To: virtualization@lists.linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-On Wed, Jul 13, 2022 at 01:40:48PM -0700, Randy Dunlap wrote:
-> 
-> 
-> On 7/13/22 05:33, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > Changes since 20220712:
-> > 
-> 
-> UML for x86_64 defconfig:
-> 
-> /usr/lib64/gcc/x86_64-suse-linux/12/../../../../x86_64-suse-linux/bin/ld: arch/x86/um/../kernel/module.o: in function `module_finalize':
-> module.c:(.text+0x416): undefined reference to `apply_returns'
-> 
-> arch/x86/kernel/alternative.o is not being built for UML.
-> 
+Virtio PCI supports new parameter sizes of find_vqs().
 
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
 ---
-Subject: um: Add missing apply_returns()
+ drivers/virtio/virtio_pci_common.c | 18 ++++++++++--------
+ drivers/virtio/virtio_pci_common.h |  1 +
+ drivers/virtio/virtio_pci_legacy.c |  6 +++++-
+ drivers/virtio/virtio_pci_modern.c | 10 +++++++---
+ 4 files changed, 23 insertions(+), 12 deletions(-)
 
-Implement apply_returns() stub for UM, just like all the other patching
-routines.
-
-Fixes: 15e67227c49a ("x86: Undo return-thunk damage")
-Reported-by: Randy Dunlap <rdunlap@infradead.org)
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/um/kernel/um_arch.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 0760e24f2eba..9838967d0b2f 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -432,6 +432,10 @@ void apply_retpolines(s32 *start, s32 *end)
+diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
+index 7ad734584823..00ad476a815d 100644
+--- a/drivers/virtio/virtio_pci_common.c
++++ b/drivers/virtio/virtio_pci_common.c
+@@ -174,6 +174,7 @@ static int vp_request_msix_vectors(struct virtio_device *vdev, int nvectors,
+ static struct virtqueue *vp_setup_vq(struct virtio_device *vdev, unsigned int index,
+ 				     void (*callback)(struct virtqueue *vq),
+ 				     const char *name,
++				     u32 size,
+ 				     bool ctx,
+ 				     u16 msix_vec)
  {
+@@ -186,7 +187,7 @@ static struct virtqueue *vp_setup_vq(struct virtio_device *vdev, unsigned int in
+ 	if (!info)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	vq = vp_dev->setup_vq(vp_dev, info, index, callback, name, ctx,
++	vq = vp_dev->setup_vq(vp_dev, info, index, callback, name, size, ctx,
+ 			      msix_vec);
+ 	if (IS_ERR(vq))
+ 		goto out_info;
+@@ -283,7 +284,7 @@ void vp_del_vqs(struct virtio_device *vdev)
+ 
+ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned int nvqs,
+ 		struct virtqueue *vqs[], vq_callback_t *callbacks[],
+-		const char * const names[], bool per_vq_vectors,
++		const char * const names[], u32 sizes[], bool per_vq_vectors,
+ 		const bool *ctx,
+ 		struct irq_affinity *desc)
+ {
+@@ -326,8 +327,8 @@ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned int nvqs,
+ 		else
+ 			msix_vec = VP_MSIX_VQ_VECTOR;
+ 		vqs[i] = vp_setup_vq(vdev, queue_idx++, callbacks[i], names[i],
+-				     ctx ? ctx[i] : false,
+-				     msix_vec);
++				     sizes ? sizes[i] : 0,
++				     ctx ? ctx[i] : false, msix_vec);
+ 		if (IS_ERR(vqs[i])) {
+ 			err = PTR_ERR(vqs[i]);
+ 			goto error_find;
+@@ -357,7 +358,7 @@ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned int nvqs,
+ 
+ static int vp_find_vqs_intx(struct virtio_device *vdev, unsigned int nvqs,
+ 		struct virtqueue *vqs[], vq_callback_t *callbacks[],
+-		const char * const names[], const bool *ctx)
++		const char * const names[], u32 sizes[], const bool *ctx)
+ {
+ 	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+ 	int i, err, queue_idx = 0;
+@@ -379,6 +380,7 @@ static int vp_find_vqs_intx(struct virtio_device *vdev, unsigned int nvqs,
+ 			continue;
+ 		}
+ 		vqs[i] = vp_setup_vq(vdev, queue_idx++, callbacks[i], names[i],
++				     sizes ? sizes[i] : 0,
+ 				     ctx ? ctx[i] : false,
+ 				     VIRTIO_MSI_NO_VECTOR);
+ 		if (IS_ERR(vqs[i])) {
+@@ -402,15 +404,15 @@ int vp_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
+ 	int err;
+ 
+ 	/* Try MSI-X with one vector per queue. */
+-	err = vp_find_vqs_msix(vdev, nvqs, vqs, callbacks, names, true, ctx, desc);
++	err = vp_find_vqs_msix(vdev, nvqs, vqs, callbacks, names, sizes, true, ctx, desc);
+ 	if (!err)
+ 		return 0;
+ 	/* Fallback: MSI-X with one vector for config, one shared for queues. */
+-	err = vp_find_vqs_msix(vdev, nvqs, vqs, callbacks, names, false, ctx, desc);
++	err = vp_find_vqs_msix(vdev, nvqs, vqs, callbacks, names, sizes, false, ctx, desc);
+ 	if (!err)
+ 		return 0;
+ 	/* Finally fall back to regular interrupts. */
+-	return vp_find_vqs_intx(vdev, nvqs, vqs, callbacks, names, ctx);
++	return vp_find_vqs_intx(vdev, nvqs, vqs, callbacks, names, sizes, ctx);
  }
  
-+void apply_returns(s32 *start, s32 *end)
-+{
-+}
-+
- void apply_alternatives(struct alt_instr *start, struct alt_instr *end)
+ const char *vp_bus_name(struct virtio_device *vdev)
+diff --git a/drivers/virtio/virtio_pci_common.h b/drivers/virtio/virtio_pci_common.h
+index a5ff838b85a5..c0448378b698 100644
+--- a/drivers/virtio/virtio_pci_common.h
++++ b/drivers/virtio/virtio_pci_common.h
+@@ -80,6 +80,7 @@ struct virtio_pci_device {
+ 				      unsigned int idx,
+ 				      void (*callback)(struct virtqueue *vq),
+ 				      const char *name,
++				      u32 size,
+ 				      bool ctx,
+ 				      u16 msix_vec);
+ 	void (*del_vq)(struct virtio_pci_vq_info *info);
+diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virtio_pci_legacy.c
+index 2257f1b3d8ae..d75e5c4e637f 100644
+--- a/drivers/virtio/virtio_pci_legacy.c
++++ b/drivers/virtio/virtio_pci_legacy.c
+@@ -112,6 +112,7 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
+ 				  unsigned int index,
+ 				  void (*callback)(struct virtqueue *vq),
+ 				  const char *name,
++				  u32 size,
+ 				  bool ctx,
+ 				  u16 msix_vec)
  {
- }
+@@ -125,10 +126,13 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
+ 	if (!num || vp_legacy_get_queue_enable(&vp_dev->ldev, index))
+ 		return ERR_PTR(-ENOENT);
+ 
++	if (!size || size > num)
++		size = num;
++
+ 	info->msix_vector = msix_vec;
+ 
+ 	/* create the vring */
+-	vq = vring_create_virtqueue(index, num,
++	vq = vring_create_virtqueue(index, size,
+ 				    VIRTIO_PCI_VRING_ALIGN, &vp_dev->vdev,
+ 				    true, false, ctx,
+ 				    vp_notify, callback, name);
+diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
+index 19ec491d515a..11607bf71b40 100644
+--- a/drivers/virtio/virtio_pci_modern.c
++++ b/drivers/virtio/virtio_pci_modern.c
+@@ -301,6 +301,7 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
+ 				  unsigned int index,
+ 				  void (*callback)(struct virtqueue *vq),
+ 				  const char *name,
++				  u32 size,
+ 				  bool ctx,
+ 				  u16 msix_vec)
+ {
+@@ -318,15 +319,18 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
+ 	if (!num || vp_modern_get_queue_enable(mdev, index))
+ 		return ERR_PTR(-ENOENT);
+ 
+-	if (num & (num - 1)) {
+-		dev_warn(&vp_dev->pci_dev->dev, "bad queue size %u", num);
++	if (!size || size > num)
++		size = num;
++
++	if (size & (size - 1)) {
++		dev_warn(&vp_dev->pci_dev->dev, "bad queue size %u", size);
+ 		return ERR_PTR(-EINVAL);
+ 	}
+ 
+ 	info->msix_vector = msix_vec;
+ 
+ 	/* create the vring */
+-	vq = vring_create_virtqueue(index, num,
++	vq = vring_create_virtqueue(index, size,
+ 				    SMP_CACHE_BYTES, &vp_dev->vdev,
+ 				    true, true, ctx,
+ 				    vp_notify, callback, name);
+-- 
+2.31.0
+
 
 _______________________________________________
 linux-um mailing list
