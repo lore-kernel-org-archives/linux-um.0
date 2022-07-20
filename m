@@ -1,205 +1,118 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oE025-00HFCt-Rm
-	for linux-um@lists.infradead.org; Wed, 20 Jul 2022 03:05:55 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v12 30/40] virtio_pci: support VIRTIO_F_RING_RESET
-Date: Wed, 20 Jul 2022 11:04:26 +0800
-Message-Id: <20220720030436.79520-31-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
-References: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
+Return-Path: <shorne@gmail.com>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+References: <20220720131934.373932-4-shorne@gmail.com> <20220720224238.GA1666095@bhelgaas>
+In-Reply-To: <20220720224238.GA1666095@bhelgaas>
+From: Stafford Horne <shorne@gmail.com>
+Date: Thu, 21 Jul 2022 08:34:10 +0900
+Message-ID: <CAAfxs76EGfzUnKp9XYAKxF9n3Y17+vsb3s2bJ4Cqi9hYFkawMg@mail.gmail.com>
+Subject: Re: [PATCH v4 3/3] asm-generic: Add new pci.h and use it
+Content-Type: multipart/alternative; boundary="000000000000de852405e4450af1"
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, Pierre Morel <pmorel@linux.ibm.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Bjorn Helgaas <bhelgaas@google.com>, linux-arm <linux-arm-kernel@lists.infradead.org>, linux-csky@vger.kernel.org, linux-riscv <linux-riscv@lists.infradead.org>, linux-um <linux-um@lists.infradead.org>, linux-pci <linux-pci@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-This patch implements virtio pci support for QUEUE RESET.
+--000000000000de852405e4450af1
+Content-Type: text/plain; charset="UTF-8"
 
-Performing reset on a queue is divided into these steps:
+On Thu, Jul 21, 2022, 7:42 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
 
- 1. notify the device to reset the queue
- 2. recycle the buffer submitted
- 3. reset the vring (may re-alloc)
- 4. mmap vring to device, and enable the queue
+> On Wed, Jul 20, 2022 at 10:19:34PM +0900, Stafford Horne wrote:
+> > The asm/pci.h used for many newer architectures share similar
+> > definitions.  Move the common parts to asm-generic/pci.h to allow for
+> > sharing code.
+> >
+> > One thing to note:
+> >
+> >  - ARCH_GENERIC_PCI_MMAP_RESOURCE, csky does not define this so we
+> >    undefine it after including asm-generic/pci.h.  Why doesn't csky
+> >    define it?
+> >
+> > Suggested-by: Arnd Bergmann <arnd@arndb.de>
+> > Link:
+> https://lore.kernel.org/lkml/CAK8P3a0JmPeczfmMBE__vn=Jbvf=nkbpVaZCycyv40pZNCJJXQ@mail.gmail.com/
+> > Acked-by: Pierre Morel <pmorel@linux.ibm.com>
+> > Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> > Signed-off-by: Stafford Horne <shorne@gmail.com>
+>
+> > diff --git a/arch/arm64/include/asm/pci.h b/arch/arm64/include/asm/pci.h
+> > index 0aebc3488c32..016eb6b46dc0 100644
+> > --- a/arch/arm64/include/asm/pci.h
+> > +++ b/arch/arm64/include/asm/pci.h
+>
+> > -extern int isa_dma_bridge_buggy;
+>
+> Shouldn't this go in the previous patch?  The only definition of a
+> isa_dma_bridge_buggy variable is in drivers/pci/pci.c, and it's under
+> #ifdef CONFIG_X86_32.
+>
+> Same for csky, riscv, um?
+>
 
-This patch implements virtio_reset_vq(), virtio_enable_resetq() in the
-pci scenario.
+Yes, you are right. I re ordered the patches and this didn't get into the
+right patch.  Thanks for catching this. I'll fix.
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/virtio/virtio_pci_common.c | 12 +++-
- drivers/virtio/virtio_pci_modern.c | 96 ++++++++++++++++++++++++++++++
- 2 files changed, 105 insertions(+), 3 deletions(-)
+- Stafford
 
-diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
-index ca51fcc9daab..ad258a9d3b9f 100644
---- a/drivers/virtio/virtio_pci_common.c
-+++ b/drivers/virtio/virtio_pci_common.c
-@@ -214,9 +214,15 @@ static void vp_del_vq(struct virtqueue *vq)
- 	struct virtio_pci_vq_info *info = vp_dev->vqs[vq->index];
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&vp_dev->lock, flags);
--	list_del(&info->node);
--	spin_unlock_irqrestore(&vp_dev->lock, flags);
-+	/*
-+	 * If it fails during re-enable reset vq. This way we won't rejoin
-+	 * info->node to the queue. Prevent unexpected irqs.
-+	 */
-+	if (!vq->reset) {
-+		spin_lock_irqsave(&vp_dev->lock, flags);
-+		list_del(&info->node);
-+		spin_unlock_irqrestore(&vp_dev->lock, flags);
-+	}
- 
- 	vp_dev->del_vq(info);
- 	kfree(info);
-diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
-index 9041d9a41b7d..4d28b6918c80 100644
---- a/drivers/virtio/virtio_pci_modern.c
-+++ b/drivers/virtio/virtio_pci_modern.c
-@@ -34,6 +34,9 @@ static void vp_transport_features(struct virtio_device *vdev, u64 features)
- 	if ((features & BIT_ULL(VIRTIO_F_SR_IOV)) &&
- 			pci_find_ext_capability(pci_dev, PCI_EXT_CAP_ID_SRIOV))
- 		__virtio_set_bit(vdev, VIRTIO_F_SR_IOV);
-+
-+	if (features & BIT_ULL(VIRTIO_F_RING_RESET))
-+		__virtio_set_bit(vdev, VIRTIO_F_RING_RESET);
- }
- 
- /* virtio config->finalize_features() implementation */
-@@ -199,6 +202,95 @@ static int vp_active_vq(struct virtqueue *vq, u16 msix_vec)
- 	return 0;
- }
- 
-+static int vp_modern_reset_vq(struct virtqueue *vq)
-+{
-+	struct virtio_pci_device *vp_dev = to_vp_device(vq->vdev);
-+	struct virtio_pci_modern_device *mdev = &vp_dev->mdev;
-+	struct virtio_pci_vq_info *info;
-+	unsigned long flags;
-+
-+	if (!virtio_has_feature(vq->vdev, VIRTIO_F_RING_RESET))
-+		return -ENOENT;
-+
-+	vp_modern_set_queue_reset(mdev, vq->index);
-+
-+	info = vp_dev->vqs[vq->index];
-+
-+	/* delete vq from irq handler */
-+	spin_lock_irqsave(&vp_dev->lock, flags);
-+	list_del(&info->node);
-+	spin_unlock_irqrestore(&vp_dev->lock, flags);
-+
-+	INIT_LIST_HEAD(&info->node);
-+
-+	/* For the case where vq has an exclusive irq, to prevent the irq from
-+	 * being received again and the pending irq, call synchronize_irq(), and
-+	 * break it.
-+	 *
-+	 * We can't use disable_irq() since it conflicts with the affinity
-+	 * managed IRQ that is used by some drivers. So this is done on top of
-+	 * IRQ hardening.
-+	 *
-+	 * In the scenario based on shared interrupts, vq will be searched from
-+	 * the queue virtqueues. Since the previous list_del() has been deleted
-+	 * from the queue, it is impossible for vq to be called in this case.
-+	 * There is no need to close the corresponding interrupt.
-+	 */
-+	if (vp_dev->per_vq_vectors && info->msix_vector != VIRTIO_MSI_NO_VECTOR) {
-+#ifdef CONFIG_VIRTIO_HARDEN_NOTIFICATION
-+		__virtqueue_break(vq);
-+#endif
-+		synchronize_irq(pci_irq_vector(vp_dev->pci_dev, info->msix_vector));
-+	}
-+
-+	vq->reset = true;
-+
-+	return 0;
-+}
-+
-+static int vp_modern_enable_reset_vq(struct virtqueue *vq)
-+{
-+	struct virtio_pci_device *vp_dev = to_vp_device(vq->vdev);
-+	struct virtio_pci_modern_device *mdev = &vp_dev->mdev;
-+	struct virtio_pci_vq_info *info;
-+	unsigned long flags, index;
-+	int err;
-+
-+	if (!vq->reset)
-+		return -EBUSY;
-+
-+	index = vq->index;
-+	info = vp_dev->vqs[index];
-+
-+	if (vp_modern_get_queue_reset(mdev, index))
-+		return -EBUSY;
-+
-+	if (vp_modern_get_queue_enable(mdev, index))
-+		return -EBUSY;
-+
-+	err = vp_active_vq(vq, info->msix_vector);
-+	if (err)
-+		return err;
-+
-+	if (vq->callback) {
-+		spin_lock_irqsave(&vp_dev->lock, flags);
-+		list_add(&info->node, &vp_dev->virtqueues);
-+		spin_unlock_irqrestore(&vp_dev->lock, flags);
-+	} else {
-+		INIT_LIST_HEAD(&info->node);
-+	}
-+
-+#ifdef CONFIG_VIRTIO_HARDEN_NOTIFICATION
-+	if (vp_dev->per_vq_vectors && info->msix_vector != VIRTIO_MSI_NO_VECTOR)
-+		__virtqueue_unbreak(vq);
-+#endif
-+
-+	vp_modern_set_queue_enable(&vp_dev->mdev, index, true);
-+	vq->reset = false;
-+
-+	return 0;
-+}
-+
- static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vector)
- {
- 	return vp_modern_config_vector(&vp_dev->mdev, vector);
-@@ -413,6 +505,8 @@ static const struct virtio_config_ops virtio_pci_config_nodev_ops = {
- 	.set_vq_affinity = vp_set_vq_affinity,
- 	.get_vq_affinity = vp_get_vq_affinity,
- 	.get_shm_region  = vp_get_shm_region,
-+	.disable_vq_and_reset = vp_modern_reset_vq,
-+	.enable_vq_after_reset = vp_modern_enable_reset_vq,
- };
- 
- static const struct virtio_config_ops virtio_pci_config_ops = {
-@@ -431,6 +525,8 @@ static const struct virtio_config_ops virtio_pci_config_ops = {
- 	.set_vq_affinity = vp_set_vq_affinity,
- 	.get_vq_affinity = vp_get_vq_affinity,
- 	.get_shm_region  = vp_get_shm_region,
-+	.disable_vq_and_reset = vp_modern_reset_vq,
-+	.enable_vq_after_reset = vp_modern_enable_reset_vq,
- };
- 
- /* the PCI probing function */
--- 
-2.31.0
+>
 
+--000000000000de852405e4450af1
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+<div dir=3D"auto"><div><br><br><div class=3D"gmail_quote"><div dir=3D"ltr" =
+class=3D"gmail_attr">On Thu, Jul 21, 2022, 7:42 AM Bjorn Helgaas &lt;<a hre=
+f=3D"mailto:helgaas@kernel.org">helgaas@kernel.org</a>&gt; wrote:<br></div>=
+<blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1p=
+x #ccc solid;padding-left:1ex">On Wed, Jul 20, 2022 at 10:19:34PM +0900, St=
+afford Horne wrote:<br>
+&gt; The asm/pci.h used for many newer architectures share similar<br>
+&gt; definitions.=C2=A0 Move the common parts to asm-generic/pci.h to allow=
+ for<br>
+&gt; sharing code.<br>
+&gt; <br>
+&gt; One thing to note:<br>
+&gt; <br>
+&gt;=C2=A0 - ARCH_GENERIC_PCI_MMAP_RESOURCE, csky does not define this so w=
+e<br>
+&gt;=C2=A0 =C2=A0 undefine it after including asm-generic/pci.h.=C2=A0 Why =
+doesn&#39;t csky<br>
+&gt;=C2=A0 =C2=A0 define it?<br>
+&gt; <br>
+&gt; Suggested-by: Arnd Bergmann &lt;<a href=3D"mailto:arnd@arndb.de" targe=
+t=3D"_blank" rel=3D"noreferrer">arnd@arndb.de</a>&gt;<br>
+&gt; Link: <a href=3D"https://lore.kernel.org/lkml/CAK8P3a0JmPeczfmMBE__vn=
+=3DJbvf=3DnkbpVaZCycyv40pZNCJJXQ@mail.gmail.com/" rel=3D"noreferrer norefer=
+rer" target=3D"_blank">https://lore.kernel.org/lkml/CAK8P3a0JmPeczfmMBE__vn=
+=3DJbvf=3DnkbpVaZCycyv40pZNCJJXQ@mail.gmail.com/</a><br>
+&gt; Acked-by: Pierre Morel &lt;<a href=3D"mailto:pmorel@linux.ibm.com" tar=
+get=3D"_blank" rel=3D"noreferrer">pmorel@linux.ibm.com</a>&gt;<br>
+&gt; Acked-by: Geert Uytterhoeven &lt;<a href=3D"mailto:geert@linux-m68k.or=
+g" target=3D"_blank" rel=3D"noreferrer">geert@linux-m68k.org</a>&gt;<br>
+&gt; Signed-off-by: Stafford Horne &lt;<a href=3D"mailto:shorne@gmail.com" =
+target=3D"_blank" rel=3D"noreferrer">shorne@gmail.com</a>&gt;<br>
+<br>
+&gt; diff --git a/arch/arm64/include/asm/pci.h b/arch/arm64/include/asm/pci=
+.h<br>
+&gt; index 0aebc3488c32..016eb6b46dc0 100644<br>
+&gt; --- a/arch/arm64/include/asm/pci.h<br>
+&gt; +++ b/arch/arm64/include/asm/pci.h<br>
+<br>
+&gt; -extern int isa_dma_bridge_buggy;<br>
+<br>
+Shouldn&#39;t this go in the previous patch?=C2=A0 The only definition of a=
+<br>
+isa_dma_bridge_buggy variable is in drivers/pci/pci.c, and it&#39;s under<b=
+r>
+#ifdef CONFIG_X86_32.<br>
+<br>
+Same for csky, riscv, um?<br></blockquote></div></div><div dir=3D"auto"><br=
+></div><div dir=3D"auto">Yes, you are right. I re ordered the patches and t=
+his didn&#39;t get into the right patch.=C2=A0 Thanks for catching this. I&=
+#39;ll fix.</div><div dir=3D"auto"><br></div><div dir=3D"auto">- Stafford=
+=C2=A0</div><div dir=3D"auto"><div class=3D"gmail_quote"><blockquote class=
+=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padd=
+ing-left:1ex">
+</blockquote></div></div></div>
+
+--000000000000de852405e4450af1--
 
