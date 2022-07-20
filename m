@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oBAi6-008V0M-Q4
-	for linux-um@lists.infradead.org; Tue, 12 Jul 2022 07:53:36 +0000
-From: Huacai Chen <chenhuacai@loongson.cn>
-Subject: [PATCH 3/6] M68K: cpuinfo: Fix a warning for CONFIG_CPUMASK_OFFSTACK
-Date: Tue, 12 Jul 2022 15:52:52 +0800
-Message-Id: <20220712075255.1345991-3-chenhuacai@loongson.cn>
-In-Reply-To: <20220712075255.1345991-1-chenhuacai@loongson.cn>
-References: <20220712075255.1345991-1-chenhuacai@loongson.cn>
+	id 1oE01P-00HEMe-8K
+	for linux-um@lists.infradead.org; Wed, 20 Jul 2022 03:05:12 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v12 11/40] virtio_ring: split: extract the logic of vring init
+Date: Wed, 20 Jul 2022 11:04:07 +0800
+Message-Id: <20220720030436.79520-12-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
+References: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,64 +22,71 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Arnd Bergmann <arnd@arndb.de>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: loongarch@lists.linux.dev, linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@gmail.com>, Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>, Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, Huacai Chen <chenhuacai@loongson.cn>, stable@vger.kernel.org
+To: virtualization@lists.linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-When CONFIG_CPUMASK_OFFSTACK and CONFIG_DEBUG_PER_CPU_MAPS is selected,
-cpu_max_bits_warn() generates a runtime warning similar as below while
-we show /proc/cpuinfo. Fix this by using nr_cpu_ids (the runtime limit)
-instead of NR_CPUS to iterate CPUs.
+Separate the logic of initializing vring, and subsequent patches will
+call it separately.
 
-[    3.052463] ------------[ cut here ]------------
-[    3.059679] WARNING: CPU: 3 PID: 1 at include/linux/cpumask.h:108 show_cpuinfo+0x5e8/0x5f0
-[    3.070072] Modules linked in: efivarfs autofs4
-[    3.076257] CPU: 0 PID: 1 Comm: systemd Not tainted 5.19-rc5+ #1052
-[    3.099465] Stack : 9000000100157b08 9000000000f18530 9000000000cf846c 9000000100154000
-[    3.109127]         9000000100157a50 0000000000000000 9000000100157a58 9000000000ef7430
-[    3.118774]         90000001001578e8 0000000000000040 0000000000000020 ffffffffffffffff
-[    3.128412]         0000000000aaaaaa 1ab25f00eec96a37 900000010021de80 900000000101c890
-[    3.138056]         0000000000000000 0000000000000000 0000000000000000 0000000000aaaaaa
-[    3.147711]         ffff8000339dc220 0000000000000001 0000000006ab4000 0000000000000000
-[    3.157364]         900000000101c998 0000000000000004 9000000000ef7430 0000000000000000
-[    3.167012]         0000000000000009 000000000000006c 0000000000000000 0000000000000000
-[    3.176641]         9000000000d3de08 9000000001639390 90000000002086d8 00007ffff0080286
-[    3.186260]         00000000000000b0 0000000000000004 0000000000000000 0000000000071c1c
-[    3.195868]         ...
-[    3.199917] Call Trace:
-[    3.203941] [<90000000002086d8>] show_stack+0x38/0x14c
-[    3.210666] [<9000000000cf846c>] dump_stack_lvl+0x60/0x88
-[    3.217625] [<900000000023d268>] __warn+0xd0/0x100
-[    3.223958] [<9000000000cf3c90>] warn_slowpath_fmt+0x7c/0xcc
-[    3.231150] [<9000000000210220>] show_cpuinfo+0x5e8/0x5f0
-[    3.238080] [<90000000004f578c>] seq_read_iter+0x354/0x4b4
-[    3.245098] [<90000000004c2e90>] new_sync_read+0x17c/0x1c4
-[    3.252114] [<90000000004c5174>] vfs_read+0x138/0x1d0
-[    3.258694] [<90000000004c55f8>] ksys_read+0x70/0x100
-[    3.265265] [<9000000000cfde9c>] do_syscall+0x7c/0x94
-[    3.271820] [<9000000000202fe4>] handle_syscall+0xc4/0x160
-[    3.281824] ---[ end trace 8b484262b4b8c24c ]---
+This function completes the variable initialization of split vring. It
+together with the logic of atatch constitutes the initialization of
+vring.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- arch/m68k/kernel/setup_no.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/virtio/virtio_ring.c | 29 ++++++++++++++++++-----------
+ 1 file changed, 18 insertions(+), 11 deletions(-)
 
-diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
-index 19eea73d3c17..ee03287a386c 100644
---- a/arch/m68k/kernel/setup_no.c
-+++ b/arch/m68k/kernel/setup_no.c
-@@ -201,7 +201,7 @@ static int show_cpuinfo(struct seq_file *m, void *v)
- 
- static void *c_start(struct seq_file *m, loff_t *pos)
- {
--	return *pos < NR_CPUS ? ((void *) 0x12345678) : NULL;
-+	return *pos < nr_cpu_ids ? ((void *) 0x12345678) : NULL;
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index b2dbbf68736b..0c952281264f 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -940,6 +940,24 @@ static void *virtqueue_detach_unused_buf_split(struct virtqueue *_vq)
+ 	return NULL;
  }
  
- static void *c_next(struct seq_file *m, void *v, loff_t *pos)
++static void virtqueue_vring_init_split(struct vring_virtqueue *vq)
++{
++	struct virtio_device *vdev;
++
++	vdev = vq->vq.vdev;
++
++	vq->split.avail_flags_shadow = 0;
++	vq->split.avail_idx_shadow = 0;
++
++	/* No callback?  Tell other side not to bother us. */
++	if (!vq->vq.callback) {
++		vq->split.avail_flags_shadow |= VRING_AVAIL_F_NO_INTERRUPT;
++		if (!vq->event)
++			vq->split.vring.avail->flags = cpu_to_virtio16(vdev,
++					vq->split.avail_flags_shadow);
++	}
++}
++
+ static void virtqueue_vring_attach_split(struct vring_virtqueue *vq,
+ 					 struct vring_virtqueue_split *vring_split)
+ {
+@@ -2300,17 +2318,6 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
+ 	vq->indirect = virtio_has_feature(vdev, VIRTIO_RING_F_INDIRECT_DESC) &&
+ 		!context;
+ 
+-	vq->split.avail_flags_shadow = 0;
+-	vq->split.avail_idx_shadow = 0;
+-
+-	/* No callback?  Tell other side not to bother us. */
+-	if (!callback) {
+-		vq->split.avail_flags_shadow |= VRING_AVAIL_F_NO_INTERRUPT;
+-		if (!vq->event)
+-			vq->split.vring.avail->flags = cpu_to_virtio16(vdev,
+-					vq->split.avail_flags_shadow);
+-	}
+-
+ 	vring_split.vring = vring;
+ 
+ 	err = vring_alloc_state_extra_split(&vring_split);
 -- 
-2.31.1
+2.31.0
 
 
 _______________________________________________
