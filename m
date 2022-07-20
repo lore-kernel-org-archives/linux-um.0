@@ -1,12 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from [43.155.65.254] (helo=smtpbg.qq.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oEFXI-00A1nC-My
-	for linux-um@lists.infradead.org; Wed, 20 Jul 2022 19:39:14 +0000
+	id 1oEFKb-009qAo-Gt
+	for linux-um@lists.infradead.org; Wed, 20 Jul 2022 19:26:06 +0000
 From: Xin Gao <gaoxin@cdjrlc.com>
 Subject: [PATCH] um:do not initialise statics to 0.
-Date: Thu, 21 Jul 2022 03:36:43 +0800
-Message-Id: <20220720193643.8081-1-gaoxin@cdjrlc.com>
+Date: Thu, 21 Jul 2022 03:24:51 +0800
+Message-Id: <20220720192451.7384-1-gaoxin@cdjrlc.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -27,22 +27,22 @@ do not initialise statics to 0.
 
 Signed-off-by: Xin Gao <gaoxin@cdjrlc.com>
 ---
- arch/um/drivers/stdio_console.c | 2 +-
+ arch/um/drivers/ssl.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/um/drivers/stdio_console.c b/arch/um/drivers/stdio_console.c
-index e8b762f4d8c2..e0f7543ef499 100644
---- a/arch/um/drivers/stdio_console.c
-+++ b/arch/um/drivers/stdio_console.c
-@@ -90,7 +90,7 @@ static int con_remove(int n, char **error_out)
- }
+diff --git a/arch/um/drivers/ssl.c b/arch/um/drivers/ssl.c
+index 41eae2e8fb65..891e9c83d407 100644
+--- a/arch/um/drivers/ssl.c
++++ b/arch/um/drivers/ssl.c
+@@ -108,7 +108,7 @@ static const struct tty_operations ssl_ops = {
+ /* Changed by ssl_init and referenced by ssl_exit, which are both serialized
+  * by being an initcall and exitcall, respectively.
+  */
+-static int ssl_init_done = 0;
++static int ssl_init_done;
  
- /* Set in an initcall, checked in an exitcall */
--static int con_init_done = 0;
-+static int con_init_done;
- 
- static int con_install(struct tty_driver *driver, struct tty_struct *tty)
- {
+ static void ssl_console_write(struct console *c, const char *string,
+ 			      unsigned len)
 -- 
 2.30.2
 
