@@ -1,19 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-wr1-x42f.google.com ([2a00:1450:4864:20::42f])
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o7Cdq-003mdW-4P
-	for linux-um@lists.infradead.org; Fri, 01 Jul 2022 09:08:47 +0000
-Received: by mail-wr1-x42f.google.com with SMTP id v9so2237712wrp.7
-        for <linux-um@lists.infradead.org>; Fri, 01 Jul 2022 02:08:39 -0700 (PDT)
+	id 1oE02M-00HFZm-Qe
+	for linux-um@lists.infradead.org; Wed, 20 Jul 2022 03:06:12 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v12 37/40] virtio_net: split free_unused_bufs()
+Date: Wed, 20 Jul 2022 11:04:33 +0800
+Message-Id: <20220720030436.79520-38-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
+References: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-References: <20220630080834.2742777-1-davidgow@google.com> <20220630080834.2742777-2-davidgow@google.com>
- <CACT4Y+ZahTu0pGNSdZmx=4ZJHt4=mVuhxQnH_7ykDA5_fBJZVQ@mail.gmail.com>
- <20220630125434.GA20153@axis.com> <CA+fCnZe6zk8WQ7FkCsnMPLpDW2+wJcjdcrs5fxJRh+T=FvFDVA@mail.gmail.com>
-In-Reply-To: <CA+fCnZe6zk8WQ7FkCsnMPLpDW2+wJcjdcrs5fxJRh+T=FvFDVA@mail.gmail.com>
-From: David Gow <davidgow@google.com>
-Date: Fri, 1 Jul 2022 17:08:27 +0800
-Message-ID: <CABVgOSmxnTc31C-gbmbns+8YOkpppK77sdXLzASZ-hspFYDwfA@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] UML: add support for KASAN under x86_64
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -26,54 +22,87 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Andrey Konovalov <andreyknvl@gmail.com>
-Cc: Vincent Whitchurch <vincent.whitchurch@axis.com>, Dmitry Vyukov <dvyukov@google.com>, Johannes Berg <johannes@sipsolutions.net>, Patricia Alfonso <trishalfonso@google.com>, Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, "anton.ivanov@cambridgegreys.com" <anton.ivanov@cambridgegreys.com>, Brendan Higgins <brendanhiggins@google.com>, Andrew Morton <akpm@linux-foundation.org>, Andrey Ryabinin <ryabinin.a.a@gmail.com>, kasan-dev <kasan-dev@googlegroups.com>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, Daniel Latypov <dlatypov@google.com>, "linux-mm@kvack.org" <linux-mm@kvack.org>, "kunit-dev@googlegroups.com" <kunit-dev@googlegroups.com>
+To: virtualization@lists.linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-On Thu, Jun 30, 2022 at 9:29 PM Andrey Konovalov <andreyknvl@gmail.com> wrote:
->
-> On Thu, Jun 30, 2022 at 2:54 PM Vincent Whitchurch
-> <vincent.whitchurch@axis.com> wrote:
-> >
-> > On Thu, Jun 30, 2022 at 11:41:04AM +0200, Dmitry Vyukov wrote:
-> > > On Thu, 30 Jun 2022 at 10:08, David Gow <davidgow@google.com> wrote:
-> > > > diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
-> > > > index 1c2d4b29a3d4..a089217e2f0e 100644
-> > > > --- a/arch/um/kernel/Makefile
-> > > > +++ b/arch/um/kernel/Makefile
-> > > > @@ -27,6 +27,9 @@ obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
-> > > >  obj-$(CONFIG_STACKTRACE) += stacktrace.o
-> > > >  obj-$(CONFIG_GENERIC_PCI_IOMAP) += ioport.o
-> > > >
-> > > > +KASAN_SANITIZE_stacktrace.o := n
-> > > > +KASAN_SANITIZE_sysrq.o := n
-> > >
-> > > Why are these needed?
-> > > It's helpful to leave some comments for any of *_SANITIZE:=n.
-> > > Otherwise later it's unclear if it's due to some latent bugs, some
-> > > inherent incompatibility, something that can be fixed, etc.
-> >
-> > I believe I saw the stacktrace code itself triggering KASAN splats and
-> > causing recursion when sanitization was not disabled on it.  I noticed
-> > that other architectures disabled sanitization of their stacktrace code,
-> > eg. ARM in commit 4d576cab16f57e1f87978f ("ARM: 9028/1: disable KASAN in
-> > call stack capturing routines"), so I did not investigate it further.
-> >
-> > (Note that despite the name, sysrq.c is also just stacktrace code.)
->
-> Stack trace collection code might trigger KASAN splats when walking
-> stack frames, but this can be resolved by using unchecked accesses.
-> The main reason to disable instrumentation here is for performance
-> reasons, see the upcoming patch for arm64 [1] for some details.
->
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/commit/?id=802b91118d11
+This patch separates two functions for freeing sq buf and rq buf from
+free_unused_bufs().
 
-Ah -- that does it! Using READ_ONCE_NOCHECK() in dump_trace() gets rid
-of the nasty recursive KASAN failures we were getting in the tests.
+When supporting the enable/disable tx/rq queue in the future, it is
+necessary to support separate recovery of a sq buf or a rq buf.
 
-I'll send out v5 with those files instrumented again.
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
+---
+ drivers/net/virtio_net.c | 41 ++++++++++++++++++++++++----------------
+ 1 file changed, 25 insertions(+), 16 deletions(-)
 
-Thanks!
--- David
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 981ef8ea4d58..fe4dc43c05a1 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -3151,6 +3151,27 @@ static void free_receive_page_frags(struct virtnet_info *vi)
+ 			put_page(vi->rq[i].alloc_frag.page);
+ }
+ 
++static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf)
++{
++	if (!is_xdp_frame(buf))
++		dev_kfree_skb(buf);
++	else
++		xdp_return_frame(ptr_to_xdp(buf));
++}
++
++static void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *buf)
++{
++	struct virtnet_info *vi = vq->vdev->priv;
++	int i = vq2rxq(vq);
++
++	if (vi->mergeable_rx_bufs)
++		put_page(virt_to_head_page(buf));
++	else if (vi->big_packets)
++		give_pages(&vi->rq[i], buf);
++	else
++		put_page(virt_to_head_page(buf));
++}
++
+ static void free_unused_bufs(struct virtnet_info *vi)
+ {
+ 	void *buf;
+@@ -3158,26 +3179,14 @@ static void free_unused_bufs(struct virtnet_info *vi)
+ 
+ 	for (i = 0; i < vi->max_queue_pairs; i++) {
+ 		struct virtqueue *vq = vi->sq[i].vq;
+-		while ((buf = virtqueue_detach_unused_buf(vq)) != NULL) {
+-			if (!is_xdp_frame(buf))
+-				dev_kfree_skb(buf);
+-			else
+-				xdp_return_frame(ptr_to_xdp(buf));
+-		}
++		while ((buf = virtqueue_detach_unused_buf(vq)) != NULL)
++			virtnet_sq_free_unused_buf(vq, buf);
+ 	}
+ 
+ 	for (i = 0; i < vi->max_queue_pairs; i++) {
+ 		struct virtqueue *vq = vi->rq[i].vq;
+-
+-		while ((buf = virtqueue_detach_unused_buf(vq)) != NULL) {
+-			if (vi->mergeable_rx_bufs) {
+-				put_page(virt_to_head_page(buf));
+-			} else if (vi->big_packets) {
+-				give_pages(&vi->rq[i], buf);
+-			} else {
+-				put_page(virt_to_head_page(buf));
+-			}
+-		}
++		while ((buf = virtqueue_detach_unused_buf(vq)) != NULL)
++			virtnet_rq_free_unused_buf(vq, buf);
+ 	}
+ }
+ 
+-- 
+2.31.0
+
 
 _______________________________________________
 linux-um mailing list
