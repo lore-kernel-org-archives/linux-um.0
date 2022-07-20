@@ -1,198 +1,117 @@
-Return-Path: <shorne@gmail.com>
-From: Stafford Horne <shorne@gmail.com>
-Subject: [PATCH v5 4/4] asm-generic: Add new pci.h and use it
-Date: Thu, 21 Jul 2022 22:49:24 +0900
-Message-Id: <20220721134924.596152-5-shorne@gmail.com>
-In-Reply-To: <20220721134924.596152-1-shorne@gmail.com>
-References: <20220721134924.596152-1-shorne@gmail.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1oE024-00HFAH-Rp
+	for linux-um@lists.infradead.org; Wed, 20 Jul 2022 03:05:54 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v12 29/40] virtio_pci: extract the logic of active vq for modern pci
+Date: Wed, 20 Jul 2022 11:04:25 +0800
+Message-Id: <20220720030436.79520-30-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
+References: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Stafford Horne <shorne@gmail.com>, Pierre Morel <pmorel@linux.ibm.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Bjorn Helgaas <bhelgaas@google.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org, linux-pci@vger.kernel.org, linux-arch@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: virtualization@lists.linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-The asm/pci.h used for many newer architectures share similar
-definitions.  Move the common parts to asm-generic/pci.h to allow for
-sharing code.
+Introduce vp_active_vq() to configure vring to backend after vq attach
+vring. And configure vq vector if necessary.
 
-Suggested-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/lkml/CAK8P3a0JmPeczfmMBE__vn=Jbvf=nkbpVaZCycyv40pZNCJJXQ@mail.gmail.com/
-Acked-by: Pierre Morel <pmorel@linux.ibm.com>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Stafford Horne <shorne@gmail.com>
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
 ---
-Since v4:
- - Add reviewed-by
+ drivers/virtio/virtio_pci_modern.c | 46 ++++++++++++++++++------------
+ 1 file changed, 28 insertions(+), 18 deletions(-)
 
- arch/arm64/include/asm/pci.h | 10 ++--------
- arch/csky/include/asm/pci.h  | 17 ++---------------
- arch/riscv/include/asm/pci.h | 23 ++++-------------------
- arch/um/include/asm/pci.h    | 14 ++------------
- include/asm-generic/pci.h    | 32 ++++++++++++++++++++++++++++++++
- 5 files changed, 42 insertions(+), 54 deletions(-)
- create mode 100644 include/asm-generic/pci.h
-
-diff --git a/arch/arm64/include/asm/pci.h b/arch/arm64/include/asm/pci.h
-index 682c922b5658..016eb6b46dc0 100644
---- a/arch/arm64/include/asm/pci.h
-+++ b/arch/arm64/include/asm/pci.h
-@@ -9,7 +9,6 @@
- #include <asm/io.h>
+diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
+index e7e0b8c850f6..9041d9a41b7d 100644
+--- a/drivers/virtio/virtio_pci_modern.c
++++ b/drivers/virtio/virtio_pci_modern.c
+@@ -176,6 +176,29 @@ static void vp_reset(struct virtio_device *vdev)
+ 	vp_synchronize_vectors(vdev);
+ }
  
- #define PCIBIOS_MIN_IO		0x1000
--#define PCIBIOS_MIN_MEM		0
- 
- /*
-  * Set to 1 if the kernel should re-assign all PCI bus numbers
-@@ -18,13 +17,8 @@
- 	(pci_has_flag(PCI_REASSIGN_ALL_BUS))
- 
- #define arch_can_pci_mmap_wc() 1
--#define ARCH_GENERIC_PCI_MMAP_RESOURCE	1
- 
--#ifdef CONFIG_PCI
--static inline int pci_proc_domain(struct pci_bus *bus)
--{
--	return 1;
--}
--#endif  /* CONFIG_PCI */
-+/* Generic PCI */
-+#include <asm-generic/pci.h>
- 
- #endif  /* __ASM_PCI_H */
-diff --git a/arch/csky/include/asm/pci.h b/arch/csky/include/asm/pci.h
-index 875bc028f8f6..42724c630d30 100644
---- a/arch/csky/include/asm/pci.h
-+++ b/arch/csky/include/asm/pci.h
-@@ -9,20 +9,7 @@
- 
- #include <asm/io.h>
- 
--#define PCIBIOS_MIN_IO		0
--#define PCIBIOS_MIN_MEM		0
--
--/* C-SKY shim does not initialize PCI bus */
--#define pcibios_assign_all_busses() 1
--
--#define ARCH_GENERIC_PCI_MMAP_RESOURCE	1
--
--#ifdef CONFIG_PCI
--static inline int pci_proc_domain(struct pci_bus *bus)
--{
--	/* always show the domain in /proc */
--	return 1;
--}
--#endif  /* CONFIG_PCI */
-+/* Generic PCI */
-+#include <asm-generic/pci.h>
- 
- #endif  /* __ASM_CSKY_PCI_H */
-diff --git a/arch/riscv/include/asm/pci.h b/arch/riscv/include/asm/pci.h
-index f904df586c03..6ef4a1426194 100644
---- a/arch/riscv/include/asm/pci.h
-+++ b/arch/riscv/include/asm/pci.h
-@@ -12,23 +12,7 @@
- 
- #include <asm/io.h>
- 
--#define PCIBIOS_MIN_IO		0
--#define PCIBIOS_MIN_MEM		0
--
--/* RISC-V shim does not initialize PCI bus */
--#define pcibios_assign_all_busses() 1
--
--#define ARCH_GENERIC_PCI_MMAP_RESOURCE 1
--
--#ifdef CONFIG_PCI
--static inline int pci_proc_domain(struct pci_bus *bus)
--{
--	/* always show the domain in /proc */
--	return 1;
--}
--
--#ifdef	CONFIG_NUMA
--
-+#if defined(CONFIG_PCI) && defined(CONFIG_NUMA)
- static inline int pcibus_to_node(struct pci_bus *bus)
- {
- 	return dev_to_node(&bus->dev);
-@@ -38,8 +22,9 @@ static inline int pcibus_to_node(struct pci_bus *bus)
- 				 cpu_all_mask :				\
- 				 cpumask_of_node(pcibus_to_node(bus)))
- #endif
--#endif	/* CONFIG_NUMA */
-+#endif /* defined(CONFIG_PCI) && defined(CONFIG_NUMA) */
- 
--#endif  /* CONFIG_PCI */
-+/* Generic PCI */
-+#include <asm-generic/pci.h>
- 
- #endif  /* _ASM_RISCV_PCI_H */
-diff --git a/arch/um/include/asm/pci.h b/arch/um/include/asm/pci.h
-index 1211855aff34..34fe4921b5fa 100644
---- a/arch/um/include/asm/pci.h
-+++ b/arch/um/include/asm/pci.h
-@@ -4,18 +4,8 @@
- #include <linux/types.h>
- #include <asm/io.h>
- 
--#define PCIBIOS_MIN_IO		0
--#define PCIBIOS_MIN_MEM		0
--
--#define pcibios_assign_all_busses() 1
--
--#ifdef CONFIG_PCI_DOMAINS
--static inline int pci_proc_domain(struct pci_bus *bus)
--{
--	/* always show the domain in /proc */
--	return 1;
--}
--#endif  /* CONFIG_PCI */
-+/* Generic PCI */
-+#include <asm-generic/pci.h>
- 
- #ifdef CONFIG_PCI_MSI_IRQ_DOMAIN
- /*
-diff --git a/include/asm-generic/pci.h b/include/asm-generic/pci.h
-new file mode 100644
-index 000000000000..3ceb0cb12321
---- /dev/null
-+++ b/include/asm-generic/pci.h
-@@ -0,0 +1,32 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+
-+#ifndef __ASM_GENERIC_PCI_H
-+#define __ASM_GENERIC_PCI_H
-+
-+#include <linux/types.h>
-+
-+#ifndef PCIBIOS_MIN_IO
-+#define PCIBIOS_MIN_IO		0
-+#endif
-+
-+#ifndef PCIBIOS_MIN_MEM
-+#define PCIBIOS_MIN_MEM		0
-+#endif
-+
-+#ifndef pcibios_assign_all_busses
-+/* For bootloaders that do not initialize the PCI bus */
-+#define pcibios_assign_all_busses() 1
-+#endif
-+
-+/* Enable generic resource mapping code in drivers/pci/ */
-+#define ARCH_GENERIC_PCI_MMAP_RESOURCE
-+
-+#ifdef CONFIG_PCI_DOMAINS
-+static inline int pci_proc_domain(struct pci_bus *bus)
++static int vp_active_vq(struct virtqueue *vq, u16 msix_vec)
 +{
-+	/* always show the domain in /proc */
-+	return 1;
-+}
-+#endif /* CONFIG_PCI_DOMAINS */
++	struct virtio_pci_device *vp_dev = to_vp_device(vq->vdev);
++	struct virtio_pci_modern_device *mdev = &vp_dev->mdev;
++	unsigned long index;
 +
-+#endif /* __ASM_GENERIC_PCI_H */
++	index = vq->index;
++
++	/* activate the queue */
++	vp_modern_set_queue_size(mdev, index, virtqueue_get_vring_size(vq));
++	vp_modern_queue_address(mdev, index, virtqueue_get_desc_addr(vq),
++				virtqueue_get_avail_addr(vq),
++				virtqueue_get_used_addr(vq));
++
++	if (msix_vec != VIRTIO_MSI_NO_VECTOR) {
++		msix_vec = vp_modern_queue_vector(mdev, index, msix_vec);
++		if (msix_vec == VIRTIO_MSI_NO_VECTOR)
++			return -EBUSY;
++	}
++
++	return 0;
++}
++
+ static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vector)
+ {
+ 	return vp_modern_config_vector(&vp_dev->mdev, vector);
+@@ -220,32 +243,19 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
+ 
+ 	vq->num_max = num;
+ 
+-	/* activate the queue */
+-	vp_modern_set_queue_size(mdev, index, virtqueue_get_vring_size(vq));
+-	vp_modern_queue_address(mdev, index, virtqueue_get_desc_addr(vq),
+-				virtqueue_get_avail_addr(vq),
+-				virtqueue_get_used_addr(vq));
++	err = vp_active_vq(vq, msix_vec);
++	if (err)
++		goto err;
+ 
+ 	vq->priv = (void __force *)vp_modern_map_vq_notify(mdev, index, NULL);
+ 	if (!vq->priv) {
+ 		err = -ENOMEM;
+-		goto err_map_notify;
+-	}
+-
+-	if (msix_vec != VIRTIO_MSI_NO_VECTOR) {
+-		msix_vec = vp_modern_queue_vector(mdev, index, msix_vec);
+-		if (msix_vec == VIRTIO_MSI_NO_VECTOR) {
+-			err = -EBUSY;
+-			goto err_assign_vector;
+-		}
++		goto err;
+ 	}
+ 
+ 	return vq;
+ 
+-err_assign_vector:
+-	if (!mdev->notify_base)
+-		pci_iounmap(mdev->pci_dev, (void __iomem __force *)vq->priv);
+-err_map_notify:
++err:
+ 	vring_del_virtqueue(vq);
+ 	return ERR_PTR(err);
+ }
 -- 
-2.36.1
+2.31.0
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
