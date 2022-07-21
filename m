@@ -1,15 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out199-5.us.a.mail.aliyun.com ([47.90.199.5])
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oE022-00HF6Y-Va
-	for linux-um@lists.infradead.org; Wed, 20 Jul 2022 03:05:52 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v12 27/40] virtio_pci: struct virtio_pci_common_cfg add queue_reset
-Date: Wed, 20 Jul 2022 11:04:23 +0800
-Message-Id: <20220720030436.79520-28-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
-References: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
+	id 1oEMzR-00Fm2e-D7
+	for linux-um@lists.infradead.org; Thu, 21 Jul 2022 03:36:43 +0000
+Received: by mail-pg1-f199.google.com with SMTP id i191-20020a6387c8000000b00419ffb2bb90so278324pge.14
+        for <linux-um@lists.infradead.org>; Wed, 20 Jul 2022 20:36:36 -0700 (PDT)
+Message-ID: <ba2ae3e4-a950-6b7f-8748-c45a685bb6b0@redhat.com>
+Date: Thu, 21 Jul 2022 11:36:19 +0800
 MIME-Version: 1.0
+Subject: Re: [PATCH v12 01/40] virtio: record the maximum queue num supported
+ by the device.
+References: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
+ <20220720030436.79520-2-xuanzhuo@linux.alibaba.com>
+From: Jason Wang <jasowang@redhat.com>
+In-Reply-To: <20220720030436.79520-2-xuanzhuo@linux.alibaba.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,55 +23,111 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, virtualization@lists.linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-Add queue_reset in virtio_pci_common_cfg.
-
- https://github.com/oasis-tcs/virtio-spec/issues/124
- https://github.com/oasis-tcs/virtio-spec/issues/139
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- include/linux/virtio_pci_modern.h | 2 +-
- include/uapi/linux/virtio_pci.h   | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/virtio_pci_modern.h b/include/linux/virtio_pci_modern.h
-index 41f5a018bd94..05123b9a606f 100644
---- a/include/linux/virtio_pci_modern.h
-+++ b/include/linux/virtio_pci_modern.h
-@@ -9,7 +9,7 @@ struct virtio_pci_modern_common_cfg {
- 	struct virtio_pci_common_cfg cfg;
- 
- 	__le16 queue_notify_data;	/* read-write */
--	__le16 padding;
-+	__le16 queue_reset;		/* read-write */
- };
- 
- struct virtio_pci_modern_device {
-diff --git a/include/uapi/linux/virtio_pci.h b/include/uapi/linux/virtio_pci.h
-index f5981a874481..f703afc7ad31 100644
---- a/include/uapi/linux/virtio_pci.h
-+++ b/include/uapi/linux/virtio_pci.h
-@@ -203,6 +203,7 @@ struct virtio_pci_cfg_cap {
- #define VIRTIO_PCI_COMMON_Q_USEDLO	48
- #define VIRTIO_PCI_COMMON_Q_USEDHI	52
- #define VIRTIO_PCI_COMMON_Q_NDATA	56
-+#define VIRTIO_PCI_COMMON_Q_RESET	58
- 
- #endif /* VIRTIO_PCI_NO_MODERN */
- 
--- 
-2.31.0
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+CuWcqCAyMDIyLzcvMjAgMTE6MDMsIFh1YW4gWmh1byDlhpnpgZM6Cj4gdmlydGlvLW5ldCBjYW4g
+ZGlzcGxheSB0aGUgbWF4aW11bSAoc3VwcG9ydGVkIGJ5IGhhcmR3YXJlKSByaW5nIHNpemUgaW4K
+PiBldGh0b29sIC1nIGV0aDAuCj4KPiBXaGVuIHRoZSBzdWJzZXF1ZW50IHBhdGNoIGltcGxlbWVu
+dHMgdnJpbmcgcmVzZXQsIGl0IGNhbiBqdWRnZSB3aGV0aGVyCj4gdGhlIHJpbmcgc2l6ZSBwYXNz
+ZWQgYnkgdGhlIGRyaXZlciBpcyBsZWdhbCBiYXNlZCBvbiB0aGlzLgo+Cj4gU2lnbmVkLW9mZi1i
+eTogWHVhbiBaaHVvIDx4dWFuemh1b0BsaW51eC5hbGliYWJhLmNvbT4KCkFja2VkLWJ5OiBKYXNv
+biBXYW5nIDxqYXNvd2FuZ0ByZWRoYXQuY29tPgoKCj4gLS0tCj4gICBhcmNoL3VtL2RyaXZlcnMv
+dmlydGlvX3VtbC5jICAgICAgICAgICAgIHwgMSArCj4gICBkcml2ZXJzL3BsYXRmb3JtL21lbGxh
+bm94L21seGJmLXRtZmlmby5jIHwgMiArKwo+ICAgZHJpdmVycy9yZW1vdGVwcm9jL3JlbW90ZXBy
+b2NfdmlydGlvLmMgICB8IDIgKysKPiAgIGRyaXZlcnMvczM5MC92aXJ0aW8vdmlydGlvX2Njdy5j
+ICAgICAgICAgfCAzICsrKwo+ICAgZHJpdmVycy92aXJ0aW8vdmlydGlvX21taW8uYyAgICAgICAg
+ICAgICB8IDIgKysKPiAgIGRyaXZlcnMvdmlydGlvL3ZpcnRpb19wY2lfbGVnYWN5LmMgICAgICAg
+fCAyICsrCj4gICBkcml2ZXJzL3ZpcnRpby92aXJ0aW9fcGNpX21vZGVybi5jICAgICAgIHwgMiAr
+Kwo+ICAgZHJpdmVycy92aXJ0aW8vdmlydGlvX3ZkcGEuYyAgICAgICAgICAgICB8IDIgKysKPiAg
+IGluY2x1ZGUvbGludXgvdmlydGlvLmggICAgICAgICAgICAgICAgICAgfCAyICsrCj4gICA5IGZp
+bGVzIGNoYW5nZWQsIDE4IGluc2VydGlvbnMoKykKPgo+IGRpZmYgLS1naXQgYS9hcmNoL3VtL2Ry
+aXZlcnMvdmlydGlvX3VtbC5jIGIvYXJjaC91bS9kcml2ZXJzL3ZpcnRpb191bWwuYwo+IGluZGV4
+IDgyZmYzNzg1YmY2OS4uZTcxOWFmOGJkZjU2IDEwMDY0NAo+IC0tLSBhL2FyY2gvdW0vZHJpdmVy
+cy92aXJ0aW9fdW1sLmMKPiArKysgYi9hcmNoL3VtL2RyaXZlcnMvdmlydGlvX3VtbC5jCj4gQEAg
+LTk1OCw2ICs5NTgsNyBAQCBzdGF0aWMgc3RydWN0IHZpcnRxdWV1ZSAqdnVfc2V0dXBfdnEoc3Ry
+dWN0IHZpcnRpb19kZXZpY2UgKnZkZXYsCj4gICAJCWdvdG8gZXJyb3JfY3JlYXRlOwo+ICAgCX0K
+PiAgIAl2cS0+cHJpdiA9IGluZm87Cj4gKwl2cS0+bnVtX21heCA9IG51bTsKPiAgIAludW0gPSB2
+aXJ0cXVldWVfZ2V0X3ZyaW5nX3NpemUodnEpOwo+ICAgCj4gICAJaWYgKHZ1X2Rldi0+cHJvdG9j
+b2xfZmVhdHVyZXMgJgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3BsYXRmb3JtL21lbGxhbm94L21s
+eGJmLXRtZmlmby5jIGIvZHJpdmVycy9wbGF0Zm9ybS9tZWxsYW5veC9tbHhiZi10bWZpZm8uYwo+
+IGluZGV4IDM4ODAwZTg2ZWQ4YS4uMWFlM2M1NmI2NmIwIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMv
+cGxhdGZvcm0vbWVsbGFub3gvbWx4YmYtdG1maWZvLmMKPiArKysgYi9kcml2ZXJzL3BsYXRmb3Jt
+L21lbGxhbm94L21seGJmLXRtZmlmby5jCj4gQEAgLTk1OSw2ICs5NTksOCBAQCBzdGF0aWMgaW50
+IG1seGJmX3RtZmlmb192aXJ0aW9fZmluZF92cXMoc3RydWN0IHZpcnRpb19kZXZpY2UgKnZkZXYs
+Cj4gICAJCQlnb3RvIGVycm9yOwo+ICAgCQl9Cj4gICAKPiArCQl2cS0+bnVtX21heCA9IHZyaW5n
+LT5udW07Cj4gKwo+ICAgCQl2cXNbaV0gPSB2cTsKPiAgIAkJdnJpbmctPnZxID0gdnE7Cj4gICAJ
+CXZxLT5wcml2ID0gdnJpbmc7Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvcmVtb3RlcHJvYy9yZW1v
+dGVwcm9jX3ZpcnRpby5jIGIvZHJpdmVycy9yZW1vdGVwcm9jL3JlbW90ZXByb2NfdmlydGlvLmMK
+PiBpbmRleCBkNDNkNzQ3MzNmMGEuLjBmNzcwNmUyM2ViOSAxMDA2NDQKPiAtLS0gYS9kcml2ZXJz
+L3JlbW90ZXByb2MvcmVtb3RlcHJvY192aXJ0aW8uYwo+ICsrKyBiL2RyaXZlcnMvcmVtb3RlcHJv
+Yy9yZW1vdGVwcm9jX3ZpcnRpby5jCj4gQEAgLTEyNSw2ICsxMjUsOCBAQCBzdGF0aWMgc3RydWN0
+IHZpcnRxdWV1ZSAqcnBfZmluZF92cShzdHJ1Y3QgdmlydGlvX2RldmljZSAqdmRldiwKPiAgIAkJ
+cmV0dXJuIEVSUl9QVFIoLUVOT01FTSk7Cj4gICAJfQo+ICAgCj4gKwl2cS0+bnVtX21heCA9IG51
+bTsKPiArCj4gICAJcnZyaW5nLT52cSA9IHZxOwo+ICAgCXZxLT5wcml2ID0gcnZyaW5nOwo+ICAg
+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvczM5MC92aXJ0aW8vdmlydGlvX2Njdy5jIGIvZHJpdmVy
+cy9zMzkwL3ZpcnRpby92aXJ0aW9fY2N3LmMKPiBpbmRleCAxNjFkM2IxNDFmMGQuLjZiODZkMDI4
+MGQ2YiAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL3MzOTAvdmlydGlvL3ZpcnRpb19jY3cuYwo+ICsr
+KyBiL2RyaXZlcnMvczM5MC92aXJ0aW8vdmlydGlvX2Njdy5jCj4gQEAgLTUzMCw2ICs1MzAsOSBA
+QCBzdGF0aWMgc3RydWN0IHZpcnRxdWV1ZSAqdmlydGlvX2Njd19zZXR1cF92cShzdHJ1Y3Qgdmly
+dGlvX2RldmljZSAqdmRldiwKPiAgIAkJZXJyID0gLUVOT01FTTsKPiAgIAkJZ290byBvdXRfZXJy
+Owo+ICAgCX0KPiArCj4gKwl2cS0+bnVtX21heCA9IGluZm8tPm51bTsKPiArCj4gICAJLyogaXQg
+bWF5IGhhdmUgYmVlbiByZWR1Y2VkICovCj4gICAJaW5mby0+bnVtID0gdmlydHF1ZXVlX2dldF92
+cmluZ19zaXplKHZxKTsKPiAgIAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3ZpcnRpby92aXJ0aW9f
+bW1pby5jIGIvZHJpdmVycy92aXJ0aW8vdmlydGlvX21taW8uYwo+IGluZGV4IDA4M2ZmMWViNzQz
+ZC4uYTIwZDVhNmI1ODE5IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvdmlydGlvL3ZpcnRpb19tbWlv
+LmMKPiArKysgYi9kcml2ZXJzL3ZpcnRpby92aXJ0aW9fbW1pby5jCj4gQEAgLTQwMyw2ICs0MDMs
+OCBAQCBzdGF0aWMgc3RydWN0IHZpcnRxdWV1ZSAqdm1fc2V0dXBfdnEoc3RydWN0IHZpcnRpb19k
+ZXZpY2UgKnZkZXYsIHVuc2lnbmVkIGludCBpbgo+ICAgCQlnb3RvIGVycm9yX25ld192aXJ0cXVl
+dWU7Cj4gICAJfQo+ICAgCj4gKwl2cS0+bnVtX21heCA9IG51bTsKPiArCj4gICAJLyogQWN0aXZh
+dGUgdGhlIHF1ZXVlICovCj4gICAJd3JpdGVsKHZpcnRxdWV1ZV9nZXRfdnJpbmdfc2l6ZSh2cSks
+IHZtX2Rldi0+YmFzZSArIFZJUlRJT19NTUlPX1FVRVVFX05VTSk7Cj4gICAJaWYgKHZtX2Rldi0+
+dmVyc2lvbiA9PSAxKSB7Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdmlydGlvL3ZpcnRpb19wY2lf
+bGVnYWN5LmMgYi9kcml2ZXJzL3ZpcnRpby92aXJ0aW9fcGNpX2xlZ2FjeS5jCj4gaW5kZXggYTVl
+NTcyMTE0NWM3Li4yMjU3ZjFiM2Q4YWUgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy92aXJ0aW8vdmly
+dGlvX3BjaV9sZWdhY3kuYwo+ICsrKyBiL2RyaXZlcnMvdmlydGlvL3ZpcnRpb19wY2lfbGVnYWN5
+LmMKPiBAQCAtMTM1LDYgKzEzNSw4IEBAIHN0YXRpYyBzdHJ1Y3QgdmlydHF1ZXVlICpzZXR1cF92
+cShzdHJ1Y3QgdmlydGlvX3BjaV9kZXZpY2UgKnZwX2RldiwKPiAgIAlpZiAoIXZxKQo+ICAgCQly
+ZXR1cm4gRVJSX1BUUigtRU5PTUVNKTsKPiAgIAo+ICsJdnEtPm51bV9tYXggPSBudW07Cj4gKwo+
+ICAgCXFfcGZuID0gdmlydHF1ZXVlX2dldF9kZXNjX2FkZHIodnEpID4+IFZJUlRJT19QQ0lfUVVF
+VUVfQUREUl9TSElGVDsKPiAgIAlpZiAocV9wZm4gPj4gMzIpIHsKPiAgIAkJZGV2X2VycigmdnBf
+ZGV2LT5wY2lfZGV2LT5kZXYsCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdmlydGlvL3ZpcnRpb19w
+Y2lfbW9kZXJuLmMgYi9kcml2ZXJzL3ZpcnRpby92aXJ0aW9fcGNpX21vZGVybi5jCj4gaW5kZXgg
+NjIzOTA2YjQ5OTZjLi5lN2UwYjhjODUwZjYgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy92aXJ0aW8v
+dmlydGlvX3BjaV9tb2Rlcm4uYwo+ICsrKyBiL2RyaXZlcnMvdmlydGlvL3ZpcnRpb19wY2lfbW9k
+ZXJuLmMKPiBAQCAtMjE4LDYgKzIxOCw4IEBAIHN0YXRpYyBzdHJ1Y3QgdmlydHF1ZXVlICpzZXR1
+cF92cShzdHJ1Y3QgdmlydGlvX3BjaV9kZXZpY2UgKnZwX2RldiwKPiAgIAlpZiAoIXZxKQo+ICAg
+CQlyZXR1cm4gRVJSX1BUUigtRU5PTUVNKTsKPiAgIAo+ICsJdnEtPm51bV9tYXggPSBudW07Cj4g
+Kwo+ICAgCS8qIGFjdGl2YXRlIHRoZSBxdWV1ZSAqLwo+ICAgCXZwX21vZGVybl9zZXRfcXVldWVf
+c2l6ZShtZGV2LCBpbmRleCwgdmlydHF1ZXVlX2dldF92cmluZ19zaXplKHZxKSk7Cj4gICAJdnBf
+bW9kZXJuX3F1ZXVlX2FkZHJlc3MobWRldiwgaW5kZXgsIHZpcnRxdWV1ZV9nZXRfZGVzY19hZGRy
+KHZxKSwKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy92aXJ0aW8vdmlydGlvX3ZkcGEuYyBiL2RyaXZl
+cnMvdmlydGlvL3ZpcnRpb192ZHBhLmMKPiBpbmRleCBjNDBmN2RlYjZiNWEuLjk2NzBjYzc5Mzcx
+ZCAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL3ZpcnRpby92aXJ0aW9fdmRwYS5jCj4gKysrIGIvZHJp
+dmVycy92aXJ0aW8vdmlydGlvX3ZkcGEuYwo+IEBAIC0xODMsNiArMTgzLDggQEAgdmlydGlvX3Zk
+cGFfc2V0dXBfdnEoc3RydWN0IHZpcnRpb19kZXZpY2UgKnZkZXYsIHVuc2lnbmVkIGludCBpbmRl
+eCwKPiAgIAkJZ290byBlcnJvcl9uZXdfdmlydHF1ZXVlOwo+ICAgCX0KPiAgIAo+ICsJdnEtPm51
+bV9tYXggPSBtYXhfbnVtOwo+ICsKPiAgIAkvKiBTZXR1cCB2aXJ0cXVldWUgY2FsbGJhY2sgKi8K
+PiAgIAljYi5jYWxsYmFjayA9IGNhbGxiYWNrID8gdmlydGlvX3ZkcGFfdmlydHF1ZXVlX2NiIDog
+TlVMTDsKPiAgIAljYi5wcml2YXRlID0gaW5mbzsKPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51
+eC92aXJ0aW8uaCBiL2luY2x1ZGUvbGludXgvdmlydGlvLmgKPiBpbmRleCBkOGZkZjE3MDYzN2Mu
+LjEyOWJkZTc1MjFlMyAxMDA2NDQKPiAtLS0gYS9pbmNsdWRlL2xpbnV4L3ZpcnRpby5oCj4gKysr
+IGIvaW5jbHVkZS9saW51eC92aXJ0aW8uaAo+IEBAIC0xOSw2ICsxOSw3IEBACj4gICAgKiBAcHJp
+djogYSBwb2ludGVyIGZvciB0aGUgdmlydHF1ZXVlIGltcGxlbWVudGF0aW9uIHRvIHVzZS4KPiAg
+ICAqIEBpbmRleDogdGhlIHplcm8tYmFzZWQgb3JkaW5hbCBudW1iZXIgZm9yIHRoaXMgcXVldWUu
+Cj4gICAgKiBAbnVtX2ZyZWU6IG51bWJlciBvZiBlbGVtZW50cyB3ZSBleHBlY3QgdG8gYmUgYWJs
+ZSB0byBmaXQuCj4gKyAqIEBudW1fbWF4OiB0aGUgbWF4aW11bSBudW1iZXIgb2YgZWxlbWVudHMg
+c3VwcG9ydGVkIGJ5IHRoZSBkZXZpY2UuCj4gICAgKgo+ICAgICogQSBub3RlIG9uIEBudW1fZnJl
+ZTogd2l0aCBpbmRpcmVjdCBidWZmZXJzLCBlYWNoIGJ1ZmZlciBuZWVkcyBvbmUKPiAgICAqIGVs
+ZW1lbnQgaW4gdGhlIHF1ZXVlLCBvdGhlcndpc2UgYSBidWZmZXIgd2lsbCBuZWVkIG9uZSBlbGVt
+ZW50IHBlcgo+IEBAIC0zMSw2ICszMiw3IEBAIHN0cnVjdCB2aXJ0cXVldWUgewo+ICAgCXN0cnVj
+dCB2aXJ0aW9fZGV2aWNlICp2ZGV2Owo+ICAgCXVuc2lnbmVkIGludCBpbmRleDsKPiAgIAl1bnNp
+Z25lZCBpbnQgbnVtX2ZyZWU7Cj4gKwl1bnNpZ25lZCBpbnQgbnVtX21heDsKPiAgIAl2b2lkICpw
+cml2Owo+ICAgfTsKPiAgIAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQu
+b3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
 
