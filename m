@@ -1,86 +1,39 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oBcq9-0049Bw-RP
-	for linux-um@lists.infradead.org; Wed, 13 Jul 2022 13:55:47 +0000
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH] um: remove stray ) in macro expression
-Date: Wed, 13 Jul 2022 15:55:39 +0200
-Message-Id: <20220713135539.919429-1-Jason@zx2c4.com>
+Return-Path: <helgaas@kernel.org>
+Date: Fri, 22 Jul 2022 18:37:03 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+Subject: Re: [PATCH v5 4/4] asm-generic: Add new pci.h and use it
+Message-ID: <20220722233703.GA1979513@bhelgaas>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: johannes@sipsolutions.net, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YtsrJghwLPf3uj4W@antec>
+To: Stafford Horne <shorne@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, LKML <linux-kernel@vger.kernel.org>, Pierre Morel <pmorel@linux.ibm.com>, Geert Uytterhoeven <geert@linux-m68k.org>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Bjorn Helgaas <bhelgaas@google.com>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-csky@vger.kernel.org, linux-riscv <linux-riscv@lists.infradead.org>, linux-um <linux-um@lists.infradead.org>, linux-pci <linux-pci@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-QSBjb21taXQgZXJyb25lb3VzbHkgYWRkZWQgYSBzdHJheSApLCBjYXVzaW5nIGNvbXBpbGUgZXJy
-b3JzOgoKSW4gZmlsZSBpbmNsdWRlZCBmcm9tIC9ob21lL3p4MmM0L1Byb2plY3RzL3dpcmVndWFy
-ZC1saW51eC9jcnlwdG8veG9yLmM6MTc6Ci9ob21lL3p4MmM0L1Byb2plY3RzL3dpcmVndWFyZC1s
-aW51eC9jcnlwdG8veG9yLmM6IEluIGZ1bmN0aW9uIOKAmHJlZ2lzdGVyX3hvcl9ibG9ja3PigJk6
-Ci9ob21lL3p4MmM0L1Byb2plY3RzL3dpcmVndWFyZC1saW51eC9hcmNoL3VtL2luY2x1ZGUvYXNt
-L3hvci5oOjIxOjc0OiBlcnJvcjogZXhwZWN0ZWQg4oCYO+KAmSBiZWZvcmUg4oCYKeKAmSB0b2tl
-bgogICAyMSB8ICAgICAgICAgKHRpbWVfdHJhdmVsX21vZGUgPT0gVFRfTU9ERV9JTkZDUFUgPyBU
-VF9DUFVfSU5GX1hPUl9ERUZBVUxUIDogeCkpCiAgICAgIHwgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIF4KL2hv
-bWUvengyYzQvUHJvamVjdHMvd2lyZWd1YXJkLWxpbnV4L2NyeXB0by94b3IuYzo2NjoyNzogbm90
-ZTogaW4gZXhwYW5zaW9uIG9mIG1hY3JvIOKAmFhPUl9TRUxFQ1RfVEVNUExBVEXigJkKICAgNjYg
-fCAgICAgICAgIGFjdGl2ZV90ZW1wbGF0ZSA9IFhPUl9TRUxFQ1RfVEVNUExBVEUoTlVMTCk7CiAg
-ICAgIHwgICAgICAgICAgICAgICAgICAgICAgICAgICBefn5+fn5+fn5+fn5+fn5+fn5+Ci9ob21l
-L3p4MmM0L1Byb2plY3RzL3dpcmVndWFyZC1saW51eC9hcmNoL3VtL2luY2x1ZGUvYXNtL3hvci5o
-OjIxOjc0OiBlcnJvcjogZXhwZWN0ZWQgc3RhdGVtZW50IGJlZm9yZSDigJgp4oCZIHRva2VuCiAg
-IDIxIHwgICAgICAgICAodGltZV90cmF2ZWxfbW9kZSA9PSBUVF9NT0RFX0lORkNQVSA/IFRUX0NQ
-VV9JTkZfWE9SX0RFRkFVTFQgOiB4KSkKICAgICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXgovaG9tZS96
-eDJjNC9Qcm9qZWN0cy93aXJlZ3VhcmQtbGludXgvY3J5cHRvL3hvci5jOjY2OjI3OiBub3RlOiBp
-biBleHBhbnNpb24gb2YgbWFjcm8g4oCYWE9SX1NFTEVDVF9URU1QTEFUReKAmQogICA2NiB8ICAg
-ICAgICAgYWN0aXZlX3RlbXBsYXRlID0gWE9SX1NFTEVDVF9URU1QTEFURShOVUxMKTsKICAgICAg
-fCAgICAgICAgICAgICAgICAgICAgICAgICAgIF5+fn5+fn5+fn5+fn5+fn5+fn4KL2hvbWUvengy
-YzQvUHJvamVjdHMvd2lyZWd1YXJkLWxpbnV4L2NyeXB0by94b3IuYzogSW4gZnVuY3Rpb24g4oCY
-Y2FsaWJyYXRlX3hvcl9ibG9ja3PigJk6Ci9ob21lL3p4MmM0L1Byb2plY3RzL3dpcmVndWFyZC1s
-aW51eC9hcmNoL3VtL2luY2x1ZGUvYXNtL3hvci5oOjIxOjc0OiBlcnJvcjogZXhwZWN0ZWQg4oCY
-O+KAmSBiZWZvcmUg4oCYKeKAmSB0b2tlbgogICAyMSB8ICAgICAgICAgKHRpbWVfdHJhdmVsX21v
-ZGUgPT0gVFRfTU9ERV9JTkZDUFUgPyBUVF9DUFVfSU5GX1hPUl9ERUZBVUxUIDogeCkpCiAgICAg
-IHwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIF4KL2hvbWUvengyYzQvUHJvamVjdHMvd2lyZWd1YXJkLWxpbnV4
-L2NyeXB0by94b3IuYzoxMjQ6MTk6IG5vdGU6IGluIGV4cGFuc2lvbiBvZiBtYWNybyDigJhYT1Jf
-U0VMRUNUX1RFTVBMQVRF4oCZCiAgMTI0IHwgICAgICAgICBmYXN0ZXN0ID0gWE9SX1NFTEVDVF9U
-RU1QTEFURShOVUxMKTsKICAgICAgfCAgICAgICAgICAgICAgICAgICBefn5+fn5+fn5+fn5+fn5+
-fn5+Ci9ob21lL3p4MmM0L1Byb2plY3RzL3dpcmVndWFyZC1saW51eC9hcmNoL3VtL2luY2x1ZGUv
-YXNtL3hvci5oOjIxOjc0OiBlcnJvcjogZXhwZWN0ZWQgc3RhdGVtZW50IGJlZm9yZSDigJgp4oCZ
-IHRva2VuCiAgIDIxIHwgICAgICAgICAodGltZV90cmF2ZWxfbW9kZSA9PSBUVF9NT0RFX0lORkNQ
-VSA/IFRUX0NQVV9JTkZfWE9SX0RFRkFVTFQgOiB4KSkKICAgICAgfCAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-XgovaG9tZS96eDJjNC9Qcm9qZWN0cy93aXJlZ3VhcmQtbGludXgvY3J5cHRvL3hvci5jOjEyNDox
-OTogbm90ZTogaW4gZXhwYW5zaW9uIG9mIG1hY3JvIOKAmFhPUl9TRUxFQ1RfVEVNUExBVEXigJkK
-ICAxMjQgfCAgICAgICAgIGZhc3Rlc3QgPSBYT1JfU0VMRUNUX1RFTVBMQVRFKE5VTEwpOwogICAg
-ICB8ICAgICAgICAgICAgICAgICAgIF5+fn5+fn5+fn5+fn5+fn5+fn4KICBDQyAgICAgIGZzL25h
-bWVpLm8KbWFrZVszXTogKioqIFsvaG9tZS96eDJjNC9Qcm9qZWN0cy93aXJlZ3VhcmQtbGludXgv
-c2NyaXB0cy9NYWtlZmlsZS5idWlsZDoyNDk6IGNyeXB0by94b3Iub10gRXJyb3IgMQptYWtlWzNd
-OiAqKiogV2FpdGluZyBmb3IgdW5maW5pc2hlZCBqb2JzLi4uLgoKRml4ZXM6IGUzYTMzYWY4MTJj
-NiAoInVtOiBmaXggYW5kIG9wdGltaXplIHhvciBzZWxlY3QgdGVtcGxhdGUgZm9yIENPTkZJRzY0
-IGFuZCB0aW1ldHJhdmVsIG1vZGUiKQpTaWduZWQtb2ZmLWJ5OiBKYXNvbiBBLiBEb25lbmZlbGQg
-PEphc29uQHp4MmM0LmNvbT4KLS0tCiBhcmNoL3VtL2luY2x1ZGUvYXNtL3hvci5oIHwgMiArLQog
-MSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0
-IGEvYXJjaC91bS9pbmNsdWRlL2FzbS94b3IuaCBiL2FyY2gvdW0vaW5jbHVkZS9hc20veG9yLmgK
-aW5kZXggMjJiMzlkZTczYzI0Li42NDdmYWUyMDBjNWQgMTAwNjQ0Ci0tLSBhL2FyY2gvdW0vaW5j
-bHVkZS9hc20veG9yLmgKKysrIGIvYXJjaC91bS9pbmNsdWRlL2FzbS94b3IuaApAQCAtMTgsNyAr
-MTgsNyBAQAogI3VuZGVmIFhPUl9TRUxFQ1RfVEVNUExBVEUKIC8qIHBpY2sgYW4gYXJiaXRyYXJ5
-IG9uZSAtIG1lYXN1cmluZyBpc24ndCBwb3NzaWJsZSB3aXRoIGluZi1jcHUgKi8KICNkZWZpbmUg
-WE9SX1NFTEVDVF9URU1QTEFURSh4KQlcCi0JKHRpbWVfdHJhdmVsX21vZGUgPT0gVFRfTU9ERV9J
-TkZDUFUgPyBUVF9DUFVfSU5GX1hPUl9ERUZBVUxUIDogeCkpCisJKHRpbWVfdHJhdmVsX21vZGUg
-PT0gVFRfTU9ERV9JTkZDUFUgPyBUVF9DUFVfSU5GX1hPUl9ERUZBVUxUIDogeCkKICNlbmRpZgog
-CiAjZW5kaWYKLS0gCjIuMzUuMQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRl
-YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
-dW0K
+On Sat, Jul 23, 2022 at 07:56:38AM +0900, Stafford Horne wrote:
+> On Fri, Jul 22, 2022 at 05:31:46PM -0500, Bjorn Helgaas wrote:
+> > On Sat, Jul 23, 2022 at 06:43:31AM +0900, Stafford Horne wrote:
+> > 
+> > > I will respin a v6 as we didn't get a reply on this.  Bjorn are you
+> > > planning to apply the series before the upcoming merge window?
+> > 
+> > I see your v6, and I can apply it.  I only got patches 1, 2, 4
+> > (without the csky patch).  Do you want that to go a separate route?  I
+> > don't care either way, but not sure it improves things to split it
+> > across trees.
+> 
+> I sent 3/4 directly to you now.  Hopefully you see it.
+> 
+> Patch 4/4 depends on it in a sense so its best to keep 3/4 together.
+
+I saw 3/4 before because b4 found it, but I didn't know what you had
+in mind.
+
+I applied all 4 patches to pci/header-cleanup-immutable for v5.20.
+
+It would be convenient if (in the future) you included a 0/n cover
+letter where replies like this could go.
+
+Bjorn
 
