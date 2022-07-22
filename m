@@ -1,14 +1,11 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oGEuz-009MBG-Ra
-	for linux-um@lists.infradead.org; Tue, 26 Jul 2022 07:23:51 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v13 41/42] virtio_net: support tx queue resize
-Date: Tue, 26 Jul 2022 15:22:24 +0800
-Message-Id: <20220726072225.19884-42-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
-References: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
+Date: Fri, 22 Jul 2022 23:41:54 +0100 (BST)
+From: "Maciej W. Rozycki" <macro@orcam.me.uk>
+Subject: Re: [PATCH v3 2/2] asm-generic: Add new pci.h and use it
+In-Reply-To: <CAL_JsqKZoru2VZLeovPnQWe01ZMdw0krq0tcPx1O6YFUKa-L0g@mail.gmail.com>
+Message-ID: <alpine.DEB.2.21.2207222328230.48997@angie.orcam.me.uk>
+References: <CAL_Jsq+_5-fhXddhxG2mr-4HD_brcKZExkZqvME1yEpa6dOGGg@mail.gmail.com> <mhng-7e3146ca-79b8-4e16-98a9-e354fb6d03ba@palmer-mbp2014> <CAL_JsqJHZEcnJi+UHQbYWVoy1okQjHSc9T377P1q8oOJnHBWFw@mail.gmail.com> <CAK8P3a2aTS74TG8F+cVHX969hMQHKP3Ai5V0h-m+GeAq6kq5pQ@mail.gmail.com>
+ <CAL_JsqKZoru2VZLeovPnQWe01ZMdw0krq0tcPx1O6YFUKa-L0g@mail.gmail.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,101 +19,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+To: Rob Herring <robh@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Palmer Dabbelt <palmer@dabbelt.com>, Bjorn Helgaas <bhelgaas@google.com>, Stafford Horne <shorne@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, Albert Ou <aou@eecs.berkeley.edu>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-csky@vger.kernel.org, linux-riscv <linux-riscv@lists.infradead.org>, linux-um <linux-um@lists.infradead.org>, PCI <linux-pci@vger.kernel.org>, "open list:GENERIC INCLUDE/ASM HEADER FILES" <linux-arch@vger.kernel.org>
 
-This patch implements the resize function of the tx queues.
-Based on this function, it is possible to modify the ring num of the
-queue.
+On Fri, 22 Jul 2022, Rob Herring wrote:
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
----
- drivers/net/virtio_net.c | 47 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+> P.S. I really wish I/O space would disappear completely.
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 1115a8b59a08..d1e6940b46d8 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -135,6 +135,9 @@ struct send_queue {
- 	struct virtnet_sq_stats stats;
- 
- 	struct napi_struct napi;
-+
-+	/* Record whether sq is in reset state. */
-+	bool reset;
- };
- 
- /* Internal representation of a receive virtqueue */
-@@ -279,6 +282,7 @@ struct padded_vnet_hdr {
- };
- 
- static void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *buf);
-+static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf);
- 
- static bool is_xdp_frame(void *ptr)
- {
-@@ -1603,6 +1607,11 @@ static void virtnet_poll_cleantx(struct receive_queue *rq)
- 		return;
- 
- 	if (__netif_tx_trylock(txq)) {
-+		if (sq->reset) {
-+			__netif_tx_unlock(txq);
-+			return;
-+		}
-+
- 		do {
- 			virtqueue_disable_cb(sq->vq);
- 			free_old_xmit_skbs(sq, true);
-@@ -1868,6 +1877,44 @@ static int virtnet_rx_resize(struct virtnet_info *vi,
- 	return err;
- }
- 
-+static int virtnet_tx_resize(struct virtnet_info *vi,
-+			     struct send_queue *sq, u32 ring_num)
-+{
-+	struct netdev_queue *txq;
-+	int err, qindex;
-+
-+	qindex = sq - vi->sq;
-+
-+	virtnet_napi_tx_disable(&sq->napi);
-+
-+	txq = netdev_get_tx_queue(vi->dev, qindex);
-+
-+	/* 1. wait all ximt complete
-+	 * 2. fix the race of netif_stop_subqueue() vs netif_start_subqueue()
-+	 */
-+	__netif_tx_lock_bh(txq);
-+
-+	/* Prevent rx poll from accessing sq. */
-+	sq->reset = true;
-+
-+	/* Prevent the upper layer from trying to send packets. */
-+	netif_stop_subqueue(vi->dev, qindex);
-+
-+	__netif_tx_unlock_bh(txq);
-+
-+	err = virtqueue_resize(sq->vq, ring_num, virtnet_sq_free_unused_buf);
-+	if (err)
-+		netdev_err(vi->dev, "resize tx fail: tx queue index: %d err: %d\n", qindex, err);
-+
-+	__netif_tx_lock_bh(txq);
-+	sq->reset = false;
-+	netif_tx_wake_queue(txq);
-+	__netif_tx_unlock_bh(txq);
-+
-+	virtnet_napi_tx_enable(vi, sq->vq, &sq->napi);
-+	return err;
-+}
-+
- /*
-  * Send command via the control virtqueue and check status.  Commands
-  * supported by the hypervisor, as indicated by feature bits, should
--- 
-2.31.0
+ Some systems make it happen already, such as the POWER9 platform and its 
+PHB4 host bridge (which doesn't handle PCIe TLP I/O read or write commands 
+at all), however some PCI/e devices do require I/O space, such as IEEE 
+1284 parallel port adapters.  Some PCI devices dating back as far as to 
+1990s provide dual mapping of their resources via an I/O and a memory BAR 
+both at a time, so we can choose which to use depending on circumstances.
 
+ FWIW,
+
+  Maciej
 
 _______________________________________________
 linux-um mailing list
