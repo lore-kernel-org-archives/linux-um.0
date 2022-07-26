@@ -1,20 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oGXMd-0088oL-Rd
-	for linux-um@lists.infradead.org; Wed, 27 Jul 2022 03:05:37 +0000
-Received: by mail-pg1-f198.google.com with SMTP id e123-20020a636981000000b0041a3e675844so7302756pgc.23
-        for <linux-um@lists.infradead.org>; Tue, 26 Jul 2022 20:05:30 -0700 (PDT)
-Message-ID: <0aa1a062-968b-370a-3a50-e0364914a7c4@redhat.com>
-Date: Wed, 27 Jul 2022 11:05:16 +0800
-MIME-Version: 1.0
-Subject: Re: [PATCH v13 08/42] virtio_ring: split: __vring_new_virtqueue()
- accept struct vring_virtqueue_split
+	id 1oGEtz-009Kl0-Mj
+	for linux-um@lists.infradead.org; Tue, 26 Jul 2022 07:22:49 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v13 08/42] virtio_ring: split: __vring_new_virtqueue() accept struct vring_virtqueue_split
+Date: Tue, 26 Jul 2022 15:21:51 +0800
+Message-Id: <20220726072225.19884-9-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
 References: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
- <20220726072225.19884-9-xuanzhuo@linux.alibaba.com>
-From: Jason Wang <jasowang@redhat.com>
-In-Reply-To: <20220726072225.19884-9-xuanzhuo@linux.alibaba.com>
-Content-Language: en-US
+MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -23,89 +18,126 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+To: virtualization@lists.linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-CuWcqCAyMDIyLzcvMjYgMTU6MjEsIFh1YW4gWmh1byDlhpnpgZM6Cj4gX192cmluZ19uZXdfdmly
-dHF1ZXVlKCkgaW5zdGVhZCBhY2NlcHRzIHN0cnVjdCB2cmluZ192aXJ0cXVldWVfc3BsaXQuCj4K
-PiBUaGUgcHVycG9zZSBvZiB0aGlzIGlzIHRvIHBhc3MgbW9yZSBpbmZvcm1hdGlvbiBpbnRvCj4g
-X192cmluZ19uZXdfdmlydHF1ZXVlKCkgdG8gbWFrZSB0aGUgY29kZSBzaW1wbGVyIGFuZCB0aGUg
-c3RydWN0dXJlCj4gY2xlYW5lci4KPgo+IFNpZ25lZC1vZmYtYnk6IFh1YW4gWmh1byA8eHVhbnpo
-dW9AbGludXguYWxpYmFiYS5jb20+CgoKQWNrZWQtYnk6IEphc29uIFdhbmcgPGphc293YW5nQHJl
-ZGhhdC5jb20+CgoKPiAtLS0KPiAgIGRyaXZlcnMvdmlydGlvL3ZpcnRpb19yaW5nLmMgfCAyOSAr
-KysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLQo+ICAgMSBmaWxlIGNoYW5nZWQsIDE1IGluc2Vy
-dGlvbnMoKyksIDE0IGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdmlydGlv
-L3ZpcnRpb19yaW5nLmMgYi9kcml2ZXJzL3ZpcnRpby92aXJ0aW9fcmluZy5jCj4gaW5kZXggNGU1
-NGVkN2VlN2ZiLi40ZDY1YzQzN2Q5NjggMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy92aXJ0aW8vdmly
-dGlvX3JpbmcuYwo+ICsrKyBiL2RyaXZlcnMvdmlydGlvL3ZpcnRpb19yaW5nLmMKPiBAQCAtMjA1
-LDcgKzIwNSw3IEBAIHN0cnVjdCB2cmluZ192aXJ0cXVldWUgewo+ICAgfTsKPiAgIAo+ICAgc3Rh
-dGljIHN0cnVjdCB2aXJ0cXVldWUgKl9fdnJpbmdfbmV3X3ZpcnRxdWV1ZSh1bnNpZ25lZCBpbnQg
-aW5kZXgsCj4gLQkJCQkJICAgICAgIHN0cnVjdCB2cmluZyB2cmluZywKPiArCQkJCQkgICAgICAg
-c3RydWN0IHZyaW5nX3ZpcnRxdWV1ZV9zcGxpdCAqdnJpbmdfc3BsaXQsCj4gICAJCQkJCSAgICAg
-ICBzdHJ1Y3QgdmlydGlvX2RldmljZSAqdmRldiwKPiAgIAkJCQkJICAgICAgIGJvb2wgd2Vha19i
-YXJyaWVycywKPiAgIAkJCQkJICAgICAgIGJvb2wgY29udGV4dCwKPiBAQCAtOTU5LDYgKzk1OSw3
-IEBAIHN0YXRpYyBzdHJ1Y3QgdmlydHF1ZXVlICp2cmluZ19jcmVhdGVfdmlydHF1ZXVlX3NwbGl0
-KAo+ICAgCXZvaWQgKCpjYWxsYmFjaykoc3RydWN0IHZpcnRxdWV1ZSAqKSwKPiAgIAljb25zdCBj
-aGFyICpuYW1lKQo+ICAgewo+ICsJc3RydWN0IHZyaW5nX3ZpcnRxdWV1ZV9zcGxpdCB2cmluZ19z
-cGxpdCA9IHt9Owo+ICAgCXN0cnVjdCB2aXJ0cXVldWUgKnZxOwo+ICAgCXZvaWQgKnF1ZXVlID0g
-TlVMTDsKPiAgIAlkbWFfYWRkcl90IGRtYV9hZGRyOwo+IEBAIC05OTQsMTAgKzk5NSwxMCBAQCBz
-dGF0aWMgc3RydWN0IHZpcnRxdWV1ZSAqdnJpbmdfY3JlYXRlX3ZpcnRxdWV1ZV9zcGxpdCgKPiAg
-IAkJcmV0dXJuIE5VTEw7Cj4gICAKPiAgIAlxdWV1ZV9zaXplX2luX2J5dGVzID0gdnJpbmdfc2l6
-ZShudW0sIHZyaW5nX2FsaWduKTsKPiAtCXZyaW5nX2luaXQoJnZyaW5nLCBudW0sIHF1ZXVlLCB2
-cmluZ19hbGlnbik7Cj4gKwl2cmluZ19pbml0KCZ2cmluZ19zcGxpdC52cmluZywgbnVtLCBxdWV1
-ZSwgdnJpbmdfYWxpZ24pOwo+ICAgCj4gLQl2cSA9IF9fdnJpbmdfbmV3X3ZpcnRxdWV1ZShpbmRl
-eCwgdnJpbmcsIHZkZXYsIHdlYWtfYmFycmllcnMsIGNvbnRleHQsCj4gLQkJCQkgICBub3RpZnks
-IGNhbGxiYWNrLCBuYW1lKTsKPiArCXZxID0gX192cmluZ19uZXdfdmlydHF1ZXVlKGluZGV4LCAm
-dnJpbmdfc3BsaXQsIHZkZXYsIHdlYWtfYmFycmllcnMsCj4gKwkJCQkgICBjb250ZXh0LCBub3Rp
-ZnksIGNhbGxiYWNrLCBuYW1lKTsKPiAgIAlpZiAoIXZxKSB7Cj4gICAJCXZyaW5nX2ZyZWVfcXVl
-dWUodmRldiwgcXVldWVfc2l6ZV9pbl9ieXRlcywgcXVldWUsCj4gICAJCQkJIGRtYV9hZGRyKTsK
-PiBAQCAtMjIwNiw3ICsyMjA3LDcgQEAgRVhQT1JUX1NZTUJPTF9HUEwodnJpbmdfaW50ZXJydXB0
-KTsKPiAgIAo+ICAgLyogT25seSBhdmFpbGFibGUgZm9yIHNwbGl0IHJpbmcgKi8KPiAgIHN0YXRp
-YyBzdHJ1Y3QgdmlydHF1ZXVlICpfX3ZyaW5nX25ld192aXJ0cXVldWUodW5zaWduZWQgaW50IGlu
-ZGV4LAo+IC0JCQkJCSAgICAgICBzdHJ1Y3QgdnJpbmcgdnJpbmcsCj4gKwkJCQkJICAgICAgIHN0
-cnVjdCB2cmluZ192aXJ0cXVldWVfc3BsaXQgKnZyaW5nX3NwbGl0LAo+ICAgCQkJCQkgICAgICAg
-c3RydWN0IHZpcnRpb19kZXZpY2UgKnZkZXYsCj4gICAJCQkJCSAgICAgICBib29sIHdlYWtfYmFy
-cmllcnMsCj4gICAJCQkJCSAgICAgICBib29sIGNvbnRleHQsCj4gQEAgLTIyNDMsNyArMjI0NCw3
-IEBAIHN0YXRpYyBzdHJ1Y3QgdmlydHF1ZXVlICpfX3ZyaW5nX25ld192aXJ0cXVldWUodW5zaWdu
-ZWQgaW50IGluZGV4LAo+ICAgCXZxLT5zcGxpdC5xdWV1ZV9kbWFfYWRkciA9IDA7Cj4gICAJdnEt
-PnNwbGl0LnF1ZXVlX3NpemVfaW5fYnl0ZXMgPSAwOwo+ICAgCj4gLQl2cS0+c3BsaXQudnJpbmcg
-PSB2cmluZzsKPiArCXZxLT5zcGxpdC52cmluZyA9IHZyaW5nX3NwbGl0LT52cmluZzsKPiAgIAl2
-cS0+c3BsaXQuYXZhaWxfZmxhZ3Nfc2hhZG93ID0gMDsKPiAgIAl2cS0+c3BsaXQuYXZhaWxfaWR4
-X3NoYWRvdyA9IDA7Cj4gICAKPiBAQCAtMjI1NSwxOSArMjI1NiwxOSBAQCBzdGF0aWMgc3RydWN0
-IHZpcnRxdWV1ZSAqX192cmluZ19uZXdfdmlydHF1ZXVlKHVuc2lnbmVkIGludCBpbmRleCwKPiAg
-IAkJCQkJdnEtPnNwbGl0LmF2YWlsX2ZsYWdzX3NoYWRvdyk7Cj4gICAJfQo+ICAgCj4gLQl2cS0+
-c3BsaXQuZGVzY19zdGF0ZSA9IGttYWxsb2NfYXJyYXkodnJpbmcubnVtLAo+ICsJdnEtPnNwbGl0
-LmRlc2Nfc3RhdGUgPSBrbWFsbG9jX2FycmF5KHZyaW5nX3NwbGl0LT52cmluZy5udW0sCj4gICAJ
-CQlzaXplb2Yoc3RydWN0IHZyaW5nX2Rlc2Nfc3RhdGVfc3BsaXQpLCBHRlBfS0VSTkVMKTsKPiAg
-IAlpZiAoIXZxLT5zcGxpdC5kZXNjX3N0YXRlKQo+ICAgCQlnb3RvIGVycl9zdGF0ZTsKPiAgIAo+
-IC0JdnEtPnNwbGl0LmRlc2NfZXh0cmEgPSB2cmluZ19hbGxvY19kZXNjX2V4dHJhKHZyaW5nLm51
-bSk7Cj4gKwl2cS0+c3BsaXQuZGVzY19leHRyYSA9IHZyaW5nX2FsbG9jX2Rlc2NfZXh0cmEodnJp
-bmdfc3BsaXQtPnZyaW5nLm51bSk7Cj4gICAJaWYgKCF2cS0+c3BsaXQuZGVzY19leHRyYSkKPiAg
-IAkJZ290byBlcnJfZXh0cmE7Cj4gICAKPiAtCW1lbXNldCh2cS0+c3BsaXQuZGVzY19zdGF0ZSwg
-MCwgdnJpbmcubnVtICoKPiArCW1lbXNldCh2cS0+c3BsaXQuZGVzY19zdGF0ZSwgMCwgdnJpbmdf
-c3BsaXQtPnZyaW5nLm51bSAqCj4gICAJCQlzaXplb2Yoc3RydWN0IHZyaW5nX2Rlc2Nfc3RhdGVf
-c3BsaXQpKTsKPiAgIAo+IC0JdmlydHF1ZXVlX2luaXQodnEsIHZxLT5zcGxpdC52cmluZy5udW0p
-Owo+ICsJdmlydHF1ZXVlX2luaXQodnEsIHZyaW5nX3NwbGl0LT52cmluZy5udW0pOwo+ICAgCj4g
-ICAJc3Bpbl9sb2NrKCZ2ZGV2LT52cXNfbGlzdF9sb2NrKTsKPiAgIAlsaXN0X2FkZF90YWlsKCZ2
-cS0+dnEubGlzdCwgJnZkZXYtPnZxcyk7Cj4gQEAgLTIzMTcsMTQgKzIzMTgsMTQgQEAgc3RydWN0
-IHZpcnRxdWV1ZSAqdnJpbmdfbmV3X3ZpcnRxdWV1ZSh1bnNpZ25lZCBpbnQgaW5kZXgsCj4gICAJ
-CQkJICAgICAgdm9pZCAoKmNhbGxiYWNrKShzdHJ1Y3QgdmlydHF1ZXVlICp2cSksCj4gICAJCQkJ
-ICAgICAgY29uc3QgY2hhciAqbmFtZSkKPiAgIHsKPiAtCXN0cnVjdCB2cmluZyB2cmluZzsKPiAr
-CXN0cnVjdCB2cmluZ192aXJ0cXVldWVfc3BsaXQgdnJpbmdfc3BsaXQgPSB7fTsKPiAgIAo+ICAg
-CWlmICh2aXJ0aW9faGFzX2ZlYXR1cmUodmRldiwgVklSVElPX0ZfUklOR19QQUNLRUQpKQo+ICAg
-CQlyZXR1cm4gTlVMTDsKPiAgIAo+IC0JdnJpbmdfaW5pdCgmdnJpbmcsIG51bSwgcGFnZXMsIHZy
-aW5nX2FsaWduKTsKPiAtCXJldHVybiBfX3ZyaW5nX25ld192aXJ0cXVldWUoaW5kZXgsIHZyaW5n
-LCB2ZGV2LCB3ZWFrX2JhcnJpZXJzLCBjb250ZXh0LAo+IC0JCQkJICAgICBub3RpZnksIGNhbGxi
-YWNrLCBuYW1lKTsKPiArCXZyaW5nX2luaXQoJnZyaW5nX3NwbGl0LnZyaW5nLCBudW0sIHBhZ2Vz
-LCB2cmluZ19hbGlnbik7Cj4gKwlyZXR1cm4gX192cmluZ19uZXdfdmlydHF1ZXVlKGluZGV4LCAm
-dnJpbmdfc3BsaXQsIHZkZXYsIHdlYWtfYmFycmllcnMsCj4gKwkJCQkgICAgIGNvbnRleHQsIG5v
-dGlmeSwgY2FsbGJhY2ssIG5hbWUpOwo+ICAgfQo+ICAgRVhQT1JUX1NZTUJPTF9HUEwodnJpbmdf
-bmV3X3ZpcnRxdWV1ZSk7Cj4gICAKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFk
-ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
-LXVtCg==
+__vring_new_virtqueue() instead accepts struct vring_virtqueue_split.
+
+The purpose of this is to pass more information into
+__vring_new_virtqueue() to make the code simpler and the structure
+cleaner.
+
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+---
+ drivers/virtio/virtio_ring.c | 29 +++++++++++++++--------------
+ 1 file changed, 15 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 4e54ed7ee7fb..4d65c437d968 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -205,7 +205,7 @@ struct vring_virtqueue {
+ };
+ 
+ static struct virtqueue *__vring_new_virtqueue(unsigned int index,
+-					       struct vring vring,
++					       struct vring_virtqueue_split *vring_split,
+ 					       struct virtio_device *vdev,
+ 					       bool weak_barriers,
+ 					       bool context,
+@@ -959,6 +959,7 @@ static struct virtqueue *vring_create_virtqueue_split(
+ 	void (*callback)(struct virtqueue *),
+ 	const char *name)
+ {
++	struct vring_virtqueue_split vring_split = {};
+ 	struct virtqueue *vq;
+ 	void *queue = NULL;
+ 	dma_addr_t dma_addr;
+@@ -994,10 +995,10 @@ static struct virtqueue *vring_create_virtqueue_split(
+ 		return NULL;
+ 
+ 	queue_size_in_bytes = vring_size(num, vring_align);
+-	vring_init(&vring, num, queue, vring_align);
++	vring_init(&vring_split.vring, num, queue, vring_align);
+ 
+-	vq = __vring_new_virtqueue(index, vring, vdev, weak_barriers, context,
+-				   notify, callback, name);
++	vq = __vring_new_virtqueue(index, &vring_split, vdev, weak_barriers,
++				   context, notify, callback, name);
+ 	if (!vq) {
+ 		vring_free_queue(vdev, queue_size_in_bytes, queue,
+ 				 dma_addr);
+@@ -2206,7 +2207,7 @@ EXPORT_SYMBOL_GPL(vring_interrupt);
+ 
+ /* Only available for split ring */
+ static struct virtqueue *__vring_new_virtqueue(unsigned int index,
+-					       struct vring vring,
++					       struct vring_virtqueue_split *vring_split,
+ 					       struct virtio_device *vdev,
+ 					       bool weak_barriers,
+ 					       bool context,
+@@ -2243,7 +2244,7 @@ static struct virtqueue *__vring_new_virtqueue(unsigned int index,
+ 	vq->split.queue_dma_addr = 0;
+ 	vq->split.queue_size_in_bytes = 0;
+ 
+-	vq->split.vring = vring;
++	vq->split.vring = vring_split->vring;
+ 	vq->split.avail_flags_shadow = 0;
+ 	vq->split.avail_idx_shadow = 0;
+ 
+@@ -2255,19 +2256,19 @@ static struct virtqueue *__vring_new_virtqueue(unsigned int index,
+ 					vq->split.avail_flags_shadow);
+ 	}
+ 
+-	vq->split.desc_state = kmalloc_array(vring.num,
++	vq->split.desc_state = kmalloc_array(vring_split->vring.num,
+ 			sizeof(struct vring_desc_state_split), GFP_KERNEL);
+ 	if (!vq->split.desc_state)
+ 		goto err_state;
+ 
+-	vq->split.desc_extra = vring_alloc_desc_extra(vring.num);
++	vq->split.desc_extra = vring_alloc_desc_extra(vring_split->vring.num);
+ 	if (!vq->split.desc_extra)
+ 		goto err_extra;
+ 
+-	memset(vq->split.desc_state, 0, vring.num *
++	memset(vq->split.desc_state, 0, vring_split->vring.num *
+ 			sizeof(struct vring_desc_state_split));
+ 
+-	virtqueue_init(vq, vq->split.vring.num);
++	virtqueue_init(vq, vring_split->vring.num);
+ 
+ 	spin_lock(&vdev->vqs_list_lock);
+ 	list_add_tail(&vq->vq.list, &vdev->vqs);
+@@ -2317,14 +2318,14 @@ struct virtqueue *vring_new_virtqueue(unsigned int index,
+ 				      void (*callback)(struct virtqueue *vq),
+ 				      const char *name)
+ {
+-	struct vring vring;
++	struct vring_virtqueue_split vring_split = {};
+ 
+ 	if (virtio_has_feature(vdev, VIRTIO_F_RING_PACKED))
+ 		return NULL;
+ 
+-	vring_init(&vring, num, pages, vring_align);
+-	return __vring_new_virtqueue(index, vring, vdev, weak_barriers, context,
+-				     notify, callback, name);
++	vring_init(&vring_split.vring, num, pages, vring_align);
++	return __vring_new_virtqueue(index, &vring_split, vdev, weak_barriers,
++				     context, notify, callback, name);
+ }
+ EXPORT_SYMBOL_GPL(vring_new_virtqueue);
+ 
+-- 
+2.31.0
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
