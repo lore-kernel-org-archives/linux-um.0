@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57])
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oE01H-00HEBh-Q6
-	for linux-um@lists.infradead.org; Wed, 20 Jul 2022 03:05:05 +0000
+	id 1oGEtp-009KaQ-IW
+	for linux-um@lists.infradead.org; Tue, 26 Jul 2022 07:22:39 +0000
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v12 08/40] virtio_ring: split: extract the logic of alloc queue
-Date: Wed, 20 Jul 2022 11:04:04 +0800
-Message-Id: <20220720030436.79520-9-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
-References: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v13 01/42] virtio: record the maximum queue num supported by the device.
+Date: Tue, 26 Jul 2022 15:21:44 +0800
+Message-Id: <20220726072225.19884-2-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
+References: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -25,124 +25,150 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: virtualization@lists.linux-foundation.org
 Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-Separate the logic of split to create vring queue.
+virtio-net can display the maximum (supported by hardware) ring size in
+ethtool -g eth0.
 
-This feature is required for subsequent virtuqueue reset vring.
+When the subsequent patch implements vring reset, it can judge whether
+the ring size passed by the driver is legal based on this.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/virtio/virtio_ring.c | 68 ++++++++++++++++++++++--------------
- 1 file changed, 42 insertions(+), 26 deletions(-)
+ arch/um/drivers/virtio_uml.c             | 1 +
+ drivers/platform/mellanox/mlxbf-tmfifo.c | 2 ++
+ drivers/remoteproc/remoteproc_virtio.c   | 2 ++
+ drivers/s390/virtio/virtio_ccw.c         | 3 +++
+ drivers/virtio/virtio_mmio.c             | 2 ++
+ drivers/virtio/virtio_pci_legacy.c       | 2 ++
+ drivers/virtio/virtio_pci_modern.c       | 2 ++
+ drivers/virtio/virtio_vdpa.c             | 2 ++
+ include/linux/virtio.h                   | 2 ++
+ 9 files changed, 18 insertions(+)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index c94c5461e702..c7971438bb2c 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -950,28 +950,19 @@ static void vring_free_split(struct vring_virtqueue_split *vring_split,
- 	kfree(vring_split->desc_extra);
- }
+diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
+index 82ff3785bf69..e719af8bdf56 100644
+--- a/arch/um/drivers/virtio_uml.c
++++ b/arch/um/drivers/virtio_uml.c
+@@ -958,6 +958,7 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
+ 		goto error_create;
+ 	}
+ 	vq->priv = info;
++	vq->num_max = num;
+ 	num = virtqueue_get_vring_size(vq);
  
--static struct virtqueue *vring_create_virtqueue_split(
--	unsigned int index,
--	unsigned int num,
--	unsigned int vring_align,
--	struct virtio_device *vdev,
--	bool weak_barriers,
--	bool may_reduce_num,
--	bool context,
--	bool (*notify)(struct virtqueue *),
--	void (*callback)(struct virtqueue *),
--	const char *name)
-+static int vring_alloc_queue_split(struct vring_virtqueue_split *vring_split,
-+				   struct virtio_device *vdev,
-+				   u32 num,
-+				   unsigned int vring_align,
-+				   bool may_reduce_num)
- {
--	struct virtqueue *vq;
- 	void *queue = NULL;
- 	dma_addr_t dma_addr;
--	size_t queue_size_in_bytes;
--	struct vring vring;
+ 	if (vu_dev->protocol_features &
+diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
+index 38800e86ed8a..1ae3c56b66b0 100644
+--- a/drivers/platform/mellanox/mlxbf-tmfifo.c
++++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
+@@ -959,6 +959,8 @@ static int mlxbf_tmfifo_virtio_find_vqs(struct virtio_device *vdev,
+ 			goto error;
+ 		}
  
- 	/* We assume num is a power of 2. */
- 	if (num & (num - 1)) {
- 		dev_warn(&vdev->dev, "Bad virtqueue length %u\n", num);
--		return NULL;
-+		return -EINVAL;
++		vq->num_max = vring->num;
++
+ 		vqs[i] = vq;
+ 		vring->vq = vq;
+ 		vq->priv = vring;
+diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
+index d43d74733f0a..0f7706e23eb9 100644
+--- a/drivers/remoteproc/remoteproc_virtio.c
++++ b/drivers/remoteproc/remoteproc_virtio.c
+@@ -125,6 +125,8 @@ static struct virtqueue *rp_find_vq(struct virtio_device *vdev,
+ 		return ERR_PTR(-ENOMEM);
  	}
  
- 	/* TODO: allocate each queue chunk individually */
-@@ -982,11 +973,11 @@ static struct virtqueue *vring_create_virtqueue_split(
- 		if (queue)
- 			break;
- 		if (!may_reduce_num)
--			return NULL;
-+			return -ENOMEM;
++	vq->num_max = num;
++
+ 	rvring->vq = vq;
+ 	vq->priv = rvring;
+ 
+diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
+index 161d3b141f0d..6b86d0280d6b 100644
+--- a/drivers/s390/virtio/virtio_ccw.c
++++ b/drivers/s390/virtio/virtio_ccw.c
+@@ -530,6 +530,9 @@ static struct virtqueue *virtio_ccw_setup_vq(struct virtio_device *vdev,
+ 		err = -ENOMEM;
+ 		goto out_err;
+ 	}
++
++	vq->num_max = info->num;
++
+ 	/* it may have been reduced */
+ 	info->num = virtqueue_get_vring_size(vq);
+ 
+diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
+index 083ff1eb743d..a20d5a6b5819 100644
+--- a/drivers/virtio/virtio_mmio.c
++++ b/drivers/virtio/virtio_mmio.c
+@@ -403,6 +403,8 @@ static struct virtqueue *vm_setup_vq(struct virtio_device *vdev, unsigned int in
+ 		goto error_new_virtqueue;
  	}
  
- 	if (!num)
--		return NULL;
-+		return -ENOMEM;
++	vq->num_max = num;
++
+ 	/* Activate the queue */
+ 	writel(virtqueue_get_vring_size(vq), vm_dev->base + VIRTIO_MMIO_QUEUE_NUM);
+ 	if (vm_dev->version == 1) {
+diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virtio_pci_legacy.c
+index a5e5721145c7..2257f1b3d8ae 100644
+--- a/drivers/virtio/virtio_pci_legacy.c
++++ b/drivers/virtio/virtio_pci_legacy.c
+@@ -135,6 +135,8 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
+ 	if (!vq)
+ 		return ERR_PTR(-ENOMEM);
  
- 	if (!queue) {
- 		/* Try to get a single page. You are my only hope! */
-@@ -994,21 +985,46 @@ static struct virtqueue *vring_create_virtqueue_split(
- 					  &dma_addr, GFP_KERNEL|__GFP_ZERO);
- 	}
- 	if (!queue)
--		return NULL;
-+		return -ENOMEM;
++	vq->num_max = num;
 +
-+	vring_init(&vring_split->vring, num, queue, vring_align);
+ 	q_pfn = virtqueue_get_desc_addr(vq) >> VIRTIO_PCI_QUEUE_ADDR_SHIFT;
+ 	if (q_pfn >> 32) {
+ 		dev_err(&vp_dev->pci_dev->dev,
+diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
+index 623906b4996c..e7e0b8c850f6 100644
+--- a/drivers/virtio/virtio_pci_modern.c
++++ b/drivers/virtio/virtio_pci_modern.c
+@@ -218,6 +218,8 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
+ 	if (!vq)
+ 		return ERR_PTR(-ENOMEM);
  
--	queue_size_in_bytes = vring_size(num, vring_align);
--	vring_init(&vring, num, queue, vring_align);
-+	vring_split->queue_dma_addr = dma_addr;
-+	vring_split->queue_size_in_bytes = vring_size(num, vring_align);
++	vq->num_max = num;
 +
-+	return 0;
-+}
-+
-+static struct virtqueue *vring_create_virtqueue_split(
-+	unsigned int index,
-+	unsigned int num,
-+	unsigned int vring_align,
-+	struct virtio_device *vdev,
-+	bool weak_barriers,
-+	bool may_reduce_num,
-+	bool context,
-+	bool (*notify)(struct virtqueue *),
-+	void (*callback)(struct virtqueue *),
-+	const char *name)
-+{
-+	struct vring_virtqueue_split vring_split = {};
-+	struct virtqueue *vq;
-+	int err;
-+
-+	err = vring_alloc_queue_split(&vring_split, vdev, num, vring_align,
-+				      may_reduce_num);
-+	if (err)
-+		return NULL;
- 
--	vq = __vring_new_virtqueue(index, vring, vdev, weak_barriers, context,
--				   notify, callback, name);
-+	vq = __vring_new_virtqueue(index, vring_split.vring, vdev, weak_barriers,
-+				   context, notify, callback, name);
- 	if (!vq) {
--		vring_free_queue(vdev, queue_size_in_bytes, queue,
--				 dma_addr);
-+		vring_free_split(&vring_split, vdev);
- 		return NULL;
+ 	/* activate the queue */
+ 	vp_modern_set_queue_size(mdev, index, virtqueue_get_vring_size(vq));
+ 	vp_modern_queue_address(mdev, index, virtqueue_get_desc_addr(vq),
+diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
+index c40f7deb6b5a..9670cc79371d 100644
+--- a/drivers/virtio/virtio_vdpa.c
++++ b/drivers/virtio/virtio_vdpa.c
+@@ -183,6 +183,8 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+ 		goto error_new_virtqueue;
  	}
  
--	to_vvq(vq)->split.queue_dma_addr = dma_addr;
--	to_vvq(vq)->split.queue_size_in_bytes = queue_size_in_bytes;
-+	to_vvq(vq)->split.queue_dma_addr = vring_split.queue_dma_addr;
-+	to_vvq(vq)->split.queue_size_in_bytes = vring_split.queue_size_in_bytes;
- 	to_vvq(vq)->we_own_ring = true;
++	vq->num_max = max_num;
++
+ 	/* Setup virtqueue callback */
+ 	cb.callback = callback ? virtio_vdpa_virtqueue_cb : NULL;
+ 	cb.private = info;
+diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+index d8fdf170637c..129bde7521e3 100644
+--- a/include/linux/virtio.h
++++ b/include/linux/virtio.h
+@@ -19,6 +19,7 @@
+  * @priv: a pointer for the virtqueue implementation to use.
+  * @index: the zero-based ordinal number for this queue.
+  * @num_free: number of elements we expect to be able to fit.
++ * @num_max: the maximum number of elements supported by the device.
+  *
+  * A note on @num_free: with indirect buffers, each buffer needs one
+  * element in the queue, otherwise a buffer will need one element per
+@@ -31,6 +32,7 @@ struct virtqueue {
+ 	struct virtio_device *vdev;
+ 	unsigned int index;
+ 	unsigned int num_free;
++	unsigned int num_max;
+ 	void *priv;
+ };
  
- 	return vq;
 -- 
 2.31.0
 
