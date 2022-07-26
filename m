@@ -1,14 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131])
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oE02K-00HFW6-QJ
-	for linux-um@lists.infradead.org; Wed, 20 Jul 2022 03:06:10 +0000
+	id 1oGEto-009KXw-Si
+	for linux-um@lists.infradead.org; Tue, 26 Jul 2022 07:22:39 +0000
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v12 36/40] virtio_net: get ringparam by virtqueue_get_vring_max_size()
-Date: Wed, 20 Jul 2022 11:04:32 +0800
-Message-Id: <20220720030436.79520-37-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
-References: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v13 00/42] virtio pci support VIRTIO_F_RING_RESET
+Date: Tue, 26 Jul 2022 15:21:43 +0800
+Message-Id: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -25,35 +23,164 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: virtualization@lists.linux-foundation.org
 Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-Use virtqueue_get_vring_max_size() in virtnet_get_ringparam() to set
-tx,rx_max_pending.
+The virtio spec already supports the virtio queue reset function. This patch set
+is to add this function to the kernel. The relevant virtio spec information is
+here:
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
----
- drivers/net/virtio_net.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+    https://github.com/oasis-tcs/virtio-spec/issues/124
+    https://github.com/oasis-tcs/virtio-spec/issues/139
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 40532ecbe7fc..981ef8ea4d58 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -2254,10 +2254,10 @@ static void virtnet_get_ringparam(struct net_device *dev,
- {
- 	struct virtnet_info *vi = netdev_priv(dev);
- 
--	ring->rx_max_pending = virtqueue_get_vring_size(vi->rq[0].vq);
--	ring->tx_max_pending = virtqueue_get_vring_size(vi->sq[0].vq);
--	ring->rx_pending = ring->rx_max_pending;
--	ring->tx_pending = ring->tx_max_pending;
-+	ring->rx_max_pending = vi->rq[0].vq->num_max;
-+	ring->tx_max_pending = vi->sq[0].vq->num_max;
-+	ring->rx_pending = virtqueue_get_vring_size(vi->rq[0].vq);
-+	ring->tx_pending = virtqueue_get_vring_size(vi->sq[0].vq);
- }
- 
- static bool virtnet_commit_rss_command(struct virtnet_info *vi)
--- 
+Also regarding MMIO support for queue reset, I plan to support it after this
+patch is passed.
+
+This patch set implements the refactoring of vring. Finally, the
+virtuque_resize() interface is provided based on the reset function of the
+transport layer.
+
+Test environment:
+    Host: 4.19.91
+    Qemu: QEMU emulator version 6.2.50 (with vq reset support)
+    Test Cmd:  ethtool -G eth1 rx $1 tx $2; ethtool -g eth1
+
+    The default is split mode, modify Qemu virtio-net to add PACKED feature to test
+    packed mode.
+
+Qemu code:
+    https://github.com/fengidri/qemu/compare/89f3bfa3265554d1d591ee4d7f1197b6e3397e84...master
+
+In order to simplify the review of this patch set, the function of reusing
+the old buffers after resize will be introduced in subsequent patch sets.
+
+Please review. Thanks.
+
+v13:
+  1. virtqueue attached by vq->split = *vring_split / vq->packed = *vring_packed
+  2. call __virtqueue_break() unconditionally
+
+v12:
+  1. access vq->num_max directly without helper
+  2. rename the vq reset callbacks:
+ 	     int (*disable_vq_and_reset)(struct virtqueue *vq);
+ 	     int (*enable_vq_after_reset)(struct virtqueue *vq);
+
+  3. rename vring to vring_split, vring_packed
+  4. protect sq->reset by tx lock
+
+v11:
+  1. struct virtio_pci_common_cfg to virtio_pci_modern.h
+  2. conflict resolution
+
+v10:
+  1. on top of the harden vring IRQ
+  2. factor out split and packed from struct vring_virtqueue
+  3. some suggest from @Jason Wang
+
+v9:
+  1. Provide a virtqueue_resize() interface directly
+  2. A patch set including vring resize, virtio pci reset, virtio-net resize
+  3. No more separate structs
+
+v8:
+  1. Provide a virtqueue_reset() interface directly
+  2. Split the two patch sets, this is the first part
+  3. Add independent allocation helper for allocating state, extra
+
+v7:
+  1. fix #6 subject typo
+  2. fix #6 ring_size_in_bytes is uninitialized
+  3. check by: make W=12
+
+v6:
+  1. virtio_pci: use synchronize_irq(irq) to sync the irq callbacks
+  2. Introduce virtqueue_reset_vring() to implement the reset of vring during
+     the reset process. May use the old vring if num of the vq not change.
+  3. find_vqs() support sizes to special the max size of each vq
+
+v5:
+  1. add virtio-net support set_ringparam
+
+v4:
+  1. just the code of virtio, without virtio-net
+  2. Performing reset on a queue is divided into these steps:
+    1. reset_vq: reset one vq
+    2. recycle the buffer from vq by virtqueue_detach_unused_buf()
+    3. release the ring of the vq by vring_release_virtqueue()
+    4. enable_reset_vq: re-enable the reset queue
+  3. Simplify the parameters of enable_reset_vq()
+  4. add container structures for virtio_pci_common_cfg
+
+v3:
+  1. keep vq, irq unreleased
+
+Xuan Zhuo (42):
+  virtio: record the maximum queue num supported by the device.
+  virtio: struct virtio_config_ops add callbacks for queue_reset
+  virtio_ring: update the document of the virtqueue_detach_unused_buf
+    for queue reset
+  virtio_ring: extract the logic of freeing vring
+  virtio_ring: split vring_virtqueue
+  virtio_ring: introduce virtqueue_init()
+  virtio_ring: split: stop __vring_new_virtqueue as export symbol
+  virtio_ring: split: __vring_new_virtqueue() accept struct
+    vring_virtqueue_split
+  virtio_ring: split: introduce vring_free_split()
+  virtio_ring: split: extract the logic of alloc queue
+  virtio_ring: split: extract the logic of alloc state and extra
+  virtio_ring: split: extract the logic of vring init
+  virtio_ring: split: extract the logic of attach vring
+  virtio_ring: split: introduce virtqueue_reinit_split()
+  virtio_ring: split: reserve vring_align, may_reduce_num
+  virtio_ring: split: introduce virtqueue_resize_split()
+  virtio_ring: packed: introduce vring_free_packed
+  virtio_ring: packed: extract the logic of alloc queue
+  virtio_ring: packed: extract the logic of alloc state and extra
+  virtio_ring: packed: extract the logic of vring init
+  virtio_ring: packed: extract the logic of attach vring
+  virtio_ring: packed: introduce virtqueue_reinit_packed()
+  virtio_ring: packed: introduce virtqueue_resize_packed()
+  virtio_ring: introduce virtqueue_resize()
+  virtio_pci: struct virtio_pci_common_cfg add queue_notify_data
+  virtio: allow to unbreak/break virtqueue individually
+  virtio: queue_reset: add VIRTIO_F_RING_RESET
+  virtio_ring: struct virtqueue introduce reset
+  virtio_pci: struct virtio_pci_common_cfg add queue_reset
+  virtio_pci: introduce helper to get/set queue reset
+  virtio_pci: extract the logic of active vq for modern pci
+  virtio_pci: support VIRTIO_F_RING_RESET
+  virtio: find_vqs() add arg sizes
+  virtio_pci: support the arg sizes of find_vqs()
+  virtio_mmio: support the arg sizes of find_vqs()
+  virtio: add helper virtio_find_vqs_ctx_size()
+  virtio_net: set the default max ring size by find_vqs()
+  virtio_net: get ringparam by virtqueue_get_vring_max_size()
+  virtio_net: split free_unused_bufs()
+  virtio_net: support rx queue resize
+  virtio_net: support tx queue resize
+  virtio_net: support set_ringparam
+
+ arch/um/drivers/virtio_uml.c             |   3 +-
+ drivers/net/virtio_net.c                 | 208 +++++-
+ drivers/platform/mellanox/mlxbf-tmfifo.c |   3 +
+ drivers/remoteproc/remoteproc_virtio.c   |   3 +
+ drivers/s390/virtio/virtio_ccw.c         |   4 +
+ drivers/virtio/virtio_mmio.c             |  11 +-
+ drivers/virtio/virtio_pci_common.c       |  32 +-
+ drivers/virtio/virtio_pci_common.h       |   3 +-
+ drivers/virtio/virtio_pci_legacy.c       |   8 +-
+ drivers/virtio/virtio_pci_modern.c       | 153 ++++-
+ drivers/virtio/virtio_pci_modern_dev.c   |  39 ++
+ drivers/virtio/virtio_ring.c             | 786 ++++++++++++++++-------
+ drivers/virtio/virtio_vdpa.c             |   3 +
+ include/linux/virtio.h                   |  10 +
+ include/linux/virtio_config.h            |  40 +-
+ include/linux/virtio_pci_modern.h        |   9 +
+ include/linux/virtio_ring.h              |  10 -
+ include/uapi/linux/virtio_config.h       |   7 +-
+ include/uapi/linux/virtio_pci.h          |   2 +
+ tools/virtio/virtio_test.c               |   4 +-
+ 20 files changed, 1037 insertions(+), 301 deletions(-)
+
+--
 2.31.0
 
 
