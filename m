@@ -1,123 +1,125 @@
-Return-Path: <openrisc-bounces@lists.librecores.org>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V7 02/26] mm/mmap: Define DECLARE_VM_GET_PAGE_PROT
-Date: Mon, 11 Jul 2022 12:35:36 +0530
-Message-Id: <20220711070600.2378316-3-anshuman.khandual@arm.com>
-In-Reply-To: <20220711070600.2378316-1-anshuman.khandual@arm.com>
-References: <20220711070600.2378316-1-anshuman.khandual@arm.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1oGEuz-009MBG-Ra
+	for linux-um@lists.infradead.org; Tue, 26 Jul 2022 07:23:51 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v13 41/42] virtio_net: support tx queue resize
+Date: Tue, 26 Jul 2022 15:22:24 +0800
+Message-Id: <20220726072225.19884-42-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
+References: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
- <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
-List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
-List-Post: <mailto:openrisc@lists.librecores.org>
-List-Help: <mailto:openrisc-request@lists.librecores.org?subject=help>
-List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
- <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
-Errors-To: openrisc-bounces@lists.librecores.org
-Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
-To: linux-mm@kvack.org, akpm@linux-foundation.org
-Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: virtualization@lists.linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-This just converts the generic vm_get_page_prot() implementation into a new
-macro i.e DECLARE_VM_GET_PAGE_PROT which later can be used across platforms
-when enabling them with ARCH_HAS_VM_GET_PAGE_PROT. This does not create any
-functional change.
+This patch implements the resize function of the tx queues.
+Based on this function, it is possible to modify the ring num of the
+queue.
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Suggested-by: Christoph Hellwig <hch@infradead.org>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- include/linux/pgtable.h | 28 ++++++++++++++++++++++++++++
- mm/mmap.c               | 26 +-------------------------
- 2 files changed, 29 insertions(+), 25 deletions(-)
+ drivers/net/virtio_net.c | 47 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 47 insertions(+)
 
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index 3cdc16cfd867..014ee8f0fbaa 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -1689,4 +1689,32 @@ typedef unsigned int pgtbl_mod_mask;
- #define MAX_PTRS_PER_P4D PTRS_PER_P4D
- #endif
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 1115a8b59a08..d1e6940b46d8 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -135,6 +135,9 @@ struct send_queue {
+ 	struct virtnet_sq_stats stats;
  
-+/* description of effects of mapping type and prot in current implementation.
-+ * this is due to the limited x86 page protection hardware.  The expected
-+ * behavior is in parens:
-+ *
-+ * map_type	prot
-+ *		PROT_NONE	PROT_READ	PROT_WRITE	PROT_EXEC
-+ * MAP_SHARED	r: (no) no	r: (yes) yes	r: (no) yes	r: (no) yes
-+ *		w: (no) no	w: (no) no	w: (yes) yes	w: (no) no
-+ *		x: (no) no	x: (no) yes	x: (no) yes	x: (yes) yes
-+ *
-+ * MAP_PRIVATE	r: (no) no	r: (yes) yes	r: (no) yes	r: (no) yes
-+ *		w: (no) no	w: (no) no	w: (copy) copy	w: (no) no
-+ *		x: (no) no	x: (no) yes	x: (no) yes	x: (yes) yes
-+ *
-+ * On arm64, PROT_EXEC has the following behaviour for both MAP_SHARED and
-+ * MAP_PRIVATE (with Enhanced PAN supported):
-+ *								r: (no) no
-+ *								w: (no) no
-+ *								x: (yes) yes
-+ */
-+#define DECLARE_VM_GET_PAGE_PROT					\
-+pgprot_t vm_get_page_prot(unsigned long vm_flags)			\
-+{									\
-+		return protection_map[vm_flags &			\
-+			(VM_READ | VM_WRITE | VM_EXEC | VM_SHARED)];	\
-+}									\
-+EXPORT_SYMBOL(vm_get_page_prot);
+ 	struct napi_struct napi;
 +
- #endif /* _LINUX_PGTABLE_H */
-diff --git a/mm/mmap.c b/mm/mmap.c
-index b01f0280bda2..b46d5e931bb3 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -81,26 +81,6 @@ static void unmap_region(struct mm_struct *mm,
- 		struct vm_area_struct *vma, struct vm_area_struct *prev,
- 		unsigned long start, unsigned long end);
++	/* Record whether sq is in reset state. */
++	bool reset;
+ };
  
--/* description of effects of mapping type and prot in current implementation.
-- * this is due to the limited x86 page protection hardware.  The expected
-- * behavior is in parens:
-- *
-- * map_type	prot
-- *		PROT_NONE	PROT_READ	PROT_WRITE	PROT_EXEC
-- * MAP_SHARED	r: (no) no	r: (yes) yes	r: (no) yes	r: (no) yes
-- *		w: (no) no	w: (no) no	w: (yes) yes	w: (no) no
-- *		x: (no) no	x: (no) yes	x: (no) yes	x: (yes) yes
-- *
-- * MAP_PRIVATE	r: (no) no	r: (yes) yes	r: (no) yes	r: (no) yes
-- *		w: (no) no	w: (no) no	w: (copy) copy	w: (no) no
-- *		x: (no) no	x: (no) yes	x: (no) yes	x: (yes) yes
-- *
-- * On arm64, PROT_EXEC has the following behaviour for both MAP_SHARED and
-- * MAP_PRIVATE (with Enhanced PAN supported):
-- *								r: (no) no
-- *								w: (no) no
-- *								x: (yes) yes
-- */
- #ifdef __P000
- pgprot_t protection_map[16] __ro_after_init = {
- 	[VM_NONE]					= __P000,
-@@ -123,11 +103,7 @@ pgprot_t protection_map[16] __ro_after_init = {
- #endif
+ /* Internal representation of a receive virtqueue */
+@@ -279,6 +282,7 @@ struct padded_vnet_hdr {
+ };
  
- #ifndef CONFIG_ARCH_HAS_VM_GET_PAGE_PROT
--pgprot_t vm_get_page_prot(unsigned long vm_flags)
--{
--	return protection_map[vm_flags & (VM_READ|VM_WRITE|VM_EXEC|VM_SHARED)];
--}
--EXPORT_SYMBOL(vm_get_page_prot);
-+DECLARE_VM_GET_PAGE_PROT
- #endif	/* CONFIG_ARCH_HAS_VM_GET_PAGE_PROT */
+ static void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *buf);
++static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf);
  
- static pgprot_t vm_pgprot_modify(pgprot_t oldprot, unsigned long vm_flags)
+ static bool is_xdp_frame(void *ptr)
+ {
+@@ -1603,6 +1607,11 @@ static void virtnet_poll_cleantx(struct receive_queue *rq)
+ 		return;
+ 
+ 	if (__netif_tx_trylock(txq)) {
++		if (sq->reset) {
++			__netif_tx_unlock(txq);
++			return;
++		}
++
+ 		do {
+ 			virtqueue_disable_cb(sq->vq);
+ 			free_old_xmit_skbs(sq, true);
+@@ -1868,6 +1877,44 @@ static int virtnet_rx_resize(struct virtnet_info *vi,
+ 	return err;
+ }
+ 
++static int virtnet_tx_resize(struct virtnet_info *vi,
++			     struct send_queue *sq, u32 ring_num)
++{
++	struct netdev_queue *txq;
++	int err, qindex;
++
++	qindex = sq - vi->sq;
++
++	virtnet_napi_tx_disable(&sq->napi);
++
++	txq = netdev_get_tx_queue(vi->dev, qindex);
++
++	/* 1. wait all ximt complete
++	 * 2. fix the race of netif_stop_subqueue() vs netif_start_subqueue()
++	 */
++	__netif_tx_lock_bh(txq);
++
++	/* Prevent rx poll from accessing sq. */
++	sq->reset = true;
++
++	/* Prevent the upper layer from trying to send packets. */
++	netif_stop_subqueue(vi->dev, qindex);
++
++	__netif_tx_unlock_bh(txq);
++
++	err = virtqueue_resize(sq->vq, ring_num, virtnet_sq_free_unused_buf);
++	if (err)
++		netdev_err(vi->dev, "resize tx fail: tx queue index: %d err: %d\n", qindex, err);
++
++	__netif_tx_lock_bh(txq);
++	sq->reset = false;
++	netif_tx_wake_queue(txq);
++	__netif_tx_unlock_bh(txq);
++
++	virtnet_napi_tx_enable(vi, sq->vq, &sq->napi);
++	return err;
++}
++
+ /*
+  * Send command via the control virtqueue and check status.  Commands
+  * supported by the hypervisor, as indicated by feature bits, should
 -- 
-2.25.1
+2.31.0
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
