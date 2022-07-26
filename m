@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131])
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oIP5N-002zAC-VU
-	for linux-um@lists.infradead.org; Mon, 01 Aug 2022 06:39:34 +0000
+	id 1oGEuv-009M4P-I4
+	for linux-um@lists.infradead.org; Tue, 26 Jul 2022 07:23:47 +0000
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v14 10/42] virtio_ring: split: extract the logic of alloc queue
-Date: Mon,  1 Aug 2022 14:38:30 +0800
-Message-Id: <20220801063902.129329-11-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
-References: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v13 38/42] virtio_net: get ringparam by virtqueue_get_vring_max_size()
+Date: Tue, 26 Jul 2022 15:22:21 +0800
+Message-Id: <20220726072225.19884-39-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
+References: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -25,124 +25,34 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: virtualization@lists.linux-foundation.org
 Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-Separate the logic of split to create vring queue.
-
-This feature is required for subsequent virtuqueue reset vring.
+Use virtqueue_get_vring_max_size() in virtnet_get_ringparam() to set
+tx,rx_max_pending.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/virtio/virtio_ring.c | 65 ++++++++++++++++++++++--------------
- 1 file changed, 40 insertions(+), 25 deletions(-)
+ drivers/net/virtio_net.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 71cc7762ec51..5597a9b9e518 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -948,29 +948,19 @@ static void vring_free_split(struct vring_virtqueue_split *vring_split,
- 	kfree(vring_split->desc_extra);
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 40532ecbe7fc..981ef8ea4d58 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -2254,10 +2254,10 @@ static void virtnet_get_ringparam(struct net_device *dev,
+ {
+ 	struct virtnet_info *vi = netdev_priv(dev);
+ 
+-	ring->rx_max_pending = virtqueue_get_vring_size(vi->rq[0].vq);
+-	ring->tx_max_pending = virtqueue_get_vring_size(vi->sq[0].vq);
+-	ring->rx_pending = ring->rx_max_pending;
+-	ring->tx_pending = ring->tx_max_pending;
++	ring->rx_max_pending = vi->rq[0].vq->num_max;
++	ring->tx_max_pending = vi->sq[0].vq->num_max;
++	ring->rx_pending = virtqueue_get_vring_size(vi->rq[0].vq);
++	ring->tx_pending = virtqueue_get_vring_size(vi->sq[0].vq);
  }
  
--static struct virtqueue *vring_create_virtqueue_split(
--	unsigned int index,
--	unsigned int num,
--	unsigned int vring_align,
--	struct virtio_device *vdev,
--	bool weak_barriers,
--	bool may_reduce_num,
--	bool context,
--	bool (*notify)(struct virtqueue *),
--	void (*callback)(struct virtqueue *),
--	const char *name)
-+static int vring_alloc_queue_split(struct vring_virtqueue_split *vring_split,
-+				   struct virtio_device *vdev,
-+				   u32 num,
-+				   unsigned int vring_align,
-+				   bool may_reduce_num)
- {
--	struct vring_virtqueue_split vring_split = {};
--	struct virtqueue *vq;
- 	void *queue = NULL;
- 	dma_addr_t dma_addr;
--	size_t queue_size_in_bytes;
--	struct vring vring;
- 
- 	/* We assume num is a power of 2. */
- 	if (num & (num - 1)) {
- 		dev_warn(&vdev->dev, "Bad virtqueue length %u\n", num);
--		return NULL;
-+		return -EINVAL;
- 	}
- 
- 	/* TODO: allocate each queue chunk individually */
-@@ -981,11 +971,11 @@ static struct virtqueue *vring_create_virtqueue_split(
- 		if (queue)
- 			break;
- 		if (!may_reduce_num)
--			return NULL;
-+			return -ENOMEM;
- 	}
- 
- 	if (!num)
--		return NULL;
-+		return -ENOMEM;
- 
- 	if (!queue) {
- 		/* Try to get a single page. You are my only hope! */
-@@ -993,21 +983,46 @@ static struct virtqueue *vring_create_virtqueue_split(
- 					  &dma_addr, GFP_KERNEL|__GFP_ZERO);
- 	}
- 	if (!queue)
--		return NULL;
-+		return -ENOMEM;
-+
-+	vring_init(&vring_split->vring, num, queue, vring_align);
- 
--	queue_size_in_bytes = vring_size(num, vring_align);
--	vring_init(&vring_split.vring, num, queue, vring_align);
-+	vring_split->queue_dma_addr = dma_addr;
-+	vring_split->queue_size_in_bytes = vring_size(num, vring_align);
-+
-+	return 0;
-+}
-+
-+static struct virtqueue *vring_create_virtqueue_split(
-+	unsigned int index,
-+	unsigned int num,
-+	unsigned int vring_align,
-+	struct virtio_device *vdev,
-+	bool weak_barriers,
-+	bool may_reduce_num,
-+	bool context,
-+	bool (*notify)(struct virtqueue *),
-+	void (*callback)(struct virtqueue *),
-+	const char *name)
-+{
-+	struct vring_virtqueue_split vring_split = {};
-+	struct virtqueue *vq;
-+	int err;
-+
-+	err = vring_alloc_queue_split(&vring_split, vdev, num, vring_align,
-+				      may_reduce_num);
-+	if (err)
-+		return NULL;
- 
- 	vq = __vring_new_virtqueue(index, &vring_split, vdev, weak_barriers,
- 				   context, notify, callback, name);
- 	if (!vq) {
--		vring_free_queue(vdev, queue_size_in_bytes, queue,
--				 dma_addr);
-+		vring_free_split(&vring_split, vdev);
- 		return NULL;
- 	}
- 
--	to_vvq(vq)->split.queue_dma_addr = dma_addr;
--	to_vvq(vq)->split.queue_size_in_bytes = queue_size_in_bytes;
-+	to_vvq(vq)->split.queue_dma_addr = vring_split.queue_dma_addr;
-+	to_vvq(vq)->split.queue_size_in_bytes = vring_split.queue_size_in_bytes;
- 	to_vvq(vq)->we_own_ring = true;
- 
- 	return vq;
+ static bool virtnet_commit_rss_command(struct virtnet_info *vi)
 -- 
 2.31.0
 
