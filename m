@@ -1,17 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from dfw.source.kernel.org ([139.178.84.217])
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oDAWS-008LhU-Ud
-	for linux-um@lists.infradead.org; Sun, 17 Jul 2022 20:05:51 +0000
-Resent-Message-ID: <YtRrlbSf1PhMM81M@zx2c4.com>
-Resent-To: linux-um@lists.infradead.org, anton.ivanov@cambridgegreys.com
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH v2] random: handle archrandom in plural words
-Date: Sun, 17 Jul 2022 22:03:56 +0200
-Message-Id: <20220717200356.75060-1-Jason@zx2c4.com>
-In-Reply-To: <YtP1+MJ1tNdJA60l@zx2c4.com>
-References: <YtP1+MJ1tNdJA60l@zx2c4.com>
+	id 1oGYkK-008tX5-9A
+	for linux-um@lists.infradead.org; Wed, 27 Jul 2022 04:34:09 +0000
+Received: by mail-pg1-f199.google.com with SMTP id u11-20020a654c0b000000b00415ed4acf16so7361279pgq.22
+        for <linux-um@lists.infradead.org>; Tue, 26 Jul 2022 21:34:06 -0700 (PDT)
+Message-ID: <11a17272-7318-0217-7e45-83a3b237ed7f@redhat.com>
+Date: Wed, 27 Jul 2022 12:33:46 +0800
 MIME-Version: 1.0
+Subject: Re: [PATCH v13 20/42] virtio_ring: packed: extract the logic of vring
+ init
+References: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
+ <20220726072225.19884-21-xuanzhuo@linux.alibaba.com>
+From: Jason Wang <jasowang@redhat.com>
+In-Reply-To: <20220726072225.19884-21-xuanzhuo@linux.alibaba.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -20,593 +23,58 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, x86@kernel.org
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Will Deacon <will@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Alexander Gordeev <agordeev@linux.ibm.com>, Thomas Gleixner <tglx@linutronix.de>, "H . Peter Anvin" <hpa@zytor.com>, Catalin Marinas <catalin.marinas@arm.com>, Borislav Petkov <bp@suse.de>, Heiko Carstens <hca@linux.ibm.com>, Johannes Berg <johannes@sipsolutions.net>, Harald Freudenberger <freude@linux.ibm.com>
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, virtualization@lists.linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-The archrandom interface was originally designed for x86, which supplies
-RDRAND/RDSEED for receiving random words into registers, resulting in
-one function to generate an int and another to generate a long. However,
-other architectures don't follow this.
-
-On arm64, the SMCCC TRNG interface can return between 1 and 3 words. On
-s390, the CPACF TRNG interface can return between 1 and 32 words for the
-same cost as for one word. On UML, the os_getrandom() interface can return
-arbitrary amounts.
-
-So change the api signature to take a "words" parameter designating the
-maximum number of words requested, and then return the number of words
-generated.
-
-Since callers need to check this return value and loop anyway, each arch
-implementation does not bother implementing its own loop to try again to
-fill the requested number of words. Additionally, all existing callers
-pass in a constant words parameter. Taken together, these two things
-mean that the codegen doesn't really change much for one-word-at-a-time
-platforms, while performance is greatly improved on platforms such as
-s390.
-
-Cc: Will Deacon <will@kernel.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Alexander Gordeev <agordeev@linux.ibm.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: H. Peter Anvin <hpa@zytor.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Borislav Petkov <bp@suse.de>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: Harald Freudenberger <freude@linux.ibm.com>
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
----
- arch/arm64/include/asm/archrandom.h   | 102 ++++++++++++--------------
- arch/arm64/kernel/kaslr.c             |   2 +-
- arch/powerpc/include/asm/archrandom.h |  30 ++------
- arch/powerpc/kvm/book3s_hv.c          |   2 +-
- arch/s390/include/asm/archrandom.h    |  29 ++------
- arch/um/include/asm/archrandom.h      |  21 ++----
- arch/x86/include/asm/archrandom.h     |  41 +----------
- arch/x86/kernel/espfix_64.c           |   2 +-
- drivers/char/random.c                 |  45 ++++++++----
- include/asm-generic/archrandom.h      |  18 +----
- include/linux/random.h                |  12 +--
- 11 files changed, 116 insertions(+), 188 deletions(-)
-
-diff --git a/arch/arm64/include/asm/archrandom.h b/arch/arm64/include/asm/archrandom.h
-index c3b9fa56af67..7a24fdee3e2f 100644
---- a/arch/arm64/include/asm/archrandom.h
-+++ b/arch/arm64/include/asm/archrandom.h
-@@ -58,7 +58,7 @@ static inline bool __arm64_rndrrs(unsigned long *v)
- 	return ok;
- }
- 
--static inline bool __must_check arch_get_random_long(unsigned long *v)
-+static inline size_t __must_check arch_get_random_words(unsigned long *v, size_t words)
- {
- 	/*
- 	 * Only support the generic interface after we have detected
-@@ -66,27 +66,15 @@ static inline bool __must_check arch_get_random_long(unsigned long *v)
- 	 * cpufeature code and with potential scheduling between CPUs
- 	 * with and without the feature.
- 	 */
--	if (cpus_have_const_cap(ARM64_HAS_RNG) && __arm64_rndr(v))
--		return true;
--	return false;
-+	if (words && cpus_have_const_cap(ARM64_HAS_RNG) && __arm64_rndr(v))
-+		return 1;
-+	return 0;
- }
- 
--static inline bool __must_check arch_get_random_int(unsigned int *v)
-+static inline size_t __must_check arch_get_random_seed_words(unsigned long *v, size_t words)
- {
--	if (cpus_have_const_cap(ARM64_HAS_RNG)) {
--		unsigned long val;
--
--		if (__arm64_rndr(&val)) {
--			*v = val;
--			return true;
--		}
--	}
--	return false;
--}
--
--static inline bool __must_check arch_get_random_seed_long(unsigned long *v)
--{
--	struct arm_smccc_res res;
-+	if (!words)
-+		return 0;
- 
- 	/*
- 	 * We prefer the SMCCC call, since its semantics (return actual
-@@ -95,10 +83,23 @@ static inline bool __must_check arch_get_random_seed_long(unsigned long *v)
- 	 * (the output of a pseudo RNG freshly seeded by a TRNG).
- 	 */
- 	if (smccc_trng_available) {
--		arm_smccc_1_1_invoke(ARM_SMCCC_TRNG_RND64, 64, &res);
-+		struct arm_smccc_res res;
-+
-+		words = min_t(size_t, 3, words);
-+		arm_smccc_1_1_invoke(ARM_SMCCC_TRNG_RND64, words * 64, &res);
- 		if ((int)res.a0 >= 0) {
--			*v = res.a3;
--			return true;
-+			switch (words) {
-+			case 3:
-+				*v++ = res.a1;
-+				fallthrough;
-+			case 2:
-+				*v++ = res.a2;
-+				fallthrough;
-+			case 1:
-+				*v++ = res.a3;
-+				break;
-+			}
-+			return words;
- 		}
- 	}
- 
-@@ -108,32 +109,9 @@ static inline bool __must_check arch_get_random_seed_long(unsigned long *v)
- 	 * enough to implement this API if no other entropy source exists.
- 	 */
- 	if (cpus_have_const_cap(ARM64_HAS_RNG) && __arm64_rndrrs(v))
--		return true;
-+		return 1;
- 
--	return false;
--}
--
--static inline bool __must_check arch_get_random_seed_int(unsigned int *v)
--{
--	struct arm_smccc_res res;
--	unsigned long val;
--
--	if (smccc_trng_available) {
--		arm_smccc_1_1_invoke(ARM_SMCCC_TRNG_RND64, 32, &res);
--		if ((int)res.a0 >= 0) {
--			*v = res.a3 & GENMASK(31, 0);
--			return true;
--		}
--	}
--
--	if (cpus_have_const_cap(ARM64_HAS_RNG)) {
--		if (__arm64_rndrrs(&val)) {
--			*v = val;
--			return true;
--		}
--	}
--
--	return false;
-+	return 0;
- }
- 
- static inline bool __init __early_cpu_has_rndr(void)
-@@ -143,26 +121,40 @@ static inline bool __init __early_cpu_has_rndr(void)
- 	return (ftr >> ID_AA64ISAR0_EL1_RNDR_SHIFT) & 0xf;
- }
- 
--static inline bool __init __must_check
--arch_get_random_seed_long_early(unsigned long *v)
-+static inline size_t __init __must_check
-+arch_get_random_seed_words_early(unsigned long *v, size_t words)
- {
- 	WARN_ON(system_state != SYSTEM_BOOTING);
- 
-+	if (!words)
-+		return 0;
-+
- 	if (smccc_trng_available) {
- 		struct arm_smccc_res res;
- 
--		arm_smccc_1_1_invoke(ARM_SMCCC_TRNG_RND64, 64, &res);
-+		words = min_t(size_t, 3, words);
-+		arm_smccc_1_1_invoke(ARM_SMCCC_TRNG_RND64, words * 64, &res);
- 		if ((int)res.a0 >= 0) {
--			*v = res.a3;
--			return true;
-+			switch (words) {
-+			case 3:
-+				*v++ = res.a1;
-+				fallthrough;
-+			case 2:
-+				*v++ = res.a2;
-+				fallthrough;
-+			case 1:
-+				*v++ = res.a3;
-+				break;
-+			}
-+			return words;
- 		}
- 	}
- 
- 	if (__early_cpu_has_rndr() && __arm64_rndr(v))
--		return true;
-+		return 1;
- 
--	return false;
-+	return 0;
- }
--#define arch_get_random_seed_long_early arch_get_random_seed_long_early
-+#define arch_get_random_seed_words_early arch_get_random_seed_words_early
- 
- #endif /* _ASM_ARCHRANDOM_H */
-diff --git a/arch/arm64/kernel/kaslr.c b/arch/arm64/kernel/kaslr.c
-index 418b2bba1521..ed77afe16121 100644
---- a/arch/arm64/kernel/kaslr.c
-+++ b/arch/arm64/kernel/kaslr.c
-@@ -106,7 +106,7 @@ u64 __init kaslr_early_init(void)
- 	 * and supported.
- 	 */
- 
--	if (arch_get_random_seed_long_early(&raw))
-+	if (arch_get_random_seed_words_early(&raw, 1))
- 		seed ^= raw;
- 
- 	if (!seed) {
-diff --git a/arch/powerpc/include/asm/archrandom.h b/arch/powerpc/include/asm/archrandom.h
-index 25ba65df6b1a..bf2182f80480 100644
---- a/arch/powerpc/include/asm/archrandom.h
-+++ b/arch/powerpc/include/asm/archrandom.h
-@@ -4,34 +4,16 @@
- 
- #include <asm/machdep.h>
- 
--static inline bool __must_check arch_get_random_long(unsigned long *v)
-+static inline size_t __must_check arch_get_random_words(unsigned long *v, size_t words)
- {
--	return false;
-+	return 0;
- }
- 
--static inline bool __must_check arch_get_random_int(unsigned int *v)
-+static inline size_t __must_check arch_get_random_seed_words(unsigned long *v, size_t words)
- {
--	return false;
--}
--
--static inline bool __must_check arch_get_random_seed_long(unsigned long *v)
--{
--	if (ppc_md.get_random_seed)
--		return ppc_md.get_random_seed(v);
--
--	return false;
--}
--
--static inline bool __must_check arch_get_random_seed_int(unsigned int *v)
--{
--	unsigned long val;
--	bool rc;
--
--	rc = arch_get_random_seed_long(&val);
--	if (rc)
--		*v = val;
--
--	return rc;
-+	if (words && ppc_md.get_random_seed && ppc_md.get_random_seed(v))
-+		return 1;
-+	return 0;
- }
- 
- #ifdef CONFIG_PPC_POWERNV
-diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
-index e08fb3124dca..18b2d80996b6 100644
---- a/arch/powerpc/kvm/book3s_hv.c
-+++ b/arch/powerpc/kvm/book3s_hv.c
-@@ -1207,7 +1207,7 @@ int kvmppc_pseries_do_hcall(struct kvm_vcpu *vcpu)
- 		break;
- #endif
- 	case H_RANDOM:
--		if (!arch_get_random_seed_long(&vcpu->arch.regs.gpr[4]))
-+		if (!arch_get_random_seed_words(&vcpu->arch.regs.gpr[4], 1))
- 			ret = H_HARDWARE;
- 		break;
- 	case H_RPT_INVALIDATE:
-diff --git a/arch/s390/include/asm/archrandom.h b/arch/s390/include/asm/archrandom.h
-index 0a1c2e66c709..29f1a9bc3867 100644
---- a/arch/s390/include/asm/archrandom.h
-+++ b/arch/s390/include/asm/archrandom.h
-@@ -18,34 +18,19 @@
- DECLARE_STATIC_KEY_FALSE(s390_arch_random_available);
- extern atomic64_t s390_arch_random_counter;
- 
--static inline bool __must_check arch_get_random_long(unsigned long *v)
-+static inline size_t __must_check arch_get_random_words(unsigned long *v, size_t words)
- {
--	return false;
-+	return 0;
- }
- 
--static inline bool __must_check arch_get_random_int(unsigned int *v)
--{
--	return false;
--}
--
--static inline bool __must_check arch_get_random_seed_long(unsigned long *v)
--{
--	if (static_branch_likely(&s390_arch_random_available)) {
--		cpacf_trng(NULL, 0, (u8 *)v, sizeof(*v));
--		atomic64_add(sizeof(*v), &s390_arch_random_counter);
--		return true;
--	}
--	return false;
--}
--
--static inline bool __must_check arch_get_random_seed_int(unsigned int *v)
-+static inline size_t __must_check arch_get_random_seed_words(unsigned long *v, size_t words)
- {
- 	if (static_branch_likely(&s390_arch_random_available)) {
--		cpacf_trng(NULL, 0, (u8 *)v, sizeof(*v));
--		atomic64_add(sizeof(*v), &s390_arch_random_counter);
--		return true;
-+		cpacf_trng(NULL, 0, (u8 *)v, words * sizeof(*v));
-+		atomic64_add(words * sizeof(*v), &s390_arch_random_counter);
-+		return words;
- 	}
--	return false;
-+	return 0;
- }
- 
- #endif /* _ASM_S390_ARCHRANDOM_H */
-diff --git a/arch/um/include/asm/archrandom.h b/arch/um/include/asm/archrandom.h
-index 2f24cb96391d..6bcbd47fcb62 100644
---- a/arch/um/include/asm/archrandom.h
-+++ b/arch/um/include/asm/archrandom.h
-@@ -7,24 +7,19 @@
- /* This is from <os.h>, but better not to #include that in a global header here. */
- ssize_t os_getrandom(void *buf, size_t len, unsigned int flags);
- 
--static inline bool __must_check arch_get_random_long(unsigned long *v)
-+static inline size_t __must_check arch_get_random_words(unsigned long *v, size_t words)
- {
--	return os_getrandom(v, sizeof(*v), 0) == sizeof(*v);
--}
-+	ssize_t ret;
- 
--static inline bool __must_check arch_get_random_int(unsigned int *v)
--{
--	return os_getrandom(v, sizeof(*v), 0) == sizeof(*v);
--}
--
--static inline bool __must_check arch_get_random_seed_long(unsigned long *v)
--{
--	return false;
-+	ret = os_getrandom(v, words * sizeof(*v), 0);
-+	if (ret < 0)
-+		return 0;
-+	return ret / sizeof(*v);
- }
- 
--static inline bool __must_check arch_get_random_seed_int(unsigned int *v)
-+static inline size_t __must_check arch_get_random_seed_words(unsigned long *v, size_t words)
- {
--	return false;
-+	return 0;
- }
- 
- #endif
-diff --git a/arch/x86/include/asm/archrandom.h b/arch/x86/include/asm/archrandom.h
-index fb235b696175..a1717b81d876 100644
---- a/arch/x86/include/asm/archrandom.h
-+++ b/arch/x86/include/asm/archrandom.h
-@@ -31,20 +31,6 @@ static inline bool __must_check rdrand_long(unsigned long *v)
- 	return false;
- }
- 
--static inline bool __must_check rdrand_int(unsigned int *v)
--{
--	bool ok;
--	unsigned int retry = RDRAND_RETRY_LOOPS;
--	do {
--		asm volatile("rdrand %[out]"
--			     CC_SET(c)
--			     : CC_OUT(c) (ok), [out] "=r" (*v));
--		if (ok)
--			return true;
--	} while (--retry);
--	return false;
--}
--
- static inline bool __must_check rdseed_long(unsigned long *v)
- {
- 	bool ok;
-@@ -54,38 +40,19 @@ static inline bool __must_check rdseed_long(unsigned long *v)
- 	return ok;
- }
- 
--static inline bool __must_check rdseed_int(unsigned int *v)
--{
--	bool ok;
--	asm volatile("rdseed %[out]"
--		     CC_SET(c)
--		     : CC_OUT(c) (ok), [out] "=r" (*v));
--	return ok;
--}
--
- /*
-  * These are the generic interfaces; they must not be declared if the
-  * stubs in <linux/random.h> are to be invoked.
-  */
- 
--static inline bool __must_check arch_get_random_long(unsigned long *v)
--{
--	return static_cpu_has(X86_FEATURE_RDRAND) ? rdrand_long(v) : false;
--}
--
--static inline bool __must_check arch_get_random_int(unsigned int *v)
--{
--	return static_cpu_has(X86_FEATURE_RDRAND) ? rdrand_int(v) : false;
--}
--
--static inline bool __must_check arch_get_random_seed_long(unsigned long *v)
-+static inline size_t __must_check arch_get_random_words(unsigned long *v, size_t words)
- {
--	return static_cpu_has(X86_FEATURE_RDSEED) ? rdseed_long(v) : false;
-+	return words && static_cpu_has(X86_FEATURE_RDRAND) && rdrand_long(v) ? 1 : 0;
- }
- 
--static inline bool __must_check arch_get_random_seed_int(unsigned int *v)
-+static inline size_t __must_check arch_get_random_seed_words(unsigned long *v, size_t words)
- {
--	return static_cpu_has(X86_FEATURE_RDSEED) ? rdseed_int(v) : false;
-+	return words && static_cpu_has(X86_FEATURE_RDSEED) && rdseed_long(v) ? 1 : 0;
- }
- 
- #ifndef CONFIG_UML
-diff --git a/arch/x86/kernel/espfix_64.c b/arch/x86/kernel/espfix_64.c
-index 4fe7af58cfe1..f46c9ff3c0d4 100644
---- a/arch/x86/kernel/espfix_64.c
-+++ b/arch/x86/kernel/espfix_64.c
-@@ -100,7 +100,7 @@ static void init_espfix_random(void)
- 	 * This is run before the entropy pools are initialized,
- 	 * but this is hopefully better than nothing.
- 	 */
--	if (!arch_get_random_long(&rand)) {
-+	if (!arch_get_random_words(&rand, 1)) {
- 		/* The constant is an arbitrary large prime */
- 		rand = rdtsc();
- 		rand *= 0xc345c6b72fd16123UL;
-diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 0c6568ae5f68..70d8d1d7e2d7 100644
---- a/drivers/char/random.c
-+++ b/drivers/char/random.c
-@@ -596,12 +596,20 @@ static void extract_entropy(void *buf, size_t len)
- 		unsigned long rdseed[32 / sizeof(long)];
- 		size_t counter;
- 	} block;
--	size_t i;
-+	size_t i, words;
- 
--	for (i = 0; i < ARRAY_SIZE(block.rdseed); ++i) {
--		if (!arch_get_random_seed_long(&block.rdseed[i]) &&
--		    !arch_get_random_long(&block.rdseed[i]))
--			block.rdseed[i] = random_get_entropy();
-+	for (i = 0; i < ARRAY_SIZE(block.rdseed);) {
-+		words = arch_get_random_seed_words(&block.rdseed[i], ARRAY_SIZE(block.rdseed) - i);
-+		if (words) {
-+			i += words;
-+			continue;
-+		}
-+		words = arch_get_random_words(&block.rdseed[i], ARRAY_SIZE(block.rdseed) - i);
-+		if (words) {
-+			i += words;
-+			continue;
-+		}
-+		block.rdseed[i++] = random_get_entropy();
- 	}
- 
- 	spin_lock_irqsave(&input_pool.lock, flags);
-@@ -776,22 +784,31 @@ static struct notifier_block pm_notifier = { .notifier_call = random_pm_notifica
- int __init random_init(const char *command_line)
- {
- 	ktime_t now = ktime_get_real();
--	unsigned int i, arch_bits;
--	unsigned long entropy;
-+	size_t i, words, arch_bits;
-+	unsigned long entropy[BLAKE2S_BLOCK_SIZE / sizeof(long)];
- 
- #if defined(LATENT_ENTROPY_PLUGIN)
- 	static const u8 compiletime_seed[BLAKE2S_BLOCK_SIZE] __initconst __latent_entropy;
- 	_mix_pool_bytes(compiletime_seed, sizeof(compiletime_seed));
- #endif
- 
--	for (i = 0, arch_bits = BLAKE2S_BLOCK_SIZE * 8;
--	     i < BLAKE2S_BLOCK_SIZE; i += sizeof(entropy)) {
--		if (!arch_get_random_seed_long_early(&entropy) &&
--		    !arch_get_random_long_early(&entropy)) {
--			entropy = random_get_entropy();
--			arch_bits -= sizeof(entropy) * 8;
-+	for (i = 0, arch_bits = sizeof(entropy) * 8; i < ARRAY_SIZE(entropy);) {
-+		words = arch_get_random_seed_words(entropy, ARRAY_SIZE(entropy) - i);
-+		if (words) {
-+			_mix_pool_bytes(entropy, sizeof(*entropy) * words);
-+			i += words;
-+			continue;
- 		}
--		_mix_pool_bytes(&entropy, sizeof(entropy));
-+		words = arch_get_random_words(entropy, ARRAY_SIZE(entropy) - i);
-+		if (words) {
-+			_mix_pool_bytes(entropy, sizeof(*entropy) * words);
-+			i += words;
-+			continue;
-+		}
-+		entropy[0] = random_get_entropy();
-+		_mix_pool_bytes(entropy, sizeof(*entropy));
-+		arch_bits -= sizeof(*entropy) * 8;
-+		++i;
- 	}
- 	_mix_pool_bytes(&now, sizeof(now));
- 	_mix_pool_bytes(utsname(), sizeof(*(utsname())));
-diff --git a/include/asm-generic/archrandom.h b/include/asm-generic/archrandom.h
-index 3a5ee202dd86..ae618916c74c 100644
---- a/include/asm-generic/archrandom.h
-+++ b/include/asm-generic/archrandom.h
-@@ -2,24 +2,14 @@
- #ifndef __ASM_GENERIC_ARCHRANDOM_H__
- #define __ASM_GENERIC_ARCHRANDOM_H__
- 
--static inline bool __must_check arch_get_random_long(unsigned long *v)
-+static inline size_t __must_check arch_get_random_words(unsigned long *v, size_t words)
- {
--	return false;
-+	return 0;
- }
- 
--static inline bool __must_check arch_get_random_int(unsigned int *v)
-+static inline size_t __must_check arch_get_random_seed_words(unsigned long *v, size_t words)
- {
--	return false;
--}
--
--static inline bool __must_check arch_get_random_seed_long(unsigned long *v)
--{
--	return false;
--}
--
--static inline bool __must_check arch_get_random_seed_int(unsigned int *v)
--{
--	return false;
-+	return 0;
- }
- 
- #endif
-diff --git a/include/linux/random.h b/include/linux/random.h
-index 865770e29f3e..0a327a289f09 100644
---- a/include/linux/random.h
-+++ b/include/linux/random.h
-@@ -112,19 +112,19 @@ declare_get_random_var_wait(long, unsigned long)
-  * Called from the boot CPU during startup; not valid to call once
-  * secondary CPUs are up and preemption is possible.
-  */
--#ifndef arch_get_random_seed_long_early
--static inline bool __init arch_get_random_seed_long_early(unsigned long *v)
-+#ifndef arch_get_random_seed_words_early
-+static inline size_t __init arch_get_random_seed_words_early(unsigned long *v, size_t words)
- {
- 	WARN_ON(system_state != SYSTEM_BOOTING);
--	return arch_get_random_seed_long(v);
-+	return arch_get_random_seed_words(v, words);
- }
- #endif
- 
--#ifndef arch_get_random_long_early
--static inline bool __init arch_get_random_long_early(unsigned long *v)
-+#ifndef arch_get_random_words_early
-+static inline bool __init arch_get_random_words_early(unsigned long *v, size_t words)
- {
- 	WARN_ON(system_state != SYSTEM_BOOTING);
--	return arch_get_random_long(v);
-+	return arch_get_random_words(v, words);
- }
- #endif
- 
--- 
-2.35.1
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+CuWcqCAyMDIyLzcvMjYgMTU6MjIsIFh1YW4gWmh1byDlhpnpgZM6Cj4gU2VwYXJhdGUgdGhlIGxv
+Z2ljIG9mIGluaXRpYWxpemluZyB2cmluZywgYW5kIHN1YnNlcXVlbnQgcGF0Y2hlcyB3aWxsCj4g
+Y2FsbCBpdCBzZXBhcmF0ZWx5Lgo+Cj4gVGhpcyBmdW5jdGlvbiBjb21wbGV0ZXMgdGhlIHZhcmlh
+YmxlIGluaXRpYWxpemF0aW9uIG9mIHBhY2tlZCB2cmluZy4gSXQKPiB0b2dldGhlciB3aXRoIHRo
+ZSBsb2dpYyBvZiBhdGF0Y2ggY29uc3RpdHV0ZXMgdGhlIGluaXRpYWxpemF0aW9uIG9mCj4gdnJp
+bmcuCj4KPiBTaWduZWQtb2ZmLWJ5OiBYdWFuIFpodW8gPHh1YW56aHVvQGxpbnV4LmFsaWJhYmEu
+Y29tPgoKCkFja2VkLWJ5OiBKYXNvbiBXYW5nIDxqYXNvd2FuZ0ByZWRoYXQuY29tPgoKCj4gLS0t
+Cj4gICBkcml2ZXJzL3ZpcnRpby92aXJ0aW9fcmluZy5jIHwgMjggKysrKysrKysrKysrKysrKyst
+LS0tLS0tLS0tLQo+ICAgMSBmaWxlIGNoYW5nZWQsIDE3IGluc2VydGlvbnMoKyksIDExIGRlbGV0
+aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdmlydGlvL3ZpcnRpb19yaW5nLmMgYi9k
+cml2ZXJzL3ZpcnRpby92aXJ0aW9fcmluZy5jCj4gaW5kZXggMzI1OTBkNzYzYzNiLi5mYzRlM2Ri
+OWY5M2IgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy92aXJ0aW8vdmlydGlvX3JpbmcuYwo+ICsrKyBi
+L2RyaXZlcnMvdmlydGlvL3ZpcnRpb19yaW5nLmMKPiBAQCAtMTkzNSw2ICsxOTM1LDIyIEBAIHN0
+YXRpYyBpbnQgdnJpbmdfYWxsb2Nfc3RhdGVfZXh0cmFfcGFja2VkKHN0cnVjdCB2cmluZ192aXJ0
+cXVldWVfcGFja2VkICp2cmluZ19wCj4gICAJcmV0dXJuIC1FTk9NRU07Cj4gICB9Cj4gICAKPiAr
+c3RhdGljIHZvaWQgdmlydHF1ZXVlX3ZyaW5nX2luaXRfcGFja2VkKHN0cnVjdCB2cmluZ192aXJ0
+cXVldWVfcGFja2VkICp2cmluZ19wYWNrZWQsCj4gKwkJCQkJYm9vbCBjYWxsYmFjaykKPiArewo+
+ICsJdnJpbmdfcGFja2VkLT5uZXh0X2F2YWlsX2lkeCA9IDA7Cj4gKwl2cmluZ19wYWNrZWQtPmF2
+YWlsX3dyYXBfY291bnRlciA9IDE7Cj4gKwl2cmluZ19wYWNrZWQtPmV2ZW50X2ZsYWdzX3NoYWRv
+dyA9IDA7Cj4gKwl2cmluZ19wYWNrZWQtPmF2YWlsX3VzZWRfZmxhZ3MgPSAxIDw8IFZSSU5HX1BB
+Q0tFRF9ERVNDX0ZfQVZBSUw7Cj4gKwo+ICsJLyogTm8gY2FsbGJhY2s/ICBUZWxsIG90aGVyIHNp
+ZGUgbm90IHRvIGJvdGhlciB1cy4gKi8KPiArCWlmICghY2FsbGJhY2spIHsKPiArCQl2cmluZ19w
+YWNrZWQtPmV2ZW50X2ZsYWdzX3NoYWRvdyA9IFZSSU5HX1BBQ0tFRF9FVkVOVF9GTEFHX0RJU0FC
+TEU7Cj4gKwkJdnJpbmdfcGFja2VkLT52cmluZy5kcml2ZXItPmZsYWdzID0KPiArCQkJY3B1X3Rv
+X2xlMTYodnJpbmdfcGFja2VkLT5ldmVudF9mbGFnc19zaGFkb3cpOwo+ICsJfQo+ICt9Cj4gKwo+
+ICAgc3RhdGljIHN0cnVjdCB2aXJ0cXVldWUgKnZyaW5nX2NyZWF0ZV92aXJ0cXVldWVfcGFja2Vk
+KAo+ICAgCXVuc2lnbmVkIGludCBpbmRleCwKPiAgIAl1bnNpZ25lZCBpbnQgbnVtLAo+IEBAIC0x
+OTg0LDExICsyMDAwLDYgQEAgc3RhdGljIHN0cnVjdCB2aXJ0cXVldWUgKnZyaW5nX2NyZWF0ZV92
+aXJ0cXVldWVfcGFja2VkKAo+ICAgCj4gICAJdnEtPnBhY2tlZC52cmluZyA9IHZyaW5nX3BhY2tl
+ZC52cmluZzsKPiAgIAo+IC0JdnEtPnBhY2tlZC5uZXh0X2F2YWlsX2lkeCA9IDA7Cj4gLQl2cS0+
+cGFja2VkLmF2YWlsX3dyYXBfY291bnRlciA9IDE7Cj4gLQl2cS0+cGFja2VkLmV2ZW50X2ZsYWdz
+X3NoYWRvdyA9IDA7Cj4gLQl2cS0+cGFja2VkLmF2YWlsX3VzZWRfZmxhZ3MgPSAxIDw8IFZSSU5H
+X1BBQ0tFRF9ERVNDX0ZfQVZBSUw7Cj4gLQo+ICAgCWVyciA9IHZyaW5nX2FsbG9jX3N0YXRlX2V4
+dHJhX3BhY2tlZCgmdnJpbmdfcGFja2VkKTsKPiAgIAlpZiAoZXJyKQo+ICAgCQlnb3RvIGVycl9z
+dGF0ZV9leHRyYTsKPiBAQCAtMTk5NiwxMiArMjAwNyw3IEBAIHN0YXRpYyBzdHJ1Y3QgdmlydHF1
+ZXVlICp2cmluZ19jcmVhdGVfdmlydHF1ZXVlX3BhY2tlZCgKPiAgIAl2cS0+cGFja2VkLmRlc2Nf
+c3RhdGUgPSB2cmluZ19wYWNrZWQuZGVzY19zdGF0ZTsKPiAgIAl2cS0+cGFja2VkLmRlc2NfZXh0
+cmEgPSB2cmluZ19wYWNrZWQuZGVzY19leHRyYTsKPiAgIAo+IC0JLyogTm8gY2FsbGJhY2s/ICBU
+ZWxsIG90aGVyIHNpZGUgbm90IHRvIGJvdGhlciB1cy4gKi8KPiAtCWlmICghY2FsbGJhY2spIHsK
+PiAtCQl2cS0+cGFja2VkLmV2ZW50X2ZsYWdzX3NoYWRvdyA9IFZSSU5HX1BBQ0tFRF9FVkVOVF9G
+TEFHX0RJU0FCTEU7Cj4gLQkJdnEtPnBhY2tlZC52cmluZy5kcml2ZXItPmZsYWdzID0KPiAtCQkJ
+Y3B1X3RvX2xlMTYodnEtPnBhY2tlZC5ldmVudF9mbGFnc19zaGFkb3cpOwo+IC0JfQo+ICsJdmly
+dHF1ZXVlX3ZyaW5nX2luaXRfcGFja2VkKCZ2cmluZ19wYWNrZWQsICEhY2FsbGJhY2spOwo+ICAg
+Cj4gICAJdmlydHF1ZXVlX2luaXQodnEsIG51bSk7Cj4gICAKCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgt
+dW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2xpbnV4LXVtCg==
 
