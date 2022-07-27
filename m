@@ -1,15 +1,20 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43])
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oIP5x-002zqC-Cq
-	for linux-um@lists.infradead.org; Mon, 01 Aug 2022 06:40:09 +0000
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v14 27/42] virtio: queue_reset: add VIRTIO_F_RING_RESET
-Date: Mon,  1 Aug 2022 14:38:47 +0800
-Message-Id: <20220801063902.129329-28-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
-References: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
+	id 1oGXMd-0088oL-Rd
+	for linux-um@lists.infradead.org; Wed, 27 Jul 2022 03:05:37 +0000
+Received: by mail-pg1-f198.google.com with SMTP id e123-20020a636981000000b0041a3e675844so7302756pgc.23
+        for <linux-um@lists.infradead.org>; Tue, 26 Jul 2022 20:05:30 -0700 (PDT)
+Message-ID: <0aa1a062-968b-370a-3a50-e0364914a7c4@redhat.com>
+Date: Wed, 27 Jul 2022 11:05:16 +0800
 MIME-Version: 1.0
+Subject: Re: [PATCH v13 08/42] virtio_ring: split: __vring_new_virtqueue()
+ accept struct vring_virtqueue_split
+References: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
+ <20220726072225.19884-9-xuanzhuo@linux.alibaba.com>
+From: Jason Wang <jasowang@redhat.com>
+In-Reply-To: <20220726072225.19884-9-xuanzhuo@linux.alibaba.com>
+Content-Language: en-US
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -18,55 +23,89 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: virtualization@lists.linux-foundation.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, virtualization@lists.linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-Added VIRTIO_F_RING_RESET, it came from here
-
-https://github.com/oasis-tcs/virtio-spec/issues/124
-https://github.com/oasis-tcs/virtio-spec/issues/139
-
-This feature indicates that the driver can reset a queue individually.
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
----
- include/uapi/linux/virtio_config.h | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/include/uapi/linux/virtio_config.h b/include/uapi/linux/virtio_config.h
-index f0fb0ae021c0..3c05162bc988 100644
---- a/include/uapi/linux/virtio_config.h
-+++ b/include/uapi/linux/virtio_config.h
-@@ -52,7 +52,7 @@
-  * rest are per-device feature bits.
-  */
- #define VIRTIO_TRANSPORT_F_START	28
--#define VIRTIO_TRANSPORT_F_END		38
-+#define VIRTIO_TRANSPORT_F_END		41
- 
- #ifndef VIRTIO_CONFIG_NO_LEGACY
- /* Do we get callbacks when the ring is completely used, even if we've
-@@ -98,4 +98,9 @@
-  * Does the device support Single Root I/O Virtualization?
-  */
- #define VIRTIO_F_SR_IOV			37
-+
-+/*
-+ * This feature indicates that the driver can reset a queue individually.
-+ */
-+#define VIRTIO_F_RING_RESET		40
- #endif /* _UAPI_LINUX_VIRTIO_CONFIG_H */
--- 
-2.31.0
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+CuWcqCAyMDIyLzcvMjYgMTU6MjEsIFh1YW4gWmh1byDlhpnpgZM6Cj4gX192cmluZ19uZXdfdmly
+dHF1ZXVlKCkgaW5zdGVhZCBhY2NlcHRzIHN0cnVjdCB2cmluZ192aXJ0cXVldWVfc3BsaXQuCj4K
+PiBUaGUgcHVycG9zZSBvZiB0aGlzIGlzIHRvIHBhc3MgbW9yZSBpbmZvcm1hdGlvbiBpbnRvCj4g
+X192cmluZ19uZXdfdmlydHF1ZXVlKCkgdG8gbWFrZSB0aGUgY29kZSBzaW1wbGVyIGFuZCB0aGUg
+c3RydWN0dXJlCj4gY2xlYW5lci4KPgo+IFNpZ25lZC1vZmYtYnk6IFh1YW4gWmh1byA8eHVhbnpo
+dW9AbGludXguYWxpYmFiYS5jb20+CgoKQWNrZWQtYnk6IEphc29uIFdhbmcgPGphc293YW5nQHJl
+ZGhhdC5jb20+CgoKPiAtLS0KPiAgIGRyaXZlcnMvdmlydGlvL3ZpcnRpb19yaW5nLmMgfCAyOSAr
+KysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLQo+ICAgMSBmaWxlIGNoYW5nZWQsIDE1IGluc2Vy
+dGlvbnMoKyksIDE0IGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdmlydGlv
+L3ZpcnRpb19yaW5nLmMgYi9kcml2ZXJzL3ZpcnRpby92aXJ0aW9fcmluZy5jCj4gaW5kZXggNGU1
+NGVkN2VlN2ZiLi40ZDY1YzQzN2Q5NjggMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy92aXJ0aW8vdmly
+dGlvX3JpbmcuYwo+ICsrKyBiL2RyaXZlcnMvdmlydGlvL3ZpcnRpb19yaW5nLmMKPiBAQCAtMjA1
+LDcgKzIwNSw3IEBAIHN0cnVjdCB2cmluZ192aXJ0cXVldWUgewo+ICAgfTsKPiAgIAo+ICAgc3Rh
+dGljIHN0cnVjdCB2aXJ0cXVldWUgKl9fdnJpbmdfbmV3X3ZpcnRxdWV1ZSh1bnNpZ25lZCBpbnQg
+aW5kZXgsCj4gLQkJCQkJICAgICAgIHN0cnVjdCB2cmluZyB2cmluZywKPiArCQkJCQkgICAgICAg
+c3RydWN0IHZyaW5nX3ZpcnRxdWV1ZV9zcGxpdCAqdnJpbmdfc3BsaXQsCj4gICAJCQkJCSAgICAg
+ICBzdHJ1Y3QgdmlydGlvX2RldmljZSAqdmRldiwKPiAgIAkJCQkJICAgICAgIGJvb2wgd2Vha19i
+YXJyaWVycywKPiAgIAkJCQkJICAgICAgIGJvb2wgY29udGV4dCwKPiBAQCAtOTU5LDYgKzk1OSw3
+IEBAIHN0YXRpYyBzdHJ1Y3QgdmlydHF1ZXVlICp2cmluZ19jcmVhdGVfdmlydHF1ZXVlX3NwbGl0
+KAo+ICAgCXZvaWQgKCpjYWxsYmFjaykoc3RydWN0IHZpcnRxdWV1ZSAqKSwKPiAgIAljb25zdCBj
+aGFyICpuYW1lKQo+ICAgewo+ICsJc3RydWN0IHZyaW5nX3ZpcnRxdWV1ZV9zcGxpdCB2cmluZ19z
+cGxpdCA9IHt9Owo+ICAgCXN0cnVjdCB2aXJ0cXVldWUgKnZxOwo+ICAgCXZvaWQgKnF1ZXVlID0g
+TlVMTDsKPiAgIAlkbWFfYWRkcl90IGRtYV9hZGRyOwo+IEBAIC05OTQsMTAgKzk5NSwxMCBAQCBz
+dGF0aWMgc3RydWN0IHZpcnRxdWV1ZSAqdnJpbmdfY3JlYXRlX3ZpcnRxdWV1ZV9zcGxpdCgKPiAg
+IAkJcmV0dXJuIE5VTEw7Cj4gICAKPiAgIAlxdWV1ZV9zaXplX2luX2J5dGVzID0gdnJpbmdfc2l6
+ZShudW0sIHZyaW5nX2FsaWduKTsKPiAtCXZyaW5nX2luaXQoJnZyaW5nLCBudW0sIHF1ZXVlLCB2
+cmluZ19hbGlnbik7Cj4gKwl2cmluZ19pbml0KCZ2cmluZ19zcGxpdC52cmluZywgbnVtLCBxdWV1
+ZSwgdnJpbmdfYWxpZ24pOwo+ICAgCj4gLQl2cSA9IF9fdnJpbmdfbmV3X3ZpcnRxdWV1ZShpbmRl
+eCwgdnJpbmcsIHZkZXYsIHdlYWtfYmFycmllcnMsIGNvbnRleHQsCj4gLQkJCQkgICBub3RpZnks
+IGNhbGxiYWNrLCBuYW1lKTsKPiArCXZxID0gX192cmluZ19uZXdfdmlydHF1ZXVlKGluZGV4LCAm
+dnJpbmdfc3BsaXQsIHZkZXYsIHdlYWtfYmFycmllcnMsCj4gKwkJCQkgICBjb250ZXh0LCBub3Rp
+ZnksIGNhbGxiYWNrLCBuYW1lKTsKPiAgIAlpZiAoIXZxKSB7Cj4gICAJCXZyaW5nX2ZyZWVfcXVl
+dWUodmRldiwgcXVldWVfc2l6ZV9pbl9ieXRlcywgcXVldWUsCj4gICAJCQkJIGRtYV9hZGRyKTsK
+PiBAQCAtMjIwNiw3ICsyMjA3LDcgQEAgRVhQT1JUX1NZTUJPTF9HUEwodnJpbmdfaW50ZXJydXB0
+KTsKPiAgIAo+ICAgLyogT25seSBhdmFpbGFibGUgZm9yIHNwbGl0IHJpbmcgKi8KPiAgIHN0YXRp
+YyBzdHJ1Y3QgdmlydHF1ZXVlICpfX3ZyaW5nX25ld192aXJ0cXVldWUodW5zaWduZWQgaW50IGlu
+ZGV4LAo+IC0JCQkJCSAgICAgICBzdHJ1Y3QgdnJpbmcgdnJpbmcsCj4gKwkJCQkJICAgICAgIHN0
+cnVjdCB2cmluZ192aXJ0cXVldWVfc3BsaXQgKnZyaW5nX3NwbGl0LAo+ICAgCQkJCQkgICAgICAg
+c3RydWN0IHZpcnRpb19kZXZpY2UgKnZkZXYsCj4gICAJCQkJCSAgICAgICBib29sIHdlYWtfYmFy
+cmllcnMsCj4gICAJCQkJCSAgICAgICBib29sIGNvbnRleHQsCj4gQEAgLTIyNDMsNyArMjI0NCw3
+IEBAIHN0YXRpYyBzdHJ1Y3QgdmlydHF1ZXVlICpfX3ZyaW5nX25ld192aXJ0cXVldWUodW5zaWdu
+ZWQgaW50IGluZGV4LAo+ICAgCXZxLT5zcGxpdC5xdWV1ZV9kbWFfYWRkciA9IDA7Cj4gICAJdnEt
+PnNwbGl0LnF1ZXVlX3NpemVfaW5fYnl0ZXMgPSAwOwo+ICAgCj4gLQl2cS0+c3BsaXQudnJpbmcg
+PSB2cmluZzsKPiArCXZxLT5zcGxpdC52cmluZyA9IHZyaW5nX3NwbGl0LT52cmluZzsKPiAgIAl2
+cS0+c3BsaXQuYXZhaWxfZmxhZ3Nfc2hhZG93ID0gMDsKPiAgIAl2cS0+c3BsaXQuYXZhaWxfaWR4
+X3NoYWRvdyA9IDA7Cj4gICAKPiBAQCAtMjI1NSwxOSArMjI1NiwxOSBAQCBzdGF0aWMgc3RydWN0
+IHZpcnRxdWV1ZSAqX192cmluZ19uZXdfdmlydHF1ZXVlKHVuc2lnbmVkIGludCBpbmRleCwKPiAg
+IAkJCQkJdnEtPnNwbGl0LmF2YWlsX2ZsYWdzX3NoYWRvdyk7Cj4gICAJfQo+ICAgCj4gLQl2cS0+
+c3BsaXQuZGVzY19zdGF0ZSA9IGttYWxsb2NfYXJyYXkodnJpbmcubnVtLAo+ICsJdnEtPnNwbGl0
+LmRlc2Nfc3RhdGUgPSBrbWFsbG9jX2FycmF5KHZyaW5nX3NwbGl0LT52cmluZy5udW0sCj4gICAJ
+CQlzaXplb2Yoc3RydWN0IHZyaW5nX2Rlc2Nfc3RhdGVfc3BsaXQpLCBHRlBfS0VSTkVMKTsKPiAg
+IAlpZiAoIXZxLT5zcGxpdC5kZXNjX3N0YXRlKQo+ICAgCQlnb3RvIGVycl9zdGF0ZTsKPiAgIAo+
+IC0JdnEtPnNwbGl0LmRlc2NfZXh0cmEgPSB2cmluZ19hbGxvY19kZXNjX2V4dHJhKHZyaW5nLm51
+bSk7Cj4gKwl2cS0+c3BsaXQuZGVzY19leHRyYSA9IHZyaW5nX2FsbG9jX2Rlc2NfZXh0cmEodnJp
+bmdfc3BsaXQtPnZyaW5nLm51bSk7Cj4gICAJaWYgKCF2cS0+c3BsaXQuZGVzY19leHRyYSkKPiAg
+IAkJZ290byBlcnJfZXh0cmE7Cj4gICAKPiAtCW1lbXNldCh2cS0+c3BsaXQuZGVzY19zdGF0ZSwg
+MCwgdnJpbmcubnVtICoKPiArCW1lbXNldCh2cS0+c3BsaXQuZGVzY19zdGF0ZSwgMCwgdnJpbmdf
+c3BsaXQtPnZyaW5nLm51bSAqCj4gICAJCQlzaXplb2Yoc3RydWN0IHZyaW5nX2Rlc2Nfc3RhdGVf
+c3BsaXQpKTsKPiAgIAo+IC0JdmlydHF1ZXVlX2luaXQodnEsIHZxLT5zcGxpdC52cmluZy5udW0p
+Owo+ICsJdmlydHF1ZXVlX2luaXQodnEsIHZyaW5nX3NwbGl0LT52cmluZy5udW0pOwo+ICAgCj4g
+ICAJc3Bpbl9sb2NrKCZ2ZGV2LT52cXNfbGlzdF9sb2NrKTsKPiAgIAlsaXN0X2FkZF90YWlsKCZ2
+cS0+dnEubGlzdCwgJnZkZXYtPnZxcyk7Cj4gQEAgLTIzMTcsMTQgKzIzMTgsMTQgQEAgc3RydWN0
+IHZpcnRxdWV1ZSAqdnJpbmdfbmV3X3ZpcnRxdWV1ZSh1bnNpZ25lZCBpbnQgaW5kZXgsCj4gICAJ
+CQkJICAgICAgdm9pZCAoKmNhbGxiYWNrKShzdHJ1Y3QgdmlydHF1ZXVlICp2cSksCj4gICAJCQkJ
+ICAgICAgY29uc3QgY2hhciAqbmFtZSkKPiAgIHsKPiAtCXN0cnVjdCB2cmluZyB2cmluZzsKPiAr
+CXN0cnVjdCB2cmluZ192aXJ0cXVldWVfc3BsaXQgdnJpbmdfc3BsaXQgPSB7fTsKPiAgIAo+ICAg
+CWlmICh2aXJ0aW9faGFzX2ZlYXR1cmUodmRldiwgVklSVElPX0ZfUklOR19QQUNLRUQpKQo+ICAg
+CQlyZXR1cm4gTlVMTDsKPiAgIAo+IC0JdnJpbmdfaW5pdCgmdnJpbmcsIG51bSwgcGFnZXMsIHZy
+aW5nX2FsaWduKTsKPiAtCXJldHVybiBfX3ZyaW5nX25ld192aXJ0cXVldWUoaW5kZXgsIHZyaW5n
+LCB2ZGV2LCB3ZWFrX2JhcnJpZXJzLCBjb250ZXh0LAo+IC0JCQkJICAgICBub3RpZnksIGNhbGxi
+YWNrLCBuYW1lKTsKPiArCXZyaW5nX2luaXQoJnZyaW5nX3NwbGl0LnZyaW5nLCBudW0sIHBhZ2Vz
+LCB2cmluZ19hbGlnbik7Cj4gKwlyZXR1cm4gX192cmluZ19uZXdfdmlydHF1ZXVlKGluZGV4LCAm
+dnJpbmdfc3BsaXQsIHZkZXYsIHdlYWtfYmFycmllcnMsCj4gKwkJCQkgICAgIGNvbnRleHQsIG5v
+dGlmeSwgY2FsbGJhY2ssIG5hbWUpOwo+ICAgfQo+ICAgRVhQT1JUX1NZTUJPTF9HUEwodnJpbmdf
+bmV3X3ZpcnRxdWV1ZSk7Cj4gICAKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFk
+ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
+LXVtCg==
 
