@@ -1,77 +1,43 @@
-Return-Path: <openrisc-bounces@lists.librecores.org>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: [PATCH V7 07/26] mm/mmap: Build protect protection_map[] with
- ARCH_HAS_VM_GET_PAGE_PROT
-Date: Mon, 11 Jul 2022 12:35:41 +0530
-Message-Id: <20220711070600.2378316-8-anshuman.khandual@arm.com>
-In-Reply-To: <20220711070600.2378316-1-anshuman.khandual@arm.com>
-References: <20220711070600.2378316-1-anshuman.khandual@arm.com>
+Return-Path: <michel@lespinasse.org>
+Date: Sat, 30 Jul 2022 16:45:29 -0700
+From: Michel Lespinasse <michel@lespinasse.org>
+Subject: Re: [PATCH 04/36] cpuidle,intel_idle: Fix CPUIDLE_FLAG_IRQ_ENABLE
+Message-ID: <20220730234529.GC1587@lespinasse.org>
+References: <20220608142723.103523089@infradead.org>
+ <20220608144516.172460444@infradead.org>
+ <20220725194306.GA14746@lespinasse.org>
+ <20220728172053.GA3607379@paulmck-ThinkPad-P17-Gen-1>
+ <20220729102458.GA1695@lespinasse.org>
+ <CAJZ5v0gyPtX=ksCibo2ZN_BztCqUn9KRtRu+gsJ5KetB_1MwEQ@mail.gmail.com>
+ <20220730094800.GB1587@lespinasse.org>
+ <CAJZ5v0hXVjsWab=qYZfXBTqcjkpWV0CFT9_oQBKQ28rFG3_VLw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-List-Unsubscribe: <https://lists.librecores.org/options/openrisc>,
- <mailto:openrisc-request@lists.librecores.org?subject=unsubscribe>
-List-Archive: <http://lists.librecores.org/pipermail/openrisc/>
-List-Post: <mailto:openrisc@lists.librecores.org>
-List-Help: <mailto:openrisc-request@lists.librecores.org?subject=help>
-List-Subscribe: <https://lists.librecores.org/listinfo/openrisc>,
- <mailto:openrisc-request@lists.librecores.org?subject=subscribe>
-Errors-To: openrisc-bounces@lists.librecores.org
-Sender: "OpenRISC" <openrisc-bounces@lists.librecores.org>
-To: linux-mm@kvack.org, akpm@linux-foundation.org
-Cc: linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-hexagon@vger.kernel.org, x86@kernel.org, christophe.leroy@csgroup.eu, hch@infradead.org, linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org, Anshuman Khandual <anshuman.khandual@arm.com>, linux-um@lists.infradead.org, linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org, linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0hXVjsWab=qYZfXBTqcjkpWV0CFT9_oQBKQ28rFG3_VLw@mail.gmail.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Michel Lespinasse <michel@lespinasse.org>, "Paul E. McKenney" <paulmck@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, vgupta@kernel.org, Russell King - ARM Linux <linux@armlinux.org.uk>, ulli.kroll@googlemail.com, Linus Walleij <linus.walleij@linaro.org>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Sascha Hauer <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, dl-linux-imx <linux-imx@nxp.com>, Tony Lindgren <tony@atomide.com>, Kevin Hilman <khilman@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>, bcain@quicinc.com, Huacai Chen <chenhuacai@kernel.org>, kernel@xen0n.name, Geert Uytterhoeven <geert@linux-m68k.org>, sammy@sammy.net, Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, dinguyen@kernel.org, jonas@southpole.se, stefan.kristiansson@saunalahti.fi, Stafford Horne <shorne@gmail.com>, James Bottomley <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, David Miller <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, anton.ivanov@cambridgegreys.com, Johannes Berg <johannes@sipsolutions.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, the arch/x86 maintainers <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, acme@kernel.org, Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, jolsa@kernel.org, namhyung@kernel.org, Juergen Gross <jgross@suse.com>, srivatsa@csail.mit.edu, amakhalov@vmware.com, pv-drivers@vmware.com, Boris Ostrovsky <boris.ostrovsky@oracle.com>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Len Brown <lenb@kernel.org>, Pavel Machek <pavel@ucw.cz>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, Lorenzo Pieralisi <lpieralisi@kernel.org>, Sudeep Holla <sudeep.holla@arm.com>, Andy Gross <agross@kernel.org>, Bjorn Andersson <bjorn.andersson@linaro.org>, Anup Patel <anup@brainfault.org>, Thierry Reding <thierry.reding@gmail.com>, Jon Hunter <jonathanh@nvidia.com>, Jacob Pan <jacob.jun.pan@linux.intel.com>, Arnd Bergmann <arnd@arndb.de>, Yury Norov <yury.norov@gmail.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Rasmus Villemoes <linux@rasmusvillemoes.dk>, Steven Rostedt <rostedt@goodmis.org>, Petr Mladek <pmladek@suse.com>, senozhatsky@chromium.org, John Ogness <john.ogness@linutronix.de>, Frederic Weisbecker <frederic@kernel.org>, quic_neeraju@quicinc.com, Josh Triplett <josh@joshtriplett.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, Joel Fernandes <joel@joelfernandes.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, Benjamin Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, vschneid@redhat.com, jpoimboe@kernel.org, linux-alpha@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-snps-arc@lists.infradead.org, Linux ARM <linux-arm-kernel@lists.infradead.org>, Linux OMAP Mailing List <linux-omap@vger.kernel.org>, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k <linux-m68k@lists.linux-m68k.org>, "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>, openrisc@lists.librecores.org, Parisc List <linux-parisc@vger.kernel.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-riscv <linux-riscv@lists.infradead.org>, linux-s390@vger.kernel.org, Linux-sh list <linux-sh@vger.kernel.org>, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org, virtualization@lists.linux-foundation.org, xen-devel@lists.xenproject.org, linux-xtensa@linux-xtensa.org, ACPI Devel Maling List <linux-acpi@vger.kernel.org>, Linux PM <linux-pm@vger.kernel.org>, linux-clk <linux-clk@vger.kernel.org>, linux-arm-msm <linux-arm-msm@vger.kernel.org>, linux-tegra <linux-tegra@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>, rcu@vger.kernel.org, rh0@fb.com
 List-ID: <linux-um.lists.infradead.org>
 
-Now that protection_map[] has been moved inside those platforms that enable
-ARCH_HAS_VM_GET_PAGE_PROT. Hence generic protection_map[] array now can be
-protected with CONFIG_ARCH_HAS_VM_GET_PAGE_PROT intead of __P000.
+On Sat, Jul 30, 2022 at 09:52:34PM +0200, Rafael J. Wysocki wrote:
+> On Sat, Jul 30, 2022 at 11:48 AM Michel Lespinasse
+> <michel@lespinasse.org> wrote:
+> > I'm not sure if that was the patch you meant to send though, as it
+> > seems it's only adding a tracepoint so shouldn't make any difference
+> > if I'm not actually using the tracepoint ?
+> 
+> You are right, it looks like I pasted a link to a different patch by
+> mistake.  Sorry about that.
+> 
+> I meant this one:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git/commit/?h=pm&id=d295ad34f236c3518634fb6403d4c0160456e470
+> 
+> which will appear in the final 5.19.
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- include/linux/mm.h | 2 +-
- mm/mmap.c          | 5 +----
- 2 files changed, 2 insertions(+), 5 deletions(-)
+Thanks. I can confirm that this patch fixes the boot time debug
+warnings for me. And I see that linus already merged it, nice!
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 0ff0a1bad091..07b56995e0fe 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -424,7 +424,7 @@ extern unsigned int kobjsize(const void *objp);
-  * mapping from the currently active vm_flags protection bits (the
-  * low four bits) to a page protection mask..
-  */
--#ifdef __P000
-+#ifndef CONFIG_ARCH_HAS_VM_GET_PAGE_PROT
- extern pgprot_t protection_map[16];
- #endif
- 
-diff --git a/mm/mmap.c b/mm/mmap.c
-index b46d5e931bb3..2cc722e162fa 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -81,7 +81,7 @@ static void unmap_region(struct mm_struct *mm,
- 		struct vm_area_struct *vma, struct vm_area_struct *prev,
- 		unsigned long start, unsigned long end);
- 
--#ifdef __P000
-+#ifndef CONFIG_ARCH_HAS_VM_GET_PAGE_PROT
- pgprot_t protection_map[16] __ro_after_init = {
- 	[VM_NONE]					= __P000,
- 	[VM_READ]					= __P001,
-@@ -100,9 +100,6 @@ pgprot_t protection_map[16] __ro_after_init = {
- 	[VM_SHARED | VM_EXEC | VM_WRITE]		= __S110,
- 	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= __S111
- };
--#endif
--
--#ifndef CONFIG_ARCH_HAS_VM_GET_PAGE_PROT
- DECLARE_VM_GET_PAGE_PROT
- #endif	/* CONFIG_ARCH_HAS_VM_GET_PAGE_PROT */
- 
--- 
-2.25.1
-
+--
+Michel "walken" Lespinasse.
 
