@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44])
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oGEtu-009Ke3-ON
-	for linux-um@lists.infradead.org; Tue, 26 Jul 2022 07:22:46 +0000
+	id 1oIP6F-0030GW-2L
+	for linux-um@lists.infradead.org; Mon, 01 Aug 2022 06:40:24 +0000
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v13 04/42] virtio_ring: extract the logic of freeing vring
-Date: Tue, 26 Jul 2022 15:21:47 +0800
-Message-Id: <20220726072225.19884-5-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
-References: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v14 38/42] virtio_net: get ringparam by virtqueue_get_vring_max_size()
+Date: Mon,  1 Aug 2022 14:38:58 +0800
+Message-Id: <20220801063902.129329-39-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
+References: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -25,55 +25,34 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: virtualization@lists.linux-foundation.org
 Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-Introduce vring_free() to free the vring of vq.
-
-Subsequent patches will use vring_free() alone.
+Use virtqueue_get_vring_max_size() in virtnet_get_ringparam() to set
+tx,rx_max_pending.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/virtio/virtio_ring.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+ drivers/net/virtio_net.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 17024389b62c..a3d76fd87983 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -2316,14 +2316,10 @@ struct virtqueue *vring_new_virtqueue(unsigned int index,
- }
- EXPORT_SYMBOL_GPL(vring_new_virtqueue);
- 
--void vring_del_virtqueue(struct virtqueue *_vq)
-+static void vring_free(struct virtqueue *_vq)
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 40532ecbe7fc..981ef8ea4d58 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -2254,10 +2254,10 @@ static void virtnet_get_ringparam(struct net_device *dev,
  {
- 	struct vring_virtqueue *vq = to_vvq(_vq);
+ 	struct virtnet_info *vi = netdev_priv(dev);
  
--	spin_lock(&vq->vq.vdev->vqs_list_lock);
--	list_del(&_vq->list);
--	spin_unlock(&vq->vq.vdev->vqs_list_lock);
--
- 	if (vq->we_own_ring) {
- 		if (vq->packed_ring) {
- 			vring_free_queue(vq->vq.vdev,
-@@ -2354,6 +2350,18 @@ void vring_del_virtqueue(struct virtqueue *_vq)
- 		kfree(vq->split.desc_state);
- 		kfree(vq->split.desc_extra);
- 	}
-+}
-+
-+void vring_del_virtqueue(struct virtqueue *_vq)
-+{
-+	struct vring_virtqueue *vq = to_vvq(_vq);
-+
-+	spin_lock(&vq->vq.vdev->vqs_list_lock);
-+	list_del(&_vq->list);
-+	spin_unlock(&vq->vq.vdev->vqs_list_lock);
-+
-+	vring_free(_vq);
-+
- 	kfree(vq);
+-	ring->rx_max_pending = virtqueue_get_vring_size(vi->rq[0].vq);
+-	ring->tx_max_pending = virtqueue_get_vring_size(vi->sq[0].vq);
+-	ring->rx_pending = ring->rx_max_pending;
+-	ring->tx_pending = ring->tx_max_pending;
++	ring->rx_max_pending = vi->rq[0].vq->num_max;
++	ring->tx_max_pending = vi->sq[0].vq->num_max;
++	ring->rx_pending = virtqueue_get_vring_size(vi->rq[0].vq);
++	ring->tx_pending = virtqueue_get_vring_size(vi->sq[0].vq);
  }
- EXPORT_SYMBOL_GPL(vring_del_virtqueue);
+ 
+ static bool virtnet_commit_rss_command(struct virtnet_info *vi)
 -- 
 2.31.0
 
