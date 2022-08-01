@@ -1,10 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Stafford Horne <shorne@gmail.com>
-Subject: [PATCH v3 2/2] asm-generic: Add new pci.h and use it
-Date: Mon, 18 Jul 2022 09:41:14 +0900
-Message-Id: <20220718004114.3925745-3-shorne@gmail.com>
-In-Reply-To: <20220718004114.3925745-1-shorne@gmail.com>
-References: <20220718004114.3925745-1-shorne@gmail.com>
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1oIP5A-002ysh-He
+	for linux-um@lists.infradead.org; Mon, 01 Aug 2022 06:39:18 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v14 04/42] virtio_ring: extract the logic of freeing vring
+Date: Mon,  1 Aug 2022 14:38:24 +0800
+Message-Id: <20220801063902.129329-5-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
+References: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -18,241 +22,60 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Stafford Horne <shorne@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Bjorn Helgaas <bhelgaas@google.com>, linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org, linux-um@lists.infradead.org, linux-pci@vger.kernel.org, linux-arch@vger.kernel.org
+To: virtualization@lists.linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-The asm/pci.h used for many newer architectures share similar
-definitions.  Move the common parts to asm-generic/pci.h to allow for
-sharing code.
+Introduce vring_free() to free the vring of vq.
 
-Two things to note are:
+Subsequent patches will use vring_free() alone.
 
- - isa_dma_bridge_buggy, traditionally this is defined in asm/dma.h but
-   these architectures avoid creating that file and add the definition
-   to asm/pci.h.
- - ARCH_GENERIC_PCI_MMAP_RESOURCE, csky does not define this so we
-   undefine it after including asm-generic/pci.h.  Why doesn't csky
-   define it?
- - pci_get_legacy_ide_irq, This function is only used on architectures
-   that support PNP.  It is only maintained for arm64, in other
-   architectures it is removed.
-
-Suggested-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/lkml/CAK8P3a0JmPeczfmMBE__vn=Jbvf=nkbpVaZCycyv40pZNCJJXQ@mail.gmail.com/
-Signed-off-by: Stafford Horne <shorne@gmail.com>
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
 ---
-Second note on isa_dma_bridge_buggy, this is set on x86 but it it also set in
-pci/quirks.c.  We discussed limiting it only to x86 though as its a general
-quick triggered by pci ids I think it will be more tricky than we thought so I
-will leave as is.  It might be nice to move it out of asm/dma.h and into
-asm/pci.h though.
+ drivers/virtio/virtio_ring.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
-Since v2:
- - Nothing
-Since v1:
- - Remove definition of pci_get_legacy_ide_irq
-
- arch/arm64/include/asm/pci.h | 12 +++---------
- arch/csky/include/asm/pci.h  | 24 ++++--------------------
- arch/riscv/include/asm/pci.h | 25 +++----------------------
- arch/um/include/asm/pci.h    | 24 ++----------------------
- include/asm-generic/pci.h    | 36 ++++++++++++++++++++++++++++++++++++
- 5 files changed, 48 insertions(+), 73 deletions(-)
- create mode 100644 include/asm-generic/pci.h
-
-diff --git a/arch/arm64/include/asm/pci.h b/arch/arm64/include/asm/pci.h
-index b33ca260e3c9..1180e83712f5 100644
---- a/arch/arm64/include/asm/pci.h
-+++ b/arch/arm64/include/asm/pci.h
-@@ -9,7 +9,6 @@
- #include <asm/io.h>
- 
- #define PCIBIOS_MIN_IO		0x1000
--#define PCIBIOS_MIN_MEM		0
- 
- /*
-  * Set to 1 if the kernel should re-assign all PCI bus numbers
-@@ -18,9 +17,6 @@
- 	(pci_has_flag(PCI_REASSIGN_ALL_BUS))
- 
- #define arch_can_pci_mmap_wc() 1
--#define ARCH_GENERIC_PCI_MMAP_RESOURCE	1
--
--extern int isa_dma_bridge_buggy;
- 
- #ifdef CONFIG_PCI
- static inline int pci_get_legacy_ide_irq(struct pci_dev *dev, int channel)
-@@ -28,11 +24,9 @@ static inline int pci_get_legacy_ide_irq(struct pci_dev *dev, int channel)
- 	/* no legacy IRQ on arm64 */
- 	return -ENODEV;
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 17024389b62c..a3d76fd87983 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -2316,14 +2316,10 @@ struct virtqueue *vring_new_virtqueue(unsigned int index,
  }
--
--static inline int pci_proc_domain(struct pci_bus *bus)
--{
--	return 1;
--}
- #endif  /* CONFIG_PCI */
+ EXPORT_SYMBOL_GPL(vring_new_virtqueue);
  
-+/* Generic PCI */
-+#include <asm-generic/pci.h>
-+
- #endif  /* __ASM_PCI_H */
-diff --git a/arch/csky/include/asm/pci.h b/arch/csky/include/asm/pci.h
-index ebc765b1f78b..44866c1ad461 100644
---- a/arch/csky/include/asm/pci.h
-+++ b/arch/csky/include/asm/pci.h
-@@ -9,26 +9,10 @@
+-void vring_del_virtqueue(struct virtqueue *_vq)
++static void vring_free(struct virtqueue *_vq)
+ {
+ 	struct vring_virtqueue *vq = to_vvq(_vq);
  
- #include <asm/io.h>
- 
--#define PCIBIOS_MIN_IO		0
--#define PCIBIOS_MIN_MEM		0
-+/* Generic PCI */
-+#include <asm-generic/pci.h>
- 
--/* C-SKY shim does not initialize PCI bus */
--#define pcibios_assign_all_busses() 1
+-	spin_lock(&vq->vq.vdev->vqs_list_lock);
+-	list_del(&_vq->list);
+-	spin_unlock(&vq->vq.vdev->vqs_list_lock);
 -
--extern int isa_dma_bridge_buggy;
--
--#ifdef CONFIG_PCI
--static inline int pci_get_legacy_ide_irq(struct pci_dev *dev, int channel)
--{
--	/* no legacy IRQ on csky */
--	return -ENODEV;
--}
--
--static inline int pci_proc_domain(struct pci_bus *bus)
--{
--	/* always show the domain in /proc */
--	return 1;
--}
--#endif  /* CONFIG_PCI */
-+/* csky doesn't use generic pci resource mapping */
-+#undef ARCH_GENERIC_PCI_MMAP_RESOURCE
- 
- #endif  /* __ASM_CSKY_PCI_H */
-diff --git a/arch/riscv/include/asm/pci.h b/arch/riscv/include/asm/pci.h
-index 7fd52a30e605..12ce8150cfb0 100644
---- a/arch/riscv/include/asm/pci.h
-+++ b/arch/riscv/include/asm/pci.h
-@@ -12,29 +12,7 @@
- 
- #include <asm/io.h>
- 
--#define PCIBIOS_MIN_IO		0
--#define PCIBIOS_MIN_MEM		0
--
--/* RISC-V shim does not initialize PCI bus */
--#define pcibios_assign_all_busses() 1
--
--#define ARCH_GENERIC_PCI_MMAP_RESOURCE 1
--
--extern int isa_dma_bridge_buggy;
--
- #ifdef CONFIG_PCI
--static inline int pci_get_legacy_ide_irq(struct pci_dev *dev, int channel)
--{
--	/* no legacy IRQ on risc-v */
--	return -ENODEV;
--}
--
--static inline int pci_proc_domain(struct pci_bus *bus)
--{
--	/* always show the domain in /proc */
--	return 1;
--}
--
- #ifdef	CONFIG_NUMA
- 
- static inline int pcibus_to_node(struct pci_bus *bus)
-@@ -50,4 +28,7 @@ static inline int pcibus_to_node(struct pci_bus *bus)
- 
- #endif  /* CONFIG_PCI */
- 
-+/* Generic PCI */
-+#include <asm-generic/pci.h>
-+
- #endif  /* _ASM_RISCV_PCI_H */
-diff --git a/arch/um/include/asm/pci.h b/arch/um/include/asm/pci.h
-index da13fd5519ef..34fe4921b5fa 100644
---- a/arch/um/include/asm/pci.h
-+++ b/arch/um/include/asm/pci.h
-@@ -4,28 +4,8 @@
- #include <linux/types.h>
- #include <asm/io.h>
- 
--#define PCIBIOS_MIN_IO		0
--#define PCIBIOS_MIN_MEM		0
--
--#define pcibios_assign_all_busses() 1
--
--extern int isa_dma_bridge_buggy;
--
--#ifdef CONFIG_PCI
--static inline int pci_get_legacy_ide_irq(struct pci_dev *dev, int channel)
--{
--	/* no legacy IRQs */
--	return -ENODEV;
--}
--#endif
--
--#ifdef CONFIG_PCI_DOMAINS
--static inline int pci_proc_domain(struct pci_bus *bus)
--{
--	/* always show the domain in /proc */
--	return 1;
--}
--#endif  /* CONFIG_PCI */
-+/* Generic PCI */
-+#include <asm-generic/pci.h>
- 
- #ifdef CONFIG_PCI_MSI_IRQ_DOMAIN
- /*
-diff --git a/include/asm-generic/pci.h b/include/asm-generic/pci.h
-new file mode 100644
-index 000000000000..fbc25741696a
---- /dev/null
-+++ b/include/asm-generic/pci.h
-@@ -0,0 +1,36 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+
-+#ifndef __ASM_GENERIC_PCI_H
-+#define __ASM_GENERIC_PCI_H
-+
-+#include <linux/types.h>
-+
-+#ifndef PCIBIOS_MIN_IO
-+#define PCIBIOS_MIN_IO		0
-+#endif
-+
-+#ifndef PCIBIOS_MIN_MEM
-+#define PCIBIOS_MIN_MEM		0
-+#endif
-+
-+#ifndef pcibios_assign_all_busses
-+/* For bootloaders that do not initialize the PCI bus */
-+#define pcibios_assign_all_busses() 1
-+#endif
-+
-+extern int isa_dma_bridge_buggy;
-+
-+/* Enable generic resource mapping code in drivers/pci/ */
-+#define ARCH_GENERIC_PCI_MMAP_RESOURCE
-+
-+#ifdef CONFIG_PCI
-+
-+static inline int pci_proc_domain(struct pci_bus *bus)
-+{
-+	/* always show the domain in /proc */
-+	return 1;
+ 	if (vq->we_own_ring) {
+ 		if (vq->packed_ring) {
+ 			vring_free_queue(vq->vq.vdev,
+@@ -2354,6 +2350,18 @@ void vring_del_virtqueue(struct virtqueue *_vq)
+ 		kfree(vq->split.desc_state);
+ 		kfree(vq->split.desc_extra);
+ 	}
 +}
 +
-+#endif /* CONFIG_PCI */
++void vring_del_virtqueue(struct virtqueue *_vq)
++{
++	struct vring_virtqueue *vq = to_vvq(_vq);
 +
-+#endif /* __ASM_GENERIC_PCI_H */
++	spin_lock(&vq->vq.vdev->vqs_list_lock);
++	list_del(&_vq->list);
++	spin_unlock(&vq->vq.vdev->vqs_list_lock);
++
++	vring_free(_vq);
++
+ 	kfree(vq);
+ }
+ EXPORT_SYMBOL_GPL(vring_del_virtqueue);
 -- 
-2.36.1
+2.31.0
 
 
 _______________________________________________
