@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54])
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oE01u-00HF1j-Ri
-	for linux-um@lists.infradead.org; Wed, 20 Jul 2022 03:05:44 +0000
+	id 1oIP5x-002zqC-Cq
+	for linux-um@lists.infradead.org; Mon, 01 Aug 2022 06:40:09 +0000
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v12 25/40] virtio: queue_reset: add VIRTIO_F_RING_RESET
-Date: Wed, 20 Jul 2022 11:04:21 +0800
-Message-Id: <20220720030436.79520-26-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
-References: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v14 27/42] virtio: queue_reset: add VIRTIO_F_RING_RESET
+Date: Mon,  1 Aug 2022 14:38:47 +0800
+Message-Id: <20220801063902.129329-28-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
+References: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
