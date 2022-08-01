@@ -1,12 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oBPII-00FjWo-11
-	for linux-um@lists.infradead.org; Tue, 12 Jul 2022 23:27:55 +0000
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH] um: seed rng using host OS rng
-Date: Wed, 13 Jul 2022 01:27:38 +0200
-Message-Id: <20220712232738.77737-1-Jason@zx2c4.com>
+	id 1oIP5X-002zLP-EQ
+	for linux-um@lists.infradead.org; Mon, 01 Aug 2022 06:39:42 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v14 13/42] virtio_ring: split: extract the logic of attach vring
+Date: Mon,  1 Aug 2022 14:38:33 +0800
+Message-Id: <20220801063902.129329-14-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
+References: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -20,118 +22,81 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, johannes@sipsolutions.net
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, stable@vger.kernel.org
+To: virtualization@lists.linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-UML generally does not provide access to special CPU instructions like
-RDRAND, and execution tends to be rather deterministic, with no real
-hardware interrupts, making good randomness really very hard, if not
-all together impossible. Not only is this a security eyebrow raiser, but
-it's also quite annoying when trying to do various pieces of UML-based
-automation that takes a long time to boot, if ever.
+Separate the logic of attach vring, subsequent patches will call it
+separately.
 
-Fix this by trivially calling getrandom() in the host and using that
-seed as "bootloader randomness", which initializes the rng immediately
-at UML boot.
+virtqueue_vring_init_split() completes the initialization of other
+variables of vring split. We can directly use
+vq->split = *vring_split to complete attach.
 
-The old behavior can be restored the same way as on any other arch, by
-way of CONFIG_TRUST_BOOTLOADER_RANDOMNESS=n or
-random.trust_bootloader=0. So seen from that perspective, this just
-makes UML act like other archs, which is positive in its own right.
-
-Cc: stable@vger.kernel.org
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- arch/um/include/shared/os.h | 7 +++++++
- arch/um/kernel/um_arch.c    | 8 ++++++++
- arch/um/os-Linux/util.c     | 6 ++++++
- 3 files changed, 21 insertions(+)
+ drivers/virtio/virtio_ring.c | 23 ++++++++++-------------
+ 1 file changed, 10 insertions(+), 13 deletions(-)
 
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index fafde1d5416e..79644dd88d58 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -11,6 +11,12 @@
- #include <irq_user.h>
- #include <longjmp.h>
- #include <mm_id.h>
-+/* This is to get size_t */
-+#ifndef __UM_HOST__
-+#include <linux/types.h>
-+#else
-+#include <stddef.h>
-+#endif
- 
- #define CATCH_EINTR(expr) while ((errno = 0, ((expr) < 0)) && (errno == EINTR))
- 
-@@ -243,6 +249,7 @@ extern void stack_protections(unsigned long address);
- extern int raw(int fd);
- extern void setup_machinename(char *machine_out);
- extern void setup_hostinfo(char *buf, int len);
-+extern ssize_t os_getrandom(void *buf, size_t len, unsigned int flags);
- extern void os_dump_core(void) __attribute__ ((noreturn));
- extern void um_early_printk(const char *s, unsigned int n);
- extern void os_fix_helper_signals(void);
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 0760e24f2eba..74f3efd96bd4 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -16,6 +16,7 @@
- #include <linux/sched/task.h>
- #include <linux/kmsg_dump.h>
- #include <linux/suspend.h>
-+#include <linux/random.h>
- 
- #include <asm/processor.h>
- #include <asm/cpufeature.h>
-@@ -406,6 +407,8 @@ int __init __weak read_initrd(void)
- 
- void __init setup_arch(char **cmdline_p)
- {
-+	u8 rng_seed[32];
-+
- 	stack_protections((unsigned long) &init_thread_info);
- 	setup_physmem(uml_physmem, uml_reserved, physmem_size, highmem);
- 	mem_total_pages(physmem_size, iomem_size, highmem);
-@@ -416,6 +419,11 @@ void __init setup_arch(char **cmdline_p)
- 	strlcpy(boot_command_line, command_line, COMMAND_LINE_SIZE);
- 	*cmdline_p = command_line;
- 	setup_hostinfo(host_info, sizeof host_info);
-+
-+	if (os_getrandom(rng_seed, sizeof(rng_seed), 0) == sizeof(rng_seed)) {
-+		add_bootloader_randomness(rng_seed, sizeof(rng_seed));
-+		memzero_explicit(rng_seed, sizeof(rng_seed));
-+	}
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index e456cc16ea2a..d0df887c3ada 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -957,6 +957,15 @@ static void virtqueue_vring_init_split(struct vring_virtqueue_split *vring_split
+ 	}
  }
  
- void __init check_bugs(void)
-diff --git a/arch/um/os-Linux/util.c b/arch/um/os-Linux/util.c
-index 41297ec404bf..fc0f2a9dee5a 100644
---- a/arch/um/os-Linux/util.c
-+++ b/arch/um/os-Linux/util.c
-@@ -14,6 +14,7 @@
- #include <sys/wait.h>
- #include <sys/mman.h>
- #include <sys/utsname.h>
-+#include <sys/random.h>
- #include <init.h>
- #include <os.h>
- 
-@@ -96,6 +97,11 @@ static inline void __attribute__ ((noreturn)) uml_abort(void)
- 			exit(127);
- }
- 
-+ssize_t os_getrandom(void *buf, size_t len, unsigned int flags)
++static void virtqueue_vring_attach_split(struct vring_virtqueue *vq,
++					 struct vring_virtqueue_split *vring_split)
 +{
-+	return getrandom(buf, len, flags);
++	vq->split = *vring_split;
++
++	/* Put everything in free lists. */
++	vq->free_head = 0;
 +}
 +
- /*
-  * UML helper threads must not handle SIGWINCH/INT/TERM
-  */
+ static int vring_alloc_state_extra_split(struct vring_virtqueue_split *vring_split)
+ {
+ 	struct vring_desc_state_split *state;
+@@ -1067,8 +1076,6 @@ static struct virtqueue *vring_create_virtqueue_split(
+ 		return NULL;
+ 	}
+ 
+-	to_vvq(vq)->split.queue_dma_addr = vring_split.queue_dma_addr;
+-	to_vvq(vq)->split.queue_size_in_bytes = vring_split.queue_size_in_bytes;
+ 	to_vvq(vq)->we_own_ring = true;
+ 
+ 	return vq;
+@@ -2317,26 +2324,16 @@ static struct virtqueue *__vring_new_virtqueue(unsigned int index,
+ 	if (virtio_has_feature(vdev, VIRTIO_F_ORDER_PLATFORM))
+ 		vq->weak_barriers = false;
+ 
+-	vq->split.queue_dma_addr = 0;
+-	vq->split.queue_size_in_bytes = 0;
+-
+-	vq->split.vring = vring_split->vring;
+-
+ 	err = vring_alloc_state_extra_split(vring_split);
+ 	if (err) {
+ 		kfree(vq);
+ 		return NULL;
+ 	}
+ 
+-	/* Put everything in free lists. */
+-	vq->free_head = 0;
+-
+-	vq->split.desc_state = vring_split->desc_state;
+-	vq->split.desc_extra = vring_split->desc_extra;
+-
+ 	virtqueue_vring_init_split(vring_split, vq);
+ 
+ 	virtqueue_init(vq, vring_split->vring.num);
++	virtqueue_vring_attach_split(vq, vring_split);
+ 
+ 	spin_lock(&vdev->vqs_list_lock);
+ 	list_add_tail(&vq->vq.list, &vdev->vqs);
 -- 
-2.35.1
+2.31.0
 
 
 _______________________________________________
