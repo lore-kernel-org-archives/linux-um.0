@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43])
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oE01T-00HESP-N0
-	for linux-um@lists.infradead.org; Wed, 20 Jul 2022 03:05:17 +0000
+	id 1oIP5w-002zqL-Gi
+	for linux-um@lists.infradead.org; Mon, 01 Aug 2022 06:40:08 +0000
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v12 14/40] virtio_ring: split: introduce virtqueue_resize_split()
-Date: Wed, 20 Jul 2022 11:04:10 +0800
-Message-Id: <20220720030436.79520-15-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
-References: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v14 28/42] virtio_ring: struct virtqueue introduce reset
+Date: Mon,  1 Aug 2022 14:38:48 +0800
+Message-Id: <20220801063902.129329-29-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
+References: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -25,75 +25,57 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: virtualization@lists.linux-foundation.org
 Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-virtio ring split supports resize.
-
-Only after the new vring is successfully allocated based on the new num,
-we will release the old vring. In any case, an error is returned,
-indicating that the vring still points to the old vring.
-
-In the case of an error, re-initialize(virtqueue_reinit_split()) the
-virtqueue to ensure that the vring can be used.
-
-In addition, vring_align, may_reduce_num are necessary for reallocating
-vring, so they are retained for creating vq.
+Introduce a new member reset to the structure virtqueue to determine
+whether the current vq is in the reset state. Subsequent patches will
+use it.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/virtio/virtio_ring.c | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+ drivers/virtio/virtio_ring.c | 2 ++
+ include/linux/virtio.h       | 2 ++
+ 2 files changed, 4 insertions(+)
 
 diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 6de1129e2aa6..2ea6d022cbd7 100644
+index accb3ae6cc95..d66c8e6d0ef3 100644
 --- a/drivers/virtio/virtio_ring.c
 +++ b/drivers/virtio/virtio_ring.c
-@@ -212,6 +212,7 @@ struct vring_virtqueue {
+@@ -1996,6 +1996,7 @@ static struct virtqueue *vring_create_virtqueue_packed(
+ 	vq->vq.vdev = vdev;
+ 	vq->vq.name = name;
+ 	vq->vq.index = index;
++	vq->vq.reset = false;
+ 	vq->we_own_ring = true;
+ 	vq->notify = notify;
+ 	vq->weak_barriers = weak_barriers;
+@@ -2481,6 +2482,7 @@ static struct virtqueue *__vring_new_virtqueue(unsigned int index,
+ 	vq->vq.vdev = vdev;
+ 	vq->vq.name = name;
+ 	vq->vq.index = index;
++	vq->vq.reset = false;
+ 	vq->we_own_ring = false;
+ 	vq->notify = notify;
+ 	vq->weak_barriers = weak_barriers;
+diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+index d45ee82a4470..a3f73bb6733e 100644
+--- a/include/linux/virtio.h
++++ b/include/linux/virtio.h
+@@ -20,6 +20,7 @@
+  * @index: the zero-based ordinal number for this queue.
+  * @num_free: number of elements we expect to be able to fit.
+  * @num_max: the maximum number of elements supported by the device.
++ * @reset: vq is in reset state or not.
+  *
+  * A note on @num_free: with indirect buffers, each buffer needs one
+  * element in the queue, otherwise a buffer will need one element per
+@@ -34,6 +35,7 @@ struct virtqueue {
+ 	unsigned int num_free;
+ 	unsigned int num_max;
+ 	void *priv;
++	bool reset;
  };
  
- static struct vring_desc_extra *vring_alloc_desc_extra(unsigned int num);
-+static void vring_free(struct virtqueue *_vq);
- 
- /*
-  * Helpers.
-@@ -1115,6 +1116,38 @@ static struct virtqueue *vring_create_virtqueue_split(
- 	return vq;
- }
- 
-+static int virtqueue_resize_split(struct virtqueue *_vq, u32 num)
-+{
-+	struct vring_virtqueue_split vring_split = {};
-+	struct vring_virtqueue *vq = to_vvq(_vq);
-+	struct virtio_device *vdev = _vq->vdev;
-+	int err;
-+
-+	err = vring_alloc_queue_split(&vring_split, vdev, num,
-+				      vq->split.vring_align,
-+				      vq->split.may_reduce_num);
-+	if (err)
-+		goto err;
-+
-+	err = vring_alloc_state_extra_split(&vring_split);
-+	if (err) {
-+		vring_free_split(&vring_split, vdev);
-+		goto err;
-+	}
-+
-+	vring_free(&vq->vq);
-+
-+	virtqueue_init(vq, vring_split.vring.num);
-+	virtqueue_vring_attach_split(vq, &vring_split);
-+	virtqueue_vring_init_split(vq);
-+
-+	return 0;
-+
-+err:
-+	virtqueue_reinit_split(vq);
-+	return -ENOMEM;
-+}
-+
- 
- /*
-  * Packed ring specific functions - *_packed().
+ int virtqueue_add_outbuf(struct virtqueue *vq,
 -- 
 2.31.0
 
