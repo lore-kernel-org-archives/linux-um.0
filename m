@@ -1,12 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56])
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oIP6J-0030OU-S8
-	for linux-um@lists.infradead.org; Mon, 01 Aug 2022 06:40:30 +0000
+	id 1oIP5s-002zpm-OH
+	for linux-um@lists.infradead.org; Mon, 01 Aug 2022 06:40:05 +0000
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v14 41/42] virtio_net: support tx queue resize
-Date: Mon,  1 Aug 2022 14:39:01 +0800
-Message-Id: <20220801063902.129329-42-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v14 26/42] virtio: allow to unbreak/break virtqueue individually
+Date: Mon,  1 Aug 2022 14:38:46 +0800
+Message-Id: <20220801063902.129329-27-xuanzhuo@linux.alibaba.com>
 In-Reply-To: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
 References: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
@@ -25,95 +25,66 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: virtualization@lists.linux-foundation.org
 Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-This patch implements the resize function of the tx queues.
-Based on this function, it is possible to modify the ring num of the
-queue.
+This patch allows the new introduced
+__virtqueue_break()/__virtqueue_unbreak() to break/unbreak the
+virtqueue.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/net/virtio_net.c | 47 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+ drivers/virtio/virtio_ring.c | 24 ++++++++++++++++++++++++
+ include/linux/virtio.h       |  3 +++
+ 2 files changed, 27 insertions(+)
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 1115a8b59a08..d1e6940b46d8 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -135,6 +135,9 @@ struct send_queue {
- 	struct virtnet_sq_stats stats;
- 
- 	struct napi_struct napi;
-+
-+	/* Record whether sq is in reset state. */
-+	bool reset;
- };
- 
- /* Internal representation of a receive virtqueue */
-@@ -279,6 +282,7 @@ struct padded_vnet_hdr {
- };
- 
- static void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *buf);
-+static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf);
- 
- static bool is_xdp_frame(void *ptr)
- {
-@@ -1603,6 +1607,11 @@ static void virtnet_poll_cleantx(struct receive_queue *rq)
- 		return;
- 
- 	if (__netif_tx_trylock(txq)) {
-+		if (sq->reset) {
-+			__netif_tx_unlock(txq);
-+			return;
-+		}
-+
- 		do {
- 			virtqueue_disable_cb(sq->vq);
- 			free_old_xmit_skbs(sq, true);
-@@ -1868,6 +1877,44 @@ static int virtnet_rx_resize(struct virtnet_info *vi,
- 	return err;
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 6447a09e2e38..accb3ae6cc95 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -2724,6 +2724,30 @@ unsigned int virtqueue_get_vring_size(struct virtqueue *_vq)
  }
+ EXPORT_SYMBOL_GPL(virtqueue_get_vring_size);
  
-+static int virtnet_tx_resize(struct virtnet_info *vi,
-+			     struct send_queue *sq, u32 ring_num)
++/*
++ * This function should only be called by the core, not directly by the driver.
++ */
++void __virtqueue_break(struct virtqueue *_vq)
 +{
-+	struct netdev_queue *txq;
-+	int err, qindex;
++	struct vring_virtqueue *vq = to_vvq(_vq);
 +
-+	qindex = sq - vi->sq;
-+
-+	virtnet_napi_tx_disable(&sq->napi);
-+
-+	txq = netdev_get_tx_queue(vi->dev, qindex);
-+
-+	/* 1. wait all ximt complete
-+	 * 2. fix the race of netif_stop_subqueue() vs netif_start_subqueue()
-+	 */
-+	__netif_tx_lock_bh(txq);
-+
-+	/* Prevent rx poll from accessing sq. */
-+	sq->reset = true;
-+
-+	/* Prevent the upper layer from trying to send packets. */
-+	netif_stop_subqueue(vi->dev, qindex);
-+
-+	__netif_tx_unlock_bh(txq);
-+
-+	err = virtqueue_resize(sq->vq, ring_num, virtnet_sq_free_unused_buf);
-+	if (err)
-+		netdev_err(vi->dev, "resize tx fail: tx queue index: %d err: %d\n", qindex, err);
-+
-+	__netif_tx_lock_bh(txq);
-+	sq->reset = false;
-+	netif_tx_wake_queue(txq);
-+	__netif_tx_unlock_bh(txq);
-+
-+	virtnet_napi_tx_enable(vi, sq->vq, &sq->napi);
-+	return err;
++	/* Pairs with READ_ONCE() in virtqueue_is_broken(). */
++	WRITE_ONCE(vq->broken, true);
 +}
++EXPORT_SYMBOL_GPL(__virtqueue_break);
 +
- /*
-  * Send command via the control virtqueue and check status.  Commands
-  * supported by the hypervisor, as indicated by feature bits, should
++/*
++ * This function should only be called by the core, not directly by the driver.
++ */
++void __virtqueue_unbreak(struct virtqueue *_vq)
++{
++	struct vring_virtqueue *vq = to_vvq(_vq);
++
++	/* Pairs with READ_ONCE() in virtqueue_is_broken(). */
++	WRITE_ONCE(vq->broken, false);
++}
++EXPORT_SYMBOL_GPL(__virtqueue_unbreak);
++
+ bool virtqueue_is_broken(struct virtqueue *_vq)
+ {
+ 	struct vring_virtqueue *vq = to_vvq(_vq);
+diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+index 62e31bca5602..d45ee82a4470 100644
+--- a/include/linux/virtio.h
++++ b/include/linux/virtio.h
+@@ -138,6 +138,9 @@ bool is_virtio_device(struct device *dev);
+ void virtio_break_device(struct virtio_device *dev);
+ void __virtio_unbreak_device(struct virtio_device *dev);
+ 
++void __virtqueue_break(struct virtqueue *_vq);
++void __virtqueue_unbreak(struct virtqueue *_vq);
++
+ void virtio_config_changed(struct virtio_device *dev);
+ #ifdef CONFIG_PM_SLEEP
+ int virtio_device_freeze(struct virtio_device *dev);
 -- 
 2.31.0
 
