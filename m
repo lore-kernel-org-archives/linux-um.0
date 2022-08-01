@@ -1,10 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Subject: [PATCH v2 06/13] um: Improve panic notifiers consistency and ordering
-Date: Tue, 19 Jul 2022 16:53:19 -0300
-Message-Id: <20220719195325.402745-7-gpiccoli@igalia.com>
-In-Reply-To: <20220719195325.402745-1-gpiccoli@igalia.com>
-References: <20220719195325.402745-1-gpiccoli@igalia.com>
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1oIP59-002yqC-Mn
+	for linux-um@lists.infradead.org; Mon, 01 Aug 2022 06:39:17 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v14 03/42] virtio_ring: update the document of the virtqueue_detach_unused_buf for queue reset
+Date: Mon,  1 Aug 2022 14:38:23 +0800
+Message-Id: <20220801063902.129329-4-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
+References: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -18,81 +22,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org, netdev@vger.kernel.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, "Guilherme G. Piccoli" <gpiccoli@igalia.com>, linux-um@lists.infradead.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Richard Weinberger <richard@nod.at>
+To: virtualization@lists.linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-Currently the panic notifiers from user mode linux don't follow
-the convention for most of the other notifiers present in the
-kernel (indentation, priority setting, numeric return).
-More important, the priorities could be improved, since it's a
-special case (userspace), hence we could run the notifiers earlier;
-user mode linux shouldn't care much with other panic notifiers but
-the ordering among the mconsole and arch notifier is important,
-given that the arch one effectively triggers a core dump.
+Added documentation for virtqueue_detach_unused_buf, allowing it to be
+called on queue reset.
 
-Fix that by running the mconsole notifier as the first panic
-notifier, followed by the architecture one (that coredumps).
-
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: Richard Weinberger <richard@nod.at>
-Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
-
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
 ---
+ drivers/virtio/virtio_ring.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-V2:
-- Kept the notifier header to avoid implicit usage - thanks
-Johannes for the suggestion!
-
- arch/um/drivers/mconsole_kern.c | 7 +++----
- arch/um/kernel/um_arch.c        | 8 ++++----
- 2 files changed, 7 insertions(+), 8 deletions(-)
-
-diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconsole_kern.c
-index 8ca67a692683..69af3ce8407a 100644
---- a/arch/um/drivers/mconsole_kern.c
-+++ b/arch/um/drivers/mconsole_kern.c
-@@ -846,13 +846,12 @@ static int notify_panic(struct notifier_block *self, unsigned long unused1,
- 
- 	mconsole_notify(notify_socket, MCONSOLE_PANIC, message,
- 			strlen(message) + 1);
--	return 0;
-+	return NOTIFY_DONE;
- }
- 
- static struct notifier_block panic_exit_notifier = {
--	.notifier_call 		= notify_panic,
--	.next 			= NULL,
--	.priority 		= 1
-+	.notifier_call	= notify_panic,
-+	.priority	= INT_MAX, /* run as soon as possible */
- };
- 
- static int add_notifier(void)
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 9838967d0b2f..970fdccc2f94 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -246,13 +246,13 @@ static int panic_exit(struct notifier_block *self, unsigned long unused1,
- 	bust_spinlocks(0);
- 	uml_exitcode = 1;
- 	os_dump_core();
--	return 0;
-+
-+	return NOTIFY_DONE;
- }
- 
- static struct notifier_block panic_exit_notifier = {
--	.notifier_call 		= panic_exit,
--	.next 			= NULL,
--	.priority 		= 0
-+	.notifier_call	= panic_exit,
-+	.priority	= INT_MAX - 1, /* run as 2nd notifier, won't return */
- };
- 
- void uml_finishsetup(void)
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index a5ec724c01d8..17024389b62c 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -2130,8 +2130,8 @@ EXPORT_SYMBOL_GPL(virtqueue_enable_cb_delayed);
+  * @_vq: the struct virtqueue we're talking about.
+  *
+  * Returns NULL or the "data" token handed to virtqueue_add_*().
+- * This is not valid on an active queue; it is useful only for device
+- * shutdown.
++ * This is not valid on an active queue; it is useful for device
++ * shutdown or the reset queue.
+  */
+ void *virtqueue_detach_unused_buf(struct virtqueue *_vq)
+ {
 -- 
-2.37.1
+2.31.0
 
 
 _______________________________________________
