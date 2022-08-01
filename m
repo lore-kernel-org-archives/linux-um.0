@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out199-15.us.a.mail.aliyun.com ([47.90.199.15])
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oE02I-00HFQY-UK
-	for linux-um@lists.infradead.org; Wed, 20 Jul 2022 03:06:08 +0000
+	id 1oIP5p-002zo7-7s
+	for linux-um@lists.infradead.org; Mon, 01 Aug 2022 06:40:08 +0000
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v12 33/40] virtio_mmio: support the arg sizes of find_vqs()
-Date: Wed, 20 Jul 2022 11:04:29 +0800
-Message-Id: <20220720030436.79520-34-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
-References: <20220720030436.79520-1-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v14 24/42] virtio_ring: introduce virtqueue_resize()
+Date: Mon,  1 Aug 2022 14:38:44 +0800
+Message-Id: <20220801063902.129329-25-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
+References: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -25,48 +25,121 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: virtualization@lists.linux-foundation.org
 Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-Virtio MMIO support the new parameter sizes of find_vqs().
+Introduce virtqueue_resize() to implement the resize of vring.
+Based on these, the driver can dynamically adjust the size of the vring.
+For example: ethtool -G.
+
+virtqueue_resize() implements resize based on the vq reset function. In
+case of failure to allocate a new vring, it will give up resize and use
+the original vring.
+
+During this process, if the re-enable reset vq fails, the vq can no
+longer be used. Although the probability of this situation is not high.
+
+The parameter recycle is used to recycle the buffer that is no longer
+used.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/virtio/virtio_mmio.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/virtio/virtio_ring.c | 69 ++++++++++++++++++++++++++++++++++++
+ include/linux/virtio.h       |  3 ++
+ 2 files changed, 72 insertions(+)
 
-diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
-index 5e3ba3cc7fd0..c888fee18caf 100644
---- a/drivers/virtio/virtio_mmio.c
-+++ b/drivers/virtio/virtio_mmio.c
-@@ -360,7 +360,7 @@ static void vm_synchronize_cbs(struct virtio_device *vdev)
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index bea5a3448217..6447a09e2e38 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -2539,6 +2539,75 @@ struct virtqueue *vring_create_virtqueue(
+ }
+ EXPORT_SYMBOL_GPL(vring_create_virtqueue);
  
- static struct virtqueue *vm_setup_vq(struct virtio_device *vdev, unsigned int index,
- 				  void (*callback)(struct virtqueue *vq),
--				  const char *name, bool ctx)
-+				  const char *name, u32 size, bool ctx)
- {
- 	struct virtio_mmio_device *vm_dev = to_virtio_mmio_device(vdev);
- 	struct virtio_mmio_vq_info *info;
-@@ -395,8 +395,11 @@ static struct virtqueue *vm_setup_vq(struct virtio_device *vdev, unsigned int in
- 		goto error_new_virtqueue;
- 	}
- 
-+	if (!size || size > num)
-+		size = num;
++/**
++ * virtqueue_resize - resize the vring of vq
++ * @_vq: the struct virtqueue we're talking about.
++ * @num: new ring num
++ * @recycle: callback for recycle the useless buffer
++ *
++ * When it is really necessary to create a new vring, it will set the current vq
++ * into the reset state. Then call the passed callback to recycle the buffer
++ * that is no longer used. Only after the new vring is successfully created, the
++ * old vring will be released.
++ *
++ * Caller must ensure we don't call this with other virtqueue operations
++ * at the same time (except where noted).
++ *
++ * Returns zero or a negative error.
++ * 0: success.
++ * -ENOMEM: Failed to allocate a new ring, fall back to the original ring size.
++ *  vq can still work normally
++ * -EBUSY: Failed to sync with device, vq may not work properly
++ * -ENOENT: Transport or device not supported
++ * -E2BIG/-EINVAL: num error
++ * -EPERM: Operation not permitted
++ *
++ */
++int virtqueue_resize(struct virtqueue *_vq, u32 num,
++		     void (*recycle)(struct virtqueue *vq, void *buf))
++{
++	struct vring_virtqueue *vq = to_vvq(_vq);
++	struct virtio_device *vdev = vq->vq.vdev;
++	void *buf;
++	int err;
 +
- 	/* Create the vring */
--	vq = vring_create_virtqueue(index, num, VIRTIO_MMIO_VRING_ALIGN, vdev,
-+	vq = vring_create_virtqueue(index, size, VIRTIO_MMIO_VRING_ALIGN, vdev,
- 				 true, true, ctx, vm_notify, callback, name);
- 	if (!vq) {
- 		err = -ENOMEM;
-@@ -497,6 +500,7 @@ static int vm_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
- 		}
++	if (!vq->we_own_ring)
++		return -EPERM;
++
++	if (num > vq->vq.num_max)
++		return -E2BIG;
++
++	if (!num)
++		return -EINVAL;
++
++	if ((vq->packed_ring ? vq->packed.vring.num : vq->split.vring.num) == num)
++		return 0;
++
++	if (!vdev->config->disable_vq_and_reset)
++		return -ENOENT;
++
++	if (!vdev->config->enable_vq_after_reset)
++		return -ENOENT;
++
++	err = vdev->config->disable_vq_and_reset(_vq);
++	if (err)
++		return err;
++
++	while ((buf = virtqueue_detach_unused_buf(_vq)) != NULL)
++		recycle(_vq, buf);
++
++	if (vq->packed_ring)
++		err = virtqueue_resize_packed(_vq, num);
++	else
++		err = virtqueue_resize_split(_vq, num);
++
++	if (vdev->config->enable_vq_after_reset(_vq))
++		return -EBUSY;
++
++	return err;
++}
++EXPORT_SYMBOL_GPL(virtqueue_resize);
++
+ /* Only available for split ring */
+ struct virtqueue *vring_new_virtqueue(unsigned int index,
+ 				      unsigned int num,
+diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+index 129bde7521e3..62e31bca5602 100644
+--- a/include/linux/virtio.h
++++ b/include/linux/virtio.h
+@@ -91,6 +91,9 @@ dma_addr_t virtqueue_get_desc_addr(struct virtqueue *vq);
+ dma_addr_t virtqueue_get_avail_addr(struct virtqueue *vq);
+ dma_addr_t virtqueue_get_used_addr(struct virtqueue *vq);
  
- 		vqs[i] = vm_setup_vq(vdev, queue_idx++, callbacks[i], names[i],
-+				     sizes ? sizes[i] : 0,
- 				     ctx ? ctx[i] : false);
- 		if (IS_ERR(vqs[i])) {
- 			vm_del_vqs(vdev);
++int virtqueue_resize(struct virtqueue *vq, u32 num,
++		     void (*recycle)(struct virtqueue *vq, void *buf));
++
+ /**
+  * virtio_device - representation of a device using virtio
+  * @index: unique position on the virtio bus
 -- 
 2.31.0
 
