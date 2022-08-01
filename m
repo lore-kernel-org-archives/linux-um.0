@@ -1,116 +1,125 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Thu, 14 Jul 2022 09:49:15 +0200
-From: Andrea Righi <andrea.righi@canonical.com>
-Subject: [PATCH v2][RESEND] x86/entry: build thunk_$(BITS) only if
- CONFIG_PREEMPTION=y
-Message-ID: <Ys/Ke7EWjcX+ZlXO@arighi-desktop>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1oIP6J-0030OU-S8
+	for linux-um@lists.infradead.org; Mon, 01 Aug 2022 06:40:30 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v14 41/42] virtio_net: support tx queue resize
+Date: Mon,  1 Aug 2022 14:39:01 +0800
+Message-Id: <20220801063902.129329-42-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
+References: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-To: Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Thadeu Lima de Souza Cascardo <cascardo@canonical.com>, x86@kernel.org, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: virtualization@lists.linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-With CONFIG_PREEMPTION disabled, arch/x86/entry/thunk_$(BITS).o becomes
-an empty object file.
+This patch implements the resize function of the tx queues.
+Based on this function, it is possible to modify the ring num of the
+queue.
 
-With some old versions of binutils (i.e., 2.35.90.20210113-1ubuntu1) the
-GNU assembler doesn't generate a symbol table for empty object files and
-objtool fails with the following error when a valid symbol table cannot
-be found:
-
-  arch/x86/entry/thunk_64.o: warning: objtool: missing symbol table
-
-To prevent this from happening, build thunk_$(BITS).o only if
-CONFIG_PREEMPTION is enabled.
-
-BugLink: https://bugs.launchpad.net/bugs/1911359
-Fixes: 320100a5ffe5 ("x86/entry: Remove the TRACE_IRQS cruft")
-Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- arch/x86/entry/Makefile   | 3 ++-
- arch/x86/entry/thunk_32.S | 2 --
- arch/x86/entry/thunk_64.S | 4 ----
- arch/x86/um/Makefile      | 3 ++-
- 4 files changed, 4 insertions(+), 8 deletions(-)
+ drivers/net/virtio_net.c | 47 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 47 insertions(+)
 
-ChangeLog (v1 -> v2):
- - rebased to the latest kernel
- - do not break UML build
-
-diff --git a/arch/x86/entry/Makefile b/arch/x86/entry/Makefile
-index eeadbd7d92cc..ca2fe186994b 100644
---- a/arch/x86/entry/Makefile
-+++ b/arch/x86/entry/Makefile
-@@ -11,12 +11,13 @@ CFLAGS_REMOVE_common.o		= $(CC_FLAGS_FTRACE)
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 1115a8b59a08..d1e6940b46d8 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -135,6 +135,9 @@ struct send_queue {
+ 	struct virtnet_sq_stats stats;
  
- CFLAGS_common.o			+= -fno-stack-protector
+ 	struct napi_struct napi;
++
++	/* Record whether sq is in reset state. */
++	bool reset;
+ };
  
--obj-y				:= entry.o entry_$(BITS).o thunk_$(BITS).o syscall_$(BITS).o
-+obj-y				:= entry.o entry_$(BITS).o syscall_$(BITS).o
- obj-y				+= common.o
+ /* Internal representation of a receive virtqueue */
+@@ -279,6 +282,7 @@ struct padded_vnet_hdr {
+ };
  
- obj-y				+= vdso/
- obj-y				+= vsyscall/
+ static void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *buf);
++static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf);
  
-+obj-$(CONFIG_PREEMPTION)	+= thunk_$(BITS).o
- obj-$(CONFIG_IA32_EMULATION)	+= entry_64_compat.o syscall_32.o
- obj-$(CONFIG_X86_X32_ABI)	+= syscall_x32.o
+ static bool is_xdp_frame(void *ptr)
+ {
+@@ -1603,6 +1607,11 @@ static void virtnet_poll_cleantx(struct receive_queue *rq)
+ 		return;
  
-diff --git a/arch/x86/entry/thunk_32.S b/arch/x86/entry/thunk_32.S
-index 7591bab060f7..ff6e7003da97 100644
---- a/arch/x86/entry/thunk_32.S
-+++ b/arch/x86/entry/thunk_32.S
-@@ -29,10 +29,8 @@ SYM_CODE_START_NOALIGN(\name)
- SYM_CODE_END(\name)
- 	.endm
+ 	if (__netif_tx_trylock(txq)) {
++		if (sq->reset) {
++			__netif_tx_unlock(txq);
++			return;
++		}
++
+ 		do {
+ 			virtqueue_disable_cb(sq->vq);
+ 			free_old_xmit_skbs(sq, true);
+@@ -1868,6 +1877,44 @@ static int virtnet_rx_resize(struct virtnet_info *vi,
+ 	return err;
+ }
  
--#ifdef CONFIG_PREEMPTION
- 	THUNK preempt_schedule_thunk, preempt_schedule
- 	THUNK preempt_schedule_notrace_thunk, preempt_schedule_notrace
- 	EXPORT_SYMBOL(preempt_schedule_thunk)
- 	EXPORT_SYMBOL(preempt_schedule_notrace_thunk)
--#endif
- 
-diff --git a/arch/x86/entry/thunk_64.S b/arch/x86/entry/thunk_64.S
-index 505b488fcc65..f38b07d2768b 100644
---- a/arch/x86/entry/thunk_64.S
-+++ b/arch/x86/entry/thunk_64.S
-@@ -31,14 +31,11 @@ SYM_FUNC_END(\name)
- 	_ASM_NOKPROBE(\name)
- 	.endm
- 
--#ifdef CONFIG_PREEMPTION
- 	THUNK preempt_schedule_thunk, preempt_schedule
- 	THUNK preempt_schedule_notrace_thunk, preempt_schedule_notrace
- 	EXPORT_SYMBOL(preempt_schedule_thunk)
- 	EXPORT_SYMBOL(preempt_schedule_notrace_thunk)
--#endif
- 
--#ifdef CONFIG_PREEMPTION
- SYM_CODE_START_LOCAL_NOALIGN(__thunk_restore)
- 	popq %r11
- 	popq %r10
-@@ -53,4 +50,3 @@ SYM_CODE_START_LOCAL_NOALIGN(__thunk_restore)
- 	RET
- 	_ASM_NOKPROBE(__thunk_restore)
- SYM_CODE_END(__thunk_restore)
--#endif
-diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
-index ba5789c35809..a8cde4e8ab11 100644
---- a/arch/x86/um/Makefile
-+++ b/arch/x86/um/Makefile
-@@ -28,7 +28,8 @@ else
- 
- obj-y += syscalls_64.o vdso/
- 
--subarch-y = ../lib/csum-partial_64.o ../lib/memcpy_64.o ../entry/thunk_64.o
-+subarch-y = ../lib/csum-partial_64.o ../lib/memcpy_64.o
-+subarch-$(CONFIG_PREEMPTION) += ../entry/thunk_64.o
- 
- endif
- 
++static int virtnet_tx_resize(struct virtnet_info *vi,
++			     struct send_queue *sq, u32 ring_num)
++{
++	struct netdev_queue *txq;
++	int err, qindex;
++
++	qindex = sq - vi->sq;
++
++	virtnet_napi_tx_disable(&sq->napi);
++
++	txq = netdev_get_tx_queue(vi->dev, qindex);
++
++	/* 1. wait all ximt complete
++	 * 2. fix the race of netif_stop_subqueue() vs netif_start_subqueue()
++	 */
++	__netif_tx_lock_bh(txq);
++
++	/* Prevent rx poll from accessing sq. */
++	sq->reset = true;
++
++	/* Prevent the upper layer from trying to send packets. */
++	netif_stop_subqueue(vi->dev, qindex);
++
++	__netif_tx_unlock_bh(txq);
++
++	err = virtqueue_resize(sq->vq, ring_num, virtnet_sq_free_unused_buf);
++	if (err)
++		netdev_err(vi->dev, "resize tx fail: tx queue index: %d err: %d\n", qindex, err);
++
++	__netif_tx_lock_bh(txq);
++	sq->reset = false;
++	netif_tx_wake_queue(txq);
++	__netif_tx_unlock_bh(txq);
++
++	virtnet_napi_tx_enable(vi, sq->vq, &sq->napi);
++	return err;
++}
++
+ /*
+  * Send command via the control virtqueue and check status.  Commands
+  * supported by the hypervisor, as indicated by feature bits, should
 -- 
-2.34.1
+2.31.0
 
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
 
