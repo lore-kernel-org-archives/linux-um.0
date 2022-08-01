@@ -1,12 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from [43.155.65.254] (helo=smtpbg.qq.com)
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oEFUB-009yAO-0B
-	for linux-um@lists.infradead.org; Wed, 20 Jul 2022 19:36:00 +0000
-From: Xin Gao <gaoxin@cdjrlc.com>
-Subject: [PATCH] kernel:do not initialise statics to 0.
-Date: Thu, 21 Jul 2022 03:33:23 +0800
-Message-Id: <20220720193323.7848-1-gaoxin@cdjrlc.com>
+	id 1oIP5l-002ziP-Op
+	for linux-um@lists.infradead.org; Mon, 01 Aug 2022 06:39:55 +0000
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v14 22/42] virtio_ring: packed: introduce virtqueue_reinit_packed()
+Date: Mon,  1 Aug 2022 14:38:42 +0800
+Message-Id: <20220801063902.129329-23-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
+References: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -20,31 +22,46 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, Xin Gao <gaoxin@cdjrlc.com>
+To: virtualization@lists.linux-foundation.org
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-do not initialise statics to 0.
+Introduce a function to initialize vq without allocating new ring,
+desc_state, desc_extra.
 
-Signed-off-by: Xin Gao <gaoxin@cdjrlc.com>
+Subsequent patches will call this function after reset vq to
+reinitialize vq.
+
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- arch/um/drivers/mconsole_kern.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/virtio/virtio_ring.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconsole_kern.c
-index 8ca67a692683..de40e7822fa6 100644
---- a/arch/um/drivers/mconsole_kern.c
-+++ b/arch/um/drivers/mconsole_kern.c
-@@ -283,7 +283,7 @@ struct unplugged_pages {
- };
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 93d2a950f536..db06fb0ddfd6 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -1957,6 +1957,18 @@ static void virtqueue_vring_attach_packed(struct vring_virtqueue *vq,
+ 	vq->free_head = 0;
+ }
  
- static DEFINE_MUTEX(plug_mem_mutex);
--static unsigned long long unplugged_pages_count = 0;
-+static unsigned long long unplugged_pages_count;
- static LIST_HEAD(unplugged_pages);
- static int unplug_index = UNPLUGGED_PER_PAGE;
- 
++static void virtqueue_reinit_packed(struct vring_virtqueue *vq)
++{
++	memset(vq->packed.vring.device, 0, vq->packed.event_size_in_bytes);
++	memset(vq->packed.vring.driver, 0, vq->packed.event_size_in_bytes);
++
++	/* we need to reset the desc.flags. For more, see is_used_desc_packed() */
++	memset(vq->packed.vring.desc, 0, vq->packed.ring_size_in_bytes);
++
++	virtqueue_init(vq, vq->packed.vring.num);
++	virtqueue_vring_init_packed(&vq->packed, !!vq->vq.callback);
++}
++
+ static struct virtqueue *vring_create_virtqueue_packed(
+ 	unsigned int index,
+ 	unsigned int num,
 -- 
-2.30.2
+2.31.0
 
 
 _______________________________________________
