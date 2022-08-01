@@ -1,12 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131])
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oIP5m-002zjp-Ig
-	for linux-um@lists.infradead.org; Mon, 01 Aug 2022 06:39:57 +0000
+	id 1oIP6J-0030LP-3z
+	for linux-um@lists.infradead.org; Mon, 01 Aug 2022 06:40:30 +0000
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v14 23/42] virtio_ring: packed: introduce virtqueue_resize_packed()
-Date: Mon,  1 Aug 2022 14:38:43 +0800
-Message-Id: <20220801063902.129329-24-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v14 40/42] virtio_net: support rx queue resize
+Date: Mon,  1 Aug 2022 14:39:00 +0800
+Message-Id: <20220801063902.129329-41-xuanzhuo@linux.alibaba.com>
 In-Reply-To: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
 References: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
@@ -25,62 +25,56 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: virtualization@lists.linux-foundation.org
 Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-virtio ring packed supports resize.
-
-Only after the new vring is successfully allocated based on the new num,
-we will release the old vring. In any case, an error is returned,
-indicating that the vring still points to the old vring.
-
-In the case of an error, re-initialize(by virtqueue_reinit_packed()) the
-virtqueue to ensure that the vring can be used.
+This patch implements the resize function of the rx queues.
+Based on this function, it is possible to modify the ring num of the
+queue.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/virtio/virtio_ring.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ drivers/net/virtio_net.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index db06fb0ddfd6..bea5a3448217 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -2036,6 +2036,36 @@ static struct virtqueue *vring_create_virtqueue_packed(
- 	return NULL;
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index fe4dc43c05a1..1115a8b59a08 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -278,6 +278,8 @@ struct padded_vnet_hdr {
+ 	char padding[12];
+ };
+ 
++static void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *buf);
++
+ static bool is_xdp_frame(void *ptr)
+ {
+ 	return (unsigned long)ptr & VIRTIO_XDP_FLAG;
+@@ -1846,6 +1848,26 @@ static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	return NETDEV_TX_OK;
  }
  
-+static int virtqueue_resize_packed(struct virtqueue *_vq, u32 num)
++static int virtnet_rx_resize(struct virtnet_info *vi,
++			     struct receive_queue *rq, u32 ring_num)
 +{
-+	struct vring_virtqueue_packed vring_packed = {};
-+	struct vring_virtqueue *vq = to_vvq(_vq);
-+	struct virtio_device *vdev = _vq->vdev;
-+	int err;
++	int err, qindex;
 +
-+	if (vring_alloc_queue_packed(&vring_packed, vdev, num))
-+		goto err_ring;
++	qindex = rq - vi->rq;
 +
-+	err = vring_alloc_state_extra_packed(&vring_packed);
++	napi_disable(&rq->napi);
++
++	err = virtqueue_resize(rq->vq, ring_num, virtnet_rq_free_unused_buf);
 +	if (err)
-+		goto err_state_extra;
++		netdev_err(vi->dev, "resize rx fail: rx queue index: %d err: %d\n", qindex, err);
 +
-+	vring_free(&vq->vq);
++	if (!try_fill_recv(vi, rq, GFP_KERNEL))
++		schedule_delayed_work(&vi->refill, 0);
 +
-+	virtqueue_vring_init_packed(&vring_packed, !!vq->vq.callback);
-+
-+	virtqueue_init(vq, vring_packed.vring.num);
-+	virtqueue_vring_attach_packed(vq, &vring_packed);
-+
-+	return 0;
-+
-+err_state_extra:
-+	vring_free_packed(&vring_packed, vdev);
-+err_ring:
-+	virtqueue_reinit_packed(vq);
-+	return -ENOMEM;
++	virtnet_napi_enable(rq->vq, &rq->napi);
++	return err;
 +}
 +
- 
  /*
-  * Generic functions and exported symbols.
+  * Send command via the control virtqueue and check status.  Commands
+  * supported by the hypervisor, as indicated by feature bits, should
 -- 
 2.31.0
 
