@@ -1,12 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56])
+Received: from out199-3.us.a.mail.aliyun.com ([47.90.199.3])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1o6RdM-009w6y-Iu
-	for linux-um@lists.infradead.org; Wed, 29 Jun 2022 06:57:11 +0000
+	id 1oIP5N-002yyG-Uk
+	for linux-um@lists.infradead.org; Mon, 01 Aug 2022 06:39:34 +0000
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v11 00/40] virtio pci support VIRTIO_F_RING_RESET
-Date: Wed, 29 Jun 2022 14:56:16 +0800
-Message-Id: <20220629065656.54420-1-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v14 06/42] virtio_ring: introduce virtqueue_init()
+Date: Mon,  1 Aug 2022 14:38:26 +0800
+Message-Id: <20220801063902.129329-7-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
+References: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -23,146 +25,113 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: virtualization@lists.linux-foundation.org
 Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-The virtio spec already supports the virtio queue reset function. This patch set
-is to add this function to the kernel. The relevant virtio spec information is
-here:
+Separate the logic of virtqueue initialization. These variables should
+be reset during reset.
 
-    https://github.com/oasis-tcs/virtio-spec/issues/124
-    https://github.com/oasis-tcs/virtio-spec/issues/139
+This logic can be called independently when implementing resize/reset
+later.
 
-Also regarding MMIO support for queue reset, I plan to support it after this
-patch is passed.
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
+---
+ drivers/virtio/virtio_ring.c | 38 +++++++++++++++++++++---------------
+ 1 file changed, 22 insertions(+), 16 deletions(-)
 
-This patch set implements the refactoring of vring. Finally, the
-virtuque_resize() interface is provided based on the reset function of the
-transport layer.
-
-Test environment:
-    Host: 4.19.91
-    Qemu: QEMU emulator version 6.2.50 (with vq reset support)
-    Test Cmd:  ethtool -G eth1 rx $1 tx $2; ethtool -g eth1
-
-    The default is split mode, modify Qemu virtio-net to add PACKED feature to test
-    packed mode.
-
-Qemu code:
-    https://github.com/fengidri/qemu/compare/89f3bfa3265554d1d591ee4d7f1197b6e3397e84...master
-
-In order to simplify the review of this patch set, the function of reusing
-the old buffers after resize will be introduced in subsequent patch sets.
-
-Please review. Thanks.
-
-v11:
-  1. struct virtio_pci_common_cfg to virtio_pci_modern.h
-  2. conflict resolution
-
-v10:
-  1. on top of the harden vring IRQ
-  2. factor out split and packed from struct vring_virtqueue
-  3. some suggest from @Jason Wang
-
-v9:
-  1. Provide a virtqueue_resize() interface directly
-  2. A patch set including vring resize, virtio pci reset, virtio-net resize
-  3. No more separate structs
-
-v8:
-  1. Provide a virtqueue_reset() interface directly
-  2. Split the two patch sets, this is the first part
-  3. Add independent allocation helper for allocating state, extra
-
-v7:
-  1. fix #6 subject typo
-  2. fix #6 ring_size_in_bytes is uninitialized
-  3. check by: make W=12
-
-v6:
-  1. virtio_pci: use synchronize_irq(irq) to sync the irq callbacks
-  2. Introduce virtqueue_reset_vring() to implement the reset of vring during
-     the reset process. May use the old vring if num of the vq not change.
-  3. find_vqs() support sizes to special the max size of each vq
-
-v5:
-  1. add virtio-net support set_ringparam
-
-v4:
-  1. just the code of virtio, without virtio-net
-  2. Performing reset on a queue is divided into these steps:
-    1. reset_vq: reset one vq
-    2. recycle the buffer from vq by virtqueue_detach_unused_buf()
-    3. release the ring of the vq by vring_release_virtqueue()
-    4. enable_reset_vq: re-enable the reset queue
-  3. Simplify the parameters of enable_reset_vq()
-  4. add container structures for virtio_pci_common_cfg
-
-v3:
-  1. keep vq, irq unreleased
-
-Xuan Zhuo (40):
-  virtio: add helper virtqueue_get_vring_max_size()
-  virtio: struct virtio_config_ops add callbacks for queue_reset
-  virtio_ring: update the document of the virtqueue_detach_unused_buf
-    for queue reset
-  virtio_ring: extract the logic of freeing vring
-  virtio_ring: split vring_virtqueue
-  virtio_ring: introduce virtqueue_init()
-  virtio_ring: split: introduce vring_free_split()
-  virtio_ring: split: extract the logic of alloc queue
-  virtio_ring: split: extract the logic of alloc state and extra
-  virtio_ring: split: extract the logic of attach vring
-  virtio_ring: split: extract the logic of vring init
-  virtio_ring: split: introduce virtqueue_reinit_split()
-  virtio_ring: split: reserve vring_align, may_reduce_num
-  virtio_ring: split: introduce virtqueue_resize_split()
-  virtio_ring: packed: introduce vring_free_packed
-  virtio_ring: packed: extract the logic of alloc queue
-  virtio_ring: packed: extract the logic of alloc state and extra
-  virtio_ring: packed: extract the logic of attach vring
-  virtio_ring: packed: extract the logic of vring init
-  virtio_ring: packed: introduce virtqueue_reinit_packed()
-  virtio_ring: packed: introduce virtqueue_resize_packed()
-  virtio_ring: introduce virtqueue_resize()
-  virtio_pci: move struct virtio_pci_common_cfg to virtio_pci_modern.h
-  virtio_pci: struct virtio_pci_common_cfg add queue_notify_data
-  virtio: allow to unbreak/break virtqueue individually
-  virtio: queue_reset: add VIRTIO_F_RING_RESET
-  virtio_pci: struct virtio_pci_common_cfg add queue_reset
-  virtio_pci: introduce helper to get/set queue reset
-  virtio_pci: extract the logic of active vq for modern pci
-  virtio_pci: support VIRTIO_F_RING_RESET
-  virtio: find_vqs() add arg sizes
-  virtio_pci: support the arg sizes of find_vqs()
-  virtio_mmio: support the arg sizes of find_vqs()
-  virtio: add helper virtio_find_vqs_ctx_size()
-  virtio_net: set the default max ring size by find_vqs()
-  virtio_net: get ringparam by virtqueue_get_vring_max_size()
-  virtio_net: split free_unused_bufs()
-  virtio_net: support rx queue resize
-  virtio_net: support tx queue resize
-  virtio_net: support set_ringparam
-
- arch/um/drivers/virtio_uml.c             |   3 +-
- drivers/net/virtio_net.c                 | 209 +++++-
- drivers/platform/mellanox/mlxbf-tmfifo.c |   3 +
- drivers/remoteproc/remoteproc_virtio.c   |   3 +
- drivers/s390/virtio/virtio_ccw.c         |   4 +
- drivers/virtio/virtio_mmio.c             |  11 +-
- drivers/virtio/virtio_pci_common.c       |  32 +-
- drivers/virtio/virtio_pci_common.h       |   3 +-
- drivers/virtio/virtio_pci_legacy.c       |   8 +-
- drivers/virtio/virtio_pci_modern.c       | 161 ++++-
- drivers/virtio/virtio_pci_modern_dev.c   |  35 +
- drivers/virtio/virtio_ring.c             | 785 +++++++++++++++++------
- drivers/virtio/virtio_vdpa.c             |   3 +
- include/linux/virtio.h                   |   9 +
- include/linux/virtio_config.h            |  38 +-
- include/linux/virtio_pci_modern.h        |  30 +
- include/uapi/linux/virtio_config.h       |   7 +-
- include/uapi/linux/virtio_pci.h          |  28 +-
- 18 files changed, 1068 insertions(+), 304 deletions(-)
-
---
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 1bc5794e9739..a63ef2d99955 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -368,6 +368,24 @@ static int vring_mapping_error(const struct vring_virtqueue *vq,
+ 	return dma_mapping_error(vring_dma_dev(vq), addr);
+ }
+ 
++static void virtqueue_init(struct vring_virtqueue *vq, u32 num)
++{
++	vq->vq.num_free = num;
++
++	if (vq->packed_ring)
++		vq->last_used_idx = 0 | (1 << VRING_PACKED_EVENT_F_WRAP_CTR);
++	else
++		vq->last_used_idx = 0;
++
++	vq->event_triggered = false;
++	vq->num_added = 0;
++
++#ifdef DEBUG
++	vq->in_use = false;
++	vq->last_add_time_valid = false;
++#endif
++}
++
+ 
+ /*
+  * Split ring specific functions - *_split().
+@@ -1706,7 +1724,6 @@ static struct virtqueue *vring_create_virtqueue_packed(
+ 	vq->vq.callback = callback;
+ 	vq->vq.vdev = vdev;
+ 	vq->vq.name = name;
+-	vq->vq.num_free = num;
+ 	vq->vq.index = index;
+ 	vq->we_own_ring = true;
+ 	vq->notify = notify;
+@@ -1716,15 +1733,8 @@ static struct virtqueue *vring_create_virtqueue_packed(
+ #else
+ 	vq->broken = false;
+ #endif
+-	vq->last_used_idx = 0 | (1 << VRING_PACKED_EVENT_F_WRAP_CTR);
+-	vq->event_triggered = false;
+-	vq->num_added = 0;
+ 	vq->packed_ring = true;
+ 	vq->use_dma_api = vring_use_dma_api(vdev);
+-#ifdef DEBUG
+-	vq->in_use = false;
+-	vq->last_add_time_valid = false;
+-#endif
+ 
+ 	vq->indirect = virtio_has_feature(vdev, VIRTIO_RING_F_INDIRECT_DESC) &&
+ 		!context;
+@@ -1773,6 +1783,8 @@ static struct virtqueue *vring_create_virtqueue_packed(
+ 			cpu_to_le16(vq->packed.event_flags_shadow);
+ 	}
+ 
++	virtqueue_init(vq, num);
++
+ 	spin_lock(&vdev->vqs_list_lock);
+ 	list_add_tail(&vq->vq.list, &vdev->vqs);
+ 	spin_unlock(&vdev->vqs_list_lock);
+@@ -2205,7 +2217,6 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
+ 	vq->vq.callback = callback;
+ 	vq->vq.vdev = vdev;
+ 	vq->vq.name = name;
+-	vq->vq.num_free = vring.num;
+ 	vq->vq.index = index;
+ 	vq->we_own_ring = false;
+ 	vq->notify = notify;
+@@ -2215,14 +2226,7 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
+ #else
+ 	vq->broken = false;
+ #endif
+-	vq->last_used_idx = 0;
+-	vq->event_triggered = false;
+-	vq->num_added = 0;
+ 	vq->use_dma_api = vring_use_dma_api(vdev);
+-#ifdef DEBUG
+-	vq->in_use = false;
+-	vq->last_add_time_valid = false;
+-#endif
+ 
+ 	vq->indirect = virtio_has_feature(vdev, VIRTIO_RING_F_INDIRECT_DESC) &&
+ 		!context;
+@@ -2260,6 +2264,8 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
+ 	memset(vq->split.desc_state, 0, vring.num *
+ 			sizeof(struct vring_desc_state_split));
+ 
++	virtqueue_init(vq, vring.num);
++
+ 	spin_lock(&vdev->vqs_list_lock);
+ 	list_add_tail(&vq->vq.list, &vdev->vqs);
+ 	spin_unlock(&vdev->vqs_list_lock);
+-- 
 2.31.0
 
 
