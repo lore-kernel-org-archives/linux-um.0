@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131])
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oGEtx-009KgF-56
-	for linux-um@lists.infradead.org; Tue, 26 Jul 2022 07:22:47 +0000
+	id 1oIP6F-0030Hg-TR
+	for linux-um@lists.infradead.org; Mon, 01 Aug 2022 06:40:25 +0000
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v13 06/42] virtio_ring: introduce virtqueue_init()
-Date: Tue, 26 Jul 2022 15:21:49 +0800
-Message-Id: <20220726072225.19884-7-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
-References: <20220726072225.19884-1-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v14 39/42] virtio_net: split free_unused_bufs()
+Date: Mon,  1 Aug 2022 14:38:59 +0800
+Message-Id: <20220801063902.129329-40-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
+References: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -25,151 +25,81 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: virtualization@lists.linux-foundation.org
 Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-Separate the logic of virtqueue initialization. This logic is irrelevant
-to ring layout.
+This patch separates two functions for freeing sq buf and rq buf from
+free_unused_bufs().
 
-This logic can be called independently when implementing resize/reset
-later.
+When supporting the enable/disable tx/rq queue in the future, it is
+necessary to support separate recovery of a sq buf or a rq buf.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/virtio/virtio_ring.c | 63 ++++++++++++++++++------------------
- 1 file changed, 32 insertions(+), 31 deletions(-)
+ drivers/net/virtio_net.c | 41 ++++++++++++++++++++++++----------------
+ 1 file changed, 25 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 1bc5794e9739..0ad35eca0d39 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -368,6 +368,34 @@ static int vring_mapping_error(const struct vring_virtqueue *vq,
- 	return dma_mapping_error(vring_dma_dev(vq), addr);
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 981ef8ea4d58..fe4dc43c05a1 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -3151,6 +3151,27 @@ static void free_receive_page_frags(struct virtnet_info *vi)
+ 			put_page(vi->rq[i].alloc_frag.page);
  }
  
-+static void virtqueue_init(struct vring_virtqueue *vq, u32 num)
++static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf)
 +{
-+	struct virtio_device *vdev;
-+
-+	vdev = vq->vq.vdev;
-+
-+	vq->vq.num_free = num;
-+	if (vq->packed_ring)
-+		vq->last_used_idx = 0 | (1 << VRING_PACKED_EVENT_F_WRAP_CTR);
++	if (!is_xdp_frame(buf))
++		dev_kfree_skb(buf);
 +	else
-+		vq->last_used_idx = 0;
-+	vq->event_triggered = false;
-+	vq->num_added = 0;
-+	vq->use_dma_api = vring_use_dma_api(vdev);
-+#ifdef DEBUG
-+	vq->in_use = false;
-+	vq->last_add_time_valid = false;
-+#endif
-+
-+	vq->event = virtio_has_feature(vdev, VIRTIO_RING_F_EVENT_IDX);
-+
-+	if (virtio_has_feature(vdev, VIRTIO_F_ORDER_PLATFORM))
-+		vq->weak_barriers = false;
-+
-+	/* Put everything in free lists. */
-+	vq->free_head = 0;
++		xdp_return_frame(ptr_to_xdp(buf));
 +}
 +
++static void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *buf)
++{
++	struct virtnet_info *vi = vq->vdev->priv;
++	int i = vq2rxq(vq);
++
++	if (vi->mergeable_rx_bufs)
++		put_page(virt_to_head_page(buf));
++	else if (vi->big_packets)
++		give_pages(&vi->rq[i], buf);
++	else
++		put_page(virt_to_head_page(buf));
++}
++
+ static void free_unused_bufs(struct virtnet_info *vi)
+ {
+ 	void *buf;
+@@ -3158,26 +3179,14 @@ static void free_unused_bufs(struct virtnet_info *vi)
  
- /*
-  * Split ring specific functions - *_split().
-@@ -1706,7 +1734,6 @@ static struct virtqueue *vring_create_virtqueue_packed(
- 	vq->vq.callback = callback;
- 	vq->vq.vdev = vdev;
- 	vq->vq.name = name;
--	vq->vq.num_free = num;
- 	vq->vq.index = index;
- 	vq->we_own_ring = true;
- 	vq->notify = notify;
-@@ -1716,22 +1743,10 @@ static struct virtqueue *vring_create_virtqueue_packed(
- #else
- 	vq->broken = false;
- #endif
--	vq->last_used_idx = 0 | (1 << VRING_PACKED_EVENT_F_WRAP_CTR);
--	vq->event_triggered = false;
--	vq->num_added = 0;
- 	vq->packed_ring = true;
--	vq->use_dma_api = vring_use_dma_api(vdev);
--#ifdef DEBUG
--	vq->in_use = false;
--	vq->last_add_time_valid = false;
--#endif
- 
- 	vq->indirect = virtio_has_feature(vdev, VIRTIO_RING_F_INDIRECT_DESC) &&
- 		!context;
--	vq->event = virtio_has_feature(vdev, VIRTIO_RING_F_EVENT_IDX);
--
--	if (virtio_has_feature(vdev, VIRTIO_F_ORDER_PLATFORM))
--		vq->weak_barriers = false;
- 
- 	vq->packed.ring_dma_addr = ring_dma_addr;
- 	vq->packed.driver_event_dma_addr = driver_event_dma_addr;
-@@ -1759,9 +1774,6 @@ static struct virtqueue *vring_create_virtqueue_packed(
- 	memset(vq->packed.desc_state, 0,
- 		num * sizeof(struct vring_desc_state_packed));
- 
--	/* Put everything in free lists. */
--	vq->free_head = 0;
--
- 	vq->packed.desc_extra = vring_alloc_desc_extra(num);
- 	if (!vq->packed.desc_extra)
- 		goto err_desc_extra;
-@@ -1773,6 +1785,8 @@ static struct virtqueue *vring_create_virtqueue_packed(
- 			cpu_to_le16(vq->packed.event_flags_shadow);
+ 	for (i = 0; i < vi->max_queue_pairs; i++) {
+ 		struct virtqueue *vq = vi->sq[i].vq;
+-		while ((buf = virtqueue_detach_unused_buf(vq)) != NULL) {
+-			if (!is_xdp_frame(buf))
+-				dev_kfree_skb(buf);
+-			else
+-				xdp_return_frame(ptr_to_xdp(buf));
+-		}
++		while ((buf = virtqueue_detach_unused_buf(vq)) != NULL)
++			virtnet_sq_free_unused_buf(vq, buf);
  	}
  
-+	virtqueue_init(vq, num);
-+
- 	spin_lock(&vdev->vqs_list_lock);
- 	list_add_tail(&vq->vq.list, &vdev->vqs);
- 	spin_unlock(&vdev->vqs_list_lock);
-@@ -2205,7 +2219,6 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
- 	vq->vq.callback = callback;
- 	vq->vq.vdev = vdev;
- 	vq->vq.name = name;
--	vq->vq.num_free = vring.num;
- 	vq->vq.index = index;
- 	vq->we_own_ring = false;
- 	vq->notify = notify;
-@@ -2215,21 +2228,9 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
- #else
- 	vq->broken = false;
- #endif
--	vq->last_used_idx = 0;
--	vq->event_triggered = false;
--	vq->num_added = 0;
--	vq->use_dma_api = vring_use_dma_api(vdev);
--#ifdef DEBUG
--	vq->in_use = false;
--	vq->last_add_time_valid = false;
--#endif
- 
- 	vq->indirect = virtio_has_feature(vdev, VIRTIO_RING_F_INDIRECT_DESC) &&
- 		!context;
--	vq->event = virtio_has_feature(vdev, VIRTIO_RING_F_EVENT_IDX);
+ 	for (i = 0; i < vi->max_queue_pairs; i++) {
+ 		struct virtqueue *vq = vi->rq[i].vq;
 -
--	if (virtio_has_feature(vdev, VIRTIO_F_ORDER_PLATFORM))
--		vq->weak_barriers = false;
+-		while ((buf = virtqueue_detach_unused_buf(vq)) != NULL) {
+-			if (vi->mergeable_rx_bufs) {
+-				put_page(virt_to_head_page(buf));
+-			} else if (vi->big_packets) {
+-				give_pages(&vi->rq[i], buf);
+-			} else {
+-				put_page(virt_to_head_page(buf));
+-			}
+-		}
++		while ((buf = virtqueue_detach_unused_buf(vq)) != NULL)
++			virtnet_rq_free_unused_buf(vq, buf);
+ 	}
+ }
  
- 	vq->split.queue_dma_addr = 0;
- 	vq->split.queue_size_in_bytes = 0;
-@@ -2255,11 +2256,11 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
- 	if (!vq->split.desc_extra)
- 		goto err_extra;
- 
--	/* Put everything in free lists. */
--	vq->free_head = 0;
- 	memset(vq->split.desc_state, 0, vring.num *
- 			sizeof(struct vring_desc_state_split));
- 
-+	virtqueue_init(vq, vq->split.vring.num);
-+
- 	spin_lock(&vdev->vqs_list_lock);
- 	list_add_tail(&vq->vq.list, &vdev->vqs);
- 	spin_unlock(&vdev->vqs_list_lock);
 -- 
 2.31.0
 
