@@ -1,12 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131])
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oIP57-002ynL-If
-	for linux-um@lists.infradead.org; Mon, 01 Aug 2022 06:39:15 +0000
+	id 1oIP5S-002zFQ-H7
+	for linux-um@lists.infradead.org; Mon, 01 Aug 2022 06:39:36 +0000
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v14 02/42] virtio: struct virtio_config_ops add callbacks for queue_reset
-Date: Mon,  1 Aug 2022 14:38:22 +0800
-Message-Id: <20220801063902.129329-3-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v14 11/42] virtio_ring: split: extract the logic of alloc state and extra
+Date: Mon,  1 Aug 2022 14:38:31 +0800
+Message-Id: <20220801063902.129329-12-xuanzhuo@linux.alibaba.com>
 In-Reply-To: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
 References: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
@@ -25,53 +25,109 @@ Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
 To: virtualization@lists.linux-foundation.org
 Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
 
-reset can be divided into the following four steps (example):
- 1. transport: notify the device to reset the queue
- 2. vring:     recycle the buffer submitted
- 3. vring:     reset/resize the vring (may re-alloc)
- 4. transport: mmap vring to device, and enable the queue
-
-In order to support queue reset, add two callbacks in struct
-virtio_config_ops to implement steps 1 and 4.
+Separate the logic of creating desc_state, desc_extra, and subsequent
+patches will call it independently.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- include/linux/virtio_config.h | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/virtio/virtio_ring.c | 52 +++++++++++++++++++++++++-----------
+ 1 file changed, 36 insertions(+), 16 deletions(-)
 
-diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
-index b47c2e7ed0ee..36ec7be1f480 100644
---- a/include/linux/virtio_config.h
-+++ b/include/linux/virtio_config.h
-@@ -78,6 +78,18 @@ struct virtio_shm_region {
-  * @set_vq_affinity: set the affinity for a virtqueue (optional).
-  * @get_vq_affinity: get the affinity for a virtqueue (optional).
-  * @get_shm_region: get a shared memory region based on the index.
-+ * @disable_vq_and_reset: reset a queue individually (optional).
-+ *	vq: the virtqueue
-+ *	Returns 0 on success or error status
-+ *	disable_vq_and_reset will guarantee that the callbacks are disabled and
-+ *	synchronized.
-+ *	Except for the callback, the caller should guarantee that the vring is
-+ *	not accessed by any functions of virtqueue.
-+ * @enable_vq_after_reset: enable a reset queue
-+ *	vq: the virtqueue
-+ *	Returns 0 on success or error status
-+ *	If disable_vq_and_reset is set, then enable_vq_after_reset must also be
-+ *	set.
-  */
- typedef void vq_callback_t(struct virtqueue *);
- struct virtio_config_ops {
-@@ -104,6 +116,8 @@ struct virtio_config_ops {
- 			int index);
- 	bool (*get_shm_region)(struct virtio_device *vdev,
- 			       struct virtio_shm_region *region, u8 id);
-+	int (*disable_vq_and_reset)(struct virtqueue *vq);
-+	int (*enable_vq_after_reset)(struct virtqueue *vq);
- };
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 5597a9b9e518..03fc656b1f40 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -212,6 +212,7 @@ static struct virtqueue *__vring_new_virtqueue(unsigned int index,
+ 					       bool (*notify)(struct virtqueue *),
+ 					       void (*callback)(struct virtqueue *),
+ 					       const char *name);
++static struct vring_desc_extra *vring_alloc_desc_extra(unsigned int num);
  
- /* If driver didn't advertise the feature, it will never appear. */
+ /*
+  * Helpers.
+@@ -937,6 +938,32 @@ static void *virtqueue_detach_unused_buf_split(struct virtqueue *_vq)
+ 	return NULL;
+ }
+ 
++static int vring_alloc_state_extra_split(struct vring_virtqueue_split *vring_split)
++{
++	struct vring_desc_state_split *state;
++	struct vring_desc_extra *extra;
++	u32 num = vring_split->vring.num;
++
++	state = kmalloc_array(num, sizeof(struct vring_desc_state_split), GFP_KERNEL);
++	if (!state)
++		goto err_state;
++
++	extra = vring_alloc_desc_extra(num);
++	if (!extra)
++		goto err_extra;
++
++	memset(state, 0, num * sizeof(struct vring_desc_state_split));
++
++	vring_split->desc_state = state;
++	vring_split->desc_extra = extra;
++	return 0;
++
++err_extra:
++	kfree(state);
++err_state:
++	return -ENOMEM;
++}
++
+ static void vring_free_split(struct vring_virtqueue_split *vring_split,
+ 			     struct virtio_device *vdev)
+ {
+@@ -2240,6 +2267,7 @@ static struct virtqueue *__vring_new_virtqueue(unsigned int index,
+ 					       const char *name)
+ {
+ 	struct vring_virtqueue *vq;
++	int err;
+ 
+ 	if (virtio_has_feature(vdev, VIRTIO_F_RING_PACKED))
+ 		return NULL;
+@@ -2285,19 +2313,17 @@ static struct virtqueue *__vring_new_virtqueue(unsigned int index,
+ 					vq->split.avail_flags_shadow);
+ 	}
+ 
+-	vq->split.desc_state = kmalloc_array(vring_split->vring.num,
+-			sizeof(struct vring_desc_state_split), GFP_KERNEL);
+-	if (!vq->split.desc_state)
+-		goto err_state;
+-
+-	vq->split.desc_extra = vring_alloc_desc_extra(vring_split->vring.num);
+-	if (!vq->split.desc_extra)
+-		goto err_extra;
++	err = vring_alloc_state_extra_split(vring_split);
++	if (err) {
++		kfree(vq);
++		return NULL;
++	}
+ 
+ 	/* Put everything in free lists. */
+ 	vq->free_head = 0;
+-	memset(vq->split.desc_state, 0, vring_split->vring.num *
+-			sizeof(struct vring_desc_state_split));
++
++	vq->split.desc_state = vring_split->desc_state;
++	vq->split.desc_extra = vring_split->desc_extra;
+ 
+ 	virtqueue_init(vq, vring_split->vring.num);
+ 
+@@ -2305,12 +2331,6 @@ static struct virtqueue *__vring_new_virtqueue(unsigned int index,
+ 	list_add_tail(&vq->vq.list, &vdev->vqs);
+ 	spin_unlock(&vdev->vqs_list_lock);
+ 	return &vq->vq;
+-
+-err_extra:
+-	kfree(vq->split.desc_state);
+-err_state:
+-	kfree(vq);
+-	return NULL;
+ }
+ 
+ struct virtqueue *vring_create_virtqueue(
 -- 
 2.31.0
 
