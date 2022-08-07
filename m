@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Message-ID: <54cd8c11428db4c419edf2267db00ca10da7a178.camel@sipsolutions.net>
+Message-ID: <5bbc4296-4858-d01c-0c76-09d942377ddf@igalia.com>
+Date: Sun, 7 Aug 2022 12:40:17 -0300
+MIME-Version: 1.0
 Subject: Re: [PATCH v2 06/13] um: Improve panic notifiers consistency and
  ordering
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Tue, 09 Aug 2022 20:09:23 +0200
-In-Reply-To: <5bbc4296-4858-d01c-0c76-09d942377ddf@igalia.com>
+Content-Language: en-US
 References: <20220719195325.402745-1-gpiccoli@igalia.com>
-	 <20220719195325.402745-7-gpiccoli@igalia.com>
-	 <5bbc4296-4858-d01c-0c76-09d942377ddf@igalia.com>
-MIME-Version: 1.0
+ <20220719195325.402745-7-gpiccoli@igalia.com>
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <20220719195325.402745-7-gpiccoli@igalia.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -21,47 +21,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "Guilherme G. Piccoli" <gpiccoli@igalia.com>, kexec@lists.infradead.org, linux-um@lists.infradead.org
+To: kexec@lists.infradead.org, linux-um@lists.infradead.org, Johannes Berg <johannes@sipsolutions.net>
 Cc: pmladek@suse.com, bhe@redhat.com, akpm@linux-foundation.org, linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org, netdev@vger.kernel.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Richard Weinberger <richard@nod.at>
 
-On Sun, 2022-08-07 at 12:40 -0300, Guilherme G. Piccoli wrote:
-> On 19/07/2022 16:53, Guilherme G. Piccoli wrote:
-> > Currently the panic notifiers from user mode linux don't follow
-> > the convention for most of the other notifiers present in the
-> > kernel (indentation, priority setting, numeric return).
-> > More important, the priorities could be improved, since it's a
-> > special case (userspace), hence we could run the notifiers earlier;
-> > user mode linux shouldn't care much with other panic notifiers but
-> > the ordering among the mconsole and arch notifier is important,
-> > given that the arch one effectively triggers a core dump.
-> > 
-> > Fix that by running the mconsole notifier as the first panic
-> > notifier, followed by the architecture one (that coredumps).
-> > 
-> > Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-> > Cc: Johannes Berg <johannes@sipsolutions.net>
-> > Cc: Richard Weinberger <richard@nod.at>
-> > Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
-> > 
-> > ---
-> > 
-> > V2:
-> > - Kept the notifier header to avoid implicit usage - thanks
-> > Johannes for the suggestion!
-> > 
-> >  arch/um/drivers/mconsole_kern.c | 7 +++----
-> >  arch/um/kernel/um_arch.c        | 8 ++++----
-> >  2 files changed, 7 insertions(+), 8 deletions(-)
-> > [...]
+On 19/07/2022 16:53, Guilherme G. Piccoli wrote:
+> Currently the panic notifiers from user mode linux don't follow
+> the convention for most of the other notifiers present in the
+> kernel (indentation, priority setting, numeric return).
+> More important, the priorities could be improved, since it's a
+> special case (userspace), hence we could run the notifiers earlier;
+> user mode linux shouldn't care much with other panic notifiers but
+> the ordering among the mconsole and arch notifier is important,
+> given that the arch one effectively triggers a core dump.
 > 
-> Hi Johannes, do you feel this one is good now, after your last review?
-> Thanks in advance,
+> Fix that by running the mconsole notifier as the first panic
+> notifier, followed by the architecture one (that coredumps).
 > 
+> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> Cc: Johannes Berg <johannes@sipsolutions.net>
+> Cc: Richard Weinberger <richard@nod.at>
+> Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
+> 
+> ---
+> 
+> V2:
+> - Kept the notifier header to avoid implicit usage - thanks
+> Johannes for the suggestion!
+> 
+>  arch/um/drivers/mconsole_kern.c | 7 +++----
+>  arch/um/kernel/um_arch.c        | 8 ++++----
+>  2 files changed, 7 insertions(+), 8 deletions(-)
+> [...]
 
-Yeah, no objections, my previous comment was just a minor almost style
-issue anyway.
+Hi Johannes, do you feel this one is good now, after your last review?
+Thanks in advance,
 
-johannes
+
+Guilherme
 
 _______________________________________________
 linux-um mailing list
