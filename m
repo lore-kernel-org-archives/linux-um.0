@@ -1,15 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oNFdy-007SO7-H6
-	for linux-um@lists.infradead.org; Sun, 14 Aug 2022 15:35:16 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.10 21/31] um: add "noreboot" command line option for PANIC_TIMEOUT=-1 setups
-Date: Sun, 14 Aug 2022 11:34:21 -0400
-Message-Id: <20220814153431.2379231-21-sashal@kernel.org>
-In-Reply-To: <20220814153431.2379231-1-sashal@kernel.org>
-References: <20220814153431.2379231-1-sashal@kernel.org>
+Message-ID: <ea98a267-6159-7ab8-703e-1ef314e1e0d8@igalia.com>
+Date: Tue, 9 Aug 2022 16:45:38 -0300
 MIME-Version: 1.0
+Subject: Re: [PATCH v2 06/13] um: Improve panic notifiers consistency and
+ ordering
+Content-Language: en-US
+References: <20220719195325.402745-1-gpiccoli@igalia.com>
+ <20220719195325.402745-7-gpiccoli@igalia.com>
+ <5bbc4296-4858-d01c-0c76-09d942377ddf@igalia.com>
+ <54cd8c11428db4c419edf2267db00ca10da7a178.camel@sipsolutions.net>
+ <15188cf2-a510-2725-0c6e-3c4b264714c5@igalia.com>
+ <f366b3d50aa8b713b0a921e4507bae4779a7cd02.camel@sipsolutions.net>
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+In-Reply-To: <f366b3d50aa8b713b0a921e4507bae4779a7cd02.camel@sipsolutions.net>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,67 +25,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, linux@roeck-us.net, linux-um@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>, kexec@lists.infradead.org, linux-um@lists.infradead.org
+Cc: pmladek@suse.com, bhe@redhat.com, akpm@linux-foundation.org, linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org, netdev@vger.kernel.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Richard Weinberger <richard@nod.at>
 
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+On 09/08/2022 16:08, Johannes Berg wrote:
+> [...]
+>> Perfect, thank you! Let me take the opportunity to ask you something I'm
+>> asking all the maintainers involved here - do you prefer taking the
+>> patch through your tree, or to get it landed with the whole series, at
+>> once, from some maintainer?
+>>
+> Hm. I don't think we'd really care, but so far I was thinking - since
+> it's a series - it'd go through some appropriate tree all together. If
+> you think it should be applied separately, let us know.
+> 
+> johannes
 
-[ Upstream commit dda520d07b95072a0b63f6c52a8eb566d08ea897 ]
+For me, it would be easier if maintainers pick the patches into their
+-next/-fixes trees when they think the patch is good enough, but some
+maintainers complained that prefer the whole series approach (and some
+others are already taking the patches into their trees).
 
-QEMU has a -no-reboot option, which halts instead of reboots when the
-guest asks to reboot. This is invaluable when used with
-CONFIG_PANIC_TIMEOUT=-1 (and panic_on_warn), because it allows panics
-and warnings to be caught immediately in CI. Implement this in UML too,
-by way of a basic setup param.
+Given that, in case you do have a linux-um tree and feel OK with that, I
+appreciate if you merge it, so I can remove the patch in next iteration.
+If you prefer the whole series approach, OK as well, your call =)
 
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/um/os-Linux/skas/process.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+Thanks,
 
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 94a7c4125ebc..eecde73b2e78 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -5,6 +5,7 @@
-  */
- 
- #include <stdlib.h>
-+#include <stdbool.h>
- #include <unistd.h>
- #include <sched.h>
- #include <errno.h>
-@@ -644,10 +645,24 @@ void halt_skas(void)
- 	UML_LONGJMP(&initial_jmpbuf, INIT_JMP_HALT);
- }
- 
-+static bool noreboot;
-+
-+static int __init noreboot_cmd_param(char *str, int *add)
-+{
-+	noreboot = true;
-+	return 0;
-+}
-+
-+__uml_setup("noreboot", noreboot_cmd_param,
-+"noreboot\n"
-+"    Rather than rebooting, exit always, akin to QEMU's -no-reboot option.\n"
-+"    This is useful if you're using CONFIG_PANIC_TIMEOUT in order to catch\n"
-+"    crashes in CI\n");
-+
- void reboot_skas(void)
- {
- 	block_signals_trace();
--	UML_LONGJMP(&initial_jmpbuf, INIT_JMP_REBOOT);
-+	UML_LONGJMP(&initial_jmpbuf, noreboot ? INIT_JMP_HALT : INIT_JMP_REBOOT);
- }
- 
- void __switch_mm(struct mm_id *mm_idp)
--- 
-2.35.1
 
+Guilherme
 
 _______________________________________________
 linux-um mailing list
