@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oNFeg-007SlS-9r
-	for linux-um@lists.infradead.org; Sun, 14 Aug 2022 15:35:59 +0000
+	id 1oNFb1-007QDa-AI
+	for linux-um@lists.infradead.org; Sun, 14 Aug 2022 15:32:13 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 14/21] um: add "noreboot" command line option for PANIC_TIMEOUT=-1 setups
-Date: Sun, 14 Aug 2022 11:35:24 -0400
-Message-Id: <20220814153531.2379705-14-sashal@kernel.org>
-In-Reply-To: <20220814153531.2379705-1-sashal@kernel.org>
-References: <20220814153531.2379705-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.18 38/56] um: add "noreboot" command line option for PANIC_TIMEOUT=-1 setups
+Date: Sun, 14 Aug 2022 11:30:08 -0400
+Message-Id: <20220814153026.2377377-38-sashal@kernel.org>
+In-Reply-To: <20220814153026.2377377-1-sashal@kernel.org>
+References: <20220814153026.2377377-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -43,7 +43,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 16 insertions(+), 1 deletion(-)
 
 diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 4fb877b99dde..0571cc0a30fc 100644
+index 87d3129e7362..0df2ebcc97c0 100644
 --- a/arch/um/os-Linux/skas/process.c
 +++ b/arch/um/os-Linux/skas/process.c
 @@ -5,6 +5,7 @@
@@ -54,7 +54,7 @@ index 4fb877b99dde..0571cc0a30fc 100644
  #include <unistd.h>
  #include <sched.h>
  #include <errno.h>
-@@ -641,10 +642,24 @@ void halt_skas(void)
+@@ -707,10 +708,24 @@ void halt_skas(void)
  	UML_LONGJMP(&initial_jmpbuf, INIT_JMP_HALT);
  }
  
