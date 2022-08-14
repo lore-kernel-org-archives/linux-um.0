@@ -1,16 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-ej1-x62d.google.com ([2a00:1450:4864:20::62d])
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oKPqV-00H10M-5l
-	for linux-um@lists.infradead.org; Sat, 06 Aug 2022 19:52:28 +0000
-Received: by mail-ej1-x62d.google.com with SMTP id a7so10291442ejp.2
-        for <linux-um@lists.infradead.org>; Sat, 06 Aug 2022 12:52:25 -0700 (PDT)
-From: Christian Lamparter <chunkeey@gmail.com>
-Subject: [PATCH v1 2/2] um: increase default virtual physical memory to 64 MiB
-Date: Sat,  6 Aug 2022 21:52:23 +0200
-Message-Id: <d7936f11aded13f03871c0d6502d611d6a1e2dc5.1659815468.git.chunkeey@gmail.com>
-In-Reply-To: <53b5c5f559cc95fc676cb4cc9e5a8d9f0cb8f58c.1659815468.git.chunkeey@gmail.com>
-References: <53b5c5f559cc95fc676cb4cc9e5a8d9f0cb8f58c.1659815468.git.chunkeey@gmail.com>
+	id 1oNFcn-007Rbk-7i
+	for linux-um@lists.infradead.org; Sun, 14 Aug 2022 15:34:02 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 31/46] um: add "noreboot" command line option for PANIC_TIMEOUT=-1 setups
+Date: Sun, 14 Aug 2022 11:32:32 -0400
+Message-Id: <20220814153247.2378312-31-sashal@kernel.org>
+In-Reply-To: <20220814153247.2378312-1-sashal@kernel.org>
+References: <20220814153247.2378312-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -24,41 +22,66 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, linux@roeck-us.net, linux-um@lists.infradead.org
 
-The current 32 MiB of RAM causes OOMs to appear shortly after
-booting in a minimal OpenWrt 22.03 configuration with a
-5.10.134 kernel.
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
 
-Of course, passing a "mem=64M" (from the --help text) parameter
-works too, but it produces the following (info) message:
+[ Upstream commit dda520d07b95072a0b63f6c52a8eb566d08ea897 ]
 
-| [    0.000000] Unknown kernel command line parameters "mem=64M", will be passed to user space.
+QEMU has a -no-reboot option, which halts instead of reboots when the
+guest asks to reboot. This is invaluable when used with
+CONFIG_PANIC_TIMEOUT=-1 (and panic_on_warn), because it allows panics
+and warnings to be caught immediately in CI. Implement this in UML too,
+by way of a basic setup param.
 
-That's why, I think it would be nicer, if this is working out
-of the box again :).
-
-Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/kernel/um_arch.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/um/os-Linux/skas/process.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 9c6991f42131..58aee676989c 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -131,7 +131,7 @@ static int have_root __initdata;
- static int have_console __initdata;
+diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+index 87d3129e7362..0df2ebcc97c0 100644
+--- a/arch/um/os-Linux/skas/process.c
++++ b/arch/um/os-Linux/skas/process.c
+@@ -5,6 +5,7 @@
+  */
  
- /* Set in uml_mem_setup and modified in linux_main */
--long long physmem_size = 32 * 1024 * 1024;
-+long long physmem_size = 64 * 1024 * 1024;
- EXPORT_SYMBOL(physmem_size);
+ #include <stdlib.h>
++#include <stdbool.h>
+ #include <unistd.h>
+ #include <sched.h>
+ #include <errno.h>
+@@ -707,10 +708,24 @@ void halt_skas(void)
+ 	UML_LONGJMP(&initial_jmpbuf, INIT_JMP_HALT);
+ }
  
- static const char *usage_string =
++static bool noreboot;
++
++static int __init noreboot_cmd_param(char *str, int *add)
++{
++	noreboot = true;
++	return 0;
++}
++
++__uml_setup("noreboot", noreboot_cmd_param,
++"noreboot\n"
++"    Rather than rebooting, exit always, akin to QEMU's -no-reboot option.\n"
++"    This is useful if you're using CONFIG_PANIC_TIMEOUT in order to catch\n"
++"    crashes in CI\n");
++
+ void reboot_skas(void)
+ {
+ 	block_signals_trace();
+-	UML_LONGJMP(&initial_jmpbuf, INIT_JMP_REBOOT);
++	UML_LONGJMP(&initial_jmpbuf, noreboot ? INIT_JMP_HALT : INIT_JMP_REBOOT);
+ }
+ 
+ void __switch_mm(struct mm_id *mm_idp)
 -- 
-2.36.1
+2.35.1
 
 
 _______________________________________________
