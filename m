@@ -1,10 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Subject: [PATCH V3 04/11] um: Improve panic notifiers consistency and ordering
-Date: Fri, 19 Aug 2022 19:17:24 -0300
-Message-Id: <20220819221731.480795-5-gpiccoli@igalia.com>
-In-Reply-To: <20220819221731.480795-1-gpiccoli@igalia.com>
-References: <20220819221731.480795-1-gpiccoli@igalia.com>
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1oNFeg-007SlS-9r
+	for linux-um@lists.infradead.org; Sun, 14 Aug 2022 15:35:59 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 14/21] um: add "noreboot" command line option for PANIC_TIMEOUT=-1 setups
+Date: Sun, 14 Aug 2022 11:35:24 -0400
+Message-Id: <20220814153531.2379705-14-sashal@kernel.org>
+In-Reply-To: <20220814153531.2379705-1-sashal@kernel.org>
+References: <20220814153531.2379705-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -18,82 +22,66 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org, netdev@vger.kernel.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, xuqiang36@huawei.com, "Guilherme G. Piccoli" <gpiccoli@igalia.com>, linux-um@lists.infradead.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Richard Weinberger <richard@nod.at>
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, linux@roeck-us.net, linux-um@lists.infradead.org
 
-Currently the panic notifiers from user mode linux don't follow
-the convention for most of the other notifiers present in the
-kernel (indentation, priority setting, numeric return).
-More important, the priorities could be improved, since it's a
-special case (userspace), hence we could run the notifiers earlier;
-user mode linux shouldn't care much with other panic notifiers but
-the ordering among the mconsole and arch notifier is important,
-given that the arch one effectively triggers a core dump.
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
 
-Fix that by running the mconsole notifier as the first panic
-notifier, followed by the architecture one (that coredumps).
+[ Upstream commit dda520d07b95072a0b63f6c52a8eb566d08ea897 ]
 
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: Richard Weinberger <richard@nod.at>
-Signed-off-by: Guilherme G. Piccoli <gpiccoli@igalia.com>
+QEMU has a -no-reboot option, which halts instead of reboots when the
+guest asks to reboot. This is invaluable when used with
+CONFIG_PANIC_TIMEOUT=-1 (and panic_on_warn), because it allows panics
+and warnings to be caught immediately in CI. Implement this in UML too,
+by way of a basic setup param.
 
-V3:
-- No changes.
-
-V2:
-- Kept the notifier header to avoid implicit usage - thanks
-Johannes for the suggestion!
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/drivers/mconsole_kern.c | 7 +++----
- arch/um/kernel/um_arch.c        | 8 ++++----
- 2 files changed, 7 insertions(+), 8 deletions(-)
+ arch/um/os-Linux/skas/process.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconsole_kern.c
-index 8ca67a692683..69af3ce8407a 100644
---- a/arch/um/drivers/mconsole_kern.c
-+++ b/arch/um/drivers/mconsole_kern.c
-@@ -846,13 +846,12 @@ static int notify_panic(struct notifier_block *self, unsigned long unused1,
+diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+index 4fb877b99dde..0571cc0a30fc 100644
+--- a/arch/um/os-Linux/skas/process.c
++++ b/arch/um/os-Linux/skas/process.c
+@@ -5,6 +5,7 @@
+  */
  
- 	mconsole_notify(notify_socket, MCONSOLE_PANIC, message,
- 			strlen(message) + 1);
--	return 0;
-+	return NOTIFY_DONE;
+ #include <stdlib.h>
++#include <stdbool.h>
+ #include <unistd.h>
+ #include <sched.h>
+ #include <errno.h>
+@@ -641,10 +642,24 @@ void halt_skas(void)
+ 	UML_LONGJMP(&initial_jmpbuf, INIT_JMP_HALT);
  }
  
- static struct notifier_block panic_exit_notifier = {
--	.notifier_call 		= notify_panic,
--	.next 			= NULL,
--	.priority 		= 1
-+	.notifier_call	= notify_panic,
-+	.priority	= INT_MAX, /* run as soon as possible */
- };
- 
- static int add_notifier(void)
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index e0de60e503b9..ae272878f692 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -247,13 +247,13 @@ static int panic_exit(struct notifier_block *self, unsigned long unused1,
- 	bust_spinlocks(0);
- 	uml_exitcode = 1;
- 	os_dump_core();
--	return 0;
++static bool noreboot;
 +
-+	return NOTIFY_DONE;
++static int __init noreboot_cmd_param(char *str, int *add)
++{
++	noreboot = true;
++	return 0;
++}
++
++__uml_setup("noreboot", noreboot_cmd_param,
++"noreboot\n"
++"    Rather than rebooting, exit always, akin to QEMU's -no-reboot option.\n"
++"    This is useful if you're using CONFIG_PANIC_TIMEOUT in order to catch\n"
++"    crashes in CI\n");
++
+ void reboot_skas(void)
+ {
+ 	block_signals_trace();
+-	UML_LONGJMP(&initial_jmpbuf, INIT_JMP_REBOOT);
++	UML_LONGJMP(&initial_jmpbuf, noreboot ? INIT_JMP_HALT : INIT_JMP_REBOOT);
  }
  
- static struct notifier_block panic_exit_notifier = {
--	.notifier_call 		= panic_exit,
--	.next 			= NULL,
--	.priority 		= 0
-+	.notifier_call	= panic_exit,
-+	.priority	= INT_MAX - 1, /* run as 2nd notifier, won't return */
- };
- 
- void uml_finishsetup(void)
+ void __switch_mm(struct mm_id *mm_idp)
 -- 
-2.37.2
+2.35.1
 
 
 _______________________________________________
