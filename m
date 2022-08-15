@@ -1,9 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH] treewide: defconfig: address renamed CONFIG_DEBUG_INFO=y
-Date: Thu, 11 Aug 2022 13:44:34 +0200
-Message-Id: <20220811114609.2097335-1-arnd@kernel.org>
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1oNi27-006FDF-7A
+	for linux-um@lists.infradead.org; Mon, 15 Aug 2022 21:54:05 +0000
+Received: by mail-wm1-f72.google.com with SMTP id c17-20020a7bc011000000b003a2bfaf8d3dso4077135wmb.0
+        for <linux-um@lists.infradead.org>; Mon, 15 Aug 2022 14:53:59 -0700 (PDT)
+Date: Mon, 15 Aug 2022 17:53:50 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Subject: [PATCH v2 5/5] virtio: Revert "virtio: find_vqs() add arg sizes"
+Message-ID: <20220815215251.154451-8-mst@redhat.com>
+References: <20220815215251.154451-1-mst@redhat.com>
 MIME-Version: 1.0
+In-Reply-To: <20220815215251.154451-1-mst@redhat.com>
+Content-Disposition: inline
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -16,550 +25,211 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@kernel.org>, Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Dinh Nguyen <dinguyen@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>
-Cc: linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-mips@vger.kernel.org, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
+To: linux-kernel@vger.kernel.org
+Cc: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, virtualization@lists.linux-foundation.org, netdev@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>, James Bottomley <James.Bottomley@hansenpartnership.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, Guenter Roeck <linux@roeck-us.net>, Greg KH <gregkh@linuxfoundation.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+This reverts commit a10fba0377145fccefea4dc4dd5915b7ed87e546: the
+proposed API isn't supported on all transports but no
+effort was made to address this.
 
-CONFIG_DEBUG_INFO is now implicitly selected if one picks one of the
-explicit options that could be DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT,
-DEBUG_INFO_DWARF4, DEBUG_INFO_DWARF5.
+It might not be hard to fix if we want to: maybe just
+rename size to size_hint and make sure legacy
+transports ignore the hint.
 
-This was actually not what I had in mind when I suggested making
-it a 'choice' statement, but it's too late to change again now,
-and the Kconfig logic is more sensible in the new form.
+But it's not sure what the benefit is in any case, so
+let's drop it.
 
-Change any defconfig file that had CONFIG_DEBUG_INFO enabled
-but did not pick DWARF4 or DWARF5 explicitly to now pick the toolchain
-default.
-
-Fixes: f9b3cd245784 ("Kconfig.debug: make DEBUG_INFO selectable from a choice")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: a10fba037714 ("virtio: find_vqs() add arg sizes")
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 ---
- arch/alpha/configs/defconfig                | 2 +-
- arch/arc/configs/tb10x_defconfig            | 2 +-
- arch/microblaze/configs/mmu_defconfig       | 2 +-
- arch/mips/configs/bcm47xx_defconfig         | 2 +-
- arch/mips/configs/cavium_octeon_defconfig   | 2 +-
- arch/mips/configs/ci20_defconfig            | 2 +-
- arch/mips/configs/cu1000-neo_defconfig      | 2 +-
- arch/mips/configs/cu1830-neo_defconfig      | 2 +-
- arch/mips/configs/generic_defconfig         | 2 +-
- arch/mips/configs/omega2p_defconfig         | 2 +-
- arch/mips/configs/qi_lb60_defconfig         | 2 +-
- arch/mips/configs/vocore2_defconfig         | 2 +-
- arch/nios2/configs/10m50_defconfig          | 2 +-
- arch/nios2/configs/3c120_defconfig          | 2 +-
- arch/sh/configs/apsh4a3a_defconfig          | 2 +-
- arch/sh/configs/apsh4ad0a_defconfig         | 2 +-
- arch/sh/configs/edosk7760_defconfig         | 2 +-
- arch/sh/configs/magicpanelr2_defconfig      | 2 +-
- arch/sh/configs/polaris_defconfig           | 2 +-
- arch/sh/configs/r7780mp_defconfig           | 2 +-
- arch/sh/configs/r7785rp_defconfig           | 2 +-
- arch/sh/configs/rsk7203_defconfig           | 2 +-
- arch/sh/configs/sdk7780_defconfig           | 2 +-
- arch/sh/configs/se7712_defconfig            | 2 +-
- arch/sh/configs/se7721_defconfig            | 2 +-
- arch/sh/configs/sh2007_defconfig            | 2 +-
- arch/sh/configs/sh7757lcr_defconfig         | 2 +-
- arch/sh/configs/sh7785lcr_32bit_defconfig   | 2 +-
- arch/sh/configs/urquell_defconfig           | 2 +-
- arch/um/configs/i386_defconfig              | 2 +-
- arch/um/configs/x86_64_defconfig            | 2 +-
- arch/xtensa/configs/audio_kc705_defconfig   | 2 +-
- arch/xtensa/configs/cadence_csp_defconfig   | 2 +-
- arch/xtensa/configs/generic_kc705_defconfig | 2 +-
- arch/xtensa/configs/nommu_kc705_defconfig   | 2 +-
- arch/xtensa/configs/smp_lx200_defconfig     | 2 +-
- arch/xtensa/configs/virt_defconfig          | 2 +-
- arch/xtensa/configs/xip_kc705_defconfig     | 2 +-
- 38 files changed, 38 insertions(+), 38 deletions(-)
+ arch/um/drivers/virtio_uml.c             |  2 +-
+ drivers/platform/mellanox/mlxbf-tmfifo.c |  1 -
+ drivers/remoteproc/remoteproc_virtio.c   |  1 -
+ drivers/s390/virtio/virtio_ccw.c         |  1 -
+ drivers/virtio/virtio_mmio.c             |  1 -
+ drivers/virtio/virtio_pci_common.c       |  2 +-
+ drivers/virtio/virtio_pci_common.h       |  2 +-
+ drivers/virtio/virtio_pci_modern.c       |  7 ++-----
+ drivers/virtio/virtio_vdpa.c             |  1 -
+ include/linux/virtio_config.h            | 14 +++++---------
+ 10 files changed, 10 insertions(+), 22 deletions(-)
 
-diff --git a/arch/alpha/configs/defconfig b/arch/alpha/configs/defconfig
-index 7e9336930880..6a39fe8ce9e5 100644
---- a/arch/alpha/configs/defconfig
-+++ b/arch/alpha/configs/defconfig
-@@ -65,7 +65,7 @@ CONFIG_NFSD=m
- CONFIG_NLS_CODEPAGE_437=y
- CONFIG_MAGIC_SYSRQ=y
- CONFIG_DEBUG_KERNEL=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_ALPHA_LEGACY_START_ADDRESS=y
- CONFIG_MATHEMU=y
- CONFIG_CRYPTO_HMAC=y
-diff --git a/arch/arc/configs/tb10x_defconfig b/arch/arc/configs/tb10x_defconfig
-index a12656ec0072..c3a35592872a 100644
---- a/arch/arc/configs/tb10x_defconfig
-+++ b/arch/arc/configs/tb10x_defconfig
-@@ -91,7 +91,7 @@ CONFIG_TMPFS=y
- CONFIG_CONFIGFS_FS=y
- # CONFIG_MISC_FILESYSTEMS is not set
- # CONFIG_NETWORK_FILESYSTEMS is not set
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_STRIP_ASM_SYMS=y
- CONFIG_DEBUG_FS=y
- CONFIG_HEADERS_INSTALL=y
-diff --git a/arch/microblaze/configs/mmu_defconfig b/arch/microblaze/configs/mmu_defconfig
-index 51337fffb947..8150daf04a76 100644
---- a/arch/microblaze/configs/mmu_defconfig
-+++ b/arch/microblaze/configs/mmu_defconfig
-@@ -83,7 +83,7 @@ CONFIG_CIFS=y
- CONFIG_CIFS_STATS2=y
- CONFIG_ENCRYPTED_KEYS=y
- CONFIG_DMA_CMA=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_KGDB=y
- CONFIG_KGDB_TESTS=y
- CONFIG_KGDB_KDB=y
-diff --git a/arch/mips/configs/bcm47xx_defconfig b/arch/mips/configs/bcm47xx_defconfig
-index 91ce75edbfb4..22ffde722bb9 100644
---- a/arch/mips/configs/bcm47xx_defconfig
-+++ b/arch/mips/configs/bcm47xx_defconfig
-@@ -72,7 +72,7 @@ CONFIG_LEDS_TRIGGER_TIMER=y
- CONFIG_LEDS_TRIGGER_DEFAULT_ON=y
- CONFIG_CRC32_SARWATE=y
- CONFIG_PRINTK_TIME=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_DEBUG_INFO_REDUCED=y
- CONFIG_STRIP_ASM_SYMS=y
- CONFIG_DEBUG_FS=y
-diff --git a/arch/mips/configs/cavium_octeon_defconfig b/arch/mips/configs/cavium_octeon_defconfig
-index b6695367aa33..0578b725dd88 100644
---- a/arch/mips/configs/cavium_octeon_defconfig
-+++ b/arch/mips/configs/cavium_octeon_defconfig
-@@ -162,7 +162,7 @@ CONFIG_CRYPTO_SHA1_OCTEON=m
- CONFIG_CRYPTO_SHA256_OCTEON=m
- CONFIG_CRYPTO_SHA512_OCTEON=m
- CONFIG_CRYPTO_DES=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_DEBUG_FS=y
- CONFIG_MAGIC_SYSRQ=y
- # CONFIG_SCHED_DEBUG is not set
-diff --git a/arch/mips/configs/ci20_defconfig b/arch/mips/configs/ci20_defconfig
-index cc69b215854e..955b6ac581ab 100644
---- a/arch/mips/configs/ci20_defconfig
-+++ b/arch/mips/configs/ci20_defconfig
-@@ -199,7 +199,7 @@ CONFIG_NLS_UTF8=y
- CONFIG_DMA_CMA=y
- CONFIG_CMA_SIZE_MBYTES=32
- CONFIG_PRINTK_TIME=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_STRIP_ASM_SYMS=y
- CONFIG_MAGIC_SYSRQ=y
- CONFIG_DEBUG_FS=y
-diff --git a/arch/mips/configs/cu1000-neo_defconfig b/arch/mips/configs/cu1000-neo_defconfig
-index 5bd55eb32fe5..1cbc9302e1d1 100644
---- a/arch/mips/configs/cu1000-neo_defconfig
-+++ b/arch/mips/configs/cu1000-neo_defconfig
-@@ -113,7 +113,7 @@ CONFIG_PRINTK_TIME=y
- CONFIG_CONSOLE_LOGLEVEL_DEFAULT=15
- CONFIG_CONSOLE_LOGLEVEL_QUIET=15
- CONFIG_MESSAGE_LOGLEVEL_DEFAULT=7
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_STRIP_ASM_SYMS=y
- CONFIG_MAGIC_SYSRQ=y
- CONFIG_DEBUG_FS=y
-diff --git a/arch/mips/configs/cu1830-neo_defconfig b/arch/mips/configs/cu1830-neo_defconfig
-index cc69688962e8..a0f73f3cd6ce 100644
---- a/arch/mips/configs/cu1830-neo_defconfig
-+++ b/arch/mips/configs/cu1830-neo_defconfig
-@@ -116,7 +116,7 @@ CONFIG_PRINTK_TIME=y
- CONFIG_CONSOLE_LOGLEVEL_DEFAULT=15
- CONFIG_CONSOLE_LOGLEVEL_QUIET=15
- CONFIG_MESSAGE_LOGLEVEL_DEFAULT=7
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_STRIP_ASM_SYMS=y
- CONFIG_MAGIC_SYSRQ=y
- CONFIG_DEBUG_FS=y
-diff --git a/arch/mips/configs/generic_defconfig b/arch/mips/configs/generic_defconfig
-index 714169e411cf..bbc0d9b1c398 100644
---- a/arch/mips/configs/generic_defconfig
-+++ b/arch/mips/configs/generic_defconfig
-@@ -83,7 +83,7 @@ CONFIG_ROOT_NFS=y
- # CONFIG_XZ_DEC_ARMTHUMB is not set
- # CONFIG_XZ_DEC_SPARC is not set
- CONFIG_PRINTK_TIME=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_DEBUG_INFO_REDUCED=y
- CONFIG_DEBUG_FS=y
- # CONFIG_SCHED_DEBUG is not set
-diff --git a/arch/mips/configs/omega2p_defconfig b/arch/mips/configs/omega2p_defconfig
-index fc39ddf610a9..6a5cb2d6de6b 100644
---- a/arch/mips/configs/omega2p_defconfig
-+++ b/arch/mips/configs/omega2p_defconfig
-@@ -116,7 +116,7 @@ CONFIG_CRYPTO_LZO=y
- CONFIG_CRC16=y
- CONFIG_XZ_DEC=y
- CONFIG_PRINTK_TIME=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_STRIP_ASM_SYMS=y
- CONFIG_DEBUG_FS=y
- CONFIG_MAGIC_SYSRQ=y
-diff --git a/arch/mips/configs/qi_lb60_defconfig b/arch/mips/configs/qi_lb60_defconfig
-index b4448d0876d5..7e5d9741bd5d 100644
---- a/arch/mips/configs/qi_lb60_defconfig
-+++ b/arch/mips/configs/qi_lb60_defconfig
-@@ -166,7 +166,7 @@ CONFIG_NLS_UTF8=y
- CONFIG_FONTS=y
- CONFIG_FONT_SUN8x16=y
- CONFIG_PRINTK_TIME=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_STRIP_ASM_SYMS=y
- CONFIG_READABLE_ASM=y
- CONFIG_KGDB=y
-diff --git a/arch/mips/configs/vocore2_defconfig b/arch/mips/configs/vocore2_defconfig
-index a14f8ea5c386..302cab9bd7bd 100644
---- a/arch/mips/configs/vocore2_defconfig
-+++ b/arch/mips/configs/vocore2_defconfig
-@@ -116,7 +116,7 @@ CONFIG_CRYPTO_LZO=y
- CONFIG_CRC16=y
- CONFIG_XZ_DEC=y
- CONFIG_PRINTK_TIME=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_STRIP_ASM_SYMS=y
- CONFIG_DEBUG_FS=y
- CONFIG_MAGIC_SYSRQ=y
-diff --git a/arch/nios2/configs/10m50_defconfig b/arch/nios2/configs/10m50_defconfig
-index a7967b4cfb6e..91c3fce4dc7f 100644
---- a/arch/nios2/configs/10m50_defconfig
-+++ b/arch/nios2/configs/10m50_defconfig
-@@ -74,4 +74,4 @@ CONFIG_NFS_FS=y
- CONFIG_NFS_V3_ACL=y
- CONFIG_ROOT_NFS=y
- CONFIG_SUNRPC_DEBUG=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
-diff --git a/arch/nios2/configs/3c120_defconfig b/arch/nios2/configs/3c120_defconfig
-index 423a0c40a162..c42ad7e162a3 100644
---- a/arch/nios2/configs/3c120_defconfig
-+++ b/arch/nios2/configs/3c120_defconfig
-@@ -71,4 +71,4 @@ CONFIG_NFS_FS=y
- CONFIG_NFS_V3_ACL=y
- CONFIG_ROOT_NFS=y
- CONFIG_SUNRPC_DEBUG=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
-diff --git a/arch/sh/configs/apsh4a3a_defconfig b/arch/sh/configs/apsh4a3a_defconfig
-index 530498f18990..99931a13a74d 100644
---- a/arch/sh/configs/apsh4a3a_defconfig
-+++ b/arch/sh/configs/apsh4a3a_defconfig
-@@ -85,7 +85,7 @@ CONFIG_DEBUG_FS=y
- CONFIG_DEBUG_KERNEL=y
- # CONFIG_DEBUG_PREEMPT is not set
- # CONFIG_DEBUG_BUGVERBOSE is not set
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- # CONFIG_FTRACE is not set
- # CONFIG_CRYPTO_ANSI_CPRNG is not set
- # CONFIG_CRYPTO_HW is not set
-diff --git a/arch/sh/configs/apsh4ad0a_defconfig b/arch/sh/configs/apsh4ad0a_defconfig
-index 6abd9bd70106..d9fb124bf015 100644
---- a/arch/sh/configs/apsh4ad0a_defconfig
-+++ b/arch/sh/configs/apsh4ad0a_defconfig
-@@ -116,7 +116,7 @@ CONFIG_MAGIC_SYSRQ=y
- CONFIG_DEBUG_KERNEL=y
- CONFIG_DEBUG_SHIRQ=y
- CONFIG_DETECT_HUNG_TASK=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_DEBUG_VM=y
- CONFIG_DWARF_UNWINDER=y
- # CONFIG_CRYPTO_ANSI_CPRNG is not set
-diff --git a/arch/sh/configs/edosk7760_defconfig b/arch/sh/configs/edosk7760_defconfig
-index d77f54e906fd..f427a95bcd21 100644
---- a/arch/sh/configs/edosk7760_defconfig
-+++ b/arch/sh/configs/edosk7760_defconfig
-@@ -107,7 +107,7 @@ CONFIG_DEBUG_SHIRQ=y
- CONFIG_DETECT_HUNG_TASK=y
- # CONFIG_SCHED_DEBUG is not set
- CONFIG_TIMER_STATS=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_CRYPTO=y
- CONFIG_CRYPTO_MD5=y
- CONFIG_CRYPTO_DES=y
-diff --git a/arch/sh/configs/magicpanelr2_defconfig b/arch/sh/configs/magicpanelr2_defconfig
-index 0989ed929540..ef1d98e35c91 100644
---- a/arch/sh/configs/magicpanelr2_defconfig
-+++ b/arch/sh/configs/magicpanelr2_defconfig
-@@ -84,7 +84,7 @@ CONFIG_MAGIC_SYSRQ=y
- CONFIG_DEBUG_KERNEL=y
- # CONFIG_SCHED_DEBUG is not set
- CONFIG_DEBUG_KOBJECT=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_FRAME_POINTER=y
- CONFIG_CRC_CCITT=m
- CONFIG_CRC16=m
-diff --git a/arch/sh/configs/polaris_defconfig b/arch/sh/configs/polaris_defconfig
-index 246408ec7462..f42e4867ddc1 100644
---- a/arch/sh/configs/polaris_defconfig
-+++ b/arch/sh/configs/polaris_defconfig
-@@ -79,5 +79,5 @@ CONFIG_DETECT_HUNG_TASK=y
- CONFIG_DEBUG_RT_MUTEXES=y
- CONFIG_DEBUG_LOCK_ALLOC=y
- CONFIG_DEBUG_SPINLOCK_SLEEP=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_DEBUG_SG=y
-diff --git a/arch/sh/configs/r7780mp_defconfig b/arch/sh/configs/r7780mp_defconfig
-index f823cc6b18f9..e527cd60a191 100644
---- a/arch/sh/configs/r7780mp_defconfig
-+++ b/arch/sh/configs/r7780mp_defconfig
-@@ -101,7 +101,7 @@ CONFIG_DEBUG_FS=y
- CONFIG_DEBUG_KERNEL=y
- CONFIG_DETECT_HUNG_TASK=y
- # CONFIG_DEBUG_PREEMPT is not set
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_CRYPTO_ECB=m
- CONFIG_CRYPTO_PCBC=m
- CONFIG_CRYPTO_HMAC=y
-diff --git a/arch/sh/configs/r7785rp_defconfig b/arch/sh/configs/r7785rp_defconfig
-index f96bc20d4b1a..a3f952a83d97 100644
---- a/arch/sh/configs/r7785rp_defconfig
-+++ b/arch/sh/configs/r7785rp_defconfig
-@@ -96,7 +96,7 @@ CONFIG_DEBUG_KERNEL=y
- # CONFIG_DEBUG_PREEMPT is not set
- CONFIG_DEBUG_LOCK_ALLOC=y
- CONFIG_DEBUG_LOCKING_API_SELFTESTS=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_SH_STANDARD_BIOS=y
- CONFIG_DEBUG_STACK_USAGE=y
- CONFIG_4KSTACKS=y
-diff --git a/arch/sh/configs/rsk7203_defconfig b/arch/sh/configs/rsk7203_defconfig
-index 5a54e2b883f0..d00fafc021e1 100644
---- a/arch/sh/configs/rsk7203_defconfig
-+++ b/arch/sh/configs/rsk7203_defconfig
-@@ -112,7 +112,7 @@ CONFIG_DETECT_HUNG_TASK=y
- CONFIG_DEBUG_OBJECTS=y
- CONFIG_DEBUG_MUTEXES=y
- CONFIG_DEBUG_SPINLOCK_SLEEP=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_DEBUG_VM=y
- CONFIG_DEBUG_LIST=y
- CONFIG_DEBUG_SG=y
-diff --git a/arch/sh/configs/sdk7780_defconfig b/arch/sh/configs/sdk7780_defconfig
-index 7d6d32359848..41cb588ca99c 100644
---- a/arch/sh/configs/sdk7780_defconfig
-+++ b/arch/sh/configs/sdk7780_defconfig
-@@ -131,7 +131,7 @@ CONFIG_DEBUG_KERNEL=y
- CONFIG_DETECT_HUNG_TASK=y
- # CONFIG_SCHED_DEBUG is not set
- CONFIG_TIMER_STATS=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_SH_STANDARD_BIOS=y
- CONFIG_CRYPTO_MD5=y
- CONFIG_CRYPTO_DES=y
-diff --git a/arch/sh/configs/se7712_defconfig b/arch/sh/configs/se7712_defconfig
-index ee6d28ae08de..36356223d51c 100644
---- a/arch/sh/configs/se7712_defconfig
-+++ b/arch/sh/configs/se7712_defconfig
-@@ -93,7 +93,7 @@ CONFIG_CRAMFS=y
- CONFIG_NFS_FS=y
- CONFIG_ROOT_NFS=y
- CONFIG_DEBUG_KERNEL=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_FRAME_POINTER=y
- CONFIG_CRYPTO_ECB=m
- CONFIG_CRYPTO_PCBC=m
-diff --git a/arch/sh/configs/se7721_defconfig b/arch/sh/configs/se7721_defconfig
-index bad921bc10f8..46c5a263a239 100644
---- a/arch/sh/configs/se7721_defconfig
-+++ b/arch/sh/configs/se7721_defconfig
-@@ -121,7 +121,7 @@ CONFIG_NLS_CODEPAGE_437=y
- CONFIG_NLS_CODEPAGE_932=y
- CONFIG_NLS_ISO8859_1=y
- CONFIG_DEBUG_KERNEL=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_FRAME_POINTER=y
- # CONFIG_CRYPTO_ANSI_CPRNG is not set
- CONFIG_CRC_CCITT=y
-diff --git a/arch/sh/configs/sh2007_defconfig b/arch/sh/configs/sh2007_defconfig
-index 79f02f1c0dc8..259c69e3fa22 100644
---- a/arch/sh/configs/sh2007_defconfig
-+++ b/arch/sh/configs/sh2007_defconfig
-@@ -159,7 +159,7 @@ CONFIG_DEBUG_FS=y
- CONFIG_DEBUG_KERNEL=y
- # CONFIG_DETECT_SOFTLOCKUP is not set
- # CONFIG_SCHED_DEBUG is not set
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_FRAME_POINTER=y
- CONFIG_SH_STANDARD_BIOS=y
- CONFIG_CRYPTO_NULL=y
-diff --git a/arch/sh/configs/sh7757lcr_defconfig b/arch/sh/configs/sh7757lcr_defconfig
-index a2700ab165af..2579dc4bc0c8 100644
---- a/arch/sh/configs/sh7757lcr_defconfig
-+++ b/arch/sh/configs/sh7757lcr_defconfig
-@@ -80,6 +80,6 @@ CONFIG_NLS_ISO8859_1=y
- CONFIG_DEBUG_KERNEL=y
- # CONFIG_SCHED_DEBUG is not set
- # CONFIG_DEBUG_BUGVERBOSE is not set
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- # CONFIG_FTRACE is not set
- # CONFIG_CRYPTO_ANSI_CPRNG is not set
-diff --git a/arch/sh/configs/sh7785lcr_32bit_defconfig b/arch/sh/configs/sh7785lcr_32bit_defconfig
-index 7eb3c10f28ad..781ff13227fc 100644
---- a/arch/sh/configs/sh7785lcr_32bit_defconfig
-+++ b/arch/sh/configs/sh7785lcr_32bit_defconfig
-@@ -141,7 +141,7 @@ CONFIG_DEBUG_KMEMLEAK=y
- CONFIG_DEBUG_SPINLOCK=y
- CONFIG_DEBUG_MUTEXES=y
- CONFIG_DEBUG_SPINLOCK_SLEEP=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_LATENCYTOP=y
- # CONFIG_FTRACE is not set
- CONFIG_CRYPTO_HMAC=y
-diff --git a/arch/sh/configs/urquell_defconfig b/arch/sh/configs/urquell_defconfig
-index cb2f56468fe0..ea773c764c5a 100644
---- a/arch/sh/configs/urquell_defconfig
-+++ b/arch/sh/configs/urquell_defconfig
-@@ -139,7 +139,7 @@ CONFIG_PRINTK_TIME=y
- CONFIG_DEBUG_FS=y
- CONFIG_DEBUG_KERNEL=y
- CONFIG_DETECT_HUNG_TASK=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_FRAME_POINTER=y
- # CONFIG_FTRACE is not set
- # CONFIG_DUMP_CODE is not set
-diff --git a/arch/um/configs/i386_defconfig b/arch/um/configs/i386_defconfig
-index fb51bd206dbe..c0162286d68b 100644
---- a/arch/um/configs/i386_defconfig
-+++ b/arch/um/configs/i386_defconfig
-@@ -69,5 +69,5 @@ CONFIG_JOLIET=y
- CONFIG_PROC_KCORE=y
- CONFIG_TMPFS=y
- CONFIG_NLS=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_DEBUG_KERNEL=y
-diff --git a/arch/um/configs/x86_64_defconfig b/arch/um/configs/x86_64_defconfig
-index 477b87317424..bec6e5d95687 100644
---- a/arch/um/configs/x86_64_defconfig
-+++ b/arch/um/configs/x86_64_defconfig
-@@ -67,6 +67,6 @@ CONFIG_JOLIET=y
- CONFIG_PROC_KCORE=y
- CONFIG_TMPFS=y
- CONFIG_NLS=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_FRAME_WARN=1024
- CONFIG_DEBUG_KERNEL=y
-diff --git a/arch/xtensa/configs/audio_kc705_defconfig b/arch/xtensa/configs/audio_kc705_defconfig
-index 3be62da8089b..ef0ebcfbccf9 100644
---- a/arch/xtensa/configs/audio_kc705_defconfig
-+++ b/arch/xtensa/configs/audio_kc705_defconfig
-@@ -120,7 +120,7 @@ CONFIG_NLS_CODEPAGE_437=y
- CONFIG_NLS_ISO8859_1=y
- CONFIG_PRINTK_TIME=y
- CONFIG_DYNAMIC_DEBUG=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_MAGIC_SYSRQ=y
- CONFIG_LOCKUP_DETECTOR=y
- # CONFIG_SCHED_DEBUG is not set
-diff --git a/arch/xtensa/configs/cadence_csp_defconfig b/arch/xtensa/configs/cadence_csp_defconfig
-index fc240737b14d..2665962d247a 100644
---- a/arch/xtensa/configs/cadence_csp_defconfig
-+++ b/arch/xtensa/configs/cadence_csp_defconfig
-@@ -100,7 +100,7 @@ CONFIG_NLS_CODEPAGE_437=y
- CONFIG_NLS_ISO8859_1=y
- CONFIG_PRINTK_TIME=y
- CONFIG_DYNAMIC_DEBUG=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_MAGIC_SYSRQ=y
- CONFIG_LOCKUP_DETECTOR=y
- # CONFIG_SCHED_DEBUG is not set
-diff --git a/arch/xtensa/configs/generic_kc705_defconfig b/arch/xtensa/configs/generic_kc705_defconfig
-index e9d6b6f6eca1..236c7f23cc10 100644
---- a/arch/xtensa/configs/generic_kc705_defconfig
-+++ b/arch/xtensa/configs/generic_kc705_defconfig
-@@ -107,7 +107,7 @@ CONFIG_NLS_CODEPAGE_437=y
- CONFIG_NLS_ISO8859_1=y
- CONFIG_PRINTK_TIME=y
- CONFIG_DYNAMIC_DEBUG=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_MAGIC_SYSRQ=y
- CONFIG_LOCKUP_DETECTOR=y
- # CONFIG_SCHED_DEBUG is not set
-diff --git a/arch/xtensa/configs/nommu_kc705_defconfig b/arch/xtensa/configs/nommu_kc705_defconfig
-index fcb620ef3799..8263da9e078d 100644
---- a/arch/xtensa/configs/nommu_kc705_defconfig
-+++ b/arch/xtensa/configs/nommu_kc705_defconfig
-@@ -105,7 +105,7 @@ CONFIG_NLS_CODEPAGE_437=y
- CONFIG_NLS_ISO8859_1=y
- CONFIG_PRINTK_TIME=y
- CONFIG_DYNAMIC_DEBUG=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- # CONFIG_FRAME_POINTER is not set
- CONFIG_MAGIC_SYSRQ=y
- CONFIG_DEBUG_VM=y
-diff --git a/arch/xtensa/configs/smp_lx200_defconfig b/arch/xtensa/configs/smp_lx200_defconfig
-index a47c85638ec1..7bdffa3a69c6 100644
---- a/arch/xtensa/configs/smp_lx200_defconfig
-+++ b/arch/xtensa/configs/smp_lx200_defconfig
-@@ -111,7 +111,7 @@ CONFIG_NLS_CODEPAGE_437=y
- CONFIG_NLS_ISO8859_1=y
- CONFIG_PRINTK_TIME=y
- CONFIG_DYNAMIC_DEBUG=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_MAGIC_SYSRQ=y
- CONFIG_DEBUG_VM=y
- CONFIG_LOCKUP_DETECTOR=y
-diff --git a/arch/xtensa/configs/virt_defconfig b/arch/xtensa/configs/virt_defconfig
-index 6d1387dfa96f..98acb7191cb7 100644
---- a/arch/xtensa/configs/virt_defconfig
-+++ b/arch/xtensa/configs/virt_defconfig
-@@ -97,7 +97,7 @@ CONFIG_CRYPTO_DEV_VIRTIO=y
- CONFIG_FONTS=y
- CONFIG_PRINTK_TIME=y
- CONFIG_DYNAMIC_DEBUG=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_MAGIC_SYSRQ=y
- # CONFIG_SCHED_DEBUG is not set
- CONFIG_SCHEDSTATS=y
-diff --git a/arch/xtensa/configs/xip_kc705_defconfig b/arch/xtensa/configs/xip_kc705_defconfig
-index 062148e17135..1c3cebaaa71b 100644
---- a/arch/xtensa/configs/xip_kc705_defconfig
-+++ b/arch/xtensa/configs/xip_kc705_defconfig
-@@ -102,7 +102,7 @@ CONFIG_CRYPTO_LZO=y
- CONFIG_CRYPTO_ANSI_CPRNG=y
- CONFIG_PRINTK_TIME=y
- CONFIG_DYNAMIC_DEBUG=y
--CONFIG_DEBUG_INFO=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
- CONFIG_MAGIC_SYSRQ=y
- CONFIG_DETECT_HUNG_TASK=y
- # CONFIG_SCHED_DEBUG is not set
+diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
+index 79e38afd4b91..e719af8bdf56 100644
+--- a/arch/um/drivers/virtio_uml.c
++++ b/arch/um/drivers/virtio_uml.c
+@@ -1011,7 +1011,7 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
+ 
+ static int vu_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+ 		       struct virtqueue *vqs[], vq_callback_t *callbacks[],
+-		       const char * const names[], u32 sizes[], const bool *ctx,
++		       const char * const names[], const bool *ctx,
+ 		       struct irq_affinity *desc)
+ {
+ 	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
+diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
+index 8be13d416f48..1ae3c56b66b0 100644
+--- a/drivers/platform/mellanox/mlxbf-tmfifo.c
++++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
+@@ -928,7 +928,6 @@ static int mlxbf_tmfifo_virtio_find_vqs(struct virtio_device *vdev,
+ 					struct virtqueue *vqs[],
+ 					vq_callback_t *callbacks[],
+ 					const char * const names[],
+-					u32 sizes[],
+ 					const bool *ctx,
+ 					struct irq_affinity *desc)
+ {
+diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
+index 81c4f5776109..0f7706e23eb9 100644
+--- a/drivers/remoteproc/remoteproc_virtio.c
++++ b/drivers/remoteproc/remoteproc_virtio.c
+@@ -158,7 +158,6 @@ static int rproc_virtio_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
+ 				 struct virtqueue *vqs[],
+ 				 vq_callback_t *callbacks[],
+ 				 const char * const names[],
+-				 u32 sizes[],
+ 				 const bool * ctx,
+ 				 struct irq_affinity *desc)
+ {
+diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
+index 896896e32664..a10dbe632ef9 100644
+--- a/drivers/s390/virtio/virtio_ccw.c
++++ b/drivers/s390/virtio/virtio_ccw.c
+@@ -637,7 +637,6 @@ static int virtio_ccw_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+ 			       struct virtqueue *vqs[],
+ 			       vq_callback_t *callbacks[],
+ 			       const char * const names[],
+-			       u32 sizes[],
+ 			       const bool *ctx,
+ 			       struct irq_affinity *desc)
+ {
+diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
+index dfcecfd7aba1..3ff746e3f24a 100644
+--- a/drivers/virtio/virtio_mmio.c
++++ b/drivers/virtio/virtio_mmio.c
+@@ -474,7 +474,6 @@ static int vm_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
+ 		       struct virtqueue *vqs[],
+ 		       vq_callback_t *callbacks[],
+ 		       const char * const names[],
+-		       u32 sizes[],
+ 		       const bool *ctx,
+ 		       struct irq_affinity *desc)
+ {
+diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
+index 7ad734584823..ad258a9d3b9f 100644
+--- a/drivers/virtio/virtio_pci_common.c
++++ b/drivers/virtio/virtio_pci_common.c
+@@ -396,7 +396,7 @@ static int vp_find_vqs_intx(struct virtio_device *vdev, unsigned int nvqs,
+ /* the config->find_vqs() implementation */
+ int vp_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
+ 		struct virtqueue *vqs[], vq_callback_t *callbacks[],
+-		const char * const names[], u32 sizes[], const bool *ctx,
++		const char * const names[], const bool *ctx,
+ 		struct irq_affinity *desc)
+ {
+ 	int err;
+diff --git a/drivers/virtio/virtio_pci_common.h b/drivers/virtio/virtio_pci_common.h
+index a5ff838b85a5..23112d84218f 100644
+--- a/drivers/virtio/virtio_pci_common.h
++++ b/drivers/virtio/virtio_pci_common.h
+@@ -110,7 +110,7 @@ void vp_del_vqs(struct virtio_device *vdev);
+ /* the config->find_vqs() implementation */
+ int vp_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
+ 		struct virtqueue *vqs[], vq_callback_t *callbacks[],
+-		const char * const names[], u32 sizes[], const bool *ctx,
++		const char * const names[], const bool *ctx,
+ 		struct irq_affinity *desc);
+ const char *vp_bus_name(struct virtio_device *vdev);
+ 
+diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
+index be51ec849252..c3b9f2761849 100644
+--- a/drivers/virtio/virtio_pci_modern.c
++++ b/drivers/virtio/virtio_pci_modern.c
+@@ -347,15 +347,12 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
+ static int vp_modern_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
+ 			      struct virtqueue *vqs[],
+ 			      vq_callback_t *callbacks[],
+-			      const char * const names[],
+-			      u32 sizes[],
+-			      const bool *ctx,
++			      const char * const names[], const bool *ctx,
+ 			      struct irq_affinity *desc)
+ {
+ 	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+ 	struct virtqueue *vq;
+-	int rc = vp_find_vqs(vdev, nvqs, vqs, callbacks, names, sizes, ctx,
+-			     desc);
++	int rc = vp_find_vqs(vdev, nvqs, vqs, callbacks, names, ctx, desc);
+ 
+ 	if (rc)
+ 		return rc;
+diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
+index 9bc4d110b800..c6b9b5062043 100644
+--- a/drivers/virtio/virtio_vdpa.c
++++ b/drivers/virtio/virtio_vdpa.c
+@@ -272,7 +272,6 @@ static int virtio_vdpa_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
+ 				struct virtqueue *vqs[],
+ 				vq_callback_t *callbacks[],
+ 				const char * const names[],
+-				u32 sizes[],
+ 				const bool *ctx,
+ 				struct irq_affinity *desc)
+ {
+diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
+index 888f7e96f0c7..36ec7be1f480 100644
+--- a/include/linux/virtio_config.h
++++ b/include/linux/virtio_config.h
+@@ -55,7 +55,6 @@ struct virtio_shm_region {
+  *		include a NULL entry for vqs that do not need a callback
+  *	names: array of virtqueue names (mainly for debugging)
+  *		include a NULL entry for vqs unused by driver
+- *	sizes: array of virtqueue sizes
+  *	Returns 0 on success or error status
+  * @del_vqs: free virtqueues found by find_vqs().
+  * @synchronize_cbs: synchronize with the virtqueue callbacks (optional)
+@@ -104,9 +103,7 @@ struct virtio_config_ops {
+ 	void (*reset)(struct virtio_device *vdev);
+ 	int (*find_vqs)(struct virtio_device *, unsigned nvqs,
+ 			struct virtqueue *vqs[], vq_callback_t *callbacks[],
+-			const char * const names[],
+-			u32 sizes[],
+-			const bool *ctx,
++			const char * const names[], const bool *ctx,
+ 			struct irq_affinity *desc);
+ 	void (*del_vqs)(struct virtio_device *);
+ 	void (*synchronize_cbs)(struct virtio_device *);
+@@ -215,7 +212,7 @@ struct virtqueue *virtio_find_single_vq(struct virtio_device *vdev,
+ 	const char *names[] = { n };
+ 	struct virtqueue *vq;
+ 	int err = vdev->config->find_vqs(vdev, 1, &vq, callbacks, names, NULL,
+-					 NULL, NULL);
++					 NULL);
+ 	if (err < 0)
+ 		return ERR_PTR(err);
+ 	return vq;
+@@ -227,8 +224,7 @@ int virtio_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+ 			const char * const names[],
+ 			struct irq_affinity *desc)
+ {
+-	return vdev->config->find_vqs(vdev, nvqs, vqs, callbacks, names, NULL,
+-				      NULL, desc);
++	return vdev->config->find_vqs(vdev, nvqs, vqs, callbacks, names, NULL, desc);
+ }
+ 
+ static inline
+@@ -237,8 +233,8 @@ int virtio_find_vqs_ctx(struct virtio_device *vdev, unsigned nvqs,
+ 			const char * const names[], const bool *ctx,
+ 			struct irq_affinity *desc)
+ {
+-	return vdev->config->find_vqs(vdev, nvqs, vqs, callbacks, names, NULL,
+-				      ctx, desc);
++	return vdev->config->find_vqs(vdev, nvqs, vqs, callbacks, names, ctx,
++				      desc);
+ }
+ 
+ /**
 -- 
-2.29.2
+MST
 
 
 _______________________________________________
