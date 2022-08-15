@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oNi27-006FDF-7A
-	for linux-um@lists.infradead.org; Mon, 15 Aug 2022 21:54:05 +0000
-Received: by mail-wm1-f72.google.com with SMTP id c17-20020a7bc011000000b003a2bfaf8d3dso4077135wmb.0
-        for <linux-um@lists.infradead.org>; Mon, 15 Aug 2022 14:53:59 -0700 (PDT)
-Date: Mon, 15 Aug 2022 17:53:50 -0400
+	id 1oNi1n-006EuF-7m
+	for linux-um@lists.infradead.org; Mon, 15 Aug 2022 21:53:45 +0000
+Received: by mail-wm1-f71.google.com with SMTP id v64-20020a1cac43000000b003a4bea31b4dso9245414wme.3
+        for <linux-um@lists.infradead.org>; Mon, 15 Aug 2022 14:53:39 -0700 (PDT)
+Date: Mon, 15 Aug 2022 17:53:29 -0400
 From: "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH v2 5/5] virtio: Revert "virtio: find_vqs() add arg sizes"
-Message-ID: <20220815215251.154451-8-mst@redhat.com>
+Subject: [PATCH v2 1/1] virtio: Revert "virtio: find_vqs() add arg sizes"
+Message-ID: <20220815215251.154451-4-mst@redhat.com>
 References: <20220815215251.154451-1-mst@redhat.com>
 MIME-Version: 1.0
 In-Reply-To: <20220815215251.154451-1-mst@redhat.com>
@@ -41,18 +41,6 @@ let's drop it.
 
 Fixes: a10fba037714 ("virtio: find_vqs() add arg sizes")
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
----
- arch/um/drivers/virtio_uml.c             |  2 +-
- drivers/platform/mellanox/mlxbf-tmfifo.c |  1 -
- drivers/remoteproc/remoteproc_virtio.c   |  1 -
- drivers/s390/virtio/virtio_ccw.c         |  1 -
- drivers/virtio/virtio_mmio.c             |  1 -
- drivers/virtio/virtio_pci_common.c       |  2 +-
- drivers/virtio/virtio_pci_common.h       |  2 +-
- drivers/virtio/virtio_pci_modern.c       |  7 ++-----
- drivers/virtio/virtio_vdpa.c             |  1 -
- include/linux/virtio_config.h            | 14 +++++---------
- 10 files changed, 10 insertions(+), 22 deletions(-)
 
 diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
 index 79e38afd4b91..e719af8bdf56 100644
