@@ -2,11 +2,11 @@ Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
 MIME-Version: 1.0
 References: <20220802015052.10452-1-ojeda@kernel.org> <20220802015052.10452-28-ojeda@kernel.org>
  <CAK8P3a0jqhGY9E85VC9gNem5q6-dWeq0H6-7bhJopinMnLtOKQ@mail.gmail.com>
- <CANiq72nNucEhXAXkXSujnGkpQrkv3-Pcn7ua8N=2XB-suAjs9w@mail.gmail.com> <CAK8P3a2YuGsSJY2-=npqXMHXEr+zaF36iDrM+kP=9nS85FLpbA@mail.gmail.com>
-In-Reply-To: <CAK8P3a2YuGsSJY2-=npqXMHXEr+zaF36iDrM+kP=9nS85FLpbA@mail.gmail.com>
+ <CANiq72nNucEhXAXkXSujnGkpQrkv3-Pcn7ua8N=2XB-suAjs9w@mail.gmail.com> <rYTolA_zKqIX3oCL_i-vlIqKS99s0bYQmRKAdcScDq0mcyxti3imzP7AvJzBpiI6RAuH5RU5BpU4xuEY1Vzq57CuY5v47tO3SuUNAMd7seM=@protonmail.com>
+In-Reply-To: <rYTolA_zKqIX3oCL_i-vlIqKS99s0bYQmRKAdcScDq0mcyxti3imzP7AvJzBpiI6RAuH5RU5BpU4xuEY1Vzq57CuY5v47tO3SuUNAMd7seM=@protonmail.com>
 From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Thu, 18 Aug 2022 01:13:42 +0200
-Message-ID: <CANiq72mW456PbD1WTkh0f=fhgO0FVdpjpXaT5cogXGT4BmKDjw@mail.gmail.com>
+Date: Thu, 18 Aug 2022 00:42:37 +0200
+Message-ID: <CANiq72mp4pgfszjM5t6zgLOBFTmUO4oZkbMxHhekbiNwUe9YLw@mail.gmail.com>
 Subject: Re: [PATCH v8 27/31] Kbuild: add Rust support
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -16,48 +16,67 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Sven Van Asbroeck <thesven73@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, Dave Hansen <dave.hansen@linux.intel.com>, Miguel Cano <macanroj@gmail.com>, Paul Mackerras <paulus@samba.org>, Gary Guo <gary@garyguo.net>, Douglas Su <d0u9.su@outlook.com>, Borislav Petkov <bp@alien8.de>, linux-riscv@lists.infradead.org, Will Deacon <will@kernel.org>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "H. Peter Anvin" <hpa@zytor.com>, Masahiro Yamada <masahiroy@kernel.org>, x86@kernel.org, Russell King <linux@armlinux.org.uk>, Ingo Molnar <mingo@redhat.com>, Wedson Almeida Filho <wedsonaf@google.com>, Alex Gaynor <alex.gaynor@gmail.com>, Antonio Terceiro <antonio.terceiro@linaro.org>, Adam Bratschi-Kaye <ark.email@gmail.com>, Albert Ou <aou@eecs.berkeley.edu>, rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org, Boqun Feng <boqun.feng@gmail.com>, linux-um@lists.infradead.org, =?UTF-8?Q?Bj=C3=83B_6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Michal Marek <michal.lkml@markovi.net>, Daniel Xu <dxu@dxuuu.xyz>, David Gow <davidgow@google.com>, Paul Walmsley <paul.walmsley@sifive.com>, Dariusz Sosnowski <dsosnowski@dsosnowski.pl>, linux-arm-kernel@lists.infradead.org, Tiago Lam <tiagolam@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Nick Desaulniers <ndesaulniers@google.com>, linux-kernel@vger.kernel.org, Boris-Chengbiao Zhou <bobo1239@web.de>, Jarkko Sakkinen <jarkko@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, Richard Weinberger <richard@nod.at>, Finn Behrens <me@kloenk.de>, Johannes Berg <johannes@sipsolutions.net>, linuxppc-dev@lists.ozlabs.org, Philip Herron <philip.herron@embecosm.com>, Arthur Cohen <arthur.cohen@embecosm.com>
+To: =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Miguel Ojeda <ojeda@kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Sven Van Asbroeck <thesven73@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, Dave Hansen <dave.hansen@linux.intel.com>, Miguel Cano <macanroj@gmail.com>, Paul Mackerras <paulus@samba.org>, Gary Guo <gary@garyguo.net>, Douglas Su <d0u9.su@outlook.com>, Borislav Petkov <bp@alien8.de>, linux-riscv@lists.infradead.org, Will Deacon <will@kernel.org>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "H. Peter Anvin" <hpa@zytor.com>, Masahiro Yamada <masahiroy@kernel.org>, x86@kernel.org, Russell King <linux@armlinux.org.uk>, Ingo Molnar <mingo@redhat.com>, Wedson Almeida Filho <wedsonaf@google.com>, Alex Gaynor <alex.gaynor@gmail.com>, Antonio Terceiro <antonio.terceiro@linaro.org>, Adam Bratschi-Kaye <ark.email@gmail.com>, Albert Ou <aou@eecs.berkeley.edu>, rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org, Boqun Feng <boqun.feng@gmail.com>, linux-um@lists.infradead.org, Michal Marek <michal.lkml@markovi.net>, Daniel Xu <dxu@dxuuu.xyz>, David Gow <davidgow@google.com>, Paul Walmsley <paul.walmsley@sifive.com>, Dariusz Sosnowski <dsosnowski@dsosnowski.pl>, linux-arm-kernel@lists.infradead.org, Tiago Lam <tiagolam@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Nick Desaulniers <ndesaulniers@google.com>, linux-kernel@vger.kernel.org, Boris-Chengbiao Zhou <bobo1239@web.de>, Jarkko Sakkinen <jarkko@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, Richard Weinberger <richard@nod.at>, Finn Behrens <me@kloenk.de>, Johannes Berg <johannes@sipsolutions.net>, linuxppc-dev@lists.ozlabs.org, Philip Herron <philip.herron@embecosm.com>, Arthur Cohen <arthur.cohen@embecosm.com>, Antoni Boucher <bouanto@zoho.com>
 
-On Wed, Aug 17, 2022 at 5:51 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> Thanks for the explanation. My hope was that building the kernel
-
-Don't mention it!
-
-> would actually be easier here than building the more complicated
-> rust user space.
-
-Yeah, the kernel is complicated for them in different ways, so I
-assume they will decide which bits to tackle first... Hopefully I will
-succeed in my attempts to convince them to focus a bit on the kernel
-at least ;)
-
-> I tried one more step and just removed the unsupported command
-> line flags to see what would happen, but that did not get me any
-> further:
-
-Thanks!
-
-It looks like it failed when compiling the target spec generator,
-which is a Rust host program. If they were to attempt the GCC Rust
-support early on, we could make things easier for them by not
-compiling host programs with gccrs.
-
-By the way, feel free to remove all the `-D` flags ("denying") when
-playing with it since they are related to diagnostics (making lints
-errors that can still be bypassed if needed), in case the crash is
-about handling those.
-
-Cheers,
-Miguel
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gV2VkLCBBdWcgMTcsIDIwMjIgYXQgNjoxMSBQTSBCasO2cm4gUm95IEJhcm9uCjxiam9ybjNf
+Z2hAcHJvdG9ubWFpbC5jb20+IHdyb3RlOgo+Cj4gVGhlcmUgaXMgYWxyZWFkeSBhIHByb3RvdHlw
+ZSBvZiBzdWNoIGEgZHJpdmVyLiBJdCBjYW4gYmUgZm91bmQgYXQgaHR0cHM6Ly9naXRodWIuY29t
+L1J1c3QtR0NDL2NhcmdvLWdjY3JzLiBVbmxpa2Ugd2hhdCB0aGUgbmFtZSBzdWdnZXN0cyBpdCBp
+cyBub3QgY2FyZ28gc3BlY2lmaWMuIEl0IGNvbnNpc3RzIG9mIHR3byBiaW5hcmllcy4gVGhlIGZp
+cnN0IGNhbGxzIGNhcmdvLCBidXQgdGVsbHMgaXQgdG8gdXNlIHRoZSBzZWNvbmQgYmluYXJ5IGlu
+c3RlYWQgb2YgYSByZWFsIHJ1c3RjLiBUaGlzIHNlY29uZCBwYXJ0IHRoZW4gdHJhbnNsYXRlcyBh
+bGwgYXJndW1lbnRzIHRvIHdoYXQgZ2NjcnMgZXhwZWN0cy4gSXQgaXMgcG9zc2libGUgdG8gZGly
+ZWN0bHkgaW52b2tlIHRoaXMgc2Vjb25kIGJpbmFyeS4gRm9yIG5vdyBpdCBwcm9iYWJseSB3b24n
+dCB3b3JrIGZvciBydXN0LWZvci1saW51eCB0aG91Z2ggYXMgaXQgZG9lc24ndCBoYXZlIGFsbCBh
+cmd1bWVudHMgdGhhdCBhcmUgdXNlZCBieSBydXN0LWZvci1saW51eCBpbXBsZW1lbnRlZC4KCkkg
+c3Bva2Ugd2l0aCB0aGVtIGFib3V0IHRoaXMgYSBmZXcgd2Vla3MgYWdvLCBidXQgSSB0aG91Z2h0
+IGl0IHdhcwpiZXN0IHRvIGxlYXZlIGl0IHVwIHRvIHRoZSBHQ0MgUnVzdCBmb2xrcyB0byBkZXRh
+aWwgaG93IHRoZXkgd2lsbApwcm9jZWVkIGlmIHRoZXkgYWxyZWFkeSBrbm93LgoKPiBBcyBhbHRl
+cm5hdGl2ZSB0byBHQ0MgUnVzdCB0aGVyZSBpcyBhbHNvIGdpdGh1Yi5jb20vcnVzdC1sYW5nL3J1
+c3RjX2NvZGVnZW5fZ2NjLyB3aGljaCB1c2VzIGxpYmdjY2ppdCBhcyBiYWNrZW5kIGZvciB0aGUg
+b2ZmaWNpYWwgcnVzdCBjb21waWxlciByYXRoZXIgdGhhbiB3cml0aW5nIGEgZnVsbCBSdXN0IGZy
+b250ZW5kIGZvciBHQ0MgZnJvbSBzY3JhdGNoLiBXaXRoIGEgYml0IG9mIHBhdGNoaW5nIHRvIGZv
+cmNlIGl0IHRvIGJlIHVzZWQsIEkgd2FzIGFibGUgdG8gY29tcGlsZSBhbGwgUnVzdCBzYW1wbGVz
+IHdpdGggR0NDIHVzaW5nIHJ1c3RjX2NvZGVnZW5fZ2NjLiBIb3dldmVyIGl0IGdpdmVzIHdhcm5p
+bmdzIG9mIHRoZSBmb2xsb3dpbmcga2luZDoKPgo+ICAgICBsZC5sbGQ6IHdhcm5pbmc6IHJ1c3Qv
+YnVpbHQtaW4uYShjb3JlLm8pOiguZGF0YS5yZWwubG9jYWwpIGlzIGJlaW5nIHBsYWNlZCBpbiAn
+LmRhdGEucmVsLmxvY2FsJwo+Cj4gQW5kIGhhbmdzIHZlcnkgZWFybHkgaW4gdGhlIGJvb3QgcHJv
+Y2Vzcy4gSWYgSSBlbmFibGUgZWFybHkgbG9nZ2luZywgaXQgcHJpbnRzIHVwIHRvICJCb290aW5n
+IHRoZSBrZXJuZWwuIiBhbmQgdGhlbiBkb2VzIG5vdGhpbmcuIFRoaXMgaXMgcHJvYmFibHkgYmVj
+YXVzZSBzdXBwb3J0IGZvciBzZXR0aW5nIGEgZGlmZmVyZW50IHJlbG9jYXRpb24gbW9kZWwgaXMg
+bm90IHlldCBpbXBsZW1lbnRlZC4gSSBvcGVuZWQgaHR0cHM6Ly9naXRodWIuY29tL3J1c3QtbGFu
+Zy9ydXN0Y19jb2RlZ2VuX2djYy9pc3N1ZXMvMjA1IGZvciB0aGlzLgoKVGhhbmtzIEJqw7ZybiBm
+b3IgZ2l2aW5nIGl0IGEgZ28hCgpBcm5kIG1haW50YWlucyBhIHNldCBvZiBjcm9zcy1HQ0MgYmlu
+YXJpZXMgZm9yIGtlcm5lbCBkZXZlbG9wZXJzLCBzbyBJCmFzc3VtZWQgaGUgd2FzIG1haW5seSBp
+bnRlcmVzdGVkIGluIGluY2x1ZGluZyBHQ0MgUnVzdCB0aGVyZSAtLSBJCmRpZG4ndCBtZWFuIHRv
+IGxlYXZlIGBydXN0Y19jb2RlZ2VuX2djY2AgYXNpZGUhIDopIEluIGZhY3QsIGEgZmV3CndlZWtz
+IGFnbyBJIGFsc28gc3Bva2Ugd2l0aCBBbnRvbmkgKENjJ2QgdG9vISkgYWJvdXQgd2hldGhlciBo
+ZSB3b3VsZApiZSBpbnRlcmVzdGVkIGluIGdldHRpbmcgaXQgdG8gd29yayB3aXRoIFJ1c3QgZm9y
+IExpbnV4IHNvb24sIHdoZXRoZXIKYW5kIGhvdyB3ZSBjb3VsZCBoZWxwIGhpbSwgZXRjLgoKSW4g
+YW55IGNhc2UsIGJvdGggR0NDIFJ1c3QgYW5kICBgcnVzdGNfY29kZWdlbl9nY2NgIHdpbGwgYmUg
+cHJlc2VudCBpbgpLYW5ncmVqb3MgYW5kIExQQyAoUnVzdCBNQyksIHNvIGhvcGVmdWxseSB3ZSB3
+aWxsIGRpc2N1c3MgdGhlIGRldGFpbHMKZmFjZS10by1mYWNlIQoKPiBUaGVyZSBtYXkgYmUgb3Ro
+ZXIgaXNzdWVzLCBidXQgcnVzdGNfY29kZWdlbl9nY2MgaXMgcHJvYmFibHkgZ29pbmcgdG8gYmUg
+dGhlIGVhc2llc3Qgcm91dGUgdG93YXJkcyBhIExMVk0gZnJlZSBydXN0LWZvci1saW51eCBidWls
+ZC4gQnkgdGhlIHdheSBub3RlIHRoYXQgcnVzdC1iaW5kZ2VuIHdoaWNoIHdlIHVzZSBmb3IgZ2Vu
+ZXJhdGluZyBydXN0IGJpbmRpbmdzIGZyb20gQyBoZWFkZXJzIGRlcGVuZHMgb24gTExWTS4gU2Vl
+IGh0dHBzOi8vZ2l0aHViLmNvbS9ydXN0LWxhbmcvcnVzdC1iaW5kZ2VuL2lzc3Vlcy8xOTQ5LgoK
+WWVhaCwgYHJ1c3RjX2NvZGVnZW5fZ2NjYCBpcyBwb3NzaWJseSBnb2luZyB0byBoYXBwZW4gc29v
+bmVyIHRoYW4gR0NDClJ1c3QgZm9yIHRoZSBrZXJuZWwuCgpBcyBmb3IgYGJpbmRnZW5gLCBpdCBp
+cyBpbmRlZWQgYSBwYWluIHBvaW50LiBUaGVyZSBhcmUgc2V2ZXJhbApwb3NzaWJpbGl0aWVzIHdl
+IGhhdmUgYmVlbiBjb25zaWRlcmluZyAoR0NDIGJhY2tlbmQgaW4gYGJpbmRnZW5gLCBhbgplcXVp
+dmFsZW50IHRvb2wgaW4gR0NDLCBzb21ldGhpbmcgYmFzZWQgb24gb3RoZXIgcGFyc2Vycywgc29t
+ZXRoaW5nCmVsc2UgZW50aXJlbHksICJqdXN0IGNoZWNraW5nIHRoZSByZXN1bHRzIiBhcHByb2Fj
+aGVzLCBldmVuIGNvbnZpbmNpbmcKdXBzdHJlYW0gUnVzdCB0aGF0IEMgaGVhZGVyIHN1cHBvcnQg
+d291bGQgYmUgYW1hemluZyBmb3IgUnVzdAp1cHRha2UuLi4gOy0pLiBJZGVhbGx5IHdlIHdvdWxk
+IGdldCBmdW5kaW5nIHRvIGhhdmUgc29tZWJvZHkgd29ya2luZwpvbiB0aGUgcHJvYmxlbSwgYnV0
+IHdlIHdpbGwgc2VlLgoKQ2hlZXJzLApNaWd1ZWwKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0
+cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vbGludXgtdW0K
 
