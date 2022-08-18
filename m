@@ -1,8 +1,10 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Subject: [PATCH] hostfs: move from strlcpy with unused retval to strscpy
-Date: Thu, 18 Aug 2022 23:01:45 +0200
-Message-Id: <20220818210145.7939-1-wsa+renesas@sang-engineering.com>
+Subject: [PATCH 08/14] hostfs: move from strlcpy with unused retval to strscpy
+Date: Thu, 18 Aug 2022 23:01:17 +0200
+Message-Id: <20220818210123.7637-8-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20220818210123.7637-1-wsa+renesas@sang-engineering.com>
+References: <20220818210123.7637-1-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 To: linux-kernel@vger.kernel.org
