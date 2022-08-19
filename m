@@ -1,12 +1,8 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mout.web.de ([212.227.17.12])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oRbMe-0072eq-OA
-	for linux-um@lists.infradead.org; Fri, 26 Aug 2022 15:35:22 +0000
-Date: Fri, 26 Aug 2022 15:29:31 +0000
-From: Lukas Straub <lukasstraub2@web.de>
-Subject: [PATCH 2/2] um: Cleanup compiler warning in arch/x86/um/tls_32.c
-Message-ID: <20220826152931.5835fdf8@gecko>
+From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Subject: [PATCH V3 00/11] The panic notifiers refactor - fixes/clean-ups (V3)
+Date: Fri, 19 Aug 2022 19:17:20 -0300
+Message-Id: <20220819221731.480795-1-gpiccoli@igalia.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -16,116 +12,103 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2692410671515588002=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um <linux-um@lists.infradead.org>
-Cc: Randy Dunlap <rdunlap@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, x86@kernel.org, linux-kernel@vger.kernel.org
+To: akpm@linux-foundation.org, bhe@redhat.com, pmladek@suse.com, kexec@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org, netdev@vger.kernel.org, x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com, fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de, corbet@lwn.net, d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com, dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org, mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com, jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org, luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org, senozhatsky@chromium.org, stern@rowland.harvard.edu, tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com, will@kernel.org, xuqiang36@huawei.com, "Guilherme G. Piccoli" <gpiccoli@igalia.com>, bcm-kernel-feedback-list@broadcom.com, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org, linux-efi@vger.kernel.org, linux-parisc@vger.kernel.org, linux-um@lists.infradead.org
 
---===============2692410671515588002==
-Content-Type: multipart/signed; boundary="Sig_/LZycpH1Xjhw3hn5+7RWproQ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Hey everybody, this the third iteration of the panic notifiers
+fixes/clean-ups;
 
---Sig_/LZycpH1Xjhw3hn5+7RWproQ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+V2 available at:
+https://lore.kernel.org/lkml/20220719195325.402745-1-gpiccoli@igalia.com/
 
-arch.tls_array is statically allocated so checking for NULL doesn't
-make sense. This causes the compiler warning below.
+V1 (including the refactor) available at:
+https://lore.kernel.org/lkml/20220427224924.592546-1-gpiccoli@igalia.com/
 
-Remove the checks to silence these warnings.
 
-../arch/x86/um/tls_32.c: In function 'get_free_idx':
-../arch/x86/um/tls_32.c:68:13: warning: the comparison will always evaluate=
- as 'true' for the address of 'tls_array' will never be NULL [-Waddress]
-   68 |         if (!t->arch.tls_array)
-      |             ^
-In file included from ../arch/x86/um/asm/processor.h:10,
-                 from ../include/linux/rcupdate.h:30,
-                 from ../include/linux/rculist.h:11,
-                 from ../include/linux/pid.h:5,
-                 from ../include/linux/sched.h:14,
-                 from ../arch/x86/um/tls_32.c:7:
-../arch/x86/um/asm/processor_32.h:22:31: note: 'tls_array' declared here
-   22 |         struct uml_tls_struct tls_array[GDT_ENTRY_TLS_ENTRIES];
-      |                               ^~~~~~~~~
-../arch/x86/um/tls_32.c: In function 'get_tls_entry':
-../arch/x86/um/tls_32.c:243:13: warning: the comparison will always evaluat=
-e as 'true' for the address of 'tls_array' will never be NULL [-Waddress]
-  243 |         if (!t->arch.tls_array)
-      |             ^
-../arch/x86/um/asm/processor_32.h:22:31: note: 'tls_array' declared here
-   22 |         struct uml_tls_struct tls_array[GDT_ENTRY_TLS_ENTRIES];
-      |                               ^~~~~~~~~
+There wasn't much change here compared to V2 (the specifics are in the
+patches), but a global change is that I've rebased against 6.0-rc1.
+One patch got merged in -next, another one was re-submit in a standalone
+format (requested by maintainer), so both of these are not here anymore.
 
-Signed-off-by: Lukas Straub <lukasstraub2@web.de>
----
- arch/x86/um/tls_32.c | 6 ------
- 1 file changed, 6 deletions(-)
 
-diff --git a/arch/x86/um/tls_32.c b/arch/x86/um/tls_32.c
-index ac8eee093f9c..66162eafd8e8 100644
---- a/arch/x86/um/tls_32.c
-+++ b/arch/x86/um/tls_32.c
-@@ -65,9 +65,6 @@ static int get_free_idx(struct task_struct* task)
- 	struct thread_struct *t =3D &task->thread;
- 	int idx;
-=20
--	if (!t->arch.tls_array)
--		return GDT_ENTRY_TLS_MIN;
--
- 	for (idx =3D 0; idx < GDT_ENTRY_TLS_ENTRIES; idx++)
- 		if (!t->arch.tls_array[idx].present)
- 			return idx + GDT_ENTRY_TLS_MIN;
-@@ -240,9 +237,6 @@ static int get_tls_entry(struct task_struct *task, stru=
-ct user_desc *info,
- {
- 	struct thread_struct *t =3D &task->thread;
-=20
--	if (!t->arch.tls_array)
--		goto clear;
--
- 	if (idx < GDT_ENTRY_TLS_MIN || idx > GDT_ENTRY_TLS_MAX)
- 		return -EINVAL;
-=20
---=20
+As usual, tested this series building for all affected architecture/drivers
+and also through some boot/runtime tests; below the test "matrix" used:
+
+Build tests (using cross-compilers): alpha, arm, arm64, parisc, um, x86_64.
+Boot/Runtime tests: x86_64 (QEMU guests and Steam Deck).
+
+Here is the link with the .config files used:
+https://people.igalia.com/gpiccoli/panic_notifiers_configs/6.0-rc1/
+
+
+About the merge strategy: I've noticed there is a difference in maintainers
+preferences (and my preference as well), so I see 3 strategies for merge:
+
+(a) Maintainers pick patches that are good from the series and merge in
+their trees;
+
+(b) Some maintainer would pick the whole series and merge, at once, given
+that everything is fine/ack/reviewed.
+
+(c) I must re-send patches individually once they are reviewed/acked, as
+standalone patches to the relevant maintainers, so they can merge it in
+their trees.
+
+I'm willing to do what's best for everybody - (a) is my choice when possible,
+(b) seems to stall things and potentially cause conflicts, (c) seems to be
+the compromise. I'll do that as per preference of the respective maintainers.
+
+
+As usual, reviews / comments are always welcome, thanks in advance for them!
+Cheers,
+
+Guilherme
+
+
+Guilherme G. Piccoli (11):
+  ARM: Disable FIQs (but not IRQs) on CPUs shutdown paths
+  notifier: Add panic notifiers info and purge trailing whitespaces
+  alpha: Clean-up the panic notifier code
+  um: Improve panic notifiers consistency and ordering
+  parisc: Replace regular spinlock with spin_trylock on panic path
+  tracing: Improve panic/die notifiers
+  notifiers: Add tracepoints to the notifiers infrastructure
+  EDAC/altera: Skip the panic notifier if kdump is loaded
+  video/hyperv_fb: Avoid taking busy spinlock on panic path
+  drivers/hv/vmbus, video/hyperv_fb: Untangle and refactor Hyper-V panic notifiers
+  panic: Fixes the panic_print NMI backtrace setting
+
+ arch/alpha/kernel/setup.c        |  36 +++++-----
+ arch/arm/kernel/machine_kexec.c  |   2 +
+ arch/arm/kernel/smp.c            |   5 +-
+ arch/parisc/include/asm/pdc.h    |   1 +
+ arch/parisc/kernel/firmware.c    |  27 ++++++--
+ arch/um/drivers/mconsole_kern.c  |   7 +-
+ arch/um/kernel/um_arch.c         |   8 +--
+ drivers/edac/altera_edac.c       |  16 +++--
+ drivers/hv/ring_buffer.c         |  13 ++++
+ drivers/hv/vmbus_drv.c           | 109 +++++++++++++++++++------------
+ drivers/parisc/power.c           |  17 +++--
+ drivers/video/fbdev/hyperv_fb.c  |  16 ++++-
+ include/linux/hyperv.h           |   2 +
+ include/linux/notifier.h         |   8 ++-
+ include/trace/events/notifiers.h |  69 +++++++++++++++++++
+ kernel/notifier.c                |   6 ++
+ kernel/panic.c                   |  47 +++++++------
+ kernel/trace/trace.c             |  55 ++++++++--------
+ 18 files changed, 302 insertions(+), 142 deletions(-)
+ create mode 100644 include/trace/events/notifiers.h
+
+-- 
 2.37.2
 
---Sig_/LZycpH1Xjhw3hn5+7RWproQ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEg/qxWKDZuPtyYo+kNasLKJxdslgFAmMI5tsACgkQNasLKJxd
-sli3qRAAkgRBGEM2oxLpbfJhsLdW21G4iDuBKV5sUnRsRzt2Wgxx8osNg28GNg+k
-xsM+8Fr2Qnjgqci8p5sIB4sqGxr5sAl3Lof7KTo2JfSs/i6pkAf4i2aXQo/8lmHd
-8lQPxzmSn6oWkGyfLYNxSMZG3ax7B1sx4tjMomaAoqF6jp0pzU9m3Kx3+c5Pw2U0
-waPRbj0R4pELzFzAinqW+tU815/UxtScYVGIJtGX5mNa0q1Nywm9iHdx7Ay2x2Bw
-QmuhfjCOQIt3hvAebILiYFLV7GBLrr93pEvnQOaozW+oHjXsM1uEXM3qCuAD/7ti
-BNpVoTTiCaNKO1PvnGpiYzky67WbsUchbSJrDcpBIPBL1NL9JDKr72B1Dg+WAUHH
-ae55V9qaye07Bg8+MiEgzGoMvE6tb4lcA6m7zhO/4uaQVv2CpNpUHNX9jyY1i3/R
-9PnR62D+kWkiqsRW5CL/bAA5mtDbkQ8gu+bov3M2IvceC9aAQe1sam5sxqcQqcFK
-CQRqAcv6hcVUx30JqLv1clx7JZwdpVrXA3DE+N2O3IKnE8xO247uAoOQ0r2Db8v3
-0964pe4JOjYprIDVyFrKAFFkntSvga5t+zJf0ZCVECn7t4IgN8xad7ar/+Yzcy2b
-FX0PVBW9FG0Vces/8byR1B/+mBwjEbb96RFK5jvQ294gXRg9LsA=
-=y+Wt
------END PGP SIGNATURE-----
-
---Sig_/LZycpH1Xjhw3hn5+7RWproQ--
-
-
---===============2692410671515588002==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 linux-um mailing list
 linux-um@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-um
-
---===============2692410671515588002==--
-
 
