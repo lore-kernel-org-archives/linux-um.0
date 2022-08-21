@@ -1,70 +1,57 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-Date: Mon, 18 Jul 2022 09:13:44 +0800
-From: kernel test robot <lkp@intel.com>
-Subject: [rw-uml:linux-next 11/16] arch/um/os-Linux/mem.c:28:6: warning: no
- previous prototype for 'kasan_map_memory'
-Message-ID: <202207180935.daaJausv-lkp@intel.com>
+Return-Path: <shorne@gmail.com>
+Date: Sun, 21 Aug 2022 17:42:51 +0000
+From: Stafford Horne <shorne@gmail.com>
+Subject: Re: [PATCH] kernel: exit: cleanup release_thread()
+Message-ID: <YwJum2c1I8JhY0B8@oscomms1>
+References: <20220819014406.32266-1-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-To: Patricia Alfonso <trishalfonso@google.com>
-Cc: kbuild-all@lists.01.org, user-mode-linux-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, Vincent Whitchurch <vincent.whitchurch@axis.com>, David Gow <davidgow@google.com>, Johannes Berg <johannes@sipsolutions.net>, Dmitry Vyukov <dvyukov@google.com>, Andrey Konovalov <andreyknvl@gmail.com>
-List-ID: <user-mode-linux-devel.lists.sourceforge.net>
+In-Reply-To: <20220819014406.32266-1-wangkefeng.wang@huawei.com>
+To: Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: Richard Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>, Brian Cain <bcain@quicinc.com>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Geert Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, "David S . Miller" <davem@davemloft.net>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, akpm@linux-foundation.org
+List-ID: <linux-um.lists.infradead.org>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git linux-next
-head:   af3e16101cee95efaa72095fe06c15ec0b8eb195
-commit: 5b301409e8bc5d7fad2ee138be44c5c529dd0874 [11/16] UML: add support for KASAN under x86_64
-config: um-i386_defconfig (https://download.01.org/0day-ci/archive/20220718/202207180935.daaJausv-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-3) 11.3.0
-reproduce (this is a W=1 build):
-        # https://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git/commit/?id=5b301409e8bc5d7fad2ee138be44c5c529dd0874
-        git remote add rw-uml https://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git
-        git fetch --no-tags rw-uml linux-next
-        git checkout 5b301409e8bc5d7fad2ee138be44c5c529dd0874
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=um SUBARCH=i386 SHELL=/bin/bash
+On Fri, Aug 19, 2022 at 09:44:06AM +0800, Kefeng Wang wrote:
+> Only x86 has own release_thread(), introduce a new weak
+> release_thread() function to clean empty definitions in
+> other ARCHs.
+> 
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
+>  arch/openrisc/include/asm/processor.h   | 1 -
+>  arch/openrisc/kernel/process.c          | 4 ----
 
-All warnings (new ones prefixed by >>):
+> diff --git a/arch/openrisc/include/asm/processor.h b/arch/openrisc/include/asm/processor.h
+> index aa1699c18add..ed9efb430afa 100644
+> --- a/arch/openrisc/include/asm/processor.h
+> +++ b/arch/openrisc/include/asm/processor.h
+> @@ -72,7 +72,6 @@ struct thread_struct {
+>  
+>  
+>  void start_thread(struct pt_regs *regs, unsigned long nip, unsigned long sp);
+> -void release_thread(struct task_struct *);
+>  unsigned long __get_wchan(struct task_struct *p);
+>  
+>  #define cpu_relax()     barrier()
+> diff --git a/arch/openrisc/kernel/process.c b/arch/openrisc/kernel/process.c
+> index 52dc983ddeba..f94b5ec06786 100644
+> --- a/arch/openrisc/kernel/process.c
+> +++ b/arch/openrisc/kernel/process.c
+> @@ -125,10 +125,6 @@ void show_regs(struct pt_regs *regs)
+>  	show_registers(regs);
+>  }
+>  
+> -void release_thread(struct task_struct *dead_task)
+> -{
+> -}
+> -
+>  /*
+>   * Copy the thread-specific (arch specific) info from the current
+>   * process to the new one p
 
->> arch/um/os-Linux/mem.c:28:6: warning: no previous prototype for 'kasan_map_memory' [-Wmissing-prototypes]
-      28 | void kasan_map_memory(void *start, size_t len)
-         |      ^~~~~~~~~~~~~~~~
-   arch/um/os-Linux/mem.c:212:13: warning: no previous prototype for 'check_tmpexec' [-Wmissing-prototypes]
-     212 | void __init check_tmpexec(void)
-         |             ^~~~~~~~~~~~~
+For OpenRISC bits.
 
-
-vim +/kasan_map_memory +28 arch/um/os-Linux/mem.c
-
-    19	
-    20	/*
-    21	 * kasan_map_memory - maps memory from @start with a size of @len.
-    22	 * The allocated memory is filled with zeroes upon success.
-    23	 * @start: the start address of the memory to be mapped
-    24	 * @len: the length of the memory to be mapped
-    25	 *
-    26	 * This function is used to map shadow memory for KASAN in uml
-    27	 */
-  > 28	void kasan_map_memory(void *start, size_t len)
-    29	{
-    30		if (mmap(start,
-    31			 len,
-    32			 PROT_READ|PROT_WRITE,
-    33			 MAP_FIXED|MAP_ANONYMOUS|MAP_PRIVATE|MAP_NORESERVE,
-    34			 -1,
-    35			 0) == MAP_FAILED) {
-    36			os_info("Couldn't allocate shadow memory: %s\n.",
-    37				strerror(errno));
-    38			exit(1);
-    39		}
-    40	}
-    41	
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Acked-by: Stafford Horne <shorne@gmail.com>
 
