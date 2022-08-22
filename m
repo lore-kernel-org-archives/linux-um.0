@@ -1,13 +1,18 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mout.web.de ([217.72.192.78])
+Received: from mail-ot1-x334.google.com ([2607:f8b0:4864:20::334])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oRbMX-0072bV-Mr
-	for linux-um@lists.infradead.org; Fri, 26 Aug 2022 15:35:15 +0000
-Date: Fri, 26 Aug 2022 15:29:27 +0000
-From: Lukas Straub <lukasstraub2@web.de>
-Subject: [PATCH 1/2] um: Cleanup syscall_handler_t cast in syscalls_32.h
-Message-ID: <20220826152927.193d262c@gecko>
+	id 1oQ0ff-005KOo-H5
+	for linux-um@lists.infradead.org; Mon, 22 Aug 2022 06:12:24 +0000
+Received: by mail-ot1-x334.google.com with SMTP id 53-20020a9d0838000000b006371d896343so7043994oty.10
+        for <linux-um@lists.infradead.org>; Sun, 21 Aug 2022 23:12:21 -0700 (PDT)
 MIME-Version: 1.0
+References: <CAADnVQJFc9AnH_9CW+bSRotkKvOmkO9jq-RF6dmyPYOpq691Yg@mail.gmail.com>
+ <20220819190640.2763586-1-ndesaulniers@google.com> <CAHk-=whLcuvDDS3rZfEgDrwbdJrTx8HCRNiZ5cDc80-_gzHCxw@mail.gmail.com>
+In-Reply-To: <CAHk-=whLcuvDDS3rZfEgDrwbdJrTx8HCRNiZ5cDc80-_gzHCxw@mail.gmail.com>
+From: Sedat Dilek <sedat.dilek@gmail.com>
+Date: Mon, 22 Aug 2022 08:11:44 +0200
+Message-ID: <CA+icZUUX1gPvnExa=zyVqB8xYOTai+nfHp6E7+qRE2mXXa2M=A@mail.gmail.com>
+Subject: Re: [PATCH v2] asm goto: eradicate CC_HAS_ASM_GOTO
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -16,86 +21,50 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4546627542126428434=="
+Reply-To: sedat.dilek@gmail.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um <linux-um@lists.infradead.org>
-Cc: Randy Dunlap <rdunlap@infradead.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, x86@kernel.org, linux-kernel@vger.kernel.org
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>, Masahiro Yamada <masahiroy@kernel.org>, Peter Zijlstra <peterz@infradead.org>, x86@kernel.org, linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, kvm@vger.kernel.org, llvm@lists.linux.dev, Alexandre Belloni <alexandre.belloni@bootlin.com>, Borislav Petkov <bp@suse.de>, Alexei Starovoitov <alexei.starovoitov@gmail.com>
 
---===============4546627542126428434==
-Content-Type: multipart/signed; boundary="Sig_/2_zsh.QdJpcK7WunS7oTK32";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+On Sun, Aug 21, 2022 at 7:13 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> Applied directly, just because I love seeing old nasty stuff like this go away.
+>
+>              Linus
 
---Sig_/2_zsh.QdJpcK7WunS7oTK32
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-Like in f4f03f299a56ce4d73c5431e0327b3b6cb55ebb9
-"um: Cleanup syscall_handler_t definition/cast, fix warning",
-remove the cast to to fix the compiler warning.
+Small nitpick:
 
-Signed-off-by: Lukas Straub <lukasstraub2@web.de>
----
- arch/x86/um/shared/sysdep/syscalls_32.h | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+--- a/arch/x86/include/asm/rmwcc.h
++++ b/arch/x86/include/asm/rmwcc.h
+...
+-#if !defined(__GCC_ASM_FLAG_OUTPUTS__) && defined(CONFIG_CC_HAS_ASM_GOTO)
++#ifndef __GCC_ASM_FLAG_OUTPUTS__
+...
+-#else /* defined(__GCC_ASM_FLAG_OUTPUTS__) ||
+!defined(CONFIG_CC_HAS_ASM_GOTO) */
++#else /* defined(__GCC_ASM_FLAG_OUTPUTS__) */
+...
+-#endif /* defined(__GCC_ASM_FLAG_OUTPUTS__) ||
+!defined(CONFIG_CC_HAS_ASM_GOTO) */
++#endif /* defined(__GCC_ASM_FLAG_OUTPUTS__) */
 
-diff --git a/arch/x86/um/shared/sysdep/syscalls_32.h b/arch/x86/um/shared/s=
-ysdep/syscalls_32.h
-index 68fd2cf526fd..f6e9f84397e7 100644
---- a/arch/x86/um/shared/sysdep/syscalls_32.h
-+++ b/arch/x86/um/shared/sysdep/syscalls_32.h
-@@ -6,10 +6,9 @@
- #include <asm/unistd.h>
- #include <sysdep/ptrace.h>
-=20
--typedef long syscall_handler_t(struct pt_regs);
-+typedef long syscall_handler_t(struct syscall_args);
-=20
- extern syscall_handler_t *sys_call_table[];
-=20
- #define EXECUTE_SYSCALL(syscall, regs) \
--	((long (*)(struct syscall_args)) \
--	 (*sys_call_table[syscall]))(SYSCALL_ARGS(&regs->regs))
-+	((*sys_call_table[syscall]))(SYSCALL_ARGS(&regs->regs))
---=20
-2.37.2
+Shouldn't that be...
 
+#if !defined(__GCC_ASM_FLAG_OUTPUTS__)
 
---Sig_/2_zsh.QdJpcK7WunS7oTK32
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+...to fit the 2 comments?
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEg/qxWKDZuPtyYo+kNasLKJxdslgFAmMI5tcACgkQNasLKJxd
-sli58g//YFp2irBcbLtEWRCL8FVxCc/fDmNk99rBRasiEUeEQ+l21SkJqqUUIhYe
-SxNDovCVZC5pFDJZbSc+a3Gd+GQGNoQojL9V6U4B6JA2r98nzOYg7Demxin2fvm5
-BA0ONTLJ4e7J156JSqX9z8lw//sk3vetdhRCFB7qh8fsUlm7dN5je4HxLfG+HRKH
-tNWQb8Gp5P29mNDq4YRh95Xv+hMgKbOTPVb/vMLsXv9ZRVU+U2wVK/9vDtf96KgP
-7NI8/g1LgcyQ9Efk+jiVjCIrqG20smACCp6mE6yPIuumZIJ7FkqujTd//BdptYns
-c6HejzHgNbi2wpSuueV667SE4nKatPmXfqr26ZsVM1MoonImQ6ThN/3Tcb6c5Xtl
-SPeafkPv/9UzREQzTdbLy5pW0pzFmyCeqJfTPMzemA553WxNQwfIWrZjbt1Kyuh0
-Mx9aKuQ+XK5nquLwG4EdktA3gi6q+KK88UflateXMX4HCyhPuolGNvgY4He1EnVi
-IPrabG4xn07xMZXKfBi9VdyDRU8C9VbdmqvY6mA8IBLlszWAZz2lMrveuCnxoMlw
-TgWthGHqpm7ec73DL4xhPsUUif4q+lLf2N22ezViwiO+BKCvAVTt7sqnpHWrK6M+
-PDWDvhuQYsNvcCJn1Zvw97YQyH/GM0jErNFZKPHDfnc7xOLvmt8=
-=jB+v
------END PGP SIGNATURE-----
-
---Sig_/2_zsh.QdJpcK7WunS7oTK32--
-
-
---===============4546627542126428434==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Best regards,
+-Sedat-
 
 _______________________________________________
 linux-um mailing list
 linux-um@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-um
-
---===============4546627542126428434==--
-
 
