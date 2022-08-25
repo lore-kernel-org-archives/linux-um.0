@@ -1,104 +1,445 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-pj1-x104a.google.com ([2607:f8b0:4864:20::104a])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oQIPg-00H21l-3n
-	for linux-um@lists.infradead.org; Tue, 23 Aug 2022 01:09:05 +0000
-Received: by mail-pj1-x104a.google.com with SMTP id l3-20020a17090aec0300b001fb0bedf2faso2307592pjy.8
-        for <linux-um@lists.infradead.org>; Mon, 22 Aug 2022 18:09:00 -0700 (PDT)
-Date: Tue, 23 Aug 2022 09:08:30 +0800
-Message-Id: <20220823010830.2675419-1-davidgow@google.com>
-Mime-Version: 1.0
-Subject: [PATCH] arch: um: Mark the stack non-executable to fix a binutils warning
-From: David Gow <davidgow@google.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Nick Desaulniers <ndesaulniers@google.com>
-Cc: David Gow <davidgow@google.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, Linus Torvalds <torvalds@linux-foundation.org>, Brendan Higgins <brendan.higgins@linux.dev>, Daniel Latypov <dlatypov@google.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com, x86@kernel.org
+Return-Path: <mail@conchuod.ie>
+From: Conor Dooley <mail@conchuod.ie>
+Subject: [PATCH v2] include/linux: declare cpuinfo_op in processor.h
+Date: Thu, 25 Aug 2022 21:59:43 +0100
+Message-Id: <20220825205942.1713914-1-mail@conchuod.ie>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+To: arnd@arndb.de, linux-arch@vger.kernel.org
+Cc: richard.henderson@linaro.org, mattst88@gmail.com, vgupta@kernel.org, linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org, guoren@kernel.org, bcain@quicinc.com, chenhuacai@kernel.org, geert@linux-m68k.org, gerg@linux-m68k.org, monstr@monstr.eu, tsbogend@alpha.franken.de, dinguyen@kernel.org, shorne@gmail.com, deller@gmx.de, mpe@ellerman.id.au, palmer@dabbelt.com, hca@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net, richard@nod.at, x86@kernel.org, jcmvbkbc@gmail.com, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, linux-fsdevel@vger.kernel.org, Conor Dooley <conor.dooley@microchip.com>
+List-ID: <linux-um.lists.infradead.org>
 
-Since binutils 2.39, ld will print a warning if any stack section is
-executable, which is the default for stack sections on files without a
-.note.GNU-stack section.
+From: Conor Dooley <conor.dooley@microchip.com>
 
-This was fixed for x86 in commit ffcf9c5700e4 ("x86: link vdso and boot with -z noexecstack --no-warn-rwx-segments"),
-but remained broken for UML, resulting in several warnings:
+RISC-V is missing a prototype for cpuinfo_op, triggering complaints
+from sparse. Rather than adding yet another `extern const struct
+seq_operations cpuinfo_op;` to an arch specific header file, create a
+generic variant and include it across the board.
 
-/usr/bin/ld: warning: arch/x86/um/vdso/vdso.o: missing .note.GNU-stack section implies executable stack
-/usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
-/usr/bin/ld: warning: .tmp_vmlinux.kallsyms1 has a LOAD segment with RWX permissions
-/usr/bin/ld: warning: .tmp_vmlinux.kallsyms1.o: missing .note.GNU-stack section implies executable stack
-/usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
-/usr/bin/ld: warning: .tmp_vmlinux.kallsyms2 has a LOAD segment with RWX permissions
-/usr/bin/ld: warning: .tmp_vmlinux.kallsyms2.o: missing .note.GNU-stack section implies executable stack
-/usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
-/usr/bin/ld: warning: vmlinux has a LOAD segment with RWX permissions
+Several archs already have a declaration in asm/processor.h - migrate
+these to include linux/processor.h instead. Most archs do not declare
+cpuinfo_op so one sparse complaint off their books.
 
-Link both the VDSO and vmlinux with -z noexecstack, fixing the warnings
-about .note.GNU-stack sections. In addition, pass --no-warn-rwx-segments
-to dodge the remaining warnings about LOAD segments with RWX permissions
-in the kallsyms objects. (Note that this flag is apparently not
-available on lld, so hide it behind a test for BFD, which is what the
-x86 patch does.)
-
-Link: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ffcf9c5700e49c0aee42dcba9a12ba21338e8136
-Link: https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=ba951afb99912da01a6e8434126b8fac7aa75107
-Signed-off-by: David Gow <davidgow@google.com>
+Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
 ---
- arch/um/Makefile          | 9 ++++++++-
- arch/x86/um/vdso/Makefile | 2 +-
- 2 files changed, 9 insertions(+), 2 deletions(-)
+Changes since v1:
+- Per Geert, use linux/processor.h & include it on all archs &
+- Squash to a single patch
 
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index f2fe63bfd819..75d5c704b3a8 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -132,10 +132,17 @@ export LDS_ELF_FORMAT := $(ELF_FORMAT)
- # The wrappers will select whether using "malloc" or the kernel allocator.
- LINK_WRAPS = -Wl,--wrap,malloc -Wl,--wrap,free -Wl,--wrap,calloc
+I pushed it out for LKP to take a look at, and was all good there.
+Only added one person per arch & the mailing lists to stay within a
+1024 character CC list. Please scream if I picked the wrong person.
+---
+ arch/alpha/kernel/setup.c               | 1 +
+ arch/arc/kernel/setup.c                 | 1 +
+ arch/arm/kernel/setup.c                 | 1 +
+ arch/arm64/kernel/cpuinfo.c             | 1 +
+ arch/csky/kernel/cpu-probe.c            | 1 +
+ arch/hexagon/kernel/setup.c             | 1 +
+ arch/ia64/kernel/setup.c                | 1 +
+ arch/loongarch/kernel/proc.c            | 1 +
+ arch/m68k/kernel/setup_mm.c             | 1 +
+ arch/m68k/kernel/setup_no.c             | 1 +
+ arch/microblaze/include/asm/processor.h | 2 --
+ arch/microblaze/kernel/cpu/mb.c         | 1 +
+ arch/mips/kernel/proc.c                 | 1 +
+ arch/nios2/kernel/cpuinfo.c             | 1 +
+ arch/openrisc/kernel/setup.c            | 1 +
+ arch/parisc/kernel/setup.c              | 1 +
+ arch/powerpc/kernel/setup-common.c      | 1 +
+ arch/riscv/kernel/cpu.c                 | 3 ++-
+ arch/s390/include/asm/processor.h       | 2 +-
+ arch/s390/kernel/processor.c            | 1 +
+ arch/sh/include/asm/processor.h         | 1 -
+ arch/sh/kernel/cpu/proc.c               | 1 +
+ arch/sparc/include/asm/cpudata.h        | 2 --
+ arch/sparc/kernel/cpu.c                 | 1 +
+ arch/um/kernel/um_arch.c                | 1 +
+ arch/x86/include/asm/processor.h        | 2 --
+ arch/x86/kernel/cpu/proc.c              | 1 +
+ arch/xtensa/kernel/setup.c              | 1 +
+ fs/proc/cpuinfo.c                       | 3 +--
+ include/linux/processor.h               | 2 ++
+ 30 files changed, 28 insertions(+), 11 deletions(-)
+
+diff --git a/arch/alpha/kernel/setup.c b/arch/alpha/kernel/setup.c
+index b4fbbba30aa2..d2c2546e9b1a 100644
+--- a/arch/alpha/kernel/setup.c
++++ b/arch/alpha/kernel/setup.c
+@@ -46,6 +46,7 @@
+ #include <asm/io.h>
+ #include <linux/log2.h>
+ #include <linux/export.h>
++#include <linux/processor.h>
  
-+# Avoid binutils 2.39+ warnings by marking the stack non-executable and
-+# ignorning warnings for the kallsyms sections.
-+LINK_RWXSECTION = -Wl,-z,noexecstack
-+ifeq ($(CONFIG_LD_IS_BFD),y)
-+LINK_RWXSECTION += -Wl,--no-warn-rwx-segments
-+endif
+ static int alpha_panic_event(struct notifier_block *, unsigned long, void *);
+ static struct notifier_block alpha_panic_block = {
+diff --git a/arch/arc/kernel/setup.c b/arch/arc/kernel/setup.c
+index 41f07b3e594e..b681bdd21a0c 100644
+--- a/arch/arc/kernel/setup.c
++++ b/arch/arc/kernel/setup.c
+@@ -17,6 +17,7 @@
+ #include <linux/of_fdt.h>
+ #include <linux/of.h>
+ #include <linux/cache.h>
++#include <linux/processor.h>
+ #include <uapi/linux/mount.h>
+ #include <asm/sections.h>
+ #include <asm/arcregs.h>
+diff --git a/arch/arm/kernel/setup.c b/arch/arm/kernel/setup.c
+index 1e8a50a97edf..83240c3c0463 100644
+--- a/arch/arm/kernel/setup.c
++++ b/arch/arm/kernel/setup.c
+@@ -29,6 +29,7 @@
+ #include <linux/compiler.h>
+ #include <linux/sort.h>
+ #include <linux/psci.h>
++#include <linux/processor.h>
+ 
+ #include <asm/unified.h>
+ #include <asm/cp15.h>
+diff --git a/arch/arm64/kernel/cpuinfo.c b/arch/arm64/kernel/cpuinfo.c
+index d7702f39b4d3..4c1b12918aed 100644
+--- a/arch/arm64/kernel/cpuinfo.c
++++ b/arch/arm64/kernel/cpuinfo.c
+@@ -20,6 +20,7 @@
+ #include <linux/personality.h>
+ #include <linux/preempt.h>
+ #include <linux/printk.h>
++#include <linux/processor.h>
+ #include <linux/seq_file.h>
+ #include <linux/sched.h>
+ #include <linux/smp.h>
+diff --git a/arch/csky/kernel/cpu-probe.c b/arch/csky/kernel/cpu-probe.c
+index 5f15ca31d3e8..62580f5d0d74 100644
+--- a/arch/csky/kernel/cpu-probe.c
++++ b/arch/csky/kernel/cpu-probe.c
+@@ -5,6 +5,7 @@
+ #include <linux/init.h>
+ #include <linux/seq_file.h>
+ #include <linux/memblock.h>
++#include <linux/processor.h>
+ 
+ #include <abi/reg_ops.h>
+ 
+diff --git a/arch/hexagon/kernel/setup.c b/arch/hexagon/kernel/setup.c
+index 1880d9beaf2b..395d2930dbd1 100644
+--- a/arch/hexagon/kernel/setup.c
++++ b/arch/hexagon/kernel/setup.c
+@@ -13,6 +13,7 @@
+ #include <linux/seq_file.h>
+ #include <linux/console.h>
+ #include <linux/of_fdt.h>
++#include <linux/processor.h>
+ #include <asm/io.h>
+ #include <asm/sections.h>
+ #include <asm/setup.h>
+diff --git a/arch/ia64/kernel/setup.c b/arch/ia64/kernel/setup.c
+index fd6301eafa9d..973725c4ce1e 100644
+--- a/arch/ia64/kernel/setup.c
++++ b/arch/ia64/kernel/setup.c
+@@ -52,6 +52,7 @@
+ #include <linux/cpufreq.h>
+ #include <linux/kexec.h>
+ #include <linux/crash_dump.h>
++#include <linux/processor.h>
+ 
+ #include <asm/mca.h>
+ #include <asm/meminit.h>
+diff --git a/arch/loongarch/kernel/proc.c b/arch/loongarch/kernel/proc.c
+index 5c67cc4fd56d..a8cbebe839e2 100644
+--- a/arch/loongarch/kernel/proc.c
++++ b/arch/loongarch/kernel/proc.c
+@@ -6,6 +6,7 @@
+ #include <linux/kernel.h>
+ #include <linux/sched.h>
+ #include <linux/seq_file.h>
++#include <linux/processor.h>
+ #include <asm/bootinfo.h>
+ #include <asm/cpu.h>
+ #include <asm/cpu-features.h>
+diff --git a/arch/m68k/kernel/setup_mm.c b/arch/m68k/kernel/setup_mm.c
+index e62fa8f2149b..45d82a4839fc 100644
+--- a/arch/m68k/kernel/setup_mm.c
++++ b/arch/m68k/kernel/setup_mm.c
+@@ -25,6 +25,7 @@
+ #include <linux/module.h>
+ #include <linux/nvram.h>
+ #include <linux/initrd.h>
++#include <linux/processor.h>
+ 
+ #include <asm/bootinfo.h>
+ #include <asm/byteorder.h>
+diff --git a/arch/m68k/kernel/setup_no.c b/arch/m68k/kernel/setup_no.c
+index cb6def585851..86dd4b47ff43 100644
+--- a/arch/m68k/kernel/setup_no.c
++++ b/arch/m68k/kernel/setup_no.c
+@@ -33,6 +33,7 @@
+ #include <linux/initrd.h>
+ #include <linux/root_dev.h>
+ #include <linux/rtc.h>
++#include <linux/processor.h>
+ 
+ #include <asm/setup.h>
+ #include <asm/bootinfo.h>
+diff --git a/arch/microblaze/include/asm/processor.h b/arch/microblaze/include/asm/processor.h
+index 7e9e92670df3..c5877c91116a 100644
+--- a/arch/microblaze/include/asm/processor.h
++++ b/arch/microblaze/include/asm/processor.h
+@@ -15,8 +15,6 @@
+ #include <asm/current.h>
+ 
+ # ifndef __ASSEMBLY__
+-/* from kernel/cpu/mb.c */
+-extern const struct seq_operations cpuinfo_op;
+ 
+ # define cpu_relax()		barrier()
+ 
+diff --git a/arch/microblaze/kernel/cpu/mb.c b/arch/microblaze/kernel/cpu/mb.c
+index 9581d194d9e4..33f5be916121 100644
+--- a/arch/microblaze/kernel/cpu/mb.c
++++ b/arch/microblaze/kernel/cpu/mb.c
+@@ -14,6 +14,7 @@
+ #include <linux/seq_file.h>
+ #include <linux/cpu.h>
+ #include <linux/initrd.h>
++#include <linux/processor.h>
+ 
+ #include <linux/bug.h>
+ #include <asm/cpuinfo.h>
+diff --git a/arch/mips/kernel/proc.c b/arch/mips/kernel/proc.c
+index 8eba5a1ed664..54a4226cff84 100644
+--- a/arch/mips/kernel/proc.c
++++ b/arch/mips/kernel/proc.c
+@@ -8,6 +8,7 @@
+ #include <linux/kernel.h>
+ #include <linux/sched.h>
+ #include <linux/seq_file.h>
++#include <linux/processor.h>
+ #include <asm/bootinfo.h>
+ #include <asm/cpu.h>
+ #include <asm/cpu-features.h>
+diff --git a/arch/nios2/kernel/cpuinfo.c b/arch/nios2/kernel/cpuinfo.c
+index 203870c4b86d..9641ca55377e 100644
+--- a/arch/nios2/kernel/cpuinfo.c
++++ b/arch/nios2/kernel/cpuinfo.c
+@@ -12,6 +12,7 @@
+ #include <linux/seq_file.h>
+ #include <linux/string.h>
+ #include <linux/of.h>
++#include <linux/processor.h>
+ #include <asm/cpuinfo.h>
+ 
+ struct cpuinfo cpuinfo;
+diff --git a/arch/openrisc/kernel/setup.c b/arch/openrisc/kernel/setup.c
+index 0cd04d936a7a..a628c928941b 100644
+--- a/arch/openrisc/kernel/setup.c
++++ b/arch/openrisc/kernel/setup.c
+@@ -33,6 +33,7 @@
+ #include <linux/of_fdt.h>
+ #include <linux/of.h>
+ #include <linux/device.h>
++#include <linux/processor.h>
+ 
+ #include <asm/sections.h>
+ #include <asm/types.h>
+diff --git a/arch/parisc/kernel/setup.c b/arch/parisc/kernel/setup.c
+index f005ddedb50e..d00488507f49 100644
+--- a/arch/parisc/kernel/setup.c
++++ b/arch/parisc/kernel/setup.c
+@@ -25,6 +25,7 @@
+ #include <linux/sched.h>
+ #include <linux/sched/clock.h>
+ #include <linux/start_kernel.h>
++#include <linux/processor.h>
+ 
+ #include <asm/cacheflush.h>
+ #include <asm/processor.h>
+diff --git a/arch/powerpc/kernel/setup-common.c b/arch/powerpc/kernel/setup-common.c
+index dd98f43bd685..12ddcb1401be 100644
+--- a/arch/powerpc/kernel/setup-common.c
++++ b/arch/powerpc/kernel/setup-common.c
+@@ -34,6 +34,7 @@
+ #include <linux/of_platform.h>
+ #include <linux/hugetlb.h>
+ #include <linux/pgtable.h>
++#include <linux/processor.h>
+ #include <asm/io.h>
+ #include <asm/paca.h>
+ #include <asm/processor.h>
+diff --git a/arch/riscv/kernel/cpu.c b/arch/riscv/kernel/cpu.c
+index 0be8a2403212..f28ec528d54a 100644
+--- a/arch/riscv/kernel/cpu.c
++++ b/arch/riscv/kernel/cpu.c
+@@ -4,8 +4,9 @@
+  */
+ 
+ #include <linux/init.h>
+-#include <linux/seq_file.h>
+ #include <linux/of.h>
++#include <linux/processor.h>
++#include <linux/seq_file.h>
+ #include <asm/hwcap.h>
+ #include <asm/smp.h>
+ #include <asm/pgtable.h>
+diff --git a/arch/s390/include/asm/processor.h b/arch/s390/include/asm/processor.h
+index bd66f8e34949..55fbb4f7f7f6 100644
+--- a/arch/s390/include/asm/processor.h
++++ b/arch/s390/include/asm/processor.h
+@@ -33,6 +33,7 @@
+ #include <linux/cpumask.h>
+ #include <linux/linkage.h>
+ #include <linux/irqflags.h>
++#include <linux/processor.h>
+ #include <asm/cpu.h>
+ #include <asm/page.h>
+ #include <asm/ptrace.h>
+@@ -80,7 +81,6 @@ void s390_adjust_jiffies(void);
+ void s390_update_cpu_mhz(void);
+ void cpu_detect_mhz_feature(void);
+ 
+-extern const struct seq_operations cpuinfo_op;
+ extern void execve_tail(void);
+ extern void __bpon(void);
+ unsigned long vdso_size(void);
+diff --git a/arch/s390/kernel/processor.c b/arch/s390/kernel/processor.c
+index a194611ba88c..267886605902 100644
+--- a/arch/s390/kernel/processor.c
++++ b/arch/s390/kernel/processor.c
+@@ -17,6 +17,7 @@
+ #include <linux/mm_types.h>
+ #include <linux/delay.h>
+ #include <linux/cpu.h>
++#include <linux/processor.h>
+ 
+ #include <asm/diag.h>
+ #include <asm/facility.h>
+diff --git a/arch/sh/include/asm/processor.h b/arch/sh/include/asm/processor.h
+index 85a6c1c3c16e..10c4b4b9af46 100644
+--- a/arch/sh/include/asm/processor.h
++++ b/arch/sh/include/asm/processor.h
+@@ -123,7 +123,6 @@ extern unsigned int mem_init_done;
+ 
+ /* arch/sh/kernel/setup.c */
+ const char *get_cpu_subtype(struct sh_cpuinfo *c);
+-extern const struct seq_operations cpuinfo_op;
+ 
+ /* thread_struct flags */
+ #define SH_THREAD_UAC_NOPRINT	(1 << 0)
+diff --git a/arch/sh/kernel/cpu/proc.c b/arch/sh/kernel/cpu/proc.c
+index a306bcd6b341..f373a21c6705 100644
+--- a/arch/sh/kernel/cpu/proc.c
++++ b/arch/sh/kernel/cpu/proc.c
+@@ -2,6 +2,7 @@
+ #include <linux/seq_file.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
++#include <linux/processor.h>
+ #include <asm/machvec.h>
+ #include <asm/processor.h>
+ 
+diff --git a/arch/sparc/include/asm/cpudata.h b/arch/sparc/include/asm/cpudata.h
+index d213165ee713..f7e690a7860b 100644
+--- a/arch/sparc/include/asm/cpudata.h
++++ b/arch/sparc/include/asm/cpudata.h
+@@ -7,8 +7,6 @@
+ #include <linux/threads.h>
+ #include <linux/percpu.h>
+ 
+-extern const struct seq_operations cpuinfo_op;
+-
+ #endif /* !(__ASSEMBLY__) */
+ 
+ #if defined(__sparc__) && defined(__arch64__)
+diff --git a/arch/sparc/kernel/cpu.c b/arch/sparc/kernel/cpu.c
+index 79cd6ccfeac0..ffdc7a825b80 100644
+--- a/arch/sparc/kernel/cpu.c
++++ b/arch/sparc/kernel/cpu.c
+@@ -12,6 +12,7 @@
+ #include <linux/smp.h>
+ #include <linux/threads.h>
+ #include <linux/pgtable.h>
++#include <linux/processor.h>
+ 
+ #include <asm/spitfire.h>
+ #include <asm/oplib.h>
+diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
+index e0de60e503b9..4034f5b959f7 100644
+--- a/arch/um/kernel/um_arch.c
++++ b/arch/um/kernel/um_arch.c
+@@ -9,6 +9,7 @@
+ #include <linux/ctype.h>
+ #include <linux/module.h>
+ #include <linux/panic_notifier.h>
++#include <linux/processor.h>
+ #include <linux/seq_file.h>
+ #include <linux/string.h>
+ #include <linux/utsname.h>
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index 356308c73951..08ccd453ec4f 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -188,8 +188,6 @@ DECLARE_PER_CPU_READ_MOSTLY(struct cpuinfo_x86, cpu_info);
+ #define cpu_data(cpu)		boot_cpu_data
+ #endif
+ 
+-extern const struct seq_operations cpuinfo_op;
+-
+ #define cache_line_size()	(boot_cpu_data.x86_cache_alignment)
+ 
+ extern void cpu_detect(struct cpuinfo_x86 *c);
+diff --git a/arch/x86/kernel/cpu/proc.c b/arch/x86/kernel/cpu/proc.c
+index 099b6f0d96bd..5a0699d9ff7d 100644
+--- a/arch/x86/kernel/cpu/proc.c
++++ b/arch/x86/kernel/cpu/proc.c
+@@ -4,6 +4,7 @@
+ #include <linux/string.h>
+ #include <linux/seq_file.h>
+ #include <linux/cpufreq.h>
++#include <linux/processor.h>
+ 
+ #include "cpu.h"
+ 
+diff --git a/arch/xtensa/kernel/setup.c b/arch/xtensa/kernel/setup.c
+index 9191738f9941..d4417a174887 100644
+--- a/arch/xtensa/kernel/setup.c
++++ b/arch/xtensa/kernel/setup.c
+@@ -25,6 +25,7 @@
+ #include <linux/cpu.h>
+ #include <linux/of.h>
+ #include <linux/of_fdt.h>
++#include <linux/processor.h>
+ 
+ #if defined(CONFIG_VGA_CONSOLE) || defined(CONFIG_DUMMY_CONSOLE)
+ # include <linux/console.h>
+diff --git a/fs/proc/cpuinfo.c b/fs/proc/cpuinfo.c
+index f38bda5b83ec..ca3065dfecd9 100644
+--- a/fs/proc/cpuinfo.c
++++ b/fs/proc/cpuinfo.c
+@@ -3,10 +3,9 @@
+ #include <linux/fs.h>
+ #include <linux/init.h>
+ #include <linux/proc_fs.h>
++#include <linux/processor.h>
+ #include <linux/seq_file.h>
+ 
+-extern const struct seq_operations cpuinfo_op;
+-
+ static int cpuinfo_open(struct inode *inode, struct file *file)
+ {
+ 	return seq_open(file, &cpuinfo_op);
+diff --git a/include/linux/processor.h b/include/linux/processor.h
+index dc78bdc7079a..71bdf8626874 100644
+--- a/include/linux/processor.h
++++ b/include/linux/processor.h
+@@ -59,4 +59,6 @@ do {								\
+ 
+ #endif
+ 
++extern const struct seq_operations cpuinfo_op;
 +
- LD_FLAGS_CMDLINE = $(foreach opt,$(KBUILD_LDFLAGS),-Wl,$(opt))
- 
- # Used by link-vmlinux.sh which has special support for um link
--export CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS) $(LD_FLAGS_CMDLINE)
-+export CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS) $(LINK_RWXSECTION) $(LD_FLAGS_CMDLINE)
- 
- # When cleaning we don't include .config, so we don't include
- # TT or skas makefiles and don't clean skas_ptregs.h.
-diff --git a/arch/x86/um/vdso/Makefile b/arch/x86/um/vdso/Makefile
-index 8c0396fd0e6f..6fbe97c52c99 100644
---- a/arch/x86/um/vdso/Makefile
-+++ b/arch/x86/um/vdso/Makefile
-@@ -65,7 +65,7 @@ quiet_cmd_vdso = VDSO    $@
- 		       -Wl,-T,$(filter %.lds,$^) $(filter %.o,$^) && \
- 		 sh $(srctree)/$(src)/checkundef.sh '$(NM)' '$@'
- 
--VDSO_LDFLAGS = -fPIC -shared -Wl,--hash-style=sysv
-+VDSO_LDFLAGS = -fPIC -shared -Wl,--hash-style=sysv -z noexecstack
- GCOV_PROFILE := n
- 
- #
+ #endif /* _LINUX_PROCESSOR_H */
 -- 
-2.37.1.595.g718a3a8f04-goog
+2.37.1
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
 
