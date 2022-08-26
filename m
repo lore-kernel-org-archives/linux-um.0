@@ -1,17 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-yw1-x114a.google.com ([2607:f8b0:4864:20::114a])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oP7Kd-00BR7X-CY
-	for linux-um@lists.infradead.org; Fri, 19 Aug 2022 19:07:01 +0000
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-3359a55dcb6so91263527b3.21
-        for <linux-um@lists.infradead.org>; Fri, 19 Aug 2022 12:06:55 -0700 (PDT)
-Date: Fri, 19 Aug 2022 12:06:40 -0700
-In-Reply-To: <CAADnVQJFc9AnH_9CW+bSRotkKvOmkO9jq-RF6dmyPYOpq691Yg@mail.gmail.com>
-Message-Id: <20220819190640.2763586-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-References: <CAADnVQJFc9AnH_9CW+bSRotkKvOmkO9jq-RF6dmyPYOpq691Yg@mail.gmail.com>
-Subject: [PATCH v2] asm goto: eradicate CC_HAS_ASM_GOTO
-From: Nick Desaulniers <ndesaulniers@google.com>
+Message-ID: <63b95279-8013-078d-b84b-716b3dbfbac4@infradead.org>
+Date: Fri, 26 Aug 2022 13:36:58 -0700
+MIME-Version: 1.0
+Subject: Re: [PATCH 2/2] um: Cleanup compiler warning in arch/x86/um/tls_32.c
+Content-Language: en-US
+References: <20220826152931.5835fdf8@gecko>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20220826152931.5835fdf8@gecko>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,298 +19,75 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, x86@kernel.org, linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, kvm@vger.kernel.org, llvm@lists.linux.dev, Linus Torvalds <torvalds@linux-foundation.org>, Alexandre Belloni <alexandre.belloni@bootlin.com>, Nick Desaulniers <ndesaulniers@google.com>, Borislav Petkov <bp@suse.de>, Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: Lukas Straub <lukasstraub2@web.de>, linux-um <linux-um@lists.infradead.org>
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, x86@kernel.org, linux-kernel@vger.kernel.org
 
-GCC has supported asm goto since 4.5, and Clang has since version 9.0.0.
-The minimum supported versions of these tools for the build according to
-Documentation/process/changes.rst are 5.1 and 11.0.0 respectively.
 
-Remove the feature detection script, Kconfig option, and clean up some
-fallback code that is no longer supported.
 
-The removed script was also testing for a GCC specific bug that was
-fixed in the 4.7 release.
+On 8/26/22 08:29, Lukas Straub wrote:
+> arch.tls_array is statically allocated so checking for NULL doesn't
+> make sense. This causes the compiler warning below.
+> 
+> Remove the checks to silence these warnings.
+> 
+> ../arch/x86/um/tls_32.c: In function 'get_free_idx':
+> ../arch/x86/um/tls_32.c:68:13: warning: the comparison will always evaluate as 'true' for the address of 'tls_array' will never be NULL [-Waddress]
+>    68 |         if (!t->arch.tls_array)
+>       |             ^
+> In file included from ../arch/x86/um/asm/processor.h:10,
+>                  from ../include/linux/rcupdate.h:30,
+>                  from ../include/linux/rculist.h:11,
+>                  from ../include/linux/pid.h:5,
+>                  from ../include/linux/sched.h:14,
+>                  from ../arch/x86/um/tls_32.c:7:
+> ../arch/x86/um/asm/processor_32.h:22:31: note: 'tls_array' declared here
+>    22 |         struct uml_tls_struct tls_array[GDT_ENTRY_TLS_ENTRIES];
+>       |                               ^~~~~~~~~
+> ../arch/x86/um/tls_32.c: In function 'get_tls_entry':
+> ../arch/x86/um/tls_32.c:243:13: warning: the comparison will always evaluate as 'true' for the address of 'tls_array' will never be NULL [-Waddress]
+>   243 |         if (!t->arch.tls_array)
+>       |             ^
+> ../arch/x86/um/asm/processor_32.h:22:31: note: 'tls_array' declared here
+>    22 |         struct uml_tls_struct tls_array[GDT_ENTRY_TLS_ENTRIES];
+>       |                               ^~~~~~~~~
+> 
+> Signed-off-by: Lukas Straub <lukasstraub2@web.de>
 
-Also remove workarounds for bpftrace using clang older than 9.0.0, since
-other BPF backend fixes are required at this point.
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 
-Link: https://lore.kernel.org/lkml/CAK7LNATSr=BXKfkdW8f-H5VT_w=xBpT2ZQcZ7rm6JfkdE+QnmA@mail.gmail.com/
-Link: http://gcc.gnu.org/bugzilla/show_bug.cgi?id=48637
-Acked-by: Borislav Petkov <bp@suse.de>
-Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
+Thanks.
 
-Changes v1 -> v2:
-https://lore.kernel.org/linux-kbuild/20220819170053.2686006-1-ndesaulniers@google.com/
-* Pick up Boris' ack.
-* Drop line about Dash compat as per Alexandre.
-* Drop Alexandre's reported by as per Masahiro.
-* s/Kbuild/asm goto/ in oneline as per Masahiro.
-* Remove entirety of bpftrace workarounds as per Alexei.
-* Fix mistake in arch/x86/include/asm/rmwcc.h in v1 where I removed too
-  much; we still need guards for __GCC_ASM_FLAG_OUTPUTS__.
+> ---
+>  arch/x86/um/tls_32.c | 6 ------
+>  1 file changed, 6 deletions(-)
+> 
+> diff --git a/arch/x86/um/tls_32.c b/arch/x86/um/tls_32.c
+> index ac8eee093f9c..66162eafd8e8 100644
+> --- a/arch/x86/um/tls_32.c
+> +++ b/arch/x86/um/tls_32.c
+> @@ -65,9 +65,6 @@ static int get_free_idx(struct task_struct* task)
+>  	struct thread_struct *t = &task->thread;
+>  	int idx;
+>  
+> -	if (!t->arch.tls_array)
+> -		return GDT_ENTRY_TLS_MIN;
+> -
+>  	for (idx = 0; idx < GDT_ENTRY_TLS_ENTRIES; idx++)
+>  		if (!t->arch.tls_array[idx].present)
+>  			return idx + GDT_ENTRY_TLS_MIN;
+> @@ -240,9 +237,6 @@ static int get_tls_entry(struct task_struct *task, struct user_desc *info,
+>  {
+>  	struct thread_struct *t = &task->thread;
+>  
+> -	if (!t->arch.tls_array)
+> -		goto clear;
+> -
+>  	if (idx < GDT_ENTRY_TLS_MIN || idx > GDT_ENTRY_TLS_MAX)
+>  		return -EINVAL;
+>  
 
- Documentation/kbuild/kconfig-language.rst |  4 ++--
- arch/Kconfig                              |  3 +--
- arch/um/include/asm/cpufeature.h          | 15 ---------------
- arch/x86/Makefile                         |  4 ----
- arch/x86/include/asm/cpufeature.h         | 15 ---------------
- arch/x86/include/asm/rmwcc.h              |  6 +++---
- arch/x86/kvm/emulate.c                    |  2 +-
- init/Kconfig                              |  4 ----
- scripts/gcc-goto.sh                       | 22 ----------------------
- tools/arch/x86/include/asm/rmwcc.h        | 21 ---------------------
- 10 files changed, 7 insertions(+), 89 deletions(-)
- delete mode 100755 scripts/gcc-goto.sh
-
-diff --git a/Documentation/kbuild/kconfig-language.rst b/Documentation/kbuild/kconfig-language.rst
-index 7fb398649f51..858ed5d80def 100644
---- a/Documentation/kbuild/kconfig-language.rst
-+++ b/Documentation/kbuild/kconfig-language.rst
-@@ -525,8 +525,8 @@ followed by a test macro::
- If you need to expose a compiler capability to makefiles and/or C source files,
- `CC_HAS_` is the recommended prefix for the config option::
- 
--  config CC_HAS_ASM_GOTO
--	def_bool $(success,$(srctree)/scripts/gcc-goto.sh $(CC))
-+  config CC_HAS_FOO
-+	def_bool $(success,$(srctree)/scripts/cc-check-foo.sh $(CC))
- 
- Build as module only
- ~~~~~~~~~~~~~~~~~~~~
-diff --git a/arch/Kconfig b/arch/Kconfig
-index f330410da63a..5dbf11a5ba4e 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -53,7 +53,6 @@ config KPROBES
- config JUMP_LABEL
- 	bool "Optimize very unlikely/likely branches"
- 	depends on HAVE_ARCH_JUMP_LABEL
--	depends on CC_HAS_ASM_GOTO
- 	select OBJTOOL if HAVE_JUMP_LABEL_HACK
- 	help
- 	 This option enables a transparent branch optimization that
-@@ -1361,7 +1360,7 @@ config HAVE_PREEMPT_DYNAMIC_CALL
- 
- config HAVE_PREEMPT_DYNAMIC_KEY
- 	bool
--	depends on HAVE_ARCH_JUMP_LABEL && CC_HAS_ASM_GOTO
-+	depends on HAVE_ARCH_JUMP_LABEL
- 	select HAVE_PREEMPT_DYNAMIC
- 	help
- 	   An architecture should select this if it can handle the preemption
-diff --git a/arch/um/include/asm/cpufeature.h b/arch/um/include/asm/cpufeature.h
-index 19cd7ed6ec3c..4b6d1b526bc1 100644
---- a/arch/um/include/asm/cpufeature.h
-+++ b/arch/um/include/asm/cpufeature.h
-@@ -65,20 +65,6 @@ extern void setup_clear_cpu_cap(unsigned int bit);
- 
- #define setup_force_cpu_bug(bit) setup_force_cpu_cap(bit)
- 
--#if defined(__clang__) && !defined(CONFIG_CC_HAS_ASM_GOTO)
--
--/*
-- * Workaround for the sake of BPF compilation which utilizes kernel
-- * headers, but clang does not support ASM GOTO and fails the build.
-- */
--#ifndef __BPF_TRACING__
--#warning "Compiler lacks ASM_GOTO support. Add -D __BPF_TRACING__ to your compiler arguments"
--#endif
--
--#define static_cpu_has(bit)            boot_cpu_has(bit)
--
--#else
--
- /*
-  * Static testing of CPU features. Used the same as boot_cpu_has(). It
-  * statically patches the target code for additional performance. Use
-@@ -137,7 +123,6 @@ static __always_inline bool _static_cpu_has(u16 bit)
- 		boot_cpu_has(bit) :				\
- 		_static_cpu_has(bit)				\
- )
--#endif
- 
- #define cpu_has_bug(c, bit)		cpu_has(c, (bit))
- #define set_cpu_bug(c, bit)		set_cpu_cap(c, (bit))
-diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index 7854685c5f25..bafbd905e6e7 100644
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -286,10 +286,6 @@ vdso_install:
- 
- archprepare: checkbin
- checkbin:
--ifndef CONFIG_CC_HAS_ASM_GOTO
--	@echo Compiler lacks asm-goto support.
--	@exit 1
--endif
- ifdef CONFIG_RETPOLINE
- ifeq ($(RETPOLINE_CFLAGS),)
- 	@echo "You are building kernel with non-retpoline compiler." >&2
-diff --git a/arch/x86/include/asm/cpufeature.h b/arch/x86/include/asm/cpufeature.h
-index ea34cc31b047..1a85e1fb0922 100644
---- a/arch/x86/include/asm/cpufeature.h
-+++ b/arch/x86/include/asm/cpufeature.h
-@@ -155,20 +155,6 @@ extern void clear_cpu_cap(struct cpuinfo_x86 *c, unsigned int bit);
- 
- #define setup_force_cpu_bug(bit) setup_force_cpu_cap(bit)
- 
--#if defined(__clang__) && !defined(CONFIG_CC_HAS_ASM_GOTO)
--
--/*
-- * Workaround for the sake of BPF compilation which utilizes kernel
-- * headers, but clang does not support ASM GOTO and fails the build.
-- */
--#ifndef __BPF_TRACING__
--#warning "Compiler lacks ASM_GOTO support. Add -D __BPF_TRACING__ to your compiler arguments"
--#endif
--
--#define static_cpu_has(bit)            boot_cpu_has(bit)
--
--#else
--
- /*
-  * Static testing of CPU features. Used the same as boot_cpu_has(). It
-  * statically patches the target code for additional performance. Use
-@@ -208,7 +194,6 @@ static __always_inline bool _static_cpu_has(u16 bit)
- 		boot_cpu_has(bit) :				\
- 		_static_cpu_has(bit)				\
- )
--#endif
- 
- #define cpu_has_bug(c, bit)		cpu_has(c, (bit))
- #define set_cpu_bug(c, bit)		set_cpu_cap(c, (bit))
-diff --git a/arch/x86/include/asm/rmwcc.h b/arch/x86/include/asm/rmwcc.h
-index 8a9eba191516..7fa611216417 100644
---- a/arch/x86/include/asm/rmwcc.h
-+++ b/arch/x86/include/asm/rmwcc.h
-@@ -11,7 +11,7 @@
- 
- #define __CLOBBERS_MEM(clb...)	"memory", ## clb
- 
--#if !defined(__GCC_ASM_FLAG_OUTPUTS__) && defined(CONFIG_CC_HAS_ASM_GOTO)
-+#ifndef __GCC_ASM_FLAG_OUTPUTS__
- 
- /* Use asm goto */
- 
-@@ -27,7 +27,7 @@ cc_label:	c = true;						\
- 	c;								\
- })
- 
--#else /* defined(__GCC_ASM_FLAG_OUTPUTS__) || !defined(CONFIG_CC_HAS_ASM_GOTO) */
-+#else /* defined(__GCC_ASM_FLAG_OUTPUTS__) */
- 
- /* Use flags output or a set instruction */
- 
-@@ -40,7 +40,7 @@ cc_label:	c = true;						\
- 	c;								\
- })
- 
--#endif /* defined(__GCC_ASM_FLAG_OUTPUTS__) || !defined(CONFIG_CC_HAS_ASM_GOTO) */
-+#endif /* defined(__GCC_ASM_FLAG_OUTPUTS__) */
- 
- #define GEN_UNARY_RMWcc_4(op, var, cc, arg0)				\
- 	__GEN_RMWcc(op " " arg0, var, cc, __CLOBBERS_MEM())
-diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
-index b4eeb7c75dfa..08613c65138d 100644
---- a/arch/x86/kvm/emulate.c
-+++ b/arch/x86/kvm/emulate.c
-@@ -493,7 +493,7 @@ FOP_END;
- 
- /*
-  * XXX: inoutclob user must know where the argument is being expanded.
-- *      Relying on CONFIG_CC_HAS_ASM_GOTO would allow us to remove _fault.
-+ *      Using asm goto would allow us to remove _fault.
-  */
- #define asm_safe(insn, inoutclob...) \
- ({ \
-diff --git a/init/Kconfig b/init/Kconfig
-index 80fe60fa77fb..532362fcfe31 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -70,11 +70,7 @@ config CC_CAN_LINK_STATIC
- 	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(USERCFLAGS) $(USERLDFLAGS) $(m64-flag) -static) if 64BIT
- 	default $(success,$(srctree)/scripts/cc-can-link.sh $(CC) $(CLANG_FLAGS) $(USERCFLAGS) $(USERLDFLAGS) $(m32-flag) -static)
- 
--config CC_HAS_ASM_GOTO
--	def_bool $(success,$(srctree)/scripts/gcc-goto.sh $(CC))
--
- config CC_HAS_ASM_GOTO_OUTPUT
--	depends on CC_HAS_ASM_GOTO
- 	def_bool $(success,echo 'int foo(int x) { asm goto ("": "=r"(x) ::: bar); return x; bar: return 0; }' | $(CC) -x c - -c -o /dev/null)
- 
- config CC_HAS_ASM_GOTO_TIED_OUTPUT
-diff --git a/scripts/gcc-goto.sh b/scripts/gcc-goto.sh
-deleted file mode 100755
-index 8b980fb2270a..000000000000
---- a/scripts/gcc-goto.sh
-+++ /dev/null
-@@ -1,22 +0,0 @@
--#!/bin/sh
--# SPDX-License-Identifier: GPL-2.0
--# Test for gcc 'asm goto' support
--# Copyright (C) 2010, Jason Baron <jbaron@redhat.com>
--
--cat << "END" | $@ -x c - -fno-PIE -c -o /dev/null
--int main(void)
--{
--#if defined(__arm__) || defined(__aarch64__)
--	/*
--	 * Not related to asm goto, but used by jump label
--	 * and broken on some ARM GCC versions (see GCC Bug 48637).
--	 */
--	static struct { int dummy; int state; } tp;
--	asm (".long %c0" :: "i" (&tp.state));
--#endif
--
--entry:
--	asm goto ("" :::: entry);
--	return 0;
--}
--END
-diff --git a/tools/arch/x86/include/asm/rmwcc.h b/tools/arch/x86/include/asm/rmwcc.h
-index fee7983a90b4..11ff975242ca 100644
---- a/tools/arch/x86/include/asm/rmwcc.h
-+++ b/tools/arch/x86/include/asm/rmwcc.h
-@@ -2,8 +2,6 @@
- #ifndef _TOOLS_LINUX_ASM_X86_RMWcc
- #define _TOOLS_LINUX_ASM_X86_RMWcc
- 
--#ifdef CONFIG_CC_HAS_ASM_GOTO
--
- #define __GEN_RMWcc(fullop, var, cc, ...)				\
- do {									\
- 	asm_volatile_goto (fullop "; j" cc " %l[cc_label]"		\
-@@ -20,23 +18,4 @@ cc_label:								\
- #define GEN_BINARY_RMWcc(op, var, vcon, val, arg0, cc)			\
- 	__GEN_RMWcc(op " %1, " arg0, var, cc, vcon (val))
- 
--#else /* !CONFIG_CC_HAS_ASM_GOTO */
--
--#define __GEN_RMWcc(fullop, var, cc, ...)				\
--do {									\
--	char c;								\
--	asm volatile (fullop "; set" cc " %1"				\
--			: "+m" (var), "=qm" (c)				\
--			: __VA_ARGS__ : "memory");			\
--	return c != 0;							\
--} while (0)
--
--#define GEN_UNARY_RMWcc(op, var, arg0, cc)				\
--	__GEN_RMWcc(op " " arg0, var, cc)
--
--#define GEN_BINARY_RMWcc(op, var, vcon, val, arg0, cc)			\
--	__GEN_RMWcc(op " %2, " arg0, var, cc, vcon (val))
--
--#endif /* CONFIG_CC_HAS_ASM_GOTO */
--
- #endif /* _TOOLS_LINUX_ASM_X86_RMWcc */
 -- 
-2.37.1.595.g718a3a8f04-goog
-
+~Randy
 
 _______________________________________________
 linux-um mailing list
