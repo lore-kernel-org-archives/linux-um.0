@@ -1,15 +1,13 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2] helo=sipsolutions.net)
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oLTe4-005RUz-UV
-	for linux-um@lists.infradead.org; Tue, 09 Aug 2022 18:08:02 +0000
-Message-ID: <76b5db88b280cccb784209b26fe48799dcb41b13.camel@sipsolutions.net>
-Subject: Re: [PATCH v2] um: read multiple msg from virtio slave request fd
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Tue, 09 Aug 2022 20:07:47 +0200
-In-Reply-To: <20220607112714.516408-1-benjamin.beichler@uni-rostock.de>
-References: <20220607112714.516408-1-benjamin.beichler@uni-rostock.de>
+Message-ID: <39e063ad-208d-f5f0-9807-eedcf0db1692@infradead.org>
+Date: Fri, 26 Aug 2022 13:35:13 -0700
 MIME-Version: 1.0
+Subject: Re: [PATCH] arch: um: Mark the stack non-executable to fix a binutils
+ warning
+Content-Language: en-US
+References: <20220823010830.2675419-1-davidgow@google.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20220823010830.2675419-1-davidgow@google.com>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,37 +20,52 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Benjamin Beichler <benjamin.beichler@uni-rostock.de>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-
-On Tue, 2022-06-07 at 11:27 +0000, Benjamin Beichler wrote:
-> If VHOST_USER_PROTOCOL_F_INBAND_NOTIFICATIONS is activated, the user mode
-> linux virtio irq handler only read one msg from the corresponding socket.
-> This creates issues, when the device emulation creates multiple call
-> requests (e.g. for multiple virtqueues), as the socket buffer tend to fill
-> up and the call requests are delayed.
-> 
-> This creates a deadlock situation, when the device simulation blocks,
-> because of sending a msg and the kernel side blocks because of
-> synchronously waiting for an acknowledge of kick request.
-> 
-> Actually inband notifications are meant to be used in combination with the
-> time travel protocol, but it is not required, therefore this corner case
-> needs to be handled.
-> 
-> Anyways, in general it seems to be more natural to consume always all
-> messages from a socket, instead of only a single one.
-> 
-> Fixes: 2cd097ba8c05 ("um: virtio: Implement VHOST_USER_PROTOCOL_F_SLAVE_REQ")
-> Signed-off-by: Benjamin Beichler <benjamin.beichler@uni-rostock.de>
-> 
-
-Reviewed-by: Johannes Berg <johannes@sipsolutions.net>
+To: David Gow <davidgow@google.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Nick Desaulniers <ndesaulniers@google.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, Linus Torvalds <torvalds@linux-foundation.org>, Brendan Higgins <brendan.higgins@linux.dev>, Daniel Latypov <dlatypov@google.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com, x86@kernel.org
 
 
-Sorry, should've sent that earlier.
 
-johannes
+On 8/22/22 18:08, David Gow wrote:
+> Since binutils 2.39, ld will print a warning if any stack section is
+> executable, which is the default for stack sections on files without a
+> .note.GNU-stack section.
+> 
+> This was fixed for x86 in commit ffcf9c5700e4 ("x86: link vdso and boot with -z noexecstack --no-warn-rwx-segments"),
+> but remained broken for UML, resulting in several warnings:
+> 
+> /usr/bin/ld: warning: arch/x86/um/vdso/vdso.o: missing .note.GNU-stack section implies executable stack
+> /usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+> /usr/bin/ld: warning: .tmp_vmlinux.kallsyms1 has a LOAD segment with RWX permissions
+> /usr/bin/ld: warning: .tmp_vmlinux.kallsyms1.o: missing .note.GNU-stack section implies executable stack
+> /usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+> /usr/bin/ld: warning: .tmp_vmlinux.kallsyms2 has a LOAD segment with RWX permissions
+> /usr/bin/ld: warning: .tmp_vmlinux.kallsyms2.o: missing .note.GNU-stack section implies executable stack
+> /usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+> /usr/bin/ld: warning: vmlinux has a LOAD segment with RWX permissions
+> 
+> Link both the VDSO and vmlinux with -z noexecstack, fixing the warnings
+> about .note.GNU-stack sections. In addition, pass --no-warn-rwx-segments
+> to dodge the remaining warnings about LOAD segments with RWX permissions
+> in the kallsyms objects. (Note that this flag is apparently not
+> available on lld, so hide it behind a test for BFD, which is what the
+> x86 patch does.)
+> 
+> Link: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ffcf9c5700e49c0aee42dcba9a12ba21338e8136
+> Link: https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=ba951afb99912da01a6e8434126b8fac7aa75107
+> Signed-off-by: David Gow <davidgow@google.com>
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+
+Thanks.
+
+> ---
+>  arch/um/Makefile          | 9 ++++++++-
+>  arch/x86/um/vdso/Makefile | 2 +-
+>  2 files changed, 9 insertions(+), 2 deletions(-)
+
+
+-- 
+~Randy
 
 _______________________________________________
 linux-um mailing list
