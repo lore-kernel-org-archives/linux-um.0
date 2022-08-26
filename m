@@ -1,15 +1,12 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ams.source.kernel.org ([145.40.68.75])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oNFcn-007Rbk-7i
-	for linux-um@lists.infradead.org; Sun, 14 Aug 2022 15:34:02 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.15 31/46] um: add "noreboot" command line option for PANIC_TIMEOUT=-1 setups
-Date: Sun, 14 Aug 2022 11:32:32 -0400
-Message-Id: <20220814153247.2378312-31-sashal@kernel.org>
-In-Reply-To: <20220814153247.2378312-1-sashal@kernel.org>
-References: <20220814153247.2378312-1-sashal@kernel.org>
+Message-ID: <b339d712-8229-469e-e976-6283b6fad842@infradead.org>
+Date: Fri, 26 Aug 2022 13:37:01 -0700
 MIME-Version: 1.0
+Subject: Re: [PATCH 1/2] um: Cleanup syscall_handler_t cast in syscalls_32.h
+Content-Language: en-US
+References: <20220826152927.193d262c@gecko>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20220826152927.193d262c@gecko>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,67 +19,46 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, linux@roeck-us.net, linux-um@lists.infradead.org
+To: Lukas Straub <lukasstraub2@web.de>, linux-um <linux-um@lists.infradead.org>
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, x86@kernel.org, linux-kernel@vger.kernel.org
 
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
 
-[ Upstream commit dda520d07b95072a0b63f6c52a8eb566d08ea897 ]
 
-QEMU has a -no-reboot option, which halts instead of reboots when the
-guest asks to reboot. This is invaluable when used with
-CONFIG_PANIC_TIMEOUT=-1 (and panic_on_warn), because it allows panics
-and warnings to be caught immediately in CI. Implement this in UML too,
-by way of a basic setup param.
+On 8/26/22 08:29, Lukas Straub wrote:
+> Like in f4f03f299a56ce4d73c5431e0327b3b6cb55ebb9
+> "um: Cleanup syscall_handler_t definition/cast, fix warning",
+> remove the cast to to fix the compiler warning.
+> 
+> Signed-off-by: Lukas Straub <lukasstraub2@web.de>
 
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/um/os-Linux/skas/process.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 87d3129e7362..0df2ebcc97c0 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -5,6 +5,7 @@
-  */
- 
- #include <stdlib.h>
-+#include <stdbool.h>
- #include <unistd.h>
- #include <sched.h>
- #include <errno.h>
-@@ -707,10 +708,24 @@ void halt_skas(void)
- 	UML_LONGJMP(&initial_jmpbuf, INIT_JMP_HALT);
- }
- 
-+static bool noreboot;
-+
-+static int __init noreboot_cmd_param(char *str, int *add)
-+{
-+	noreboot = true;
-+	return 0;
-+}
-+
-+__uml_setup("noreboot", noreboot_cmd_param,
-+"noreboot\n"
-+"    Rather than rebooting, exit always, akin to QEMU's -no-reboot option.\n"
-+"    This is useful if you're using CONFIG_PANIC_TIMEOUT in order to catch\n"
-+"    crashes in CI\n");
-+
- void reboot_skas(void)
- {
- 	block_signals_trace();
--	UML_LONGJMP(&initial_jmpbuf, INIT_JMP_REBOOT);
-+	UML_LONGJMP(&initial_jmpbuf, noreboot ? INIT_JMP_HALT : INIT_JMP_REBOOT);
- }
- 
- void __switch_mm(struct mm_id *mm_idp)
+Thanks.
+
+> ---
+>  arch/x86/um/shared/sysdep/syscalls_32.h | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/um/shared/sysdep/syscalls_32.h b/arch/x86/um/shared/sysdep/syscalls_32.h
+> index 68fd2cf526fd..f6e9f84397e7 100644
+> --- a/arch/x86/um/shared/sysdep/syscalls_32.h
+> +++ b/arch/x86/um/shared/sysdep/syscalls_32.h
+> @@ -6,10 +6,9 @@
+>  #include <asm/unistd.h>
+>  #include <sysdep/ptrace.h>
+>  
+> -typedef long syscall_handler_t(struct pt_regs);
+> +typedef long syscall_handler_t(struct syscall_args);
+>  
+>  extern syscall_handler_t *sys_call_table[];
+>  
+>  #define EXECUTE_SYSCALL(syscall, regs) \
+> -	((long (*)(struct syscall_args)) \
+> -	 (*sys_call_table[syscall]))(SYSCALL_ARGS(&regs->regs))
+> +	((*sys_call_table[syscall]))(SYSCALL_ARGS(&regs->regs))
+
 -- 
-2.35.1
-
+~Randy
 
 _______________________________________________
 linux-um mailing list
