@@ -1,13 +1,11 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH v8 27/31] Kbuild: add Rust support
-In-Reply-To: <CAK7LNARTX+2Z=pnGbbUepxskE+KZ1f5YsfQukJ88ijPBQt9_GA@mail.gmail.com>
-References: <20220802015052.10452-1-ojeda@kernel.org>
- <20220802015052.10452-28-ojeda@kernel.org>
- <CAK7LNARTX+2Z=pnGbbUepxskE+KZ1f5YsfQukJ88ijPBQt9_GA@mail.gmail.com>
-Date: Wed, 07 Sep 2022 09:34:38 +1000
-Message-ID: <8735d4t6up.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
+References: <20220802015052.10452-1-ojeda@kernel.org> <20220802015052.10452-28-ojeda@kernel.org>
+In-Reply-To: <20220802015052.10452-28-ojeda@kernel.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Wed, 7 Sep 2022 03:08:36 +0900
+Message-ID: <CAK7LNARTX+2Z=pnGbbUepxskE+KZ1f5YsfQukJ88ijPBQt9_GA@mail.gmail.com>
+Subject: Re: [PATCH v8 27/31] Kbuild: add Rust support
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -16,60 +14,132 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Masahiro Yamada <masahiroy@kernel.org>, Miguel Ojeda <ojeda@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, rust-for-linux@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Jarkko Sakkinen <jarkko@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Finn Behrens <me@kloenk.de>, Adam Bratschi-Kaye <ark.email@gmail.com>, Wedson Almeida Filho <wedsonaf@google.com>, Sven Van Asbroeck <thesven73@gmail.com>, Gary Guo <gary@garyguo.net>, Boris-Chengbiao Zhou <bobo1239@web.de>, Boqun Feng <boqun.feng@gmail.com>, Douglas Su <d0u9.su@outlook.com>, Dariusz Sosnowski <dsosnowski@dsosnowski.pl>, Antonio Terceiro <antonio.terceiro@linaro.org>, Daniel Xu <dxu@dxuuu.xyz>, Miguel Cano <macanroj@gmail.com>, David Gow <davidgow@google.com>, Tiago Lam <tiagolam@gmail.com>, =?utf-8?Q?Bj=C3=B6rn?= Roy Baron <bjorn3_gh@protonmail.com>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>, Michal Marek <michal.lkml@markovi.net>, Nick Desaulniers <ndesaulniers@google.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, "open list:SIFIVE DRIVERS" <linux-riscv@lists.infradead.org>, linux-um@lists.infradead.org
+To: Miguel Ojeda <ojeda@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, rust-for-linux@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Jarkko Sakkinen <jarkko@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Finn Behrens <me@kloenk.de>, Adam Bratschi-Kaye <ark.email@gmail.com>, Wedson Almeida Filho <wedsonaf@google.com>, Michael Ellerman <mpe@ellerman.id.au>, Sven Van Asbroeck <thesven73@gmail.com>, Gary Guo <gary@garyguo.net>, Boris-Chengbiao Zhou <bobo1239@web.de>, Boqun Feng <boqun.feng@gmail.com>, Douglas Su <d0u9.su@outlook.com>, Dariusz Sosnowski <dsosnowski@dsosnowski.pl>, Antonio Terceiro <antonio.terceiro@linaro.org>, Daniel Xu <dxu@dxuuu.xyz>, Miguel Cano <macanroj@gmail.com>, David Gow <davidgow@google.com>, Tiago Lam <tiagolam@gmail.com>, =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>, Michal Marek <michal.lkml@markovi.net>, Nick Desaulniers <ndesaulniers@google.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, "open list:SIFIVE DRIVERS" <linux-riscv@lists.infradead.org>, linux-um@lists.infradead.org
 
-Masahiro Yamada <masahiroy@kernel.org> writes:
-> On Tue, Aug 2, 2022 at 10:53 AM Miguel Ojeda <ojeda@kernel.org> wrote:
->>
->> Having all the new files in place, we now enable Rust support
->> in the build system, including `Kconfig` entries related to Rust,
->> the Rust configuration printer, the target specification
->> generation script, the version detection script and a few
->> other bits.
-...
->> +
->> +config RUSTC_VERSION_TEXT
->> +       string
->> +       depends on RUST
->> +       default $(shell,command -v $(RUSTC) >/dev/null 2>&1 && $(RUSTC) --version || echo n)
->> +
->> +config BINDGEN_VERSION_TEXT
->> +       string
->> +       depends on RUST
->> +       default $(shell,command -v $(BINDGEN) >/dev/null 2>&1 && $(BINDGEN) --version || echo n)
->> +
->
-> Where are these config options used?
->
-> I grep'ed but no hit.
->
-> masahiro@zoe:~/ref/linux-next$ git grep RUSTC_VERSION_TEXT
-> init/Kconfig:config RUSTC_VERSION_TEXT
-> masahiro@zoe:~/ref/linux-next$ git grep BINDGEN_VERSION_TEXT
-> init/Kconfig:config BINDGEN_VERSION_TEXT
-
-That came up before in a review by Nick:
-
-Miguel wrote:
-> Nick wrote:
-> > Are these two kconfigs used anywhere?
-> 
-> Not for the moment, but it could still be useful when getting
-> `.config` reports (and we could add it to `LINUX_COMPILER` etc. in the
-> future).
-
-https://lore.kernel.org/all/CANiq72n2bU3LSGu-4v66nif_95EVq--z2X_F2V7JBPU8v=h8EA@mail.gmail.com/
-
-
-cheers
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gVHVlLCBBdWcgMiwgMjAyMiBhdCAxMDo1MyBBTSBNaWd1ZWwgT2plZGEgPG9qZWRhQGtlcm5l
+bC5vcmc+IHdyb3RlOgo+Cj4gSGF2aW5nIGFsbCB0aGUgbmV3IGZpbGVzIGluIHBsYWNlLCB3ZSBu
+b3cgZW5hYmxlIFJ1c3Qgc3VwcG9ydAo+IGluIHRoZSBidWlsZCBzeXN0ZW0sIGluY2x1ZGluZyBg
+S2NvbmZpZ2AgZW50cmllcyByZWxhdGVkIHRvIFJ1c3QsCj4gdGhlIFJ1c3QgY29uZmlndXJhdGlv
+biBwcmludGVyLCB0aGUgdGFyZ2V0IHNwZWNpZmljYXRpb24KPiBnZW5lcmF0aW9uIHNjcmlwdCwg
+dGhlIHZlcnNpb24gZGV0ZWN0aW9uIHNjcmlwdCBhbmQgYSBmZXcKPiBvdGhlciBiaXRzLgo+Cj4g
+Q28tZGV2ZWxvcGVkLWJ5OiBBbGV4IEdheW5vciA8YWxleC5nYXlub3JAZ21haWwuY29tPgo+IFNp
+Z25lZC1vZmYtYnk6IEFsZXggR2F5bm9yIDxhbGV4LmdheW5vckBnbWFpbC5jb20+Cj4gQ28tZGV2
+ZWxvcGVkLWJ5OiBGaW5uIEJlaHJlbnMgPG1lQGtsb2Vuay5kZT4KPiBTaWduZWQtb2ZmLWJ5OiBG
+aW5uIEJlaHJlbnMgPG1lQGtsb2Vuay5kZT4KPiBDby1kZXZlbG9wZWQtYnk6IEFkYW0gQnJhdHNj
+aGktS2F5ZSA8YXJrLmVtYWlsQGdtYWlsLmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBBZGFtIEJyYXRz
+Y2hpLUtheWUgPGFyay5lbWFpbEBnbWFpbC5jb20+Cj4gQ28tZGV2ZWxvcGVkLWJ5OiBXZWRzb24g
+QWxtZWlkYSBGaWxobyA8d2Vkc29uYWZAZ29vZ2xlLmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBXZWRz
+b24gQWxtZWlkYSBGaWxobyA8d2Vkc29uYWZAZ29vZ2xlLmNvbT4KPiBDby1kZXZlbG9wZWQtYnk6
+IE1pY2hhZWwgRWxsZXJtYW4gPG1wZUBlbGxlcm1hbi5pZC5hdT4KPiBTaWduZWQtb2ZmLWJ5OiBN
+aWNoYWVsIEVsbGVybWFuIDxtcGVAZWxsZXJtYW4uaWQuYXU+Cj4gQ28tZGV2ZWxvcGVkLWJ5OiBT
+dmVuIFZhbiBBc2Jyb2VjayA8dGhlc3ZlbjczQGdtYWlsLmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBT
+dmVuIFZhbiBBc2Jyb2VjayA8dGhlc3ZlbjczQGdtYWlsLmNvbT4KPiBDby1kZXZlbG9wZWQtYnk6
+IEdhcnkgR3VvIDxnYXJ5QGdhcnlndW8ubmV0Pgo+IFNpZ25lZC1vZmYtYnk6IEdhcnkgR3VvIDxn
+YXJ5QGdhcnlndW8ubmV0Pgo+IENvLWRldmVsb3BlZC1ieTogQm9yaXMtQ2hlbmdiaWFvIFpob3Ug
+PGJvYm8xMjM5QHdlYi5kZT4KPiBTaWduZWQtb2ZmLWJ5OiBCb3Jpcy1DaGVuZ2JpYW8gWmhvdSA8
+Ym9ibzEyMzlAd2ViLmRlPgo+IENvLWRldmVsb3BlZC1ieTogQm9xdW4gRmVuZyA8Ym9xdW4uZmVu
+Z0BnbWFpbC5jb20+Cj4gU2lnbmVkLW9mZi1ieTogQm9xdW4gRmVuZyA8Ym9xdW4uZmVuZ0BnbWFp
+bC5jb20+Cj4gQ28tZGV2ZWxvcGVkLWJ5OiBEb3VnbGFzIFN1IDxkMHU5LnN1QG91dGxvb2suY29t
+Pgo+IFNpZ25lZC1vZmYtYnk6IERvdWdsYXMgU3UgPGQwdTkuc3VAb3V0bG9vay5jb20+Cj4gQ28t
+ZGV2ZWxvcGVkLWJ5OiBEYXJpdXN6IFNvc25vd3NraSA8ZHNvc25vd3NraUBkc29zbm93c2tpLnBs
+Pgo+IFNpZ25lZC1vZmYtYnk6IERhcml1c3ogU29zbm93c2tpIDxkc29zbm93c2tpQGRzb3Nub3dz
+a2kucGw+Cj4gQ28tZGV2ZWxvcGVkLWJ5OiBBbnRvbmlvIFRlcmNlaXJvIDxhbnRvbmlvLnRlcmNl
+aXJvQGxpbmFyby5vcmc+Cj4gU2lnbmVkLW9mZi1ieTogQW50b25pbyBUZXJjZWlybyA8YW50b25p
+by50ZXJjZWlyb0BsaW5hcm8ub3JnPgo+IENvLWRldmVsb3BlZC1ieTogRGFuaWVsIFh1IDxkeHVA
+ZHh1dXUueHl6Pgo+IFNpZ25lZC1vZmYtYnk6IERhbmllbCBYdSA8ZHh1QGR4dXV1Lnh5ej4KPiBD
+by1kZXZlbG9wZWQtYnk6IE1pZ3VlbCBDYW5vIDxtYWNhbnJvakBnbWFpbC5jb20+Cj4gU2lnbmVk
+LW9mZi1ieTogTWlndWVsIENhbm8gPG1hY2Fucm9qQGdtYWlsLmNvbT4KPiBDby1kZXZlbG9wZWQt
+Ynk6IERhdmlkIEdvdyA8ZGF2aWRnb3dAZ29vZ2xlLmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBEYXZp
+ZCBHb3cgPGRhdmlkZ293QGdvb2dsZS5jb20+Cj4gQ28tZGV2ZWxvcGVkLWJ5OiBUaWFnbyBMYW0g
+PHRpYWdvbGFtQGdtYWlsLmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBUaWFnbyBMYW0gPHRpYWdvbGFt
+QGdtYWlsLmNvbT4KPiBDby1kZXZlbG9wZWQtYnk6IEJqw7ZybiBSb3kgQmFyb24gPGJqb3JuM19n
+aEBwcm90b25tYWlsLmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBCasO2cm4gUm95IEJhcm9uIDxiam9y
+bjNfZ2hAcHJvdG9ubWFpbC5jb20+Cj4gQ28tZGV2ZWxvcGVkLWJ5OiBNYXJ0aW4gUm9kcmlndWV6
+IFJlYm9yZWRvIDx5YWtveW9rdUBnbWFpbC5jb20+Cj4gU2lnbmVkLW9mZi1ieTogTWFydGluIFJv
+ZHJpZ3VleiBSZWJvcmVkbyA8eWFrb3lva3VAZ21haWwuY29tPgo+IFNpZ25lZC1vZmYtYnk6IE1p
+Z3VlbCBPamVkYSA8b2plZGFAa2VybmVsLm9yZz4KPiAtLS0KPiAgLmdpdGlnbm9yZSAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDYgKwo+ICAucnVzdGZtdC50b21sICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAxMiArCj4gIE1ha2VmaWxlICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIHwgMTcyICsrKysrKystCj4gIGFyY2gvS2NvbmZpZyAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA2ICsKPiAgYXJjaC9hcm0vS2NvbmZp
+ZyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDEgKwo+ICBhcmNoL2FybTY0L0tjb25m
+aWcgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMSArCj4gIGFyY2gvcG93ZXJwYy9LY29u
+ZmlnICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAxICsKPiAgYXJjaC9yaXNjdi9LY29uZmln
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDEgKwo+ICBhcmNoL3Jpc2N2L01ha2VmaWxl
+ICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgNSArCj4gIGFyY2gvdW0vS2NvbmZpZyAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAxICsKPiAgYXJjaC94ODYvS2NvbmZpZyAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDEgKwo+ICBhcmNoL3g4Ni9NYWtlZmlsZSAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICB8ICAxMCArCj4gIGluY2x1ZGUvbGludXgvY29tcGlsZXJf
+dHlwZXMuaCAgICAgICAgICAgICAgIHwgICA2ICstCj4gIGluaXQvS2NvbmZpZyAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIHwgIDQ2ICstCj4gIGxpYi9LY29uZmlnLmRlYnVnICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIHwgIDgyICsrKysKPiAgcnVzdC8uZ2l0aWdub3JlICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgfCAgMTAgKwo+ICBydXN0L01ha2VmaWxlICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICB8IDQxNSArKysrKysrKysrKysrKysrKysrCj4gIHJ1c3Qv
+YmluZGdlbl9wYXJhbWV0ZXJzICAgICAgICAgICAgICAgICAgICAgIHwgIDIxICsKPiAgc2NyaXB0
+cy8uZ2l0aWdub3JlICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDEgKwo+ICBzY3JpcHRz
+L0tjb25maWcuaW5jbHVkZSAgICAgICAgICAgICAgICAgICAgICB8ICAgNiArLQo+ICBzY3JpcHRz
+L01ha2VmaWxlICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMyArCj4gIHNjcmlwdHMv
+TWFrZWZpbGUuYnVpbGQgICAgICAgICAgICAgICAgICAgICAgIHwgIDYwICsrKwo+ICBzY3JpcHRz
+L01ha2VmaWxlLmRlYnVnICAgICAgICAgICAgICAgICAgICAgICB8ICAxMCArCj4gIHNjcmlwdHMv
+TWFrZWZpbGUuaG9zdCAgICAgICAgICAgICAgICAgICAgICAgIHwgIDM0ICstCj4gIHNjcmlwdHMv
+TWFrZWZpbGUubGliICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDEyICsKPiAgc2NyaXB0cy9N
+YWtlZmlsZS5tb2RmaW5hbCAgICAgICAgICAgICAgICAgICAgfCAgIDggKy0KPiAgc2NyaXB0cy9j
+Yy12ZXJzaW9uLnNoICAgICAgICAgICAgICAgICAgICAgICAgfCAgMTIgKy0KPiAgc2NyaXB0cy9n
+ZW5lcmF0ZV9ydXN0X3RhcmdldC5ycyAgICAgICAgICAgICAgfCAyMzIgKysrKysrKysrKysKPiAg
+c2NyaXB0cy9pc19ydXN0X21vZHVsZS5zaCAgICAgICAgICAgICAgICAgICAgfCAgMTYgKwo+ICBz
+Y3JpcHRzL2tjb25maWcvY29uZmRhdGEuYyAgICAgICAgICAgICAgICAgICB8ICA3NSArKysrCj4g
+IHNjcmlwdHMvbWluLXRvb2wtdmVyc2lvbi5zaCAgICAgICAgICAgICAgICAgIHwgICA2ICsKPiAg
+c2NyaXB0cy9ydXN0LWlzLWF2YWlsYWJsZS1iaW5kZ2VuLWxpYmNsYW5nLmggfCAgIDIgKwo+ICBz
+Y3JpcHRzL3J1c3QtaXMtYXZhaWxhYmxlLnNoICAgICAgICAgICAgICAgICB8IDE2MCArKysrKysr
+Cj4gIDMzIGZpbGVzIGNoYW5nZWQsIDE0MDggaW5zZXJ0aW9ucygrKSwgMjYgZGVsZXRpb25zKC0p
+Cj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCAucnVzdGZtdC50b21sCj4gIGNyZWF0ZSBtb2RlIDEwMDY0
+NCBydXN0Ly5naXRpZ25vcmUKPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IHJ1c3QvTWFrZWZpbGUKPiAg
+Y3JlYXRlIG1vZGUgMTAwNjQ0IHJ1c3QvYmluZGdlbl9wYXJhbWV0ZXJzCj4gIGNyZWF0ZSBtb2Rl
+IDEwMDY0NCBzY3JpcHRzL2dlbmVyYXRlX3J1c3RfdGFyZ2V0LnJzCj4gIGNyZWF0ZSBtb2RlIDEw
+MDc1NSBzY3JpcHRzL2lzX3J1c3RfbW9kdWxlLnNoCj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBzY3Jp
+cHRzL3J1c3QtaXMtYXZhaWxhYmxlLWJpbmRnZW4tbGliY2xhbmcuaAo+ICBjcmVhdGUgbW9kZSAx
+MDA3NTUgc2NyaXB0cy9ydXN0LWlzLWF2YWlsYWJsZS5zaAo+CgoKCgoKCj4gQEAgLTE1MSw3ICsx
+NjIsOCBAQCBjb25maWcgV0VSUk9SCj4gICAgICAgICBkZWZhdWx0IENPTVBJTEVfVEVTVAo+ICAg
+ICAgICAgaGVscAo+ICAgICAgICAgICBBIGtlcm5lbCBidWlsZCBzaG91bGQgbm90IGNhdXNlIGFu
+eSBjb21waWxlciB3YXJuaW5ncywgYW5kIHRoaXMKPiAtICAgICAgICAgZW5hYmxlcyB0aGUgJy1X
+ZXJyb3InIGZsYWcgdG8gZW5mb3JjZSB0aGF0IHJ1bGUgYnkgZGVmYXVsdC4KPiArICAgICAgICAg
+ZW5hYmxlcyB0aGUgJy1XZXJyb3InIChmb3IgQykgYW5kICctRHdhcm5pbmdzJyAoZm9yIFJ1c3Qp
+IGZsYWdzCj4gKyAgICAgICAgIHRvIGVuZm9yY2UgdGhhdCBydWxlIGJ5IGRlZmF1bHQuCj4KPiAg
+ICAgICAgICAgSG93ZXZlciwgaWYgeW91IGhhdmUgYSBuZXcgKG9yIHZlcnkgb2xkKSBjb21waWxl
+ciB3aXRoIG9kZCBhbmQKPiAgICAgICAgICAgdW51c3VhbCB3YXJuaW5ncywgb3IgeW91IGhhdmUg
+c29tZSBhcmNoaXRlY3R1cmUgd2l0aCBwcm9ibGVtcywKPiBAQCAtMTg5OCw2ICsxOTEwLDM4IEBA
+IGNvbmZpZyBQUk9GSUxJTkcKPiAgICAgICAgICAgU2F5IFkgaGVyZSB0byBlbmFibGUgdGhlIGV4
+dGVuZGVkIHByb2ZpbGluZyBzdXBwb3J0IG1lY2hhbmlzbXMgdXNlZAo+ICAgICAgICAgICBieSBw
+cm9maWxlcnMuCj4KPiArY29uZmlnIFJVU1QKPiArICAgICAgIGJvb2wgIlJ1c3Qgc3VwcG9ydCIK
+PiArICAgICAgIGRlcGVuZHMgb24gSEFWRV9SVVNUCj4gKyAgICAgICBkZXBlbmRzIG9uIFJVU1Rf
+SVNfQVZBSUxBQkxFCj4gKyAgICAgICBkZXBlbmRzIG9uICFNT0RWRVJTSU9OUwo+ICsgICAgICAg
+ZGVwZW5kcyBvbiAhR0NDX1BMVUdJTlMKPiArICAgICAgIGRlcGVuZHMgb24gIVJBTkRTVFJVQ1QK
+PiArICAgICAgIGRlcGVuZHMgb24gIURFQlVHX0lORk9fQlRGCj4gKyAgICAgICBzZWxlY3QgQ09O
+U1RSVUNUT1JTCj4gKyAgICAgICBoZWxwCj4gKyAgICAgICAgIEVuYWJsZXMgUnVzdCBzdXBwb3J0
+IGluIHRoZSBrZXJuZWwuCj4gKwo+ICsgICAgICAgICBUaGlzIGFsbG93cyBvdGhlciBSdXN0LXJl
+bGF0ZWQgb3B0aW9ucywgbGlrZSBkcml2ZXJzIHdyaXR0ZW4gaW4gUnVzdCwKPiArICAgICAgICAg
+dG8gYmUgc2VsZWN0ZWQuCj4gKwo+ICsgICAgICAgICBJdCBpcyBhbHNvIHJlcXVpcmVkIHRvIGJl
+IGFibGUgdG8gbG9hZCBleHRlcm5hbCBrZXJuZWwgbW9kdWxlcwo+ICsgICAgICAgICB3cml0dGVu
+IGluIFJ1c3QuCj4gKwo+ICsgICAgICAgICBTZWUgRG9jdW1lbnRhdGlvbi9ydXN0LyBmb3IgbW9y
+ZSBpbmZvcm1hdGlvbi4KPiArCj4gKyAgICAgICAgIElmIHVuc3VyZSwgc2F5IE4uCj4gKwo+ICtj
+b25maWcgUlVTVENfVkVSU0lPTl9URVhUCj4gKyAgICAgICBzdHJpbmcKPiArICAgICAgIGRlcGVu
+ZHMgb24gUlVTVAo+ICsgICAgICAgZGVmYXVsdCAkKHNoZWxsLGNvbW1hbmQgLXYgJChSVVNUQykg
+Pi9kZXYvbnVsbCAyPiYxICYmICQoUlVTVEMpIC0tdmVyc2lvbiB8fCBlY2hvIG4pCj4gKwo+ICtj
+b25maWcgQklOREdFTl9WRVJTSU9OX1RFWFQKPiArICAgICAgIHN0cmluZwo+ICsgICAgICAgZGVw
+ZW5kcyBvbiBSVVNUCj4gKyAgICAgICBkZWZhdWx0ICQoc2hlbGwsY29tbWFuZCAtdiAkKEJJTkRH
+RU4pID4vZGV2L251bGwgMj4mMSAmJiAkKEJJTkRHRU4pIC0tdmVyc2lvbiB8fCBlY2hvIG4pCj4g
+KwoKCgpXaGVyZSBhcmUgdGhlc2UgY29uZmlnIG9wdGlvbnMgdXNlZD8KCgpJIGdyZXAnZWQgYnV0
+IG5vIGhpdC4KCgptYXNhaGlyb0B6b2U6fi9yZWYvbGludXgtbmV4dCQgZ2l0IGdyZXAgUlVTVENf
+VkVSU0lPTl9URVhUCmluaXQvS2NvbmZpZzpjb25maWcgUlVTVENfVkVSU0lPTl9URVhUCm1hc2Fo
+aXJvQHpvZTp+L3JlZi9saW51eC1uZXh0JCBnaXQgZ3JlcCBCSU5ER0VOX1ZFUlNJT05fVEVYVApp
+bml0L0tjb25maWc6Y29uZmlnIEJJTkRHRU5fVkVSU0lPTl9URVhUCgoKCj4gLS0KPiAyLjM3LjEK
+PgoKCi0tCkJlc3QgUmVnYXJkcwpNYXNhaGlybyBZYW1hZGEKCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11
+bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vbGludXgtdW0K
 
