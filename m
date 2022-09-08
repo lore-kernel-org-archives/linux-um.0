@@ -1,121 +1,59 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from mail-yb1-xb49.google.com ([2607:f8b0:4864:20::b49])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oatXk-009NH9-Q7
-	for linux-um@lists.infradead.org; Wed, 21 Sep 2022 06:49:17 +0000
-Received: by mail-yb1-xb49.google.com with SMTP id d8-20020a25bc48000000b00680651cf051so4349350ybk.23
-        for <linux-um@lists.infradead.org>; Tue, 20 Sep 2022 23:49:03 -0700 (PDT)
-Date: Wed, 21 Sep 2022 14:48:55 +0800
-Mime-Version: 1.0
-Message-ID: <20220921064855.2841607-1-davidgow@google.com>
-Subject: [PATCH v2] arch: um: Mark the stack non-executable to fix a binutils warning
-From: David Gow <davidgow@google.com>
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Nick Desaulniers <ndesaulniers@google.com>
-Cc: David Gow <davidgow@google.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, Linus Torvalds <torvalds@linux-foundation.org>, Brendan Higgins <brendan.higgins@linux.dev>, Daniel Latypov <dlatypov@google.com>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com, x86@kernel.org, Lukas Straub <lukasstraub2@web.de>, Randy Dunlap <rdunlap@infradead.org>
+MIME-Version: 1.0
+Date: Thu, 8 Sep 2022 19:45:58 +0200
+References: <20220908125401.28130-1-wangjianli@cdjrlc.com>
+	<514c7366cc8e78face3094a66bb2c4bf030f9432.camel@sipsolutions.net>
+In-Reply-To: <514c7366cc8e78face3094a66bb2c4bf030f9432.camel@sipsolutions.net>
+Message-ID: <CAMuHMdXtPREdgoXK4wyBJiZmubDtsT5Cjjn44MzGVnpu_Ph=YQ@mail.gmail.com>
+Subject: Re: [PATCH] um/kernel: fix repeated words in comments
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: wangjianli <wangjianli@cdjrlc.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um <linux-um@lists.infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-Since binutils 2.39, ld will print a warning if any stack section is
-executable, which is the default for stack sections on files without a
-.note.GNU-stack section.
+On Thu, Sep 8, 2022 at 2:56 PM Johannes Berg <johannes@sipsolutions.net> wrote:
+> On Thu, 2022-09-08 at 20:54 +0800, wangjianli wrote:
+> > Delete the redundant word 'in'.
+> >
+> > Signed-off-by: wangjianli <wangjianli@cdjrlc.com>
+> > ---
+> >  arch/um/kernel/physmem.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/arch/um/kernel/physmem.c b/arch/um/kernel/physmem.c
+> > index e7c7b53a1435..91485119ae67 100644
+> > --- a/arch/um/kernel/physmem.c
+> > +++ b/arch/um/kernel/physmem.c
+> > @@ -169,7 +169,7 @@ __uml_setup("iomem=", parse_iomem,
+> >  );
+> >
+> >  /*
+> > - * This list is constructed in parse_iomem and addresses filled in in
+> > + * This list is constructed in parse_iomem and addresses filled in
+> >   * setup_iomem, both of which run during early boot.  Afterwards, it's
+> >
+> Fine, I guess, but honestly - that sentence doesn't parse well either
 
-This was fixed for x86 in commit ffcf9c5700e4 ("x86: link vdso and boot with -z noexecstack --no-warn-rwx-segments"),
-but remained broken for UML, resulting in several warnings:
+Not fine, the repeated "in" is correct.
+Q: "Where are addresses filled in?"
+A: "In setup_iomem".
 
-/usr/bin/ld: warning: arch/x86/um/vdso/vdso.o: missing .note.GNU-stack section implies executable stack
-/usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
-/usr/bin/ld: warning: .tmp_vmlinux.kallsyms1 has a LOAD segment with RWX permissions
-/usr/bin/ld: warning: .tmp_vmlinux.kallsyms1.o: missing .note.GNU-stack section implies executable stack
-/usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
-/usr/bin/ld: warning: .tmp_vmlinux.kallsyms2 has a LOAD segment with RWX permissions
-/usr/bin/ld: warning: .tmp_vmlinux.kallsyms2.o: missing .note.GNU-stack section implies executable stack
-/usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
-/usr/bin/ld: warning: vmlinux has a LOAD segment with RWX permissions
+> way. Might be worth addressing that at the same time...
 
-Link both the VDSO and vmlinux with -z noexecstack, fixing the warnings
-about .note.GNU-stack sections. In addition, pass --no-warn-rwx-segments
-to dodge the remaining warnings about LOAD segments with RWX permissions
-in the kallsyms objects. (Note that this flag is apparently not
-available on lld, so hide it behind a test for BFD, which is what the
-x86 patch does.)
+addresses are filled in?
 
-Link: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ffcf9c5700e49c0aee42dcba9a12ba21338e8136
-Link: https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=ba951afb99912da01a6e8434126b8fac7aa75107
-Signed-off-by: David Gow <davidgow@google.com>
-Reviewed-by: Lukas Straub <lukasstraub2@web.de>
-Tested-by: Lukas Straub <lukasstraub2@web.de>
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
----
+General note: please stop submitting these patches for auto-detected
+repeated words.  There are too many false positives.
+Thanks!
 
-Note that this still doesn't seem to be working properly with make
-LLVM=1. It doesn't appear to break anything, and still is an improvement
-for gcc, so seems worthwhile anyway...
+Gr{oetje,eeting}s,
 
-Changes since v1:
-http://lists.infradead.org/pipermail/linux-um/2022-August/004234.html
-- Pass the -z noexecstack and --no-warn-rwx-segments flags as LDFLAGS,
-  rather than as CFLAGS via -Wl
-- Check that --no-warn-rwx-segments exists with the ld-option function
-  (Thanks Richard)
-- Add Lukas and Randy's tags.
+                        Geert
 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
- arch/um/Makefile          | 8 ++++++++
- arch/x86/um/vdso/Makefile | 2 +-
- 2 files changed, 9 insertions(+), 1 deletion(-)
-
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index f2fe63bfd819..f1d4d67157be 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -132,10 +132,18 @@ export LDS_ELF_FORMAT := $(ELF_FORMAT)
- # The wrappers will select whether using "malloc" or the kernel allocator.
- LINK_WRAPS = -Wl,--wrap,malloc -Wl,--wrap,free -Wl,--wrap,calloc
- 
-+# Avoid binutils 2.39+ warnings by marking the stack non-executable and
-+# ignorning warnings for the kallsyms sections.
-+LDFLAGS_EXECSTACK = -z noexecstack
-+ifeq ($(CONFIG_LD_IS_BFD),y)
-+LDFLAGS_EXECSTACK += $(call ld-option,--no-warn-rwx-segments)
-+endif
-+
- LD_FLAGS_CMDLINE = $(foreach opt,$(KBUILD_LDFLAGS),-Wl,$(opt))
- 
- # Used by link-vmlinux.sh which has special support for um link
- export CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS) $(LD_FLAGS_CMDLINE)
-+export LDFLAGS_vmlinux := $(LDFLAGS_EXECSTACK)
- 
- # When cleaning we don't include .config, so we don't include
- # TT or skas makefiles and don't clean skas_ptregs.h.
-diff --git a/arch/x86/um/vdso/Makefile b/arch/x86/um/vdso/Makefile
-index 8c0396fd0e6f..6fbe97c52c99 100644
---- a/arch/x86/um/vdso/Makefile
-+++ b/arch/x86/um/vdso/Makefile
-@@ -65,7 +65,7 @@ quiet_cmd_vdso = VDSO    $@
- 		       -Wl,-T,$(filter %.lds,$^) $(filter %.o,$^) && \
- 		 sh $(srctree)/$(src)/checkundef.sh '$(NM)' '$@'
- 
--VDSO_LDFLAGS = -fPIC -shared -Wl,--hash-style=sysv
-+VDSO_LDFLAGS = -fPIC -shared -Wl,--hash-style=sysv -z noexecstack
- GCOV_PROFILE := n
- 
- #
--- 
-2.37.3.968.ga6b4b080e4-goog
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
