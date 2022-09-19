@@ -1,52 +1,48 @@
-Return-Path: <peterz@infradead.org>
-Message-ID: <20220919101521.676713943@infradead.org>
-Date: Mon, 19 Sep 2022 11:59:59 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v2 20/44] cpuidle,intel_idle: Fix CPUIDLE_FLAG_IBRS
-References: <20220919095939.761690562@infradead.org>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from lithops.sigma-star.at ([195.201.40.130])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1oaNou-00FQ8K-9F
+	for linux-um@lists.infradead.org; Mon, 19 Sep 2022 20:56:50 +0000
+Date: Mon, 19 Sep 2022 22:56:44 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+Message-ID: <437983532.241061.1663621004742.JavaMail.zimbra@nod.at>
+In-Reply-To: <39e063ad-208d-f5f0-9807-eedcf0db1692@infradead.org>
+References: <20220823010830.2675419-1-davidgow@google.com> <39e063ad-208d-f5f0-9807-eedcf0db1692@infradead.org>
+Subject: Re: [PATCH] arch: um: Mark the stack non-executable to fix a
+ binutils warning
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-To: peterz@infradead.org
-Cc: richard.henderson@linaro.org, ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@kernel.org, linux@armlinux.org.uk, ulli.kroll@googlemail.com, linus.walleij@linaro.org, shawnguo@kernel.org, Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com, tony@atomide.com, khilman@kernel.org, catalin.marinas@arm.com, will@kernel.org, guoren@kernel.org, bcain@quicinc.com, chenhuacai@kernel.org, kernel@xen0n.name, geert@linux-m68k.org, sammy@sammy.net, monstr@monstr.eu, tsbogend@alpha.franken.de, dinguyen@kernel.org, jonas@southpole.se, stefan.kristiansson@saunalahti.fi, shorne@gmail.com, James.Bottomley@HansenPartnership.com, deller@gmx.de, mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu, paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com, borntraeger@linux.ibm.com, svens@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, acme@kernel.org, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org, namhyung@kernel.org, jgross@suse.com, srivatsa@csail.mit.edu, amakhalov@vmware.com, pv-drivers@vmware.com, boris.ostrovsky@oracle.com, chris@zankel.net, jcmvbkbc@gmail.com, rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz, gregkh@linuxfoundation.org, mturquette@baylibre.com, sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org, sudeep.holla@arm.com, agross@kernel.org, bjorn.andersson@linaro.org, konrad.dybcio@somainline.org, anup@brainfault.org, thierry.reding@gmail.com, jonathanh@nvidia.com, jacob.jun.pan@linux.intel.com, atishp@atishpatra.org, Arnd Bergmann <arnd@arndb.de>, yury.norov@gmail.com, andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk, dennis@kernel.org, tj@kernel.org, cl@linux.com, rostedt@goodmis.org, pmladek@suse.com, senozhatsky@chromium.org, john.ogness@linutronix.de, juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, fweisbec@gmail.com, ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com, dvyukov@google.com, vincenzo.frascino@arm.com, Andrew Morton <akpm@linux-foundation.org>, jpoimboe@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-omap@vger.kernel.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org, virtualization@lists.linux-foundation.org, linux-xtensa@linux-xtensa.org, linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org, linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org, kasan-dev@googlegroups.com
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Randy Dunlap <rdunlap@infradead.org>, davidgow <davidgow@google.com>
+Cc: anton ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Nick Desaulniers <ndesaulniers@google.com>, tglx <tglx@linutronix.de>, mingo <mingo@redhat.com>, dave hansen <dave.hansen@linux.intel.com>, torvalds <torvalds@linux-foundation.org>, Brendan Higgins <brendan.higgins@linux.dev>, Daniel Latypov <dlatypov@google.com>, linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, kunit-dev@googlegroups.com, x86 <x86@kernel.org>
 
-vmlinux.o: warning: objtool: intel_idle_ibrs+0x17: call to spec_ctrl_current() leaves .noinstr.text section
-vmlinux.o: warning: objtool: intel_idle_ibrs+0x27: call to wrmsrl.constprop.0() leaves .noinstr.text section
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/kernel/cpu/bugs.c |    2 +-
- drivers/idle/intel_idle.c  |    4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -79,7 +79,7 @@ void write_spec_ctrl_current(u64 val, bo
- 		wrmsrl(MSR_IA32_SPEC_CTRL, val);
- }
- 
--u64 spec_ctrl_current(void)
-+noinstr u64 spec_ctrl_current(void)
- {
- 	return this_cpu_read(x86_spec_ctrl_current);
- }
---- a/drivers/idle/intel_idle.c
-+++ b/drivers/idle/intel_idle.c
-@@ -181,12 +181,12 @@ static __cpuidle int intel_idle_ibrs(str
- 	int ret;
- 
- 	if (smt_active)
--		wrmsrl(MSR_IA32_SPEC_CTRL, 0);
-+		native_wrmsrl(MSR_IA32_SPEC_CTRL, 0);
- 
- 	ret = __intel_idle(dev, drv, index);
- 
- 	if (smt_active)
--		wrmsrl(MSR_IA32_SPEC_CTRL, spec_ctrl);
-+		native_wrmsrl(MSR_IA32_SPEC_CTRL, spec_ctrl);
- 
- 	return ret;
- }
-
-
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIlJhbmR5IER1bmxhcCIgPHJk
+dW5sYXBAaW5mcmFkZWFkLm9yZz4KPj4gTGluazoKPj4gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9w
+dWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0L2NvbW1pdC8/aWQ9ZmZj
+ZjljNTcwMGU0OWMwYWVlNDJkY2JhOWExMmJhMjEzMzhlODEzNgo+PiBMaW5rOgo+PiBodHRwczov
+L3NvdXJjZXdhcmUub3JnL2dpdC8/cD1iaW51dGlscy1nZGIuZ2l0O2E9Y29tbWl0O2g9YmE5NTFh
+ZmI5OTkxMmRhMDFhNmU4NDM0MTI2YjhmYWM3YWE3NTEwNwo+PiBTaWduZWQtb2ZmLWJ5OiBEYXZp
+ZCBHb3cgPGRhdmlkZ293QGdvb2dsZS5jb20+Cj4gCj4gQWNrZWQtYnk6IFJhbmR5IER1bmxhcCA8
+cmR1bmxhcEBpbmZyYWRlYWQub3JnPiAjIGJ1aWxkLXRlc3RlZAoKVGhpcyBwYXRjaCBjYXVzZXMg
+YSBidWlsZCBlcnJvciBvbiBvbmUgb2YgbXkgc3lzdGVtczoKCi91c3IvbGliNjQvZ2NjL3g4Nl82
+NC1zdXNlLWxpbnV4LzcvLi4vLi4vLi4vLi4veDg2XzY0LXN1c2UtbGludXgvYmluL2xkOiB1bnJl
+Y29nbml6ZWQgb3B0aW9uICctLW5vLXdhcm4tcnd4LXNlZ21lbnRzJwovdXNyL2xpYjY0L2djYy94
+ODZfNjQtc3VzZS1saW51eC83Ly4uLy4uLy4uLy4uL3g4Nl82NC1zdXNlLWxpbnV4L2Jpbi9sZDog
+dXNlIHRoZSAtLWhlbHAgb3B0aW9uIGZvciB1c2FnZSBpbmZvcm1hdGlvbgpjb2xsZWN0MjogZXJy
+b3I6IGxkIHJldHVybmVkIDEgZXhpdCBzdGF0dXMKCkp1c3QgbGlrZSBpbiBjb21taXQgZmZjZjlj
+NTcwMGU0ICgieDg2OiBsaW5rIHZkc28gYW5kIGJvb3Qgd2l0aCAteiBub2V4ZWNzdGFjayAtLW5v
+LXdhcm4tcnd4LXNlZ21lbnRzIikgeW91IG5lZWQgdG8KdGVzdCBmb3IgaXQuCgpUaGFua3MsCi8v
+cmljaGFyZAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+bGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
+L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
 
