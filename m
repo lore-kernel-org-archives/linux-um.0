@@ -1,8 +1,8 @@
 Return-Path: <frederic@kernel.org>
-Date: Mon, 19 Sep 2022 16:43:24 +0200
+Date: Mon, 19 Sep 2022 16:31:42 +0200
 From: Frederic Weisbecker <frederic@kernel.org>
 Subject: Re: [PATCH v2 09/44] cpuidle,omap3: Push RCU-idle into driver
-Message-ID: <20220919144324.GA62117@lothringen>
+Message-ID: <20220919143142.GA61009@lothringen>
 References: <20220919095939.761690562@infradead.org>
  <20220919101520.936337959@infradead.org>
 MIME-Version: 1.0
@@ -16,12 +16,8 @@ List-ID: <linux-um.lists.infradead.org>
 On Mon, Sep 19, 2022 at 11:59:48AM +0200, Peter Zijlstra wrote:
 > Doing RCU-idle outside the driver, only to then teporarily enable it
 > again before going idle is daft.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Reviewed-by: Tony Lindgren <tony@atomide.com>
-> Tested-by: Tony Lindgren <tony@atomide.com>
 
-Ok now with the cpu_pm_*() informations that makes sense:
+That doesn't tell where those calls are.
 
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Thanks.
 
