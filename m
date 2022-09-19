@@ -1,8 +1,8 @@
 Return-Path: <peterz@infradead.org>
-Date: Mon, 19 Sep 2022 17:03:04 +0200
+Date: Mon, 19 Sep 2022 17:01:08 +0200
 From: Peter Zijlstra <peterz@infradead.org>
 Subject: Re: [PATCH v2 08/44] cpuidle,imx6: Push RCU-idle into driver
-Message-ID: <YyiEqDSJVOZrQYg8@hirez.programming.kicks-ass.net>
+Message-ID: <YyiENIiiw0lx4z3l@hirez.programming.kicks-ass.net>
 References: <20220919095939.761690562@infradead.org>
  <20220919101520.869531945@infradead.org>
  <20220919144941.GA62211@lothringen>
@@ -47,6 +47,5 @@ On Mon, Sep 19, 2022 at 04:49:41PM +0200, Frederic Weisbecker wrote:
 > 
 > There is a second one below that also uses imx6sx_enter_wait.
 
-Oh, above you mean; but only @index==2 gets us into the whole PM crud.
-@index==1 is fine afaict.
+Duh, thanks!
 
