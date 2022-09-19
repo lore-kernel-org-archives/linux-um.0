@@ -1,8 +1,8 @@
-Return-Path: <linux-clk-owner@vger.kernel.org>
-Date: Wed, 21 Sep 2022 22:51:10 +0100
-From: Kajetan Puchalski <kajetan.puchalski@arm.com>
+Return-Path: <frederic@kernel.org>
+Date: Mon, 19 Sep 2022 16:11:51 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
 Subject: Re: [PATCH v2 07/44] cpuidle,psci: Push RCU-idle into driver
-Message-ID: <YyuHTgRh7t6vYjHw@e126311.manchester.arm.com>
+Message-ID: <20220919141151.GD58444@lothringen>
 References: <20220919095939.761690562@infradead.org>
  <20220919101520.802976773@infradead.org>
 MIME-Version: 1.0
@@ -19,7 +19,5 @@ On Mon, Sep 19, 2022 at 11:59:46AM +0200, Peter Zijlstra wrote:
 > 
 > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-Tried it on Pixel 6 running psci_idle, looks good with no apparent issues.
-
-Tested-by: Kajetan Puchalski <kajetan.puchalski@arm.com>
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
