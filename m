@@ -1,8 +1,8 @@
 Return-Path: <peterz@infradead.org>
-Message-ID: <20220919101523.177759249@infradead.org>
-Date: Mon, 19 Sep 2022 12:00:21 +0200
+Message-ID: <20220919101522.707997632@infradead.org>
+Date: Mon, 19 Sep 2022 12:00:14 +0200
 From: Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v2 42/44] entry,kasan,x86: Disallow overriding mem*() functions
+Subject: [PATCH v2 35/44] cpuidle,omap3: Push RCU-idle into omap_sram_idle()
 References: <20220919095939.761690562@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -10,171 +10,92 @@ To: peterz@infradead.org
 Cc: richard.henderson@linaro.org, ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@kernel.org, linux@armlinux.org.uk, ulli.kroll@googlemail.com, linus.walleij@linaro.org, shawnguo@kernel.org, Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com, tony@atomide.com, khilman@kernel.org, catalin.marinas@arm.com, will@kernel.org, guoren@kernel.org, bcain@quicinc.com, chenhuacai@kernel.org, kernel@xen0n.name, geert@linux-m68k.org, sammy@sammy.net, monstr@monstr.eu, tsbogend@alpha.franken.de, dinguyen@kernel.org, jonas@southpole.se, stefan.kristiansson@saunalahti.fi, shorne@gmail.com, James.Bottomley@HansenPartnership.com, deller@gmx.de, mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu, paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com, borntraeger@linux.ibm.com, svens@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, acme@kernel.org, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org, namhyung@kernel.org, jgross@suse.com, srivatsa@csail.mit.edu, amakhalov@vmware.com, pv-drivers@vmware.com, boris.ostrovsky@oracle.com, chris@zankel.net, jcmvbkbc@gmail.com, rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz, gregkh@linuxfoundation.org, mturquette@baylibre.com, sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org, sudeep.holla@arm.com, agross@kernel.org, bjorn.andersson@linaro.org, konrad.dybcio@somainline.org, anup@brainfault.org, thierry.reding@gmail.com, jonathanh@nvidia.com, jacob.jun.pan@linux.intel.com, atishp@atishpatra.org, Arnd Bergmann <arnd@arndb.de>, yury.norov@gmail.com, andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk, dennis@kernel.org, tj@kernel.org, cl@linux.com, rostedt@goodmis.org, pmladek@suse.com, senozhatsky@chromium.org, john.ogness@linutronix.de, juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, fweisbec@gmail.com, ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com, dvyukov@google.com, vincenzo.frascino@arm.com, Andrew Morton <akpm@linux-foundation.org>, jpoimboe@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-omap@vger.kernel.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org, virtualization@lists.linux-foundation.org, linux-xtensa@linux-xtensa.org, linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org, linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org, kasan-dev@googlegroups.com
 List-ID: <linux-um.lists.infradead.org>
 
-KASAN cannot just hijack the mem*() functions, it needs to emit
-__asan_mem*() variants if it wants instrumentation (other sanitizers
-already do this).
+OMAP3 uses full SoC suspend modes as idle states, as such it needs the
+whole power-domain and clock-domain code from the idle path.
 
-vmlinux.o: warning: objtool: sync_regs+0x24: call to memcpy() leaves .noinstr.text section
-vmlinux.o: warning: objtool: vc_switch_off_ist+0xbe: call to memcpy() leaves .noinstr.text section
-vmlinux.o: warning: objtool: fixup_bad_iret+0x36: call to memset() leaves .noinstr.text section
-vmlinux.o: warning: objtool: __sev_get_ghcb+0xa0: call to memcpy() leaves .noinstr.text section
-vmlinux.o: warning: objtool: __sev_put_ghcb+0x35: call to memcpy() leaves .noinstr.text section
-
-Remove the weak aliases to ensure nobody hijacks these functions and
-add them to the noinstr section.
+All that code is not suitable to run with RCU disabled, as such push
+RCU-idle deeper still.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Tony Lindgren <tony@atomide.com>
+Tested-by: Tony Lindgren <tony@atomide.com>
 ---
- arch/x86/lib/memcpy_64.S  |    5 ++---
- arch/x86/lib/memmove_64.S |    4 +++-
- arch/x86/lib/memset_64.S  |    4 +++-
- mm/kasan/kasan.h          |    4 ++++
- mm/kasan/shadow.c         |   38 ++++++++++++++++++++++++++++++++++++++
- tools/objtool/check.c     |    3 +++
- 6 files changed, 53 insertions(+), 5 deletions(-)
+ arch/arm/mach-omap2/cpuidle34xx.c |    4 +---
+ arch/arm/mach-omap2/pm.h          |    2 +-
+ arch/arm/mach-omap2/pm34xx.c      |   12 ++++++++++--
+ 3 files changed, 12 insertions(+), 6 deletions(-)
 
---- a/arch/x86/lib/memcpy_64.S
-+++ b/arch/x86/lib/memcpy_64.S
-@@ -7,7 +7,7 @@
- #include <asm/alternative.h>
- #include <asm/export.h>
+--- a/arch/arm/mach-omap2/cpuidle34xx.c
++++ b/arch/arm/mach-omap2/cpuidle34xx.c
+@@ -133,9 +133,7 @@ static int omap3_enter_idle(struct cpuid
+ 	}
  
--.pushsection .noinstr.text, "ax"
-+.section .noinstr.text, "ax"
+ 	/* Execute ARM wfi */
+-	ct_cpuidle_enter();
+-	omap_sram_idle();
+-	ct_cpuidle_exit();
++	omap_sram_idle(true);
  
- /*
-  * We build a jump to memcpy_orig by default which gets NOPped out on
-@@ -42,7 +42,7 @@ SYM_FUNC_START(__memcpy)
- SYM_FUNC_END(__memcpy)
- EXPORT_SYMBOL(__memcpy)
+ 	/*
+ 	 * Call idle CPU PM enter notifier chain to restore
+--- a/arch/arm/mach-omap2/pm.h
++++ b/arch/arm/mach-omap2/pm.h
+@@ -29,7 +29,7 @@ static inline int omap4_idle_init(void)
  
--SYM_FUNC_ALIAS_WEAK(memcpy, __memcpy)
-+SYM_FUNC_ALIAS(memcpy, __memcpy)
- EXPORT_SYMBOL(memcpy)
+ extern void *omap3_secure_ram_storage;
+ extern void omap3_pm_off_mode_enable(int);
+-extern void omap_sram_idle(void);
++extern void omap_sram_idle(bool rcuidle);
+ extern int omap_pm_clkdms_setup(struct clockdomain *clkdm, void *unused);
  
- /*
-@@ -183,4 +183,3 @@ SYM_FUNC_START_LOCAL(memcpy_orig)
- 	RET
- SYM_FUNC_END(memcpy_orig)
+ #if defined(CONFIG_PM_OPP)
+--- a/arch/arm/mach-omap2/pm34xx.c
++++ b/arch/arm/mach-omap2/pm34xx.c
+@@ -26,6 +26,7 @@
+ #include <linux/delay.h>
+ #include <linux/slab.h>
+ #include <linux/of.h>
++#include <linux/cpuidle.h>
  
--.popsection
---- a/arch/x86/lib/memmove_64.S
-+++ b/arch/x86/lib/memmove_64.S
-@@ -13,6 +13,8 @@
+ #include <trace/events/power.h>
  
- #undef memmove
- 
-+.section .noinstr.text, "ax"
-+
- /*
-  * Implement memmove(). This can handle overlap between src and dst.
-  *
-@@ -213,5 +215,5 @@ SYM_FUNC_START(__memmove)
- SYM_FUNC_END(__memmove)
- EXPORT_SYMBOL(__memmove)
- 
--SYM_FUNC_ALIAS_WEAK(memmove, __memmove)
-+SYM_FUNC_ALIAS(memmove, __memmove)
- EXPORT_SYMBOL(memmove)
---- a/arch/x86/lib/memset_64.S
-+++ b/arch/x86/lib/memset_64.S
-@@ -6,6 +6,8 @@
- #include <asm/alternative.h>
- #include <asm/export.h>
- 
-+.section .noinstr.text, "ax"
-+
- /*
-  * ISO C memset - set a memory block to a byte value. This function uses fast
-  * string to get better performance than the original function. The code is
-@@ -43,7 +45,7 @@ SYM_FUNC_START(__memset)
- SYM_FUNC_END(__memset)
- EXPORT_SYMBOL(__memset)
- 
--SYM_FUNC_ALIAS_WEAK(memset, __memset)
-+SYM_FUNC_ALIAS(memset, __memset)
- EXPORT_SYMBOL(memset)
- 
- /*
---- a/mm/kasan/kasan.h
-+++ b/mm/kasan/kasan.h
-@@ -551,6 +551,10 @@ void __asan_set_shadow_f3(const void *ad
- void __asan_set_shadow_f5(const void *addr, size_t size);
- void __asan_set_shadow_f8(const void *addr, size_t size);
- 
-+void *__asan_memset(void *addr, int c, size_t len);
-+void *__asan_memmove(void *dest, const void *src, size_t len);
-+void *__asan_memcpy(void *dest, const void *src, size_t len);
-+
- void __hwasan_load1_noabort(unsigned long addr);
- void __hwasan_store1_noabort(unsigned long addr);
- void __hwasan_load2_noabort(unsigned long addr);
---- a/mm/kasan/shadow.c
-+++ b/mm/kasan/shadow.c
-@@ -38,6 +38,12 @@ bool __kasan_check_write(const volatile
+@@ -174,7 +175,7 @@ static int omap34xx_do_sram_idle(unsigne
+ 	return 0;
  }
- EXPORT_SYMBOL(__kasan_check_write);
  
-+#ifndef CONFIG_GENERIC_ENTRY
-+/*
-+ * CONFIG_GENERIC_ENTRY relies on compiler emitted mem*() calls to not be
-+ * instrumented. KASAN enabled toolchains should emit __asan_mem*() functions
-+ * for the sites they want to instrument.
-+ */
- #undef memset
- void *memset(void *addr, int c, size_t len)
+-void omap_sram_idle(void)
++void omap_sram_idle(bool rcuidle)
  {
-@@ -68,6 +74,38 @@ void *memcpy(void *dest, const void *src
+ 	/* Variable to tell what needs to be saved and restored
+ 	 * in omap_sram_idle*/
+@@ -254,11 +255,18 @@ void omap_sram_idle(void)
+ 	 */
+ 	if (save_state)
+ 		omap34xx_save_context(omap3_arm_context);
++
++	if (rcuidle)
++		ct_cpuidle_enter();
++
+ 	if (save_state == 1 || save_state == 3)
+ 		cpu_suspend(save_state, omap34xx_do_sram_idle);
+ 	else
+ 		omap34xx_do_sram_idle(save_state);
  
- 	return __memcpy(dest, src, len);
- }
-+#endif
++	if (rcuidle)
++		ct_cpuidle_exit();
 +
-+void *__asan_memset(void *addr, int c, size_t len)
-+{
-+	if (!kasan_check_range((unsigned long)addr, len, true, _RET_IP_))
-+		return NULL;
-+
-+	return __memset(addr, c, len);
-+}
-+EXPORT_SYMBOL(__asan_memset);
-+
-+#ifdef __HAVE_ARCH_MEMMOVE
-+void *__asan_memmove(void *dest, const void *src, size_t len)
-+{
-+	if (!kasan_check_range((unsigned long)src, len, false, _RET_IP_) ||
-+	    !kasan_check_range((unsigned long)dest, len, true, _RET_IP_))
-+		return NULL;
-+
-+	return __memmove(dest, src, len);
-+}
-+EXPORT_SYMBOL(__asan_memmove);
-+#endif
-+
-+void *__asan_memcpy(void *dest, const void *src, size_t len)
-+{
-+	if (!kasan_check_range((unsigned long)src, len, false, _RET_IP_) ||
-+	    !kasan_check_range((unsigned long)dest, len, true, _RET_IP_))
-+		return NULL;
-+
-+	return __memcpy(dest, src, len);
-+}
-+EXPORT_SYMBOL(__asan_memcpy);
+ 	/* Restore normal SDRC POWER settings */
+ 	if (cpu_is_omap3430() && omap_rev() >= OMAP3430_REV_ES3_0 &&
+ 	    (omap_type() == OMAP2_DEVICE_TYPE_EMU ||
+@@ -316,7 +324,7 @@ static int omap3_pm_suspend(void)
  
- void kasan_poison(const void *addr, size_t size, u8 value, bool init)
- {
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -956,6 +956,9 @@ static const char *uaccess_safe_builtin[
- 	"__asan_store16_noabort",
- 	"__kasan_check_read",
- 	"__kasan_check_write",
-+	"__asan_memset",
-+	"__asan_memmove",
-+	"__asan_memcpy",
- 	/* KASAN in-line */
- 	"__asan_report_load_n_noabort",
- 	"__asan_report_load1_noabort",
+ 	omap3_intc_suspend();
+ 
+-	omap_sram_idle();
++	omap_sram_idle(false);
+ 
+ restore:
+ 	/* Restore next_pwrsts */
 
 
 
