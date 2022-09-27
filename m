@@ -1,127 +1,33 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oNTFw-00BjQs-IQ
-	for linux-um@lists.infradead.org; Mon, 15 Aug 2022 06:07:22 +0000
-Received: by mail-ed1-f69.google.com with SMTP id y14-20020a056402440e00b0044301c7ccd9so4144041eda.19
-        for <linux-um@lists.infradead.org>; Sun, 14 Aug 2022 23:07:15 -0700 (PDT)
-Date: Mon, 15 Aug 2022 02:07:05 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Subject: Re: [PATCH v14 30/42] virtio_pci: introduce helper to get/set queue
- reset
-Message-ID: <20220815020548-mutt-send-email-mst@kernel.org>
-References: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
- <20220801063902.129329-31-xuanzhuo@linux.alibaba.com>
+Return-Path: <tony@atomide.com>
+Date: Tue, 27 Sep 2022 09:31:11 +0300
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH v2 00/44] cpuidle,rcu: Clean up the mess
+Message-ID: <YzKYrx8Kd9SBYcUg@atomide.com>
+References: <20220919095939.761690562@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20220801063902.129329-31-xuanzhuo@linux.alibaba.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: virtualization@lists.linux-foundation.org, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Jason Wang <jasowang@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, Mark Gross <markgross@kernel.org>, Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>, linux-um@lists.infradead.org, netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org, bpf@vger.kernel.org, kangjie.xu@linux.alibaba.com
+In-Reply-To: <20220919095939.761690562@infradead.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: richard.henderson@linaro.org, ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@kernel.org, linux@armlinux.org.uk, ulli.kroll@googlemail.com, linus.walleij@linaro.org, shawnguo@kernel.org, Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com, khilman@kernel.org, catalin.marinas@arm.com, will@kernel.org, guoren@kernel.org, bcain@quicinc.com, chenhuacai@kernel.org, kernel@xen0n.name, geert@linux-m68k.org, sammy@sammy.net, monstr@monstr.eu, tsbogend@alpha.franken.de, dinguyen@kernel.org, jonas@southpole.se, stefan.kristiansson@saunalahti.fi, shorne@gmail.com, James.Bottomley@hansenpartnership.com, deller@gmx.de, mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu, paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com, borntraeger@linux.ibm.com, svens@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, acme@kernel.org, mark.rutland@arm.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org, namhyung@kernel.org, jgross@suse.com, srivatsa@csail.mit.edu, amakhalov@vmware.com, pv-drivers@vmware.com, boris.ostrovsky@oracle.com, chris@zankel.net, jcmvbkbc@gmail.com, rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz, gregkh@linuxfoundation.org, mturquette@baylibre.com, sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org, sudeep.holla@arm.com, agross@kernel.org, bjorn.andersson@linaro.org, konrad.dybcio@somainline.org, anup@brainfault.org, thierry.reding@gmail.com, jonathanh@nvidia.com, jacob.jun.pan@linux.intel.com, atishp@atishpatra.org, Arnd Bergmann <arnd@arndb.de>, yury.norov@gmail.com, andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk, dennis@kernel.org, tj@kernel.org, cl@linux.com, rostedt@goodmis.org, pmladek@suse.com, senozhatsky@chromium.org, john.ogness@linutronix.de, juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, fweisbec@gmail.com, ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com, dvyukov@google.com, vincenzo.frascino@arm.com, Andrew Morton <akpm@linux-foundation.org>, jpoimboe@kernel.org, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-omap@vger.kernel.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org, virtualization@lists.linux-foundation.org, linux-xtensa@linux-xtensa.org, linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org, linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org, kasan-dev@googlegroups.com
+List-ID: <linux-um.lists.infradead.org>
 
-On Mon, Aug 01, 2022 at 02:38:50PM +0800, Xuan Zhuo wrote:
-> Introduce new helpers to implement queue reset and get queue reset
-> status.
+Hi,
+
+* Peter Zijlstra <peterz@infradead.org> [220919 10:08]:
+> Hi All!
 > 
->  https://github.com/oasis-tcs/virtio-spec/issues/124
->  https://github.com/oasis-tcs/virtio-spec/issues/139
+> At long last, a respin of the cpuidle vs rcu cleanup patches.
 > 
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> Acked-by: Jason Wang <jasowang@redhat.com>
-> ---
->  drivers/virtio/virtio_pci_modern_dev.c | 39 ++++++++++++++++++++++++++
->  include/linux/virtio_pci_modern.h      |  2 ++
->  2 files changed, 41 insertions(+)
+> v1: https://lkml.kernel.org/r/20220608142723.103523089@infradead.org
 > 
-> diff --git a/drivers/virtio/virtio_pci_modern_dev.c b/drivers/virtio/virtio_pci_modern_dev.c
-> index fa2a9445bb18..869cb46bef96 100644
-> --- a/drivers/virtio/virtio_pci_modern_dev.c
-> +++ b/drivers/virtio/virtio_pci_modern_dev.c
-> @@ -3,6 +3,7 @@
->  #include <linux/virtio_pci_modern.h>
->  #include <linux/module.h>
->  #include <linux/pci.h>
-> +#include <linux/delay.h>
->  
->  /*
->   * vp_modern_map_capability - map a part of virtio pci capability
-> @@ -474,6 +475,44 @@ void vp_modern_set_status(struct virtio_pci_modern_device *mdev,
->  }
->  EXPORT_SYMBOL_GPL(vp_modern_set_status);
->  
-> +/*
-> + * vp_modern_get_queue_reset - get the queue reset status
-> + * @mdev: the modern virtio-pci device
-> + * @index: queue index
-> + */
-> +int vp_modern_get_queue_reset(struct virtio_pci_modern_device *mdev, u16 index)
-> +{
-> +	struct virtio_pci_modern_common_cfg __iomem *cfg;
-> +
-> +	cfg = (struct virtio_pci_modern_common_cfg __iomem *)mdev->common;
+> These here patches clean up the mess that is cpuidle vs rcuidle.
 
-This should use container_of, and assignment combined with the
-declaration.
+I just gave these a quick test and things still work for me. The old
+omap3 off mode during idle still works. No more need to play the
+whack the mole game with RCU-idle :) I did not test on x86, or on other
+ARMs, but considering the test pretty much covered the all the
+affected RCU-idle related paths, where suitable, feel free to add:
 
-> +
-> +	vp_iowrite16(index, &cfg->cfg.queue_select);
-> +	return vp_ioread16(&cfg->queue_reset);
-> +}
-> +EXPORT_SYMBOL_GPL(vp_modern_get_queue_reset);
-> +
-> +/*
-> + * vp_modern_set_queue_reset - reset the queue
-> + * @mdev: the modern virtio-pci device
-> + * @index: queue index
-> + */
-> +void vp_modern_set_queue_reset(struct virtio_pci_modern_device *mdev, u16 index)
-> +{
-> +	struct virtio_pci_modern_common_cfg __iomem *cfg;
-> +
-> +	cfg = (struct virtio_pci_modern_common_cfg __iomem *)mdev->common;
-> +
-> +	vp_iowrite16(index, &cfg->cfg.queue_select);
-> +	vp_iowrite16(1, &cfg->queue_reset);
-> +
-> +	while (vp_ioread16(&cfg->queue_reset))
-> +		msleep(1);
-> +
-> +	while (vp_ioread16(&cfg->cfg.queue_enable))
-> +		msleep(1);
-> +}
-> +EXPORT_SYMBOL_GPL(vp_modern_set_queue_reset);
-> +
->  /*
->   * vp_modern_queue_vector - set the MSIX vector for a specific virtqueue
->   * @mdev: the modern virtio-pci device
-> diff --git a/include/linux/virtio_pci_modern.h b/include/linux/virtio_pci_modern.h
-> index 05123b9a606f..c4eeb79b0139 100644
-> --- a/include/linux/virtio_pci_modern.h
-> +++ b/include/linux/virtio_pci_modern.h
-> @@ -113,4 +113,6 @@ void __iomem * vp_modern_map_vq_notify(struct virtio_pci_modern_device *mdev,
->  				       u16 index, resource_size_t *pa);
->  int vp_modern_probe(struct virtio_pci_modern_device *mdev);
->  void vp_modern_remove(struct virtio_pci_modern_device *mdev);
-> +int vp_modern_get_queue_reset(struct virtio_pci_modern_device *mdev, u16 index);
-> +void vp_modern_set_queue_reset(struct virtio_pci_modern_device *mdev, u16 index);
->  #endif
-> -- 
-> 2.31.0
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+Tested-by: Tony Lindgren <tony@atomide.com>
 
