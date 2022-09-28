@@ -1,57 +1,93 @@
-Return-Path: <linux-kernel-owner@vger.kernel.org>
-From: cgel.zte@gmail.com
-Subject: [PATCH linux-next] um: use strscpy() is more robust and safer
-Date: Wed, 21 Sep 2022 09:29:44 +0000
-Message-Id: <20220921092944.230413-1-ye.xingchen@zte.com.cn>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1odQVE-00EEzS-NC
+	for linux-um@lists.infradead.org; Wed, 28 Sep 2022 06:25:06 +0000
+Date: Tue, 27 Sep 2022 23:25:00 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: linux-next: Tree for Sep 27 (uml 64-bit or 32-bit: tinyconfig)
+Message-ID: <20220928062500.GZ4196@paulmck-ThinkPad-P17-Gen-1>
+References: <20220927201053.518736-1-broonie@kernel.org>
+ <f1b22431-074d-32f1-b67a-34c51e4d072a@infradead.org>
+ <20220927212821.GX4196@paulmck-ThinkPad-P17-Gen-1>
+ <1d54d4ff-c8a3-145a-7ec5-f32107eda21e@infradead.org>
+ <20220927224234.GY4196@paulmck-ThinkPad-P17-Gen-1>
+ <ae367f0e-424c-d026-23fb-5eafec93cfb1@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To: richard@nod.at
-Cc: anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, baihaowen@meizu.com, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, ye xingchen <ye.xingchen@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
-List-ID: <linux-um.lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <ae367f0e-424c-d026-23fb-5eafec93cfb1@infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Reply-To: paulmck@kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: broonie@kernel.org, Linux Next Mailing List <linux-next@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>
 
-From: ye xingchen <ye.xingchen@zte.com.cn>
-
-The implementation of strscpy() is more robust and safer.
-
-That's now the recommended way to copy NUL terminated strings.
-
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: ye xingchen <ye.xingchen@zte.com.cn>
----
- arch/um/os-Linux/umid.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/um/os-Linux/umid.c b/arch/um/os-Linux/umid.c
-index 7a1abb829930..288c422bfa96 100644
---- a/arch/um/os-Linux/umid.c
-+++ b/arch/um/os-Linux/umid.c
-@@ -40,7 +40,7 @@ static int __init make_uml_dir(void)
- 				__func__);
- 			goto err;
- 		}
--		strlcpy(dir, home, sizeof(dir));
-+		strscpy(dir, home, sizeof(dir));
- 		uml_dir++;
- 	}
- 	strlcat(dir, uml_dir, sizeof(dir));
-@@ -243,7 +243,7 @@ int __init set_umid(char *name)
- 	if (strlen(name) > UMID_LEN - 1)
- 		return -E2BIG;
- 
--	strlcpy(umid, name, sizeof(umid));
-+	strscpy(umid, name, sizeof(umid));
- 
- 	return 0;
- }
-@@ -262,7 +262,7 @@ static int __init make_umid(void)
- 	make_uml_dir();
- 
- 	if (*umid == '\0') {
--		strlcpy(tmp, uml_dir, sizeof(tmp));
-+		strscpy(tmp, uml_dir, sizeof(tmp));
- 		strlcat(tmp, "XXXXXX", sizeof(tmp));
- 		fd = mkstemp(tmp);
- 		if (fd < 0) {
--- 
-2.25.1
+T24gVHVlLCBTZXAgMjcsIDIwMjIgYXQgMDg6Mjc6MTNQTSAtMDcwMCwgUmFuZHkgRHVubGFwIHdy
+b3RlOgo+IEhpIFBhdWwsCj4gCj4gT24gOS8yNy8yMiAxNTo0MiwgUGF1bCBFLiBNY0tlbm5leSB3
+cm90ZToKPiA+IE9uIFR1ZSwgU2VwIDI3LCAyMDIyIGF0IDAyOjMzOjE5UE0gLTA3MDAsIFJhbmR5
+IER1bmxhcCB3cm90ZToKPiA+Pgo+ID4+Cj4gPj4gT24gOS8yNy8yMiAxNDoyOCwgUGF1bCBFLiBN
+Y0tlbm5leSB3cm90ZToKPiA+Pj4gT24gVHVlLCBTZXAgMjcsIDIwMjIgYXQgMDI6MTM6MjlQTSAt
+MDcwMCwgUmFuZHkgRHVubGFwIHdyb3RlOgo+ID4+Pj4KPiA+Pj4+Cj4gPj4+PiBPbiA5LzI3LzIy
+IDEzOjEwLCBicm9vbmllQGtlcm5lbC5vcmcgd3JvdGU6Cj4gPj4+Pj4gSGkgYWxsLAo+ID4+Pj4+
+Cj4gPj4+Pj4gQ2hhbmdlcyBzaW5jZSAyMDIyMDkyMzoKPiA+Pj4+Pgo+ID4+Pj4KPiA+Pj4+IElu
+IGZpbGUgaW5jbHVkZWQgZnJvbSAuLi9pbmNsdWRlL2xpbnV4L25vdGlmaWVyLmg6MTYsCj4gPj4+
+PiAgICAgICAgICAgICAgICAgIGZyb20gLi4vaW5jbHVkZS9saW51eC9tZW1vcnlfaG90cGx1Zy5o
+OjcsCj4gPj4+PiAgICAgICAgICAgICAgICAgIGZyb20gLi4vaW5jbHVkZS9saW51eC9tbXpvbmUu
+aDoxMjQ0LAo+ID4+Pj4gICAgICAgICAgICAgICAgICBmcm9tIC4uL2luY2x1ZGUvbGludXgvZ2Zw
+Lmg6NywKPiA+Pj4+ICAgICAgICAgICAgICAgICAgZnJvbSAuLi9pbmNsdWRlL2xpbnV4L3NsYWIu
+aDoxNSwKPiA+Pj4+ICAgICAgICAgICAgICAgICAgZnJvbSAuLi9pbmNsdWRlL2xpbnV4L2NyeXB0
+by5oOjIwLAo+ID4+Pj4gICAgICAgICAgICAgICAgICBmcm9tIC4uL2FyY2gveDg2L3VtL3NoYXJl
+ZC9zeXNkZXAva2VybmVsLW9mZnNldHMuaDo1LAo+ID4+Pj4gICAgICAgICAgICAgICAgICBmcm9t
+IC4uL2FyY2gvdW0va2VybmVsL2FzbS1vZmZzZXRzLmM6MToKPiA+Pj4+IC4uL2luY2x1ZGUvbGlu
+dXgvc3JjdS5oOiBJbiBmdW5jdGlvbiDigJhzcmN1X3JlYWRfbG9ja19ubWlzYWZl4oCZOgo+ID4+
+Pj4gLi4vaW5jbHVkZS9saW51eC9zcmN1Lmg6MTgxOjI2OiBlcnJvcjogaW1wbGljaXQgZGVjbGFy
+YXRpb24gb2YgZnVuY3Rpb24g4oCYX19zcmN1X3JlYWRfbG9ja19ubWlzYWZl4oCZOyBkaWQgeW91
+IG1lYW4g4oCYc3JjdV9yZWFkX2xvY2tfbm1pc2FmZeKAmT8gWy1XZXJyb3I9aW1wbGljaXQtZnVu
+Y3Rpb24tZGVjbGFyYXRpb25dCj4gPj4+PiAgIDE4MSB8ICAgICAgICAgICAgICAgICByZXR2YWwg
+PSBfX3NyY3VfcmVhZF9sb2NrX25taXNhZmUoc3NwLCB0cnVlKTsKPiA+Pj4+ICAgICAgIHwgICAg
+ICAgICAgICAgICAgICAgICAgICAgIF5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fgo+ID4+Pj4gICAg
+ICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAgc3JjdV9yZWFkX2xvY2tfbm1pc2FmZQo+ID4+
+Pj4gLi4vaW5jbHVkZS9saW51eC9zcmN1Lmg6IEluIGZ1bmN0aW9uIOKAmHNyY3VfcmVhZF91bmxv
+Y2tfbm1pc2FmZeKAmToKPiA+Pj4+IC4uL2luY2x1ZGUvbGludXgvc3JjdS5oOjIyNjoxNzogZXJy
+b3I6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uIOKAmF9fc3JjdV9yZWFkX3VubG9j
+a19ubWlzYWZl4oCZOyBkaWQgeW91IG1lYW4g4oCYc3JjdV9yZWFkX3VubG9ja19ubWlzYWZl4oCZ
+PyBbLVdlcnJvcj1pbXBsaWNpdC1mdW5jdGlvbi1kZWNsYXJhdGlvbl0KPiA+Pj4+ICAgMjI2IHwg
+ICAgICAgICAgICAgICAgIF9fc3JjdV9yZWFkX3VubG9ja19ubWlzYWZlKHNzcCwgaWR4LCB0cnVl
+KTsKPiA+Pj4+ICAgICAgIHwgICAgICAgICAgICAgICAgIF5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
+fn5+Cj4gPj4+PiAgICAgICB8ICAgICAgICAgICAgICAgICBzcmN1X3JlYWRfdW5sb2NrX25taXNh
+ZmUKPiA+Pj4KPiA+Pj4gQ291bGQgeW91IHBsZWFzZSBzZW5kIHlvdXIgLmNvbmZpZyBvciB0ZWxs
+IG1lIGhvdyB5b3UgZ2VuZXJhdGVkIGl0Pwo+ID4+Cj4gPj4KPiA+PiBGb3IgeDg2XzY0IFNVQkFS
+Q0gsIEFSQ0g9dW06Cj4gPj4KPiA+PiBta2RpciBVTUw2NAo+ID4+IG1ha2UgQVJDSD11bSBTVUJB
+UkNIPXg4Nl82NCBPPVVNTDY0IHRpbnljb25maWcKPiA+PiBtYWtlIEFSQ0g9dW0gU1VCQVJDSD14
+ODZfNjQgTz1VTUw2NCBhbGwKPiA+IAo+ID4gVGhhbmsgeW91ISAgVGhlIGRpZmYgc2hvd24gYmVs
+b3cgY2xlYXJzIGl0IHVwIGZvciBtZS4gIERvZXMgaXQgY292ZXIgaXQKPiA+IGZvciB5b3UgYXMg
+d2VsbD8KPiAKPiBXb3JrcyBmb3IgbWUuIFRoYW5rcy4KPiBBY2tlZC1ieTogUmFuZHkgRHVubGFw
+IDxyZHVubGFwQGluZnJhZGVhZC5vcmc+ICMgYnVpbGQtdGVzdGVkCgpUaGFuayB5b3UsIFJhbmR5
+IQoKCQkJCQkJCVRoYW54LCBQYXVsCgo+ID4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gPiAKPiA+IGRpZmYg
+LS1naXQgYS9pbmNsdWRlL2xpbnV4L3NyY3UuaCBiL2luY2x1ZGUvbGludXgvc3JjdS5oCj4gPiBp
+bmRleCAyNzRkNzIwMGNlNGUuLjU2NWY2MGQ1NzQ4NCAxMDA2NDQKPiA+IC0tLSBhL2luY2x1ZGUv
+bGludXgvc3JjdS5oCj4gPiArKysgYi9pbmNsdWRlL2xpbnV4L3NyY3UuaAo+ID4gQEAgLTUyLDYg
+KzUyLDggQEAgaW50IGluaXRfc3JjdV9zdHJ1Y3Qoc3RydWN0IHNyY3Vfc3RydWN0ICpzc3ApOwo+
+ID4gICNlbHNlCj4gPiAgLyogRHVtbXkgZGVmaW5pdGlvbiBmb3IgdGhpbmdzIGxpa2Ugbm90aWZp
+ZXJzLiAgQWN0dWFsIHVzZSBnZXRzIGxpbmsgZXJyb3IuICovCj4gPiAgc3RydWN0IHNyY3Vfc3Ry
+dWN0IHsgfTsKPiA+ICtpbnQgX19zcmN1X3JlYWRfbG9ja19ubWlzYWZlKHN0cnVjdCBzcmN1X3N0
+cnVjdCAqc3NwLCBib29sIGNoa25taXNhZmUpIF9fYWNxdWlyZXMoc3NwKTsKPiA+ICt2b2lkIF9f
+c3JjdV9yZWFkX3VubG9ja19ubWlzYWZlKHN0cnVjdCBzcmN1X3N0cnVjdCAqc3NwLCBpbnQgaWR4
+LCBib29sIGNoa25taXNhZmUpIF9fcmVsZWFzZXMoc3NwKTsKPiA+ICAjZW5kaWYKPiA+ICAKPiA+
+ICB2b2lkIGNhbGxfc3JjdShzdHJ1Y3Qgc3JjdV9zdHJ1Y3QgKnNzcCwgc3RydWN0IHJjdV9oZWFk
+ICpoZWFkLAo+IAo+IC0tIAo+IH5SYW5keQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmlu
+ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
+aW51eC11bQo=
 
