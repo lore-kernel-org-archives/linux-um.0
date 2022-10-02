@@ -1,10 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Date: Wed, 12 Oct 2022 14:11:42 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-Subject: Add linux-um archives to lore.kernel.org?
-Message-ID: <20221012191142.GA3109265@bhelgaas>
+Received: from dfw.source.kernel.org ([139.178.84.217])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1of7q6-002pQF-FI
+	for linux-um@lists.infradead.org; Sun, 02 Oct 2022 22:53:39 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 5/6] um: Cleanup syscall_handler_t cast in syscalls_32.h
+Date: Sun,  2 Oct 2022 18:53:20 -0400
+Message-Id: <20221002225323.240142-5-sashal@kernel.org>
+In-Reply-To: <20221002225323.240142-1-sashal@kernel.org>
+References: <20221002225323.240142-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Disposition: inline
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -17,26 +22,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-um@lists.infradead.org
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um-owner@lists.infradead.org, linux-kernel@vger.kernel.org, helpdesk@kernel.org
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: Lukas Straub <lukasstraub2@web.de>, Randy Dunlap <rdunlap@infradead.org>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, linux-um@lists.infradead.org
 
-The linux-um@lists.infradead.org mailing list is listed in MAINTAINERS
-and is quite active [1].  Once in a while a commit links to the
-infradead pipermail archive [2] (the link in that commit appears
-broken).
+From: Lukas Straub <lukasstraub2@web.de>
 
-I propose that we add linux-um to the lore.kernel.org archives so
-future commits can use lore.kernel.org links that don't depend on
-infradead.
+[ Upstream commit 61670b4d270c71219def1fbc9441debc2ac2e6e9 ]
 
-https://korg.docs.kernel.org/lore.html says pipermail archives like
-infradead has are not ideal, but I don't have any archives at all, and
-I don't know how to get even pipermail archives out of infradead.
+Like in f4f03f299a56ce4d73c5431e0327b3b6cb55ebb9
+"um: Cleanup syscall_handler_t definition/cast, fix warning",
+remove the cast to to fix the compiler warning.
 
-Bjorn
+Signed-off-by: Lukas Straub <lukasstraub2@web.de>
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/x86/um/shared/sysdep/syscalls_32.h | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-[1] http://lists.infradead.org/pipermail/linux-um/
-[2] https://git.kernel.org/linus/3b0b42527937
+diff --git a/arch/x86/um/shared/sysdep/syscalls_32.h b/arch/x86/um/shared/sysdep/syscalls_32.h
+index 68fd2cf526fd..f6e9f84397e7 100644
+--- a/arch/x86/um/shared/sysdep/syscalls_32.h
++++ b/arch/x86/um/shared/sysdep/syscalls_32.h
+@@ -6,10 +6,9 @@
+ #include <asm/unistd.h>
+ #include <sysdep/ptrace.h>
+ 
+-typedef long syscall_handler_t(struct pt_regs);
++typedef long syscall_handler_t(struct syscall_args);
+ 
+ extern syscall_handler_t *sys_call_table[];
+ 
+ #define EXECUTE_SYSCALL(syscall, regs) \
+-	((long (*)(struct syscall_args)) \
+-	 (*sys_call_table[syscall]))(SYSCALL_ARGS(&regs->regs))
++	((*sys_call_table[syscall]))(SYSCALL_ARGS(&regs->regs))
+-- 
+2.35.1
+
 
 _______________________________________________
 linux-um mailing list
