@@ -1,10 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH v6 2/7] treewide: use prandom_u32_max() when possible, part 2
-Date: Mon, 10 Oct 2022 17:06:08 -0600
-Message-Id: <20221010230613.1076905-3-Jason@zx2c4.com>
-In-Reply-To: <20221010230613.1076905-1-Jason@zx2c4.com>
-References: <20221010230613.1076905-1-Jason@zx2c4.com>
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1of7mt-002mUv-By
+	for linux-um@lists.infradead.org; Sun, 02 Oct 2022 22:50:22 +0000
+From: Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.19 20/29] arch: um: Mark the stack non-executable to fix a binutils warning
+Date: Sun,  2 Oct 2022 18:49:13 -0400
+Message-Id: <20221002224922.238837-20-sashal@kernel.org>
+In-Reply-To: <20221002224922.238837-1-sashal@kernel.org>
+References: <20221002224922.238837-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -18,122 +22,88 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, patches@lists.linux.dev
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Andreas Noever <andreas.noever@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Borislav Petkov <bp@alien8.de>, Catalin Marinas <catalin.marinas@arm.com>, =?UTF-8?q?Christoph=20B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>, Christoph Hellwig <hch@lst.de>, Christophe Leroy <christophe.leroy@csgroup.eu>, Daniel Borkmann <daniel@iogearbox.net>, Dave Airlie <airlied@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, "David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Florian Westphal <fw@strlen.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "H . Peter Anvin" <hpa@zytor.com>, Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Herbert Xu <herbert@gondor.apana.org.au>, Huacai Chen <chenhuacai@kernel.org>, Hugh Dickins <hughd@google.com>, Jakub Kicinski <kuba@kernel.org>, "James E . J . Bottomley" <jejb@linux.ibm.com>, Jan Kara <jack@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>, Johannes Berg <johannes@sipsolutions.net>, Jonathan Corbet <corbet@lwn.net>, Jozsef Kadlecsik <kadlec@netfilter.org>, KP Singh <kpsingh@kernel.org>, Kees Cook <keescook@chromium.org>, Marco Elver <elver@google.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Pablo Neira Ayuso <pablo@netfilter.org>, Paolo Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Theodore Ts'o <tytso@mit.edu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner <tglx@linutronix.de>, Thomas Graf <tgraf@suug.ch>, Ulf Hansson <ulf.hansson@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>, WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>, Yury Norov <yury.norov@gmail.com>, dri-devel@lists.freedesktop.org, kasan-dev@googlegroups.com, kernel-janitors@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org, linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-media@vger.kernel.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-parisc@vger.kernel.org, linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org, linux-um@lists.infradead.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org, Jan Kara <jack@suse.cz>
+To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: David Gow <davidgow@google.com>, Lukas Straub <lukasstraub2@web.de>, Randy Dunlap <rdunlap@infradead.org>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, vincent.whitchurch@axis.com, andreyknvl@gmail.com, trishalfonso@google.com, linux-um@lists.infradead.org
 
-Rather than incurring a division or requesting too many random bytes for
-the given range, use the prandom_u32_max() function, which only takes
-the minimum required bytes from the RNG and avoids divisions. This was
-done by hand, covering things that coccinelle could not do on its own.
+From: David Gow <davidgow@google.com>
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Yury Norov <yury.norov@gmail.com>
-Reviewed-by: Jan Kara <jack@suse.cz> # for ext2, ext4, and sbitmap
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+[ Upstream commit bd71558d585ac61cfd799db7f25e78dca404dd7a ]
+
+Since binutils 2.39, ld will print a warning if any stack section is
+executable, which is the default for stack sections on files without a
+.note.GNU-stack section.
+
+This was fixed for x86 in commit ffcf9c5700e4 ("x86: link vdso and boot with -z noexecstack --no-warn-rwx-segments"),
+but remained broken for UML, resulting in several warnings:
+
+/usr/bin/ld: warning: arch/x86/um/vdso/vdso.o: missing .note.GNU-stack section implies executable stack
+/usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+/usr/bin/ld: warning: .tmp_vmlinux.kallsyms1 has a LOAD segment with RWX permissions
+/usr/bin/ld: warning: .tmp_vmlinux.kallsyms1.o: missing .note.GNU-stack section implies executable stack
+/usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+/usr/bin/ld: warning: .tmp_vmlinux.kallsyms2 has a LOAD segment with RWX permissions
+/usr/bin/ld: warning: .tmp_vmlinux.kallsyms2.o: missing .note.GNU-stack section implies executable stack
+/usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+/usr/bin/ld: warning: vmlinux has a LOAD segment with RWX permissions
+
+Link both the VDSO and vmlinux with -z noexecstack, fixing the warnings
+about .note.GNU-stack sections. In addition, pass --no-warn-rwx-segments
+to dodge the remaining warnings about LOAD segments with RWX permissions
+in the kallsyms objects. (Note that this flag is apparently not
+available on lld, so hide it behind a test for BFD, which is what the
+x86 patch does.)
+
+Link: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ffcf9c5700e49c0aee42dcba9a12ba21338e8136
+Link: https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=ba951afb99912da01a6e8434126b8fac7aa75107
+Signed-off-by: David Gow <davidgow@google.com>
+Reviewed-by: Lukas Straub <lukasstraub2@web.de>
+Tested-by: Lukas Straub <lukasstraub2@web.de>
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext2/ialloc.c   |  3 +--
- fs/ext4/ialloc.c   |  5 ++---
- lib/sbitmap.c      |  2 +-
- lib/test_vmalloc.c | 17 ++++-------------
- 4 files changed, 8 insertions(+), 19 deletions(-)
+ arch/um/Makefile          | 8 ++++++++
+ arch/x86/um/vdso/Makefile | 2 +-
+ 2 files changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ext2/ialloc.c b/fs/ext2/ialloc.c
-index 998dd2ac8008..f4944c4dee60 100644
---- a/fs/ext2/ialloc.c
-+++ b/fs/ext2/ialloc.c
-@@ -277,8 +277,7 @@ static int find_group_orlov(struct super_block *sb, struct inode *parent)
- 		int best_ndir = inodes_per_group;
- 		int best_group = -1;
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index f2fe63bfd819..f1d4d67157be 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -132,10 +132,18 @@ export LDS_ELF_FORMAT := $(ELF_FORMAT)
+ # The wrappers will select whether using "malloc" or the kernel allocator.
+ LINK_WRAPS = -Wl,--wrap,malloc -Wl,--wrap,free -Wl,--wrap,calloc
  
--		group = prandom_u32();
--		parent_group = (unsigned)group % ngroups;
-+		parent_group = prandom_u32_max(ngroups);
- 		for (i = 0; i < ngroups; i++) {
- 			group = (parent_group + i) % ngroups;
- 			desc = ext2_get_group_desc (sb, group, NULL);
-diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-index 208b87ce8858..7575aa359675 100644
---- a/fs/ext4/ialloc.c
-+++ b/fs/ext4/ialloc.c
-@@ -463,10 +463,9 @@ static int find_group_orlov(struct super_block *sb, struct inode *parent,
- 			hinfo.hash_version = DX_HASH_HALF_MD4;
- 			hinfo.seed = sbi->s_hash_seed;
- 			ext4fs_dirhash(parent, qstr->name, qstr->len, &hinfo);
--			grp = hinfo.hash;
-+			parent_group = hinfo.hash % ngroups;
- 		} else
--			grp = prandom_u32();
--		parent_group = (unsigned)grp % ngroups;
-+			parent_group = prandom_u32_max(ngroups);
- 		for (i = 0; i < ngroups; i++) {
- 			g = (parent_group + i) % ngroups;
- 			get_orlov_stats(sb, g, flex_size, &stats);
-diff --git a/lib/sbitmap.c b/lib/sbitmap.c
-index 055dac069afb..7280ae8ca88c 100644
---- a/lib/sbitmap.c
-+++ b/lib/sbitmap.c
-@@ -21,7 +21,7 @@ static int init_alloc_hint(struct sbitmap *sb, gfp_t flags)
- 		int i;
++# Avoid binutils 2.39+ warnings by marking the stack non-executable and
++# ignorning warnings for the kallsyms sections.
++LDFLAGS_EXECSTACK = -z noexecstack
++ifeq ($(CONFIG_LD_IS_BFD),y)
++LDFLAGS_EXECSTACK += $(call ld-option,--no-warn-rwx-segments)
++endif
++
+ LD_FLAGS_CMDLINE = $(foreach opt,$(KBUILD_LDFLAGS),-Wl,$(opt))
  
- 		for_each_possible_cpu(i)
--			*per_cpu_ptr(sb->alloc_hint, i) = prandom_u32() % depth;
-+			*per_cpu_ptr(sb->alloc_hint, i) = prandom_u32_max(depth);
- 	}
- 	return 0;
- }
-diff --git a/lib/test_vmalloc.c b/lib/test_vmalloc.c
-index 4f2f2d1bac56..a26bbbf20e62 100644
---- a/lib/test_vmalloc.c
-+++ b/lib/test_vmalloc.c
-@@ -151,9 +151,7 @@ static int random_size_alloc_test(void)
- 	int i;
+ # Used by link-vmlinux.sh which has special support for um link
+ export CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS) $(LD_FLAGS_CMDLINE)
++export LDFLAGS_vmlinux := $(LDFLAGS_EXECSTACK)
  
- 	for (i = 0; i < test_loop_count; i++) {
--		n = prandom_u32();
--		n = (n % 100) + 1;
--
-+		n = prandom_u32_max(100) + 1;
- 		p = vmalloc(n * PAGE_SIZE);
+ # When cleaning we don't include .config, so we don't include
+ # TT or skas makefiles and don't clean skas_ptregs.h.
+diff --git a/arch/x86/um/vdso/Makefile b/arch/x86/um/vdso/Makefile
+index 5943387e3f35..5ca366e15c76 100644
+--- a/arch/x86/um/vdso/Makefile
++++ b/arch/x86/um/vdso/Makefile
+@@ -62,7 +62,7 @@ quiet_cmd_vdso = VDSO    $@
+ 		       -Wl,-T,$(filter %.lds,$^) $(filter %.o,$^) && \
+ 		 sh $(srctree)/$(src)/checkundef.sh '$(NM)' '$@'
  
- 		if (!p)
-@@ -293,16 +291,12 @@ pcpu_alloc_test(void)
- 		return -1;
+-VDSO_LDFLAGS = -fPIC -shared -Wl,--hash-style=sysv
++VDSO_LDFLAGS = -fPIC -shared -Wl,--hash-style=sysv -z noexecstack
+ GCOV_PROFILE := n
  
- 	for (i = 0; i < 35000; i++) {
--		unsigned int r;
--
--		r = prandom_u32();
--		size = (r % (PAGE_SIZE / 4)) + 1;
-+		size = prandom_u32_max(PAGE_SIZE / 4) + 1;
- 
- 		/*
- 		 * Maximum PAGE_SIZE
- 		 */
--		r = prandom_u32();
--		align = 1 << ((r % 11) + 1);
-+		align = 1 << (prandom_u32_max(11) + 1);
- 
- 		pcpu[i] = __alloc_percpu(size, align);
- 		if (!pcpu[i])
-@@ -393,14 +387,11 @@ static struct test_driver {
- 
- static void shuffle_array(int *arr, int n)
- {
--	unsigned int rnd;
- 	int i, j;
- 
- 	for (i = n - 1; i > 0; i--)  {
--		rnd = prandom_u32();
--
- 		/* Cut the range. */
--		j = rnd % i;
-+		j = prandom_u32_max(i);
- 
- 		/* Swap indexes. */
- 		swap(arr[i], arr[j]);
+ #
 -- 
-2.37.3
+2.35.1
 
 
 _______________________________________________
