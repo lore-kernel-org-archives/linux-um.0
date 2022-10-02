@@ -1,14 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from dfw.source.kernel.org ([139.178.84.217])
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1of7q6-002pQF-FI
-	for linux-um@lists.infradead.org; Sun, 02 Oct 2022 22:53:39 +0000
+	id 1of7pQ-002orh-Sv
+	for linux-um@lists.infradead.org; Sun, 02 Oct 2022 22:52:58 +0000
 From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.14 5/6] um: Cleanup syscall_handler_t cast in syscalls_32.h
-Date: Sun,  2 Oct 2022 18:53:20 -0400
-Message-Id: <20221002225323.240142-5-sashal@kernel.org>
-In-Reply-To: <20221002225323.240142-1-sashal@kernel.org>
-References: <20221002225323.240142-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 8/9] um: Cleanup compiler warning in arch/x86/um/tls_32.c
+Date: Sun,  2 Oct 2022 18:52:35 -0400
+Message-Id: <20221002225236.239675-8-sashal@kernel.org>
+In-Reply-To: <20221002225236.239675-1-sashal@kernel.org>
+References: <20221002225236.239675-1-sashal@kernel.org>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -27,37 +27,66 @@ Cc: Lukas Straub <lukasstraub2@web.de>, Randy Dunlap <rdunlap@infradead.org>, Ri
 
 From: Lukas Straub <lukasstraub2@web.de>
 
-[ Upstream commit 61670b4d270c71219def1fbc9441debc2ac2e6e9 ]
+[ Upstream commit d27fff3499671dc23a08efd01cdb8b3764a391c4 ]
 
-Like in f4f03f299a56ce4d73c5431e0327b3b6cb55ebb9
-"um: Cleanup syscall_handler_t definition/cast, fix warning",
-remove the cast to to fix the compiler warning.
+arch.tls_array is statically allocated so checking for NULL doesn't
+make sense. This causes the compiler warning below.
+
+Remove the checks to silence these warnings.
+
+../arch/x86/um/tls_32.c: In function 'get_free_idx':
+../arch/x86/um/tls_32.c:68:13: warning: the comparison will always evaluate as 'true' for the address of 'tls_array' will never be NULL [-Waddress]
+   68 |         if (!t->arch.tls_array)
+      |             ^
+In file included from ../arch/x86/um/asm/processor.h:10,
+                 from ../include/linux/rcupdate.h:30,
+                 from ../include/linux/rculist.h:11,
+                 from ../include/linux/pid.h:5,
+                 from ../include/linux/sched.h:14,
+                 from ../arch/x86/um/tls_32.c:7:
+../arch/x86/um/asm/processor_32.h:22:31: note: 'tls_array' declared here
+   22 |         struct uml_tls_struct tls_array[GDT_ENTRY_TLS_ENTRIES];
+      |                               ^~~~~~~~~
+../arch/x86/um/tls_32.c: In function 'get_tls_entry':
+../arch/x86/um/tls_32.c:243:13: warning: the comparison will always evaluate as 'true' for the address of 'tls_array' will never be NULL [-Waddress]
+  243 |         if (!t->arch.tls_array)
+      |             ^
+../arch/x86/um/asm/processor_32.h:22:31: note: 'tls_array' declared here
+   22 |         struct uml_tls_struct tls_array[GDT_ENTRY_TLS_ENTRIES];
+      |                               ^~~~~~~~~
 
 Signed-off-by: Lukas Straub <lukasstraub2@web.de>
 Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/um/shared/sysdep/syscalls_32.h | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ arch/x86/um/tls_32.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/arch/x86/um/shared/sysdep/syscalls_32.h b/arch/x86/um/shared/sysdep/syscalls_32.h
-index 68fd2cf526fd..f6e9f84397e7 100644
---- a/arch/x86/um/shared/sysdep/syscalls_32.h
-+++ b/arch/x86/um/shared/sysdep/syscalls_32.h
-@@ -6,10 +6,9 @@
- #include <asm/unistd.h>
- #include <sysdep/ptrace.h>
+diff --git a/arch/x86/um/tls_32.c b/arch/x86/um/tls_32.c
+index ac8eee093f9c..66162eafd8e8 100644
+--- a/arch/x86/um/tls_32.c
++++ b/arch/x86/um/tls_32.c
+@@ -65,9 +65,6 @@ static int get_free_idx(struct task_struct* task)
+ 	struct thread_struct *t = &task->thread;
+ 	int idx;
  
--typedef long syscall_handler_t(struct pt_regs);
-+typedef long syscall_handler_t(struct syscall_args);
+-	if (!t->arch.tls_array)
+-		return GDT_ENTRY_TLS_MIN;
+-
+ 	for (idx = 0; idx < GDT_ENTRY_TLS_ENTRIES; idx++)
+ 		if (!t->arch.tls_array[idx].present)
+ 			return idx + GDT_ENTRY_TLS_MIN;
+@@ -240,9 +237,6 @@ static int get_tls_entry(struct task_struct *task, struct user_desc *info,
+ {
+ 	struct thread_struct *t = &task->thread;
  
- extern syscall_handler_t *sys_call_table[];
+-	if (!t->arch.tls_array)
+-		goto clear;
+-
+ 	if (idx < GDT_ENTRY_TLS_MIN || idx > GDT_ENTRY_TLS_MAX)
+ 		return -EINVAL;
  
- #define EXECUTE_SYSCALL(syscall, regs) \
--	((long (*)(struct syscall_args)) \
--	 (*sys_call_table[syscall]))(SYSCALL_ARGS(&regs->regs))
-+	((*sys_call_table[syscall]))(SYSCALL_ARGS(&regs->regs))
 -- 
 2.35.1
 
