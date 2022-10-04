@@ -1,136 +1,193 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH v5 4/7] treewide: use get_random_{u8,u16}() when possible, part 2
-Date: Fri,  7 Oct 2022 23:53:56 -0600
-Message-Id: <20221008055359.286426-5-Jason@zx2c4.com>
-In-Reply-To: <20221008055359.286426-1-Jason@zx2c4.com>
-References: <20221008055359.286426-1-Jason@zx2c4.com>
+Return-Path: <ulf.hansson@linaro.org>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, patches@lists.linux.dev
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Andreas Noever <andreas.noever@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Borislav Petkov <bp@alien8.de>, Catalin Marinas <catalin.marinas@arm.com>, =?UTF-8?q?Christoph=20B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>, Christoph Hellwig <hch@lst.de>, Christophe Leroy <christophe.leroy@csgroup.eu>, Daniel Borkmann <daniel@iogearbox.net>, Dave Airlie <airlied@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, "David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Florian Westphal <fw@strlen.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "H . Peter Anvin" <hpa@zytor.com>, Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Herbert Xu <herbert@gondor.apana.org.au>, Huacai Chen <chenhuacai@kernel.org>, Hugh Dickins <hughd@google.com>, Jakub Kicinski <kuba@kernel.org>, "James E . J . Bottomley" <jejb@linux.ibm.com>, Jan Kara <jack@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>, Johannes Berg <johannes@sipsolutions.net>, Jonathan Corbet <corbet@lwn.net>, Jozsef Kadlecsik <kadlec@netfilter.org>, KP Singh <kpsingh@kernel.org>, Kees Cook <keescook@chromium.org>, Marco Elver <elver@google.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Pablo Neira Ayuso <pablo@netfilter.org>, Paolo Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Theodore Ts'o <tytso@mit.edu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner <tglx@linutronix.de>, Thomas Graf <tgraf@suug.ch>, Ulf Hansson <ulf.hansson@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>, WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>, Yury Norov <yury.norov@gmail.com>, dri-devel@lists.freedesktop.org, kasan-dev@googlegroups.com, kernel-janitors@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org, linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-media@vger.kernel.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-parisc@vger.kernel.org, linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org, linux-um@lists.infradead.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+References: <20220919095939.761690562@infradead.org> <20220919101521.139727471@infradead.org>
+ <CAPDyKFqTWd4W5Ofk76CtC4X43dxBTNHtmY9YzN355-vpviLsPw@mail.gmail.com>
+In-Reply-To: <CAPDyKFqTWd4W5Ofk76CtC4X43dxBTNHtmY9YzN355-vpviLsPw@mail.gmail.com>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Tue, 4 Oct 2022 13:43:31 +0200
+Message-ID: <CAPDyKFqGSt2NFe8aY=6rkp4P-WH7DCO1fmWrcXk4_5XNEvv25w@mail.gmail.com>
+Subject: Re: [PATCH v2 12/44] cpuidle,dt: Push RCU-idle into driver
+Content-Type: text/plain; charset="UTF-8"
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: juri.lelli@redhat.com, rafael@kernel.org, catalin.marinas@arm.com, linus.walleij@linaro.org, bsegall@google.com, guoren@kernel.org, pavel@ucw.cz, agordeev@linux.ibm.com, linux-arch@vger.kernel.org, vincent.guittot@linaro.org, mpe@ellerman.id.au, chenhuacai@kernel.org, christophe.leroy@csgroup.eu, linux-acpi@vger.kernel.org, agross@kernel.org, geert@linux-m68k.org, linux-imx@nxp.com, vgupta@kernel.org, mattst88@gmail.com, mturquette@baylibre.com, sammy@sammy.net, pmladek@suse.com, linux-pm@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>, linux-um@lists.infradead.org, npiggin@gmail.com, tglx@linutronix.de, linux-omap@vger.kernel.org, dietmar.eggemann@arm.com, andreyknvl@gmail.com, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, senozhatsky@chromium.org, svens@linux.ibm.com, jolsa@kernel.org, tj@kernel.org, Andrew Morton <akpm@linux-foundation.org>, mark.rutland@arm.com, linux-ia64@vger.kernel.org, dave.hansen@linux.intel.com, virtualization@lists.linux-foundation.org, James.Bottomley@hansenpartnership.com, jcmvbkbc@gmail.com, thierry.reding@gmail.com, kernel@xen0n.name, cl@linux.com, linux-s390@vger.kernel.org, vschneid@redhat.com, john.ogness@linutronix.de, ysato@users.sourceforge.jp, linux-sh@vger.kernel.org, festevam@gmail.com, deller@gmx.de, daniel.lezcano@linaro.org, jonathanh@nvidia.com, dennis@kernel.org, lenb@kernel.org, linux-xtensa@linux-xtensa.org, kernel@pengutronix.de, gor@linux.ibm.com, linux-arm-msm@vger.kernel.org, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, loongarch@lists.linux.dev, shorne@gmail.com, chris@zankel.net, sboyd@kernel.org, dinguyen@kernel.org, bristot@redhat.com, alexander.shishkin@linux.intel.com, fweisbec@gmail.com, lpieralisi@kernel.org, atishp@atishpatra.org, linux@rasmusvillemoes.dk, kasan-dev@googlegroups.com, will@kernel.org, boris.ostrovsky@oracle.com, khilman@kernel.org, linux-csky@vger.kernel.org, pv-drivers@vmware.com, linux-snps-arc@lists.infradead.org, mgorman@suse.de, jacob.jun.pan@linux.intel.com, Arnd Bergmann <arnd@arndb.de>, ulli.kroll@googlemail.com, linux-clk@vger.kernel.org, rostedt@goodmis.org, ink@jurassic.park.msu.ru, bcain@quicinc.com, tsbogend@alpha.franken.de, linux-parisc@vger.kernel.org, ryabinin.a.a@gmail.com, sudeep.holla@arm.com, shawnguo@kernel.org, davem@davemloft.net, dalias@libc.org, tony@atomide.com, amakhalov@vmware.com, konrad.dybcio@somainline.org, bjorn.andersson@linaro.org, glider@google.com, hpa@zytor.com, sparclinux@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-riscv@lists.infradead.org, vincenzo.frascino@arm.com, anton.ivanov@cambridgegreys.com, jonas@southpole.se, yury.norov@gmail.com, richard@nod.at, x86@kernel.org, linux@armlinux.org.uk, mingo@redhat.com, aou@eecs.berkeley.edu, hca@linux.ibm.com, richard.henderson@linaro.org, stefan.kristiansson@saunalahti.fi, openrisc@lists.librecores.org, acme@kernel.org, paul.walmsley@sifive.com, linux-tegra@vger.kernel.org, namhyung@kernel.org, andriy.shevchenko@linux.intel.com, jpoimboe@kernel.org, dvyukov@google.com, jgross@suse.com, monstr@monstr.eu, linux-mips@vger.kernel.org, palmer@dabbelt.com, anup@brainfault.org, bp@alien8.de, johannes@sipsolutions.net, linuxppc-dev@lists.ozlabs.org
+List-ID: <linux-um.lists.infradead.org>
 
-Rather than truncate a 32-bit value to a 16-bit value or an 8-bit value,
-simply use the get_random_{u8,u16}() functions, which are faster than
-wasting the additional bytes from a 32-bit value. This was done by hand,
-identifying all of the places where one of the random integer functions
-was used in a non-32-bit context.
+On Tue, 4 Oct 2022 at 13:03, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> On Mon, 19 Sept 2022 at 12:18, Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > Doing RCU-idle outside the driver, only to then temporarily enable it
+> > again before going idle is daft.
+> >
+> > Notably: this converts all dt_init_idle_driver() and
+> > __CPU_PM_CPU_IDLE_ENTER() users for they are inextrably intertwined.
+> >
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+>
+> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
----
- arch/s390/kernel/process.c  | 2 +-
- lib/test_vmalloc.c          | 2 +-
- net/ipv4/ip_output.c        | 2 +-
- net/netfilter/nf_nat_core.c | 4 ++--
- net/rds/bind.c              | 2 +-
- net/sched/sch_sfb.c         | 2 +-
- 6 files changed, 7 insertions(+), 7 deletions(-)
+This was not (yet) my intention. Please have a look at the comments I
+provided below.
 
-diff --git a/arch/s390/kernel/process.c b/arch/s390/kernel/process.c
-index 5ec78555dd2e..42af4b3aa02b 100644
---- a/arch/s390/kernel/process.c
-+++ b/arch/s390/kernel/process.c
-@@ -230,7 +230,7 @@ unsigned long arch_align_stack(unsigned long sp)
- 
- static inline unsigned long brk_rnd(void)
- {
--	return (get_random_int() & BRK_RND_MASK) << PAGE_SHIFT;
-+	return (get_random_u16() & BRK_RND_MASK) << PAGE_SHIFT;
- }
- 
- unsigned long arch_randomize_brk(struct mm_struct *mm)
-diff --git a/lib/test_vmalloc.c b/lib/test_vmalloc.c
-index a26bbbf20e62..cf7780572f5b 100644
---- a/lib/test_vmalloc.c
-+++ b/lib/test_vmalloc.c
-@@ -80,7 +80,7 @@ static int random_size_align_alloc_test(void)
- 	int i;
- 
- 	for (i = 0; i < test_loop_count; i++) {
--		rnd = prandom_u32();
-+		rnd = get_random_u8();
- 
- 		/*
- 		 * Maximum 1024 pages, if PAGE_SIZE is 4096.
-diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-index 04e2034f2f8e..a4fbdbff14b3 100644
---- a/net/ipv4/ip_output.c
-+++ b/net/ipv4/ip_output.c
-@@ -172,7 +172,7 @@ int ip_build_and_send_pkt(struct sk_buff *skb, const struct sock *sk,
- 		 * Avoid using the hashed IP ident generator.
- 		 */
- 		if (sk->sk_protocol == IPPROTO_TCP)
--			iph->id = (__force __be16)prandom_u32();
-+			iph->id = (__force __be16)get_random_u16();
- 		else
- 			__ip_select_ident(net, iph, 1);
- 	}
-diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
-index 7981be526f26..57c7686ac485 100644
---- a/net/netfilter/nf_nat_core.c
-+++ b/net/netfilter/nf_nat_core.c
-@@ -468,7 +468,7 @@ static void nf_nat_l4proto_unique_tuple(struct nf_conntrack_tuple *tuple,
- 	if (range->flags & NF_NAT_RANGE_PROTO_OFFSET)
- 		off = (ntohs(*keyptr) - ntohs(range->base_proto.all));
- 	else
--		off = prandom_u32();
-+		off = get_random_u16();
- 
- 	attempts = range_size;
- 	if (attempts > max_attempts)
-@@ -490,7 +490,7 @@ static void nf_nat_l4proto_unique_tuple(struct nf_conntrack_tuple *tuple,
- 	if (attempts >= range_size || attempts < 16)
- 		return;
- 	attempts /= 2;
--	off = prandom_u32();
-+	off = get_random_u16();
- 	goto another_round;
- }
- 
-diff --git a/net/rds/bind.c b/net/rds/bind.c
-index 5b5fb4ca8d3e..97a29172a8ee 100644
---- a/net/rds/bind.c
-+++ b/net/rds/bind.c
-@@ -104,7 +104,7 @@ static int rds_add_bound(struct rds_sock *rs, const struct in6_addr *addr,
- 			return -EINVAL;
- 		last = rover;
- 	} else {
--		rover = max_t(u16, prandom_u32(), 2);
-+		rover = max_t(u16, get_random_u16(), 2);
- 		last = rover - 1;
- 	}
- 
-diff --git a/net/sched/sch_sfb.c b/net/sched/sch_sfb.c
-index 2829455211f8..7eb70acb4d58 100644
---- a/net/sched/sch_sfb.c
-+++ b/net/sched/sch_sfb.c
-@@ -379,7 +379,7 @@ static int sfb_enqueue(struct sk_buff *skb, struct Qdisc *sch,
- 		goto enqueue;
- 	}
- 
--	r = prandom_u32() & SFB_MAX_PROB;
-+	r = get_random_u16() & SFB_MAX_PROB;
- 
- 	if (unlikely(r < p_min)) {
- 		if (unlikely(p_min > SFB_MAX_PROB / 2)) {
--- 
-2.37.3
+Kind regards
+Uffe
 
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+>
+> > ---
+> >  arch/arm/mach-omap2/cpuidle34xx.c    |    4 ++--
+> >  drivers/acpi/processor_idle.c        |    2 ++
+> >  drivers/cpuidle/cpuidle-arm.c        |    1 +
+> >  drivers/cpuidle/cpuidle-big_little.c |    8 ++++++--
+> >  drivers/cpuidle/cpuidle-psci.c       |    1 +
+> >  drivers/cpuidle/cpuidle-qcom-spm.c   |    1 +
+> >  drivers/cpuidle/cpuidle-riscv-sbi.c  |    1 +
+> >  drivers/cpuidle/dt_idle_states.c     |    2 +-
+> >  include/linux/cpuidle.h              |    4 ++++
+> >  9 files changed, 19 insertions(+), 5 deletions(-)
+> >
+> > --- a/drivers/acpi/processor_idle.c
+> > +++ b/drivers/acpi/processor_idle.c
+> > @@ -1200,6 +1200,8 @@ static int acpi_processor_setup_lpi_stat
+> >                 state->target_residency = lpi->min_residency;
+> >                 if (lpi->arch_flags)
+> >                         state->flags |= CPUIDLE_FLAG_TIMER_STOP;
+> > +               if (lpi->entry_method == ACPI_CSTATE_FFH)
+> > +                       state->flags |= CPUIDLE_FLAG_RCU_IDLE;
+>
+> I assume the state index here will never be 0?
+>
+> If not, it may lead to that acpi_processor_ffh_lpi_enter() may trigger
+> CPU_PM_CPU_IDLE_ENTER_PARAM() to call ct_cpuidle_enter|exit() for an
+> idle-state that doesn't have the CPUIDLE_FLAG_RCU_IDLE bit set.
+>
+> >                 state->enter = acpi_idle_lpi_enter;
+> >                 drv->safe_state_index = i;
+> >         }
+> > --- a/drivers/cpuidle/cpuidle-arm.c
+> > +++ b/drivers/cpuidle/cpuidle-arm.c
+> > @@ -53,6 +53,7 @@ static struct cpuidle_driver arm_idle_dr
+> >          * handler for idle state index 0.
+> >          */
+> >         .states[0] = {
+> > +               .flags                  = CPUIDLE_FLAG_RCU_IDLE,
+>
+> Comparing arm64 and arm32 idle-states/idle-drivers, the $subject
+> series ends up setting the CPUIDLE_FLAG_RCU_IDLE for the ARM WFI idle
+> state (state zero), but only for the arm64 and psci cases (mostly
+> arm64). For arm32 we would need to update the ARM_CPUIDLE_WFI_STATE
+> too, as that is what most arm32 idle-drivers are using. My point is,
+> the code becomes a bit inconsistent.
+>
+> Perhaps it's easier to avoid setting the CPUIDLE_FLAG_RCU_IDLE bit for
+> all of the ARM WFI idle states, for both arm64 and arm32?
+>
+> >                 .enter                  = arm_enter_idle_state,
+> >                 .exit_latency           = 1,
+> >                 .target_residency       = 1,
+> > --- a/drivers/cpuidle/cpuidle-big_little.c
+> > +++ b/drivers/cpuidle/cpuidle-big_little.c
+> > @@ -64,7 +64,8 @@ static struct cpuidle_driver bl_idle_lit
+> >                 .enter                  = bl_enter_powerdown,
+> >                 .exit_latency           = 700,
+> >                 .target_residency       = 2500,
+> > -               .flags                  = CPUIDLE_FLAG_TIMER_STOP,
+> > +               .flags                  = CPUIDLE_FLAG_TIMER_STOP |
+> > +                                         CPUIDLE_FLAG_RCU_IDLE,
+> >                 .name                   = "C1",
+> >                 .desc                   = "ARM little-cluster power down",
+> >         },
+> > @@ -85,7 +86,8 @@ static struct cpuidle_driver bl_idle_big
+> >                 .enter                  = bl_enter_powerdown,
+> >                 .exit_latency           = 500,
+> >                 .target_residency       = 2000,
+> > -               .flags                  = CPUIDLE_FLAG_TIMER_STOP,
+> > +               .flags                  = CPUIDLE_FLAG_TIMER_STOP |
+> > +                                         CPUIDLE_FLAG_RCU_IDLE,
+> >                 .name                   = "C1",
+> >                 .desc                   = "ARM big-cluster power down",
+> >         },
+> > @@ -124,11 +126,13 @@ static int bl_enter_powerdown(struct cpu
+> >                                 struct cpuidle_driver *drv, int idx)
+> >  {
+> >         cpu_pm_enter();
+> > +       ct_idle_enter();
+> >
+> >         cpu_suspend(0, bl_powerdown_finisher);
+> >
+> >         /* signals the MCPM core that CPU is out of low power state */
+> >         mcpm_cpu_powered_up();
+> > +       ct_idle_exit();
+> >
+> >         cpu_pm_exit();
+> >
+> > --- a/drivers/cpuidle/cpuidle-psci.c
+> > +++ b/drivers/cpuidle/cpuidle-psci.c
+> > @@ -357,6 +357,7 @@ static int psci_idle_init_cpu(struct dev
+> >          * PSCI idle states relies on architectural WFI to be represented as
+> >          * state index 0.
+> >          */
+> > +       drv->states[0].flags = CPUIDLE_FLAG_RCU_IDLE;
+> >         drv->states[0].enter = psci_enter_idle_state;
+> >         drv->states[0].exit_latency = 1;
+> >         drv->states[0].target_residency = 1;
+> > --- a/drivers/cpuidle/cpuidle-qcom-spm.c
+> > +++ b/drivers/cpuidle/cpuidle-qcom-spm.c
+> > @@ -72,6 +72,7 @@ static struct cpuidle_driver qcom_spm_id
+> >         .owner = THIS_MODULE,
+> >         .states[0] = {
+> >                 .enter                  = spm_enter_idle_state,
+> > +               .flags                  = CPUIDLE_FLAG_RCU_IDLE,
+> >                 .exit_latency           = 1,
+> >                 .target_residency       = 1,
+> >                 .power_usage            = UINT_MAX,
+> > --- a/drivers/cpuidle/cpuidle-riscv-sbi.c
+> > +++ b/drivers/cpuidle/cpuidle-riscv-sbi.c
+> > @@ -332,6 +332,7 @@ static int sbi_cpuidle_init_cpu(struct d
+> >         drv->cpumask = (struct cpumask *)cpumask_of(cpu);
+> >
+> >         /* RISC-V architectural WFI to be represented as state index 0. */
+> > +       drv->states[0].flags = CPUIDLE_FLAG_RCU_IDLE;
+> >         drv->states[0].enter = sbi_cpuidle_enter_state;
+> >         drv->states[0].exit_latency = 1;
+> >         drv->states[0].target_residency = 1;
+> > --- a/drivers/cpuidle/dt_idle_states.c
+> > +++ b/drivers/cpuidle/dt_idle_states.c
+> > @@ -77,7 +77,7 @@ static int init_state_node(struct cpuidl
+> >         if (err)
+> >                 desc = state_node->name;
+> >
+> > -       idle_state->flags = 0;
+> > +       idle_state->flags = CPUIDLE_FLAG_RCU_IDLE;
+> >         if (of_property_read_bool(state_node, "local-timer-stop"))
+> >                 idle_state->flags |= CPUIDLE_FLAG_TIMER_STOP;
+> >         /*
+> > --- a/include/linux/cpuidle.h
+> > +++ b/include/linux/cpuidle.h
+> > @@ -282,14 +282,18 @@ extern s64 cpuidle_governor_latency_req(
+> >         int __ret = 0;                                                  \
+> >                                                                         \
+> >         if (!idx) {                                                     \
+> > +               ct_idle_enter();                                        \
+>
+> According to my comment above, we should then drop these calls to
+> ct_idle_enter and ct_idle_exit() here. Right?
+>
+> >                 cpu_do_idle();                                          \
+> > +               ct_idle_exit();                                         \
+> >                 return idx;                                             \
+> >         }                                                               \
+> >                                                                         \
+> >         if (!is_retention)                                              \
+> >                 __ret =  cpu_pm_enter();                                \
+> >         if (!__ret) {                                                   \
+> > +               ct_idle_enter();                                        \
+> >                 __ret = low_level_idle_enter(state);                    \
+> > +               ct_idle_exit();                                         \
+> >                 if (!is_retention)                                      \
+> >                         cpu_pm_exit();                                  \
+> >         }                                                               \
+> >
+>
+> Kind regards
+> Uffe
 
