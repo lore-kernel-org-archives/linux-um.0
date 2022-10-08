@@ -1,17 +1,14 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ohIA1-00ENDA-TJ
-	for linux-um@lists.infradead.org; Sat, 08 Oct 2022 22:19:12 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-Subject: RE: [PATCH v4 4/6] treewide: use get_random_u32() when possible
-Date: Sat, 8 Oct 2022 22:18:45 +0000
-Message-ID: <f1ca1b53bc104065a83da60161a4c7b6@AcuMS.aculab.com>
+Date: Fri, 7 Oct 2022 19:40:07 -0600
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: Re: [PATCH v4 4/6] treewide: use get_random_u32() when possible
+Message-ID: <Y0DU93wMsDwlLmMP@zx2c4.com>
 References: <20221007180107.216067-1-Jason@zx2c4.com>
  <20221007180107.216067-5-Jason@zx2c4.com>
-In-Reply-To: <20221007180107.216067-5-Jason@zx2c4.com>
+ <3216619.44csPzL39Z@daneel.sf-tec.de>
 MIME-Version: 1.0
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <3216619.44csPzL39Z@daneel.sf-tec.de>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -24,54 +21,122 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: "'Jason A. Donenfeld'" <Jason@zx2c4.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "patches@lists.linux.dev" <patches@lists.linux.dev>
-Cc: Andreas Noever <andreas.noever@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Borislav Petkov <bp@alien8.de>, "Catalin Marinas  <catalin.marinas@arm.com>, =?utf-8?B?Q2hyaXN0b3BoIELDtmhtd2FsZGVy?=" <christoph.boehmwalder@linbit.com>, Christoph Hellwig <hch@lst.de>, Christophe Leroy <christophe.leroy@csgroup.eu>, Daniel Borkmann <daniel@iogearbox.net>, Dave Airlie <airlied@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, "David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Florian Westphal <fw@strlen.de>, "Greg Kroah-Hartman  <gregkh@linuxfoundation.org>,  H . Peter Anvin " <hpa@zytor.com>, Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Herbert Xu <herbert@gondor.apana.org.au>, Huacai Chen <chenhuacai@kernel.org>, Hugh Dickins <hughd@google.com>, Jakub Kicinski <kuba@kernel.org>, "James E . J . Bottomley" <jejb@linux.ibm.com>, Jan Kara <jack@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>, Johannes Berg <johannes@sipsolutions.net>, Jonathan Corbet <corbet@lwn.net>, Jozsef Kadlecsik <kadlec@netfilter.org>, KP Singh <kpsingh@kernel.org>, Kees Cook <keescook@chromium.org>, Marco Elver <elver@google.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, "Michael Ellerman  <mpe@ellerman.id.au>, Pablo Neira Ayuso <pablo@netfilter.org>, Paolo Abeni" <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Theodore Ts'o <tytso@mit.edu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner <tglx@linutronix.de>, Thomas Graf <tgraf@suug.ch>, Ulf Hansson <ulf.hansson@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>, WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>, Yury Norov <yury.norov@gmail.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>, "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>, "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, =?utf-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@toke.dk>, Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>, Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Rolf Eike Beer <eike-kernel@sf-tec.de>
+Cc: linux-kernel@vger.kernel.org, patches@lists.linux.dev, andreas.noever@gmail.com, akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com, bp@alien8.de, catalin.marinas@arm.com, christoph.boehmwalder@linbit.com, hch@lst.de, christophe.leroy@csgroup.eu, daniel@iogearbox.net, airlied@redhat.com, dave.hansen@linux.intel.com, davem@davemloft.net, edumazet@google.com, fw@strlen.de, gregkh@linuxfoundation.org, hpa@zytor.com, hca@linux.ibm.com, deller@gmx.de, herbert@gondor.apana.org.au, chenhuacai@kernel.org, hughd@google.com, kuba@kernel.org, jejb@linux.ibm.com, jack@suse.com, jgg@ziepe.ca, axboe@kernel.dk, johannes@sipsolutions.net, corbet@lwn.net, kadlec@netfilter.org, kpsingh@kernel.org, keescook@chromium.org, elver@google.com, mchehab@kernel.org, mpe@ellerman.id.au, pablo@netfilter.org, pabeni@redhat.com, peterz@infradead.org, richard@nod.at, linux@armlinux.org.uk, tytso@mit.edu, tsbogend@alpha.franken.de, tglx@linutronix.de, tgraf@suug.ch, ulf.hansson@linaro.org, vigneshr@ti.com, kernel@xen0n.name, will@kernel.org, yury.norov@gmail.com, dri-devel@lists.freedesktop.org, kasan-dev@googlegroups.com, kernel-janitors@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org, linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-media@vger.kernel.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-parisc@vger.kernel.org, linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org, linux-um@lists.infradead.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org, toke@toke.dk, chuck.lever@oracle.com, jack@suse.cz, mika.westerberg@linux.intel.com
 
-From: Jason A. Donenfeld
-> Sent: 07 October 2022 19:01
+On Fri, Oct 07, 2022 at 10:34:47PM +0200, Rolf Eike Beer wrote:
+> > diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
+> > index 7c37e09c92da..18c4f0e3e906 100644
+> > --- a/arch/parisc/kernel/process.c
+> > +++ b/arch/parisc/kernel/process.c
+> > @@ -288,7 +288,7 @@ __get_wchan(struct task_struct *p)
+> > 
+> >  static inline unsigned long brk_rnd(void)
+> >  {
+> > -	return (get_random_int() & BRK_RND_MASK) << PAGE_SHIFT;
+> > +	return (get_random_u32() & BRK_RND_MASK) << PAGE_SHIFT;
+> >  }
 > 
-> The prandom_u32() function has been a deprecated inline wrapper around
-> get_random_u32() for several releases now, and compiles down to the
-> exact same code. Replace the deprecated wrapper with a direct call to
-> the real function. The same also applies to get_random_int(), which is
-> just a wrapper around get_random_u32().
+> Can't this be
 > 
-...
-> diff --git a/net/802/garp.c b/net/802/garp.c
-> index f6012f8e59f0..c1bb67e25430 100644
-> --- a/net/802/garp.c
-> +++ b/net/802/garp.c
-> @@ -407,7 +407,7 @@ static void garp_join_timer_arm(struct garp_applicant *app)
->  {
->  	unsigned long delay;
+>   prandom_u32_max(BRK_RND_MASK + 1) << PAGE_SHIFT
 > 
-> -	delay = (u64)msecs_to_jiffies(garp_join_time) * prandom_u32() >> 32;
-> +	delay = (u64)msecs_to_jiffies(garp_join_time) * get_random_u32() >> 32;
->  	mod_timer(&app->join_timer, jiffies + delay);
->  }
+> ? More similar code with other masks follows below.
+
+I guess it can, because BRK_RND_MASK happens to have all its lower bits
+set. But as a "_MASK" maybe this isn't a given, and I don't want to
+change intended semantics in this patchset. It's also not more
+efficient, because BRK_RND_MASK is actually an expression:
+
+    #define BRK_RND_MASK        (is_32bit_task() ? 0x07ffUL : 0x3ffffUL)
+
+So at compile-time, the compiler can't prove that it's <= U16_MAX, since
+it isn't always the case, so it'll use get_random_u32() anyway.
+
+[Side note: maybe that compile-time check should become a runtime check,
+ but I'll need to do some benchmarking before changing that and
+ introducing two added branches to every non-constant invocation, so for
+ now it's a compile-time check. Fortunately the vast majority of uses
+ are done on inputs the compiler can prove something about.]
+
 > 
-> diff --git a/net/802/mrp.c b/net/802/mrp.c
-> index 35e04cc5390c..3e9fe9f5d9bf 100644
-> --- a/net/802/mrp.c
-> +++ b/net/802/mrp.c
-> @@ -592,7 +592,7 @@ static void mrp_join_timer_arm(struct mrp_applicant *app)
->  {
->  	unsigned long delay;
+> > diff --git a/drivers/gpu/drm/i915/i915_gem_gtt.c
+> > b/drivers/gpu/drm/i915/i915_gem_gtt.c index 329ff75b80b9..7bd1861ddbdf
+> > 100644
+> > --- a/drivers/gpu/drm/i915/i915_gem_gtt.c
+> > +++ b/drivers/gpu/drm/i915/i915_gem_gtt.c
+> > @@ -137,12 +137,12 @@ static u64 random_offset(u64 start, u64 end, u64 len,
+> > u64 align) range = round_down(end - len, align) - round_up(start, align);
+> >  	if (range) {
+> >  		if (sizeof(unsigned long) == sizeof(u64)) {
+> > -			addr = get_random_long();
+> > +			addr = get_random_u64();
+> >  		} else {
+> > -			addr = get_random_int();
+> > +			addr = get_random_u32();
+> >  			if (range > U32_MAX) {
+> >  				addr <<= 32;
+> > -				addr |= get_random_int();
+> > +				addr |= get_random_u32();
+> >  			}
+> >  		}
+> >  		div64_u64_rem(addr, range, &addr);
 > 
-> -	delay = (u64)msecs_to_jiffies(mrp_join_time) * prandom_u32() >> 32;
-> +	delay = (u64)msecs_to_jiffies(mrp_join_time) * get_random_u32() >> 32;
->  	mod_timer(&app->join_timer, jiffies + delay);
->  }
+> How about 
+> 
+>  		if (sizeof(unsigned long) == sizeof(u64) || range > 
+> U32_MAX)
+> 			addr = get_random_u64();
+>  		else
+> 			addr = get_random_u32();
 > 
 
-Aren't those:
-	delay = prandom_u32_max(msecs_to_jiffies(xxx_join_time));
+Yes, maybe, probably, indeed... But I don't want to go wild and start
+fixing all the weird algorithms everywhere. My goal is to only make
+changes that are "obviously right". But maybe after this lands this is
+something that you or I can submit to the i915 people as an
+optimization.
 
-	David
+> > diff --git a/drivers/infiniband/hw/cxgb4/cm.c
+> > b/drivers/infiniband/hw/cxgb4/cm.c index 14392c942f49..499a425a3379 100644
+> > --- a/drivers/infiniband/hw/cxgb4/cm.c
+> > +++ b/drivers/infiniband/hw/cxgb4/cm.c
+> > @@ -734,7 +734,7 @@ static int send_connect(struct c4iw_ep *ep)
+> >  				   &ep->com.remote_addr;
+> >  	int ret;
+> >  	enum chip_type adapter_type = ep->com.dev->rdev.lldi.adapter_type;
+> > -	u32 isn = (prandom_u32() & ~7UL) - 1;
+> > +	u32 isn = (get_random_u32() & ~7UL) - 1;
+> >  	struct net_device *netdev;
+> >  	u64 params;
+> > 
+> > @@ -2469,7 +2469,7 @@ static int accept_cr(struct c4iw_ep *ep, struct
+> > sk_buff *skb, }
+> > 
+> >  	if (!is_t4(adapter_type)) {
+> > -		u32 isn = (prandom_u32() & ~7UL) - 1;
+> > +		u32 isn = (get_random_u32() & ~7UL) - 1;
+> 
+> u32 isn = get_random_u32() | 0x7;
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+Again, maybe so, but same rationale as above.
+
+> >  static void ns_do_bit_flips(struct nandsim *ns, int num)
+> >  {
+> > -	if (bitflips && prandom_u32() < (1 << 22)) {
+> > +	if (bitflips && get_random_u32() < (1 << 22)) {
+> 
+> Doing "get_random_u16() < (1 << 6)" should have the same probability with only 
+> 2 bytes of random, no?
+
+That's very clever. (1<<22)/(1<<32) == (1<<6)/(1<<16). But also, same
+rationale as above for not doing that.
+
+Anyway, I realize this is probably disappointing to read. But also, we
+can come back to those optimization cases later pretty easily.
+
+Jason
+
 _______________________________________________
 linux-um mailing list
 linux-um@lists.infradead.org
