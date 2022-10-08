@@ -1,14 +1,10 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1of7pQ-002orh-Sv
-	for linux-um@lists.infradead.org; Sun, 02 Oct 2022 22:52:58 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 8/9] um: Cleanup compiler warning in arch/x86/um/tls_32.c
-Date: Sun,  2 Oct 2022 18:52:35 -0400
-Message-Id: <20221002225236.239675-8-sashal@kernel.org>
-In-Reply-To: <20221002225236.239675-1-sashal@kernel.org>
-References: <20221002225236.239675-1-sashal@kernel.org>
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: [PATCH v5 4/7] treewide: use get_random_{u8,u16}() when possible, part 2
+Date: Fri,  7 Oct 2022 23:53:56 -0600
+Message-Id: <20221008055359.286426-5-Jason@zx2c4.com>
+In-Reply-To: <20221008055359.286426-1-Jason@zx2c4.com>
+References: <20221008055359.286426-1-Jason@zx2c4.com>
 MIME-Version: 1.0
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
@@ -22,73 +18,115 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: Lukas Straub <lukasstraub2@web.de>, Randy Dunlap <rdunlap@infradead.org>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, linux-um@lists.infradead.org
+To: linux-kernel@vger.kernel.org, patches@lists.linux.dev
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Andreas Noever <andreas.noever@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Borislav Petkov <bp@alien8.de>, Catalin Marinas <catalin.marinas@arm.com>, =?UTF-8?q?Christoph=20B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>, Christoph Hellwig <hch@lst.de>, Christophe Leroy <christophe.leroy@csgroup.eu>, Daniel Borkmann <daniel@iogearbox.net>, Dave Airlie <airlied@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, "David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Florian Westphal <fw@strlen.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "H . Peter Anvin" <hpa@zytor.com>, Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Herbert Xu <herbert@gondor.apana.org.au>, Huacai Chen <chenhuacai@kernel.org>, Hugh Dickins <hughd@google.com>, Jakub Kicinski <kuba@kernel.org>, "James E . J . Bottomley" <jejb@linux.ibm.com>, Jan Kara <jack@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>, Johannes Berg <johannes@sipsolutions.net>, Jonathan Corbet <corbet@lwn.net>, Jozsef Kadlecsik <kadlec@netfilter.org>, KP Singh <kpsingh@kernel.org>, Kees Cook <keescook@chromium.org>, Marco Elver <elver@google.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Pablo Neira Ayuso <pablo@netfilter.org>, Paolo Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Theodore Ts'o <tytso@mit.edu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner <tglx@linutronix.de>, Thomas Graf <tgraf@suug.ch>, Ulf Hansson <ulf.hansson@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>, WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>, Yury Norov <yury.norov@gmail.com>, dri-devel@lists.freedesktop.org, kasan-dev@googlegroups.com, kernel-janitors@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org, linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-media@vger.kernel.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-parisc@vger.kernel.org, linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org, linux-um@lists.infradead.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
 
-From: Lukas Straub <lukasstraub2@web.de>
+Rather than truncate a 32-bit value to a 16-bit value or an 8-bit value,
+simply use the get_random_{u8,u16}() functions, which are faster than
+wasting the additional bytes from a 32-bit value. This was done by hand,
+identifying all of the places where one of the random integer functions
+was used in a non-32-bit context.
 
-[ Upstream commit d27fff3499671dc23a08efd01cdb8b3764a391c4 ]
-
-arch.tls_array is statically allocated so checking for NULL doesn't
-make sense. This causes the compiler warning below.
-
-Remove the checks to silence these warnings.
-
-../arch/x86/um/tls_32.c: In function 'get_free_idx':
-../arch/x86/um/tls_32.c:68:13: warning: the comparison will always evaluate as 'true' for the address of 'tls_array' will never be NULL [-Waddress]
-   68 |         if (!t->arch.tls_array)
-      |             ^
-In file included from ../arch/x86/um/asm/processor.h:10,
-                 from ../include/linux/rcupdate.h:30,
-                 from ../include/linux/rculist.h:11,
-                 from ../include/linux/pid.h:5,
-                 from ../include/linux/sched.h:14,
-                 from ../arch/x86/um/tls_32.c:7:
-../arch/x86/um/asm/processor_32.h:22:31: note: 'tls_array' declared here
-   22 |         struct uml_tls_struct tls_array[GDT_ENTRY_TLS_ENTRIES];
-      |                               ^~~~~~~~~
-../arch/x86/um/tls_32.c: In function 'get_tls_entry':
-../arch/x86/um/tls_32.c:243:13: warning: the comparison will always evaluate as 'true' for the address of 'tls_array' will never be NULL [-Waddress]
-  243 |         if (!t->arch.tls_array)
-      |             ^
-../arch/x86/um/asm/processor_32.h:22:31: note: 'tls_array' declared here
-   22 |         struct uml_tls_struct tls_array[GDT_ENTRY_TLS_ENTRIES];
-      |                               ^~~~~~~~~
-
-Signed-off-by: Lukas Straub <lukasstraub2@web.de>
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 ---
- arch/x86/um/tls_32.c | 6 ------
- 1 file changed, 6 deletions(-)
+ arch/s390/kernel/process.c  | 2 +-
+ lib/test_vmalloc.c          | 2 +-
+ net/ipv4/ip_output.c        | 2 +-
+ net/netfilter/nf_nat_core.c | 4 ++--
+ net/rds/bind.c              | 2 +-
+ net/sched/sch_sfb.c         | 2 +-
+ 6 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/arch/x86/um/tls_32.c b/arch/x86/um/tls_32.c
-index ac8eee093f9c..66162eafd8e8 100644
---- a/arch/x86/um/tls_32.c
-+++ b/arch/x86/um/tls_32.c
-@@ -65,9 +65,6 @@ static int get_free_idx(struct task_struct* task)
- 	struct thread_struct *t = &task->thread;
- 	int idx;
+diff --git a/arch/s390/kernel/process.c b/arch/s390/kernel/process.c
+index 5ec78555dd2e..42af4b3aa02b 100644
+--- a/arch/s390/kernel/process.c
++++ b/arch/s390/kernel/process.c
+@@ -230,7 +230,7 @@ unsigned long arch_align_stack(unsigned long sp)
  
--	if (!t->arch.tls_array)
--		return GDT_ENTRY_TLS_MIN;
--
- 	for (idx = 0; idx < GDT_ENTRY_TLS_ENTRIES; idx++)
- 		if (!t->arch.tls_array[idx].present)
- 			return idx + GDT_ENTRY_TLS_MIN;
-@@ -240,9 +237,6 @@ static int get_tls_entry(struct task_struct *task, struct user_desc *info,
+ static inline unsigned long brk_rnd(void)
  {
- 	struct thread_struct *t = &task->thread;
+-	return (get_random_int() & BRK_RND_MASK) << PAGE_SHIFT;
++	return (get_random_u16() & BRK_RND_MASK) << PAGE_SHIFT;
+ }
  
--	if (!t->arch.tls_array)
--		goto clear;
--
- 	if (idx < GDT_ENTRY_TLS_MIN || idx > GDT_ENTRY_TLS_MAX)
- 		return -EINVAL;
+ unsigned long arch_randomize_brk(struct mm_struct *mm)
+diff --git a/lib/test_vmalloc.c b/lib/test_vmalloc.c
+index a26bbbf20e62..cf7780572f5b 100644
+--- a/lib/test_vmalloc.c
++++ b/lib/test_vmalloc.c
+@@ -80,7 +80,7 @@ static int random_size_align_alloc_test(void)
+ 	int i;
  
+ 	for (i = 0; i < test_loop_count; i++) {
+-		rnd = prandom_u32();
++		rnd = get_random_u8();
+ 
+ 		/*
+ 		 * Maximum 1024 pages, if PAGE_SIZE is 4096.
+diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
+index 04e2034f2f8e..a4fbdbff14b3 100644
+--- a/net/ipv4/ip_output.c
++++ b/net/ipv4/ip_output.c
+@@ -172,7 +172,7 @@ int ip_build_and_send_pkt(struct sk_buff *skb, const struct sock *sk,
+ 		 * Avoid using the hashed IP ident generator.
+ 		 */
+ 		if (sk->sk_protocol == IPPROTO_TCP)
+-			iph->id = (__force __be16)prandom_u32();
++			iph->id = (__force __be16)get_random_u16();
+ 		else
+ 			__ip_select_ident(net, iph, 1);
+ 	}
+diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
+index 7981be526f26..57c7686ac485 100644
+--- a/net/netfilter/nf_nat_core.c
++++ b/net/netfilter/nf_nat_core.c
+@@ -468,7 +468,7 @@ static void nf_nat_l4proto_unique_tuple(struct nf_conntrack_tuple *tuple,
+ 	if (range->flags & NF_NAT_RANGE_PROTO_OFFSET)
+ 		off = (ntohs(*keyptr) - ntohs(range->base_proto.all));
+ 	else
+-		off = prandom_u32();
++		off = get_random_u16();
+ 
+ 	attempts = range_size;
+ 	if (attempts > max_attempts)
+@@ -490,7 +490,7 @@ static void nf_nat_l4proto_unique_tuple(struct nf_conntrack_tuple *tuple,
+ 	if (attempts >= range_size || attempts < 16)
+ 		return;
+ 	attempts /= 2;
+-	off = prandom_u32();
++	off = get_random_u16();
+ 	goto another_round;
+ }
+ 
+diff --git a/net/rds/bind.c b/net/rds/bind.c
+index 5b5fb4ca8d3e..97a29172a8ee 100644
+--- a/net/rds/bind.c
++++ b/net/rds/bind.c
+@@ -104,7 +104,7 @@ static int rds_add_bound(struct rds_sock *rs, const struct in6_addr *addr,
+ 			return -EINVAL;
+ 		last = rover;
+ 	} else {
+-		rover = max_t(u16, prandom_u32(), 2);
++		rover = max_t(u16, get_random_u16(), 2);
+ 		last = rover - 1;
+ 	}
+ 
+diff --git a/net/sched/sch_sfb.c b/net/sched/sch_sfb.c
+index 2829455211f8..7eb70acb4d58 100644
+--- a/net/sched/sch_sfb.c
++++ b/net/sched/sch_sfb.c
+@@ -379,7 +379,7 @@ static int sfb_enqueue(struct sk_buff *skb, struct Qdisc *sch,
+ 		goto enqueue;
+ 	}
+ 
+-	r = prandom_u32() & SFB_MAX_PROB;
++	r = get_random_u16() & SFB_MAX_PROB;
+ 
+ 	if (unlikely(r < p_min)) {
+ 		if (unlikely(p_min > SFB_MAX_PROB / 2)) {
 -- 
-2.35.1
+2.37.3
 
 
 _______________________________________________
