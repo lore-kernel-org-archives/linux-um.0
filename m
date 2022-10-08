@@ -1,75 +1,108 @@
-Return-Path: <ulf.hansson@linaro.org>
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: [PATCH v5 7/7] prandom: remove unused functions
+Date: Fri,  7 Oct 2022 23:53:59 -0600
+Message-Id: <20221008055359.286426-8-Jason@zx2c4.com>
+In-Reply-To: <20221008055359.286426-1-Jason@zx2c4.com>
+References: <20221008055359.286426-1-Jason@zx2c4.com>
 MIME-Version: 1.0
-References: <20220919095939.761690562@infradead.org> <20220919101521.886766952@infradead.org>
-In-Reply-To: <20220919101521.886766952@infradead.org>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Tue, 4 Oct 2022 13:08:00 +0200
-Message-ID: <CAPDyKFoMidikoTPe0Xd+wZQdBBJSoy+CZ2ZmJShfLkbGZZRYDQ@mail.gmail.com>
-Subject: Re: [PATCH v2 23/44] arm,smp: Remove trace_.*_rcuidle() usage
-Content-Type: text/plain; charset="UTF-8"
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: juri.lelli@redhat.com, rafael@kernel.org, catalin.marinas@arm.com, linus.walleij@linaro.org, bsegall@google.com, guoren@kernel.org, pavel@ucw.cz, agordeev@linux.ibm.com, linux-arch@vger.kernel.org, vincent.guittot@linaro.org, mpe@ellerman.id.au, chenhuacai@kernel.org, christophe.leroy@csgroup.eu, linux-acpi@vger.kernel.org, agross@kernel.org, geert@linux-m68k.org, linux-imx@nxp.com, vgupta@kernel.org, mattst88@gmail.com, mturquette@baylibre.com, sammy@sammy.net, pmladek@suse.com, linux-pm@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>, linux-um@lists.infradead.org, npiggin@gmail.com, tglx@linutronix.de, linux-omap@vger.kernel.org, dietmar.eggemann@arm.com, andreyknvl@gmail.com, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, senozhatsky@chromium.org, svens@linux.ibm.com, jolsa@kernel.org, tj@kernel.org, Andrew Morton <akpm@linux-foundation.org>, mark.rutland@arm.com, linux-ia64@vger.kernel.org, dave.hansen@linux.intel.com, virtualization@lists.linux-foundation.org, James.Bottomley@hansenpartnership.com, jcmvbkbc@gmail.com, thierry.reding@gmail.com, kernel@xen0n.name, cl@linux.com, linux-s390@vger.kernel.org, vschneid@redhat.com, john.ogness@linutronix.de, ysato@users.sourceforge.jp, linux-sh@vger.kernel.org, festevam@gmail.com, deller@gmx.de, daniel.lezcano@linaro.org, jonathanh@nvidia.com, dennis@kernel.org, lenb@kernel.org, linux-xtensa@linux-xtensa.org, kernel@pengutronix.de, gor@linux.ibm.com, linux-arm-msm@vger.kernel.org, linux-alpha@vger.kernel.org, linux-m68k@lists.linux-m68k.org, loongarch@lists.linux.dev, shorne@gmail.com, chris@zankel.net, sboyd@kernel.org, dinguyen@kernel.org, bristot@redhat.com, alexander.shishkin@linux.intel.com, fweisbec@gmail.com, lpieralisi@kernel.org, atishp@atishpatra.org, linux@rasmusvillemoes.dk, kasan-dev@googlegroups.com, will@kernel.org, boris.ostrovsky@oracle.com, khilman@kernel.org, linux-csky@vger.kernel.org, pv-drivers@vmware.com, linux-snps-arc@lists.infradead.org, mgorman@suse.de, jacob.jun.pan@linux.intel.com, Arnd Bergmann <arnd@arndb.de>, ulli.kroll@googlemail.com, linux-clk@vger.kernel.org, rostedt@goodmis.org, ink@jurassic.park.msu.ru, bcain@quicinc.com, tsbogend@alpha.franken.de, linux-parisc@vger.kernel.org, ryabinin.a.a@gmail.com, sudeep.holla@arm.com, shawnguo@kernel.org, davem@davemloft.net, dalias@libc.org, tony@atomide.com, amakhalov@vmware.com, konrad.dybcio@somainline.org, bjorn.andersson@linaro.org, glider@google.com, hpa@zytor.com, sparclinux@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-riscv@lists.infradead.org, vincenzo.frascino@arm.com, anton.ivanov@cambridgegreys.com, jonas@southpole.se, yury.norov@gmail.com, richard@nod.at, x86@kernel.org, linux@armlinux.org.uk, mingo@redhat.com, aou@eecs.berkeley.edu, hca@linux.ibm.com, richard.henderson@linaro.org, stefan.kristiansson@saunalahti.fi, openrisc@lists.librecores.org, acme@kernel.org, paul.walmsley@sifive.com, linux-tegra@vger.kernel.org, namhyung@kernel.org, andriy.shevchenko@linux.intel.com, jpoimboe@kernel.org, dvyukov@google.com, jgross@suse.com, monstr@monstr.eu, linux-mips@vger.kernel.org, palmer@dabbelt.com, anup@brainfault.org, bp@alien8.de, johannes@sipsolutions.net, linuxppc-dev@lists.ozlabs.org
+Content-Transfer-Encoding: 8bit
+To: linux-kernel@vger.kernel.org, patches@lists.linux.dev
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Andreas Noever <andreas.noever@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Borislav Petkov <bp@alien8.de>, Catalin Marinas <catalin.marinas@arm.com>, =?UTF-8?q?Christoph=20B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>, Christoph Hellwig <hch@lst.de>, Christophe Leroy <christophe.leroy@csgroup.eu>, Daniel Borkmann <daniel@iogearbox.net>, Dave Airlie <airlied@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, "David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Florian Westphal <fw@strlen.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "H . Peter Anvin" <hpa@zytor.com>, Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Herbert Xu <herbert@gondor.apana.org.au>, Huacai Chen <chenhuacai@kernel.org>, Hugh Dickins <hughd@google.com>, Jakub Kicinski <kuba@kernel.org>, "James E . J . Bottomley" <jejb@linux.ibm.com>, Jan Kara <jack@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>, Johannes Berg <johannes@sipsolutions.net>, Jonathan Corbet <corbet@lwn.net>, Jozsef Kadlecsik <kadlec@netfilter.org>, KP Singh <kpsingh@kernel.org>, Kees Cook <keescook@chromium.org>, Marco Elver <elver@google.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Pablo Neira Ayuso <pablo@netfilter.org>, Paolo Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Theodore Ts'o <tytso@mit.edu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner <tglx@linutronix.de>, Thomas Graf <tgraf@suug.ch>, Ulf Hansson <ulf.hansson@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>, WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>, Yury Norov <yury.norov@gmail.com>, dri-devel@lists.freedesktop.org, kasan-dev@googlegroups.com, kernel-janitors@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org, linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-media@vger.kernel.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-parisc@vger.kernel.org, linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org, linux-um@lists.infradead.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
 List-ID: <linux-um.lists.infradead.org>
 
-On Mon, 19 Sept 2022 at 12:18, Peter Zijlstra <peterz@infradead.org> wrote:
->
-> None of these functions should ever be ran with RCU disabled anymore.
->
-> Specifically, do_handle_IPI() is only called from handle_IPI() which
-> explicitly does irq_enter()/irq_exit() which ensures RCU is watching.
->
-> The problem with smp_cross_call() was, per commit 7c64cc0531fa ("arm: Use
-> _rcuidle for smp_cross_call() tracepoints"), that
-> cpuidle_enter_state_coupled() already had RCU disabled, but that's
-> long been fixed by commit 1098582a0f6c ("sched,idle,rcu: Push rcu_idle
-> deeper into the idle path").
->
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+With no callers left of prandom_u32() and prandom_bytes(), as well as
+get_random_int(), remove these deprecated wrappers, in favor of
+get_random_u32() and get_random_bytes().
 
-FWIW:
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+---
+ drivers/char/random.c   | 11 +++++------
+ include/linux/prandom.h | 12 ------------
+ include/linux/random.h  |  5 -----
+ 3 files changed, 5 insertions(+), 23 deletions(-)
 
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+diff --git a/drivers/char/random.c b/drivers/char/random.c
+index 01acf235f263..2fe28eeb2f38 100644
+--- a/drivers/char/random.c
++++ b/drivers/char/random.c
+@@ -97,7 +97,7 @@ MODULE_PARM_DESC(ratelimit_disable, "Disable random ratelimit suppression");
+  * Returns whether or not the input pool has been seeded and thus guaranteed
+  * to supply cryptographically secure random numbers. This applies to: the
+  * /dev/urandom device, the get_random_bytes function, and the get_random_{u8,
+- * u16,u32,u64,int,long} family of functions.
++ * u16,u32,u64,long} family of functions.
+  *
+  * Returns: true if the input pool has been seeded.
+  *          false if the input pool has not been seeded.
+@@ -161,15 +161,14 @@ EXPORT_SYMBOL(wait_for_random_bytes);
+  *	u16 get_random_u16()
+  *	u32 get_random_u32()
+  *	u64 get_random_u64()
+- *	unsigned int get_random_int()
+  *	unsigned long get_random_long()
+  *
+  * These interfaces will return the requested number of random bytes
+  * into the given buffer or as a return value. This is equivalent to
+- * a read from /dev/urandom. The u8, u16, u32, u64, int, and long
+- * family of functions may be higher performance for one-off random
+- * integers, because they do a bit of buffering and do not invoke
+- * reseeding until the buffer is emptied.
++ * a read from /dev/urandom. The u8, u16, u32, u64, long family of
++ * functions may be higher performance for one-off random integers,
++ * because they do a bit of buffering and do not invoke reseeding
++ * until the buffer is emptied.
+  *
+  *********************************************************************/
+ 
+diff --git a/include/linux/prandom.h b/include/linux/prandom.h
+index 78db003bc290..e0a0759dd09c 100644
+--- a/include/linux/prandom.h
++++ b/include/linux/prandom.h
+@@ -12,18 +12,6 @@
+ #include <linux/percpu.h>
+ #include <linux/random.h>
+ 
+-/* Deprecated: use get_random_u32 instead. */
+-static inline u32 prandom_u32(void)
+-{
+-	return get_random_u32();
+-}
+-
+-/* Deprecated: use get_random_bytes instead. */
+-static inline void prandom_bytes(void *buf, size_t nbytes)
+-{
+-	return get_random_bytes(buf, nbytes);
+-}
+-
+ struct rnd_state {
+ 	__u32 s1, s2, s3, s4;
+ };
+diff --git a/include/linux/random.h b/include/linux/random.h
+index 08322f700cdc..147a5e0d0b8e 100644
+--- a/include/linux/random.h
++++ b/include/linux/random.h
+@@ -42,10 +42,6 @@ u8 get_random_u8(void);
+ u16 get_random_u16(void);
+ u32 get_random_u32(void);
+ u64 get_random_u64(void);
+-static inline unsigned int get_random_int(void)
+-{
+-	return get_random_u32();
+-}
+ static inline unsigned long get_random_long(void)
+ {
+ #if BITS_PER_LONG == 64
+@@ -100,7 +96,6 @@ declare_get_random_var_wait(u8, u8)
+ declare_get_random_var_wait(u16, u16)
+ declare_get_random_var_wait(u32, u32)
+ declare_get_random_var_wait(u64, u32)
+-declare_get_random_var_wait(int, unsigned int)
+ declare_get_random_var_wait(long, unsigned long)
+ #undef declare_get_random_var
+ 
+-- 
+2.37.3
 
-Kind regards
-Uffe
-
-> ---
->  arch/arm/kernel/smp.c |    6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> --- a/arch/arm/kernel/smp.c
-> +++ b/arch/arm/kernel/smp.c
-> @@ -639,7 +639,7 @@ static void do_handle_IPI(int ipinr)
->         unsigned int cpu = smp_processor_id();
->
->         if ((unsigned)ipinr < NR_IPI)
-> -               trace_ipi_entry_rcuidle(ipi_types[ipinr]);
-> +               trace_ipi_entry(ipi_types[ipinr]);
->
->         switch (ipinr) {
->         case IPI_WAKEUP:
-> @@ -686,7 +686,7 @@ static void do_handle_IPI(int ipinr)
->         }
->
->         if ((unsigned)ipinr < NR_IPI)
-> -               trace_ipi_exit_rcuidle(ipi_types[ipinr]);
-> +               trace_ipi_exit(ipi_types[ipinr]);
->  }
->
->  /* Legacy version, should go away once all irqchips have been converted */
-> @@ -709,7 +709,7 @@ static irqreturn_t ipi_handler(int irq,
->
->  static void smp_cross_call(const struct cpumask *target, unsigned int ipinr)
->  {
-> -       trace_ipi_raise_rcuidle(target, ipi_types[ipinr]);
-> +       trace_ipi_raise(target, ipi_types[ipinr]);
->         __ipi_send_mask(ipi_desc[ipinr], target);
->  }
->
->
->
-> _______________________________________________
-> Virtualization mailing list
-> Virtualization@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/virtualization
 
