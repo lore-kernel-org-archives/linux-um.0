@@ -1,1649 +1,860 @@
-Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
 From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH v4 1/6] treewide: use prandom_u32_max() when possible, mechanically
-Date: Fri,  7 Oct 2022 12:01:02 -0600
-Message-Id: <20221007180107.216067-2-Jason@zx2c4.com>
-In-Reply-To: <20221007180107.216067-1-Jason@zx2c4.com>
-References: <20221007180107.216067-1-Jason@zx2c4.com>
+Subject: [PATCH v5 5/7] treewide: use get_random_u32() when possible
+Date: Fri,  7 Oct 2022 23:53:57 -0600
+Message-Id: <20221008055359.286426-6-Jason@zx2c4.com>
+In-Reply-To: <20221008055359.286426-1-Jason@zx2c4.com>
+References: <20221008055359.286426-1-Jason@zx2c4.com>
 MIME-Version: 1.0
-List-Id: <linux-um.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
-List-Post: <mailto:linux-um@lists.infradead.org>
-List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
- <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
-Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
+Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
 To: linux-kernel@vger.kernel.org, patches@lists.linux.dev
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Andreas Noever <andreas.noever@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Borislav Petkov <bp@alien8.de>, Catalin Marinas <catalin.marinas@arm.com>, =?UTF-8?q?Christoph=20B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>, Christoph Hellwig <hch@lst.de>, Christophe Leroy <christophe.leroy@csgroup.eu>, Daniel Borkmann <daniel@iogearbox.net>, Dave Airlie <airlied@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, "David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Florian Westphal <fw@strlen.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "H . Peter Anvin" <hpa@zytor.com>, Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Herbert Xu <herbert@gondor.apana.org.au>, Huacai Chen <chenhuacai@kernel.org>, Hugh Dickins <hughd@google.com>, Jakub Kicinski <kuba@kernel.org>, "James E . J . Bottomley" <jejb@linux.ibm.com>, Jan Kara <jack@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>, Johannes Berg <johannes@sipsolutions.net>, Jonathan Corbet <corbet@lwn.net>, Jozsef Kadlecsik <kadlec@netfilter.org>, KP Singh <kpsingh@kernel.org>, Kees Cook <keescook@chromium.org>, Marco Elver <elver@google.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Pablo Neira Ayuso <pablo@netfilter.org>, Paolo Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Theodore Ts'o <tytso@mit.edu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner <tglx@linutronix.de>, Thomas Graf <tgraf@suug.ch>, Ulf Hansson <ulf.hansson@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>, WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>, Yury Norov <yury.norov@gmail.com>, dri-devel@lists.freedesktop.org, kasan-dev@googlegroups.com, kernel-janitors@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org, linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-media@vger.kernel.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-parisc@vger.kernel.org, linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org, linux-um@lists.infradead.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org, Jan Kara <jack@suse.cz>
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Andreas Noever <andreas.noever@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Borislav Petkov <bp@alien8.de>, Catalin Marinas <catalin.marinas@arm.com>, =?UTF-8?q?Christoph=20B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>, Christoph Hellwig <hch@lst.de>, Christophe Leroy <christophe.leroy@csgroup.eu>, Daniel Borkmann <daniel@iogearbox.net>, Dave Airlie <airlied@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, "David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Florian Westphal <fw@strlen.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "H . Peter Anvin" <hpa@zytor.com>, Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Herbert Xu <herbert@gondor.apana.org.au>, Huacai Chen <chenhuacai@kernel.org>, Hugh Dickins <hughd@google.com>, Jakub Kicinski <kuba@kernel.org>, "James E . J . Bottomley" <jejb@linux.ibm.com>, Jan Kara <jack@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>, Johannes Berg <johannes@sipsolutions.net>, Jonathan Corbet <corbet@lwn.net>, Jozsef Kadlecsik <kadlec@netfilter.org>, KP Singh <kpsingh@kernel.org>, Kees Cook <keescook@chromium.org>, Marco Elver <elver@google.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Pablo Neira Ayuso <pablo@netfilter.org>, Paolo Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Theodore Ts'o <tytso@mit.edu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner <tglx@linutronix.de>, Thomas Graf <tgraf@suug.ch>, Ulf Hansson <ulf.hansson@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>, WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>, Yury Norov <yury.norov@gmail.com>, dri-devel@lists.freedesktop.org, kasan-dev@googlegroups.com, kernel-janitors@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org, linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-media@vger.kernel.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-parisc@vger.kernel.org, linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org, linux-um@lists.infradead.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org, =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>, Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>, Mika Westerberg <mika.westerberg@linux.intel.com>, "Darrick J . Wong" <djwong@kernel.org>
+List-ID: <linux-um.lists.infradead.org>
 
-Rather than incurring a division or requesting too many random bytes for
-the given range, use the prandom_u32_max() function, which only takes
-the minimum required bytes from the RNG and avoids divisions. This was
-done mechanically with these coccinelle scripts:
-
-    @no_modulo@
-    expression E;
-    @@
-    -       (prandom_u32() % (E))
-    +       prandom_u32_max(E)
-    @no_modulo@
-    expression E;
-    @@
-    -       (get_random_u32() % (E))
-    +       prandom_u32_max(E)
-    @no_modulo@
-    expression E;
-    @@
-    -       (get_random_int() % (E))
-    +       prandom_u32_max(E)
-
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: KP Singh <kpsingh@kernel.org>
-Reviewed-by: Jan Kara <jack@suse.cz> # for ext4 and sbitmap
-Acked-by: Ulf Hansson <ulf.hansson@linaro.org> # for mmc
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
----
- arch/arm/kernel/process.c                     |  2 +-
- arch/s390/kernel/vdso.c                       |  2 +-
- arch/um/kernel/process.c                      |  2 +-
- arch/x86/entry/vdso/vma.c                     |  2 +-
- arch/x86/kernel/module.c                      |  2 +-
- arch/x86/kernel/process.c                     |  2 +-
- arch/x86/mm/pat/cpa-test.c                    |  4 +-
- crypto/testmgr.c                              | 86 +++++++++----------
- .../gpu/drm/i915/gem/i915_gem_execbuffer.c    |  2 +-
- drivers/infiniband/core/cma.c                 |  2 +-
- drivers/infiniband/hw/cxgb4/id_table.c        |  4 +-
- drivers/infiniband/hw/hns/hns_roce_ah.c       |  5 +-
- drivers/infiniband/ulp/rtrs/rtrs-clt.c        |  3 +-
- .../test-drivers/vivid/vivid-touch-cap.c      |  2 +-
- drivers/mmc/core/core.c                       |  4 +-
- drivers/mmc/host/dw_mmc.c                     |  2 +-
- drivers/mtd/nand/raw/nandsim.c                |  4 +-
- drivers/mtd/tests/mtd_nandecctest.c           | 10 +--
- drivers/mtd/ubi/debug.c                       |  2 +-
- .../chelsio/inline_crypto/chtls/chtls_io.c    |  4 +-
- drivers/net/hamradio/baycom_epp.c             |  2 +-
- drivers/net/hamradio/hdlcdrv.c                |  2 +-
- drivers/net/hamradio/yam.c                    |  2 +-
- drivers/net/phy/at803x.c                      |  2 +-
- .../broadcom/brcm80211/brcmfmac/p2p.c         |  2 +-
- .../net/wireless/intel/iwlwifi/mvm/mac-ctxt.c |  2 +-
- drivers/scsi/fcoe/fcoe_ctlr.c                 |  4 +-
- drivers/scsi/qedi/qedi_main.c                 |  2 +-
- fs/ceph/inode.c                               |  2 +-
- fs/ceph/mdsmap.c                              |  2 +-
- fs/ext4/super.c                               |  7 +-
- fs/f2fs/gc.c                                  |  2 +-
- fs/f2fs/segment.c                             |  8 +-
- fs/ubifs/debug.c                              |  8 +-
- fs/ubifs/lpt_commit.c                         | 12 +--
- fs/xfs/xfs_error.c                            |  2 +-
- kernel/bpf/core.c                             |  4 +-
- kernel/locking/test-ww_mutex.c                |  4 +-
- kernel/time/clocksource.c                     |  2 +-
- lib/cmdline_kunit.c                           |  4 +-
- lib/fault-inject.c                            |  2 +-
- lib/find_bit_benchmark.c                      |  4 +-
- lib/reed_solomon/test_rslib.c                 |  4 +-
- lib/sbitmap.c                                 |  2 +-
- lib/test-string_helpers.c                     |  2 +-
- lib/test_hexdump.c                            | 10 +--
- lib/test_kasan.c                              |  6 +-
- lib/test_list_sort.c                          |  2 +-
- mm/migrate.c                                  |  2 +-
- mm/slub.c                                     |  2 +-
- net/ceph/mon_client.c                         |  2 +-
- net/ceph/osd_client.c                         |  2 +-
- net/core/neighbour.c                          |  2 +-
- net/core/pktgen.c                             | 39 ++++-----
- net/core/stream.c                             |  2 +-
- net/ipv4/igmp.c                               |  6 +-
- net/ipv4/inet_connection_sock.c               |  2 +-
- net/ipv6/addrconf.c                           |  8 +-
- net/ipv6/mcast.c                              | 10 +--
- net/netfilter/ipvs/ip_vs_twos.c               |  4 +-
- net/packet/af_packet.c                        |  2 +-
- net/sched/act_gact.c                          |  2 +-
- net/sched/act_sample.c                        |  2 +-
- net/sched/sch_netem.c                         |  4 +-
- net/sctp/socket.c                             |  2 +-
- net/tipc/socket.c                             |  2 +-
- net/xfrm/xfrm_state.c                         |  2 +-
- 67 files changed, 173 insertions(+), 177 deletions(-)
-
-diff --git a/arch/arm/kernel/process.c b/arch/arm/kernel/process.c
-index 3d9cace63884..35129ae36067 100644
---- a/arch/arm/kernel/process.c
-+++ b/arch/arm/kernel/process.c
-@@ -375,7 +375,7 @@ static unsigned long sigpage_addr(const struct mm_struct *mm,
- 
- 	slots = ((last - first) >> PAGE_SHIFT) + 1;
- 
--	offset = get_random_int() % slots;
-+	offset = prandom_u32_max(slots);
- 
- 	addr = first + (offset << PAGE_SHIFT);
- 
-diff --git a/arch/s390/kernel/vdso.c b/arch/s390/kernel/vdso.c
-index 5075cde77b29..a6b5db59cf40 100644
---- a/arch/s390/kernel/vdso.c
-+++ b/arch/s390/kernel/vdso.c
-@@ -226,7 +226,7 @@ static unsigned long vdso_addr(unsigned long start, unsigned long len)
- 	end -= len;
- 
- 	if (end > start) {
--		offset = get_random_int() % (((end - start) >> PAGE_SHIFT) + 1);
-+		offset = prandom_u32_max(((end - start) >> PAGE_SHIFT) + 1);
- 		addr = start + (offset << PAGE_SHIFT);
- 	} else {
- 		addr = start;
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index 80b90b1276a1..010bc422a09d 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -356,7 +356,7 @@ int singlestepping(void * t)
- unsigned long arch_align_stack(unsigned long sp)
- {
- 	if (!(current->personality & ADDR_NO_RANDOMIZE) && randomize_va_space)
--		sp -= get_random_int() % 8192;
-+		sp -= prandom_u32_max(8192);
- 	return sp & ~0xf;
- }
- #endif
-diff --git a/arch/x86/entry/vdso/vma.c b/arch/x86/entry/vdso/vma.c
-index 1000d457c332..b64c58c6940f 100644
---- a/arch/x86/entry/vdso/vma.c
-+++ b/arch/x86/entry/vdso/vma.c
-@@ -327,7 +327,7 @@ static unsigned long vdso_addr(unsigned long start, unsigned len)
- 	end -= len;
- 
- 	if (end > start) {
--		offset = get_random_int() % (((end - start) >> PAGE_SHIFT) + 1);
-+		offset = prandom_u32_max(((end - start) >> PAGE_SHIFT) + 1);
- 		addr = start + (offset << PAGE_SHIFT);
- 	} else {
- 		addr = start;
-diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
-index b1abf663417c..c032edcd3d95 100644
---- a/arch/x86/kernel/module.c
-+++ b/arch/x86/kernel/module.c
-@@ -53,7 +53,7 @@ static unsigned long int get_module_load_offset(void)
- 		 */
- 		if (module_load_offset == 0)
- 			module_load_offset =
--				(get_random_int() % 1024 + 1) * PAGE_SIZE;
-+				(prandom_u32_max(1024) + 1) * PAGE_SIZE;
- 		mutex_unlock(&module_kaslr_mutex);
- 	}
- 	return module_load_offset;
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index 58a6ea472db9..c21b7347a26d 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -965,7 +965,7 @@ early_param("idle", idle_setup);
- unsigned long arch_align_stack(unsigned long sp)
- {
- 	if (!(current->personality & ADDR_NO_RANDOMIZE) && randomize_va_space)
--		sp -= get_random_int() % 8192;
-+		sp -= prandom_u32_max(8192);
- 	return sp & ~0xf;
- }
- 
-diff --git a/arch/x86/mm/pat/cpa-test.c b/arch/x86/mm/pat/cpa-test.c
-index 0612a73638a8..423b21e80929 100644
---- a/arch/x86/mm/pat/cpa-test.c
-+++ b/arch/x86/mm/pat/cpa-test.c
-@@ -136,10 +136,10 @@ static int pageattr_test(void)
- 	failed += print_split(&sa);
- 
- 	for (i = 0; i < NTEST; i++) {
--		unsigned long pfn = prandom_u32() % max_pfn_mapped;
-+		unsigned long pfn = prandom_u32_max(max_pfn_mapped);
- 
- 		addr[i] = (unsigned long)__va(pfn << PAGE_SHIFT);
--		len[i] = prandom_u32() % NPAGES;
-+		len[i] = prandom_u32_max(NPAGES);
- 		len[i] = min_t(unsigned long, len[i], max_pfn_mapped - pfn - 1);
- 
- 		if (len[i] == 0)
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index 5349ffee6bbd..be45217acde4 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -855,9 +855,9 @@ static int prepare_keybuf(const u8 *key, unsigned int ksize,
- /* Generate a random length in range [0, max_len], but prefer smaller values */
- static unsigned int generate_random_length(unsigned int max_len)
- {
--	unsigned int len = prandom_u32() % (max_len + 1);
-+	unsigned int len = prandom_u32_max(max_len + 1);
- 
--	switch (prandom_u32() % 4) {
-+	switch (prandom_u32_max(4)) {
- 	case 0:
- 		return len % 64;
- 	case 1:
-@@ -874,14 +874,14 @@ static void flip_random_bit(u8 *buf, size_t size)
- {
- 	size_t bitpos;
- 
--	bitpos = prandom_u32() % (size * 8);
-+	bitpos = prandom_u32_max(size * 8);
- 	buf[bitpos / 8] ^= 1 << (bitpos % 8);
- }
- 
- /* Flip a random byte in the given nonempty data buffer */
- static void flip_random_byte(u8 *buf, size_t size)
- {
--	buf[prandom_u32() % size] ^= 0xff;
-+	buf[prandom_u32_max(size)] ^= 0xff;
- }
- 
- /* Sometimes make some random changes to the given nonempty data buffer */
-@@ -891,15 +891,15 @@ static void mutate_buffer(u8 *buf, size_t size)
- 	size_t i;
- 
- 	/* Sometimes flip some bits */
--	if (prandom_u32() % 4 == 0) {
--		num_flips = min_t(size_t, 1 << (prandom_u32() % 8), size * 8);
-+	if (prandom_u32_max(4) == 0) {
-+		num_flips = min_t(size_t, 1 << prandom_u32_max(8), size * 8);
- 		for (i = 0; i < num_flips; i++)
- 			flip_random_bit(buf, size);
- 	}
- 
- 	/* Sometimes flip some bytes */
--	if (prandom_u32() % 4 == 0) {
--		num_flips = min_t(size_t, 1 << (prandom_u32() % 8), size);
-+	if (prandom_u32_max(4) == 0) {
-+		num_flips = min_t(size_t, 1 << prandom_u32_max(8), size);
- 		for (i = 0; i < num_flips; i++)
- 			flip_random_byte(buf, size);
- 	}
-@@ -915,11 +915,11 @@ static void generate_random_bytes(u8 *buf, size_t count)
- 	if (count == 0)
- 		return;
- 
--	switch (prandom_u32() % 8) { /* Choose a generation strategy */
-+	switch (prandom_u32_max(8)) { /* Choose a generation strategy */
- 	case 0:
- 	case 1:
- 		/* All the same byte, plus optional mutations */
--		switch (prandom_u32() % 4) {
-+		switch (prandom_u32_max(4)) {
- 		case 0:
- 			b = 0x00;
- 			break;
-@@ -959,24 +959,24 @@ static char *generate_random_sgl_divisions(struct test_sg_division *divs,
- 		unsigned int this_len;
- 		const char *flushtype_str;
- 
--		if (div == &divs[max_divs - 1] || prandom_u32() % 2 == 0)
-+		if (div == &divs[max_divs - 1] || prandom_u32_max(2) == 0)
- 			this_len = remaining;
- 		else
--			this_len = 1 + (prandom_u32() % remaining);
-+			this_len = 1 + prandom_u32_max(remaining);
- 		div->proportion_of_total = this_len;
- 
--		if (prandom_u32() % 4 == 0)
--			div->offset = (PAGE_SIZE - 128) + (prandom_u32() % 128);
--		else if (prandom_u32() % 2 == 0)
--			div->offset = prandom_u32() % 32;
-+		if (prandom_u32_max(4) == 0)
-+			div->offset = (PAGE_SIZE - 128) + prandom_u32_max(128);
-+		else if (prandom_u32_max(2) == 0)
-+			div->offset = prandom_u32_max(32);
- 		else
--			div->offset = prandom_u32() % PAGE_SIZE;
--		if (prandom_u32() % 8 == 0)
-+			div->offset = prandom_u32_max(PAGE_SIZE);
-+		if (prandom_u32_max(8) == 0)
- 			div->offset_relative_to_alignmask = true;
- 
- 		div->flush_type = FLUSH_TYPE_NONE;
- 		if (gen_flushes) {
--			switch (prandom_u32() % 4) {
-+			switch (prandom_u32_max(4)) {
- 			case 0:
- 				div->flush_type = FLUSH_TYPE_REIMPORT;
- 				break;
-@@ -988,7 +988,7 @@ static char *generate_random_sgl_divisions(struct test_sg_division *divs,
- 
- 		if (div->flush_type != FLUSH_TYPE_NONE &&
- 		    !(req_flags & CRYPTO_TFM_REQ_MAY_SLEEP) &&
--		    prandom_u32() % 2 == 0)
-+		    prandom_u32_max(2) == 0)
- 			div->nosimd = true;
- 
- 		switch (div->flush_type) {
-@@ -1035,7 +1035,7 @@ static void generate_random_testvec_config(struct testvec_config *cfg,
- 
- 	p += scnprintf(p, end - p, "random:");
- 
--	switch (prandom_u32() % 4) {
-+	switch (prandom_u32_max(4)) {
- 	case 0:
- 	case 1:
- 		cfg->inplace_mode = OUT_OF_PLACE;
-@@ -1050,12 +1050,12 @@ static void generate_random_testvec_config(struct testvec_config *cfg,
- 		break;
- 	}
- 
--	if (prandom_u32() % 2 == 0) {
-+	if (prandom_u32_max(2) == 0) {
- 		cfg->req_flags |= CRYPTO_TFM_REQ_MAY_SLEEP;
- 		p += scnprintf(p, end - p, " may_sleep");
- 	}
- 
--	switch (prandom_u32() % 4) {
-+	switch (prandom_u32_max(4)) {
- 	case 0:
- 		cfg->finalization_type = FINALIZATION_TYPE_FINAL;
- 		p += scnprintf(p, end - p, " use_final");
-@@ -1071,7 +1071,7 @@ static void generate_random_testvec_config(struct testvec_config *cfg,
- 	}
- 
- 	if (!(cfg->req_flags & CRYPTO_TFM_REQ_MAY_SLEEP) &&
--	    prandom_u32() % 2 == 0) {
-+	    prandom_u32_max(2) == 0) {
- 		cfg->nosimd = true;
- 		p += scnprintf(p, end - p, " nosimd");
- 	}
-@@ -1084,7 +1084,7 @@ static void generate_random_testvec_config(struct testvec_config *cfg,
- 					  cfg->req_flags);
- 	p += scnprintf(p, end - p, "]");
- 
--	if (cfg->inplace_mode == OUT_OF_PLACE && prandom_u32() % 2 == 0) {
-+	if (cfg->inplace_mode == OUT_OF_PLACE && prandom_u32_max(2) == 0) {
- 		p += scnprintf(p, end - p, " dst_divs=[");
- 		p = generate_random_sgl_divisions(cfg->dst_divs,
- 						  ARRAY_SIZE(cfg->dst_divs),
-@@ -1093,13 +1093,13 @@ static void generate_random_testvec_config(struct testvec_config *cfg,
- 		p += scnprintf(p, end - p, "]");
- 	}
- 
--	if (prandom_u32() % 2 == 0) {
--		cfg->iv_offset = 1 + (prandom_u32() % MAX_ALGAPI_ALIGNMASK);
-+	if (prandom_u32_max(2) == 0) {
-+		cfg->iv_offset = 1 + prandom_u32_max(MAX_ALGAPI_ALIGNMASK);
- 		p += scnprintf(p, end - p, " iv_offset=%u", cfg->iv_offset);
- 	}
- 
--	if (prandom_u32() % 2 == 0) {
--		cfg->key_offset = 1 + (prandom_u32() % MAX_ALGAPI_ALIGNMASK);
-+	if (prandom_u32_max(2) == 0) {
-+		cfg->key_offset = 1 + prandom_u32_max(MAX_ALGAPI_ALIGNMASK);
- 		p += scnprintf(p, end - p, " key_offset=%u", cfg->key_offset);
- 	}
- 
-@@ -1652,8 +1652,8 @@ static void generate_random_hash_testvec(struct shash_desc *desc,
- 	vec->ksize = 0;
- 	if (maxkeysize) {
- 		vec->ksize = maxkeysize;
--		if (prandom_u32() % 4 == 0)
--			vec->ksize = 1 + (prandom_u32() % maxkeysize);
-+		if (prandom_u32_max(4) == 0)
-+			vec->ksize = 1 + prandom_u32_max(maxkeysize);
- 		generate_random_bytes((u8 *)vec->key, vec->ksize);
- 
- 		vec->setkey_error = crypto_shash_setkey(desc->tfm, vec->key,
-@@ -2218,13 +2218,13 @@ static void mutate_aead_message(struct aead_testvec *vec, bool aad_iv,
- 	const unsigned int aad_tail_size = aad_iv ? ivsize : 0;
- 	const unsigned int authsize = vec->clen - vec->plen;
- 
--	if (prandom_u32() % 2 == 0 && vec->alen > aad_tail_size) {
-+	if (prandom_u32_max(2) == 0 && vec->alen > aad_tail_size) {
- 		 /* Mutate the AAD */
- 		flip_random_bit((u8 *)vec->assoc, vec->alen - aad_tail_size);
--		if (prandom_u32() % 2 == 0)
-+		if (prandom_u32_max(2) == 0)
- 			return;
- 	}
--	if (prandom_u32() % 2 == 0) {
-+	if (prandom_u32_max(2) == 0) {
- 		/* Mutate auth tag (assuming it's at the end of ciphertext) */
- 		flip_random_bit((u8 *)vec->ctext + vec->plen, authsize);
- 	} else {
-@@ -2249,7 +2249,7 @@ static void generate_aead_message(struct aead_request *req,
- 	const unsigned int ivsize = crypto_aead_ivsize(tfm);
- 	const unsigned int authsize = vec->clen - vec->plen;
- 	const bool inauthentic = (authsize >= MIN_COLLISION_FREE_AUTHSIZE) &&
--				 (prefer_inauthentic || prandom_u32() % 4 == 0);
-+				 (prefer_inauthentic || prandom_u32_max(4) == 0);
- 
- 	/* Generate the AAD. */
- 	generate_random_bytes((u8 *)vec->assoc, vec->alen);
-@@ -2257,7 +2257,7 @@ static void generate_aead_message(struct aead_request *req,
- 		/* Avoid implementation-defined behavior. */
- 		memcpy((u8 *)vec->assoc + vec->alen - ivsize, vec->iv, ivsize);
- 
--	if (inauthentic && prandom_u32() % 2 == 0) {
-+	if (inauthentic && prandom_u32_max(2) == 0) {
- 		/* Generate a random ciphertext. */
- 		generate_random_bytes((u8 *)vec->ctext, vec->clen);
- 	} else {
-@@ -2321,8 +2321,8 @@ static void generate_random_aead_testvec(struct aead_request *req,
- 
- 	/* Key: length in [0, maxkeysize], but usually choose maxkeysize */
- 	vec->klen = maxkeysize;
--	if (prandom_u32() % 4 == 0)
--		vec->klen = prandom_u32() % (maxkeysize + 1);
-+	if (prandom_u32_max(4) == 0)
-+		vec->klen = prandom_u32_max(maxkeysize + 1);
- 	generate_random_bytes((u8 *)vec->key, vec->klen);
- 	vec->setkey_error = crypto_aead_setkey(tfm, vec->key, vec->klen);
- 
-@@ -2331,8 +2331,8 @@ static void generate_random_aead_testvec(struct aead_request *req,
- 
- 	/* Tag length: in [0, maxauthsize], but usually choose maxauthsize */
- 	authsize = maxauthsize;
--	if (prandom_u32() % 4 == 0)
--		authsize = prandom_u32() % (maxauthsize + 1);
-+	if (prandom_u32_max(4) == 0)
-+		authsize = prandom_u32_max(maxauthsize + 1);
- 	if (prefer_inauthentic && authsize < MIN_COLLISION_FREE_AUTHSIZE)
- 		authsize = MIN_COLLISION_FREE_AUTHSIZE;
- 	if (WARN_ON(authsize > maxdatasize))
-@@ -2342,7 +2342,7 @@ static void generate_random_aead_testvec(struct aead_request *req,
- 
- 	/* AAD, plaintext, and ciphertext lengths */
- 	total_len = generate_random_length(maxdatasize);
--	if (prandom_u32() % 4 == 0)
-+	if (prandom_u32_max(4) == 0)
- 		vec->alen = 0;
- 	else
- 		vec->alen = generate_random_length(total_len);
-@@ -2958,8 +2958,8 @@ static void generate_random_cipher_testvec(struct skcipher_request *req,
- 
- 	/* Key: length in [0, maxkeysize], but usually choose maxkeysize */
- 	vec->klen = maxkeysize;
--	if (prandom_u32() % 4 == 0)
--		vec->klen = prandom_u32() % (maxkeysize + 1);
-+	if (prandom_u32_max(4) == 0)
-+		vec->klen = prandom_u32_max(maxkeysize + 1);
- 	generate_random_bytes((u8 *)vec->key, vec->klen);
- 	vec->setkey_error = crypto_skcipher_setkey(tfm, vec->key, vec->klen);
- 
-diff --git a/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c b/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
-index cd75b0ca2555..845023c14eb3 100644
---- a/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
-@@ -2424,7 +2424,7 @@ gen8_dispatch_bsd_engine(struct drm_i915_private *dev_priv,
- 	/* Check whether the file_priv has already selected one ring. */
- 	if ((int)file_priv->bsd_engine < 0)
- 		file_priv->bsd_engine =
--			get_random_int() % num_vcs_engines(dev_priv);
-+			prandom_u32_max(num_vcs_engines(dev_priv));
- 
- 	return file_priv->bsd_engine;
- }
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index be317f2665a9..d460935e89eb 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -3759,7 +3759,7 @@ static int cma_alloc_any_port(enum rdma_ucm_port_space ps,
- 
- 	inet_get_local_port_range(net, &low, &high);
- 	remaining = (high - low) + 1;
--	rover = prandom_u32() % remaining + low;
-+	rover = prandom_u32_max(remaining) + low;
- retry:
- 	if (last_used_port != rover) {
- 		struct rdma_bind_list *bind_list;
-diff --git a/drivers/infiniband/hw/cxgb4/id_table.c b/drivers/infiniband/hw/cxgb4/id_table.c
-index f64e7e02b129..280d61466855 100644
---- a/drivers/infiniband/hw/cxgb4/id_table.c
-+++ b/drivers/infiniband/hw/cxgb4/id_table.c
-@@ -54,7 +54,7 @@ u32 c4iw_id_alloc(struct c4iw_id_table *alloc)
- 
- 	if (obj < alloc->max) {
- 		if (alloc->flags & C4IW_ID_TABLE_F_RANDOM)
--			alloc->last += prandom_u32() % RANDOM_SKIP;
-+			alloc->last += prandom_u32_max(RANDOM_SKIP);
- 		else
- 			alloc->last = obj + 1;
- 		if (alloc->last >= alloc->max)
-@@ -85,7 +85,7 @@ int c4iw_id_table_alloc(struct c4iw_id_table *alloc, u32 start, u32 num,
- 	alloc->start = start;
- 	alloc->flags = flags;
- 	if (flags & C4IW_ID_TABLE_F_RANDOM)
--		alloc->last = prandom_u32() % RANDOM_SKIP;
-+		alloc->last = prandom_u32_max(RANDOM_SKIP);
- 	else
- 		alloc->last = 0;
- 	alloc->max = num;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_ah.c b/drivers/infiniband/hw/hns/hns_roce_ah.c
-index 492b122d0521..480c062dd04f 100644
---- a/drivers/infiniband/hw/hns/hns_roce_ah.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_ah.c
-@@ -41,9 +41,8 @@ static inline u16 get_ah_udp_sport(const struct rdma_ah_attr *ah_attr)
- 	u16 sport;
- 
- 	if (!fl)
--		sport = get_random_u32() %
--			(IB_ROCE_UDP_ENCAP_VALID_PORT_MAX + 1 -
--			 IB_ROCE_UDP_ENCAP_VALID_PORT_MIN) +
-+		sport = prandom_u32_max(IB_ROCE_UDP_ENCAP_VALID_PORT_MAX + 1 -
-+					IB_ROCE_UDP_ENCAP_VALID_PORT_MIN) +
- 			IB_ROCE_UDP_ENCAP_VALID_PORT_MIN;
- 	else
- 		sport = rdma_flow_label_to_udp_sport(fl);
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index 449904dac0a9..e2a89d7f52df 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -1511,8 +1511,7 @@ static void rtrs_clt_err_recovery_work(struct work_struct *work)
- 	rtrs_clt_stop_and_destroy_conns(clt_path);
- 	queue_delayed_work(rtrs_wq, &clt_path->reconnect_dwork,
- 			   msecs_to_jiffies(delay_ms +
--					    prandom_u32() %
--					    RTRS_RECONNECT_SEED));
-+					    prandom_u32_max(RTRS_RECONNECT_SEED)));
- }
- 
- static struct rtrs_clt_path *alloc_path(struct rtrs_clt_sess *clt,
-diff --git a/drivers/media/test-drivers/vivid/vivid-touch-cap.c b/drivers/media/test-drivers/vivid/vivid-touch-cap.c
-index 64e3e4cb30c2..792660a85bc1 100644
---- a/drivers/media/test-drivers/vivid/vivid-touch-cap.c
-+++ b/drivers/media/test-drivers/vivid/vivid-touch-cap.c
-@@ -221,7 +221,7 @@ static void vivid_fill_buff_noise(__s16 *tch_buf, int size)
- 
- static inline int get_random_pressure(void)
- {
--	return get_random_int() % VIVID_PRESSURE_LIMIT;
-+	return prandom_u32_max(VIVID_PRESSURE_LIMIT);
- }
- 
- static void vivid_tch_buf_set(struct v4l2_pix_format *f,
-diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
-index ef53a2578824..95fa8fb1d45f 100644
---- a/drivers/mmc/core/core.c
-+++ b/drivers/mmc/core/core.c
-@@ -97,8 +97,8 @@ static void mmc_should_fail_request(struct mmc_host *host,
- 	    !should_fail(&host->fail_mmc_request, data->blksz * data->blocks))
- 		return;
- 
--	data->error = data_errors[prandom_u32() % ARRAY_SIZE(data_errors)];
--	data->bytes_xfered = (prandom_u32() % (data->bytes_xfered >> 9)) << 9;
-+	data->error = data_errors[prandom_u32_max(ARRAY_SIZE(data_errors))];
-+	data->bytes_xfered = prandom_u32_max(data->bytes_xfered >> 9) << 9;
- }
- 
- #else /* CONFIG_FAIL_MMC_REQUEST */
-diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
-index 581614196a84..c78bbc22e0d1 100644
---- a/drivers/mmc/host/dw_mmc.c
-+++ b/drivers/mmc/host/dw_mmc.c
-@@ -1858,7 +1858,7 @@ static void dw_mci_start_fault_timer(struct dw_mci *host)
- 	 * Try to inject the error at random points during the data transfer.
- 	 */
- 	hrtimer_start(&host->fault_timer,
--		      ms_to_ktime(prandom_u32() % 25),
-+		      ms_to_ktime(prandom_u32_max(25)),
- 		      HRTIMER_MODE_REL);
- }
- 
-diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
-index 24beade95c7f..50bcf745e816 100644
---- a/drivers/mtd/nand/raw/nandsim.c
-+++ b/drivers/mtd/nand/raw/nandsim.c
-@@ -1405,9 +1405,9 @@ static void ns_do_bit_flips(struct nandsim *ns, int num)
- 	if (bitflips && prandom_u32() < (1 << 22)) {
- 		int flips = 1;
- 		if (bitflips > 1)
--			flips = (prandom_u32() % (int) bitflips) + 1;
-+			flips = prandom_u32_max(bitflips) + 1;
- 		while (flips--) {
--			int pos = prandom_u32() % (num * 8);
-+			int pos = prandom_u32_max(num * 8);
- 			ns->buf.byte[pos / 8] ^= (1 << (pos % 8));
- 			NS_WARN("read_page: flipping bit %d in page %d "
- 				"reading from %d ecc: corrected=%u failed=%u\n",
-diff --git a/drivers/mtd/tests/mtd_nandecctest.c b/drivers/mtd/tests/mtd_nandecctest.c
-index c4f271314f52..1c7201b0f372 100644
---- a/drivers/mtd/tests/mtd_nandecctest.c
-+++ b/drivers/mtd/tests/mtd_nandecctest.c
-@@ -47,7 +47,7 @@ struct nand_ecc_test {
- static void single_bit_error_data(void *error_data, void *correct_data,
- 				size_t size)
- {
--	unsigned int offset = prandom_u32() % (size * BITS_PER_BYTE);
-+	unsigned int offset = prandom_u32_max(size * BITS_PER_BYTE);
- 
- 	memcpy(error_data, correct_data, size);
- 	__change_bit_le(offset, error_data);
-@@ -58,9 +58,9 @@ static void double_bit_error_data(void *error_data, void *correct_data,
- {
- 	unsigned int offset[2];
- 
--	offset[0] = prandom_u32() % (size * BITS_PER_BYTE);
-+	offset[0] = prandom_u32_max(size * BITS_PER_BYTE);
- 	do {
--		offset[1] = prandom_u32() % (size * BITS_PER_BYTE);
-+		offset[1] = prandom_u32_max(size * BITS_PER_BYTE);
- 	} while (offset[0] == offset[1]);
- 
- 	memcpy(error_data, correct_data, size);
-@@ -71,7 +71,7 @@ static void double_bit_error_data(void *error_data, void *correct_data,
- 
- static unsigned int random_ecc_bit(size_t size)
- {
--	unsigned int offset = prandom_u32() % (3 * BITS_PER_BYTE);
-+	unsigned int offset = prandom_u32_max(3 * BITS_PER_BYTE);
- 
- 	if (size == 256) {
- 		/*
-@@ -79,7 +79,7 @@ static unsigned int random_ecc_bit(size_t size)
- 		 * and 17th bit) in ECC code for 256 byte data block
- 		 */
- 		while (offset == 16 || offset == 17)
--			offset = prandom_u32() % (3 * BITS_PER_BYTE);
-+			offset = prandom_u32_max(3 * BITS_PER_BYTE);
- 	}
- 
- 	return offset;
-diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
-index 31d427ee191a..908d0e088557 100644
---- a/drivers/mtd/ubi/debug.c
-+++ b/drivers/mtd/ubi/debug.c
-@@ -590,7 +590,7 @@ int ubi_dbg_power_cut(struct ubi_device *ubi, int caller)
- 
- 		if (ubi->dbg.power_cut_max > ubi->dbg.power_cut_min) {
- 			range = ubi->dbg.power_cut_max - ubi->dbg.power_cut_min;
--			ubi->dbg.power_cut_counter += prandom_u32() % range;
-+			ubi->dbg.power_cut_counter += prandom_u32_max(range);
- 		}
- 		return 0;
- 	}
-diff --git a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_io.c b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_io.c
-index 539992dad8ba..a4256087ac82 100644
---- a/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_io.c
-+++ b/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_io.c
-@@ -919,8 +919,8 @@ static int csk_wait_memory(struct chtls_dev *cdev,
- 	current_timeo = *timeo_p;
- 	noblock = (*timeo_p ? false : true);
- 	if (csk_mem_free(cdev, sk)) {
--		current_timeo = (prandom_u32() % (HZ / 5)) + 2;
--		vm_wait = (prandom_u32() % (HZ / 5)) + 2;
-+		current_timeo = prandom_u32_max(HZ / 5) + 2;
-+		vm_wait = prandom_u32_max(HZ / 5) + 2;
- 	}
- 
- 	add_wait_queue(sk_sleep(sk), &wait);
-diff --git a/drivers/net/hamradio/baycom_epp.c b/drivers/net/hamradio/baycom_epp.c
-index 3e69079ed694..7df78a721b04 100644
---- a/drivers/net/hamradio/baycom_epp.c
-+++ b/drivers/net/hamradio/baycom_epp.c
-@@ -438,7 +438,7 @@ static int transmit(struct baycom_state *bc, int cnt, unsigned char stat)
- 			if ((--bc->hdlctx.slotcnt) > 0)
- 				return 0;
- 			bc->hdlctx.slotcnt = bc->ch_params.slottime;
--			if ((prandom_u32() % 256) > bc->ch_params.ppersist)
-+			if (prandom_u32_max(256) > bc->ch_params.ppersist)
- 				return 0;
- 		}
- 	}
-diff --git a/drivers/net/hamradio/hdlcdrv.c b/drivers/net/hamradio/hdlcdrv.c
-index 8297411e87ea..360d041a62c4 100644
---- a/drivers/net/hamradio/hdlcdrv.c
-+++ b/drivers/net/hamradio/hdlcdrv.c
-@@ -377,7 +377,7 @@ void hdlcdrv_arbitrate(struct net_device *dev, struct hdlcdrv_state *s)
- 	if ((--s->hdlctx.slotcnt) > 0)
- 		return;
- 	s->hdlctx.slotcnt = s->ch_params.slottime;
--	if ((prandom_u32() % 256) > s->ch_params.ppersist)
-+	if (prandom_u32_max(256) > s->ch_params.ppersist)
- 		return;
- 	start_tx(dev, s);
- }
-diff --git a/drivers/net/hamradio/yam.c b/drivers/net/hamradio/yam.c
-index 980f2be32f05..97a6cc5c7ae8 100644
---- a/drivers/net/hamradio/yam.c
-+++ b/drivers/net/hamradio/yam.c
-@@ -626,7 +626,7 @@ static void yam_arbitrate(struct net_device *dev)
- 	yp->slotcnt = yp->slot / 10;
- 
- 	/* is random > persist ? */
--	if ((prandom_u32() % 256) > yp->pers)
-+	if (prandom_u32_max(256) > yp->pers)
- 		return;
- 
- 	yam_start_tx(dev, yp);
-diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-index 59fe356942b5..2a7108361246 100644
---- a/drivers/net/phy/at803x.c
-+++ b/drivers/net/phy/at803x.c
-@@ -1732,7 +1732,7 @@ static int qca808x_phy_fast_retrain_config(struct phy_device *phydev)
- 
- static int qca808x_phy_ms_random_seed_set(struct phy_device *phydev)
- {
--	u16 seed_value = (prandom_u32() % QCA808X_MASTER_SLAVE_SEED_RANGE);
-+	u16 seed_value = prandom_u32_max(QCA808X_MASTER_SLAVE_SEED_RANGE);
- 
- 	return at803x_debug_reg_mask(phydev, QCA808X_PHY_DEBUG_LOCAL_SEED,
- 			QCA808X_MASTER_SLAVE_SEED_CFG,
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/p2p.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/p2p.c
-index 479041f070f9..10d9d9c63b28 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/p2p.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/p2p.c
-@@ -1128,7 +1128,7 @@ static void brcmf_p2p_afx_handler(struct work_struct *work)
- 	if (afx_hdl->is_listen && afx_hdl->my_listen_chan)
- 		/* 100ms ~ 300ms */
- 		err = brcmf_p2p_discover_listen(p2p, afx_hdl->my_listen_chan,
--						100 * (1 + prandom_u32() % 3));
-+						100 * (1 + prandom_u32_max(3)));
- 	else
- 		err = brcmf_p2p_act_frm_search(p2p, afx_hdl->peer_listen_chan);
- 
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c b/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c
-index ed586e6d7d64..de0c545d50fd 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/mac-ctxt.c
-@@ -1099,7 +1099,7 @@ static void iwl_mvm_mac_ctxt_cmd_fill_ap(struct iwl_mvm *mvm,
- 			iwl_mvm_mac_ap_iterator, &data);
- 
- 		if (data.beacon_device_ts) {
--			u32 rand = (prandom_u32() % (64 - 36)) + 36;
-+			u32 rand = prandom_u32_max(64 - 36) + 36;
- 			mvmvif->ap_beacon_time = data.beacon_device_ts +
- 				ieee80211_tu_to_usec(data.beacon_int * rand /
- 						     100);
-diff --git a/drivers/scsi/fcoe/fcoe_ctlr.c b/drivers/scsi/fcoe/fcoe_ctlr.c
-index 39e16eab47aa..ddc048069af2 100644
---- a/drivers/scsi/fcoe/fcoe_ctlr.c
-+++ b/drivers/scsi/fcoe/fcoe_ctlr.c
-@@ -2233,7 +2233,7 @@ static void fcoe_ctlr_vn_restart(struct fcoe_ctlr *fip)
- 
- 	if (fip->probe_tries < FIP_VN_RLIM_COUNT) {
- 		fip->probe_tries++;
--		wait = prandom_u32() % FIP_VN_PROBE_WAIT;
-+		wait = prandom_u32_max(FIP_VN_PROBE_WAIT);
- 	} else
- 		wait = FIP_VN_RLIM_INT;
- 	mod_timer(&fip->timer, jiffies + msecs_to_jiffies(wait));
-@@ -3125,7 +3125,7 @@ static void fcoe_ctlr_vn_timeout(struct fcoe_ctlr *fip)
- 					  fcoe_all_vn2vn, 0);
- 			fip->port_ka_time = jiffies +
- 				 msecs_to_jiffies(FIP_VN_BEACON_INT +
--					(prandom_u32() % FIP_VN_BEACON_FUZZ));
-+					prandom_u32_max(FIP_VN_BEACON_FUZZ));
- 		}
- 		if (time_before(fip->port_ka_time, next_time))
- 			next_time = fip->port_ka_time;
-diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
-index cecfb2cb4c7b..df2fe7bd26d1 100644
---- a/drivers/scsi/qedi/qedi_main.c
-+++ b/drivers/scsi/qedi/qedi_main.c
-@@ -618,7 +618,7 @@ static int qedi_cm_alloc_mem(struct qedi_ctx *qedi)
- 				sizeof(struct qedi_endpoint *)), GFP_KERNEL);
- 	if (!qedi->ep_tbl)
- 		return -ENOMEM;
--	port_id = prandom_u32() % QEDI_LOCAL_PORT_RANGE;
-+	port_id = prandom_u32_max(QEDI_LOCAL_PORT_RANGE);
- 	if (qedi_init_id_tbl(&qedi->lcl_port_tbl, QEDI_LOCAL_PORT_RANGE,
- 			     QEDI_LOCAL_PORT_MIN, port_id)) {
- 		qedi_cm_free_mem(qedi);
-diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
-index 42351d7a0dd6..f0c6e7e7b92b 100644
---- a/fs/ceph/inode.c
-+++ b/fs/ceph/inode.c
-@@ -362,7 +362,7 @@ static int ceph_fill_fragtree(struct inode *inode,
- 	if (nsplits != ci->i_fragtree_nsplits) {
- 		update = true;
- 	} else if (nsplits) {
--		i = prandom_u32() % nsplits;
-+		i = prandom_u32_max(nsplits);
- 		id = le32_to_cpu(fragtree->splits[i].frag);
- 		if (!__ceph_find_frag(ci, id))
- 			update = true;
-diff --git a/fs/ceph/mdsmap.c b/fs/ceph/mdsmap.c
-index 8d0a6d2c2da4..3fbabc98e1f7 100644
---- a/fs/ceph/mdsmap.c
-+++ b/fs/ceph/mdsmap.c
-@@ -29,7 +29,7 @@ static int __mdsmap_get_random_mds(struct ceph_mdsmap *m, bool ignore_laggy)
- 		return -1;
- 
- 	/* pick */
--	n = prandom_u32() % n;
-+	n = prandom_u32_max(n);
- 	for (j = 0, i = 0; i < m->possible_max_rank; i++) {
- 		if (CEPH_MDS_IS_READY(i, ignore_laggy))
- 			j++;
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 9a66abcca1a8..4af351320075 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -3811,8 +3811,7 @@ static int ext4_lazyinit_thread(void *arg)
- 			}
- 			if (!progress) {
- 				elr->lr_next_sched = jiffies +
--					(prandom_u32()
--					 % (EXT4_DEF_LI_MAX_START_DELAY * HZ));
-+					prandom_u32_max(EXT4_DEF_LI_MAX_START_DELAY * HZ);
- 			}
- 			if (time_before(elr->lr_next_sched, next_wakeup))
- 				next_wakeup = elr->lr_next_sched;
-@@ -3959,8 +3958,8 @@ static struct ext4_li_request *ext4_li_request_new(struct super_block *sb,
- 	 * spread the inode table initialization requests
- 	 * better.
- 	 */
--	elr->lr_next_sched = jiffies + (prandom_u32() %
--				(EXT4_DEF_LI_MAX_START_DELAY * HZ));
-+	elr->lr_next_sched = jiffies + prandom_u32_max(
-+				EXT4_DEF_LI_MAX_START_DELAY * HZ);
- 	return elr;
- }
- 
-diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
-index 6da21d405ce1..2c5fd1db3a3e 100644
---- a/fs/f2fs/gc.c
-+++ b/fs/f2fs/gc.c
-@@ -285,7 +285,7 @@ static void select_policy(struct f2fs_sb_info *sbi, int gc_type,
- 
- 	/* let's select beginning hot/small space first in no_heap mode*/
- 	if (f2fs_need_rand_seg(sbi))
--		p->offset = prandom_u32() % (MAIN_SECS(sbi) * sbi->segs_per_sec);
-+		p->offset = prandom_u32_max(MAIN_SECS(sbi) * sbi->segs_per_sec);
- 	else if (test_opt(sbi, NOHEAP) &&
- 		(type == CURSEG_HOT_DATA || IS_NODESEG(type)))
- 		p->offset = 0;
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 0de21f82d7bc..507f77f839f3 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -2535,7 +2535,7 @@ static unsigned int __get_next_segno(struct f2fs_sb_info *sbi, int type)
- 
- 	sanity_check_seg_type(sbi, seg_type);
- 	if (f2fs_need_rand_seg(sbi))
--		return prandom_u32() % (MAIN_SECS(sbi) * sbi->segs_per_sec);
-+		return prandom_u32_max(MAIN_SECS(sbi) * sbi->segs_per_sec);
- 
- 	/* if segs_per_sec is large than 1, we need to keep original policy. */
- 	if (__is_large_section(sbi))
-@@ -2589,7 +2589,7 @@ static void new_curseg(struct f2fs_sb_info *sbi, int type, bool new_sec)
- 	curseg->alloc_type = LFS;
- 	if (F2FS_OPTION(sbi).fs_mode == FS_MODE_FRAGMENT_BLK)
- 		curseg->fragment_remained_chunk =
--				prandom_u32() % sbi->max_fragment_chunk + 1;
-+				prandom_u32_max(sbi->max_fragment_chunk) + 1;
- }
- 
- static int __next_free_blkoff(struct f2fs_sb_info *sbi,
-@@ -2626,9 +2626,9 @@ static void __refresh_next_blkoff(struct f2fs_sb_info *sbi,
- 			/* To allocate block chunks in different sizes, use random number */
- 			if (--seg->fragment_remained_chunk <= 0) {
- 				seg->fragment_remained_chunk =
--				   prandom_u32() % sbi->max_fragment_chunk + 1;
-+				   prandom_u32_max(sbi->max_fragment_chunk) + 1;
- 				seg->next_blkoff +=
--				   prandom_u32() % sbi->max_fragment_hole + 1;
-+				   prandom_u32_max(sbi->max_fragment_hole) + 1;
- 			}
- 		}
- 	}
-diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
-index fc718f6178f2..f4d3b568aa64 100644
---- a/fs/ubifs/debug.c
-+++ b/fs/ubifs/debug.c
-@@ -2467,7 +2467,7 @@ int dbg_check_nondata_nodes_order(struct ubifs_info *c, struct list_head *head)
- 
- static inline int chance(unsigned int n, unsigned int out_of)
- {
--	return !!((prandom_u32() % out_of) + 1 <= n);
-+	return !!(prandom_u32_max(out_of) + 1 <= n);
- 
- }
- 
-@@ -2485,13 +2485,13 @@ static int power_cut_emulated(struct ubifs_info *c, int lnum, int write)
- 			if (chance(1, 2)) {
- 				d->pc_delay = 1;
- 				/* Fail within 1 minute */
--				delay = prandom_u32() % 60000;
-+				delay = prandom_u32_max(60000);
- 				d->pc_timeout = jiffies;
- 				d->pc_timeout += msecs_to_jiffies(delay);
- 				ubifs_warn(c, "failing after %lums", delay);
- 			} else {
- 				d->pc_delay = 2;
--				delay = prandom_u32() % 10000;
-+				delay = prandom_u32_max(10000);
- 				/* Fail within 10000 operations */
- 				d->pc_cnt_max = delay;
- 				ubifs_warn(c, "failing after %lu calls", delay);
-@@ -2571,7 +2571,7 @@ static int corrupt_data(const struct ubifs_info *c, const void *buf,
- 	unsigned int from, to, ffs = chance(1, 2);
- 	unsigned char *p = (void *)buf;
- 
--	from = prandom_u32() % len;
-+	from = prandom_u32_max(len);
- 	/* Corruption span max to end of write unit */
- 	to = min(len, ALIGN(from + 1, c->max_write_size));
- 
-diff --git a/fs/ubifs/lpt_commit.c b/fs/ubifs/lpt_commit.c
-index d76a19e460cd..cd4d5726a78d 100644
---- a/fs/ubifs/lpt_commit.c
-+++ b/fs/ubifs/lpt_commit.c
-@@ -1977,21 +1977,21 @@ static int dbg_populate_lsave(struct ubifs_info *c)
- 		c->lsave[i] = c->main_first;
- 
- 	list_for_each_entry(lprops, &c->empty_list, list)
--		c->lsave[prandom_u32() % c->lsave_cnt] = lprops->lnum;
-+		c->lsave[prandom_u32_max(c->lsave_cnt)] = lprops->lnum;
- 	list_for_each_entry(lprops, &c->freeable_list, list)
--		c->lsave[prandom_u32() % c->lsave_cnt] = lprops->lnum;
-+		c->lsave[prandom_u32_max(c->lsave_cnt)] = lprops->lnum;
- 	list_for_each_entry(lprops, &c->frdi_idx_list, list)
--		c->lsave[prandom_u32() % c->lsave_cnt] = lprops->lnum;
-+		c->lsave[prandom_u32_max(c->lsave_cnt)] = lprops->lnum;
- 
- 	heap = &c->lpt_heap[LPROPS_DIRTY_IDX - 1];
- 	for (i = 0; i < heap->cnt; i++)
--		c->lsave[prandom_u32() % c->lsave_cnt] = heap->arr[i]->lnum;
-+		c->lsave[prandom_u32_max(c->lsave_cnt)] = heap->arr[i]->lnum;
- 	heap = &c->lpt_heap[LPROPS_DIRTY - 1];
- 	for (i = 0; i < heap->cnt; i++)
--		c->lsave[prandom_u32() % c->lsave_cnt] = heap->arr[i]->lnum;
-+		c->lsave[prandom_u32_max(c->lsave_cnt)] = heap->arr[i]->lnum;
- 	heap = &c->lpt_heap[LPROPS_FREE - 1];
- 	for (i = 0; i < heap->cnt; i++)
--		c->lsave[prandom_u32() % c->lsave_cnt] = heap->arr[i]->lnum;
-+		c->lsave[prandom_u32_max(c->lsave_cnt)] = heap->arr[i]->lnum;
- 
- 	return 1;
- }
-diff --git a/fs/xfs/xfs_error.c b/fs/xfs/xfs_error.c
-index 296faa41d81d..7db588ed0be5 100644
---- a/fs/xfs/xfs_error.c
-+++ b/fs/xfs/xfs_error.c
-@@ -274,7 +274,7 @@ xfs_errortag_test(
- 
- 	ASSERT(error_tag < XFS_ERRTAG_MAX);
- 	randfactor = mp->m_errortag[error_tag];
--	if (!randfactor || prandom_u32() % randfactor)
-+	if (!randfactor || prandom_u32_max(randfactor))
- 		return false;
- 
- 	xfs_warn_ratelimited(mp,
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 3d9eb3ae334c..ade6b03b1d9b 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -1027,7 +1027,7 @@ bpf_jit_binary_alloc(unsigned int proglen, u8 **image_ptr,
- 	hdr->size = size;
- 	hole = min_t(unsigned int, size - (proglen + sizeof(*hdr)),
- 		     PAGE_SIZE - sizeof(*hdr));
--	start = (get_random_int() % hole) & ~(alignment - 1);
-+	start = prandom_u32_max(hole) & ~(alignment - 1);
- 
- 	/* Leave a random number of instructions before BPF code. */
- 	*image_ptr = &hdr->image[start];
-@@ -1089,7 +1089,7 @@ bpf_jit_binary_pack_alloc(unsigned int proglen, u8 **image_ptr,
- 
- 	hole = min_t(unsigned int, size - (proglen + sizeof(*ro_header)),
- 		     BPF_PROG_CHUNK_SIZE - sizeof(*ro_header));
--	start = (get_random_int() % hole) & ~(alignment - 1);
-+	start = prandom_u32_max(hole) & ~(alignment - 1);
- 
- 	*image_ptr = &ro_header->image[start];
- 	*rw_image = &(*rw_header)->image[start];
-diff --git a/kernel/locking/test-ww_mutex.c b/kernel/locking/test-ww_mutex.c
-index 353004155d65..43efb2a04160 100644
---- a/kernel/locking/test-ww_mutex.c
-+++ b/kernel/locking/test-ww_mutex.c
-@@ -399,7 +399,7 @@ static int *get_random_order(int count)
- 		order[n] = n;
- 
- 	for (n = count - 1; n > 1; n--) {
--		r = get_random_int() % (n + 1);
-+		r = prandom_u32_max(n + 1);
- 		if (r != n) {
- 			tmp = order[n];
- 			order[n] = order[r];
-@@ -538,7 +538,7 @@ static void stress_one_work(struct work_struct *work)
- {
- 	struct stress *stress = container_of(work, typeof(*stress), work);
- 	const int nlocks = stress->nlocks;
--	struct ww_mutex *lock = stress->locks + (get_random_int() % nlocks);
-+	struct ww_mutex *lock = stress->locks + prandom_u32_max(nlocks);
- 	int err;
- 
- 	do {
-diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index cee5da1e54c4..8058bec87ace 100644
---- a/kernel/time/clocksource.c
-+++ b/kernel/time/clocksource.c
-@@ -310,7 +310,7 @@ static void clocksource_verify_choose_cpus(void)
- 	 * CPUs that are currently online.
- 	 */
- 	for (i = 1; i < n; i++) {
--		cpu = prandom_u32() % nr_cpu_ids;
-+		cpu = prandom_u32_max(nr_cpu_ids);
- 		cpu = cpumask_next(cpu - 1, cpu_online_mask);
- 		if (cpu >= nr_cpu_ids)
- 			cpu = cpumask_first(cpu_online_mask);
-diff --git a/lib/cmdline_kunit.c b/lib/cmdline_kunit.c
-index a72a2c16066e..e6a31c927b06 100644
---- a/lib/cmdline_kunit.c
-+++ b/lib/cmdline_kunit.c
-@@ -76,7 +76,7 @@ static void cmdline_test_lead_int(struct kunit *test)
- 		int rc = cmdline_test_values[i];
- 		int offset;
- 
--		sprintf(in, "%u%s", get_random_int() % 256, str);
-+		sprintf(in, "%u%s", prandom_u32_max(256), str);
- 		/* Only first '-' after the number will advance the pointer */
- 		offset = strlen(in) - strlen(str) + !!(rc == 2);
- 		cmdline_do_one_test(test, in, rc, offset);
-@@ -94,7 +94,7 @@ static void cmdline_test_tail_int(struct kunit *test)
- 		int rc = strcmp(str, "") ? (strcmp(str, "-") ? 0 : 1) : 1;
- 		int offset;
- 
--		sprintf(in, "%s%u", str, get_random_int() % 256);
-+		sprintf(in, "%s%u", str, prandom_u32_max(256));
- 		/*
- 		 * Only first and leading '-' not followed by integer
- 		 * will advance the pointer.
-diff --git a/lib/fault-inject.c b/lib/fault-inject.c
-index 423784d9c058..96e092de5b72 100644
---- a/lib/fault-inject.c
-+++ b/lib/fault-inject.c
-@@ -139,7 +139,7 @@ bool should_fail(struct fault_attr *attr, ssize_t size)
- 			return false;
- 	}
- 
--	if (attr->probability <= prandom_u32() % 100)
-+	if (attr->probability <= prandom_u32_max(100))
- 		return false;
- 
- 	if (!fail_stacktrace(attr))
-diff --git a/lib/find_bit_benchmark.c b/lib/find_bit_benchmark.c
-index db904b57d4b8..1a6466c64bb6 100644
---- a/lib/find_bit_benchmark.c
-+++ b/lib/find_bit_benchmark.c
-@@ -157,8 +157,8 @@ static int __init find_bit_test(void)
- 	bitmap_zero(bitmap2, BITMAP_LEN);
- 
- 	while (nbits--) {
--		__set_bit(prandom_u32() % BITMAP_LEN, bitmap);
--		__set_bit(prandom_u32() % BITMAP_LEN, bitmap2);
-+		__set_bit(prandom_u32_max(BITMAP_LEN), bitmap);
-+		__set_bit(prandom_u32_max(BITMAP_LEN), bitmap2);
- 	}
- 
- 	test_find_next_bit(bitmap, BITMAP_LEN);
-diff --git a/lib/reed_solomon/test_rslib.c b/lib/reed_solomon/test_rslib.c
-index d9d1c33aebda..6faf9c9a6215 100644
---- a/lib/reed_solomon/test_rslib.c
-+++ b/lib/reed_solomon/test_rslib.c
-@@ -183,7 +183,7 @@ static int get_rcw_we(struct rs_control *rs, struct wspace *ws,
- 
- 		do {
- 			/* Must not choose the same location twice */
--			errloc = prandom_u32() % len;
-+			errloc = prandom_u32_max(len);
- 		} while (errlocs[errloc] != 0);
- 
- 		errlocs[errloc] = 1;
-@@ -194,7 +194,7 @@ static int get_rcw_we(struct rs_control *rs, struct wspace *ws,
- 	for (i = 0; i < eras; i++) {
- 		do {
- 			/* Must not choose the same location twice */
--			errloc = prandom_u32() % len;
-+			errloc = prandom_u32_max(len);
- 		} while (errlocs[errloc] != 0);
- 
- 		derrlocs[i] = errloc;
-diff --git a/lib/sbitmap.c b/lib/sbitmap.c
-index 29eb0484215a..c4f04edf3ee9 100644
---- a/lib/sbitmap.c
-+++ b/lib/sbitmap.c
-@@ -33,7 +33,7 @@ static inline unsigned update_alloc_hint_before_get(struct sbitmap *sb,
- 
- 	hint = this_cpu_read(*sb->alloc_hint);
- 	if (unlikely(hint >= depth)) {
--		hint = depth ? prandom_u32() % depth : 0;
-+		hint = depth ? prandom_u32_max(depth) : 0;
- 		this_cpu_write(*sb->alloc_hint, hint);
- 	}
- 
-diff --git a/lib/test-string_helpers.c b/lib/test-string_helpers.c
-index 437d8e6b7cb1..86fadd3ba08c 100644
---- a/lib/test-string_helpers.c
-+++ b/lib/test-string_helpers.c
-@@ -587,7 +587,7 @@ static int __init test_string_helpers_init(void)
- 	for (i = 0; i < UNESCAPE_ALL_MASK + 1; i++)
- 		test_string_unescape("unescape", i, false);
- 	test_string_unescape("unescape inplace",
--			     get_random_int() % (UNESCAPE_ANY + 1), true);
-+			     prandom_u32_max(UNESCAPE_ANY + 1), true);
- 
- 	/* Without dictionary */
- 	for (i = 0; i < ESCAPE_ALL_MASK + 1; i++)
-diff --git a/lib/test_hexdump.c b/lib/test_hexdump.c
-index 5144899d3c6b..0927f44cd478 100644
---- a/lib/test_hexdump.c
-+++ b/lib/test_hexdump.c
-@@ -149,7 +149,7 @@ static void __init test_hexdump(size_t len, int rowsize, int groupsize,
- static void __init test_hexdump_set(int rowsize, bool ascii)
- {
- 	size_t d = min_t(size_t, sizeof(data_b), rowsize);
--	size_t len = get_random_int() % d + 1;
-+	size_t len = prandom_u32_max(d) + 1;
- 
- 	test_hexdump(len, rowsize, 4, ascii);
- 	test_hexdump(len, rowsize, 2, ascii);
-@@ -208,11 +208,11 @@ static void __init test_hexdump_overflow(size_t buflen, size_t len,
- static void __init test_hexdump_overflow_set(size_t buflen, bool ascii)
- {
- 	unsigned int i = 0;
--	int rs = (get_random_int() % 2 + 1) * 16;
-+	int rs = (prandom_u32_max(2) + 1) * 16;
- 
- 	do {
- 		int gs = 1 << i;
--		size_t len = get_random_int() % rs + gs;
-+		size_t len = prandom_u32_max(rs) + gs;
- 
- 		test_hexdump_overflow(buflen, rounddown(len, gs), rs, gs, ascii);
- 	} while (i++ < 3);
-@@ -223,11 +223,11 @@ static int __init test_hexdump_init(void)
- 	unsigned int i;
- 	int rowsize;
- 
--	rowsize = (get_random_int() % 2 + 1) * 16;
-+	rowsize = (prandom_u32_max(2) + 1) * 16;
- 	for (i = 0; i < 16; i++)
- 		test_hexdump_set(rowsize, false);
- 
--	rowsize = (get_random_int() % 2 + 1) * 16;
-+	rowsize = (prandom_u32_max(2) + 1) * 16;
- 	for (i = 0; i < 16; i++)
- 		test_hexdump_set(rowsize, true);
- 
-diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-index 58c1b01ccfe2..7b4026623ace 100644
---- a/lib/test_kasan.c
-+++ b/lib/test_kasan.c
-@@ -1269,7 +1269,7 @@ static void match_all_not_assigned(struct kunit *test)
- 	KASAN_TEST_NEEDS_CONFIG_OFF(test, CONFIG_KASAN_GENERIC);
- 
- 	for (i = 0; i < 256; i++) {
--		size = (get_random_int() % 1024) + 1;
-+		size = prandom_u32_max(1024) + 1;
- 		ptr = kmalloc(size, GFP_KERNEL);
- 		KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
- 		KUNIT_EXPECT_GE(test, (u8)get_tag(ptr), (u8)KASAN_TAG_MIN);
-@@ -1278,7 +1278,7 @@ static void match_all_not_assigned(struct kunit *test)
- 	}
- 
- 	for (i = 0; i < 256; i++) {
--		order = (get_random_int() % 4) + 1;
-+		order = prandom_u32_max(4) + 1;
- 		pages = alloc_pages(GFP_KERNEL, order);
- 		ptr = page_address(pages);
- 		KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
-@@ -1291,7 +1291,7 @@ static void match_all_not_assigned(struct kunit *test)
- 		return;
- 
- 	for (i = 0; i < 256; i++) {
--		size = (get_random_int() % 1024) + 1;
-+		size = prandom_u32_max(1024) + 1;
- 		ptr = vmalloc(size);
- 		KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
- 		KUNIT_EXPECT_GE(test, (u8)get_tag(ptr), (u8)KASAN_TAG_MIN);
-diff --git a/lib/test_list_sort.c b/lib/test_list_sort.c
-index ade7a1ea0c8e..19ff229b9c3a 100644
---- a/lib/test_list_sort.c
-+++ b/lib/test_list_sort.c
-@@ -71,7 +71,7 @@ static void list_sort_test(struct kunit *test)
- 		KUNIT_ASSERT_NOT_ERR_OR_NULL(test, el);
- 
- 		 /* force some equivalencies */
--		el->value = prandom_u32() % (TEST_LIST_LEN / 3);
-+		el->value = prandom_u32_max(TEST_LIST_LEN / 3);
- 		el->serial = i;
- 		el->poison1 = TEST_POISON1;
- 		el->poison2 = TEST_POISON2;
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 6a1597c92261..db04f95fe050 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -2292,7 +2292,7 @@ int next_demotion_node(int node)
- 		 * caching issue, which seems more complicated. So selecting
- 		 * target node randomly seems better until now.
- 		 */
--		index = get_random_int() % target_nr;
-+		index = prandom_u32_max(target_nr);
- 		break;
- 	}
- 
-diff --git a/mm/slub.c b/mm/slub.c
-index 862dbd9af4f5..46ee52efeeef 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -1911,7 +1911,7 @@ static bool shuffle_freelist(struct kmem_cache *s, struct slab *slab)
- 		return false;
- 
- 	freelist_count = oo_objects(s->oo);
--	pos = get_random_int() % freelist_count;
-+	pos = prandom_u32_max(freelist_count);
- 
- 	page_limit = slab->objects * s->size;
- 	start = fixup_red_left(s, slab_address(slab));
-diff --git a/net/ceph/mon_client.c b/net/ceph/mon_client.c
-index 6a6898ee4049..db60217f911b 100644
---- a/net/ceph/mon_client.c
-+++ b/net/ceph/mon_client.c
-@@ -222,7 +222,7 @@ static void pick_new_mon(struct ceph_mon_client *monc)
- 				max--;
- 		}
- 
--		n = prandom_u32() % max;
-+		n = prandom_u32_max(max);
- 		if (o >= 0 && n >= o)
- 			n++;
- 
-diff --git a/net/ceph/osd_client.c b/net/ceph/osd_client.c
-index 87b883c7bfd6..4e4f1e4bc265 100644
---- a/net/ceph/osd_client.c
-+++ b/net/ceph/osd_client.c
-@@ -1479,7 +1479,7 @@ static bool target_should_be_paused(struct ceph_osd_client *osdc,
- 
- static int pick_random_replica(const struct ceph_osds *acting)
- {
--	int i = prandom_u32() % acting->size;
-+	int i = prandom_u32_max(acting->size);
- 
- 	dout("%s picked osd%d, primary osd%d\n", __func__,
- 	     acting->osds[i], acting->primary);
-diff --git a/net/core/neighbour.c b/net/core/neighbour.c
-index 78cc8fb68814..85d497cb58d8 100644
---- a/net/core/neighbour.c
-+++ b/net/core/neighbour.c
-@@ -111,7 +111,7 @@ static void neigh_cleanup_and_release(struct neighbour *neigh)
- 
- unsigned long neigh_rand_reach_time(unsigned long base)
- {
--	return base ? (prandom_u32() % base) + (base >> 1) : 0;
-+	return base ? prandom_u32_max(base) + (base >> 1) : 0;
- }
- EXPORT_SYMBOL(neigh_rand_reach_time);
- 
-diff --git a/net/core/pktgen.c b/net/core/pktgen.c
-index 88906ba6d9a7..a13ee452429e 100644
---- a/net/core/pktgen.c
-+++ b/net/core/pktgen.c
-@@ -2324,7 +2324,7 @@ static inline int f_pick(struct pktgen_dev *pkt_dev)
- 				pkt_dev->curfl = 0; /*reset */
- 		}
- 	} else {
--		flow = prandom_u32() % pkt_dev->cflows;
-+		flow = prandom_u32_max(pkt_dev->cflows);
- 		pkt_dev->curfl = flow;
- 
- 		if (pkt_dev->flows[flow].count > pkt_dev->lflow) {
-@@ -2380,10 +2380,9 @@ static void set_cur_queue_map(struct pktgen_dev *pkt_dev)
- 	else if (pkt_dev->queue_map_min <= pkt_dev->queue_map_max) {
- 		__u16 t;
- 		if (pkt_dev->flags & F_QUEUE_MAP_RND) {
--			t = prandom_u32() %
--				(pkt_dev->queue_map_max -
--				 pkt_dev->queue_map_min + 1)
--				+ pkt_dev->queue_map_min;
-+			t = prandom_u32_max(pkt_dev->queue_map_max -
-+					    pkt_dev->queue_map_min + 1) +
-+			    pkt_dev->queue_map_min;
- 		} else {
- 			t = pkt_dev->cur_queue_map + 1;
- 			if (t > pkt_dev->queue_map_max)
-@@ -2412,7 +2411,7 @@ static void mod_cur_headers(struct pktgen_dev *pkt_dev)
- 		__u32 tmp;
- 
- 		if (pkt_dev->flags & F_MACSRC_RND)
--			mc = prandom_u32() % pkt_dev->src_mac_count;
-+			mc = prandom_u32_max(pkt_dev->src_mac_count);
- 		else {
- 			mc = pkt_dev->cur_src_mac_offset++;
- 			if (pkt_dev->cur_src_mac_offset >=
-@@ -2438,7 +2437,7 @@ static void mod_cur_headers(struct pktgen_dev *pkt_dev)
- 		__u32 tmp;
- 
- 		if (pkt_dev->flags & F_MACDST_RND)
--			mc = prandom_u32() % pkt_dev->dst_mac_count;
-+			mc = prandom_u32_max(pkt_dev->dst_mac_count);
- 
- 		else {
- 			mc = pkt_dev->cur_dst_mac_offset++;
-@@ -2479,9 +2478,9 @@ static void mod_cur_headers(struct pktgen_dev *pkt_dev)
- 
- 	if (pkt_dev->udp_src_min < pkt_dev->udp_src_max) {
- 		if (pkt_dev->flags & F_UDPSRC_RND)
--			pkt_dev->cur_udp_src = prandom_u32() %
--				(pkt_dev->udp_src_max - pkt_dev->udp_src_min)
--				+ pkt_dev->udp_src_min;
-+			pkt_dev->cur_udp_src = prandom_u32_max(
-+				pkt_dev->udp_src_max - pkt_dev->udp_src_min) +
-+				pkt_dev->udp_src_min;
- 
- 		else {
- 			pkt_dev->cur_udp_src++;
-@@ -2492,9 +2491,9 @@ static void mod_cur_headers(struct pktgen_dev *pkt_dev)
- 
- 	if (pkt_dev->udp_dst_min < pkt_dev->udp_dst_max) {
- 		if (pkt_dev->flags & F_UDPDST_RND) {
--			pkt_dev->cur_udp_dst = prandom_u32() %
--				(pkt_dev->udp_dst_max - pkt_dev->udp_dst_min)
--				+ pkt_dev->udp_dst_min;
-+			pkt_dev->cur_udp_dst = prandom_u32_max(
-+				pkt_dev->udp_dst_max - pkt_dev->udp_dst_min) +
-+				pkt_dev->udp_dst_min;
- 		} else {
- 			pkt_dev->cur_udp_dst++;
- 			if (pkt_dev->cur_udp_dst >= pkt_dev->udp_dst_max)
-@@ -2509,7 +2508,7 @@ static void mod_cur_headers(struct pktgen_dev *pkt_dev)
- 		if (imn < imx) {
- 			__u32 t;
- 			if (pkt_dev->flags & F_IPSRC_RND)
--				t = prandom_u32() % (imx - imn) + imn;
-+				t = prandom_u32_max(imx - imn) + imn;
- 			else {
- 				t = ntohl(pkt_dev->cur_saddr);
- 				t++;
-@@ -2531,8 +2530,8 @@ static void mod_cur_headers(struct pktgen_dev *pkt_dev)
- 				if (pkt_dev->flags & F_IPDST_RND) {
- 
- 					do {
--						t = prandom_u32() %
--							(imx - imn) + imn;
-+						t = prandom_u32_max(imx - imn) +
-+						    imn;
- 						s = htonl(t);
- 					} while (ipv4_is_loopback(s) ||
- 						ipv4_is_multicast(s) ||
-@@ -2579,9 +2578,9 @@ static void mod_cur_headers(struct pktgen_dev *pkt_dev)
- 	if (pkt_dev->min_pkt_size < pkt_dev->max_pkt_size) {
- 		__u32 t;
- 		if (pkt_dev->flags & F_TXSIZE_RND) {
--			t = prandom_u32() %
--				(pkt_dev->max_pkt_size - pkt_dev->min_pkt_size)
--				+ pkt_dev->min_pkt_size;
-+			t = prandom_u32_max(pkt_dev->max_pkt_size -
-+					    pkt_dev->min_pkt_size) +
-+			    pkt_dev->min_pkt_size;
- 		} else {
- 			t = pkt_dev->cur_pkt_size + 1;
- 			if (t > pkt_dev->max_pkt_size)
-@@ -2590,7 +2589,7 @@ static void mod_cur_headers(struct pktgen_dev *pkt_dev)
- 		pkt_dev->cur_pkt_size = t;
- 	} else if (pkt_dev->n_imix_entries > 0) {
- 		struct imix_pkt *entry;
--		__u32 t = prandom_u32() % IMIX_PRECISION;
-+		__u32 t = prandom_u32_max(IMIX_PRECISION);
- 		__u8 entry_index = pkt_dev->imix_distribution[t];
- 
- 		entry = &pkt_dev->imix_entries[entry_index];
-diff --git a/net/core/stream.c b/net/core/stream.c
-index ccc083cdef23..4780558ea314 100644
---- a/net/core/stream.c
-+++ b/net/core/stream.c
-@@ -123,7 +123,7 @@ int sk_stream_wait_memory(struct sock *sk, long *timeo_p)
- 	DEFINE_WAIT_FUNC(wait, woken_wake_function);
- 
- 	if (sk_stream_memory_free(sk))
--		current_timeo = vm_wait = (prandom_u32() % (HZ / 5)) + 2;
-+		current_timeo = vm_wait = prandom_u32_max(HZ / 5) + 2;
- 
- 	add_wait_queue(sk_sleep(sk), &wait);
- 
-diff --git a/net/ipv4/igmp.c b/net/ipv4/igmp.c
-index e3ab0cb61624..9149e78beea5 100644
---- a/net/ipv4/igmp.c
-+++ b/net/ipv4/igmp.c
-@@ -213,7 +213,7 @@ static void igmp_stop_timer(struct ip_mc_list *im)
- /* It must be called with locked im->lock */
- static void igmp_start_timer(struct ip_mc_list *im, int max_delay)
- {
--	int tv = prandom_u32() % max_delay;
-+	int tv = prandom_u32_max(max_delay);
- 
- 	im->tm_running = 1;
- 	if (!mod_timer(&im->timer, jiffies+tv+2))
-@@ -222,7 +222,7 @@ static void igmp_start_timer(struct ip_mc_list *im, int max_delay)
- 
- static void igmp_gq_start_timer(struct in_device *in_dev)
- {
--	int tv = prandom_u32() % in_dev->mr_maxdelay;
-+	int tv = prandom_u32_max(in_dev->mr_maxdelay);
- 	unsigned long exp = jiffies + tv + 2;
- 
- 	if (in_dev->mr_gq_running &&
-@@ -236,7 +236,7 @@ static void igmp_gq_start_timer(struct in_device *in_dev)
- 
- static void igmp_ifc_start_timer(struct in_device *in_dev, int delay)
- {
--	int tv = prandom_u32() % delay;
-+	int tv = prandom_u32_max(delay);
- 
- 	if (!mod_timer(&in_dev->mr_ifc_timer, jiffies+tv+2))
- 		in_dev_hold(in_dev);
-diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
-index eb31c7158b39..0c3eab1347cd 100644
---- a/net/ipv4/inet_connection_sock.c
-+++ b/net/ipv4/inet_connection_sock.c
-@@ -223,7 +223,7 @@ inet_csk_find_open_port(struct sock *sk, struct inet_bind_bucket **tb_ret, int *
- 	if (likely(remaining > 1))
- 		remaining &= ~1U;
- 
--	offset = prandom_u32() % remaining;
-+	offset = prandom_u32_max(remaining);
- 	/* __inet_hash_connect() favors ports having @low parity
- 	 * We do the opposite to not pollute connect() users.
- 	 */
-diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
-index 10ce86bf228e..417834b7169d 100644
---- a/net/ipv6/addrconf.c
-+++ b/net/ipv6/addrconf.c
-@@ -104,7 +104,7 @@ static inline u32 cstamp_delta(unsigned long cstamp)
- static inline s32 rfc3315_s14_backoff_init(s32 irt)
- {
- 	/* multiply 'initial retransmission time' by 0.9 .. 1.1 */
--	u64 tmp = (900000 + prandom_u32() % 200001) * (u64)irt;
-+	u64 tmp = (900000 + prandom_u32_max(200001)) * (u64)irt;
- 	do_div(tmp, 1000000);
- 	return (s32)tmp;
- }
-@@ -112,11 +112,11 @@ static inline s32 rfc3315_s14_backoff_init(s32 irt)
- static inline s32 rfc3315_s14_backoff_update(s32 rt, s32 mrt)
- {
- 	/* multiply 'retransmission timeout' by 1.9 .. 2.1 */
--	u64 tmp = (1900000 + prandom_u32() % 200001) * (u64)rt;
-+	u64 tmp = (1900000 + prandom_u32_max(200001)) * (u64)rt;
- 	do_div(tmp, 1000000);
- 	if ((s32)tmp > mrt) {
- 		/* multiply 'maximum retransmission time' by 0.9 .. 1.1 */
--		tmp = (900000 + prandom_u32() % 200001) * (u64)mrt;
-+		tmp = (900000 + prandom_u32_max(200001)) * (u64)mrt;
- 		do_div(tmp, 1000000);
- 	}
- 	return (s32)tmp;
-@@ -3967,7 +3967,7 @@ static void addrconf_dad_kick(struct inet6_ifaddr *ifp)
- 	if (ifp->flags & IFA_F_OPTIMISTIC)
- 		rand_num = 0;
- 	else
--		rand_num = prandom_u32() % (idev->cnf.rtr_solicit_delay ? : 1);
-+		rand_num = prandom_u32_max(idev->cnf.rtr_solicit_delay ?: 1);
- 
- 	nonce = 0;
- 	if (idev->cnf.enhanced_dad ||
-diff --git a/net/ipv6/mcast.c b/net/ipv6/mcast.c
-index 87c699d57b36..bf4f5edb3c3e 100644
---- a/net/ipv6/mcast.c
-+++ b/net/ipv6/mcast.c
-@@ -1050,7 +1050,7 @@ bool ipv6_chk_mcast_addr(struct net_device *dev, const struct in6_addr *group,
- /* called with mc_lock */
- static void mld_gq_start_work(struct inet6_dev *idev)
- {
--	unsigned long tv = prandom_u32() % idev->mc_maxdelay;
-+	unsigned long tv = prandom_u32_max(idev->mc_maxdelay);
- 
- 	idev->mc_gq_running = 1;
- 	if (!mod_delayed_work(mld_wq, &idev->mc_gq_work, tv + 2))
-@@ -1068,7 +1068,7 @@ static void mld_gq_stop_work(struct inet6_dev *idev)
- /* called with mc_lock */
- static void mld_ifc_start_work(struct inet6_dev *idev, unsigned long delay)
- {
--	unsigned long tv = prandom_u32() % delay;
-+	unsigned long tv = prandom_u32_max(delay);
- 
- 	if (!mod_delayed_work(mld_wq, &idev->mc_ifc_work, tv + 2))
- 		in6_dev_hold(idev);
-@@ -1085,7 +1085,7 @@ static void mld_ifc_stop_work(struct inet6_dev *idev)
- /* called with mc_lock */
- static void mld_dad_start_work(struct inet6_dev *idev, unsigned long delay)
- {
--	unsigned long tv = prandom_u32() % delay;
-+	unsigned long tv = prandom_u32_max(delay);
- 
- 	if (!mod_delayed_work(mld_wq, &idev->mc_dad_work, tv + 2))
- 		in6_dev_hold(idev);
-@@ -1130,7 +1130,7 @@ static void igmp6_group_queried(struct ifmcaddr6 *ma, unsigned long resptime)
- 	}
- 
- 	if (delay >= resptime)
--		delay = prandom_u32() % resptime;
-+		delay = prandom_u32_max(resptime);
- 
- 	if (!mod_delayed_work(mld_wq, &ma->mca_work, delay))
- 		refcount_inc(&ma->mca_refcnt);
-@@ -2574,7 +2574,7 @@ static void igmp6_join_group(struct ifmcaddr6 *ma)
- 
- 	igmp6_send(&ma->mca_addr, ma->idev->dev, ICMPV6_MGM_REPORT);
- 
--	delay = prandom_u32() % unsolicited_report_interval(ma->idev);
-+	delay = prandom_u32_max(unsolicited_report_interval(ma->idev));
- 
- 	if (cancel_delayed_work(&ma->mca_work)) {
- 		refcount_dec(&ma->mca_refcnt);
-diff --git a/net/netfilter/ipvs/ip_vs_twos.c b/net/netfilter/ipvs/ip_vs_twos.c
-index acb55d8393ef..f2579fc9c75b 100644
---- a/net/netfilter/ipvs/ip_vs_twos.c
-+++ b/net/netfilter/ipvs/ip_vs_twos.c
-@@ -71,8 +71,8 @@ static struct ip_vs_dest *ip_vs_twos_schedule(struct ip_vs_service *svc,
- 	 * from 0 to total_weight
- 	 */
- 	total_weight += 1;
--	rweight1 = prandom_u32() % total_weight;
--	rweight2 = prandom_u32() % total_weight;
-+	rweight1 = prandom_u32_max(total_weight);
-+	rweight2 = prandom_u32_max(total_weight);
- 
- 	/* Pick two weighted servers */
- 	list_for_each_entry_rcu(dest, &svc->destinations, n_list) {
-diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
-index 5cbe07116e04..331f80e12779 100644
---- a/net/packet/af_packet.c
-+++ b/net/packet/af_packet.c
-@@ -1350,7 +1350,7 @@ static bool fanout_flow_is_huge(struct packet_sock *po, struct sk_buff *skb)
- 		if (READ_ONCE(history[i]) == rxhash)
- 			count++;
- 
--	victim = prandom_u32() % ROLLOVER_HLEN;
-+	victim = prandom_u32_max(ROLLOVER_HLEN);
- 
- 	/* Avoid dirtying the cache line if possible */
- 	if (READ_ONCE(history[victim]) != rxhash)
-diff --git a/net/sched/act_gact.c b/net/sched/act_gact.c
-index ac29d1065232..1accaedef54f 100644
---- a/net/sched/act_gact.c
-+++ b/net/sched/act_gact.c
-@@ -26,7 +26,7 @@ static struct tc_action_ops act_gact_ops;
- static int gact_net_rand(struct tcf_gact *gact)
- {
- 	smp_rmb(); /* coupled with smp_wmb() in tcf_gact_init() */
--	if (prandom_u32() % gact->tcfg_pval)
-+	if (prandom_u32_max(gact->tcfg_pval))
- 		return gact->tcf_action;
- 	return gact->tcfg_paction;
- }
-diff --git a/net/sched/act_sample.c b/net/sched/act_sample.c
-index 2f7f5e44d28c..55c9f961fb0f 100644
---- a/net/sched/act_sample.c
-+++ b/net/sched/act_sample.c
-@@ -169,7 +169,7 @@ static int tcf_sample_act(struct sk_buff *skb, const struct tc_action *a,
- 	psample_group = rcu_dereference_bh(s->psample_group);
- 
- 	/* randomly sample packets according to rate */
--	if (psample_group && (prandom_u32() % s->rate == 0)) {
-+	if (psample_group && (prandom_u32_max(s->rate) == 0)) {
- 		if (!skb_at_tc_ingress(skb)) {
- 			md.in_ifindex = skb->skb_iif;
- 			md.out_ifindex = skb->dev->ifindex;
-diff --git a/net/sched/sch_netem.c b/net/sched/sch_netem.c
-index 5449ed114e40..3ca320f1a031 100644
---- a/net/sched/sch_netem.c
-+++ b/net/sched/sch_netem.c
-@@ -513,8 +513,8 @@ static int netem_enqueue(struct sk_buff *skb, struct Qdisc *sch,
- 			goto finish_segs;
- 		}
- 
--		skb->data[prandom_u32() % skb_headlen(skb)] ^=
--			1<<(prandom_u32() % 8);
-+		skb->data[prandom_u32_max(skb_headlen(skb))] ^=
-+			1<<prandom_u32_max(8);
- 	}
- 
- 	if (unlikely(sch->q.qlen >= sch->limit)) {
-diff --git a/net/sctp/socket.c b/net/sctp/socket.c
-index 171f1a35d205..1e354ba44960 100644
---- a/net/sctp/socket.c
-+++ b/net/sctp/socket.c
-@@ -8319,7 +8319,7 @@ static int sctp_get_port_local(struct sock *sk, union sctp_addr *addr)
- 
- 		inet_get_local_port_range(net, &low, &high);
- 		remaining = (high - low) + 1;
--		rover = prandom_u32() % remaining + low;
-+		rover = prandom_u32_max(remaining) + low;
- 
- 		do {
- 			rover++;
-diff --git a/net/tipc/socket.c b/net/tipc/socket.c
-index f1c3b8eb4b3d..e902b01ea3cb 100644
---- a/net/tipc/socket.c
-+++ b/net/tipc/socket.c
-@@ -3010,7 +3010,7 @@ static int tipc_sk_insert(struct tipc_sock *tsk)
- 	struct net *net = sock_net(sk);
- 	struct tipc_net *tn = net_generic(net, tipc_net_id);
- 	u32 remaining = (TIPC_MAX_PORT - TIPC_MIN_PORT) + 1;
--	u32 portid = prandom_u32() % remaining + TIPC_MIN_PORT;
-+	u32 portid = prandom_u32_max(remaining) + TIPC_MIN_PORT;
- 
- 	while (remaining--) {
- 		portid++;
-diff --git a/net/xfrm/xfrm_state.c b/net/xfrm/xfrm_state.c
-index 91c32a3b6924..b213c89cfb8a 100644
---- a/net/xfrm/xfrm_state.c
-+++ b/net/xfrm/xfrm_state.c
-@@ -2072,7 +2072,7 @@ int xfrm_alloc_spi(struct xfrm_state *x, u32 low, u32 high)
- 	} else {
- 		u32 spi = 0;
- 		for (h = 0; h < high-low+1; h++) {
--			spi = low + prandom_u32()%(high-low+1);
-+			spi = low + prandom_u32_max(high - low + 1);
- 			x0 = xfrm_state_lookup(net, mark, &x->id.daddr, htonl(spi), x->id.proto, x->props.family);
- 			if (x0 == NULL) {
- 				newspi = htonl(spi);
--- 
-2.37.3
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+VGhlIHByYW5kb21fdTMyKCkgZnVuY3Rpb24gaGFzIGJlZW4gYSBkZXByZWNhdGVkIGlubGluZSB3
+cmFwcGVyIGFyb3VuZApnZXRfcmFuZG9tX3UzMigpIGZvciBzZXZlcmFsIHJlbGVhc2VzIG5vdywg
+YW5kIGNvbXBpbGVzIGRvd24gdG8gdGhlCmV4YWN0IHNhbWUgY29kZS4gUmVwbGFjZSB0aGUgZGVw
+cmVjYXRlZCB3cmFwcGVyIHdpdGggYSBkaXJlY3QgY2FsbCB0bwp0aGUgcmVhbCBmdW5jdGlvbi4g
+VGhlIHNhbWUgYWxzbyBhcHBsaWVzIHRvIGdldF9yYW5kb21faW50KCksIHdoaWNoIGlzCmp1c3Qg
+YSB3cmFwcGVyIGFyb3VuZCBnZXRfcmFuZG9tX3UzMigpLiBUaGlzIHdhcyBkb25lIGFzIGEgYmFz
+aWMgZmluZAphbmQgcmVwbGFjZS4KClJldmlld2VkLWJ5OiBLZWVzIENvb2sgPGtlZXNjb29rQGNo
+cm9taXVtLm9yZz4KQWNrZWQtYnk6IFRva2UgSMO4aWxhbmQtSsO4cmdlbnNlbiA8dG9rZUB0b2tl
+LmRrPiAjIGZvciBzY2hfY2FrZQpBY2tlZC1ieTogQ2h1Y2sgTGV2ZXIgPGNodWNrLmxldmVyQG9y
+YWNsZS5jb20+ICMgZm9yIG5mc2QKUmV2aWV3ZWQtYnk6IEphbiBLYXJhIDxqYWNrQHN1c2UuY3o+
+ICMgZm9yIGV4dDQKQWNrZWQtYnk6IE1pa2EgV2VzdGVyYmVyZyA8bWlrYS53ZXN0ZXJiZXJnQGxp
+bnV4LmludGVsLmNvbT4gIyBmb3IgdGh1bmRlcmJvbHQKQWNrZWQtYnk6IERhcnJpY2sgSi4gV29u
+ZyA8ZGp3b25nQGtlcm5lbC5vcmc+ICMgZm9yIHhmcwpTaWduZWQtb2ZmLWJ5OiBKYXNvbiBBLiBE
+b25lbmZlbGQgPEphc29uQHp4MmM0LmNvbT4KLS0tCiBEb2N1bWVudGF0aW9uL25ldHdvcmtpbmcv
+ZmlsdGVyLnJzdCAgICAgICAgICAgIHwgIDIgKy0KIGFyY2gvcGFyaXNjL2tlcm5lbC9wcm9jZXNz
+LmMgICAgICAgICAgICAgICAgICAgfCAgMiArLQogYXJjaC9wYXJpc2Mva2VybmVsL3N5c19wYXJp
+c2MuYyAgICAgICAgICAgICAgICB8ICA0ICsrLS0KIGFyY2gvczM5MC9tbS9tbWFwLmMgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgfCAgMiArLQogYXJjaC94ODYva2VybmVsL2NwdS9hbWQuYyAg
+ICAgICAgICAgICAgICAgICAgICB8ICAyICstCiBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2dl
+bV9ndHQuYyAgICAgICAgICAgIHwgIDYgKysrLS0tCiBkcml2ZXJzL2dwdS9kcm0vaTkxNS9zZWxm
+dGVzdHMvaTkxNV9zZWxmdGVzdC5jIHwgIDIgKy0KIGRyaXZlcnMvZ3B1L2RybS9zZWxmdGVzdHMv
+dGVzdC1kcm1fYnVkZHkuYyAgICAgfCAgMiArLQogZHJpdmVycy9ncHUvZHJtL3NlbGZ0ZXN0cy90
+ZXN0LWRybV9tbS5jICAgICAgICB8ICAyICstCiBkcml2ZXJzL2luZmluaWJhbmQvaHcvY3hnYjQv
+Y20uYyAgICAgICAgICAgICAgIHwgIDQgKystLQogZHJpdmVycy9pbmZpbmliYW5kL2h3L2hmaTEv
+dGlkX3JkbWEuYyAgICAgICAgICB8ICAyICstCiBkcml2ZXJzL2luZmluaWJhbmQvaHcvbWx4NC9t
+YWQuYyAgICAgICAgICAgICAgIHwgIDIgKy0KIGRyaXZlcnMvaW5maW5pYmFuZC91bHAvaXBvaWIv
+aXBvaWJfY20uYyAgICAgICAgfCAgMiArLQogZHJpdmVycy9tZC9yYWlkNS1jYWNoZS5jICAgICAg
+ICAgICAgICAgICAgICAgICB8ICAyICstCiAuLi4vbWVkaWEvdGVzdC1kcml2ZXJzL3ZpdmlkL3Zp
+dmlkLXRvdWNoLWNhcC5jIHwgIDQgKystLQogZHJpdmVycy9taXNjL2hhYmFuYWxhYnMvZ2F1ZGky
+L2dhdWRpMi5jICAgICAgICB8ICAyICstCiBkcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kc2ltLmMg
+ICAgICAgICAgICAgICAgIHwgIDIgKy0KIGRyaXZlcnMvbmV0L2JvbmRpbmcvYm9uZF9tYWluLmMg
+ICAgICAgICAgICAgICAgfCAgMiArLQogZHJpdmVycy9uZXQvZXRoZXJuZXQvYnJvYWRjb20vY25p
+Yy5jICAgICAgICAgICB8ICAyICstCiAuLi4vY2hlbHNpby9pbmxpbmVfY3J5cHRvL2NodGxzL2No
+dGxzX2NtLmMgICAgIHwgIDIgKy0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L3JvY2tlci9yb2NrZXJf
+bWFpbi5jICAgICAgfCAgNiArKystLS0KIC4uLi93aXJlbGVzcy9icm9hZGNvbS9icmNtODAyMTEv
+YnJjbWZtYWMvcG5vLmMgfCAgMiArLQogLi4uL25ldC93aXJlbGVzcy9tYXJ2ZWxsL213aWZpZXgv
+Y2ZnODAyMTEuYyAgICB8ICA0ICsrLS0KIC4uLi9uZXQvd2lyZWxlc3MvbWljcm9jaGlwL3dpbGMx
+MDAwL2NmZzgwMjExLmMgfCAgMiArLQogLi4uL25ldC93aXJlbGVzcy9xdWFudGVubmEvcXRuZm1h
+Yy9jZmc4MDIxMS5jICB8ICAyICstCiBkcml2ZXJzL25ldC93aXJlbGVzcy90aS93bGNvcmUvbWFp
+bi5jICAgICAgICAgIHwgIDIgKy0KIGRyaXZlcnMvbnZtZS9jb21tb24vYXV0aC5jICAgICAgICAg
+ICAgICAgICAgICAgfCAgMiArLQogZHJpdmVycy9zY3NpL2N4Z2JpL2N4Z2I0aS9jeGdiNGkuYyAg
+ICAgICAgICAgICB8ICA0ICsrLS0KIGRyaXZlcnMvdGFyZ2V0L2lzY3NpL2N4Z2JpdC9jeGdiaXRf
+Y20uYyAgICAgICAgfCAgMiArLQogZHJpdmVycy90aHVuZGVyYm9sdC94ZG9tYWluLmMgICAgICAg
+ICAgICAgICAgICB8ICAyICstCiBkcml2ZXJzL3ZpZGVvL2ZiZGV2L3V2ZXNhZmIuYyAgICAgICAg
+ICAgICAgICAgIHwgIDIgKy0KIGZzL2V4ZmF0L2lub2RlLmMgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgfCAgMiArLQogZnMvZXh0NC9pYWxsb2MuYyAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICB8ICAyICstCiBmcy9leHQ0L2lvY3RsLmMgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIHwgIDQgKystLQogZnMvZXh0NC9tbXAuYyAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICB8ICAyICstCiBmcy9mMmZzL25hbWVpLmMgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIHwgIDIgKy0KIGZzL2ZhdC9pbm9kZS5jICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgfCAgMiArLQogZnMvbmZzZC9uZnM0c3RhdGUuYyAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICB8ICA0ICsrLS0KIGZzL250ZnMzL2ZzbG9nLmMgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgfCAgNiArKystLS0KIGZzL3ViaWZzL2pvdXJuYWwuYyAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgfCAgMiArLQogZnMveGZzL2xpYnhmcy94ZnNfaWFsbG9jLmMgICAgICAgICAgICAg
+ICAgICAgICB8ICAyICstCiBmcy94ZnMveGZzX2ljYWNoZS5jICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIHwgIDIgKy0KIGZzL3hmcy94ZnNfbG9nLmMgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgfCAgMiArLQogaW5jbHVkZS9uZXQvbmV0ZmlsdGVyL25mX3F1ZXVlLmggICAgICAgICAg
+ICAgICB8ICAyICstCiBpbmNsdWRlL25ldC9yZWQuaCAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIHwgIDIgKy0KIGluY2x1ZGUvbmV0L3NvY2suaCAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgfCAgMiArLQoga2VybmVsL2JwZi9ibG9vbV9maWx0ZXIuYyAgICAgICAgICAgICAgICAgICAg
+ICB8ICAyICstCiBrZXJuZWwvYnBmL2NvcmUuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IHwgIDIgKy0KIGtlcm5lbC9icGYvaGFzaHRhYi5jICAgICAgICAgICAgICAgICAgICAgICAgICAg
+fCAgMiArLQoga2VybmVsL2JwZi92ZXJpZmllci5jICAgICAgICAgICAgICAgICAgICAgICAgICB8
+ICAyICstCiBrZXJuZWwva2NzYW4vc2VsZnRlc3QuYyAgICAgICAgICAgICAgICAgICAgICAgIHwg
+IDIgKy0KIGxpYi9yYW5kb20zMi5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAg
+MiArLQogbGliL3JlZWRfc29sb21vbi90ZXN0X3JzbGliLmMgICAgICAgICAgICAgICAgICB8ICA2
+ICsrKy0tLQogbGliL3Rlc3RfZnByb2JlLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8
+ICAyICstCiBsaWIvdGVzdF9rcHJvYmVzLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwg
+IDIgKy0KIGxpYi90ZXN0X21pbl9oZWFwLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAg
+NiArKystLS0KIGxpYi90ZXN0X3JoYXNodGFibGUuYyAgICAgICAgICAgICAgICAgICAgICAgICAg
+fCAgNiArKystLS0KIG1tL3NobWVtLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgfCAgMiArLQogbW0vc2xhYi5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICB8ICAyICstCiBuZXQvODAyL2dhcnAuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IHwgIDIgKy0KIG5ldC84MDIvbXJwLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+fCAgMiArLQogbmV0L2NvcmUvcGt0Z2VuLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8
+ICA0ICsrLS0KIG5ldC9pcHY0L3JvdXRlLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+fCAgMiArLQogbmV0L2lwdjQvdGNwX2NkZy5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8
+ICAyICstCiBuZXQvaXB2NC91ZHAuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwg
+IDIgKy0KIG5ldC9pcHY2L2lwNl9mbG93bGFiZWwuYyAgICAgICAgICAgICAgICAgICAgICAgfCAg
+MiArLQogbmV0L2lwdjYvb3V0cHV0X2NvcmUuYyAgICAgICAgICAgICAgICAgICAgICAgICB8ICAy
+ICstCiBuZXQvbmV0ZmlsdGVyL2lwdnMvaXBfdnNfY29ubi5jICAgICAgICAgICAgICAgIHwgIDIg
+Ky0KIG5ldC9uZXRmaWx0ZXIveHRfc3RhdGlzdGljLmMgICAgICAgICAgICAgICAgICAgfCAgMiAr
+LQogbmV0L29wZW52c3dpdGNoL2FjdGlvbnMuYyAgICAgICAgICAgICAgICAgICAgICB8ICAyICst
+CiBuZXQvc2NoZWQvc2NoX2Nha2UuYyAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0K
+IG5ldC9zY2hlZC9zY2hfbmV0ZW0uYyAgICAgICAgICAgICAgICAgICAgICAgICAgfCAxOCArKysr
+KysrKystLS0tLS0tLS0KIG5ldC9zdW5ycGMvYXV0aF9nc3MvZ3NzX2tyYjVfd3JhcC5jICAgICAg
+ICAgICAgfCAgNCArKy0tCiBuZXQvc3VucnBjL3hwcnQuYyAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIHwgIDIgKy0KIG5ldC91bml4L2FmX3VuaXguYyAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgfCAgMiArLQogNzUgZmlsZXMgY2hhbmdlZCwgMTA0IGluc2VydGlvbnMoKyksIDEwNCBk
+ZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL25ldHdvcmtpbmcvZmlsdGVy
+LnJzdCBiL0RvY3VtZW50YXRpb24vbmV0d29ya2luZy9maWx0ZXIucnN0CmluZGV4IDQzY2RjNGQz
+NDc0NS4uZjY5ZGE1MDc0ODYwIDEwMDY0NAotLS0gYS9Eb2N1bWVudGF0aW9uL25ldHdvcmtpbmcv
+ZmlsdGVyLnJzdAorKysgYi9Eb2N1bWVudGF0aW9uL25ldHdvcmtpbmcvZmlsdGVyLnJzdApAQCAt
+MzA1LDcgKzMwNSw3IEBAIFBvc3NpYmxlIEJQRiBleHRlbnNpb25zIGFyZSBzaG93biBpbiB0aGUg
+Zm9sbG93aW5nIHRhYmxlOgogICB2bGFuX3RjaSAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IHNrYl92bGFuX3RhZ19nZXQoc2tiKQogICB2bGFuX2F2YWlsICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIHNrYl92bGFuX3RhZ19wcmVzZW50KHNrYikKICAgdmxhbl90cGlkICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICBza2ItPnZsYW5fcHJvdG8KLSAgcmFuZCAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICBwcmFuZG9tX3UzMigpCisgIHJhbmQgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgZ2V0X3JhbmRvbV91MzIoKQogICA9PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PSAgID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT0KIAogVGhlc2UgZXh0ZW5zaW9ucyBjYW4gYWxzbyBiZSBwcmVmaXhlZCB3aXRoICcj
+Jy4KZGlmZiAtLWdpdCBhL2FyY2gvcGFyaXNjL2tlcm5lbC9wcm9jZXNzLmMgYi9hcmNoL3Bhcmlz
+Yy9rZXJuZWwvcHJvY2Vzcy5jCmluZGV4IDdjMzdlMDljOTJkYS4uMThjNGYwZTNlOTA2IDEwMDY0
+NAotLS0gYS9hcmNoL3BhcmlzYy9rZXJuZWwvcHJvY2Vzcy5jCisrKyBiL2FyY2gvcGFyaXNjL2tl
+cm5lbC9wcm9jZXNzLmMKQEAgLTI4OCw3ICsyODgsNyBAQCBfX2dldF93Y2hhbihzdHJ1Y3QgdGFz
+a19zdHJ1Y3QgKnApCiAKIHN0YXRpYyBpbmxpbmUgdW5zaWduZWQgbG9uZyBicmtfcm5kKHZvaWQp
+CiB7Ci0JcmV0dXJuIChnZXRfcmFuZG9tX2ludCgpICYgQlJLX1JORF9NQVNLKSA8PCBQQUdFX1NI
+SUZUOworCXJldHVybiAoZ2V0X3JhbmRvbV91MzIoKSAmIEJSS19STkRfTUFTSykgPDwgUEFHRV9T
+SElGVDsKIH0KIAogdW5zaWduZWQgbG9uZyBhcmNoX3JhbmRvbWl6ZV9icmsoc3RydWN0IG1tX3N0
+cnVjdCAqbW0pCmRpZmYgLS1naXQgYS9hcmNoL3BhcmlzYy9rZXJuZWwvc3lzX3BhcmlzYy5jIGIv
+YXJjaC9wYXJpc2Mva2VybmVsL3N5c19wYXJpc2MuYwppbmRleCAyYjM0Mjk0NTE3YTEuLjg0OGIw
+NzAyMDA1ZCAxMDA2NDQKLS0tIGEvYXJjaC9wYXJpc2Mva2VybmVsL3N5c19wYXJpc2MuYworKysg
+Yi9hcmNoL3BhcmlzYy9rZXJuZWwvc3lzX3BhcmlzYy5jCkBAIC0yMzksMTQgKzIzOSwxNCBAQCBz
+dGF0aWMgdW5zaWduZWQgbG9uZyBtbWFwX3JuZCh2b2lkKQogCXVuc2lnbmVkIGxvbmcgcm5kID0g
+MDsKIAogCWlmIChjdXJyZW50LT5mbGFncyAmIFBGX1JBTkRPTUlaRSkKLQkJcm5kID0gZ2V0X3Jh
+bmRvbV9pbnQoKSAmIE1NQVBfUk5EX01BU0s7CisJCXJuZCA9IGdldF9yYW5kb21fdTMyKCkgJiBN
+TUFQX1JORF9NQVNLOwogCiAJcmV0dXJuIHJuZCA8PCBQQUdFX1NISUZUOwogfQogCiB1bnNpZ25l
+ZCBsb25nIGFyY2hfbW1hcF9ybmQodm9pZCkKIHsKLQlyZXR1cm4gKGdldF9yYW5kb21faW50KCkg
+JiBNTUFQX1JORF9NQVNLKSA8PCBQQUdFX1NISUZUOworCXJldHVybiAoZ2V0X3JhbmRvbV91MzIo
+KSAmIE1NQVBfUk5EX01BU0spIDw8IFBBR0VfU0hJRlQ7CiB9CiAKIHN0YXRpYyB1bnNpZ25lZCBs
+b25nIG1tYXBfbGVnYWN5X2Jhc2Uodm9pZCkKZGlmZiAtLWdpdCBhL2FyY2gvczM5MC9tbS9tbWFw
+LmMgYi9hcmNoL3MzOTAvbW0vbW1hcC5jCmluZGV4IDU5ODBjZTM0ODgzMi4uMzMyN2M0N2JjMTgx
+IDEwMDY0NAotLS0gYS9hcmNoL3MzOTAvbW0vbW1hcC5jCisrKyBiL2FyY2gvczM5MC9tbS9tbWFw
+LmMKQEAgLTM3LDcgKzM3LDcgQEAgc3RhdGljIGlubGluZSBpbnQgbW1hcF9pc19sZWdhY3koc3Ry
+dWN0IHJsaW1pdCAqcmxpbV9zdGFjaykKIAogdW5zaWduZWQgbG9uZyBhcmNoX21tYXBfcm5kKHZv
+aWQpCiB7Ci0JcmV0dXJuIChnZXRfcmFuZG9tX2ludCgpICYgTU1BUF9STkRfTUFTSykgPDwgUEFH
+RV9TSElGVDsKKwlyZXR1cm4gKGdldF9yYW5kb21fdTMyKCkgJiBNTUFQX1JORF9NQVNLKSA8PCBQ
+QUdFX1NISUZUOwogfQogCiBzdGF0aWMgdW5zaWduZWQgbG9uZyBtbWFwX2Jhc2VfbGVnYWN5KHVu
+c2lnbmVkIGxvbmcgcm5kKQpkaWZmIC0tZ2l0IGEvYXJjaC94ODYva2VybmVsL2NwdS9hbWQuYyBi
+L2FyY2gveDg2L2tlcm5lbC9jcHUvYW1kLmMKaW5kZXggNDgyNzZjMGU0NzlkLi44NjBiNjAyNzNk
+ZjMgMTAwNjQ0Ci0tLSBhL2FyY2gveDg2L2tlcm5lbC9jcHUvYW1kLmMKKysrIGIvYXJjaC94ODYv
+a2VybmVsL2NwdS9hbWQuYwpAQCAtNTAzLDcgKzUwMyw3IEBAIHN0YXRpYyB2b2lkIGJzcF9pbml0
+X2FtZChzdHJ1Y3QgY3B1aW5mb194ODYgKmMpCiAJCXZhX2FsaWduLmZsYWdzICAgID0gQUxJR05f
+VkFfMzIgfCBBTElHTl9WQV82NDsKIAogCQkvKiBBIHJhbmRvbSB2YWx1ZSBwZXIgYm9vdCBmb3Ig
+Yml0IHNsaWNlIFsxMjp1cHBlcl9iaXQpICovCi0JCXZhX2FsaWduLmJpdHMgPSBnZXRfcmFuZG9t
+X2ludCgpICYgdmFfYWxpZ24ubWFzazsKKwkJdmFfYWxpZ24uYml0cyA9IGdldF9yYW5kb21fdTMy
+KCkgJiB2YV9hbGlnbi5tYXNrOwogCX0KIAogCWlmIChjcHVfaGFzKGMsIFg4Nl9GRUFUVVJFX01X
+QUlUWCkpCmRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2dlbV9ndHQuYyBi
+L2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZ2VtX2d0dC5jCmluZGV4IDMyOWZmNzViODBiOS4u
+N2JkMTg2MWRkYmRmIDEwMDY0NAotLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2dlbV9n
+dHQuYworKysgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2dlbV9ndHQuYwpAQCAtMTM3LDEy
+ICsxMzcsMTIgQEAgc3RhdGljIHU2NCByYW5kb21fb2Zmc2V0KHU2NCBzdGFydCwgdTY0IGVuZCwg
+dTY0IGxlbiwgdTY0IGFsaWduKQogCXJhbmdlID0gcm91bmRfZG93bihlbmQgLSBsZW4sIGFsaWdu
+KSAtIHJvdW5kX3VwKHN0YXJ0LCBhbGlnbik7CiAJaWYgKHJhbmdlKSB7CiAJCWlmIChzaXplb2Yo
+dW5zaWduZWQgbG9uZykgPT0gc2l6ZW9mKHU2NCkpIHsKLQkJCWFkZHIgPSBnZXRfcmFuZG9tX2xv
+bmcoKTsKKwkJCWFkZHIgPSBnZXRfcmFuZG9tX3U2NCgpOwogCQl9IGVsc2UgewotCQkJYWRkciA9
+IGdldF9yYW5kb21faW50KCk7CisJCQlhZGRyID0gZ2V0X3JhbmRvbV91MzIoKTsKIAkJCWlmIChy
+YW5nZSA+IFUzMl9NQVgpIHsKIAkJCQlhZGRyIDw8PSAzMjsKLQkJCQlhZGRyIHw9IGdldF9yYW5k
+b21faW50KCk7CisJCQkJYWRkciB8PSBnZXRfcmFuZG9tX3UzMigpOwogCQkJfQogCQl9CiAJCWRp
+djY0X3U2NF9yZW0oYWRkciwgcmFuZ2UsICZhZGRyKTsKZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1
+L2RybS9pOTE1L3NlbGZ0ZXN0cy9pOTE1X3NlbGZ0ZXN0LmMgYi9kcml2ZXJzL2dwdS9kcm0vaTkx
+NS9zZWxmdGVzdHMvaTkxNV9zZWxmdGVzdC5jCmluZGV4IGM0ZTkzMjM2OGIzNy4uMzlkYTBmYjBk
+NmQyIDEwMDY0NAotLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9zZWxmdGVzdHMvaTkxNV9zZWxm
+dGVzdC5jCisrKyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L3NlbGZ0ZXN0cy9pOTE1X3NlbGZ0ZXN0
+LmMKQEAgLTEzNSw3ICsxMzUsNyBAQCBzdGF0aWMgaW50IF9fcnVuX3NlbGZ0ZXN0cyhjb25zdCBj
+aGFyICpuYW1lLAogCWludCBlcnIgPSAwOwogCiAJd2hpbGUgKCFpOTE1X3NlbGZ0ZXN0LnJhbmRv
+bV9zZWVkKQotCQlpOTE1X3NlbGZ0ZXN0LnJhbmRvbV9zZWVkID0gZ2V0X3JhbmRvbV9pbnQoKTsK
+KwkJaTkxNV9zZWxmdGVzdC5yYW5kb21fc2VlZCA9IGdldF9yYW5kb21fdTMyKCk7CiAKIAlpOTE1
+X3NlbGZ0ZXN0LnRpbWVvdXRfamlmZmllcyA9CiAJCWk5MTVfc2VsZnRlc3QudGltZW91dF9tcyA/
+CmRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vc2VsZnRlc3RzL3Rlc3QtZHJtX2J1ZGR5LmMg
+Yi9kcml2ZXJzL2dwdS9kcm0vc2VsZnRlc3RzL3Rlc3QtZHJtX2J1ZGR5LmMKaW5kZXggYWNhMGM0
+OTEwNDBmLi42MzQwYTcxMTc3M2YgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvZ3B1L2RybS9zZWxmdGVz
+dHMvdGVzdC1kcm1fYnVkZHkuYworKysgYi9kcml2ZXJzL2dwdS9kcm0vc2VsZnRlc3RzL3Rlc3Qt
+ZHJtX2J1ZGR5LmMKQEAgLTk3NCw3ICs5NzQsNyBAQCBzdGF0aWMgaW50IF9faW5pdCB0ZXN0X2Ry
+bV9idWRkeV9pbml0KHZvaWQpCiAJaW50IGVycjsKIAogCXdoaWxlICghcmFuZG9tX3NlZWQpCi0J
+CXJhbmRvbV9zZWVkID0gZ2V0X3JhbmRvbV9pbnQoKTsKKwkJcmFuZG9tX3NlZWQgPSBnZXRfcmFu
+ZG9tX3UzMigpOwogCiAJcHJfaW5mbygiVGVzdGluZyBEUk0gYnVkZHkgbWFuYWdlciAoc3RydWN0
+IGRybV9idWRkeSksIHdpdGggcmFuZG9tX3NlZWQ9MHgleFxuIiwKIAkJcmFuZG9tX3NlZWQpOwpk
+aWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL3NlbGZ0ZXN0cy90ZXN0LWRybV9tbS5jIGIvZHJp
+dmVycy9ncHUvZHJtL3NlbGZ0ZXN0cy90ZXN0LWRybV9tbS5jCmluZGV4IGI3NjhiNTNjNGFlZS4u
+MWRjNDFkNzNkMTdlIDEwMDY0NAotLS0gYS9kcml2ZXJzL2dwdS9kcm0vc2VsZnRlc3RzL3Rlc3Qt
+ZHJtX21tLmMKKysrIGIvZHJpdmVycy9ncHUvZHJtL3NlbGZ0ZXN0cy90ZXN0LWRybV9tbS5jCkBA
+IC0yNDYzLDcgKzI0NjMsNyBAQCBzdGF0aWMgaW50IF9faW5pdCB0ZXN0X2RybV9tbV9pbml0KHZv
+aWQpCiAJaW50IGVycjsKIAogCXdoaWxlICghcmFuZG9tX3NlZWQpCi0JCXJhbmRvbV9zZWVkID0g
+Z2V0X3JhbmRvbV9pbnQoKTsKKwkJcmFuZG9tX3NlZWQgPSBnZXRfcmFuZG9tX3UzMigpOwogCiAJ
+cHJfaW5mbygiVGVzdGluZyBEUk0gcmFuZ2UgbWFuYWdlciAoc3RydWN0IGRybV9tbSksIHdpdGgg
+cmFuZG9tX3NlZWQ9MHgleCBtYXhfaXRlcmF0aW9ucz0ldSBtYXhfcHJpbWU9JXVcbiIsCiAJCXJh
+bmRvbV9zZWVkLCBtYXhfaXRlcmF0aW9ucywgbWF4X3ByaW1lKTsKZGlmZiAtLWdpdCBhL2RyaXZl
+cnMvaW5maW5pYmFuZC9ody9jeGdiNC9jbS5jIGIvZHJpdmVycy9pbmZpbmliYW5kL2h3L2N4Z2I0
+L2NtLmMKaW5kZXggMTQzOTJjOTQyZjQ5Li40OTlhNDI1YTMzNzkgMTAwNjQ0Ci0tLSBhL2RyaXZl
+cnMvaW5maW5pYmFuZC9ody9jeGdiNC9jbS5jCisrKyBiL2RyaXZlcnMvaW5maW5pYmFuZC9ody9j
+eGdiNC9jbS5jCkBAIC03MzQsNyArNzM0LDcgQEAgc3RhdGljIGludCBzZW5kX2Nvbm5lY3Qoc3Ry
+dWN0IGM0aXdfZXAgKmVwKQogCQkJCSAgICZlcC0+Y29tLnJlbW90ZV9hZGRyOwogCWludCByZXQ7
+CiAJZW51bSBjaGlwX3R5cGUgYWRhcHRlcl90eXBlID0gZXAtPmNvbS5kZXYtPnJkZXYubGxkaS5h
+ZGFwdGVyX3R5cGU7Ci0JdTMyIGlzbiA9IChwcmFuZG9tX3UzMigpICYgfjdVTCkgLSAxOworCXUz
+MiBpc24gPSAoZ2V0X3JhbmRvbV91MzIoKSAmIH43VUwpIC0gMTsKIAlzdHJ1Y3QgbmV0X2Rldmlj
+ZSAqbmV0ZGV2OwogCXU2NCBwYXJhbXM7CiAKQEAgLTI0NjksNyArMjQ2OSw3IEBAIHN0YXRpYyBp
+bnQgYWNjZXB0X2NyKHN0cnVjdCBjNGl3X2VwICplcCwgc3RydWN0IHNrX2J1ZmYgKnNrYiwKIAl9
+CiAKIAlpZiAoIWlzX3Q0KGFkYXB0ZXJfdHlwZSkpIHsKLQkJdTMyIGlzbiA9IChwcmFuZG9tX3Uz
+MigpICYgfjdVTCkgLSAxOworCQl1MzIgaXNuID0gKGdldF9yYW5kb21fdTMyKCkgJiB+N1VMKSAt
+IDE7CiAKIAkJc2tiID0gZ2V0X3NrYihza2IsIHJvdW5kdXAoc2l6ZW9mKCpycGw1KSwgMTYpLCBH
+RlBfS0VSTkVMKTsKIAkJcnBsNSA9IF9fc2tiX3B1dF96ZXJvKHNrYiwgcm91bmR1cChzaXplb2Yo
+KnJwbDUpLCAxNikpOwpkaWZmIC0tZ2l0IGEvZHJpdmVycy9pbmZpbmliYW5kL2h3L2hmaTEvdGlk
+X3JkbWEuYyBiL2RyaXZlcnMvaW5maW5pYmFuZC9ody9oZmkxL3RpZF9yZG1hLmMKaW5kZXggMmE3
+YWJmN2ExZjdmLi4xOGIwNWZmYjQxNWEgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvaW5maW5pYmFuZC9o
+dy9oZmkxL3RpZF9yZG1hLmMKKysrIGIvZHJpdmVycy9pbmZpbmliYW5kL2h3L2hmaTEvdGlkX3Jk
+bWEuYwpAQCAtODUwLDcgKzg1MCw3IEBAIHZvaWQgaGZpMV9rZXJuX2luaXRfY3R4dF9nZW5lcmF0
+aW9ucyhzdHJ1Y3QgaGZpMV9jdHh0ZGF0YSAqcmNkKQogCWludCBpOwogCiAJZm9yIChpID0gMDsg
+aSA8IFJYRV9OVU1fVElEX0ZMT1dTOyBpKyspIHsKLQkJcmNkLT5mbG93c1tpXS5nZW5lcmF0aW9u
+ID0gbWFza19nZW5lcmF0aW9uKHByYW5kb21fdTMyKCkpOworCQlyY2QtPmZsb3dzW2ldLmdlbmVy
+YXRpb24gPSBtYXNrX2dlbmVyYXRpb24oZ2V0X3JhbmRvbV91MzIoKSk7CiAJCWtlcm5fc2V0X2h3
+X2Zsb3cocmNkLCBLRVJOX0dFTkVSQVRJT05fUkVTRVJWRUQsIGkpOwogCX0KIH0KZGlmZiAtLWdp
+dCBhL2RyaXZlcnMvaW5maW5pYmFuZC9ody9tbHg0L21hZC5jIGIvZHJpdmVycy9pbmZpbmliYW5k
+L2h3L21seDQvbWFkLmMKaW5kZXggZDEzZWNiZGQ0MzkxLi5hMzdjZmFjNWUyM2YgMTAwNjQ0Ci0t
+LSBhL2RyaXZlcnMvaW5maW5pYmFuZC9ody9tbHg0L21hZC5jCisrKyBiL2RyaXZlcnMvaW5maW5p
+YmFuZC9ody9tbHg0L21hZC5jCkBAIC05Niw3ICs5Niw3IEBAIHN0YXRpYyB2b2lkIF9fcHJvcGFn
+YXRlX3BrZXlfZXYoc3RydWN0IG1seDRfaWJfZGV2ICpkZXYsIGludCBwb3J0X251bSwKIF9fYmU2
+NCBtbHg0X2liX2dlbl9ub2RlX2d1aWQodm9pZCkKIHsKICNkZWZpbmUgTk9ERV9HVUlEX0hJCSgo
+dTY0KSAoKCh1NjQpSUJfT1BFTklCX09VSSkgPDwgNDApKQotCXJldHVybiBjcHVfdG9fYmU2NChO
+T0RFX0dVSURfSEkgfCBwcmFuZG9tX3UzMigpKTsKKwlyZXR1cm4gY3B1X3RvX2JlNjQoTk9ERV9H
+VUlEX0hJIHwgZ2V0X3JhbmRvbV91MzIoKSk7CiB9CiAKIF9fYmU2NCBtbHg0X2liX2dldF9uZXdf
+ZGVtdXhfdGlkKHN0cnVjdCBtbHg0X2liX2RlbXV4X2N0eCAqY3R4KQpkaWZmIC0tZ2l0IGEvZHJp
+dmVycy9pbmZpbmliYW5kL3VscC9pcG9pYi9pcG9pYl9jbS5jIGIvZHJpdmVycy9pbmZpbmliYW5k
+L3VscC9pcG9pYi9pcG9pYl9jbS5jCmluZGV4IGZkOWQ3ZjJjNGQ2NC4uYTYwNWNmNjZiODNlIDEw
+MDY0NAotLS0gYS9kcml2ZXJzL2luZmluaWJhbmQvdWxwL2lwb2liL2lwb2liX2NtLmMKKysrIGIv
+ZHJpdmVycy9pbmZpbmliYW5kL3VscC9pcG9pYi9pcG9pYl9jbS5jCkBAIC00NjUsNyArNDY1LDcg
+QEAgc3RhdGljIGludCBpcG9pYl9jbV9yZXFfaGFuZGxlcihzdHJ1Y3QgaWJfY21faWQgKmNtX2lk
+LAogCQlnb3RvIGVycl9xcDsKIAl9CiAKLQlwc24gPSBwcmFuZG9tX3UzMigpICYgMHhmZmZmZmY7
+CisJcHNuID0gZ2V0X3JhbmRvbV91MzIoKSAmIDB4ZmZmZmZmOwogCXJldCA9IGlwb2liX2NtX21v
+ZGlmeV9yeF9xcChkZXYsIGNtX2lkLCBwLT5xcCwgcHNuKTsKIAlpZiAocmV0KQogCQlnb3RvIGVy
+cl9tb2RpZnk7CmRpZmYgLS1naXQgYS9kcml2ZXJzL21kL3JhaWQ1LWNhY2hlLmMgYi9kcml2ZXJz
+L21kL3JhaWQ1LWNhY2hlLmMKaW5kZXggZjRlMWNjMWVjZTQzLi41YjBmYzc4M2JmMDEgMTAwNjQ0
+Ci0tLSBhL2RyaXZlcnMvbWQvcmFpZDUtY2FjaGUuYworKysgYi9kcml2ZXJzL21kL3JhaWQ1LWNh
+Y2hlLmMKQEAgLTI5OTMsNyArMjk5Myw3IEBAIHN0YXRpYyBpbnQgcjVsX2xvYWRfbG9nKHN0cnVj
+dCByNWxfbG9nICpsb2cpCiAJfQogY3JlYXRlOgogCWlmIChjcmVhdGVfc3VwZXIpIHsKLQkJbG9n
+LT5sYXN0X2NwX3NlcSA9IHByYW5kb21fdTMyKCk7CisJCWxvZy0+bGFzdF9jcF9zZXEgPSBnZXRf
+cmFuZG9tX3UzMigpOwogCQljcCA9IDA7CiAJCXI1bF9sb2dfd3JpdGVfZW1wdHlfbWV0YV9ibG9j
+ayhsb2csIGNwLCBsb2ctPmxhc3RfY3Bfc2VxKTsKIAkJLyoKZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+bWVkaWEvdGVzdC1kcml2ZXJzL3ZpdmlkL3ZpdmlkLXRvdWNoLWNhcC5jIGIvZHJpdmVycy9tZWRp
+YS90ZXN0LWRyaXZlcnMvdml2aWQvdml2aWQtdG91Y2gtY2FwLmMKaW5kZXggNzkyNjYwYTg1YmMx
+Li42Y2MzMmViNTRmOWQgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbWVkaWEvdGVzdC1kcml2ZXJzL3Zp
+dmlkL3ZpdmlkLXRvdWNoLWNhcC5jCisrKyBiL2RyaXZlcnMvbWVkaWEvdGVzdC1kcml2ZXJzL3Zp
+dmlkL3ZpdmlkLXRvdWNoLWNhcC5jCkBAIC0yMTAsNyArMjEwLDcgQEAgc3RhdGljIHZvaWQgdml2
+aWRfZmlsbF9idWZmX25vaXNlKF9fczE2ICp0Y2hfYnVmLCBpbnQgc2l6ZSkKIAogCS8qIEZpbGwg
+MTAlIG9mIHRoZSB2YWx1ZXMgd2l0aGluIHJhbmdlIC0zIGFuZCAzLCB6ZXJvIHRoZSBvdGhlcnMg
+Ki8KIAlmb3IgKGkgPSAwOyBpIDwgc2l6ZTsgaSsrKSB7Ci0JCXVuc2lnbmVkIGludCByYW5kID0g
+Z2V0X3JhbmRvbV9pbnQoKTsKKwkJdW5zaWduZWQgaW50IHJhbmQgPSBnZXRfcmFuZG9tX3UzMigp
+OwogCiAJCWlmIChyYW5kICUgMTApCiAJCQl0Y2hfYnVmW2ldID0gMDsKQEAgLTI3Miw3ICsyNzIs
+NyBAQCB2b2lkIHZpdmlkX2ZpbGxidWZmX3RjaChzdHJ1Y3Qgdml2aWRfZGV2ICpkZXYsIHN0cnVj
+dCB2aXZpZF9idWZmZXIgKmJ1ZikKIAkJcmV0dXJuOwogCiAJaWYgKHRlc3RfcGF0X2lkeCA9PSAw
+KQotCQlkZXYtPnRjaF9wYXRfcmFuZG9tID0gZ2V0X3JhbmRvbV9pbnQoKTsKKwkJZGV2LT50Y2hf
+cGF0X3JhbmRvbSA9IGdldF9yYW5kb21fdTMyKCk7CiAJcmFuZCA9IGRldi0+dGNoX3BhdF9yYW5k
+b207CiAKIAlzd2l0Y2ggKHRlc3RfcGF0dGVybikgewpkaWZmIC0tZ2l0IGEvZHJpdmVycy9taXNj
+L2hhYmFuYWxhYnMvZ2F1ZGkyL2dhdWRpMi5jIGIvZHJpdmVycy9taXNjL2hhYmFuYWxhYnMvZ2F1
+ZGkyL2dhdWRpMi5jCmluZGV4IDk4MzM2YTFhODRiMC4uNDEzYjI4NGJmMjI0IDEwMDY0NAotLS0g
+YS9kcml2ZXJzL21pc2MvaGFiYW5hbGFicy9nYXVkaTIvZ2F1ZGkyLmMKKysrIGIvZHJpdmVycy9t
+aXNjL2hhYmFuYWxhYnMvZ2F1ZGkyL2dhdWRpMi5jCkBAIC0yOTE3LDcgKzI5MTcsNyBAQCBzdGF0
+aWMgdm9pZCBnYXVkaTJfdXNlcl9pbnRlcnJ1cHRfc2V0dXAoc3RydWN0IGhsX2RldmljZSAqaGRl
+dikKIAogc3RhdGljIGlubGluZSBpbnQgZ2F1ZGkyX2dldF9ub25femVyb19yYW5kb21faW50KHZv
+aWQpCiB7Ci0JaW50IHJhbmQgPSBnZXRfcmFuZG9tX2ludCgpOworCWludCByYW5kID0gZ2V0X3Jh
+bmRvbV91MzIoKTsKIAogCXJldHVybiByYW5kID8gcmFuZCA6IDE7CiB9CmRpZmYgLS1naXQgYS9k
+cml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kc2ltLmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5k
+c2ltLmMKaW5kZXggNTBiY2Y3NDVlODE2Li40YmRhZjRhYTcwMDcgMTAwNjQ0Ci0tLSBhL2RyaXZl
+cnMvbXRkL25hbmQvcmF3L25hbmRzaW0uYworKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5k
+c2ltLmMKQEAgLTE0MDIsNyArMTQwMiw3IEBAIHN0YXRpYyBpbnQgbnNfZG9fcmVhZF9lcnJvcihz
+dHJ1Y3QgbmFuZHNpbSAqbnMsIGludCBudW0pCiAKIHN0YXRpYyB2b2lkIG5zX2RvX2JpdF9mbGlw
+cyhzdHJ1Y3QgbmFuZHNpbSAqbnMsIGludCBudW0pCiB7Ci0JaWYgKGJpdGZsaXBzICYmIHByYW5k
+b21fdTMyKCkgPCAoMSA8PCAyMikpIHsKKwlpZiAoYml0ZmxpcHMgJiYgZ2V0X3JhbmRvbV91MzIo
+KSA8ICgxIDw8IDIyKSkgewogCQlpbnQgZmxpcHMgPSAxOwogCQlpZiAoYml0ZmxpcHMgPiAxKQog
+CQkJZmxpcHMgPSBwcmFuZG9tX3UzMl9tYXgoYml0ZmxpcHMpICsgMTsKZGlmZiAtLWdpdCBhL2Ry
+aXZlcnMvbmV0L2JvbmRpbmcvYm9uZF9tYWluLmMgYi9kcml2ZXJzL25ldC9ib25kaW5nL2JvbmRf
+bWFpbi5jCmluZGV4IDg2ZDQyMzA2YWE1ZS4uYzg1NDMzOTRhM2JiIDEwMDY0NAotLS0gYS9kcml2
+ZXJzL25ldC9ib25kaW5nL2JvbmRfbWFpbi5jCisrKyBiL2RyaXZlcnMvbmV0L2JvbmRpbmcvYm9u
+ZF9tYWluLmMKQEAgLTQ4MDYsNyArNDgwNiw3IEBAIHN0YXRpYyB1MzIgYm9uZF9ycl9nZW5fc2xh
+dmVfaWQoc3RydWN0IGJvbmRpbmcgKmJvbmQpCiAKIAlzd2l0Y2ggKHBhY2tldHNfcGVyX3NsYXZl
+KSB7CiAJY2FzZSAwOgotCQlzbGF2ZV9pZCA9IHByYW5kb21fdTMyKCk7CisJCXNsYXZlX2lkID0g
+Z2V0X3JhbmRvbV91MzIoKTsKIAkJYnJlYWs7CiAJY2FzZSAxOgogCQlzbGF2ZV9pZCA9IHRoaXNf
+Y3B1X2luY19yZXR1cm4oKmJvbmQtPnJyX3R4X2NvdW50ZXIpOwpkaWZmIC0tZ2l0IGEvZHJpdmVy
+cy9uZXQvZXRoZXJuZXQvYnJvYWRjb20vY25pYy5jIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvYnJv
+YWRjb20vY25pYy5jCmluZGV4IGY1OTdiMzEzYWNhYS4uMjE5OGUzNWQ5ZTE4IDEwMDY0NAotLS0g
+YS9kcml2ZXJzL25ldC9ldGhlcm5ldC9icm9hZGNvbS9jbmljLmMKKysrIGIvZHJpdmVycy9uZXQv
+ZXRoZXJuZXQvYnJvYWRjb20vY25pYy5jCkBAIC00MTY0LDcgKzQxNjQsNyBAQCBzdGF0aWMgaW50
+IGNuaWNfY21faW5pdF9ibngyX2h3KHN0cnVjdCBjbmljX2RldiAqZGV2KQogewogCXUzMiBzZWVk
+OwogCi0Jc2VlZCA9IHByYW5kb21fdTMyKCk7CisJc2VlZCA9IGdldF9yYW5kb21fdTMyKCk7CiAJ
+Y25pY19jdHhfd3IoZGV2LCA0NSwgMCwgc2VlZCk7CiAJcmV0dXJuIDA7CiB9CmRpZmYgLS1naXQg
+YS9kcml2ZXJzL25ldC9ldGhlcm5ldC9jaGVsc2lvL2lubGluZV9jcnlwdG8vY2h0bHMvY2h0bHNf
+Y20uYyBiL2RyaXZlcnMvbmV0L2V0aGVybmV0L2NoZWxzaW8vaW5saW5lX2NyeXB0by9jaHRscy9j
+aHRsc19jbS5jCmluZGV4IGFjNDUyYTAxMTFhOS4uYjcxY2U2YzViNTEyIDEwMDY0NAotLS0gYS9k
+cml2ZXJzL25ldC9ldGhlcm5ldC9jaGVsc2lvL2lubGluZV9jcnlwdG8vY2h0bHMvY2h0bHNfY20u
+YworKysgYi9kcml2ZXJzL25ldC9ldGhlcm5ldC9jaGVsc2lvL2lubGluZV9jcnlwdG8vY2h0bHMv
+Y2h0bHNfY20uYwpAQCAtMTA2Myw3ICsxMDYzLDcgQEAgc3RhdGljIHZvaWQgY2h0bHNfcGFzc19h
+Y2NlcHRfcnBsKHN0cnVjdCBza19idWZmICpza2IsCiAJb3B0MiB8PSBXTkRfU0NBTEVfRU5fVihX
+U0NBTEVfT0sodHApKTsKIAlycGw1LT5vcHQwID0gY3B1X3RvX2JlNjQob3B0MCk7CiAJcnBsNS0+
+b3B0MiA9IGNwdV90b19iZTMyKG9wdDIpOwotCXJwbDUtPmlzcyA9IGNwdV90b19iZTMyKChwcmFu
+ZG9tX3UzMigpICYgfjdVTCkgLSAxKTsKKwlycGw1LT5pc3MgPSBjcHVfdG9fYmUzMigoZ2V0X3Jh
+bmRvbV91MzIoKSAmIH43VUwpIC0gMSk7CiAJc2V0X3dyX3R4cShza2IsIENQTF9QUklPUklUWV9T
+RVRVUCwgY3NrLT5wb3J0X2lkKTsKIAl0NF9zZXRfYXJwX2Vycl9oYW5kbGVyKHNrYiwgc2ssIGNo
+dGxzX2FjY2VwdF9ycGxfYXJwX2ZhaWx1cmUpOwogCWN4Z2I0X2wydF9zZW5kKGNzay0+ZWdyZXNz
+X2Rldiwgc2tiLCBjc2stPmwydF9lbnRyeSk7CmRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9ldGhl
+cm5ldC9yb2NrZXIvcm9ja2VyX21haW4uYyBiL2RyaXZlcnMvbmV0L2V0aGVybmV0L3JvY2tlci9y
+b2NrZXJfbWFpbi5jCmluZGV4IGZjODNlYzIzYmQxZC4uOGMzYmJhZmFiYjA3IDEwMDY0NAotLS0g
+YS9kcml2ZXJzL25ldC9ldGhlcm5ldC9yb2NrZXIvcm9ja2VyX21haW4uYworKysgYi9kcml2ZXJz
+L25ldC9ldGhlcm5ldC9yb2NrZXIvcm9ja2VyX21haW4uYwpAQCAtMTI5LDcgKzEyOSw3IEBAIHN0
+YXRpYyBpbnQgcm9ja2VyX3JlZ190ZXN0KGNvbnN0IHN0cnVjdCByb2NrZXIgKnJvY2tlcikKIAl1
+NjQgdGVzdF9yZWc7CiAJdTY0IHJuZDsKIAotCXJuZCA9IHByYW5kb21fdTMyKCk7CisJcm5kID0g
+Z2V0X3JhbmRvbV91MzIoKTsKIAlybmQgPj49IDE7CiAJcm9ja2VyX3dyaXRlMzIocm9ja2VyLCBU
+RVNUX1JFRywgcm5kKTsKIAl0ZXN0X3JlZyA9IHJvY2tlcl9yZWFkMzIocm9ja2VyLCBURVNUX1JF
+Ryk7CkBAIC0xMzksOSArMTM5LDkgQEAgc3RhdGljIGludCByb2NrZXJfcmVnX3Rlc3QoY29uc3Qg
+c3RydWN0IHJvY2tlciAqcm9ja2VyKQogCQlyZXR1cm4gLUVJTzsKIAl9CiAKLQlybmQgPSBwcmFu
+ZG9tX3UzMigpOworCXJuZCA9IGdldF9yYW5kb21fdTMyKCk7CiAJcm5kIDw8PSAzMTsKLQlybmQg
+fD0gcHJhbmRvbV91MzIoKTsKKwlybmQgfD0gZ2V0X3JhbmRvbV91MzIoKTsKIAlyb2NrZXJfd3Jp
+dGU2NChyb2NrZXIsIFRFU1RfUkVHNjQsIHJuZCk7CiAJdGVzdF9yZWcgPSByb2NrZXJfcmVhZDY0
+KHJvY2tlciwgVEVTVF9SRUc2NCk7CiAJaWYgKHRlc3RfcmVnICE9IHJuZCAqIDIpIHsKZGlmZiAt
+LWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2Jyb2FkY29tL2JyY204MDIxMS9icmNtZm1hYy9w
+bm8uYyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2Jyb2FkY29tL2JyY204MDIxMS9icmNtZm1hYy9w
+bm8uYwppbmRleCBmYWJmYmIwYjQwYjAuLjM3NGUxY2MwN2E2MyAxMDA2NDQKLS0tIGEvZHJpdmVy
+cy9uZXQvd2lyZWxlc3MvYnJvYWRjb20vYnJjbTgwMjExL2JyY21mbWFjL3Buby5jCisrKyBiL2Ry
+aXZlcnMvbmV0L3dpcmVsZXNzL2Jyb2FkY29tL2JyY204MDIxMS9icmNtZm1hYy9wbm8uYwpAQCAt
+MTc3LDcgKzE3Nyw3IEBAIHN0YXRpYyBpbnQgYnJjbWZfcG5vX3NldF9yYW5kb20oc3RydWN0IGJy
+Y21mX2lmICppZnAsIHN0cnVjdCBicmNtZl9wbm9faW5mbyAqcGkpCiAJbWVtY3B5KHBmbl9tYWMu
+bWFjLCBtYWNfYWRkciwgRVRIX0FMRU4pOwogCWZvciAoaSA9IDA7IGkgPCBFVEhfQUxFTjsgaSsr
+KSB7CiAJCXBmbl9tYWMubWFjW2ldICY9IG1hY19tYXNrW2ldOwotCQlwZm5fbWFjLm1hY1tpXSB8
+PSBnZXRfcmFuZG9tX2ludCgpICYgfihtYWNfbWFza1tpXSk7CisJCXBmbl9tYWMubWFjW2ldIHw9
+IGdldF9yYW5kb21fdTMyKCkgJiB+KG1hY19tYXNrW2ldKTsKIAl9CiAJLyogQ2xlYXIgbXVsdGkg
+Yml0ICovCiAJcGZuX21hYy5tYWNbMF0gJj0gMHhGRTsKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0
+L3dpcmVsZXNzL21hcnZlbGwvbXdpZmlleC9jZmc4MDIxMS5jIGIvZHJpdmVycy9uZXQvd2lyZWxl
+c3MvbWFydmVsbC9td2lmaWV4L2NmZzgwMjExLmMKaW5kZXggMTM0MTE0YWMxYWMwLi40ZmJiNWM4
+NzZiMTIgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL21hcnZlbGwvbXdpZmlleC9j
+Zmc4MDIxMS5jCisrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL21hcnZlbGwvbXdpZmlleC9jZmc4
+MDIxMS5jCkBAIC0yMzgsNyArMjM4LDcgQEAgbXdpZmlleF9jZmc4MDIxMV9tZ210X3R4KHN0cnVj
+dCB3aXBoeSAqd2lwaHksIHN0cnVjdCB3aXJlbGVzc19kZXYgKndkZXYsCiAJdHhfaW5mby0+cGt0
+X2xlbiA9IHBrdF9sZW47CiAKIAltd2lmaWV4X2Zvcm1fbWdtdF9mcmFtZShza2IsIGJ1ZiwgbGVu
+KTsKLQkqY29va2llID0gcHJhbmRvbV91MzIoKSB8IDE7CisJKmNvb2tpZSA9IGdldF9yYW5kb21f
+dTMyKCkgfCAxOwogCiAJaWYgKGllZWU4MDIxMV9pc19hY3Rpb24obWdtdC0+ZnJhbWVfY29udHJv
+bCkpCiAJCXNrYiA9IG13aWZpZXhfY2xvbmVfc2tiX2Zvcl90eF9zdGF0dXMocHJpdiwKQEAgLTMw
+Miw3ICszMDIsNyBAQCBtd2lmaWV4X2NmZzgwMjExX3JlbWFpbl9vbl9jaGFubmVsKHN0cnVjdCB3
+aXBoeSAqd2lwaHksCiAJCQkJCSBkdXJhdGlvbik7CiAKIAlpZiAoIXJldCkgewotCQkqY29va2ll
+ID0gcHJhbmRvbV91MzIoKSB8IDE7CisJCSpjb29raWUgPSBnZXRfcmFuZG9tX3UzMigpIHwgMTsK
+IAkJcHJpdi0+cm9jX2NmZy5jb29raWUgPSAqY29va2llOwogCQlwcml2LT5yb2NfY2ZnLmNoYW4g
+PSAqY2hhbjsKIApkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvbWljcm9jaGlwL3dp
+bGMxMDAwL2NmZzgwMjExLmMgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9taWNyb2NoaXAvd2lsYzEw
+MDAvY2ZnODAyMTEuYwppbmRleCAzYWMzNzNkMjlkOTMuLjg0YjlkMzQ1NGU1NyAxMDA2NDQKLS0t
+IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvbWljcm9jaGlwL3dpbGMxMDAwL2NmZzgwMjExLmMKKysr
+IGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvbWljcm9jaGlwL3dpbGMxMDAwL2NmZzgwMjExLmMKQEAg
+LTExNTksNyArMTE1OSw3IEBAIHN0YXRpYyBpbnQgbWdtdF90eChzdHJ1Y3Qgd2lwaHkgKndpcGh5
+LAogCWNvbnN0IHU4ICp2ZW5kb3JfaWU7CiAJaW50IHJldCA9IDA7CiAKLQkqY29va2llID0gcHJh
+bmRvbV91MzIoKTsKKwkqY29va2llID0gZ2V0X3JhbmRvbV91MzIoKTsKIAlwcml2LT50eF9jb29r
+aWUgPSAqY29va2llOwogCW1nbXQgPSAoY29uc3Qgc3RydWN0IGllZWU4MDIxMV9tZ210ICopYnVm
+OwogCmRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9xdWFudGVubmEvcXRuZm1hYy9j
+Zmc4MDIxMS5jIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvcXVhbnRlbm5hL3F0bmZtYWMvY2ZnODAy
+MTEuYwppbmRleCAxNTkzZTgxMGIzY2EuLjljNTQxNjE0MWQzYyAxMDA2NDQKLS0tIGEvZHJpdmVy
+cy9uZXQvd2lyZWxlc3MvcXVhbnRlbm5hL3F0bmZtYWMvY2ZnODAyMTEuYworKysgYi9kcml2ZXJz
+L25ldC93aXJlbGVzcy9xdWFudGVubmEvcXRuZm1hYy9jZmc4MDIxMS5jCkBAIC00NDksNyArNDQ5
+LDcgQEAgcXRuZl9tZ210X3R4KHN0cnVjdCB3aXBoeSAqd2lwaHksIHN0cnVjdCB3aXJlbGVzc19k
+ZXYgKndkZXYsCiB7CiAJc3RydWN0IHF0bmZfdmlmICp2aWYgPSBxdG5mX25ldGRldl9nZXRfcHJp
+dih3ZGV2LT5uZXRkZXYpOwogCWNvbnN0IHN0cnVjdCBpZWVlODAyMTFfbWdtdCAqbWdtdF9mcmFt
+ZSA9ICh2b2lkICopcGFyYW1zLT5idWY7Ci0JdTMyIHNob3J0X2Nvb2tpZSA9IHByYW5kb21fdTMy
+KCk7CisJdTMyIHNob3J0X2Nvb2tpZSA9IGdldF9yYW5kb21fdTMyKCk7CiAJdTE2IGZsYWdzID0g
+MDsKIAl1MTYgZnJlcTsKIApkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvdGkvd2xj
+b3JlL21haW4uYyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL3RpL3dsY29yZS9tYWluLmMKaW5kZXgg
+M2UzOTIyZDRjNzg4Li4yOGMwZjA2ZTMxMWYgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbmV0L3dpcmVs
+ZXNzL3RpL3dsY29yZS9tYWluLmMKKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvdGkvd2xjb3Jl
+L21haW4uYwpAQCAtNjEwMCw3ICs2MTAwLDcgQEAgc3RhdGljIGludCB3bDEyNzFfcmVnaXN0ZXJf
+aHcoc3RydWN0IHdsMTI3MSAqd2wpCiAJCQl3bDEyNzFfd2FybmluZygiRnVzZSBtYWMgYWRkcmVz
+cyBpcyB6ZXJvLiB1c2luZyByYW5kb20gbWFjIik7CiAJCQkvKiBVc2UgVEkgb3VpIGFuZCBhIHJh
+bmRvbSBuaWMgKi8KIAkJCW91aV9hZGRyID0gV0xDT1JFX1RJX09VSV9BRERSRVNTOwotCQkJbmlj
+X2FkZHIgPSBnZXRfcmFuZG9tX2ludCgpOworCQkJbmljX2FkZHIgPSBnZXRfcmFuZG9tX3UzMigp
+OwogCQl9IGVsc2UgewogCQkJb3VpX2FkZHIgPSB3bC0+ZnVzZV9vdWlfYWRkcjsKIAkJCS8qIGZ1
+c2UgaGFzIHRoZSBCRF9BRERSLCB0aGUgV0xBTiBhZGRyZXNzZXMgYXJlIHRoZSBuZXh0IHR3byAq
+LwpkaWZmIC0tZ2l0IGEvZHJpdmVycy9udm1lL2NvbW1vbi9hdXRoLmMgYi9kcml2ZXJzL252bWUv
+Y29tbW9uL2F1dGguYwppbmRleCAwNGJkMjhmMTdkY2MuLmQ5MGU0ZjBjMDhiNyAxMDA2NDQKLS0t
+IGEvZHJpdmVycy9udm1lL2NvbW1vbi9hdXRoLmMKKysrIGIvZHJpdmVycy9udm1lL2NvbW1vbi9h
+dXRoLmMKQEAgLTIzLDcgKzIzLDcgQEAgdTMyIG52bWVfYXV0aF9nZXRfc2VxbnVtKHZvaWQpCiAK
+IAltdXRleF9sb2NrKCZudm1lX2RoY2hhcF9tdXRleCk7CiAJaWYgKCFudm1lX2RoY2hhcF9zZXFu
+dW0pCi0JCW52bWVfZGhjaGFwX3NlcW51bSA9IHByYW5kb21fdTMyKCk7CisJCW52bWVfZGhjaGFw
+X3NlcW51bSA9IGdldF9yYW5kb21fdTMyKCk7CiAJZWxzZSB7CiAJCW52bWVfZGhjaGFwX3NlcW51
+bSsrOwogCQlpZiAoIW52bWVfZGhjaGFwX3NlcW51bSkKZGlmZiAtLWdpdCBhL2RyaXZlcnMvc2Nz
+aS9jeGdiaS9jeGdiNGkvY3hnYjRpLmMgYi9kcml2ZXJzL3Njc2kvY3hnYmkvY3hnYjRpL2N4Z2I0
+aS5jCmluZGV4IDUzZDkxYmY5YzEyYS4uYzA3ZDJlM2I0YmNmIDEwMDY0NAotLS0gYS9kcml2ZXJz
+L3Njc2kvY3hnYmkvY3hnYjRpL2N4Z2I0aS5jCisrKyBiL2RyaXZlcnMvc2NzaS9jeGdiaS9jeGdi
+NGkvY3hnYjRpLmMKQEAgLTI1NCw3ICsyNTQsNyBAQCBzdGF0aWMgdm9pZCBzZW5kX2FjdF9vcGVu
+X3JlcShzdHJ1Y3QgY3hnYmlfc29jayAqY3NrLCBzdHJ1Y3Qgc2tfYnVmZiAqc2tiLAogCX0gZWxz
+ZSBpZiAoaXNfdDUobGxkaS0+YWRhcHRlcl90eXBlKSkgewogCQlzdHJ1Y3QgY3BsX3Q1X2FjdF9v
+cGVuX3JlcSAqcmVxID0KIAkJCQkoc3RydWN0IGNwbF90NV9hY3Rfb3Blbl9yZXEgKilza2ItPmhl
+YWQ7Ci0JCXUzMiBpc24gPSAocHJhbmRvbV91MzIoKSAmIH43VUwpIC0gMTsKKwkJdTMyIGlzbiA9
+IChnZXRfcmFuZG9tX3UzMigpICYgfjdVTCkgLSAxOwogCiAJCUlOSVRfVFBfV1IocmVxLCAwKTsK
+IAkJT1BDT0RFX1RJRChyZXEpID0gY3B1X3RvX2JlMzIoTUtfT1BDT0RFX1RJRChDUExfQUNUX09Q
+RU5fUkVRLApAQCAtMjgyLDcgKzI4Miw3IEBAIHN0YXRpYyB2b2lkIHNlbmRfYWN0X29wZW5fcmVx
+KHN0cnVjdCBjeGdiaV9zb2NrICpjc2ssIHN0cnVjdCBza19idWZmICpza2IsCiAJfSBlbHNlIHsK
+IAkJc3RydWN0IGNwbF90Nl9hY3Rfb3Blbl9yZXEgKnJlcSA9CiAJCQkJKHN0cnVjdCBjcGxfdDZf
+YWN0X29wZW5fcmVxICopc2tiLT5oZWFkOwotCQl1MzIgaXNuID0gKHByYW5kb21fdTMyKCkgJiB+
+N1VMKSAtIDE7CisJCXUzMiBpc24gPSAoZ2V0X3JhbmRvbV91MzIoKSAmIH43VUwpIC0gMTsKIAog
+CQlJTklUX1RQX1dSKHJlcSwgMCk7CiAJCU9QQ09ERV9USUQocmVxKSA9IGNwdV90b19iZTMyKE1L
+X09QQ09ERV9USUQoQ1BMX0FDVF9PUEVOX1JFUSwKZGlmZiAtLWdpdCBhL2RyaXZlcnMvdGFyZ2V0
+L2lzY3NpL2N4Z2JpdC9jeGdiaXRfY20uYyBiL2RyaXZlcnMvdGFyZ2V0L2lzY3NpL2N4Z2JpdC9j
+eGdiaXRfY20uYwppbmRleCAzMzM2ZDJiNzhiZjcuLmQ5MjA0YzU5MGQ5YSAxMDA2NDQKLS0tIGEv
+ZHJpdmVycy90YXJnZXQvaXNjc2kvY3hnYml0L2N4Z2JpdF9jbS5jCisrKyBiL2RyaXZlcnMvdGFy
+Z2V0L2lzY3NpL2N4Z2JpdC9jeGdiaXRfY20uYwpAQCAtMTIwMiw3ICsxMjAyLDcgQEAgY3hnYml0
+X3Bhc3NfYWNjZXB0X3JwbChzdHJ1Y3QgY3hnYml0X3NvY2sgKmNzaywgc3RydWN0IGNwbF9wYXNz
+X2FjY2VwdF9yZXEgKnJlcSkKIAlvcHQyIHw9IENPTkdfQ05UUkxfVihDT05HX0FMR19ORVdSRU5P
+KTsKIAogCW9wdDIgfD0gVDVfSVNTX0Y7Ci0JcnBsNS0+aXNzID0gY3B1X3RvX2JlMzIoKHByYW5k
+b21fdTMyKCkgJiB+N1VMKSAtIDEpOworCXJwbDUtPmlzcyA9IGNwdV90b19iZTMyKChnZXRfcmFu
+ZG9tX3UzMigpICYgfjdVTCkgLSAxKTsKIAogCW9wdDIgfD0gVDVfT1BUXzJfVkFMSURfRjsKIApk
+aWZmIC0tZ2l0IGEvZHJpdmVycy90aHVuZGVyYm9sdC94ZG9tYWluLmMgYi9kcml2ZXJzL3RodW5k
+ZXJib2x0L3hkb21haW4uYwppbmRleCBjMzFjMGQ5NGQ4YjMuLjc2MDc1ZTI5Njk2YyAxMDA2NDQK
+LS0tIGEvZHJpdmVycy90aHVuZGVyYm9sdC94ZG9tYWluLmMKKysrIGIvZHJpdmVycy90aHVuZGVy
+Ym9sdC94ZG9tYWluLmMKQEAgLTI0MzgsNyArMjQzOCw3IEBAIGludCB0Yl94ZG9tYWluX2luaXQo
+dm9pZCkKIAl0Yl9wcm9wZXJ0eV9hZGRfaW1tZWRpYXRlKHhkb21haW5fcHJvcGVydHlfZGlyLCAi
+ZGV2aWNlaWQiLCAweDEpOwogCXRiX3Byb3BlcnR5X2FkZF9pbW1lZGlhdGUoeGRvbWFpbl9wcm9w
+ZXJ0eV9kaXIsICJkZXZpY2VydiIsIDB4ODAwMDAxMDApOwogCi0JeGRvbWFpbl9wcm9wZXJ0eV9i
+bG9ja19nZW4gPSBwcmFuZG9tX3UzMigpOworCXhkb21haW5fcHJvcGVydHlfYmxvY2tfZ2VuID0g
+Z2V0X3JhbmRvbV91MzIoKTsKIAlyZXR1cm4gMDsKIH0KIApkaWZmIC0tZ2l0IGEvZHJpdmVycy92
+aWRlby9mYmRldi91dmVzYWZiLmMgYi9kcml2ZXJzL3ZpZGVvL2ZiZGV2L3V2ZXNhZmIuYwppbmRl
+eCA0ZGY2NzcyODAyZDcuLjI4NWI4M2MyMDMyNiAxMDA2NDQKLS0tIGEvZHJpdmVycy92aWRlby9m
+YmRldi91dmVzYWZiLmMKKysrIGIvZHJpdmVycy92aWRlby9mYmRldi91dmVzYWZiLmMKQEAgLTE2
+Nyw3ICsxNjcsNyBAQCBzdGF0aWMgaW50IHV2ZXNhZmJfZXhlYyhzdHJ1Y3QgdXZlc2FmYl9rdGFz
+ayAqdGFzaykKIAltZW1jcHkoJm0tPmlkLCAmdXZlc2FmYl9jbl9pZCwgc2l6ZW9mKG0tPmlkKSk7
+CiAJbS0+c2VxID0gc2VxOwogCW0tPmxlbiA9IGxlbjsKLQltLT5hY2sgPSBwcmFuZG9tX3UzMigp
+OworCW0tPmFjayA9IGdldF9yYW5kb21fdTMyKCk7CiAKIAkvKiB1dmVzYWZiX3Rhc2sgc3RydWN0
+dXJlICovCiAJbWVtY3B5KG0gKyAxLCAmdGFzay0+dCwgc2l6ZW9mKHRhc2stPnQpKTsKZGlmZiAt
+LWdpdCBhL2ZzL2V4ZmF0L2lub2RlLmMgYi9mcy9leGZhdC9pbm9kZS5jCmluZGV4IGE3OTU0Mzdi
+ODZkMC4uNTU5MGExZTgzMTI2IDEwMDY0NAotLS0gYS9mcy9leGZhdC9pbm9kZS5jCisrKyBiL2Zz
+L2V4ZmF0L2lub2RlLmMKQEAgLTU1Miw3ICs1NTIsNyBAQCBzdGF0aWMgaW50IGV4ZmF0X2ZpbGxf
+aW5vZGUoc3RydWN0IGlub2RlICppbm9kZSwgc3RydWN0IGV4ZmF0X2Rpcl9lbnRyeSAqaW5mbykK
+IAlpbm9kZS0+aV91aWQgPSBzYmktPm9wdGlvbnMuZnNfdWlkOwogCWlub2RlLT5pX2dpZCA9IHNi
+aS0+b3B0aW9ucy5mc19naWQ7CiAJaW5vZGVfaW5jX2l2ZXJzaW9uKGlub2RlKTsKLQlpbm9kZS0+
+aV9nZW5lcmF0aW9uID0gcHJhbmRvbV91MzIoKTsKKwlpbm9kZS0+aV9nZW5lcmF0aW9uID0gZ2V0
+X3JhbmRvbV91MzIoKTsKIAogCWlmIChpbmZvLT5hdHRyICYgQVRUUl9TVUJESVIpIHsgLyogZGly
+ZWN0b3J5ICovCiAJCWlub2RlLT5pX2dlbmVyYXRpb24gJj0gfjE7CmRpZmYgLS1naXQgYS9mcy9l
+eHQ0L2lhbGxvYy5jIGIvZnMvZXh0NC9pYWxsb2MuYwppbmRleCAzNmQ1YmM1OTVjYzIuLjM5NTZl
+MjRmYTZlOSAxMDA2NDQKLS0tIGEvZnMvZXh0NC9pYWxsb2MuYworKysgYi9mcy9leHQ0L2lhbGxv
+Yy5jCkBAIC0xMjc5LDcgKzEyNzksNyBAQCBzdHJ1Y3QgaW5vZGUgKl9fZXh0NF9uZXdfaW5vZGUo
+c3RydWN0IHVzZXJfbmFtZXNwYWNlICptbnRfdXNlcm5zLAogCQkJCQlFWFQ0X0dST1VQX0lORk9f
+SUJJVE1BUF9DT1JSVVBUKTsKIAkJZ290byBvdXQ7CiAJfQotCWlub2RlLT5pX2dlbmVyYXRpb24g
+PSBwcmFuZG9tX3UzMigpOworCWlub2RlLT5pX2dlbmVyYXRpb24gPSBnZXRfcmFuZG9tX3UzMigp
+OwogCiAJLyogUHJlY29tcHV0ZSBjaGVja3N1bSBzZWVkIGZvciBpbm9kZSBtZXRhZGF0YSAqLwog
+CWlmIChleHQ0X2hhc19tZXRhZGF0YV9jc3VtKHNiKSkgewpkaWZmIC0tZ2l0IGEvZnMvZXh0NC9p
+b2N0bC5jIGIvZnMvZXh0NC9pb2N0bC5jCmluZGV4IDNjZjNlYzRiMWMyMS4uOTlkZjViOGFlMTQ5
+IDEwMDY0NAotLS0gYS9mcy9leHQ0L2lvY3RsLmMKKysrIGIvZnMvZXh0NC9pb2N0bC5jCkBAIC00
+NTMsOCArNDUzLDggQEAgc3RhdGljIGxvbmcgc3dhcF9pbm9kZV9ib290X2xvYWRlcihzdHJ1Y3Qg
+c3VwZXJfYmxvY2sgKnNiLAogCiAJaW5vZGUtPmlfY3RpbWUgPSBpbm9kZV9ibC0+aV9jdGltZSA9
+IGN1cnJlbnRfdGltZShpbm9kZSk7CiAKLQlpbm9kZS0+aV9nZW5lcmF0aW9uID0gcHJhbmRvbV91
+MzIoKTsKLQlpbm9kZV9ibC0+aV9nZW5lcmF0aW9uID0gcHJhbmRvbV91MzIoKTsKKwlpbm9kZS0+
+aV9nZW5lcmF0aW9uID0gZ2V0X3JhbmRvbV91MzIoKTsKKwlpbm9kZV9ibC0+aV9nZW5lcmF0aW9u
+ID0gZ2V0X3JhbmRvbV91MzIoKTsKIAlleHQ0X3Jlc2V0X2lub2RlX3NlZWQoaW5vZGUpOwogCWV4
+dDRfcmVzZXRfaW5vZGVfc2VlZChpbm9kZV9ibCk7CiAKZGlmZiAtLWdpdCBhL2ZzL2V4dDQvbW1w
+LmMgYi9mcy9leHQ0L21tcC5jCmluZGV4IDlhZjY4YTdlY2RjZi4uNTg4Y2IwOWM1MjkxIDEwMDY0
+NAotLS0gYS9mcy9leHQ0L21tcC5jCisrKyBiL2ZzL2V4dDQvbW1wLmMKQEAgLTI2NSw3ICsyNjUs
+NyBAQCBzdGF0aWMgdW5zaWduZWQgaW50IG1tcF9uZXdfc2VxKHZvaWQpCiAJdTMyIG5ld19zZXE7
+CiAKIAlkbyB7Ci0JCW5ld19zZXEgPSBwcmFuZG9tX3UzMigpOworCQluZXdfc2VxID0gZ2V0X3Jh
+bmRvbV91MzIoKTsKIAl9IHdoaWxlIChuZXdfc2VxID4gRVhUNF9NTVBfU0VRX01BWCk7CiAKIAly
+ZXR1cm4gbmV3X3NlcTsKZGlmZiAtLWdpdCBhL2ZzL2YyZnMvbmFtZWkuYyBiL2ZzL2YyZnMvbmFt
+ZWkuYwppbmRleCBiZjAwZDUwNTdhYmIuLjkzOTUzNjk4MmMzZSAxMDA2NDQKLS0tIGEvZnMvZjJm
+cy9uYW1laS5jCisrKyBiL2ZzL2YyZnMvbmFtZWkuYwpAQCAtNTAsNyArNTAsNyBAQCBzdGF0aWMg
+c3RydWN0IGlub2RlICpmMmZzX25ld19pbm9kZShzdHJ1Y3QgdXNlcl9uYW1lc3BhY2UgKm1udF91
+c2VybnMsCiAJaW5vZGUtPmlfYmxvY2tzID0gMDsKIAlpbm9kZS0+aV9tdGltZSA9IGlub2RlLT5p
+X2F0aW1lID0gaW5vZGUtPmlfY3RpbWUgPSBjdXJyZW50X3RpbWUoaW5vZGUpOwogCUYyRlNfSShp
+bm9kZSktPmlfY3J0aW1lID0gaW5vZGUtPmlfbXRpbWU7Ci0JaW5vZGUtPmlfZ2VuZXJhdGlvbiA9
+IHByYW5kb21fdTMyKCk7CisJaW5vZGUtPmlfZ2VuZXJhdGlvbiA9IGdldF9yYW5kb21fdTMyKCk7
+CiAKIAlpZiAoU19JU0RJUihpbm9kZS0+aV9tb2RlKSkKIAkJRjJGU19JKGlub2RlKS0+aV9jdXJy
+ZW50X2RlcHRoID0gMTsKZGlmZiAtLWdpdCBhL2ZzL2ZhdC9pbm9kZS5jIGIvZnMvZmF0L2lub2Rl
+LmMKaW5kZXggYTM4MjM4ZDc1YzA4Li4xY2JjYzQ2MDhkYzcgMTAwNjQ0Ci0tLSBhL2ZzL2ZhdC9p
+bm9kZS5jCisrKyBiL2ZzL2ZhdC9pbm9kZS5jCkBAIC01MjMsNyArNTIzLDcgQEAgaW50IGZhdF9m
+aWxsX2lub2RlKHN0cnVjdCBpbm9kZSAqaW5vZGUsIHN0cnVjdCBtc2Rvc19kaXJfZW50cnkgKmRl
+KQogCWlub2RlLT5pX3VpZCA9IHNiaS0+b3B0aW9ucy5mc191aWQ7CiAJaW5vZGUtPmlfZ2lkID0g
+c2JpLT5vcHRpb25zLmZzX2dpZDsKIAlpbm9kZV9pbmNfaXZlcnNpb24oaW5vZGUpOwotCWlub2Rl
+LT5pX2dlbmVyYXRpb24gPSBwcmFuZG9tX3UzMigpOworCWlub2RlLT5pX2dlbmVyYXRpb24gPSBn
+ZXRfcmFuZG9tX3UzMigpOwogCiAJaWYgKChkZS0+YXR0ciAmIEFUVFJfRElSKSAmJiAhSVNfRlJF
+RShkZS0+bmFtZSkpIHsKIAkJaW5vZGUtPmlfZ2VuZXJhdGlvbiAmPSB+MTsKZGlmZiAtLWdpdCBh
+L2ZzL25mc2QvbmZzNHN0YXRlLmMgYi9mcy9uZnNkL25mczRzdGF0ZS5jCmluZGV4IGM1ZDE5OWQ3
+ZTZiNC4uZTEwYzE2Y2Q3ODgxIDEwMDY0NAotLS0gYS9mcy9uZnNkL25mczRzdGF0ZS5jCisrKyBi
+L2ZzL25mc2QvbmZzNHN0YXRlLmMKQEAgLTQzNDYsOCArNDM0Niw4IEBAIHZvaWQgbmZzZDRfaW5p
+dF9sZWFzZXNfbmV0KHN0cnVjdCBuZnNkX25ldCAqbm4pCiAJbm4tPm5mc2Q0X2dyYWNlID0gOTA7
+CiAJbm4tPnNvbWVib2R5X3JlY2xhaW1lZCA9IGZhbHNlOwogCW5uLT50cmFja19yZWNsYWltX2Nv
+bXBsZXRlcyA9IGZhbHNlOwotCW5uLT5jbHZlcmlmaWVyX2NvdW50ZXIgPSBwcmFuZG9tX3UzMigp
+OwotCW5uLT5jbGllbnRpZF9iYXNlID0gcHJhbmRvbV91MzIoKTsKKwlubi0+Y2x2ZXJpZmllcl9j
+b3VudGVyID0gZ2V0X3JhbmRvbV91MzIoKTsKKwlubi0+Y2xpZW50aWRfYmFzZSA9IGdldF9yYW5k
+b21fdTMyKCk7CiAJbm4tPmNsaWVudGlkX2NvdW50ZXIgPSBubi0+Y2xpZW50aWRfYmFzZSArIDE7
+CiAJbm4tPnMyc19jcF9jbF9pZCA9IG5uLT5jbGllbnRpZF9jb3VudGVyKys7CiAKZGlmZiAtLWdp
+dCBhL2ZzL250ZnMzL2ZzbG9nLmMgYi9mcy9udGZzMy9mc2xvZy5jCmluZGV4IGU3YzQ5NDAwNTEy
+Mi4uMGQ2MTFhNmM1NTExIDEwMDY0NAotLS0gYS9mcy9udGZzMy9mc2xvZy5jCisrKyBiL2ZzL250
+ZnMzL2ZzbG9nLmMKQEAgLTM4MTksNyArMzgxOSw3IEBAIGludCBsb2dfcmVwbGF5KHN0cnVjdCBu
+dGZzX2lub2RlICpuaSwgYm9vbCAqaW5pdGlhbGl6ZWQpCiAJCX0KIAogCQlsb2dfaW5pdF9wZ19o
+ZHIobG9nLCBwYWdlX3NpemUsIHBhZ2Vfc2l6ZSwgMSwgMSk7Ci0JCWxvZ19jcmVhdGUobG9nLCBs
+X3NpemUsIDAsIGdldF9yYW5kb21faW50KCksIGZhbHNlLCBmYWxzZSk7CisJCWxvZ19jcmVhdGUo
+bG9nLCBsX3NpemUsIDAsIGdldF9yYW5kb21fdTMyKCksIGZhbHNlLCBmYWxzZSk7CiAKIAkJbG9n
+LT5yYSA9IHJhOwogCkBAIC0zODkzLDcgKzM4OTMsNyBAQCBpbnQgbG9nX3JlcGxheShzdHJ1Y3Qg
+bnRmc19pbm9kZSAqbmksIGJvb2wgKmluaXRpYWxpemVkKQogCiAJCS8qIERvIHNvbWUgY2hlY2tz
+IGJhc2VkIG9uIHdoZXRoZXIgd2UgaGF2ZSBhIHZhbGlkIGxvZyBwYWdlLiAqLwogCQlpZiAoIXJz
+dF9pbmZvLnZhbGlkX3BhZ2UpIHsKLQkJCW9wZW5fbG9nX2NvdW50ID0gZ2V0X3JhbmRvbV9pbnQo
+KTsKKwkJCW9wZW5fbG9nX2NvdW50ID0gZ2V0X3JhbmRvbV91MzIoKTsKIAkJCWdvdG8gaW5pdF9s
+b2dfaW5zdGFuY2U7CiAJCX0KIAkJb3Blbl9sb2dfY291bnQgPSBsZTMyX3RvX2NwdShyYTItPm9w
+ZW5fbG9nX2NvdW50KTsKQEAgLTQwNDQsNyArNDA0NCw3IEBAIGludCBsb2dfcmVwbGF5KHN0cnVj
+dCBudGZzX2lub2RlICpuaSwgYm9vbCAqaW5pdGlhbGl6ZWQpCiAJCW1lbWNweShyYS0+Y2xpZW50
+cywgQWRkMlB0cihyYTIsIHQxNiksCiAJCSAgICAgICBsZTE2X3RvX2NwdShyYTItPnJhX2xlbikg
+LSB0MTYpOwogCi0JCWxvZy0+Y3VycmVudF9vcGVubG9nX2NvdW50ID0gZ2V0X3JhbmRvbV9pbnQo
+KTsKKwkJbG9nLT5jdXJyZW50X29wZW5sb2dfY291bnQgPSBnZXRfcmFuZG9tX3UzMigpOwogCQly
+YS0+b3Blbl9sb2dfY291bnQgPSBjcHVfdG9fbGUzMihsb2ctPmN1cnJlbnRfb3BlbmxvZ19jb3Vu
+dCk7CiAJCWxvZy0+cmFfc2l6ZSA9IG9mZnNldG9mKHN0cnVjdCBSRVNUQVJUX0FSRUEsIGNsaWVu
+dHMpICsKIAkJCSAgICAgICBzaXplb2Yoc3RydWN0IENMSUVOVF9SRUMpOwpkaWZmIC0tZ2l0IGEv
+ZnMvdWJpZnMvam91cm5hbC5jIGIvZnMvdWJpZnMvam91cm5hbC5jCmluZGV4IDc1ZGFiMGFlMzkz
+OS4uNDYxOTY1MjA0NmNmIDEwMDY0NAotLS0gYS9mcy91Ymlmcy9qb3VybmFsLmMKKysrIGIvZnMv
+dWJpZnMvam91cm5hbC5jCkBAIC01MDMsNyArNTAzLDcgQEAgc3RhdGljIHZvaWQgbWFya19pbm9k
+ZV9jbGVhbihzdHJ1Y3QgdWJpZnNfaW5mbyAqYywgc3RydWN0IHViaWZzX2lub2RlICp1aSkKIHN0
+YXRpYyB2b2lkIHNldF9kZW50X2Nvb2tpZShzdHJ1Y3QgdWJpZnNfaW5mbyAqYywgc3RydWN0IHVi
+aWZzX2RlbnRfbm9kZSAqZGVudCkKIHsKIAlpZiAoYy0+ZG91YmxlX2hhc2gpCi0JCWRlbnQtPmNv
+b2tpZSA9IChfX2ZvcmNlIF9fbGUzMikgcHJhbmRvbV91MzIoKTsKKwkJZGVudC0+Y29va2llID0g
+KF9fZm9yY2UgX19sZTMyKSBnZXRfcmFuZG9tX3UzMigpOwogCWVsc2UKIAkJZGVudC0+Y29va2ll
+ID0gMDsKIH0KZGlmZiAtLWdpdCBhL2ZzL3hmcy9saWJ4ZnMveGZzX2lhbGxvYy5jIGIvZnMveGZz
+L2xpYnhmcy94ZnNfaWFsbG9jLmMKaW5kZXggNzgzOGIzMTEyNmUyLi45NGRiNTBlYjcwNmEgMTAw
+NjQ0Ci0tLSBhL2ZzL3hmcy9saWJ4ZnMveGZzX2lhbGxvYy5jCisrKyBiL2ZzL3hmcy9saWJ4ZnMv
+eGZzX2lhbGxvYy5jCkBAIC04MDUsNyArODA1LDcgQEAgeGZzX2lhbGxvY19hZ19hbGxvYygKIAkg
+KiBudW1iZXIgZnJvbSBiZWluZyBlYXNpbHkgZ3Vlc3NhYmxlLgogCSAqLwogCWVycm9yID0geGZz
+X2lhbGxvY19pbm9kZV9pbml0KGFyZ3MubXAsIHRwLCBOVUxMLCBuZXdsZW4sIHBhZy0+cGFnX2Fn
+bm8sCi0JCQlhcmdzLmFnYm5vLCBhcmdzLmxlbiwgcHJhbmRvbV91MzIoKSk7CisJCQlhcmdzLmFn
+Ym5vLCBhcmdzLmxlbiwgZ2V0X3JhbmRvbV91MzIoKSk7CiAKIAlpZiAoZXJyb3IpCiAJCXJldHVy
+biBlcnJvcjsKZGlmZiAtLWdpdCBhL2ZzL3hmcy94ZnNfaWNhY2hlLmMgYi9mcy94ZnMveGZzX2lj
+YWNoZS5jCmluZGV4IDJiYmU3OTE2YTk5OC4uZWFlNzQyNzA2MmNmIDEwMDY0NAotLS0gYS9mcy94
+ZnMveGZzX2ljYWNoZS5jCisrKyBiL2ZzL3hmcy94ZnNfaWNhY2hlLmMKQEAgLTU5Niw3ICs1OTYs
+NyBAQCB4ZnNfaWdldF9jYWNoZV9taXNzKAogCSAqLwogCWlmICh4ZnNfaGFzX3YzaW5vZGVzKG1w
+KSAmJgogCSAgICAoZmxhZ3MgJiBYRlNfSUdFVF9DUkVBVEUpICYmICF4ZnNfaGFzX2lrZWVwKG1w
+KSkgewotCQlWRlNfSShpcCktPmlfZ2VuZXJhdGlvbiA9IHByYW5kb21fdTMyKCk7CisJCVZGU19J
+KGlwKS0+aV9nZW5lcmF0aW9uID0gZ2V0X3JhbmRvbV91MzIoKTsKIAl9IGVsc2UgewogCQlzdHJ1
+Y3QgeGZzX2J1ZgkJKmJwOwogCmRpZmYgLS1naXQgYS9mcy94ZnMveGZzX2xvZy5jIGIvZnMveGZz
+L3hmc19sb2cuYwppbmRleCAzODZiMDMwN2FlZDguLmFkODY1MmNiZjI0NSAxMDA2NDQKLS0tIGEv
+ZnMveGZzL3hmc19sb2cuYworKysgYi9mcy94ZnMveGZzX2xvZy5jCkBAIC0zNTQ0LDcgKzM1NDQs
+NyBAQCB4bG9nX3RpY2tldF9hbGxvYygKIAl0aWMtPnRfY3Vycl9yZXMJCT0gdW5pdF9yZXM7CiAJ
+dGljLT50X2NudAkJPSBjbnQ7CiAJdGljLT50X29jbnQJCT0gY250OwotCXRpYy0+dF90aWQJCT0g
+cHJhbmRvbV91MzIoKTsKKwl0aWMtPnRfdGlkCQk9IGdldF9yYW5kb21fdTMyKCk7CiAJaWYgKHBl
+cm1hbmVudCkKIAkJdGljLT50X2ZsYWdzIHw9IFhMT0dfVElDX1BFUk1fUkVTRVJWOwogCmRpZmYg
+LS1naXQgYS9pbmNsdWRlL25ldC9uZXRmaWx0ZXIvbmZfcXVldWUuaCBiL2luY2x1ZGUvbmV0L25l
+dGZpbHRlci9uZl9xdWV1ZS5oCmluZGV4IDk4MGRhYTZlMWUzYS4uYzgxMDIxYWIwN2FhIDEwMDY0
+NAotLS0gYS9pbmNsdWRlL25ldC9uZXRmaWx0ZXIvbmZfcXVldWUuaAorKysgYi9pbmNsdWRlL25l
+dC9uZXRmaWx0ZXIvbmZfcXVldWUuaApAQCAtNDMsNyArNDMsNyBAQCB2b2lkIG5mX3F1ZXVlX2Vu
+dHJ5X2ZyZWUoc3RydWN0IG5mX3F1ZXVlX2VudHJ5ICplbnRyeSk7CiBzdGF0aWMgaW5saW5lIHZv
+aWQgaW5pdF9oYXNocmFuZG9tKHUzMiAqamhhc2hfaW5pdHZhbCkKIHsKIAl3aGlsZSAoKmpoYXNo
+X2luaXR2YWwgPT0gMCkKLQkJKmpoYXNoX2luaXR2YWwgPSBwcmFuZG9tX3UzMigpOworCQkqamhh
+c2hfaW5pdHZhbCA9IGdldF9yYW5kb21fdTMyKCk7CiB9CiAKIHN0YXRpYyBpbmxpbmUgdTMyIGhh
+c2hfdjQoY29uc3Qgc3RydWN0IGlwaGRyICppcGgsIHUzMiBpbml0dmFsKQpkaWZmIC0tZ2l0IGEv
+aW5jbHVkZS9uZXQvcmVkLmggYi9pbmNsdWRlL25ldC9yZWQuaAppbmRleCBiZTExZGJkMjY0OTIu
+LjU2ZDA2NDdkNzM1NiAxMDA2NDQKLS0tIGEvaW5jbHVkZS9uZXQvcmVkLmgKKysrIGIvaW5jbHVk
+ZS9uZXQvcmVkLmgKQEAgLTM2NCw3ICszNjQsNyBAQCBzdGF0aWMgaW5saW5lIHVuc2lnbmVkIGxv
+bmcgcmVkX2NhbGNfcWF2Zyhjb25zdCBzdHJ1Y3QgcmVkX3Bhcm1zICpwLAogCiBzdGF0aWMgaW5s
+aW5lIHUzMiByZWRfcmFuZG9tKGNvbnN0IHN0cnVjdCByZWRfcGFybXMgKnApCiB7Ci0JcmV0dXJu
+IHJlY2lwcm9jYWxfZGl2aWRlKHByYW5kb21fdTMyKCksIHAtPm1heF9QX3JlY2lwcm9jYWwpOwor
+CXJldHVybiByZWNpcHJvY2FsX2RpdmlkZShnZXRfcmFuZG9tX3UzMigpLCBwLT5tYXhfUF9yZWNp
+cHJvY2FsKTsKIH0KIAogc3RhdGljIGlubGluZSBpbnQgcmVkX21hcmtfcHJvYmFiaWxpdHkoY29u
+c3Qgc3RydWN0IHJlZF9wYXJtcyAqcCwKZGlmZiAtLWdpdCBhL2luY2x1ZGUvbmV0L3NvY2suaCBi
+L2luY2x1ZGUvbmV0L3NvY2suaAppbmRleCBkMDhjZmUxOTBhNzguLmNhMmIyNjY4NjY3NyAxMDA2
+NDQKLS0tIGEvaW5jbHVkZS9uZXQvc29jay5oCisrKyBiL2luY2x1ZGUvbmV0L3NvY2suaApAQCAt
+MjA5MSw3ICsyMDkxLDcgQEAgc3RhdGljIGlubGluZSBrdWlkX3Qgc29ja19uZXRfdWlkKGNvbnN0
+IHN0cnVjdCBuZXQgKm5ldCwgY29uc3Qgc3RydWN0IHNvY2sgKnNrKQogCiBzdGF0aWMgaW5saW5l
+IHUzMiBuZXRfdHhfcm5kaGFzaCh2b2lkKQogewotCXUzMiB2ID0gcHJhbmRvbV91MzIoKTsKKwl1
+MzIgdiA9IGdldF9yYW5kb21fdTMyKCk7CiAKIAlyZXR1cm4gdiA/OiAxOwogfQpkaWZmIC0tZ2l0
+IGEva2VybmVsL2JwZi9ibG9vbV9maWx0ZXIuYyBiL2tlcm5lbC9icGYvYmxvb21fZmlsdGVyLmMK
+aW5kZXggYjllYTUzOWE1NTYxLi40OGVlNzUwODQ5ZjIgMTAwNjQ0Ci0tLSBhL2tlcm5lbC9icGYv
+Ymxvb21fZmlsdGVyLmMKKysrIGIva2VybmVsL2JwZi9ibG9vbV9maWx0ZXIuYwpAQCAtMTU4LDcg
+KzE1OCw3IEBAIHN0YXRpYyBzdHJ1Y3QgYnBmX21hcCAqYmxvb21fbWFwX2FsbG9jKHVuaW9uIGJw
+Zl9hdHRyICphdHRyKQogCQkJYXR0ci0+dmFsdWVfc2l6ZSAvIHNpemVvZih1MzIpOwogCiAJaWYg
+KCEoYXR0ci0+bWFwX2ZsYWdzICYgQlBGX0ZfWkVST19TRUVEKSkKLQkJYmxvb20tPmhhc2hfc2Vl
+ZCA9IGdldF9yYW5kb21faW50KCk7CisJCWJsb29tLT5oYXNoX3NlZWQgPSBnZXRfcmFuZG9tX3Uz
+MigpOwogCiAJcmV0dXJuICZibG9vbS0+bWFwOwogfQpkaWZmIC0tZ2l0IGEva2VybmVsL2JwZi9j
+b3JlLmMgYi9rZXJuZWwvYnBmL2NvcmUuYwppbmRleCBhZGU2YjAzYjFkOWIuLmY2YjM0ODZmMDAx
+YSAxMDA2NDQKLS0tIGEva2VybmVsL2JwZi9jb3JlLmMKKysrIGIva2VybmVsL2JwZi9jb3JlLmMK
+QEAgLTEyMTEsNyArMTIxMSw3IEBAIHN0YXRpYyBpbnQgYnBmX2ppdF9ibGluZF9pbnNuKGNvbnN0
+IHN0cnVjdCBicGZfaW5zbiAqZnJvbSwKIAkJCSAgICAgIGJvb2wgZW1pdF96ZXh0KQogewogCXN0
+cnVjdCBicGZfaW5zbiAqdG8gPSB0b19idWZmOwotCXUzMiBpbW1fcm5kID0gZ2V0X3JhbmRvbV9p
+bnQoKTsKKwl1MzIgaW1tX3JuZCA9IGdldF9yYW5kb21fdTMyKCk7CiAJczE2IG9mZjsKIAogCUJV
+SUxEX0JVR19PTihCUEZfUkVHX0FYICArIDEgIT0gTUFYX0JQRl9KSVRfUkVHKTsKZGlmZiAtLWdp
+dCBhL2tlcm5lbC9icGYvaGFzaHRhYi5jIGIva2VybmVsL2JwZi9oYXNodGFiLmMKaW5kZXggNmM1
+MzBhNWU1NjBhLi4xZDM2MTczNTk4YTAgMTAwNjQ0Ci0tLSBhL2tlcm5lbC9icGYvaGFzaHRhYi5j
+CisrKyBiL2tlcm5lbC9icGYvaGFzaHRhYi5jCkBAIC01NDYsNyArNTQ2LDcgQEAgc3RhdGljIHN0
+cnVjdCBicGZfbWFwICpodGFiX21hcF9hbGxvYyh1bmlvbiBicGZfYXR0ciAqYXR0cikKIAlpZiAo
+aHRhYi0+bWFwLm1hcF9mbGFncyAmIEJQRl9GX1pFUk9fU0VFRCkKIAkJaHRhYi0+aGFzaHJuZCA9
+IDA7CiAJZWxzZQotCQlodGFiLT5oYXNocm5kID0gZ2V0X3JhbmRvbV9pbnQoKTsKKwkJaHRhYi0+
+aGFzaHJuZCA9IGdldF9yYW5kb21fdTMyKCk7CiAKIAlodGFiX2luaXRfYnVja2V0cyhodGFiKTsK
+IApkaWZmIC0tZ2l0IGEva2VybmVsL2JwZi92ZXJpZmllci5jIGIva2VybmVsL2JwZi92ZXJpZmll
+ci5jCmluZGV4IDNlYWRiMTRlMDkwYi4uOTQzYWY1YWJkYzE4IDEwMDY0NAotLS0gYS9rZXJuZWwv
+YnBmL3ZlcmlmaWVyLmMKKysrIGIva2VybmVsL2JwZi92ZXJpZmllci5jCkBAIC0xMzMxNyw3ICsx
+MzMxNyw3IEBAIHN0YXRpYyBpbnQgb3B0X3N1YnJlZ196ZXh0X2xvMzJfcm5kX2hpMzIoc3RydWN0
+IGJwZl92ZXJpZmllcl9lbnYgKmVudiwKIAkJCSAgICBhdXhbYWRqX2lkeF0ucHRyX3R5cGUgPT0g
+UFRSX1RPX0NUWCkKIAkJCQljb250aW51ZTsKIAotCQkJaW1tX3JuZCA9IGdldF9yYW5kb21faW50
+KCk7CisJCQlpbW1fcm5kID0gZ2V0X3JhbmRvbV91MzIoKTsKIAkJCXJuZF9oaTMyX3BhdGNoWzBd
+ID0gaW5zbjsKIAkJCXJuZF9oaTMyX3BhdGNoWzFdLmltbSA9IGltbV9ybmQ7CiAJCQlybmRfaGkz
+Ml9wYXRjaFszXS5kc3RfcmVnID0gbG9hZF9yZWc7CmRpZmYgLS1naXQgYS9rZXJuZWwva2NzYW4v
+c2VsZnRlc3QuYyBiL2tlcm5lbC9rY3Nhbi9zZWxmdGVzdC5jCmluZGV4IDc1NzEyOTU5Yzg0ZS4u
+NThiOTRkZWFlNWMwIDEwMDY0NAotLS0gYS9rZXJuZWwva2NzYW4vc2VsZnRlc3QuYworKysgYi9r
+ZXJuZWwva2NzYW4vc2VsZnRlc3QuYwpAQCAtMjYsNyArMjYsNyBAQAogc3RhdGljIGJvb2wgX19p
+bml0IHRlc3RfcmVxdWlyZXModm9pZCkKIHsKIAkvKiByYW5kb20gc2hvdWxkIGJlIGluaXRpYWxp
+emVkIGZvciB0aGUgYmVsb3cgdGVzdHMgKi8KLQlyZXR1cm4gcHJhbmRvbV91MzIoKSArIHByYW5k
+b21fdTMyKCkgIT0gMDsKKwlyZXR1cm4gZ2V0X3JhbmRvbV91MzIoKSArIGdldF9yYW5kb21fdTMy
+KCkgIT0gMDsKIH0KIAogLyoKZGlmZiAtLWdpdCBhL2xpYi9yYW5kb20zMi5jIGIvbGliL3JhbmRv
+bTMyLmMKaW5kZXggZDVkOTAyOTM2MmNiLi5kNGYxOWUxYTY5ZDQgMTAwNjQ0Ci0tLSBhL2xpYi9y
+YW5kb20zMi5jCisrKyBiL2xpYi9yYW5kb20zMi5jCkBAIC00Nyw3ICs0Nyw3IEBACiAgKglAc3Rh
+dGU6IHBvaW50ZXIgdG8gc3RhdGUgc3RydWN0dXJlIGhvbGRpbmcgc2VlZGVkIHN0YXRlLgogICoK
+ICAqCVRoaXMgaXMgdXNlZCBmb3IgcHNldWRvLXJhbmRvbW5lc3Mgd2l0aCBubyBvdXRzaWRlIHNl
+ZWRpbmcuCi0gKglGb3IgbW9yZSByYW5kb20gcmVzdWx0cywgdXNlIHByYW5kb21fdTMyKCkuCisg
+KglGb3IgbW9yZSByYW5kb20gcmVzdWx0cywgdXNlIGdldF9yYW5kb21fdTMyKCkuCiAgKi8KIHUz
+MiBwcmFuZG9tX3UzMl9zdGF0ZShzdHJ1Y3Qgcm5kX3N0YXRlICpzdGF0ZSkKIHsKZGlmZiAtLWdp
+dCBhL2xpYi9yZWVkX3NvbG9tb24vdGVzdF9yc2xpYi5jIGIvbGliL3JlZWRfc29sb21vbi90ZXN0
+X3JzbGliLmMKaW5kZXggNGQyNDFiZGM4OGFhLi44NDhlN2ViNWRhOTIgMTAwNjQ0Ci0tLSBhL2xp
+Yi9yZWVkX3NvbG9tb24vdGVzdF9yc2xpYi5jCisrKyBiL2xpYi9yZWVkX3NvbG9tb24vdGVzdF9y
+c2xpYi5jCkBAIC0xNjQsNyArMTY0LDcgQEAgc3RhdGljIGludCBnZXRfcmN3X3dlKHN0cnVjdCBy
+c19jb250cm9sICpycywgc3RydWN0IHdzcGFjZSAqd3MsCiAKIAkvKiBMb2FkIGMgd2l0aCByYW5k
+b20gZGF0YSBhbmQgZW5jb2RlICovCiAJZm9yIChpID0gMDsgaSA8IGRsZW47IGkrKykKLQkJY1tp
+XSA9IHByYW5kb21fdTMyKCkgJiBubjsKKwkJY1tpXSA9IGdldF9yYW5kb21fdTMyKCkgJiBubjsK
+IAogCW1lbXNldChjICsgZGxlbiwgMCwgbnJvb3RzICogc2l6ZW9mKCpjKSk7CiAJZW5jb2RlX3Jz
+MTYocnMsIGMsIGRsZW4sIGMgKyBkbGVuLCAwKTsKQEAgLTE3OCw3ICsxNzgsNyBAQCBzdGF0aWMg
+aW50IGdldF9yY3dfd2Uoc3RydWN0IHJzX2NvbnRyb2wgKnJzLCBzdHJ1Y3Qgd3NwYWNlICp3cywK
+IAlmb3IgKGkgPSAwOyBpIDwgZXJyczsgaSsrKSB7CiAJCWRvIHsKIAkJCS8qIEVycm9yIHZhbHVl
+IG11c3QgYmUgbm9uemVybyAqLwotCQkJZXJydmFsID0gcHJhbmRvbV91MzIoKSAmIG5uOworCQkJ
+ZXJydmFsID0gZ2V0X3JhbmRvbV91MzIoKSAmIG5uOwogCQl9IHdoaWxlIChlcnJ2YWwgPT0gMCk7
+CiAKIAkJZG8gewpAQCAtMjA2LDcgKzIwNiw3IEBAIHN0YXRpYyBpbnQgZ2V0X3Jjd193ZShzdHJ1
+Y3QgcnNfY29udHJvbCAqcnMsIHN0cnVjdCB3c3BhY2UgKndzLAogCQkJLyogRXJhc3VyZSB3aXRo
+IGNvcnJ1cHRlZCBzeW1ib2wgKi8KIAkJCWRvIHsKIAkJCQkvKiBFcnJvciB2YWx1ZSBtdXN0IGJl
+IG5vbnplcm8gKi8KLQkJCQllcnJ2YWwgPSBwcmFuZG9tX3UzMigpICYgbm47CisJCQkJZXJydmFs
+ID0gZ2V0X3JhbmRvbV91MzIoKSAmIG5uOwogCQkJfSB3aGlsZSAoZXJydmFsID09IDApOwogCiAJ
+CQllcnJsb2NzW2VycmxvY10gPSAxOwpkaWZmIC0tZ2l0IGEvbGliL3Rlc3RfZnByb2JlLmMgYi9s
+aWIvdGVzdF9mcHJvYmUuYwppbmRleCBlZDcwNjM3YTJmZmEuLmUwMzgxYjNlYzQxMCAxMDA2NDQK
+LS0tIGEvbGliL3Rlc3RfZnByb2JlLmMKKysrIGIvbGliL3Rlc3RfZnByb2JlLmMKQEAgLTE0NSw3
+ICsxNDUsNyBAQCBzdGF0aWMgdW5zaWduZWQgbG9uZyBnZXRfZnRyYWNlX2xvY2F0aW9uKHZvaWQg
+KmZ1bmMpCiBzdGF0aWMgaW50IGZwcm9iZV90ZXN0X2luaXQoc3RydWN0IGt1bml0ICp0ZXN0KQog
+ewogCWRvIHsKLQkJcmFuZDEgPSBwcmFuZG9tX3UzMigpOworCQlyYW5kMSA9IGdldF9yYW5kb21f
+dTMyKCk7CiAJfSB3aGlsZSAocmFuZDEgPD0gZGl2X2ZhY3Rvcik7CiAKIAl0YXJnZXQgPSBmcHJv
+YmVfc2VsZnRlc3RfdGFyZ2V0OwpkaWZmIC0tZ2l0IGEvbGliL3Rlc3Rfa3Byb2Jlcy5jIGIvbGli
+L3Rlc3Rfa3Byb2Jlcy5jCmluZGV4IGE1ZWRjMmViYzk0Ny4uZWViMWQ3MjhkOTc0IDEwMDY0NAot
+LS0gYS9saWIvdGVzdF9rcHJvYmVzLmMKKysrIGIvbGliL3Rlc3Rfa3Byb2Jlcy5jCkBAIC0zNDEs
+NyArMzQxLDcgQEAgc3RhdGljIGludCBrcHJvYmVzX3Rlc3RfaW5pdChzdHJ1Y3Qga3VuaXQgKnRl
+c3QpCiAJc3RhY2t0cmFjZV9kcml2ZXIgPSBrcHJvYmVfc3RhY2t0cmFjZV9kcml2ZXI7CiAKIAlk
+byB7Ci0JCXJhbmQxID0gcHJhbmRvbV91MzIoKTsKKwkJcmFuZDEgPSBnZXRfcmFuZG9tX3UzMigp
+OwogCX0gd2hpbGUgKHJhbmQxIDw9IGRpdl9mYWN0b3IpOwogCXJldHVybiAwOwogfQpkaWZmIC0t
+Z2l0IGEvbGliL3Rlc3RfbWluX2hlYXAuYyBiL2xpYi90ZXN0X21pbl9oZWFwLmMKaW5kZXggZDE5
+YzgwODBmZDRkLi43YjAxYjQzODdjZmIgMTAwNjQ0Ci0tLSBhL2xpYi90ZXN0X21pbl9oZWFwLmMK
+KysrIGIvbGliL3Rlc3RfbWluX2hlYXAuYwpAQCAtODMsNyArODMsNyBAQCBzdGF0aWMgX19pbml0
+IGludCB0ZXN0X2hlYXBpZnlfYWxsKGJvb2wgbWluX2hlYXApCiAJLyogVGVzdCB3aXRoIHJhbmRv
+bWx5IGdlbmVyYXRlZCB2YWx1ZXMuICovCiAJaGVhcC5uciA9IEFSUkFZX1NJWkUodmFsdWVzKTsK
+IAlmb3IgKGkgPSAwOyBpIDwgaGVhcC5ucjsgaSsrKQotCQl2YWx1ZXNbaV0gPSBnZXRfcmFuZG9t
+X2ludCgpOworCQl2YWx1ZXNbaV0gPSBnZXRfcmFuZG9tX3UzMigpOwogCiAJbWluX2hlYXBpZnlf
+YWxsKCZoZWFwLCAmZnVuY3MpOwogCWVyciArPSBwb3BfdmVyaWZ5X2hlYXAobWluX2hlYXAsICZo
+ZWFwLCAmZnVuY3MpOwpAQCAtMTE2LDcgKzExNiw3IEBAIHN0YXRpYyBfX2luaXQgaW50IHRlc3Rf
+aGVhcF9wdXNoKGJvb2wgbWluX2hlYXApCiAKIAkvKiBUZXN0IHdpdGggcmFuZG9tbHkgZ2VuZXJh
+dGVkIHZhbHVlcy4gKi8KIAl3aGlsZSAoaGVhcC5uciA8IGhlYXAuc2l6ZSkgewotCQl0ZW1wID0g
+Z2V0X3JhbmRvbV9pbnQoKTsKKwkJdGVtcCA9IGdldF9yYW5kb21fdTMyKCk7CiAJCW1pbl9oZWFw
+X3B1c2goJmhlYXAsICZ0ZW1wLCAmZnVuY3MpOwogCX0KIAllcnIgKz0gcG9wX3ZlcmlmeV9oZWFw
+KG1pbl9oZWFwLCAmaGVhcCwgJmZ1bmNzKTsKQEAgLTE1OCw3ICsxNTgsNyBAQCBzdGF0aWMgX19p
+bml0IGludCB0ZXN0X2hlYXBfcG9wX3B1c2goYm9vbCBtaW5faGVhcCkKIAogCS8qIFRlc3Qgd2l0
+aCByYW5kb21seSBnZW5lcmF0ZWQgdmFsdWVzLiAqLwogCWZvciAoaSA9IDA7IGkgPCBBUlJBWV9T
+SVpFKGRhdGEpOyBpKyspIHsKLQkJdGVtcCA9IGdldF9yYW5kb21faW50KCk7CisJCXRlbXAgPSBn
+ZXRfcmFuZG9tX3UzMigpOwogCQltaW5faGVhcF9wb3BfcHVzaCgmaGVhcCwgJnRlbXAsICZmdW5j
+cyk7CiAJfQogCWVyciArPSBwb3BfdmVyaWZ5X2hlYXAobWluX2hlYXAsICZoZWFwLCAmZnVuY3Mp
+OwpkaWZmIC0tZ2l0IGEvbGliL3Rlc3Rfcmhhc2h0YWJsZS5jIGIvbGliL3Rlc3Rfcmhhc2h0YWJs
+ZS5jCmluZGV4IDVhMWRkNDczNmI1Ni4uYjM1OGE3NGVkN2VkIDEwMDY0NAotLS0gYS9saWIvdGVz
+dF9yaGFzaHRhYmxlLmMKKysrIGIvbGliL3Rlc3Rfcmhhc2h0YWJsZS5jCkBAIC0yOTEsNyArMjkx
+LDcgQEAgc3RhdGljIGludCBfX2luaXQgdGVzdF9yaGx0YWJsZSh1bnNpZ25lZCBpbnQgZW50cmll
+cykKIAlpZiAoV0FSTl9PTihlcnIpKQogCQlnb3RvIG91dF9mcmVlOwogCi0JayA9IHByYW5kb21f
+dTMyKCk7CisJayA9IGdldF9yYW5kb21fdTMyKCk7CiAJcmV0ID0gMDsKIAlmb3IgKGkgPSAwOyBp
+IDwgZW50cmllczsgaSsrKSB7CiAJCXJobF90ZXN0X29iamVjdHNbaV0udmFsdWUuaWQgPSBrOwpA
+QCAtMzY5LDEyICszNjksMTIgQEAgc3RhdGljIGludCBfX2luaXQgdGVzdF9yaGx0YWJsZSh1bnNp
+Z25lZCBpbnQgZW50cmllcykKIAlwcl9pbmZvKCJ0ZXN0ICVkIHJhbmRvbSByaGxpc3QgYWRkL2Rl
+bGV0ZSBvcGVyYXRpb25zXG4iLCBlbnRyaWVzKTsKIAlmb3IgKGogPSAwOyBqIDwgZW50cmllczsg
+aisrKSB7CiAJCXUzMiBpID0gcHJhbmRvbV91MzJfbWF4KGVudHJpZXMpOwotCQl1MzIgcHJhbmQg
+PSBwcmFuZG9tX3UzMigpOworCQl1MzIgcHJhbmQgPSBnZXRfcmFuZG9tX3UzMigpOwogCiAJCWNv
+bmRfcmVzY2hlZCgpOwogCiAJCWlmIChwcmFuZCA9PSAwKQotCQkJcHJhbmQgPSBwcmFuZG9tX3Uz
+MigpOworCQkJcHJhbmQgPSBnZXRfcmFuZG9tX3UzMigpOwogCiAJCWlmIChwcmFuZCAmIDEpIHsK
+IAkJCXByYW5kID4+PSAxOwpkaWZmIC0tZ2l0IGEvbW0vc2htZW0uYyBiL21tL3NobWVtLmMKaW5k
+ZXggNDJlNTg4OGJmODRkLi42ZjJjZWY3MzgwOGQgMTAwNjQ0Ci0tLSBhL21tL3NobWVtLmMKKysr
+IGIvbW0vc2htZW0uYwpAQCAtMjMzMCw3ICsyMzMwLDcgQEAgc3RhdGljIHN0cnVjdCBpbm9kZSAq
+c2htZW1fZ2V0X2lub2RlKHN0cnVjdCBzdXBlcl9ibG9jayAqc2IsIHN0cnVjdCBpbm9kZSAqZGly
+LAogCQlpbm9kZV9pbml0X293bmVyKCZpbml0X3VzZXJfbnMsIGlub2RlLCBkaXIsIG1vZGUpOwog
+CQlpbm9kZS0+aV9ibG9ja3MgPSAwOwogCQlpbm9kZS0+aV9hdGltZSA9IGlub2RlLT5pX210aW1l
+ID0gaW5vZGUtPmlfY3RpbWUgPSBjdXJyZW50X3RpbWUoaW5vZGUpOwotCQlpbm9kZS0+aV9nZW5l
+cmF0aW9uID0gcHJhbmRvbV91MzIoKTsKKwkJaW5vZGUtPmlfZ2VuZXJhdGlvbiA9IGdldF9yYW5k
+b21fdTMyKCk7CiAJCWluZm8gPSBTSE1FTV9JKGlub2RlKTsKIAkJbWVtc2V0KGluZm8sIDAsIChj
+aGFyICopaW5vZGUgLSAoY2hhciAqKWluZm8pOwogCQlzcGluX2xvY2tfaW5pdCgmaW5mby0+bG9j
+ayk7CmRpZmYgLS1naXQgYS9tbS9zbGFiLmMgYi9tbS9zbGFiLmMKaW5kZXggMTBlOTYxMzdiNDRm
+Li4zNmVkNzE4MmJhZDUgMTAwNjQ0Ci0tLSBhL21tL3NsYWIuYworKysgYi9tbS9zbGFiLmMKQEAg
+LTIzODAsNyArMjM4MCw3IEBAIHN0YXRpYyBib29sIGZyZWVsaXN0X3N0YXRlX2luaXRpYWxpemUo
+dW5pb24gZnJlZWxpc3RfaW5pdF9zdGF0ZSAqc3RhdGUsCiAJdW5zaWduZWQgaW50IHJhbmQ7CiAK
+IAkvKiBVc2UgYmVzdCBlbnRyb3B5IGF2YWlsYWJsZSB0byBkZWZpbmUgYSByYW5kb20gc2hpZnQg
+Ki8KLQlyYW5kID0gZ2V0X3JhbmRvbV9pbnQoKTsKKwlyYW5kID0gZ2V0X3JhbmRvbV91MzIoKTsK
+IAogCS8qIFVzZSBhIHJhbmRvbSBzdGF0ZSBpZiB0aGUgcHJlLWNvbXB1dGVkIGxpc3QgaXMgbm90
+IGF2YWlsYWJsZSAqLwogCWlmICghY2FjaGVwLT5yYW5kb21fc2VxKSB7CmRpZmYgLS1naXQgYS9u
+ZXQvODAyL2dhcnAuYyBiL25ldC84MDIvZ2FycC5jCmluZGV4IGY2MDEyZjhlNTlmMC4uYzFiYjY3
+ZTI1NDMwIDEwMDY0NAotLS0gYS9uZXQvODAyL2dhcnAuYworKysgYi9uZXQvODAyL2dhcnAuYwpA
+QCAtNDA3LDcgKzQwNyw3IEBAIHN0YXRpYyB2b2lkIGdhcnBfam9pbl90aW1lcl9hcm0oc3RydWN0
+IGdhcnBfYXBwbGljYW50ICphcHApCiB7CiAJdW5zaWduZWQgbG9uZyBkZWxheTsKIAotCWRlbGF5
+ID0gKHU2NCltc2Vjc190b19qaWZmaWVzKGdhcnBfam9pbl90aW1lKSAqIHByYW5kb21fdTMyKCkg
+Pj4gMzI7CisJZGVsYXkgPSAodTY0KW1zZWNzX3RvX2ppZmZpZXMoZ2FycF9qb2luX3RpbWUpICog
+Z2V0X3JhbmRvbV91MzIoKSA+PiAzMjsKIAltb2RfdGltZXIoJmFwcC0+am9pbl90aW1lciwgamlm
+ZmllcyArIGRlbGF5KTsKIH0KIApkaWZmIC0tZ2l0IGEvbmV0LzgwMi9tcnAuYyBiL25ldC84MDIv
+bXJwLmMKaW5kZXggMzVlMDRjYzUzOTBjLi4zZTlmZTlmNWQ5YmYgMTAwNjQ0Ci0tLSBhL25ldC84
+MDIvbXJwLmMKKysrIGIvbmV0LzgwMi9tcnAuYwpAQCAtNTkyLDcgKzU5Miw3IEBAIHN0YXRpYyB2
+b2lkIG1ycF9qb2luX3RpbWVyX2FybShzdHJ1Y3QgbXJwX2FwcGxpY2FudCAqYXBwKQogewogCXVu
+c2lnbmVkIGxvbmcgZGVsYXk7CiAKLQlkZWxheSA9ICh1NjQpbXNlY3NfdG9famlmZmllcyhtcnBf
+am9pbl90aW1lKSAqIHByYW5kb21fdTMyKCkgPj4gMzI7CisJZGVsYXkgPSAodTY0KW1zZWNzX3Rv
+X2ppZmZpZXMobXJwX2pvaW5fdGltZSkgKiBnZXRfcmFuZG9tX3UzMigpID4+IDMyOwogCW1vZF90
+aW1lcigmYXBwLT5qb2luX3RpbWVyLCBqaWZmaWVzICsgZGVsYXkpOwogfQogCmRpZmYgLS1naXQg
+YS9uZXQvY29yZS9wa3RnZW4uYyBiL25ldC9jb3JlL3BrdGdlbi5jCmluZGV4IDVjYTRmOTUzMDM0
+Yy4uYzM3NjMwNTZjNTU0IDEwMDY0NAotLS0gYS9uZXQvY29yZS9wa3RnZW4uYworKysgYi9uZXQv
+Y29yZS9wa3RnZW4uYwpAQCAtMjQ2NCw3ICsyNDY0LDcgQEAgc3RhdGljIHZvaWQgbW9kX2N1cl9o
+ZWFkZXJzKHN0cnVjdCBwa3RnZW5fZGV2ICpwa3RfZGV2KQogCQlmb3IgKGkgPSAwOyBpIDwgcGt0
+X2Rldi0+bnJfbGFiZWxzOyBpKyspCiAJCQlpZiAocGt0X2Rldi0+bGFiZWxzW2ldICYgTVBMU19T
+VEFDS19CT1RUT00pCiAJCQkJcGt0X2Rldi0+bGFiZWxzW2ldID0gTVBMU19TVEFDS19CT1RUT00g
+fAotCQkJCQkgICAgICgoX19mb3JjZSBfX2JlMzIpcHJhbmRvbV91MzIoKSAmCisJCQkJCSAgICAg
+KChfX2ZvcmNlIF9fYmUzMilnZXRfcmFuZG9tX3UzMigpICYKIAkJCQkJCSAgICAgIGh0b25sKDB4
+MDAwZmZmZmYpKTsKIAl9CiAKQEAgLTI1NjgsNyArMjU2OCw3IEBAIHN0YXRpYyB2b2lkIG1vZF9j
+dXJfaGVhZGVycyhzdHJ1Y3QgcGt0Z2VuX2RldiAqcGt0X2RldikKIAogCQkJZm9yIChpID0gMDsg
+aSA8IDQ7IGkrKykgewogCQkJCXBrdF9kZXYtPmN1cl9pbjZfZGFkZHIuczZfYWRkcjMyW2ldID0K
+LQkJCQkgICAgKCgoX19mb3JjZSBfX2JlMzIpcHJhbmRvbV91MzIoKSB8CisJCQkJICAgICgoKF9f
+Zm9yY2UgX19iZTMyKWdldF9yYW5kb21fdTMyKCkgfAogCQkJCSAgICAgIHBrdF9kZXYtPm1pbl9p
+bjZfZGFkZHIuczZfYWRkcjMyW2ldKSAmCiAJCQkJICAgICBwa3RfZGV2LT5tYXhfaW42X2RhZGRy
+LnM2X2FkZHIzMltpXSk7CiAJCQl9CmRpZmYgLS1naXQgYS9uZXQvaXB2NC9yb3V0ZS5jIGIvbmV0
+L2lwdjQvcm91dGUuYwppbmRleCA3OTVjYmUxZGU5MTIuLjFhMzdhMDdjNzE2MyAxMDA2NDQKLS0t
+IGEvbmV0L2lwdjQvcm91dGUuYworKysgYi9uZXQvaXB2NC9yb3V0ZS5jCkBAIC0zNjY0LDcgKzM2
+NjQsNyBAQCBzdGF0aWMgX19uZXRfaW5pdCBpbnQgcnRfZ2VuaWRfaW5pdChzdHJ1Y3QgbmV0ICpu
+ZXQpCiB7CiAJYXRvbWljX3NldCgmbmV0LT5pcHY0LnJ0X2dlbmlkLCAwKTsKIAlhdG9taWNfc2V0
+KCZuZXQtPmZuaGVfZ2VuaWQsIDApOwotCWF0b21pY19zZXQoJm5ldC0+aXB2NC5kZXZfYWRkcl9n
+ZW5pZCwgZ2V0X3JhbmRvbV9pbnQoKSk7CisJYXRvbWljX3NldCgmbmV0LT5pcHY0LmRldl9hZGRy
+X2dlbmlkLCBnZXRfcmFuZG9tX3UzMigpKTsKIAlyZXR1cm4gMDsKIH0KIApkaWZmIC0tZ2l0IGEv
+bmV0L2lwdjQvdGNwX2NkZy5jIGIvbmV0L2lwdjQvdGNwX2NkZy5jCmluZGV4IGRkYzdiYTA1NTRi
+ZC4uZWZjZDE0NWYwNmRiIDEwMDY0NAotLS0gYS9uZXQvaXB2NC90Y3BfY2RnLmMKKysrIGIvbmV0
+L2lwdjQvdGNwX2NkZy5jCkBAIC0yNDMsNyArMjQzLDcgQEAgc3RhdGljIGJvb2wgdGNwX2NkZ19i
+YWNrb2ZmKHN0cnVjdCBzb2NrICpzaywgdTMyIGdyYWQpCiAJc3RydWN0IGNkZyAqY2EgPSBpbmV0
+X2Nza19jYShzayk7CiAJc3RydWN0IHRjcF9zb2NrICp0cCA9IHRjcF9zayhzayk7CiAKLQlpZiAo
+cHJhbmRvbV91MzIoKSA8PSBuZXhwX3UzMihncmFkICogYmFja29mZl9mYWN0b3IpKQorCWlmIChn
+ZXRfcmFuZG9tX3UzMigpIDw9IG5leHBfdTMyKGdyYWQgKiBiYWNrb2ZmX2ZhY3RvcikpCiAJCXJl
+dHVybiBmYWxzZTsKIAogCWlmICh1c2VfaW5lZmYpIHsKZGlmZiAtLWdpdCBhL25ldC9pcHY0L3Vk
+cC5jIGIvbmV0L2lwdjQvdWRwLmMKaW5kZXggNTYwZDllYWRlYWE1Li4xYTViMjQ2NDU0OGUgMTAw
+NjQ0Ci0tLSBhL25ldC9pcHY0L3VkcC5jCisrKyBiL25ldC9pcHY0L3VkcC5jCkBAIC0yNDYsNyAr
+MjQ2LDcgQEAgaW50IHVkcF9saWJfZ2V0X3BvcnQoc3RydWN0IHNvY2sgKnNrLCB1bnNpZ25lZCBz
+aG9ydCBzbnVtLAogCQlpbmV0X2dldF9sb2NhbF9wb3J0X3JhbmdlKG5ldCwgJmxvdywgJmhpZ2gp
+OwogCQlyZW1haW5pbmcgPSAoaGlnaCAtIGxvdykgKyAxOwogCi0JCXJhbmQgPSBwcmFuZG9tX3Uz
+MigpOworCQlyYW5kID0gZ2V0X3JhbmRvbV91MzIoKTsKIAkJZmlyc3QgPSByZWNpcHJvY2FsX3Nj
+YWxlKHJhbmQsIHJlbWFpbmluZykgKyBsb3c7CiAJCS8qCiAJCSAqIGZvcmNlIHJhbmQgdG8gYmUg
+YW4gb2RkIG11bHRpcGxlIG9mIFVEUF9IVEFCTEVfU0laRQpkaWZmIC0tZ2l0IGEvbmV0L2lwdjYv
+aXA2X2Zsb3dsYWJlbC5jIGIvbmV0L2lwdjYvaXA2X2Zsb3dsYWJlbC5jCmluZGV4IGNlYjg1YzY3
+Y2UzOS4uMTg0ODFlYjc2YTBhIDEwMDY0NAotLS0gYS9uZXQvaXB2Ni9pcDZfZmxvd2xhYmVsLmMK
+KysrIGIvbmV0L2lwdjYvaXA2X2Zsb3dsYWJlbC5jCkBAIC0yMjAsNyArMjIwLDcgQEAgc3RhdGlj
+IHN0cnVjdCBpcDZfZmxvd2xhYmVsICpmbF9pbnRlcm4oc3RydWN0IG5ldCAqbmV0LAogCXNwaW5f
+bG9ja19iaCgmaXA2X2ZsX2xvY2spOwogCWlmIChsYWJlbCA9PSAwKSB7CiAJCWZvciAoOzspIHsK
+LQkJCWZsLT5sYWJlbCA9IGh0b25sKHByYW5kb21fdTMyKCkpJklQVjZfRkxPV0xBQkVMX01BU0s7
+CisJCQlmbC0+bGFiZWwgPSBodG9ubChnZXRfcmFuZG9tX3UzMigpKSZJUFY2X0ZMT1dMQUJFTF9N
+QVNLOwogCQkJaWYgKGZsLT5sYWJlbCkgewogCQkJCWxmbCA9IF9fZmxfbG9va3VwKG5ldCwgZmwt
+PmxhYmVsKTsKIAkJCQlpZiAoIWxmbCkKZGlmZiAtLWdpdCBhL25ldC9pcHY2L291dHB1dF9jb3Jl
+LmMgYi9uZXQvaXB2Ni9vdXRwdXRfY29yZS5jCmluZGV4IDI4ODBkYzdkOWE0OS4uMjY4NWMzZjE1
+ZTlkIDEwMDY0NAotLS0gYS9uZXQvaXB2Ni9vdXRwdXRfY29yZS5jCisrKyBiL25ldC9pcHY2L291
+dHB1dF9jb3JlLmMKQEAgLTE4LDcgKzE4LDcgQEAgc3RhdGljIHUzMiBfX2lwdjZfc2VsZWN0X2lk
+ZW50KHN0cnVjdCBuZXQgKm5ldCwKIAl1MzIgaWQ7CiAKIAlkbyB7Ci0JCWlkID0gcHJhbmRvbV91
+MzIoKTsKKwkJaWQgPSBnZXRfcmFuZG9tX3UzMigpOwogCX0gd2hpbGUgKCFpZCk7CiAKIAlyZXR1
+cm4gaWQ7CmRpZmYgLS1naXQgYS9uZXQvbmV0ZmlsdGVyL2lwdnMvaXBfdnNfY29ubi5jIGIvbmV0
+L25ldGZpbHRlci9pcHZzL2lwX3ZzX2Nvbm4uYwppbmRleCBmYjY3ZjFjYTI0OTUuLjhjMDRiYjU3
+ZGQ2ZiAxMDA2NDQKLS0tIGEvbmV0L25ldGZpbHRlci9pcHZzL2lwX3ZzX2Nvbm4uYworKysgYi9u
+ZXQvbmV0ZmlsdGVyL2lwdnMvaXBfdnNfY29ubi5jCkBAIC0xMzA4LDcgKzEzMDgsNyBAQCB2b2lk
+IGlwX3ZzX3JhbmRvbV9kcm9wZW50cnkoc3RydWN0IG5ldG5zX2lwdnMgKmlwdnMpCiAJICogUmFu
+ZG9tbHkgc2NhbiAxLzMyIG9mIHRoZSB3aG9sZSB0YWJsZSBldmVyeSBzZWNvbmQKIAkgKi8KIAlm
+b3IgKGlkeCA9IDA7IGlkeCA8IChpcF92c19jb25uX3RhYl9zaXplPj41KTsgaWR4KyspIHsKLQkJ
+dW5zaWduZWQgaW50IGhhc2ggPSBwcmFuZG9tX3UzMigpICYgaXBfdnNfY29ubl90YWJfbWFzazsK
+KwkJdW5zaWduZWQgaW50IGhhc2ggPSBnZXRfcmFuZG9tX3UzMigpICYgaXBfdnNfY29ubl90YWJf
+bWFzazsKIAogCQlobGlzdF9mb3JfZWFjaF9lbnRyeV9yY3UoY3AsICZpcF92c19jb25uX3RhYlto
+YXNoXSwgY19saXN0KSB7CiAJCQlpZiAoY3AtPmlwdnMgIT0gaXB2cykKZGlmZiAtLWdpdCBhL25l
+dC9uZXRmaWx0ZXIveHRfc3RhdGlzdGljLmMgYi9uZXQvbmV0ZmlsdGVyL3h0X3N0YXRpc3RpYy5j
+CmluZGV4IDIwM2UyNGFlNDcyYy4uYjI2YzFkY2ZjMjdiIDEwMDY0NAotLS0gYS9uZXQvbmV0Zmls
+dGVyL3h0X3N0YXRpc3RpYy5jCisrKyBiL25ldC9uZXRmaWx0ZXIveHRfc3RhdGlzdGljLmMKQEAg
+LTM0LDcgKzM0LDcgQEAgc3RhdGlzdGljX210KGNvbnN0IHN0cnVjdCBza19idWZmICpza2IsIHN0
+cnVjdCB4dF9hY3Rpb25fcGFyYW0gKnBhcikKIAogCXN3aXRjaCAoaW5mby0+bW9kZSkgewogCWNh
+c2UgWFRfU1RBVElTVElDX01PREVfUkFORE9NOgotCQlpZiAoKHByYW5kb21fdTMyKCkgJiAweDdG
+RkZGRkZGKSA8IGluZm8tPnUucmFuZG9tLnByb2JhYmlsaXR5KQorCQlpZiAoKGdldF9yYW5kb21f
+dTMyKCkgJiAweDdGRkZGRkZGKSA8IGluZm8tPnUucmFuZG9tLnByb2JhYmlsaXR5KQogCQkJcmV0
+ID0gIXJldDsKIAkJYnJlYWs7CiAJY2FzZSBYVF9TVEFUSVNUSUNfTU9ERV9OVEg6CmRpZmYgLS1n
+aXQgYS9uZXQvb3BlbnZzd2l0Y2gvYWN0aW9ucy5jIGIvbmV0L29wZW52c3dpdGNoL2FjdGlvbnMu
+YwppbmRleCA4NjhkYjQ2NjlhMjkuLmNhM2ViZmRiMzAyMyAxMDA2NDQKLS0tIGEvbmV0L29wZW52
+c3dpdGNoL2FjdGlvbnMuYworKysgYi9uZXQvb3BlbnZzd2l0Y2gvYWN0aW9ucy5jCkBAIC0xMDMz
+LDcgKzEwMzMsNyBAQCBzdGF0aWMgaW50IHNhbXBsZShzdHJ1Y3QgZGF0YXBhdGggKmRwLCBzdHJ1
+Y3Qgc2tfYnVmZiAqc2tiLAogCWFjdGlvbnMgPSBubGFfbmV4dChzYW1wbGVfYXJnLCAmcmVtKTsK
+IAogCWlmICgoYXJnLT5wcm9iYWJpbGl0eSAhPSBVMzJfTUFYKSAmJgotCSAgICAoIWFyZy0+cHJv
+YmFiaWxpdHkgfHwgcHJhbmRvbV91MzIoKSA+IGFyZy0+cHJvYmFiaWxpdHkpKSB7CisJICAgICgh
+YXJnLT5wcm9iYWJpbGl0eSB8fCBnZXRfcmFuZG9tX3UzMigpID4gYXJnLT5wcm9iYWJpbGl0eSkp
+IHsKIAkJaWYgKGxhc3QpCiAJCQljb25zdW1lX3NrYihza2IpOwogCQlyZXR1cm4gMDsKZGlmZiAt
+LWdpdCBhL25ldC9zY2hlZC9zY2hfY2FrZS5jIGIvbmV0L3NjaGVkL3NjaF9jYWtlLmMKaW5kZXgg
+NjM3ZWYxNzU3OTMxLi40OGUzZTA1MjI4YTEgMTAwNjQ0Ci0tLSBhL25ldC9zY2hlZC9zY2hfY2Fr
+ZS5jCisrKyBiL25ldC9zY2hlZC9zY2hfY2FrZS5jCkBAIC01NzMsNyArNTczLDcgQEAgc3RhdGlj
+IGJvb2wgY29iYWx0X3Nob3VsZF9kcm9wKHN0cnVjdCBjb2JhbHRfdmFycyAqdmFycywKIAogCS8q
+IFNpbXBsZSBCTFVFIGltcGxlbWVudGF0aW9uLiAgTGFjayBvZiBFQ04gaXMgZGVsaWJlcmF0ZS4g
+Ki8KIAlpZiAodmFycy0+cF9kcm9wKQotCQlkcm9wIHw9IChwcmFuZG9tX3UzMigpIDwgdmFycy0+
+cF9kcm9wKTsKKwkJZHJvcCB8PSAoZ2V0X3JhbmRvbV91MzIoKSA8IHZhcnMtPnBfZHJvcCk7CiAK
+IAkvKiBPdmVybG9hZCB0aGUgZHJvcF9uZXh0IGZpZWxkIGFzIGFuIGFjdGl2aXR5IHRpbWVvdXQg
+Ki8KIAlpZiAoIXZhcnMtPmNvdW50KQpkaWZmIC0tZ2l0IGEvbmV0L3NjaGVkL3NjaF9uZXRlbS5j
+IGIvbmV0L3NjaGVkL3NjaF9uZXRlbS5jCmluZGV4IDNjYTMyMGYxYTAzMS4uODhjMWZhMmUxZDE1
+IDEwMDY0NAotLS0gYS9uZXQvc2NoZWQvc2NoX25ldGVtLmMKKysrIGIvbmV0L3NjaGVkL3NjaF9u
+ZXRlbS5jCkBAIC0xNzEsNyArMTcxLDcgQEAgc3RhdGljIGlubGluZSBzdHJ1Y3QgbmV0ZW1fc2ti
+X2NiICpuZXRlbV9za2JfY2Ioc3RydWN0IHNrX2J1ZmYgKnNrYikKIHN0YXRpYyB2b2lkIGluaXRf
+Y3JhbmRvbShzdHJ1Y3QgY3JuZHN0YXRlICpzdGF0ZSwgdW5zaWduZWQgbG9uZyByaG8pCiB7CiAJ
+c3RhdGUtPnJobyA9IHJobzsKLQlzdGF0ZS0+bGFzdCA9IHByYW5kb21fdTMyKCk7CisJc3RhdGUt
+Pmxhc3QgPSBnZXRfcmFuZG9tX3UzMigpOwogfQogCiAvKiBnZXRfY3JhbmRvbSAtIGNvcnJlbGF0
+ZWQgcmFuZG9tIG51bWJlciBnZW5lcmF0b3IKQEAgLTE4NCw5ICsxODQsOSBAQCBzdGF0aWMgdTMy
+IGdldF9jcmFuZG9tKHN0cnVjdCBjcm5kc3RhdGUgKnN0YXRlKQogCXVuc2lnbmVkIGxvbmcgYW5z
+d2VyOwogCiAJaWYgKCFzdGF0ZSB8fCBzdGF0ZS0+cmhvID09IDApCS8qIG5vIGNvcnJlbGF0aW9u
+ICovCi0JCXJldHVybiBwcmFuZG9tX3UzMigpOworCQlyZXR1cm4gZ2V0X3JhbmRvbV91MzIoKTsK
+IAotCXZhbHVlID0gcHJhbmRvbV91MzIoKTsKKwl2YWx1ZSA9IGdldF9yYW5kb21fdTMyKCk7CiAJ
+cmhvID0gKHU2NClzdGF0ZS0+cmhvICsgMTsKIAlhbnN3ZXIgPSAodmFsdWUgKiAoKDF1bGw8PDMy
+KSAtIHJobykgKyBzdGF0ZS0+bGFzdCAqIHJobykgPj4gMzI7CiAJc3RhdGUtPmxhc3QgPSBhbnN3
+ZXI7CkBAIC0yMDAsNyArMjAwLDcgQEAgc3RhdGljIHUzMiBnZXRfY3JhbmRvbShzdHJ1Y3QgY3Ju
+ZHN0YXRlICpzdGF0ZSkKIHN0YXRpYyBib29sIGxvc3NfNHN0YXRlKHN0cnVjdCBuZXRlbV9zY2hl
+ZF9kYXRhICpxKQogewogCXN0cnVjdCBjbGdzdGF0ZSAqY2xnID0gJnEtPmNsZzsKLQl1MzIgcm5k
+ID0gcHJhbmRvbV91MzIoKTsKKwl1MzIgcm5kID0gZ2V0X3JhbmRvbV91MzIoKTsKIAogCS8qCiAJ
+ICogTWFrZXMgYSBjb21wYXJpc29uIGJldHdlZW4gcm5kIGFuZCB0aGUgdHJhbnNpdGlvbgpAQCAt
+MjY4LDE1ICsyNjgsMTUgQEAgc3RhdGljIGJvb2wgbG9zc19naWxiX2VsbChzdHJ1Y3QgbmV0ZW1f
+c2NoZWRfZGF0YSAqcSkKIAogCXN3aXRjaCAoY2xnLT5zdGF0ZSkgewogCWNhc2UgR09PRF9TVEFU
+RToKLQkJaWYgKHByYW5kb21fdTMyKCkgPCBjbGctPmExKQorCQlpZiAoZ2V0X3JhbmRvbV91MzIo
+KSA8IGNsZy0+YTEpCiAJCQljbGctPnN0YXRlID0gQkFEX1NUQVRFOwotCQlpZiAocHJhbmRvbV91
+MzIoKSA8IGNsZy0+YTQpCisJCWlmIChnZXRfcmFuZG9tX3UzMigpIDwgY2xnLT5hNCkKIAkJCXJl
+dHVybiB0cnVlOwogCQlicmVhazsKIAljYXNlIEJBRF9TVEFURToKLQkJaWYgKHByYW5kb21fdTMy
+KCkgPCBjbGctPmEyKQorCQlpZiAoZ2V0X3JhbmRvbV91MzIoKSA8IGNsZy0+YTIpCiAJCQljbGct
+PnN0YXRlID0gR09PRF9TVEFURTsKLQkJaWYgKHByYW5kb21fdTMyKCkgPiBjbGctPmEzKQorCQlp
+ZiAoZ2V0X3JhbmRvbV91MzIoKSA+IGNsZy0+YTMpCiAJCQlyZXR1cm4gdHJ1ZTsKIAl9CiAKQEAg
+LTYzMiw3ICs2MzIsNyBAQCBzdGF0aWMgdm9pZCBnZXRfc2xvdF9uZXh0KHN0cnVjdCBuZXRlbV9z
+Y2hlZF9kYXRhICpxLCB1NjQgbm93KQogCiAJaWYgKCFxLT5zbG90X2Rpc3QpCiAJCW5leHRfZGVs
+YXkgPSBxLT5zbG90X2NvbmZpZy5taW5fZGVsYXkgKwotCQkJCShwcmFuZG9tX3UzMigpICoKKwkJ
+CQkoZ2V0X3JhbmRvbV91MzIoKSAqCiAJCQkJIChxLT5zbG90X2NvbmZpZy5tYXhfZGVsYXkgLQog
+CQkJCSAgcS0+c2xvdF9jb25maWcubWluX2RlbGF5KSA+PiAzMik7CiAJZWxzZQpkaWZmIC0tZ2l0
+IGEvbmV0L3N1bnJwYy9hdXRoX2dzcy9nc3Nfa3JiNV93cmFwLmMgYi9uZXQvc3VucnBjL2F1dGhf
+Z3NzL2dzc19rcmI1X3dyYXAuYwppbmRleCA1Zjk2ZTc1ZjllZWMuLjQ4MzM3Njg3ODQ4YyAxMDA2
+NDQKLS0tIGEvbmV0L3N1bnJwYy9hdXRoX2dzcy9nc3Nfa3JiNV93cmFwLmMKKysrIGIvbmV0L3N1
+bnJwYy9hdXRoX2dzcy9nc3Nfa3JiNV93cmFwLmMKQEAgLTEzMCw4ICsxMzAsOCBAQCBnc3Nfa3Ji
+NV9tYWtlX2NvbmZvdW5kZXIoY2hhciAqcCwgdTMyIGNvbmZsZW4pCiAKIAkvKiBpbml0aWFsaXpl
+IHRvIHJhbmRvbSB2YWx1ZSAqLwogCWlmIChpID09IDApIHsKLQkJaSA9IHByYW5kb21fdTMyKCk7
+Ci0JCWkgPSAoaSA8PCAzMikgfCBwcmFuZG9tX3UzMigpOworCQlpID0gZ2V0X3JhbmRvbV91MzIo
+KTsKKwkJaSA9IChpIDw8IDMyKSB8IGdldF9yYW5kb21fdTMyKCk7CiAJfQogCiAJc3dpdGNoIChj
+b25mbGVuKSB7CmRpZmYgLS1naXQgYS9uZXQvc3VucnBjL3hwcnQuYyBiL25ldC9zdW5ycGMveHBy
+dC5jCmluZGV4IGY4ZmFlNzgxNTY0OS4uOTQwNzAwN2Y0N2FlIDEwMDY0NAotLS0gYS9uZXQvc3Vu
+cnBjL3hwcnQuYworKysgYi9uZXQvc3VucnBjL3hwcnQuYwpAQCAtMTg2OCw3ICsxODY4LDcgQEAg
+eHBydF9hbGxvY194aWQoc3RydWN0IHJwY194cHJ0ICp4cHJ0KQogc3RhdGljIHZvaWQKIHhwcnRf
+aW5pdF94aWQoc3RydWN0IHJwY194cHJ0ICp4cHJ0KQogewotCXhwcnQtPnhpZCA9IHByYW5kb21f
+dTMyKCk7CisJeHBydC0+eGlkID0gZ2V0X3JhbmRvbV91MzIoKTsKIH0KIAogc3RhdGljIHZvaWQK
+ZGlmZiAtLWdpdCBhL25ldC91bml4L2FmX3VuaXguYyBiL25ldC91bml4L2FmX3VuaXguYwppbmRl
+eCBiZjMzOGI3ODJmYzQuLjM1YmQ4MTMyMTEzZiAxMDA2NDQKLS0tIGEvbmV0L3VuaXgvYWZfdW5p
+eC5jCisrKyBiL25ldC91bml4L2FmX3VuaXguYwpAQCAtMTExNiw3ICsxMTE2LDcgQEAgc3RhdGlj
+IGludCB1bml4X2F1dG9iaW5kKHN0cnVjdCBzb2NrICpzaykKIAlhZGRyLT5uYW1lLT5zdW5fZmFt
+aWx5ID0gQUZfVU5JWDsKIAlyZWZjb3VudF9zZXQoJmFkZHItPnJlZmNudCwgMSk7CiAKLQlvcmRl
+cm51bSA9IHByYW5kb21fdTMyKCk7CisJb3JkZXJudW0gPSBnZXRfcmFuZG9tX3UzMigpOwogCWxh
+c3RudW0gPSBvcmRlcm51bSAmIDB4RkZGRkY7CiByZXRyeToKIAlvcmRlcm51bSA9IChvcmRlcm51
+bSArIDEpICYgMHhGRkZGRjsKLS0gCjIuMzcuMwoKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5n
+IGxpc3QKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1t
+dGQvCg==
 
