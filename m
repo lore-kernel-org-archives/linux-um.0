@@ -1,15 +1,15 @@
 Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
-Received: from ams.source.kernel.org ([145.40.68.75])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1of7pW-002owm-Mu
-	for linux-um@lists.infradead.org; Sun, 02 Oct 2022 22:53:04 +0000
-From: Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 9/9] arch: um: Mark the stack non-executable to fix a binutils warning
-Date: Sun,  2 Oct 2022 18:52:36 -0400
-Message-Id: <20221002225236.239675-9-sashal@kernel.org>
-In-Reply-To: <20221002225236.239675-1-sashal@kernel.org>
-References: <20221002225236.239675-1-sashal@kernel.org>
+Date: Mon, 10 Oct 2022 21:00:08 -0600
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: Re: [PATCH v6 3/7] treewide: use get_random_{u8,u16}() when
+ possible, part 1
+Message-ID: <Y0TcOH/BDfg5c1gj@zx2c4.com>
+References: <20221010230613.1076905-1-Jason@zx2c4.com>
+ <20221010230613.1076905-4-Jason@zx2c4.com>
+ <MW5PR84MB18421AC962BE140DDEB58A8BAB239@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <MW5PR84MB18421AC962BE140DDEB58A8BAB239@MW5PR84MB1842.NAMPRD84.PROD.OUTLOOK.COM>
 List-Id: <linux-um.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
@@ -22,89 +22,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc: David Gow <davidgow@google.com>, Lukas Straub <lukasstraub2@web.de>, Randy Dunlap <rdunlap@infradead.org>, Richard Weinberger <richard@nod.at>, Sasha Levin <sashal@kernel.org>, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, trishalfonso@google.com, andreyknvl@gmail.com, linux-um@lists.infradead.org
+To: "Elliott, Robert (Servers)" <elliott@hpe.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "patches@lists.linux.dev" <patches@lists.linux.dev>, Andreas Noever <andreas.noever@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Borislav Petkov <bp@alien8.de>, Catalin Marinas <catalin.marinas@arm.com>, Christoph =?utf-8?Q?B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>, Christoph Hellwig <hch@lst.de>, Christophe Leroy <christophe.leroy@csgroup.eu>, Daniel Borkmann <daniel@iogearbox.net>, Dave Airlie <airlied@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, "David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Florian Westphal <fw@strlen.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "H . Peter Anvin" <hpa@zytor.com>, Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Herbert Xu <herbert@gondor.apana.org.au>, Huacai Chen <chenhuacai@kernel.org>, Hugh Dickins <hughd@google.com>, Jakub Kicinski <kuba@kernel.org>, "James E . J . Bottomley" <jejb@linux.ibm.com>, Jan Kara <jack@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>, Johannes Berg <johannes@sipsolutions.net>, Jonathan Corbet <corbet@lwn.net>, Jozsef Kadlecsik <kadlec@netfilter.org>, KP Singh <kpsingh@kernel.org>, Kees Cook <keescook@chromium.org>, Marco Elver <elver@google.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Pablo Neira Ayuso <pablo@netfilter.org>, Paolo Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Theodore Ts'o <tytso@mit.edu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner <tglx@linutronix.de>, Thomas Graf <tgraf@suug.ch>, Ulf Hansson <ulf.hansson@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>, WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>, Yury Norov <yury.norov@gmail.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>, "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>, "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>, "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>, "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>, Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
 
-From: David Gow <davidgow@google.com>
+On Tue, Oct 11, 2022 at 01:18:40AM +0000, Elliott, Robert (Servers) wrote:
+> 
+> > diff --git a/crypto/testmgr.c b/crypto/testmgr.c
+> ...
+> > @@ -944,7 +944,7 @@ static void generate_random_bytes(u8 *buf, size_t count)
+> >  	default:
+> >  		/* Fully random bytes */
+> >  		for (i = 0; i < count; i++)
+> > -			buf[i] = (u8)prandom_u32();
+> > +			buf[i] = get_random_u8();
+> 
+> Should that whole for loop be replaced with this?
+>     get_random_bytes(buf, count);
 
-[ Upstream commit bd71558d585ac61cfd799db7f25e78dca404dd7a ]
+Wow, that's kind of grotesque. Yea, it certainly should. But that's
+beyond the scope of this patchset. I'll send a follow-up patch just for
+this case to Herbert after this cleanup lands, though.
 
-Since binutils 2.39, ld will print a warning if any stack section is
-executable, which is the default for stack sections on files without a
-.note.GNU-stack section.
-
-This was fixed for x86 in commit ffcf9c5700e4 ("x86: link vdso and boot with -z noexecstack --no-warn-rwx-segments"),
-but remained broken for UML, resulting in several warnings:
-
-/usr/bin/ld: warning: arch/x86/um/vdso/vdso.o: missing .note.GNU-stack section implies executable stack
-/usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
-/usr/bin/ld: warning: .tmp_vmlinux.kallsyms1 has a LOAD segment with RWX permissions
-/usr/bin/ld: warning: .tmp_vmlinux.kallsyms1.o: missing .note.GNU-stack section implies executable stack
-/usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
-/usr/bin/ld: warning: .tmp_vmlinux.kallsyms2 has a LOAD segment with RWX permissions
-/usr/bin/ld: warning: .tmp_vmlinux.kallsyms2.o: missing .note.GNU-stack section implies executable stack
-/usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
-/usr/bin/ld: warning: vmlinux has a LOAD segment with RWX permissions
-
-Link both the VDSO and vmlinux with -z noexecstack, fixing the warnings
-about .note.GNU-stack sections. In addition, pass --no-warn-rwx-segments
-to dodge the remaining warnings about LOAD segments with RWX permissions
-in the kallsyms objects. (Note that this flag is apparently not
-available on lld, so hide it behind a test for BFD, which is what the
-x86 patch does.)
-
-Link: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ffcf9c5700e49c0aee42dcba9a12ba21338e8136
-Link: https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=ba951afb99912da01a6e8434126b8fac7aa75107
-Signed-off-by: David Gow <davidgow@google.com>
-Reviewed-by: Lukas Straub <lukasstraub2@web.de>
-Tested-by: Lukas Straub <lukasstraub2@web.de>
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/um/Makefile          | 8 ++++++++
- arch/x86/um/vdso/Makefile | 2 +-
- 2 files changed, 9 insertions(+), 1 deletion(-)
-
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index 275f5ffdf6f0..773120be0f56 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -132,10 +132,18 @@ export LDS_ELF_FORMAT := $(ELF_FORMAT)
- # The wrappers will select whether using "malloc" or the kernel allocator.
- LINK_WRAPS = -Wl,--wrap,malloc -Wl,--wrap,free -Wl,--wrap,calloc
- 
-+# Avoid binutils 2.39+ warnings by marking the stack non-executable and
-+# ignorning warnings for the kallsyms sections.
-+LDFLAGS_EXECSTACK = -z noexecstack
-+ifeq ($(CONFIG_LD_IS_BFD),y)
-+LDFLAGS_EXECSTACK += $(call ld-option,--no-warn-rwx-segments)
-+endif
-+
- LD_FLAGS_CMDLINE = $(foreach opt,$(KBUILD_LDFLAGS),-Wl,$(opt))
- 
- # Used by link-vmlinux.sh which has special support for um link
- export CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS) $(LD_FLAGS_CMDLINE)
-+export LDFLAGS_vmlinux := $(LDFLAGS_EXECSTACK)
- 
- # When cleaning we don't include .config, so we don't include
- # TT or skas makefiles and don't clean skas_ptregs.h.
-diff --git a/arch/x86/um/vdso/Makefile b/arch/x86/um/vdso/Makefile
-index 0caddd6acb22..bec115036f87 100644
---- a/arch/x86/um/vdso/Makefile
-+++ b/arch/x86/um/vdso/Makefile
-@@ -62,7 +62,7 @@ quiet_cmd_vdso = VDSO    $@
- 		       -Wl,-T,$(filter %.lds,$^) $(filter %.o,$^) && \
- 		 sh $(srctree)/$(src)/checkundef.sh '$(NM)' '$@'
- 
--VDSO_LDFLAGS = -fPIC -shared -Wl,--hash-style=sysv
-+VDSO_LDFLAGS = -fPIC -shared -Wl,--hash-style=sysv -z noexecstack
- GCOV_PROFILE := n
- 
- #
--- 
-2.35.1
-
+Jason
 
 _______________________________________________
 linux-um mailing list
