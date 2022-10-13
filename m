@@ -1,122 +1,87 @@
-Return-Path: <linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org>
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH v3 5/5] prandom: remove unused functions
-Date: Thu,  6 Oct 2022 10:53:46 -0600
-Message-Id: <20221006165346.73159-6-Jason@zx2c4.com>
-In-Reply-To: <20221006165346.73159-1-Jason@zx2c4.com>
-References: <20221006165346.73159-1-Jason@zx2c4.com>
+Return-Path: <linux-um-bounces+geert=linux-m68k.org@lists.infradead.org>
+Received: from mail-ej1-x631.google.com ([2a00:1450:4864:20::631])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1oj0tM-00CPB8-2N
+	for linux-um@lists.infradead.org; Thu, 13 Oct 2022 16:17:05 +0000
+Received: by mail-ej1-x631.google.com with SMTP id 13so5040528ejn.3
+        for <linux-um@lists.infradead.org>; Thu, 13 Oct 2022 09:16:56 -0700 (PDT)
+From: "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH] fs/hostfs: Replace kmap() with kmap_local_page()
+Date: Thu, 13 Oct 2022 18:17:00 +0200
+Message-Id: <20221013161700.11631-1-fmdefrancesco@gmail.com>
 MIME-Version: 1.0
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Sender: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-Errors-To: linux-mtd-bounces+geert=linux-m68k.org@lists.infradead.org
-To: linux-kernel@vger.kernel.org, patches@lists.linux.dev
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>, Andreas Noever <andreas.noever@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Borislav Petkov <bp@alien8.de>, Catalin Marinas <catalin.marinas@arm.com>, =?UTF-8?q?Christoph=20B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>, Christoph Hellwig <hch@lst.de>, Christophe Leroy <christophe.leroy@csgroup.eu>, Daniel Borkmann <daniel@iogearbox.net>, Dave Airlie <airlied@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, "David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Florian Westphal <fw@strlen.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "H . Peter Anvin" <hpa@zytor.com>, Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Herbert Xu <herbert@gondor.apana.org.au>, Huacai Chen <chenhuacai@kernel.org>, Hugh Dickins <hughd@google.com>, Jakub Kicinski <kuba@kernel.org>, "James E . J . Bottomley" <jejb@linux.ibm.com>, Jan Kara <jack@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>, Johannes Berg <johannes@sipsolutions.net>, Jonathan Corbet <corbet@lwn.net>, Jozsef Kadlecsik <kadlec@netfilter.org>, KP Singh <kpsingh@kernel.org>, Kees Cook <keescook@chromium.org>, Marco Elver <elver@google.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Pablo Neira Ayuso <pablo@netfilter.org>, Paolo Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Theodore Ts'o <tytso@mit.edu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner <tglx@linutronix.de>, Thomas Graf <tgraf@suug.ch>, Ulf Hansson <ulf.hansson@linaro.org>, Vignesh Raghavendra <vigneshr@ti.com>, WANG Xuerui <kernel@xen0n.name>, Will Deacon <will@kernel.org>, Yury Norov <yury.norov@gmail.com>, dri-devel@lists.freedesktop.org, kasan-dev@googlegroups.com, kernel-janitors@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org, linux-crypto@vger.kernel.org, linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-media@vger.kernel.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org, linux-parisc@vger.kernel.org, linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org, linux-um@lists.infradead.org, linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
-List-ID: <linux-um.lists.infradead.org>
+List-Id: <linux-um.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-um/>
+List-Post: <mailto:linux-um@lists.infradead.org>
+List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
+ <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
+Errors-To: linux-um-bounces+geert=linux-m68k.org@lists.infradead.org
+To: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: "Fabio M. De Francesco" <fmdefrancesco@gmail.com>, "Venkataramanan, Anirudh" <anirudh.venkataramanan@intel.com>, Ira Weiny <ira.weiny@intel.com>
 
-With no callers left of prandom_u32() and prandom_bytes(), as well as
-get_random_int(), remove these deprecated wrappers, in favor of
-get_random_u32() and get_random_bytes().
-
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
----
- drivers/char/random.c   | 11 +++++------
- include/linux/prandom.h | 12 ------------
- include/linux/random.h  |  5 -----
- 3 files changed, 5 insertions(+), 23 deletions(-)
-
-diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 01acf235f263..2fe28eeb2f38 100644
---- a/drivers/char/random.c
-+++ b/drivers/char/random.c
-@@ -97,7 +97,7 @@ MODULE_PARM_DESC(ratelimit_disable, "Disable random ratelimit suppression");
-  * Returns whether or not the input pool has been seeded and thus guaranteed
-  * to supply cryptographically secure random numbers. This applies to: the
-  * /dev/urandom device, the get_random_bytes function, and the get_random_{u8,
-- * u16,u32,u64,int,long} family of functions.
-+ * u16,u32,u64,long} family of functions.
-  *
-  * Returns: true if the input pool has been seeded.
-  *          false if the input pool has not been seeded.
-@@ -161,15 +161,14 @@ EXPORT_SYMBOL(wait_for_random_bytes);
-  *	u16 get_random_u16()
-  *	u32 get_random_u32()
-  *	u64 get_random_u64()
-- *	unsigned int get_random_int()
-  *	unsigned long get_random_long()
-  *
-  * These interfaces will return the requested number of random bytes
-  * into the given buffer or as a return value. This is equivalent to
-- * a read from /dev/urandom. The u8, u16, u32, u64, int, and long
-- * family of functions may be higher performance for one-off random
-- * integers, because they do a bit of buffering and do not invoke
-- * reseeding until the buffer is emptied.
-+ * a read from /dev/urandom. The u8, u16, u32, u64, long family of
-+ * functions may be higher performance for one-off random integers,
-+ * because they do a bit of buffering and do not invoke reseeding
-+ * until the buffer is emptied.
-  *
-  *********************************************************************/
- 
-diff --git a/include/linux/prandom.h b/include/linux/prandom.h
-index 78db003bc290..e0a0759dd09c 100644
---- a/include/linux/prandom.h
-+++ b/include/linux/prandom.h
-@@ -12,18 +12,6 @@
- #include <linux/percpu.h>
- #include <linux/random.h>
- 
--/* Deprecated: use get_random_u32 instead. */
--static inline u32 prandom_u32(void)
--{
--	return get_random_u32();
--}
--
--/* Deprecated: use get_random_bytes instead. */
--static inline void prandom_bytes(void *buf, size_t nbytes)
--{
--	return get_random_bytes(buf, nbytes);
--}
--
- struct rnd_state {
- 	__u32 s1, s2, s3, s4;
- };
-diff --git a/include/linux/random.h b/include/linux/random.h
-index 08322f700cdc..147a5e0d0b8e 100644
---- a/include/linux/random.h
-+++ b/include/linux/random.h
-@@ -42,10 +42,6 @@ u8 get_random_u8(void);
- u16 get_random_u16(void);
- u32 get_random_u32(void);
- u64 get_random_u64(void);
--static inline unsigned int get_random_int(void)
--{
--	return get_random_u32();
--}
- static inline unsigned long get_random_long(void)
- {
- #if BITS_PER_LONG == 64
-@@ -100,7 +96,6 @@ declare_get_random_var_wait(u8, u8)
- declare_get_random_var_wait(u16, u16)
- declare_get_random_var_wait(u32, u32)
- declare_get_random_var_wait(u64, u32)
--declare_get_random_var_wait(int, unsigned int)
- declare_get_random_var_wait(long, unsigned long)
- #undef declare_get_random_var
- 
--- 
-2.37.3
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+VGhlIHVzZSBvZiBrbWFwKCkgaXMgYmVpbmcgZGVwcmVjYXRlZCBpbiBmYXZvciBvZiBrbWFwX2xv
+Y2FsX3BhZ2UoKS4KClRoZXJlIGFyZSB0d28gbWFpbiBwcm9ibGVtcyB3aXRoIGttYXAoKTogKDEp
+IEl0IGNvbWVzIHdpdGggYW4gb3ZlcmhlYWQgYXMKdGhlIG1hcHBpbmcgc3BhY2UgaXMgcmVzdHJp
+Y3RlZCBhbmQgcHJvdGVjdGVkIGJ5IGEgZ2xvYmFsIGxvY2sgZm9yCnN5bmNocm9uaXphdGlvbiBh
+bmQgKDIpIGl0IGFsc28gcmVxdWlyZXMgZ2xvYmFsIFRMQiBpbnZhbGlkYXRpb24gd2hlbiB0aGUK
+a21hcOKAmXMgcG9vbCB3cmFwcyBhbmQgaXQgbWlnaHQgYmxvY2sgd2hlbiB0aGUgbWFwcGluZyBz
+cGFjZSBpcyBmdWxseQp1dGlsaXplZCB1bnRpbCBhIHNsb3QgYmVjb21lcyBhdmFpbGFibGUuCgpX
+aXRoIGttYXBfbG9jYWxfcGFnZSgpIHRoZSBtYXBwaW5ncyBhcmUgcGVyIHRocmVhZCwgQ1BVIGxv
+Y2FsLCBjYW4gdGFrZQpwYWdlIGZhdWx0cywgYW5kIGNhbiBiZSBjYWxsZWQgZnJvbSBhbnkgY29u
+dGV4dCAoaW5jbHVkaW5nIGludGVycnVwdHMpLgpJdCBpcyBmYXN0ZXIgdGhhbiBrbWFwKCkgaW4g
+a2VybmVscyB3aXRoIEhJR0hNRU0gZW5hYmxlZC4gRnVydGhlcm1vcmUsCnRoZSB0YXNrcyBjYW4g
+YmUgcHJlZW1wdGVkIGFuZCwgd2hlbiB0aGV5IGFyZSBzY2hlZHVsZWQgdG8gcnVuIGFnYWluLCB0
+aGUKa2VybmVsIHZpcnR1YWwgYWRkcmVzc2VzIGFyZSByZXN0b3JlZCBhbmQgc3RpbGwgdmFsaWQu
+CgpUaGVyZWZvcmUsIHJlcGxhY2Uga21hcCgpIHdpdGgga21hcF9sb2NhbF9wYWdlKCkgaW4gaG9z
+dGZzX2tlcm4uYywgaXQKYmVpbmcgdGhlIG9ubHkgZmlsZSB3aXRoIGttYXAoKSBjYWxsIHNpdGVz
+IGN1cnJlbnRseSBsZWZ0IGluIGZzL2hvc3Rmcy4KCkNjOiAiVmVua2F0YXJhbWFuYW4sIEFuaXJ1
+ZGgiIDxhbmlydWRoLnZlbmthdGFyYW1hbmFuQGludGVsLmNvbT4KU3VnZ2VzdGVkLWJ5OiBJcmEg
+V2VpbnkgPGlyYS53ZWlueUBpbnRlbC5jb20+ClNpZ25lZC1vZmYtYnk6IEZhYmlvIE0uIERlIEZy
+YW5jZXNjbyA8Zm1kZWZyYW5jZXNjb0BnbWFpbC5jb20+Ci0tLQoKVGhlc2UgY2hhbmdlcyBhcmUg
+bm90IHRlc3RlZCBpbiBhIDMyIGJpdHMgVk0gYXMgSSB1c2UgdG8gZG8gd2l0aCBvdGhlciBtb3Jl
+CnByb2JsZW1hdGljIGNvbnZlcnNpb25zLiBNZXJlIGNvZGUgaW5zcGVjdGlvbiBtYWtlcyBtZSBy
+ZWFzb25hYmx5IHRoaW5rCnRoYXQgdGhlIHJ1bGVzIG9mIGxvY2FsIG1hcHBpbmdzIGFyZSBub3Qg
+dmlvbGF0ZWQgYnkgdGhpcyBjb252ZXJzaW9uLgoKRnVydGhlcm1vcmUsIEkgaGF2ZSBubyBpZGVh
+IGhvdyB0byB0ZXN0IHRoaXMgY29kZS4gSWYgbWFpbnRhaW5lcnMgdGhpbmsKdGhhdCB0ZXN0cyBh
+cmUgYWJzb2x1dGVseSBuZWNlc3NhcnksIGFueSBoaW50cyBhYm91dCBob3cgdG8gcGVyZm9ybSB0
+aGVtCndvdWxkIGJlIGdyZWF0bHkgYXBwcmVjaWF0ZWQuCgogZnMvaG9zdGZzL2hvc3Rmc19rZXJu
+LmMgfCAxNSArKysrKysrKy0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyks
+IDcgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZnMvaG9zdGZzL2hvc3Rmc19rZXJuLmMgYi9m
+cy9ob3N0ZnMvaG9zdGZzX2tlcm4uYwppbmRleCAwNzg4MWI3NmQ0MmYuLjBjOWY4OTM1MjYwMSAx
+MDA2NDQKLS0tIGEvZnMvaG9zdGZzL2hvc3Rmc19rZXJuLmMKKysrIGIvZnMvaG9zdGZzL2hvc3Rm
+c19rZXJuLmMKQEAgLTQxMiw3ICs0MTIsNyBAQCBzdGF0aWMgaW50IGhvc3Rmc193cml0ZXBhZ2Uo
+c3RydWN0IHBhZ2UgKnBhZ2UsIHN0cnVjdCB3cml0ZWJhY2tfY29udHJvbCAqd2JjKQogCWlmIChw
+YWdlLT5pbmRleCA+PSBlbmRfaW5kZXgpCiAJCWNvdW50ID0gaW5vZGUtPmlfc2l6ZSAmIChQQUdF
+X1NJWkUtMSk7CiAKLQlidWZmZXIgPSBrbWFwKHBhZ2UpOworCWJ1ZmZlciA9IGttYXBfbG9jYWxf
+cGFnZShwYWdlKTsKIAogCWVyciA9IHdyaXRlX2ZpbGUoSE9TVEZTX0koaW5vZGUpLT5mZCwgJmJh
+c2UsIGJ1ZmZlciwgY291bnQpOwogCWlmIChlcnIgIT0gY291bnQpIHsKQEAgLTQyOCw5ICs0Mjgs
+OSBAQCBzdGF0aWMgaW50IGhvc3Rmc193cml0ZXBhZ2Uoc3RydWN0IHBhZ2UgKnBhZ2UsIHN0cnVj
+dCB3cml0ZWJhY2tfY29udHJvbCAqd2JjKQogCWVyciA9IDA7CiAKICBvdXQ6Ci0Ja3VubWFwKHBh
+Z2UpOwotCisJa3VubWFwX2xvY2FsKGJ1ZmZlcik7CiAJdW5sb2NrX3BhZ2UocGFnZSk7CisKIAly
+ZXR1cm4gZXJyOwogfQogCkBAIC00NDEsNyArNDQxLDcgQEAgc3RhdGljIGludCBob3N0ZnNfcmVh
+ZF9mb2xpbyhzdHJ1Y3QgZmlsZSAqZmlsZSwgc3RydWN0IGZvbGlvICpmb2xpbykKIAlsb2ZmX3Qg
+c3RhcnQgPSBwYWdlX29mZnNldChwYWdlKTsKIAlpbnQgYnl0ZXNfcmVhZCwgcmV0ID0gMDsKIAot
+CWJ1ZmZlciA9IGttYXAocGFnZSk7CisJYnVmZmVyID0ga21hcF9sb2NhbF9wYWdlKHBhZ2UpOwog
+CWJ5dGVzX3JlYWQgPSByZWFkX2ZpbGUoRklMRV9IT1NURlNfSShmaWxlKS0+ZmQsICZzdGFydCwg
+YnVmZmVyLAogCQkJUEFHRV9TSVpFKTsKIAlpZiAoYnl0ZXNfcmVhZCA8IDApIHsKQEAgLTQ1OCw4
+ICs0NTgsOSBAQCBzdGF0aWMgaW50IGhvc3Rmc19yZWFkX2ZvbGlvKHN0cnVjdCBmaWxlICpmaWxl
+LCBzdHJ1Y3QgZm9saW8gKmZvbGlvKQogCiAgb3V0OgogCWZsdXNoX2RjYWNoZV9wYWdlKHBhZ2Up
+OwotCWt1bm1hcChwYWdlKTsKKwlrdW5tYXBfbG9jYWwoYnVmZmVyKTsKIAl1bmxvY2tfcGFnZShw
+YWdlKTsKKwogCXJldHVybiByZXQ7CiB9CiAKQEAgLTQ4NCw5ICs0ODUsOSBAQCBzdGF0aWMgaW50
+IGhvc3Rmc193cml0ZV9lbmQoc3RydWN0IGZpbGUgKmZpbGUsIHN0cnVjdCBhZGRyZXNzX3NwYWNl
+ICptYXBwaW5nLAogCXVuc2lnbmVkIGZyb20gPSBwb3MgJiAoUEFHRV9TSVpFIC0gMSk7CiAJaW50
+IGVycjsKIAotCWJ1ZmZlciA9IGttYXAocGFnZSk7CisJYnVmZmVyID0ga21hcF9sb2NhbF9wYWdl
+KHBhZ2UpOwogCWVyciA9IHdyaXRlX2ZpbGUoRklMRV9IT1NURlNfSShmaWxlKS0+ZmQsICZwb3Ms
+IGJ1ZmZlciArIGZyb20sIGNvcGllZCk7Ci0Ja3VubWFwKHBhZ2UpOworCWt1bm1hcF9sb2NhbChi
+dWZmZXIpOwogCiAJaWYgKCFQYWdlVXB0b2RhdGUocGFnZSkgJiYgZXJyID09IFBBR0VfU0laRSkK
+IAkJU2V0UGFnZVVwdG9kYXRlKHBhZ2UpOwotLSAKMi4zNy4zCgoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4
+LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9saW51eC11bQo=
 
