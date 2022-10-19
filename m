@@ -4,95 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF79CC4332F
-	for <linux-um@archiver.kernel.org>; Mon, 17 Oct 2022 12:10:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6310C4332F
+	for <linux-um@archiver.kernel.org>; Wed, 19 Oct 2022 01:32:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:Date:
-	Message-ID:From:References:CC:To:Subject:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=04qt5ZcxtiPjTTXRiI08y2oxzk7I+yIAmxzfhXMHANE=; b=4/wmVQfwf1rzGFNvT4Ldoo9xym
-	FX4A+GjmQ7sUQusy1olDKJI68QAhiwECBmnWiaMj/SEbNuORmpUPa2yme6i3ow86la0cikLjor1pi
-	0G9Ginn+QKU9nWyg0zQu8o+mYS+EFV/vE3bAre38/QOrRPxqJMadr+PjpTKS/yF4Ds3zZfASupnaL
-	Y9pTb1fVpoU8eXs7JOGLc3IgYgSot7XNEDjc56MTeWn6ZvyR++AjGoo/7tBzBtXhHU/935cA/IOLX
-	otfveyZ7ejgL8vJKTBwUSKKoWkiPwWNhTFZqla8MHGIgVvzs4NhVYDj0JsBu5OiBJBEk8wfEJbhxY
-	BSYfFkbQ==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=cINg51x8RZv+ADf4IulAB+Rf4WeaOPRSjjETI79Y378=; b=TSxZ8gk1RkmORo
+	xisPV6VZfqEzl/6AFfWo8ikk6enjcZcG5FtTkG1/8JvhS14MqwZY9Zlis96S72e+wwT0Xg9T+OX49
+	uAf4g5ThwXYNTOx27i+YY9DhSUfnD+yHp1GqAXVOcG/wMY20hks/R4Xic3ICiNmX8xG7razNaLQKl
+	PPs+ZRHeiDmONpjqCskvfD0AuqNELpc2IHLCN5qcL+ooHwiXsPm4wAjm3HF1+bXDL/hXBjeO5UYCh
+	a4JeKuEGhfWz3+Vfe0W46aNKQh5ucFkvlOybdwBosRSkcMQq2ZFpBZP3H5oOupmg7cIfM4pRzs3ju
+	qQEfqef4DKbMXChDL/uA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1okOwe-00BPOl-83; Mon, 17 Oct 2022 12:10:12 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1okxwZ-00DHm9-FK; Wed, 19 Oct 2022 01:32:27 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1okOmn-00BIpX-RJ; Mon, 17 Oct 2022 12:00:05 +0000
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Mrb7T71GfzpW32;
-	Mon, 17 Oct 2022 19:56:37 +0800 (CST)
-Received: from kwepemm600005.china.huawei.com (7.193.23.191) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 17 Oct 2022 19:59:34 +0800
-Received: from [10.67.103.158] (10.67.103.158) by
- kwepemm600005.china.huawei.com (7.193.23.191) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Mon, 17 Oct 2022 19:59:31 +0800
-Subject: Re: [PATCH v6 0/7] treewide cleanup of random integer usage
-To: "Jason A. Donenfeld" <Jason@zx2c4.com>, <linux-kernel@vger.kernel.org>,
-	<patches@lists.linux.dev>
-CC: Andreas Noever <andreas.noever@gmail.com>, Andrew Morton
-	<akpm@linux-foundation.org>, Andy Shevchenko
-	<andriy.shevchenko@linux.intel.com>, Borislav Petkov <bp@alien8.de>, "Catalin
- Marinas" <catalin.marinas@arm.com>, =?UTF-8?Q?Christoph_B=c3=b6hmwalder?=
-	<christoph.boehmwalder@linbit.com>, Christoph Hellwig <hch@lst.de>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>, Daniel Borkmann
-	<daniel@iogearbox.net>, Dave Airlie <airlied@redhat.com>, Dave Hansen
-	<dave.hansen@linux.intel.com>, "David S . Miller" <davem@davemloft.net>,
-	"Eric Dumazet" <edumazet@google.com>, Florian Westphal <fw@strlen.de>, "Greg
- Kroah-Hartman" <gregkh@linuxfoundation.org>, "H . Peter Anvin"
-	<hpa@zytor.com>, Heiko Carstens <hca@linux.ibm.com>, Helge Deller
-	<deller@gmx.de>, Herbert Xu <herbert@gondor.apana.org.au>, Huacai Chen
-	<chenhuacai@kernel.org>, Hugh Dickins <hughd@google.com>, Jakub Kicinski
-	<kuba@kernel.org>, "James E . J . Bottomley" <jejb@linux.ibm.com>, Jan Kara
-	<jack@suse.com>, Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe
-	<axboe@kernel.dk>, Johannes Berg <johannes@sipsolutions.net>, Jonathan Corbet
-	<corbet@lwn.net>, Jozsef Kadlecsik <kadlec@netfilter.org>, KP Singh
-	<kpsingh@kernel.org>, Kees Cook <keescook@chromium.org>, Marco Elver
-	<elver@google.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, "Michael
- Ellerman" <mpe@ellerman.id.au>, Pablo Neira Ayuso <pablo@netfilter.org>,
-	"Paolo Abeni" <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-	"Richard Weinberger" <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
-	"Theodore Ts'o" <tytso@mit.edu>, Thomas Bogendoerfer
-	<tsbogend@alpha.franken.de>, "Thomas Gleixner" <tglx@linutronix.de>, Thomas
- Graf <tgraf@suug.ch>, Ulf Hansson <ulf.hansson@linaro.org>, Vignesh
- Raghavendra <vigneshr@ti.com>, WANG Xuerui <kernel@xen0n.name>, Will Deacon
-	<will@kernel.org>, Yury Norov <yury.norov@gmail.com>,
-	<dri-devel@lists.freedesktop.org>, <kasan-dev@googlegroups.com>,
-	<kernel-janitors@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-block@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-	<linux-media@vger.kernel.org>, <linux-mips@vger.kernel.org>,
-	<linux-mm@kvack.org>, <linux-mmc@vger.kernel.org>,
-	<linux-mtd@lists.infradead.org>, <linux-nvme@lists.infradead.org>,
-	<linux-parisc@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-	<linux-s390@vger.kernel.org>, <linux-um@lists.infradead.org>,
-	<linux-usb@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
-	<linuxppc-dev@lists.ozlabs.org>, <loongarch@lists.linux.dev>,
-	<netdev@vger.kernel.org>, <sparclinux@vger.kernel.org>, <x86@kernel.org>
-References: <20221010230613.1076905-1-Jason@zx2c4.com>
-From: liulongfang <liulongfang@huawei.com>
-Message-ID: <8dad6a2c-9ef6-086e-0fb0-cd9115d4faca@huawei.com>
-Date: Mon, 17 Oct 2022 19:59:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	id 1okxwQ-00DHin-C0; Wed, 19 Oct 2022 01:32:22 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 3ABA7B81EAD;
+	Wed, 19 Oct 2022 01:32:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EE51C43150;
+	Wed, 19 Oct 2022 01:32:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1666143130;
+	bh=BEdeW5XOSC+LkftEadGT2mJyRRySUphBCqzKsA5bdU4=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=WOBs+LWVbOYcBtRshhQpHrRKdXE4XaQDkaZS8GZXORUyPEFD6tSvoKe/89Xrp08/U
+	 cR6G3DJiQXBegqdeyI1K0YhkBFK/G8KeXKm9xSe3gjptpA6rc18bFmuBoXqH/6bUL+
+	 3IJV/84ITqYxFkEnHMfGiNZE3uUH5tivQ/n8Zbd2sAhZlSJsFoEPH6EsZesmPzVufB
+	 WyAnCa31BFfVcsWplrWbx5j0TnNAv5CKmoVym88Nh99WhzQgp5/tfPfeolM88hujD6
+	 DukP9jzvnKYMeGbKxpYy8or5g9bDlSkfD8HLDf9zPkR120vkSlLtEWFdcW9fjXaLpT
+	 cGey+ck1NmhVA==
+Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-131dda37dddso19026896fac.0;
+        Tue, 18 Oct 2022 18:32:10 -0700 (PDT)
+X-Gm-Message-State: ACrzQf3DFVd6Sjdkt4rstnNIg1TOajtEPQH+U/Z2atnhAhFEmYs53Mqq
+	eCzAm8b8Us/VaTznuL+4cdljC5PUxe8csd2yiG0=
+X-Google-Smtp-Source: AMsMyM47deibPcGhC4jryYGu+IlMhS7a3zLF+2ymtnLQ7Z5k4SiTcgL0t1iujJRtiwDJH+/vXNhI+3EPm3oPh6lHPpo=
+X-Received: by 2002:a05:6870:5803:b0:12c:c3e0:99dc with SMTP id
+ r3-20020a056870580300b0012cc3e099dcmr19227231oap.19.1666143129318; Tue, 18
+ Oct 2022 18:32:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20221010230613.1076905-1-Jason@zx2c4.com>
-X-Originating-IP: [10.67.103.158]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600005.china.huawei.com (7.193.23.191)
-X-CFilter-Loop: Reflected
+References: <20221018074014.185687-1-wangkefeng.wang@huawei.com>
+In-Reply-To: <20221018074014.185687-1-wangkefeng.wang@huawei.com>
+From: Guo Ren <guoren@kernel.org>
+Date: Wed, 19 Oct 2022 09:31:56 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTRAvhWPf2ik7o3T8rxME=6kyxbZ8OESTsFVKTpSvGd13Q@mail.gmail.com>
+Message-ID: <CAJF2gTRAvhWPf2ik7o3T8rxME=6kyxbZ8OESTsFVKTpSvGd13Q@mail.gmail.com>
+Subject: Re: [PATCH] mm: remove kern_addr_valid() completely
+To: Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-alpha@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, 
+	linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, 
+	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, 
+	linux-mips@vger.kernel.org, openrisc@lists.librecores.org, 
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
+	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
+	linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, 
+	linux-fsdevel@vger.kernel.org, 
+	Richard Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, 
+	Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@kernel.org>, 
+	Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer <gerg@linux-m68k.org>, 
+	Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>, 
+	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, 
+	"James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, 
+	Christophe Leroy <christophe.leroy@csgroup.eu>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
+	Rich Felker <dalias@libc.org>, "David S . Miller" <davem@davemloft.net>, 
+	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H . Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221017_050002_286415_81A970B5 
-X-CRM114-Status: GOOD (  33.65  )
+X-CRM114-CacheID: sfid-20221018_183219_152665_3D2461E0 
+X-CRM114-Status: GOOD (  41.47  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,323 +105,633 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-T24gMjAyMi8xMC8xMSA3OjA2LCBKYXNvbiBBLiBEb25lbmZlbGQgV3JvdGU6Cj4gQ2hhbmdlcyB2
-NS0+djY6Cj4gLSBBZGRlZCBhIGZldyBtaXNzaW5nIGNvbnZlcnNpb25zIHRoYXQgd2VyZW4ndCBp
-biBteSBvbGRlciB0cmVlLCBzbyBub3cKPiAgIHRoaXMgc2hvdWxkIGJlIHJlYWR5IHRvIGdvLCBh
-cyB3ZWxsIGFzIGEgY291cGxlIG5pdHMgcGVvcGxlIGhhZCBmcm9tCj4gICB2NS4gQmFycmluZyBz
-b21ldGhpbmcgbGFyZ2UgYW5kIHVuZm9yZXNlZW4sIHRoaXMgaXMgdGhlICJmaW5hbAo+ICAgdmVy
-c2lvbiIsIGFzIHRoaXMgaXMgcmVhZHkgdG8gc2hpcC4gVGhhbmtzIHRvIGV2ZXJ5b25lIHdobyBy
-ZXZpZXdlZAo+ICAgdGhpcy4KPiAKPiBIaSBmb2xrcywKPiAKPiBUaGlzIGlzIGEgZml2ZSBwYXJ0
-IHRyZWV3aWRlIGNsZWFudXAgb2YgcmFuZG9tIGludGVnZXIgaGFuZGxpbmcuIFRoZQo+IHJ1bGVz
-IGZvciByYW5kb20gaW50ZWdlcnMgYXJlOgo+IAo+IC0gSWYgeW91IHdhbnQgYSBzZWN1cmUgb3Ig
-YW4gaW5zZWN1cmUgcmFuZG9tIHU2NCwgdXNlIGdldF9yYW5kb21fdTY0KCkuCj4gLSBJZiB5b3Ug
-d2FudCBhIHNlY3VyZSBvciBhbiBpbnNlY3VyZSByYW5kb20gdTMyLCB1c2UgZ2V0X3JhbmRvbV91
-MzIoKS4KPiAgICogVGhlIG9sZCBmdW5jdGlvbiBwcmFuZG9tX3UzMigpIGhhcyBiZWVuIGRlcHJl
-Y2F0ZWQgZm9yIGEgd2hpbGUgbm93Cj4gICAgIGFuZCBpcyBqdXN0IGEgd3JhcHBlciBhcm91bmQg
-Z2V0X3JhbmRvbV91MzIoKS4gU2FtZSBmb3IKPiAgICAgZ2V0X3JhbmRvbV9pbnQoKS4KPiAtIElm
-IHlvdSB3YW50IGEgc2VjdXJlIG9yIGFuIGluc2VjdXJlIHJhbmRvbSB1MTYsIHVzZSBnZXRfcmFu
-ZG9tX3UxNigpLgo+IC0gSWYgeW91IHdhbnQgYSBzZWN1cmUgb3IgYW4gaW5zZWN1cmUgcmFuZG9t
-IHU4LCB1c2UgZ2V0X3JhbmRvbV91OCgpLgo+IC0gSWYgeW91IHdhbnQgc2VjdXJlIG9yIGluc2Vj
-dXJlIHJhbmRvbSBieXRlcywgdXNlIGdldF9yYW5kb21fYnl0ZXMoKS4KPiAgICogVGhlIG9sZCBm
-dW5jdGlvbiBwcmFuZG9tX2J5dGVzKCkgaGFzIGJlZW4gZGVwcmVjYXRlZCBmb3IgYSB3aGlsZSBu
-b3cKPiAgICAgYW5kIGhhcyBsb25nIGJlZW4gYSB3cmFwcGVyIGFyb3VuZCBnZXRfcmFuZG9tX2J5
-dGVzKCkuCj4gLSBJZiB5b3Ugd2FudCBhIG5vbi11bmlmb3JtIHJhbmRvbSB1MzIsIHUxNiwgb3Ig
-dTggYm91bmRlZCBieSBhIGNlcnRhaW4KPiAgIG9wZW4gaW50ZXJ2YWwgbWF4aW11bSwgdXNlIHBy
-YW5kb21fdTMyX21heCgpLgo+ICAgKiBJIHNheSAibm9uLXVuaWZvcm0iLCBiZWNhdXNlIGl0IGRv
-ZXNuJ3QgZG8gYW55IHJlamVjdGlvbiBzYW1wbGluZyBvcgo+ICAgICBkaXZpc2lvbnMuIEhlbmNl
-LCBpdCBzdGF5cyB3aXRoaW4gdGhlIHByYW5kb21fKiBuYW1lc3BhY2UuCj4gCj4gVGhlc2UgcnVs
-ZXMgb3VnaHQgdG8gYmUgYXBwbGllZCB1bmlmb3JtbHksIHNvIHRoYXQgd2UgY2FuIGNsZWFuIHVw
-IHRoZQo+IGRlcHJlY2F0ZWQgZnVuY3Rpb25zLCBhbmQgZWFybiB0aGUgYmVuZWZpdHMgb2YgdXNp
-bmcgdGhlIG1vZGVybgo+IGZ1bmN0aW9ucy4gSW4gcGFydGljdWxhciwgaW4gYWRkaXRpb24gdG8g
-dGhlIGJvcmluZyBzdWJzdGl0dXRpb25zLCB0aGlzCj4gcGF0Y2hzZXQgYWNjb21wbGlzaGVzIGEg
-ZmV3IG5pY2UgZWZmZWN0czoKPiAKPiAtIEJ5IHVzaW5nIHByYW5kb21fdTMyX21heCgpIHdpdGgg
-YW4gdXBwZXItYm91bmQgdGhhdCB0aGUgY29tcGlsZXIgY2FuCj4gICBwcm92ZSBhdCBjb21waWxl
-LXRpbWUgaXMg4omkNjU1MzYgb3Ig4omkMjU2LCBpbnRlcm5hbGx5IGdldF9yYW5kb21fdTE2KCkK
-PiAgIG9yIGdldF9yYW5kb21fdTgoKSBpcyB1c2VkLCB3aGljaCB3YXN0ZXMgZmV3ZXIgYmF0Y2hl
-ZCByYW5kb20gYnl0ZXMsCj4gICBhbmQgaGVuY2UgaGFzIGhpZ2hlciB0aHJvdWdocHV0Lgo+IAo+
-IC0gQnkgdXNpbmcgcHJhbmRvbV91MzJfbWF4KCkgaW5zdGVhZCBvZiAlLCB3aGVuIHRoZSB1cHBl
-ci1ib3VuZCBpcyBub3QgYQo+ICAgY29uc3RhbnQsIGRpdmlzaW9uIGlzIHN0aWxsIGF2b2lkZWQs
-IGJlY2F1c2UgcHJhbmRvbV91MzJfbWF4KCkgdXNlcwo+ICAgYSBmYXN0ZXIgbXVsdGlwbGljYXRp
-b24tYmFzZWQgdHJpY2sgaW5zdGVhZC4KPiAKPiAtIEJ5IHVzaW5nIGdldF9yYW5kb21fdTE2KCkg
-b3IgZ2V0X3JhbmRvbV91OCgpIGluIGNhc2VzIHdoZXJlIHRoZSByZXR1cm4KPiAgIHZhbHVlIGlz
-IGludGVuZGVkIHRvIGluZGVlZCBiZSBhIHUxNiBvciBhIHU4LCB3ZSB3YXN0ZSBmZXdlciBiYXRj
-aGVkCj4gICByYW5kb20gYnl0ZXMsIGFuZCBoZW5jZSBoYXZlIGhpZ2hlciB0aHJvdWdocHV0Lgo+
-IAo+IFNvLCBiYXNlZCBvbiB0aG9zZSBydWxlcyBhbmQgYmVuZWZpdHMgZnJvbSBmb2xsb3dpbmcg
-dGhlbSwgdGhpcyBwYXRjaHNldAo+IGJyZWFrcyBkb3duIGludG8gdGhlIGZvbGxvd2luZyBmaXZl
-IHN0ZXBzOgo+IAo+IDEpIFJlcGxhY2UgYHByYW5kb21fdTMyKCkgJSBtYXhgIGFuZCB2YXJpYW50
-cyB0aGVyZW9mIHdpdGgKPiAgICBwcmFuZG9tX3UzMl9tYXgobWF4KS4KPiAKPiAgICAqIFBhcnQg
-MSBpcyBkb25lIHdpdGggQ29jY2luZWxsZS4gUGFydCAyIGlzIGRvbmUgYnkgaGFuZC4KPiAKPiAy
-KSBSZXBsYWNlIGAodHlwZSlnZXRfcmFuZG9tX3UzMigpYCBhbmQgdmFyaWFudHMgdGhlcmVvZiB3
-aXRoCj4gICAgZ2V0X3JhbmRvbV91MTYoKSBvciBnZXRfcmFuZG9tX3U4KCkuIEkgdG9vayB0aGUg
-cGFpbnMgdG8gYWN0dWFsbHkKPiAgICBsb29rIGFuZCBzZWUgd2hhdCBldmVyeSBsdmFsdWUgdHlw
-ZSB3YXMgYWNyb3NzIHRoZSBlbnRpcmUgdHJlZS4KPiAKPiAgICAqIFBhcnQgMSBpcyBkb25lIHdp
-dGggQ29jY2luZWxsZS4gUGFydCAyIGlzIGRvbmUgYnkgaGFuZC4KPiAKPiAzKSBSZXBsYWNlIHJl
-bWFpbmluZyBkZXByZWNhdGVkIHVzZXMgb2YgcHJhbmRvbV91MzIoKSBhbmQKPiAgICBnZXRfcmFu
-ZG9tX2ludCgpIHdpdGggZ2V0X3JhbmRvbV91MzIoKS4gCj4gCj4gICAgKiBBIGJvcmluZyBzZWFy
-Y2ggYW5kIHJlcGxhY2Ugb3BlcmF0aW9uLgo+IAo+IDQpIFJlcGxhY2UgcmVtYWluaW5nIGRlcHJl
-Y2F0ZWQgdXNlcyBvZiBwcmFuZG9tX2J5dGVzKCkgd2l0aAo+ICAgIGdldF9yYW5kb21fYnl0ZXMo
-KS4KPiAKPiAgICAqIEEgYm9yaW5nIHNlYXJjaCBhbmQgcmVwbGFjZSBvcGVyYXRpb24uCj4gCj4g
-NSkgUmVtb3ZlIHRoZSBkZXByZWNhdGVkIGFuZCBub3ctdW51c2VkIHByYW5kb21fdTMyKCkgYW5k
-Cj4gICAgcHJhbmRvbV9ieXRlcygpIGlubGluZSB3cmFwcGVyIGZ1bmN0aW9ucy4KPiAKPiAgICAq
-IEp1c3QgZGVsZXRpbmcgY29kZSBhbmQgdXBkYXRpbmcgY29tbWVudHMuCj4gCj4gSSdsbCBiZSBz
-ZW5kaW5nIHRoaXMgdG93YXJkIHRoZSBlbmQgb2YgdGhlIDYuMSBtZXJnZSB3aW5kb3cgdmlhIHRo
-ZQo+IHJhbmRvbS5naXQgdHJlZS4KPiAKPiBQbGVhc2UgdGFrZSBhIGxvb2shIFRoZSBudW1iZXIg
-b2YgbGluZXMgdG91Y2hlZCBpcyBxdWl0ZSBzbWFsbCwgc28gdGhpcwo+IHNob3VsZCBiZSByZXZp
-ZXdhYmxlLCBhbmQgYXMgbXVjaCBhcyBpcyBwb3NzaWJsZSBoYXMgYmVlbiBwdXNoZWQgaW50bwo+
-IENvY2NpbmVsbGUgc2NyaXB0cy4KPiAKPiBUaGFua3MsCj4gSmFzb24KPiAKPiBDYzogQW5kcmVh
-cyBOb2V2ZXIgPGFuZHJlYXMubm9ldmVyQGdtYWlsLmNvbT4KPiBDYzogQW5kcmV3IE1vcnRvbiA8
-YWtwbUBsaW51eC1mb3VuZGF0aW9uLm9yZz4KPiBDYzogQW5keSBTaGV2Y2hlbmtvIDxhbmRyaXku
-c2hldmNoZW5rb0BsaW51eC5pbnRlbC5jb20+Cj4gQ2M6IEJvcmlzbGF2IFBldGtvdiA8YnBAYWxp
-ZW44LmRlPgo+IENjOiBDYXRhbGluIE1hcmluYXMgPGNhdGFsaW4ubWFyaW5hc0Bhcm0uY29tPgo+
-IENjOiBDaHJpc3RvcGggQsO2aG13YWxkZXIgPGNocmlzdG9waC5ib2VobXdhbGRlckBsaW5iaXQu
-Y29tPgo+IENjOiBDaHJpc3RvcGggSGVsbHdpZyA8aGNoQGxzdC5kZT4KPiBDYzogQ2hyaXN0b3Bo
-ZSBMZXJveSA8Y2hyaXN0b3BoZS5sZXJveUBjc2dyb3VwLmV1Pgo+IENjOiBEYW5pZWwgQm9ya21h
-bm4gPGRhbmllbEBpb2dlYXJib3gubmV0Pgo+IENjOiBEYXZlIEFpcmxpZSA8YWlybGllZEByZWRo
-YXQuY29tPgo+IENjOiBEYXZlIEhhbnNlbiA8ZGF2ZS5oYW5zZW5AbGludXguaW50ZWwuY29tPgo+
-IENjOiBEYXZpZCBTLiBNaWxsZXIgPGRhdmVtQGRhdmVtbG9mdC5uZXQ+Cj4gQ2M6IEVyaWMgRHVt
-YXpldCA8ZWR1bWF6ZXRAZ29vZ2xlLmNvbT4KPiBDYzogRmxvcmlhbiBXZXN0cGhhbCA8ZndAc3Ry
-bGVuLmRlPgo+IENjOiBHcmVnIEtyb2FoLUhhcnRtYW4gPGdyZWdraEBsaW51eGZvdW5kYXRpb24u
-b3JnPiwKPiBDYzogSC4gUGV0ZXIgQW52aW4gPGhwYUB6eXRvci5jb20+Cj4gQ2M6IEhlaWtvIENh
-cnN0ZW5zIDxoY2FAbGludXguaWJtLmNvbT4KPiBDYzogSGVsZ2UgRGVsbGVyIDxkZWxsZXJAZ214
-LmRlPgo+IENjOiBIZXJiZXJ0IFh1IDxoZXJiZXJ0QGdvbmRvci5hcGFuYS5vcmcuYXU+Cj4gQ2M6
-IEh1YWNhaSBDaGVuIDxjaGVuaHVhY2FpQGtlcm5lbC5vcmc+Cj4gQ2M6IEh1Z2ggRGlja2lucyA8
-aHVnaGRAZ29vZ2xlLmNvbT4KPiBDYzogSmFrdWIgS2ljaW5za2kgPGt1YmFAa2VybmVsLm9yZz4K
-PiBDYzogSmFtZXMgRS5KLiBCb3R0b21sZXkgPGplamJAbGludXguaWJtLmNvbT4KPiBDYzogSmFu
-IEthcmEgPGphY2tAc3VzZS5jb20+Cj4gQ2M6IEphc29uIEd1bnRob3JwZSA8amdnQHppZXBlLmNh
-Pgo+IENjOiBKZW5zIEF4Ym9lIDxheGJvZUBrZXJuZWwuZGs+Cj4gQ2M6IEpvaGFubmVzIEJlcmcg
-PGpvaGFubmVzQHNpcHNvbHV0aW9ucy5uZXQ+Cj4gQ2M6IEpvbmF0aGFuIENvcmJldCA8Y29yYmV0
-QGx3bi5uZXQ+Cj4gQ2M6IEpvenNlZiBLYWRsZWNzaWsgPGthZGxlY0BuZXRmaWx0ZXIub3JnPgo+
-IENjOiBLUCBTaW5naCA8a3BzaW5naEBrZXJuZWwub3JnPgo+IENjOiBLZWVzIENvb2sgPGtlZXNj
-b29rQGNocm9taXVtLm9yZz4KPiBDYzogTWFyY28gRWx2ZXIgPGVsdmVyQGdvb2dsZS5jb20+Cj4g
-Q2M6IE1hdXJvIENhcnZhbGhvIENoZWhhYiA8bWNoZWhhYkBrZXJuZWwub3JnPgo+IENjOiBNaWNo
-YWVsIEVsbGVybWFuIDxtcGVAZWxsZXJtYW4uaWQuYXU+Cj4gQ2M6IFBhYmxvIE5laXJhIEF5dXNv
-IDxwYWJsb0BuZXRmaWx0ZXIub3JnPgo+IENjOiBQYW9sbyBBYmVuaSA8cGFiZW5pQHJlZGhhdC5j
-b20+Cj4gQ2M6IFBldGVyIFppamxzdHJhIDxwZXRlcnpAaW5mcmFkZWFkLm9yZz4KPiBDYzogUmlj
-aGFyZCBXZWluYmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD4KPiBDYzogUnVzc2VsbCBLaW5nIDxsaW51
-eEBhcm1saW51eC5vcmcudWs+Cj4gQ2M6IFRoZW9kb3JlIFRzJ28gPHR5dHNvQG1pdC5lZHU+Cj4g
-Q2M6IFRob21hcyBCb2dlbmRvZXJmZXIgPHRzYm9nZW5kQGFscGhhLmZyYW5rZW4uZGU+Cj4gQ2M6
-IFRob21hcyBHbGVpeG5lciA8dGdseEBsaW51dHJvbml4LmRlPgo+IENjOiBUaG9tYXMgR3JhZiA8
-dGdyYWZAc3V1Zy5jaD4KPiBDYzogVWxmIEhhbnNzb24gPHVsZi5oYW5zc29uQGxpbmFyby5vcmc+
-Cj4gQ2M6IFZpZ25lc2ggUmFnaGF2ZW5kcmEgPHZpZ25lc2hyQHRpLmNvbT4KPiBDYzogV0FORyBY
-dWVydWkgPGtlcm5lbEB4ZW4wbi5uYW1lPgo+IENjOiBXaWxsIERlYWNvbiA8d2lsbEBrZXJuZWwu
-b3JnPgo+IENjOiBZdXJ5IE5vcm92IDx5dXJ5Lm5vcm92QGdtYWlsLmNvbT4KPiBDYzogZHJpLWRl
-dmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwo+IENjOiBrYXNhbi1kZXZAZ29vZ2xlZ3JvdXBzLmNv
-bQo+IENjOiBrZXJuZWwtamFuaXRvcnNAdmdlci5rZXJuZWwub3JnCj4gQ2M6IGxpbnV4LWFybS1r
-ZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZwo+IENjOiBsaW51eC1ibG9ja0B2Z2VyLmtlcm5lbC5v
-cmcKPiBDYzogbGludXgtY3J5cHRvQHZnZXIua2VybmVsLm9yZwo+IENjOiBsaW51eC1kb2NAdmdl
-ci5rZXJuZWwub3JnCj4gQ2M6IGxpbnV4LWZzZGV2ZWxAdmdlci5rZXJuZWwub3JnCj4gQ2M6IGxp
-bnV4LW1lZGlhQHZnZXIua2VybmVsLm9yZwo+IENjOiBsaW51eC1taXBzQHZnZXIua2VybmVsLm9y
-Zwo+IENjOiBsaW51eC1tbUBrdmFjay5vcmcKPiBDYzogbGludXgtbW1jQHZnZXIua2VybmVsLm9y
-Zwo+IENjOiBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZwo+IENjOiBsaW51eC1udm1lQGxp
-c3RzLmluZnJhZGVhZC5vcmcKPiBDYzogbGludXgtcGFyaXNjQHZnZXIua2VybmVsLm9yZwo+IENj
-OiBsaW51eC1yZG1hQHZnZXIua2VybmVsLm9yZwo+IENjOiBsaW51eC1zMzkwQHZnZXIua2VybmVs
-Lm9yZwo+IENjOiBsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCj4gQ2M6IGxpbnV4LXVzYkB2
-Z2VyLmtlcm5lbC5vcmcKPiBDYzogbGludXgtd2lyZWxlc3NAdmdlci5rZXJuZWwub3JnCj4gQ2M6
-IGxpbnV4cHBjLWRldkBsaXN0cy5vemxhYnMub3JnCj4gQ2M6IGxvb25nYXJjaEBsaXN0cy5saW51
-eC5kZXYKPiBDYzogbmV0ZGV2QHZnZXIua2VybmVsLm9yZwo+IENjOiBzcGFyY2xpbnV4QHZnZXIu
-a2VybmVsLm9yZwo+IENjOiB4ODZAa2VybmVsLm9yZwo+IAo+IEphc29uIEEuIERvbmVuZmVsZCAo
-Nyk6Cj4gICB0cmVld2lkZTogdXNlIHByYW5kb21fdTMyX21heCgpIHdoZW4gcG9zc2libGUsIHBh
-cnQgMQo+ICAgdHJlZXdpZGU6IHVzZSBwcmFuZG9tX3UzMl9tYXgoKSB3aGVuIHBvc3NpYmxlLCBw
-YXJ0IDIKPiAgIHRyZWV3aWRlOiB1c2UgZ2V0X3JhbmRvbV97dTgsdTE2fSgpIHdoZW4gcG9zc2li
-bGUsIHBhcnQgMQo+ICAgdHJlZXdpZGU6IHVzZSBnZXRfcmFuZG9tX3t1OCx1MTZ9KCkgd2hlbiBw
-b3NzaWJsZSwgcGFydCAyCj4gICB0cmVld2lkZTogdXNlIGdldF9yYW5kb21fdTMyKCkgd2hlbiBw
-b3NzaWJsZQo+ICAgdHJlZXdpZGU6IHVzZSBnZXRfcmFuZG9tX2J5dGVzKCkgd2hlbiBwb3NzaWJs
-ZQo+ICAgcHJhbmRvbTogcmVtb3ZlIHVudXNlZCBmdW5jdGlvbnMKPiAKPiAgRG9jdW1lbnRhdGlv
-bi9uZXR3b3JraW5nL2ZpbHRlci5yc3QgICAgICAgICAgIHwgIDIgKy0KPiAgYXJjaC9hcm0va2Vy
-bmVsL3Byb2Nlc3MuYyAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KPiAgYXJjaC9hcm0va2Vy
-bmVsL3NpZ25hbC5jICAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KPiAgYXJjaC9hcm02NC9r
-ZXJuZWwvcHJvY2Vzcy5jICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KPiAgYXJjaC9hcm02NC9r
-ZXJuZWwvc3lzY2FsbC5jICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KPiAgYXJjaC9sb29uZ2Fy
-Y2gva2VybmVsL3Byb2Nlc3MuYyAgICAgICAgICAgICAgIHwgIDIgKy0KPiAgYXJjaC9sb29uZ2Fy
-Y2gva2VybmVsL3Zkc28uYyAgICAgICAgICAgICAgICAgIHwgIDIgKy0KPiAgYXJjaC9taXBzL2tl
-cm5lbC9wcm9jZXNzLmMgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KPiAgYXJjaC9taXBzL2tl
-cm5lbC92ZHNvLmMgICAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KPiAgYXJjaC9wYXJpc2Mv
-a2VybmVsL3Byb2Nlc3MuYyAgICAgICAgICAgICAgICAgIHwgIDIgKy0KPiAgYXJjaC9wYXJpc2Mv
-a2VybmVsL3N5c19wYXJpc2MuYyAgICAgICAgICAgICAgIHwgIDQgKy0KPiAgYXJjaC9wYXJpc2Mv
-a2VybmVsL3Zkc28uYyAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KPiAgYXJjaC9wb3dlcnBj
-L2NyeXB0by9jcmMtdnBtc3VtX3Rlc3QuYyAgICAgICAgIHwgIDIgKy0KPiAgYXJjaC9wb3dlcnBj
-L2tlcm5lbC9wcm9jZXNzLmMgICAgICAgICAgICAgICAgIHwgIDIgKy0KPiAgYXJjaC9zMzkwL2tl
-cm5lbC9wcm9jZXNzLmMgICAgICAgICAgICAgICAgICAgIHwgIDQgKy0KPiAgYXJjaC9zMzkwL2tl
-cm5lbC92ZHNvLmMgICAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KPiAgYXJjaC9zMzkwL21t
-L21tYXAuYyAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KPiAgYXJjaC9zcGFyYy92
-ZHNvL3ZtYS5jICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KPiAgYXJjaC91bS9rZXJu
-ZWwvcHJvY2Vzcy5jICAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KPiAgYXJjaC94ODYvZW50
-cnkvdmRzby92bWEuYyAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KPiAgYXJjaC94ODYva2Vy
-bmVsL2NwdS9hbWQuYyAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KPiAgYXJjaC94ODYva2Vy
-bmVsL21vZHVsZS5jICAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KPiAgYXJjaC94ODYva2Vy
-bmVsL3Byb2Nlc3MuYyAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KPiAgYXJjaC94ODYvbW0v
-cGF0L2NwYS10ZXN0LmMgICAgICAgICAgICAgICAgICAgIHwgIDQgKy0KPiAgYmxvY2svYmxrLWNy
-eXB0by1mYWxsYmFjay5jICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KPiAgY3J5cHRvL2FzeW5j
-X3R4L3JhaWQ2dGVzdC5jICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KPiAgY3J5cHRvL3Rlc3Rt
-Z3IuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgOTQgKysrKysrKysrLS0tLS0tLS0t
-LQo+ICBkcml2ZXJzL2Jsb2NrL2RyYmQvZHJiZF9yZWNlaXZlci5jICAgICAgICAgICAgfCAgNCAr
-LQo+ICBkcml2ZXJzL2NoYXIvcmFuZG9tLmMgICAgICAgICAgICAgICAgICAgICAgICAgfCAxMSAr
-LS0KPiAgZHJpdmVycy9kbWEvZG1hdGVzdC5jICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDIg
-Ky0KPiAgLi4uL2dwdS9kcm0vaTkxNS9nZW0vaTkxNV9nZW1fZXhlY2J1ZmZlci5jICAgIHwgIDIg
-Ky0KPiAgZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9nZW1fZ3R0LmMgICAgICAgICAgIHwgIDYg
-Ky0KPiAgLi4uL2dwdS9kcm0vaTkxNS9zZWxmdGVzdHMvaTkxNV9zZWxmdGVzdC5jICAgIHwgIDIg
-Ky0KPiAgZHJpdmVycy9ncHUvZHJtL3Rlc3RzL2RybV9idWRkeV90ZXN0LmMgICAgICAgIHwgIDIg
-Ky0KPiAgZHJpdmVycy9ncHUvZHJtL3Rlc3RzL2RybV9tbV90ZXN0LmMgICAgICAgICAgIHwgIDIg
-Ky0KPiAgZHJpdmVycy9pbmZpbmliYW5kL2NvcmUvY21hLmMgICAgICAgICAgICAgICAgIHwgIDIg
-Ky0KPiAgZHJpdmVycy9pbmZpbmliYW5kL2h3L2N4Z2I0L2NtLmMgICAgICAgICAgICAgIHwgIDQg
-Ky0KPiAgZHJpdmVycy9pbmZpbmliYW5kL2h3L2N4Z2I0L2lkX3RhYmxlLmMgICAgICAgIHwgIDQg
-Ky0KPiAgZHJpdmVycy9pbmZpbmliYW5kL2h3L2hmaTEvdGlkX3JkbWEuYyAgICAgICAgIHwgIDIg
-Ky0KPiAgZHJpdmVycy9pbmZpbmliYW5kL2h3L2hucy9obnNfcm9jZV9haC5jICAgICAgIHwgIDUg
-Ky0KPiAgZHJpdmVycy9pbmZpbmliYW5kL2h3L21seDQvbWFkLmMgICAgICAgICAgICAgIHwgIDIg
-Ky0KPiAgZHJpdmVycy9pbmZpbmliYW5kL3VscC9pcG9pYi9pcG9pYl9jbS5jICAgICAgIHwgIDIg
-Ky0KPiAgZHJpdmVycy9pbmZpbmliYW5kL3VscC9ydHJzL3J0cnMtY2x0LmMgICAgICAgIHwgIDMg
-Ky0KPiAgZHJpdmVycy9tZC9iY2FjaGUvcmVxdWVzdC5jICAgICAgICAgICAgICAgICAgIHwgIDIg
-Ky0KPiAgZHJpdmVycy9tZC9yYWlkNS1jYWNoZS5jICAgICAgICAgICAgICAgICAgICAgIHwgIDIg
-Ky0KPiAgZHJpdmVycy9tZWRpYS9jb21tb24vdjRsMi10cGcvdjRsMi10cGctY29yZS5jIHwgIDIg
-Ky0KPiAgLi4uL21lZGlhL3Rlc3QtZHJpdmVycy92aXZpZC92aXZpZC1yYWRpby1yeC5jIHwgIDQg
-Ky0KPiAgLi4uL3Rlc3QtZHJpdmVycy92aXZpZC92aXZpZC10b3VjaC1jYXAuYyAgICAgIHwgIDYg
-Ky0KPiAgZHJpdmVycy9taXNjL2hhYmFuYWxhYnMvZ2F1ZGkyL2dhdWRpMi5jICAgICAgIHwgIDIg
-Ky0KPiAgZHJpdmVycy9tbWMvY29yZS9jb3JlLmMgICAgICAgICAgICAgICAgICAgICAgIHwgIDQg
-Ky0KPiAgZHJpdmVycy9tbWMvaG9zdC9kd19tbWMuYyAgICAgICAgICAgICAgICAgICAgIHwgIDIg
-Ky0KPiAgZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZHNpbS5jICAgICAgICAgICAgICAgIHwgIDgg
-Ky0KPiAgZHJpdmVycy9tdGQvdGVzdHMvbXRkX25hbmRlY2N0ZXN0LmMgICAgICAgICAgIHwgMTIg
-Ky0tCj4gIGRyaXZlcnMvbXRkL3Rlc3RzL3NwZWVkdGVzdC5jICAgICAgICAgICAgICAgICB8ICAy
-ICstCj4gIGRyaXZlcnMvbXRkL3Rlc3RzL3N0cmVzc3Rlc3QuYyAgICAgICAgICAgICAgICB8IDE5
-ICstLS0KPiAgZHJpdmVycy9tdGQvdWJpL2RlYnVnLmMgICAgICAgICAgICAgICAgICAgICAgIHwg
-IDIgKy0KPiAgZHJpdmVycy9tdGQvdWJpL2RlYnVnLmggICAgICAgICAgICAgICAgICAgICAgIHwg
-IDYgKy0KPiAgZHJpdmVycy9uZXQvYm9uZGluZy9ib25kX21haW4uYyAgICAgICAgICAgICAgIHwg
-IDIgKy0KPiAgZHJpdmVycy9uZXQvZXRoZXJuZXQvYnJvYWRjb20vYm54dC9ibnh0LmMgICAgIHwg
-IDIgKy0KPiAgZHJpdmVycy9uZXQvZXRoZXJuZXQvYnJvYWRjb20vY25pYy5jICAgICAgICAgIHwg
-IDUgKy0KPiAgLi4uL2NoZWxzaW8vaW5saW5lX2NyeXB0by9jaHRscy9jaHRsc19jbS5jICAgIHwg
-IDQgKy0KPiAgLi4uL2NoZWxzaW8vaW5saW5lX2NyeXB0by9jaHRscy9jaHRsc19pby5jICAgIHwg
-IDQgKy0KPiAgZHJpdmVycy9uZXQvZXRoZXJuZXQvcm9ja2VyL3JvY2tlcl9tYWluLmMgICAgIHwg
-IDggKy0KPiAgZHJpdmVycy9uZXQvaGFtcmFkaW8vYmF5Y29tX2VwcC5jICAgICAgICAgICAgIHwg
-IDIgKy0KPiAgZHJpdmVycy9uZXQvaGFtcmFkaW8vaGRsY2Rydi5jICAgICAgICAgICAgICAgIHwg
-IDIgKy0KPiAgZHJpdmVycy9uZXQvaGFtcmFkaW8veWFtLmMgICAgICAgICAgICAgICAgICAgIHwg
-IDIgKy0KPiAgZHJpdmVycy9uZXQvcGh5L2F0ODAzeC5jICAgICAgICAgICAgICAgICAgICAgIHwg
-IDIgKy0KPiAgZHJpdmVycy9uZXQvd2lyZWd1YXJkL3NlbGZ0ZXN0L2FsbG93ZWRpcHMuYyAgIHwg
-MTYgKystLQo+ICAuLi4vYnJvYWRjb20vYnJjbTgwMjExL2JyY21mbWFjL3AycC5jICAgICAgICAg
-fCAgMiArLQo+ICAuLi4vYnJvYWRjb20vYnJjbTgwMjExL2JyY21mbWFjL3Buby5jICAgICAgICAg
-fCAgMiArLQo+ICAuLi4vbmV0L3dpcmVsZXNzL2ludGVsL2l3bHdpZmkvbXZtL21hYy1jdHh0LmMg
-fCAgMiArLQo+ICAuLi4vbmV0L3dpcmVsZXNzL21hcnZlbGwvbXdpZmlleC9jZmc4MDIxMS5jICAg
-fCAgNCArLQo+ICAuLi4vd2lyZWxlc3MvbWljcm9jaGlwL3dpbGMxMDAwL2NmZzgwMjExLmMgICAg
-fCAgMiArLQo+ICAuLi4vbmV0L3dpcmVsZXNzL3F1YW50ZW5uYS9xdG5mbWFjL2NmZzgwMjExLmMg
-fCAgMiArLQo+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9zdC9jdzEyMDAvd3NtLmMgICAgICAgICAg
-fCAgMiArLQo+ICBkcml2ZXJzL25ldC93aXJlbGVzcy90aS93bGNvcmUvbWFpbi5jICAgICAgICAg
-fCAgMiArLQo+ICBkcml2ZXJzL252bWUvY29tbW9uL2F1dGguYyAgICAgICAgICAgICAgICAgICAg
-fCAgMiArLQo+ICBkcml2ZXJzL3Njc2kvY3hnYmkvY3hnYjRpL2N4Z2I0aS5jICAgICAgICAgICAg
-fCAgNCArLQo+ICBkcml2ZXJzL3Njc2kvZmNvZS9mY29lX2N0bHIuYyAgICAgICAgICAgICAgICAg
-fCAgNCArLQo+ICBkcml2ZXJzL3Njc2kvbHBmYy9scGZjX2hiYWRpc2MuYyAgICAgICAgICAgICAg
-fCAgNiArLQo+ICBkcml2ZXJzL3Njc2kvcWVkaS9xZWRpX21haW4uYyAgICAgICAgICAgICAgICAg
-fCAgMiArLQo+ICBkcml2ZXJzL3RhcmdldC9pc2NzaS9jeGdiaXQvY3hnYml0X2NtLmMgICAgICAg
-fCAgMiArLQo+ICBkcml2ZXJzL3RodW5kZXJib2x0L3hkb21haW4uYyAgICAgICAgICAgICAgICAg
-fCAgMiArLQo+ICBkcml2ZXJzL3ZpZGVvL2ZiZGV2L3V2ZXNhZmIuYyAgICAgICAgICAgICAgICAg
-fCAgMiArLQo+ICBmcy9jZXBoL2lub2RlLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-fCAgMiArLQo+ICBmcy9jZXBoL21kc21hcC5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-fCAgMiArLQo+ICBmcy9leGZhdC9pbm9kZS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-fCAgMiArLQo+ICBmcy9leHQyL2lhbGxvYy5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-fCAgMyArLQo+ICBmcy9leHQ0L2lhbGxvYy5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-fCAgNyArLQo+ICBmcy9leHQ0L2lvY3RsLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-fCAgNCArLQo+ICBmcy9leHQ0L21tcC5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-fCAgMiArLQo+ICBmcy9leHQ0L3N1cGVyLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-fCAgNyArLQo+ICBmcy9mMmZzL2djLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-fCAgMiArLQo+ICBmcy9mMmZzL25hbWVpLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-fCAgMiArLQo+ICBmcy9mMmZzL3NlZ21lbnQuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-fCAgOCArLQo+ICBmcy9mYXQvaW5vZGUuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-fCAgMiArLQo+ICBmcy9uZnNkL25mczRzdGF0ZS5jICAgICAgICAgICAgICAgICAgICAgICAgICAg
-fCAgNCArLQo+ICBmcy9udGZzMy9mc2xvZy5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-fCAgNiArLQo+ICBmcy91Ymlmcy9kZWJ1Zy5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-fCAxMCArLQo+ICBmcy91Ymlmcy9qb3VybmFsLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-fCAgMiArLQo+ICBmcy91Ymlmcy9scHRfY29tbWl0LmMgICAgICAgICAgICAgICAgICAgICAgICAg
-fCAxNCArLS0KPiAgZnMvdWJpZnMvdG5jX2NvbW1pdC5jICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgIDIgKy0KPiAgZnMveGZzL2xpYnhmcy94ZnNfYWxsb2MuYyAgICAgICAgICAgICAgICAgICAg
-IHwgIDIgKy0KPiAgZnMveGZzL2xpYnhmcy94ZnNfaWFsbG9jLmMgICAgICAgICAgICAgICAgICAg
-IHwgIDQgKy0KPiAgZnMveGZzL3hmc19lcnJvci5jICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgIDIgKy0KPiAgZnMveGZzL3hmc19pY2FjaGUuYyAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgIDIgKy0KPiAgZnMveGZzL3hmc19sb2cuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgIDIgKy0KPiAgaW5jbHVkZS9saW51eC9ub2RlbWFzay5oICAgICAgICAgICAgICAgICAgICAg
-IHwgIDIgKy0KPiAgaW5jbHVkZS9saW51eC9wcmFuZG9tLmggICAgICAgICAgICAgICAgICAgICAg
-IHwgMTIgLS0tCj4gIGluY2x1ZGUvbGludXgvcmFuZG9tLmggICAgICAgICAgICAgICAgICAgICAg
-ICB8ICA1IC0KPiAgaW5jbHVkZS9uZXQvbmV0ZmlsdGVyL25mX3F1ZXVlLmggICAgICAgICAgICAg
-IHwgIDIgKy0KPiAgaW5jbHVkZS9uZXQvcmVkLmggICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgIDIgKy0KPiAgaW5jbHVkZS9uZXQvc29jay5oICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgIDIgKy0KPiAga2VybmVsL2JwZi9ibG9vbV9maWx0ZXIuYyAgICAgICAgICAgICAgICAgICAg
-IHwgIDIgKy0KPiAga2VybmVsL2JwZi9jb3JlLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgIDYgKy0KPiAga2VybmVsL2JwZi9oYXNodGFiLmMgICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgIDIgKy0KPiAga2VybmVsL2JwZi92ZXJpZmllci5jICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgIDIgKy0KPiAga2VybmVsL2tjc2FuL3NlbGZ0ZXN0LmMgICAgICAgICAgICAgICAgICAgICAg
-IHwgIDQgKy0KPiAga2VybmVsL2xvY2tpbmcvdGVzdC13d19tdXRleC5jICAgICAgICAgICAgICAg
-IHwgIDQgKy0KPiAga2VybmVsL3RpbWUvY2xvY2tzb3VyY2UuYyAgICAgICAgICAgICAgICAgICAg
-IHwgIDIgKy0KPiAgbGliL2NtZGxpbmVfa3VuaXQuYyAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgIDQgKy0KPiAgbGliL2ZhdWx0LWluamVjdC5jICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgIDIgKy0KPiAgbGliL2ZpbmRfYml0X2JlbmNobWFyay5jICAgICAgICAgICAgICAgICAgICAg
-IHwgIDQgKy0KPiAgbGliL2tvYmplY3QuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgIDIgKy0KPiAgbGliL3JhbmRvbTMyLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgIDQgKy0KPiAgbGliL3JlZWRfc29sb21vbi90ZXN0X3JzbGliLmMgICAgICAgICAgICAgICAg
-IHwgMTIgKy0tCj4gIGxpYi9zYml0bWFwLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICB8ICA0ICstCj4gIGxpYi90ZXN0LXN0cmluZ19oZWxwZXJzLmMgICAgICAgICAgICAgICAgICAg
-ICB8ICAyICstCj4gIGxpYi90ZXN0X2Zwcm9iZS5jICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICB8ICAyICstCj4gIGxpYi90ZXN0X2hleGR1bXAuYyAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICB8IDEwICstCj4gIGxpYi90ZXN0X2thc2FuLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICB8ICA2ICstCj4gIGxpYi90ZXN0X2twcm9iZXMuYyAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICB8ICAyICstCj4gIGxpYi90ZXN0X2xpc3Rfc29ydC5jICAgICAgICAgICAgICAgICAgICAgICAg
-ICB8ICAyICstCj4gIGxpYi90ZXN0X21pbl9oZWFwLmMgICAgICAgICAgICAgICAgICAgICAgICAg
-ICB8ICA2ICstCj4gIGxpYi90ZXN0X29iamFnZy5jICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICB8ICAyICstCj4gIGxpYi90ZXN0X3JoYXNodGFibGUuYyAgICAgICAgICAgICAgICAgICAgICAg
-ICB8ICA2ICstCj4gIGxpYi90ZXN0X3ZtYWxsb2MuYyAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICB8IDE5ICstLS0KPiAgbGliL3V1aWQuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIHwgIDIgKy0KPiAgbW0vbWlncmF0ZS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIHwgIDIgKy0KPiAgbW0vc2htZW0uYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIHwgIDIgKy0KPiAgbW0vc2xhYi5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIHwgIDIgKy0KPiAgbW0vc2x1Yi5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIHwgIDIgKy0KPiAgbmV0LzgwMi9nYXJwLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIHwgIDIgKy0KPiAgbmV0LzgwMi9tcnAuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIHwgIDIgKy0KPiAgbmV0L2NlcGgvbW9uX2NsaWVudC5jICAgICAgICAgICAgICAgICAgICAg
-ICAgIHwgIDIgKy0KPiAgbmV0L2NlcGgvb3NkX2NsaWVudC5jICAgICAgICAgICAgICAgICAgICAg
-ICAgIHwgIDIgKy0KPiAgbmV0L2NvcmUvbmVpZ2hib3VyLmMgICAgICAgICAgICAgICAgICAgICAg
-ICAgIHwgIDIgKy0KPiAgbmV0L2NvcmUvcGt0Z2VuLmMgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIHwgNDcgKysrKystLS0tLQo+ICBuZXQvY29yZS9zdHJlYW0uYyAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAgMiArLQo+ICBuZXQvZGNjcC9pcHY0LmMgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAgNCArLQo+ICBuZXQvaXB2NC9kYXRhZ3JhbS5jICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAgMiArLQo+ICBuZXQvaXB2NC9pZ21wLmMgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAgNiArLQo+ICBuZXQvaXB2NC9pbmV0X2Nvbm5lY3Rpb25fc29jay5jICAg
-ICAgICAgICAgICAgfCAgMiArLQo+ICBuZXQvaXB2NC9pbmV0X2hhc2h0YWJsZXMuYyAgICAgICAg
-ICAgICAgICAgICAgfCAgMiArLQo+ICBuZXQvaXB2NC9pcF9vdXRwdXQuYyAgICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAgMiArLQo+ICBuZXQvaXB2NC9yb3V0ZS5jICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAgNCArLQo+ICBuZXQvaXB2NC90Y3BfY2RnLmMgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAgMiArLQo+ICBuZXQvaXB2NC90Y3BfaXB2NC5jICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAgNCArLQo+ICBuZXQvaXB2NC91ZHAuYyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAgMiArLQo+ICBuZXQvaXB2Ni9hZGRyY29uZi5jICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAgOCArLQo+ICBuZXQvaXB2Ni9pcDZfZmxvd2xhYmVsLmMgICAgICAgICAg
-ICAgICAgICAgICAgfCAgMiArLQo+ICBuZXQvaXB2Ni9tY2FzdC5jICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAxMCArLQo+ICBuZXQvaXB2Ni9vdXRwdXRfY29yZS5jICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAgMiArLQo+ICBuZXQvbWFjODAyMTEvcmM4MDIxMV9taW5zdHJlbF9odC5j
-ICAgICAgICAgICAgfCAgMiArLQo+ICBuZXQvbWFjODAyMTEvc2Nhbi5jICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAgMiArLQo+ICBuZXQvbmV0ZmlsdGVyL2lwdnMvaXBfdnNfY29ubi5jICAg
-ICAgICAgICAgICAgfCAgMiArLQo+ICBuZXQvbmV0ZmlsdGVyL2lwdnMvaXBfdnNfdHdvcy5jICAg
-ICAgICAgICAgICAgfCAgNCArLQo+ICBuZXQvbmV0ZmlsdGVyL25mX25hdF9jb3JlLmMgICAgICAg
-ICAgICAgICAgICAgfCAgNCArLQo+ICBuZXQvbmV0ZmlsdGVyL3h0X3N0YXRpc3RpYy5jICAgICAg
-ICAgICAgICAgICAgfCAgMiArLQo+ICBuZXQvb3BlbnZzd2l0Y2gvYWN0aW9ucy5jICAgICAgICAg
-ICAgICAgICAgICAgfCAgMiArLQo+ICBuZXQvcGFja2V0L2FmX3BhY2tldC5jICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAgMiArLQo+ICBuZXQvcmRzL2JpbmQuYyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAgMiArLQo+ICBuZXQvc2NoZWQvYWN0X2dhY3QuYyAgICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAgMiArLQo+ICBuZXQvc2NoZWQvYWN0X3NhbXBsZS5jICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAgMiArLQo+ICBuZXQvc2NoZWQvc2NoX2Nha2UuYyAgICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAgOCArLQo+ICBuZXQvc2NoZWQvc2NoX25ldGVtLmMgICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAyMiArKy0tLQo+ICBuZXQvc2NoZWQvc2NoX3BpZS5jICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgfCAgMiArLQo+ICBuZXQvc2NoZWQvc2NoX3NmYi5jICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgfCAgMiArLQo+ICBuZXQvc2N0cC9zb2NrZXQuYyAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgfCAgNCArLQo+ICBuZXQvc3VucnBjL2F1dGhfZ3NzL2dzc19rcmI1X3dy
-YXAuYyAgICAgICAgICAgfCAgNCArLQo+ICBuZXQvc3VucnBjL2NhY2hlLmMgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgfCAgMiArLQo+ICBuZXQvc3VucnBjL3hwcnQuYyAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgfCAgMiArLQo+ICBuZXQvc3VucnBjL3hwcnRzb2NrLmMgICAgICAgICAg
-ICAgICAgICAgICAgICAgfCAgMiArLQo+ICBuZXQvdGlwYy9zb2NrZXQuYyAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgfCAgMiArLQo+ICBuZXQvdW5peC9hZl91bml4LmMgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgfCAgMiArLQo+ICBuZXQveGZybS94ZnJtX3N0YXRlLmMgICAgICAgICAg
-ICAgICAgICAgICAgICAgfCAgMiArLQo+ICAxODYgZmlsZXMgY2hhbmdlZCwgMzc5IGluc2VydGlv
-bnMoKyksIDQyMiBkZWxldGlvbnMoLSkKPiAKCkhpLCBKYXNvbjoKClRoZXJlIGlzIGEgbG90IG9m
-IGNvZGUgdXNpbmcgInByYW5kb21fdTMyICUgNCIgaW4gY3J5cHRvJ3Mga2VybmVsIHNlbGYtdGVz
-dCBmaWxlIHRlc3RtZ3IuYywKY2FuIHlvdSBtb2RpZnkgaXQgdG9nZXRoZXI/CgpUaGFua3MsCkxv
-bmdmYW5nLgoKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRw
-Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
+On Tue, Oct 18, 2022 at 3:21 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+>
+> Most architectures(except arm64/x86/sparc) simply return 1 for
+> kern_addr_valid(), which is only used in read_kcore(), and it
+> calls copy_from_kernel_nofault() which could check whether the
+> address is a valid kernel address, so no need kern_addr_valid(),
+> let's remove unneeded kern_addr_valid() completely.
+>
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+>  arch/alpha/include/asm/pgtable.h          |  2 -
+>  arch/arc/include/asm/pgtable-bits-arcv2.h |  2 -
+>  arch/arm/include/asm/pgtable-nommu.h      |  2 -
+>  arch/arm/include/asm/pgtable.h            |  4 --
+>  arch/arm64/include/asm/pgtable.h          |  2 -
+>  arch/arm64/mm/mmu.c                       | 47 -----------------------
+>  arch/arm64/mm/pageattr.c                  |  3 +-
+>  arch/csky/include/asm/pgtable.h           |  3 --
+>  arch/hexagon/include/asm/page.h           |  7 ----
+>  arch/ia64/include/asm/pgtable.h           | 16 --------
+>  arch/loongarch/include/asm/pgtable.h      |  2 -
+>  arch/m68k/include/asm/pgtable_mm.h        |  2 -
+>  arch/m68k/include/asm/pgtable_no.h        |  1 -
+>  arch/microblaze/include/asm/pgtable.h     |  3 --
+>  arch/mips/include/asm/pgtable.h           |  2 -
+>  arch/nios2/include/asm/pgtable.h          |  2 -
+>  arch/openrisc/include/asm/pgtable.h       |  2 -
+>  arch/parisc/include/asm/pgtable.h         | 15 --------
+>  arch/powerpc/include/asm/pgtable.h        |  7 ----
+>  arch/riscv/include/asm/pgtable.h          |  2 -
+>  arch/s390/include/asm/pgtable.h           |  2 -
+>  arch/sh/include/asm/pgtable.h             |  2 -
+>  arch/sparc/include/asm/pgtable_32.h       |  6 ---
+>  arch/sparc/mm/init_32.c                   |  3 +-
+>  arch/sparc/mm/init_64.c                   |  1 -
+>  arch/um/include/asm/pgtable.h             |  2 -
+>  arch/x86/include/asm/pgtable_32.h         |  9 -----
+>  arch/x86/include/asm/pgtable_64.h         |  1 -
+>  arch/x86/mm/init_64.c                     | 41 --------------------
+>  arch/xtensa/include/asm/pgtable.h         |  2 -
+>  fs/proc/kcore.c                           | 26 +++++--------
+>  31 files changed, 11 insertions(+), 210 deletions(-)
+>
+> diff --git a/arch/alpha/include/asm/pgtable.h b/arch/alpha/include/asm/pgtable.h
+> index 3ea9661c09ff..9e45f6735d5d 100644
+> --- a/arch/alpha/include/asm/pgtable.h
+> +++ b/arch/alpha/include/asm/pgtable.h
+> @@ -313,8 +313,6 @@ extern inline pte_t mk_swap_pte(unsigned long type, unsigned long offset)
+>  #define __pte_to_swp_entry(pte)        ((swp_entry_t) { pte_val(pte) })
+>  #define __swp_entry_to_pte(x)  ((pte_t) { (x).val })
+>
+> -#define kern_addr_valid(addr)  (1)
+> -
+>  #define pte_ERROR(e) \
+>         printk("%s:%d: bad pte %016lx.\n", __FILE__, __LINE__, pte_val(e))
+>  #define pmd_ERROR(e) \
+> diff --git a/arch/arc/include/asm/pgtable-bits-arcv2.h b/arch/arc/include/asm/pgtable-bits-arcv2.h
+> index b23be557403e..515e82db519f 100644
+> --- a/arch/arc/include/asm/pgtable-bits-arcv2.h
+> +++ b/arch/arc/include/asm/pgtable-bits-arcv2.h
+> @@ -120,8 +120,6 @@ void update_mmu_cache(struct vm_area_struct *vma, unsigned long address,
+>  #define __pte_to_swp_entry(pte)                ((swp_entry_t) { pte_val(pte) })
+>  #define __swp_entry_to_pte(x)          ((pte_t) { (x).val })
+>
+> -#define kern_addr_valid(addr)  (1)
+> -
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>  #include <asm/hugepage.h>
+>  #endif
+> diff --git a/arch/arm/include/asm/pgtable-nommu.h b/arch/arm/include/asm/pgtable-nommu.h
+> index d16aba48fa0a..25d8c7bb07e0 100644
+> --- a/arch/arm/include/asm/pgtable-nommu.h
+> +++ b/arch/arm/include/asm/pgtable-nommu.h
+> @@ -21,8 +21,6 @@
+>  #define pgd_none(pgd)          (0)
+>  #define pgd_bad(pgd)           (0)
+>  #define pgd_clear(pgdp)
+> -#define kern_addr_valid(addr)  (1)
+> -/* FIXME */
+>  /*
+>   * PMD_SHIFT determines the size of the area a second-level page table can map
+>   * PGDIR_SHIFT determines what a third-level page table entry can map
+> diff --git a/arch/arm/include/asm/pgtable.h b/arch/arm/include/asm/pgtable.h
+> index 78a532068fec..00954ab1a039 100644
+> --- a/arch/arm/include/asm/pgtable.h
+> +++ b/arch/arm/include/asm/pgtable.h
+> @@ -298,10 +298,6 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
+>   */
+>  #define MAX_SWAPFILES_CHECK() BUILD_BUG_ON(MAX_SWAPFILES_SHIFT > __SWP_TYPE_BITS)
+>
+> -/* Needs to be defined here and not in linux/mm.h, as it is arch dependent */
+> -/* FIXME: this is not correct */
+> -#define kern_addr_valid(addr)  (1)
+> -
+>  /*
+>   * We provide our own arch_get_unmapped_area to cope with VIPT caches.
+>   */
+> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> index 71a1af42f0e8..4873c1d6e7d0 100644
+> --- a/arch/arm64/include/asm/pgtable.h
+> +++ b/arch/arm64/include/asm/pgtable.h
+> @@ -1021,8 +1021,6 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
+>   */
+>  #define MAX_SWAPFILES_CHECK() BUILD_BUG_ON(MAX_SWAPFILES_SHIFT > __SWP_TYPE_BITS)
+>
+> -extern int kern_addr_valid(unsigned long addr);
+> -
+>  #ifdef CONFIG_ARM64_MTE
+>
+>  #define __HAVE_ARCH_PREPARE_TO_SWAP
+> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+> index 9a7c38965154..556154d821bf 100644
+> --- a/arch/arm64/mm/mmu.c
+> +++ b/arch/arm64/mm/mmu.c
+> @@ -814,53 +814,6 @@ void __init paging_init(void)
+>         create_idmap();
+>  }
+>
+> -/*
+> - * Check whether a kernel address is valid (derived from arch/x86/).
+> - */
+> -int kern_addr_valid(unsigned long addr)
+> -{
+> -       pgd_t *pgdp;
+> -       p4d_t *p4dp;
+> -       pud_t *pudp, pud;
+> -       pmd_t *pmdp, pmd;
+> -       pte_t *ptep, pte;
+> -
+> -       addr = arch_kasan_reset_tag(addr);
+> -       if ((((long)addr) >> VA_BITS) != -1UL)
+> -               return 0;
+> -
+> -       pgdp = pgd_offset_k(addr);
+> -       if (pgd_none(READ_ONCE(*pgdp)))
+> -               return 0;
+> -
+> -       p4dp = p4d_offset(pgdp, addr);
+> -       if (p4d_none(READ_ONCE(*p4dp)))
+> -               return 0;
+> -
+> -       pudp = pud_offset(p4dp, addr);
+> -       pud = READ_ONCE(*pudp);
+> -       if (pud_none(pud))
+> -               return 0;
+> -
+> -       if (pud_sect(pud))
+> -               return pfn_valid(pud_pfn(pud));
+> -
+> -       pmdp = pmd_offset(pudp, addr);
+> -       pmd = READ_ONCE(*pmdp);
+> -       if (pmd_none(pmd))
+> -               return 0;
+> -
+> -       if (pmd_sect(pmd))
+> -               return pfn_valid(pmd_pfn(pmd));
+> -
+> -       ptep = pte_offset_kernel(pmdp, addr);
+> -       pte = READ_ONCE(*ptep);
+> -       if (pte_none(pte))
+> -               return 0;
+> -
+> -       return pfn_valid(pte_pfn(pte));
+> -}
+> -
+>  #ifdef CONFIG_MEMORY_HOTPLUG
+>  static void free_hotplug_page_range(struct page *page, size_t size,
+>                                     struct vmem_altmap *altmap)
+> diff --git a/arch/arm64/mm/pageattr.c b/arch/arm64/mm/pageattr.c
+> index d107c3d434e2..0a741a910a6a 100644
+> --- a/arch/arm64/mm/pageattr.c
+> +++ b/arch/arm64/mm/pageattr.c
+> @@ -201,8 +201,7 @@ void __kernel_map_pages(struct page *page, int numpages, int enable)
+>
+>  /*
+>   * This function is used to determine if a linear map page has been marked as
+> - * not-valid. Walk the page table and check the PTE_VALID bit. This is based
+> - * on kern_addr_valid(), which almost does what we need.
+> + * not-valid. Walk the page table and check the PTE_VALID bit.
+>   *
+>   * Because this is only called on the kernel linear map,  p?d_sect() implies
+>   * p?d_present(). When debug_pagealloc is enabled, sections mappings are
+> diff --git a/arch/csky/include/asm/pgtable.h b/arch/csky/include/asm/pgtable.h
+> index c3d9b92cbe61..77bc6caff2d2 100644
+> --- a/arch/csky/include/asm/pgtable.h
+> +++ b/arch/csky/include/asm/pgtable.h
+> @@ -249,9 +249,6 @@ extern void paging_init(void);
+>  void update_mmu_cache(struct vm_area_struct *vma, unsigned long address,
+>                       pte_t *pte);
+>
+> -/* Needs to be defined here and not in linux/mm.h, as it is arch dependent */
+> -#define kern_addr_valid(addr)  (1)
+> -
+Clean is good for me.
+
+Acked-by: Guo Ren <guoren@kernel.org> # csky part
+
+
+>  #define io_remap_pfn_range(vma, vaddr, pfn, size, prot) \
+>         remap_pfn_range(vma, vaddr, pfn, size, prot)
+>
+> diff --git a/arch/hexagon/include/asm/page.h b/arch/hexagon/include/asm/page.h
+> index 7cbf719c578e..d7d4f9fca327 100644
+> --- a/arch/hexagon/include/asm/page.h
+> +++ b/arch/hexagon/include/asm/page.h
+> @@ -131,13 +131,6 @@ static inline void clear_page(void *page)
+>
+>  #define page_to_virt(page)     __va(page_to_phys(page))
+>
+> -/*
+> - * For port to Hexagon Virtual Machine, MAYBE we check for attempts
+> - * to reference reserved HVM space, but in any case, the VM will be
+> - * protected.
+> - */
+> -#define kern_addr_valid(addr)   (1)
+> -
+>  #include <asm/mem-layout.h>
+>  #include <asm-generic/memory_model.h>
+>  /* XXX Todo: implement assembly-optimized version of getorder. */
+> diff --git a/arch/ia64/include/asm/pgtable.h b/arch/ia64/include/asm/pgtable.h
+> index 6925e28ae61d..01517a5e6778 100644
+> --- a/arch/ia64/include/asm/pgtable.h
+> +++ b/arch/ia64/include/asm/pgtable.h
+> @@ -181,22 +181,6 @@ ia64_phys_addr_valid (unsigned long addr)
+>         return (addr & (local_cpu_data->unimpl_pa_mask)) == 0;
+>  }
+>
+> -/*
+> - * kern_addr_valid(ADDR) tests if ADDR is pointing to valid kernel
+> - * memory.  For the return value to be meaningful, ADDR must be >=
+> - * PAGE_OFFSET.  This operation can be relatively expensive (e.g.,
+> - * require a hash-, or multi-level tree-lookup or something of that
+> - * sort) but it guarantees to return TRUE only if accessing the page
+> - * at that address does not cause an error.  Note that there may be
+> - * addresses for which kern_addr_valid() returns FALSE even though an
+> - * access would not cause an error (e.g., this is typically true for
+> - * memory mapped I/O regions.
+> - *
+> - * XXX Need to implement this for IA-64.
+> - */
+> -#define kern_addr_valid(addr)  (1)
+> -
+> -
+>  /*
+>   * Now come the defines and routines to manage and access the three-level
+>   * page table.
+> diff --git a/arch/loongarch/include/asm/pgtable.h b/arch/loongarch/include/asm/pgtable.h
+> index 946704bee599..fc70b7041b76 100644
+> --- a/arch/loongarch/include/asm/pgtable.h
+> +++ b/arch/loongarch/include/asm/pgtable.h
+> @@ -421,8 +421,6 @@ static inline void update_mmu_cache_pmd(struct vm_area_struct *vma,
+>         __update_tlb(vma, address, (pte_t *)pmdp);
+>  }
+>
+> -#define kern_addr_valid(addr)  (1)
+> -
+>  static inline unsigned long pmd_pfn(pmd_t pmd)
+>  {
+>         return (pmd_val(pmd) & _PFN_MASK) >> _PFN_SHIFT;
+> diff --git a/arch/m68k/include/asm/pgtable_mm.h b/arch/m68k/include/asm/pgtable_mm.h
+> index 9b4e2fe2ac82..b93c41fe2067 100644
+> --- a/arch/m68k/include/asm/pgtable_mm.h
+> +++ b/arch/m68k/include/asm/pgtable_mm.h
+> @@ -145,8 +145,6 @@ static inline void update_mmu_cache(struct vm_area_struct *vma,
+>
+>  #endif /* !__ASSEMBLY__ */
+>
+> -#define kern_addr_valid(addr)  (1)
+> -
+>  /* MMU-specific headers */
+>
+>  #ifdef CONFIG_SUN3
+> diff --git a/arch/m68k/include/asm/pgtable_no.h b/arch/m68k/include/asm/pgtable_no.h
+> index bce5ca56c388..fed58da3a6b6 100644
+> --- a/arch/m68k/include/asm/pgtable_no.h
+> +++ b/arch/m68k/include/asm/pgtable_no.h
+> @@ -20,7 +20,6 @@
+>  #define pgd_none(pgd)          (0)
+>  #define pgd_bad(pgd)           (0)
+>  #define pgd_clear(pgdp)
+> -#define kern_addr_valid(addr)  (1)
+>  #define        pmd_offset(a, b)        ((void *)0)
+>
+>  #define PAGE_NONE      __pgprot(0)
+> diff --git a/arch/microblaze/include/asm/pgtable.h b/arch/microblaze/include/asm/pgtable.h
+> index ba348e997dbb..42f5988e998b 100644
+> --- a/arch/microblaze/include/asm/pgtable.h
+> +++ b/arch/microblaze/include/asm/pgtable.h
+> @@ -416,9 +416,6 @@ extern unsigned long iopa(unsigned long addr);
+>  #define        IOMAP_NOCACHE_NONSER    2
+>  #define        IOMAP_NO_COPYBACK       3
+>
+> -/* Needs to be defined here and not in linux/mm.h, as it is arch dependent */
+> -#define kern_addr_valid(addr)  (1)
+> -
+>  void do_page_fault(struct pt_regs *regs, unsigned long address,
+>                    unsigned long error_code);
+>
+> diff --git a/arch/mips/include/asm/pgtable.h b/arch/mips/include/asm/pgtable.h
+> index 6caec386ad2f..364a06033105 100644
+> --- a/arch/mips/include/asm/pgtable.h
+> +++ b/arch/mips/include/asm/pgtable.h
+> @@ -550,8 +550,6 @@ static inline void update_mmu_cache_pmd(struct vm_area_struct *vma,
+>         __update_tlb(vma, address, pte);
+>  }
+>
+> -#define kern_addr_valid(addr)  (1)
+> -
+>  /*
+>   * Allow physical addresses to be fixed up to help 36-bit peripherals.
+>   */
+> diff --git a/arch/nios2/include/asm/pgtable.h b/arch/nios2/include/asm/pgtable.h
+> index b3d45e815295..ab793bc517f5 100644
+> --- a/arch/nios2/include/asm/pgtable.h
+> +++ b/arch/nios2/include/asm/pgtable.h
+> @@ -249,8 +249,6 @@ static inline unsigned long pmd_page_vaddr(pmd_t pmd)
+>  #define __swp_entry_to_pte(swp)        ((pte_t) { (swp).val })
+>  #define __pte_to_swp_entry(pte)        ((swp_entry_t) { pte_val(pte) })
+>
+> -#define kern_addr_valid(addr)          (1)
+> -
+>  extern void __init paging_init(void);
+>  extern void __init mmu_init(void);
+>
+> diff --git a/arch/openrisc/include/asm/pgtable.h b/arch/openrisc/include/asm/pgtable.h
+> index dcae8aea132f..6477c17b3062 100644
+> --- a/arch/openrisc/include/asm/pgtable.h
+> +++ b/arch/openrisc/include/asm/pgtable.h
+> @@ -395,8 +395,6 @@ static inline void update_mmu_cache(struct vm_area_struct *vma,
+>  #define __pte_to_swp_entry(pte)                ((swp_entry_t) { pte_val(pte) })
+>  #define __swp_entry_to_pte(x)          ((pte_t) { (x).val })
+>
+> -#define kern_addr_valid(addr)           (1)
+> -
+>  typedef pte_t *pte_addr_t;
+>
+>  #endif /* __ASSEMBLY__ */
+> diff --git a/arch/parisc/include/asm/pgtable.h b/arch/parisc/include/asm/pgtable.h
+> index ecd028854469..bd09a44cfb2d 100644
+> --- a/arch/parisc/include/asm/pgtable.h
+> +++ b/arch/parisc/include/asm/pgtable.h
+> @@ -23,21 +23,6 @@
+>  #include <asm/processor.h>
+>  #include <asm/cache.h>
+>
+> -/*
+> - * kern_addr_valid(ADDR) tests if ADDR is pointing to valid kernel
+> - * memory.  For the return value to be meaningful, ADDR must be >=
+> - * PAGE_OFFSET.  This operation can be relatively expensive (e.g.,
+> - * require a hash-, or multi-level tree-lookup or something of that
+> - * sort) but it guarantees to return TRUE only if accessing the page
+> - * at that address does not cause an error.  Note that there may be
+> - * addresses for which kern_addr_valid() returns FALSE even though an
+> - * access would not cause an error (e.g., this is typically true for
+> - * memory mapped I/O regions.
+> - *
+> - * XXX Need to implement this for parisc.
+> - */
+> -#define kern_addr_valid(addr)  (1)
+> -
+>  /* This is for the serialization of PxTLB broadcasts. At least on the N class
+>   * systems, only one PxTLB inter processor broadcast can be active at any one
+>   * time on the Merced bus. */
+> diff --git a/arch/powerpc/include/asm/pgtable.h b/arch/powerpc/include/asm/pgtable.h
+> index 283f40d05a4d..9972626ddaf6 100644
+> --- a/arch/powerpc/include/asm/pgtable.h
+> +++ b/arch/powerpc/include/asm/pgtable.h
+> @@ -81,13 +81,6 @@ void poking_init(void);
+>  extern unsigned long ioremap_bot;
+>  extern const pgprot_t protection_map[16];
+>
+> -/*
+> - * kern_addr_valid is intended to indicate whether an address is a valid
+> - * kernel address.  Most 32-bit archs define it as always true (like this)
+> - * but most 64-bit archs actually perform a test.  What should we do here?
+> - */
+> -#define kern_addr_valid(addr)  (1)
+> -
+>  #ifndef CONFIG_TRANSPARENT_HUGEPAGE
+>  #define pmd_large(pmd)         0
+>  #endif
+> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+> index 7ec936910a96..c7993bdf749f 100644
+> --- a/arch/riscv/include/asm/pgtable.h
+> +++ b/arch/riscv/include/asm/pgtable.h
+> @@ -801,8 +801,6 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
+>
+>  #endif /* !CONFIG_MMU */
+>
+> -#define kern_addr_valid(addr)   (1) /* FIXME */
+> -
+>  extern char _start[];
+>  extern void *_dtb_early_va;
+>  extern uintptr_t _dtb_early_pa;
+> diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
+> index f1cb9391190d..e1db07211818 100644
+> --- a/arch/s390/include/asm/pgtable.h
+> +++ b/arch/s390/include/asm/pgtable.h
+> @@ -1773,8 +1773,6 @@ static inline swp_entry_t __swp_entry(unsigned long type, unsigned long offset)
+>  #define __pte_to_swp_entry(pte)        ((swp_entry_t) { pte_val(pte) })
+>  #define __swp_entry_to_pte(x)  ((pte_t) { (x).val })
+>
+> -#define kern_addr_valid(addr)   (1)
+> -
+>  extern int vmem_add_mapping(unsigned long start, unsigned long size);
+>  extern void vmem_remove_mapping(unsigned long start, unsigned long size);
+>  extern int __vmem_map_4k_page(unsigned long addr, unsigned long phys, pgprot_t prot, bool alloc);
+> diff --git a/arch/sh/include/asm/pgtable.h b/arch/sh/include/asm/pgtable.h
+> index 6fb9ec54cf9b..3ce30becf6df 100644
+> --- a/arch/sh/include/asm/pgtable.h
+> +++ b/arch/sh/include/asm/pgtable.h
+> @@ -92,8 +92,6 @@ static inline unsigned long phys_addr_mask(void)
+>
+>  typedef pte_t *pte_addr_t;
+>
+> -#define kern_addr_valid(addr)  (1)
+> -
+>  #define pte_pfn(x)             ((unsigned long)(((x).pte_low >> PAGE_SHIFT)))
+>
+>  struct vm_area_struct;
+> diff --git a/arch/sparc/include/asm/pgtable_32.h b/arch/sparc/include/asm/pgtable_32.h
+> index 8ff549004fac..5acc05b572e6 100644
+> --- a/arch/sparc/include/asm/pgtable_32.h
+> +++ b/arch/sparc/include/asm/pgtable_32.h
+> @@ -368,12 +368,6 @@ __get_iospace (unsigned long addr)
+>         }
+>  }
+>
+> -extern unsigned long *sparc_valid_addr_bitmap;
+> -
+> -/* Needs to be defined here and not in linux/mm.h, as it is arch dependent */
+> -#define kern_addr_valid(addr) \
+> -       (test_bit(__pa((unsigned long)(addr))>>20, sparc_valid_addr_bitmap))
+> -
+>  /*
+>   * For sparc32&64, the pfn in io_remap_pfn_range() carries <iospace> in
+>   * its high 4 bits.  These macros/functions put it there or get it from there.
+> diff --git a/arch/sparc/mm/init_32.c b/arch/sparc/mm/init_32.c
+> index d88e774c8eb4..9c0ea457bdf0 100644
+> --- a/arch/sparc/mm/init_32.c
+> +++ b/arch/sparc/mm/init_32.c
+> @@ -37,8 +37,7 @@
+>
+>  #include "mm_32.h"
+>
+> -unsigned long *sparc_valid_addr_bitmap;
+> -EXPORT_SYMBOL(sparc_valid_addr_bitmap);
+> +static unsigned long *sparc_valid_addr_bitmap;
+>
+>  unsigned long phys_base;
+>  EXPORT_SYMBOL(phys_base);
+> diff --git a/arch/sparc/mm/init_64.c b/arch/sparc/mm/init_64.c
+> index d6faee23c77d..04f9db0c3111 100644
+> --- a/arch/sparc/mm/init_64.c
+> +++ b/arch/sparc/mm/init_64.c
+> @@ -1667,7 +1667,6 @@ bool kern_addr_valid(unsigned long addr)
+>
+>         return pfn_valid(pte_pfn(*pte));
+>  }
+> -EXPORT_SYMBOL(kern_addr_valid);
+>
+>  static unsigned long __ref kernel_map_hugepud(unsigned long vstart,
+>                                               unsigned long vend,
+> diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.h
+> index 66bc3f99d9be..4e3052f2671a 100644
+> --- a/arch/um/include/asm/pgtable.h
+> +++ b/arch/um/include/asm/pgtable.h
+> @@ -298,8 +298,6 @@ extern pte_t *virt_to_pte(struct mm_struct *mm, unsigned long addr);
+>         ((swp_entry_t) { pte_val(pte_mkuptodate(pte)) })
+>  #define __swp_entry_to_pte(x)          ((pte_t) { (x).val })
+>
+> -#define kern_addr_valid(addr) (1)
+> -
+>  /* Clear a kernel PTE and flush it from the TLB */
+>  #define kpte_clear_flush(ptep, vaddr)          \
+>  do {                                           \
+> diff --git a/arch/x86/include/asm/pgtable_32.h b/arch/x86/include/asm/pgtable_32.h
+> index 7c9c968a42ef..7d4ad8907297 100644
+> --- a/arch/x86/include/asm/pgtable_32.h
+> +++ b/arch/x86/include/asm/pgtable_32.h
+> @@ -47,15 +47,6 @@ do {                                         \
+>
+>  #endif /* !__ASSEMBLY__ */
+>
+> -/*
+> - * kern_addr_valid() is (1) for FLATMEM and (0) for SPARSEMEM
+> - */
+> -#ifdef CONFIG_FLATMEM
+> -#define kern_addr_valid(addr)  (1)
+> -#else
+> -#define kern_addr_valid(kaddr) (0)
+> -#endif
+> -
+>  /*
+>   * This is used to calculate the .brk reservation for initial pagetables.
+>   * Enough space is reserved to allocate pagetables sufficient to cover all
+> diff --git a/arch/x86/include/asm/pgtable_64.h b/arch/x86/include/asm/pgtable_64.h
+> index e479491da8d5..7929327abe00 100644
+> --- a/arch/x86/include/asm/pgtable_64.h
+> +++ b/arch/x86/include/asm/pgtable_64.h
+> @@ -240,7 +240,6 @@ static inline void native_pgd_clear(pgd_t *pgd)
+>  #define __swp_entry_to_pte(x)          ((pte_t) { .pte = (x).val })
+>  #define __swp_entry_to_pmd(x)          ((pmd_t) { .pmd = (x).val })
+>
+> -extern int kern_addr_valid(unsigned long addr);
+>  extern void cleanup_highmap(void);
+>
+>  #define HAVE_ARCH_UNMAPPED_AREA
+> diff --git a/arch/x86/mm/init_64.c b/arch/x86/mm/init_64.c
+> index 3f040c6e5d13..e8db4edd7cc9 100644
+> --- a/arch/x86/mm/init_64.c
+> +++ b/arch/x86/mm/init_64.c
+> @@ -1416,47 +1416,6 @@ void mark_rodata_ro(void)
+>         debug_checkwx();
+>  }
+>
+> -int kern_addr_valid(unsigned long addr)
+> -{
+> -       unsigned long above = ((long)addr) >> __VIRTUAL_MASK_SHIFT;
+> -       pgd_t *pgd;
+> -       p4d_t *p4d;
+> -       pud_t *pud;
+> -       pmd_t *pmd;
+> -       pte_t *pte;
+> -
+> -       if (above != 0 && above != -1UL)
+> -               return 0;
+> -
+> -       pgd = pgd_offset_k(addr);
+> -       if (pgd_none(*pgd))
+> -               return 0;
+> -
+> -       p4d = p4d_offset(pgd, addr);
+> -       if (!p4d_present(*p4d))
+> -               return 0;
+> -
+> -       pud = pud_offset(p4d, addr);
+> -       if (!pud_present(*pud))
+> -               return 0;
+> -
+> -       if (pud_large(*pud))
+> -               return pfn_valid(pud_pfn(*pud));
+> -
+> -       pmd = pmd_offset(pud, addr);
+> -       if (!pmd_present(*pmd))
+> -               return 0;
+> -
+> -       if (pmd_large(*pmd))
+> -               return pfn_valid(pmd_pfn(*pmd));
+> -
+> -       pte = pte_offset_kernel(pmd, addr);
+> -       if (pte_none(*pte))
+> -               return 0;
+> -
+> -       return pfn_valid(pte_pfn(*pte));
+> -}
+> -
+>  /*
+>   * Block size is the minimum amount of memory which can be hotplugged or
+>   * hotremoved. It must be power of two and must be equal or larger than
+> diff --git a/arch/xtensa/include/asm/pgtable.h b/arch/xtensa/include/asm/pgtable.h
+> index 54f577c13afa..5b5484d707b2 100644
+> --- a/arch/xtensa/include/asm/pgtable.h
+> +++ b/arch/xtensa/include/asm/pgtable.h
+> @@ -386,8 +386,6 @@ ptep_set_wrprotect(struct mm_struct *mm, unsigned long addr, pte_t *ptep)
+>
+>  #else
+>
+> -#define kern_addr_valid(addr)  (1)
+> -
+>  extern  void update_mmu_cache(struct vm_area_struct * vma,
+>                               unsigned long address, pte_t *ptep);
+>
+> diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
+> index dff921f7ca33..590ecb79ad8b 100644
+> --- a/fs/proc/kcore.c
+> +++ b/fs/proc/kcore.c
+> @@ -541,25 +541,17 @@ read_kcore(struct file *file, char __user *buffer, size_t buflen, loff_t *fpos)
+>                         fallthrough;
+>                 case KCORE_VMEMMAP:
+>                 case KCORE_TEXT:
+> -                       if (kern_addr_valid(start)) {
+> -                               /*
+> -                                * Using bounce buffer to bypass the
+> -                                * hardened user copy kernel text checks.
+> -                                */
+> -                               if (copy_from_kernel_nofault(buf, (void *)start,
+> -                                               tsz)) {
+> -                                       if (clear_user(buffer, tsz)) {
+> -                                               ret = -EFAULT;
+> -                                               goto out;
+> -                                       }
+> -                               } else {
+> -                                       if (copy_to_user(buffer, buf, tsz)) {
+> -                                               ret = -EFAULT;
+> -                                               goto out;
+> -                                       }
+> +                       /*
+> +                        * Using bounce buffer to bypass the
+> +                        * hardened user copy kernel text checks.
+> +                        */
+> +                       if (copy_from_kernel_nofault(buf, (void *)start, tsz)) {
+> +                               if (clear_user(buffer, tsz)) {
+> +                                       ret = -EFAULT;
+> +                                       goto out;
+>                                 }
+>                         } else {
+> -                               if (clear_user(buffer, tsz)) {
+> +                               if (copy_to_user(buffer, buf, tsz)) {
+>                                         ret = -EFAULT;
+>                                         goto out;
+>                                 }
+> --
+> 2.35.3
+>
+
+
+-- 
+Best Regards
+ Guo Ren
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
