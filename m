@@ -4,104 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF032C4332F
-	for <linux-um@archiver.kernel.org>; Wed, 19 Oct 2022 15:11:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F2DBC4332F
+	for <linux-um@archiver.kernel.org>; Fri, 21 Oct 2022 12:47:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=xk+dwg+1dGO8AHF98ByuVR8oC7sMe1tGFbLUCDkGt9w=; b=fUqQ9pj5IdA9TJ
-	bPLY7FUp+cPVtn3Zqbxp6T0tEuhMuhR7ZTZCAlf7H/GC94T/eraLHP0eRp8QEgfMk2RIXQz7+ojKs
-	fuc5RBlP68ytJAlBgtpMBBvctj5D5VEiQZVoTtoxZF6kY4SiQCB/gCxmpmPdjsDcUQGeLU/H6DfaB
-	IdzyqFCwO01sHRX80eye+UqY05WmXzW6o5/DwZ1fGi7DxpYZmkDKcgTeWSvC+oTlSvcNFLlopZTgc
-	k793yBSmc08Mi+fKDz9C3I5Dg079M/0+Ttfp66pDDWlKpBMQMwVS0aEKJgAtxPJLHts7SFUtG41qX
-	ScNLPMM4DApm9GY2cLLQ==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=pnvSU1mFSUV9BgSmrmXybmwvwzOw1bQbPcfPDWWBVno=; b=d1EA2E7voJeKpq
+	KutCAC7nT5R4FF6PzEP0PnMCfqjCOuoSU/Qn7vpUbzsEhAJxhvrv5pT306GsY/2oqrf92mrgzIF7/
+	0onVc/rfNghX7j5GmktpSIVfM/zmnCCEcMTHAG/EqAJth6uxW+RsZR1BrN86HBTs7GAKpsL4RSkyU
+	7kMy6BHQDQKcQ46YnQSGdKD/lHo62ioDPa/MAGBhbeYT+vev86fZ/sLRFJw/q84hNUTW3GizRHBy/
+	ZQYI+c61lyupHe2Bmyzo44Lg+/b4ebikRvPFp4frHh6/HoX25kXCZA5d282IWMAlKvx/Ka7Nv8nxE
+	2GS/HHUmqE+kip0Y6Mfw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1olAja-0036Vr-S7; Wed, 19 Oct 2022 15:11:54 +0000
-Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
+	id 1olrRB-007h2e-IT; Fri, 21 Oct 2022 12:47:45 +0000
+Received: from smtp-out2.suse.de ([195.135.220.29])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1olAUK-002wW9-Ju; Wed, 19 Oct 2022 14:56:13 +0000
-From: John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1666191362;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=zkI+7kE11pEfvJZCSjIsOIHfnjIhjBs6goKb/AUL2D4=;
-	b=YYO7v04TmKSkEL8SQfYf9FANh400BpV31ZQR/trpNhqYtbMsqHy7XZuAyWZcYguh+KTZKz
-	uMkqVYF2Idk8ssJy6cSwkhJih5dltGrVFm3Z7MoL7Nhtw4GkmZEKblfArE1vVoKGDs5p81
-	WHY9OAlLqzr8G07YBDVNtY0AT4QClPosfQAXC7SCLUuMtHyHR5c2LCkNDByg36nTiuRcRN
-	AVWPIk+/COT66KSdFzs7sxleUpL2onRYs8JoVdAMBeDCEkOf8Yvmkp92DVD8xjN57OewPI
-	lAF6m3iPq5588431gmChW8+srrThoCLrEllt8f0GsYtka8ApK0mxiWi8JG1KQQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1666191362;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=zkI+7kE11pEfvJZCSjIsOIHfnjIhjBs6goKb/AUL2D4=;
-	b=taXn8qnVlav1KthfUzD2BUf7770pohYL/ecGjx8VGuNp3NOcr/dyz4UXH5Ok4L9J1BRVse
-	cqmXXqp/T3jlr9Bg==
-To: Petr Mladek <pmladek@suse.com>
+	id 1olrPu-007gS0-Hh
+	for linux-um@lists.infradead.org; Fri, 21 Oct 2022 12:46:27 +0000
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+	by smtp-out2.suse.de (Postfix) with ESMTP id B59191F8D2;
+	Fri, 21 Oct 2022 12:46:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1666356378; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KrSE31wu5PQi2XMLaox3e4E1ZLIXrqOBp7/4sX2RftI=;
+	b=ENPJsW/CzOH0I8k88z4J5LSpErXPYw2QfQiYeyTKYL8zOfymtMycSwlTTs2fnO/hPfrTtq
+	/jNrP7XzCQpiwfSEKEhN4je06GbO+oqWrkcL7VuO3lNebJQEWvUO/C27+Xx2teK4rbfuWF
+	v4YJBVjhdtIdE0ejKw6YFbgdpa2FYuw=
+Received: from suse.cz (unknown [10.100.208.146])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by relay2.suse.de (Postfix) with ESMTPS id 65AF72C141;
+	Fri, 21 Oct 2022 12:46:18 +0000 (UTC)
+Date: Fri, 21 Oct 2022 14:46:14 +0200
+From: Petr Mladek <pmladek@suse.com>
+To: John Ogness <john.ogness@linutronix.de>
 Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	linux-kernel@vger.kernel.org,
-	Jason Wessel <jason.wessel@windriver.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Daniel Thompson <daniel.thompson@linaro.org>,
-	Douglas Anderson <dianders@chromium.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	kgdb-bugreport@lists.sourceforge.net,
-	linux-serial@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-m68k@lists.linux-m68k.org,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
 	Richard Weinberger <richard@nod.at>,
 	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
 	Johannes Berg <johannes@sipsolutions.net>,
-	linux-um@lists.infradead.org,
-	Ard Biesheuvel <ardb@kernel.org>,
-	linux-efi@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org,
-	Shile Zhang <shile.zhang@linux.alibaba.com>,
-	Xianting Tian <xianting.tian@linux.alibaba.com>,
-	linuxppc-dev@lists.ozlabs.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org,
-	Michal Simek <michal.simek@xilinx.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Mike Rapoport <rppt@kernel.org>,
-	Mathias Nyman <mathias.nyman@linux.intel.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-usb@vger.kernel.org,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Aaron Tomlin <atomlin@redhat.com>,
-	Helge Deller <deller@gmx.de>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Javier Martinez Canillas <javierm@redhat.com>,
-	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-	Juergen Gross <jgross@suse.com>,
-	Tom Rix <trix@redhat.com>,
-	linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH printk v2 00/38] reduce console_lock scope
-Date: Wed, 19 Oct 2022 17:01:22 +0206
-Message-Id: <20221019145600.1282823-1-john.ogness@linutronix.de>
+	linux-um@lists.infradead.org
+Subject: Re: [PATCH printk v2 07/38] um: kmsg_dump: use console_is_enabled()
+Message-ID: <Y1KUltGpD0CwVYg7@alley>
+References: <20221019145600.1282823-1-john.ogness@linutronix.de>
+ <20221019145600.1282823-8-john.ogness@linutronix.de>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20221019145600.1282823-8-john.ogness@linutronix.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221019_075609_034871_3FA43CAA 
-X-CRM114-Status: GOOD (  16.22  )
+X-CRM114-CacheID: sfid-20221021_054626_773911_864206CA 
+X-CRM114-Status: UNSURE (   6.88  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -118,204 +78,15 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-This is v2 of a series to prepare for threaded/atomic
-printing. It is a rework of patches 6-12 of the v1 [0]. From
-the v1, patches 1-5 are already mainline and a rework of
-patches >12 will be posted in a later series.
+On Wed 2022-10-19 17:01:29, John Ogness wrote:
+> Replace (console->flags & CON_ENABLED) usage with console_is_enabled().
+> 
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 
-This series focuses on reducing the scope of the BKL
-console_lock. It achieves this by switching to SRCU and a
-dedicated mutex for console list iteration and modification,
-respectively. The console_lock will no longer offer this
-protection and is completely removed from
-(un)register_console() and console_stop/start() code.
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-All users of the console_lock for list iteration have been
-modified. For the call sites where the console_lock is still
-needed (because of other reasons), I added comments to explain
-exactly why the console_lock was needed.
-
-The base commit for this series is from Paul McKenney's RCU tree
-and provides an NMI-safe SRCU implementation [1]. Without the
-NMI-safe SRCU implementation, this series is not less safe than
-mainline. But we will need the NMI-safe SRCU implementation for
-atomic consoles anyway, so we might as well get it in
-now. Especially since it _does_ increase the reliability for
-mainline in the panic path.
-
-Changes since v2:
-
-general:
-
-- introduce console_is_enabled() to document safe data race on
-  console->flags
-
-- switch all "console->flags & CON_ENABLED" code sites to
-  console_is_enabled()
-
-- add "for_each_console_srcu" to .clang-format
-
-- cleanup/clarify comments relating to console_lock
-  coverage/usage
-
-um:
-
-- kmsg_dumper: use srcu instead of console_lock for list
-  iteration
-
-kgdb/kdb:
-
-- configure_kgdboc: keep console_lock for console->device()
-  synchronization, use srcu for list iteration
-
-- kgdboc_earlycon_pre_exp_handler: use srcu instead of
-  documenting unsafety for list iteration
-
-- kgdboc_earlycon_init: use console_list_lock instead of
-  console_lock to lock list
-
-- kdb_msg_write: use srcu instead of documenting unsafety for
-  list iteration
-
-tty:
-
-- show_cons_active: keep console_lock for console->device()
-  synchronization
-
-fbdev:
-
-- xen-fbfront: xenfb_probe: use srcu instead of console_lock
-  for list iteration, introduce console_force_preferred() to
-  safely implement hack
-
-proc/consoles:
-
-- show_console_dev: keep console_lock for console->device()
-  synchronization
-
-- c_next: use hlist_entry_safe() instead of
-  hlist_for_each_entry_continue()
-
-printk:
-
-- remove console_lock from console_stop/start() and
-  (un)register_console()
-
-- introduce console_srcu_read_(un)lock() to wrap scru read
-  (un)lock
-
-- rename cons_first() macro to console_first()
-
-- for_each_console: add lockdep check instead of introducing
-  new for_each_registered_console()
-
-- console_list_lock: add warning if in read-side critical
-  section
-
-- release srcu read lock on handover
-
-- console_flush_all: use srcu instead of relying on console
-  lock for list iteration
-
-- console_unblank: use srcu instead of relying on console_lock
-  for list iteration
-
-- console_flush_on_panic: use srcu for list iteration and
-  document console->seq race
-
-- device: keep console_lock for console->device()
-  synchronization, usr srcu for list iteration
-
-- register_console: split list adding logic into the 3 distinct
-  scenarios
-
-- register_console: set initial sequence number before adding
-  to list
-
-- unregister_console: fix ENODEV return value if the console is
-  not registered
-
-- console_stop: synchronize srcu
-
-- printk_late_init: use _safe variant of iteration
-
-- __pr_flush: use srcu instead of relying on console_lock for
-  list iteration
-
-John Ogness
-
-[0] https://lore.kernel.org/r/20220924000454.3319186-1-john.ogness@linutronix.de
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/log/?h=srcunmisafe.2022.10.18b
-
-John Ogness (37):
-  printk: Convert console_drivers list to hlist
-  printk: Prepare for SRCU console list protection
-  printk: introduce console_is_enabled() wrapper
-  printk: use console_is_enabled()
-  tty: nfcon: use console_is_enabled()
-  um: kmsg_dump: use console_is_enabled()
-  efi: earlycon: use console_is_enabled()
-  netconsole: use console_is_enabled()
-  tty: hvc: use console_is_enabled()
-  tty: serial: earlycon: use console_is_enabled()
-  tty: serial: kgdboc: use console_is_enabled()
-  tty: serial: pic32_uart: use console_is_enabled()
-  tty: serial: samsung_tty: use console_is_enabled()
-  tty: serial: serial_core: use console_is_enabled()
-  tty: serial: xilinx_uartps: use console_is_enabled()
-  tty: tty_io: use console_is_enabled()
-  usb: early: xhci-dbc: use console_is_enabled()
-  kdb: kdb_io: use console_is_enabled()
-  um: kmsg_dumper: use srcu console list iterator
-  serial: kgdboc: use srcu console list iterator
-  serial: kgdboc: document console_lock usage
-  tty: tty_io: document console_lock usage
-  xen: fbfront: use srcu console list iterator
-  proc: consoles: document console_lock usage
-  kdb: use srcu console list iterator
-  printk: console_flush_all: use srcu console list iterator
-  printk: console_unblank: use srcu console list iterator
-  printk: console_flush_on_panic: use srcu console list iterator
-  printk: console_device: use srcu console list iterator
-  printk: register_console: use srcu console list iterator
-  printk: __pr_flush: use srcu console list iterator
-  printk: introduce console_list_lock
-  serial: kgdboc: use console_list_lock instead of console_lock
-  tty: tty_io: use console_list_lock for list synchronization
-  proc: consoles: use console_list_lock for list iteration
-  printk: relieve console_lock of list synchronization duties
-  printk, xen: fbfront: create/use safe function for forcing preferred
-
-Thomas Gleixner (1):
-  serial: kgdboc: Lock console list in probe function
-
- .clang-format                      |   1 +
- arch/m68k/emu/nfcon.c              |   4 +-
- arch/um/kernel/kmsg_dump.c         |  15 +-
- drivers/firmware/efi/earlycon.c    |   4 +-
- drivers/net/netconsole.c           |   4 +-
- drivers/tty/hvc/hvc_console.c      |   2 +-
- drivers/tty/serial/earlycon.c      |   4 +-
- drivers/tty/serial/kgdboc.c        |  37 ++-
- drivers/tty/serial/pic32_uart.c    |   2 +-
- drivers/tty/serial/samsung_tty.c   |   2 +-
- drivers/tty/serial/serial_core.c   |   2 +-
- drivers/tty/serial/xilinx_uartps.c |   2 +-
- drivers/tty/tty_io.c               |  18 +-
- drivers/usb/early/xhci-dbc.c       |   2 +-
- drivers/video/fbdev/xen-fbfront.c  |  16 +-
- fs/proc/consoles.c                 |  20 +-
- include/linux/console.h            |  75 +++++-
- include/linux/serial_core.h        |   2 +-
- kernel/debug/kdb/kdb_io.c          |   7 +-
- kernel/printk/printk.c             | 373 +++++++++++++++++++++--------
- 20 files changed, 438 insertions(+), 154 deletions(-)
-
-
-base-commit: c2d158a284abd63d727dad7402a2eed650dd4233
--- 
-2.30.2
-
+Best Regards,
+Petr
 
 _______________________________________________
 linux-um mailing list
