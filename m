@@ -4,64 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60BC3C433FE
-	for <linux-um@archiver.kernel.org>; Fri, 21 Oct 2022 14:56:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A2C4FA373D
+	for <linux-um@archiver.kernel.org>; Tue,  1 Nov 2022 08:08:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Bhn6MpSZXFDXPUHA+M/b28nwlLzpH5P7pGgltDnJBLk=; b=nau3z/3QLxg/am
-	s6aaKVk5WZawV5HOVbmQvvRl2eTeoNNmzTRWOydCWBZAshg0RRyC2YQpx7DVyxFdbwRUhOgI1YTN5
-	Bw6lKLrweckkGaAL0PZ5jGWgx/cxK1g7ZXYa7+4nzDMQt5e9N3XdWxFa+NCeG23NCMXiFeINtWRaG
-	2f82LNXrN9LcHnkeE+FacaDH7evGYwt9NWhgkpvQQ7wdqwR9oYu2LZ5/I+9Sn3mGF1GXIzwrR4o8y
-	8VO/4lNLv9AdugGB2R0J/VFx4K6wlp8xUx/Tw9mLUrR2XN0+pxYkI3zkZSsba/Y1Rc24qOst7uhpI
-	9S2NnjlXAh+MOrzARGog==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:References:Message-ID:In-Reply-To:
+	Subject:cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=7UKeHrBtSqoK0wJQeOn/qUQrMf6Ednuq1S5VZkbDVAA=; b=SSlUxPFg+Er3tU/6ox8IEJjETb
+	g4yK87l9CYf7g0YU+foIxGpQAGxCizdd1B1vkEv3oCrQY31yKQrFtP6mZFFLCwUga4365bmJo6c7b
+	+ns9pWDtL2UroF5uJk2YxY3fUNwxVQpnb2Pqvk/aNHQHxHo0zrG7eCswlOWD4Z2Y7slHnCp8lEQPf
+	jmN80eCavyNcTYemvN/GHE38+sadQ/bqLT5hkL0/bnBuLaLYWavvtca7nC3pxmjpekuT07vvBDC1e
+	jOGy2FrrT1OXed/NdQKYyMJ/ohAM8hhhYTu/ikblVdiwYfbyfnZ9LJ1WN97rC8NqfeQWqf+j2LT7K
+	DKPqTKOA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oltRT-008cAP-4R; Fri, 21 Oct 2022 14:56:11 +0000
-Received: from smtp-out1.suse.de ([2001:67c:2178:6::1c])
+	id 1opmJo-00343F-Ek; Tue, 01 Nov 2022 08:08:20 +0000
+Received: from laurent.telenet-ops.be ([2a02:1800:110:4::f00:19])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oltRQ-008c9i-GP
-	for linux-um@lists.infradead.org; Fri, 21 Oct 2022 14:56:09 +0000
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-	by smtp-out1.suse.de (Postfix) with ESMTP id BBCD421ABC;
-	Fri, 21 Oct 2022 14:56:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1666364164; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=f1SvQMXi10r+rqaqtdwYHyeOxYLEtVGhID9W890ELfQ=;
-	b=rWuQYy5ekQHJwfeXZGz4uX4PxDIIgxv0+pb4rsYn/WNu8BYJ4dwxshLkJph917IL6rEVfC
-	pGSjFdhqLOqOZeyHJMkLW3Yc+CVyaOn9cqbhS/iYyoFtGJ2InyQqVwOrPs7Nd0hzob1N8L
-	4m0PnAefcnJ0HdHHsFZDE62o8+6qP18=
-Received: from suse.cz (unknown [10.100.201.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by relay2.suse.de (Postfix) with ESMTPS id 55FCB2C141;
-	Fri, 21 Oct 2022 14:56:04 +0000 (UTC)
-Date: Fri, 21 Oct 2022 16:56:03 +0200
-From: Petr Mladek <pmladek@suse.com>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Thomas Meyer <thomas@m3y3r.de>, linux-um@lists.infradead.org
-Subject: Re: [PATCH printk v2 20/38] um: kmsg_dumper: use srcu console list
- iterator
-Message-ID: <Y1KzA0Avz08iW6l5@alley>
-References: <20221019145600.1282823-1-john.ogness@linutronix.de>
- <20221019145600.1282823-21-john.ogness@linutronix.de>
+	id 1opmJg-0033hb-WB
+	for linux-um@lists.infradead.org; Tue, 01 Nov 2022 08:08:19 +0000
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:cd8a:284a:a448:1949])
+	by laurent.telenet-ops.be with bizsmtp
+	id ew832800N2kye1T01w84Ru; Tue, 01 Nov 2022 09:08:04 +0100
+Received: from geert (helo=localhost)
+	by ramsan.of.borg with local-esmtp (Exim 4.93)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1opmJX-002GBw-KJ; Tue, 01 Nov 2022 09:08:03 +0100
+Date: Tue, 1 Nov 2022 09:08:03 +0100 (CET)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+X-X-Sender: geert@ramsan.of.borg
+To: linux-kernel@vger.kernel.org
+cc: linux-mips@vger.kernel.org, linux-rdma@vger.kernel.org, 
+    linux-um@lists.infradead.org
+Subject: Re: Build regressions/improvements in v6.1-rc3
+In-Reply-To: <20221101080246.795789-1-geert@linux-m68k.org>
+Message-ID: <alpine.DEB.2.22.394.2211010906390.538850@ramsan.of.borg>
+References: <CAHk-=wgJVNe4mUxGJE5B-_GMg0oOgxkZz3UxehVRiCT3QvoZ0w@mail.gmail.com> <20221101080246.795789-1-geert@linux-m68k.org>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20221019145600.1282823-21-john.ogness@linutronix.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221021_075608_710614_7EBE96EB 
-X-CRM114-Status: GOOD (  23.29  )
+X-CRM114-CacheID: sfid-20221101_010813_229917_EEB6EDAD 
+X-CRM114-Status: GOOD (  13.10  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,78 +58,36 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed 2022-10-19 17:01:42, John Ogness wrote:
-> Rather than using the console_lock to guarantee safe console list
-> traversal, use srcu console list iteration.
-> 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
-> ---
->  arch/um/kernel/kmsg_dump.c | 11 ++++-------
->  1 file changed, 4 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/um/kernel/kmsg_dump.c b/arch/um/kernel/kmsg_dump.c
-> index 3a3bbbb22090..44a418dec919 100644
-> --- a/arch/um/kernel/kmsg_dump.c
-> +++ b/arch/um/kernel/kmsg_dump.c
-> @@ -16,20 +16,17 @@ static void kmsg_dumper_stdout(struct kmsg_dumper *dumper,
->  	struct console *con;
->  	unsigned long flags;
->  	size_t len = 0;
-> +	int cookie;
->  
->  	/* only dump kmsg when no console is available */
+On Tue, 1 Nov 2022, Geert Uytterhoeven wrote:
+> JFYI, when comparing v6.1-rc3[1] to v6.1-rc2[3], the summaries are:
+>  - build errors: +4/-0
 
-I agree that it is perfectly fine to use RCU here. The previous
-code was just a best effort. The kdump was done without console_lock()
-so that the console might get available in the meantime.
+   + /kisskb/src/arch/sh/include/asm/io.h: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]:  => 239:34
 
-I guess that it is not a big deal. The dumper is called typically only
-during panic() where new consoles are not added.
+sh4-gcc11/sh-allmodconfig
+cvmx_ptr_to_phys() should return physaddr_t instead (patch sent)
 
-> -	if (!console_trylock())
-> -		return;
-> -
-> -	for_each_console(con) {
-> +	cookie = console_srcu_read_lock();
-> +	for_each_console_srcu(con) {
->  		if (strcmp(con->name, "tty") == 0 &&
->  		    (console_is_enabled(con) || (con->flags & CON_CONSDEV))) {
+   + /kisskb/src/drivers/infiniband/sw/rdmavt/qp.c: error: 'struct cpuinfo_um' has no member named 'x86_cache_size':  => 88:22
+   + /kisskb/src/drivers/infiniband/sw/rdmavt/qp.c: error: control reaches end of non-void function [-Werror=return-type]:  => 89:1
+   + /kisskb/src/drivers/infiniband/sw/rdmavt/qp.c: error: implicit declaration of function '__copy_user_nocache' [-Werror=implicit-function-declaration]:  => 100:2
 
-This is slightly more racy than the previous code. Only one console
-could have CON_CONSDEV. It might be moved to another console when the
-list is manipulated. As a result, rcu walk might see zero, one, or two
-consoles with this flag unless the flag is moved carefully.
+um-x86_64/um-all{mod,yes}config
 
-Anyway, this check does not match the comment and does not make much
-sense to me. It is true that CON_CONSDEV flag is used only for
-registered consoles. But messages are printed on the console only
-when CON_ENABLED flag is set.
+Gr{oetje,eeting}s,
 
-IMHO, we should check only console_is_enabled() here.
+ 						Geert
 
-Adding Thomas Meyer and Richard Weinberger <richard@nod.at> into Cc.
-Thomas added this check in the commit e23fe90dec286cd77e90
-("um: kmsg_dumper: always dump when not tty console") and
-Richard pushed it.
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
->  			break;
->  		}
->  	}
-> -
-> -	console_unlock();
-> -
-> +	console_srcu_read_unlock(cookie);
->
->  	if (con)
->  		return;
-
-Best Regards,
-Petr
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+ 							     - Linus Torvalds
 
 _______________________________________________
 linux-um mailing list
