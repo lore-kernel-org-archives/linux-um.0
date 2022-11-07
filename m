@@ -4,93 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3E96C43219
-	for <linux-um@archiver.kernel.org>; Tue,  1 Nov 2022 17:47:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FE03C4332F
+	for <linux-um@archiver.kernel.org>; Mon,  7 Nov 2022 14:17:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=v8D8DKQwae7wafI5rOkhnTS601scQfn6dRddqTJS9BY=; b=LeaSDzCCT7GvoB
-	Ybjfb1AgrOKTM3SLg9Qb7DuuSqMJVcbJjtTgR8Qyy1SJ5LuuQrV9FeZqi+PLehxwUcOJQFx3TX9NK
-	2ZYVBY1697hVlxOvg33lqKRXYXPOg8qyRFbppcvGg/svfmMUsZubeTfLwI5kXkqGCOBBmEhxbEVcu
-	+qGFn+nEjPGYhB9tn0xjvhdAZxerJLF1GIg/qlVHULzkeRLt3eeR8GPkCSLxj7/ef51oxoQDlnIa3
-	aqqcaKP2lVWWUo6YXbnwYHirqh6tK5Zaue9snNm5yvTe7hCi6sCVDNpVwhban7SbQeC1IS7U7Vvex
-	gIkHb7QmOlZH5YX46E1Q==;
+	List-Owner; bh=fmLg0NNuAPxmW3lBz1Yz25O1DvZpRS+HxpSQ8Im7AHU=; b=Mt6oUjoirtcgV8
+	s+oF2wel1hQyzzbQD8fAovAHhy14iUB289/B5g8Zwf1/B0p1wX1g9fAePAquh+sezzWChkecTMa4e
+	ZJx7RxK+yLumpqdpLt8MEFOlGJz3I4IME6b5yNSFpfs5DxU8RGMTVbs/zszlo3/QHoLK297+vZdRX
+	Lgzr8gs9oeLQ+W5lV1UoUOEprfOfTpFCxrvA27esgHqrZb9qegdJXfE5JOJ9qRg7Ts1mZ3KtQSV0h
+	lSkGpI2/av4513PfTf4cJD/J6TwkX5M03PQBctTWBKrCFM+8z6wPZxNFsQGt5Jh3rLNH/G0tCxpkJ
+	MJdhkuPwfn7XJi8291Jw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1opvMA-006MRg-IS; Tue, 01 Nov 2022 17:47:22 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1os2vz-00F9m0-IR; Mon, 07 Nov 2022 14:17:07 +0000
+Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1opvM6-006MP9-3u; Tue, 01 Nov 2022 17:47:19 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id DE9F2616A8;
-	Tue,  1 Nov 2022 17:47:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CD53C433D6;
-	Tue,  1 Nov 2022 17:47:05 +0000 (UTC)
-Date: Tue, 1 Nov 2022 17:47:01 +0000
-From: Catalin Marinas <catalin.marinas@arm.com>
-To: Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-alpha@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-	linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-	linux-fsdevel@vger.kernel.org,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-	Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@kernel.org>,
-	Russell King <linux@armlinux.org.uk>, Will Deacon <will@kernel.org>,
-	Guo Ren <guoren@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Greg Ungerer <gerg@linux-m68k.org>, Michal Simek <monstr@monstr.eu>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>,
-	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-	Stafford Horne <shorne@gmail.com>,
-	"James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Rich Felker <dalias@libc.org>,
-	"David S . Miller" <davem@davemloft.net>,
+	id 1os2vg-00F9bD-LZ
+	for linux-um@lists.infradead.org; Mon, 07 Nov 2022 14:16:50 +0000
+From: John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1667830605;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jHu0DmQ8f1rgQbiyd2Suu9x07qh6zOdBEqqZ/26ftRk=;
+	b=hGwj6gizl96NQKwR498k6uAl6XSNfXs5DgtmC5L8WU7gQWVMnV7NlRaPDbm+f6yjkhmslu
+	QucFR7Y2mtVq5FQDr4sTthdt7CY0EmINf9SVUOxmemZNSxstqrHpUbc6G88hCPT21Yegbw
+	eqg3pL91M6+PPtd1gM+QJUhLzSCTMEpbM2aJhVq6e1aoD+8XkEN/nxIGyiR1B32A6BlAV6
+	m19ypo58YK7PSvx6wjWoCQiTVJgwBKEG3xfqcKheTXfurqjSDhZxeg3XVqGOZTLfPijIy1
+	IOG5h4UQmGKMeBTZ1D2406gA5WuWTokF1Wsn3rGlck+/9hA/SyrLA4qUBFxMzA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1667830605;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jHu0DmQ8f1rgQbiyd2Suu9x07qh6zOdBEqqZ/26ftRk=;
+	b=P9Gxvfan7DCC1ih4Knt2kaKzs4QeQhU+whuk/d07z5yqj/O+rOCCGJvNj0Wj3ZUD3GFgTP
+	nGuJe2YaCbe55ACw==
+To: Petr Mladek <pmladek@suse.com>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	linux-kernel@vger.kernel.org,
 	Richard Weinberger <richard@nod.at>,
 	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
 	Johannes Berg <johannes@sipsolutions.net>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H . Peter Anvin" <hpa@zytor.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>
-Subject: Re: [PATCH] mm: remove kern_addr_valid() completely
-Message-ID: <Y2FblZlz2LIGh5qH@arm.com>
-References: <20221018074014.185687-1-wangkefeng.wang@huawei.com>
+	linux-um@lists.infradead.org
+Subject: [PATCH printk v3 11/40] um: kmsg_dumper: use srcu console list iterator
+Date: Mon,  7 Nov 2022 15:22:09 +0106
+Message-Id: <20221107141638.3790965-12-john.ogness@linutronix.de>
+In-Reply-To: <20221107141638.3790965-1-john.ogness@linutronix.de>
+References: <20221107141638.3790965-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20221018074014.185687-1-wangkefeng.wang@huawei.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221101_104718_212746_2FA9E425 
-X-CRM114-Status: GOOD (  12.81  )
+X-CRM114-CacheID: sfid-20221107_061648_913674_72531DB6 
+X-CRM114-Status: UNSURE (   9.23  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,18 +82,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Oct 18, 2022 at 03:40:14PM +0800, Kefeng Wang wrote:
-> Most architectures(except arm64/x86/sparc) simply return 1 for
-> kern_addr_valid(), which is only used in read_kcore(), and it
-> calls copy_from_kernel_nofault() which could check whether the
-> address is a valid kernel address, so no need kern_addr_valid(),
-> let's remove unneeded kern_addr_valid() completely.
-> 
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+Rather than using the console_lock to guarantee safe console list
+traversal, use srcu console list iteration.
 
-For arm64:
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
+---
+ arch/um/kernel/kmsg_dump.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+diff --git a/arch/um/kernel/kmsg_dump.c b/arch/um/kernel/kmsg_dump.c
+index f0233e2f8de0..b6acb3837f1d 100644
+--- a/arch/um/kernel/kmsg_dump.c
++++ b/arch/um/kernel/kmsg_dump.c
+@@ -16,16 +16,15 @@ static void kmsg_dumper_stdout(struct kmsg_dumper *dumper,
+ 	struct console *con;
+ 	unsigned long flags;
+ 	size_t len = 0;
++	int cookie;
+ 
+ 	/*
+ 	 * If no consoles are available to output crash information, dump
+ 	 * the kmsg buffer to stdout.
+ 	 */
+ 
+-	if (!console_trylock())
+-		return;
+-
+-	for_each_console(con) {
++	cookie = console_srcu_read_lock();
++	for_each_console_srcu(con) {
+ 		/*
+ 		 * The ttynull console and disabled consoles are ignored
+ 		 * since they cannot output. All other consoles are
+@@ -36,9 +35,7 @@ static void kmsg_dumper_stdout(struct kmsg_dumper *dumper,
+ 			break;
+ 		}
+ 	}
+-
+-	console_unlock();
+-
++	console_srcu_read_unlock(cookie);
+ 	if (con)
+ 		return;
+ 
+-- 
+2.30.2
+
 
 _______________________________________________
 linux-um mailing list
