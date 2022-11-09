@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93901C433FE
-	for <linux-um@archiver.kernel.org>; Wed,  9 Nov 2022 14:53:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6E4E5C433FE
+	for <linux-um@archiver.kernel.org>; Wed,  9 Nov 2022 14:56:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=03Bc01kes1kaLk8VueBRjIjLs4aLTc0n8WsbYVcbi74=; b=s6tLGsEgeklUWp
-	SiGjHmcTolKe2DB+9bKMahtUuNVCxR1Rce1sjk2ZewU+zrubXnuMnCFZRDUP7VJKBM/OPY4FmTMXd
-	Dz7nvxeY4NVsnU/8m3SOIjBKVQPLdDAL6ghCYT2emYPy9ojO19GTjJvTnsm14gh6VFySYI7aCjlT4
-	PSyp0uM0aR6mqUYmO4+V+qCc1+SixPfSIhvMnAaFA5F29L5GhagdhIwsOcrhIW7FHNXEUKWZZbZ5v
-	KTMRrOWTuuPPIlpBgFE9USp9pAlZHbi4YkY7w1u4gCAgWxFcPt3RDq0IlTfgLWrXw0v7NJ5/oUuCi
-	P8CBxpP6XbZr/KrFkygA==;
+	List-Owner; bh=8PQvY3y+D9wMKhEqzZ2IhYjvGltEN08qEokPbZECNIs=; b=VtuWo0MeKz4SAD
+	jiHVgJ/XlzE+E54PzrmCZ/VgwBsB8LllnxuUIQ33r4Iv4MjcdDLC0zDN7cquHA/oRQK7Zu+smrxFD
+	cb6H9oDEzQr8A6L1NQS99JtYtFAZGGFlJuUxzATO9dsFq463v8SVpSF1IfdUhTEDkHbhzKQ9B7c4J
+	YoH+Xw5W4mXxDKoI/9e0k9L7wa9hiFUnICebVsc9LsDpXvTuUZRrebOvxff47Ctwmv1nwq/C+LfWm
+	ZH2gztRE/zPfrR5m+DtF9F/QnQ+Ih6ykAfAD8Jq1v1/JXVtX6h/S7kbmbQZMZ5jijcxJlQdMDAjw8
+	thZMaUUcTchJ22OPCnwg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1osmRt-00EGq4-EQ; Wed, 09 Nov 2022 14:53:05 +0000
-Received: from smtp-out2.suse.de ([2001:67c:2178:6::1d])
+	id 1osmV0-00EIgm-Rj; Wed, 09 Nov 2022 14:56:18 +0000
+Received: from smtp-out2.suse.de ([195.135.220.29])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1osmRq-00EGmM-Rj
-	for linux-um@lists.infradead.org; Wed, 09 Nov 2022 14:53:04 +0000
+	id 1osmUy-00EIcv-4D
+	for linux-um@lists.infradead.org; Wed, 09 Nov 2022 14:56:17 +0000
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-	by smtp-out2.suse.de (Postfix) with ESMTP id E2D661FAD7;
-	Wed,  9 Nov 2022 14:52:57 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTP id B27511FA7D;
+	Wed,  9 Nov 2022 14:56:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1668005577; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1668005771; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FutJ1VPLZFBajZZiyGg8sMOsTn5Qp9A62puyDLQBuTc=;
-	b=NPAbe1ETJXR+P7Z6KLWW1x2nSkzeh+d5c1yrGY8P8IPy7nyDazFJyGYAlmQvALrdlTMgNP
-	5fHy00+za04xiUEgRAqWbTfZ7mMl+HYDMsLz2jK/lk1lmmX/QDX+YJC9KxcIokGAxevfpa
-	fjFac5a3Qqdwecyx4Hmm43B+1eIKCHY=
+	bh=mKMrIsC8h62DzWI0E3YlyYVcB0iVjI1eAX5b1Z/HrfA=;
+	b=BF+jg8t39zGdVFt86eIQ02x8sHCJWivHvSNSHm+oGhx835MM6HNMkmAHq610pG5gmTd6c6
+	mQh5RJ8r/hsupcJcJUdIIfrAM+ZyOGgRXd5zg8W2t8k/LdnCKdXeAlZc7KA+nZiJsDB6wZ
+	Pt0SIR9rT3xOM2wiBvSsQaIvSxb75rc=
 Received: from suse.cz (unknown [10.100.201.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by relay2.suse.de (Postfix) with ESMTPS id 7051E2C141;
-	Wed,  9 Nov 2022 14:52:57 +0000 (UTC)
-Date: Wed, 9 Nov 2022 15:52:57 +0100
+	by relay2.suse.de (Postfix) with ESMTPS id 9748E2C141;
+	Wed,  9 Nov 2022 14:56:11 +0000 (UTC)
+Date: Wed, 9 Nov 2022 15:56:11 +0100
 From: Petr Mladek <pmladek@suse.com>
 To: John Ogness <john.ogness@linutronix.de>
 Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
@@ -52,15 +52,15 @@ Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
 	Johannes Berg <johannes@sipsolutions.net>,
 	linux-um@lists.infradead.org
 Subject: Re: [PATCH printk v3 09/40] um: kmsg_dump: use console_is_enabled()
-Message-ID: <Y2u+yQca3Y5DzPUc@alley>
+Message-ID: <Y2u/i9EgSe5BYIA5@alley>
 References: <20221107141638.3790965-1-john.ogness@linutronix.de>
  <20221107141638.3790965-10-john.ogness@linutronix.de>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <20221107141638.3790965-10-john.ogness@linutronix.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221109_065303_060572_F4831E76 
-X-CRM114-Status: GOOD (  18.58  )
+X-CRM114-CacheID: sfid-20221109_065616_339126_90FA4F12 
+X-CRM114-Status: GOOD (  16.40  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,12 +96,10 @@ On Mon 2022-11-07 15:22:07, John Ogness wrote:
 > -		    (con->flags & CON_ENABLED)) {
 > +		    console_is_enabled(con)) {
 
-The patch does not explain why the racy check is needed here.
-
-I would prefer to merge this patch with the patch switching to the srcu
-console list iterator. It will become more or less self-explaining.
-
-Anyway, I agree that the racy check is acceptable here.
+Same as with the 9th patch. I would merge this with the patch
+switching to the srcu console list iterator. It will explain
+why the racy check is needed here. This change does not make
+sense without the other.
 
 Best Regards,
 Petr
