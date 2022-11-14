@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71DFBC4332F
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4A49C43217
 	for <linux-um@archiver.kernel.org>; Mon, 14 Nov 2022 16:29:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,41 +12,41 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BhhrT3gVU/zBkvJt/92wQsBYCCUwenCodUKPJO/mLjs=; b=NWSPcUsNHSI+Ye
-	q+g8eEryr4M+J9LxPV1JfnWHxJbQWJgKHm/b0IqbaEpBnMBVWThGu7Jzp/SgSlm+WiXHR41oUprjL
-	P++hAdWUtSfxOFU/RaWX/LoSEwQESOY9dufsZsH0mKsGuKvi9TT81LMGLfUxEjvQixzluu05fnYy3
-	CTMtLJld78p2usMNZRexUZpsvwYcrc9syWpc4nwCaGnPDlT++FX6IiltlXdUFLLux2a+Aaz4zDtLA
-	LbGW7Zf6uOFcgSbdbmoIZsKOlVt612nnKs5jJOjZPzq/YpIvt+QXuZt57PjIMGO0WceIctSscFGPa
-	fvAG7Txe1zE3NxpdLxJA==;
+	List-Owner; bh=PbzOeR05n7bK5pGy92cpTm4DdrKBy8u/a0nGUCiwZDQ=; b=j0c0HqnVsCh3Dt
+	DLG5pWLple3rqGPEykEbTQ1+honHfzx3YHBa3KZmqNH7Zfl2wFr0ReruQ8Xw4e7MZTa+Git2Y3v46
+	nR4zUNLimx68LLqUN5DlIpCJcRuXEuH7AReHWZejemRQXJCb4C4YGl9ykT4PUZiODOCjFImlaJNTW
+	/4BZc31QL6WaFJXt+9regU82csdbqAKt6oAVaPSwc/AmxAdnJpg9cOz/LfRm1qHfGWcz7AheNv9N1
+	6cevnF2tB1uEHdwzNBIq5+M7hEfH7FwF9V3FDN8/vT8SuC9OScVPoU6XJV8/WN0ClG+iWvxSFSUVB
+	+azfIdwCpVoDKr6Qt4Ww==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oucLF-002ieq-1K; Mon, 14 Nov 2022 16:29:49 +0000
+	id 1oucLH-002ig0-8i; Mon, 14 Nov 2022 16:29:51 +0000
 Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oucLC-002iau-K7
-	for linux-um@lists.infradead.org; Mon, 14 Nov 2022 16:29:48 +0000
+	id 1oucLC-002ibF-MN
+	for linux-um@lists.infradead.org; Mon, 14 Nov 2022 16:29:49 +0000
 From: John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1668443377;
+	s=2020; t=1668443379;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=eUV7NYFJOYRPWEVh0G/EU6zT1t7HGJ6qLPZoOxwFJX0=;
-	b=hXrAuUk0veFL2Qfb6GL5q62iv8qbDJs1l0+JFrxmW/AwVib9zp2qJNhFunHfBfU9Zqg88+
-	JTlaYWS7koTSowUankx8ymKJVaHyRcKqL0FQPxX2kJ3jy87p7JCO3vqBZ1Xg6IdsGqC/oT
-	lfU3BO3xPx8wKUf74di2LOduzLl9D0hKHBnVEf1DeVGsqjTcFOWF1MSo2/PAMnLQL8uQN3
-	VAD8oc3lspCaTS0b/swtjZpIdl7aAj3KT1/bn7t0kTKgCnK346lG/0P7emVoeyvNCFXDuy
-	ffxx3KsbLdFJj2Cm/sFn07Hv/82wgyTbEOfHV2EOrBLqmpQmhXGCKMWHi2JSkQ==
+	bh=GEhKO0dJc2f16pdA5isP3tyKiWxAMb8gJwHLg9bJtvU=;
+	b=fED6VtmDED6MuLvYHCpr7jg0s8uQ4ubFuV+VJrDBURlb+sRmrPLVdZhbCg7C9vkvldCcZC
+	O3jnP3sS40Xc/9Nl61qOPe4tQo5M701OfeqSfviyYjbM9aVF5lpkSd4rH9cAes5ZiqmRXV
+	qSC0fmcpzoHohSsnvCqpR2jm74hLpeXfas4Urmb+nz47yUrVVMWUckuYe0K6QhSQ0thxYe
+	Do4tLzYO/CeZJ4lQo1ewHWpTh8mj47O/uroIOAzyntCZsQtDNfsDD/JIDWJTssmb6VX7O6
+	7zwiYUW4aXXfoFUuEEQfPo3tGoBVRNEWeL66ULaqMgc89bm5V3SqUuiZVWBb3A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1668443377;
+	s=2020e; t=1668443379;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=eUV7NYFJOYRPWEVh0G/EU6zT1t7HGJ6qLPZoOxwFJX0=;
-	b=QxyEvyxZCYa8n5ddhd4y/3oG8Ik1RqNDjid21OVOW9aSygXYvipEI3nPBP20kFecVjgnoJ
-	PQ89LtwsJTOe6+DQ==
+	bh=GEhKO0dJc2f16pdA5isP3tyKiWxAMb8gJwHLg9bJtvU=;
+	b=X+VenatF4kHSWTowXfqC0zSVEJludzZYKhc6X1KeZyez9dy82GgAGpy+a7Avhfw9vUOvoe
+	nAz42aPySqUAAZDA==
 To: Petr Mladek <pmladek@suse.com>
 Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
@@ -56,15 +56,15 @@ Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
 	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
 	Johannes Berg <johannes@sipsolutions.net>,
 	linux-um@lists.infradead.org
-Subject: [PATCH printk v4 06/39] um: kmsg_dump: only dump when no output console available
-Date: Mon, 14 Nov 2022 17:34:59 +0106
-Message-Id: <20221114162932.141883-7-john.ogness@linutronix.de>
+Subject: [PATCH printk v4 12/39] um: kmsg_dumper: use srcu console list iterator
+Date: Mon, 14 Nov 2022 17:35:05 +0106
+Message-Id: <20221114162932.141883-13-john.ogness@linutronix.de>
 In-Reply-To: <20221114162932.141883-1-john.ogness@linutronix.de>
 References: <20221114162932.141883-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221114_082946_842413_DE37DB8D 
-X-CRM114-Status: GOOD (  13.35  )
+X-CRM114-CacheID: sfid-20221114_082946_925621_5000CEB5 
+X-CRM114-Status: GOOD (  10.37  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,58 +81,54 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-The initial intention of the UML kmsg_dumper is to dump the kernel
-buffers to stdout if there is no console available to perform the
-regular crash output.
-
-However, if ttynull was registered as a console, no crash output was
-seen. Commit e23fe90dec28 ("um: kmsg_dumper: always dump when not tty
-console") tried to fix this by performing the kmsg_dump unless the
-stdio console was behind /dev/console or enabled. But this allowed
-kmsg dumping to occur even if other non-stdio consoles will output
-the crash output. Also, a console being the driver behind
-/dev/console has nothing to do with a crash scenario.
-
-Restore the initial intention by dumping the kernel buffers to stdout
-only if a non-ttynull console is registered and enabled. Also add
-detailed comments so that it is clear why these rules are applied.
+Rather than using the console_lock to guarantee safe console list
+traversal, use srcu console list iteration.
 
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 Reviewed-by: Petr Mladek <pmladek@suse.com>
 ---
- arch/um/kernel/kmsg_dump.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ arch/um/kernel/kmsg_dump.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
 diff --git a/arch/um/kernel/kmsg_dump.c b/arch/um/kernel/kmsg_dump.c
-index 0224fcb36e22..40abf1e9ccb1 100644
+index 40abf1e9ccb1..427dd5a61a38 100644
 --- a/arch/um/kernel/kmsg_dump.c
 +++ b/arch/um/kernel/kmsg_dump.c
-@@ -17,13 +17,22 @@ static void kmsg_dumper_stdout(struct kmsg_dumper *dumper,
+@@ -16,29 +16,26 @@ static void kmsg_dumper_stdout(struct kmsg_dumper *dumper,
+ 	struct console *con;
  	unsigned long flags;
  	size_t len = 0;
++	int cookie;
  
--	/* only dump kmsg when no console is available */
-+	/*
-+	 * If no consoles are available to output crash information, dump
-+	 * the kmsg buffer to stdout.
-+	 */
-+
- 	if (!console_trylock())
- 		return;
+ 	/*
+ 	 * If no consoles are available to output crash information, dump
+ 	 * the kmsg buffer to stdout.
+ 	 */
  
- 	for_each_console(con) {
--		if(strcmp(con->name, "tty") == 0 &&
--		   (con->flags & (CON_ENABLED | CON_CONSDEV)) != 0) {
-+		/*
-+		 * The ttynull console and disabled consoles are ignored
-+		 * since they cannot output. All other consoles are
-+		 * expected to output the crash information.
-+		 */
-+		if (strcmp(con->name, "ttynull") != 0 &&
-+		    (con->flags & CON_ENABLED)) {
+-	if (!console_trylock())
+-		return;
+-
+-	for_each_console(con) {
++	cookie = console_srcu_read_lock();
++	for_each_console_srcu(con) {
+ 		/*
+ 		 * The ttynull console and disabled consoles are ignored
+ 		 * since they cannot output. All other consoles are
+ 		 * expected to output the crash information.
+ 		 */
+ 		if (strcmp(con->name, "ttynull") != 0 &&
+-		    (con->flags & CON_ENABLED)) {
++		    (console_srcu_read_flags(con) & CON_ENABLED)) {
  			break;
  		}
  	}
+-
+-	console_unlock();
+-
++	console_srcu_read_unlock(cookie);
+ 	if (con)
+ 		return;
+ 
 -- 
 2.30.2
 
