@@ -4,133 +4,131 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE492C433FE
-	for <linux-um@archiver.kernel.org>; Wed, 16 Nov 2022 10:53:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9B37C4332F
+	for <linux-um@archiver.kernel.org>; Wed, 16 Nov 2022 10:53:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=g1JtdNnBeBV2AI37ZPfiOKMFFrbrtqYu7dSZl4jO0jY=; b=NS0YmelryevDEA
-	FeG2phJqjiCP11X5V5Jm+4y/tEqEBQ71s8h3s7eFsfA/zsTKYwBx8rR1ds77zitGuuCZN5l7Jcjbg
-	9wS60bBEpHk871uUO9QHPzsVm02vigj5OKUrULb5x4wlqFHuB40zrlM8zi+UARCGIsF6QvYtymje/
-	f6bQUHTQ+g1JQKjRK0IXpLtdaUTTryVby/DscwQNDox5tpi3HX31X7Qp6lKPpVc2lhSGdsMz+aaRW
-	t5hYK4qRVlYFhuJjKKlIjmhXNcoOdyIi6145dldzbiAtEOWz9Q/vT/9hVxXlg9uwwA53HR/TFUvXn
-	Gor23p1m5fIJz9PRTBpw==;
+	List-Owner; bh=IPv/MBLVsWFI/bygMWZ+XFPX7Wg7UJ9RuzOnwhaWq5M=; b=CRyHN2EIsKGCfd
+	a1xUJfxAbFT1JxX1iVD3ev1F5BcqChACZxtJFFzYb424PXTRbrO4KBTrer0iSMdKR8nbNeI1jS+Bb
+	apA0i2OVwr6/881LgQLCxURlkFYpIm/NKwRgh8wvBnWoPEAn4oJIVVl7JeAXjSB9v2mHiPgSSeUTp
+	0Q9MfLmPGNzgioQm9L82dzVNzbIaka1zz5RvuHmWREHCMc1zvQbw7WBoCKKhULaC4WPsKf3nWx9Cn
+	O74Lt5Nl2yEUINBOf+OZn796rJWBtj7HI70lvtVRS/QNCOZvIAOk/RaPn3m5G8n5j1qNDt56zhiO/
+	LPo+CfJ0o8KGh5OSw9RQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ovG2Q-002Trd-5v; Wed, 16 Nov 2022 10:53:02 +0000
-Received: from mail-ed1-x529.google.com ([2a00:1450:4864:20::529])
+	id 1ovG2S-002Tts-Rh; Wed, 16 Nov 2022 10:53:04 +0000
+Received: from mail-ej1-x636.google.com ([2a00:1450:4864:20::636])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ovFzK-002RVL-UT
-	for linux-um@lists.infradead.org; Wed, 16 Nov 2022 10:49:54 +0000
-Received: by mail-ed1-x529.google.com with SMTP id v27so25982843eda.1
-        for <linux-um@lists.infradead.org>; Wed, 16 Nov 2022 02:49:47 -0800 (PST)
+	id 1ovG04-002S6B-BL
+	for linux-um@lists.infradead.org; Wed, 16 Nov 2022 10:50:37 +0000
+Received: by mail-ej1-x636.google.com with SMTP id i10so34426502ejg.6
+        for <linux-um@lists.infradead.org>; Wed, 16 Nov 2022 02:50:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
         h=in-reply-to:content-disposition:mime-version:references
          :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SB0xMxg7mb7arNhoP48cqWafxbk28Z1Lix7iS7Zkf4o=;
-        b=G+yH7gGM79Kur0Iop0CPPA+qhziqzAzwIurg983ubYb3WshrhUBjt115nMP15JVtFB
-         bCAGjPfacpREtOfp/xR/YX1SymsdQ1bgnCyPvMlgHC3mzRuO7K3B6poJkP/JWiUCmMWF
-         GisY2xBmQqATnhhXA26BG81FXfyHx1zsVnNWg=
+        bh=mdwJ/650wADnRoR72oyZkQ8DiIzSWQSpq6IdxtCR+gY=;
+        b=f2SpOZdEZzXCSPn0ykm1oJX1As7I6xxh5wr16pOd/kbA5OOiuO0Y4IWH35k28OjNoj
+         wHiTHItpgbOeFMLRaKE+zMy2u3TZ9N8dtmICEQujo3Me7a5E74OF+31ufRLy1oYVFEA1
+         T3Nbw0vHjZlr/vzIiD2dpwD9w/oFbF5Q800Lc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references
          :mail-followup-to:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SB0xMxg7mb7arNhoP48cqWafxbk28Z1Lix7iS7Zkf4o=;
-        b=PweiI2067gE6JbgCqSuyhbkrRjGpQM2CioWAb3MqgjHlBh7JFbM8/mboJRTwxPRUzT
-         IRcYEcf5yM1UvC00g/EVp7lqXsrbwRppkJMtTTRWoWf3DHfeMj7sL1ZLEwzys4l+uW76
-         bsVKn/FFdU4VCviqYO2lZ20vBrN+Cz/IwpARnxyNvmMzHuf9YAeDuQp3le9mbffok0CF
-         lSz+1hvuFCxjCKCuYUaZ2aAoBXamTdajwoTIDIq9oEM9VZrgnz8BUDXRojbWztpTdboT
-         paolZOQ93HKzrZNDv9GiUjozqa/8hqRckM4D/4sObyIbc9B2jU9jWRj5E4iD2ckWH24a
-         0iIw==
-X-Gm-Message-State: ANoB5pmQXPedj+NVoFqmbcipI0GRPUvV3+k7BpoeTUoLDi1x7ZmLQD6u
-	dJYrTzakYAXdwu/9X8RT36GPTw==
-X-Google-Smtp-Source: AA0mqf5eZw0lnDAfrqoVYz8ol539itw9JN3l4qV2Eir0Zt6pEgAkXKur5xarVrPRHlm5su04xf/hGA==
-X-Received: by 2002:a05:6402:3458:b0:458:b9f9:9fba with SMTP id l24-20020a056402345800b00458b9f99fbamr19055554edc.305.1668595786519;
-        Wed, 16 Nov 2022 02:49:46 -0800 (PST)
+        bh=mdwJ/650wADnRoR72oyZkQ8DiIzSWQSpq6IdxtCR+gY=;
+        b=oTTWshT43bIcNE2WjBVUTeJytc6PXWKMZZSw0XVWrC+Iux86iH/eY2quqlyIAr54Po
+         qPoUnQg8AHG3EgK1GIGW3mNk77aD1Cqr8z0L4uwDC5zQePOO6wxCisR/zXqpkG9yq/TJ
+         MpZXAIRz0gc/DiQAQceaqVUu+i/gb3lnn2Y07vKgVex9EOez7xScF4iuuLaWsAF4GkNG
+         /Igz6LQmOw7M7eHltwI1InV7Eh6JNg0U6Ve9BIFQ8qUb+GfHxY8xKaoLmd53a20O6xlr
+         Su/a4BOCDOaL8Dq2qxASVxX/XJJP/T9wHEXkaqxr9zF3kpKMxK5rhvL/ukF2+03bRtEy
+         bNxg==
+X-Gm-Message-State: ANoB5pmsTUGPpLX+o3uhUHR3YalTsL8ptAU27xi1fksCStfR+8MzhAON
+	pvdPPD8HF0NwhVDT6UnMo3r1Eg==
+X-Google-Smtp-Source: AA0mqf4MgV0oW/LCUugReHUpBkpepoZ7Vy6UeNXMZ5Yjky+iNhPczOtY8K1ul1dtRtcsoxT6/N3VKQ==
+X-Received: by 2002:a17:906:78e:b0:7a1:e52e:bddb with SMTP id l14-20020a170906078e00b007a1e52ebddbmr16502698ejc.685.1668595834073;
+        Wed, 16 Nov 2022 02:50:34 -0800 (PST)
 Received: from phenom.ffwll.local (212-51-149-33.fiber7.init7.net. [212.51.149.33])
-        by smtp.gmail.com with ESMTPSA id kx13-20020a170907774d00b0078ba492db81sm6694451ejc.9.2022.11.16.02.49.45
+        by smtp.gmail.com with ESMTPSA id jw17-20020a17090776b100b0078b1ff41f05sm6758790ejc.43.2022.11.16.02.50.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Nov 2022 02:49:46 -0800 (PST)
-Date: Wed, 16 Nov 2022 11:49:43 +0100
+        Wed, 16 Nov 2022 02:50:33 -0800 (PST)
+Date: Wed, 16 Nov 2022 11:50:31 +0100
 From: Daniel Vetter <daniel@ffwll.ch>
 To: David Hildenbrand <david@redhat.com>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
-	linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-	linux-um@lists.infradead.org, etnaviv@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org, linux-samsung-soc@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-perf-users@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>,
-	Peter Xu <peterx@redhat.com>,
+Cc: linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	dri-devel@lists.freedesktop.org, Hans Verkuil <hverkuil@xs4all.nl>,
+	linux-mm@kvack.org, Nadav Amit <namit@vmware.com>,
+	linux-kselftest@vger.kernel.org, sparclinux@vger.kernel.org,
+	Shuah Khan <shuah@kernel.org>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
 	Andrea Arcangeli <aarcange@redhat.com>,
-	Hugh Dickins <hughd@google.com>, Nadav Amit <namit@vmware.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
+	linux-samsung-soc@vger.kernel.org, linux-rdma@vger.kernel.org,
+	x86@kernel.org, Hugh Dickins <hughd@google.com>,
 	Matthew Wilcox <willy@infradead.org>,
-	Mike Kravetz <mike.kravetz@oracle.com>,
-	Muchun Song <songmuchun@bytedance.com>,
-	Shuah Khan <shuah@kernel.org>, Lucas Stach <l.stach@pengutronix.de>,
-	David Airlie <airlied@gmail.com>, Oded Gabbay <ogabbay@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
 	Christoph Hellwig <hch@infradead.org>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Vlastimil Babka <vbabka@suse.cz>,
+	linux-media@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+	John Hubbard <jhubbard@nvidia.com>, linux-um@lists.infradead.org,
+	etnaviv@lists.freedesktop.org,
 	Alex Williamson <alex.williamson@redhat.com>,
-	Daniel Vetter <daniel.vetter@ffwll.ch>,
-	Russell King <linux+etnaviv@armlinux.org.uk>,
-	Christian Gmeiner <christian.gmeiner@gmail.com>
-Subject: Re: [PATCH mm-unstable v1 14/20] drm/etnaviv: remove FOLL_FORCE usage
-Message-ID: <Y3TAR7Ndmat+zYpJ@phenom.ffwll.local>
+	Peter Xu <peterx@redhat.com>,
+	Muchun Song <songmuchun@bytedance.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+	Oded Gabbay <ogabbay@kernel.org>, linux-mips@vger.kernel.org,
+	Tomasz Figa <tfiga@chromium.org>, linux-perf-users@vger.kernel.org,
+	linux-security-module@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Mike Kravetz <mike.kravetz@oracle.com>
+Subject: Re: [PATCH mm-unstable v1 16/20] mm/frame-vector: remove FOLL_FORCE
+ usage
+Message-ID: <Y3TAd14jCBSKeqsL@phenom.ffwll.local>
 Mail-Followup-To: David Hildenbrand <david@redhat.com>,
-	linux-kernel@vger.kernel.org, x86@kernel.org,
-	linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-	linux-um@lists.infradead.org, etnaviv@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org, linux-samsung-soc@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-perf-users@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>,
-	Peter Xu <peterx@redhat.com>,
+	linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	dri-devel@lists.freedesktop.org, Hans Verkuil <hverkuil@xs4all.nl>,
+	linux-mm@kvack.org, Nadav Amit <namit@vmware.com>,
+	linux-kselftest@vger.kernel.org, sparclinux@vger.kernel.org,
+	Shuah Khan <shuah@kernel.org>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
 	Andrea Arcangeli <aarcange@redhat.com>,
-	Hugh Dickins <hughd@google.com>, Nadav Amit <namit@vmware.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
+	linux-samsung-soc@vger.kernel.org, linux-rdma@vger.kernel.org,
+	x86@kernel.org, Hugh Dickins <hughd@google.com>,
 	Matthew Wilcox <willy@infradead.org>,
-	Mike Kravetz <mike.kravetz@oracle.com>,
-	Muchun Song <songmuchun@bytedance.com>,
-	Shuah Khan <shuah@kernel.org>, Lucas Stach <l.stach@pengutronix.de>,
-	David Airlie <airlied@gmail.com>, Oded Gabbay <ogabbay@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
 	Christoph Hellwig <hch@infradead.org>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Vlastimil Babka <vbabka@suse.cz>,
+	linux-media@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+	John Hubbard <jhubbard@nvidia.com>, linux-um@lists.infradead.org,
+	etnaviv@lists.freedesktop.org,
 	Alex Williamson <alex.williamson@redhat.com>,
-	Russell King <linux+etnaviv@armlinux.org.uk>,
-	Christian Gmeiner <christian.gmeiner@gmail.com>
+	Peter Xu <peterx@redhat.com>,
+	Muchun Song <songmuchun@bytedance.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+	Oded Gabbay <ogabbay@kernel.org>, linux-mips@vger.kernel.org,
+	Tomasz Figa <tfiga@chromium.org>, linux-perf-users@vger.kernel.org,
+	linux-security-module@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Mike Kravetz <mike.kravetz@oracle.com>
 References: <20221116102659.70287-1-david@redhat.com>
- <20221116102659.70287-15-david@redhat.com>
+ <20221116102659.70287-17-david@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20221116102659.70287-15-david@redhat.com>
+In-Reply-To: <20221116102659.70287-17-david@redhat.com>
 X-Operating-System: Linux phenom 5.19.0-2-amd64 
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221116_024951_093083_EF995189 
-X-CRM114-Status: GOOD (  24.24  )
+X-CRM114-CacheID: sfid-20221116_025036_440090_B0623C18 
+X-CRM114-Status: GOOD (  23.89  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -147,69 +145,47 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Nov 16, 2022 at 11:26:53AM +0100, David Hildenbrand wrote:
-> GUP now supports reliable R/O long-term pinning in COW mappings, such
-> that we break COW early. MAP_SHARED VMAs only use the shared zeropage so
-> far in one corner case (DAXFS file with holes), which can be ignored
-> because GUP does not support long-term pinning in fsdax (see
-> check_vma_flags()).
+On Wed, Nov 16, 2022 at 11:26:55AM +0100, David Hildenbrand wrote:
+> FOLL_FORCE is really only for ptrace access. According to commit
+> 707947247e95 ("media: videobuf2-vmalloc: get_userptr: buffers are always
+> writable"), get_vaddr_frames() currently pins all pages writable as a
+> workaround for issues with read-only buffers.
 > 
-> commit cd5297b0855f ("drm/etnaviv: Use FOLL_FORCE for userptr")
-> documents that FOLL_FORCE | FOLL_WRITE was really only used for reliable
-> R/O pinning.
+> FOLL_FORCE, however, seems to be a legacy leftover as it predates
+> commit 707947247e95 ("media: videobuf2-vmalloc: get_userptr: buffers are
+> always writable"). Let's just remove it.
 > 
-> Consequently, FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM is no longer required
-> for reliable R/O long-term pinning: FOLL_LONGTERM is sufficient. So stop
-> using FOLL_FORCE, which is really only for ptrace access.
+> Once the read-only buffer issue has been resolved, FOLL_WRITE could
+> again be set depending on the DMA direction.
 > 
-> Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-> Cc: Lucas Stach <l.stach@pengutronix.de>
-> Cc: Russell King <linux+etnaviv@armlinux.org.uk>
-> Cc: Christian Gmeiner <christian.gmeiner@gmail.com>
-> Cc: David Airlie <airlied@gmail.com>
+> Cc: Hans Verkuil <hverkuil@xs4all.nl>
+> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> Cc: Tomasz Figa <tfiga@chromium.org>
+> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
 > Signed-off-by: David Hildenbrand <david@redhat.com>
+
+Also code I looked at while looking at follow_pfn stuff
 
 Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-Also ack for merging through whatever tree suits best, since I guess this
-should all land together.
--Daniel
-
 > ---
->  drivers/gpu/drm/etnaviv/etnaviv_gem.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
+>  drivers/media/common/videobuf2/frame_vector.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem.c b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
-> index cc386f8a7116..efe2240945d0 100644
-> --- a/drivers/gpu/drm/etnaviv/etnaviv_gem.c
-> +++ b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
-> @@ -638,6 +638,7 @@ static int etnaviv_gem_userptr_get_pages(struct etnaviv_gem_object *etnaviv_obj)
->  	struct page **pvec = NULL;
->  	struct etnaviv_gem_userptr *userptr = &etnaviv_obj->userptr;
->  	int ret, pinned = 0, npages = etnaviv_obj->base.size >> PAGE_SHIFT;
-> +	unsigned int gup_flags = FOLL_LONGTERM;
+> diff --git a/drivers/media/common/videobuf2/frame_vector.c b/drivers/media/common/videobuf2/frame_vector.c
+> index 542dde9d2609..062e98148c53 100644
+> --- a/drivers/media/common/videobuf2/frame_vector.c
+> +++ b/drivers/media/common/videobuf2/frame_vector.c
+> @@ -50,7 +50,7 @@ int get_vaddr_frames(unsigned long start, unsigned int nr_frames,
+>  	start = untagged_addr(start);
 >  
->  	might_lock_read(&current->mm->mmap_lock);
->  
-> @@ -648,14 +649,15 @@ static int etnaviv_gem_userptr_get_pages(struct etnaviv_gem_object *etnaviv_obj)
->  	if (!pvec)
->  		return -ENOMEM;
->  
-> +	if (!userptr->ro)
-> +		gup_flags |= FOLL_WRITE;
-> +
->  	do {
->  		unsigned num_pages = npages - pinned;
->  		uint64_t ptr = userptr->ptr + pinned * PAGE_SIZE;
->  		struct page **pages = pvec + pinned;
->  
-> -		ret = pin_user_pages_fast(ptr, num_pages,
-> -					  FOLL_WRITE | FOLL_FORCE | FOLL_LONGTERM,
-> -					  pages);
-> +		ret = pin_user_pages_fast(ptr, num_pages, gup_flags, pages);
->  		if (ret < 0) {
->  			unpin_user_pages(pvec, pinned);
->  			kvfree(pvec);
+>  	ret = pin_user_pages_fast(start, nr_frames,
+> -				  FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM,
+> +				  FOLL_WRITE | FOLL_LONGTERM,
+>  				  (struct page **)(vec->ptrs));
+>  	if (ret > 0) {
+>  		vec->got_ref = true;
 > -- 
 > 2.38.1
 > 
