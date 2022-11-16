@@ -4,50 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1396C433FE
-	for <linux-um@archiver.kernel.org>; Wed, 16 Nov 2022 10:33:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F950C433FE
+	for <linux-um@archiver.kernel.org>; Wed, 16 Nov 2022 10:33:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dxtBbQsqIXi5Tr9dMa0XGMeYFqA/TQoDvdBffww5nas=; b=VwDnmb1//CtCLe
-	UlO/V2867aIzfv//HmZjSTgb91e8iA7QH2ofWuGdGXPXWnL/8pYjV4KguKDfRXFMF7B2sBawse4TO
-	Mol4WbL44VqHO6a3xqPxWxGBYl8JifmKkRn/6FFOVwXUhXI1fbBBRJVf2Dp2V21ox5p+OIFxW+As6
-	DyMurbUvermZsm2tOgQxGRTQVzADDGBlItBgjvRlhcit0pdVzc2oL8FCD0SwixFXpiST6LqRK8zuL
-	f1+keLu7je2OT6yDwY24wW/k57RL6uoJZXhh2Cefj0F8AtAM5U+G9ZTknoC/e83kvhyUeRDmnv9bI
-	3uxvuRVS5yn3JqhxJyGg==;
+	List-Owner; bh=RaZ8lDT66OjU5mfpX+7w/ZVQ8ighV47r7cnFpFhTg2E=; b=Sf4hEcTkdrJopn
+	Pc+D+Ag6jk0VWWeRZBFfflJW9vZabHSXMqs8rDAm46tJ8JfIq/giZunsiyF0sbEmBetOnHs2djXdV
+	sH6aU+qb4vNUuAoIMemVI8FcMj/fX1Az0K3tTrp1JZXWwTa0yUbLwnExy5qVZP7qUvR2clKoXjShm
+	kSkRJ+o29dVhhlXS88Zufn9nFKsJFiyZ5ikx1cb5v8c5xP3v/RfkmvPbVBGRuRZtT2YyZaJhPfyJi
+	1W6J3ieWs9pirvXdjP1PVT1xtwnHK7gpp5uLMMt0UT5BPyrMHk6gWlSm/NKsTQSaTajsgyHgFTc1i
+	pHuIHjdO0hy3mCgASqdA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ovFjZ-002FjI-Vj; Wed, 16 Nov 2022 10:33:33 +0000
+	id 1ovFje-002Fmw-RZ; Wed, 16 Nov 2022 10:33:38 +0000
 Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ovFf5-002DCi-7i
-	for linux-um@lists.infradead.org; Wed, 16 Nov 2022 10:28:57 +0000
+	id 1ovFfG-002DHg-WF
+	for linux-um@lists.infradead.org; Wed, 16 Nov 2022 10:29:09 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1668594534;
+	s=mimecast20190719; t=1668594546;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=AXY/UyjjpCuDyNIViwtXXXaWlWVq5fOjr9nC+t8u+wk=;
-	b=Z8EfPQsFF94MtlpORwT+i+AclFbS2SVGoEki04OfmZ618WbEWBrX1p1hTRo0dpYyXIZ4We
-	E2wuNnkZG7dTQ6rT5Y0eM97Bme1TCAPrUs0jupRdZ3HTQD/yUPXtmFuNHZzGsX1i/+HvQP
-	PpPMQfUoSL+Or2cSWh6pOaO2MZ43mAk=
+	bh=Os9mhvYmMDrU7oRu07Gt40tRhtITIyLN3UTJWIxCBGQ=;
+	b=Np5mjxEQ6nkEvC55WFc+8lnTQduUxuP+2dfPKZNeS2rk/mVM8fhjpQwnWucL2zS360O6zL
+	RbnP6kXzyBTFlhakIQvJ8B2E+axaTZrD34u0z2BLjSCx9ZqeftT79MQqpx70HDKLanLY2+
+	qjkb3nFkqOTWvmQeLXWZKPOlbxCxVc8=
 Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
  [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-325-nf3OqAa0Mp2NEpiQ4Fl_4w-1; Wed, 16 Nov 2022 05:28:47 -0500
-X-MC-Unique: nf3OqAa0Mp2NEpiQ4Fl_4w-1
+ us-mta-169-8bSBee3zN2WWjnQux77ZrA-1; Wed, 16 Nov 2022 05:28:54 -0500
+X-MC-Unique: 8bSBee3zN2WWjnQux77ZrA-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 43CBC1C0A10F;
-	Wed, 16 Nov 2022 10:28:45 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E444E29ABA07;
+	Wed, 16 Nov 2022 10:28:52 +0000 (UTC)
 Received: from t480s.fritz.box (unknown [10.39.193.216])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id C3F5B2028E8F;
-	Wed, 16 Nov 2022 10:28:37 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 8254B20290A5;
+	Wed, 16 Nov 2022 10:28:45 +0000 (UTC)
 From: David Hildenbrand <david@redhat.com>
 To: linux-kernel@vger.kernel.org
 Cc: x86@kernel.org,
@@ -89,19 +89,18 @@ Cc: x86@kernel.org,
 	Christoph Hellwig <hch@infradead.org>,
 	Alex Williamson <alex.williamson@redhat.com>,
 	David Hildenbrand <david@redhat.com>,
-	Christian Benvenuti <benve@cisco.com>,
-	Nelson Escobar <neescoba@cisco.com>,
+	Bernard Metzler <bmt@zurich.ibm.com>,
 	Leon Romanovsky <leon@kernel.org>
-Subject: [PATCH mm-unstable v1 11/20] RDMA/usnic: remove FOLL_FORCE usage
-Date: Wed, 16 Nov 2022 11:26:50 +0100
-Message-Id: <20221116102659.70287-12-david@redhat.com>
+Subject: [PATCH mm-unstable v1 12/20] RDMA/siw: remove FOLL_FORCE usage
+Date: Wed, 16 Nov 2022 11:26:51 +0100
+Message-Id: <20221116102659.70287-13-david@redhat.com>
 In-Reply-To: <20221116102659.70287-1-david@redhat.com>
 References: <20221116102659.70287-1-david@redhat.com>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221116_022855_376213_382572BB 
-X-CRM114-Status: GOOD (  15.05  )
+X-CRM114-CacheID: sfid-20221116_022907_146581_26B547D3 
+X-CRM114-Status: GOOD (  14.28  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -128,56 +127,48 @@ Consequently, FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM is no longer required
 for reliable R/O long-term pinning: FOLL_LONGTERM is sufficient. So stop
 using FOLL_FORCE, which is really only for ptrace access.
 
-Cc: Christian Benvenuti <benve@cisco.com>
-Cc: Nelson Escobar <neescoba@cisco.com>
+Cc: Bernard Metzler <bmt@zurich.ibm.com>
 Cc: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: Leon Romanovsky <leon@kernel.org>
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- drivers/infiniband/hw/usnic/usnic_uiom.c | 9 ++++-----
+ drivers/infiniband/sw/siw/siw_mem.c | 9 ++++-----
  1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/infiniband/hw/usnic/usnic_uiom.c b/drivers/infiniband/hw/usnic/usnic_uiom.c
-index 67923ced6e2d..c301b3be9f30 100644
---- a/drivers/infiniband/hw/usnic/usnic_uiom.c
-+++ b/drivers/infiniband/hw/usnic/usnic_uiom.c
-@@ -85,6 +85,7 @@ static int usnic_uiom_get_pages(unsigned long addr, size_t size, int writable,
- 				int dmasync, struct usnic_uiom_reg *uiomr)
- {
- 	struct list_head *chunk_list = &uiomr->chunk_list;
-+	unsigned int gup_flags = FOLL_LONGTERM;
- 	struct page **page_list;
- 	struct scatterlist *sg;
- 	struct usnic_uiom_chunk *chunk;
-@@ -96,7 +97,6 @@ static int usnic_uiom_get_pages(unsigned long addr, size_t size, int writable,
- 	int off;
- 	int i;
- 	dma_addr_t pa;
--	unsigned int gup_flags;
- 	struct mm_struct *mm;
+diff --git a/drivers/infiniband/sw/siw/siw_mem.c b/drivers/infiniband/sw/siw/siw_mem.c
+index 61c17db70d65..b2b33dd3b4fa 100644
+--- a/drivers/infiniband/sw/siw/siw_mem.c
++++ b/drivers/infiniband/sw/siw/siw_mem.c
+@@ -368,7 +368,7 @@ struct siw_umem *siw_umem_get(u64 start, u64 len, bool writable)
+ 	struct mm_struct *mm_s;
+ 	u64 first_page_va;
+ 	unsigned long mlock_limit;
+-	unsigned int foll_flags = FOLL_WRITE;
++	unsigned int foll_flags = FOLL_LONGTERM;
+ 	int num_pages, num_chunks, i, rv = 0;
  
- 	/*
-@@ -131,8 +131,8 @@ static int usnic_uiom_get_pages(unsigned long addr, size_t size, int writable,
- 		goto out;
- 	}
+ 	if (!can_do_mlock())
+@@ -391,8 +391,8 @@ struct siw_umem *siw_umem_get(u64 start, u64 len, bool writable)
  
--	gup_flags = FOLL_WRITE;
--	gup_flags |= (writable) ? 0 : FOLL_FORCE;
+ 	mmgrab(mm_s);
+ 
+-	if (!writable)
+-		foll_flags |= FOLL_FORCE;
 +	if (writable)
-+		gup_flags |= FOLL_WRITE;
- 	cur_base = addr & PAGE_MASK;
- 	ret = 0;
++		foll_flags |= FOLL_WRITE;
  
-@@ -140,8 +140,7 @@ static int usnic_uiom_get_pages(unsigned long addr, size_t size, int writable,
- 		ret = pin_user_pages(cur_base,
- 				     min_t(unsigned long, npages,
- 				     PAGE_SIZE / sizeof(struct page *)),
--				     gup_flags | FOLL_LONGTERM,
--				     page_list, NULL);
-+				     gup_flags, page_list, NULL);
+ 	mmap_read_lock(mm_s);
  
- 		if (ret < 0)
- 			goto out;
+@@ -423,8 +423,7 @@ struct siw_umem *siw_umem_get(u64 start, u64 len, bool writable)
+ 		while (nents) {
+ 			struct page **plist = &umem->page_chunk[i].plist[got];
+ 
+-			rv = pin_user_pages(first_page_va, nents,
+-					    foll_flags | FOLL_LONGTERM,
++			rv = pin_user_pages(first_page_va, nents, foll_flags,
+ 					    plist, NULL);
+ 			if (rv < 0)
+ 				goto out_sem_up;
 -- 
 2.38.1
 
