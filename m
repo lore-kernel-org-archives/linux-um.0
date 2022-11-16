@@ -4,50 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBD2EC433FE
-	for <linux-um@archiver.kernel.org>; Wed, 16 Nov 2022 10:37:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BA05C4332F
+	for <linux-um@archiver.kernel.org>; Wed, 16 Nov 2022 10:39:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RyFcam1y2V4iFMj8Zobv+nSF24p0gXOlZHCDDMeC2aM=; b=n6VqFuDnK0+rtU
-	vUgKMblojxwaya5FZujWaU87HGICld7f2JMa0+jH4zYgunAj8OG82iT/05GcEiIWysPQdwRsJMivT
-	jS9CKvC5BvsvgguBJENl+JCfzK003J0GePsF6FRwn7sQ9i/fNjBNFABlPCD4b6suwdqYB1FkETzOO
-	sxSN24/wJOByRn4iCXlZP5h8fQpo30x2rNJmu15eAslHVql+8V+FHzgeyaM5DXriZQrsG9ckp4m1f
-	PAuGOMhKGW392h/Uc/z1LLSSOQeyMocKzozMdMYgMTheOQfmW/JN93M1w716OkJEGdvXRKCFVaJrK
-	LqIo33oRK5GtvfRV/N7A==;
+	List-Owner; bh=My2y4pw7e4t1iXSksFdfQNXD27ucNXHm9Q5OY+N3WGI=; b=iMdLsCGrVeZHv7
+	Dh2jwomb/4t7Ag5bxV/ee1Vr8YhVjaiAKbVZAqa2qjta3QiRgc+KHVDERreq7XfXx/ZnGLR8fyKoZ
+	zyKJHjyZjsf1wiv0NJDdcBJDyW4v+TtxUVWiby40M1Ek7ttGq9pclnud1hXfEhK1rcLMWSHR+8nNA
+	Khdw5jB/YnsN1lzfC6frsxQoXgXDz3oJVwrEtR01qw52adUhfSBERD9LgNQxfrc+o4CgfXSXZbzuV
+	U3PPqUxaii8PZMJz8A1zsESqasBILj/FcBC3xr33csDCYtVROavQ/RgONBR3ndwq3KSebq6Uh8edb
+	W0OnqER05a/MLKJtuNMQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ovFnf-002Iqa-O7; Wed, 16 Nov 2022 10:37:47 +0000
+	id 1ovFp1-002Jiu-LL; Wed, 16 Nov 2022 10:39:11 +0000
 Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ovFfY-002DUt-7g
-	for linux-um@lists.infradead.org; Wed, 16 Nov 2022 10:29:27 +0000
+	id 1ovFfg-002DcL-Pu
+	for linux-um@lists.infradead.org; Wed, 16 Nov 2022 10:29:34 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1668594563;
+	s=mimecast20190719; t=1668594571;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=1lgRYK0+yPuNJDFPZ9ndbDbQCvjtc3Xp7NDAue46xBY=;
-	b=L1TyFbfCXbqBdbw/Ata8BNnNCKvCKDgcYVKD+f2j98zyN+SYhX6WNRxAlAeTjWx455vjAf
-	o4fElTgPkQyi7MuY/YKbK63jZmD6/TWaVjnczrtrpQ/4I8S/tzSxneDFuv/FNO7AILmXm0
-	2o477lpLT1xLKztjRUftIjDL6JXNwUI=
+	bh=G0FpSSTO1Nfi3hHjZY1vs8kl28xrhbJvR/VmU2bZlrg=;
+	b=QBzDddfY7V11x7Hf2GLg6C9hU2X9wWzeSIv9jWmXhTrk3Npp+wfCGvyF3JNBhdUnoX0aal
+	8iY4vG/2Ym+nF4oWvBR6tEY6OFCT2zacWrb0Ju8Ild05xJePJiVVv+ZJ7IB5ZQG6jj9P6O
+	aoTME2nThx0sHU5BautNfK3YY5kC94Q=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-14-svSpfQNhOguMSNDl-MdQSA-1; Wed, 16 Nov 2022 05:29:18 -0500
-X-MC-Unique: svSpfQNhOguMSNDl-MdQSA-1
+ us-mta-652-smSH3VzZPoqE7rq7qnypxQ-1; Wed, 16 Nov 2022 05:29:26 -0500
+X-MC-Unique: smSH3VzZPoqE7rq7qnypxQ-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 724BE86F147;
-	Wed, 16 Nov 2022 10:29:15 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2D136101A528;
+	Wed, 16 Nov 2022 10:29:25 +0000 (UTC)
 Received: from t480s.fritz.box (unknown [10.39.193.216])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 3626A2028E8F;
-	Wed, 16 Nov 2022 10:29:08 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id AF3102024CC8;
+	Wed, 16 Nov 2022 10:29:15 +0000 (UTC)
 From: David Hildenbrand <david@redhat.com>
 To: linux-kernel@vger.kernel.org
 Cc: x86@kernel.org,
@@ -89,18 +89,20 @@ Cc: x86@kernel.org,
 	Christoph Hellwig <hch@infradead.org>,
 	Alex Williamson <alex.williamson@redhat.com>,
 	David Hildenbrand <david@redhat.com>,
-	Andy Walls <awalls@md.metrocast.net>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Tomasz Figa <tfiga@chromium.org>,
 	Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: [PATCH mm-unstable v1 15/20] media: pci/ivtv: remove FOLL_FORCE usage
-Date: Wed, 16 Nov 2022 11:26:54 +0100
-Message-Id: <20221116102659.70287-16-david@redhat.com>
+Subject: [PATCH mm-unstable v1 16/20] mm/frame-vector: remove FOLL_FORCE usage
+Date: Wed, 16 Nov 2022 11:26:55 +0100
+Message-Id: <20221116102659.70287-17-david@redhat.com>
 In-Reply-To: <20221116102659.70287-1-david@redhat.com>
 References: <20221116102659.70287-1-david@redhat.com>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221116_022924_415698_C1807700 
-X-CRM114-Status: GOOD (  16.78  )
+X-CRM114-CacheID: sfid-20221116_022932_943924_7794B075 
+X-CRM114-Status: GOOD (  16.37  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -117,53 +119,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-FOLL_FORCE is really only for ptrace access. R/O pinning a page is
-supposed to fail if the VMA misses proper access permissions (no VM_READ).
+FOLL_FORCE is really only for ptrace access. According to commit
+707947247e95 ("media: videobuf2-vmalloc: get_userptr: buffers are always
+writable"), get_vaddr_frames() currently pins all pages writable as a
+workaround for issues with read-only buffers.
 
-Let's just remove FOLL_FORCE usage here; there would have to be a pretty
-good reason to allow arbitrary drivers to R/O pin pages in a PROT_NONE
-VMA. Most probably, FOLL_FORCE usage is just some legacy leftover.
+FOLL_FORCE, however, seems to be a legacy leftover as it predates
+commit 707947247e95 ("media: videobuf2-vmalloc: get_userptr: buffers are
+always writable"). Let's just remove it.
 
-Cc: Andy Walls <awalls@md.metrocast.net>
+Once the read-only buffer issue has been resolved, FOLL_WRITE could
+again be set depending on the DMA direction.
+
+Cc: Hans Verkuil <hverkuil@xs4all.nl>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: Tomasz Figa <tfiga@chromium.org>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>
 Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- drivers/media/pci/ivtv/ivtv-udma.c | 2 +-
- drivers/media/pci/ivtv/ivtv-yuv.c  | 5 ++---
- 2 files changed, 3 insertions(+), 4 deletions(-)
+ drivers/media/common/videobuf2/frame_vector.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/pci/ivtv/ivtv-udma.c b/drivers/media/pci/ivtv/ivtv-udma.c
-index 210be8290f24..99b9f55ca829 100644
---- a/drivers/media/pci/ivtv/ivtv-udma.c
-+++ b/drivers/media/pci/ivtv/ivtv-udma.c
-@@ -115,7 +115,7 @@ int ivtv_udma_setup(struct ivtv *itv, unsigned long ivtv_dest_addr,
+diff --git a/drivers/media/common/videobuf2/frame_vector.c b/drivers/media/common/videobuf2/frame_vector.c
+index 542dde9d2609..062e98148c53 100644
+--- a/drivers/media/common/videobuf2/frame_vector.c
++++ b/drivers/media/common/videobuf2/frame_vector.c
+@@ -50,7 +50,7 @@ int get_vaddr_frames(unsigned long start, unsigned int nr_frames,
+ 	start = untagged_addr(start);
  
- 	/* Pin user pages for DMA Xfer */
- 	err = pin_user_pages_unlocked(user_dma.uaddr, user_dma.page_count,
--			dma->map, FOLL_FORCE);
-+			dma->map, 0);
- 
- 	if (user_dma.page_count != err) {
- 		IVTV_DEBUG_WARN("failed to map user pages, returned %d instead of %d\n",
-diff --git a/drivers/media/pci/ivtv/ivtv-yuv.c b/drivers/media/pci/ivtv/ivtv-yuv.c
-index 4ba10c34a16a..582146f8d70d 100644
---- a/drivers/media/pci/ivtv/ivtv-yuv.c
-+++ b/drivers/media/pci/ivtv/ivtv-yuv.c
-@@ -63,12 +63,11 @@ static int ivtv_yuv_prep_user_dma(struct ivtv *itv, struct ivtv_user_dma *dma,
- 
- 	/* Pin user pages for DMA Xfer */
- 	y_pages = pin_user_pages_unlocked(y_dma.uaddr,
--			y_dma.page_count, &dma->map[0], FOLL_FORCE);
-+			y_dma.page_count, &dma->map[0], 0);
- 	uv_pages = 0; /* silence gcc. value is set and consumed only if: */
- 	if (y_pages == y_dma.page_count) {
- 		uv_pages = pin_user_pages_unlocked(uv_dma.uaddr,
--				uv_dma.page_count, &dma->map[y_pages],
--				FOLL_FORCE);
-+				uv_dma.page_count, &dma->map[y_pages], 0);
- 	}
- 
- 	if (y_pages != y_dma.page_count || uv_pages != uv_dma.page_count) {
+ 	ret = pin_user_pages_fast(start, nr_frames,
+-				  FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM,
++				  FOLL_WRITE | FOLL_LONGTERM,
+ 				  (struct page **)(vec->ptrs));
+ 	if (ret > 0) {
+ 		vec->got_ref = true;
 -- 
 2.38.1
 
