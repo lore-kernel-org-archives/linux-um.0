@@ -4,131 +4,137 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D9B37C4332F
-	for <linux-um@archiver.kernel.org>; Wed, 16 Nov 2022 10:53:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B5851C433FE
+	for <linux-um@archiver.kernel.org>; Wed, 16 Nov 2022 10:54:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=IPv/MBLVsWFI/bygMWZ+XFPX7Wg7UJ9RuzOnwhaWq5M=; b=CRyHN2EIsKGCfd
-	a1xUJfxAbFT1JxX1iVD3ev1F5BcqChACZxtJFFzYb424PXTRbrO4KBTrer0iSMdKR8nbNeI1jS+Bb
-	apA0i2OVwr6/881LgQLCxURlkFYpIm/NKwRgh8wvBnWoPEAn4oJIVVl7JeAXjSB9v2mHiPgSSeUTp
-	0Q9MfLmPGNzgioQm9L82dzVNzbIaka1zz5RvuHmWREHCMc1zvQbw7WBoCKKhULaC4WPsKf3nWx9Cn
-	O74Lt5Nl2yEUINBOf+OZn796rJWBtj7HI70lvtVRS/QNCOZvIAOk/RaPn3m5G8n5j1qNDt56zhiO/
-	LPo+CfJ0o8KGh5OSw9RQ==;
+	List-Owner; bh=Xu/b7cN87VYKfZrV9jxZq5rwlKo+L73aKLAexobUGT0=; b=E58Ql974cJPKbp
+	z0n1GZdojGtzkpF90JF8rT78wFzU49iaqcp2eG7qQvEMYzLwtrtydjVmTMfFp0KHPDNuPvRHYzzYl
+	shSqZ9aCJ0YcOqHnNv5lf15Nf6CeXdToyhCvucJ4cgmHtKWVC+1LU/hcPIgFfMosMobbbTKgk5w4S
+	C0NJiafoNUZFvwNrPDzeRTJUe6NNo0289gMmxn2CMP19N2+ZJ9ifK8l7DJz0j1T+HNQWmhoDb6Z1N
+	oA4L6GHYxfMlexQeun+ahZCEt03Bg0kmKsmfMRsoR42MwHNeEb43SlXEPK7KggGffhp6zIfiIGE8X
+	c6WlUWmdE6meztfmHLxA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ovG2S-002Tts-Rh; Wed, 16 Nov 2022 10:53:04 +0000
-Received: from mail-ej1-x636.google.com ([2a00:1450:4864:20::636])
+	id 1ovG3T-002UZQ-J0; Wed, 16 Nov 2022 10:54:07 +0000
+Received: from mail-ed1-x532.google.com ([2a00:1450:4864:20::532])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ovG04-002S6B-BL
-	for linux-um@lists.infradead.org; Wed, 16 Nov 2022 10:50:37 +0000
-Received: by mail-ej1-x636.google.com with SMTP id i10so34426502ejg.6
-        for <linux-um@lists.infradead.org>; Wed, 16 Nov 2022 02:50:35 -0800 (PST)
+	id 1ovG0T-002ST0-G5
+	for linux-um@lists.infradead.org; Wed, 16 Nov 2022 10:51:03 +0000
+Received: by mail-ed1-x532.google.com with SMTP id v27so25987265eda.1
+        for <linux-um@lists.infradead.org>; Wed, 16 Nov 2022 02:51:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
         h=in-reply-to:content-disposition:mime-version:references
          :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mdwJ/650wADnRoR72oyZkQ8DiIzSWQSpq6IdxtCR+gY=;
-        b=f2SpOZdEZzXCSPn0ykm1oJX1As7I6xxh5wr16pOd/kbA5OOiuO0Y4IWH35k28OjNoj
-         wHiTHItpgbOeFMLRaKE+zMy2u3TZ9N8dtmICEQujo3Me7a5E74OF+31ufRLy1oYVFEA1
-         T3Nbw0vHjZlr/vzIiD2dpwD9w/oFbF5Q800Lc=
+        bh=NMt8HjKxItO2J6bIbRsCvEdSlAZpP8uC48lcisou+nI=;
+        b=eLnGvKK+w1XqLxzowLTo19VxBdUCyRC3jZCwBMpKaUWXXlLi4fs0Axmuul/wRN/I3k
+         Ls2daX/AS8NBqlkGiJqqxb0gEFzgn6n0a6+XnpTDtipAc3J5NayuL7HDBO33beS0D75x
+         K2gRZhVXeM0+lA+7zcbmJS/RVo1YdOeZ/sxms=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=in-reply-to:content-disposition:mime-version:references
          :mail-followup-to:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mdwJ/650wADnRoR72oyZkQ8DiIzSWQSpq6IdxtCR+gY=;
-        b=oTTWshT43bIcNE2WjBVUTeJytc6PXWKMZZSw0XVWrC+Iux86iH/eY2quqlyIAr54Po
-         qPoUnQg8AHG3EgK1GIGW3mNk77aD1Cqr8z0L4uwDC5zQePOO6wxCisR/zXqpkG9yq/TJ
-         MpZXAIRz0gc/DiQAQceaqVUu+i/gb3lnn2Y07vKgVex9EOez7xScF4iuuLaWsAF4GkNG
-         /Igz6LQmOw7M7eHltwI1InV7Eh6JNg0U6Ve9BIFQ8qUb+GfHxY8xKaoLmd53a20O6xlr
-         Su/a4BOCDOaL8Dq2qxASVxX/XJJP/T9wHEXkaqxr9zF3kpKMxK5rhvL/ukF2+03bRtEy
-         bNxg==
-X-Gm-Message-State: ANoB5pmsTUGPpLX+o3uhUHR3YalTsL8ptAU27xi1fksCStfR+8MzhAON
-	pvdPPD8HF0NwhVDT6UnMo3r1Eg==
-X-Google-Smtp-Source: AA0mqf4MgV0oW/LCUugReHUpBkpepoZ7Vy6UeNXMZ5Yjky+iNhPczOtY8K1ul1dtRtcsoxT6/N3VKQ==
-X-Received: by 2002:a17:906:78e:b0:7a1:e52e:bddb with SMTP id l14-20020a170906078e00b007a1e52ebddbmr16502698ejc.685.1668595834073;
-        Wed, 16 Nov 2022 02:50:34 -0800 (PST)
+        bh=NMt8HjKxItO2J6bIbRsCvEdSlAZpP8uC48lcisou+nI=;
+        b=WCum2Wt3Gsw3bBhKk6thkVyAOTkzWfmbyq2fzDIAn8DyPMs2YE1+v16aZlMrxqUIVZ
+         Wun2xp+6fwP29plBLvEkOEvocdeSEfe2M2HRMBRe79CRqmOeRx5Da86Izl6A8lGX7yWw
+         +IozAPBJp7ZCmad9WY2s+Ilr1F8hvEJ/aLcy0p25lWvqJ4srZ9UQGn7lIVQ/LXFVUxhm
+         rBVC2nvL91rA/KzEGywwWBdRX44YKqwVeGyXKdzyG8Vtx9/LxIzomcALlWHvjgDZfIYH
+         jCZoIPvqcuHm0OEsNMyTeZuVbaVGpSCNKi7gccm/AtliAwItVQf6wsp19BzUC+Z6/ZUx
+         LVDg==
+X-Gm-Message-State: ANoB5plpSBSxZkxjfHZ9Z9bTWGIlJ2gCaNxYTkYlidTq2viZw1MaWvdw
+	U5OMcrQ0FFeqX2/DTJ5wOTfQfA==
+X-Google-Smtp-Source: AA0mqf4Z9KF9DYfdJQdqGvbtRloYOPQXnN3MkKcJxdOs80iDic7Ysg9e6qfGKtqJuC+1emfUPfQ+gw==
+X-Received: by 2002:a50:ff04:0:b0:462:709:9f7b with SMTP id a4-20020a50ff04000000b0046207099f7bmr19331341edu.263.1668595860175;
+        Wed, 16 Nov 2022 02:51:00 -0800 (PST)
 Received: from phenom.ffwll.local (212-51-149-33.fiber7.init7.net. [212.51.149.33])
-        by smtp.gmail.com with ESMTPSA id jw17-20020a17090776b100b0078b1ff41f05sm6758790ejc.43.2022.11.16.02.50.32
+        by smtp.gmail.com with ESMTPSA id s6-20020a170906bc4600b007aed2057eaesm6056420ejv.161.2022.11.16.02.50.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Nov 2022 02:50:33 -0800 (PST)
-Date: Wed, 16 Nov 2022 11:50:31 +0100
+        Wed, 16 Nov 2022 02:50:59 -0800 (PST)
+Date: Wed, 16 Nov 2022 11:50:57 +0100
 From: Daniel Vetter <daniel@ffwll.ch>
 To: David Hildenbrand <david@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	dri-devel@lists.freedesktop.org, Hans Verkuil <hverkuil@xs4all.nl>,
-	linux-mm@kvack.org, Nadav Amit <namit@vmware.com>,
-	linux-kselftest@vger.kernel.org, sparclinux@vger.kernel.org,
-	Shuah Khan <shuah@kernel.org>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Andrea Arcangeli <aarcange@redhat.com>,
-	linux-samsung-soc@vger.kernel.org, linux-rdma@vger.kernel.org,
-	x86@kernel.org, Hugh Dickins <hughd@google.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Christoph Hellwig <hch@infradead.org>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Vlastimil Babka <vbabka@suse.cz>,
-	linux-media@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-	John Hubbard <jhubbard@nvidia.com>, linux-um@lists.infradead.org,
-	etnaviv@lists.freedesktop.org,
-	Alex Williamson <alex.williamson@redhat.com>,
-	Peter Xu <peterx@redhat.com>,
-	Muchun Song <songmuchun@bytedance.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	Oded Gabbay <ogabbay@kernel.org>, linux-mips@vger.kernel.org,
-	Tomasz Figa <tfiga@chromium.org>, linux-perf-users@vger.kernel.org,
-	linux-security-module@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
+	linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+	linux-um@lists.infradead.org, etnaviv@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org, linux-samsung-soc@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-perf-users@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
 	Linus Torvalds <torvalds@linux-foundation.org>,
-	Mike Kravetz <mike.kravetz@oracle.com>
-Subject: Re: [PATCH mm-unstable v1 16/20] mm/frame-vector: remove FOLL_FORCE
- usage
-Message-ID: <Y3TAd14jCBSKeqsL@phenom.ffwll.local>
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>,
+	Peter Xu <peterx@redhat.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Andrea Arcangeli <aarcange@redhat.com>,
+	Hugh Dickins <hughd@google.com>, Nadav Amit <namit@vmware.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Matthew Wilcox <willy@infradead.org>,
+	Mike Kravetz <mike.kravetz@oracle.com>,
+	Muchun Song <songmuchun@bytedance.com>,
+	Shuah Khan <shuah@kernel.org>, Lucas Stach <l.stach@pengutronix.de>,
+	David Airlie <airlied@gmail.com>, Oded Gabbay <ogabbay@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Christoph Hellwig <hch@infradead.org>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Inki Dae <inki.dae@samsung.com>,
+	Seung-Woo Kim <sw0312.kim@samsung.com>,
+	Kyungmin Park <kyungmin.park@samsung.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH mm-unstable v1 17/20] drm/exynos: remove FOLL_FORCE usage
+Message-ID: <Y3TAkWy/xXfX1cIv@phenom.ffwll.local>
 Mail-Followup-To: David Hildenbrand <david@redhat.com>,
-	linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	dri-devel@lists.freedesktop.org, Hans Verkuil <hverkuil@xs4all.nl>,
-	linux-mm@kvack.org, Nadav Amit <namit@vmware.com>,
-	linux-kselftest@vger.kernel.org, sparclinux@vger.kernel.org,
-	Shuah Khan <shuah@kernel.org>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Andrea Arcangeli <aarcange@redhat.com>,
-	linux-samsung-soc@vger.kernel.org, linux-rdma@vger.kernel.org,
-	x86@kernel.org, Hugh Dickins <hughd@google.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Christoph Hellwig <hch@infradead.org>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Vlastimil Babka <vbabka@suse.cz>,
-	linux-media@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-	John Hubbard <jhubbard@nvidia.com>, linux-um@lists.infradead.org,
-	etnaviv@lists.freedesktop.org,
-	Alex Williamson <alex.williamson@redhat.com>,
-	Peter Xu <peterx@redhat.com>,
-	Muchun Song <songmuchun@bytedance.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	Oded Gabbay <ogabbay@kernel.org>, linux-mips@vger.kernel.org,
-	Tomasz Figa <tfiga@chromium.org>, linux-perf-users@vger.kernel.org,
-	linux-security-module@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, x86@kernel.org,
+	linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+	linux-um@lists.infradead.org, etnaviv@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org, linux-samsung-soc@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-perf-users@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
 	Linus Torvalds <torvalds@linux-foundation.org>,
-	Mike Kravetz <mike.kravetz@oracle.com>
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>,
+	Peter Xu <peterx@redhat.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Andrea Arcangeli <aarcange@redhat.com>,
+	Hugh Dickins <hughd@google.com>, Nadav Amit <namit@vmware.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Matthew Wilcox <willy@infradead.org>,
+	Mike Kravetz <mike.kravetz@oracle.com>,
+	Muchun Song <songmuchun@bytedance.com>,
+	Shuah Khan <shuah@kernel.org>, Lucas Stach <l.stach@pengutronix.de>,
+	David Airlie <airlied@gmail.com>, Oded Gabbay <ogabbay@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Christoph Hellwig <hch@infradead.org>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Inki Dae <inki.dae@samsung.com>,
+	Seung-Woo Kim <sw0312.kim@samsung.com>,
+	Kyungmin Park <kyungmin.park@samsung.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 References: <20221116102659.70287-1-david@redhat.com>
- <20221116102659.70287-17-david@redhat.com>
+ <20221116102659.70287-18-david@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20221116102659.70287-17-david@redhat.com>
+In-Reply-To: <20221116102659.70287-18-david@redhat.com>
 X-Operating-System: Linux phenom 5.19.0-2-amd64 
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221116_025036_440090_B0623C18 
-X-CRM114-Status: GOOD (  23.89  )
+X-CRM114-CacheID: sfid-20221116_025101_645058_0352AFFF 
+X-CRM114-Status: GOOD (  23.45  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -145,47 +151,44 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Nov 16, 2022 at 11:26:55AM +0100, David Hildenbrand wrote:
-> FOLL_FORCE is really only for ptrace access. According to commit
-> 707947247e95 ("media: videobuf2-vmalloc: get_userptr: buffers are always
-> writable"), get_vaddr_frames() currently pins all pages writable as a
-> workaround for issues with read-only buffers.
+On Wed, Nov 16, 2022 at 11:26:56AM +0100, David Hildenbrand wrote:
+> FOLL_FORCE is really only for ptrace access. As we unpin the pinned pages
+> using unpin_user_pages_dirty_lock(true), the assumption is that all these
+> pages are writable.
 > 
-> FOLL_FORCE, however, seems to be a legacy leftover as it predates
-> commit 707947247e95 ("media: videobuf2-vmalloc: get_userptr: buffers are
-> always writable"). Let's just remove it.
+> FOLL_FORCE in this case seems to be a legacy leftover. Let's just remove
+> it.
 > 
-> Once the read-only buffer issue has been resolved, FOLL_WRITE could
-> again be set depending on the DMA direction.
-> 
-> Cc: Hans Verkuil <hverkuil@xs4all.nl>
-> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> Cc: Tomasz Figa <tfiga@chromium.org>
-> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: Inki Dae <inki.dae@samsung.com>
+> Cc: Seung-Woo Kim <sw0312.kim@samsung.com>
+> Cc: Kyungmin Park <kyungmin.park@samsung.com>
+> Cc: David Airlie <airlied@gmail.com>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 > Signed-off-by: David Hildenbrand <david@redhat.com>
-
-Also code I looked at while looking at follow_pfn stuff
 
 Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 
+Plus ack for merging through the appropriate non-drm tree.
+-Daniel
+
 > ---
->  drivers/media/common/videobuf2/frame_vector.c | 2 +-
+>  drivers/gpu/drm/exynos/exynos_drm_g2d.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/media/common/videobuf2/frame_vector.c b/drivers/media/common/videobuf2/frame_vector.c
-> index 542dde9d2609..062e98148c53 100644
-> --- a/drivers/media/common/videobuf2/frame_vector.c
-> +++ b/drivers/media/common/videobuf2/frame_vector.c
-> @@ -50,7 +50,7 @@ int get_vaddr_frames(unsigned long start, unsigned int nr_frames,
->  	start = untagged_addr(start);
+> diff --git a/drivers/gpu/drm/exynos/exynos_drm_g2d.c b/drivers/gpu/drm/exynos/exynos_drm_g2d.c
+> index 471fd6c8135f..e19c2ceb3759 100644
+> --- a/drivers/gpu/drm/exynos/exynos_drm_g2d.c
+> +++ b/drivers/gpu/drm/exynos/exynos_drm_g2d.c
+> @@ -477,7 +477,7 @@ static dma_addr_t *g2d_userptr_get_dma_addr(struct g2d_data *g2d,
+>  	}
 >  
->  	ret = pin_user_pages_fast(start, nr_frames,
+>  	ret = pin_user_pages_fast(start, npages,
 > -				  FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM,
 > +				  FOLL_WRITE | FOLL_LONGTERM,
->  				  (struct page **)(vec->ptrs));
->  	if (ret > 0) {
->  		vec->got_ref = true;
+>  				  g2d_userptr->pages);
+>  	if (ret != npages) {
+>  		DRM_DEV_ERROR(g2d->dev,
 > -- 
 > 2.38.1
 > 
