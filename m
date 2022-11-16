@@ -4,50 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81AEBC433FE
-	for <linux-um@archiver.kernel.org>; Wed, 16 Nov 2022 10:35:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 209B8C4332F
+	for <linux-um@archiver.kernel.org>; Wed, 16 Nov 2022 10:36:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=99HxU6Au/EmMWVPGg5AQBc0RYaGbggAUt5akypLrbiI=; b=QvCt7gg6K4b3tv
-	O7s+xFvYYb+4sWCgZx7Xatuc166oDv6hJI5mJRXnuG3Nn3YnFqE9kNHmBkSrsh5Oq/q+nm+PteFx7
-	QBs7xiPvpJykuSMgqdkrcpXRCE4hIyonQvK5Oe34oWpcIoD7tH+l9yXFVKAoVKxvuPEt03TUoK3fd
-	QPEjO8Hg5upSjAAkW4R5Cfx3WXXUshZv3WVthVomPavmjl1Orzy2lED3y/0iYaEiaQH2u+FzHC6lz
-	DqAosAUBr6/Ral9StC8kIrPnCI0CtQfOvPk7tlxGdVoMfSAyLlAjpM1WYPzVLCEhBhYU13V6ljngq
-	YzSf3N5DIICw0ygTNuyA==;
+	List-Owner; bh=71iej5smWXe3DfsLaNrb2nJqW/SAX0ZWcP04IBBgscI=; b=JgZT3NA0kNcaBP
+	I5kJiKwdNg31epVeeT8bXsXmCkAXLskezL0G59c+GZlxDvVQVmy/sLhhz5IaNfQw/Hq5gX13QZREu
+	kx7pbEcXxMTj+5rpZnMDGClo0PoOve492NYJTBnwH3mGxD5zBkNP4ttExnoP5fMnBoYGFYOgy4dt9
+	uoMMHDsYlmzN9XA6P2G9LdhLAcdNJBjbbeh0AA94xtLkSKxtB0et2L2vhMR+5vASh4RmBKUffV+jk
+	Yx+O+dL56Fo/SlpxKicp7M03XhjC+8jy0J3p8lOGEJOyz0z58Y8QrO3+3dwKijbUc1ohOSjImlvOX
+	Q6ndF8cipX5gvU1J99vw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ovFla-002HFV-Vt; Wed, 16 Nov 2022 10:35:39 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+	id 1ovFmZ-002I3X-7d; Wed, 16 Nov 2022 10:36:39 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ovFfK-002DLA-98
-	for linux-um@lists.infradead.org; Wed, 16 Nov 2022 10:29:12 +0000
+	id 1ovFfR-002DQb-0U
+	for linux-um@lists.infradead.org; Wed, 16 Nov 2022 10:29:20 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1668594549;
+	s=mimecast20190719; t=1668594556;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=PtZFIm00BoukAq0r3vxYea1/oUxWby/yeQnBgXcmZG8=;
-	b=hr1vtWj7hSzN/U8/+SOSHRcATuJ36HbEUAvStWcViiqkwKmdcn4tKY8i/Ex6sKYidjE8NW
-	VYhLKt5bMGEzKTpCEyjFYcymoS5Y29s+T2FkjullqOkN5yx5mjGZklHUhGSSbUOTl9QG2h
-	foWk8N3D4JgNB0zO77I1/HFftwrsAsY=
+	bh=ddMjxbE+d57ySmRYhTvAErVzb9ykjmc/iLClBCHgJ7c=;
+	b=DhHV24hOaKvXDcUFqkwDJXrzBUGBac6gqjYnjARNMKoN5fsv/1OOWNEcwhmi9aDHscZf/D
+	FUWuaUSSeAQF86bCykToDE5EKFQ9cgMA8IRzYET6Yne7cMf9KKqRtsLgXFHICXC3eGRo+o
+	s7XxE0A0wygquc8/drhQPpoWdtNlgj4=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-618-uLqpp3ByOjmb0y4uEYa0gA-1; Wed, 16 Nov 2022 05:29:02 -0500
-X-MC-Unique: uLqpp3ByOjmb0y4uEYa0gA-1
+ us-mta-281-3wHpF2z_Ol-w_Oz0Io_Gqg-1; Wed, 16 Nov 2022 05:29:09 -0500
+X-MC-Unique: 3wHpF2z_Ol-w_Oz0Io_Gqg-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 95160811E7A;
-	Wed, 16 Nov 2022 10:29:00 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id ED87586F130;
+	Wed, 16 Nov 2022 10:29:07 +0000 (UTC)
 Received: from t480s.fritz.box (unknown [10.39.193.216])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 4EDB82028E8F;
-	Wed, 16 Nov 2022 10:28:53 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 0046B2027064;
+	Wed, 16 Nov 2022 10:29:00 +0000 (UTC)
 From: David Hildenbrand <david@redhat.com>
 To: linux-kernel@vger.kernel.org
 Cc: x86@kernel.org,
@@ -89,17 +89,19 @@ Cc: x86@kernel.org,
 	Christoph Hellwig <hch@infradead.org>,
 	Alex Williamson <alex.williamson@redhat.com>,
 	David Hildenbrand <david@redhat.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: [PATCH mm-unstable v1 13/20] media: videobuf-dma-sg: remove FOLL_FORCE usage
-Date: Wed, 16 Nov 2022 11:26:52 +0100
-Message-Id: <20221116102659.70287-14-david@redhat.com>
+	Daniel Vetter <daniel.vetter@ffwll.ch>,
+	Russell King <linux+etnaviv@armlinux.org.uk>,
+	Christian Gmeiner <christian.gmeiner@gmail.com>
+Subject: [PATCH mm-unstable v1 14/20] drm/etnaviv: remove FOLL_FORCE usage
+Date: Wed, 16 Nov 2022 11:26:53 +0100
+Message-Id: <20221116102659.70287-15-david@redhat.com>
 In-Reply-To: <20221116102659.70287-1-david@redhat.com>
 References: <20221116102659.70287-1-david@redhat.com>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221116_022910_432633_4EB1B6EC 
-X-CRM114-Status: GOOD (  15.85  )
+X-CRM114-CacheID: sfid-20221116_022917_161435_EDC9C933 
+X-CRM114-Status: GOOD (  15.40  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -122,58 +124,55 @@ far in one corner case (DAXFS file with holes), which can be ignored
 because GUP does not support long-term pinning in fsdax (see
 check_vma_flags()).
 
+commit cd5297b0855f ("drm/etnaviv: Use FOLL_FORCE for userptr")
+documents that FOLL_FORCE | FOLL_WRITE was really only used for reliable
+R/O pinning.
+
 Consequently, FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM is no longer required
 for reliable R/O long-term pinning: FOLL_LONGTERM is sufficient. So stop
 using FOLL_FORCE, which is really only for ptrace access.
 
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc: Lucas Stach <l.stach@pengutronix.de>
+Cc: Russell King <linux+etnaviv@armlinux.org.uk>
+Cc: Christian Gmeiner <christian.gmeiner@gmail.com>
+Cc: David Airlie <airlied@gmail.com>
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- drivers/media/v4l2-core/videobuf-dma-sg.c | 14 +++++---------
- 1 file changed, 5 insertions(+), 9 deletions(-)
+ drivers/gpu/drm/etnaviv/etnaviv_gem.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/v4l2-core/videobuf-dma-sg.c b/drivers/media/v4l2-core/videobuf-dma-sg.c
-index f75e5eedeee0..234e9f647c96 100644
---- a/drivers/media/v4l2-core/videobuf-dma-sg.c
-+++ b/drivers/media/v4l2-core/videobuf-dma-sg.c
-@@ -151,17 +151,16 @@ static void videobuf_dma_init(struct videobuf_dmabuf *dma)
- static int videobuf_dma_init_user_locked(struct videobuf_dmabuf *dma,
- 			int direction, unsigned long data, unsigned long size)
- {
+diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem.c b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
+index cc386f8a7116..efe2240945d0 100644
+--- a/drivers/gpu/drm/etnaviv/etnaviv_gem.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
+@@ -638,6 +638,7 @@ static int etnaviv_gem_userptr_get_pages(struct etnaviv_gem_object *etnaviv_obj)
+ 	struct page **pvec = NULL;
+ 	struct etnaviv_gem_userptr *userptr = &etnaviv_obj->userptr;
+ 	int ret, pinned = 0, npages = etnaviv_obj->base.size >> PAGE_SHIFT;
 +	unsigned int gup_flags = FOLL_LONGTERM;
- 	unsigned long first, last;
--	int err, rw = 0;
--	unsigned int flags = FOLL_FORCE;
-+	int err;
  
- 	dma->direction = direction;
- 	switch (dma->direction) {
- 	case DMA_FROM_DEVICE:
--		rw = READ;
-+		gup_flags |= FOLL_WRITE;
- 		break;
- 	case DMA_TO_DEVICE:
--		rw = WRITE;
- 		break;
- 	default:
- 		BUG();
-@@ -177,14 +176,11 @@ static int videobuf_dma_init_user_locked(struct videobuf_dmabuf *dma,
- 	if (NULL == dma->pages)
+ 	might_lock_read(&current->mm->mmap_lock);
+ 
+@@ -648,14 +649,15 @@ static int etnaviv_gem_userptr_get_pages(struct etnaviv_gem_object *etnaviv_obj)
+ 	if (!pvec)
  		return -ENOMEM;
  
--	if (rw == READ)
--		flags |= FOLL_WRITE;
--
- 	dprintk(1, "init user [0x%lx+0x%lx => %lu pages]\n",
- 		data, size, dma->nr_pages);
++	if (!userptr->ro)
++		gup_flags |= FOLL_WRITE;
++
+ 	do {
+ 		unsigned num_pages = npages - pinned;
+ 		uint64_t ptr = userptr->ptr + pinned * PAGE_SIZE;
+ 		struct page **pages = pvec + pinned;
  
--	err = pin_user_pages(data & PAGE_MASK, dma->nr_pages,
--			     flags | FOLL_LONGTERM, dma->pages, NULL);
-+	err = pin_user_pages(data & PAGE_MASK, dma->nr_pages, gup_flags,
-+			     dma->pages, NULL);
- 
- 	if (err != dma->nr_pages) {
- 		dma->nr_pages = (err >= 0) ? err : 0;
+-		ret = pin_user_pages_fast(ptr, num_pages,
+-					  FOLL_WRITE | FOLL_FORCE | FOLL_LONGTERM,
+-					  pages);
++		ret = pin_user_pages_fast(ptr, num_pages, gup_flags, pages);
+ 		if (ret < 0) {
+ 			unpin_user_pages(pvec, pinned);
+ 			kvfree(pvec);
 -- 
 2.38.1
 
