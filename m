@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19155C4321E
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 954A3C4167B
 	for <linux-um@archiver.kernel.org>; Wed, 16 Nov 2022 10:32:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,42 +12,42 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=249VCtz81nuDR5X+z7DdbylpZlobYTMKkXut8FERWX4=; b=uNrvbxJ1P9J1vZ
-	E86VTJiRyLy9eKLZkn4OXD1KrnQz70JR/l5Fyda8mRwaHTd1cXv4uyjnBGSmgvk6zUx+U7UUVa7Tp
-	KKy67WOnJpjkQbX2qeGAgyV++NBXtVrG3NOWF9lQ1RCwEihABLSnI91MK4oEITK+c5i/AuqGgvgPL
-	2DEs6qXOkhmc0epdiWci5UE4Q62H57ha4M2E+NBzq2UKp1tyCgxLbP1SyoxTpl5/t4++HkKAmvYKR
-	8DsShtZOz6hqzWBPhLVRhzr1gA0fV4Qh0IQt8ximw5sjgllKlfFwSHoitpma2eadBCE1kn616hx8A
-	vSqS7FS47jM4sp/2yHGw==;
+	List-Owner; bh=z0IxQKTR30iA3+Evq6O440Uy4KbgALxiaMETu9e4MNo=; b=jH8dR2/2RMk+dV
+	wUFj8J5vfyNHfWJhQW6PjqRQb9BeWF8SEf/cygHU7Pyiqr1rTeQET/Ywz/xLjT4vb9+a9SLAob34T
+	1PCSaKzYUfOVT9l3DGAS0Rfedo/fG/PGqwxkAG3nYugV/1yDZ4o7dmyokBBOarkS7KAeqjZoS+0LH
+	1rxACfogYIIckhB8kSEBnaRZVTgbwZzyjOjRrkWwbYEBMsllKKvK8vXiYrpZpn+Z3OSYFEVamj1X7
+	nWiGXQEhnxf8Dv+C/+3A4TOxK0Q1Aex5TheHYbOX/iR+g/Giqf0MEYG81Z9YM8LD5Q8xSSpUHPBwH
+	c4r4SOeRIryG+7p5xj+w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ovFiy-002FPe-U8; Wed, 16 Nov 2022 10:32:56 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
+	id 1ovFiz-002FQM-MV; Wed, 16 Nov 2022 10:32:57 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ovFem-002CyF-Nf
-	for linux-um@lists.infradead.org; Wed, 16 Nov 2022 10:28:41 +0000
+	id 1ovFev-002D4Y-BU
+	for linux-um@lists.infradead.org; Wed, 16 Nov 2022 10:28:47 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1668594515;
+	s=mimecast20190719; t=1668594524;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=MyRNKgE9VejcvK3KnE6hG0vB3Gd3R9NfE1yvuVtmrG0=;
-	b=QWRb2GpGUY28wVCzrNoO2tCLUkHrY1JCG4m5qMj8BSfIz9CdqQcLp0kPiCIH0es1PnhTPM
-	7MSUd3tdQ88DnpcwKRFvqYJRHfLwpdiIoYhCLV74qoNFGgNPlE3stUFfHNr3491mopwfOB
-	xEsMV9LzlMVEepivnF5abWUABDfelkg=
+	bh=xyj8jS+C9wqOk3KceDQTo75wMiWZgljnGSBlM8HQloY=;
+	b=HyVSO6OqC/gyAIUuVMXoeM1X2q2HGXEdNdaxMdk2Vy95oyYuYPYs+2QP7j1mdL7FrioHdX
+	TbTBqLLcuZ5eaT45BNKl7jbv+D65zT6ecgXqA8ct3duF5iZHVlUxfGqv+aN60svjE9SLxy
+	2lfc7aOUpVzBnsMZbN7Cm+/iLDmyMoE=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-1-x5l38RKeO-CqL_8lbQ5Wdg-1; Wed, 16 Nov 2022 05:28:31 -0500
-X-MC-Unique: x5l38RKeO-CqL_8lbQ5Wdg-1
+ us-mta-156-1i0B0n5wO9KbojDzH-noSA-1; Wed, 16 Nov 2022 05:28:39 -0500
+X-MC-Unique: 1i0B0n5wO9KbojDzH-noSA-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 96DF7101A528;
-	Wed, 16 Nov 2022 10:28:29 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6CE1B86F132;
+	Wed, 16 Nov 2022 10:28:37 +0000 (UTC)
 Received: from t480s.fritz.box (unknown [10.39.193.216])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 287292028E8F;
-	Wed, 16 Nov 2022 10:28:23 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id D7D7C2028E8F;
+	Wed, 16 Nov 2022 10:28:29 +0000 (UTC)
 From: David Hildenbrand <david@redhat.com>
 To: linux-kernel@vger.kernel.org
 Cc: x86@kernel.org,
@@ -88,17 +88,19 @@ Cc: x86@kernel.org,
 	Arnd Bergmann <arnd@arndb.de>,
 	Christoph Hellwig <hch@infradead.org>,
 	Alex Williamson <alex.williamson@redhat.com>,
-	David Hildenbrand <david@redhat.com>
-Subject: [PATCH mm-unstable v1 09/20] mm/gup: reliable R/O long-term pinning in COW mappings
-Date: Wed, 16 Nov 2022 11:26:48 +0100
-Message-Id: <20221116102659.70287-10-david@redhat.com>
+	David Hildenbrand <david@redhat.com>,
+	Leon Romanovsky <leonro@nvidia.com>,
+	Leon Romanovsky <leon@kernel.org>
+Subject: [PATCH mm-unstable v1 10/20] RDMA/umem: remove FOLL_FORCE usage
+Date: Wed, 16 Nov 2022 11:26:49 +0100
+Message-Id: <20221116102659.70287-11-david@redhat.com>
 In-Reply-To: <20221116102659.70287-1-david@redhat.com>
 References: <20221116102659.70287-1-david@redhat.com>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221116_022836_917216_8203D28B 
-X-CRM114-Status: GOOD (  27.79  )
+X-CRM114-CacheID: sfid-20221116_022845_494849_E86C955B 
+X-CRM114-Status: GOOD (  14.95  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -115,224 +117,57 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-We already support reliable R/O pinning of anonymous memory. However,
-assume we end up pinning (R/O long-term) a pagecache page or the shared
-zeropage inside a writable private ("COW") mapping. The next write access
-will trigger a write-fault and replace the pinned page by an exclusive
-anonymous page in the process page tables to break COW: the pinned page no
-longer corresponds to the page mapped into the process' page table.
+GUP now supports reliable R/O long-term pinning in COW mappings, such
+that we break COW early. MAP_SHARED VMAs only use the shared zeropage so
+far in one corner case (DAXFS file with holes), which can be ignored
+because GUP does not support long-term pinning in fsdax (see
+check_vma_flags()).
 
-Now that FAULT_FLAG_UNSHARE can break COW on anything mapped into a
-COW mapping, let's properly break COW first before R/O long-term
-pinning something that's not an exclusive anon page inside a COW
-mapping. FAULT_FLAG_UNSHARE will break COW and map an exclusive anon page
-instead that can get pinned safely.
+Consequently, FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM is no longer required
+for reliable R/O long-term pinning: FOLL_LONGTERM is sufficient. So stop
+using FOLL_FORCE, which is really only for ptrace access.
 
-With this change, we can stop using FOLL_FORCE|FOLL_WRITE for reliable
-R/O long-term pinning in COW mappings.
-
-With this change, the new R/O long-term pinning tests for non-anonymous
-memory succeed:
-  # [RUN] R/O longterm GUP pin ... with shared zeropage
-  ok 151 Longterm R/O pin is reliable
-  # [RUN] R/O longterm GUP pin ... with memfd
-  ok 152 Longterm R/O pin is reliable
-  # [RUN] R/O longterm GUP pin ... with tmpfile
-  ok 153 Longterm R/O pin is reliable
-  # [RUN] R/O longterm GUP pin ... with huge zeropage
-  ok 154 Longterm R/O pin is reliable
-  # [RUN] R/O longterm GUP pin ... with memfd hugetlb (2048 kB)
-  ok 155 Longterm R/O pin is reliable
-  # [RUN] R/O longterm GUP pin ... with memfd hugetlb (1048576 kB)
-  ok 156 Longterm R/O pin is reliable
-  # [RUN] R/O longterm GUP-fast pin ... with shared zeropage
-  ok 157 Longterm R/O pin is reliable
-  # [RUN] R/O longterm GUP-fast pin ... with memfd
-  ok 158 Longterm R/O pin is reliable
-  # [RUN] R/O longterm GUP-fast pin ... with tmpfile
-  ok 159 Longterm R/O pin is reliable
-  # [RUN] R/O longterm GUP-fast pin ... with huge zeropage
-  ok 160 Longterm R/O pin is reliable
-  # [RUN] R/O longterm GUP-fast pin ... with memfd hugetlb (2048 kB)
-  ok 161 Longterm R/O pin is reliable
-  # [RUN] R/O longterm GUP-fast pin ... with memfd hugetlb (1048576 kB)
-  ok 162 Longterm R/O pin is reliable
-
-Note 1: We don't care about short-term R/O-pinning, because they have
-snapshot semantics: they are not supposed to observe modifications that
-happen after pinning.
-
-As one example, assume we start direct I/O to read from a page and store
-page content into a file: modifications to page content after starting
-direct I/O are not guaranteed to end up in the file. So even if we'd pin
-the shared zeropage, the end result would be as expected -- getting zeroes
-stored to the file.
-
-Note 2: For shared mappings we'll now always fallback to the slow path to
-lookup the VMA when R/O long-term pining. While that's the necessary price
-we have to pay right now, it's actually not that bad in practice: most
-FOLL_LONGTERM users already specify FOLL_WRITE, for example, along with
-FOLL_FORCE because they tried dealing with COW mappings correctly ...
-
-Note 3: For users that use FOLL_LONGTERM right now without FOLL_WRITE,
-such as VFIO, we'd now no longer pin the shared zeropage. Instead, we'd
-populate exclusive anon pages that we can pin. There was a concern that
-this could affect the memlock limit of existing setups.
-
-For example, a VM running with VFIO could run into the memlock limit and
-fail to run. However, we essentially had the same behavior already in
-commit 17839856fd58 ("gup: document and work around "COW can break either
-way" issue") which got merged into some enterprise distros, and there were
-not any such complaints. So most probably, we're fine.
-
+Tested-by: Leon Romanovsky <leonro@nvidia.com> # Over mlx4 and mlx5.
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Leon Romanovsky <leon@kernel.org>
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- include/linux/mm.h | 27 ++++++++++++++++++++++++---
- mm/gup.c           | 10 +++++-----
- mm/huge_memory.c   |  2 +-
- mm/hugetlb.c       |  7 ++++---
- 4 files changed, 34 insertions(+), 12 deletions(-)
+ drivers/infiniband/core/umem.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 6bd2ee5872dd..e8cc838f42f9 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -3095,8 +3095,12 @@ static inline int vm_fault_to_errno(vm_fault_t vm_fault, int foll_flags)
-  * Must be called with the (sub)page that's actually referenced via the
-  * page table entry, which might not necessarily be the head page for a
-  * PTE-mapped THP.
-+ *
-+ * If the vma is NULL, we're coming from the GUP-fast path and might have
-+ * to fallback to the slow path just to lookup the vma.
-  */
--static inline bool gup_must_unshare(unsigned int flags, struct page *page)
-+static inline bool gup_must_unshare(struct vm_area_struct *vma,
-+				    unsigned int flags, struct page *page)
- {
+diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
+index 86d479772fbc..755a9c57db6f 100644
+--- a/drivers/infiniband/core/umem.c
++++ b/drivers/infiniband/core/umem.c
+@@ -156,7 +156,7 @@ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
+ 	struct mm_struct *mm;
+ 	unsigned long npages;
+ 	int pinned, ret;
+-	unsigned int gup_flags = FOLL_WRITE;
++	unsigned int gup_flags = FOLL_LONGTERM;
+ 
  	/*
- 	 * FOLL_WRITE is implicitly handled correctly as the page table entry
-@@ -3109,8 +3113,25 @@ static inline bool gup_must_unshare(unsigned int flags, struct page *page)
- 	 * Note: PageAnon(page) is stable until the page is actually getting
- 	 * freed.
- 	 */
--	if (!PageAnon(page))
--		return false;
-+	if (!PageAnon(page)) {
-+		/*
-+		 * We only care about R/O long-term pining: R/O short-term
-+		 * pinning does not have the semantics to observe successive
-+		 * changes through the process page tables.
-+		 */
-+		if (!(flags & FOLL_LONGTERM))
-+			return false;
-+
-+		/* We really need the vma ... */
-+		if (!vma)
-+			return true;
-+
-+		/*
-+		 * ... because we only care about writable private ("COW")
-+		 * mappings where we have to break COW early.
-+		 */
-+		return is_cow_mapping(vma->vm_flags);
-+	}
+ 	 * If the combination of the addr and size requested for this memory
+@@ -210,8 +210,8 @@ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
  
- 	/* Paired with a memory barrier in page_try_share_anon_rmap(). */
- 	if (IS_ENABLED(CONFIG_HAVE_FAST_GUP))
-diff --git a/mm/gup.c b/mm/gup.c
-index 5182abaaecde..01116699c863 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -578,7 +578,7 @@ static struct page *follow_page_pte(struct vm_area_struct *vma,
- 		}
- 	}
+ 	cur_base = addr & PAGE_MASK;
  
--	if (!pte_write(pte) && gup_must_unshare(flags, page)) {
-+	if (!pte_write(pte) && gup_must_unshare(vma, flags, page)) {
- 		page = ERR_PTR(-EMLINK);
- 		goto out;
- 	}
-@@ -2338,7 +2338,7 @@ static int gup_pte_range(pmd_t pmd, pmd_t *pmdp, unsigned long addr,
- 			goto pte_unmap;
- 		}
+-	if (!umem->writable)
+-		gup_flags |= FOLL_FORCE;
++	if (umem->writable)
++		gup_flags |= FOLL_WRITE;
  
--		if (!pte_write(pte) && gup_must_unshare(flags, page)) {
-+		if (!pte_write(pte) && gup_must_unshare(NULL, flags, page)) {
- 			gup_put_folio(folio, 1, flags);
- 			goto pte_unmap;
- 		}
-@@ -2506,7 +2506,7 @@ static int gup_hugepte(pte_t *ptep, unsigned long sz, unsigned long addr,
- 		return 0;
- 	}
- 
--	if (!pte_write(pte) && gup_must_unshare(flags, &folio->page)) {
-+	if (!pte_write(pte) && gup_must_unshare(NULL, flags, &folio->page)) {
- 		gup_put_folio(folio, refs, flags);
- 		return 0;
- 	}
-@@ -2572,7 +2572,7 @@ static int gup_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
- 		return 0;
- 	}
- 
--	if (!pmd_write(orig) && gup_must_unshare(flags, &folio->page)) {
-+	if (!pmd_write(orig) && gup_must_unshare(NULL, flags, &folio->page)) {
- 		gup_put_folio(folio, refs, flags);
- 		return 0;
- 	}
-@@ -2612,7 +2612,7 @@ static int gup_huge_pud(pud_t orig, pud_t *pudp, unsigned long addr,
- 		return 0;
- 	}
- 
--	if (!pud_write(orig) && gup_must_unshare(flags, &folio->page)) {
-+	if (!pud_write(orig) && gup_must_unshare(NULL, flags, &folio->page)) {
- 		gup_put_folio(folio, refs, flags);
- 		return 0;
- 	}
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 68d00196b519..dec7a7c0eca8 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -1434,7 +1434,7 @@ struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
- 	if (pmd_protnone(*pmd) && !gup_can_follow_protnone(flags))
- 		return NULL;
- 
--	if (!pmd_write(*pmd) && gup_must_unshare(flags, page))
-+	if (!pmd_write(*pmd) && gup_must_unshare(vma, flags, page))
- 		return ERR_PTR(-EMLINK);
- 
- 	VM_BUG_ON_PAGE((flags & FOLL_PIN) && PageAnon(page) &&
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 383b26069b33..c3aab6d5b7aa 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -6195,7 +6195,8 @@ static void record_subpages_vmas(struct page *page, struct vm_area_struct *vma,
- 	}
- }
- 
--static inline bool __follow_hugetlb_must_fault(unsigned int flags, pte_t *pte,
-+static inline bool __follow_hugetlb_must_fault(struct vm_area_struct *vma,
-+					       unsigned int flags, pte_t *pte,
- 					       bool *unshare)
- {
- 	pte_t pteval = huge_ptep_get(pte);
-@@ -6207,7 +6208,7 @@ static inline bool __follow_hugetlb_must_fault(unsigned int flags, pte_t *pte,
- 		return false;
- 	if (flags & FOLL_WRITE)
- 		return true;
--	if (gup_must_unshare(flags, pte_page(pteval))) {
-+	if (gup_must_unshare(vma, flags, pte_page(pteval))) {
- 		*unshare = true;
- 		return true;
- 	}
-@@ -6336,7 +6337,7 @@ long follow_hugetlb_page(struct mm_struct *mm, struct vm_area_struct *vma,
- 		 * directly from any kind of swap entries.
- 		 */
- 		if (absent ||
--		    __follow_hugetlb_must_fault(flags, pte, &unshare)) {
-+		    __follow_hugetlb_must_fault(vma, flags, pte, &unshare)) {
- 			vm_fault_t ret;
- 			unsigned int fault_flags = 0;
- 
+ 	while (npages) {
+ 		cond_resched();
+@@ -219,7 +219,7 @@ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
+ 					  min_t(unsigned long, npages,
+ 						PAGE_SIZE /
+ 						sizeof(struct page *)),
+-					  gup_flags | FOLL_LONGTERM, page_list);
++					  gup_flags, page_list);
+ 		if (pinned < 0) {
+ 			ret = pinned;
+ 			goto umem_release;
 -- 
 2.38.1
 
