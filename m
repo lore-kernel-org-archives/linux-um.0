@@ -4,50 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CC629C433FE
-	for <linux-um@archiver.kernel.org>; Wed, 16 Nov 2022 10:31:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AF02AC43219
+	for <linux-um@archiver.kernel.org>; Wed, 16 Nov 2022 10:32:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9kMU9uTTmnSTu2o7Br7ipFnqvoMBxuiEpQUXAPRL6H8=; b=u9f+ZDFy5nsATy
-	aR8exTVjF0tTx8MNPbySObmcwrLRsTFZv9ybzcyGuSV2MXy5bM1ErVzCbzsZd4rQXs3z6v+XDrkem
-	NmFgpgqr0vwhyqWcgTuXo6TjItqX/VStMMZdubz5IOZ3Qd/jnVeIo7wu3s8ckw3Jd1pfgoAtQzE15
-	RLmlVrpoqWs+hFE7P8rW2J3+PoWnGiJq+cbrPH8Ox108ZZDRo2iruCw3BJbrXYLDXiuqG7c19C9Oj
-	KZhSN+QJki/dy+fEkCQYUjnhEya4DiBXuggI0PZqed0lA8BjxQesLTjb3avmcfXvKmDWOfMiT41rI
-	UA1TescOFXw55oFVqeqw==;
+	List-Owner; bh=RXDzG4Int949SAFLKy3hhDGKJ+4EogDwvWNhVlziVIM=; b=RQjwFeQsh8UXVN
+	a7R8FXm+PIIXpLswlAbrQxOzEzUIiPy3pU+9MsVHESbQR/nuA2sUKCMejKB7eyy27LFj+OxCjhk19
+	Qdkj58eD9tJlenP6djY+c00Tge2IlMIIemLUEwwwVmhwMBi/filF+k0+eaAdjyeDge53MUKw9asOV
+	CqRJGvRyIY96jGAifbAHaHKofS27jWUPeUBhBDLj1J2KMu55FhvQULu+sTUZNRnkfif0PKQAiAg07
+	SLituCcGFmGAvB5M0iS7a20vVq4a7Yd7uQWBNdOi7uvZ1kBLawuIg8Rmp3pGDv3191vLpZvquDrn+
+	VHGT8S+iKxgyYY+iWcsQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ovFhU-002EdP-Rg; Wed, 16 Nov 2022 10:31:24 +0000
+	id 1ovFiL-002F32-Sz; Wed, 16 Nov 2022 10:32:17 +0000
 Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ovFeY-002Cou-HY
-	for linux-um@lists.infradead.org; Wed, 16 Nov 2022 10:28:24 +0000
+	id 1ovFeh-002CvD-V8
+	for linux-um@lists.infradead.org; Wed, 16 Nov 2022 10:28:33 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1668594501;
+	s=mimecast20190719; t=1668594511;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=G7hQ0RjvfvFzJ7xHsADTRuI/sN47/U3pNJiDmnh86Zg=;
-	b=DNtyZUGaBEoMHb4dk2woqqxcvh3uRZ5IxEIlqKOrO+29uwYW0/xZaduQ++/eOzZsw5fmzI
-	kdJGAFGuXTBCdzm64Tb2jwx26vV05u/G2XDZxL/ezWrKFRfDchC9DtormYTQZ8VENNBJB2
-	ZgY5p7IHIJY+xPlR0R7fL0N9/2PtxZI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=B1T+ot5qRtqPN1LpUOFfkK/yXOB9NMbn5pFr5NKSN84=;
+	b=dPfhw1nkloHnd2rrJYONmUDaf+BI98TW9zYzsWRGezQp3kfPC1U0YAL2NMKoLfXjq7B5mF
+	2oIfgisz31fSxFqip8YeJHyW9yTCS1wteJsYTAdOFhDJw3HSMMujpX1VvkGXRfeWNGlVbP
+	EL7DUjN53AnysCVVJLzGFIsmK03h054=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-342-y1dt35sINka8k4sGs1wnag-1; Wed, 16 Nov 2022 05:28:17 -0500
-X-MC-Unique: y1dt35sINka8k4sGs1wnag-1
+ us-mta-412-r17LTSJHM5C5l1EBulZ-LQ-1; Wed, 16 Nov 2022 05:28:24 -0500
+X-MC-Unique: r17LTSJHM5C5l1EBulZ-LQ-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D8854101CC62;
-	Wed, 16 Nov 2022 10:28:15 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D71761C0A110;
+	Wed, 16 Nov 2022 10:28:22 +0000 (UTC)
 Received: from t480s.fritz.box (unknown [10.39.193.216])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 140632024CC8;
-	Wed, 16 Nov 2022 10:28:08 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 3E25A2024CCA;
+	Wed, 16 Nov 2022 10:28:16 +0000 (UTC)
 From: David Hildenbrand <david@redhat.com>
 To: linux-kernel@vger.kernel.org
 Cc: x86@kernel.org,
@@ -89,16 +89,16 @@ Cc: x86@kernel.org,
 	Christoph Hellwig <hch@infradead.org>,
 	Alex Williamson <alex.williamson@redhat.com>,
 	David Hildenbrand <david@redhat.com>
-Subject: [PATCH mm-unstable v1 07/20] mm: don't call vm_ops->huge_fault() in wp_huge_pmd()/wp_huge_pud() for private mappings
-Date: Wed, 16 Nov 2022 11:26:46 +0100
-Message-Id: <20221116102659.70287-8-david@redhat.com>
+Subject: [PATCH mm-unstable v1 08/20] mm: extend FAULT_FLAG_UNSHARE support to anything in a COW mapping
+Date: Wed, 16 Nov 2022 11:26:47 +0100
+Message-Id: <20221116102659.70287-9-david@redhat.com>
 In-Reply-To: <20221116102659.70287-1-david@redhat.com>
 References: <20221116102659.70287-1-david@redhat.com>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221116_022822_669802_3905E079 
-X-CRM114-Status: GOOD (  15.89  )
+X-CRM114-CacheID: sfid-20221116_022832_124256_FB45AE69 
+X-CRM114-Status: GOOD (  19.67  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -115,74 +115,70 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-If we already have a PMD/PUD mapped write-protected in a private mapping
-and we want to break COW either due to FAULT_FLAG_WRITE or
-FAULT_FLAG_UNSHARE, there is no need to inform the file system just like on
-the PTE path.
+Extend FAULT_FLAG_UNSHARE to break COW on anything mapped into a
+COW (i.e., private writable) mapping and adjust the documentation
+accordingly.
 
-Let's just split (->zap) + fallback in that case.
+FAULT_FLAG_UNSHARE will now also break COW when encountering the shared
+zeropage, a pagecache page, a PFNMAP, ... inside a COW mapping, by
+properly replacing the mapped page/pfn by a private copy (an exclusive
+anonymous page).
 
-This is a preparation for more generic FAULT_FLAG_UNSHARE support in
+Note that only do_wp_page() needs care: hugetlb_wp() already handles
+FAULT_FLAG_UNSHARE correctly. wp_huge_pmd()/wp_huge_pud() also handles it
+correctly, for example, splitting the huge zeropage on FAULT_FLAG_UNSHARE
+such that we can handle FAULT_FLAG_UNSHARE on the PTE level.
+
+This change is a requirement for reliable long-term R/O pinning in
 COW mappings.
 
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- mm/memory.c | 24 +++++++++++++++---------
- 1 file changed, 15 insertions(+), 9 deletions(-)
+ include/linux/mm_types.h | 8 ++++----
+ mm/memory.c              | 4 ----
+ 2 files changed, 4 insertions(+), 8 deletions(-)
 
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 5e7f4fac1e78..5e9aaad8c7b2 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -1037,9 +1037,9 @@ typedef struct {
+  * @FAULT_FLAG_REMOTE: The fault is not for current task/mm.
+  * @FAULT_FLAG_INSTRUCTION: The fault was during an instruction fetch.
+  * @FAULT_FLAG_INTERRUPTIBLE: The fault can be interrupted by non-fatal signals.
+- * @FAULT_FLAG_UNSHARE: The fault is an unsharing request to unshare (and mark
+- *                      exclusive) a possibly shared anonymous page that is
+- *                      mapped R/O.
++ * @FAULT_FLAG_UNSHARE: The fault is an unsharing request to break COW in a
++ *                      COW mapping, making sure that an exclusive anon page is
++ *                      mapped after the fault.
+  * @FAULT_FLAG_ORIG_PTE_VALID: whether the fault has vmf->orig_pte cached.
+  *                        We should only access orig_pte if this flag set.
+  *
+@@ -1064,7 +1064,7 @@ typedef struct {
+  *
+  * The combination FAULT_FLAG_WRITE|FAULT_FLAG_UNSHARE is illegal.
+  * FAULT_FLAG_UNSHARE is ignored and treated like an ordinary read fault when
+- * no existing R/O-mapped anonymous page is encountered.
++ * applied to mappings that are not COW mappings.
+  */
+ enum fault_flag {
+ 	FAULT_FLAG_WRITE =		1 << 0,
 diff --git a/mm/memory.c b/mm/memory.c
-index c35e6cd32b6a..d47ad33c6487 100644
+index d47ad33c6487..56b21ab1e4d2 100644
 --- a/mm/memory.c
 +++ b/mm/memory.c
-@@ -4802,6 +4802,7 @@ static inline vm_fault_t create_huge_pmd(struct vm_fault *vmf)
- static inline vm_fault_t wp_huge_pmd(struct vm_fault *vmf)
- {
- 	const bool unshare = vmf->flags & FAULT_FLAG_UNSHARE;
-+	vm_fault_t ret;
- 
- 	if (vma_is_anonymous(vmf->vma)) {
- 		if (likely(!unshare) &&
-@@ -4809,11 +4810,13 @@ static inline vm_fault_t wp_huge_pmd(struct vm_fault *vmf)
- 			return handle_userfault(vmf, VM_UFFD_WP);
- 		return do_huge_pmd_wp_page(vmf);
+@@ -3432,10 +3432,6 @@ static vm_fault_t do_wp_page(struct vm_fault *vmf)
+ 		}
+ 		wp_page_reuse(vmf);
+ 		return 0;
+-	} else if (unshare) {
+-		/* No anonymous page -> nothing to do. */
+-		pte_unmap_unlock(vmf->pte, vmf->ptl);
+-		return 0;
  	}
--	if (vmf->vma->vm_ops->huge_fault) {
--		vm_fault_t ret = vmf->vma->vm_ops->huge_fault(vmf, PE_SIZE_PMD);
- 
--		if (!(ret & VM_FAULT_FALLBACK))
--			return ret;
-+	if (vmf->vma->vm_flags & (VM_SHARED | VM_MAYSHARE)) {
-+		if (vmf->vma->vm_ops->huge_fault) {
-+			ret = vmf->vma->vm_ops->huge_fault(vmf, PE_SIZE_PMD);
-+			if (!(ret & VM_FAULT_FALLBACK))
-+				return ret;
-+		}
- 	}
- 
- 	/* COW or write-notify handled on pte level: split pmd. */
-@@ -4839,14 +4842,17 @@ static vm_fault_t wp_huge_pud(struct vm_fault *vmf, pud_t orig_pud)
- {
- #if defined(CONFIG_TRANSPARENT_HUGEPAGE) &&			\
- 	defined(CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD)
-+	vm_fault_t ret;
-+
- 	/* No support for anonymous transparent PUD pages yet */
- 	if (vma_is_anonymous(vmf->vma))
- 		goto split;
--	if (vmf->vma->vm_ops->huge_fault) {
--		vm_fault_t ret = vmf->vma->vm_ops->huge_fault(vmf, PE_SIZE_PUD);
--
--		if (!(ret & VM_FAULT_FALLBACK))
--			return ret;
-+	if (vmf->vma->vm_flags & (VM_SHARED | VM_MAYSHARE)) {
-+		if (vmf->vma->vm_ops->huge_fault) {
-+			ret = vmf->vma->vm_ops->huge_fault(vmf, PE_SIZE_PUD);
-+			if (!(ret & VM_FAULT_FALLBACK))
-+				return ret;
-+		}
- 	}
- split:
- 	/* COW or write-notify not handled on PUD level: split pud.*/
+ copy:
+ 	/*
 -- 
 2.38.1
 
