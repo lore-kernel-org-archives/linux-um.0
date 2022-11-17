@@ -4,106 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 492A2C4332F
-	for <linux-um@archiver.kernel.org>; Thu, 17 Nov 2022 00:46:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AFAFC433FE
+	for <linux-um@archiver.kernel.org>; Thu, 17 Nov 2022 08:58:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WnJEhr8C7TDzd9smvaKqqmF0av3OdyIW1Pdtz+1NmQc=; b=eqCoHRirwcCTwQ
-	RKFMEuTNb8n237EJ5ij5bU4xfs5tcQPOiE9z5HK2VFGxm4oOgAxVZWVktK1KmMx2y6aDFVgE6y7+6
-	2XHR5hlV5tvtV34JAbR6ujEDwqoYAaxJdcRDutKCl8n++BsZXaV1ryGVPLCWMJaYW9i26+cFDSWto
-	6XtH7RO+jSpOb3M3doo9kB/9XmNP7C2Q1S8V4J8lSIl0r8je/hRxNaC4IiKKcdNrowJEaPG3j+c+h
-	Cqk5qLZms65dOa0JevNtZC5T8mSxxlKh1NgytHEKw/4OKuE0jJ6vLiXK6DdOBPNLasxGeY0E3BfiB
-	RX3zZmAiTgi5VFmh9WbA==;
+	List-Owner; bh=mEcjdgC6BGKRgtkU26plefJ31MTvFmpawoqCvYGxLZk=; b=Dgkg2F3+eM2eGe
+	psGFdsvxnbEll90whqAyKHCESDn52RxlKYQmeXEhf9EfUzCqE7HAjlNVDv3C4NNGJ+KpQ2zxWuFO4
+	pj61TcFOekX68cj0kzzZBwwoAItarxhsxrxBqoGKOM61fzmwe0kUD0W5EzuzRSe3w0vllVSJKlJEv
+	Nd9Fu2jE8sy1ba5UVc+GcfSTgQCEV0ivgJqgKApwuKJ0XTQhmEKVZx6U6IsyNq3uGevVlmrCGv3/v
+	PGvWhvfEFFXoYRLcsQmQ7QeaWqpedTcTv9NfsSUzz04SxrHVrCDGdQA2hWTg0BQASg9uH50/X1tqw
+	w0U5zQkltpkYYjJ3Gt4Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ovT2p-009EqQ-MO; Thu, 17 Nov 2022 00:46:19 +0000
-Received: from mail-qk1-x72e.google.com ([2607:f8b0:4864:20::72e])
+	id 1ovajP-00Bufm-WC; Thu, 17 Nov 2022 08:58:48 +0000
+Received: from mail-qv1-f43.google.com ([209.85.219.43])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ovT2b-009EjF-Q0
-	for linux-um@lists.infradead.org; Thu, 17 Nov 2022 00:46:07 +0000
-Received: by mail-qk1-x72e.google.com with SMTP id i9so219847qki.10
-        for <linux-um@lists.infradead.org>; Wed, 16 Nov 2022 16:46:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rT9xjSJmKp4cCvf16bTKl9Dc4YEY7MjOtsK/w44qv+E=;
-        b=VV2cb+pd6jfcSL2tauZE67KBioAHcybPQR+VfU40dKebsvpG7CB3+xd0Uv8h8MKz8R
-         sbSQ7TqeMCU61fYQIjRwQoQBWrCcg8ekkdEQ8V7xYjRGPq0DN+C0Atnpvt0eAux7Zvaz
-         PXr7WI31PYcmErRNWRYdBKljCyptLiKShcOF4gqH5bxcH7c9a48sUWSu+SLW+D60rEcT
-         94q2cJm8yEvdEzbYpl0Vwvwu6uXwvrse0KXhbaR5xd9/LECZYdD6vR+hmUeAJTlxbvcq
-         ueSGRE+vNlUSsDE90kXWUWeAcS6lHSqHDXkbeBbAuFPPnKLrO2HgUtltNTPZxflFTx6j
-         B+8A==
+	id 1ovajO-00BueL-0C
+	for linux-um@lists.infradead.org; Thu, 17 Nov 2022 08:58:47 +0000
+Received: by mail-qv1-f43.google.com with SMTP id ml12so809603qvb.0
+        for <linux-um@lists.infradead.org>; Thu, 17 Nov 2022 00:58:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rT9xjSJmKp4cCvf16bTKl9Dc4YEY7MjOtsK/w44qv+E=;
-        b=MR9HlZ9bhpffIjNUfqbbGMsyKNMvnIHmOPJ3YyUV/if8oVYPak2gOi4Jom/3AjDoWd
-         EOitlMFDyecnPoZ8UoOdp6ljwHPEYwB86I7dTdFA5E44l8Wm+8SkKXCHHHxyV8bDji3C
-         rNiKue6UjF5RK3TKkfDWqmVJ7im5xgBrSeIJihHb5ndIsiycmfc+q9v2OhFMuHN/Ee2Z
-         34xHKLfXCIEJOQry1s3uj7cODCw9gWchOWKYTPsgKaPUtbydpzd5NktUhuYrr+3z4ENR
-         te1Wkb02JRR0uM7LVfni2K0YavsqLyW5r+XqCGYoAL18b9CDV7RUoBTn/4qgQqdnQu3l
-         0HKw==
-X-Gm-Message-State: ANoB5pk6RfHhSlhxBlVKuzGLOkYzn1EsCcjgrBQO6zVs77DLr+9Qfp5/
-	4AKnez9cqKfJK8ehjE5CmbHCPBqeKL41Ig==
-X-Google-Smtp-Source: AA0mqf607w9C7cuVA1Gk/5OO594s7B3KGBk4c2yq8D1+/1YgY/KvFwESfDj3NEnwxZjz0MAqyk7Deg==
-X-Received: by 2002:a37:424c:0:b0:6fb:a0ec:c5ba with SMTP id p73-20020a37424c000000b006fba0ecc5bamr8177915qka.493.1668645964499;
-        Wed, 16 Nov 2022 16:46:04 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-47-55-122-23.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.122.23])
-        by smtp.gmail.com with ESMTPSA id i18-20020a05620a405200b006fa84082b6dsm11394495qko.128.2022.11.16.16.46.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Nov 2022 16:46:03 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1ovT2Z-0066UZ-3n;
-	Wed, 16 Nov 2022 20:46:03 -0400
-Date: Wed, 16 Nov 2022 20:46:03 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: David Hildenbrand <david@redhat.com>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
-	linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-	linux-um@lists.infradead.org, etnaviv@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org, linux-samsung-soc@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-perf-users@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Andrea Arcangeli <aarcange@redhat.com>,
-	Hugh Dickins <hughd@google.com>, Nadav Amit <namit@vmware.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Matthew Wilcox <willy@infradead.org>,
-	Mike Kravetz <mike.kravetz@oracle.com>,
-	Muchun Song <songmuchun@bytedance.com>,
-	Shuah Khan <shuah@kernel.org>, Lucas Stach <l.stach@pengutronix.de>,
-	David Airlie <airlied@gmail.com>, Oded Gabbay <ogabbay@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Christoph Hellwig <hch@infradead.org>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	Bernard Metzler <bmt@zurich.ibm.com>,
-	Leon Romanovsky <leon@kernel.org>
-Subject: Re: [PATCH mm-unstable v1 12/20] RDMA/siw: remove FOLL_FORCE usage
-Message-ID: <Y3WES5adl6yyS4ZB@ziepe.ca>
-References: <20221116102659.70287-1-david@redhat.com>
- <20221116102659.70287-13-david@redhat.com>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PsHL7FL7Xul8Q7EqXyeDP++KJ21Dqj5Fc5nxhWT+XH8=;
+        b=wNGzDDU5VSPbT1O9ApRxgXlq3F6Tg9mQmb1H5c/hEo4G+pXpnMp8GZSvbfIjIOo8uK
+         rpKVUubZ3gWd+uni7LRvRpjLAnRGt8tQiF90fb/BHkxkihXsG2xmYLM8DG5QtCr8R3MY
+         6MSIeY0fBfJDNGD33P2XOkgeZlRbu/cRl25wV+G43XUJ+q1jJnzoO/IVlH/tTTq8r24+
+         AYLKuR7OGmaLtKCTr5WmogvrzRQ7R/X5ftC/9oZL+SVQTXkkUlrRgdQ/ggqxjJ9BK62m
+         VkHJQGryVQo3P6qSPQEOHATkHCwGxJm+mh+X2Wmaie3Mi5WvqDe7pnmRewKwyms2x5u1
+         zv1g==
+X-Gm-Message-State: ANoB5pmXZYYlVuUzBm4rZ+UBP6UCq31A2lM/VdzknvdOfxPqpvcLzEwk
+	3q+byD7gk1ig1tRSD5QiezH0akR5m3pb0Q==
+X-Google-Smtp-Source: AA0mqf7NASUqS3mU18xgXqOy3+rS4BW1pFt457kqO6cFaVbqX7+LAZej01mzeWSkIGSdGGpFfB1XLw==
+X-Received: by 2002:a0c:eacd:0:b0:4bb:d68d:2744 with SMTP id y13-20020a0ceacd000000b004bbd68d2744mr1673106qvp.5.1668675523439;
+        Thu, 17 Nov 2022 00:58:43 -0800 (PST)
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
+        by smtp.gmail.com with ESMTPSA id fa9-20020a05622a4cc900b0039cc944ebdasm74457qtb.54.2022.11.17.00.58.42
+        for <linux-um@lists.infradead.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Nov 2022 00:58:42 -0800 (PST)
+Received: by mail-yb1-f181.google.com with SMTP id 63so1114835ybq.4
+        for <linux-um@lists.infradead.org>; Thu, 17 Nov 2022 00:58:42 -0800 (PST)
+X-Received: by 2002:a25:4289:0:b0:6ca:e43:d9ff with SMTP id
+ p131-20020a254289000000b006ca0e43d9ffmr1156718yba.543.1668675522199; Thu, 17
+ Nov 2022 00:58:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20221116102659.70287-13-david@redhat.com>
+References: <20221012191142.GA3109265@bhelgaas> <885a98b927a5244ad5a5ec8727b67b2135d5a8ad.camel@sipsolutions.net>
+ <f57d954a-b565-9bfa-b8eb-ce608e168f1a@cambridgegreys.com> <2135037685.24273.1665665172126.JavaMail.zimbra@nod.at>
+ <CAMuHMdVWWbonfT7-RRV4U9UUudUobpeAGOXpO9Y0Cyuqzy=DeQ@mail.gmail.com>
+ <CAMuHMdU=TurB14tkAbqb9nWYvCOcr0UUScdga25h3-oWjYfzTg@mail.gmail.com>
+ <20221013182912.k4deh5v47rjbpnnl@meerkat.local> <CAMuHMdWb5HHuBi2BUKatdJ4e9y3Tz2pM-DG6mt18U60cD64fjQ@mail.gmail.com>
+ <CAMuHMdV5i3JGtg8e=STuP7SENVOKHAEtZ+WdUw8GPt7j9gH65A@mail.gmail.com>
+In-Reply-To: <CAMuHMdV5i3JGtg8e=STuP7SENVOKHAEtZ+WdUw8GPt7j9gH65A@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 17 Nov 2022 09:58:31 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdV5pbH-=8z0Qg2_t8ekzTQjZUopPrZeJHWs+z0DzJAZYg@mail.gmail.com>
+Message-ID: <CAMuHMdV5pbH-=8z0Qg2_t8ekzTQjZUopPrZeJHWs+z0DzJAZYg@mail.gmail.com>
+Subject: Re: Add linux-um archives to lore.kernel.org?
+To: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Cc: Richard Weinberger <richard@nod.at>, anton ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, Bjorn Helgaas <helgaas@kernel.org>, 
+	linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, 
+	helpdesk <helpdesk@kernel.org>, David Woodhouse <dwmw2@infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221116_164605_872311_EF8DAA9B 
-X-CRM114-Status: GOOD (  12.90  )
+X-CRM114-CacheID: sfid-20221117_005846_076836_9E8F64A3 
+X-CRM114-Status: GOOD (  25.79  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,28 +91,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Nov 16, 2022 at 11:26:51AM +0100, David Hildenbrand wrote:
-> GUP now supports reliable R/O long-term pinning in COW mappings, such
-> that we break COW early. MAP_SHARED VMAs only use the shared zeropage so
-> far in one corner case (DAXFS file with holes), which can be ignored
-> because GUP does not support long-term pinning in fsdax (see
-> check_vma_flags()).
-> 
-> Consequently, FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM is no longer required
-> for reliable R/O long-term pinning: FOLL_LONGTERM is sufficient. So stop
-> using FOLL_FORCE, which is really only for ptrace access.
-> 
-> Cc: Bernard Metzler <bmt@zurich.ibm.com>
-> Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> Cc: Leon Romanovsky <leon@kernel.org>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  drivers/infiniband/sw/siw/siw_mem.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
+Hi Konstantin,
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+On Fri, Oct 14, 2022 at 8:06 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On Thu, Oct 13, 2022 at 8:48 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Thu, Oct 13, 2022 at 8:29 PM Konstantin Ryabitsev
+> > <konstantin@linuxfoundation.org> wrote:
+> > > On Thu, Oct 13, 2022 at 02:57:18PM +0200, Geert Uytterhoeven wrote:
+> > > > The first step is
+> > > > https://korg.docs.kernel.org/lore.html#requesting-archival-of-an-existing-list
+> > > >
+> > > > It doesn't make much sense to start collecting archives if the lore
+> > > > collector hasn't been activated yet.
+> > >
+> > > The archiver is now subscribed to the list. Once we have the archives, we can
+> > > complete the setup.
+> >
+> > Thank you, I have triggered the export from Gmail. After I have received
+> > the export archive, I will merge it with my local pre-Gmail archives.
+>
+> I have just sent my merged archive for linux-um.lists.infradead.org
+> and the old user-mode-linux-devel.lists.sourceforge.net (starting
+> from 2003-09-02) to Konstantin.
 
-Jason
+Is there anything from us you are still waiting for?
+Thanks again!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
 _______________________________________________
 linux-um mailing list
