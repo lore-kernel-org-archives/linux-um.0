@@ -4,94 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A19AC4332F
-	for <linux-um@archiver.kernel.org>; Fri, 18 Nov 2022 14:58:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 273A0C433FE
+	for <linux-um@archiver.kernel.org>; Fri, 18 Nov 2022 16:20:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QjoZ2xwPlGyKve/L23J5J93HV2PMpsvddTQm4rc8xpc=; b=ua1fbHv9q/6d98
-	UW14UvNFBvuW4yjFIUqEldGixIcPG8Hd0Wk4HIBmiiRnrGR97xAUkrEvrZEZerPBVZkmIQsV6C66F
-	wa8DeUdh0vx6uiYv9HWkUOZtXE7YLbTe3oku+Ga2/eOtihi2m3I6L6RMO+UtBvxRN+Lv8bZFJch4j
-	Sga4Px4HWSfPbITvCp/yp1ahDodPy7zb4ikQynJ69VgEubuW1SP01/oZsg0GyLwLSgyVGZtmJi7Nm
-	8adnI8k2rhDSrS5b+sf+fr9k/kn1nioMCvTnpCd7nY+iFQHwih+lwmkym4DhPJBMPsiN32S+lC7fp
-	3YV6A4tUmTJCPxVU2pUQ==;
+	List-Owner; bh=wLGBtXihB9nkAvL8JCtntrW0jokdb1YHjCZ+I6aIsUs=; b=QYHzbfyiyzEkcm
+	VHHufrjOHPe3LGcyB3TXZpIhhGnDnviAhtAkUZrz/rdEWZZIEGkGwqYDhWzGgs5KCxQ1xebQKW/hW
+	Ssk295hHd+S+d/k37rwhbfpm3y97ADgX0PzhwJ1W5IBypVQIbDMwokqNbyJIOjNoRUA77q9AdzCzH
+	UJQS7N5ZjRyM1T8ibhnaCYiu4HpqEKoa3hl64NHUafnsxzp6ljzo5dXxgJBnu9V0XLOsRdV0QHdOO
+	nHweApQ7/cK7W5uz8nqcaGEbXinazXoztobgDu8yD7hVs5jmY4I6Cd+RUHn610n/AlxhwBjr/4lCB
+	Iaqjo+5fUQsw/CpfI0pw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ow2ol-004h6V-VN; Fri, 18 Nov 2022 14:58:11 +0000
-Received: from smtp-out1.suse.de ([2001:67c:2178:6::1c])
+	id 1ow46L-005FCB-LF; Fri, 18 Nov 2022 16:20:25 +0000
+Received: from smtp-out2.suse.de ([195.135.220.29])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ow2mG-004fcu-VY; Fri, 18 Nov 2022 14:55:40 +0000
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-	by smtp-out1.suse.de (Postfix) with ESMTP id A1D8221FB8;
-	Fri, 18 Nov 2022 14:55:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1668783329; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RcWbup5BnnjHzEPpsHQeQ/9zmfC/ktCQBWDNShm4WAU=;
-	b=EDb4yO6yUhovxR1R/uuiYft78ukr2h+oU+IjaIre1crSLD6FqDa7tOBl7T9GdFyjImWzLl
-	fuZVE7BJe7raqlKMXUK6GnRr1NqEKply8FF3aod58x9Whn9xAOWMtUkNgxO/GnqpzSdULK
-	TFzAN6y09Rae96AY+OVlAOuIn3VhXg8=
-Received: from suse.cz (unknown [10.100.201.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 1ow468-005F3A-Dg; Fri, 18 Nov 2022 16:20:13 +0000
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by relay2.suse.de (Postfix) with ESMTPS id 093D42C141;
-	Fri, 18 Nov 2022 14:55:28 +0000 (UTC)
-Date: Fri, 18 Nov 2022 15:55:27 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	Jason Wessel <jason.wessel@windriver.com>,
-	Daniel Thompson <daniel.thompson@linaro.org>,
-	Douglas Anderson <dianders@chromium.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	kgdb-bugreport@lists.sourceforge.net, linux-serial@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	linux-um@lists.infradead.org, Aaron Tomlin <atomlin@redhat.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Lukas Wunner <lukas@wunner.de>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-m68k@lists.linux-m68k.org, Ard Biesheuvel <ardb@kernel.org>,
-	linux-efi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org,
-	Michal Simek <michal.simek@xilinx.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Mathias Nyman <mathias.nyman@linux.intel.com>,
-	linux-usb@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, Helge Deller <deller@gmx.de>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Javier Martinez Canillas <javierm@redhat.com>,
-	Juergen Gross <jgross@suse.com>,
-	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-	Tom Rix <trix@redhat.com>, linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH printk v5 00/40] reduce console_lock scope
-Message-ID: <Y3ec3/fpdAQacAOW@alley>
-References: <20221116162152.193147-1-john.ogness@linutronix.de>
- <Y3drEOkD1fuZcvV2@alley>
+	by smtp-out2.suse.de (Postfix) with ESMTPS id AE6541FD2A;
+	Fri, 18 Nov 2022 16:20:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1668788407; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZdCAdBuUfE3Rqc7NKln9hVuWsUdVVMVjbpiUee2vmvc=;
+	b=gFn628LRme6mgJaZwZXeXxqjVHZ1dhRwig/bm8/PJr2zPCzCtNxBMW9LTId3gWUCMDCXyK
+	TtXWbFh2gTikA3YMbaaroxv4l1XPLUH9rONQd0Dr+UuiMwnQoW4bEdHtBzAdzRgdfTZpOo
+	z5sm6N12GAAOBYVJKj61R24kx7azRZk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1668788407;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZdCAdBuUfE3Rqc7NKln9hVuWsUdVVMVjbpiUee2vmvc=;
+	b=TNP3u8Xx8uZo+sUiWVVILNS2hk5mwr0qssvrZKBXcmmjqp8qeTg4rudZW0WqfwYAgYNMk2
+	poai8KIFEEpddcDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 10E861345B;
+	Fri, 18 Nov 2022 16:20:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id uA9uA7ewd2PXAwAAMHmgww
+	(envelope-from <vbabka@suse.cz>); Fri, 18 Nov 2022 16:20:07 +0000
+Message-ID: <5104fc7b-7b38-652a-9a3f-6116e48d4129@suse.cz>
+Date: Fri, 18 Nov 2022 17:20:06 +0100
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <Y3drEOkD1fuZcvV2@alley>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [PATCH mm-unstable v1 01/20] selftests/vm: anon_cow: prepare for
+ non-anonymous COW tests
+Content-Language: en-US
+To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Cc: x86@kernel.org, linux-alpha@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+ linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+ etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ linux-samsung-soc@vger.kernel.org, linux-rdma@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
+ linux-security-module@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+ John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Andrea Arcangeli <aarcange@redhat.com>, Hugh Dickins <hughd@google.com>,
+ Nadav Amit <namit@vmware.com>, Matthew Wilcox <willy@infradead.org>,
+ Mike Kravetz <mike.kravetz@oracle.com>,
+ Muchun Song <songmuchun@bytedance.com>, Shuah Khan <shuah@kernel.org>,
+ Lucas Stach <l.stach@pengutronix.de>, David Airlie <airlied@gmail.com>,
+ Oded Gabbay <ogabbay@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ Christoph Hellwig <hch@infradead.org>,
+ Alex Williamson <alex.williamson@redhat.com>
+References: <20221116102659.70287-1-david@redhat.com>
+ <20221116102659.70287-2-david@redhat.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20221116102659.70287-2-david@redhat.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221118_065537_310718_81073F05 
-X-CRM114-Status: GOOD (  17.12  )
+X-CRM114-CacheID: sfid-20221118_082012_635234_36EF59AB 
+X-CRM114-Status: GOOD (  10.45  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,29 +111,18 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri 2022-11-18 12:22:58, Petr Mladek wrote:
-> On Wed 2022-11-16 17:27:12, John Ogness wrote:
-> > This is v5 of a series to prepare for threaded/atomic
-> > printing. v4 is here [0]. This series focuses on reducing the
-> > scope of the BKL console_lock. It achieves this by switching to
-> > SRCU and a dedicated mutex for console list iteration and
-> > modification, respectively. The console_lock will no longer
-> > offer this protection.
+On 11/16/22 11:26, David Hildenbrand wrote:
+> Originally, the plan was to have a separate tests for testing COW of
+> non-anonymous (e.g., shared zeropage) pages.
 > 
-> The patchset looks ready for linux-next from my POV.
+> Turns out, that we'd need a lot of similar functionality and that there
+> isn't a really good reason to separate it. So let's prepare for non-anon
+> tests by renaming to "cow".
 > 
-> I am going to push it there right now to get as much testing
-> as possible before the merge window.
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-JFYI, the patchset is committed in printk/linux.git,
-branch rework/console-list-lock.
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-I'll eventually merge it into rework/kthreads. But I wanted to have
-it separated until it gets some more testing in linux-next and
-eventually some more review.
-
-Best Regards,
-Petr
 
 _______________________________________________
 linux-um mailing list
