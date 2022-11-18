@@ -4,111 +4,113 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 539ABC4321E
-	for <linux-um@archiver.kernel.org>; Thu, 17 Nov 2022 23:20:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD158C43217
+	for <linux-um@archiver.kernel.org>; Fri, 18 Nov 2022 11:09:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Fq6z6IYseiPtukmmzL0CU6liKnEGczqEhIXz1i/blzI=; b=UKW5VtrotDt3Gl
-	JBTDrxxbsDEKhy53CfhLeRlBoGDM26VYyYnjC6OS2Nqi5PIjDyWINw44/9prJhZ3C1asjwlKYvVs9
-	EwANlm6poJ+FxTGdxQUoBc/y6F/0dmcb7VoUN3hSD1SFxCn6I7sXyu6WC1L4VAyZI0GEWhirWXUNu
-	NH8w4EZSx41w8Swd8BOz4qIuLojaDBcwH71sPVqhOOKQxWiQ+sYu21vOBf3dAblpDbpqlJScCe9hz
-	611U+no2U5x4eUlRvgYgs5AUK6ABmUyv9m8f0QbkKxw22fVVowZgyYPzHsv2eE/wPgBiQBNY+0D38
-	ehspRZS88wJabUNE5Ajw==;
+	List-Owner; bh=nNlca4mZnCFplbad9IEVm24mCAmYiB2fRaTxoCVISN8=; b=oy1DneqGJafrOQ
+	BTIjxkI4LbL1VW5MfYjEUA+uh1xsTVrhnRo6E5GBE8pjTQOEQFznJzOU7zzauIGQdG66cG9ExfSEy
+	rmdMpgTJdrPgDzxP2Sp2NbJ8cBoHwJ+sZso1fwxIzg+QbTJy2ebOH9bfpGFEmdt6ZG14B55fq9nw9
+	F+UnCh2ZBMhV3RgG/L14ducVaKywP0NTAlRlL5xjXNJYm5c93jqe7piQWoEGyoJf0hEqxT1syJtji
+	GM7ej4AfiYQBIPEhS0LoEZK/lk7CmZs2oSTKasSMQGUs5SPBrU4h9ZnXGLkOY70FTGo4ey0iEnSZ3
+	GS08Kr9px8IDYzYnswew==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ovoBD-000duQ-VX; Thu, 17 Nov 2022 23:20:24 +0000
-Received: from mail-qk1-x734.google.com ([2607:f8b0:4864:20::734])
+	id 1ovzFQ-003ZGN-F8; Fri, 18 Nov 2022 11:09:28 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ovoBB-000dtj-8o
-	for linux-um@lists.infradead.org; Thu, 17 Nov 2022 23:20:23 +0000
-Received: by mail-qk1-x734.google.com with SMTP id x21so2406274qkj.0
-        for <linux-um@lists.infradead.org>; Thu, 17 Nov 2022 15:20:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y0Zl62KafxDJ8AwrDahi1bqb4Xk/32bDlmDdXpQC/2I=;
-        b=McHst7l/f7KmgETncU4ax8Cz1+X0pDSSDz+NpOo85KKRbSTGF3eq2IAlrIRy/FELSJ
-         Y7C0SIlyu5mGQyhzPLIjsCXMOXUrzD5TZH+dJcbaF2LHrVuVcof8hyWOL3D9pZZx4wAD
-         8LINQRolzJh6QXumNwKV51jsDIdF9sMEo4+5s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Y0Zl62KafxDJ8AwrDahi1bqb4Xk/32bDlmDdXpQC/2I=;
-        b=Ae4X4Yq6HqHx9gVBtqqE059lycShAqCPY3eN/l+XZ4QA5811rLy/r+B+S+OSU0Cu0h
-         7fZ4wON1mFYT9uQQoi261XIABiSvBYqzdjyW4/7WdoihEZduWJXKO+TwPxoq7T0cdzzc
-         P3KUx5cRFkwQJ4UQ2/pka1uMSPxHh95Jerye7zilpWoaMjNzZYZkejzdKpDWk0OHMqIc
-         iOSwMpLsEOgCjz3zy3Z1fssu7RNsgKFrQ4lN+ddT9Msv5is+aZ5sE2h7s0j8pAxN+OKg
-         7sBMqLlQR+FBY6jVgWEd3EHvzQgipHwQvEx8nIuhpLN/izCLte8LDss0qj6O+ON/jkzk
-         HWRg==
-X-Gm-Message-State: ANoB5pmIELtcYy3NgOmP7XI6fcb68kKQt0riSmsu6CtkhhIUgzg1t3ht
-	+AXvwAt3cDPVs+q6IB4/IL+Jp26BcWS0hA==
-X-Google-Smtp-Source: AA0mqf59rEhRTemMYBkq58t1BDOQPSyTTb99LMiKqb6NzTEeI2twui5hm+Srm61nMpysL6Bj91IGpg==
-X-Received: by 2002:a05:620a:1134:b0:6d8:4bda:e9 with SMTP id p20-20020a05620a113400b006d84bda00e9mr3824115qkk.236.1668727219206;
-        Thu, 17 Nov 2022 15:20:19 -0800 (PST)
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com. [209.85.219.42])
-        by smtp.gmail.com with ESMTPSA id az20-20020a05620a171400b006ec771d8f89sm1345788qkb.112.2022.11.17.15.20.17
-        for <linux-um@lists.infradead.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Nov 2022 15:20:17 -0800 (PST)
-Received: by mail-qv1-f42.google.com with SMTP id u7so2259006qvn.13
-        for <linux-um@lists.infradead.org>; Thu, 17 Nov 2022 15:20:17 -0800 (PST)
-X-Received: by 2002:ad4:4101:0:b0:4b1:856b:4277 with SMTP id
- i1-20020ad44101000000b004b1856b4277mr4665856qvp.129.1668727216978; Thu, 17
- Nov 2022 15:20:16 -0800 (PST)
-MIME-Version: 1.0
-References: <20221116102659.70287-1-david@redhat.com> <20221116102659.70287-21-david@redhat.com>
- <CAHk-=wgtEwpR-rE_=cXzecHMZ+zgrx5zf9UfvH0w-mKgckn4=Q@mail.gmail.com> <202211171439.CDE720EAD@keescook>
-In-Reply-To: <202211171439.CDE720EAD@keescook>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 17 Nov 2022 15:20:01 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjykbz-4xVTWF7vkvGJnFoTSXNVeMzfsXaLnGm3CRd8rQ@mail.gmail.com>
-Message-ID: <CAHk-=wjykbz-4xVTWF7vkvGJnFoTSXNVeMzfsXaLnGm3CRd8rQ@mail.gmail.com>
+	id 1ovzFN-003ZEt-Vd; Fri, 18 Nov 2022 11:09:25 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=EfRO0ptxO3+ypU2KxCKexp96MUHxMRW8bunXh9MGsDQ=; b=j2fhWNOmh2ITESo1lzhfRgZXcy
+	Ww/+yE7B77lsEp9a5n4uehGvoEzq0/D6H+yNfg2imI7YtOyX0f7hBuGqmcLLVHk7Xoiz2DhCcr6Ox
+	Kyj24oVhndXBJUtnSu3HeY2mMmKgIgEYe+CgnUZx2ga615+T+GFz8I6+hMI7Htu6k0I+BMReJCS79
+	lAjXTWY+taWdToLN5Du3UIwPnfLSaBXSvfRVjW0tKz24opKqeYxBMCGY3c/C/3e3UyKkhijlvua8W
+	YSHKr8HDrN9+5aolNRPgkhdieUgbnls9Z9hPp8KrNiwdL9WqNuH3UC1ytxeh+awYd4oA+Hz9kLSlJ
+	IaR4uXQw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1ovzF5-001xdI-ON; Fri, 18 Nov 2022 11:09:08 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9BC4C300220;
+	Fri, 18 Nov 2022 12:09:02 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 7C5AF205A9605; Fri, 18 Nov 2022 12:09:02 +0100 (CET)
+Date: Fri, 18 Nov 2022 12:09:02 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
+	x86@kernel.org, linux-alpha@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+	linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+	etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	linux-samsung-soc@vger.kernel.org, linux-rdma@vger.kernel.org,
+	linux-media@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>,
+	Peter Xu <peterx@redhat.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Andrea Arcangeli <aarcange@redhat.com>,
+	Hugh Dickins <hughd@google.com>, Nadav Amit <namit@vmware.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Matthew Wilcox <willy@infradead.org>,
+	Mike Kravetz <mike.kravetz@oracle.com>,
+	Muchun Song <songmuchun@bytedance.com>,
+	Shuah Khan <shuah@kernel.org>, Lucas Stach <l.stach@pengutronix.de>,
+	David Airlie <airlied@gmail.com>, Oded Gabbay <ogabbay@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Christoph Hellwig <hch@infradead.org>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Matt Turner <mattst88@gmail.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"David S. Miller" <davem@davemloft.net>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Eric Biederman <ebiederm@xmission.com>,
+	Kees Cook <keescook@chromium.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+	Kentaro Takeda <takedakn@nttdata.co.jp>,
+	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+	"Serge E. Hallyn" <serge@hallyn.com>
 Subject: Re: [PATCH mm-unstable v1 20/20] mm: rename FOLL_FORCE to FOLL_PTRACE
-To: Kees Cook <keescook@chromium.org>
-Cc: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org, x86@kernel.org, 
-	linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org, 
-	linux-um@lists.infradead.org, etnaviv@lists.freedesktop.org, 
-	dri-devel@lists.freedesktop.org, linux-samsung-soc@vger.kernel.org, 
-	linux-rdma@vger.kernel.org, linux-media@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-perf-users@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, 
-	Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Andrea Arcangeli <aarcange@redhat.com>, 
-	Hugh Dickins <hughd@google.com>, Nadav Amit <namit@vmware.com>, Vlastimil Babka <vbabka@suse.cz>, 
-	Matthew Wilcox <willy@infradead.org>, Mike Kravetz <mike.kravetz@oracle.com>, 
-	Muchun Song <songmuchun@bytedance.com>, Shuah Khan <shuah@kernel.org>, 
-	Lucas Stach <l.stach@pengutronix.de>, David Airlie <airlied@gmail.com>, 
-	Oded Gabbay <ogabbay@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Christoph Hellwig <hch@infradead.org>, Alex Williamson <alex.williamson@redhat.com>, 
-	Oleg Nesterov <oleg@redhat.com>, Richard Henderson <richard.henderson@linaro.org>, 
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	"David S. Miller" <davem@davemloft.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	"H. Peter Anvin" <hpa@zytor.com>, Richard Weinberger <richard@nod.at>, 
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
-	Eric Biederman <ebiederm@xmission.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Peter Zijlstra <peterz@infradead.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, Kentaro Takeda <takedakn@nttdata.co.jp>, 
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, Paul Moore <paul@paul-moore.com>, 
-	James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221117_152021_734497_A1F76812 
-X-CRM114-Status: GOOD (  14.74  )
+Message-ID: <Y3dnzgwJpjTQXI9y@hirez.programming.kicks-ass.net>
+References: <20221116102659.70287-1-david@redhat.com>
+ <20221116102659.70287-21-david@redhat.com>
+ <CAHk-=wgtEwpR-rE_=cXzecHMZ+zgrx5zf9UfvH0w-mKgckn4=Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgtEwpR-rE_=cXzecHMZ+zgrx5zf9UfvH0w-mKgckn4=Q@mail.gmail.com>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -125,27 +127,20 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, Nov 17, 2022 at 2:58 PM Kees Cook <keescook@chromium.org> wrote:
->
-> Oh, er, why does get_arg_page() even need FOLL_FORCE? This is writing the
-> new stack contents to the nascent brpm->vma, which was newly allocated
-> with VM_STACK_FLAGS, which an arch can override, but they all appear to include
-> VM_WRITE | VM_MAYWRITE.
+On Wed, Nov 16, 2022 at 10:16:34AM -0800, Linus Torvalds wrote:
+> Following the history of it is a big of a mess, because there's a
+> number of renamings and re-organizations, but it seems to go back to
+> 2007 and commit b6a2fea39318 ("mm: variable length argument support").
 
-Yeah, it does seem entirely superfluous.
+I went back and read parts of the discussions with Ollie, and the
+.force=1 thing just magically appeared one day when we were sending
+work-in-progress patches back and forth without mention of where it came
+from :-/
 
-It's been there since the very beginning (although in that original
-commit b6a2fea39318 it was there as a '1' to the 'force' argument to
-get_user_pages()).
+And I certainly can't remember now..
 
-I *think* it can be just removed. But as long as it exists, it should
-most definitely not be renamed to FOLL_PTRACE.
-
-There's a slight worry that it currently hides some other setup issue
-that makes it matter, since it's been that way so long, but I can't
-see what it is.
-
-             Linus
+Looking at it now, I have the same reaction as both you and Kees had, it
+seems entirely superflous. So I'm all for trying to remove it.
 
 _______________________________________________
 linux-um mailing list
