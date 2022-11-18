@@ -4,67 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 273A0C433FE
-	for <linux-um@archiver.kernel.org>; Fri, 18 Nov 2022 16:20:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 640A2C4332F
+	for <linux-um@archiver.kernel.org>; Fri, 18 Nov 2022 16:48:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wLGBtXihB9nkAvL8JCtntrW0jokdb1YHjCZ+I6aIsUs=; b=QYHzbfyiyzEkcm
-	VHHufrjOHPe3LGcyB3TXZpIhhGnDnviAhtAkUZrz/rdEWZZIEGkGwqYDhWzGgs5KCxQ1xebQKW/hW
-	Ssk295hHd+S+d/k37rwhbfpm3y97ADgX0PzhwJ1W5IBypVQIbDMwokqNbyJIOjNoRUA77q9AdzCzH
-	UJQS7N5ZjRyM1T8ibhnaCYiu4HpqEKoa3hl64NHUafnsxzp6ljzo5dXxgJBnu9V0XLOsRdV0QHdOO
-	nHweApQ7/cK7W5uz8nqcaGEbXinazXoztobgDu8yD7hVs5jmY4I6Cd+RUHn610n/AlxhwBjr/4lCB
-	Iaqjo+5fUQsw/CpfI0pw==;
+	List-Owner; bh=ZdvIr3bBLNxYrErD6Hwiy30XxK6C3XPDPb5Gm3Hscxk=; b=Uu/YrlC4Q7UEqN
+	pvlLQbQpFRduffcFpoCXfOVWlCf1fKoA3yH1DtlchxaO/kCKuTic8m/ZP+LtJaaC+oBceORnwrfWc
+	hBg/85LDTAMjhSkqxun8ry5zUBgtsrlZkZzMTh+owF/KPVX8/3D4ju7ZeujsxPNqFByDHn9y/IWP4
+	6O0Um72s2LMtmsy6xC9GbdK5gzWUTWGhwSSI4dIkLE1ynvkIpPNs1M3BoJdeN2u6xkeXRntw/gvWE
+	UzUXZDfXegCKqx6baf+JyaXIQtmJv980+gw2V2xxqrQF8ialc0T/17j5CJRNdoYauEwlgYyCh1U+n
+	wYu3koxT1qyrKfFybkjQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ow46L-005FCB-LF; Fri, 18 Nov 2022 16:20:25 +0000
-Received: from smtp-out2.suse.de ([195.135.220.29])
+	id 1ow4Xc-005UW1-Vm; Fri, 18 Nov 2022 16:48:37 +0000
+Received: from smtp-out1.suse.de ([195.135.220.28])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1ow468-005F3A-Dg; Fri, 18 Nov 2022 16:20:13 +0000
+	id 1ow4Uh-005SUv-DI; Fri, 18 Nov 2022 16:45:36 +0000
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id AE6541FD2A;
-	Fri, 18 Nov 2022 16:20:07 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B457722809;
+	Fri, 18 Nov 2022 16:45:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1668788407; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1668789932; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ZdCAdBuUfE3Rqc7NKln9hVuWsUdVVMVjbpiUee2vmvc=;
-	b=gFn628LRme6mgJaZwZXeXxqjVHZ1dhRwig/bm8/PJr2zPCzCtNxBMW9LTId3gWUCMDCXyK
-	TtXWbFh2gTikA3YMbaaroxv4l1XPLUH9rONQd0Dr+UuiMwnQoW4bEdHtBzAdzRgdfTZpOo
-	z5sm6N12GAAOBYVJKj61R24kx7azRZk=
+	bh=gGWCBwR6W7N/T/oKVxq15JaXduGL74ybELQMLEOROjQ=;
+	b=oTTvOF9em1RBHrcDz3sPtZD55HB28JQKz0rq8O6fqbEdz69a/AXJF4jT92zC2TnMfoTP5o
+	N+/92zbPBa11XH4uj3j1PVuX4IFT5iMf+cuDaOPUiGYk17AhOFewCKsW2Vloee6rUH2cev
+	ywRRIq+dF6sPyizq6eVC4qLT8N+v1Fc=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1668788407;
+	s=susede2_ed25519; t=1668789932;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ZdCAdBuUfE3Rqc7NKln9hVuWsUdVVMVjbpiUee2vmvc=;
-	b=TNP3u8Xx8uZo+sUiWVVILNS2hk5mwr0qssvrZKBXcmmjqp8qeTg4rudZW0WqfwYAgYNMk2
-	poai8KIFEEpddcDw==
+	bh=gGWCBwR6W7N/T/oKVxq15JaXduGL74ybELQMLEOROjQ=;
+	b=w1a8SK5GtUV98VIRjCKPQTv/uTPpGl8AZCdCXalMKOScuLDWEelI6GTSk7XWYEsOviak8d
+	9ZPPVSaQ1GZLctAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 10E861345B;
-	Fri, 18 Nov 2022 16:20:07 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2CE531345B;
+	Fri, 18 Nov 2022 16:45:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id uA9uA7ewd2PXAwAAMHmgww
-	(envelope-from <vbabka@suse.cz>); Fri, 18 Nov 2022 16:20:07 +0000
-Message-ID: <5104fc7b-7b38-652a-9a3f-6116e48d4129@suse.cz>
-Date: Fri, 18 Nov 2022 17:20:06 +0100
+	id /+1SCqy2d2MoEAAAMHmgww
+	(envelope-from <vbabka@suse.cz>); Fri, 18 Nov 2022 16:45:32 +0000
+Message-ID: <f427422c-9af3-dc0a-dcc3-2a1114eb77ea@suse.cz>
+Date: Fri, 18 Nov 2022 17:45:31 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.4.2
-Subject: Re: [PATCH mm-unstable v1 01/20] selftests/vm: anon_cow: prepare for
- non-anonymous COW tests
+Subject: Re: [PATCH mm-unstable v1 04/20] mm: add early FAULT_FLAG_UNSHARE
+ consistency checks
 Content-Language: en-US
 To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
 Cc: x86@kernel.org, linux-alpha@vger.kernel.org,
@@ -89,12 +89,12 @@ Cc: x86@kernel.org, linux-alpha@vger.kernel.org,
  Christoph Hellwig <hch@infradead.org>,
  Alex Williamson <alex.williamson@redhat.com>
 References: <20221116102659.70287-1-david@redhat.com>
- <20221116102659.70287-2-david@redhat.com>
+ <20221116102659.70287-5-david@redhat.com>
 From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20221116102659.70287-2-david@redhat.com>
+In-Reply-To: <20221116102659.70287-5-david@redhat.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221118_082012_635234_36EF59AB 
-X-CRM114-Status: GOOD (  10.45  )
+X-CRM114-CacheID: sfid-20221118_084535_632392_BF60956D 
+X-CRM114-Status: GOOD (  14.86  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,16 +112,24 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On 11/16/22 11:26, David Hildenbrand wrote:
-> Originally, the plan was to have a separate tests for testing COW of
-> non-anonymous (e.g., shared zeropage) pages.
+> For now, FAULT_FLAG_UNSHARE only applies to anonymous pages, which
+> implies a COW mapping. Let's hide FAULT_FLAG_UNSHARE early if we're not
+> dealing with a COW mapping, such that we treat it like a read fault as
+> documented and don't have to worry about the flag throughout all fault
+> handlers.
 > 
-> Turns out, that we'd need a lot of similar functionality and that there
-> isn't a really good reason to separate it. So let's prepare for non-anon
-> tests by renaming to "cow".
+> While at it, centralize the check for mutual exclusion of
+> FAULT_FLAG_UNSHARE and FAULT_FLAG_WRITE and just drop the check that
+> either flag is set in the WP handler.
 > 
 > Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  mm/huge_memory.c |  3 ---
+>  mm/hugetlb.c     |  5 -----
+>  mm/memory.c      | 23 ++++++++++++++++++++---
+>  3 files changed, 20 insertions(+), 11 deletions(-)
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
 
 _______________________________________________
