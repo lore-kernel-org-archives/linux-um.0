@@ -4,56 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B549CC433FE
-	for <linux-um@archiver.kernel.org>; Tue, 22 Nov 2022 10:11:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44EC7C4332F
+	for <linux-um@archiver.kernel.org>; Tue, 22 Nov 2022 10:11:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=E1zLsdqYqpDaSP9/hgP04MeXltbn+JTexNrFkddBsh8=; b=i9pbQbbEQO/ld/
-	JKUluBORXbJsRic15HapFhDV8lVVjK3z9dLdJSBDR17Np+tDF2YBfVQ/9btL4OMJlMU7aDR/qyxbt
-	CC0Lveio9pOIbO/qaDJiEM9/Yd8HD/0TYMWrHQ2/+CqqrK0WEuVxqRKJwH3LMdVM3gs4tr+AHFzju
-	3vKmhLxikOEP7Rso7JzTVHit+sjWfY2zJCJxZ5I4xqw1RwETcujaZwdhWwsS1ecQLh/Y0JXKpu2RS
-	swZbMdEQ4lK0Loi+72LXODAZ/cxFlRcxdwIqm+p6bPSqntkBp4YjIwej0bAOOktpdK5Q4SljlMSHh
-	SaSC+aP3QdvLGvww2JLg==;
+	List-Owner; bh=lxN+4gdNrJ1UBFwPlgMDFswgviauMXXJAfbU1iBPqlI=; b=tGUSF77CO/yNU2
+	SzLxW6xEi5ndC8XAC1lT1x4gvfeqm0L5NEP6AmiG49qIJrZAlFCi6fCHUI9EhgbShEAta4413nnHB
+	LV2EfS4IxdpzOLDxNtOXO6hcFTM4xuwk7DOPQt2/apvbS9DYWDE2b09Ds0Rw1dAa8keX8mRyjI0NC
+	sLqsHHpVJ/vJoplejd3h8Ous3p7cat5oth+wplAknw+QnUMuBbwhM0xB+dWunk4CdG/aX2KjZY+qn
+	WDBb5cDsW+PhRBVIJO/VFhVkpG9JoiinZuLgNCFp5EueL+m34lkWq/idtYX9E1vUSGPfWeWkqWRrG
+	VWeWaBt4dzxJWh3lIoFw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxQFG-007fto-My; Tue, 22 Nov 2022 10:11:14 +0000
+	id 1oxQFI-007fvO-VT; Tue, 22 Nov 2022 10:11:17 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxQF0-007feS-Mn
-	for linux-um@lists.infradead.org; Tue, 22 Nov 2022 10:11:03 +0000
+	id 1oxQF1-007fe8-Cz
+	for linux-um@lists.infradead.org; Tue, 22 Nov 2022 10:11:05 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Content-Type:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=L5lwHk0HZHzNpW+yWG8h7bvuqrEFplbPaGqnoi6nvOE=;
-	t=1669111858; x=1670321458; b=u3izfO0PVm7FlXqk/kTl7hu+jTXWFpAeBIfCEAeVZ+hqyyk
-	WJFO7LJwE55oPnytDDKv45fGkn9EaAHenUt0snVDJJAuAy4gL2726X5UegS6DWoiMkwd/AS2gHi3l
-	k9sh3nlq9rZT2D/RQfW6QRKEk1tFJNiN+CD+YoUULRfVXw4pcb1AAAkxKU6Cu05Z2/a/cDYxfLA03
-	vMlDT6CLTJWAUzPH6x4Tn3Pm0Q0w7RJ46ciXySHV3JT8ecCHSGOR5HUdAK3/ZJI65vin31ZfAPrWu
-	DLQvWy2Mm7mdlP2iHFtLdokHkDrSXmRgUNfcPpvVHS4zqrArkcxUHgCLTqturVRw==;
+	Resent-Cc:Resent-Message-ID; bh=KjpcFBCKEm7c7UxV02u5j7zVfA4fomToklUtlIPzpis=;
+	t=1669111856; x=1670321456; b=GyvxCbnvgW7YHJ8mMMsNwvruzThXJXrH0qrp1Mvg2abqM6y
+	hAe7pkhg4DGoJ+9kmMijp8RASCh2OSJJ81VOjXODH1eHP0hFsxYL2XoWLhtD9m4T4HriCM/jRdCPx
+	JgLxyKF+QBz5SKudEdrid4hjcn8YstjUkrSylWa8wL6RtdrSXu2ccuE39rsLA8xiU15BHe2/3fzWf
+	GzCkyqtYwCQm1gMaeyt2skVYo3Ld5FraCx721vTGR1Mz1XqmdjHbm39iq1+KvYdlk02BQNe0u0NcD
+	wR4mxXnoZBe4YgtFigxWOMu8V1qTEBOVfCMqlx+b8GZz1UVItLNeaWAwIJ6+4sig==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.96)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1oxQEs-006IGn-2V;
+	id 1oxQEs-006IGn-0R;
 	Tue, 22 Nov 2022 11:10:50 +0100
 From: benjamin@sipsolutions.net
 To: linux-um@lists.infradead.org
 Cc: Benjamin Berg <benjamin@sipsolutions.net>
-Subject: [PATCH v2 21/28] um: Use struct uml_pt_regs for copy_context_skas0
-Date: Tue, 22 Nov 2022 11:07:52 +0100
-Message-Id: <20221122100759.208290-22-benjamin@sipsolutions.net>
+Subject: [PATCH v2 20/28] um: Move faultinfo extraction into userspace routine
+Date: Tue, 22 Nov 2022 11:07:51 +0100
+Message-Id: <20221122100759.208290-21-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221122100759.208290-1-benjamin@sipsolutions.net>
 References: <20221122100759.208290-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221122_021058_907262_20FC1A2B 
-X-CRM114-Status: UNSURE (   9.95  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20221122_021059_571510_2631E284 
+X-CRM114-Status: GOOD (  11.93  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,68 +71,57 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Benjamin Berg <benjamin@sipsolutions.net>
 
-This is done as preparation for seccomp support as we have no helper to
-copy the registers from a plain array.
+The segv handler is called slightly differently depending on whether
+PTRACE_FULL_FAULTINFO is set or not (32bit vs. 64bit). The only
+difference is that we don't try to pass the registers and instruction
+pointer to the segv handler.
+
+It would be good to either document or remove the difference, but I do
+not know why this difference exists.
 
 Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
 ---
- arch/um/os-Linux/skas/process.c | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
+ arch/um/os-Linux/skas/process.c | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
 diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 1bc7e5aa2fc1..cdbab5a864e4 100644
+index 1e1c378588ba..1bc7e5aa2fc1 100644
 --- a/arch/um/os-Linux/skas/process.c
 +++ b/arch/um/os-Linux/skas/process.c
-@@ -458,22 +458,21 @@ void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
+@@ -171,12 +171,6 @@ static void get_skas_faultinfo(int pid, struct faultinfo *fi, unsigned long *aux
  	}
  }
  
--static unsigned long thread_regs[MAX_REG_NR];
--static unsigned long thread_fp_regs[FP_SIZE];
-+static struct uml_pt_regs thread_regs;
- 
- static int __init init_thread_regs(void)
+-static void handle_segv(int pid, struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
+-{
+-	get_skas_faultinfo(pid, &regs->faultinfo, aux_fp_regs);
+-	segv(regs->faultinfo, 0, 1, NULL);
+-}
+-
+ static void handle_trap(int pid, struct uml_pt_regs *regs)
  {
--	get_safe_registers(thread_regs, thread_fp_regs);
-+	get_safe_registers(thread_regs.gp, thread_regs.fp);
- 	/* Set parent's instruction pointer to start of clone-stub */
--	thread_regs[REGS_IP_INDEX] = STUB_CODE +
--				(unsigned long) stub_clone_handler -
--				(unsigned long) __syscall_stub_start;
-+	thread_regs.gp[REGS_IP_INDEX] = STUB_CODE +
-+					(unsigned long)stub_clone_handler -
-+					(unsigned long)__syscall_stub_start;
+ 	if ((UPT_IP(regs) >= STUB_START) && (UPT_IP(regs) < STUB_END))
+@@ -422,13 +416,15 @@ void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
  
- 	/* syscall data as a temporary stack area (top half). */
--	thread_regs[REGS_SP_INDEX] = STUB_DATA +
--				     offsetof(struct stub_data, syscall_data) +
--				     sizeof(((struct stub_data *) 0)->syscall_data) -
--				     sizeof(void *);
-+	thread_regs.gp[REGS_SP_INDEX] = STUB_DATA +
-+					offsetof(struct stub_data, syscall_data) +
-+					sizeof(((struct stub_data *)0)->syscall_data) -
-+					sizeof(void *);
- 	return 0;
- }
- 
-@@ -502,7 +501,7 @@ int copy_context_skas0(struct mm_id *id, struct mm_id *from)
- 		.child_err = -ESRCH,
- 	});
- 
--	err = ptrace_setregs(from->u.pid, thread_regs);
-+	err = ptrace_setregs(from->u.pid, thread_regs.gp);
- 	if (err < 0) {
- 		err = -errno;
- 		printk(UM_KERN_ERR "%s : PTRACE_SETREGS failed, pid = %d, errno = %d\n",
-@@ -510,7 +509,7 @@ int copy_context_skas0(struct mm_id *id, struct mm_id *from)
- 		return err;
- 	}
- 
--	err = put_fp_registers(from->u.pid, thread_fp_regs);
-+	err = put_fp_registers(from->u.pid, thread_regs.fp);
- 	if (err < 0) {
- 		printk(UM_KERN_ERR "%s : put_fp_registers failed, pid = %d, err = %d\n",
- 		       __func__, from->u.pid, err);
+ 			switch (sig) {
+ 			case SIGSEGV:
+-				if (PTRACE_FULL_FAULTINFO) {
+-					get_skas_faultinfo(pid,
+-							   &regs->faultinfo, aux_fp_regs);
++				get_skas_faultinfo(pid,
++						   &regs->faultinfo, aux_fp_regs);
++
++				if (PTRACE_FULL_FAULTINFO)
+ 					(*sig_info[SIGSEGV])(SIGSEGV, (struct siginfo *)&si,
+ 							     regs);
+-				}
+-				else handle_segv(pid, regs, aux_fp_regs);
++				else
++					segv(regs->faultinfo, 0, 1, NULL);
++
+ 				break;
+ 			case SIGTRAP + 0x80:
+ 				handle_trap(pid, regs);
 -- 
 2.38.1
 
