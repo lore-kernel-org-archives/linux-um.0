@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5768CC4332F
-	for <linux-um@archiver.kernel.org>; Tue, 22 Nov 2022 10:27:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E3BDC433FE
+	for <linux-um@archiver.kernel.org>; Tue, 22 Nov 2022 10:27:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=r1iLqhhTkKRzqdddibSKMWzqNEU9q3SR+9QcTeHSOW8=; b=qqwyI0pVtZEQoi
-	CPK2lv/XEPCw/lHfyU94bxXvTFE4EWURGBw8MQfBEt4iDCjOmt3FkBUPhL+6JVMOB8glVaxnpZSAb
-	acUUbUCHqdLscPBhWysTFL7zJh/+piTs+p2rN5sVXen8TKHRqgb4YIhLUwLYvubooOzMJMNN+dlXD
-	2CaxPl3oH3hITiYwkvnbWABHRojaYSBkMlulsux9OFSgLPkWtHmJsFx31zQhOa6Ul6pweSrvd1d6v
-	k0uc6yJ/WrQNjjJOC0AjQM/uXX050C0lHY9zop5U+R5S3cwcNchdfNMc2hAzYy1Ca30f/3833DING
-	hokOPgSsUevoNIxF/oNQ==;
+	List-Owner; bh=+6rIR8tNlefrM0y1PKLpaD8n8KzfkaI0EDEqqlrNQDA=; b=Q5J2NoV4+LsPKs
+	Q4+reFkv/RFTJ4qeIRf7KziQ2qTNQskm2zHuhjuYpmebf17Pu1r5FssZyycvyDxlu6CJSqY9+Fey6
+	GSdWS0pM++wojKuaR84fw4Y/bEzBOO2gD9DTVUhwoc3yIiAZNwlT6k8Nb0mavku9yGxw9XoXGquLX
+	X8rKE4KQLIJadh2E+4IypPlMxuFKUMiGNwtfcc5X6exxDP42+8iZumsxIEqq1IbJh6dW4jvm+1I9p
+	xlFoJgZZhVY3YFgY+mkVH+XZHJj710F/9w/z9AYnPCyj7UWVyI94hGaYrfSsj9bItCfdkl+BY9Bqi
+	a7GIHDPSYc7qtqVCkXtA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxQUU-007nwX-Ft; Tue, 22 Nov 2022 10:26:58 +0000
+	id 1oxQUV-007nxM-Sx; Tue, 22 Nov 2022 10:26:59 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxQTL-007nM8-Oc
-	for linux-um@bombadil.infradead.org; Tue, 22 Nov 2022 10:25:47 +0000
+	id 1oxQTM-007nM8-LC
+	for linux-um@bombadil.infradead.org; Tue, 22 Nov 2022 10:25:48 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
 	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=5P81qnzTcChuIaNhaa4ZlDz9aT2og1d1jl4cX4zqzdc=; b=lqrcOMk3PBIc08lNxFiTRWcRQH
-	9y8mSDbQ4aVlHmkEBEcf7NK5gEaZ1cJ2DavaXrvGy1p8RxazDnIyPpqQgr/bEKDeV076pj9RfWX54
-	ld6byrcSb6bzgg1v4UgTtC4l23CqpT05DlCP8eZQH1uravDwTmzRuzdikT/M99TLB3Yk13hMQ9iCD
-	sIoHKrRQAV7tuK7E8iIG1uXpgcuU9MjCjoL8XCkjMbocnXQVEyZB6/QJRrPLgI5qn/r3+W1Zdw5dE
-	4PEeiFHBC0/sYSlZQ+rsKT1qPZ3GTDUai7L/NKPUDcS6aHHWqjd0c4yDmX8q+7vX2zfgRSkKwu9cX
-	hOaa9J/g==;
+	bh=xGAXwswBRGmb1xcjgs4zTcGm8Ouw9gDgCNNLh9CPQ6c=; b=BfdRkhb/DmvO3TBF9wPPn8Z3Ad
+	/gouO0DwRje6Q8ZH5f6SDWN4aFn1cDQ1P8vNsofXeWndgcbQTXKGJXEjcDGflfjbU3L/LkaGYJggc
+	Iv2QpPWJKkscFjC0SB5pYQBjrOgL/D5gpfUBqVyfTj7gi0PGXnH8F0cHorYT0aiWrye8tl/+KZH7G
+	ReSGVCPnGERr6OIsJOIm+CH9WVyzHPYzWbogTpxSOiwkSrCqrjzw27+WMQCpiBxOT6lTfKsJC6aUH
+	VrIxmn82LrFpdr7SUrJLN7iR2Snq6cjdbHRR0XYA5pNhNiniLin9amSPvFYVpqxlYC5ZHdCDCvfNc
+	2lVFrMGQ==;
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2] helo=sipsolutions.net)
 	by desiato.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxQF1-003P1t-8D
+	id 1oxQF1-003P1q-BY
 	for linux-um@lists.infradead.org; Tue, 22 Nov 2022 10:11:06 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Content-Type:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=5P81qnzTcChuIaNhaa4ZlDz9aT2og1d1jl4cX4zqzdc=;
-	t=1669111858; x=1670321458; b=r4u2oecFtJ7uBqnvZfGiStlLCH72c+SlX3QjbDmVN3OCjBc
-	RE5BAiDFj83EX1RTbSfouYEUBKlm3oLXH9ni2NURJpOwL49Eewc2rs4Styn0KAepae16FlpUhg7WZ
-	xRv5MAT7OJ6xA7QgoaQy955Cl0SB/qDZ2cBCLFMtVlmhLO1KqlnltPWwWBLkKCQJhCoC5gB1XJsN0
-	rlrQBp4bFIRtpAulmRd7KVpvBZqvW4N/3Xjtawd1RtqYvhhQM/MeZiSEXt7C5UyHZZrpkWZJSAgh1
-	CSjU5m+9qArhzzM2pSawZ6eOz/VYBer90jogtrXkVri+YW2/FhgZBOz5B+iPuagQ==;
+	Resent-Cc:Resent-Message-ID; bh=xGAXwswBRGmb1xcjgs4zTcGm8Ouw9gDgCNNLh9CPQ6c=;
+	t=1669111858; x=1670321458; b=pOjdNKAJxuHKGRgMMGFy6d76m/eEbZEAMi3AGH1LRflDJ/O
+	wwzF4GOQpeE2DPIqoSgaxNJkmC/pJtXGKLP2xjKo3OA4zTEI/g5RIDR/1eQkSuIpUrtQ6PHCXVAYV
+	bWzwTFSkbSgFLPOW3Wh+scHX7V0eqBikxe0IuO/JmaHQWP1TOip5sD7kMVZBRk91CBoACTtaY39OQ
+	JQT3Kkd7bkScDZhw8LXTyWebPRjT7S8taG7ZpOUZ2EKvhb5dFC+umOZYQ4hZvAVAyAvPDLe52KDYS
+	RtCQu6516nq10m9uEZtSnthfIcdmhevRpMH3UtOncyTFLZMh6Jgyjx4vXY4Cp2Hg==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.96)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1oxQEn-006IGn-32;
-	Tue, 22 Nov 2022 11:10:46 +0100
+	id 1oxQEm-006IGn-2t;
+	Tue, 22 Nov 2022 11:10:44 +0100
 From: benjamin@sipsolutions.net
 To: linux-um@lists.infradead.org
 Cc: Benjamin Berg <benjamin@sipsolutions.net>
-Subject: [PATCH v2 08/28] um: Reap winch thread if it fails
-Date: Tue, 22 Nov 2022 11:07:39 +0100
-Message-Id: <20221122100759.208290-9-benjamin@sipsolutions.net>
+Subject: [PATCH v2 03/28] um: Drop support for hosts without SYSEMU_SINGLESTEP support
+Date: Tue, 22 Nov 2022 11:07:34 +0100
+Message-Id: <20221122100759.208290-4-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221122100759.208290-1-benjamin@sipsolutions.net>
 References: <20221122100759.208290-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221122_101101_152800_4262880D 
-X-CRM114-Status: GOOD (  13.95  )
+X-CRM114-CacheID: sfid-20221122_101100_483991_60B0789E 
+X-CRM114-Status: GOOD (  30.91  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,102 +85,517 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Benjamin Berg <benjamin@sipsolutions.net>
 
-When the winch thread runs into an error condition, it would exit(1) and
-never be reaped until shutdown time. Change this to write a command byte
-which causes the driver to kill it, therefore reaping the child.
+These features have existed since Linux 2.6.14 and can be considered
+widely available at this point. Also drop the backward compatibility
+code for PTRACE_SETOPTIONS.
 
 Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
----
- arch/um/drivers/chan_user.c | 16 +++++++++++-----
- arch/um/drivers/line.c      | 13 ++++++++-----
- 2 files changed, 19 insertions(+), 10 deletions(-)
 
-diff --git a/arch/um/drivers/chan_user.c b/arch/um/drivers/chan_user.c
-index c2b83cb99aae..ed7cc830b3e7 100644
---- a/arch/um/drivers/chan_user.c
-+++ b/arch/um/drivers/chan_user.c
-@@ -141,7 +141,7 @@ struct winch_data {
- 	int pipe_fd;
- };
+----
+
+v2:
+ * Continue to define PTRACE_SYSEMU_SINGLESTEP as glibc only added it in
+   version 2.27.
+---
+ arch/um/include/asm/processor-generic.h |  1 -
+ arch/um/include/shared/kern_util.h      |  3 +-
+ arch/um/include/shared/ptrace_user.h    | 41 ---------------
+ arch/um/kernel/process.c                | 12 +----
+ arch/um/kernel/ptrace.c                 |  2 -
+ arch/um/kernel/signal.c                 | 12 -----
+ arch/um/os-Linux/skas/process.c         | 60 ++++-----------------
+ arch/um/os-Linux/start_up.c             | 70 +++----------------------
+ arch/x86/um/ptrace_32.c                 | 24 ---------
+ arch/x86/um/ptrace_64.c                 | 26 ---------
+ arch/x86/um/shared/sysdep/ptrace_32.h   |  4 --
+ arch/x86/um/shared/sysdep/ptrace_user.h | 12 ++---
+ 12 files changed, 24 insertions(+), 243 deletions(-)
+
+diff --git a/arch/um/include/asm/processor-generic.h b/arch/um/include/asm/processor-generic.h
+index d0fc1862da95..db60a89911d5 100644
+--- a/arch/um/include/asm/processor-generic.h
++++ b/arch/um/include/asm/processor-generic.h
+@@ -22,7 +22,6 @@ struct mm_struct;
+ struct thread_struct {
+ 	struct pt_regs regs;
+ 	struct pt_regs *segv_regs;
+-	int singlestep_syscall;
+ 	void *fault_addr;
+ 	jmp_buf *fault_catcher;
+ 	struct task_struct *prev_sched;
+diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
+index d8b8b4f07e42..11b4f3d7c18a 100644
+--- a/arch/um/include/shared/kern_util.h
++++ b/arch/um/include/shared/kern_util.h
+@@ -34,7 +34,6 @@ extern int handle_page_fault(unsigned long address, unsigned long ip,
  
--static int winch_thread(void *arg)
-+static __noreturn int winch_thread(void *arg)
+ extern unsigned int do_IRQ(int irq, struct uml_pt_regs *regs);
+ extern void initial_thread_cb(void (*proc)(void *), void *arg);
+-extern int is_syscall(unsigned long addr);
+ 
+ extern void timer_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
+ 
+@@ -58,7 +57,7 @@ extern char *uml_strdup(const char *string);
+ extern unsigned long to_irq_stack(unsigned long *mask_out);
+ extern unsigned long from_irq_stack(int nested);
+ 
+-extern int singlestepping(void *t);
++extern int singlestepping(void);
+ 
+ extern void segv_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
+ extern void bus_handler(int sig, struct siginfo *si, struct uml_pt_regs *regs);
+diff --git a/arch/um/include/shared/ptrace_user.h b/arch/um/include/shared/ptrace_user.h
+index 95455e8996e7..8a705d8f96ce 100644
+--- a/arch/um/include/shared/ptrace_user.h
++++ b/arch/um/include/shared/ptrace_user.h
+@@ -12,45 +12,4 @@
+ extern int ptrace_getregs(long pid, unsigned long *regs_out);
+ extern int ptrace_setregs(long pid, unsigned long *regs_in);
+ 
+-/* syscall emulation path in ptrace */
+-
+-#ifndef PTRACE_SYSEMU
+-#define PTRACE_SYSEMU 31
+-#endif
+-#ifndef PTRACE_SYSEMU_SINGLESTEP
+-#define PTRACE_SYSEMU_SINGLESTEP 32
+-#endif
+-
+-/* On architectures, that started to support PTRACE_O_TRACESYSGOOD
+- * in linux 2.4, there are two different definitions of
+- * PTRACE_SETOPTIONS: linux 2.4 uses 21 while linux 2.6 uses 0x4200.
+- * For binary compatibility, 2.6 also supports the old "21", named
+- * PTRACE_OLDSETOPTION. On these architectures, UML always must use
+- * "21", to ensure the kernel runs on 2.4 and 2.6 host without
+- * recompilation. So, we use PTRACE_OLDSETOPTIONS in UML.
+- * We also want to be able to build the kernel on 2.4, which doesn't
+- * have PTRACE_OLDSETOPTIONS. So, if it is missing, we declare
+- * PTRACE_OLDSETOPTIONS to be the same as PTRACE_SETOPTIONS.
+- *
+- * On architectures, that start to support PTRACE_O_TRACESYSGOOD on
+- * linux 2.6, PTRACE_OLDSETOPTIONS never is defined, and also isn't
+- * supported by the host kernel. In that case, our trick lets us use
+- * the new 0x4200 with the name PTRACE_OLDSETOPTIONS.
+- */
+-#ifndef PTRACE_OLDSETOPTIONS
+-#define PTRACE_OLDSETOPTIONS PTRACE_SETOPTIONS
+-#endif
+-
+-void set_using_sysemu(int value);
+-int get_using_sysemu(void);
+-extern int sysemu_supported;
+-
+-#define SELECT_PTRACE_OPERATION(sysemu_mode, singlestep_mode) \
+-	(((int[3][3] ) { \
+-		{ PTRACE_SYSCALL, PTRACE_SYSCALL, PTRACE_SINGLESTEP }, \
+-		{ PTRACE_SYSEMU, PTRACE_SYSEMU, PTRACE_SINGLESTEP }, \
+-		{ PTRACE_SYSEMU, PTRACE_SYSEMU_SINGLESTEP, \
+-		  PTRACE_SYSEMU_SINGLESTEP } }) \
+-		[sysemu_mode][singlestep_mode])
+-
+ #endif
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index 80b90b1276a1..1cc1eab64e24 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -332,17 +332,9 @@ int __init make_proc_sysemu(void)
+ 
+ late_initcall(make_proc_sysemu);
+ 
+-int singlestepping(void * t)
++int singlestepping(void)
  {
- 	struct winch_data *data = arg;
- 	sigset_t sigs;
-@@ -168,7 +168,7 @@ static int winch_thread(void *arg)
- 	if (sigprocmask(SIG_SETMASK, &sigs, NULL) < 0) {
- 		os_info("winch_thread : sigprocmask failed, errno = %d\n",
- 			errno);
--		exit(1);
-+		goto wait_kill;
- 	}
- 	/* In sigsuspend(), block anything else than SIGWINCH. */
- 	sigdelset(&sigs, SIGWINCH);
-@@ -176,19 +176,19 @@ static int winch_thread(void *arg)
- 	if (setsid() < 0) {
- 		os_info("winch_thread : setsid failed, errno = %d\n",
- 		       errno);
--		exit(1);
-+		goto wait_kill;
- 	}
- 
- 	if (ioctl(pty_fd, TIOCSCTTY, 0) < 0) {
- 		os_info("winch_thread : TIOCSCTTY failed on "
- 			"fd %d err = %d\n", pty_fd, errno);
--		exit(1);
-+		goto wait_kill;
- 	}
- 
- 	if (tcsetpgrp(pty_fd, os_getpid()) < 0) {
- 		os_info("winch_thread : tcsetpgrp failed on fd %d err = %d\n",
- 			pty_fd, errno);
--		exit(1);
-+		goto wait_kill;
- 	}
- 
- 	/*
-@@ -214,6 +214,12 @@ static int winch_thread(void *arg)
- 			os_info("winch_thread : write failed, err = %d\n",
- 				errno);
- 	}
-+
-+wait_kill:
-+	c = 2;
-+	count = write(pipe_fd, &c, sizeof(c));
-+	while (1)
-+		pause();
+-	struct task_struct *task = t ? t : current;
+-
+-	if (!test_thread_flag(TIF_SINGLESTEP))
+-		return 0;
+-
+-	if (task->thread.singlestep_syscall)
+-		return 1;
+-
+-	return 2;
++	return test_thread_flag(TIF_SINGLESTEP);
  }
  
- static int winch_tramp(int fd, struct tty_port *port, int *fd_out,
-diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
-index 02b0befd6763..2e61899e5996 100644
---- a/arch/um/drivers/line.c
-+++ b/arch/um/drivers/line.c
-@@ -629,15 +629,18 @@ static irqreturn_t winch_interrupt(int irq, void *data)
+ /*
+diff --git a/arch/um/kernel/ptrace.c b/arch/um/kernel/ptrace.c
+index 5154b27de580..6600a2782796 100644
+--- a/arch/um/kernel/ptrace.c
++++ b/arch/um/kernel/ptrace.c
+@@ -12,7 +12,6 @@
+ void user_enable_single_step(struct task_struct *child)
+ {
+ 	set_tsk_thread_flag(child, TIF_SINGLESTEP);
+-	child->thread.singlestep_syscall = 0;
  
- 	if (fd != -1) {
- 		err = generic_read(fd, &c, NULL);
+ #ifdef SUBARCH_SET_SINGLESTEPPING
+ 	SUBARCH_SET_SINGLESTEPPING(child, 1);
+@@ -22,7 +21,6 @@ void user_enable_single_step(struct task_struct *child)
+ void user_disable_single_step(struct task_struct *child)
+ {
+ 	clear_tsk_thread_flag(child, TIF_SINGLESTEP);
+-	child->thread.singlestep_syscall = 0;
+ 
+ #ifdef SUBARCH_SET_SINGLESTEPPING
+ 	SUBARCH_SET_SINGLESTEPPING(child, 0);
+diff --git a/arch/um/kernel/signal.c b/arch/um/kernel/signal.c
+index ae4658f576ab..a56b44522766 100644
+--- a/arch/um/kernel/signal.c
++++ b/arch/um/kernel/signal.c
+@@ -120,18 +120,6 @@ void do_signal(struct pt_regs *regs)
+ 		}
+ 	}
+ 
+-	/*
+-	 * This closes a way to execute a system call on the host.  If
+-	 * you set a breakpoint on a system call instruction and singlestep
+-	 * from it, the tracing thread used to PTRACE_SINGLESTEP the process
+-	 * rather than PTRACE_SYSCALL it, allowing the system call to execute
+-	 * on the host.  The tracing thread will check this flag and
+-	 * PTRACE_SYSCALL if necessary.
+-	 */
+-	if (test_thread_flag(TIF_SINGLESTEP))
+-		current->thread.singlestep_syscall =
+-			is_syscall(PT_REGS_IP(&current->thread.regs));
+-
+ 	/*
+ 	 * if there's no signal to deliver, we just put the saved sigmask
+ 	 * back
+diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+index b1ea53285af1..11278c30a82d 100644
+--- a/arch/um/os-Linux/skas/process.c
++++ b/arch/um/os-Linux/skas/process.c
+@@ -177,48 +177,11 @@ static void handle_segv(int pid, struct uml_pt_regs *regs, unsigned long *aux_fp
+ 	segv(regs->faultinfo, 0, 1, NULL);
+ }
+ 
+-/*
+- * To use the same value of using_sysemu as the caller, ask it that value
+- * (in local_using_sysemu
+- */
+-static void handle_trap(int pid, struct uml_pt_regs *regs,
+-			int local_using_sysemu)
++static void handle_trap(int pid, struct uml_pt_regs *regs)
+ {
+-	int err, status;
+-
+ 	if ((UPT_IP(regs) >= STUB_START) && (UPT_IP(regs) < STUB_END))
+ 		fatal_sigsegv();
+ 
+-	if (!local_using_sysemu)
+-	{
+-		err = ptrace(PTRACE_POKEUSER, pid, PT_SYSCALL_NR_OFFSET,
+-			     __NR_getpid);
 -		if (err < 0) {
-+		/* A read of 2 means the winch thread failed and has warned */
-+		if (err < 0 || (err == 1 && c == 2)) {
- 			if (err != -EAGAIN) {
- 				winch->fd = -1;
- 				list_del(&winch->list);
- 				os_close_file(fd);
--				printk(KERN_ERR "winch_interrupt : "
--				       "read failed, errno = %d\n", -err);
--				printk(KERN_ERR "fd %d is losing SIGWINCH "
--				       "support\n", winch->tty_fd);
-+				if (err < 0) {
-+					printk(KERN_ERR "winch_interrupt : read failed, errno = %d\n",
-+					       -err);
-+					printk(KERN_ERR "fd %d is losing SIGWINCH support\n",
-+					       winch->tty_fd);
-+				}
- 				INIT_WORK(&winch->work, __free_winch);
- 				schedule_work(&winch->work);
- 				return IRQ_HANDLED;
+-			printk(UM_KERN_ERR "%s - nullifying syscall failed, errno = %d\n",
+-			       __func__, errno);
+-			fatal_sigsegv();
+-		}
+-
+-		err = ptrace(PTRACE_SYSCALL, pid, 0, 0);
+-		if (err < 0) {
+-			printk(UM_KERN_ERR "%s - continuing to end of syscall failed, errno = %d\n",
+-			       __func__, errno);
+-			fatal_sigsegv();
+-		}
+-
+-		CATCH_EINTR(err = waitpid(pid, &status, WUNTRACED | __WALL));
+-		if ((err < 0) || !WIFSTOPPED(status) ||
+-		    (WSTOPSIG(status) != SIGTRAP + 0x80)) {
+-			err = ptrace_dump_regs(pid);
+-			if (err)
+-				printk(UM_KERN_ERR "Failed to get registers from process, errno = %d\n",
+-				       -err);
+-			printk(UM_KERN_ERR "%s - failed to wait at end of syscall, errno = %d, status = %d\n",
+-			       __func__, errno, status);
+-			fatal_sigsegv();
+-		}
+-	}
+-
+ 	handle_syscall(regs);
+ }
+ 
+@@ -355,10 +318,10 @@ int start_userspace(unsigned long stub_stack)
+ 		goto out_kill;
+ 	}
+ 
+-	if (ptrace(PTRACE_OLDSETOPTIONS, pid, NULL,
++	if (ptrace(PTRACE_SETOPTIONS, pid, NULL,
+ 		   (void *) PTRACE_O_TRACESYSGOOD) < 0) {
+ 		err = -errno;
+-		printk(UM_KERN_ERR "%s : PTRACE_OLDSETOPTIONS failed, errno = %d\n",
++		printk(UM_KERN_ERR "%s : PTRACE_SETOPTIONS failed, errno = %d\n",
+ 		       __func__, errno);
+ 		goto out_kill;
+ 	}
+@@ -380,8 +343,6 @@ int start_userspace(unsigned long stub_stack)
+ void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
+ {
+ 	int err, status, op, pid = userspace_pid[0];
+-	/* To prevent races if using_sysemu changes under us.*/
+-	int local_using_sysemu;
+ 	siginfo_t si;
+ 
+ 	/* Handle any immediate reschedules or signals */
+@@ -411,11 +372,10 @@ void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
+ 			fatal_sigsegv();
+ 		}
+ 
+-		/* Now we set local_using_sysemu to be used for one loop */
+-		local_using_sysemu = get_using_sysemu();
+-
+-		op = SELECT_PTRACE_OPERATION(local_using_sysemu,
+-					     singlestepping(NULL));
++		if (singlestepping())
++			op = PTRACE_SYSEMU_SINGLESTEP;
++		else
++			op = PTRACE_SYSEMU;
+ 
+ 		if (ptrace(op, pid, 0, 0)) {
+ 			printk(UM_KERN_ERR "%s - ptrace continue failed, op = %d, errno = %d\n",
+@@ -474,7 +434,7 @@ void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
+ 				else handle_segv(pid, regs, aux_fp_regs);
+ 				break;
+ 			case SIGTRAP + 0x80:
+-			        handle_trap(pid, regs, local_using_sysemu);
++				handle_trap(pid, regs);
+ 				break;
+ 			case SIGTRAP:
+ 				relay_signal(SIGTRAP, (struct siginfo *)&si, regs);
+@@ -597,10 +557,10 @@ int copy_context_skas0(unsigned long new_stack, int pid)
+ 		goto out_kill;
+ 	}
+ 
+-	if (ptrace(PTRACE_OLDSETOPTIONS, pid, NULL,
++	if (ptrace(PTRACE_SETOPTIONS, pid, NULL,
+ 		   (void *)PTRACE_O_TRACESYSGOOD) < 0) {
+ 		err = -errno;
+-		printk(UM_KERN_ERR "%s : PTRACE_OLDSETOPTIONS failed, errno = %d\n",
++		printk(UM_KERN_ERR "%s : PTRACE_SETOPTIONS failed, errno = %d\n",
+ 		       __func__, errno);
+ 		goto out_kill;
+ 	}
+diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
+index e3ee4db58b40..561c08e0cc9c 100644
+--- a/arch/um/os-Linux/start_up.c
++++ b/arch/um/os-Linux/start_up.c
+@@ -143,71 +143,16 @@ static int stop_ptraced_child(int pid, int exitcode, int mustexit)
+ 	return ret;
+ }
+ 
+-/* Changed only during early boot */
+-static int force_sysemu_disabled = 0;
+-
+-static int __init nosysemu_cmd_param(char *str, int* add)
+-{
+-	force_sysemu_disabled = 1;
+-	return 0;
+-}
+-
+-__uml_setup("nosysemu", nosysemu_cmd_param,
+-"nosysemu\n"
+-"    Turns off syscall emulation patch for ptrace (SYSEMU).\n"
+-"    SYSEMU is a performance-patch introduced by Laurent Vivier. It changes\n"
+-"    behaviour of ptrace() and helps reduce host context switch rates.\n"
+-"    To make it work, you need a kernel patch for your host, too.\n"
+-"    See http://perso.wanadoo.fr/laurent.vivier/UML/ for further \n"
+-"    information.\n\n");
+-
+ static void __init check_sysemu(void)
+ {
+-	unsigned long regs[MAX_REG_NR];
+ 	int pid, n, status, count=0;
+ 
+-	os_info("Checking syscall emulation patch for ptrace...");
+-	sysemu_supported = 0;
+-	pid = start_ptraced_child();
+-
+-	if (ptrace(PTRACE_SYSEMU, pid, 0, 0) < 0)
+-		goto fail;
+-
+-	CATCH_EINTR(n = waitpid(pid, &status, WUNTRACED));
+-	if (n < 0)
+-		fatal_perror("check_sysemu : wait failed");
+-	if (!WIFSTOPPED(status) || (WSTOPSIG(status) != SIGTRAP))
+-		fatal("check_sysemu : expected SIGTRAP, got status = %d\n",
+-		      status);
+-
+-	if (ptrace(PTRACE_GETREGS, pid, 0, regs) < 0)
+-		fatal_perror("check_sysemu : PTRACE_GETREGS failed");
+-	if (PT_SYSCALL_NR(regs) != __NR_getpid) {
+-		non_fatal("check_sysemu got system call number %d, "
+-			  "expected %d...", PT_SYSCALL_NR(regs), __NR_getpid);
+-		goto fail;
+-	}
+-
+-	n = ptrace(PTRACE_POKEUSER, pid, PT_SYSCALL_RET_OFFSET, os_getpid());
+-	if (n < 0) {
+-		non_fatal("check_sysemu : failed to modify system call "
+-			  "return");
+-		goto fail;
+-	}
+-
+-	if (stop_ptraced_child(pid, 0, 0) < 0)
+-		goto fail_stopped;
+-
+-	sysemu_supported = 1;
+-	os_info("OK\n");
+-	set_using_sysemu(!force_sysemu_disabled);
+-
+-	os_info("Checking advanced syscall emulation patch for ptrace...");
++	os_info("Checking syscall emulation for ptrace...");
+ 	pid = start_ptraced_child();
+ 
+-	if ((ptrace(PTRACE_OLDSETOPTIONS, pid, 0,
++	if ((ptrace(PTRACE_SETOPTIONS, pid, 0,
+ 		   (void *) PTRACE_O_TRACESYSGOOD) < 0))
+-		fatal_perror("check_sysemu: PTRACE_OLDSETOPTIONS failed");
++		fatal_perror("check_sysemu: PTRACE_SETOPTIONS failed");
+ 
+ 	while (1) {
+ 		count++;
+@@ -243,17 +188,14 @@ static void __init check_sysemu(void)
+ 	if (stop_ptraced_child(pid, 0, 0) < 0)
+ 		goto fail_stopped;
+ 
+-	sysemu_supported = 2;
+ 	os_info("OK\n");
+ 
+-	if (!force_sysemu_disabled)
+-		set_using_sysemu(sysemu_supported);
+ 	return;
+ 
+ fail:
+ 	stop_ptraced_child(pid, 1, 0);
+ fail_stopped:
+-	non_fatal("missing\n");
++	fatal("missing\n");
+ }
+ 
+ static void __init check_ptrace(void)
+@@ -263,9 +205,9 @@ static void __init check_ptrace(void)
+ 	os_info("Checking that ptrace can change system call numbers...");
+ 	pid = start_ptraced_child();
+ 
+-	if ((ptrace(PTRACE_OLDSETOPTIONS, pid, 0,
++	if ((ptrace(PTRACE_SETOPTIONS, pid, 0,
+ 		   (void *) PTRACE_O_TRACESYSGOOD) < 0))
+-		fatal_perror("check_ptrace: PTRACE_OLDSETOPTIONS failed");
++		fatal_perror("check_ptrace: PTRACE_SETOPTIONS failed");
+ 
+ 	while (1) {
+ 		if (ptrace(PTRACE_SYSCALL, pid, 0, 0) < 0)
+diff --git a/arch/x86/um/ptrace_32.c b/arch/x86/um/ptrace_32.c
+index 0bc4b73a9cde..7f1abde2c84b 100644
+--- a/arch/x86/um/ptrace_32.c
++++ b/arch/x86/um/ptrace_32.c
+@@ -25,30 +25,6 @@ void arch_switch_to(struct task_struct *to)
+ 		printk(KERN_WARNING "arch_switch_tls failed, errno = EINVAL\n");
+ }
+ 
+-int is_syscall(unsigned long addr)
+-{
+-	unsigned short instr;
+-	int n;
+-
+-	n = copy_from_user(&instr, (void __user *) addr, sizeof(instr));
+-	if (n) {
+-		/* access_process_vm() grants access to vsyscall and stub,
+-		 * while copy_from_user doesn't. Maybe access_process_vm is
+-		 * slow, but that doesn't matter, since it will be called only
+-		 * in case of singlestepping, if copy_from_user failed.
+-		 */
+-		n = access_process_vm(current, addr, &instr, sizeof(instr),
+-				FOLL_FORCE);
+-		if (n != sizeof(instr)) {
+-			printk(KERN_ERR "is_syscall : failed to read "
+-			       "instruction from 0x%lx\n", addr);
+-			return 1;
+-		}
+-	}
+-	/* int 0x80 or sysenter */
+-	return (instr == 0x80cd) || (instr == 0x340f);
+-}
+-
+ /* determines which flags the user has access to. */
+ /* 1 = access 0 = no access */
+ #define FLAG_MASK 0x00044dd5
+diff --git a/arch/x86/um/ptrace_64.c b/arch/x86/um/ptrace_64.c
+index 289d0159b041..aa68d83d3f44 100644
+--- a/arch/x86/um/ptrace_64.c
++++ b/arch/x86/um/ptrace_64.c
+@@ -188,32 +188,6 @@ int peek_user(struct task_struct *child, long addr, long data)
+ 	return put_user(tmp, (unsigned long *) data);
+ }
+ 
+-/* XXX Mostly copied from sys-i386 */
+-int is_syscall(unsigned long addr)
+-{
+-	unsigned short instr;
+-	int n;
+-
+-	n = copy_from_user(&instr, (void __user *) addr, sizeof(instr));
+-	if (n) {
+-		/*
+-		 * access_process_vm() grants access to vsyscall and stub,
+-		 * while copy_from_user doesn't. Maybe access_process_vm is
+-		 * slow, but that doesn't matter, since it will be called only
+-		 * in case of singlestepping, if copy_from_user failed.
+-		 */
+-		n = access_process_vm(current, addr, &instr, sizeof(instr),
+-				FOLL_FORCE);
+-		if (n != sizeof(instr)) {
+-			printk("is_syscall : failed to read instruction from "
+-			       "0x%lx\n", addr);
+-			return 1;
+-		}
+-	}
+-	/* sysenter */
+-	return instr == 0x050f;
+-}
+-
+ static int get_fpregs(struct user_i387_struct __user *buf, struct task_struct *child)
+ {
+ 	int err, n, cpu = ((struct thread_info *) child->stack)->cpu;
+diff --git a/arch/x86/um/shared/sysdep/ptrace_32.h b/arch/x86/um/shared/sysdep/ptrace_32.h
+index db8478a83a09..0c4989842fbe 100644
+--- a/arch/x86/um/shared/sysdep/ptrace_32.h
++++ b/arch/x86/um/shared/sysdep/ptrace_32.h
+@@ -8,10 +8,6 @@
+ 
+ #define MAX_FP_NR HOST_FPX_SIZE
+ 
+-void set_using_sysemu(int value);
+-int get_using_sysemu(void);
+-extern int sysemu_supported;
+-
+ #define UPT_SYSCALL_ARG1(r) UPT_BX(r)
+ #define UPT_SYSCALL_ARG2(r) UPT_CX(r)
+ #define UPT_SYSCALL_ARG3(r) UPT_DX(r)
+diff --git a/arch/x86/um/shared/sysdep/ptrace_user.h b/arch/x86/um/shared/sysdep/ptrace_user.h
+index 44782bbad41e..1d1a824fa652 100644
+--- a/arch/x86/um/shared/sysdep/ptrace_user.h
++++ b/arch/x86/um/shared/sysdep/ptrace_user.h
+@@ -15,14 +15,12 @@
+ #define FP_SIZE ((HOST_FPX_SIZE > HOST_FP_SIZE) ? HOST_FPX_SIZE : HOST_FP_SIZE)
+ #else
+ #define FP_SIZE HOST_FP_SIZE
++#endif
+ 
+ /*
+- * x86_64 FC3 doesn't define this in /usr/include/linux/ptrace.h even though
+- * it's defined in the kernel's include/linux/ptrace.h. Additionally, use the
+- * 2.4 name and value for 2.4 host compatibility.
++ * glibc before 2.27 does not include PTRACE_SYSEMU_SINGLESTEP in its enum,
++ * ensure we have a definition by (re-)defining it here.
+  */
+-#ifndef PTRACE_OLDSETOPTIONS
+-#define PTRACE_OLDSETOPTIONS 21
+-#endif
+-
++#ifndef PTRACE_SYSEMU_SINGLESTEP
++#define PTRACE_SYSEMU_SINGLESTEP 32
+ #endif
 -- 
 2.38.1
 
