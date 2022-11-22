@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6993EC433FE
-	for <linux-um@archiver.kernel.org>; Tue, 22 Nov 2022 10:26:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5768CC4332F
+	for <linux-um@archiver.kernel.org>; Tue, 22 Nov 2022 10:27:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4o9WIY8EUijQE2CYU8HXMxhRGc7B9xAzaBhBNX13dBE=; b=EwPg99E/aq1qvd
-	EQjBFQiMsp9ZmPQXzkKIPX5hgi/Bsl01N0dcQcYPUua+ptFyNhpC58r+38EESUIu4RvKuTDLS7YPE
-	7hAVy9CWhgHyy60e0THNH3twzvbweeui5RMVw7dpIK2ncu+QVjxZfjtoghJ909qCxh/QPoj9pwl5H
-	+TOFcz2qAjNW6GVIRTTpMKQerhyjs4dEohwLd41p9sh7Lu/vUW3pJckcQBWsZM+sbyo1k0CwdPAjI
-	sFQdagiJQvuDdz1TuKXvX9gyzXG+IPRV/jAnj3kzzvjINXtTkptdvgd+WkDB9BFiAFwSKK2Q05s+x
-	Gtk0uRGW9Bd1hhoNBI0w==;
+	List-Owner; bh=r1iLqhhTkKRzqdddibSKMWzqNEU9q3SR+9QcTeHSOW8=; b=qqwyI0pVtZEQoi
+	CPK2lv/XEPCw/lHfyU94bxXvTFE4EWURGBw8MQfBEt4iDCjOmt3FkBUPhL+6JVMOB8glVaxnpZSAb
+	acUUbUCHqdLscPBhWysTFL7zJh/+piTs+p2rN5sVXen8TKHRqgb4YIhLUwLYvubooOzMJMNN+dlXD
+	2CaxPl3oH3hITiYwkvnbWABHRojaYSBkMlulsux9OFSgLPkWtHmJsFx31zQhOa6Ul6pweSrvd1d6v
+	k0uc6yJ/WrQNjjJOC0AjQM/uXX050C0lHY9zop5U+R5S3cwcNchdfNMc2hAzYy1Ca30f/3833DING
+	hokOPgSsUevoNIxF/oNQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxQUS-007nuy-RM; Tue, 22 Nov 2022 10:26:56 +0000
+	id 1oxQUU-007nwX-Ft; Tue, 22 Nov 2022 10:26:58 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxQTL-007nKg-7F
+	id 1oxQTL-007nM8-Oc
 	for linux-um@bombadil.infradead.org; Tue, 22 Nov 2022 10:25:47 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
 	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=96ItsAytwJTttTAMWODMnbHwjuNRvBXmNArE3fyRN6c=; b=EsygNAtZwxGtNrApwH35oVzpt1
-	dGgv1D+oG6SO8gs1DvcfSbGJKN3aowiIVoHmulM9gZ9ILOR6ldwfUJ9WpgCLe49RVsjB806NQ041+
-	W6MoLah/I/t2in1numrGpH5Q2AkA0gXaK/SYsVzqHqaJ9u4svLlWH9rDrNjvMIzRjvAC+xcCgOpux
-	tAz2okCk+eJa1b/XsmW45nHEr+3ENVYMY0Ro0rv/D8uPrjkhwjIpWB+fhCZplaGHj8+YKSMi5VE9c
-	X0j1I/4Zb4aUtv0EuK6MnDsdGthAW6LwMIdxVSyLWwgVLFPGTVu5mfXeg72Gl5APcqpC/37YjgARz
-	I/hOFPnA==;
+	bh=5P81qnzTcChuIaNhaa4ZlDz9aT2og1d1jl4cX4zqzdc=; b=lqrcOMk3PBIc08lNxFiTRWcRQH
+	9y8mSDbQ4aVlHmkEBEcf7NK5gEaZ1cJ2DavaXrvGy1p8RxazDnIyPpqQgr/bEKDeV076pj9RfWX54
+	ld6byrcSb6bzgg1v4UgTtC4l23CqpT05DlCP8eZQH1uravDwTmzRuzdikT/M99TLB3Yk13hMQ9iCD
+	sIoHKrRQAV7tuK7E8iIG1uXpgcuU9MjCjoL8XCkjMbocnXQVEyZB6/QJRrPLgI5qn/r3+W1Zdw5dE
+	4PEeiFHBC0/sYSlZQ+rsKT1qPZ3GTDUai7L/NKPUDcS6aHHWqjd0c4yDmX8q+7vX2zfgRSkKwu9cX
+	hOaa9J/g==;
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2] helo=sipsolutions.net)
 	by desiato.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxQF1-003P1k-0L
-	for linux-um@lists.infradead.org; Tue, 22 Nov 2022 10:11:08 +0000
+	id 1oxQF1-003P1t-8D
+	for linux-um@lists.infradead.org; Tue, 22 Nov 2022 10:11:06 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Content-Type:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=96ItsAytwJTttTAMWODMnbHwjuNRvBXmNArE3fyRN6c=;
-	t=1669111857; x=1670321457; b=dapKscrsqXC9TDhj7Gd2UaeR4Z5psXX2k0H13D2orLyC9U4
-	6fUtu+z8/3ukvLv1yYD0whkPNp4X3G/LF+TTa6GYHnx476TK0yHAUUMSybF/tMm4TjmqdcFbSjKxr
-	wPDm3Pqw/Q0PLf8HFjtJ7mKLtlHK+UOKs54DGiaJHgz33mBU9pTlNidijLlRNilsAl6XrM8u+mB9N
-	KQ+8QxkSFlvHXkkzFsm9i8GLPsjGwL0d/eq2CgZQBPIcufcpEPOimGprjJ4DfMNhFzdR4zQFW0w2d
-	3xPCpluGpof9Bjn6Q02vTQjijgGuUPp9aJKHimdgcZ6mJw6imICdqOe1Z+dVtj3g==;
+	Resent-Cc:Resent-Message-ID; bh=5P81qnzTcChuIaNhaa4ZlDz9aT2og1d1jl4cX4zqzdc=;
+	t=1669111858; x=1670321458; b=r4u2oecFtJ7uBqnvZfGiStlLCH72c+SlX3QjbDmVN3OCjBc
+	RE5BAiDFj83EX1RTbSfouYEUBKlm3oLXH9ni2NURJpOwL49Eewc2rs4Styn0KAepae16FlpUhg7WZ
+	xRv5MAT7OJ6xA7QgoaQy955Cl0SB/qDZ2cBCLFMtVlmhLO1KqlnltPWwWBLkKCQJhCoC5gB1XJsN0
+	rlrQBp4bFIRtpAulmRd7KVpvBZqvW4N/3Xjtawd1RtqYvhhQM/MeZiSEXt7C5UyHZZrpkWZJSAgh1
+	CSjU5m+9qArhzzM2pSawZ6eOz/VYBer90jogtrXkVri+YW2/FhgZBOz5B+iPuagQ==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.96)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1oxQEp-006IGn-34;
-	Tue, 22 Nov 2022 11:10:48 +0100
+	id 1oxQEn-006IGn-32;
+	Tue, 22 Nov 2022 11:10:46 +0100
 From: benjamin@sipsolutions.net
 To: linux-um@lists.infradead.org
 Cc: Benjamin Berg <benjamin@sipsolutions.net>
-Subject: [PATCH v2 15/28] um: Create signal stack memory assignment in stub_data
-Date: Tue, 22 Nov 2022 11:07:46 +0100
-Message-Id: <20221122100759.208290-16-benjamin@sipsolutions.net>
+Subject: [PATCH v2 08/28] um: Reap winch thread if it fails
+Date: Tue, 22 Nov 2022 11:07:39 +0100
+Message-Id: <20221122100759.208290-9-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.38.1
 In-Reply-To: <20221122100759.208290-1-benjamin@sipsolutions.net>
 References: <20221122100759.208290-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221122_101101_456189_7B6A16CC 
-X-CRM114-Status: GOOD (  17.45  )
+X-CRM114-CacheID: sfid-20221122_101101_152800_4262880D 
+X-CRM114-Status: GOOD (  13.95  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,218 +85,102 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Benjamin Berg <benjamin@sipsolutions.net>
 
-When we switch to use seccomp, we need both the signal stack and other
-data (i.e. syscall information) to co-exist in the stub data. To
-facilitate this, start by defining separate memory areas for the stack
-and syscall data.
-
-This moves the signal stack onto a new page as the memory area is not
-sufficient to hold both signal stack and syscall information.
-
-Only change the signal stack setup for now, as the syscall code will be
-reworked later.
+When the winch thread runs into an error condition, it would exit(1) and
+never be reaped until shutdown time. Change this to write a command byte
+which causes the driver to kill it, therefore reaping the child.
 
 Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
 ---
- arch/um/include/shared/as-layout.h      |  2 +-
- arch/um/include/shared/skas/stub-data.h | 12 ++++++++++++
- arch/um/kernel/skas/clone.c             |  7 +++++--
- arch/um/kernel/skas/mmu.c               |  6 +++---
- arch/um/os-Linux/skas/process.c         | 17 ++++++++++-------
- arch/x86/um/shared/sysdep/stub_32.h     |  3 ++-
- arch/x86/um/shared/sysdep/stub_64.h     |  5 +++--
- 7 files changed, 36 insertions(+), 16 deletions(-)
+ arch/um/drivers/chan_user.c | 16 +++++++++++-----
+ arch/um/drivers/line.c      | 13 ++++++++-----
+ 2 files changed, 19 insertions(+), 10 deletions(-)
 
-diff --git a/arch/um/include/shared/as-layout.h b/arch/um/include/shared/as-layout.h
-index 9a0bd648d872..70d3df8ae814 100644
---- a/arch/um/include/shared/as-layout.h
-+++ b/arch/um/include/shared/as-layout.h
-@@ -23,7 +23,7 @@
- #define STUB_START stub_start
- #define STUB_CODE STUB_START
- #define STUB_DATA (STUB_CODE + UM_KERN_PAGE_SIZE)
--#define STUB_END (STUB_DATA + UM_KERN_PAGE_SIZE)
-+#define STUB_END (STUB_DATA + 2*UM_KERN_PAGE_SIZE)
- 
- #ifndef __ASSEMBLY__
- 
-diff --git a/arch/um/include/shared/skas/stub-data.h b/arch/um/include/shared/skas/stub-data.h
-index 5e3ade3fb38b..3281809a7272 100644
---- a/arch/um/include/shared/skas/stub-data.h
-+++ b/arch/um/include/shared/skas/stub-data.h
-@@ -8,10 +8,22 @@
- #ifndef __STUB_DATA_H
- #define __STUB_DATA_H
- 
-+#include <linux/compiler_types.h>
-+#include <as-layout.h>
-+
- struct stub_data {
- 	unsigned long offset;
- 	int fd;
- 	long parent_err, child_err;
-+
-+	/* 128 leaves enough room for additional fields in the struct */
-+	unsigned char syscall_data[UM_KERN_PAGE_SIZE - 128] __aligned(16);
-+
-+	/* Stack for our signal handlers and for calling into . */
-+	unsigned char sigstack[UM_KERN_PAGE_SIZE] __aligned(UM_KERN_PAGE_SIZE);
+diff --git a/arch/um/drivers/chan_user.c b/arch/um/drivers/chan_user.c
+index c2b83cb99aae..ed7cc830b3e7 100644
+--- a/arch/um/drivers/chan_user.c
++++ b/arch/um/drivers/chan_user.c
+@@ -141,7 +141,7 @@ struct winch_data {
+ 	int pipe_fd;
  };
  
-+typedef char stub_data_sizecheck
-+	[sizeof(struct stub_data) == 2*UM_KERN_PAGE_SIZE ? 1 : -1] __always_unused;
-+
- #endif
-diff --git a/arch/um/kernel/skas/clone.c b/arch/um/kernel/skas/clone.c
-index ff5061f29167..a631566e4a20 100644
---- a/arch/um/kernel/skas/clone.c
-+++ b/arch/um/kernel/skas/clone.c
-@@ -24,11 +24,14 @@
- void __attribute__ ((__section__ (".__syscall_stub")))
- stub_clone_handler(void)
+-static int winch_thread(void *arg)
++static __noreturn int winch_thread(void *arg)
  {
--	struct stub_data *data = get_stub_page();
-+	struct stub_data *data = get_stub_page() + UM_KERN_PAGE_SIZE;
- 	long err;
- 
-+	/* syscall data as a temporary stack area (bottom half). */
- 	err = stub_syscall2(__NR_clone, CLONE_PARENT | CLONE_FILES | SIGCHLD,
--			    (unsigned long)data + UM_KERN_PAGE_SIZE / 2);
-+			    (unsigned long) data->syscall_data +
-+					    sizeof(data->syscall_data) / 2 -
-+					    sizeof(void *));
- 	if (err) {
- 		data->parent_err = err;
- 		goto done;
-diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
-index 125df465e8ea..6ccb561b4373 100644
---- a/arch/um/kernel/skas/mmu.c
-+++ b/arch/um/kernel/skas/mmu.c
-@@ -21,7 +21,7 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
- 	unsigned long stack = 0;
- 	int ret = -ENOMEM;
- 
--	stack = get_zeroed_page(GFP_KERNEL);
-+	stack = __get_free_pages(GFP_KERNEL|__GFP_ZERO, 1);
- 	if (stack == 0)
- 		goto out;
- 
-@@ -52,7 +52,7 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
- 
-  out_free:
- 	if (to_mm->id.stack != 0)
--		free_page(to_mm->id.stack);
-+		free_pages(to_mm->id.stack, 1);
-  out:
- 	return ret;
- }
-@@ -74,6 +74,6 @@ void destroy_context(struct mm_struct *mm)
+ 	struct winch_data *data = arg;
+ 	sigset_t sigs;
+@@ -168,7 +168,7 @@ static int winch_thread(void *arg)
+ 	if (sigprocmask(SIG_SETMASK, &sigs, NULL) < 0) {
+ 		os_info("winch_thread : sigprocmask failed, errno = %d\n",
+ 			errno);
+-		exit(1);
++		goto wait_kill;
  	}
- 	os_kill_ptraced_process(mmu->id.u.pid, 1);
- 
--	free_page(mmu->id.stack);
-+	free_pages(mmu->id.stack, 1);
- 	free_ldt(mmu);
- }
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 4198ca21e4ab..3917bd862315 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -205,6 +205,7 @@ extern char __syscall_stub_start[];
- static int userspace_tramp(void *stack)
- {
- 	struct sigaction sa;
-+	struct stub_data *data;
- 	void *addr;
- 	int fd;
- 	unsigned long long offset;
-@@ -228,15 +229,16 @@ static int userspace_tramp(void *stack)
- 
- 	fd = phys_mapping(uml_to_phys(stack), &offset);
- 	addr = mmap((void *) STUB_DATA,
--		    UM_KERN_PAGE_SIZE, PROT_READ | PROT_WRITE,
-+		    sizeof(struct stub_data), PROT_READ | PROT_WRITE,
- 		    MAP_FIXED | MAP_SHARED, fd, offset);
- 	if (addr == MAP_FAILED) {
- 		os_info("mapping segfault stack at 0x%lx failed, errno = %d\n",
- 			STUB_DATA, errno);
- 		exit(1);
+ 	/* In sigsuspend(), block anything else than SIGWINCH. */
+ 	sigdelset(&sigs, SIGWINCH);
+@@ -176,19 +176,19 @@ static int winch_thread(void *arg)
+ 	if (setsid() < 0) {
+ 		os_info("winch_thread : setsid failed, errno = %d\n",
+ 		       errno);
+-		exit(1);
++		goto wait_kill;
  	}
-+	data = (void *) addr;
  
--	set_sigstack((void *) STUB_DATA, UM_KERN_PAGE_SIZE);
-+	set_sigstack((void *) &data->sigstack, sizeof(data->sigstack));
- 	sigemptyset(&sa.sa_mask);
- 	sa.sa_flags = SA_ONSTACK | SA_NODEFER | SA_SIGINFO;
- 	sa.sa_sigaction = (void *) segv_handler;
-@@ -470,11 +472,12 @@ static int __init init_thread_regs(void)
- 	thread_regs[REGS_IP_INDEX] = STUB_CODE +
- 				(unsigned long) stub_clone_handler -
- 				(unsigned long) __syscall_stub_start;
--	thread_regs[REGS_SP_INDEX] = STUB_DATA + UM_KERN_PAGE_SIZE -
--		sizeof(void *);
--#ifdef __SIGNAL_FRAMESIZE
--	thread_regs[REGS_SP_INDEX] -= __SIGNAL_FRAMESIZE;
--#endif
+ 	if (ioctl(pty_fd, TIOCSCTTY, 0) < 0) {
+ 		os_info("winch_thread : TIOCSCTTY failed on "
+ 			"fd %d err = %d\n", pty_fd, errno);
+-		exit(1);
++		goto wait_kill;
+ 	}
+ 
+ 	if (tcsetpgrp(pty_fd, os_getpid()) < 0) {
+ 		os_info("winch_thread : tcsetpgrp failed on fd %d err = %d\n",
+ 			pty_fd, errno);
+-		exit(1);
++		goto wait_kill;
+ 	}
+ 
+ 	/*
+@@ -214,6 +214,12 @@ static int winch_thread(void *arg)
+ 			os_info("winch_thread : write failed, err = %d\n",
+ 				errno);
+ 	}
 +
-+	/* syscall data as a temporary stack area (top half). */
-+	thread_regs[REGS_SP_INDEX] = STUB_DATA +
-+				     offsetof(struct stub_data, syscall_data) +
-+				     sizeof(((struct stub_data *) 0)->syscall_data) -
-+				     sizeof(void *);
- 	return 0;
++wait_kill:
++	c = 2;
++	count = write(pipe_fd, &c, sizeof(c));
++	while (1)
++		pause();
  }
  
-diff --git a/arch/x86/um/shared/sysdep/stub_32.h b/arch/x86/um/shared/sysdep/stub_32.h
-index c413927c6ad0..85a224506530 100644
---- a/arch/x86/um/shared/sysdep/stub_32.h
-+++ b/arch/x86/um/shared/sysdep/stub_32.h
-@@ -87,6 +87,7 @@ static __always_inline void trap_myself(void)
+ static int winch_tramp(int fd, struct tty_port *port, int *fd_out,
+diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
+index 02b0befd6763..2e61899e5996 100644
+--- a/arch/um/drivers/line.c
++++ b/arch/um/drivers/line.c
+@@ -629,15 +629,18 @@ static irqreturn_t winch_interrupt(int irq, void *data)
  
- static __always_inline void remap_stack_and_trap(void)
- {
-+	/* The stack here is in syscall data (i.e. on the first page) */
- 	__asm__ volatile (
- 		"movl %%esp,%%ebx ;"
- 		"andl %0,%%ebx ;"
-@@ -102,7 +103,7 @@ static __always_inline void remap_stack_and_trap(void)
- 		"g" (offsetof(struct stub_data, fd)),
- 		"g" (offsetof(struct stub_data, offset)),
- 		"g" (offsetof(struct stub_data, child_err)),
--		"c" (UM_KERN_PAGE_SIZE),
-+		"c" (2*UM_KERN_PAGE_SIZE),
- 		"d" (PROT_READ | PROT_WRITE),
- 		"S" (MAP_FIXED | MAP_SHARED)
- 		:
-diff --git a/arch/x86/um/shared/sysdep/stub_64.h b/arch/x86/um/shared/sysdep/stub_64.h
-index 361a6a9fe1e4..2e7acba74dc3 100644
---- a/arch/x86/um/shared/sysdep/stub_64.h
-+++ b/arch/x86/um/shared/sysdep/stub_64.h
-@@ -87,6 +87,7 @@ static __always_inline void trap_myself(void)
- 
- static __always_inline void remap_stack_and_trap(void)
- {
-+	/* The stack here is in syscall data (i.e. on the first page) */
- 	__asm__ volatile (
- 		"movq %0,%%rax ;"
- 		"movq %%rsp,%%rdi ;"
-@@ -105,7 +106,7 @@ static __always_inline void remap_stack_and_trap(void)
- 		"g" (offsetof(struct stub_data, fd)),
- 		"g" (offsetof(struct stub_data, offset)),
- 		"g" (offsetof(struct stub_data, child_err)),
--		"S" (UM_KERN_PAGE_SIZE),
-+		"S" (2*UM_KERN_PAGE_SIZE),
- 		"d" (PROT_READ | PROT_WRITE)
- 		:
- 		__syscall_clobber, "r10", "r8", "r9");
-@@ -121,6 +122,6 @@ static __always_inline void *get_stub_page(void)
- 		: "=a" (ret)
- 		: "g" (~(UM_KERN_PAGE_SIZE - 1)));
- 
--	return (void *)ret;
-+	return (void *)ret - UM_KERN_PAGE_SIZE;
- }
- #endif
+ 	if (fd != -1) {
+ 		err = generic_read(fd, &c, NULL);
+-		if (err < 0) {
++		/* A read of 2 means the winch thread failed and has warned */
++		if (err < 0 || (err == 1 && c == 2)) {
+ 			if (err != -EAGAIN) {
+ 				winch->fd = -1;
+ 				list_del(&winch->list);
+ 				os_close_file(fd);
+-				printk(KERN_ERR "winch_interrupt : "
+-				       "read failed, errno = %d\n", -err);
+-				printk(KERN_ERR "fd %d is losing SIGWINCH "
+-				       "support\n", winch->tty_fd);
++				if (err < 0) {
++					printk(KERN_ERR "winch_interrupt : read failed, errno = %d\n",
++					       -err);
++					printk(KERN_ERR "fd %d is losing SIGWINCH support\n",
++					       winch->tty_fd);
++				}
+ 				INIT_WORK(&winch->work, __free_winch);
+ 				schedule_work(&winch->work);
+ 				return IRQ_HANDLED;
 -- 
 2.38.1
 
