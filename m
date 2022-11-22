@@ -4,97 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62E20C4332F
-	for <linux-um@archiver.kernel.org>; Tue, 22 Nov 2022 14:50:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C4D0C4332F
+	for <linux-um@archiver.kernel.org>; Tue, 22 Nov 2022 15:01:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6XcR5WtUhcdsUa+OYTy8IoIRF33+zC0dNlI0MbqhdBQ=; b=xR37rF3cx2wLNU
-	6Dxnl0hhqjO4+0E3zMyyRpR423LNru8EshcRHsiI1meOgL308Euf2t/c8ZKBjewdm0ZDvhb6AIz0l
-	qSvNaLBjlyDAiQLG2DwlFSRTwmR3olLkoVpl+XWa90pkdSorw/V81k88/YjAigcupB6F5vNM+nTbq
-	Rm00C65fhw5L/Qao1PXFdrMPcXk83Pruh7RC8GNbMMnWoelNTEq53sPVYc5pTutVdcurmcYkXeVq2
-	lGwMI6iGWoe0wUtahpxMJgRDO4N4KOqRgq62Y6KALPNTd8DIgo3/QKCTvrNYNKeaU9rIKXL4JeQfO
-	6gK6/D3Dd67L/EacyO8g==;
+	List-Owner; bh=DxyzuJllLQKsIKo8/VHETsV6Zk6a8JoqIAGLRvwenIY=; b=t89tWUl21QH0Dl
+	YT/Ur0zI57a4apxiXOH7cB9yPUdPF1xSj7Zi+k9QyxehJRsxQwJpspz6b98oVaZ2ha1NVh+ejg+mG
+	YeynFFKa2PQC/uEk17ZpRSZknTd80m0OHTVtChJwao01q4F5pDLPnEX+i7PawmzK3XRdxs1ecKbY1
+	mhSZLUhkywWsx457ACd4G8FPRE5OTio+Gibpm51+qyq6XdWyRiNN6omgj0TCRmrxBOg9XhucShYMx
+	c2IhfDMWF2uxmVSqcqevr4gpgHJFYlBhzxEwLYCyRVarzny22Oh9xbN74gIlx/m0pqgWuOMe6W+OW
+	1mEUngdZJ9/dbQ3DYUPg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxUbP-00A5Lg-V0; Tue, 22 Nov 2022 14:50:23 +0000
-Received: from smtp-out2.suse.de ([195.135.220.29])
+	id 1oxUlx-00A9XY-I0; Tue, 22 Nov 2022 15:01:17 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxUbB-00A5FA-Ge; Tue, 22 Nov 2022 14:50:12 +0000
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 683391F85D;
-	Tue, 22 Nov 2022 14:50:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1669128607; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TuOeD9hS5w47LsnqcPKQtrXy6koctaIzcHPxwbxmwbA=;
-	b=aGZachSXiRVjKPJsrWk8CPop2PpOEMJr7spf/DAJ5bmOd/2f4r4PDMztApEKo2PcSlvmxW
-	kUYly+UTyuJUxKmOQFyKK0uK83vpsu8HLfHf74wJV6xsDgOcFpyyuGww7bQkx1IkhT+zig
-	CKpIYly4TJFynSwnq3h8C8XfDQxdhu4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1669128607;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TuOeD9hS5w47LsnqcPKQtrXy6koctaIzcHPxwbxmwbA=;
-	b=3O83wprOyy/Za1HsOlbBbN841s6+bHjQppNWEZSAiaC61+01222yq5NJYcQdKsFuOVce+G
-	lcMh2DB+p4IaJ9Ag==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BDF4713AA1;
-	Tue, 22 Nov 2022 14:50:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id xuSnLZ7hfGM/fwAAMHmgww
-	(envelope-from <vbabka@suse.cz>); Tue, 22 Nov 2022 14:50:06 +0000
-Message-ID: <d40947e4-06c4-8413-9d53-e4926abd9559@suse.cz>
-Date: Tue, 22 Nov 2022 15:50:06 +0100
+	id 1oxUlT-00A9Fw-05
+	for linux-um@lists.infradead.org; Tue, 22 Nov 2022 15:00:48 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=+NFpLSd8ScOHEVd4DHTztoyZ+UkB3J/9rUIzBb7GyY0=;
+	t=1669129242; x=1670338842; b=LLOXZC/WUtVrh6/Y6FGJmyJ6I6clOuJODtMKY6WvNc/8Zpt
+	TF92eweJ+AzQaTvn+9WA1RUU61gQpKSlD4FnNMrAHAIxMrj/H9ygKTYm/QT1qx6c4TX+LgJ3/qjM/
+	Rj+QPjaXacB0DtDFf16FC3PYCDjpjg+Gh8HzCWguZRaXTpZEwxrq+5XInXIMsm8hsAU3laSslnObK
+	HhrQ2IS5axUeTVCkmlsWWPHabcFqnZg/rEKUQ5hwGJjhgVyD8WyKhcVnfJeFUGvQE3THbFkRZ4X1Q
+	JkwmmMVm1sZvOueWP4AvawVJLO4CHkuEShsi+cRpdqeNDt8waJKKrDzF2Zt8w9uA==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.96)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1oxUlH-006Ngc-2Z;
+	Tue, 22 Nov 2022 16:00:35 +0100
+Message-ID: <021efb6c9295402cf05406bb319c441c0b0229b3.camel@sipsolutions.net>
+Subject: Re: Build regressions/improvements in v6.1-rc6
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Alex Deucher <alexdeucher@gmail.com>, Geert Uytterhoeven
+	 <geert@linux-m68k.org>
+Cc: linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	linux-staging@lists.linux.dev, linux-um@lists.infradead.org, 
+	dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org
+Date: Tue, 22 Nov 2022 16:00:34 +0100
+In-Reply-To: <CADnq5_PvouSKugXxJXqkVeZf+kbP8+hhUKFgVALSO=MOW3jzvA@mail.gmail.com>
+References: 	<CAHk-=wjKJyzfJmOzBdEOqCFRc8Fh-rdGM4tvMXfW0WXbbHwV0w@mail.gmail.com>
+	 <20221122105054.4062213-1-geert@linux-m68k.org>
+	 <alpine.DEB.2.22.394.2211221154280.284524@ramsan.of.borg>
+	 <CADnq5_PvouSKugXxJXqkVeZf+kbP8+hhUKFgVALSO=MOW3jzvA@mail.gmail.com>
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH mm-unstable v1 07/20] mm: don't call vm_ops->huge_fault()
- in wp_huge_pmd()/wp_huge_pud() for private mappings
-Content-Language: en-US
-To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc: x86@kernel.org, linux-alpha@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
- linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
- etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- linux-samsung-soc@vger.kernel.org, linux-rdma@vger.kernel.org,
- linux-media@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
- linux-security-module@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Andrew Morton <akpm@linux-foundation.org>, Jason Gunthorpe <jgg@ziepe.ca>,
- John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Andrea Arcangeli <aarcange@redhat.com>, Hugh Dickins <hughd@google.com>,
- Nadav Amit <namit@vmware.com>, Matthew Wilcox <willy@infradead.org>,
- Mike Kravetz <mike.kravetz@oracle.com>,
- Muchun Song <songmuchun@bytedance.com>, Shuah Khan <shuah@kernel.org>,
- Lucas Stach <l.stach@pengutronix.de>, David Airlie <airlied@gmail.com>,
- Oded Gabbay <ogabbay@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- Christoph Hellwig <hch@infradead.org>,
- Alex Williamson <alex.williamson@redhat.com>
-References: <20221116102659.70287-1-david@redhat.com>
- <20221116102659.70287-8-david@redhat.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20221116102659.70287-8-david@redhat.com>
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221122_065009_719191_7B9C811F 
-X-CRM114-Status: GOOD (  24.06  )
+X-CRM114-CacheID: sfid-20221122_070047_066591_E0E68CAE 
+X-CRM114-Status: UNSURE (   8.10  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,88 +77,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 11/16/22 11:26, David Hildenbrand wrote:
-> If we already have a PMD/PUD mapped write-protected in a private mapping
-> and we want to break COW either due to FAULT_FLAG_WRITE or
-> FAULT_FLAG_UNSHARE, there is no need to inform the file system just like on
-> the PTE path.
+On Tue, 2022-11-22 at 08:55 -0500, Alex Deucher wrote:
+> > 
+> >    + /kisskb/src/arch/um/include/asm/processor-generic.h: error: called object is not a function or function pointer:  => 94:18
+> >    + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_topology.c: error: control reaches end of non-void function [-Werror=return-type]:  => 1934:1
+> > 
+> > um-x86_64/um-all{mod,yes}config (in kfd_cpumask_to_apic_id())
 > 
-> Let's just split (->zap) + fallback in that case.
-> 
-> This is a preparation for more generic FAULT_FLAG_UNSHARE support in
-> COW mappings.
-> 
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+> Presumably cpu_data is not defined on um-x86_64?  Does it even make
+> sense to build drivers on um-x86_64?
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+Drivers in general yes ;-)
 
-Nits:
+This driver, probably not.
 
-> ---
->  mm/memory.c | 24 +++++++++++++++---------
->  1 file changed, 15 insertions(+), 9 deletions(-)
-> 
-> diff --git a/mm/memory.c b/mm/memory.c
-> index c35e6cd32b6a..d47ad33c6487 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -4802,6 +4802,7 @@ static inline vm_fault_t create_huge_pmd(struct vm_fault *vmf)
->  static inline vm_fault_t wp_huge_pmd(struct vm_fault *vmf)
->  {
->  	const bool unshare = vmf->flags & FAULT_FLAG_UNSHARE;
-> +	vm_fault_t ret;
->  
->  	if (vma_is_anonymous(vmf->vma)) {
->  		if (likely(!unshare) &&
-> @@ -4809,11 +4810,13 @@ static inline vm_fault_t wp_huge_pmd(struct vm_fault *vmf)
->  			return handle_userfault(vmf, VM_UFFD_WP);
->  		return do_huge_pmd_wp_page(vmf);
->  	}
-> -	if (vmf->vma->vm_ops->huge_fault) {
-> -		vm_fault_t ret = vmf->vma->vm_ops->huge_fault(vmf, PE_SIZE_PMD);
->  
-> -		if (!(ret & VM_FAULT_FALLBACK))
-> -			return ret;
-> +	if (vmf->vma->vm_flags & (VM_SHARED | VM_MAYSHARE)) {
-> +		if (vmf->vma->vm_ops->huge_fault) {
+But the issue is that a lot of drivers "depends on X86_64" or such,
+where only "X86" is the arch symbol. You could add "X86 && X86_64" to
+really build on x86 64-bit only.
 
-I guess it could have been a single if with && and the reduced identation
-could fit keeping 'ret' declaration inside.
-AFAICS the later patches don't build more on top of this anyway.
-But also fine keeping as is.
+I didn't check this driver, but this has mostly popped up since UM got
+PCI support some time ago (which I added.)
 
-(the hunk below same)
+johannes
 
-> +			ret = vmf->vma->vm_ops->huge_fault(vmf, PE_SIZE_PMD);
-> +			if (!(ret & VM_FAULT_FALLBACK))
-> +				return ret;
-> +		}
->  	}
->  
->  	/* COW or write-notify handled on pte level: split pmd. */
-> @@ -4839,14 +4842,17 @@ static vm_fault_t wp_huge_pud(struct vm_fault *vmf, pud_t orig_pud)
->  {
->  #if defined(CONFIG_TRANSPARENT_HUGEPAGE) &&			\
->  	defined(CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD)
-> +	vm_fault_t ret;
-> +
->  	/* No support for anonymous transparent PUD pages yet */
->  	if (vma_is_anonymous(vmf->vma))
->  		goto split;
-> -	if (vmf->vma->vm_ops->huge_fault) {
-> -		vm_fault_t ret = vmf->vma->vm_ops->huge_fault(vmf, PE_SIZE_PUD);
-> -
-> -		if (!(ret & VM_FAULT_FALLBACK))
-> -			return ret;
-> +	if (vmf->vma->vm_flags & (VM_SHARED | VM_MAYSHARE)) {
-> +		if (vmf->vma->vm_ops->huge_fault) {
-> +			ret = vmf->vma->vm_ops->huge_fault(vmf, PE_SIZE_PUD);
-> +			if (!(ret & VM_FAULT_FALLBACK))
-> +				return ret;
-> +		}
->  	}
->  split:
->  	/* COW or write-notify not handled on PUD level: split pud.*/
 
 
 _______________________________________________
