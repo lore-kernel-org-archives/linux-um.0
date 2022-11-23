@@ -4,40 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD445C4332F
-	for <linux-um@archiver.kernel.org>; Wed, 23 Nov 2022 13:28:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34225C433FE
+	for <linux-um@archiver.kernel.org>; Wed, 23 Nov 2022 13:30:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
 	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dRchmQkzc0L9XOYayG2ui0G7izXYYieQFwUIr/kf4Go=; b=VQxvPV7+RvzAup
-	FUgG8UvDFFzk+r2OoXBEhhovxMuXXXIWmhTaZWV/GKlCYnaftkqPKlXt9HSmB+UA2/FT+8809i0C0
-	YNYJZZoapu7rfZtaWeNHi+lLT8qNLjv7QrQeY3QUSpm7wgZ+HNWfAG5wym7d9rg0AnMDAgS0RMchn
-	xF7LTeqpTANarJs04cX0xkd66we4JZzKfU0OIk6yLwv8Iz7Ljo1JhWc/SykqZzW3xmp7+PgQttv0Y
-	pPq5TdxfrrfDuxdicoYHJzE4RQ6VIPqCjt91+ZwBWxwOs4nYB1TKvyEnkBilpk530i0t2Fu0h5Ukm
-	15mKKfARVjFEgMkTHPMQ==;
+	List-Owner; bh=GKwIm+MQq4t01mB/a19WW32uSFfsFIMgPildQSfacQo=; b=synJljJuvhL33D
+	Gx4ultaGlJZa3imLsq1dWV6wTmVHYzP0O2BPBsa5jxD4r0awmR1sL/Pb628ahElEjd3UnCsajXY0w
+	x9BirIo15YCY5yLs1PT7RboKRx0tMr3DM1tYLHo6Eo+kK8HnSB2QD15uMUv8IS24j2EGorptGULfy
+	HsX5ag6tt4rmmfF3Xg7blDa35VZcQVYjwLl2kH9dd6ajMb539+uSaQNa9M7j9rszJgMhNjoKlBpB3
+	Sqx0XjELBCg9tMJmc3eQpWtPp6CJdrvZIkTQctJkSsZUiKX2KCAjCQSxHGmKPpPQuc2UuHyef89iy
+	kHdW/utCbPWO8OytZV4w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxpo8-00HEcH-Vb; Wed, 23 Nov 2022 13:28:56 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1oxppg-00HFci-Ax; Wed, 23 Nov 2022 13:30:32 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1oxpnq-00HEVg-Kr; Wed, 23 Nov 2022 13:28:41 +0000
+	id 1oxpom-00HEmk-8b; Wed, 23 Nov 2022 13:29:36 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=JzBAHGiYGonhKt624puQu+Q7dXE0IseQBohJYpzV3iw=; b=Sb/6Zyho4citOBJKT9yx1TRh6z
+	aYXOZcPE/OaPjdrDsad9Zl6v+CelP/dHX8ivDwborFfFtbPhKBFN2aaRe2VHSbxfy7oJZnGU/Vl1o
+	sHCIRlhC5MIkAaxvDQiyzSpgYiT0zbohqZfo4udtiiE8NbFVrvwyqXdLTDfESm80DsLRkg7ID+0av
+	5GfIUnwmxQJe447KlFVM+E5sUTNyC7a+ENFQXLPzNYDUL4WVRmAjkQhuB4l//eFWVkWCB9pcJ8lEs
+	cKekjp3ExXCkI67KGAGjn55QJw5CqLi1HDByAbTdgeCVpgdweYu0BPIfiNJj9rvG0WSnLMRpxxMB1
+	J/axFdvw==;
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	by desiato.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1oxpdL-003n18-Vt; Wed, 23 Nov 2022 13:17:50 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 1B64861C4E;
-	Wed, 23 Nov 2022 13:18:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74BDEC433C1;
-	Wed, 23 Nov 2022 13:18:32 +0000 (UTC)
-Message-ID: <e0701648-fec1-f1fd-0c69-8ed85e162a01@xs4all.nl>
-Date: Wed, 23 Nov 2022 14:18:31 +0100
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 0D2BB61CAD;
+	Wed, 23 Nov 2022 13:17:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC3BFC433D6;
+	Wed, 23 Nov 2022 13:17:36 +0000 (UTC)
+Message-ID: <73481668-9c41-7d01-d328-bd137a57c0b3@xs4all.nl>
+Date: Wed, 23 Nov 2022 14:17:35 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.4.1
-Subject: Re: [PATCH mm-unstable v1 15/20] media: pci/ivtv: remove FOLL_FORCE
- usage
+Subject: Re: [PATCH mm-unstable v1 13/20] media: videobuf-dma-sg: remove
+ FOLL_FORCE usage
 Content-Language: en-US
 To: David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
 Cc: x86@kernel.org, linux-alpha@vger.kernel.org,
@@ -61,15 +74,14 @@ Cc: x86@kernel.org, linux-alpha@vger.kernel.org,
  David Airlie <airlied@gmail.com>, Oded Gabbay <ogabbay@kernel.org>,
  Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@infradead.org>,
  Alex Williamson <alex.williamson@redhat.com>,
- Andy Walls <awalls@md.metrocast.net>,
  Mauro Carvalho Chehab <mchehab@kernel.org>
 References: <20221116102659.70287-1-david@redhat.com>
- <20221116102659.70287-16-david@redhat.com>
+ <20221116102659.70287-14-david@redhat.com>
 From: Hans Verkuil <hverkuil@xs4all.nl>
-In-Reply-To: <20221116102659.70287-16-david@redhat.com>
+In-Reply-To: <20221116102659.70287-14-david@redhat.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221123_052838_804663_0966179B 
-X-CRM114-Status: GOOD (  22.18  )
+X-CRM114-CacheID: sfid-20221123_131748_447096_2EFF75BA 
+X-CRM114-Status: GOOD (  20.93  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,62 +99,71 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On 16/11/2022 11:26, David Hildenbrand wrote:
-> FOLL_FORCE is really only for ptrace access. R/O pinning a page is
-> supposed to fail if the VMA misses proper access permissions (no VM_READ).
+> GUP now supports reliable R/O long-term pinning in COW mappings, such
+> that we break COW early. MAP_SHARED VMAs only use the shared zeropage so
+> far in one corner case (DAXFS file with holes), which can be ignored
+> because GUP does not support long-term pinning in fsdax (see
+> check_vma_flags()).
 > 
-> Let's just remove FOLL_FORCE usage here; there would have to be a pretty
-> good reason to allow arbitrary drivers to R/O pin pages in a PROT_NONE
-> VMA. Most probably, FOLL_FORCE usage is just some legacy leftover.
-
-I'm pretty sure about that as well, so:
+> Consequently, FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM is no longer required
+> for reliable R/O long-term pinning: FOLL_LONGTERM is sufficient. So stop
+> using FOLL_FORCE, which is really only for ptrace access.
+> 
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
 Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-Regards,
+Looks good!
 
 	Hans
 
-> 
-> Cc: Andy Walls <awalls@md.metrocast.net>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
 > ---
->  drivers/media/pci/ivtv/ivtv-udma.c | 2 +-
->  drivers/media/pci/ivtv/ivtv-yuv.c  | 5 ++---
->  2 files changed, 3 insertions(+), 4 deletions(-)
+>  drivers/media/v4l2-core/videobuf-dma-sg.c | 14 +++++---------
+>  1 file changed, 5 insertions(+), 9 deletions(-)
 > 
-> diff --git a/drivers/media/pci/ivtv/ivtv-udma.c b/drivers/media/pci/ivtv/ivtv-udma.c
-> index 210be8290f24..99b9f55ca829 100644
-> --- a/drivers/media/pci/ivtv/ivtv-udma.c
-> +++ b/drivers/media/pci/ivtv/ivtv-udma.c
-> @@ -115,7 +115,7 @@ int ivtv_udma_setup(struct ivtv *itv, unsigned long ivtv_dest_addr,
+> diff --git a/drivers/media/v4l2-core/videobuf-dma-sg.c b/drivers/media/v4l2-core/videobuf-dma-sg.c
+> index f75e5eedeee0..234e9f647c96 100644
+> --- a/drivers/media/v4l2-core/videobuf-dma-sg.c
+> +++ b/drivers/media/v4l2-core/videobuf-dma-sg.c
+> @@ -151,17 +151,16 @@ static void videobuf_dma_init(struct videobuf_dmabuf *dma)
+>  static int videobuf_dma_init_user_locked(struct videobuf_dmabuf *dma,
+>  			int direction, unsigned long data, unsigned long size)
+>  {
+> +	unsigned int gup_flags = FOLL_LONGTERM;
+>  	unsigned long first, last;
+> -	int err, rw = 0;
+> -	unsigned int flags = FOLL_FORCE;
+> +	int err;
 >  
->  	/* Pin user pages for DMA Xfer */
->  	err = pin_user_pages_unlocked(user_dma.uaddr, user_dma.page_count,
-> -			dma->map, FOLL_FORCE);
-> +			dma->map, 0);
+>  	dma->direction = direction;
+>  	switch (dma->direction) {
+>  	case DMA_FROM_DEVICE:
+> -		rw = READ;
+> +		gup_flags |= FOLL_WRITE;
+>  		break;
+>  	case DMA_TO_DEVICE:
+> -		rw = WRITE;
+>  		break;
+>  	default:
+>  		BUG();
+> @@ -177,14 +176,11 @@ static int videobuf_dma_init_user_locked(struct videobuf_dmabuf *dma,
+>  	if (NULL == dma->pages)
+>  		return -ENOMEM;
 >  
->  	if (user_dma.page_count != err) {
->  		IVTV_DEBUG_WARN("failed to map user pages, returned %d instead of %d\n",
-> diff --git a/drivers/media/pci/ivtv/ivtv-yuv.c b/drivers/media/pci/ivtv/ivtv-yuv.c
-> index 4ba10c34a16a..582146f8d70d 100644
-> --- a/drivers/media/pci/ivtv/ivtv-yuv.c
-> +++ b/drivers/media/pci/ivtv/ivtv-yuv.c
-> @@ -63,12 +63,11 @@ static int ivtv_yuv_prep_user_dma(struct ivtv *itv, struct ivtv_user_dma *dma,
+> -	if (rw == READ)
+> -		flags |= FOLL_WRITE;
+> -
+>  	dprintk(1, "init user [0x%lx+0x%lx => %lu pages]\n",
+>  		data, size, dma->nr_pages);
 >  
->  	/* Pin user pages for DMA Xfer */
->  	y_pages = pin_user_pages_unlocked(y_dma.uaddr,
-> -			y_dma.page_count, &dma->map[0], FOLL_FORCE);
-> +			y_dma.page_count, &dma->map[0], 0);
->  	uv_pages = 0; /* silence gcc. value is set and consumed only if: */
->  	if (y_pages == y_dma.page_count) {
->  		uv_pages = pin_user_pages_unlocked(uv_dma.uaddr,
-> -				uv_dma.page_count, &dma->map[y_pages],
-> -				FOLL_FORCE);
-> +				uv_dma.page_count, &dma->map[y_pages], 0);
->  	}
+> -	err = pin_user_pages(data & PAGE_MASK, dma->nr_pages,
+> -			     flags | FOLL_LONGTERM, dma->pages, NULL);
+> +	err = pin_user_pages(data & PAGE_MASK, dma->nr_pages, gup_flags,
+> +			     dma->pages, NULL);
 >  
->  	if (y_pages != y_dma.page_count || uv_pages != uv_dma.page_count) {
+>  	if (err != dma->nr_pages) {
+>  		dma->nr_pages = (err >= 0) ? err : 0;
 
 
 _______________________________________________
