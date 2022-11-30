@@ -4,55 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3731C4321E
-	for <linux-um@archiver.kernel.org>; Wed, 30 Nov 2022 21:56:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7473FC4321E
+	for <linux-um@archiver.kernel.org>; Wed, 30 Nov 2022 23:23:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=yb9D898J1gY+RGlGrbvCI9JXj1fZ2a064KreEgp74m0=; b=U+tunPd+IOIwtY
-	AbyGCS7SsRhGE1KvYYOtV/ppNxSgvupxVfqRPGsdu/uwp4MvlUqBS/I7Y51Bdo3GhZSW1R7wvjMA4
-	ypmj+rrAYLB0XN0gnXd/Yi9QyzRd9WltMp5CrlsRzDDd7yeYLWPNlB5K+0V4YAn5QKwqznnV7utWv
-	H05n/BmkI14MzM0ubbrNzc39wluUJHd+gW51VpvAmIV26KEtIPYewAtiJmLwx9Fiu3K2gdEJwD5fk
-	uDelAuR31fv8lISIa729iGHtI5eu2YUNP7Gu08MnDnPSu+Uh1ZloawJmxR/RjqqHuI/6ELA+s1EuN
-	XuycQu7XAwYu+GaU//Aw==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=x0LiadDo/mnRCyevdQCv5Q89blrgTEcSNEJg1ROOg7I=; b=XirdMZ3aOTkIzT
+	xP8dLhbEsRfoObrC6pzOEFXhekjbsO2QFg5lTIi5EjajOo+d/bNP3gRZgnNm7wjbnTZCxtfS5RpHW
+	yvzC3Z6hc2fLBEV5r0YAURseMHBvL8eow5zKSFrs6iTNAiiiy7/rCJ4WJdcGDOVRmyetmLzq+S54+
+	V26C1EZe1fFkykeJPuhCQAHLPaoY0cbPT907mJ4C9uyhqYKr8dJ59AeQmyHtptbHi1Yo2A/e88zzA
+	YgMUemB4f6n5zVYg4s1y/qrIi9D3SB0st+dj4J3ySiL7CmLH7AB3DzNIVGeHQwoUgF0IfWow1MPU/
+	Qq8ixnzc1csRMc7XVbyg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p0V3p-002uTn-1M; Wed, 30 Nov 2022 21:56:09 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1p0WQi-003CW2-EQ; Wed, 30 Nov 2022 23:23:52 +0000
+Received: from mail-pl1-x633.google.com ([2607:f8b0:4864:20::633])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p0V3n-002uTG-Mv; Wed, 30 Nov 2022 21:56:07 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=9ue0uGD9yX/1sJHyqmcNOU+aIhb/LFzhG5X5H+uhnGw=; b=eYuFdnVEKQN3qRV/BGXQG0Mxyd
-	fFwZQ1O+epwDYpg5jkS8lEjMUV9QQCveIntrqBrGceCtOokWuJOQw2se3juK0d2RzfVaLpfJgu0PD
-	7NsUelo2lxiHlGAnjkd3/kEFelkcxhp5ddwK6gP829fPi4D1YqYB6Ev3V6hBjHb4b5ldwXLjzcWpR
-	M8wcPUQ+bwxU2jyd/KRF6uC7yaYmuBGnOi6HMeJnKkhe2JcBV75ccO/KiDnymTY/62qqZeGZWLsGB
-	G5IIKQxENka/H3M061749bTb0qfMQGufCDpR9NraJM9CGU+5/+zMiTSa3BXAPujRHFFsYmtQY3nks
-	TB2gcCQA==;
-Received: from [2601:1c2:d80:3110::a2e7] (helo=casper.infradead.org)
-	by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p0V3s-00FKDQ-Io; Wed, 30 Nov 2022 21:56:13 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Richard Weinberger <richard@nod.at>,
-	linux-um@lists.infradead.org,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Helge Deller <deller@gmx.de>,
-	linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	Michal Januszewski <spock@gentoo.org>
-Subject: [PATCH 2/2] fbdev: uvesafb: don't build on UML
-Date: Wed, 30 Nov 2022 13:55:59 -0800
-Message-Id: <20221130215559.28969-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.38.1
+	id 1p0WJN-0039J3-DH
+	for linux-um@lists.infradead.org; Wed, 30 Nov 2022 23:16:19 +0000
+Received: by mail-pl1-x633.google.com with SMTP id jl24so722085plb.8
+        for <linux-um@lists.infradead.org>; Wed, 30 Nov 2022 15:16:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OI4oe9f9CJ36Kp9mJv1gCGk1ojeGZwXUPKDrYbhDj4k=;
+        b=UVR8LpN1aCq4PBkeoinaOtXdDTMRH+RSulkUIjjbH1VEtqx3WlY0N816NC3l4XGdZQ
+         deZFVpTfMZloq63bb+cMsor+078WnOOAMg+4Itrf0bXUcRVjr8cARcdbIE0AE6QRNdqm
+         AJvR/abVLCwjQmu76DuT+7lT88knfBiSMu+g1xqzXcA6OIeYnBjWoSRP7udLz2nMlXuA
+         bAmJkuhfkutXKRLaJYDhvzYcwvWscu48qjRT1h/GPSBW5OlDs38VPv79RkAOF5u+Q36q
+         /YHHkNTUnG7HZfpaqHumPFTCGNSeLZSlYrKYSzflbmfqojCWPRN+a4Lg+WrbO7n3oLRs
+         tbCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OI4oe9f9CJ36Kp9mJv1gCGk1ojeGZwXUPKDrYbhDj4k=;
+        b=iHZteljKsEygYHxRq3bJuvVnWS9xunDPlwC1iGc6bL6THrWdIlxIVTs5D7McjVx5pW
+         3IzSV+ifEIHYY8xAG0D6fBxzDFEdEZVny3H20HE6xMVJa/YhUEb6j8/mytOOx2u3/hqm
+         srLW0LNGhdZvQGco8aW3qNE4u6+NYJxxwBDWAtItdyaL6U4FIAMmrE8Jf9FzOjN1kqJf
+         9DYGlXdMy8yTKpVsRXfz1HPhgiRmW9DAdpA9gEEP5bSHwLYSbc0pfHt5totzqmVxJReK
+         WK/mp2v4T3bo3WIRHF9KbpjUrXEVkTRSohybPx+RqUsk1a6kbRq5Hrm8VcZAGpOIsVPm
+         viUQ==
+X-Gm-Message-State: ANoB5pnKVzbkVZJ023ZqsATNSZUeyINlawlic4J4YYxFp2vBy2mgmN0H
+	Hs+7vO7jJYuJBjxCnQtjEdI=
+X-Google-Smtp-Source: AA0mqf5bQhX1KOZl7ZuLYypPGnOmCEf/iMe9H+mgCFFH7lLQUvqJXOKgfns+n8I09yS1nrd9RZ5HBA==
+X-Received: by 2002:a17:90a:bd11:b0:206:64cd:4797 with SMTP id y17-20020a17090abd1100b0020664cd4797mr67221140pjr.103.1669850171343;
+        Wed, 30 Nov 2022 15:16:11 -0800 (PST)
+Received: from google.com ([2620:15c:9d:2:360e:7e9f:b234:c094])
+        by smtp.gmail.com with ESMTPSA id f23-20020aa79697000000b005742ee3bf71sm1905211pfk.20.2022.11.30.15.16.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Nov 2022 15:16:10 -0800 (PST)
+Date: Wed, 30 Nov 2022 15:16:07 -0800
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-kernel@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
+	Richard Weinberger <richard@nod.at>, Miloslav Trmac <mitr@volny.cz>,
+	linux-input@vger.kernel.org, linux-um@lists.infradead.org
+Subject: Re: [PATCH] input/misc: wistron_btns: disable on UML
+Message-ID: <Y4fkNy9URvaW+AtN@google.com>
+References: <20221130161604.1879-1-rdunlap@infradead.org>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20221130161604.1879-1-rdunlap@infradead.org>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20221130_151617_521884_7082CF55 
+X-CRM114-Status: GOOD (  10.50  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,36 +85,35 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-VGhlIHV2ZXNhZmIgZmJkZXYgZHJpdmVyIHVzZXMgbWVtb3J5IG1hbmFnZW1lbnQgaW5mb3JtYXRp
-b24gdGhhdCBpcyBub3QKYXZhaWxhYmxlIG9uIEFSQ0g9dW0sIHNvIGRvbid0IGFsbG93IHRoaXMg
-ZHJpdmVyIHRvIGJlIGJ1aWx0IG9uIFVNTC4KClByZXZlbnRzIHRoZXNlIGJ1aWxkIGVycm9yczoK
-Ci4uL2RyaXZlcnMvdmlkZW8vZmJkZXYvdXZlc2FmYi5jOiBJbiBmdW5jdGlvbiDigJh1dmVzYWZi
-X3ZiZV9pbml04oCZOgouLi9kcml2ZXJzL3ZpZGVvL2ZiZGV2L3V2ZXNhZmIuYzo4MDc6MjE6IGVy
-cm9yOiDigJhfX3N1cHBvcnRlZF9wdGVfbWFza+KAmSB1bmRlY2xhcmVkIChmaXJzdCB1c2UgaW4g
-dGhpcyBmdW5jdGlvbikKICA4MDcgfCAgICAgICAgICAgICAgICAgaWYgKF9fc3VwcG9ydGVkX3B0
-ZV9tYXNrICYgX1BBR0VfTlgpIHsKLi4vZHJpdmVycy92aWRlby9mYmRldi91dmVzYWZiLmM6ODA3
-OjQ0OiBlcnJvcjog4oCYX1BBR0VfTljigJkgdW5kZWNsYXJlZCAoZmlyc3QgdXNlIGluIHRoaXMg
-ZnVuY3Rpb24pCiAgODA3IHwgICAgICAgICAgICAgICAgIGlmIChfX3N1cHBvcnRlZF9wdGVfbWFz
-ayAmIF9QQUdFX05YKSB7CgpGaXhlczogNjhmNWQzZjNiNjU0ICgidW06IGFkZCBQQ0kgb3ZlciB2
-aXJ0aW8gZW11bGF0aW9uIGRyaXZlciIpClNpZ25lZC1vZmYtYnk6IFJhbmR5IER1bmxhcCA8cmR1
-bmxhcEBpbmZyYWRlYWQub3JnPgpDYzogSm9oYW5uZXMgQmVyZyA8am9oYW5uZXNAc2lwc29sdXRp
-b25zLm5ldD4KQ2M6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+CkNjOiBsaW51
-eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCkNjOiBEYW5pZWwgVmV0dGVyIDxkYW5pZWxAZmZ3bGwu
-Y2g+CkNjOiBIZWxnZSBEZWxsZXIgPGRlbGxlckBnbXguZGU+CkNjOiBsaW51eC1mYmRldkB2Z2Vy
-Lmtlcm5lbC5vcmcKQ2M6IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKQ2M6IE1pY2hh
-bCBKYW51c3pld3NraSA8c3BvY2tAZ2VudG9vLm9yZz4KLS0tCiBkcml2ZXJzL3ZpZGVvL2ZiZGV2
-L0tjb25maWcgfCAgICAxICsKIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKQoKZGlmZiAt
-LSBhL2RyaXZlcnMvdmlkZW8vZmJkZXYvS2NvbmZpZyBiL2RyaXZlcnMvdmlkZW8vZmJkZXYvS2Nv
-bmZpZwotLS0gYS9kcml2ZXJzL3ZpZGVvL2ZiZGV2L0tjb25maWcKKysrIGIvZHJpdmVycy92aWRl
-by9mYmRldi9LY29uZmlnCkBAIC02MDksNiArNjA5LDcgQEAgY29uZmlnIEZCX1RHQQogY29uZmln
-IEZCX1VWRVNBCiAJdHJpc3RhdGUgIlVzZXJzcGFjZSBWRVNBIFZHQSBncmFwaGljcyBzdXBwb3J0
-IgogCWRlcGVuZHMgb24gRkIgJiYgQ09OTkVDVE9SCisJZGVwZW5kcyBvbiAhVU1MCiAJc2VsZWN0
-IEZCX0NGQl9GSUxMUkVDVAogCXNlbGVjdCBGQl9DRkJfQ09QWUFSRUEKIAlzZWxlY3QgRkJfQ0ZC
-X0lNQUdFQkxJVAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
+On Wed, Nov 30, 2022 at 08:16:04AM -0800, Randy Dunlap wrote:
+> The wistron_btns driver calls rtc_cmos_read(), which isn't
+> available with UML builds, so disable this driver on UML.
+> 
+> Prevents this build error:
+> 
+> ld: drivers/input/misc/wistron_btns.o: in function `poll_bios':
+> wistron_btns.c:(.text+0x4be): undefined reference to `rtc_cmos_read'
+> 
+> Fixes: 0bbadafdc49d ("um: allow disabling NO_IOMEM") # v5.14+
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Johannes Berg <johannes.berg@intel.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: Miloslav Trmac <mitr@volny.cz>
+> Cc: linux-input@vger.kernel.org
+> Cc: linux-um@lists.infradead.org
+
+Applied, thank you.
+
+-- 
+Dmitry
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
