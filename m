@@ -4,76 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7473FC4321E
-	for <linux-um@archiver.kernel.org>; Wed, 30 Nov 2022 23:23:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2016C4321E
+	for <linux-um@archiver.kernel.org>; Thu,  1 Dec 2022 01:25:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=x0LiadDo/mnRCyevdQCv5Q89blrgTEcSNEJg1ROOg7I=; b=XirdMZ3aOTkIzT
-	xP8dLhbEsRfoObrC6pzOEFXhekjbsO2QFg5lTIi5EjajOo+d/bNP3gRZgnNm7wjbnTZCxtfS5RpHW
-	yvzC3Z6hc2fLBEV5r0YAURseMHBvL8eow5zKSFrs6iTNAiiiy7/rCJ4WJdcGDOVRmyetmLzq+S54+
-	V26C1EZe1fFkykeJPuhCQAHLPaoY0cbPT907mJ4C9uyhqYKr8dJ59AeQmyHtptbHi1Yo2A/e88zzA
-	YgMUemB4f6n5zVYg4s1y/qrIi9D3SB0st+dj4J3ySiL7CmLH7AB3DzNIVGeHQwoUgF0IfWow1MPU/
-	Qq8ixnzc1csRMc7XVbyg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=Bz0XCEtq4k+aksYb/5diUF70F3kxlmMdgc7UT73sEA0=; b=rvT7VYZn6kwT27
+	nKYrG5IBsuSYR2qXmk4vmrytiG+kj4a4z57r4dMWhti4HYXkBoAuBAQENSdUO3eMFsMCkwhxvi/sv
+	K3+mXSDF8wIXy3KyZb7HmasVYTcq5CjQHZ55vfIYxlcTtqUoAoDVmMyb0SCLlvK96awJGf2a8hnXc
+	OZrq/96J/F0dlaTqo/ql+grOSgKTz6dTg+OGWaL52Rpkj/Myhvyw+IAwPfLrwytuJghzLbQaT+hJf
+	Hmf/VvK9KuxRLwt8StfwV86NNDnikpg7l9MaJgJC2ZmCFS9hjZqv/G/Ji3Zqkchg4qYwAke55OWcX
+	INfP3OrjxUOB3YmJnWKg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p0WQi-003CW2-EQ; Wed, 30 Nov 2022 23:23:52 +0000
-Received: from mail-pl1-x633.google.com ([2607:f8b0:4864:20::633])
+	id 1p0YKm-003mVj-Ct; Thu, 01 Dec 2022 01:25:52 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p0WJN-0039J3-DH
-	for linux-um@lists.infradead.org; Wed, 30 Nov 2022 23:16:19 +0000
-Received: by mail-pl1-x633.google.com with SMTP id jl24so722085plb.8
-        for <linux-um@lists.infradead.org>; Wed, 30 Nov 2022 15:16:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OI4oe9f9CJ36Kp9mJv1gCGk1ojeGZwXUPKDrYbhDj4k=;
-        b=UVR8LpN1aCq4PBkeoinaOtXdDTMRH+RSulkUIjjbH1VEtqx3WlY0N816NC3l4XGdZQ
-         deZFVpTfMZloq63bb+cMsor+078WnOOAMg+4Itrf0bXUcRVjr8cARcdbIE0AE6QRNdqm
-         AJvR/abVLCwjQmu76DuT+7lT88knfBiSMu+g1xqzXcA6OIeYnBjWoSRP7udLz2nMlXuA
-         bAmJkuhfkutXKRLaJYDhvzYcwvWscu48qjRT1h/GPSBW5OlDs38VPv79RkAOF5u+Q36q
-         /YHHkNTUnG7HZfpaqHumPFTCGNSeLZSlYrKYSzflbmfqojCWPRN+a4Lg+WrbO7n3oLRs
-         tbCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OI4oe9f9CJ36Kp9mJv1gCGk1ojeGZwXUPKDrYbhDj4k=;
-        b=iHZteljKsEygYHxRq3bJuvVnWS9xunDPlwC1iGc6bL6THrWdIlxIVTs5D7McjVx5pW
-         3IzSV+ifEIHYY8xAG0D6fBxzDFEdEZVny3H20HE6xMVJa/YhUEb6j8/mytOOx2u3/hqm
-         srLW0LNGhdZvQGco8aW3qNE4u6+NYJxxwBDWAtItdyaL6U4FIAMmrE8Jf9FzOjN1kqJf
-         9DYGlXdMy8yTKpVsRXfz1HPhgiRmW9DAdpA9gEEP5bSHwLYSbc0pfHt5totzqmVxJReK
-         WK/mp2v4T3bo3WIRHF9KbpjUrXEVkTRSohybPx+RqUsk1a6kbRq5Hrm8VcZAGpOIsVPm
-         viUQ==
-X-Gm-Message-State: ANoB5pnKVzbkVZJ023ZqsATNSZUeyINlawlic4J4YYxFp2vBy2mgmN0H
-	Hs+7vO7jJYuJBjxCnQtjEdI=
-X-Google-Smtp-Source: AA0mqf5bQhX1KOZl7ZuLYypPGnOmCEf/iMe9H+mgCFFH7lLQUvqJXOKgfns+n8I09yS1nrd9RZ5HBA==
-X-Received: by 2002:a17:90a:bd11:b0:206:64cd:4797 with SMTP id y17-20020a17090abd1100b0020664cd4797mr67221140pjr.103.1669850171343;
-        Wed, 30 Nov 2022 15:16:11 -0800 (PST)
-Received: from google.com ([2620:15c:9d:2:360e:7e9f:b234:c094])
-        by smtp.gmail.com with ESMTPSA id f23-20020aa79697000000b005742ee3bf71sm1905211pfk.20.2022.11.30.15.16.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Nov 2022 15:16:10 -0800 (PST)
-Date: Wed, 30 Nov 2022 15:16:07 -0800
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-kernel@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
-	Richard Weinberger <richard@nod.at>, Miloslav Trmac <mitr@volny.cz>,
-	linux-input@vger.kernel.org, linux-um@lists.infradead.org
-Subject: Re: [PATCH] input/misc: wistron_btns: disable on UML
-Message-ID: <Y4fkNy9URvaW+AtN@google.com>
-References: <20221130161604.1879-1-rdunlap@infradead.org>
+	id 1p0YKl-003mVM-Ex; Thu, 01 Dec 2022 01:25:51 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=pk5DH7G/x9KTP95IkRi4C5JBQ3WWwGoC+AVueVfHSio=; b=SespthigY8G9VWNCp+UTy0ryA8
+	3fxpFCtz3lHm0vPwhJfeb4mvc4aF6+diWFXOfkDxKWlNk2O0ys9mdxqowxrWSBQ/kVCts7+enK/bC
+	nIbTSQ9Y9cDyvv97f6pH9MLoh1bsnnGDML80yWMSBYlLD/wJUa3QWe2sgQJe+7VJALZJoPWi9g+Y0
+	/Zf5kzR3ouTL8eqMtjQbjpa2DBEm87Jfwi4c9tWu8GfxNZH8NZ+638Ml86KoB/g6jSYNbiztUnT0u
+	Ob7M73kMxDoul/3iiFB//OalseT4C8uavkwlY0s8GJphLD50Yg7+/GA+zKgszdVBX3EwK0lXIZ2in
+	7D5uOTvg==;
+Received: from [2601:1c2:d80:3110::a2e7] (helo=casper.infradead.org)
+	by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1p0YKo-00FVtG-47; Thu, 01 Dec 2022 01:25:54 +0000
+From: Randy Dunlap <rdunlap@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Richard Weinberger <richard@nod.at>,
+	linux-um@lists.infradead.org,
+	Andres Salomon <dilinger@queued.net>,
+	linux-geode@lists.infradead.org,
+	Lee Jones <lee@kernel.org>
+Subject: [PATCH] mfd: cs5535: don't build on UML
+Date: Wed, 30 Nov 2022 17:25:41 -0800
+Message-Id: <20221201012541.11809-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20221130161604.1879-1-rdunlap@infradead.org>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221130_151617_521884_7082CF55 
-X-CRM114-Status: GOOD (  10.50  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,35 +62,58 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Nov 30, 2022 at 08:16:04AM -0800, Randy Dunlap wrote:
-> The wistron_btns driver calls rtc_cmos_read(), which isn't
-> available with UML builds, so disable this driver on UML.
-> 
-> Prevents this build error:
-> 
-> ld: drivers/input/misc/wistron_btns.o: in function `poll_bios':
-> wistron_btns.c:(.text+0x4be): undefined reference to `rtc_cmos_read'
-> 
-> Fixes: 0bbadafdc49d ("um: allow disabling NO_IOMEM") # v5.14+
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Johannes Berg <johannes.berg@intel.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: Miloslav Trmac <mitr@volny.cz>
-> Cc: linux-input@vger.kernel.org
-> Cc: linux-um@lists.infradead.org
-
-Applied, thank you.
-
--- 
-Dmitry
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+VGhlIGNzNTUzNS1tZmQgZHJpdmVyIHVzZXMgQ1BVLXNwZWNpZmljIGRhdGEgdGhhdCBpcyBub3Qg
+YXZhaWxhYmxlCmZvciBBUkNIPXVtIGJ1aWxkcywgc28gZG9uJ3QgYWxsb3cgaXQgdG8gYmUgYnVp
+bHQgZm9yIFVNTC4KClByZXZlbnRzIHRoZXNlIGJ1aWxkIGVycm9yczoKCkluIGZpbGUgaW5jbHVk
+ZWQgZnJvbSAuLi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9vbHBjLmg6NywKICAgICAgICAgICAgICAg
+ICBmcm9tIC4uL2RyaXZlcnMvbWZkL2NzNTUzNS1tZmQuYzoxNzoKLi4vYXJjaC94ODYvaW5jbHVk
+ZS9hc20vZ2VvZGUuaDogSW4gZnVuY3Rpb24g4oCYaXNfZ2VvZGVfZ3jigJk6Ci4uL2FyY2gveDg2
+L2luY2x1ZGUvYXNtL2dlb2RlLmg6MTY6MzE6IGVycm9yOiDigJhzdHJ1Y3QgY3B1aW5mb191beKA
+mSBoYXMgbm8gbWVtYmVyIG5hbWVkIOKAmHg4Nl92ZW5kb3LigJkKICAgMTYgfCAgICAgICAgIHJl
+dHVybiAoKGJvb3RfY3B1X2RhdGEueDg2X3ZlbmRvciA9PSBYODZfVkVORE9SX05TQykgJiYKLi4v
+YXJjaC94ODYvaW5jbHVkZS9hc20vZ2VvZGUuaDoxNjo0NjogZXJyb3I6IOKAmFg4Nl9WRU5ET1Jf
+TlND4oCZIHVuZGVjbGFyZWQgKGZpcnN0IHVzZSBpbiB0aGlzIGZ1bmN0aW9uKTsgZGlkIHlvdSBt
+ZWFuIOKAmFg4Nl9WRU5ET1JfQU5Z4oCZPwogICAxNiB8ICAgICAgICAgcmV0dXJuICgoYm9vdF9j
+cHVfZGF0YS54ODZfdmVuZG9yID09IFg4Nl9WRU5ET1JfTlNDKSAmJgouLi9hcmNoL3g4Ni9pbmNs
+dWRlL2FzbS9nZW9kZS5oOjE3OjMxOiBlcnJvcjog4oCYc3RydWN0IGNwdWluZm9fdW3igJkgaGFz
+IG5vIG1lbWJlciBuYW1lZCDigJh4ODbigJkKICAgMTcgfCAgICAgICAgICAgICAgICAgKGJvb3Rf
+Y3B1X2RhdGEueDg2ID09IDUpICYmCi4uL2FyY2gveDg2L2luY2x1ZGUvYXNtL2dlb2RlLmg6MTg6
+MzE6IGVycm9yOiDigJhzdHJ1Y3QgY3B1aW5mb191beKAmSBoYXMgbm8gbWVtYmVyIG5hbWVkIOKA
+mHg4Nl9tb2RlbOKAmQogICAxOCB8ICAgICAgICAgICAgICAgICAoYm9vdF9jcHVfZGF0YS54ODZf
+bW9kZWwgPT0gNSkpOwouLi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9nZW9kZS5oOiBJbiBmdW5jdGlv
+biDigJhpc19nZW9kZV9seOKAmToKLi4vYXJjaC94ODYvaW5jbHVkZS9hc20vZ2VvZGUuaDoyMzoz
+MTogZXJyb3I6IOKAmHN0cnVjdCBjcHVpbmZvX3Vt4oCZIGhhcyBubyBtZW1iZXIgbmFtZWQg4oCY
+eDg2X3ZlbmRvcuKAmQogICAyMyB8ICAgICAgICAgcmV0dXJuICgoYm9vdF9jcHVfZGF0YS54ODZf
+dmVuZG9yID09IFg4Nl9WRU5ET1JfQU1EKSAmJgouLi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9nZW9k
+ZS5oOjIzOjQ2OiBlcnJvcjog4oCYWDg2X1ZFTkRPUl9BTUTigJkgdW5kZWNsYXJlZCAoZmlyc3Qg
+dXNlIGluIHRoaXMgZnVuY3Rpb24pOyBkaWQgeW91IG1lYW4g4oCYWDg2X1ZFTkRPUl9BTlnigJk/
+CiAgIDIzIHwgICAgICAgICByZXR1cm4gKChib290X2NwdV9kYXRhLng4Nl92ZW5kb3IgPT0gWDg2
+X1ZFTkRPUl9BTUQpICYmCi4uL2FyY2gveDg2L2luY2x1ZGUvYXNtL2dlb2RlLmg6MjQ6MzE6IGVy
+cm9yOiDigJhzdHJ1Y3QgY3B1aW5mb191beKAmSBoYXMgbm8gbWVtYmVyIG5hbWVkIOKAmHg4NuKA
+mQogICAyNCB8ICAgICAgICAgICAgICAgICAoYm9vdF9jcHVfZGF0YS54ODYgPT0gNSkgJiYKLi4v
+YXJjaC94ODYvaW5jbHVkZS9hc20vZ2VvZGUuaDoyNTozMTogZXJyb3I6IOKAmHN0cnVjdCBjcHVp
+bmZvX3Vt4oCZIGhhcyBubyBtZW1iZXIgbmFtZWQg4oCYeDg2X21vZGVs4oCZCiAgIDI1IHwgICAg
+ICAgICAgICAgICAgIChib290X2NwdV9kYXRhLng4Nl9tb2RlbCA9PSAxMCkpOwoKRml4ZXM6IDY4
+ZjVkM2YzYjY1NCAoInVtOiBhZGQgUENJIG92ZXIgdmlydGlvIGVtdWxhdGlvbiBkcml2ZXIiKQpT
+aWduZWQtb2ZmLWJ5OiBSYW5keSBEdW5sYXAgPHJkdW5sYXBAaW5mcmFkZWFkLm9yZz4KQ2M6IEpv
+aGFubmVzIEJlcmcgPGpvaGFubmVzQHNpcHNvbHV0aW9ucy5uZXQ+CkNjOiBSaWNoYXJkIFdlaW5i
+ZXJnZXIgPHJpY2hhcmRAbm9kLmF0PgpDYzogbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpD
+YzogQW5kcmVzIFNhbG9tb24gPGRpbGluZ2VyQHF1ZXVlZC5uZXQ+CkNjOiBsaW51eC1nZW9kZUBs
+aXN0cy5pbmZyYWRlYWQub3JnCkNjOiBMZWUgSm9uZXMgPGxlZUBrZXJuZWwub3JnPgotLS0KIGRy
+aXZlcnMvbWZkL0tjb25maWcgfCAgICAxICsKIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigr
+KQoKZGlmZiAtLSBhL2RyaXZlcnMvbWZkL0tjb25maWcgYi9kcml2ZXJzL21mZC9LY29uZmlnCi0t
+LSBhL2RyaXZlcnMvbWZkL0tjb25maWcKKysrIGIvZHJpdmVycy9tZmQvS2NvbmZpZwpAQCAtMTUs
+NiArMTUsNyBAQCBjb25maWcgTUZEX0NTNTUzNQogCXRyaXN0YXRlICJBTUQgQ1M1NTM1IGFuZCBD
+UzU1MzYgc291dGhicmlkZ2UgY29yZSBmdW5jdGlvbnMiCiAJc2VsZWN0IE1GRF9DT1JFCiAJZGVw
+ZW5kcyBvbiBQQ0kgJiYgKFg4Nl8zMiB8fCAoWDg2ICYmIENPTVBJTEVfVEVTVCkpCisJZGVwZW5k
+cyBvbiAhVU1MCiAJaGVscAogCSAgVGhpcyBpcyB0aGUgY29yZSBkcml2ZXIgZm9yIENTNTUzNS9D
+UzU1MzYgTUZEIGZ1bmN0aW9ucy4gIFRoaXMgaXMKIAkgIG5lY2Vzc2FyeSBmb3IgdXNpbmcgdGhl
+IGJvYXJkJ3MgR1BJTyBhbmQgTUZHUFQgZnVuY3Rpb25hbGl0eS4KCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51
+eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
+YW4vbGlzdGluZm8vbGludXgtdW0K
