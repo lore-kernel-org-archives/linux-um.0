@@ -4,61 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD42CC4708D
-	for <linux-um@archiver.kernel.org>; Sun,  4 Dec 2022 13:23:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E4B6C4321E
+	for <linux-um@archiver.kernel.org>; Sun,  4 Dec 2022 16:11:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Date:Message-Id:Subject:
-	References:In-Reply-To:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CuacR08dSJilqaxaUTsjQBW+QYMbrh9gED1gVV4wjps=; b=ZsXoFFoT6HdMYA
-	vlarx3ZkIIckhIWTMExlJluLAXXTh5A2ESFdxuTZve5u4Iue0fVm/w2/RWi1s8rJypHpMOw8fbTbW
-	j6BbkkIVYFQqPhrr87Gpjz5N0Q430/qS2kSkCB/l5y9UNaCnFA7RLrcdxrUPdrmNiEp0BMrUD3n3e
-	OhJM2Z5caRcQhZVs9VJvnwZhmQHFWqtAaJA69IJp+H6N577CkaQnlvaMYNUMDUqq9DG6YlIbZZ05g
-	ubPmX3zhMhb6pSqpJAbSyP8oBovXcDL51DlD6VPr/DYLs+lc1NikaJOjlodY3Z+ZaC0I0Xo7+zJzm
-	MCRdzH7Se6tlh4ALVBTg==;
+	List-Owner; bh=4at30IgEf5TJ+ue/McGf9+CNvf1Y6tMmQmxG4VlKQk8=; b=xjAP+PLeG++Y0u
+	0rVdh4rhx5iNi8NcQGvgKs5faI8dMpQZtnPZY/yTCaip5cRs2IHH97c3Tx9OaxHg3IH28pb8R2WbE
+	rjHpUXT80qqS3iiDy4L5iRF8zcUyKCmXb/5jd8W4XUWFcvma8x+A50/V9+hpQRSTeYYV3pyf8Cxzg
+	tMzdiG7HAjDBL6YIyVii7QlD/lKnDf9+f0yFOHHwlWnaw6WvhTkGysLrpexKGQB6abuOSTjjIpBgU
+	teQ+lDr1Osbs9bXty4iNSwWfK5sgtDVtUGJ7ZhnP3gV6jO1XuKin4boCT7BbieC8dL09aHRuO7vDe
+	pykHTfRwlB6pvQK9d0jA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p1oy4-008Ci7-CF; Sun, 04 Dec 2022 13:23:40 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1p1oy1-008Cfw-EG
-	for linux-um@lists.infradead.org; Sun, 04 Dec 2022 13:23:38 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id BFF6DB8092B;
-	Sun,  4 Dec 2022 13:23:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBD00C433D6;
-	Sun,  4 Dec 2022 13:23:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1670160214;
-	bh=MgTQ8q6E94moHiSPp3pcN9AG9weUpTT6tPXfNB3DjXg=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=s/YG8gsFRni1Nh1LCZkoIKTtY8hvwB2nORPEAx9GViiDkghnOKCKc8RC/doRodMtT
-	 /66K3f2d+Pk144Cvv133R5yemIgStXC+rS8V2A8b3lprEAW6h0MGt32aeCGPNnsPDm
-	 cF441iXVZFEN49kOR8/0vANSIqw6ITUKstzEJtN1D3S/Jb3mhBv7gRNmilAfHor1h7
-	 YoPTdGR4doS3QjiGmHJnmDEXoPtC9spDMSRF/p54TZOmcFwcEyPcSjVw5FQ3XMNK9u
-	 0MX6rPwv/+nVo7GPxoNnuSKFZkumcDzAclZ6Yu+GLRYvH6QlWbIueLqHP6dfb9OZj7
-	 GIVkGlTaWLVrA==
-From: Leon Romanovsky <leon@kernel.org>
-To: linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Christoph Hellwig <hch@infradead.org>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>, Jeff Dike <jdike@addtoit.com>,
- Johannes Berg <johannes@sipsolutions.net>, Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org,
- linux-rdma@vger.kernel.org, Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-In-Reply-To: <20221202211940.29111-1-rdunlap@infradead.org>
-References: <20221202211940.29111-1-rdunlap@infradead.org>
-Subject: Re: [PATCH v2] infiniband: disable IB HW for UML
-Message-Id: <167016020363.36226.13998271236937647073.b4-ty@kernel.org>
-Date: Sun, 04 Dec 2022 15:23:23 +0200
+	id 1p1raa-009YTw-AD; Sun, 04 Dec 2022 16:11:36 +0000
+Received: from [2601:1c2:d80:3110::a2e7]
+	by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1p1rZI-009Y2B-Lh; Sun, 04 Dec 2022 16:10:16 +0000
+Message-ID: <12a78373-024a-1e50-01c1-10985815ff1f@infradead.org>
+Date: Sun, 4 Dec 2022 08:10:14 -0800
 MIME-Version: 1.0
-X-Mailer: b4 0.11.0-dev-87e0e
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221204_052337_646114_6132198A 
-X-CRM114-Status: UNSURE (   7.25  )
-X-CRM114-Notice: Please train this message.
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH v2] infiniband: disable IB HW for UML
+Content-Language: en-US
+To: Leon Romanovsky <leon@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Jason Gunthorpe <jgg@nvidia.com>,
+ Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+ Christoph Hellwig <hch@infradead.org>, linux-rdma@vger.kernel.org,
+ Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
+References: <20221202211940.29111-1-rdunlap@infradead.org>
+ <Y4ye8YOWk0V/BqKL@unreal>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <Y4ye8YOWk0V/BqKL@unreal>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,22 +58,57 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2 Dec 2022 13:19:40 -0800, Randy Dunlap wrote:
-> Disable all of drivers/infiniband/hw/ for UML builds until someone
-> needs it and provides patches to support it.
-> 
-> This prevents build errors in hw/qib/qib_wc_x86_64.c.
-> 
-> 
 
-Applied, thanks!
 
-[1/1] infiniband: disable IB HW for UML
-      https://git.kernel.org/rdma/rdma/c/323a74fc20f53c
+On 12/4/22 05:21, Leon Romanovsky wrote:
+> On Fri, Dec 02, 2022 at 01:19:40PM -0800, Randy Dunlap wrote:
+>> Disable all of drivers/infiniband/hw/ for UML builds until someone
+>> needs it and provides patches to support it.
+>>
+>> This prevents build errors in hw/qib/qib_wc_x86_64.c.
+>>
+>> Fixes: 68f5d3f3b654 ("um: add PCI over virtio emulation driver")
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Suggested-by: Leon Romanovsky <leon@kernel.org>
+>> Cc: Jason Gunthorpe <jgg@nvidia.com>
+>> Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+>> Cc: Christoph Hellwig <hch@infradead.org>
+>> Cc: linux-rdma@vger.kernel.org
+>> Cc: Jeff Dike <jdike@addtoit.com>
+>> Cc: Richard Weinberger <richard@nod.at>
+>> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+>> Cc: Johannes Berg <johannes@sipsolutions.net>
+>> Cc: linux-um@lists.infradead.org
+>> ---
+>> v2: just disable infiniband/hw/, not all of infiniband.
+>>
+>>  drivers/infiniband/Kconfig |    2 ++
+>>  1 file changed, 2 insertions(+)
+> 
+> I added rdmavt to the mix and applied.
 
-Best regards,
+Sounds good. Thanks.
+
+> https://lore.kernel.org/linux-rdma/20221130200958.25305-1-rdunlap@infradead.org/
+> 
+> diff --git a/drivers/infiniband/Kconfig b/drivers/infiniband/Kconfig
+> index 6ee97c898231..a5827d11e934 100644
+> --- a/drivers/infiniband/Kconfig
+> +++ b/drivers/infiniband/Kconfig
+> @@ -95,8 +95,8 @@ source "drivers/infiniband/hw/qedr/Kconfig"
+>  source "drivers/infiniband/hw/qib/Kconfig"
+>  source "drivers/infiniband/hw/usnic/Kconfig"
+>  source "drivers/infiniband/hw/vmw_pvrdma/Kconfig"
+> -endif # !UML
+>  source "drivers/infiniband/sw/rdmavt/Kconfig"
+> +endif # !UML
+>  source "drivers/infiniband/sw/rxe/Kconfig"
+>  source "drivers/infiniband/sw/siw/Kconfig"
+>  endif
+> (END)
+
 -- 
-Leon Romanovsky <leon@kernel.org>
+~Randy
 
 _______________________________________________
 linux-um mailing list
