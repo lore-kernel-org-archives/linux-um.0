@@ -4,41 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34B32C4167B
-	for <linux-um@archiver.kernel.org>; Wed, 28 Dec 2022 16:14:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1EC2C4167B
+	for <linux-um@archiver.kernel.org>; Wed, 28 Dec 2022 16:20:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jCWeuD+NxZiW5CYHBTFp2dloWtJwnL79mDlaSqrzG/Q=; b=NdiXPX+oCgxFEA
-	+1dANLSEm3Ej/IOUNQatOb05NLhpavy8Elek1VXzM2QbdUfkhNpj7KuvSU+IJxLSLRAdQX+LNVhGu
-	fO5zFMKhgDhaLP7VKM5Lp66xKFklyCaAeFkA+n7l70BKaihOHgVaYkW0wPEs7wnH9RFsMBpDLKJhF
-	kQ9WWtOBKqkPI5eZ3gKzEuXGI5bk6PzMEpTCCK8dwqv9h2YLL/Svs4uQYEfT69tlB/1yckoLyjXmT
-	B93mA0MQFEuianSCwRpIx0z+Bb1co8ZGcUXvE5AbaaTUbJG3NkFcHI3gqcoL9WmX51XzvIjycGcvO
-	tN0pZnRWQao8AR5M9CiQ==;
+	List-Owner; bh=jCWeuD+NxZiW5CYHBTFp2dloWtJwnL79mDlaSqrzG/Q=; b=ulu+GgBtQMBINK
+	I+5uHTe2YzeeVKIhpyVniPM6IZLi6OsO332Onge+c6+sUIu1wytbofcShzVLBdR9s5G8d94oV62r/
+	yNAmUFIXQMyuNucZee/I/73cMURqH21rM338526v9ZpP8/+SMVNMRLop62peoP7SY9cEZI2NtD0cb
+	NrBUHJ0+lVfcA0sQjLc4P2MMlOzyI/ew4moOQVj3mXdtxnvI6nF/5ixAhUrmXztoFauTXb/2dESxM
+	Luq1z3xhfxqEenMuwPHmBmoNR+5u0I7Go3Yl8mutToUIDaPxANWqpeCtCrc8nO9hlst6QEcmwDXIS
+	qbo9DDYOkDEBWzFcy5Eg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pAZ4g-006GPo-Se; Wed, 28 Dec 2022 16:14:39 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1pAZAF-006JMZ-6f; Wed, 28 Dec 2022 16:20:23 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pAZ4a-006GN1-UK
-	for linux-um@lists.infradead.org; Wed, 28 Dec 2022 16:14:34 +0000
+	id 1pAZAB-006JL4-WB
+	for linux-um@lists.infradead.org; Wed, 28 Dec 2022 16:20:21 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 6C7ADB817F6;
-	Wed, 28 Dec 2022 16:14:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 967FAC433D2;
-	Wed, 28 Dec 2022 16:14:29 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 8519661563;
+	Wed, 28 Dec 2022 16:20:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6FABC433F0;
+	Wed, 28 Dec 2022 16:20:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1672244070;
+	s=korg; t=1672244419;
 	bh=kRTk6nDVGgy/CNk4BdTNcr95TadAdi4NeD1/gJZGOy4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=xQ+d3ZBR+gZXp58Ww6HB66erW3F66DZ8Qle5N8gUVH+/nWaUk6JzDlJpkmiNByabZ
-	 3/Y7pQUubgnI3gotnak4F/5P76tHrCZf40fYqOqsASVYzQob1oRamjY4eQmNlp5l6R
-	 PYyuYJ6SutFgGDuncyUalZEmwXyM+UUA1bvUMXzg=
+	b=ZbAmCWjasU89DYy2QKREeS4IVVzUaPUsr3e91J0kWvbY1BxmDIwvG9hmAT/3ccezJ
+	 Bd6u9u+waigarpVJ8PNsl07fxyFVOgajaVzDG+Jx+08yo5X8jYZu98eyqa3asgCB6o
+	 2BeVbOjxfwRyXeCnKlbGNMmjPg9Uh25XRNoZ9hik=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -55,16 +55,16 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-um@lists.infradead.org,
 	Leon Romanovsky <leon@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.0 0641/1073] RDMA: Disable IB HW for UML
-Date: Wed, 28 Dec 2022 15:37:09 +0100
-Message-Id: <20221228144345.450630069@linuxfoundation.org>
+Subject: [PATCH 6.1 0666/1146] RDMA: Disable IB HW for UML
+Date: Wed, 28 Dec 2022 15:36:45 +0100
+Message-Id: <20221228144348.241855464@linuxfoundation.org>
 X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20221228144328.162723588@linuxfoundation.org>
-References: <20221228144328.162723588@linuxfoundation.org>
+In-Reply-To: <20221228144330.180012208@linuxfoundation.org>
+References: <20221228144330.180012208@linuxfoundation.org>
 User-Agent: quilt/0.67
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221228_081433_153935_C4B5380D 
+X-CRM114-CacheID: sfid-20221228_082020_107138_FFEADE23 
 X-CRM114-Status: GOOD (  10.80  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
