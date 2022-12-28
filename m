@@ -4,66 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E82ABC3DA7A
-	for <linux-um@archiver.kernel.org>; Wed, 28 Dec 2022 15:34:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 34B32C4167B
+	for <linux-um@archiver.kernel.org>; Wed, 28 Dec 2022 16:14:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pF22f4dlkyj3fnySwRmLLNRLr06s/i/jIWLVWqVbTI0=; b=1zyaNZf9Jnz09I
-	8yfnXu6GWJId8dXn39KbUTUU9jq+OlG6sIqhDphvmxty/Hh+BX5IrecKosuN/76RMHfZ/Pof9oAkL
-	4nZ96f9ElYpP5FsIPH6wcjweYp6NsBTinUCaIQyNXjGGctY9lzcvqFsgXijGDN92BTxlmm3bYT8KQ
-	TH2cO7kCglxQcnWaXS6UFHShHm8E3b45bCQxdQU9jycQ33VAZwm/Lrf6dQC8/uHBDbpQzyn/wF2/i
-	myE6SlGJLST6Vm2H2UakhKxlmPMpy2sFZtUKNTnoDY2hmMiXV2euHad2Qb/9k6r3CnX+L+aTTE6uz
-	khuet9z4d9/8tdFSMytA==;
+	List-Owner; bh=jCWeuD+NxZiW5CYHBTFp2dloWtJwnL79mDlaSqrzG/Q=; b=NdiXPX+oCgxFEA
+	+1dANLSEm3Ej/IOUNQatOb05NLhpavy8Elek1VXzM2QbdUfkhNpj7KuvSU+IJxLSLRAdQX+LNVhGu
+	fO5zFMKhgDhaLP7VKM5Lp66xKFklyCaAeFkA+n7l70BKaihOHgVaYkW0wPEs7wnH9RFsMBpDLKJhF
+	kQ9WWtOBKqkPI5eZ3gKzEuXGI5bk6PzMEpTCCK8dwqv9h2YLL/Svs4uQYEfT69tlB/1yckoLyjXmT
+	B93mA0MQFEuianSCwRpIx0z+Bb1co8ZGcUXvE5AbaaTUbJG3NkFcHI3gqcoL9WmX51XzvIjycGcvO
+	tN0pZnRWQao8AR5M9CiQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pAYRx-005z3o-SQ; Wed, 28 Dec 2022 15:34:37 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1pAZ4g-006GPo-Se; Wed, 28 Dec 2022 16:14:39 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pAYRe-005yvm-UQ; Wed, 28 Dec 2022 15:34:32 +0000
+	id 1pAZ4a-006GN1-UK
+	for linux-um@lists.infradead.org; Wed, 28 Dec 2022 16:14:34 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 490AE6154D;
-	Wed, 28 Dec 2022 15:34:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94AD7C433F0;
-	Wed, 28 Dec 2022 15:34:17 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 6C7ADB817F6;
+	Wed, 28 Dec 2022 16:14:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 967FAC433D2;
+	Wed, 28 Dec 2022 16:14:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1672241658;
-	bh=l6SZ1o3XablMRreE/05h9qlGf3szz8R5it9zAPOMn0Y=;
+	s=korg; t=1672244070;
+	bh=kRTk6nDVGgy/CNk4BdTNcr95TadAdi4NeD1/gJZGOy4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LIN4TO73VrpYIw+BXmoBrcco1HQ4txnkCnPoDBf6uobkmC4ZA/UJdFwn9h7da42Ca
-	 M9DkKvx4l/22GY4eabQcC1y9MNx5x5nL9tby5Fv2x139xNQXX0oHz70t9OLnSRl28R
-	 zT2bwzcE81f5Ng4hE0NWyd8jLxGe9HA9Ruhxx+lY=
+	b=xQ+d3ZBR+gZXp58Ww6HB66erW3F66DZ8Qle5N8gUVH+/nWaUk6JzDlJpkmiNByabZ
+	 3/Y7pQUubgnI3gotnak4F/5P76tHrCZf40fYqOqsASVYzQob1oRamjY4eQmNlp5l6R
+	 PYyuYJ6SutFgGDuncyUalZEmwXyM+UUA1bvUMXzg=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	patches@lists.linux.dev,
 	Randy Dunlap <rdunlap@infradead.org>,
-	Johannes Berg <johannes@sipsolutions.net>,
+	Jason Gunthorpe <jgg@nvidia.com>,
+	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	linux-rdma@vger.kernel.org,
+	Jeff Dike <jdike@addtoit.com>,
 	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
 	linux-um@lists.infradead.org,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Helge Deller <deller@gmx.de>,
-	linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	Andres Salomon <dilinger@queued.net>,
-	linux-geode@lists.infradead.org,
+	Leon Romanovsky <leon@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 508/731] fbdev: geode: dont build on UML
-Date: Wed, 28 Dec 2022 15:40:15 +0100
-Message-Id: <20221228144311.271388741@linuxfoundation.org>
+Subject: [PATCH 6.0 0641/1073] RDMA: Disable IB HW for UML
+Date: Wed, 28 Dec 2022 15:37:09 +0100
+Message-Id: <20221228144345.450630069@linuxfoundation.org>
 X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20221228144256.536395940@linuxfoundation.org>
-References: <20221228144256.536395940@linuxfoundation.org>
+In-Reply-To: <20221228144328.162723588@linuxfoundation.org>
+References: <20221228144328.162723588@linuxfoundation.org>
 User-Agent: quilt/0.67
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221228_073429_506423_5692DBA4 
-X-CRM114-Status: GOOD (  12.56  )
+X-CRM114-CacheID: sfid-20221228_081433_153935_C4B5380D 
+X-CRM114-Status: GOOD (  10.80  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,62 +77,65 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-RnJvbTogUmFuZHkgRHVubGFwIDxyZHVubGFwQGluZnJhZGVhZC5vcmc+CgpbIFVwc3RyZWFtIGNv
-bW1pdCA3MWM1M2UxOTIyNmIwMTY2YmEzODdkM2M1OTBkMDUwOWY1NDFhMGExIF0KClRoZSBnZW9k
-ZSBmYmRldiBkcml2ZXIgdXNlcyBzdHJ1Y3QgY3B1aW5mbyBmaWVsZHMgdGhhdCBhcmUgbm90IHBy
-ZXNlbnQKb24gQVJDSD11bSwgc28gZG9uJ3QgYWxsb3cgdGhpcyBkcml2ZXIgdG8gYmUgYnVpbHQg
-b24gVU1MLgoKUHJldmVudHMgdGhlc2UgYnVpbGQgZXJyb3JzOgoKSW4gZmlsZSBpbmNsdWRlZCBm
-cm9tIC4uL2FyY2gveDg2L2luY2x1ZGUvYXNtL29scGMuaDo3OjAsCiAgICAgICAgICAgICAgICAg
-ZnJvbSAuLi9kcml2ZXJzL21mZC9jczU1MzUtbWZkLmM6MTc6Ci4uL2FyY2gveDg2L2luY2x1ZGUv
-YXNtL2dlb2RlLmg6IEluIGZ1bmN0aW9uIOKAmGlzX2dlb2RlX2d44oCZOgouLi9hcmNoL3g4Ni9p
-bmNsdWRlL2FzbS9nZW9kZS5oOjE2OjI0OiBlcnJvcjog4oCYc3RydWN0IGNwdWluZm9fdW3igJkg
-aGFzIG5vIG1lbWJlciBuYW1lZCDigJh4ODZfdmVuZG9y4oCZCiAgcmV0dXJuICgoYm9vdF9jcHVf
-ZGF0YS54ODZfdmVuZG9yID09IFg4Nl9WRU5ET1JfTlNDKSAmJgouLi9hcmNoL3g4Ni9pbmNsdWRl
-L2FzbS9nZW9kZS5oOjE2OjM5OiBlcnJvcjog4oCYWDg2X1ZFTkRPUl9OU0PigJkgdW5kZWNsYXJl
-ZCAoZmlyc3QgdXNlIGluIHRoaXMgZnVuY3Rpb24pOyBkaWQgeW91IG1lYW4g4oCYWDg2X1ZFTkRP
-Ul9BTlnigJk/CiAgcmV0dXJuICgoYm9vdF9jcHVfZGF0YS54ODZfdmVuZG9yID09IFg4Nl9WRU5E
-T1JfTlNDKSAmJgouLi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9nZW9kZS5oOjE3OjE3OiBlcnJvcjog
-4oCYc3RydWN0IGNwdWluZm9fdW3igJkgaGFzIG5vIG1lbWJlciBuYW1lZCDigJh4ODbigJkKICAg
-KGJvb3RfY3B1X2RhdGEueDg2ID09IDUpICYmCi4uL2FyY2gveDg2L2luY2x1ZGUvYXNtL2dlb2Rl
-Lmg6MTg6MTc6IGVycm9yOiDigJhzdHJ1Y3QgY3B1aW5mb191beKAmSBoYXMgbm8gbWVtYmVyIG5h
-bWVkIOKAmHg4Nl9tb2RlbOKAmQogICAoYm9vdF9jcHVfZGF0YS54ODZfbW9kZWwgPT0gNSkpOwou
-Li9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9nZW9kZS5oOiBJbiBmdW5jdGlvbiDigJhpc19nZW9kZV9s
-eOKAmToKLi4vYXJjaC94ODYvaW5jbHVkZS9hc20vZ2VvZGUuaDoyMzoyNDogZXJyb3I6IOKAmHN0
-cnVjdCBjcHVpbmZvX3Vt4oCZIGhhcyBubyBtZW1iZXIgbmFtZWQg4oCYeDg2X3ZlbmRvcuKAmQog
-IHJldHVybiAoKGJvb3RfY3B1X2RhdGEueDg2X3ZlbmRvciA9PSBYODZfVkVORE9SX0FNRCkgJiYK
-Li4vYXJjaC94ODYvaW5jbHVkZS9hc20vZ2VvZGUuaDoyMzozOTogZXJyb3I6IOKAmFg4Nl9WRU5E
-T1JfQU1E4oCZIHVuZGVjbGFyZWQgKGZpcnN0IHVzZSBpbiB0aGlzIGZ1bmN0aW9uKTsgZGlkIHlv
-dSBtZWFuIOKAmFg4Nl9WRU5ET1JfQU5Z4oCZPwogIHJldHVybiAoKGJvb3RfY3B1X2RhdGEueDg2
-X3ZlbmRvciA9PSBYODZfVkVORE9SX0FNRCkgJiYKLi4vYXJjaC94ODYvaW5jbHVkZS9hc20vZ2Vv
-ZGUuaDoyNDoxNzogZXJyb3I6IOKAmHN0cnVjdCBjcHVpbmZvX3Vt4oCZIGhhcyBubyBtZW1iZXIg
-bmFtZWQg4oCYeDg24oCZCiAgIChib290X2NwdV9kYXRhLng4NiA9PSA1KSAmJgouLi9hcmNoL3g4
-Ni9pbmNsdWRlL2FzbS9nZW9kZS5oOjI1OjE3OiBlcnJvcjog4oCYc3RydWN0IGNwdWluZm9fdW3i
-gJkgaGFzIG5vIG1lbWJlciBuYW1lZCDigJh4ODZfbW9kZWzigJkKICAgKGJvb3RfY3B1X2RhdGEu
-eDg2X21vZGVsID09IDEwKSk7CgpGaXhlczogNjhmNWQzZjNiNjU0ICgidW06IGFkZCBQQ0kgb3Zl
-ciB2aXJ0aW8gZW11bGF0aW9uIGRyaXZlciIpClNpZ25lZC1vZmYtYnk6IFJhbmR5IER1bmxhcCA8
-cmR1bmxhcEBpbmZyYWRlYWQub3JnPgpDYzogSm9oYW5uZXMgQmVyZyA8am9oYW5uZXNAc2lwc29s
-dXRpb25zLm5ldD4KQ2M6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+CkNjOiBs
-aW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCkNjOiBEYW5pZWwgVmV0dGVyIDxkYW5pZWxAZmZ3
-bGwuY2g+CkNjOiBIZWxnZSBEZWxsZXIgPGRlbGxlckBnbXguZGU+CkNjOiBsaW51eC1mYmRldkB2
-Z2VyLmtlcm5lbC5vcmcKQ2M6IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKQ2M6IEFu
-ZHJlcyBTYWxvbW9uIDxkaWxpbmdlckBxdWV1ZWQubmV0PgpDYzogbGludXgtZ2VvZGVAbGlzdHMu
-aW5mcmFkZWFkLm9yZwpTaWduZWQtb2ZmLWJ5OiBIZWxnZSBEZWxsZXIgPGRlbGxlckBnbXguZGU+
-ClNpZ25lZC1vZmYtYnk6IFNhc2hhIExldmluIDxzYXNoYWxAa2VybmVsLm9yZz4KLS0tCiBkcml2
-ZXJzL3ZpZGVvL2ZiZGV2L2dlb2RlL0tjb25maWcgfCAxICsKIDEgZmlsZSBjaGFuZ2VkLCAxIGlu
-c2VydGlvbigrKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvdmlkZW8vZmJkZXYvZ2VvZGUvS2NvbmZp
-ZyBiL2RyaXZlcnMvdmlkZW8vZmJkZXYvZ2VvZGUvS2NvbmZpZwppbmRleCBhYzljODYwNTkyYWEu
-Ljg1YmMxNGI2ZmFmNiAxMDA2NDQKLS0tIGEvZHJpdmVycy92aWRlby9mYmRldi9nZW9kZS9LY29u
-ZmlnCisrKyBiL2RyaXZlcnMvdmlkZW8vZmJkZXYvZ2VvZGUvS2NvbmZpZwpAQCAtNSw2ICs1LDcg
-QEAKIGNvbmZpZyBGQl9HRU9ERQogCWJvb2wgIkFNRCBHZW9kZSBmYW1pbHkgZnJhbWVidWZmZXIg
-c3VwcG9ydCIKIAlkZXBlbmRzIG9uIEZCICYmIFBDSSAmJiAoWDg2XzMyIHx8IChYODYgJiYgQ09N
-UElMRV9URVNUKSkKKwlkZXBlbmRzIG9uICFVTUwKIAloZWxwCiAJICBTYXkgJ1knIGhlcmUgdG8g
-YWxsb3cgeW91IHRvIHNlbGVjdCBmcmFtZWJ1ZmZlciBkcml2ZXJzIGZvcgogCSAgdGhlIEFNRCBH
-ZW9kZSBmYW1pbHkgb2YgcHJvY2Vzc29ycy4KLS0gCjIuMzUuMQoKCgoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0Cmxp
-bnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9saW51eC11bQo=
+From: Randy Dunlap <rdunlap@infradead.org>
+
+[ Upstream commit 323a74fc20f53c0d0e13a16aee703a30d9751235 ]
+
+Disable all of drivers/infiniband/hw/ and rdmavt for UML builds until
+someone needs it and provides patches to support it.
+
+This prevents build errors in hw/qib/qib_wc_x86_64.c.
+
+Fixes: 68f5d3f3b654 ("um: add PCI over virtio emulation driver")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc: Christoph Hellwig <hch@infradead.org>
+Cc: linux-rdma@vger.kernel.org
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-um@lists.infradead.org
+Link: https://lore.kernel.org/r/20221202211940.29111-1-rdunlap@infradead.org
+Signed-off-by: Leon Romanovsky <leon@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/infiniband/Kconfig | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/infiniband/Kconfig b/drivers/infiniband/Kconfig
+index aa36ac618e72..17a227415277 100644
+--- a/drivers/infiniband/Kconfig
++++ b/drivers/infiniband/Kconfig
+@@ -78,6 +78,7 @@ config INFINIBAND_VIRT_DMA
+ 	def_bool !HIGHMEM
+ 
+ if INFINIBAND_USER_ACCESS || !INFINIBAND_USER_ACCESS
++if !UML
+ source "drivers/infiniband/hw/bnxt_re/Kconfig"
+ source "drivers/infiniband/hw/cxgb4/Kconfig"
+ source "drivers/infiniband/hw/efa/Kconfig"
+@@ -94,6 +95,7 @@ source "drivers/infiniband/hw/qib/Kconfig"
+ source "drivers/infiniband/hw/usnic/Kconfig"
+ source "drivers/infiniband/hw/vmw_pvrdma/Kconfig"
+ source "drivers/infiniband/sw/rdmavt/Kconfig"
++endif # !UML
+ source "drivers/infiniband/sw/rxe/Kconfig"
+ source "drivers/infiniband/sw/siw/Kconfig"
+ endif
+-- 
+2.35.1
+
+
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
