@@ -4,66 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D85DC4167B
-	for <linux-um@archiver.kernel.org>; Wed, 28 Dec 2022 16:28:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79514C4332F
+	for <linux-um@archiver.kernel.org>; Thu, 29 Dec 2022 07:53:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=T5EtZEyeaJhyMgTdsdlYzZFBesCsb7GPEbLMTbJx02g=; b=AGVE6TP7+LPe+D
-	p0k+UkDSYb1ShuIXhB91z0JLMwmI46zuNgzRptwYxCwJ8zLI6svSnBH4KtJ4VN0bQ1LwaXnx9+VvF
-	0/pLpmw4NsI0DB9KKqlskx6V8GGM5LEdGBlHrkaUgBz6uTXH+7pb5f5VqDHZBFt4SyJVvBUsNIZNr
-	v+oQdDA+FRWuHcEvDctKdFJbC2pTBBEYhGFLFHuWQvMddLhp6YFOWHJMdQYrBBaoWzDyWu1iuDLhF
-	+A+LgFhFPhTgWg3NS+mj9PsBk4oBLypAyLx1QxGQQ4InRU4UuW9pEN1XnfYuJjbwMR6REwUJ0YIJT
-	5HoayLRyCeWcIc8yCu5Q==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=r9d5/dtXwKJ+jYBdMq+qim1bQDOBB6T++e4ex+q/k9s=; b=OjfkAVKeTUsMyl
+	IgXMhZl9E1OcOaa09fG2HYid/hN2DAaBWta8sSLd/YVSRE+QriI2lH3oAToTLlHk9fZ776fwl394r
+	Dr1kT0DsMAF3ild+pd1K24H1n6wKFFJbhTtybJobpXeviEfGwBghQB0rhETYaaP9WmQUfstkTuQE/
+	1LaS+f6VazgIkqYMpXLQylWrQ9+/6qDwze7FzQUfdtf8OjEXo3NAK2f+lNZlA6ZiQbx/7uKBiGNPE
+	t8j5TXcrM3LXw5v4LqCZphOaEt/0PGSuMbWTBawApERQ6hAjeZokHvcWxyVPJYyzrjwr9q8bR+cye
+	NgK+fCsC+MTJZeea0RRw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pAZIA-006MCv-HT; Wed, 28 Dec 2022 16:28:34 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1pAnjO-00DR0g-Pq; Thu, 29 Dec 2022 07:53:38 +0000
+Received: from mail-pf1-x436.google.com ([2607:f8b0:4864:20::436])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pAZI7-006MAM-K3
-	for linux-um@lists.infradead.org; Wed, 28 Dec 2022 16:28:33 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 45C99B816F4;
-	Wed, 28 Dec 2022 16:28:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6705FC433EF;
-	Wed, 28 Dec 2022 16:28:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1672244908;
-	bh=BLOZxcjnEXYR6XvwzCsyfFc30JnGmIUnqT9FcOApdUQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=m4UhiSuqZsyC3QCpMi57FYqQ9DsKaqI4FEJfzqfYVdIVaiIzGJ/v/t/7etd227iso
-	 UtSxOU006pnmgNt0xTG8GUE2apCRAEVQui4Zt7C4f6vnp37L/Rfh8hhi2tWaM15q8i
-	 epiC/H1hLSj1biLdQN7QvCzbvJQCsAKeN+1wDAnA=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: stable@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	patches@lists.linux.dev,
-	Randy Dunlap <rdunlap@infradead.org>,
+	id 1pAnjK-00DQwo-5B
+	for linux-um@lists.infradead.org; Thu, 29 Dec 2022 07:53:35 +0000
+Received: by mail-pf1-x436.google.com with SMTP id e21so2592411pfl.1
+        for <linux-um@lists.infradead.org>; Wed, 28 Dec 2022 23:53:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wDeSYbJRD5UIxf0kkPf6Les3H3nIVnzcLc/ji7ALnCE=;
+        b=qtpzgTHlnAUEX2ly37pMS8tGaRlIXK0hm2KhLHj9n1OgGC9mPJ4R3s1wEEjDXcr7v8
+         LH/xO2CKUW7TThMnCXMQEU9Fk5xFelRz6bQcuIWar7ylBvHdnqsKlrLT9D6avGwhi1k3
+         LmoOfoEoWvjBIA2cf40UqTdy6hKv1svsnmqN10EGTR7WwHtxWgAwe08tA8Sp5BiuBktj
+         2ju9o7VcUAj4/KeelGsnMQNp3IcuNtJuvIASxr7+eJX/yilF8MgvPSYnudnfAm3/5xvt
+         i0tWic8Sgt7ZkiBubZUj1ckNt5qyowqTIWpqOgNKZPebk0yxzwrGsJBHf+fMUC3tgzj5
+         Y/2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wDeSYbJRD5UIxf0kkPf6Les3H3nIVnzcLc/ji7ALnCE=;
+        b=ikS0jGcG0xikT82URluJW9iscUSyyOGcJoRUg91FNA85oMEsWbdxouAAa5AK6LZwAi
+         lB9VbEP+iDasOrHcNoSPa38CURYYLkeG6tweLNWHuqqEQkzjV1GpD5NXUR5SNmdjiD0r
+         iKJrJMYrgrjtqmVpVKMtb7aK/d+pHjq46zgdQMSHXKS4PoAAmQ9lVCrSlRhQi+EwexvN
+         jGyYPtyVbzEEhHIPOnxaBwRfNvQ2hjE1HDy3m6PdtoGJZg9GDmwW3IaxtjLSITlmjrIX
+         iBPk8C2K9d117a3NBfx5Vv2B/heSX8WzsS5AgoqBr8H3P4C6bx2OheDvs3N01bw5F0g+
+         qRBw==
+X-Gm-Message-State: AFqh2kolwxGb/TbLa6xDMhWBAUtn6cjDZcYd5pK9oOJvN8TlwQczlUMX
+	+7HlWiqWDHVMbi4D3hhromWsoc96aS/IOEL5
+X-Google-Smtp-Source: AMrXdXv9sdoL0oUYN50GZYSQ/Q+vg/lYZGOj0iBbbAfLxbLORZ9wpsaC7se50iwwDrJg9KKX5LDS8w==
+X-Received: by 2002:a05:6a00:410b:b0:57a:9482:843b with SMTP id bu11-20020a056a00410b00b0057a9482843bmr31812196pfb.5.1672300412939;
+        Wed, 28 Dec 2022 23:53:32 -0800 (PST)
+Received: from localhost.localdomain ([202.120.234.246])
+        by smtp.googlemail.com with ESMTPSA id x24-20020aa78f18000000b0058134d2df41sm6126235pfr.146.2022.12.28.23.53.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Dec 2022 23:53:32 -0800 (PST)
+From: Miaoqian Lin <linmq006@gmail.com>
+To: Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
 	Johannes Berg <johannes@sipsolutions.net>,
-	Richard Weinberger <richard@nod.at>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Miaoqian Lin <linmq006@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Wolfram Sang <wsa+renesas@sang-engineering.com>,
 	linux-um@lists.infradead.org,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Helge Deller <deller@gmx.de>,
-	linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	Michal Januszewski <spock@gentoo.org>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 0760/1146] fbdev: uvesafb: dont build on UML
-Date: Wed, 28 Dec 2022 15:38:19 +0100
-Message-Id: <20221228144350.786064866@linuxfoundation.org>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20221228144330.180012208@linuxfoundation.org>
-References: <20221228144330.180012208@linuxfoundation.org>
-User-Agent: quilt/0.67
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] um: vector: Fix memory leak in vector_config
+Date: Thu, 29 Dec 2022 11:53:21 +0400
+Message-Id: <20221229075323.1394010-1-linmq006@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20221228_082831_882546_6B306913 
-X-CRM114-Status: GOOD (  12.70  )
+X-CRM114-CacheID: sfid-20221228_235334_286587_06884246 
+X-CRM114-Status: UNSURE (   8.98  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,41 +88,37 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-RnJvbTogUmFuZHkgRHVubGFwIDxyZHVubGFwQGluZnJhZGVhZC5vcmc+CgpbIFVwc3RyZWFtIGNv
-bW1pdCAzNWI0ZjRkNGE3MjVjZjhmOGMxMDY0OTE2M2NkMTJhZWQ1MDliOTUzIF0KClRoZSB1dmVz
-YWZiIGZiZGV2IGRyaXZlciB1c2VzIG1lbW9yeSBtYW5hZ2VtZW50IGluZm9ybWF0aW9uIHRoYXQg
-aXMgbm90CmF2YWlsYWJsZSBvbiBBUkNIPXVtLCBzbyBkb24ndCBhbGxvdyB0aGlzIGRyaXZlciB0
-byBiZSBidWlsdCBvbiBVTUwuCgpQcmV2ZW50cyB0aGVzZSBidWlsZCBlcnJvcnM6CgouLi9kcml2
-ZXJzL3ZpZGVvL2ZiZGV2L3V2ZXNhZmIuYzogSW4gZnVuY3Rpb24g4oCYdXZlc2FmYl92YmVfaW5p
-dOKAmToKLi4vZHJpdmVycy92aWRlby9mYmRldi91dmVzYWZiLmM6ODA3OjIxOiBlcnJvcjog4oCY
-X19zdXBwb3J0ZWRfcHRlX21hc2vigJkgdW5kZWNsYXJlZCAoZmlyc3QgdXNlIGluIHRoaXMgZnVu
-Y3Rpb24pCiAgODA3IHwgICAgICAgICAgICAgICAgIGlmIChfX3N1cHBvcnRlZF9wdGVfbWFzayAm
-IF9QQUdFX05YKSB7Ci4uL2RyaXZlcnMvdmlkZW8vZmJkZXYvdXZlc2FmYi5jOjgwNzo0NDogZXJy
-b3I6IOKAmF9QQUdFX05Y4oCZIHVuZGVjbGFyZWQgKGZpcnN0IHVzZSBpbiB0aGlzIGZ1bmN0aW9u
-KQogIDgwNyB8ICAgICAgICAgICAgICAgICBpZiAoX19zdXBwb3J0ZWRfcHRlX21hc2sgJiBfUEFH
-RV9OWCkgewoKRml4ZXM6IDY4ZjVkM2YzYjY1NCAoInVtOiBhZGQgUENJIG92ZXIgdmlydGlvIGVt
-dWxhdGlvbiBkcml2ZXIiKQpTaWduZWQtb2ZmLWJ5OiBSYW5keSBEdW5sYXAgPHJkdW5sYXBAaW5m
-cmFkZWFkLm9yZz4KQ2M6IEpvaGFubmVzIEJlcmcgPGpvaGFubmVzQHNpcHNvbHV0aW9ucy5uZXQ+
-CkNjOiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9kLmF0PgpDYzogbGludXgtdW1AbGlz
-dHMuaW5mcmFkZWFkLm9yZwpDYzogRGFuaWVsIFZldHRlciA8ZGFuaWVsQGZmd2xsLmNoPgpDYzog
-SGVsZ2UgRGVsbGVyIDxkZWxsZXJAZ214LmRlPgpDYzogbGludXgtZmJkZXZAdmdlci5rZXJuZWwu
-b3JnCkNjOiBkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCkNjOiBNaWNoYWwgSmFudXN6
-ZXdza2kgPHNwb2NrQGdlbnRvby5vcmc+ClNpZ25lZC1vZmYtYnk6IEhlbGdlIERlbGxlciA8ZGVs
-bGVyQGdteC5kZT4KU2lnbmVkLW9mZi1ieTogU2FzaGEgTGV2aW4gPHNhc2hhbEBrZXJuZWwub3Jn
-PgotLS0KIGRyaXZlcnMvdmlkZW8vZmJkZXYvS2NvbmZpZyB8IDEgKwogMSBmaWxlIGNoYW5nZWQs
-IDEgaW5zZXJ0aW9uKCspCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy92aWRlby9mYmRldi9LY29uZmln
-IGIvZHJpdmVycy92aWRlby9mYmRldi9LY29uZmlnCmluZGV4IDk0OTdmZTkyOTE2Mi4uOTc0ZTg2
-MmNkMjBkIDEwMDY0NAotLS0gYS9kcml2ZXJzL3ZpZGVvL2ZiZGV2L0tjb25maWcKKysrIGIvZHJp
-dmVycy92aWRlby9mYmRldi9LY29uZmlnCkBAIC02MDEsNiArNjAxLDcgQEAgY29uZmlnIEZCX1RH
-QQogY29uZmlnIEZCX1VWRVNBCiAJdHJpc3RhdGUgIlVzZXJzcGFjZSBWRVNBIFZHQSBncmFwaGlj
-cyBzdXBwb3J0IgogCWRlcGVuZHMgb24gRkIgJiYgQ09OTkVDVE9SCisJZGVwZW5kcyBvbiAhVU1M
-CiAJc2VsZWN0IEZCX0NGQl9GSUxMUkVDVAogCXNlbGVjdCBGQl9DRkJfQ09QWUFSRUEKIAlzZWxl
-Y3QgRkJfQ0ZCX0lNQUdFQkxJVAotLSAKMi4zNS4xCgoKCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1A
-bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2xpbnV4LXVtCg==
+kstrdup() return newly allocated copy of the string.
+Call kfree() to release the memory when after use.
+
+Fixes: 49da7e64f33e ("High Performance UML Vector Network Driver")
+Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
+---
+ arch/um/drivers/vector_kern.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
+index ded7c47d2fbe..78f32005dd90 100644
+--- a/arch/um/drivers/vector_kern.c
++++ b/arch/um/drivers/vector_kern.c
+@@ -765,6 +765,7 @@ static int vector_config(char *str, char **error_out)
+ 
+ 	parsed = uml_parse_vector_ifspec(params);
+ 
++	kfree(params);
+ 	if (parsed == NULL) {
+ 		*error_out = "vector_config failed to parse parameters";
+ 		return -EINVAL;
+-- 
+2.25.1
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
