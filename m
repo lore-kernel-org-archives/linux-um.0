@@ -4,59 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2079DC46467
-	for <linux-um@archiver.kernel.org>; Wed,  4 Jan 2023 15:19:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1212C46467
+	for <linux-um@archiver.kernel.org>; Wed,  4 Jan 2023 15:19:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=u/P+ouPll4+T3t0AuaB6GHutqstIZwOljFbr0eh7JFE=; b=sOCeqJ4l8nSEIm
-	g/bcuzUSrrXQOQ3Y38EHEULmbx+9djaWBd67ZsAMTIHaWsgD4Uyl6yQ/gjLhB7ZGcqUW7Qchh8M9r
-	v6gYWo5tpBhWhBqCWagcJ1P56x8+J4bMA86aLcOaYduI1Fc6ZoXIl7+nlEUc4FCawuUWOxgJFWyQE
-	PQI/XUyvhatZANIZ6Jt203zcy4k/c1Dswapc+g9sDk92uvDxRvkBvbkk50lDT0vMsXPT6XQFhWF07
-	9EsnPkXXfMlS+ky9uniZkez4SzzHyMKO55Ko1Pj1HqG+OwUxzdpxTw08jVeuw8JYZ/qTzoxeb7uk8
-	4kvK8QRHayAbkhSV3sjg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:From:Cc:To
+	:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ixi+csMJ4wlCzJIxg73p5IpuBcWdmrxvTLyCXoyjhzM=; b=WnSXYA8rQVBtMZ
+	NO4tAtR3DmEgdkaVPISRtlKFdNzt8vhD0WrdsMxdnu6XgSNaMGmu05CXliUtDmKQmgjX+SjUzxrpF
+	DUlUIWRRqiItNXM704yMd45zsOws0orRxtvikfXSNEvWeWtBWMp85ZDFAKIf8sd6L6AEJbXbUhy11
+	HKl1HGPhLBBEexoFDTMjQiayxFsmW7iaQS9acv1LQaYf2EOHbCts6yBcogGmrlDmEaOE2qODaTPqs
+	pkj1lVAaUrSMeT5u9BKUSMWNh4qq9shEZZbhjlU7Ya5S3HtqA1H940b4Oi+f6p1b8sdxYhheTZmEV
+	8GDFd0zEjGfnXr3/zMLA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pD5Xl-00A30c-DW; Wed, 04 Jan 2023 15:19:05 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1pD5Xj-00A2zS-TE; Wed, 04 Jan 2023 15:19:04 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pD5E5-009tcT-Rj; Wed, 04 Jan 2023 14:58:47 +0000
+	id 1pD5Au-009san-PL
+	for linux-um@lists.infradead.org; Wed, 04 Jan 2023 14:55:30 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 5FBAB61738;
-	Wed,  4 Jan 2023 14:58:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8DEBC43392;
-	Wed,  4 Jan 2023 14:58:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1672844324;
-	bh=X1AAIn1JCwOQYsbeGXY+bK+m5zW1QQ+OXoCh04OSGhw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dsWfbzf6UpefT3nvlAW2+mmoBZrvwGHtzuXTpJea+7S8F1k14QDJtXD3pDFtSR6Ri
-	 nQKqkkzHY9XYQ0LRMdhZEab7uq7ZRguwsS4V9o6ZOn09ynNhaOZqHXZiDXTKBJvWIJ
-	 QEfIhnNjk0Lhsbcw169G+inpEOZjPBgMctZi3PgoOR0+Ovfnk1YTzCy1k17H4YIVot
-	 phl0bc/AeGj3Hlyx3vhJT7xqbsK5IxJLdWTCfv0TIX7rEkZUaVYY2WCFM7lAPa2m3Z
-	 W3w6yCaukh7TK7SsxE57XdRGg8K5hc1+pucJiNpMVjljGf2yJ5jRvSQVb83rtOT1ZY
-	 4YyP56K2uDI7Q==
-Date: Wed, 4 Jan 2023 14:58:39 +0000
-From: Lee Jones <lee@kernel.org>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-kernel@vger.kernel.org, Johannes Berg <johannes@sipsolutions.net>,
-	Richard Weinberger <richard@nod.at>, linux-um@lists.infradead.org,
-	Andres Salomon <dilinger@queued.net>,
-	linux-geode@lists.infradead.org
-Subject: Re: [PATCH] mfd: cs5535: don't build on UML
-Message-ID: <Y7WUHyHiJbAgXcaM@google.com>
-References: <20221201012541.11809-1-rdunlap@infradead.org>
+	by ams.source.kernel.org (Postfix) with ESMTPS id 39D22B8169E;
+	Wed,  4 Jan 2023 14:55:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92ED4C433D2;
+	Wed,  4 Jan 2023 14:55:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1672844126;
+	bh=LDSz5riE84Dr9HLlvpPEZbwgcnLNb/ra2djip+FSJBs=;
+	h=Subject:To:Cc:From:Date:From;
+	b=rKJzt1nzAqHJOsOC9okKH3tw6YgWP/yJVWfSi1+dK72jwp63iGCGyfO6mLvnrslOK
+	 xB1fnhgyS4Pbjc17ko/eU5KsL0U3+lQBTAUTs5ujMPcjDoDrrxyI2ytnJxC8jt7Gjl
+	 AER2vazFook2dffGKm2iAIKFgpiU1sBYypN7oGWM=
+Subject: Patch "um: virt-pci: Avoid GCC non-NULL warning" has been added to the 6.1-stable tree
+To: anton.ivanov@cambridgegreys.com,gregkh@linuxfoundation.org,johannes@sipsolutions.net,keescook@chromium.org,linux-um@lists.infradead.org,lkp@intel.com,mst@redhat.com,richard@nod.at,vincent.whitchurch@axis.com,viro@zeniv.linux.org.uk,xiujianfeng@huawei.com
+Cc: <stable-commits@vger.kernel.org>
+From: <gregkh@linuxfoundation.org>
+Date: Wed, 04 Jan 2023 15:48:00 +0100
+Message-ID: <1672843680230167@kroah.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20221201012541.11809-1-rdunlap@infradead.org>
+X-stable: commit
+X-Patchwork-Hint: ignore 
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230104_065846_181060_19C00C4D 
-X-CRM114-Status: GOOD (  14.99  )
+X-CRM114-CacheID: sfid-20230104_065529_339775_E32BD216 
+X-CRM114-Status: GOOD (  17.34  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,53 +62,122 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-T24gV2VkLCAzMCBOb3YgMjAyMiwgUmFuZHkgRHVubGFwIHdyb3RlOgoKPiBUaGUgY3M1NTM1LW1m
-ZCBkcml2ZXIgdXNlcyBDUFUtc3BlY2lmaWMgZGF0YSB0aGF0IGlzIG5vdCBhdmFpbGFibGUKPiBm
-b3IgQVJDSD11bSBidWlsZHMsIHNvIGRvbid0IGFsbG93IGl0IHRvIGJlIGJ1aWx0IGZvciBVTUwu
-Cj4gCj4gUHJldmVudHMgdGhlc2UgYnVpbGQgZXJyb3JzOgo+IAo+IEluIGZpbGUgaW5jbHVkZWQg
-ZnJvbSAuLi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9vbHBjLmg6NywKPiAgICAgICAgICAgICAgICAg
-IGZyb20gLi4vZHJpdmVycy9tZmQvY3M1NTM1LW1mZC5jOjE3Ogo+IC4uL2FyY2gveDg2L2luY2x1
-ZGUvYXNtL2dlb2RlLmg6IEluIGZ1bmN0aW9uIOKAmGlzX2dlb2RlX2d44oCZOgo+IC4uL2FyY2gv
-eDg2L2luY2x1ZGUvYXNtL2dlb2RlLmg6MTY6MzE6IGVycm9yOiDigJhzdHJ1Y3QgY3B1aW5mb191
-beKAmSBoYXMgbm8gbWVtYmVyIG5hbWVkIOKAmHg4Nl92ZW5kb3LigJkKPiAgICAxNiB8ICAgICAg
-ICAgcmV0dXJuICgoYm9vdF9jcHVfZGF0YS54ODZfdmVuZG9yID09IFg4Nl9WRU5ET1JfTlNDKSAm
-Jgo+IC4uL2FyY2gveDg2L2luY2x1ZGUvYXNtL2dlb2RlLmg6MTY6NDY6IGVycm9yOiDigJhYODZf
-VkVORE9SX05TQ+KAmSB1bmRlY2xhcmVkIChmaXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlvbik7IGRp
-ZCB5b3UgbWVhbiDigJhYODZfVkVORE9SX0FOWeKAmT8KPiAgICAxNiB8ICAgICAgICAgcmV0dXJu
-ICgoYm9vdF9jcHVfZGF0YS54ODZfdmVuZG9yID09IFg4Nl9WRU5ET1JfTlNDKSAmJgo+IC4uL2Fy
-Y2gveDg2L2luY2x1ZGUvYXNtL2dlb2RlLmg6MTc6MzE6IGVycm9yOiDigJhzdHJ1Y3QgY3B1aW5m
-b191beKAmSBoYXMgbm8gbWVtYmVyIG5hbWVkIOKAmHg4NuKAmQo+ICAgIDE3IHwgICAgICAgICAg
-ICAgICAgIChib290X2NwdV9kYXRhLng4NiA9PSA1KSAmJgo+IC4uL2FyY2gveDg2L2luY2x1ZGUv
-YXNtL2dlb2RlLmg6MTg6MzE6IGVycm9yOiDigJhzdHJ1Y3QgY3B1aW5mb191beKAmSBoYXMgbm8g
-bWVtYmVyIG5hbWVkIOKAmHg4Nl9tb2RlbOKAmQo+ICAgIDE4IHwgICAgICAgICAgICAgICAgIChi
-b290X2NwdV9kYXRhLng4Nl9tb2RlbCA9PSA1KSk7Cj4gLi4vYXJjaC94ODYvaW5jbHVkZS9hc20v
-Z2VvZGUuaDogSW4gZnVuY3Rpb24g4oCYaXNfZ2VvZGVfbHjigJk6Cj4gLi4vYXJjaC94ODYvaW5j
-bHVkZS9hc20vZ2VvZGUuaDoyMzozMTogZXJyb3I6IOKAmHN0cnVjdCBjcHVpbmZvX3Vt4oCZIGhh
-cyBubyBtZW1iZXIgbmFtZWQg4oCYeDg2X3ZlbmRvcuKAmQo+ICAgIDIzIHwgICAgICAgICByZXR1
-cm4gKChib290X2NwdV9kYXRhLng4Nl92ZW5kb3IgPT0gWDg2X1ZFTkRPUl9BTUQpICYmCj4gLi4v
-YXJjaC94ODYvaW5jbHVkZS9hc20vZ2VvZGUuaDoyMzo0NjogZXJyb3I6IOKAmFg4Nl9WRU5ET1Jf
-QU1E4oCZIHVuZGVjbGFyZWQgKGZpcnN0IHVzZSBpbiB0aGlzIGZ1bmN0aW9uKTsgZGlkIHlvdSBt
-ZWFuIOKAmFg4Nl9WRU5ET1JfQU5Z4oCZPwo+ICAgIDIzIHwgICAgICAgICByZXR1cm4gKChib290
-X2NwdV9kYXRhLng4Nl92ZW5kb3IgPT0gWDg2X1ZFTkRPUl9BTUQpICYmCj4gLi4vYXJjaC94ODYv
-aW5jbHVkZS9hc20vZ2VvZGUuaDoyNDozMTogZXJyb3I6IOKAmHN0cnVjdCBjcHVpbmZvX3Vt4oCZ
-IGhhcyBubyBtZW1iZXIgbmFtZWQg4oCYeDg24oCZCj4gICAgMjQgfCAgICAgICAgICAgICAgICAg
-KGJvb3RfY3B1X2RhdGEueDg2ID09IDUpICYmCj4gLi4vYXJjaC94ODYvaW5jbHVkZS9hc20vZ2Vv
-ZGUuaDoyNTozMTogZXJyb3I6IOKAmHN0cnVjdCBjcHVpbmZvX3Vt4oCZIGhhcyBubyBtZW1iZXIg
-bmFtZWQg4oCYeDg2X21vZGVs4oCZCj4gICAgMjUgfCAgICAgICAgICAgICAgICAgKGJvb3RfY3B1
-X2RhdGEueDg2X21vZGVsID09IDEwKSk7Cj4gCj4gRml4ZXM6IDY4ZjVkM2YzYjY1NCAoInVtOiBh
-ZGQgUENJIG92ZXIgdmlydGlvIGVtdWxhdGlvbiBkcml2ZXIiKQo+IFNpZ25lZC1vZmYtYnk6IFJh
-bmR5IER1bmxhcCA8cmR1bmxhcEBpbmZyYWRlYWQub3JnPgo+IENjOiBKb2hhbm5lcyBCZXJnIDxq
-b2hhbm5lc0BzaXBzb2x1dGlvbnMubmV0Pgo+IENjOiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hh
-cmRAbm9kLmF0Pgo+IENjOiBsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCj4gQ2M6IEFuZHJl
-cyBTYWxvbW9uIDxkaWxpbmdlckBxdWV1ZWQubmV0Pgo+IENjOiBsaW51eC1nZW9kZUBsaXN0cy5p
-bmZyYWRlYWQub3JnCj4gQ2M6IExlZSBKb25lcyA8bGVlQGtlcm5lbC5vcmc+Cj4gLS0tCj4gIGRy
-aXZlcnMvbWZkL0tjb25maWcgfCAgICAxICsKPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9u
-KCspCgpBcHBsaWVkLCB0aGFua3MKCi0tIApMZWUgSm9uZXMgW+adjueQvOaWr10KCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcg
-bGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
+
+This is a note to let you know that I've just added the patch titled
+
+    um: virt-pci: Avoid GCC non-NULL warning
+
+to the 6.1-stable tree which can be found at:
+    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+
+The filename of the patch is:
+     um-virt-pci-avoid-gcc-non-null-warning.patch
+and it can be found in the queue-6.1 subdirectory.
+
+If you, or anyone else, feels it should not be added to the stable tree,
+please let <stable@vger.kernel.org> know about it.
+
+
+From bdc77507fecd00ddad2f502f86a48a9ec38f0f84 Mon Sep 17 00:00:00 2001
+From: Kees Cook <keescook@chromium.org>
+Date: Thu, 1 Dec 2022 16:23:25 -0800
+Subject: um: virt-pci: Avoid GCC non-NULL warning
+
+From: Kees Cook <keescook@chromium.org>
+
+commit bdc77507fecd00ddad2f502f86a48a9ec38f0f84 upstream.
+
+GCC gets confused about the return value of get_cpu_var() possibly
+being NULL, so explicitly test for it before calls to memcpy() and
+memset(). Avoids warnings like this:
+
+   arch/um/drivers/virt-pci.c: In function 'um_pci_send_cmd':
+   include/linux/fortify-string.h:48:33: warning: argument 1 null where non-null expected [-Wnonnull]
+      48 | #define __underlying_memcpy     __builtin_memcpy
+         |                                 ^
+   include/linux/fortify-string.h:438:9: note: in expansion of macro '__underlying_memcpy'
+     438 |         __underlying_##op(p, q, __fortify_size);                        \
+         |         ^~~~~~~~~~~~~
+   include/linux/fortify-string.h:483:26: note: in expansion of macro '__fortify_memcpy_chk'
+     483 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,                  \
+         |                          ^~~~~~~~~~~~~~~~~~~~
+   arch/um/drivers/virt-pci.c:100:9: note: in expansion of macro 'memcpy'
+     100 |         memcpy(buf, cmd, cmd_size);
+         |         ^~~~~~
+
+While at it, avoid literal "8" and use stored sizeof(buf->data) in
+memset() and um_pci_send_cmd().
+
+Reported-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/lkml/202211271212.SUZSC9f9-lkp@intel.com
+Fixes: ba38961a069b ("um: Enable FORTIFY_SOURCE")
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Xiu Jianfeng <xiujianfeng@huawei.com>
+Cc: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc: linux-um@lists.infradead.org
+Cc: stable@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ arch/um/drivers/virt-pci.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+--- a/arch/um/drivers/virt-pci.c
++++ b/arch/um/drivers/virt-pci.c
+@@ -97,7 +97,8 @@ static int um_pci_send_cmd(struct um_pci
+ 	}
+ 
+ 	buf = get_cpu_var(um_pci_msg_bufs);
+-	memcpy(buf, cmd, cmd_size);
++	if (buf)
++		memcpy(buf, cmd, cmd_size);
+ 
+ 	if (posted) {
+ 		u8 *ncmd = kmalloc(cmd_size + extra_size, GFP_ATOMIC);
+@@ -182,6 +183,7 @@ static unsigned long um_pci_cfgspace_rea
+ 	struct um_pci_message_buffer *buf;
+ 	u8 *data;
+ 	unsigned long ret = ULONG_MAX;
++	size_t bytes = sizeof(buf->data);
+ 
+ 	if (!dev)
+ 		return ULONG_MAX;
+@@ -189,7 +191,8 @@ static unsigned long um_pci_cfgspace_rea
+ 	buf = get_cpu_var(um_pci_msg_bufs);
+ 	data = buf->data;
+ 
+-	memset(buf->data, 0xff, sizeof(buf->data));
++	if (buf)
++		memset(data, 0xff, bytes);
+ 
+ 	switch (size) {
+ 	case 1:
+@@ -204,7 +207,7 @@ static unsigned long um_pci_cfgspace_rea
+ 		goto out;
+ 	}
+ 
+-	if (um_pci_send_cmd(dev, &hdr, sizeof(hdr), NULL, 0, data, 8))
++	if (um_pci_send_cmd(dev, &hdr, sizeof(hdr), NULL, 0, data, bytes))
+ 		goto out;
+ 
+ 	switch (size) {
+
+
+Patches currently in stable-queue which might be from keescook@chromium.org are
+
+queue-6.1/um-virt-pci-avoid-gcc-non-null-warning.patch
+queue-6.1/random-add-helpers-for-random-numbers-with-given-floor-or-range.patch
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
