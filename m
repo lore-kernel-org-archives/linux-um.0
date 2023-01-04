@@ -4,53 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F1212C46467
-	for <linux-um@archiver.kernel.org>; Wed,  4 Jan 2023 15:19:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DBAEC4332F
+	for <linux-um@archiver.kernel.org>; Wed,  4 Jan 2023 16:19:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:From:Cc:To
-	:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=ixi+csMJ4wlCzJIxg73p5IpuBcWdmrxvTLyCXoyjhzM=; b=WnSXYA8rQVBtMZ
-	NO4tAtR3DmEgdkaVPISRtlKFdNzt8vhD0WrdsMxdnu6XgSNaMGmu05CXliUtDmKQmgjX+SjUzxrpF
-	DUlUIWRRqiItNXM704yMd45zsOws0orRxtvikfXSNEvWeWtBWMp85ZDFAKIf8sd6L6AEJbXbUhy11
-	HKl1HGPhLBBEexoFDTMjQiayxFsmW7iaQS9acv1LQaYf2EOHbCts6yBcogGmrlDmEaOE2qODaTPqs
-	pkj1lVAaUrSMeT5u9BKUSMWNh4qq9shEZZbhjlU7Ya5S3HtqA1H940b4Oi+f6p1b8sdxYhheTZmEV
-	8GDFd0zEjGfnXr3/zMLA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=yfCQ0s6/czwDSi8LIfSrqLi53F/4jEsTKrKU8IBqdSc=; b=gWl8CUi0i2V5AU
+	/XmeDcgbf0S+f5Ya5/5K00IoVgq8gJfTsxX2x6OKlms0fA8Xuah7AIgoKXx0cd+dAr4Kv+PnAdGDa
+	5dRrFcMV+dvQOlr0HcgGYr1IpzEl7/SKVjm/euZKCCMDRjaBJhx2CzBdiyZND9LZJqx9gSWLIVjSz
+	w+wR5rrl1iMDpIg8Ar153YUz29UskiXRAQ27/v0IVJ5Gh8y6kRBxjvIV9g51RhUWTo9VviLLSIkdK
+	8EII1SRDrJGzfDoPAijXPKDGCa68zUoumkqYF1dJoWZB9hjgtwhrJbL7z+ZPamQaBHoqXYxd2zUWU
+	LzIk9ROi7LWedDbWiYmA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pD5Xj-00A2zS-TE; Wed, 04 Jan 2023 15:19:04 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1pD6Uf-00ALt9-86; Wed, 04 Jan 2023 16:19:57 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pD5Au-009san-PL
-	for linux-um@lists.infradead.org; Wed, 04 Jan 2023 14:55:30 +0000
+	id 1pD6SD-00ALGi-9S
+	for linux-um@lists.infradead.org; Wed, 04 Jan 2023 16:17:27 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 39D22B8169E;
-	Wed,  4 Jan 2023 14:55:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92ED4C433D2;
-	Wed,  4 Jan 2023 14:55:25 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 8AD7C617AF;
+	Wed,  4 Jan 2023 16:17:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C9D9C433D2;
+	Wed,  4 Jan 2023 16:17:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1672844126;
-	bh=LDSz5riE84Dr9HLlvpPEZbwgcnLNb/ra2djip+FSJBs=;
-	h=Subject:To:Cc:From:Date:From;
-	b=rKJzt1nzAqHJOsOC9okKH3tw6YgWP/yJVWfSi1+dK72jwp63iGCGyfO6mLvnrslOK
-	 xB1fnhgyS4Pbjc17ko/eU5KsL0U3+lQBTAUTs5ujMPcjDoDrrxyI2ytnJxC8jt7Gjl
-	 AER2vazFook2dffGKm2iAIKFgpiU1sBYypN7oGWM=
-Subject: Patch "um: virt-pci: Avoid GCC non-NULL warning" has been added to the 6.1-stable tree
-To: anton.ivanov@cambridgegreys.com,gregkh@linuxfoundation.org,johannes@sipsolutions.net,keescook@chromium.org,linux-um@lists.infradead.org,lkp@intel.com,mst@redhat.com,richard@nod.at,vincent.whitchurch@axis.com,viro@zeniv.linux.org.uk,xiujianfeng@huawei.com
-Cc: <stable-commits@vger.kernel.org>
-From: <gregkh@linuxfoundation.org>
-Date: Wed, 04 Jan 2023 15:48:00 +0100
-Message-ID: <1672843680230167@kroah.com>
+	s=korg; t=1672849044;
+	bh=28ckKiyj9m0vg3THgDlgJYCvyX5Xu6g7B6dQBS8gd2Q=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=aTnfd8rTB0nkbSXvABRkWGFn4gPolfFhGtW15d5FvL4f/+nqVKI4LZMPoasTyZK5q
+	 1/UxMkvM7uIBsq3O4A8m8qYaNniymab8W22mdaOEQNULv+7dU5yZC0EHx13dYTOMoF
+	 SnC0oObVuguPNX57tvnGdEh5CrqqZk/0rua9lBF8=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: stable@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	patches@lists.linux.dev,
+	kernel test robot <lkp@intel.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	Xiu Jianfeng <xiujianfeng@huawei.com>,
+	Vincent Whitchurch <vincent.whitchurch@axis.com>,
+	linux-um@lists.infradead.org,
+	Kees Cook <keescook@chromium.org>
+Subject: [PATCH 6.1 124/207] um: virt-pci: Avoid GCC non-NULL warning
+Date: Wed,  4 Jan 2023 17:06:22 +0100
+Message-Id: <20230104160515.842647496@linuxfoundation.org>
+X-Mailer: git-send-email 2.39.0
+In-Reply-To: <20230104160511.905925875@linuxfoundation.org>
+References: <20230104160511.905925875@linuxfoundation.org>
+User-Agent: quilt/0.67
 MIME-Version: 1.0
-X-stable: commit
-X-Patchwork-Hint: ignore 
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230104_065529_339775_E32BD216 
-X-CRM114-Status: GOOD (  17.34  )
+X-CRM114-CacheID: sfid-20230104_081725_494098_D757A826 
+X-CRM114-Status: GOOD (  13.79  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,27 +79,6 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
-
-
-This is a note to let you know that I've just added the patch titled
-
-    um: virt-pci: Avoid GCC non-NULL warning
-
-to the 6.1-stable tree which can be found at:
-    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
-
-The filename of the patch is:
-     um-virt-pci-avoid-gcc-non-null-warning.patch
-and it can be found in the queue-6.1 subdirectory.
-
-If you, or anyone else, feels it should not be added to the stable tree,
-please let <stable@vger.kernel.org> know about it.
-
-
-From bdc77507fecd00ddad2f502f86a48a9ec38f0f84 Mon Sep 17 00:00:00 2001
-From: Kees Cook <keescook@chromium.org>
-Date: Thu, 1 Dec 2022 16:23:25 -0800
-Subject: um: virt-pci: Avoid GCC non-NULL warning
 
 From: Kees Cook <keescook@chromium.org>
 
@@ -172,10 +164,6 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	switch (size) {
 
 
-Patches currently in stable-queue which might be from keescook@chromium.org are
-
-queue-6.1/um-virt-pci-avoid-gcc-non-null-warning.patch
-queue-6.1/random-add-helpers-for-random-numbers-with-given-floor-or-range.patch
 
 _______________________________________________
 linux-um mailing list
