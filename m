@@ -4,50 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 51206C61DB3
-	for <linux-um@archiver.kernel.org>; Thu, 12 Jan 2023 22:01:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E18EC63797
+	for <linux-um@archiver.kernel.org>; Thu, 12 Jan 2023 22:01:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:Subject:Cc:To:
 	From:Date:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	List-Owner; bh=swbPvV3AFydtBdUIOyBvqJ5rfb/PBErjh/4sDca+M68=; b=ZU/d5xisvkIz+2
-	SKDQknRHZeKTwliqtJmBbNP5yMuwX7Ims9SCY0TtRTnOCUxUbOs6JiOZaOp9xgPHJTYSdwzy4RYmE
-	yZyCrfFcblW8oaA/ymRwn094ezU+3e83iUZmV8JfNiw2K7/LiS1O0k9RlDqwZInhYLYhVLPrp9/AG
-	D/o1lVi4n27oJDgvUBPSnmbIkdchL2aHF5CUMZofaV+YB7TNSIYC/97D08mE9wZgruHqwFDsDGEOh
-	1zrRxlqmy/iCRq88l9rB9q+MB7MN1b4wjeFhaJPh6yz4AzXyhNgNzHA5mtl409QZvIyXFQ+HoG6sd
-	mMZlvV7zkCgu8FcXSKaA==;
+	List-Owner; bh=qA+u3TjjXPeK5DJ6PAshtpNhiLG6relDUUj6WTQI9Dc=; b=QtjgbuGuKn4voP
+	w++sgHCj5YivqT8IMi4vZ40RjgaoS2t3RTq5CAmwufonVkj/yjIuvRyqD2hl9FFvBHMksfF6cFEnC
+	m3BI/4ipnKzyjKSxOGL/HwfOKvn/LnKYfYteRWCi9dJOX05igJ/r769rdc1tlFlOxLOGxZAC3oe4j
+	zs35xaCLqNKrlkn5Z/n3kqCSp6aSyoFnPXbTWNds5WBsO2s0m7AfXWr1iDdUqaHkWqWexqGJI3Nds
+	LyESBBCD9d5D29PZGllsOJStd3PvN5MRP+8auzPOFfFAvwsvDD0QN5jo2/iLbHnT/Ft7m+kOwtICD
+	Nsxjvfu04XyV0oGy3Z/w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pG5d6-00HJ13-55; Thu, 12 Jan 2023 22:01:00 +0000
+	id 1pG5dB-00HJ2W-Vj; Thu, 12 Jan 2023 22:01:06 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pG3hQ-00Ggio-3m; Thu, 12 Jan 2023 19:57:20 +0000
+	id 1pG3hR-00Ggjv-Np; Thu, 12 Jan 2023 19:57:21 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
 	Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
 	Content-ID:Content-Description:In-Reply-To;
-	bh=H++Izq9gHCigzm3jyfqVQx/OXXHHURXAPu4rHKpriQs=; b=YePyvi42dN2KCMqq+7e1S609eb
-	WFxHWtO/jgyjZzxARHvRjE2QrtZo1Ma5mkqruZXU5/PO7FUvyR8sUawTrYfaBeVEfspiuaIFkKVMc
-	fyMuNWmG8G5expNMvK0etyhW9olX8plthocE0oVEpGxCtTn6UmUf8Ek1AzD8jqegIKasUbqvSUmau
-	3vbOWKtb6/qLR7kaj8lgimVeDrMvfjUeqa93YM+gDqx28KwMHAgMewjhNVOm9uQNY0kOI6Nucsz6S
-	xTgwD42zZEFhgWLXGdgI1gSnPYNpoj0eZ2X3XkoE4AXqCgGkP9dJYVs+mDKvgVqwc5CylK2jrIKRn
-	P/TbqzeQ==;
+	bh=el0CIt1mM51BvZPcHKbhuF9lp1fNYUjgpLSAPy3Ccmg=; b=tvBa36On1tgPpOho7ahgpRDeA7
+	VD3Q9HQ4f3Ej4oPbH9YxtMDqs5HyC7lkDZn5vZGB8d3WSo7Z1P9FBFIVms0pz6CgWqRMwrRb15Bsd
+	lcLK8h29qqcDlNe6qJc92nfUkYJF7ntrSRabmmAT0/kBKe4lowjWasVtTUzitfMJgum2PFTCW7aib
+	lFuw51y9ho3hcp236ghfxyTUTs/4QMwB9E3vY+71ARt47IMDlRnGyVA8rTrEzFDXZ7wxABkQRw7/I
+	LNpFhK1ipzOKKwI7x97Ns9z0W+cf/xTT0i7yl5EA14WEDj8/hFqG3cHumvt8KUylgEvg9o+NcZc6z
+	iBVAM65A==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
 	by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pG3hb-005OeQ-9k; Thu, 12 Jan 2023 19:57:31 +0000
+	id 1pG3hc-005Oen-Qk; Thu, 12 Jan 2023 19:57:32 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(Client did not present a certificate)
-	by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8136B303431;
+	by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AD27A303443;
 	Thu, 12 Jan 2023 20:57:13 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-	id 0D9AD2CCF62A9; Thu, 12 Jan 2023 20:57:08 +0100 (CET)
-Message-ID: <20230112195540.804410487@infradead.org>
+	id 24C2C2CCF62B5; Thu, 12 Jan 2023 20:57:08 +0100 (CET)
+Message-ID: <20230112195541.171918174@infradead.org>
 User-Agent: quilt/0.66
-Date: Thu, 12 Jan 2023 20:43:38 +0100
+Date: Thu, 12 Jan 2023 20:43:44 +0100
 From: Peter Zijlstra <peterz@infradead.org>
 To: peterz@infradead.org
 Cc: richard.henderson@linaro.org,
@@ -195,10 +195,9 @@ Cc: richard.henderson@linaro.org,
  linux-mm@kvack.org,
  linux-trace-kernel@vger.kernel.org,
  kasan-dev@googlegroups.com,
- Marc Zyngier <maz@kernel.org>,
  "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
  Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH v3 24/51] arm64,smp: Remove trace_.*_rcuidle() usage
+Subject: [PATCH v3 30/51] cpuidle,xenpv: Make more PARAVIRT_XXL noinstr clean
 References: <20230112194314.845371875@infradead.org>
 MIME-Version: 1.0
 X-Mailman-Approved-At: Thu, 12 Jan 2023 14:00:43 -0800
@@ -218,40 +217,145 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Ever since commit d3afc7f12987 ("arm64: Allow IPIs to be handled as
-normal interrupts") this function is called in regular IRQ context.
+vmlinux.o: warning: objtool: acpi_idle_enter_s2idle+0xde: call to wbinvd() leaves .noinstr.text section
+vmlinux.o: warning: objtool: default_idle+0x4: call to arch_safe_halt() leaves .noinstr.text section
+vmlinux.o: warning: objtool: xen_safe_halt+0xa: call to HYPERVISOR_sched_op.constprop.0() leaves .noinstr.text section
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-Acked-by: Marc Zyngier <maz@kernel.org>
+Reviewed-by: Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
+Reviewed-by: Juergen Gross <jgross@suse.com>
 Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Acked-by: Frederic Weisbecker <frederic@kernel.org>
 Tested-by: Tony Lindgren <tony@atomide.com>
 Tested-by: Ulf Hansson <ulf.hansson@linaro.org>
 ---
- arch/arm64/kernel/smp.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/include/asm/paravirt.h      |    6 ++++--
+ arch/x86/include/asm/special_insns.h |    4 ++--
+ arch/x86/include/asm/xen/hypercall.h |    2 +-
+ arch/x86/kernel/paravirt.c           |   14 ++++++++++++--
+ arch/x86/xen/enlighten_pv.c          |    2 +-
+ arch/x86/xen/irq.c                   |    2 +-
+ 6 files changed, 21 insertions(+), 9 deletions(-)
 
---- a/arch/arm64/kernel/smp.c
-+++ b/arch/arm64/kernel/smp.c
-@@ -865,7 +865,7 @@ static void do_handle_IPI(int ipinr)
- 	unsigned int cpu = smp_processor_id();
- 
- 	if ((unsigned)ipinr < NR_IPI)
--		trace_ipi_entry_rcuidle(ipi_types[ipinr]);
-+		trace_ipi_entry(ipi_types[ipinr]);
- 
- 	switch (ipinr) {
- 	case IPI_RESCHEDULE:
-@@ -914,7 +914,7 @@ static void do_handle_IPI(int ipinr)
- 	}
- 
- 	if ((unsigned)ipinr < NR_IPI)
--		trace_ipi_exit_rcuidle(ipi_types[ipinr]);
-+		trace_ipi_exit(ipi_types[ipinr]);
+--- a/arch/x86/include/asm/paravirt.h
++++ b/arch/x86/include/asm/paravirt.h
+@@ -168,7 +168,7 @@ static inline void __write_cr4(unsigned
+ 	PVOP_VCALL1(cpu.write_cr4, x);
  }
  
- static irqreturn_t ipi_handler(int irq, void *data)
+-static inline void arch_safe_halt(void)
++static __always_inline void arch_safe_halt(void)
+ {
+ 	PVOP_VCALL0(irq.safe_halt);
+ }
+@@ -178,7 +178,9 @@ static inline void halt(void)
+ 	PVOP_VCALL0(irq.halt);
+ }
+ 
+-static inline void wbinvd(void)
++extern noinstr void pv_native_wbinvd(void);
++
++static __always_inline void wbinvd(void)
+ {
+ 	PVOP_ALT_VCALL0(cpu.wbinvd, "wbinvd", ALT_NOT(X86_FEATURE_XENPV));
+ }
+--- a/arch/x86/include/asm/special_insns.h
++++ b/arch/x86/include/asm/special_insns.h
+@@ -115,7 +115,7 @@ static inline void wrpkru(u32 pkru)
+ }
+ #endif
+ 
+-static inline void native_wbinvd(void)
++static __always_inline void native_wbinvd(void)
+ {
+ 	asm volatile("wbinvd": : :"memory");
+ }
+@@ -179,7 +179,7 @@ static inline void __write_cr4(unsigned
+ 	native_write_cr4(x);
+ }
+ 
+-static inline void wbinvd(void)
++static __always_inline void wbinvd(void)
+ {
+ 	native_wbinvd();
+ }
+--- a/arch/x86/include/asm/xen/hypercall.h
++++ b/arch/x86/include/asm/xen/hypercall.h
+@@ -382,7 +382,7 @@ MULTI_stack_switch(struct multicall_entr
+ }
+ #endif
+ 
+-static inline int
++static __always_inline int
+ HYPERVISOR_sched_op(int cmd, void *arg)
+ {
+ 	return _hypercall2(int, sched_op, cmd, arg);
+--- a/arch/x86/kernel/paravirt.c
++++ b/arch/x86/kernel/paravirt.c
+@@ -233,6 +233,11 @@ static noinstr void pv_native_set_debugr
+ 	native_set_debugreg(regno, val);
+ }
+ 
++noinstr void pv_native_wbinvd(void)
++{
++	native_wbinvd();
++}
++
+ static noinstr void pv_native_irq_enable(void)
+ {
+ 	native_irq_enable();
+@@ -242,6 +247,11 @@ static noinstr void pv_native_irq_disabl
+ {
+ 	native_irq_disable();
+ }
++
++static noinstr void pv_native_safe_halt(void)
++{
++	native_safe_halt();
++}
+ #endif
+ 
+ enum paravirt_lazy_mode paravirt_get_lazy_mode(void)
+@@ -273,7 +283,7 @@ struct paravirt_patch_template pv_ops =
+ 	.cpu.read_cr0		= native_read_cr0,
+ 	.cpu.write_cr0		= native_write_cr0,
+ 	.cpu.write_cr4		= native_write_cr4,
+-	.cpu.wbinvd		= native_wbinvd,
++	.cpu.wbinvd		= pv_native_wbinvd,
+ 	.cpu.read_msr		= native_read_msr,
+ 	.cpu.write_msr		= native_write_msr,
+ 	.cpu.read_msr_safe	= native_read_msr_safe,
+@@ -307,7 +317,7 @@ struct paravirt_patch_template pv_ops =
+ 	.irq.save_fl		= __PV_IS_CALLEE_SAVE(native_save_fl),
+ 	.irq.irq_disable	= __PV_IS_CALLEE_SAVE(pv_native_irq_disable),
+ 	.irq.irq_enable		= __PV_IS_CALLEE_SAVE(pv_native_irq_enable),
+-	.irq.safe_halt		= native_safe_halt,
++	.irq.safe_halt		= pv_native_safe_halt,
+ 	.irq.halt		= native_halt,
+ #endif /* CONFIG_PARAVIRT_XXL */
+ 
+--- a/arch/x86/xen/enlighten_pv.c
++++ b/arch/x86/xen/enlighten_pv.c
+@@ -1019,7 +1019,7 @@ static const typeof(pv_ops) xen_cpu_ops
+ 
+ 		.write_cr4 = xen_write_cr4,
+ 
+-		.wbinvd = native_wbinvd,
++		.wbinvd = pv_native_wbinvd,
+ 
+ 		.read_msr = xen_read_msr,
+ 		.write_msr = xen_write_msr,
+--- a/arch/x86/xen/irq.c
++++ b/arch/x86/xen/irq.c
+@@ -24,7 +24,7 @@ noinstr void xen_force_evtchn_callback(v
+ 	(void)HYPERVISOR_xen_version(0, NULL);
+ }
+ 
+-static void xen_safe_halt(void)
++static noinstr void xen_safe_halt(void)
+ {
+ 	/* Blocking includes an implicit local_irq_enable(). */
+ 	if (HYPERVISOR_sched_op(SCHEDOP_block, NULL) != 0)
 
 
 
