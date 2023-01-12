@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A14AC54EBE
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 845B5C61DB3
 	for <linux-um@archiver.kernel.org>; Thu, 12 Jan 2023 22:01:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,42 +12,42 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:Subject:Cc:To:
 	From:Date:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	List-Owner; bh=QOKm6T3YPK+DsO3rFHF2IQzhq9QPXrAdouLlU6JPbok=; b=hCCkR6IyJ8Rjf0
-	nL9Ks0bpgj23WzrJNT3rdSvWCm8P5JPlglKM5dHpzInbe6a33b8y45bg2Z1UxvYl/vHdVVEh6h7gE
-	8DwTL+/ruFlAzMvsc0YvnKhIZWhoiwQUsxT2biok7gqrfBxMH0EFcvkJufJfEnmGBl/aeT6wKsTho
-	hcXAaJ1VWf6YKzLDy+ehAY/8HQ6RzkMCpA2R2UysnA8eE2EOflxd+4GR6y4TvFcJarIwMy56I2uo6
-	y1tz1jpGmHAKknI1mgxjgCl64uBvl3iA4wdjTkrCUIR+ZLPpAnfYBzf5pryke/Tqz2V/xsEJqyiWW
-	vlRQPnB6v3kenVbEpVEg==;
+	List-Owner; bh=gYRFXxY9fzxprfTa1pDzD80v+vNpx/TbaSxBmMQHruY=; b=3HoQ/wpnCdzkWQ
+	fX446ZBr9kTXFwquqdXuyYjCUJPB/ddZgcrHF38hMRl3OeTNbfmEQgYqI71N4RSme22JUR/IcUH6z
+	4bjZJIVD/xC+jPgoWDMniph0cC+JI5QPjamyEPncdqD/2dzF4DjaDKHTY1gBazowH6G3TMFrnzA/+
+	dv2nhIRBob3BP+uMTk7zjhuLuFtpFSElMqv4ikXUgzMkDNeUTUhh7zGB3FkAmlYHBxfsLlusI9Sjc
+	WEZ+akSGNExj3/lmKkxZi2eWGKtPr3aVzFUFl2pEMQdSPxVv8Fv14PlDP4L8im2OkUUnlD1YqYMvz
+	OBGR/LftYv02caGVQtBQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pG5dV-00HJXM-9z; Thu, 12 Jan 2023 22:01:25 +0000
+	id 1pG5dV-00HJY4-N3; Thu, 12 Jan 2023 22:01:25 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pG3ys-00Goql-Iw; Thu, 12 Jan 2023 20:15:22 +0000
+	id 1pG3ys-00Goql-Uz; Thu, 12 Jan 2023 20:15:23 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
 	Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
 	Content-ID:Content-Description:In-Reply-To;
-	bh=grsvYP38q4MnN8oBsFSgy8h24Veck5RfPmpq2ugRYPM=; b=sAS+cVfJZnxSjVZ+cWnQizLCZi
-	uzGVUsOf3anafnENfDcz5DBxNwmF2u/05pvc6A0c+OdcaX2m7Qx3mQCWD2r8+RXAQmr6AABwQQUqG
-	Xnn1+diWHWxMGA10WHWQkPrlviiLNwKR8l/igNBPuc/Urss/XPLwrgEzGEkTLbJF2i3zM2wEUdQId
-	iXvs8/Thb5QmoGtDr5BpPsofdym80GCpPly/+P1kmFfpKKXI1eKi4k9Kt5ZS1McOXBTe8WNh0qvx1
-	Mira4VG3zNGY/eh9MdDKDjG1vDtIkJ7jl+e56WDxEl8scNd8fDZtJTeB77Tp7XyQzYbmD4z6YExxk
-	sfEhC80A==;
+	bh=TpAs8eQceCyyKKtR//95dieD+m+uPCJ6EEXd6r5ehjs=; b=tOV0YOj5iNDK/m47VBWfA6Ru4x
+	bmj0NeQaiaQs0AKpJs0p/FhjCO7xciTK0nJuh8IuzQGajotJsiy0W+x0AVXUaoNLZnZiKFIJAoHmj
+	BUEedwDc02yQZ8ZXdXHY1sc/922UDzqaZjq3c0CNpaERUTU6w4xWrYhr0/MiJvV0yldLmkp8K2I/g
+	S6ObVx4NF7YshbqwRQkug5niXhh7Men/EndtRRY9U+mGWG1XpgKDjfmIdwaWQ286ma4cOjAXN0+WW
+	DLMrjCJbdT3gRxDJNEIJWJVda+cZllU4MucGSA+Yl53ZmDet+O4b9B1wWrxl82vveg8EofoDzBF31
+	ZgLYxuNA==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
 	by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pG3hs-005P5q-UH; Thu, 12 Jan 2023 19:57:49 +0000
+	id 1pG3ht-005P68-BV; Thu, 12 Jan 2023 19:57:49 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(Client did not present a certificate)
-	by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3351230347B;
+	by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 266FB303475;
 	Thu, 12 Jan 2023 20:57:14 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-	id 6E8FA2CD066EC; Thu, 12 Jan 2023 20:57:08 +0100 (CET)
-Message-ID: <20230112195542.212914195@infradead.org>
+	id 6405E2CD066D8; Thu, 12 Jan 2023 20:57:08 +0100 (CET)
+Message-ID: <20230112195542.089981974@infradead.org>
 User-Agent: quilt/0.66
-Date: Thu, 12 Jan 2023 20:44:01 +0100
+Date: Thu, 12 Jan 2023 20:43:59 +0100
 From: Peter Zijlstra <peterz@infradead.org>
 To: peterz@infradead.org
 Cc: richard.henderson@linaro.org,
@@ -194,8 +194,10 @@ Cc: richard.henderson@linaro.org,
  linux-arch@vger.kernel.org,
  linux-mm@kvack.org,
  linux-trace-kernel@vger.kernel.org,
- kasan-dev@googlegroups.com
-Subject: [PATCH v3 47/51] cpuidle: Ensure ct_cpuidle_enter() is always called from noinstr/__cpuidle
+ kasan-dev@googlegroups.com,
+ "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+ Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH v3 45/51] sched: Always inline __this_cpu_preempt_check()
 References: <20230112194314.845371875@infradead.org>
 MIME-Version: 1.0
 X-Mailman-Approved-At: Thu, 12 Jan 2023 14:00:44 -0800
@@ -215,118 +217,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Tracing (kprobes included) and other compiler instrumentation relies
-on a normal kernel runtime. Therefore all functions that disable RCU
-should be noinstr, as should all functions that are called while RCU
-is disabled.
+vmlinux.o: warning: objtool: in_entry_stack+0x9: call to __this_cpu_preempt_check() leaves .noinstr.text section
+vmlinux.o: warning: objtool: default_do_nmi+0x10: call to __this_cpu_preempt_check() leaves .noinstr.text section
+vmlinux.o: warning: objtool: fpu_idle_fpregs+0x41: call to __this_cpu_preempt_check() leaves .noinstr.text section
+vmlinux.o: warning: objtool: kvm_read_and_reset_apf_flags+0x1: call to __this_cpu_preempt_check() leaves .noinstr.text section
+vmlinux.o: warning: objtool: lockdep_hardirqs_on+0xb0: call to __this_cpu_preempt_check() leaves .noinstr.text section
+vmlinux.o: warning: objtool: lockdep_hardirqs_off+0xae: call to __this_cpu_preempt_check() leaves .noinstr.text section
+vmlinux.o: warning: objtool: irqentry_nmi_enter+0x69: call to __this_cpu_preempt_check() leaves .noinstr.text section
+vmlinux.o: warning: objtool: irqentry_nmi_exit+0x32: call to __this_cpu_preempt_check() leaves .noinstr.text section
+vmlinux.o: warning: objtool: acpi_processor_ffh_cstate_enter+0x9: call to __this_cpu_preempt_check() leaves .noinstr.text section
+vmlinux.o: warning: objtool: acpi_idle_enter+0x43: call to __this_cpu_preempt_check() leaves .noinstr.text section
+vmlinux.o: warning: objtool: acpi_idle_enter_s2idle+0x45: call to __this_cpu_preempt_check() leaves .noinstr.text section
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Acked-by: Frederic Weisbecker <frederic@kernel.org>
+Tested-by: Tony Lindgren <tony@atomide.com>
+Tested-by: Ulf Hansson <ulf.hansson@linaro.org>
 ---
- drivers/cpuidle/cpuidle.c |   37 ++++++++++++++++++++++++++++---------
- 1 file changed, 28 insertions(+), 9 deletions(-)
+ include/linux/percpu-defs.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/cpuidle/cpuidle.c
-+++ b/drivers/cpuidle/cpuidle.c
-@@ -137,11 +137,13 @@ int cpuidle_find_deepest_state(struct cp
- }
+--- a/include/linux/percpu-defs.h
++++ b/include/linux/percpu-defs.h
+@@ -310,7 +310,7 @@ extern void __bad_size_call_parameter(vo
+ #ifdef CONFIG_DEBUG_PREEMPT
+ extern void __this_cpu_preempt_check(const char *op);
+ #else
+-static inline void __this_cpu_preempt_check(const char *op) { }
++static __always_inline void __this_cpu_preempt_check(const char *op) { }
+ #endif
  
- #ifdef CONFIG_SUSPEND
--static void enter_s2idle_proper(struct cpuidle_driver *drv,
--				struct cpuidle_device *dev, int index)
-+static noinstr void enter_s2idle_proper(struct cpuidle_driver *drv,
-+					 struct cpuidle_device *dev, int index)
- {
--	ktime_t time_start, time_end;
- 	struct cpuidle_state *target_state = &drv->states[index];
-+	ktime_t time_start, time_end;
-+
-+	instrumentation_begin();
- 
- 	time_start = ns_to_ktime(local_clock());
- 
-@@ -152,13 +154,18 @@ static void enter_s2idle_proper(struct c
- 	 * suspended is generally unsafe.
- 	 */
- 	stop_critical_timings();
--	if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE))
-+	if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE)) {
- 		ct_cpuidle_enter();
-+		/* Annotate away the indirect call */
-+		instrumentation_begin();
-+	}
- 	target_state->enter_s2idle(dev, drv, index);
- 	if (WARN_ON_ONCE(!irqs_disabled()))
- 		raw_local_irq_disable();
--	if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE))
-+	if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE)) {
-+		instrumentation_end();
- 		ct_cpuidle_exit();
-+	}
- 	tick_unfreeze();
- 	start_critical_timings();
- 
-@@ -166,6 +173,7 @@ static void enter_s2idle_proper(struct c
- 
- 	dev->states_usage[index].s2idle_time += ktime_us_delta(time_end, time_start);
- 	dev->states_usage[index].s2idle_usage++;
-+	instrumentation_end();
- }
- 
- /**
-@@ -200,8 +208,9 @@ int cpuidle_enter_s2idle(struct cpuidle_
-  * @drv: cpuidle driver for this cpu
-  * @index: index into the states table in @drv of the state to enter
-  */
--int cpuidle_enter_state(struct cpuidle_device *dev, struct cpuidle_driver *drv,
--			int index)
-+noinstr int cpuidle_enter_state(struct cpuidle_device *dev,
-+				 struct cpuidle_driver *drv,
-+				 int index)
- {
- 	int entered_state;
- 
-@@ -209,6 +218,8 @@ int cpuidle_enter_state(struct cpuidle_d
- 	bool broadcast = !!(target_state->flags & CPUIDLE_FLAG_TIMER_STOP);
- 	ktime_t time_start, time_end;
- 
-+	instrumentation_begin();
-+
- 	/*
- 	 * Tell the time framework to switch to a broadcast timer because our
- 	 * local timer will be shut down.  If a local timer is used from another
-@@ -235,15 +246,21 @@ int cpuidle_enter_state(struct cpuidle_d
- 	time_start = ns_to_ktime(local_clock());
- 
- 	stop_critical_timings();
--	if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE))
-+	if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE)) {
- 		ct_cpuidle_enter();
-+		/* Annotate away the indirect call */
-+		instrumentation_begin();
-+	}
- 
- 	entered_state = target_state->enter(dev, drv, index);
-+
- 	if (WARN_ONCE(!irqs_disabled(), "%ps leaked IRQ state", target_state->enter))
- 		raw_local_irq_disable();
- 
--	if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE))
-+	if (!(target_state->flags & CPUIDLE_FLAG_RCU_IDLE)) {
-+		instrumentation_end();
- 		ct_cpuidle_exit();
-+	}
- 	start_critical_timings();
- 
- 	sched_clock_idle_wakeup_event();
-@@ -306,6 +323,8 @@ int cpuidle_enter_state(struct cpuidle_d
- 		dev->states_usage[index].rejected++;
- 	}
- 
-+	instrumentation_end();
-+
- 	return entered_state;
- }
- 
+ #define __pcpu_size_call_return(stem, variable)				\
 
 
 
