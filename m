@@ -4,50 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F6A9C54EBE
-	for <linux-um@archiver.kernel.org>; Thu, 12 Jan 2023 22:00:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C357C61DB3
+	for <linux-um@archiver.kernel.org>; Thu, 12 Jan 2023 22:00:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:Subject:Cc:To:
 	From:Date:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	List-Owner; bh=33U7lsNfvbf/z9m8jc0xhZ8Tl+aYsiuxgVN44SSWj9w=; b=WVA4EwyWiMSA8S
-	uDbgl+WTMGdP1JAL5TbCnmtedlFGqMbCZsFIHVo7gRSHcLGSl5gEOogNig7lfjrO4KVTTZJozdyBM
-	F4nehD1MZNxIZJ5+Z26DlkJADG+stJg9/Iz+5K9uLX95kbNPhqEf7ef4hCVRajnLh8SSsZHBAVYUM
-	+PXOWQmAGfU7TJkF8FlCMHWI7SQ3lX0e9asn/p+d4uDmlvjKANElj6/MsrVFa6RBc392UE+e8QuF+
-	pO4EP1L6sqOeMa01hEvVnDv0kobGUtNUqQCdv27EQHwOgx76aJFOcrSuWezsvc5slPdzIjjWVN2p1
-	rpPDPFQikvYJ5ZUZ0CYA==;
+	List-Owner; bh=Mc3R6aERDx9hLgCBNW0WJpChuJPwreZKjHFKcflXAy4=; b=zEtZh3y8Pz2T1q
+	iuOqplIes7bP7FdWTu4mVMOEpX/4+E+1ksouTHMleXRjWVTH6MO3E3uAzOHaig9j7GZGrSjDhI08A
+	+aPX2bBxlgUM/7nSN42xc5Ng8Sl2xXK4GbRLW4OkAwHvja7heCscgn4bqDpJDLMlENSaTYKpXxweC
+	IdMuL+WHS+m4nxpd+gUeRwMuHgQen512HW/gjySNIfiZ4FSgTxRVxWf7j6Aq3D7NyIPNNTmH3J3XG
+	D+wXZfwcylAsaXzrWdw0B8tjQ/lMVf6TUcOsjtegbYjXLy38B1FxdFtp9kIM4mJEMqLR563uCcpMp
+	CR/kdkeaGC3RxebRCXzA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pG5d3-00HIxv-6M; Thu, 12 Jan 2023 22:00:57 +0000
+	id 1pG5d4-00HIyu-8C; Thu, 12 Jan 2023 22:00:58 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pG3hS-00Ggk9-51; Thu, 12 Jan 2023 19:57:22 +0000
+	id 1pG3hP-00GgiQ-GY; Thu, 12 Jan 2023 19:57:19 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
 	Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
 	Content-ID:Content-Description:In-Reply-To;
-	bh=DVmthOBTi8Yd+1hoz4bpY0hqbVL72Y+E2XHDdN1zqxc=; b=lU+pE8XRxUW4+CC8OuM7xeVx/M
-	53AZChJydAaQiNNNgWeQoTlIIugCKq8amTsHlJecasU3dF9bLGhfr0XD7p0zfc1xhqPVI6iQEDfqX
-	qXF+EpD9Bp4SVnDyAwq5dbL9yLZztXpLXKAoIh2CWTXdxqClmYRsHpA8pyl5FRdBgommZULZLIE56
-	PjEu9hkifrrqxkSQ/X13tLWCHGM51XCgnnXTbVlw1+fjNdVPnZOIYRsxn6+jcprBZ1YbkjynCuAGB
-	phuV4qtrZKPyDS35nlAPD+Rz3SJqOYDompFJbF1wWA90cXW8tptoQc6+aDjXQIUUftFrnUPYliwFp
-	nHblH0EQ==;
+	bh=zetob5Egrh+4xSqY+h3U8eHRaaU6Xv/VYHG/8LvUn9U=; b=XY7SfD4JzAJJbveELIvdat/cbW
+	E+yFFn4aNWAgBawJ26SoENVk9HjgjCyHK9vtm0DJHnuC5VDdB61ndo4h4/i7Q5MSw1rkqiTic4+xR
+	3Y4D5MUptZ7ITQwdJ+rd2ao7vl1gTwOWK6Sx7WR4lsMotsDZ0CjhwtIvhpsU+NDMSFoT0g5aNyvGa
+	iMi4QJBO85DnX+Mw7tQFfzfNeRIKSpTPmFw5CM4c/Zo+olx5lzudeaiJOWa1G7jKsVRtgbLWqFUp2
+	QH+tfhDjHvNHMqws27xY0eX//Ypm8qtyiO7rXUI4Q4fOaQ8sTUtjWWcBaaRXjx9gG6YdwAkHM+oGP
+	31LcvOtQ==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
 	by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pG3hd-005Ofl-Eu; Thu, 12 Jan 2023 19:57:33 +0000
+	id 1pG3hW-005OcC-5Z; Thu, 12 Jan 2023 19:57:26 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(Client did not present a certificate)
-	by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B80A430344D;
-	Thu, 12 Jan 2023 20:57:13 +0100 (CET)
+	by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9F135302D60;
+	Thu, 12 Jan 2023 20:57:11 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-	id 2D82F2CCF62B9; Thu, 12 Jan 2023 20:57:08 +0100 (CET)
-Message-ID: <20230112195541.294846301@infradead.org>
+	id 956222CCF1F48; Thu, 12 Jan 2023 20:57:07 +0100 (CET)
+Message-ID: <20230112195539.515253662@infradead.org>
 User-Agent: quilt/0.66
-Date: Thu, 12 Jan 2023 20:43:46 +0100
+Date: Thu, 12 Jan 2023 20:43:17 +0100
 From: Peter Zijlstra <peterz@infradead.org>
 To: peterz@infradead.org
 Cc: richard.henderson@linaro.org,
@@ -197,7 +197,7 @@ Cc: richard.henderson@linaro.org,
  kasan-dev@googlegroups.com,
  "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
  Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH v3 32/51] cpuidle,acpi: Make noinstr clean
+Subject: [PATCH v3 03/51] cpuidle/poll: Ensure IRQ state is invariant
 References: <20230112194314.845371875@infradead.org>
 MIME-Version: 1.0
 X-Mailman-Approved-At: Thu, 12 Jan 2023 14:00:43 -0800
@@ -217,64 +217,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-vmlinux.o: warning: objtool: io_idle+0xc: call to __inb.isra.0() leaves .noinstr.text section
-vmlinux.o: warning: objtool: acpi_idle_enter+0xfe: call to num_online_cpus() leaves .noinstr.text section
-vmlinux.o: warning: objtool: acpi_idle_enter+0x115: call to acpi_idle_fallback_to_c1.isra.0() leaves .noinstr.text section
+cpuidle_state::enter() methods should be IRQ invariant.
+
+Additionally make sure to use raw_local_irq_*() methods since this
+cpuidle callback will be called with RCU already disabled.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Acked-by: Frederic Weisbecker <frederic@kernel.org>
+Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 Tested-by: Tony Lindgren <tony@atomide.com>
 Tested-by: Ulf Hansson <ulf.hansson@linaro.org>
 ---
- arch/x86/include/asm/shared/io.h |    4 ++--
- drivers/acpi/processor_idle.c    |    2 +-
- include/linux/cpumask.h          |    4 ++--
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/cpuidle/poll_state.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/arch/x86/include/asm/shared/io.h
-+++ b/arch/x86/include/asm/shared/io.h
-@@ -5,13 +5,13 @@
- #include <linux/types.h>
+--- a/drivers/cpuidle/poll_state.c
++++ b/drivers/cpuidle/poll_state.c
+@@ -17,7 +17,7 @@ static int __cpuidle poll_idle(struct cp
  
- #define BUILDIO(bwl, bw, type)						\
--static inline void __out##bwl(type value, u16 port)			\
-+static __always_inline void __out##bwl(type value, u16 port)		\
- {									\
- 	asm volatile("out" #bwl " %" #bw "0, %w1"			\
- 		     : : "a"(value), "Nd"(port));			\
- }									\
- 									\
--static inline type __in##bwl(u16 port)					\
-+static __always_inline type __in##bwl(u16 port)				\
- {									\
- 	type value;							\
- 	asm volatile("in" #bwl " %w1, %" #bw "0"			\
---- a/drivers/acpi/processor_idle.c
-+++ b/drivers/acpi/processor_idle.c
-@@ -593,7 +593,7 @@ static int acpi_idle_play_dead(struct cp
- 	return 0;
- }
+ 	dev->poll_time_limit = false;
  
--static bool acpi_idle_fallback_to_c1(struct acpi_processor *pr)
-+static __always_inline bool acpi_idle_fallback_to_c1(struct acpi_processor *pr)
- {
- 	return IS_ENABLED(CONFIG_HOTPLUG_CPU) && !pr->flags.has_cst &&
- 		!(acpi_gbl_FADT.flags & ACPI_FADT_C2_MP_SUPPORTED);
---- a/include/linux/cpumask.h
-+++ b/include/linux/cpumask.h
-@@ -908,9 +908,9 @@ static inline const struct cpumask *get_
-  * concurrent CPU hotplug operations unless invoked from a cpuhp_lock held
-  * region.
-  */
--static inline unsigned int num_online_cpus(void)
-+static __always_inline unsigned int num_online_cpus(void)
- {
--	return atomic_read(&__num_online_cpus);
-+	return arch_atomic_read(&__num_online_cpus);
- }
- #define num_possible_cpus()	cpumask_weight(cpu_possible_mask)
- #define num_present_cpus()	cpumask_weight(cpu_present_mask)
+-	local_irq_enable();
++	raw_local_irq_enable();
+ 	if (!current_set_polling_and_test()) {
+ 		unsigned int loop_count = 0;
+ 		u64 limit;
+@@ -36,6 +36,8 @@ static int __cpuidle poll_idle(struct cp
+ 			}
+ 		}
+ 	}
++	raw_local_irq_disable();
++
+ 	current_clr_polling();
+ 
+ 	return index;
 
 
 
