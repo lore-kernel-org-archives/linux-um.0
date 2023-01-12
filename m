@@ -4,50 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 845B5C61DB3
-	for <linux-um@archiver.kernel.org>; Thu, 12 Jan 2023 22:01:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32353C54EBE
+	for <linux-um@archiver.kernel.org>; Thu, 12 Jan 2023 22:01:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:Subject:Cc:To:
 	From:Date:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	List-Owner; bh=gYRFXxY9fzxprfTa1pDzD80v+vNpx/TbaSxBmMQHruY=; b=3HoQ/wpnCdzkWQ
-	fX446ZBr9kTXFwquqdXuyYjCUJPB/ddZgcrHF38hMRl3OeTNbfmEQgYqI71N4RSme22JUR/IcUH6z
-	4bjZJIVD/xC+jPgoWDMniph0cC+JI5QPjamyEPncdqD/2dzF4DjaDKHTY1gBazowH6G3TMFrnzA/+
-	dv2nhIRBob3BP+uMTk7zjhuLuFtpFSElMqv4ikXUgzMkDNeUTUhh7zGB3FkAmlYHBxfsLlusI9Sjc
-	WEZ+akSGNExj3/lmKkxZi2eWGKtPr3aVzFUFl2pEMQdSPxVv8Fv14PlDP4L8im2OkUUnlD1YqYMvz
-	OBGR/LftYv02caGVQtBQ==;
+	List-Owner; bh=21KB0XiB3kvB5F0atHtxjqpK4JC+aAT3HLyVhrAbfAY=; b=T1sH/F6ZoqrQq3
+	bA/DhZHd/hgJnSI0zt6E3YAylYp/ICnOXF73L+UO1xjg7TcoWzW6jwW85qt8KAfX0alJ4RGs2dtrk
+	HUpXlvUMiF4IE6uH6MO8EQbynVWLrGbq44LuLVRCkMkgkQgcQEYCw8LB298xghcVp4IonZvGIo+DI
+	aY2IM+Gjm0AE4h7El7ho0OiSjuCt/+efjhLymvhhO1QSiWdLPKBL4bj5cvuokc/5Z+2MS7NfOy4n0
+	A1j1tgFQkacLpHt39a0WoDi8FnOmJUrQkyFZnr8LnM6bhvu2SgNGJSax+CiZEIsYOSjidFetQE8hO
+	AbWXIRul8hlflwKvnflQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pG5dV-00HJY4-N3; Thu, 12 Jan 2023 22:01:25 +0000
+	id 1pG5dW-00HJZ4-A5; Thu, 12 Jan 2023 22:01:26 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pG3ys-00Goql-Uz; Thu, 12 Jan 2023 20:15:23 +0000
+	id 1pG3yt-00Goql-CU; Thu, 12 Jan 2023 20:15:23 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
 	Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
 	Content-ID:Content-Description:In-Reply-To;
-	bh=TpAs8eQceCyyKKtR//95dieD+m+uPCJ6EEXd6r5ehjs=; b=tOV0YOj5iNDK/m47VBWfA6Ru4x
-	bmj0NeQaiaQs0AKpJs0p/FhjCO7xciTK0nJuh8IuzQGajotJsiy0W+x0AVXUaoNLZnZiKFIJAoHmj
-	BUEedwDc02yQZ8ZXdXHY1sc/922UDzqaZjq3c0CNpaERUTU6w4xWrYhr0/MiJvV0yldLmkp8K2I/g
-	S6ObVx4NF7YshbqwRQkug5niXhh7Men/EndtRRY9U+mGWG1XpgKDjfmIdwaWQ286ma4cOjAXN0+WW
-	DLMrjCJbdT3gRxDJNEIJWJVda+cZllU4MucGSA+Yl53ZmDet+O4b9B1wWrxl82vveg8EofoDzBF31
-	ZgLYxuNA==;
+	bh=JTqeKYECYSubBnJX/J9QEXdDkgA0NkIECFSZWgBtZ5c=; b=QLxqheLQZUqNb4ar6Mg/ZNYb8D
+	KRXignWHOdRNYAZm1cWdi/oPzQSARGwohBPicdntdXc+jUrRsNN0/8D5g40oSZToLbikwu1cLT8Yq
+	DGxNRPTtijYeX370Unaju4jHsAmBpKk4CtqN4rzPT0XsWknfadHdAv5RZqCyX7svpkdfdNo2Iy+X2
+	deUTui/Bqe2X+k6Xu+YE1rX06haCXJkDpEbwkwuRoA1QmH69jGtF95HxJnRzgOZzuAinpm8tbEcEr
+	TteyBVyGlHJftS/ry2M8MUzehKE9YMacr/muMS965kyZZf+vOtAukwARx8+SxhX8sDlxjf8Sr0LdM
+	JiM9bSsw==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
 	by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pG3ht-005P68-BV; Thu, 12 Jan 2023 19:57:49 +0000
+	id 1pG3hr-005P30-66; Thu, 12 Jan 2023 19:57:47 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(Client did not present a certificate)
-	by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 266FB303475;
+	by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 19D3D302D4A;
 	Thu, 12 Jan 2023 20:57:14 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-	id 6405E2CD066D8; Thu, 12 Jan 2023 20:57:08 +0100 (CET)
-Message-ID: <20230112195542.089981974@infradead.org>
+	id 5B5522CD066C2; Thu, 12 Jan 2023 20:57:08 +0100 (CET)
+Message-ID: <20230112195541.967699392@infradead.org>
 User-Agent: quilt/0.66
-Date: Thu, 12 Jan 2023 20:43:59 +0100
+Date: Thu, 12 Jan 2023 20:43:57 +0100
 From: Peter Zijlstra <peterz@infradead.org>
 To: peterz@infradead.org
 Cc: richard.henderson@linaro.org,
@@ -197,7 +197,7 @@ Cc: richard.henderson@linaro.org,
  kasan-dev@googlegroups.com,
  "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
  Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH v3 45/51] sched: Always inline __this_cpu_preempt_check()
+Subject: [PATCH v3 43/51] intel_idle: Add force_irq_on module param
 References: <20230112194314.845371875@infradead.org>
 MIME-Version: 1.0
 X-Mailman-Approved-At: Thu, 12 Jan 2023 14:00:44 -0800
@@ -217,17 +217,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-vmlinux.o: warning: objtool: in_entry_stack+0x9: call to __this_cpu_preempt_check() leaves .noinstr.text section
-vmlinux.o: warning: objtool: default_do_nmi+0x10: call to __this_cpu_preempt_check() leaves .noinstr.text section
-vmlinux.o: warning: objtool: fpu_idle_fpregs+0x41: call to __this_cpu_preempt_check() leaves .noinstr.text section
-vmlinux.o: warning: objtool: kvm_read_and_reset_apf_flags+0x1: call to __this_cpu_preempt_check() leaves .noinstr.text section
-vmlinux.o: warning: objtool: lockdep_hardirqs_on+0xb0: call to __this_cpu_preempt_check() leaves .noinstr.text section
-vmlinux.o: warning: objtool: lockdep_hardirqs_off+0xae: call to __this_cpu_preempt_check() leaves .noinstr.text section
-vmlinux.o: warning: objtool: irqentry_nmi_enter+0x69: call to __this_cpu_preempt_check() leaves .noinstr.text section
-vmlinux.o: warning: objtool: irqentry_nmi_exit+0x32: call to __this_cpu_preempt_check() leaves .noinstr.text section
-vmlinux.o: warning: objtool: acpi_processor_ffh_cstate_enter+0x9: call to __this_cpu_preempt_check() leaves .noinstr.text section
-vmlinux.o: warning: objtool: acpi_idle_enter+0x43: call to __this_cpu_preempt_check() leaves .noinstr.text section
-vmlinux.o: warning: objtool: acpi_idle_enter_s2idle+0x45: call to __this_cpu_preempt_check() leaves .noinstr.text section
+For testing purposes.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
@@ -235,20 +225,33 @@ Acked-by: Frederic Weisbecker <frederic@kernel.org>
 Tested-by: Tony Lindgren <tony@atomide.com>
 Tested-by: Ulf Hansson <ulf.hansson@linaro.org>
 ---
- include/linux/percpu-defs.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/idle/intel_idle.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
---- a/include/linux/percpu-defs.h
-+++ b/include/linux/percpu-defs.h
-@@ -310,7 +310,7 @@ extern void __bad_size_call_parameter(vo
- #ifdef CONFIG_DEBUG_PREEMPT
- extern void __this_cpu_preempt_check(const char *op);
- #else
--static inline void __this_cpu_preempt_check(const char *op) { }
-+static __always_inline void __this_cpu_preempt_check(const char *op) { }
- #endif
+--- a/drivers/idle/intel_idle.c
++++ b/drivers/idle/intel_idle.c
+@@ -1787,6 +1787,9 @@ static bool __init intel_idle_verify_cst
+ 	return true;
+ }
  
- #define __pcpu_size_call_return(stem, variable)				\
++static bool force_irq_on __read_mostly;
++module_param(force_irq_on, bool, 0444);
++
+ static void __init intel_idle_init_cstates_icpu(struct cpuidle_driver *drv)
+ {
+ 	int cstate;
+@@ -1838,8 +1841,10 @@ static void __init intel_idle_init_cstat
+ 		/* Structure copy. */
+ 		drv->states[drv->state_count] = cpuidle_state_table[cstate];
+ 
+-		if (cpuidle_state_table[cstate].flags & CPUIDLE_FLAG_IRQ_ENABLE)
++		if ((cpuidle_state_table[cstate].flags & CPUIDLE_FLAG_IRQ_ENABLE) || force_irq_on) {
++			printk("intel_idle: forced intel_idle_irq for state %d\n", cstate);
+ 			drv->states[drv->state_count].enter = intel_idle_irq;
++		}
+ 
+ 		if (cpu_feature_enabled(X86_FEATURE_KERNEL_IBRS) &&
+ 		    cpuidle_state_table[cstate].flags & CPUIDLE_FLAG_IBRS) {
 
 
 
