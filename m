@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15C56C54EBE
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69FCCC54EBE
 	for <linux-um@archiver.kernel.org>; Thu, 12 Jan 2023 22:01:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,42 +12,42 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:Subject:Cc:To:
 	From:Date:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	List-Owner; bh=+boIRSnEAdx46cex9MDUAMs1vY1ZdEMDEbn0MdJ2aAU=; b=HIIPZUReYpOQ+h
-	cfSWuL/hvI0U4FbU/ojOTDbslqm3dpj205x6V+M7Vtv0Vq6hnDgD+e2t5HZX1sSoJih6Tm3BB3l94
-	g9+sB1cl8ffXLy9OhzuRXbBUZFA8sWby8yuRjR93vdF0DZeM0yZ4FUbs0Yf52EqB9NQrMn1EKNMRi
-	naQ+yKeuvMOSjA4+da0wVp120zKshuN2QKR6+tIDQ+izfhCDAOZLCaPC/woQVhIn/qFz06Tf2TPIb
-	4Wkt0sNLmrRBLyJAhMSmObd03am6v5xTf4Q5Aiznf9GtVwxJIUHRQF/71FTXFbCEJOZGMNoGENZU2
-	WU76kaXn3t+WIpmK4nhw==;
+	List-Owner; bh=obqkY39rZow1xOApfMtKtGS9f7r53r0l7LPQZ4aGA68=; b=SToEHyA95ujcgQ
+	wVP+hQaneq756+HyFkgoW75rpfuN9kFeyhbcMdIn78hQNtqnWatsqwIM9mPaJxnLfFtt2+n6YOJoI
+	weeqfAl8gkPHLLv/zaCqAOrhDK1j35rBmQVzqzDdrPDg5FwKRc10R929abUjiYHxK7akwXSUdRw3D
+	7Tkz/rVAcZH7kufhDXsAy5AIoYiBfWogFhkL70u2SKLicy4KaeEXWEBsnlcFbEXIkM3sOYEFgBXFB
+	nUhDc277AFLijR+y6fB5sbJP4NVtHFLY0+cwAx6ilAaBgtlMEyBED2HE68QeWHWtZ4LrkZFV7aJtc
+	gTzXRapujHLpkWfD8TEw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pG5dT-00HJT1-31; Thu, 12 Jan 2023 22:01:23 +0000
+	id 1pG5dT-00HJUC-LI; Thu, 12 Jan 2023 22:01:23 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pG3yp-00Goql-Qy; Thu, 12 Jan 2023 20:15:19 +0000
+	id 1pG3ys-00Goql-6j; Thu, 12 Jan 2023 20:15:22 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
 	Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
 	Content-ID:Content-Description:In-Reply-To;
-	bh=53PdPXBrlefs7aSWYtbVMctVqERBXlbNfkzlUyuHUdw=; b=ATlfmILWtdBMS162SLdQ7satXH
-	lRrHA+Oo8xPovKk8FQq7RK98sDcnma5GRSfOFtLwNMoVkAXDXisud5eoVVLDZihpqE49vRJxWIbw2
-	/Y9OujIMxZk1pbjWaqUFjWo75kJhYQD0AKKQKJ+8CiSaiG3IgyCVvD8TMNqCScPpUugqNp41+I7do
-	5xU2L9cP7LTkQIolwptF5b7/KAQ9UdyvdXN5gS5y15We2Sa4zjrnXtrvDhbcZWdaP3QN6BMMn3InU
-	Lq/+IhZFycZWB1LH1o2Fy8Qq8PGKdb6bDkxa8FbpQ30yPWc9p7g6EIAFIzA6F77JVZkL+nzT6pZrb
-	3DJjl/xg==;
+	bh=ljNIHChdlymEt0s4DtY+Ji5/5ZFr1jFKrzucPLjcAFA=; b=UFhO8sQycbOykP9WLmHLr8syH1
+	9tKpgf+RH4+2oIWu+p1NsZyG1ZQUQEWQKyB7rZeJqKLqT/EpPMTLJSHpi/eniYQI6kNhYX80bC7rp
+	v4DYtLIywV5PM3hyi+6d9VreCBIfyUq0bOE4EJwgP1PAPqwc5ULRKbQuNPzHKcYXFJ+bhA18Sk3BK
+	0SHi+ZzW5d72kp/7epWf2U0Zao67mw1W6KZFzu9PuzdtQCB/RZo73P/7KFSV/9Z+EgMtlu14sgzCt
+	LY3p+teRO7dsISyeJIOJS/fTB2tiC6ZycPsflBP3cBseh7aef5nb+O7jgwPbkvWsd95ol/bFuNb6B
+	77LSYyRg==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
 	by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pG3hu-005P7G-BC; Thu, 12 Jan 2023 19:57:50 +0000
+	id 1pG3hu-005P6M-DU; Thu, 12 Jan 2023 19:57:50 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(Client did not present a certificate)
-	by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 41FAD303481;
+	by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2E2C5303477;
 	Thu, 12 Jan 2023 20:57:14 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-	id 767D32CD066F4; Thu, 12 Jan 2023 20:57:08 +0100 (CET)
-Message-ID: <20230112195542.335211484@infradead.org>
+	id 68B912CD066DC; Thu, 12 Jan 2023 20:57:08 +0100 (CET)
+Message-ID: <20230112195542.151174682@infradead.org>
 User-Agent: quilt/0.66
-Date: Thu, 12 Jan 2023 20:44:03 +0100
+Date: Thu, 12 Jan 2023 20:44:00 +0100
 From: Peter Zijlstra <peterz@infradead.org>
 To: peterz@infradead.org
 Cc: richard.henderson@linaro.org,
@@ -194,8 +194,10 @@ Cc: richard.henderson@linaro.org,
  linux-arch@vger.kernel.org,
  linux-mm@kvack.org,
  linux-trace-kernel@vger.kernel.org,
- kasan-dev@googlegroups.com
-Subject: [PATCH v3 49/51] cpuidle,arch: Mark all regular cpuidle_state::enter methods __cpuidle
+ kasan-dev@googlegroups.com,
+ "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+ Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH v3 46/51] arm64,riscv,perf: Remove RCU_NONIDLE() usage
 References: <20230112194314.845371875@infradead.org>
 MIME-Version: 1.0
 X-Mailman-Approved-At: Thu, 12 Jan 2023 14:00:44 -0800
@@ -215,124 +217,58 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-For all cpuidle drivers that do not use CPUIDLE_FLAG_RCU_IDLE (iow,
-the simple ones) make sure all the functions are marked __cpuidle.
-
-( due to lack of noinstr validation on these platforms it is entirely
-  possible this isn't complete )
+The PM notifiers should no longer be ran with RCU disabled (per the
+previous patches), as such this hack is no longer required either.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Acked-by: Frederic Weisbecker <frederic@kernel.org>
+Tested-by: Tony Lindgren <tony@atomide.com>
+Tested-by: Ulf Hansson <ulf.hansson@linaro.org>
 ---
- arch/arm/kernel/cpuidle.c           |    4 ++--
- arch/arm/mach-davinci/cpuidle.c     |    4 ++--
- arch/arm/mach-imx/cpuidle-imx5.c    |    4 ++--
- arch/arm/mach-imx/cpuidle-imx6sl.c  |    4 ++--
- arch/arm/mach-imx/cpuidle-imx7ulp.c |    4 ++--
- arch/arm/mach-s3c/cpuidle-s3c64xx.c |    5 ++---
- arch/mips/kernel/idle.c             |    6 +++---
- 7 files changed, 15 insertions(+), 16 deletions(-)
+ drivers/perf/arm_pmu.c       |   11 +----------
+ drivers/perf/riscv_pmu_sbi.c |    8 +-------
+ 2 files changed, 2 insertions(+), 17 deletions(-)
 
---- a/arch/arm/kernel/cpuidle.c
-+++ b/arch/arm/kernel/cpuidle.c
-@@ -26,8 +26,8 @@ static struct cpuidle_ops cpuidle_ops[NR
-  *
-  * Returns the index passed as parameter
-  */
--int arm_cpuidle_simple_enter(struct cpuidle_device *dev,
--		struct cpuidle_driver *drv, int index)
-+__cpuidle int arm_cpuidle_simple_enter(struct cpuidle_device *dev, struct
-+				       cpuidle_driver *drv, int index)
- {
- 	cpu_do_idle();
- 
---- a/arch/arm/mach-davinci/cpuidle.c
-+++ b/arch/arm/mach-davinci/cpuidle.c
-@@ -44,8 +44,8 @@ static void davinci_save_ddr_power(int e
- }
- 
- /* Actual code that puts the SoC in different idle states */
--static int davinci_enter_idle(struct cpuidle_device *dev,
--			      struct cpuidle_driver *drv, int index)
-+static __cpuidle int davinci_enter_idle(struct cpuidle_device *dev,
-+					struct cpuidle_driver *drv, int index)
- {
- 	davinci_save_ddr_power(1, ddr2_pdown);
- 	cpu_do_idle();
---- a/arch/arm/mach-imx/cpuidle-imx5.c
-+++ b/arch/arm/mach-imx/cpuidle-imx5.c
-@@ -8,8 +8,8 @@
- #include <asm/system_misc.h>
- #include "cpuidle.h"
- 
--static int imx5_cpuidle_enter(struct cpuidle_device *dev,
--			      struct cpuidle_driver *drv, int index)
-+static __cpuidle int imx5_cpuidle_enter(struct cpuidle_device *dev,
-+					struct cpuidle_driver *drv, int index)
- {
- 	arm_pm_idle();
- 	return index;
---- a/arch/arm/mach-imx/cpuidle-imx6sl.c
-+++ b/arch/arm/mach-imx/cpuidle-imx6sl.c
-@@ -11,8 +11,8 @@
- #include "common.h"
- #include "cpuidle.h"
- 
--static int imx6sl_enter_wait(struct cpuidle_device *dev,
--			    struct cpuidle_driver *drv, int index)
-+static __cpuidle int imx6sl_enter_wait(struct cpuidle_device *dev,
-+				       struct cpuidle_driver *drv, int index)
- {
- 	imx6_set_lpm(WAIT_UNCLOCKED);
- 	/*
---- a/arch/arm/mach-imx/cpuidle-imx7ulp.c
-+++ b/arch/arm/mach-imx/cpuidle-imx7ulp.c
-@@ -12,8 +12,8 @@
- #include "common.h"
- #include "cpuidle.h"
- 
--static int imx7ulp_enter_wait(struct cpuidle_device *dev,
--			    struct cpuidle_driver *drv, int index)
-+static __cpuidle int imx7ulp_enter_wait(struct cpuidle_device *dev,
-+					struct cpuidle_driver *drv, int index)
- {
- 	if (index == 1)
- 		imx7ulp_set_lpm(ULP_PM_WAIT);
---- a/arch/arm/mach-s3c/cpuidle-s3c64xx.c
-+++ b/arch/arm/mach-s3c/cpuidle-s3c64xx.c
-@@ -19,9 +19,8 @@
- #include "regs-sys-s3c64xx.h"
- #include "regs-syscon-power-s3c64xx.h"
- 
--static int s3c64xx_enter_idle(struct cpuidle_device *dev,
--			      struct cpuidle_driver *drv,
--			      int index)
-+static __cpuidle int s3c64xx_enter_idle(struct cpuidle_device *dev,
-+					struct cpuidle_driver *drv, int index)
- {
- 	unsigned long tmp;
- 
---- a/arch/mips/kernel/idle.c
-+++ b/arch/mips/kernel/idle.c
-@@ -241,7 +241,7 @@ void __init check_wait(void)
- 	}
- }
- 
--void arch_cpu_idle(void)
-+__cpuidle void arch_cpu_idle(void)
- {
- 	if (cpu_wait)
- 		cpu_wait();
-@@ -249,8 +249,8 @@ void arch_cpu_idle(void)
- 
- #ifdef CONFIG_CPU_IDLE
- 
--int mips_cpuidle_wait_enter(struct cpuidle_device *dev,
--			    struct cpuidle_driver *drv, int index)
-+__cpuidle int mips_cpuidle_wait_enter(struct cpuidle_device *dev,
-+				      struct cpuidle_driver *drv, int index)
- {
- 	arch_cpu_idle();
- 	return index;
+--- a/drivers/perf/arm_pmu.c
++++ b/drivers/perf/arm_pmu.c
+@@ -762,17 +762,8 @@ static void cpu_pm_pmu_setup(struct arm_
+ 		case CPU_PM_ENTER_FAILED:
+ 			 /*
+ 			  * Restore and enable the counter.
+-			  * armpmu_start() indirectly calls
+-			  *
+-			  * perf_event_update_userpage()
+-			  *
+-			  * that requires RCU read locking to be functional,
+-			  * wrap the call within RCU_NONIDLE to make the
+-			  * RCU subsystem aware this cpu is not idle from
+-			  * an RCU perspective for the armpmu_start() call
+-			  * duration.
+ 			  */
+-			RCU_NONIDLE(armpmu_start(event, PERF_EF_RELOAD));
++			armpmu_start(event, PERF_EF_RELOAD);
+ 			break;
+ 		default:
+ 			break;
+--- a/drivers/perf/riscv_pmu_sbi.c
++++ b/drivers/perf/riscv_pmu_sbi.c
+@@ -747,14 +747,8 @@ static int riscv_pm_pmu_notify(struct no
+ 		case CPU_PM_ENTER_FAILED:
+ 			/*
+ 			 * Restore and enable the counter.
+-			 *
+-			 * Requires RCU read locking to be functional,
+-			 * wrap the call within RCU_NONIDLE to make the
+-			 * RCU subsystem aware this cpu is not idle from
+-			 * an RCU perspective for the riscv_pmu_start() call
+-			 * duration.
+ 			 */
+-			RCU_NONIDLE(riscv_pmu_start(event, PERF_EF_RELOAD));
++			riscv_pmu_start(event, PERF_EF_RELOAD);
+ 			break;
+ 		default:
+ 			break;
 
 
 
