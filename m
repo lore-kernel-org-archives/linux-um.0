@@ -4,51 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E900C54EBE
-	for <linux-um@archiver.kernel.org>; Thu, 12 Jan 2023 22:01:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15C56C54EBE
+	for <linux-um@archiver.kernel.org>; Thu, 12 Jan 2023 22:01:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:Subject:Cc:To:
 	From:Date:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	List-Owner; bh=5UUNp2SzbzvIEj8JN4C4gRYOH9ako0E5A9qOoYei7N8=; b=QxvygX21xInLe2
-	oqzAaZgcekXMBoNpFh/C1jqlOTnKYfwjwj9kIJfe+rGoNLw5BrWvjEimyFHphwS5oM12x0+LO6AmP
-	6LaJfH0HUNCRhav4uvu5vS/PhPVaRCby5zQqsL1ZWhq/q2K2FN//EEoI+LsXfJCr6eaf7HglT1InU
-	EtYD85C8Zhw1rJ+kaqWXeLq/yMdp9lpwpagiMyfsrVvac6jcNFPAfTjNNcGRSh5xuePoAyWSwcyY0
-	AeRQqmdVkWDVOh0vOrl0/72P1DWM7RaOaxVoJIBfpdnC4IJCZ4pWrURbY1gogBeMoVgDM0LIC1Ciq
-	hopztJLLdzEDwV7pNIKA==;
+	List-Owner; bh=+boIRSnEAdx46cex9MDUAMs1vY1ZdEMDEbn0MdJ2aAU=; b=HIIPZUReYpOQ+h
+	cfSWuL/hvI0U4FbU/ojOTDbslqm3dpj205x6V+M7Vtv0Vq6hnDgD+e2t5HZX1sSoJih6Tm3BB3l94
+	g9+sB1cl8ffXLy9OhzuRXbBUZFA8sWby8yuRjR93vdF0DZeM0yZ4FUbs0Yf52EqB9NQrMn1EKNMRi
+	naQ+yKeuvMOSjA4+da0wVp120zKshuN2QKR6+tIDQ+izfhCDAOZLCaPC/woQVhIn/qFz06Tf2TPIb
+	4Wkt0sNLmrRBLyJAhMSmObd03am6v5xTf4Q5Aiznf9GtVwxJIUHRQF/71FTXFbCEJOZGMNoGENZU2
+	WU76kaXn3t+WIpmK4nhw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pG5dS-00HJRk-1b; Thu, 12 Jan 2023 22:01:22 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1pG5dT-00HJT1-31; Thu, 12 Jan 2023 22:01:23 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pG3ht-00Gh9j-1Y; Thu, 12 Jan 2023 19:57:49 +0000
+	id 1pG3yp-00Goql-Qy; Thu, 12 Jan 2023 20:15:19 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
+	d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
 	Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
 	Content-ID:Content-Description:In-Reply-To;
-	bh=VEFTHHrPJN8MUcU5Q+nJT8cn7XDeQYtM8FLMMPm5jQc=; b=KkymT6fnEbdrqizXmWSH2cuOVn
-	jQjLDtcvao8QQM1CDAK23eOtDc3kGN8afBk6jSjfUisCkP/gFLTRKyHuWxXNN647u5J77e9UXxs4t
-	Nxxuk35lQLxa93CmttzHSiwgU7o+eq1l/NDUJPW0u/204PTmRFYkZtbGrRnibXXVYKxBvO5GiUx5C
-	Ls/TdpMiBxMJCS6bvNyUYXqq4XdSVNVmiIEQu6E5gXUs4CphL1YhVZIEKwPAIa9s2+nPr/nrqytbH
-	mC8VuqJNuDqfhjqJCiCzJnptubyVuLBm6bAA/aC0BGih+Kw2mq2OB93VPKPrJHR/xS9q1LgFbp1c/
-	ElutY9cQ==;
+	bh=53PdPXBrlefs7aSWYtbVMctVqERBXlbNfkzlUyuHUdw=; b=ATlfmILWtdBMS162SLdQ7satXH
+	lRrHA+Oo8xPovKk8FQq7RK98sDcnma5GRSfOFtLwNMoVkAXDXisud5eoVVLDZihpqE49vRJxWIbw2
+	/Y9OujIMxZk1pbjWaqUFjWo75kJhYQD0AKKQKJ+8CiSaiG3IgyCVvD8TMNqCScPpUugqNp41+I7do
+	5xU2L9cP7LTkQIolwptF5b7/KAQ9UdyvdXN5gS5y15We2Sa4zjrnXtrvDhbcZWdaP3QN6BMMn3InU
+	Lq/+IhZFycZWB1LH1o2Fy8Qq8PGKdb6bDkxa8FbpQ30yPWc9p7g6EIAFIzA6F77JVZkL+nzT6pZrb
+	3DJjl/xg==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1pG3hH-0045pC-1j;
-	Thu, 12 Jan 2023 19:57:38 +0000
+	by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1pG3hu-005P7G-BC; Thu, 12 Jan 2023 19:57:50 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
 	(Client did not present a certificate)
-	by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A0F25303440;
-	Thu, 12 Jan 2023 20:57:13 +0100 (CET)
+	by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 41FAD303481;
+	Thu, 12 Jan 2023 20:57:14 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-	id 20F0F2CCF62B3; Thu, 12 Jan 2023 20:57:08 +0100 (CET)
-Message-ID: <20230112195541.111485720@infradead.org>
+	id 767D32CD066F4; Thu, 12 Jan 2023 20:57:08 +0100 (CET)
+Message-ID: <20230112195542.335211484@infradead.org>
 User-Agent: quilt/0.66
-Date: Thu, 12 Jan 2023 20:43:43 +0100
+Date: Thu, 12 Jan 2023 20:44:03 +0100
 From: Peter Zijlstra <peterz@infradead.org>
 To: peterz@infradead.org
 Cc: richard.henderson@linaro.org,
@@ -195,10 +194,8 @@ Cc: richard.henderson@linaro.org,
  linux-arch@vger.kernel.org,
  linux-mm@kvack.org,
  linux-trace-kernel@vger.kernel.org,
- kasan-dev@googlegroups.com,
- "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
- Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH v3 29/51] cpuidle,tdx: Make tdx noinstr clean
+ kasan-dev@googlegroups.com
+Subject: [PATCH v3 49/51] cpuidle,arch: Mark all regular cpuidle_state::enter methods __cpuidle
 References: <20230112194314.845371875@infradead.org>
 MIME-Version: 1.0
 X-Mailman-Approved-At: Thu, 12 Jan 2023 14:00:44 -0800
@@ -218,64 +215,124 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-vmlinux.o: warning: objtool: __halt+0x2c: call to hcall_func.constprop.0() leaves .noinstr.text section
-vmlinux.o: warning: objtool: __halt+0x3f: call to __tdx_hypercall() leaves .noinstr.text section
-vmlinux.o: warning: objtool: __tdx_hypercall+0x66: call to __tdx_hypercall_failed() leaves .noinstr.text section
+For all cpuidle drivers that do not use CPUIDLE_FLAG_RCU_IDLE (iow,
+the simple ones) make sure all the functions are marked __cpuidle.
+
+( due to lack of noinstr validation on these platforms it is entirely
+  possible this isn't complete )
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Acked-by: Frederic Weisbecker <frederic@kernel.org>
-Tested-by: Tony Lindgren <tony@atomide.com>
-Tested-by: Ulf Hansson <ulf.hansson@linaro.org>
 ---
- arch/x86/boot/compressed/vmlinux.lds.S |    1 +
- arch/x86/coco/tdx/tdcall.S             |    2 ++
- arch/x86/coco/tdx/tdx.c                |    5 +++--
- 3 files changed, 6 insertions(+), 2 deletions(-)
+ arch/arm/kernel/cpuidle.c           |    4 ++--
+ arch/arm/mach-davinci/cpuidle.c     |    4 ++--
+ arch/arm/mach-imx/cpuidle-imx5.c    |    4 ++--
+ arch/arm/mach-imx/cpuidle-imx6sl.c  |    4 ++--
+ arch/arm/mach-imx/cpuidle-imx7ulp.c |    4 ++--
+ arch/arm/mach-s3c/cpuidle-s3c64xx.c |    5 ++---
+ arch/mips/kernel/idle.c             |    6 +++---
+ 7 files changed, 15 insertions(+), 16 deletions(-)
 
---- a/arch/x86/boot/compressed/vmlinux.lds.S
-+++ b/arch/x86/boot/compressed/vmlinux.lds.S
-@@ -34,6 +34,7 @@ SECTIONS
- 		_text = .; 	/* Text */
- 		*(.text)
- 		*(.text.*)
-+		*(.noinstr.text)
- 		_etext = . ;
- 	}
- 	.rodata : {
---- a/arch/x86/coco/tdx/tdcall.S
-+++ b/arch/x86/coco/tdx/tdcall.S
-@@ -31,6 +31,8 @@
- 					  TDX_R12 | TDX_R13 | \
- 					  TDX_R14 | TDX_R15 )
- 
-+.section .noinstr.text, "ax"
-+
- /*
-  * __tdx_module_call()  - Used by TDX guests to request services from
-  * the TDX module (does not include VMM services) using TDCALL instruction.
---- a/arch/x86/coco/tdx/tdx.c
-+++ b/arch/x86/coco/tdx/tdx.c
-@@ -53,8 +53,9 @@ static inline u64 _tdx_hypercall(u64 fn,
- }
- 
- /* Called from __tdx_hypercall() for unrecoverable failure */
--void __tdx_hypercall_failed(void)
-+noinstr void __tdx_hypercall_failed(void)
- {
-+	instrumentation_begin();
- 	panic("TDVMCALL failed. TDX module bug?");
- }
- 
-@@ -64,7 +65,7 @@ void __tdx_hypercall_failed(void)
-  * Reusing the KVM EXIT_REASON macros makes it easier to connect the host and
-  * guest sides of these calls.
+--- a/arch/arm/kernel/cpuidle.c
++++ b/arch/arm/kernel/cpuidle.c
+@@ -26,8 +26,8 @@ static struct cpuidle_ops cpuidle_ops[NR
+  *
+  * Returns the index passed as parameter
   */
--static u64 hcall_func(u64 exit_reason)
-+static __always_inline u64 hcall_func(u64 exit_reason)
+-int arm_cpuidle_simple_enter(struct cpuidle_device *dev,
+-		struct cpuidle_driver *drv, int index)
++__cpuidle int arm_cpuidle_simple_enter(struct cpuidle_device *dev, struct
++				       cpuidle_driver *drv, int index)
  {
- 	return exit_reason;
+ 	cpu_do_idle();
+ 
+--- a/arch/arm/mach-davinci/cpuidle.c
++++ b/arch/arm/mach-davinci/cpuidle.c
+@@ -44,8 +44,8 @@ static void davinci_save_ddr_power(int e
  }
+ 
+ /* Actual code that puts the SoC in different idle states */
+-static int davinci_enter_idle(struct cpuidle_device *dev,
+-			      struct cpuidle_driver *drv, int index)
++static __cpuidle int davinci_enter_idle(struct cpuidle_device *dev,
++					struct cpuidle_driver *drv, int index)
+ {
+ 	davinci_save_ddr_power(1, ddr2_pdown);
+ 	cpu_do_idle();
+--- a/arch/arm/mach-imx/cpuidle-imx5.c
++++ b/arch/arm/mach-imx/cpuidle-imx5.c
+@@ -8,8 +8,8 @@
+ #include <asm/system_misc.h>
+ #include "cpuidle.h"
+ 
+-static int imx5_cpuidle_enter(struct cpuidle_device *dev,
+-			      struct cpuidle_driver *drv, int index)
++static __cpuidle int imx5_cpuidle_enter(struct cpuidle_device *dev,
++					struct cpuidle_driver *drv, int index)
+ {
+ 	arm_pm_idle();
+ 	return index;
+--- a/arch/arm/mach-imx/cpuidle-imx6sl.c
++++ b/arch/arm/mach-imx/cpuidle-imx6sl.c
+@@ -11,8 +11,8 @@
+ #include "common.h"
+ #include "cpuidle.h"
+ 
+-static int imx6sl_enter_wait(struct cpuidle_device *dev,
+-			    struct cpuidle_driver *drv, int index)
++static __cpuidle int imx6sl_enter_wait(struct cpuidle_device *dev,
++				       struct cpuidle_driver *drv, int index)
+ {
+ 	imx6_set_lpm(WAIT_UNCLOCKED);
+ 	/*
+--- a/arch/arm/mach-imx/cpuidle-imx7ulp.c
++++ b/arch/arm/mach-imx/cpuidle-imx7ulp.c
+@@ -12,8 +12,8 @@
+ #include "common.h"
+ #include "cpuidle.h"
+ 
+-static int imx7ulp_enter_wait(struct cpuidle_device *dev,
+-			    struct cpuidle_driver *drv, int index)
++static __cpuidle int imx7ulp_enter_wait(struct cpuidle_device *dev,
++					struct cpuidle_driver *drv, int index)
+ {
+ 	if (index == 1)
+ 		imx7ulp_set_lpm(ULP_PM_WAIT);
+--- a/arch/arm/mach-s3c/cpuidle-s3c64xx.c
++++ b/arch/arm/mach-s3c/cpuidle-s3c64xx.c
+@@ -19,9 +19,8 @@
+ #include "regs-sys-s3c64xx.h"
+ #include "regs-syscon-power-s3c64xx.h"
+ 
+-static int s3c64xx_enter_idle(struct cpuidle_device *dev,
+-			      struct cpuidle_driver *drv,
+-			      int index)
++static __cpuidle int s3c64xx_enter_idle(struct cpuidle_device *dev,
++					struct cpuidle_driver *drv, int index)
+ {
+ 	unsigned long tmp;
+ 
+--- a/arch/mips/kernel/idle.c
++++ b/arch/mips/kernel/idle.c
+@@ -241,7 +241,7 @@ void __init check_wait(void)
+ 	}
+ }
+ 
+-void arch_cpu_idle(void)
++__cpuidle void arch_cpu_idle(void)
+ {
+ 	if (cpu_wait)
+ 		cpu_wait();
+@@ -249,8 +249,8 @@ void arch_cpu_idle(void)
+ 
+ #ifdef CONFIG_CPU_IDLE
+ 
+-int mips_cpuidle_wait_enter(struct cpuidle_device *dev,
+-			    struct cpuidle_driver *drv, int index)
++__cpuidle int mips_cpuidle_wait_enter(struct cpuidle_device *dev,
++				      struct cpuidle_driver *drv, int index)
+ {
+ 	arch_cpu_idle();
+ 	return index;
 
 
 
