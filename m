@@ -4,83 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2498BC54EBD
-	for <linux-um@archiver.kernel.org>; Fri, 13 Jan 2023 16:56:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFCC3C54EBE
+	for <linux-um@archiver.kernel.org>; Fri, 13 Jan 2023 17:03:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:MIME-Version:Subject:
 	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=e+hzXAJMyex1CQH+tAizuqUlzxTnuTM8RNWISdDnNhM=; b=GfhMM64AXQRYvI
-	dRzlp4HLpyrjujFTBXXRx8P0iY5Fw3LDA1GnHcJCFrNV1gyhcN2LaZ2ucYCgBfEyHtC75eU9P2Ck+
-	/2XxLMBI8W7+PXpnHmiK7wmbcbnVdhwW+ne58o6TjC2g2pwlH9HSJLMUkzbX96NI+jiNrGhbsnF/o
-	gIFD4o/lt24f1iRz2NB32xi+hiC2eDGR8jVFkeQ6Eq0jphtm7QCjIm1LeDT3hjZHl7NnuXGkSq/PH
-	h2no9lmO8L1SMvw7Lkb8NGpkz1OvLrLg6MVSIX8wKApJ0jHzLeMvawqhiBCP3TZJ0d6IPf9J7EM2I
-	cNEmsYOprcSHFpVbONww==;
+	List-Owner; bh=jyVjjam/2wCjr5B35vP7GvfIq/38L+Ruh7CkmdQctnU=; b=r8ttgaAKcWYEGE
+	Jans8wX0PMEHcydOBvEj3XKdi15/HjFhAKAYuVbCLEQNTpV79GaBla+SFyEqyosUR8eDqTzlvuQtd
+	NVQxLExhiicgJw3O07pFZf4MTr5EnbDppioHNK03ScwlB7/03bLcveMncXAFpNDqJ6hcT41viRpuV
+	AZRCYcut4LEA/HAwd21S9clYjeGZMSB/j0bCYEcUNhTvArLqPpVUAl4vz0u5Qteo5t3/JIQgueBHh
+	kn5e3zLt8rvC00iNgHr5iFhRDh5DJ++bWVgoNKp7+oDPWlPaTrSz9QevQCBp8nCQdn30LX17B02V5
+	qwHPHSUiQpuyC3L2Orqg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGNLp-003XM2-0H; Fri, 13 Jan 2023 16:56:21 +0000
-Received: from mail-vs1-xe35.google.com ([2607:f8b0:4864:20::e35])
+	id 1pGNSW-003YlE-0f; Fri, 13 Jan 2023 17:03:16 +0000
+Received: from mail-qt1-x834.google.com ([2607:f8b0:4864:20::834])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGNLm-003XL4-GW
-	for linux-um@lists.infradead.org; Fri, 13 Jan 2023 16:56:19 +0000
-Received: by mail-vs1-xe35.google.com with SMTP id k6so13898603vsk.1
-        for <linux-um@lists.infradead.org>; Fri, 13 Jan 2023 08:56:15 -0800 (PST)
+	id 1pGNSS-003YkU-Vy
+	for linux-um@lists.infradead.org; Fri, 13 Jan 2023 17:03:14 +0000
+Received: by mail-qt1-x834.google.com with SMTP id s5so15083870qtx.6
+        for <linux-um@lists.infradead.org>; Fri, 13 Jan 2023 09:03:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=pefoley.com; s=google;
         h=cc:to:message-id:content-transfer-encoding:mime-version:subject
          :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=TOZ2XXqS0p7ft3IrzNrVta3tYhszOavdjeGJQ4dCn8k=;
-        b=MBOddXeYiZqcidLAeKir46cRJsI/dSEbGP+R7EM2jqabnjoLy6eWPZQ8R3KDN2unkC
-         YknhoVm0yuTpp1gYD3640UlKsC6F1dKMvORGg0IepWdBvNkb7M4YvmCHOYYg2o12p/5C
-         nYQfznuYAuoEzciyKdMlW9RcIlG2+049Gl4kA=
+        bh=bROfxi87SKGtnuGyOOLeoMUpo9EzYYApKxrmMtTM9wU=;
+        b=LDrSoesyD8KnwWxhmjqrU4fg/5CkN6ucQbUQ7x4RSB1p7qC7NPYiMAjuFMCd4JSg6m
+         B4LcwAN/i6ydMhqVzJkOCE125tantDDz8ToY4onW7V7TQfMmJQt1nfvthpcM6oPZQMVz
+         pM0PJfDD4C5XkKB90uz4Ymc48p36s6OpjPEMk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:message-id:content-transfer-encoding:mime-version:subject
          :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=TOZ2XXqS0p7ft3IrzNrVta3tYhszOavdjeGJQ4dCn8k=;
-        b=iMEno+oKN2J6bKkhgC9Y3tMlpNCJGL2AKJkyaXe2ANwj6Sz8gOq/5AzZ79NnASNpji
-         WHGqgNHe3Ae98r9lIErbmMDVEZk8jlcMRxbvIdhEK7OUXqBO96rOe/zh+aMGS5yCAQss
-         CAR5BubYQas6SPiDdp+rGcCwcB0kJ95ope0wsxbwIzXBXgcPUWFxVZV4vJNRR+2dnnT2
-         wVZ6aIOZ2QMpTAnatu+FAJuM/e+yv9B0cAFZhnjJgDbROgwMeoiO4b7EMljcWWKCKTr1
-         Wjr/rekDqYHFFb3EhbcG8tQwN4J3JlG8vuDGvJUBgUNYfFytoYQTFSDrBv76sDg+xgB/
-         Wh3A==
-X-Gm-Message-State: AFqh2krohlJGnL3ykYxlYsX+TFFomxu0y618MsLE9cS697GCj5nN8fiA
-	qx9JWzyGG7NIho2jvfPh1pg5GQ==
-X-Google-Smtp-Source: AMrXdXtA4jJhbap9Mesgi8AFhu+BzYgf1NF+0+LILeIyGvLezURePTUOrnBbv4PeaVdpL8R78SDOMA==
-X-Received: by 2002:a05:6102:510e:b0:3d0:dafe:9e57 with SMTP id bm14-20020a056102510e00b003d0dafe9e57mr9244569vsb.26.1673628975033;
-        Fri, 13 Jan 2023 08:56:15 -0800 (PST)
+        bh=bROfxi87SKGtnuGyOOLeoMUpo9EzYYApKxrmMtTM9wU=;
+        b=H10rbflk6fZ63FQlHLg0yGizmfg620sJReET48dhUsUdSBqwGXRlaPpZlvh50oUxs3
+         0dFEfMW7F60TXpCJrw1YYY1P9QCo8Uws4iy6Wefn/QOQLiphSJb/eveJ2GDGk+LCp8Au
+         xoU+BJ8E15Pm0xNNT1qGteQdeXyUjfq1Eow8X1hTl4PP/hL/hQZCWI+MkWehWTSYzsjJ
+         So24EK6552LsJA2aJ7ttsojxqeCKKOQOmBAQWyxfEkZqXc5xneQo/xDv9lxBZsp/Yp1N
+         IdA3ZXk2IWl8I4SSqi1ba/ila6ObtbdAOXBw1EteXZl/55zCodZvI5LnR1CQOmD5Xq65
+         m1UA==
+X-Gm-Message-State: AFqh2kr7uPZyDddcRKnmMPSmBMXcO5qGMam7qjfS90kymIPw99RavsLG
+	BKqGNDkcm6q7+3n8X5oUAlTP2Q==
+X-Google-Smtp-Source: AMrXdXtmxOnHo7PGMg9shJkUouga7bPa4NewH/ugJgs+Ify+0IpDXF6lcm2iNVILj5PiF9Q3nl2pzQ==
+X-Received: by 2002:ac8:4e44:0:b0:3a9:8842:5854 with SMTP id e4-20020ac84e44000000b003a988425854mr148872960qtw.52.1673629391435;
+        Fri, 13 Jan 2023 09:03:11 -0800 (PST)
 Received: from [192.168.1.3] ([2600:4040:29fb:d300:887b:7eff:fe74:68b2])
-        by smtp.gmail.com with ESMTPSA id bq35-20020a05620a46a300b00704c9015e68sm13018930qkb.116.2023.01.13.08.56.14
+        by smtp.gmail.com with ESMTPSA id o7-20020ac841c7000000b003a82562c90fsm10716775qtm.62.2023.01.13.09.03.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Jan 2023 08:56:14 -0800 (PST)
+        Fri, 13 Jan 2023 09:03:10 -0800 (PST)
 From: Peter Foley <pefoley2@pefoley.com>
-Date: Fri, 13 Jan 2023 11:56:11 -0500
-Subject: [PATCH] um: put power options in a menu
+Date: Fri, 13 Jan 2023 12:03:00 -0500
+Subject: [PATCH] um: Support LTO
 MIME-Version: 1.0
-Message-Id: <20230113-umpower-v1-1-faa1459f7ab3@pefoley.com>
-X-B4-Tracking: v=1; b=H4sIACuNwWMC/x2NywqDQAwAf0VydmEf2oe/Ij3EbVpzcJVEqyD+u
- 2uPwwzMDkrCpNAUOwj9WHlMGVxZQOwxfcnwOzN464N1LphlmMaVxIS7jZV/1E+81ZDrDpVMJ5hi
- f/UD6kxyiUnow9t/0b6O4wR7aiR2cgAAAA==
+Message-Id: <20230113-umlto-v1-1-9795842411e7@pefoley.com>
+X-B4-Tracking: v=1; b=H4sIAMSOwWMC/x2NQQqAIBAAvxJ7TtCEhL4SHcy2WiiL3YpA+nvWc
+ ZiBSSDIhAJNkYDxIqEtZjBlAWH2cUJFQ2aodGW1MVad63JsKrixdtZYXaOD3PZeUPXsY5i/evVy
+ IH9iZxzp/gdt9zwv5qhYb3AAAAA=
 To: Richard Weinberger <richard@nod.at>,
  Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>
+ Johannes Berg <johannes@sipsolutions.net>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
 Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
  Peter Foley <pefoley2@pefoley.com>
 X-Mailer: b4 0.11.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1673628974; l=663;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1673629390; l=2027;
  i=pefoley2@pefoley.com; s=20230111; h=from:subject:message-id;
- bh=gLu5+b7mdNXFx8A5ZK+VNsmqzaiQBj+qX4NXuo5RyRE=;
- b=qBQxQSZ3UYV8DOtEChK0c5gvyxQKmXVdcCWG+2ylzNq1O2S4pN9rRXq8UEdHHrJw+wXh2Ojg7LS+
- XDKm421CBIcXLzu6aX9ISdvvt61jR0H8BODLTABtkLWhQ83/dwJ+
+ bh=r37o6W2X7xYahpb4XmGtj5Z76NOt8ozSLJ+BNIEJYA0=;
+ b=ewHzEg53qWxOptgtg7+hrYdRUvKjiJ+M+Hb6RM7u3+898hGzrBx/hT7YCM4mnNVQrQ4lsOOepN8R
+ ooM0pqCXAaAjuR51JlN7ajMsGnw1nkPoaEXV9V31CbSX/EG/59Ko
 X-Developer-Key: i=pefoley2@pefoley.com; a=ed25519;
  pk=DCQqIdN6rHnvfQH58WQiQzJFfGUo1HyWSvdYG8vnO5o=
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230113_085618_670516_A294BA15 
-X-CRM114-Status: UNSURE (   6.95  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230113_090313_058352_D0EBF494 
+X-CRM114-Status: GOOD (  10.08  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,30 +99,58 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Because having them all dumped at top-level is a bit messy.
+Only a handful of changes are necessary to get it to work.
 
 Signed-off-by: Peter Foley <pefoley2@pefoley.com>
 ---
- arch/um/Kconfig | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/um/Kconfig           | 2 ++
+ arch/um/Makefile          | 2 +-
+ arch/x86/um/vdso/Makefile | 2 +-
+ 3 files changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index ad4ff3b0e91e..65bc4c5f2e64 100644
+index ad4ff3b0e91e..7c94ca7ff758 100644
 --- a/arch/um/Kconfig
 +++ b/arch/um/Kconfig
-@@ -242,4 +242,8 @@ source "arch/um/drivers/Kconfig"
- config ARCH_SUSPEND_POSSIBLE
- 	def_bool y
+@@ -25,6 +25,8 @@ config UML
+ 	select GENERIC_IRQ_SHOW
+ 	select GENERIC_CPU_DEVICES
+ 	select HAVE_GCC_PLUGINS
++	select ARCH_SUPPORTS_LTO_CLANG
++	select ARCH_SUPPORTS_LTO_CLANG_THIN
+ 	select TRACE_IRQFLAGS_SUPPORT
+ 	select TTY # Needed for line.c
+ 	select HAVE_ARCH_VMAP_STACK
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index f1d4d67157be..a41dde204b08 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -142,7 +142,7 @@ endif
+ LD_FLAGS_CMDLINE = $(foreach opt,$(KBUILD_LDFLAGS),-Wl,$(opt))
  
-+menu "Power management options"
-+
- source "kernel/power/Kconfig"
-+
-+endmenu
+ # Used by link-vmlinux.sh which has special support for um link
+-export CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS) $(LD_FLAGS_CMDLINE)
++export CFLAGS_vmlinux := $(LINK-y) $(LINK_WRAPS) $(LD_FLAGS_CMDLINE) $(CC_FLAGS_LTO)
+ export LDFLAGS_vmlinux := $(LDFLAGS_EXECSTACK)
+ 
+ # When cleaning we don't include .config, so we don't include
+diff --git a/arch/x86/um/vdso/Makefile b/arch/x86/um/vdso/Makefile
+index 6fbe97c52c99..6825e146a62f 100644
+--- a/arch/x86/um/vdso/Makefile
++++ b/arch/x86/um/vdso/Makefile
+@@ -61,7 +61,7 @@ CFLAGS_REMOVE_um_vdso.o = -pg -fprofile-arcs -ftest-coverage
+ #
+ quiet_cmd_vdso = VDSO    $@
+       cmd_vdso = $(CC) -nostdlib -o $@ \
+-		       $(VDSO_LDFLAGS) $(VDSO_LDFLAGS_$(filter %.lds,$(^F))) \
++		       $(CC_FLAGS_LTO) $(VDSO_LDFLAGS) $(VDSO_LDFLAGS_$(filter %.lds,$(^F))) \
+ 		       -Wl,-T,$(filter %.lds,$^) $(filter %.o,$^) && \
+ 		 sh $(srctree)/$(src)/checkundef.sh '$(NM)' '$@'
+ 
 
 ---
 base-commit: d9fc1511728c15df49ff18e49a494d00f78b7cd4
-change-id: 20230113-umpower-370c42859a65
+change-id: 20230113-umlto-c7f6731306e7
 
 Best regards,
 -- 
