@@ -4,50 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43D1AC678D7
-	for <linux-um@archiver.kernel.org>; Fri, 13 Jan 2023 17:12:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7FEFC67871
+	for <linux-um@archiver.kernel.org>; Fri, 13 Jan 2023 17:12:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/VyPk1EqjycVPhAF9jBJPKwI2pNGgu8ngiuysRstJFM=; b=Hnwy4TQzxMGCkH
-	3ltn/fq9N6uxqXg8Wjn94v4k0nMXS0tOjwGMSxSOdAIdG0xZ9DciunpH25NNyBnWqc9CQ9o3X47ii
-	kSMK5QLG5JAf0cSdNz4tFEswqFIUc2XCzGTZOSYAO7bYlnXKGRfFzykiiDJC9Q1kmmMNXNucOt0nZ
-	t1KT3FOmg2Z2G8pn0vGkT3Z+HjUeM/ysA7mML2HhlkIcpOl1F0scPdYKPZI7EyvFtub1sq0GhhKWs
-	eKiYZM5UAX0rOWxZJ9Kc54lpciPfnKovUOjSuYHLoU+ylHkFSl4kctEMh0L2oqlD3e2hNR/821M5Y
-	0tYAPQn4ymFwUObAYhXg==;
+	List-Owner; bh=MRayLgRARWmNSNKdL6Q0XKMqcxnDH5A1nX9VjO4r3l0=; b=Nx+pIRrIZgHS3Q
+	Q503eQgJH8jiLZLBQSm63+xfVfDIy1v9i90FbpMOfhxwaKFr6kF3R5v5am1I0XA0FRsNgQtpvEKgs
+	RFSg0ULjelp/zeM4rQ7bKyEoW7YsyO2+LS01efTfP4Zcj0IOsxzoQy+2gzOwxbaGarZCIVMMRWO/R
+	pHjNq33wDJ7Y4UhB4XE9DKHEFuNPSRnZoVBnca+mFFuKZZBEQhcgzBoakJcHsOdc0ux09FmFyArOt
+	cfpj7KPzKkus8/SThiJa8nJiowybN+mH30+huukMyPy6fz4gjFSi5ZKq9O2RuhaL9vdz00EO87hL8
+	d5pApVBvU/w+rapX7u5Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGNbd-003bAW-BO; Fri, 13 Jan 2023 17:12:41 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+	id 1pGNbm-003bGy-NH; Fri, 13 Jan 2023 17:12:50 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGNaM-003aBf-TD
-	for linux-um@lists.infradead.org; Fri, 13 Jan 2023 17:11:24 +0000
+	id 1pGNaU-003aI4-K0
+	for linux-um@lists.infradead.org; Fri, 13 Jan 2023 17:11:33 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1673629882;
+	s=mimecast20190719; t=1673629889;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=tZj4FS3+eH3k8U+2o1kgh0Nnr8qiKFynHsnxPGTLDn0=;
-	b=EXb1xxw+BCGYGGdcuLVj7sL9XkqkytgSj8JeehxIBQnrcO1qGBjLAI2CWz6jUCzGA3uQn/
-	c//93hs+kV763tatfgVLuhMinOpnnHPWg2lzC0CecuBYKkObm9D5yIYIEK3C9JHjEuv/Os
-	/6ejSWEGc04wwZCOtwo4jBmhWcVINd0=
+	bh=73fMLbo4V7+MiQ5juN7uSvKw/YSpoFxaX5Pl91RBCXU=;
+	b=F+tarAcwqwkxLoWvaHi+iWYeJc7gpIm4Rj6DwJgsZXGGpjXJjaxbTxggA0TqmCtxWa9BLT
+	EDNSmnDcPQOgQIqhpkKrR4rqOmT+pFqeudp9nIHUdGdOZyKk+YobCnIDh/Hp16RsDQFgWr
+	pYjlmY9xm7UWTZ5lX5Q1NwtCsiyYZZs=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-104-hBWEIBOUMXubvNcoEzKBLg-1; Fri, 13 Jan 2023 12:11:15 -0500
-X-MC-Unique: hBWEIBOUMXubvNcoEzKBLg-1
+ us-mta-673-aDHSxwP-Maa5xUp69hE7Ig-1; Fri, 13 Jan 2023 12:11:23 -0500
+X-MC-Unique: aDHSxwP-Maa5xUp69hE7Ig-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8299E101A55E;
-	Fri, 13 Jan 2023 17:11:14 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 98E2A886464;
+	Fri, 13 Jan 2023 17:11:21 +0000 (UTC)
 Received: from t480s.fritz.box (unknown [10.39.193.196])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 121D440C2064;
-	Fri, 13 Jan 2023 17:11:06 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id C8ACB40C2064;
+	Fri, 13 Jan 2023 17:11:14 +0000 (UTC)
 From: David Hildenbrand <david@redhat.com>
 To: linux-kernel@vger.kernel.org
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -81,17 +81,17 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	linux-um@lists.infradead.org,
 	linux-xtensa@linux-xtensa.org,
 	David Hildenbrand <david@redhat.com>,
-	Russell King <linux@armlinux.org.uk>
-Subject: [PATCH mm-unstable v1 04/26] arm/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
-Date: Fri, 13 Jan 2023 18:10:04 +0100
-Message-Id: <20230113171026.582290-5-david@redhat.com>
+	Guo Ren <guoren@kernel.org>
+Subject: [PATCH mm-unstable v1 05/26] csky/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+Date: Fri, 13 Jan 2023 18:10:05 +0100
+Message-Id: <20230113171026.582290-6-david@redhat.com>
 In-Reply-To: <20230113171026.582290-1-david@redhat.com>
 References: <20230113171026.582290-1-david@redhat.com>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230113_091123_038293_458E8A3C 
-X-CRM114-Status: GOOD (  17.59  )
+X-CRM114-CacheID: sfid-20230113_091130_766186_FD9A91BC 
+X-CRM114-Status: GOOD (  14.40  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,110 +109,142 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 Let's support __HAVE_ARCH_PTE_SWP_EXCLUSIVE by stealing one bit from the
-offset. This reduces the maximum swap space per file to 64 GiB (was 128
+offset. This reduces the maximum swap space per file to 16 GiB (was 32
 GiB).
 
-While at it drop the PTE_TYPE_FAULT from __swp_entry_to_pte() which is
-defined to be 0 and is rather confusing because we should be dealing
-with "Linux PTEs" not "hardware PTEs". Also, properly mask the type in
-__swp_entry().
+We might actually be able to reuse one of the other software bits
+(_PAGE_READ / PAGE_WRITE) instead, because we only have to keep
+pte_present(), pte_none() and HW happy. For now, let's keep it simple
+because there might be something non-obvious.
 
-Cc: Russell King <linux@armlinux.org.uk>
+Cc: Guo Ren <guoren@kernel.org>
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- arch/arm/include/asm/pgtable-2level.h |  3 +++
- arch/arm/include/asm/pgtable-3level.h |  3 +++
- arch/arm/include/asm/pgtable.h        | 35 +++++++++++++++++++++------
- 3 files changed, 34 insertions(+), 7 deletions(-)
+ arch/csky/abiv1/inc/abi/pgtable-bits.h | 13 +++++++++----
+ arch/csky/abiv2/inc/abi/pgtable-bits.h | 19 ++++++++++++-------
+ arch/csky/include/asm/pgtable.h        | 18 ++++++++++++++++++
+ 3 files changed, 39 insertions(+), 11 deletions(-)
 
-diff --git a/arch/arm/include/asm/pgtable-2level.h b/arch/arm/include/asm/pgtable-2level.h
-index 92abd4cd8ca2..ce543cd9380c 100644
---- a/arch/arm/include/asm/pgtable-2level.h
-+++ b/arch/arm/include/asm/pgtable-2level.h
-@@ -126,6 +126,9 @@
- #define L_PTE_SHARED		(_AT(pteval_t, 1) << 10)	/* shared(v6), coherent(xsc3) */
- #define L_PTE_NONE		(_AT(pteval_t, 1) << 11)
+diff --git a/arch/csky/abiv1/inc/abi/pgtable-bits.h b/arch/csky/abiv1/inc/abi/pgtable-bits.h
+index 752c8b3f9194..ae7a2f76dd42 100644
+--- a/arch/csky/abiv1/inc/abi/pgtable-bits.h
++++ b/arch/csky/abiv1/inc/abi/pgtable-bits.h
+@@ -10,6 +10,9 @@
+ #define _PAGE_ACCESSED		(1<<3)
+ #define _PAGE_MODIFIED		(1<<4)
  
-+/* We borrow bit 7 to store the exclusive marker in swap PTEs. */
-+#define L_PTE_SWP_EXCLUSIVE	L_PTE_RDONLY
++/* We borrow bit 9 to store the exclusive marker in swap PTEs. */
++#define _PAGE_SWP_EXCLUSIVE	(1<<9)
 +
- /*
-  * These are the memory types, defined to be compatible with
-  * pre-ARMv6 CPUs cacheable and bufferable bits: n/a,n/a,C,B
-diff --git a/arch/arm/include/asm/pgtable-3level.h b/arch/arm/include/asm/pgtable-3level.h
-index eabe72ff7381..106049791500 100644
---- a/arch/arm/include/asm/pgtable-3level.h
-+++ b/arch/arm/include/asm/pgtable-3level.h
-@@ -76,6 +76,9 @@
- #define L_PTE_NONE		(_AT(pteval_t, 1) << 57)	/* PROT_NONE */
- #define L_PTE_RDONLY		(_AT(pteval_t, 1) << 58)	/* READ ONLY */
- 
-+/* We borrow bit 7 to store the exclusive marker in swap PTEs. */
-+#define L_PTE_SWP_EXCLUSIVE	(_AT(pteval_t, 1) << 7)
-+
- #define L_PMD_SECT_VALID	(_AT(pmdval_t, 1) << 0)
- #define L_PMD_SECT_DIRTY	(_AT(pmdval_t, 1) << 55)
- #define L_PMD_SECT_NONE		(_AT(pmdval_t, 1) << 57)
-diff --git a/arch/arm/include/asm/pgtable.h b/arch/arm/include/asm/pgtable.h
-index f049072b2e85..886c275995a2 100644
---- a/arch/arm/include/asm/pgtable.h
-+++ b/arch/arm/include/asm/pgtable.h
-@@ -271,27 +271,48 @@ static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
- }
+ /* implemented in hardware */
+ #define _PAGE_GLOBAL		(1<<6)
+ #define _PAGE_VALID		(1<<7)
+@@ -26,7 +29,8 @@
+ #define _PAGE_PROT_NONE		_PAGE_READ
  
  /*
-- * Encode and decode a swap entry.  Swap entries are stored in the Linux
-- * page tables as follows:
+- * Encode and decode a swap entry
 + * Encode/decode swap entries and swap PTEs. Swap PTEs are all PTEs that
 + * are !pte_none() && !pte_present().
-+ *
-+ * Format of swap PTEs:
   *
-  *   3 3 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1
-  *   1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
-- *   <--------------- offset ------------------------> < type -> 0 0
-+ *   <------------------- offset ------------------> E < type -> 0 0
-+ *
-+ *   E is the exclusive marker that is not stored in swap entries.
-  *
-- * This gives us up to 31 swap files and 128GB per swap file.  Note that
-+ * This gives us up to 31 swap files and 64GB per swap file.  Note that
-  * the offset field is always non-zero.
+  * Format of swap PTE:
+  *     bit          0:    _PAGE_PRESENT (zero)
+@@ -35,15 +39,16 @@
+  *     bit          6:    _PAGE_GLOBAL (zero)
+  *     bit          7:    _PAGE_VALID (zero)
+  *     bit          8:    swap type[4]
+- *     bit     9 - 31:    swap offset
++ *     bit          9:    exclusive marker
++ *     bit    10 - 31:    swap offset
   */
- #define __SWP_TYPE_SHIFT	2
- #define __SWP_TYPE_BITS		5
- #define __SWP_TYPE_MASK		((1 << __SWP_TYPE_BITS) - 1)
--#define __SWP_OFFSET_SHIFT	(__SWP_TYPE_BITS + __SWP_TYPE_SHIFT)
-+#define __SWP_OFFSET_SHIFT	(__SWP_TYPE_BITS + __SWP_TYPE_SHIFT + 1)
+ #define __swp_type(x)			((((x).val >> 2) & 0xf) | \
+ 					(((x).val >> 4) & 0x10))
+-#define __swp_offset(x)			((x).val >> 9)
++#define __swp_offset(x)			((x).val >> 10)
+ #define __swp_entry(type, offset)	((swp_entry_t) { \
+ 					((type & 0xf) << 2) | \
+ 					((type & 0x10) << 4) | \
+-					((offset) << 9)})
++					((offset) << 10)})
  
- #define __swp_type(x)		(((x).val >> __SWP_TYPE_SHIFT) & __SWP_TYPE_MASK)
- #define __swp_offset(x)		((x).val >> __SWP_OFFSET_SHIFT)
--#define __swp_entry(type,offset) ((swp_entry_t) { ((type) << __SWP_TYPE_SHIFT) | ((offset) << __SWP_OFFSET_SHIFT) })
-+#define __swp_entry(type, offset) ((swp_entry_t) { (((type) & __SWP_TYPE_BITS) << __SWP_TYPE_SHIFT) | \
-+						   ((offset) << __SWP_OFFSET_SHIFT) })
+ #define HAVE_ARCH_UNMAPPED_AREA
  
- #define __pte_to_swp_entry(pte)	((swp_entry_t) { pte_val(pte) })
--#define __swp_entry_to_pte(swp)	__pte((swp).val | PTE_TYPE_FAULT)
-+#define __swp_entry_to_pte(swp)	__pte((swp).val)
+diff --git a/arch/csky/abiv2/inc/abi/pgtable-bits.h b/arch/csky/abiv2/inc/abi/pgtable-bits.h
+index 7e7f389f546f..526152bd2156 100644
+--- a/arch/csky/abiv2/inc/abi/pgtable-bits.h
++++ b/arch/csky/abiv2/inc/abi/pgtable-bits.h
+@@ -10,6 +10,9 @@
+ #define _PAGE_PRESENT		(1<<10)
+ #define _PAGE_MODIFIED		(1<<11)
+ 
++/* We borrow bit 7 to store the exclusive marker in swap PTEs. */
++#define _PAGE_SWP_EXCLUSIVE	(1<<7)
 +
+ /* implemented in hardware */
+ #define _PAGE_GLOBAL		(1<<0)
+ #define _PAGE_VALID		(1<<1)
+@@ -26,23 +29,25 @@
+ #define _PAGE_PROT_NONE		_PAGE_WRITE
+ 
+ /*
+- * Encode and decode a swap entry
++ * Encode/decode swap entries and swap PTEs. Swap PTEs are all PTEs that
++ * are !pte_none() && !pte_present().
+  *
+  * Format of swap PTE:
+  *     bit          0:    _PAGE_GLOBAL (zero)
+  *     bit          1:    _PAGE_VALID (zero)
+  *     bit      2 - 6:    swap type
+- *     bit      7 - 8:    swap offset[0 - 1]
++ *     bit          7:    exclusive marker
++ *     bit          8:    swap offset[0]
+  *     bit          9:    _PAGE_WRITE (zero)
+  *     bit         10:    _PAGE_PRESENT (zero)
+- *     bit    11 - 31:    swap offset[2 - 22]
++ *     bit    11 - 31:    swap offset[1 - 21]
+  */
+ #define __swp_type(x)			(((x).val >> 2) & 0x1f)
+-#define __swp_offset(x)			((((x).val >> 7) & 0x3) | \
+-					(((x).val >> 9) & 0x7ffffc))
++#define __swp_offset(x)			((((x).val >> 8) & 0x1) | \
++					(((x).val >> 10) & 0x3ffffe))
+ #define __swp_entry(type, offset)	((swp_entry_t) { \
+ 					((type & 0x1f) << 2) | \
+-					((offset & 0x3) << 7) | \
+-					((offset & 0x7ffffc) << 9)})
++					((offset & 0x1) << 8) | \
++					((offset & 0x3ffffe) << 10)})
+ 
+ #endif /* __ASM_CSKY_PGTABLE_BITS_H */
+diff --git a/arch/csky/include/asm/pgtable.h b/arch/csky/include/asm/pgtable.h
+index 77bc6caff2d2..574c97b9ecca 100644
+--- a/arch/csky/include/asm/pgtable.h
++++ b/arch/csky/include/asm/pgtable.h
+@@ -200,6 +200,24 @@ static inline pte_t pte_mkyoung(pte_t pte)
+ 	return pte;
+ }
+ 
 +#define __HAVE_ARCH_PTE_SWP_EXCLUSIVE
 +static inline int pte_swp_exclusive(pte_t pte)
 +{
-+	return pte_isset(pte, L_PTE_SWP_EXCLUSIVE);
++	return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
 +}
 +
 +static inline pte_t pte_swp_mkexclusive(pte_t pte)
 +{
-+	return set_pte_bit(pte, __pgprot(L_PTE_SWP_EXCLUSIVE));
++	pte_val(pte) |= _PAGE_SWP_EXCLUSIVE;
++	return pte;
 +}
 +
 +static inline pte_t pte_swp_clear_exclusive(pte_t pte)
 +{
-+	return clear_pte_bit(pte, __pgprot(L_PTE_SWP_EXCLUSIVE));
++	pte_val(pte) &= ~_PAGE_SWP_EXCLUSIVE;
++	return pte;
 +}
- 
- /*
-  * It is an error for the kernel to have more swap files than we can
++
+ #define __HAVE_PHYS_MEM_ACCESS_PROT
+ struct file;
+ extern pgprot_t phys_mem_access_prot(struct file *file, unsigned long pfn,
 -- 
 2.39.0
 
