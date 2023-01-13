@@ -4,50 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3DCCFC54EBD
-	for <linux-um@archiver.kernel.org>; Fri, 13 Jan 2023 17:13:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6779EC3DA78
+	for <linux-um@archiver.kernel.org>; Fri, 13 Jan 2023 17:14:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=l4WlvLDTUNISdku0uebTx8QEkDeGgmcyO2DsU7s7Hq4=; b=KfRksHE/LEYGwH
-	pzR8qQ5qmewljo74UTU8/W0nrUBVjUAu/9gYiJlfIZOlelo1SFPXM31s/EINtydOu+CLoEYt5TAPq
-	Hzi1dG1KxIFHxyZIUFBkWowqOYSWXL0Ym5VaGdnuhwPmPSECpNfm7JPBDe+2TXJ9sqMBUFpT4VJy4
-	OtCkmXlcw442fnaK3BkC1+hxQQ8bx8aUkvGLBfNYrIriyKFq+hAYmN5zmosd3OT9qxou+8nJVJgLl
-	M1EY5f4LP2Sd0A1ieiluGAC7ztnMLH8AWnu2I7pjniPtDeSnDugJYom/qqxwXRJw5KGm+RIcQnlqA
-	Rz2URZHbS3+EXK/Mb6mw==;
+	List-Owner; bh=BeSqgydvtqT1ylNEKsqHpI98FbJJ3bPjt4vV2RJJ2ZM=; b=nJIG38Zw9hf4G3
+	74uYd+xH1TUWYv3LZ9hEy4ulDYmibgTShnn2+iCIg9NzAEqJ1AakhMpurYL9HiX4ProDRQmVzuf6z
+	05Nj7qCRoUj4QUvjdrL7zcLOaMokJKE5mfMaQ98whvgPv28j+yjeARSddfOFBxOswcQlV/QmLcvko
+	thxVH8LMBRiiboYvfoawGWKReg9CsA8xgn6J67Q+dUzOnB1LCQQ6UZxGKu7FZqf5uKlA2vZThTq1z
+	noWGxVfdHN2/5yo2Ci1gklxFFf2LsB+vkedtYIfulJjD2TzBqvWGE/jxJmK+nEorLlERSOBFmcQs1
+	+vhQm+lYW/ESg/kBSXtg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGNcX-003bqr-H1; Fri, 13 Jan 2023 17:13:37 +0000
+	id 1pGNdE-003cJq-88; Fri, 13 Jan 2023 17:14:20 +0000
 Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pGNaZ-003aMo-Ag
-	for linux-um@lists.infradead.org; Fri, 13 Jan 2023 17:11:39 +0000
+	id 1pGNah-003aSt-1E
+	for linux-um@lists.infradead.org; Fri, 13 Jan 2023 17:11:44 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1673629894;
+	s=mimecast20190719; t=1673629902;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=7Tra/8OvEB/D6RZgFaJhZ/NUp8ml8r1Zefl0IpfbRbo=;
-	b=EDmZmtBR0rSYGWizZM7PK/xMX7+mnAKSJZZ1gIobulmkh96J7FVktJQ8mGYb4EkEgV25sA
-	w6vb5BT8jPMdUUDjNbQr7ZOSkM5svdJ1USTcbPvI68d8OwNw5WsRA/zAS28fONQXisj+8d
-	a9lKKU9n0AJtDn3IoZyh0ueJXnmYgmg=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=aoWiVle2vALbm81f87GqQxp1lNDAFbpV4WpvPll4VZk=;
+	b=Y+pqj0ZYZMrUhXNOkC8o3IOG1xJfnv5job9RU16AJPVhf0MxKT033Exi9ZVN8M5dFaBYzA
+	694Ctg94aTXGNbe0V3+Hbgn4hh5mxPabihTG41wYEY+F1q5di1Sxt/5XFQ3ibJLo/7pXLT
+	oxwMXMlPr7vG1+TXX4S/4m6Lj6qdq90=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-655-XLgqcdLfMlOTpMhM2wlwUA-1; Fri, 13 Jan 2023 12:11:29 -0500
-X-MC-Unique: XLgqcdLfMlOTpMhM2wlwUA-1
+ us-mta-527-rdVTI0nvPQSRFri4XAJDbA-1; Fri, 13 Jan 2023 12:11:36 -0500
+X-MC-Unique: rdVTI0nvPQSRFri4XAJDbA-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
 	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BD677281DE79;
-	Fri, 13 Jan 2023 17:11:27 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 82DD1101B42B;
+	Fri, 13 Jan 2023 17:11:34 +0000 (UTC)
 Received: from t480s.fritz.box (unknown [10.39.193.196])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 1DDA340C2064;
-	Fri, 13 Jan 2023 17:11:21 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 4259640C2064;
+	Fri, 13 Jan 2023 17:11:27 +0000 (UTC)
 From: David Hildenbrand <david@redhat.com>
 To: linux-kernel@vger.kernel.org
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -80,18 +80,17 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	sparclinux@vger.kernel.org,
 	linux-um@lists.infradead.org,
 	linux-xtensa@linux-xtensa.org,
-	David Hildenbrand <david@redhat.com>,
-	Brian Cain <bcain@quicinc.com>
-Subject: [PATCH mm-unstable v1 06/26] hexagon/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
-Date: Fri, 13 Jan 2023 18:10:06 +0100
-Message-Id: <20230113171026.582290-7-david@redhat.com>
+	David Hildenbrand <david@redhat.com>
+Subject: [PATCH mm-unstable v1 07/26] ia64/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+Date: Fri, 13 Jan 2023 18:10:07 +0100
+Message-Id: <20230113171026.582290-8-david@redhat.com>
 In-Reply-To: <20230113171026.582290-1-david@redhat.com>
 References: <20230113171026.582290-1-david@redhat.com>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230113_091135_552624_E5475809 
-X-CRM114-Status: GOOD (  16.60  )
+X-CRM114-CacheID: sfid-20230113_091143_184644_0D146C30 
+X-CRM114-Status: GOOD (  15.63  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,73 +107,60 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Let's support __HAVE_ARCH_PTE_SWP_EXCLUSIVE by stealing one bit from the
-offset. This reduces the maximum swap space per file to 16 GiB (was 32
-GiB).
+Let's support __HAVE_ARCH_PTE_SWP_EXCLUSIVE by stealing one bit
+from the type. Generic MM currently only uses 5 bits for the type
+(MAX_SWAPFILES_SHIFT), so the stolen bit is effectively unused.
 
-While at it, mask the type in __swp_entry().
+While at it, also mask the type in __swp_entry().
 
-Cc: Brian Cain <bcain@quicinc.com>
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- arch/hexagon/include/asm/pgtable.h | 37 +++++++++++++++++++++++++-----
- 1 file changed, 31 insertions(+), 6 deletions(-)
+ arch/ia64/include/asm/pgtable.h | 32 +++++++++++++++++++++++++++++---
+ 1 file changed, 29 insertions(+), 3 deletions(-)
 
-diff --git a/arch/hexagon/include/asm/pgtable.h b/arch/hexagon/include/asm/pgtable.h
-index f7048c18b6f9..7eb008e477c8 100644
---- a/arch/hexagon/include/asm/pgtable.h
-+++ b/arch/hexagon/include/asm/pgtable.h
-@@ -61,6 +61,9 @@ extern unsigned long empty_zero_page;
-  * So we'll put up with a bit of inefficiency for now...
-  */
+diff --git a/arch/ia64/include/asm/pgtable.h b/arch/ia64/include/asm/pgtable.h
+index 01517a5e6778..e4b8ab931399 100644
+--- a/arch/ia64/include/asm/pgtable.h
++++ b/arch/ia64/include/asm/pgtable.h
+@@ -58,6 +58,9 @@
+ #define _PAGE_ED		(__IA64_UL(1) << 52)	/* exception deferral */
+ #define _PAGE_PROTNONE		(__IA64_UL(1) << 63)
  
-+/* We borrow bit 6 to store the exclusive marker in swap PTEs. */
-+#define _PAGE_SWP_EXCLUSIVE	(1<<6)
++/* We borrow bit 7 to store the exclusive marker in swap PTEs. */
++#define _PAGE_SWP_EXCLUSIVE	(1 << 7)
 +
- /*
-  * Top "FOURTH" level (pgd), which for the Hexagon VM is really
-  * only the second from the bottom, pgd and pud both being collapsed.
-@@ -359,9 +362,12 @@ static inline unsigned long pmd_page_vaddr(pmd_t pmd)
- #define ZERO_PAGE(vaddr) (virt_to_page(&empty_zero_page))
+ #define _PFN_MASK		_PAGE_PPN_MASK
+ /* Mask of bits which may be changed by pte_modify(); the odd bits are there for _PAGE_PROTNONE */
+ #define _PAGE_CHG_MASK	(_PAGE_P | _PAGE_PROTNONE | _PAGE_PL_MASK | _PAGE_AR_MASK | _PAGE_ED)
+@@ -399,6 +402,9 @@ extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
+ extern void paging_init (void);
  
  /*
 + * Encode/decode swap entries and swap PTEs. Swap PTEs are all PTEs that
 + * are !pte_none() && !pte_present().
 + *
-  * Swap/file PTE definitions.  If _PAGE_PRESENT is zero, the rest of the PTE is
-  * interpreted as swap information.  The remaining free bits are interpreted as
-- * swap type/offset tuple.  Rather than have the TLB fill handler test
-+ * listed below.  Rather than have the TLB fill handler test
-  * _PAGE_PRESENT, we're going to reserve the permissions bits and set them to
-  * all zeros for swap entries, which speeds up the miss handler at the cost of
-  * 3 bits of offset.  That trade-off can be revisited if necessary, but Hexagon
-@@ -371,9 +377,10 @@ static inline unsigned long pmd_page_vaddr(pmd_t pmd)
-  * Format of swap PTE:
-  *	bit	0:	Present (zero)
-  *	bits	1-5:	swap type (arch independent layer uses 5 bits max)
-- *	bits	6-9:	bits 3:0 of offset
-+ *	bit	6:	exclusive marker
-+ *	bits	7-9:	bits 2:0 of offset
-  *	bits	10-12:	effectively _PAGE_PROTNONE (all zero)
-- *	bits	13-31:  bits 22:4 of swap offset
-+ *	bits	13-31:  bits 21:3 of swap offset
+  * Note: The macros below rely on the fact that MAX_SWAPFILES_SHIFT <= number of
+  *	 bits in the swap-type field of the swap pte.  It would be nice to
+  *	 enforce that, but we can't easily include <linux/swap.h> here.
+@@ -406,16 +412,36 @@ extern void paging_init (void);
   *
-  * The split offset makes some of the following macros a little gnarly,
-  * but there's plenty of precedent for this sort of thing.
-@@ -383,11 +390,29 @@ static inline unsigned long pmd_page_vaddr(pmd_t pmd)
- #define __swp_type(swp_pte)		(((swp_pte).val >> 1) & 0x1f)
+  * Format of swap pte:
+  *	bit   0   : present bit (must be zero)
+- *	bits  1- 7: swap-type
++ *	bits  1- 6: swap type
++ *	bit   7   : exclusive marker
+  *	bits  8-62: swap offset
+  *	bit  63   : _PAGE_PROTNONE bit
+  */
+-#define __swp_type(entry)		(((entry).val >> 1) & 0x7f)
++#define __swp_type(entry)		(((entry).val >> 1) & 0x3f)
+ #define __swp_offset(entry)		(((entry).val << 1) >> 9)
+-#define __swp_entry(type,offset)	((swp_entry_t) { ((type) << 1) | ((long) (offset) << 8) })
++#define __swp_entry(type, offset)	((swp_entry_t) { ((type & 0x3f) << 1) | \
++							 ((long) (offset) << 8) })
+ #define __pte_to_swp_entry(pte)		((swp_entry_t) { pte_val(pte) })
+ #define __swp_entry_to_pte(x)		((pte_t) { (x).val })
  
- #define __swp_offset(swp_pte) \
--	((((swp_pte).val >> 6) & 0xf) | (((swp_pte).val >> 9) & 0x7ffff0))
-+	((((swp_pte).val >> 7) & 0x7) | (((swp_pte).val >> 10) & 0x3ffff8))
- 
- #define __swp_entry(type, offset) \
- 	((swp_entry_t)	{ \
--		((type << 1) | \
--		 ((offset & 0x7ffff0) << 9) | ((offset & 0xf) << 6)) })
-+		(((type & 0x1f) << 1) | \
-+		 ((offset & 0x3ffff8) << 10) | ((offset & 0x7) << 7)) })
-+
 +#define __HAVE_ARCH_PTE_SWP_EXCLUSIVE
 +static inline int pte_swp_exclusive(pte_t pte)
 +{
@@ -192,8 +178,10 @@ index f7048c18b6f9..7eb008e477c8 100644
 +	pte_val(pte) &= ~_PAGE_SWP_EXCLUSIVE;
 +	return pte;
 +}
- 
- #endif
++
+ /*
+  * ZERO_PAGE is a global shared page that is always zero: used
+  * for zero-mapped memory areas etc..
 -- 
 2.39.0
 
