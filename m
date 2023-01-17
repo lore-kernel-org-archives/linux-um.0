@@ -4,36 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0615FC27C76
-	for <linux-um@archiver.kernel.org>; Wed, 25 Jan 2023 09:02:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23495C27C76
+	for <linux-um@archiver.kernel.org>; Wed, 25 Jan 2023 09:02:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4lj1DKObptEDruogMWxxS667+/mmYn/jL6XkJX6ast0=; b=KPJ837KYToY6pR
-	X3XE34J4MCBd/Rtd/JLnRKajxFY5EYKurCfjCJCYmmz3rxzqL/P2adbmhx+ucsGYuAnm+u6YqcRRB
-	jGbTQgqhdOPTOUe/dsWsKK+R4eT3oLBsw1OVGulPYZVXmy6rCnO5sNGSj+yz9veRVq0/jLwmHeXw3
-	O6pEktAE1C/+PQoH/TBNXl3xMsWfV9GRemHpfduAjFwDHXhT1k+E7Hh0nD7mZimwvoj71KCM64F+U
-	mUzKv+Bzqmk6/QjUBmS0HXhPku8wx7Dz8vpgJbjlgmMDs++cygP74adbGC4ydXJOvSqzINcgqP4ld
-	5ckUuGSNy7xYhURfAohw==;
+	List-Owner; bh=rFG68K6qdMbF+wKDLffJFYoRVjQHBzb+JtEnHz/I/9s=; b=ri8nysu9Pbulz0
+	/MjdcownaqepmjY4ZNPPWS+LdpORCM/3hU2vAsjjqIkcYJzR368su9nrQ9m/keDgpa/jFzshoZbh4
+	mzTYYWvqS7295BbKqxYKi8LqMIRRY1dTg/kfU0MoFciBOqqR0n70DhjUpfOmvbE3/j0cQL9ZJPga2
+	ia1AbfcqfkVmASbh4rHa2oTWnr2FwRNIAhHVljyTeljfr8Q7msJb0B/EW3NpKYoHBiDlusCzB8FXF
+	YKE6Qvp3wSqhIS2MNj3MLAkO8YklnGahKgYOpL+RAzJ7eyCNL40e5kxAnDVFCN/OFAjAcU2zAHVwD
+	SXZ7az9JJMYc9+HkHg6g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKbg6-006WiN-FH; Wed, 25 Jan 2023 09:02:46 +0000
+	id 1pKbg6-006Why-10; Wed, 25 Jan 2023 09:02:46 +0000
 Received: from foss.arm.com ([217.140.110.172])
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pHnzt-00ErI2-AH; Tue, 17 Jan 2023 15:35:40 +0000
+	id 1pHlFq-00ECDD-Ea; Tue, 17 Jan 2023 12:39:55 +0000
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 94F4F12FC;
-	Tue, 17 Jan 2023 07:36:16 -0800 (PST)
-Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.31.153])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ACA663F67D;
-	Tue, 17 Jan 2023 07:35:17 -0800 (PST)
-Date: Tue, 17 Jan 2023 15:35:10 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Sudeep Holla <sudeep.holla@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, richard.henderson@linaro.org,
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D33EC1063;
+	Tue, 17 Jan 2023 04:40:31 -0800 (PST)
+Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7F6B53F67D;
+	Tue, 17 Jan 2023 04:39:33 -0800 (PST)
+Date: Tue, 17 Jan 2023 12:39:31 +0000
+From: Sudeep Holla <sudeep.holla@arm.com>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, richard.henderson@linaro.org,
 	ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@kernel.org,
 	linux@armlinux.org.uk, nsekhar@ti.com, brgl@bgdev.pl,
 	ulli.kroll@googlemail.com, linus.walleij@linaro.org,
@@ -91,20 +91,19 @@ Cc: Peter Zijlstra <peterz@infradead.org>, richard.henderson@linaro.org,
 	linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
 	linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
 	linux-arch@vger.kernel.org, linux-mm@kvack.org,
-	linux-trace-kernel@vger.kernel.org, kasan-dev@googlegroups.com
+	linux-trace-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+	Sudeep Holla <sudeep.holla@arm.com>
 Subject: Re: [PATCH v3 00/51] cpuidle,rcu: Clean up the mess
-Message-ID: <Y8bALvyrPpdg++/J@FVFF77S0Q05N.cambridge.arm.com>
+Message-ID: <20230117123931.3ocl3ckkf72kusbz@bogus>
 References: <20230112194314.845371875@infradead.org>
  <Y8WCWAuQSHN651dA@FVFF77S0Q05N.cambridge.arm.com>
  <Y8Z31UbzG3LJgAXE@hirez.programming.kicks-ass.net>
- <Y8afpbHtDOqAHq9M@FVFF77S0Q05N.cambridge.arm.com>
- <20230117142140.g423hxisv7djudof@bogus>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230117142140.g423hxisv7djudof@bogus>
+In-Reply-To: <Y8Z31UbzG3LJgAXE@hirez.programming.kicks-ass.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230117_073537_475706_33E4F0FE 
-X-CRM114-Status: GOOD (  33.69  )
+X-CRM114-CacheID: sfid-20230117_043954_607375_7474F237 
+X-CRM114-Status: GOOD (  21.41  )
 X-Mailman-Approved-At: Wed, 25 Jan 2023 01:02:42 -0800
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -122,71 +121,47 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jan 17, 2023 at 02:21:40PM +0000, Sudeep Holla wrote:
-> On Tue, Jan 17, 2023 at 01:16:21PM +0000, Mark Rutland wrote:
-> > On Tue, Jan 17, 2023 at 11:26:29AM +0100, Peter Zijlstra wrote:
-> > > On Mon, Jan 16, 2023 at 04:59:04PM +0000, Mark Rutland wrote:
-> > > 
-> > > > I'm sorry to have to bear some bad news on that front. :(
-> > > 
-> > > Moo, something had to give..
-> > > 
-> > > 
-> > > > IIUC what's happenign here is the PSCI cpuidle driver has entered idle and RCU
-> > > > is no longer watching when arm64's cpu_suspend() manipulates DAIF. Our
-> > > > local_daif_*() helpers poke lockdep and tracing, hence the call to
-> > > > trace_hardirqs_off() and the RCU usage.
-> > > 
-> > > Right, strictly speaking not needed at this point, IRQs should have been
-> > > traced off a long time ago.
-> > 
-> > True, but there are some other calls around here that *might* end up invoking
-> > RCU stuff (e.g. the MTE code).
-> > 
-> > That all needs a noinstr cleanup too, which I'll sort out as a follow-up.
-> > 
-> > > > I think we need RCU to be watching all the way down to cpu_suspend(), and it's
-> > > > cpu_suspend() that should actually enter/exit idle context. That and we need to
-> > > > make cpu_suspend() and the low-level PSCI invocation noinstr.
-> > > > 
-> > > > I'm not sure whether 32-bit will have a similar issue or not.
-> > > 
-> > > I'm not seeing 32bit or Risc-V have similar issues here, but who knows,
-> > > maybe I missed somsething.
-> > 
-> > I reckon if they do, the core changes here give us the infrastructure to fix
-> > them if/when we get reports.
-> > 
-> > > In any case, the below ought to cure the ARM64 case and remove that last
-> > > known RCU_NONIDLE() user as a bonus.
-> > 
-> > The below works for me testing on a Juno R1 board with PSCI, using defconfig +
-> > CONFIG_PROVE_LOCKING=y + CONFIG_DEBUG_LOCKDEP=y + CONFIG_DEBUG_ATOMIC_SLEEP=y.
-> > I'm not sure how to test the LPI / FFH part, but it looks good to me.
-> > 
-> > FWIW:
-> > 
-> > Reviewed-by: Mark Rutland <mark.rutland@arm.com>
-> > Tested-by: Mark Rutland <mark.rutland@arm.com>
-> > 
-> > Sudeep, would you be able to give the LPI/FFH side a spin with the kconfig
-> > options above?
-> > 
+On Tue, Jan 17, 2023 at 11:26:29AM +0100, Peter Zijlstra wrote:
+> On Mon, Jan 16, 2023 at 04:59:04PM +0000, Mark Rutland wrote:
 > 
-> Not sure if I have messed up something in my mail setup, but I did reply
-> earlier.
+> > I'm sorry to have to bear some bad news on that front. :(
+> 
+> Moo, something had to give..
+> 
+> 
+> > IIUC what's happenign here is the PSCI cpuidle driver has entered idle and RCU
+> > is no longer watching when arm64's cpu_suspend() manipulates DAIF. Our
+> > local_daif_*() helpers poke lockdep and tracing, hence the call to
+> > trace_hardirqs_off() and the RCU usage.
+> 
+> Right, strictly speaking not needed at this point, IRQs should have been
+> traced off a long time ago.
+> 
+> > I think we need RCU to be watching all the way down to cpu_suspend(), and it's
+> > cpu_suspend() that should actually enter/exit idle context. That and we need to
+> > make cpu_suspend() and the low-level PSCI invocation noinstr.
+> > 
+> > I'm not sure whether 32-bit will have a similar issue or not.
+> 
+> I'm not seeing 32bit or Risc-V have similar issues here, but who knows,
+> maybe I missed somsething.
+> 
+> In any case, the below ought to cure the ARM64 case and remove that last
+> known RCU_NONIDLE() user as a bonus.
+>
 
-Sorry, that was my bad; I had been drafting my reply for a while and forgot to
-re-check prior to sending.
+Thanks for the fix. I tested the series and did observe the same splat
+with both DT and ACPI boot(they enter idle in different code paths). Thanks
+to Mark for reminding me about ACPI. With this fix, I see the splat is
+gone in both DT(cpuidle-psci.c) and ACPI(acpi_processor_idle.c).
 
-> I did test both DT/cpuidle-psci driver and  ACPI/LPI+FFH driver
-> with the fix Peter sent. I was seeing same splat as you in both DT and
-> ACPI boot which the patch fixed it. I used the same config as described by
-> you above.
+You can add:
 
-Perfect; thanks!
+Tested-by: Sudeep Holla <sudeep.holla@arm.com>
 
-Mark.
+--
+Regards,
+Sudeep
 
 _______________________________________________
 linux-um mailing list
