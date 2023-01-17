@@ -4,58 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97501C05027
-	for <linux-um@archiver.kernel.org>; Fri, 20 Jan 2023 08:23:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0615FC27C76
+	for <linux-um@archiver.kernel.org>; Wed, 25 Jan 2023 09:02:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BF+b8Rxq4zac2IpJTUlUHTRTlRVDI4ztZ9sxMxlwn3E=; b=D8l2kPZ74U5D1m
-	+8nTYqQPBzBTeI3cKHpnH7MAfnPbPQt8m+rDtVRAT35zfrndAtlSyQ5tunS79ysD480/sr07ZYF0V
-	ZTitXyRvKgBRHs1QZNGyny5q60b2MVptxBCpvE/EhWu5+F0R1U1I0WWH6Gt8OrIGrmxcDLZrx/hdA
-	PaSaOB0mcnVb+GYMgljB/as8a1wK1VzPfS+Y7DKRMGVqRwWAZ40jvlks3UHa8+mxpRtv4d5j1q6ve
-	vl6UZRz4VgAb96w9terbwSrEaqOFdhtWw6TZokd84E+BvzoOEYIkhm5ndPIfxoNjYv4OIywIQ3+ER
-	UPz/ejVSzIFJrgmQpU2Q==;
+	List-Owner; bh=4lj1DKObptEDruogMWxxS667+/mmYn/jL6XkJX6ast0=; b=KPJ837KYToY6pR
+	X3XE34J4MCBd/Rtd/JLnRKajxFY5EYKurCfjCJCYmmz3rxzqL/P2adbmhx+ucsGYuAnm+u6YqcRRB
+	jGbTQgqhdOPTOUe/dsWsKK+R4eT3oLBsw1OVGulPYZVXmy6rCnO5sNGSj+yz9veRVq0/jLwmHeXw3
+	O6pEktAE1C/+PQoH/TBNXl3xMsWfV9GRemHpfduAjFwDHXhT1k+E7Hh0nD7mZimwvoj71KCM64F+U
+	mUzKv+Bzqmk6/QjUBmS0HXhPku8wx7Dz8vpgJbjlgmMDs++cygP74adbGC4ydXJOvSqzINcgqP4ld
+	5ckUuGSNy7xYhURfAohw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pImfy-0091K5-N3; Fri, 20 Jan 2023 08:23:06 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2] helo=sipsolutions.net)
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pImfu-0091Ie-Si
-	for linux-um@lists.infradead.org; Fri, 20 Jan 2023 08:23:04 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=1IBDSfDrpMYQx8rkav9qJHt8V5y0Ox1ZCl4BB8a2/Bk=;
-	t=1674202981; x=1675412581; b=DpplsQR98bvaYu49nQW+g5C3//OmaRJx6WNk/XrzNT8qk97
-	wYAydGLMYzEU2ouC1MwKSXInHpDJQXKCCJsS9EPTrlh1skZzD6qAL7tujRZuhs0hd1mmtEevFrDTO
-	ZTz8lJlsXB3F9xsUr6OXnc1tC2K7jQl1/SvAUsIUhaN85KcZbLFt+QFtU4bUrLMxN6IzsfJPvlqGq
-	7OCjfZXzTuux+wo5BlVSKMlYnpzGSV+JlfsADX1SWUv4OdG4Joz/otAYARM0nC9mNq3EnzIBA+1gJ
-	O83JKPkyZNo1AyGNDKWoMQZksxBsc8JAoQxhbRqPzP1NVPIhOuj31zBl7kAztLlg==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.96)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1pImfp-007Mhu-2I;
-	Fri, 20 Jan 2023 09:22:57 +0100
-Message-ID: <49d7ebeb4617e9a1e42ef1608da6a907201c6c38.camel@sipsolutions.net>
-Subject: Re: [PATCH] um: virt-pci: implement pcibios_get_phb_of_node()
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Vincent Whitchurch <vincent.whitchurch@axis.com>, Richard Weinberger
-	 <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: linux-um@lists.infradead.org, linux-pci@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@axis.com
-Date: Fri, 20 Jan 2023 09:22:56 +0100
-In-Reply-To: <20230120-uml-pci-of-v1-1-134fb66643d8@axis.com>
-References: <20230120-uml-pci-of-v1-1-134fb66643d8@axis.com>
-User-Agent: Evolution 3.46.3 (3.46.3-1.fc37) 
+	id 1pKbg6-006WiN-FH; Wed, 25 Jan 2023 09:02:46 +0000
+Received: from foss.arm.com ([217.140.110.172])
+	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1pHnzt-00ErI2-AH; Tue, 17 Jan 2023 15:35:40 +0000
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 94F4F12FC;
+	Tue, 17 Jan 2023 07:36:16 -0800 (PST)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.31.153])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ACA663F67D;
+	Tue, 17 Jan 2023 07:35:17 -0800 (PST)
+Date: Tue, 17 Jan 2023 15:35:10 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Sudeep Holla <sudeep.holla@arm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, richard.henderson@linaro.org,
+	ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@kernel.org,
+	linux@armlinux.org.uk, nsekhar@ti.com, brgl@bgdev.pl,
+	ulli.kroll@googlemail.com, linus.walleij@linaro.org,
+	shawnguo@kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
+	kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+	tony@atomide.com, khilman@kernel.org,
+	krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com,
+	catalin.marinas@arm.com, will@kernel.org, guoren@kernel.org,
+	bcain@quicinc.com, chenhuacai@kernel.org, kernel@xen0n.name,
+	geert@linux-m68k.org, sammy@sammy.net, monstr@monstr.eu,
+	tsbogend@alpha.franken.de, dinguyen@kernel.org, jonas@southpole.se,
+	stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
+	James.Bottomley@hansenpartnership.com, deller@gmx.de,
+	mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
+	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
+	hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+	borntraeger@linux.ibm.com, svens@linux.ibm.com,
+	ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net,
+	richard@nod.at, anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com,
+	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+	hpa@zytor.com, acme@kernel.org, alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org, namhyung@kernel.org, jgross@suse.com,
+	srivatsa@csail.mit.edu, amakhalov@vmware.com, pv-drivers@vmware.com,
+	boris.ostrovsky@oracle.com, chris@zankel.net, jcmvbkbc@gmail.com,
+	rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz,
+	gregkh@linuxfoundation.org, mturquette@baylibre.com,
+	sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org,
+	agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+	anup@brainfault.org, thierry.reding@gmail.com, jonathanh@nvidia.com,
+	jacob.jun.pan@linux.intel.com, atishp@atishpatra.org,
+	Arnd Bergmann <arnd@arndb.de>, yury.norov@gmail.com,
+	andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
+	dennis@kernel.org, tj@kernel.org, cl@linux.com, rostedt@goodmis.org,
+	mhiramat@kernel.org, frederic@kernel.org, paulmck@kernel.org,
+	pmladek@suse.com, senozhatsky@chromium.org,
+	john.ogness@linutronix.de, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+	vschneid@redhat.com, ryabinin.a.a@gmail.com, glider@google.com,
+	andreyknvl@gmail.com, dvyukov@google.com, vincenzo.frascino@arm.com,
+	Andrew Morton <akpm@linux-foundation.org>, jpoimboe@kernel.org,
+	linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org, linux-omap@vger.kernel.org,
+	linux-samsung-soc@vger.kernel.org, linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+	linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org,
+	virtualization@lists.linux-foundation.org,
+	linux-xtensa@linux-xtensa.org, linux-acpi@vger.kernel.org,
+	linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-mm@kvack.org,
+	linux-trace-kernel@vger.kernel.org, kasan-dev@googlegroups.com
+Subject: Re: [PATCH v3 00/51] cpuidle,rcu: Clean up the mess
+Message-ID: <Y8bALvyrPpdg++/J@FVFF77S0Q05N.cambridge.arm.com>
+References: <20230112194314.845371875@infradead.org>
+ <Y8WCWAuQSHN651dA@FVFF77S0Q05N.cambridge.arm.com>
+ <Y8Z31UbzG3LJgAXE@hirez.programming.kicks-ass.net>
+ <Y8afpbHtDOqAHq9M@FVFF77S0Q05N.cambridge.arm.com>
+ <20230117142140.g423hxisv7djudof@bogus>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Disposition: inline
+In-Reply-To: <20230117142140.g423hxisv7djudof@bogus>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230120_002302_963497_B168D860 
-X-CRM114-Status: GOOD (  12.71  )
+X-CRM114-CacheID: sfid-20230117_073537_475706_33E4F0FE 
+X-CRM114-Status: GOOD (  33.69  )
+X-Mailman-Approved-At: Wed, 25 Jan 2023 01:02:42 -0800
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,37 +122,71 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2023-01-20 at 09:02 +0100, Vincent Whitchurch wrote:
-> Implement pcibios_get_phb_of_node() as x86 does in order to allow PCI
-> busses to be associated with devicetree nodes.
+On Tue, Jan 17, 2023 at 02:21:40PM +0000, Sudeep Holla wrote:
+> On Tue, Jan 17, 2023 at 01:16:21PM +0000, Mark Rutland wrote:
+> > On Tue, Jan 17, 2023 at 11:26:29AM +0100, Peter Zijlstra wrote:
+> > > On Mon, Jan 16, 2023 at 04:59:04PM +0000, Mark Rutland wrote:
+> > > 
+> > > > I'm sorry to have to bear some bad news on that front. :(
+> > > 
+> > > Moo, something had to give..
+> > > 
+> > > 
+> > > > IIUC what's happenign here is the PSCI cpuidle driver has entered idle and RCU
+> > > > is no longer watching when arm64's cpu_suspend() manipulates DAIF. Our
+> > > > local_daif_*() helpers poke lockdep and tracing, hence the call to
+> > > > trace_hardirqs_off() and the RCU usage.
+> > > 
+> > > Right, strictly speaking not needed at this point, IRQs should have been
+> > > traced off a long time ago.
+> > 
+> > True, but there are some other calls around here that *might* end up invoking
+> > RCU stuff (e.g. the MTE code).
+> > 
+> > That all needs a noinstr cleanup too, which I'll sort out as a follow-up.
+> > 
+> > > > I think we need RCU to be watching all the way down to cpu_suspend(), and it's
+> > > > cpu_suspend() that should actually enter/exit idle context. That and we need to
+> > > > make cpu_suspend() and the low-level PSCI invocation noinstr.
+> > > > 
+> > > > I'm not sure whether 32-bit will have a similar issue or not.
+> > > 
+> > > I'm not seeing 32bit or Risc-V have similar issues here, but who knows,
+> > > maybe I missed somsething.
+> > 
+> > I reckon if they do, the core changes here give us the infrastructure to fix
+> > them if/when we get reports.
+> > 
+> > > In any case, the below ought to cure the ARM64 case and remove that last
+> > > known RCU_NONIDLE() user as a bonus.
+> > 
+> > The below works for me testing on a Juno R1 board with PSCI, using defconfig +
+> > CONFIG_PROVE_LOCKING=y + CONFIG_DEBUG_LOCKDEP=y + CONFIG_DEBUG_ATOMIC_SLEEP=y.
+> > I'm not sure how to test the LPI / FFH part, but it looks good to me.
+> > 
+> > FWIW:
+> > 
+> > Reviewed-by: Mark Rutland <mark.rutland@arm.com>
+> > Tested-by: Mark Rutland <mark.rutland@arm.com>
+> > 
+> > Sudeep, would you be able to give the LPI/FFH side a spin with the kconfig
+> > options above?
+> > 
 > 
-> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
-> ---
->  arch/um/drivers/virt-pci.c | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
-> 
-> diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
-> index 3ac220dafec4..6884e1be38e4 100644
-> --- a/arch/um/drivers/virt-pci.c
-> +++ b/arch/um/drivers/virt-pci.c
-> @@ -533,6 +533,25 @@ static void um_pci_irq_vq_cb(struct virtqueue *vq)
->  	}
->  }
->  
-> +/* Copied from arch/x86/kernel/devicetree.c */
-> +struct device_node *pcibios_get_phb_of_node(struct pci_bus *bus)
+> Not sure if I have messed up something in my mail setup, but I did reply
+> earlier.
 
-Hah. I was going to ask how that works without any ifdef or anything,
-but then I found the __weak version :-)
+Sorry, that was my bad; I had been drafting my reply for a while and forgot to
+re-check prior to sending.
 
-Acked-by: Johannes Berg <johannes@sipsolutions.net>
+> I did test both DT/cpuidle-psci driver and  ACPI/LPI+FFH driver
+> with the fix Peter sent. I was seeing same splat as you in both DT and
+> ACPI boot which the patch fixed it. I used the same config as described by
+> you above.
 
+Perfect; thanks!
 
-Or maybe I should finally put on my tentative ARCH=um maintainer hat and
-start taking patches :)
-
-johannes
-
+Mark.
 
 _______________________________________________
 linux-um mailing list
