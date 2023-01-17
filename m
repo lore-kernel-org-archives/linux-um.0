@@ -4,118 +4,112 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 32607C61DB3
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 365EDC27C76
 	for <linux-um@archiver.kernel.org>; Wed, 25 Jan 2023 09:02:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Mime-Version:References:In-Reply-To:
+	Message-Id:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MCacS4MdPvsCuc9NKiqBwTox32sOBabwiktwNolDSFQ=; b=N1/HGwj6Uiwdot
-	XgaYrgo81KaUobos1Pko4mfz/0A8PKKbwo32+q545x7q0B7W+ua8SIFA/hzbEyo7zdhQBXt3JF/0e
-	lWCgjYExjnSJFST5tGXIWTeuwtSgEzcFpFATyXSCqYsPlr3Np5mICVRWtFnxZ/Jp/ci08UXXGjsm/
-	G2xWwZtPdhdzsHVol5cGYQfdnvDHr5leKp6WPIYxnB6RMOkuenG5A6vh9cqpanbnpA6k3I6IYPT8m
-	lh3Ircvjidy7bm6CcvjZuhSELfrw9Ki6ZIVtz88WasE89rdy+tG4L7xzWxwXKukGRcgXDBuogY/T3
-	ZDb60uEtGP0uhvFPYTzw==;
+	List-Owner; bh=o4T341mTta+oFuYl4MezjZt892rOjzSkQIqS/j/WWEs=; b=XGlHPZ2gE2OJI5
+	QKRiGNQEMOk7J2csWKOcdJ9979J49qU9A7Dg/4yozMw/NMVLl06znpJAuHwzv+ysZBPPSNISePTLX
+	ECofndNVk8as0vj+WUsCrr+01WRWgUYtE/YAGE0VCf6liNKrAQ4WXqj3R4nHuf2pDpm9/POQW5b84
+	FFEseNtbUY3sG9M+uIz1ASVtDCRYGMs4XzTXxt90kNbLbIxQ5BiIZsskJJu+vY2rq5y/YX4Qh9WEb
+	F7Gfo6vS2MXcV5T4sR2I67s37VBqcOGzV5GCRN04BipqYdKUyHYLRIzugjQkiQokn8WqWYwppJxf6
+	rmHnon3LDzxBjNQpwHyA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKbg4-006WhL-I7; Wed, 25 Jan 2023 09:02:44 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1pKbg4-006WhX-QR; Wed, 25 Jan 2023 09:02:44 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pHT3M-00BWJw-DX; Mon, 16 Jan 2023 17:13:48 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=5C/pXQj60xjLVCUn07cewonvr7ibeGOwDHeRdhIJopE=; b=nno6/92Kfg6NLzbv4w4QKZ8jIq
-	E0DwYHTGTkeJN2dHUJNcxHuHIPXPUjbgpJ+S2tFdM/uohqBRivY5knlZikpNEhcdZ0214wctIcJOM
-	/ubpYAr4cPvoAT5jrSUL11ogGfz053ay3aMatpz51n4WNfFmECSfg+9K5qy3o8VgssrNmmwQhbIUF
-	bbjdjZQHLI1xxyRK1rGXtK+UA12TjHui4mq2aIWWD7HboamuEG6kxY0L8sfgWFoyfLWThgG3u+n9w
-	xnqEUPjrTWZcIhmGhMOohxN/ZNfoceqSg0ZHplHM5x1Q+EOKjGf1dxplYALaysdhWuM3ImX5K5pQD
-	i0je1dhg==;
-Received: from foss.arm.com ([217.140.110.172])
-	by desiato.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pHSpW-005euW-12;
-	Mon, 16 Jan 2023 16:59:36 +0000
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 30C411570;
-	Mon, 16 Jan 2023 09:00:09 -0800 (PST)
-Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.35.162])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5B0403F67D;
-	Mon, 16 Jan 2023 08:59:10 -0800 (PST)
-Date: Mon, 16 Jan 2023 16:59:04 +0000
-From: Mark Rutland <mark.rutland@arm.com>
+	id 1pHdX8-00CsMv-Nq; Tue, 17 Jan 2023 04:25:16 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 4844EB81060;
+	Tue, 17 Jan 2023 04:25:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0701C433EF;
+	Tue, 17 Jan 2023 04:24:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1673929510;
+	bh=LKPfAbcdavLMCpifQk05Aqw+1tD2xg5qsuB6VorVVnI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=rvDfVQk7Tsas4+LZFK04iCV/SqfYXmqYXLFi42JOngYW1dOP0QSo6CLiBkpjYosKx
+	 nKUcD4fx6Lu1RT5hJ5yblHd47Jqpvv59kmEAKtriWUWkTZ7hmC4Za3q3BgpEtr891G
+	 Uhe5azCk4FahsTTDCEc3lE2+MzsUQWKU5CAcTO6IYBsGKCz8NivYw+lk7qeBhykDxt
+	 x23XNA0A5LxituWhIHyg6sCe7NTSUKsY2ON6C3g6I/nFT8i/VEH7jmIvKLWoo8AYZN
+	 JlOlRfIFLAGKs5+FVWy9q/WwqqbuzK/Mvbqfsgyxm4gYqDdXx2B1Vx+ckQBMj8vEfk
+	 ICBnmkeUNpdwg==
+Date: Tue, 17 Jan 2023 13:24:46 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 To: Peter Zijlstra <peterz@infradead.org>
 Cc: richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
-	mattst88@gmail.com, vgupta@kernel.org, linux@armlinux.org.uk,
-	nsekhar@ti.com, brgl@bgdev.pl, ulli.kroll@googlemail.com,
-	linus.walleij@linaro.org, shawnguo@kernel.org,
-	Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de,
-	festevam@gmail.com, linux-imx@nxp.com, tony@atomide.com,
-	khilman@kernel.org, krzysztof.kozlowski@linaro.org,
-	alim.akhtar@samsung.com, catalin.marinas@arm.com, will@kernel.org,
-	guoren@kernel.org, bcain@quicinc.com, chenhuacai@kernel.org,
-	kernel@xen0n.name, geert@linux-m68k.org, sammy@sammy.net,
-	monstr@monstr.eu, tsbogend@alpha.franken.de, dinguyen@kernel.org,
-	jonas@southpole.se, stefan.kristiansson@saunalahti.fi,
-	shorne@gmail.com, James.Bottomley@HansenPartnership.com,
-	deller@gmx.de, mpe@ellerman.id.au, npiggin@gmail.com,
-	christophe.leroy@csgroup.eu, paul.walmsley@sifive.com,
-	palmer@dabbelt.com, aou@eecs.berkeley.edu, hca@linux.ibm.com,
-	gor@linux.ibm.com, agordeev@linux.ibm.com,
-	borntraeger@linux.ibm.com, svens@linux.ibm.com,
-	ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net,
-	richard@nod.at, anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com,
-	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-	hpa@zytor.com, acme@kernel.org, alexander.shishkin@linux.intel.com,
-	jolsa@kernel.org, namhyung@kernel.org, jgross@suse.com,
-	srivatsa@csail.mit.edu, amakhalov@vmware.com, pv-drivers@vmware.com,
-	boris.ostrovsky@oracle.com, chris@zankel.net, jcmvbkbc@gmail.com,
-	rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz,
-	gregkh@linuxfoundation.org, mturquette@baylibre.com,
-	sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org,
-	sudeep.holla@arm.com, agross@kernel.org, andersson@kernel.org,
-	konrad.dybcio@linaro.org, anup@brainfault.org,
-	thierry.reding@gmail.com, jonathanh@nvidia.com,
-	jacob.jun.pan@linux.intel.com, atishp@atishpatra.org,
-	Arnd Bergmann <arnd@arndb.de>, yury.norov@gmail.com,
-	andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
-	dennis@kernel.org, tj@kernel.org, cl@linux.com, rostedt@goodmis.org,
-	mhiramat@kernel.org, frederic@kernel.org, paulmck@kernel.org,
-	pmladek@suse.com, senozhatsky@chromium.org,
-	john.ogness@linutronix.de, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
-	vschneid@redhat.com, ryabinin.a.a@gmail.com, glider@google.com,
-	andreyknvl@gmail.com, dvyukov@google.com, vincenzo.frascino@arm.com,
-	Andrew Morton <akpm@linux-foundation.org>, jpoimboe@kernel.org,
-	linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-snps-arc@lists.infradead.org, linux-omap@vger.kernel.org,
-	linux-samsung-soc@vger.kernel.org, linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-	linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org,
-	virtualization@lists.linux-foundation.org,
-	linux-xtensa@linux-xtensa.org, linux-acpi@vger.kernel.org,
-	linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-mm@kvack.org,
-	linux-trace-kernel@vger.kernel.org, kasan-dev@googlegroups.com
-Subject: Re: [PATCH v3 00/51] cpuidle,rcu: Clean up the mess
-Message-ID: <Y8WCWAuQSHN651dA@FVFF77S0Q05N.cambridge.arm.com>
+ mattst88@gmail.com, vgupta@kernel.org, linux@armlinux.org.uk,
+ nsekhar@ti.com, brgl@bgdev.pl, ulli.kroll@googlemail.com,
+ linus.walleij@linaro.org, shawnguo@kernel.org, Sascha Hauer
+ <s.hauer@pengutronix.de>, kernel@pengutronix.de, festevam@gmail.com,
+ linux-imx@nxp.com, tony@atomide.com, khilman@kernel.org,
+ krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com,
+ catalin.marinas@arm.com, will@kernel.org, guoren@kernel.org,
+ bcain@quicinc.com, chenhuacai@kernel.org, kernel@xen0n.name,
+ geert@linux-m68k.org, sammy@sammy.net, monstr@monstr.eu,
+ tsbogend@alpha.franken.de, dinguyen@kernel.org, jonas@southpole.se,
+ stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
+ James.Bottomley@HansenPartnership.com, deller@gmx.de, mpe@ellerman.id.au,
+ npiggin@gmail.com, christophe.leroy@csgroup.eu, paul.walmsley@sifive.com,
+ palmer@dabbelt.com, aou@eecs.berkeley.edu, hca@linux.ibm.com,
+ gor@linux.ibm.com, agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
+ svens@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org,
+ davem@davemloft.net, richard@nod.at, anton.ivanov@cambridgegreys.com,
+ johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com,
+ bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+ acme@kernel.org, mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+ jolsa@kernel.org, namhyung@kernel.org, jgross@suse.com,
+ srivatsa@csail.mit.edu, amakhalov@vmware.com, pv-drivers@vmware.com,
+ boris.ostrovsky@oracle.com, chris@zankel.net, jcmvbkbc@gmail.com,
+ rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz,
+ gregkh@linuxfoundation.org, mturquette@baylibre.com, sboyd@kernel.org,
+ daniel.lezcano@linaro.org, lpieralisi@kernel.org, sudeep.holla@arm.com,
+ agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+ anup@brainfault.org, thierry.reding@gmail.com, jonathanh@nvidia.com,
+ jacob.jun.pan@linux.intel.com, atishp@atishpatra.org, Arnd Bergmann
+ <arnd@arndb.de>, yury.norov@gmail.com, andriy.shevchenko@linux.intel.com,
+ linux@rasmusvillemoes.dk, dennis@kernel.org, tj@kernel.org, cl@linux.com,
+ rostedt@goodmis.org, mhiramat@kernel.org, frederic@kernel.org,
+ paulmck@kernel.org, pmladek@suse.com, senozhatsky@chromium.org,
+ john.ogness@linutronix.de, juri.lelli@redhat.com,
+ vincent.guittot@linaro.org, dietmar.eggemann@arm.com, bsegall@google.com,
+ mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+ ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
+ dvyukov@google.com, vincenzo.frascino@arm.com, Andrew Morton
+ <akpm@linux-foundation.org>, jpoimboe@kernel.org,
+ linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, linux-omap@vger.kernel.org,
+ linux-samsung-soc@vger.kernel.org, linux-csky@vger.kernel.org,
+ linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org,
+ virtualization@lists.linux-foundation.org, linux-xtensa@linux-xtensa.org,
+ linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org,
+ linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org,
+ kasan-dev@googlegroups.com
+Subject: Re: [PATCH v3 35/51] trace,hardirq: No moar _rcuidle() tracing
+Message-Id: <20230117132446.02ec12e4c10718de27790900@kernel.org>
+In-Reply-To: <20230112195541.477416709@infradead.org>
 References: <20230112194314.845371875@infradead.org>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230112194314.845371875@infradead.org>
+	<20230112195541.477416709@infradead.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230116_165930_771330_B8610FCB 
-X-CRM114-Status: GOOD (  14.04  )
+X-CRM114-CacheID: sfid-20230116_202515_134720_E008D5E9 
+X-CRM114-Status: GOOD (  21.84  )
 X-Mailman-Approved-At: Wed, 25 Jan 2023 01:02:42 -0800
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -133,102 +127,95 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jan 12, 2023 at 08:43:14PM +0100, Peter Zijlstra wrote:
-> Hi All!
-
 Hi Peter,
 
-> The (hopefully) final respin of cpuidle vs rcu cleanup patches. Barring any
-> objections I'll be queueing these patches in tip/sched/core in the next few
-> days.
+On Thu, 12 Jan 2023 20:43:49 +0100
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-I'm sorry to have to bear some bad news on that front. :(
+> Robot reported that trace_hardirqs_{on,off}() tickle the forbidden
+> _rcuidle() tracepoint through local_irq_{en,dis}able().
+> 
+> For 'sane' configs, these calls will only happen with RCU enabled and
+> as such can use the regular tracepoint. This also means it's possible
+> to trace them from NMI context again.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-I just had a go at testing this on a Juno dev board, using your queue.git
-sched/idle branch and defconfig + CONFIG_PROVE_LOCKING=y +
-CONFIG_DEBUG_LOCKDEP=y + CONFIG_DEBUG_ATOMIC_SLEEP=y.
+The code looks good to me. I just have a question about comment.
 
-With that I consistently see RCU at boot time (log below).
+> ---
+>  kernel/trace/trace_preemptirq.c |   21 +++++++++++++--------
+>  1 file changed, 13 insertions(+), 8 deletions(-)
+> 
+> --- a/kernel/trace/trace_preemptirq.c
+> +++ b/kernel/trace/trace_preemptirq.c
+> @@ -20,6 +20,15 @@
+>  static DEFINE_PER_CPU(int, tracing_irq_cpu);
+>  
+>  /*
+> + * ...
 
-| =============================
-| WARNING: suspicious RCU usage
-| 6.2.0-rc3-00051-gced9b6eecb31 #1 Not tainted
-| -----------------------------
-| include/trace/events/ipi.h:19 suspicious rcu_dereference_check() usage!
-| 
-| other info that might help us debug this:
-| 
-| 
-| rcu_scheduler_active = 2, debug_locks = 1
-| RCU used illegally from extended quiescent state!
-| no locks held by swapper/0/0.
-| 
-| stack backtrace:
-| CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.2.0-rc3-00051-gced9b6eecb31 #1
-| Hardware name: ARM LTD ARM Juno Development Platform/ARM Juno Development Platform, BIOS EDK II May 16 2021
-| Call trace:
-|  dump_backtrace.part.0+0xe4/0xf0
-|  show_stack+0x18/0x30
-|  dump_stack_lvl+0x98/0xd4
-|  dump_stack+0x18/0x34
-|  lockdep_rcu_suspicious+0xf8/0x10c
-|  trace_ipi_raise+0x1a8/0x1b0
-|  arch_irq_work_raise+0x4c/0x70
-|  __irq_work_queue_local+0x48/0x80
-|  irq_work_queue+0x50/0x80
-|  __wake_up_klogd.part.0+0x98/0xe0
-|  defer_console_output+0x20/0x30
-|  vprintk+0x98/0xf0
-|  _printk+0x5c/0x84
-|  lockdep_rcu_suspicious+0x34/0x10c
-|  trace_lock_acquire+0x174/0x180
-|  lock_acquire+0x3c/0x8c
-|  _raw_spin_lock_irqsave+0x70/0x150
-|  down_trylock+0x18/0x50
-|  __down_trylock_console_sem+0x3c/0xd0
-|  console_trylock+0x28/0x90
-|  vprintk_emit+0x11c/0x354
-|  vprintk_default+0x38/0x4c
-|  vprintk+0xd4/0xf0
-|  _printk+0x5c/0x84
-|  lockdep_rcu_suspicious+0x34/0x10c
-|  printk_sprint+0x238/0x240
-|  vprintk_store+0x32c/0x4b0
-|  vprintk_emit+0x104/0x354
-|  vprintk_default+0x38/0x4c
-|  vprintk+0xd4/0xf0
-|  _printk+0x5c/0x84
-|  lockdep_rcu_suspicious+0x34/0x10c
-|  trace_irq_disable+0x1ac/0x1b0
-|  trace_hardirqs_off+0xe8/0x110
-|  cpu_suspend+0x4c/0xfc
-|  psci_cpu_suspend_enter+0x58/0x6c
-|  psci_enter_idle_state+0x70/0x170
-|  cpuidle_enter_state+0xc4/0x464
-|  cpuidle_enter+0x38/0x50
-|  do_idle+0x230/0x2c0
-|  cpu_startup_entry+0x24/0x30
-|  rest_init+0x110/0x190
-|  arch_post_acpi_subsys_init+0x0/0x18
-|  start_kernel+0x6f8/0x738
-|  __primary_switched+0xbc/0xc4
+Is this intended? Wouldn't you leave any comment here?
 
-IIUC what's happenign here is the PSCI cpuidle driver has entered idle and RCU
-is no longer watching when arm64's cpu_suspend() manipulates DAIF. Our
-local_daif_*() helpers poke lockdep and tracing, hence the call to
-trace_hardirqs_off() and the RCU usage.
+Thank you,
 
-I think we need RCU to be watching all the way down to cpu_suspend(), and it's
-cpu_suspend() that should actually enter/exit idle context. That and we need to
-make cpu_suspend() and the low-level PSCI invocation noinstr.
+> + */
+> +#ifdef CONFIG_ARCH_WANTS_NO_INSTR
+> +#define trace(point)	trace_##point
+> +#else
+> +#define trace(point)	if (!in_nmi()) trace_##point##_rcuidle
+> +#endif
+> +
+> +/*
+>   * Like trace_hardirqs_on() but without the lockdep invocation. This is
+>   * used in the low level entry code where the ordering vs. RCU is important
+>   * and lockdep uses a staged approach which splits the lockdep hardirq
+> @@ -28,8 +37,7 @@ static DEFINE_PER_CPU(int, tracing_irq_c
+>  void trace_hardirqs_on_prepare(void)
+>  {
+>  	if (this_cpu_read(tracing_irq_cpu)) {
+> -		if (!in_nmi())
+> -			trace_irq_enable(CALLER_ADDR0, CALLER_ADDR1);
+> +		trace(irq_enable)(CALLER_ADDR0, CALLER_ADDR1);
+>  		tracer_hardirqs_on(CALLER_ADDR0, CALLER_ADDR1);
+>  		this_cpu_write(tracing_irq_cpu, 0);
+>  	}
+> @@ -40,8 +48,7 @@ NOKPROBE_SYMBOL(trace_hardirqs_on_prepar
+>  void trace_hardirqs_on(void)
+>  {
+>  	if (this_cpu_read(tracing_irq_cpu)) {
+> -		if (!in_nmi())
+> -			trace_irq_enable_rcuidle(CALLER_ADDR0, CALLER_ADDR1);
+> +		trace(irq_enable)(CALLER_ADDR0, CALLER_ADDR1);
+>  		tracer_hardirqs_on(CALLER_ADDR0, CALLER_ADDR1);
+>  		this_cpu_write(tracing_irq_cpu, 0);
+>  	}
+> @@ -63,8 +70,7 @@ void trace_hardirqs_off_finish(void)
+>  	if (!this_cpu_read(tracing_irq_cpu)) {
+>  		this_cpu_write(tracing_irq_cpu, 1);
+>  		tracer_hardirqs_off(CALLER_ADDR0, CALLER_ADDR1);
+> -		if (!in_nmi())
+> -			trace_irq_disable(CALLER_ADDR0, CALLER_ADDR1);
+> +		trace(irq_disable)(CALLER_ADDR0, CALLER_ADDR1);
+>  	}
+>  
+>  }
+> @@ -78,8 +84,7 @@ void trace_hardirqs_off(void)
+>  	if (!this_cpu_read(tracing_irq_cpu)) {
+>  		this_cpu_write(tracing_irq_cpu, 1);
+>  		tracer_hardirqs_off(CALLER_ADDR0, CALLER_ADDR1);
+> -		if (!in_nmi())
+> -			trace_irq_disable_rcuidle(CALLER_ADDR0, CALLER_ADDR1);
+> +		trace(irq_disable)(CALLER_ADDR0, CALLER_ADDR1);
+>  	}
+>  }
+>  EXPORT_SYMBOL(trace_hardirqs_off);
+> 
+> 
 
-I'm not sure whether 32-bit will have a similar issue or not.
 
-I'm surprised no-one else who has tested has seen this; I suspect people
-haven't enabled lockdep and friends. :/
-
-Thanks,
-Mark. 
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
 _______________________________________________
 linux-um mailing list
