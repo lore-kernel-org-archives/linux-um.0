@@ -4,51 +4,51 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6093C27C76
-	for <linux-um@archiver.kernel.org>; Wed, 25 Jan 2023 09:02:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60C38C54E94
+	for <linux-um@archiver.kernel.org>; Wed, 25 Jan 2023 11:28:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=yYPxcL5YHvykV5S2eOTOKqlXEYI1O0HVyP0JWIVrrDs=; b=hqpqX/O7xSglO2
-	/iFTqcllp4gCbfdmONMfFZg3kcP8IXWR99R+621WpZHNRMwW0Ils6v1HnabntXbPD4UojPJd+YKJx
-	Uz+5M+ktsWdRm8Wf7mGFUypJeBFyMEpFgUmw+H9dahkb2KlXPM5Ts21NFFAaWk7hnmdv5NqZJktTc
-	pVwE8V8q6W24hDefs6E3GNnR71Drr01caxLtqVQGZI0WkKNZqL9Viq5Ou79YQkvqcSm3hXvuEOvOF
-	4OjT2LKZqdDsdyvSkoaqWF3DHU7o3QMdYHhtt2ZgqBXERjzw+OXEFt5Jviu7RA8xDae2UQ6KRU9Kx
-	/uEJQktrhBxoHxCHLpXQ==;
+	List-Owner; bh=vPrb9HnMpSF3Kpcqd81tkxG83WZ6B4nSu78zu8xdsxE=; b=uKb8AqI30r7D1t
+	csR7NR4OL6gDACHdWvh8/SvTxqL2/UTDdPPp/7X1E3PHZQtdD7h1uCP7JNU1kOZLWUoAn/475mZSR
+	fQQPN4NRlfVYo4jHctRPA1vrmtoIJvKRfrq/Xbc4S7a73wLPpYMUcd7DMGNwpp9EHY36F2KFp37ha
+	kO/2WCbWQ58eoBn3vUcubGOX0kW1m6IOqyOoc/pUZGWur032xYXErg0Jvzpn0aCGsK1wN7rHSWhq5
+	inHkXf7s7/G3YAUQuY9J3QgnVnugt3prkChrRwvyK1b+QUhLgCmWJ+ExMwirjYOTK3sff27pF4wtO
+	LGDajBCCl3mb3buUVDTQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKbgE-006Wq5-25; Wed, 25 Jan 2023 09:02:54 +0000
+	id 1pKdx8-007AEQ-0A; Wed, 25 Jan 2023 11:28:30 +0000
 Received: from smtp-out1.suse.de ([2001:67c:2178:6::1c])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKbfa-006WWH-1a; Wed, 25 Jan 2023 09:02:17 +0000
+	id 1pKcJA-006fYG-Gv; Wed, 25 Jan 2023 09:43:11 +0000
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 706F421BC7;
-	Wed, 25 Jan 2023 09:02:12 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id ED8EF21C83;
+	Wed, 25 Jan 2023 09:43:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1674637332; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1674639787; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=SlRMHnKgl2ysMiG3ziDgQVqy0pZ2+RMTN2tEUkXl1oQ=;
-	b=CylERLDbieGu3PWTdvXLEld0Li+qbd7wIdoCwjIyDd+qG3j/xsmZaFNxHZ9BHqigKFDp2h
-	G+luEBa1wjOWHFua4YAnGvwD5IYd5KDo2FdpDHLq+ELEUbPuYE6WIwO6oA3RlzeuL+Fv1J
-	XkwT2InE7+nANi+BujeIlpRiAMYhk9g=
+	bh=/H7fv8j3//amIhsuvsnszBORL7yxYM5gHjte1pGnd6k=;
+	b=mZDjQNB1hPzvcXQvGHeFauKnSuc1ap67S0f/lHhQc+tBAiRuxTH6kOAY66JaEQ5pw8N/I3
+	vRWRMVylkxH5+7xZzlUtSs4JuzUBNvi7rrHJ3BhzsHOyBEZ29ADyT+w2tbmr+7dVhJit8H
+	Gvojz3/KsEomLEifDjwU2dmewO/7emc=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 224651339E;
-	Wed, 25 Jan 2023 09:02:12 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8FA761358F;
+	Wed, 25 Jan 2023 09:43:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id reRPCBTw0GOqDAAAMHmgww
-	(envelope-from <mhocko@suse.com>); Wed, 25 Jan 2023 09:02:12 +0000
-Date: Wed, 25 Jan 2023 10:02:11 +0100
+	id usqPIqr50GPHIgAAMHmgww
+	(envelope-from <mhocko@suse.com>); Wed, 25 Jan 2023 09:43:06 +0000
+Date: Wed, 25 Jan 2023 10:43:05 +0100
 From: Michal Hocko <mhocko@suse.com>
 To: Suren Baghdasaryan <surenb@google.com>
 Cc: akpm@linux-foundation.org, michel@lespinasse.org, jglisse@google.com,
@@ -121,18 +121,17 @@ Cc: akpm@linux-foundation.org, michel@lespinasse.org, jglisse@google.com,
 	linux-perf-users@vger.kernel.org, kasan-dev@googlegroups.com,
 	selinux@vger.kernel.org, alsa-devel@alsa-project.org,
 	kernel-team@android.com
-Subject: Re: [PATCH v2 2/6] mm: replace VM_LOCKED_CLEAR_MASK with
- VM_LOCKED_MASK
-Message-ID: <Y9DwE4Z8hB38aX6X@dhcp22.suse.cz>
+Subject: Re: [PATCH v2 6/6] mm: export dump_mm()
+Message-ID: <Y9D5qS02j/fPLP/6@dhcp22.suse.cz>
 References: <20230125083851.27759-1-surenb@google.com>
- <20230125083851.27759-3-surenb@google.com>
+ <20230125083851.27759-7-surenb@google.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230125083851.27759-3-surenb@google.com>
+In-Reply-To: <20230125083851.27759-7-surenb@google.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230125_010214_290074_FDFBC3D5 
-X-CRM114-Status: GOOD (  23.71  )
-X-Mailman-Approved-At: Wed, 25 Jan 2023 01:02:52 -0800
+X-CRM114-CacheID: sfid-20230125_014308_757573_E513128B 
+X-CRM114-Status: GOOD (  12.72  )
+X-Mailman-Approved-At: Wed, 25 Jan 2023 03:28:27 -0800
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -149,134 +148,32 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed 25-01-23 00:38:47, Suren Baghdasaryan wrote:
-> To simplify the usage of VM_LOCKED_CLEAR_MASK in clear_vm_flags(),
-> replace it with VM_LOCKED_MASK bitmask and convert all users.
->
+On Wed 25-01-23 00:38:51, Suren Baghdasaryan wrote:
+> mmap_assert_write_locked() is used in vm_flags modifiers. Because
+> mmap_assert_write_locked() uses dump_mm() and vm_flags are sometimes
+> modified from from inside a module, it's necessary to export
+> dump_mm() function.
+> 
 > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 
 Acked-by: Michal Hocko <mhocko@suse.com>
 
 > ---
->  include/linux/mm.h | 4 ++--
->  kernel/fork.c      | 2 +-
->  mm/hugetlb.c       | 4 ++--
->  mm/mlock.c         | 6 +++---
->  mm/mmap.c          | 6 +++---
->  mm/mremap.c        | 2 +-
->  6 files changed, 12 insertions(+), 12 deletions(-)
+>  mm/debug.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index b71f2809caac..da62bdd627bf 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -421,8 +421,8 @@ extern unsigned int kobjsize(const void *objp);
->  /* This mask defines which mm->def_flags a process can inherit its parent */
->  #define VM_INIT_DEF_MASK	VM_NOHUGEPAGE
+> diff --git a/mm/debug.c b/mm/debug.c
+> index 9d3d893dc7f4..96d594e16292 100644
+> --- a/mm/debug.c
+> +++ b/mm/debug.c
+> @@ -215,6 +215,7 @@ void dump_mm(const struct mm_struct *mm)
+>  		mm->def_flags, &mm->def_flags
+>  	);
+>  }
+> +EXPORT_SYMBOL(dump_mm);
 >  
-> -/* This mask is used to clear all the VMA flags used by mlock */
-> -#define VM_LOCKED_CLEAR_MASK	(~(VM_LOCKED | VM_LOCKONFAULT))
-> +/* This mask represents all the VMA flag bits used by mlock */
-> +#define VM_LOCKED_MASK	(VM_LOCKED | VM_LOCKONFAULT)
+>  static bool page_init_poisoning __read_mostly = true;
 >  
->  /* Arch-specific flags to clear when updating VM flags on protection change */
->  #ifndef VM_ARCH_CLEAR
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index 6683c1b0f460..03d472051236 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -669,7 +669,7 @@ static __latent_entropy int dup_mmap(struct mm_struct *mm,
->  			tmp->anon_vma = NULL;
->  		} else if (anon_vma_fork(tmp, mpnt))
->  			goto fail_nomem_anon_vma_fork;
-> -		tmp->vm_flags &= ~(VM_LOCKED | VM_LOCKONFAULT);
-> +		clear_vm_flags(tmp, VM_LOCKED_MASK);
->  		file = tmp->vm_file;
->  		if (file) {
->  			struct address_space *mapping = file->f_mapping;
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index d20c8b09890e..4ecdbad9a451 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -6973,8 +6973,8 @@ static unsigned long page_table_shareable(struct vm_area_struct *svma,
->  	unsigned long s_end = sbase + PUD_SIZE;
->  
->  	/* Allow segments to share if only one is marked locked */
-> -	unsigned long vm_flags = vma->vm_flags & VM_LOCKED_CLEAR_MASK;
-> -	unsigned long svm_flags = svma->vm_flags & VM_LOCKED_CLEAR_MASK;
-> +	unsigned long vm_flags = vma->vm_flags & ~VM_LOCKED_MASK;
-> +	unsigned long svm_flags = svma->vm_flags & ~VM_LOCKED_MASK;
->  
->  	/*
->  	 * match the virtual addresses, permission and the alignment of the
-> diff --git a/mm/mlock.c b/mm/mlock.c
-> index 0336f52e03d7..5c4fff93cd6b 100644
-> --- a/mm/mlock.c
-> +++ b/mm/mlock.c
-> @@ -497,7 +497,7 @@ static int apply_vma_lock_flags(unsigned long start, size_t len,
->  		if (vma->vm_start != tmp)
->  			return -ENOMEM;
->  
-> -		newflags = vma->vm_flags & VM_LOCKED_CLEAR_MASK;
-> +		newflags = vma->vm_flags & ~VM_LOCKED_MASK;
->  		newflags |= flags;
->  		/* Here we know that  vma->vm_start <= nstart < vma->vm_end. */
->  		tmp = vma->vm_end;
-> @@ -661,7 +661,7 @@ static int apply_mlockall_flags(int flags)
->  	struct vm_area_struct *vma, *prev = NULL;
->  	vm_flags_t to_add = 0;
->  
-> -	current->mm->def_flags &= VM_LOCKED_CLEAR_MASK;
-> +	current->mm->def_flags &= ~VM_LOCKED_MASK;
->  	if (flags & MCL_FUTURE) {
->  		current->mm->def_flags |= VM_LOCKED;
->  
-> @@ -681,7 +681,7 @@ static int apply_mlockall_flags(int flags)
->  	for_each_vma(vmi, vma) {
->  		vm_flags_t newflags;
->  
-> -		newflags = vma->vm_flags & VM_LOCKED_CLEAR_MASK;
-> +		newflags = vma->vm_flags & ~VM_LOCKED_MASK;
->  		newflags |= to_add;
->  
->  		/* Ignore errors */
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> index d4abc6feced1..323bd253b25a 100644
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -2671,7 +2671,7 @@ unsigned long mmap_region(struct file *file, unsigned long addr,
->  		if ((vm_flags & VM_SPECIAL) || vma_is_dax(vma) ||
->  					is_vm_hugetlb_page(vma) ||
->  					vma == get_gate_vma(current->mm))
-> -			vma->vm_flags &= VM_LOCKED_CLEAR_MASK;
-> +			clear_vm_flags(vma, VM_LOCKED_MASK);
->  		else
->  			mm->locked_vm += (len >> PAGE_SHIFT);
->  	}
-> @@ -3340,8 +3340,8 @@ static struct vm_area_struct *__install_special_mapping(
->  	vma->vm_start = addr;
->  	vma->vm_end = addr + len;
->  
-> -	vma->vm_flags = vm_flags | mm->def_flags | VM_DONTEXPAND | VM_SOFTDIRTY;
-> -	vma->vm_flags &= VM_LOCKED_CLEAR_MASK;
-> +	init_vm_flags(vma, (vm_flags | mm->def_flags |
-> +		      VM_DONTEXPAND | VM_SOFTDIRTY) & ~VM_LOCKED_MASK);
->  	vma->vm_page_prot = vm_get_page_prot(vma->vm_flags);
->  
->  	vma->vm_ops = ops;
-> diff --git a/mm/mremap.c b/mm/mremap.c
-> index 1b3ee02bead7..35db9752cb6a 100644
-> --- a/mm/mremap.c
-> +++ b/mm/mremap.c
-> @@ -687,7 +687,7 @@ static unsigned long move_vma(struct vm_area_struct *vma,
->  
->  	if (unlikely(!err && (flags & MREMAP_DONTUNMAP))) {
->  		/* We always clear VM_LOCKED[ONFAULT] on the old vma */
-> -		vma->vm_flags &= VM_LOCKED_CLEAR_MASK;
-> +		clear_vm_flags(vma, VM_LOCKED_MASK);
->  
->  		/*
->  		 * anon_vma links of the old vma is no longer needed after its page
 > -- 
 > 2.39.1
 
