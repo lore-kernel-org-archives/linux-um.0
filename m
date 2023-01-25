@@ -4,107 +4,130 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CD68C61DA3
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2FDF3C61DA7
 	for <linux-um@archiver.kernel.org>; Wed, 25 Jan 2023 09:02:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Np+v33IdgXQeXWBwh/r71uL5wytJzGyFswRstVFRR0k=; b=YW50Tijy8Qa2SV
-	ZGjG66J/W9JPGVWCSsK6ZOZ3uLV8b8dpm8X141Q/TvWM8W1ivpIhh7PYfnqTTzl1JnfbGt0XdeGEa
-	lCTQOW/qb9V2Ac/tGaivPUfPp+icLrfqqglCKS5wGSSj5ePzsTAyVh1gspvD9yWfaNLbVtZG0N57B
-	YKDScmMj5N5VmXbUA0yK4KMgghQo5ChGS4p2lNOAfaKR1BNWKpWESEdJfa57T0VYb7nKgrZQYPKbI
-	h1WuQ+yz5PZea9zEEY+ydziC1LUES/7SdlEmtXRZrbmAvzjaoH3QFaW4GXNaiHbRTe5rvcHXkcn5i
-	fFcfEafk286tqC9+RKiw==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:From:Subject:Message-ID:
+	References:Mime-Version:In-Reply-To:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=2/8Cs88EYiakSXkO6IUFEZHC2oi+UAEmv5RU3NUBBxI=; b=cLdJ9nd0HeWKhdpfTGsHh0jsTB
+	XjKfMPOkQ8ht4X6wHDiSVDdj0bOw6hwfax7F6hDs0b9dm696k+ofATK4GigiOCIBbOqv3kLMRbiaX
+	zxvXER5PbeD3HFMwmvaMVxqNELN/89AwnTqLmGkcXEto3VsvWy3f1T6M0ikczqgb2+487xAA8S9J3
+	vkfItwzpQKkm9QiMIW5oNCPeKX3eVllmF/5kDqBERE3jseaoC0HljHgR+lrlAMFzmL7TxSoYf1lKz
+	N74mX2rM7lmPXJKpR+JZwcestregi34ovyzv5UH+0ySkBV1u72R0rEL6THVeE5QrO/G6aY941pTyu
+	ZPmHdsDA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKbg6-006WiD-B5; Wed, 25 Jan 2023 09:02:46 +0000
-Received: from foss.arm.com ([217.140.110.172])
-	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pHmqj-00EbAD-2H; Tue, 17 Jan 2023 14:22:06 +0000
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6E24DC14;
-	Tue, 17 Jan 2023 06:22:41 -0800 (PST)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1B3A83F67D;
-	Tue, 17 Jan 2023 06:21:43 -0800 (PST)
-Date: Tue, 17 Jan 2023 14:21:40 +0000
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, richard.henderson@linaro.org,
-	ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@kernel.org,
-	linux@armlinux.org.uk, nsekhar@ti.com, brgl@bgdev.pl,
-	ulli.kroll@googlemail.com, linus.walleij@linaro.org,
-	shawnguo@kernel.org, Sascha Hauer <s.hauer@pengutronix.de>,
-	kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-	tony@atomide.com, khilman@kernel.org,
-	krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com,
-	catalin.marinas@arm.com, will@kernel.org, guoren@kernel.org,
-	bcain@quicinc.com, chenhuacai@kernel.org, kernel@xen0n.name,
-	geert@linux-m68k.org, sammy@sammy.net, monstr@monstr.eu,
-	tsbogend@alpha.franken.de, dinguyen@kernel.org, jonas@southpole.se,
-	stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
-	James.Bottomley@hansenpartnership.com, deller@gmx.de,
-	mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
-	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
-	hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
-	borntraeger@linux.ibm.com, svens@linux.ibm.com,
-	ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net,
-	richard@nod.at, anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com,
-	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-	hpa@zytor.com, acme@kernel.org, alexander.shishkin@linux.intel.com,
-	jolsa@kernel.org, namhyung@kernel.org, jgross@suse.com,
-	srivatsa@csail.mit.edu, amakhalov@vmware.com, pv-drivers@vmware.com,
-	boris.ostrovsky@oracle.com, chris@zankel.net, jcmvbkbc@gmail.com,
-	rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz,
-	gregkh@linuxfoundation.org, mturquette@baylibre.com,
-	sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org,
-	agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-	anup@brainfault.org, thierry.reding@gmail.com, jonathanh@nvidia.com,
-	jacob.jun.pan@linux.intel.com, atishp@atishpatra.org,
-	Arnd Bergmann <arnd@arndb.de>, yury.norov@gmail.com,
-	andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
-	dennis@kernel.org, tj@kernel.org, cl@linux.com, rostedt@goodmis.org,
-	mhiramat@kernel.org, frederic@kernel.org, paulmck@kernel.org,
-	pmladek@suse.com, senozhatsky@chromium.org,
-	john.ogness@linutronix.de, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
-	vschneid@redhat.com, ryabinin.a.a@gmail.com, glider@google.com,
-	andreyknvl@gmail.com, dvyukov@google.com, vincenzo.frascino@arm.com,
-	Andrew Morton <akpm@linux-foundation.org>, jpoimboe@kernel.org,
-	linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-snps-arc@lists.infradead.org, linux-omap@vger.kernel.org,
-	linux-samsung-soc@vger.kernel.org, linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-	linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org,
-	virtualization@lists.linux-foundation.org,
-	linux-xtensa@linux-xtensa.org, linux-acpi@vger.kernel.org,
-	linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-mm@kvack.org,
-	linux-trace-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-	Sudeep Holla <sudeep.holla@arm.com>
-Subject: Re: [PATCH v3 00/51] cpuidle,rcu: Clean up the mess
-Message-ID: <20230117142140.g423hxisv7djudof@bogus>
-References: <20230112194314.845371875@infradead.org>
- <Y8WCWAuQSHN651dA@FVFF77S0Q05N.cambridge.arm.com>
- <Y8Z31UbzG3LJgAXE@hirez.programming.kicks-ass.net>
- <Y8afpbHtDOqAHq9M@FVFF77S0Q05N.cambridge.arm.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <Y8afpbHtDOqAHq9M@FVFF77S0Q05N.cambridge.arm.com>
+	id 1pKbg7-006Wj4-4v; Wed, 25 Jan 2023 09:02:47 +0000
+Received: from mail-yb1-xb4a.google.com ([2607:f8b0:4864:20::b4a])
+	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1pKbJ6-006UA4-TZ
+	for linux-um@lists.infradead.org; Wed, 25 Jan 2023 08:39:05 +0000
+Received: by mail-yb1-xb4a.google.com with SMTP id z17-20020a256651000000b007907852ca4dso19255195ybm.16
+        for <linux-um@lists.infradead.org>; Wed, 25 Jan 2023 00:38:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ralp0YsbeintaJ1+3rV0BJxcsbdnu/jVKuNhvnt0T5Y=;
+        b=FpW3ZfeoZ58NaZWfySIfB+f4+MM7GrKuq9uCXe+gfhjrC0bvKaL2kAypJ/pJdIrezU
+         Ru0cU0KNklRfuYrJ3SKXkdPgNjMfodaxcsFUMH2z2VP+LqiGmmBZi4WNjYcaaYQLe2mC
+         v6uAPWcErh2g6vXcpQB3pwh9XmkkPfWLDi2bI5mgZlrfFBGfjeQ9Wv8iIQeddGuuYJGy
+         vGYSJIu//+24XGZjzB+Q3VYOxZ5pJZ/HCGoJ5h7l6e1K0sxINKIjiYRXApyFQ3GXR7xJ
+         ZclVjCWVjm/7Pu3pZxJbkPLxrnDwpix1sMzuU+AEqB9vICm+UZCWtOUOt5GLju8+nccL
+         rTTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ralp0YsbeintaJ1+3rV0BJxcsbdnu/jVKuNhvnt0T5Y=;
+        b=FNOa37GUj2xvqI7hF2SGWWV1kiLJ/5PUjxl+IWGIfxLEvhOcM/qi7YLAVyViAdQERF
+         9HJanCB6j3EoOTzU78eYRcbAgxJtV4Zz1Wefrw3hmZ5KP1P6BEj0EqG6JyV4OEOPyAwR
+         Y6JJnarCjGsEDWhrd21C5CSqv78KFmoHlX8jiMzkFLBhGnjmLZuAWalqNqu1d9Eo5Cly
+         JvbYcfu1WRdumALOuDts6qUrIH2AmbFZFk/hJujKCKpBqe6lJX/h379dw6njLTQ8HyAk
+         3R8UZW5Kcl7O14BzGwgsa9UJ77E6Lq/M6BIHYVVCrGms998/raUu3B5fHOKdDE8WYD/A
+         kpcA==
+X-Gm-Message-State: AO0yUKXR/F+mAoYcZYJscP1pUvAQfuDiqY60DNgwbQPPgL9OLWFONCpM
+	HhMnzLIYcPtjboupON4tWmhKFr6WEkQ=
+X-Google-Smtp-Source: AK7set8/stQqnGGz4OB/vqyDOBLoBX54VTTeagu3mMK0HzymWEEvjI0ujOzPLr/zvAsu1DJMDE0YK80W9/s=
+X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:200:f7b0:20e8:ce66:f98])
+ (user=surenb job=sendgmr) by 2002:a81:3e07:0:b0:506:6185:4fad with SMTP id
+ l7-20020a813e07000000b0050661854fadmr450398ywa.451.1674635938431; Wed, 25 Jan
+ 2023 00:38:58 -0800 (PST)
+Date: Wed, 25 Jan 2023 00:38:46 -0800
+In-Reply-To: <20230125083851.27759-1-surenb@google.com>
+Mime-Version: 1.0
+References: <20230125083851.27759-1-surenb@google.com>
+X-Mailer: git-send-email 2.39.1.405.gd4c25cc71f-goog
+Message-ID: <20230125083851.27759-2-surenb@google.com>
+Subject: [PATCH v2 1/6] mm: introduce vma->vm_flags modifier functions
+From: Suren Baghdasaryan <surenb@google.com>
+To: akpm@linux-foundation.org
+Cc: michel@lespinasse.org, jglisse@google.com, mhocko@suse.com, vbabka@suse.cz, 
+	hannes@cmpxchg.org, mgorman@techsingularity.net, dave@stgolabs.net, 
+	willy@infradead.org, liam.howlett@oracle.com, peterz@infradead.org, 
+	ldufour@linux.ibm.com, paulmck@kernel.org, luto@kernel.org, 
+	songliubraving@fb.com, peterx@redhat.com, david@redhat.com, 
+	dhowells@redhat.com, hughd@google.com, bigeasy@linutronix.de, 
+	kent.overstreet@linux.dev, punit.agrawal@bytedance.com, lstoakes@gmail.com, 
+	peterjung1337@gmail.com, rientjes@google.com, axelrasmussen@google.com, 
+	joelaf@google.com, minchan@google.com, jannh@google.com, shakeelb@google.com, 
+	tatashin@google.com, edumazet@google.com, gthelen@google.com, 
+	gurua@google.com, arjunroy@google.com, soheil@google.com, 
+	hughlynch@google.com, leewalsh@google.com, posk@google.com, will@kernel.org, 
+	aneesh.kumar@linux.ibm.com, npiggin@gmail.com, chenhuacai@kernel.org, 
+	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
+	dave.hansen@linux.intel.com, richard@nod.at, anton.ivanov@cambridgegreys.com, 
+	johannes@sipsolutions.net, qianweili@huawei.com, wangzhou1@hisilicon.com, 
+	herbert@gondor.apana.org.au, davem@davemloft.net, vkoul@kernel.org, 
+	airlied@gmail.com, daniel@ffwll.ch, maarten.lankhorst@linux.intel.com, 
+	mripard@kernel.org, tzimmermann@suse.de, l.stach@pengutronix.de, 
+	krzysztof.kozlowski@linaro.org, patrik.r.jakobsson@gmail.com, 
+	matthias.bgg@gmail.com, robdclark@gmail.com, quic_abhinavk@quicinc.com, 
+	dmitry.baryshkov@linaro.org, tomba@kernel.org, hjc@rock-chips.com, 
+	heiko@sntech.de, ray.huang@amd.com, kraxel@redhat.com, sre@kernel.org, 
+	mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com, tfiga@chromium.org, 
+	m.szyprowski@samsung.com, mchehab@kernel.org, dimitri.sivanich@hpe.com, 
+	zhangfei.gao@linaro.org, jejb@linux.ibm.com, martin.petersen@oracle.com, 
+	dgilbert@interlog.com, hdegoede@redhat.com, mst@redhat.com, 
+	jasowang@redhat.com, alex.williamson@redhat.com, deller@gmx.de, 
+	jayalk@intworks.biz, viro@zeniv.linux.org.uk, nico@fluxnic.net, 
+	xiang@kernel.org, chao@kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, 
+	miklos@szeredi.hu, mike.kravetz@oracle.com, muchun.song@linux.dev, 
+	bhe@redhat.com, andrii@kernel.org, yoshfuji@linux-ipv6.org, 
+	dsahern@kernel.org, kuba@kernel.org, pabeni@redhat.com, perex@perex.cz, 
+	tiwai@suse.com, haojian.zhuang@gmail.com, robert.jarzmik@free.fr, 
+	linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org, 
+	linuxppc-dev@lists.ozlabs.org, x86@kernel.org, linux-kernel@vger.kernel.org, 
+	linux-graphics-maintainer@vmware.com, linux-ia64@vger.kernel.org, 
+	linux-arch@vger.kernel.org, loongarch@lists.linux.dev, kvm@vger.kernel.org, 
+	linux-s390@vger.kernel.org, linux-sgx@vger.kernel.org, 
+	linux-um@lists.infradead.org, linux-acpi@vger.kernel.org, 
+	linux-crypto@vger.kernel.org, nvdimm@lists.linux.dev, 
+	dmaengine@vger.kernel.org, amd-gfx@lists.freedesktop.org, 
+	dri-devel@lists.freedesktop.org, etnaviv@lists.freedesktop.org, 
+	linux-samsung-soc@vger.kernel.org, intel-gfx@lists.freedesktop.org, 
+	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
+	freedreno@lists.freedesktop.org, linux-rockchip@lists.infradead.org, 
+	linux-tegra@vger.kernel.org, virtualization@lists.linux-foundation.org, 
+	xen-devel@lists.xenproject.org, linux-stm32@st-md-mailman.stormreply.com, 
+	linux-rdma@vger.kernel.org, linux-media@vger.kernel.org, 
+	linux-accelerators@lists.ozlabs.org, sparclinux@vger.kernel.org, 
+	linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev, 
+	target-devel@vger.kernel.org, linux-usb@vger.kernel.org, 
+	netdev@vger.kernel.org, linux-fbdev@vger.kernel.org, linux-aio@kvack.org, 
+	linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org, 
+	linux-ext4@vger.kernel.org, devel@lists.orangefs.org, 
+	kexec@lists.infradead.org, linux-xfs@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, kasan-dev@googlegroups.com, 
+	selinux@vger.kernel.org, alsa-devel@alsa-project.org, kernel-team@android.com, 
+	surenb@google.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230117_062205_223578_CCF3D168 
-X-CRM114-Status: GOOD (  30.49  )
+X-CRM114-CacheID: sfid-20230125_003900_990429_E859D70F 
+X-CRM114-Status: GOOD (  12.24  )
 X-Mailman-Approved-At: Wed, 25 Jan 2023 01:02:42 -0800
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -122,65 +145,89 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jan 17, 2023 at 01:16:21PM +0000, Mark Rutland wrote:
-> On Tue, Jan 17, 2023 at 11:26:29AM +0100, Peter Zijlstra wrote:
-> > On Mon, Jan 16, 2023 at 04:59:04PM +0000, Mark Rutland wrote:
-> > 
-> > > I'm sorry to have to bear some bad news on that front. :(
-> > 
-> > Moo, something had to give..
-> > 
-> > 
-> > > IIUC what's happenign here is the PSCI cpuidle driver has entered idle and RCU
-> > > is no longer watching when arm64's cpu_suspend() manipulates DAIF. Our
-> > > local_daif_*() helpers poke lockdep and tracing, hence the call to
-> > > trace_hardirqs_off() and the RCU usage.
-> > 
-> > Right, strictly speaking not needed at this point, IRQs should have been
-> > traced off a long time ago.
-> 
-> True, but there are some other calls around here that *might* end up invoking
-> RCU stuff (e.g. the MTE code).
-> 
-> That all needs a noinstr cleanup too, which I'll sort out as a follow-up.
-> 
-> > > I think we need RCU to be watching all the way down to cpu_suspend(), and it's
-> > > cpu_suspend() that should actually enter/exit idle context. That and we need to
-> > > make cpu_suspend() and the low-level PSCI invocation noinstr.
-> > > 
-> > > I'm not sure whether 32-bit will have a similar issue or not.
-> > 
-> > I'm not seeing 32bit or Risc-V have similar issues here, but who knows,
-> > maybe I missed somsething.
-> 
-> I reckon if they do, the core changes here give us the infrastructure to fix
-> them if/when we get reports.
-> 
-> > In any case, the below ought to cure the ARM64 case and remove that last
-> > known RCU_NONIDLE() user as a bonus.
-> 
-> The below works for me testing on a Juno R1 board with PSCI, using defconfig +
-> CONFIG_PROVE_LOCKING=y + CONFIG_DEBUG_LOCKDEP=y + CONFIG_DEBUG_ATOMIC_SLEEP=y.
-> I'm not sure how to test the LPI / FFH part, but it looks good to me.
-> 
-> FWIW:
-> 
-> Reviewed-by: Mark Rutland <mark.rutland@arm.com>
-> Tested-by: Mark Rutland <mark.rutland@arm.com>
-> 
-> Sudeep, would you be able to give the LPI/FFH side a spin with the kconfig
-> options above?
-> 
+vm_flags are among VMA attributes which affect decisions like VMA merging
+and splitting. Therefore all vm_flags modifications are performed after
+taking exclusive mmap_lock to prevent vm_flags updates racing with such
+operations. Introduce modifier functions for vm_flags to be used whenever
+flags are updated. This way we can better check and control correct
+locking behavior during these updates.
 
-Not sure if I have messed up something in my mail setup, but I did reply
-earlier. I did test both DT/cpuidle-psci driver and  ACPI/LPI+FFH driver
-with the fix Peter sent. I was seeing same splat as you in both DT and
-ACPI boot which the patch fixed it. I used the same config as described by
-you above.
+Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+---
+ include/linux/mm.h       | 37 +++++++++++++++++++++++++++++++++++++
+ include/linux/mm_types.h |  8 +++++++-
+ 2 files changed, 44 insertions(+), 1 deletion(-)
 
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index c2f62bdce134..b71f2809caac 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -627,6 +627,43 @@ static inline void vma_init(struct vm_area_struct *vma, struct mm_struct *mm)
+ 	INIT_LIST_HEAD(&vma->anon_vma_chain);
+ }
+ 
++/* Use when VMA is not part of the VMA tree and needs no locking */
++static inline void init_vm_flags(struct vm_area_struct *vma,
++				 unsigned long flags)
++{
++	vma->vm_flags = flags;
++}
++
++/* Use when VMA is part of the VMA tree and modifications need coordination */
++static inline void reset_vm_flags(struct vm_area_struct *vma,
++				  unsigned long flags)
++{
++	mmap_assert_write_locked(vma->vm_mm);
++	init_vm_flags(vma, flags);
++}
++
++static inline void set_vm_flags(struct vm_area_struct *vma,
++				unsigned long flags)
++{
++	mmap_assert_write_locked(vma->vm_mm);
++	vma->vm_flags |= flags;
++}
++
++static inline void clear_vm_flags(struct vm_area_struct *vma,
++				  unsigned long flags)
++{
++	mmap_assert_write_locked(vma->vm_mm);
++	vma->vm_flags &= ~flags;
++}
++
++static inline void mod_vm_flags(struct vm_area_struct *vma,
++				unsigned long set, unsigned long clear)
++{
++	mmap_assert_write_locked(vma->vm_mm);
++	vma->vm_flags |= set;
++	vma->vm_flags &= ~clear;
++}
++
+ static inline void vma_set_anonymous(struct vm_area_struct *vma)
+ {
+ 	vma->vm_ops = NULL;
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 2d6d790d9bed..6c7c70bf50dd 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -491,7 +491,13 @@ struct vm_area_struct {
+ 	 * See vmf_insert_mixed_prot() for discussion.
+ 	 */
+ 	pgprot_t vm_page_prot;
+-	unsigned long vm_flags;		/* Flags, see mm.h. */
++
++	/*
++	 * Flags, see mm.h.
++	 * WARNING! Do not modify directly.
++	 * Use {init|reset|set|clear|mod}_vm_flags() functions instead.
++	 */
++	unsigned long vm_flags;
+ 
+ 	/*
+ 	 * For areas with an address space and backing store,
 -- 
-Regards,
-Sudeep
+2.39.1
+
 
 _______________________________________________
 linux-um mailing list
