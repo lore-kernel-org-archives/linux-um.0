@@ -4,136 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 963E2C54EED
-	for <linux-um@archiver.kernel.org>; Wed, 25 Jan 2023 11:28:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFEB8C54EED
+	for <linux-um@archiver.kernel.org>; Wed, 25 Jan 2023 19:08:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1Vlr2yC3LsnjXzDu43wVvDH18PVo2vyCVv6+a3tlRqk=; b=t32YmrOEE6BDau
-	Ac6nqjXG4q2Sip4OOFBb11ivq1pjZ3mhgxEWG22W/l7eL+2x6c5w02cSXgj3pZ+AqNHEGihENxkLe
-	Q7vDi31zNT8I4sJVfkeiv24zJ4BUZFYTwO50XIKIGFxA7YpmEU5zW2QvoV7UFqTo+f7+KL9AfaF/5
-	rJRMZnWOG+pb4A9t/JRatSE7jJbf2CgHMrJdOqzleSevHXsA14wj6KkVwgXC+5rY3RbcIBvKpoXy9
-	nnai+mZ1bKlXHahfqsWYMJky6lADthd+v8MniB7CS6r8bclJZOzi67rT5Ui2wq3v3/io1af055f7E
-	Nx+8w9f0p9X+e8/BZ9pA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=mlEDM6wGZAZwghg8VIp29rN6gWiOnvfK6nK0fsVhsNs=; b=JHuXpmOPDh/25P
+	Qf8vHRumOQQnYoRA69JlV+E4U6C2k/9cRrxy+Q8Ql53dANwjHe/3lVXgid+hU3yXYyGCcpwc69Dut
+	otvty9wOx8ptqY+jV8CoG/PPkD+51hJ4PR9pDl/bbGlmtHlgaZZfVVHrqfLP/V54tXWgrlNH1EdUt
+	4Ou1giWhI11A9MQrGm/nZryIStA4N6hVJrl8wCOucAwPcAUp7KkrDBmniRPpAyGXrupS1oswEEosM
+	L/P2MvkBCqHcxjQf2P+SXALfGyBlHW81XqAQBc1pwaEWCP4TtPQ7Jiom+1CifLzkQhqtZPQtPKUC4
+	IZyQBlhJRgdL7kQppm8w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKdx7-007AEC-M2; Wed, 25 Jan 2023 11:28:29 +0000
-Received: from smtp-out2.suse.de ([195.135.220.29])
+	id 1pKl8E-008QQh-KU; Wed, 25 Jan 2023 19:08:26 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKcF6-006eAB-BG; Wed, 25 Jan 2023 09:38:57 +0000
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	id 1pKl8A-008QPV-5s; Wed, 25 Jan 2023 19:08:23 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 8985B1F8CC;
-	Wed, 25 Jan 2023 09:38:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1674639534; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rlC3v8G7Qltb7/sMWGykfElAbj3RZvreU88MtZ+OLHM=;
-	b=r0FIat4kOE8WovOTP3LWhacl5M3EjQXhF3aBT5cBj3FuQ5I+yJMTY0cq7QTmO7SFPDQv6O
-	tRrm4BhOZHjZFNfq3BxFKWYU7SqtAc8zTE0tqhcCiP6BOgQ+ipP6+yjGZBzFWwz4Mee2C0
-	GFF6IKS/BdrV8Bwlj7T9ur543veHKvk=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 446411358F;
-	Wed, 25 Jan 2023 09:38:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id jLUjEK740GMsIAAAMHmgww
-	(envelope-from <mhocko@suse.com>); Wed, 25 Jan 2023 09:38:54 +0000
-Date: Wed, 25 Jan 2023 10:38:53 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: akpm@linux-foundation.org, michel@lespinasse.org, jglisse@google.com,
-	vbabka@suse.cz, hannes@cmpxchg.org, mgorman@techsingularity.net,
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com,
-	peterz@infradead.org, ldufour@linux.ibm.com, paulmck@kernel.org,
-	luto@kernel.org, songliubraving@fb.com, peterx@redhat.com,
-	david@redhat.com, dhowells@redhat.com, hughd@google.com,
-	bigeasy@linutronix.de, kent.overstreet@linux.dev,
-	punit.agrawal@bytedance.com, lstoakes@gmail.com,
-	peterjung1337@gmail.com, rientjes@google.com,
-	axelrasmussen@google.com, joelaf@google.com, minchan@google.com,
-	jannh@google.com, shakeelb@google.com, tatashin@google.com,
-	edumazet@google.com, gthelen@google.com, gurua@google.com,
-	arjunroy@google.com, soheil@google.com, hughlynch@google.com,
-	leewalsh@google.com, posk@google.com, will@kernel.org,
-	aneesh.kumar@linux.ibm.com, npiggin@gmail.com,
-	chenhuacai@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-	bp@alien8.de, dave.hansen@linux.intel.com, richard@nod.at,
-	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
-	qianweili@huawei.com, wangzhou1@hisilicon.com,
-	herbert@gondor.apana.org.au, davem@davemloft.net, vkoul@kernel.org,
-	airlied@gmail.com, daniel@ffwll.ch,
-	maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-	tzimmermann@suse.de, l.stach@pengutronix.de,
-	krzysztof.kozlowski@linaro.org, patrik.r.jakobsson@gmail.com,
-	matthias.bgg@gmail.com, robdclark@gmail.com,
-	quic_abhinavk@quicinc.com, dmitry.baryshkov@linaro.org,
-	tomba@kernel.org, hjc@rock-chips.com, heiko@sntech.de,
-	ray.huang@amd.com, kraxel@redhat.com, sre@kernel.org,
-	mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
-	tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
-	dimitri.sivanich@hpe.com, zhangfei.gao@linaro.org,
-	jejb@linux.ibm.com, martin.petersen@oracle.com,
-	dgilbert@interlog.com, hdegoede@redhat.com, mst@redhat.com,
-	jasowang@redhat.com, alex.williamson@redhat.com, deller@gmx.de,
-	jayalk@intworks.biz, viro@zeniv.linux.org.uk, nico@fluxnic.net,
-	xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
-	adilger.kernel@dilger.ca, miklos@szeredi.hu,
-	mike.kravetz@oracle.com, muchun.song@linux.dev, bhe@redhat.com,
-	andrii@kernel.org, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-	kuba@kernel.org, pabeni@redhat.com, perex@perex.cz, tiwai@suse.com,
-	haojian.zhuang@gmail.com, robert.jarzmik@free.fr,
-	linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
-	linux-kernel@vger.kernel.org, linux-graphics-maintainer@vmware.com,
-	linux-ia64@vger.kernel.org, linux-arch@vger.kernel.org,
-	loongarch@lists.linux.dev, kvm@vger.kernel.org,
-	linux-s390@vger.kernel.org, linux-sgx@vger.kernel.org,
-	linux-um@lists.infradead.org, linux-acpi@vger.kernel.org,
-	linux-crypto@vger.kernel.org, nvdimm@lists.linux.dev,
-	dmaengine@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org, etnaviv@lists.freedesktop.org,
-	linux-samsung-soc@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	freedreno@lists.freedesktop.org, linux-rockchip@lists.infradead.org,
-	linux-tegra@vger.kernel.org,
-	virtualization@lists.linux-foundation.org,
-	xen-devel@lists.xenproject.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
-	linux-accelerators@lists.ozlabs.org, sparclinux@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
-	target-devel@vger.kernel.org, linux-usb@vger.kernel.org,
-	netdev@vger.kernel.org, linux-fbdev@vger.kernel.org,
-	linux-aio@kvack.org, linux-fsdevel@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-	devel@lists.orangefs.org, kexec@lists.infradead.org,
-	linux-xfs@vger.kernel.org, bpf@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, kasan-dev@googlegroups.com,
-	selinux@vger.kernel.org, alsa-devel@alsa-project.org,
-	kernel-team@android.com
-Subject: Re: [PATCH v2 4/6] mm: replace vma->vm_flags indirect modification
- in ksm_madvise
-Message-ID: <Y9D4rWEsajV/WfNx@dhcp22.suse.cz>
-References: <20230125083851.27759-1-surenb@google.com>
- <20230125083851.27759-5-surenb@google.com>
+	by ams.source.kernel.org (Postfix) with ESMTPS id B1CEAB81B8C;
+	Wed, 25 Jan 2023 19:08:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A964C433D2;
+	Wed, 25 Jan 2023 19:08:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1674673699;
+	bh=qBn35DQSqUXJuSRxeDRwfpJWNfuE/0crpJYRHd83v4o=;
+	h=From:To:Cc:Subject:Date:From;
+	b=YEcaLAiW8LOEsQEOizhwah/DgYdk0Sj0EasElxRkmwC22UeVxExd/uj6NUQmANgP4
+	 jAVzwBza/ip8qzByaan6itTOheGqmGzh/hD5E5BgZdD+9/3Ftzb0GYHM6hdAJnWG8c
+	 +0dGrFu7IRI1vv+/xNF7SyJwcJ060FgtAE8tFhY0qs9BSVQGxK9kiiDi+9Al/inQ5y
+	 QgjBkIDWnjNcjAsez+fQtgv2zY2/zSGOHn2szZ/WwbSgKX3evSa6IUTI2vOHlKyjnc
+	 FhqKk/BuoBaxEuVWyr0QicxLbVmc8narKWe5G38G00CIXLChnK8wks51ggl7FZlFcj
+	 PHJVAXzE1TuvQ==
+From: Mike Rapoport <rppt@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Brian Cain <bcain@quicinc.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Greg Ungerer <gerg@linux-m68k.org>,
+	Guo Ren <guoren@kernel.org>,
+	Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Matt Turner <mattst88@gmail.com>,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Rich Felker <dalias@libc.org>,
+	Richard Weinberger <richard@nod.at>,
+	Stafford Horne <shorne@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Vineet Gupta <vgupta@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	linux-alpha@vger.kernel.org,
+	linux-arch@vger.kernel.org,
+	linux--csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
+	linux-ia64@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-sh@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-um@lists.infradead.org,
+	linux-xtensa@linux-xtensa.org,
+	linuxppc-dev@lists.ozlabs.org,
+	loongarch@lists.linux.dev,
+	openrisc@lists.librecores.org,
+	sparclinux@vger.kernel.org,
+	x86@kernel.org,
+	"Mike Rapoport (IBM)" <rppt@kernel.org>
+Subject: [PATCH 0/3] mm, arch: add generic implementation of pfn_valid() for FLATMEM
+Date: Wed, 25 Jan 2023 21:07:54 +0200
+Message-Id: <20230125190757.22555-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230125083851.27759-5-surenb@google.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230125_013856_568655_E121E10E 
-X-CRM114-Status: UNSURE (   7.58  )
-X-CRM114-Notice: Please train this message.
-X-Mailman-Approved-At: Wed, 25 Jan 2023 03:28:27 -0800
+X-CRM114-CacheID: sfid-20230125_110822_531607_4492222A 
+X-CRM114-Status: GOOD (  10.91  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -150,21 +108,52 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed 25-01-23 00:38:49, Suren Baghdasaryan wrote:
-> Replace indirect modifications to vma->vm_flags with calls to modifier
-> functions to be able to track flag changes and to keep vma locking
-> correctness. Add a BUG_ON check in ksm_madvise() to catch indirect
-> vm_flags modification attempts.
+From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 
-Those BUG_ONs scream to much IMHO. KSM is an MM internal code so I
-gueess we should be willing to trust it.
+Hi,
 
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+Every architecture that supports FLATMEM memory model defines its own
+version of pfn_valid() that essentially compares a pfn to max_mapnr.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+Use mips/powerpc version implemented as static inline as a generic
+implementation of pfn_valid() and drop its per-architecture definitions
+
+Mike Rapoport (IBM) (3):
+  m68k: use asm-generic/memory_model.h for both MMU and !MMU
+  mips: drop definition of pfn_valid() for DISCONTIGMEM
+  mm, arch: add generic implementation of pfn_valid() for FLATMEM
+
+ arch/alpha/include/asm/page.h      |  4 ----
+ arch/arc/include/asm/page.h        |  1 -
+ arch/csky/include/asm/page.h       |  1 -
+ arch/hexagon/include/asm/page.h    |  1 -
+ arch/ia64/include/asm/page.h       |  4 ----
+ arch/loongarch/include/asm/page.h  | 13 -------------
+ arch/m68k/include/asm/page.h       |  6 +-----
+ arch/m68k/include/asm/page_mm.h    |  1 -
+ arch/m68k/include/asm/page_no.h    |  4 ----
+ arch/microblaze/include/asm/page.h |  1 -
+ arch/mips/include/asm/page.h       | 28 ----------------------------
+ arch/nios2/include/asm/page.h      |  9 ---------
+ arch/openrisc/include/asm/page.h   |  2 --
+ arch/parisc/include/asm/page.h     |  4 ----
+ arch/powerpc/include/asm/page.h    |  9 ---------
+ arch/riscv/include/asm/page.h      |  5 -----
+ arch/sh/include/asm/page.h         |  3 ---
+ arch/sparc/include/asm/page_32.h   |  1 -
+ arch/um/include/asm/page.h         |  1 -
+ arch/x86/include/asm/page_32.h     |  4 ----
+ arch/x86/include/asm/page_64.h     |  4 ----
+ arch/xtensa/include/asm/page.h     |  2 --
+ include/asm-generic/memory_model.h | 12 ++++++++++++
+ include/asm-generic/page.h         |  2 --
+ 24 files changed, 13 insertions(+), 109 deletions(-)
+
+
+base-commit: 2241ab53cbb5cdb08a6b2d4688feb13971058f65
 -- 
-Michal Hocko
-SUSE Labs
+2.35.1
+
 
 _______________________________________________
 linux-um mailing list
