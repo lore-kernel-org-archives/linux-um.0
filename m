@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83ED0C54EED
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86ECEC61DA0
 	for <linux-um@archiver.kernel.org>; Wed, 25 Jan 2023 11:28:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,49 +12,46 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=C1C31o+HXjzuF97j5fQG6QcdyPNSwcVLJCJnMF4QVgc=; b=HLPhVqupCo3BAS
-	9JFcthVD6sNQjJA49WbtZkXSgL79+ZQTVmYQqXO+gk9NI8Abud+InAt/gVurfs9RCAtXsp272ZaS8
-	kxiPEa4TGqoI6aATQ0X3AW4R0i3rgsoAtjs7qeB6NaZlqLk5icRjs4UN2KO3ZeQmxqd1XccuyPTTG
-	1Ja3HfpXON5HHiosi4YFZhpM6PNa9+lGy3fqK7vZkV4HQKtYNy6RRfK4cyto4t/dnjaInsqfnwOYb
-	RnVw1MzVXDaf8yGesb5YyItsgfuB8o9iUTrbQKwt0p85/YBeLiWK9J1NlkExIFtms5W2MxBvka34H
-	nX0Q/r+2+Nx8yGtRjEHw==;
+	List-Owner; bh=6zfCBL/PdOSMBi8LZbxd2hIy/XhDQ3uJDiRU2fxX5IA=; b=IoTopDrur0HVJi
+	pqtkWvy2edbIPaqmfxxH6niFp7z06I6+h+oWU+v/vlfG5oxiUVBSx+uotveaOQ6U7QvcvZDcXRsHa
+	35I5J95W+9WxHz+ESoe/PInAOSev9A3VRCUtqrcn5Md8coHYmZOy55woIU5bcOFR993eG1MDpFIYM
+	fzwrN9Mm+vdel7fcoRJ2vnZuU64iMlPo6ErlvmWsC2rZLr3RPxvefrXt3VhuXqMaJWbjxBbek6s0h
+	DSMDqldNnd8m82/tf6F2YKt0kyuWcTpDrGTXMAdheITEqK4VvOUC7ggI+XWIREyThQ5/m+VmwvVr4
+	14+Lsx3Bp68d2QV3Gvbw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKdx7-007AE6-Gs; Wed, 25 Jan 2023 11:28:29 +0000
-Received: from smtp-out1.suse.de ([195.135.220.28])
+	id 1pKdx7-007AE0-BM; Wed, 25 Jan 2023 11:28:29 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKc7P-006csc-9c; Wed, 25 Jan 2023 09:31:00 +0000
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	id 1pKbmw-006Yid-8f; Wed, 25 Jan 2023 09:09:50 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=hk+0OseVD3OO+ksIzhtEU5LrZV8KXEqXC3zpbOGn/ls=; b=L8qSvLf3dSoKSiW2HygcIYLOca
+	21DCM8/DXgLnxfiohHpsT3lhw9RWtU9FTk5Q6obziletdupyk3K9yzioMkIYd3jrdHr1S7LLdHH60
+	lZs07uhtEIXDyuP/MuCEsO9tg/Dya8cSzK7mCmRjV2qBie+7+Y5IGxB0daAwFzjqMhaFzpySf6YXo
+	2vEVk+F84A4V2/U10C6G40hQA6YENiuXDX3aMgZ9vALWKqZFZvyNzBmwUbYJ2TrPobnkNV5WcsTzh
+	MlPPu5bEJs9JKwDVT1dVMYwpGrr2HHxIHWMyvY2cQrGsAsrDt+nZKoGt/dS9qSUmXOpPkxoiUPomG
+	V0Od16xg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1pKbmm-005neJ-75; Wed, 25 Jan 2023 09:09:40 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C57E921C78;
-	Wed, 25 Jan 2023 09:30:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1674639054; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jognpwZWDP/caNk47/2I5pB+VrjaxgWmcyaDbH1onsg=;
-	b=Pij8ssoJlw6k6tQr48jFXJyevDWch308vx0CLomRDmV84uEdMgTC6NhqR8VCkgI74II7DW
-	anm6YuwD0GfDOi17b+9Zs5S20/ilyumOWkOAGicsthADYQDP18s2AfYp6RzP5d5hjTOUwm
-	W4uNWFQcSkUDrOF5p/6xahiK2Zzyzto=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 684E91358F;
-	Wed, 25 Jan 2023 09:30:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id yJRSGc720GMeHAAAMHmgww
-	(envelope-from <mhocko@suse.com>); Wed, 25 Jan 2023 09:30:54 +0000
-Date: Wed, 25 Jan 2023 10:30:53 +0100
-From: Michal Hocko <mhocko@suse.com>
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D33DC30073F;
+	Wed, 25 Jan 2023 10:09:37 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 673382C247607; Wed, 25 Jan 2023 10:09:37 +0100 (CET)
+Date: Wed, 25 Jan 2023 10:09:37 +0100
+From: Peter Zijlstra <peterz@infradead.org>
 To: Suren Baghdasaryan <surenb@google.com>
 Cc: akpm@linux-foundation.org, michel@lespinasse.org, jglisse@google.com,
-	vbabka@suse.cz, hannes@cmpxchg.org, mgorman@techsingularity.net,
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com,
-	peterz@infradead.org, ldufour@linux.ibm.com, paulmck@kernel.org,
+	mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org,
+	mgorman@techsingularity.net, dave@stgolabs.net, willy@infradead.org,
+	liam.howlett@oracle.com, ldufour@linux.ibm.com, paulmck@kernel.org,
 	luto@kernel.org, songliubraving@fb.com, peterx@redhat.com,
 	david@redhat.com, dhowells@redhat.com, hughd@google.com,
 	bigeasy@linutronix.de, kent.overstreet@linux.dev,
@@ -121,18 +118,13 @@ Cc: akpm@linux-foundation.org, michel@lespinasse.org, jglisse@google.com,
 	linux-perf-users@vger.kernel.org, kasan-dev@googlegroups.com,
 	selinux@vger.kernel.org, alsa-devel@alsa-project.org,
 	kernel-team@android.com
-Subject: Re: [PATCH v2 3/6] mm: replace vma->vm_flags direct modifications
- with modifier calls
-Message-ID: <Y9D2zXpy+9iyZNun@dhcp22.suse.cz>
+Subject: Re: [PATCH v2 1/6] mm: introduce vma->vm_flags modifier functions
+Message-ID: <Y9Dx0cPXF2yoLwww@hirez.programming.kicks-ass.net>
 References: <20230125083851.27759-1-surenb@google.com>
- <20230125083851.27759-4-surenb@google.com>
+ <20230125083851.27759-2-surenb@google.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230125083851.27759-4-surenb@google.com>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230125_013059_501881_C07D97B8 
-X-CRM114-Status: UNSURE (   8.13  )
-X-CRM114-Notice: Please train this message.
+In-Reply-To: <20230125083851.27759-2-surenb@google.com>
 X-Mailman-Approved-At: Wed, 25 Jan 2023 03:28:27 -0800
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -150,27 +142,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed 25-01-23 00:38:48, Suren Baghdasaryan wrote:
-> Replace direct modifications to vma->vm_flags with calls to modifier
-> functions to be able to track flag changes and to keep vma locking
-> correctness.
+On Wed, Jan 25, 2023 at 12:38:46AM -0800, Suren Baghdasaryan wrote:
 
-Is this a manual (git grep) based work or have you used Coccinele for
-the patch generation?
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index 2d6d790d9bed..6c7c70bf50dd 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -491,7 +491,13 @@ struct vm_area_struct {
+>  	 * See vmf_insert_mixed_prot() for discussion.
+>  	 */
+>  	pgprot_t vm_page_prot;
+> -	unsigned long vm_flags;		/* Flags, see mm.h. */
+> +
+> +	/*
+> +	 * Flags, see mm.h.
+> +	 * WARNING! Do not modify directly.
+> +	 * Use {init|reset|set|clear|mod}_vm_flags() functions instead.
+> +	 */
+> +	unsigned long vm_flags;
 
-My potentially incomplete check
-$ git grep ">[[:space:]]*vm_flags[[:space:]]*[&|^]="
-
-shows that nothing should be left after this. There is still quite a lot
-of direct checks of the flags (more than 600). Maybe it would be good to
-make flags accessible only via accessors which would also prevent any
-future direct setting of those flags in uncontrolled way as well.
-
-Anyway
-Acked-by: Michal Hocko <mhocko@suse.com>
--- 
-Michal Hocko
-SUSE Labs
+We have __private and ACCESS_PRIVATE() to help with enforcing this.
 
 _______________________________________________
 linux-um mailing list
