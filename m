@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA219C61DA0
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AADDCC61DA2
 	for <linux-um@archiver.kernel.org>; Wed, 25 Jan 2023 20:41:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,59 +12,59 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kstqIbaB4xEXziCX4nBocC9MkDm/t3o3TXjl0kTfbx0=; b=eDm6tKQ4o69oV1
-	UXmGEBn/uI4uqXH/jNRrH2B91fkVzG1UQKxisl61yTvDNHZmV3Mxb5gkytRD8/Ewv6VcGiXVdRgqp
-	K7dPz00VssmCUp8/T8Q8gq8/NG3jADDsQJCFUClrdIhOeyNSvdWdgjdNxyIkIT1scC3WKYQ5UG6SM
-	DXRFzBoFL45dwxZ8E7HiLqBwJ8qeXoRtXeNEjtdR7Oj9nyQC1WNCb2bCoqJlaiIn1DT9/BGJB9n8+
-	OcT5o9uDIwUQH7+cj5UYvzbaPiRRpSvBnhaMmcChxX7ukp81YnB28R+Paeue3MYFec6/83+ZSS5Ew
-	Ygjr0yepCqRkr9MWjyhw==;
+	List-Owner; bh=XKU3O/vhcdQDrp6aOhmncKyi1QIyE6XnYB7uFpIMp4Y=; b=SJoAb9mlIoTCgM
+	z1jOtgCjPTQCuFPvHRU6MJpSd1owdHx1Aeyo8vw3fe5WKAGm5xoDjl5vC6t46y7+ThhfnlmDwWFnj
+	hLs1fWEibpqaVE5HORwRkdG9llnDVhEjq4PLBTQzJ6XDjFCx3bDajaG3Qjykx7Us/8p2lHEC2lxQY
+	pO3yVDzPmnnZbp+HVvv40Zw15gP17W4wCErVc0NhRMT+QDAuDRNoMFtF0eYL/dp5MMpDhSTCdqjcP
+	N7626OokgYNJ/ftoD1BZB3tiSSJ+eOUAd7f/R535xFzBqe6h3UnApU0s+BNb7ZcpZwfojsWHhjucZ
+	5N9ttAVmpzugmpRpRaMw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKmad-008kn8-Fe; Wed, 25 Jan 2023 20:41:51 +0000
-Received: from mail-yb1-xb2a.google.com ([2607:f8b0:4864:20::b2a])
+	id 1pKmac-008kmg-Pm; Wed, 25 Jan 2023 20:41:50 +0000
+Received: from mail-yw1-x1132.google.com ([2607:f8b0:4864:20::1132])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKjTn-008BDG-ST
-	for linux-um@lists.infradead.org; Wed, 25 Jan 2023 17:22:37 +0000
-Received: by mail-yb1-xb2a.google.com with SMTP id h5so6995901ybj.8
-        for <linux-um@lists.infradead.org>; Wed, 25 Jan 2023 09:22:35 -0800 (PST)
+	id 1pKj3V-00861K-M3
+	for linux-um@lists.infradead.org; Wed, 25 Jan 2023 16:55:28 +0000
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-4fda31c3351so243498317b3.11
+        for <linux-um@lists.infradead.org>; Wed, 25 Jan 2023 08:55:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=IqJXv+IInDU1mKTOWecSjx46uIp9RhIiEah7PjvPLrg=;
-        b=QlZyecSvRJAlH7daZiVbTmdMCDJawwIkjqybbPcYd50INvCOOFwycJjGFsDCENBvPF
-         JeBM9yeOQDknmaZC6LT0p7wlzLAJo3QYgAn7K1xQNCTJjPrh6oinOxgRNGwGedAqUfeH
-         4EF6oknHwKU0N6BIZOc0CJi1hrgM4W0zxm3gicvvOuEGF7JC9HCNICDdMPEAz6Lz/B5y
-         FN2dpyuojKkpe3r7ipsFxRIyHaJ4nJmkiiUGkQy6aOsuBhBZ3WzwUsGkq0uXDlGTKFEH
-         iRh4N/trPN148wcbBUC1DmqB3ErHQLF9n9pkmMXooLK6oXyXf0aS41iIJv2buhnN7zSu
-         X8Bw==
+        bh=49H+5dcfdqsESvQ4qNxkOgTxyGkRYtaMvRra0jMgwoI=;
+        b=S433Z2p/j0oEnqzhdMbCoBVS6yLsoVuhPxi7PQkxnyRK8RoE5tlGqQCWFiSx/y2EvP
+         VAUU6f5te6yd0FF3QKoXQk59fXSc40Ni99FjmOhoS8uoMeuhfG+AT8hg6vTHrAcNtls7
+         iMIrnMdjSfEnhMBuERTLvpM6IdVwE9wobd2Cb3XY0VBKEUGGTBatMri522T6kyoxGdRv
+         R/YHI2CzXA+66ssNNRD0kBHVPl8TI5ear6XOrgI2lTdtmT0YpMoSddNSDob6lG0ADoLk
+         +xTQAwFZ3i/oeH+aroOYDwlOGwYRh8N7mvnq0HFpqRIYUl+jcTUyG7X+0g74P9WaFx1x
+         4nDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=IqJXv+IInDU1mKTOWecSjx46uIp9RhIiEah7PjvPLrg=;
-        b=GfdlsnDJreypHA0whbbdT8i2P0ASv1DAuOnM2epmSHXMMfcy3siiUM/teLrBSYgbkZ
-         k9IjtiDQh0DiPjqAet1G4CozxWbNGqw0dbUz88X75siqKBrY3mIHUg0CnG2Kk0Iu04Er
-         WDwJF6b1tPLJqyldzRX4rEUdWNXwCDnUuHasR4fQ73TMfmU73YZtUpgLTwWPNtHm81qn
-         Axu/qoQbqnTTdXAx5DfRI76xVwaRS/qlSBDQcQx14eJPMcB4PfLpDYGhCVJdj1RtECFS
-         dWFVZg769g3am5N9ict0N3ly4Fy5Vy+Kz1QrbKHGAE8mfr2V7ceJ97HxL3W/lZpcqpL0
-         I75w==
-X-Gm-Message-State: AFqh2kqW6QVaC2W3xWQECelDD6oWP2azdDIexNoz1EZPXaAGiABbK7s/
-	tdwruaR0Ef6ljoMbkkX1rQe/alrA1b+vPLVZj0Uv5w==
-X-Google-Smtp-Source: AMrXdXv634nY3BrnZ3PlTUGlyUi8i7L3YenO2gMgxW5qJ4tF6Xha6yZp+2FFeWeU8OQrXrCFeHpomo5nr++haHZW7UI=
-X-Received: by 2002:a25:a408:0:b0:800:28d4:6936 with SMTP id
- f8-20020a25a408000000b0080028d46936mr2303639ybi.431.1674667354997; Wed, 25
- Jan 2023 09:22:34 -0800 (PST)
+        bh=49H+5dcfdqsESvQ4qNxkOgTxyGkRYtaMvRra0jMgwoI=;
+        b=wuC6r98TqqvwsEhBUvtRh3THXU71SFVE+7T8HSpbjR8N/caY6zr9qoYm5T+6awJGrh
+         efjJjUkckAVhpv52Qh020w0CFBEqMCA/ClI2eYITmCx36Gu1ExVjilgk/fEUaD3418X5
+         VlCrtVg4vdfppGxcldSP4v5JhX/0r4aOJ50wuWJQJymyT2TkOMxv0V+eGrg6uu73UIg9
+         M117CeQmDqhw8UbgjHgkP8KM9qd7AOtO4NQe58DpHHL0egKFiVjlSDqAZRhiiQdQGaBh
+         djH/YSymNv9fkx81BiSc3bsXBB3bMIcW8obdvMnBNLh9lyqQqUjfQNSJwT9OZQ1RF0cP
+         8Ttw==
+X-Gm-Message-State: AO0yUKUwaW1QNb6nM7aPMC/JC57ryUJ7E2Zl01NfMLeMPuFTpCxwMDRq
+	9I7t8XVyc+ikgPaOlQEjNsuFQDs96Q0NBhZNiw+0ow==
+X-Google-Smtp-Source: AK7set/FwLbWx6yiqkzvjcGbe3t+VxnD8xj+/iXHUbjRIwB0jRkvrcCR+VhH4DhOMzxTzJJlzd0h1TxaYfABci/YfRk=
+X-Received: by 2002:a0d:d456:0:b0:507:26dc:ebd with SMTP id
+ w83-20020a0dd456000000b0050726dc0ebdmr239978ywd.455.1674665724181; Wed, 25
+ Jan 2023 08:55:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20230125083851.27759-1-surenb@google.com> <20230125083851.27759-5-surenb@google.com>
- <Y9D4rWEsajV/WfNx@dhcp22.suse.cz> <CAJuCfpGd2eG0RSMte9OVgsRVWPo+Sj7+t8EOo8o_iKzZoh1MXA@mail.gmail.com>
- <Y9Fh9joU3vTCwYbX@dhcp22.suse.cz>
-In-Reply-To: <Y9Fh9joU3vTCwYbX@dhcp22.suse.cz>
+References: <20230125083851.27759-1-surenb@google.com> <20230125083851.27759-4-surenb@google.com>
+ <Y9D2zXpy+9iyZNun@dhcp22.suse.cz>
+In-Reply-To: <Y9D2zXpy+9iyZNun@dhcp22.suse.cz>
 From: Suren Baghdasaryan <surenb@google.com>
-Date: Wed, 25 Jan 2023 09:22:23 -0800
-Message-ID: <CAJuCfpEJ1U2UHBNhLx4gggN3PLZKP5RejiZL_U5ZLxU_wdviVg@mail.gmail.com>
-Subject: Re: [PATCH v2 4/6] mm: replace vma->vm_flags indirect modification in ksm_madvise
+Date: Wed, 25 Jan 2023 08:55:12 -0800
+Message-ID: <CAJuCfpG7KWnj3J_t4nN1R4gfiM5jgjsiTfL55hNa=Uvz4E835g@mail.gmail.com>
+Subject: Re: [PATCH v2 3/6] mm: replace vma->vm_flags direct modifications
+ with modifier calls
 To: Michal Hocko <mhocko@suse.com>
 Cc: akpm@linux-foundation.org, michel@lespinasse.org, jglisse@google.com, 
 	vbabka@suse.cz, hannes@cmpxchg.org, mgorman@techsingularity.net, 
@@ -125,8 +125,8 @@ Cc: akpm@linux-foundation.org, michel@lespinasse.org, jglisse@google.com,
 	linux-perf-users@vger.kernel.org, kasan-dev@googlegroups.com, 
 	selinux@vger.kernel.org, alsa-devel@alsa-project.org, kernel-team@android.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230125_092235_971792_F548AC0F 
-X-CRM114-Status: GOOD (  17.30  )
+X-CRM114-CacheID: sfid-20230125_085525_749894_D7F59BA4 
+X-CRM114-Status: GOOD (  16.75  )
 X-Mailman-Approved-At: Wed, 25 Jan 2023 12:41:47 -0800
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -144,34 +144,46 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jan 25, 2023 at 9:08 AM Michal Hocko <mhocko@suse.com> wrote:
+On Wed, Jan 25, 2023 at 1:30 AM 'Michal Hocko' via kernel-team
+<kernel-team@android.com> wrote:
 >
-> On Wed 25-01-23 08:57:48, Suren Baghdasaryan wrote:
-> > On Wed, Jan 25, 2023 at 1:38 AM 'Michal Hocko' via kernel-team
-> > <kernel-team@android.com> wrote:
-> > >
-> > > On Wed 25-01-23 00:38:49, Suren Baghdasaryan wrote:
-> > > > Replace indirect modifications to vma->vm_flags with calls to modifier
-> > > > functions to be able to track flag changes and to keep vma locking
-> > > > correctness. Add a BUG_ON check in ksm_madvise() to catch indirect
-> > > > vm_flags modification attempts.
-> > >
-> > > Those BUG_ONs scream to much IMHO. KSM is an MM internal code so I
-> > > gueess we should be willing to trust it.
-> >
-> > Yes, but I really want to prevent an indirect misuse since it was not
-> > easy to find these. If you feel strongly about it I will remove them
-> > or if you have a better suggestion I'm all for it.
+> On Wed 25-01-23 00:38:48, Suren Baghdasaryan wrote:
+> > Replace direct modifications to vma->vm_flags with calls to modifier
+> > functions to be able to track flag changes and to keep vma locking
+> > correctness.
 >
-> You can avoid that by making flags inaccesible directly, right?
+> Is this a manual (git grep) based work or have you used Coccinele for
+> the patch generation?
 
-Ah, you mean Peter's suggestion of using __private? I guess that would
-cover it. I'll drop these BUG_ONs in the next version. Thanks!
+It was a manual "search and replace" and in the process I temporarily
+renamed vm_flags to ensure I did not miss any usage.
 
 >
+> My potentially incomplete check
+> $ git grep ">[[:space:]]*vm_flags[[:space:]]*[&|^]="
+>
+> shows that nothing should be left after this. There is still quite a lot
+> of direct checks of the flags (more than 600). Maybe it would be good to
+> make flags accessible only via accessors which would also prevent any
+> future direct setting of those flags in uncontrolled way as well.
+
+Yes, I think Peter's suggestion in the first patch would also require
+that. Much more churn but probably worth it for the future
+maintenance. I'll add a patch which converts all readers as well.
+
+>
+> Anyway
+> Acked-by: Michal Hocko <mhocko@suse.com>
+
+Thanks for all the reviews!
+
 > --
 > Michal Hocko
 > SUSE Labs
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+>
 
 _______________________________________________
 linux-um mailing list
