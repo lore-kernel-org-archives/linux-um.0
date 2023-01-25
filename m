@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B66B5C61DA4
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6645C54EED
 	for <linux-um@archiver.kernel.org>; Wed, 25 Jan 2023 20:41:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,65 +12,64 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
 	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=fW0H4kc5Rbaor5WuFoGk5vCNj0F6aS/+WzpX7Uf/TRU=; b=YdebBRO3vmGgZa
-	k4Rcd3Dl3Z0XN69MX3rT2PUf1JxweADK9bVRb32simvvHZduu76r6XqV5vqXAZGhvVVMKKTJoeNnF
-	q0YZ6mXaB0wntCioPAAesvVHoujsCgg5AJdjSGXzYOmSdsIdKxtfb3OSvUwBaaFVmwFlhTMxL2rn4
-	3NCAfQDczRDez03HZSDB8bjA2vuw2ueOMuD286oDgrDRY6S011wpM10Si0/83NhLXYRxrTNq2TDm0
-	qhpLlb3vcFFU73Ka+o8SwEZKNFsaBAQbi8A/Dbcdj1rBgudJjtj1jSuaWcNpAVUVgQMkCbwxukkmS
-	qzNYFkwv+ItdFHZpoiCA==;
+	List-Owner; bh=aTXI21hEdxLxE8BNQOA9vYdR70GCKbr7g6G6H9Nv2gM=; b=yVwEKm5TKUKEC/
+	1ehpCA0E1kH1AIWUq9Gu50xNDzfVHnPCcpPPjl1mKBuQtg5l3ceNAAbL3sjFHMjtNzwGccLIBl7MU
+	3XG99OnVbHmEIYosLsgWo9Cb6rGEcuN4iXSM6G0Pjo+jPeClSaNRUa+C6hKJK4HvrJfUfF53JWE8W
+	K7mTLP5aN2yojWyVUb7baTv7EniTECM3HgHwpbwcfBtKisTHlOsO7i70KTW9HR11Nj26FP37kO8zl
+	Qt9ysZPAmEjyTZwDTwsqAzN/S2yBCVPHQMO9X6M2XmSwGeHnqnP6/PgtLuGAQ7CA5Pysm8oWghV18
+	wJ6P6iaiqxNZdeZhpdxQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKmad-008knS-TO; Wed, 25 Jan 2023 20:41:51 +0000
-Received: from mail-yb1-xb34.google.com ([2607:f8b0:4864:20::b34])
+	id 1pKmac-008kmm-Uq; Wed, 25 Jan 2023 20:41:50 +0000
+Received: from mail-yb1-xb32.google.com ([2607:f8b0:4864:20::b32])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKlLX-008SLF-3B
-	for linux-um@lists.infradead.org; Wed, 25 Jan 2023 19:22:12 +0000
-Received: by mail-yb1-xb34.google.com with SMTP id e15so2184429ybn.10
-        for <linux-um@lists.infradead.org>; Wed, 25 Jan 2023 11:22:08 -0800 (PST)
+	id 1pKj62-0086xf-Uj
+	for linux-um@lists.infradead.org; Wed, 25 Jan 2023 16:58:05 +0000
+Received: by mail-yb1-xb32.google.com with SMTP id m199so8037868ybm.4
+        for <linux-um@lists.infradead.org>; Wed, 25 Jan 2023 08:58:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=azRxZ4iz/UmvW0JqPrqtZcKNmaFt9MhDUKzgc4KSKbs=;
-        b=idbJO946IIJ5xclJl8K3ScrKphDS9TF1tg1AgsB8MPco32Ta3+qR61NnmqeUtsnx6v
-         goCUeETP5lzAzmASwAR43MDdzy2mxaLRi4K6yZE3Q+T5C1FUbuWCmQDSDtqKn5s2e6iw
-         g3L5+Ey8VBu5ZDVtB0a1Axssd66xmU+yYweeF+hE6jQwYilC1xMJq5jCj+NjIEVUsfL4
-         tw7nY9DM/DzPYd8vrkO+1JZY6FVSYBMjhRJz+WIxF8k5j1BI+Qpdb88Is7APtmnyodC7
-         tcl2VYHmnzhTEoT5QVoxpB++zHDpcXCuz10aLB8wrCQNw685txpV1MvZDG3GANSg7b1j
-         9Xwg==
+        bh=G/HaQvIeifLKJJp6JsBUTA/Cu0PG4HCFXOBV2LCBpGc=;
+        b=ngnRJahtqVxSN6UIjLqWU+1aTxdIhv7re4hDfLrN8LXncI6BNG1ZwqGy4tzOTLxPiH
+         4VWOIuHk0tMtzp4F11bJV5cn9qN75X4TjPW2iyn4nOIj2Y2qsTa18wfmHkOGhLKlmZoS
+         vXpRc/g/QGDtReYNnPGF6rlvG7jz8sM8MsRTR7LhXioKCpHgDgO7fKBddw0dzS48JeET
+         78piPZYcyZX9vIYyfAzpklatM6XnaaFqr/b+XLZlxI1Y0y+wCHWFOsnbVElEi6T+CQOb
+         4zMPa96gAXD4xbmjnQv7nMUvo5bgJJEK/r3Eu0NIV8f4SPGC7eT5IU6zl2RkKdozGWcK
+         sknQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=azRxZ4iz/UmvW0JqPrqtZcKNmaFt9MhDUKzgc4KSKbs=;
-        b=5DXgJ3bcSm20m4Dq4HCLic44owuQExxuHhIi6n5UiBEZSWiyZ8zhMHzPQlWScoPVWD
-         9wY1dqujBcdnc39slvrzomh57tvg15IdFlSe/M7KeZUCh93/6GSH5zLavlr/TJuaSwR8
-         5hNEu6RlM8PVfoXEl66cBoPPuWJKOHOw3d+GXsK2CRubA3N2wrz0eEiVoXTpmAfBTJqr
-         Q6Gc+czJqpio8inVKBUl2Tv+yvCDI+0uJVFUlVrqrPU32utVW2TQiqasg2tJcVez7qLQ
-         tKzAd/fSEzUPElyjdBSHqVJ0fl+M2j1u1tUwyCCIo0N4/QF5cTnfSxKjqfT+xf4eOcZ8
-         L4bg==
-X-Gm-Message-State: AO0yUKUQAomfOl6RTRbuEe1rWErGQWB55XgypERFC5V63TlHH9CnPRIM
-	XdN+fKIKvyPms8968TIMkcyv5SUNzxhE2WEP+1Dd6A==
-X-Google-Smtp-Source: AK7set9Keebho/efVX9+GO9rxFk2PCEOZWbQBvt6Ld/Tpsz3uuvCSMXu6oGPdxC/ITtQ87qnzhMkMAEzeywlAhveKx4=
-X-Received: by 2002:a25:c247:0:b0:80b:6201:bee7 with SMTP id
- s68-20020a25c247000000b0080b6201bee7mr946541ybf.340.1674674527537; Wed, 25
- Jan 2023 11:22:07 -0800 (PST)
+        bh=G/HaQvIeifLKJJp6JsBUTA/Cu0PG4HCFXOBV2LCBpGc=;
+        b=IdQms5MA22UpniG2OHw/XKyRlktGY85IqZTl6Ihmr0ErcVddun/vt4S/yeVtaAgmnn
+         GDprj2zOjLg5inX05VlV5UV0aZRI8SIUYn4FW7NI/ZDwx7l9i22Z7Zruc2y1xaegzjxb
+         vmQjVw2OnorgFZz572IP+x0BxSD2H0lan8yIoW63HYeo5Jf1M0umy9wJ/Ef/NlTr9XC4
+         FKPK9AzRqZJrNr4o2baJ0E8CNlb389yJUonaUwkJWAM5N05DxmhuwVb8UVGCG0paKliS
+         JjkO7wmSQud+pQeY3kZfq7WouNAU6eZcZr9e1T8YP4PSGxDvJ8PMkCRTIgeWt5X0qJgj
+         v4tA==
+X-Gm-Message-State: AO0yUKWrqjgYpd8QBO+md+yXtYfEXNvXEsdUr18xjonCBysD9oA0Pq6A
+	epm2qSigxupTxUdZXhvb07375Sr/Y7yXpKxmhbm/hg==
+X-Google-Smtp-Source: AK7set97wrc43TM0/ovVONCfpWDKrtFzkyYmNKL3FW97qdU/yOGMPZssBTWD4MRF2UhZkPfEz4JLEj3/xF1loldnjYM=
+X-Received: by 2002:a25:ad02:0:b0:80b:6fd3:84d3 with SMTP id
+ y2-20020a25ad02000000b0080b6fd384d3mr714673ybi.316.1674665880846; Wed, 25 Jan
+ 2023 08:58:00 -0800 (PST)
 MIME-Version: 1.0
-References: <20230125083851.27759-1-surenb@google.com> <20230125083851.27759-2-surenb@google.com>
- <Y9Dx0cPXF2yoLwww@hirez.programming.kicks-ass.net> <CAJuCfpEcVCZaCGzc-Wim25eaV5e6YG1YJAAdKwZ6JHViB0z8aw@mail.gmail.com>
- <Y9F28J9njAtwifuL@casper.infradead.org>
-In-Reply-To: <Y9F28J9njAtwifuL@casper.infradead.org>
+References: <20230125083851.27759-1-surenb@google.com> <20230125083851.27759-5-surenb@google.com>
+ <Y9D4rWEsajV/WfNx@dhcp22.suse.cz>
+In-Reply-To: <Y9D4rWEsajV/WfNx@dhcp22.suse.cz>
 From: Suren Baghdasaryan <surenb@google.com>
-Date: Wed, 25 Jan 2023 11:21:56 -0800
-Message-ID: <CAJuCfpHO7g-5GZep0e7r=dFTBhVHpN3R_pHMGOqetgrKyYzMFQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/6] mm: introduce vma->vm_flags modifier functions
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, akpm@linux-foundation.org, michel@lespinasse.org, 
-	jglisse@google.com, mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org, 
-	mgorman@techsingularity.net, dave@stgolabs.net, liam.howlett@oracle.com, 
-	ldufour@linux.ibm.com, paulmck@kernel.org, luto@kernel.org, 
-	songliubraving@fb.com, peterx@redhat.com, david@redhat.com, 
+Date: Wed, 25 Jan 2023 08:57:48 -0800
+Message-ID: <CAJuCfpGd2eG0RSMte9OVgsRVWPo+Sj7+t8EOo8o_iKzZoh1MXA@mail.gmail.com>
+Subject: Re: [PATCH v2 4/6] mm: replace vma->vm_flags indirect modification in ksm_madvise
+To: Michal Hocko <mhocko@suse.com>
+Cc: akpm@linux-foundation.org, michel@lespinasse.org, jglisse@google.com, 
+	vbabka@suse.cz, hannes@cmpxchg.org, mgorman@techsingularity.net, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	peterz@infradead.org, ldufour@linux.ibm.com, paulmck@kernel.org, 
+	luto@kernel.org, songliubraving@fb.com, peterx@redhat.com, david@redhat.com, 
 	dhowells@redhat.com, hughd@google.com, bigeasy@linutronix.de, 
 	kent.overstreet@linux.dev, punit.agrawal@bytedance.com, lstoakes@gmail.com, 
 	peterjung1337@gmail.com, rientjes@google.com, axelrasmussen@google.com, 
@@ -125,8 +124,8 @@ Cc: Peter Zijlstra <peterz@infradead.org>, akpm@linux-foundation.org, michel@les
 	linux-perf-users@vger.kernel.org, kasan-dev@googlegroups.com, 
 	selinux@vger.kernel.org, alsa-devel@alsa-project.org, kernel-team@android.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230125_112211_178608_9131C566 
-X-CRM114-Status: GOOD (  18.01  )
+X-CRM114-CacheID: sfid-20230125_085803_032609_100A921F 
+X-CRM114-Status: GOOD (  13.06  )
 X-Mailman-Approved-At: Wed, 25 Jan 2023 12:41:47 -0800
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -144,39 +143,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jan 25, 2023 at 10:37 AM Matthew Wilcox <willy@infradead.org> wrote:
+On Wed, Jan 25, 2023 at 1:38 AM 'Michal Hocko' via kernel-team
+<kernel-team@android.com> wrote:
 >
-> On Wed, Jan 25, 2023 at 08:49:50AM -0800, Suren Baghdasaryan wrote:
-> > On Wed, Jan 25, 2023 at 1:10 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> > > > +     /*
-> > > > +      * Flags, see mm.h.
-> > > > +      * WARNING! Do not modify directly.
-> > > > +      * Use {init|reset|set|clear|mod}_vm_flags() functions instead.
-> > > > +      */
-> > > > +     unsigned long vm_flags;
-> > >
-> > > We have __private and ACCESS_PRIVATE() to help with enforcing this.
-> >
-> > Thanks for pointing this out, Peter! I guess for that I'll need to
-> > convert all read accesses and provide get_vm_flags() too? That will
-> > cause some additional churt (a quick search shows 801 hits over 248
-> > files) but maybe it's worth it? I think Michal suggested that too in
-> > another patch. Should I do that while we are at it?
+> On Wed 25-01-23 00:38:49, Suren Baghdasaryan wrote:
+> > Replace indirect modifications to vma->vm_flags with calls to modifier
+> > functions to be able to track flag changes and to keep vma locking
+> > correctness. Add a BUG_ON check in ksm_madvise() to catch indirect
+> > vm_flags modification attempts.
 >
-> Here's a trick I saw somewhere in the VFS:
->
->         union {
->                 const vm_flags_t vm_flags;
->                 vm_flags_t __private __vm_flags;
->         };
->
-> Now it can be read by anybody but written only by those using
-> ACCESS_PRIVATE.
+> Those BUG_ONs scream to much IMHO. KSM is an MM internal code so I
+> gueess we should be willing to trust it.
 
-Huh, this is quite nice! I think it does not save us from the cases
-when vma->vm_flags is passed by a reference and modified indirectly,
-like in ksm_madvise()? Though maybe such usecases are so rare (I found
-only 2 cases) that we can ignore this?
+Yes, but I really want to prevent an indirect misuse since it was not
+easy to find these. If you feel strongly about it I will remove them
+or if you have a better suggestion I'm all for it.
+
+>
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+>
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> --
+> Michal Hocko
+> SUSE Labs
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+>
 
 _______________________________________________
 linux-um mailing list
