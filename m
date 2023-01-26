@@ -4,55 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62C7AC27C76
-	for <linux-um@archiver.kernel.org>; Thu, 26 Jan 2023 01:45:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BBB5C54E94
+	for <linux-um@archiver.kernel.org>; Thu, 26 Jan 2023 07:22:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Mime-Version:References:In-Reply-To:
-	Message-Id:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Date:References:
+	In-Reply-To:Message-Id:Mime-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2ydeXm5IWxAGZng4W//FFn2n08dK/5WkcVouD14G0XI=; b=DJ0SA6bC+apHN9
-	AxyGMAymb1MCij3SVEfQAs5tNj+BWVbQhiyTwA2Eq9/Dxwlh2tJtlENKyB8xfAHRxwojM8tI6exsx
-	TZ/DwmDddwTeEi2drMmnjCSIHwg2Rhc4hWWxZJkZjdul0rKtvoBct17KlzrJVA2J/yplW9Md4+t8T
-	ZMvi9hS8jEspzW8Eob9P39YPfJ+3RQGKKCDG72WRoqFks3pCntGQfaFD2VJp5AOF41Da0N+kvUVcR
-	7JiND1cYNAiwxWmXJqZQGKhqSm83mHSGZOpZEqHgbKi8PW3eX4oyWpzxXaKqA7/GCqNJG9+5jz6Fr
-	Aa/LfLAn+i+F5xr9d2IA==;
+	List-Owner; bh=UMPNGf9XieWc4oe5BKRxLipBC6MfVnNmx745yzQl1mo=; b=lWV0u2xUR0L9wf
+	/tWgJjOs/P0MXM1uUuNDDX/+V3TFGtIulHOO9A3XwXDn7fdXbtbjbCFXTi/H7GQ2Py0O4sZTUWrT4
+	1d81F9Qbvt07PDRBFk+/uYE16mRNchZVewghpg8JjIQM0cnIhx2tNDILTRnZbbYCZKNu3uypGScHN
+	LOVa0kgeuSF74olLXX6dPESLuaHw3/+pJ64zBlJR/nXdwQ4aP04hjqfTVgiVrb3PVGROUjHABBdJw
+	p8xTLvXoYK+pBLGUG4vO87q7fIi07OpfhVeJ/caWoJ5Of3QE+hWBP7hi56HtgKMk3WYAZiVJ1uU33
+	Hn1yEG99EZJ74QjNUl5g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKrKL-009OSi-Vf; Thu, 26 Jan 2023 01:45:21 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1pKwas-009pkc-Lj; Thu, 26 Jan 2023 07:22:46 +0000
+Received: from new2-smtp.messagingengine.com ([66.111.4.224])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKrKH-009OR6-Uv; Thu, 26 Jan 2023 01:45:19 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id CC90AB819AD;
-	Thu, 26 Jan 2023 01:45:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32671C433D2;
-	Thu, 26 Jan 2023 01:45:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1674697514;
-	bh=7RpoJrPZS6SJcilZwJlgfOcy8VI5bDbkm1rwJIiWgGs=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=QrUq5ATjY2oqR+jEAeForg1RvYMYo+bDZxJkpPvGEAQMtF9Wex3AsF6pj45qmjarD
-	 FkXgKw35BmzCytgE7GIRGvCG25LoCH1q8w/sqjuafA+hP0s/EWoOXsqZwbktTsZyRq
-	 n3OCsv9RwqATlbboWAh4Ya/cfUooerJ2jtkrgbTo=
-Date: Wed, 25 Jan 2023 17:45:12 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Brian Cain <bcain@quicinc.com>,
- "David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Greg Ungerer
- <gerg@linux-m68k.org>, Guo Ren <guoren@kernel.org>, Helge Deller
- <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>, Matt Turner
- <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman
- <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, Palmer Dabbelt
- <palmer@dabbelt.com>, Rich Felker <dalias@libc.org>, Richard Weinberger
- <richard@nod.at>, Stafford Horne <shorne@gmail.com>, Thomas Bogendoerfer
- <tsbogend@alpha.franken.de>, Vineet Gupta <vgupta@kernel.org>, WANG Xuerui
- <kernel@xen0n.name>, Yoshinori Sato <ysato@users.sourceforge.jp>,
- linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+	id 1pKwan-009pj3-AU; Thu, 26 Jan 2023 07:22:42 +0000
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailnew.nyi.internal (Postfix) with ESMTP id 84E2258287B;
+	Thu, 26 Jan 2023 02:22:36 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Thu, 26 Jan 2023 02:22:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:date:date:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:sender:subject
+	:subject:to:to; s=fm2; t=1674717756; x=1674724956; bh=E33V4yTgr/
+	ebT73Eum3QUd1t2W82YQcLJ50MWaQWWA8=; b=GiLb/skMhyZcQ01dO+WmZTL0hL
+	fZ2ikfEbw6M+0GfWoi9BCHFyTrzd/xw84UaBaAMBNbekfpfzAvn0+3OyIl7DpZIk
+	AscfaN2jhi+H4+HQPHW6kdeYv0wuJbvXO+Nmf3robmrH9p5Eaz+pTFIh+gw7OUdr
+	GHaCtnvyFflXRN840zxE0TueOxb7X1UKgvjA9BbNkN54rpLAR1FBHefwPtJLfO63
+	HU5voKjovLZNYSTASSTneRk9lhMeYYIxU5ah7ERIB1I+Tlqz6Sh6cL1quV9LIBsu
+	LJGaa2P7uDg6V7dGWcg5+AdhatDXLV001yKTEzZw6AETD2Ctpr5noVgk6LyA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
+	:feedback-id:from:from:in-reply-to:in-reply-to:message-id
+	:mime-version:references:reply-to:sender:subject:subject:to:to
+	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1674717756; x=1674724956; bh=E33V4yTgr/ebT73Eum3QUd1t2W82
+	YQcLJ50MWaQWWA8=; b=i56wP0aRGUynM8c34e7C84YjtNs5ESnKIS4Qk9sa0afa
+	hZ6EA3tyzNwBZXGsbGt4dL3J7JuIzcSWHi3zNRP0iTUuzQE6/UwhR5FhRpLn/ouY
+	xt6qq+vPBvkzpCHoSxo03igHd1P6lM5xa5cKrF0kUrwg7q2T50CTjxmrDjS0magc
+	ZxGVHrCofyRHgqO1ckZj1XRFm2MlqCsUcWY5ZDdbx7SuYVnKPtd0L9F879LdS+aK
+	Dn7zgQYu29nT9qh2c89O8Dw8mgobJhwQ28spFTbeCvY5iq0cHOI93ldlBxi2zZYx
+	hCfhfAJXQq9sSPCh3KQtBHwxvY8+uaUayqJxJdu1iQ==
+X-ME-Sender: <xms:OirSY0UrLGgYH3i-5TBnXx5kCGsN2YicrY23OHL1XQjg0oxapCF8GQ>
+    <xme:OirSY4mGQAtxHP9bCv1xlHPGN64L04ZTpqbp3Zo_GJISeoNzutpf4eILgOt_wG15N
+    1B3TnHPfXPQ5aq8ZzA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedruddvfedguddtiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
+    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:OirSY4a2BI8A8n6QHmfRNwvlyjZb0oHPUIh8AqkYJFN6HEjTyNF3mg>
+    <xmx:OirSYzWHad1gVQ1pUnGhOP8BKq_-7XwGF62Qeq8f9YbfS8PPn3iaCw>
+    <xmx:OirSY-nzh-yZLlxChEUc50uhXtONqG_p56LYIjKU8LygqILAOsLvJw>
+    <xmx:PCrSY4uHnBHnmZDNTb4kWTrj5YTK-XYwojaMEFC5m6krF7i9k40zBQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 7FEEBB60089; Thu, 26 Jan 2023 02:22:34 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-85-gd6d859e0cf-fm-20230116.001-gd6d859e0
+Mime-Version: 1.0
+Message-Id: <03605ec4-3e31-475e-8acf-2c342436aa24@app.fastmail.com>
+In-Reply-To: <20230125190757.22555-4-rppt@kernel.org>
+References: <20230125190757.22555-1-rppt@kernel.org>
+ <20230125190757.22555-4-rppt@kernel.org>
+Date: Thu, 26 Jan 2023 08:22:15 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Mike Rapoport" <rppt@kernel.org>,
+ "Andrew Morton" <akpm@linux-foundation.org>
+Cc: "Brian Cain" <bcain@quicinc.com>,
+ "David S . Miller" <davem@davemloft.net>,
+ "Dinh Nguyen" <dinguyen@kernel.org>,
+ "Geert Uytterhoeven" <geert@linux-m68k.org>,
+ "Greg Ungerer" <gerg@linux-m68k.org>, guoren <guoren@kernel.org>,
+ "Helge Deller" <deller@gmx.de>, "Huacai Chen" <chenhuacai@kernel.org>,
+ "Matt Turner" <mattst88@gmail.com>, "Max Filippov" <jcmvbkbc@gmail.com>,
+ "Michael Ellerman" <mpe@ellerman.id.au>,
+ "Michal Simek" <monstr@monstr.eu>, "Palmer Dabbelt" <palmer@dabbelt.com>,
+ "Rich Felker" <dalias@libc.org>, "Richard Weinberger" <richard@nod.at>,
+ "Stafford Horne" <shorne@gmail.com>,
+ "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+ "Vineet Gupta" <vgupta@kernel.org>, "WANG Xuerui" <kernel@xen0n.name>,
+ "Yoshinori Sato" <ysato@users.sourceforge.jp>,
+ linux-alpha@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>,
  linux--csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
  linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
@@ -60,18 +102,14 @@ Cc: Arnd Bergmann <arnd@arndb.de>, Brian Cain <bcain@quicinc.com>,
  linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
  linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
  linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
- openrisc@lists.librecores.org, sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH 3/3] mm, arch: add generic implementation of pfn_valid()
- for FLATMEM
-Message-Id: <20230125174512.ce5aed444cc8b8870825d8c2@linux-foundation.org>
-In-Reply-To: <20230125190757.22555-4-rppt@kernel.org>
-References: <20230125190757.22555-1-rppt@kernel.org>
-	<20230125190757.22555-4-rppt@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
+ openrisc@lists.librecores.org, sparclinux@vger.kernel.org,
+ x86@kernel.org
+Subject: Re: [PATCH 3/3] mm, arch: add generic implementation of pfn_valid() for
+ FLATMEM
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230125_174518_177888_6CEF1325 
-X-CRM114-Status: GOOD (  13.82  )
+X-CRM114-CacheID: sfid-20230125_232241_747979_6DFCC6CD 
+X-CRM114-Status: UNSURE (   8.63  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,45 +126,23 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, 25 Jan 2023 21:07:57 +0200 Mike Rapoport <rppt@kernel.org> wrote:
-
+On Wed, Jan 25, 2023, at 20:07, Mike Rapoport wrote:
+> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+>
 > Every architecture that supports FLATMEM memory model defines its own
 > version of pfn_valid() that essentially compares a pfn to max_mapnr.
-> 
+>
 > Use mips/powerpc version implemented as static inline as a generic
 > implementation of pfn_valid() and drop its per-architecture definitions
+>
+> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
 
-arm allnoconfig:
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 
-./include/asm-generic/memory_model.h:23:19: error: static declaration of 'pfn_valid' follows non-static declaration
-   23 | static inline int pfn_valid(unsigned long pfn)
-      |                   ^~~~~~~~~
-./arch/arm/include/asm/page.h:160:12: note: previous declaration of 'pfn_valid' with type 'int(long unsigned int)'
-  160 | extern int pfn_valid(unsigned long);
-      |            ^~~~~~~~~
+I assume this can best go through the mm tree, let me know if I should
+pick it up in the asm-generic tree instead.
 
-
-I thought of doing
-
---- a/arch/arm/include/asm/page.h~mm-arch-add-generic-implementation-of-pfn_valid-for-flatmem-fix
-+++ a/arch/arm/include/asm/page.h
-@@ -156,10 +156,6 @@ extern void copy_page(void *to, const vo
- 
- typedef struct page *pgtable_t;
- 
--#ifdef CONFIG_HAVE_ARCH_PFN_VALID
--extern int pfn_valid(unsigned long);
--#endif
--
- #include <asm/memory.h>
- 
- #endif /* !__ASSEMBLY__ */
-_
-
-but I'm seeing a pfn_valid declaration in arch/arc/include/asm/page.h
-which might be a problem.
-
-v2, please ;)
+     Arnd
 
 _______________________________________________
 linux-um mailing list
