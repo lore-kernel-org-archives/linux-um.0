@@ -4,112 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BBB5C54E94
-	for <linux-um@archiver.kernel.org>; Thu, 26 Jan 2023 07:22:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1FD5C05027
+	for <linux-um@archiver.kernel.org>; Thu, 26 Jan 2023 08:27:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Date:References:
-	In-Reply-To:Message-Id:Mime-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UMPNGf9XieWc4oe5BKRxLipBC6MfVnNmx745yzQl1mo=; b=lWV0u2xUR0L9wf
-	/tWgJjOs/P0MXM1uUuNDDX/+V3TFGtIulHOO9A3XwXDn7fdXbtbjbCFXTi/H7GQ2Py0O4sZTUWrT4
-	1d81F9Qbvt07PDRBFk+/uYE16mRNchZVewghpg8JjIQM0cnIhx2tNDILTRnZbbYCZKNu3uypGScHN
-	LOVa0kgeuSF74olLXX6dPESLuaHw3/+pJ64zBlJR/nXdwQ4aP04hjqfTVgiVrb3PVGROUjHABBdJw
-	p8xTLvXoYK+pBLGUG4vO87q7fIi07OpfhVeJ/caWoJ5Of3QE+hWBP7hi56HtgKMk3WYAZiVJ1uU33
-	Hn1yEG99EZJ74QjNUl5g==;
+	List-Owner; bh=EgYA6lhtQ+5Cxx9/xb7ZhgWTDPwTalNLQ1Mq/B5NdYY=; b=uoDAla5y9jhd4y
+	piBNCZeKHP8nlQvGIDVWiJkwXvl/PaJ7L+b7QDF3HWbGreyEI8CsBnHP2ncO9ieDl5Z40BAndN7Lh
+	nwZYtgTWhrfEI1IEqb9lY+352M7o+IkUNk+Xugb7tYTFQCVkBfvRMRsVFVeL+VBb16XexxYHS9LB/
+	D6PtXrehxPwORfFON1AXntxqd6cZ/isIOaRSj6PriOTqFU46SoAHFbPIA7OqgI6h3podiD+tT2g12
+	RWvdiY+0vR3jtD0gU7w3sYLy72GaNUslC8fq+8OaGLWrKMqsct5hP1wkAF5DRgCi5TceiLUa7KAby
+	xGUavAIDKYCVyoGfqRqA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKwas-009pkc-Lj; Thu, 26 Jan 2023 07:22:46 +0000
-Received: from new2-smtp.messagingengine.com ([66.111.4.224])
+	id 1pKxbU-009yfc-8F; Thu, 26 Jan 2023 08:27:28 +0000
+Received: from mail-qv1-f50.google.com ([209.85.219.50])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKwan-009pj3-AU; Thu, 26 Jan 2023 07:22:42 +0000
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailnew.nyi.internal (Postfix) with ESMTP id 84E2258287B;
-	Thu, 26 Jan 2023 02:22:36 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Thu, 26 Jan 2023 02:22:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
-	:subject:to:to; s=fm2; t=1674717756; x=1674724956; bh=E33V4yTgr/
-	ebT73Eum3QUd1t2W82YQcLJ50MWaQWWA8=; b=GiLb/skMhyZcQ01dO+WmZTL0hL
-	fZ2ikfEbw6M+0GfWoi9BCHFyTrzd/xw84UaBaAMBNbekfpfzAvn0+3OyIl7DpZIk
-	AscfaN2jhi+H4+HQPHW6kdeYv0wuJbvXO+Nmf3robmrH9p5Eaz+pTFIh+gw7OUdr
-	GHaCtnvyFflXRN840zxE0TueOxb7X1UKgvjA9BbNkN54rpLAR1FBHefwPtJLfO63
-	HU5voKjovLZNYSTASSTneRk9lhMeYYIxU5ah7ERIB1I+Tlqz6Sh6cL1quV9LIBsu
-	LJGaa2P7uDg6V7dGWcg5+AdhatDXLV001yKTEzZw6AETD2Ctpr5noVgk6LyA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:date:date:feedback-id
-	:feedback-id:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:sender:subject:subject:to:to
-	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1674717756; x=1674724956; bh=E33V4yTgr/ebT73Eum3QUd1t2W82
-	YQcLJ50MWaQWWA8=; b=i56wP0aRGUynM8c34e7C84YjtNs5ESnKIS4Qk9sa0afa
-	hZ6EA3tyzNwBZXGsbGt4dL3J7JuIzcSWHi3zNRP0iTUuzQE6/UwhR5FhRpLn/ouY
-	xt6qq+vPBvkzpCHoSxo03igHd1P6lM5xa5cKrF0kUrwg7q2T50CTjxmrDjS0magc
-	ZxGVHrCofyRHgqO1ckZj1XRFm2MlqCsUcWY5ZDdbx7SuYVnKPtd0L9F879LdS+aK
-	Dn7zgQYu29nT9qh2c89O8Dw8mgobJhwQ28spFTbeCvY5iq0cHOI93ldlBxi2zZYx
-	hCfhfAJXQq9sSPCh3KQtBHwxvY8+uaUayqJxJdu1iQ==
-X-ME-Sender: <xms:OirSY0UrLGgYH3i-5TBnXx5kCGsN2YicrY23OHL1XQjg0oxapCF8GQ>
-    <xme:OirSY4mGQAtxHP9bCv1xlHPGN64L04ZTpqbp3Zo_GJISeoNzutpf4eILgOt_wG15N
-    1B3TnHPfXPQ5aq8ZzA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedruddvfedguddtiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
-    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:OirSY4a2BI8A8n6QHmfRNwvlyjZb0oHPUIh8AqkYJFN6HEjTyNF3mg>
-    <xmx:OirSYzWHad1gVQ1pUnGhOP8BKq_-7XwGF62Qeq8f9YbfS8PPn3iaCw>
-    <xmx:OirSY-nzh-yZLlxChEUc50uhXtONqG_p56LYIjKU8LygqILAOsLvJw>
-    <xmx:PCrSY4uHnBHnmZDNTb4kWTrj5YTK-XYwojaMEFC5m6krF7i9k40zBQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 7FEEBB60089; Thu, 26 Jan 2023 02:22:34 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-85-gd6d859e0cf-fm-20230116.001-gd6d859e0
-Mime-Version: 1.0
-Message-Id: <03605ec4-3e31-475e-8acf-2c342436aa24@app.fastmail.com>
-In-Reply-To: <20230125190757.22555-4-rppt@kernel.org>
-References: <20230125190757.22555-1-rppt@kernel.org>
- <20230125190757.22555-4-rppt@kernel.org>
-Date: Thu, 26 Jan 2023 08:22:15 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Mike Rapoport" <rppt@kernel.org>,
- "Andrew Morton" <akpm@linux-foundation.org>
-Cc: "Brian Cain" <bcain@quicinc.com>,
- "David S . Miller" <davem@davemloft.net>,
- "Dinh Nguyen" <dinguyen@kernel.org>,
- "Geert Uytterhoeven" <geert@linux-m68k.org>,
- "Greg Ungerer" <gerg@linux-m68k.org>, guoren <guoren@kernel.org>,
- "Helge Deller" <deller@gmx.de>, "Huacai Chen" <chenhuacai@kernel.org>,
- "Matt Turner" <mattst88@gmail.com>, "Max Filippov" <jcmvbkbc@gmail.com>,
- "Michael Ellerman" <mpe@ellerman.id.au>,
- "Michal Simek" <monstr@monstr.eu>, "Palmer Dabbelt" <palmer@dabbelt.com>,
- "Rich Felker" <dalias@libc.org>, "Richard Weinberger" <richard@nod.at>,
- "Stafford Horne" <shorne@gmail.com>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- "Vineet Gupta" <vgupta@kernel.org>, "WANG Xuerui" <kernel@xen0n.name>,
- "Yoshinori Sato" <ysato@users.sourceforge.jp>,
- linux-alpha@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>,
- linux--csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
- linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
- linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
- openrisc@lists.librecores.org, sparclinux@vger.kernel.org,
- x86@kernel.org
-Subject: Re: [PATCH 3/3] mm, arch: add generic implementation of pfn_valid() for
- FLATMEM
+	id 1pKxbO-009yes-PY; Thu, 26 Jan 2023 08:27:24 +0000
+Received: by mail-qv1-f50.google.com with SMTP id x18so995469qvl.1;
+        Thu, 26 Jan 2023 00:27:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iTLUhLqiktW0lQYPPHgLpL0hyET/yRv7DDBqjk/47Fc=;
+        b=HF3Mp/tkUQEt92H+3m9PR8RfC5plw3fnI5O/4A9VdWJl8dt/ClvT4+4jZNz9G15OO4
+         j42ue8HC+yDyY+bYiq8sORYFLym/y9nA6hpOMiVyvJNbcZK0F9/LpUqMxszneRVXU3u6
+         1D6Zof0CDbCj7X71UoYWaldupTGxFUolqZ2kxfpmbhI4dD1MZxomv7IH4N4rkKLpE+WG
+         Z6WS59gTbTXLklHH7H7QXQ2SVeS+tveabns7+EAC0Yfu40yQQ9p1yI2An+xIs0U+JLCG
+         PVNFHpAtp4v+5Yvyq93UNsO7FVrDnoFG1Q3FGD0w8VKSlGCZfsPcfbUFwtRxUhDKgqar
+         +kkA==
+X-Gm-Message-State: AFqh2koVr7IxfsN+NqR/C/otK/cBUmtMIn1XXBApm2JzbK3SOSbe0D0H
+	WihQFcFOKBCsR6oH0FafjYaT/YqhaIai9Q==
+X-Google-Smtp-Source: AMrXdXuLnoSu1EMzjp+VUp7CW45G9/7r9YIkt5Q0Ty6EZP2cHTyBRB1xO2tYBG6UUPohvNHPrTsHrg==
+X-Received: by 2002:a05:6214:3991:b0:51e:a23c:92b7 with SMTP id ny17-20020a056214399100b0051ea23c92b7mr51712201qvb.21.1674721640249;
+        Thu, 26 Jan 2023 00:27:20 -0800 (PST)
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com. [209.85.128.171])
+        by smtp.gmail.com with ESMTPSA id h185-20020a376cc2000000b007069375e0f4sm517527qkc.122.2023.01.26.00.27.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 26 Jan 2023 00:27:20 -0800 (PST)
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-4c131bede4bso13727207b3.5;
+        Thu, 26 Jan 2023 00:27:20 -0800 (PST)
+X-Received: by 2002:a25:9ac1:0:b0:7b4:6a33:d89f with SMTP id
+ t1-20020a259ac1000000b007b46a33d89fmr2761883ybo.543.1674721245117; Thu, 26
+ Jan 2023 00:20:45 -0800 (PST)
+MIME-Version: 1.0
+References: <20230125190757.22555-1-rppt@kernel.org> <20230125190757.22555-2-rppt@kernel.org>
+In-Reply-To: <20230125190757.22555-2-rppt@kernel.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 26 Jan 2023 09:20:33 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUeuPgkWVjpZ=OM4ofnoYyv2nY1_FGo0JUZCFXYX=K2vw@mail.gmail.com>
+Message-ID: <CAMuHMdUeuPgkWVjpZ=OM4ofnoYyv2nY1_FGo0JUZCFXYX=K2vw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] m68k: use asm-generic/memory_model.h for both MMU and !MMU
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Brian Cain <bcain@quicinc.com>, "David S. Miller" <davem@davemloft.net>, 
+	Dinh Nguyen <dinguyen@kernel.org>, Greg Ungerer <gerg@linux-m68k.org>, Guo Ren <guoren@kernel.org>, 
+	Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>, Matt Turner <mattst88@gmail.com>, 
+	Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Rich Felker <dalias@libc.org>, 
+	Richard Weinberger <richard@nod.at>, Stafford Horne <shorne@gmail.com>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Vineet Gupta <vgupta@kernel.org>, 
+	WANG Xuerui <kernel@xen0n.name>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
+	linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, 
+	linux--csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
+	linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, 
+	linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, 
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, 
+	openrisc@lists.librecores.org, sparclinux@vger.kernel.org, x86@kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230125_232241_747979_6DFCC6CD 
-X-CRM114-Status: UNSURE (   8.63  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230126_002722_840831_B8A8BB72 
+X-CRM114-Status: GOOD (  18.19  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -126,23 +98,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jan 25, 2023, at 20:07, Mike Rapoport wrote:
+On Wed, Jan 25, 2023 at 8:08 PM Mike Rapoport <rppt@kernel.org> wrote:
 > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 >
-> Every architecture that supports FLATMEM memory model defines its own
-> version of pfn_valid() that essentially compares a pfn to max_mapnr.
+> The MMU variant uses generic definitions of page_to_pfn() and
+> pfn_to_page(), but !MMU defines them in include/asm/page_no.h for no
+> good reason.
 >
-> Use mips/powerpc version implemented as static inline as a generic
-> implementation of pfn_valid() and drop its per-architecture definitions
+> Include asm-generic/memory_model.h in the common include/asm/page.h and
+> drop redundant definitions.
 >
 > Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-I assume this can best go through the mm tree, let me know if I should
-pick it up in the asm-generic tree instead.
+Gr{oetje,eeting}s,
 
-     Arnd
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
 _______________________________________________
 linux-um mailing list
