@@ -4,98 +4,129 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CF12C38142
-	for <linux-um@archiver.kernel.org>; Sat, 28 Jan 2023 09:02:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81F4BC27C76
+	for <linux-um@archiver.kernel.org>; Sat, 28 Jan 2023 16:21:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vt3WbPpX3JytW//YRrcG60Rzc/PbFYVvxz9uUMfw9bI=; b=ooPpmuoVtv/9ju
-	xBS6LHCly06swhOPYkXVZ1d3nRRxoJ4n5m3qmrIbxAsVQ4OA1J2efrSjoiCuSKWklouYUqBOIrwbc
-	p5oa1AYo2XKqZaLeWjllRBplXXTGeQzNBWlqbQLwlUgFslAAbyDsI3W6KkJrXJzN/GHe6qrnIzmHr
-	GLu1VN821f0uOsZUNPGJEO4gROvwfjTr+Il80Xt4+mSFtGY/vr+wmzRLSmlnsaLieZ+fY+FNZ1aop
-	CiSR5PGzbHCfgQuRlGPzqsi2S5JbntvGztHVRD5PZK8EKGOyVOQlJ+tHKCTb/pVLjUnleOyIgCrpx
-	IEQpuke7Fxp8wmgmnyDA==;
+	List-Owner; bh=gyrSH1/LgYai0YnHUdCZmM0QWuG1aKuIWD8USYKe798=; b=ka7FK/QPQUBFsX
+	Loj0/XI15+xFvPmkVBTGrzeS+zrU/NIfJ5wjyio2TOQDUBkzDxMA1mWwIKySOYljrDlN3CZWv3sMF
+	Sv0uSWOtFXNnkV8waCGDv3PTgYJzVVUfJ6/SxDXpVhdgT4soq1wIRCJH7Nq9wRcAU2urBhIaEWJ9R
+	N8lylznitRYRPIIzLTSFpEKY1zKnRrfaS9acb/5Vwe3+ZEpQcV5x6ckeLzFz08OyTONk9Nw11tFUu
+	BaX2TuiCNQ+3FnSE50VdRg+GYXTBrVuQkiBtm7KbNR3oV2u5RfnkQCnEoIJ18oNP63EYaQ+5QM+kQ
+	38q1hZCwD80z98KDML0w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pLh6O-00HVbz-1H; Sat, 28 Jan 2023 09:02:24 +0000
-Received: from mail-wm1-x32c.google.com ([2a00:1450:4864:20::32c])
+	id 1pLnx5-000PRs-Dl; Sat, 28 Jan 2023 16:21:15 +0000
+Received: from mail-yw1-x1129.google.com ([2607:f8b0:4864:20::1129])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pLh6J-00HVaR-UX; Sat, 28 Jan 2023 09:02:21 +0000
-Received: by mail-wm1-x32c.google.com with SMTP id j36-20020a05600c1c2400b003dc39cb9c33so2673682wms.1;
-        Sat, 28 Jan 2023 01:02:16 -0800 (PST)
+	id 1pL53t-00BkXQ-4b
+	for linux-um@lists.infradead.org; Thu, 26 Jan 2023 16:25:20 +0000
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5063029246dso30108877b3.6
+        for <linux-um@lists.infradead.org>; Thu, 26 Jan 2023 08:25:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=v7ARCz3cVaBFOjYkC77qL/HBEniL1qdQHS5E6K6GFOY=;
-        b=aqbRojTHRCVjzGUAj7OwNNFidQtZRaRDHHmAjBWeAFhAl4EP6lU/HQ+DT3lz3ORLRs
-         krDbFNMyaAoPDNNbr2Us4LfdqxvtQoKw/VqPFwWdtmeZaX2Yr/xMNSAvUp0bHiLiSOj3
-         SN1iYBMZrJW6Tuoe05d5ixjoXDQyxOx+hHgkYRdk2YredIT5D868vyI7+JtGnCIwsINP
-         AC8gyFLqm6XouHJKilNfBj6iNxK7cGu1Nhc9VlLOm0nqQCpyycdmijDtgityKjfCFibc
-         kBECjMNCFbqcxj8dsEQrghcf75B90yP81hRDkvCSROQeKfuHc3hus0w8nNDlJyMcHou/
-         rQVg==
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=rUFKXit/Slxp5jNkRtm2qJfbudUdkwg/5ym9L9/2xFg=;
+        b=BrNExWGHbV1NeR+vu2Js5zAqwDKTAmFhHgoWjYZ0a3qbH7rru8W3QViuclznskZkVo
+         6Q5eqrGX7jMOOdvE9K9lsVmJpHX9roidNQoqd4ah6qpZ3z5AR/LzfumpWsF7qxr+L/L7
+         2EeJAw9MATGkA5VBf2UwOc7KCg21F0CUspP8pGqPmL78PHbmYrJgHGcDXuiJf+tpyEq5
+         mYd3qiJmdB/mmqbT25mkgF6e/9yHOLIF4ZmJU2qiUjSg09+a1L9BOQF70sP/z/t1hEtG
+         N3QguNCw23qX8RL/9XVLJb/vAzwIwx19tcG6Myly1SJ+d6fdbBsCbrW+Wp9iSE9SLjFe
+         r7Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=v7ARCz3cVaBFOjYkC77qL/HBEniL1qdQHS5E6K6GFOY=;
-        b=5vLXA5fiR5T1C+SXXRuaruasSHaE1fGp3jFv6nlg7/GLD3Akj/b2b0A4UdGx6ouDpq
-         vwEYNMd3tt+andnDvBZvMn+BbMMxOdLFH9Qfpw7qTXrwMX1AVuKETQ0PrZitbqcyWAVD
-         f6zLULp/84EMPM96VaI181lV0hwlJXxOYJd56Jb4HUutX9kMG/u5ccJZi5db7ggKQoeK
-         ufeLBBFd3qK+nwLp4spSrPuDV7Ys1WCFeGISQhcfhid9a8SHTiSCalSMHR7gFF9vnvbF
-         z63gd1UuUamQ5W4hqaEDNjDcLC5j4eG8ub86J9yppOStmqcltnTutNFo1NmPO3JgSmBY
-         0egQ==
-X-Gm-Message-State: AFqh2krOX+yCdVBTuLDvoMePUY4Ok4qswwbwkj88ziLbal4E/xbfK7cC
-	cio9AMz4zmYiW1gG9MplDRE=
-X-Google-Smtp-Source: AMrXdXshtli+OqZ9VwFCdRpOAvHTMs/09zG9TMwa0gaZMZJ8uG1JiJOtVlF/BhmQxoXBbhlR7WJAkg==
-X-Received: by 2002:a05:600c:5116:b0:3db:1a8:c041 with SMTP id o22-20020a05600c511600b003db01a8c041mr42453030wms.17.1674896535134;
-        Sat, 28 Jan 2023 01:02:15 -0800 (PST)
-Received: from localhost (cpc1-brnt4-2-0-cust862.4-2.cable.virginm.net. [86.9.131.95])
-        by smtp.gmail.com with ESMTPSA id f28-20020a5d58fc000000b002be5401ef5fsm6212824wrd.39.2023.01.28.01.02.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Jan 2023 01:02:14 -0800 (PST)
-Date: Sat, 28 Jan 2023 18:02:13 +0900
-From: Stafford Horne <shorne@gmail.com>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Arnd Bergmann <arnd@arndb.de>, Brian Cain <bcain@quicinc.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Greg Ungerer <gerg@linux-m68k.org>, Guo Ren <guoren@kernel.org>,
-	Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>,
-	Palmer Dabbelt <palmer@dabbelt.com>, Rich Felker <dalias@libc.org>,
-	Richard Weinberger <richard@nod.at>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Vineet Gupta <vgupta@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux--csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH 3/3] mm, arch: add generic implementation of pfn_valid()
- for FLATMEM
-Message-ID: <Y9TklS4v8oHCvCu2@antec>
-References: <20230125190757.22555-1-rppt@kernel.org>
- <20230125190757.22555-4-rppt@kernel.org>
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rUFKXit/Slxp5jNkRtm2qJfbudUdkwg/5ym9L9/2xFg=;
+        b=nWw2DzacS4CS9Gm2r8RzTF7qCcGj/21GwcCTPAT/2TWDufMAaLjRwh7eC83GK0rWYg
+         bipTPwLnuw2XIhmKnsqQK/3veka8S2f8Uzi702SUNnPEfe4Al089Hv7/VP1e/FoLFhow
+         ITnm4zWGn/v/6Dwtq+p26pnVFqx5vKQF/Rs92mCr22qGC/j3ZV1FZTw1Rd6WpZ96EpdO
+         07kxorqv2BwH61Nm49BWvFOJBuVW1Z56DzfKA2+I2DT/jfDvqf9wGPmTWoctzB6v/lDz
+         Vs/KuPLyuDxKjfV4W3QjZFJo9BTJoFaR0P3lyt0SO8nwPoKX8aMB9n5MeQxMBpsGGCO/
+         BCKQ==
+X-Gm-Message-State: AFqh2ko/NvyKiRRqUh2a96QPgF8Dvjg+YbUG8qp6gdkWBkm8OKEJN4lx
+	l3bcjhdrklOOX+/5z8AhIOMbAapDwtcZ8GclrWQC2A==
+X-Google-Smtp-Source: AMrXdXvRVLeaIi85wIrJBS5zRkOyr5/BQ66PCe0y1aLe9hmWIu7jqHBlhyy2SYPoXbE9x4WotKo1j1aRHLVU6Hd1LsI=
+X-Received: by 2002:a81:1b8b:0:b0:4ff:774b:7ffb with SMTP id
+ b133-20020a811b8b000000b004ff774b7ffbmr3541685ywb.218.1674750315051; Thu, 26
+ Jan 2023 08:25:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230125190757.22555-4-rppt@kernel.org>
+References: <20230125083851.27759-1-surenb@google.com> <20230125083851.27759-2-surenb@google.com>
+ <Y9JFFYjfJf9uDijE@kernel.org> <Y9KTUw/04FmBVplw@kernel.org> <Y9KXjLaFFUvqqdd4@casper.infradead.org>
+In-Reply-To: <Y9KXjLaFFUvqqdd4@casper.infradead.org>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Thu, 26 Jan 2023 08:25:03 -0800
+Message-ID: <CAJuCfpHs4wvQpitiAYc+PQX3LnitF=wvm=zVX7CzMozzmnbcnw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/6] mm: introduce vma->vm_flags modifier functions
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Mike Rapoport <rppt@kernel.org>, akpm@linux-foundation.org, michel@lespinasse.org, 
+	jglisse@google.com, mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org, 
+	mgorman@techsingularity.net, dave@stgolabs.net, liam.howlett@oracle.com, 
+	peterz@infradead.org, ldufour@linux.ibm.com, paulmck@kernel.org, 
+	luto@kernel.org, songliubraving@fb.com, peterx@redhat.com, david@redhat.com, 
+	dhowells@redhat.com, hughd@google.com, bigeasy@linutronix.de, 
+	kent.overstreet@linux.dev, punit.agrawal@bytedance.com, lstoakes@gmail.com, 
+	peterjung1337@gmail.com, rientjes@google.com, axelrasmussen@google.com, 
+	joelaf@google.com, minchan@google.com, jannh@google.com, shakeelb@google.com, 
+	tatashin@google.com, edumazet@google.com, gthelen@google.com, 
+	gurua@google.com, arjunroy@google.com, soheil@google.com, 
+	hughlynch@google.com, leewalsh@google.com, posk@google.com, will@kernel.org, 
+	aneesh.kumar@linux.ibm.com, npiggin@gmail.com, chenhuacai@kernel.org, 
+	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
+	dave.hansen@linux.intel.com, richard@nod.at, anton.ivanov@cambridgegreys.com, 
+	johannes@sipsolutions.net, qianweili@huawei.com, wangzhou1@hisilicon.com, 
+	herbert@gondor.apana.org.au, davem@davemloft.net, vkoul@kernel.org, 
+	airlied@gmail.com, daniel@ffwll.ch, maarten.lankhorst@linux.intel.com, 
+	mripard@kernel.org, tzimmermann@suse.de, l.stach@pengutronix.de, 
+	krzysztof.kozlowski@linaro.org, patrik.r.jakobsson@gmail.com, 
+	matthias.bgg@gmail.com, robdclark@gmail.com, quic_abhinavk@quicinc.com, 
+	dmitry.baryshkov@linaro.org, tomba@kernel.org, hjc@rock-chips.com, 
+	heiko@sntech.de, ray.huang@amd.com, kraxel@redhat.com, sre@kernel.org, 
+	mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com, tfiga@chromium.org, 
+	m.szyprowski@samsung.com, mchehab@kernel.org, dimitri.sivanich@hpe.com, 
+	zhangfei.gao@linaro.org, jejb@linux.ibm.com, martin.petersen@oracle.com, 
+	dgilbert@interlog.com, hdegoede@redhat.com, mst@redhat.com, 
+	jasowang@redhat.com, alex.williamson@redhat.com, deller@gmx.de, 
+	jayalk@intworks.biz, viro@zeniv.linux.org.uk, nico@fluxnic.net, 
+	xiang@kernel.org, chao@kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, 
+	miklos@szeredi.hu, mike.kravetz@oracle.com, muchun.song@linux.dev, 
+	bhe@redhat.com, andrii@kernel.org, yoshfuji@linux-ipv6.org, 
+	dsahern@kernel.org, kuba@kernel.org, pabeni@redhat.com, perex@perex.cz, 
+	tiwai@suse.com, haojian.zhuang@gmail.com, robert.jarzmik@free.fr, 
+	linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org, 
+	linuxppc-dev@lists.ozlabs.org, x86@kernel.org, linux-kernel@vger.kernel.org, 
+	linux-graphics-maintainer@vmware.com, linux-ia64@vger.kernel.org, 
+	linux-arch@vger.kernel.org, loongarch@lists.linux.dev, kvm@vger.kernel.org, 
+	linux-s390@vger.kernel.org, linux-sgx@vger.kernel.org, 
+	linux-um@lists.infradead.org, linux-acpi@vger.kernel.org, 
+	linux-crypto@vger.kernel.org, nvdimm@lists.linux.dev, 
+	dmaengine@vger.kernel.org, amd-gfx@lists.freedesktop.org, 
+	dri-devel@lists.freedesktop.org, etnaviv@lists.freedesktop.org, 
+	linux-samsung-soc@vger.kernel.org, intel-gfx@lists.freedesktop.org, 
+	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org, 
+	freedreno@lists.freedesktop.org, linux-rockchip@lists.infradead.org, 
+	linux-tegra@vger.kernel.org, virtualization@lists.linux-foundation.org, 
+	xen-devel@lists.xenproject.org, linux-stm32@st-md-mailman.stormreply.com, 
+	linux-rdma@vger.kernel.org, linux-media@vger.kernel.org, 
+	linux-accelerators@lists.ozlabs.org, sparclinux@vger.kernel.org, 
+	linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev, 
+	target-devel@vger.kernel.org, linux-usb@vger.kernel.org, 
+	netdev@vger.kernel.org, linux-fbdev@vger.kernel.org, linux-aio@kvack.org, 
+	linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org, 
+	linux-ext4@vger.kernel.org, devel@lists.orangefs.org, 
+	kexec@lists.infradead.org, linux-xfs@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, kasan-dev@googlegroups.com, 
+	selinux@vger.kernel.org, alsa-devel@alsa-project.org, kernel-team@android.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230128_010220_009610_4BDB5A16 
-X-CRM114-Status: GOOD (  15.52  )
+X-CRM114-CacheID: sfid-20230126_082517_282970_540E7EE5 
+X-CRM114-Status: GOOD (  13.66  )
+X-Mailman-Approved-At: Sat, 28 Jan 2023 08:21:13 -0800
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,59 +143,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jan 25, 2023 at 09:07:57PM +0200, Mike Rapoport wrote:
-> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> 
-> Every architecture that supports FLATMEM memory model defines its own
-> version of pfn_valid() that essentially compares a pfn to max_mapnr.
-> 
-> Use mips/powerpc version implemented as static inline as a generic
-> implementation of pfn_valid() and drop its per-architecture definitions
-> 
-> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
-> ---
->  arch/alpha/include/asm/page.h      |  4 ----
->  arch/arc/include/asm/page.h        |  1 -
->  arch/csky/include/asm/page.h       |  1 -
->  arch/hexagon/include/asm/page.h    |  1 -
->  arch/ia64/include/asm/page.h       |  4 ----
->  arch/loongarch/include/asm/page.h  | 13 -------------
->  arch/m68k/include/asm/page_no.h    |  2 --
->  arch/microblaze/include/asm/page.h |  1 -
->  arch/mips/include/asm/page.h       | 13 -------------
->  arch/nios2/include/asm/page.h      |  9 ---------
->  arch/openrisc/include/asm/page.h   |  2 --
->  arch/parisc/include/asm/page.h     |  4 ----
->  arch/powerpc/include/asm/page.h    |  9 ---------
->  arch/riscv/include/asm/page.h      |  5 -----
->  arch/sh/include/asm/page.h         |  3 ---
->  arch/sparc/include/asm/page_32.h   |  1 -
->  arch/um/include/asm/page.h         |  1 -
->  arch/x86/include/asm/page_32.h     |  4 ----
->  arch/x86/include/asm/page_64.h     |  4 ----
->  arch/xtensa/include/asm/page.h     |  2 --
->  include/asm-generic/memory_model.h | 12 ++++++++++++
->  include/asm-generic/page.h         |  2 --
->  22 files changed, 12 insertions(+), 86 deletions(-)
-> 
-[...] 
-> diff --git a/arch/openrisc/include/asm/page.h b/arch/openrisc/include/asm/page.h
-> index aab6e64d6db4..52b0d7e76446 100644
-> --- a/arch/openrisc/include/asm/page.h
-> +++ b/arch/openrisc/include/asm/page.h
-> @@ -80,8 +80,6 @@ typedef struct page *pgtable_t;
->  
->  #define page_to_phys(page)      ((dma_addr_t)page_to_pfn(page) << PAGE_SHIFT)
->  
-> -#define pfn_valid(pfn)          ((pfn) < max_mapnr)
-> -
->  #define virt_addr_valid(kaddr)	(pfn_valid(virt_to_pfn(kaddr)))
->  
->  #endif /* __ASSEMBLY__ */
+On Thu, Jan 26, 2023 at 7:09 AM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Thu, Jan 26, 2023 at 04:50:59PM +0200, Mike Rapoport wrote:
+> > On Thu, Jan 26, 2023 at 11:17:09AM +0200, Mike Rapoport wrote:
+> > > On Wed, Jan 25, 2023 at 12:38:46AM -0800, Suren Baghdasaryan wrote:
+> > > > +/* Use when VMA is not part of the VMA tree and needs no locking */
+> > > > +static inline void init_vm_flags(struct vm_area_struct *vma,
+> > > > +                          unsigned long flags)
+> > >
+> > > I'd suggest to make it vm_flags_init() etc.
+> >
+> > Thinking more about it, it will be even clearer to name these vma_flags_xyz()
+>
+> Perhaps vma_VERB_flags()?
+>
+> vma_init_flags()
+> vma_reset_flags()
+> vma_set_flags()
+> vma_clear_flags()
+> vma_mod_flags()
 
-For OpenRISC
+Due to excessive email bouncing I posted the v3 of this patchset using
+the original per-VMA patchset's distribution list. That might have
+dropped Mike from the list. Sorry about that Mike, I'll add you to my
+usual list of suspects :)
+The v3 is here:
+https://lore.kernel.org/all/20230125233554.153109-1-surenb@google.com/
+and Andrew did suggest the same renames, so I'll be posting v4 with
+those changes later today.
+Thanks for the feedback!
 
-Acked-by: Stafford Horne <shorne@gmail.com>
+>
 
 _______________________________________________
 linux-um mailing list
