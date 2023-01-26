@@ -4,50 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D83AC05027
-	for <linux-um@archiver.kernel.org>; Thu, 26 Jan 2023 16:05:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CAF9C05027
+	for <linux-um@archiver.kernel.org>; Thu, 26 Jan 2023 16:05:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=niWjXn6cEybbiok2gfQkR4Cc/8TCI/BbnAZBPIH7fXQ=; b=HtrjwjBLTGj9y1
-	cKF9xdekUHqEsDQ51kfz+SUR4b1pSPZ4mI3kXQRyADRji+P32knMe6OXEVEcH6vwd8vf41qCziwfb
-	1grdaHQ4Mop4xvv+dmCstrbI/VKM5tfQjyfqeuuvavOCadq310f/Wek4y4GODbjr0/SRSwgC0s1sI
-	n898m2acAUYceyk/2YU7zs7DYEa+GAgXrSD7C6tDak4RRSxuVGSIzjnCdTHVuUrTFsENziZiQw8bu
-	D563Vf4ixye8AClmEtUo+Rpv9Z8txK7WkKOmdkTpWP6zkXf5Sq34Eh4Oyvk9Vr1ZCxe1M9DaB4j/u
-	KV0twk5pZM6SJa31892A==;
+	List-Owner; bh=QArSgXy4SZ12An6YmrOJVimOrj6m7qB+GmwrFfVJSus=; b=r0OZb0ooXoj+EB
+	nigUDC09fVInTKzl6uIEgpNlsL4FrR1oK+rylP0wtkYArLwaV2x0UizH8iVwb3B1ZZVAKiysND/Xg
+	Rlw+stL+ThalS3C+zEnt8MG89gWw+UXqCmp3H11NS84D4woYVUVO2hwQiYdqH+1dZCCznwee9yFQE
+	u94Sng5yeN4Ta8s4qizMIpp2e9y6oH9RJzFEsbQNN8kn7ksHseIQ8hyxRgR81cZPK9dfMLy6CuGS8
+	mZKbzJAc/FYcsIOkC7EFzcoCX90ikBlESEGFuOU9zWkgddM0t5d4aAwuUuQhEoDaWElTbXlkzMZZG
+	m57pNOK1m9B8vsfs/4qA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pL4ks-00Bf35-IC; Thu, 26 Jan 2023 16:05:38 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1pL4kt-00Bf3j-Iq; Thu, 26 Jan 2023 16:05:39 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pL3bQ-00BIed-0o; Thu, 26 Jan 2023 14:51:49 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 4EA0C61756;
-	Thu, 26 Jan 2023 14:51:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3695EC433EF;
-	Thu, 26 Jan 2023 14:51:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1674744706;
-	bh=vTtNm5B4uxkFGkyUcD6bt7bUv740cC5zoLQ3n4iCXig=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=r54XDevqCxaIthjhpV90e/3PReNDit6CxkjYziBMldcr+DpwGPcGH7s0yFhPlYu8B
-	 NohDoJ7KVIUCX5Zs7V0ydKB7t9XQRchAYOCR8XLnEbVPCZ8e7MIHv0UEcp73VODAq8
-	 aFhcsGcrVCc28IZRly/gODnl3cguu4R9trJCc4u2GtQ9ygUwR4IFSGftEKj188geBR
-	 3987kGANtDLWA/GzBI6W69E/F450ClXU14kAngo3y+A1wCivQR2InkOef4HeCwIwVj
-	 QYEspA95Wv7WS3mfCUr9QMGnsDd2HsZvTUBOWl52ZSZiQBqHvpwy1Yy3PsmXixNWVQ
-	 B28KDvwGClVRQ==
-Date: Thu, 26 Jan 2023 16:50:59 +0200
-From: Mike Rapoport <rppt@kernel.org>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: akpm@linux-foundation.org, michel@lespinasse.org, jglisse@google.com,
-	mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org,
-	mgorman@techsingularity.net, dave@stgolabs.net, willy@infradead.org,
-	liam.howlett@oracle.com, peterz@infradead.org,
+	id 1pL3sX-00BPem-8B; Thu, 26 Jan 2023 15:09:29 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=EH9adbDOpWNaGYEHl4xrAV40gwHDwqK76tq84Z0eyXc=; b=iqmwaHjxa8hZXZrYCzuWMxG2Kd
+	gUi1Y8eYsd0omFHjfmpVdNaehwIHED+H1VzLiTscJu/MXykaHjjIUo4/UeePSQ/3qO2Scxl5KBcbs
+	rwafzWiMp0gW54lDXpQNTGojrzBrhUSE24qBNrz9Eu8wZKUKM+VJeNVRGRDui4Mjh6zNrJRA9uXJe
+	2WKv1rttzI5041i+Ny9WQoRsYwvuy+Pu29+WLEfQrszB7lQZjKA+bZ/4URx7/yXNldScNG2l8YeYl
+	moQR7vt2oRKUKukioTBGNdLmNI+GiODuZUH9eGz4sLFdnhDHr8CijQAXVN9xNJqlnGwrCU0R4Kh9h
+	Kpe2WfSQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1pL3s4-006q4a-Hd; Thu, 26 Jan 2023 15:09:00 +0000
+Date: Thu, 26 Jan 2023 15:09:00 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
+	michel@lespinasse.org, jglisse@google.com, mhocko@suse.com,
+	vbabka@suse.cz, hannes@cmpxchg.org, mgorman@techsingularity.net,
+	dave@stgolabs.net, liam.howlett@oracle.com, peterz@infradead.org,
 	ldufour@linux.ibm.com, paulmck@kernel.org, luto@kernel.org,
 	songliubraving@fb.com, peterx@redhat.com, david@redhat.com,
 	dhowells@redhat.com, hughd@google.com, bigeasy@linutronix.de,
@@ -115,16 +110,14 @@ Cc: akpm@linux-foundation.org, michel@lespinasse.org, jglisse@google.com,
 	selinux@vger.kernel.org, alsa-devel@alsa-project.org,
 	kernel-team@android.com
 Subject: Re: [PATCH v2 1/6] mm: introduce vma->vm_flags modifier functions
-Message-ID: <Y9KTUw/04FmBVplw@kernel.org>
+Message-ID: <Y9KXjLaFFUvqqdd4@casper.infradead.org>
 References: <20230125083851.27759-1-surenb@google.com>
  <20230125083851.27759-2-surenb@google.com>
  <Y9JFFYjfJf9uDijE@kernel.org>
+ <Y9KTUw/04FmBVplw@kernel.org>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <Y9JFFYjfJf9uDijE@kernel.org>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230126_065148_192434_64BE08C3 
-X-CRM114-Status: GOOD (  19.65  )
+In-Reply-To: <Y9KTUw/04FmBVplw@kernel.org>
 X-Mailman-Approved-At: Thu, 26 Jan 2023 08:05:31 -0800
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -142,45 +135,25 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jan 26, 2023 at 11:17:09AM +0200, Mike Rapoport wrote:
-> On Wed, Jan 25, 2023 at 12:38:46AM -0800, Suren Baghdasaryan wrote:
-> > vm_flags are among VMA attributes which affect decisions like VMA merging
-> > and splitting. Therefore all vm_flags modifications are performed after
-> > taking exclusive mmap_lock to prevent vm_flags updates racing with such
-> > operations. Introduce modifier functions for vm_flags to be used whenever
-> > flags are updated. This way we can better check and control correct
-> > locking behavior during these updates.
+On Thu, Jan 26, 2023 at 04:50:59PM +0200, Mike Rapoport wrote:
+> On Thu, Jan 26, 2023 at 11:17:09AM +0200, Mike Rapoport wrote:
+> > On Wed, Jan 25, 2023 at 12:38:46AM -0800, Suren Baghdasaryan wrote:
+> > > +/* Use when VMA is not part of the VMA tree and needs no locking */
+> > > +static inline void init_vm_flags(struct vm_area_struct *vma,
+> > > +				 unsigned long flags)
 > > 
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > ---
-> >  include/linux/mm.h       | 37 +++++++++++++++++++++++++++++++++++++
-> >  include/linux/mm_types.h |  8 +++++++-
-> >  2 files changed, 44 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/include/linux/mm.h b/include/linux/mm.h
-> > index c2f62bdce134..b71f2809caac 100644
-> > --- a/include/linux/mm.h
-> > +++ b/include/linux/mm.h
-> > @@ -627,6 +627,43 @@ static inline void vma_init(struct vm_area_struct *vma, struct mm_struct *mm)
-> >  	INIT_LIST_HEAD(&vma->anon_vma_chain);
-> >  }
-> >  
-> > +/* Use when VMA is not part of the VMA tree and needs no locking */
-> > +static inline void init_vm_flags(struct vm_area_struct *vma,
-> > +				 unsigned long flags)
+> > I'd suggest to make it vm_flags_init() etc.
 > 
-> I'd suggest to make it vm_flags_init() etc.
+> Thinking more about it, it will be even clearer to name these vma_flags_xyz()
 
-Thinking more about it, it will be even clearer to name these vma_flags_xyz()
+Perhaps vma_VERB_flags()?
 
-> Except that
-> 
-> Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
-> 
+vma_init_flags()
+vma_reset_flags()
+vma_set_flags()
+vma_clear_flags()
+vma_mod_flags()
 
---
-Sincerely yours,
-Mike.
 
 _______________________________________________
 linux-um mailing list
