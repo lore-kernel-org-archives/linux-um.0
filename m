@@ -4,84 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A1FD5C05027
-	for <linux-um@archiver.kernel.org>; Thu, 26 Jan 2023 08:27:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 605DDC54E94
+	for <linux-um@archiver.kernel.org>; Thu, 26 Jan 2023 10:49:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=EgYA6lhtQ+5Cxx9/xb7ZhgWTDPwTalNLQ1Mq/B5NdYY=; b=uoDAla5y9jhd4y
-	piBNCZeKHP8nlQvGIDVWiJkwXvl/PaJ7L+b7QDF3HWbGreyEI8CsBnHP2ncO9ieDl5Z40BAndN7Lh
-	nwZYtgTWhrfEI1IEqb9lY+352M7o+IkUNk+Xugb7tYTFQCVkBfvRMRsVFVeL+VBb16XexxYHS9LB/
-	D6PtXrehxPwORfFON1AXntxqd6cZ/isIOaRSj6PriOTqFU46SoAHFbPIA7OqgI6h3podiD+tT2g12
-	RWvdiY+0vR3jtD0gU7w3sYLy72GaNUslC8fq+8OaGLWrKMqsct5hP1wkAF5DRgCi5TceiLUa7KAby
-	xGUavAIDKYCVyoGfqRqA==;
+	List-Archive:List-Unsubscribe:List-Id:CC:To:Message-ID:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=d+Noj2cPrBcD5FRibguWwhzhh7RH8Yd5T7V7GNWfoHM=; b=GPPJtQO4Glpo4f
+	usuvvmAKdyJmwnal9Opx+vy65+wl2lTWZbwNB+29EQ3e/iAEsUjAxgTwWf9DSvZPC7Xr+I/O1zwiZ
+	FuvvGULGxBh2jp7x/u98jTbxm8Ju9w3uBYnXonVbvTgUCMeV6xSR/2mk2yZylGWU3wQkADl8rNza3
+	ZTa8r6jSAFX3G6hV+E8igAxjRQHELtXWmUyctBYTJ+xa9ASCQnmnD8VuFMW3MlHLFbtwPF4cwssyW
+	/c0nQSV6UhUtJqGmiYvLzssWdXvlKGdih03nb1j3e12dNX/jFdnLJ+IueQzrYxqrzwH3pHJv5ixA2
+	QWgFqGjN10k66w2H40rA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKxbU-009yfc-8F; Thu, 26 Jan 2023 08:27:28 +0000
-Received: from mail-qv1-f50.google.com ([209.85.219.50])
+	id 1pKzpF-00AZMF-6U; Thu, 26 Jan 2023 10:49:49 +0000
+Received: from smtp1.axis.com ([195.60.68.17])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pKxbO-009yes-PY; Thu, 26 Jan 2023 08:27:24 +0000
-Received: by mail-qv1-f50.google.com with SMTP id x18so995469qvl.1;
-        Thu, 26 Jan 2023 00:27:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iTLUhLqiktW0lQYPPHgLpL0hyET/yRv7DDBqjk/47Fc=;
-        b=HF3Mp/tkUQEt92H+3m9PR8RfC5plw3fnI5O/4A9VdWJl8dt/ClvT4+4jZNz9G15OO4
-         j42ue8HC+yDyY+bYiq8sORYFLym/y9nA6hpOMiVyvJNbcZK0F9/LpUqMxszneRVXU3u6
-         1D6Zof0CDbCj7X71UoYWaldupTGxFUolqZ2kxfpmbhI4dD1MZxomv7IH4N4rkKLpE+WG
-         Z6WS59gTbTXLklHH7H7QXQ2SVeS+tveabns7+EAC0Yfu40yQQ9p1yI2An+xIs0U+JLCG
-         PVNFHpAtp4v+5Yvyq93UNsO7FVrDnoFG1Q3FGD0w8VKSlGCZfsPcfbUFwtRxUhDKgqar
-         +kkA==
-X-Gm-Message-State: AFqh2koVr7IxfsN+NqR/C/otK/cBUmtMIn1XXBApm2JzbK3SOSbe0D0H
-	WihQFcFOKBCsR6oH0FafjYaT/YqhaIai9Q==
-X-Google-Smtp-Source: AMrXdXuLnoSu1EMzjp+VUp7CW45G9/7r9YIkt5Q0Ty6EZP2cHTyBRB1xO2tYBG6UUPohvNHPrTsHrg==
-X-Received: by 2002:a05:6214:3991:b0:51e:a23c:92b7 with SMTP id ny17-20020a056214399100b0051ea23c92b7mr51712201qvb.21.1674721640249;
-        Thu, 26 Jan 2023 00:27:20 -0800 (PST)
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com. [209.85.128.171])
-        by smtp.gmail.com with ESMTPSA id h185-20020a376cc2000000b007069375e0f4sm517527qkc.122.2023.01.26.00.27.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Jan 2023 00:27:20 -0800 (PST)
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-4c131bede4bso13727207b3.5;
-        Thu, 26 Jan 2023 00:27:20 -0800 (PST)
-X-Received: by 2002:a25:9ac1:0:b0:7b4:6a33:d89f with SMTP id
- t1-20020a259ac1000000b007b46a33d89fmr2761883ybo.543.1674721245117; Thu, 26
- Jan 2023 00:20:45 -0800 (PST)
+	id 1pKzmx-00AYNo-4m
+	for linux-um@lists.infradead.org; Thu, 26 Jan 2023 10:47:32 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1674730047;
+  x=1706266047;
+  h=from:date:subject:mime-version:content-transfer-encoding:
+   message-id:to:cc;
+  bh=DTva1Ssx8kQR67UOp6qZggMijTqQjiAsgHXYRC030jE=;
+  b=Z1/1itknB+x2EiLSsxd3jhk4MDvzELNtbw6YT4GkMSQ8PI5ZC7M9L1wg
+   TUwnp9EPgWrRuBCmGfMuE5jXFbSOX0oPbnYbXKHZtmpAFDxZ0cCPyRNuV
+   nqttmeQNIYtdtWLKebJainqwOpCKhBM4cOGO3JjF5uwGR9UFg8mXzlRWt
+   DA2h7Iv+2Wm0nGNZEnnMm2Xp2xD6MqbCcL61hkpYlxPoXTnFdZIrH0olZ
+   T6sbBK7K0iEYVYxF8YlQdizjVE8fJ7zAtcY+RRkefGGnvx8kEgfJ0Ao3w
+   OW2+i/FK4amijWtxoxiSAY8LCKGCmglySP0AVeZuil/IElPt8RgepxZ3+
+   A==;
+From: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Date: Thu, 26 Jan 2023 11:47:10 +0100
+Subject: [PATCH] um-virt-pci: Make max delay configurable
 MIME-Version: 1.0
-References: <20230125190757.22555-1-rppt@kernel.org> <20230125190757.22555-2-rppt@kernel.org>
-In-Reply-To: <20230125190757.22555-2-rppt@kernel.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 26 Jan 2023 09:20:33 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUeuPgkWVjpZ=OM4ofnoYyv2nY1_FGo0JUZCFXYX=K2vw@mail.gmail.com>
-Message-ID: <CAMuHMdUeuPgkWVjpZ=OM4ofnoYyv2nY1_FGo0JUZCFXYX=K2vw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] m68k: use asm-generic/memory_model.h for both MMU and !MMU
-To: Mike Rapoport <rppt@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Brian Cain <bcain@quicinc.com>, "David S. Miller" <davem@davemloft.net>, 
-	Dinh Nguyen <dinguyen@kernel.org>, Greg Ungerer <gerg@linux-m68k.org>, Guo Ren <guoren@kernel.org>, 
-	Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>, Matt Turner <mattst88@gmail.com>, 
-	Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Rich Felker <dalias@libc.org>, 
-	Richard Weinberger <richard@nod.at>, Stafford Horne <shorne@gmail.com>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Vineet Gupta <vgupta@kernel.org>, 
-	WANG Xuerui <kernel@xen0n.name>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
-	linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux--csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
-	linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, 
-	linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, 
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, 
-	openrisc@lists.librecores.org, sparclinux@vger.kernel.org, x86@kernel.org
+Message-ID: <20230126-uml-pci-delay-v1-1-015ed7e93ef2@axis.com>
+X-B4-Tracking: v=1; b=H4sIAC1a0mMC/x2NwQqDMBAFf0X27EKMVLC/UnrYxKcuaBoSLS3iv
+ zf2OAPDHJSRFJnu1UEJb836CgWauiI/S5jAOhQma2xrGtvxvi4cvfKARb5spff9rTWA66g0TjL
+ YJQl+vqptjZeNCaN+/pfH8zx/c6Z7+nUAAAA=
+To: Richard Weinberger <richard@nod.at>, Anton Ivanov
+	<anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>
+CC: <linux-um@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<kernel@axis.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>
+X-Mailer: b4 0.12.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230126_002722_840831_B8A8BB72 
-X-CRM114-Status: GOOD (  18.19  )
+X-CRM114-CacheID: sfid-20230126_024727_807630_56244A64 
+X-CRM114-Status: GOOD (  10.34  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,31 +70,48 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jan 25, 2023 at 8:08 PM Mike Rapoport <rppt@kernel.org> wrote:
-> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
->
-> The MMU variant uses generic definitions of page_to_pfn() and
-> pfn_to_page(), but !MMU defines them in include/asm/page_no.h for no
-> good reason.
->
-> Include asm-generic/memory_model.h in the common include/asm/page.h and
-> drop redundant definitions.
->
-> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+There is a hard coded maximum time for which the driver busy-loops
+waiting for a response from the virtio device.  This default time may be
+too short for some systems, so make it a module parameter so that it can
+be set via the kernel command line.
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+---
+ arch/um/drivers/virt-pci.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Gr{oetje,eeting}s,
+diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
+index 3ac220dafec4..33183f6f9f2a 100644
+--- a/arch/um/drivers/virt-pci.c
++++ b/arch/um/drivers/virt-pci.c
+@@ -54,7 +54,8 @@ static struct irq_domain *um_pci_inner_domain;
+ static struct irq_domain *um_pci_msi_domain;
+ static unsigned long um_pci_msi_used[BITS_TO_LONGS(MAX_MSI_VECTORS)];
+ 
+-#define UM_VIRT_PCI_MAXDELAY 40000
++static unsigned int um_pci_max_delay_us = 40000;
++module_param_named(max_delay_us, um_pci_max_delay_us, uint, 0644);
+ 
+ struct um_pci_message_buffer {
+ 	struct virtio_pcidev_msg hdr;
+@@ -155,7 +156,7 @@ static int um_pci_send_cmd(struct um_pci_device *dev,
+ 			kfree(completed);
+ 
+ 		if (WARN_ONCE(virtqueue_is_broken(dev->cmd_vq) ||
+-			      ++delay_count > UM_VIRT_PCI_MAXDELAY,
++			      ++delay_count > um_pci_max_delay_us,
+ 			      "um virt-pci delay: %d", delay_count)) {
+ 			ret = -EIO;
+ 			break;
 
-                        Geert
+---
+base-commit: 1b929c02afd37871d5afb9d498426f83432e71c2
+change-id: 20230126-uml-pci-delay-2a9c9530eeb6
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Best regards,
+-- 
+Vincent Whitchurch <vincent.whitchurch@axis.com>
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
 
 _______________________________________________
 linux-um mailing list
