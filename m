@@ -4,83 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F2DAC54EAA
-	for <linux-um@archiver.kernel.org>; Fri, 27 Jan 2023 01:58:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E1769C54EAA
+	for <linux-um@archiver.kernel.org>; Fri, 27 Jan 2023 14:30:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BqE0ru8Vav8aUP03LEQSDqpTvHMAk5AbSGiiBZUnpTY=; b=WV/cw+cq802xN8
-	UawQdZWvy1GQSawnlFs0LWTbAqhUPeYLFGTI46mmqd8gERsuB5UqeAE8SucDnhHGVAyp67xlJenmn
-	cM7FQDDcKGyPP69UGHUuWXSIAi/FwWOVuowS9dTc4azuJNdKnhIz5oKNmRaOKMO+IpZ273Mm6c4BP
-	UGuyuPsNZaO+I9ryN/uNgh3CoswuOQdXh7rTDivPcRJCyc7p7BpKfTh5Zele+MQImcGti4wU0cFr1
-	IpZQ/C/GiM6cY43dxPUUMdoacyHvmZzCf4jeS4S5hWlPYoDqM+I8C0lHOQ1od4UoWS/jVv92y30xb
-	KQShjKRZx0+MabPSZkog==;
+	List-Archive:List-Unsubscribe:List-Id:CC:To:Message-ID:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=3raC9BcOaM/d3XpBAspXQYvjYFEHSXApF508qo9k+Hk=; b=Or1hPT2UTN2EtZ
+	dxeMXyUrd0xMjIEtynBGv4fW3c2oileujoMwnzIzc0KAt2nBjxJOIP4EvdSjGfI5yTUiBzTPNDwg/
+	QndiTemXcD4FRDh4Byvqu7xaxh4UcTpimUtVonrMfQNDM9wkhNRfjkEhmugcRqN1O9XGA084cH5oJ
+	J1O8DtTtqB3FIaz1rdW85r52pjzQVu7nP99pFTe05CRDklttpOxJZ+7ke/BhWgWBXmAhsjtDGM1Lh
+	efm70c9EC7qynQK4+TVVkGfIdBk8IoLIOUAuEmr7Y1J+OzemCWUDEI8i9QRTJuseSY5+vThVjlgQK
+	6J3ZLCWR7CHB7BGoHptQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pLE0p-00D6IK-Sz; Fri, 27 Jan 2023 01:58:44 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1pLPkZ-00FItH-Ox; Fri, 27 Jan 2023 14:30:43 +0000
+Received: from smtp1.axis.com ([195.60.68.17])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pLE0f-00D6GP-Ng; Fri, 27 Jan 2023 01:58:38 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 23D60B81F9F;
-	Fri, 27 Jan 2023 01:58:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29AA2C433A7;
-	Fri, 27 Jan 2023 01:58:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1674784709;
-	bh=pzNOG0Djf7V1R33wl68ow+px2X7SH6XndlxEJRqf8KA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=DLTnS85jmYw3B9GcEjVOD6YJTNMQz8vVDc0NzVyrsHkgBmzqzXyTwHe5HyqYwHTue
-	 6DEkRNTwrg6oH+QSwHhbE7T2JQZKioBkNeLiqCnSoH8Y3m6J/ZWVlaC5iyuLeDFJpW
-	 jWwwVpUNLPGcBEWIyyAlHEb/CyRZXr9G/zGeGRFtWGi2OXzMZe190yNvw7YZj5OTwL
-	 z3bNr0cmkz3rKMERSPdiz5rKRagX4ehp4qPhNPMz2tPNcZ9OD8LOk3mo+RNfACr5oh
-	 17xX6Z8jrfFMHqsAOJUSzV6bpKYzQ7MidcOqAKhRjyKHSIpHEH2g32jJiTf0ntZlC9
-	 R2dyvHPwGx9tA==
-Received: by mail-ej1-f53.google.com with SMTP id mg12so9999662ejc.5;
-        Thu, 26 Jan 2023 17:58:28 -0800 (PST)
-X-Gm-Message-State: AFqh2koI6Ph/Rp04xwD0wd3cct6OWGttQYo8ef17hjyVp5UsSzNWJ86h
-	OuhLhYyBamw3a13HGyLJtKHS2S3zeGz/m811+Uo=
-X-Google-Smtp-Source: AMrXdXt008fMl0aqmAEgNQX/zkl+hROHQsMbEajSnj9VGCgxHd9lGbxsSIeB2dhxneD5xCgD0lX2gGyuG+mIBYuC/Ak=
-X-Received: by 2002:a17:906:d7a8:b0:84d:3b9a:2e4a with SMTP id
- pk8-20020a170906d7a800b0084d3b9a2e4amr4004490ejb.235.1674784707205; Thu, 26
- Jan 2023 17:58:27 -0800 (PST)
+	id 1pLPkV-00FIqd-FE
+	for linux-um@lists.infradead.org; Fri, 27 Jan 2023 14:30:42 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1674829839;
+  x=1706365839;
+  h=from:date:subject:mime-version:content-transfer-encoding:
+   message-id:to:cc;
+  bh=RL1TVR8JpwDGXzhk2Xp/sjq8b+rwzvFYVEYMjlPcCWk=;
+  b=AwW3F+gJKHFGLKmwzmhze+VrT2g+hVpk1MWbbK3FrRUyXvBevgqS3zfI
+   XOE1rIu4g83sPmXtmwGINh+CLfYRFrxhzDnPUWvNTUfoLwJmeZ5+uAS09
+   GzXGSFNTBnTov66aLbV9Jzifva1Ya9teqlGHovdT8trQ/qUWpn98z49kV
+   Avdk0PLD2XjY5Nu8dlNfsyb8yuR/tWasuX1GxJbdzuZkfbIL3xKdYblnA
+   bs2TByPlEEMIQa3yCTRarilcq1umM08xevCWsdD4XZUQuQmOiwL6TzW7N
+   X4baZXnawUUpnZUOUCgHOOEtKy2gWBX/nS3O1MysKXh+6fqSbu1ZrEOV0
+   g==;
+From: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Date: Fri, 27 Jan 2023 15:30:27 +0100
+Subject: [PATCH] virt-pci: add platform bus support
 MIME-Version: 1.0
-References: <20230125190757.22555-1-rppt@kernel.org> <20230125190757.22555-4-rppt@kernel.org>
-In-Reply-To: <20230125190757.22555-4-rppt@kernel.org>
-From: Guo Ren <guoren@kernel.org>
-Date: Fri, 27 Jan 2023 09:58:15 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQw7vaj8uu2CYuKHwKQM4=v7dxmtNaMMoFXjwhtvog7nw@mail.gmail.com>
-Message-ID: <CAJF2gTQw7vaj8uu2CYuKHwKQM4=v7dxmtNaMMoFXjwhtvog7nw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] mm, arch: add generic implementation of pfn_valid()
- for FLATMEM
-To: Mike Rapoport <rppt@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Brian Cain <bcain@quicinc.com>, "David S. Miller" <davem@davemloft.net>, 
-	Dinh Nguyen <dinguyen@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	Greg Ungerer <gerg@linux-m68k.org>, Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>, 
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Rich Felker <dalias@libc.org>, 
-	Richard Weinberger <richard@nod.at>, Stafford Horne <shorne@gmail.com>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Vineet Gupta <vgupta@kernel.org>, 
-	WANG Xuerui <kernel@xen0n.name>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
-	linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux--csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
-	linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org, 
-	linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, 
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, 
-	openrisc@lists.librecores.org, sparclinux@vger.kernel.org, x86@kernel.org
+Message-ID: <20230127-uml-pci-platform-v1-1-ec6b45d2829f@axis.com>
+X-B4-Tracking: v=1; b=H4sIAALg02MC/x2NQQqDMBAAvyJ77kKSIkq/UnrYxE1dMDFsbCmIf
+ zf2OAPD7FBZhSs8uh2Uv1JlzQ3srYMwU34zytQYnHF3Y92An7RgCYJloS2umpDj2FtPQx9HAy3
+ zVBm9Ug7zFW6pXLYoR/n9R8/XcZyN11SoeAAAAA==
+To: Richard Weinberger <richard@nod.at>, Anton Ivanov
+	<anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>
+CC: <robh@kernel.org>, <devicetree@lists.infradead.org>,
+	<linux-um@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<kernel@axis.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>
+X-Mailer: b4 0.12.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230126_175835_180987_76FD1E78 
-X-CRM114-Status: GOOD (  23.43  )
+X-CRM114-CacheID: sfid-20230127_063040_188577_EA7BE0EC 
+X-CRM114-Status: GOOD (  17.99  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,393 +71,194 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jan 26, 2023 at 3:08 AM Mike Rapoport <rppt@kernel.org> wrote:
->
-> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
->
-> Every architecture that supports FLATMEM memory model defines its own
-> version of pfn_valid() that essentially compares a pfn to max_mapnr.
->
-> Use mips/powerpc version implemented as static inline as a generic
-> implementation of pfn_valid() and drop its per-architecture definitions
->
-> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
-> ---
->  arch/alpha/include/asm/page.h      |  4 ----
->  arch/arc/include/asm/page.h        |  1 -
->  arch/csky/include/asm/page.h       |  1 -
->  arch/hexagon/include/asm/page.h    |  1 -
->  arch/ia64/include/asm/page.h       |  4 ----
->  arch/loongarch/include/asm/page.h  | 13 -------------
->  arch/m68k/include/asm/page_no.h    |  2 --
->  arch/microblaze/include/asm/page.h |  1 -
->  arch/mips/include/asm/page.h       | 13 -------------
->  arch/nios2/include/asm/page.h      |  9 ---------
->  arch/openrisc/include/asm/page.h   |  2 --
->  arch/parisc/include/asm/page.h     |  4 ----
->  arch/powerpc/include/asm/page.h    |  9 ---------
->  arch/riscv/include/asm/page.h      |  5 -----
->  arch/sh/include/asm/page.h         |  3 ---
->  arch/sparc/include/asm/page_32.h   |  1 -
->  arch/um/include/asm/page.h         |  1 -
->  arch/x86/include/asm/page_32.h     |  4 ----
->  arch/x86/include/asm/page_64.h     |  4 ----
->  arch/xtensa/include/asm/page.h     |  2 --
->  include/asm-generic/memory_model.h | 12 ++++++++++++
->  include/asm-generic/page.h         |  2 --
->  22 files changed, 12 insertions(+), 86 deletions(-)
->
-> diff --git a/arch/alpha/include/asm/page.h b/arch/alpha/include/asm/page.h
-> index 8f3f5eecba28..227d32b6b75f 100644
-> --- a/arch/alpha/include/asm/page.h
-> +++ b/arch/alpha/include/asm/page.h
-> @@ -87,10 +87,6 @@ typedef struct page *pgtable_t;
->  #define virt_to_page(kaddr)    pfn_to_page(__pa(kaddr) >> PAGE_SHIFT)
->  #define virt_addr_valid(kaddr) pfn_valid((__pa(kaddr) >> PAGE_SHIFT))
->
-> -#ifdef CONFIG_FLATMEM
-> -#define pfn_valid(pfn)         ((pfn) < max_mapnr)
-> -#endif /* CONFIG_FLATMEM */
-> -
->  #include <asm-generic/memory_model.h>
->  #include <asm-generic/getorder.h>
->
-> diff --git a/arch/arc/include/asm/page.h b/arch/arc/include/asm/page.h
-> index 9a62e1d87967..e43fe27ec54d 100644
-> --- a/arch/arc/include/asm/page.h
-> +++ b/arch/arc/include/asm/page.h
-> @@ -109,7 +109,6 @@ extern int pfn_valid(unsigned long pfn);
->  #else /* CONFIG_HIGHMEM */
->
->  #define ARCH_PFN_OFFSET                virt_to_pfn(CONFIG_LINUX_RAM_BASE)
-> -#define pfn_valid(pfn)         (((pfn) - ARCH_PFN_OFFSET) < max_mapnr)
->
->  #endif /* CONFIG_HIGHMEM */
->
-> diff --git a/arch/csky/include/asm/page.h b/arch/csky/include/asm/page.h
-> index ed7451478b1b..b23e3006a9e0 100644
-> --- a/arch/csky/include/asm/page.h
-> +++ b/arch/csky/include/asm/page.h
-> @@ -39,7 +39,6 @@
->
->  #define virt_addr_valid(kaddr)  ((void *)(kaddr) >= (void *)PAGE_OFFSET && \
->                         (void *)(kaddr) < high_memory)
-> -#define pfn_valid(pfn)         ((pfn) >= ARCH_PFN_OFFSET && ((pfn) - ARCH_PFN_OFFSET) < max_mapnr)
-For csky part:
-Acked-by: Guo Ren <guoren@kernel.org>
+This driver registers PCI busses, but the underlying virtio protocol
+could just as easily be used to provide a platform bus instead.  If the
+virtio device node in the devicetree indicates that it's compatible with
+simple-bus, register platform devices instead of handling it as a PCI
+bus.
 
->
->  extern void *memset(void *dest, int c, size_t l);
->  extern void *memcpy(void *to, const void *from, size_t l);
-> diff --git a/arch/hexagon/include/asm/page.h b/arch/hexagon/include/asm/page.h
-> index d7d4f9fca327..9c03b9965f07 100644
-> --- a/arch/hexagon/include/asm/page.h
-> +++ b/arch/hexagon/include/asm/page.h
-> @@ -95,7 +95,6 @@ struct page;
->  /* Default vm area behavior is non-executable.  */
->  #define VM_DATA_DEFAULT_FLAGS  VM_DATA_FLAGS_NON_EXEC
->
-> -#define pfn_valid(pfn) ((pfn) < max_mapnr)
->  #define virt_addr_valid(kaddr) pfn_valid(__pa(kaddr) >> PAGE_SHIFT)
->
->  /*  Need to not use a define for linesize; may move this to another file.  */
-> diff --git a/arch/ia64/include/asm/page.h b/arch/ia64/include/asm/page.h
-> index 1b990466d540..783eceab5df3 100644
-> --- a/arch/ia64/include/asm/page.h
-> +++ b/arch/ia64/include/asm/page.h
-> @@ -97,10 +97,6 @@ do {                                         \
->
->  #include <asm-generic/memory_model.h>
->
-> -#ifdef CONFIG_FLATMEM
-> -# define pfn_valid(pfn)                ((pfn) < max_mapnr)
-> -#endif
-> -
->  #define page_to_phys(page)     (page_to_pfn(page) << PAGE_SHIFT)
->  #define virt_to_page(kaddr)    pfn_to_page(__pa(kaddr) >> PAGE_SHIFT)
->  #define pfn_to_kaddr(pfn)      __va((pfn) << PAGE_SHIFT)
-> diff --git a/arch/loongarch/include/asm/page.h b/arch/loongarch/include/asm/page.h
-> index 53f284a96182..fb5338b352e6 100644
-> --- a/arch/loongarch/include/asm/page.h
-> +++ b/arch/loongarch/include/asm/page.h
-> @@ -82,19 +82,6 @@ typedef struct { unsigned long pgprot; } pgprot_t;
->
->  #define pfn_to_kaddr(pfn)      __va((pfn) << PAGE_SHIFT)
->
-> -#ifdef CONFIG_FLATMEM
-> -
-> -static inline int pfn_valid(unsigned long pfn)
-> -{
-> -       /* avoid <linux/mm.h> include hell */
-> -       extern unsigned long max_mapnr;
-> -       unsigned long pfn_offset = ARCH_PFN_OFFSET;
-> -
-> -       return pfn >= pfn_offset && pfn < max_mapnr;
-> -}
-> -
-> -#endif
-> -
->  #define virt_to_pfn(kaddr)     PFN_DOWN(PHYSADDR(kaddr))
->  #define virt_to_page(kaddr)    pfn_to_page(virt_to_pfn(kaddr))
->
-> diff --git a/arch/m68k/include/asm/page_no.h b/arch/m68k/include/asm/page_no.h
-> index 0a8ccef777fd..2555ec57149d 100644
-> --- a/arch/m68k/include/asm/page_no.h
-> +++ b/arch/m68k/include/asm/page_no.h
-> @@ -26,8 +26,6 @@ extern unsigned long memory_end;
->  #define virt_to_page(addr)     (mem_map + (((unsigned long)(addr)-PAGE_OFFSET) >> PAGE_SHIFT))
->  #define page_to_virt(page)     __va(((((page) - mem_map) << PAGE_SHIFT) + PAGE_OFFSET))
->
-> -#define pfn_valid(pfn)         ((pfn) < max_mapnr)
-> -
->  #define        virt_addr_valid(kaddr)  (((unsigned long)(kaddr) >= PAGE_OFFSET) && \
->                                 ((unsigned long)(kaddr) < memory_end))
->
-> diff --git a/arch/microblaze/include/asm/page.h b/arch/microblaze/include/asm/page.h
-> index 4b8b2fa78fc5..7b9861bcd458 100644
-> --- a/arch/microblaze/include/asm/page.h
-> +++ b/arch/microblaze/include/asm/page.h
-> @@ -112,7 +112,6 @@ extern int page_is_ram(unsigned long pfn);
->  #  define page_to_phys(page)     (page_to_pfn(page) << PAGE_SHIFT)
->
->  #  define ARCH_PFN_OFFSET      (memory_start >> PAGE_SHIFT)
-> -#  define pfn_valid(pfn)       ((pfn) >= ARCH_PFN_OFFSET && (pfn) < (max_mapnr + ARCH_PFN_OFFSET))
->  # endif /* __ASSEMBLY__ */
->
->  #define        virt_addr_valid(vaddr)  (pfn_valid(virt_to_pfn(vaddr)))
-> diff --git a/arch/mips/include/asm/page.h b/arch/mips/include/asm/page.h
-> index 9286f11ff6ad..5978a8dfb917 100644
-> --- a/arch/mips/include/asm/page.h
-> +++ b/arch/mips/include/asm/page.h
-> @@ -224,19 +224,6 @@ extern phys_addr_t __phys_addr_symbol(unsigned long x);
->
->  #define pfn_to_kaddr(pfn)      __va((pfn) << PAGE_SHIFT)
->
-> -#ifdef CONFIG_FLATMEM
-> -
-> -static inline int pfn_valid(unsigned long pfn)
-> -{
-> -       /* avoid <linux/mm.h> include hell */
-> -       extern unsigned long max_mapnr;
-> -       unsigned long pfn_offset = ARCH_PFN_OFFSET;
-> -
-> -       return pfn >= pfn_offset && pfn < max_mapnr;
-> -}
-> -
-> -#endif
-> -
->  #define virt_to_pfn(kaddr)     PFN_DOWN(virt_to_phys((void *)(kaddr)))
->  #define virt_to_page(kaddr)    pfn_to_page(virt_to_pfn(kaddr))
->
-> diff --git a/arch/nios2/include/asm/page.h b/arch/nios2/include/asm/page.h
-> index 6a989819a7c1..0ae7d9ce369b 100644
-> --- a/arch/nios2/include/asm/page.h
-> +++ b/arch/nios2/include/asm/page.h
-> @@ -86,15 +86,6 @@ extern struct page *mem_map;
->
->  # define pfn_to_kaddr(pfn)     __va((pfn) << PAGE_SHIFT)
->
-> -static inline bool pfn_valid(unsigned long pfn)
-> -{
-> -       /* avoid <linux/mm.h> include hell */
-> -       extern unsigned long max_mapnr;
-> -       unsigned long pfn_offset = ARCH_PFN_OFFSET;
-> -
-> -       return pfn >= pfn_offset && pfn < max_mapnr;
-> -}
-> -
->  # define virt_to_page(vaddr)   pfn_to_page(PFN_DOWN(virt_to_phys(vaddr)))
->  # define virt_addr_valid(vaddr)        pfn_valid(PFN_DOWN(virt_to_phys(vaddr)))
->
-> diff --git a/arch/openrisc/include/asm/page.h b/arch/openrisc/include/asm/page.h
-> index aab6e64d6db4..52b0d7e76446 100644
-> --- a/arch/openrisc/include/asm/page.h
-> +++ b/arch/openrisc/include/asm/page.h
-> @@ -80,8 +80,6 @@ typedef struct page *pgtable_t;
->
->  #define page_to_phys(page)      ((dma_addr_t)page_to_pfn(page) << PAGE_SHIFT)
->
-> -#define pfn_valid(pfn)          ((pfn) < max_mapnr)
-> -
->  #define virt_addr_valid(kaddr) (pfn_valid(virt_to_pfn(kaddr)))
->
->  #endif /* __ASSEMBLY__ */
-> diff --git a/arch/parisc/include/asm/page.h b/arch/parisc/include/asm/page.h
-> index 6faaaa3ebe9b..667e703c0e8f 100644
-> --- a/arch/parisc/include/asm/page.h
-> +++ b/arch/parisc/include/asm/page.h
-> @@ -155,10 +155,6 @@ extern int npmem_ranges;
->  #define __pa(x)                        ((unsigned long)(x)-PAGE_OFFSET)
->  #define __va(x)                        ((void *)((unsigned long)(x)+PAGE_OFFSET))
->
-> -#ifndef CONFIG_SPARSEMEM
-> -#define pfn_valid(pfn)         ((pfn) < max_mapnr)
-> -#endif
-> -
->  #ifdef CONFIG_HUGETLB_PAGE
->  #define HPAGE_SHIFT            PMD_SHIFT /* fixed for transparent huge pages */
->  #define HPAGE_SIZE             ((1UL) << HPAGE_SHIFT)
-> diff --git a/arch/powerpc/include/asm/page.h b/arch/powerpc/include/asm/page.h
-> index edf1dd1b0ca9..f2b6bf5687d0 100644
-> --- a/arch/powerpc/include/asm/page.h
-> +++ b/arch/powerpc/include/asm/page.h
-> @@ -117,15 +117,6 @@ extern long long virt_phys_offset;
->
->  #ifdef CONFIG_FLATMEM
->  #define ARCH_PFN_OFFSET                ((unsigned long)(MEMORY_START >> PAGE_SHIFT))
-> -#ifndef __ASSEMBLY__
-> -extern unsigned long max_mapnr;
-> -static inline bool pfn_valid(unsigned long pfn)
-> -{
-> -       unsigned long min_pfn = ARCH_PFN_OFFSET;
-> -
-> -       return pfn >= min_pfn && pfn < max_mapnr;
-> -}
-> -#endif
->  #endif
->
->  #define virt_to_pfn(kaddr)     (__pa(kaddr) >> PAGE_SHIFT)
-> diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
-> index 9f432c1b5289..7fed7c431928 100644
-> --- a/arch/riscv/include/asm/page.h
-> +++ b/arch/riscv/include/asm/page.h
-> @@ -171,11 +171,6 @@ extern phys_addr_t __phys_addr_symbol(unsigned long x);
->
->  #define sym_to_pfn(x)           __phys_to_pfn(__pa_symbol(x))
->
-> -#ifdef CONFIG_FLATMEM
-> -#define pfn_valid(pfn) \
-> -       (((pfn) >= ARCH_PFN_OFFSET) && (((pfn) - ARCH_PFN_OFFSET) < max_mapnr))
-> -#endif
-> -
->  #endif /* __ASSEMBLY__ */
->
->  #define virt_addr_valid(vaddr) ({                                              \
-> diff --git a/arch/sh/include/asm/page.h b/arch/sh/include/asm/page.h
-> index eca5daa43b93..09ac6c7faee0 100644
-> --- a/arch/sh/include/asm/page.h
-> +++ b/arch/sh/include/asm/page.h
-> @@ -169,9 +169,6 @@ typedef struct page *pgtable_t;
->  #define PFN_START              (__MEMORY_START >> PAGE_SHIFT)
->  #define ARCH_PFN_OFFSET                (PFN_START)
->  #define virt_to_page(kaddr)    pfn_to_page(__pa(kaddr) >> PAGE_SHIFT)
-> -#ifdef CONFIG_FLATMEM
-> -#define pfn_valid(pfn)         ((pfn) >= min_low_pfn && (pfn) < max_low_pfn)
-> -#endif
->  #define virt_addr_valid(kaddr) pfn_valid(__pa(kaddr) >> PAGE_SHIFT)
->
->  #include <asm-generic/memory_model.h>
-> diff --git a/arch/sparc/include/asm/page_32.h b/arch/sparc/include/asm/page_32.h
-> index fff8861df107..6be6f683f98f 100644
-> --- a/arch/sparc/include/asm/page_32.h
-> +++ b/arch/sparc/include/asm/page_32.h
-> @@ -130,7 +130,6 @@ extern unsigned long pfn_base;
->  #define ARCH_PFN_OFFSET                (pfn_base)
->  #define virt_to_page(kaddr)    pfn_to_page(__pa(kaddr) >> PAGE_SHIFT)
->
-> -#define pfn_valid(pfn)         (((pfn) >= (pfn_base)) && (((pfn)-(pfn_base)) < max_mapnr))
->  #define virt_addr_valid(kaddr) ((((unsigned long)(kaddr)-PAGE_OFFSET)>>PAGE_SHIFT) < max_mapnr)
->
->  #include <asm-generic/memory_model.h>
-> diff --git a/arch/um/include/asm/page.h b/arch/um/include/asm/page.h
-> index cdbd9653aa14..84866127d074 100644
-> --- a/arch/um/include/asm/page.h
-> +++ b/arch/um/include/asm/page.h
-> @@ -108,7 +108,6 @@ extern unsigned long uml_physmem;
->  #define phys_to_pfn(p) ((p) >> PAGE_SHIFT)
->  #define pfn_to_phys(pfn) PFN_PHYS(pfn)
->
-> -#define pfn_valid(pfn) ((pfn) < max_mapnr)
->  #define virt_addr_valid(v) pfn_valid(phys_to_pfn(__pa(v)))
->
->  #include <asm-generic/memory_model.h>
-> diff --git a/arch/x86/include/asm/page_32.h b/arch/x86/include/asm/page_32.h
-> index df42f8aa99e4..580d71aca65a 100644
-> --- a/arch/x86/include/asm/page_32.h
-> +++ b/arch/x86/include/asm/page_32.h
-> @@ -15,10 +15,6 @@ extern unsigned long __phys_addr(unsigned long);
->  #define __phys_addr_symbol(x)  __phys_addr(x)
->  #define __phys_reloc_hide(x)   RELOC_HIDE((x), 0)
->
-> -#ifdef CONFIG_FLATMEM
-> -#define pfn_valid(pfn)         ((pfn) < max_mapnr)
-> -#endif /* CONFIG_FLATMEM */
-> -
->  #include <linux/string.h>
->
->  static inline void clear_page(void *page)
-> diff --git a/arch/x86/include/asm/page_64.h b/arch/x86/include/asm/page_64.h
-> index 198e03e59ca1..cc6b8e087192 100644
-> --- a/arch/x86/include/asm/page_64.h
-> +++ b/arch/x86/include/asm/page_64.h
-> @@ -39,10 +39,6 @@ extern unsigned long __phys_addr_symbol(unsigned long);
->
->  #define __phys_reloc_hide(x)   (x)
->
-> -#ifdef CONFIG_FLATMEM
-> -#define pfn_valid(pfn)          ((pfn) < max_pfn)
-> -#endif
-> -
->  void clear_page_orig(void *page);
->  void clear_page_rep(void *page);
->  void clear_page_erms(void *page);
-> diff --git a/arch/xtensa/include/asm/page.h b/arch/xtensa/include/asm/page.h
-> index 493eb7083b1a..3267c672cd11 100644
-> --- a/arch/xtensa/include/asm/page.h
-> +++ b/arch/xtensa/include/asm/page.h
-> @@ -189,8 +189,6 @@ static inline unsigned long ___pa(unsigned long va)
->  #endif
->  #define __va(x)        \
->         ((void *)((unsigned long) (x) - PHYS_OFFSET + PAGE_OFFSET))
-> -#define pfn_valid(pfn) \
-> -       ((pfn) >= ARCH_PFN_OFFSET && ((pfn) - ARCH_PFN_OFFSET) < max_mapnr)
->
->  #define virt_to_page(kaddr)    pfn_to_page(__pa(kaddr) >> PAGE_SHIFT)
->  #define page_to_virt(page)     __va(page_to_pfn(page) << PAGE_SHIFT)
-> diff --git a/include/asm-generic/memory_model.h b/include/asm-generic/memory_model.h
-> index a2c8ed60233a..13d2a844d928 100644
-> --- a/include/asm-generic/memory_model.h
-> +++ b/include/asm-generic/memory_model.h
-> @@ -19,6 +19,18 @@
->  #define __page_to_pfn(page)    ((unsigned long)((page) - mem_map) + \
->                                  ARCH_PFN_OFFSET)
->
-> +#ifndef pfn_valid
-> +static inline int pfn_valid(unsigned long pfn)
-> +{
-> +       /* avoid <linux/mm.h> include hell */
-> +       extern unsigned long max_mapnr;
-> +       unsigned long pfn_offset = ARCH_PFN_OFFSET;
-> +
-> +       return pfn >= pfn_offset && pfn < max_mapnr;
-> +}
-> +#define pfn_valid pfn_valid
-> +#endif
-> +
->  #elif defined(CONFIG_SPARSEMEM_VMEMMAP)
->
->  /* memmap is virtually contiguous.  */
-> diff --git a/include/asm-generic/page.h b/include/asm-generic/page.h
-> index 6fc47561814c..c0be2edeb484 100644
-> --- a/include/asm-generic/page.h
-> +++ b/include/asm-generic/page.h
-> @@ -84,8 +84,6 @@ extern unsigned long memory_end;
->  #define page_to_phys(page)      ((dma_addr_t)page_to_pfn(page) << PAGE_SHIFT)
->  #endif
->
-> -#define pfn_valid(pfn)         ((pfn) >= ARCH_PFN_OFFSET && ((pfn) - ARCH_PFN_OFFSET) < max_mapnr)
-> -
->  #define        virt_addr_valid(kaddr)  (((void *)(kaddr) >= (void *)PAGE_OFFSET) && \
->                                 ((void *)(kaddr) < (void *)memory_end))
->
-> --
-> 2.35.1
->
+Only one platform bus is allowed and the logic MMIO region for the
+platform bus is placed at an arbitrarily-chosen address away from the
+PCI region.
 
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+---
+My first approach to getting platform drivers working on UML was by
+adding a minimal PCI-to-platform bridge driver, which worked without
+modifications to virt-pci, but that got shot down:
 
+ https://lore.kernel.org/lkml/20230120-simple-mfd-pci-v1-1-c46b3d6601ef@axis.com/
+---
+ arch/um/drivers/virt-pci.c | 91 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 91 insertions(+)
+
+diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
+index 3ac220dafec4..0ff69d6ad253 100644
+--- a/arch/um/drivers/virt-pci.c
++++ b/arch/um/drivers/virt-pci.c
+@@ -8,6 +8,7 @@
+ #include <linux/virtio.h>
+ #include <linux/virtio_config.h>
+ #include <linux/logic_iomem.h>
++#include <linux/of_platform.h>
+ #include <linux/irqdomain.h>
+ #include <linux/virtio_pcidev.h>
+ #include <linux/virtio-uml.h>
+@@ -39,6 +40,8 @@ struct um_pci_device {
+ 	unsigned long status;
+ 
+ 	int irq;
++
++	bool platform;
+ };
+ 
+ struct um_pci_device_reg {
+@@ -48,6 +51,7 @@ struct um_pci_device_reg {
+ 
+ static struct pci_host_bridge *bridge;
+ static DEFINE_MUTEX(um_pci_mtx);
++static struct um_pci_device *um_pci_platform_device;
+ static struct um_pci_device_reg um_pci_devices[MAX_DEVICES];
+ static struct fwnode_handle *um_pci_fwnode;
+ static struct irq_domain *um_pci_inner_domain;
+@@ -480,6 +484,9 @@ static void um_pci_handle_irq_message(struct virtqueue *vq,
+ 	struct virtio_device *vdev = vq->vdev;
+ 	struct um_pci_device *dev = vdev->priv;
+ 
++	if (!dev->irq)
++		return;
++
+ 	/* we should properly chain interrupts, but on ARCH=um we don't care */
+ 
+ 	switch (msg->op) {
+@@ -561,6 +568,55 @@ static int um_pci_init_vqs(struct um_pci_device *dev)
+ 	return 0;
+ }
+ 
++static void __um_pci_virtio_platform_remove(struct virtio_device *vdev,
++					    struct um_pci_device *dev)
++{
++	virtio_reset_device(vdev);
++	vdev->config->del_vqs(vdev);
++
++	mutex_lock(&um_pci_mtx);
++	um_pci_platform_device = NULL;
++	mutex_unlock(&um_pci_mtx);
++
++	kfree(dev);
++}
++
++static int um_pci_virtio_platform_probe(struct virtio_device *vdev,
++					struct um_pci_device *dev)
++{
++	int ret;
++
++	dev->platform = true;
++
++	mutex_lock(&um_pci_mtx);
++
++	if (um_pci_platform_device) {
++		mutex_unlock(&um_pci_mtx);
++		ret = -EBUSY;
++		goto out_free;
++	}
++
++	ret = um_pci_init_vqs(dev);
++	if (ret) {
++		mutex_unlock(&um_pci_mtx);
++		goto out_free;
++	}
++
++	um_pci_platform_device = dev;
++
++	mutex_unlock(&um_pci_mtx);
++
++	ret = of_platform_default_populate(vdev->dev.of_node, NULL, &vdev->dev);
++	if (ret)
++		__um_pci_virtio_platform_remove(vdev, dev);
++
++	return ret;
++
++out_free:
++	kfree(dev);
++	return ret;
++}
++
+ static int um_pci_virtio_probe(struct virtio_device *vdev)
+ {
+ 	struct um_pci_device *dev;
+@@ -574,6 +630,9 @@ static int um_pci_virtio_probe(struct virtio_device *vdev)
+ 	dev->vdev = vdev;
+ 	vdev->priv = dev;
+ 
++	if (of_device_is_compatible(vdev->dev.of_node, "simple-bus"))
++		return um_pci_virtio_platform_probe(vdev, dev);
++
+ 	mutex_lock(&um_pci_mtx);
+ 	for (i = 0; i < MAX_DEVICES; i++) {
+ 		if (um_pci_devices[i].dev)
+@@ -623,6 +682,12 @@ static void um_pci_virtio_remove(struct virtio_device *vdev)
+ 	struct um_pci_device *dev = vdev->priv;
+ 	int i;
+ 
++	if (dev->platform) {
++		of_platform_depopulate(&vdev->dev);
++		__um_pci_virtio_platform_remove(vdev, dev);
++		return;
++	}
++
+         /* Stop all virtqueues */
+         virtio_reset_device(vdev);
+         vdev->config->del_vqs(vdev);
+@@ -860,6 +925,30 @@ void *pci_root_bus_fwnode(struct pci_bus *bus)
+ 	return um_pci_fwnode;
+ }
+ 
++static long um_pci_map_platform(unsigned long offset, size_t size,
++				const struct logic_iomem_ops **ops,
++				void **priv)
++{
++	if (!um_pci_platform_device)
++		return -ENOENT;
++
++	*ops = &um_pci_device_bar_ops;
++	*priv = &um_pci_platform_device->resptr[0];
++
++	return 0;
++}
++
++static const struct logic_iomem_region_ops um_pci_platform_ops = {
++	.map = um_pci_map_platform,
++};
++
++static struct resource virt_platform_resource = {
++	.name = "platform",
++	.start = 0x10000000,
++	.end = 0x1fffffff,
++	.flags = IORESOURCE_MEM,
++};
++
+ static int __init um_pci_init(void)
+ {
+ 	int err, i;
+@@ -868,6 +957,8 @@ static int __init um_pci_init(void)
+ 				       &um_pci_cfgspace_ops));
+ 	WARN_ON(logic_iomem_add_region(&virt_iomem_resource,
+ 				       &um_pci_iomem_ops));
++	WARN_ON(logic_iomem_add_region(&virt_platform_resource,
++				       &um_pci_platform_ops));
+ 
+ 	if (WARN(CONFIG_UML_PCI_OVER_VIRTIO_DEVICE_ID < 0,
+ 		 "No virtio device ID configured for PCI - no PCI support\n"))
+
+---
+base-commit: 1b929c02afd37871d5afb9d498426f83432e71c2
+change-id: 20230127-uml-pci-platform-ef851ba75f80
+
+Best regards,
 -- 
-Best Regards
- Guo Ren
+Vincent Whitchurch <vincent.whitchurch@axis.com>
+
 
 _______________________________________________
 linux-um mailing list
