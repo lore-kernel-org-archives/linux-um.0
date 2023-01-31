@@ -4,74 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CA1DC38142
-	for <linux-um@archiver.kernel.org>; Tue, 31 Jan 2023 04:18:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EC5FC38142
+	for <linux-um@archiver.kernel.org>; Tue, 31 Jan 2023 07:23:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:
-	Subject:Cc:To:From:Date:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=5uGnj4tOvsyL6RU4+1XBpMbD8eHIp6I7VrBQ+Lc0wEk=; b=jg/
-	io6vBoyv2GoZjsmVIwjFmKvestpEMS1XcAKBpf/yFfIaxImGUYGGrRfNbaJ0rm7c3Zkdn0FKYd+Gs
-	7D9JtqKEz5pYBffSN4m6EGKNm0Nj8fHfBDsj+n8EDrcRuLi/tTlsGN6vx8ZHI0h006XsspOQWk17R
-	sqn0sSJwI2ojSsKuAEQLLGrdHm+puF8+/VGd8nlEuDoZx1KCOUctIvqAorS+POsfqocjlJe821kWD
-	ZT/GQR1RHZG2FXrbYniAxz+oB2p4eaZdFQdDd3wNHAYFeBjtpNJDqyM1CBgU8Zze/AEzB1EvQuLpE
-	r2K8jurt1EgzP+PgAQ3xTK7D5MVJYOA==;
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=nZdsgk/gm/1jOUd9AAibHx3Ts+19G1q5ylvDMp3LDiI=; b=XMEvbNFWwiz0C5Fm08uoDLnpFM
+	88WXz+4yUUMfR+nh1qQQ/qq/NQMhLF3eX3lnUtDa7w9ZB8jZW+mZOGyW/k7I9RP8AsBpqaWz55fDa
+	qu3ha5VGUSsL/yC5HniR30/1cZtTaX2jY7QYEoopFCNCBTgrdO8X7N6Tik8RPZVYJyKYajt3h44Nb
+	CPEZyWzsUUVO6Y6hWG8xZSf9KZntrFlDbnmoWOp3sfoJtSh9nVHv3sbnZ44uQrXYCERXetYV2r6tT
+	7DULx598Zqc2ksjsMLwGbSM749JFPTvrjzgLX7rgYpaJ4V2i6xdtlbpBx6lW3FSLBv3C9ljfQjHql
+	HqjccJww==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pMi5y-006F5i-5b; Tue, 31 Jan 2023 04:18:10 +0000
-Received: from mail-qt1-x831.google.com ([2607:f8b0:4864:20::831])
+	id 1pMkys-006Yxk-Lr; Tue, 31 Jan 2023 07:23:02 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pMi5v-006F5D-IB
-	for linux-um@lists.infradead.org; Tue, 31 Jan 2023 04:18:09 +0000
-Received: by mail-qt1-x831.google.com with SMTP id m26so12314104qtp.9
-        for <linux-um@lists.infradead.org>; Mon, 30 Jan 2023 20:18:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=efficientek-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:reply-to:message-id:subject
-         :cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LBIQUzC7/5QMM7LYpQr4X/+HmNwW1KBNqBv72Lc3P+A=;
-        b=JjNp2g3oeR7aG3TFpYV6ufC8YxDH88f+UqmqZAJrCYCwOseNCZnKzqDbWzwd7Zom7J
-         mwZRY6GcIdQpI9j+qp6+mqIrjZHDFZThaJCaCVR1hfSIiRrQTJqAOlIV+nd0Z9HcO6fK
-         49P/mDwpdaWWm74SpC+6PDGawvAPRM6Y/7jTFG7C2Rb9nYFwnbMB7/OnHLpNHo+tnsIC
-         nwCxDnW0LUiUY7UROeFfGRSM2JbE8AYFsMb2DTWAfryZTdv4E/ZIy2zloGV+l2SOtyNd
-         vkYKP0iJcO1GBwXi5gDjQLIY8hQdFH/4CkoRWPTd9OV+Y+deX0pCXZDqchwjPLFr4tI7
-         a6YQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:reply-to:message-id:subject
-         :cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LBIQUzC7/5QMM7LYpQr4X/+HmNwW1KBNqBv72Lc3P+A=;
-        b=wxBdtsnpZ+2srBETt/Fc/PZSw4v1XWSOBLKvYea0P/vQpH7diCFvmLCXZ/VvbbY+aI
-         ugJ6pVYGfd9jh2j54jwdegu7yN6MPguALf6uWJ0Xap/hCiyvhatXI9BLWj5ehzt1gGUE
-         Sc/H/zm5UgkRWQGHgPVbGH0gqqYmvewplEZmP0WewtmTOozYrf/uhpNm1Z74N57JOQ+V
-         /lvcVaklWS+5rIMxyrHbMdELkpOudrA4fKfDVYJvPEqXUdiq2o6NmD2rSWt5RmIMorBW
-         EUZ73Hkk05Fsm4mssisfZJhqpJwaZFT0SYEO6jrFdh7EzNqFlT0M2Wz/EVG/miTBIq1X
-         CB3A==
-X-Gm-Message-State: AO0yUKX2+yfvQ4YeSAZFbj3JjxscP8Ys+dRph1Rmnl1nksC7pAdolL+O
-	kr19YUtnKcSDAwdkqspPyIgZH6ipEDcgrEzT
-X-Google-Smtp-Source: AK7set/PEdxjr+rDF9Y00GB7CaSSRiOy5Ksuzp+bpQJMctwBXKaxG7l0fi9bXmRVvwpAyGp9Mc+5vg==
-X-Received: by 2002:a05:622a:4cf:b0:3b8:385f:d72e with SMTP id q15-20020a05622a04cf00b003b8385fd72emr19755060qtx.48.1675138679419;
-        Mon, 30 Jan 2023 20:17:59 -0800 (PST)
-Received: from crass-HP-ZBook-15-G2 ([37.218.244.251])
-        by smtp.gmail.com with ESMTPSA id pi48-20020a05620a37b000b006e16dcf99c8sm9371165qkn.71.2023.01.30.20.17.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Jan 2023 20:17:58 -0800 (PST)
-Date: Mon, 30 Jan 2023 22:17:48 -0600
-From: Glenn Washburn <development@efficientek.com>
-To: linux-um <linux-um@lists.infradead.org>
-Cc: Richard Weinberger <richard@nod.at>, Johannes Berg
- <johannes@sipsolutions.net>, Anton Ivanov <anton.ivanov@kot-begemot.co.uk>,
- Glenn Washburn <development@efficientek.com>
-Subject: Using ftrace
-Message-ID: <20230130221748.5c472da5@crass-HP-ZBook-15-G2>
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.34; x86_64-pc-linux-gnu)
+	id 1pMkyp-006Yvr-Lg
+	for linux-um@lists.infradead.org; Tue, 31 Jan 2023 07:23:01 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id EEAA6622623A;
+	Tue, 31 Jan 2023 08:22:45 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id Vrka5epifJMK; Tue, 31 Jan 2023 08:22:45 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 91D596399237;
+	Tue, 31 Jan 2023 08:22:45 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id FIQUPW8xperW; Tue, 31 Jan 2023 08:22:45 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 71500622623A;
+	Tue, 31 Jan 2023 08:22:45 +0100 (CET)
+Date: Tue, 31 Jan 2023 08:22:45 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+To: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Cc: Glenn Washburn <development@efficientek.com>, 
+	linux-um <linux-um@lists.infradead.org>, 
+	Johannes Berg <johannes@sipsolutions.net>
+Message-ID: <1215849138.84344.1675149765214.JavaMail.zimbra@nod.at>
+In-Reply-To: <aa957c80-1aeb-8fde-440e-6e4408c59559@kot-begemot.co.uk>
+References: <20230130221748.5c472da5@crass-HP-ZBook-15-G2> <aa957c80-1aeb-8fde-440e-6e4408c59559@kot-begemot.co.uk>
+Subject: Re: Using ftrace
 MIME-Version: 1.0
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: Using ftrace
+Thread-Index: Kt3tdRZa2IRKl1d6pRQid7ZHX4g4pw==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230130_201807_871099_C511B9BA 
-X-CRM114-Status: UNSURE (   7.58  )
+X-CRM114-CacheID: sfid-20230130_232259_896692_099267BE 
+X-CRM114-Status: UNSURE (   7.09  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -84,21 +71,26 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Reply-To: development@efficientek.com
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-I'm trying to use the ftrace facility within UML. It appears as though
-it exists in the menuconfig, but I can't seem to get the kernel to
-recognize the tracefs filesystem. I'm wondering if someone can confirm
-that either ftrace does or does not work in UML.
-
-Thanks,
-Glenn
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkFudG9uIEl2YW5vdiIgPGFu
+dG9uLml2YW5vdkBrb3QtYmVnZW1vdC5jby51az4KPiBPbiAzMS8wMS8yMDIzIDA0OjE3LCBHbGVu
+biBXYXNoYnVybiB3cm90ZToKPj4gSSdtIHRyeWluZyB0byB1c2UgdGhlIGZ0cmFjZSBmYWNpbGl0
+eSB3aXRoaW4gVU1MLiBJdCBhcHBlYXJzIGFzIHRob3VnaAo+PiBpdCBleGlzdHMgaW4gdGhlIG1l
+bnVjb25maWcsIGJ1dCBJIGNhbid0IHNlZW0gdG8gZ2V0IHRoZSBrZXJuZWwgdG8KPj4gcmVjb2du
+aXplIHRoZSB0cmFjZWZzIGZpbGVzeXN0ZW0uIEknbSB3b25kZXJpbmcgaWYgc29tZW9uZSBjYW4g
+Y29uZmlybQo+PiB0aGF0IGVpdGhlciBmdHJhY2UgZG9lcyBvciBkb2VzIG5vdCB3b3JrIGluIFVN
+TC4KPiAKPiBJIGhhdmUgbm90IHVzZWQgaXQuIFdlIGhhdmUgbm90IGhhZCBhbnkgcmVxdWVzdHMg
+cmVsYXRlZCB0byBpdCBlaXRoZXIKPiAKPiBJIHdpbGwgbG9vayBpbnRvIGl0LgoKVHJhY2luZyBp
+dHNlbGYgc2hvdWxkIHdvcmsuIEJ1dCBmdW5jdGlvbiB0cmFjaW5nIGlzIG5vdCBzdXBwb3J0ZWQu
+CllvdSdsbCBnZXQgdHJhY2VmcyBhcyBzb29uIHlvdSBzZWxlY3Qgb25lIHRyYWNlciAoc3VjaCBh
+cyBDT05GSUdfSVJRU09GRl9UUkFDRVIpLgoKQWRkaW5nIGZ1bmN0aW9uIChhbmQgZnVuY3Rpb24g
+Z3JhcGgpIHRyYWNpbmcgdG8gVU1MIGlzIHBvc3NpYmxlIGJ1dCBhIGJpdCBvZiB3b3JrLgpZb3Ug
+bmVlZCB0byBmaW5kIGEgd2F5IHRvIGltcGxlbWVudCBhbGwgb2YgZnRyYWNlcyBtY291bnQgaG9v
+a3MgZm9yIFVNTC4KClRoYW5rcywKLy9yaWNoYXJkCgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlz
+dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2xpbnV4LXVtCg==
