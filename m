@@ -4,78 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64578C38142
-	for <linux-um@archiver.kernel.org>; Tue, 31 Jan 2023 18:44:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27E40C64EC4
+	for <linux-um@archiver.kernel.org>; Tue, 31 Jan 2023 18:55:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:
-	In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vutE4uCwMS5CVQ92dxDarumturOwOJ0PfwfcLYlfXYE=; b=RDZFprfYdZDiXq
-	Sf2fYPbeQ8AGNFE/pqnInx1uE4YU68jDWk5pvsKDH1CNjaOTzVgn+U/vVdllPWEuPmM3nckLx1+US
-	mRit37+VKiD7ANI5HRkVH2WCb+bb4thQWSAR+MwTjASGmgtr+dxGX/XC098oNlR9aZySnypKdBr7G
-	B30I4mNuBQd1Z4G2+2dFFOJMDvF8nU/uheTt0dk17VoZLZJt/qyPkID+TtNjFkUunQOIyHqgT7TNE
-	0B+7XjiexTpZQ+EcBfCqlyTbUnng3mPfo9MIFqWdWVaHINMjQ7PyW5WYy000UKijaF/q/4KuEnw+0
-	SAyHFuo0HHqAhJEjfVrQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=OjbOBONwiwB9Q5nPVuWcJZUT1F+7iAGS8y/JeSmzygE=; b=BVlQ5rLjs1brEn/axS+JqEByHo
+	V8GSJ0AbTMrHOs/PVFJkQUQ3d0lHEXe1aohWEDoqz9dZvhh2PN7FKNOig4ZlvLCxllLV9DGUf4HEe
+	6FBgHY6VVjVePMWvDP6Z8Pwnk14OGbqu98O1dLOvKqEKXRVlTq6/MukvEb9tiCetVEd+V/c2nd1eE
+	KxtvLcopcuPSsGZ8wah8T+oKpe1aP6e+3y14MIbEUGW90Op2j0Z2q73QqNHPMXaLTasSEw+FDdwtF
+	5EiTE4NAH4LjO/AiwE9AU8TOz92VlRfuWfKu2DJKCbIgVU+EhM/TKbGAl/qD7mqth9u0RoZUSxuCu
+	atq24S7g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pMvcf-0091Im-63; Tue, 31 Jan 2023 18:44:49 +0000
-Received: from mail-qt1-x82c.google.com ([2607:f8b0:4864:20::82c])
+	id 1pMvnA-0092Q7-Rw; Tue, 31 Jan 2023 18:55:40 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pMvcc-0091Hz-3s
-	for linux-um@lists.infradead.org; Tue, 31 Jan 2023 18:44:47 +0000
-Received: by mail-qt1-x82c.google.com with SMTP id m26so14325721qtp.9
-        for <linux-um@lists.infradead.org>; Tue, 31 Jan 2023 10:44:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=efficientek-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:reply-to:references
-         :in-reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=bhSkd/j2uPDlX15OkSCXywuoGprRbUO9ekmEG/ONE60=;
-        b=GQx4/IFVpid/kVVPWHvrQh1UVNxrknAKCWWP3OiFpYr9izB9S0WmrYcYYsvrdfbxM7
-         YN9rqLc4PXUSAYZ4AzzkipFTHidqwcuACSYghi/Tgyb1gJ9QE66+ZmgRC3rN4SpITqU0
-         9EyUBtTnsJ3R/50byptVvaMYMJzXxVQOIHFQ0sycnkQXq68n8GtNSdosXW9dRE0cndMx
-         1b7lqCItGDdvsmrrqzMZH5HPsjgTVKyguQ+/CdD4ooa7Jj5NqK92mRX8SJ8FFzgcKcFT
-         IGq5ar6Opr/w4xz2QpsQ5OrCDlOjmltyM3cy7EJtxIpv6Ll3S892obJdSLrdakUFg+2h
-         UPpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:reply-to:references
-         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bhSkd/j2uPDlX15OkSCXywuoGprRbUO9ekmEG/ONE60=;
-        b=j//dAz/GdDfW3DHnoNBIihQ8jeczeo7aON04urLYXE1v0919ufAetXQYJQw0X1e5AK
-         coWcY5oWDw9HLjNd+gDQwHkqsXQP9L2iJZo1CjadH1qfdLcm4Z5zfW99wDNcO0Pu1hrY
-         tWiwZhfpcfSkqOZznj/xzRffOokSW3fJb2Oxx6rfx5+0n5/uIhvgTKAHRQHopN/Z9LjM
-         0SfKTypHXXBecDE0+Zsft8PZIBfDf5sWTPpgTeNbaEmA9uQsK6tkwKMK+HqgPhCQhWkf
-         yMD8NjOrnuOSnIWxvPmCkgaOMeL/jXE8BUtcKfcY/q6F+jM88vjC1F+mi8koioDJS+IC
-         i25w==
-X-Gm-Message-State: AFqh2krtsI949wXcOhxiPUDjRjQi5c7aa8duJqExiIdWFLJDqFgrMUTk
-	m5OK733bMyT1AgDKB3lPGVzQbg==
-X-Google-Smtp-Source: AMrXdXswOmTVmW2zIaRe2I8UhWHud5zoaCEy8R/A3eD8uXyUBEO9WRldxmqHJU+NPZ9nx9cqsJmOBQ==
-X-Received: by 2002:a05:622a:1a27:b0:3b7:ec1b:1fa7 with SMTP id f39-20020a05622a1a2700b003b7ec1b1fa7mr56969869qtb.43.1675190684534;
-        Tue, 31 Jan 2023 10:44:44 -0800 (PST)
-Received: from crass-HP-ZBook-15-G2 ([37.218.244.251])
-        by smtp.gmail.com with ESMTPSA id ay41-20020a05620a17a900b0071a49ac0e05sm2884906qkb.111.2023.01.31.10.44.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Jan 2023 10:44:44 -0800 (PST)
-Date: Tue, 31 Jan 2023 12:44:35 -0600
-From: Glenn Washburn <development@efficientek.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, linux-um
- <linux-um@lists.infradead.org>, Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: Using ftrace
-Message-ID: <20230131124435.1f3cfc16@crass-HP-ZBook-15-G2>
-In-Reply-To: <1215849138.84344.1675149765214.JavaMail.zimbra@nod.at>
-References: <20230130221748.5c472da5@crass-HP-ZBook-15-G2>
-	<aa957c80-1aeb-8fde-440e-6e4408c59559@kot-begemot.co.uk>
-	<1215849138.84344.1675149765214.JavaMail.zimbra@nod.at>
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.34; x86_64-pc-linux-gnu)
+	id 1pMvmr-0092Ig-KX; Tue, 31 Jan 2023 18:55:23 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id B440CB81E69;
+	Tue, 31 Jan 2023 18:55:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 249B8C433EF;
+	Tue, 31 Jan 2023 18:55:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1675191318;
+	bh=bIDjyyvdysd52cz3wo+R2FqIpQuhXwaSP+2JinM77Zs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=p4r9YCVihzZrIRlizFq96lF4LsuRcYuXyit+cVXFPxJSxGfL99cms2/SSKpvkF2Pp
+	 NgIawOhOvw555KfS+LAiMfG5/YT2a/THCQd4ucSFldwug8pgOxrs80vH+lCVDLHIZh
+	 fh6CSOEpoCrswZLqAXRWz9pZ9CFIa58ZjTeMXFlgy8V6KmgUqFk322AZ/O2du+jfxI
+	 cQP8VEptS2HT9jSp8zZqLDDlrzS+XSn+HUeeyHjnm0LO863o/QOiqT647VANwYetka
+	 9TpahVOYB0s8YL82xibnQ7Ggye7lO/va5K0QbIxfYIjwKYESn8Y2//JUV74+mpgZ7e
+	 krHdpZB95Rbtg==
+Date: Tue, 31 Jan 2023 18:55:07 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Arnd Bergmann <arnd@arndb.de>, Brian Cain <bcain@quicinc.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Greg Ungerer <gerg@linux-m68k.org>, Guo Ren <guoren@kernel.org>,
+	Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
+	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>,
+	Palmer Dabbelt <palmer@dabbelt.com>, Rich Felker <dalias@libc.org>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>,
+	Stafford Horne <shorne@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Vineet Gupta <vgupta@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-mm@kvack.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+	linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	openrisc@lists.librecores.org, sparclinux@vger.kernel.org,
+	x86@kernel.org, Huacai Chen <chenhuacai@loongson.cn>
+Subject: Re: [PATCH v2 4/4] mm, arch: add generic implementation of
+ pfn_valid() for FLATMEM
+Message-ID: <Y9lkCz73v7/iyyLj@spud>
+References: <20230129124235.209895-1-rppt@kernel.org>
+ <20230129124235.209895-5-rppt@kernel.org>
+ <Y9lULIIOneBUFE/E@spud>
+ <Y9lg7R1Yd931C+y5@kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <Y9lg7R1Yd931C+y5@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230131_104446_399143_4FDC072D 
-X-CRM114-Status: GOOD (  17.21  )
+X-CRM114-CacheID: sfid-20230131_105521_978144_88AD2986 
+X-CRM114-Status: GOOD (  29.58  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,32 +95,101 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Reply-To: development@efficientek.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============2009483132248443624=="
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-T24gVHVlLCAzMSBKYW4gMjAyMyAwODoyMjo0NSArMDEwMCAoQ0VUKQpSaWNoYXJkIFdlaW5iZXJn
-ZXIgPHJpY2hhcmRAbm9kLmF0PiB3cm90ZToKCj4gLS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAt
-LS0tLQo+ID4gVm9uOiAiQW50b24gSXZhbm92IiA8YW50b24uaXZhbm92QGtvdC1iZWdlbW90LmNv
-LnVrPgo+ID4gT24gMzEvMDEvMjAyMyAwNDoxNywgR2xlbm4gV2FzaGJ1cm4gd3JvdGU6Cj4gPj4g
-SSdtIHRyeWluZyB0byB1c2UgdGhlIGZ0cmFjZSBmYWNpbGl0eSB3aXRoaW4gVU1MLiBJdCBhcHBl
-YXJzIGFzCj4gPj4gdGhvdWdoIGl0IGV4aXN0cyBpbiB0aGUgbWVudWNvbmZpZywgYnV0IEkgY2Fu
-J3Qgc2VlbSB0byBnZXQgdGhlCj4gPj4ga2VybmVsIHRvIHJlY29nbml6ZSB0aGUgdHJhY2VmcyBm
-aWxlc3lzdGVtLiBJJ20gd29uZGVyaW5nIGlmCj4gPj4gc29tZW9uZSBjYW4gY29uZmlybSB0aGF0
-IGVpdGhlciBmdHJhY2UgZG9lcyBvciBkb2VzIG5vdCB3b3JrIGluCj4gPj4gVU1MLgo+ID4gCj4g
-PiBJIGhhdmUgbm90IHVzZWQgaXQuIFdlIGhhdmUgbm90IGhhZCBhbnkgcmVxdWVzdHMgcmVsYXRl
-ZCB0byBpdAo+ID4gZWl0aGVyCj4gPiAKPiA+IEkgd2lsbCBsb29rIGludG8gaXQuCj4gCj4gVHJh
-Y2luZyBpdHNlbGYgc2hvdWxkIHdvcmsuIEJ1dCBmdW5jdGlvbiB0cmFjaW5nIGlzIG5vdCBzdXBw
-b3J0ZWQuCj4gWW91J2xsIGdldCB0cmFjZWZzIGFzIHNvb24geW91IHNlbGVjdCBvbmUgdHJhY2Vy
-IChzdWNoIGFzCj4gQ09ORklHX0lSUVNPRkZfVFJBQ0VSKS4KCk9rYXksIHRoYXQgbWFrZXMgc2Vu
-c2UuIFllcywgSSB3YXMgcmVhbGx5IGFza2luZyBhYm91dCBmdW5jdGlvbgp0cmFjaW5nLgoKPiBB
-ZGRpbmcgZnVuY3Rpb24gKGFuZCBmdW5jdGlvbiBncmFwaCkgdHJhY2luZyB0byBVTUwgaXMgcG9z
-c2libGUgYnV0IGEKPiBiaXQgb2Ygd29yay4gWW91IG5lZWQgdG8gZmluZCBhIHdheSB0byBpbXBs
-ZW1lbnQgYWxsIG9mIGZ0cmFjZXMKPiBtY291bnQgaG9va3MgZm9yIFVNTC4KClNvdW5kcyBsaWtl
-IG1vcmUgdGhhbiBJIHdhbnQgdG8gaW52ZXN0IGF0IHRoaXMgcG9pbnQuIEknbGwgZ2V0IG9uCndp
-dGhvdXQgaXQgZm9yIHRoZSB0aW1lIGJlaW5nLiBUaGFua3MgZm9yIHRoZSBjb25maXJtYXRpb24u
-IAoKR2xlbm4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6
-Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
+
+--===============2009483132248443624==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="hiaCFsst32mLBZni"
+Content-Disposition: inline
+
+
+--hiaCFsst32mLBZni
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi Mike,
+
+On Tue, Jan 31, 2023 at 08:41:49PM +0200, Mike Rapoport wrote:
+> On Tue, Jan 31, 2023 at 05:47:24PM +0000, Conor Dooley wrote:
+> > On Sun, Jan 29, 2023 at 02:42:35PM +0200, Mike Rapoport wrote:
+> > > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> > >=20
+> > > Every architecture that supports FLATMEM memory model defines its own
+> > > version of pfn_valid() that essentially compares a pfn to max_mapnr.
+> > >=20
+> > > Use mips/powerpc version implemented as static inline as a generic
+> > > implementation of pfn_valid() and drop its per-architecture definitio=
+ns.
+> > >=20
+> > > Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+> > > Acked-by: Arnd Bergmann <arnd@arndb.de>
+> > > Acked-by: Guo Ren <guoren@kernel.org>		# csky
+> > > Acked-by: Huacai Chen <chenhuacai@loongson.cn>	# LoongArch
+> > > Acked-by: Stafford Horne <shorne@gmail.com>	# OpenRISC
+> >=20
+> > Hmm, so this landed in linux-next today and I bisected a boot failure in
+> > my CI to it. However, I am not really sure if it is a real issue worth
+> > worrying about as the platform it triggered on is supposed to be using
+> > SPARSEMEM, but isn't.
+> > I had thought that my CI was using a config with SPARSEMEM since that
+> > became required for riscv defconfig builds to boot in v6.1-rc1, but I
+> > must have just forgotten to add it to my $platform_defconfig builds too.
+> > However, those $platform_defconfig builds continued booting without
+> > SPARSEMEM enabled until today.
+>=20
+> The issue seems to be that the generic pfn_valid() does not take into
+> account pfn_offset when it compares it with max_mapnr.
+> Can you please test with the patch below?
+>=20
+> diff --git a/include/asm-generic/memory_model.h b/include/asm-generic/mem=
+ory_model.h
+> index 13d2a844d928..6796abe1900e 100644
+> --- a/include/asm-generic/memory_model.h
+> +++ b/include/asm-generic/memory_model.h
+> @@ -26,7 +26,7 @@ static inline int pfn_valid(unsigned long pfn)
+>  	extern unsigned long max_mapnr;
+>  	unsigned long pfn_offset =3D ARCH_PFN_OFFSET;
+> =20
+> -	return pfn >=3D pfn_offset && pfn < max_mapnr;
+> +	return pfn >=3D pfn_offset && (pfn - pfn_offset) < max_mapnr;
+>  }
+>  #define pfn_valid pfn_valid
+>  #endif
+
+Gave that a go, board is booting properly again! Feel free to add a:
+Tested-by: Conor Dooley <conor.dooley@microchip.com>
+
+Thanks for the prompt fix!
+
+
+--hiaCFsst32mLBZni
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCY9lkCwAKCRB4tDGHoIJi
+0pIDAP9nc8RsXGyfp84b29PfLE6bd1djEIZ71+YYWPrhRbOT0QEAs5hvd2Aq0mES
+TzWIEs2xL7+wjwVIWLwPjr1kP0shHA0=
+=AQg2
+-----END PGP SIGNATURE-----
+
+--hiaCFsst32mLBZni--
+
+
+--===============2009483132248443624==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
+
+--===============2009483132248443624==--
+
