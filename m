@@ -4,86 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 27E40C64EC4
-	for <linux-um@archiver.kernel.org>; Tue, 31 Jan 2023 18:55:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0135C636CC
+	for <linux-um@archiver.kernel.org>; Tue, 31 Jan 2023 22:05:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=OjbOBONwiwB9Q5nPVuWcJZUT1F+7iAGS8y/JeSmzygE=; b=BVlQ5rLjs1brEn/axS+JqEByHo
-	V8GSJ0AbTMrHOs/PVFJkQUQ3d0lHEXe1aohWEDoqz9dZvhh2PN7FKNOig4ZlvLCxllLV9DGUf4HEe
-	6FBgHY6VVjVePMWvDP6Z8Pwnk14OGbqu98O1dLOvKqEKXRVlTq6/MukvEb9tiCetVEd+V/c2nd1eE
-	KxtvLcopcuPSsGZ8wah8T+oKpe1aP6e+3y14MIbEUGW90Op2j0Z2q73QqNHPMXaLTasSEw+FDdwtF
-	5EiTE4NAH4LjO/AiwE9AU8TOz92VlRfuWfKu2DJKCbIgVU+EhM/TKbGAl/qD7mqth9u0RoZUSxuCu
-	atq24S7g==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=Oy9qB29PdYTUMMf7QKHZEmB1twMEkUfzJcjdwN6q8aU=; b=R5WeqKBcAeLFMi
+	3fFtHL0uwXB00QcfgTgyqC6ZClTvDtGmS1RCbHvI+p0MrXsnxv/U8ggkEedotLgUS6Aa6tVXMK4nF
+	Q8E4bn/CXMtRz9HCr5WtDidf7+mZbf1NczBVbLNrOZS/EC8r8ugHLbhHKCWPii1+rZk3Bh/5R3XCx
+	dOGSN4f5ysN2EcSmgMgzdX7lFmrbjSq3MSxTgZ1gh0r8ZWz0a0gctlPg7HPPuYKpOP+wSnOeT+TQ4
+	AFG8W35q3zWcwXsuNSy5rXk8d6ks1GgWZY6utkEumf9nSazYffR3TYAAIKBlbGWjrlgu4iMKOSkTu
+	SwRAQAK+vxTeYwCFN19A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pMvnA-0092Q7-Rw; Tue, 31 Jan 2023 18:55:40 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1pMylF-009TLr-4l; Tue, 31 Jan 2023 22:05:53 +0000
+Received: from mail-oa1-x2b.google.com ([2001:4860:4864:20::2b])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pMvmr-0092Ig-KX; Tue, 31 Jan 2023 18:55:23 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id B440CB81E69;
-	Tue, 31 Jan 2023 18:55:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 249B8C433EF;
-	Tue, 31 Jan 2023 18:55:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1675191318;
-	bh=bIDjyyvdysd52cz3wo+R2FqIpQuhXwaSP+2JinM77Zs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=p4r9YCVihzZrIRlizFq96lF4LsuRcYuXyit+cVXFPxJSxGfL99cms2/SSKpvkF2Pp
-	 NgIawOhOvw555KfS+LAiMfG5/YT2a/THCQd4ucSFldwug8pgOxrs80vH+lCVDLHIZh
-	 fh6CSOEpoCrswZLqAXRWz9pZ9CFIa58ZjTeMXFlgy8V6KmgUqFk322AZ/O2du+jfxI
-	 cQP8VEptS2HT9jSp8zZqLDDlrzS+XSn+HUeeyHjnm0LO863o/QOiqT647VANwYetka
-	 9TpahVOYB0s8YL82xibnQ7Ggye7lO/va5K0QbIxfYIjwKYESn8Y2//JUV74+mpgZ7e
-	 krHdpZB95Rbtg==
-Date: Tue, 31 Jan 2023 18:55:07 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Arnd Bergmann <arnd@arndb.de>, Brian Cain <bcain@quicinc.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Greg Ungerer <gerg@linux-m68k.org>, Guo Ren <guoren@kernel.org>,
-	Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>,
-	Palmer Dabbelt <palmer@dabbelt.com>, Rich Felker <dalias@libc.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>,
-	Stafford Horne <shorne@gmail.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Vineet Gupta <vgupta@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	openrisc@lists.librecores.org, sparclinux@vger.kernel.org,
-	x86@kernel.org, Huacai Chen <chenhuacai@loongson.cn>
-Subject: Re: [PATCH v2 4/4] mm, arch: add generic implementation of
- pfn_valid() for FLATMEM
-Message-ID: <Y9lkCz73v7/iyyLj@spud>
-References: <20230129124235.209895-1-rppt@kernel.org>
- <20230129124235.209895-5-rppt@kernel.org>
- <Y9lULIIOneBUFE/E@spud>
- <Y9lg7R1Yd931C+y5@kernel.org>
+	id 1pMylC-009TKb-Fq
+	for linux-um@lists.infradead.org; Tue, 31 Jan 2023 22:05:51 +0000
+Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-163bd802238so9104300fac.1
+        for <linux-um@lists.infradead.org>; Tue, 31 Jan 2023 14:05:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=MyxDjyy2IlJ3p3i03mgTiG6/EEQfhrOoRC/1/YKunrE=;
+        b=jklVhsU1uN06i5ESEpD7V3l9NjUozxMd83fs49Vd7DindmvFlRelwkePu4K0/iMOr2
+         XwdKWjM1j8mMx3fB8OyLCKTZDnhKG95j+Hfhm7jhJgXvhTEsKhHbf62Zqbsezh9GYweI
+         T6r30NHXRaW9xzU22ULKGF04Jvf+NGi12Hyuq3ZyMHCEFzaqdTZyjeFcebVvenRRk0dj
+         kqnZsgShLi9+xc7XwzuDyiX2QlRHdKuX45gZSnBHaLTZ7GzsK9xS3FoqBR1ttT6VCqfJ
+         EBuUv8D2ii2meYTMDluCnAws3crQXsnz2ULVPKslpD4tRlsYMCK9F5nQiSgMAPM/SSJr
+         41Vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MyxDjyy2IlJ3p3i03mgTiG6/EEQfhrOoRC/1/YKunrE=;
+        b=HBVYzG7cvWVpsWryD9s3qSFECIY4CWI09Pno4qFA66biTPxY1/ShfwiKAZ502Z6Obf
+         Mf+LepOw7PldlFl2JdJcBwSXOuwcnX/R6bYQGH9TQ5UzgC22D8rSOkTsu1KDp5XuvWIb
+         e8wxiK8aH0d/J+U4Wpv7kkBZQ3nd8cNHsMN9rMQbjJBKhVRonjWlWKoFi+QcgvPd2Zuw
+         YS2tICsj9CEbVwrT+/8cvM6ganvFcMhPKuWzy7V0V3FOefjicFqkgX8t5k+2FCfTtfM8
+         QcVMjvrTEtRtlcMwRK2Oj8VPdHmkoFS8Yaxpoy2PPZbUOGBSJThJBQtZMDRXq2h/pp9F
+         mTmg==
+X-Gm-Message-State: AO0yUKUFCf4AP1aJ3mrz51U/8ypVmFEqeQfgCdFhXPKsAuaMqGiLTaAG
+	mFsQ8Mo6lTGBX69lSdca4Aee6Ix2nvt2ekStUF4=
+X-Google-Smtp-Source: AK7set/nF6GZwc2diRD94JiletmKt075rCBFGXp8Si3rgi9KMX5Vd214djm2lv5q2SJjw/Lq475mtwWCTRAg/CgLrlg=
+X-Received: by 2002:a05:6870:a714:b0:163:38df:5b65 with SMTP id
+ g20-20020a056870a71400b0016338df5b65mr2303256oam.272.1675202747088; Tue, 31
+ Jan 2023 14:05:47 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <Y9lg7R1Yd931C+y5@kernel.org>
+References: <20230130221748.5c472da5@crass-HP-ZBook-15-G2> <aa957c80-1aeb-8fde-440e-6e4408c59559@kot-begemot.co.uk>
+ <1215849138.84344.1675149765214.JavaMail.zimbra@nod.at> <98f7e8b52dbb222f4d959d5440e27b4257005b93.camel@sipsolutions.net>
+In-Reply-To: <98f7e8b52dbb222f4d959d5440e27b4257005b93.camel@sipsolutions.net>
+From: YiFei Zhu <zhuyifei1999@gmail.com>
+Date: Tue, 31 Jan 2023 14:05:36 -0800
+Message-ID: <CABqSeASC1XcvYn0MsakH=pbAySsP_ZNs=JC4rKo7mbrNTS42Rw@mail.gmail.com>
+Subject: Re: Using ftrace
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@kot-begemot.co.uk>, 
+	Glenn Washburn <development@efficientek.com>, linux-um <linux-um@lists.infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230131_105521_978144_88AD2986 
-X-CRM114-Status: GOOD (  29.58  )
+X-CRM114-CacheID: sfid-20230131_140550_545510_9F9911A2 
+X-CRM114-Status: GOOD (  13.24  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,101 +81,34 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2009483132248443624=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+On Tue, Jan 31, 2023 at 1:11 AM Johannes Berg <johannes@sipsolutions.net> wrote:
+>
+> On Tue, 2023-01-31 at 08:22 +0100, Richard Weinberger wrote:
+> >
+> > Adding function (and function graph) tracing to UML is possible but a bit of work.
+> > You need to find a way to implement all of ftraces mcount hooks for UML.
+> >
+>
+> It feels like it shouldn't be that hard, but I coincidentally looked a
+> few days ago and got scared :)
 
---===============2009483132248443624==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="hiaCFsst32mLBZni"
-Content-Disposition: inline
+This looks interesting. I might want to take a look too soon. ;)
 
+YiFei Zhu
 
---hiaCFsst32mLBZni
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi Mike,
-
-On Tue, Jan 31, 2023 at 08:41:49PM +0200, Mike Rapoport wrote:
-> On Tue, Jan 31, 2023 at 05:47:24PM +0000, Conor Dooley wrote:
-> > On Sun, Jan 29, 2023 at 02:42:35PM +0200, Mike Rapoport wrote:
-> > > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> > >=20
-> > > Every architecture that supports FLATMEM memory model defines its own
-> > > version of pfn_valid() that essentially compares a pfn to max_mapnr.
-> > >=20
-> > > Use mips/powerpc version implemented as static inline as a generic
-> > > implementation of pfn_valid() and drop its per-architecture definitio=
-ns.
-> > >=20
-> > > Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
-> > > Acked-by: Arnd Bergmann <arnd@arndb.de>
-> > > Acked-by: Guo Ren <guoren@kernel.org>		# csky
-> > > Acked-by: Huacai Chen <chenhuacai@loongson.cn>	# LoongArch
-> > > Acked-by: Stafford Horne <shorne@gmail.com>	# OpenRISC
-> >=20
-> > Hmm, so this landed in linux-next today and I bisected a boot failure in
-> > my CI to it. However, I am not really sure if it is a real issue worth
-> > worrying about as the platform it triggered on is supposed to be using
-> > SPARSEMEM, but isn't.
-> > I had thought that my CI was using a config with SPARSEMEM since that
-> > became required for riscv defconfig builds to boot in v6.1-rc1, but I
-> > must have just forgotten to add it to my $platform_defconfig builds too.
-> > However, those $platform_defconfig builds continued booting without
-> > SPARSEMEM enabled until today.
->=20
-> The issue seems to be that the generic pfn_valid() does not take into
-> account pfn_offset when it compares it with max_mapnr.
-> Can you please test with the patch below?
->=20
-> diff --git a/include/asm-generic/memory_model.h b/include/asm-generic/mem=
-ory_model.h
-> index 13d2a844d928..6796abe1900e 100644
-> --- a/include/asm-generic/memory_model.h
-> +++ b/include/asm-generic/memory_model.h
-> @@ -26,7 +26,7 @@ static inline int pfn_valid(unsigned long pfn)
->  	extern unsigned long max_mapnr;
->  	unsigned long pfn_offset =3D ARCH_PFN_OFFSET;
-> =20
-> -	return pfn >=3D pfn_offset && pfn < max_mapnr;
-> +	return pfn >=3D pfn_offset && (pfn - pfn_offset) < max_mapnr;
->  }
->  #define pfn_valid pfn_valid
->  #endif
-
-Gave that a go, board is booting properly again! Feel free to add a:
-Tested-by: Conor Dooley <conor.dooley@microchip.com>
-
-Thanks for the prompt fix!
-
-
---hiaCFsst32mLBZni
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCY9lkCwAKCRB4tDGHoIJi
-0pIDAP9nc8RsXGyfp84b29PfLE6bd1djEIZ71+YYWPrhRbOT0QEAs5hvd2Aq0mES
-TzWIEs2xL7+wjwVIWLwPjr1kP0shHA0=
-=AQg2
------END PGP SIGNATURE-----
-
---hiaCFsst32mLBZni--
-
-
---===============2009483132248443624==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> johannes
+>
+> _______________________________________________
+> linux-um mailing list
+> linux-um@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-um
 
 _______________________________________________
 linux-um mailing list
 linux-um@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-um
-
---===============2009483132248443624==--
-
