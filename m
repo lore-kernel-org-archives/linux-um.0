@@ -4,58 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E276CC61DA4
-	for <linux-um@archiver.kernel.org>; Tue, 14 Feb 2023 12:12:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62DB7C05027
+	for <linux-um@archiver.kernel.org>; Tue, 14 Feb 2023 21:41:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:CC:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2Hm9Z5tfjgrqtciyR3pcxL01i5HOk7J1rarNy2ov4x4=; b=nWkMWckSO3kL3o
-	Jg/Q8XKwDvpd56mrmT8XuSPw82GZHpZFf16xLC0IBvdoSpw/BDq+y5oYpilGJWn/fA74CFY81j3+7
-	4EbWBDXFurrhv4fy2uL2iWStp2WTgtcBjxiIxjxOq83T/0t5MXaUGFXZbXf5oGJP4zcdIZmtzuj2V
-	p1WBLxhUo2cHf5PmcqmMrpn58ELvkFmBTEpwezvdBn4HvM2qlCuxCBsEbekkaa54Wwan9ALnq+0M/
-	CeQeU7GvWylVPViRuBaO06weLTKjF8UODcZHNtmVBKxfPgyOFtKXYor+hAXoEBPP+H0SnFQqJohon
-	gXdnMCzLbRTkniWBVJJQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:To
+	:From:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=HWZgj903x/vN171Y4ezzG1IrTcRu7h8XP7yadKHnkB8=; b=3DBfic8tI8qq5M
+	BPx3krqUOcjh6xhOKtxwl8Hmoi90WvlDilL6M+Gbf64nIIBOE5wVXCEK5dG+GBvaFi72JRYe2eUpg
+	gn7BcAKfAzVJ9mMCnUhZ8rLjbPanyibMMEynTWZciXx9Czajt0k9ZzX7YjENlOnnF8F+JwXIDwL4C
+	Wi2650lHI5jS9MtQ8ntvl+nxYW5ACNtBBBrCp7USLZhK/t0FS0+x2fVq0MOdJ+Rsm7LiDYzrcNOZE
+	MpLyR4cUdr4LFxq1AajdCfmyMgrlsyvs4QRox2iHPgsl5Vh64cJ/fdFN7vHljhMAEthMU2csqJsoY
+	8w46B5hJMnxp64WcP8+Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pRuAo-001X2Q-3i; Tue, 14 Feb 2023 12:12:38 +0000
-Received: from smtp1.axis.com ([195.60.68.17])
+	id 1pS32v-003d50-Jr; Tue, 14 Feb 2023 21:41:05 +0000
+Received: from mx0a-0031df01.pphosted.com ([205.220.168.131])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pRuAk-001X0M-IO
-	for linux-um@lists.infradead.org; Tue, 14 Feb 2023 12:12:36 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1676376754;
-  x=1707912754;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=LW+fYZVBMkIdds32xQMOF1cT/AnskpifFhDC6xuX7MA=;
-  b=AsVR4LBQH+Ne3l7z0dnRQcN3mZZRzBEDxeLiJ86b+bWG2pAh0YQh9BGT
-   sMpc8l5LNh4gYE1aF7829qSgMW+XHCVtZC/qhkI1whEtAPGDrc9x881KJ
-   Rsqmc8yAC1eDtkSYrx6URMADwBQW5nAfIAOHvbUPAYCTHfPswRQqT8gxI
-   R/Ds/v4X8nl21SuEmuIzlelpMPd1++XFaxhrzKR9PTxW+n5XliYWs9mef
-   gJ2w5PpCynqc7YBThtjWmypSqPQXQ2pBZu9oFdCypssOBoWvkg9kgVlxI
-   bvFWAQoXuoC4P4L36pti0MvH37fMqxhbp84U/oQodKAH93HPA3VoZo/bq
-   Q==;
-Date: Tue, 14 Feb 2023 13:12:25 +0100
-From: Vincent Whitchurch <vincent.whitchurch@axis.com>
-To: Johannes Berg <johannes@sipsolutions.net>
-CC: Richard Weinberger <richard@nod.at>, Anton Ivanov
-	<anton.ivanov@cambridgegreys.com>, "robh@kernel.org" <robh@kernel.org>,
-	<devicetree@vger.kernel.org>, "linux-um@lists.infradead.org"
-	<linux-um@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, kernel <kernel@axis.com>
-Subject: Re: [PATCH] virt-pci: add platform bus support
-Message-ID: <Y+t6qXBxLqf/+eQM@axis.com>
-References: <20230127-uml-pci-platform-v1-1-ec6b45d2829f@axis.com>
- <d3f6d627290bb1a6a1fcfdfd5fad915578453e02.camel@sipsolutions.net>
+	id 1pS2tn-003ZNK-36
+	for linux-um@lists.infradead.org; Tue, 14 Feb 2023 21:31:44 +0000
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 31EHLlIk027227;
+	Tue, 14 Feb 2023 21:31:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : subject
+ : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=qcppdkim1;
+ bh=jdadcMHUEHEz3wESNyYCqEqZE1xiSFm7gjLwEXCHUq4=;
+ b=onAw/Ed1Rds4wArHiFBeJntOEqNg5p3PqBvyUh6+M+MtRv8Jh0kvC6waD+qY2BBAZDjJ
+ JfNSKdQQEJjFmMbGFa0EBbVuhLAH0HMdSLl9GyYd3gjazEZ9b78V/qfeoHvNKf2IkN07
+ P0eJM9p3sh7SSA9wtmqR0NDpqDxIcv6Xg68ANEzv6ky4vcLjJLNnOQ7r0wjS4OSNO+WT
+ SREsyWc3lilplPKQEEe8D+Ncz2Ba4oSoCTTopsz/P47twra/NfFNrKAYMJP9t6FadVId
+ hOp5/0eZ3AfjHx+EHRQjszmcLGEQp1bQ1IPlAucGlIrwcIsw0SfcaSTWBLi6U/CvKE4t 3Q== 
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3nqyygtu5r-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 14 Feb 2023 21:31:32 +0000
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 31ELVRmY013297;
+	Tue, 14 Feb 2023 21:31:27 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3np43kjtbk-1;
+	Tue, 14 Feb 2023 21:31:27 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 31ELVRKm013292;
+	Tue, 14 Feb 2023 21:31:27 GMT
+Received: from hu-sgudaval-hyd.qualcomm.com (hu-c-spathi-hyd.qualcomm.com [10.213.108.59])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 31ELVQ2F013291;
+	Tue, 14 Feb 2023 21:31:26 +0000
+Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 212714)
+	id 1DA434801; Wed, 15 Feb 2023 03:01:26 +0530 (+0530)
+From: Srinivasarao Pathipati <quic_c_spathi@quicinc.com>
+To: richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
+        quic_c_spathi@quicinc.com, linux-um@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V1] um: Fix compilation warnings
+Date: Wed, 15 Feb 2023 03:00:43 +0530
+Message-Id: <1676410243-10566-1-git-send-email-quic_c_spathi@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <d3f6d627290bb1a6a1fcfdfd5fad915578453e02.camel@sipsolutions.net>
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: o9J2jh1-t8dYIgz2zYsGdSgbsy5oOMaz
+X-Proofpoint-GUID: o9J2jh1-t8dYIgz2zYsGdSgbsy5oOMaz
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.219,Aquarius:18.0.930,Hydra:6.0.562,FMLib:17.11.170.22
+ definitions=2023-02-14_15,2023-02-14_01,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ impostorscore=0 malwarescore=0 adultscore=0 mlxlogscore=360 mlxscore=0
+ priorityscore=1501 lowpriorityscore=0 spamscore=0 bulkscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2302140184
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230214_041234_953712_461ACDF2 
-X-CRM114-Status: GOOD (  41.48  )
+X-CRM114-CacheID: sfid-20230214_133139_212956_238122B0 
+X-CRM114-Status: GOOD (  16.91  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,184 +92,51 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, Feb 13, 2023 at 06:54:49PM +0100, Johannes Berg wrote:
-> On Fri, 2023-01-27 at 15:30 +0100, Vincent Whitchurch wrote:
-> > My first approach to getting platform drivers working on UML was by
-> > adding a minimal PCI-to-platform bridge driver, which worked without
-> > modifications to virt-pci, but that got shot down:
-> > 
-> >  https://lore.kernel.org/lkml/20230120-simple-mfd-pci-v1-1-c46b3d6601ef@axis.com/
-> 
-> Reading through that ... OK that isn't fun either :-)
-> 
-> Sounds like there's a use case for something else though, but the PCI
-> IDs issue also makes that thorny.
-
-Yes, Greg was initially totally opposed to the idea of putting platform
-devices under PCI devices, but in his latest email he seemed to
-allow it in some cases.  It's still unclear if he'd be OK with a
-"virtual PCI-to-platform bridge" though.  And yes, adding platform
-devices support like in this patch removes one layer and also eliminates
-the disadvantage of having to wait for user space to specify a PCI ID
-for the bridge device.
-
-> > @@ -48,6 +51,7 @@ struct um_pci_device_reg {
-> >  
-> >  static struct pci_host_bridge *bridge;
-> >  static DEFINE_MUTEX(um_pci_mtx);
-> > +static struct um_pci_device *um_pci_platform_device;
-> >  static struct um_pci_device_reg um_pci_devices[MAX_DEVICES];
-> >  static struct fwnode_handle *um_pci_fwnode;
-> >  static struct irq_domain *um_pci_inner_domain;
-> > @@ -480,6 +484,9 @@ static void um_pci_handle_irq_message(struct virtqueue *vq,
-> >  	struct virtio_device *vdev = vq->vdev;
-> >  	struct um_pci_device *dev = vdev->priv;
-> >  
-> > +	if (!dev->irq)
-> > +		return;
-> > 
-> 
-> Does that mean platform devices don't have interrupts, or does that mean
-> not all of them must have interrupts?
-
-They don't have interrupts via this driver.  There isn't any standard
-way for platform devices to handle interrupts since it it all depends on
-what interrupt-parent is specified in the devicetree and how that is
-implemented.
-
-In my case, I have a separate virtio-gpio and use that as the
-interrupt-parent like in the devicetree at the end of this email.  I
-actually also did that when I used the platform-on-PCI solution since I
-already use virtio-gpio as the interrupt controller for devices on other
-busses like I2C and SPI and just reusing that was easier than
-implementing MSI support in my virt-pci device.
-
-> I'll note that this also would allow the device to send an MSI which
-> feels a bit wrong? But I guess it doesn't really matter.
-
-We could avoid setting up the IRQ/MSI virtqueue when we know we're
-dealing with platform devices.
-
-> So let me ask this: Conceptually, wouldn't the "right" way to handle
-> this be a new virtio device and protocol and everything, with a new
-> driver to handle it? I realise that would likely lead to quite a bit of
-> code duplication, for now I just want to understand the concept here a
-> bit better.
-
-Yes, that could be a way to do it.  Or there could perhaps be some
-feature bits indicating that only MMIO read/write/memset are allowed.
-
-> Such a driver would then define its own messages, requiring (I guess)
-> the equivalents of
->  * VIRTIO_PCIDEV_OP_INT,
->  * VIRTIO_PCIDEV_OP_MMIO_READ,
->  * VIRTIO_PCIDEV_OP_MMIO_WRITE, and
->  * (maybe) VIRTIO_PCIDEV_OP_MMIO_MEMSET,
-> 
-> but not
->  * VIRTIO_PCIDEV_OP_CFG_READ,
->  * VIRTIO_PCIDEV_OP_CFG_WRITE,
->  * VIRTIO_PCIDEV_OP_MSI and
->  * VIRTIO_PCIDEV_OP_PME,
-> 
-> right?
-
-Yes, just the MMIO* stuff would be enough.
-
-> How much code would we actually duplicate? Most of virt-pci is dedicated
-> to the mess of PCI MSI domains, bridges, etc.
-
-Probably not a huge amount, I can try to cook up a patch if you'd like.
-But, besides the code duplication, I'm not sure if adding another new
-virtio driver without a specification would be OK?
-
-> The limitation to a single device feels odd, and the fact that you have
-
-The limitation to a single device here is not a problem since one can
-use simple-bus to instantiate any number of platform devices via the
-devicetree.  The devicetree at the end of this email shows how that
-looks like.
-
-> to put it into DT under the PCI also seems odd. OTOH, the platform
-> device has to be _somewhere_ right?
-
-With this patch, it's not put under PCI in the devicetree, see the
-example below.
-
-> I guess I'm not really sure how to use it, but I suppose that's OK too
-> :)
-
-With a devicetree like the one below, using it shouldn't be all that
-different from using the normal virt-pci except that the register ranges
-and IRQ information are in the devicetree rather than coming via the
-config space implementation in the virtio device.
-
-With everything hooked up and with the backend code I have in roadtest,
-this allows tests like this one which exercises some SoC's DMA
-controller (the simplest one I could find in the tree):
- https://github.com/vwax/linux/commit/337e03bb3c1796c96ab8f397ff36e9b543f2c6d5
-
-Here's the devicetree example I mentioned above:
-
- / {
-     #address-cells = <2>;
-     #size-cells = <2>;
- 
-     virtio@0 {
-         compatible = "virtio,uml";
-         socket-path = ".roadtest/roadtest-work/0/gpio.sock";
-         virtio-device-id = <0x29>;
- 
-         gpio: gpio {
-             compatible = "virtio,device29";
- 
-             gpio-controller;
-             #gpio-cells = <2>;
- 
-             interrupt-controller;
-             #interrupt-cells = <2>;
-         };
-     };
- 
-     virtio@2 {
-         compatible = "virtio,uml";
-         socket-path = ".roadtest/roadtest-work/0/platform.sock";
-         virtio-device-id = <1234>;
-         ranges;
- 
-         platform: bus@0,0 {
-                 compatible = "virtio,device4d2", "simple-bus";
-                 reg = <0x00000 0x10000000 0x0 0x10000>;
-                 interrupt-parent = <&gpio>;
-		 // Could use range translation here to avoid absolute
-		 // addresses in reg properties
-                 ranges;
-         };
-     };
- 
- };
- 
- &platform {
-     foo@10001000 {
-             compatible = "some-platform-device-complatible";
-             reg = <0x00000 0x10001000 0 0x1000>;
-             interrupts = <2 4>;
-     };
-
-     bar@10002000 {
-             compatible = "another-platform-device-complatible";
-             reg = <0x00000 0x10002000 0 0x1000>;
-             interrupts = <3 4>;
-     };
- };
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+VXNlIGR5bmFtaWMgYWxsb2NhdGlvbiBpbiBzaWdfaGFuZGxlcl9jb21tb24oKSBhbmQgaW4KdGlt
+ZXJfcmVhbF9hbGFybV9oYW5kbGVyKCkgdG8gZml4IGJlbG93IHdhcm5pbmdzIGFuZCBidWlsZApm
+YWlsdXJlcyB3aGVyZSBDT05GSUdfV0VSUk9SIGlzIGVuYWJsZWQuCgphcmNoL3VtL29zLUxpbnV4
+L3NpZ25hbC5jOiBJbiBmdW5jdGlvbiDigJhzaWdfaGFuZGxlcl9jb21tb27igJk6CmFyY2gvdW0v
+b3MtTGludXgvc2lnbmFsLmM6NTE6MTogZXJyb3I6IHRoZSBmcmFtZSBzaXplIG9mIDI5NjAgYnl0
+ZXMgaXMgbGFyZ2VyIHRoYW4gMTAyNCBieXRlcyBbLVdlcnJvcj1mcmFtZS1sYXJnZXItdGhhbj1d
+CiB9CiBeCmFyY2gvdW0vb3MtTGludXgvc2lnbmFsLmM6IEluIGZ1bmN0aW9uIOKAmHRpbWVyX3Jl
+YWxfYWxhcm1faGFuZGxlcuKAmToKYXJjaC91bS9vcy1MaW51eC9zaWduYWwuYzo5NToxOiBlcnJv
+cjogdGhlIGZyYW1lIHNpemUgb2YgMjk2MCBieXRlcyBpcyBsYXJnZXIgdGhhbiAxMDI0IGJ5dGVz
+IFstV2Vycm9yPWZyYW1lLWxhcmdlci10aGFuPV0KIH0KClNpZ25lZC1vZmYtYnk6IFNyaW5pdmFz
+YXJhbyBQYXRoaXBhdGkgPHF1aWNfY19zcGF0aGlAcXVpY2luYy5jb20+Ci0tLQogYXJjaC91bS9v
+cy1MaW51eC9zaWduYWwuYyB8IDIyICsrKysrKysrKysrKystLS0tLS0tLS0KIDEgZmlsZSBjaGFu
+Z2VkLCAxMyBpbnNlcnRpb25zKCspLCA5IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2FyY2gv
+dW0vb3MtTGludXgvc2lnbmFsLmMgYi9hcmNoL3VtL29zLUxpbnV4L3NpZ25hbC5jCmluZGV4IDI0
+YTQwM2EuLjlkZTg4MjYgMTAwNjQ0Ci0tLSBhL2FyY2gvdW0vb3MtTGludXgvc2lnbmFsLmMKKysr
+IGIvYXJjaC91bS9vcy1MaW51eC9zaWduYWwuYwpAQCAtMzIsMjMgKzMyLDI1IEBAIHZvaWQgKCpz
+aWdfaW5mb1tOU0lHXSkoaW50LCBzdHJ1Y3Qgc2lnaW5mbyAqLCBzdHJ1Y3QgdW1sX3B0X3JlZ3Mg
+KikgPSB7CiAKIHN0YXRpYyB2b2lkIHNpZ19oYW5kbGVyX2NvbW1vbihpbnQgc2lnLCBzdHJ1Y3Qg
+c2lnaW5mbyAqc2ksIG1jb250ZXh0X3QgKm1jKQogewotCXN0cnVjdCB1bWxfcHRfcmVncyByOwor
+CXN0cnVjdCB1bWxfcHRfcmVncyAqcjsKIAlpbnQgc2F2ZV9lcnJubyA9IGVycm5vOwogCi0Jci5p
+c191c2VyID0gMDsKKwlyID0gbWFsbG9jKHNpemVvZihzdHJ1Y3QgdW1sX3B0X3JlZ3MpKTsKKwly
+LT5pc191c2VyID0gMDsKIAlpZiAoc2lnID09IFNJR1NFR1YpIHsKIAkJLyogRm9yIHNlZ2ZhdWx0
+cywgd2Ugd2FudCB0aGUgZGF0YSBmcm9tIHRoZSBzaWdjb250ZXh0LiAqLwotCQlnZXRfcmVnc19m
+cm9tX21jKCZyLCBtYyk7Ci0JCUdFVF9GQVVMVElORk9fRlJPTV9NQyhyLmZhdWx0aW5mbywgbWMp
+OworCQlnZXRfcmVnc19mcm9tX21jKHIsIG1jKTsKKwkJR0VUX0ZBVUxUSU5GT19GUk9NX01DKHIt
+PmZhdWx0aW5mbywgbWMpOwogCX0KIAogCS8qIGVuYWJsZSBzaWduYWxzIGlmIHNpZyBpc24ndCBJ
+UlEgc2lnbmFsICovCiAJaWYgKChzaWcgIT0gU0lHSU8pICYmIChzaWcgIT0gU0lHV0lOQ0gpKQog
+CQl1bmJsb2NrX3NpZ25hbHNfdHJhY2UoKTsKIAotCSgqc2lnX2luZm9bc2lnXSkoc2lnLCBzaSwg
+JnIpOworCSgqc2lnX2luZm9bc2lnXSkoc2lnLCBzaSwgcik7CiAKIAllcnJubyA9IHNhdmVfZXJy
+bm87CisJZnJlZShyKTsKIH0KIAogLyoKQEAgLTk5LDEzICsxMDEsMTUgQEAgdm9pZCBzaWdfaGFu
+ZGxlcihpbnQgc2lnLCBzdHJ1Y3Qgc2lnaW5mbyAqc2ksIG1jb250ZXh0X3QgKm1jKQogCiBzdGF0
+aWMgdm9pZCB0aW1lcl9yZWFsX2FsYXJtX2hhbmRsZXIobWNvbnRleHRfdCAqbWMpCiB7Ci0Jc3Ry
+dWN0IHVtbF9wdF9yZWdzIHJlZ3M7CisJc3RydWN0IHVtbF9wdF9yZWdzICpyZWdzOwogCisJcmVn
+cyA9IG1hbGxvYyhzaXplb2Yoc3RydWN0IHVtbF9wdF9yZWdzKSk7CiAJaWYgKG1jICE9IE5VTEwp
+Ci0JCWdldF9yZWdzX2Zyb21fbWMoJnJlZ3MsIG1jKTsKKwkJZ2V0X3JlZ3NfZnJvbV9tYyhyZWdz
+LCBtYyk7CiAJZWxzZQotCQltZW1zZXQoJnJlZ3MsIDAsIHNpemVvZihyZWdzKSk7Ci0JdGltZXJf
+aGFuZGxlcihTSUdBTFJNLCBOVUxMLCAmcmVncyk7CisJCW1lbXNldChyZWdzLCAwLCBzaXplb2Yo
+c3RydWN0IHVtbF9wdF9yZWdzKSk7CisJdGltZXJfaGFuZGxlcihTSUdBTFJNLCBOVUxMLCByZWdz
+KTsKKwlmcmVlKHJlZ3MpOwogfQogCiB2b2lkIHRpbWVyX2FsYXJtX2hhbmRsZXIoaW50IHNpZywg
+c3RydWN0IHNpZ2luZm8gKnVudXNlZF9zaSwgbWNvbnRleHRfdCAqbWMpCi0tIAoyLjcuNAoKCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1h
+aWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
+YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
