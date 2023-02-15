@@ -4,135 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB539C636CC
-	for <linux-um@archiver.kernel.org>; Wed, 15 Feb 2023 08:02:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D487C6379F
+	for <linux-um@archiver.kernel.org>; Wed, 15 Feb 2023 08:07:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:From:
-	References:Cc:To:Subject:Date:Message-ID:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=W7rp0Npj+t53lfgwioJZ/+gHZ1nj5Biuj5Ra6NYvO1M=; b=xq3sAK82P2NmXsHMlVUT5n7WEf
-	uMo4o8fS5nnOESCY22WijvTJEpq4jxNBv3Je/3adWuVdwNuEK6uUiwjv3gnT6fk2lOSsl1RPNBlO9
-	GJQxpv4woqNuqlpG4GffjhYxtkPfKYhr6w1innxc3PFANnVZW66NA2v80iOB8h7tA68M8YqhnuDvW
-	lWa0Rp2L5VkvXa1CFVdew4ul4SQl34AAEJmvl5ybskppPMDgAxKpdQf3yhOIRMJTjM2rOJb35QlFD
-	SNc3zZHqTmMXF1T9oq9EYxupVqmIl3QhNBi9IDIV44pfdU9K6KRg6qJDpeYJiGEfTwYnpTRGztLZI
-	vpKpVdQQ==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=b/BchCSnYZWFw7QkeSXkfJ0p1vnbmYuksfTICXPIgEU=; b=JzGhd3BmBAk/80
+	JLWr6tPVrWmNDmEK7aLU7Tm++u3S9i469W7DRKn4yUovLMvB7aebMvY4CsmAF7guH2A/rUxCEfozU
+	gP2s9amtfE6qVklghxtQmPwLUPFdCowqtgYXxpSFcNDF/Cwe1HKxsn6xoU74B37gXnFPDp9Kvciu6
+	mbHLMt3DcLaSsZc/qAYgw50BEr9I9USjTrs7wAtu54EcG8CiR0s0+hYqGL24dwgSP3HnAcf0PwFqr
+	LzFLgXOYcCM/RdkWYVCiLklS7DM7nt+IqsRPK0yGL2zqi8wSNPN0ZlIOuNH3mVBfEsxeALscKsqQ8
+	l7GmCF4/K4Re5QB4xpBw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pSCjo-0057cz-DW; Wed, 15 Feb 2023 08:02:00 +0000
-Received: from mail-db8eur05on20610.outbound.protection.outlook.com ([2a01:111:f400:7e1a::610] helo=EUR05-DB8-obe.outbound.protection.outlook.com)
+	id 1pSCpG-0058kp-5s; Wed, 15 Feb 2023 08:07:38 +0000
+Received: from mail-qt1-f169.google.com ([209.85.160.169])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pSCjl-0057bk-4H
-	for linux-um@lists.infradead.org; Wed, 15 Feb 2023 08:01:58 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eJlSZY3e3XK58dutvqen5wOeAQT0dgX+JhscZKmTYipvXwUkNV7CAIi7WJ6+fcmNwa8ix5Bl4KkV6um402wGa1FLiJzPDb8oiPBLJ1WFZV0xF7aPb0EN8joWVc/WAnom8ajzzQgxPFs3QCfpJ9PhLd0rWdR6SxGt/JqwdjJpGjgXyE37XaP16ql8jBBlQ9gJ/bPqey82U3E4HLskbarVBYVhOwROb7/y9qNowSKGx/TCyXP/eWTlhaowfkz7t/swpkr2xg7zeFXtfr6E0eoXitH9N+jKNYn7AtidE9jlOKvrdIjXIXKcc9wDJbz6c2CBr8Ja3ktXu9kNSug8k5suUg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Rej7r1wUPvqPPPTbRyW1Bh7EEkay9Wd10wchiRDy8NE=;
- b=OwoP5jq4pHrOpdUAWU/ui9/xRlZFoaXQp63VS22FBpEs693OnzgVoqliVLAjtHSmA1GUyxZPmVvy2zhIuhToqk9ORdMsIXBnjGbcmxvRBTd1+LZ7VXtVRmayS5bCHUY61pC5jxVx3GHXL1S1XmTRsjKTk0Po0O9B+5jHA7bFVe+YbJOZcSy0O0jaXrFXv+PpqlHJCerpEcLFr11WSpr2JLrzRirXnJI8wnT0DGmBbuO2iAFb1LwVQo9KaeuF/Dm0H/hxJ5+3BHAhWwLxYj1MELr9luvk8iLZFRIlBLCBsOgD89y44ZFNq4RYwU1z20pUWY5houSvGFfQ+gT1jlzaSQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=siemens.com; dmarc=pass action=none header.from=siemens.com;
- dkim=pass header.d=siemens.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Rej7r1wUPvqPPPTbRyW1Bh7EEkay9Wd10wchiRDy8NE=;
- b=UefWxJPadRUndsKK0Quo3nZomG1nO3wrsOAccVLnjiHELjxQspu3ckpv87NLwPXeb8blH5BKM6MDhxoFtwaQNcziBK/8flVjJhYqkishdmtoK62s+K7dfg8LYjzgxD4qxpKaG43Lb7cGGEe3emKz9yP4W5gOQTzrtuzBaD9dghjqd2bdZzwaWufS/q8eyswkYEKXJWhuQRtUpsM9Jjem1VP1tz0cWC6tSx5Gz0XPVdQVgeVCbPfoccPC/W1SJU8wZCD7lcT0P+5oN2UvR8EjKj50G03JMBg/o6MW3PKQLk71lu/LkX7MXETstym4L5yBWhCCqHoSSDawuo6XXnnUSA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=siemens.com;
-Received: from AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:588::19)
- by VI1PR10MB7830.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:800:1cf::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6086.24; Wed, 15 Feb
- 2023 07:45:52 +0000
-Received: from AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::784b:e95b:b855:dcc5]) by AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::784b:e95b:b855:dcc5%9]) with mapi id 15.20.6086.026; Wed, 15 Feb 2023
- 07:45:51 +0000
-Message-ID: <31d49cc7-b6a8-8942-016a-9a2793e601c7@siemens.com>
-Date: Wed, 15 Feb 2023 08:45:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH 2/2] scripts/gdb: Support getting current task struct in
- UML
-Content-Language: en-US
-To: Glenn Washburn <development@efficientek.com>,
- Kieran Bingham <kbingham@kernel.org>
-Cc: linux-um <linux-um@lists.infradead.org>,
- Richard Weinberger <richard@nod.at>,
- Johannes Berg <johannes@sipsolutions.net>,
- Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-References: <cover.1676416728.git.development@efficientek.com>
- <8c3db2291f583200a9036e83134ba363db492222.1676416728.git.development@efficientek.com>
-From: Jan Kiszka <jan.kiszka@siemens.com>
-In-Reply-To: <8c3db2291f583200a9036e83134ba363db492222.1676416728.git.development@efficientek.com>
-X-ClientProxiedBy: FR0P281CA0037.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:48::19) To AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:20b:588::19)
+	id 1pSCpD-0058kG-Jv
+	for linux-um@lists.infradead.org; Wed, 15 Feb 2023 08:07:37 +0000
+Received: by mail-qt1-f169.google.com with SMTP id w3so20948705qts.7
+        for <linux-um@lists.infradead.org>; Wed, 15 Feb 2023 00:07:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rx6raGPVkjLOh5DBbFhiid2XbozsdzVzlVKzi7He69I=;
+        b=37PYfSxUa3xEPg+9AhAvUOzy/yioi6xeR/QeY1A8/nn85SA0p7qY0uc3iVMy98YUX9
+         +6kfMRF/5Zg0W431sqh/QovLucs9/42L3DUs3vrTZ0hDe4+BpXzvOBOhl4kBwXsPfTFH
+         siv6uWym7YdW69agLWhHG9WCxn+Bq9YszNEM4BbqzrVmFZ5fX9n7T2+k4jtT/NbujSNW
+         cPq4Ht046HkVa8eu08RWquRaZqAuHBJrmF6giGV80rZ7tZBBjRoKVfhZBvT2xEg8L/rA
+         vhod1mPq0S7wSNFMadND9TQk1kfbvyRzgEmqVIPLaP1Vzfavp1myOs0AjgD4UgfkL1Va
+         Au6Q==
+X-Gm-Message-State: AO0yUKXHEmq2vHmYlXSjj/nZRls1udDrxKeiEieSWTq3ezQjq8vu3JTu
+	mYFLJdy92K/J3Ja6fLtvCvcpxHP+xP91TX9w
+X-Google-Smtp-Source: AK7set+XLa6p7nhRqCFZyo95+bP6UGFYGHiMY6tl39nQ6zDQ6Fmk3FyidtzJzfYR5cAKxRQWgpjEEg==
+X-Received: by 2002:ac8:7e84:0:b0:3b8:6b1b:e3a2 with SMTP id w4-20020ac87e84000000b003b86b1be3a2mr1842930qtj.10.1676448453775;
+        Wed, 15 Feb 2023 00:07:33 -0800 (PST)
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com. [209.85.128.178])
+        by smtp.gmail.com with ESMTPSA id p23-20020ac84097000000b003a530a32f67sm12622200qtl.65.2023.02.15.00.07.33
+        for <linux-um@lists.infradead.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Feb 2023 00:07:33 -0800 (PST)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-52f1b1d08c2so124539047b3.5
+        for <linux-um@lists.infradead.org>; Wed, 15 Feb 2023 00:07:33 -0800 (PST)
+X-Received: by 2002:a81:6a03:0:b0:52f:972:e6a1 with SMTP id
+ f3-20020a816a03000000b0052f0972e6a1mr173556ywc.235.1676448452756; Wed, 15 Feb
+ 2023 00:07:32 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS4PR10MB6181:EE_|VI1PR10MB7830:EE_
-X-MS-Office365-Filtering-Correlation-Id: 92e7a08e-5cd3-4029-4dd0-08db0f28a94f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 	G0GJM+vqOXIxFRtEc/mIrLNkdjcNVO5G6WjDS0MNLHTgkR13jv5+3vUhqkiBvaZLE1pdNl1/k7jxENPolrNkITCkmXOqWK/6BDU0HCRgYTSkO7bMw9upLgByzS2clkRM4eGE22iFsbE9cR6+slgb1iBHeLPQh9Dy15FNKfVti4Qq/Ng7VPhtWi/MpfbGlwMX6izFEYVqUDyVpFuXyVPuUyr5m4g/IPGLHsDGDdNRHJk7w42Xtqp0qFRyDVCyJzhLNglDKBe5nFVoxadsYl6tpLAQ+HP5HE5EVUz8f1cTZgiUDsa1udChGwPHD87ksN5BhsqW8qf6xJ3xkgoH9B3NO0faAHtNRRKA8fgXV1lq5mjJw97wmi15G4LtnO82n6nwau+oLDvCnWzTFUPPRGPa3w8OaVeqeFz4itqqShuOq/7j6hBl05zMkLJ33DoGKUrvVLoOFY3vbb0xyoGbNm5C6Y3nQy0BI2Iio6QLZ90JHV2lh79ZibW694c4lDNKUc6KgMSD2pSyuVsiqUx+eutVWoGBFUq9CT/XJNHArVo5Zui+1PlllI7eBU365Pu3AxfNizSMdn2ArDHUHjQhrufzFM5mfQ4bNIck6PElTFoB/W4sp0Zq+zNNz+vfq+uX1qIwAk8DkE0/+7PK81FcrEhp7nrLEzeRRr8d4fFJsYNNdmlbB0uxk+5gFDN3BHC8g2Pluery9mT0/NWw+Mw5iD8VSmWmBZwF6fPzlnNG5cDeQSI=
-X-Forefront-Antispam-Report: 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230025)(4636009)(346002)(376002)(39860400002)(396003)(366004)(136003)(451199018)(4326008)(6506007)(41300700001)(36756003)(6486002)(8676002)(44832011)(478600001)(2616005)(8936002)(83380400001)(66946007)(31696002)(66556008)(5660300002)(6512007)(66476007)(82960400001)(26005)(186003)(86362001)(110136005)(31686004)(38100700002)(54906003)(316002)(6666004)(2906002)(53546011)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 	=?utf-8?B?SzdSL0ZzZlloUjNvbVA1ZS8wWUM5Z3NrMFRERVhQZDFzQ2prRkFJSG5oQXZM?=
- =?utf-8?B?R1RacHNhL2pQTURyOU8yYVRaNURkaVBEWWgvb3hhbmE3Y2tVMXdpTzhSVzhr?=
- =?utf-8?B?VTM0cHJMS01yRFBlbjFyVUxXUS9xYmdpaHFFZUJkbW1GT3lIdHluNDN6dzUr?=
- =?utf-8?B?cldERG1iZFRVR3hrSUpGUDcxMDBOcDVyMTJXSXl0c1Y4QmVhVTNXeGhiRkNU?=
- =?utf-8?B?Tk9iUjc2dzk4QUpLK3ZNUWwySlMyeGJ5Rmg0N1l4bXpTaGh4UUw0STkzOWJv?=
- =?utf-8?B?Q05pazlraFh6U1lvdTh0c1Y0akxqV1d5Y1UrZUw3Z3dmVjMyN2phMjhwYWla?=
- =?utf-8?B?ejJHR3p5OTVKTUh5aEJRMVRoSldjWm0ra2tNcmhSck81T3VMbExWL3ArMkRv?=
- =?utf-8?B?Ty9xdFAwakdKRGhDZFlaY01YTGppdmdVT2EzWEFWZkxaUzZDWFJXaG1rQ0lK?=
- =?utf-8?B?RURwU3ZlYWhMUzFVOGR5Q2Z6cm1wbmRXbU5IZytwMkxISmk0UzUzZ2hXOGNy?=
- =?utf-8?B?QzNJQTJLR2cvOVRXS3hBYm1iOUUrQ1JKanFnOTlxUmE5dHRabjg4M2JVYzV1?=
- =?utf-8?B?Wm90TXZxRzN3aWNKQWc1aEVacHVCRWd4elA2Z0xJdW9SSmlnR1J0UnJ5cC9u?=
- =?utf-8?B?Y2ZObzI2N2xrd3N6Nld6eDJ5c2k2UmFXWFFWOHZOOHhBaElud005cXRFc3J4?=
- =?utf-8?B?SU1PWUhUTVhBeXZXdk5MSE9zQ1FoZmtxL1I2N0pNdDdKL3dSK01qVWFHK1Zr?=
- =?utf-8?B?YXRQSWxNQUVVc25KY0ZqdW8yYlQvbFRIaWZ4Z0Jidkd4ZWVSbU9rbHN6azRQ?=
- =?utf-8?B?b1JVeUtYeFBpSnp3ODlEb2xNYzlmMy9vL3JjTldGVlkrM0VSYkoxemVzM2sv?=
- =?utf-8?B?dWxCNm92VmhJNnROZTZXaW5JaWwxZGxsTEhNSHFXRmE5T0R3c042YzErS3o1?=
- =?utf-8?B?YnRsaEVEOHZLeU0rZHhxbTJkTEk5RWduTzk2MnpDaUdkNitDN2JycHA2Q2Nv?=
- =?utf-8?B?NVRIeE4wZkY5ZnRjeEtLNzlFSTdwM2wweG9UaTI1OFRLeGJYd1BtbE9DTElz?=
- =?utf-8?B?RVNXMFFMNnh6bUxwSTFwQUFOVExoWFlRSG40NlM1UnNuSzRBOWNQSU1BSlZ5?=
- =?utf-8?B?cWtYNTVoYnVEUDh4M2dlSlVOZi9GU1IzYnJXdk1xdmF1SXlUOXlVVnlwTTZk?=
- =?utf-8?B?RE5PeWRaNUF4cmlQQVhCTTF1aTRVU2NoQzdxczF2K0VSU3VuL0ZLYmdKVS90?=
- =?utf-8?B?NjdCUFJPREQ1dm1WSjl3OG1QR0pCeVhUZXV6aTduemxGZms1QjlCbXBKY0tL?=
- =?utf-8?B?a3F6UUlJV0hWeE9YNENKZ0tQMzVab3ZGWjJhNUhFK2dIY1h6TXVJYUFXdzJh?=
- =?utf-8?B?dXRGdmMyRm9ybzlsazk2U2Y3Sk1JZ0M3RFI4V2pZNlpkcFprRCtpUUJoRXV3?=
- =?utf-8?B?c3Y3WVBJa2xPeTVBZVZBeEUvcmVvVkI2eVAwYTFRd1VDb3hNblJPTHI5M2xt?=
- =?utf-8?B?OXduMDBoRE14K1p2OWlCclZZV3ZpWXpjK0xiaDY4NlZweVpuYzZYR0VDSzhM?=
- =?utf-8?B?ajRXQ0c1RG1JeDYwR1JCejZEZUZMWUVZdkdNWDZmWjFlbk40Q2s3a1lJcWhr?=
- =?utf-8?B?ZC90ai9ERW9oU3A3eGF2RVRqVlNrRVhneGgycUhya3FJanhJUzhxZllMUUVm?=
- =?utf-8?B?bGU0SDZZaVowRlFPY1hUWnhmd2c3am9xWlIyeStlekZJd2tzbTJrc2R6WkdN?=
- =?utf-8?B?bDFDYzhRczV4NnpYbmlJa1FqZGxyQ0NtR2RBQitYT2NjSm1hbUJSQWVDTTBR?=
- =?utf-8?B?WlMwUktVemhOUDhxSmZoVm16cTYyWkVVdlNoaTNzaGtvVzYwdklNZURzREZi?=
- =?utf-8?B?MWlSZmU4eU1aa0FGajAray9TNDlydVdNVXBsQ29nTGRCZHFYNHJYTk53elBk?=
- =?utf-8?B?UWUzckJPRFpkbkVCSTFyR2tkeEdtU0RZZk53ZjhTOVBOc25OOXY1YjcwUXBC?=
- =?utf-8?B?OUlEOUhFQXhMb2oxWWRPdnhPVFY0SlArRUNPQjVmbUtMdjEzb3RGbm9jd2tv?=
- =?utf-8?B?QUsxV1ZoVE5xQ3JJTTRPRkN1cjhpRmovNFpYZ1l0ZnNoU0RUVXdqUzl4dVpK?=
- =?utf-8?B?QWI5a1RZQ1pQVFA4MXFzVFExOWpFMXJTZitzNGdoTFRXTzRPN2h6V1ZPbkZy?=
- =?utf-8?B?Tnc9PQ==?=
-X-OriginatorOrg: siemens.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 92e7a08e-5cd3-4029-4dd0-08db0f28a94f
-X-MS-Exchange-CrossTenant-AuthSource: AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2023 07:45:51.7649
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mIp/S6eupzi8W4aI662yrjt+VMHdKEJVihq0lDgo9GOneke4VEep62pAGmgLEs9iIkZuWKyQHeklWSlGvD6V3g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR10MB7830
+References: <1676410243-10566-1-git-send-email-quic_c_spathi@quicinc.com>
+ <1950127775.130646.1676411821807.JavaMail.zimbra@nod.at> <913fea79-09f9-b976-ff1a-cd833784abb6@quicinc.com>
+In-Reply-To: <913fea79-09f9-b976-ff1a-cd833784abb6@quicinc.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 15 Feb 2023 09:07:21 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUb9cduEae2vzX8LeVG7z0nRrKHrQN6UGJ_YLuWOBbKOg@mail.gmail.com>
+Message-ID: <CAMuHMdUb9cduEae2vzX8LeVG7z0nRrKHrQN6UGJ_YLuWOBbKOg@mail.gmail.com>
+Subject: Re: [PATCH V1] um: Fix compilation warnings
+To: Srinivasarao Pathipati <quic_c_spathi@quicinc.com>
+Cc: Richard Weinberger <richard@nod.at>, anton ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, linux-um <linux-um@lists.infradead.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230215_000157_538278_0B3EF904 
-X-CRM114-Status: GOOD (  16.95  )
+X-CRM114-CacheID: sfid-20230215_000735_677663_2EF8C73A 
+X-CRM114-Status: GOOD (  22.07  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -144,56 +81,37 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 15.02.23 00:35, Glenn Washburn wrote:
-> A running x86 UML kernel reports with architecture "i386:x86-64" as
-> it is a sub-architecture. However, a difference with bare-metal x86
-> kernels is in how it manages tasks and the current task struct. To
-> identify that the inferior is a UML kernel and not bare-metal, the
-> symbol "uml_kmalloc" is checked for. If it exists, then do the UML
-> specific way of getting the current task struct.
-> 
-> Signed-off-by: Glenn Washburn <development@efficientek.com>
-> ---
->  scripts/gdb/linux/cpus.py | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/scripts/gdb/linux/cpus.py b/scripts/gdb/linux/cpus.py
-> index 289f0bf4d2a1..90908653f6c7 100644
-> --- a/scripts/gdb/linux/cpus.py
-> +++ b/scripts/gdb/linux/cpus.py
-> @@ -163,8 +163,12 @@ def get_current_task(cpu):
->      task_ptr_type = task_type.get_type().pointer()
->  
->      if utils.is_target_arch("x86"):
-> -        var_ptr = gdb.parse_and_eval("&current_task")
-> -        return per_cpu(var_ptr, cpu).dereference()
-> +        if gdb.lookup_global_symbol("uml_kmalloc"):
-> +            var_ptr = gdb.parse_and_eval("(struct task_struct *)cpu_tasks[0].task")
-
-Can't we use an UML indicator that is related to the topic? Why not
-cpu_tasks itself?
-
-> +            return var_ptr.dereference()
-> +        else:
-> +            var_ptr = gdb.parse_and_eval("&current_task")
-> +            return per_cpu(var_ptr, cpu).dereference()
->      elif utils.is_target_arch("aarch64"):
->          current_task_addr = gdb.parse_and_eval("$SP_EL0")
->          if((current_task_addr >> 63) != 0):
-
-Jan
-
--- 
-Siemens AG, Technology
-Competence Center Embedded Linux
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+SGkgU3Jpbml2YXNhcmFvLAoKT24gV2VkLCBGZWIgMTUsIDIwMjMgYXQgNjozNiBBTSBTcmluaXZh
+c2FyYW8gUGF0aGlwYXRpCjxxdWljX2Nfc3BhdGhpQHF1aWNpbmMuY29tPiB3cm90ZToKPiBPbiAy
+LzE1LzIwMjMgMzoyNyBBTSwgUmljaGFyZCBXZWluYmVyZ2VyIHdyb3RlOgo+ID4gLS0tLS0gVXJz
+cHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+ID4+IFZvbjogIlNyaW5pdmFzYXJhbyBQYXRoaXBhdGki
+IDxxdWljX2Nfc3BhdGhpQHF1aWNpbmMuY29tPgo+ID4+IHN0YXRpYyB2b2lkIHNpZ19oYW5kbGVy
+X2NvbW1vbihpbnQgc2lnLCBzdHJ1Y3Qgc2lnaW5mbyAqc2ksIG1jb250ZXh0X3QgKm1jKQo+ID4+
+IHsKPiA+PiAtICAgIHN0cnVjdCB1bWxfcHRfcmVncyByOwo+ID4+ICsgICAgc3RydWN0IHVtbF9w
+dF9yZWdzICpyOwo+ID4+ICAgICAgaW50IHNhdmVfZXJybm8gPSBlcnJubzsKPiA+Pgo+ID4+IC0g
+ICAgci5pc191c2VyID0gMDsKPiA+PiArICAgIHIgPSBtYWxsb2Moc2l6ZW9mKHN0cnVjdCB1bWxf
+cHRfcmVncykpOwo+ID4gSSBmZWFyIHRoaXMgaXMgbm90IGNvcnJlY3Qgc2luY2UgbWFsbG9jKCkg
+aXMgbm90IGFzeW5jLXNpZ25hbCBzYWZlLgo+Cj4gVGhhbmtzIFJpY2hhcmQgZm9yIHF1aWNrIHJl
+c3BvbnNlLiBDb3VsZCB5b3UgcGxlYXNlIHN1Z2dlc3QgYWx0ZXJuYXRpdmUKPiBmdW5jdGlvbiBv
+ZiBtYWxsb2MoKSB3aXRoIGFzeW5jLXNpZ25hbCBzYWZlLgo+Cj4gaWYgdGhhdCBpcyBub3QgcG9z
+c2libGUgSXMgdGhlcmUgYW55IG90aGVyIHdheSB0byBmaXggdGhpcyB3YXJuaW5nPyBPUgo+IGRv
+IHdlIG5lZWQgdG8gbGl2ZSB3aXRoIHRoYXQgd2FybmluZz8KCkRvZXMgdGhpcyBsaW1pdCBhY3R1
+YWxseSBhcHBseSB0byB0aGlzIGZpbGUsIHdoaWNoIGNhbGxzIGludG8gdGhlIGhvc3QgT1M/CgpI
+b3cgY29tZSB5b3UgZXZlbiBzZWUgdGhpcyB3YXJuaW5nLCBhcyB3ZSBoYXZlCgogICAgQ0ZMQUdT
+X3NpZ25hbC5vICs9IC1XZnJhbWUtbGFyZ2VyLXRoYW49NDA5NgoKc2luY2UgY29tbWl0IDUxN2Y2
+MDIwNmVlNWQ1ZjcgKCJ1bTogSW5jcmVhc2Ugc3RhY2sgZnJhbWUgc2l6ZSB0aHJlc2hvbGQKZm9y
+IHNpZ25hbC5jIikgaW4gdjUuMTE/CgpHcntvZXRqZSxlZXRpbmd9cywKCiAgICAgICAgICAgICAg
+ICAgICAgICAgIEdlZXJ0CgotLSAKR2VlcnQgVXl0dGVyaG9ldmVuIC0tIFRoZXJlJ3MgbG90cyBv
+ZiBMaW51eCBiZXlvbmQgaWEzMiAtLSBnZWVydEBsaW51eC1tNjhrLm9yZwoKSW4gcGVyc29uYWwg
+Y29udmVyc2F0aW9ucyB3aXRoIHRlY2huaWNhbCBwZW9wbGUsIEkgY2FsbCBteXNlbGYgYSBoYWNr
+ZXIuIEJ1dAp3aGVuIEknbSB0YWxraW5nIHRvIGpvdXJuYWxpc3RzIEkganVzdCBzYXkgInByb2dy
+YW1tZXIiIG9yIHNvbWV0aGluZyBsaWtlIHRoYXQuCiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgLS0gTGludXMgVG9ydmFsZHMKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZy
+YWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGlu
+dXgtdW0K
