@@ -4,8 +4,8 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DECBC636CC
-	for <linux-um@archiver.kernel.org>; Wed, 15 Feb 2023 07:44:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB539C636CC
+	for <linux-um@archiver.kernel.org>; Wed, 15 Feb 2023 08:02:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
@@ -13,50 +13,51 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:Cc:To:Subject:Date:Message-ID:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
 	:Resent-Message-ID:List-Owner;
-	bh=MVYmOw4owgQ49IY+hqwNEBMKwjO083XzECWBRFqdUMA=; b=bSiZtziZOVe3cADDu67lPV2D91
-	JhZ9GA6kY6GpJPGjDFKDPfr9xULMqdceflvHE+Js0kYZhGYlvBCwseQHBAKPh0HgH8kw5/WAp1+0k
-	ytO1xKmtmnqxG17zibCuWrbFVcgrlaVSBZzlaQ4IiM+slaEDHGZBHW4Emxahec37tUlndUqA2ttt7
-	i0XNc2I+LF1zcyVBhIgL+bFSmWVwGgwFI2n6ZGPDyII0yq/Z1cnZgmozdiXpv11qTLFywdSQ8Ods0
-	WyrK63ArXZnnAceaPmM48OOlY3xfX7PGNM2ENGt34XPWOh88hVx3GfxHOro8vz4iq5uPXNLQtmcq/
-	CghZ16XQ==;
+	bh=W7rp0Npj+t53lfgwioJZ/+gHZ1nj5Biuj5Ra6NYvO1M=; b=xq3sAK82P2NmXsHMlVUT5n7WEf
+	uMo4o8fS5nnOESCY22WijvTJEpq4jxNBv3Je/3adWuVdwNuEK6uUiwjv3gnT6fk2lOSsl1RPNBlO9
+	GJQxpv4woqNuqlpG4GffjhYxtkPfKYhr6w1innxc3PFANnVZW66NA2v80iOB8h7tA68M8YqhnuDvW
+	lWa0Rp2L5VkvXa1CFVdew4ul4SQl34AAEJmvl5ybskppPMDgAxKpdQf3yhOIRMJTjM2rOJb35QlFD
+	SNc3zZHqTmMXF1T9oq9EYxupVqmIl3QhNBi9IDIV44pfdU9K6KRg6qJDpeYJiGEfTwYnpTRGztLZI
+	vpKpVdQQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pSCSm-0055Bx-QP; Wed, 15 Feb 2023 07:44:24 +0000
-Received: from mail-ve1eur01on0607.outbound.protection.outlook.com ([2a01:111:f400:fe1f::607] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
+	id 1pSCjo-0057cz-DW; Wed, 15 Feb 2023 08:02:00 +0000
+Received: from mail-db8eur05on20610.outbound.protection.outlook.com ([2a01:111:f400:7e1a::610] helo=EUR05-DB8-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pSCSk-0055BA-01
-	for linux-um@lists.infradead.org; Wed, 15 Feb 2023 07:44:23 +0000
+	id 1pSCjl-0057bk-4H
+	for linux-um@lists.infradead.org; Wed, 15 Feb 2023 08:01:58 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XAYT3MKokl3++9s5HwuQzFmXv9yLWbg9d/fQfJvE29IZXccYFSfrt327AWdS43meTJjBiHFZRUvgK5hdsi9OFSQK8MADOmiHogNumsPBhfJpQA3JkO8yUSlf25d2gNN+3v2cNQalcITgCpWcuIp6pcNeSmuY1K6HtkB09n2aETwEraigSvWoVvOxbrT/QCiXAG4oLLbsmmZWTgryR1TxLQZaBVximwQlrDrWkdcou9HS16sARpkbiI3KDb/b+GX6xnHhJuoENbzfP5RHX8BTxZdsdXyoCEVXcmKXgCwTkYie3TJtcFq/ldDzcIWD4vTt9iUbgdozQk0DHLdmdSEj4Q==
+ b=eJlSZY3e3XK58dutvqen5wOeAQT0dgX+JhscZKmTYipvXwUkNV7CAIi7WJ6+fcmNwa8ix5Bl4KkV6um402wGa1FLiJzPDb8oiPBLJ1WFZV0xF7aPb0EN8joWVc/WAnom8ajzzQgxPFs3QCfpJ9PhLd0rWdR6SxGt/JqwdjJpGjgXyE37XaP16ql8jBBlQ9gJ/bPqey82U3E4HLskbarVBYVhOwROb7/y9qNowSKGx/TCyXP/eWTlhaowfkz7t/swpkr2xg7zeFXtfr6E0eoXitH9N+jKNYn7AtidE9jlOKvrdIjXIXKcc9wDJbz6c2CBr8Ja3ktXu9kNSug8k5suUg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wPk7f7ws1ZsxeoGg0o4Yp2iLPyC4MOV9FbLV2blu74Q=;
- b=e8RFr3MQWW3AonFfFYPV+Jd5RUwD3jkWbJ4mamCG5iHKcZirqrCJy9bFh7KHyEOWeSbfTqkGLdPjejmT5HxV0ZnN8JRlbkQzJPEB5MsgJ9oCrzmCeWhUrbo0SvPCzgnjjAecDyv7J7n7hzkUe8U3oIIDq/svU4YwbfyM+F3eLt4iKtBQ4pWZK4UhWGOU0pPVEDPcrvkf3CrLsLfiovhM5jgusl0j+CVvl4Z9NDIJcZJrjNg9yXN5AJVIc5ydciLcqNudqxfktCGa59ayjtEjD6Fd37OFsbUW/abebYxZ6ufFAlg4oMn6ASABNlhMXirZVCTdlfIHr+xfuMo1RLEpRw==
+ bh=Rej7r1wUPvqPPPTbRyW1Bh7EEkay9Wd10wchiRDy8NE=;
+ b=OwoP5jq4pHrOpdUAWU/ui9/xRlZFoaXQp63VS22FBpEs693OnzgVoqliVLAjtHSmA1GUyxZPmVvy2zhIuhToqk9ORdMsIXBnjGbcmxvRBTd1+LZ7VXtVRmayS5bCHUY61pC5jxVx3GHXL1S1XmTRsjKTk0Po0O9B+5jHA7bFVe+YbJOZcSy0O0jaXrFXv+PpqlHJCerpEcLFr11WSpr2JLrzRirXnJI8wnT0DGmBbuO2iAFb1LwVQo9KaeuF/Dm0H/hxJ5+3BHAhWwLxYj1MELr9luvk8iLZFRIlBLCBsOgD89y44ZFNq4RYwU1z20pUWY5houSvGFfQ+gT1jlzaSQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=siemens.com; dmarc=pass action=none header.from=siemens.com;
  dkim=pass header.d=siemens.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wPk7f7ws1ZsxeoGg0o4Yp2iLPyC4MOV9FbLV2blu74Q=;
- b=KJ0zwTFdncwTEnYvMvbwiWY9ClHbsGgKCRL1Xe4X2qXfTVjC12oZ/byYLNPxGktHgIul1r58sl8TbftPqadUjvrPto3VZObkdqnvuEx8SFjJ17iEa/JKwT5CqkFGjrWWzE7MqSTSrLkuIfV4QibGpyvjHLkTBr4gMV57MPe/IKfJTP5ZjlCgDkwHJxi0jxljYuQ5+7LM7+WzPnsNZWh+/DvRjYkX/vcUFGKFqa/JsDoBtJaKE28c41O/7zy5W4K5LSh32cM1SIbxmTSMcUJVk4shU6PKmnRdp5mc79VLRePc8w+daF7SoPwsxpJepasbEhhvhTuA43/Yr4q0unkJmA==
+ bh=Rej7r1wUPvqPPPTbRyW1Bh7EEkay9Wd10wchiRDy8NE=;
+ b=UefWxJPadRUndsKK0Quo3nZomG1nO3wrsOAccVLnjiHELjxQspu3ckpv87NLwPXeb8blH5BKM6MDhxoFtwaQNcziBK/8flVjJhYqkishdmtoK62s+K7dfg8LYjzgxD4qxpKaG43Lb7cGGEe3emKz9yP4W5gOQTzrtuzBaD9dghjqd2bdZzwaWufS/q8eyswkYEKXJWhuQRtUpsM9Jjem1VP1tz0cWC6tSx5Gz0XPVdQVgeVCbPfoccPC/W1SJU8wZCD7lcT0P+5oN2UvR8EjKj50G03JMBg/o6MW3PKQLk71lu/LkX7MXETstym4L5yBWhCCqHoSSDawuo6XXnnUSA==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=siemens.com;
 Received: from AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:588::19)
- by GV1PR10MB6098.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:9d::19) with
+ by VI1PR10MB7830.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:800:1cf::7) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6086.24; Wed, 15 Feb
- 2023 07:44:15 +0000
+ 2023 07:45:52 +0000
 Received: from AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
  ([fe80::784b:e95b:b855:dcc5]) by AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
  ([fe80::784b:e95b:b855:dcc5%9]) with mapi id 15.20.6086.026; Wed, 15 Feb 2023
- 07:44:15 +0000
-Message-ID: <76578d08-0faa-59b5-9a51-444446125c4a@siemens.com>
-Date: Wed, 15 Feb 2023 08:44:06 +0100
+ 07:45:51 +0000
+Message-ID: <31d49cc7-b6a8-8942-016a-9a2793e601c7@siemens.com>
+Date: Wed, 15 Feb 2023 08:45:20 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.7.1
-Subject: Re: [PATCH 1/2] scripts/gdb: Correct indentation in get_current_task
+Subject: Re: [PATCH 2/2] scripts/gdb: Support getting current task struct in
+ UML
 Content-Language: en-US
 To: Glenn Washburn <development@efficientek.com>,
  Kieran Bingham <kbingham@kernel.org>
@@ -65,73 +66,73 @@ Cc: linux-um <linux-um@lists.infradead.org>,
  Johannes Berg <johannes@sipsolutions.net>,
  Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
 References: <cover.1676416728.git.development@efficientek.com>
- <f33ebe524590314238b48fe620c9af717b1db096.1676416728.git.development@efficientek.com>
+ <8c3db2291f583200a9036e83134ba363db492222.1676416728.git.development@efficientek.com>
 From: Jan Kiszka <jan.kiszka@siemens.com>
-In-Reply-To: <f33ebe524590314238b48fe620c9af717b1db096.1676416728.git.development@efficientek.com>
-X-ClientProxiedBy: FR0P281CA0049.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:48::15) To AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
+In-Reply-To: <8c3db2291f583200a9036e83134ba363db492222.1676416728.git.development@efficientek.com>
+X-ClientProxiedBy: FR0P281CA0037.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:48::19) To AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
  (2603:10a6:20b:588::19)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS4PR10MB6181:EE_|GV1PR10MB6098:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5369e419-aeeb-48d0-eea6-08db0f286f66
+X-MS-TrafficTypeDiagnostic: AS4PR10MB6181:EE_|VI1PR10MB7830:EE_
+X-MS-Office365-Filtering-Correlation-Id: 92e7a08e-5cd3-4029-4dd0-08db0f28a94f
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 	3hMZfg64CNRsG6Osj9Wgx0BhDYqIc2DJWFKZn2Q6wU/VzbkK3ribSKTg+O9Xjs0/R2KM+o+7sGjQvKP3X1v7YjWRtJ+rGIvT/AsCu7Zdvdg1dBn9hMmBP7PFTov8HKomndSkRJegx/qmGsK6by6QZA/AqWgCp6zmCTa/76II1lP4vSECqQzX2AyzpArArCsFUJZ2hUBp9866sgSrSqNCSgCfQPj4tzKqLiO6kZi+S+050N3he/A2AD1UH6zsmL+sXplIiUFXOTf1sXgB9bYNTt5npJ9gwiWeT+bHND2GHjVU2JKhTECoyEAyS5ja4yj6Hp/7ESkIhG1lXUdLrKgX2X9xcsAdRzmbQRS6WM2Xxd2G8u3+8kmIe77rPUYNfj9l/YnhVIgso+LEuyUESLgVJUMxVmfjnQChnqIbRUiGYwecEqg/6d17MBeaUappn/96rRE9oCcgwYYDiF1qC55HcPbldPs6MK7UNDsXZgsi8fIsG/AdCnsdM9qIjMGFmPZKHgYOiwcW2Qv7ax030psv/9JA6TJI6yRZQfnJobLeaRGJqjp2CcOKaSIy6SYbfGV3ZSqfEHd8zRXwf43gfpvymS3wCppy98sndqM5gl11yKKEHURNFE3nRtiMSExKBwzIUYFqIjEhscaVjH5B5MaP7cb6fQj3qRKg3qTvQD0Swo6MFJGUzR7xnkk9kZoLa4Hk2Wu3UQttoiULmJrbzYnSUtK8RT1ssG4p7bhprUgQjfE=
-X-Forefront-Antispam-Report: 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230025)(4636009)(376002)(366004)(39860400002)(346002)(396003)(136003)(451199018)(478600001)(31686004)(6512007)(186003)(26005)(2906002)(82960400001)(53546011)(44832011)(6506007)(38100700002)(5660300002)(2616005)(31696002)(6666004)(8936002)(41300700001)(86362001)(316002)(4326008)(6486002)(8676002)(66476007)(83380400001)(66556008)(66946007)(110136005)(36756003)(54906003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 	G0GJM+vqOXIxFRtEc/mIrLNkdjcNVO5G6WjDS0MNLHTgkR13jv5+3vUhqkiBvaZLE1pdNl1/k7jxENPolrNkITCkmXOqWK/6BDU0HCRgYTSkO7bMw9upLgByzS2clkRM4eGE22iFsbE9cR6+slgb1iBHeLPQh9Dy15FNKfVti4Qq/Ng7VPhtWi/MpfbGlwMX6izFEYVqUDyVpFuXyVPuUyr5m4g/IPGLHsDGDdNRHJk7w42Xtqp0qFRyDVCyJzhLNglDKBe5nFVoxadsYl6tpLAQ+HP5HE5EVUz8f1cTZgiUDsa1udChGwPHD87ksN5BhsqW8qf6xJ3xkgoH9B3NO0faAHtNRRKA8fgXV1lq5mjJw97wmi15G4LtnO82n6nwau+oLDvCnWzTFUPPRGPa3w8OaVeqeFz4itqqShuOq/7j6hBl05zMkLJ33DoGKUrvVLoOFY3vbb0xyoGbNm5C6Y3nQy0BI2Iio6QLZ90JHV2lh79ZibW694c4lDNKUc6KgMSD2pSyuVsiqUx+eutVWoGBFUq9CT/XJNHArVo5Zui+1PlllI7eBU365Pu3AxfNizSMdn2ArDHUHjQhrufzFM5mfQ4bNIck6PElTFoB/W4sp0Zq+zNNz+vfq+uX1qIwAk8DkE0/+7PK81FcrEhp7nrLEzeRRr8d4fFJsYNNdmlbB0uxk+5gFDN3BHC8g2Pluery9mT0/NWw+Mw5iD8VSmWmBZwF6fPzlnNG5cDeQSI=
+X-Forefront-Antispam-Report: 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230025)(4636009)(346002)(376002)(39860400002)(396003)(366004)(136003)(451199018)(4326008)(6506007)(41300700001)(36756003)(6486002)(8676002)(44832011)(478600001)(2616005)(8936002)(83380400001)(66946007)(31696002)(66556008)(5660300002)(6512007)(66476007)(82960400001)(26005)(186003)(86362001)(110136005)(31686004)(38100700002)(54906003)(316002)(6666004)(2906002)(53546011)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 	=?utf-8?B?azI5VGVYaGVROWJGUGdweHI1OG5ZY3BNeWNrdFdyU1NMNGJpd29hNng1TlRt?=
- =?utf-8?B?UmptalM5ZCsyaWNZaWJNbXJ3bEl4OHJ0clY2bGVncGEvRFlnTUhtM3VEOXVv?=
- =?utf-8?B?eXlMUWhOejUvdlc1NGFRVUUrT25ZMjVsUXlzSm9jcEpiZmd5Y09zVlYxTmN5?=
- =?utf-8?B?dFdVUkxFK3BZc2RyMGVGNWtkeUgyTnh1eUNwOCtOc1IxKytrQUpvNkVtZkZE?=
- =?utf-8?B?K25RbnNxejB0ZzJjZDBLUUFJRmFlYzFPajgrcE45YXNTbEc3WEhHMkI3WElI?=
- =?utf-8?B?U3NXalZOV0xxV0VVdFh3Rjcxb1lDVUtQNTFGTjhoZlBvWURjUVZsQUI0WXYy?=
- =?utf-8?B?RmtSNzdwbCtta2JBdE1TYjVBQWVaYVpReHlnUUE0V2k3M1RvS3RaYmlvbmVo?=
- =?utf-8?B?UFdZVWJRV2FJZlplanJ4TDlCMmhvZ0Raa1JnVStya3dINWg4MEsraWEzLzFK?=
- =?utf-8?B?ZzJTN0tsKzlSaGM3RDdZaXdscUlOb25TY001Umh5TUJjYVpCWUlOY2lWZ1lT?=
- =?utf-8?B?RTA5dDlpeG9pMlQyV25uQ3o2RUo1dmIvakdHSTlkbCtHVDhGVnRIdisxTVh5?=
- =?utf-8?B?Ymx3ZXhhNlV3ZFVjdm9lNVUxdVhJQ2QwbWphSEx0aFlSV3NFb2hKLzdWRXVH?=
- =?utf-8?B?V1dnYVBBQVJadEhJOWFla1oyek4zQ1h3c0s2cFZzaGMvaVRxTmc3Q3YwcjdX?=
- =?utf-8?B?cUVJb05pV0M1QjVSMWxmaThuSmNTTzdYTkNZZ25Mbk11TlpLSnFyMXljK20y?=
- =?utf-8?B?M29KQ1UxT0tBS3BwMHNScWZtNTNYdHZPMGRuWXJmeEtTZEdvMGc1MjdNYlFa?=
- =?utf-8?B?bmk4dUZDOFNOd0tDQmt0ZFRWT3pXZ3pYRmdTZVl0bUF6RTZLZ1l6aXFsWHdP?=
- =?utf-8?B?cGQyQTNYTndqVk1FZWtYazgrbzQyY21BVkZyRlNKY0pBRzlOK2RtT0I1ZDFQ?=
- =?utf-8?B?MFU4bnQ4MkR0dmRBcVVlWExyWlRLRjlmemVDTXZtUnZlTU5jWmlEcG9nNHA3?=
- =?utf-8?B?SzZSQmZWUTVwUGFHTVZTeDMvSTdyNlo1ZHNrZCs5MmdBaHBGdUE3ZzgxNGhx?=
- =?utf-8?B?bWZHaExveUtEY0ZjOVQ1aUhDNEFGV2l4WS9nbndPMitacFNMbmZQMjRCSFM1?=
- =?utf-8?B?eThFUW9zVytKSlRWZThOY2E2ZS9aekgva1hOaWF5eGdVTWJyUTcwWFFhbGhY?=
- =?utf-8?B?Nzg0NDBSK1lxMDZ4b3IvQVZTTzdnOStEVVh1U0tvM3BaNDVRYVk3ejdIZEg4?=
- =?utf-8?B?ZHVRQm11em5kYUsxRmNndUZ4cWowa05LY3N4elZrMlorNFZ5bGI5SUMxYjV3?=
- =?utf-8?B?UGQyQjZyWnhxLzl3bHJGeFlURy92S1pWajFLYWNGNG9FUHhid29GT2JSdURT?=
- =?utf-8?B?cE9kQndjK25BRTFvVm80UWI1Qk5zNXBIL2hzTU1MRTV5Y29EWXJXWERPQ3FI?=
- =?utf-8?B?cWJaMW0rMGJnTmJJVmtNeVZER0o4UG9LUlhGMHBjODBjcWExcEdlQVNoVE12?=
- =?utf-8?B?SW5DNmJ6T21ic2VoV2l3Z2RVR0pyRXd0SUlzMXY4ZjNEZDZoaFJ0UlBmeklZ?=
- =?utf-8?B?ZWF0bGFQQ3JjRmhBT3d1SzljaXRBcW5zbk9QOWdTZU1xQnM2RHVzZVk1Mi82?=
- =?utf-8?B?bnphOGJuYzZqdnhPeWF4Rit3VmRiOTVKWEVEMzJLVmdPREpHWjBtamxXekgy?=
- =?utf-8?B?aW5JZG5NTDczbGdHTE1YbkdCYVFvRkNTcDI3djQrdzY2Z0lWT1c5YmJMYUll?=
- =?utf-8?B?V1EwKzlBaVNnSDAvUjgvdC9FM0FrdkNxTTVmYkx6RWU3WE9WUHd2UTl3TUpP?=
- =?utf-8?B?bnl4ckNLRnB1VDJwSFZHc2NTK3VBSnowa0g5MDRXN2Q2L2lFZGQvWGdMbDRn?=
- =?utf-8?B?aXlHOEZLRVVESC9hWXRGRCs4bkxVNjk2WEN6TWtMdFhNYzZWUHhEK2dTU0pE?=
- =?utf-8?B?OVpUaytGVjNkeGIrV01Da3hpM2U4Sy9kWUR1Z25DWGh0aTN1blNrTWIySEI1?=
- =?utf-8?B?Zm1QRitTbmQ3THdjL3lpSVNrOWdzQW9tWHJnVlJJVnczcis1M0Nlai9VVkxW?=
- =?utf-8?B?ekovTWU2T2FTSmtBVlpvRFBjc0hDNzVmeEFRaGJkK29lakkrRTRmU09qaGNs?=
- =?utf-8?B?akdQektiOHZhM3M1ckt6UTViZkNCbk05b09IaHRsQVBDbVhDWWtCa3BpeXlE?=
- =?utf-8?B?UFE9PQ==?=
+X-MS-Exchange-AntiSpam-MessageData-0: 	=?utf-8?B?SzdSL0ZzZlloUjNvbVA1ZS8wWUM5Z3NrMFRERVhQZDFzQ2prRkFJSG5oQXZM?=
+ =?utf-8?B?R1RacHNhL2pQTURyOU8yYVRaNURkaVBEWWgvb3hhbmE3Y2tVMXdpTzhSVzhr?=
+ =?utf-8?B?VTM0cHJMS01yRFBlbjFyVUxXUS9xYmdpaHFFZUJkbW1GT3lIdHluNDN6dzUr?=
+ =?utf-8?B?cldERG1iZFRVR3hrSUpGUDcxMDBOcDVyMTJXSXl0c1Y4QmVhVTNXeGhiRkNU?=
+ =?utf-8?B?Tk9iUjc2dzk4QUpLK3ZNUWwySlMyeGJ5Rmg0N1l4bXpTaGh4UUw0STkzOWJv?=
+ =?utf-8?B?Q05pazlraFh6U1lvdTh0c1Y0akxqV1d5Y1UrZUw3Z3dmVjMyN2phMjhwYWla?=
+ =?utf-8?B?ejJHR3p5OTVKTUh5aEJRMVRoSldjWm0ra2tNcmhSck81T3VMbExWL3ArMkRv?=
+ =?utf-8?B?Ty9xdFAwakdKRGhDZFlaY01YTGppdmdVT2EzWEFWZkxaUzZDWFJXaG1rQ0lK?=
+ =?utf-8?B?RURwU3ZlYWhMUzFVOGR5Q2Z6cm1wbmRXbU5IZytwMkxISmk0UzUzZ2hXOGNy?=
+ =?utf-8?B?QzNJQTJLR2cvOVRXS3hBYm1iOUUrQ1JKanFnOTlxUmE5dHRabjg4M2JVYzV1?=
+ =?utf-8?B?Wm90TXZxRzN3aWNKQWc1aEVacHVCRWd4elA2Z0xJdW9SSmlnR1J0UnJ5cC9u?=
+ =?utf-8?B?Y2ZObzI2N2xrd3N6Nld6eDJ5c2k2UmFXWFFWOHZOOHhBaElud005cXRFc3J4?=
+ =?utf-8?B?SU1PWUhUTVhBeXZXdk5MSE9zQ1FoZmtxL1I2N0pNdDdKL3dSK01qVWFHK1Zr?=
+ =?utf-8?B?YXRQSWxNQUVVc25KY0ZqdW8yYlQvbFRIaWZ4Z0Jidkd4ZWVSbU9rbHN6azRQ?=
+ =?utf-8?B?b1JVeUtYeFBpSnp3ODlEb2xNYzlmMy9vL3JjTldGVlkrM0VSYkoxemVzM2sv?=
+ =?utf-8?B?dWxCNm92VmhJNnROZTZXaW5JaWwxZGxsTEhNSHFXRmE5T0R3c042YzErS3o1?=
+ =?utf-8?B?YnRsaEVEOHZLeU0rZHhxbTJkTEk5RWduTzk2MnpDaUdkNitDN2JycHA2Q2Nv?=
+ =?utf-8?B?NVRIeE4wZkY5ZnRjeEtLNzlFSTdwM2wweG9UaTI1OFRLeGJYd1BtbE9DTElz?=
+ =?utf-8?B?RVNXMFFMNnh6bUxwSTFwQUFOVExoWFlRSG40NlM1UnNuSzRBOWNQSU1BSlZ5?=
+ =?utf-8?B?cWtYNTVoYnVEUDh4M2dlSlVOZi9GU1IzYnJXdk1xdmF1SXlUOXlVVnlwTTZk?=
+ =?utf-8?B?RE5PeWRaNUF4cmlQQVhCTTF1aTRVU2NoQzdxczF2K0VSU3VuL0ZLYmdKVS90?=
+ =?utf-8?B?NjdCUFJPREQ1dm1WSjl3OG1QR0pCeVhUZXV6aTduemxGZms1QjlCbXBKY0tL?=
+ =?utf-8?B?a3F6UUlJV0hWeE9YNENKZ0tQMzVab3ZGWjJhNUhFK2dIY1h6TXVJYUFXdzJh?=
+ =?utf-8?B?dXRGdmMyRm9ybzlsazk2U2Y3Sk1JZ0M3RFI4V2pZNlpkcFprRCtpUUJoRXV3?=
+ =?utf-8?B?c3Y3WVBJa2xPeTVBZVZBeEUvcmVvVkI2eVAwYTFRd1VDb3hNblJPTHI5M2xt?=
+ =?utf-8?B?OXduMDBoRE14K1p2OWlCclZZV3ZpWXpjK0xiaDY4NlZweVpuYzZYR0VDSzhM?=
+ =?utf-8?B?ajRXQ0c1RG1JeDYwR1JCejZEZUZMWUVZdkdNWDZmWjFlbk40Q2s3a1lJcWhr?=
+ =?utf-8?B?ZC90ai9ERW9oU3A3eGF2RVRqVlNrRVhneGgycUhya3FJanhJUzhxZllMUUVm?=
+ =?utf-8?B?bGU0SDZZaVowRlFPY1hUWnhmd2c3am9xWlIyeStlekZJd2tzbTJrc2R6WkdN?=
+ =?utf-8?B?bDFDYzhRczV4NnpYbmlJa1FqZGxyQ0NtR2RBQitYT2NjSm1hbUJSQWVDTTBR?=
+ =?utf-8?B?WlMwUktVemhOUDhxSmZoVm16cTYyWkVVdlNoaTNzaGtvVzYwdklNZURzREZi?=
+ =?utf-8?B?MWlSZmU4eU1aa0FGajAray9TNDlydVdNVXBsQ29nTGRCZHFYNHJYTk53elBk?=
+ =?utf-8?B?UWUzckJPRFpkbkVCSTFyR2tkeEdtU0RZZk53ZjhTOVBOc25OOXY1YjcwUXBC?=
+ =?utf-8?B?OUlEOUhFQXhMb2oxWWRPdnhPVFY0SlArRUNPQjVmbUtMdjEzb3RGbm9jd2tv?=
+ =?utf-8?B?QUsxV1ZoVE5xQ3JJTTRPRkN1cjhpRmovNFpYZ1l0ZnNoU0RUVXdqUzl4dVpK?=
+ =?utf-8?B?QWI5a1RZQ1pQVFA4MXFzVFExOWpFMXJTZitzNGdoTFRXTzRPN2h6V1ZPbkZy?=
+ =?utf-8?B?Tnc9PQ==?=
 X-OriginatorOrg: siemens.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5369e419-aeeb-48d0-eea6-08db0f286f66
+X-MS-Exchange-CrossTenant-Network-Message-Id: 92e7a08e-5cd3-4029-4dd0-08db0f28a94f
 X-MS-Exchange-CrossTenant-AuthSource: AS4PR10MB6181.EURPRD10.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2023 07:44:14.6119
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2023 07:45:51.7649
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mOZy0rcFSYzoTjpvsyCIAFrcKovrmRwAR/gNTBonBCvFEVcm0uLePGcJ4++hJicwcxFa6g0ap/bkdsdMdEVkcg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV1PR10MB6098
+X-MS-Exchange-CrossTenant-UserPrincipalName: mIp/S6eupzi8W4aI662yrjt+VMHdKEJVihq0lDgo9GOneke4VEep62pAGmgLEs9iIkZuWKyQHeklWSlGvD6V3g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR10MB7830
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230214_234422_475186_C4771E01 
-X-CRM114-Status: GOOD (  14.19  )
+X-CRM114-CacheID: sfid-20230215_000157_538278_0B3EF904 
+X-CRM114-Status: GOOD (  16.95  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -149,47 +150,41 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On 15.02.23 00:35, Glenn Washburn wrote:
-> There is an extra space in a couple blocks in get_current_task.
-> Though python does not care, let's make the spacing consistent.
+> A running x86 UML kernel reports with architecture "i386:x86-64" as
+> it is a sub-architecture. However, a difference with bare-metal x86
+> kernels is in how it manages tasks and the current task struct. To
+> identify that the inferior is a UML kernel and not bare-metal, the
+> symbol "uml_kmalloc" is checked for. If it exists, then do the UML
+> specific way of getting the current task struct.
 > 
 > Signed-off-by: Glenn Washburn <development@efficientek.com>
 > ---
->  scripts/gdb/linux/cpus.py | 18 +++++++++---------
->  1 file changed, 9 insertions(+), 9 deletions(-)
+>  scripts/gdb/linux/cpus.py | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
 > 
 > diff --git a/scripts/gdb/linux/cpus.py b/scripts/gdb/linux/cpus.py
-> index 15fc4626d236..289f0bf4d2a1 100644
+> index 289f0bf4d2a1..90908653f6c7 100644
 > --- a/scripts/gdb/linux/cpus.py
 > +++ b/scripts/gdb/linux/cpus.py
-> @@ -163,16 +163,16 @@ def get_current_task(cpu):
+> @@ -163,8 +163,12 @@ def get_current_task(cpu):
 >      task_ptr_type = task_type.get_type().pointer()
 >  
 >      if utils.is_target_arch("x86"):
-> -         var_ptr = gdb.parse_and_eval("&current_task")
-> -         return per_cpu(var_ptr, cpu).dereference()
-> +        var_ptr = gdb.parse_and_eval("&current_task")
-> +        return per_cpu(var_ptr, cpu).dereference()
->      elif utils.is_target_arch("aarch64"):
-> -         current_task_addr = gdb.parse_and_eval("$SP_EL0")
-> -         if((current_task_addr >> 63) != 0):
-> -             current_task = current_task_addr.cast(task_ptr_type)
-> -             return current_task.dereference()
-> -         else:
-> -             raise gdb.GdbError("Sorry, obtaining the current task is not allowed "
-> -                                "while running in userspace(EL0)")
-> +        current_task_addr = gdb.parse_and_eval("$SP_EL0")
-> +        if((current_task_addr >> 63) != 0):
+> -        var_ptr = gdb.parse_and_eval("&current_task")
+> -        return per_cpu(var_ptr, cpu).dereference()
+> +        if gdb.lookup_global_symbol("uml_kmalloc"):
+> +            var_ptr = gdb.parse_and_eval("(struct task_struct *)cpu_tasks[0].task")
 
-At this chance: "if (current_task_addr >> 63) != 0:"
+Can't we use an UML indicator that is related to the topic? Why not
+cpu_tasks itself?
 
-> +            current_task = current_task_addr.cast(task_ptr_type)
-> +            return current_task.dereference()
+> +            return var_ptr.dereference()
 > +        else:
-> +            raise gdb.GdbError("Sorry, obtaining the current task is not allowed "
-> +                               "while running in userspace(EL0)")
->      else:
->          raise gdb.GdbError("Sorry, obtaining the current task is not yet "
->                             "supported with this arch")
+> +            var_ptr = gdb.parse_and_eval("&current_task")
+> +            return per_cpu(var_ptr, cpu).dereference()
+>      elif utils.is_target_arch("aarch64"):
+>          current_task_addr = gdb.parse_and_eval("$SP_EL0")
+>          if((current_task_addr >> 63) != 0):
 
 Jan
 
