@@ -4,71 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2C74C64ED8
-	for <linux-um@archiver.kernel.org>; Mon, 27 Feb 2023 07:49:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09FAEC64ED8
+	for <linux-um@archiver.kernel.org>; Mon, 27 Feb 2023 13:31:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:
-	To:Subject:Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=55ItkhquyQniAvEt733KmXxzJpEVtJiso/GpDQ132Qo=; b=ovruA6RJdo1fkJCm2tGculy9nF
-	wV1omm9t3b6zH4PD50DUOvXdyyV2QuqTTbkeFHHycW4wlPBY1A1ifuYDecqWNPaxenKQ9sSj85FDK
-	ZO3lHfWzMIRcueho0RNmHJXc3oOPYG1JOxU7JSukb0WfUMhjErVEphTQbseVm8iH6uxDy4JeAqiKW
-	M+cTGpzGy5lObc0gbxxcE7CD6WIJJmD1WuHVrSazIWUFQUh3AEZh5Eqaqk5Sdv0eVs5GTPpUpXESq
-	Xw1bmR2XAp1DYLHJh5PlqjpqJxN+zaQYkh0ezcVgN8uHSBwnrnyr2g2V9r5F/hDsZzYLhUmp0toXR
-	WhbgQXJQ==;
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:Subject:From:References:Cc:To:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=f3+8eFU2rA2W1omvkUABM6PG4OK6qRTvS94jB3Dl8ns=; b=si4db9j5SP11oR
+	BQ37QPusV81jbitbTE7H4jDj1/3jF+2HNzbBHfly3Q44Ayloy9K9yNGVVYuD3qC7zAiGfdYSazIJ1
+	UETYkfv6xL/zf/PxkcIsU5CglSrR8jpLg6GHL8P0m9Yyw8J/PHI7qhZyntd2SA7C58Txg5A1XjHPB
+	Y4LM6kw2w8CXCgQTfcK4W2qNHzPO3MyIAOtA/Qp3Fkqz+FycdOli/q7lM6/dGxg3+4VSBwS1EjfvX
+	JdVkkmTgRC9VEXLZO+JKzQ+GsKrU804ocDWWwuoFq9tknzE+4JUdf2DE0zUtDQQm77ze6tWe/05Z/
+	5/zUOufM/qHmApzL/zjQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pWYG7-008i5E-KE; Mon, 27 Feb 2023 07:49:19 +0000
-Received: from mail-vs1-xe31.google.com ([2607:f8b0:4864:20::e31])
+	id 1pWdbh-009lij-3N; Mon, 27 Feb 2023 13:31:57 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pWYG4-008i3s-2Y
-	for linux-um@lists.infradead.org; Mon, 27 Feb 2023 07:49:17 +0000
-Received: by mail-vs1-xe31.google.com with SMTP id f23so9488625vsa.13
-        for <linux-um@lists.infradead.org>; Sun, 26 Feb 2023 23:49:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=WnsDKa5uqdYlUyZ49oPx2zeykcNxaFu/cLoqZFk70/w=;
-        b=PN6ZbTpSFJwdUCfmku+R1tdfXQxDrD5rPx0SjLTQsSAhEw2rGV7GAEX5rEqD9F4XU0
-         aLVqL8uPSJpoWOe1sxZZhdWDuJi5VLwqpuBWxVRn180klvSlJoprfekgt6xoEW7qWOEV
-         +MZFJc6Llc9kEmGcErhqNOOJWB0f4pRdZf+ivMNN68Hs/qROi9OcyFJ4f8dbf0J/v+hR
-         ykf4iq6jhGXcAs5E0FcITt4Xt6RZcbm0tuuznjmYWOJD0wl0nkpUndYw2yDnpB3sKvRq
-         OfVuK5wFWctDl2YrcAfCf46UuXCFFNpNRQVUdzmzuW2TIRaUOfgwHyNeT2lKYxY97fWs
-         6b+A==
+	id 1pWdbV-009ley-BT
+	for linux-um@lists.infradead.org; Mon, 27 Feb 2023 13:31:48 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1677504702;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V+6qFC7OXniFoFqHVWKESI1xjQfVcOUspp9yumvENXI=;
+	b=ex46fXXrhKmDPYEWGcB+af8vCe1J2IzZwA/e2KmgnAYszjSYEeJRhD0SpcUuO1qPy3fF9X
+	XAUmcoTTxXm+25+CGrHsNBZUTmHTyITfycVgVEzyB9To6mrfHrZuTHv/h//7qCbivgE7jW
+	G/8xMJixjPXbKePOGt18zoDHMoIkxVA=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-235-LwIqWUv4PE2Ms24km6h94Q-1; Mon, 27 Feb 2023 08:31:41 -0500
+X-MC-Unique: LwIqWUv4PE2Ms24km6h94Q-1
+Received: by mail-wr1-f69.google.com with SMTP id 1-20020a056000154100b002c54d9b8312so833656wry.5
+        for <linux-um@lists.infradead.org>; Mon, 27 Feb 2023 05:31:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :references:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=WnsDKa5uqdYlUyZ49oPx2zeykcNxaFu/cLoqZFk70/w=;
-        b=kF9A675r3PKFEMkzgCiR0kJhJYf1iIXpJf4Q1yuiwmK+lefsb5sNpTgDX/7j2j7jno
-         PLy97u4yiHsb42Hp+sgKG6wYyzooZxR0gm+DPuJ5u38sJvFN5lrOZx33FzWEfnCDtnrk
-         LGQBORMdfhIBvLgEybgtDVHqy9kcIwusSowzHmXKDaKZx0dcJeryo/I+EphDCT4B3BMS
-         BX8yCKVnKprG+xIiez44t+rN+f+yc4Dx/nhF3hR1z5V1CvqJejznU9Fpo3MSZGcXgT2V
-         OM8f5kir3umIAMBYLZ2JVJUVCQl3b0gXKEaoLYHqakqSrXz0a6jk7qr3JPOMrmmo4CrC
-         8G0A==
-X-Gm-Message-State: AO0yUKUDankn2oY1d2xjoau0VE0vOaD7iQtBDueWWhspHX5+u/hjdQw7
-	jrlmXa6x+KYQKz99t6KlEWeh5LEBaqKYV3VoVQHBYA==
-X-Google-Smtp-Source: AK7set9TMVQ48negkpqRDV9talu8Qj4XsvjYhxmvYEX+2iLtJaOS40vqhbFZWv4EXP5HpRdI7ibk/IXT8dFanTxR1Yw=
-X-Received: by 2002:a67:db0a:0:b0:414:2344:c353 with SMTP id
- z10-20020a67db0a000000b004142344c353mr6732894vsj.5.1677484149371; Sun, 26 Feb
- 2023 23:49:09 -0800 (PST)
+        bh=V+6qFC7OXniFoFqHVWKESI1xjQfVcOUspp9yumvENXI=;
+        b=5q7Nix3ykp8ujjLQ3pKYZW+hR2GF9c8bRBzG82he3dzIhmjBZ13JKz+gomKD34pTBU
+         ujBKfGFMHzQRhU9Z+jsHh26x+DvqBxGoprW/iSXYrYJn4y9S3VW4pcpHpXtB7Iuq8qtE
+         8LQQwulmXJTlD23yqtXKMIbFCFPaVeZptQuj/AQye8EYVuQGXo0APyaxxsvNuGV8zX2h
+         XSv3AqPF+JGfOhhJ4z93mEcxXbcz79D1g0OWfWCXRJfPAsVDfXo0PFM/2dij7THnNQHk
+         WkjJa1QOzx4VYW38g/V+9uxk+yofVTomootspy3hq9KNMWSIAEc+NsRMZmSK4ToY6Tqd
+         MS9A==
+X-Gm-Message-State: AO0yUKVPg3r3zHE6SFxk+sC29Na9JnlXTD0oP2eYJA6osE7rcP0sLTPx
+	1ev0i6igPC1ntT3JXY9pLnmEEAfBL46AwEYaRSWK8j5vxUEir9lGxggK3+kdjVo/EGx0MU2m1Kj
+	Y1qBkcUW/rEVf/aP+jTE4WYO6
+X-Received: by 2002:a05:600c:3d9b:b0:3ea:f6c4:5f2a with SMTP id bi27-20020a05600c3d9b00b003eaf6c45f2amr11631385wmb.17.1677504699854;
+        Mon, 27 Feb 2023 05:31:39 -0800 (PST)
+X-Google-Smtp-Source: AK7set9k8OE3X06H0t6ffblDghDw4p6MluetLQ2Nt3K/GymnPq5PiNVd71t1cUTwSWsd1hBXO2jKVw==
+X-Received: by 2002:a05:600c:3d9b:b0:3ea:f6c4:5f2a with SMTP id bi27-20020a05600c3d9b00b003eaf6c45f2amr11631342wmb.17.1677504699482;
+        Mon, 27 Feb 2023 05:31:39 -0800 (PST)
+Received: from ?IPV6:2003:cb:c703:1f00:7816:2307:5967:2228? (p200300cbc7031f007816230759672228.dip0.t-ipconnect.de. [2003:cb:c703:1f00:7816:2307:5967:2228])
+        by smtp.gmail.com with ESMTPSA id m34-20020a05600c3b2200b003df5be8987esm14091432wms.20.2023.02.27.05.31.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Feb 2023 05:31:38 -0800 (PST)
+Message-ID: <9ed766a6-cf06-535d-3337-ea6ff25c2362@redhat.com>
+Date: Mon, 27 Feb 2023 14:31:37 +0100
 MIME-Version: 1.0
-References: <I0YeaNjTtc4Nh47ZLJfAs6rgfAc_QZxhynNfz-GQKssVZ1S2UI_cTScCkp9-oX-hPYVcP3EfF7N0HMB9iAlm1FcvOJagnQoLeHtiW3bGCgM=@bamelis.dev>
-In-Reply-To: <I0YeaNjTtc4Nh47ZLJfAs6rgfAc_QZxhynNfz-GQKssVZ1S2UI_cTScCkp9-oX-hPYVcP3EfF7N0HMB9iAlm1FcvOJagnQoLeHtiW3bGCgM=@bamelis.dev>
-From: David Gow <davidgow@google.com>
-Date: Mon, 27 Feb 2023 15:48:57 +0800
-Message-ID: <CABVgOSmMx4f79M-VyQCmQfY9AaGta8wDvK62ui+O5kE0BPb1iw@mail.gmail.com>
-Subject: Re: [PATCH] rust: sort uml documentation arch support table
-To: dev <thomas@bamelis.dev>
-Cc: "rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>, 
-	"linux-um@lists.infradead.org" <linux-um@lists.infradead.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.2
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ Hugh Dickins <hughd@google.com>, John Hubbard <jhubbard@nvidia.com>,
+ Jason Gunthorpe <jgg@nvidia.com>, Mike Rapoport <rppt@linux.ibm.com>,
+ Yang Shi <shy828301@gmail.com>, Vlastimil Babka <vbabka@suse.cz>,
+ Nadav Amit <namit@vmware.com>, Andrea Arcangeli <aarcange@redhat.com>,
+ Peter Xu <peterx@redhat.com>, linux-mm@kvack.org, x86@kernel.org,
+ linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+ linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+ Michal Simek <monstr@monstr.eu>
+References: <20230113171026.582290-1-david@redhat.com>
+ <20230113171026.582290-12-david@redhat.com>
+ <CAMuHMdX-FDga8w=pgg1myskEx6wp+oyZifhPPPFnWrc1zW7ZpQ@mail.gmail.com>
+From: David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH mm-unstable v1 11/26] microblaze/mm: support
+ __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+In-Reply-To: <CAMuHMdX-FDga8w=pgg1myskEx6wp+oyZifhPPPFnWrc1zW7ZpQ@mail.gmail.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230226_234916_136005_DBF08A2C 
-X-CRM114-Status: GOOD (  21.55  )
+X-CRM114-CacheID: sfid-20230227_053145_500757_DE9DE220 
+X-CRM114-Status: GOOD (  29.81  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,155 +114,129 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3809713969772494420=="
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
---===============3809713969772494420==
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000dc32f605f5a9b681"
+On 26.02.23 21:13, Geert Uytterhoeven wrote:
+> Hi David,
 
---000000000000dc32f605f5a9b681
-Content-Type: text/plain; charset="UTF-8"
+Hi Geert,
 
-On Sun, 26 Feb 2023 at 23:30, dev <thomas@bamelis.dev> wrote:
->
-> From: Thomas Bamelis <thomas@bamelis.dev>
->
-> The arch_support table was not sorted alphabetically.
-> Sorts the table properly.
->
-> Fixes: 0438aadfa69a ("rust: arch/um: Add support for CONFIG_RUST under x86_64 UML")
-> Link: https://lore.kernel.org/rust-for-linux/CANiq72nXMsnUsJNZOG-QZiCVOqa9dRUSMc4RAS3ExLZNJ7VhHg@mail.gmail.com
-> Reported-by: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-> Signed-off-by: Thomas Bamelis <thomas@bamelis.dev>
-> ---
+> 
+> On Fri, Jan 13, 2023 at 6:16 PM David Hildenbrand <david@redhat.com> wrote:
+>> Let's support __HAVE_ARCH_PTE_SWP_EXCLUSIVE by stealing one bit
+>> from the type. Generic MM currently only uses 5 bits for the type
+>> (MAX_SWAPFILES_SHIFT), so the stolen bit is effectively unused.
+>>
+>> The shift by 2 when converting between PTE and arch-specific swap entry
+>> makes the swap PTE layout a little bit harder to decipher.
+>>
+>> While at it, drop the comment from paulus---copy-and-paste leftover
+>> from powerpc where we actually have _PAGE_HASHPTE---and mask the type in
+>> __swp_entry_to_pte() as well.
+>>
+>> Cc: Michal Simek <monstr@monstr.eu>
+>> Signed-off-by: David Hildenbrand <david@redhat.com>
+> 
+> Thanks for your patch, which is now commit b5c88f21531c3457
+> ("microblaze/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE") in
+> 
 
-Thanks very much for fixing my mistake!
+Right, it went upstream, so we can only fixup.
 
-This is
-Reviewed-by: David Gow <davidgow@google.com>
+>>   arch/m68k/include/asm/mcf_pgtable.h   |  4 +--
+> 
+> What is this m68k change doing here?
+> Sorry for not noticing this earlier.
 
-Cheers,
--- David
+Thanks for the late review, still valuable :)
 
->  Documentation/rust/arch-support.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/Documentation/rust/arch-support.rst b/Documentation/rust/arch-support.rst
-> index ed7f4f5b3cf1..b91e9ef4d0c2 100644
-> --- a/Documentation/rust/arch-support.rst
-> +++ b/Documentation/rust/arch-support.rst
-> @@ -15,7 +15,7 @@ support corresponds to ``S`` values in the ``MAINTAINERS`` file.
->  ============  ================  ==============================================
->  Architecture  Level of support  Constraints
->  ============  ================  ==============================================
-> -``x86``       Maintained        ``x86_64`` only.
->  ``um``        Maintained        ``x86_64`` only.
-> +``x86``       Maintained        ``x86_64`` only.
->  ============  ================  ==============================================
->
-> --
->
-> Thank you,
-> Thomas
->
->
-> _______________________________________________
-> linux-um mailing list
-> linux-um@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-um
+That hunk should have gone into the previous patch, looks like I messed 
+that up when reworking.
 
---000000000000dc32f605f5a9b681
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+> 
+> Furthermore, several things below look strange to me...
+> 
+>>   arch/microblaze/include/asm/pgtable.h | 45 +++++++++++++++++++++------
+>>   2 files changed, 37 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/arch/m68k/include/asm/mcf_pgtable.h b/arch/m68k/include/asm/mcf_pgtable.h
+>> index 3f8f4d0e66dd..e573d7b649f7 100644
+>> --- a/arch/m68k/include/asm/mcf_pgtable.h
+>> +++ b/arch/m68k/include/asm/mcf_pgtable.h
+>> @@ -46,8 +46,8 @@
+>>   #define _CACHEMASK040          (~0x060)
+>>   #define _PAGE_GLOBAL040                0x400   /* 68040 global bit, used for kva descs */
+>>
+>> -/* We borrow bit 7 to store the exclusive marker in swap PTEs. */
+>> -#define _PAGE_SWP_EXCLUSIVE    0x080
+>> +/* We borrow bit 24 to store the exclusive marker in swap PTEs. */
+>> +#define _PAGE_SWP_EXCLUSIVE    CF_PAGE_NOCACHE
+> 
+> CF_PAGE_NOCACHE is 0x80, so this is still bit 7, thus the new comment
+> is wrong?
 
-MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-64VRg2IjDI2fJVE9RD6aMEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
-dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
-AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
-c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
-LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
-LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
-Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQA2lZLYRLu7foeR
-cHo1VeNA974FZBiCm08Kd44/aCMEzdTJvxAE9xbUJf7hS1i6eW49qxuSp3/YLn6U7uatwAcmZcwp
-Zma19ftf3LH+9Hvffk+X8fbPKe6uHkJhR2LktrhRzF159jj67NvXyGQv8J4n7UNeEVP0d5ByvRwv
-tF2bJwlOwRGLoxasKSyDHIyUpwTfWYPq7XvjoGqQ/tDS7Khcc5WncJl0/ZEj7EKjtoGbsDbLdXEF
-m/6vdcYKJzF9ghHewtV3YIU4RE3pEM4aCWWRtJwbExzeue6fI7RqURbNCAyQuSpWv0YQvzsX3ZX3
-c1otrs50n1N0Sf8/rfJxq7sWMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
-R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABxy1wm0tAmHKHFkLS9RWPMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCAi
-z7OD1iuvvqDIQAmsORRfsUR76ZF7loUR9u7z56rHZzAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMzAyMjcwNzQ5MDlaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
-BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAYRYASwOTRNzGu1ahpW1H
-qlE0cvny2k5nCZrrxF8pBiSoSsuOhzeaxlvCkqQvQ+lK5SsAONhSw9jxMGU+NdM5r4oy2XRIThgV
-WE3xLHvEXjSfYv3k3fw7ySOo0TYfT+0cFTN1qd4AsS1MXwaoQRt2fupdcz1kkXJ718tDKoLoSyNa
-LejBzXgoXYfb7vqIBU+DtCPCrFOJwrOg8W/OYTlNpiaqZAUz5E9Sa62KSEInXXQ+Ekp45xt7XUBg
-G9OvES+alwZX4Zl7VX/EpOM9+qRpmHfExkUD+hy/4pU2ZfbLtEON0/O3jGISQPEIyk/a2yXe1lfY
-E+oexZ8DHIt0To32Zg==
---000000000000dc32f605f5a9b681--
+You're right, it's still bit 7 (and we use LSB-0 bit numbering in that 
+file). I'll send a fixup.
 
+> 
+>>
+>>   /*
+>>    * Externally used page protection values.
+>> diff --git a/arch/microblaze/include/asm/pgtable.h b/arch/microblaze/include/asm/pgtable.h
+>> index 42f5988e998b..7e3de54bf426 100644
+>> --- a/arch/microblaze/include/asm/pgtable.h
+>> +++ b/arch/microblaze/include/asm/pgtable.h
+>> @@ -131,10 +131,10 @@ extern pte_t *va_to_pte(unsigned long address);
+>>    * of the 16 available.  Bit 24-26 of the TLB are cleared in the TLB
+>>    * miss handler.  Bit 27 is PAGE_USER, thus selecting the correct
+>>    * zone.
+>> - * - PRESENT *must* be in the bottom two bits because swap cache
+>> - * entries use the top 30 bits.  Because 4xx doesn't support SMP
+>> - * anyway, M is irrelevant so we borrow it for PAGE_PRESENT.  Bit 30
+>> - * is cleared in the TLB miss handler before the TLB entry is loaded.
+>> + * - PRESENT *must* be in the bottom two bits because swap PTEs use the top
+>> + * 30 bits.  Because 4xx doesn't support SMP anyway, M is irrelevant so we
+>> + * borrow it for PAGE_PRESENT.  Bit 30 is cleared in the TLB miss handler
+>> + * before the TLB entry is loaded.
+> 
+> So the PowerPC 4xx comment is still here?
 
---===============3809713969772494420==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I only dropped the comment above __swp_type(). I guess you mean that we 
+could also drop the "Because 4xx doesn't support SMP anyway, M is 
+irrelevant so we borrow it for PAGE_PRESENT." sentence, correct? Not 
+sure about the "Bit 30 is cleared in the TLB miss handler" comment, if 
+that can similarly be dropped.
+
+> 
+>>    * - All other bits of the PTE are loaded into TLBLO without
+>>    *  * modification, leaving us only the bits 20, 21, 24, 25, 26, 30 for
+>>    * software PTE bits.  We actually use bits 21, 24, 25, and
+>> @@ -155,6 +155,9 @@ extern pte_t *va_to_pte(unsigned long address);
+>>   #define _PAGE_ACCESSED 0x400   /* software: R: page referenced */
+>>   #define _PMD_PRESENT   PAGE_MASK
+>>
+>> +/* We borrow bit 24 to store the exclusive marker in swap PTEs. */
+>> +#define _PAGE_SWP_EXCLUSIVE    _PAGE_DIRTY
+> 
+> _PAGE_DIRTY is 0x80, so this is also bit 7, thus the new comment is
+> wrong?
+
+In the example, I use MSB-0 bit numbering (which I determined to be 
+correct in microblaze context eventually, but I got confused a couple a 
+times because it's very inconsistent). That should be MSB-0 bit 24.
+
+Thanks!
+
+-- 
+Thanks,
+
+David / dhildenb
+
 
 _______________________________________________
 linux-um mailing list
 linux-um@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-um
-
---===============3809713969772494420==--
-
