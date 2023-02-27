@@ -4,61 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D7A6C64ED8
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 616DEC64ED6
 	for <linux-um@archiver.kernel.org>; Mon, 27 Feb 2023 04:06:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=C0ve7QHR37Vetmx/W0uqoEFwkB1FIdm40zdXlhRP01Y=; b=ntsv6IlOB33qNG
-	KzJDEv3hHoDz2h1vBGZ7z0xO9yhvZhtamqFWhiPrJpeZ87wpEQPII5SQKaHP19v4m5eHTIzUH7gbk
-	VH7835i0IIOqfE74P+CelpQcA+vMLCT951N4qOcH2Xkrc7e32IjCKJA3kKSTcEjNSwaxaL4Z0IAHF
-	0ssC8eOShr1Hn/7U2CAmN1m8TXezZbEbXgkPjYz1D4U5n+IKvcbVgilOyKMDlxWzkjjbdZHee4t7/
-	w1iThQS7IOWnaeac58lThTNMdJwylH5aUnRcRTytZlOXKWx6v25blQ3BF7yfE94KTfkSdavQy1FDt
-	rP8Hu0x2McO0VARfxgmg==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=OzaY2qwooARQJUjXY5f4362P23JMw+u8Nskwj39dIfI=; b=ERslIbNjgjAqQU
+	qMccfIgU0573rIzTn1jMen/ipn2EQwb4QDeqPpn0Z0C4UzSSnduVjVZEG1vngPQUQEviTOBEpZRXe
+	6MaE89yJBwAObu0MB3LOFfN6Kt9jjUHAO3iyfWbAWrwMr8kR/znyugVI3cyZSboLhQ69pOMe0LnjT
+	DKSBC6El/EN9PLln45yHJE5qhtWuM15REX2f9mqMwWu2RA3IGIbLcQvTstGdtU/BKfXsayrI2tOEb
+	mPNMon6KXmTzIkjYq/BdPufnGQaN/X7Mk6e3/8T2aAQR+oPi2d9lQex0Zb5D3/n6hKbs91mWQzm0R
+	OyDBe5mIK2oIuBeD7XpA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pWUmk-008Pjt-Rw; Mon, 27 Feb 2023 04:06:47 +0000
-Received: from mail-oa1-x36.google.com ([2001:4860:4864:20::36])
+	id 1pWUmm-008Pk7-32; Mon, 27 Feb 2023 04:06:48 +0000
+Received: from mail-ot1-x336.google.com ([2607:f8b0:4864:20::336])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pWUmb-008PiT-89
+	id 1pWUmh-008Pis-IX
 	for linux-um@lists.infradead.org; Mon, 27 Feb 2023 04:06:45 +0000
-Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-172b0ba97b0so6237790fac.4
-        for <linux-um@lists.infradead.org>; Sun, 26 Feb 2023 20:06:36 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id f19-20020a9d5f13000000b00693ce5a2f3eso2878698oti.8
+        for <linux-um@lists.infradead.org>; Sun, 26 Feb 2023 20:06:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=efficientek-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8NY3l/s5VQm6VcHLyL10UBGGbYoT2GbHYKXZoazGbGQ=;
-        b=4qhtQ2kheDnpHE9FFFzqrfE2x+dSjQm8Mbdrez47ES8OGfHOGTo33J6l0+jvwR/CUl
-         frX8+8C9eRptVWrhKZ5tQE653DA2JTheX9OBSKUMR05W1tqHIC8Z19/GAWShZ5NQUnsM
-         BiePDWIh6PVq3Z8R8LBSRuMdLG2wECYCM/jHmVJ3+KOJzUKCRl4J3w83PaPbUGOReGJt
-         VhpRZTW6WzjSOSWgBW+u2YaSH//VHlZ5c9s4zKdWK+kKz5R9L/hEb/AOBARqjNMeiK5m
-         VD7lTSP4ToMdP3GEiROVI6JMYF5NmRNx7ympf8peALnBoJ+jSGoYK4VBIRFa378kvEwU
-         t62Q==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=flnML7b+bSQRGsvQ8NZIpa8v6ijknaB9o2IhQpg86OM=;
+        b=HydNKyWBQ6INfb8aCWugSFRRQyXuUfSnrsfrPH0qpTanBmBdOmE1ChbsPcS5RlCnAU
+         L7YgU3avoC/d1NOa46vC/Z+gc+YxTaWNe26fm4YZo8BuRs119GWsZVkQnITEc9jwc0kX
+         4sVWLWm601f2CzphpW/FitMhVF2j+c/f23fPhsMcXbyEvyIuBJGiDKDo7l7DW6YOq09H
+         X5SB4lV3tIB46+TqV1VsXybHxVk1T84M+hsxfnC+YU97M/vKPdhsTHYx/nqM1G7SiU4/
+         CMPuvLCgFmIwyxgHgd5J7sXnfAD48nipqDexhVH0QL/7pBPar+sw5XaUQ9wMO6GnjsQF
+         bczg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8NY3l/s5VQm6VcHLyL10UBGGbYoT2GbHYKXZoazGbGQ=;
-        b=oXE1RC8s7a08BMBDYNjrPXz0aUXsSeDYuwpIrZdXdsH4R1E25+j4z1Ny5a9enaxh+3
-         jCfQ9togkjhiS/9u8dW4/LrR/ajomA+TsGeEl4SBE9DWxQ8oAGmb9n5itvBeOiOS4wXP
-         bbw5l6yivftjjWkxtwMhw5CyKukI3Dws/CUI5LfeT5daJjAYKoZvjdg1Xc31zxfUjEoQ
-         Qt9gt31mAyRgCfN8TJcFdT8B6dxLSS+AlKVgSO0RkvIBujs4vseppDF7oh7iaV8glVtk
-         2SIov47hKwRnpoTOShHcMHUqhYh3bRkhu99yQo4w8QkD2ER/yIBvK1rhYQC+2VdmOsJ0
-         qoIA==
-X-Gm-Message-State: AO0yUKUthFWlSTJNFVgKD0DWH/+ISyiaQc1TQHf7tY6G/vqNJ3Z4QJSz
-	jV2IbbogwHVuVV0mSiOGG6bqhg==
-X-Google-Smtp-Source: AK7set9I9pJi9niHzngrb+YDyd1WgNevIXHBtFNjsLnj4BakBocFpMg3ebWR16yLK5HVOgaU5sAjig==
-X-Received: by 2002:a05:6871:68d:b0:163:535d:4a86 with SMTP id l13-20020a056871068d00b00163535d4a86mr18651384oao.22.1677470795611;
-        Sun, 26 Feb 2023 20:06:35 -0800 (PST)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=flnML7b+bSQRGsvQ8NZIpa8v6ijknaB9o2IhQpg86OM=;
+        b=WbgtwjourE/Oc51m/QB/GCxYZpBiiEHV938bJzjdOiG3TgCkxSgT3/lku2dOIncSg3
+         Iu13HFptKIVLQSQqKo23l+5VDF3Aos1ge/s0/2iRhiPcnUWJSVdfyRFIfThf6VMPB6Og
+         jQW9gY8uOoW053Fp2GGjLQrHrCPDeJvBQU00QN/Ug5XkBQkPdQIvsx1qeJPeMfY6MiFS
+         t2TpMT6VMs8lyDbtKyyRRvdVihRfxcHpc5ybii1Ui3ap3/9hZlyabnwZnUjxohIe1Ae4
+         QnHHV+5zXzf9JiFggJ3p1LY1M681rss+Y9xSOPIU2J3EwEy4IGnpolIMK77WH22J3fqj
+         KzGA==
+X-Gm-Message-State: AO0yUKVCO40Cu1UdGNK3bi4jUcdXoTW1gdfX178clYjvCRSrcTiuRQZO
+	OPWkDE7uattS8UQMJb+fbP0A7g==
+X-Google-Smtp-Source: AK7set9J0nTW4hS4HuqvLTM2KAs1wmypF/nBiEPT9XNeaZovonDhj8PaKB0xQUZm95HarPWlm8HBNg==
+X-Received: by 2002:a9d:1cb:0:b0:690:edd1:a86 with SMTP id e69-20020a9d01cb000000b00690edd10a86mr12439347ote.7.1677470802128;
+        Sun, 26 Feb 2023 20:06:42 -0800 (PST)
 Received: from localhost.localdomain ([37.218.244.251])
-        by smtp.gmail.com with ESMTPSA id j19-20020a9d7f13000000b00690dd5e7345sm2219589otq.26.2023.02.26.20.06.31
+        by smtp.gmail.com with ESMTPSA id j19-20020a9d7f13000000b00690dd5e7345sm2219589otq.26.2023.02.26.20.06.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Feb 2023 20:06:34 -0800 (PST)
+        Sun, 26 Feb 2023 20:06:41 -0800 (PST)
 From: Glenn Washburn <development@efficientek.com>
 To: Jan Kiszka <jan.kiszka@siemens.com>,
 	Kieran Bingham <kbingham@kernel.org>
@@ -69,15 +70,16 @@ Cc: linux-um <linux-um@lists.infradead.org>,
 	linux-kernel@vger.kernel.org,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Glenn Washburn <development@efficientek.com>
-Subject: [PATCH v3 0/2] GDB: Support getting current task struct in UML
-Date: Sun, 26 Feb 2023 22:05:58 -0600
-Message-Id: <cover.1677469905.git.development@efficientek.com>
+Subject: [PATCH v3 2/2] scripts/gdb: Support getting current task struct in UML
+Date: Sun, 26 Feb 2023 22:06:00 -0600
+Message-Id: <b839d611e2906ccef2725c34d8e353fab35fe75e.1677469905.git.development@efficientek.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1677469905.git.development@efficientek.com>
+References: <cover.1677469905.git.development@efficientek.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230226_200643_800766_D900E70B 
-X-CRM114-Status: UNSURE (   8.46  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230226_200643_799219_05C0B354 
+X-CRM114-Status: GOOD (  11.92  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,56 +96,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Changes in v3:
-  - Rebase onto tip.
+A running x86 UML kernel reports with architecture "i386:x86-64" as
+it is a sub-architecture. However, a difference with bare-metal x86
+kernels is in how it manages tasks and the current task struct. To
+identify that the inferior is a UML kernel and not bare-metal, check
+for the existence of the UML specific symbol "cpu_tasks" which
+contains the current task struct.
 
-Changes in v2:
-  - Use cpu_tasks symbols instead of uml_kmalloc when determining if the
-    kernel is a UML kernel.
-  - Improve formatting.
+Signed-off-by: Glenn Washburn <development@efficientek.com>
+Reviewed-by: Jan Kiszka <jan.kiszka@siemens.com>
+---
+ scripts/gdb/linux/cpus.py | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-Glenn
-
-Glenn Washburn (2):
-  scripts/gdb: Correct indentation in get_current_task
-  scripts/gdb: Support getting current task struct in UML
-
- scripts/gdb/linux/cpus.py | 24 +++++++++++++++---------
- 1 file changed, 15 insertions(+), 9 deletions(-)
-
-Range-diff against v2:
-1:  918bc1299bdb ! 1:  2e117b82240d scripts/gdb: Correct indentation in get_current_task
-    @@ scripts/gdb/linux/cpus.py: def get_current_task(cpu):
-          task_ptr_type = task_type.get_type().pointer()
-      
-          if utils.is_target_arch("x86"):
-    --         var_ptr = gdb.parse_and_eval("&current_task")
-    +-         var_ptr = gdb.parse_and_eval("&pcpu_hot.current_task")
-     -         return per_cpu(var_ptr, cpu).dereference()
-    -+        var_ptr = gdb.parse_and_eval("&current_task")
-    ++        var_ptr = gdb.parse_and_eval("&pcpu_hot.current_task")
-     +        return per_cpu(var_ptr, cpu).dereference()
-          elif utils.is_target_arch("aarch64"):
-     -         current_task_addr = gdb.parse_and_eval("$SP_EL0")
-2:  93fc6584ea16 ! 2:  b839d611e290 scripts/gdb: Support getting current task struct in UML
-    @@ scripts/gdb/linux/cpus.py: def get_current_task(cpu):
-          task_ptr_type = task_type.get_type().pointer()
-      
-          if utils.is_target_arch("x86"):
-    --        var_ptr = gdb.parse_and_eval("&current_task")
-    +-        var_ptr = gdb.parse_and_eval("&pcpu_hot.current_task")
-     -        return per_cpu(var_ptr, cpu).dereference()
-     +        if gdb.lookup_global_symbol("cpu_tasks"):
-     +            # This is a UML kernel, which stores the current task
-    @@ scripts/gdb/linux/cpus.py: def get_current_task(cpu):
-     +            var_ptr = gdb.parse_and_eval("(struct task_struct *)cpu_tasks[0].task")
-     +            return var_ptr.dereference()
-     +        else:
-    -+            var_ptr = gdb.parse_and_eval("&current_task")
-    ++            var_ptr = gdb.parse_and_eval("&pcpu_hot.current_task")
-     +            return per_cpu(var_ptr, cpu).dereference()
-          elif utils.is_target_arch("aarch64"):
-              current_task_addr = gdb.parse_and_eval("$SP_EL0")
+diff --git a/scripts/gdb/linux/cpus.py b/scripts/gdb/linux/cpus.py
+index e8d2a62ff119..255dc18cb9da 100644
+--- a/scripts/gdb/linux/cpus.py
++++ b/scripts/gdb/linux/cpus.py
+@@ -163,8 +163,14 @@ def get_current_task(cpu):
+     task_ptr_type = task_type.get_type().pointer()
+ 
+     if utils.is_target_arch("x86"):
+-        var_ptr = gdb.parse_and_eval("&pcpu_hot.current_task")
+-        return per_cpu(var_ptr, cpu).dereference()
++        if gdb.lookup_global_symbol("cpu_tasks"):
++            # This is a UML kernel, which stores the current task
++            # differently than other x86 sub architectures
++            var_ptr = gdb.parse_and_eval("(struct task_struct *)cpu_tasks[0].task")
++            return var_ptr.dereference()
++        else:
++            var_ptr = gdb.parse_and_eval("&pcpu_hot.current_task")
++            return per_cpu(var_ptr, cpu).dereference()
+     elif utils.is_target_arch("aarch64"):
+         current_task_addr = gdb.parse_and_eval("$SP_EL0")
+         if (current_task_addr >> 63) != 0:
 -- 
 2.30.2
 
