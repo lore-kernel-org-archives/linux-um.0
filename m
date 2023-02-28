@@ -4,83 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31E4AC64EC7
-	for <linux-um@archiver.kernel.org>; Tue, 28 Feb 2023 15:50:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2695C6FA8E
+	for <linux-um@archiver.kernel.org>; Tue, 28 Feb 2023 15:55:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:Mime-Version:Message-ID:To:From:CC:In-Reply-To:
-	Subject:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:List-Owner;
-	bh=Lrasd/cLNjasWdBeK9XiCo9CZGDAQmn31LMY3fHH24k=; b=O2m0spfgv2/y38lGNk3eAJS2P0
-	M90pQHDW0AbT484cGwVQsw935H7VP/p4x7QZKVQTvj3IhGjVvHH3LwFRuzEf1X8BmCHk+KrbX2deI
-	pOsEHPqxX/rwCW9+Lpvh9s2LacVYx9QpY9VEVVKdSQ2QrEnPPKMKS+NGLTQzB0GQRRlFSzLy2Nx+0
-	VqKZSr/DK9pcc0wRpdxgp4hbeQsf5GA30A/0w+sIdl8UE3iuygeCTn+WF1/nC7Ydb1ep2WAHxxqh5
-	1b2Q4Xzy/E+t2lRqdUaNvRKhG6rhkJRiZpmGXmlvBYa1IgA8UdLbfV1BN9K43Q3SwM7AU3tY7n9KP
-	CZVo3xSQ==;
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=adxcl/8+dhcQjsViGTqgtpk4/lpfI+Ns3Nvo0w7Dn7Q=; b=ID7F7TVdHWISQc
+	Asi6m+sxtYrjh5gQiM7pTBpeQAxOxmHbnMMnw4w75W1REMo3h2hmSfHSc2m1tNcQQjMi6D0aBLd+N
+	iHrF/F8Z2snGt4JI8BA9tFFl4C8rnwTkvOW00fDJZltxlXKQsmE57xuO0ILGD66lzhQDg3TYyJa21
+	IxkKPTpsNZu4NUd91Z0kz+Q8g6+5IOZtYjbfCiczl20NYhlsVfXV/3MIwnWtxlAd8wKEd+ox+lobS
+	MZtNokASRxuN51IpiYLMHrDVMJ6APYpf3/bn81udCaQp56JsuFybLzCVJxjZMnXWoM9nZmPypIDV8
+	Mp/27XEoU+HInJPjsmLg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pX2FX-00DgOK-H3; Tue, 28 Feb 2023 15:50:43 +0000
-Received: from mail-pj1-x1029.google.com ([2607:f8b0:4864:20::1029])
+	id 1pX2KV-00Dh7h-51; Tue, 28 Feb 2023 15:55:51 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pX2FT-00DgNZ-E6
-	for linux-um@lists.infradead.org; Tue, 28 Feb 2023 15:50:41 +0000
-Received: by mail-pj1-x1029.google.com with SMTP id c23so10264355pjo.4
-        for <linux-um@lists.infradead.org>; Tue, 28 Feb 2023 07:50:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20210112.gappssmtp.com; s=20210112; t=1677599437;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UryJW0EuVY8u2sW6z9mCQGQjWTzi+ldNIkpQGB8+HtU=;
-        b=B87Sz4AD1+v0XwCsrRoMpTHOfPGa5C2kWXfopmI+Go4uM/GlteH88Prr3xnOjgOBpK
-         5TXEM23YJaNZ7g9EbVYCuK/JD08Tarh0thhlMnTFFyMOEygBOFNnHXUltVMCUsr+soSV
-         N7JymoT7+eTk9L3hW6gd0jRYqCQJylQ1Sv9bK+MVkRTzPo6kpx2lySfN5ZcoLvOslGRO
-         KPapypwptYDfTKoui/kxjkto9aXQEXnB0zNI2xnF9K9K1w6AMTAlsuNOBVAzoDOh6S9m
-         XMeLlvUu7AtZRerpGExszQw24rKkktWNdf98ePl6noAkKeRplxZuYNOqKiII4Yi6n3n8
-         TCXA==
+	id 1pX2KS-00Dh5Y-5O
+	for linux-um@lists.infradead.org; Tue, 28 Feb 2023 15:55:49 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1677599746;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xBghEncF8boHA8ERPg4saQyYB+zKBnxfff7p7OTCduA=;
+	b=Wdgp+ShpR8oPuIbIv1cMoHGdwz7Hnu20fhoZlHfN2R/kfNQL6IkNYln1IUd2Bi/bR82QNh
+	ZHn9DyhkhN9QAM/A8kGkbZNm2W6ssr3y9+8YxDG1QLMuewtdfcswLXSoQ2L2rcehvdI01Q
+	H1TWHUlClGhOhyU3hn3xkxlrqJSN3pE=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-630-osdak7-HP3K_Jw-RCMEq0Q-1; Tue, 28 Feb 2023 10:55:44 -0500
+X-MC-Unique: osdak7-HP3K_Jw-RCMEq0Q-1
+Received: by mail-wm1-f72.google.com with SMTP id e22-20020a05600c219600b003e000facbb1so7062742wme.9
+        for <linux-um@lists.infradead.org>; Tue, 28 Feb 2023 07:55:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677599437;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UryJW0EuVY8u2sW6z9mCQGQjWTzi+ldNIkpQGB8+HtU=;
-        b=qyMc+QN4uCN9E6CuxxmbvLQo/FevKpW2csz1ru1/JIpsYGDtEgntTPbuOW5YQjAwJA
-         scc8ZK5XPG+QmkUWjR9lwSChqHTszp0aDVXTvOpyTlvz5aLpxibbCjsrbGH50dY327bc
-         Bj/xqKca+ar5XQ1tKaFqHmJlAomATyCtGYAt3I1g7ARD4+BbfKGqgwKPQgT1BJxWegsy
-         6DvH0/81oW1TZFRaPIUpSiq1PaeyIB/to0A4AyUK5ZSucdmVR9HJPRtZzvFZEkEUS5xO
-         s0NJpJ6tigroTgUiq4rdOPaiwKMs7/uEoJP6t0rfrgr+r0sCAGmjnu9h4H5QJSQSvvj7
-         AIlA==
-X-Gm-Message-State: AO0yUKV1rFFBjd0af5kaWMFG6VIZb7k7VEtVxVUPeW+Rh8G8KAR8RM5k
-	wwdkEYk9d04fepvinSI3Cors2A==
-X-Google-Smtp-Source: AK7set80NPLuAAPSgZZsRqS35byB+8nywbDP9pe24Tyk+tjImkNZjMRv8vvzE4HsisyOpmumYVDG2Q==
-X-Received: by 2002:a17:902:d2c7:b0:19c:fbdb:43cb with SMTP id n7-20020a170902d2c700b0019cfbdb43cbmr3953598plc.51.1677599436809;
-        Tue, 28 Feb 2023 07:50:36 -0800 (PST)
-Received: from localhost ([50.221.140.188])
-        by smtp.gmail.com with ESMTPSA id h12-20020a170902f7cc00b0019d1f42b00csm3612084plw.17.2023.02.28.07.50.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Feb 2023 07:50:36 -0800 (PST)
-Date: Tue, 28 Feb 2023 07:50:36 -0800 (PST)
-X-Google-Original-Date: Tue, 28 Feb 2023 07:49:44 PST (-0800)
-Subject: Re: [PATCH mm-unstable v1 19/26] riscv/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
-In-Reply-To: <20230113171026.582290-20-david@redhat.com>
-CC: linux-kernel@vger.kernel.org, akpm@linux-foundation.org, hughd@google.com,
-  jhubbard@nvidia.com, jgg@nvidia.com, rppt@linux.ibm.com, shy828301@gmail.com, vbabka@suse.cz,
-  namit@vmware.com, aarcange@redhat.com, peterx@redhat.com, linux-mm@kvack.org, x86@kernel.org,
-  linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-  linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-  loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-  openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-  linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-  sparclinux@vger.kernel.org, linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org, david@redhat.com,
-  Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu
-From: Palmer Dabbelt <palmer@dabbelt.com>
-To: david@redhat.com
-Message-ID: <mhng-b8dc8a57-dde0-4995-bbb7-3948a95ba0b1@palmer-ri-x1c9a>
-Mime-Version: 1.0 (MHng)
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xBghEncF8boHA8ERPg4saQyYB+zKBnxfff7p7OTCduA=;
+        b=dE7m32E7w+hO3Cz+Syt4ezzl4saRVnJBqL9/rT2ucwi47iCDueauxgw42O3w3Y6IvH
+         xkONSUz/oDbu7WBE/VRsYFltNVPIh//ap1hkAp1piZCXrCftHEfqsn07F/VesrZTWiXM
+         lB0Jn7qSu/tJDJDBR7ekTttdzkLtKcwC6oL1C7wwMahg4T4NJ5mMfO3Pqomg17ohZKbJ
+         PMCwfg5Ne7HwX1DZ4ea4b1T+DQjczRjHLAsA6qwXHhrh8eV3624yGoxwQbC0c2XyIb+s
+         oFLt0iIHSORewLy4iYiJ7PtOeAao9nud8MTqh6lRLpEDJzC58dwafWJp/oZdpT16YV8g
+         LSmg==
+X-Gm-Message-State: AO0yUKVeDfoxd+9pNXrvpfQCj1MZobaInMxg9zGXwNF9hlSldq6tb14l
+	TjxDWj6iQg6YWpYcQEYnUxtJE3L4Y9FaIJBIhOZC0odgP2fDmcac0tIZ7cvJ0E6LYaRUk0kIuPo
+	30PoTxGk3wvftRZluSn1bvdUZ
+X-Received: by 2002:a05:600c:350f:b0:3eb:3945:d400 with SMTP id h15-20020a05600c350f00b003eb3945d400mr2593179wmq.6.1677599743559;
+        Tue, 28 Feb 2023 07:55:43 -0800 (PST)
+X-Google-Smtp-Source: AK7set+wnf2WDMcprxngEfzcv3vYTz2vjDLBbvltb+8+t+ERFjJxQhjmdzxRvt+YBcvxcSrV4CC0jA==
+X-Received: by 2002:a05:600c:350f:b0:3eb:3945:d400 with SMTP id h15-20020a05600c350f00b003eb3945d400mr2593150wmq.6.1677599743200;
+        Tue, 28 Feb 2023 07:55:43 -0800 (PST)
+Received: from ?IPV6:2003:cb:c706:b800:3757:baed:f95e:20ac? (p200300cbc706b8003757baedf95e20ac.dip0.t-ipconnect.de. [2003:cb:c706:b800:3757:baed:f95e:20ac])
+        by smtp.gmail.com with ESMTPSA id o25-20020a05600c511900b003dfe549da4fsm18407191wms.18.2023.02.28.07.55.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Feb 2023 07:55:42 -0800 (PST)
+Message-ID: <5d99c731-c47a-c525-76e5-4578d9dfc9ee@redhat.com>
+Date: Tue, 28 Feb 2023 16:55:41 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH mm-unstable v1 11/26] microblaze/mm: support
+ __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-kernel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ Hugh Dickins <hughd@google.com>, John Hubbard <jhubbard@nvidia.com>,
+ Jason Gunthorpe <jgg@nvidia.com>, Mike Rapoport <rppt@linux.ibm.com>,
+ Yang Shi <shy828301@gmail.com>, Vlastimil Babka <vbabka@suse.cz>,
+ Nadav Amit <namit@vmware.com>, Andrea Arcangeli <aarcange@redhat.com>,
+ Peter Xu <peterx@redhat.com>, linux-mm@kvack.org, x86@kernel.org,
+ linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+ linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+ Michal Simek <monstr@monstr.eu>
+References: <20230113171026.582290-1-david@redhat.com>
+ <20230113171026.582290-12-david@redhat.com>
+ <CAMuHMdX-FDga8w=pgg1myskEx6wp+oyZifhPPPFnWrc1zW7ZpQ@mail.gmail.com>
+ <9ed766a6-cf06-535d-3337-ea6ff25c2362@redhat.com>
+ <CAMuHMdWSaoKqO1Nx7QMDCcXrRmFbqqX8uwDRezXs8g+HdEFjKA@mail.gmail.com>
+ <c145a2db-f92c-65aa-3e68-07dbb2e097a6@redhat.com>
+ <CAMuHMdX7MND++KXgTpx4jscfctQA_-zPt3EN9-+79EWE7e+OjA@mail.gmail.com>
+From: David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <CAMuHMdX7MND++KXgTpx4jscfctQA_-zPt3EN9-+79EWE7e+OjA@mail.gmail.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Language: en-US
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230228_075039_717260_54F7BDA9 
-X-CRM114-Status: GOOD (  23.09  )
+X-CRM114-CacheID: sfid-20230228_075548_351168_6780627D 
+X-CRM114-Status: GOOD (  18.00  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,102 +123,67 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, 13 Jan 2023 09:10:19 PST (-0800), david@redhat.com wrote:
-> Let's support __HAVE_ARCH_PTE_SWP_EXCLUSIVE by stealing one bit
-> from the offset. This reduces the maximum swap space per file: on 32bit
-> to 16 GiB (was 32 GiB).
+On 27.02.23 20:46, Geert Uytterhoeven wrote:
+> Hi David,
+> 
+> On Mon, Feb 27, 2023 at 6:01 PM David Hildenbrand <david@redhat.com> wrote:
+>>>>>>     /*
+>>>>>>      * Externally used page protection values.
+>>>>>> diff --git a/arch/microblaze/include/asm/pgtable.h b/arch/microblaze/include/asm/pgtable.h
+>>>>>> index 42f5988e998b..7e3de54bf426 100644
+>>>>>> --- a/arch/microblaze/include/asm/pgtable.h
+>>>>>> +++ b/arch/microblaze/include/asm/pgtable.h
+> 
+>>>>>>      * - All other bits of the PTE are loaded into TLBLO without
+>>>>>>      *  * modification, leaving us only the bits 20, 21, 24, 25, 26, 30 for
+>>>>>>      * software PTE bits.  We actually use bits 21, 24, 25, and
+>>>>>> @@ -155,6 +155,9 @@ extern pte_t *va_to_pte(unsigned long address);
+>>>>>>     #define _PAGE_ACCESSED 0x400   /* software: R: page referenced */
+>>>>>>     #define _PMD_PRESENT   PAGE_MASK
+>>>>>>
+>>>>>> +/* We borrow bit 24 to store the exclusive marker in swap PTEs. */
+>>>>>> +#define _PAGE_SWP_EXCLUSIVE    _PAGE_DIRTY
+>>>>>
+>>>>> _PAGE_DIRTY is 0x80, so this is also bit 7, thus the new comment is
+>>>>> wrong?
+>>>>
+>>>> In the example, I use MSB-0 bit numbering (which I determined to be
+>>>> correct in microblaze context eventually, but I got confused a couple a
+>>>> times because it's very inconsistent). That should be MSB-0 bit 24.
+>>>
+>>> Thanks, TIL microblaze uses IBM bit numbering...
+>>
+>> I assume IBM bit numbering corresponds to MSB-0 bit numbering, correct?
+> 
+> Correct, as seen in s370 and PowerPC manuals...
 
-Seems fine to me, I doubt anyone wants a huge pile of swap on rv32.
+Good, I have some solid s390x background, but thinking about the term 
+"IBM PC" made me double-check that we're talking about the same thing ;)
 
->
-> Note that this bit does not conflict with swap PMDs and could also be used
-> in swap PMD context later.
->
-> While at it, mask the type in __swp_entry().
->
-> Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: Albert Ou <aou@eecs.berkeley.edu>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  arch/riscv/include/asm/pgtable-bits.h |  3 +++
->  arch/riscv/include/asm/pgtable.h      | 29 ++++++++++++++++++++++-----
->  2 files changed, 27 insertions(+), 5 deletions(-)
->
-> diff --git a/arch/riscv/include/asm/pgtable-bits.h b/arch/riscv/include/asm/pgtable-bits.h
-> index b9e13a8fe2b7..f896708e8331 100644
-> --- a/arch/riscv/include/asm/pgtable-bits.h
-> +++ b/arch/riscv/include/asm/pgtable-bits.h
-> @@ -27,6 +27,9 @@
->   */
->  #define _PAGE_PROT_NONE _PAGE_GLOBAL
->
-> +/* Used for swap PTEs only. */
-> +#define _PAGE_SWP_EXCLUSIVE _PAGE_ACCESSED
-> +
->  #define _PAGE_PFN_SHIFT 10
->
->  /*
-> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-> index 4eba9a98d0e3..03a4728db039 100644
-> --- a/arch/riscv/include/asm/pgtable.h
-> +++ b/arch/riscv/include/asm/pgtable.h
-> @@ -724,16 +724,18 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
->  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
->
->  /*
-> - * Encode and decode a swap entry
-> + * Encode/decode swap entries and swap PTEs. Swap PTEs are all PTEs that
-> + * are !pte_none() && !pte_present().
->   *
->   * Format of swap PTE:
->   *	bit            0:	_PAGE_PRESENT (zero)
->   *	bit       1 to 3:       _PAGE_LEAF (zero)
->   *	bit            5:	_PAGE_PROT_NONE (zero)
-> - *	bits      6 to 10:	swap type
-> - *	bits 10 to XLEN-1:	swap offset
-> + *	bit            6:	exclusive marker
-> + *	bits      7 to 11:	swap type
-> + *	bits 11 to XLEN-1:	swap offset
->   */
-> -#define __SWP_TYPE_SHIFT	6
-> +#define __SWP_TYPE_SHIFT	7
->  #define __SWP_TYPE_BITS		5
->  #define __SWP_TYPE_MASK		((1UL << __SWP_TYPE_BITS) - 1)
->  #define __SWP_OFFSET_SHIFT	(__SWP_TYPE_BITS + __SWP_TYPE_SHIFT)
-> @@ -744,11 +746,28 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
->  #define __swp_type(x)	(((x).val >> __SWP_TYPE_SHIFT) & __SWP_TYPE_MASK)
->  #define __swp_offset(x)	((x).val >> __SWP_OFFSET_SHIFT)
->  #define __swp_entry(type, offset) ((swp_entry_t) \
-> -	{ ((type) << __SWP_TYPE_SHIFT) | ((offset) << __SWP_OFFSET_SHIFT) })
-> +	{ (((type) & __SWP_TYPE_MASK) << __SWP_TYPE_SHIFT) | \
-> +	  ((offset) << __SWP_OFFSET_SHIFT) })
->
->  #define __pte_to_swp_entry(pte)	((swp_entry_t) { pte_val(pte) })
->  #define __swp_entry_to_pte(x)	((pte_t) { (x).val })
->
-> +#define __HAVE_ARCH_PTE_SWP_EXCLUSIVE
-> +static inline int pte_swp_exclusive(pte_t pte)
-> +{
-> +	return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
-> +}
-> +
-> +static inline pte_t pte_swp_mkexclusive(pte_t pte)
-> +{
-> +	return __pte(pte_val(pte) | _PAGE_SWP_EXCLUSIVE);
-> +}
-> +
-> +static inline pte_t pte_swp_clear_exclusive(pte_t pte)
-> +{
-> +	return __pte(pte_val(pte) & ~_PAGE_SWP_EXCLUSIVE);
-> +}
-> +
->  #ifdef CONFIG_ARCH_ENABLE_THP_MIGRATION
->  #define __pmd_to_swp_entry(pmd) ((swp_entry_t) { pmd_val(pmd) })
->  #define __swp_entry_to_pmd(swp) __pmd((swp).val)
+> 
+>> I recall that I used the comment above "/* Definitions for MicroBlaze.
+>> */" as an orientation.
+>>
+>> 0  1  2  3  4  ... 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+>> RPN.....................  0  0 EX WR ZSEL.......  W  I  M  G
+> 
+> Indeed, that's where I noticed the "unconventional" numbering...
+> 
+>> So ... either we adjust both or we leave it as is. (again, depends on
+>> what the right thing to to is -- which I don't know :) )
+> 
+> It depends whether you want to match the hardware documentation,
+> or the Linux BIT() macro and friends...
 
-Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
-Reviewed-by: Palmer Dabbelt <palmer@rivosinc.com>
+The hardware documentation, so we should be good.
+
+Thanks!
+
+-- 
+Thanks,
+
+David / dhildenb
+
 
 _______________________________________________
 linux-um mailing list
