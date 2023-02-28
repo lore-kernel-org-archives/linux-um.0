@@ -4,62 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B142C64ED6
-	for <linux-um@archiver.kernel.org>; Tue, 28 Feb 2023 17:39:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 118F8C64EC7
+	for <linux-um@archiver.kernel.org>; Tue, 28 Feb 2023 21:11:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Date:
+	Message-Id:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pTHqU8z8+blMMbkQRagu2AvCUHEbVXKy+3/P5D9IZBw=; b=AuBwnKH25lmHC4
-	zXZlJvqgxT0W7vHhckhdKTBZjvFTXTW3gUe9uAgbXbU8bq1xuUX8mo9McLTiOBITixJhAnihdYyKF
-	e01WL+vVSWMpeHQOZSxIuyuftQJYVCCJkxiLTMHk0i0Az9lBGKdTdPMj1RG87Mo6RNNcUwZErtUqu
-	JS8DpgxR6Ls+Fqs39Ks1/rwl2N/qvUlSKm7mKdxh3MWAW3/GBOIVTpSEnNVko9AEd9TiRDvi5kwRT
-	vLEfeuOeIppphiF2DCyAvqOATvwoIBW5GfQ+yDafOlUvnY3FaDi24WCVILzLdDK8BVgkGfDfZfuRO
-	OODAAgOIjq+oaJPaN4pA==;
+	List-Owner; bh=n54D+k2sJaWcy3SF1Vm4m4ELalzP+RB8vCM4Ks0EYFw=; b=UeisPhkbHR5hFo
+	7DcUq2F+uDfRs/FDyZY4zAoWVi5iiXPxu7gmgzNNsM2mCFommWM6FzmwojCoLIg0+NNSC9l0cdNp3
+	1ECyFq3mlP+22JGkCn65ck14BBm2YjXWt/ZT3jlSRoS4E3GzXfhRiUU/2foRgX4cxyPny//xLT2M7
+	X48L3ojUNKpvUUtvZ/l5GX3j/TCVpguWjtRfjgSf6Yzq0jELGsupeOruBwUSNngWdXHr+zlmP8LEN
+	QoZKE/f5ViZel1PxnJa9AO1VGHoY1RU59sWYfBEl52zpPziDTvIqv3IlrFewuzB/OCXYRdIhDWbHM
+	B/as9D5r/Hs7oEFvEBog==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pX3xD-00DuBJ-3H; Tue, 28 Feb 2023 17:39:55 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2] helo=sipsolutions.net)
+	id 1pX7Fx-00EIms-16; Tue, 28 Feb 2023 21:11:29 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pX3x8-00Du7p-ET
-	for linux-um@lists.infradead.org; Tue, 28 Feb 2023 17:39:53 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=1kOgwoHUpeZnKGhyoamiE8rEFrDmo1RwpX9g7ay49uU=;
-	t=1677605985; x=1678815585; b=cCmiGe9pC+0QxBMV8O5+1yLoXyshVDHxfXV5sB0fBfkeYMc
-	TSfNpIwng6soJDF+9Zau1b/sWWNmMrsE8iUtNpGlMSb6C4AthHPbWzrZalFnamk/XNyy67jhwWKtz
-	2ECTWdnpStk/3GxAGp7nM4wrtlqCU5ZqwO2VpufIfpjbZ3WSnDzILrJbKqBvuSaxSgjRp9qXjiZdk
-	2UfEXjbkqGTkS7IGQqrDYOhMX+6knTPLaY5UeVXm/2rWxD4G1a+MN9kd6JJVk0xo7U8eHRzuhd796
-	JHh0GQKjcmJ/35A9+NI8vfTwl5zEv0ceUqkilZCBisUpCP478F0qI/oJGrMYmSYg==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.96)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1pX3wt-00845w-0N;
-	Tue, 28 Feb 2023 18:39:35 +0100
-Message-ID: <699d35cd36f3d77c112a6aa8705b043efaa63711.camel@sipsolutions.net>
-Subject: Re: [PATCH] virt-pci: add platform bus support
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Vincent Whitchurch <vincent.whitchurch@axis.com>
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov
-	 <anton.ivanov@cambridgegreys.com>, "robh@kernel.org" <robh@kernel.org>, 
-	devicetree@vger.kernel.org, "linux-um@lists.infradead.org"
-	 <linux-um@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	 <linux-kernel@vger.kernel.org>, kernel <kernel@axis.com>
-Date: Tue, 28 Feb 2023 18:39:34 +0100
-In-Reply-To: <Y+t6qXBxLqf/+eQM@axis.com>
-References: <20230127-uml-pci-platform-v1-1-ec6b45d2829f@axis.com>
-	 <d3f6d627290bb1a6a1fcfdfd5fad915578453e02.camel@sipsolutions.net>
-	 <Y+t6qXBxLqf/+eQM@axis.com>
-User-Agent: Evolution 3.46.3 (3.46.3-1.fc37) 
+	id 1pX7Fn-00EIhA-R5; Tue, 28 Feb 2023 21:11:21 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 25887611D8;
+	Tue, 28 Feb 2023 21:11:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 620DBC433EF;
+	Tue, 28 Feb 2023 21:11:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1677618677;
+	bh=hQNwE+IEUbKQvI91yvljJosaVP7JCZ7+8bppV3cOFbg=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=EWCQE/HQjrWuM9JLi5n8h88COIVDC0Dwj8Ls7hxDeYr4SIALkO/qqCk/UGcAvWK5o
+	 c02+sh/QcUi/6bE0ILdbEb/C+A8GV+CJaLo8WfaGxJWgLFvkSK7vL/E7uokCa4MOxg
+	 ngdg3jXiJrkGUm98gEQXAgu/dxa50c+7WgMlmDgNw1PpnJ2oFrWoeU4ingGh4tZ7R7
+	 NCLLPqaZ1Zn4rnovGjIPX8BlJ6CPAfDs1vwTGYqI9oMCtgbAk9Bh8oF1Q3q6KxteX4
+	 j5u6Jm2tA55Z1q6NEJRkgLy4vCcaaRiYhIH8qBVhYl9/Ucn2GR4gvjnvRg/iSe5UV4
+	 UdVCGz5UeLKDg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3FB70C691DE;
+	Tue, 28 Feb 2023 21:11:17 +0000 (UTC)
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Subject: Re: [PATCH mm-unstable v1 00/26] mm: support
+ __HAVE_ARCH_PTE_SWP_EXCLUSIVE on all architectures with swap PTEs
+From: patchwork-bot+linux-riscv@kernel.org
+Message-Id:  <167761867725.10135.3611718470427113262.git-patchwork-notify@kernel.org>
+Date: Tue, 28 Feb 2023 21:11:17 +0000
+References: <20230113171026.582290-1-david@redhat.com>
+In-Reply-To: <20230113171026.582290-1-david@redhat.com>
+To: David Hildenbrand <david@redhat.com>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ akpm@linux-foundation.org, hughd@google.com, jhubbard@nvidia.com,
+ jgg@nvidia.com, rppt@linux.ibm.com, shy828301@gmail.com, vbabka@suse.cz,
+ namit@vmware.com, aarcange@redhat.com, peterx@redhat.com, linux-mm@kvack.org,
+ x86@kernel.org, linux-alpha@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+ linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+ openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+ linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+ aou@eecs.berkeley.edu, anton.ivanov@cambridgegreys.com, bp@alien8.de,
+ bcain@quicinc.com, christophe.leroy@csgroup.eu, chris@zankel.net,
+ dave.hansen@linux.intel.com, davem@davemloft.net, dinguyen@kernel.org,
+ geert@linux-m68k.org, gerg@linux-m68k.org, guoren@kernel.org, deller@gmx.de,
+ hpa@zytor.com, chenhuacai@kernel.org, mingo@redhat.com,
+ ink@jurassic.park.msu.ru, James.Bottomley@HansenPartnership.com,
+ johannes@sipsolutions.net, mattst88@gmail.com, jcmvbkbc@gmail.com,
+ mpe@ellerman.id.au, monstr@monstr.eu, npiggin@gmail.com, palmer@dabbelt.com,
+ paul.walmsley@sifive.com, richard.henderson@linaro.org, richard@nod.at,
+ dalias@libc.org, linux@armlinux.org.uk, shorne@gmail.com,
+ stefan.kristiansson@saunalahti.fi, tsbogend@alpha.franken.de,
+ tglx@linutronix.de, vgupta@kernel.org, kernel@xen0n.name,
+ ysato@users.sourceforge.jp
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230228_093950_507103_36132728 
-X-CRM114-Status: GOOD (  33.30  )
+X-CRM114-CacheID: sfid-20230228_131119_997304_BF0F85FD 
+X-CRM114-Status: GOOD (  10.09  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,81 +98,82 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2023-02-14 at 13:12 +0100, Vincent Whitchurch wrote:
+Hello:
+
+This series was applied to riscv/linux.git (for-next)
+by Andrew Morton <akpm@linux-foundation.org>:
+
+On Fri, 13 Jan 2023 18:10:00 +0100 you wrote:
+> This is the follow-up on [1]:
+> 	[PATCH v2 0/8] mm: COW fixes part 3: reliable GUP R/W FOLL_GET of
+> 	anonymous pages
 > 
-> Yes, Greg was initially totally opposed to the idea of putting platform
-> devices under PCI devices, but in his latest email he seemed to
-> allow it in some cases.  It's still unclear if he'd be OK with a
-> "virtual PCI-to-platform bridge" though.  And yes, adding platform
-> devices support like in this patch removes one layer and also eliminates
-> the disadvantage of having to wait for user space to specify a PCI ID
-> for the bridge device.
-
-Right.
-
-> > > +	if (!dev->irq)
-> > > +		return;
-> > > 
-> > 
-> > Does that mean platform devices don't have interrupts, or does that mean
-> > not all of them must have interrupts?
+> After we implemented __HAVE_ARCH_PTE_SWP_EXCLUSIVE on most prominent
+> enterprise architectures, implement __HAVE_ARCH_PTE_SWP_EXCLUSIVE on all
+> remaining architectures that support swap PTEs.
 > 
-> They don't have interrupts via this driver.  There isn't any standard
-> way for platform devices to handle interrupts since it it all depends on
-> what interrupt-parent is specified in the devicetree and how that is
-> implemented.
+> [...]
 
-Ah, OK.
+Here is the summary with links:
+  - [mm-unstable,v1,01/26] mm/debug_vm_pgtable: more pte_swp_exclusive() sanity checks
+    (no matching commit)
+  - [mm-unstable,v1,02/26] alpha/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+    (no matching commit)
+  - [mm-unstable,v1,03/26] arc/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+    (no matching commit)
+  - [mm-unstable,v1,04/26] arm/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+    (no matching commit)
+  - [mm-unstable,v1,05/26] csky/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+    (no matching commit)
+  - [mm-unstable,v1,06/26] hexagon/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+    (no matching commit)
+  - [mm-unstable,v1,07/26] ia64/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+    (no matching commit)
+  - [mm-unstable,v1,08/26] loongarch/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+    (no matching commit)
+  - [mm-unstable,v1,09/26] m68k/mm: remove dummy __swp definitions for nommu
+    (no matching commit)
+  - [mm-unstable,v1,10/26] m68k/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+    (no matching commit)
+  - [mm-unstable,v1,11/26] microblaze/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+    (no matching commit)
+  - [mm-unstable,v1,12/26] mips/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+    (no matching commit)
+  - [mm-unstable,v1,13/26] nios2/mm: refactor swap PTE layout
+    (no matching commit)
+  - [mm-unstable,v1,14/26] nios2/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+    (no matching commit)
+  - [mm-unstable,v1,15/26] openrisc/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+    (no matching commit)
+  - [mm-unstable,v1,16/26] parisc/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+    (no matching commit)
+  - [mm-unstable,v1,17/26] powerpc/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE on 32bit book3s
+    (no matching commit)
+  - [mm-unstable,v1,18/26] powerpc/nohash/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+    (no matching commit)
+  - [mm-unstable,v1,19/26] riscv/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+    https://git.kernel.org/riscv/c/51a1007d4113
+  - [mm-unstable,v1,20/26] sh/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+    (no matching commit)
+  - [mm-unstable,v1,21/26] sparc/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE on 32bit
+    (no matching commit)
+  - [mm-unstable,v1,22/26] sparc/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE on 64bit
+    (no matching commit)
+  - [mm-unstable,v1,23/26] um/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+    (no matching commit)
+  - [mm-unstable,v1,24/26] x86/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE also on 32bit
+    (no matching commit)
+  - [mm-unstable,v1,25/26] xtensa/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+    (no matching commit)
+  - [mm-unstable,v1,26/26] mm: remove __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+    (no matching commit)
 
-> > I'll note that this also would allow the device to send an MSI which
-> > feels a bit wrong? But I guess it doesn't really matter.
-> 
-> We could avoid setting up the IRQ/MSI virtqueue when we know we're
-> dealing with platform devices.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Not sure it matters then?
 
-> > So let me ask this: Conceptually, wouldn't the "right" way to handle
-> > this be a new virtio device and protocol and everything, with a new
-> > driver to handle it? I realise that would likely lead to quite a bit of
-> > code duplication, for now I just want to understand the concept here a
-> > bit better.
-> 
-> Yes, that could be a way to do it.  Or there could perhaps be some
-> feature bits indicating that only MMIO read/write/memset are allowed.
-
-Right.
-
-> > How much code would we actually duplicate? Most of virt-pci is dedicated
-> > to the mess of PCI MSI domains, bridges, etc.
-> 
-> Probably not a huge amount, I can try to cook up a patch if you'd like.
-> But, besides the code duplication, I'm not sure if adding another new
-> virtio driver without a specification would be OK?
-
-Yeah ... let's not worry. Was mostly trying to understand it better.
-
-I'm not really bothered by it :)
-
-> > The limitation to a single device feels odd, and the fact that you have
-> 
-> The limitation to a single device here is not a problem since one can
-> use simple-bus to instantiate any number of platform devices via the
-> devicetree.  The devicetree at the end of this email shows how that
-> looks like.
-
-OK cool.
-
-> With a devicetree like the one below, using it shouldn't be all that
-> different from using the normal virt-pci except that the register ranges
-> and IRQ information are in the devicetree rather than coming via the
-> config space implementation in the virtio device.
-
-Makes sense.
-
-Thanks for all the answers & examples! Let's just leave it as is then :)
-
-johannes
 
 _______________________________________________
 linux-um mailing list
