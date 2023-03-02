@@ -4,66 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A29EC7EE32
-	for <linux-um@archiver.kernel.org>; Wed,  1 Mar 2023 18:02:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40EB0C678D4
+	for <linux-um@archiver.kernel.org>; Thu,  2 Mar 2023 01:38:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
-	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
-	References:In-Reply-To:From:Subject:Reply-To:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=I3EGvepDVgtGZKy59fcnbX1s5Fl/jPr0XC/5dCFUMag=; b=q9+E0UJz0gxvBV
-	ZbXQ8xCw1mVwQTTehzVKxpOumuUovHC0Lu2HXPnxTaUpsnFWA5LXssHXuY1batVeWUuM3ki7udbnR
-	ouDoVAZFofjszaOIxBHjF1+iB70hxfRTIv7hHxVZFu49ghenS/CXFf6q3R1dL963jdJCRe37MkH+A
-	b1ZD4jZiQmx0DkbXXNIvMC+gvtv/vx4Aca4f0ikbVkqkMw/xeEbe/dVXLI/6GcsYPHJCn1DHWfXJl
-	SlxgWDZ2eUfw3npu7W7DXhbYgyNwwKkqgtX2D3EWPXOPGZwM2I09+o4XEOMYLu0jEeGlRyUYnFJXO
-	CYpU9DX0lRGhRLIHNI8A==;
+	List-Owner; bh=73PHxEygJreK16oPxJBSKKllaWJ9LS6iv5pNC4iDKB8=; b=E5n3Xt2mUJ3nyC
+	bsNihhuoP5awiIWkeR/Wb2+AxM4Fbd8bv3MJCTqYvenhITakk0PHWEFjX5YIqJ2nVisu204ZjGfiz
+	dzUq5QV+1vY3gFtksBbSLQTYxMh58cV13ihK7iP3rnbrCftyRefXH1iYSegS8Mjq5uLcXkT3sleL6
+	bRtJv9dz2rej8cnRIwQxje4M6F/IyZMto9S9ipPCRR94kSTELLSumUgxBF8ZlEyXM/a8/NVVlJm5B
+	y42lvGGx7jAwJoWpob7BuyFAAHyk+t1CKZlKjnaHZ2DuRiOVC4Anwfj6GEZqjtKbl+dBBMlTzsQn5
+	zyvhCcaxnAufUnoSN7PA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXQmL-00H3ky-JR; Wed, 01 Mar 2023 18:02:13 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1pXXts-000U8M-KQ; Thu, 02 Mar 2023 01:38:28 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXQmI-00H3ju-Ic
-	for linux-um@lists.infradead.org; Wed, 01 Mar 2023 18:02:11 +0000
+	id 1pXXtp-000U6g-94
+	for linux-um@lists.infradead.org; Thu, 02 Mar 2023 01:38:26 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 2534261378;
-	Wed,  1 Mar 2023 18:02:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 898B2C433D2;
-	Wed,  1 Mar 2023 18:02:09 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id A8B7061545;
+	Thu,  2 Mar 2023 01:38:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE626C43442;
+	Thu,  2 Mar 2023 01:38:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1677693729;
-	bh=kO5Wi1sF+r0PAn7FwLozPKkQkacs/Nay+DJ4pfDvRbk=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=bLfakHSCIDslMw9ZrVqh6VAbxK/Jy6TKX/Gtll4OlxjOS6f7SKgCNyEz95qnyVL+N
-	 B9NyjZ6JEYn9+dJEiX6hHt60arV76R9bgycJ6q578YeqaqzQg25pPbkMwx7hl59adS
-	 AtF8WPq7UOCpRkXJG847iw6MLGcYbnoIGnluzP7IJt8TVtnQ4RPVwhP5YXVXFrlumR
-	 WZfe7kQwsAVlfKJx3L6mjaujVcOuG+FhvWAt3Fo07l2RNeaDDWK7k7xg/+yr79QGOZ
-	 SQbU2lpsDnbXkNw1au5gVJmiCV0ZGyPoNxNjOHMgrMlw16zEs/HwTOo/k+bdny5p1Z
-	 RCn0IxOTAnU/A==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 795ADC41676;
-	Wed,  1 Mar 2023 18:02:09 +0000 (UTC)
-Subject: Re: [GIT PULL] UML changes for v6.3-rc1
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <52785855.187162.1677658023892.JavaMail.zimbra@nod.at>
-References: <52785855.187162.1677658023892.JavaMail.zimbra@nod.at>
-X-PR-Tracked-List-Id: <linux-um.lists.infradead.org>
-X-PR-Tracked-Message-Id: <52785855.187162.1677658023892.JavaMail.zimbra@nod.at>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-linus-6.3-rc1
-X-PR-Tracked-Commit-Id: 04df97e150c83d4640540008e95d0229cb188135
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 64e851689e441e66e001ae063d4536602f9f74cb
-Message-Id: <167769372948.10213.11066361498534065985.pr-tracker-bot@kernel.org>
-Date: Wed, 01 Mar 2023 18:02:09 +0000
-To: Richard Weinberger <richard@nod.at>
-Cc: torvalds <torvalds@linux-foundation.org>, linux-kernel <linux-kernel@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>
+	s=k20201202; t=1677721104;
+	bh=xlmggg4SwPHgsUHI5EKsdomiaUIjY1b7gCCFhpuQ1f0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=QX5VMEDWKzXOvBrh3s5n8VNsk9WCy+BA9LU0FftVmXQFxnx9N4tmGdqqJbt4HBNC/
+	 /Qlpzm4VHNwG1upxQs/3iAv3kEvXMUcNPICy2unmITpgwI27wshbBkaYelU99Og3/X
+	 p5YKr67RY+XlVu88alwK46oCYJX2sz1t55xB+CborNapRC+fVCStkxZLrs4vbUVQp8
+	 VkGBUpBi7nyiEcrDtkNgaz+3/+D2JOiC74nqF8N0t5IIQy6bc7yL9zxQMfRoYpZZcU
+	 f28hGP1XZakglVR91gvvQt0gH03SKVUs98uG1rm/CYB0ImCiuK9S8Hxa9KyjMIIN1F
+	 k/5ExXHAciHDA==
+From: Stephen Boyd <sboyd@kernel.org>
+To: Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	linux-clk@vger.kernel.org,
+	patches@lists.linux.dev,
+	Brendan Higgins <brendan.higgins@linux.dev>,
+	David Gow <davidgow@google.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Vincent Whitchurch <vincent.whitchurch@axis.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Frank Rowand <frowand.list@gmail.com>,
+	Christian Marangi <ansuelsmth@gmail.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	devicetree@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	linux-kselftest@vger.kernel.org,
+	kunit-dev@googlegroups.com
+Subject: [PATCH 1/8] dt-bindings: Add linux,kunit binding
+Date: Wed,  1 Mar 2023 17:38:14 -0800
+Message-Id: <20230302013822.1808711-2-sboyd@kernel.org>
+X-Mailer: git-send-email 2.39.2.722.g9855ee24e9-goog
+In-Reply-To: <20230302013822.1808711-1-sboyd@kernel.org>
+References: <20230302013822.1808711-1-sboyd@kernel.org>
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230301_100210_690848_00F1CC40 
-X-CRM114-Status: UNSURE (   5.29  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230301_173825_400004_497BDADA 
+X-CRM114-Status: GOOD (  13.99  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,24 +85,58 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-The pull request you sent on Wed, 1 Mar 2023 09:07:03 +0100 (CET):
+Document the linux,kunit board compatible string. This board is loaded
+into the Linux kernel when KUnit is testing devicetree dependent code.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-linus-6.3-rc1
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc: Brendan Higgins <brendan.higgins@linux.dev>
+Cc: David Gow <davidgow@google.com>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+---
+ .../bindings/kunit/linux,kunit.yaml           | 24 +++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/kunit/linux,kunit.yaml
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/64e851689e441e66e001ae063d4536602f9f74cb
-
-Thank you!
-
+diff --git a/Documentation/devicetree/bindings/kunit/linux,kunit.yaml b/Documentation/devicetree/bindings/kunit/linux,kunit.yaml
+new file mode 100644
+index 000000000000..dfe6da4796e8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/kunit/linux,kunit.yaml
+@@ -0,0 +1,24 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/kunit/linux,kunit.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: KUnit
++
++maintainers:
++  - Brendan Higgins <brendanhiggins@google.com>
++  - David Gow <davidgow@google.com>
++
++description:
++  KUnit board used to unit test the Linux kernel in User Mode Linux (UML).
++
++properties:
++  $nodename:
++    const: "/"
++  compatible:
++    const: linux,kunit
++
++additionalProperties: true
++
++...
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
+https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
+
 
 _______________________________________________
 linux-um mailing list
