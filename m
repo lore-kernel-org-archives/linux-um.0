@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5859EC7EE23
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 980BBC7EE37
 	for <linux-um@archiver.kernel.org>; Thu,  2 Mar 2023 01:38:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,36 +12,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rvuzbBwObCYViENx6oKID1VDKG2cPGO93e5qJx/7NbI=; b=BnTWcGBwjQWpWb
-	i/KYZ5zyZBrFa3mg0LFBC5PIcUrF9V/9uj1PAPg/lRdJsfWVK5Eo0yafS3eW1DN4S5S5//dBOWvl8
-	YF7ERh9kpSkX4/l4hxpFMSfEPm/Mqq54f0FuOSxgZW2M3/o+DAC94m+S8ZRjno4HlXx9XOEzlOyhS
-	tH1ZpsLjWYUWGSwbz5VbrSODu1mL7ZN65s1ggbfKQJgZgBIuCu1G/Vf9NXkG0tYIc48PmElUbYZtZ
-	svlLZij9mnlhxcI1MwQtk9nnO91O0VQCYuK5JcoBaI6BT2qsXiLYWBDH/2vMyGSHllm12iktxLaFF
-	wuEEEj9xlF+xphZZBSyg==;
+	List-Owner; bh=rkwvbHJ+dNSscecxNGkRWgrjYlYtSQZPF5kZBgpzQ8A=; b=gN7sn5za09XDib
+	29AQ6Tz+bgKgpVwJn5mcrbhR/bDmotf1yG4/7EqbV7YxR3nuPJuQXZ2lGMMMjHc3FG2U7rvh1HMuA
+	UROfKpb+lIpxfwLRDxwUybY6mfr4huE6teWl5hJYrVU/2KX1XEWT3/ElfF7vYjJHEGR+r2ZPjh/gA
+	/kdURWwHuoqPStOaN9fhlmZiu7agK9pnbMTTBvcrLfIcs3b5776HQcQXHM21RYe6d2yjlZRPPCDEM
+	9xXZ9DYpSzDmpExjU0160ltEpeJlqFUZYgA0msqZi2Ze22UoqkJlBcpyXL75aUEFgBEwsWdfhgFky
+	nxz9kXTpyGIC42tZtQMg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXXts-000U8Y-SC; Thu, 02 Mar 2023 01:38:28 +0000
+	id 1pXXtv-000UAP-S9; Thu, 02 Mar 2023 01:38:31 +0000
 Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXXtp-000U6w-Vr
-	for linux-um@lists.infradead.org; Thu, 02 Mar 2023 01:38:27 +0000
+	id 1pXXts-000U7y-2s
+	for linux-um@lists.infradead.org; Thu, 02 Mar 2023 01:38:30 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 8D6606153F;
-	Thu,  2 Mar 2023 01:38:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2CCFC4339E;
-	Thu,  2 Mar 2023 01:38:24 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 9DEAA61543;
+	Thu,  2 Mar 2023 01:38:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 625B0C433D2;
+	Thu,  2 Mar 2023 01:38:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1677721105;
-	bh=kuvw9W5FZhpfWvxyQ40xAiL1cU8qQButV6bl0j/U8CY=;
+	s=k20201202; t=1677721107;
+	bh=fvPrCAyBkgnxgijN1lTuag/4in6rKiEGnEPO+gbwEs4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hvFYRxNcF/h2bnEXB525WG0BYTbbsmT9V2JIlTtAcKJCeL3H6/rVztATelYl8ioT3
-	 0ofMBzrOcsfG3jfXxGqc7LCrD2YNMMqIo5SpU+i/A79tZVpSEFRDLLKMZQ5jfrZUev
-	 dprzZA6j8c+VRmLyzIqz+Aj5eJ6Hf5T0TMd66jeOhvQd1SCzBrHTNYpVxjHrHdwFI/
-	 Ckz1aUqKMUxLyWqWvE9UqkclchocVqKZEl54ZtQ07ngMVTH2WbRcyQvM1XmvXVDW5S
-	 rY/yDUvP8okVyFHcE6u2F4m1kE7bY6HMkrOETWHIC0QqFzla4Ox7fUfV6VJvu82m6r
-	 Pz3tBMtJCmjGg==
+	b=i8zopeNC1in3w5XGUJKY/LXKlzK5BRSdMPry4rWNbnjNE84GWR1xF+RINEeejLejd
+	 gKJpd8LdNs0TePE9fGcx70fY9XJ9a1rnTqoXELutE5T7dWUUu0TvXclZsGcJKLA9Ta
+	 TnaxwHXeO/1BPtBl6s09cfKsPnLL8/Qxj6LP+ZweOmzZPczLC4+iFKN4d6MB6t2ebM
+	 XlyovDX82U6lPSCyKUlkFXAD6OHJcEi7K4N64x81/QZvn8Jn0WIlq4kosMjwoNMe3M
+	 OV9ydVXq2h7mGhu/mlZ4GkHAYKEQSp5u/n9pe41izH+Ewj/iiX9TOcCMlYBIWrIxyC
+	 X6lYxry87mTrw==
 From: Stephen Boyd <sboyd@kernel.org>
 To: Michael Turquette <mturquette@baylibre.com>,
 	Stephen Boyd <sboyd@kernel.org>
@@ -64,16 +64,16 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-um@lists.infradead.org,
 	linux-kselftest@vger.kernel.org,
 	kunit-dev@googlegroups.com
-Subject: [PATCH 2/8] of: Enable DTB loading on UML for KUnit tests
-Date: Wed,  1 Mar 2023 17:38:15 -0800
-Message-Id: <20230302013822.1808711-3-sboyd@kernel.org>
+Subject: [PATCH 4/8] clk: Add test managed clk provider/consumer APIs
+Date: Wed,  1 Mar 2023 17:38:17 -0800
+Message-Id: <20230302013822.1808711-5-sboyd@kernel.org>
 X-Mailer: git-send-email 2.39.2.722.g9855ee24e9-goog
 In-Reply-To: <20230302013822.1808711-1-sboyd@kernel.org>
 References: <20230302013822.1808711-1-sboyd@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230301_173826_146217_88CA6B26 
-X-CRM114-Status: GOOD (  31.08  )
+X-CRM114-CacheID: sfid-20230301_173828_222601_BD8A47DF 
+X-CRM114-Status: GOOD (  20.53  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,256 +90,286 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-To fully exercise common clk framework code in KUnit we need to
-associate 'struct device' pointers with 'struct device_node' pointers so
-that things like clk_get() can parse DT nodes for 'clocks' and so that
-clk providers can use DT to provide clks; the most common mode of
-operation for clk providers.
+Unit tests are more ergonomic and simpler to understand if they don't
+have to hoist a bunch of code into the test harness init and exit
+functions. Add some test managed wrappers for the clk APIs so that clk
+unit tests can write more code in the actual test and less code in the
+harness.
 
-Adding support to KUnit so that it loads a DTB is fairly simple after
-commit b31297f04e86 ("um: Add devicetree support"). We can simply pass a
-pre-compiled deviectree blob (DTB) on the kunit.py commandline and UML
-will load it. The problem is that tests won't know that the commandline
-has been modified, nor that a DTB has been loaded. Take a different
-approach so that tests can skip if a DTB hasn't been loaded.
+Only add APIs that are used for now. More wrappers can be added in the
+future as necessary.
 
-Reuse the Makefile logic from the OF unittests to build a DTB into the
-kernel. This DTB will be for the mythical machine "linux,kunit", i.e.
-the devicetree for the KUnit "board". In practice, it is a dtsi file
-that will gather includes for kunit tests that rely in part on a
-devicetree being loaded. The devicetree should only be loaded if
-CONFIG_OF_KUNIT=y. Make that a choice config parallel to the existing
-CONFIG_OF_UNITTEST so that only one devicetree can be loaded in the
-system at a time. Similarly, the kernel commandline option to load a
-DTB is ignored if CONFIG_OF_KUNIT is enabled so that only one DTB is
-loaded at a time.
-
-Add a simple unit test to confirm that the DTB loading worked. Future
-tests will add to the kunit.dtsi file to include their specific test
-nodes.
-
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: Vincent Whitchurch <vincent.whitchurch@axis.com>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: Frank Rowand <frowand.list@gmail.com>
+Cc: Brendan Higgins <brendan.higgins@linux.dev>
+Cc: David Gow <davidgow@google.com>
 Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 ---
- arch/um/kernel/dtb.c            | 29 +++++++++++++++--
- drivers/of/Kconfig              | 26 ++++++++++++++++
- drivers/of/Makefile             |  1 +
- drivers/of/kunit/.kunitconfig   |  4 +++
- drivers/of/kunit/Makefile       |  4 +++
- drivers/of/kunit/kunit.dtsi     |  8 +++++
- drivers/of/kunit/kunit.dtso     |  4 +++
- drivers/of/kunit/uml_dtb_test.c | 55 +++++++++++++++++++++++++++++++++
- 8 files changed, 128 insertions(+), 3 deletions(-)
- create mode 100644 drivers/of/kunit/.kunitconfig
- create mode 100644 drivers/of/kunit/Makefile
- create mode 100644 drivers/of/kunit/kunit.dtsi
- create mode 100644 drivers/of/kunit/kunit.dtso
- create mode 100644 drivers/of/kunit/uml_dtb_test.c
+ drivers/clk/Makefile    |   5 +
+ drivers/clk/clk-kunit.c | 204 ++++++++++++++++++++++++++++++++++++++++
+ drivers/clk/clk-kunit.h |  28 ++++++
+ 3 files changed, 237 insertions(+)
+ create mode 100644 drivers/clk/clk-kunit.c
+ create mode 100644 drivers/clk/clk-kunit.h
 
-diff --git a/arch/um/kernel/dtb.c b/arch/um/kernel/dtb.c
-index 484141b06938..ee63951b12df 100644
---- a/arch/um/kernel/dtb.c
-+++ b/arch/um/kernel/dtb.c
-@@ -15,9 +15,32 @@ void uml_dtb_init(void)
- 	long long size;
- 	void *area;
+diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
+index e3ca0d058a25..7efce649b0d3 100644
+--- a/drivers/clk/Makefile
++++ b/drivers/clk/Makefile
+@@ -17,6 +17,11 @@ ifeq ($(CONFIG_OF), y)
+ obj-$(CONFIG_COMMON_CLK)	+= clk-conf.o
+ endif
  
--	area = uml_load_file(dtb, &size);
--	if (!area)
--		return;
-+	if (IS_ENABLED(CONFIG_OF_KUNIT)) {
-+		/*
-+		 * __dtbo_kunit_begin[] and __dtbo_kunit_end[] are magically
-+		 * created by cmd_dt_S_dtbo in scripts/Makefile.lib from the
-+		 * drivers/of/kunit/kunit.dtsi file.
-+		 */
-+		extern uint8_t __dtbo_kunit_begin[];
-+		extern uint8_t __dtbo_kunit_end[];
++# KUnit specific helpers
++ifeq ($(CONFIG_COMMON_CLK), y)
++obj-$(CONFIG_KUNIT)		+= clk-kunit.o
++endif
 +
-+		size = __dtbo_kunit_end - __dtbo_kunit_begin;
-+		if (!size) {
-+			pr_warn("%s: kunit testcases is empty\n", __func__);
-+			return;
-+		}
+ # hardware specific clock types
+ # please keep this section sorted lexicographically by file path name
+ obj-$(CONFIG_COMMON_CLK_APPLE_NCO)  	+= clk-apple-nco.o
+diff --git a/drivers/clk/clk-kunit.c b/drivers/clk/clk-kunit.c
+new file mode 100644
+index 000000000000..78d85b3a7a4a
+--- /dev/null
++++ b/drivers/clk/clk-kunit.c
+@@ -0,0 +1,204 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * KUnit helpers for clk tests
++ */
++#include <linux/clk.h>
++#include <linux/clk-provider.h>
++#include <linux/err.h>
++#include <linux/kernel.h>
++#include <linux/slab.h>
 +
-+		/* creating copy */
-+		area = memblock_alloc(size, 8);
-+		if (!area)
-+			return;
++#include <kunit/resource.h>
 +
-+		memcpy(area, __dtbo_kunit_begin, size);
-+	} else {
-+		area = uml_load_file(dtb, &size);
-+		if (!area)
-+			return;
++#include "clk-kunit.h"
++
++static void kunit_clk_disable_unprepare(struct kunit_resource *res)
++{
++	struct clk *clk = res->data;
++
++	clk_disable_unprepare(clk);
++}
++
++/**
++ * kunit_clk_prepare_enable() - Test managed clk_prepare_enable()
++ * @test: The test context
++ * @clk: clk to prepare and enable
++ *
++ * Returns: 0 on success, or negative errno on failure.
++ */
++int kunit_clk_prepare_enable(struct kunit *test, struct clk *clk)
++{
++	if (!kunit_alloc_resource(test, NULL, kunit_clk_disable_unprepare,
++				  GFP_KERNEL, clk))
++		return -EINVAL;
++
++	return clk_prepare_enable(clk);
++}
++EXPORT_SYMBOL_GPL(kunit_clk_prepare_enable);
++
++static void kunit_clk_put(struct kunit_resource *res)
++{
++	struct clk *clk = res->data;
++
++	clk_put(clk);
++}
++
++/**
++ * kunit_clk_get() - Test managed clk_get()
++ * @test: The test context
++ * @dev: device for clock "consumer"
++ * @id: clock consumer ID
++ *
++ * Returns: new clk consumer or ERR_PTR on failure
++ */
++struct clk *
++kunit_clk_get(struct kunit *test, struct device *dev, const char *con_id)
++{
++	struct clk *clk;
++
++	clk = clk_get(dev, con_id);
++	if (IS_ERR(clk))
++		return clk;
++
++	if (!kunit_alloc_resource(test, NULL, kunit_clk_put, GFP_KERNEL, clk)) {
++		clk_put(clk);
++		return ERR_PTR(-EINVAL);
 +	}
- 
- 	if (!early_init_dt_scan(area)) {
- 		pr_err("invalid DTB %s\n", dtb);
-diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
-index 80b5fd44ab1c..1f968b6a3dde 100644
---- a/drivers/of/Kconfig
-+++ b/drivers/of/Kconfig
-@@ -12,6 +12,20 @@ menuconfig OF
- 
- if OF
- 
-+choice
-+	prompt "Devicetree Runtime Tests"
-+	default OF_UNITTEST
 +
-+config OF_KUNIT
-+	bool "Devicetree KUnit support" if KUNIT
-+	depends on UML
-+	select IRQ_DOMAIN
-+	select OF_EARLY_FLATTREE
-+	help
-+	  This option builds in KUnit test cases that rely on device tree infrastructure.
-+	  A fake Device Tree Blob (DTB) is loaded on the UML kernel running KUnit so that
-+	  KUnit tests can test device tree dependent code.
++	return clk;
++}
++EXPORT_SYMBOL_GPL(kunit_clk_get);
 +
- config OF_UNITTEST
- 	bool "Device Tree runtime unit tests"
- 	depends on !SPARC
-@@ -25,6 +39,18 @@ config OF_UNITTEST
- 
- 	  If unsure, say N here, but this option is safe to enable.
- 
-+endchoice
-+
-+config OF_DTB_KUNIT_TEST
-+	tristate "Devicetree KUnit DTB Test" if !KUNIT_ALL_TESTS
-+	depends on KUNIT
-+	default KUNIT_ALL_TESTS
-+	help
-+	  This option builds unit tests for the "linux,kunit" DTB built into
-+	  the UML kernel image.
-+
-+	  If unsure, say N here, but this option is safe to enable.
-+
- config OF_ALL_DTBS
- 	bool "Build all Device Tree Blobs"
- 	depends on COMPILE_TEST
-diff --git a/drivers/of/Makefile b/drivers/of/Makefile
-index e0360a44306e..16eef3fdf60a 100644
---- a/drivers/of/Makefile
-+++ b/drivers/of/Makefile
-@@ -19,4 +19,5 @@ obj-y	+= kexec.o
- endif
- endif
- 
-+obj-y += kunit/
- obj-$(CONFIG_OF_UNITTEST) += unittest-data/
-diff --git a/drivers/of/kunit/.kunitconfig b/drivers/of/kunit/.kunitconfig
-new file mode 100644
-index 000000000000..1def0ad30d29
---- /dev/null
-+++ b/drivers/of/kunit/.kunitconfig
-@@ -0,0 +1,4 @@
-+CONFIG_KUNIT=y
-+CONFIG_OF=y
-+CONFIG_OF_KUNIT=y
-+CONFIG_OF_DTB_KUNIT_TEST=y
-diff --git a/drivers/of/kunit/Makefile b/drivers/of/kunit/Makefile
-new file mode 100644
-index 000000000000..ffe0447e1ac7
---- /dev/null
-+++ b/drivers/of/kunit/Makefile
-@@ -0,0 +1,4 @@
-+# SPDX-License-Identifier: GPL-2.0
-+obj-$(CONFIG_OF_KUNIT) += kunit.dtbo.o
-+
-+obj-$(CONFIG_OF_DTB_KUNIT_TEST) += uml_dtb_test.o
-diff --git a/drivers/of/kunit/kunit.dtsi b/drivers/of/kunit/kunit.dtsi
-new file mode 100644
-index 000000000000..82f6c3e2b8d5
---- /dev/null
-+++ b/drivers/of/kunit/kunit.dtsi
-@@ -0,0 +1,8 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/ {
-+	model = "KUnit UML";
-+	compatible = "linux,kunit";
-+};
-+
-+/* Include testcase dtsi files below */
-diff --git a/drivers/of/kunit/kunit.dtso b/drivers/of/kunit/kunit.dtso
-new file mode 100644
-index 000000000000..50187e8d1422
---- /dev/null
-+++ b/drivers/of/kunit/kunit.dtso
-@@ -0,0 +1,4 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/dts-v1/;
-+
-+#include "kunit.dtsi"
-diff --git a/drivers/of/kunit/uml_dtb_test.c b/drivers/of/kunit/uml_dtb_test.c
-new file mode 100644
-index 000000000000..8966c9ebf51f
---- /dev/null
-+++ b/drivers/of/kunit/uml_dtb_test.c
-@@ -0,0 +1,55 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * KUnit tests for DTB loading on UML
++/**
++ * kunit_of_clk_get() - Test managed of_clk_get()
++ * @test: The test context
++ * @np: device_node for clock "consumer"
++ * @index: index in 'clocks' property of @np
++ *
++ * Returns: new clk consumer or ERR_PTR on failure
 + */
-+#include <linux/kconfig.h>
-+#include <linux/of.h>
-+#include <linux/of_fdt.h>
-+
-+#include <kunit/test.h>
-+
-+/*
-+ * Test that of_machine_is_compatible() returns positive int when loaded DTB
-+ * matches.
-+ */
-+static void uml_dtb_of_machine_compatible_test(struct kunit *test)
++struct clk *
++kunit_of_clk_get(struct kunit *test, struct device_node *np, int index)
 +{
-+	KUNIT_EXPECT_GT(test, of_machine_is_compatible("linux,kunit"), 0);
++	struct clk *clk;
++
++	clk = of_clk_get(np, index);
++	if (IS_ERR(clk))
++		return clk;
++
++	if (!kunit_alloc_resource(test, NULL, kunit_clk_put, GFP_KERNEL, clk)) {
++		clk_put(clk);
++		return ERR_PTR(-EINVAL);
++	}
++
++	return clk;
++}
++EXPORT_SYMBOL_GPL(kunit_of_clk_get);
++
++/**
++ * kunit_clk_hw_get_clk() - Test managed clk_hw_get_clk()
++ * @test: The test context
++ * @hw: clk_hw associated with the clk being consumed
++ * @con_id: connection ID string on device
++ *
++ * Returns: new clk consumer or ERR_PTR on failure
++ */
++struct clk *
++kunit_clk_hw_get_clk(struct kunit *test, struct clk_hw *hw, const char *con_id)
++{
++	struct clk *clk;
++
++	clk = clk_hw_get_clk(hw, con_id);
++	if (IS_ERR(clk))
++		return clk;
++
++	if (!kunit_alloc_resource(test, NULL, kunit_clk_put, GFP_KERNEL, clk)) {
++		clk_put(clk);
++		return ERR_PTR(-EINVAL);
++	}
++
++	return clk;
++}
++EXPORT_SYMBOL_GPL(kunit_clk_hw_get_clk);
++
++/**
++ * kunit_clk_hw_get_clk_prepared_enabled() - Test managed clk_hw_get_clk() + clk_prepare_enable()
++ * @test: The test context
++ * @hw: clk_hw associated with the clk being consumed
++ * @con_id: connection ID string on device
++ *
++ * Returns: new clk consumer that is prepared and enabled or ERR_PTR on failure
++ */
++struct clk *
++kunit_clk_hw_get_clk_prepared_enabled(struct kunit *test, struct clk_hw *hw,
++				      const char *con_id)
++{
++	int ret;
++	struct clk *clk;
++
++	clk = kunit_clk_hw_get_clk(test, hw, con_id);
++	if (IS_ERR(clk))
++		return clk;
++
++	ret = kunit_clk_prepare_enable(test, clk);
++	if (ret)
++		return ERR_PTR(ret);
++
++	return clk;
++}
++EXPORT_SYMBOL_GPL(kunit_clk_hw_get_clk_prepared_enabled);
++
++static void kunit_clk_hw_unregister(struct kunit_resource *res)
++{
++	struct clk_hw *hw = res->data;
++
++	clk_hw_unregister(hw);
 +}
 +
-+/*
-+ * Test that of_flat_dt_get_machine_name() returns the expected 'model' from the
-+ * loaded DTB.
++/**
++ * kunit_clk_hw_register() - Test managed clk_hw_register()
++ * @test: The test context
++ * @dev: device that is registering this clock
++ * @hw: link to hardware-specific clock data
++ *
++ * Returns: 0 on success or a negative errno value on failure
 + */
-+static void uml_dtb_of_flat_dt_get_machine_name_test(struct kunit *test)
++int kunit_clk_hw_register(struct kunit *test, struct device *dev, struct clk_hw *hw)
 +{
-+	KUNIT_EXPECT_STREQ(test, of_flat_dt_get_machine_name(), "KUnit UML");
-+}
++	int ret;
 +
-+static struct kunit_case uml_dtb_test_cases[] = {
-+	KUNIT_CASE(uml_dtb_of_machine_compatible_test),
-+	KUNIT_CASE(uml_dtb_of_flat_dt_get_machine_name_test),
-+	{}
-+};
++	ret = clk_hw_register(dev, hw);
++	if (ret)
++		return ret;
 +
-+static int uml_dtb_test_init(struct kunit *test)
-+{
-+	if (!IS_ENABLED(CONFIG_OF_KUNIT))
-+		kunit_skip(test, "requires CONFIG_OF_KUNIT");
++	if (!kunit_alloc_resource(test, NULL, kunit_clk_hw_unregister, GFP_KERNEL, hw)) {
++		clk_hw_unregister(hw);
++		return -EINVAL;
++	}
 +
 +	return 0;
 +}
 +
-+/*
-+ * Test suite to confirm DTB is loaded on UML.
++/**
++ * kunit_of_clk_hw_register() - Test managed of_clk_hw_register()
++ * @test: The test context
++ * @node: device_node of device that is registering this clock
++ * @hw: link to hardware-specific clock data
++ *
++ * Returns: 0 on success or a negative errno value on failure
 + */
-+static struct kunit_suite uml_dtb_suite = {
-+	.name = "uml_dtb",
-+	.init = uml_dtb_test_init,
-+	.test_cases = uml_dtb_test_cases,
-+};
++int kunit_of_clk_hw_register(struct kunit *test, struct device_node *node, struct clk_hw *hw)
++{
++	int ret;
 +
-+kunit_test_suites(
-+	&uml_dtb_suite,
-+);
-+MODULE_LICENSE("GPL");
++	ret = of_clk_hw_register(node, hw);
++	if (ret)
++		return ret;
++
++	if (!kunit_alloc_resource(test, NULL, kunit_clk_hw_unregister, GFP_KERNEL, hw)) {
++		clk_hw_unregister(hw);
++		return -EINVAL;
++	}
++
++	return 0;
++}
+diff --git a/drivers/clk/clk-kunit.h b/drivers/clk/clk-kunit.h
+new file mode 100644
+index 000000000000..153597d69269
+--- /dev/null
++++ b/drivers/clk/clk-kunit.h
+@@ -0,0 +1,28 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _CLK_KUNIT_H
++#define _CLK_KUNIT_H
++
++struct clk;
++struct clk_hw;
++struct device;
++struct device_node;
++struct kunit;
++
++struct clk *
++kunit_clk_get(struct kunit *test, struct device *dev, const char *con_id);
++struct clk *
++kunit_of_clk_get(struct kunit *test, struct device_node *np, int index);
++
++struct clk *
++kunit_clk_hw_get_clk(struct kunit *test, struct clk_hw *hw, const char *con_id);
++struct clk *
++kunit_clk_hw_get_clk_prepared_enabled(struct kunit *test, struct clk_hw *hw,
++				      const char *con_id);
++
++int kunit_clk_prepare_enable(struct kunit *test, struct clk *clk);
++
++int kunit_clk_hw_register(struct kunit *test, struct device *dev, struct clk_hw *hw);
++int kunit_of_clk_hw_register(struct kunit *test, struct device_node *node,
++			     struct clk_hw *hw);
++
++#endif
 -- 
 https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
 https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
