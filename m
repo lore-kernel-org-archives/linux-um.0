@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40EB0C678D4
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50B5CC7EE32
 	for <linux-um@archiver.kernel.org>; Thu,  2 Mar 2023 01:38:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=73PHxEygJreK16oPxJBSKKllaWJ9LS6iv5pNC4iDKB8=; b=E5n3Xt2mUJ3nyC
-	bsNihhuoP5awiIWkeR/Wb2+AxM4Fbd8bv3MJCTqYvenhITakk0PHWEFjX5YIqJ2nVisu204ZjGfiz
-	dzUq5QV+1vY3gFtksBbSLQTYxMh58cV13ihK7iP3rnbrCftyRefXH1iYSegS8Mjq5uLcXkT3sleL6
-	bRtJv9dz2rej8cnRIwQxje4M6F/IyZMto9S9ipPCRR94kSTELLSumUgxBF8ZlEyXM/a8/NVVlJm5B
-	y42lvGGx7jAwJoWpob7BuyFAAHyk+t1CKZlKjnaHZ2DuRiOVC4Anwfj6GEZqjtKbl+dBBMlTzsQn5
-	zyvhCcaxnAufUnoSN7PA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=DJyHnY/AEpTF9GfMLo8k/6bfaLX6C6Q1KHLqm5XY7Ow=; b=RsZOyJIAcfFHTY
+	JI2LrYVYi+D1AQmJdC8seTFQg7PM5VtIuG3ZyFMNWI+JHr/e/ZPyaSAS3CV+3GIzxyVj8pJlNAbLh
+	OqSr1iBZu4JLy7NGyUPJNwLXEMYqrQMu02OPDLieW6oqEfDRRXReGPlyS9DxqsIGQ9kWh0nnlDnZT
+	PICdUTk54rRxBo7pI3+y/AKPHBYAhX8lXB9Kdh9/JeCNxRY3uiGjujcM697a5/DlxygfJ28/8hH5u
+	bniU9tpd/VdlJ34orlvaENw8g3l/o4FM+HrYeCTRaN7iaAzoqzK2idUCCNKJG+XKUVi2h7Pj+6W6j
+	sfyCv/BLxIpE9QeV39Ow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXXts-000U8M-KQ; Thu, 02 Mar 2023 01:38:28 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1pXXtu-000U9I-64; Thu, 02 Mar 2023 01:38:30 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pXXtp-000U6g-94
-	for linux-um@lists.infradead.org; Thu, 02 Mar 2023 01:38:26 +0000
+	id 1pXXtq-000U6x-Ui
+	for linux-um@lists.infradead.org; Thu, 02 Mar 2023 01:38:28 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id A8B7061545;
-	Thu,  2 Mar 2023 01:38:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE626C43442;
-	Thu,  2 Mar 2023 01:38:23 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 80C02B811D6;
+	Thu,  2 Mar 2023 01:38:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04EACC433D2;
+	Thu,  2 Mar 2023 01:38:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1677721104;
-	bh=xlmggg4SwPHgsUHI5EKsdomiaUIjY1b7gCCFhpuQ1f0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QX5VMEDWKzXOvBrh3s5n8VNsk9WCy+BA9LU0FftVmXQFxnx9N4tmGdqqJbt4HBNC/
-	 /Qlpzm4VHNwG1upxQs/3iAv3kEvXMUcNPICy2unmITpgwI27wshbBkaYelU99Og3/X
-	 p5YKr67RY+XlVu88alwK46oCYJX2sz1t55xB+CborNapRC+fVCStkxZLrs4vbUVQp8
-	 VkGBUpBi7nyiEcrDtkNgaz+3/+D2JOiC74nqF8N0t5IIQy6bc7yL9zxQMfRoYpZZcU
-	 f28hGP1XZakglVR91gvvQt0gH03SKVUs98uG1rm/CYB0ImCiuK9S8Hxa9KyjMIIN1F
-	 k/5ExXHAciHDA==
+	s=k20201202; t=1677721103;
+	bh=rKtcHDStlDpmev0wSqFyH2j1eZ3mNsvHeJTuTDd60rk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Oq0iRiKSGI3z/jJpMgBfNOss+Xzar8RB/Cw11ZHp3oGjPiMZ8vs68LTw4qreqA/VI
+	 BpgpwOQ7uCgJEavC3zsKuuWBqfeTXaf9ydAm/THAWCV3L/MnQaQRKF4K2PxQx38FMG
+	 jcAYlN7XG4iU1l4mUBLFCEkHlxhkRocvuUyFc+j6o0KrZPtq1MmHjxUqW90wYKbbFj
+	 I5Uj9I+R30xd5TSwLaH39w3rJcKu8h482yW5Uh/XW/XHjBt9QXk2l5oOjQujJuMQYg
+	 RXaTU21Its7pzaW8Z11gOGGd1A3RixrpdaW0goxxiLK0qu400p2dBU8NcuE0fOYvSB
+	 rCqxUyZLJZKUg==
 From: Stephen Boyd <sboyd@kernel.org>
 To: Michael Turquette <mturquette@baylibre.com>,
 	Stephen Boyd <sboyd@kernel.org>
@@ -64,16 +64,14 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-um@lists.infradead.org,
 	linux-kselftest@vger.kernel.org,
 	kunit-dev@googlegroups.com
-Subject: [PATCH 1/8] dt-bindings: Add linux,kunit binding
-Date: Wed,  1 Mar 2023 17:38:14 -0800
-Message-Id: <20230302013822.1808711-2-sboyd@kernel.org>
+Subject: [PATCH 0/8] clk: Add kunit tests for fixed rate and parent data
+Date: Wed,  1 Mar 2023 17:38:13 -0800
+Message-Id: <20230302013822.1808711-1-sboyd@kernel.org>
 X-Mailer: git-send-email 2.39.2.722.g9855ee24e9-goog
-In-Reply-To: <20230302013822.1808711-1-sboyd@kernel.org>
-References: <20230302013822.1808711-1-sboyd@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230301_173825_400004_497BDADA 
-X-CRM114-Status: GOOD (  13.99  )
+X-CRM114-CacheID: sfid-20230301_173827_320362_84CC7DFA 
+X-CRM114-Status: GOOD (  17.48  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,49 +88,75 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Document the linux,kunit board compatible string. This board is loaded
-into the Linux kernel when KUnit is testing devicetree dependent code.
+This patch series adds unit tests for the clk fixed rate basic type and
+the clk registration functions that use struct clk_parent_data. To get
+there, we add support for loading a DTB into the UML kernel that's
+running the unit tests along with probing platform drivers to bind to
+device nodes specified in DT.
 
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc: Brendan Higgins <brendan.higgins@linux.dev>
-Cc: David Gow <davidgow@google.com>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
----
- .../bindings/kunit/linux,kunit.yaml           | 24 +++++++++++++++++++
- 1 file changed, 24 insertions(+)
+With this series, we're able to exercise some of the code in the common
+clk framework that uses devicetree lookups to find parents and the fixed
+rate clk code that scans devicetree directly and creates clks. Please
+review.
+
+I Cced everyone to all the patches so they get the full context. I'm
+hoping I can take the whole pile through the clk tree as they almost all
+depend on each other. In the future I imagine it will be easy to add
+more test nodes to the clk.dtsi file and not need to go across various
+maintainer trees like this series does.
+
+Stephen Boyd (8):
+  dt-bindings: Add linux,kunit binding
+  of: Enable DTB loading on UML for KUnit tests
+  kunit: Add test managed platform_device/driver APIs
+  clk: Add test managed clk provider/consumer APIs
+  dt-bindings: kunit: Add fixed rate clk consumer test
+  clk: Add KUnit tests for clk fixed rate basic type
+  dt-bindings: clk: Add KUnit clk_parent_data test
+  clk: Add KUnit tests for clks registered with struct clk_parent_data
+
+ .../clock/linux,clk-kunit-parent-data.yaml    |  47 ++
+ .../kunit/linux,clk-kunit-fixed-rate.yaml     |  35 ++
+ .../bindings/kunit/linux,kunit.yaml           |  24 +
+ arch/um/kernel/dtb.c                          |  29 +-
+ drivers/clk/.kunitconfig                      |   3 +
+ drivers/clk/Kconfig                           |   7 +
+ drivers/clk/Makefile                          |   6 +
+ drivers/clk/clk-fixed-rate_test.c             | 296 ++++++++++++
+ drivers/clk/clk-kunit.c                       | 204 ++++++++
+ drivers/clk/clk-kunit.h                       |  28 ++
+ drivers/clk/clk_test.c                        | 456 +++++++++++++++++-
+ drivers/of/Kconfig                            |  26 +
+ drivers/of/Makefile                           |   1 +
+ drivers/of/kunit/.kunitconfig                 |   4 +
+ drivers/of/kunit/Makefile                     |   4 +
+ drivers/of/kunit/clk.dtsi                     |  30 ++
+ drivers/of/kunit/kunit.dtsi                   |   9 +
+ drivers/of/kunit/kunit.dtso                   |   4 +
+ drivers/of/kunit/uml_dtb_test.c               |  55 +++
+ include/kunit/platform_driver.h               |  15 +
+ lib/kunit/Makefile                            |   6 +
+ lib/kunit/platform_driver-test.c              | 107 ++++
+ lib/kunit/platform_driver.c                   | 207 ++++++++
+ 23 files changed, 1599 insertions(+), 4 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/linux,clk-kunit-parent-data.yaml
+ create mode 100644 Documentation/devicetree/bindings/kunit/linux,clk-kunit-fixed-rate.yaml
  create mode 100644 Documentation/devicetree/bindings/kunit/linux,kunit.yaml
+ create mode 100644 drivers/clk/clk-fixed-rate_test.c
+ create mode 100644 drivers/clk/clk-kunit.c
+ create mode 100644 drivers/clk/clk-kunit.h
+ create mode 100644 drivers/of/kunit/.kunitconfig
+ create mode 100644 drivers/of/kunit/Makefile
+ create mode 100644 drivers/of/kunit/clk.dtsi
+ create mode 100644 drivers/of/kunit/kunit.dtsi
+ create mode 100644 drivers/of/kunit/kunit.dtso
+ create mode 100644 drivers/of/kunit/uml_dtb_test.c
+ create mode 100644 include/kunit/platform_driver.h
+ create mode 100644 lib/kunit/platform_driver-test.c
+ create mode 100644 lib/kunit/platform_driver.c
 
-diff --git a/Documentation/devicetree/bindings/kunit/linux,kunit.yaml b/Documentation/devicetree/bindings/kunit/linux,kunit.yaml
-new file mode 100644
-index 000000000000..dfe6da4796e8
---- /dev/null
-+++ b/Documentation/devicetree/bindings/kunit/linux,kunit.yaml
-@@ -0,0 +1,24 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/kunit/linux,kunit.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: KUnit
-+
-+maintainers:
-+  - Brendan Higgins <brendanhiggins@google.com>
-+  - David Gow <davidgow@google.com>
-+
-+description:
-+  KUnit board used to unit test the Linux kernel in User Mode Linux (UML).
-+
-+properties:
-+  $nodename:
-+    const: "/"
-+  compatible:
-+    const: linux,kunit
-+
-+additionalProperties: true
-+
-+...
+
+base-commit: c9c3395d5e3dcc6daee66c6908354d47bf98cb0c
 -- 
 https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
 https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
