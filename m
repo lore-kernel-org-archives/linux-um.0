@@ -4,71 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1FC5FC678D5
-	for <linux-um@archiver.kernel.org>; Sat,  4 Mar 2023 04:35:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65743C6FA8E
+	for <linux-um@archiver.kernel.org>; Sat,  4 Mar 2023 06:29:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:
-	To:Subject:Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=XGymjFDLLvSKNXSCwgC6J2FTPowYo0cU8LveZqvn/lk=; b=PlV5tH9madjY5TSXhHhUdeZvxW
-	l1HUcL0Qjj16TLBwj0BNxMCf5h2amciTKthPhmBYQQ8EfarMzZwSjz09AbOp4yUf+jC43U2yQ0oy/
-	5hFIdMZEGsTJ9ttIIwgHZvln/NOeD3161LsE+SzN1WB1koQ4xzCZOLBAGuCBrryl8aRGsj3qbkFwM
-	RaOKYJU3bGaYNvLL/INnPAawPaBvuM30CHvYMpGCx4Q8pDbg4eK8qrIYbhibj4CU7AN1HG1jczr6L
-	99pPEyKlKli2YKat7K1y/Z4sknr+DjdGkvzmyWphK4ZM+39LbyZmjUcw29d0AHPYzAGz5jAjAyytd
-	X2QaoLJw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:Reply-To:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:
+	In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Content-ID:Content-Description
+	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=vQ0860CZSwv52e3U774J0h0xysF45CK1Br7kyT6q1gY=; b=DR3otIqWNJWYPW
+	RTCo8sMXNsXUX41h0MEVv0hr1OCJitQi1CvQJh6QZcAZgFcAcJxRC3UAxRfhg5I7zKIuKEgO+dCk+
+	pPKZ6Z9pY7I16ljAa07LIX8c2W7ARcj6srDn60KkNfSfjtfxkpdRW5FyawRwKTquhM82QitFrJWvC
+	6tyv0F2UaJmnnRxJ6Kk32gV/qLwVV+XtSZdbw5FouEiUYvS3I4/UlvdG6TVXjFb91cWnXWDFX294+
+	Bg4zTcDEhgPMGetblzWM28roLHnv2/ybAsZT+qMFR9wfL+zl2TibotH9NxEn8zcSadihbsX62vhSr
+	jEJo6rnXQ2KxTTTF9F0w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pYJca-008I3i-16; Sat, 04 Mar 2023 04:35:48 +0000
-Received: from mail-ua1-x936.google.com ([2607:f8b0:4864:20::936])
+	id 1pYLOC-008Rbk-Jj; Sat, 04 Mar 2023 06:29:04 +0000
+Received: from mail-qt1-x82e.google.com ([2607:f8b0:4864:20::82e])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pYJcW-008I36-Gs
-	for linux-um@lists.infradead.org; Sat, 04 Mar 2023 04:35:46 +0000
-Received: by mail-ua1-x936.google.com with SMTP id p2so3056361uap.1
-        for <linux-um@lists.infradead.org>; Fri, 03 Mar 2023 20:35:37 -0800 (PST)
+	id 1pYLO6-008Rae-Rt
+	for linux-um@lists.infradead.org; Sat, 04 Mar 2023 06:29:03 +0000
+Received: by mail-qt1-x82e.google.com with SMTP id r16so3719454qtx.9
+        for <linux-um@lists.infradead.org>; Fri, 03 Mar 2023 22:28:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1677904536;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pNWI8GMioFfQpv8zMzOv/iwiIjch+0nLSqCfnhRjd6M=;
-        b=Tm1T796EvRPOQNGtVEXvsYrYIKGLTXVnstAnE4h4o6snsU5IAueD/8R842zrZJ5BDe
-         g/hmmBnegkkid4oZfPvMH2Y1FDGUEarVATkz0Z4XhLFbEoIPYpj8La24h+09Cd9jtEsT
-         1LvCmfB1aoP7awfrgTxaGRJdpbjAKZvfIWGjm+MrsQJDuo3C2snM53jpIznmjr+4EKrq
-         YP5ikXkPTgFJBkrO574J4XBVHDLw218qfv9U8LYtBIDYHuIj5yB1wJl0ylzyU4UARKto
-         VNk/g0pIxCvaJpSZqpQcvbRkCdfS8juIsFY4zr3gJxbZ/FRxVkbdCfQ1wbLz+byiep+i
-         +nZQ==
+        d=efficientek-com.20210112.gappssmtp.com; s=20210112; t=1677911334;
+        h=content-transfer-encoding:mime-version:reply-to:references
+         :in-reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=/ZhmyOntrOjkxmgZEANs8FAUrxpW6skJgTb+tVElklU=;
+        b=0OeMTbSZgBh+ZyunBH7xpBZFolRx1a8OaS5kt4r2FSl4Ggf3ZUuYQwQIN0GB09tzcj
+         u9TqnvUgYAdiLqlvk1mgdiFagzZh+rG3r8LMeuvETcy4scAzDZxSWmFIfZdcrdRxiKxz
+         Lxgp7sj48McHA2gwPQ9JTFZT0j8cTvCNkipQLQLXQbkP47XksJisWOoDJP1bOudWzrzB
+         L8Rzm/Oef2psIVtAWdhFcVt82PscSmhsY8tEgux5IDEvRzZRMpBggbNLTuaNm6uFh3A9
+         ECY9m40u59CKfp16q7UoeDe7oXIvgJ0fOMLoyS/Blp0oc7FTUAi0YSF7OHqTmo+qvBuQ
+         8L8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677904536;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pNWI8GMioFfQpv8zMzOv/iwiIjch+0nLSqCfnhRjd6M=;
-        b=akerXzM9OPmBX7WyUwDdXAdXPRz0+CSo/XWS4xlLj9beA4d1ieTabdThaeV0w6aSvV
-         6nGqx0WwrJPZpknnxzv6G7+Kt5YC/ulft1/LuNwL2Srjtt0FBzE7DdXawW+ecpJ/ZxQ5
-         Lbi5K5jgz2H+xSrV6DYQqlkeFqkSaDbf1aoSQEC0/m3VZhoYRNH6tvr9ABHbtG53MgMF
-         uekjZmJ+pKm4BVuVaIYu/+c2NVVWVR4G5GjSttSFPgng/ptrPx6HtW86JGThYhaotxND
-         o2EoV6L7A7Q5GQdP9ov2fmo9AvHFyk0zstYeOepVGEL4WmXXLlqIBjKyvoLzr2IYB9AE
-         9t7Q==
-X-Gm-Message-State: AO0yUKVE6Vmh0jK8ZFGG2UmYRXwqufI0XKc9a/Vq2/++NcgVBZJwoU6k
-	FdJyxW1p68guEhvxOAPZxXJl44Mwzxqc0jKCN8gtVA==
-X-Google-Smtp-Source: AK7set8RBh/l0kmI7s7aqMsfsVqupkN4B936BZub1XfTIOJLHLVi1Oy2vH3ABuJV+Gi+vr1g1tdbiYT/QWWqnCazrW4=
-X-Received: by 2002:a1f:e305:0:b0:401:95ec:8e17 with SMTP id
- a5-20020a1fe305000000b0040195ec8e17mr2737050vkh.2.1677904536220; Fri, 03 Mar
- 2023 20:35:36 -0800 (PST)
+        d=1e100.net; s=20210112; t=1677911334;
+        h=content-transfer-encoding:mime-version:reply-to:references
+         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/ZhmyOntrOjkxmgZEANs8FAUrxpW6skJgTb+tVElklU=;
+        b=kztWMlrcwa+Bw/kWi9scPYgYPI834jEhUmXS0vF3YLuY8w+dApFVJu8Yzy7xKub0+s
+         LUhl5chg9N/rUCoipVbzrImQToDm3NYJWRhBLfCJISbmH9/zusb8mg92z22UsFP0gk56
+         JzGUJUE5ZV0pdToe/ocSAW7ZZV4yo4ODfp9hOD4yltr3aZPs12IqoWvPqdFHTL+b/CJB
+         GGXgMOCZCo1oW9yTHufKT8x0xSDjzIR+ydC/bhZLlZPe+0h4D0K7qUUG35vdYZHdF/vI
+         B/o3oEq9usW3kYUvoonI6KJ2aAituuWf/nT3+rYDDP87/FvYn0o779pllSreirLf6CiK
+         PqVw==
+X-Gm-Message-State: AO0yUKXNSbLguzMF97xGi+kF3uDzwdCl/zIKRLmKMEkgzar8muDdOjAA
+	YWc/fJXq3C2zq0DYB08nsEsnhnjOQaAqLMJr3xk=
+X-Google-Smtp-Source: AK7set9DSRkrLPRV4Cag9yn1sUOTyNYKhabS2nRmI7IxB3I0t9vaw+DQBhtoqMMpbRx+ohtLZEGY1Q==
+X-Received: by 2002:a05:622a:18a6:b0:3ba:101e:88c6 with SMTP id v38-20020a05622a18a600b003ba101e88c6mr7001893qtc.48.1677911334384;
+        Fri, 03 Mar 2023 22:28:54 -0800 (PST)
+Received: from crass-HP-ZBook-15-G2 ([37.218.244.251])
+        by smtp.gmail.com with ESMTPSA id a4-20020a05620a02e400b0073bacce6ad7sm3180092qko.82.2023.03.03.22.28.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Mar 2023 22:28:54 -0800 (PST)
+Date: Sat, 4 Mar 2023 00:28:46 -0600
+From: Glenn Washburn <development@efficientek.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov
+ <anton.ivanov@cambridgegreys.com>, Johannes Berg
+ <johannes@sipsolutions.net>, linux-um@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Seth Forshee <sforshee@kernel.org>,
+ linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC PATCH v2] hostfs: handle idmapped mounts
+Message-ID: <20230304002846.48278199@crass-HP-ZBook-15-G2>
+In-Reply-To: <20230302083928.zek46ybxvuwgwdf5@wittgenstein>
+References: <20230301015002.2402544-1-development@efficientek.com>
+	<20230302083928.zek46ybxvuwgwdf5@wittgenstein>
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.34; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <6df2ecef9011d85654a82acd607fdcbc93ad593c.camel@huaweicloud.com>
-In-Reply-To: <6df2ecef9011d85654a82acd607fdcbc93ad593c.camel@huaweicloud.com>
-From: David Gow <davidgow@google.com>
-Date: Sat, 4 Mar 2023 12:35:24 +0800
-Message-ID: <CABVgOSm1t3_mcUUu0A8eG-zAA4q0d-dmi6Ceb3TFtoUt1i3gTQ@mail.gmail.com>
-Subject: Re: Cannot compile UML in Ubuntu 20.04.5 anymore
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc: linux-um@lists.infradead.org, Richard Weinberger <richard@nod.at>, 
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230303_203544_627766_FCFF37ED 
-X-CRM114-Status: GOOD (  20.84  )
+X-CRM114-CacheID: sfid-20230303_222859_163938_A05722EA 
+X-CRM114-Status: GOOD (  29.41  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,185 +89,154 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============9212946363950898482=="
+Reply-To: development@efficientek.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
---===============9212946363950898482==
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000de6a3e05f60b9760"
+On Thu, 2 Mar 2023 09:39:28 +0100
+Christian Brauner <brauner@kernel.org> wrote:
 
---000000000000de6a3e05f60b9760
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> On Tue, Feb 28, 2023 at 07:50:02PM -0600, Glenn Washburn wrote:
+> > Let hostfs handle idmapped mounts. This allows to have the same
+> > hostfs mount appear in multiple locations with different id
+> > mappings.
+> > 
+> > root@(none):/media# id
+> > uid=0(root) gid=0(root) groups=0(root)
+> > root@(none):/media# mkdir mnt idmapped
+> > root@(none):/media# mount -thostfs -o/home/user hostfs mnt
+> > 
+> > root@(none):/media# touch mnt/aaa
+> > root@(none):/media# mount-idmapped --map-mount u:`id -u user`:0:1
+> > --map-mount g:`id -g user`:0:1 /media/mnt /media/idmapped
+> > root@(none):/media# ls -l mnt/aaa idmapped/aaa -rw-r--r-- 1 root
+> > root 0 Jan 28 01:23 idmapped/aaa -rw-r--r-- 1 user user 0 Jan 28
+> > 01:23 mnt/aaa
+> > 
+> > root@(none):/media# touch idmapped/bbb
+> > root@(none):/media# ls -l mnt/bbb idmapped/bbb
+> > -rw-r--r-- 1 root root 0 Jan 28 01:26 idmapped/bbb
+> > -rw-r--r-- 1 user user 0 Jan 28 01:26 mnt/bbb
+> > 
+> > Signed-off-by: Glenn Washburn <development@efficientek.com>
+> > ---
+> > Changes from v1:
+> >  * Rebase on to tip. The above commands work and have the results
+> > expected. The __vfsuid_val(make_vfsuid(...)) seems ugly to get the
+> > uid_t, but it seemed like the best one I've come across. Is there a
+> > better way?
+> 
+> Sure, I can help you with that. ;)
 
-On Fri, 3 Mar 2023 at 16:37, Roberto Sassu
-<roberto.sassu@huaweicloud.com> wrote:
->
-> Hi
->
-> it looks like one recent commit causes the kernel build to break.
->
->   GEN     scripts/gdb/linux/constants.py
-> In file included from /usr/include/stdlib.h:1013,
->                  from arch/um/os-Linux/helper.c:6:
-> /usr/include/x86_64-linux-gnu/bits/stdlib-float.h: In function =E2=80=98a=
-tof=E2=80=99:
-> /usr/include/x86_64-linux-gnu/bits/stdlib-float.h:26:1: error: SSE regist=
-er return with SSE disabled
->    26 | {
->       | ^
->   CC      init/noinitramfs.o
->
-> It works again by reverting commit 884981867947 ("rust: arch/um:
-> Disable FP/SIMD instruction to match x86").
->
-> $ cat /proc/cpuinfo
->
-> [...]
->
-> processor       : 31
-> vendor_id       : AuthenticAMD
-> cpu family      : 23
-> model           : 49
-> model name      : AMD Ryzen Threadripper PRO 3955WX 16-Cores
->
-> Thanks
->
-> Roberto
->
+Thank you!
 
-Yup, this is definitely caused by 884981867947 ("rust: arch/um:
-Disable FP/SIMD instruction to match x86").
+> > 
+> > Glenn
+> > ---
+> >  fs/hostfs/hostfs_kern.c | 13 +++++++------
+> >  1 file changed, 7 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+> > index c18bb50c31b6..9459da99a0db 100644
+> > --- a/fs/hostfs/hostfs_kern.c
+> > +++ b/fs/hostfs/hostfs_kern.c
+> > @@ -786,7 +786,7 @@ static int hostfs_permission(struct mnt_idmap
+> > *idmap, err = access_file(name, r, w, x);
+> >  	__putname(name);
+> >  	if (!err)
+> > -		err = generic_permission(&nop_mnt_idmap, ino,
+> > desired);
+> > +		err = generic_permission(idmap, ino, desired);
+> >  	return err;
+> >  }
+> >  
+> > @@ -794,13 +794,14 @@ static int hostfs_setattr(struct mnt_idmap
+> > *idmap, struct dentry *dentry, struct iattr *attr)
+> >  {
+> >  	struct inode *inode = d_inode(dentry);
+> > +	struct user_namespace *fs_userns = i_user_ns(inode);
+> 
+> Fyi, since hostfs can't be mounted in a user namespace
+> fs_userns == &init_user_ns
+> so it doesn't really matter what you use.
 
-It looks like GCC fixed this upstream in GCC 11:
-https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D99652
+What would you suggest as preferable?
 
-Equally though, not having this change breaks older versions of LLVM,
-so I think it's best to not totally revert it.
+> >  	struct hostfs_iattr attrs;
+> >  	char *name;
+> >  	int err;
+> >  
+> >  	int fd = HOSTFS_I(inode)->fd;
+> >  
+> > -	err = setattr_prepare(&nop_mnt_idmap, dentry, attr);
+> > +	err = setattr_prepare(idmap, dentry, attr);
+> >  	if (err)
+> >  		return err;
+> >  
+> > @@ -814,11 +815,11 @@ static int hostfs_setattr(struct mnt_idmap
+> > *idmap, }
+> >  	if (attr->ia_valid & ATTR_UID) {
+> >  		attrs.ia_valid |= HOSTFS_ATTR_UID;
+> > -		attrs.ia_uid = from_kuid(&init_user_ns,
+> > attr->ia_uid);
+> > +		attrs.ia_uid = __vfsuid_val(make_vfsuid(idmap,
+> > fs_userns, attr->ia_uid)); }
+> >  	if (attr->ia_valid & ATTR_GID) {
+> >  		attrs.ia_valid |= HOSTFS_ATTR_GID;
+> > -		attrs.ia_gid = from_kgid(&init_user_ns,
+> > attr->ia_gid);
+> > +		attrs.ia_gid = __vfsgid_val(make_vfsgid(idmap,
+> > fs_userns, attr->ia_gid));
+> 
+> Heh, if you look include/linux/fs.h:
+> 
+>         /*
+>          * The two anonymous unions wrap structures with the same
+> member. *
+>          * Filesystems raising FS_ALLOW_IDMAP need to use
+> ia_vfs{g,u}id which
+>          * are a dedicated type requiring the filesystem to use the
+> dedicated
+>          * helpers. Other filesystem can continue to use ia_{g,u}id
+> until they
+>          * have been ported.
+>          *
+>          * They always contain the same value. In other words
+> FS_ALLOW_IDMAP
+>          * pass down the same value on idmapped mounts as they would
+> on regular
+>          * mounts.
+>          */
+>         union {
+>                 kuid_t          ia_uid;
+>                 vfsuid_t        ia_vfsuid;
+>         };
+>         union {
+>                 kgid_t          ia_gid;
+>                 vfsgid_t        ia_vfsgid;
+>         };
+> 
+> this just is:
+> 
+> attrs.ia_uid = from_vfsuid(idmap, fs_userns, attr->ia_vfsuid));
+> attrs.ia_gid = from_vfsgid(idmap, fs_userns, attr->ia_vfsgid));
 
-Something like this should work:
----
-diff --git a/arch/x86/Makefile.um b/arch/x86/Makefile.um
-index d2e95d1d4db7..1aa64846e539 100644
---- a/arch/x86/Makefile.um
-+++ b/arch/x86/Makefile.um
-@@ -3,9 +3,14 @@ core-y +=3D arch/x86/crypto/
+Its easy to miss from this patch because of lack of context, but attrs
+is a struct hostfs_iattr, not struct iattr. And attrs.ia_uid is of type
+uid_t, not kuid_t. So the above fails to compile. This is why I needed
+to wrap make_vfsuid() in __vfsuid_val() (to get the uid_t).
 
-#
-# Disable SSE and other FP/SIMD instructions to match normal x86
-+# This is required to work around issues in older LLVM versions, but break=
-s
-+# GCC versions < 11. See:
-+# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D99652
-#
-+ifeq ($(CONFIG_CC_IS_CLANG),y)
-KBUILD_CFLAGS +=3D -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx
-KBUILD_RUSTFLAGS +=3D
--Ctarget-feature=3D-sse,-sse2,-sse3,-ssse3,-sse4.1,-sse4.2,-avx,-avx2
-+endif
+I had decided against using from_vfsuid() because then I thought I'd
+need to use from_kuid() to get the uid_t. And from_kuid() takes the
+namespace (again), which seemed uglier.
 
-ifeq ($(CONFIG_X86_32),y)
-START :=3D 0x8048000
----
+Based on this, what do you suggest?
 
-Though the more correct solution would be to just check
-gcc-min-version || clang. That probably requires a bit more
-makefile-fu to do cleanly, though.
-
-Cheers,
--- David
-
---000000000000de6a3e05f60b9760
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-64VRg2IjDI2fJVE9RD6aMEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
-dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
-AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
-c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
-LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
-LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
-Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQA2lZLYRLu7foeR
-cHo1VeNA974FZBiCm08Kd44/aCMEzdTJvxAE9xbUJf7hS1i6eW49qxuSp3/YLn6U7uatwAcmZcwp
-Zma19ftf3LH+9Hvffk+X8fbPKe6uHkJhR2LktrhRzF159jj67NvXyGQv8J4n7UNeEVP0d5ByvRwv
-tF2bJwlOwRGLoxasKSyDHIyUpwTfWYPq7XvjoGqQ/tDS7Khcc5WncJl0/ZEj7EKjtoGbsDbLdXEF
-m/6vdcYKJzF9ghHewtV3YIU4RE3pEM4aCWWRtJwbExzeue6fI7RqURbNCAyQuSpWv0YQvzsX3ZX3
-c1otrs50n1N0Sf8/rfJxq7sWMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
-R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABxy1wm0tAmHKHFkLS9RWPMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCDH
-NGzCH+ZfkQYjXBiLn/zOaw/vgIGCkYvV4wC2VSSdoDAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMzAzMDQwNDM1MzZaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
-BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEArcCVnBO+Ho48DtldZU47
-cUd0Yc4Ue5fTz0YHjTy7bYhsIw6XQJJwwLRg8fdDpLYZFAlUyvUadSnAKtyysX2vwliiLinky219
-HyDoxHICbHQQdpE188iaowaNsFVw//Vrs+yHn8RtbsZrNbW6DV5FH7ia26XxiVW2VjZ4RBrlC0Dl
-9Z3xAvwBOidUayDjjjYtB7ODAYJ0zSwY0CpEVnugHcypYhbXOJ+gOuOrOEm11la+5mEEQZ17u8aK
-G2EWZRxUVLtduuteBUv4iPg4xvIf2JSHDbDCdsVnrh84PawHhrQMOb5TT/LoRqukWxjdrkZKX9K8
-46A9uE59XGJvMEaoDA==
---000000000000de6a3e05f60b9760--
-
-
---===============9212946363950898482==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Glenn
 
 _______________________________________________
 linux-um mailing list
 linux-um@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-um
-
---===============9212946363950898482==--
-
