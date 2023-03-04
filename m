@@ -4,63 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2B0FC678DB
-	for <linux-um@archiver.kernel.org>; Sat,  4 Mar 2023 12:01:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A7AFC64EC4
+	for <linux-um@archiver.kernel.org>; Sat,  4 Mar 2023 14:49:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=pmy0HgSbe3i8hEYvIB7ZHLg48ldq624xxPPoXb1KhsE=; b=NLGb1hVotF4Gdq
-	YV9jMeLy/30vzVoQSg4KokqTX9EIper7aR0H0LPgJ0Y7iMp3MX2ETKXey+d1ItsamP8TPV4IE1Pw/
-	syq7VTKTr566R+8E4DcIy65fzCgk5vzn5qjIEmEPX0LsUncBKe+wkXeHzOkYa7JPi5zvniuEMctvw
-	hbmply1WyiE12MU15dgFqweudEzzEto4R93GHio3LaQd1H/YGcVWjNSDPp9tSLKpj8GTjMvbSIxsY
-	MRKwJHOEMzR5taEzDdPS80vNZ637yHEp2VG8fPdLavCsWF0MzrAgWUmq6rkHs4VW6/RBdjuqkNt2Z
-	v374rg4LsUvmbeykesCQ==;
+	List-Owner; bh=DU50HNZaYUqyfaTV6KlwgbFuL+ynPrtKBiFN6QI+8gw=; b=XS8S66dOjmVrWj
+	v4BPg7ff+kf3rADZvn4xmjd0aFD5UHLw8H81jyj8Wmk/GdCtumYWuq/w4usiARRDAsmoloU29UTMP
+	PkI2Se8lv0vrj+3YHDjLScdIM4QpemUZ7R9plIjVj/RPNp8DNAUMTd9WpxGq6mGI0quoZJy5SRas7
+	ls+K33FKxhw31NZ0i/Ckf4c0YhvLO1Ju7bzPfdAplBeOjJ9E7eUBWpTYq0D37VldWyG6DQFSd8NHd
+	10fiBdQ5oampnlqFLE0Dla96i0e4y7rMd7xL2dSaPLGNMBfXsaxjm49PGF5ZB5J5uUn9fJenxfdpM
+	CDLE8ZP3FJQF2MaL+nww==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pYQZw-008tz4-3c; Sat, 04 Mar 2023 12:01:32 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1pYTC2-0098nT-8f; Sat, 04 Mar 2023 14:49:02 +0000
+Received: from mail-qv1-xf2b.google.com ([2607:f8b0:4864:20::f2b])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pYQZs-008tyJ-Ck
-	for linux-um@lists.infradead.org; Sat, 04 Mar 2023 12:01:30 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 7E737B8010F;
-	Sat,  4 Mar 2023 12:01:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0982AC433D2;
-	Sat,  4 Mar 2023 12:01:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1677931284;
-	bh=kxArD6kqa3Zrpk8FVHbixCQ4K9R+00pElouDl7sjmXQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CEwtMFKx/Zt9JcpA24Cr3DaBpUwxpxY4mZz6eW08SEEeN3bfPhT25kzHZe2uEX+tv
-	 Fm8X/Kk8hPSsnwZOqSmoDQfBq7Ch2dD66rhZkftLx21OnS5y6Afl8WDm2Nru4eyquw
-	 VEqXP8VtakyPYBr4a63Xr5+XdhM+CD5KWSvtzSuwlrGciwd/3GaergSN5CrUBeha3B
-	 o1Z82bhZGEPwt46cZwCUvx6OWq2HDHuVftoST4FkKskwZ4cX7URlSFKVv06l0OgvCa
-	 4Cr3RCzK6UC/WPeGNiTJVlX6LrGyY4QEIxDdYPz5tTGvI7Gz0zG+O017XkAA10zSd9
-	 CAoXFqg1VZ1kA==
-Date: Sat, 4 Mar 2023 13:01:18 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Glenn Washburn <development@efficientek.com>
-Cc: Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Seth Forshee <sforshee@kernel.org>, linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC PATCH v2] hostfs: handle idmapped mounts
-Message-ID: <20230304120118.bhbilwzhmjt72fok@wittgenstein>
-References: <20230301015002.2402544-1-development@efficientek.com>
- <20230302083928.zek46ybxvuwgwdf5@wittgenstein>
- <20230304002846.48278199@crass-HP-ZBook-15-G2>
+	id 1pYTBy-0098m4-PN
+	for linux-um@lists.infradead.org; Sat, 04 Mar 2023 14:49:00 +0000
+Received: by mail-qv1-xf2b.google.com with SMTP id op8so3681735qvb.11
+        for <linux-um@lists.infradead.org>; Sat, 04 Mar 2023 06:48:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1677941336;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TsKKHJ0/GD+1zuzNsuCdWtAJjvxya3Twz8P8LNYqCwY=;
+        b=o0XqqF9KH2cTPnL75tHljXD8nVLW6wpV2NwV7X4XXX+8CRd/3AiCnKdEDZYSwR76vS
+         z8DZ8fDxhR9+Ldwet6gfGkh2EsHwkG4Dy7dIJF9dPCMa6YH7fOTsxGPuSPTCkAS8XnXz
+         OfwYYEu30tPOkw33e6UktE/vuadPB2J8SBzRq91ZzIsoBzpFT+a/OEoRYN3MxofBSzE3
+         n2D3eHQaHuIWSse1usU0WLHDT0VedC2vd3YjKYqeoWc8J/YzpCrNaTcZorTn2ZaYobKj
+         vcDaPFP2HtRgLwcyZQk40ii3Uxz5WJNVJ4F+7fU5RfFO0z0TzUrHE3mMAIJLs5FvwND4
+         pCBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1677941336;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TsKKHJ0/GD+1zuzNsuCdWtAJjvxya3Twz8P8LNYqCwY=;
+        b=l9ForYRFIJQuixaVsaJ7VieMPcu6QgWlnv6C+2pkcH90uYMMdD2TMc6AVf6fKD0Kus
+         2MV/j8bb0tgz58OJnnVgegh5+tCK0YZpdWilRDE8eKpM6nSaa3rrS+j/is7hyMlAxzlg
+         i5N4miISHAGPugx8MGVfFMn+qg2CfHcPWP6OD/hUnI26at7A8W8mjZ9IoiCZUfOwZkzt
+         VcRZB73BIROOURCrTQICAQmTYMoU6hAgUh1watYMprK7wqmi8t8sfL/AfVcEj1UhuQQL
+         h1hG/O4zA7uNbqpjq4qKgokOocYNhlZNCJj54OAZbXa/kQKtrI3yEu0XptQgmeDFeVZm
+         a5IA==
+X-Gm-Message-State: AO0yUKUdBE2h+mFF+vIBKuP5sLLGyAiFUvtW5JqL6qC8a44QKfzXB7I3
+	qQYrMgrgujlBQEieIeIkU2Y=
+X-Google-Smtp-Source: AK7set/lpTeE6jSzoh7eLRmNQ2aPTpe64xLeLcMiiEyIor3lA8OcSo+NeLshc41rysf1tZHsq/I8fQ==
+X-Received: by 2002:a05:6214:23c8:b0:583:a07b:554c with SMTP id hr8-20020a05621423c800b00583a07b554cmr2306311qvb.40.1677941335935;
+        Sat, 04 Mar 2023 06:48:55 -0800 (PST)
+Received: from ?IPV6:2600:1700:2442:6db0:99e6:eec3:1daa:f163? ([2600:1700:2442:6db0:99e6:eec3:1daa:f163])
+        by smtp.gmail.com with ESMTPSA id d82-20020a376855000000b007419eb86df0sm3835899qkc.127.2023.03.04.06.48.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 04 Mar 2023 06:48:55 -0800 (PST)
+Message-ID: <6668e83c-eb2c-7ac9-7b6f-2c8146c2175d@gmail.com>
+Date: Sat, 4 Mar 2023 08:48:54 -0600
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230304002846.48278199@crass-HP-ZBook-15-G2>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH 0/8] clk: Add kunit tests for fixed rate and parent data
+Content-Language: en-US
+To: Rob Herring <robh+dt@kernel.org>, David Gow <davidgow@google.com>,
+ Stephen Boyd <sboyd@kernel.org>
+Cc: Michael Turquette <mturquette@baylibre.com>,
+ linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+ patches@lists.linux.dev, Brendan Higgins <brendan.higgins@linux.dev>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Rafael J . Wysocki" <rafael@kernel.org>, Richard Weinberger
+ <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ Vincent Whitchurch <vincent.whitchurch@axis.com>,
+ Christian Marangi <ansuelsmth@gmail.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ devicetree@vger.kernel.org, linux-um@lists.infradead.org,
+ linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com
+References: <20230302013822.1808711-1-sboyd@kernel.org>
+ <CABVgOSnpMNCtEEsJV28OzUoxdDuiT4a2T0avP0AYf9xFW1jxrw@mail.gmail.com>
+ <CAL_JsqJMd3Fi0ZBObdyE1VDKTH1_+smuGDymHnKOkVH2HB3jJQ@mail.gmail.com>
+From: Frank Rowand <frowand.list@gmail.com>
+In-Reply-To: <CAL_JsqJMd3Fi0ZBObdyE1VDKTH1_+smuGDymHnKOkVH2HB3jJQ@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230304_040128_774520_706760A9 
-X-CRM114-Status: GOOD (  47.51  )
+X-CRM114-CacheID: sfid-20230304_064858_870941_C624EEDE 
+X-CRM114-Status: GOOD (  30.53  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,249 +100,68 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sat, Mar 04, 2023 at 12:28:46AM -0600, Glenn Washburn wrote:
-> On Thu, 2 Mar 2023 09:39:28 +0100
-> Christian Brauner <brauner@kernel.org> wrote:
-> 
-> > On Tue, Feb 28, 2023 at 07:50:02PM -0600, Glenn Washburn wrote:
-> > > Let hostfs handle idmapped mounts. This allows to have the same
-> > > hostfs mount appear in multiple locations with different id
-> > > mappings.
-> > > 
-> > > root@(none):/media# id
-> > > uid=0(root) gid=0(root) groups=0(root)
-> > > root@(none):/media# mkdir mnt idmapped
-> > > root@(none):/media# mount -thostfs -o/home/user hostfs mnt
-> > > 
-> > > root@(none):/media# touch mnt/aaa
-> > > root@(none):/media# mount-idmapped --map-mount u:`id -u user`:0:1
-> > > --map-mount g:`id -g user`:0:1 /media/mnt /media/idmapped
-> > > root@(none):/media# ls -l mnt/aaa idmapped/aaa -rw-r--r-- 1 root
-> > > root 0 Jan 28 01:23 idmapped/aaa -rw-r--r-- 1 user user 0 Jan 28
-> > > 01:23 mnt/aaa
-> > > 
-> > > root@(none):/media# touch idmapped/bbb
-> > > root@(none):/media# ls -l mnt/bbb idmapped/bbb
-> > > -rw-r--r-- 1 root root 0 Jan 28 01:26 idmapped/bbb
-> > > -rw-r--r-- 1 user user 0 Jan 28 01:26 mnt/bbb
-> > > 
-> > > Signed-off-by: Glenn Washburn <development@efficientek.com>
-> > > ---
-> > > Changes from v1:
-> > >  * Rebase on to tip. The above commands work and have the results
-> > > expected. The __vfsuid_val(make_vfsuid(...)) seems ugly to get the
-> > > uid_t, but it seemed like the best one I've come across. Is there a
-> > > better way?
-> > 
-> > Sure, I can help you with that. ;)
-> 
-> Thank you!
-> 
-> > > 
-> > > Glenn
-> > > ---
-> > >  fs/hostfs/hostfs_kern.c | 13 +++++++------
-> > >  1 file changed, 7 insertions(+), 6 deletions(-)
-> > > 
-> > > diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-> > > index c18bb50c31b6..9459da99a0db 100644
-> > > --- a/fs/hostfs/hostfs_kern.c
-> > > +++ b/fs/hostfs/hostfs_kern.c
-> > > @@ -786,7 +786,7 @@ static int hostfs_permission(struct mnt_idmap
-> > > *idmap, err = access_file(name, r, w, x);
-> > >  	__putname(name);
-> > >  	if (!err)
-> > > -		err = generic_permission(&nop_mnt_idmap, ino,
-> > > desired);
-> > > +		err = generic_permission(idmap, ino, desired);
-> > >  	return err;
-> > >  }
-> > >  
-> > > @@ -794,13 +794,14 @@ static int hostfs_setattr(struct mnt_idmap
-> > > *idmap, struct dentry *dentry, struct iattr *attr)
-> > >  {
-> > >  	struct inode *inode = d_inode(dentry);
-> > > +	struct user_namespace *fs_userns = i_user_ns(inode);
-> > 
-> > Fyi, since hostfs can't be mounted in a user namespace
-> > fs_userns == &init_user_ns
-> > so it doesn't really matter what you use.
-> 
-> What would you suggest as preferable?
-
-I would leave init_user_ns hardcoded as it clearly indicates that hostfs
-can only be mounted in the initial user namespace. Plus, the patch is
-smaller.
-
-> 
-> > >  	struct hostfs_iattr attrs;
-> > >  	char *name;
-> > >  	int err;
-> > >  
-> > >  	int fd = HOSTFS_I(inode)->fd;
-> > >  
-> > > -	err = setattr_prepare(&nop_mnt_idmap, dentry, attr);
-> > > +	err = setattr_prepare(idmap, dentry, attr);
-> > >  	if (err)
-> > >  		return err;
-> > >  
-> > > @@ -814,11 +815,11 @@ static int hostfs_setattr(struct mnt_idmap
-> > > *idmap, }
-> > >  	if (attr->ia_valid & ATTR_UID) {
-> > >  		attrs.ia_valid |= HOSTFS_ATTR_UID;
-> > > -		attrs.ia_uid = from_kuid(&init_user_ns,
-> > > attr->ia_uid);
-> > > +		attrs.ia_uid = __vfsuid_val(make_vfsuid(idmap,
-> > > fs_userns, attr->ia_uid)); }
-> > >  	if (attr->ia_valid & ATTR_GID) {
-> > >  		attrs.ia_valid |= HOSTFS_ATTR_GID;
-> > > -		attrs.ia_gid = from_kgid(&init_user_ns,
-> > > attr->ia_gid);
-> > > +		attrs.ia_gid = __vfsgid_val(make_vfsgid(idmap,
-> > > fs_userns, attr->ia_gid));
-> > 
-> > Heh, if you look include/linux/fs.h:
-> > 
-> >         /*
-> >          * The two anonymous unions wrap structures with the same
-> > member. *
-> >          * Filesystems raising FS_ALLOW_IDMAP need to use
-> > ia_vfs{g,u}id which
-> >          * are a dedicated type requiring the filesystem to use the
-> > dedicated
-> >          * helpers. Other filesystem can continue to use ia_{g,u}id
-> > until they
-> >          * have been ported.
-> >          *
-> >          * They always contain the same value. In other words
-> > FS_ALLOW_IDMAP
-> >          * pass down the same value on idmapped mounts as they would
-> > on regular
-> >          * mounts.
-> >          */
-> >         union {
-> >                 kuid_t          ia_uid;
-> >                 vfsuid_t        ia_vfsuid;
-> >         };
-> >         union {
-> >                 kgid_t          ia_gid;
-> >                 vfsgid_t        ia_vfsgid;
-> >         };
-> > 
-> > this just is:
-> > 
-> > attrs.ia_uid = from_vfsuid(idmap, fs_userns, attr->ia_vfsuid));
-> > attrs.ia_gid = from_vfsgid(idmap, fs_userns, attr->ia_vfsgid));
-> 
-> Its easy to miss from this patch because of lack of context, but attrs
-> is a struct hostfs_iattr, not struct iattr. And attrs.ia_uid is of type
-> uid_t, not kuid_t. So the above fails to compile. This is why I needed
-
-Oh, I see. And then that raw value is used by calling
-fchmod()/chmod()/chown()/fchown() and so on. That's rather special.
-Ok, then I know what to do.
-
-> to wrap make_vfsuid() in __vfsuid_val() (to get the uid_t).
-
-Right. My point had been - independent of the struct hostfs_iattr issue
-you thankfully pointed out - that make_vfsuid() is wrong here.
-
-make_vfsuid() is used to map a filesystem wide k{g,u}id_t according to
-the mount's idmapping that operation originated from. But that's done
-by the vfs way before we're calling into the filesystem. For example,
-it's done in chown_common().
-
-So the value placed in struct iattr (the VFS struct) is already a
-vfs{g,u}id stored in iattr->ia_vfs{g,u}id. So you need to use
-from_vfs{g,u}id() here.
-
-> 
-> I had decided against using from_vfsuid() because then I thought I'd
-> need to use from_kuid() to get the uid_t. And from_kuid() takes the
-> namespace (again), which seemed uglier.
-> 
-> Based on this, what do you suggest?
-
-Ok, so just some details on the background before I paste what I think
-we should do.
-
-As soon as you support idmapped mounts you at least technically are
-always dealing with two mappings:
-
-(1) First, there's the filesystem wide idmapping which is taken from the
-    namespace the filessytem was mounted in. This idmapping is applied
-    when you read the raw uid/gid value from disk and turn into a kuid_t
-    type. That value is persistent and stored in inode->i_{g,u}id. All
-    things that are cached and that can be accessed from multiple mounts
-    concurrently can only ever cache k{g,u}id_t aka filesystem values.
-(2) Whenever we're dealing with an operation that's coming from an
-    idmapped mount we need to take the idmapping of the mount into
-    account. That idmapping is completely separate type struct
-    mnt_idmap that's opaque for filesystems and most of the vfs.
-
-    That idmapping is used to generate the vfs{g,u}id_t. IOW, translates
-    from the filesystem representation to a mount/vfs representation.
-
-So, in order to store the correct value on disk we need to invert those
-two idmappings to arrive at the raw value that we want to store:
-(U1) from_vfsuid() // map to the filesystem wide value aka something
-     that we can store in inode->i_{g,u}id and that's cacheable. This is
-     done in setattr_copy().
-(U2) from_kuid() // map the filesystem wide value to the raw value we
-     want to store on disk
-
-For nearly all filesystems these steps almost never need to be performed
-explicitly. Instead, dedicated vfs helpers will do this:
-
-(U1) i_{g,u}id_update() // map to filesystem wide value
-(U2) i_{g,u}id_read() // map to raw on-disk value
-
-For filesystems that don't support being mounted in namespaces the (U2)
-step is always a nop. So technically there's no difference between:
-
-(U2) from_kuid() and __kuid_val(kuid)
-
-but it's cleaner to use the helpers even in that case.
-
-So given how hostfs works these two steps need to be performed
-explicitly. So I suggest (untested):
-
-diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index c18bb50c31b6..72b7e1bcc32e 100644
---- a/fs/hostfs/hostfs_kern.c
-+++ b/fs/hostfs/hostfs_kern.c
-@@ -813,12 +813,22 @@ static int hostfs_setattr(struct mnt_idmap *idmap,
-                attrs.ia_mode = attr->ia_mode;
-        }
-        if (attr->ia_valid & ATTR_UID) {
-+               kuid_t kuid;
-+
-                attrs.ia_valid |= HOSTFS_ATTR_UID;
--               attrs.ia_uid = from_kuid(&init_user_ns, attr->ia_uid);
-+               /* Map the vfs id into the filesystem. */
-+               kuid = from_vfsuid(idmap, &init_user_ns, attr->ia_vfsuid);
-+               /* Map the filesystem id to its raw on disk value. */
-+               attrs.ia_uid = from_kuid(&init_user_ns, kuid);
-        }
-        if (attr->ia_valid & ATTR_GID) {
-+               kgid_t kgid;
-+
-                attrs.ia_valid |= HOSTFS_ATTR_GID;
--               attrs.ia_gid = from_kgid(&init_user_ns, attr->ia_gid);
-+               /* Map the vfs id into the filesystem. */
-+               kgid = from_vfsgid(idmap, &init_user_ns, attr->ia_vfsgid);
-+               /* Map the filesystem id to its raw on disk value. */
-+               attrs.ia_gid = from_kgid(&init_user_ns, kgid);
-        }
-        if (attr->ia_valid & ATTR_SIZE) {
-                attrs.ia_valid |= HOSTFS_ATTR_SIZE;
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gMy8yLzIzIDExOjMyLCBSb2IgSGVycmluZyB3cm90ZToKPiBPbiBUaHUsIE1hciAyLCAyMDIz
+IGF0IDI6MTTigK9BTSBEYXZpZCBHb3cgPGRhdmlkZ293QGdvb2dsZS5jb20+IHdyb3RlOgo+Pgo+
+PiBPbiBUaHUsIDIgTWFyIDIwMjMgYXQgMDk6MzgsIFN0ZXBoZW4gQm95ZCA8c2JveWRAa2VybmVs
+Lm9yZz4gd3JvdGU6Cj4+Pgo+Pj4gVGhpcyBwYXRjaCBzZXJpZXMgYWRkcyB1bml0IHRlc3RzIGZv
+ciB0aGUgY2xrIGZpeGVkIHJhdGUgYmFzaWMgdHlwZSBhbmQKPj4+IHRoZSBjbGsgcmVnaXN0cmF0
+aW9uIGZ1bmN0aW9ucyB0aGF0IHVzZSBzdHJ1Y3QgY2xrX3BhcmVudF9kYXRhLiBUbyBnZXQKPj4+
+IHRoZXJlLCB3ZSBhZGQgc3VwcG9ydCBmb3IgbG9hZGluZyBhIERUQiBpbnRvIHRoZSBVTUwga2Vy
+bmVsIHRoYXQncwo+Pj4gcnVubmluZyB0aGUgdW5pdCB0ZXN0cyBhbG9uZyB3aXRoIHByb2Jpbmcg
+cGxhdGZvcm0gZHJpdmVycyB0byBiaW5kIHRvCj4+PiBkZXZpY2Ugbm9kZXMgc3BlY2lmaWVkIGlu
+IERULgo+Pj4KPj4+IFdpdGggdGhpcyBzZXJpZXMsIHdlJ3JlIGFibGUgdG8gZXhlcmNpc2Ugc29t
+ZSBvZiB0aGUgY29kZSBpbiB0aGUgY29tbW9uCj4+PiBjbGsgZnJhbWV3b3JrIHRoYXQgdXNlcyBk
+ZXZpY2V0cmVlIGxvb2t1cHMgdG8gZmluZCBwYXJlbnRzIGFuZCB0aGUgZml4ZWQKPj4+IHJhdGUg
+Y2xrIGNvZGUgdGhhdCBzY2FucyBkZXZpY2V0cmVlIGRpcmVjdGx5IGFuZCBjcmVhdGVzIGNsa3Mu
+IFBsZWFzZQo+Pj4gcmV2aWV3Lgo+Pj4KPj4KPj4gVGhhbmtzIFN0ZXBoZW4gLS0gdGhpcyBpcyBy
+ZWFsbHkgbmVhdCEKPj4KPj4gVGhpcyB3b3JrcyB3ZWxsIGhlcmUsIGFuZCBJIGxvdmUgYWxsIG9m
+IHRoZSB0ZXN0cyBmb3IgdGhlCj4+IEtVbml0L2RldmljZS10cmVlIGludGVncmF0aW9uIGFzIHdl
+bGwuCj4+Cj4+IEknbSBzdGlsbCBsb29raW5nIHRocm91Z2ggdGhlIGRldGFpbHMgb2YgaXQgKGFs
+YXMsIEkndmUgbW9zdGx5IGxpdmVkCj4+IGluIHg4Ni1sYW5kLCBzbyBteSBkZXZpY2UtdHJlZSBr
+bm93bGVkZ2UgaXMsIHVoLCBzcG90dHkgdG8gc2F5IHRoZQo+PiBsZWFzdCksIGJ1dCBhcGFydCBm
+cm9tIHBvc3NpYmx5IHJlbmFtaW5nIHNvbWUgdGhpbmdzIG9yIHNpbWlsYXJseQo+PiBtaW5vciB0
+d2Vha3MsIEkndmUgbm90IGdvdCBhbnkgcmVhbCBzdWdnZXN0aW9ucyB0aHVzIGZhci4KPj4KPj4g
+SSBkbyB3b25kZXIgd2hldGhlciB3ZSdsbCB3YW50LCBvbiB0aGUgS1VuaXQgc2lkZSwgdG8gaGF2
+ZSBzb21lIHdheSBvZgo+PiBzdXBwb3J0aW5nIEtVbml0IGRldmljZSB0cmVlcyBvbiBub24tVU1M
+IGFyY2hpdGVjY3R1cmVzIChlLmcuLCBpZiB3ZQo+PiBuZWVkIHRvIHRlc3Qgc29tZXRoaW5nIGFy
+Y2hpdGVjdHVyZS1zcGVjaWZpYywgb3Igb24gYSBiaWctZW5kaWFuCj4+IHBsYXRmb3JtLCBldGMp
+LCBidXQgSSB0aGluayB0aGF0J3MgYSBxdWVzdGlvbiBmb3IgdGhlIGZ1dHVyZSwgcmF0aGVyCj4+
+IHRoYW4gc29tZXRoaW5nIHRoYXQgYWZmZWN0cyB0aGlzIHNlcmllcy4KPiAKPiBJJ2xsIHNheSB0
+aGF0J3MgYSByZXF1aXJlbWVudC4gV2Ugc2hvdWxkIGJlIGFibGUgdG8gc3RydWN0dXJlIHRoZQo+
+IHRlc3RzIHRvIG5vdCBpbnRlcmZlcmUgd2l0aCB0aGUgcnVubmluZyBzeXN0ZW0ncyBEVC4gVGhl
+IERUIHVuaXR0ZXN0Cj4gZG9lcyB0aGF0Lgo+IAo+IEFzIGEgc2lkZSB0b3BpYywgSXMgYW55b25l
+IGxvb2tpbmcgYXQgZ2V0dGluZyBVTUwgdG8gd29yayBvbiBhcm02ND8KPiBJdCdzIHN1cnByaXNp
+bmcgaG93IG11Y2ggeDg2IHN0dWZmIHRoZXJlIGlzIHdoaWNoIGlzIEkgZ3Vlc3Mgb25lCj4gcmVh
+c29uIGl0IGhhc24ndCBoYXBwZW5lZC4KPiAKPj4gU2ltaWxhcmx5LCBJIHdvbmRlciBpZiB0aGVy
+ZSdzIHNvbWV0aGluZyB3ZSBjb3VsZCBkbyB3aXRoIGRldmljZSB0cmVlCj4+IG92ZXJsYXlzLCBp
+biBvcmRlciB0byBtYWtlIGl0IHBvc3NpYmxlIGZvciB0ZXN0cyB0byBzd2FwIG5vZGVzIGluIGFu
+ZAo+PiBvdXQgZm9yIHRlc3RpbmcuCj4gCj4gWWVzLCB0aGF0J3MgaG93IHRoZSBEVCB1bml0dGVz
+dCB3b3Jrcy4gQnV0IGl0IGlzIHByZXR0eSBtdWNoIG9uZSBiaWcKPiBvdmVybGF5IChpZ25vcmlu
+ZyB0aGUgb3ZlcmxheSB0ZXN0cykuIEl0IGNvdWxkIHByb2JhYmx5IGJlIG1vcmUKPiBtb2R1bGFy
+IHdoZXJlIGl0IGlzIGFwcGx5IG92ZXJsYXksIHRlc3QsIHJlbW92ZSBvdmVybGF5LCByZXBlYXQu
+CgpBY3R1YWxseSwgbm8sIHRoZSBidWxrIG9mIHRoZSBEVCB1bml0dGVzdCBkZXZpY2V0cmVlIGRh
+dGEgaXMgX25vdF8gYW4Kb3ZlcmxheS4gIEl0IGlzIGFuIEZEVCB0aGF0IGlzIGxvYWRlZCB2aWEg
+b2ZfZmR0X3VuZmxhdHRlbl90cmVlKCkgaW5zdGVhZApvZiB0aGUgb3ZlcmxheSBsb2FkIEFQSS4g
+IE5vdGUgdGhhdCB0aGUgYmFzZSBEVCB1bml0dGVzdCBydW5zIHdpdGgKICBDT05GSUdfT0ZfRFlO
+QU1JQz1uCiAgQ09ORklHX09GX09WRVJMQVk9bgpzbyB0aGUgb3ZlcmxheSBzdXBwb3J0IGNvZGUg
+aXMgbm90IGV2ZW4gcHJlc2VudCBpbiB0aGUgYnVpbHQga2VybmVsLgoKT25lIGNhbiB0aGVuIGVu
+YWJsZSBDT05GSUdfT0ZfRFlOQU1JQyB0byB0ZXN0IHRoZSBkeW5hbWljIGNvZGUuCgpPbmUgY2Fu
+IGZ1cnRoZXIgZW5hYmxlIENPTkZJR19PRl9PVkVSTEFZIHRvIHRlc3QgdGhlIG92ZXJsYXkgY29k
+ZQoodGhpcyB3aWxsIGluIHR1cm4gc2VsZWN0IENPTkZJR19PRl9EWU5BTUlDIGlmIG5vdCBhbHJl
+YWR5IGVuYWJsZWQpLgoKSSB3b3VsZCBzdHJvbmdseSBkaXNjb3VyYWdlIHVzZSBvZiB0aGUgb3Zl
+cmxheSBBUElzIGZvciBrdW5pdCB0ZXN0cywKdW5sZXNzIHRoZSBwb2ludCBvZiB0aGUga3VuaXQg
+dGVzdCBpcyB0byB0ZXN0IHRoZSBvdmVybGF5IEFQSS4gIEJhc2ljCnRlc3RzIHNob3VsZCBhbHdh
+eXMgYmUgcGVyZm9ybWVkIHdpdGggZGV2aWNldHJlZSBkYXRhIHRoYXQgaGFzIGJlZW4KcG9wdWxh
+dGVkIGJ5IHRoZSBub3JtYWwgcHJvY2Vzc2luZyBvZiBhbiBGRFQgZHVyaW5nIGVhcmx5IGJvb3Qu
+ICBJZgpvbmUgd2FudCB0byB0ZXN0IHByb3BlciBvdmVybGF5IGluZnJhc3RydWN0dXJlIGZ1bmN0
+aW9uYWxpdHksIHRoZW4KdGhvc2UgKGVzc2VudGlhbGx5KSBzYW1lIGJhc2ljIHRlc3RzIGNvdWxk
+L3Nob3VsZCBiZSByZXBlYXRlZCB3aXRoCmRldmljZXRyZWUgZGF0YSB0aGF0IGhhcyBiZWVuIHBv
+cHVsYXRlZCBieSBsb2FkaW5nIGFuIG92ZXJsYXkuCgo+IAo+IFJvYgoKCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdAps
+aW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vbGludXgtdW0K
