@@ -4,67 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86095C61DA4
-	for <linux-um@archiver.kernel.org>; Tue,  7 Mar 2023 00:31:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23258C678D5
+	for <linux-um@archiver.kernel.org>; Tue,  7 Mar 2023 21:53:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Date:To:Cc:From:Subject:References:
+	In-Reply-To:MIME-Version:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Y0OMQhUJobssaiNXSwtAc9AD0teLHSfiNXOSfSF+9dw=; b=ZXvU8hGYpWGhYr
-	M5N2+W7fg7nwiHILMH8w3RZjwwoN0aA5Rokk2qO7ORwdGkFQlhPsPgiMcM3/b3SMjUYd3c7nhCZWG
-	zP6DxH8FfI4a1cbxdxF7t/QrnJ73rHNebG96UaGqfqykh3T5FZxsk4w/XU/L5bShaVDs4PkwGHUX9
-	WJD0UHKSbQlPoH/qMvxnRXNO5h01Cd8jCT8gB7diIQ7gj0P0LuIV6X3xOu6Nuq4HFewSWwWy02sB5
-	yQ0S1MB5PdzH63vr7XasjZr3WB+tMLC38637nGl5NwUPVvtkx1FV9mlrjiwEQKjb25K7+UnwI6Ses
-	s4NGieGXW6aViluvd3aw==;
+	List-Owner; bh=ZEp8o4N5pzcU4KLugIgLVVegRO/KJ0MzjtxpDpnzjU4=; b=ZY7+dS/k2gpFAO
+	6OpWG8d0E3cUAU+skmQXsgA4HpmOZPHV7FvjH34GRbou4byRLZ7IZ2R5h48jfnzOmZwUfR2Ny207U
+	6NHRMl/A+Z0dbSOxW3V9TTbyom6BCBks57quKJzMwbaCx+c+d6YXv4Njl1kdrDKOJgWK6ctM4djRr
+	5JpSOYQ6CAAqo3+P2EjM8ZsdRPArm4a47qm0kjLoxheHF0qs6RgE7Mm9OHqf9C9yWN/02ni4cpBJ/
+	JXbXB/XLgerhfCxVf1V0mAuyPVo966cO/77O7mGe5Xi0wCZC1O064ZUx70OWyYUl6qCJDLVufkn0x
+	JPK+KSlZwFROCK2IAV7w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pZLEy-00FcpP-KH; Tue, 07 Mar 2023 00:31:40 +0000
-Received: from mail-qt1-f181.google.com ([209.85.160.181])
+	id 1pZfFh-002XwX-OV; Tue, 07 Mar 2023 21:53:45 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pZLEw-00FcnG-9U
-	for linux-um@lists.infradead.org; Tue, 07 Mar 2023 00:31:39 +0000
-Received: by mail-qt1-f181.google.com with SMTP id r16so11150243qtx.9
-        for <linux-um@lists.infradead.org>; Mon, 06 Mar 2023 16:31:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678149094;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3OcxBWi+fVPcj6LdXeac5WEwf/t01OSULuob77wgPfk=;
-        b=kVwJx7hBAdhNief4txUcVbNzOhE4bVADyk4uMjNf9dn3aOpQDA1hvYIT3SNzM4hqw+
-         025Zd1Ek1rktgy51upRRbaf69UPQzhNYd81S0bAW273lNbujWlyXoqGnWVBPQD2qIdA0
-         vWmxiPNdKkdIZhAB4nlaMyGacQJmRh6yxgop3blLZ2NgsVwYC7zp8Rm6+rE1srCbiK3j
-         M+pbt82h0IdI0Lhcryroaun3EQQn1utWEFqRtpxYw8KYkeqeryNx3tOehfkvSTuew25a
-         y4FsPpIvH/emBSOLJkWK7b10mkIalIBw4OBlndRAuduTV/S+TplE8SkZNykb6HyyGUuK
-         BCUw==
-X-Gm-Message-State: AO0yUKXsPN8USP37zvr5ZJbqcRKCRrf26c/BrtHrzWgq3S+pt0hBnp5E
-	nG7NetgKyfgvV0oo3FaVAA7L4qR4eYVb
-X-Google-Smtp-Source: AK7set8fUnjreVZQ0144g6g2i5wEN0n+GrJKJ96YTx91SjVQkoi4tSAg2pTObyRW7ccAlKfX+Zxpdw==
-X-Received: by 2002:ac8:5c08:0:b0:3b9:bc8c:c1f9 with SMTP id i8-20020ac85c08000000b003b9bc8cc1f9mr29744892qti.4.1678149094187;
-        Mon, 06 Mar 2023 16:31:34 -0800 (PST)
-Received: from robh_at_kernel.org (adsl-72-50-3-187.prtc.net. [72.50.3.187])
-        by smtp.gmail.com with ESMTPSA id a4-20020a379804000000b007417affecdcsm8643332qke.69.2023.03.06.16.31.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Mar 2023 16:31:33 -0800 (PST)
-Received: (nullmailer pid 6585 invoked by uid 1000);
-	Tue, 07 Mar 2023 00:31:32 -0000
-Date: Mon, 6 Mar 2023 18:31:32 -0600
-From: Rob Herring <robh@kernel.org>
-To: Vincent Whitchurch <vincent.whitchurch@axis.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, devicetree@vger.kernel.org, "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, kernel <kernel@axis.com>
-Subject: Re: [PATCH] virt-pci: add platform bus support
-Message-ID: <20230307003132.GA6366-robh@kernel.org>
-References: <20230127-uml-pci-platform-v1-1-ec6b45d2829f@axis.com>
- <d3f6d627290bb1a6a1fcfdfd5fad915578453e02.camel@sipsolutions.net>
- <Y+t6qXBxLqf/+eQM@axis.com>
+	id 1pZfFe-002Xw5-K6
+	for linux-um@lists.infradead.org; Tue, 07 Mar 2023 21:53:44 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id 22218B81A43;
+	Tue,  7 Mar 2023 21:53:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB433C433EF;
+	Tue,  7 Mar 2023 21:53:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1678226016;
+	bh=bXpDeJ+bKqyuyw9K1wlhaLEENKYmniVFEPD3+zmo9AE=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=cEPL0PxrcCqhhfdpdMP7T5do0b0u55fgRXA6AcSKDTG4rmjAqKHUVagowIbRwdMNq
+	 sjKhcK17x1oo/PIKeTLhHF8JQWXmZSdA0PQslle7OaCrGH8d/4dctj9hnhnCndVw//
+	 flpnsEOOTge3smiTgjaXXwCzzL4QIoVRR0JvQVBW7cGXUId8Y0pEzl3mmnmXqVi+g4
+	 YHJNuNfYEi7H0352Txc/VaRpjDzKNbDFyvkie34CBWIrXVnT9E4NkTM3i8o/pOa9dx
+	 lqTd3WCct8W/Cu43Z3HyoIHfgppFM9A/7RJDQEF4CBe0iVWLNtV8YZDnO4zf/168SX
+	 o6uh9K7Puc4Yw==
+Message-ID: <509072932692550449632f714c6ccb29.sboyd@kernel.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <Y+t6qXBxLqf/+eQM@axis.com>
+In-Reply-To: <5e26a786-400a-cd6c-8771-d94a8020839d@gmail.com>
+References: <20230302013822.1808711-1-sboyd@kernel.org> <CABVgOSnpMNCtEEsJV28OzUoxdDuiT4a2T0avP0AYf9xFW1jxrw@mail.gmail.com> <CAL_JsqJMd3Fi0ZBObdyE1VDKTH1_+smuGDymHnKOkVH2HB3jJQ@mail.gmail.com> <3759b28cca7ab751296d4dd83f2dcc51.sboyd@kernel.org> <5e26a786-400a-cd6c-8771-d94a8020839d@gmail.com>
+Subject: Re: [PATCH 0/8] clk: Add kunit tests for fixed rate and parent data
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: Michael Turquette <mturquette@baylibre.com>, linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, patches@lists.linux.dev, Brendan Higgins <brendan.higgins@linux.dev>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Rafael J.Wysocki <rafael@kernel.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Christian Marangi <ansuelsmth@gmail.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, devicetree@vger.kernel.org, linux-um@lists.infradead.org, linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com
+To: David Gow <davidgow@google.com>, Frank Rowand <frowand.list@gmail.com>, Rob Herring <robh+dt@kernel.org>
+Date: Tue, 07 Mar 2023 13:53:34 -0800
+User-Agent: alot/0.10
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230306_163138_348545_B871730E 
-X-CRM114-Status: GOOD (  17.96  )
+X-CRM114-CacheID: sfid-20230307_135342_990591_0ECB498B 
+X-CRM114-Status: GOOD (  20.66  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,35 +71,43 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Feb 14, 2023 at 01:12:25PM +0100, Vincent Whitchurch wrote:
-> On Mon, Feb 13, 2023 at 06:54:49PM +0100, Johannes Berg wrote:
-> > On Fri, 2023-01-27 at 15:30 +0100, Vincent Whitchurch wrote:
-> > > My first approach to getting platform drivers working on UML was by
-> > > adding a minimal PCI-to-platform bridge driver, which worked without
-> > > modifications to virt-pci, but that got shot down:
-> > > 
-> > >  https://lore.kernel.org/lkml/20230120-simple-mfd-pci-v1-1-c46b3d6601ef@axis.com/
+Quoting Frank Rowand (2023-03-04 07:04:48)
+> On 3/2/23 13:27, Stephen Boyd wrote:
 > > 
-> > Reading through that ... OK that isn't fun either :-)
+> > But perhaps this design is too much of an end-to-end test and not a unit
+> > test? In the spirit of unit testing we shouldn't care about how the node
+> > is added to the live devicetree, just that there is a devicetree at all.
 > > 
-> > Sounds like there's a use case for something else though, but the PCI
-> > IDs issue also makes that thorny.
+> > Supporting overlays to more easily test combinations sounds like a good
+> > idea. Probably some kunit_*() prefixed functions could be used to
 > 
-> Yes, Greg was initially totally opposed to the idea of putting platform
-> devices under PCI devices, but in his latest email he seemed to
-> allow it in some cases.  It's still unclear if he'd be OK with a
-> "virtual PCI-to-platform bridge" though.  And yes, adding platform
-> devices support like in this patch removes one layer and also eliminates
-> the disadvantage of having to wait for user space to specify a PCI ID
-> for the bridge device.
+> In an imaginary world where overlay support was completed, then _maybe_.
+> 
+> To me, the most important  environment to test is where the devictree
+> data is populated in early boot from an FDT.  This is the environment
+> that drivers currently exist in.
+> 
+> Populating devicetree data via an overlay adds in the functioning of the
+> overlay apply code (and how the rules behind that functioning may differ
+> from devicetree data populated in early boot from an FDT).
 
-Like I said in that thread, we have multiple usecases needing something 
-similar for non-discoverable MMIO devices behind a PCI device. And I 
-convinced Greg a platform device was okay, so please continue that path.
+For the purposes of clk unit tests I don't care where the devicetree
+nodes come from. All I care about is that they're rooted in the live
+devicetree for the system and that they have platform devices attached
+to them. The clk unit tests will assert that the overlay has been
+applied and that should be sufficient to make sure the tests has
+satisfied pre-conditions.
 
-I'm adding you to the thread of other usecases.
+If these were end-to-end tests then I would agree that making the nodes
+be loaded during early boot from an FDT would be the right approach.
+That would test the integration of early DTB loading and code that runs
+on the FDT. These aren't integration tests though, so when the nodes are
+created and unflattened doesn't matter.
 
-Rob
+I'll introduce various unit tests around the kunit specific overlay
+application API so that I know it makes platform devices and they have
+device nodes attached to them. And those same tests should be able to
+confirm that devices are destroyed when the overlay is removed.
 
 _______________________________________________
 linux-um mailing list
