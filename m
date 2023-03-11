@@ -4,57 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C0AEC6FA99
-	for <linux-um@archiver.kernel.org>; Fri, 10 Mar 2023 23:36:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5417C61DA4
+	for <linux-um@archiver.kernel.org>; Sat, 11 Mar 2023 06:32:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:To:Cc:From:Subject:References:
-	In-Reply-To:MIME-Version:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=6NDds0FjsKTXwO40jU6AZ2KBPehIu91rcGWHeZIyIyE=; b=epeP7tYC256MUi
-	4VXRMTZpuRMriOlhvMFLA44VkWYojJp/LOlD9wJlZpwdq9qwdm/qV4CSYygYqM8F5Pp1WZhpP1muT
-	rh2PiMxObxvVzkbA0L7l+njko80duOG9x2bxN8GMzKM7r8SpDLRClNkvXu+4BgpfsZl1fdSTkIvac
-	/e1b8EqBLgs5GFPEa+FAiQhUj1RM9RNrUxsngbF87kH98eowizjkv17jyDLc9cSexXdoIzErs8l02
-	xbAh0zSHX7gCz3hpN7rio6iCF92LQeFbf0BiDYI8/9sQ6kn1pkTOpMVXmsW+cTN03GfpkYOSKeO8h
-	lAHm3kccGdudNRsogyoQ==;
+	List-Owner; bh=LVWgNDg25z6088/bFSh+ktySrJ0ySwho4Z42Zv0nJlk=; b=L7qiA4QFfraObQ
+	S1EJDiLdPbrtNbL8i8qHUs4Y0vtaL7BFehxXMZfvt1ofQhyac6iuwSPotkndsQlnGTlJtW3SzBA32
+	/rOeS2S9Cl6HYryEhSqqOUj1CqYntoU2Bbko+iV9x1yHY2da9WuTdkfTj6bwYKVdcVS6t7va4KQ1B
+	Ss5z5gXNMMC1rNB3Gs3gKcmFFxFeJ4wuF/JvejGvO2PMj4iq8gJsBJvXYPKjeYh4pW/q8zce25n6m
+	WU5T6Gvb+KW0gnjE1Vy45oPLj9ubdjqB3tN7HUs2P1IqtWcHu+GCJlFkNSXctwPCCMRYOompvgWDM
+	zLXkKszT9t2rAQKiRXEQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pamHN-00Gfki-Nj; Fri, 10 Mar 2023 23:36:05 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1pasmL-00HJEA-KV; Sat, 11 Mar 2023 06:32:29 +0000
+Received: from mail-wr1-x435.google.com ([2a00:1450:4864:20::435])
 	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pamG4-00Gesq-3E
-	for linux-um@lists.infradead.org; Fri, 10 Mar 2023 23:34:45 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 7DED8B82450;
-	Fri, 10 Mar 2023 23:34:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 183E9C433D2;
-	Fri, 10 Mar 2023 23:34:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1678491281;
-	bh=uSd0tEmCWXupTOgTFvb2AvRm/aeTqjIy6WaKA0Y9qqo=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=UCctW/WRBbQbVKQrrWl4XjTtfmz2ED/hswy7+PYcUnUJr5RPbyg06ckgY8EWIma3Z
-	 /ZbzFocRpIsFlElSvJvQZhJ5ZWzFHUSJN1NSEpnxEG08/8z2nx+75kq7JMCEMcwaYz
-	 rhMHlAJXsB8BZyt5qXpe6ByYBhtKa8/hmriG+PKHWUuUgTDOhEyR8pSDqzVjNjGafW
-	 FD/nAeBTaiVUFjVZZHXUBqotSs/g7dnbuJ681VXJ/j4uHbTqso1JV60Nb3pZgfcILz
-	 YTC/x8bfFFy7zG1R0gtpCvHsXbrq+reclJRfW1cxNYHH84sEoOsYhytZ+X9/RF9jZy
-	 mtwZ/AZxg3mkQ==
-Message-ID: <d64a086ddcb7c5ca5abecab0ca654259.sboyd@kernel.org>
+	id 1pasmH-00HJCb-VK
+	for linux-um@lists.infradead.org; Sat, 11 Mar 2023 06:32:27 +0000
+Received: by mail-wr1-x435.google.com with SMTP id bw19so6938398wrb.13
+        for <linux-um@lists.infradead.org>; Fri, 10 Mar 2023 22:32:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112; t=1678516336;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=6lmrU4eTdH1LlrPfEXYDhzp3lUOoppeHdlpzZNoxfe8=;
+        b=nLq7Xb4NF24D7H3GBjsYHagIbHndwNT+61zuD0Nlg2PmcM+4idvhH1kpGl36ZO3lWa
+         /eR/XYw4MXooepkTU6nJU+3AVZtCTGd1Af/8FkuzbQI5LqnUJhXGjxDD82N5qKelAIqy
+         XmoZW7shdO7q/JUuV2JXQ5JhgvBN9wgra0Gf5uXqUmVd3S02t20EZINF9RnJd3QCTRbT
+         1qyTclKhFybjQfHvGM0jOE94DVvxGY6ns2vn49mdPV9WnwRppLtwnHkmUEjsS6xGs25K
+         i1NtAmKBILjC7GfdpQHt0i0y2wPwnzanFUPn6SM2euF6DuNrTjvR/KreaZqFfWfj7kbx
+         iJAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678516336;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6lmrU4eTdH1LlrPfEXYDhzp3lUOoppeHdlpzZNoxfe8=;
+        b=40ljk3Nu7advQRxQP3agq4hzDFRHFcxLQOoEmcOSjf1oHjXrRCNaoynKBgMNkuy/BJ
+         JQ72nEFnfkuAQxYIqbSd1kMUAFYV6SbXm9Ouki4gX2JUxIG0uXRsybih3fHKDzfA4pOi
+         feMBQz89jcnWFwM+ovRwwCgBt3RaQ68NwBFREygc3lDJYPE/+F9FwNMDEPm2YN3oYlhO
+         cEUoXVscauWwplw8DPLU+QJx8CFE+X3zSDNnTcNCeVED9fakn0vtBevxQNBVRpVmCpld
+         cVQ9iGcVXVMKh1Yt4r8ldovLzGTnGakwl7hlPN6xR+bOUUp0zAykHl5UazI8tb1gfm0r
+         RNwQ==
+X-Gm-Message-State: AO0yUKVy+sKdybVZCxFsosAWWe2zpYv0Jv97O+qcvkVOFwX8za46SIpS
+	susZWcYTEFN5rJ2SZ7XBRki7S3Os6+L8eSOLAyjVLQ==
+X-Google-Smtp-Source: AK7set8S2emKWNLgFkZRnoOWd+fhiVrrKPr/wP5P1ol0gsAdT7wLI36gea8rEw4xa3hE8VAdoqwkQ2QNeNlyrP+Shvo=
+X-Received: by 2002:a5d:4e06:0:b0:2c5:a38f:ca2f with SMTP id
+ p6-20020a5d4e06000000b002c5a38fca2fmr921405wrt.4.1678516336462; Fri, 10 Mar
+ 2023 22:32:16 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CABVgOSkJ4mw_DtFzn5EwcsuYixWY_j13YotxEYqWhO+ZCL1KPg@mail.gmail.com>
-References: <20230302013822.1808711-1-sboyd@kernel.org> <20230302013822.1808711-3-sboyd@kernel.org> <CABVgOSkomwwgKZ9N0_0YMDL--QaZiTV7ONgSRABU2Ph1Z0CG-g@mail.gmail.com> <a97c9bb3a5addfb34af8ccabaa513026.sboyd@kernel.org> <CABVgOSkJ4mw_DtFzn5EwcsuYixWY_j13YotxEYqWhO+ZCL1KPg@mail.gmail.com>
-Subject: Re: [PATCH 2/8] of: Enable DTB loading on UML for KUnit tests
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: Michael Turquette <mturquette@baylibre.com>, linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, patches@lists.linux.dev, Brendan Higgins <brendan.higgins@linux.dev>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Rafael J . Wysocki <rafael@kernel.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Christian Marangi <ansuelsmth@gmail.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, devicetree@vger.kernel.org, linux-um@lists.infradead.org, linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com
-To: David Gow <davidgow@google.com>
-Date: Fri, 10 Mar 2023 15:34:38 -0800
-User-Agent: alot/0.10
+References: <20230302013822.1808711-1-sboyd@kernel.org> <20230302013822.1808711-5-sboyd@kernel.org>
+ <CABVgOSkahumU6T+rCVx+k7Y9=iMszveseVYE0wfKjXwkNJpFxQ@mail.gmail.com> <77b315f6b89eb256c516ee08b1c17312.sboyd@kernel.org>
+In-Reply-To: <77b315f6b89eb256c516ee08b1c17312.sboyd@kernel.org>
+From: David Gow <davidgow@google.com>
+Date: Sat, 11 Mar 2023 14:32:04 +0800
+Message-ID: <CABVgOSk4gEob3rokKF_p2Bcd_Sj3ikUN4R-HPHyTR0Eoo==85g@mail.gmail.com>
+Subject: Re: [PATCH 4/8] clk: Add test managed clk provider/consumer APIs
+To: Stephen Boyd <sboyd@kernel.org>
+Cc: Michael Turquette <mturquette@baylibre.com>, linux-kernel@vger.kernel.org, 
+	linux-clk@vger.kernel.org, patches@lists.linux.dev, 
+	Brendan Higgins <brendan.higgins@linux.dev>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	"Rafael J . Wysocki" <rafael@kernel.org>, Richard Weinberger <richard@nod.at>, 
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
+	Vincent Whitchurch <vincent.whitchurch@axis.com>, Rob Herring <robh+dt@kernel.org>, 
+	Frank Rowand <frowand.list@gmail.com>, Christian Marangi <ansuelsmth@gmail.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, devicetree@vger.kernel.org, 
+	linux-um@lists.infradead.org, linux-kselftest@vger.kernel.org, 
+	kunit-dev@googlegroups.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230310_153444_453335_0ADD3834 
-X-CRM114-Status: GOOD (  41.31  )
+X-CRM114-CacheID: sfid-20230310_223226_037481_81D6EECA 
+X-CRM114-Status: GOOD (  44.55  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,85 +94,130 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Quoting David Gow (2023-03-10 00:09:48)
-> On Fri, 10 Mar 2023 at 07:19, Stephen Boyd <sboyd@kernel.org> wrote:
-> >
-> >
-> > Hmm. I think you're suggesting that the unit test data be loaded
-> > whenever CONFIG_OF=y and CONFIG_KUNIT=y. Then tests can check for
-> > CONFIG_OF and skip if it isn't enabled?
-> >
-> 
-> More of the opposite: that we should have some way of supporting tests
-> which might want to use a DTB other than the built-in one. Mostly for
-> non-UML situations where an actual devicetree is needed to even boot
-> far enough to get test output (so we wouldn't be able to override it
-> with a compiled-in test one).
-
-Ok, got it.
-
-> 
-> I think moving to overlays probably will render this idea obsolete:
-> but the thought was to give test code a way to check for the required
-> devicetree nodes at runtime, and skip the test if they weren't found.
-> That way, the failure mode for trying to boot this on something which
-> required another device tree for, e.g., serial, would be "these tests
-> are skipped because the wrong device tree is loaded", not "I get no
-> output because serial isn't working".
-> 
-> Again, though, it's only really needed for non-UML, and just loading
-> overlays as needed should be much more sensible anyway.
-
-I still have one niggle here. Loading overlays requires
-CONFIG_OF_OVERLAY, and the overlay loading API returns -ENOTSUPP when
-CONFIG_OF_OVERLAY=n. For now I'm checking for the config being enabled
-in each test, but I'm thinking it may be better to simply call
-kunit_skip() from the overlay loading function if the config is
-disabled. This way tests can simply call the overlay loading function
-and we'll halt the test immediately if the config isn't enabled.
-
-> 
+On Sat, 11 Mar 2023 at 07:21, Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Quoting David Gow (2023-03-02 23:15:35)
+> > On Thu, 2 Mar 2023 at 09:38, Stephen Boyd <sboyd@kernel.org> wrote:
 > > >
-> > > That being said, I do think that there's probably some sense in
-> > > supporting the compiled-in DTB as well (it's definitely simpler than
-> > > patching kunit.py to always pass the extra command-line option in, for
-> > > example).
-> > > But maybe it'd be nice to have the command-line option override the
-> > > built-in one if present.
+> > > Unit tests are more ergonomic and simpler to understand if they don't
+> > > have to hoist a bunch of code into the test harness init and exit
+> > > functions. Add some test managed wrappers for the clk APIs so that clk
+> > > unit tests can write more code in the actual test and less code in the
+> > > harness.
+> > >
+> > > Only add APIs that are used for now. More wrappers can be added in the
+> > > future as necessary.
+> > >
+> > > Cc: Brendan Higgins <brendan.higgins@linux.dev>
+> > > Cc: David Gow <davidgow@google.com>
+> > > Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+> > > ---
 > >
-> > Got it. I need to test loading another DTB on the commandline still, but
-> > I think this won't be a problem. We'll load the unittest-data DTB even
-> > with KUnit on UML, so assuming that works on UML right now it should be
-> > unchanged by this series once I resend.
-> 
-> Again, moving to overlays should render this mostly obsolete, no? Or
-> am I misunderstanding how the overlay stuff will work?
+> > Looks good, modulo bikeshedding below.
+>
+> Cool!
+>
+> > >
+> > > diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
+> > > index e3ca0d058a25..7efce649b0d3 100644
+> > > --- a/drivers/clk/Makefile
+> > > +++ b/drivers/clk/Makefile
+> > > @@ -17,6 +17,11 @@ ifeq ($(CONFIG_OF), y)
+> > >  obj-$(CONFIG_COMMON_CLK)       += clk-conf.o
+> > >  endif
+> > >
+> > > +# KUnit specific helpers
+> > > +ifeq ($(CONFIG_COMMON_CLK), y)
+> > > +obj-$(CONFIG_KUNIT)            += clk-kunit.o
+> >
+> > Do we want to compile these in whenever KUnit is enabled, or only when
+> > we're building clk tests specifically? I suspect this would be served
+> > better by being under a CLK_KUNIT config option, which all of the
+> > tests then depend on. (Whether that's the existing
+> > CONFIG_CLK_KUNIT_TEST, and all of the clk tests live under the same
+> > config option, or a separate parent option would be up to you).
+>
+> I was thinking of building it in with whatever mode CONFIG_KUNIT is
+> built as. If this is a module because CONFIG_KUNIT=m, then unit tests
+> would depend on that, and this would be a module as well. modprobe would
+> know that some unit test module depends on symbols provided by
+> clk-kunit.ko and thus load clk-kunit.ko first.
+>
 
-Right, overlays make it largely a moot issue. The way the OF unit tests
-work today is by grafting a DTB onto the live tree. I'm reusing that
-logic to graft a container node target for kunit tests to add their
-overlays too. It will be clearer once I post v2.
+Personally, I'd rather have this behind CONFIG_CLK_KUNIT_TEST if
+possible, if only to avoid needlessly building these if someone just
+wants to test some other subsystem (but needs CONFIG_COMMON_CLK
+enabled anyway). I doubt it'd be a problem in practice in this case,
+but we definitely want to keep build (and hence iteration) times down
+as much as possible, so it's probably good practice to keep all tests
+behind at least some sort of "test this subsystem" option.
 
-> 
-> One possible future advantage of being able to test with custom DTs at
-> boot time would be for fuzzing (provide random DT properties, see what
-> happens in the test). We've got some vague plans to support a way of
-> passing custom data to tests to support this kind of case (though, if
-> we're using overlays, maybe the test could just patch those if we
-> wanted to do that).
+> >
+> > Equally, this could be a bit interesting if CONFIG_KUNIT=m. Given
+> > CONFIG_COMMON_CLK=y, this would end up as a clk-kunit module, no?
+>
+> Yes, that is the intent.
+>
+> >
+> > > +endif
+> > > +
+> > >  # hardware specific clock types
+> > >  # please keep this section sorted lexicographically by file path name
+> > >  obj-$(CONFIG_COMMON_CLK_APPLE_NCO)     += clk-apple-nco.o
+> > > diff --git a/drivers/clk/clk-kunit.c b/drivers/clk/clk-kunit.c
+> > > new file mode 100644
+> > > index 000000000000..78d85b3a7a4a
+> > > --- /dev/null
+> > > +++ b/drivers/clk/clk-kunit.c
+> > > @@ -0,0 +1,204 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +/*
+> > > + * KUnit helpers for clk tests
+> > > + */
+> > > +#include <linux/clk.h>
+> > > +#include <linux/clk-provider.h>
+> > > +#include <linux/err.h>
+> > > +#include <linux/kernel.h>
+> > > +#include <linux/slab.h>
+> > > +
+> > > +#include <kunit/resource.h>
+> > > +
+> > > +#include "clk-kunit.h"
+> > > +
+> > > +static void kunit_clk_disable_unprepare(struct kunit_resource *res)
+> >
+> > We need to decide on the naming scheme of these, and in particular if
+> > they should be kunit_clk or clk_kunit (or something else).
+> >
+> > I'd lean to clk_kunit, if only to match DRM's KUnit helpers being
+> > drm_kunit_helper better, and so that these are more tightly bound to
+> > the subsystem being tested.
+> > (i.e., so I don't have to scroll through every subsystem's helpers
+> > when autocompleting kunit_).
+>
+> Ok, got it. I was trying to match kunit_kzalloc() style. It makes it
+> easy to slap the 'kunit_' prefix on existing auto-completed function
+> names like kzalloc() or clk_prepare_enable().
 
-Ah ok. I can see someone making a fuzzer that modifies devicetree
-properties randomly, e.g. using different strings for clock-names.
+Yeah: my rule of thumb at the moment is to keep the kunit_ prefix for
+things which are generic across the whole kernel (and tend to be
+implemented in lib/kunit), and to use suffixes or infixes (whichever
+works best) for things which are subsystem-specific.
 
-This reminds me of another issue I ran into. I wanted to test adding the
-same platform device to the platform bus twice to confirm that the
-second device can't be added. That prints a warning, which makes
-kunit.py think that the test has failed because it printed a warning. Is
-there some way to avoid that? I want something like
+> I wasn't aware of drm_kunit_helper. That's a mouthful! We don't call it
+> slab_kunit_helper_kzalloc(). Maybe to satisfy all conditions it should
+> be:
+>
+>         clk_prepare_enable_kunit()
+>
+> so that kunit_ autocomplete doesn't have a big scroll list, and clk
+> subsystem autocompletes, and we know it is kunit specific.
 
-	KUNIT_EXPECT_WARNING(test, <call some function>)
 
-so I can test error cases.
+Sounds good to me.
+
+Cheers,
+-- David
 
 _______________________________________________
 linux-um mailing list
