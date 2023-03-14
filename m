@@ -4,95 +4,132 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 738B6C6FD1F
-	for <linux-um@archiver.kernel.org>; Tue, 14 Mar 2023 04:28:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B201AC7618B
+	for <linux-um@archiver.kernel.org>; Tue, 14 Mar 2023 12:13:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:From:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=mLlhcObjy6/B8J7nZaWajp2HGWDmlb5iXGrXMsgwujU=; b=3+MmBBsrt1f6zS
-	X++onYHbwnDNLwUCB1Z1clw5C7B9yEX5X8b9v0lGR2pdRCHHCvaVCqy6ohPtenrB9l/SM0TjNwz/+
-	+xBEWoUml0/eyd1Rm5H9hFnd7uFiuyKll/TgE23h0CoSrA2YpP4QML1MLADBiEc4EZOJXjQYtvEn+
-	X9nkKPr7QDdU+hXeE7ZJ2oZEJXP6vSKuY+iwRF1Y5RjXkYmom60o1ECNOuN+2hI4k4mjonZbx+N4E
-	ci3WxR9xm1qh7axj8bsUiFQfkDB58b9h5noOVdI8ILMiqclTm0mpTRy8Wzo27nf9CQITPr5Z7KFvc
-	gehsDxZDZDK6eXRIsonA==;
+	List-Owner; bh=b+hodcGNSHT3EOIkh2LV7lE/b1ZIEn4s61zm9PN4hcw=; b=oxmkOqC/UtGWgB
+	VLHjUXXQjkeGLxlGaWYfjCuaI1wejkYCMTvGW6L5RUyDxb/WhG/GF/AAAqTHleRqxnSBdq59iB1Wd
+	UQHvorS9C+xX0a43d3m3wM1BVtQAp9IllGgn+1dcpWsKmj2O1ina01jWDpHCBzN9n7vpTl96fTLR3
+	85Z6vrxyblhqdS3kfhz7DAnr6IBP70GQBqGJ6bsG/zzihq9yN9Byye17OEbOqpwLDd18Jyq45EY1Z
+	tj+FF3tWEyquptYGELtkSqvNtgj4eXwfJ5/MbwF5cEzC5Lj/xW/qi7GUHAuwKrePbhQybKkUa3xbe
+	Rhky2Qj5qVOokMaomOEQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtp (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pbwHK-008xqC-MY; Tue, 14 Mar 2023 04:28:50 +0000
-Received: from mail-qv1-xf34.google.com ([2607:f8b0:4864:20::f34])
-	by bombadil.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1pbwHA-008xnk-Qa
-	for linux-um@lists.infradead.org; Tue, 14 Mar 2023 04:28:48 +0000
-Received: by mail-qv1-xf34.google.com with SMTP id cu4so5876749qvb.3
-        for <linux-um@lists.infradead.org>; Mon, 13 Mar 2023 21:28:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678768116;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=y750kud8mHtJic9GXfaEeGkhfjSIqfKCGoLOtAydFgI=;
-        b=jhKsGFUZuOjlPI/ybjOHKr286JRg/tr9p/GCLssUKypycNpqFBf2O1BMckaPQmUFQ1
-         SXz2/t5C/uYRI9rmCUJbbT6bEF95iQ6HMMOpiaGiAFZrNKKz3J+He3fJzCZ6T4PqsDz5
-         4m+6XviiyUXvipnzxuzLou73qsvCxkI4swtSYQsbWoB90x7YBEEVnqCQbeHOwwWTOGOu
-         nRa8mcVfeBqjZ/S+phnlQcuJjFFfnFKifYvq2SnUUb3YGaWx7/AYTJNv0zeaHmb1ULBS
-         UTiROfwsrTc5NxP/59sAjFHH68VQ0lSi6OVbDVTbonYPKGc0GHGit/yKyYvjiXmfjHSt
-         vdfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678768116;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=y750kud8mHtJic9GXfaEeGkhfjSIqfKCGoLOtAydFgI=;
-        b=OlQBFsAcgND+Qd8utbzsHMDhdzvZypoHwvIwx3WHSN+wGStloqb8lSGbry+A4oxuM+
-         vwnCciZajXwcXs03c+BNO1CIbG2XZAeYQcSfiWDFTOcEHK0WL6e6mAW7woEWjcFkALUT
-         oRkAw73l8HiO094oiBjfKQL09sgFmiViRfXc28At8/dhhz7HI0dR85HN2fXBnUAIXxfb
-         Vo3zNWXv42Zoonx0WOnLFPZuSzHZV/31bgA6hoAFyrBrvXVvhy9iCQEG423mo1uWtIB3
-         iQDiNbFrtAS/rUAywG6BpRPq4anaIvIi/Zjeo6OixJBjOUEcuG6rhT17plV6kNHKm1Ao
-         iQ+g==
-X-Gm-Message-State: AO0yUKXWhINZKrDdlAJlRMDZ6NJ/SfAS9CGaui2G8C2KihSJ+CHKgXGh
-	8ivyrBvEfGISvt4kYxXx0yo=
-X-Google-Smtp-Source: AK7set+xkuA4DXyGLm8pCAYjUaEcNydWGbEn4eLnuh/IMmnxDNH9bYBSvQ1VgXD/rEWWwYRYDv7rIw==
-X-Received: by 2002:ad4:5caa:0:b0:5aa:17d5:bbfe with SMTP id q10-20020ad45caa000000b005aa17d5bbfemr6330378qvh.10.1678768116555;
-        Mon, 13 Mar 2023 21:28:36 -0700 (PDT)
-Received: from ?IPV6:2600:1700:2442:6db0:4071:d635:4b20:d09e? ([2600:1700:2442:6db0:4071:d635:4b20:d09e])
-        by smtp.gmail.com with ESMTPSA id s124-20020ae9de82000000b007429ee9482dsm979941qkf.134.2023.03.13.21.28.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Mar 2023 21:28:36 -0700 (PDT)
-Message-ID: <e1889f7f-2804-718b-6651-f333aed48e99@gmail.com>
-Date: Mon, 13 Mar 2023 23:28:35 -0500
+	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
+	id 1pc3Wo-00A4xG-0P;
+	Tue, 14 Mar 2023 12:13:18 +0000
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5] helo=mx0a-001b2d01.pphosted.com)
+	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1pc3Wj-00A4uX-0v;
+	Tue, 14 Mar 2023 12:13:15 +0000
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+	by mx0b-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32EBuD9i021456;
+	Tue, 14 Mar 2023 12:12:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=HdO4vE5VVMCsPa//8JbQ8fNZYQE0ELrX1Vo0vu7Lmcw=;
+ b=jRVugEP5xDd1pI58t3BVxvvVnhxolTgKNIlh5c3kHN9EjQ9FIlqdvRvCK/hgZWsnYtfw
+ WPZi3gAhF0WmcWhoLOEWq8SKtUxXST9FCtiYBlPEu2c9HOEjhfVyKM/LUtZBzk6haTli
+ Ml0I+ATW2ZciUnQl/t4U+TzOtcO7G64SqEcIVo/CYnDjGljcItau6MITA8YCJK3wbSHt
+ nMeWUNlThjdsr+WaQd5j8i3A4nbFM83o2XQ5z+Eg8oJVVTinH/t6cx47D4goX11RvPuk
+ VA/fXwS7l0Y9bonwrVFpJn6vk9F5Trs6j4Nyjkp8QZ+mrGh/taRCzmXxSzmCgjl8HhOs sw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3papenbxfp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 14 Mar 2023 12:12:26 +0000
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 32ECAYwG031131;
+	Tue, 14 Mar 2023 12:12:25 GMT
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+	by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3papenbxer-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 14 Mar 2023 12:12:25 +0000
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+	by ppma02fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 32E9dImv019195;
+	Tue, 14 Mar 2023 12:12:23 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma02fra.de.ibm.com (PPS) with ESMTPS id 3p8h96krue-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 14 Mar 2023 12:12:23 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 32ECCKPI65274356
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 14 Mar 2023 12:12:20 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9ADE32007C;
+	Tue, 14 Mar 2023 12:12:20 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 64E2D2007A;
+	Tue, 14 Mar 2023 12:12:19 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 14 Mar 2023 12:12:19 +0000 (GMT)
+From: Niklas Schnelle <schnelle@linux.ibm.com>
+To: Arnd Bergmann <arnd@arndb.de>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>, Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-pci@vger.kernel.org,
+        Arnd Bergmann <arnd@kernel.org>, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-um@lists.infradead.org
+Subject: [PATCH v3 01/38] Kconfig: introduce HAS_IOPORT option and select it as necessary
+Date: Tue, 14 Mar 2023 13:11:39 +0100
+Message-Id: <20230314121216.413434-2-schnelle@linux.ibm.com>
+X-Mailer: git-send-email 2.37.2
+In-Reply-To: <20230314121216.413434-1-schnelle@linux.ibm.com>
+References: <20230314121216.413434-1-schnelle@linux.ibm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH 2/8] of: Enable DTB loading on UML for KUnit tests
-Content-Language: en-US
-From: Frank Rowand <frowand.list@gmail.com>
-To: David Gow <davidgow@google.com>, Stephen Boyd <sboyd@kernel.org>
-Cc: Michael Turquette <mturquette@baylibre.com>,
- linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
- patches@lists.linux.dev, Brendan Higgins <brendan.higgins@linux.dev>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Rafael J . Wysocki" <rafael@kernel.org>, Richard Weinberger
- <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- Vincent Whitchurch <vincent.whitchurch@axis.com>,
- Rob Herring <robh+dt@kernel.org>, Christian Marangi <ansuelsmth@gmail.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- devicetree@vger.kernel.org, linux-um@lists.infradead.org,
- linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com
-References: <20230302013822.1808711-1-sboyd@kernel.org>
- <20230302013822.1808711-3-sboyd@kernel.org>
- <CABVgOSkomwwgKZ9N0_0YMDL--QaZiTV7ONgSRABU2Ph1Z0CG-g@mail.gmail.com>
- <a97c9bb3a5addfb34af8ccabaa513026.sboyd@kernel.org>
- <CABVgOSkJ4mw_DtFzn5EwcsuYixWY_j13YotxEYqWhO+ZCL1KPg@mail.gmail.com>
- <d64a086ddcb7c5ca5abecab0ca654259.sboyd@kernel.org>
- <CABVgOSk9gqRe_5yQZweBA2Qg2aGx8rUJtOHywGeT4x7TEyBH0A@mail.gmail.com>
- <40299ee6-c518-5505-0dc5-874deef03d19@gmail.com>
-In-Reply-To: <40299ee6-c518-5505-0dc5-874deef03d19@gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: jEeY3nBMThQ6e7_Ur-wLIeKSlt5g2V_U
+X-Proofpoint-GUID: P_xr1SfeNrScxKrnJYkVPc3TfzBTokPD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
+ definitions=2023-03-14_06,2023-03-14_02,2023-02-09_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ mlxlogscore=999 mlxscore=0 adultscore=0 phishscore=0 impostorscore=0
+ lowpriorityscore=0 malwarescore=0 clxscore=1011 priorityscore=1501
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2303140103
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230313_212844_135441_AFD7137F 
-X-CRM114-Status: GOOD (  43.79  )
+X-CRM114-CacheID: sfid-20230314_051313_442468_08B28819 
+X-CRM114-Status: GOOD (  27.27  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,148 +146,303 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 3/13/23 11:02, Frank Rowand wrote:
-> On 3/11/23 00:42, David Gow wrote:
->> On Sat, 11 Mar 2023 at 07:34, Stephen Boyd <sboyd@kernel.org> wrote:
->>>
->>> Quoting David Gow (2023-03-10 00:09:48)
->>>> On Fri, 10 Mar 2023 at 07:19, Stephen Boyd <sboyd@kernel.org> wrote:
->>>>>
->>>>>
->>>>> Hmm. I think you're suggesting that the unit test data be loaded
->>>>> whenever CONFIG_OF=y and CONFIG_KUNIT=y. Then tests can check for
->>>>> CONFIG_OF and skip if it isn't enabled?
->>>>>
->>>>
->>>> More of the opposite: that we should have some way of supporting tests
->>>> which might want to use a DTB other than the built-in one. Mostly for
->>>> non-UML situations where an actual devicetree is needed to even boot
->>>> far enough to get test output (so we wouldn't be able to override it
->>>> with a compiled-in test one).
->>>
->>> Ok, got it.
->>>
->>>>
->>>> I think moving to overlays probably will render this idea obsolete:
->>>> but the thought was to give test code a way to check for the required
->>>> devicetree nodes at runtime, and skip the test if they weren't found.
->>>> That way, the failure mode for trying to boot this on something which
->>>> required another device tree for, e.g., serial, would be "these tests
->>>> are skipped because the wrong device tree is loaded", not "I get no
->>>> output because serial isn't working".
->>>>
->>>> Again, though, it's only really needed for non-UML, and just loading
->>>> overlays as needed should be much more sensible anyway.
->>>
->>> I still have one niggle here. Loading overlays requires
->>> CONFIG_OF_OVERLAY, and the overlay loading API returns -ENOTSUPP when
->>> CONFIG_OF_OVERLAY=n. For now I'm checking for the config being enabled
->>> in each test, but I'm thinking it may be better to simply call
->>> kunit_skip() from the overlay loading function if the config is
->>> disabled. This way tests can simply call the overlay loading function
->>> and we'll halt the test immediately if the config isn't enabled.
->>>
->>
->> That sounds sensible, though there is a potential pitfall. If
->> kunit_skip() is called directly from overlay code, might introduce a
->> dependency on kunit.ko from the DT overlay, which we might not want.
->> The solution there is either to have a kunit wrapper function (so the
->> call is already in kunit.ko), or to have a hook to skip the current
->> test (which probably makes sense to do anyway, but I think the wrapper
->> is the better option).
->>
->>
->>>>
->>>>>>
->>>>>> That being said, I do think that there's probably some sense in
->>>>>> supporting the compiled-in DTB as well (it's definitely simpler than
->>>>>> patching kunit.py to always pass the extra command-line option in, for
->>>>>> example).
->>>>>> But maybe it'd be nice to have the command-line option override the
->>>>>> built-in one if present.
->>>>>
->>>>> Got it. I need to test loading another DTB on the commandline still, but
->>>>> I think this won't be a problem. We'll load the unittest-data DTB even
->>>>> with KUnit on UML, so assuming that works on UML right now it should be
->>>>> unchanged by this series once I resend.
->>>>
->>>> Again, moving to overlays should render this mostly obsolete, no? Or
->>>> am I misunderstanding how the overlay stuff will work?
->>>
->>> Right, overlays make it largely a moot issue. The way the OF unit tests
->>> work today is by grafting a DTB onto the live tree. I'm reusing that
->>> logic to graft a container node target for kunit tests to add their
->>> overlays too. It will be clearer once I post v2.
->>>
->>>>
->>>> One possible future advantage of being able to test with custom DTs at
->>>> boot time would be for fuzzing (provide random DT properties, see what
->>>> happens in the test). We've got some vague plans to support a way of
->>>> passing custom data to tests to support this kind of case (though, if
->>>> we're using overlays, maybe the test could just patch those if we
->>>> wanted to do that).
->>>
->>> Ah ok. I can see someone making a fuzzer that modifies devicetree
->>> properties randomly, e.g. using different strings for clock-names.
->>>
->>> This reminds me of another issue I ran into. I wanted to test adding the
->>> same platform device to the platform bus twice to confirm that the
->>> second device can't be added. That prints a warning, which makes
->>> kunit.py think that the test has failed because it printed a warning. Is
->>> there some way to avoid that? I want something like
->>>
->>>         KUNIT_EXPECT_WARNING(test, <call some function>)
->>>
->>> so I can test error cases.
-> 
-> DT unittests already have a similar concept.  A test can report that a
-> kernel warning (or any other specific text) either (1) must occur for the
-> test to pass or (2) must _not_ occur for the test to pass.  The check
-> for the kernel warning is done by the test output parsing program
-> scripts/dtc/of_unittest_expect.
-> 
-> The reporting by a test of an expected error in drivers/of/unittest.c
-> is done by EXPECT_BEGIN() and EXPECT_END().  These have been in
-> unittest for a long time.
-> 
-> The reporting by a test of a not expected to occur error is done
-> by EXPECT_NOT_BEGIN() and EXPECT_NOT_END().  These are added to
-> unittest in linux 6.3-rc1.
-> 
-> I discussed this concept in one of the early TAP / KTAP discussion
+We introduce a new HAS_IOPORT Kconfig option to indicate support for I/O
+Port access. In a future patch HAS_IOPORT=n will disable compilation of
+the I/O accessor functions inb()/outb() and friends on architectures
+which can not meaningfully support legacy I/O spaces such as s390. Also
+add dependencies on HAS_IOPORT for the ISA and HAVE_EISA config options
+as these busses always go along with HAS_IOPORT.
 
-The link to the early KTAP discussion on this concept is:
+The "depends on" relations on HAS_IOPORT in drivers as well as ifdefs
+for HAS_IOPORT specific sections will be added in subsequent patches on
+a per subsystem basis.
 
-   https://lore.kernel.org/all/d38bf9f9-8a39-87a6-8ce7-d37e4a641675@gmail.com/T/#u
+Co-developed-by: Arnd Bergmann <arnd@kernel.org>
+Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+---
+ arch/alpha/Kconfig      | 1 +
+ arch/arm/Kconfig        | 1 +
+ arch/arm64/Kconfig      | 1 +
+ arch/ia64/Kconfig       | 1 +
+ arch/m68k/Kconfig       | 1 +
+ arch/microblaze/Kconfig | 1 +
+ arch/mips/Kconfig       | 2 ++
+ arch/parisc/Kconfig     | 2 ++
+ arch/powerpc/Kconfig    | 2 +-
+ arch/riscv/Kconfig      | 1 +
+ arch/sh/Kconfig         | 1 +
+ arch/sparc/Kconfig      | 1 +
+ arch/um/Kconfig         | 1 +
+ arch/x86/Kconfig        | 2 ++
+ drivers/bus/Kconfig     | 2 +-
+ drivers/eisa/Kconfig    | 1 +
+ lib/Kconfig             | 4 ++++
+ lib/Kconfig.kgdb        | 3 ++-
+ 18 files changed, 25 insertions(+), 3 deletions(-)
 
-
-> threads and expect to start a discussion thread on this specific
-> topic in the KTAP Specification V2 context.  I expect the discussion
-> to result in a different implementation than what DT unittests are
-> using (bike shedding likely to ensue) but whatever is agreed to
-> should be easy for DT to switch to.
-
-The link to the KTAP Specification Version 2 process and progress is:
-
-   https://elinux.org/Test_Results_Format_Notes#KTAP_version_2
-
--Frank
-
-> 
->>
->> Hmm... I'd've thought that shouldn't be a problem: kunit.py should
->> ignore most messages during a test, unless it can't find a valid
->> result line. What does the raw KTAP output look like? (You can get it
->> from kunit.py by passing the --raw_output option).
->>
->> That being said, a KUNIT_EXPECT_LOG_MESSAGE() or similar is something
->> we've wanted for a while. I think that the KASAN folks have been
->> working on something similar using console tracepoints:
->> https://lore.kernel.org/all/ebf96ea600050f00ed567e80505ae8f242633640.1666113393.git.andreyknvl@google.com/
->>
->> Cheers,
->> -- David
-> 
+diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
+index 780d4673c3ca..a5c2b1aa46b0 100644
+--- a/arch/alpha/Kconfig
++++ b/arch/alpha/Kconfig
+@@ -27,6 +27,7 @@ config ALPHA
+ 	select AUDIT_ARCH
+ 	select GENERIC_CPU_VULNERABILITIES
+ 	select GENERIC_SMP_IDLE_THREAD
++	select HAS_IOPORT
+ 	select HAVE_ARCH_AUDITSYSCALL
+ 	select HAVE_MOD_ARCH_SPECIFIC
+ 	select MODULES_USE_ELF_RELA
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index e24a9820e12f..4acb5bc4b52a 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -70,6 +70,7 @@ config ARM
+ 	select GENERIC_SCHED_CLOCK
+ 	select GENERIC_SMP_IDLE_THREAD
+ 	select HARDIRQS_SW_RESEND
++	select HAS_IOPORT
+ 	select HAVE_ARCH_AUDITSYSCALL if AEABI && !OABI_COMPAT
+ 	select HAVE_ARCH_BITREVERSE if (CPU_32v7M || CPU_32v7) && !CPU_32v6
+ 	select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL && !CPU_ENDIAN_BE32 && MMU
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 1023e896d46b..b740019c4aee 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -145,6 +145,7 @@ config ARM64
+ 	select GENERIC_GETTIMEOFDAY
+ 	select GENERIC_VDSO_TIME_NS
+ 	select HARDIRQS_SW_RESEND
++	select HAS_IOPORT
+ 	select HAVE_MOVE_PMD
+ 	select HAVE_MOVE_PUD
+ 	select HAVE_PCI
+diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
+index d7e4a24e8644..2e13ec8263b9 100644
+--- a/arch/ia64/Kconfig
++++ b/arch/ia64/Kconfig
+@@ -25,6 +25,7 @@ config IA64
+ 	select PCI_DOMAINS if PCI
+ 	select PCI_MSI
+ 	select PCI_SYSCALL if PCI
++	select HAS_IOPORT
+ 	select HAVE_ASM_MODVERSIONS
+ 	select HAVE_UNSTABLE_SCHED_CLOCK
+ 	select HAVE_EXIT_THREAD
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 82154952e574..40198a1ebe27 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -18,6 +18,7 @@ config M68K
+ 	select GENERIC_CPU_DEVICES
+ 	select GENERIC_IOMAP
+ 	select GENERIC_IRQ_SHOW
++	select HAS_IOPORT if PCI || ISA || ATARI_ROM_ISA
+ 	select HAVE_ARCH_SECCOMP
+ 	select HAVE_ARCH_SECCOMP_FILTER
+ 	select HAVE_ASM_MODVERSIONS
+diff --git a/arch/microblaze/Kconfig b/arch/microblaze/Kconfig
+index cc88af6fa7a4..211f338d6235 100644
+--- a/arch/microblaze/Kconfig
++++ b/arch/microblaze/Kconfig
+@@ -21,6 +21,7 @@ config MICROBLAZE
+ 	select GENERIC_IRQ_SHOW
+ 	select GENERIC_PCI_IOMAP
+ 	select GENERIC_SCHED_CLOCK
++	select HAS_IOPORT if PCI
+ 	select HAVE_ARCH_HASH
+ 	select HAVE_ARCH_KGDB
+ 	select HAVE_ARCH_SECCOMP
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index e2f3ca73f40d..64760fcd7b52 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -47,6 +47,7 @@ config MIPS
+ 	select GENERIC_SMP_IDLE_THREAD
+ 	select GENERIC_TIME_VSYSCALL
+ 	select GUP_GET_PXX_LOW_HIGH if CPU_MIPS32 && PHYS_ADDR_T_64BIT
++	select HAS_IOPORT if !NO_IOPORT_MAP
+ 	select HAVE_ARCH_COMPILER_H
+ 	select HAVE_ARCH_JUMP_LABEL
+ 	select HAVE_ARCH_KGDB if MIPS_FP_SUPPORT
+@@ -3120,6 +3121,7 @@ config PCI_DRIVERS_LEGACY
+ # users to choose the right thing ...
+ #
+ config ISA
++	depends on HAS_IOPORT
+ 	bool
+ 
+ config TC
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index a98940e64243..5eeacc72e4da 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -47,6 +47,7 @@ config PARISC
+ 	select MODULES_USE_ELF_RELA
+ 	select CLONE_BACKWARDS
+ 	select TTY # Needed for pdc_cons.c
++	select HAS_IOPORT if PCI
+ 	select HAVE_DEBUG_STACKOVERFLOW
+ 	select HAVE_ARCH_AUDITSYSCALL
+ 	select HAVE_ARCH_HASH
+@@ -131,6 +132,7 @@ config STACKTRACE_SUPPORT
+ 
+ config ISA_DMA_API
+ 	bool
++	depends on HAS_IOPORT
+ 
+ config ARCH_MAY_HAVE_PC_FDC
+ 	bool
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index a6c4407d3ec8..f7de646c074a 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -188,6 +188,7 @@ config PPC
+ 	select GENERIC_SMP_IDLE_THREAD
+ 	select GENERIC_TIME_VSYSCALL
+ 	select GENERIC_VDSO_TIME_NS
++	select HAS_IOPORT			if PCI
+ 	select HAVE_ARCH_AUDITSYSCALL
+ 	select HAVE_ARCH_HUGE_VMALLOC		if HAVE_ARCH_HUGE_VMAP
+ 	select HAVE_ARCH_HUGE_VMAP		if PPC_RADIX_MMU || PPC_8xx
+@@ -1070,7 +1071,6 @@ menu "Bus options"
+ 
+ config ISA
+ 	bool "Support for ISA-bus hardware"
+-	depends on PPC_CHRP
+ 	select PPC_I8259
+ 	help
+ 	  Find out whether you have ISA slots on your motherboard.  ISA is the
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index c5e42cc37604..b957d12a171b 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -74,6 +74,7 @@ config RISCV
+ 	select GENERIC_TIME_VSYSCALL if MMU && 64BIT
+ 	select GENERIC_VDSO_TIME_NS if HAVE_GENERIC_VDSO
+ 	select HARDIRQS_SW_RESEND
++	select HAS_IOPORT if MMU
+ 	select HAVE_ARCH_AUDITSYSCALL
+ 	select HAVE_ARCH_HUGE_VMALLOC if HAVE_ARCH_HUGE_VMAP
+ 	select HAVE_ARCH_HUGE_VMAP if MMU && 64BIT && !XIP_KERNEL
+diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
+index 0665ac0add0b..cfb797bc4200 100644
+--- a/arch/sh/Kconfig
++++ b/arch/sh/Kconfig
+@@ -25,6 +25,7 @@ config SUPERH
+ 	select GENERIC_SCHED_CLOCK
+ 	select GENERIC_SMP_IDLE_THREAD
+ 	select GUP_GET_PXX_LOW_HIGH if X2TLB
++	select HAS_IOPORT if HAS_IOPORT_MAP
+ 	select HAVE_ARCH_AUDITSYSCALL
+ 	select HAVE_ARCH_KGDB
+ 	select HAVE_ARCH_SECCOMP_FILTER
+diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
+index 84437a4c6545..d4c1d96f85cd 100644
+--- a/arch/sparc/Kconfig
++++ b/arch/sparc/Kconfig
+@@ -32,6 +32,7 @@ config SPARC
+ 	select GENERIC_IRQ_SHOW
+ 	select ARCH_WANT_IPC_PARSE_VERSION
+ 	select GENERIC_PCI_IOMAP
++	select HAS_IOPORT
+ 	select HAVE_NMI_WATCHDOG if SPARC64
+ 	select HAVE_CBPF_JIT if SPARC32
+ 	select HAVE_EBPF_JIT if SPARC64
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index 541a9b18e343..452d268be2e8 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -56,6 +56,7 @@ config NO_IOPORT_MAP
+ 
+ config ISA
+ 	bool
++	depends on HAS_IOPORT
+ 
+ config SBUS
+ 	bool
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index a825bf031f49..634dd42532f3 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -162,6 +162,7 @@ config X86
+ 	select GUP_GET_PXX_LOW_HIGH		if X86_PAE
+ 	select HARDIRQS_SW_RESEND
+ 	select HARDLOCKUP_CHECK_TIMESTAMP	if X86_64
++	select HAS_IOPORT
+ 	select HAVE_ACPI_APEI			if ACPI
+ 	select HAVE_ACPI_APEI_NMI		if ACPI
+ 	select HAVE_ALIGNED_STRUCT_PAGE		if SLUB
+@@ -2893,6 +2894,7 @@ if X86_32
+ 
+ config ISA
+ 	bool "ISA support"
++	depends on HAS_IOPORT
+ 	help
+ 	  Find out whether you have ISA slots on your motherboard.  ISA is the
+ 	  name of a bus system, i.e. the way the CPU talks to the other stuff
+diff --git a/drivers/bus/Kconfig b/drivers/bus/Kconfig
+index 7bfe998f3514..fcfa280df98a 100644
+--- a/drivers/bus/Kconfig
++++ b/drivers/bus/Kconfig
+@@ -81,7 +81,7 @@ config MOXTET
+ config HISILICON_LPC
+ 	bool "Support for ISA I/O space on HiSilicon Hip06/7"
+ 	depends on (ARM64 && ARCH_HISI) || (COMPILE_TEST && !ALPHA && !HEXAGON && !PARISC)
+-	depends on HAS_IOMEM
++	depends on HAS_IOPORT
+ 	select INDIRECT_PIO if ARM64
+ 	help
+ 	  Driver to enable I/O access to devices attached to the Low Pin
+diff --git a/drivers/eisa/Kconfig b/drivers/eisa/Kconfig
+index c8bbf90209f5..d3f62de72259 100644
+--- a/drivers/eisa/Kconfig
++++ b/drivers/eisa/Kconfig
+@@ -5,6 +5,7 @@
+ 
+ config HAVE_EISA
+ 	bool
++	depends on HAS_IOPORT
+ 
+ menuconfig EISA
+ 	bool "EISA support"
+diff --git a/lib/Kconfig b/lib/Kconfig
+index ce2abffb9ed8..5c2da561c516 100644
+--- a/lib/Kconfig
++++ b/lib/Kconfig
+@@ -92,6 +92,7 @@ config ARCH_USE_SYM_ANNOTATIONS
+ config INDIRECT_PIO
+ 	bool "Access I/O in non-MMIO mode"
+ 	depends on ARM64
++	depends on HAS_IOPORT
+ 	help
+ 	  On some platforms where no separate I/O space exists, there are I/O
+ 	  hosts which can not be accessed in MMIO mode. Using the logical PIO
+@@ -509,6 +510,9 @@ config HAS_IOMEM
+ 	depends on !NO_IOMEM
+ 	default y
+ 
++config HAS_IOPORT
++	bool
++
+ config HAS_IOPORT_MAP
+ 	bool
+ 	depends on HAS_IOMEM && !NO_IOPORT_MAP
+diff --git a/lib/Kconfig.kgdb b/lib/Kconfig.kgdb
+index 3b9a44008433..c68e4d9dcecb 100644
+--- a/lib/Kconfig.kgdb
++++ b/lib/Kconfig.kgdb
+@@ -121,7 +121,8 @@ config KDB_DEFAULT_ENABLE
+ 
+ config KDB_KEYBOARD
+ 	bool "KGDB_KDB: keyboard as input device"
+-	depends on VT && KGDB_KDB && !PARISC
++	depends on HAS_IOPORT
++	depends on VT && KGDB_KDB
+ 	default n
+ 	help
+ 	  KDB can use a PS/2 type keyboard for an input device
+-- 
+2.37.2
 
 
 _______________________________________________
