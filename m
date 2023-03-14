@@ -4,151 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB619C6FD1F
-	for <linux-um@archiver.kernel.org>; Tue, 14 Mar 2023 16:38:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 869B0C7618D
+	for <linux-um@archiver.kernel.org>; Tue, 14 Mar 2023 18:28:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	List-Archive:List-Unsubscribe:List-Id:Mime-Version:References:In-Reply-To:
 	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=lPk5qsf6VJPrpPmSATuQOFWPjMspf53j2UAYq7xz0Cg=; b=YPOBOCoz7u/PIf
-	1kQv21RuX4ijtKk1EfgMGTiYl6mu+oVtNMOHQuDbllW5rlIFsD0vqNbATdLJ/H80t/YukW/0tc7Q5
-	i8oRJhH5MPS1nFY8UrJ3sVml9USYVFIwnipL9x0qK03NVvS/jWDDaTWHsljUCEBRHQ/VmYhHA2AHS
-	5hjvSR/eyKBngRStRXiFMSfcrUf7m7XWW66FTXxkgg4vCj2GxSmlPBh0N/CK6lt0aTa0SiSz/JmC0
-	WzcrUPUbJuiFfSLseqjDMvh1WpdFYpATz6ZydnEMPsbdgtsUVpmn6F+ThHI5Yrp89/ljb3f3isZqn
-	qubTp685lLDhjeTp0Dyw==;
+	List-Owner; bh=gMWt2pl9+kfLJkJ8APA/Akn1T4V2JBJIndpBSolrbsY=; b=0s4qKehN4XSIN4
+	nSxKzuBEggcY8ycOJkcoL5XuTl8ki2xLlk9K/1cICtWkVgOc025v+D1CjCl+tL/CzZd0ctOTEpU5l
+	i5rsJRewPJQjRjFdMv353F5UAHhE9pnrJhBWGNAjgipU6teYioaA82OXeB77eQyM5D3f9/S6wSgKT
+	lZVLHqMTBSF9U8/wuHCA5WwlmhLJ7oPGmwSTBie9U8q7iBmpa/QPoSj0WUPNom2icmaLrljlx5N4d
+	Tkfom+wKaX+0XZuUr+u8/MdVSUxyRrricem8p41yq7Mg86XdN/fVUyz3WoLe/9WxsxXzbxEpavMEw
+	ZwpS9mhatckSCWKN9/4g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pc7fV-00Ark1-1E;
-	Tue, 14 Mar 2023 16:38:33 +0000
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
+	id 1pc9OD-00BBht-0z;
+	Tue, 14 Mar 2023 18:28:49 +0000
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pc7fQ-00Arh0-1d;
-	Tue, 14 Mar 2023 16:38:30 +0000
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32EGRZv7022013;
-	Tue, 14 Mar 2023 16:37:45 GMT
+	id 1pc9O9-00BBfM-0e;
+	Tue, 14 Mar 2023 18:28:46 +0000
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 32EGx4M5002703;
+	Tue, 14 Mar 2023 18:28:34 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
  from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=kD2FKGQJY5Kf8K0VUyX35AX5LQg3aJuJoe2kwtuWMw0=;
- b=iX+D+PfLCDYte+nyP0JUfTanv1++cGMzXrkEu0Li7gI+yPLgvxEuvkpjg4AncLeq64G9
- 2J9fKM7/vPtmoBOzbMKmeCDtmQG0XDWf54DltcsKhWYAuKplKoOIpPTtp95LGHgrmgiV
- Rq3jKvzt+N1JnIEz6jZRQsFU2f723zceIWqx9FuNuJRK75jzM/k+WABeQua+XcnSbykr
- bdRxuuZaXxG3TSQoNNiFZgrb+KDS3pIxhdEgt8PRwyQlXBieEpqK8ka56UgVrIypPnNx
- tnn7NWo4kn7j5vMmGl15UmWAXzMuzcf0dXBg5vuYXQnfj5PClVT6OaWcgCyyxtydI2AT YQ== 
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=MoBys2a5a2aIW+4UTVOsTIdo1J8fju5GYhkuW+NpRrs=;
+ b=AhRn3PYDkXKDiEEBaHHLN05n34zaWMpzc5kzMtp78yAtviLF7q7NglMV53OqyZJ/ABZ/
+ 0ZmvWe7oOMki3VKYfO4unaX7Eo8r/fqIH+l2Sf+A6ljMz5q0tgv0iEqUIQ7n3wQwUbJH
+ ivJ0qUFETPJhv9v9hjR/XVtuOr9o64/ciKODKHDwCxYQwGw00y8XOIRXiLKw9qjdNhUw
+ XjwWq7KhoCrazef4UDUsNkuyge4OHYljFROQmc3cTsgJ22YXlG+SBbCnJ3oyYUOjl/FX
+ DeeTXOytRxXkVVfHc1V1lKn60L48mcCi0zG7l9XyzQYg9UpJEORO907+pewMdOj4CI0i aw== 
 Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3pavf5r7qa-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3pampv303j-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 14 Mar 2023 16:37:45 +0000
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 32EGRYU7021991;
-	Tue, 14 Mar 2023 16:37:44 GMT
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3pavf5r7nw-1
+	Tue, 14 Mar 2023 18:28:33 +0000
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 32EHlh6o037756;
+	Tue, 14 Mar 2023 18:28:33 GMT
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3pampv303a-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 14 Mar 2023 16:37:43 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-	by ppma03ams.nl.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 32E8ZueW001600;
-	Tue, 14 Mar 2023 16:37:40 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma03ams.nl.ibm.com (PPS) with ESMTPS id 3p8h96n2sy-1
+	Tue, 14 Mar 2023 18:28:33 +0000
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+	by ppma02dal.us.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 32EICdbJ004888;
+	Tue, 14 Mar 2023 18:28:32 GMT
+Received: from smtprelay01.wdc07v.mail.ibm.com ([9.208.129.119])
+	by ppma02dal.us.ibm.com (PPS) with ESMTPS id 3p8h97tg1r-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 14 Mar 2023 16:37:40 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 32EGbc0p46662236
+	Tue, 14 Mar 2023 18:28:32 +0000
+Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
+	by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 32EISVVI39518754
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 14 Mar 2023 16:37:38 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 59AC220040;
-	Tue, 14 Mar 2023 16:37:38 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A522C20043;
-	Tue, 14 Mar 2023 16:37:34 +0000 (GMT)
-Received: from [9.171.50.237] (unknown [9.171.50.237])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 14 Mar 2023 16:37:34 +0000 (GMT)
-Message-ID: <62b254d84463338f0210b52e37628d05416787d1.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 01/38] Kconfig: introduce HAS_IOPORT option and
- select it as necessary
-From: Niklas Schnelle <schnelle@linux.ibm.com>
-To: Arnd Bergmann <arnd@arndb.de>,
-        Richard Henderson
- <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>, Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley"
- <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Walmsley
- <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou
- <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich
- Felker <dalias@libc.org>,
-        John Paul Adrian Glaubitz
- <glaubitz@physik.fu-berlin.de>,
-        "David S. Miller" <davem@davemloft.net>,
+	Tue, 14 Mar 2023 18:28:31 GMT
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1AE8158066;
+	Tue, 14 Mar 2023 18:28:31 +0000 (GMT)
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9540358043;
+	Tue, 14 Mar 2023 18:28:29 +0000 (GMT)
+Received: from sig-9-65-194-57.ibm.com (unknown [9.65.194.57])
+	by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 14 Mar 2023 18:28:29 +0000 (GMT)
+Message-ID: <ab1e29c1620ac492b9194b4c7a465b20cd39076a.camel@linux.ibm.com>
+Subject: Re: [PATCH] IMA: allow/fix UML builds
+From: Mimi Zohar <zohar@linux.ibm.com>
+To: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc: Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        linux-integrity@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        Rajiv
+ Andrade <srajiv@linux.vnet.ibm.com>,
         Richard Weinberger <richard@nod.at>,
-        Anton Ivanov
- <anton.ivanov@cambridgegreys.com>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
         Johannes Berg
  <johannes@sipsolutions.net>,
-        Thomas Gleixner <tglx@linutronix.de>, Ingo
- Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen
- <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin"
- <hpa@zytor.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Helgaas
- <bhelgaas@google.com>,
-        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?=
- <u.kleine-koenig@pengutronix.de>,
-        Mauro Carvalho Chehab
- <mchehab@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        "Rafael J.
- Wysocki" <rafael@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-pci@vger.kernel.org,
-        Arnd Bergmann
- <arnd@kernel.org>, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org
-Date: Tue, 14 Mar 2023 17:37:34 +0100
-In-Reply-To: <20230314121216.413434-2-schnelle@linux.ibm.com>
-References: <20230314121216.413434-1-schnelle@linux.ibm.com>
-	 <20230314121216.413434-2-schnelle@linux.ibm.com>
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
-MIME-Version: 1.0
+        linux-um@lists.infradead.org
+Date: Tue, 14 Mar 2023 14:28:29 -0400
+In-Reply-To: <20230224032703.7789-1-rdunlap@infradead.org>
+References: <20230224032703.7789-1-rdunlap@infradead.org>
+X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
+Mime-Version: 1.0
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: GueKt5igeUn3bYmxiu67S5oTPZyYNUi9
-X-Proofpoint-GUID: 5FevvOZ3EWLw6_zZHyJRkdUMIbd32WjR
+X-Proofpoint-ORIG-GUID: DLevhJuZLcRgOUMV72YS6jyn3vaayjw1
+X-Proofpoint-GUID: uMGPTO-j01lF7ok9TnXILXgamzP26jVA
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
  definitions=2023-03-14_10,2023-03-14_02,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- mlxlogscore=675 mlxscore=0 priorityscore=1501 impostorscore=0
- clxscore=1015 malwarescore=0 spamscore=0 bulkscore=0 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2212070000 definitions=main-2303140137
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 impostorscore=0 suspectscore=0 mlxscore=0 clxscore=1011
+ priorityscore=1501 bulkscore=0 mlxlogscore=999 spamscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2212070000 definitions=main-2303140144
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230314_093828_567047_DF5E8D2A 
-X-CRM114-Status: GOOD (  21.14  )
+X-CRM114-CacheID: sfid-20230314_112845_549479_0D9A4E4C 
+X-CRM114-Status: GOOD (  15.76  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -165,33 +117,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2023-03-14 at 13:11 +0100, Niklas Schnelle wrote:
-> We introduce a new HAS_IOPORT Kconfig option to indicate support for I/O
-> Port access. In a future patch HAS_IOPORT=n will disable compilation of
-> the I/O accessor functions inb()/outb() and friends on architectures
-> which can not meaningfully support legacy I/O spaces such as s390. Also
-> add dependencies on HAS_IOPORT for the ISA and HAVE_EISA config options
-> as these busses always go along with HAS_IOPORT.
+On Thu, 2023-02-23 at 19:27 -0800, Randy Dunlap wrote:
+> UML supports HAS_IOMEM since 0bbadafdc49d (um: allow disabling
+> NO_IOMEM).
 > 
-> The "depends on" relations on HAS_IOPORT in drivers as well as ifdefs
-> for HAS_IOPORT specific sections will be added in subsequent patches on
-> a per subsystem basis.
+> Current IMA build on UML fails on allmodconfig (with TCG_TPM=m):
 > 
-> Co-developed-by: Arnd Bergmann <arnd@kernel.org>
-> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-> ---
+> ld: security/integrity/ima/ima_queue.o: in function `ima_add_template_entry':
+> ima_queue.c:(.text+0x2d9): undefined reference to `tpm_pcr_extend'
+> ld: security/integrity/ima/ima_init.o: in function `ima_init':
+> ima_init.c:(.init.text+0x43f): undefined reference to `tpm_default_chip'
+> ld: security/integrity/ima/ima_crypto.o: in function `ima_calc_boot_aggregate_tfm':
+> ima_crypto.c:(.text+0x1044): undefined reference to `tpm_pcr_read'
+> ld: ima_crypto.c:(.text+0x10d8): undefined reference to `tpm_pcr_read'
 > 
+> Modify the IMA Kconfig entry so that it selects TCG_TPM if HAS_IOMEM
+> is set, regardless of the UML Kconfig setting.
+> This updates TCG_TPM from =m to =y and fixes the linker errors.
+> 
+> Fixes: f4a0391dfa91 ("ima: fix Kconfig dependencies")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 
-@Arnd, I swear I asked you and then added Signed-off-bys for all these
-Co-developed-bys as suggested by checkpatch. Sadly that must have been
-during my failed attempt of converting to b4 prep / b4 send before
-sending this last Friday and then it got lost. It almost worked and is
-a very nice work flow except that b4 currently can only use a single
-list of To/Cc fields and for this treewide series that would probably
-hit mail server limits. Added it now.
+Indicating this resolves a commit which was upstreamed in linux-3.4,
+while the fix for that commit 0bbadafdc49d ("um: allow disabling
+NO_IOMEM") was upstreamed only in linux-5.14, leaves out an important
+detail.
 
-Thanks,
-Niklas
+Is the proper way of indicating this disconnect by adding to the fixes
+line the kernel?
+Fixes: f4a0391dfa91 ("ima: fix Kconfig dependencies") # v5.14+
+
+-- 
+thanks,
+
+Mimi
+
 
 
 _______________________________________________
