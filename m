@@ -4,86 +4,109 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BEFDC61DA4
-	for <linux-um@archiver.kernel.org>; Wed, 15 Mar 2023 07:04:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B43AC7618B
+	for <linux-um@archiver.kernel.org>; Wed, 15 Mar 2023 08:28:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:
-	To:Subject:Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=UyDv+Ji8HsQZCke3hAq2w5aYw4ShAq91yOvioDQimPE=; b=VuGNftu1Fhi7E1xNwvi61UHPul
-	AvxvMXqtvRCiH5V7MDdnUTjij3KfxYgaKJjgO/dL9ta7D7ikwHC6MfLW4XgjYcOmZ5sKLN1kqG0bv
-	rJFPQlx3RXFSZdiYiJwiCtUqJVEDvJUFUA8WPWk3sm+H1ugX5QkFMhnwHw7sSJ/c06OYsDisdrUh0
-	Qi0MUUUU9kgH6+N5kH50fNlx6xBlDE7GRTxn7vjrQNzdFP9zwQHdhbNANqPZkSRnIvEXAFPwWses+
-	e4QaR63PKVFZWheqAaq37T9r6DekSbGJqnhRjgZdac9mpJ0v/3EhgIBZLrQFjvRRpdQIRZIgBbjL+
-	kxhDbJWg==;
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=RLQEuNUzAA+8dkXRVscWhRCh0QKDJqKjcnp9lugOVUg=; b=Sw+7wczdV3VtIj+lDNToCTg+bA
+	N6J1hcxaaDZBf2hbI3COWMweG0Elieno73LlADAkTt5A3KCMk1kT2TIgdgmjiacl7ntTchMwHoHni
+	YkrihvwSOH+kzG0BgGf5nj4CdMmVvp94UNbVnO8HKgRFt1g73sTHaW5YeyHD2CSLfKz3obwFeCnx4
+	A80jy1MzYu6Qk/JtK3+H222x+FJDJC7hy7t6Qu5zYfhCUcbd5zFfB4xSVErUp9LLQ8K60RGQGodcd
+	7xEemJ7zClVPq/0PHm7G9sX9QvWWyM8kN5V1NWPWaTF917G8SCy1xJ8zLA0x7CywWYKcbcKEB6drr
+	IcUTe8ug==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pcLBb-00CbYj-1O;
-	Wed, 15 Mar 2023 07:04:35 +0000
-Received: from mail-vs1-xe30.google.com ([2607:f8b0:4864:20::e30])
+	id 1pcMUX-00Cmhu-0J;
+	Wed, 15 Mar 2023 08:28:13 +0000
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pcLBY-00CbXn-1O
+	id 1pcMUT-00CmhG-2a
 	for linux-um@lists.infradead.org;
-	Wed, 15 Mar 2023 07:04:34 +0000
-Received: by mail-vs1-xe30.google.com with SMTP id x14so16133309vso.9
-        for <linux-um@lists.infradead.org>; Wed, 15 Mar 2023 00:04:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1678863866;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=NInCqA6nmV/uTOfRMzywLc/CrOuMvDvzvITV0VwdIac=;
-        b=I6E8h2IaOei6k0k0yrOV5RDTJzPxyH52RyT/RsHxcvGX1l5c3ED9FXwuqj8xIcN3tC
-         rdsE7/ecdjhhEhr3OyW53taQN+xxdpa2N1t1BG8JnSr3EvFhB2+mV7EqCx2lLdTTRwFQ
-         7Uei1iozjl2EYDTFUJef3WvOG7UL+K25L1ZP9dy+4LLlPBH4QIn9EPeqiw+xfK3WXym/
-         /j38A6R3SjsObZbyCXoZDE0pFQwSgSeP8HqO5/B4f8t1WLzx2tEd1gqCj2Eq486nF6t7
-         VPhf4cz05rgCvYFeraYJ+tH8bpmCKTmHRWFs7YZgye7XAavq04zoojvT6raBx0UHs9L6
-         a62Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678863866;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NInCqA6nmV/uTOfRMzywLc/CrOuMvDvzvITV0VwdIac=;
-        b=qbtFDW39lf+BOZnItkT6UyKJWc1laz1mx/JGVUoeaaLWgI3MMXbFpdQsGmHiMgatzo
-         7JVwxmPQ4TDV9yjkY9OWY+PLNdS0QrMxiy9uDBxX0qadxAwQtMr+q959JYycFG8iDCj9
-         erfevo+Ai2S3Wvmjw19baGRWt6a/iB/rWvqGidXqkRiCWEH8dLI8wv2VJfx8EDPLVt4k
-         gr0i1CP11bK7JFEvCajX9H6FHj4IxHH02sXJHq84zAExYdJ+6tXSmHlhSy2/Wp1TLLUE
-         uLbN1KOJnVDueyGl9DHGFmjKFedp8nhWmRWArGwUFBonj7pihOH4icIcCy2YLodD+reh
-         B1UA==
-X-Gm-Message-State: AO0yUKVQqPRlsPZmxvUi8iVJnasktZtsnAgHvCzkR16SSb8Tf+6fn9jH
-	cLK2Srms1SA+e1RoiUKsAu4deDLGCl2G0v4LT2aCeg==
-X-Google-Smtp-Source: AK7set/bE3IAkov2DXf958+pNzRhQNIM6arsRAJa9wk3OK9urrIm6hE0Jg0/47+bmqYfNoapNacBw6v4fJUpBPS381I=
-X-Received: by 2002:a05:6102:4bb:b0:425:875f:50c6 with SMTP id
- r27-20020a05610204bb00b00425875f50c6mr6227655vsa.5.1678863865625; Wed, 15 Mar
- 2023 00:04:25 -0700 (PDT)
+	Wed, 15 Mar 2023 08:28:11 +0000
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailnew.west.internal (Postfix) with ESMTP id 9E7482B05BCC;
+	Wed, 15 Mar 2023 04:28:01 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Wed, 15 Mar 2023 04:28:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:sender
+	:subject:subject:to:to; s=fm3; t=1678868881; x=1678876081; bh=sm
+	BXPA4tzaw5CWmCbZopn1Nv/tcbeL+d7+B00EOaE7Q=; b=n2jAfdmkzr4/x+CsBm
+	W3h1fdrXzPUm2M6yIwhfuUk5NhMWT/Re0vBrmd65xKAFLeiEY/BPKjvG849fGvop
+	r6lZ+pB/zktfi8PfRRRsZZxxY+cJG9Y8XIUnSYR9FzjNY1hbRY7wB2Ioqdk4Xy3J
+	+zrsJ8pM3pJUgMLZjLnB8owsf1EKqCBVtyimEGpJnrWHHZ3GZnmthFkeDTmiy15O
+	wCZ248asyrS8sfn/G2SctX82+c9wYjoqkwx6H14GvynjhkvaV69ZxuBKI07kZWqS
+	2BAIxwRWGRkc/xYuv+WUF6S3KnnkiwzWwTt5cjAY1pXxu+1AGKpNS0+LHt0g4mQo
+	YeYQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:sender:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm2; t=1678868881; x=1678876081; bh=smBXPA4tzaw5C
+	WmCbZopn1Nv/tcbeL+d7+B00EOaE7Q=; b=F9iSSzvNOuBHmzJ/Fjk/0R6964S6p
+	odwOiiFpi55tKtu3VaUMm/rZY8Hu73NPU/2nn66mTZdMKLH8z/G73bZUoVgOWQFM
+	lEWHDM0Q2GsVNtwgXiIvtw2V6JnAQICZbxMDCGFQDJZ/8O21qcOEE8PnqOSr5G9A
+	3wQswbd0yMxi8kTTJn0befLjm5ZI/PjqJc8f8Uxh70MlAUPiQgVdyUXZGbE9DRPc
+	Bn+XLdW5kusQNFnzzSJbTu7HS1CQJggtArNUcghVl+C6huIpTLQmhFd8CeMpgu4n
+	2H/PoTPP4AVPhupCfieoBLln5iLfbSLiVx/apAN0+A5evGjnGtX8rK5yg==
+X-ME-Sender: <xms:j4ERZN7n63PUVZA5NQrmfriOeymxN4S23oD5CkVe-P3ocMm_vkMwlQ>
+    <xme:j4ERZK5JYdqTXwxHgRekqf6m27BGyMd_lx9Ec8m9TYMiyd5PZcUPhlqfa71AtXer5
+    wk4VwFJLw8gv0WXAO0>
+X-ME-Received: <xmr:j4ERZEcLZytM7Ewc974LmNDKPijeBjzfR8JPNjQs-XBCokHRLLKVOWLF7SN8FXMBglnYsw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvddvjedguddujecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvvefukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgig
+    ihhmvgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrf
+    grthhtvghrnheptdelkeejiedufedvhfeiffetlefhiedvleeigfeiuefghfdvleeiffej
+    ieegteejnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgv
+    tghh
+X-ME-Proxy: <xmx:kIERZGIDWUucWnPXTT6Llkt_3om4aQKgR9mx6sRYPcZI6RP9JmCYlw>
+    <xmx:kIERZBJBjGTvnhJuADp3ZCN0-GwhVdn4XlaIdYwb_uE-SevZEmx0jA>
+    <xmx:kIERZPx8rOuY_jmxv_1O3qoQ0Sr341i5gKbvpdvQiYLdBZegosqI7Q>
+    <xmx:kYERZJcsvqLRjqXppPj219cma-IgLDluKHxkQFfUdPILE_e9JwFd8mgOnf8>
+Feedback-ID: i8771445c:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 15 Mar 2023 04:27:59 -0400 (EDT)
+Date: Wed, 15 Mar 2023 09:27:56 +0100
+From: Maxime Ripard <maxime@cerno.tech>
+To: Stephen Boyd <sboyd@kernel.org>
+Cc: David Gow <davidgow@google.com>,
+	Michael Turquette <mturquette@baylibre.com>,
+	linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+	patches@lists.linux.dev,
+	Brendan Higgins <brendan.higgins@linux.dev>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Vincent Whitchurch <vincent.whitchurch@axis.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Frank Rowand <frowand.list@gmail.com>,
+	Christian Marangi <ansuelsmth@gmail.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	devicetree@vger.kernel.org, linux-um@lists.infradead.org,
+	linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com
+Subject: Re: [PATCH 3/8] kunit: Add test managed platform_device/driver APIs
+Message-ID: <20230315082756.ynq3dpbv7udrcbds@houat>
+References: <20230302013822.1808711-1-sboyd@kernel.org>
+ <20230302013822.1808711-4-sboyd@kernel.org>
+ <CABVgOSmR0_u8Tw0E8C1mRFxSiGKwdKG5ka_+X_36Hj4VNLdg2g@mail.gmail.com>
+ <20230303143528.2dovipmqlms74vp2@houat>
+ <dea61f59ea83c772b693b18db43c3eb7.sboyd@kernel.org>
 MIME-Version: 1.0
-References: <20230302013822.1808711-1-sboyd@kernel.org> <20230302013822.1808711-3-sboyd@kernel.org>
- <CABVgOSkomwwgKZ9N0_0YMDL--QaZiTV7ONgSRABU2Ph1Z0CG-g@mail.gmail.com>
- <a97c9bb3a5addfb34af8ccabaa513026.sboyd@kernel.org> <CABVgOSkJ4mw_DtFzn5EwcsuYixWY_j13YotxEYqWhO+ZCL1KPg@mail.gmail.com>
- <d64a086ddcb7c5ca5abecab0ca654259.sboyd@kernel.org> <CABVgOSk9gqRe_5yQZweBA2Qg2aGx8rUJtOHywGeT4x7TEyBH0A@mail.gmail.com>
- <40299ee6-c518-5505-0dc5-874deef03d19@gmail.com> <e1889f7f-2804-718b-6651-f333aed48e99@gmail.com>
-In-Reply-To: <e1889f7f-2804-718b-6651-f333aed48e99@gmail.com>
-From: David Gow <davidgow@google.com>
-Date: Wed, 15 Mar 2023 15:04:13 +0800
-Message-ID: <CABVgOS=B51mzjVLy35aMp5PSAB=qhzMQVNzvxDVMezYwsOv1zw@mail.gmail.com>
-Subject: Re: [PATCH 2/8] of: Enable DTB loading on UML for KUnit tests
-To: Frank Rowand <frowand.list@gmail.com>
-Cc: Stephen Boyd <sboyd@kernel.org>, Michael Turquette <mturquette@baylibre.com>, 
-	linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, 
-	patches@lists.linux.dev, Brendan Higgins <brendan.higgins@linux.dev>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J . Wysocki" <rafael@kernel.org>, 
-	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
-	Johannes Berg <johannes@sipsolutions.net>, 
-	Vincent Whitchurch <vincent.whitchurch@axis.com>, Rob Herring <robh+dt@kernel.org>, 
-	Christian Marangi <ansuelsmth@gmail.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, devicetree@vger.kernel.org, 
-	linux-um@lists.infradead.org, linux-kselftest@vger.kernel.org, 
-	kunit-dev@googlegroups.com
+In-Reply-To: <dea61f59ea83c772b693b18db43c3eb7.sboyd@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230315_000432_518827_85BD452D 
-X-CRM114-Status: GOOD (  70.62  )
+X-CRM114-CacheID: sfid-20230315_012810_277272_FDD4BFDC 
+X-CRM114-Status: GOOD (  24.43  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,284 +118,75 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============9041392724794392218=="
+Content-Type: multipart/mixed; boundary="===============2633666772355868973=="
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
---===============9041392724794392218==
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000005cc74905f6eaf4e5"
 
---0000000000005cc74905f6eaf4e5
-Content-Type: text/plain; charset="UTF-8"
+--===============2633666772355868973==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="mrd2rsrmiq2ziig6"
+Content-Disposition: inline
 
-On Tue, 14 Mar 2023 at 12:28, Frank Rowand <frowand.list@gmail.com> wrote:
+
+--mrd2rsrmiq2ziig6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi Stephen,
+
+On Thu, Mar 09, 2023 at 03:31:15PM -0800, Stephen Boyd wrote:
+> Quoting Maxime Ripard (2023-03-03 06:35:28)
+> > On Fri, Mar 03, 2023 at 03:15:31PM +0800, David Gow wrote:
+> > >=20
+> > > DRM has a similar thing already (albeit with a root_device, which is
+> > > more common with KUnit tests generally):
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tr=
+ee/include/drm/drm_kunit_helpers.h
+> > >=20
+> > > But that's reasonably drm-specific, so it makes sense that it lives
+> > > with DRM stuff. platform_device is a bit more generic.
+> >=20
+> > I'd be very happy to get something from the core to address the same
+> > thing.
+> >=20
+> > I think the main thing we needed that isn't covered by this patch is we
+> > wanted the device to be bound to its driver, so with probe being called
+> > before calling the test (see 57a84a97bbda).
 >
-> On 3/13/23 11:02, Frank Rowand wrote:
-> > On 3/11/23 00:42, David Gow wrote:
-> >> On Sat, 11 Mar 2023 at 07:34, Stephen Boyd <sboyd@kernel.org> wrote:
-> >>>
-> >>> Quoting David Gow (2023-03-10 00:09:48)
-> >>>> On Fri, 10 Mar 2023 at 07:19, Stephen Boyd <sboyd@kernel.org> wrote:
-> >>>>>
-> >>>>>
-> >>>>> Hmm. I think you're suggesting that the unit test data be loaded
-> >>>>> whenever CONFIG_OF=y and CONFIG_KUNIT=y. Then tests can check for
-> >>>>> CONFIG_OF and skip if it isn't enabled?
-> >>>>>
-> >>>>
-> >>>> More of the opposite: that we should have some way of supporting tests
-> >>>> which might want to use a DTB other than the built-in one. Mostly for
-> >>>> non-UML situations where an actual devicetree is needed to even boot
-> >>>> far enough to get test output (so we wouldn't be able to override it
-> >>>> with a compiled-in test one).
-> >>>
-> >>> Ok, got it.
-> >>>
-> >>>>
-> >>>> I think moving to overlays probably will render this idea obsolete:
-> >>>> but the thought was to give test code a way to check for the required
-> >>>> devicetree nodes at runtime, and skip the test if they weren't found.
-> >>>> That way, the failure mode for trying to boot this on something which
-> >>>> required another device tree for, e.g., serial, would be "these tests
-> >>>> are skipped because the wrong device tree is loaded", not "I get no
-> >>>> output because serial isn't working".
-> >>>>
-> >>>> Again, though, it's only really needed for non-UML, and just loading
-> >>>> overlays as needed should be much more sensible anyway.
-> >>>
-> >>> I still have one niggle here. Loading overlays requires
-> >>> CONFIG_OF_OVERLAY, and the overlay loading API returns -ENOTSUPP when
-> >>> CONFIG_OF_OVERLAY=n. For now I'm checking for the config being enabled
-> >>> in each test, but I'm thinking it may be better to simply call
-> >>> kunit_skip() from the overlay loading function if the config is
-> >>> disabled. This way tests can simply call the overlay loading function
-> >>> and we'll halt the test immediately if the config isn't enabled.
-> >>>
-> >>
-> >> That sounds sensible, though there is a potential pitfall. If
-> >> kunit_skip() is called directly from overlay code, might introduce a
-> >> dependency on kunit.ko from the DT overlay, which we might not want.
-> >> The solution there is either to have a kunit wrapper function (so the
-> >> call is already in kunit.ko), or to have a hook to skip the current
-> >> test (which probably makes sense to do anyway, but I think the wrapper
-> >> is the better option).
-> >>
-> >>
-> >>>>
-> >>>>>>
-> >>>>>> That being said, I do think that there's probably some sense in
-> >>>>>> supporting the compiled-in DTB as well (it's definitely simpler than
-> >>>>>> patching kunit.py to always pass the extra command-line option in, for
-> >>>>>> example).
-> >>>>>> But maybe it'd be nice to have the command-line option override the
-> >>>>>> built-in one if present.
-> >>>>>
-> >>>>> Got it. I need to test loading another DTB on the commandline still, but
-> >>>>> I think this won't be a problem. We'll load the unittest-data DTB even
-> >>>>> with KUnit on UML, so assuming that works on UML right now it should be
-> >>>>> unchanged by this series once I resend.
-> >>>>
-> >>>> Again, moving to overlays should render this mostly obsolete, no? Or
-> >>>> am I misunderstanding how the overlay stuff will work?
-> >>>
-> >>> Right, overlays make it largely a moot issue. The way the OF unit tests
-> >>> work today is by grafting a DTB onto the live tree. I'm reusing that
-> >>> logic to graft a container node target for kunit tests to add their
-> >>> overlays too. It will be clearer once I post v2.
-> >>>
-> >>>>
-> >>>> One possible future advantage of being able to test with custom DTs at
-> >>>> boot time would be for fuzzing (provide random DT properties, see what
-> >>>> happens in the test). We've got some vague plans to support a way of
-> >>>> passing custom data to tests to support this kind of case (though, if
-> >>>> we're using overlays, maybe the test could just patch those if we
-> >>>> wanted to do that).
-> >>>
-> >>> Ah ok. I can see someone making a fuzzer that modifies devicetree
-> >>> properties randomly, e.g. using different strings for clock-names.
-> >>>
-> >>> This reminds me of another issue I ran into. I wanted to test adding the
-> >>> same platform device to the platform bus twice to confirm that the
-> >>> second device can't be added. That prints a warning, which makes
-> >>> kunit.py think that the test has failed because it printed a warning. Is
-> >>> there some way to avoid that? I want something like
-> >>>
-> >>>         KUNIT_EXPECT_WARNING(test, <call some function>)
-> >>>
-> >>> so I can test error cases.
-> >
-> > DT unittests already have a similar concept.  A test can report that a
-> > kernel warning (or any other specific text) either (1) must occur for the
-> > test to pass or (2) must _not_ occur for the test to pass.  The check
-> > for the kernel warning is done by the test output parsing program
-> > scripts/dtc/of_unittest_expect.
-> >
-> > The reporting by a test of an expected error in drivers/of/unittest.c
-> > is done by EXPECT_BEGIN() and EXPECT_END().  These have been in
-> > unittest for a long time.
-> >
-> > The reporting by a test of a not expected to occur error is done
-> > by EXPECT_NOT_BEGIN() and EXPECT_NOT_END().  These are added to
-> > unittest in linux 6.3-rc1.
-> >
-> > I discussed this concept in one of the early TAP / KTAP discussion
->
-> The link to the early KTAP discussion on this concept is:
->
->    https://lore.kernel.org/all/d38bf9f9-8a39-87a6-8ce7-d37e4a641675@gmail.com/T/#u
->
->
+> Can you clarify? This patch makes a poor attempt at waiting for the
+> platform driver to bind, but in reality it may not be bound by the time
+> the driver register function returns.
 
-Thanks -- I'd totally forgotten about that!
+The issue was that devm will only clean up the resources if the device
+was bound to a driver so we were exhausting resources when running
+dozens of test in a sequence.
 
-I still personally would prefer a way of checking this from within the
-kernel, as if we're just printing out "EXPECT: " lines, then it's not
-possible to know if a test passes just from the raw results (and
-things like statistics can't be updated without a separate tool like
-kunit.py parsing the KTAP.
+The way I solved it for vc4 was to create a dumb platform driver with a
+waitqueue, and wait for probe to be called.
 
-Indeed, my personal preference is that this log-based way of doing
-expectations is probably best kept as a last resort. i.e.,
-1. Try to add a hook to the code which prints the message, which can
-then fail the test (or set a flag for the test to check later). This
-probably needs some better KUnit-side helpers to be truly ergonomic,
-but at least avoids too strict a dependency on the exact formatting of
-the log messages.
-2. If that doesn't work, use console tracepoints or similar to
-implement an EXPECT_BEGIN() / EXPECT_END() or similar API entirely
-within the kernel.
-3. Only if we can't come up with a working way of doing the former
-options, resort to adding "EXPECT:" lines and having a parser pick up
-on this.
+I think we could make it more generic by allowing a pointer to a probe
+function and calling it into our own probe implementation. What do you
+think?
 
-One of the downsides of doing "EXPECT" lines in KTAP is that it'll
-suddenly be much more dependent on the exact layout of the tests, as
-we'd need to be able to override a test result if an expectation fails
-(at least, to maintain the KUnit structure). And overriding a result
-which is already in the output seems really, really ugly.
+Maxime
 
-There's a patch to the KASAN tests to move from doing option 1 to
-option 2 above (in order to better support RCU, which didn't work with
-the hook):
-https://lore.kernel.org/all/ebf96ea600050f00ed567e80505ae8f242633640.1666113393.git.andreyknvl@google.com/
+--mrd2rsrmiq2ziig6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZBGBhwAKCRDj7w1vZxhR
+xQfJAP9d8Mk6W6LsnZWjdC2ZVCNtlVeMbIMPi7JwuKzAFKJrnwD+P0T5lH1uMYyg
+Q4LeS+MNoLW1jvZenhi+zkdv6wRJswU=
+=1NPj
+-----END PGP SIGNATURE-----
+
+--mrd2rsrmiq2ziig6--
 
 
-> > threads and expect to start a discussion thread on this specific
-> > topic in the KTAP Specification V2 context.  I expect the discussion
-> > to result in a different implementation than what DT unittests are
-> > using (bike shedding likely to ensue) but whatever is agreed to
-> > should be easy for DT to switch to.
->
-> The link to the KTAP Specification Version 2 process and progress is:
->
->    https://elinux.org/Test_Results_Format_Notes#KTAP_version_2
->
-
-Thanks! We've got a few more KTAP ideas to air, so will hopefully send
-those out soon!
-
-Cheers,
--- David
-
-> >
-> >>
-> >> Hmm... I'd've thought that shouldn't be a problem: kunit.py should
-> >> ignore most messages during a test, unless it can't find a valid
-> >> result line. What does the raw KTAP output look like? (You can get it
-> >> from kunit.py by passing the --raw_output option).
-> >>
-> >> That being said, a KUNIT_EXPECT_LOG_MESSAGE() or similar is something
-> >> we've wanted for a while. I think that the KASAN folks have been
-> >> working on something similar using console tracepoints:
-> >> https://lore.kernel.org/all/ebf96ea600050f00ed567e80505ae8f242633640.1666113393.git.andreyknvl@google.com/
-> >>
-> >> Cheers,
-> >> -- David
-> >
->
-
---0000000000005cc74905f6eaf4e5
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-64VRg2IjDI2fJVE9RD6aMEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
-dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
-AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
-c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
-LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
-LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
-Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQA2lZLYRLu7foeR
-cHo1VeNA974FZBiCm08Kd44/aCMEzdTJvxAE9xbUJf7hS1i6eW49qxuSp3/YLn6U7uatwAcmZcwp
-Zma19ftf3LH+9Hvffk+X8fbPKe6uHkJhR2LktrhRzF159jj67NvXyGQv8J4n7UNeEVP0d5ByvRwv
-tF2bJwlOwRGLoxasKSyDHIyUpwTfWYPq7XvjoGqQ/tDS7Khcc5WncJl0/ZEj7EKjtoGbsDbLdXEF
-m/6vdcYKJzF9ghHewtV3YIU4RE3pEM4aCWWRtJwbExzeue6fI7RqURbNCAyQuSpWv0YQvzsX3ZX3
-c1otrs50n1N0Sf8/rfJxq7sWMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
-R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABxy1wm0tAmHKHFkLS9RWPMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCCl
-mHed+D99QLxVX2BIK3Dxc4z8T7zEVClAlMCSUe9zqjAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMzAzMTUwNzA0MjZaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
-BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEANsx5JafWfaDRtp6Pdrti
-OU3SCLHosXrL8okHmyaHJq2SV95/goxKNGF2grPrs14WR1rBrwzEyJVvKalKCQBbjonKyG95V1ad
-hfs3bB/R+8RZC+RzHeNG3PGjaVeMT+X3tyhlpBOYDMOMtRg1hVXaQDHIcQ9v4ck5KcQ5CZSLopZh
-hVtS7ZIzaALGcPqiPrkWe6wD7uioFShVQQgRgwecwiisvKjUSNPg/Ik63QE/7NU3bKMRWcjMO2HY
-Vx3PzYfSigfuTqqA8T36yr9HS2Le0ulxl7TF+u9ODfIjWcGdwvFiiuJ7Uu++S5be/WXr07Utz3V0
-DmxkmTk8hG/pwtY2hQ==
---0000000000005cc74905f6eaf4e5--
-
-
---===============9041392724794392218==
+--===============2633666772355868973==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -383,5 +197,5 @@ linux-um mailing list
 linux-um@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-um
 
---===============9041392724794392218==--
+--===============2633666772355868973==--
 
