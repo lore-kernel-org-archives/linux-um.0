@@ -4,88 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B78BC6FD1F
-	for <linux-um@archiver.kernel.org>; Thu, 16 Mar 2023 04:16:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED0C1C6FD19
+	for <linux-um@archiver.kernel.org>; Thu, 16 Mar 2023 06:20:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:
-	To:Subject:Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=4uz23juE6uwcr+VRtZ0dZYTUeRrqFgzet6dSdq6KpK8=; b=nVQPIMwU1JtAbgXQrXgdR1DlVO
-	vCMNocPWZIfieFm/ycwu4T59wTFu2j1I6r78f+pwOszm7nGEkl6fsQnJvFyDBbGZrWYSZpIMum/Ew
-	E5VCq2KKGCPRVGJPscylBuq80Lrn1oaqmH2BbUmhn13iDRbvluWwBhrDul7/U9oC4MnCaUwSOo3cz
-	QEVKAFPccDAl6ihABAWI/dcK8uE93DgdkIcb140fgCv7Xn8wpZWQJbwikIXn6qF2nOIdzV4pivbRN
-	f/9Dl8s+BJc0tHrEwImb98Xpwbp1mzwK4qV2kxb06xvTbOAOMDqjrAYUZkKjowgalnFT3HsYLawTf
-	S1yXQCsg==;
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=XGL5o6DlYk/kt3GV4oF1JNeOyDLaZwx7Ax4YowXjGLc=; b=IhnIyO7A3H0lLx
+	rZbrIkIiX/gh6ZTRBx35DTociqrPmapnXft+1F2YZxrzq/6wmzCpfK+Fu4vV4AaOjlaV6SZiDM4jN
+	HYhBYjOM/Q5HYI19sucR3jBdUgRtQD/Jb7WGgwIkTUCTRubirxysF5phaw7kqdnBjjrOBlM8H/l1d
+	MnI7RhE0j27vjiOLB36OvKKm1Uq/mjxSzffd1uAvWU5zh/XVSGPUUsbYT6kHhRfXhhOTKy+k8u/3x
+	Ttef+xPOjEstYyoaFvxhIz7wL2VvtkzKFrrBXPG8u5++D4X4IgC6KmSvizfsgLnb9TSoObjEQDBTq
+	+ks5w+Vbr/wscXltLg/Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pcf25-00FAjg-1r;
-	Thu, 16 Mar 2023 04:16:05 +0000
-Received: from mail-vs1-xe33.google.com ([2607:f8b0:4864:20::e33])
+	id 1pcgyY-00FLD6-1T;
+	Thu, 16 Mar 2023 06:20:34 +0000
+Received: from mail-pj1-x102b.google.com ([2607:f8b0:4864:20::102b])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pcf21-00FAjA-2v
+	id 1pcgyU-00FLCE-0S
 	for linux-um@lists.infradead.org;
-	Thu, 16 Mar 2023 04:16:04 +0000
-Received: by mail-vs1-xe33.google.com with SMTP id s1so431579vsk.5
-        for <linux-um@lists.infradead.org>; Wed, 15 Mar 2023 21:15:59 -0700 (PDT)
+	Thu, 16 Mar 2023 06:20:32 +0000
+Received: by mail-pj1-x102b.google.com with SMTP id om3-20020a17090b3a8300b0023efab0e3bfso4149348pjb.3
+        for <linux-um@lists.infradead.org>; Wed, 15 Mar 2023 23:20:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1678940159;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=DdPAdu8DEk3XAx+VcejL/TU2Wim6RH0OPvMlmctwPQ4=;
-        b=Wu9RWg9Ij6bEGwWpPS2CMSnYfScvwSYhQ6aT5Vqed+VdOojbT446/HyRkYX9YWEB0D
-         7M814qYl7fpIUGhNfsw2EhkkGLEY/DplUbtARivjA6zQSkwozkwGam68jiTRoWfS5M1U
-         xfz7vNoJjKdSy+Q1IcIp4MG46RQTL5FbOiccnXm9GQKjl+JizsLbHUi26UKG3Xf5aQt2
-         tyY1J+cPR9+qx2rDg2fXOBPV1jY5SfYR9MLq0m4TRZ0YCJTEUQjmyETzybaZ7XUAx5z7
-         sYJ2IspKpwQtosmxkAT+KseOJaeS7q11KcGMzg0LIylQH/BTGnCb74iNmat0OgQbRpzx
-         xXFQ==
+        d=efficientek-com.20210112.gappssmtp.com; s=20210112; t=1678947625;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4wPR3q9bhQ1Pb4cLYVjM+WMJHH4UrfvHRDpmSQYh45Q=;
+        b=ymrJCkke34gatJF/WH2IEEsOT5dLOKyOnvtWiWzV+wHUrPC5FQvAXkNGI5hq5cXPuQ
+         0Vz782hbeFiIJBezDDH12SLc3jeuiQmldXWW8DH3oScWP+AdyMvKTEqxeBN6lxnRzjjj
+         YQSkhmxi+5qDkFvzGGAErh5yrF4PLvOrdOSDN4qREYRw1Ee2iA2r2jXfw4q7iEYU1Dtn
+         yUokH7W/tOybOKAYTAHWz6vAOp087Txz++i6Pbj9yFaIKegtSmzZtsrphHgv6UXX/G0m
+         3jkFpSuc1TVEmfW96U/RwZdRgKRdWVHlBjVbQ6l6d+TvgQZNyzn6YrX9cHDl6LQDks/X
+         BwIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678940159;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DdPAdu8DEk3XAx+VcejL/TU2Wim6RH0OPvMlmctwPQ4=;
-        b=iaoOX2GuifVX1cvzYjgVXOOb6LK4XJCFajm08PIzmL8su4UL58NOb6qQM54GOCoOIr
-         gLRch4fic3qJngZjcAraHvvt+7kogQ4yc6s/o3x8mi5Cu3KHEjzYH96Kd5n/M1JX2XJm
-         uBCU/doC6db9JL0XzPEIhLr0ituAtgYKMlp/wbKYj71SRV1oLsC0FUKit+YCgmBqwWqG
-         ioX0fr/kIpkZ0ibRxEXotoW1zQRKO12gsAuErOrQrpHOdnkqOrHmZaGtYoq8c/0Z885w
-         G5Z6LGbWnlOe5hryHp/xesIr7PQjDSclhDvp8Nv6yzYsOMFNA4iVCA7PO5XEmZjWL/D0
-         iKQw==
-X-Gm-Message-State: AO0yUKWSGTOA3Kl3w0qXLyBjE929HsMqNAC/JJPnia/sCPDOBO8zhX7C
-	VQJlB6ipt02hCTRb/5qgV7NnfBJ4x9/+EopRdwwI1w==
-X-Google-Smtp-Source: AK7set+d1+EeMKuullca832l9FKkqqU6QiaHEn/qoK63n1waQEPlF55lmA1toIVFgXJyM3k7mMkdy+iOXUnsvpwyl1s=
-X-Received: by 2002:a67:fd7a:0:b0:416:f1ea:1001 with SMTP id
- h26-20020a67fd7a000000b00416f1ea1001mr27990320vsa.5.1678940158841; Wed, 15
- Mar 2023 21:15:58 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1678947625;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4wPR3q9bhQ1Pb4cLYVjM+WMJHH4UrfvHRDpmSQYh45Q=;
+        b=JSBAPJ3xrV7QpE50+Wgu7CR5ADUAf5qI6TVUqCFNsY1u2Vvwm330vi8Yc45thdTbEN
+         uVIuiXeb2x8e+oEZ3Z3mcNdn48krsnOBn7TVVbAk4w4/ssX43TJHBb6hllsywvV+acjN
+         daShjqbjLCjSr2Cref4QR8rko+5WWLvdvWGxvacSYJ2xEmEjdAKNqQ7min4Qjt55Ulw8
+         h1OFjC2yUhJtnPRjloRaHqKeQfTpcoy7z0eOHLeI6TFVTNbWRETEY4BEGI8dAEhVDa7+
+         OovabyTpABcdRv5n12g14/lZ3pA6jCAQRHNa83zRZoZUelNPAaFp6AnLDqRD0MnoegK6
+         Ha3w==
+X-Gm-Message-State: AO0yUKUkBDS8yobyUeqfTWl7eTfQGI86JPyYyhgliyrg8JWtnpzSZH/u
+	KjH1spxHISpbaftlx4pz5cQhig==
+X-Google-Smtp-Source: AK7set88RbQAZgVcArFixTGK4YC3GudAAxJKDA1JIEFoZI7mAR8cFVq1mva99DmtADR8ZlR37cOLCg==
+X-Received: by 2002:a17:902:e38c:b0:19d:19fb:55ec with SMTP id g12-20020a170902e38c00b0019d19fb55ecmr1583739ple.6.1678947625286;
+        Wed, 15 Mar 2023 23:20:25 -0700 (PDT)
+Received: from [10.41.0.90] ([199.254.238.56])
+        by smtp.gmail.com with ESMTPSA id i7-20020a170902c94700b00195f242d0a0sm4622211pla.194.2023.03.15.23.20.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Mar 2023 23:20:24 -0700 (PDT)
+Message-ID: <b0e04468-f313-047d-5bde-785bb826599b@efficientek.com>
+Date: Thu, 16 Mar 2023 06:20:19 +0000
 MIME-Version: 1.0
-References: <20230302013822.1808711-1-sboyd@kernel.org> <20230302013822.1808711-3-sboyd@kernel.org>
- <CABVgOSkomwwgKZ9N0_0YMDL--QaZiTV7ONgSRABU2Ph1Z0CG-g@mail.gmail.com>
- <a97c9bb3a5addfb34af8ccabaa513026.sboyd@kernel.org> <CABVgOSkJ4mw_DtFzn5EwcsuYixWY_j13YotxEYqWhO+ZCL1KPg@mail.gmail.com>
- <d64a086ddcb7c5ca5abecab0ca654259.sboyd@kernel.org> <CABVgOSk9gqRe_5yQZweBA2Qg2aGx8rUJtOHywGeT4x7TEyBH0A@mail.gmail.com>
- <40299ee6-c518-5505-0dc5-874deef03d19@gmail.com> <e1889f7f-2804-718b-6651-f333aed48e99@gmail.com>
- <CABVgOS=B51mzjVLy35aMp5PSAB=qhzMQVNzvxDVMezYwsOv1zw@mail.gmail.com>
- <b217e613-575e-9e33-3469-6de5e0fb813a@gmail.com> <b05b5e50-413f-0aa8-1842-aef6f846c38d@gmail.com>
-In-Reply-To: <b05b5e50-413f-0aa8-1842-aef6f846c38d@gmail.com>
-From: David Gow <davidgow@google.com>
-Date: Thu, 16 Mar 2023 12:15:46 +0800
-Message-ID: <CABVgOSnJPKRqAdYtu2bhSxBEehF7BVQH6Rvj1U4xOcGWei8Lig@mail.gmail.com>
-Subject: Re: [PATCH 2/8] of: Enable DTB loading on UML for KUnit tests
-To: Frank Rowand <frowand.list@gmail.com>
-Cc: Stephen Boyd <sboyd@kernel.org>, Michael Turquette <mturquette@baylibre.com>, 
-	linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, 
-	patches@lists.linux.dev, Brendan Higgins <brendan.higgins@linux.dev>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J . Wysocki" <rafael@kernel.org>, 
-	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
-	Johannes Berg <johannes@sipsolutions.net>, 
-	Vincent Whitchurch <vincent.whitchurch@axis.com>, Rob Herring <robh+dt@kernel.org>, 
-	Christian Marangi <ansuelsmth@gmail.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, devicetree@vger.kernel.org, 
-	linux-um@lists.infradead.org, linux-kselftest@vger.kernel.org, 
-	kunit-dev@googlegroups.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [RFC PATCH v2] hostfs: handle idmapped mounts
+Content-Language: en-US
+To: Christian Brauner <brauner@kernel.org>
+Cc: Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Seth Forshee <sforshee@kernel.org>,
+ linux-fsdevel@vger.kernel.org
+References: <20230301015002.2402544-1-development@efficientek.com>
+ <20230302083928.zek46ybxvuwgwdf5@wittgenstein>
+ <20230304002846.48278199@crass-HP-ZBook-15-G2>
+ <20230304120118.bhbilwzhmjt72fok@wittgenstein>
+From: Glenn Washburn <development@efficientek.com>
+In-Reply-To: <20230304120118.bhbilwzhmjt72fok@wittgenstein>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230315_211601_972577_E09627F2 
-X-CRM114-Status: GOOD (  80.31  )
+X-CRM114-CacheID: sfid-20230315_232030_401892_A6163D99 
+X-CRM114-Status: GOOD (  52.41  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,431 +95,276 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============0964677734745836470=="
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
---===============0964677734745836470==
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000cb9ee705f6fcb762"
+On 3/4/23 12:01, Christian Brauner wrote:
+> On Sat, Mar 04, 2023 at 12:28:46AM -0600, Glenn Washburn wrote:
+>> On Thu, 2 Mar 2023 09:39:28 +0100
+>> Christian Brauner <brauner@kernel.org> wrote:
+>>
+>>> On Tue, Feb 28, 2023 at 07:50:02PM -0600, Glenn Washburn wrote:
+>>>> Let hostfs handle idmapped mounts. This allows to have the same
+>>>> hostfs mount appear in multiple locations with different id
+>>>> mappings.
+>>>>
+>>>> root@(none):/media# id
+>>>> uid=0(root) gid=0(root) groups=0(root)
+>>>> root@(none):/media# mkdir mnt idmapped
+>>>> root@(none):/media# mount -thostfs -o/home/user hostfs mnt
+>>>>
+>>>> root@(none):/media# touch mnt/aaa
+>>>> root@(none):/media# mount-idmapped --map-mount u:`id -u user`:0:1
+>>>> --map-mount g:`id -g user`:0:1 /media/mnt /media/idmapped
+>>>> root@(none):/media# ls -l mnt/aaa idmapped/aaa -rw-r--r-- 1 root
+>>>> root 0 Jan 28 01:23 idmapped/aaa -rw-r--r-- 1 user user 0 Jan 28
+>>>> 01:23 mnt/aaa
+>>>>
+>>>> root@(none):/media# touch idmapped/bbb
+>>>> root@(none):/media# ls -l mnt/bbb idmapped/bbb
+>>>> -rw-r--r-- 1 root root 0 Jan 28 01:26 idmapped/bbb
+>>>> -rw-r--r-- 1 user user 0 Jan 28 01:26 mnt/bbb
+>>>>
+>>>> Signed-off-by: Glenn Washburn <development@efficientek.com>
+>>>> ---
+>>>> Changes from v1:
+>>>>   * Rebase on to tip. The above commands work and have the results
+>>>> expected. The __vfsuid_val(make_vfsuid(...)) seems ugly to get the
+>>>> uid_t, but it seemed like the best one I've come across. Is there a
+>>>> better way?
+>>>
+>>> Sure, I can help you with that. ;)
+>>
+>> Thank you!
+>>
+>>>>
+>>>> Glenn
+>>>> ---
+>>>>   fs/hostfs/hostfs_kern.c | 13 +++++++------
+>>>>   1 file changed, 7 insertions(+), 6 deletions(-)
+>>>>
+>>>> diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+>>>> index c18bb50c31b6..9459da99a0db 100644
+>>>> --- a/fs/hostfs/hostfs_kern.c
+>>>> +++ b/fs/hostfs/hostfs_kern.c
+>>>> @@ -786,7 +786,7 @@ static int hostfs_permission(struct mnt_idmap
+>>>> *idmap, err = access_file(name, r, w, x);
+>>>>   	__putname(name);
+>>>>   	if (!err)
+>>>> -		err = generic_permission(&nop_mnt_idmap, ino,
+>>>> desired);
+>>>> +		err = generic_permission(idmap, ino, desired);
+>>>>   	return err;
+>>>>   }
+>>>>   
+>>>> @@ -794,13 +794,14 @@ static int hostfs_setattr(struct mnt_idmap
+>>>> *idmap, struct dentry *dentry, struct iattr *attr)
+>>>>   {
+>>>>   	struct inode *inode = d_inode(dentry);
+>>>> +	struct user_namespace *fs_userns = i_user_ns(inode);
+>>>
+>>> Fyi, since hostfs can't be mounted in a user namespace
+>>> fs_userns == &init_user_ns
+>>> so it doesn't really matter what you use.
+>>
+>> What would you suggest as preferable?
+> 
+> I would leave init_user_ns hardcoded as it clearly indicates that hostfs
+> can only be mounted in the initial user namespace. Plus, the patch is
+> smaller.
+> 
+>>
+>>>>   	struct hostfs_iattr attrs;
+>>>>   	char *name;
+>>>>   	int err;
+>>>>   
+>>>>   	int fd = HOSTFS_I(inode)->fd;
+>>>>   
+>>>> -	err = setattr_prepare(&nop_mnt_idmap, dentry, attr);
+>>>> +	err = setattr_prepare(idmap, dentry, attr);
+>>>>   	if (err)
+>>>>   		return err;
+>>>>   
+>>>> @@ -814,11 +815,11 @@ static int hostfs_setattr(struct mnt_idmap
+>>>> *idmap, }
+>>>>   	if (attr->ia_valid & ATTR_UID) {
+>>>>   		attrs.ia_valid |= HOSTFS_ATTR_UID;
+>>>> -		attrs.ia_uid = from_kuid(&init_user_ns,
+>>>> attr->ia_uid);
+>>>> +		attrs.ia_uid = __vfsuid_val(make_vfsuid(idmap,
+>>>> fs_userns, attr->ia_uid)); }
+>>>>   	if (attr->ia_valid & ATTR_GID) {
+>>>>   		attrs.ia_valid |= HOSTFS_ATTR_GID;
+>>>> -		attrs.ia_gid = from_kgid(&init_user_ns,
+>>>> attr->ia_gid);
+>>>> +		attrs.ia_gid = __vfsgid_val(make_vfsgid(idmap,
+>>>> fs_userns, attr->ia_gid));
+>>>
+>>> Heh, if you look include/linux/fs.h:
+>>>
+>>>          /*
+>>>           * The two anonymous unions wrap structures with the same
+>>> member. *
+>>>           * Filesystems raising FS_ALLOW_IDMAP need to use
+>>> ia_vfs{g,u}id which
+>>>           * are a dedicated type requiring the filesystem to use the
+>>> dedicated
+>>>           * helpers. Other filesystem can continue to use ia_{g,u}id
+>>> until they
+>>>           * have been ported.
+>>>           *
+>>>           * They always contain the same value. In other words
+>>> FS_ALLOW_IDMAP
+>>>           * pass down the same value on idmapped mounts as they would
+>>> on regular
+>>>           * mounts.
+>>>           */
+>>>          union {
+>>>                  kuid_t          ia_uid;
+>>>                  vfsuid_t        ia_vfsuid;
+>>>          };
+>>>          union {
+>>>                  kgid_t          ia_gid;
+>>>                  vfsgid_t        ia_vfsgid;
+>>>          };
+>>>
+>>> this just is:
+>>>
+>>> attrs.ia_uid = from_vfsuid(idmap, fs_userns, attr->ia_vfsuid));
+>>> attrs.ia_gid = from_vfsgid(idmap, fs_userns, attr->ia_vfsgid));
+>>
+>> Its easy to miss from this patch because of lack of context, but attrs
+>> is a struct hostfs_iattr, not struct iattr. And attrs.ia_uid is of type
+>> uid_t, not kuid_t. So the above fails to compile. This is why I needed
+> 
+> Oh, I see. And then that raw value is used by calling
+> fchmod()/chmod()/chown()/fchown() and so on. That's rather special.
+> Ok, then I know what to do.
+> 
+>> to wrap make_vfsuid() in __vfsuid_val() (to get the uid_t).
+> 
+> Right. My point had been - independent of the struct hostfs_iattr issue
+> you thankfully pointed out - that make_vfsuid() is wrong here.
+> 
+> make_vfsuid() is used to map a filesystem wide k{g,u}id_t according to
+> the mount's idmapping that operation originated from. But that's done
+> by the vfs way before we're calling into the filesystem. For example,
+> it's done in chown_common().
+> 
+> So the value placed in struct iattr (the VFS struct) is already a
+> vfs{g,u}id stored in iattr->ia_vfs{g,u}id. So you need to use
+> from_vfs{g,u}id() here.
+> 
+>>
+>> I had decided against using from_vfsuid() because then I thought I'd
+>> need to use from_kuid() to get the uid_t. And from_kuid() takes the
+>> namespace (again), which seemed uglier.
+>>
+>> Based on this, what do you suggest?
+> 
+> Ok, so just some details on the background before I paste what I think
+> we should do.
+> As soon as you support idmapped mounts you at least technically are
+Thanks for the detailed explanation. I apologize for not getting back to 
+this sooner.
 
---000000000000cb9ee705f6fcb762
-Content-Type: text/plain; charset="UTF-8"
+> always dealing with two mappings:
+> 
+> (1) First, there's the filesystem wide idmapping which is taken from the
+>      namespace the filessytem was mounted in. This idmapping is applied
+>      when you read the raw uid/gid value from disk and turn into a kuid_t
+>      type. That value is persistent and stored in inode->i_{g,u}id. All
+>      things that are cached and that can be accessed from multiple mounts
+>      concurrently can only ever cache k{g,u}id_t aka filesystem values.
+> (2) Whenever we're dealing with an operation that's coming from an
+>      idmapped mount we need to take the idmapping of the mount into
+>      account. That idmapping is completely separate type struct
+>      mnt_idmap that's opaque for filesystems and most of the vfs.
+> 
+>      That idmapping is used to generate the vfs{g,u}id_t. IOW, translates
+>      from the filesystem representation to a mount/vfs representation.
+> 
+> So, in order to store the correct value on disk we need to invert those
+> two idmappings to arrive at the raw value that we want to store:
+> (U1) from_vfsuid() // map to the filesystem wide value aka something
+>       that we can store in inode->i_{g,u}id and that's cacheable. This is
+>       done in setattr_copy().
+> (U2) from_kuid() // map the filesystem wide value to the raw value we
+>       want to store on disk
 
-On Thu, 16 Mar 2023 at 08:45, Frank Rowand <frowand.list@gmail.com> wrote:
->
-> On 3/15/23 16:35, Frank Rowand wrote:
-> > On 3/15/23 02:04, David Gow wrote:
-> >> On Tue, 14 Mar 2023 at 12:28, Frank Rowand <frowand.list@gmail.com> wrote:
-> >>>
-> >>> On 3/13/23 11:02, Frank Rowand wrote:
-> >>>> On 3/11/23 00:42, David Gow wrote:
-> >>>>> On Sat, 11 Mar 2023 at 07:34, Stephen Boyd <sboyd@kernel.org> wrote:
-> >>>>>>
-> >>>>>> Quoting David Gow (2023-03-10 00:09:48)
-> >>>>>>> On Fri, 10 Mar 2023 at 07:19, Stephen Boyd <sboyd@kernel.org> wrote:
-> >>>>>>>>
-> >>>>>>>>
-> >>>>>>>> Hmm. I think you're suggesting that the unit test data be loaded
-> >>>>>>>> whenever CONFIG_OF=y and CONFIG_KUNIT=y. Then tests can check for
-> >>>>>>>> CONFIG_OF and skip if it isn't enabled?
-> >>>>>>>>
-> >>>>>>>
-> >>>>>>> More of the opposite: that we should have some way of supporting tests
-> >>>>>>> which might want to use a DTB other than the built-in one. Mostly for
-> >>>>>>> non-UML situations where an actual devicetree is needed to even boot
-> >>>>>>> far enough to get test output (so we wouldn't be able to override it
-> >>>>>>> with a compiled-in test one).
-> >>>>>>
-> >>>>>> Ok, got it.
-> >>>>>>
-> >>>>>>>
-> >>>>>>> I think moving to overlays probably will render this idea obsolete:
-> >>>>>>> but the thought was to give test code a way to check for the required
-> >>>>>>> devicetree nodes at runtime, and skip the test if they weren't found.
-> >>>>>>> That way, the failure mode for trying to boot this on something which
-> >>>>>>> required another device tree for, e.g., serial, would be "these tests
-> >>>>>>> are skipped because the wrong device tree is loaded", not "I get no
-> >>>>>>> output because serial isn't working".
-> >>>>>>>
-> >>>>>>> Again, though, it's only really needed for non-UML, and just loading
-> >>>>>>> overlays as needed should be much more sensible anyway.
-> >>>>>>
-> >>>>>> I still have one niggle here. Loading overlays requires
-> >>>>>> CONFIG_OF_OVERLAY, and the overlay loading API returns -ENOTSUPP when
-> >>>>>> CONFIG_OF_OVERLAY=n. For now I'm checking for the config being enabled
-> >>>>>> in each test, but I'm thinking it may be better to simply call
-> >>>>>> kunit_skip() from the overlay loading function if the config is
-> >>>>>> disabled. This way tests can simply call the overlay loading function
-> >>>>>> and we'll halt the test immediately if the config isn't enabled.
-> >>>>>>
-> >>>>>
-> >>>>> That sounds sensible, though there is a potential pitfall. If
-> >>>>> kunit_skip() is called directly from overlay code, might introduce a
-> >>>>> dependency on kunit.ko from the DT overlay, which we might not want.
-> >>>>> The solution there is either to have a kunit wrapper function (so the
-> >>>>> call is already in kunit.ko), or to have a hook to skip the current
-> >>>>> test (which probably makes sense to do anyway, but I think the wrapper
-> >>>>> is the better option).
-> >>>>>
-> >>>>>
-> >>>>>>>
-> >>>>>>>>>
-> >>>>>>>>> That being said, I do think that there's probably some sense in
-> >>>>>>>>> supporting the compiled-in DTB as well (it's definitely simpler than
-> >>>>>>>>> patching kunit.py to always pass the extra command-line option in, for
-> >>>>>>>>> example).
-> >>>>>>>>> But maybe it'd be nice to have the command-line option override the
-> >>>>>>>>> built-in one if present.
-> >>>>>>>>
-> >>>>>>>> Got it. I need to test loading another DTB on the commandline still, but
-> >>>>>>>> I think this won't be a problem. We'll load the unittest-data DTB even
-> >>>>>>>> with KUnit on UML, so assuming that works on UML right now it should be
-> >>>>>>>> unchanged by this series once I resend.
-> >>>>>>>
-> >>>>>>> Again, moving to overlays should render this mostly obsolete, no? Or
-> >>>>>>> am I misunderstanding how the overlay stuff will work?
-> >>>>>>
-> >>>>>> Right, overlays make it largely a moot issue. The way the OF unit tests
-> >>>>>> work today is by grafting a DTB onto the live tree. I'm reusing that
-> >>>>>> logic to graft a container node target for kunit tests to add their
-> >>>>>> overlays too. It will be clearer once I post v2.
-> >>>>>>
-> >>>>>>>
-> >>>>>>> One possible future advantage of being able to test with custom DTs at
-> >>>>>>> boot time would be for fuzzing (provide random DT properties, see what
-> >>>>>>> happens in the test). We've got some vague plans to support a way of
-> >>>>>>> passing custom data to tests to support this kind of case (though, if
-> >>>>>>> we're using overlays, maybe the test could just patch those if we
-> >>>>>>> wanted to do that).
-> >>>>>>
-> >>>>>> Ah ok. I can see someone making a fuzzer that modifies devicetree
-> >>>>>> properties randomly, e.g. using different strings for clock-names.
-> >>>>>>
-> >>>>>> This reminds me of another issue I ran into. I wanted to test adding the
-> >>>>>> same platform device to the platform bus twice to confirm that the
-> >>>>>> second device can't be added. That prints a warning, which makes
-> >>>>>> kunit.py think that the test has failed because it printed a warning. Is
-> >>>>>> there some way to avoid that? I want something like
-> >>>>>>
-> >>>>>>         KUNIT_EXPECT_WARNING(test, <call some function>)
-> >>>>>>
-> >>>>>> so I can test error cases.
-> >>>>
-> >>>> DT unittests already have a similar concept.  A test can report that a
-> >>>> kernel warning (or any other specific text) either (1) must occur for the
-> >>>> test to pass or (2) must _not_ occur for the test to pass.  The check
-> >>>> for the kernel warning is done by the test output parsing program
-> >>>> scripts/dtc/of_unittest_expect.
-> >>>>
-> >>>> The reporting by a test of an expected error in drivers/of/unittest.c
-> >>>> is done by EXPECT_BEGIN() and EXPECT_END().  These have been in
-> >>>> unittest for a long time.
-> >>>>
-> >>>> The reporting by a test of a not expected to occur error is done
-> >>>> by EXPECT_NOT_BEGIN() and EXPECT_NOT_END().  These are added to
-> >>>> unittest in linux 6.3-rc1.
-> >>>>
-> >>>> I discussed this concept in one of the early TAP / KTAP discussion
-> >>>
-> >>> The link to the early KTAP discussion on this concept is:
-> >>>
-> >>>    https://lore.kernel.org/all/d38bf9f9-8a39-87a6-8ce7-d37e4a641675@gmail.com/T/#u
-> >>>
-> >>>
-> >>
-> >> Thanks -- I'd totally forgotten about that!
-> >>
-> >
-> >> I still personally would prefer a way of checking this from within the
-> >> kernel, as if we're just printing out "EXPECT: " lines, then it's not
-> >> possible to know if a test passes just from the raw results (and
-> >> things like statistics can't be updated without a separate tool like
-> >> kunit.py parsing the KTAP.
-> >
-> > Yes, I totally agree with that.  If there is a reasonable way to
-> > implement.  But in the DT unittest world, I have not found a
-> > reasonable way.  Adding hooks is suggested below, but for DT
-> > unittest _I_ (opinion) do not find that reasonable.  I voice no
-> > vote for kunit - that decision is up to the kunit crowd.
-> >
-> >>
-> >> Indeed, my personal preference is that this log-based way of doing
-> >> expectations is probably best kept as a last resort. i.e.,
-> >> 1. Try to add a hook to the code which prints the message, which can
-> >> then fail the test (or set a flag for the test to check later). This
-> >> probably needs some better KUnit-side helpers to be truly ergonomic,
-> >> but at least avoids too strict a dependency on the exact formatting of
-> >> the log messages.
-> >
-> > I'm not a fan of hooks.  I see them as a maintenance burden, dependent
-> > upon the source version of the object being tested, yet another
-> > thing that can go wrong, and adds complexity to creating a test
-> > environment and running the test.  Again, this just a personal
-> > opinion, and I'm not voting for or against this for kunit.
-> >
+It seems to me that there are actually 3 mappings, with the third being 
+(U2) above (ie vfsuid_t -> kuid_t). And that from_vfsuid() does mappings 
+(1) and (2) above. Is this incorrect?
 
-I definitely agree that they've got their problems, and aren't the
-right solution for every test.
+Whats confusing to me is that from_vfsuid() takes both an idmap and a 
+user namespace, so presumably it will handle both mapping types (1) and 
+(2). And then there's from_kuid() which takes an idmap, so I thought it 
+might also do a type (2) mapping. But looking at the code it doesn't 
+seem to ever use its idmap parameter. Can you explain the rational 
+behind having from_kuid() take an idmap? Is it legacy that will be 
+cleaned up as this code settles down / stabilizes? Or perhaps its
 
-That being said, I think a few of those problems also apply to
-expecting individual error lines, which are basically doing the same
-thing, just less explicitly (though with the advantage of serving
-another real-world purpose).
+> 
+> For nearly all filesystems these steps almost never need to be performed
+> explicitly. Instead, dedicated vfs helpers will do this:
+> 
+> (U1) i_{g,u}id_update() // map to filesystem wide value
+> (U2) i_{g,u}id_read() // map to raw on-disk value
+> 
+> For filesystems that don't support being mounted in namespaces the (U2)
+> step is always a nop. So technically there's no difference between:
+> 
+> (U2) from_kuid() and __kuid_val(kuid)
+> 
+> but it's cleaner to use the helpers even in that case.
+> 
+> So given how hostfs works these two steps need to be performed
+> explicitly. So I suggest (untested):
+> 
+> diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+> index c18bb50c31b6..72b7e1bcc32e 100644
+> --- a/fs/hostfs/hostfs_kern.c
+> +++ b/fs/hostfs/hostfs_kern.c
+> @@ -813,12 +813,22 @@ static int hostfs_setattr(struct mnt_idmap *idmap,
+>                  attrs.ia_mode = attr->ia_mode;
+>          }
+>          if (attr->ia_valid & ATTR_UID) {
+> +               kuid_t kuid;
+> +
+>                  attrs.ia_valid |= HOSTFS_ATTR_UID;
+> -               attrs.ia_uid = from_kuid(&init_user_ns, attr->ia_uid);
+> +               /* Map the vfs id into the filesystem. */
+> +               kuid = from_vfsuid(idmap, &init_user_ns, attr->ia_vfsuid);
+> +               /* Map the filesystem id to its raw on disk value. */
+> +               attrs.ia_uid = from_kuid(&init_user_ns, kuid);
 
-> >> 2. If that doesn't work, use console tracepoints or similar to
-> >> implement an EXPECT_BEGIN() / EXPECT_END() or similar API entirely
-> >> within the kernel.
-> >
-> > Isn't this just another hook?  So same opinion.
-> >
+Its interesting that this is what I originally discarded, as an 
+unfamiliar reader, it looks like you're doing two namespace mappings. 
+But that's not happening because from_kuid() disregards its namespace 
+parameter.
 
-I see what you mean. I guess the distinction I was trying to draw was
-between a specific hook, implemented as such explicitly on both sides,
-and a generic mechanism for console-message-based expectations.
+I've tested this and it does seems to work. Thanks!
 
-So the difference is that, once the EXPECT_BEGIN()/EXPECT_END() macros
-have been implemented this way, the uses of them should look the same.
+Glenn
 
-> >> 3. Only if we can't come up with a working way of doing the former
-> >> options, resort to adding "EXPECT:" lines and having a parser pick up
-> >> on this.
->
-> Adding one more thought here so I don't forget it before the topic picks
-> up again in the KTAP version 2 world...
->
-> The test parser could generate an artificial subtest test case status line
-> or normal test case status line to report the result of the EXPECT.  This
-> also is ugly because it is creating a new requirement on the parser vs the
-> expectations in the KTAP plan line (the plan line could include the EXPECT
-> in the number of tests count, but then the raw KTAP test output would be
-> missing the artificial EXPECT test result).  No need to hash out details
-> here, just a thought...
->
+>          }
+>          if (attr->ia_valid & ATTR_GID) {
+> +               kgid_t kgid;
+> +
+>                  attrs.ia_valid |= HOSTFS_ATTR_GID;
+> -               attrs.ia_gid = from_kgid(&init_user_ns, attr->ia_gid);
+> +               /* Map the vfs id into the filesystem. */
+> +               kgid = from_vfsgid(idmap, &init_user_ns, attr->ia_vfsgid);
+> +               /* Map the filesystem id to its raw on disk value. */
+> +               attrs.ia_gid = from_kgid(&init_user_ns, kgid);
+>          }
+>          if (attr->ia_valid & ATTR_SIZE) {
+>                  attrs.ia_valid |= HOSTFS_ATTR_SIZE;
 
-Yeah, I think if we have this done at the parser level, our options
-are either that or an override.
-
-For KUnit, I think the override makes much more sense, as logically,
-any expectation would be considered part of an existing test case.
-Maybe we could treat an override as a "subtest" of the current test,
-but injecting a test case anywhere else would go pretty seriously
-against the KUnit model.
-
-> -Frank
->
-> >
-> > Again, don't let my opinion affect the voting between 1, 2, 3, or other
-> > for kunit.
-> >
-> >>
-> >> One of the downsides of doing "EXPECT" lines in KTAP is that it'll
-> >> suddenly be much more dependent on the exact layout of the tests, as
-> >> we'd need to be able to override a test result if an expectation fails
-> >> (at least, to maintain the KUnit structure). And overriding a result
-> >> which is already in the output seems really, really ugly.
-> >
-> > I don't understand "dependent on the exact layout of the tests".
-> > If you are saying that the test result parser has to figure out
-> > which test result to override, that has not been an issue in
-> > the cases that I use EXPECTs in DT unittest.  The EXPECT begin and
-> > EXPECT end have always immediately surrounded a single test, so
-> > when the parser processes the EXPECT end, only the most recent
-> > test result could be overridden.  This has worked because the
-> > kernel warning and error messages have been from kernel action
-> > that happens synchronously with the test.  If the test prods the
-> > kernel in a way that results in the kernel performing an
-> > asynchronous activity (eg in another thread), then it becomes
-> > more complex to structure the EXPECT end -- I would imagine that the
-> > test would have to block on the asynchronous activity just before
-> > reporting the normal KTAP status result for the test (and the
-> > EXPECT end would normally be just after reporting the KTAP
-> > status result for the test).
-
-Okay: I agree 100% with you there.
-
-I think the difference I was thinking of is more whether expectations
-are considered part of an existing test (which may need overriding),
-or exist as their own separate test result (as you suggest in the
-follow-up email above).
-
-> >
-> > I agree with overriding being ugly.  For the DT unittest results
-> > parser, the EXPECT summary results are reported separately from
-> > the individual test summary results.  The parser also flags the
-> > EXPECT failure in line with the normal individual test result
-> > lines.
-> >
-> > I see both parsing results as valid, and as a policy choice for
-> > each test parser.
-> >
-
-I agree that each parser should have some leeway here, but do think we
-want to make sure the results have some sensible, standardised
-interpretation, so that we can use parsers interchangeably without
-getting totally inconsistent results. That's the big advantage of
-standardisation, after all.
-
-My philosophical objection to overriding is that it's really confusing
-to have an "ok" line in the results, indicating that a test has
-passed, when the test has in fact failed (because the expectation
-doesn't match). This gets worse when subtests are considered, and we
-have these misleading results bubbled up to reported overall "suite"
-results.
-
-I guess one solution is to have an extra layer of parsing, which takes
-raw kernel output, verifies the expectations, and then outputs
-"processed KTAP", with all of the final results resolved. But that's
-ugly in a way, too.
-
-> >>
-> >> There's a patch to the KASAN tests to move from doing option 1 to
-> >> option 2 above (in order to better support RCU, which didn't work with
-> >> the hook):
-> >> https://lore.kernel.org/all/ebf96ea600050f00ed567e80505ae8f242633640.1666113393.git.andreyknvl@google.com/
-> >>
-> >>
-> >>>> threads and expect to start a discussion thread on this specific
-> >>>> topic in the KTAP Specification V2 context.  I expect the discussion
-> >>>> to result in a different implementation than what DT unittests are
-> >>>> using (bike shedding likely to ensue) but whatever is agreed to
-> >>>> should be easy for DT to switch to.
-> >>>
-> >>> The link to the KTAP Specification Version 2 process and progress is:
-> >>>
-> >>>    https://elinux.org/Test_Results_Format_Notes#KTAP_version_2
-> >>>
-> >>
-> >> Thanks! We've got a few more KTAP ideas to air, so will hopefully send
-> >> those out soon!
-> >
-> > Glad to hear, I'm hoping that process starts progressing a bit.
-> >
-
-Yeah. I'll shift further discussion of this to a KTAP proposal: I
-don't want to derail this thread too much further.
-
-We'll keep looking at fully in-kernel ways of achieving similar things
-in the meantime.
-
-Cheers,
--- David
-
-> > -Frank
-> >
-> >>
-> >> Cheers,
-> >> -- David
-> >>
-> >>>>
-> >>>>>
-> >>>>> Hmm... I'd've thought that shouldn't be a problem: kunit.py should
-> >>>>> ignore most messages during a test, unless it can't find a valid
-> >>>>> result line. What does the raw KTAP output look like? (You can get it
-> >>>>> from kunit.py by passing the --raw_output option).
-> >>>>>
-> >>>>> That being said, a KUNIT_EXPECT_LOG_MESSAGE() or similar is something
-> >>>>> we've wanted for a while. I think that the KASAN folks have been
-> >>>>> working on something similar using console tracepoints:
-> >>>>> https://lore.kernel.org/all/ebf96ea600050f00ed567e80505ae8f242633640.1666113393.git.andreyknvl@google.com/
-> >>>>>
-> >>>>> Cheers,
-> >>>>> -- David
-> >>>>
-> >>>
-> >
->
-
---000000000000cb9ee705f6fcb762
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-64VRg2IjDI2fJVE9RD6aMEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
-dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
-AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
-c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
-LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
-LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
-Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQA2lZLYRLu7foeR
-cHo1VeNA974FZBiCm08Kd44/aCMEzdTJvxAE9xbUJf7hS1i6eW49qxuSp3/YLn6U7uatwAcmZcwp
-Zma19ftf3LH+9Hvffk+X8fbPKe6uHkJhR2LktrhRzF159jj67NvXyGQv8J4n7UNeEVP0d5ByvRwv
-tF2bJwlOwRGLoxasKSyDHIyUpwTfWYPq7XvjoGqQ/tDS7Khcc5WncJl0/ZEj7EKjtoGbsDbLdXEF
-m/6vdcYKJzF9ghHewtV3YIU4RE3pEM4aCWWRtJwbExzeue6fI7RqURbNCAyQuSpWv0YQvzsX3ZX3
-c1otrs50n1N0Sf8/rfJxq7sWMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
-R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABxy1wm0tAmHKHFkLS9RWPMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCCk
-QKttta0vKO3EEV4E7xigoxV1tFPqhlRw1Poiw2FVUjAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMzAzMTYwNDE1NTlaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
-BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEApQ2vC1vu9ou/04tEx2Dp
-YkIk2v8ktgSTc+vWbBCVXtkhgqWVRdmrYVbHdvm0G/PnjQ9X6S+Pbmzb5m641PseGutF3Est6zYJ
-AfcIfY1dRrmwGrFd0BL4qqO1Wg90tsltz0TqPC303RV1M0g2TLAw+602e7oGnYqBkBP8WBaJgGC6
-PGqf8I9J39rCDv9+QfpsKgP1WB8BGQfbtpWQsPiSfxHXKEMlKST8VK+JcIOuTPDhZMmcLAEe6STq
-WNYBfDPn/s4gx220mmTeg5wcJrQUft/eMNQ4/ZYFoFaXEBJXBG7/TXVs+h6D2x5Ydrfn/F38qM7Y
-J9iygyNo7dDBrJHSdw==
---000000000000cb9ee705f6fcb762--
-
-
---===============0964677734745836470==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 linux-um mailing list
 linux-um@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-um
-
---===============0964677734745836470==--
-
