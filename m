@@ -4,85 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B52FEC6FD1D
-	for <linux-um@archiver.kernel.org>; Mon, 20 Mar 2023 17:22:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF2C6C74A5B
+	for <linux-um@archiver.kernel.org>; Tue, 21 Mar 2023 14:33:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:To:From:Subject:
-	Cc:Message-Id:Date:Mime-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=iWWmDVb1ARRQksKbziBp+ltFUSlpKOcjKD87WlhSnAs=; b=TwG7owkwQzOe77
-	I7Hxv8/n6dCrze2WMzuVN8EthOYBfr3HOg8COZ+vjvuia/STzTikZXGQEDqgMvAKME2K1PIE3CTrJ
-	iKRHpE2jyqtNDM3G9GERDLvoaHGv8jHgCCxiETlUOzAOriVenrfU3WgeXd5mBleVThfH7pD2gTRDc
-	I1A4eh7iEM7Jka5bZbbr+3e0GE506WYRyJzZGMSdqcYHvlGu0Kj+xyiKxclkG7Cq+OKOGpTKUAsld
-	VdhvBsTaMlMN3jvdbhTWgMKcsJc56qIEl1N/ZN/4FwvgIulxV62eNF+GjongQXaAJWbzlbgvVnb7R
-	QxSrivrO1nky00LWWIRw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=s2LndDu4WeNEwuOrw78YJv+r0T1J6KnSzPMxRTwk0L4=; b=QZ0fkiiuaeDfrwqAs5sWjcloJu
+	oY8PxGcZOoH7HWI+3kBgPRsOC1cGK6odX8i2pd38JtsbwoNaTlYi4y1c78CwVjrnKsGwj+LfRv1li
+	IhgW0N9qBtg+jaPySFlCCJ1eCAOwOpg9nxXdVjr6k4/wc5X3pzTeZO0TIXZwNZzqsOZTErDWsgel2
+	bXE0S6R+ur4A+56nWUOPdO7MqSt+nOdE8347ngDLDWobS/smm+r0RYa7e1RczPYzzZbm5BsWA5jCq
+	M5CXWLLyh+FiNER6SIotj8cHSKp3nZGWTZ6PS1cZXnZ/gaAH9w62NRh1mpwL8l6kIkHnORUi5U0LH
+	4h4LJZOw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1peJDH-009yPE-2P;
-	Mon, 20 Mar 2023 17:22:27 +0000
-Received: from mail-wr1-x42e.google.com ([2a00:1450:4864:20::42e])
+	id 1ped2y-00CkME-23;
+	Tue, 21 Mar 2023 14:33:08 +0000
+Received: from new3-smtp.messagingengine.com ([66.111.4.229])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1peJDE-009yNv-2R
+	id 1ped2u-00CkIx-32
 	for linux-um@lists.infradead.org;
-	Mon, 20 Mar 2023 17:22:26 +0000
-Received: by mail-wr1-x42e.google.com with SMTP id h17so11121434wrt.8
-        for <linux-um@lists.infradead.org>; Mon, 20 Mar 2023 10:22:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679332940;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lxjjxaJTXTboGVrfO6rMCJaEH+UFkfq+cnWcxaf6bDM=;
-        b=e7NNTBrcXYI6ZeGCPVcm1gqNsy0fhqmhF1hY5CpuPfiD09pAc8mDyuSPHZ2abjnEQs
-         5MeUNkf9+Qpn/gJ0TIQFqf1B8wOb7ZAewpBP6p+pX/q3NXaUD16HbZZC6fkbtWE4igUE
-         HWYwcgk257n6oww6LsojLHml+jZ/D96pSwk1dP8Uuj9PqRCNSJNie0HouKYdgrWY57o5
-         jZsA6U7EfydUc7Q6aytVYpqsZh/KZNqpOnrHIaSJlajFx+HXsoQLIx9/GdPjDA5F6HEj
-         stbisFtVA6wAsC+WofyDQyT68vLvYIkMy8kzd+rhsPvwKhzPQY7SiMlZf2Q1sXeDo345
-         evxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679332940;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=lxjjxaJTXTboGVrfO6rMCJaEH+UFkfq+cnWcxaf6bDM=;
-        b=idg77lenLOIFzZJzEfi6I48ISucz/eMLZ1fWgk/hu8rTZILpkQV9iuAum629vyi5Q0
-         3gJqdw3uv8+UlHqCn1spmwjRR7kdYx2n4mN9BmWz0BPN0ZFXgrtIGfNKwIrCJc9Vg/Fx
-         Ia6HibBocJ61eEBePjX16BE5ur0dsrCxjMdDgSq54peLRssQTYMxxE0QpcWlSpkP+XCk
-         xw9Hj5ujvCOZMYKG1MT/SZFcMOO24maDa8fBg6WsonvmrWAGrh8LpogYGMtozR7o0VWW
-         f9uWDvrBz8P491KZu8rPIhG5/RRWUtBpYfdRSQjZGyoSHgAUe3BqnwEsEoPiJcjR4//C
-         W0gw==
-X-Gm-Message-State: AO0yUKU+DFSyI7LCBVcFyMRCKsKvkuOWY0fudlT8dNbjO6cfpgFXJAkI
-	7MAEyi4xeu1ZLPCHDFnBy4Y=
-X-Google-Smtp-Source: AK7set/ymi8bJFB2BEvtQ2c1G0ARXELEvqljjbsIS1JkE7eUXiLHhggKQZscZsry8GAlEe38EPXVMw==
-X-Received: by 2002:a05:6000:1081:b0:2d4:53d7:ea7f with SMTP id y1-20020a056000108100b002d453d7ea7fmr121431wrw.3.1679332940533;
-        Mon, 20 Mar 2023 10:22:20 -0700 (PDT)
-Received: from localhost (93-55-83-125.ip262.fastwebnet.it. [93.55.83.125])
-        by smtp.gmail.com with ESMTPSA id p17-20020adfcc91000000b002c71dd1109fsm9426966wrj.47.2023.03.20.10.22.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Mar 2023 10:22:20 -0700 (PDT)
-Mime-Version: 1.0
-Date: Mon, 20 Mar 2023 18:22:18 +0100
-Message-Id: <CRBDUDH0574S.1JGPTCYLLSBMC@vincent-arch>
-Cc: <linux-um@lists.infradead.org>, <x86@kernel.org>,
- <llvm@lists.linux.dev>, <rust-for-linux@vger.kernel.org>,
- <kunit-dev@googlegroups.com>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] arch:um: Only disable SSE on clang to work around old
- GCC bugs
-From: "Vincenzo Palazzo" <vincenzopalazzodev@gmail.com>
-To: "David Gow" <davidgow@google.com>, "Richard Weinberger"
- <richard@nod.at>, "Anton Ivanov" <anton.ivanov@cambridgegreys.com>,
- "Johannes Berg" <johannes@sipsolutions.net>, "Thomas Gleixner"
- <tglx@linutronix.de>, "Ingo Molnar" <mingo@redhat.com>, "Nick Desaulniers"
- <ndesaulniers@google.com>, "Nathan Chancellor" <nathan@kernel.org>, "Miguel
- Ojeda" <ojeda@kernel.org>, "Roberto Sassu" <roberto.sassu@huaweicloud.com>,
- "SeongJae Park" <sj@kernel.org>
-References: <20230318041555.4192172-1-davidgow@google.com>
-In-Reply-To: <20230318041555.4192172-1-davidgow@google.com>
+	Tue, 21 Mar 2023 14:33:07 +0000
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailnew.nyi.internal (Postfix) with ESMTP id 2F777582194;
+	Tue, 21 Mar 2023 10:33:00 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Tue, 21 Mar 2023 10:33:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:sender
+	:subject:subject:to:to; s=fm3; t=1679409180; x=1679416380; bh=T/
+	lq0wdl5waDK7GJCv2ptAX5Xsg9I9oRktyonRsh2Ok=; b=nSQeM/hAbtbjunm3+l
+	9m0ACRX5pcJaI4mDgqc3K84iYdrOkpWyhiivRFGddhBnNafT5tIoYwX0pOKg2/r2
+	d0AREqYUPBAnPjyugOIN8SdCGJ5DLL7KISvulndfWgfqsEsKKKArdTJ72QG0ezyJ
+	4oMmHbQYFFK3UhUvVy9evNiYJrAY+iPwA1HL6OOwMtIYq4msJtNrcR3o4PKPsIHj
+	Kty9Csv3mzjyUMehWpPB5RriaZ77gwU5fVLJXT3wRu4YMMkNNeDWM/IXnWO9RCMn
+	rZERZ4TDdS8g5Ux/IOJR3oXbPFCyXkWOJEQ1+b3x+gvYXHz+KzM/vFSAqzBpPlfe
+	AKCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:sender:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm2; t=1679409180; x=1679416380; bh=T/lq0wdl5waDK
+	7GJCv2ptAX5Xsg9I9oRktyonRsh2Ok=; b=WkTdIj36fxYe9ZB98EK6mienufLrF
+	qeZoTxB5+dougAHWFmQH32QWx12UioQ12q5M2JLS2WS1Kr7xwhBRKkQR2QpqVrw2
+	hiMqLBUR1Plzw97VXOJOPMeUjY03KWodhVVRlHatQmFQ2WezHqtoZI4h6YPwMKZH
+	ZPbf5C2KfjpCXB1Fyu2SsJ0TaD9YSTVdYsgGB+5Ebz03LHezG1LKtF5yQb6CjTmN
+	4jUvzz0B/Lj2B0i7vPJujZbH8yGXsEawU7ZPc1Rpc4yWK+WcfEHSHweiP0S6CbI8
+	/gKKIQe7ZeUgg18lTzYQQxnZ11jXsJT9aPRjoSpd2uzOxkUXgoK6elABg==
+X-ME-Sender: <xms:G8AZZLgSQPHKhlV50q8TO3b-YscRkC9yQ7lc6TnjJh3KXHLYTAIoBw>
+    <xme:G8AZZIBkr2JChgYJTsTYbi8KEuTIK3nbfoAys_uyDwo6kwBEqioF6pJqiS6PK0GA7
+    LGno9h1qEJDq5duAws>
+X-ME-Received: <xmr:G8AZZLEiWTYxlKntBJX_Dbfee0v_Ar8edQcJPjs3c9Cl_2MWZ1WJrd3s9dB2l-8aAeOCNJ10YVlIV2qs9a2EOTRy_d9uno0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdegtddgieehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpeetfefffefgkedtfefgledugfdtjeefjedvtddtkeetieffjedvgfehheff
+    hfevudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:G8AZZIQ3LvdGLv99ngFCGTO6-hTz02yJFTBVzDt_NQDAqd12r6Cx-A>
+    <xmx:G8AZZIz_gaZiOALKNSZFvA5p-bS7GlshX4IHWG3o1ksbDtqfeafejg>
+    <xmx:G8AZZO4y6C4PkPoN8Zjyt2N7JuF9PlRNG7idrZua3C8HEm9UgYCm4w>
+    <xmx:HMAZZIEv6AY65hhQlNCWwIlZEXqiIg197-nyQfcGi_cisbYAWFZd0A>
+Feedback-ID: i8771445c:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 21 Mar 2023 10:32:58 -0400 (EDT)
+Date: Tue, 21 Mar 2023 15:32:56 +0100
+From: Maxime Ripard <maxime@cerno.tech>
+To: David Gow <davidgow@google.com>
+Cc: Stephen Boyd <sboyd@kernel.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+	patches@lists.linux.dev,
+	Brendan Higgins <brendan.higgins@linux.dev>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Vincent Whitchurch <vincent.whitchurch@axis.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Frank Rowand <frowand.list@gmail.com>,
+	Christian Marangi <ansuelsmth@gmail.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	devicetree@vger.kernel.org, linux-um@lists.infradead.org,
+	linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com
+Subject: Re: [PATCH 4/8] clk: Add test managed clk provider/consumer APIs
+Message-ID: <20230321143256.ybr6c6kstcv5lnbk@houat>
+References: <20230302013822.1808711-1-sboyd@kernel.org>
+ <20230302013822.1808711-5-sboyd@kernel.org>
+ <CABVgOSkahumU6T+rCVx+k7Y9=iMszveseVYE0wfKjXwkNJpFxQ@mail.gmail.com>
+ <77b315f6b89eb256c516ee08b1c17312.sboyd@kernel.org>
+ <CABVgOSk4gEob3rokKF_p2Bcd_Sj3ikUN4R-HPHyTR0Eoo==85g@mail.gmail.com>
+MIME-Version: 1.0
+In-Reply-To: <CABVgOSk4gEob3rokKF_p2Bcd_Sj3ikUN4R-HPHyTR0Eoo==85g@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230320_102224_817894_0A30104E 
-X-CRM114-Status: GOOD (  14.45  )
+X-CRM114-CacheID: sfid-20230321_073305_584321_B8B4BF54 
+X-CRM114-Status: GOOD (  23.99  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,61 +117,96 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3458501113770008195=="
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-> As part of the Rust support for UML, we disable SSE (and similar flags)
-> to match the normal x86 builds. This both makes sense (we ideally want a
-> similar configuration to x86), and works around a crash bug with SSE
-> generation under Rust with LLVM.
->
-> However, this breaks compiling stdlib.h under gcc < 11, as the x86_64
-> ABI requires floating-point return values be stored in an SSE register.
-> gcc 11 fixes this by only doing register allocation when a function is
-> actually used, and since we never use atof(), it shouldn't be a problem:
-> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99652
->
-> Nevertheless, only disable SSE on clang setups, as that's a simple way
-> of working around everyone's bugs.
->
-> Fixes: 884981867947 ("rust: arch/um: Disable FP/SIMD instruction to match x86")
-> Reported-by: Roberto Sassu <roberto.sassu@huaweicloud.com>
-> Link: https://lore.kernel.org/linux-um/6df2ecef9011d85654a82acd607fdcbc93ad593c.camel@huaweicloud.com/
-> Tested-by: Roberto Sassu <roberto.sassu@huaweicloud.com>
-> Tested-by: SeongJae Park <sj@kernel.org>
-> Signed-off-by: David Gow <davidgow@google.com>
-> ---
->  arch/x86/Makefile.um | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/arch/x86/Makefile.um b/arch/x86/Makefile.um
-> index b70559b821df..2106a2bd152b 100644
-> --- a/arch/x86/Makefile.um
-> +++ b/arch/x86/Makefile.um
-> @@ -3,9 +3,14 @@ core-y += arch/x86/crypto/
->  
->  #
->  # Disable SSE and other FP/SIMD instructions to match normal x86
-> +# This is required to work around issues in older LLVM versions, but breaks
-> +# GCC versions < 11. See:
-> +# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99652
->  #
-> +ifeq ($(CONFIG_CC_IS_CLANG),y)
->  KBUILD_CFLAGS += -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx
->  KBUILD_RUSTFLAGS += -Ctarget-feature=-sse,-sse2,-sse3,-ssse3,-sse4.1,-sse4.2,-avx,-avx2
-> +endif
->  
->  ifeq ($(CONFIG_X86_32),y)
->  START := 0x8048000
-> -- 
-> 2.40.0.rc1.284.g88254d51c5-goog
+
+--===============3458501113770008195==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="kn4g64rogn4yrwmy"
+Content-Disposition: inline
 
 
-Reviewed-by: Vincenzo Palazzo <vincenzopalazzodev@gmail.com>
+--kn4g64rogn4yrwmy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, Mar 11, 2023 at 02:32:04PM +0800, David Gow wrote:
+> > > > diff --git a/drivers/clk/clk-kunit.c b/drivers/clk/clk-kunit.c
+> > > > new file mode 100644
+> > > > index 000000000000..78d85b3a7a4a
+> > > > --- /dev/null
+> > > > +++ b/drivers/clk/clk-kunit.c
+> > > > @@ -0,0 +1,204 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0
+> > > > +/*
+> > > > + * KUnit helpers for clk tests
+> > > > + */
+> > > > +#include <linux/clk.h>
+> > > > +#include <linux/clk-provider.h>
+> > > > +#include <linux/err.h>
+> > > > +#include <linux/kernel.h>
+> > > > +#include <linux/slab.h>
+> > > > +
+> > > > +#include <kunit/resource.h>
+> > > > +
+> > > > +#include "clk-kunit.h"
+> > > > +
+> > > > +static void kunit_clk_disable_unprepare(struct kunit_resource *res)
+> > >
+> > > We need to decide on the naming scheme of these, and in particular if
+> > > they should be kunit_clk or clk_kunit (or something else).
+> > >
+> > > I'd lean to clk_kunit, if only to match DRM's KUnit helpers being
+> > > drm_kunit_helper better, and so that these are more tightly bound to
+> > > the subsystem being tested.
+> > > (i.e., so I don't have to scroll through every subsystem's helpers
+> > > when autocompleting kunit_).
+> >
+> > Ok, got it. I was trying to match kunit_kzalloc() style. It makes it
+> > easy to slap the 'kunit_' prefix on existing auto-completed function
+> > names like kzalloc() or clk_prepare_enable().
+>=20
+> Yeah: my rule of thumb at the moment is to keep the kunit_ prefix for
+> things which are generic across the whole kernel (and tend to be
+> implemented in lib/kunit), and to use suffixes or infixes (whichever
+> works best) for things which are subsystem-specific.
+
+A suffix is kind of weird though when any other managed call is using a
+prefix: devm is always using a prefix including for clocks, kunit for
+some calls too (like kzalloc).
+
+Having clk_get vs devm_clk_get vs clk_get_kunit would be very
+inconsistent and throws me off completely :)
+
+Maxime
+
+--kn4g64rogn4yrwmy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZBnAGAAKCRDj7w1vZxhR
+xcCXAPwJeWrqE0jAwByKsB4bICizCU+z39K0DcfRrOCvNgqcfwD8DHaZSDnzz/ky
+XhKIRMR9Jm58Oeu5HdXIKxO3zDFyWQU=
+=1Uxg
+-----END PGP SIGNATURE-----
+
+--kn4g64rogn4yrwmy--
+
+
+--===============3458501113770008195==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 linux-um mailing list
 linux-um@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-um
+
+--===============3458501113770008195==--
+
