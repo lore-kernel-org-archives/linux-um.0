@@ -4,108 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF2C6C74A5B
-	for <linux-um@archiver.kernel.org>; Tue, 21 Mar 2023 14:33:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C1B4C6FD20
+	for <linux-um@archiver.kernel.org>; Tue, 21 Mar 2023 20:12:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=s2LndDu4WeNEwuOrw78YJv+r0T1J6KnSzPMxRTwk0L4=; b=QZ0fkiiuaeDfrwqAs5sWjcloJu
-	oY8PxGcZOoH7HWI+3kBgPRsOC1cGK6odX8i2pd38JtsbwoNaTlYi4y1c78CwVjrnKsGwj+LfRv1li
-	IhgW0N9qBtg+jaPySFlCCJ1eCAOwOpg9nxXdVjr6k4/wc5X3pzTeZO0TIXZwNZzqsOZTErDWsgel2
-	bXE0S6R+ur4A+56nWUOPdO7MqSt+nOdE8347ngDLDWobS/smm+r0RYa7e1RczPYzzZbm5BsWA5jCq
-	M5CXWLLyh+FiNER6SIotj8cHSKp3nZGWTZ6PS1cZXnZ/gaAH9w62NRh1mpwL8l6kIkHnORUi5U0LH
-	4h4LJZOw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=1lGsjEM2OKgaEwAsfEERG4aiqtMFyn+9ZFLtnxbp1o0=; b=T8qVGdN7zdp4ek
+	JhAZ5qKV/ki32+CAASbbEsaGdwMMl2W6MyiPjZaWOnKgjm7aZSLOVkCjy0dP5AsNSIpTsCkG137Ko
+	juSCdbBaeWwkthRaB0WMEnJwnoJCFeKpIZZUxFu+chQc23Z1wUGfUC4QD4Ag72S/z2+Aap+M/xlbL
+	1J3NkJSYZaMN4eAqQxs1E86hrKpGKiEDAFIz9UWQFBnSfN8ISb41yA0lRjVNK5tGBsVfJSqNSIASc
+	moRfCveK5CX9uZX5B3hFPFwhPH7Z0XPwpXXQf+kfs73TZZfw8EG9rR6p3Lkgqy18yHKVGYdi4UHct
+	itW8XYvbisgDerEieXvg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1ped2y-00CkME-23;
-	Tue, 21 Mar 2023 14:33:08 +0000
-Received: from new3-smtp.messagingengine.com ([66.111.4.229])
+	id 1peiLB-00DcLt-38;
+	Tue, 21 Mar 2023 20:12:17 +0000
+Received: from mx1.riseup.net ([198.252.153.129])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1ped2u-00CkIx-32
+	id 1peiL8-00DcKN-2G
 	for linux-um@lists.infradead.org;
-	Tue, 21 Mar 2023 14:33:07 +0000
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailnew.nyi.internal (Postfix) with ESMTP id 2F777582194;
-	Tue, 21 Mar 2023 10:33:00 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Tue, 21 Mar 2023 10:33:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:sender
-	:subject:subject:to:to; s=fm3; t=1679409180; x=1679416380; bh=T/
-	lq0wdl5waDK7GJCv2ptAX5Xsg9I9oRktyonRsh2Ok=; b=nSQeM/hAbtbjunm3+l
-	9m0ACRX5pcJaI4mDgqc3K84iYdrOkpWyhiivRFGddhBnNafT5tIoYwX0pOKg2/r2
-	d0AREqYUPBAnPjyugOIN8SdCGJ5DLL7KISvulndfWgfqsEsKKKArdTJ72QG0ezyJ
-	4oMmHbQYFFK3UhUvVy9evNiYJrAY+iPwA1HL6OOwMtIYq4msJtNrcR3o4PKPsIHj
-	Kty9Csv3mzjyUMehWpPB5RriaZ77gwU5fVLJXT3wRu4YMMkNNeDWM/IXnWO9RCMn
-	rZERZ4TDdS8g5Ux/IOJR3oXbPFCyXkWOJEQ1+b3x+gvYXHz+KzM/vFSAqzBpPlfe
-	AKCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm2; t=1679409180; x=1679416380; bh=T/lq0wdl5waDK
-	7GJCv2ptAX5Xsg9I9oRktyonRsh2Ok=; b=WkTdIj36fxYe9ZB98EK6mienufLrF
-	qeZoTxB5+dougAHWFmQH32QWx12UioQ12q5M2JLS2WS1Kr7xwhBRKkQR2QpqVrw2
-	hiMqLBUR1Plzw97VXOJOPMeUjY03KWodhVVRlHatQmFQ2WezHqtoZI4h6YPwMKZH
-	ZPbf5C2KfjpCXB1Fyu2SsJ0TaD9YSTVdYsgGB+5Ebz03LHezG1LKtF5yQb6CjTmN
-	4jUvzz0B/Lj2B0i7vPJujZbH8yGXsEawU7ZPc1Rpc4yWK+WcfEHSHweiP0S6CbI8
-	/gKKIQe7ZeUgg18lTzYQQxnZ11jXsJT9aPRjoSpd2uzOxkUXgoK6elABg==
-X-ME-Sender: <xms:G8AZZLgSQPHKhlV50q8TO3b-YscRkC9yQ7lc6TnjJh3KXHLYTAIoBw>
-    <xme:G8AZZIBkr2JChgYJTsTYbi8KEuTIK3nbfoAys_uyDwo6kwBEqioF6pJqiS6PK0GA7
-    LGno9h1qEJDq5duAws>
-X-ME-Received: <xmr:G8AZZLEiWTYxlKntBJX_Dbfee0v_Ar8edQcJPjs3c9Cl_2MWZ1WJrd3s9dB2l-8aAeOCNJ10YVlIV2qs9a2EOTRy_d9uno0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdegtddgieehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpeetfefffefgkedtfefgledugfdtjeefjedvtddtkeetieffjedvgfehheff
-    hfevudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:G8AZZIQ3LvdGLv99ngFCGTO6-hTz02yJFTBVzDt_NQDAqd12r6Cx-A>
-    <xmx:G8AZZIz_gaZiOALKNSZFvA5p-bS7GlshX4IHWG3o1ksbDtqfeafejg>
-    <xmx:G8AZZO4y6C4PkPoN8Zjyt2N7JuF9PlRNG7idrZua3C8HEm9UgYCm4w>
-    <xmx:HMAZZIEv6AY65hhQlNCWwIlZEXqiIg197-nyQfcGi_cisbYAWFZd0A>
-Feedback-ID: i8771445c:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 21 Mar 2023 10:32:58 -0400 (EDT)
-Date: Tue, 21 Mar 2023 15:32:56 +0100
-From: Maxime Ripard <maxime@cerno.tech>
-To: David Gow <davidgow@google.com>
-Cc: Stephen Boyd <sboyd@kernel.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-	patches@lists.linux.dev,
-	Brendan Higgins <brendan.higgins@linux.dev>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Vincent Whitchurch <vincent.whitchurch@axis.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Frank Rowand <frowand.list@gmail.com>,
-	Christian Marangi <ansuelsmth@gmail.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	devicetree@vger.kernel.org, linux-um@lists.infradead.org,
-	linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com
-Subject: Re: [PATCH 4/8] clk: Add test managed clk provider/consumer APIs
-Message-ID: <20230321143256.ybr6c6kstcv5lnbk@houat>
-References: <20230302013822.1808711-1-sboyd@kernel.org>
- <20230302013822.1808711-5-sboyd@kernel.org>
- <CABVgOSkahumU6T+rCVx+k7Y9=iMszveseVYE0wfKjXwkNJpFxQ@mail.gmail.com>
- <77b315f6b89eb256c516ee08b1c17312.sboyd@kernel.org>
- <CABVgOSk4gEob3rokKF_p2Bcd_Sj3ikUN4R-HPHyTR0Eoo==85g@mail.gmail.com>
+	Tue, 21 Mar 2023 20:12:16 +0000
+Received: from fews2.riseup.net (fews2-pn.riseup.net [10.0.1.84])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
+	 client-signature RSA-PSS (2048 bits) client-digest SHA256)
+	(Client CN "mail.riseup.net", Issuer "R3" (not verified))
+	by mx1.riseup.net (Postfix) with ESMTPS id 4Ph2nh23XDzDqGt;
+	Tue, 21 Mar 2023 20:12:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+	t=1679429528; bh=+4hKPyRMH2aAK35R9DtVSpBun70VepUerw2XjaTytxU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=cnch0x4zGxsR9VcUGElrbA7sE/iBGr3H+sdwfYJ4+SiLz3Odfgd7jOUhGap+KYViM
+	 zi1bsUKERut+p8wrLXb3bAC/JUBiyoqP9DSKFbqqoXm+jMhRuyOd+Hzvo3D/ltY8ts
+	 FEnJ/T9QtDnPvc5H9n/Ci5fvDIdLLCWA33tXns78=
+X-Riseup-User-ID: 1C3CD006F550256050AEC2FA37B1A54058F970E2E8F94543F974B5CEED22D817
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	 by fews2.riseup.net (Postfix) with ESMTPSA id 4Ph2nP1MWTz1y8Z;
+	Tue, 21 Mar 2023 20:11:52 +0000 (UTC)
+Message-ID: <a7313cdd-c54e-cbbf-e8e9-8330184912ac@riseup.net>
+Date: Tue, 21 Mar 2023 17:11:47 -0300
 MIME-Version: 1.0
-In-Reply-To: <CABVgOSk4gEob3rokKF_p2Bcd_Sj3ikUN4R-HPHyTR0Eoo==85g@mail.gmail.com>
+Subject: Re: [PATCH] arch:um: Only disable SSE on clang to work around old GCC
+ bugs
+Content-Language: en-US
+To: David Gow <davidgow@google.com>, Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Nick Desaulniers <ndesaulniers@google.com>,
+ Nathan Chancellor <nathan@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
+ Roberto Sassu <roberto.sassu@huaweicloud.com>, SeongJae Park <sj@kernel.org>
+Cc: linux-um@lists.infradead.org, x86@kernel.org, llvm@lists.linux.dev,
+ rust-for-linux@vger.kernel.org, kunit-dev@googlegroups.com,
+ linux-kernel@vger.kernel.org
+References: <20230318041555.4192172-1-davidgow@google.com>
+From: Arthur Grillo Queiroz Cabral <arthurgrillo@riseup.net>
+In-Reply-To: <20230318041555.4192172-1-davidgow@google.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230321_073305_584321_B8B4BF54 
-X-CRM114-Status: GOOD (  23.99  )
+X-CRM114-CacheID: sfid-20230321_131214_799790_999A3EA1 
+X-CRM114-Status: GOOD (  15.12  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -117,96 +77,61 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3458501113770008195=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 
---===============3458501113770008195==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="kn4g64rogn4yrwmy"
-Content-Disposition: inline
 
+On 18/03/23 01:15, 'David Gow' via KUnit Development wrote:
+> As part of the Rust support for UML, we disable SSE (and similar flags)
+> to match the normal x86 builds. This both makes sense (we ideally want a
+> similar configuration to x86), and works around a crash bug with SSE
+> generation under Rust with LLVM.
+> 
+> However, this breaks compiling stdlib.h under gcc < 11, as the x86_64
+> ABI requires floating-point return values be stored in an SSE register.
+> gcc 11 fixes this by only doing register allocation when a function is
+> actually used, and since we never use atof(), it shouldn't be a problem:
+> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99652
+> 
+> Nevertheless, only disable SSE on clang setups, as that's a simple way
+> of working around everyone's bugs.
+> 
+> Fixes: 884981867947 ("rust: arch/um: Disable FP/SIMD instruction to match x86")
+> Reported-by: Roberto Sassu <roberto.sassu@huaweicloud.com>
+> Link: https://lore.kernel.org/linux-um/6df2ecef9011d85654a82acd607fdcbc93ad593c.camel@huaweicloud.com/
+> Tested-by: Roberto Sassu <roberto.sassu@huaweicloud.com>
+> Tested-by: SeongJae Park <sj@kernel.org>
+> Signed-off-by: David Gow <davidgow@google.com>
+> ---
+>  arch/x86/Makefile.um | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/arch/x86/Makefile.um b/arch/x86/Makefile.um
+> index b70559b821df..2106a2bd152b 100644
+> --- a/arch/x86/Makefile.um
+> +++ b/arch/x86/Makefile.um
+> @@ -3,9 +3,14 @@ core-y += arch/x86/crypto/
+>  
+>  #
+>  # Disable SSE and other FP/SIMD instructions to match normal x86
+> +# This is required to work around issues in older LLVM versions, but breaks
+> +# GCC versions < 11. See:
+> +# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99652
+>  #
+> +ifeq ($(CONFIG_CC_IS_CLANG),y)
+>  KBUILD_CFLAGS += -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx
+>  KBUILD_RUSTFLAGS += -Ctarget-feature=-sse,-sse2,-sse3,-ssse3,-sse4.1,-sse4.2,-avx,-avx2
+> +endif
+>  
+>  ifeq ($(CONFIG_X86_32),y)
+>  START := 0x8048000
 
---kn4g64rogn4yrwmy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sat, Mar 11, 2023 at 02:32:04PM +0800, David Gow wrote:
-> > > > diff --git a/drivers/clk/clk-kunit.c b/drivers/clk/clk-kunit.c
-> > > > new file mode 100644
-> > > > index 000000000000..78d85b3a7a4a
-> > > > --- /dev/null
-> > > > +++ b/drivers/clk/clk-kunit.c
-> > > > @@ -0,0 +1,204 @@
-> > > > +// SPDX-License-Identifier: GPL-2.0
-> > > > +/*
-> > > > + * KUnit helpers for clk tests
-> > > > + */
-> > > > +#include <linux/clk.h>
-> > > > +#include <linux/clk-provider.h>
-> > > > +#include <linux/err.h>
-> > > > +#include <linux/kernel.h>
-> > > > +#include <linux/slab.h>
-> > > > +
-> > > > +#include <kunit/resource.h>
-> > > > +
-> > > > +#include "clk-kunit.h"
-> > > > +
-> > > > +static void kunit_clk_disable_unprepare(struct kunit_resource *res)
-> > >
-> > > We need to decide on the naming scheme of these, and in particular if
-> > > they should be kunit_clk or clk_kunit (or something else).
-> > >
-> > > I'd lean to clk_kunit, if only to match DRM's KUnit helpers being
-> > > drm_kunit_helper better, and so that these are more tightly bound to
-> > > the subsystem being tested.
-> > > (i.e., so I don't have to scroll through every subsystem's helpers
-> > > when autocompleting kunit_).
-> >
-> > Ok, got it. I was trying to match kunit_kzalloc() style. It makes it
-> > easy to slap the 'kunit_' prefix on existing auto-completed function
-> > names like kzalloc() or clk_prepare_enable().
->=20
-> Yeah: my rule of thumb at the moment is to keep the kunit_ prefix for
-> things which are generic across the whole kernel (and tend to be
-> implemented in lib/kunit), and to use suffixes or infixes (whichever
-> works best) for things which are subsystem-specific.
-
-A suffix is kind of weird though when any other managed call is using a
-prefix: devm is always using a prefix including for clocks, kunit for
-some calls too (like kzalloc).
-
-Having clk_get vs devm_clk_get vs clk_get_kunit would be very
-inconsistent and throws me off completely :)
-
-Maxime
-
---kn4g64rogn4yrwmy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZBnAGAAKCRDj7w1vZxhR
-xcCXAPwJeWrqE0jAwByKsB4bICizCU+z39K0DcfRrOCvNgqcfwD8DHaZSDnzz/ky
-XhKIRMR9Jm58Oeu5HdXIKxO3zDFyWQU=
-=1Uxg
------END PGP SIGNATURE-----
-
---kn4g64rogn4yrwmy--
-
-
---===============3458501113770008195==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Tested-by: Arthur Grillo <arthurgrillo@riseup.net>
 
 _______________________________________________
 linux-um mailing list
 linux-um@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-um
-
---===============3458501113770008195==--
-
