@@ -4,68 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C1B4C6FD20
-	for <linux-um@archiver.kernel.org>; Tue, 21 Mar 2023 20:12:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EFA5BC6FD20
+	for <linux-um@archiver.kernel.org>; Tue, 21 Mar 2023 20:57:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Date:To:Cc:From:Subject:References:
+	In-Reply-To:MIME-Version:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1lGsjEM2OKgaEwAsfEERG4aiqtMFyn+9ZFLtnxbp1o0=; b=T8qVGdN7zdp4ek
-	JhAZ5qKV/ki32+CAASbbEsaGdwMMl2W6MyiPjZaWOnKgjm7aZSLOVkCjy0dP5AsNSIpTsCkG137Ko
-	juSCdbBaeWwkthRaB0WMEnJwnoJCFeKpIZZUxFu+chQc23Z1wUGfUC4QD4Ag72S/z2+Aap+M/xlbL
-	1J3NkJSYZaMN4eAqQxs1E86hrKpGKiEDAFIz9UWQFBnSfN8ISb41yA0lRjVNK5tGBsVfJSqNSIASc
-	moRfCveK5CX9uZX5B3hFPFwhPH7Z0XPwpXXQf+kfs73TZZfw8EG9rR6p3Lkgqy18yHKVGYdi4UHct
-	itW8XYvbisgDerEieXvg==;
+	List-Owner; bh=vNX9u5n2c/2x07TH8cKR7RI3+WuF/IbkiaBBw3huR7U=; b=vM0Ys41HC2GPqZ
+	NT4K49K2ZisL52cQaa+3XXwSxq8tLCLEeWuI7ufnu+v4LcwelaEB9kvumhNcLSG2aSwkAjgqP20SQ
+	f52rX0P8noQ45rmNkQlXoXa5RtO0s6EOIZBFoqpvFInMS0xwI9kLn7CcJIpaoUFrBzFZSCBI8Upq2
+	X+OrpQrVXFyzmHy6uOrfP8tBhi1C5sUbNIUxMQEwrudHSxMhlEydNQtB96M6czGpdh89QerysVJF8
+	RSrdHVr9sl4xmah728LyeGjJQtn254WWsL8RLjHLU1tXSmT4iWDT708D2HulgLjibWpUEhqXE1BcF
+	SnjYs9FNrlxPOY9Q0xjg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1peiLB-00DcLt-38;
-	Tue, 21 Mar 2023 20:12:17 +0000
-Received: from mx1.riseup.net ([198.252.153.129])
+	id 1pej2T-00DlC0-2c;
+	Tue, 21 Mar 2023 20:57:01 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1peiL8-00DcKN-2G
+	id 1pej2Q-00DlBQ-2g
 	for linux-um@lists.infradead.org;
-	Tue, 21 Mar 2023 20:12:16 +0000
-Received: from fews2.riseup.net (fews2-pn.riseup.net [10.0.1.84])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
-	 client-signature RSA-PSS (2048 bits) client-digest SHA256)
-	(Client CN "mail.riseup.net", Issuer "R3" (not verified))
-	by mx1.riseup.net (Postfix) with ESMTPS id 4Ph2nh23XDzDqGt;
-	Tue, 21 Mar 2023 20:12:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1679429528; bh=+4hKPyRMH2aAK35R9DtVSpBun70VepUerw2XjaTytxU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=cnch0x4zGxsR9VcUGElrbA7sE/iBGr3H+sdwfYJ4+SiLz3Odfgd7jOUhGap+KYViM
-	 zi1bsUKERut+p8wrLXb3bAC/JUBiyoqP9DSKFbqqoXm+jMhRuyOd+Hzvo3D/ltY8ts
-	 FEnJ/T9QtDnPvc5H9n/Ci5fvDIdLLCWA33tXns78=
-X-Riseup-User-ID: 1C3CD006F550256050AEC2FA37B1A54058F970E2E8F94543F974B5CEED22D817
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews2.riseup.net (Postfix) with ESMTPSA id 4Ph2nP1MWTz1y8Z;
-	Tue, 21 Mar 2023 20:11:52 +0000 (UTC)
-Message-ID: <a7313cdd-c54e-cbbf-e8e9-8330184912ac@riseup.net>
-Date: Tue, 21 Mar 2023 17:11:47 -0300
+	Tue, 21 Mar 2023 20:57:00 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id BCBE0B819C2;
+	Tue, 21 Mar 2023 20:56:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70F1DC433EF;
+	Tue, 21 Mar 2023 20:56:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1679432215;
+	bh=qgNHCadAkebh8+XwXNyHvRzBICpIGss89/yZYgR7dic=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=nzP6F7edJAjZYbEwQbVQWLCYc3HyMeXECVqqzGdpbVHOVXMSIX9PYlwTWai4WhkAr
+	 XvCuEhBF/PbBTetnSx9AAQ1gUj426mcEGb+aTek9q7g4ORAZxQ0mJTUrLO+PO686Lp
+	 IhED1ev9cMw7wFHQUbTb/WL+BydQhJE4Un6AIVMNEQG3i0+XKeH0jHKW4kLuORi7Wc
+	 SFsQG2xeopUpkboBNDdQt3Y03W2MTPI7c04JibwbUrU+PSlAwH6yhuXqeyubp3jSz8
+	 G+54EW3RIxX2W7H5CPzzyAKwP4gKdKyAYYcAqvWGH/sNUds8xu7Z4dJBMayhaqRfqw
+	 aAszR0TbIeBsA==
+Message-ID: <ffd2d079db17d6756a72ae711d6fdafb.sboyd@kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] arch:um: Only disable SSE on clang to work around old GCC
- bugs
-Content-Language: en-US
-To: David Gow <davidgow@google.com>, Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Nick Desaulniers <ndesaulniers@google.com>,
- Nathan Chancellor <nathan@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
- Roberto Sassu <roberto.sassu@huaweicloud.com>, SeongJae Park <sj@kernel.org>
-Cc: linux-um@lists.infradead.org, x86@kernel.org, llvm@lists.linux.dev,
- rust-for-linux@vger.kernel.org, kunit-dev@googlegroups.com,
- linux-kernel@vger.kernel.org
-References: <20230318041555.4192172-1-davidgow@google.com>
-From: Arthur Grillo Queiroz Cabral <arthurgrillo@riseup.net>
-In-Reply-To: <20230318041555.4192172-1-davidgow@google.com>
+In-Reply-To: <CABVgOSk9gqRe_5yQZweBA2Qg2aGx8rUJtOHywGeT4x7TEyBH0A@mail.gmail.com>
+References: <20230302013822.1808711-1-sboyd@kernel.org> <20230302013822.1808711-3-sboyd@kernel.org> <CABVgOSkomwwgKZ9N0_0YMDL--QaZiTV7ONgSRABU2Ph1Z0CG-g@mail.gmail.com> <a97c9bb3a5addfb34af8ccabaa513026.sboyd@kernel.org> <CABVgOSkJ4mw_DtFzn5EwcsuYixWY_j13YotxEYqWhO+ZCL1KPg@mail.gmail.com> <d64a086ddcb7c5ca5abecab0ca654259.sboyd@kernel.org> <CABVgOSk9gqRe_5yQZweBA2Qg2aGx8rUJtOHywGeT4x7TEyBH0A@mail.gmail.com>
+Subject: Re: [PATCH 2/8] of: Enable DTB loading on UML for KUnit tests
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: Michael Turquette <mturquette@baylibre.com>, linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, patches@lists.linux.dev, Brendan Higgins <brendan.higgins@linux.dev>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Rafael J . Wysocki <rafael@kernel.org>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Vincent Whitchurch <vincent.whitchurch@axis.com>, Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Christian Marangi <ansuelsmth@gmail.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, devicetree@vger.kernel.org, linux-um@lists.infradead.org, linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com
+To: David Gow <davidgow@google.com>
+Date: Tue, 21 Mar 2023 13:56:53 -0700
+User-Agent: alot/0.10
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230321_131214_799790_999A3EA1 
-X-CRM114-Status: GOOD (  15.12  )
+X-CRM114-CacheID: sfid-20230321_135659_045172_FEC0C2CA 
+X-CRM114-Status: GOOD (  10.34  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,54 +73,15 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+Quoting David Gow (2023-03-10 22:42:24)
+> Hmm... I'd've thought that shouldn't be a problem: kunit.py should
+> ignore most messages during a test, unless it can't find a valid
+> result line. What does the raw KTAP output look like? (You can get it
+> from kunit.py by passing the --raw_output option).
+> 
 
-
-On 18/03/23 01:15, 'David Gow' via KUnit Development wrote:
-> As part of the Rust support for UML, we disable SSE (and similar flags)
-> to match the normal x86 builds. This both makes sense (we ideally want a
-> similar configuration to x86), and works around a crash bug with SSE
-> generation under Rust with LLVM.
-> 
-> However, this breaks compiling stdlib.h under gcc < 11, as the x86_64
-> ABI requires floating-point return values be stored in an SSE register.
-> gcc 11 fixes this by only doing register allocation when a function is
-> actually used, and since we never use atof(), it shouldn't be a problem:
-> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99652
-> 
-> Nevertheless, only disable SSE on clang setups, as that's a simple way
-> of working around everyone's bugs.
-> 
-> Fixes: 884981867947 ("rust: arch/um: Disable FP/SIMD instruction to match x86")
-> Reported-by: Roberto Sassu <roberto.sassu@huaweicloud.com>
-> Link: https://lore.kernel.org/linux-um/6df2ecef9011d85654a82acd607fdcbc93ad593c.camel@huaweicloud.com/
-> Tested-by: Roberto Sassu <roberto.sassu@huaweicloud.com>
-> Tested-by: SeongJae Park <sj@kernel.org>
-> Signed-off-by: David Gow <davidgow@google.com>
-> ---
->  arch/x86/Makefile.um | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/arch/x86/Makefile.um b/arch/x86/Makefile.um
-> index b70559b821df..2106a2bd152b 100644
-> --- a/arch/x86/Makefile.um
-> +++ b/arch/x86/Makefile.um
-> @@ -3,9 +3,14 @@ core-y += arch/x86/crypto/
->  
->  #
->  # Disable SSE and other FP/SIMD instructions to match normal x86
-> +# This is required to work around issues in older LLVM versions, but breaks
-> +# GCC versions < 11. See:
-> +# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99652
->  #
-> +ifeq ($(CONFIG_CC_IS_CLANG),y)
->  KBUILD_CFLAGS += -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx
->  KBUILD_RUSTFLAGS += -Ctarget-feature=-sse,-sse2,-sse3,-ssse3,-sse4.1,-sse4.2,-avx,-avx2
-> +endif
->  
->  ifeq ($(CONFIG_X86_32),y)
->  START := 0x8048000
-
-Tested-by: Arthur Grillo <arthurgrillo@riseup.net>
+I rebased and retried on v6.3-rc1 and it isn't a problem. Maybe there
+was some problem on v6.2?
 
 _______________________________________________
 linux-um mailing list
