@@ -4,77 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CD29C77B76
-	for <linux-um@archiver.kernel.org>; Mon, 17 Apr 2023 21:59:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2763FC77B78
+	for <linux-um@archiver.kernel.org>; Mon, 17 Apr 2023 22:00:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=jT9xjAxOqutc5Qmuks2OJBVO+owwzgK4WneuAZ/L4BY=; b=FrclDfxVgxKGUX
-	jFoOO/PKgjVNfK2SGdinUSBhY53dJxgVZkkm/hlBH4TlLPFEIq0lrsxvi4Cb8OVPZ5VPe43HkuoBI
-	e5dOkKm6uqvUT0emKerEbisVcT0tfyIa7rKYQaCzHtk4i6wbEHbtp2wd6+PK5xuvYpDWrxBoclMho
-	8NNXzt8y34XJ92vLIwGB1rw/mp1QcspUXr33/gIQ3TG5ppvOEbuW3Jared0WwX7Xmg9nkJQ7HKQWe
-	NnsEvsSar2I38LgR1tb9m1CrEcFNI1ukZvykt0yDngjwpkKEuAQohMBz9EhJ/5eCNqs7JQmoav7Ti
-	YEJmk/DmwK/Kyw7TnqjQ==;
+	List-Owner; bh=e3GbtwNkOG2JavcqUkO730QrCuPAjP1Tl0M3WXn46HY=; b=aU/GuwuwaH/X17
+	0pD4uIA+XlX4MPbbWEl70XBRj7zGXWlw1IpiHdLrzrka6c9FxMTR6AVCwJO4dcTuobUVgunB9TZV7
+	9Xo3u3hdn9yz35DLprBKxGlVI8xhObLUfn1ZXSIDDfLhrIP8Vxh4aa8lebe4iSUmcLTwLCZcj5Kzu
+	CcXnrI9hVQnkX4+pNDvh6RQgWVQzzF2jUknplZV0q1OfFiq1rMcB6f9JfO6Rm+ekWngr8EAny5go1
+	jtQtGsTsJHMYMCi8ebp65XcxHMmg8iXfAnnx+lX5d8JZSIxJC3/AJL/RCdKnUnHUm4QN2ZVyHSKaG
+	NPy5P/cyl4S6CEXdj2Tw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1poWsm-000Brg-2k;
-	Mon, 17 Apr 2023 21:59:32 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1poWtf-000CHN-2E;
+	Mon, 17 Apr 2023 22:00:27 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1poWsj-000BpY-1U;
-	Mon, 17 Apr 2023 21:59:29 +0000
+	id 1poVqP-00Ha1W-2h;
+	Mon, 17 Apr 2023 20:53:01 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=kyicI3UFSJTH3R33HGjLFGEyUDrTPXlIkqJCgIfzdrc=; b=LBIXwuHpcbmxt23lPcGZ7jHW6x
-	EvezF9aCKY4L5w+sdxab1nLoFVZTNk0dzd6F97cjZcbQp8lvLOp652DZlWEwwbhQA36ZX55bE3yf3
-	G5UwxHDCZZXoGoLtDS6sPv0yMe405wGgr/oLxwouGi6UNPeAElFsktWG79csWZlBAlBebbcgS3VQi
-	OWUaCYHCN8nsMJaYt2g3ztIS0vvMX47CCfVdxxYX2aTVO3nIHyWzjxdIqraA75uCzoT9YNYx80qyt
-	20e/SAH0a8r19WdvE6ipVxKB6d1ZNHa2UqrvWVuJbliNDHTr7uqw0Y0YLN6xwANRF5zC6ROlTu3Rw
-	/6Y4c3CA==;
-Received: from mail-yw1-x112e.google.com ([2607:f8b0:4864:20::112e])
-	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1poVxh-00HSUG-2j;
-	Mon, 17 Apr 2023 21:00:37 +0000
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-54f8b46d031so15386087b3.3;
-        Mon, 17 Apr 2023 14:00:33 -0700 (PDT)
+	bh=seoMdP0S43tB5tHiAJsyEn/McuL6oTkl/wxfiJ8zej0=; b=eAGDHn/PIvCMAbe9ms55PjUopH
+	uO9z5NAnd/Vp3BbmOPrVxM28Krp0mF3nuvZAT3nBTSPYOf56PQuG+ikjSdevlhnV1u6Nv9rhu1Yfn
+	sse9XfSBNk9K6BYdqLr1MRv+/W4t3gswsgcMZh4Pw0aV28AkZaF7V4LmH/4o5yRvd0Cwv5ehdk0Xi
+	pzhIalIWCL+VDo/wity8iI54K10+lpeUzlEf0vHOiIHHtmY6LFbk6ooWqNc7Qq7hVU85QI//zX0Da
+	Sm98ZwSBvfcfG61nVZxgRyGQyth+/ckN7y75Q2hCXDdmP/3ziE4G326okBHBMP0cUqgPHoCfZE7lk
+	dpdn9wRA==;
+Received: from mail-pj1-x102f.google.com ([2607:f8b0:4864:20::102f])
+	by casper.infradead.org with esmtps (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1poVqL-00BfmA-Sc; Mon, 17 Apr 2023 20:53:00 +0000
+Received: by mail-pj1-x102f.google.com with SMTP id z11-20020a17090abd8b00b0024721c47ceaso14039503pjr.3;
+        Mon, 17 Apr 2023 13:52:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1681765228; x=1684357228;
+        d=gmail.com; s=20221208; t=1681764774; x=1684356774;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kyicI3UFSJTH3R33HGjLFGEyUDrTPXlIkqJCgIfzdrc=;
-        b=eFTwCheIPLi7v2//O72VDeMHtkh8k8nxg6t87EaRWaiwgWOm4TnXmmM5o9lvUO5PLn
-         Hc9sulYZXmKHt3+PAdp4Ao3uIhsoupFXES56Axn8WdaIGA0fyfKO5vIAHDboXV8qUdF6
-         T/d7Rs7QzZVYhIjR/nmDeSwf4sMbZzLuNy0zv1usiumRqx+O/vzVNwE5s7DzpJ7/lstM
-         1rmrCReFyeb4di4WtGKxi1v/iMA33/BW57+PaIuV+DRK7Yphe+uSqQlfLKyUNAx6F5La
-         Hz8gSAjqzgV6NIyte4Bxdg+ctOvLf0mbEhSVfjbT9/s/VTNUUBjXB+X9rfb8RRCOuMJe
-         S1ww==
+        bh=seoMdP0S43tB5tHiAJsyEn/McuL6oTkl/wxfiJ8zej0=;
+        b=m9/ZIcz+Tqctc8DsupfPgmRFjJ+xGEJ5QFcDJn618MR0YPogH6sfzkHf8JHJze9cJp
+         x5NQYQBUB4f261Rif3c3u/e/lVyrkb7fkfJolfOwhFk6XOwO7D63t/TQQqs9S95k9Ae8
+         FKQXzDTaphWXYOHY2MRQP+XNQ8wh3L+YHkBgztA18oGJHjweyg/A/nWWIx5QMqDpAEPB
+         X0wu3GkIqgBlm9RuBmiAr6UEFrV7LCwD9Gy8HkrUbR2REAIxrVGyinkjPCtpi11n6vo5
+         ARCTsKi2jOZHutSbPq4tlksgdP3OAZq4N0EqMo6MlYwn+u6KLBtMzuBeO5yqTZEreTX6
+         9o+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1681765228; x=1684357228;
+        d=1e100.net; s=20221208; t=1681764774; x=1684356774;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kyicI3UFSJTH3R33HGjLFGEyUDrTPXlIkqJCgIfzdrc=;
-        b=iBqcZdUIEMAOLspKoPRBdt8Nrc1oUYC4ZQZ+u8gAPhwNYlgG61d7fG2ib5WXzIQH7k
-         o90FBB6kKVm9d9rWuORCcG7Phq/LFQe/37+yZL3RxvkwvAKnLjL0RfgSPPM+WrwKA9Hj
-         OAVhNXau+ASCEJcm0KCIOaMBD4Wd2+CBl7gwlzHysdzAn3uohPuBUGSJBCWwM+oBsn9+
-         pAd4uYHDCkZV7tiM+Bra5y1eIVFNtjzxCcnfuActE3Ju0tV3em6Cy6uZ5ovkyuyPRQEE
-         rRNUCOx6gtREIm9Tm/k1asK+x6Do+d+JXP8P7h2zCDvQTpKXV6iXSxUGsMVVizXm+3mo
-         vJSQ==
-X-Gm-Message-State: AAQBX9eBeLLDBuO56CRK2nOVnQ98yUjfswTJ3z9qqZH22midPaWfcUzI
-	WahVNccOGhhYOwn5ZkIembCubUdgXT6xZg==
-X-Google-Smtp-Source: AKy350b8thcmecOoaOKiNwMZgeAazmiEiQ9V6nLrivAsLyOgVvPy05KEMe/JXWQl3cGgcJMZ1iU0KA==
-X-Received: by 2002:a17:90b:3848:b0:247:4ad1:f69b with SMTP id nl8-20020a17090b384800b002474ad1f69bmr11748993pjb.26.1681764800112;
-        Mon, 17 Apr 2023 13:53:20 -0700 (PDT)
+        bh=seoMdP0S43tB5tHiAJsyEn/McuL6oTkl/wxfiJ8zej0=;
+        b=X+PVWvVrtfGqgbwVD7vboxcLrI6cMbKqEGaQHtMmgfVAC5UMuCMsTRkqmkYo2MfoPf
+         0zn9mWapR5h3LxaPE2F5ZulZh6jt/b/n7elXkj33bFotJUDmFKXXLtnrmesVXqauM3yk
+         +6XqaUUXilPkxdmuJKQ48T60PKxKPDhlVTS1QrlIoZXdkteEVnWZtfYVVFLvC8RgySLb
+         wOCaGUytiez0QfTnCM8CkugbNN6YULbKiRHSVbLKR+rRHquZd9FkAV0jbkcoS0Ogdc3M
+         s7wwyutMackyXbRGVE0ZbYT8sAOxit+AVraSRyC1QSDuq6cmHzXE3FoEL+GL3laGtcMN
+         23dQ==
+X-Gm-Message-State: AAQBX9d2aN0kPO8tIEnjc8uo+UqaQL8nV6eaL/Ldam5kh/gxEPQwjCkt
+	UTOfMYRlkAltMOSoG5oRfj0=
+X-Google-Smtp-Source: AKy350aUejw0DeO6puoaXC3R5n6x3DzcxqacgAq+Qj51dxkW8glMsrCpGOXbLfdvjTORWF+TApg9qw==
+X-Received: by 2002:a05:6a20:b21:b0:eb:8d47:332a with SMTP id x33-20020a056a200b2100b000eb8d47332amr14024065pzf.36.1681764773709;
+        Mon, 17 Apr 2023 13:52:53 -0700 (PDT)
 Received: from fedora.hsd1.ca.comcast.net ([2601:644:937f:7f20::c139])
-        by smtp.googlemail.com with ESMTPSA id h7-20020a17090ac38700b0022335f1dae2sm7609707pjt.22.2023.04.17.13.53.18
+        by smtp.googlemail.com with ESMTPSA id h7-20020a17090ac38700b0022335f1dae2sm7609707pjt.22.2023.04.17.13.52.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Apr 2023 13:53:19 -0700 (PDT)
+        Mon, 17 Apr 2023 13:52:53 -0700 (PDT)
 From: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	Matthew Wilcox <willy@infradead.org>
@@ -96,16 +95,16 @@ Cc: linux-mm@kvack.org,
 	xen-devel@lists.xenproject.org,
 	kvm@vger.kernel.org,
 	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-Subject: [PATCH 25/33] mips: Convert various functions to use ptdescs
-Date: Mon, 17 Apr 2023 13:50:40 -0700
-Message-Id: <20230417205048.15870-26-vishal.moola@gmail.com>
+Subject: [PATCH 06/33] mm: Convert ptlock_alloc() to use ptdescs
+Date: Mon, 17 Apr 2023 13:50:21 -0700
+Message-Id: <20230417205048.15870-7-vishal.moola@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230417205048.15870-1-vishal.moola@gmail.com>
 References: <20230417205048.15870-1-vishal.moola@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230417_220034_153921_DCD55530 
-X-CRM114-Status: GOOD (  13.10  )
+X-CRM114-CacheID: sfid-20230417_215257_990244_1D8E6632 
+X-CRM114-Status: GOOD (  10.73  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -122,103 +121,67 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-As part of the conversions to replace pgtable constructor/destructors with
-ptdesc equivalents, convert various page table functions to use ptdescs.
-
-Some of the functions use the *get*page*() helper functions. Convert
-these to use ptdesc_alloc() and ptdesc_address() instead to help
-standardize page tables further.
+This removes some direct accesses to struct page, working towards
+splitting out struct ptdesc from struct page.
 
 Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
 ---
- arch/mips/include/asm/pgalloc.h | 31 +++++++++++++++++--------------
- arch/mips/mm/pgtable.c          |  7 ++++---
- 2 files changed, 21 insertions(+), 17 deletions(-)
+ include/linux/mm.h | 6 +++---
+ mm/memory.c        | 4 ++--
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/mips/include/asm/pgalloc.h b/arch/mips/include/asm/pgalloc.h
-index f72e737dda21..7f7cc3140b27 100644
---- a/arch/mips/include/asm/pgalloc.h
-+++ b/arch/mips/include/asm/pgalloc.h
-@@ -51,13 +51,13 @@ extern pgd_t *pgd_alloc(struct mm_struct *mm);
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 069187e84e35..17dc6e37ea03 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2786,7 +2786,7 @@ static inline void ptdesc_clear(void *x)
+ #if USE_SPLIT_PTE_PTLOCKS
+ #if ALLOC_SPLIT_PTLOCKS
+ void __init ptlock_cache_init(void);
+-extern bool ptlock_alloc(struct page *page);
++bool ptlock_alloc(struct ptdesc *ptdesc);
+ extern void ptlock_free(struct page *page);
  
- static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
+ static inline spinlock_t *ptlock_ptr(struct page *page)
+@@ -2798,7 +2798,7 @@ static inline void ptlock_cache_init(void)
  {
--	free_pages((unsigned long)pgd, PGD_TABLE_ORDER);
-+	ptdesc_free(virt_to_ptdesc(pgd));
  }
  
--#define __pte_free_tlb(tlb,pte,address)			\
--do {							\
--	pgtable_pte_page_dtor(pte);			\
--	tlb_remove_page((tlb), pte);			\
-+#define __pte_free_tlb(tlb, pte, address)			\
-+do {								\
-+	ptdesc_pte_dtor(page_ptdesc(pte));			\
-+	tlb_remove_page_ptdesc((tlb), page_ptdesc(pte));	\
- } while (0)
- 
- #ifndef __PAGETABLE_PMD_FOLDED
-@@ -65,18 +65,18 @@ do {							\
- static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
+-static inline bool ptlock_alloc(struct page *page)
++static inline bool ptlock_alloc(struct ptdesc *ptdesc)
  {
- 	pmd_t *pmd;
--	struct page *pg;
-+	struct ptdesc *ptdesc;
- 
--	pg = alloc_pages(GFP_KERNEL_ACCOUNT, PMD_TABLE_ORDER);
--	if (!pg)
-+	ptdesc = ptdesc_alloc(GFP_KERNEL_ACCOUNT, PMD_TABLE_ORDER);
-+	if (!ptdesc)
- 		return NULL;
- 
--	if (!pgtable_pmd_page_ctor(pg)) {
--		__free_pages(pg, PMD_TABLE_ORDER);
-+	if (!ptdesc_pmd_ctor(ptdesc)) {
-+		ptdesc_free(ptdesc);
- 		return NULL;
- 	}
- 
--	pmd = (pmd_t *)page_address(pg);
-+	pmd = (pmd_t *)ptdesc_address(ptdesc);
- 	pmd_init(pmd);
- 	return pmd;
+ 	return true;
  }
-@@ -90,10 +90,13 @@ static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
- static inline pud_t *pud_alloc_one(struct mm_struct *mm, unsigned long address)
- {
- 	pud_t *pud;
-+	struct ptdesc *ptdesc = ptdesc_alloc(GFP_KERNEL, PUD_TABLE_ORDER);
- 
--	pud = (pud_t *) __get_free_pages(GFP_KERNEL, PUD_TABLE_ORDER);
--	if (pud)
--		pud_init(pud);
-+	if (!ptdesc)
-+		return NULL;
-+	pud = (pud_t *)ptdesc_address(ptdesc);
-+
-+	pud_init(pud);
- 	return pud;
+@@ -2828,7 +2828,7 @@ static inline bool ptlock_init(struct page *page)
+ 	 * slab code uses page->slab_cache, which share storage with page->ptl.
+ 	 */
+ 	VM_BUG_ON_PAGE(*(unsigned long *)&page->ptl, page);
+-	if (!ptlock_alloc(page))
++	if (!ptlock_alloc(page_ptdesc(page)))
+ 		return false;
+ 	spin_lock_init(ptlock_ptr(page));
+ 	return true;
+diff --git a/mm/memory.c b/mm/memory.c
+index d4d7df041b6f..37d408ac1b8d 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -5926,14 +5926,14 @@ void __init ptlock_cache_init(void)
+ 			SLAB_PANIC, NULL);
  }
  
-diff --git a/arch/mips/mm/pgtable.c b/arch/mips/mm/pgtable.c
-index b13314be5d0e..d626db9ac224 100644
---- a/arch/mips/mm/pgtable.c
-+++ b/arch/mips/mm/pgtable.c
-@@ -10,10 +10,11 @@
- 
- pgd_t *pgd_alloc(struct mm_struct *mm)
+-bool ptlock_alloc(struct page *page)
++bool ptlock_alloc(struct ptdesc *ptdesc)
  {
--	pgd_t *ret, *init;
-+	pgd_t *init, *ret = NULL;
-+	struct ptdesc *ptdesc = ptdesc_alloc(GFP_KERNEL, PGD_TABLE_ORDER);
+ 	spinlock_t *ptl;
  
--	ret = (pgd_t *) __get_free_pages(GFP_KERNEL, PGD_TABLE_ORDER);
--	if (ret) {
-+	if (ptdesc) {
-+		ret = (pgd_t *) ptdesc_address(ptdesc);
- 		init = pgd_offset(&init_mm, 0UL);
- 		pgd_init(ret);
- 		memcpy(ret + USER_PTRS_PER_PGD, init + USER_PTRS_PER_PGD,
+ 	ptl = kmem_cache_alloc(page_ptl_cachep, GFP_KERNEL);
+ 	if (!ptl)
+ 		return false;
+-	page->ptl = ptl;
++	ptdesc->ptl = ptl;
+ 	return true;
+ }
+ 
 -- 
 2.39.2
 
