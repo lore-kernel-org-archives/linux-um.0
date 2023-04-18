@@ -4,82 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7249C77B72
-	for <linux-um@archiver.kernel.org>; Tue, 18 Apr 2023 02:13:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7043AC77B71
+	for <linux-um@archiver.kernel.org>; Tue, 18 Apr 2023 08:26:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BYIeqql3DjHXNfBYgWB8nD6I9TWnlC+8SgR+btLps30=; b=y2iKvXmDmtcDA9
-	w3lBCXoTWDgCpPiT6++1rPy4nu6KFGWeixy4oxcIeGdnxXE3CPjfa0Q9whY4+4MHN5kGkphGYJzad
-	6k1992SJ2dIwuouwgLZipYtCMq1Wt4nwLH40q3EGM5zOv8d1UgNlRi4T2cseXWPjt0FVKqaetfrRS
-	WBADcHpSVeXFOrizQ+oXRdmlMJWcAOClnEZUJo0ZmaqKWyfulI4yci4lW3KXVhQyFUWtgg3DcWUKE
-	XooHkEBVo9rUirgr6hPMfE+vghYVe9K+4OnB4WsBTKOrNTCLdHYIRouLd4F75iaJJJsYrqJfV00f6
-	MtOtWu7fY8oMQdwLjDNQ==;
+	List-Owner; bh=pVIbUbHjxKQG+zfzrrlU0dLsUJqgqhfOzc6KMy6T2ow=; b=k8p6NazTgEw4lU
+	yOEoOICpxigLWIaatVdjWcRQSfTl0WVAYnaK6yQAUYWGrkXRr8Jr0PAwsYIOAj6HBAYgYpFtiXNdO
+	vw4VTLxdKcoFO9DEUOKGGJuddus6+AzYZeyqJ6L4yBdibRciiKRM2n6arBkPG8QPK4nj9HyZpahCU
+	dkGpzyOIjh1K59s6doH1tr3fVw3ye1XuPobtDhTdy7qO+X0Qsng6oZm0xrC7VWjJI3w5BMXKmfaoj
+	Uf+DmY54DcNurrnMG33hFVj+YdpTbG/gSUmZ9VTtEXvaVxN++rU5ocD6edirSoL3TcZLimrL0Ea1L
+	Ie4ivGW+mpYYKVv4MoZQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1poaqX-000ePb-07;
-	Tue, 18 Apr 2023 02:13:29 +0000
-Received: from mga04.intel.com ([192.55.52.120])
+	id 1pogft-001ItY-2H;
+	Tue, 18 Apr 2023 08:26:53 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1poaqP-000eNf-1R;
-	Tue, 18 Apr 2023 02:13:25 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1681784001; x=1713320001;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=wqlsjQk8Hlncd0Tit9Ob615YFcxS+GeVN0PRT6FhUrY=;
-  b=P3xKzv1riB0ccHpdIEPPsNpJLrxUdLET2hfX9mDUTOq74H+iqSvS0USn
-   ngEXxPFDeoRi1Q80Qy5w12KhMwsU1dcJeJs+Dzb3GhiuDMftIsi/MBoKq
-   hl+Yb4TYuWg/hBnmSDWSILjGIS0lD6MH5h2U8jGeq1x973V56fsTAvigv
-   DopNkgbYaYUumbzhUdDMDXbgux+pJZ0ftIOwbdaR/6liEJSrBbiBpNpY1
-   Yg1qLKoQkYsYuRQrUJxU0qoT1F4eyMv7wiCNc17I2xreN5/37Ess5yYjZ
-   hEiMU8ExUuHs5nyqYdDL3cyebXpQkFFScBwxbXyOate25uBUrsiS4yYcJ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10683"; a="343806398"
-X-IronPort-AV: E=Sophos;i="5.99,205,1677571200"; 
-   d="scan'208";a="343806398"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2023 19:13:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10683"; a="723460357"
-X-IronPort-AV: E=Sophos;i="5.99,205,1677571200"; 
-   d="scan'208";a="723460357"
-Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 17 Apr 2023 19:13:13 -0700
-Received: from kbuild by b613635ddfff with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1poaqG-000cqb-33;
-	Tue, 18 Apr 2023 02:13:12 +0000
-Date: Tue, 18 Apr 2023 10:13:01 +0800
-From: kernel test robot <lkp@intel.com>
-To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>
-Cc: oe-kbuild-all@lists.linux.dev,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-	xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
-	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-Subject: Re: [PATCH 12/33] mm: Create ptdesc equivalents for
- pgtable_{pte,pmd}_page_{ctor,dtor}
-Message-ID: <202304180959.YFCTfVKw-lkp@intel.com>
-References: <20230417205048.15870-13-vishal.moola@gmail.com>
+	id 1pogfq-001Isl-2V
+	for linux-um@lists.infradead.org;
+	Tue, 18 Apr 2023 08:26:52 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=Pa3AbBPLmsJru+kp7hmhkWIZnaFV6/kVt5HbYGSSg8A=;
+	t=1681806410; x=1683016010; b=D0aMoUfYHl7erZF/pV9U8+fcdx/DanhYlRwKN4iAQX22ab0
+	fq5lD+O+GzijkxS7njg00ILUhdQxbTBUMPLvJCsEmo5I1WUThPtynPFd9jsY+TDfzxGdkYsmdSMUZ
+	a/9OSJcZFCFT5HIQg4JUklod+0s+MevKUS5uqbQXvIY+AeDElg/oipiR22AEgyU2OAAQkZtF1IrTR
+	fvzOUwZblNZa655U9e0RUYpqleYskj+CGK2VwI2MDlEJW90zzq/y97TTx+kAFf+/LCmsdSYrXV/Bn
+	INUVfqlOkoBrCqREPkXid9XAk6DTgFGTVnriywB/Sdg04TEkSDE0vyxDUjIlxq6w==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.96)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1pogfo-001Xis-2J;
+	Tue, 18 Apr 2023 10:26:48 +0200
+Message-ID: <5a61dc08683e4e7988693f5ffe4836be7aaf7451.camel@sipsolutions.net>
+Subject: Re: [PATCH v2 2/2] hostfs: store permissions in extended attributes
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Marko =?UTF-8?Q?Petrovi=C4=87?= <petrovicmarko2006@gmail.com>, 
+	linux-um@lists.infradead.org
+Cc: richard@nod.at, anton.ivanov@cambridgegreys.com, Glenn Washburn
+	 <development@efficientek.com>, Christian Brauner <brauner@kernel.org>
+Date: Tue, 18 Apr 2023 10:26:47 +0200
+In-Reply-To: <CRWNG4ROL7ON.2DVU93FENOO89@laptop-fedora>
+References: <20230413223024.11513-3-petrovicmarko2006@gmail.com>
+	 <20230414023357.63722-1-petrovicmarko2006@gmail.com>
+	 <8e4ab053944c39ba6ba686f0acc748bb7f76632a.camel@sipsolutions.net>
+	 <CRWNG4ROL7ON.2DVU93FENOO89@laptop-fedora>
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230417205048.15870-13-vishal.moola@gmail.com>
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230417_191321_544176_FC205EBF 
-X-CRM114-Status: GOOD (  15.83  )
+X-CRM114-CacheID: sfid-20230418_012650_810936_BD49DC2E 
+X-CRM114-Status: GOOD (  45.40  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,230 +72,103 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Vishal,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on akpm-mm/mm-everything]
-[also build test WARNING on next-20230417]
-[cannot apply to s390/features powerpc/next powerpc/fixes geert-m68k/for-next geert-m68k/for-linus linus/master v6.3-rc7]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Vishal-Moola-Oracle/s390-Use-_pt_s390_gaddr-for-gmap-address-tracking/20230418-045832
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20230417205048.15870-13-vishal.moola%40gmail.com
-patch subject: [PATCH 12/33] mm: Create ptdesc equivalents for pgtable_{pte,pmd}_page_{ctor,dtor}
-config: sh-allmodconfig (https://download.01.org/0day-ci/archive/20230418/202304180959.YFCTfVKw-lkp@intel.com/config)
-compiler: sh4-linux-gcc (GCC) 12.1.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/d53de56a2dbf659b53aee1aa2eac60bcc936f10b
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Vishal-Moola-Oracle/s390-Use-_pt_s390_gaddr-for-gmap-address-tracking/20230418-045832
-        git checkout d53de56a2dbf659b53aee1aa2eac60bcc936f10b
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=sh olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=sh prepare
-
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202304180959.YFCTfVKw-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from arch/sh/kernel/asm-offsets.c:14:
-   include/linux/mm.h: In function 'virt_to_ptdesc':
-   include/linux/mm.h:2723:16: error: implicit declaration of function 'page_ptdesc' [-Werror=implicit-function-declaration]
-    2723 |         return page_ptdesc(virt_to_head_page(x));
-         |                ^~~~~~~~~~~
-   include/linux/mm.h:2723:16: warning: returning 'int' from a function with return type 'struct ptdesc *' makes pointer from integer without a cast [-Wint-conversion]
-    2723 |         return page_ptdesc(virt_to_head_page(x));
-         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   In file included from arch/sh/include/asm/thread_info.h:13,
-                    from include/linux/thread_info.h:60,
-                    from include/asm-generic/preempt.h:5,
-                    from ./arch/sh/include/generated/asm/preempt.h:1,
-                    from include/linux/preempt.h:78,
-                    from include/linux/spinlock.h:56,
-                    from include/linux/mmzone.h:8,
-                    from include/linux/gfp.h:7,
-                    from include/linux/mm.h:7:
-   include/linux/mm.h: In function 'ptdesc_to_virt':
-   include/linux/mm.h:2728:29: error: implicit declaration of function 'ptdesc_page'; did you mean 'pte_page'? [-Werror=implicit-function-declaration]
-    2728 |         return page_to_virt(ptdesc_page(pt));
-         |                             ^~~~~~~~~~~
-   arch/sh/include/asm/page.h:139:27: note: in definition of macro '___va'
-     139 | #define ___va(x)        ((x)+PAGE_OFFSET)
-         |                           ^
-   include/linux/mm.h:117:25: note: in expansion of macro '__va'
-     117 | #define page_to_virt(x) __va(PFN_PHYS(page_to_pfn(x)))
-         |                         ^~~~
-   include/linux/mm.h:117:30: note: in expansion of macro 'PFN_PHYS'
-     117 | #define page_to_virt(x) __va(PFN_PHYS(page_to_pfn(x)))
-         |                              ^~~~~~~~
-   include/asm-generic/memory_model.h:64:21: note: in expansion of macro '__page_to_pfn'
-      64 | #define page_to_pfn __page_to_pfn
-         |                     ^~~~~~~~~~~~~
-   include/linux/mm.h:2728:16: note: in expansion of macro 'page_to_virt'
-    2728 |         return page_to_virt(ptdesc_page(pt));
-         |                ^~~~~~~~~~~~
-   include/asm-generic/memory_model.h:46:35: warning: initialization of 'const struct page *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-      46 | ({      const struct page *__pg = (pg);                         \
-         |                                   ^
-   arch/sh/include/asm/page.h:139:27: note: in definition of macro '___va'
-     139 | #define ___va(x)        ((x)+PAGE_OFFSET)
-         |                           ^
-   include/linux/mm.h:117:25: note: in expansion of macro '__va'
-     117 | #define page_to_virt(x) __va(PFN_PHYS(page_to_pfn(x)))
-         |                         ^~~~
-   include/linux/mm.h:117:30: note: in expansion of macro 'PFN_PHYS'
-     117 | #define page_to_virt(x) __va(PFN_PHYS(page_to_pfn(x)))
-         |                              ^~~~~~~~
-   include/asm-generic/memory_model.h:64:21: note: in expansion of macro '__page_to_pfn'
-      64 | #define page_to_pfn __page_to_pfn
-         |                     ^~~~~~~~~~~~~
-   include/linux/mm.h:117:39: note: in expansion of macro 'page_to_pfn'
-     117 | #define page_to_virt(x) __va(PFN_PHYS(page_to_pfn(x)))
-         |                                       ^~~~~~~~~~~
-   include/linux/mm.h:2728:16: note: in expansion of macro 'page_to_virt'
-    2728 |         return page_to_virt(ptdesc_page(pt));
-         |                ^~~~~~~~~~~~
-   include/linux/mm.h: In function 'ptdesc_address':
-   include/linux/mm.h:2733:30: error: implicit declaration of function 'ptdesc_folio'; did you mean 'page_folio'? [-Werror=implicit-function-declaration]
-    2733 |         return folio_address(ptdesc_folio(pt));
-         |                              ^~~~~~~~~~~~
-         |                              page_folio
-   include/linux/mm.h:2733:30: warning: passing argument 1 of 'folio_address' makes pointer from integer without a cast [-Wint-conversion]
-    2733 |         return folio_address(ptdesc_folio(pt));
-         |                              ^~~~~~~~~~~~~~~~
-         |                              |
-         |                              int
-   include/linux/mm.h:2151:55: note: expected 'const struct folio *' but argument is of type 'int'
-    2151 | static inline void *folio_address(const struct folio *folio)
-         |                                   ~~~~~~~~~~~~~~~~~~~~^~~~~
-   include/linux/mm.h: In function 'ptdesc_is_reserved':
-   include/linux/mm.h:2738:36: warning: passing argument 1 of 'folio_test_reserved' makes pointer from integer without a cast [-Wint-conversion]
-    2738 |         return folio_test_reserved(ptdesc_folio(pt));
-         |                                    ^~~~~~~~~~~~~~~~
-         |                                    |
-         |                                    int
-   In file included from include/linux/mmzone.h:23:
-   include/linux/page-flags.h:375:62: note: expected 'struct folio *' but argument is of type 'int'
-     375 | static __always_inline bool folio_test_##lname(struct folio *folio)     \
-         |                                                ~~~~~~~~~~~~~~^~~~~
-   include/linux/page-flags.h:423:9: note: in expansion of macro 'TESTPAGEFLAG'
-     423 |         TESTPAGEFLAG(uname, lname, policy)                              \
-         |         ^~~~~~~~~~~~
-   include/linux/page-flags.h:494:1: note: in expansion of macro 'PAGEFLAG'
-     494 | PAGEFLAG(Reserved, reserved, PF_NO_COMPOUND)
-         | ^~~~~~~~
-   include/linux/mm.h: In function 'ptdesc_alloc':
-   include/linux/mm.h:2745:16: warning: returning 'int' from a function with return type 'struct ptdesc *' makes pointer from integer without a cast [-Wint-conversion]
-    2745 |         return page_ptdesc(page);
-         |                ^~~~~~~~~~~~~~~~~
-   include/linux/mm.h: In function 'ptdesc_free':
-   include/linux/mm.h:2750:29: warning: initialization of 'struct page *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-    2750 |         struct page *page = ptdesc_page(pt);
-         |                             ^~~~~~~~~~~
-   include/linux/mm.h: In function 'ptdesc_pte_ctor':
->> include/linux/mm.h:2826:31: warning: initialization of 'struct folio *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-    2826 |         struct folio *folio = ptdesc_folio(ptdesc);
-         |                               ^~~~~~~~~~~~
-   include/linux/mm.h: In function 'pgtable_pte_page_ctor':
-   include/linux/mm.h:2837:32: warning: passing argument 1 of 'ptdesc_pte_ctor' makes pointer from integer without a cast [-Wint-conversion]
-    2837 |         return ptdesc_pte_ctor(page_ptdesc(page));
-         |                                ^~~~~~~~~~~~~~~~~
-         |                                |
-         |                                int
-   include/linux/mm.h:2824:51: note: expected 'struct ptdesc *' but argument is of type 'int'
-    2824 | static inline bool ptdesc_pte_ctor(struct ptdesc *ptdesc)
-         |                                    ~~~~~~~~~~~~~~~^~~~~~
-   include/linux/mm.h: In function 'ptdesc_pte_dtor':
-   include/linux/mm.h:2842:31: warning: initialization of 'struct folio *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-    2842 |         struct folio *folio = ptdesc_folio(ptdesc);
-         |                               ^~~~~~~~~~~~
-   include/linux/mm.h: In function 'pgtable_pte_page_dtor':
-   include/linux/mm.h:2851:25: warning: passing argument 1 of 'ptdesc_pte_dtor' makes pointer from integer without a cast [-Wint-conversion]
-    2851 |         ptdesc_pte_dtor(page_ptdesc(page));
-         |                         ^~~~~~~~~~~~~~~~~
-         |                         |
-         |                         int
-   include/linux/mm.h:2840:51: note: expected 'struct ptdesc *' but argument is of type 'int'
-    2840 | static inline void ptdesc_pte_dtor(struct ptdesc *ptdesc)
-         |                                    ~~~~~~~~~~~~~~~^~~~~~
-   include/linux/mm.h: In function 'ptdesc_pmd_ctor':
-   include/linux/mm.h:2935:31: warning: initialization of 'struct folio *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-    2935 |         struct folio *folio = ptdesc_folio(ptdesc);
-         |                               ^~~~~~~~~~~~
-   include/linux/mm.h: In function 'pgtable_pmd_page_ctor':
-   include/linux/mm.h:2946:32: warning: passing argument 1 of 'ptdesc_pmd_ctor' makes pointer from integer without a cast [-Wint-conversion]
-    2946 |         return ptdesc_pmd_ctor(page_ptdesc(page));
-         |                                ^~~~~~~~~~~~~~~~~
-         |                                |
-         |                                int
-   include/linux/mm.h:2933:51: note: expected 'struct ptdesc *' but argument is of type 'int'
-    2933 | static inline bool ptdesc_pmd_ctor(struct ptdesc *ptdesc)
-         |                                    ~~~~~~~~~~~~~~~^~~~~~
-   include/linux/mm.h: In function 'ptdesc_pmd_dtor':
-   include/linux/mm.h:2951:31: warning: initialization of 'struct folio *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-    2951 |         struct folio *folio = ptdesc_folio(ptdesc);
-         |                               ^~~~~~~~~~~~
-   include/linux/mm.h: In function 'pgtable_pmd_page_dtor':
-   include/linux/mm.h:2960:25: warning: passing argument 1 of 'ptdesc_pmd_dtor' makes pointer from integer without a cast [-Wint-conversion]
-    2960 |         ptdesc_pmd_dtor(page_ptdesc(page));
-         |                         ^~~~~~~~~~~~~~~~~
-         |                         |
-         |                         int
-   include/linux/mm.h:2949:51: note: expected 'struct ptdesc *' but argument is of type 'int'
-    2949 | static inline void ptdesc_pmd_dtor(struct ptdesc *ptdesc)
-         |                                    ~~~~~~~~~~~~~~~^~~~~~
-   include/linux/mm.h: In function 'free_reserved_ptdesc':
-   include/linux/mm.h:3016:28: warning: passing argument 1 of 'free_reserved_page' makes pointer from integer without a cast [-Wint-conversion]
-    3016 |         free_reserved_page(ptdesc_page(pt));
-         |                            ^~~~~~~~~~~~~~~
-         |                            |
-         |                            int
-   include/linux/mm.h:2999:52: note: expected 'struct page *' but argument is of type 'int'
-    2999 | static inline void free_reserved_page(struct page *page)
-         |                                       ~~~~~~~~~~~~~^~~~
-   cc1: some warnings being treated as errors
-   make[2]: *** [scripts/Makefile.build:114: arch/sh/kernel/asm-offsets.s] Error 1
-   make[2]: Target 'prepare' not remade because of errors.
-   make[1]: *** [Makefile:1286: prepare0] Error 2
-   make[1]: Target 'prepare' not remade because of errors.
-   make: *** [Makefile:226: __sub-make] Error 2
-   make: Target 'prepare' not remade because of errors.
-
-
-vim +2826 include/linux/mm.h
-
-  2823	
-  2824	static inline bool ptdesc_pte_ctor(struct ptdesc *ptdesc)
-  2825	{
-> 2826		struct folio *folio = ptdesc_folio(ptdesc);
-  2827	
-  2828		if (!ptlock_init(ptdesc))
-  2829			return false;
-  2830		__SetPageTable(&folio->page);
-  2831		lruvec_stat_add_folio(folio, NR_PAGETABLE);
-  2832		return true;
-  2833	}
-  2834	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gRnJpLCAyMDIzLTA0LTE0IGF0IDE5OjE5ICswMjAwLCBNYXJrbyBQZXRyb3ZpxIcgd3JvdGU6
+Cj4gPiA+ICsrKyBiL2ZzL2hvc3Rmcy9ob3N0ZnMuaAo+ID4gPiBAQCAtMzcsNiArMzcsNyBAQAo+
+ID4gPiAgICogaXMgb24sIGFuZCByZW1vdmUgdGhlIGFwcHJvcHJpYXRlIGJpdHMgZnJvbSBhdHRy
+LT5pYV9tb2RlIChhdHRyIGlzIGEKPiA+ID4gICAqICJzdHJ1Y3QgaWF0dHIgKiIpLiAtQmxhaXNv
+ckJsYWRlCj4gPiA+ICAgKi8KPiA+ID4gK2V4dGVybiBpbnQgdXNlX3hhdHRyOwo+ID4gCj4gPiAK
+PiA+IFRoYXQgc2VlbXMgbGlrZSBhbiBvZGQgcGxhY2UgdG8gcHV0IGl0IC0gdGhlIGNvbW1lbnQg
+YWJvdmUgaXMgc3VyZWx5IGZvcgo+ID4gdGhlIGhvc3Rmc190aW1lc3BlYz8KPiBBY3R1YWxseSBp
+dCBhcHBlYXJzIHRvIGJlIHRhbGtpbmcgYWJvdXQgdGhlIG1pc3NpbmcgZGVmaW5lcyBvZgo+IEFU
+VFJfS0lMTF9TVUlEIGFuZCBBVFRSX0tJTExfU0dJRCwgdW5yZWxhdGVkIHRvIHRoZSBzdHJ1Y3Qg
+aG9zdGZzX3RpbWVzcGVjLgo+IEFzIGZvciB3aHkgSSBwdXQgaXQgdGhlcmUsIEkgdGhvdWdodCBp
+dCB3b3VsZCBiZSBuaWNlIG5vdCB0byBtaXgKPiBmdW5jdGlvbiBkZWNsYXJhdGlvbnMgd2l0aCB2
+YXJpYWJsZSBkZWNsYXJhdGlvbnMuCgpPaCwgT0ssIHNvcnJ5LiBNYXliZSBqdXN0IGFkZCBhIGNv
+dXBsZSBvZiBibGFuayBsaW5lIGFyb3VuZCBpdCB0aGVuIHNvCml0IGRvZXNuJ3QgbG9vayBzbyBn
+cm91cGVkPyA6KQo+ID4gCj4gPiBOb3QgcmVsZXZhbnQganVzdCBfeWV0XywgYnV0IEZZSSwgSSBo
+YXZlIGEgcGF0Y2ggc29tZXdoZXJlIHRvIGJ1aWxkIHRoZQo+ID4gX3VzZXIuYyBwYXJ0IGFsd2F5
+cyBpbnRvIHRoZSBrZXJuZWwgaW1hZ2UsIGFuZCB0aGVuIHRoaXMgbmVlZHMgdG8gYmUKPiA+IG92
+ZXIgdGhlcmUgYW5kIGV4cG9ydGVkIGZvciB0aGUgbW9kdWxlLCBJIHRoaW5rLgo+ID4gCj4gPiAo
+QnV0IEkgbmVlZCB0byBzZWUgd2hhdCdzIHRoZSBzdGF0ZSBvZiBteSBwYXRjaCkKPiBPay4gSW4g
+dGhhdCBjYXNlLCBJIGNhbiBhZGQgRVhQT1JUX1NZTUJPTCgpIGZvciB0aGVzZSB2YXJpYWJsZXMu
+CgpSaWdodC4gRldJVywgdGhlIHBhdGNoIHNlcmllcyBpcyBoZXJlOgpodHRwczovL3BhdGNod29y
+ay5vemxhYnMub3JnL3Byb2plY3QvbGludXgtdW0vbGlzdC8/c2VyaWVzPTM0MTM0MAoKSSBob3Bl
+IFJpY2hhcmQgd2lsbCBhcHBseSB0aGVzZSBzb29uLgoKPiA+ID4gQEAgLTU3OCw3ICs1ODcsOSBA
+QCBzdGF0aWMgaW50IGhvc3Rmc19jcmVhdGUoc3RydWN0IG1udF9pZG1hcCAqaWRtYXAsIHN0cnVj
+dCBpbm9kZSAqZGlyLAo+ID4gPiAgCWlmIChuYW1lID09IE5VTEwpCj4gPiA+ICAJCWdvdG8gb3V0
+X3B1dDsKPiA+ID4gIAo+ID4gPiAtCWZkID0gZmlsZV9jcmVhdGUobmFtZSwgbW9kZSAmIDA3Nzcp
+Owo+ID4gPiArCWN1cnJlbnR1aWQgPSBmcm9tX2t1aWQoY3VycmVudC0+Y3JlZC0+dXNlcl9ucywg
+Y3VycmVudC0+Y3JlZC0+ZXVpZCk7Cj4gPiA+ICsJY3VycmVudGdpZCA9IGZyb21fa2dpZChjdXJy
+ZW50LT5jcmVkLT51c2VyX25zLCBjdXJyZW50LT5jcmVkLT5lZ2lkKTsKPiA+ID4gKwlmZCA9IGZp
+bGVfY3JlYXRlKG5hbWUsIG1vZGUgJiAwNzc3LCBjdXJyZW50dWlkLCBjdXJyZW50Z2lkKTsKPiA+
+ID4gIAlpZiAoZmQgPCAwKQo+ID4gPiAgCQllcnJvciA9IGZkOwo+ID4gPiAgCWVsc2UKPiA+IAo+
+ID4gVGhhdCBwcm9iYWJseSBzb21laG93IGludGVyYWN0cyB3aXRoIHRoZSBpZG1hcHBpbmcsICtH
+bGVubiAmIENocmlzdGlhbi4KPiA+IAo+ID4gTm90IHNheWluZyBpdCdzIHdyb25nLCBidXQgSSBk
+b24ndCB1bmRlcnN0YW5kIGl0LgoKPiBJZiBJIHVuZGVyc3Rvb2QgZG9jdW1lbnRhdGlvbiBjb3Jy
+ZWN0bHksIGZpbGVzeXN0ZW1zIHNob3VsZCBzdG9yZSB1c2Vyc3BhY2UKPiBpZHMgYW5kIGtlcm5l
+bCBwZXJmb3JtcyB0cmFuc2xhdGlvbiBvZiB1c2Vyc3BhY2UgaWQgdG8ga2VybmVsIGlkIHdoZW4K
+PiBmaWxlIGlzIHJlYWQgZnJvbSB0aGUgZGlzay4KCk1ha2VzIHNlbnNlLgoKPiBPbiB0aGUgb3Ro
+ZXIgaGFuZCwgdGhlIHZhcmlhYmxlcyBldWlkIGFuZCBlZ2lkIGluIHN0cnVjdCBjcmVkIGFyZSBv
+Zgo+IHR5cGUga3VpZF90IGFuZCBrZ2lkX3Qgc28gdGhpcyBoZXJlIHBlcmZvcm1zIHJldmVyc2Ug
+dHJhbnNsYXRpb24KPiAoZnJvbSBrZXJuZWwgaWQgdG8gdXNlcnNwYWNlIGlkKSBiYXNlZCBvbiB0
+aGUgcHJvY2VzcycgY3VycmVudCB1c2VyCj4gbmFtZXNwYWNlLiBUaGVuIHRoZSByZXN1bHRpbmcg
+dXNlcnNwYWNlIGlkcyBhcmUgc2VudCB0byBmaWxlX2NyZWF0ZSgpCj4gdG8gYmUgc3RvcmVkIG9u
+IHRoZSBkaXNrLgoKT0sgOikKCj4gSWYgSSBoYXZlIG1hZGUgc29tZSBtaXN1bmRlcnN0YW5kaW5n
+IGFuZCB0aGlzIGNvZGUgaGFzIGFueSBlcnJvciwKPiBJIGFwb2xvZ2lzZSBhbmQgcGxlYXNlIGlu
+Zm9ybSBtZSBzbyB0aGF0IEkgY2FuIGZpeCBpdC4KCk9oLCBubywgSSByZWFsbHkganVzdCBkb24n
+dCBrbm93ISBKdXN0IG5vdGljZWQgdGhhdCB0aGVyZSB3YXMgb3RoZXIgd29yawppbiB0aGlzIGFy
+ZWEuCgo+ID4gCj4gPiA+ICsKPiA+ID4gKwlpZiAodXNlX3hhdHRyKSB7Cj4gPiA+ICsJCWlmIChv
+d25lciAhPSAtMSkgewo+ID4gPiArCQkJc3RhdHVzID0gc2V0eGF0dHIocGF0aG5hbWUsICJ1c2Vy
+LnVtbHVpZCIsICZvd25lciwKPiA+ID4gKwkJCQkJCQlzaXplb2YodW5zaWduZWQgaW50KSwgMCk7
+Cj4gPiAKPiA+IEluZGVudGF0aW9uIF9zZWVtc18gdG8gYmUgb2ZmIGEgYml0IGhlcmUsIGJ1dCBj
+b3VsZCBiZSBteSBtYWlsIGNsaWVudC4KPiBJIGp1c3QgY2hlY2tlZCwgaXQgaXMgODIgY29sdW1u
+cyB3aWRlLiBTb3JyeSBhYm91dCB0aGF0LCB3aWxsIGZpeCBpdC4KCkFoLCB0aGF0J3Mgbm90IHdo
+YXQgSSBtZWFudCwgSSBtZWFudCB0aGUgaW5kZW50YXRpb24gc2hvdWxkIGJlIG9ubHkgdG8KanVz
+dCBhZnRlciB0aGUgKCBvbiB0aGUgbmV4dCBsaW5lLgoKPiBSZWdhcmRpbmcgbmVzdGVkIFVNTHMg
+dXNpbmcgaG9zdGZzLCBhIHNpbXBsZSBhcHBlbmQgb2Ygc29tZSBjaGFyCj4gKG9yIHN0cmluZz8p
+IHRvIHRoZSBhdHRyaWJ1dGUgbmFtZSB3aGVuIGl0IHN0YXJ0cyB3aXRoIHVzZXIudW1scGVybXMK
+PiBzaG91bGQgc29sdmUgdGhlIGlzc3VlLiBUaGVuIGZpcnN0IFVNTCB3b3VsZCBhY2Nlc3MgdXNl
+ci51bWxwZXJtcywgVU1MCj4gaW5zaWRlIGl0IHdvdWxkIGFjY2VzcyB1c2VyLnVtbHBlcm1zMSwg
+VU1MIGluc2lkZSB0aGF0IFVNTCB3b3VsZCBhY2Nlc3MKPiB1c2VyLnVtbHBlcm1zMTEsIGV0Yy4g
+YXMgc2VlbiBieSB0aGUgaG9zdC4KCk5vdCBzdXJlIHRoYXQgc2VlbXMgbGlrZSBhIGdvb2QgaWRl
+YSwgdGhlbiB3b3VsZG4ndCB5b3UgcmVhZCB0aGUKcGVybWlzc2lvbnMgZGVwZW5kaW5nIG9uIHRo
+ZSBuZXN0aW5nIGxldmVsIHlvdSdyZSBydW5uaW5nIG9uIG9yCnNvbWV0aGluZz8gSG93IHdvdWxk
+IHRoYXQgZXZlbiB3b3JrPwoKQW55d2F5IGl0IGFsbCBkb2Vzbid0IHdvcmsgc2luY2UgaG9zdGZz
+IGl0c2VsZiBkb2Vzbid0IHNlZW0gdG8gc3VwcG9ydAp4YXR0cnMgbm93LCBzbyB5b3UgY2FuJ3Qg
+c3RvcmUgeGF0dHJzIGluIGl0LCBzbyBvbmx5IHRoZW4gd291bGQgd2UgaGF2ZQp0byB0aGluayBh
+Ym91dCBpdC4KCkFuZCBJIHRoaW5rIGF0IHRoYXQgcG9pbnQgd2UnZCBwcm9iYWJseSB3YW50IHRv
+IGRvIHNvbWUgbWFuZ2xpbmcgbGlrZQoKCXVzZXIueHl6CglzZWN1cml0eS54eXoKCmF0dHJpYnV0
+ZXMgaW5zaWRlIGhvc3RmcyBnZXR0aW5nIHN0b3JlZCBpbnRvCgoJdXNlci51bWwudXNlci54eXoK
+CXVzZXIudW1sLnNlY3VyaXR5Lnh5egoKb24gdGhlIGhvc3QgZmlsZXN5c3RlbSwgb3Igc3VjaC4g
+QW5kIHRoZW4gaXQgd291bGRuJ3QgY29uZmxpY3QsIGFuZCBpZgp5b3UgbmVzdGVkLCB5b3UnZCBn
+ZXQgInVzZXIudW1sLnVzZXIudW1sY3JlZCIgKG9yIHdoYXQgeW91IGNob3NlIG5vdyksCnlvdSdk
+IGp1c3QgbGltaXQgdGhlIG5lc3RpbmcgaGVyZSBvbiB0aGUgZGVwdGggb2YgdGhlIHhhdHRyIG5h
+bWUgOykKCk5vdGhpbmcgd2UgbmVlZCB0byB0aGluayBhYm91dCB0b28gbXVjaCByaWdodCBub3cs
+IEkgZ3Vlc3MuCgo+ID4gCj4gPiA+ICsJc3RydWN0IHN0YXQ2NCBidWYgPSB7IDAgfTsKPiA+ID4g
+Kwo+ID4gPiArCXN0cmNweShwYXJlbnQsIHBhdGgpOwo+ID4gPiArCWkgPSBpIC0gMzsKPiA+IAo+
+ID4gd2h5IC0zPwo+IGkgaXMgaW5pdGlhbGx5IHN0cmxlbihwYXRoKSArIDEsIGkuZS4gdGhlIGxl
+bmd0aCBvZiB0aGUgd2hvbGUgc3RyaW5nCj4gaW5jbHVkaW5nIHRoZSBudWxsIGJ5dGUuIFRoZW4g
+aS0xIGlzIHRoZSBpbmRleCBvZiB0aGUgbnVsbCBieXRlIGFuZCBpLTIKPiBpcyB0aGUgaW5kZXgg
+b2YgdGhlIGxhc3QgY2hhcmFjdGVyLCBidXQgbGFzdCBjaGFyY3RlciBjYW5ub3QgYmUgdGhlCj4g
+c2xhc2ggdGhhdCBzZXBhcmF0ZXMgZmlsZSBmcm9tIGl0J3MgcGFyZW50IGRpcmVjdG9yeSwgc28g
+c2VhcmNoIHN0YXJ0cwo+IGZyb20gaS0zLgoKV291bGQgYmUgZ29vZCB0byBhZGQgYSBjb21tZW50
+IHdpdGggdGhhdCBJIHRoaW5rIDopCgoKPiA+ID4gKwl3aGlsZSAocGFyZW50W2ldICE9ICcvJykK
+PiA+ID4gKwkJaS0tOwo+ID4gPiArCXBhcmVudFtpXSA9ICdcMCc7Cj4gPiA+ICsJZml4X3BhdGgo
+cGFyZW50KTsKPiA+ID4gKwo+ID4gPiArCXN0YXQ2NChwYXJlbnQsICZidWYpOwo+ID4gCj4gPiBJ
+cyBpdCBldmVuIHdvcnRoIGRvaW5nIHRoZSBzdGF0IG9uIHRoZSBob3N0PyBpZiB0aGUgU19JU0dJ
+RCBpcyBzZXQKPiA+IHRoZXJlLCBpdCdsbCBiZSBkb25lIGFueXdheSBieSB0aGUgaG9zdCBubz8g
+SU9XLCBkb24ndCB5b3Ugb25seSBuZWVkIHRvCj4gPiBkbyB0aGUgaGFuZGxpbmcgZm9yICdpbnRl
+cm5hbCcgeGF0dHIgcGVybWlzc2lvbnM/Cj4gPiAKPiBZZXMsIGl0IHdpbGwgYmUgZG9uZSBieSB0
+aGUgaG9zdCBidXQgaXQgd2lsbCB0aGVuIGJlIG92ZXJyaWRkZW4gYnkgdGhlCj4gcGVybWlzc2lv
+bnMgaW4geGF0dHIgc28gVU1MIHdvdWxkIHByZXNlbnQgd3JvbmcgR0lEIHRvIFVNTCBwcm9jZXNz
+ZXMuCj4gVG8gZml4IHRoYXQsIFVNTCBkb2VzIHN0YXQgb24gdGhlIGZpbGUgdG8gZGV0ZXJtaW5l
+IHdoZXRoZXIgU19JU0dJRCBpcwo+IHNldCB0aGVyZSBzbyB0aGF0IHhhdHRyIHBlcm1pc3Npb25z
+IHJlZmxlY3QgdGhhdC4KCkFoIHJpZ2h0LCBtYWtlcyBzZW5zZS4KCmpvaGFubmVzCgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5n
+IGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
