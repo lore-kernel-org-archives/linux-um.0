@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2427FC77B72
-	for <linux-um@archiver.kernel.org>; Tue, 18 Apr 2023 01:23:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7249C77B72
+	for <linux-um@archiver.kernel.org>; Tue, 18 Apr 2023 02:13:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=X8JgW9eptfRe5SPh/whr+fTGB3+FVQUrYcLSEScpYp0=; b=xTqe5ZH6C/R88O
-	kF+8nTPg8SK57drJe0XHWQ6eKcy/FwgrF+GpI7kq1878DJqvlj+ku7a452ZtkhCTtH7j+jjERrozm
-	6ETxsVPVSNXVEh1EGfPxBzXuRIWKOalA86AXp5cyG8fqoDwP1lXtTvJgR40dfkZoeXUtHlT+JjKax
-	AtwsKPNshV72bfzYdOMVrktDcQvK999TdW41pfGWPvSaEmpAXRFfsTVaM4k4Od+rYpiG6mikHkCwk
-	rgqFZZMhNshZbrG2GBPuVBhA0TFxhk8HA/5QoiId66MU3YkqrrPY9SpDDmwaSMC4V0GsWYbdlgwGI
-	WOKIB7bgB8Ipucwp9tdA==;
+	List-Owner; bh=BYIeqql3DjHXNfBYgWB8nD6I9TWnlC+8SgR+btLps30=; b=y2iKvXmDmtcDA9
+	w3lBCXoTWDgCpPiT6++1rPy4nu6KFGWeixy4oxcIeGdnxXE3CPjfa0Q9whY4+4MHN5kGkphGYJzad
+	6k1992SJ2dIwuouwgLZipYtCMq1Wt4nwLH40q3EGM5zOv8d1UgNlRi4T2cseXWPjt0FVKqaetfrRS
+	WBADcHpSVeXFOrizQ+oXRdmlMJWcAOClnEZUJo0ZmaqKWyfulI4yci4lW3KXVhQyFUWtgg3DcWUKE
+	XooHkEBVo9rUirgr6hPMfE+vghYVe9K+4OnB4WsBTKOrNTCLdHYIRouLd4F75iaJJJsYrqJfV00f6
+	MtOtWu7fY8oMQdwLjDNQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1poa44-000ZAS-0X;
-	Tue, 18 Apr 2023 01:23:24 +0000
-Received: from mga07.intel.com ([134.134.136.100])
+	id 1poaqX-000ePb-07;
+	Tue, 18 Apr 2023 02:13:29 +0000
+Received: from mga04.intel.com ([192.55.52.120])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1poa3y-000Z8Y-2J;
-	Tue, 18 Apr 2023 01:23:20 +0000
+	id 1poaqP-000eNf-1R;
+	Tue, 18 Apr 2023 02:13:25 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1681780998; x=1713316998;
+  t=1681784001; x=1713320001;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=xxj4orMdwSEXYJlb7suHd8py6WoU3VU9TrspjC7QyJg=;
-  b=KtS5OVrXOckfoU53OIgnzSBts5QaZjaX4ete640/iWSiaGEbdHvtuLCz
-   4h292mMUVielOJImRyUFDPQp57DyW2lwN/USjA9A0R/kCz3mLYBXybBIu
-   YwPwcLPC+sJzWVVigEFTWi/lhVEEC0/uLH+ki4/1RFQH85jtjBuqxoBYB
-   ugU4F9ABfjX148Jkf3laBEj1+vP3/tYFhXnvClCUkbIRfvwqmm6bG0SZZ
-   pd4eIrSDhEEAsfeHSU1FnlCq96sQQvEsSMId0KFehlMcE9SmDI4oU5ET8
-   MYBi2zjmlNeveyihS+AyLkwZxtLxFlwC1yUA5LYtl+Nu6XGqvKyGmkWo+
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10683"; a="410264161"
+  bh=wqlsjQk8Hlncd0Tit9Ob615YFcxS+GeVN0PRT6FhUrY=;
+  b=P3xKzv1riB0ccHpdIEPPsNpJLrxUdLET2hfX9mDUTOq74H+iqSvS0USn
+   ngEXxPFDeoRi1Q80Qy5w12KhMwsU1dcJeJs+Dzb3GhiuDMftIsi/MBoKq
+   hl+Yb4TYuWg/hBnmSDWSILjGIS0lD6MH5h2U8jGeq1x973V56fsTAvigv
+   DopNkgbYaYUumbzhUdDMDXbgux+pJZ0ftIOwbdaR/6liEJSrBbiBpNpY1
+   Yg1qLKoQkYsYuRQrUJxU0qoT1F4eyMv7wiCNc17I2xreN5/37Ess5yYjZ
+   hEiMU8ExUuHs5nyqYdDL3cyebXpQkFFScBwxbXyOate25uBUrsiS4yYcJ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10683"; a="343806398"
 X-IronPort-AV: E=Sophos;i="5.99,205,1677571200"; 
-   d="scan'208";a="410264161"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2023 18:23:15 -0700
+   d="scan'208";a="343806398"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2023 19:13:19 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10683"; a="668298836"
+X-IronPort-AV: E=McAfee;i="6600,9927,10683"; a="723460357"
 X-IronPort-AV: E=Sophos;i="5.99,205,1677571200"; 
-   d="scan'208";a="668298836"
+   d="scan'208";a="723460357"
 Received: from lkp-server01.sh.intel.com (HELO b613635ddfff) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 17 Apr 2023 18:23:10 -0700
+  by orsmga001.jf.intel.com with ESMTP; 17 Apr 2023 19:13:13 -0700
 Received: from kbuild by b613635ddfff with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1poa3p-000co7-26;
-	Tue, 18 Apr 2023 01:23:09 +0000
-Date: Tue, 18 Apr 2023 09:22:18 +0800
+	id 1poaqG-000cqb-33;
+	Tue, 18 Apr 2023 02:13:12 +0000
+Date: Tue, 18 Apr 2023 10:13:01 +0800
 From: kernel test robot <lkp@intel.com>
 To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
@@ -70,15 +70,16 @@ Cc: oe-kbuild-all@lists.linux.dev,
 	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
 	xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
 	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-Subject: Re: [PATCH 04/33] mm: add utility functions for ptdesc
-Message-ID: <202304180913.p1BuXrBb-lkp@intel.com>
-References: <20230417205048.15870-5-vishal.moola@gmail.com>
+Subject: Re: [PATCH 12/33] mm: Create ptdesc equivalents for
+ pgtable_{pte,pmd}_page_{ctor,dtor}
+Message-ID: <202304180959.YFCTfVKw-lkp@intel.com>
+References: <20230417205048.15870-13-vishal.moola@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230417205048.15870-5-vishal.moola@gmail.com>
+In-Reply-To: <20230417205048.15870-13-vishal.moola@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230417_182318_804270_CD3C4AC0 
-X-CRM114-Status: GOOD (  15.11  )
+X-CRM114-CacheID: sfid-20230417_191321_544176_FC205EBF 
+X-CRM114-Status: GOOD (  15.83  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,27 +98,28 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 Hi Vishal,
 
-kernel test robot noticed the following build errors:
+kernel test robot noticed the following build warnings:
 
-[auto build test ERROR on akpm-mm/mm-everything]
-[also build test ERROR on s390/features powerpc/next powerpc/fixes geert-m68k/for-next geert-m68k/for-linus linus/master v6.3-rc7 next-20230417]
+[auto build test WARNING on akpm-mm/mm-everything]
+[also build test WARNING on next-20230417]
+[cannot apply to s390/features powerpc/next powerpc/fixes geert-m68k/for-next geert-m68k/for-linus linus/master v6.3-rc7]
 [If your patch is applied to the wrong git tree, kindly drop us a note.
 And when submitting patch, we suggest to use '--base' as documented in
 https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
 url:    https://github.com/intel-lab-lkp/linux/commits/Vishal-Moola-Oracle/s390-Use-_pt_s390_gaddr-for-gmap-address-tracking/20230418-045832
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20230417205048.15870-5-vishal.moola%40gmail.com
-patch subject: [PATCH 04/33] mm: add utility functions for ptdesc
-config: sh-allmodconfig (https://download.01.org/0day-ci/archive/20230418/202304180913.p1BuXrBb-lkp@intel.com/config)
+patch link:    https://lore.kernel.org/r/20230417205048.15870-13-vishal.moola%40gmail.com
+patch subject: [PATCH 12/33] mm: Create ptdesc equivalents for pgtable_{pte,pmd}_page_{ctor,dtor}
+config: sh-allmodconfig (https://download.01.org/0day-ci/archive/20230418/202304180959.YFCTfVKw-lkp@intel.com/config)
 compiler: sh4-linux-gcc (GCC) 12.1.0
 reproduce (this is a W=1 build):
         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
         chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/1b6f8137ca50a543ad2937092836635ca58c78ce
+        # https://github.com/intel-lab-lkp/linux/commit/d53de56a2dbf659b53aee1aa2eac60bcc936f10b
         git remote add linux-review https://github.com/intel-lab-lkp/linux
         git fetch --no-tags linux-review Vishal-Moola-Oracle/s390-Use-_pt_s390_gaddr-for-gmap-address-tracking/20230418-045832
-        git checkout 1b6f8137ca50a543ad2937092836635ca58c78ce
+        git checkout d53de56a2dbf659b53aee1aa2eac60bcc936f10b
         # save the config file
         mkdir build_dir && cp config build_dir/.config
         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=sh olddefconfig
@@ -125,16 +127,16 @@ reproduce (this is a W=1 build):
 
 If you fix the issue, kindly add following tag where applicable
 | Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202304180913.p1BuXrBb-lkp@intel.com/
+| Link: https://lore.kernel.org/oe-kbuild-all/202304180959.YFCTfVKw-lkp@intel.com/
 
-All error/warnings (new ones prefixed by >>):
+All warnings (new ones prefixed by >>):
 
    In file included from arch/sh/kernel/asm-offsets.c:14:
    include/linux/mm.h: In function 'virt_to_ptdesc':
->> include/linux/mm.h:2723:16: error: implicit declaration of function 'page_ptdesc' [-Werror=implicit-function-declaration]
+   include/linux/mm.h:2723:16: error: implicit declaration of function 'page_ptdesc' [-Werror=implicit-function-declaration]
     2723 |         return page_ptdesc(virt_to_head_page(x));
          |                ^~~~~~~~~~~
->> include/linux/mm.h:2723:16: warning: returning 'int' from a function with return type 'struct ptdesc *' makes pointer from integer without a cast [-Wint-conversion]
+   include/linux/mm.h:2723:16: warning: returning 'int' from a function with return type 'struct ptdesc *' makes pointer from integer without a cast [-Wint-conversion]
     2723 |         return page_ptdesc(virt_to_head_page(x));
          |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    In file included from arch/sh/include/asm/thread_info.h:13,
@@ -147,7 +149,7 @@ All error/warnings (new ones prefixed by >>):
                     from include/linux/gfp.h:7,
                     from include/linux/mm.h:7:
    include/linux/mm.h: In function 'ptdesc_to_virt':
->> include/linux/mm.h:2728:29: error: implicit declaration of function 'ptdesc_page'; did you mean 'pte_page'? [-Werror=implicit-function-declaration]
+   include/linux/mm.h:2728:29: error: implicit declaration of function 'ptdesc_page'; did you mean 'pte_page'? [-Werror=implicit-function-declaration]
     2728 |         return page_to_virt(ptdesc_page(pt));
          |                             ^~~~~~~~~~~
    arch/sh/include/asm/page.h:139:27: note: in definition of macro '___va'
@@ -165,7 +167,7 @@ All error/warnings (new ones prefixed by >>):
    include/linux/mm.h:2728:16: note: in expansion of macro 'page_to_virt'
     2728 |         return page_to_virt(ptdesc_page(pt));
          |                ^~~~~~~~~~~~
->> include/asm-generic/memory_model.h:46:35: warning: initialization of 'const struct page *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+   include/asm-generic/memory_model.h:46:35: warning: initialization of 'const struct page *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
       46 | ({      const struct page *__pg = (pg);                         \
          |                                   ^
    arch/sh/include/asm/page.h:139:27: note: in definition of macro '___va'
@@ -187,11 +189,11 @@ All error/warnings (new ones prefixed by >>):
     2728 |         return page_to_virt(ptdesc_page(pt));
          |                ^~~~~~~~~~~~
    include/linux/mm.h: In function 'ptdesc_address':
->> include/linux/mm.h:2733:30: error: implicit declaration of function 'ptdesc_folio'; did you mean 'page_folio'? [-Werror=implicit-function-declaration]
+   include/linux/mm.h:2733:30: error: implicit declaration of function 'ptdesc_folio'; did you mean 'page_folio'? [-Werror=implicit-function-declaration]
     2733 |         return folio_address(ptdesc_folio(pt));
          |                              ^~~~~~~~~~~~
          |                              page_folio
->> include/linux/mm.h:2733:30: warning: passing argument 1 of 'folio_address' makes pointer from integer without a cast [-Wint-conversion]
+   include/linux/mm.h:2733:30: warning: passing argument 1 of 'folio_address' makes pointer from integer without a cast [-Wint-conversion]
     2733 |         return folio_address(ptdesc_folio(pt));
          |                              ^~~~~~~~~~~~~~~~
          |                              |
@@ -200,7 +202,7 @@ All error/warnings (new ones prefixed by >>):
     2151 | static inline void *folio_address(const struct folio *folio)
          |                                   ~~~~~~~~~~~~~~~~~~~~^~~~~
    include/linux/mm.h: In function 'ptdesc_is_reserved':
->> include/linux/mm.h:2738:36: warning: passing argument 1 of 'folio_test_reserved' makes pointer from integer without a cast [-Wint-conversion]
+   include/linux/mm.h:2738:36: warning: passing argument 1 of 'folio_test_reserved' makes pointer from integer without a cast [-Wint-conversion]
     2738 |         return folio_test_reserved(ptdesc_folio(pt));
          |                                    ^~~~~~~~~~~~~~~~
          |                                    |
@@ -220,17 +222,69 @@ All error/warnings (new ones prefixed by >>):
     2745 |         return page_ptdesc(page);
          |                ^~~~~~~~~~~~~~~~~
    include/linux/mm.h: In function 'ptdesc_free':
->> include/linux/mm.h:2750:29: warning: initialization of 'struct page *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+   include/linux/mm.h:2750:29: warning: initialization of 'struct page *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
     2750 |         struct page *page = ptdesc_page(pt);
          |                             ^~~~~~~~~~~
+   include/linux/mm.h: In function 'ptdesc_pte_ctor':
+>> include/linux/mm.h:2826:31: warning: initialization of 'struct folio *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+    2826 |         struct folio *folio = ptdesc_folio(ptdesc);
+         |                               ^~~~~~~~~~~~
+   include/linux/mm.h: In function 'pgtable_pte_page_ctor':
+   include/linux/mm.h:2837:32: warning: passing argument 1 of 'ptdesc_pte_ctor' makes pointer from integer without a cast [-Wint-conversion]
+    2837 |         return ptdesc_pte_ctor(page_ptdesc(page));
+         |                                ^~~~~~~~~~~~~~~~~
+         |                                |
+         |                                int
+   include/linux/mm.h:2824:51: note: expected 'struct ptdesc *' but argument is of type 'int'
+    2824 | static inline bool ptdesc_pte_ctor(struct ptdesc *ptdesc)
+         |                                    ~~~~~~~~~~~~~~~^~~~~~
+   include/linux/mm.h: In function 'ptdesc_pte_dtor':
+   include/linux/mm.h:2842:31: warning: initialization of 'struct folio *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+    2842 |         struct folio *folio = ptdesc_folio(ptdesc);
+         |                               ^~~~~~~~~~~~
+   include/linux/mm.h: In function 'pgtable_pte_page_dtor':
+   include/linux/mm.h:2851:25: warning: passing argument 1 of 'ptdesc_pte_dtor' makes pointer from integer without a cast [-Wint-conversion]
+    2851 |         ptdesc_pte_dtor(page_ptdesc(page));
+         |                         ^~~~~~~~~~~~~~~~~
+         |                         |
+         |                         int
+   include/linux/mm.h:2840:51: note: expected 'struct ptdesc *' but argument is of type 'int'
+    2840 | static inline void ptdesc_pte_dtor(struct ptdesc *ptdesc)
+         |                                    ~~~~~~~~~~~~~~~^~~~~~
+   include/linux/mm.h: In function 'ptdesc_pmd_ctor':
+   include/linux/mm.h:2935:31: warning: initialization of 'struct folio *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+    2935 |         struct folio *folio = ptdesc_folio(ptdesc);
+         |                               ^~~~~~~~~~~~
+   include/linux/mm.h: In function 'pgtable_pmd_page_ctor':
+   include/linux/mm.h:2946:32: warning: passing argument 1 of 'ptdesc_pmd_ctor' makes pointer from integer without a cast [-Wint-conversion]
+    2946 |         return ptdesc_pmd_ctor(page_ptdesc(page));
+         |                                ^~~~~~~~~~~~~~~~~
+         |                                |
+         |                                int
+   include/linux/mm.h:2933:51: note: expected 'struct ptdesc *' but argument is of type 'int'
+    2933 | static inline bool ptdesc_pmd_ctor(struct ptdesc *ptdesc)
+         |                                    ~~~~~~~~~~~~~~~^~~~~~
+   include/linux/mm.h: In function 'ptdesc_pmd_dtor':
+   include/linux/mm.h:2951:31: warning: initialization of 'struct folio *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+    2951 |         struct folio *folio = ptdesc_folio(ptdesc);
+         |                               ^~~~~~~~~~~~
+   include/linux/mm.h: In function 'pgtable_pmd_page_dtor':
+   include/linux/mm.h:2960:25: warning: passing argument 1 of 'ptdesc_pmd_dtor' makes pointer from integer without a cast [-Wint-conversion]
+    2960 |         ptdesc_pmd_dtor(page_ptdesc(page));
+         |                         ^~~~~~~~~~~~~~~~~
+         |                         |
+         |                         int
+   include/linux/mm.h:2949:51: note: expected 'struct ptdesc *' but argument is of type 'int'
+    2949 | static inline void ptdesc_pmd_dtor(struct ptdesc *ptdesc)
+         |                                    ~~~~~~~~~~~~~~~^~~~~~
    include/linux/mm.h: In function 'free_reserved_ptdesc':
->> include/linux/mm.h:2988:28: warning: passing argument 1 of 'free_reserved_page' makes pointer from integer without a cast [-Wint-conversion]
-    2988 |         free_reserved_page(ptdesc_page(pt));
+   include/linux/mm.h:3016:28: warning: passing argument 1 of 'free_reserved_page' makes pointer from integer without a cast [-Wint-conversion]
+    3016 |         free_reserved_page(ptdesc_page(pt));
          |                            ^~~~~~~~~~~~~~~
          |                            |
          |                            int
-   include/linux/mm.h:2971:52: note: expected 'struct page *' but argument is of type 'int'
-    2971 | static inline void free_reserved_page(struct page *page)
+   include/linux/mm.h:2999:52: note: expected 'struct page *' but argument is of type 'int'
+    2999 | static inline void free_reserved_page(struct page *page)
          |                                       ~~~~~~~~~~~~~^~~~
    cc1: some warnings being treated as errors
    make[2]: *** [scripts/Makefile.build:114: arch/sh/kernel/asm-offsets.s] Error 1
@@ -241,43 +295,20 @@ All error/warnings (new ones prefixed by >>):
    make: Target 'prepare' not remade because of errors.
 
 
-vim +/page_ptdesc +2723 include/linux/mm.h
+vim +2826 include/linux/mm.h
 
-  2720	
-  2721	static inline struct ptdesc *virt_to_ptdesc(const void *x)
-  2722	{
-> 2723		return page_ptdesc(virt_to_head_page(x));
-  2724	}
-  2725	
-  2726	static inline void *ptdesc_to_virt(struct ptdesc *pt)
-  2727	{
-> 2728		return page_to_virt(ptdesc_page(pt));
-  2729	}
-  2730	
-  2731	static inline void *ptdesc_address(struct ptdesc *pt)
-  2732	{
-> 2733		return folio_address(ptdesc_folio(pt));
-  2734	}
-  2735	
-  2736	static inline bool ptdesc_is_reserved(struct ptdesc *pt)
-  2737	{
-> 2738		return folio_test_reserved(ptdesc_folio(pt));
-  2739	}
-  2740	
-  2741	static inline struct ptdesc *ptdesc_alloc(gfp_t gfp, unsigned int order)
-  2742	{
-  2743		struct page *page = alloc_pages(gfp | __GFP_COMP, order);
-  2744	
-  2745		return page_ptdesc(page);
-  2746	}
-  2747	
-  2748	static inline void ptdesc_free(struct ptdesc *pt)
-  2749	{
-> 2750		struct page *page = ptdesc_page(pt);
-  2751	
-  2752		__free_pages(page, compound_order(page));
-  2753	}
-  2754	
+  2823	
+  2824	static inline bool ptdesc_pte_ctor(struct ptdesc *ptdesc)
+  2825	{
+> 2826		struct folio *folio = ptdesc_folio(ptdesc);
+  2827	
+  2828		if (!ptlock_init(ptdesc))
+  2829			return false;
+  2830		__SetPageTable(&folio->page);
+  2831		lruvec_stat_add_folio(folio, NR_PAGETABLE);
+  2832		return true;
+  2833	}
+  2834	
 
 -- 
 0-DAY CI Kernel Test Service
