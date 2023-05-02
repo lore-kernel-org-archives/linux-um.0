@@ -4,96 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10400C77B73
-	for <linux-um@archiver.kernel.org>; Tue,  2 May 2023 03:41:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 448A2C7EE29
+	for <linux-um@archiver.kernel.org>; Tue,  2 May 2023 14:24:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:From:
+	Subject:Message-Id:Date:Mime-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GggpdcPSAptl8CMgKhrXuFKMi8nbas8kQ96DuSBSR2E=; b=RgjB77KGMAu6Q5
-	uhxtg/iFgnqpKlzfAHZ0mWbWeBg1PprzDwvfukcQO2W7xlYgreAVoPdzSDVHVJO3EzJIGAYrzfOMB
-	p0vHY5QWokeh+6pMd94wA5XaSvon/4i1GAkvQigH0l/3UERgfv7P+HaLKhpajSy9/52hdCRVbVHTl
-	BFt5I4Te0Ng4oPM+42DVvfB4ttgdQEaxdpQZ9fTOeTMmrIl3SHyQA0mUKubONSX+3uV6qhwFqLCxH
-	68vnPCdC5kuJCgj7q2C7xZYcmpnYiOTr1DrQLATJLhvRSxQinI9xLYCOy0ZCw/RrzvK0vhlxEh1q+
-	kMp+e/2zLfln+SB6be+Q==;
+	List-Owner; bh=XerOCQw7VxVUWxqw9FbGGDH+tFSwx+V7BShOAi//jn8=; b=jo3h6jAza6/SCh
+	cRZrgQsuFz0RXIXGyN3wNN02cV5YUb4iucLP7prUZPYS/rOa/BGazAWwX0L9A/H8q7w0Mt32AL+qA
+	F6LobU9YuDOP+rhJtYKDGNrWmeiDGDQ+IVGxP0Tek0KdSFiTu4PWC+ipAXYEqXfGwgaycs7ctD60t
+	Zah1H9wTj7JdRp10fZEeKez9GlRZGjPgThH+EtEfUuT2RD0gQNiLmSlZQvv3bb3n5bvuHqyzZFgYk
+	qEN8xcZ34NPVif99Ajq4DXf62VU8N0QtNE/RBFET6c8RaPmgca0R3X4T2cqFdepu0qSkN85LXyFxG
+	wlaGZAtUZIgg4rwlasCQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1ptgtI-0000My-17;
-	Tue, 02 May 2023 03:41:24 +0000
-Received: from desiato.infradead.org ([90.155.92.199])
+	id 1ptqvw-001oVW-1f;
+	Tue, 02 May 2023 14:24:48 +0000
+Received: from mail-pl1-x635.google.com ([2607:f8b0:4864:20::635])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1ptgtF-0000Kx-1G;
-	Tue, 02 May 2023 03:41:21 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=Lk75ZjE2r9RBa6YqJgQtuPl1oEa00Vf2+DuensGVbTE=; b=qQ2uYSJQvRohLOGWSCln6IEO14
-	AWS5p2O5ZTd5ODiPI6F0vsohKqMjVkXkGAe4VlNE+2MQE2GP3Gw4uoe3qIqOHYPC7X0mxAhOhinfp
-	5/L1JXuFNUf+Lljoim297rJ6IwxywLWxnXzWcPAPYKLyjmOA+7NsyXaOFViw2j6vCDdb4Hu4YrEs1
-	CpIghGhmOqDjR2CaqPwAGpWEbyAFphEH2Y+Kf4iOiSko9ROTvRG9Nf3pzvEm0jewZz1VFDirplDxy
-	fXB0Gux1YpIAjfI46Ja2kzeNad2d6vpgCAlhCoaRKt4yhek8JULiYUND/IGbAUyW2zlXQNf6P5+NT
-	ojvWEO1w==;
-Received: from mga17.intel.com ([192.55.52.151])
-	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1ptf94-00F5xk-2m;
-	Tue, 02 May 2023 01:49:39 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1682992174; x=1714528174;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=atYvzhPCCZ/tytx2DE7s23i4jWidElWSRjsH6cc5aEY=;
-  b=kCFZGvegUtAtWwRrLAHMUj2nyW+KW5Ss5SyScvB5cwlyZ0tJfJoVvwmc
-   OF/0GmmevwLHpkVuNho4Zp4PGV012FRBO75wtAFdApMFYdjwzrN4A4tDV
-   8mNuEBEdN7fV7nQbvINirZkprqSpCTzqXWNyUPBjHMizt6KunR1X4dHa7
-   DDyyMUx1PQHBM24sBkvSivuAtcg3ykbmRdROhRAxETA7gC56ayPiCiSuQ
-   bPuahHfboOV4YTkge/T0SSCLLRZz6TOa6bl9v/ViZfep3/iqpwk6pdqHa
-   NUnqOThzoalrLEIiRORoosV4QG0z8mqrX3/z5s+J134OqaE6sAQNzwdPB
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10697"; a="328651232"
-X-IronPort-AV: E=Sophos;i="5.99,242,1677571200"; 
-   d="scan'208";a="328651232"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 May 2023 18:49:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10697"; a="698763727"
-X-IronPort-AV: E=Sophos;i="5.99,242,1677571200"; 
-   d="scan'208";a="698763727"
-Received: from lkp-server01.sh.intel.com (HELO e3434d64424d) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 01 May 2023 18:49:20 -0700
-Received: from kbuild by e3434d64424d with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1ptf8q-0000ke-0J;
-	Tue, 02 May 2023 01:49:20 +0000
-Date: Tue, 2 May 2023 09:48:46 +0800
-From: kernel test robot <lkp@intel.com>
-To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>
-Cc: oe-kbuild-all@lists.linux.dev,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-	xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
-	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-	Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: [PATCH v2 21/34] arm64: Convert various functions to use ptdescs
-Message-ID: <202305020914.OGRWcEG1-lkp@intel.com>
-References: <20230501192829.17086-22-vishal.moola@gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230501192829.17086-22-vishal.moola@gmail.com>
+	id 1ptqvs-001oUD-1o;
+	Tue, 02 May 2023 14:24:45 +0000
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1aaed87d8bdso19867795ad.3;
+        Tue, 02 May 2023 07:24:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683037483; x=1685629483;
+        h=in-reply-to:references:cc:to:from:subject:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s1aeen3ZK+Eot6IC/oOTAkZg5Jx6a7diThkYUUdZei0=;
+        b=o7eV6bV5rpKciv6EIj9ga4Omoc8JiajzV/SXD9s6GTpCIHwLsqIeUrnFZuC+xAIaiW
+         WjEsJu1B2GKv/VlyiP9foiCAZE6F++nD+BWDCHQtjX8GXp25FXxTTDqEhJfEaCmCRZnW
+         r/TojnhdtU1uIxMuMFFOdIT7Ow7MxYnqTZbrKtm4QgaRKGsCrFqUlZThCmVisJrJf8LM
+         /bNVZ2wUIhggAaUQvPy2HmP3xLnCZxM2nh9Oy/B1JiqMdIiCPGs2rAsKMpXcHd+3R9I1
+         ZjnOJ4VKyNowo/00zxs8soF2kfewUpLu4llf08zWCp8MVLdUhOzj6mQ/SdBcj0q0dUoG
+         ml+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1683037483; x=1685629483;
+        h=in-reply-to:references:cc:to:from:subject:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=s1aeen3ZK+Eot6IC/oOTAkZg5Jx6a7diThkYUUdZei0=;
+        b=hHftRP2lyufTvo1nDd72xBAnWYhhdOJOW86VyFrfBzow6krWgriM35F9w/jwkAf8oT
+         25BR4legCIRE2FFLloABF9Eq1etGkZFCVG6NJZzMsrETMXDk8eCyaO4B5ZhPWqDIxZKp
+         5liPo1Lk4ACAWScfIO4op9xi4y55mogE5Urv6MO3hpP4IlbdtgoDsbmYYdB6C7ovPNLH
+         D/t/rzX6gaZHdxmRZIuY0Ypstslmd1IspgOwtR6aB2vZt2dxz8+J/madxXiIVehW/ytS
+         TmDGm5+Peypf7yd29lmWJD4bJYqfWI65Kst34voBHsd1SBJB7Nm8AjeuxrvVV5WR0rr5
+         dHcw==
+X-Gm-Message-State: AC+VfDyAvVWwBT6nEy52wgO6aLhsaXOJCYksG1V4BPDWPs1BaHm4/iwy
+	LRa9RqTHTZz+A6+Mxllq21M=
+X-Google-Smtp-Source: ACHHUZ7J8Aas1J2Rc20jnb1KGckFkPjq+j4uXL85mWslpQ5/EpkOpe4cYomHtpe0qtAoy+AsMW7sBg==
+X-Received: by 2002:a17:902:d349:b0:1a9:2823:dad3 with SMTP id l9-20020a170902d34900b001a92823dad3mr18355696plk.42.1683037482638;
+        Tue, 02 May 2023 07:24:42 -0700 (PDT)
+Received: from localhost (118-208-214-188.tpgi.com.au. [118.208.214.188])
+        by smtp.gmail.com with ESMTPSA id x10-20020a170902b40a00b001ab05aaaf8fsm2012505plr.104.2023.05.02.07.24.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 May 2023 07:24:41 -0700 (PDT)
+Mime-Version: 1.0
+Date: Wed, 03 May 2023 00:24:24 +1000
+Message-Id: <CSBUZL6M3MSS.316JRNGXVMLB@wheely>
+Subject: Re: [PATCH] Remove HAVE_VIRT_CPU_ACCOUNTING_GEN option
+From: "Nicholas Piggin" <npiggin@gmail.com>
+To: "Palmer Dabbelt" <palmer@dabbelt.com>
+Cc: "Arnd Bergmann" <arnd@arndb.de>, <linux-arch@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <vgupta@kernel.org>,
+ <linux-snps-arc@lists.infradead.org>, <bcain@quicinc.com>,
+ <linux-hexagon@vger.kernel.org>, <chenhuacai@kernel.org>,
+ <loongarch@lists.linux.dev>, <geert@linux-m68k.org>,
+ <linux-m68k@lists.linux-m68k.org>, <monstr@monstr.eu>,
+ <tsbogend@alpha.franken.de>, <linux-mips@vger.kernel.org>,
+ <dinguyen@kernel.org>, <jonas@southpole.se>,
+ <stefan.kristiansson@saunalahti.fi>, <shorne@gmail.com>,
+ <linux-openrisc@vger.kernel.org>, <James.Bottomley@HansenPartnership.com>,
+ <deller@gmx.de>, <linux-parisc@vger.kernel.org>, "Paul Walmsley"
+ <paul.walmsley@sifive.com>, <aou@eecs.berkeley.edu>,
+ <linux-riscv@lists.infradead.org>, <ysato@users.sourceforge.jp>,
+ <dalias@libc.org>, <glaubitz@physik.fu-berlin.de>,
+ <linux-sh@vger.kernel.org>, <davem@davemloft.net>,
+ <sparclinux@vger.kernel.org>, <richard@nod.at>,
+ <anton.ivanov@cambridgegreys.com>, <johannes@sipsolutions.net>,
+ <linux-um@lists.infradead.org>, <tglx@linutronix.de>, <mingo@redhat.com>,
+ <bp@alien8.de>, <dave.hansen@linux.intel.com>, <x86@kernel.org>,
+ <hpa@zytor.com>, <khilman@baylibre.com>, <frederic@kernel.org>
+X-Mailer: aerc 0.14.0
+References: <20230429063348.125544-1-npiggin@gmail.com>
+ <mhng-7ec0443b-2201-41b7-996c-78c3a61f0230@palmer-ri-x1c9a>
+In-Reply-To: <mhng-7ec0443b-2201-41b7-996c-78c3a61f0230@palmer-ri-x1c9a>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230502_024937_634227_7FD88398 
-X-CRM114-Status: GOOD (  13.17  )
+X-CRM114-CacheID: sfid-20230502_072444_599573_E680969C 
+X-CRM114-Status: GOOD (  24.10  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,96 +110,95 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Vishal,
+On Sun Apr 30, 2023 at 6:14 AM AEST, Palmer Dabbelt wrote:
+> On Fri, 28 Apr 2023 23:33:48 PDT (-0700), npiggin@gmail.com wrote:
+> > This option was created in commit 554b0004d0ec4 ("vtime: Add
+> > HAVE_VIRT_CPU_ACCOUNTING_GEN Kconfig") for architectures to indicate
+> > they support the 64-bit cputime_t required for VIRT_CPU_ACCOUNTING_GEN.
+> >
+> > The cputime_t type has since been removed, so this doesn't have any
+> > meaning. Remove it.
+> >
+> > Cc: linux-arch@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > Cc: Vineet Gupta <vgupta@kernel.org>
+> > Cc: linux-snps-arc@lists.infradead.org
+> > Cc: Brian Cain <bcain@quicinc.com>
+> > Cc: linux-hexagon@vger.kernel.org
+> > Cc: Huacai Chen <chenhuacai@kernel.org>
+> > Cc: loongarch@lists.linux.dev
+> > Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> > Cc: linux-m68k@lists.linux-m68k.org
+> > Cc: Michal Simek <monstr@monstr.eu>
+> > Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> > Cc: linux-mips@vger.kernel.org
+> > Cc: Dinh Nguyen <dinguyen@kernel.org>
+> > Cc: Jonas Bonn <jonas@southpole.se>
+> > Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
+> > Cc: Stafford Horne <shorne@gmail.com>
+> > Cc: linux-openrisc@vger.kernel.org
+> > Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+> > Cc: Helge Deller <deller@gmx.de>
+> > Cc: linux-parisc@vger.kernel.org
+> > Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> > Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> > Cc: Albert Ou <aou@eecs.berkeley.edu>
+> > Cc: linux-riscv@lists.infradead.org
+> > Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+> > Cc: Rich Felker <dalias@libc.org>
+> > Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+> > Cc: linux-sh@vger.kernel.org
+> > Cc: "David S. Miller" <davem@davemloft.net>
+> > Cc: sparclinux@vger.kernel.org
+> > Cc: Richard Weinberger <richard@nod.at>
+> > Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> > Cc: Johannes Berg <johannes@sipsolutions.net>
+> > Cc: linux-um@lists.infradead.org
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Ingo Molnar <mingo@redhat.com>
+> > Cc: Borislav Petkov <bp@alien8.de>
+> > Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> > Cc: x86@kernel.org
+> > Cc: "H. Peter Anvin" <hpa@zytor.com>
+> > Cc: Kevin Hilman <khilman@baylibre.com>
+> > Cc: Frederic Weisbecker <frederic@kernel.org>
+> > Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+> > ---
+> > Hi,
+> >
+> > Could we tidy this? I don't know what tree it can go in, timers,
+> > sched, asm-generic, probably doesn't matter.
+> >
+> > The only thing this actually does is gate VIRT_CPU_ACCOUNTING_GEN and
+> > NO_HZ_FULL so if your arch has some other issue that requires this
+> > then the documentation needs to change. Any concerns from the archs?
+> > I.e., 32-bit that does *not* define HAVE_VIRT_CPU_ACCOUNTING_GEN
+> > which looks to be:
+> >
+> > arc
+> > hexagon
+> > loongarch 32-bit with SMP
+> > m68k
+> > microblaze
+> > mips 32-bit with SMP
+> > nios2
+> > openrisc
+> > parisc 32-bit
+> > riscv 32-bit
+>
+> Nothing's jumping out, though I haven't tested this yet so I'm not 100%.  
+> I assume this isn't aimed for this merge window, given the timing?  
 
-kernel test robot noticed the following build errors:
+No, maybe the next one though.
 
-[auto build test ERROR on akpm-mm/mm-everything]
-[also build test ERROR on linus/master next-20230428]
-[cannot apply to s390/features powerpc/next powerpc/fixes geert-m68k/for-next geert-m68k/for-linus v6.3]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> Probably best to give this sort of thing time to bake in linux-next, but 
+> I doubt anyone is even paying attention to rv32/NO_HZ_FULL so no big 
+> deal either way on my end.
+>
+> Acked-by: Palmer Dabbelt <palmer@rivosinc.com> # RISC-V
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Vishal-Moola-Oracle/mm-Add-PAGE_TYPE_OP-folio-functions/20230502-033042
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20230501192829.17086-22-vishal.moola%40gmail.com
-patch subject: [PATCH v2 21/34] arm64: Convert various functions to use ptdescs
-config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20230502/202305020914.OGRWcEG1-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 12.1.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/8e9481b63b5773d7c914836dcd7fbec2449902bc
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Vishal-Moola-Oracle/mm-Add-PAGE_TYPE_OP-folio-functions/20230502-033042
-        git checkout 8e9481b63b5773d7c914836dcd7fbec2449902bc
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=arm64 olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=arm64 SHELL=/bin/bash arch/arm64/
-
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202305020914.OGRWcEG1-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from include/linux/build_bug.h:5,
-                    from include/linux/bits.h:21,
-                    from include/linux/bitops.h:6,
-                    from arch/arm64/include/asm/cache.h:39,
-                    from include/linux/cache.h:6,
-                    from arch/arm64/mm/mmu.c:9:
-   arch/arm64/mm/mmu.c: In function 'pgd_pgtable_alloc':
->> arch/arm64/mm/mmu.c:440:24: error: invalid use of void expression
-     440 |                 BUG_ON(!ptdesc_pte_dtor(ptdesc));
-         |                        ^
-   include/linux/compiler.h:78:45: note: in definition of macro 'unlikely'
-      78 | # define unlikely(x)    __builtin_expect(!!(x), 0)
-         |                                             ^
-   arch/arm64/mm/mmu.c:440:17: note: in expansion of macro 'BUG_ON'
-     440 |                 BUG_ON(!ptdesc_pte_dtor(ptdesc));
-         |                 ^~~~~~
-   arch/arm64/mm/mmu.c:442:24: error: invalid use of void expression
-     442 |                 BUG_ON(!ptdesc_pte_dtor(ptdesc));
-         |                        ^
-   include/linux/compiler.h:78:45: note: in definition of macro 'unlikely'
-      78 | # define unlikely(x)    __builtin_expect(!!(x), 0)
-         |                                             ^
-   arch/arm64/mm/mmu.c:442:17: note: in expansion of macro 'BUG_ON'
-     442 |                 BUG_ON(!ptdesc_pte_dtor(ptdesc));
-         |                 ^~~~~~
-
-
-vim +440 arch/arm64/mm/mmu.c
-
-   425	
-   426	static phys_addr_t pgd_pgtable_alloc(int shift)
-   427	{
-   428		phys_addr_t pa = __pgd_pgtable_alloc(shift);
-   429		struct ptdesc *ptdesc = page_ptdesc(phys_to_page(pa));
-   430	
-   431		/*
-   432		 * Call proper page table ctor in case later we need to
-   433		 * call core mm functions like apply_to_page_range() on
-   434		 * this pre-allocated page table.
-   435		 *
-   436		 * We don't select ARCH_ENABLE_SPLIT_PMD_PTLOCK if pmd is
-   437		 * folded, and if so ptdesc_pte_dtor() becomes nop.
-   438		 */
-   439		if (shift == PAGE_SHIFT)
- > 440			BUG_ON(!ptdesc_pte_dtor(ptdesc));
-   441		else if (shift == PMD_SHIFT)
-   442			BUG_ON(!ptdesc_pte_dtor(ptdesc));
-   443	
-   444		return pa;
-   445	}
-   446	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+Thanks,
+Nick
 
 _______________________________________________
 linux-um mailing list
