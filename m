@@ -4,86 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90C4CC7EE2C
-	for <linux-um@archiver.kernel.org>; Wed,  3 May 2023 11:06:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E66C9C77B78
+	for <linux-um@archiver.kernel.org>; Wed,  3 May 2023 19:26:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=71I75fX/OevL09xUuZRjBdyn2l5R910S9sNjz9NRSc0=; b=nl86FnBS55OKDc
-	WPie9ycupxI4vQksTtRWXckDPO0hJpc4Ep24jHS8dYWdmcZ2zKdkgSp15bVIkCTFE7IAxjcdwTFte
-	UC72QNV0FFCKTG/d4Qkm5K7c8wUzo733nxEIyAfUJ/gk4S6rIilP5kIEWO3lRlh309mT9quBEIucQ
-	mQk14Ey6gTd4JrPEVTDhtiZU1Zy66mKrn9UgDO9cNpPfPfSH995knEllBr6xU3Bc3YOs3PHqIRokL
-	LU2UtlUVGdTZhskMz9R9XntOJTTN+tUXKvPp5ZMXLkvSVbjqr//u6/ah6PuMlByo3XnjRpAh/eps/
-	7IySMeJNv2hPUnpwVcMQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:Message-ID:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=ZCVVLgOK67bCHQdynASyolrZrkiEF1ZyGHBNfc6eG3I=; b=tX3Ftj6+17qCTC
+	yT1rZc+78blqLcqDL/8P5s782Ux6xFNVwq4EVyu00RexQ9ZOwJBfikBc/emwuqrNYz337zdh0BwED
+	/NEjKskgMT02KLOdhwCBNh69I5QqX+mIgDx3Uzd8f6otzMrpN6m+yAVwosfddO4LD1vKVxh0h1dzA
+	jQrF9zboq+tNFJdVy+fm1rqX8OXa/SEuUBS8EF2ovtfwsSNWHdhcMxFb2HZudtYolwZF14iZRTM9s
+	ZSVW/LSmdLG+zt3J6lUF4j5ZARBjBC070I46r23eYm+Jfh1L3/K9pks6ZXRGNm6DAk+sZOBw2o9IH
+	th/9c+Gm1hgB9MY5kvkA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1puAJw-004LlI-2v;
-	Wed, 03 May 2023 11:06:52 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1puI75-005aTC-06;
+	Wed, 03 May 2023 19:26:07 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1puAJt-004Ljs-2I;
-	Wed, 03 May 2023 11:06:50 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 68C3562085;
-	Wed,  3 May 2023 11:06:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 319CAC433D2;
-	Wed,  3 May 2023 11:06:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1683112007;
-	bh=1Z/abXjYScbaeQJORhJfZ1yaBTS2vU/U1cufhR2GD0M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DYeRD57ViS93rxSgHpAWB7YMqFMUVx8+EiMfSRn6yQEG7G9RSDQSNSSe1sxzZ3BLo
-	 GvrB3gAjIST0ilFZUg8IMfwBDx8wfH+KA+j3pBm5lWI8UmkhRuaPcCrBRvajh/kKlf
-	 sc97elHz9FlAP3leMT4UaefDRJMGkLzMHZE6FdoaOvmUUjuDHCL58u0eFmESKWCS4j
-	 iTu0lEr+kmh/c3tzKSar0Ap1ePkXfG5K61exCSLbCF+9ApT/2au8DOYFlhGDOEhdXg
-	 2pQvwMWVokBgoPnt+ruSQN7Puaw5HnfRo4DOOVEE3FkCyWkRa5+PjlZzOTI1BYYKE3
-	 QatkVXcriRXBA==
-Date: Wed, 3 May 2023 13:06:44 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Nicholas Piggin <npiggin@gmail.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Vineet Gupta <vgupta@kernel.org>,
-	linux-snps-arc@lists.infradead.org, Brian Cain <bcain@quicinc.com>,
-	linux-hexagon@vger.kernel.org, Huacai Chen <chenhuacai@kernel.org>,
-	loongarch@lists.linux.dev,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-m68k@lists.linux-m68k.org, Michal Simek <monstr@monstr.eu>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-mips@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>,
-	Jonas Bonn <jonas@southpole.se>,
-	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-	Stafford Horne <shorne@gmail.com>, linux-openrisc@vger.kernel.org,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, linux-riscv@lists.infradead.org,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	linux-sh@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-	sparclinux@vger.kernel.org, Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	linux-um@lists.infradead.org, Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Kevin Hilman <khilman@baylibre.com>
-Subject: Re: [PATCH] Remove HAVE_VIRT_CPU_ACCOUNTING_GEN option
-Message-ID: <ZFJARBDqWPLSy7Ge@localhost.localdomain>
-References: <20230429063348.125544-1-npiggin@gmail.com>
+	id 1puI6z-005aOg-33
+	for linux-um@lists.infradead.org;
+	Wed, 03 May 2023 19:26:05 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id DC45562E1A88;
+	Wed,  3 May 2023 21:25:46 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id NgIMzGpBMDA5; Wed,  3 May 2023 21:25:46 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 9056362E1A8B;
+	Wed,  3 May 2023 21:25:46 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id kIWJ4Yhy4vqi; Wed,  3 May 2023 21:25:46 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 7688D62E1A88;
+	Wed,  3 May 2023 21:25:46 +0200 (CEST)
+Date: Wed, 3 May 2023 21:25:46 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, 
+	linux-um <linux-um@lists.infradead.org>
+Message-ID: <1396818281.2692347.1683141946452.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] UML changes for v6.4
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230429063348.125544-1-npiggin@gmail.com>
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Index: UBzrUyVu13WtK84om5FO5dxIQ5FWlA==
+Thread-Topic: UML changes for v6.4
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230503_040649_812345_2C190D8B 
-X-CRM114-Status: GOOD (  12.32  )
+X-CRM114-CacheID: sfid-20230503_122602_154397_9513B8C7 
+X-CRM114-Status: UNSURE (   6.58  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,30 +69,55 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Le Sat, Apr 29, 2023 at 04:33:48PM +1000, Nicholas Piggin a =E9crit :
-> This option was created in commit 554b0004d0ec4 ("vtime: Add
-> HAVE_VIRT_CPU_ACCOUNTING_GEN Kconfig") for architectures to indicate
-> they support the 64-bit cputime_t required for VIRT_CPU_ACCOUNTING_GEN.
-> =
+Linus,
 
-> The cputime_t type has since been removed, so this doesn't have any
-> meaning. Remove it.
+The following changes since commit 7e364e56293bb98cae1b55fd835f5991c4e96e7d:
 
-Well, cputime_t has disappeared but not the u64 type used
-for task/cpu time accounting.
+  Linux 6.3-rc5 (2023-04-02 14:29:29 -0700)
 
-But now we have the vtime seqcount. Though we already had it
-when we introduced that Kconfig switch so I can't remember why
-this was necessary :-(
+are available in the Git repository at:
 
-It _looks_ OK but I might be missing something...
+  git://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-linus-6.4-rc1
 
-Thanks.
+for you to fetch changes up to 6032aca0deb9c138df122192f8ef02de1fdccf25:
+
+  um: make stub data pages size tweakable (2023-04-20 23:08:43 +0200)
+
+----------------------------------------------------------------
+This pull request contains the following changes for UML:
+
+- Make stub data pages configurable
+- Make it harder to mix user and kernel code by accident
+
+----------------------------------------------------------------
+Johannes Berg (6):
+      um: add __weak for exported functions
+      um: hostfs: define our own API boundary
+      um: don't export printf()
+      um: further clean up user_syms
+      um: prevent user code in modules
+      um: make stub data pages size tweakable
+
+ arch/um/include/shared/as-layout.h  |   3 +-
+ arch/um/kernel/skas/clone.c         |   5 +-
+ arch/um/kernel/skas/mmu.c           |   6 +--
+ arch/um/kernel/um_arch.c            |  10 ++--
+ arch/um/os-Linux/skas/process.c     |   6 +--
+ arch/um/os-Linux/user_syms.c        | 104 ++++++------------------------------
+ arch/um/scripts/Makefile.rules      |   4 +-
+ arch/x86/um/shared/sysdep/stub_32.h |   8 +--
+ arch/x86/um/shared/sysdep/stub_64.h |   8 +--
+ arch/x86/um/stub_segv.c             |   2 +-
+ fs/Makefile                         |   2 +-
+ fs/hostfs/Makefile                  |   6 ++-
+ fs/hostfs/hostfs_user_exp.c         |  28 ++++++++++
+ 13 files changed, 78 insertions(+), 114 deletions(-)
+ create mode 100644 fs/hostfs/hostfs_user_exp.c
 
 _______________________________________________
 linux-um mailing list
