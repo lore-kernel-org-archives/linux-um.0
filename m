@@ -4,59 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E66C9C77B78
-	for <linux-um@archiver.kernel.org>; Wed,  3 May 2023 19:26:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F685C77B75
+	for <linux-um@archiver.kernel.org>; Thu,  4 May 2023 03:13:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:Message-ID:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=ZCVVLgOK67bCHQdynASyolrZrkiEF1ZyGHBNfc6eG3I=; b=tX3Ftj6+17qCTC
-	yT1rZc+78blqLcqDL/8P5s782Ux6xFNVwq4EVyu00RexQ9ZOwJBfikBc/emwuqrNYz337zdh0BwED
-	/NEjKskgMT02KLOdhwCBNh69I5QqX+mIgDx3Uzd8f6otzMrpN6m+yAVwosfddO4LD1vKVxh0h1dzA
-	jQrF9zboq+tNFJdVy+fm1rqX8OXa/SEuUBS8EF2ovtfwsSNWHdhcMxFb2HZudtYolwZF14iZRTM9s
-	ZSVW/LSmdLG+zt3J6lUF4j5ZARBjBC070I46r23eYm+Jfh1L3/K9pks6ZXRGNm6DAk+sZOBw2o9IH
-	th/9c+Gm1hgB9MY5kvkA==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
+	References:In-Reply-To:From:Subject:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=dvcR1/BwYrCkdQ5ax7mQpUENCqX70BFRw5z2c6Xc0D4=; b=sFdowLL1DZKgc/
+	wuDmsMyUdoQkC/dvqbgDXUf75AKklLItBzj1ZUtMckNbPKOqPNgnZKJ4TxYoY8yum5UO0PjaRqbTi
+	Y0GwC80cz9mqXsxGOhz4E8J58npTrrhjN7MSx9MgvTVZS3PApQ/brri/HkmPRo/IemL5fvdgThfKK
+	93I7tB4c5vALI+9SQO2I9TNBK4EltCbeW8GGR58R8JT7uFogWDf02BczBm2m11WugLNp96skY6yDS
+	1TPLWvhJMdKYTs3x3nkXQ3/E9hEzQtptI3Ho7IPIRLS4LcnLJjrSSPJMwGxW8BFtk9skIlbBLt0pM
+	gHrhRI6E2VtAazynym/A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1puI75-005aTC-06;
-	Wed, 03 May 2023 19:26:07 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1puPPV-006RvW-2S;
+	Thu, 04 May 2023 03:13:37 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1puI6z-005aOg-33
+	id 1puPPT-006RuP-1Y
 	for linux-um@lists.infradead.org;
-	Wed, 03 May 2023 19:26:05 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id DC45562E1A88;
-	Wed,  3 May 2023 21:25:46 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id NgIMzGpBMDA5; Wed,  3 May 2023 21:25:46 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 9056362E1A8B;
-	Wed,  3 May 2023 21:25:46 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id kIWJ4Yhy4vqi; Wed,  3 May 2023 21:25:46 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 7688D62E1A88;
-	Wed,  3 May 2023 21:25:46 +0200 (CEST)
-Date: Wed, 3 May 2023 21:25:46 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, 
-	linux-um <linux-um@lists.infradead.org>
-Message-ID: <1396818281.2692347.1683141946452.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] UML changes for v6.4
-MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Index: UBzrUyVu13WtK84om5FO5dxIQ5FWlA==
-Thread-Topic: UML changes for v6.4
+	Thu, 04 May 2023 03:13:36 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 8F82561142;
+	Thu,  4 May 2023 03:13:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id F3C88C433D2;
+	Thu,  4 May 2023 03:13:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1683170014;
+	bh=BT17TKv14sHR5a5L0wHp6uZenNcjtUAts+/j2AlaLt4=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=YVApyGFuteAKQKDiAo+vjztt6QpnEXHISgCnL+UkFVq5ITBwhpRDBGSa81bNGAI7P
+	 XKqdrmtnybGvkMU0KdihHRe+Zdlbkue8cgFfCSZ/H+7MPejA89QzIVIGRjbeZuwK2+
+	 GVSbcXu8Odq0gfu525DBxET2YuON1pI67OGJlvqtmn8ca3Wd6I00j22iYq3sHp0hif
+	 UZbCbE3uA5c8opeSRqyU3Z/uOWDWLswr+t/RokkUxAvsXbe5bPP9xyQJLrWUyqZK5F
+	 OUe/lY6wCVdT2F1dxODssg1HJJD3fqsf81lsZFskMLYqhv8eJeBP7ehaHAE6oCHp6Q
+	 81DgMSU8xpnVw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E2518C43158;
+	Thu,  4 May 2023 03:13:33 +0000 (UTC)
+Subject: Re: [GIT PULL] UML changes for v6.4
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <1396818281.2692347.1683141946452.JavaMail.zimbra@nod.at>
+References: <1396818281.2692347.1683141946452.JavaMail.zimbra@nod.at>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <1396818281.2692347.1683141946452.JavaMail.zimbra@nod.at>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-linus-6.4-rc1
+X-PR-Tracked-Commit-Id: 6032aca0deb9c138df122192f8ef02de1fdccf25
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 342528ff00e8a7dd31c1ea0c0093c2289d769b39
+Message-Id: <168317001392.23861.17628098609837409912.pr-tracker-bot@kernel.org>
+Date: Thu, 04 May 2023 03:13:33 +0000
+To: Richard Weinberger <richard@nod.at>
+Cc: torvalds <torvalds@linux-foundation.org>, linux-kernel <linux-kernel@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230503_122602_154397_9513B8C7 
-X-CRM114-Status: UNSURE (   6.58  )
+X-CRM114-CacheID: sfid-20230503_201335_563635_01079C16 
+X-CRM114-Status: UNSURE (   5.08  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -69,55 +77,24 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Linus,
+The pull request you sent on Wed, 3 May 2023 21:25:46 +0200 (CEST):
 
-The following changes since commit 7e364e56293bb98cae1b55fd835f5991c4e96e7d:
+> git://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-linus-6.4-rc1
 
-  Linux 6.3-rc5 (2023-04-02 14:29:29 -0700)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/342528ff00e8a7dd31c1ea0c0093c2289d769b39
 
-are available in the Git repository at:
+Thank you!
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-linus-6.4-rc1
-
-for you to fetch changes up to 6032aca0deb9c138df122192f8ef02de1fdccf25:
-
-  um: make stub data pages size tweakable (2023-04-20 23:08:43 +0200)
-
-----------------------------------------------------------------
-This pull request contains the following changes for UML:
-
-- Make stub data pages configurable
-- Make it harder to mix user and kernel code by accident
-
-----------------------------------------------------------------
-Johannes Berg (6):
-      um: add __weak for exported functions
-      um: hostfs: define our own API boundary
-      um: don't export printf()
-      um: further clean up user_syms
-      um: prevent user code in modules
-      um: make stub data pages size tweakable
-
- arch/um/include/shared/as-layout.h  |   3 +-
- arch/um/kernel/skas/clone.c         |   5 +-
- arch/um/kernel/skas/mmu.c           |   6 +--
- arch/um/kernel/um_arch.c            |  10 ++--
- arch/um/os-Linux/skas/process.c     |   6 +--
- arch/um/os-Linux/user_syms.c        | 104 ++++++------------------------------
- arch/um/scripts/Makefile.rules      |   4 +-
- arch/x86/um/shared/sysdep/stub_32.h |   8 +--
- arch/x86/um/shared/sysdep/stub_64.h |   8 +--
- arch/x86/um/stub_segv.c             |   2 +-
- fs/Makefile                         |   2 +-
- fs/hostfs/Makefile                  |   6 ++-
- fs/hostfs/hostfs_user_exp.c         |  28 ++++++++++
- 13 files changed, 78 insertions(+), 114 deletions(-)
- create mode 100644 fs/hostfs/hostfs_user_exp.c
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
 _______________________________________________
 linux-um mailing list
