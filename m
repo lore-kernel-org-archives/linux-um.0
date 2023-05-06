@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADCDFC77B73
-	for <linux-um@archiver.kernel.org>; Sat,  6 May 2023 06:09:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C62AC77B73
+	for <linux-um@archiver.kernel.org>; Sat,  6 May 2023 06:14:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:From:Cc:To
 	:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=yoK3StkuJuTxLNEPMxDO1SLYUU8a7ELIr4AiArOdOf4=; b=xufBdEWR4wjepX
-	602RXoA13iCnnnjBKcCIYu0Ks+utdypuUeJqAZe3RAY5hgvDlNkB5lqx+i+1YhW20Jloeo7vHR3sd
-	7JLdwT19Px4/rnFVhW/rewmBUKVrPrb/g/oBHMVig1onda+9Ew3VVKQc99W7sk7gx47so/9BWZ3fe
-	k1Hqtv2roigoOnVB2EVDB2BHEgCLbTWAaqI7To4kxzhvvrC42OemTuXlt+qXu8hvhc4DfV8EL4XhX
-	nPNMxgh0kJfx8YH6DcxJsvp46GDAQdjgDUTZh1qefwilG7DY3PZuLaMpPPQmPXeOXUfIW6thBM+e1
-	ewlKnaJfZKbBtWqCZAEg==;
+	List-Owner; bh=uS04ccx4Rx2PZRbHgjJjG5Y7TYqelE4Vq3yVzVfy5Gs=; b=GSzuB1MwZxKqFu
+	q/Gi33buqeEvyG2K1nKaMk8L2hDhIBQhR2mdiPSuw+ZyfU5VuaQDps3GxQ3HWEjsxkgBnwp0mTs5e
+	Qs6pSCdA06aleGJwpNxYZJ0ER9QK9La1G0GS2jVjaQRGQu4cVRO7cDH07X9Y4qN2rMXdAtg27+AMQ
+	T+QRomkyVktBeJa3KAivTUmEQCfd9iK6OnASGyTjrFFJpfjUnf0A/xMYuaEvlUncR+kivmUAeUqn8
+	PVgeMjvmT4hcqnG5yqwlRJPx2cClc136qbizUZ8+KBHOCA6SLpTotpGQ462GoTs6huuIuNs79ik9e
+	31mDnxAcuDD4zjrMK4cQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pvB6o-00Cdhs-2l;
-	Sat, 06 May 2023 06:09:30 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1pvBBk-00Cea1-2Y;
+	Sat, 06 May 2023 06:14:36 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pvB6l-00Cdh0-2B
+	id 1pvBBh-00CeYw-2z
 	for linux-um@lists.infradead.org;
-	Sat, 06 May 2023 06:09:29 +0000
+	Sat, 06 May 2023 06:14:35 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id C8414612F4;
-	Sat,  6 May 2023 06:09:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26BA6C433D2;
-	Sat,  6 May 2023 06:09:25 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id D1A9460FB7;
+	Sat,  6 May 2023 06:14:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 464EFC433D2;
+	Sat,  6 May 2023 06:14:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1683353366;
-	bh=0Jf+yaZWvmOS5uNcU+JvXtMrHeXD5J9D5dbWyATZAqQ=;
+	s=korg; t=1683353672;
+	bh=HlkZrKLTWvpJzYgv4nebUF/Oo5ceIWg+TIIgVHqQ1wQ=;
 	h=Subject:To:Cc:From:Date:From;
-	b=njNfXcfl1I0ScWzImuJe+QEg4FW0Z2TIm3KOofJImAcP9O8bFuOJjDqvxnmRjjR5H
-	 EQwduY72e2vVElLbXdAWp6Rt+J0N+d1gHx+mRZ+/37Qu2KnJWraVn500o0c5MmEkB2
-	 f1scr8DxjWGPurhrnYrPq2mD5XTmo8jWkEXWBdxU=
-Subject: Patch "IMA: allow/fix UML builds" has been added to the 5.15-stable tree
+	b=JEPre2znJqaFJ2mJ6mNAC+iBWba+qUb5ZnA2Bi9LFHMD0+9d1CXyO66DJBk7JQXJD
+	 oitXOyPXZqgmtr6iCboKBPvj1hy8/nt38d246qvhM+TvzsLQmHswU7aBcCDu2kvYmJ
+	 kjBGwBuKSbEAuUsR9uWtDpgooEygkN1Tl96/P11o=
+Subject: Patch "IMA: allow/fix UML builds" has been added to the 6.1-stable tree
 To: anton.ivanov@cambridgegreys.com,festevam@gmail.com,gregkh@linuxfoundation.org,johannes@sipsolutions.net,linux-um@lists.infradead.org,rdunlap@infradead.org,richard@nod.at,zohar@linux.ibm.com
 Cc: <stable-commits@vger.kernel.org>
 From: <gregkh@linuxfoundation.org>
-Date: Sat, 06 May 2023 11:18:14 +0900
-Message-ID: <2023050614-habitat-undrafted-bddf@gregkh>
+Date: Sat, 06 May 2023 11:18:20 +0900
+Message-ID: <2023050620-effort-tactics-f761@gregkh>
 MIME-Version: 1.0
 X-stable: commit
 X-Patchwork-Hint: ignore 
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230505_230927_763567_A56D21B2 
+X-CRM114-CacheID: sfid-20230505_231433_997870_FAD80F7A 
 X-CRM114-Status: GOOD (  15.67  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -74,12 +74,12 @@ This is a note to let you know that I've just added the patch titled
 
     IMA: allow/fix UML builds
 
-to the 5.15-stable tree which can be found at:
+to the 6.1-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
      ima-allow-fix-uml-builds.patch
-and it can be found in the queue-5.15 subdirectory.
+and it can be found in the queue-6.1 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.
@@ -140,7 +140,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 Patches currently in stable-queue which might be from rdunlap@infradead.org are
 
-queue-5.15/ima-allow-fix-uml-builds.patch
+queue-6.1/ima-allow-fix-uml-builds.patch
 
 _______________________________________________
 linux-um mailing list
