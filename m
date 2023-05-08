@@ -4,65 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BD69C77B73
-	for <linux-um@archiver.kernel.org>; Mon,  8 May 2023 11:29:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D19CC7EE22
+	for <linux-um@archiver.kernel.org>; Mon,  8 May 2023 12:14:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=roPgLwi/GS/YjJQ92z0YFpXt/76TisDmIhfsWVmvt00=; b=LSVkdcL/yo2cP5
-	qbnHMRNDpZC+z5hUB7LPI4wc2uDGM/hsLnjoSVIS4TNHFbqJieG4aEyj2rWu7qSQZbm8H/h7ul6gX
-	6KPICWVavEGSU+HZ1DiHGnuG0OXWfDZZLoZHSAbxJggsVoyLt78KuOAppGH4Og77DZuOL7gr3pI3R
-	aqwUZVJqEzmgYM2Aj8fDaKr/aMUVd7tvoS3TAe8dbe2fNp0qn2U8um0zYJ0KPsc++LLvFlXHdjv+B
-	9ovT/HHhcU3HSk8MKcuNUczR0ZcHqNPRIcUapm6O5LqmAJwzyucurgS3HHHkqTaDhCT1wQ1Z6lqLx
-	UT4o7mOVgWoByc0WczuA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:References:Message-ID:In-Reply-To:
+	Subject:cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=UUDfqfVo4jYm8rfxQ0FMTn0hSilrNgtWzGs8ILkljMo=; b=2r7wQju1c3eXUhHmY0i2Xk+9AL
+	IXW0HkUyB7xnQ633yblOZZo/V8OaklgVyDXskNiOAAlU5wbkBr5e0TMCQez9lRS4WAgL1PAK7L/cE
+	m3PtUBY6l4p/cRoraA/AYj+7tT1GueFsr9fjonsR4dwOlJHnrarvQ9jljTk4mCVqPHIX3+n6+yJ22
+	t97pIsd1w0yrs83aLyJZnrtIHOqJfDmH7o2TGo2g2UHTHxogGOdkhItiF8kr62YIA9aEMWVWqIypP
+	5GKqChzTJEc27BFEX1rXUYVkuxCvIPBGEGRamrRfvosvq4fLAjU2skeHwRY4Lfr9orisby6YhhwYg
+	4zAgKm1A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pvz3V-000PM1-17;
-	Mon, 08 May 2023 11:29:25 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1pvzlW-000UZU-1V;
+	Mon, 08 May 2023 12:14:54 +0000
+Received: from albert.telenet-ops.be ([2a02:1800:110:4::f00:1a])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pvz3T-000PLH-0A
+	id 1pvzlS-000UXy-2s
 	for linux-um@lists.infradead.org;
-	Mon, 08 May 2023 11:29:24 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id D47B362EB2;
-	Mon,  8 May 2023 11:29:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7F64C433D2;
-	Mon,  8 May 2023 11:29:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1683545361;
-	bh=8r1z6+zlLX5kZZjRsnVMbks8vuLgQJO5hKGKMtuVvsk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pq13mowXFJ9X3mDVx2+HW6n9sL9GfqRAqrGqvSYN7ObRYfqTNFTwAVsJCMmyiEd4E
-	 1e7TCnkcA4SReBu/PNY+i9/fbomMhoYRXbEFfyAv1iKFbl8Nb8K6xzZU50j5xGxpHE
-	 /boAoh5jZ8aHV4JQjZW67uPOSvj6zj8Qke/M+WjE=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: stable@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	patches@lists.linux.dev,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Fabio Estevam <festevam@gmail.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	linux-um@lists.infradead.org,
-	Mimi Zohar <zohar@linux.ibm.com>
-Subject: [PATCH 5.15 015/371] IMA: allow/fix UML builds
-Date: Mon,  8 May 2023 11:43:36 +0200
-Message-Id: <20230508094812.675651517@linuxfoundation.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230508094811.912279944@linuxfoundation.org>
-References: <20230508094811.912279944@linuxfoundation.org>
-User-Agent: quilt/0.67
+	Mon, 08 May 2023 12:14:53 +0000
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed30:6a18:41e7:fcfe:24c0])
+	by albert.telenet-ops.be with bizsmtp
+	id uCEY2900F2WBekD06CEYzh; Mon, 08 May 2023 14:14:43 +0200
+Received: from geert (helo=localhost)
+	by ramsan.of.borg with local-esmtp (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1pvzlA-001VjV-5u;
+	Mon, 08 May 2023 14:14:32 +0200
+Date: Mon, 8 May 2023 14:14:32 +0200 (CEST)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: linux-kernel@vger.kernel.org
+cc: Mauro Carvalho Chehab <mchehab@kernel.org>, 
+    Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+    Tudor Ambarus <tudor.ambarus@linaro.org>, 
+    Pratyush Yadav <pratyush@kernel.org>, Richard Weinberger <richard@nod.at>, 
+    Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+    Johannes Berg <johannes@sipsolutions.net>, 
+    "Darrick J. Wong" <djwong@kernel.org>, 
+    Chun-Kuang Hu <chunkuang.hu@kernel.org>, 
+    Philipp Zabel <p.zabel@pengutronix.de>, 
+    "David S. Miller" <davem@davemloft.net>, linux-um@lists.infradead.org, 
+    linux-media@vger.kernel.org, linux-mtd@lists.infradead.org, 
+    linux-xfs@vger.kernel.org, linux-mediatek@lists.infradead.org, 
+    linux-phy@lists.infradead.org, sparclinux@vger.kernel.org
+Subject: Re: Build regressions/improvements in v6.4-rc1
+In-Reply-To: <20230508115727.2597864-1-geert@linux-m68k.org>
+Message-ID: <749c2fc2-93dc-585-3826-dea581602d6e@linux-m68k.org>
+References: <CAHk-=wiUxm-NZ1si8dXWVTTJ9n3c+1SRTC0V+Lk7hOE4bDVwJQ@mail.gmail.com> <20230508115727.2597864-1-geert@linux-m68k.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230508_042923_176168_EF6102CF 
-X-CRM114-Status: GOOD (  12.26  )
+X-CRM114-CacheID: sfid-20230508_051451_088122_1873F243 
+X-CRM114-Status: GOOD (  16.94  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,59 +70,74 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+On Mon, 8 May 2023, Geert Uytterhoeven wrote:
+> Below is the list of build error/warning regressions/improvements in
+> v6.4-rc1[1] compared to v6.3[2].
+>
+> Summarized:
+>  - build errors: +9/-16
+>  - build warnings: +1/-1439
+>
+> Happy fixing! ;-)
+>
+> Thanks to the linux-next team for providing the build service.
+>
+> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/ac9a78681b921877518763ba0e89202254349d1b/ (all 152 configs)
+> [2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/457391b0380335d5e9a5babdec90ac53928b23b4/ (all 152 configs)
+>
+>
+> *** ERRORS ***
+>
+> 9 error regressions:
+>  + /kisskb/src/drivers/media/platform/nxp/imx8-isi/imx8-isi-core.c: error: 'mxc_isi_pm_resume' defined but not used [-Werror=unused-function]:  => 328:12
+>  + /kisskb/src/drivers/media/platform/nxp/imx8-isi/imx8-isi-core.c: error: 'mxc_isi_pm_suspend' defined but not used [-Werror=unused-function]:  => 314:12
 
-commit 644f17412f5acf01a19af9d04a921937a2bc86c6 upstream.
+sparc64-gcc{5,11}/sparc-allmodconfig
+(fix was available before the merge window)
 
-UML supports HAS_IOMEM since 0bbadafdc49d (um: allow disabling
-NO_IOMEM).
+>  + /kisskb/src/drivers/media/platform/nxp/imx8-isi/imx8-isi-hw.c: error: "CONFIG_ARCH_DMA_ADDR_T_64BIT" is not defined [-Werror=undef]:  => 66:5, 33:5, 51:5
+>  + /kisskb/src/drivers/media/platform/nxp/imx8-isi/imx8-isi-hw.c: error: "CONFIG_ARCH_DMA_ADDR_T_64BIT" is not defined, evaluates to 0 [-Werror=undef]:  => 51:5, 66:5, 33:5
 
-Current IMA build on UML fails on allmodconfig (with TCG_TPM=m):
+mips-gcc{8,11}/mips-allmodconfig
+xtensa-gcc11/xtensa-allmodconfig
+powerpc-gcc5/ppc32_allmodconfig
+(fix was available before the merge window)
 
-ld: security/integrity/ima/ima_queue.o: in function `ima_add_template_entry':
-ima_queue.c:(.text+0x2d9): undefined reference to `tpm_pcr_extend'
-ld: security/integrity/ima/ima_init.o: in function `ima_init':
-ima_init.c:(.init.text+0x43f): undefined reference to `tpm_default_chip'
-ld: security/integrity/ima/ima_crypto.o: in function `ima_calc_boot_aggregate_tfm':
-ima_crypto.c:(.text+0x1044): undefined reference to `tpm_pcr_read'
-ld: ima_crypto.c:(.text+0x10d8): undefined reference to `tpm_pcr_read'
+>  + /kisskb/src/drivers/mtd/spi-nor/spansion.c: error: 'op' is used uninitialized [-Werror=uninitialized]:  => 495:27, 364:27
 
-Modify the IMA Kconfig entry so that it selects TCG_TPM if HAS_IOMEM
-is set, regardless of the UML Kconfig setting.
-This updates TCG_TPM from =m to =y and fixes the linker errors.
+um-x86_64-gcc12/um-allyesconfig
 
-Fixes: f4a0391dfa91 ("ima: fix Kconfig dependencies")
-Cc: Stable <stable@vger.kernel.org> # v5.14+
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Fabio Estevam <festevam@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-um@lists.infradead.org
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- security/integrity/ima/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>  + /kisskb/src/fs/xfs/scrub/scrub.h: error: initializer element is not constant:  => 112:28
 
---- a/security/integrity/ima/Kconfig
-+++ b/security/integrity/ima/Kconfig
-@@ -8,7 +8,7 @@ config IMA
- 	select CRYPTO_HMAC
- 	select CRYPTO_SHA1
- 	select CRYPTO_HASH_INFO
--	select TCG_TPM if HAS_IOMEM && !UML
-+	select TCG_TPM if HAS_IOMEM
- 	select TCG_TIS if TCG_TPM && X86
- 	select TCG_CRB if TCG_TPM && ACPI
- 	select TCG_IBMVTPM if TCG_TPM && PPC_PSERIES
+powerpc-gcc5/ppc64_book3e_allmodconfig
+powerpc-gcc5/powerpc-allmodconfig
+powerpc-gcc5/ppc32_allmodconfig
+powerpc-gcc5/powerpc-allyesconfig
+powerpc-gcc5/ppc64le_allmodconfig
+arm64-gcc5/arm64-allmodconfig
+(fix sent)
 
+>  + error: modpost: "__floatunsidf" [drivers/phy/mediatek/phy-mtk-hdmi-drv.ko] undefined!:  => N/A
+>  + error: modpost: "__gedf2" [drivers/phy/mediatek/phy-mtk-hdmi-drv.ko] undefined!:  => N/A
+>  + error: modpost: "__ltdf2" [drivers/phy/mediatek/phy-mtk-hdmi-drv.ko] undefined!:  => N/A
 
+sparc64-gcc5/sparc64-allmodconfig
+
+Gr{oetje,eeting}s,
+
+ 						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+ 							    -- Linus Torvalds
 
 _______________________________________________
 linux-um mailing list
