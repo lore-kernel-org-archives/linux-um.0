@@ -4,61 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D19CC7EE22
-	for <linux-um@archiver.kernel.org>; Mon,  8 May 2023 12:14:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6B6BC7EE22
+	for <linux-um@archiver.kernel.org>; Mon,  8 May 2023 15:19:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:MIME-Version:References:Message-ID:In-Reply-To:
-	Subject:cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=UUDfqfVo4jYm8rfxQ0FMTn0hSilrNgtWzGs8ILkljMo=; b=2r7wQju1c3eXUhHmY0i2Xk+9AL
-	IXW0HkUyB7xnQ633yblOZZo/V8OaklgVyDXskNiOAAlU5wbkBr5e0TMCQez9lRS4WAgL1PAK7L/cE
-	m3PtUBY6l4p/cRoraA/AYj+7tT1GueFsr9fjonsR4dwOlJHnrarvQ9jljTk4mCVqPHIX3+n6+yJ22
-	t97pIsd1w0yrs83aLyJZnrtIHOqJfDmH7o2TGo2g2UHTHxogGOdkhItiF8kr62YIA9aEMWVWqIypP
-	5GKqChzTJEc27BFEX1rXUYVkuxCvIPBGEGRamrRfvosvq4fLAjU2skeHwRY4Lfr9orisby6YhhwYg
-	4zAgKm1A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:In-Reply-To:
+	Date:References:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=es5WfurFDEx7pBDjpc0r6SuI9IFokoRdm5CpJiaL1qI=; b=jWyRfDMc19tyzP
+	H7CIakgZqtALzIgdYzuDMnQFKfSdJDGA9v0T9JadIHUZpAsWRa57twxGoFTCXgxvjDFOKGLVyYvl5
+	dFhvgPi2ArEgGewdYSPWlpmYK+ilXP5MCA4VG6QiB6gPSnvOxex/8MWaWehtwRsXBDME4Myl03Q7E
+	7nu3dW8k+plMN2XyuPSmGRLrEpllCfWG8Ypp73T2bMUZI8xcL2qC/zJUh2+nePaNmRvw+/S8IvU61
+	Mkz/B1hehpIxuXPRzb5v7uWl7l3QKuFm5cvMYs1fSEP8tjEp0xKjvafbSU19LLz9kLNKOO/nVx+7t
+	FPN7QliUdJjzcd1PgTZw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pvzlW-000UZU-1V;
-	Mon, 08 May 2023 12:14:54 +0000
-Received: from albert.telenet-ops.be ([2a02:1800:110:4::f00:1a])
+	id 1pw2eJ-000qnA-1D;
+	Mon, 08 May 2023 15:19:39 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pvzlS-000UXy-2s
-	for linux-um@lists.infradead.org;
-	Mon, 08 May 2023 12:14:53 +0000
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed30:6a18:41e7:fcfe:24c0])
-	by albert.telenet-ops.be with bizsmtp
-	id uCEY2900F2WBekD06CEYzh; Mon, 08 May 2023 14:14:43 +0200
-Received: from geert (helo=localhost)
-	by ramsan.of.borg with local-esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1pvzlA-001VjV-5u;
-	Mon, 08 May 2023 14:14:32 +0200
-Date: Mon, 8 May 2023 14:14:32 +0200 (CEST)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: linux-kernel@vger.kernel.org
-cc: Mauro Carvalho Chehab <mchehab@kernel.org>, 
-    Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
-    Tudor Ambarus <tudor.ambarus@linaro.org>, 
-    Pratyush Yadav <pratyush@kernel.org>, Richard Weinberger <richard@nod.at>, 
-    Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
-    Johannes Berg <johannes@sipsolutions.net>, 
-    "Darrick J. Wong" <djwong@kernel.org>, 
-    Chun-Kuang Hu <chunkuang.hu@kernel.org>, 
-    Philipp Zabel <p.zabel@pengutronix.de>, 
-    "David S. Miller" <davem@davemloft.net>, linux-um@lists.infradead.org, 
-    linux-media@vger.kernel.org, linux-mtd@lists.infradead.org, 
-    linux-xfs@vger.kernel.org, linux-mediatek@lists.infradead.org, 
-    linux-phy@lists.infradead.org, sparclinux@vger.kernel.org
+	id 1pw2eE-000qlK-0X;
+	Mon, 08 May 2023 15:19:35 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id B23F462203;
+	Mon,  8 May 2023 15:19:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54179C433EF;
+	Mon,  8 May 2023 15:19:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1683559172;
+	bh=TFzPKqH85O0PJiVNWjP4+BZQJgCJpfZyNmq88Kq2LS4=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=SsqGI4Udvoy7Xur23L/a4pdzWsb+wimg+nsLzCqFRO+S+esnFYAo2T+jCUXodRptl
+	 3Uqu/fiUNrxCV6eHnOjh1gLGuUkNSPJcIxtSCx80rdh3EPEx+hFRg9xo74b7WkzSR2
+	 OreQ0SS5g2jz0zcorBIITdYtb7UNfAYExtzAjqjlQbx4xOth+F1vF2CRWfxklwKb6N
+	 JHj8rkBEqvrUwG3al29CWo1V7Tv/9RoEL17XiuQtvdWSgEU3kFpkpICKLlNPDCmj26
+	 X16rlSR2RuSyE5WEiSwYVNBdg3wFbr2/e1wbPbTL1HgCJpAPoNhnSleBG7yh37b7rX
+	 efwqtRaOS+XNA==
+From: Pratyush Yadav <pratyush@kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-kernel@vger.kernel.org,  Mauro Carvalho Chehab
+ <mchehab@kernel.org>,  Laurent Pinchart
+ <laurent.pinchart@ideasonboard.com>,  Tudor Ambarus
+ <tudor.ambarus@linaro.org>,  Pratyush Yadav <pratyush@kernel.org>,
+  Richard Weinberger <richard@nod.at>,  Anton Ivanov
+ <anton.ivanov@cambridgegreys.com>,  Johannes Berg
+ <johannes@sipsolutions.net>,  "Darrick J. Wong" <djwong@kernel.org>,
+  Chun-Kuang Hu <chunkuang.hu@kernel.org>,  Philipp Zabel
+ <p.zabel@pengutronix.de>,  "David S. Miller" <davem@davemloft.net>,
+  linux-um@lists.infradead.org,  linux-media@vger.kernel.org,
+  linux-mtd@lists.infradead.org,  linux-xfs@vger.kernel.org,
+  linux-mediatek@lists.infradead.org,  linux-phy@lists.infradead.org,
+  sparclinux@vger.kernel.org
 Subject: Re: Build regressions/improvements in v6.4-rc1
-In-Reply-To: <20230508115727.2597864-1-geert@linux-m68k.org>
-Message-ID: <749c2fc2-93dc-585-3826-dea581602d6e@linux-m68k.org>
-References: <CAHk-=wiUxm-NZ1si8dXWVTTJ9n3c+1SRTC0V+Lk7hOE4bDVwJQ@mail.gmail.com> <20230508115727.2597864-1-geert@linux-m68k.org>
+References: <CAHk-=wiUxm-NZ1si8dXWVTTJ9n3c+1SRTC0V+Lk7hOE4bDVwJQ@mail.gmail.com>
+	<20230508115727.2597864-1-geert@linux-m68k.org>
+	<749c2fc2-93dc-585-3826-dea581602d6e@linux-m68k.org>
+Date: Mon, 08 May 2023 17:19:27 +0200
+In-Reply-To: <749c2fc2-93dc-585-3826-dea581602d6e@linux-m68k.org> (Geert
+	Uytterhoeven's message of "Mon, 8 May 2023 14:14:32 +0200 (CEST)")
+Message-ID: <mafs035466ebk.fsf@amazon.de>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230508_051451_088122_1873F243 
-X-CRM114-Status: GOOD (  16.94  )
+X-CRM114-CacheID: sfid-20230508_081934_308546_B532195F 
+X-CRM114-Status: GOOD (  15.58  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,74 +82,66 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, 8 May 2023, Geert Uytterhoeven wrote:
-> Below is the list of build error/warning regressions/improvements in
-> v6.4-rc1[1] compared to v6.3[2].
+On Mon, May 08 2023, Geert Uytterhoeven wrote:
+
+> On Mon, 8 May 2023, Geert Uytterhoeven wrote:
+>> Below is the list of build error/warning regressions/improvements in
+>> v6.4-rc1[1] compared to v6.3[2].
+>>
+>> Summarized:
+>>  - build errors: +9/-16
+>>  - build warnings: +1/-1439
+>>
+>> Happy fixing! ;-)
+>>
+>> Thanks to the linux-next team for providing the build service.
+>>
+>> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/ac9a78681b921877518763ba0e89202254349d1b/ (all 152 configs)
+>> [2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/457391b0380335d5e9a5babdec90ac53928b23b4/ (all 152 configs)
+>>
+>>
+[...]
 >
-> Summarized:
->  - build errors: +9/-16
->  - build warnings: +1/-1439
+>>  + /kisskb/src/drivers/mtd/spi-nor/spansion.c: error: 'op' is used uninitialized [-Werror=uninitialized]:  => 495:27, 364:27
+
+Hmm, I don't get why we get this warning. Line 495 is in
+s25fs256t_post_bfpt_fixup(). It declares 'op' and then it does
+
+    op = (struct spi_mem_op)
+        CYPRESS_NOR_RD_ANY_REG_OP(nor->params->addr_mode_nbytes,
+                      SPINOR_REG_CYPRESS_ARCFN, 1,
+                      nor->bouncebuf);
+    ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
+
+
+which initializes 'op' before using it. Same with line 364 which is in
+the function cypress_nor_set_addr_mode_nbytes().
+
+Even the compiler warnings [0] don't seem to make much sense to me:
+
+    /kisskb/src/drivers/mtd/spi-nor/spansion.c: In function 's25fs256t_post_bfpt_fixup':
+    /kisskb/src/drivers/mtd/spi-nor/spansion.c:495:27: error: 'op' is used uninitialized [-Werror=uninitialized]
+    495 |         struct spi_mem_op op;
+        |                           ^~
+    /kisskb/src/drivers/mtd/spi-nor/spansion.c:495:27: note: 'op' declared here
+    495 |         struct spi_mem_op op;
+        |                           ^~
+
+[0] http://kisskb.ellerman.id.au/kisskb/buildresult/14922057/
+
 >
-> Happy fixing! ;-)
+> um-x86_64-gcc12/um-allyesconfig
 >
-> Thanks to the linux-next team for providing the build service.
->
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/ac9a78681b921877518763ba0e89202254349d1b/ (all 152 configs)
-> [2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/457391b0380335d5e9a5babdec90ac53928b23b4/ (all 152 configs)
->
->
-> *** ERRORS ***
->
-> 9 error regressions:
->  + /kisskb/src/drivers/media/platform/nxp/imx8-isi/imx8-isi-core.c: error: 'mxc_isi_pm_resume' defined but not used [-Werror=unused-function]:  => 328:12
->  + /kisskb/src/drivers/media/platform/nxp/imx8-isi/imx8-isi-core.c: error: 'mxc_isi_pm_suspend' defined but not used [-Werror=unused-function]:  => 314:12
+[...]
 
-sparc64-gcc{5,11}/sparc-allmodconfig
-(fix was available before the merge window)
-
->  + /kisskb/src/drivers/media/platform/nxp/imx8-isi/imx8-isi-hw.c: error: "CONFIG_ARCH_DMA_ADDR_T_64BIT" is not defined [-Werror=undef]:  => 66:5, 33:5, 51:5
->  + /kisskb/src/drivers/media/platform/nxp/imx8-isi/imx8-isi-hw.c: error: "CONFIG_ARCH_DMA_ADDR_T_64BIT" is not defined, evaluates to 0 [-Werror=undef]:  => 51:5, 66:5, 33:5
-
-mips-gcc{8,11}/mips-allmodconfig
-xtensa-gcc11/xtensa-allmodconfig
-powerpc-gcc5/ppc32_allmodconfig
-(fix was available before the merge window)
-
->  + /kisskb/src/drivers/mtd/spi-nor/spansion.c: error: 'op' is used uninitialized [-Werror=uninitialized]:  => 495:27, 364:27
-
-um-x86_64-gcc12/um-allyesconfig
-
->  + /kisskb/src/fs/xfs/scrub/scrub.h: error: initializer element is not constant:  => 112:28
-
-powerpc-gcc5/ppc64_book3e_allmodconfig
-powerpc-gcc5/powerpc-allmodconfig
-powerpc-gcc5/ppc32_allmodconfig
-powerpc-gcc5/powerpc-allyesconfig
-powerpc-gcc5/ppc64le_allmodconfig
-arm64-gcc5/arm64-allmodconfig
-(fix sent)
-
->  + error: modpost: "__floatunsidf" [drivers/phy/mediatek/phy-mtk-hdmi-drv.ko] undefined!:  => N/A
->  + error: modpost: "__gedf2" [drivers/phy/mediatek/phy-mtk-hdmi-drv.ko] undefined!:  => N/A
->  + error: modpost: "__ltdf2" [drivers/phy/mediatek/phy-mtk-hdmi-drv.ko] undefined!:  => N/A
-
-sparc64-gcc5/sparc64-allmodconfig
-
-Gr{oetje,eeting}s,
-
- 						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
- 							    -- Linus Torvalds
+-- 
+Regards,
+Pratyush Yadav
 
 _______________________________________________
 linux-um mailing list
