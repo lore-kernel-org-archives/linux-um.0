@@ -4,92 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8211AC77B7F
-	for <linux-um@archiver.kernel.org>; Mon,  8 May 2023 15:47:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B604FC77B7D
+	for <linux-um@archiver.kernel.org>; Mon, 15 May 2023 16:32:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xde7OgWffM4FE3muwEsZXEk9VPgFJlTvzO9FV11o8Es=; b=bX2JPOC5ZdgApV
-	on5BKL67bjprWx1fnGZFCSg7qMOTuersplzPgE2/56znhH+89d7hTdM3/Tr7VYsSRDicREDsVy+Nm
-	fWahShLWERC0X1Ixs45S63cQmXzKe6S6wp8CJHw9EVgxeq8sU0OUycV2q/705JpXuOiIm2KlxDOy4
-	tt6Gk9T9WGNMq5EXnNw3c5+iFNbhSEOdJ03QhKgeTcBeF1L3IAm1IvFpJdc3+C0lGfLzNV0qESIm+
-	ioO7xqcVFm68KScGanVibf7IyKAioLKHcKYJmSFEqxDingo4EPrL9hxpOZ7qJm818dU5rpF3m4DxG
-	5MUNObnTW/EAiY73qFjg==;
+	List-Owner; bh=ev5DUKtGkobkZE2LpUzhJrN8xlkRlBJS2xcstvRWtvo=; b=JDEDsaeVOAhv4J
+	dnGsS9fHvvoxNf3KnMqLJTf6UH9kiI4f2KX9CA1BzcsrWEy/yD/1wiOyHEuyjJSsSYCoLM9RfMKwe
+	C/wPMaFKmy1Lp/JY8teyZAF1V3RrfpEaH8H/rLXpirAB/02quxBtQshBDtYNYPy4U/hqR9btQmxlV
+	82O86qusnulB1zc2zgp5HX+hWb7ulFvELr2Zm8SG//ZuY2RYfRcFD5yU0gLuKIkWJomWOgMRhYXuX
+	kxt43NMJAbxzYtcB5aG8zPqrvGzWa+Y2IA69tLIdboWSmdCspXWxnazqutJZdeymCeOlQiLsl9ZKx
+	iF5luMcWoZ9NRGAdppXQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pw35A-000tLA-0c;
-	Mon, 08 May 2023 15:47:24 +0000
-Received: from lelv0143.ext.ti.com ([198.47.23.248])
+	id 1pyb7v-002lwy-34;
+	Mon, 15 May 2023 16:32:47 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pw358-000tKW-0B;
-	Mon, 08 May 2023 15:47:23 +0000
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 348Fl3jg054523;
-	Mon, 8 May 2023 10:47:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1683560823;
-	bh=ThTMpPXBEPh4HdHzswHAKDf5fokfeMb5MpOdHcvdqgE=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=cAwMBQtt+9p61ybgcF82DbpMQgD20dsGzxfdQiMdlKtBtnVK2UXR045dEAVRh0lw2
-	 sTOwAqMYxGlLQJ385l3l0Bl8nRyL358LToNs2y2d5uPVKZa1Lk3e+hQ4572pQfyh7L
-	 0GnxlXQCzr1YRXEg2m0XQFvatQYp7I0Uu4DaPNUU=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 348Fl3t3121784
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 8 May 2023 10:47:03 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 8
- May 2023 10:47:03 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 8 May 2023 10:47:03 -0500
-Received: from [10.250.149.252] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-	by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 348FkvEU003096;
-	Mon, 8 May 2023 10:46:58 -0500
-Message-ID: <a80f540a-492a-0585-9ed1-de3397535e07@ti.com>
-Date: Mon, 8 May 2023 21:16:56 +0530
+	id 1pyb7s-002lv9-2Y
+	for linux-um@lists.infradead.org;
+	Mon, 15 May 2023 16:32:46 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 5DE4162785;
+	Mon, 15 May 2023 16:32:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F03EC4339C;
+	Mon, 15 May 2023 16:32:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1684168363;
+	bh=UGgqEjEj8efqEMywn/MDqgyqgronnWtnQ7Lhoz27O1M=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=olMTozFpcSRMP8Dfbl1CPx636WHvBIVXiUU66ykgg46+KR/KSvkxYHlfR1zNEBibF
+	 gLQFfSyIExtvraSNHokBYGesKzx/Kl1chbSGmRmcB7tkgKIWSDHpC2Q7m5FU/p0sdG
+	 /JfCw110CXACXxA6ohIQZDquqjcf40OL1Wf34SHk=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: stable@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	patches@lists.linux.dev,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Fabio Estevam <festevam@gmail.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	linux-um@lists.infradead.org,
+	Mimi Zohar <zohar@linux.ibm.com>
+Subject: [PATCH 4.14 005/116] IMA: allow/fix UML builds
+Date: Mon, 15 May 2023 18:25:02 +0200
+Message-Id: <20230515161658.433624318@linuxfoundation.org>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230515161658.228491273@linuxfoundation.org>
+References: <20230515161658.228491273@linuxfoundation.org>
+User-Agent: quilt/0.67
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: Build regressions/improvements in v6.4-rc1
-Content-Language: en-US
-To: Pratyush Yadav <pratyush@kernel.org>,
-        Geert Uytterhoeven
-	<geert@linux-m68k.org>
-CC: <linux-kernel@vger.kernel.org>,
-        Mauro Carvalho Chehab
-	<mchehab@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Tudor Ambarus <tudor.ambarus@linaro.org>,
-        Richard Weinberger
-	<richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes
- Berg <johannes@sipsolutions.net>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel
-	<p.zabel@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        <linux-um@lists.infradead.org>, <linux-media@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>, <linux-xfs@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-phy@lists.infradead.org>,
-        <sparclinux@vger.kernel.org>
-References: <CAHk-=wiUxm-NZ1si8dXWVTTJ9n3c+1SRTC0V+Lk7hOE4bDVwJQ@mail.gmail.com>
- <20230508115727.2597864-1-geert@linux-m68k.org>
- <749c2fc2-93dc-585-3826-dea581602d6e@linux-m68k.org>
- <mafs035466ebk.fsf@amazon.de>
-From: "Raghavendra, Vignesh" <vigneshr@ti.com>
-In-Reply-To: <mafs035466ebk.fsf@amazon.de>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230508_084722_193721_D5859E81 
-X-CRM114-Status: GOOD (  15.42  )
+X-CRM114-CacheID: sfid-20230515_093244_875293_CBA3FE35 
+X-CRM114-Status: GOOD (  12.15  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,65 +79,54 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+From: Randy Dunlap <rdunlap@infradead.org>
+
+commit 644f17412f5acf01a19af9d04a921937a2bc86c6 upstream.
+
+UML supports HAS_IOMEM since 0bbadafdc49d (um: allow disabling
+NO_IOMEM).
+
+Current IMA build on UML fails on allmodconfig (with TCG_TPM=m):
+
+ld: security/integrity/ima/ima_queue.o: in function `ima_add_template_entry':
+ima_queue.c:(.text+0x2d9): undefined reference to `tpm_pcr_extend'
+ld: security/integrity/ima/ima_init.o: in function `ima_init':
+ima_init.c:(.init.text+0x43f): undefined reference to `tpm_default_chip'
+ld: security/integrity/ima/ima_crypto.o: in function `ima_calc_boot_aggregate_tfm':
+ima_crypto.c:(.text+0x1044): undefined reference to `tpm_pcr_read'
+ld: ima_crypto.c:(.text+0x10d8): undefined reference to `tpm_pcr_read'
+
+Modify the IMA Kconfig entry so that it selects TCG_TPM if HAS_IOMEM
+is set, regardless of the UML Kconfig setting.
+This updates TCG_TPM from =m to =y and fixes the linker errors.
+
+Fixes: f4a0391dfa91 ("ima: fix Kconfig dependencies")
+Cc: Stable <stable@vger.kernel.org> # v5.14+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-um@lists.infradead.org
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ security/integrity/ima/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/security/integrity/ima/Kconfig
++++ b/security/integrity/ima/Kconfig
+@@ -8,7 +8,7 @@ config IMA
+ 	select CRYPTO_MD5
+ 	select CRYPTO_SHA1
+ 	select CRYPTO_HASH_INFO
+-	select TCG_TPM if HAS_IOMEM && !UML
++	select TCG_TPM if HAS_IOMEM
+ 	select TCG_TIS if TCG_TPM && X86
+ 	select TCG_CRB if TCG_TPM && ACPI
+ 	select TCG_IBMVTPM if TCG_TPM && PPC_PSERIES
 
 
-On 5/8/2023 8:49 PM, Pratyush Yadav wrote:
-> On Mon, May 08 2023, Geert Uytterhoeven wrote:
-> 
->> On Mon, 8 May 2023, Geert Uytterhoeven wrote:
->>> Below is the list of build error/warning regressions/improvements in
->>> v6.4-rc1[1] compared to v6.3[2].
->>>
->>> Summarized:
->>>  - build errors: +9/-16
->>>  - build warnings: +1/-1439
->>>
->>> Happy fixing! ;-)
->>>
->>> Thanks to the linux-next team for providing the build service.
->>>
->>> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/ac9a78681b921877518763ba0e89202254349d1b/ (all 152 configs)
->>> [2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/457391b0380335d5e9a5babdec90ac53928b23b4/ (all 152 configs)
->>>
->>>
-> [...]
->>
->>>  + /kisskb/src/drivers/mtd/spi-nor/spansion.c: error: 'op' is used uninitialized [-Werror=uninitialized]:  => 495:27, 364:27
-> 
-> Hmm, I don't get why we get this warning. Line 495 is in
-> s25fs256t_post_bfpt_fixup(). It declares 'op' and then it does
-> 
->     op = (struct spi_mem_op)
->         CYPRESS_NOR_RD_ANY_REG_OP(nor->params->addr_mode_nbytes,
->                       SPINOR_REG_CYPRESS_ARCFN, 1,
->                       nor->bouncebuf);
->     ret = spi_nor_read_any_reg(nor, &op, nor->reg_proto);
-> 
-
-Not all the fields of struct get initialized if you assign later on in
-the function vs at the time of declaration... For example cmd.dtr isn't
-explicitly set to any value here and may have garbage?
-> 
-> which initializes 'op' before using it. Same with line 364 which is in
-> the function cypress_nor_set_addr_mode_nbytes().
-> 
-> Even the compiler warnings [0] don't seem to make much sense to me:
-> 
->     /kisskb/src/drivers/mtd/spi-nor/spansion.c: In function 's25fs256t_post_bfpt_fixup':
->     /kisskb/src/drivers/mtd/spi-nor/spansion.c:495:27: error: 'op' is used uninitialized [-Werror=uninitialized]
->     495 |         struct spi_mem_op op;
->         |                           ^~
->     /kisskb/src/drivers/mtd/spi-nor/spansion.c:495:27: note: 'op' declared here
->     495 |         struct spi_mem_op op;
->         |                           ^~
-> 
-> [0] http://kisskb.ellerman.id.au/kisskb/buildresult/14922057/
-> 
->>
->> um-x86_64-gcc12/um-allyesconfig
->>
-> [...]
-> 
 
 _______________________________________________
 linux-um mailing list
