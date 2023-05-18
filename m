@@ -4,64 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7451DC77B7F
-	for <linux-um@archiver.kernel.org>; Tue, 16 May 2023 09:18:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F00F7C77B7A
+	for <linux-um@archiver.kernel.org>; Thu, 18 May 2023 12:12:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=xvykMFvSJW8O4BRKLunRftRSlW6NzpNTzUVijEOndDs=; b=L3eKu+9RIIhkYg
-	NnnadAHxQt9KIwiFUQ8hvko7BAmwfmla+duS579YQPz5AHFjVwseMdhzsl9ZzFl9giai5eIkOHEFJ
-	bRDM1dAOAc7sMFumj4k72w0lZ6Sfr/I0+a5/k6NPF0NpB9dAgPEsQViXGUIQh6uqMOBmEkLMySlXj
-	Xe/xSlskzkWNV/SM98Mja8QHdmTm91u/aIJeWBEM2oFpP8+mr3LAcVUEX3KAoUrIfE4o1G+q8Df9U
-	yCguFf2qGpRol/OQFUxlGJUGaqifJXcW06b3wn/c+DjLSPoqRz53gbCuci9YPKB42JHlxmE9grRDQ
-	8tN01lA+qh4Z/ApMWWkg==;
+	List-Owner; bh=/3vAVcHVFGw31BsPIYnX3HdrywT/JrmFgwWsfw1k/Dc=; b=sLDTVvXgR++Dt9
+	wJ3khO9HQOA5J2LYeAnRRj5weY77fWlg6JRCCNLF39t469KrkvYpGCEmmdlNJDkXRhpRkdT1KlBn3
+	eBQAFB9iIoXytIkx6TbmPa0VorRPVLsd6jj37HZeZ9Lsx4cdzZd5HFYSv96Q4y1fA7ZxotmCwlquF
+	ApW7FRO+Y3AUbKLDnPM0PsN0mdTemPBmBON+EYIAG2O3W3MN+liChzsUrCq0pkYQ3AQV4nu3Mjucu
+	Dm1sO5s+zYmXyzrNblUc9ARCtAPXWeKUgz5LGvNQhm2MBx+QtfpwItvnK7pRJkKRpGEVjdghCTnPn
+	pbbJjGGbfdYETFso4IoA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1pyqpD-0051u3-2L;
-	Tue, 16 May 2023 09:18:31 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1pzcUO-00Cvnw-1v;
+	Thu, 18 May 2023 12:12:12 +0000
+Received: from mail-qk1-x730.google.com ([2607:f8b0:4864:20::730])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1pyqpA-0051sz-2I
+	id 1pzcUL-00CvlT-12
 	for linux-um@lists.infradead.org;
-	Tue, 16 May 2023 09:18:29 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 11C6861985;
-	Tue, 16 May 2023 09:18:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 234A0C433D2;
-	Tue, 16 May 2023 09:18:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1684228707;
-	bh=8BJ+s5vIHAO4GubJlcqW6iAuHjFow3RHcI4fHoEz8l0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YX1tZTc7H7B3YOGuXOCgpLm7vNWJMxLIbZPUKGYrFXKTcFYbTyi9C2rJmqBXMlcQt
-	 7HGlKtVUthFlmYH40oHlJsjXDPeZCW3DDINYZLb7ly3rQfCVN77rKTd8Y9R3xo4U/k
-	 Yquru0Lbfv6sQD9NSOjVjQoCThSwSxSKHigVjJAA=
-Date: Tue, 16 May 2023 11:18:24 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Fabio Estevam <festevam@gmail.com>,
+	Thu, 18 May 2023 12:12:10 +0000
+Received: by mail-qk1-x730.google.com with SMTP id af79cd13be357-75795493bceso106662685a.3
+        for <linux-um@lists.infradead.org>; Thu, 18 May 2023 05:12:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1684411926; x=1687003926;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=b1LVde9eD9hiDa72aXFp01UeitZcx1XKK5VRIQwwJ4w=;
+        b=f1WIjix4LVO2qoUadyymiNEwWX8LVYnKjiZJmHZsA00vpgp8OzN7fLeOXwmxyAsNjQ
+         sHOCKYtaHjUeBnmA70xUS7m11Y8GXRs0HF7i7PVSFcwvUzQVx0yAXlGLYQrw7yq7y3KH
+         MBoMqwZGJTzwuItitFkcFv88cqBCrBWri+DUGp8Fc0eAqXpc1sD7lY1vf9Zu0c1UnHTi
+         g1NSzolGSvoeoheQrwHIwMvc3Rso4DvQpoRRtvFDk7J6iY3SLf6NCCF8S9IRrkOXhhUV
+         HRuCy/CUe+KQ4Lk9dlGX7GSjHNglFJk4MTFkm4joUr1QsJe7so9IrOlgfq/tmei89LyY
+         B2xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1684411926; x=1687003926;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b1LVde9eD9hiDa72aXFp01UeitZcx1XKK5VRIQwwJ4w=;
+        b=e4yW7VhlfhByO91V5TipW5gMEYpfOnAP+DnT+ZojKiKiJBzmhze2BAqiZ5iD/shBwm
+         4X3UkmwU2Rz1vEbQQRtUxLPpci1UYq/naIQHCoVZY+SnmhGSHp9rvhevLTny9eOOdliM
+         LLJ7nMReVvVKZQH0jeZlLBBEcm3nb3lnWLByI74bS7ntIPOScqlzYzLq5kSWSNH/4G2p
+         MEnMYwGR8hV50K7a/UVAlvWYuCf4QweaqB4EbJGViOfx6nZrZ2YRMaRy6ruQ05Kt6ZcK
+         P1WceSxG8awbe3Su3weCGmZt81Pq5iP4mjF2QvuoabY9rNCYtM6rMAttPaiF8vW41053
+         PDxw==
+X-Gm-Message-State: AC+VfDwFrVyK8QXYD8c1cxye86UbSfG68TdgQt1Q/Zq8CHJVuavTYRNE
+	uP5Cxii6jOrA3+HywIKgpbmolg==
+X-Google-Smtp-Source: ACHHUZ7wZ7lgCFFjWmWBQuc0tx+WGJVC/VREvoop6Vbqh2gPTjnAeer0zQN00cudqqAWi4mVPLtPKg==
+X-Received: by 2002:a05:6214:2486:b0:5fd:7701:88c5 with SMTP id gi6-20020a056214248600b005fd770188c5mr5974330qvb.6.1684411925806;
+        Thu, 18 May 2023 05:12:05 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
+        by smtp.gmail.com with ESMTPSA id w8-20020a0562140b2800b006215c5bb2e9sm476635qvj.70.2023.05.18.05.12.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 May 2023 05:12:05 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1pzcUG-0055VE-PF;
+	Thu, 18 May 2023 09:12:04 -0300
+Date: Thu, 18 May 2023 09:12:04 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+	xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>,
+	David Hildenbrand <david@redhat.com>,
+	Claudio Imbrenda <imbrenda@linux.ibm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	"David S. Miller" <davem@davemloft.net>,
 	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	linux-um@lists.infradead.org, Mimi Zohar <zohar@linux.ibm.com>
-Subject: Re: [PATCH 4.19 007/191] IMA: allow/fix UML builds
-Message-ID: <2023051655-dinghy-uncolored-6480@gregkh>
-References: <20230515161707.203549282@linuxfoundation.org>
- <20230515161707.460071056@linuxfoundation.org>
- <CAMuHMdWjkZ-FAKrwQkoyZRHLpyvaVYT0NvAUwaCs+30qC2VZmA@mail.gmail.com>
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2 00/34] Split ptdesc from struct page
+Message-ID: <ZGYWFIfyDtdpeWg1@ziepe.ca>
+References: <20230501192829.17086-1-vishal.moola@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdWjkZ-FAKrwQkoyZRHLpyvaVYT0NvAUwaCs+30qC2VZmA@mail.gmail.com>
+In-Reply-To: <20230501192829.17086-1-vishal.moola@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230516_021828_792826_5DFAE2C2 
-X-CRM114-Status: GOOD (  14.21  )
+X-CRM114-CacheID: sfid-20230518_051209_361931_8B14DC70 
+X-CRM114-Status: UNSURE (   9.98  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,38 +112,26 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-T24gVHVlLCBNYXkgMTYsIDIwMjMgYXQgMTA6NDc6MTNBTSArMDIwMCwgR2VlcnQgVXl0dGVyaG9l
-dmVuIHdyb3RlOgo+IEhpIEdyZWcsCj4gCj4gT24gTW9uLCBNYXkgMTUsIDIwMjMgYXQgNjozOeKA
-r1BNIEdyZWcgS3JvYWgtSGFydG1hbgo+IDxncmVna2hAbGludXhmb3VuZGF0aW9uLm9yZz4gd3Jv
-dGU6Cj4gPiBGcm9tOiBSYW5keSBEdW5sYXAgPHJkdW5sYXBAaW5mcmFkZWFkLm9yZz4KPiA+Cj4g
-PiBjb21taXQgNjQ0ZjE3NDEyZjVhY2YwMWExOWFmOWQwNGE5MjE5MzdhMmJjODZjNiB1cHN0cmVh
-bS4KPiA+Cj4gPiBVTUwgc3VwcG9ydHMgSEFTX0lPTUVNIHNpbmNlIDBiYmFkYWZkYzQ5ZCAodW06
-IGFsbG93IGRpc2FibGluZwo+ID4gTk9fSU9NRU0pLgo+IAo+IDBiYmFkYWZkYzQ5ZCBpcyBpbiB2
-NS4xNC4KPiBXYXMgaXQgYmFja3BvcnRlZCB0byBvbGRlciB2ZXJzaW9ucz8KCk5vcGUuCgo+ID4g
-Q3VycmVudCBJTUEgYnVpbGQgb24gVU1MIGZhaWxzIG9uIGFsbG1vZGNvbmZpZyAod2l0aCBUQ0df
-VFBNPW0pOgo+ID4KPiA+IGxkOiBzZWN1cml0eS9pbnRlZ3JpdHkvaW1hL2ltYV9xdWV1ZS5vOiBp
-biBmdW5jdGlvbiBgaW1hX2FkZF90ZW1wbGF0ZV9lbnRyeSc6Cj4gPiBpbWFfcXVldWUuYzooLnRl
-eHQrMHgyZDkpOiB1bmRlZmluZWQgcmVmZXJlbmNlIHRvIGB0cG1fcGNyX2V4dGVuZCcKPiA+IGxk
-OiBzZWN1cml0eS9pbnRlZ3JpdHkvaW1hL2ltYV9pbml0Lm86IGluIGZ1bmN0aW9uIGBpbWFfaW5p
-dCc6Cj4gPiBpbWFfaW5pdC5jOiguaW5pdC50ZXh0KzB4NDNmKTogdW5kZWZpbmVkIHJlZmVyZW5j
-ZSB0byBgdHBtX2RlZmF1bHRfY2hpcCcKPiA+IGxkOiBzZWN1cml0eS9pbnRlZ3JpdHkvaW1hL2lt
-YV9jcnlwdG8ubzogaW4gZnVuY3Rpb24gYGltYV9jYWxjX2Jvb3RfYWdncmVnYXRlX3RmbSc6Cj4g
-PiBpbWFfY3J5cHRvLmM6KC50ZXh0KzB4MTA0NCk6IHVuZGVmaW5lZCByZWZlcmVuY2UgdG8gYHRw
-bV9wY3JfcmVhZCcKPiA+IGxkOiBpbWFfY3J5cHRvLmM6KC50ZXh0KzB4MTBkOCk6IHVuZGVmaW5l
-ZCByZWZlcmVuY2UgdG8gYHRwbV9wY3JfcmVhZCcKPiA+Cj4gPiBNb2RpZnkgdGhlIElNQSBLY29u
-ZmlnIGVudHJ5IHNvIHRoYXQgaXQgc2VsZWN0cyBUQ0dfVFBNIGlmIEhBU19JT01FTQo+ID4gaXMg
-c2V0LCByZWdhcmRsZXNzIG9mIHRoZSBVTUwgS2NvbmZpZyBzZXR0aW5nLgo+ID4gVGhpcyB1cGRh
-dGVzIFRDR19UUE0gZnJvbSA9bSB0byA9eSBhbmQgZml4ZXMgdGhlIGxpbmtlciBlcnJvcnMuCj4g
-Pgo+ID4gRml4ZXM6IGY0YTAzOTFkZmE5MSAoImltYTogZml4IEtjb25maWcgZGVwZW5kZW5jaWVz
-IikKClRoaXMgaXMgd2hhdCBJIHRyaWdnZXJlZCBvZmYgb2YuCgo+ID4gQ2M6IFN0YWJsZSA8c3Rh
-YmxlQHZnZXIua2VybmVsLm9yZz4gIyB2NS4xNCsKPiAKPiAidjUuMTQrIgoKU29ycnksIGdvb2Qg
-Y2F0Y2gsIEknbGwgZ28gZHJvcCB0aGlzIGZyb20gYWxsIG9mIHRoZSBvbGRlciBxdWV1ZXMuCgp0
-aGFua3MgZm9yIHRoZSByZXZpZXchCgpncmVnIGstaAoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxp
-c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9saW51eC11bQo=
+On Mon, May 01, 2023 at 12:27:55PM -0700, Vishal Moola (Oracle) wrote:
+> The MM subsystem is trying to shrink struct page. This patchset
+> introduces a memory descriptor for page table tracking - struct ptdesc.
+> 
+> This patchset introduces ptdesc, splits ptdesc from struct page, and
+> converts many callers of page table constructor/destructors to use ptdescs.
+
+Lightly related food for future thought - based on some discussions at
+LSF/MM it would be really nice if an end result of this was that a
+rcu_head was always available in the ptdesc so we don't need to
+allocate memory to free a page table.
+
+Jason
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
