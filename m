@@ -4,70 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DA95C77B7C
-	for <linux-um@archiver.kernel.org>; Wed, 24 May 2023 15:47:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AE862C7EE2E
+	for <linux-um@archiver.kernel.org>; Thu, 25 May 2023 08:56:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:Subject:Message-ID:Date:From:
-	MIME-Version:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Owner; bh=q4sGduJUD2wSPKlhFW5yw9WYX/t/6vqq0Lnr4iR97R4=; b=yJt
-	U3+DAWvdiLWclZUkO3k9gYJoP/fpmJ3IUqodmCooqDoHJTw2ipcjbubKRi9h/gcyTcoxCGGPAyA8R
-	GGF0fEY9ONJ6Gz5srnL6YuNx3lyEpeqwgbQOH/5NIlZcqQfSxG6EEdIx3ClvQzB40w1EduX4zx7kX
-	PsEyr0zpzo24Xt39g0LvBxf8ceIEg2YUmEvC51Twn+d6I2DhaIHvdYKZD6ybaejWOfZuGRogJkBqp
-	eXgdVmoJ/wHrrKVTU11tRtFWbPt90xWmL2MdgJMeyYXVg4aY9zKV/2S6IdGlL6Y5DpPN339XOIEXs
-	X475yWHh82ufHHwLAmQPlLZHGX8jn1g==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=5pooSLYtz6tu9HEb8lyp5WRs4Kvr8yK+eDPaFMbY11w=; b=b877AZURw7XhFD
+	stYUmMP6seVMCv/YQU3BBYNuplsmwPMbyg/+mW77ygbaxnaUIqogNyPV5RiWBW+CtUvT0XcXQl0rR
+	uqgKQEmHFjZ+uotmhqXuNc+9iwEut2tHdk6lkcQhHJA7kfr214MJI0sxEFIU5cz3uRzmO3YyzRKpH
+	o3acQJ0r0IqtGysgS8OZpqFeBqDygmWTRWYJVYQUwLVU/EP2S3DcN20I0ZNS0P9e8sHhDxwL7aaxX
+	GObP60tI69eu5gyG5OTY4Js8KFGB/+xo5ByOmfyJBS5oXz58XqV0JyUFtveq+PWukeU29aWZZrkcm
+	jJm1b3bsCGkijjI/Bnxg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q1qhy-00DtQZ-2Z;
-	Wed, 24 May 2023 15:47:26 +0000
-Received: from mail-yb1-xb2c.google.com ([2607:f8b0:4864:20::b2c])
+	id 1q26ln-00G43c-0n;
+	Thu, 25 May 2023 08:56:27 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q1qhu-00DtLd-13
-	for linux-um@lists.infradead.org;
-	Wed, 24 May 2023 15:47:24 +0000
-Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-ba86ea269e0so2263331276.1
-        for <linux-um@lists.infradead.org>; Wed, 24 May 2023 08:47:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1684943223; x=1687535223;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=7tGw+/RB183XXg/5VnSSbQyfA2HGRV+zIzbBqKjJP9k=;
-        b=kCzyC2ehZk6HBvx8Ta6uU7L847bQAMSzA3tVME3zAEh8PmOQxeaQrvh9cTo2qdsB3C
-         xCR8Ei8mDk1N6UTG+eMTA0EaRcifzPdkSKTv6VCxkY98/O8oSMjGe0lIyIjeGL43wU85
-         hnIVd8ropPaNnkIJdZCt7KEWk2LfWvTuPxlvr7OAmEYE6guxrtBRzzYu9r9eb0aaLBhT
-         6M7SltAqFcZZt+nP2vG/z5ddoR1OmTpq2/MDi647wF17EE9jnwOqiznpAaBrOlPlUyOc
-         CP+XOJFPOU/6YB77+iLxObgvcvBrATDgpQ9MVGKn67HOOL3y9ROBA6S+h02iQaQXuchb
-         vg3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1684943223; x=1687535223;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7tGw+/RB183XXg/5VnSSbQyfA2HGRV+zIzbBqKjJP9k=;
-        b=X2oPXh3QVgJT2hPU8DxmvwfwUOrlvYvigAjJ5dN6yjd+CUk1eGefqftwDo/u5TT6UC
-         McnPbhZgG197DVhUm171dgMqlW/zeogHWKXvMDhZwVg4ohw9lovhl+/qhP/wxFxoLBoz
-         zGZOWYRr1LsTMCWkdNLyBExaqI408dkF5v8fBSyGwXlaL3bMqgHJnVA9GSPxYc/0v/1v
-         VwKME3lYk7OWtgu0FeSQiaq/P2/yCa0L1dzvJ3CeCnGS5o3Xh0eUkQtzTUalHBDi/pTy
-         sKFI7Ns5fHLNvDfoTvgHx3dcAx2DEuU6uUyQJTLKUa5+W5VLDowCxjSh9lfvSf4EbcPe
-         87Kg==
-X-Gm-Message-State: AC+VfDyMJsFkaJQ/m3mhaLEWnXiulghQCJ08nX2zMp9LW03VHJ6wkHH3
-	rHMQ73mDkrd50KtUi/3sTHenBDd2OsJEIU71ZKHGUW5vjBElIc4+Tpp9vw==
-X-Google-Smtp-Source: ACHHUZ4GruMga8hCQ4YhSH4U/fpRz3k7gyeHaEZ80b7LhSv4VPlweFwQMMelXYfJikcrXCBc7hfapyUHEMuuvkGQdYE=
-X-Received: by 2002:a25:6946:0:b0:ba8:8b4d:c1b with SMTP id
- e67-20020a256946000000b00ba88b4d0c1bmr222481ybc.52.1684943221412; Wed, 24 May
- 2023 08:47:01 -0700 (PDT)
+	id 1q26li-00G41s-2N;
+	Thu, 25 May 2023 08:56:24 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 443A86441D;
+	Thu, 25 May 2023 08:56:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9425AC433EF;
+	Thu, 25 May 2023 08:56:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1685004981;
+	bh=T3x6HsAO3RQbrXA8lAmGWzhIEFxQo3e/SuF/zmio4Hs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mRtUeUA+TIvgOPBLeDE0LEeluR6Lkzocki1ce4LxvGW3Kh74OsnmFoUFRRmQEOqgY
+	 vPbs8UllpBsHYQNETyRPKHNQXbkjzvcZ/qcNMJMO2YSn7oQ9dFwS8Ece6KmReDjGKv
+	 UHsfvGg5kn0tsbjmZAqeTwYppOTlzTxEsz6d+ZO+0GcrxaOJ0wF3N2ge6+B4EiqPJP
+	 Rr14bkavs3kxuqVnqdy8wSuE2VMYBsI0nPEtl+gq6jIzwj54Hlj3QoMxeOG7OsIhLt
+	 Fod2UUbjMqcZpiBjbvghJGsfjbRDVycHZQ/GoUx1cUGXfXrx/0id06caAMVPKwYBaI
+	 blTpXwhMXt6qg==
+Date: Thu, 25 May 2023 11:55:55 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+	xen-devel@lists.xenproject.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v2 01/34] mm: Add PAGE_TYPE_OP folio functions
+Message-ID: <20230525085555.GV4967@kernel.org>
+References: <20230501192829.17086-1-vishal.moola@gmail.com>
+ <20230501192829.17086-2-vishal.moola@gmail.com>
 MIME-Version: 1.0
-From: Alexander Potapenko <glider@google.com>
-Date: Wed, 24 May 2023 17:46:25 +0200
-Message-ID: <CAG_fn=VaYdgreWwCUgrcaCDHH_54hBksvEUD4fijSzRs21ge=A@mail.gmail.com>
-Subject: Building UML with ASan on x86
-To: linux-um@lists.infradead.org, richard@nod.at, 
-	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net
+Content-Disposition: inline
+In-Reply-To: <20230501192829.17086-2-vishal.moola@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230524_084723_081175_C672AC1F 
-X-CRM114-Status: UNSURE (   8.97  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230525_015622_855557_08B9183A 
+X-CRM114-Status: GOOD (  18.71  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,34 +82,80 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi UML maintainers,
+Hi,
 
-I am trying to build and run x86_64 UML with ASan (some patches to do
-so are at [1]).
-This is more of an experiment, but the idea behind it is that
-userspace ASan should be able to instrument the whole kernel code,
-while KASAN does not instrument its own building blocks (SLAB/SLUB,
-stack unwinder, stackdepot).
+On Mon, May 01, 2023 at 12:27:56PM -0700, Vishal Moola (Oracle) wrote:
+> No folio equivalents for page type operations have been defined, so
+> define them for later folio conversions.
 
-The problem I am hitting is that by default my kernel is loaded
-between 0x60000000-0x62000000, and UML attempts to allocate its
-physical memory so that it starts around those addresses.
-Unfortunately ASan's shadow memory on x86_64 Linux is located at
-0x00007fff8000-0x10007fff8000, so if I run UML with e.g. `mem=512` the
-physical memory allocated by setup_physmem() will overlap with ASan
-shadow, leading to crashes.
+Can you please elaborate why would we need folios for page table descriptors? 
+ 
+> Also changes the Page##uname macros to take in const struct page* since
+> we only read the memory here.
+> 
+> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+> ---
+>  include/linux/page-flags.h | 20 ++++++++++++++++++--
+>  1 file changed, 18 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+> index 1c68d67b832f..607b495d1b57 100644
+> --- a/include/linux/page-flags.h
+> +++ b/include/linux/page-flags.h
+> @@ -902,6 +902,8 @@ static inline bool is_page_hwpoison(struct page *page)
+>  
+>  #define PageType(page, flag)						\
+>  	((page->page_type & (PAGE_TYPE_BASE | flag)) == PAGE_TYPE_BASE)
+> +#define folio_test_type(folio, flag)					\
+> +	((folio->page.page_type & (PAGE_TYPE_BASE | flag)) == PAGE_TYPE_BASE)
+>  
+>  static inline int page_type_has_type(unsigned int page_type)
+>  {
+> @@ -914,20 +916,34 @@ static inline int page_has_type(struct page *page)
+>  }
+>  
+>  #define PAGE_TYPE_OPS(uname, lname)					\
+> -static __always_inline int Page##uname(struct page *page)		\
+> +static __always_inline int Page##uname(const struct page *page)		\
+>  {									\
+>  	return PageType(page, PG_##lname);				\
+>  }									\
+> +static __always_inline int folio_test_##lname(const struct folio *folio)\
+> +{									\
+> +	return folio_test_type(folio, PG_##lname);			\
+> +}									\
+>  static __always_inline void __SetPage##uname(struct page *page)		\
+>  {									\
+>  	VM_BUG_ON_PAGE(!PageType(page, 0), page);			\
+>  	page->page_type &= ~PG_##lname;					\
+>  }									\
+> +static __always_inline void __folio_set_##lname(struct folio *folio)	\
+> +{									\
+> +	VM_BUG_ON_FOLIO(!folio_test_type(folio, 0), folio);		\
+> +	folio->page.page_type &= ~PG_##lname;				\
+> +}									\
+>  static __always_inline void __ClearPage##uname(struct page *page)	\
+>  {									\
+>  	VM_BUG_ON_PAGE(!Page##uname(page), page);			\
+>  	page->page_type |= PG_##lname;					\
+> -}
+> +}									\
+> +static __always_inline void __folio_clear_##lname(struct folio *folio)	\
+> +{									\
+> +	VM_BUG_ON_FOLIO(!folio_test_##lname(folio), folio);		\
+> +	folio->page.page_type |= PG_##lname;				\
+> +}									\
+>  
+>  /*
+>   * PageBuddy() indicates that the page is free and in the buddy system
+> -- 
+> 2.39.2
+> 
+> 
 
-Is there an easy way to move UML's physical memory above 0x10007fff8000?
-
-I tried e.g. adjusting START in arch/x86/Makefile.um to
-0x200060000000, but that led to boot-time vmap allocation failures.
-Could it be that there are some implicit conditions on this address -
-maybe something related to TASK_SIZE?
-
-Thanks,
-Alex
-
-[1] https://github.com/ramosian-glider/linux/commits/uml-asan
+-- 
+Sincerely yours,
+Mike.
 
 _______________________________________________
 linux-um mailing list
