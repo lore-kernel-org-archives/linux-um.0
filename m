@@ -4,46 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7C81C77B7E
-	for <linux-um@archiver.kernel.org>; Thu, 25 May 2023 18:39:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 942F7C7EE29
+	for <linux-um@archiver.kernel.org>; Thu, 25 May 2023 19:45:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=o78/Py3gIHDSmV0EUAEes+1zw/puksBMQPNUf5RwG/Q=; b=OGFWWab3u3J8md
-	atIhfO8nmNQSTWxc+uCa9DQ/Mk8qac9z9wfckvyxEukN6mTuRPyEnJ6kP/ZTUyzt/73m5RQTtc3BX
-	awlCkWfwW4VIqsgl9p3pQXS5U2i0fmBCsxC5dymXfqX/GfgbOykMjFa4dOZH8dbT/zzG/A88PgCf0
-	z3HN2LToWYA0BnOXzH7IrNdsKNEex8VAXiAtvSt6f6zGjpZEDay2q9RHEhBzP+HQ3XjweiOgNJELf
-	tIQCXMabjXnZyEFtwqmX8R++4AptpwzcWTktuRk3gnQBnD49ThZll6/ioqnCCPp++4cJqZNssvWhT
-	l9EhzwziPzHJkGw3KUYQ==;
+	List-Owner; bh=TeQyB7qM2No60DIG9FmpY8ZCQ1xaoBvJzPzaTGK2hLY=; b=ieeCRIAuXThMCb
+	6qwCxnC8mrAcWx1OAy3NxJyHHDtHURXs+PikY/MWmFe82qMoqH5bypRZjdnZhCxjyt8YoYHzXbFY2
+	kjx1uKyoClFtxLUqog6+0TkEAOHAxF8iFlqrRxv5ZHIB9qZ3EksJGEBl8T/1ERsyhF35ooSr3AJDs
+	2aH2MjptjXwm5ihXojmS+EQ17EG96cDsSP4JdJAknR+xhVEzrGNNV0wyIx/8ieCkTxT4lE3TRTTCD
+	1/H27DxjOp3K355PYTAWA1Z+CPOss4Vc/olQ2kCbH9HVDz9kpqL2wMitdj+unV4zjnR40DM0aM/K/
+	UYBtT/226H2zF24eYA4Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q2Frz-00HReL-2L;
-	Thu, 25 May 2023 18:39:27 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1q2GtT-0000Pq-2t;
+	Thu, 25 May 2023 19:45:03 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q2Frw-00HRdM-07
+	id 1q2GtS-0000Ox-1d
+	for linux-um@bombadil.infradead.org;
+	Thu, 25 May 2023 19:45:02 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-Type:Content-ID:Content-Description;
+	bh=624oLw7os3EpwIXLCI7BNRK4nuSK6Sw+a1R80XpNFaw=; b=QkM4hW+FzreL26dMajQimyLb23
+	H3I6STWPrHib8z86unyLHgNz4pF+psUXfWO0sIJMRw3lm3YHDRpGhKWi2t/IfrJwUCqT6UTl+Smc4
+	NBS0o+RvMLbjvmag9Lb1hDkPkZ4R0aANWQbV3u2qotTL/Evt9iy//z5Ctd66d6XlYYImEAhJMAW2b
+	Mcw/nStN86gB0W7eaTHccHZq9ezlBfeEy9ltOKuTyBgPrIxXi1h1t1ijMj7kAKhLnUm81XENV+Y8R
+	FYAvAYIxdnq4HPxLF3xADrrS/h8g6x83rWiaFO3u6c/NXKqGqFLzUbdz8mQfjRHH777TGQR+S1D4l
+	z/8sY6NQ==;
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1q2FpP-006dQV-2E
 	for linux-um@lists.infradead.org;
-	Thu, 25 May 2023 18:39:25 +0000
+	Thu, 25 May 2023 18:36:50 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 9356B6494E;
-	Thu, 25 May 2023 18:39:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69E0EC433D2;
-	Thu, 25 May 2023 18:39:22 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 9C72B648FE;
+	Thu, 25 May 2023 18:36:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1220DC433EF;
+	Thu, 25 May 2023 18:36:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1685039963;
-	bh=p9ZR0WsujbR4gx/eZToGB1JXDe5wcbAbu4U+5ciWCss=;
+	s=k20201202; t=1685039802;
+	bh=k4xLpc2kDfrZGIzuPUhhZcsIyB570BeLmlOecqYVjjo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hNdreVg5apfd+V88IWs6akC0Eq0L2wxVr14qcT/nV8osx/mRXAQ8cL+bhxT/BUU/G
-	 FmDEheujujd8IGozxh7j0qyzFy2iJfZSQF0xTCL8OlX8WhxC/d+pcn7DnXPA4JzlQW
-	 0p81stV+EMniukppPVPhZugiihpNTSctaz1pPH6Djc8IVzxl9/nQ3T0mtoEoTvWTBU
-	 pW7X3igxW5hTQ5+FeWEBrw3g1SZJdGydQG1I/pIleXOaScCFI14C960uGDxXY6JXST
-	 r4k5vfgT0AhqWOo/6hvAWoItuDBnGqO3aYMHGIYbSlE0zibMJ+EDi+pGqdNyjyIw+s
-	 3C8g8Cuh1uaMw==
+	b=GlD5ngPP8Jcu4BRFJKag4ChNIRsGBzk0QeNXBrpV5ZjxIXvCT3TqiU+tOZ3LOAd9u
+	 +UA3mJ1Or/WgsB5hpiAZoXo1E6NSXM9eIsjayHPs4oZ4qP0cyHTLBqSO6pobyNlxxn
+	 aJn6+3776OphXtpebLv7dAouWM9778cTbVr9zl6fWlcwoRPxCYfWH3+6XgaBuIo1TK
+	 TF4V+aIJCrgTnAH7HQBByFsGorTGYjnimIfSwDpEcrG5fVkKkTxSZ6jvBCF8XQwW2t
+	 UHPXF8aJFxGNu36/ETLyG3IjaY3hSXZ+wK+rCIdljAta7eXtcz6MjSqTkvAQ35eYqs
+	 zwUkh/iQ1OTDw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -55,18 +70,18 @@ Cc: Johannes Berg <johannes.berg@intel.com>,
 	johannes@sipsolutions.net,
 	masahiroy@kernel.org,
 	linux-um@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.15 05/43] um: harddog: fix modular build
-Date: Thu, 25 May 2023 14:38:16 -0400
-Message-Id: <20230525183854.1855431-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 06/57] um: harddog: fix modular build
+Date: Thu, 25 May 2023 14:35:16 -0400
+Message-Id: <20230525183607.1793983-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230525183854.1855431-1-sashal@kernel.org>
-References: <20230525183854.1855431-1-sashal@kernel.org>
+In-Reply-To: <20230525183607.1793983-1-sashal@kernel.org>
+References: <20230525183607.1793983-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230525_113924_162192_9AF015AF 
-X-CRM114-Status: GOOD (  17.06  )
+X-CRM114-CacheID: sfid-20230525_193648_066398_2CC83B31 
+X-CRM114-Status: GOOD (  17.00  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,7 +122,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  create mode 100644 arch/um/drivers/harddog_user_exp.c
 
 diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
-index 803666e85414a..cd1a58bb3e9cd 100644
+index e1dc4292bd22e..65b449c992d2c 100644
 --- a/arch/um/drivers/Makefile
 +++ b/arch/um/drivers/Makefile
 @@ -16,7 +16,8 @@ mconsole-objs := mconsole_kern.o mconsole_user.o
