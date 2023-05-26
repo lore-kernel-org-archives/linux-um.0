@@ -4,36 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 74BEBC77B7A
-	for <linux-um@archiver.kernel.org>; Fri, 26 May 2023 05:35:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EBB36C7EE2F
+	for <linux-um@archiver.kernel.org>; Fri, 26 May 2023 05:40:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=+QLJIEjZO3ToOBmYZ6Yx2fKlk+hE5cl0zYq0oS46ITA=; b=yQlBPBMSQzuCLR
-	TemDWtw8w1QDl1QtLNKuY5diR9LQo12ae5l38rCTIkf2u0SjqxyyoKIPSLdOENATFpvI8dGhlwknZ
-	WhrFadpND0SnW26XKPOdV7H/++p9MxG6BaS5XKoRH4MINM3XtfTgg9NpFpJxBg/QeKKRbSSe1VR5R
-	39CX293Jk67zEnMo+MSnDAkPGevVIetx1arVGFuEl50jhps7e6KhSjxcq8Btyrw+5Nw2Fz3OvccWF
-	ysEYB2uQjxkQeHm1+8EvbkasNYMUIlYz53a6pfb8bkkiuakboUPmP+IbrkSFEVqo1TDU0DvN6wqOd
-	d7vRaqyUnSvrs35KBnug==;
+	List-Owner; bh=Ad70k671v8y+KJ61vzuL825ZOa/hxu27+VJuKv/g4vw=; b=cjgZFOlWvD7N2T
+	fabwOldzRQcgvaSTWdUMBnP0w7Afw498M2gKdCaILvQ6Aa4ZizEjQ+kK9iyjOW3IljpFJrMMkH9iT
+	5BKcukgZ2R3wc4hMUPJh0hbyyU9COdhDB5EZXvXYQxM+1BOVNdcW5AYlPs5aOxpGP0rWR7yGS7PaD
+	1NfPORETHTKb2KfWlkz6bVzTrpjm8cEFv336HsHwouCc/PQ1UBnkCjhPfCDRtoZsZxLiRkxwpvYrr
+	7eVhDaNkiWFj675Si4L11Xi8xOz10OItzvMll+tlott0UWYhKSPAeMMaHCESFrytzQU6Dc4Fnhh4F
+	vm/U5yQ37COVPAkjTJwA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q2Q79-0017tt-1X;
-	Fri, 26 May 2023 05:35:47 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1q2QBi-0018WA-06;
+	Fri, 26 May 2023 05:40:30 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q2Q76-0017sY-1D;
-	Fri, 26 May 2023 05:35:45 +0000
+	id 1q2QBe-0018Uq-2M;
+	Fri, 26 May 2023 05:40:27 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id BFF6C64BF1;
-	Fri, 26 May 2023 05:35:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BD15C433EF;
-	Fri, 26 May 2023 05:35:38 +0000 (UTC)
-Date: Fri, 26 May 2023 01:35:34 -0400
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 42FB564C7A;
+	Fri, 26 May 2023 05:40:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66082C433EF;
+	Fri, 26 May 2023 05:40:22 +0000 (UTC)
+Date: Fri, 26 May 2023 01:40:18 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: Nadav Amit <nadav.amit@gmail.com>
 Cc: Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>,
@@ -44,7 +44,7 @@ Cc: Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>,
  <dave.hansen@linux.intel.com>, Borislav Petkov <bp@alien8.de>, X86 ML
  <x86@kernel.org>, Peter Zijlstra <peterz@infradead.org>
 Subject: Re: [PATCH v2 2/3] compiler: inline does not imply notrace
-Message-ID: <20230526013534.76e5b613@rorschach.local.home>
+Message-ID: <20230526014018.5ebafc55@rorschach.local.home>
 In-Reply-To: <D4B1FB24-C351-411B-8A40-4DAFE95FA921@gmail.com>
 References: <20230525210040.3637-1-namit@vmware.com>
 	<20230525210040.3637-3-namit@vmware.com>
@@ -53,8 +53,9 @@ References: <20230525210040.3637-1-namit@vmware.com>
 X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230525_223544_455271_BB79EC3F 
-X-CRM114-Status: GOOD (  16.52  )
+X-CRM114-CacheID: sfid-20230525_224026_828781_32D8C625 
+X-CRM114-Status: UNSURE (   7.89  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,21 +73,10 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 T24gVGh1LCAyNSBNYXkgMjAyMyAyMjoxNzozMyAtMDcwMApOYWRhdiBBbWl0IDxuYWRhdi5hbWl0
-QGdtYWlsLmNvbT4gd3JvdGU6CgoKPiA+IEZZSSwgSSBoYXZlIGEgcGF0Y2ggcXVldWVkIChzdGls
-bCBuZWVkcyB0byBnbyB0aHJvdWdoIHRlc3RpbmcpIHRoYXQKPiA+IGFscmVhZHkgZG9lcyB0aGlz
-IDstKQo+ID4gCj4gPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9hbGwvMjAyMzA1MDIxNjQxMDIu
-MWE1MWNkYjRAZ2FuZGFsZi5sb2NhbC5ob21lLyAgCj4gCj4gVWdoLiBJZiB5b3UgY2PigJlkIG1l
-LCBJIHdvdWxkbuKAmXQgYm90aGVyIHlvdSBkdXJpbmcgeW91ciB2YWNhdGlvbi4gOikKCkknbSBj
-dXJyZW50bHkgcGFzc2VkIHRoZSB2YWNhdGlvbiBwYXJ0IGFuZCBub3cgaW4gVGFpd2FuIGZvciB3
-b3JrLgoKPiAKPiBJIHRoaW5rIHlvdSBtYXkgbGlrZSB0aGUgZmlyc3QgcGF0Y2ggaW4gbXkgc2Vy
-aWVzIHRvIHByZWNlZGUgdGhpcyBwYXRjaAo+IHRob3VnaCBhcyBzb21lIG9mIHRoZSBmdW5jdGlv
-biBJIG1hcmtlZCBhcyDigJxub3RyYWNlIiBhcmUgY3VycmVudGx5IOKAnGlubGluZeKAnS4KPiAK
-PiBMZXQgbWUga25vdyBob3cgeW91IHdhbnQgdG8gcHJvY2VlZCwgc28gSSB3b3VsZCBrbm93IGhv
-dyB0byBicmVhayB0aGlzCj4gc2VyaWVzLgoKQ3VycmVudGx5IHRoZXJlJ3MgYSBuYXN0eSBidWcg
-aW4gdjYuNC1yYzMgSSdtIGZpZ2h0aW5nIHdoZXJlIEkgY2FuJ3QKcHJvY2VlZCBvbiBhbnl0aGlu
-ZyB1bnRpbCBpdCdzIHJlc29sdmVkLiBCdXQgSSBjb3VsZCBhbHNvIGp1c3QgcHVsbAp5b3VyIGZp
-cnN0IGFuZCB0aGlyZCBwYXRjaCB0b28uIEknbGwgbGV0IHlvdSBrbm93IHdoZW4gSSdtIGZpbmlz
-aGVkCmRlYnVnZ2luZy4KCi0tIFN0ZXZlCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5m
-cmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xp
-bnV4LXVtCg==
+QGdtYWlsLmNvbT4gd3JvdGU6Cgo+IFVnaC4gSWYgeW91IGNj4oCZZCBtZSwgSSB3b3VsZG7igJl0
+IGJvdGhlciB5b3UgZHVyaW5nIHlvdXIgdmFjYXRpb24uIDopCgpPaCwgYW5kIGlmIHlvdSBhcmUg
+aW50ZXJlc3RlZCBpbiB0cmFjaW5nIHBhdGNoZXMsIGp1c3Qgc3Vic2NyaWJlIHRvCmxpbnV4LXRy
+YWNlLWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcuCgotLSBTdGV2ZQoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4
+LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9saW51eC11bQo=
