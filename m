@@ -4,83 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D34E3C7EE33
-	for <linux-um@archiver.kernel.org>; Thu,  1 Jun 2023 08:22:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7BCBBC77B7E
+	for <linux-um@archiver.kernel.org>; Thu,  1 Jun 2023 13:19:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wRZ0XxawZXWqLmKvqfngpqafylqwFtO16D1zRfXXOAk=; b=mMccLAPxsgYAxs
-	k6JYhp9zvaehnRz0XEaDpI668J+twHqZyanf3ZKmD03jcrzpc/kewFZXLXvxdUQpifajMzp9oAogv
-	qEOURGBbnYoqPwfENlbTIjpd+8Ve75OiLU1TesB3enUGUBBfrgm6NuFNat5yauuuAvocfPHtuNZjx
-	GOEUG5OMoNFXrHS5h55xG2UAUjWsy1A25Ezp2m+e8Cgn94l1vi8zReWkpzJ/xCkKsOatd8rWdf2lT
-	miqz3TtBmcg/dxJLX/4gddzSVGF+m6z9EHgRisml50tjul1HU63WWbhq2g6hgfqPrhcgCnp7Ybt2l
-	HqVrHYQ482TBqEksMTrQ==;
+	List-Owner; bh=5XoJvsOJED9eIfjnK0WhYy01qPu2Fv/lXspwGbX8qQg=; b=286ptdl3CjnGVJ
+	lHMgr8QRLWhZzQenXy6soz0Ufc7nw7+cqfGze3NJLOCFy4+dYGx21ee0zA27FkmrbNvZb4QepaGHq
+	3YLY5rXadyUJ8muBUflobLeVAE8BkAo8yRn/Id0WwdOTrDtvABhEJs3A7TJE9F6d/dq1vOl1r5viv
+	+RjKwNFTwOCKgqmrkWbF4eqT0Rfmq/92DRfcaxdNshxhrJvMKHmgoK6a1AUYOMXnoiBJ2IlvUkesP
+	JvAY1c9oDX9P9lt1bFELIsqnpf0TADiXFHW8LjKoseQE+/oGwuhCJ2AkkfXdNlTeqTMFkwqnG58EL
+	Y5JV2wvBIoleU959kXMg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4dZb-002X6O-1e;
-	Thu, 01 Jun 2023 08:22:19 +0000
-Received: from mail-yw1-x112a.google.com ([2607:f8b0:4864:20::112a])
+	id 1q4iD8-003f8V-2k;
+	Thu, 01 Jun 2023 13:19:26 +0000
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q4dZY-002X4S-1C;
-	Thu, 01 Jun 2023 08:22:17 +0000
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-565cdb77b01so5259067b3.0;
-        Thu, 01 Jun 2023 01:22:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685607734; x=1688199734;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F3q8fSv1CYQ8OeBSkoHHq8yQzPVMEdcVj1sJJBohCe0=;
-        b=scnpKoycafdSA6Zmoxe64NtU1IPtpP1XoN7u6BxbHgaNpHHpBaRgfB2X/NbVQI3XUI
-         S43vtnrb0VpUQFKtCtNAL2Z4eQGxKB9jkDmQzBef6OSmzPFkANcNw2nEHbBaxtIGRJFx
-         F2gdbWX0/JO50BjGXzMMRjG/dVaN6/37Aaxe3j2XyiD9NBGl22snChdmfv7CpIBT4YsT
-         wzEsBAOaAGJLasaxdabRza57BmBoAT7cVmGOq5aUEFhtYj/c1WejBdPyTkL2OU+y9vxz
-         zNiBma0es8vOX0CahjWds9KH8J6DH6xHzp6sGGczNoDJQcyp7Q2snP8wt+QQc7Qs4GOa
-         fyBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685607734; x=1688199734;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=F3q8fSv1CYQ8OeBSkoHHq8yQzPVMEdcVj1sJJBohCe0=;
-        b=gVsfO0fOSbFC7K4YNJCHYkB5dkJoxEDuyDFg2c40pCvDiwtMeSNNI5Olj7b7XiCSjM
-         qpctU/B4+Zy5C1MczhrnrFBjOXdMSkCc4dzAJTi/PKZJjI4vvgqtwua9TERYhDOui6pH
-         Y+YguXZ1zWe0toIzvsyuvW7/j85D2cdWMLbm/zIIsKAogoaa/U/900+0r3v5wFoe7IB0
-         IERTPLa+XRPrMlR/jTtpGsqRIvNmJ9qoHqqxjKyeo2pcf85FNxBrCNEq707plbB0puVA
-         gA4c3qW3yDKIOL5Hk/Tbtl9M1k85VPO1tbPrzWFtvGfAZsv3hZaUH/a59TzQbBF7E8WW
-         ToLw==
-X-Gm-Message-State: AC+VfDzD5N8SHbv1HCd5vx6DzZPTHWUziIW6cw5t8oljhpggfGi/HSpX
-	lE/ntmdi6ItQzj0BDg/95XbUHrp+DSWsTMXavcY=
-X-Google-Smtp-Source: ACHHUZ4BVGpqKx729yAA7sIpRRuJCk9B2q39qd4V84f+TNhLT6e1WTgI1mcqI+pCtHVuJpHfepvjflFti312UIm7bGk=
-X-Received: by 2002:a0d:f5c2:0:b0:568:d63e:dd2c with SMTP id
- e185-20020a0df5c2000000b00568d63edd2cmr6202683ywf.11.1685607733835; Thu, 01
- Jun 2023 01:22:13 -0700 (PDT)
-MIME-Version: 1.0
+	id 1q4iD5-003f79-07;
+	Thu, 01 Jun 2023 13:19:24 +0000
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 351DDSRk018568;
+	Thu, 1 Jun 2023 13:19:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=tTBWxMHAGeJlpPAzqjw4yCDaupaYk6+WOuZ0r7RHXlQ=;
+ b=S/K5bR2wzWD8jF0s2LtK3vF/J1ec5Pw9lqbPdCL6ZXZARzxk77m6XthOAVrzcENBYS/e
+ ov9SEtmnnKsZTXa99Jk5hlMimhCPtmwo+YCJttdvMRkZI8Kj3tec3MJCAkANML7vJgEN
+ mm82HHoVVpteTT1109f2h3OEi5Dtya1+qWK/izBLKcrhp4adRtqmgRrMH7o6BtITpGsV
+ XQajjlwcskrHiNYJ0m2IzKlfajqLyEOsVlAvnpMojNTW61NI6Y/l6FXM9CcrwKrRoiRU
+ 5yYyiViugHG/GJk6Dj84G7GFPGbzxZudOaESQkF8/B03VEx03rqx3lIPkJn/GXcV7VmA dQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3qxv1b0a39-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 01 Jun 2023 13:19:09 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 351DFUru001084;
+	Thu, 1 Jun 2023 13:19:09 GMT
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3qxv1b0a25-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 01 Jun 2023 13:19:08 +0000
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+	by ppma05fra.de.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 351Ac6ca009714;
+	Thu, 1 Jun 2023 13:19:07 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma05fra.de.ibm.com (PPS) with ESMTPS id 3qu9g5a49c-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 01 Jun 2023 13:19:06 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 351DJ3fS23134818
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 1 Jun 2023 13:19:03 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 330772004F;
+	Thu,  1 Jun 2023 13:19:03 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7D8E420040;
+	Thu,  1 Jun 2023 13:19:02 +0000 (GMT)
+Received: from thinkpad-T15 (unknown [9.152.212.238])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu,  1 Jun 2023 13:19:02 +0000 (GMT)
+Date: Thu, 1 Jun 2023 15:19:00 +0200
+From: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox
+ <willy@infradead.org>, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+        xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
+        David Hildenbrand <david@redhat.com>,
+        Claudio Imbrenda
+ <imbrenda@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>,
+        Hugh
+ Dickins <hughd@google.com>,
+        Christian Borntraeger
+ <borntraeger@linux.ibm.com>
+Subject: Re: [PATCH v3 03/34] s390: Use pt_frag_refcount for pagetables
+Message-ID: <20230601151900.6f184e8c@thinkpad-T15>
+In-Reply-To: <20230531213032.25338-4-vishal.moola@gmail.com>
 References: <20230531213032.25338-1-vishal.moola@gmail.com>
- <20230531213032.25338-31-vishal.moola@gmail.com> <CAMuHMdU4t4ac_eCH0UaX9F+GQ5-9kYjB_=e+pSfTkxG=3b8DsA@mail.gmail.com>
- <025fc34a24e1a1c26b187f15dba86d382d9617eb.camel@physik.fu-berlin.de>
-In-Reply-To: <025fc34a24e1a1c26b187f15dba86d382d9617eb.camel@physik.fu-berlin.de>
-From: Vishal Moola <vishal.moola@gmail.com>
-Date: Thu, 1 Jun 2023 01:22:03 -0700
-Message-ID: <CAOzc2pxnb6WXoVK5JXX42R0Q6FK59Q1uebQskK2fxLn6DuicqA@mail.gmail.com>
-Subject: Re: [PATCH v3 30/34] sh: Convert pte_free_tlb() to use ptdescs
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org, linux-arch@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, 
-	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
-	linux-openrisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
-	linux-um@lists.infradead.org, xen-devel@lists.xenproject.org, 
-	kvm@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>
+	<20230531213032.25338-4-vishal.moola@gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-redhat-linux-gnu)
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: NZnx_8FojkhNAEEWitWpik8jaNZSNqYi
+X-Proofpoint-GUID: URInLnYnsG8BZV2VGVY1OnfgESTv3EvD
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
+ definitions=2023-06-01_08,2023-05-31_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 spamscore=0
+ adultscore=0 priorityscore=1501 lowpriorityscore=0 suspectscore=0
+ impostorscore=0 bulkscore=0 mlxscore=0 phishscore=0 mlxlogscore=692
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2304280000 definitions=main-2306010115
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230601_012216_405528_4B747334 
-X-CRM114-Status: GOOD (  12.99  )
+X-CRM114-CacheID: sfid-20230601_061923_193206_CD574865 
+X-CRM114-Status: GOOD (  17.11  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,24 +125,37 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-T24gVGh1LCBKdW4gMSwgMjAyMyBhdCAxMjoyOOKAr0FNIEpvaG4gUGF1bCBBZHJpYW4gR2xhdWJp
-dHoKPGdsYXViaXR6QHBoeXNpay5mdS1iZXJsaW4uZGU+IHdyb3RlOgo+Cj4gSGkgR2VlcnQhCj4K
-PiBPbiBUaHUsIDIwMjMtMDYtMDEgYXQgMDk6MjAgKzAyMDAsIEdlZXJ0IFV5dHRlcmhvZXZlbiB3
-cm90ZToKPiA+IE9uIFdlZCwgTWF5IDMxLCAyMDIzIGF0IDExOjMz4oCvUE0gVmlzaGFsIE1vb2xh
-IChPcmFjbGUpCj4gPiA8dmlzaGFsLm1vb2xhQGdtYWlsLmNvbT4gd3JvdGU6Cj4gPiA+IFBhcnQg
-b2YgdGhlIGNvbnZlcnNpb25zIHRvIHJlcGxhY2UgcGd0YWJsZSBjb25zdHJ1Y3Rvci9kZXN0cnVj
-dG9ycyB3aXRoCj4gPiA+IHB0ZGVzYyBlcXVpdmFsZW50cy4gQWxzbyBjbGVhbnMgdXAgc29tZSBz
-cGFjaW5nIGlzc3Vlcy4KPiA+ID4KPiA+ID4gU2lnbmVkLW9mZi1ieTogVmlzaGFsIE1vb2xhIChP
-cmFjbGUpIDx2aXNoYWwubW9vbGFAZ21haWwuY29tPgo+ID4KPiA+IExHVE0sIHNvCj4gPiBSZXZp
-ZXdlZC1ieTogR2VlcnQgVXl0dGVyaG9ldmVuIDxnZWVydCtyZW5lc2FzQGdsaWRlci5iZT4KPgo+
-IEkgYXNzdW1lIHRoaXMgc2VyaWVzIGlzIHN1cHBvc2VkIHRvIGdvIHRocm91Z2ggc29tZSBtbSB0
-cmVlPwoKSGkgQWRyaWFuLApJIHdhcyBnb2luZyB0byBoYXZlIEFuZHJldyB0YWtlIHRoaXMgdGhy
-b3VnaCBtbS11bnN0YWJsZQpvbmNlIGl0IGdldHMgZW5vdWdoIHJldmlldy4KCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlz
-dApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
+ On Wed, 31 May 2023 14:30:01 -0700
+"Vishal Moola (Oracle)" <vishal.moola@gmail.com> wrote:
+
+> s390 currently uses _refcount to identify fragmented page tables.
+> The page table struct already has a member pt_frag_refcount used by
+> powerpc, so have s390 use that instead of the _refcount field as well.
+> This improves the safety for _refcount and the page table tracking.
+> 
+> This also allows us to simplify the tracking since we can once again use
+> the lower byte of pt_frag_refcount instead of the upper byte of _refcount.
+
+This would conflict with s390 impact of pte_free_defer() work from Hugh Dickins
+https://lore.kernel.org/lkml/35e983f5-7ed3-b310-d949-9ae8b130cdab@google.com/
+https://lore.kernel.org/lkml/6dd63b39-e71f-2e8b-7e0-83e02f3bcb39@google.com/
+
+There he uses pt_frag_refcount, or rather pt_mm in the same union, to save
+the mm_struct for deferred pte_free().
+
+I still need to look closer into both of your patch series, but so far it
+seems that you have no hard functional requirement to switch from _refcount
+to pt_frag_refcount here, for s390.
+
+If this is correct, and you do not e.g. need this to make some other use
+of _refcount, I would suggest to drop this patch.
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
