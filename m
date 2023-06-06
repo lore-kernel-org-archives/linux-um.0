@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58D38C7EE2A
-	for <linux-um@archiver.kernel.org>; Tue,  6 Jun 2023 07:41:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25186C7EE24
+	for <linux-um@archiver.kernel.org>; Tue,  6 Jun 2023 07:41:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=S6MW+RABeP/Bsz0k4bFyjqxyp/Q+05qRu3Tvo1kJQGI=; b=hQ96LfAB2IzVsS
-	7pmczGZUGWyRzgIEmM2fbMg7ec9PKSguvoOW7Wxim4tFvbPJCVezQfKltvfll2sfyd191Vsuo68R7
-	GSg6Xfv3Zj4ryf+PxLOSznspUC2NefiVEqtgSxxDooL9RrMAtgAzs/nzKSdDgd7/kwscDXIyLJdo1
-	L7ImFQT17gO0EtNGjVQQ/AwAKVqtUBIVIQvSmN5ost4LFRgsmqSrqkNz65OErgaadCKKsrfjsHX9t
-	4Qaw5v2ZiN3/Yl0WuFblgQ6p6DmmTAcnkfNoWbkRj5yyBGCeBaVCnxHQZUQiO3rLwb0lEUCjSznKW
-	+WfWZunr6Pbo5hRl3J4A==;
+	List-Owner; bh=QqnO6lCecH7E1g6JzC9GvhEQftlihYpJzjT8VSJiVok=; b=0ZT54cTqIvDx4J
+	6fwt6nC2kgMtmCJU+1gmsrY5XSUmlPoJGqeff1byer7PZ4H0xWUl6bVWKYDIXXxt8IO+PAZ+Dztm1
+	qxInRH9I5/ENxUonjjhddcR9HGRTNteIUwzILKkM9vK1W5MtRkjnWQWEFspgUW69NaDwCdpxyajCS
+	nNx/BHqC6Fp/ZW8voN7UsyBPqTW+0NiUvxP88WCDi7HhxtQAqgpYuS5uzHcWyZglYuwrlSKW/ZoZi
+	meMu5s07yoKktT77l0jnpva+OnyVfS3RAFOwB8hW91WDUzcoJ9kMPY8g5WpIRZNcCOjExQfgwzfvQ
+	KXbo6dLAsyttHafgq2nA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6RJZ-000Zuh-33;
-	Tue, 06 Jun 2023 07:41:13 +0000
+	id 1q6RJy-000aJD-21;
+	Tue, 06 Jun 2023 07:41:38 +0000
 Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6RIt-000Z8r-0R;
-	Tue, 06 Jun 2023 07:40:31 +0000
+	id 1q6RIy-000ZEq-1z;
+	Tue, 06 Jun 2023 07:40:37 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -55,9 +55,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-nilfs@vger.kernel.org,
 	linux-fsdevel@vger.kernel.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH 11/31] block: rename blkdev_close to blkdev_release
-Date: Tue,  6 Jun 2023 09:39:30 +0200
-Message-Id: <20230606073950.225178-12-hch@lst.de>
+Subject: [PATCH 13/31] bcache: don't pass a stack address to blkdev_get_by_path
+Date: Tue,  6 Jun 2023 09:39:32 +0200
+Message-Id: <20230606073950.225178-14-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230606073950.225178-1-hch@lst.de>
 References: <20230606073950.225178-1-hch@lst.de>
@@ -78,35 +78,28 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Make the function name match the method name.
+sb is just an on-stack pointer that can easily be reused by other calls.
+Switch to use the bcache-wide bcache_kobj instead as there is no need to
+claim per-bcache device anyway.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- block/fops.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/md/bcache/super.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/block/fops.c b/block/fops.c
-index 6a3087b750a6cd..26af2b39c758e1 100644
---- a/block/fops.c
-+++ b/block/fops.c
-@@ -500,7 +500,7 @@ static int blkdev_open(struct inode *inode, struct file *filp)
- 	return 0;
- }
- 
--static int blkdev_close(struct inode *inode, struct file *filp)
-+static int blkdev_release(struct inode *inode, struct file *filp)
- {
- 	struct block_device *bdev = filp->private_data;
- 
-@@ -677,7 +677,7 @@ static long blkdev_fallocate(struct file *file, int mode, loff_t start,
- 
- const struct file_operations def_blk_fops = {
- 	.open		= blkdev_open,
--	.release	= blkdev_close,
-+	.release	= blkdev_release,
- 	.llseek		= blkdev_llseek,
- 	.read_iter	= blkdev_read_iter,
- 	.write_iter	= blkdev_write_iter,
+diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+index 94b91c45c9e2a9..4a2aed047aec12 100644
+--- a/drivers/md/bcache/super.c
++++ b/drivers/md/bcache/super.c
+@@ -2560,7 +2560,7 @@ static ssize_t register_bcache(struct kobject *k, struct kobj_attribute *attr,
+ 	err = "failed to open device";
+ 	bdev = blkdev_get_by_path(strim(path),
+ 				  FMODE_READ|FMODE_WRITE|FMODE_EXCL,
+-				  sb, NULL);
++				  bcache_kobj, NULL);
+ 	if (IS_ERR(bdev)) {
+ 		if (bdev == ERR_PTR(-EBUSY)) {
+ 			dev_t dev;
 -- 
 2.39.2
 
