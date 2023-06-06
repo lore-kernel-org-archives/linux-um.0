@@ -4,82 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10CF9C7EE24
-	for <linux-um@archiver.kernel.org>; Tue,  6 Jun 2023 18:24:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BAC37C7EE37
+	for <linux-um@archiver.kernel.org>; Tue,  6 Jun 2023 20:52:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=mc8u4LkUhcQ0+rypfrdWa8dIgIkYNJU0wdsBRYixg9M=; b=Yd9K5GByW2TnKZ
-	PdlzCVRsPSgf14IAQEu1jS7VfSxVVi/Q4FsYwCfBXeE2/VbOjxLODIqqrvEfppOK3Rv9lshtaJnW8
-	mE8Qk884xnI/yWM2Xwy5qAr1Fj1CAh2j2t0IaSSJPlZAymCyxRR4ucTMayY2nCzZ5Dh/C38tuQZec
-	RoqbFvQs8SoSM7E9Im8pnq/0X993GYlCvp9iwnLWUPI/r2p+L3Kp84bcmeyYvWPAs7ftboyTysCQH
-	J+mVsYthIF5OOeF8cewGv77y9HN2lKaVmmxDaQhIQx1CXgIh+Mzj7IiOJzPcfs6VoUAIB1z/Yt6aN
-	q0OP7zECwygrla1qPKIw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=6l8nbp3gI7+zKU0vPvjophYraV/adMGzLiZKZP5Brcg=; b=KuUR3qVLCYGlLWEx4qXvTO6LuB
+	ExwJBv6b39D3CtHWBuzJCGBCQj3m4yzXbKTVWfx+b6HRIsZbBbofBy8sL1qIsNFD3HKPfmSmgiEWt
+	4Yeugk1kpqlvQMoMQLdb1soxTekiqSA+3h6zv6q58UAgVKJ88z288bhKQ+Mx9WW9h7W1ZYHiT+KG9
+	DX1xr7U7cac7RWidRb0C7ZHKHn0XAwbR/9ip7E9T0zuLEwC4vjqGq5E2IltaKsyP+BEmS+HpDAp+w
+	9dtZKqN9bWxIuOKyIrf+rX17D31LjJ7bGOpJnSLoYWGWhycNKeXWhxhoHEbOPLkWadeuXeRnzAWKB
+	skgsMdyA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6bM7-002lBZ-0O;
-	Tue, 06 Jun 2023 18:24:31 +0000
-Received: from mail-il1-x133.google.com ([2607:f8b0:4864:20::133])
+	id 1q6df6-003Deu-0F;
+	Tue, 06 Jun 2023 20:52:16 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6bM5-002lAX-07
+	id 1q6df2-003DYt-1a
 	for linux-um@lists.infradead.org;
-	Tue, 06 Jun 2023 18:24:30 +0000
-Received: by mail-il1-x133.google.com with SMTP id e9e14a558f8ab-33b4552e55cso19048775ab.0
-        for <linux-um@lists.infradead.org>; Tue, 06 Jun 2023 11:24:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686075867; x=1688667867;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=V12rCjy7mPc3LIBp5uRLQjG6txyB7DcxNo61Y87f3E8=;
-        b=iy/xvJarg3bLpHU7R7JQ/+OIqn6X9rB1vjDBEYSmRbGrF2GYKSNyCBxqDKaTg3TsY1
-         m8XyTGpH3SUlb8n2kQg7nkhHq0b+xvMWHVAwznViXl32hPsaKltXyM7txeJ3El3WXp2H
-         /RsZ/MHX05X8ig+jqB6WkaMITlkFjywymK1swg8trjjSAYwPLIC84KO7kM2we1+ZWb8x
-         Vpq/cQw/auxNKUg100D2+YjMMUajgwlUt09Z73LOQworieqQRB3yUdq/odGQZDC+Xl0Q
-         mwL7r6Z+4XZ7veO+wP2a9CgrH8sfBr9vQdwtRPstIS8z/ofMvJYtn8MFqNF6uDm7mvl+
-         2P9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686075867; x=1688667867;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=V12rCjy7mPc3LIBp5uRLQjG6txyB7DcxNo61Y87f3E8=;
-        b=TywLcAbdJBgI2CD4Zwr1Om3JmWBB0dIM46Nst6qVGqDrQ1aiD64P3ghoVPCe12oMo/
-         WXf3VBwVfI2iQDK8zqdz5I2hDDUePrgWqYeDWisA3uoNKoGdzZDvIeHneqnanRZ7/pO/
-         QBaA2ZWz88I9+MNZQdGbiPtLbb4K89Hb7Y+BO9iK7V+8bvsjfMwb8shUSPmaZ5gu3vtk
-         F38vIxybhlCh81HfcLJt0AMoSUZRbxcXElnHWPdN8JZglAvkPYLbgbTw9P1/PYkw0/zb
-         q9rlmXn+jG6PciVrO6UPg5ajW8cxk2IUMp26CJ0j8MAD4WTa6nP+573/q6fKjdyT5PQK
-         YjLw==
-X-Gm-Message-State: AC+VfDz6psThwYEVvbzA4caSKc0DtZ2QsnTIr/YsvLrUXeLTiN05d/DA
-	2ye+qrs3cFVOFMJj6q7GCNw=
-X-Google-Smtp-Source: ACHHUZ4Xl6Q3aZU+8ToKIEYcfoUZ4oDIRjhiWwJIU6JSAcZnO8WFZANa3GqrSDV09npzYmGy1N2rbQ==
-X-Received: by 2002:a92:2805:0:b0:334:de38:d600 with SMTP id l5-20020a922805000000b00334de38d600mr2401946ilf.3.1686075867141;
-        Tue, 06 Jun 2023 11:24:27 -0700 (PDT)
-Received: from azeems-kspp.c.googlers.com.com (54.70.188.35.bc.googleusercontent.com. [35.188.70.54])
-        by smtp.gmail.com with ESMTPSA id p15-20020a92da4f000000b0033a4f125238sm3235543ilq.41.2023.06.06.11.24.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jun 2023 11:24:26 -0700 (PDT)
-From: Azeem Shaikh <azeemshaikh38@gmail.com>
-To: Maxim Krasnyansky <maxk@qti.qualcomm.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-hardening@vger.kernel.org,
-	Azeem Shaikh <azeemshaikh38@gmail.com>,
-	linux-kernel@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	"Jason A. Donenfeld" <Jason@zx2c4.com>,
+	Tue, 06 Jun 2023 20:52:14 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 8F00B63CC103;
+	Tue,  6 Jun 2023 22:51:58 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id PHgZNUdjvgcB; Tue,  6 Jun 2023 22:51:57 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id BE5DF608F44F;
+	Tue,  6 Jun 2023 22:51:57 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id aN1OkdMjbyuq; Tue,  6 Jun 2023 22:51:57 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 940C063CC103;
+	Tue,  6 Jun 2023 22:51:57 +0200 (CEST)
+Date: Tue, 6 Jun 2023 22:51:57 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: Azeem Shaikh <azeemshaikh38@gmail.com>
+Cc: Maxim Krasnyansky <maxk@qti.qualcomm.com>, 
+	anton ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, 
+	linux-hardening <linux-hardening@vger.kernel.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, 
+	linux-um <linux-um@lists.infradead.org>, 
+	"Jason A. Donenfeld" <Jason@zx2c4.com>, 
 	kernel test robot <lkp@intel.com>
-Subject: [PATCH v2] uml: Replace strlcpy with strscpy
-Date: Tue,  6 Jun 2023 18:24:09 +0000
-Message-ID: <20230606182410.3976487-1-azeemshaikh38@gmail.com>
-X-Mailer: git-send-email 2.41.0.rc0.172.g3f132b7071-goog
+Message-ID: <1833651082.3690424.1686084717406.JavaMail.zimbra@nod.at>
+In-Reply-To: <20230606182410.3976487-1-azeemshaikh38@gmail.com>
+References: <20230606182410.3976487-1-azeemshaikh38@gmail.com>
+Subject: Re: [PATCH v2] uml: Replace strlcpy with strscpy
 MIME-Version: 1.0
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: Replace strlcpy with strscpy
+Thread-Index: kDC0hXVrB1XbeTt1tCVxurpE9ug2qA==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230606_112429_075188_0D5A4ED2 
-X-CRM114-Status: GOOD (  13.14  )
+X-CRM114-CacheID: sfid-20230606_135212_700771_C9258905 
+X-CRM114-Status: UNSURE (   8.79  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,64 +78,29 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-strlcpy() reads the entire source buffer first.
-This read may exceed the destination size limit.
-This is both inefficient and can lead to linear read
-overflows if a source string is not NUL-terminated [1].
-In an effort to remove strlcpy() completely [2], replace
-strlcpy() here with strscpy().
-No return values were used, so direct replacement is safe.
-
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
-[2] https://github.com/KSPP/linux/issues/89
-
-Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202305311135.zGMT1gYR-lkp@intel.com/
----
-v1: https://lore.kernel.org/all/20230530164004.986750-1-azeemshaikh38@gmail.com/
-
-Changes from v1 - added strscpy declaration. v1 does not build.
-
- arch/um/include/shared/user.h          | 1 +
- arch/um/os-Linux/drivers/tuntap_user.c | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/um/include/shared/user.h b/arch/um/include/shared/user.h
-index bda66e5a9d4e..0347a190429c 100644
---- a/arch/um/include/shared/user.h
-+++ b/arch/um/include/shared/user.h
-@@ -52,6 +52,7 @@ static inline int printk(const char *fmt, ...)
- extern int in_aton(char *str);
- extern size_t strlcpy(char *, const char *, size_t);
- extern size_t strlcat(char *, const char *, size_t);
-+extern size_t strscpy(char *, const char *, size_t);
- 
- /* Copied from linux/compiler-gcc.h since we can't include it directly */
- #define barrier() __asm__ __volatile__("": : :"memory")
-diff --git a/arch/um/os-Linux/drivers/tuntap_user.c b/arch/um/os-Linux/drivers/tuntap_user.c
-index 53eb3d508645..2284e9c1cbbb 100644
---- a/arch/um/os-Linux/drivers/tuntap_user.c
-+++ b/arch/um/os-Linux/drivers/tuntap_user.c
-@@ -146,7 +146,7 @@ static int tuntap_open(void *data)
- 		}
- 		memset(&ifr, 0, sizeof(ifr));
- 		ifr.ifr_flags = IFF_TAP | IFF_NO_PI;
--		strlcpy(ifr.ifr_name, pri->dev_name, sizeof(ifr.ifr_name));
-+		strscpy(ifr.ifr_name, pri->dev_name, sizeof(ifr.ifr_name));
- 		if (ioctl(pri->fd, TUNSETIFF, &ifr) < 0) {
- 			err = -errno;
- 			printk(UM_KERN_ERR "TUNSETIFF failed, errno = %d\n",
--- 
-2.41.0.rc0.172.g3f132b7071-goog
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkF6ZWVtIFNoYWlraCIgPGF6
+ZWVtc2hhaWtoMzhAZ21haWwuY29tPgo+IHN0cmxjcHkoKSByZWFkcyB0aGUgZW50aXJlIHNvdXJj
+ZSBidWZmZXIgZmlyc3QuCj4gVGhpcyByZWFkIG1heSBleGNlZWQgdGhlIGRlc3RpbmF0aW9uIHNp
+emUgbGltaXQuCj4gVGhpcyBpcyBib3RoIGluZWZmaWNpZW50IGFuZCBjYW4gbGVhZCB0byBsaW5l
+YXIgcmVhZAo+IG92ZXJmbG93cyBpZiBhIHNvdXJjZSBzdHJpbmcgaXMgbm90IE5VTC10ZXJtaW5h
+dGVkIFsxXS4KPiBJbiBhbiBlZmZvcnQgdG8gcmVtb3ZlIHN0cmxjcHkoKSBjb21wbGV0ZWx5IFsy
+XSwgcmVwbGFjZQo+IHN0cmxjcHkoKSBoZXJlIHdpdGggc3Ryc2NweSgpLgo+IE5vIHJldHVybiB2
+YWx1ZXMgd2VyZSB1c2VkLCBzbyBkaXJlY3QgcmVwbGFjZW1lbnQgaXMgc2FmZS4KPiAKPiBbMV0g
+aHR0cHM6Ly93d3cua2VybmVsLm9yZy9kb2MvaHRtbC9sYXRlc3QvcHJvY2Vzcy9kZXByZWNhdGVk
+Lmh0bWwjc3RybGNweQo+IFsyXSBodHRwczovL2dpdGh1Yi5jb20vS1NQUC9saW51eC9pc3N1ZXMv
+ODkKPiAKPiBTaWduZWQtb2ZmLWJ5OiBBemVlbSBTaGFpa2ggPGF6ZWVtc2hhaWtoMzhAZ21haWwu
+Y29tPgo+IFJlcG9ydGVkLWJ5OiBrZXJuZWwgdGVzdCByb2JvdCA8bGtwQGludGVsLmNvbT4KPiBD
+bG9zZXM6Cj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvb2Uta2J1aWxkLWFsbC8yMDIzMDUzMTEx
+MzUuekdNVDFnWVItbGtwQGludGVsLmNvbS8KCkFyZSB5b3Ugc3VyZSBSZXBvcnRlZC1ieSBhbmQg
+Q2xvc2VzIG1ha2Ugc2Vuc2U/CkFGQUlLIHRoZSByZXBvcnQgd2FzIG9ubHkgb24geW91ciBmaXJz
+dCBwYXRjaCBhbmQgbm90aGluZyBhZ2FpbnN0IHVwc3RyZWFtLgpTbyBzdGF0aW5nIHRoaXMgaW4g
+dGhlIHVwZGF0ZWQgcGF0Y2ggaXMgaW4gdmFpbi4KCk90aGVyIHRoYW4gdGhhdCwKQWNrZWQtYnk6
+IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+CgpUaGFua3MsCi8vcmljaGFyZAoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0g
+bWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmlu
+ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
