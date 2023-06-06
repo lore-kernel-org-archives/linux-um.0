@@ -4,70 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 28F82C77B73
-	for <linux-um@archiver.kernel.org>; Mon,  5 Jun 2023 20:07:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22559C7EE2A
+	for <linux-um@archiver.kernel.org>; Tue,  6 Jun 2023 07:40:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=oBkKcCm1eXyOszIYYN3xm6UFGa1H+WbB+o+XhDs4l74=; b=PmnW0eO2861t5XC7v9XVkMdOGQ
-	TBcZxKOfDKA/ffNNCo8RodJb7PZuQWBrQ6JSb4li0Mj4vxGYd1Kq+w4DrJcxehusHNCrfKiW2TXJd
-	bq75NOrwuu8BM2Ib7uxiYFc+B4/m9EElabOacT75h1+4Rs6eqmt6zyYMmpsg4syHi9fabxMaeB+P/
-	Ig2e1Nec4kIEzIxAismHJZZsDDurm7HHwY804K7NIweOBPw6ZL3HV5NY+U5pB9lZxnT0/5knZRI6R
-	ffeUPsASZuSKtvlnuMlJv3f4lgYQ1TxPdOo8LiYxT22i3vYYxCkuDtsK8bDNEuTd26iRQr16gdTHF
-	U9GoNrfQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=mjy04L6II9PMzcy0xLS5KC0IVsr03bJIispSpQz/Vg4=; b=zZWnVHNDsBFowM
+	Cij1HQ18vbEoM4JkchPgy2T3pmdn7cz/EVQ3r7j0YAASL96FlhC+tA/CC6K5ZRXbuM0OnAWFQXgSY
+	GzBzNOX7z1GeIf5rQUwKbt9O+LceN2B0BhrN4d4yDq7pGlxNqlOWqlH5TdzT3HzLsh1hWBwUzuDGO
+	Z0L2gTVfOv9QjrMa5gvhR87chBJRFpJqSDBIxa3NIGg3lecvQ3Bg7OuBDN8aeWzOfswYJouA3UtmW
+	5gY2lpCDUc2jqNmxznB9e+AT0poZurD9c+FolAmrv0B150Tywhoy7YduTz2RYLu9TrFTGFw1OXS7g
+	EZfSE/YJaLzW7PgaPVAQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6GUO-00GeYk-22;
-	Mon, 05 Jun 2023 20:07:40 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
-	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6GUL-00GeXI-1i
-	for linux-um@lists.infradead.org;
-	Mon, 05 Jun 2023 20:07:39 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 10B7363CC10C;
-	Mon,  5 Jun 2023 22:07:31 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id X6roPuzR374K; Mon,  5 Jun 2023 22:07:30 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id BF45E6081100;
-	Mon,  5 Jun 2023 22:07:30 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id xJjb7zySq9_X; Mon,  5 Jun 2023 22:07:30 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 9FE3863CC10C;
-	Mon,  5 Jun 2023 22:07:30 +0200 (CEST)
-Date: Mon, 5 Jun 2023 22:07:30 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: Azeem Shaikh <azeemshaikh38@gmail.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, Kees Cook <kees@kernel.org>, 
-	kernel test robot <lkp@intel.com>, 
-	Maxim Krasnyansky <maxk@qti.qualcomm.com>, 
-	oe-kbuild-all <oe-kbuild-all@lists.linux.dev>, 
-	linux-hardening <linux-hardening@vger.kernel.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, 
-	anton ivanov <anton.ivanov@cambridgegreys.com>, 
-	Johannes Berg <johannes@sipsolutions.net>, 
-	linux-um <linux-um@lists.infradead.org>
-Message-ID: <458187791.3685910.1685995650602.JavaMail.zimbra@nod.at>
-In-Reply-To: <CADmuW3WXDg-5SFXkMDE6BmvSwLNHmXpTzBonaOL8eErc4+d3qQ@mail.gmail.com>
-References: <20230530164004.986750-1-azeemshaikh38@gmail.com> <202305311135.zGMT1gYR-lkp@intel.com> <09A0C6FA-669F-4B73-9620-43AEA17E5D0C@kernel.org> <103925562.158061.1685514200368.JavaMail.zimbra@nod.at> <CAMuHMdU70uRxnMNb8KCJe8M3BRPPxowRXtj+POcrh+KLkfQyAA@mail.gmail.com> <CADmuW3WXDg-5SFXkMDE6BmvSwLNHmXpTzBonaOL8eErc4+d3qQ@mail.gmail.com>
-Subject: Re: [PATCH] uml: Replace all non-returning strlcpy with strscpy
+	id 1q6RIN-000YbZ-1P;
+	Tue, 06 Jun 2023 07:39:59 +0000
+Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1q6RIH-000Ya3-0f;
+	Tue, 06 Jun 2023 07:39:53 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Richard Weinberger <richard@nod.at>,
+	Josef Bacik <josef@toxicpanda.com>,
+	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+	Jack Wang <jinpu.wang@ionos.com>,
+	Phillip Potter <phil@philpotter.co.uk>,
+	Coly Li <colyli@suse.de>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Chris Mason <clm@fb.com>,
+	David Sterba <dsterba@suse.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Pavel Machek <pavel@ucw.cz>,
+	dm-devel@redhat.com,
+	linux-block@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	linux-scsi@vger.kernel.org,
+	linux-bcache@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-nvme@lists.infradead.org,
+	linux-btrfs@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-nilfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-pm@vger.kernel.org
+Subject: decouple block open flags from fmode_t
+Date: Tue,  6 Jun 2023 09:39:19 +0200
+Message-Id: <20230606073950.225178-1-hch@lst.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Topic: Replace all non-returning strlcpy with strscpy
-Thread-Index: F0kvDMRUOo3WCvHaQMtuD24L4U1LkA==
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230605_130737_746512_BE60793C 
-X-CRM114-Status: UNSURE (   1.57  )
-X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,15 +71,130 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIkF6ZWVtIFNoYWlraCIgPGF6
-ZWVtc2hhaWtoMzhAZ21haWwuY29tPgo+IFBsYW5uaW5nIHRvIHNlbmQgb3V0IHYyIHdpdGggdGhl
-IGZpeHVwIGZyb20gUmljaGFyZCBhcHBsaWVkLiBMZXQgbWUKPiBrbm93IGlmIHRoYXQncyBvay4K
-CkZpbmUgYnkgbWUuIDotKQoKVGhhbmtzLAovL3JpY2hhcmQKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11
-bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vbGludXgtdW0K
+Hi all,
+
+this series adds a new blk_mode_t for block open flags instead of abusing
+fmode_t.  The block open flags work very different from the normal use of
+fmode_t and only share the basic READ/WRITE flags with it.  None of the
+other normal FMODE_* flags is used, but instead there are three
+block-specific ones not used by anyone else, which can now be removed.
+
+Note that I've only CCed maintainers and lists for drivers and file systems
+that have non-trivial changes, as otherwise the series would spam literally
+everyone in the block and file system world.
+
+Diffstat:
+ arch/um/drivers/ubd_kern.c          |   20 ++-----
+ arch/xtensa/platforms/iss/simdisk.c |    6 +-
+ block/bdev.c                        |   99 ++++++++++++++++++------------------
+ block/blk-zoned.c                   |   12 ++--
+ block/blk.h                         |   26 ++++++++-
+ block/bsg-lib.c                     |    2 
+ block/bsg.c                         |    8 +-
+ block/disk-events.c                 |   47 +++++++----------
+ block/fops.c                        |   54 ++++++++++++-------
+ block/genhd.c                       |   13 ++--
+ block/ioctl.c                       |   61 +++++++---------------
+ drivers/block/amiflop.c             |   20 +++----
+ drivers/block/aoe/aoeblk.c          |    8 +-
+ drivers/block/ataflop.c             |   43 +++++++--------
+ drivers/block/drbd/drbd_main.c      |   13 ++--
+ drivers/block/drbd/drbd_nl.c        |   23 +++++---
+ drivers/block/floppy.c              |   72 +++++++++++++-------------
+ drivers/block/loop.c                |   24 ++++----
+ drivers/block/mtip32xx/mtip32xx.c   |    4 -
+ drivers/block/nbd.c                 |   12 ++--
+ drivers/block/pktcdvd.c             |   36 ++++++-------
+ drivers/block/rbd.c                 |    6 +-
+ drivers/block/rnbd/rnbd-clt.c       |    8 +-
+ drivers/block/rnbd/rnbd-srv-sysfs.c |    3 -
+ drivers/block/rnbd/rnbd-srv.c       |   23 ++++----
+ drivers/block/rnbd/rnbd-srv.h       |    2 
+ drivers/block/sunvdc.c              |    2 
+ drivers/block/swim.c                |   24 ++++----
+ drivers/block/swim3.c               |   33 +++++-------
+ drivers/block/ublk_drv.c            |    4 -
+ drivers/block/xen-blkback/xenbus.c  |    4 -
+ drivers/block/xen-blkfront.c        |    2 
+ drivers/block/z2ram.c               |    8 +-
+ drivers/block/zram/zram_drv.c       |   21 +++----
+ drivers/cdrom/cdrom.c               |   36 +++----------
+ drivers/cdrom/gdrom.c               |   12 ++--
+ drivers/md/bcache/bcache.h          |    2 
+ drivers/md/bcache/request.c         |    4 -
+ drivers/md/bcache/super.c           |   25 ++++-----
+ drivers/md/dm-cache-target.c        |   12 ++--
+ drivers/md/dm-clone-target.c        |   10 +--
+ drivers/md/dm-core.h                |    7 +-
+ drivers/md/dm-era-target.c          |    6 +-
+ drivers/md/dm-ioctl.c               |   10 +--
+ drivers/md/dm-snap.c                |    4 -
+ drivers/md/dm-table.c               |   11 ++--
+ drivers/md/dm-thin.c                |    9 +--
+ drivers/md/dm-verity-fec.c          |    2 
+ drivers/md/dm-verity-target.c       |    6 +-
+ drivers/md/dm.c                     |   20 +++----
+ drivers/md/dm.h                     |    2 
+ drivers/md/md.c                     |   50 +++++++++---------
+ drivers/mmc/core/block.c            |   12 ++--
+ drivers/mtd/devices/block2mtd.c     |    6 +-
+ drivers/mtd/mtd_blkdevs.c           |    8 +-
+ drivers/mtd/mtdblock.c              |    2 
+ drivers/mtd/ubi/block.c             |    9 +--
+ drivers/nvme/host/core.c            |    6 +-
+ drivers/nvme/host/ioctl.c           |   66 +++++++++++++-----------
+ drivers/nvme/host/multipath.c       |    6 +-
+ drivers/nvme/host/nvme.h            |    4 -
+ drivers/nvme/target/io-cmd-bdev.c   |    4 -
+ drivers/s390/block/dasd.c           |   10 +--
+ drivers/s390/block/dasd_genhd.c     |    5 +
+ drivers/s390/block/dasd_int.h       |    3 -
+ drivers/s390/block/dasd_ioctl.c     |    2 
+ drivers/s390/block/dcssblk.c        |   11 +---
+ drivers/scsi/ch.c                   |    3 -
+ drivers/scsi/scsi_bsg.c             |    4 -
+ drivers/scsi/scsi_ioctl.c           |   38 ++++++-------
+ drivers/scsi/sd.c                   |   39 ++++++--------
+ drivers/scsi/sg.c                   |    7 +-
+ drivers/scsi/sr.c                   |   22 ++++----
+ drivers/scsi/st.c                   |    2 
+ drivers/target/target_core_iblock.c |    9 +--
+ drivers/target/target_core_pscsi.c  |   10 +--
+ fs/btrfs/dev-replace.c              |    6 +-
+ fs/btrfs/ioctl.c                    |   12 ++--
+ fs/btrfs/super.c                    |   21 ++-----
+ fs/btrfs/volumes.c                  |   55 +++++++++-----------
+ fs/btrfs/volumes.h                  |   11 +---
+ fs/erofs/super.c                    |    7 +-
+ fs/ext4/super.c                     |   11 +---
+ fs/f2fs/super.c                     |   12 ++--
+ fs/jfs/jfs_logmgr.c                 |    6 +-
+ fs/nfs/blocklayout/dev.c            |    9 +--
+ fs/nilfs2/super.c                   |   12 +---
+ fs/ocfs2/cluster/heartbeat.c        |    7 +-
+ fs/reiserfs/journal.c               |   19 +++---
+ fs/reiserfs/reiserfs.h              |    1 
+ fs/super.c                          |   33 ++++--------
+ fs/xfs/xfs_super.c                  |   15 ++---
+ include/linux/blkdev.h              |   68 +++++++++++-------------
+ include/linux/bsg.h                 |    2 
+ include/linux/cdrom.h               |   12 ++--
+ include/linux/device-mapper.h       |    8 +-
+ include/linux/fs.h                  |    8 --
+ include/linux/mtd/blktrans.h        |    2 
+ include/scsi/scsi_ioctl.h           |    4 -
+ kernel/power/hibernate.c            |   12 +---
+ kernel/power/power.h                |    2 
+ kernel/power/swap.c                 |   28 ++++------
+ mm/swapfile.c                       |    7 +-
+ 103 files changed, 796 insertions(+), 853 deletions(-)
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
