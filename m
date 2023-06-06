@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6352FC7EE2C
-	for <linux-um@archiver.kernel.org>; Tue,  6 Jun 2023 08:45:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24E84C7EE2F
+	for <linux-um@archiver.kernel.org>; Tue,  6 Jun 2023 08:45:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=x7y/V5RxVP/RHW/oshpOgFE1YLAFKeHFibtrGZN52bs=; b=MYIDRYPfqwwCmS
-	L8fBbokdoW+etdTrmS17K4Ny9IJUsac+v3mfF/bKyFYObriv06c3oUM8XkQOxC9z39VnJdeEVi87A
-	GHwPEqJxraH7fLAxsn82w3bxx6ZZH0iy7Jx7dbQb4vR/y8GU5P+MeyzH7CQ9LVpnnXxQG3ZkEArCF
-	ZJfwEJ8G7ND+pSKPoke1r+nICFES1KwfcsGKA4cV9rcId/Uf/XiJXuEiz+IpIDORYzYA0iTM8cb0w
-	MOrSEmobAnVCXPhbi1qKMf4kJ0v03Sl1Qps5McrrsPH8YRAaL2/RybGu35t86WtOFqcgVvlOFAsLE
-	c5aEVsAoLENyyhzRcv8g==;
+	List-Owner; bh=MmsXGDtZJmf0NU8iywwKcC1RHGxGLx30XPQqqrSfvu4=; b=wzkkTv3TYCh1Gx
+	L6QJKoSkBJ/7MKXVKHHJK6hNxlxVUhGqH53QtGVMsEKPi4YTldIZ1nm2cirmH2vOGNBMhxSKyzxf5
+	kAohyXzqNr8dU/Wrrw1s+E7/J43oORsfwuWMsti3g5jOIdMA3Bm2hnr2x0HkwpfItnqzHCCGZ0zst
+	8wdfXI/O0W8TewsLaBrmykqbJaKtX7KCApTPibQ+5ZXZxiIfzZmglm4vyIRfrZc6ABYYvSyTA2aZV
+	1NEISF4ATgPrnz/c2bwVKALtiblnn0I0OML8KZ9vBnohbXjzctljMtJ8guf8731uyUsuGCN6isucv
+	wUR9OhSNjN5p3+IOJnWA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6SJp-000r3W-2d;
-	Tue, 06 Jun 2023 08:45:33 +0000
+	id 1q6SJt-000r88-2X;
+	Tue, 06 Jun 2023 08:45:37 +0000
 Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6RJE-000ZZD-1u;
-	Tue, 06 Jun 2023 07:40:52 +0000
+	id 1q6RJg-000Zye-0A;
+	Tue, 06 Jun 2023 07:41:20 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -55,9 +55,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-nilfs@vger.kernel.org,
 	linux-fsdevel@vger.kernel.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH 18/31] fs: remove sb->s_mode
-Date: Tue,  6 Jun 2023 09:39:37 +0200
-Message-Id: <20230606073950.225178-19-hch@lst.de>
+Subject: [PATCH 27/31] block: remove unused fmode_t arguments from ioctl handlers
+Date: Tue,  6 Jun 2023 09:39:46 +0200
+Message-Id: <20230606073950.225178-28-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230606073950.225178-1-hch@lst.de>
 References: <20230606073950.225178-1-hch@lst.de>
@@ -78,96 +78,101 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-There is no real need to store the open mode in the super_block now.
-It is only used by f2fs, which can easily recalculate it.
+A few ioctl handlers have fmode_t arguments that are entirely unused,
+remove them.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/f2fs/super.c    | 10 ++++++----
- fs/nilfs2/super.c  |  1 -
- fs/super.c         |  2 --
- include/linux/fs.h |  1 -
- 4 files changed, 6 insertions(+), 8 deletions(-)
+ block/blk-zoned.c |  4 ++--
+ block/blk.h       |  6 +++---
+ block/ioctl.c     | 14 +++++++-------
+ 3 files changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index a5adb1d316e331..5a764fecd1c7ef 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -3993,6 +3993,7 @@ static int f2fs_scan_devices(struct f2fs_sb_info *sbi)
- 	struct f2fs_super_block *raw_super = F2FS_RAW_SUPER(sbi);
- 	unsigned int max_devices = MAX_DEVICES;
- 	unsigned int logical_blksize;
-+	fmode_t mode = sb_open_mode(sbi->sb->s_flags);
- 	int i;
+diff --git a/block/blk-zoned.c b/block/blk-zoned.c
+index 096b6b47561f83..02cc2c629ac9be 100644
+--- a/block/blk-zoned.c
++++ b/block/blk-zoned.c
+@@ -323,8 +323,8 @@ static int blkdev_copy_zone_to_user(struct blk_zone *zone, unsigned int idx,
+  * BLKREPORTZONE ioctl processing.
+  * Called from blkdev_ioctl.
+  */
+-int blkdev_report_zones_ioctl(struct block_device *bdev, fmode_t mode,
+-			      unsigned int cmd, unsigned long arg)
++int blkdev_report_zones_ioctl(struct block_device *bdev, unsigned int cmd,
++		unsigned long arg)
+ {
+ 	void __user *argp = (void __user *)arg;
+ 	struct zone_report_args args;
+diff --git a/block/blk.h b/block/blk.h
+index 6910220aa030f1..e28d5d67d31a28 100644
+--- a/block/blk.h
++++ b/block/blk.h
+@@ -394,15 +394,15 @@ static inline struct bio *blk_queue_bounce(struct bio *bio,
+ #ifdef CONFIG_BLK_DEV_ZONED
+ void disk_free_zone_bitmaps(struct gendisk *disk);
+ void disk_clear_zone_settings(struct gendisk *disk);
+-int blkdev_report_zones_ioctl(struct block_device *bdev, fmode_t mode,
+-		unsigned int cmd, unsigned long arg);
++int blkdev_report_zones_ioctl(struct block_device *bdev, unsigned int cmd,
++		unsigned long arg);
+ int blkdev_zone_mgmt_ioctl(struct block_device *bdev, fmode_t mode,
+ 		unsigned int cmd, unsigned long arg);
+ #else /* CONFIG_BLK_DEV_ZONED */
+ static inline void disk_free_zone_bitmaps(struct gendisk *disk) {}
+ static inline void disk_clear_zone_settings(struct gendisk *disk) {}
+ static inline int blkdev_report_zones_ioctl(struct block_device *bdev,
+-		fmode_t mode, unsigned int cmd, unsigned long arg)
++		unsigned int cmd, unsigned long arg)
+ {
+ 	return -ENOTTY;
+ }
+diff --git a/block/ioctl.c b/block/ioctl.c
+index b39bd5b41ee492..3a10c34b8ef6d3 100644
+--- a/block/ioctl.c
++++ b/block/ioctl.c
+@@ -344,8 +344,8 @@ static int blkdev_pr_clear(struct block_device *bdev,
+ 	return ops->pr_clear(bdev, c.key);
+ }
  
- 	/* Initialize single device information */
-@@ -4024,8 +4025,8 @@ static int f2fs_scan_devices(struct f2fs_sb_info *sbi)
- 		if (max_devices == 1) {
- 			/* Single zoned block device mount */
- 			FDEV(0).bdev =
--				blkdev_get_by_dev(sbi->sb->s_bdev->bd_dev,
--					sbi->sb->s_mode, sbi->sb->s_type, NULL);
-+				blkdev_get_by_dev(sbi->sb->s_bdev->bd_dev, mode,
-+						  sbi->sb->s_type, NULL);
- 		} else {
- 			/* Multi-device mount */
- 			memcpy(FDEV(i).path, RDEV(i).path, MAX_PATH_LEN);
-@@ -4043,8 +4044,9 @@ static int f2fs_scan_devices(struct f2fs_sb_info *sbi)
- 					(FDEV(i).total_segments <<
- 					sbi->log_blocks_per_seg) - 1;
- 			}
--			FDEV(i).bdev = blkdev_get_by_path(FDEV(i).path,
--					sbi->sb->s_mode, sbi->sb->s_type, NULL);
-+			FDEV(i).bdev = blkdev_get_by_path(FDEV(i).path, mode,
-+							  sbi->sb->s_type,
-+							  NULL);
- 		}
- 		if (IS_ERR(FDEV(i).bdev))
- 			return PTR_ERR(FDEV(i).bdev);
-diff --git a/fs/nilfs2/super.c b/fs/nilfs2/super.c
-index a41fd84d4e28ab..15a5a1099427d8 100644
---- a/fs/nilfs2/super.c
-+++ b/fs/nilfs2/super.c
-@@ -1316,7 +1316,6 @@ nilfs_mount(struct file_system_type *fs_type, int flags,
- 		s_new = true;
+-static int blkdev_flushbuf(struct block_device *bdev, fmode_t mode,
+-		unsigned cmd, unsigned long arg)
++static int blkdev_flushbuf(struct block_device *bdev, unsigned cmd,
++		unsigned long arg)
+ {
+ 	if (!capable(CAP_SYS_ADMIN))
+ 		return -EACCES;
+@@ -354,8 +354,8 @@ static int blkdev_flushbuf(struct block_device *bdev, fmode_t mode,
+ 	return 0;
+ }
  
- 		/* New superblock instance created */
--		s->s_mode = mode;
- 		snprintf(s->s_id, sizeof(s->s_id), "%pg", sd.bdev);
- 		sb_set_blocksize(s, block_size(sd.bdev));
+-static int blkdev_roset(struct block_device *bdev, fmode_t mode,
+-		unsigned cmd, unsigned long arg)
++static int blkdev_roset(struct block_device *bdev, unsigned cmd,
++		unsigned long arg)
+ {
+ 	int ret, n;
  
-diff --git a/fs/super.c b/fs/super.c
-index dc7f328398339d..86f40f8981989d 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -1308,7 +1308,6 @@ int get_tree_bdev(struct fs_context *fc,
- 		blkdev_put(bdev, fc->fs_type);
- 		down_write(&s->s_umount);
- 	} else {
--		s->s_mode = mode;
- 		snprintf(s->s_id, sizeof(s->s_id), "%pg", bdev);
- 		shrinker_debugfs_rename(&s->s_shrink, "sb-%s:%s",
- 					fc->fs_type->name, s->s_id);
-@@ -1382,7 +1381,6 @@ struct dentry *mount_bdev(struct file_system_type *fs_type,
- 		blkdev_put(bdev, fs_type);
- 		down_write(&s->s_umount);
- 	} else {
--		s->s_mode = mode;
- 		snprintf(s->s_id, sizeof(s->s_id), "%pg", bdev);
- 		shrinker_debugfs_rename(&s->s_shrink, "sb-%s:%s",
- 					fs_type->name, s->s_id);
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 7b2053649820cc..ad1d2c9afb3fa4 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -1215,7 +1215,6 @@ struct super_block {
- 	uuid_t			s_uuid;		/* UUID */
+@@ -475,9 +475,9 @@ static int blkdev_common_ioctl(struct block_device *bdev, fmode_t mode,
  
- 	unsigned int		s_max_links;
--	fmode_t			s_mode;
- 
- 	/*
- 	 * The next field is for VFS *only*. No filesystems have any business
+ 	switch (cmd) {
+ 	case BLKFLSBUF:
+-		return blkdev_flushbuf(bdev, mode, cmd, arg);
++		return blkdev_flushbuf(bdev, cmd, arg);
+ 	case BLKROSET:
+-		return blkdev_roset(bdev, mode, cmd, arg);
++		return blkdev_roset(bdev, cmd, arg);
+ 	case BLKDISCARD:
+ 		return blk_ioctl_discard(bdev, mode, arg);
+ 	case BLKSECDISCARD:
+@@ -487,7 +487,7 @@ static int blkdev_common_ioctl(struct block_device *bdev, fmode_t mode,
+ 	case BLKGETDISKSEQ:
+ 		return put_u64(argp, bdev->bd_disk->diskseq);
+ 	case BLKREPORTZONE:
+-		return blkdev_report_zones_ioctl(bdev, mode, cmd, arg);
++		return blkdev_report_zones_ioctl(bdev, cmd, arg);
+ 	case BLKRESETZONE:
+ 	case BLKOPENZONE:
+ 	case BLKCLOSEZONE:
 -- 
 2.39.2
 
