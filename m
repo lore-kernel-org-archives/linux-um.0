@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24E84C7EE2F
-	for <linux-um@archiver.kernel.org>; Tue,  6 Jun 2023 08:45:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD00FC77B73
+	for <linux-um@archiver.kernel.org>; Tue,  6 Jun 2023 08:45:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MmsXGDtZJmf0NU8iywwKcC1RHGxGLx30XPQqqrSfvu4=; b=wzkkTv3TYCh1Gx
-	L6QJKoSkBJ/7MKXVKHHJK6hNxlxVUhGqH53QtGVMsEKPi4YTldIZ1nm2cirmH2vOGNBMhxSKyzxf5
-	kAohyXzqNr8dU/Wrrw1s+E7/J43oORsfwuWMsti3g5jOIdMA3Bm2hnr2x0HkwpfItnqzHCCGZ0zst
-	8wdfXI/O0W8TewsLaBrmykqbJaKtX7KCApTPibQ+5ZXZxiIfzZmglm4vyIRfrZc6ABYYvSyTA2aZV
-	1NEISF4ATgPrnz/c2bwVKALtiblnn0I0OML8KZ9vBnohbXjzctljMtJ8guf8731uyUsuGCN6isucv
-	wUR9OhSNjN5p3+IOJnWA==;
+	List-Owner; bh=fGZ0d3yrxUXVmbTOqntsK3cPY88233g3DaU7eNi1Idc=; b=kwM0vHKVmlcyyx
+	aMD9iFEU0cF0V5OJc/suH58AgbXJTzNXsj+kLEYBc7JB/SjkmGvGNiIy5Ik/93wKmm1jrU0N6HdBl
+	MugnuERshKVYGph4vVe7ZCIYEQBizZypq6YnFQ1jDjCHFVKeU1vOzJR/IteGV3rLjijlW4YydgZ9V
+	YE5CvTbzviieE3FIM9HhPytDrjWHkvV5SddTAWlwOurs1PaMDD1cp2mQZrL9yMe+VhRd17VvG9CiO
+	OK3AcHjmtdFVcu6c0lXN7NO7Ailz25p63Uf+sTOB7dnHKX8e81nc7/J1ezBi2Iui+6TMfCZ/OiS2Q
+	AYFtgDA55NlQa2ZAgxvQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6SJt-000r88-2X;
-	Tue, 06 Jun 2023 08:45:37 +0000
+	id 1q6SK0-000rE0-0d;
+	Tue, 06 Jun 2023 08:45:44 +0000
 Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6RJg-000Zye-0A;
-	Tue, 06 Jun 2023 07:41:20 +0000
+	id 1q6RJr-000aA8-0F;
+	Tue, 06 Jun 2023 07:41:33 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -55,9 +55,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-nilfs@vger.kernel.org,
 	linux-fsdevel@vger.kernel.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH 27/31] block: remove unused fmode_t arguments from ioctl handlers
-Date: Tue,  6 Jun 2023 09:39:46 +0200
-Message-Id: <20230606073950.225178-28-hch@lst.de>
+Subject: [PATCH 30/31] block: store the holder in file->private_data
+Date: Tue,  6 Jun 2023 09:39:49 +0200
+Message-Id: <20230606073950.225178-31-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230606073950.225178-1-hch@lst.de>
 References: <20230606073950.225178-1-hch@lst.de>
@@ -78,101 +78,57 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-A few ioctl handlers have fmode_t arguments that are entirely unused,
-remove them.
+Store the file struct used as the holder in file->private_data as an
+indicator that this file descriptor was opened exclusively to  remove
+the last use of FMODE_EXCL.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- block/blk-zoned.c |  4 ++--
- block/blk.h       |  6 +++---
- block/ioctl.c     | 14 +++++++-------
- 3 files changed, 12 insertions(+), 12 deletions(-)
+ block/fops.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/block/blk-zoned.c b/block/blk-zoned.c
-index 096b6b47561f83..02cc2c629ac9be 100644
---- a/block/blk-zoned.c
-+++ b/block/blk-zoned.c
-@@ -323,8 +323,8 @@ static int blkdev_copy_zone_to_user(struct blk_zone *zone, unsigned int idx,
-  * BLKREPORTZONE ioctl processing.
-  * Called from blkdev_ioctl.
-  */
--int blkdev_report_zones_ioctl(struct block_device *bdev, fmode_t mode,
--			      unsigned int cmd, unsigned long arg)
-+int blkdev_report_zones_ioctl(struct block_device *bdev, unsigned int cmd,
-+		unsigned long arg)
- {
- 	void __user *argp = (void __user *)arg;
- 	struct zone_report_args args;
-diff --git a/block/blk.h b/block/blk.h
-index 6910220aa030f1..e28d5d67d31a28 100644
---- a/block/blk.h
-+++ b/block/blk.h
-@@ -394,15 +394,15 @@ static inline struct bio *blk_queue_bounce(struct bio *bio,
- #ifdef CONFIG_BLK_DEV_ZONED
- void disk_free_zone_bitmaps(struct gendisk *disk);
- void disk_clear_zone_settings(struct gendisk *disk);
--int blkdev_report_zones_ioctl(struct block_device *bdev, fmode_t mode,
--		unsigned int cmd, unsigned long arg);
-+int blkdev_report_zones_ioctl(struct block_device *bdev, unsigned int cmd,
-+		unsigned long arg);
- int blkdev_zone_mgmt_ioctl(struct block_device *bdev, fmode_t mode,
- 		unsigned int cmd, unsigned long arg);
- #else /* CONFIG_BLK_DEV_ZONED */
- static inline void disk_free_zone_bitmaps(struct gendisk *disk) {}
- static inline void disk_clear_zone_settings(struct gendisk *disk) {}
- static inline int blkdev_report_zones_ioctl(struct block_device *bdev,
--		fmode_t mode, unsigned int cmd, unsigned long arg)
-+		unsigned int cmd, unsigned long arg)
- {
- 	return -ENOTTY;
- }
-diff --git a/block/ioctl.c b/block/ioctl.c
-index b39bd5b41ee492..3a10c34b8ef6d3 100644
---- a/block/ioctl.c
-+++ b/block/ioctl.c
-@@ -344,8 +344,8 @@ static int blkdev_pr_clear(struct block_device *bdev,
- 	return ops->pr_clear(bdev, c.key);
- }
+diff --git a/block/fops.c b/block/fops.c
+index c40b9f978e3bc7..915e0ef7560993 100644
+--- a/block/fops.c
++++ b/block/fops.c
+@@ -478,7 +478,7 @@ blk_mode_t file_to_blk_mode(struct file *file)
+ 		mode |= BLK_OPEN_READ;
+ 	if (file->f_mode & FMODE_WRITE)
+ 		mode |= BLK_OPEN_WRITE;
+-	if (file->f_mode & FMODE_EXCL)
++	if (file->private_data)
+ 		mode |= BLK_OPEN_EXCL;
+ 	if ((file->f_flags & O_ACCMODE) == 3)
+ 		mode |= BLK_OPEN_WRITE_IOCTL;
+@@ -501,12 +501,15 @@ static int blkdev_open(struct inode *inode, struct file *filp)
+ 	filp->f_flags |= O_LARGEFILE;
+ 	filp->f_mode |= FMODE_NOWAIT | FMODE_BUF_RASYNC;
  
--static int blkdev_flushbuf(struct block_device *bdev, fmode_t mode,
--		unsigned cmd, unsigned long arg)
-+static int blkdev_flushbuf(struct block_device *bdev, unsigned cmd,
-+		unsigned long arg)
++	/*
++	 * Use the file private data to store the holder, file_to_blk_mode
++	 * relies on this.
++	 */
+ 	if (filp->f_flags & O_EXCL)
+-		filp->f_mode |= FMODE_EXCL;
++		filp->private_data = filp;
+ 
+ 	bdev = blkdev_get_by_dev(inode->i_rdev, file_to_blk_mode(filp),
+-				 (filp->f_mode & FMODE_EXCL) ? filp : NULL,
+-				 NULL);
++				 filp->private_data, NULL);
+ 	if (IS_ERR(bdev))
+ 		return PTR_ERR(bdev);
+ 
+@@ -517,8 +520,7 @@ static int blkdev_open(struct inode *inode, struct file *filp)
+ 
+ static int blkdev_release(struct inode *inode, struct file *filp)
  {
- 	if (!capable(CAP_SYS_ADMIN))
- 		return -EACCES;
-@@ -354,8 +354,8 @@ static int blkdev_flushbuf(struct block_device *bdev, fmode_t mode,
+-	blkdev_put(I_BDEV(filp->f_mapping->host),
+-		   (filp->f_mode & FMODE_EXCL) ? filp : NULL);
++	blkdev_put(I_BDEV(filp->f_mapping->host), filp->private_data);
  	return 0;
  }
  
--static int blkdev_roset(struct block_device *bdev, fmode_t mode,
--		unsigned cmd, unsigned long arg)
-+static int blkdev_roset(struct block_device *bdev, unsigned cmd,
-+		unsigned long arg)
- {
- 	int ret, n;
- 
-@@ -475,9 +475,9 @@ static int blkdev_common_ioctl(struct block_device *bdev, fmode_t mode,
- 
- 	switch (cmd) {
- 	case BLKFLSBUF:
--		return blkdev_flushbuf(bdev, mode, cmd, arg);
-+		return blkdev_flushbuf(bdev, cmd, arg);
- 	case BLKROSET:
--		return blkdev_roset(bdev, mode, cmd, arg);
-+		return blkdev_roset(bdev, cmd, arg);
- 	case BLKDISCARD:
- 		return blk_ioctl_discard(bdev, mode, arg);
- 	case BLKSECDISCARD:
-@@ -487,7 +487,7 @@ static int blkdev_common_ioctl(struct block_device *bdev, fmode_t mode,
- 	case BLKGETDISKSEQ:
- 		return put_u64(argp, bdev->bd_disk->diskseq);
- 	case BLKREPORTZONE:
--		return blkdev_report_zones_ioctl(bdev, mode, cmd, arg);
-+		return blkdev_report_zones_ioctl(bdev, cmd, arg);
- 	case BLKRESETZONE:
- 	case BLKOPENZONE:
- 	case BLKCLOSEZONE:
 -- 
 2.39.2
 
