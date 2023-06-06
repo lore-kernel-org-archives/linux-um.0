@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7E5DC77B73
-	for <linux-um@archiver.kernel.org>; Tue,  6 Jun 2023 08:45:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6352FC7EE2C
+	for <linux-um@archiver.kernel.org>; Tue,  6 Jun 2023 08:45:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sfLFN6Ld7CzQ62qJNkmNZY7EguFyarGT+MZlgxvxgVc=; b=kS7f9cUjmCqyMM
-	0DAtH+6RCg066b+FgBgghkcQ1AE933fH1/1cwT9QKcdc660LitzCVbTi/G8uB5+3oPmtVr9h2O2Z5
-	vtcVYMmje0whUXbleCH1ap7qUJWKrVB3ssl0v+sUCt5N8/IpOK6d0oNxUket666PgNDgrBaWfycp3
-	QOBkas/PUz6EtmhsOQsbQOLdY4ILL0YkZcTT8dumUW9wnzvbNnRnsoZo2lnBO0MAh3koEPWyhYI7p
-	1Vbsc14vz/p2jUUg4hjbv68JNajWZcTfIKVHT/UPXjdfh9HAPOC4awHb38krqZkKrhbavmwUGUAFX
-	XmtuXe/M+hu+hzIuk+UQ==;
+	List-Owner; bh=x7y/V5RxVP/RHW/oshpOgFE1YLAFKeHFibtrGZN52bs=; b=MYIDRYPfqwwCmS
+	L8fBbokdoW+etdTrmS17K4Ny9IJUsac+v3mfF/bKyFYObriv06c3oUM8XkQOxC9z39VnJdeEVi87A
+	GHwPEqJxraH7fLAxsn82w3bxx6ZZH0iy7Jx7dbQb4vR/y8GU5P+MeyzH7CQ9LVpnnXxQG3ZkEArCF
+	ZJfwEJ8G7ND+pSKPoke1r+nICFES1KwfcsGKA4cV9rcId/Uf/XiJXuEiz+IpIDORYzYA0iTM8cb0w
+	MOrSEmobAnVCXPhbi1qKMf4kJ0v03Sl1Qps5McrrsPH8YRAaL2/RybGu35t86WtOFqcgVvlOFAsLE
+	c5aEVsAoLENyyhzRcv8g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6SJp-000r2x-1B;
+	id 1q6SJp-000r3W-2d;
 	Tue, 06 Jun 2023 08:45:33 +0000
 Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6RJB-000ZUg-1x;
-	Tue, 06 Jun 2023 07:40:50 +0000
+	id 1q6RJE-000ZZD-1u;
+	Tue, 06 Jun 2023 07:40:52 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -55,9 +55,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-nilfs@vger.kernel.org,
 	linux-fsdevel@vger.kernel.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH 17/31] block: add a sb_open_mode helper
-Date: Tue,  6 Jun 2023 09:39:36 +0200
-Message-Id: <20230606073950.225178-18-hch@lst.de>
+Subject: [PATCH 18/31] fs: remove sb->s_mode
+Date: Tue,  6 Jun 2023 09:39:37 +0200
+Message-Id: <20230606073950.225178-19-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230606073950.225178-1-hch@lst.de>
 References: <20230606073950.225178-1-hch@lst.de>
@@ -78,114 +78,96 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Add a helper to return the open flags for blkdev_get_by* for passed in
-super block flags instead of open coding the logic in many places.
+There is no real need to store the open mode in the super_block now.
+It is only used by f2fs, which can easily recalculate it.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/super.c       |  5 +----
- fs/nilfs2/super.c      |  7 ++-----
- fs/super.c             | 15 ++++-----------
- include/linux/blkdev.h |  7 +++++++
- 4 files changed, 14 insertions(+), 20 deletions(-)
+ fs/f2fs/super.c    | 10 ++++++----
+ fs/nilfs2/super.c  |  1 -
+ fs/super.c         |  2 --
+ include/linux/fs.h |  1 -
+ 4 files changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 1a2ee9407f5414..fd02b92e39106a 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1440,12 +1440,9 @@ static struct dentry *btrfs_mount_root(struct file_system_type *fs_type,
- 	struct btrfs_fs_devices *fs_devices = NULL;
- 	struct btrfs_fs_info *fs_info = NULL;
- 	void *new_sec_opts = NULL;
--	fmode_t mode = FMODE_READ;
-+	fmode_t mode = sb_open_mode(flags);
- 	int error = 0;
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index a5adb1d316e331..5a764fecd1c7ef 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -3993,6 +3993,7 @@ static int f2fs_scan_devices(struct f2fs_sb_info *sbi)
+ 	struct f2fs_super_block *raw_super = F2FS_RAW_SUPER(sbi);
+ 	unsigned int max_devices = MAX_DEVICES;
+ 	unsigned int logical_blksize;
++	fmode_t mode = sb_open_mode(sbi->sb->s_flags);
+ 	int i;
  
--	if (!(flags & SB_RDONLY))
--		mode |= FMODE_WRITE;
--
- 	if (data) {
- 		error = security_sb_eat_lsm_opts(data, &new_sec_opts);
- 		if (error)
+ 	/* Initialize single device information */
+@@ -4024,8 +4025,8 @@ static int f2fs_scan_devices(struct f2fs_sb_info *sbi)
+ 		if (max_devices == 1) {
+ 			/* Single zoned block device mount */
+ 			FDEV(0).bdev =
+-				blkdev_get_by_dev(sbi->sb->s_bdev->bd_dev,
+-					sbi->sb->s_mode, sbi->sb->s_type, NULL);
++				blkdev_get_by_dev(sbi->sb->s_bdev->bd_dev, mode,
++						  sbi->sb->s_type, NULL);
+ 		} else {
+ 			/* Multi-device mount */
+ 			memcpy(FDEV(i).path, RDEV(i).path, MAX_PATH_LEN);
+@@ -4043,8 +4044,9 @@ static int f2fs_scan_devices(struct f2fs_sb_info *sbi)
+ 					(FDEV(i).total_segments <<
+ 					sbi->log_blocks_per_seg) - 1;
+ 			}
+-			FDEV(i).bdev = blkdev_get_by_path(FDEV(i).path,
+-					sbi->sb->s_mode, sbi->sb->s_type, NULL);
++			FDEV(i).bdev = blkdev_get_by_path(FDEV(i).path, mode,
++							  sbi->sb->s_type,
++							  NULL);
+ 		}
+ 		if (IS_ERR(FDEV(i).bdev))
+ 			return PTR_ERR(FDEV(i).bdev);
 diff --git a/fs/nilfs2/super.c b/fs/nilfs2/super.c
-index 61d5e79a5e81df..a41fd84d4e28ab 100644
+index a41fd84d4e28ab..15a5a1099427d8 100644
 --- a/fs/nilfs2/super.c
 +++ b/fs/nilfs2/super.c
-@@ -1278,14 +1278,11 @@ nilfs_mount(struct file_system_type *fs_type, int flags,
- {
- 	struct nilfs_super_data sd;
- 	struct super_block *s;
--	fmode_t mode = FMODE_READ;
- 	struct dentry *root_dentry;
- 	int err, s_new = false;
+@@ -1316,7 +1316,6 @@ nilfs_mount(struct file_system_type *fs_type, int flags,
+ 		s_new = true;
  
--	if (!(flags & SB_RDONLY))
--		mode |= FMODE_WRITE;
--
--	sd.bdev = blkdev_get_by_path(dev_name, mode, fs_type, NULL);
-+	sd.bdev = blkdev_get_by_path(dev_name, sb_open_mode(flags), fs_type,
-+				     NULL);
- 	if (IS_ERR(sd.bdev))
- 		return ERR_CAST(sd.bdev);
+ 		/* New superblock instance created */
+-		s->s_mode = mode;
+ 		snprintf(s->s_id, sizeof(s->s_id), "%pg", sd.bdev);
+ 		sb_set_blocksize(s, block_size(sd.bdev));
  
 diff --git a/fs/super.c b/fs/super.c
-index 8563794a8bc462..dc7f328398339d 100644
+index dc7f328398339d..86f40f8981989d 100644
 --- a/fs/super.c
 +++ b/fs/super.c
-@@ -1255,17 +1255,13 @@ int get_tree_bdev(struct fs_context *fc,
- {
- 	struct block_device *bdev;
- 	struct super_block *s;
--	fmode_t mode = FMODE_READ;
- 	int error = 0;
+@@ -1308,7 +1308,6 @@ int get_tree_bdev(struct fs_context *fc,
+ 		blkdev_put(bdev, fc->fs_type);
+ 		down_write(&s->s_umount);
+ 	} else {
+-		s->s_mode = mode;
+ 		snprintf(s->s_id, sizeof(s->s_id), "%pg", bdev);
+ 		shrinker_debugfs_rename(&s->s_shrink, "sb-%s:%s",
+ 					fc->fs_type->name, s->s_id);
+@@ -1382,7 +1381,6 @@ struct dentry *mount_bdev(struct file_system_type *fs_type,
+ 		blkdev_put(bdev, fs_type);
+ 		down_write(&s->s_umount);
+ 	} else {
+-		s->s_mode = mode;
+ 		snprintf(s->s_id, sizeof(s->s_id), "%pg", bdev);
+ 		shrinker_debugfs_rename(&s->s_shrink, "sb-%s:%s",
+ 					fs_type->name, s->s_id);
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 7b2053649820cc..ad1d2c9afb3fa4 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -1215,7 +1215,6 @@ struct super_block {
+ 	uuid_t			s_uuid;		/* UUID */
  
--	if (!(fc->sb_flags & SB_RDONLY))
--		mode |= FMODE_WRITE;
--
- 	if (!fc->source)
- 		return invalf(fc, "No source specified");
+ 	unsigned int		s_max_links;
+-	fmode_t			s_mode;
  
--	bdev = blkdev_get_by_path(fc->source, mode, fc->fs_type,
--				  &fs_holder_ops);
-+	bdev = blkdev_get_by_path(fc->source, sb_open_mode(fc->sb_flags),
-+				  fc->fs_type, &fs_holder_ops);
- 	if (IS_ERR(bdev)) {
- 		errorf(fc, "%s: Can't open blockdev", fc->source);
- 		return PTR_ERR(bdev);
-@@ -1344,13 +1340,10 @@ struct dentry *mount_bdev(struct file_system_type *fs_type,
- {
- 	struct block_device *bdev;
- 	struct super_block *s;
--	fmode_t mode = FMODE_READ;
- 	int error = 0;
- 
--	if (!(flags & SB_RDONLY))
--		mode |= FMODE_WRITE;
--
--	bdev = blkdev_get_by_path(dev_name, mode, fs_type, &fs_holder_ops);
-+	bdev = blkdev_get_by_path(dev_name, sb_open_mode(flags), fs_type,
-+				  &fs_holder_ops);
- 	if (IS_ERR(bdev))
- 		return ERR_CAST(bdev);
- 
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index d5b99796f12c11..97803603902076 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -1473,6 +1473,13 @@ struct blk_holder_ops {
- 	void (*mark_dead)(struct block_device *bdev);
- };
- 
-+/*
-+ * Return the correct open flags for blkdev_get_by_* for super block flags
-+ * as stored in sb->s_flags.
-+ */
-+#define sb_open_mode(flags) \
-+	(FMODE_READ | (((flags) & SB_RDONLY) ? 0 : FMODE_WRITE))
-+
- struct block_device *blkdev_get_by_dev(dev_t dev, fmode_t mode, void *holder,
- 		const struct blk_holder_ops *hops);
- struct block_device *blkdev_get_by_path(const char *path, fmode_t mode,
+ 	/*
+ 	 * The next field is for VFS *only*. No filesystems have any business
 -- 
 2.39.2
 
