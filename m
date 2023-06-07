@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0666CC7EE23
-	for <linux-um@archiver.kernel.org>; Wed,  7 Jun 2023 08:40:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7565BC77B7A
+	for <linux-um@archiver.kernel.org>; Wed,  7 Jun 2023 08:50:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7gd2UzaOcfeO4jYnI7XSAofnNmO9Pd6ZAhbPywNGWcI=; b=DsnDH5m3uo6O7E
-	usS8d7cuS5P+SyjFbAcIeaJ/7SoTALiLqALyuk7uODaQ9QzZ6dStgC3q6EIQy7VqvjqLejEIuJgnQ
-	NuGpggHikRlJ1Dwddg1SWW/DYsakrhSkbPAO8C/nwETSPhDp0TshNRGNEiz/73Tekxp0esJn+gtSA
-	hx1RDaKfjI5EETnE6qbDnnGNk+GNSUCmyAXjvoPQZsr4cZqUuVw7Jadl3P+xfjakVkVMD6GoFGaZJ
-	x9uj95MEHa4E9X3RuOgzOVMGxRWfbeTgUPWzRTBq88xfeneXN1fYpnb9Ij9C7KP9FQHkNQipe8qGy
-	U7O4vHPHhzZFHZtcSCQg==;
+	List-Owner; bh=HBpwO7wivYoHZsoOpGljuNktlmyP12dyZEzcWsiL3Us=; b=S6ASswWYQ1RfPB
+	UdjKNg9rSn8NKlwFIlmz1D5f/llbDpTfYCQrhS08nVVtQOE7xr8RvKkbmG3mgbquK0RWIjzSlv+OF
+	UlEKkQEBhOS/ZclnA1TiSrAXFJnq+AgUuy6RIaf3pDnuydI7EkUVgJWMeCHbrpZYYQIoP9HvP12hy
+	bQ/Ax4CdE1AMigjVueoN2aJ/DXgoKd86aIKymHcmlt+tLDz/0HlcM5L2sAgVvtNXOBuQOWhCAiTcZ
+	7cNsGVuBHQDcN6gwgGIObEoqSX2VTgPJwiutGxloAn7XiJydJ7bST2X5BkV/BLcgQG7JqyU+ZpS1R
+	KlEQJsKCvLWYJapgwS7w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6oir-0051Ak-22;
-	Wed, 07 Jun 2023 08:40:53 +0000
+	id 1q6os1-0053it-0K;
+	Wed, 07 Jun 2023 08:50:21 +0000
 Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6oio-00518i-0O;
-	Wed, 07 Jun 2023 08:40:51 +0000
+	id 1q6orl-0053WQ-0T;
+	Wed, 07 Jun 2023 08:50:06 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id B5A0D632CF;
-	Wed,  7 Jun 2023 08:40:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A169C433EF;
-	Wed,  7 Jun 2023 08:40:43 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 5998B6334D;
+	Wed,  7 Jun 2023 08:50:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DEBAC433EF;
+	Wed,  7 Jun 2023 08:49:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686127249;
-	bh=rzaXCmDshhO+LXHkp8rQmS2hilpXNGYeK30nLPS+yX4=;
+	s=k20201202; t=1686127803;
+	bh=PZjCdaHviY+RVqpZkaQVixpnvUVrPR62Zf8+mzHD1uk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fdSp6N+EchetyNQ9ELQAK0k0bpXVcnAL/B1ILfEopTiSUxSrqA68P9/6Fq9lp/rvs
-	 0PdaFTqQtL7hh+98jKmzKvAI22ckdJ6mpUM7tqdfwc59mGXZfc2UZr3+kEZoNF9iCd
-	 rNsY4NJ5wPvPPksQ43AYSH5CsJ9ZZPwPKOSRaPn/FQxz7WMErUvxKsWGr8EuIBUbUv
-	 GCwjEeBpBb8r5ert952BDHGVamNUJ1fc0KErTkK5SXMdqq0Lpyjam5mGL+HGGvKta5
-	 OZuoqYdC2LP3lItmJ9t7Vn/pgmrJbGFIX1uT/KEmFPNjK+eme8JXQdHwUEcehzKecl
-	 PsM6nqwDiF4Hg==
-Date: Wed, 7 Jun 2023 10:40:40 +0200
+	b=psgkq590ELlnR3YewhzuAje3f6nLqAdxD2ks0a0ex7l9AURvWbDqzYkAaTTfQ3LRh
+	 lbjVPemFfDSDVxbPW+yVAYbVlRK2mYcGkDU+s9QomicwFqaBsiwabN/y6C+B9XbF7a
+	 TUp8gIDqcrYKdDf1/ALLYLXJICKJabskE/hFOC/X2WxRVUqsCWuBbuBtyCKTR3JcP5
+	 UshWyePpXwuCBpPQlRL5oU0JjL5XQDDGrzAY9Q4EpVcVDZmW/DwUYrjmVOzW63Jixr
+	 ioDpPQD0ktu/OZfW3TlmJmEpP8gCBlQwrZ8iPtiqN0Aky+ak3ORBZqrV1HDSve4xiN
+	 ZX/3XM7Ql6s/w==
+Date: Wed, 7 Jun 2023 10:49:55 +0200
 From: Christian Brauner <brauner@kernel.org>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>,
@@ -64,17 +64,17 @@ Cc: Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>,
 	linux-btrfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
 	linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
 	linux-pm@vger.kernel.org
-Subject: Re: [PATCH 15/31] btrfs: don't pass a holder for non-exclusive
- blkdev_get_by_path
-Message-ID: <20230607-dagegen-bandmitglieder-427b6130afcf@brauner>
+Subject: Re: [PATCH 16/31] block: use the holder as indication for exclusive
+ opens
+Message-ID: <20230607-umtriebe-absicht-0b2232e4f212@brauner>
 References: <20230606073950.225178-1-hch@lst.de>
- <20230606073950.225178-16-hch@lst.de>
+ <20230606073950.225178-17-hch@lst.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230606073950.225178-16-hch@lst.de>
+In-Reply-To: <20230606073950.225178-17-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230607_014050_195182_EA701ECF 
-X-CRM114-Status: GOOD (  11.31  )
+X-CRM114-CacheID: sfid-20230607_015005_267101_B3742FF3 
+X-CRM114-Status: GOOD (  14.88  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,10 +91,14 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jun 06, 2023 at 09:39:34AM +0200, Christoph Hellwig wrote:
-> Passing a holder to blkdev_get_by_path when FMODE_EXCL isn't set doesn't
-> make sense, so pass NULL instead and remove the holder argument from the
-> call chains the only end up in non-FMODE_EXCL blkdev_get_by_path calls.
+On Tue, Jun 06, 2023 at 09:39:35AM +0200, Christoph Hellwig wrote:
+> The current interface for exclusive opens is rather confusing as it
+> requires both the FMODE_EXCL flag and a holder.  Remove the need to pass
+> FMODE_EXCL and just key off the exclusive open off a non-NULL holder.
+> 
+> For blkdev_put this requires adding the holder argument, which provides
+> better debug checking that only the holder actually releases the hold,
+> but at the same time allows removing the now superfluous mode argument.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
