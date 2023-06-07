@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14101C7EE23
-	for <linux-um@archiver.kernel.org>; Wed,  7 Jun 2023 13:07:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 961B3C83005
+	for <linux-um@archiver.kernel.org>; Wed,  7 Jun 2023 13:08:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=/ZaZheJ0ZrBq7NVqcPdk6vOlwjW6AzTKrqGKGeJj2eU=; b=VURoLGrfh2rLbv
-	MO/RwR9RvGWZUGODgffY/cbXaLoFlarJfwZsTBNItZbe5Vln0E6X/MDKtBQOijrhSI8CkrVBCdJCX
-	VA/ljfphmCmgTzpdgS47xmFho/TKqE3bbU6if61rnrN8C+plNavggwHw9kV/4YzMBCqKY6JBbrVom
-	O8ou9+VvzmlDl7nLBYlGyUBtdN1Lu7ZH+C8yEdy49er3tCwlX/zIUEdiBwkeU8kAv4rBL3Ov4Z8I/
-	x7y9Haj8sYK2Okccr7zhpt73hSQt9450uNhrcobhZr8VtouLcwowSKMDkFP71seC8Pr8zzcC7xheO
-	STeS5uE53tW5ZzVhwurA==;
+	List-Owner; bh=oY9h2X+7qWD0DmmJNQgCXqX01TAb7/H0A3NabjrpHjo=; b=sYQnDsebxOQg2c
+	oKvaocORXTOuogCFSpB9eKrC3ihQyLnRiFX89Bn1b4IDweMlfq/ctmrD4innBz456Wri32zAcn+bc
+	NokqtpzhoturF1qgY8ecvlVOq42+o6QqQBXaBgVq/BNOvdDq6T8XQUCEo2JRE6b5E9eTFG4HGyGPD
+	kXMuS+8ubgVXM6TyHoQDIlolqCbk2bAN4U3PVhQixJynwrbTFhh5BbDsoGKP5fOXD1PMGBu9Z+t/C
+	tS2QvZdaYW7NZHkF41CsW9RrrY2YsAF4hWHMdonvQmzUwBgAnvJprVVPp5FG9XtSkdWfbhXhH+M1q
+	rPKom83cDmxYDerCGeyg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6ssv-00612g-1d;
-	Wed, 07 Jun 2023 13:07:33 +0000
+	id 1q6stO-0061Kk-08;
+	Wed, 07 Jun 2023 13:08:02 +0000
 Received: from smtp-out2.suse.de ([195.135.220.29])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6ssq-0060yQ-2B;
-	Wed, 07 Jun 2023 13:07:29 +0000
+	id 1q6stH-0061F4-0O;
+	Wed, 07 Jun 2023 13:07:58 +0000
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 52F521FDAB;
-	Wed,  7 Jun 2023 13:07:26 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D13EA1FDAB;
+	Wed,  7 Jun 2023 13:07:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1686143246; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1686143273; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=I3Xu5xnxyajaK9lEyD+lRKy4DgPsL1YfsR8zg1PkBSU=;
-	b=D7kp1+Ffp/bNYQ2ixWdCE2UcmwbjjdIwINTo/94Fy/wFASbrqAlnKyrSNUFl6xGxwe6d71
-	16GB98LWFNPYpixuPpi/Ut8F7Yek69iypHAZ9AEOqC81hd9Qkb0ZwZEtT4RSQLAl+OkrTs
-	M/l0TlO0QosFjqMgqKFI4VApxMHLMms=
+	bh=WYR6E+7CZ66zHJYLJjKOaLzPM1Za0GV1ZkeQn6/iILE=;
+	b=ssiTa2zohPfH5pK3Hpp4pFjmGEPTu9BvzTV4Hxc9Hy4aHW+aBIBg03o+H106+SGtAaa+Ib
+	NJTzrhCdz+kX2DErhr9voa5MelMACD+q+7OUiJtlNffoiHdZVV5haMOb20VKY2C1N2qipc
+	ykw9WMEI79WfMD6Adbvi5wNHysTCTZs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1686143246;
+	s=susede2_ed25519; t=1686143273;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=I3Xu5xnxyajaK9lEyD+lRKy4DgPsL1YfsR8zg1PkBSU=;
-	b=L9PoJIo84iFMFcAjyZJ/lufdErDqncDN2j7QkqOyNmFWvTzsJaT9bb5QJf4/Rn7HbMYPwY
-	S9WPfxlGQwY3jEBw==
+	bh=WYR6E+7CZ66zHJYLJjKOaLzPM1Za0GV1ZkeQn6/iILE=;
+	b=NSNEBOoPb7S7vfhhAb7lPvwrcKEwo3g8fFbxqxSrF/BThS2UHNKlcSo7I+k3KCBt2dHv2r
+	vaNFJQBGNxYbW1Ag==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1A5851346D;
-	Wed,  7 Jun 2023 13:07:26 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 89DDD1346D;
+	Wed,  7 Jun 2023 13:07:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id QpDZBQ6BgGRVXAAAMHmgww
-	(envelope-from <hare@suse.de>); Wed, 07 Jun 2023 13:07:26 +0000
-Message-ID: <2426bcf4-10f5-92dd-95c0-839b49309066@suse.de>
-Date: Wed, 7 Jun 2023 15:07:21 +0200
+	id 0TUqISmBgGSkXAAAMHmgww
+	(envelope-from <hare@suse.de>); Wed, 07 Jun 2023 13:07:53 +0000
+Message-ID: <69e78359-0fb6-2c31-9d17-9d1e84e97da8@suse.de>
+Date: Wed, 7 Jun 2023 15:07:53 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.11.0
-Subject: Re: [PATCH 23/31] mtd: block: use a simple bool to track open for
- write
+Subject: Re: [PATCH 24/31] rnbd-srv: replace sess->open_flags with a "bool
+ readonly"
 Content-Language: en-US
 To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
 Cc: Richard Weinberger <richard@nod.at>, Josef Bacik <josef@toxicpanda.com>,
@@ -85,12 +85,12 @@ Cc: Richard Weinberger <richard@nod.at>, Josef Bacik <josef@toxicpanda.com>,
  linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  linux-pm@vger.kernel.org
 References: <20230606073950.225178-1-hch@lst.de>
- <20230606073950.225178-24-hch@lst.de>
+ <20230606073950.225178-25-hch@lst.de>
 From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20230606073950.225178-24-hch@lst.de>
+In-Reply-To: <20230606073950.225178-25-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230607_060728_858145_57ACE703 
-X-CRM114-Status: GOOD (  12.87  )
+X-CRM114-CacheID: sfid-20230607_060755_333916_5DB3B291 
+X-CRM114-Status: GOOD (  12.06  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,15 +108,15 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On 6/6/23 09:39, Christoph Hellwig wrote:
-> Instead of propagating the fmode_t, just use a bool to track if a mtd
-> block device was opened for writing.
+> Stop passing the fmode_t around and just use a simple bool to track if
+> an export is read-only.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->   drivers/mtd/mtd_blkdevs.c    | 2 +-
->   drivers/mtd/mtdblock.c       | 2 +-
->   include/linux/mtd/blktrans.h | 2 +-
->   3 files changed, 3 insertions(+), 3 deletions(-)
+>   drivers/block/rnbd/rnbd-srv-sysfs.c |  3 +--
+>   drivers/block/rnbd/rnbd-srv.c       | 15 +++++++--------
+>   drivers/block/rnbd/rnbd-srv.h       |  2 +-
+>   3 files changed, 9 insertions(+), 11 deletions(-)
 > 
 Reviewed-by: Hannes Reinecke <hare@suse.de>
 
