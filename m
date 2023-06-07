@@ -4,46 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF3D6C7EE23
-	for <linux-um@archiver.kernel.org>; Wed,  7 Jun 2023 09:01:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00ED6C7EE2E
+	for <linux-um@archiver.kernel.org>; Wed,  7 Jun 2023 09:02:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=uoj9wqrqEUUrnAAL4EWYbRlQOnZ6csIkVeZwKrQ/K1U=; b=XUdfKTvJHlbgRs
-	0OVro/tgZRZBS+HtwwZR6/BF80kMcFAgvaWzIuuaQPH0UVtVfKuajAJOk/bIlZhYV3XiDclNZu1cA
-	EHT+GwuE5YSg19U93SwzjLh2nwctOYqjokijsLFmI7ysSLfMbguH9tbsBTSjQJKi7AA8WOI5SB1z9
-	8nIGngHrZFVzb9CIz7HDRQQvJlOKuau3NKzyKy4EszAXDxcR7pqpQwQqeonspA3Jo1oBg0tH/q84c
-	TPQqNiRS6XGjWzUtytsqCRnnMIP2TPSNxlTfPYdQP9gHyc47gxVP3Vc562XXf0Ad8WRWW2GNktFEg
-	H1OBO2RAjmeivlLow5gA==;
+	List-Owner; bh=vd6VNDNX6Zawz8Tn59N6zDgUI3cMpthUbLcoe0d2skE=; b=EOZaJOUwYfeRmE
+	Ccxtg9RIaxQYDWqONr2yz81NA7fI5PV1vWeutYJgyIkVsmj9tYI9sbnhrLu5URSbNg1g5N/kzkJkv
+	87Fm0WBWmv9OCU7e2Hjt13YKh6iUKahcS9LvIFz+85oxldAuU18+GgjQy0RXJvvFC4rjySxvJ8j95
+	HE7qRCMh1P8T8rhrKJIfvx7nkVBz9FBOC5D+86L16mzb7HBhZlCBdOzNf82p9FBQtSDSo3EMYb6Db
+	FWWSHeWvYAEeXc0+inkIykSgbN8dm2u+Lz4/H9uRNBcacBcWpjv8pTb1zZHLx4R0D8/YsLqa4bBLC
+	I1wjo9hQ2CM0kRnqoafA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6p2w-0058Dq-1Y;
-	Wed, 07 Jun 2023 09:01:38 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1q6p3q-0058hq-2A;
+	Wed, 07 Jun 2023 09:02:34 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6p2r-0058BG-2P;
-	Wed, 07 Jun 2023 09:01:34 +0000
+	id 1q6p3n-0058es-0x;
+	Wed, 07 Jun 2023 09:02:31 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=zwQ7mjq/Ray9NFCEILAQk/QKOK885zMQIAzTo533urU=; b=bu0FwjWpSrznrk3a/h4PWUEI6C
+	npH/joQz5Ln3wKUN15Ir3xVEERS08L47G8hbGfwdkodlU/MeqcaBS0d4yh8VFybBSryPq6G1hHhWf
+	OJaNf5UNtp81KETZHTEvQ61NZk0oLQmVfXPFNoV7f1xAfn3Eo1E6FxOzLWwdrl71tokfrNP68VKEL
+	KFucEx+OjXWE6+vAWJJqGTPociSiI1TSfABP1rexxm1vcHnvHirrckLUDhDPsCyfphrWibl6bfvNO
+	s2uYTakGM8aNO+jFiAqsgdQjZrfaJWRZ3nFpejSU0Qd5qj461RTaZfLDfPl2uu642HRVXUfvQh8IG
+	yvURefvQ==;
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1q6p3i-0056xQ-1c;
+	Wed, 07 Jun 2023 09:02:28 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 443A563CA0;
-	Wed,  7 Jun 2023 09:01:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01FCDC4339E;
-	Wed,  7 Jun 2023 09:01:26 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 372AB61549;
+	Wed,  7 Jun 2023 09:02:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C307C4339B;
+	Wed,  7 Jun 2023 09:02:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686128492;
-	bh=g3r5rYOcZPuzhWXIH0bYKBRPgwc3E1p0pJA/TrUWYf4=;
+	s=k20201202; t=1686128540;
+	bh=F5yK/CebQYGivXkJ/hRkJ11KpKZaKc+G+VOQffjNVTg=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rP0+sQU05ytYS6k6BMHqTVzyKjsFFQ6Wnfz9kTwbzFygygaENxsZpLVLE+i0Qat/T
-	 H9xyY75epM433AvDHOzMGZ5nCVlaptMhX5S2jj2AOMVumZAKr75qlxAmdCSJnS6NUd
-	 7tqPBZriCMC3nI9evGotlI0qLb0BdyIVBS77Pfxw7PBbtd9IVfScHPRbniWMpCV7lR
-	 55VKlh0TF/3SRbWeQbPAZTyUSElyLojLOoq4PjR4jgVaJ3PzHPr6hWQJhpR6zvmzyU
-	 fgP8TlXGFzHd65cVjqzqqQynkH3SXjh0FCcoqjywuH9MLmxBXvOdpNSU1a7eORehO/
-	 8mV+t8uVMgcTQ==
-Date: Wed, 7 Jun 2023 11:01:24 +0200
+	b=sAfQXO5SH40rCtDhbwEvXcSBRhslBvNvKUU+/C6zJmUW7rk4KDZem+SyB7w55qX2y
+	 S8GP7XOz+Sh1JsNAkUh/43kCDhRagfGOJ6ymJTvy8EvYu8/Y72NkSvyaxeGEoX5NYg
+	 ZNDcw7HYM0UpR6uCZuSvmtx8nAL3oOFkFGjtbLip/0jPFzG0EsuCrfGiU3+dsUo6Mk
+	 09/Q8RacrQEXGw7OpkFy06YCu5mCCT4iywdTjXjWEe2cbi2/c6/h5WqzuX58R/oEbv
+	 wLB23zogewfEPk6rfCC+XUbaeVedBS79aJPk4vzv1kQ3/T/szT3pO6l5YM/nxQqSRl
+	 uTtUOEbNKxpzw==
+Date: Wed, 7 Jun 2023 11:02:12 +0200
 From: Christian Brauner <brauner@kernel.org>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>,
@@ -64,17 +78,16 @@ Cc: Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>,
 	linux-btrfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
 	linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
 	linux-pm@vger.kernel.org
-Subject: Re: [PATCH 24/31] rnbd-srv: replace sess->open_flags with a "bool
- readonly"
-Message-ID: <20230607-getadelt-pfauenauge-75adb3f04015@brauner>
+Subject: Re: [PATCH 25/31] ubd: remove commented out code in ubd_open
+Message-ID: <20230607-mietpreis-deich-90ec6cba9ca8@brauner>
 References: <20230606073950.225178-1-hch@lst.de>
- <20230606073950.225178-25-hch@lst.de>
+ <20230606073950.225178-26-hch@lst.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230606073950.225178-25-hch@lst.de>
+In-Reply-To: <20230606073950.225178-26-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230607_020133_836793_6E956B65 
-X-CRM114-Status: GOOD (  11.64  )
+X-CRM114-CacheID: sfid-20230607_100227_041907_294FAD98 
+X-CRM114-Status: GOOD (  12.27  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,9 +104,9 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jun 06, 2023 at 09:39:43AM +0200, Christoph Hellwig wrote:
-> Stop passing the fmode_t around and just use a simple bool to track if
-> an export is read-only.
+On Tue, Jun 06, 2023 at 09:39:44AM +0200, Christoph Hellwig wrote:
+> This code has been dead forever, make sure it doesn't show up in code
+> searches.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
