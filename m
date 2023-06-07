@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81CB1C7EE25
-	for <linux-um@archiver.kernel.org>; Wed,  7 Jun 2023 12:24:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 840D9C7EE25
+	for <linux-um@archiver.kernel.org>; Wed,  7 Jun 2023 12:24:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=YI/rxMpRe/iFdDSpTjtCBSxXUUuKFjUt3fS3zbr0gJM=; b=x9SbYKa0FSMsEn
-	XgFjklZbk66KQ+Y305JfWW6P5n8DdZQdELU2mBesN4z38VUcrXKwqbwWiL7mTlpYk3LOLEtIQqvM6
-	CPJ30hZS6/0U6790hrVRjgiP+jApFqaV3aHd4GQlRWmlUjjM5sUXU0yZ7V6cNCojrvRy7S4rjdOT0
-	t+WOrX5FPFMjAn7LAJLXg3AtdO3e8Z8TV0Wd65lYh/T2ir0hYo8vSX6P5hyZEJEw/3s/3LfRHcTkV
-	5FeylTzcftRrgkGApwbMBjDV2ynlnFmiD3wkmkfZUb22eCXIKy49tWCNeOyxev94RxTKM9MDYTTkI
-	55dSvUx1CMVSp6Fn+mXg==;
+	List-Owner; bh=+ea96QFF0SXgGDIicNhMAH3oPVAGSzq/uObiB3cILmA=; b=PSaixKAkyYWmFD
+	1MaP7v/j3sMO6fUQ3a40YXz0YVEJlkOlFgEyvtuhwqhxReTcL4x1uSt0n6UR8r2M3wQ6LuGklJJ3K
+	NWbv1lk7xkJZKHtWNlPt597yOJ6C9X7c5p9pXH7xBvunkQBdJGUH2lpOr1jXsQGx/L8+NMeYUApfB
+	XZKloj+tJvz80U8het6P2wInMxe7ql1TmBN9b9l39N3Z0M3lRJEgZHNsYgukeMcwkSnnPY5BqdzNt
+	QQWYsIA6DeGjVTLHi4ASrUCzis49WHwDe3uZJROXyVzs2N1N9QmKeovQoNtQ48dlagmVoz76gUIU9
+	AzS/wS4ANqnoVJJpXZ3A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6sD1-005sPi-06;
-	Wed, 07 Jun 2023 12:24:15 +0000
+	id 1q6sDa-005sfs-06;
+	Wed, 07 Jun 2023 12:24:50 +0000
 Received: from smtp-out2.suse.de ([195.135.220.29])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6sCw-005sNA-2K;
-	Wed, 07 Jun 2023 12:24:12 +0000
+	id 1q6sDW-005scb-0Q;
+	Wed, 07 Jun 2023 12:24:47 +0000
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 4DE161FDAC;
-	Wed,  7 Jun 2023 12:24:09 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id AF5BE1FDAB;
+	Wed,  7 Jun 2023 12:24:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1686140649; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1686140684; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=IeHKXY8DQMYynmCbn67VwUtjIudb7jabyk51i4+QSlc=;
-	b=fe8H50sS8tQRczEb+XFE2CsdZ98Svz7wkpB2856nS7cJiFSd5+Tafzwm+u2bz9iOrP+L5V
-	qx/+/jMmcVbdy9AR2rN1p8NmabiQfrEIzv+N124uyxlAyVmZXXlCmSpPokp1RMHk1uLBIN
-	JYM+dS4ABnc/kMuxQqr9XOByZ4zDzNs=
+	bh=KCRiIM6mgQNiaRN4slOj6w2K+n4GV4y/Ipgg+KcKOaw=;
+	b=eWvKc6+XsVMgS2o+jnbgVDiOxQfeWHhu0e8T9BkZN4xA7GtFhLnijTW4uhg0GV6Tf2jI61
+	NSUIFb4QGmNRaAc7HobP5WP81kvgm1LEwZVkZpQCtAzVm+ftIzRfzSXOKTc93VRWbO9CEq
+	G4uxhhr86DwZ61t/AujdSyJtfIiEsF4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1686140649;
+	s=susede2_ed25519; t=1686140684;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=IeHKXY8DQMYynmCbn67VwUtjIudb7jabyk51i4+QSlc=;
-	b=fPlYJKlyORzsMax1LFDHJp7IhsVtagC5L1z1G1Cypgw/5/K/vn5khHxTkPwhSWKnCWE8wi
-	ytW537Gik2AZ90DQ==
+	bh=KCRiIM6mgQNiaRN4slOj6w2K+n4GV4y/Ipgg+KcKOaw=;
+	b=bustZKsI1NR6CLV+CI1hmTL5N+5NnWVOX+XSb0CX0csEo3uCjSxAj612Gua8G/bodioPMl
+	Lwx2I58oATCzfNAg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1D43213776;
-	Wed,  7 Jun 2023 12:24:09 +0000 (UTC)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 72B7B13776;
+	Wed,  7 Jun 2023 12:24:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
 	by imap2.suse-dmz.suse.de with ESMTPSA
-	id p8fmBul2gGRhQwAAMHmgww
-	(envelope-from <hare@suse.de>); Wed, 07 Jun 2023 12:24:09 +0000
-Message-ID: <b4db6d6a-9843-a95e-0025-8bae637c678f@suse.de>
-Date: Wed, 7 Jun 2023 14:24:08 +0200
+	id Z+7OFQx3gGTOQwAAMHmgww
+	(envelope-from <hare@suse.de>); Wed, 07 Jun 2023 12:24:44 +0000
+Message-ID: <02530b35-dcfe-1de3-9f09-5120fc166a28@suse.de>
+Date: Wed, 7 Jun 2023 14:24:39 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.11.0
-Subject: Re: [PATCH 14/31] rnbd-srv: don't pass a holder for non-exclusive
+Subject: Re: [PATCH 15/31] btrfs: don't pass a holder for non-exclusive
  blkdev_get_by_path
 Content-Language: en-US
 To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
@@ -85,12 +85,12 @@ Cc: Richard Weinberger <richard@nod.at>, Josef Bacik <josef@toxicpanda.com>,
  linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  linux-pm@vger.kernel.org
 References: <20230606073950.225178-1-hch@lst.de>
- <20230606073950.225178-15-hch@lst.de>
+ <20230606073950.225178-16-hch@lst.de>
 From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20230606073950.225178-15-hch@lst.de>
+In-Reply-To: <20230606073950.225178-16-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230607_052410_903897_AE6F1736 
-X-CRM114-Status: GOOD (  11.56  )
+X-CRM114-CacheID: sfid-20230607_052446_311207_C9A20F6B 
+X-CRM114-Status: GOOD (  11.34  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,12 +109,15 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On 6/6/23 09:39, Christoph Hellwig wrote:
 > Passing a holder to blkdev_get_by_path when FMODE_EXCL isn't set doesn't
-> make sense, so pass NULL instead.
+> make sense, so pass NULL instead and remove the holder argument from the
+> call chains the only end up in non-FMODE_EXCL blkdev_get_by_path calls.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->   drivers/block/rnbd/rnbd-srv.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>   fs/btrfs/super.c   | 16 ++++++----------
+>   fs/btrfs/volumes.c | 17 ++++++++---------
+>   fs/btrfs/volumes.h |  3 +--
+>   3 files changed, 15 insertions(+), 21 deletions(-)
 > 
 Reviewed-by: Hannes Reinecke <hare@suse.de>
 
