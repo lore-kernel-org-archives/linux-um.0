@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A5C9C7EE2F
-	for <linux-um@archiver.kernel.org>; Wed,  7 Jun 2023 09:23:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A7AAC7EE29
+	for <linux-um@archiver.kernel.org>; Wed,  7 Jun 2023 09:25:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=VdbiL1d5iz/lh4nP05g/urwa0ExwK9hGuwJog46Ybrs=; b=OqLdnIaqG0cK62
-	YaORzyFxE7Y4fX8bxKtBv4c4//aG/QZxSOmnguvuAFbGl19DY1Da+fs+zKFeFlTJ7G32RANaCvJZr
-	Kxbm5hxrjo5FRiYFeGERLqOydocNAwEy5DHXbjuOFoucLIG7mSDT/LxyArKwQkx9FaIxfOrEQQfvR
-	H8FezWxLx0iqZqW01HfzrIQpvFxM0YcXsfxq1CsCtGfI4hRuC2znJ6voqePy1efBfXiG2SveFcA5J
-	q0aLp/uSYGMK8i0XgVQSLPn/RPFojnf0Y/2ZoRyF74800jhaS7H5z4iT/yZ+3qenLg5tAtoT79fn8
-	C5DGyLWti1JlJ2RGTUXw==;
+	List-Owner; bh=oxrvBfh+iA68S9Nrl4bFkqiEYyIBYARocHUh6AXZAGE=; b=lMqKjiLgjtMv6/
+	lKwvxuAQSwF2ihbryA2fo5aSlVNJRcdH3eFZ12hcVmAe8e4TgEwlXg8YEsRSzyH00ilGYNwOCAc0M
+	lWz2QepJ0DefiduPa1FqpDr/bciHNAPtuF6df18LiYE4qpJkuY5tLlhOkH+2OIHZvMdg97vGpp01v
+	ugxMnJ2SHKDqZAkkx7gRKU6mvpeyZs0c0PI5C3n/NRs3E8BXlNBI+Y30d/yEMLpMtZ8/a0rfsfipp
+	sKmTYKt+cwwxGwOnkI3K++3JeOSYYNW0XGhSTqEMqoDblmHPwikROMTOwkLFSmGhf/z7v1tfbirQ3
+	Dv+vU/ILeQ07hVVD37SQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6pOL-005Dv8-0O;
-	Wed, 07 Jun 2023 09:23:45 +0000
+	id 1q6pPh-005EKz-2i;
+	Wed, 07 Jun 2023 09:25:09 +0000
 Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6pOG-005Dsq-2R;
-	Wed, 07 Jun 2023 09:23:41 +0000
+	id 1q6pPd-005EIT-0R;
+	Wed, 07 Jun 2023 09:25:06 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 53E8661645;
-	Wed,  7 Jun 2023 09:23:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B328C433EF;
-	Wed,  7 Jun 2023 09:23:33 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id A27A160EF2;
+	Wed,  7 Jun 2023 09:25:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CA78C433EF;
+	Wed,  7 Jun 2023 09:24:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686129819;
-	bh=2dBZxelf4g0w/gdLM0HKDBqAqVXwuGv1PlJcXlPn9lY=;
+	s=k20201202; t=1686129904;
+	bh=PVPEiqQnbOrHGRENvLEdaR/nzeey8b8ZshNSuWbTzrk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FA37ryzewz3+4K4l8Ktr97eYBVVqBLv2pVXW0viLjV+m+r/uNhWaJUioMBllxDrcb
-	 m/2rQlbq2vyk3xPBmVzj29M7JVrvLsSMjwUJJkNN8B6XdEYn5s49h4hyw6bLTtoi9p
-	 EjTM+zpv2Dhmnnkhitfx/vj2brk5MHkYyJoQRtsq8+0xWW/1nK8yf7e6n1c+pCWVlV
-	 C1XYMaOxwobfzPLR8thTUoG0bwIiC1DRhAZeaP57LjbKOs0qtf1boJvs5JbZewwmWa
-	 ZNyTmf20EjV9XQz4d8qaTsyPbhurixlhBxn2jxz+gzDDr74A/rLls/VWc0tFau9VX+
-	 GD8kCkpo5IuUg==
-Date: Wed, 7 Jun 2023 11:23:31 +0200
+	b=ALdNOSLUKbyG4MtN9g4NY65h2phNBq7vkw8myPQgpJG2PzaM8f/SVslVCmF/QOc3T
+	 Bwp8JuH17KAppuZAf9ArpxZTmb2lgZ7cED8j2ebPZYTj2IOo1Pq/kE6GkpjP2srCxN
+	 XuLDkhy5x7omz7gFdxwTAPV7lc6Gdyrkd5NATTyExP7JIaWtEnHvRju/P8W1jwC/ZQ
+	 pgr661S3TGnNa0/R8XJs7I9augkFB3fO/k2xICj9Rw66l5DVIPYSNCIJVnNMEfjw+Z
+	 gguliFEjC8Gq4dp0LyuKCQZnO9AA7rkPsqLnWoRqyaIZ4YpfwuJwZivsVp2KmUYvZJ
+	 O4+xhtnOR9qOw==
+Date: Wed, 7 Jun 2023 11:24:55 +0200
 From: Christian Brauner <brauner@kernel.org>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>,
@@ -64,17 +64,16 @@ Cc: Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>,
 	linux-btrfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
 	linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
 	linux-pm@vger.kernel.org
-Subject: Re: [PATCH 29/31] block: always use I_BDEV on file->f_mapping->host
- to find the bdev
-Message-ID: <20230607-thermal-sohlen-1ff852d8a99d@brauner>
+Subject: Re: [PATCH 30/31] block: store the holder in file->private_data
+Message-ID: <20230607-verjagen-weise-4fb3d76a6313@brauner>
 References: <20230606073950.225178-1-hch@lst.de>
- <20230606073950.225178-30-hch@lst.de>
+ <20230606073950.225178-31-hch@lst.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230606073950.225178-30-hch@lst.de>
+In-Reply-To: <20230606073950.225178-31-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230607_022340_833298_EC4BB173 
-X-CRM114-Status: GOOD (  11.81  )
+X-CRM114-CacheID: sfid-20230607_022505_211683_CBCD547F 
+X-CRM114-Status: GOOD (  13.85  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,14 +90,15 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jun 06, 2023 at 09:39:48AM +0200, Christoph Hellwig wrote:
-> Always use I_BDEV(file->f_mapping->host) to find the bdev for a file to
-> free up file->private_data for other uses.
+On Tue, Jun 06, 2023 at 09:39:49AM +0200, Christoph Hellwig wrote:
+> Store the file struct used as the holder in file->private_data as an
+> indicator that this file descriptor was opened exclusively to  remove
+> the last use of FMODE_EXCL.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
 
-Looks good to me,
+Feels a bit odd to store the object itself but anyway,
 Acked-by: Christian Brauner <brauner@kernel.org>
 
 _______________________________________________
