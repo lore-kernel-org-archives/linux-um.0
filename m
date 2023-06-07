@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89E47C7EE29
-	for <linux-um@archiver.kernel.org>; Wed,  7 Jun 2023 08:14:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8609C77B7A
+	for <linux-um@archiver.kernel.org>; Wed,  7 Jun 2023 08:16:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bKvBsolUwCeIA4DBUv1CvJ/NgbFCXfWBqhiOjt1hImo=; b=ejEF+6W3YTUbVt
-	LibIkSC0D5H84264zwkTP8QHVaJ2qtLuMW3Ksbw+O4BFK7TgfVNvRZsqnQHVQpxRwGpud8bLT03zc
-	s15HGJnc1cyhGfn1MTAA2OLWNBPvQWHQd1mac3YD25zM1IgrUpMAh/kE475OPZvrhDi6diiLKDpLT
-	G1vKPTWBIR3nVQP2bAKAAXKWNi1xGQqiRcIfNCib65uClvx1D1ko/tfAql/46LamLv54IUfvbZtac
-	4nrI7BZUpJooN9MKsV908K7wuIcdH7kNMJK0PC2uwzbUDZiqr0ktXQOSoq4e+WdscG6KOsVe31bdo
-	5T/lK9Yr777EkoE9vGuw==;
+	List-Owner; bh=HspEnUAF/vz8HJg7BQ7fV11TLbjySCQ9On5VarfpeZA=; b=BgeO3rXDrRcqzt
+	Vf3mbCtOKnlVSKQF3K4RMbbTqwMD/O616K93hL128kqzuIhU+SgLppe2YxiINGEBZQMLULpGDI2mx
+	P/B91YAuizoqU9CR4j8wIt/5ssFHQwJVB/iwGlkthpv049yLvUlQu+Ta2RNPWWskzMXC/Fa8/dzxm
+	wxKGpYMlNPH4GRBLYGuP+6Obo/QsdFu3uw82kQmQTRzreYCQgvouXjDVs3F8l4j3B7vWiIPdbPEaf
+	DGt4EcZflfyw4VwvB6AuAN8f5Wg4C87wzgraZimIlCF2hKHAkBQdavddvVcV78zZzkckS4BImaoP3
+	T3uS98Fc8IoiJwDMUJkA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6oJQ-004u94-2M;
-	Wed, 07 Jun 2023 08:14:36 +0000
+	id 1q6oLJ-004ufO-1r;
+	Wed, 07 Jun 2023 08:16:33 +0000
 Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6oJM-004u7T-0k;
-	Wed, 07 Jun 2023 08:14:33 +0000
+	id 1q6oLF-004udr-27;
+	Wed, 07 Jun 2023 08:16:30 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 3FBA863894;
-	Wed,  7 Jun 2023 08:14:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02DB1C433EF;
-	Wed,  7 Jun 2023 08:14:24 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 326BC6397D;
+	Wed,  7 Jun 2023 08:16:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8DCEC433EF;
+	Wed,  7 Jun 2023 08:16:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686125670;
-	bh=OikN0V0gAjgBP+HPzDoTzlQuNrCoReKL8FDM6o8SWL4=;
+	s=k20201202; t=1686125788;
+	bh=RXb/uaqR0x5/NbgjksTcXwSkQHw+GeMJrx4xaN4v7MY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LoOtwMsbiODoiTDBOlhy9h+NcaXo/0ty0ho40m0mYf7Tqj+wr2dJZ7vUbOn0Kz7GP
-	 33AzVbFt/SH4ZtCqtGcyP4wx2pNr5qeOSz7n5llnvQzbkevHbUBwUChjs8tVFu+w+7
-	 9qFZdhkREWPfruOfyuYqVKvgknYU35bmYym5jzuvpMGmp93SMTqsZWFeVhyuiwJkrs
-	 LAwyIzU/+kVumnYrd9shzRES4ZrZYHJo9QZXt+wC4ujn3BMrp977Z7B0LOqc0LVlBz
-	 8OgzOnLLMWqPSlcCNiFoGKY+/fwNpasAfTm2ssRASquxyIwPgu3PSIm5oXJID8PKnw
-	 l3rqMIfCwdUgQ==
-Date: Wed, 7 Jun 2023 10:14:22 +0200
+	b=D7HLq/BSC9BMU8P4kJMjo5MRJvyXbwS4/2PvvwAgM8ZW1dL92Hwr6Zk7SS4cudd43
+	 YqaP0WroUvYa+J2A0NcRIinvLRsnSH3+zo1FaTyPgQ4GnhYB7qgc3d/Go72HNsVxQF
+	 2VnZeMObpLaXQgi8iTif/MccBCn6vLk1nxwqHzPzuxFsvOp3CDpoMGoMBUNPzKqJ+9
+	 MDPrw2poPrPBCR3aAKE82p3/3e6I3qqlouz4S7jup9ehDAbiUr/4WJT37Mf7snmVlY
+	 xWYx9JWoneLZBkWhVBZeWvh/L+gD953X7yEXsyewcrazZ0kGnjene02lhM27pPq0WM
+	 4vEu4pR4sz/Jw==
+Date: Wed, 7 Jun 2023 10:16:19 +0200
 From: Christian Brauner <brauner@kernel.org>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>,
@@ -64,17 +64,17 @@ Cc: Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>,
 	linux-btrfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
 	linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
 	linux-pm@vger.kernel.org
-Subject: Re: [PATCH 01/31] block: also call ->open for incremental partition
- opens
-Message-ID: <20230607-behelfen-abnormal-8ccf8e1e99c9@brauner>
+Subject: Re: [PATCH 02/31] cdrom: remove the unused bdev argument to
+ cdrom_open
+Message-ID: <20230607-fahrdienst-leidwesen-f4192e429765@brauner>
 References: <20230606073950.225178-1-hch@lst.de>
- <20230606073950.225178-2-hch@lst.de>
+ <20230606073950.225178-3-hch@lst.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230606073950.225178-2-hch@lst.de>
+In-Reply-To: <20230606073950.225178-3-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230607_011432_332323_DCCB6727 
-X-CRM114-Status: GOOD (  13.31  )
+X-CRM114-CacheID: sfid-20230607_011629_735275_69B15881 
+X-CRM114-Status: GOOD (  10.33  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,17 +91,11 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jun 06, 2023 at 09:39:20AM +0200, Christoph Hellwig wrote:
-> For whole devices ->open is called for each open, but for partitions it
-> is only called on the first open of a partition.  This is problematic
-> as various block drivers look at open flags and might not do all setup
-> for ioctl only or NDELAY opens.
-> 
+On Tue, Jun 06, 2023 at 09:39:21AM +0200, Christoph Hellwig wrote:
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
 
-This assumes that all drivers deal with additional ->open() calls for
-each partition correctly which I assumed you checked so,
+lgtm,
 Acked-by: Christian Brauner <brauner@kernel.org>
 
 _______________________________________________
