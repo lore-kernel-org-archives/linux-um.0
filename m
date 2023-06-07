@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B3FEC87FDC
-	for <linux-um@archiver.kernel.org>; Wed,  7 Jun 2023 08:20:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2F718C83005
+	for <linux-um@archiver.kernel.org>; Wed,  7 Jun 2023 08:25:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4bO+igkNU5wLER0GHESNFWykWqWu4RKTTR4rrI3bnHw=; b=w1yxDWRyxCgeSI
-	EaioIQVDuJmt0rrr3jmyD94u9ivgPUcV3tn3BZCJad1qcvLkBBMlDgCctr/UliE8gVMbKde/eVK8J
-	QSOAhbpLDui0lrZ2+tk6npShIfHR5XHFmkuOfiGYHzTmny2H9+KLs7N9WW59ZysIRLKGwq+Y84jqr
-	P4DdP3zpkk1nbe4fQZTo1t8wOyaEkWWVo5yep/YUb7QaKJfsJ71t3yrppk29F3DFeCC57ah7qGer+
-	Sqza8QoqvCc4u6sTOCwdMMvooXkTp8yTdRxnh55QoV3XRRLUwGruKwaUefh/xOy8jUKdL52WOgeCC
-	iXulSgi/q42LTeLVEegw==;
+	List-Owner; bh=bQ2oIBD9a2esEWRIcmQ7HfN4C4KabzRqCNKK+Ioh8Dc=; b=0lE4Co2EqvHghH
+	H6fEUNkUqmtDnSbn+9Eq8vU45fv+EI/3aniOHaVaYKVbo4eEumBuT8c1sljNOhzwhvJPrrk1bNopt
+	kNMGQb38tyJ0tR7LXwPOSfXBu/Zfe0qLa4rgYgZ48rczjf1vidQr9VQn/jcmcJ3NXWEDZOrzMFM7r
+	wuhBZDQi5G33o6KAl9nlt5icQpIuXmNDpXNJL++c9OeJRvWRezyEOe1BtRf7xsaseeJRAD0y1AJ74
+	pG9hch71fLtmxe3Dn2YdkdoNptcSANUwhbEOnNBqqtFTdJpkUnbzBHh8AO4vsi7+Mkq1hMva3LX8T
+	VyDnlR163ErmD8//nEhg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6oOz-004vva-2a;
-	Wed, 07 Jun 2023 08:20:21 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1q6oTv-004xEo-2e;
+	Wed, 07 Jun 2023 08:25:27 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q6oOv-004vtR-3B;
-	Wed, 07 Jun 2023 08:20:19 +0000
+	id 1q6oTr-004xDX-2n;
+	Wed, 07 Jun 2023 08:25:25 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 73F3E60F7D;
-	Wed,  7 Jun 2023 08:20:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59570C433EF;
-	Wed,  7 Jun 2023 08:20:11 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 517B1615B0;
+	Wed,  7 Jun 2023 08:25:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F50BC433EF;
+	Wed,  7 Jun 2023 08:25:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686126016;
-	bh=JsXN/EIW6Kqwigw4wGGVknucfkdIsZm79w1pPIMczSI=;
+	s=k20201202; t=1686126322;
+	bh=MlK8ImDSCelGPFiPL92Uyz1xTZjxqRsNNJXefAB4RxA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hPo1mXkKxFqrFJbgKtNEIt5ZHiTabb37wMXxLRAIeNRno5DR3AAGuKjp93g16mzBl
-	 /3CNbG6uWs3WhElMnvwbqhmSsjjMwZfwrvzM8T673tQGiHisyduOo/76UvFPx8vWHx
-	 9lzYUK3IeThBOk9/FedNGybyiwR4Gdt72t9wwPv9e2CIKHXV4qq0pTv7B7QX81SLyf
-	 Iw3ISSaMn4rNIW1sjHFDtLvoDLYD8pYgZXmzPWirpoHmn5112xh4jwvgTxtmQ6Wuk2
-	 8Bh4MVxCgMvJMsNDaUbaU0No+32RJCdez5rEuCBZAIC/6oUb+6u9qKz1t5j/Vvz6mQ
-	 GPTyAfGP21eBA==
-Date: Wed, 7 Jun 2023 10:20:08 +0200
+	b=RJVQ7IElXButGpfihgaGTsX+x2U783OB0x7LjcjEuzbvCprkRssPlCqitXbv2qS80
+	 7bXHij0rDiyQmVWntSpVgswo1pyplWiVLnxddjl4YEuW7xtVVHP1gtfSYDSzKshjbd
+	 cg5VxGDoq3Sq//o6lEqRihRJL3wnpkC2VFrT+3tRPyfE8Rm3QEIGgrc8Zst/2xza1A
+	 1dLzlcWhE45pPOZvKsENsCth7zzXVyiw7PbzjT4UN+wZmWKKt2oJ6bg8vrxwu+KR+0
+	 hQ+ZzeZhWReHgfkAb9X57t7f3jFG0+rfua8y05NfHnXWIf5wyGJUIy3C7/vBVqlnz+
+	 EWD5OnJTGdrhQ==
+Date: Wed, 7 Jun 2023 10:25:14 +0200
 From: Christian Brauner <brauner@kernel.org>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>,
@@ -64,17 +64,16 @@ Cc: Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>,
 	linux-btrfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
 	linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
 	linux-pm@vger.kernel.org
-Subject: Re: [PATCH 06/31] cdrom: remove the unused mode argument to
- cdrom_release
-Message-ID: <20230607-beulen-infiltrieren-4cacf9083274@brauner>
+Subject: Re: [PATCH 07/31] block: pass a gendisk on bdev_check_media_change
+Message-ID: <20230607-chefsessel-angeordnet-269f0596f9b3@brauner>
 References: <20230606073950.225178-1-hch@lst.de>
- <20230606073950.225178-7-hch@lst.de>
+ <20230606073950.225178-8-hch@lst.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230606073950.225178-7-hch@lst.de>
+In-Reply-To: <20230606073950.225178-8-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230607_012018_093752_9AB226D6 
-X-CRM114-Status: GOOD (  10.15  )
+X-CRM114-CacheID: sfid-20230607_012523_946546_9344FD37 
+X-CRM114-Status: GOOD (  12.97  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,11 +90,16 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jun 06, 2023 at 09:39:25AM +0200, Christoph Hellwig wrote:
+On Tue, Jun 06, 2023 at 09:39:26AM +0200, Christoph Hellwig wrote:
+> bdev_check_media_change should only ever be called for the whole device.
+> Pass a gendisk to make that explicit and rename the function to
+> disk_check_media_change.
+> 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
 
-Looks good to me,
+Under the assumption it did only in fact ever only get called on the
+whole device so far,
 Acked-by: Christian Brauner <brauner@kernel.org>
 
 _______________________________________________
