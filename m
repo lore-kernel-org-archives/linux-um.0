@@ -4,65 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99A01C7EE25
-	for <linux-um@archiver.kernel.org>; Thu,  8 Jun 2023 12:15:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EEDEC7EE29
+	for <linux-um@archiver.kernel.org>; Thu,  8 Jun 2023 14:24:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gC6ksN1bGFVsdGxU9mQTR/wQdP3zM6qlUfm+mqMb59M=; b=Jtqw5Y/6UA7CtS
-	hzYG0bK7IrW+0/L8KnkMWr1XcT/pjVZ8Wq+jJttSVgFtaT129IzWfVg/y+6GjKPKYpl4E6ky+nFrn
-	3KUGqfeZ8/VVEKUI+LOYG8H2EJ/5bI+Tzsv50GE1W1EdnQpY0fr98CXwj4HJ2fIAE36sxr51QlyMY
-	+xg+448f67h/wKnSxxuO2erPYOBTJsu6cKrOkZjoptykSr6cZTTNgzAGuvn0nAu8GxyE+WxgezgOk
-	S9ap0Lr81AD4OULrjP7WUu/l5ac2dnbK6hn3qp6RhO8V+0b1HVkqPKrBjevV1trxXE9+Lcml48AWL
-	CS1jPswCVjMupByIym+A==;
+	List-Owner; bh=k7zgVWhSUjBLebkRqXfygof2ePXaU8MJpbYrp4CRiaI=; b=DzKTcgriaASz11
+	1Jg2x+goACgsSM8w1KrOeYdHs0bG9/u0TSJ7xTfjFPBV50RV2+Ab6DyrwcLhp/ElxGzzE3BBpdJZm
+	AetF8PMYvq//0hA4oMCPbWyqhjhIK6JsoJLaePN3Mvwi1zOvB+Te6WfxRn1tlQ8DXXz5+nrpctsEx
+	W20Pw6UERXFICYciShEIFe6Wg5efBIlWxz951fAAs0nFt/P9/7DCs3l0HcbyqPrqsWoo6Q89wgjhP
+	gOD/aE0IC/CChTpr585LBvaE7MZcT+t+VGhgRO2oym+j/44tcvyFp1wwA3qOxiX+Nga/BVSqfVJT/
+	ONVjEWD5/+Rbdf+sNRZQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7EYZ-009HWr-0X;
-	Thu, 08 Jun 2023 12:15:59 +0000
-Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7DRF-0092vE-2z;
-	Thu, 08 Jun 2023 11:04:22 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Richard Weinberger <richard@nod.at>,
-	Josef Bacik <josef@toxicpanda.com>,
-	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-	Jack Wang <jinpu.wang@ionos.com>,
-	Phillip Potter <phil@philpotter.co.uk>,
-	Coly Li <colyli@suse.de>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Chris Mason <clm@fb.com>,
-	David Sterba <dsterba@suse.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Pavel Machek <pavel@ucw.cz>,
-	dm-devel@redhat.com,
-	linux-block@vger.kernel.org,
+	id 1q7GZ7-009c9S-2T;
+	Thu, 08 Jun 2023 14:24:41 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
+	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1q7GZ5-009c8T-0n
+	for linux-um@lists.infradead.org;
+	Thu, 08 Jun 2023 14:24:40 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id D62CB64E21;
+	Thu,  8 Jun 2023 14:24:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A036C433A0;
+	Thu,  8 Jun 2023 14:24:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1686234278;
+	bh=7ZPyZ9apG1M05E0n0MB6gFR/gnPXwymtgzxIDVjhPog=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=lyb/aRQonk8gbaoHdI0/Cb4ItgDLwxIK+DRpbx0KcKc6rNJ6Rpj7K2KQKpzmumDnE
+	 WdoNs13V76MCdMdX41tTHvhd5gocZxNMJEERi+nfhLvD9G4pTxmLMApimqHyX0L624
+	 t4x+22sxF1nQMKsXUZNPeEion4PCNsIBz8S6PkOgZJ9Qxtcjj2th9w1H4u/onrZWcR
+	 YwxVkKN4TQA7V4Fl4JLvBPwXVE6EZ6t49WjXaMMKaPucewyNKER1YTMUKrXUqI2n5k
+	 VGJi/w9oqzpuvrSUmQueff5KNiMOeypROw8NYKdqqIjd158V/EnZqu6id2PKTe1LUF
+	 4J3jIFYyTWWcg==
+From: Masahiro Yamada <masahiroy@kernel.org>
+To: linux-kbuild@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Nicolas Schier <nicolas@fjasle.eu>,
 	linux-um@lists.infradead.org,
-	linux-scsi@vger.kernel.org,
-	linux-bcache@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-nvme@lists.infradead.org,
-	linux-btrfs@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-nilfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	Hannes Reinecke <hare@suse.de>
-Subject: [PATCH 28/30] block: always use I_BDEV on file->f_mapping->host to find the bdev
-Date: Thu,  8 Jun 2023 13:02:56 +0200
-Message-Id: <20230608110258.189493-29-hch@lst.de>
+	Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH v7 01/11] Revert "[PATCH] uml: export symbols added by GCC hardened"
+Date: Thu,  8 Jun 2023 23:24:18 +0900
+Message-Id: <20230608142428.256985-2-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230608110258.189493-1-hch@lst.de>
-References: <20230608110258.189493-1-hch@lst.de>
+In-Reply-To: <20230608142428.256985-1-masahiroy@kernel.org>
+References: <20230608142428.256985-1-masahiroy@kernel.org>
 MIME-Version: 1.0
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20230608_072439_355269_A685883D 
+X-CRM114-Status: GOOD (  14.68  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,94 +78,90 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Always use I_BDEV(file->f_mapping->host) to find the bdev for a file to
-free up file->private_data for other uses.
+This reverts commit cead61a6717a9873426b08d73a34a325e3546f5d.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-Acked-by: Christian Brauner <brauner@kernel.org>
+It exported __stack_smash_handler and __guard, while they may not be
+defined by anyone.
+
+The code *declares* __stack_smash_handler and __guard. It does not
+create weak symbols. When the stack-protector is disabled, they are
+left undefined, but yet exported.
+
+If a loadable module tries to access non-existing symbols, bad things
+(a page fault, NULL pointer dereference, etc.) will happen. So, the
+current code is wrong.
+
+If the code were written as follows, it would *define* them as weak
+symbols so modules would be able to get access to them.
+
+  void (*__stack_smash_handler)(void *) __attribute__((weak));
+  EXPORT_SYMBOL(__stack_smash_handler);
+
+  long __guard __attribute__((weak));
+  EXPORT_SYMBOL(__guard);
+
+In fact, modpost forbids exporting undefined symbols. It shows an error
+message if it detects such a mistake.
+
+  ERROR: modpost: "..." [...] was exported without definition
+
+Unfortunately, it is checked only when the code is built as modular.
+The problem described above has been unnoticed for a long time because
+arch/um/os-Linux/user_syms.c is always built-in.
+
+With a planned change in Kbuild, exporting undefined symbols will always
+result in a build error instead of a run-time error. It is a good thing,
+but we need to fix the breakage in advance.
+
+One fix is to *define* weak symbols as shown above. An alternative is
+to export them conditionally as follows:
+
+  #ifdef CONFIG_STACKPROTECTOR
+  extern void __stack_smash_handler(void *);
+  EXPORT_SYMBOL(__stack_smash_handler);
+
+  external long __guard;
+  EXPORT_SYMBOL(__guard);
+  #endif
+
+This is what other architectures do; EXPORT_SYMBOL(__stack_chk_guard)
+is guarded by #ifdef CONFIG_STACKPROTECTOR.
+
+However, adding the #ifdef guard is not sensible because UML cannot
+enable the stack-protector in the first place! (Please note UML does
+not select HAVE_STACKPROTECTOR in Kconfig.)
+
+So, the code is already broken (and unused) in multiple ways.
+
+Just remove.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- block/fops.c | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
 
-diff --git a/block/fops.c b/block/fops.c
-index 086612103b9dd9..0d714d050a462c 100644
---- a/block/fops.c
-+++ b/block/fops.c
-@@ -54,7 +54,7 @@ static bool blkdev_dio_unaligned(struct block_device *bdev, loff_t pos,
- static ssize_t __blkdev_direct_IO_simple(struct kiocb *iocb,
- 		struct iov_iter *iter, unsigned int nr_pages)
- {
--	struct block_device *bdev = iocb->ki_filp->private_data;
-+	struct block_device *bdev = I_BDEV(iocb->ki_filp->f_mapping->host);
- 	struct bio_vec inline_vecs[DIO_INLINE_BIO_VECS], *vecs;
- 	loff_t pos = iocb->ki_pos;
- 	bool should_dirty = false;
-@@ -170,7 +170,7 @@ static void blkdev_bio_end_io(struct bio *bio)
- static ssize_t __blkdev_direct_IO(struct kiocb *iocb, struct iov_iter *iter,
- 		unsigned int nr_pages)
- {
--	struct block_device *bdev = iocb->ki_filp->private_data;
-+	struct block_device *bdev = I_BDEV(iocb->ki_filp->f_mapping->host);
- 	struct blk_plug plug;
- 	struct blkdev_dio *dio;
- 	struct bio *bio;
-@@ -310,7 +310,7 @@ static ssize_t __blkdev_direct_IO_async(struct kiocb *iocb,
- 					struct iov_iter *iter,
- 					unsigned int nr_pages)
- {
--	struct block_device *bdev = iocb->ki_filp->private_data;
-+	struct block_device *bdev = I_BDEV(iocb->ki_filp->f_mapping->host);
- 	bool is_read = iov_iter_rw(iter) == READ;
- 	blk_opf_t opf = is_read ? REQ_OP_READ : dio_bio_write_op(iocb);
- 	struct blkdev_dio *dio;
-@@ -451,7 +451,7 @@ static loff_t blkdev_llseek(struct file *file, loff_t offset, int whence)
- static int blkdev_fsync(struct file *filp, loff_t start, loff_t end,
- 		int datasync)
- {
--	struct block_device *bdev = filp->private_data;
-+	struct block_device *bdev = I_BDEV(filp->f_mapping->host);
- 	int error;
+Changes in v7:
+  - New patch
+
+ arch/um/os-Linux/user_syms.c | 7 -------
+ 1 file changed, 7 deletions(-)
+
+diff --git a/arch/um/os-Linux/user_syms.c b/arch/um/os-Linux/user_syms.c
+index 9b62a9d352b3..a310ae27b479 100644
+--- a/arch/um/os-Linux/user_syms.c
++++ b/arch/um/os-Linux/user_syms.c
+@@ -37,13 +37,6 @@ EXPORT_SYMBOL(vsyscall_ehdr);
+ EXPORT_SYMBOL(vsyscall_end);
+ #endif
  
- 	error = file_write_and_wait_range(filp, start, end);
-@@ -516,7 +516,6 @@ static int blkdev_open(struct inode *inode, struct file *filp)
- 	if (IS_ERR(bdev))
- 		return PTR_ERR(bdev);
- 
--	filp->private_data = bdev;
- 	filp->f_mapping = bdev->bd_inode->i_mapping;
- 	filp->f_wb_err = filemap_sample_wb_err(filp->f_mapping);
- 	return 0;
-@@ -524,9 +523,8 @@ static int blkdev_open(struct inode *inode, struct file *filp)
- 
- static int blkdev_release(struct inode *inode, struct file *filp)
- {
--	struct block_device *bdev = filp->private_data;
+-/* Export symbols used by GCC for the stack protector. */
+-extern void __stack_smash_handler(void *) __attribute__((weak));
+-EXPORT_SYMBOL(__stack_smash_handler);
 -
--	blkdev_put(bdev, (filp->f_mode & FMODE_EXCL) ? filp : NULL);
-+	blkdev_put(I_BDEV(filp->f_mapping->host),
-+		   (filp->f_mode & FMODE_EXCL) ? filp : NULL);
- 	return 0;
- }
- 
-@@ -539,7 +537,7 @@ static int blkdev_release(struct inode *inode, struct file *filp)
-  */
- static ssize_t blkdev_write_iter(struct kiocb *iocb, struct iov_iter *from)
- {
--	struct block_device *bdev = iocb->ki_filp->private_data;
-+	struct block_device *bdev = I_BDEV(iocb->ki_filp->f_mapping->host);
- 	struct inode *bd_inode = bdev->bd_inode;
- 	loff_t size = bdev_nr_bytes(bdev);
- 	size_t shorted = 0;
-@@ -575,7 +573,7 @@ static ssize_t blkdev_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 
- static ssize_t blkdev_read_iter(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct block_device *bdev = iocb->ki_filp->private_data;
-+	struct block_device *bdev = I_BDEV(iocb->ki_filp->f_mapping->host);
- 	loff_t size = bdev_nr_bytes(bdev);
- 	loff_t pos = iocb->ki_pos;
- 	size_t shorted = 0;
+-extern long __guard __attribute__((weak));
+-EXPORT_SYMBOL(__guard);
+-
+ #ifdef _FORTIFY_SOURCE
+ extern int __sprintf_chk(char *str, int flag, size_t len, const char *format);
+ EXPORT_SYMBOL(__sprintf_chk);
 -- 
 2.39.2
 
