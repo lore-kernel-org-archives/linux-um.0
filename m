@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EEDEC7EE29
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B73BC7EE37
 	for <linux-um@archiver.kernel.org>; Thu,  8 Jun 2023 14:24:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=k7zgVWhSUjBLebkRqXfygof2ePXaU8MJpbYrp4CRiaI=; b=DzKTcgriaASz11
-	1Jg2x+goACgsSM8w1KrOeYdHs0bG9/u0TSJ7xTfjFPBV50RV2+Ab6DyrwcLhp/ElxGzzE3BBpdJZm
-	AetF8PMYvq//0hA4oMCPbWyqhjhIK6JsoJLaePN3Mvwi1zOvB+Te6WfxRn1tlQ8DXXz5+nrpctsEx
-	W20Pw6UERXFICYciShEIFe6Wg5efBIlWxz951fAAs0nFt/P9/7DCs3l0HcbyqPrqsWoo6Q89wgjhP
-	gOD/aE0IC/CChTpr585LBvaE7MZcT+t+VGhgRO2oym+j/44tcvyFp1wwA3qOxiX+Nga/BVSqfVJT/
-	ONVjEWD5/+Rbdf+sNRZQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=32491UDGlmoN2WSEb+Dab2vFS8MiAey2fNW+meGAzqU=; b=VJnrLXFiXGNv7Y
+	k6zig3dfxKUGjdLb22f0j5UoAg24SdqlTrNvVNBWb4edV+9YEzibFXPYMRcdVFrhWOwGNvnxK7NWR
+	DiW/aSpKcYquUXXFHIQYRdAzqcFry/UObfKbs2xiyX00O/m7u1hnOD9DCMfAUVJ84rwCUfHKYTbyx
+	XF/x3ZYncVoIhQotxBVGbfd2s7YlWx591gz7q46mtyzv0eKO47/xuT6iMg7iqwHN3R9qSp5ZYI9an
+	MbdxvxmBaJBYOpFFGqYWYMpLvDY4cPoNvgc/1Pfw4nKfHIQK4BOQmGP+5XM/YYTWkZzgNsr8Y5VCf
+	ZQXeNB+ogAvcwRPNvLoA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7GZ7-009c9S-2T;
+	id 1q7GZ7-009c95-1Q;
 	Thu, 08 Jun 2023 14:24:41 +0000
 Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7GZ5-009c8T-0n
+	id 1q7GZ4-009c7h-0z
 	for linux-um@lists.infradead.org;
 	Thu, 08 Jun 2023 14:24:40 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id D62CB64E21;
-	Thu,  8 Jun 2023 14:24:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A036C433A0;
-	Thu,  8 Jun 2023 14:24:36 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 2CD3464E17;
+	Thu,  8 Jun 2023 14:24:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50F10C433EF;
+	Thu,  8 Jun 2023 14:24:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686234278;
-	bh=7ZPyZ9apG1M05E0n0MB6gFR/gnPXwymtgzxIDVjhPog=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lyb/aRQonk8gbaoHdI0/Cb4ItgDLwxIK+DRpbx0KcKc6rNJ6Rpj7K2KQKpzmumDnE
-	 WdoNs13V76MCdMdX41tTHvhd5gocZxNMJEERi+nfhLvD9G4pTxmLMApimqHyX0L624
-	 t4x+22sxF1nQMKsXUZNPeEion4PCNsIBz8S6PkOgZJ9Qxtcjj2th9w1H4u/onrZWcR
-	 YwxVkKN4TQA7V4Fl4JLvBPwXVE6EZ6t49WjXaMMKaPucewyNKER1YTMUKrXUqI2n5k
-	 VGJi/w9oqzpuvrSUmQueff5KNiMOeypROw8NYKdqqIjd158V/EnZqu6id2PKTe1LUF
-	 4J3jIFYyTWWcg==
+	s=k20201202; t=1686234276;
+	bh=k+Mn9weSydYIaCuWNuvDX6AoybHLToDi+9bw3+6L3mE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=fRrTog57JAttHS7m0CTWO4G3XgAr0HVzUMfMz+Jmj5OZPG0N0DW2sGdctfa4CGO1e
+	 L6rPljb+N0AK99eRTbYIESp6H+s+AtiYY6qRRcQyvCg86U2BQoRi1UYLk1lM0KmOfK
+	 AGKQ8hO4xvAjeyBD60CJJKpJJRO6A8qTgK4mFNx5vPy/x0BpHI3Nwsw1NS6XT8iDnH
+	 ArNDJGpgwarr95RA8NNW82gvmFyAwZbIsleYpLXawNwmtbBR5mblmfZ7XRceO182ys
+	 PJFSuNqp+b4GeEsh2Nw6PKKVMWIogyCKTroUDzVa7XSYBCwQ233h2/xGDvfoqph3oV
+	 i98Nwklk4pAiA==
 From: Masahiro Yamada <masahiroy@kernel.org>
 To: linux-kbuild@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -52,16 +52,14 @@ Cc: linux-kernel@vger.kernel.org,
 	Nicolas Schier <nicolas@fjasle.eu>,
 	linux-um@lists.infradead.org,
 	Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH v7 01/11] Revert "[PATCH] uml: export symbols added by GCC hardened"
-Date: Thu,  8 Jun 2023 23:24:18 +0900
-Message-Id: <20230608142428.256985-2-masahiroy@kernel.org>
+Subject: [PATCH v7 00/11] Unify <linux/export.h> and <asm/export.h>, remove EXPORT_DATA_SYMBOL(), faster TRIM_UNUSED_KSYMS
+Date: Thu,  8 Jun 2023 23:24:17 +0900
+Message-Id: <20230608142428.256985-1-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230608142428.256985-1-masahiroy@kernel.org>
-References: <20230608142428.256985-1-masahiroy@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230608_072439_355269_A685883D 
-X-CRM114-Status: GOOD (  14.68  )
+X-CRM114-CacheID: sfid-20230608_072438_438158_D45B9472 
+X-CRM114-Status: GOOD (  12.84  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,90 +76,76 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-This reverts commit cead61a6717a9873426b08d73a34a325e3546f5d.
 
-It exported __stack_smash_handler and __guard, while they may not be
-defined by anyone.
+This patch set refactors modpost first to make it easier to
+add new code.
 
-The code *declares* __stack_smash_handler and __guard. It does not
-create weak symbols. When the stack-protector is disabled, they are
-left undefined, but yet exported.
+My goals:
 
-If a loadable module tries to access non-existing symbols, bad things
-(a page fault, NULL pointer dereference, etc.) will happen. So, the
-current code is wrong.
+ - Refactors EXPORT_SYMBOL, <linux/export.h> and <asm/export.h>.
+   You can still put EXPORT_SYMBOL() in *.S file, very close to the definition,
+   but you do not need to care about whether it is a function or a data.
+   This removes EXPORT_DATA_SYMBOL().
 
-If the code were written as follows, it would *define* them as weak
-symbols so modules would be able to get access to them.
+ - Re-implement TRIM_UNUSED_KSYMS in one-pass.
+   This makes the building faster.
 
-  void (*__stack_smash_handler)(void *) __attribute__((weak));
-  EXPORT_SYMBOL(__stack_smash_handler);
+ - Move the static EXPORT_SYMBOL check to modpost.
+   This also makes the building faster.
 
-  long __guard __attribute__((weak));
-  EXPORT_SYMBOL(__guard);
+This patch set is applicable to linux-next 20230608.
 
-In fact, modpost forbids exporting undefined symbols. It shows an error
-message if it detects such a mistake.
+Previous version
+v6: https://lore.kernel.org/linux-kbuild/CAK7LNARjzGnj+sYX=_5yQ+8qoOQ2KB5N-_Ye53Ru3=XicezTYw@mail.gmail.com/T/#t
+v5: https://lore.kernel.org/linux-kbuild/CAK7LNARBiOywrMLbR=9N35sk19U0QM3xcPy7d1WqV-eyb4W23w@mail.gmail.com/T/#t
+v4: https://lore.kernel.org/linux-kbuild/CAK7LNASDzy9RERN6+q6WgR4ROYZQue=SBqgbcoYuVePByHtk6Q@mail.gmail.com/T/#t
+v3: https://lore.kernel.org/all/20220928063947.299333-1-masahiroy@kernel.org/
 
-  ERROR: modpost: "..." [...] was exported without definition
 
-Unfortunately, it is checked only when the code is built as modular.
-The problem described above has been unnoticed for a long time because
-arch/um/os-Linux/user_syms.c is always built-in.
 
-With a planned change in Kbuild, exporting undefined symbols will always
-result in a build error instead of a run-time error. It is a good thing,
-but we need to fix the breakage in advance.
+Masahiro Yamada (11):
+  Revert "[PATCH] uml: export symbols added by GCC hardened"
+  modpost: pass struct module pointer to check_section_mismatch()
+  kbuild: generate KSYMTAB entries by modpost
+  ia64,export.h: replace EXPORT_DATA_SYMBOL* with EXPORT_SYMBOL*
+  modpost: check static EXPORT_SYMBOL* by modpost again
+  modpost: squash sym_update_namespace() into sym_add_exported()
+  modpost: use null string instead of NULL pointer for default namespace
+  kbuild: implement CONFIG_TRIM_UNUSED_KSYMS without recursion
+  modpost: merge two similar section mismatch warnings
+  modpost: show offset from symbol for section mismatch warnings
+  linux/export.h: rename 'sec' argument to 'license'
 
-One fix is to *define* weak symbols as shown above. An alternative is
-to export them conditionally as follows:
+ .gitignore                        |   2 -
+ Makefile                          |  22 +--
+ arch/ia64/include/asm/Kbuild      |   1 +
+ arch/ia64/include/asm/export.h    |   3 -
+ arch/ia64/kernel/head.S           |   2 +-
+ arch/ia64/kernel/ivt.S            |   2 +-
+ arch/um/os-Linux/user_syms.c      |   7 -
+ include/asm-generic/export.h      |  83 +----------
+ include/asm-generic/vmlinux.lds.h |   1 +
+ include/linux/export-internal.h   |  49 +++++++
+ include/linux/export.h            | 127 ++++------------
+ include/linux/pm.h                |  14 +-
+ kernel/module/internal.h          |  12 ++
+ scripts/Makefile.build            |  27 +---
+ scripts/Makefile.modpost          |   7 +
+ scripts/adjust_autoksyms.sh       |  73 ----------
+ scripts/basic/fixdep.c            |   3 +-
+ scripts/check-local-export        |  70 ---------
+ scripts/gen_autoksyms.sh          |  62 --------
+ scripts/gen_ksymdeps.sh           |  30 ----
+ scripts/mod/modpost.c             | 233 +++++++++++++++++++-----------
+ scripts/mod/modpost.h             |   1 +
+ scripts/remove-stale-files        |   4 +
+ 23 files changed, 266 insertions(+), 569 deletions(-)
+ delete mode 100644 arch/ia64/include/asm/export.h
+ delete mode 100755 scripts/adjust_autoksyms.sh
+ delete mode 100755 scripts/check-local-export
+ delete mode 100755 scripts/gen_autoksyms.sh
+ delete mode 100755 scripts/gen_ksymdeps.sh
 
-  #ifdef CONFIG_STACKPROTECTOR
-  extern void __stack_smash_handler(void *);
-  EXPORT_SYMBOL(__stack_smash_handler);
-
-  external long __guard;
-  EXPORT_SYMBOL(__guard);
-  #endif
-
-This is what other architectures do; EXPORT_SYMBOL(__stack_chk_guard)
-is guarded by #ifdef CONFIG_STACKPROTECTOR.
-
-However, adding the #ifdef guard is not sensible because UML cannot
-enable the stack-protector in the first place! (Please note UML does
-not select HAVE_STACKPROTECTOR in Kconfig.)
-
-So, the code is already broken (and unused) in multiple ways.
-
-Just remove.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
-Changes in v7:
-  - New patch
-
- arch/um/os-Linux/user_syms.c | 7 -------
- 1 file changed, 7 deletions(-)
-
-diff --git a/arch/um/os-Linux/user_syms.c b/arch/um/os-Linux/user_syms.c
-index 9b62a9d352b3..a310ae27b479 100644
---- a/arch/um/os-Linux/user_syms.c
-+++ b/arch/um/os-Linux/user_syms.c
-@@ -37,13 +37,6 @@ EXPORT_SYMBOL(vsyscall_ehdr);
- EXPORT_SYMBOL(vsyscall_end);
- #endif
- 
--/* Export symbols used by GCC for the stack protector. */
--extern void __stack_smash_handler(void *) __attribute__((weak));
--EXPORT_SYMBOL(__stack_smash_handler);
--
--extern long __guard __attribute__((weak));
--EXPORT_SYMBOL(__guard);
--
- #ifdef _FORTIFY_SOURCE
- extern int __sprintf_chk(char *str, int flag, size_t len, const char *format);
- EXPORT_SYMBOL(__sprintf_chk);
 -- 
 2.39.2
 
