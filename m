@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4E5C8C7EE25
-	for <linux-um@archiver.kernel.org>; Thu,  8 Jun 2023 10:12:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 941D3C7EE29
+	for <linux-um@archiver.kernel.org>; Thu,  8 Jun 2023 11:03:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=M7d2XwxUcHdxzJWoz/K4W/XLICGxihx2LKz+Maw7Opc=; b=CmoDxHyjp/2o4w
-	qyGh3JmrYmodLgFHsyK1EC40dix3BQbE8PNN03eDMuAi3uh6lUwcguKjbyJvcnlNG+OJU4fKIV2Ks
-	y3OQV43Hql2YMV5zosML9xnFb61lS0ghmtKTRRpxZLIU2O/l+mFZTh4RyRdSFxrSDiHFocKuwZHnj
-	k9OmS7m47UKyYj05e/IeY7utih5J+4oC9tcEVemmyyqYQ+sxZypBRG2BS/WhlEQzEp+DHx1hy5CK+
-	wvdrg/h9gt639XPvh3Y+pJG/4znIowVjgsyYIPNdnqeoEVpitT6r0NLfwZTvH//D21TXQSeAUlcEY
-	GekG81wTgyfs5JKDnQwQ==;
+	List-Owner; bh=RwNHxzELo4vRnD3mPPMAP9aqnflUcwKweZKrgAd+JmY=; b=WIqUFZ5p19Tqor
+	zxKpcVnkuVD7b5FiHeLRE+9ukdTPcuxqbf4nj/W1F5vOzQw168tcHK2VvFGJAqXTg1X74TSEigIm3
+	TjUSsRkGXOY3+ZoIbjVLFBA9Hff52JJ8mCBM3X3gvWGnAzi0/xpD7ncXpw2sFrxrE1R5tGR4hS2ci
+	4Gr/wroGKndPyiDmNgrTr26lEZFnTkn/LRx20Yzk8txQ1Bhnk7ZI/iBeBL5hLa2nnbA1AZdODUcqp
+	pG11v4iZJ4NZbtnrJZannIPQ274+sRo0PYPMeGXJBqCKBQDl9HD2aAVhR775M5XckkCgDsPSLEoRo
+	rLHdUJYKRpDuIoVXS+vQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7CdJ-008o3O-2w;
-	Thu, 08 Jun 2023 10:12:45 +0000
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66])
-	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7CdF-008nn0-34;
-	Thu, 08 Jun 2023 10:12:43 +0000
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1q7Cck-000hkd-IA; Thu, 08 Jun 2023 12:12:10 +0200
-Received: from p57bd96d9.dip0.t-ipconnect.de ([87.189.150.217] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1q7Cck-0049Nn-9l; Thu, 08 Jun 2023 12:12:10 +0200
-Message-ID: <0e74974450a15870f13ff36ab5dd60924368c0d9.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH v3 30/34] sh: Convert pte_free_tlb() to use ptdescs
-From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>, Andrew Morton
-	 <akpm@linux-foundation.org>, Matthew Wilcox <willy@infradead.org>
-Cc: linux-mm@kvack.org, linux-arch@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, 
-	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
-	linux-openrisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
-	linux-um@lists.infradead.org, xen-devel@lists.xenproject.org, 
-	kvm@vger.kernel.org, Yoshinori Sato <ysato@users.sourceforge.jp>
-Date: Thu, 08 Jun 2023 12:12:09 +0200
-In-Reply-To: <20230531213032.25338-31-vishal.moola@gmail.com>
-References: <20230531213032.25338-1-vishal.moola@gmail.com>
-	 <20230531213032.25338-31-vishal.moola@gmail.com>
-User-Agent: Evolution 3.48.2 
+	id 1q7DQ3-0091ea-1w;
+	Thu, 08 Jun 2023 11:03:07 +0000
+Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1q7DPz-0091cl-2t;
+	Thu, 08 Jun 2023 11:03:04 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Richard Weinberger <richard@nod.at>,
+	Josef Bacik <josef@toxicpanda.com>,
+	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+	Jack Wang <jinpu.wang@ionos.com>,
+	Phillip Potter <phil@philpotter.co.uk>,
+	Coly Li <colyli@suse.de>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Chris Mason <clm@fb.com>,
+	David Sterba <dsterba@suse.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Pavel Machek <pavel@ucw.cz>,
+	dm-devel@redhat.com,
+	linux-block@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	linux-scsi@vger.kernel.org,
+	linux-bcache@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-nvme@lists.infradead.org,
+	linux-btrfs@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-nilfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	Hannes Reinecke <hare@suse.de>
+Subject: [PATCH 01/30] block: also call ->open for incremental partition opens
+Date: Thu,  8 Jun 2023 13:02:29 +0200
+Message-Id: <20230608110258.189493-2-hch@lst.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230608110258.189493-1-hch@lst.de>
+References: <20230608110258.189493-1-hch@lst.de>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.150.217
-X-ZEDAT-Hint: PO
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230608_031242_144615_682DE420 
-X-CRM114-Status: GOOD (  10.63  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,50 +79,79 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2023-05-31 at 14:30 -0700, Vishal Moola (Oracle) wrote:
-> Part of the conversions to replace pgtable constructor/destructors with
-> ptdesc equivalents. Also cleans up some spacing issues.
-> 
-> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
-> ---
->  arch/sh/include/asm/pgalloc.h | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/sh/include/asm/pgalloc.h b/arch/sh/include/asm/pgalloc.h
-> index a9e98233c4d4..5d8577ab1591 100644
-> --- a/arch/sh/include/asm/pgalloc.h
-> +++ b/arch/sh/include/asm/pgalloc.h
-> @@ -2,6 +2,7 @@
->  #ifndef __ASM_SH_PGALLOC_H
->  #define __ASM_SH_PGALLOC_H
->  
-> +#include <linux/mm.h>
->  #include <asm/page.h>
->  
->  #define __HAVE_ARCH_PMD_ALLOC_ONE
-> @@ -31,10 +32,10 @@ static inline void pmd_populate(struct mm_struct *mm, pmd_t *pmd,
->  	set_pmd(pmd, __pmd((unsigned long)page_address(pte)));
->  }
->  
-> -#define __pte_free_tlb(tlb,pte,addr)			\
-> -do {							\
-> -	pgtable_pte_page_dtor(pte);			\
-> -	tlb_remove_page((tlb), (pte));			\
-> +#define __pte_free_tlb(tlb, pte, addr)				\
-> +do {								\
-> +	pagetable_pte_dtor(page_ptdesc(pte));			\
-> +	tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)));	\
->  } while (0)
->  
->  #endif /* __ASM_SH_PGALLOC_H */
+For whole devices ->open is called for each open, but for partitions it
+is only called on the first open of a partition, e.g.:
 
-Acked-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+  open("/dev/vdb", ...)
+  open("/dev/vdb", ...)
+    - 2 call to ->open
 
+  open("/dev/vdb1", ...)
+  open("/dev/vdb", ...)
+    - 2 call to ->open
+
+  open("/dev/vdb", ...)
+  open("/dev/vdb", ...)
+    - just open call to ->open
+
+This is problematic as various block drivers look at open flags and
+might not do all the required setup if the earlier open was with an
+odd flag like O_NDELAY or the magic 3 ioctl-only open mode.
+
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Phillip Potter <phil@philpotter.co.uk>
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+Acked-by: Christian Brauner <brauner@kernel.org>
+---
+ block/bdev.c | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
+
+diff --git a/block/bdev.c b/block/bdev.c
+index 5c46ff10770638..981f6135795138 100644
+--- a/block/bdev.c
++++ b/block/bdev.c
+@@ -683,9 +683,6 @@ static int blkdev_get_part(struct block_device *part, fmode_t mode)
+ 	struct gendisk *disk = part->bd_disk;
+ 	int ret;
+ 
+-	if (atomic_read(&part->bd_openers))
+-		goto done;
+-
+ 	ret = blkdev_get_whole(bdev_whole(part), mode);
+ 	if (ret)
+ 		return ret;
+@@ -694,9 +691,10 @@ static int blkdev_get_part(struct block_device *part, fmode_t mode)
+ 	if (!bdev_nr_sectors(part))
+ 		goto out_blkdev_put;
+ 
+-	disk->open_partitions++;
+-	set_init_blocksize(part);
+-done:
++	if (!atomic_read(&part->bd_openers)) {
++		disk->open_partitions++;
++		set_init_blocksize(part);
++	}
+ 	atomic_inc(&part->bd_openers);
+ 	return 0;
+ 
+@@ -709,10 +707,10 @@ static void blkdev_put_part(struct block_device *part, fmode_t mode)
+ {
+ 	struct block_device *whole = bdev_whole(part);
+ 
+-	if (!atomic_dec_and_test(&part->bd_openers))
+-		return;
+-	blkdev_flush_mapping(part);
+-	whole->bd_disk->open_partitions--;
++	if (atomic_dec_and_test(&part->bd_openers)) {
++		blkdev_flush_mapping(part);
++		whole->bd_disk->open_partitions--;
++	}
+ 	blkdev_put_whole(whole, mode);
+ }
+ 
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+2.39.2
+
 
 _______________________________________________
 linux-um mailing list
