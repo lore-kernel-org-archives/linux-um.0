@@ -4,64 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E07D0C8300C
-	for <linux-um@archiver.kernel.org>; Thu,  8 Jun 2023 14:25:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EEFBC7EE25
+	for <linux-um@archiver.kernel.org>; Fri,  9 Jun 2023 06:37:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=MpqQwT6lYbte2huW9CvSApBGIFuYZ3gACLF4SliQlkQ=; b=dSPOzX3I+m8TOu
-	0HijRZiqBxzMD71IblqHwjg7JSApzO9H3sLuYvHGSUKQ1hugimGU53NfDbrQbrZPWbD2V4+vphVWH
-	S2z2dfwjxB9ivigBweTg81i0Qx2YAHdGeVbZCxf85PCqcO6qAsGKcgTkfn6hF481aBWlo+52FqkSs
-	F+ZnEYqKWBPp0Wb3Z7icOB9oF9v2ZQwLNDdEx6Z6f0aD/ZKVns39xRs90pzZILzcsTV9Qgxp+73UT
-	/mI8NMUXjeS2GviFOuI9BKbJrZXFEtDrghR4hDldvs3RsA8iPJgjLKGOxCsO86v/lz/TMaaWzQBEK
-	OTfyjkqo5axIkNfGL4Fw==;
+	List-Owner; bh=XhjgcbV316hYmVFhY4pLZgPnnc7p9bm5NQ2tUxU1YCw=; b=bizhBRIjCvVHbm
+	K5ey967rx867V1D4/8BvaRakJuQlhpW5sYZXIEiTJXAItq0hOdQY/gfGDWps9pAbAdiwZm8i4F5XZ
+	mFP2fx5BtNdJDvRDz1cOHt2mO4HyLmLYZDKu//vPumtZ9+Ujlzq/K41IEfox+YKDU2PRcQ6cQ2KWF
+	7yWdnQPq8tEAVRor76101+YxzCAU5bYh/ugDNMTGy6My3z8+2uSN4M7u91UD34E2gHxcBiHf+xo8J
+	/tvdFtGc2thInbFB+M1a5q/AZWe468n5aAktKnA3fRWcUGGDryjw5BPvi3lCV86oSeWZJxB1+AdmC
+	7SBfFCYGmFNtcWnCGr9g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7GZQ-009cL9-1b;
-	Thu, 08 Jun 2023 14:25:00 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1q7Vko-00Btbn-0o;
+	Fri, 09 Jun 2023 06:37:46 +0000
+Received: from smtp-out1.suse.de ([2001:67c:2178:6::1c])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7GZM-009cIB-1J
-	for linux-um@lists.infradead.org;
-	Thu, 08 Jun 2023 14:24:57 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	id 1q7Vkk-00Btab-2d;
+	Fri, 09 Jun 2023 06:37:44 +0000
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 06F4363CDC;
-	Thu,  8 Jun 2023 14:24:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32260C433D2;
-	Thu,  8 Jun 2023 14:24:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686234295;
-	bh=W7P3iG4O3YjGApyRwNtiWKX5Kq+VmGX8uTvW8Ums99c=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ntFv6gYKlgbdRwOlDg1ZciYIhnPhN2Yth0zSMBh1rlXZK4/QWKEvGYg1VqYJU7Q7Y
-	 7kPowQgOC8uSdSuIVTPw8oBH0M1YSfJjTwNZPmE3GP7hQP++wMeo+yIOFshXSfOxWM
-	 kmEdw4koner4TpL3XNp9u65JUDy2+93IeydEtbqQ6qHjVK+wsFMWA8O6UX3h4NtYdx
-	 NHVPrlm87C9dMQoa0JsB8wSfS0xHgoDuGdYQKSt4dq7x2V5PMg5WMimbx42hWDuqHX
-	 ibVrSlp+cCQLo4yDl8Ecy3T+AR9+MhywHQsT3hKNrWQiJ0Gz/6hniiRPANFG6WcLxk
-	 Fh0DE3EZ2xB+Q==
-From: Masahiro Yamada <masahiroy@kernel.org>
-To: linux-kbuild@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	linux-um@lists.infradead.org,
-	Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH v7 11/11] linux/export.h: rename 'sec' argument to 'license'
-Date: Thu,  8 Jun 2023 23:24:28 +0900
-Message-Id: <20230608142428.256985-12-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230608142428.256985-1-masahiroy@kernel.org>
-References: <20230608142428.256985-1-masahiroy@kernel.org>
+	by smtp-out1.suse.de (Postfix) with ESMTPS id C5AB621A53;
+	Fri,  9 Jun 2023 06:37:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1686292659; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AuLuFfaUhqZIlvqsrBqFCILQNfB9NBh4XQJqJuwBaak=;
+	b=DfWcezE02xLifKYApRh/Add62cFaOcxnW3wNSvzD8w9yj5YaSZ2IJzFtcqTHWC93xEcGoZ
+	5DIcDvnUzc7+rHwW+tvz398fOf28mmIhzoloOpuJ13hG/Af4ypuqo9UbqAddu8da4BuPJ6
+	Ej17itybE9m84CucOtrfNyhxobciHic=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1686292659;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AuLuFfaUhqZIlvqsrBqFCILQNfB9NBh4XQJqJuwBaak=;
+	b=+5Awe/+aCoJv+pwVztOJIiCyAnb6pTZHwYvv7sP4i5Gc34IqAOSTrhZJJYJOAhtGbr6s8I
+	YS3t00UaYTmcZuDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 2374A139C8;
+	Fri,  9 Jun 2023 06:37:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id Jna4BrPIgmRfNwAAMHmgww
+	(envelope-from <hare@suse.de>); Fri, 09 Jun 2023 06:37:39 +0000
+Message-ID: <f398627e-f69f-de42-d55d-2d497d208ae5@suse.de>
+Date: Fri, 9 Jun 2023 08:37:38 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 05/30] cdrom: track if a cdrom_device_info was opened for
+ data
+Content-Language: en-US
+To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc: Richard Weinberger <richard@nod.at>, Josef Bacik <josef@toxicpanda.com>,
+ "Md. Haris Iqbal" <haris.iqbal@ionos.com>, Jack Wang <jinpu.wang@ionos.com>,
+ Phillip Potter <phil@philpotter.co.uk>, Coly Li <colyli@suse.de>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>, Chris Mason <clm@fb.com>,
+ David Sterba <dsterba@suse.com>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, "Rafael J. Wysocki"
+ <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>, dm-devel@redhat.com,
+ linux-block@vger.kernel.org, linux-um@lists.infradead.org,
+ linux-scsi@vger.kernel.org, linux-bcache@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
+ linux-btrfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-pm@vger.kernel.org
+References: <20230608110258.189493-1-hch@lst.de>
+ <20230608110258.189493-6-hch@lst.de>
+From: Hannes Reinecke <hare@suse.de>
+In-Reply-To: <20230608110258.189493-6-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230608_072456_523533_B4385213 
-X-CRM114-Status: GOOD (  12.07  )
+X-CRM114-CacheID: sfid-20230608_233743_042535_24069AE8 
+X-CRM114-Status: GOOD (  13.39  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,84 +102,28 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Now, EXPORT_SYMBOL() is populated in two stages. In the first stage,
-all of EXPORT_SYMBOL/EXPORT_SYMBOL_GPL go into the same section,
-.export_symbol.
-
-'sec' does not make sense any more. Rename it to 'license'.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
-Changes in v7:
- - New patch
-
- include/linux/export.h | 8 ++++----
- include/linux/pm.h     | 6 +++---
- 2 files changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/include/linux/export.h b/include/linux/export.h
-index fed2e5717461..b411fdb88720 100644
---- a/include/linux/export.h
-+++ b/include/linux/export.h
-@@ -46,11 +46,11 @@ extern struct module __this_module;
-  * be reused in other execution contexts such as the UEFI stub or the
-  * decompressor.
-  */
--#define __EXPORT_SYMBOL(sym, sec, ns)
-+#define __EXPORT_SYMBOL(sym, license, ns)
- 
- #elif defined(__GENKSYMS__)
- 
--#define __EXPORT_SYMBOL(sym, sec, ns)	__GENKSYMS_EXPORT_SYMBOL(sym)
-+#define __EXPORT_SYMBOL(sym, license, ns)	__GENKSYMS_EXPORT_SYMBOL(sym)
- 
- #elif defined(__ASSEMBLY__)
- 
-@@ -67,9 +67,9 @@ extern struct module __this_module;
- #endif /* CONFIG_MODULES */
- 
- #ifdef DEFAULT_SYMBOL_NAMESPACE
--#define _EXPORT_SYMBOL(sym, sec)	__EXPORT_SYMBOL(sym, sec, __stringify(DEFAULT_SYMBOL_NAMESPACE))
-+#define _EXPORT_SYMBOL(sym, license)	__EXPORT_SYMBOL(sym, license, __stringify(DEFAULT_SYMBOL_NAMESPACE))
- #else
--#define _EXPORT_SYMBOL(sym, sec)	__EXPORT_SYMBOL(sym, sec, "")
-+#define _EXPORT_SYMBOL(sym, license)	__EXPORT_SYMBOL(sym, license, "")
- #endif
- 
- #define EXPORT_SYMBOL(sym)		_EXPORT_SYMBOL(sym,)
-diff --git a/include/linux/pm.h b/include/linux/pm.h
-index aabb6bd8f89e..1810d776e84a 100644
---- a/include/linux/pm.h
-+++ b/include/linux/pm.h
-@@ -375,14 +375,14 @@ const struct dev_pm_ops name = { \
- }
- 
- #ifdef CONFIG_PM
--#define _EXPORT_DEV_PM_OPS(name, sec, ns)				\
-+#define _EXPORT_DEV_PM_OPS(name, license, ns)				\
- 	const struct dev_pm_ops name;					\
--	__EXPORT_SYMBOL(name, sec, ns);					\
-+	__EXPORT_SYMBOL(name, license, ns);				\
- 	const struct dev_pm_ops name
- #define EXPORT_PM_FN_GPL(name)		EXPORT_SYMBOL_GPL(name)
- #define EXPORT_PM_FN_NS_GPL(name, ns)	EXPORT_SYMBOL_NS_GPL(name, ns)
- #else
--#define _EXPORT_DEV_PM_OPS(name, sec, ns)				\
-+#define _EXPORT_DEV_PM_OPS(name, license, ns)				\
- 	static __maybe_unused const struct dev_pm_ops __static_##name
- #define EXPORT_PM_FN_GPL(name)
- #define EXPORT_PM_FN_NS_GPL(name, ns)
--- 
-2.39.2
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gNi84LzIzIDEzOjAyLCBDaHJpc3RvcGggSGVsbHdpZyB3cm90ZToKPiBTZXQgYSBmbGFnIHdo
+ZW4gYSBjZHJvbV9kZXZpY2VfaW5mbyBpcyBvcGVuZWQgZm9yIHdyaXRpbmcsIGluc3RlYWQgb2YK
+PiB0cnlpbmcgdG8gZmlndXJlIG91dCB0aGlzIGF0IHJlbGVhc2UgdGltZS4gIFRoaXMgd2lsbCBh
+bGxvdyB0byBldmVudHVhbGx5Cj4gcmVtb3ZlIHRoZSBtb2RlIGFyZ3VtZW50IHRvIHRoZSAtPnJl
+bGVhc2UgYmxvY2tfZGV2aWNlX29wZXJhdGlvbiBhcwo+IG5vdGhpbmcgYnV0IHRoZSBDRFJPTSBk
+cml2ZXJzIHVzZXMgdGhhdCBhcmd1bWVudC4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBDaHJpc3RvcGgg
+SGVsbHdpZyA8aGNoQGxzdC5kZT4KPiBSZXZpZXdlZC1ieTogUGhpbGxpcCBQb3R0ZXIgPHBoaWxA
+cGhpbHBvdHRlci5jby51az4KPiBBY2tlZC1ieTogQ2hyaXN0aWFuIEJyYXVuZXIgPGJyYXVuZXJA
+a2VybmVsLm9yZz4KPiAtLS0KPiAgIGRyaXZlcnMvY2Ryb20vY2Ryb20uYyB8IDEyICsrKysrLS0t
+LS0tLQo+ICAgaW5jbHVkZS9saW51eC9jZHJvbS5oIHwgIDEgKwo+ICAgMiBmaWxlcyBjaGFuZ2Vk
+LCA2IGluc2VydGlvbnMoKyksIDcgZGVsZXRpb25zKC0pCj4gClJldmlld2VkLWJ5OiBIYW5uZXMg
+UmVpbmVja2UgPGhhcmVAc3VzZS5kZT4KCkNoZWVycywKCkhhbm5lcwotLSAKRHIuIEhhbm5lcyBS
+ZWluZWNrZSAgICAgICAgICAgICAgICBLZXJuZWwgU3RvcmFnZSBBcmNoaXRlY3QKaGFyZUBzdXNl
+LmRlICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKzQ5IDkxMSA3NDA1MyA2ODgKU1VTRSBT
+b2Z0d2FyZSBTb2x1dGlvbnMgR21iSCwgTWF4ZmVsZHN0ci4gNSwgOTA0MDkgTsO8cm5iZXJnCkhS
+QiAzNjgwOSAoQUcgTsO8cm5iZXJnKSwgR2VzY2jDpGZ0c2bDvGhyZXI6IEl2byBUb3RldiwgQW5k
+cmV3Ck15ZXJzLCBBbmRyZXcgTWNEb25hbGQsIE1hcnRqZSBCb3VkaWVuIE1vZXJtYW4KCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWls
+aW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
