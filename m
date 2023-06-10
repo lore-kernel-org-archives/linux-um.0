@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EE56C7EE45
-	for <linux-um@archiver.kernel.org>; Sat, 10 Jun 2023 09:13:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14961C7EE2E
+	for <linux-um@archiver.kernel.org>; Sat, 10 Jun 2023 09:13:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2F66kamkfWm2MjHNggCU7o9JJqeiofGZHYXZKvLU0Uw=; b=jAs9/tFHfmokgE
-	n4VFzmIgT7l/aB0dJFLt7oGCRAjJLnu8T4Hf9lO7atf/4YIbWFsreiZgeVb89Uk/vllHH8Gkv1May
-	fL2igW6939AeXk8JD/OuQmUcz8zF/aTIBUWf2ICzzWq6K8eMn3Lsdvdb7gdo5RGnJcFRgXXbq7SMl
-	FzEEAnM92yhT48YzZpXUSSCjW+ERRHlc/nSYHjpFgyYK/vO04znFX1fMXTJopxiiWD6LsrO9UE0BO
-	3nM8aMzL882bEgQbrpSdKzVOrhP6mXt8MBFxNdmStGY65EGSQkSwv9hi6FG7nxrTn0Y2pNw+GRneC
-	8WavShTBO1Q/Wiq1z16w==;
+	List-Owner; bh=E1OFXV0IS4fzFv7uKo7k3RBG9f5WRT17rw5GTnP1GD8=; b=Kk56v4GB0gOpJ0
+	L83jSdaU+kxgQMBpPSmRz6wfEdOaAhajIQ/S2TT4qez+tSyADFfH88dvnHelgbVRAa2ltMJzi5BVR
+	zGYvkGATXAAWjHc6yThgD0XIQEUuOjT9IOWyDXo3KSUmHaE9TPRcoIwMboq64r1uIHsjCibetARjt
+	4XZ6zr2glyT+zwJNgjogb5u5uRO6CdADP72+key8fn+ElceNeUbfw4cjUCmxHMH5yZVPazfbFvGVJ
+	9cx8/PPb5zXU00w+o/qbPMZbsuvpLiXUG8kwbXsKt0I1MCLKpsAZzRSREOsGmmXUCVNT2AYWvu3pO
+	DaRZ+aRHDerLEskcLxZw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7ufQ-00Fcio-0o;
-	Sat, 10 Jun 2023 09:13:52 +0000
+	id 1q7ufT-00Fckg-2H;
+	Sat, 10 Jun 2023 09:13:55 +0000
 Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q7ufN-00FchK-1N
+	id 1q7ufQ-00FcjB-2o
 	for linux-um@lists.infradead.org;
-	Sat, 10 Jun 2023 09:13:50 +0000
+	Sat, 10 Jun 2023 09:13:54 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 059B36112F;
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 77E7562062;
+	Sat, 10 Jun 2023 09:13:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48724C433EF;
 	Sat, 10 Jun 2023 09:13:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1F9EC433D2;
-	Sat, 10 Jun 2023 09:13:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1686388428;
-	bh=WxsbZJQWaT5jCsrdDCJG6B1Ekj8QHp6BWQx+hm3BcWA=;
+	s=k20201202; t=1686388431;
+	bh=Ap3GuMqINZf2WdIT1xsNL1OzEvsLgkbr6RhrjaSFN2U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IiVRdteGCFlLKvr6PB4BCZgVXVjEWdD61C3XUb06yo/CsMmc4UWgAdOTV5m1U2nhB
-	 zWm617SOqSOTnqPDMiX2W7FX1GzhNVhTWvbKLleGHtqtftwS/Yl++6e7FhyL1r4d4Y
-	 eu+XqhXwGgPROTiKzc6lYC3ZK6idH6uEN5g0m68Gd4HqC4wh9FNJNU7/S/7TfXYYzF
-	 yL/Y/KQcDirTKqUUhGJLwR2NFl+yT36PPuaQlDjWjfD5VmUeX6vCtP9TSBXxwAWQyL
-	 8YTlhHv6426s6URkTD/oOmtFU4fN383j74r9PCZ0VS+9E0F7v4enw4Ble3k0LjncGh
-	 +7euzpAbwJkig==
+	b=nP8/MpiNzNy6yeqR8dbxaAnpVDSSoo3qY417NEK4RQd9NKUvZSPMzRA5cn/Df0D7q
+	 7A72aMZjxbwGbVW/3aBk56MiDOsN+OcGe6kYvgPm2f6F3gKT/ZdC3I1SgWn/kKYVUE
+	 skMlKo5hKcNkzg1szdEKt8uWRkEoa5AesUv+tdGldplIMswWj1mjPhlLFDMEc7vb6G
+	 ahLZ7YHFS0nFnigd6vvA+EFX9yg4DaE/ikO/6XfZZTFjDg1HG5A4eEegvtM2OKijgi
+	 FhSw0bJig3AHk5uuww7kLyD1jwNwx5ugoak/u6Eq6JsHuZOmhKMu7M3MQ05wm+2Edp
+	 BYJAu3c45vgbw==
 From: Masahiro Yamada <masahiroy@kernel.org>
 To: linux-kbuild@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
@@ -52,16 +52,16 @@ Cc: linux-kernel@vger.kernel.org,
 	Nicolas Schier <nicolas@fjasle.eu>,
 	linux-um@lists.infradead.org,
 	Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH v8 06/11] modpost: squash sym_update_namespace() into sym_add_exported()
-Date: Sat, 10 Jun 2023 18:13:15 +0900
-Message-Id: <20230610091320.1054554-7-masahiroy@kernel.org>
+Subject: [PATCH v8 07/11] modpost: use null string instead of NULL pointer for default namespace
+Date: Sat, 10 Jun 2023 18:13:16 +0900
+Message-Id: <20230610091320.1054554-8-masahiroy@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230610091320.1054554-1-masahiroy@kernel.org>
 References: <20230610091320.1054554-1-masahiroy@kernel.org>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230610_021349_501972_897A7314 
-X-CRM114-Status: GOOD (  13.14  )
+X-CRM114-CacheID: sfid-20230610_021352_988696_008ABDF2 
+X-CRM114-Status: GOOD (  14.99  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,78 +78,87 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Pass a set of the name, license, and namespace to sym_add_exported().
+The default namespace is the null string, "".
 
-sym_update_namespace() is unneeded.
+When set, the null string "" is converted to NULL:
+
+  s->namespace = namespace[0] ? NOFAIL(strdup(namespace)) : NULL;
+
+When printed, the NULL pointer is get back to the null string:
+
+  sym->namespace ?: ""
+
+This saves 1 byte memory allocated for "", but loses the readability.
+
+In kernel-space, we strive to save memory, but modpost is a userspace
+tool used to build the kernel. On modern systems, such small piece of
+memory is not a big deal.
+
+Handle the namespace string as is.
 
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 ---
 
- scripts/mod/modpost.c | 27 ++++-----------------------
- 1 file changed, 4 insertions(+), 23 deletions(-)
+ scripts/mod/modpost.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
 diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index a3185ee6ec1a..4b0a009de0fb 100644
+index 4b0a009de0fb..7044b257424a 100644
 --- a/scripts/mod/modpost.c
 +++ b/scripts/mod/modpost.c
-@@ -355,26 +355,8 @@ static const char *sec_name(const struct elf_info *info, unsigned int secindex)
- 
- #define strstarts(str, prefix) (strncmp(str, prefix, strlen(prefix)) == 0)
- 
--static void sym_update_namespace(const char *symname, const char *namespace)
--{
--	struct symbol *s = find_symbol(symname);
--
--	/*
--	 * That symbol should have been created earlier and thus this is
--	 * actually an assertion.
--	 */
--	if (!s) {
--		error("Could not update namespace(%s) for symbol %s\n",
--		      namespace, symname);
--		return;
--	}
--
--	free(s->namespace);
--	s->namespace = namespace[0] ? NOFAIL(strdup(namespace)) : NULL;
--}
--
- static struct symbol *sym_add_exported(const char *name, struct module *mod,
--				       bool gpl_only)
-+				       bool gpl_only, const char *namespace)
+@@ -300,6 +300,13 @@ static bool contains_namespace(struct list_head *head, const char *namespace)
  {
- 	struct symbol *s = find_symbol(name);
+ 	struct namespace_list *list;
  
-@@ -387,6 +369,7 @@ static struct symbol *sym_add_exported(const char *name, struct module *mod,
++	/*
++	 * The default namespace is null string "", which is always implicitly
++	 * contained.
++	 */
++	if (!namespace[0])
++		return true;
++
+ 	list_for_each_entry(list, head, list) {
+ 		if (!strcmp(list->namespace, namespace))
+ 			return true;
+@@ -369,7 +376,7 @@ static struct symbol *sym_add_exported(const char *name, struct module *mod,
  	s = alloc_symbol(name);
  	s->module = mod;
  	s->is_gpl_only = gpl_only;
-+	s->namespace = namespace[0] ? NOFAIL(strdup(namespace)) : NULL;
+-	s->namespace = namespace[0] ? NOFAIL(strdup(namespace)) : NULL;
++	s->namespace = NOFAIL(strdup(namespace));
  	list_add_tail(&s->list, &mod->exported_symbols);
  	hash_add_symbol(s);
  
-@@ -1230,8 +1213,7 @@ static void check_export_symbol(struct module *mod, struct elf_info *elf,
+@@ -1823,8 +1830,7 @@ static void check_exports(struct module *mod)
+ 		else
+ 			basename = mod->name;
+ 
+-		if (exp->namespace &&
+-		    !contains_namespace(&mod->imported_namespaces, exp->namespace)) {
++		if (!contains_namespace(&mod->imported_namespaces, exp->namespace)) {
+ 			modpost_log(allow_missing_ns_imports ? LOG_WARN : LOG_ERROR,
+ 				    "module %s uses symbol %s from namespace %s, but does not import it.\n",
+ 				    basename, exp->name, exp->namespace);
+@@ -1910,8 +1916,7 @@ static void add_exported_symbols(struct buffer *buf, struct module *mod)
+ 	list_for_each_entry(sym, &mod->exported_symbols, list)
+ 		buf_printf(buf, "KSYMTAB_%s(%s, \"%s\", \"%s\");\n",
+ 			   sym->is_func ? "FUNC" : "DATA", sym->name,
+-			   sym->is_gpl_only ? "_gpl" : "",
+-			   sym->namespace ?: "");
++			   sym->is_gpl_only ? "_gpl" : "", sym->namespace);
+ 
+ 	if (!modversions)
  		return;
- 	}
- 
--	s = sym_add_exported(name, mod, is_gpl);
--	sym_update_namespace(name, sym_get_data(elf, label));
-+	s = sym_add_exported(name, mod, is_gpl, sym_get_data(elf, label));
- 
- 	/*
- 	 * We need to be aware whether we are exporting a function or
-@@ -2174,9 +2156,8 @@ static void read_dump(const char *fname)
- 			mod = new_module(modname, strlen(modname));
- 			mod->from_dump = true;
+@@ -2179,7 +2184,7 @@ static void write_dump(const char *fname)
+ 			buf_printf(&buf, "0x%08x\t%s\t%s\tEXPORT_SYMBOL%s\t%s\n",
+ 				   sym->crc, sym->name, mod->name,
+ 				   sym->is_gpl_only ? "_GPL" : "",
+-				   sym->namespace ?: "");
++				   sym->namespace);
  		}
--		s = sym_add_exported(symname, mod, gpl_only);
-+		s = sym_add_exported(symname, mod, gpl_only, namespace);
- 		sym_set_crc(s, crc);
--		sym_update_namespace(symname, namespace);
  	}
- 	free(buf);
- 	return;
+ 	write_buf(&buf, fname);
 -- 
 2.39.2
 
