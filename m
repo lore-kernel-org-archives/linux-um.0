@@ -4,77 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C0FDC7EE43
-	for <linux-um@archiver.kernel.org>; Mon, 12 Jun 2023 22:01:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C17FEC7EE43
+	for <linux-um@archiver.kernel.org>; Mon, 12 Jun 2023 22:02:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=uJ1xkyRNAzq2O0q9joBxfg3DlXnrWfOTA1+ZlWpS3XQ=; b=30PLhuBiO5Rkhj
-	yL499MjTh6F3MxA/pAqkbr95AjSU8B2d7Q25h7L+3CTKOR2qWBCEXEYqvjkvT2NQMH0OSh047+uZc
-	4LhWIlgJjnpNtffyT7fCpIDJmVog/y5Mb712I/hmOH30w6asbiRtfJ5UOe0nyKYxZEuva40ggcZmj
-	5cHX2aD4jYRA4wRCClNq8fObGloFiz5qQqcewRTtOojXf8otL7rmYYDnlkiBpezAAC5GgFoRtP+SM
-	dkAznG/V4bgqkRZ2RgWF5CQbEcGWWOKxYJuTIM6bE9cosgXTR3DtLQMS7bj8SJWr78oSt2dGYympG
-	zziwfDuKPMQofuu0jUCQ==;
+	List-Owner; bh=oj81xGkHgxe59yn0pMbWLk3OuCC5N9xaXTGvaC5XajM=; b=F8Vo7Q7L1RcRLY
+	lyEirW15FORNGb4UPzCTyrc8LW+se7cOutv8LM+bN/Cl2ht+qH3jR4BYngz50BTd2JlKDXO6xwVwZ
+	PIB1zSdZOt3pAYx7M4llkI2oipxtC7EJd/5JuwOgB61SYaCWBzzpf7gM4fKL+wy52n84XOSiR/IaY
+	cnb0o4L6310dU3k6Seo5ciiKFEDqDlD5z6tyDmhxD3Q0Sr0qCwMf3yweYLGzghSsXRzP1dk+4msco
+	dhaRsBvFjYIXBKrxv/HfTwFI3wCDZgWM/T9wZknGMSDCJuv2ZsWzwUi079t9woYI6O6/K1zhGOeIg
+	vgdugcdlGxP/rhec2ihQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q8pbI-005crX-2P;
-	Mon, 12 Jun 2023 22:01:24 +0000
+	id 1q8pcA-005dCC-1G;
+	Mon, 12 Jun 2023 22:02:18 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q8pbG-005cpZ-0F;
-	Mon, 12 Jun 2023 22:01:22 +0000
+	id 1q8pc7-005dAc-2i;
+	Mon, 12 Jun 2023 22:02:16 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
 	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=YznDncwA9GAqykzg54RX0MBNzB2zliFPfcggpr0Eh4s=; b=T7mlGz5bFrO8BFTWPhdiz6HxDF
-	qn73f7ChlqzhBl1y/98kQOPjrB30BAnFC/CDGIRE1g2Wfh/KOzL7aaN74EqHie1QiKVRw2mJA3mm3
-	iWM7yw+TtVOIVJZ5zbOR46tU6PsbPCsihMVrMg4rJ6KTa0NQ6SEhuDidv4opl6xvn7RUsX55MyFNO
-	jvIptJQi7Ow8WVloJwlp9J3eXSbQPu7Ne7Ro5FyeoWZjSZgWdUBIkizt/UhaTnXl3IMNrMGQ3apnr
-	XWhRibRT6dSMZ2VDuKeiKNIxbVDlLUXzc08GrlLRym/C84nbNohQ++8fXfNJGyR1nCwwHjC+mIw7Q
-	XujK6tNw==;
-Received: from mail-yw1-x1133.google.com ([2607:f8b0:4864:20::1133])
+	bh=zgKyM3Bqye8XIR4cGys6T5IvKp0/wF3iTsg1PUDsTwk=; b=Y16rR33dIo17eKUglGkte8mne/
+	brORBd2dJKwxeW3t8hewQ6ydFSl0NJS0Y9Am+QrX6KqsLvhhWK6G9bhehF6jVIvnsiNsW+ysb3gxO
+	+GE5r8PXiCzg3D40jk2CCNuXMRWMsz0p3ye8s4o8d5EBFBLhMPwMJ5qOsSq1q/6Kcp8JCCCnOY5Di
+	PFxKEjuepbyoLNc2vihgh43Mi1WmT8IwJDN9H4HG8u9GqxWWxHLSGuaCipczmxJ9pcBPQT47Dbmop
+	UFAGZxVZoUJD7zeUIxEEiCsAwwseC/jsCRkxb63e6mbHXk9OfmC116NwFXhNYifCoySfmySY4bSr9
+	Zs++LuIA==;
+Received: from mail-oo1-xc30.google.com ([2607:f8b0:4864:20::c30])
 	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q8ojM-0090j5-2y;
-	Mon, 12 Jun 2023 21:05:47 +0000
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-56d304e5f83so13125807b3.2;
-        Mon, 12 Jun 2023 14:05:38 -0700 (PDT)
+	id 1q8oj1-0090dD-2H;
+	Mon, 12 Jun 2023 21:05:22 +0000
+Received: by mail-oo1-xc30.google.com with SMTP id 006d021491bc7-558cb7f201cso2777369eaf.2;
+        Mon, 12 Jun 2023 14:05:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686603937; x=1689195937;
+        d=gmail.com; s=20221208; t=1686603916; x=1689195916;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YznDncwA9GAqykzg54RX0MBNzB2zliFPfcggpr0Eh4s=;
-        b=QRoyvLYEgxL/2kCjPdtGz5QAOI77H8loVEKJnu5DXjBhTeuZzXSW3sH87LjUK8GXq+
-         Ni0/ms01raOgbTyNhkKSK5xptFnCpOw51bCuMschp5irMPmkXquXQTS+FYmXtEVbn5yM
-         l55Cew9WZd/PGf5LMSokC+rcq8ZKIRncx7ECXqQGG+tKKnAOMwOtO9dyfKSmSCaex2iX
-         2NivJzP5rq2hVV/YjxU2wV6J9nj+kvJCVEu9BAqcy2HzczmnbJeIkP/KaaT6YTF9TAWb
-         AjjacshjGjPtqwSZWAawzFFfrAAsEWLFLRmKLAa65IfKQVb6IUHRo6JGUNBf25tg/BiS
-         TUvQ==
+        bh=zgKyM3Bqye8XIR4cGys6T5IvKp0/wF3iTsg1PUDsTwk=;
+        b=qq8ATz7qnjhMI4JQRRPl8nQkZZESoSMSYaIpvAm1fkmTP/hhJtK09QthkQIszdY2en
+         Np28aEy4Ap8kQZZkxOILcAkOWFCvtD0mksimPr07l40BlBsZAEhYxeqfdjyxkQeqAOW5
+         ZTc2r2EYyhW+/Rjr+ix4rQnVYpkl/uEhOS/VFy3JybVwLZGjn5WR2cf2gk8obwo2CXkB
+         sGSrhNlSnOkEM+3mRCKt35MlveZfVuGQGd2P1arrL9+IybQt5wlSdODKjPEGV1dnmgeN
+         o5s8QyWZIU5taEap5wETL65HSHBQ11HVjiPK1AO1Q4tVycf+rnHrB5djM+QoDLh7ynuT
+         05uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686603937; x=1689195937;
+        d=1e100.net; s=20221208; t=1686603916; x=1689195916;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YznDncwA9GAqykzg54RX0MBNzB2zliFPfcggpr0Eh4s=;
-        b=hx9mjc5iwef03Wf50q5w2R/Yk+1beqcUbfMNxCczkiC+nXMabVZzL9i9VSWYCchz3d
-         7RZcezUYCYCZGGVOQBWdHRB72HBn5lRUr8oDTTBpMWSCibDUr+NVFq0wLmsMjgnLNKCe
-         kaZQLpPFF9FPN9+4qvLbdVxG2pVasukQ/5qC3CqDrPB+56qWYRoEZ2nClaQpuCxBvgRj
-         l38cRpsOBtd8fnTff3SB3NR42oNT2g1RC4pj4B07G0G28R/FugiDBrsHz48AF4gGGmTi
-         EMnRrB2PEqDD3aPN8eYjNb57L1M7qIvVVJRvax16AgxBiSdy0SUYxYLS04ATv2zMhntj
-         DRjw==
-X-Gm-Message-State: AC+VfDx5EsJ6GWqMvRWyahfp2yFNj1f6LGBpUiQXTmE35q/7syEDhcg4
-	RezswC1bNNjGTPzRJZw7oLA=
-X-Google-Smtp-Source: ACHHUZ6CPRZy4B1gHWQwGyL1jpWh6RHuanx0k7sKCLWXZpcFJmn4wjrQVTLXrK9+FDMtZqXPjFpwgg==
-X-Received: by 2002:a0d:cb4e:0:b0:56c:f32d:1753 with SMTP id n75-20020a0dcb4e000000b0056cf32d1753mr9075881ywd.44.1686603936731;
-        Mon, 12 Jun 2023 14:05:36 -0700 (PDT)
+        bh=zgKyM3Bqye8XIR4cGys6T5IvKp0/wF3iTsg1PUDsTwk=;
+        b=de64lxRbq71KGpMRR3waM25nn4qCuKhAiZrHgnGpDCqNSuJNzLkx0h4X88yeEYNW5f
+         7vGbm/ZeQRELR8jlqsp7W0uxgeCjBoH1z6G5l4Xi2w0rOo24OJPqDnDlgh3IVnZXtfJ1
+         riXRxPal3lTF5IYqvVs42WW8xqWo70KLAfOr6koHMr9umC9zN0jLw8/armeCB6016Bbv
+         t3rl7V24Sw+SRpycptGzESZCvTT4YRpSB4RQkbztFLKnOLTILGree5eE8IMMbtod5pGv
+         E+r6zEfmUZ2RXF7VQYkyF5nuu3az9slNGOTY9A3g9r0gFmaR29cvEiS7q0sm3ppLmSWM
+         hRnw==
+X-Gm-Message-State: AC+VfDyX6vQTF5zXdiwQMGRPjAGCfqI7YekLlRcxSv4EY72CHbccQIOk
+	hehtQgGJ1WEf9c3zbVYZ/oI=
+X-Google-Smtp-Source: ACHHUZ6OvrV5xnmsTMrRhILOepKGCGWLH/CFbB0N6d+Jj1gXGdTSLJ6+yTuiQ99sICG0ABshC/lJaQ==
+X-Received: by 2002:a05:6870:955c:b0:1a6:a89b:d8fa with SMTP id v28-20020a056870955c00b001a6a89bd8famr1204093oal.22.1686603916460;
+        Mon, 12 Jun 2023 14:05:16 -0700 (PDT)
 Received: from unknowna0e70b2ca394.attlocal.net ([2600:1700:2f7d:1800::16])
-        by smtp.googlemail.com with ESMTPSA id s125-20020a817783000000b00569eb609458sm2757115ywc.81.2023.06.12.14.05.34
+        by smtp.googlemail.com with ESMTPSA id s125-20020a817783000000b00569eb609458sm2757115ywc.81.2023.06.12.14.05.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jun 2023 14:05:36 -0700 (PDT)
+        Mon, 12 Jun 2023 14:05:16 -0700 (PDT)
 From: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	Matthew Wilcox <willy@infradead.org>
@@ -97,17 +97,17 @@ Cc: linux-mm@kvack.org,
 	kvm@vger.kernel.org,
 	Hugh Dickins <hughd@google.com>,
 	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v4 25/34] m68k: Convert various functions to use ptdescs
-Date: Mon, 12 Jun 2023 14:04:14 -0700
-Message-Id: <20230612210423.18611-26-vishal.moola@gmail.com>
+	Dave Hansen <dave.hansen@linux.intel.com>
+Subject: [PATCH v4 15/34] x86: Convert various functions to use ptdescs
+Date: Mon, 12 Jun 2023 14:04:04 -0700
+Message-Id: <20230612210423.18611-16-vishal.moola@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230612210423.18611-1-vishal.moola@gmail.com>
 References: <20230612210423.18611-1-vishal.moola@gmail.com>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230612_220544_307102_8B6CC3B2 
-X-CRM114-Status: GOOD (  15.77  )
+X-CRM114-CacheID: sfid-20230612_220520_173394_1EF3F6F0 
+X-CRM114-Status: GOOD (  14.26  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,8 +124,8 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-As part of the conversions to replace pgtable constructor/destructors with
-ptdesc equivalents, convert various page table functions to use ptdescs.
+In order to split struct ptdesc from struct page, convert various
+functions to use ptdescs.
 
 Some of the functions use the *get*page*() helper functions. Convert
 these to use pagetable_alloc() and ptdesc_address() instead to help
@@ -133,152 +133,132 @@ standardize page tables further.
 
 Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
 ---
- arch/m68k/include/asm/mcf_pgalloc.h  | 41 ++++++++++++++--------------
- arch/m68k/include/asm/sun3_pgalloc.h |  8 +++---
- arch/m68k/mm/motorola.c              |  4 +--
- 3 files changed, 27 insertions(+), 26 deletions(-)
+ arch/x86/mm/pgtable.c | 46 +++++++++++++++++++++++++------------------
+ 1 file changed, 27 insertions(+), 19 deletions(-)
 
-diff --git a/arch/m68k/include/asm/mcf_pgalloc.h b/arch/m68k/include/asm/mcf_pgalloc.h
-index 5c2c0a864524..857949ac9431 100644
---- a/arch/m68k/include/asm/mcf_pgalloc.h
-+++ b/arch/m68k/include/asm/mcf_pgalloc.h
-@@ -7,20 +7,19 @@
+diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
+index 15a8009a4480..6da7fd5d4782 100644
+--- a/arch/x86/mm/pgtable.c
++++ b/arch/x86/mm/pgtable.c
+@@ -52,7 +52,7 @@ early_param("userpte", setup_userpte);
  
- extern inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
+ void ___pte_free_tlb(struct mmu_gather *tlb, struct page *pte)
  {
--	free_page((unsigned long) pte);
-+	pagetable_free(virt_to_ptdesc(pte));
+-	pgtable_pte_page_dtor(pte);
++	pagetable_pte_dtor(page_ptdesc(pte));
+ 	paravirt_release_pte(page_to_pfn(pte));
+ 	paravirt_tlb_remove_table(tlb, pte);
+ }
+@@ -60,7 +60,7 @@ void ___pte_free_tlb(struct mmu_gather *tlb, struct page *pte)
+ #if CONFIG_PGTABLE_LEVELS > 2
+ void ___pmd_free_tlb(struct mmu_gather *tlb, pmd_t *pmd)
+ {
+-	struct page *page = virt_to_page(pmd);
++	struct ptdesc *ptdesc = virt_to_ptdesc(pmd);
+ 	paravirt_release_pmd(__pa(pmd) >> PAGE_SHIFT);
+ 	/*
+ 	 * NOTE! For PAE, any changes to the top page-directory-pointer-table
+@@ -69,8 +69,8 @@ void ___pmd_free_tlb(struct mmu_gather *tlb, pmd_t *pmd)
+ #ifdef CONFIG_X86_PAE
+ 	tlb->need_flush_all = 1;
+ #endif
+-	pgtable_pmd_page_dtor(page);
+-	paravirt_tlb_remove_table(tlb, page);
++	pagetable_pmd_dtor(ptdesc);
++	paravirt_tlb_remove_table(tlb, ptdesc_page(ptdesc));
  }
  
- extern const char bad_pmd_string[];
+ #if CONFIG_PGTABLE_LEVELS > 3
+@@ -92,16 +92,16 @@ void ___p4d_free_tlb(struct mmu_gather *tlb, p4d_t *p4d)
  
- extern inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm)
+ static inline void pgd_list_add(pgd_t *pgd)
  {
--	unsigned long page = __get_free_page(GFP_DMA);
-+	struct ptdesc *ptdesc = pagetable_alloc(GFP_DMA | __GFP_ZERO, 0);
+-	struct page *page = virt_to_page(pgd);
++	struct ptdesc *ptdesc = virt_to_ptdesc(pgd);
  
--	if (!page)
-+	if (!ptdesc)
- 		return NULL;
- 
--	memset((void *)page, 0, PAGE_SIZE);
--	return (pte_t *) (page);
-+	return ptdesc_address(ptdesc);
+-	list_add(&page->lru, &pgd_list);
++	list_add(&ptdesc->pt_list, &pgd_list);
  }
  
- extern inline pmd_t *pmd_alloc_kernel(pgd_t *pgd, unsigned long address)
-@@ -35,36 +34,36 @@ extern inline pmd_t *pmd_alloc_kernel(pgd_t *pgd, unsigned long address)
- static inline void __pte_free_tlb(struct mmu_gather *tlb, pgtable_t pgtable,
- 				  unsigned long address)
+ static inline void pgd_list_del(pgd_t *pgd)
  {
--	struct page *page = virt_to_page(pgtable);
-+	struct ptdesc *ptdesc = virt_to_ptdesc(pgtable);
+-	struct page *page = virt_to_page(pgd);
++	struct ptdesc *ptdesc = virt_to_ptdesc(pgd);
  
--	pgtable_pte_page_dtor(page);
--	__free_page(page);
-+	pagetable_pte_dtor(ptdesc);
-+	pagetable_free(ptdesc);
+-	list_del(&page->lru);
++	list_del(&ptdesc->pt_list);
  }
  
- static inline pgtable_t pte_alloc_one(struct mm_struct *mm)
- {
--	struct page *page = alloc_pages(GFP_DMA, 0);
-+	struct ptdesc *ptdesc = pagetable_alloc(GFP_DMA, 0);
- 	pte_t *pte;
+ #define UNSHARED_PTRS_PER_PGD				\
+@@ -112,12 +112,12 @@ static inline void pgd_list_del(pgd_t *pgd)
  
--	if (!page)
-+	if (!ptdesc)
- 		return NULL;
--	if (!pgtable_pte_page_ctor(page)) {
--		__free_page(page);
-+	if (!pagetable_pte_ctor(ptdesc)) {
-+		pagetable_free(ptdesc);
- 		return NULL;
+ static void pgd_set_mm(pgd_t *pgd, struct mm_struct *mm)
+ {
+-	virt_to_page(pgd)->pt_mm = mm;
++	virt_to_ptdesc(pgd)->pt_mm = mm;
+ }
+ 
+ struct mm_struct *pgd_page_get_mm(struct page *page)
+ {
+-	return page->pt_mm;
++	return page_ptdesc(page)->pt_mm;
+ }
+ 
+ static void pgd_ctor(struct mm_struct *mm, pgd_t *pgd)
+@@ -213,11 +213,14 @@ void pud_populate(struct mm_struct *mm, pud_t *pudp, pmd_t *pmd)
+ static void free_pmds(struct mm_struct *mm, pmd_t *pmds[], int count)
+ {
+ 	int i;
++	struct ptdesc *ptdesc;
+ 
+ 	for (i = 0; i < count; i++)
+ 		if (pmds[i]) {
+-			pgtable_pmd_page_dtor(virt_to_page(pmds[i]));
+-			free_page((unsigned long)pmds[i]);
++			ptdesc = virt_to_ptdesc(pmds[i]);
++
++			pagetable_pmd_dtor(ptdesc);
++			pagetable_free(ptdesc);
+ 			mm_dec_nr_pmds(mm);
+ 		}
+ }
+@@ -232,16 +235,21 @@ static int preallocate_pmds(struct mm_struct *mm, pmd_t *pmds[], int count)
+ 		gfp &= ~__GFP_ACCOUNT;
+ 
+ 	for (i = 0; i < count; i++) {
+-		pmd_t *pmd = (pmd_t *)__get_free_page(gfp);
+-		if (!pmd)
++		pmd_t *pmd = NULL;
++		struct ptdesc *ptdesc = pagetable_alloc(gfp, 0);
++
++		if (!ptdesc)
+ 			failed = true;
+-		if (pmd && !pgtable_pmd_page_ctor(virt_to_page(pmd))) {
+-			free_page((unsigned long)pmd);
+-			pmd = NULL;
++		if (ptdesc && !pagetable_pmd_ctor(ptdesc)) {
++			pagetable_free(ptdesc);
++			ptdesc = NULL;
+ 			failed = true;
+ 		}
+-		if (pmd)
++		if (ptdesc) {
+ 			mm_inc_nr_pmds(mm);
++			pmd = ptdesc_address(ptdesc);
++		}
++
+ 		pmds[i] = pmd;
  	}
  
--	pte = page_address(page);
--	clear_page(pte);
-+	pte = ptdesc_address(ptdesc);
-+	pagetable_clear(pte);
+@@ -830,7 +838,7 @@ int pud_free_pmd_page(pud_t *pud, unsigned long addr)
  
- 	return pte;
- }
+ 	free_page((unsigned long)pmd_sv);
  
- static inline void pte_free(struct mm_struct *mm, pgtable_t pgtable)
- {
--	struct page *page = virt_to_page(pgtable);
-+	struct ptdesc *ptdesc = virt_to_ptdesc(pgtable);
+-	pgtable_pmd_page_dtor(virt_to_page(pmd));
++	pagetable_pmd_dtor(virt_to_ptdesc(pmd));
+ 	free_page((unsigned long)pmd);
  
--	pgtable_pte_page_dtor(page);
--	__free_page(page);
-+	pagetable_pte_dtor(ptdesc);
-+	pagetable_free(ptdesc);
- }
- 
- /*
-@@ -75,16 +74,18 @@ static inline void pte_free(struct mm_struct *mm, pgtable_t pgtable)
- 
- static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
- {
--	free_page((unsigned long) pgd);
-+	pagetable_free(virt_to_ptdesc(pgd));
- }
- 
- static inline pgd_t *pgd_alloc(struct mm_struct *mm)
- {
- 	pgd_t *new_pgd;
-+	struct ptdesc *ptdesc = pagetable_alloc(GFP_DMA | GFP_NOWARN, 0);
- 
--	new_pgd = (pgd_t *)__get_free_page(GFP_DMA | __GFP_NOWARN);
--	if (!new_pgd)
-+	if (!ptdesc)
- 		return NULL;
-+	new_pgd = ptdesc_address(ptdesc);
-+
- 	memcpy(new_pgd, swapper_pg_dir, PTRS_PER_PGD * sizeof(pgd_t));
- 	memset(new_pgd, 0, PAGE_OFFSET >> PGDIR_SHIFT);
- 	return new_pgd;
-diff --git a/arch/m68k/include/asm/sun3_pgalloc.h b/arch/m68k/include/asm/sun3_pgalloc.h
-index 198036aff519..ff48573db2c0 100644
---- a/arch/m68k/include/asm/sun3_pgalloc.h
-+++ b/arch/m68k/include/asm/sun3_pgalloc.h
-@@ -17,10 +17,10 @@
- 
- extern const char bad_pmd_string[];
- 
--#define __pte_free_tlb(tlb,pte,addr)			\
--do {							\
--	pgtable_pte_page_dtor(pte);			\
--	tlb_remove_page((tlb), pte);			\
-+#define __pte_free_tlb(tlb, pte, addr)				\
-+do {								\
-+	pagetable_pte_dtor(page_ptdesc(pte));			\
-+	tlb_remove_page_ptdesc((tlb), page_ptdesc(pte));	\
- } while (0)
- 
- static inline void pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd, pte_t *pte)
-diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
-index c75984e2d86b..594575a0780c 100644
---- a/arch/m68k/mm/motorola.c
-+++ b/arch/m68k/mm/motorola.c
-@@ -161,7 +161,7 @@ void *get_pointer_table(int type)
- 			 * m68k doesn't have SPLIT_PTE_PTLOCKS for not having
- 			 * SMP.
- 			 */
--			pgtable_pte_page_ctor(virt_to_page(page));
-+			pagetable_pte_ctor(virt_to_ptdesc(page));
- 		}
- 
- 		mmu_page_ctor(page);
-@@ -201,7 +201,7 @@ int free_pointer_table(void *table, int type)
- 		list_del(dp);
- 		mmu_page_dtor((void *)page);
- 		if (type == TABLE_PTE)
--			pgtable_pte_page_dtor(virt_to_page((void *)page));
-+			pagetable_pte_dtor(virt_to_ptdesc((void *)page));
- 		free_page (page);
- 		return 1;
- 	} else if (ptable_list[type].next != dp) {
+ 	return 1;
 -- 
 2.40.1
 
