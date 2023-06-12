@@ -4,51 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7BBBC7EE2E
-	for <linux-um@archiver.kernel.org>; Mon, 12 Jun 2023 09:28:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95EC7C7EE43
+	for <linux-um@archiver.kernel.org>; Mon, 12 Jun 2023 09:48:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=IZ0E3uTe6J6R0m/j8nnFa1b95ElxGXm9JwH2/e/K95M=; b=CW6eIeGJ/lZCY1H726/cM3le+B
-	vIJIxFiPn4KSG/iTv0hJKe/j6eV/3/OXcu+U+5aOyzTRw6gB9LziMEcsXB39hpSMK2Nwv+/AubsUw
-	l1RAPzMRLiCkHXDozYwfjsz9I/tJGSv6lyZfek1H1TuN/NNQloNjk7lLUiOfD/lSPmhCj3eNMVK6o
-	UBTkC5h00k6kZ3p0yuDvsyOA7yBNlo0KVyrRruMnKWXbIK4Fv99MXc22q9n65kEqs4U6OC8ZjUEwt
-	Pg6zhL77OIbQ4LdKgxtd0JfY1NuXWYTas+mYaLt+XFKEpHYR6tax3zb2ItBz90f5XGPz8+Vr2yzwj
-	1p1wZOzA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
+	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=eWLaHCIGT7ARUQ4Xw1rT2yDKBHz22XvPCZpm60kBro0=; b=ARrbk6iTgALwhX
+	ZcKfldcdQNvSbodLMWVySweTHpMORNm1euUjt9RRQNJHA1riTUSNQh8SRDOQoF38rWMPK3Sz04JQK
+	qzppnd5l0r8yyaCnMY8MGcuQo9ImMbva2TZGfESqvMP+FE9yHT3G32DLuzC7YJig3IQLgWbvEdtWE
+	diQEMIZPHKUwRNDqw6JU6n1d5CvkT9JgepXrcUtMieSuDPYigbneOrxxQVaB+fXsjHRU1eiklBwI3
+	SAUDlVhZOQqvdLSkc43NKPJgHqPYlciAE1L7vnmh7QfUZ/2RWANBG4GsTi8qhXY+pn/H8ZsEdNybE
+	gd6CRqN+C7g/NHSW+pcQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q8dqk-003IeV-1B;
-	Mon, 12 Jun 2023 09:28:34 +0000
-Received: from michel.telenet-ops.be ([2a02:1800:110:4::f00:18])
+	id 1q8eAH-003MPR-0A;
+	Mon, 12 Jun 2023 09:48:45 +0000
+Received: from mail-wr1-x42d.google.com ([2a00:1450:4864:20::42d])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q8dqg-003Ibm-2d
+	id 1q8eAE-003MNa-04
 	for linux-um@lists.infradead.org;
-	Mon, 12 Jun 2023 09:28:32 +0000
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed30:8f41:e69:ef53:9db3])
-	by michel.telenet-ops.be with bizsmtp
-	id 89UQ2A00B41JBE4069UQnQ; Mon, 12 Jun 2023 11:28:24 +0200
-Received: from geert (helo=localhost)
-	by ramsan.of.borg with local-esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1q8dqa-008cV2-D4;
-	Mon, 12 Jun 2023 11:28:24 +0200
-Date: Mon, 12 Jun 2023 11:28:24 +0200 (CEST)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: linux-kernel@vger.kernel.org
-cc: linux-um@lists.infradead.org, linux-spi@vger.kernel.org, 
-    linux-mips@vger.kernel.org
-Subject: Re: Build regressions/improvements in v6.4-rc6
-In-Reply-To: <20230612090911.1579029-1-geert@linux-m68k.org>
-Message-ID: <9c7f3e17-c1-1a3a-7e87-9b1ea25d9d7@linux-m68k.org>
-References: <CAHk-=wgmbjQu3bVSa5JJhEymeQhkr7N3cjg-CoNLVituUnfW8w@mail.gmail.com> <20230612090911.1579029-1-geert@linux-m68k.org>
+	Mon, 12 Jun 2023 09:48:43 +0000
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-30fc6b513afso217783f8f.1
+        for <linux-um@lists.infradead.org>; Mon, 12 Jun 2023 02:48:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1686563319; x=1689155319;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TlNSyW01k9RQ6r3TAUIxxl3gEy3tIBaKB2a3SyuONic=;
+        b=xxOQI6NNANXTOWzWS32SlBLOHCGyjc8GT/MPA9syGH0nXWWJ9aMkSIyACTIqtJwwz7
+         aYWnV86EdevV+5dsjqn/qWqqczxClLrLQQkvtDcNgXhqZGaAeGj/d3yarqk68XqjrEmb
+         Vo/6ODEO9VnUPhXuJJhSWUIAW5cDYN4C85WUsQ6TrLtbhacAo23MyP+vXkEf2jTd8Gzy
+         wFDB79XoTZeiYS0mYd7BIygw/punojTzRtBal0junmkVOpebP+ZN6XoUMx/gYLFJQhJ/
+         PW7nmS7FcxFY3huNztvPY2T5+uvK+tVCpZxRsOLksYhr7rItDRC4yBSMBji1/Z9DKL7X
+         TEYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686563319; x=1689155319;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TlNSyW01k9RQ6r3TAUIxxl3gEy3tIBaKB2a3SyuONic=;
+        b=TY+3TzhR7/ZC2AC6bkJ70UVXvQb9DXcjPWb1SGpWDbLUARqWzJYNTmDHmi/yEgLVEF
+         iDNCh3PbStEq9lyF87gnfQ4+ARiIMbvTHll3HpFWd138ewH0ggV1UmbTB1eQOqnvvNzT
+         DsPQlS1G8kzbBYWjeKaXsfW24OkPMbcN/HFJU8iBryeoT11+npm2Kpo7/sl6vzFeBDVS
+         W3ZvcW8IPwKsLJHt6iQvyYQAKwrMy66RZMAujj9bvbvmDQn1acqHKqFUGJiEMhTC2DOd
+         V0giWW/V7nhybk9lSVIVvDHufCGeZyjsYudAP+5OmNLTMXrJI1fcXZ2LJgyjLCnP/K/O
+         xsIw==
+X-Gm-Message-State: AC+VfDwu8G9qOr6RkO6DZDDRrvQ2VmOOyY3DdnFIBBCl8SBLnWIWv0Cp
+	DzSRVVvhIeiK5V1YDsVBzxlmwgJTZ9jDEzkzlczkJA==
+X-Google-Smtp-Source: ACHHUZ6J0MuzEgB+zY5N5cGweR8g3pcXTay98BeXBUo3Yy7hzVoM691gG3iZCVtdC3Kll3oHg6ecTg==
+X-Received: by 2002:a5d:6e0c:0:b0:30e:45a5:9476 with SMTP id h12-20020a5d6e0c000000b0030e45a59476mr4219195wrz.1.1686563318849;
+        Mon, 12 Jun 2023 02:48:38 -0700 (PDT)
+Received: from [192.168.2.107] ([79.115.63.153])
+        by smtp.gmail.com with ESMTPSA id t12-20020adfe10c000000b00307acec258esm11905152wrz.3.2023.06.12.02.48.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Jun 2023 02:48:38 -0700 (PDT)
+Message-ID: <ea22bff7-ecd2-018e-77a1-1d2edaa21355@linaro.org>
+Date: Mon, 12 Jun 2023 10:48:37 +0100
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-85567032-1686562104=:2054603"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: Build regressions/improvements in v6.4-rc6
+Content-Language: en-US
+To: Geert Uytterhoeven <geert@linux-m68k.org>, linux-kernel@vger.kernel.org
+Cc: linux-um@lists.infradead.org, linux-spi@vger.kernel.org,
+ linux-mips@vger.kernel.org
+References: <CAHk-=wgmbjQu3bVSa5JJhEymeQhkr7N3cjg-CoNLVituUnfW8w@mail.gmail.com>
+ <20230612090911.1579029-1-geert@linux-m68k.org>
+ <9c7f3e17-c1-1a3a-7e87-9b1ea25d9d7@linux-m68k.org>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <9c7f3e17-c1-1a3a-7e87-9b1ea25d9d7@linux-m68k.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230612_022831_017577_7844AC1F 
-X-CRM114-Status: GOOD (  14.98  )
+X-CRM114-CacheID: sfid-20230612_024842_062194_852B0C06 
+X-CRM114-Status: UNSURE (   6.65  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -60,57 +92,18 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-85567032-1686562104=:2054603
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
-
-On Mon, 12 Jun 2023, Geert Uytterhoeven wrote:
-> JFYI, when comparing v6.4-rc6[1] to v6.4-rc5[3], the summaries are:
->  - build errors: +5/-6
-
-   + /kisskb/src/drivers/spi/spi-stm32-qspi.c: error: ‘op’ is used uninitialized [-Werror=uninitialized]:  => 523:27, 564:27
-
-um-all{mod,yes}config
-
-Seen before
-(why did the type of quotes around 'op' in the compiler output change?)
-
-   + /opt/cross/kisskb/br-mipsel-o32-full-2016.08-613-ge98b4dd/bin/../lib/gcc/mipsel-buildroot-linux-uclibc/5.4.0/plugin/include/gimple.h: error: field ‘call_clobbered’ has incomplete type ‘pt_solution’:  => 284:22
-   + /opt/cross/kisskb/br-mipsel-o32-full-2016.08-613-ge98b4dd/bin/../lib/gcc/mipsel-buildroot-linux-uclibc/5.4.0/plugin/include/gimple.h: error: field ‘call_used’ has incomplete type ‘pt_solution’:  => 283:22
-   + /opt/cross/kisskb/br-mipsel-o32-full-2016.08-613-ge98b4dd/bin/../lib/gcc/mipsel-buildroot-linux-uclibc/5.4.0/plugin/include/gimple.h: error: ‘gimple_call_addr_fndecl’ was not declared in this scope; did you mean ‘gimple_call_set_fndecl’?:  => 2790:10
-   + /opt/cross/kisskb/br-mipsel-o32-full-2016.08-613-ge98b4dd/bin/../lib/gcc/mipsel-buildroot-linux-uclibc/5.4.0/plugin/include/gimple.h: error: ‘is_gimple_reg’ was not declared in this scope; did you mean ‘is_gimple_assign’?:  => 2556:18
-
-mipsel-gcc5/mips-allmodconfig
-
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/858fd168a95c5b9669aac8db6c14a9aeab446375/ (151 out of 152 configs)
-> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/9561de3a55bed6bdd44a12820ba81ec416e705a7/ (151 out of 152 configs)
-
-Gr{oetje,eeting}s,
-
- 						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
- 							    -- Linus Torvalds
---8323329-85567032-1686562104=:2054603
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
-
---8323329-85567032-1686562104=:2054603--
-
+CgpPbiA2LzEyLzIzIDEwOjI4LCBHZWVydCBVeXR0ZXJob2V2ZW4gd3JvdGU6Cj4+IEpGWUksIHdo
+ZW4gY29tcGFyaW5nIHY2LjQtcmM2WzFdIHRvIHY2LjQtcmM1WzNdLCB0aGUgc3VtbWFyaWVzIGFy
+ZToKPj4gwqAtIGJ1aWxkIGVycm9yczogKzUvLTYKPiAKPiDCoCArIC9raXNza2Ivc3JjL2RyaXZl
+cnMvc3BpL3NwaS1zdG0zMi1xc3BpLmM6IGVycm9yOiDigJhvcOKAmSBpcyB1c2VkCj4gdW5pbml0
+aWFsaXplZCBbLVdlcnJvcj11bmluaXRpYWxpemVkXTrCoCA9PiA1MjM6MjcsIDU2NDoyNwoKU2Vl
+bXMgdGhhdCB0aGUgcmVwb3J0IGlzIG5vdCBjb3JyZWN0IGZvciB0aGlzIHBhcnRpY3VsYXIgY2Fz
+ZSBhcyBvcCBpcwpmaWxsZWQgZWl0aGVyIGJ5IG1lbWNweSBvciBtZW1zZXQgYmVmb3JlIHVzZS4K
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVt
+IG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5p
+bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
