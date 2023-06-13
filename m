@@ -4,46 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 267BFEB64D8
-	for <linux-um@archiver.kernel.org>; Tue, 13 Jun 2023 23:39:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06BCCC001B1
+	for <linux-um@archiver.kernel.org>; Tue, 13 Jun 2023 23:39:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Date:MIME-Version:References:Subject:Cc
-	:To:From:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	List-Owner; bh=PpFk+usNm4ZOZz+ltkhQGjJBhcBGN+RWEcyBPexnf6s=; b=Ij/EZXiO/koQ6L
-	d5ltiwzBvgI9rZMrDPr3ZrcWkBQxTY7ayq7LjPbH03oL44CTUjLEiJy9agntNQvloM3euwbLdlJCa
-	SHJtcmNq9c+KK08Nb1XdtuCvfOVcIs4N5pc9aVndp+tUFsrpXTgnzv8Yuq/odW9KHqipLzBG9tjaF
-	A5IdO5IOKK1lmB25Mg94pJMJuO+I4e3WVekRh1km1NLTv/tPOSrkuhXtNmd/xiQNjjwtm/93S0syU
-	/VNBFARiHyPsQQgYkPTNNvENZYFvjzBBMSEvEHfftRk2ImNy81a3UoEd13laCoz3hKzSSgbApqsiq
-	/ZEUsIuLYxFwHLCBK0Cg==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Subject:Cc:To:From:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=UQ5bQEWtVqOSigQSWSBjNRYEXnnVP1UacqHBLl9wj0s=; b=fXFcSirEcuc3mY
+	wLwGXlvi14gEsScufEwppMem5kPmtDOx6y4ojP8mq9+YcuDcSWwJPMsFGHbm6j+SzebKYxK8WFfit
+	0MSqWaEUV4kzFvcaZOfd5feJrtcodQ1OybcrtfzcWUEac3w7IZ5K/ULIarAYBrN57SwVfB2Dt5M4T
+	UYoTH9oVPIzhJ8anGnMzNNjMCxRArCcSz/HRHbKWkvmsr6uYml4MVSwUhs1LTAIX6r+RaUF0BoK5/
+	fGSnkB4zfvXh8SeMd7IuasfTPEyllnHxmINAMTfp0olb6lLaE/na2C5/4ag2lYy8FSyau+AiPBKIV
+	eArsTH2bBZe4Y4VEAm2g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9Dbm-009RGA-1t;
-	Tue, 13 Jun 2023 23:39:30 +0000
+	id 1q9Dbr-009RKz-1s;
+	Tue, 13 Jun 2023 23:39:35 +0000
 Received: from galois.linutronix.de ([193.142.43.55])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9Dbh-009RCp-2Q;
-	Tue, 13 Jun 2023 23:39:28 +0000
-Message-ID: <20230613224544.957805717@linutronix.de>
+	id 1q9Dbh-009RCY-2Q;
+	Tue, 13 Jun 2023 23:39:31 +0000
+Message-ID: <20230613223827.532680283@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1686699563;
+	s=2020; t=1686699562;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=77AqRKQdSjaQjDGx40OLahyRXrEjSKh/Zvl13xpUqBI=;
-	b=fnjAlb4buqGgk+rgrSCls7XVVnssMKtlFn2wVkNKc0rXqkoKriukti4plpA4B3XFF4TzZK
-	HkCGTHa0kgSQScvJzMGd5ndETRmA+U3bEX7DbZ4/2do4EQ0DxEh5OrT0lEol4VvMYfuRS9
-	HynlSeJlhLILNeJrnp5YyETdHndPSJ7O/5rI4vnEKgJp3QTTCjnHyKycf9vdAFNWo8H2rb
-	OTqiVuHCxtKC1JhOpK0UDZj/7iiiakYdsll7mDRVfp6DDuS0PUAl8a0YNpVsMMsx4052en
-	gUZVODYB997wOJEzzkrsE7bLzpx5hqFiHqP0cAfvYOr6EwF5Zzytu+rPbxhCmA==
+	 to:to:cc:cc; bh=zGcwSkjRu8UFPTZ5Hk2Js/azQZ9pUpsGsLPKi5+wHk4=;
+	b=1vl6UXgCAJSEGSzD8t6gUcoJc5169AwVrpA21nUOBZK5joseTFTf4tOCJuSxYeH8jjiG5a
+	jEyyQE8u/hzl94Ysm1rJG2YnzoQg/tcACXTl7p0VwWp1Hg5BBJMua3yUhYob6t9+1w2mee
+	490vMvkq9U3+kLEoOiWcYf6hGufEEl+RY32dXE3KaUMRZAu87C+A2xK5wy++4GlmwK3EZB
+	Z5VXWqjjyIYWILTQXObbl4QE63VzmXuPdS4shWyoeGuVxCCmwUXoumayy+XcSsFxFG+bU7
+	NlI/LWfvrG5jqcCo56KbCsG3Df/lECSRqYeR0pyPUxwGWLhUnEuZlGh+hhMUzg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1686699563;
+	s=2020e; t=1686699562;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=77AqRKQdSjaQjDGx40OLahyRXrEjSKh/Zvl13xpUqBI=;
-	b=NcUHkxGs2yX0+eW1fJGry5eTvk3bMCTGxKXUguMEnkfcS6GFg9bNcY/6dOYm0SDEPQHUZn
-	lMvSic4+i4tjOCAw==
+	 to:to:cc:cc; bh=zGcwSkjRu8UFPTZ5Hk2Js/azQZ9pUpsGsLPKi5+wHk4=;
+	b=c2klUM1ewA5e7Mdg+k2IbCC4Vl2VvLKpWjP1RVCx9kwxZJ2Q99tmqHfyKPV09o7em5evQ2
+	Pbn7SMSiRq5L4VBA==
 From: Thomas Gleixner <tglx@linutronix.de>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: x86@kernel.org,
@@ -76,13 +74,12 @@ Cc: x86@kernel.org,
  Michael Ellerman <mpe@ellerman.id.au>,
  Chris Zankel <chris@zankel.net>,
  Tom Lendacky <thomas.lendacky@amd.com>
-Subject: [patch 01/17] init: Provide arch_cpu_finalize_init()
-References: <20230613223827.532680283@linutronix.de>
-MIME-Version: 1.0
-Date: Wed, 14 Jun 2023 01:39:22 +0200 (CEST)
+Subject: [patch 00/17] init, treewide, x86: Cleanup check_bugs() and start
+ sanitizing the x86 boot process
+Date: Wed, 14 Jun 2023 01:39:21 +0200 (CEST)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230613_163925_940155_69CE8043 
-X-CRM114-Status: GOOD (  10.24  )
+X-CRM114-CacheID: sfid-20230613_163926_068948_02AC132F 
+X-CRM114-Status: GOOD (  15.27  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,74 +91,128 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-check_bugs() has become a dump ground for all sorts of activities to
-finalize the CPU initialization before running the rest of the init code.
+Hi!
 
-Most are empty, a few do actual bug checks, some do alternative patching
-and some cobble a CPU advertisment string together....
+My team and myself are working on sanitizing the x86 boot process,
+especially the complete horror show of CPUID evaluation, which is
+constructed with hay-wire circuits, duct tape and superglue.
 
-Aside of that the current implementation requires duplicated function
-declaration and mostly empty header files for them.
+A related goal is to move the initialization of infrastructure which is not
+required during early boot out into a later phase of the boot process.
+Early boot is fragile and convoluted enough already, so anything which can
+move into a later phase is a win.
 
-Provide a new function arch_cpu_finalize_init(). Provide a generic
-declaration if CONFIG_ARCH_HAS_CPU_FINALIZE_INIT is selected and a stub
-inline otherwise.
+X86 FPU initialization is one of the obvious parts which has zero
+justification to be done early. The only requirement is that it happens
+before alternative patching. Doing it early also requires custom command
+line parsing which can be obviously avoided when the initialization happens
+later.
 
-This requires a temporary #ifdef in start_kernel() which will be removed
-along with check_bugs() once the architectures are converted over.
+Alternative patching happens from check_bugs() which is invoked late in
+start_kernel(). Moving FPU initialization into that is too late because
+check_bugs() is invoked after fork_init(), but fork_init() requires that
+the FPU is initialized on X86 as on X86 the size of task_struct depends on
+the FPU register buffer size.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+In order to avoid another magic function we set out to move check_bugs()
+earlier and inspected all incarnations whether there is any reason to do
+that so late. It turned out there is none (famous last words), but it also
+revealed that check_bugs() is a gross misnomer.
+
+check_bugs() has become a dump ground for finalizing the CPU initialization
+before running the rest of the init code.
+
+Most implementations are empty, a few do actual bug checks, some do
+alternative patching and one cobbles a CPU advertisment string together...
+
+As a consequence we decided to rename it to arch_cpu_finalize_init(). The
+purely mechanical 's/check_bugs/arch_cpu_finalize_init/' would have been
+trivial, but having stared at the actual implementations of check_bugs()
+had triggered the scavenger reflex already. So I got the mop out and
+cleaned it up completely.
+
+The resulting series consists therefore of three parts:
+
+ 1) Patches 1-11
+
+    Rename and mop up check_bugs() which removes a solid amount of
+    redundant historical copy & pasta crud:
+
+    39 files changed, 161 insertions(+), 321 deletions(-)
+
+    11 out of the 39 changed files are removed completely.
+
+ 2) Patches 12-13
+
+    Move the invocation of arch_cpu_finalize_init() earlier in
+    start_kernel() and move the x86'ism mem_encrypt_init() into the x86
+    space.
+
+ 3) Patches 14-17
+
+    Implement the late FPU initialization for X86 on top. Removal of the
+    custom early command line parsing is subject to separate x86 specific
+    changes. This part #3 is to illustrate the use case for #2.
+
+The series applies on Linus tree and is also available from git:
+
+    git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git init
+
+Thanks,
+
+	tglx
 ---
- arch/Kconfig        |    3 +++
- include/linux/cpu.h |    6 ++++++
- init/main.c         |    4 ++++
- 3 files changed, 13 insertions(+)
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -285,6 +285,9 @@ config ARCH_HAS_DMA_SET_UNCACHED
- config ARCH_HAS_DMA_CLEAR_UNCACHED
- 	bool
- 
-+config ARCH_HAS_CPU_FINALIZE_INIT
-+	bool
-+
- # Select if arch init_task must go in the __init_task_data section
- config ARCH_TASK_STRUCT_ON_STACK
- 	bool
---- a/include/linux/cpu.h
-+++ b/include/linux/cpu.h
-@@ -184,6 +184,12 @@ void arch_cpu_idle_enter(void);
- void arch_cpu_idle_exit(void);
- void __noreturn arch_cpu_idle_dead(void);
- 
-+#ifdef CONFIG_ARCH_HAS_CPU_FINALIZE_INIT
-+void arch_cpu_finalize_init(void);
-+#else
-+static inline void arch_cpu_finalize_init(void) { }
-+#endif
-+
- int cpu_report_state(int cpu);
- int cpu_check_up_prepare(int cpu);
- void cpu_set_state_online(int cpu);
---- a/init/main.c
-+++ b/init/main.c
-@@ -1078,7 +1078,11 @@ asmlinkage __visible void __init __no_sa
- 	taskstats_init_early();
- 	delayacct_init();
- 
-+	arch_cpu_finalize_init();
-+	/* Temporary conditional until everything has been converted */
-+#ifndef CONFIG_ARCH_HAS_CPU_FINALIZE_INIT
- 	check_bugs();
-+#endif
- 
- 	acpi_subsystem_init();
- 	arch_post_acpi_subsys_init();
+ a/arch/alpha/include/asm/bugs.h     |   20 ---------
+ a/arch/ia64/include/asm/bugs.h      |   20 ---------
+ a/arch/loongarch/include/asm/bugs.h |   15 ------
+ a/arch/m68k/include/asm/bugs.h      |   21 ---------
+ a/arch/parisc/include/asm/bugs.h    |   20 ---------
+ a/arch/powerpc/include/asm/bugs.h   |   15 ------
+ a/arch/sh/include/asm/bugs.h        |   74 ---------------------------------
+ a/arch/sparc/include/asm/bugs.h     |   18 --------
+ a/arch/um/include/asm/bugs.h        |    7 ---
+ a/arch/xtensa/include/asm/bugs.h    |   18 --------
+ a/include/asm-generic/bugs.h        |   11 -----
+ arch/Kconfig                        |    3 +
+ arch/arm/Kconfig                    |    1 
+ arch/arm/include/asm/bugs.h         |    4 -
+ arch/arm/kernel/bugs.c              |    3 -
+ arch/ia64/Kconfig                   |    1 
+ arch/ia64/kernel/setup.c            |    3 -
+ arch/loongarch/Kconfig              |    1 
+ arch/loongarch/kernel/setup.c       |    4 -
+ arch/m68k/Kconfig                   |    1 
+ arch/m68k/kernel/setup_mm.c         |    3 -
+ arch/mips/Kconfig                   |    1 
+ arch/mips/include/asm/bugs.h        |   17 -------
+ arch/mips/kernel/setup.c            |   13 +++++
+ arch/sh/Kconfig                     |    1 
+ arch/sh/include/asm/processor.h     |    2 
+ arch/sh/kernel/idle.c               |    1 
+ arch/sh/kernel/setup.c              |   55 +++++++++++++++++++++++++
+ arch/sparc/Kconfig                  |    1 
+ arch/sparc/kernel/setup_32.c        |    7 +++
+ arch/um/Kconfig                     |    1 
+ arch/um/kernel/um_arch.c            |    3 -
+ arch/x86/Kconfig                    |    1 
+ arch/x86/include/asm/bugs.h         |    2 
+ arch/x86/include/asm/fpu/api.h      |    2 
+ arch/x86/include/asm/mem_encrypt.h  |    7 +--
+ arch/x86/include/asm/sigframe.h     |    2 
+ arch/x86/kernel/cpu/bugs.c          |   51 -----------------------
+ arch/x86/kernel/cpu/common.c        |   79 ++++++++++++++++++++++++++++++++----
+ arch/x86/kernel/cpu/cpu.h           |    1 
+ arch/x86/kernel/fpu/init.c          |    8 +--
+ arch/x86/kernel/signal.c            |    4 +
+ include/linux/cpu.h                 |    6 ++
+ init/main.c                         |   16 -------
+ 44 files changed, 192 insertions(+), 352 deletions(-)
 
 
 _______________________________________________
