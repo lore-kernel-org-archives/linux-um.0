@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FCA5EB64DC
-	for <linux-um@archiver.kernel.org>; Tue, 13 Jun 2023 23:40:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A987EB64D8
+	for <linux-um@archiver.kernel.org>; Tue, 13 Jun 2023 23:40:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Date:MIME-Version:References:Subject:Cc
 	:To:From:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	List-Owner; bh=eMe5b9o70MPcO7F7yJkSo+ogNsYDLqDMUSQl01NQAGA=; b=NxSuJbbS/mOAiK
-	OlnCXyngCCOdM3IAXyGuGaZqZ6R29Y/B77H0IFhIJpql/cVVuc1jm1hdg8LduURvaNrhML5WWqilI
-	W5exeV6PT6YOy1ZUdsY+m8v7T7Kh/7h3+bum4sP4gZFScLH7sBaZ6G3hZxkDYiinWWj1dvkVc2SXO
-	kJJXI4xXmFqCPMtmqtS9oyOCD5ptdi6WB8KhMKnul5wmqSTj7xsyKdZ2zrAVI5mvojHdwLQE1jFJM
-	bBppEQzUQcSnburHjrUiphHgmh2W10G105YK5e8C9FWnz0xKqx+zs8r7Yu8vZuktCD8lWPJ25WE8v
-	QJaMrmCxXDj1avHiTMow==;
+	List-Owner; bh=REORD3BcCYxfLkOayGPUC2nbaastxsXt/z+t6GXjQe0=; b=5EOIp7RUqbgs+d
+	8hohbEMl4LosQHwB7oA7AXKt1df3E83w6M4629TEUuXcZwNC0YzFdH3soIDr4q+pirSvV3AJquxrR
+	tV0IAsKy1W+r3nwuRUzaXs9lBz7aUULGaChn6uRLs0Il1bHjNUjXrxp9ltZgALF0dB6smC0v17eTM
+	K/PPAyxTTD1RBwaYlPXqMLbqbrCT2Yx+to1zVxVYDNLU/Bh7qlXpeI7EgE4F8jOwxNMC97urb2P7j
+	dvZAHGWXe2pIaV3UKywYiE4WjICl+2rdQYsfyluzdFCU/s9q5ncNStdZf3rz/3wab3V/epr7kM12S
+	4bh70CFtT2bGAQMQ7J0A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9Dcf-009S3B-2N;
-	Tue, 13 Jun 2023 23:40:25 +0000
-Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
+	id 1q9Dcm-009SB8-0T;
+	Tue, 13 Jun 2023 23:40:32 +0000
+Received: from galois.linutronix.de ([193.142.43.55])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9Dc1-009RUX-2J;
-	Tue, 13 Jun 2023 23:39:52 +0000
-Message-ID: <20230613224545.783704297@linutronix.de>
+	id 1q9Dc4-009RWt-2F;
+	Tue, 13 Jun 2023 23:40:02 +0000
+Message-ID: <20230613224545.902376621@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1686699584;
+	s=2020; t=1686699587;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=Gb5sLOwcDGGXCtx9H68t6SKa9rJuuFgNMIgGpRA1Cww=;
-	b=OnpchWKJJhpq6ONVVpZ9c6pjV8+YWD6D9ACsa/8z515oMg42/3uYESxEQtaaT0ZhA+Bg4D
-	buKV/TS+gn3oROep32cD9pSlOuxkNN9gN1FI793/jM6gaP61aGgNBMspBhF24cVrqNkwmP
-	6ZpLhrFqrdHTnl2F9db2HisP72PB5PFG31yDOZj7xCPFtzA0i/wVmqWvn4/B7KPU4C+g+A
-	Hb0tBXmvL2dCVGkZKLYp8zxv+/uly8bkLAHYCsjdnPbgTYze9gOUtyNazJsma861n1vfxT
-	FzX8CKJnzmPKSylUT3jSpbeQwCYY0b1DBlyPWRtKlKctXCqDI1gfU4iKjo3u0Q==
+	 references:references; bh=yamwFyBvrdZRw7MmNaK/oFEbdYjxMOiCQipNsVidBdY=;
+	b=cWEYDV+dY5cYnXMn2IADOGSloCc3OH/wIBg2KCcN3a1GBDYZK5rpVXHTSZSSIN/yhfKD9K
+	8XlUkdVuOUDM59G936HR6j4FbZOl2H5DewIOODAfyBkMcjXYqaEOYz/MpDOMYJNz57yWmE
+	pQuBR5WiKkJFnGdKlDddnv9zw7hZeJIARpezajt4Bxgjut4M5LbDIuiqMY9bB9AEE/tjF2
+	M3UtuoWNv4dZOFpHAQNjDR5yhYPWMZDbscvMZlYp80E0Kn79G2MbnY46KVamXyOzw6l6qg
+	nQzjxn74Ci53FU7fX+qNLFBzEJ36NVdF92GK9x6ZIJWM70t4Jn1qeXdK4q0VTg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1686699584;
+	s=2020e; t=1686699587;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=Gb5sLOwcDGGXCtx9H68t6SKa9rJuuFgNMIgGpRA1Cww=;
-	b=KeoNcLCZt1pscWtsZI+qPvC+QWWzBTddeaCrGnRrGuOteDQ3sqa2Z5VDUdEJeOoM1IwMZE
-	+u5kYsrLmjkwanCA==
+	 references:references; bh=yamwFyBvrdZRw7MmNaK/oFEbdYjxMOiCQipNsVidBdY=;
+	b=4Jqf4+d+0ak1Fk64uiL4SdD5UndpKcuYFGikhaVTmOBL0kGv65OkEbKG0c8uYhV9hqzAUy
+	LBd8FLWl65qGHGAQ==
 From: Thomas Gleixner <tglx@linutronix.de>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: x86@kernel.org,
@@ -76,13 +76,13 @@ Cc: x86@kernel.org,
  Michael Ellerman <mpe@ellerman.id.au>,
  Chris Zankel <chris@zankel.net>,
  Tom Lendacky <thomas.lendacky@amd.com>
-Subject: [patch 15/17] x86/fpu: Remove cpuinfo argument from init functions
+Subject: [patch 17/17] x86/fpu: Move FPU initialization into arch_cpu_finalize_init()
 References: <20230613223827.532680283@linutronix.de>
 MIME-Version: 1.0
-Date: Wed, 14 Jun 2023 01:39:43 +0200 (CEST)
+Date: Wed, 14 Jun 2023 01:39:46 +0200 (CEST)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230613_163945_929220_2B3459B6 
-X-CRM114-Status: GOOD (  11.78  )
+X-CRM114-CacheID: sfid-20230613_163948_884738_A7471CD8 
+X-CRM114-Status: GOOD (  12.68  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,61 +99,68 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Nothing in the call chain requires it
+Initializing the FPU during the early boot process is a pointless
+exercise. Early boot is convoluted and fragile enough.
+
+Nothing requires that the FPU is set up early. It has to be initialized
+before fork_init() because the task_struct size depends on the FPU register
+buffer size.
+
+Move the initialization to arch_cpu_finalize_init() which is the perfect
+place to do so.
+
+No functional change.
+
+This allows to remove quite some of the custom early command line parsing,
+but that's subject to the next installment.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/include/asm/fpu/api.h |    2 +-
- arch/x86/kernel/cpu/common.c   |    2 +-
- arch/x86/kernel/fpu/init.c     |    6 +++---
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ arch/x86/kernel/cpu/common.c |   12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
---- a/arch/x86/include/asm/fpu/api.h
-+++ b/arch/x86/include/asm/fpu/api.h
-@@ -109,7 +109,7 @@ extern void fpu_reset_from_exception_fix
- 
- /* Boot, hotplug and resume */
- extern void fpu__init_cpu(void);
--extern void fpu__init_system(struct cpuinfo_x86 *c);
-+extern void fpu__init_system(void);
- extern void fpu__init_check_bugs(void);
- extern void fpu__resume_cpu(void);
- 
 --- a/arch/x86/kernel/cpu/common.c
 +++ b/arch/x86/kernel/cpu/common.c
-@@ -1604,7 +1604,7 @@ static void __init early_identify_cpu(st
+@@ -1604,8 +1604,6 @@ static void __init early_identify_cpu(st
  
  	sld_setup(c);
  
--	fpu__init_system(c);
-+	fpu__init_system();
- 
+-	fpu__init_system();
+-
  #ifdef CONFIG_X86_32
  	/*
---- a/arch/x86/kernel/fpu/init.c
-+++ b/arch/x86/kernel/fpu/init.c
-@@ -71,7 +71,7 @@ static bool fpu__probe_without_cpuid(voi
- 	return fsw == 0 && (fcw & 0x103f) == 0x003f;
+ 	 * Regardless of whether PCID is enumerated, the SDM says
+@@ -2287,8 +2285,6 @@ void cpu_init(void)
+ 
+ 	doublefault_init_cpu_tss();
+ 
+-	fpu__init_cpu();
+-
+ 	if (is_uv_system())
+ 		uv_cpu_init();
+ 
+@@ -2304,6 +2300,7 @@ void cpu_init_secondary(void)
+ 	 */
+ 	cpu_init_exception_handling();
+ 	cpu_init();
++	fpu__init_cpu();
  }
+ #endif
  
--static void fpu__init_system_early_generic(struct cpuinfo_x86 *c)
-+static void fpu__init_system_early_generic(void)
- {
- 	if (!boot_cpu_has(X86_FEATURE_CPUID) &&
- 	    !test_bit(X86_FEATURE_FPU, (unsigned long *)cpu_caps_cleared)) {
-@@ -211,10 +211,10 @@ static void __init fpu__init_system_xsta
-  * Called on the boot CPU once per system bootup, to set up the initial
-  * FPU state that is later cloned into all processes:
-  */
--void __init fpu__init_system(struct cpuinfo_x86 *c)
-+void __init fpu__init_system(void)
- {
- 	fpstate_reset(&current->thread.fpu);
--	fpu__init_system_early_generic(c);
-+	fpu__init_system_early_generic();
+@@ -2396,6 +2393,13 @@ void __init arch_cpu_finalize_init(void)
+ 			'0' + (boot_cpu_data.x86 > 6 ? 6 : boot_cpu_data.x86);
+ 	}
  
- 	/*
- 	 * The FPU has to be operational for some of the
++	/*
++	 * Must be before alternatives because it might set or clear
++	 * feature bits.
++	 */
++	fpu__init_system();
++	fpu__init_cpu();
++
+ 	alternative_instructions();
+ 
+ 	if (IS_ENABLED(CONFIG_X86_64)) {
 
 
 _______________________________________________
