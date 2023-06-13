@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DCD6C001B0
-	for <linux-um@archiver.kernel.org>; Tue, 13 Jun 2023 23:40:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A96FEB64D8
+	for <linux-um@archiver.kernel.org>; Tue, 13 Jun 2023 23:40:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Date:MIME-Version:References:Subject:Cc
 	:To:From:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	List-Owner; bh=YJyxiX03Ty/K6+unBYhTWw9xl4/5SwTHTbyqMtVUws0=; b=PQj4eRF1oGHAf9
-	kLyVXmUFYBvbHY/EU8jLbAYo+4DtDq9yobr0nqM5kZaFQnluzULwZgamH8sykArKJ2nZ5i8ZsnThG
-	K1dREZE+9QQAlO/SmTyS371+M5mDPzhmUhbMfjLQ6tNtfmm3ehrVt/g6Yw0lVD3uzJ1V+3gui/HYX
-	Al4q1p/GkYTcMFfke+/trHucj6xd/VQcHuJQyUNmORoVRDSkN5REkBDckxB2xRJ78VG7nBjAMgAKA
-	h4+spAFyLS6F/8DSw4VcHuNj+WC3Y9ISn2YlVwvxv0PTEMQ0Fihd/to07/ZyPzTnwNtDW4NON5AIF
-	1CSIEg8vtxn5ewwMgu8w==;
+	List-Owner; bh=aFnQuQLV6xAgQOW9K5wpmLvZ4e2KfQXYm4Ps4gaSejM=; b=WWZtqFwO99i1Wr
+	IDcdLBS21HgnNagNAXh3FMl0tn+Zhp4G4DUcwGPItj7q1qIuC9s5VM6HKBI2C6YJKVRKq9kzoC9cU
+	V/mYYyKizpMjIEPr/+GCGwXcDL87M7jocqpDi8T63rRxgRStU+6nZRp1Kxp8S2BaF/M2FSqpWP3HE
+	TIje907L4+aHPWVBNzH1nsky2ngNzVP3Ac1n7yyuFMazZ2EnEC92tR4ZwHP6siauRkfnPOB0GMGM0
+	/5sOPn8tbC60kNMAxFkzX49POLjggRxII9zZ9PFPZVEDIMiIG5gH7v54kEj94i3mQ4gucrU5x9Bgr
+	1uQ6SF2CoIAIogl2gc+A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9Dcc-009RzD-05;
-	Tue, 13 Jun 2023 23:40:22 +0000
-Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
+	id 1q9Dcd-009S0H-0D;
+	Tue, 13 Jun 2023 23:40:23 +0000
+Received: from galois.linutronix.de ([193.142.43.55])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9Dbu-009RNG-1G;
-	Tue, 13 Jun 2023 23:39:48 +0000
-Message-ID: <20230613224545.493148694@linutronix.de>
+	id 1q9Dbv-009RP4-2f;
+	Tue, 13 Jun 2023 23:39:49 +0000
+Message-ID: <20230613224545.553215951@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1686699577;
+	s=2020; t=1686699578;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=lUDXX8ko/KTY3Fmll0qcD/JZgWuXrZZ2If6VXK8TUa4=;
-	b=ArkztmtVLr3xVxaqYrS8WoFCX53KbdJb76bpB2UundZYc1fDeHsn7vlQ8Qnk0H6lgWS+xg
-	1/YkdQdsguLbon5owD0gZyyLfrOqL1/0924vPfQu6loPVZT902dG1DjCOkvKL3WHvGXCd9
-	kARO1P5fNBmxeLuHrOu72Ti7cHlr7FBwXSV6pA4+F0ZJInTWFjMMz14xAuSSAtWDoJZW98
-	BordYwd3JAkB7P6QYHb8lN/vDY6K4dGNEK6lsQvXTHlyfCo7BgwCj8eYUrG8ZlNOhuL1pn
-	u6cLS9XnfPA4ZGvJ9aNZdTv+ys/Km6CLvkq80JO3Nu/ZgHBw/AsN712sOdLZmA==
+	 references:references; bh=k8gjwvZjutOT4dHhfWGxf+PGA1gm8Km0IyXoTok3KA4=;
+	b=v8W2XlvrpPYRmnFVsA9HCf8AAEeUri3PKcSbwDBhRbwhqwQtRa3HmK1Q+2f3969zDWfvCU
+	f+45JzSz4x2sdDMrg3PbRK6O6edSMK7X4fWklqVXtDdM8riwj3C1GuSs1kx0LdAlT//Eor
+	bWuSkiP+eaVkqgryQSWe6lTFzhiT6zcxiSb48g5a2o3AOWjohXwIvwDSxjCOLeBhgj0rYc
+	n9XKsHvBvxp6nhVkTdEQcV0esMuw3gJKVWlJUzMzD7i2EQ1VKtn2Y5gr3xWEUZBjeBe10Z
+	BKcwkG0HAbUoDhfKVkxh2Ta5dC63PTBYjC0UsQ8d0hP2nAr1e5mgtdUqvnRrfg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1686699577;
+	s=2020e; t=1686699578;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=lUDXX8ko/KTY3Fmll0qcD/JZgWuXrZZ2If6VXK8TUa4=;
-	b=e9amJQKHZkUpaaomQ1NYmqFdC+msPtjjGEras5FqpvKNXcBc9xqq+1Cwq8OBPViAjP+9Ya
-	rK2vv0C5jO38/fAA==
+	 references:references; bh=k8gjwvZjutOT4dHhfWGxf+PGA1gm8Km0IyXoTok3KA4=;
+	b=9oeXgEFxRyb4tlolxuBtEo2cOgt2q8mFUTkLY9QzVOjoN+gPO7c+6pTf6+CANvmFHTzX+s
+	vdUXlgL1JBLstfAQ==
 From: Thomas Gleixner <tglx@linutronix.de>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: x86@kernel.org,
@@ -51,10 +51,10 @@ Cc: x86@kernel.org,
  Nikolay Borisov <nik.borisov@suse.com>,
  "Ahmed S. Darwish" <darwi@linutronix.de>,
  Arnd Bergmann <arnd@arndb.de>,
- Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- linux-um@lists.infradead.org,
+ Richard Henderson <richard.henderson@linaro.org>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ Michael Ellerman <mpe@ellerman.id.au>,
+ Chris Zankel <chris@zankel.net>,
  Russell King <linux@armlinux.org.uk>,
  linux-arm-kernel@lists.infradead.org,
  linux-ia64@vger.kernel.org,
@@ -71,19 +71,18 @@ Cc: x86@kernel.org,
  linux-sh@vger.kernel.org,
  "David S. Miller" <davem@davemloft.net>,
  sparclinux@vger.kernel.org,
- Richard Henderson <richard.henderson@linaro.org>,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- Michael Ellerman <mpe@ellerman.id.au>,
- Chris Zankel <chris@zankel.net>,
+ Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ linux-um@lists.infradead.org,
  Tom Lendacky <thomas.lendacky@amd.com>
-Subject: [patch 10/17] um/cpu: Switch to arch_cpu_finalize_init()
+Subject: [patch 11/17] init: Remove check_bugs() leftovers
 References: <20230613223827.532680283@linutronix.de>
 MIME-Version: 1.0
-Date: Wed, 14 Jun 2023 01:39:36 +0200 (CEST)
+Date: Wed, 14 Jun 2023 01:39:38 +0200 (CEST)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230613_163938_601733_1F604D38 
-X-CRM114-Status: UNSURE (   9.93  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230613_163940_143595_1EC8AAB3 
+X-CRM114-Status: GOOD (  11.36  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,61 +99,144 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-check_bugs() is about to be phased out. Switch over to the new
-arch_cpu_finalize_init() implementation.
-
-No functional change.
+Everything is converted over to arch_cpu_finalize_init(). Remove the
+check_bugs() leftovers including the empty stubs in asm-generic, alpha,
+parisc, powerpc and xtensa.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-um@lists.infradead.org
+Cc: Richard Henderson <richard.henderson@linaro.org>
+Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Chris Zankel <chris@zankel.net>
 ---
- arch/um/Kconfig            |    1 +
- arch/um/include/asm/bugs.h |    7 -------
- arch/um/kernel/um_arch.c   |    3 ++-
- 3 files changed, 3 insertions(+), 8 deletions(-)
+ arch/alpha/include/asm/bugs.h   |   20 --------------------
+ arch/parisc/include/asm/bugs.h  |   20 --------------------
+ arch/powerpc/include/asm/bugs.h |   15 ---------------
+ arch/xtensa/include/asm/bugs.h  |   18 ------------------
+ include/asm-generic/bugs.h      |   11 -----------
+ init/main.c                     |    5 -----
+ 6 files changed, 89 deletions(-)
 
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -6,6 +6,7 @@ config UML
- 	bool
- 	default y
- 	select ARCH_EPHEMERAL_INODES
-+	select ARCH_HAS_CPU_FINALIZE_INIT
- 	select ARCH_HAS_FORTIFY_SOURCE
- 	select ARCH_HAS_GCOV_PROFILE_ALL
- 	select ARCH_HAS_KCOV
---- a/arch/um/include/asm/bugs.h
+--- a/arch/alpha/include/asm/bugs.h
 +++ /dev/null
-@@ -1,7 +0,0 @@
+@@ -1,20 +0,0 @@
+-/*
+- *  include/asm-alpha/bugs.h
+- *
+- *  Copyright (C) 1994  Linus Torvalds
+- */
+-
+-/*
+- * This is included by init/main.c to check for architecture-dependent bugs.
+- *
+- * Needs:
+- *	void check_bugs(void);
+- */
+-
+-/*
+- * I don't know of any alpha bugs yet.. Nice chip
+- */
+-
+-static void check_bugs(void)
+-{
+-}
+--- a/arch/parisc/include/asm/bugs.h
++++ /dev/null
+@@ -1,20 +0,0 @@
 -/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef __UM_BUGS_H
--#define __UM_BUGS_H
+-/*
+- *  include/asm-parisc/bugs.h
+- *
+- *  Copyright (C) 1999	Mike Shaver
+- */
 -
--void check_bugs(void);
+-/*
+- * This is included by init/main.c to check for architecture-dependent bugs.
+- *
+- * Needs:
+- *	void check_bugs(void);
+- */
 -
+-#include <asm/processor.h>
+-
+-static inline void check_bugs(void)
+-{
+-//	identify_cpu(&boot_cpu_data);
+-}
+--- a/arch/powerpc/include/asm/bugs.h
++++ /dev/null
+@@ -1,15 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-or-later */
+-#ifndef _ASM_POWERPC_BUGS_H
+-#define _ASM_POWERPC_BUGS_H
+-
+-/*
+- */
+-
+-/*
+- * This file is included by 'init/main.c' to check for
+- * architecture-dependent bugs.
+- */
+-
+-static inline void check_bugs(void) { }
+-
+-#endif	/* _ASM_POWERPC_BUGS_H */
+--- a/arch/xtensa/include/asm/bugs.h
++++ /dev/null
+@@ -1,18 +0,0 @@
+-/*
+- * include/asm-xtensa/bugs.h
+- *
+- * This is included by init/main.c to check for architecture-dependent bugs.
+- *
+- * Xtensa processors don't have any bugs.  :)
+- *
+- * This file is subject to the terms and conditions of the GNU General
+- * Public License.  See the file "COPYING" in the main directory of
+- * this archive for more details.
+- */
+-
+-#ifndef _XTENSA_BUGS_H
+-#define _XTENSA_BUGS_H
+-
+-static void check_bugs(void) { }
+-
+-#endif /* _XTENSA_BUGS_H */
+--- a/include/asm-generic/bugs.h
++++ /dev/null
+@@ -1,11 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef __ASM_GENERIC_BUGS_H
+-#define __ASM_GENERIC_BUGS_H
+-/*
+- * This file is included by 'init/main.c' to check for
+- * architecture-dependent bugs.
+- */
+-
+-static inline void check_bugs(void) { }
+-
+-#endif	/* __ASM_GENERIC_BUGS_H */
+--- a/init/main.c
++++ b/init/main.c
+@@ -103,7 +103,6 @@
+ #include <net/net_namespace.h>
+ 
+ #include <asm/io.h>
+-#include <asm/bugs.h>
+ #include <asm/setup.h>
+ #include <asm/sections.h>
+ #include <asm/cacheflush.h>
+@@ -1079,10 +1078,6 @@ asmlinkage __visible void __init __no_sa
+ 	delayacct_init();
+ 
+ 	arch_cpu_finalize_init();
+-	/* Temporary conditional until everything has been converted */
+-#ifndef CONFIG_ARCH_HAS_CPU_FINALIZE_INIT
+-	check_bugs();
 -#endif
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -3,6 +3,7 @@
-  * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-  */
  
-+#include <linux/cpu.h>
- #include <linux/delay.h>
- #include <linux/init.h>
- #include <linux/mm.h>
-@@ -430,7 +431,7 @@ void __init setup_arch(char **cmdline_p)
- 	}
- }
- 
--void __init check_bugs(void)
-+void __init arch_cpu_finalize_init(void)
- {
- 	arch_check_bugs();
- 	os_check_bugs();
+ 	acpi_subsystem_init();
+ 	arch_post_acpi_subsys_init();
 
 
 _______________________________________________
