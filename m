@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13D01C00528
-	for <linux-um@archiver.kernel.org>; Tue, 13 Jun 2023 23:40:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43F33C04A6A
+	for <linux-um@archiver.kernel.org>; Tue, 13 Jun 2023 23:40:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Date:MIME-Version:References:Subject:Cc
 	:To:From:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	List-Owner; bh=OZoQy1ktI4EqxXjfY2rQfBxsa3kG7RPJnYA0TVUhHwM=; b=vllVb/low92NCy
-	7fvkwLuUS4v136tgBc+FUb1NNpkYPmMkcR03wEOtWT8A5v+Kx6xdhgvs7MTvACEp2XtW97vwBHywr
-	GUhVJX30KD5eydTo5wXur8z63Cgig1JDlzJ0wHXkMBs2JB40wxEgLKwtBXYFlEDEGBwbDEs8TZhn3
-	cTKf0eo1gabXlLyu/bmS0eLN3bHCk0dSKxAPJ9UrS6PEPoBNdYxiYy4BfJkaPIhSjXXW1bpFBe1Gj
-	hefk54w2Yu61RVIuo30NnN63CyJSJ8ko2oMB3STQGazAYnAqCW9dx7Ueun4Du92JCTqZOLVqkoHEn
-	rRCvdH+roU21lX0LCrKQ==;
+	List-Owner; bh=YKV7+YX6BezKWArC4kr93NU/nv0t7K2ADASh7lj1ne0=; b=Hg1PWCIKd6D5ND
+	auJTTi6f1wCZ5Gmb6BO5ZUoAbh9lvVKNLbm0gC3Zhdzc1RwR2PIFjkWWf3REYUpJFbFIYtEsb5uZE
+	rbotRKX2nScbTzpLmmLtM3UoCtUf/PaI7JH2dDrRvUIlbrZmcEp9ZDDoQB2kRQCdG4NkNSbRPVLxq
+	JYIGRGKXF25lz2KGJcGBiDOX7uinI7C48xWJV/foJdNwA2DfEUtS2BO8rwC0ACEyfW3ur54x8XOHf
+	bNtF7bk64YHpAnWReV++Dgy/wfkqirfiEq6RX4vZeEbwldgK6CDBbxMG2QKFXB9cKuSrLjIV4nLWu
+	XKPQkRq1WAaFz/covNhA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9DcM-009RmO-28;
-	Tue, 13 Jun 2023 23:40:06 +0000
-Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
+	id 1q9DcN-009RnZ-2I;
+	Tue, 13 Jun 2023 23:40:07 +0000
+Received: from galois.linutronix.de ([193.142.43.55])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9Dbp-009RIP-2i;
-	Tue, 13 Jun 2023 23:39:43 +0000
-Message-ID: <20230613224545.312438573@linutronix.de>
+	id 1q9Dbs-009RLa-2g;
+	Tue, 13 Jun 2023 23:39:45 +0000
+Message-ID: <20230613224545.431995857@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1686699572;
+	s=2020; t=1686699575;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=wBQc/zChg4ZHu9OAL6oaU+W0aufJsVa+t+cps2UYOzo=;
-	b=sHRgliPpDTjgmrteZw2uDQBUy+LhOlD3YNuUxaLosBPN+K+8BCzWKcPReE25Xi07QjPQcL
-	WHxBiBob3DFaJk/2N9uf+OeuN8Hq+VDzDvLfA5UtScqlcGp5kBT5Xwx5SsCfaNH3pLOkcK
-	OaKK3NqcYdxM5nvApmNp0HRDO2slf2ydverVHd74coSQyIKQURcg7JGrXjDYwEiZtKSFYt
-	2fU2pGqYCaccQFmaN+qTg4IkKeFj53K071bPF00AJ4dPXMfCbJMrqNiHJBC0R5Y+HkvovW
-	FLplREzOZ5ayqWY4iQUMr4rIn18sRC0mBw/C/OMxcmLs38IblSKmbvmzh1FyCQ==
+	 references:references; bh=KovQmxHAduP9K1IJzcjAHDrTAJrP6R2ub7olKG/Nt4k=;
+	b=S5XqhegzNMmoBMubC4ItUZLALBFvIxHYIXbLb+wSq8U5/4sbsbEarf8iLB9msAP1qQNBa5
+	ZXBbLCCAhFFxXFpXnvc5g+UBRdkoIZHSkhNrY+/PNW92EAMhwurbX0Gee2JfqjfU4sji6t
+	D1OcGpBTohbu+DkApu+YTPfgQS91Pv32pRG8Njvuh+uLhDEJFXjgsl23TIcupRDWmSLFni
+	e0y2HTb5eKVlWzQoAFH3KSXswlde2jmlldgRU2AUJVOrMezYS5iSjwjvDKQYQjWpgCvkwZ
+	4f+lkwOAUOkFk53rNJm4+VzWNVNItfmaysNTyqYgbMAYKZHQMR1/rGaEnXozYw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1686699572;
+	s=2020e; t=1686699575;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=wBQc/zChg4ZHu9OAL6oaU+W0aufJsVa+t+cps2UYOzo=;
-	b=dfmmyGF3Ntb3WpojTDArqr9OpUQlPdOpzLQomxxJDc1n/cQhmo6FJVRhmTyPC6gibO2eTb
-	/aeCSO1mON4sepBA==
+	 references:references; bh=KovQmxHAduP9K1IJzcjAHDrTAJrP6R2ub7olKG/Nt4k=;
+	b=wguOJEto0a1kHNhs4bWY/QmwskE6nEyjtUyErmp0bbC7yJSrOpxmaDsWhVNxsSRcUqJ7BC
+	1B2kAuQsawIOpDDw==
 From: Thomas Gleixner <tglx@linutronix.de>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: x86@kernel.org,
@@ -51,8 +51,8 @@ Cc: x86@kernel.org,
  Nikolay Borisov <nik.borisov@suse.com>,
  "Ahmed S. Darwish" <darwi@linutronix.de>,
  Arnd Bergmann <arnd@arndb.de>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- linux-mips@vger.kernel.org,
+ "David S. Miller" <davem@davemloft.net>,
+ sparclinux@vger.kernel.org,
  Russell King <linux@armlinux.org.uk>,
  linux-arm-kernel@lists.infradead.org,
  linux-ia64@vger.kernel.org,
@@ -61,12 +61,12 @@ Cc: x86@kernel.org,
  loongarch@lists.linux.dev,
  Geert Uytterhoeven <geert@linux-m68k.org>,
  linux-m68k@lists.linux-m68k.org,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ linux-mips@vger.kernel.org,
  Yoshinori Sato <ysato@users.sourceforge.jp>,
  Rich Felker <dalias@libc.org>,
  John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
  linux-sh@vger.kernel.org,
- "David S. Miller" <davem@davemloft.net>,
- sparclinux@vger.kernel.org,
  Richard Weinberger <richard@nod.at>,
  Anton Ivanov <anton.ivanov@cambridgegreys.com>,
  Johannes Berg <johannes@sipsolutions.net>,
@@ -76,13 +76,14 @@ Cc: x86@kernel.org,
  Michael Ellerman <mpe@ellerman.id.au>,
  Chris Zankel <chris@zankel.net>,
  Tom Lendacky <thomas.lendacky@amd.com>
-Subject: [patch 07/17] mips/cpu: Switch to arch_cpu_finalize_init()
+Subject: [patch 09/17] sparc/cpu: Switch to arch_cpu_finalize_init()
 References: <20230613223827.532680283@linutronix.de>
 MIME-Version: 1.0
-Date: Wed, 14 Jun 2023 01:39:32 +0200 (CEST)
+Date: Wed, 14 Jun 2023 01:39:35 +0200 (CEST)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230613_163934_155932_A15306F0 
-X-CRM114-Status: GOOD (  12.96  )
+X-CRM114-CacheID: sfid-20230613_163937_038425_6B006B23 
+X-CRM114-Status: UNSURE (   9.56  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -105,88 +106,58 @@ arch_cpu_finalize_init() implementation.
 No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: sparclinux@vger.kernel.org
 ---
- arch/mips/Kconfig            |    1 +
- arch/mips/include/asm/bugs.h |   17 -----------------
- arch/mips/kernel/setup.c     |   13 +++++++++++++
- 3 files changed, 14 insertions(+), 17 deletions(-)
+ arch/sparc/Kconfig            |    1 +
+ arch/sparc/include/asm/bugs.h |   18 ------------------
+ arch/sparc/kernel/setup_32.c  |    7 +++++++
+ 3 files changed, 8 insertions(+), 18 deletions(-)
 
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -4,6 +4,7 @@ config MIPS
- 	default y
- 	select ARCH_32BIT_OFF_T if !64BIT
- 	select ARCH_BINFMT_ELF_STATE if MIPS_FP_SUPPORT
-+	select ARCH_HAS_CPU_FINALIZE_INIT
- 	select ARCH_HAS_CURRENT_STACK_POINTER if !CC_IS_CLANG || CLANG_VERSION >= 140000
- 	select ARCH_HAS_DEBUG_VIRTUAL if !64BIT
- 	select ARCH_HAS_FORTIFY_SOURCE
---- a/arch/mips/include/asm/bugs.h
-+++ b/arch/mips/include/asm/bugs.h
-@@ -1,17 +1,11 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- /*
-- * This is included by init/main.c to check for architecture-dependent bugs.
+--- a/arch/sparc/Kconfig
++++ b/arch/sparc/Kconfig
+@@ -52,6 +52,7 @@ config SPARC
+ config SPARC32
+ 	def_bool !64BIT
+ 	select ARCH_32BIT_OFF_T
++	select ARCH_HAS_CPU_FINALIZE_INIT if !SMP
+ 	select ARCH_HAS_SYNC_DMA_FOR_CPU
+ 	select CLZ_TAB
+ 	select DMA_DIRECT_REMAP
+--- a/arch/sparc/include/asm/bugs.h
++++ /dev/null
+@@ -1,18 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/* include/asm/bugs.h:  Sparc probes for various bugs.
 - *
-  * Copyright (C) 2007  Maciej W. Rozycki
-- *
-- * Needs:
-- *	void check_bugs(void);
-  */
- #ifndef _ASM_BUGS_H
- #define _ASM_BUGS_H
- 
- #include <linux/bug.h>
--#include <linux/delay.h>
- #include <linux/smp.h>
- 
- #include <asm/cpu.h>
-@@ -24,17 +18,6 @@ extern void check_bugs64_early(void);
- extern void check_bugs32(void);
- extern void check_bugs64(void);
- 
--static inline void __init check_bugs(void)
+- * Copyright (C) 1996, 2007 David S. Miller (davem@davemloft.net)
+- */
+-
+-#ifdef CONFIG_SPARC32
+-#include <asm/cpudata.h>
+-#endif
+-
+-extern unsigned long loops_per_jiffy;
+-
+-static void __init check_bugs(void)
 -{
--	unsigned int cpu = smp_processor_id();
--
--	cpu_data[cpu].udelay_val = loops_per_jiffy;
--	check_bugs32();
--
--	if (IS_ENABLED(CONFIG_CPU_R4X00_BUGS64))
--		check_bugs64();
+-#if defined(CONFIG_SPARC32) && !defined(CONFIG_SMP)
+-	cpu_data(0).udelay_val = loops_per_jiffy;
+-#endif
 -}
--
- static inline int r4k_daddiu_bug(void)
- {
- 	if (!IS_ENABLED(CONFIG_CPU_R4X00_BUGS64))
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -11,6 +11,8 @@
-  * Copyright (C) 2000, 2001, 2002, 2007	 Maciej W. Rozycki
-  */
- #include <linux/init.h>
-+#include <linux/cpu.h>
-+#include <linux/delay.h>
- #include <linux/ioport.h>
- #include <linux/export.h>
- #include <linux/screen_info.h>
-@@ -841,3 +843,14 @@ static int __init setnocoherentio(char *
+--- a/arch/sparc/kernel/setup_32.c
++++ b/arch/sparc/kernel/setup_32.c
+@@ -412,3 +412,10 @@ static int __init topology_init(void)
  }
- early_param("nocoherentio", setnocoherentio);
- #endif
+ 
+ subsys_initcall(topology_init);
 +
++#if defined(CONFIG_SPARC32) && !defined(CONFIG_SMP)
 +void __init arch_cpu_finalize_init(void)
 +{
-+	unsigned int cpu = smp_processor_id();
-+
-+	cpu_data[cpu].udelay_val = loops_per_jiffy;
-+	check_bugs32();
-+
-+	if (IS_ENABLED(CONFIG_CPU_R4X00_BUGS64))
-+		check_bugs64();
++	cpu_data(0).udelay_val = loops_per_jiffy;
 +}
++#endif
 
 
 _______________________________________________
