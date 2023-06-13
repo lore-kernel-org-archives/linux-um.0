@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1E82BEB64D7
-	for <linux-um@archiver.kernel.org>; Tue, 13 Jun 2023 23:39:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5C81EB64DA
+	for <linux-um@archiver.kernel.org>; Tue, 13 Jun 2023 23:39:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Date:MIME-Version:References:Subject:Cc
 	:To:From:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	List-Owner; bh=FdHA9apUi6rPkD1UoRjX7z0XY3NqWSOqxPxxRgwo2u8=; b=Glh0M93Q3Z4hmZ
-	idYY2bn9dJlrq3ouP3xGJvdQmEy1j4zooNfnIVhKkFemLM7+ebn9bLC1snHfMdmDyJHBUgGkLduYR
-	F69zgfRCzHeswUkRed4Pu1bhVznTsLEZ1Hf0sJqksSwNQMhZhBc4SdmpAmIS1RZVV66CzA/uRquCA
-	pi74PvOuRlW63GsvNLhg8bG23jKydWlr9j66Uh3xHW5k0WYGE8ARwPi6EXl8jI+KoHUb/PtU4PkdE
-	gD56qqhUIJlwpKvXswClr9ClMedtsvuwa3QSpEYqHdtc6nrD40RvOQzjkZ6yBaF4n4JgdxAOEz4u+
-	4GPcKMI22tlTrg0KrLPw==;
+	List-Owner; bh=5pVQQ3qo36h6+IS0SXAEZRr2VphKd13ZTgRPDL6x/Lw=; b=YLdwO5RAWHtvYW
+	N2Kl8uOaK6YYj5qMWfGGXAhUxAn7iLuy+n7mBQKAoB4q76Rmt06dZX+XrcCuCz3NVhR6D4qXabV3C
+	d+e+CiHhukHzT3t6gB0cfXeLX5bZFWKAQgeJUSixTKZeH5fS7wKUL+d2rAXcUjcFHDsYKpCrMZumH
+	Gxm0q1utxuPVqSpi0nrBmCJCU3NQ22dm+J5AdJOGiKdWF51IZM6dXQ+oNSbLCpF6WHYLIki8bqag3
+	0ncyAGWDXNiZ9UxNDzxeR2b3RjxkRA4f+BrYmJaXsGcMg6/e5EmHGjhCLBoI6kAM9r2y+NCz3RimD
+	CJi3yfJwM0pMWrn7sAFw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9Dbt-009RNZ-26;
-	Tue, 13 Jun 2023 23:39:37 +0000
+	id 1q9Dc5-009RZ1-1M;
+	Tue, 13 Jun 2023 23:39:49 +0000
 Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9Dbj-009RDI-1l;
-	Tue, 13 Jun 2023 23:39:34 +0000
-Message-ID: <20230613224545.019583869@linutronix.de>
+	id 1q9Dbl-009RES-0f;
+	Tue, 13 Jun 2023 23:39:37 +0000
+Message-ID: <20230613224545.137045745@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1686699565;
+	s=2020; t=1686699567;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=83St4CX9k4r3etM5D/zDLxt583bBYUX8Z2E5c0B+/8o=;
-	b=3viID6EMmGtwT6pty1299Bp4e/YEbbLDSFkQ5FM1xHbDTnnYM2EPjzfoyNvqU9xZQ6si67
-	zDu0E0pfkffv/xVUzayaJiuDWIl2tDbw5bZGTSDfO1w7xkGrr3eAqt4VzVvDNTbMD0+8lQ
-	8P0dqipiyPmmZCa+o48JUXdjTAm9xStwOwtUlihlYgBoCO0LUad9gn10J3MiZ7i3ihy24A
-	5wMJHC5qOSflVMpxvb55/jOd+ZMT3GkmwRxwnBKQWRxPadaRQAuIBxw435ZWWQcdR1tKC+
-	/GW9p44n6J4jU+jta5DEZ7WUcaW8gIjdndf0ueYD7h+qQRtu75mG1qkMpVVVkw==
+	 references:references; bh=DDD4mAWSMPbjAODBEDFm/GZSLXiwbvYxlB2kHZQV314=;
+	b=wVvSy71gluUCZPIXgEtKPo8BBg7ieMdvjy41cFsDvAMwvS7sWiK2ivysp2uh7x/mxyaE2v
+	lRpXB1T+7Rb6IhJgtH5Gh08EjeY+LV6qZp8KxcG+Mhf6mq4TcOLzZ/urF31L2Jq6vP8rGD
+	O3sKohDckVTh89UONt6PufDlgq59mtO9ozxMIcgcJeJuYnkf5IiWhWBIszpLhkgYnocc/h
+	xrbrRFzNmT23GfQzPff5kIDwltofebDY8pYCgfGaONVaucUAY1o15zJaZaeGbebvk8LdrS
+	hHhnyxcZsRDg7D6qogYEDL7tYICUsTP9fXm2+DUkN6m2IpENljiliuemCZcuKg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1686699565;
+	s=2020e; t=1686699567;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=83St4CX9k4r3etM5D/zDLxt583bBYUX8Z2E5c0B+/8o=;
-	b=bbIrH1nI96We/t4rw8JUO249OZXCtRabtAP3RSB1RR6S/JhBpaowhlD8A1iE7l22P9oR7a
-	OMsatE9/YbtL6RCA==
+	 references:references; bh=DDD4mAWSMPbjAODBEDFm/GZSLXiwbvYxlB2kHZQV314=;
+	b=xCdom/FmXQFqzqnDxobvpXnmHuFNJaBHO2lxQlF4vIc3u28hxBBnrlvC4Zi9IVE9w6CRK5
+	Ws8bEUww9+yjUQBg==
 From: Thomas Gleixner <tglx@linutronix.de>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: x86@kernel.org,
@@ -51,9 +51,9 @@ Cc: x86@kernel.org,
  Nikolay Borisov <nik.borisov@suse.com>,
  "Ahmed S. Darwish" <darwi@linutronix.de>,
  Arnd Bergmann <arnd@arndb.de>,
+ linux-ia64@vger.kernel.org,
  Russell King <linux@armlinux.org.uk>,
  linux-arm-kernel@lists.infradead.org,
- linux-ia64@vger.kernel.org,
  Huacai Chen <chenhuacai@kernel.org>,
  WANG Xuerui <kernel@xen0n.name>,
  loongarch@lists.linux.dev,
@@ -76,13 +76,14 @@ Cc: x86@kernel.org,
  Michael Ellerman <mpe@ellerman.id.au>,
  Chris Zankel <chris@zankel.net>,
  Tom Lendacky <thomas.lendacky@amd.com>
-Subject: [patch 02/17] x86/cpu: Switch to arch_cpu_finalize_init()
+Subject: [patch 04/17] ia64/cpu: Switch to arch_cpu_finalize_init()
 References: <20230613223827.532680283@linutronix.de>
 MIME-Version: 1.0
-Date: Wed, 14 Jun 2023 01:39:24 +0200 (CEST)
+Date: Wed, 14 Jun 2023 01:39:27 +0200 (CEST)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230613_163928_120720_8AD6AC40 
-X-CRM114-Status: GOOD (  19.96  )
+X-CRM114-CacheID: sfid-20230613_163929_386966_2A7CC9FF 
+X-CRM114-Status: UNSURE (   9.45  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,215 +100,64 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-check_bugs() is a dump ground for finalizing the CPU bringup. Only parts of
-it has to do with actual CPU bugs.
-
-Split it apart into arch_cpu_finalize_init() and cpu_select_mitigations().
-
-Fixup the bogus 32bit comments while at it.
+check_bugs() is about to be phased out. Switch over to the new
+arch_cpu_finalize_init() implementation.
 
 No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-ia64@vger.kernel.org
 ---
- arch/x86/Kconfig             |    1 
- arch/x86/include/asm/bugs.h  |    2 -
- arch/x86/kernel/cpu/bugs.c   |   51 -----------------------------------------
- arch/x86/kernel/cpu/common.c |   53 +++++++++++++++++++++++++++++++++++++++++++
- arch/x86/kernel/cpu/cpu.h    |    1 
- 5 files changed, 56 insertions(+), 52 deletions(-)
+ arch/ia64/Kconfig            |    1 +
+ arch/ia64/include/asm/bugs.h |   20 --------------------
+ arch/ia64/kernel/setup.c     |    3 +--
+ 3 files changed, 2 insertions(+), 22 deletions(-)
 
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -71,6 +71,7 @@ config X86
- 	select ARCH_HAS_ACPI_TABLE_UPGRADE	if ACPI
- 	select ARCH_HAS_CACHE_LINE_SIZE
- 	select ARCH_HAS_CPU_CACHE_INVALIDATE_MEMREGION
+--- a/arch/ia64/Kconfig
++++ b/arch/ia64/Kconfig
+@@ -9,6 +9,7 @@ menu "Processor type and features"
+ config IA64
+ 	bool
+ 	select ARCH_BINFMT_ELF_EXTRA_PHDRS
 +	select ARCH_HAS_CPU_FINALIZE_INIT
- 	select ARCH_HAS_CURRENT_STACK_POINTER
- 	select ARCH_HAS_DEBUG_VIRTUAL
- 	select ARCH_HAS_DEBUG_VM_PGTABLE	if !X86_PAE
---- a/arch/x86/include/asm/bugs.h
-+++ b/arch/x86/include/asm/bugs.h
-@@ -4,8 +4,6 @@
- 
- #include <asm/processor.h>
- 
--extern void check_bugs(void);
+ 	select ARCH_HAS_DMA_MARK_CLEAN
+ 	select ARCH_HAS_STRNCPY_FROM_USER
+ 	select ARCH_HAS_STRNLEN_USER
+--- a/arch/ia64/include/asm/bugs.h
++++ /dev/null
+@@ -1,20 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-/*
+- * This is included by init/main.c to check for architecture-dependent bugs.
+- *
+- * Needs:
+- *	void check_bugs(void);
+- *
+- * Based on <asm-alpha/bugs.h>.
+- *
+- * Modified 1998, 1999, 2003
+- *	David Mosberger-Tang <davidm@hpl.hp.com>,  Hewlett-Packard Co.
+- */
+-#ifndef _ASM_IA64_BUGS_H
+-#define _ASM_IA64_BUGS_H
 -
- #if defined(CONFIG_CPU_SUP_INTEL) && defined(CONFIG_X86_32)
- int ppro_with_ram_bug(void);
- #else
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -9,7 +9,6 @@
-  *	- Andrew D. Balsa (code cleanup).
-  */
- #include <linux/init.h>
--#include <linux/utsname.h>
- #include <linux/cpu.h>
- #include <linux/module.h>
- #include <linux/nospec.h>
-@@ -27,8 +26,6 @@
- #include <asm/msr.h>
- #include <asm/vmx.h>
- #include <asm/paravirt.h>
--#include <asm/alternative.h>
--#include <asm/set_memory.h>
- #include <asm/intel-family.h>
- #include <asm/e820/api.h>
- #include <asm/hypervisor.h>
-@@ -125,21 +122,8 @@ DEFINE_STATIC_KEY_FALSE(switch_mm_cond_l
- DEFINE_STATIC_KEY_FALSE(mmio_stale_data_clear);
- EXPORT_SYMBOL_GPL(mmio_stale_data_clear);
- 
--void __init check_bugs(void)
-+void __init cpu_select_mitigations(void)
- {
--	identify_boot_cpu();
+-#include <asm/processor.h>
 -
--	/*
--	 * identify_boot_cpu() initialized SMT support information, let the
--	 * core code know.
--	 */
--	cpu_smt_check_topology();
+-extern void check_bugs (void);
 -
--	if (!IS_ENABLED(CONFIG_SMP)) {
--		pr_info("CPU: ");
--		print_cpu_info(&boot_cpu_data);
--	}
--
- 	/*
- 	 * Read the SPEC_CTRL MSR to account for reserved bits which may
- 	 * have unknown values. AMD64_LS_CFG MSR is cached in the early AMD
-@@ -176,39 +160,6 @@ void __init check_bugs(void)
- 	md_clear_select_mitigation();
- 	srbds_select_mitigation();
- 	l1d_flush_select_mitigation();
--
--	arch_smt_update();
--
--#ifdef CONFIG_X86_32
--	/*
--	 * Check whether we are able to run this kernel safely on SMP.
--	 *
--	 * - i386 is no longer supported.
--	 * - In order to run on anything without a TSC, we need to be
--	 *   compiled for a i486.
--	 */
--	if (boot_cpu_data.x86 < 4)
--		panic("Kernel requires i486+ for 'invlpg' and other features");
--
--	init_utsname()->machine[1] =
--		'0' + (boot_cpu_data.x86 > 6 ? 6 : boot_cpu_data.x86);
--	alternative_instructions();
--
--	fpu__init_check_bugs();
--#else /* CONFIG_X86_64 */
--	alternative_instructions();
--
--	/*
--	 * Make sure the first 2MB area is not mapped by huge pages
--	 * There are typically fixed size MTRRs in there and overlapping
--	 * MTRRs into large pages causes slow downs.
--	 *
--	 * Right now we don't do that with gbpages because there seems
--	 * very little benefit for that case.
--	 */
--	if (!direct_gbpages)
--		set_memory_4k((unsigned long)__va(0), 1);
--#endif
+-#endif /* _ASM_IA64_BUGS_H */
+--- a/arch/ia64/kernel/setup.c
++++ b/arch/ia64/kernel/setup.c
+@@ -1067,8 +1067,7 @@ cpu_init (void)
+ 	}
  }
  
- /*
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -19,11 +19,14 @@
- #include <linux/kprobes.h>
- #include <linux/kgdb.h>
- #include <linux/smp.h>
-+#include <linux/cpu.h>
- #include <linux/io.h>
- #include <linux/syscore_ops.h>
- #include <linux/pgtable.h>
- #include <linux/stackprotector.h>
-+#include <linux/utsname.h>
- 
-+#include <asm/alternative.h>
- #include <asm/cmdline.h>
- #include <asm/perf_event.h>
- #include <asm/mmu_context.h>
-@@ -59,6 +62,7 @@
- #include <asm/intel-family.h>
- #include <asm/cpu_device_id.h>
- #include <asm/uv/uv.h>
-+#include <asm/set_memory.h>
- #include <asm/sigframe.h>
- #include <asm/traps.h>
- #include <asm/sev.h>
-@@ -2362,3 +2366,52 @@ void arch_smt_update(void)
- 	/* Check whether IPI broadcasting can be enabled */
- 	apic_smt_update();
- }
-+
+-void __init
+-check_bugs (void)
 +void __init arch_cpu_finalize_init(void)
-+{
-+	identify_boot_cpu();
-+
-+	/*
-+	 * identify_boot_cpu() initialized SMT support information, let the
-+	 * core code know.
-+	 */
-+	cpu_smt_check_topology();
-+
-+	if (!IS_ENABLED(CONFIG_SMP)) {
-+		pr_info("CPU: ");
-+		print_cpu_info(&boot_cpu_data);
-+	}
-+
-+	arch_smt_update();
-+
-+	cpu_select_mitigations();
-+
-+	if (IS_ENABLED(CONFIG_X86_32)) {
-+		/*
-+		 * Check whether this is a real i386 which is not longer
-+		 * supported and fixup the utsname.
-+		 */
-+		if (boot_cpu_data.x86 < 4)
-+			panic("Kernel requires i486+ for 'invlpg' and other features");
-+
-+		init_utsname()->machine[1] =
-+			'0' + (boot_cpu_data.x86 > 6 ? 6 : boot_cpu_data.x86);
-+	}
-+
-+	alternative_instructions();
-+
-+	if (IS_ENABLED(CONFIG_X86_64)) {
-+		/*
-+		 * Make sure the first 2MB area is not mapped by huge pages
-+		 * There are typically fixed size MTRRs in there and overlapping
-+		 * MTRRs into large pages causes slow downs.
-+		 *
-+		 * Right now we don't do that with gbpages because there seems
-+		 * very little benefit for that case.
-+		 */
-+		if (!direct_gbpages)
-+			set_memory_4k((unsigned long)__va(0), 1);
-+	} else {
-+		fpu__init_check_bugs();
-+	}
-+}
---- a/arch/x86/kernel/cpu/cpu.h
-+++ b/arch/x86/kernel/cpu/cpu.h
-@@ -79,6 +79,7 @@ extern void detect_ht(struct cpuinfo_x86
- extern void check_null_seg_clears_base(struct cpuinfo_x86 *c);
- 
- unsigned int aperfmperf_get_khz(int cpu);
-+void cpu_select_mitigations(void);
- 
- extern void x86_spec_ctrl_setup_ap(void);
- extern void update_srbds_msr(void);
+ {
+ 	ia64_patch_mckinley_e9((unsigned long) __start___mckinley_e9_bundles,
+ 			       (unsigned long) __end___mckinley_e9_bundles);
 
 
 _______________________________________________
