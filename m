@@ -4,46 +4,46 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C20A2C001B0
-	for <linux-um@archiver.kernel.org>; Tue, 13 Jun 2023 23:40:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 993DAC001DD
+	for <linux-um@archiver.kernel.org>; Tue, 13 Jun 2023 23:40:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:Date:MIME-Version:References:Subject:Cc
 	:To:From:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	List-Owner; bh=D9piyQ+XsHApHTAMQ946HzUKvi5H9dV/cIG/iT89coU=; b=qngz4FqumbqloO
-	phIi89eshcQ3FYNJ/gNsWCVcdp697MQRmfRzcshrTFaXlxQ/y2PNOU6z6DE5Q2cNeH48LsZCHbMNW
-	ce0W1fQIkMkaUyD7nhX7shrjXL2fWNMTg8nx0Iwolaw3qodgjn5PtwFQxZZdzQImdvFasirp6hnGf
-	SmKrFpX4BwSXmGFlVQRNJ26a9j4szeBFF7hIgCo9rXM6OkN595nRifwPgPj7bGkwyxGa8w0MnLuDv
-	Qmawa2Qf0s/Rx+NtDsdUyzzaOIIVPJy3ntxU3ZjiHzy/v9Gsmtfs9N+Aed9SrTMVzkZTuAX/Q6Rzw
-	02wFO1x226bik6+UEJEw==;
+	List-Owner; bh=vqvvtCDX2FDwWg32Au+BlPl2MEl3mRLD33JZJiyoDPk=; b=TedPoGlAplNWxV
+	KD8+9MnXudwl1b1tzOS3h6nlu1uo7OKJrDY6yG+e+olhTF+tn7ymEzs/j1JvF2d1qYU10DZy5nQel
+	lYTHX5iSJHzw3kvLA7J2B+TfTdHD7ndeK16YtHIUB4xYbhChdDnwyLDskyiWvCjQSafiWpLUMJsph
+	fv3TxorK8Q3Ixp7TtKhygTLBAZBLwl+AAOk+Z54+MW4AShH3pPyPotDvJoJAIigI3zM6xF/V8fjKJ
+	++wG4YKDyUmbaen8lVrz4GrSKRP4oc7FWwf3qAtv4EXjsCI29eOpmfDDloHOWmARUhzZLI2sYnS7Q
+	5JJfmq2/K7EDg9ANzDfQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9Dch-009S5f-17;
-	Tue, 13 Jun 2023 23:40:27 +0000
-Received: from galois.linutronix.de ([193.142.43.55])
+	id 1q9Dci-009S7g-39;
+	Tue, 13 Jun 2023 23:40:28 +0000
+Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9Dby-009RRy-2Z;
-	Tue, 13 Jun 2023 23:39:53 +0000
-Message-ID: <20230613224545.670360645@linutronix.de>
+	id 1q9Dc3-009RVs-0Z;
+	Tue, 13 Jun 2023 23:39:57 +0000
+Message-ID: <20230613224545.841685728@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1686699581;
+	s=2020; t=1686699585;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=lNQFIv9giVxLbCumZPShd6fBwItl7AKDfIjQdD1B1ok=;
-	b=NhwOjp0vdKWOrteRuFiTOkExTiGFZ+1X3uZu8Sf9fdyrIPm2q/gN4MmPHkCZJSMuDFIyau
-	62b1YEZwJdmoo/8iAGDMB+f2rfpJWTxhz280VlrOWuVI8kMlClaNhFnA/HnrvxfThhq2Y7
-	LrmEMnVJ5d25Djkc3MZjVW/Fmz2axOYQ++mr4C8i7V8xhsVuiDO0UcuAgoIZ2LkpjNgGiP
-	7dqi2bz7PCyBpzzyh/htAgssbDnwJDTyEbGU2gqgSCoXYtobvOXRW69yEXXCETLnzJzHvQ
-	dbG14Dx6omVuOO5nyZKPQvEOw9jwwdikXGwasbUA2D71OPAp4CjnptBqSSwaHw==
+	 references:references; bh=mdLair9MyWDVqPCo3VYZYQwXMBzE274L3lUc1PUjYzw=;
+	b=tvknF4JQcwX0lM5O4DZTQuc30Yg9yiLzqRi4X2iQXF/rYttRwxZcIK6EcdK55DoYlMxRE5
+	P0mkYs/iQ/cjRO8mk7MV5JkV9ZuQJgcw6JUtB19cZ9EwRnDimk9Xo7AZ4YRq3EGrHOt5Vb
+	DNs4nYJlWr7TOx07NfCBW8Nrn51ARUbYjrw+8SDW/PGmeyNd2IDUAJhiC+0QYh3J9YfV+0
+	/f5g54ndBGu+vtkKj+HwXcVCPNpr9uulVNkO8WM/YoNZsNhpzWGKWCdvrsa3VYL1p1Fo92
+	IXzaQeVfRZJ2lNBrphRMdwLF4GZBfuZ5ZhQbSHtQVs0QBCTVHkh6rWWIAukLVg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1686699581;
+	s=2020e; t=1686699585;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=lNQFIv9giVxLbCumZPShd6fBwItl7AKDfIjQdD1B1ok=;
-	b=gfCfRi6taulCsvO42taqM4pd4hXtC0EjIZYTeRqyo9lKyT8xnwcJ0CXF+9O/JENzPKmB+i
-	pT1TJrwh+wATGyAA==
+	 references:references; bh=mdLair9MyWDVqPCo3VYZYQwXMBzE274L3lUc1PUjYzw=;
+	b=weToH2Qa1SQqSJH8nQz8yPWHP67Y8ikgQP8AOS2+GL2sffNVONPBGYNLIgL4AGgEn4bpWa
+	yxpMUxbA/N9sffBw==
 From: Thomas Gleixner <tglx@linutronix.de>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: x86@kernel.org,
@@ -51,7 +51,6 @@ Cc: x86@kernel.org,
  Nikolay Borisov <nik.borisov@suse.com>,
  "Ahmed S. Darwish" <darwi@linutronix.de>,
  Arnd Bergmann <arnd@arndb.de>,
- Tom Lendacky <thomas.lendacky@amd.com>,
  Russell King <linux@armlinux.org.uk>,
  linux-arm-kernel@lists.infradead.org,
  linux-ia64@vger.kernel.org,
@@ -75,15 +74,16 @@ Cc: x86@kernel.org,
  Richard Henderson <richard.henderson@linaro.org>,
  "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
  Michael Ellerman <mpe@ellerman.id.au>,
- Chris Zankel <chris@zankel.net>
-Subject: [patch 13/17] init, x86: Move mem_encrypt_init() into
- arch_cpu_finalize_init()
+ Chris Zankel <chris@zankel.net>,
+ Tom Lendacky <thomas.lendacky@amd.com>
+Subject: [patch 16/17] x86/fpu: Mark init functions __init
 References: <20230613223827.532680283@linutronix.de>
 MIME-Version: 1.0
-Date: Wed, 14 Jun 2023 01:39:41 +0200 (CEST)
+Date: Wed, 14 Jun 2023 01:39:45 +0200 (CEST)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230613_163943_168363_BD3C8101 
-X-CRM114-Status: GOOD (  12.02  )
+X-CRM114-CacheID: sfid-20230613_163947_359458_30E212F0 
+X-CRM114-Status: UNSURE (   9.30  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,107 +100,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Invoke the X86ism mem_encrypt_init() from X86 arch_cpu_finalize_init() and
-remove the weak fallback from the core code.
-
-No functional change.
+No point in keeping them around.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
 ---
- arch/x86/include/asm/mem_encrypt.h |    7 ++++---
- arch/x86/kernel/cpu/common.c       |   11 +++++++++++
- init/main.c                        |   13 -------------
- 3 files changed, 15 insertions(+), 16 deletions(-)
+ arch/x86/kernel/fpu/init.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/x86/include/asm/mem_encrypt.h
-+++ b/arch/x86/include/asm/mem_encrypt.h
-@@ -51,6 +51,8 @@ void __init mem_encrypt_free_decrypted_m
- 
- void __init sev_es_init_vc_handling(void);
- 
-+void __init mem_encrypt_init(void);
-+
- #define __bss_decrypted __section(".bss..decrypted")
- 
- #else	/* !CONFIG_AMD_MEM_ENCRYPT */
-@@ -83,13 +85,12 @@ early_set_mem_enc_dec_hypercall(unsigned
- 
- static inline void mem_encrypt_free_decrypted_mem(void) { }
- 
-+static inline void mem_encrypt_init(void) { }
-+
- #define __bss_decrypted
- 
- #endif	/* CONFIG_AMD_MEM_ENCRYPT */
- 
--/* Architecture __weak replacement functions */
--void __init mem_encrypt_init(void);
--
- void add_encrypt_protection_map(void);
- 
- /*
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -18,6 +18,7 @@
- #include <linux/init.h>
- #include <linux/kprobes.h>
- #include <linux/kgdb.h>
-+#include <linux/mem_encrypt.h>
- #include <linux/smp.h>
- #include <linux/cpu.h>
- #include <linux/io.h>
-@@ -2417,4 +2418,14 @@ void __init arch_cpu_finalize_init(void)
- 	} else {
- 		fpu__init_check_bugs();
- 	}
-+
-+	/*
-+	 * This needs to be called before any devices perform DMA
-+	 * operations that might use the SWIOTLB bounce buffers. It will
-+	 * mark the bounce buffers as decrypted so that their usage will
-+	 * not cause "plain-text" data to be decrypted when accessed. It
-+	 * must be called after late_time_init() so that Hyper-V x86/x64
-+	 * hypercalls work when the SWIOTLB bounce buffers are decrypted.
-+	 */
-+	mem_encrypt_init();
+--- a/arch/x86/kernel/fpu/init.c
++++ b/arch/x86/kernel/fpu/init.c
+@@ -53,7 +53,7 @@ void fpu__init_cpu(void)
+ 	fpu__init_cpu_xstate();
  }
---- a/init/main.c
-+++ b/init/main.c
-@@ -95,7 +95,6 @@
- #include <linux/cache.h>
- #include <linux/rodata_test.h>
- #include <linux/jump_label.h>
--#include <linux/mem_encrypt.h>
- #include <linux/kcsan.h>
- #include <linux/init_syscalls.h>
- #include <linux/stackdepot.h>
-@@ -786,8 +785,6 @@ void __init __weak thread_stack_cache_in
+ 
+-static bool fpu__probe_without_cpuid(void)
++static bool __init fpu__probe_without_cpuid(void)
+ {
+ 	unsigned long cr0;
+ 	u16 fsw, fcw;
+@@ -71,7 +71,7 @@ static bool fpu__probe_without_cpuid(voi
+ 	return fsw == 0 && (fcw & 0x103f) == 0x003f;
  }
- #endif
  
--void __init __weak mem_encrypt_init(void) { }
--
- void __init __weak poking_init(void) { }
- 
- void __init __weak pgtable_cache_init(void) { }
-@@ -1043,16 +1040,6 @@ asmlinkage __visible void __init __no_sa
- 
- 	arch_cpu_finalize_init();
- 
--	/*
--	 * This needs to be called before any devices perform DMA
--	 * operations that might use the SWIOTLB bounce buffers. It will
--	 * mark the bounce buffers as decrypted so that their usage will
--	 * not cause "plain-text" data to be decrypted when accessed. It
--	 * must be called after late_time_init() so that Hyper-V x86/x64
--	 * hypercalls work when the SWIOTLB bounce buffers are decrypted.
--	 */
--	mem_encrypt_init();
--
- 	pid_idr_init();
- 	anon_vma_init();
- #ifdef CONFIG_X86
+-static void fpu__init_system_early_generic(void)
++static void __init fpu__init_system_early_generic(void)
+ {
+ 	if (!boot_cpu_has(X86_FEATURE_CPUID) &&
+ 	    !test_bit(X86_FEATURE_FPU, (unsigned long *)cpu_caps_cleared)) {
 
 
 _______________________________________________
