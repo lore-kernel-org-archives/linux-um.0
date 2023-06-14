@@ -4,60 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9E230EB64D8
-	for <linux-um@archiver.kernel.org>; Wed, 14 Jun 2023 16:41:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F36DDEB64D8
+	for <linux-um@archiver.kernel.org>; Wed, 14 Jun 2023 20:42:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wUySHTlSID3WPEWlXUgfQITtCN/LPUQSbrMgKF5nMeY=; b=hip52aWDvrooub
-	4qDdUXdwhux9WDR4sg9Y1zxMST1lTb6QpIAMdR5wMfhQT5eAzHwaOCxsr9CsOeaW/Zc/U+DuGQs+G
-	BtK6MLpe24lSpGFDB55R7r3pnhJNsyOEprWB8aBb2SZtcgkGmsHM5omb3FdW5x4ipdS63lQDomMDb
-	f9EjtjGFPTZZo746WYhbVhduZJw3sRBOcCmWlmz270zr2mKs+O4vXg+AJ3vnb7C/dw5EeV5GwCPAZ
-	w3+cMEamD7vfCSBRa5dkLI2vE8T290ZxQObcJWtE3A10Hol7X/2143A54/Xfc7dSZW0Cy4I7mdhTK
-	/XpBxL2k+3u4GxVO8qsw==;
+	List-Owner; bh=La5x8IfIe8LjmYhUPzHWEHy+kN+A2LvayR9vB/c47ls=; b=ib2w1auKsOG0ZV
+	G4XBFlwABMZm8npGnXb0ZSH3xznVDbmWkGn46RxEj80wnfJnkH22Ds9SH2a6fJuWkO7tWl12sGk98
+	CSxEKAH/bz4i16it6VEPAmauHk+yQ5hEsK5535AbusRwYkuCEfAFSBFO/ms4DMnX1wV1A0JSZ7Z7h
+	+mhRLHljfXYa3VK3GCwHafeut4FpUO1ZfKARrSbnURLguj3FqrOfPGO/90iXCxE/7N69fhR9xv+s+
+	br6i4syIW7FIoGiucj97M9OVFnfcO4zxGYkW32Xv64akNFEU8UNTNk273mOFuJrmwj86U+1P2uMX2
+	ac1OE4+c9oddkVcaEFHw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9TYz-00CEeE-0B;
-	Wed, 14 Jun 2023 16:41:41 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1q9XJf-00CfPN-1O;
+	Wed, 14 Jun 2023 20:42:07 +0000
+Received: from mailrelay3-1.pub.mailoutpod2-cph3.one.com ([2a02:2350:5:402::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9TYv-00CEcj-26;
-	Wed, 14 Jun 2023 16:41:38 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 14A0661C60;
-	Wed, 14 Jun 2023 16:41:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2092EC433C8;
-	Wed, 14 Jun 2023 16:41:32 +0000 (UTC)
-Date: Wed, 14 Jun 2023 17:41:30 +0100
-From: Catalin Marinas <catalin.marinas@arm.com>
-To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-	xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
-	Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH v4 21/34] arm64: Convert various functions to use ptdescs
-Message-ID: <ZIntusCSpsSHISYp@arm.com>
-References: <20230612210423.18611-1-vishal.moola@gmail.com>
- <20230612210423.18611-22-vishal.moola@gmail.com>
+	id 1q9XJb-00CfNN-1h
+	for linux-um@lists.infradead.org;
+	Wed, 14 Jun 2023 20:42:06 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=ravnborg.org; s=rsa1;
+	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+	 from:date:from;
+	bh=cW4dy2To7/M902URPa1VAjOZaTBlNB+GfxWd9TtkCSE=;
+	b=E+yvNIrkyeT6IEUt9sQXovg5SM1XJyIh1I4psC5M3E0rZecTNFqf6dUoJZIzciYDZF0wHtv1CkbtY
+	 Ug1uzl6V27VzH/JmBV94T1MdtTmgFg2jzeFq6Mfho6iJGF+23+QBKJ0QDxcICllSjMb+Kt1MW6XBKv
+	 PQsAOS9u08oxojjceExcrYB6dEKtgWFOX2UcAeoJzROmdLfweXYrEpnTYdlO2gOY+dDHjQtqVpfKXH
+	 yhxY21X3GJ1ZCEp4H8EZ6mPYVhtwndrZHgoJss5Wr0lAHHK6G4CZP3yqRUlLm7GYcjj9weu2d/kNrz
+	 fKoNo+NR6+5qOQMLwzz0o0xdvg/UVSg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+	d=ravnborg.org; s=ed1;
+	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+	 from:date:from;
+	bh=cW4dy2To7/M902URPa1VAjOZaTBlNB+GfxWd9TtkCSE=;
+	b=VXu9k3ldXcowqgW30zeYdluY94r2cP2Z6PZzlWmByvpKOXcQRh1vwTttSWKSGKkWXSw4a8h/rZkbB
+	 U3M0jZMAA==
+X-HalOne-ID: e3e45d00-0af3-11ee-bc48-b90637070a9d
+Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
+	by mailrelay3 (Halon) with ESMTPSA
+	id e3e45d00-0af3-11ee-bc48-b90637070a9d;
+	Wed, 14 Jun 2023 20:41:52 +0000 (UTC)
+Date: Wed, 14 Jun 2023 22:41:51 +0200
+From: Sam Ravnborg <sam@ravnborg.org>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Nikolay Borisov <nik.borisov@suse.com>,
+	"Ahmed S. Darwish" <darwi@linutronix.de>,
+	Arnd Bergmann <arnd@arndb.de>,
+	"David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org,
+	Russell King <linux@armlinux.org.uk>,
+	linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	linux-m68k@lists.linux-m68k.org,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-mips@vger.kernel.org,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Rich Felker <dalias@libc.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	linux-sh@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	linux-um@lists.infradead.org,
+	Richard Henderson <richard.henderson@linaro.org>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Chris Zankel <chris@zankel.net>,
+	Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [patch 09/17] sparc/cpu: Switch to arch_cpu_finalize_init()
+Message-ID: <20230614204151.GA1492503@ravnborg.org>
+References: <20230613223827.532680283@linutronix.de>
+ <20230613224545.431995857@linutronix.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230612210423.18611-22-vishal.moola@gmail.com>
+In-Reply-To: <20230613224545.431995857@linutronix.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230614_094137_727775_5168667E 
-X-CRM114-Status: UNSURE (   7.51  )
+X-CRM114-CacheID: sfid-20230614_134204_956780_5FDE4622 
+X-CRM114-Status: UNSURE (   9.10  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -75,13 +105,17 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jun 12, 2023 at 02:04:10PM -0700, Vishal Moola (Oracle) wrote:
-> As part of the conversions to replace pgtable constructor/destructors with
-> ptdesc equivalents, convert various page table functions to use ptdescs.
+On Wed, Jun 14, 2023 at 01:39:35AM +0200, Thomas Gleixner wrote:
+> check_bugs() is about to be phased out. Switch over to the new
+> arch_cpu_finalize_init() implementation.
 > 
-> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+> No functional change.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: sparclinux@vger.kernel.org
+Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
 
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
 
 _______________________________________________
 linux-um mailing list
