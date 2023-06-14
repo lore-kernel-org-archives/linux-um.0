@@ -4,108 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7344FEB64DA
-	for <linux-um@archiver.kernel.org>; Wed, 14 Jun 2023 10:40:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 262BAEB64D8
+	for <linux-um@archiver.kernel.org>; Wed, 14 Jun 2023 13:02:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=vfLT0Fe8O9pfeF9QjmdxVnG+shq7K6Wdz2IUKyqPmRY=; b=bUZSOoq1w/+zAr
-	VjA6pmY2fzBPZDHQnSocei1++07HheDgL6qNh8H5tZ+4XGAG0teR0O2TpGpsflIdzqYrRTm44vu8I
-	ljkmFA3rEU1Dc6OB2CYS/MEyVwV2s0Xoj8H+pX9SJeYow2Zzg7vDkP79UZeB/d6MjC4A150DleMYU
-	TrMPQmdVsZY+41NI4OGLupGQWYyytm+tavjyr7v+EG9nR/HP+5n4VE12li/LriawLIyrQ2s83X8Lv
-	eS0gBn1AbMEdRBy45xGBORCqJ92+znzVntIUDB6T5RPX6clML2wXdwNTgOVtKo5Q1WDEf3Q8Ogwq5
-	+LWk0088+rRFehisc/fg==;
+	List-Owner; bh=eE3fkLrMsjOh616S0AIHHAuq6H7TCV4kX6xuOhfRFJk=; b=Pxbj1j4ykuJHaS
+	hNHJzDu7XtUiBKw6Do9vZXfzH6/nB3ZO9iIWjWzN+oTGx4BJH4jy+frQzNJ3TCLLrgtfgBrXAmpd+
+	rx1ZuQVNLsfVoQPKf+z5ju72HkjeHq0kksV2YrboqJApjE9IB4idXwAPFuPWO3RVrGYTu7re/oSoq
+	e1OSRY62bv5vWxq7Etig+QqlSQBGZgrbs06LXgGPRdMj6R5BygHxV6Sz4b/HjVK8khROq1G1RiGUf
+	+tPrHyk5A9vWAkinE0In1p4jzwDRG9ADvzvu3vLMLPtX/OcXQwmKJXTVxai5/fGvPaVTosZEfkhrw
+	jZesOGiuVmqYw8uOnC5g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9Nvg-00BG7Q-1o;
-	Wed, 14 Jun 2023 10:40:44 +0000
-Received: from mail.skyhub.de ([5.9.137.197])
+	id 1q9Q9F-00Bh9K-2H;
+	Wed, 14 Jun 2023 13:02:53 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1q9Nvc-00BG5o-24;
-	Wed, 14 Jun 2023 10:40:42 +0000
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1D3B11EC072D;
-	Wed, 14 Jun 2023 12:40:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-	t=1686739238;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-	bh=l0wmUCOq08ocL9JWwuGeMkrv5XjoGiMDJp61EtBoHWU=;
-	b=NtiUaYGB5+TIiR6764dKlyutinr0Ii2WHv1k1ezwxrjjQluavlkSikEJFCBE29+y/6mRd/
-	9MUSBX1BWV2MDxyCbr2QzRorpbH40VaUbn3P++FsWlkUli8gdX+1wB1IMooeSaZUIQ00QY
-	2Z4CIiA4TBNTNbI3FVrl+xBfD2lz8oY=
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id Pj0lafQrEqVp; Wed, 14 Jun 2023 10:40:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1686739234; bh=l0wmUCOq08ocL9JWwuGeMkrv5XjoGiMDJp61EtBoHWU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=k/bfHtEPP8YIugFtqP+tN7LuSStGm8cFiUrHxVXMD7P3bgirpEEolWPDL+G5Du0Ye
-	 oES6q+UTrgVC0XsCPnhHAnXrgeI74hSaa4liUMaygb/Qe6T0A1WExfifcs6O/SI6Hy
-	 UMJ7Ylo8gXm87tXLFG1dJLNFsdrX59AjRaa1KiXyl87SWoSzBeagPRa2apwt2nEakO
-	 e9VbO5ef2lKwu/7Bl6wRfn5UcrR3L58Vyjjqim1KInTv2VbqErVoEhQrLfTpdXcONy
-	 i8l0xguR7a/APu4Q5wiNXeUs1DhYdGfZpibapg0j34EWnXTfHRkimUnz2uqO5nbl1n
-	 WrKGDg1wRNEi6YV9N8ASx3Jkh1GEBSm3Iy47Rtq0mzqtK9wFgejzMmuWsq5rLDTnbu
-	 k476FnlY9Q03tTWlcNR0mwL0cltiNK+WzxryIwdyhXz79/U59j+aXRPE3226LH7nuR
-	 mPBd/hcumKwgUIW/y7r34xKEyDlXo1cCJDvrLyXetKh9urHMjgm/wmTfrBwkAQeXa7
-	 NV1zEAOAmoRv1ihD7AGnEoHuTT3zFe1Rlmdp4JaQPZMj9XyEbY87bxlzuUTxP4/HDP
-	 xLdf/AJlIV1769l55vJl2dl/9HW3PNJkuIUZVr1tn/7QIJCewdotxWz7PITPBacB/8
-	 mrNBtZfDh3ofu7rt5wUXClHo=
-Received: from zn.tnic (p200300ea971dC5f7329c23ffFea6a903.dip0.t-ipconnect.de [IPv6:2003:ea:971d:c5f7:329c:23ff:fea6:a903])
+	id 1q9Q9B-00Bh7B-0Y;
+	Wed, 14 Jun 2023 13:02:50 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 511F740E018C;
-	Wed, 14 Jun 2023 10:40:02 +0000 (UTC)
-Date: Wed, 14 Jun 2023 12:39:55 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Nikolay Borisov <nik.borisov@suse.com>,
-	"Ahmed S. Darwish" <darwi@linutronix.de>,
-	Arnd Bergmann <arnd@arndb.de>, Russell King <linux@armlinux.org.uk>,
-	linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-m68k@lists.linux-m68k.org,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-mips@vger.kernel.org,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	linux-sh@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-	sparclinux@vger.kernel.org, Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	linux-um@lists.infradead.org,
-	Richard Henderson <richard.henderson@linaro.org>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Chris Zankel <chris@zankel.net>,
-	Tom Lendacky <thomas.lendacky@amd.com>
-Subject: Re: [patch 02/17] x86/cpu: Switch to arch_cpu_finalize_init()
-Message-ID: <20230614103955.GAZImY+6VF9oezn22m@fat_crate.local>
-References: <20230613223827.532680283@linutronix.de>
- <20230613224545.019583869@linutronix.de>
- <87legm8j4h.ffs@tglx>
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 4E2AB639FF;
+	Wed, 14 Jun 2023 13:02:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8321C433CB;
+	Wed, 14 Jun 2023 13:02:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1686747764;
+	bh=Z0S2d/Eru6a8jIIub+wJj2QGnnAEIe7xODp5r4XEjY4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ij1kaX2f2DmI7HK85FkEb/euMvHbhk1Yl6Bfkym5Y/V3n55SCcwdtHPiMl/Uaznfq
+	 /JPBcReV4N5cCfLGrjl0lmP3t1/xIRQ0sNu8SuNRKfJvFTG3ehEI7XrnyZzzj/mq5Z
+	 LIzsfSZJkFEA+VFk5od8SUJmz7a2MZahKi7y83tUViVFyHKqtoU7QmKJKuQUMruG+3
+	 ZBcXEtH/BdXI8p8nle54zxP2rJXEAQvrH6UElVJeso6ar3qrgbKRU7tK7ulw5ExB7M
+	 3MJes9iMWx7TD3tX2qF3/3jOSJV75iRXzB8fjYUsip9RPr0GERlktBmW7yBKguUpKQ
+	 +EDy1u2Ox8vrA==
+Date: Wed, 14 Jun 2023 16:02:07 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+	xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
+	Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH v4 01/34] mm: Add PAGE_TYPE_OP folio functions
+Message-ID: <20230614130207.GZ52412@kernel.org>
+References: <20230612210423.18611-1-vishal.moola@gmail.com>
+ <20230612210423.18611-2-vishal.moola@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <87legm8j4h.ffs@tglx>
+In-Reply-To: <20230612210423.18611-2-vishal.moola@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230614_034040_839501_FC692591 
-X-CRM114-Status: UNSURE (   8.39  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230614_060249_292883_4F75DEF0 
+X-CRM114-Status: GOOD (  17.07  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -122,19 +84,79 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jun 14, 2023 at 11:53:50AM +0200, Thomas Gleixner wrote:
-> That's the wrong order. mitigations must come before the smt
-> update. Thanks to Boris for spotting it.
+On Mon, Jun 12, 2023 at 02:03:50PM -0700, Vishal Moola (Oracle) wrote:
+> No folio equivalents for page type operations have been defined, so
+> define them for later folio conversions.
+> 
+> Also changes the Page##uname macros to take in const struct page* since
+> we only read the memory here.
+> 
+> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
 
-Right, with that fixed the ordering looks good now.
+Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
 
-Reviewed-by: Borislav Petkov (AMD) <bp@alien8.de>
+> ---
+>  include/linux/page-flags.h | 20 ++++++++++++++++++--
+>  1 file changed, 18 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+> index 92a2063a0a23..e99a616b9bcd 100644
+> --- a/include/linux/page-flags.h
+> +++ b/include/linux/page-flags.h
+> @@ -908,6 +908,8 @@ static inline bool is_page_hwpoison(struct page *page)
+>  
+>  #define PageType(page, flag)						\
+>  	((page->page_type & (PAGE_TYPE_BASE | flag)) == PAGE_TYPE_BASE)
+> +#define folio_test_type(folio, flag)					\
+> +	((folio->page.page_type & (PAGE_TYPE_BASE | flag)) == PAGE_TYPE_BASE)
+>  
+>  static inline int page_type_has_type(unsigned int page_type)
+>  {
+> @@ -920,20 +922,34 @@ static inline int page_has_type(struct page *page)
+>  }
+>  
+>  #define PAGE_TYPE_OPS(uname, lname)					\
+> -static __always_inline int Page##uname(struct page *page)		\
+> +static __always_inline int Page##uname(const struct page *page)		\
+>  {									\
+>  	return PageType(page, PG_##lname);				\
+>  }									\
+> +static __always_inline int folio_test_##lname(const struct folio *folio)\
+> +{									\
+> +	return folio_test_type(folio, PG_##lname);			\
+> +}									\
+>  static __always_inline void __SetPage##uname(struct page *page)		\
+>  {									\
+>  	VM_BUG_ON_PAGE(!PageType(page, 0), page);			\
+>  	page->page_type &= ~PG_##lname;					\
+>  }									\
+> +static __always_inline void __folio_set_##lname(struct folio *folio)	\
+> +{									\
+> +	VM_BUG_ON_FOLIO(!folio_test_type(folio, 0), folio);		\
+> +	folio->page.page_type &= ~PG_##lname;				\
+> +}									\
+>  static __always_inline void __ClearPage##uname(struct page *page)	\
+>  {									\
+>  	VM_BUG_ON_PAGE(!Page##uname(page), page);			\
+>  	page->page_type |= PG_##lname;					\
+> -}
+> +}									\
+> +static __always_inline void __folio_clear_##lname(struct folio *folio)	\
+> +{									\
+> +	VM_BUG_ON_FOLIO(!folio_test_##lname(folio), folio);		\
+> +	folio->page.page_type |= PG_##lname;				\
+> +}									\
+>  
+>  /*
+>   * PageBuddy() indicates that the page is free and in the buddy system
+> -- 
+> 2.40.1
+> 
+> 
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Sincerely yours,
+Mike.
 
 _______________________________________________
 linux-um mailing list
