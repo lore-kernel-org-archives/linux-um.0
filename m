@@ -4,81 +4,145 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 276BAEB64D7
-	for <linux-um@archiver.kernel.org>; Wed, 21 Jun 2023 16:15:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33EB1EB64DC
+	for <linux-um@archiver.kernel.org>; Wed, 21 Jun 2023 17:12:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=QGYj4N3s+80LJ9j3GSU3SmPJBYt1/GSlAcuOzjljF70=; b=CwJHa0rtbpreXU
-	V1IrgHPS4o9aSGb23vsTtIRs17+Mm61B9Chnux4B02UjMNk4PljxmubppQ9zq/9p45u24cBHjeis9
-	rR7Jw27V4idq5iBnZ+bmd+iZweNw1ZrPSUGR2JSyBv9LllmnEUtJ5zf2gukepxD6OBis1Pnro6hF9
-	Kq+Yatn8yVUTRYtZU4lIvlwIrmqQc1vsQgfoIgDurWbm68M4ykda81mnFbXnMYDhBPXAgWjZ97HBo
-	O8HAxl45g9mThqJQ3d1ub8kxnE0GwMoSS2XVnV5R8PuSQ5P2BPkjHF1/Py0rj6dQqWbGgHB1csJGc
-	4V8wbeXbabsWRO59Vn/w==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:From:References:Cc:To:
+	Subject:Date:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=z2z3f73j5M7cFwMfeKSWaaRClFp+Up81ViX5QBs/JcQ=; b=TD8t5TDlYcsW1NcRab2s8VeRYP
+	GceKMATJ3ivuhXYjqKRfTqJFysSgx4GjCjcMk6zvVHC7dLEUEF5HF85r20NrFN/cxFxplAMihGIP0
+	7iPxpHOA9drh9K3QJ4uudcDsi4yrrErhdVJ4e9ck6uGfAVxJ8Im9Ilq0mYVDGNMDFdxLqyiWh/NNV
+	DpNTsuHqi1Ik4jvifHD6Ol+PoZCHxG0qce3bjH1HUkXI3GPnEW/yupSuSo/ue8t/WcbmWnpKzpKa1
+	/kBfXCqaoJ16iHg/0CYopbwrqCB8yVFVSkdOJlsJYxO/CBghTUSzRNfKkaoMTLZiIra1A1/OFO7sp
+	c56ICPJQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qC0Ur-00F3bd-29;
-	Wed, 21 Jun 2023 16:15:53 +0000
-Received: from mail-pl1-x62e.google.com ([2607:f8b0:4864:20::62e])
+	id 1qC1Nn-00FCDM-37;
+	Wed, 21 Jun 2023 17:12:39 +0000
+Received: from mail-mw2nam12on20613.outbound.protection.outlook.com ([2a01:111:f400:fe5a::613] helo=NAM12-MW2-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qC0Un-00F3aK-2z
-	for linux-um@lists.infradead.org;
-	Wed, 21 Jun 2023 16:15:52 +0000
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1b5452b77b4so38270735ad.3
-        for <linux-um@lists.infradead.org>; Wed, 21 Jun 2023 09:15:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687364148; x=1689956148;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nJGYiZSmAz4f7DWqK5EepnnOfjeHuHz97IlICgAbfpM=;
-        b=rXvFFwpBMa5FmYnwQKryzn7/pRIxWbxqUbuDWOxQy5R5fuAZg6H/lCYrcytisckb9V
-         JOpaxzgqsRWoqC9YWvhZwVl2z2eplFB28DwpD7fd5PD2IuLiLmFrxexRL/I4e3IPwnFZ
-         iEZXzUZBM6F6NV0AdfajGy9BoRkUWB56UG/XWMsL1z2z5F1i77CAhHoR2lCRMndf//kw
-         VLBGg1mE8ZdmAsGaFgqJ8P7IfxuDy4/LtblSTRPIpMYlrG/4m4AoKKE6WkZWZ4gAW4v7
-         z+7l0xfPc+roMttREcfno6LCCh2x6ZH9JJFipd+v5VxGB8FWEUlGQgCTP85PKZIuSBj6
-         CWLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687364148; x=1689956148;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nJGYiZSmAz4f7DWqK5EepnnOfjeHuHz97IlICgAbfpM=;
-        b=fwaS9lUTaxL0o5/O6nh/0U0WqXDcOowFoyZeXXZpG5zdWY82I7PPoP+vrOD1uYwEwS
-         RrTEDgQiEW5n9mZMRW1ceD4K5ShVAKPWO89EZxgES+uI9LkuqcxgCItL4GADeA/SBVnU
-         7do2inFgodLmBknZ5+cOoCnRWv4GD/WeGDOLzSISAJDOu2MkCOQJOU0prCWqshpjzTAu
-         X9+x1ndng+LgZloYbEssZG1+Mu7guIeOuMPf59RqqvONDrhyhy9i2xOYaUWESP0IKS+2
-         V5mt9GrGqO5KhEXm/YkLVn6s/Og8Wdokj+NYturqq1xJWHYj82SneqaY1No3lVd/0Zz4
-         nvfA==
-X-Gm-Message-State: AC+VfDwoUm5gMG6f0kD8nfrrsB704m24GAb20L4dIpOCKJzO5vcODH0Y
-	U8FMDc1wBnbNJBHUs4WUP5U=
-X-Google-Smtp-Source: ACHHUZ5w5C/Ax/llbxeWIVIzqLnv+V2hnXxpwlzgpEcMzA+Yr9rTk5qAvHYFGctAC+AfLAN0h7E8Dg==
-X-Received: by 2002:a17:902:bc85:b0:1b5:54cc:fcb8 with SMTP id bb5-20020a170902bc8500b001b554ccfcb8mr10779557plb.19.1687364147732;
-        Wed, 21 Jun 2023 09:15:47 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w15-20020a170902e88f00b001b53d3d911dsm3712465plg.69.2023.06.21.09.15.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Jun 2023 09:15:46 -0700 (PDT)
-Date: Wed, 21 Jun 2023 09:15:45 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Nicolas Schier <nicolas@fjasle.eu>, linux-um@lists.infradead.org
-Subject: Re: [PATCH v7 03/11] kbuild: generate KSYMTAB entries by modpost
-Message-ID: <bb5048e7-5e8f-4391-a9a0-ff15b5384186@roeck-us.net>
-References: <20230608142428.256985-1-masahiroy@kernel.org>
- <20230608142428.256985-4-masahiroy@kernel.org>
+	id 1qC1Nl-00FCCc-1u;
+	Wed, 21 Jun 2023 17:12:38 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Eho4tAFb4UX0DE4JyB69vWCuPwudKtjHbtXzKAep9jozwF75YKuV8NiwLu996CwKyP9t2dkaAI3Vy3vSsvt6NjCqFfrHVgXztzHUJKw6Kz5/0OMBJcf1unN5SbremBZDhNBKajzsTvoHI4dZG3Mkz1eRPEO8Z7XQqQW78bLaqoMJe4NLUqOw+JmeAt28YvUSf0nmFKG/C39hMvV+OD503XFlZ65iomWDQSDfYjEcUiUU7eRROPb62w9kU9Cq0DtHa9o7DEo6gDVS8ppJblwNlHeKZhM6VB35jIAlOm5NDgVJ7aTUkysegCJMECU7m3Ab4E1TOFl8L+MiOVrK+wQJ/w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7A9DVQgzS9DWRv6ZiGnJmNF/wMnib+H4UxmcsW8hGUM=;
+ b=lR6GnOd4nkZQvukrObBttWK1qtgyxPKThTyIuZl4Xu4px1foN1aJMlpmxEyXq3SOsaUm6WrdYoIp6yl5jySdisCoV0ZK4CGzwEt+QV9QwNlo+E1cG3QkfW8+WkFXoeuiVlD+qMJOncGxLtgxbLYVeoIGwo2CzEdE8u6nKzgcL4yehRko4q0gWiyUZ9nXoiM/m1/CpN1K31z77q7MVABRhWY8lwGp/5wQPNjkP3A3KMz+hhmQ+tH/scQX88ObEaj8o1fLfSWC/MHpMGH3+6/FqDWZPFaFZFqsjeXJYUNVcamOoFwiNunEotuR49KpA4DA+AdwjEMWS3czChKDLzbqvQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7A9DVQgzS9DWRv6ZiGnJmNF/wMnib+H4UxmcsW8hGUM=;
+ b=Fteqe1Fx1sx+auPqpnkXIxooCe+wDGJPMC6KmKFI6gQ6wVBlnprRrdPjvC3wc+/CF316VvH4zXAiCSfsrJ2JmbYkamneoke7m5MJA5Sxywt7jwi/bmVsTExbXVSbbYrLIL2eADucN6/nT3jeQMtBY3iUpBZfnjQwdbjiHPbmasc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
+ by CH3PR12MB8356.namprd12.prod.outlook.com (2603:10b6:610:130::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.23; Wed, 21 Jun
+ 2023 17:12:30 +0000
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::1629:622f:93d0:f72f]) by DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::1629:622f:93d0:f72f%7]) with mapi id 15.20.6521.023; Wed, 21 Jun 2023
+ 17:12:30 +0000
+Message-ID: <6c572cce-f596-1e95-f834-efb6b49b2ea6@amd.com>
+Date: Wed, 21 Jun 2023 12:12:22 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [patch 13/17] init, x86: Move mem_encrypt_init() into
+ arch_cpu_finalize_init()
+Content-Language: en-US
+To: Thomas Gleixner <tglx@linutronix.de>, LKML <linux-kernel@vger.kernel.org>
+Cc: x86@kernel.org, Linus Torvalds <torvalds@linux-foundation.org>,
+ Nikolay Borisov <nik.borisov@suse.com>,
+ "Ahmed S. Darwish" <darwi@linutronix.de>, Arnd Bergmann <arnd@arndb.de>,
+ Russell King <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org,
+ linux-ia64@vger.kernel.org, Huacai Chen <chenhuacai@kernel.org>,
+ WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
+ Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-mips@vger.kernel.org,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ linux-sh@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+ sparclinux@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org,
+ Richard Henderson <richard.henderson@linaro.org>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ Michael Ellerman <mpe@ellerman.id.au>, Chris Zankel <chris@zankel.net>
+References: <20230613223827.532680283@linutronix.de>
+ <20230613224545.670360645@linutronix.de>
+From: Tom Lendacky <thomas.lendacky@amd.com>
+In-Reply-To: <20230613224545.670360645@linutronix.de>
+X-ClientProxiedBy: SA1P222CA0001.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:806:22c::34) To DM4PR12MB5229.namprd12.prod.outlook.com
+ (2603:10b6:5:398::12)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230608142428.256985-4-masahiroy@kernel.org>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR12MB5229:EE_|CH3PR12MB8356:EE_
+X-MS-Office365-Filtering-Correlation-Id: 24402f93-bede-4422-8375-08db727aafcd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: g5aJ9csGD0kvQEmNMbSQFlus/1FpIRNC3pRqIwojT4vrjbYqYoXfi7ny2Af/y/6b25ECvUoW0LV1phFIphuwG1Nb/ls6iWAh/cCVyqiusEDOT1UAi36aMPLNo3ZZPhQdqg7Y2kXXHvoOYyq95BvkOg6utlH2WxLaG86Q7Iuku3VZM0lO4FrZoeYGnY2aickD/yroxR2Q6q8/ihr+ZLy9Gy6J32Olkircl02r+vBv9XRE5Z+p0HnOEVWpeD9zgscjncAoVyeuwA5LozzyrChEmFrVPePmnxpwhM/NTNQabslXfW+GbsoHsjkhFvYt0FNmdgtsAVow5zTwMMyMb0VPNZMa9vFAGP9edm4VWw5G5IkZfizdegGbFd5mFcEpur3OoZc8OAyI9bQO9Tf+Zbl/oKqIE03xZqnI+saeS9evaSsf5K1q0zwwgHVRWaHZt0bc9OdFtbMl1Q1oxCBYNSBrIrQdEyMn0AAwoy8Dc/rTSLoX6Uirih7AMXhJv82tztZKljDYqPx1FM0NLdjzL2k8XBWQy67DiuDxtIVKZ6tSuqQCvrnIo5Vc7D4PcgzAkHQD2Hzmw4NT7cKbx0CgKtuTDb10DTpPTtXrQFrVZfR75D9m+Hjo4x6xzpVt4TG2GtSonnJQAaN9gvNp083Gpk7sgg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(136003)(396003)(366004)(39860400002)(451199021)(31686004)(478600001)(66946007)(66556008)(66476007)(36756003)(6666004)(316002)(54906003)(86362001)(110136005)(31696002)(6512007)(83380400001)(6506007)(26005)(186003)(2616005)(6486002)(38100700002)(53546011)(8936002)(8676002)(41300700001)(4744005)(5660300002)(2906002)(4326008)(7416002)(7406005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Y2cwVWRxY2UwaWdjRE9vNERDUHJOM25UTWYrZGpualFEUkJlUkdsUXZyZzhs?=
+ =?utf-8?B?WXBoWHE5MHZPUHJ4dWFaTThRQkRoUkR2YVV1b2VmVUlaN1A3MVdLVS9xZXM2?=
+ =?utf-8?B?OUVuNVpOWS9Oa3B3TWpCUkllcWpxdzlUWDd1dVZOSU5PRGpGTlVGNUhUcE5u?=
+ =?utf-8?B?UnlEaExEaUNLNzdKQ08wZDNQdzFHYWdSK25BOHVNMXRNS01vTEQzMXRZeHVF?=
+ =?utf-8?B?OXNYeVNHTEFla0FxVzJHclk2UUI4QXlWUjNKZ3ptdm9nZGJYdHllSGdKR2Jt?=
+ =?utf-8?B?VXFacTQwdFQ2bm5IREpROUFCTnpoQmtxS2lwR1pvRkVxU1lKUlkyM2MvNkRp?=
+ =?utf-8?B?bWRybUpLaVFNNmJ4MVlBYkluWmhOS2JucWF6aDBHd1c4c0lwemlraDRxYXBt?=
+ =?utf-8?B?ZThITWVMOFNyRDlTc1NaaGc1cVlZeFcrc0dSS0NvVzZqS1FUY0ErZVdRN2Jq?=
+ =?utf-8?B?Q3EySnB0UEI5QSt3OUV4TzVVSDhKYjJPN1NCNlFLcmtSQU16SkcrWlBkSDdJ?=
+ =?utf-8?B?NnpuMDJid0hac1h4T2dYTkl2ZnZsM2FGbGRxQ1JTc1UwVzBjZHFLeHNkdGZL?=
+ =?utf-8?B?VElHMHFNVDM0ekx4cVIzUlRnR2hTdlJWazR5STQ4b2N3TjJyNU9tM0Y3QVhh?=
+ =?utf-8?B?M21pZDd4TVBZdzR2Rzd5K0ZoUnF0Y3hoQTBWL2grb0FDYmZvY3pVVU9FdkRq?=
+ =?utf-8?B?VU1ub0I2NVFLNHBRSXpCcFFVWnBUR25KcmxzK3NuUkVuZ3FIMEdXODgzeW42?=
+ =?utf-8?B?UzVlK1MyMGZiRmdHb0FJRzM3REdqcGNVVnRVRG44M053M1ZjYW1VY3VManVn?=
+ =?utf-8?B?MDRlaWRUcUtQRzdKZlI3d1F5Sktidy9iNS9ONTczREFkVFBOTHA4V2EwN3d0?=
+ =?utf-8?B?TW5DZ3czZ0ZoRVVJNStLbWwxOUVFNU9SSzI2eXdwc2l1VlhCaysyeCtwQWVN?=
+ =?utf-8?B?VHdpU1ZuUWhWemlCTU50eVVkTkltZFdlQmUzR1krNEVCbktyNzNsM0pvY1Jr?=
+ =?utf-8?B?WEFLcmRrZXJRd0NsTDlmQ08zY3NRcEV0RVMwaWl1NXJsQ2dPMEVtaVVraTVX?=
+ =?utf-8?B?MWcwb01hOXNZbmdEM1BqaXV6KzVjMDJTV0VMYXNTVDIwZk5Wa29RbFhibzBJ?=
+ =?utf-8?B?c1JDaGJhblFHYngxaC82K1V0YmdJSGhYS3p4cFAyRFJ4MlJ6VmN5QzFFMERk?=
+ =?utf-8?B?ckwrdFdaSklXM2ZaR3k3MmdnNGgra0JrbFBoajZDVkIwSXJHK0QvTEhINERh?=
+ =?utf-8?B?Ui84b082WGhLM3kyQ0gwbnI5N0JqeXNMTG5kOC96TTJWYW1sSm1iVzhQck9u?=
+ =?utf-8?B?V05hMWRSc0Q4N0lSQVZjaTh3RGt6cjFqZTZCRkJhRHM3cnZTRVVoeGk0RWpW?=
+ =?utf-8?B?SVd5VnhuUERTZWNhbVcyRnFONFBrR1BBaHFTRjhMRGR1Z1BmQnJVVllxRXdM?=
+ =?utf-8?B?VHlDcndnZXR2THBRbG82c2tOelF6NFZ5ZHlJZytPVkEraERneFgwU3I2eXFQ?=
+ =?utf-8?B?dm43QWFMa1J6MlJWU2tIY2RHV0ZJKzJ2eFZpUTRrYXFyVGNmWk41eExWRVdp?=
+ =?utf-8?B?UE92aUJVRHkwZmNrVzNFeGFuWlp1Q0NHZUhvV2lpSU1sV2VicDgzem9IQ0M5?=
+ =?utf-8?B?TkMrdXlZWmlMcWEyWTVQRlR3bE9YSE9BYUtWNngwcDBSQTd4NkFlUyt5OHNG?=
+ =?utf-8?B?UWNDdHZGeStlUjBMK08yZ0JZOU5vdWxhWklxR3V5Vm5CQ3hMa0pLUThXSno3?=
+ =?utf-8?B?MjFBc21oQWdEMU9pWm5wdWpKK0FQL0RTejJSTmk0bE5pcHVuNFBLL3FhYnU2?=
+ =?utf-8?B?UW11azF2R2N2VkdGRVQ4SWx6YmZXdk9USlRKYWpKdXM0RnFqWDJNK3VrcXhI?=
+ =?utf-8?B?Vld3aHVwNys2OGw4TUZvdU13OVZFMC9ITDJKZ2I2M21qT3VWbjhNVW9ja3FE?=
+ =?utf-8?B?ai9BSEV3QjlxRzdOSXR3bEFYQ0VxamprY0lsOU10S2Y1VUw5ZzA3QzZpR1dl?=
+ =?utf-8?B?ZkRyYmJrZ2swcllaK3Bqd2JINCt5RmlubVExQWJIRkUzNkZZSGd6WXJwSlpL?=
+ =?utf-8?B?NHY1UGExL090SDNyc1JPT0pZeStDWk9jdXdDcmJyV29OdnlRZVFLK1FaWjVp?=
+ =?utf-8?Q?M9/01UBEybqWEphqZo7GApvPD?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 24402f93-bede-4422-8375-08db727aafcd
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2023 17:12:30.2143
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: SnyXSgu0SNegjMGQqQhBFywene8hE3DCzXzvACM17ckySPa0s4eHBRHV2rguFDYFsJr4E57od4RvjdfVMm+ZAA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8356
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230621_091549_966780_F6772A2A 
-X-CRM114-Status: GOOD (  10.59  )
+X-CRM114-CacheID: sfid-20230621_101237_632598_7A340931 
+X-CRM114-Status: GOOD (  10.84  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,71 +154,28 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jun 08, 2023 at 11:24:20PM +0900, Masahiro Yamada wrote:
-> Commit 7b4537199a4a ("kbuild: link symbol CRCs at final link, removing
-> CONFIG_MODULE_REL_CRCS") made modpost output CRCs in the same way
-> whether the EXPORT_SYMBOL() is placed in *.c or *.S.
+On 6/13/23 18:39, Thomas Gleixner wrote:
+> Invoke the X86ism mem_encrypt_init() from X86 arch_cpu_finalize_init() and
+> remove the weak fallback from the core code.
 > 
-...
-
-> We can do this better now; modpost can selectively emit KSYMTAB entries
-> that are really used by modules.
+> No functional change.
 > 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
 
-This patch results in
+Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
 
-Building alpha:defconfig ... failed
---------------
-Error log:
-<stdin>:1519:2: warning: #warning syscall clone3 not implemented [-Wcpp]
-WARNING: modpost: "saved_config" [vmlinux] is COMMON symbol
-ERROR: modpost: vmlinux: page_is_ram: EXPORT_SYMBOL used for init symbol. Remove __init or EXPORT_SYMBOL.
-
-I don't know if other architectures are affected - linux-next is so broken
-that it is difficult to find root causes for all the breakages.
-
-Guenter
-
----
-Bisect log:
-
-# bad: [15e71592dbae49a674429c618a10401d7f992ac3] Add linux-next specific files for 20230621
-# good: [45a3e24f65e90a047bef86f927ebdc4c710edaa1] Linux 6.4-rc7
-git bisect start 'HEAD' 'v6.4-rc7'
-# bad: [e867e67cd55ae460c860ffd896c7fc96add2821c] Merge branch 'master' of git://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git
-git bisect bad e867e67cd55ae460c860ffd896c7fc96add2821c
-# bad: [57b289d5b1005a9c39d6d6567e0ef6115bd59cea] Merge branch 'for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git
-git bisect bad 57b289d5b1005a9c39d6d6567e0ef6115bd59cea
-# bad: [dc6399fc9ae6d2530fc38fb3ae96bcc8393bd66f] Merge branch 'for-next/perf' of git://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git
-git bisect bad dc6399fc9ae6d2530fc38fb3ae96bcc8393bd66f
-# good: [6d366ba598334a0457d917a7bf38efd118c5b7be] Merge branch 'mm-stable' of git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm
-git bisect good 6d366ba598334a0457d917a7bf38efd118c5b7be
-# good: [82fe2e45cdb00de4fa648050ae33bdadf9b3294a] perf pmus: Check if we can encode the PMU number in perf_event_attr.type
-git bisect good 82fe2e45cdb00de4fa648050ae33bdadf9b3294a
-# bad: [d2fa756910f88c2f5871775483744407cbf67933] Merge branch 'for-next' of git://git.infradead.org/users/hch/dma-mapping.git
-git bisect bad d2fa756910f88c2f5871775483744407cbf67933
-# good: [1b990bc8edc396a37a3ff1a43f7c329c361ee07c] Merge branch 'mm-nonmm-unstable' into mm-everything
-git bisect good 1b990bc8edc396a37a3ff1a43f7c329c361ee07c
-# good: [cff6e7f50bd315e5b39c4e46c704ac587ceb965f] kbuild: Add CLANG_FLAGS to as-instr
-git bisect good cff6e7f50bd315e5b39c4e46c704ac587ceb965f
-# bad: [8f3847e175a0044e2212fef772e7fa912270cd6d] ia64,export.h: replace EXPORT_DATA_SYMBOL* with EXPORT_SYMBOL*
-git bisect bad 8f3847e175a0044e2212fef772e7fa912270cd6d
-# good: [3a3f1e573a105328a2cca45a7cfbebabbf5e3192] modpost: fix off by one in is_executable_section()
-git bisect good 3a3f1e573a105328a2cca45a7cfbebabbf5e3192
-# good: [92e74fb6e6196d642505ae2b74a8e327202afef9] scripts/kallsyms: constify long_options
-git bisect good 92e74fb6e6196d642505ae2b74a8e327202afef9
-# good: [92e2921eeafdfca9acd9b83f07d2b7ca099bac24] ARC: define ASM_NL and __ALIGN(_STR) outside #ifdef __ASSEMBLY__ guard
-git bisect good 92e2921eeafdfca9acd9b83f07d2b7ca099bac24
-# bad: [bb2aa9a94b41b883037a56709d995c269204ade0] kbuild: generate KSYMTAB entries by modpost
-git bisect bad bb2aa9a94b41b883037a56709d995c269204ade0
-# good: [94d6cb68124b7a63f24fcc345795ba5f9a27e694] modpost: pass struct module pointer to check_section_mismatch()
-git bisect good 94d6cb68124b7a63f24fcc345795ba5f9a27e694
-# first bad commit: [bb2aa9a94b41b883037a56709d995c269204ade0] kbuild: generate KSYMTAB entries by modpost
+> ---
+>   arch/x86/include/asm/mem_encrypt.h |    7 ++++---
+>   arch/x86/kernel/cpu/common.c       |   11 +++++++++++
+>   init/main.c                        |   13 -------------
+>   3 files changed, 15 insertions(+), 16 deletions(-)
+> 
 
 _______________________________________________
 linux-um mailing list
