@@ -4,62 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CD33EB64DA
-	for <linux-um@archiver.kernel.org>; Sat, 24 Jun 2023 13:16:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF109EB64DA
+	for <linux-um@archiver.kernel.org>; Sat, 24 Jun 2023 20:06:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UIK3lLmNqgETthAn8Nr3ZIPdj9MfRorNSI0dPyc3ev0=; b=gOyAhwG+t65gZ3
-	GsRF96+GyLCLguXBD18R0qPzgSOJ3nv47f5M/G8+fxKPg6UGIcT3Bn5HGornP+UoJdpkl4AcJJPlY
-	CCx0resN3TDvF5w+eCkJX/i9JMtlkQjE8T96tg8dXrDOvU6Tnd+AyrkLr7sDjzkO+LTleqEB7CO+6
-	5+1tT3N8cXJVQg0Auj8PO9Xw0MdNk/dMLc4XN7JE6n1KlrK6ts1GL+TnA7mPEH9ytIpd3QtsEbgfI
-	Ys6sHXmupl7iP80D8+zjCS3h8/KYaJCVnzSL7Hk/fXgx50v1y5SGLF4sQe8I350nDYUWTps3dN2g8
-	kB8oG2lcuMb2DuWg3hiQ==;
+	List-Owner; bh=zNgSeXkYuuoyKi+yl47Ig2KV1qhDXcnFrt6lgmtdhVo=; b=QPmDOgme2fKIlQ
+	GGeTNgJ1kGBpf7noUWrWa5jQn2QrzxVFn3gwtC9c4y1OY3usyTOZ//IgtFXneDYFA7f+chUG5mzuM
+	KH9hfyip2B4o/3Yb0rSkhatMSxmLvmMHdXHmGt7lponezNXh2+fFb26hfgzKOtosq8KOdB6M3XfTC
+	Y54O0QySFWn0d0QMv6fpvdnN4dcJbDBgO405wrdFRnpq2xzW01bucZWyf46oSPRCRmuRdADUdtVvg
+	uWylq8VIl+HR1EBQSGRZeizIYwAw5s7r2fDXYA8BsPZ4RJxl4TkcwBfWuj+Wt6OliKlQdhU60DOH8
+	zbE9a1Go7pvJRcdG2ZOg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qD37Q-00618C-0U;
-	Sat, 24 Jun 2023 13:16:00 +0000
+	id 1qD9WJ-006W1V-20;
+	Sat, 24 Jun 2023 20:06:07 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qD37M-00616u-0P
+	id 1qD9WD-006Vyz-2U
 	for linux-um@lists.infradead.org;
-	Sat, 24 Jun 2023 13:15:58 +0000
+	Sat, 24 Jun 2023 20:06:06 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
 	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=/T1ZWFGoI3wG8TTA5fyZDzaURz2CKEyx45+KZEvtO8c=;
-	t=1687612549; x=1688822149; b=OLiwOT9L72K7V3XdKAWxhK/zsLmn2X6a+t3mqMhDwq71W6X
-	FOaNEUUefwKnHed3VbHke/v1XljxAn3ugi0ZvIY9etCDF8FnWCdJPuB5Kc3WYJbulQwplsYWcbCzJ
-	8L1t67HvPQKVlfd1A7QGNRWig2pNHcmkuqoFuLw/aP1XZ/5h/1mwODUgSK50IJArhte8KhIgveJTl
-	ogFn39b5aevfjbpW5eQLpBYRQ3WzFZHHwx/cttDoY+VtV2kyWZ/tTGbc37men94dGOiKpPggGyCzg
-	f5v0+ET838WFtBHtxWaRUD2Q5BTmER6FqrV6i+DFM1qrjn92bEDhwswbN6w/7kkg==;
+	Resent-Cc:Resent-Message-ID; bh=J9JXCSZEmlfUIz6fCTIxKHvulGM01DXIRiTIUDyw6z8=;
+	t=1687637157; x=1688846757; b=LUuFmvFIDqPUM4o8j9LUmvNPoIaUUNeS2Zlo4v/lelca/AO
+	F50FgLqavwNZ1ITiSva/vWQKC+X0Nc77Y0gHc1QVYT6UdNazNVzPoQWYTpkUr5GFslBG1ruHT8qJ+
+	s5a74lBo/PF2IMcfnucMwpuhoEWAlT2oWeN/G+1JOMMFQ2TwK4EHciyHgaUHJnk++sGdnAUeMcByJ
+	XYOaWsUVDmQT+rb3hKKcnUcfivla8CA5IFaDQb96cfJsW+IkkLxKMeZJSwozYnDHFLaS4rasV2yHZ
+	1xtwhw1BdDFsRBX0I7kcMxq6o1h8NqX1gxgIpvl/Sioq+J19vog+C/xpy4TCvC+A==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.96)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1qD371-00Gfqq-1T;
-	Sat, 24 Jun 2023 15:15:35 +0200
-Message-ID: <ef180d8f1b69b95b51d324e0631807aeb6bcd09d.camel@sipsolutions.net>
+	(envelope-from <benjamin@sipsolutions.net>)
+	id 1qD9W3-00GpMi-0W;
+	Sat, 24 Jun 2023 22:05:51 +0200
+Message-ID: <b5ca5d46a0323048debf00ffd9e1574df675d93e.camel@sipsolutions.net>
 Subject: Re: UML for arm64
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Rob Herring <robh@kernel.org>, Benjamin Berg <benjamin@sipsolutions.net>
+From: Benjamin Berg <benjamin@sipsolutions.net>
+To: Johannes Berg <johannes@sipsolutions.net>, Rob Herring <robh@kernel.org>
 Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov
 	 <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
-Date: Sat, 24 Jun 2023 15:15:34 +0200
-In-Reply-To: <CAL_JsqKTb4QQGj6z2LB9tNFpwCRg5avdK=oQ7qzMjw1oWNBrvw@mail.gmail.com>
+Date: Sat, 24 Jun 2023 22:05:50 +0200
+In-Reply-To: <ef180d8f1b69b95b51d324e0631807aeb6bcd09d.camel@sipsolutions.net>
 References: <20230622192247.GA2278576-robh@kernel.org>
 	 <dc5704a5d452f7432313170ed900975b2b72354f.camel@sipsolutions.net>
 	 <69707b721698594f96899c050871bcbb3594a9a1.camel@sipsolutions.net>
 	 <CAL_JsqKTb4QQGj6z2LB9tNFpwCRg5avdK=oQ7qzMjw1oWNBrvw@mail.gmail.com>
-User-Agent: Evolution 3.48.3 (3.48.3-1.fc38) 
+	 <ef180d8f1b69b95b51d324e0631807aeb6bcd09d.camel@sipsolutions.net>
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
 X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230624_061557_062917_27BFC5DF 
-X-CRM114-Status: GOOD (  24.06  )
+X-CRM114-CacheID: sfid-20230624_130601_833327_1C15FE1E 
+X-CRM114-Status: GOOD (  37.31  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,92 +72,86 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2023-06-23 at 16:34 -0600, Rob Herring wrote:
-> 
-> > 
-> > Either way, the old patchset will give you a good idea about how it all
-> > works, the changes are mostly in the details. I am happy to push out a
-> > new version sooner rather than later if it might help with any efforts
-> > on your side.
-> 
-> From a quick scan, it looks like there's some cleanups in the series
-> which would be helpful without seccomp parts. One of the initial
-> issues I've found is UML using older ptrace interfaces which arm64
-> doesn't implement. PTRACE_GETREGS for example.
-> 
-
-I don't think that completely gets rid of PTRACE_GETREGS though, and if
-I remember correctly, we really kind of need that there?
-
-Though then again it's all been a while, and I only faulted the seccomp
-mode back in in discussions with Benjamin. Looks like we've found a
-potentially nicer way to make it secure than his secret-based approach,
-and in fact in a way that should even make it SMP-safe, at least in
-theory, obviously a lot of infrastructure is missing to make it SMP in
-the first place.
-
-Currently, UML has a host process per VMA. Obviously, you need multiple
-host processes for SMP (to get SMP), i.e. one per (used) CPU per VMA,
-with CLONE_VM.
-
-The problem with the secrets-based approach here for SMP is that the
-secret will be readable to the other running in the VMA (1) and then can
-be used for circumventing the protection by jumping into the stub area
-and calling host syscalls, see
-https://patchwork.ozlabs.org/project/linux-um/patch/20221122100759.208290-28-benjamin@sipsolutions.net/
-and
-https://patchwork.ozlabs.org/project/linux-um/patch/20221122100759.208290-24-benjamin@sipsolutions.net/
-
-
-Now the new idea we came up with is this: We can make the per-CPU VMA
-with CLONE_VM but *not* CLONE_FILES. Then, in the stub, when we need to
-execute some real host syscalls on behalf of the child, we
-
- * send the FD over in a message
- * use the FD for mmap (and also always use mmap instead of mprotect)
- * close the FD
-
-Without CLONE_FILES, another thread cannot "steal" the (real, host) FD,
-it's useless in the other thread. Note that I'm talking about host FDs
-here, in-UML FDs are just numbers and it works all differently, I'm just
-talking about executing host syscalls inside the VMA, to set up the VMA
-correctly etc.
-
-The BPF program now allows any the relevant syscalls (2) inside the stub
-area, but since you don't have the FD unless you actually executed the
-recvmsg() call at the beginning of the stub you can't do anything with
-that by jumping into the stub.
-
-There are some other details involved such as having to split the stub
-data into a read-only "what to execute" (3) and a writeable "results"
-page, but those are reasonably easy to deal with.
-
-At the end of the stub, of course the FD must be closed. This is fine
-though since mappings persist after the FD was closed. On the next page
-fault we have to do it all again, but yeah, page faults were always
-super expensive in UML ...
-
-johannes
-
-
-(1) unless you extract it directly out of the BPF program into registers
-via some magic syscalls that get a BPF return, but that's kind of icky
-too
-
-(2) mmap & munmap are the most relevant ones, some others but they're
-not that critical for security; notably mprotect is not allowed but must
-be done with mmap instead
-
-(3) so another thread can't actually overwrite the instructions of what
-the kernel wants to run inside the VMA process from another thread while
-it's happening
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gU2F0LCAyMDIzLTA2LTI0IGF0IDE1OjE1ICswMjAwLCBKb2hhbm5lcyBCZXJnIHdyb3RlOgo+
+IE9uIEZyaSwgMjAyMy0wNi0yMyBhdCAxNjozNCAtMDYwMCwgUm9iIEhlcnJpbmcgd3JvdGU6Cj4g
+PiAKPiA+ID4gCj4gPiA+IEVpdGhlciB3YXksIHRoZSBvbGQgcGF0Y2hzZXQgd2lsbCBnaXZlIHlv
+dSBhIGdvb2QgaWRlYSBhYm91dCBob3cgaXQgYWxsCj4gPiA+IHdvcmtzLCB0aGUgY2hhbmdlcyBh
+cmUgbW9zdGx5IGluIHRoZSBkZXRhaWxzLiBJIGFtIGhhcHB5IHRvIHB1c2ggb3V0IGEKPiA+ID4g
+bmV3IHZlcnNpb24gc29vbmVyIHJhdGhlciB0aGFuIGxhdGVyIGlmIGl0IG1pZ2h0IGhlbHAgd2l0
+aCBhbnkgZWZmb3J0cwo+ID4gPiBvbiB5b3VyIHNpZGUuCj4gPiAKPiA+IEZyb20gYSBxdWljayBz
+Y2FuLCBpdCBsb29rcyBsaWtlIHRoZXJlJ3Mgc29tZSBjbGVhbnVwcyBpbiB0aGUgc2VyaWVzCj4g
+PiB3aGljaCB3b3VsZCBiZSBoZWxwZnVsIHdpdGhvdXQgc2VjY29tcCBwYXJ0cy4gT25lIG9mIHRo
+ZSBpbml0aWFsCj4gPiBpc3N1ZXMgSSd2ZSBmb3VuZCBpcyBVTUwgdXNpbmcgb2xkZXIgcHRyYWNl
+IGludGVyZmFjZXMgd2hpY2ggYXJtNjQKPiA+IGRvZXNuJ3QgaW1wbGVtZW50LiBQVFJBQ0VfR0VU
+UkVHUyBmb3IgZXhhbXBsZS4KPiA+IAo+IAo+IEkgZG9uJ3QgdGhpbmsgdGhhdCBjb21wbGV0ZWx5
+IGdldHMgcmlkIG9mIFBUUkFDRV9HRVRSRUdTIHRob3VnaCwgYW5kIGlmCj4gSSByZW1lbWJlciBj
+b3JyZWN0bHksIHdlIHJlYWxseSBraW5kIG9mIG5lZWQgdGhhdCB0aGVyZT8KClRoZSBTRUNDT01Q
+IGNvZGUgc2hvdWxkIG5vdCBuZWVkIGFueSBwdHJhY2UgYXQgYWxsLiBBbGwgaXQgZG9lcyBpcwpy
+ZWFkL3dyaXRlIHRoZSBtY29udGV4dCB0aGF0IGlzIGdlbmVyYXRlZCBieSB0aGUgaG9zdC4gSSB0
+aGluayB0aGVyZQp3YXMganVzdCBzb21lIG1hbmdsaW5nIHRoZXJlIHRvIG1hcCB0aGUgYmFzaWMg
+cmVnaXN0ZXJzIGludG8gdGhlIGZvcm1hdAp0aGF0IFVNTCBleHBlY3RzIGludGVybmFsbHkgKGZs
+b2F0aW5nIHBvaW50LCBTU0UsIGV0Yy4gYXJlIGp1c3QgY29waWVkCmRpcmVjdGx5IHRob3VnaCku
+Cgo+IFRob3VnaCB0aGVuIGFnYWluIGl0J3MgYWxsIGJlZW4gYSB3aGlsZSwgYW5kIEkgb25seSBm
+YXVsdGVkIHRoZSBzZWNjb21wCj4gbW9kZSBiYWNrIGluIGluIGRpc2N1c3Npb25zIHdpdGggQmVu
+amFtaW4uIExvb2tzIGxpa2Ugd2UndmUgZm91bmQgYQo+IHBvdGVudGlhbGx5IG5pY2VyIHdheSB0
+byBtYWtlIGl0IHNlY3VyZSB0aGFuIGhpcyBzZWNyZXQtYmFzZWQgYXBwcm9hY2gsCj4gYW5kIGlu
+IGZhY3QgaW4gYSB3YXkgdGhhdCBzaG91bGQgZXZlbiBtYWtlIGl0IFNNUC1zYWZlLCBhdCBsZWFz
+dCBpbgo+IHRoZW9yeSwgb2J2aW91c2x5IGEgbG90IG9mIGluZnJhc3RydWN0dXJlIGlzIG1pc3Np
+bmcgdG8gbWFrZSBpdCBTTVAgaW4KPiB0aGUgZmlyc3QgcGxhY2UuCgpZZWFoLCB0aGUgaWRlYSB3
+aXRoIEZEIHBhc3NpbmcgYW5kIENMT05FX1ZNIHdpdGhvdXQgQ0xPTkVfRklMRVMgZG9lcwppbmRl
+ZWQgc2VlbSB2ZXJ5IHByb21pc2luZyBib3RoIGZvciBhIHNlY3VyZSBTRUNDT01QIG1vZGVsIGFu
+ZCBTTVAKc3VwcG9ydCBzcGVjaWZpY2FsbHkuIEl0IGlzIHNob3VsZCBiZSBtdWNoIGVhc2llciB0
+byBpbXBsZW1lbnQgdGhhbiBteQpwcmV2aW91cyBzZWNyZXQgYmFzZWQgc3lzY2FsbCBhdXRoZW50
+aWNhdGlvbiBpZGVhLgoKQmVuamFtaW4KCj4gCj4gQ3VycmVudGx5LCBVTUwgaGFzIGEgaG9zdCBw
+cm9jZXNzIHBlciBWTUEuIE9idmlvdXNseSwgeW91IG5lZWQgbXVsdGlwbGUKPiBob3N0IHByb2Nl
+c3NlcyBmb3IgU01QICh0byBnZXQgU01QKSwgaS5lLiBvbmUgcGVyICh1c2VkKSBDUFUgcGVyIFZN
+QSwKPiB3aXRoIENMT05FX1ZNLgo+IAo+IFRoZSBwcm9ibGVtIHdpdGggdGhlIHNlY3JldHMtYmFz
+ZWQgYXBwcm9hY2ggaGVyZSBmb3IgU01QIGlzIHRoYXQgdGhlCj4gc2VjcmV0IHdpbGwgYmUgcmVh
+ZGFibGUgdG8gdGhlIG90aGVyIHJ1bm5pbmcgaW4gdGhlIFZNQSAoMSkgYW5kIHRoZW4gY2FuCj4g
+YmUgdXNlZCBmb3IgY2lyY3VtdmVudGluZyB0aGUgcHJvdGVjdGlvbiBieSBqdW1waW5nIGludG8g
+dGhlIHN0dWIgYXJlYQo+IGFuZCBjYWxsaW5nIGhvc3Qgc3lzY2FsbHMsIHNlZQo+IGh0dHBzOi8v
+cGF0Y2h3b3JrLm96bGFicy5vcmcvcHJvamVjdC9saW51eC11bS9wYXRjaC8yMDIyMTEyMjEwMDc1
+OS4yMDgyOTAtMjgtYmVuamFtaW5Ac2lwc29sdXRpb25zLm5ldC8KPiBhbmQKPiBodHRwczovL3Bh
+dGNod29yay5vemxhYnMub3JnL3Byb2plY3QvbGludXgtdW0vcGF0Y2gvMjAyMjExMjIxMDA3NTku
+MjA4MjkwLTI0LWJlbmphbWluQHNpcHNvbHV0aW9ucy5uZXQvCj4gCj4gCj4gTm93IHRoZSBuZXcg
+aWRlYSB3ZSBjYW1lIHVwIHdpdGggaXMgdGhpczogV2UgY2FuIG1ha2UgdGhlIHBlci1DUFUgVk1B
+Cj4gd2l0aCBDTE9ORV9WTSBidXQgKm5vdCogQ0xPTkVfRklMRVMuIFRoZW4sIGluIHRoZSBzdHVi
+LCB3aGVuIHdlIG5lZWQgdG8KPiBleGVjdXRlIHNvbWUgcmVhbCBob3N0IHN5c2NhbGxzIG9uIGJl
+aGFsZiBvZiB0aGUgY2hpbGQsIHdlCj4gCj4gwqAqIHNlbmQgdGhlIEZEIG92ZXIgaW4gYSBtZXNz
+YWdlCj4gwqAqIHVzZSB0aGUgRkQgZm9yIG1tYXAgKGFuZCBhbHNvIGFsd2F5cyB1c2UgbW1hcCBp
+bnN0ZWFkIG9mIG1wcm90ZWN0KQo+IMKgKiBjbG9zZSB0aGUgRkQKPiAKPiBXaXRob3V0IENMT05F
+X0ZJTEVTLCBhbm90aGVyIHRocmVhZCBjYW5ub3QgInN0ZWFsIiB0aGUgKHJlYWwsIGhvc3QpIEZE
+LAo+IGl0J3MgdXNlbGVzcyBpbiB0aGUgb3RoZXIgdGhyZWFkLiBOb3RlIHRoYXQgSSdtIHRhbGtp
+bmcgYWJvdXQgaG9zdCBGRHMKPiBoZXJlLCBpbi1VTUwgRkRzIGFyZSBqdXN0IG51bWJlcnMgYW5k
+IGl0IHdvcmtzIGFsbCBkaWZmZXJlbnRseSwgSSdtIGp1c3QKPiB0YWxraW5nIGFib3V0IGV4ZWN1
+dGluZyBob3N0IHN5c2NhbGxzIGluc2lkZSB0aGUgVk1BLCB0byBzZXQgdXAgdGhlIFZNQQo+IGNv
+cnJlY3RseSBldGMuCj4gCj4gVGhlIEJQRiBwcm9ncmFtIG5vdyBhbGxvd3MgYW55IHRoZSByZWxl
+dmFudCBzeXNjYWxscyAoMikgaW5zaWRlIHRoZSBzdHViCj4gYXJlYSwgYnV0IHNpbmNlIHlvdSBk
+b24ndCBoYXZlIHRoZSBGRCB1bmxlc3MgeW91IGFjdHVhbGx5IGV4ZWN1dGVkIHRoZQo+IHJlY3Zt
+c2coKSBjYWxsIGF0IHRoZSBiZWdpbm5pbmcgb2YgdGhlIHN0dWIgeW91IGNhbid0IGRvIGFueXRo
+aW5nIHdpdGgKPiB0aGF0IGJ5IGp1bXBpbmcgaW50byB0aGUgc3R1Yi4KPiAKPiBUaGVyZSBhcmUg
+c29tZSBvdGhlciBkZXRhaWxzIGludm9sdmVkIHN1Y2ggYXMgaGF2aW5nIHRvIHNwbGl0IHRoZSBz
+dHViCj4gZGF0YSBpbnRvIGEgcmVhZC1vbmx5ICJ3aGF0IHRvIGV4ZWN1dGUiICgzKSBhbmQgYSB3
+cml0ZWFibGUgInJlc3VsdHMiCj4gcGFnZSwgYnV0IHRob3NlIGFyZSByZWFzb25hYmx5IGVhc3kg
+dG8gZGVhbCB3aXRoLgo+IAo+IEF0IHRoZSBlbmQgb2YgdGhlIHN0dWIsIG9mIGNvdXJzZSB0aGUg
+RkQgbXVzdCBiZSBjbG9zZWQuIFRoaXMgaXMgZmluZQo+IHRob3VnaCBzaW5jZSBtYXBwaW5ncyBw
+ZXJzaXN0IGFmdGVyIHRoZSBGRCB3YXMgY2xvc2VkLiBPbiB0aGUgbmV4dCBwYWdlCj4gZmF1bHQg
+d2UgaGF2ZSB0byBkbyBpdCBhbGwgYWdhaW4sIGJ1dCB5ZWFoLCBwYWdlIGZhdWx0cyB3ZXJlIGFs
+d2F5cwo+IHN1cGVyIGV4cGVuc2l2ZSBpbiBVTUwgLi4uCj4gCj4gam9oYW5uZXMKPiAKPiAKPiAo
+MSkgdW5sZXNzIHlvdSBleHRyYWN0IGl0IGRpcmVjdGx5IG91dCBvZiB0aGUgQlBGIHByb2dyYW0g
+aW50byByZWdpc3RlcnMKPiB2aWEgc29tZSBtYWdpYyBzeXNjYWxscyB0aGF0IGdldCBhIEJQRiBy
+ZXR1cm4sIGJ1dCB0aGF0J3Mga2luZCBvZiBpY2t5Cj4gdG9vCj4gCj4gKDIpIG1tYXAgJiBtdW5t
+YXAgYXJlIHRoZSBtb3N0IHJlbGV2YW50IG9uZXMsIHNvbWUgb3RoZXJzIGJ1dCB0aGV5J3JlCj4g
+bm90IHRoYXQgY3JpdGljYWwgZm9yIHNlY3VyaXR5OyBub3RhYmx5IG1wcm90ZWN0IGlzIG5vdCBh
+bGxvd2VkIGJ1dCBtdXN0Cj4gYmUgZG9uZSB3aXRoIG1tYXAgaW5zdGVhZAo+IAo+ICgzKSBzbyBh
+bm90aGVyIHRocmVhZCBjYW4ndCBhY3R1YWxseSBvdmVyd3JpdGUgdGhlIGluc3RydWN0aW9ucyBv
+ZiB3aGF0Cj4gdGhlIGtlcm5lbCB3YW50cyB0byBydW4gaW5zaWRlIHRoZSBWTUEgcHJvY2VzcyBm
+cm9tIGFub3RoZXIgdGhyZWFkIHdoaWxlCj4gaXQncyBoYXBwZW5pbmcKPiAKCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxp
+c3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
