@@ -4,70 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EB86EB64D7
-	for <linux-um@archiver.kernel.org>; Fri, 23 Jun 2023 22:34:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9CD33EB64DA
+	for <linux-um@archiver.kernel.org>; Sat, 24 Jun 2023 13:16:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=wpa45BGz2x1gwUQ3SpB3YT9yVE5bz5ujxypQk/FDAO4=; b=gN+0UJF4mntGM6
-	bh3SaKIFnpvhks/0qNd8nKKw0afAYoB8f8+vVYmadftU/3Z6DnUIvfLuWymyCFa+4RjrgiGzuhSI/
-	kLYZcn/NEJRn0MAYupJc3St5UCl7rSzxVkYGva/jWSym0UPYCMURzvtQCcWgwb5N4tnu0tlkiLSLB
-	wRPwha7JmukuZyXqBMX4017JHJbbKHG2CV4l6RijQYQBJNqI6ldbt4Q95vr5ncPYAqysjeaY/vkEf
-	14OtwtpS7y4iOs7pDQ4dDbp51/JmoUBNZYMI7U2rKOszELkioOd2ZlSLcc7DEjsKS/AOLFlX0TCBd
-	jj7eGJ2TboxCpaXWNkjw==;
+	List-Owner; bh=UIK3lLmNqgETthAn8Nr3ZIPdj9MfRorNSI0dPyc3ev0=; b=gOyAhwG+t65gZ3
+	GsRF96+GyLCLguXBD18R0qPzgSOJ3nv47f5M/G8+fxKPg6UGIcT3Bn5HGornP+UoJdpkl4AcJJPlY
+	CCx0resN3TDvF5w+eCkJX/i9JMtlkQjE8T96tg8dXrDOvU6Tnd+AyrkLr7sDjzkO+LTleqEB7CO+6
+	5+1tT3N8cXJVQg0Auj8PO9Xw0MdNk/dMLc4XN7JE6n1KlrK6ts1GL+TnA7mPEH9ytIpd3QtsEbgfI
+	Ys6sHXmupl7iP80D8+zjCS3h8/KYaJCVnzSL7Hk/fXgx50v1y5SGLF4sQe8I350nDYUWTps3dN2g8
+	kB8oG2lcuMb2DuWg3hiQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCpMM-004lRh-1Y;
-	Fri, 23 Jun 2023 22:34:30 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1qD37Q-00618C-0U;
+	Sat, 24 Jun 2023 13:16:00 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:191:4433::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qCpMI-004lR9-2A
+	id 1qD37M-00616u-0P
 	for linux-um@lists.infradead.org;
-	Fri, 23 Jun 2023 22:34:28 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 3289260FF5
-	for <linux-um@lists.infradead.org>; Fri, 23 Jun 2023 22:34:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97137C433C8
-	for <linux-um@lists.infradead.org>; Fri, 23 Jun 2023 22:34:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1687559663;
-	bh=B/G6vWU5G81xQ5RoRlvg/h3tGVQoCHwUQD0XWQdua8Q=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=FfsPIk0pv4eW22sWWyw3SR0A+62m7X8mBJCMtleBnk+7xO0UrIB3QPlIebFtSIc7k
-	 CH/293bF6F7SGRxbnhZOluX6Vsll28yEapeI1LxbNwE4cIAYR+Eb/wNkh5kSWkfVy0
-	 YNz4l4psmgHebZEV2xWZHmcMCjP7ZurSpK6fZCFHaKvavwtcEwNnM1TmZDv6sFn+pP
-	 w5zB/VHGUS2ddedYIqSuN30SdA9JCCBCUR5clA3tx2ZH8aF4WMENhjdO65oYMo9VYU
-	 e+KTfj0U6HXTuIS1jMzaUmqIgc2fIgrC6mEq309B+yFsoFo3zY8Tne/DNb+RoleJhR
-	 38gSbr/aMul3g==
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2b47bfd4e45so19069791fa.0
-        for <linux-um@lists.infradead.org>; Fri, 23 Jun 2023 15:34:23 -0700 (PDT)
-X-Gm-Message-State: AC+VfDxo3rkIAAl/oFm9Mb+9FM25zlq6CBvaFWba8Z5rnn+3TmA2O1O2
-	BM6TmN1CuWLBYp8Ect7YV/O0hZPPZP+/i+rO8Q==
-X-Google-Smtp-Source: ACHHUZ4HJZvsXhdXYD7FRpnazU9VuZUTw4n1EHmCO/2QG3T3rq6ZW3aJmm4Cusa9o4kc+rUcFXwCjy6Dz4wsoDAjsqQ=
-X-Received: by 2002:a2e:7209:0:b0:2b4:5a0b:9297 with SMTP id
- n9-20020a2e7209000000b002b45a0b9297mr16749317ljc.29.1687559661574; Fri, 23
- Jun 2023 15:34:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230622192247.GA2278576-robh@kernel.org> <dc5704a5d452f7432313170ed900975b2b72354f.camel@sipsolutions.net>
- <69707b721698594f96899c050871bcbb3594a9a1.camel@sipsolutions.net>
-In-Reply-To: <69707b721698594f96899c050871bcbb3594a9a1.camel@sipsolutions.net>
-From: Rob Herring <robh@kernel.org>
-Date: Fri, 23 Jun 2023 16:34:09 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKTb4QQGj6z2LB9tNFpwCRg5avdK=oQ7qzMjw1oWNBrvw@mail.gmail.com>
-Message-ID: <CAL_JsqKTb4QQGj6z2LB9tNFpwCRg5avdK=oQ7qzMjw1oWNBrvw@mail.gmail.com>
+	Sat, 24 Jun 2023 13:15:58 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=/T1ZWFGoI3wG8TTA5fyZDzaURz2CKEyx45+KZEvtO8c=;
+	t=1687612549; x=1688822149; b=OLiwOT9L72K7V3XdKAWxhK/zsLmn2X6a+t3mqMhDwq71W6X
+	FOaNEUUefwKnHed3VbHke/v1XljxAn3ugi0ZvIY9etCDF8FnWCdJPuB5Kc3WYJbulQwplsYWcbCzJ
+	8L1t67HvPQKVlfd1A7QGNRWig2pNHcmkuqoFuLw/aP1XZ/5h/1mwODUgSK50IJArhte8KhIgveJTl
+	ogFn39b5aevfjbpW5eQLpBYRQ3WzFZHHwx/cttDoY+VtV2kyWZ/tTGbc37men94dGOiKpPggGyCzg
+	f5v0+ET838WFtBHtxWaRUD2Q5BTmER6FqrV6i+DFM1qrjn92bEDhwswbN6w/7kkg==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.96)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1qD371-00Gfqq-1T;
+	Sat, 24 Jun 2023 15:15:35 +0200
+Message-ID: <ef180d8f1b69b95b51d324e0631807aeb6bcd09d.camel@sipsolutions.net>
 Subject: Re: UML for arm64
-To: Benjamin Berg <benjamin@sipsolutions.net>
-Cc: Johannes Berg <johannes@sipsolutions.net>, Richard Weinberger <richard@nod.at>, 
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Rob Herring <robh@kernel.org>, Benjamin Berg <benjamin@sipsolutions.net>
+Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov
+	 <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
+Date: Sat, 24 Jun 2023 15:15:34 +0200
+In-Reply-To: <CAL_JsqKTb4QQGj6z2LB9tNFpwCRg5avdK=oQ7qzMjw1oWNBrvw@mail.gmail.com>
+References: <20230622192247.GA2278576-robh@kernel.org>
+	 <dc5704a5d452f7432313170ed900975b2b72354f.camel@sipsolutions.net>
+	 <69707b721698594f96899c050871bcbb3594a9a1.camel@sipsolutions.net>
+	 <CAL_JsqKTb4QQGj6z2LB9tNFpwCRg5avdK=oQ7qzMjw1oWNBrvw@mail.gmail.com>
+User-Agent: Evolution 3.48.3 (3.48.3-1.fc38) 
+MIME-Version: 1.0
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230623_153426_818199_75866F0B 
-X-CRM114-Status: GOOD (  23.94  )
+X-CRM114-CacheID: sfid-20230624_061557_062917_27BFC5DF 
+X-CRM114-Status: GOOD (  24.06  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,39 +71,92 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-T24gVGh1LCBKdW4gMjIsIDIwMjMgYXQgMjoxNOKAr1BNIEJlbmphbWluIEJlcmcgPGJlbmphbWlu
-QHNpcHNvbHV0aW9ucy5uZXQ+IHdyb3RlOgo+Cj4gSGksCj4KPiBPbiBUaHUsIDIwMjMtMDYtMjIg
-YXQgMjE6NDEgKzAyMDAsIEpvaGFubmVzIEJlcmcgd3JvdGU6Cj4gPiBPbiBUaHUsIDIwMjMtMDYt
-MjIgYXQgMTM6MjIgLTA2MDAsIFJvYiBIZXJyaW5nIHdyb3RlOgo+ID4gPiBJJ20gaW50ZXJlc3Rl
-ZCBpbiBnZXR0aW5nIFVNTCB3b3JraW5nIG9uIEFybS4gSXMgYW55b25lIGF3YXJlIG9mIGFueQo+
-ID4gPiBlZmZvcnRzIHRvIGRvIHRoaXMgYWxyZWFkeT8KPiA+Cj4gPiBOb3QgbWUgLi4uIEJ1dCB5
-ZWFoLCBhZ3JlZSB0aGF0IGl0IHNlZW1zIGxpa2VseSB0byByZXF1aXJlIHNvbWUKPiA+IHJlZmFj
-dG9yaW5nLCBldmVuIGlmIF9zb21lXyBkZWdyZWUgb2YgYXR0ZW1wdHMgd2VyZSBtYWRlIHRvIGtl
-ZXAgYXJjaC0KPiA+IHNwZWNpZmljIHRoaW5ncyB0aGVyZSAuLi4KPiA+Cj4gPiBUaGVyZSBtaWdo
-dCBiZSBhIHRvbiBvZiBhcmNoLXNwZWNpZmljIHRoaW5ncyBpbiB0aGUgcHRyYWNlIGNvZGUgdG9v
-Cj4KPiBBdCBsZWFzdCBhIGxvdCBvZiB0aGUgcmVnaXN0ZXIgaGFuZGxpbmcsIGJ1dCB0aGF0IHdp
-bGwgYWx3YXlzIGJlCj4gc29tZXdoYXQgYXJjaGl0ZWN0dXJlIHNwZWNpZmljLgo+Cj4gPiAuLi4g
-LCBzbyBwZXJoYXBzIGl0J2QgYmUgZWFzaWVyIHRvIHN0YXJ0IHdpdGggdGhlIHNlY2NvbXAtYmFz
-ZWQgbW9kZWw6Cj4gPgo+ID4gaHR0cHM6Ly9wYXRjaHdvcmsub3psYWJzLm9yZy9wcm9qZWN0L2xp
-bnV4LXVtL2xpc3QvP3Nlcmllcz0zMjk0NjYKPiA+Cj4gPiBCdXQgdGhhdCdzIG5vdCByZWFsbHkg
-ZG9uZSB5ZXQgZWl0aGVyLgo+Cj4gWWVzLCB0aG91Z2ggSSBoYXZlIHF1aXRlIHNvbWUgdXBkYXRl
-cyBsb2NhbGx5IHRoYXQgc29sdmUgdGhlIHNlY3VyaXR5Cj4gaXNzdWVzIChpLmUuIHByZXZlbnQg
-aG9zdCBzeXNjYWxscyBmcm9tIHVzZXJzcGFjZSkuIFNvLCBpdCBkb2VzIG5lZWQKPiByZWJhc2lu
-ZyBhbmQgSSBhbSBzdXJlIGJ1Z2ZpeGVzLCBidXQgSSB0aGluayBpdCBpcyBnZXR0aW5nIGludG8g
-YQo+IHByZXR0eSBnb29kIHNoYXBlIG92ZXJhbGwuCj4KPiBFaXRoZXIgd2F5LCB0aGUgb2xkIHBh
-dGNoc2V0IHdpbGwgZ2l2ZSB5b3UgYSBnb29kIGlkZWEgYWJvdXQgaG93IGl0IGFsbAo+IHdvcmtz
-LCB0aGUgY2hhbmdlcyBhcmUgbW9zdGx5IGluIHRoZSBkZXRhaWxzLiBJIGFtIGhhcHB5IHRvIHB1
-c2ggb3V0IGEKPiBuZXcgdmVyc2lvbiBzb29uZXIgcmF0aGVyIHRoYW4gbGF0ZXIgaWYgaXQgbWln
-aHQgaGVscCB3aXRoIGFueSBlZmZvcnRzCj4gb24geW91ciBzaWRlLgoKRnJvbSBhIHF1aWNrIHNj
-YW4sIGl0IGxvb2tzIGxpa2UgdGhlcmUncyBzb21lIGNsZWFudXBzIGluIHRoZSBzZXJpZXMKd2hp
-Y2ggd291bGQgYmUgaGVscGZ1bCB3aXRob3V0IHNlY2NvbXAgcGFydHMuIE9uZSBvZiB0aGUgaW5p
-dGlhbAppc3N1ZXMgSSd2ZSBmb3VuZCBpcyBVTUwgdXNpbmcgb2xkZXIgcHRyYWNlIGludGVyZmFj
-ZXMgd2hpY2ggYXJtNjQKZG9lc24ndCBpbXBsZW1lbnQuIFBUUkFDRV9HRVRSRUdTIGZvciBleGFt
-cGxlLgoKUm9iCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRw
-Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
+On Fri, 2023-06-23 at 16:34 -0600, Rob Herring wrote:
+> 
+> > 
+> > Either way, the old patchset will give you a good idea about how it all
+> > works, the changes are mostly in the details. I am happy to push out a
+> > new version sooner rather than later if it might help with any efforts
+> > on your side.
+> 
+> From a quick scan, it looks like there's some cleanups in the series
+> which would be helpful without seccomp parts. One of the initial
+> issues I've found is UML using older ptrace interfaces which arm64
+> doesn't implement. PTRACE_GETREGS for example.
+> 
+
+I don't think that completely gets rid of PTRACE_GETREGS though, and if
+I remember correctly, we really kind of need that there?
+
+Though then again it's all been a while, and I only faulted the seccomp
+mode back in in discussions with Benjamin. Looks like we've found a
+potentially nicer way to make it secure than his secret-based approach,
+and in fact in a way that should even make it SMP-safe, at least in
+theory, obviously a lot of infrastructure is missing to make it SMP in
+the first place.
+
+Currently, UML has a host process per VMA. Obviously, you need multiple
+host processes for SMP (to get SMP), i.e. one per (used) CPU per VMA,
+with CLONE_VM.
+
+The problem with the secrets-based approach here for SMP is that the
+secret will be readable to the other running in the VMA (1) and then can
+be used for circumventing the protection by jumping into the stub area
+and calling host syscalls, see
+https://patchwork.ozlabs.org/project/linux-um/patch/20221122100759.208290-28-benjamin@sipsolutions.net/
+and
+https://patchwork.ozlabs.org/project/linux-um/patch/20221122100759.208290-24-benjamin@sipsolutions.net/
+
+
+Now the new idea we came up with is this: We can make the per-CPU VMA
+with CLONE_VM but *not* CLONE_FILES. Then, in the stub, when we need to
+execute some real host syscalls on behalf of the child, we
+
+ * send the FD over in a message
+ * use the FD for mmap (and also always use mmap instead of mprotect)
+ * close the FD
+
+Without CLONE_FILES, another thread cannot "steal" the (real, host) FD,
+it's useless in the other thread. Note that I'm talking about host FDs
+here, in-UML FDs are just numbers and it works all differently, I'm just
+talking about executing host syscalls inside the VMA, to set up the VMA
+correctly etc.
+
+The BPF program now allows any the relevant syscalls (2) inside the stub
+area, but since you don't have the FD unless you actually executed the
+recvmsg() call at the beginning of the stub you can't do anything with
+that by jumping into the stub.
+
+There are some other details involved such as having to split the stub
+data into a read-only "what to execute" (3) and a writeable "results"
+page, but those are reasonably easy to deal with.
+
+At the end of the stub, of course the FD must be closed. This is fine
+though since mappings persist after the FD was closed. On the next page
+fault we have to do it all again, but yeah, page faults were always
+super expensive in UML ...
+
+johannes
+
+
+(1) unless you extract it directly out of the BPF program into registers
+via some magic syscalls that get a BPF return, but that's kind of icky
+too
+
+(2) mmap & munmap are the most relevant ones, some others but they're
+not that critical for security; notably mprotect is not allowed but must
+be done with mmap instead
+
+(3) so another thread can't actually overwrite the instructions of what
+the kernel wants to run inside the VMA process from another thread while
+it's happening
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
