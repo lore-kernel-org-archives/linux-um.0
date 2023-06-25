@@ -4,84 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 225B1EB64DD
-	for <linux-um@archiver.kernel.org>; Sun, 25 Jun 2023 07:58:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01396EB64DC
+	for <linux-um@archiver.kernel.org>; Sun, 25 Jun 2023 08:51:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=C8Qxv5G1nk2+e+5TofjcTkqSqcF9rJl8fTZUUB4B8r8=; b=TEEIxdGYW+bui4
-	R4sKOvtTR2tBusNMc+y0oaL+mhxsyWq/GTxrUoxh5w4wE0Onl2ErB+47GredLSW8KVUCsUyfC7w3I
-	c5iB0iQwwwJTmmplKisKzmLqeSGmvgMLBGqmR1cDujh8/ycoUVyRY6CCXTU07UKtNt3bjo2Ugsfdp
-	q/5/poNvcMifwzh/Pfcfi2CGPhHxPGZvMCsc15Pw9Q48bPLDP37NLlHzbKqJWNAILc8H6VENZZXpP
-	tXngg0m7+ThiTsNC+NatoKBkHtcKisPbhL9UW9e5Wrik7FeMiIAe0lTqGq5/oIyHQWMN4+4I4+8kC
-	dfeAPpmatwFEf4i1Cl8A==;
+	List-Owner; bh=bxXXgSE0QQieXSH8JB7H4hK3pkekYW5Cg9KDKCF+pH8=; b=D3ertkZ2Hij2+w
+	mxJdynoSinOZ87W6theuQjUkPNXWXptYwxY8CHqAk7dq1fxAnTxskPKkROjQNBVJw2ejMrnwmDkl5
+	UfuUnawTataaeLwrM/mp9yO3LFGTAjMuGwFwRD62Z8/np/JmAY8NuKVuqfWKkHKoUkLvYm/B27k99
+	wzMiMubjVx8UkV2czOMDXNwqGbH53ZCfp2qqXD3sHQgN1FmRYKzHPcTvV0/TcOTgw4Eez9Qe4QK06
+	EzaqgBPl2HSWZsZow6uIxM1wt+5scH5n6HBTvLfbK3utcIA/JZInhqlvPXgbRIjPvGTzPAgP5Z/ib
+	AI+5BQWylF0rcsue3A+g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qDKe0-007Qnk-2o;
-	Sun, 25 Jun 2023 07:58:48 +0000
-Received: from mga05.intel.com ([192.55.52.43])
+	id 1qDLT9-007VWy-0n;
+	Sun, 25 Jun 2023 08:51:39 +0000
+Received: from mail-yw1-f179.google.com ([209.85.128.179])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qDKdv-007QlY-21;
-	Sun, 25 Jun 2023 07:58:45 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1687679923; x=1719215923;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=eTIwvrfKylgiLU30c+QKGL2VdYd5OeJbT6ROhsR0yJI=;
-  b=BaS8GFixg+b0Rv2y9rgXJZXHZJMB26aru050fc8B+JQ4qjGaA9x0Krok
-   +HIPFLax3U4nJDNmr8XS9XQX0w8PF5Xot97BDK3o3bbRc2ecwdptOLPT1
-   6RLnPOpFGRctkUPJQsO+AGg1YikbSWhaJe8BkQoZN5T+pQPLvSsnygS93
-   wcx5pzzmgGxh1+3ZnO+tZEH+7EplB+gqcoumhDuaC3h98R7blgPBpDG0p
-   ySGPtLG8Nej0KiWQhqhYFDXHHNVBY0ypqJqKVa9JVyBZMgiDXANMzYXm0
-   c53cO5d9aeJDUmPQ7nMU1b9nZWNt4ptWvQOxREC14jA66q00xGSIZH37c
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10751"; a="447419944"
-X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
-   d="scan'208";a="447419944"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2023 00:58:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10751"; a="693123135"
-X-IronPort-AV: E=Sophos;i="6.01,156,1684825200"; 
-   d="scan'208";a="693123135"
-Received: from lkp-server01.sh.intel.com (HELO 783282924a45) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 25 Jun 2023 00:58:34 -0700
-Received: from kbuild by 783282924a45 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qDKdm-0009sJ-0Z;
-	Sun, 25 Jun 2023 07:58:34 +0000
-Date: Sun, 25 Jun 2023 15:57:56 +0800
-From: kernel test robot <lkp@intel.com>
-To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>
-Cc: oe-kbuild-all@lists.linux.dev,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-	xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
-	Hugh Dickins <hughd@google.com>,
-	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Mike Rapoport <rppt@kernel.org>
-Subject: Re: [PATCH v5 24/33] m68k: Convert various functions to use ptdescs
-Message-ID: <202306251513.WVzxgGxu-lkp@intel.com>
-References: <20230622205745.79707-25-vishal.moola@gmail.com>
+	id 1qDLT5-007VUZ-0P;
+	Sun, 25 Jun 2023 08:51:36 +0000
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5700b15c12fso23298817b3.1;
+        Sun, 25 Jun 2023 01:51:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1687683092; x=1690275092;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=e/Aydrd9oAz9wF8VtbGA6a+XUUai3n6kkWsRZbAgo9o=;
+        b=F2xTkhV1LIHNjt8dA3q+jIrTcvB/EwIHQwqb61bTgUMaBxJaXG/xMB6ivEYFS19mw6
+         l5TvBXYiJu6E2uol16dvOmyqeRtP9zeRBlb0UkmZedlhlq3wyrhRSIYoPEeqnUlGNTFj
+         8QULpc8aqwhOwN9fHMXT0/FwowwNe1KhoGw2YBbo7jKvV+4/sLmf6e/uJr6YU1NV9P4z
+         Gu0w4y/eTI4v/SK9LT0759vHLpfN1QkCogddqAvlSD2f8b5M6p0FQmUmlpGmZftKGcGx
+         ycNdSx6+TgTicxmUW6t3jKuM7dr4SRqwCCh7PxzUI3PbmOO0TKu14sZjvD8MRrPcQBX6
+         zAag==
+X-Gm-Message-State: AC+VfDwqxY6ZwFKF8kLkigF/4/yEh9w/A4V+GgUPaMAh5lctziTDhWjG
+	UbJbEEdNY0G5c117qhQV7vtc5bc7u5X1ug==
+X-Google-Smtp-Source: ACHHUZ6Ys7UgKzU9+mUw2CYpxk7QkegJrsm4zxKLfx2MR3vJ32Dcz7KoAkURp6iPJkCVOYVvIz/z6A==
+X-Received: by 2002:a81:75d6:0:b0:56d:2e22:8b31 with SMTP id q205-20020a8175d6000000b0056d2e228b31mr30081695ywc.41.1687683092405;
+        Sun, 25 Jun 2023 01:51:32 -0700 (PDT)
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
+        by smtp.gmail.com with ESMTPSA id i18-20020a0ddf12000000b0057328423a05sm729581ywe.80.2023.06.25.01.51.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 25 Jun 2023 01:51:31 -0700 (PDT)
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-c1061f0c282so1488280276.1;
+        Sun, 25 Jun 2023 01:51:30 -0700 (PDT)
+X-Received: by 2002:a25:cc02:0:b0:c13:f86d:3324 with SMTP id
+ l2-20020a25cc02000000b00c13f86d3324mr3724376ybf.14.1687683090555; Sun, 25 Jun
+ 2023 01:51:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
+References: <20230622205745.79707-1-vishal.moola@gmail.com> <20230622205745.79707-25-vishal.moola@gmail.com>
 In-Reply-To: <20230622205745.79707-25-vishal.moola@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Sun, 25 Jun 2023 10:51:19 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdU2ZM1oJ7=Br6nezLpxjDQo_07N3T-adOupDm0Jntp=Qg@mail.gmail.com>
+Message-ID: <CAMuHMdU2ZM1oJ7=Br6nezLpxjDQo_07N3T-adOupDm0Jntp=Qg@mail.gmail.com>
+Subject: Re: [PATCH v5 24/33] m68k: Convert various functions to use ptdescs
+To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org, 
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
+	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, 
+	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, 
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org, 
+	xen-devel@lists.xenproject.org, kvm@vger.kernel.org, 
+	Hugh Dickins <hughd@google.com>, Mike Rapoport <rppt@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230625_005843_682598_76D68A23 
-X-CRM114-Status: GOOD (  17.62  )
+X-CRM114-CacheID: sfid-20230625_015135_169912_C294670C 
+X-CRM114-Status: GOOD (  17.48  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,183 +87,41 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Vishal,
-
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on next-20230622]
-[cannot apply to akpm-mm/mm-everything powerpc/next powerpc/fixes s390/features geert-m68k/for-next geert-m68k/for-linus linus/master v6.4-rc7 v6.4-rc6 v6.4-rc5 v6.4-rc7]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Vishal-Moola-Oracle/mm-Add-PAGE_TYPE_OP-folio-functions/20230623-050011
-base:   next-20230622
-patch link:    https://lore.kernel.org/r/20230622205745.79707-25-vishal.moola%40gmail.com
-patch subject: [PATCH v5 24/33] m68k: Convert various functions to use ptdescs
-config: m68k-randconfig-s051-20230625 (https://download.01.org/0day-ci/archive/20230625/202306251513.WVzxgGxu-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230625/202306251513.WVzxgGxu-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202306251513.WVzxgGxu-lkp@intel.com/
-
-All error/warnings (new ones prefixed by >>):
-
-   In file included from arch/m68k/include/asm/pgalloc.h:12,
-                    from kernel/fork.c:103:
-   arch/m68k/include/asm/mcf_pgalloc.h: In function 'pgd_alloc':
->> arch/m68k/include/asm/mcf_pgalloc.h:82:60: error: 'GFP_NOWARN' undeclared (first use in this function); did you mean 'GFP_NOWAIT'?
-      82 |         struct ptdesc *ptdesc = pagetable_alloc((GFP_DMA | GFP_NOWARN) &
-         |                                                            ^~~~~~~~~~
-         |                                                            GFP_NOWAIT
-   arch/m68k/include/asm/mcf_pgalloc.h:82:60: note: each undeclared identifier is reported only once for each function it appears in
-   arch/m68k/include/asm/mcf_pgalloc.h: At top level:
->> arch/m68k/include/asm/mcf_pgalloc.h:23:16: warning: 'ptdesc_address' is static but used in inline function 'pte_alloc_one_kernel' which is not static
-      23 |         return ptdesc_address(ptdesc);
-         |                ^~~~~~~~~~~~~~
->> arch/m68k/include/asm/mcf_pgalloc.h:17:33: warning: 'pagetable_alloc' is static but used in inline function 'pte_alloc_one_kernel' which is not static
-      17 |         struct ptdesc *ptdesc = pagetable_alloc((GFP_DMA | __GFP_ZERO) &
-         |                                 ^~~~~~~~~~~~~~~
->> arch/m68k/include/asm/mcf_pgalloc.h:10:24: warning: 'virt_to_ptdesc' is static but used in inline function 'pte_free_kernel' which is not static
-      10 |         pagetable_free(virt_to_ptdesc(pte));
-         |                        ^~~~~~~~~~~~~~
->> arch/m68k/include/asm/mcf_pgalloc.h:10:9: warning: 'pagetable_free' is static but used in inline function 'pte_free_kernel' which is not static
-      10 |         pagetable_free(virt_to_ptdesc(pte));
-         |         ^~~~~~~~~~~~~~
---
-   In file included from arch/m68k/mm/mcfmmu.c:21:
-   arch/m68k/include/asm/mcf_pgalloc.h: In function 'pgd_alloc':
->> arch/m68k/include/asm/mcf_pgalloc.h:82:60: error: 'GFP_NOWARN' undeclared (first use in this function); did you mean 'GFP_NOWAIT'?
-      82 |         struct ptdesc *ptdesc = pagetable_alloc((GFP_DMA | GFP_NOWARN) &
-         |                                                            ^~~~~~~~~~
-         |                                                            GFP_NOWAIT
-   arch/m68k/include/asm/mcf_pgalloc.h:82:60: note: each undeclared identifier is reported only once for each function it appears in
-   arch/m68k/mm/mcfmmu.c: At top level:
-   arch/m68k/mm/mcfmmu.c:36:13: warning: no previous prototype for 'paging_init' [-Wmissing-prototypes]
-      36 | void __init paging_init(void)
-         |             ^~~~~~~~~~~
-   arch/m68k/mm/mcfmmu.c: In function 'paging_init':
-   arch/m68k/mm/mcfmmu.c:41:37: warning: variable 'bootmem_end' set but not used [-Wunused-but-set-variable]
-      41 |         unsigned long next_pgtable, bootmem_end;
-         |                                     ^~~~~~~~~~~
-   arch/m68k/include/asm/mcf_pgalloc.h: At top level:
->> arch/m68k/include/asm/mcf_pgalloc.h:23:16: warning: 'ptdesc_address' is static but used in inline function 'pte_alloc_one_kernel' which is not static
-      23 |         return ptdesc_address(ptdesc);
-         |                ^~~~~~~~~~~~~~
->> arch/m68k/include/asm/mcf_pgalloc.h:17:33: warning: 'pagetable_alloc' is static but used in inline function 'pte_alloc_one_kernel' which is not static
-      17 |         struct ptdesc *ptdesc = pagetable_alloc((GFP_DMA | __GFP_ZERO) &
-         |                                 ^~~~~~~~~~~~~~~
->> arch/m68k/include/asm/mcf_pgalloc.h:10:24: warning: 'virt_to_ptdesc' is static but used in inline function 'pte_free_kernel' which is not static
-      10 |         pagetable_free(virt_to_ptdesc(pte));
-         |                        ^~~~~~~~~~~~~~
->> arch/m68k/include/asm/mcf_pgalloc.h:10:9: warning: 'pagetable_free' is static but used in inline function 'pte_free_kernel' which is not static
-      10 |         pagetable_free(virt_to_ptdesc(pte));
-         |         ^~~~~~~~~~~~~~
-
-
-vim +82 arch/m68k/include/asm/mcf_pgalloc.h
-
-     7	
-     8	extern inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
-     9	{
-  > 10		pagetable_free(virt_to_ptdesc(pte));
-    11	}
-    12	
-    13	extern const char bad_pmd_string[];
-    14	
-    15	extern inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm)
-    16	{
-  > 17		struct ptdesc *ptdesc = pagetable_alloc((GFP_DMA | __GFP_ZERO) &
-    18				~__GFP_HIGHMEM, 0);
-    19	
-    20		if (!ptdesc)
-    21			return NULL;
-    22	
-  > 23		return ptdesc_address(ptdesc);
-    24	}
-    25	
-    26	extern inline pmd_t *pmd_alloc_kernel(pgd_t *pgd, unsigned long address)
-    27	{
-    28		return (pmd_t *) pgd;
-    29	}
-    30	
-    31	#define pmd_populate(mm, pmd, pte) (pmd_val(*pmd) = (unsigned long)(pte))
-    32	
-    33	#define pmd_populate_kernel pmd_populate
-    34	
-    35	static inline void __pte_free_tlb(struct mmu_gather *tlb, pgtable_t pgtable,
-    36					  unsigned long address)
-    37	{
-    38		struct ptdesc *ptdesc = virt_to_ptdesc(pgtable);
-    39	
-    40		pagetable_pte_dtor(ptdesc);
-    41		pagetable_free(ptdesc);
-    42	}
-    43	
-    44	static inline pgtable_t pte_alloc_one(struct mm_struct *mm)
-    45	{
-    46		struct ptdesc *ptdesc = pagetable_alloc(GFP_DMA | __GFP_ZERO, 0);
-    47		pte_t *pte;
-    48	
-    49		if (!ptdesc)
-    50			return NULL;
-    51		if (!pagetable_pte_ctor(ptdesc)) {
-    52			pagetable_free(ptdesc);
-    53			return NULL;
-    54		}
-    55	
-    56		pte = ptdesc_address(ptdesc);
-    57		return pte;
-    58	}
-    59	
-    60	static inline void pte_free(struct mm_struct *mm, pgtable_t pgtable)
-    61	{
-    62		struct ptdesc *ptdesc = virt_to_ptdesc(pgtable);
-    63	
-    64		pagetable_pte_dtor(ptdesc);
-    65		pagetable_free(ptdesc);
-    66	}
-    67	
-    68	/*
-    69	 * In our implementation, each pgd entry contains 1 pmd that is never allocated
-    70	 * or freed.  pgd_present is always 1, so this should never be called. -NL
-    71	 */
-    72	#define pmd_free(mm, pmd) BUG()
-    73	
-    74	static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
-    75	{
-    76		pagetable_free(virt_to_ptdesc(pgd));
-    77	}
-    78	
-    79	static inline pgd_t *pgd_alloc(struct mm_struct *mm)
-    80	{
-    81		pgd_t *new_pgd;
-  > 82		struct ptdesc *ptdesc = pagetable_alloc((GFP_DMA | GFP_NOWARN) &
-    83				~__GFP_HIGHMEM, 0);
-    84	
-    85		if (!ptdesc)
-    86			return NULL;
-    87		new_pgd = ptdesc_address(ptdesc);
-    88	
-    89		memcpy(new_pgd, swapper_pg_dir, PTRS_PER_PGD * sizeof(pgd_t));
-    90		memset(new_pgd, 0, PAGE_OFFSET >> PGDIR_SHIFT);
-    91		return new_pgd;
-    92	}
-    93	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+SGkgVmlzaGFsLAoKT24gVGh1LCBKdW4gMjIsIDIwMjMgYXQgMTA6NTjigK9QTSBWaXNoYWwgTW9v
+bGEgKE9yYWNsZSkKPHZpc2hhbC5tb29sYUBnbWFpbC5jb20+IHdyb3RlOgo+IEFzIHBhcnQgb2Yg
+dGhlIGNvbnZlcnNpb25zIHRvIHJlcGxhY2UgcGd0YWJsZSBjb25zdHJ1Y3Rvci9kZXN0cnVjdG9y
+cyB3aXRoCj4gcHRkZXNjIGVxdWl2YWxlbnRzLCBjb252ZXJ0IHZhcmlvdXMgcGFnZSB0YWJsZSBm
+dW5jdGlvbnMgdG8gdXNlIHB0ZGVzY3MuCj4KPiBTb21lIG9mIHRoZSBmdW5jdGlvbnMgdXNlIHRo
+ZSAqZ2V0KnBhZ2UqKCkgaGVscGVyIGZ1bmN0aW9ucy4gQ29udmVydAo+IHRoZXNlIHRvIHVzZSBw
+YWdldGFibGVfYWxsb2MoKSBhbmQgcHRkZXNjX2FkZHJlc3MoKSBpbnN0ZWFkIHRvIGhlbHAKPiBz
+dGFuZGFyZGl6ZSBwYWdlIHRhYmxlcyBmdXJ0aGVyLgo+Cj4gU2lnbmVkLW9mZi1ieTogVmlzaGFs
+IE1vb2xhIChPcmFjbGUpIDx2aXNoYWwubW9vbGFAZ21haWwuY29tPgoKVGhhbmtzIGZvciB5b3Vy
+IHBhdGNoIQoKPiAtLS0gYS9hcmNoL202OGsvaW5jbHVkZS9hc20vbWNmX3BnYWxsb2MuaAo+ICsr
+KyBiL2FyY2gvbTY4ay9pbmNsdWRlL2FzbS9tY2ZfcGdhbGxvYy5oCgo+ICBzdGF0aWMgaW5saW5l
+IHBnZF90ICpwZ2RfYWxsb2Moc3RydWN0IG1tX3N0cnVjdCAqbW0pCj4gIHsKPiAgICAgICAgIHBn
+ZF90ICpuZXdfcGdkOwo+ICsgICAgICAgc3RydWN0IHB0ZGVzYyAqcHRkZXNjID0gcGFnZXRhYmxl
+X2FsbG9jKChHRlBfRE1BIHwgR0ZQX05PV0FSTikgJgoKMC1kYXkgYWxyZWFkeSB0b2xkIHlvdSBm
+b3IgdjMgdGhhdCBHRlBfTk9XQVJOIGRvZXMgbm90IGV4aXN0LgpQbGVhc2UgdHJ5IGNyb3NzLWNv
+bXBpbGluZyB5b3VyIGNoYW5nZXM6Cmh0dHBzOi8vbWlycm9ycy5lZGdlLmtlcm5lbC5vcmcvcHVi
+L3Rvb2xzL2Nyb3NzdG9vbC8KCj4gKyAgICAgICAgICAgICAgICAgICAgICAgfl9fR0ZQX0hJR0hN
+RU0sIDApOwo+Cj4gLSAgICAgICBuZXdfcGdkID0gKHBnZF90ICopX19nZXRfZnJlZV9wYWdlKEdG
+UF9ETUEgfCBfX0dGUF9OT1dBUk4pOwo+IC0gICAgICAgaWYgKCFuZXdfcGdkKQo+ICsgICAgICAg
+aWYgKCFwdGRlc2MpCj4gICAgICAgICAgICAgICAgIHJldHVybiBOVUxMOwo+ICsgICAgICAgbmV3
+X3BnZCA9IHB0ZGVzY19hZGRyZXNzKHB0ZGVzYyk7Cj4gKwo+ICAgICAgICAgbWVtY3B5KG5ld19w
+Z2QsIHN3YXBwZXJfcGdfZGlyLCBQVFJTX1BFUl9QR0QgKiBzaXplb2YocGdkX3QpKTsKPiAgICAg
+ICAgIG1lbXNldChuZXdfcGdkLCAwLCBQQUdFX09GRlNFVCA+PiBQR0RJUl9TSElGVCk7Cj4gICAg
+ICAgICByZXR1cm4gbmV3X3BnZDsKCkdye29ldGplLGVldGluZ31zLAoKICAgICAgICAgICAgICAg
+ICAgICAgICAgR2VlcnQKCi0tIApHZWVydCBVeXR0ZXJob2V2ZW4gLS0gVGhlcmUncyBsb3RzIG9m
+IExpbnV4IGJleW9uZCBpYTMyIC0tIGdlZXJ0QGxpbnV4LW02OGsub3JnCgpJbiBwZXJzb25hbCBj
+b252ZXJzYXRpb25zIHdpdGggdGVjaG5pY2FsIHBlb3BsZSwgSSBjYWxsIG15c2VsZiBhIGhhY2tl
+ci4gQnV0CndoZW4gSSdtIHRhbGtpbmcgdG8gam91cm5hbGlzdHMgSSBqdXN0IHNheSAicHJvZ3Jh
+bW1lciIgb3Igc29tZXRoaW5nIGxpa2UgdGhhdC4KICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAtLSBMaW51cyBUb3J2YWxkcwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJh
+ZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
+eC11bQo=
