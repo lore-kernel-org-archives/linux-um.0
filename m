@@ -4,96 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F2E3EB64D9
-	for <linux-um@archiver.kernel.org>; Tue, 27 Jun 2023 05:41:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83083EB64D9
+	for <linux-um@archiver.kernel.org>; Tue, 27 Jun 2023 05:48:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=bwVtPQCyzHTjP0EJiOa1S4bJwOFAL6yNdZIC0ObPOJw=; b=nSh2nkCupeNfw4
-	Aq5KgviF3ICS8I5UHHEiOTCDGsDWpcoxeRVUw0Dx/Y/Bs2Dvua6SdftvCY6uUiIBcvGu/r3Zkpxro
-	VuZwfm9Jwz41og3ZLNqK+6kL8Otwwdx1IkzHKk058hfnGVPUa5OTRhcj5hpqyt64k74cjZCFUNksP
-	09rT0hfN4XJLovFiIiB5I0dRWly6yC3r+SmloGdt5UJx7gXuGjlwFuijCj1VyULCzhnHP8MHemjea
-	tMNfXNoXghmncVQ9Ki/OVBbxEd2X7ToRcnBwQumO9vMPMnxqH5xV5VgeW/ozsOAOzZERreaFdDVCD
-	5tdweJLm+/r+XkybPChA==;
+	List-Owner; bh=RJwbki39Ed+htDgrXVTu3OFQcGBOt63bkZ+J0dw19qY=; b=VdyvwP/l0CR1tC
+	Wo+4kUCVaw0TeI9+iuo8ZZ9SngJ0Rix+ywxU+Wsf4JSAUDhelDpOA2A3gQ+eUdB/TyAEytLG7A0T6
+	g5NAV9fJq5Nzp9n4OQ7r5yYIB6aq9VJFpAFpw8Bi5WNGIaHQ6xfnsXfqfo36qUDfkj1KkIhBTidwu
+	jbMnQ/n2jWso/UnV2gwOEvCubXdXohrsThzcYpD74y/2e2bbvEaCYz04ZNGW0TMEe5banujlXFcVs
+	arSvNxOQgT5Xyq1pYGZm0+xTgAvLLhmjXm+0V9aT/OpmS9gDcFZkmgDIB6Xt1U/XD38MXC5MMYu5t
+	WB0bGOwaH80RbtO0ENiQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qE1Ry-00BvlK-0F;
-	Tue, 27 Jun 2023 05:41:14 +0000
-Received: from mail-pl1-x62e.google.com ([2607:f8b0:4864:20::62e])
+	id 1qE1YX-00Bwov-2P;
+	Tue, 27 Jun 2023 05:48:01 +0000
+Received: from mail-pg1-x52c.google.com ([2607:f8b0:4864:20::52c])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qE1Rv-00BvkY-0O;
-	Tue, 27 Jun 2023 05:41:12 +0000
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1b4f9583404so34904725ad.2;
-        Mon, 26 Jun 2023 22:41:10 -0700 (PDT)
+	id 1qE1YT-00Bwle-2e;
+	Tue, 27 Jun 2023 05:47:59 +0000
+Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-55ae2075990so878591a12.0;
+        Mon, 26 Jun 2023 22:47:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687844470; x=1690436470;
+        d=gmail.com; s=20221208; t=1687844871; x=1690436871;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=eUHv1b8aqLsb4R7LditAal7kNTag6lxKqXAOQ2qujCU=;
-        b=fG/WGax37UoauKBSyv6kej64LdcGJrv6k66h8NGOsMv9uaUsNclSu7DiDyHvg7N0+H
-         TpLbLvnFmTkLJuRzyFn0V5R9/xG3MBNfmS6gpoZxFQmbIvFJa8XU1iIC6Fyl95ACCFHi
-         Ys+3TEnr35uP041kETcaQnaFL3Zzmuv0Ara4RUBuuI4A1DlyY37o026XtSt1PCG00d7o
-         R82xvUrMlfJH4JujFDKNZYqLCuYZs3onB7GlXFtQZdgcqNFnR06TCpWzVOviTJnvGG64
-         v3WIIO+Pf3siD1OxDgXeCgfd8ad+rtq0TuDOYOoPNLLpd/YOKy903+fL59/xrY4ynCa9
-         WP/g==
+        bh=bjTPMlxWt9nC/sXrGsrew1h8LID7KP4FRrxfXfknacs=;
+        b=CKCXCuWl0gYpQ4q8YGqBYIHt4kiR1AhHpEiDPYQrq6u+C1EcCN199Rf+TEI2yZgN+R
+         yHF4vksLQaZZNCW1AKLUCeBUhO/zz1T+Q9/6Dn0kQ15ZW6K5TqPmtUB9rSpHUKgxZgiA
+         HSTUVKDZ4xM6L9+zGQEVzY8EH5rZJBCsvXHjcbbzvbKrE2StJxwwReSDEN5b3GfPvLfH
+         eqtt0xPcEOboGwjNakJZJtyOpw0n8CltvqJLvaWUUnjMuBH5yNe38AlJDiG6mzZTOhDy
+         hB/teSyin+eBzVwUgFatWumtP7LykGuBvZNNj+IJUNFfPVWNZBZUcFVQKEBMH4tHKOww
+         HTig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687844470; x=1690436470;
+        d=1e100.net; s=20221208; t=1687844871; x=1690436871;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=eUHv1b8aqLsb4R7LditAal7kNTag6lxKqXAOQ2qujCU=;
-        b=mGaiuRiHZ4hve0FHk2jpnPytyscxtnABUttGsEmmCaxuzIpI3Z00/9ptmZ7c2Z/PjV
-         S6Q38+U7ZrMXku5ggcl92NEQMsp6hF7cs3Ixqpq31pl2vzQilZJFMoJAwU2XOjAqvkKm
-         s/RAD2Fno9/tor86gxsFMdMXf95zC1dM7iAEsqNYjSJYU49LtYzIjAQmBPXjm1bf0PcJ
-         +acuN1U1Md5id96EqUuQtu7MIZWalhmub6zngm5wDM49CGCSO0aAwa5PlidtjHSKz68F
-         auk+ELfkI3GCG0OMsM/L0cbQIdSGI0GJEnS/AWIgvl5vquVyfoAq1H1u0aQJWNIW5VzQ
-         WD8g==
-X-Gm-Message-State: AC+VfDzKhDpkPPRUgu01fXelEpYDvLtBYTgL+CjPRQAhvzPDXO6yB4ag
-	E8DfApe8e7+/YHZk4PZPQnk=
-X-Google-Smtp-Source: ACHHUZ4Aj+CfQoLGg0YEyBUDipJUlv6nej6ije3P7CId9SMSoIBcFwHmOjcIwHyQMLpCclEzduuKWQ==
-X-Received: by 2002:a17:902:f54b:b0:1b6:b805:5ae3 with SMTP id h11-20020a170902f54b00b001b6b8055ae3mr10571515plf.3.1687844469519;
-        Mon, 26 Jun 2023 22:41:09 -0700 (PDT)
+        bh=bjTPMlxWt9nC/sXrGsrew1h8LID7KP4FRrxfXfknacs=;
+        b=RdKKETUOVogW1Jgq4BRzSc+pb/M9KcekqoCGIpqlVDzMQT9nWClD4PmqNn9YAj/Qy6
+         IoksCEOVE026AqwD4PAETQhpKGBxCOb9ikqGBdTLYHkY90G2ok9qgH5rcG3Zs2aFbWES
+         DbO3Wgx8Kssmi7UYaILLhC7gK02PgQvnf3gA9OTuwhRBdkWGXVhDQDVSJYpXWLsBCh7I
+         uvMlLAQpL1H9oxB8fFSqrZeAYPtkwszsBh4SsJmUySLr6MIASBmNucgH9/bcB3lU0bun
+         yXivkotlYhgn3Lv5H8Ike8larfxG5NrEHb2tQ3dKeIJrE23r5EoziHHvnynV6ah6Npry
+         ljpA==
+X-Gm-Message-State: AC+VfDxDHTnrCEvvauF+W8TfLlGpBYNoCMUVPqIE3cfyGeSyinTMvHoD
+	QZgBKP6Ff4b5FaJn9PIx0Y0=
+X-Google-Smtp-Source: ACHHUZ7JjW8b6fgOe+JthCsQbs9/NjABXgCew6ba8g3n2m02um8mxuD9LeyNll8XOwuywhMwRgh5kw==
+X-Received: by 2002:a05:6a20:7491:b0:126:8ddd:d786 with SMTP id p17-20020a056a20749100b001268dddd786mr5575003pzd.46.1687844870738;
+        Mon, 26 Jun 2023 22:47:50 -0700 (PDT)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id n9-20020a1709026a8900b001b80d411e5bsm2144863plk.253.2023.06.26.22.41.08
+        by smtp.gmail.com with ESMTPSA id je5-20020a170903264500b001b8004ff609sm3033756plb.270.2023.06.26.22.47.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Jun 2023 22:41:09 -0700 (PDT)
-Date: Mon, 26 Jun 2023 22:41:07 -0700
+        Mon, 26 Jun 2023 22:47:50 -0700 (PDT)
+Date: Mon, 26 Jun 2023 22:47:49 -0700
 From: Guenter Roeck <linux@roeck-us.net>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>,
-	Josef Bacik <josef@toxicpanda.com>,
-	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-	Jack Wang <jinpu.wang@ionos.com>,
-	Phillip Potter <phil@philpotter.co.uk>, Coly Li <colyli@suse.de>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Pavel Machek <pavel@ucw.cz>, dm-devel@redhat.com,
-	linux-block@vger.kernel.org, linux-um@lists.infradead.org,
-	linux-scsi@vger.kernel.org, linux-bcache@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
-	linux-btrfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-	linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-pm@vger.kernel.org
-Subject: Re: [PATCH 06/31] cdrom: remove the unused mode argument to
- cdrom_release
-Message-ID: <fb21bb8b-958a-4238-aab8-c2720ac519ad@roeck-us.net>
-References: <20230606073950.225178-1-hch@lst.de>
- <20230606073950.225178-7-hch@lst.de>
+To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+	xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
+	Hugh Dickins <hughd@google.com>, Dinh Nguyen <dinguyen@kernel.org>,
+	Mike Rapoport <rppt@kernel.org>
+Subject: Re: [PATCH v5 26/33] nios2: Convert __pte_free_tlb() to use ptdescs
+Message-ID: <13bab37c-0f0a-431a-8b67-4379bf4dc541@roeck-us.net>
+References: <20230622205745.79707-1-vishal.moola@gmail.com>
+ <20230622205745.79707-27-vishal.moola@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20230606073950.225178-7-hch@lst.de>
+In-Reply-To: <20230622205745.79707-27-vishal.moola@gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230626_224111_166075_3E1972EE 
-X-CRM114-Status: GOOD (  18.99  )
+X-CRM114-CacheID: sfid-20230626_224757_863483_440DA7F0 
+X-CRM114-Status: GOOD (  15.81  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,102 +102,75 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jun 06, 2023 at 09:39:25AM +0200, Christoph Hellwig wrote:
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+On Thu, Jun 22, 2023 at 01:57:38PM -0700, Vishal Moola (Oracle) wrote:
+> Part of the conversions to replace pgtable constructor/destructors with
+> ptdesc equivalents.
+> 
+> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+> Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
+
+This patch causes all nios2 builds to fail.
+
+Building nios2:allnoconfig ... failed
+--------------
+Error log:
+<stdin>:1519:2: warning: #warning syscall clone3 not implemented [-Wcpp]
+In file included from mm/memory.c:85:
+mm/memory.c: In function 'free_pte_range':
+arch/nios2/include/asm/pgalloc.h:33:17: error: implicit declaration of function 'pagetable_pte_dtor'; did you mean 'pgtable_pte_page_dtor'? [-Werror=implicit-function-declaration]
+   33 |                 pagetable_pte_dtor(page_ptdesc(pte));                   \
+      |                 ^~~~~~~~~~~~~~~~~~
+include/asm-generic/tlb.h:666:17: note: in expansion of macro '__pte_free_tlb'
+  666 |                 __pte_free_tlb(tlb, ptep, address);             \
+      |                 ^~~~~~~~~~~~~~
+mm/memory.c:193:9: note: in expansion of macro 'pte_free_tlb'
+  193 |         pte_free_tlb(tlb, token, addr);
+      |         ^~~~~~~~~~~~
+arch/nios2/include/asm/pgalloc.h:33:36: error: implicit declaration of function 'page_ptdesc' [-Werror=implicit-function-declaration]
+   33 |                 pagetable_pte_dtor(page_ptdesc(pte));                   \
+      |                                    ^~~~~~~~~~~
+include/asm-generic/tlb.h:666:17: note: in expansion of macro '__pte_free_tlb'
+  666 |                 __pte_free_tlb(tlb, ptep, address);             \
+      |                 ^~~~~~~~~~~~~~
+mm/memory.c:193:9: note: in expansion of macro 'pte_free_tlb'
+  193 |         pte_free_tlb(tlb, token, addr);
+      |         ^~~~~~~~~~~~
+arch/nios2/include/asm/pgalloc.h:34:17: error: implicit declaration of function 'tlb_remove_page_ptdesc'; did you mean 'tlb_remove_page_size'? [-Werror=implicit-function-declaration]
+   34 |                 tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)));      \
+      |                 ^~~~~~~~~~~~~~~~~~~~~~
+include/asm-generic/tlb.h:666:17: note: in expansion of macro '__pte_free_tlb'
+  666 |                 __pte_free_tlb(tlb, ptep, address);             \
+      |                 ^~~~~~~~~~~~~~
+mm/memory.c:193:9: note: in expansion of macro 'pte_free_tlb'
+  193 |         pte_free_tlb(tlb, token, addr);
+
 > ---
-
-$ git grep cdrom_release
-Documentation/cdrom/cdrom-standard.rst:         cdrom_release,          /* release */
-Documentation/cdrom/cdrom-standard.rst:the door, should be left over to the general routine *cdrom_release()*.
-Documentation/cdrom/cdrom-standard.rst: void cdrom_release(struct inode *ip, struct file *fp)
-                                                                           ^^^^^^^^^^^^^^^^^
-drivers/cdrom/cdrom.c:void cdrom_release(struct cdrom_device_info *cdi)
-drivers/cdrom/cdrom.c:  cd_dbg(CD_CLOSE, "entering cdrom_release\n");
-drivers/cdrom/cdrom.c:EXPORT_SYMBOL(cdrom_release);
-drivers/cdrom/gdrom.c:  cdrom_release(gd.cd_info, mode);
-                                                ^^^^^^
-drivers/scsi/sr.c:      cdrom_release(&cd->cdi);
-include/linux/cdrom.h:void cdrom_release(struct cdrom_device_info *cdi);
-
-$ git grep cdrom_open
-Documentation/cdrom/cdrom-standard.rst:         cdrom_open,             /* open */
-Documentation/cdrom/cdrom-standard.rst: int cdrom_open(struct inode * ip, struct file * fp)
-Documentation/cdrom/cdrom-standard.rst:This function implements the reverse-logic of *cdrom_open()*, and then
-drivers/cdrom/cdrom.c:static int cdrom_open_write(struct cdrom_device_info *cdi)
-drivers/cdrom/cdrom.c:int cdrom_open(struct cdrom_device_info *cdi, blk_mode_t mode)
-drivers/cdrom/cdrom.c:  cd_dbg(CD_OPEN, "entering cdrom_open\n");
-drivers/cdrom/cdrom.c:                  if (cdrom_open_write(cdi))
-drivers/cdrom/cdrom.c:EXPORT_SYMBOL(cdrom_open);
-drivers/cdrom/gdrom.c:  ret = cdrom_open(gd.cd_info);
-                                         ^^^^^^^^^^
-drivers/scsi/sr.c:      ret = cdrom_open(&cd->cdi, mode);
-include/linux/cdrom.h:int cdrom_open(struct cdrom_device_info *cdi, blk_mode_t mode);
-
->  drivers/cdrom/cdrom.c | 2 +-
->  drivers/cdrom/gdrom.c | 2 +-
->  drivers/scsi/sr.c     | 2 +-
->  include/linux/cdrom.h | 2 +-
->  4 files changed, 4 insertions(+), 4 deletions(-)
+>  arch/nios2/include/asm/pgalloc.h | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/cdrom/cdrom.c b/drivers/cdrom/cdrom.c
-> index adebac1bd210d9..998b03fe976e22 100644
-> --- a/drivers/cdrom/cdrom.c
-> +++ b/drivers/cdrom/cdrom.c
-> @@ -1250,7 +1250,7 @@ static int check_for_audio_disc(struct cdrom_device_info *cdi,
->  	return 0;
->  }
+> diff --git a/arch/nios2/include/asm/pgalloc.h b/arch/nios2/include/asm/pgalloc.h
+> index ecd1657bb2ce..ce6bb8e74271 100644
+> --- a/arch/nios2/include/asm/pgalloc.h
+> +++ b/arch/nios2/include/asm/pgalloc.h
+> @@ -28,10 +28,10 @@ static inline void pmd_populate(struct mm_struct *mm, pmd_t *pmd,
 >  
-> -void cdrom_release(struct cdrom_device_info *cdi, fmode_t mode)
-> +void cdrom_release(struct cdrom_device_info *cdi)
->  {
->  	const struct cdrom_device_ops *cdo = cdi->ops;
+>  extern pgd_t *pgd_alloc(struct mm_struct *mm);
 >  
-> diff --git a/drivers/cdrom/gdrom.c b/drivers/cdrom/gdrom.c
-> index 14922403983e9e..a401dc4218a998 100644
-> --- a/drivers/cdrom/gdrom.c
-> +++ b/drivers/cdrom/gdrom.c
-> @@ -481,7 +481,7 @@ static int gdrom_bdops_open(struct block_device *bdev, fmode_t mode)
->  	bdev_check_media_change(bdev);
+> -#define __pte_free_tlb(tlb, pte, addr)				\
+> -	do {							\
+> -		pgtable_pte_page_dtor(pte);			\
+> -		tlb_remove_page((tlb), (pte));			\
+> +#define __pte_free_tlb(tlb, pte, addr)					\
+> +	do {								\
+> +		pagetable_pte_dtor(page_ptdesc(pte));			\
+> +		tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)));	\
+>  	} while (0)
 >  
->  	mutex_lock(&gdrom_mutex);
-> -	ret = cdrom_open(gd.cd_info, mode);
-> +	ret = cdrom_open(gd.cd_info);
->  	mutex_unlock(&gdrom_mutex);
->  	return ret;
->  }
-> diff --git a/drivers/scsi/sr.c b/drivers/scsi/sr.c
-> index 444c7efc14cba7..6d33120ee5ba85 100644
-> --- a/drivers/scsi/sr.c
-> +++ b/drivers/scsi/sr.c
-> @@ -512,7 +512,7 @@ static void sr_block_release(struct gendisk *disk, fmode_t mode)
->  	struct scsi_cd *cd = scsi_cd(disk);
->  
->  	mutex_lock(&cd->lock);
-> -	cdrom_release(&cd->cdi, mode);
-> +	cdrom_release(&cd->cdi);
->  	mutex_unlock(&cd->lock);
->  
->  	scsi_device_put(cd->device);
-> diff --git a/include/linux/cdrom.h b/include/linux/cdrom.h
-> index 385e94732b2cf1..3f23d5239de254 100644
-> --- a/include/linux/cdrom.h
-> +++ b/include/linux/cdrom.h
-> @@ -102,7 +102,7 @@ int cdrom_read_tocentry(struct cdrom_device_info *cdi,
->  
->  /* the general block_device operations structure: */
->  int cdrom_open(struct cdrom_device_info *cdi, fmode_t mode);
-> -extern void cdrom_release(struct cdrom_device_info *cdi, fmode_t mode);
-> +void cdrom_release(struct cdrom_device_info *cdi);
->  int cdrom_ioctl(struct cdrom_device_info *cdi, struct block_device *bdev,
->  		unsigned int cmd, unsigned long arg);
->  extern unsigned int cdrom_check_events(struct cdrom_device_info *cdi,
+>  #endif /* _ASM_NIOS2_PGALLOC_H */
 > -- 
-> 2.39.2
+> 2.40.1
 > 
 > 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
 _______________________________________________
 linux-um mailing list
