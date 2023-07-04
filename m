@@ -4,81 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95F64EB64D9
-	for <linux-um@archiver.kernel.org>; Tue,  4 Jul 2023 08:11:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D217C001B0
+	for <linux-um@archiver.kernel.org>; Tue,  4 Jul 2023 08:30:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=DomtcgZRx3peAz1b+bjeq6axosp5LnrW0bkMwiAfOZA=; b=T3DX52bWapYEHI
-	J83ncWgEs3gIX/NsIY04RkxVWBuDSePsjlpkni4oKRGUKQbBgv9Rj+RKq6bFgmsWd0xBmRpkztMSA
-	W9qcChrALRUgud1QNB+rAqZ17Op8++mUJCrXF31AytaYHlzNHjOVfEmRpOebtx/qg02bF/7GEllIy
-	nPE8+AP6NP+Mm1Y9rgs7DeID4t5Otzv2IPC+6pOfi2ylJmcafC9mFpxRvHx3kLl71m9cU5Jj/BX5B
-	Kjyl3IlThBMZkf79dwBrVaE38APnE+LmQV/3Z2CFVnXRGxBwNwVHVUKtIwoK0+bLTdaxlWdH3UMtP
-	S7R3d+H8YllZS1vxt95w==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:From:Subject:Message-ID:
+	Mime-Version:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=pF6h5eAvYKHAtmM3U9UI4jCL3B1Ftmeh6SFY9ubC6iU=; b=kuT
+	g66JZWC+kGu75kf+RTHe8Ju8ea4v3y4ZBo0sGHsXkPaLWt4YMVSmf+J7R8RRWzaom8MVcAibJQtVU
+	2Hb/Yk6IK3QoZD6C0vVUPJ0o9MTCieiyZfM24qx8OczG5sGn9eBo3+cuoH/W3+JQx4GVE3Lhla0Io
+	rPpHirKigZEHWqPdydLibNa32nBOxACsNafxxDYf09vTwGr+Berrldu99fbyBpgR4Rq+OkuhD1146
+	RUz1vtk3ob1jzQRl4QtN94cekLBvZmkEtxlHORiCPOx6kmLiQnpy4u2xJp+rO+3oZwgMCsfRwTtTU
+	TaYJwOPUlVyDOPznK9rzuffhcYT6cpA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qGb7k-00CXQ2-0L;
-	Tue, 04 Jul 2023 08:11:00 +0000
-Received: from mout.web.de ([212.227.15.14])
+	id 1qGbQg-00CZXV-12;
+	Tue, 04 Jul 2023 08:30:34 +0000
+Received: from mail-yw1-x1149.google.com ([2607:f8b0:4864:20::1149])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qGb7h-00CXPA-2D
+	id 1qGbQd-00CZVV-0z
 	for linux-um@lists.infradead.org;
-	Tue, 04 Jul 2023 08:10:59 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
- s=s29768273; t=1688458240; x=1689063040; i=markus.elfring@web.de;
- bh=MbgMZUtDc5LOymBuVB4BFHT9KcCaMcbbhxDpCilF3pk=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=oBfsflY89gRUJ3BtJcb7ccqLlONqosNPjJQe8W0w/uGt/P/nrVfNUHns5jmZc7+hxejmEdu
- +kCPrCo4NQhqreoS0ZyZX1xG0AdWd9+Q173kEq9ygDZSTNl9qlS0/TpTOJkmanviva74W+9K6
- QLtFaqGzmViihZNyo+bf4Exgym4MW/qM7hAQPZMnHwJ35+onldScTt0B4wpZN/5QFgWXf0ET8
- TCu06fgdbFhIGc3wNOCHCorZLn5QTyqho9PTchHZ7uQzhc54QHakJINMnzX6Wdq+BW5vwjVVi
- DEJlojyR79aWm1RIrzWWuowVJX7YDNdnBIe9S+os8HTgiW6Eh0dA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.90.83]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1M6091-1qMMot2jxj-007Wrm; Tue, 04
- Jul 2023 10:10:40 +0200
-Message-ID: <a30aec3c-fb81-4e5d-c131-e59de87a3aed@web.de>
-Date: Tue, 4 Jul 2023 10:10:38 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v3] um: vector: Replace undo_user_init in old code with
- out_free_netdev
-Content-Language: en-GB
-To: Minjie Du <duminjie@vivo.com>, linux-um@lists.infradead.org,
- kernel-janitors@vger.kernel.org, bpf@vger.kernel.org
-Cc: opensource.kernel@vivo.com, LKML <linux-kernel@vger.kernel.org>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- Richard Weinberger <richard@nod.at>, Stephen Rothwell <sfr@canb.auug.org.au>
-References: <20230704042942.3984-1-duminjie@vivo.com>
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20230704042942.3984-1-duminjie@vivo.com>
-X-Provags-ID: V03:K1:Gr4ZCxwnyhoYOnwb21965EOD9UzhKJD7CwSw+3kSpNxyjoCCozS
- r+uOxpLUhREiRakKn3e1XP3WVp/FhdY8Sh36t0V6FOS/welkJE4TlMLmEOiD9+/t1Q4nJRn
- L95IifQkAMFRfpHIQlrun9zEqEFFGRNSl/nSLbRbI6BYFGmaS7QdKAKJlIfevqL/RudIIvA
- I+EQvB0dXmGEa4JJi7m8Q==
-UI-OutboundReport: notjunk:1;M01:P0:kYSE/kgDd3k=;pm6qATdE/9V8SP38mZT26tP/0dZ
- dJMu9xkJ4MFXCXBMnZ5avnUteo1KOygJVaSzp3vfhkJwbxoPNZs94xpkcnDkKdhWCQ2/stb4u
- 1VqNpbc0yuLR+GwspKM/quSFqQ9z6MJYyMNtAqvSVkjO4UxS47CYB6R8r+3yx12BcXf2xdf1/
- 4l7rHDX6ck8ZVhzTHaDEqSSGgSsbjnJCIEOk+WfAhcck8isxSZQfeYFN0ApeZZZhCYvifBUbo
- jXq6Esj0tKzT0RJWQC6mQuYRF3mMZOo3Lafu2LPocDgtPX3OmQHrt5G2rC/NCTYoTMNN8C0cs
- hRkKt7SKQZ4J538axWIKqyOGrNx+4NW4zksXiIj5bULWAMHyrKTZ4N/7hYXOO768rdn+INWct
- LOchIkSHw5CWXl6wADBLXID2zy9xZiEbZZmLAr3SbqV4Mo4zKlmhkEiC+L5iZ7ychZO1qEB1V
- Ovf51G9VgG9z9YnyLL2E/TYokyu4ArsvAXMMfQK41Ce3tIQ+nmWHiA+J3xLM/v5bFr9wY5QXv
- R20I99Cg4nqWA0X2lUE1zg27dE0cvnwiJvp2Yu45ARAFae4yNiiibqoO10KyIN1GmZRbE55hI
- 83tQ1qBMIPnnYe+SJ+1LAL/Gjd9E7yVZZR6gqvBTXYCzKyB7aeYc9flLwrTVZbYiiCigyyHfM
- nLwKlZ1uYZ9llBEPfKPtQPMkCWbaAZyHoxenxuV7c4wxCCQoQ76DndxuHNjEfcy+WbaHHf8h+
- i0YsOvkv6nJ6vJ09jU62h1gcohGJ6AEgc5aqCokQoxsxjM3smxTsqNSjDyDCACzbYbMho5Qpf
- +x4EwRZUN6AoQTgEIn1vkTnIMl59h3CcA5dTUhGwJC0vu3NJ05f2zM/jdk7NuvE/7uxR4owW3
- QPxyFVGC9IvqCUn5nWAPtxkbkjTQ97HMhh9sWTBhrl21WL+2XyQ2At/0enrvWGNMngA2vhk7A
- 27PFWQ==
+	Tue, 04 Jul 2023 08:30:32 +0000
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5704970148dso55099577b3.3
+        for <linux-um@lists.infradead.org>; Tue, 04 Jul 2023 01:30:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1688459428; x=1691051428;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=sfzTTTZzhjYlz4coFh9E2qSX1ec2CbvNDkaAXEgpk5k=;
+        b=V8Vsb0Zt5QGQio1EPy5IGW2p8TPoQMJ1oVAgaPnqc8Bl2IMATsQZRlbz2u8dDr8cmo
+         aHvazQfMuSXmNAxqMbzFrwGkp7MBrxzmuYCrK2BwIoCc5U+Ty43eJVT2pdEMJjDL+ma+
+         aGkT6TxH6vX5m9sWMUsU+RZXMaDJV6vqbQBkD0oyV+3N90lgjPTlbBVuOn0nnzGw2Qvl
+         oXx07SyWAgK2Jt9JjDwEMAQje137bsU9yzAunIxWnc4o7Cqc+Ml1mROlOJXkEFdIsB6l
+         y3z/GPJWMEe5xVO3UZlkoIid/wmLfG7exFCE/PaAAoNH36bzS5cFinGXDw4qlI7NW10j
+         rcHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1688459428; x=1691051428;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sfzTTTZzhjYlz4coFh9E2qSX1ec2CbvNDkaAXEgpk5k=;
+        b=Egcg9nkYwuR49EP7iFLB+wit5XvaKGeHuOaGIe2Ty+rNXf/o2y+fBFptLxVbmXfEm1
+         7hW8W447qIL9l6+Gc1LbDSKxR6U33mOMuRuBDLo5dD12WI/t0lJZs/Pvhiz2am1i6iBs
+         i9usycQUTBtmw9x+zypfPOJnJK3y3Vxw2UL9bd6O3D6IEklcOQZ13Y5RoMJY8bVJM2oH
+         XljGRK0a1VZVft3NVg1I37KP0HRhgzf9x3PZzgtsD5lpqhVcsyl2VJHBDVf8L7rcxfU/
+         DW1oKkuhvCP1ppHd8Xc4gaBSauTRcCBngLLRaStFaYSDYCmNrcsp7drU9RKdY1jeK4XK
+         XxIQ==
+X-Gm-Message-State: ABy/qLaiDFfKKf30IhfvW60+N7+Ypf+MYtW9j4e85G6MIP7xZoFvF/ek
+	LmQ6PYJHP0566Q1Ui1LlAu/rRwp9W3AtqA==
+X-Google-Smtp-Source: APBJJlGdBVgj65bby9V434H9tf4LMtH0P8VjOntdbYAYDc6gjGY+BtXP400b2TbEy0J1sOLuNq4qDOqdTr44WQ==
+X-Received: from slicestar.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:20a1])
+ (user=davidgow job=sendgmr) by 2002:a05:6902:1813:b0:bc5:2869:d735 with SMTP
+ id cf19-20020a056902181300b00bc52869d735mr77328ybb.13.1688459428478; Tue, 04
+ Jul 2023 01:30:28 -0700 (PDT)
+Date: Tue,  4 Jul 2023 16:30:21 +0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
+Message-ID: <20230704083022.692368-1-davidgow@google.com>
+Subject: [PATCH 1/2] asm-generic: current: Don't include thread-info.h if
+ building asm
+From: David Gow <davidgow@google.com>
+To: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Noah Goldstein <goldstein.w.n@gmail.com>
+Cc: linux-um@lists.infradead.org, x86@kernel.org, linux-arch@vger.kernel.org, 
+	Geert Uytterhoeven <geert@linux-m68k.org>, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, David Gow <davidgow@google.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230704_011058_003243_D51484A0 
-X-CRM114-Status: GOOD (  11.14  )
+X-CRM114-CacheID: sfid-20230704_013031_343526_22B72600 
+X-CRM114-Status: GOOD (  11.48  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,32 +87,53 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-PiBUaGFua3MgZm9yIHlvdXIgcmVzcG9uc2UgYW5kIHN1Z2dlc3Rpb25zLAo+IEkgbWFkZSBzb21l
-IG1pc3Rha2VzLiBUaGlzIGlzIGEgcmVzdWJtaXR0ZWQgcGF0Y2guCgpZb3UgcHJlc2VudCBhIG5l
-ZWQgZm9yIGZ1cnRoZXIgaW1wcm92ZW1lbnRzLgoKCj4gSSBnb3Qgc29tZSBlcnJvcnMgd2l0aCBt
-eSBsb2NhbCByZXBvc2l0b3J5LAo+IHNvIEkgbG9zdCB0aGUgY29tbWl0IFNIQS0xIElELgoKSSB3
-b25kZXIgYWJvdXQgc3VjaCBpbmZvcm1hdGlvbiBoZXJlLgoKCj4gRml4ZXM6ICgiZHJpdmVyczog
-dXNlIGZyZWVfbmV0ZGV2IGJlZm9yZSByZXR1cm4gaW4gdmVjdG9yX2V0aF9jb25maWd1cmUoKSIp
-CgpQbGVhc2UgcHJvdmlkZSBhIG1pc3NpbmcgZGV0YWlsLgoKCj4gUGxlYXNlIGNoZWNrIHRoaXMg
-bGluayB0byBzZWUgcHJldmlvdXMgcmVwbGllcy4KPiBMaW5rOiBodHRwczovL2xvcmUua2VybmVs
-Lm9yZy9hbGwvODg1NDY3NWYtOTllNy0zMTRlLWM5ODYtOGRjOTU0ZWU0YTI3QHdlYi5kZS8KCldv
-dWxkIGEgc3ViamVjdCBsaWtlIOKAnFtQQVRDSCB2NF0gdW06IHZlY3RvcjogRml4IGV4Y2VwdGlv
-biBoYW5kbGluZyBpbiB2ZWN0b3JfZXRoX2NvbmZpZ3VyZSgp4oCdCmJlIG1vcmUgYXBwcm9wcmlh
-dGU/CgoKPiBUaGlzIHBhdGNoIG1ha2Ugb3V0X2ZyZWVfbmV0ZGV2IHJlcGxhY2UgdW5kb191c2Vy
-X2luaXQsCj4gZml4IGV0aGVyZGV2IGxlYWsgaW4gZXJyb3IgcmV0dXJuIHBhdGguCgpUaGUgcmVz
-b3VyY2UgY2xlYW51cCB3YXMgaW5jb21wbGV0ZSBpbiB0aGUgaW1wbGVtZW50YXRpb24gb2YgdGhl
-IGZ1bmN0aW9uIOKAnHZlY3Rvcl9ldGhfY29uZmlndXJl4oCdLgpUaHVzIHJlcGxhY2UgdGhlIGp1
-bXAgdGFyZ2V0IOKAnG91dF91bmRvX3VzZXJfaW5pdOKAnSBieSDigJxvdXRfZnJlZV9uZXRkZXbi
-gJ0uCgoK4oCmCj4gLS0tCj4gIGFyY2gvdW0vZHJpdmVycy92ZWN0b3Jfa2Vybi5jIHwgNCArLS0t
-CuKApgoKSSB3b3VsZCBhcHByZWNpYXRlIGZ1cnRoZXIgdmVyc2lvbiBkZXNjcmlwdGlvbnMgaGVy
-ZS4KClNlZSBhbHNvOgpodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVs
-L2dpdC90b3J2YWxkcy9saW51eC5naXQvdHJlZS9Eb2N1bWVudGF0aW9uL3Byb2Nlc3Mvc3VibWl0
-dGluZy1wYXRjaGVzLnJzdD9oPXY2LjQjbjY5OAoKUmVnYXJkcywKTWFya3VzCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxp
-c3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
+asm/current.h is included by some assembly files (either directly, or
+indirectly). This works on some architectures (such as x86), as their
+implementation of current.h is careful to not include any C, but the
+asm-generic version includes linux/thread-info.h unconditionally, which
+leads to errors when either C code or non-asm-compatible preprocessor
+directives are included.
+
+Just wrap the contents behind an #ifndef __ASSEMBLY__ to avoid any C
+code making its way in.
+
+Signed-off-by: David Gow <davidgow@google.com>
+---
+
+This is requrired for patch #2 here, as UML uses this asm-generic
+header, but works with x86 assembly files which are expecting the x86
+current.h, which is assembly-friendly.
+
+---
+ include/asm-generic/current.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/include/asm-generic/current.h b/include/asm-generic/current.h
+index 3a2e224b9fa0..9c2aeecbd05a 100644
+--- a/include/asm-generic/current.h
++++ b/include/asm-generic/current.h
+@@ -2,9 +2,11 @@
+ #ifndef __ASM_GENERIC_CURRENT_H
+ #define __ASM_GENERIC_CURRENT_H
+ 
++#ifndef __ASSEMBLY__
+ #include <linux/thread_info.h>
+ 
+ #define get_current() (current_thread_info()->task)
+ #define current get_current()
++#endif
+ 
+ #endif /* __ASM_GENERIC_CURRENT_H */
+-- 
+2.41.0.255.g8b1d071c50-goog
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
