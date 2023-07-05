@@ -4,80 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 268A1EB64D9
-	for <linux-um@archiver.kernel.org>; Tue,  4 Jul 2023 08:30:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B56EDEB64DD
+	for <linux-um@archiver.kernel.org>; Wed,  5 Jul 2023 19:04:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:From:Subject:Message-ID:
-	References:Mime-Version:In-Reply-To:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=52ALC+0ApzmOQymn8cg5P6jFCZtKozgAeDXVF7ilpFk=; b=Czh562dOwlXfa6VAQbkCaR0iVM
-	JgBitAFumQrb80XSXNAcRtQM0wTJQ9LjVnPcoaHiYTT3Oonp7NQ5XdE+SaAuCvCq3CKrgIu4fXBrG
-	Klgg4PFVSyFOSZ3fHoOfzlaIQfby0xEqS06qWUVEyEIauNH6iiwtEuOV7BAQPxDEz1QaUKA0UWcn9
-	gNtJjHfahbpCZQHHGF7PmTYB0HMco8BVbZZMyE1DRyssVdgFtOh06V075odt/NQznqfyqAwmJFCVP
-	6gDO8LLdtBYpqvx1lzESqxZ6NR46xUSDj96c0pKOcFYiP5TQjX5c7KnwKMo4mvanpiR4BgBcEmTZk
-	50fzw5DA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=RlnGkQm8Rp501NUh+FcloFEwBYrXYug0v2idlsM1oxU=; b=DVn4KjZP5ZkP3F
+	zT2sjkBXtr0Lz612TY/LpUUTHGRPiunzf5UOLdQOlZ0mnWNCCuno13nuboiVbfwB1H8clasMhi814
+	5KuVP5lgBnH+2NChZc3Jfih19vEw4xYZbtA/NcpY/8M2zMontPWqVTfxXmtnCSpipwD5BOYr81bXA
+	mbg8QbquawaarD8/2e9J1Zl/64wL2fhO5WcLYZrHd7KrFCjU3GYoH8IuiP2d4C5sUnzJwfeXp2pzJ
+	LxW1H2zv5kGO9IQ1uQsIXejDQ/3iErCmjiDYdSMBpC1EFGdSyC83eu+3PVugYgNUChe5ttjbsh2sH
+	J19f9d2FR96fk+ThDTKA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qGbQk-00CZZI-2Y;
-	Tue, 04 Jul 2023 08:30:38 +0000
-Received: from mail-yw1-x114a.google.com ([2607:f8b0:4864:20::114a])
+	id 1qH7nn-00GqYj-2q;
+	Wed, 05 Jul 2023 19:04:35 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qGbQh-00CZX5-0u
+	id 1qH7nl-00GqXy-25
 	for linux-um@lists.infradead.org;
-	Tue, 04 Jul 2023 08:30:37 +0000
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5704991ea05so58438617b3.1
-        for <linux-um@lists.infradead.org>; Tue, 04 Jul 2023 01:30:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1688459433; x=1691051433;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VPFPYpJqlVkifeWySsxdrO28y5Ny6mwft6nx5ZGUVhA=;
-        b=14EDmER7U5p0mx0dZlvSGrr81vx0YvPVwEF8Gh+/1kQO1+UZJp5K/F+lL9Myx/x9zY
-         vQqky1ClisRbs8YYZsldp7K48F4AHDpcvRFkmrCanxn0nYHAdiH69obE/poRWlCqj0S3
-         gIjiDU5P5lqw5j1C/hkVynNVKz++87eMq+sLy4J/R1GRKEajNXnBOdVz2049lPGshSxu
-         Plc3wwLAX4TBifDwSNOyvfApUkjT85k7e8qgWXHEBAhUpTscsh2hGUe/b7XWHXce6HvG
-         34Ur6wKY0ZPaNMh/joOMz71adFz/TgMQVmn6Q0ULqheiTyUL2qEcfppQBE3EID0pNjjr
-         bHrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688459433; x=1691051433;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VPFPYpJqlVkifeWySsxdrO28y5Ny6mwft6nx5ZGUVhA=;
-        b=L388bXFy0PlrIUrqcjKK16Z1tXyx4OX5baoNH+vjCMIQyWZHkERIUGIRg8q0iRnVtv
-         31Lx6ddJ9UkRMdZ+Bh6SOMZf3QJ1CXH85GPBiU6QQAsCEOgUijfZHeCqydgCf0Zokny5
-         ruKICzYh8s5cXQGLSqo9pFecPpVoEOSDpsgr8fL10+sE23Pt+y6gXVMGAikmqjkL97uw
-         BFo7bVbdqf7CEUsSkdEVMMWtIrp5FzPhG4RI3BXMsVfq2lG77aVXnOWYBUbAYT/+++Ux
-         uA7OJfHNZB6BiLP/FAXYIEGXUUeOVGC8vWSOcEZ/lqChaRWcLAAkKFmGJx376GqyWO8p
-         +RJw==
-X-Gm-Message-State: ABy/qLZvtG1lQZXFGcK2pPb7PDRdHWE92Z+WGtBRJvxBBeAQhc/O94po
-	NcsAC7O6jAm2O0clwgjDXqVBEf3ofogSCw==
-X-Google-Smtp-Source: APBJJlG/mQtleWpmYTFrXjz5VDtAR3m8iutNTnV65fa5jShxEezd7l/XSMldeUFw12dUkSYPNgkYX2mxR5smOw==
-X-Received: from slicestar.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:20a1])
- (user=davidgow job=sendgmr) by 2002:a0d:d5c2:0:b0:577:d5b:7ce3 with SMTP id
- x185-20020a0dd5c2000000b005770d5b7ce3mr84586ywd.9.1688459433076; Tue, 04 Jul
- 2023 01:30:33 -0700 (PDT)
-Date: Tue,  4 Jul 2023 16:30:22 +0800
-In-Reply-To: <20230704083022.692368-1-davidgow@google.com>
-Mime-Version: 1.0
-References: <20230704083022.692368-1-davidgow@google.com>
-X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-Message-ID: <20230704083022.692368-2-davidgow@google.com>
-Subject: [PATCH 2/2] arch: um: Use the x86 checksum implementation on 32-bit
-From: David Gow <davidgow@google.com>
-To: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
-	Johannes Berg <johannes@sipsolutions.net>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Noah Goldstein <goldstein.w.n@gmail.com>
-Cc: linux-um@lists.infradead.org, x86@kernel.org, linux-arch@vger.kernel.org, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, linux-kselftest@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, David Gow <davidgow@google.com>
+	Wed, 05 Jul 2023 19:04:34 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 2C1E561718;
+	Wed,  5 Jul 2023 19:04:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2349FC433C7;
+	Wed,  5 Jul 2023 19:04:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1688583873;
+	bh=Q07agmN+3+t14XXRG6FKQDnwU5RN+rMKtJn4NHdEWos=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=QkIfF+SdhLDlA6hyjj0ReVT8TuhVzupOEUrHVW1NoCL0TKXJ6VhiTU4HAAY9HUPxI
+	 EIlpEW655H87oQuluOyUe84GuJS3XSH1DmOCPy0l2+r1UCkn2c0Ys6DBxzdeZxF/CE
+	 4zI97zX8fF44I5BUOzZfc7IxAf4k1wTpTy0CfO7rFSdvWIQ+tFpDRxtE57mD0ZPsbM
+	 SFRhL8QogFgK4DkrTPfL+fjPJN0squ60mBnqmQ1OspfOoKhnxEdanEUc5C2dgTmX7i
+	 yvOMmEzu6ZSg88WKi/2glAMJh/J51GGR3EeFgBaohUXR2oTe0PRe8IfW9NBTioLufs
+	 THtBLd8+7Xeqg==
+From: Jeff Layton <jlayton@kernel.org>
+To: Christian Brauner <brauner@kernel.org>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>
+Cc: Al Viro <viro@zeniv.linux.org.uk>,
+	Jan Kara <jack@suse.cz>,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-um@lists.infradead.org
+Subject: [PATCH v2 50/92] hostfs: convert to ctime accessor functions
+Date: Wed,  5 Jul 2023 15:01:15 -0400
+Message-ID: <20230705190309.579783-48-jlayton@kernel.org>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230705190309.579783-1-jlayton@kernel.org>
+References: <20230705185755.579053-1-jlayton@kernel.org>
+ <20230705190309.579783-1-jlayton@kernel.org>
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230704_013035_323463_27D8F7DF 
-X-CRM114-Status: GOOD (  18.57  )
+X-CRM114-CacheID: sfid-20230705_120433_724715_08CD24C9 
+X-CRM114-Status: GOOD (  11.02  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,290 +82,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-When UML is compiled under 32-bit x86, it uses its own copy of
-checksum_32.S, which is terribly out-of-date and doesn't support
-checksumming unaligned data.
+In later patches, we're going to change how the inode's ctime field is
+used. Switch to using accessor functions instead of raw accesses of
+inode->i_ctime.
 
-This causes the new "checksum" KUnit test to fail:
-./tools/testing/kunit/kunit.py run --kconfig_add CONFIG_64BIT=n --cross_compile i686-linux-gnu- checksum
-    KTAP version 1
-    # Subtest: checksum
-    1..3
-    # test_csum_fixed_random_inputs: ASSERTION FAILED at lib/checksum_kunit.c:243
-    Expected result == expec, but
-        result == 33316 (0x8224)
-        expec == 33488 (0x82d0)
-    not ok 1 test_csum_fixed_random_inputs
-    # test_csum_all_carry_inputs: ASSERTION FAILED at lib/checksum_kunit.c:267
-    Expected result == expec, but
-        result == 65280 (0xff00)
-        expec == 0 (0x0)
-    not ok 2 test_csum_all_carry_inputs
-    # test_csum_no_carry_inputs: ASSERTION FAILED at lib/checksum_kunit.c:306
-    Expected result == expec, but
-        result == 65531 (0xfffb)
-        expec == 0 (0x0)
-    not ok 3 test_csum_no_carry_inputs
-
-Sharing the normal implementation in arch/x86/lib both fixes all of
-these issues and means any further fixes only need to be done once.
-
-x86_64 already seems to share the same implementation between UML and
-"normal" x86.
-
-Signed-off-by: David Gow <davidgow@google.com>
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
 ---
+ fs/hostfs/hostfs_kern.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Note that there is a further issue with the pre-pentium-pro codepath in
-the shared x86 code, which I'll send a separate fix out for. i686+ works
-fine with just this series.
-
----
- arch/x86/um/Makefile      |   3 +-
- arch/x86/um/checksum_32.S | 214 --------------------------------------
- 2 files changed, 2 insertions(+), 215 deletions(-)
- delete mode 100644 arch/x86/um/checksum_32.S
-
-diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
-index ee89f6bb9242..cb738967a9f5 100644
---- a/arch/x86/um/Makefile
-+++ b/arch/x86/um/Makefile
-@@ -17,11 +17,12 @@ obj-y = bugs_$(BITS).o delay.o fault.o ldt.o \
- 
- ifeq ($(CONFIG_X86_32),y)
- 
--obj-y += checksum_32.o syscalls_32.o
-+obj-y += syscalls_32.o
- obj-$(CONFIG_ELF_CORE) += elfcore.o
- 
- subarch-y = ../lib/string_32.o ../lib/atomic64_32.o ../lib/atomic64_cx8_32.o
- subarch-y += ../lib/cmpxchg8b_emu.o ../lib/atomic64_386_32.o
-+subarch-y += ../lib/checksum_32.o
- subarch-y += ../kernel/sys_ia32.o
- 
- else
-diff --git a/arch/x86/um/checksum_32.S b/arch/x86/um/checksum_32.S
-deleted file mode 100644
-index aed782ab7721..000000000000
---- a/arch/x86/um/checksum_32.S
-+++ /dev/null
-@@ -1,214 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-or-later */
--/*
-- * INET		An implementation of the TCP/IP protocol suite for the LINUX
-- *		operating system.  INET is implemented using the  BSD Socket
-- *		interface as the means of communication with the user level.
-- *
-- *		IP/TCP/UDP checksumming routines
-- *
-- * Authors:	Jorge Cwik, <jorge@laser.satlink.net>
-- *		Arnt Gulbrandsen, <agulbra@nvg.unit.no>
-- *		Tom May, <ftom@netcom.com>
-- *              Pentium Pro/II routines:
-- *              Alexander Kjeldaas <astor@guardian.no>
-- *              Finn Arne Gangstad <finnag@guardian.no>
-- *		Lots of code moved from tcp.c and ip.c; see those files
-- *		for more names.
-- *
-- * Changes:     Ingo Molnar, converted csum_partial_copy() to 2.1 exception
-- *			     handling.
-- *		Andi Kleen,  add zeroing on error
-- *                   converted to pure assembler
-- */
--
--#include <asm/errno.h>
--#include <asm/asm.h>
--#include <asm/export.h>
--				
--/*
-- * computes a partial checksum, e.g. for TCP/UDP fragments
-- */
--
--/*	
--unsigned int csum_partial(const unsigned char * buff, int len, unsigned int sum)
-- */
--		
--.text
--.align 4
--.globl csum_partial
--		
--#ifndef CONFIG_X86_USE_PPRO_CHECKSUM
--
--	  /*		
--	   * Experiments with Ethernet and SLIP connections show that buff
--	   * is aligned on either a 2-byte or 4-byte boundary.  We get at
--	   * least a twofold speedup on 486 and Pentium if it is 4-byte aligned.
--	   * Fortunately, it is easy to convert 2-byte alignment to 4-byte
--	   * alignment for the unrolled loop.
--	   */		
--csum_partial:
--	pushl %esi
--	pushl %ebx
--	movl 20(%esp),%eax	# Function arg: unsigned int sum
--	movl 16(%esp),%ecx	# Function arg: int len
--	movl 12(%esp),%esi	# Function arg: unsigned char *buff
--	testl $2, %esi		# Check alignment.
--	jz 2f			# Jump if alignment is ok.
--	subl $2, %ecx		# Alignment uses up two bytes.
--	jae 1f			# Jump if we had at least two bytes.
--	addl $2, %ecx		# ecx was < 2.  Deal with it.
--	jmp 4f
--1:	movw (%esi), %bx
--	addl $2, %esi
--	addw %bx, %ax
--	adcl $0, %eax
--2:
--	movl %ecx, %edx
--	shrl $5, %ecx
--	jz 2f
--	testl %esi, %esi
--1:	movl (%esi), %ebx
--	adcl %ebx, %eax
--	movl 4(%esi), %ebx
--	adcl %ebx, %eax
--	movl 8(%esi), %ebx
--	adcl %ebx, %eax
--	movl 12(%esi), %ebx
--	adcl %ebx, %eax
--	movl 16(%esi), %ebx
--	adcl %ebx, %eax
--	movl 20(%esi), %ebx
--	adcl %ebx, %eax
--	movl 24(%esi), %ebx
--	adcl %ebx, %eax
--	movl 28(%esi), %ebx
--	adcl %ebx, %eax
--	lea 32(%esi), %esi
--	dec %ecx
--	jne 1b
--	adcl $0, %eax
--2:	movl %edx, %ecx
--	andl $0x1c, %edx
--	je 4f
--	shrl $2, %edx		# This clears CF
--3:	adcl (%esi), %eax
--	lea 4(%esi), %esi
--	dec %edx
--	jne 3b
--	adcl $0, %eax
--4:	andl $3, %ecx
--	jz 7f
--	cmpl $2, %ecx
--	jb 5f
--	movw (%esi),%cx
--	leal 2(%esi),%esi
--	je 6f
--	shll $16,%ecx
--5:	movb (%esi),%cl
--6:	addl %ecx,%eax
--	adcl $0, %eax 
--7:	
--	popl %ebx
--	popl %esi
--	RET
--
--#else
--
--/* Version for PentiumII/PPro */
--
--csum_partial:
--	pushl %esi
--	pushl %ebx
--	movl 20(%esp),%eax	# Function arg: unsigned int sum
--	movl 16(%esp),%ecx	# Function arg: int len
--	movl 12(%esp),%esi	# Function arg:	const unsigned char *buf
--
--	testl $2, %esi         
--	jnz 30f                 
--10:
--	movl %ecx, %edx
--	movl %ecx, %ebx
--	andl $0x7c, %ebx
--	shrl $7, %ecx
--	addl %ebx,%esi
--	shrl $2, %ebx  
--	negl %ebx
--	lea 45f(%ebx,%ebx,2), %ebx
--	testl %esi, %esi
--	jmp *%ebx
--
--	# Handle 2-byte-aligned regions
--20:	addw (%esi), %ax
--	lea 2(%esi), %esi
--	adcl $0, %eax
--	jmp 10b
--
--30:	subl $2, %ecx          
--	ja 20b                 
--	je 32f
--	movzbl (%esi),%ebx	# csumming 1 byte, 2-aligned
--	addl %ebx, %eax
--	adcl $0, %eax
--	jmp 80f
--32:
--	addw (%esi), %ax	# csumming 2 bytes, 2-aligned
--	adcl $0, %eax
--	jmp 80f
--
--40: 
--	addl -128(%esi), %eax
--	adcl -124(%esi), %eax
--	adcl -120(%esi), %eax
--	adcl -116(%esi), %eax   
--	adcl -112(%esi), %eax   
--	adcl -108(%esi), %eax
--	adcl -104(%esi), %eax
--	adcl -100(%esi), %eax
--	adcl -96(%esi), %eax
--	adcl -92(%esi), %eax
--	adcl -88(%esi), %eax
--	adcl -84(%esi), %eax
--	adcl -80(%esi), %eax
--	adcl -76(%esi), %eax
--	adcl -72(%esi), %eax
--	adcl -68(%esi), %eax
--	adcl -64(%esi), %eax     
--	adcl -60(%esi), %eax     
--	adcl -56(%esi), %eax     
--	adcl -52(%esi), %eax   
--	adcl -48(%esi), %eax   
--	adcl -44(%esi), %eax
--	adcl -40(%esi), %eax
--	adcl -36(%esi), %eax
--	adcl -32(%esi), %eax
--	adcl -28(%esi), %eax
--	adcl -24(%esi), %eax
--	adcl -20(%esi), %eax
--	adcl -16(%esi), %eax
--	adcl -12(%esi), %eax
--	adcl -8(%esi), %eax
--	adcl -4(%esi), %eax
--45:
--	lea 128(%esi), %esi
--	adcl $0, %eax
--	dec %ecx
--	jge 40b
--	movl %edx, %ecx
--50:	andl $3, %ecx
--	jz 80f
--
--	# Handle the last 1-3 bytes without jumping
--	notl %ecx		# 1->2, 2->1, 3->0, higher bits are masked
--	movl $0xffffff,%ebx	# by the shll and shrl instructions
--	shll $3,%ecx
--	shrl %cl,%ebx
--	andl -128(%esi),%ebx	# esi is 4-aligned so should be ok
--	addl %ebx,%eax
--	adcl $0,%eax
--80: 
--	popl %ebx
--	popl %esi
--	RET
--				
--#endif
--	EXPORT_SYMBOL(csum_partial)
+diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+index 46387090eb76..182af84a9c12 100644
+--- a/fs/hostfs/hostfs_kern.c
++++ b/fs/hostfs/hostfs_kern.c
+@@ -517,8 +517,7 @@ static int hostfs_inode_update(struct inode *ino, const struct hostfs_stat *st)
+ 		(struct timespec64){ st->atime.tv_sec, st->atime.tv_nsec };
+ 	ino->i_mtime =
+ 		(struct timespec64){ st->mtime.tv_sec, st->mtime.tv_nsec };
+-	ino->i_ctime =
+-		(struct timespec64){ st->ctime.tv_sec, st->ctime.tv_nsec };
++	inode_set_ctime_to_ts(ino, &st->ctime);
+ 	ino->i_size = st->size;
+ 	ino->i_blocks = st->blocks;
+ 	return 0;
 -- 
-2.41.0.255.g8b1d071c50-goog
+2.41.0
 
 
 _______________________________________________
