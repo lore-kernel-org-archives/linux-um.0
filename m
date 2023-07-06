@@ -4,84 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52266EB64DC
-	for <linux-um@archiver.kernel.org>; Thu,  6 Jul 2023 12:48:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0AC42EB64D9
+	for <linux-um@archiver.kernel.org>; Thu,  6 Jul 2023 13:17:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:Subject:References:Cc:
+	To:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=r48uPIppHhUKPg1Ssip8riniu3Pte/UlW9f6ig4uikQ=; b=Be3XREemWCXObc
-	kiJAwuTHo8+ZsHcCdMpra2eNmkGfidWOCvGk3LVkkjRFfnG6KFrVuJXWS9KR/Rl1nO0OR+gFGwlM5
-	go+06aNxR+G/Hj7GuYYVMJTLf1A2tgHuuLLJnPwtFjIzDjK3GGAzvbORjnCdZoWh/kEQGTBPk8uVL
-	DYRxBr/tNCZqd5yEn68hSFX+sXTjtRncdY04B4JTij3i0Ma+I+9aZyheuZsfpetIL+I/ShAQelrz2
-	XQPmiTElud6cKuDpLvYTmcz6Hcf7gpvNrQxk7Cob8XRuYfrHvH1JxXt1s4MYA8YXTmkFwEHksvNuN
-	C+pAKmACdpu36HJL2WhQ==;
+	List-Owner; bh=iV084hpCJjwZvGVSL7R9QjUPIvKQgEs6t76YEMNw9Ng=; b=B+qSustjE52NVj
+	WNNEEZH1/nduQfzifSm+K6lmhIji69oTj/OAqSEmvfT4kujfG3H+cmNLYBwRn7Q20OGJQbkpH9vXI
+	XrU4zsavQMZYjwlmI8sljqQ9O1CIdv3+wd0LTqN+5X+jj9fB0o66nIN+ss2btPepyk/1ZqcokIqR8
+	Wmt3YvsjO2TVAckHeLJXmxVVXgQXo3j6fSOKRob/v5JfPdoS5qW8cZB1Wx+TcfGUtgTH869Su4EJ/
+	3TFl7IcPNS/VQZwaomJBGyUZrcT2fqRZliTtKMmpIMWASEk7R+mnyHYXF+JY8R+jQCTtIOakgRT7q
+	z3VrV68XnFP6NTiih+dg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qHOP0-001ggf-1S;
-	Thu, 06 Jul 2023 12:48:06 +0000
-Received: from smtp-out1.suse.de ([195.135.220.28])
+	id 1qHOr8-001kK3-0f;
+	Thu, 06 Jul 2023 13:17:10 +0000
+Received: from mout.web.de ([212.227.17.12])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qHOOy-001gfO-1G
+	id 1qHOr5-001kJ8-2s
 	for linux-um@lists.infradead.org;
-	Thu, 06 Jul 2023 12:48:05 +0000
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 150B1228BE;
-	Thu,  6 Jul 2023 12:48:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1688647682; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gRXye/rxgx5yXx+4yaqVLpPLLCHYMJGCFB4srDdTvrs=;
-	b=HXYJ/++T9nVftJLw686zBdTp0YcyK0ZaRFe/2Xxm0wzQL/fp9KguiyhCNN7DBor7IsCLAS
-	hD4ctzB4Pz2fvwPnnGy6mlXg+7chpKrRw7QOQD36xXsc3gckcMccpGVTQ3P5YvO4XE2aSw
-	GLjtsJYxF10ha9wbTTNMpd7hCWV2+ZY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1688647682;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gRXye/rxgx5yXx+4yaqVLpPLLCHYMJGCFB4srDdTvrs=;
-	b=mH3XoeJCtzX3hkFYlQJGOO8bI2u0KB2in0z2GPcmkdyNbzdafC/huFHu0vnDvQW6he2Quw
-	pCGP4mx09bJlF8AA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0782C138FC;
-	Thu,  6 Jul 2023 12:48:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id n+nJAQK4pmQcQgAAMHmgww
-	(envelope-from <jack@suse.cz>); Thu, 06 Jul 2023 12:48:02 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id AB698A0707; Thu,  6 Jul 2023 14:48:01 +0200 (CEST)
-Date: Thu, 6 Jul 2023 14:48:01 +0200
-From: Jan Kara <jack@suse.cz>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Christian Brauner <brauner@kernel.org>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-um@lists.infradead.org
-Subject: Re: [PATCH v2 50/92] hostfs: convert to ctime accessor functions
-Message-ID: <20230706124801.exu6lh2d6dwt4dfj@quack3>
-References: <20230705185755.579053-1-jlayton@kernel.org>
- <20230705190309.579783-1-jlayton@kernel.org>
- <20230705190309.579783-48-jlayton@kernel.org>
+	Thu, 06 Jul 2023 13:17:09 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+ s=s29768273; t=1688649411; x=1689254211; i=markus.elfring@web.de;
+ bh=fJlXmmzrOj95xU1VQlbv9j2MSr7jZ+WZV76JS7dAp9E=;
+ h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:In-Reply-To;
+ b=mBmBI9kMnPmztdWkReSjAjEq8uIsKlvRoFvR1xMXfyHoJ+/YfClYHh/bvk6BYH8QuJXAsRI
+ ZzfwwUht+M9+HLKhIDhV18JV3uhmyD4mB7ny61daRYojw3NJkeuUIWOmjaU5Lg6hUP6h1nZmK
+ 4epvTlGJ5U4Xy7T8cvXBi+WdI7ZjNRQNTu0bugDEJdwftgfLYOAsnWM6WZzUj7d5HuJG4g0jp
+ bC/M7pr4T98kTN2pxHq8p9VIxXkFe6Zet0Uj4TyiPaLfA3qiDymua2ruhuNwwufvtdlRs+gS1
+ gS2uD6jEGMNruNKcBEBiIII//18Zqvg5X292EL/TtGQ6OUoh867w==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.90.83]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MumJF-1pzSIC0hGt-00rjd2; Thu, 06
+ Jul 2023 15:16:51 +0200
+Message-ID: <b8e14b6c-da2d-ac6e-7cdb-077b2c2a6390@web.de>
+Date: Thu, 6 Jul 2023 15:16:49 +0200
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230705190309.579783-48-jlayton@kernel.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+To: Minjie Du <duminjie@vivo.com>, opensource.kernel@vivo.com,
+ linux-um@lists.infradead.org, bpf@vger.kernel.org,
+ kernel-janitors@vger.kernel.org
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ Richard Weinberger <richard@nod.at>, Stephen Rothwell <sfr@canb.auug.org.au>
+References: <20230706013911.695-1-duminjie@vivo.com>
+Subject: Re: [PATCH v4] um: vector: Fix exception handling in
+ vector_eth_configure()
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20230706013911.695-1-duminjie@vivo.com>
+X-Provags-ID: V03:K1:+zxh/YLDLGmRjkJRUeka2Do+HFkJNyd5nBqotS+CMLGEpowdfC2
+ 56FEq4o+q4TLsXDVv1XrEMDYLJhD9TLyAEkNtbffpq+70+8mwAXlLqUG7gt9r3pmbP1644s
+ huAnrnlVUtHX5FxfkctCw2ovdd6q6+PRr4D7RmW1ric/p45x2pWNhv85m8WWI3VOrJGlRDF
+ oALM1U/TmnDGBil+69g2w==
+UI-OutboundReport: notjunk:1;M01:P0:Q+EI21sMTfA=;f05Co5tj4tm7I8SeThT3KRNhKGv
+ Vf5zAwzRjl40ZxScPalPI609jsgO+idpeH0rozpCRTT6ZBTbv/Ssx9jcf+zJ2KWQCGZZsrBNZ
+ pOBsozHbz1oBWr4PDj0Hm5CEwy5vYFXz6PMIo1ouv0Pv70wJqyLTVdNzXqB4nswsKbwd3JVTl
+ GfGWt1mvebsy5dt01i1+6U+uL0EAM89WFoEOvXezWUW+i9/sJFAsXawgOKG9OOajedxaU2v2F
+ xKO2K0CeLEFYfuT3slqVnqS2prr3dXGMazuZIGCo1M9sbqyYvFBeLDnCeT/keisJw5sdRtGex
+ 6KDjwy+upLtRIrQ7W4UGhpikG4+Z35yhagRrXlM3dfrWsUuH28iX2XNSM3IUzycgWLIRP1q9T
+ Xz8xrhNh+9YWusKqSM6FoF4W9YB61kR7AjvgCO3eEDB/GVx8K6cyIl4okSHC1w/cN4xwAG8ar
+ E5/eoFaNK64v96FrOZoHqyYKrn9tQHyxUtVlkFsCrjyY/+jaD+QZKD7oP8llgj6xsumY5xhWz
+ 2UMQ9ixlp0C3qUtj8WgvLQ2JCeVE2RNaaHBX65sN+YUJyaF6N8gLMhgr48PRFzZxFDoFiQOsY
+ 3kKDmdGjeAowd20xKAAD+BfouvTD2VXvXytxEw3rxDhCCPakG8szD/3Hxn0K0jNg3a02qURsx
+ KYpt25y7UX15IkN8jc9LvBqrigp7mIqQoNiK9Fyr1xSXsITIkwMWQK66sE1f/k/ABHc+lduHX
+ SVfV/pae4b0sptXtkFbP7J+Tqzii9ceKZcCl929LflS01yUHRosnQReYa6UN6W7odN9rmrVVe
+ HDwSA038EfKZ3jLsrp2EFnzvah+15kEl9FUwrrW6WKFVxXLlI9hACsaVu3XyB9/E1+q2DjrBW
+ fqOv+AIVQGW/H7Ay9lPqOnOJMlAdTRhlcAyJsZr/CY3PcOV1pzYrbij7sAaxVp2Y6AyoT41GQ
+ OxAh7A==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230706_054804_573589_0BE2065D 
-X-CRM114-Status: GOOD (  16.56  )
+X-CRM114-CacheID: sfid-20230706_061708_402180_D058EFFC 
+X-CRM114-Status: UNSURE (   5.70  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,50 +92,19 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed 05-07-23 15:01:15, Jeff Layton wrote:
-> In later patches, we're going to change how the inode's ctime field is
-> used. Switch to using accessor functions instead of raw accesses of
-> inode->i_ctime.
-> 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-
-Looks good. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/hostfs/hostfs_kern.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-> index 46387090eb76..182af84a9c12 100644
-> --- a/fs/hostfs/hostfs_kern.c
-> +++ b/fs/hostfs/hostfs_kern.c
-> @@ -517,8 +517,7 @@ static int hostfs_inode_update(struct inode *ino, const struct hostfs_stat *st)
->  		(struct timespec64){ st->atime.tv_sec, st->atime.tv_nsec };
->  	ino->i_mtime =
->  		(struct timespec64){ st->mtime.tv_sec, st->mtime.tv_nsec };
-> -	ino->i_ctime =
-> -		(struct timespec64){ st->ctime.tv_sec, st->ctime.tv_nsec };
-> +	inode_set_ctime_to_ts(ino, &st->ctime);
->  	ino->i_size = st->size;
->  	ino->i_blocks = st->blocks;
->  	return 0;
-> -- 
-> 2.41.0
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+PiBUaHVzIHJlcGxhY2UgdGhlIGp1bXAgdGFyZ2V0Cj4gIm91dF91bmRvX3VzZXJfaW5pdCIgYnkg
+Im91dF9mcmVlX25ldGRldiIuCgpTdWNoIHRleHQgc2hvdWxkIGJlIGNvbWJpbmVkIGludG8gYSBz
+aW5nbGUgbGluZS4KKDcxIGNoYXJhY3RlcnMgZml0IHN0aWxsIGludG8ga25vd24gd29yZGluZyBj
+b25zdHJhaW50cy4pCgoKPiBEZWxhdGUgdGhlIG9ycGhhbiBmdW5jdGlvbiAib3V0X3VuZG9fdXNl
+cl9pbml0IgoKUGxlYXNlIGF2b2lkIHR5cG9zIGluIHN1Y2ggYSBzZW50ZW5jZS4KCiogSG93IGhl
+bHBmdWwgaXMgdGhlIGF0dGVtcHQgdG8gbWVudGlvbiBhIGRlbGV0aW9uPwoKKiBXb3VsZCB5b3Ug
+ZXZlbnR1YWxseSBsaWtlIHRvIHJlZmVyIHRvIGEgbGFiZWwgaW5zdGVhZCBvZiBhIOKAnGZ1bmN0
+aW9u4oCdPwoKClJlZ2FyZHMsCk1hcmt1cwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmlu
+ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
+aW51eC11bQo=
