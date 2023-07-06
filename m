@@ -4,68 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B56EDEB64DD
-	for <linux-um@archiver.kernel.org>; Wed,  5 Jul 2023 19:04:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0AEDC001B0
+	for <linux-um@archiver.kernel.org>; Thu,  6 Jul 2023 00:18:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Date:
+	Message-Id:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=RlnGkQm8Rp501NUh+FcloFEwBYrXYug0v2idlsM1oxU=; b=DVn4KjZP5ZkP3F
-	zT2sjkBXtr0Lz612TY/LpUUTHGRPiunzf5UOLdQOlZ0mnWNCCuno13nuboiVbfwB1H8clasMhi814
-	5KuVP5lgBnH+2NChZc3Jfih19vEw4xYZbtA/NcpY/8M2zMontPWqVTfxXmtnCSpipwD5BOYr81bXA
-	mbg8QbquawaarD8/2e9J1Zl/64wL2fhO5WcLYZrHd7KrFCjU3GYoH8IuiP2d4C5sUnzJwfeXp2pzJ
-	LxW1H2zv5kGO9IQ1uQsIXejDQ/3iErCmjiDYdSMBpC1EFGdSyC83eu+3PVugYgNUChe5ttjbsh2sH
-	J19f9d2FR96fk+ThDTKA==;
+	List-Owner; bh=6TCgQ0VKVBgpWa1BrM7JPyTGV68+ekzMnXWgsyiM/1g=; b=Mx0htb6OJ/pL64
+	BE6T79q0fQbW28W4IYHQfCVfNoX+hSrSAzdTsJsy+yR6HJnszX27Lp1gGSeHq2v3kBfbGkYN5BCex
+	v88NxHpReA723q54hb0+GLbY0DmMxlMmU0LER8qSWCBrpw7+W9oA65l/uKvLlGZciN65NlGvC3/NI
+	9btB2O+MuyVHj8PsMcfL+N4jX2LPQlkBNOve9ghQPizV+2MSWs9YY9cjEAK+6dg7dDWGkbKXs2gif
+	zsh/HVh5P7Y1dERkoW+KU496wcAPspiUd6mz465eexwYGSY7rPByrB/tixI5WVzu60mawC+QtkS3R
+	5E7djJXbt3yALMOnZ7iA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qH7nn-00GqYj-2q;
-	Wed, 05 Jul 2023 19:04:35 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1qHChS-00HSTd-0c;
+	Thu, 06 Jul 2023 00:18:22 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qH7nl-00GqXy-25
-	for linux-um@lists.infradead.org;
-	Wed, 05 Jul 2023 19:04:34 +0000
+	id 1qHChN-00HSOc-02;
+	Thu, 06 Jul 2023 00:18:18 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 2C1E561718;
-	Wed,  5 Jul 2023 19:04:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2349FC433C7;
-	Wed,  5 Jul 2023 19:04:32 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 797AE617AA;
+	Thu,  6 Jul 2023 00:18:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C33B1C433C8;
+	Thu,  6 Jul 2023 00:18:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1688583873;
-	bh=Q07agmN+3+t14XXRG6FKQDnwU5RN+rMKtJn4NHdEWos=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QkIfF+SdhLDlA6hyjj0ReVT8TuhVzupOEUrHVW1NoCL0TKXJ6VhiTU4HAAY9HUPxI
-	 EIlpEW655H87oQuluOyUe84GuJS3XSH1DmOCPy0l2+r1UCkn2c0Ys6DBxzdeZxF/CE
-	 4zI97zX8fF44I5BUOzZfc7IxAf4k1wTpTy0CfO7rFSdvWIQ+tFpDRxtE57mD0ZPsbM
-	 SFRhL8QogFgK4DkrTPfL+fjPJN0squ60mBnqmQ1OspfOoKhnxEdanEUc5C2dgTmX7i
-	 yvOMmEzu6ZSg88WKi/2glAMJh/J51GGR3EeFgBaohUXR2oTe0PRe8IfW9NBTioLufs
-	 THtBLd8+7Xeqg==
-From: Jeff Layton <jlayton@kernel.org>
-To: Christian Brauner <brauner@kernel.org>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>
-Cc: Al Viro <viro@zeniv.linux.org.uk>,
-	Jan Kara <jack@suse.cz>,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-um@lists.infradead.org
-Subject: [PATCH v2 50/92] hostfs: convert to ctime accessor functions
-Date: Wed,  5 Jul 2023 15:01:15 -0400
-Message-ID: <20230705190309.579783-48-jlayton@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230705190309.579783-1-jlayton@kernel.org>
-References: <20230705185755.579053-1-jlayton@kernel.org>
- <20230705190309.579783-1-jlayton@kernel.org>
+	s=k20201202; t=1688602694;
+	bh=UCIqkh07H9RodI2FiYHSloPcTyNTNSp1TtLBvzeAlzY=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=XD5s9qgQk+bezWq3JBvoy9wmXJ5ZRyDVTHkpXWgLVO3OxVcBH0YyZg8Gz6rb+KfwN
+	 /A+CNNvgWQMrDzOs56n2cEhwU0PkBRXiccPcVu64Aq1yBYBPWYZC4FuTB8N5QK1KQ+
+	 MdmDcn18RW7d50qJnG0uAgWsSoPksgnrlWtl7DDURyh0pmkik5uADq73uLJFx1EI+5
+	 TxJjuarqz28vf+B0YnRKEqs2EnBb9P4N1MwtPeCMbPEFDapDEj1dai8Lh/Uv6asayt
+	 1cEnsHDnrwJGGhdMLNNVih3y+j4HdKbkLcado1IWcst06dccj5qYciZqXhBkSg0rUM
+	 /tfAjpbujjdzA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A1405C64459;
+	Thu,  6 Jul 2023 00:18:14 +0000 (UTC)
 MIME-Version: 1.0
+Subject: Re: [f2fs-dev] [PATCH 01/30] block: also call ->open for incremental
+ partition opens
+From: patchwork-bot+f2fs@kernel.org
+Message-Id: <168860269464.29151.2364164271547941172.git-patchwork-notify@kernel.org>
+Date: Thu, 06 Jul 2023 00:18:14 +0000
+References: <20230608110258.189493-2-hch@lst.de>
+In-Reply-To: <20230608110258.189493-2-hch@lst.de>
+To: Christoph Hellwig <hch@lst.de>
+Cc: axboe@kernel.dk, vigneshr@ti.com, rafael@kernel.org,
+ linux-nvme@lists.infradead.org, phil@philpotter.co.uk, clm@fb.com,
+ dm-devel@redhat.com, haris.iqbal@ionos.com, pavel@ucw.cz,
+ miquel.raynal@bootlin.com, jinpu.wang@ionos.com, linux-nilfs@vger.kernel.org,
+ linux-scsi@vger.kernel.org, richard@nod.at, linux-pm@vger.kernel.org,
+ linux-um@lists.infradead.org, josef@toxicpanda.com, colyli@suse.de,
+ linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
+ viro@zeniv.linux.org.uk, dsterba@suse.com, brauner@kernel.org,
+ martin.petersen@oracle.com, linux-f2fs-devel@lists.sourceforge.net,
+ linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-btrfs@vger.kernel.org, hare@suse.de
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230705_120433_724715_08CD24C9 
-X-CRM114-Status: GOOD (  11.02  )
+X-CRM114-CacheID: sfid-20230705_171817_173958_0D3653A4 
+X-CRM114-Status: GOOD (  12.14  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,31 +86,88 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-In later patches, we're going to change how the inode's ctime field is
-used. Switch to using accessor functions instead of raw accesses of
-inode->i_ctime.
+Hello:
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- fs/hostfs/hostfs_kern.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+This series was applied to jaegeuk/f2fs.git (dev)
+by Jens Axboe <axboe@kernel.dk>:
 
-diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index 46387090eb76..182af84a9c12 100644
---- a/fs/hostfs/hostfs_kern.c
-+++ b/fs/hostfs/hostfs_kern.c
-@@ -517,8 +517,7 @@ static int hostfs_inode_update(struct inode *ino, const struct hostfs_stat *st)
- 		(struct timespec64){ st->atime.tv_sec, st->atime.tv_nsec };
- 	ino->i_mtime =
- 		(struct timespec64){ st->mtime.tv_sec, st->mtime.tv_nsec };
--	ino->i_ctime =
--		(struct timespec64){ st->ctime.tv_sec, st->ctime.tv_nsec };
-+	inode_set_ctime_to_ts(ino, &st->ctime);
- 	ino->i_size = st->size;
- 	ino->i_blocks = st->blocks;
- 	return 0;
+On Thu,  8 Jun 2023 13:02:29 +0200 you wrote:
+> For whole devices ->open is called for each open, but for partitions it
+> is only called on the first open of a partition, e.g.:
+> 
+>   open("/dev/vdb", ...)
+>   open("/dev/vdb", ...)
+>     - 2 call to ->open
+> 
+> [...]
+
+Here is the summary with links:
+  - [f2fs-dev,01/30] block: also call ->open for incremental partition opens
+    https://git.kernel.org/jaegeuk/f2fs/c/9d1c92872e70
+  - [f2fs-dev,02/30] cdrom: remove the unused bdev argument to cdrom_open
+    https://git.kernel.org/jaegeuk/f2fs/c/764b83100b9a
+  - [f2fs-dev,03/30] cdrom: remove the unused mode argument to cdrom_ioctl
+    https://git.kernel.org/jaegeuk/f2fs/c/473399b50de1
+  - [f2fs-dev,04/30] cdrom: remove the unused cdrom_close_write release code
+    https://git.kernel.org/jaegeuk/f2fs/c/a4cec8bc14c0
+  - [f2fs-dev,05/30] cdrom: track if a cdrom_device_info was opened for data
+    https://git.kernel.org/jaegeuk/f2fs/c/8cdf433e2b8e
+  - [f2fs-dev,06/30] cdrom: remove the unused mode argument to cdrom_release
+    https://git.kernel.org/jaegeuk/f2fs/c/7ae24fcee992
+  - [f2fs-dev,07/30] block: pass a gendisk on bdev_check_media_change
+    https://git.kernel.org/jaegeuk/f2fs/c/444aa2c58cb3
+  - [f2fs-dev,08/30] block: pass a gendisk to ->open
+    https://git.kernel.org/jaegeuk/f2fs/c/d32e2bf83791
+  - [f2fs-dev,09/30] block: remove the unused mode argument to ->release
+    https://git.kernel.org/jaegeuk/f2fs/c/ae220766d87c
+  - [f2fs-dev,10/30] block: rename blkdev_close to blkdev_release
+    https://git.kernel.org/jaegeuk/f2fs/c/7ee34cbc291a
+  - [f2fs-dev,11/30] swsusp: don't pass a stack address to blkdev_get_by_path
+    https://git.kernel.org/jaegeuk/f2fs/c/c889d0793d9d
+  - [f2fs-dev,12/30] bcache: don't pass a stack address to blkdev_get_by_path
+    https://git.kernel.org/jaegeuk/f2fs/c/29499ab060fe
+  - [f2fs-dev,13/30] rnbd-srv: don't pass a holder for non-exclusive blkdev_get_by_path
+    https://git.kernel.org/jaegeuk/f2fs/c/5ee607675deb
+  - [f2fs-dev,14/30] btrfs: don't pass a holder for non-exclusive blkdev_get_by_path
+    https://git.kernel.org/jaegeuk/f2fs/c/2ef789288afd
+  - [f2fs-dev,15/30] block: use the holder as indication for exclusive opens
+    https://git.kernel.org/jaegeuk/f2fs/c/2736e8eeb0cc
+  - [f2fs-dev,16/30] block: add a sb_open_mode helper
+    https://git.kernel.org/jaegeuk/f2fs/c/3f0b3e785e8b
+  - [f2fs-dev,17/30] fs: remove sb->s_mode
+    https://git.kernel.org/jaegeuk/f2fs/c/81b1fb7d17c0
+  - [f2fs-dev,18/30] scsi: replace the fmode_t argument to scsi_cmd_allowed with a simple bool
+    https://git.kernel.org/jaegeuk/f2fs/c/5f4eb9d5413f
+  - [f2fs-dev,19/30] scsi: replace the fmode_t argument to scsi_ioctl with a simple bool
+    https://git.kernel.org/jaegeuk/f2fs/c/2e80089c1824
+  - [f2fs-dev,20/30] scsi: replace the fmode_t argument to ->sg_io_fn with a simple bool
+    https://git.kernel.org/jaegeuk/f2fs/c/1991299e49fa
+  - [f2fs-dev,21/30] nvme: replace the fmode_t argument to the nvme ioctl handlers with a simple bool
+    https://git.kernel.org/jaegeuk/f2fs/c/7d9d7d59d44b
+  - [f2fs-dev,22/30] mtd: block: use a simple bool to track open for write
+    https://git.kernel.org/jaegeuk/f2fs/c/658afed19cee
+  - [f2fs-dev,23/30] rnbd-srv: replace sess->open_flags with a "bool readonly"
+    https://git.kernel.org/jaegeuk/f2fs/c/99b07780814e
+  - [f2fs-dev,24/30] ubd: remove commented out code in ubd_open
+    https://git.kernel.org/jaegeuk/f2fs/c/bd6abfc8e789
+  - [f2fs-dev,25/30] block: move a few internal definitions out of blkdev.h
+    https://git.kernel.org/jaegeuk/f2fs/c/cfb425761c79
+  - [f2fs-dev,26/30] block: remove unused fmode_t arguments from ioctl handlers
+    https://git.kernel.org/jaegeuk/f2fs/c/5e4ea834676e
+  - [f2fs-dev,27/30] block: replace fmode_t with a block-specific type for block open flags
+    https://git.kernel.org/jaegeuk/f2fs/c/05bdb9965305
+  - [f2fs-dev,28/30] block: always use I_BDEV on file->f_mapping->host to find the bdev
+    https://git.kernel.org/jaegeuk/f2fs/c/4e762d862344
+  - [f2fs-dev,29/30] block: store the holder in file->private_data
+    https://git.kernel.org/jaegeuk/f2fs/c/ee3249a8ce78
+  - [f2fs-dev,30/30] fs: remove the now unused FMODE_* flags
+    https://git.kernel.org/jaegeuk/f2fs/c/0733ad800291
+
+You are awesome, thank you!
 -- 
-2.41.0
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
 _______________________________________________
