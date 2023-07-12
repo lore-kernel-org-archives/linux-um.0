@@ -4,59 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CD4EEB64DC
-	for <linux-um@archiver.kernel.org>; Mon, 10 Jul 2023 20:43:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A04AEB64DA
+	for <linux-um@archiver.kernel.org>; Wed, 12 Jul 2023 15:32:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5ThsHIT8gEVMi3kupDXNa0DDEsqGbldhZqmcTlYrKtg=; b=j+1XuiItwvQWgZ
-	cBLZq1xFL/Np9Uo/70/a81SUiNgkCjbfa19bes10Bh0gB9aE8gU+7Fs5AKQq9NPJjII0LsZllY7b2
-	O8oxsGcnGyIRSbq4J0FBMzHyuvgWRNWzWF3iLIPACxtcCcQ3VHSvM+7se12RXv4k2kX8yhivn2ZiP
-	ANurakesLYj7j/qMpvTx0xRiNSqXwUXj8kszY621ISQNt3UnnIOBeUTRlGb8lMsYcajz3nZVHzQ3u
-	+52nEujNyiUycTsAKF6ugkA07It9VBY647SXcZhJNg0pTqTUev5gsmgchYy8Sw/N6IuIGonb65xuP
-	QtYmf+DnSd9etouXMnnQ==;
+	List-Owner; bh=JYOnU/qh9IHmsH43wMqXTaKYqkeWKXA2rJBOuXioToA=; b=EZkM2C7JAl0rL8
+	yTUaIvXQKKsYfNpkiAU1OEC17GQ28KdAXCb9a2A5ts9PkFdEh8nDl8+XkDLGHTqkTrJMi4HJn9Zqa
+	Q0jBcHzNHK1jrYaNZklydDdNTusmQGRjQTeACt7SlaRlvp9vUe+stqa0LGMfp5X2SKMQkxTZCRJRw
+	w3cS3JO+OZM3ow5pdiaMSH78Cx4aR28rgqMGLDEMX3NFkjIYvsNHLbOBqmnS3/rSUQBk8w7rbwUjA
+	QVhhoT5tl2ZsNiIYBE1rgv2v4/JE20qznTKRyH65VK3UPGrxon+g0IuaO3nj+NvMPHsIfuW0jtc8y
+	rCuQuv2KsV9CKa1s8mEQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qIxjX-00CgzA-2S;
-	Mon, 10 Jul 2023 20:43:47 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
-	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qIxjW-00CgyK-0Y
-	for linux-um@bombadil.infradead.org;
-	Mon, 10 Jul 2023 20:43:46 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=Syy9e2c8ZW8YV+TAzwjXxuMyXTj35iZpxEM63ZAjrDs=; b=N43G73nIZ0b/OqOtMEkUld9RHI
-	F4Mgrg1TmEBFXnr4M6ztPSKvHtYp5heEnvbw/0hdHJHAAUm4WwDFWqMOlv8p6EKECfnJjrdxEvb9v
-	WVjvfctXnRh9p5Fv/zakRG1KBwzkzEk5iNhl7/qEbHgEzKNMZV+aq8+HdlTJYZ6g/rUY7s6ZU28ti
-	wZWGNUgAEO29XNQYuRytMNAPJ3L3OYnn72bzL+kT640TxmZXe9sVZw57VvJDm+ufECLq1c7hlFBdx
-	w4UqBYuwIpNPdbRwfUbzHZLDARxk4Jfk5F7VFE5ZqvgBTJ4sK9dUmqf2XUc+UnFJq0w5HLdb+eFQi
-	Deu2w/Mw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1qIxjU-00Euqb-Aj; Mon, 10 Jul 2023 20:43:44 +0000
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	linux-arch@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Mike Rapoport <rppt@kernel.org>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	linux-um@lists.infradead.org
-Subject: [PATCH v5 27/38] um: Implement the new page table range API
-Date: Mon, 10 Jul 2023 21:43:28 +0100
-Message-Id: <20230710204339.3554919-28-willy@infradead.org>
-X-Mailer: git-send-email 2.37.1
-In-Reply-To: <20230710204339.3554919-1-willy@infradead.org>
-References: <20230710204339.3554919-1-willy@infradead.org>
+	id 1qJbpn-000MfI-2o;
+	Wed, 12 Jul 2023 15:32:55 +0000
+Received: from [2601:1c2:980:9ec0::2764]
+	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1qJboy-000MRl-20;
+	Wed, 12 Jul 2023 15:32:04 +0000
+Message-ID: <03e153ce-328b-f279-2a40-4074bea2bc8f@infradead.org>
+Date: Wed, 12 Jul 2023 08:31:55 -0700
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH 01/79] fs: add ctime accessors infrastructure
+Content-Language: en-US
+To: Jeff Layton <jlayton@kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+ linux-um <linux-um@lists.infradead.org>
+References: <20230621144507.55591-1-jlayton@kernel.org>
+ <20230621144507.55591-2-jlayton@kernel.org>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230621144507.55591-2-jlayton@kernel.org>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,46 +57,18 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Add PFN_PTE_SHIFT and update_mmu_cache_range().
+Hi Jeff,
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-um@lists.infradead.org
----
- arch/um/include/asm/pgtable.h | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+On arch/um/, (subarch i386 or x86_64), hostfs build fails with:
 
-diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.h
-index a70d1618eb35..44f6c76167d9 100644
---- a/arch/um/include/asm/pgtable.h
-+++ b/arch/um/include/asm/pgtable.h
-@@ -242,11 +242,7 @@ static inline void set_pte(pte_t *pteptr, pte_t pteval)
- 	if(pte_present(*pteptr)) *pteptr = pte_mknewprot(*pteptr);
- }
- 
--static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
--			      pte_t *pteptr, pte_t pteval)
--{
--	set_pte(pteptr, pteval);
--}
-+#define PFN_PTE_SHIFT		PAGE_SHIFT
- 
- #define __HAVE_ARCH_PTE_SAME
- static inline int pte_same(pte_t pte_a, pte_t pte_b)
-@@ -290,6 +286,7 @@ struct mm_struct;
- extern pte_t *virt_to_pte(struct mm_struct *mm, unsigned long addr);
- 
- #define update_mmu_cache(vma,address,ptep) do {} while (0)
-+#define update_mmu_cache_range(vmf, vma, address, ptep, nr) do {} while (0)
- 
- /*
-  * Encode/decode swap entries and swap PTEs. Swap PTEs are all PTEs that
+../fs/hostfs/hostfs_kern.c:520:36: error: incompatible type for arg
+ument 2 of 'inode_set_ctime_to_ts'
+../include/linux/fs.h:1499:73: note: expected 'struct timespec64' b
+ut argument is of type 'const struct hostfs_timespec *'
+
+
 -- 
-2.39.2
-
+~Randy
 
 _______________________________________________
 linux-um mailing list
