@@ -4,56 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BA3EFEB64DA
-	for <linux-um@archiver.kernel.org>; Sun, 16 Jul 2023 09:30:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4EF0DEB64DD
+	for <linux-um@archiver.kernel.org>; Sun, 16 Jul 2023 20:27:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:From:Cc:To
-	:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=IpLotax2UdsU3QsCkGidvGrsE+2lkUyRHJtJxoVwSWY=; b=z8OVp0fYvxf5Ch
-	pZtEXmiVbUQEliCwgbI1hWu+CSMKh22wawOkbPgaSNko7l8EIUGIUWUxLcXWn2XKR6TbU2diwH87e
-	oqspwCa9/GnBx/iZvbc5KwaUF0xDW9p4wZ4Vx7GHXPtkpe3kNBMt1ud017mExBGlJLhui6pGAqj8J
-	jDF3ahVvcF1Rfe1zLMv1yysaCaNEWlX/V+9t7nKse5nJT/rI6f0Vv0Pc5qggapT8gT5dqygsxaFl8
-	EqXSXUzqTkR3yWjkHU/Bfn7J/nOSSHJtYFAf4PGygwFS2vP4Hi5afpjHwuthlG667RbRu3ecVovm4
-	89Xxt8E+hiQF8QLZUEGA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=w+BKTvNJ3sEN13j9ZuLmg5iadG05bCiCHk3iPmclOH0=; b=fceYvIwVMIZVUG
+	awygMUK705xpVMk3Z68G1lMQSEuTqqEw2IbM2kFtO3qRnNZRbXIJk0UJsUEGqgvHgroLDZlzrdQJ+
+	ZfZji7Ew/sNT1lqAsnl6u/xaWyEcyvFRbr9CgEMyau8Xvrj/VKurbKz53MxAmHiiH0PG+sr0v11h/
+	WVC1AGXKD7VwJzmgdXu28aD2/0ZwEc3IPbnwBGOFckzePDJdgp0z9okm+ki9reTM4D94sshLOzay4
+	1M/pKKvDb7ndlTJ09ktGOfjtD8hPyDbzANBRghb7xOUJCoUWuhCDwaMfUjlPQ/Lq92rvOkfMeKf3Z
+	9xWLwotY99GmYHEjkEyQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qKy5A-00ARYq-1L;
-	Sun, 16 Jul 2023 09:30:24 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1qL8Kz-00F519-1r;
+	Sun, 16 Jul 2023 20:27:25 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qKy57-00ARYP-07
+	id 1qL8Kv-00F4yJ-2H
 	for linux-um@lists.infradead.org;
-	Sun, 16 Jul 2023 09:30:22 +0000
+	Sun, 16 Jul 2023 20:27:23 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 65B9760C84;
-	Sun, 16 Jul 2023 09:30:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 701CEC433C7;
-	Sun, 16 Jul 2023 09:30:19 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 3606160EBC;
+	Sun, 16 Jul 2023 20:27:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49D94C433C7;
+	Sun, 16 Jul 2023 20:27:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1689499819;
-	bh=EbjOwaE613OkeBo578PR9105biemHmYNCzPZj2fOqo4=;
-	h=Subject:To:Cc:From:Date:From;
-	b=yLoLNwPEOuCU/KVJXE9zBwe2YwNeOGx8UcOhX2kG6hKpHRLyuz6KJ6Tuqdd76wxlR
-	 2E6p7J0pn9TxIk5mYx7mCxBwUXGuXXVf0pCU2VbamNrSntWcMxSu8XogR1MQ1tQSsO
-	 aEHuKHYXXLRAJR0oveoQgFddX47kn0Dx67QGjGDI=
-Subject: Patch "um: Use HOST_DIR for mrproper" has been added to the 6.4-stable tree
-To: anton.ivanov@cambridgegreys.com,azeemshaikh38@gmail.com,gregkh@linuxfoundation.org,johannes@sipsolutions.net,keescook@chromium.org,linux-um@lists.infradead.org,richard@nod.at
-Cc: <stable-commits@vger.kernel.org>
-From: <gregkh@linuxfoundation.org>
-Date: Sun, 16 Jul 2023 11:27:30 +0200
-Message-ID: <2023071629-unsightly-kleenex-eed6@gregkh>
+	s=korg; t=1689539240;
+	bh=PZb9GWddQADOiJrKrzADKUB01skpQR8H/5gD991yoPM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=HdoXA4ztK0OcJMpCtq01eB7FqN9ogsCrL/1yYR4YkX5CrpswxA46UtsViWU8XkVqI
+	 qq1vWUEGO4Sbq0b6RdpfsnuOSHehlceFjyik6hEkOBUun0bcl8uOta3FMZ3bxA0PJU
+	 6m+XGSXvFbZSBGRswXCEiLGeKcFI/ZuuYHnhELso=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: stable@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	patches@lists.linux.dev,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Azeem Shaikh <azeemshaikh38@gmail.com>,
+	linux-um@lists.infradead.org,
+	Kees Cook <keescook@chromium.org>
+Subject: [PATCH 6.4 738/800] um: Use HOST_DIR for mrproper
+Date: Sun, 16 Jul 2023 21:49:51 +0200
+Message-ID: <20230716195006.258998624@linuxfoundation.org>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230716194949.099592437@linuxfoundation.org>
+References: <20230716194949.099592437@linuxfoundation.org>
+User-Agent: quilt/0.67
 MIME-Version: 1.0
-X-stable: commit
-X-Patchwork-Hint: ignore 
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230716_023021_178410_8EB3D1E2 
-X-CRM114-Status: GOOD (  14.74  )
+X-CRM114-CacheID: sfid-20230716_132721_810669_89F0916E 
+X-CRM114-Status: GOOD (  10.93  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,27 +78,6 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
-
-
-This is a note to let you know that I've just added the patch titled
-
-    um: Use HOST_DIR for mrproper
-
-to the 6.4-stable tree which can be found at:
-    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
-
-The filename of the patch is:
-     um-use-host_dir-for-mrproper.patch
-and it can be found in the queue-6.4 subdirectory.
-
-If you, or anyone else, feels it should not be added to the stable tree,
-please let <stable@vger.kernel.org> know about it.
-
-
-From a5a319ec2c2236bb96d147c16196d2f1f3799301 Mon Sep 17 00:00:00 2001
-From: Kees Cook <keescook@chromium.org>
-Date: Tue, 6 Jun 2023 15:24:45 -0700
-Subject: um: Use HOST_DIR for mrproper
 
 From: Kees Cook <keescook@chromium.org>
 
@@ -128,18 +116,6 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	@find . \( -name '*.bb' -o -name '*.bbg' -o -name '*.da' \
 
 
-Patches currently in stable-queue which might be from keescook@chromium.org are
-
-queue-6.4/um-use-host_dir-for-mrproper.patch
-queue-6.4/crypto-marvell-cesa-fix-type-mismatch-warning.patch
-queue-6.4/pstore-ram-add-check-for-kstrdup.patch
-queue-6.4/locking-atomic-arm-fix-sync-ops.patch
-queue-6.4/arm-9303-1-kprobes-avoid-missing-declaration-warning.patch
-queue-6.4/lkdtm-replace-ll_rw_block-with-submit_bh.patch
-queue-6.4/kbuild-disable-gcov-for-.mod.o.patch
-queue-6.4/kbuild-fix-cfi-failures-with-gcov.patch
-queue-6.4/autofs-use-flexible-array-in-ioctl-structure.patch
-queue-6.4/test_firmware-return-enomem-instead-of-enospc-on-fai.patch
 
 _______________________________________________
 linux-um mailing list
