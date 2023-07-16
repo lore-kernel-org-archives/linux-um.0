@@ -4,56 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BB33EB64DD
-	for <linux-um@archiver.kernel.org>; Sun, 16 Jul 2023 09:27:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41B78EB64DA
+	for <linux-um@archiver.kernel.org>; Sun, 16 Jul 2023 09:28:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:From:Cc:To
 	:Subject:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=aVWFPUxtIyL3bdERXrZ8kdRNl5FCw6lnzAv2Hfu+mtU=; b=1XNix4VU0U1Uq4
-	XKmVRLPkUoJdGqN6swa/o370hPNDoHaE/t3Q512rZElyqiY8r1yrB3z2/I+Y2XHU9urbB5AuDoQv+
-	WFpdjojjxocbIpbZn++Vf0m4C4oaxjrQCNI0GOy4tV4hp9DRgp3sXRAIJdrP6jlPjvp/DkaG4CQkx
-	ez8bpJAutgR0fHPtPZyF6UTlgXW1EpEzDRfsZvr5NKsgYEcJXqWipkv3hJHVUqhI6ia9nSyCoRXQs
-	E2eSAcqb9q4mE9UjQ3JZdO1rGnoTu/YeX9bFqn/h0u9yHnGlf8dNYNJlXx5Hl2WrjXi83ywOGNDjq
-	oQM6Clo7cNy2W83OMgvA==;
+	List-Owner; bh=7qif+vU6vELv5TF4JDPkZSBmQs2KxsNiy16sIXd5XxM=; b=EH67SuOThP0Q5O
+	xD0uQbYDCvF/d02WP3VHU1BuTIOz5V3Ihe2ZdyXs4Hbjj67u1GsgyfBr7Qo8/hzOGqXQcBx8BnOGV
+	d7aUQi+bx2bjjuUMoFPLgqEi2g1SMTq6eE4Tbe4A02Ap++kkiTVz8GUCihKIYIkzwhxZ1bhx132jK
+	cEs907yKy0iNxjqtanWjFKxMUGfZdOBByf5bm3WPcv3wnpz3Kt5Gai7ix/VRoyXhCcrcHdP3F4k+l
+	2TB6tNUvplleoGsguUBB4w3pwgyozRkfHE+6faDWYiPSobKXW7O/gOtQWvcJ528Tb0hbMNUVJumYJ
+	LmnpJXpduJF+i1ZuNeiw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qKy2J-00ARKp-00;
-	Sun, 16 Jul 2023 09:27:27 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1qKy3P-00ARQ6-0X;
+	Sun, 16 Jul 2023 09:28:35 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qKy2G-00ARKA-1m
+	id 1qKy3M-00ARPU-29
 	for linux-um@lists.infradead.org;
-	Sun, 16 Jul 2023 09:27:26 +0000
+	Sun, 16 Jul 2023 09:28:34 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id E85B960C78;
-	Sun, 16 Jul 2023 09:27:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0325EC433C8;
-	Sun, 16 Jul 2023 09:27:21 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 1D7DB60C67;
+	Sun, 16 Jul 2023 09:28:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CF54C433C8;
+	Sun, 16 Jul 2023 09:28:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1689499642;
-	bh=Tn5My/wPENlSiEVLc1DuBZeDkNCV+8c9oOPtUudIPkQ=;
+	s=korg; t=1689499711;
+	bh=KWTiZA4VJ8zHfY73h+uKTTanzwVkcFOgt32eJjA7BBo=;
 	h=Subject:To:Cc:From:Date:From;
-	b=qh8htDjGbBR6JJ/6ZJhFrI5eMThlbwADKjNmxgnINogVWRMuhzyhnazmLrxJcIZEu
-	 9Jvr8sruqI31tJdaUqlXE/XpKh1uq8SrMRruX8xtJJvrjbl23ZwVH+lxigChhHN1RO
-	 JXDH66RQ1DA+miIZh4aAaoV7sZuz4HEPs4UIYcyw=
-Subject: Patch "um: Use HOST_DIR for mrproper" has been added to the 5.15-stable tree
+	b=lC5Fn6Q3d4UI9B3QswHjpol5kRu0/vM7LX0Df0zZO+8YHXvz/HO+IZGv5B6VrhVtj
+	 NufDfuXEQ1DbMc86Rtt0GUH+Ch/FF23UzvObge2NQAVpycxoSEhwEKu1LgM9ELU3E2
+	 Xta4nbx3gO4OLjd52BMERkaf4mnHV/SJEFssj0ec=
+Subject: Patch "um: Use HOST_DIR for mrproper" has been added to the 6.1-stable tree
 To: anton.ivanov@cambridgegreys.com,azeemshaikh38@gmail.com,gregkh@linuxfoundation.org,johannes@sipsolutions.net,keescook@chromium.org,linux-um@lists.infradead.org,richard@nod.at
 Cc: <stable-commits@vger.kernel.org>
 From: <gregkh@linuxfoundation.org>
-Date: Sun, 16 Jul 2023 11:26:40 +0200
-Message-ID: <2023071639-reanalyze-overcoat-4a23@gregkh>
+Date: Sun, 16 Jul 2023 11:27:10 +0200
+Message-ID: <2023071610-buddhist-left-8572@gregkh>
 MIME-Version: 1.0
 X-stable: commit
 X-Patchwork-Hint: ignore 
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230716_022724_704069_A90BB983 
-X-CRM114-Status: GOOD (  14.74  )
+X-CRM114-CacheID: sfid-20230716_022832_785313_7AC4C065 
+X-CRM114-Status: GOOD (  14.70  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,12 +75,12 @@ This is a note to let you know that I've just added the patch titled
 
     um: Use HOST_DIR for mrproper
 
-to the 5.15-stable tree which can be found at:
+to the 6.1-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
      um-use-host_dir-for-mrproper.patch
-and it can be found in the queue-5.15 subdirectory.
+and it can be found in the queue-6.1 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.
@@ -130,14 +130,14 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 Patches currently in stable-queue which might be from keescook@chromium.org are
 
-queue-5.15/um-use-host_dir-for-mrproper.patch
-queue-5.15/crypto-marvell-cesa-fix-type-mismatch-warning.patch
-queue-5.15/pstore-ram-add-check-for-kstrdup.patch
-queue-5.15/locking-atomic-arm-fix-sync-ops.patch
-queue-5.15/arm-9303-1-kprobes-avoid-missing-declaration-warning.patch
-queue-5.15/kbuild-disable-gcov-for-.mod.o.patch
-queue-5.15/autofs-use-flexible-array-in-ioctl-structure.patch
-queue-5.15/test_firmware-return-enomem-instead-of-enospc-on-fai.patch
+queue-6.1/um-use-host_dir-for-mrproper.patch
+queue-6.1/crypto-marvell-cesa-fix-type-mismatch-warning.patch
+queue-6.1/pstore-ram-add-check-for-kstrdup.patch
+queue-6.1/locking-atomic-arm-fix-sync-ops.patch
+queue-6.1/arm-9303-1-kprobes-avoid-missing-declaration-warning.patch
+queue-6.1/lkdtm-replace-ll_rw_block-with-submit_bh.patch
+queue-6.1/kbuild-disable-gcov-for-.mod.o.patch
+queue-6.1/autofs-use-flexible-array-in-ioctl-structure.patch
 
 _______________________________________________
 linux-um mailing list
