@@ -4,123 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2D80EC001DF
-	for <linux-um@archiver.kernel.org>; Mon, 17 Jul 2023 16:52:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30DE9EB64DD
+	for <linux-um@archiver.kernel.org>; Fri, 21 Jul 2023 13:46:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	In-Reply-To:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
-	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=MHYPgE6hqzVJ+qU/5DPKcwrgPek0tyinblK7xx7oG/o=; b=PkbC7uYMoUMMyN2ljzg1dr12LV
-	py+xVrZcB1QlY8SEKaqGE/PLFtohehoxSw5p5DV9qx2x9cQqKJEi0iGgXO4WZBs69M9wEtIp9vTGj
-	YRkRw2Al7jrusvvEfVPFaLjH/u9sLN1Fbnih4ii2uR2fI7sEP5G54+HS5fpMR9cNzxZRNd/fRDwAG
-	6uTAzIy+00xJ2etpHLqojiXlsbQ14vsHPApAmulN0NLLQMb9TeoofeBYskzjbwOw3whJG9KJjNkwP
-	BNX/WXU5ydNtnClwqlqkgoT2WbhBXBnOQMsALAz0SaDpqLc8m5TUTe2fx4V7h0gjn5rFocuGi6ls7
-	15iZOo6A==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=MsFX5nsxjNRfIEQAQXaNr4GA4DGdYLG0HfuJ2EWXy2E=; b=i//zBkHKUiQHGi
+	Hty4uTbHcXn5oC0Yg7eZ//PutDpQ/KkJzFPLNvCMCpmdz+3KvoeA8Y63z91WqQ6tzXC4nHbX3M9WD
+	WH0yf2XN0CkAYFyorK5KdiIq7jnuVTumA/lZ66adsyV2fKefDGvHAZB6MWFJ8H4ZiMIqOI1rHOPZp
+	2Htmc2lYvAvQD+Un+4SC0v9e2NhOwWgGO2Z+2u3ZTtspaDLJo/k0eRCGwBXz7pxEbx1pJIZL1hANn
+	lsS53z7sEQqgRApwGs+0NjrAF6gEYrPTyc3yBFXsXBjgbWOwomHZFapvw9FxjAHZcJsE+Uih3CfIa
+	IDbqAZQtlyVMYT16msQA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLRSB-004au3-0i;
-	Mon, 17 Jul 2023 16:52:07 +0000
+	id 1qMqSJ-00EBC2-0i;
+	Fri, 21 Jul 2023 13:46:03 +0000
 Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qLRRr-004alE-2W;
-	Mon, 17 Jul 2023 16:51:49 +0000
+	id 1qMqSG-00EBB5-1a
+	for linux-um@lists.infradead.org;
+	Fri, 21 Jul 2023 13:46:01 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id F381E6117E;
-	Mon, 17 Jul 2023 16:51:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 812EAC433C7;
-	Mon, 17 Jul 2023 16:51:34 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 8B89E61B18;
+	Fri, 21 Jul 2023 13:45:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0543C433C7;
+	Fri, 21 Jul 2023 13:45:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1689612706;
-	bh=GDoZ+CsfFo9PibsTP4iZm+ttTgfHxn11DDJbAlCFH8E=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZEoHMX2JdQeUVyNkgdWBKI6yr5pe/INc5DfODCru+00fN8J5XJg/01FraxC5Uf+FG
-	 XLGyykcZarElT+yfQ88/qw3rxbdtmQwlMm4MVMWcjVA8W1BzI++pek5YZKKBwI7XR6
-	 Vc/WH98m5BnS7DdeM2++eaKr94hk2O0k89Bc1b9ybe/FsHvQBWZ/9PaJFm5XUvbhPh
-	 78TOOOqQ+Nd6w2oOqOYhgVZm+Y7ykGxydEmczeSZwjlePi5nZMkHrFdDg9hL8zxSio
-	 SCc95tvYUaXDed+x2C7VwVXHcnKo0+0JBdhxm/Vl4xw/gxBOwJrvOMJAyCgSMZ+3MK
-	 +O+f2UpDtYbxQ==
-Date: Mon, 17 Jul 2023 17:51:31 +0100
-From: Mark Brown <broonie@kernel.org>
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc: "Schimpe, Christina" <christina.schimpe@intel.com>,
-	"Yang, Weijiang" <weijiang.yang@intel.com>,
-	"hjl.tools@gmail.com" <hjl.tools@gmail.com>,
-	"x86@kernel.org" <x86@kernel.org>,
-	"monstr@monstr.eu" <monstr@monstr.eu>,
-	"rppt@kernel.org" <rppt@kernel.org>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-	"linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>,
-	"Torvalds, Linus" <torvalds@linux-foundation.org>,
-	"kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-	"linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-	"dinguyen@kernel.org" <dinguyen@kernel.org>,
-	"rdunlap@infradead.org" <rdunlap@infradead.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-	"arnd@arndb.de" <arnd@arndb.de>,
-	"linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-	"Lutomirski, Andy" <luto@kernel.org>,
-	"szabolcs.nagy@arm.com" <szabolcs.nagy@arm.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"pavel@ucw.cz" <pavel@ucw.cz>,
-	"keescook@chromium.org" <keescook@chromium.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-	"gorcunov@gmail.com" <gorcunov@gmail.com>,
-	"andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
-	"david@redhat.com" <david@redhat.com>,
-	"hpa@zytor.com" <hpa@zytor.com>,
-	"loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
-	"peterz@infradead.org" <peterz@infradead.org>,
-	"linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
-	"nadav.amit@gmail.com" <nadav.amit@gmail.com>,
-	"linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-	"openrisc@lists.librecores.org" <openrisc@lists.librecores.org>,
-	"jamorris@linux.microsoft.com" <jamorris@linux.microsoft.com>,
-	"mike.kravetz@oracle.com" <mike.kravetz@oracle.com>,
-	"debug@rivosinc.com" <debug@rivosinc.com>,
-	"fweimer@redhat.com" <fweimer@redhat.com>,
-	"kcc@google.com" <kcc@google.com>,
-	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-	"mingo@redhat.com" <mingo@redhat.com>,
-	"linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
-	"linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-	"john.allen@amd.com" <john.allen@amd.com>,
-	"Eranian, Stephane" <eranian@google.com>,
-	"bsingharora@gmail.com" <bsingharora@gmail.com>,
-	"linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-	"linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	"linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"torvalds@linuxfoundation.org" <torvalds@linuxfoundation.org>,
-	"bp@alien8.de" <bp@alien8.de>, "corbet@lwn.net" <corbet@lwn.net>,
-	"linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>,
-	"dethoma@microsoft.com" <dethoma@microsoft.com>,
-	"jannh@google.com" <jannh@google.com>,
-	"Syromiatnikov, Eugene" <esyr@redhat.com>,
-	"oleg@redhat.com" <oleg@redhat.com>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: Re: [PATCH v9 01/42] mm: Rename arch pte_mkwrite()'s to
- pte_mkwrite_novma()
-Message-ID: <285d346e-14e7-4f43-9b5b-faded6205142@sirena.org.uk>
-References: <20230613001108.3040476-1-rick.p.edgecombe@intel.com>
- <20230613001108.3040476-2-rick.p.edgecombe@intel.com>
- <b389274a-abed-40dc-8e33-7ce922ea9b61@sirena.org.uk>
- <87acbb49fa83b0e3f261315a531e105da9e5b9d6.camel@intel.com>
+	s=k20201202; t=1689947159;
+	bh=Y+KzTs8+PzyDlj+I4KwGMIMgwXWbHAbN6snUeh5qmNk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=L67onQyS74Pnfx6UGTk/eusNu4C0c3ZMB7dzcL7H6aH+EVteGl0lC4CtSQf2HwlAD
+	 uYFTBSIZLHDmSuIhmTyG4X/KJ2SeHzUOzt1BpFTnckdLLUrhuFaKVgxeVuZjDzz1Yt
+	 8GEzbIOpuGO0iDL5Q8LMMJDDsDJj6l3YJKscOl4vUWoaVBEZgYtZLHor3zWpaQIDIA
+	 umxkNhBUuECZ5M8wnVguwZEEtTk4G/TvQyjFgYxxYqdbdVA35T75Dd90x3d2LOTeta
+	 eyxwL8AwKtwyxcmwl6BSbqK8gqN4ZyX2ARGuvQZ3exThwtgm5S6W/uyIcMiykB02xK
+	 8fsn32/MXR5Sg==
+From: Masahiro Yamada <masahiroy@kernel.org>
+To: Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	linux-um@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org,
+	linux-kbuild@vger.kernel.org,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	x86@kernel.org
+Subject: [PATCH 1/2] UML: hard-code the result of 'uname -s'
+Date: Fri, 21 Jul 2023 22:45:47 +0900
+Message-Id: <20230721134548.3438376-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-In-Reply-To: <87acbb49fa83b0e3f261315a531e105da9e5b9d6.camel@intel.com>
-X-Cookie: Not a flying toy.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230717_095147_905239_6C986A57 
-X-CRM114-Status: GOOD (  15.28  )
+X-CRM114-CacheID: sfid-20230721_064600_575897_B81EF98E 
+X-CRM114-Status: GOOD (  10.37  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -132,66 +79,78 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============4668724755692896851=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+We rely on 'uname -s' returning 'Linux' as there are arch/um/os-Linux/
+and arch/x86/um/os-Linux/, but no other os-*/ directories.
 
---===============4668724755692896851==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="klyEM8Lfv/18WVhb"
-Content-Disposition: inline
+Supporting a non-Linux host is unlikely to happen.
 
+Let's hard-code 'Linux'.
 
---klyEM8Lfv/18WVhb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-On Mon, Jul 17, 2023 at 03:55:50PM +0000, Edgecombe, Rick P wrote:
-> On Fri, 2023-07-14 at 23:57 +0100, Mark Brown wrote:
+ arch/um/Makefile     | 7 +++----
+ arch/x86/um/Makefile | 2 +-
+ 2 files changed, 4 insertions(+), 5 deletions(-)
 
-> > The same issue seems to apply with the version that was in -next
-> > based
-> > on v6.4-rc4 too.
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index da4d5256af2f..1735a562453d 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -18,14 +18,13 @@ else
+ endif
+ 
+ ARCH_DIR := arch/um
+-OS := $(shell uname -s)
+ # We require bash because the vmlinux link and loader script cpp use bash
+ # features.
+ SHELL := /bin/bash
+ 
+ core-y			+= $(ARCH_DIR)/kernel/		\
+ 			   $(ARCH_DIR)/drivers/		\
+-			   $(ARCH_DIR)/os-$(OS)/
++			   $(ARCH_DIR)/os-Linux/
+ 
+ MODE_INCLUDE	+= -I$(srctree)/$(ARCH_DIR)/include/shared/skas
+ 
+@@ -78,7 +77,7 @@ USER_CFLAGS = $(patsubst $(KERNEL_DEFINES),,$(patsubst -I%,,$(KBUILD_CFLAGS))) \
+ 		-idirafter $(objtree)/include -D__KERNEL__ -D__UM_HOST__
+ 
+ #This will adjust *FLAGS accordingly to the platform.
+-include $(srctree)/$(ARCH_DIR)/Makefile-os-$(OS)
++include $(srctree)/$(ARCH_DIR)/Makefile-os-Linux
+ 
+ KBUILD_CPPFLAGS += -I$(srctree)/$(HOST_DIR)/include \
+ 		   -I$(srctree)/$(HOST_DIR)/include/uapi \
+@@ -155,4 +154,4 @@ archclean:
+ 	@find . \( -name '*.bb' -o -name '*.bbg' -o -name '*.da' \
+ 		-o -name '*.gcov' \) -type f -print | xargs rm -f
+ 
+-export HEADER_ARCH SUBARCH USER_CFLAGS CFLAGS_NO_HARDENING OS DEV_NULL_PATH
++export HEADER_ARCH SUBARCH USER_CFLAGS CFLAGS_NO_HARDENING DEV_NULL_PATH
+diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
+index ee89f6bb9242..e207e6748aa2 100644
+--- a/arch/x86/um/Makefile
++++ b/arch/x86/um/Makefile
+@@ -13,7 +13,7 @@ obj-y = bugs_$(BITS).o delay.o fault.o ldt.o \
+ 	ptrace_$(BITS).o ptrace_user.o setjmp_$(BITS).o signal.o \
+ 	stub_$(BITS).o stub_segv.o \
+ 	sys_call_table_$(BITS).o sysrq_$(BITS).o tls_$(BITS).o \
+-	mem_$(BITS).o subarch.o os-$(OS)/
++	mem_$(BITS).o subarch.o os-Linux/
+ 
+ ifeq ($(CONFIG_X86_32),y)
+ 
+-- 
+2.39.2
 
-> The version in your branch is not the same as the version in tip (which
-> had a squashed build fix). I was able to reproduce the build error with
-> your branch. But not with the one in tip rebased on v6.5-rc1. So can
-> you try this version:
-> https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?h=x86/shstk&id=899223d69ce9f338056f4c41ef870d70040fc860
-
-Ah, I'd not seen that patch or that tip had been rebased - I'd actually
-been using literally the branch from tip as my base at whatever point I
-last noticed it changing up until I rebased onto -rc1.
-
---klyEM8Lfv/18WVhb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmS1cZIACgkQJNaLcl1U
-h9DfWwf/Qv2sx8Qywn2HA+F1wJsVWOOqaPIZzIVBQ5Kg2bysQK3YMNLLZWKdXMsh
-sTgXGVlr5oANLjP/hYxvcaxk16N1y51q6PuBh4lJN1w37tEdph1ZIcSejQY/jKpf
-fKFWHZ++2w+lXvIOB/7rYQe+XutmQzCVmL0Cod8zxf2UhC4WJe9/3RCKxi6rfxuV
-NXldTW7h7dqnurbev4TX4npwjcetNGofPUer7VZD7o1vRKXvX9VLG42UbeV4cu+g
-ICKZmGwC9G23gWg0Ql2QkeOr43PLBo4AocKhyO6B22uYLOrA8BQHJUrbnD4ZUyD+
-4rWq0iWXOnrixnw11LOSSIVZ2HkwmQ==
-=SaIl
------END PGP SIGNATURE-----
-
---klyEM8Lfv/18WVhb--
-
-
---===============4668724755692896851==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 linux-um mailing list
 linux-um@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-um
-
---===============4668724755692896851==--
-
