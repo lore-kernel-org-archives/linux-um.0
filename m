@@ -4,55 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C6C7C001DF
-	for <linux-um@archiver.kernel.org>; Mon, 24 Jul 2023 14:23:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ABD23C00528
+	for <linux-um@archiver.kernel.org>; Mon, 24 Jul 2023 14:31:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
 	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=07koaf06IkHHyj0wEX40oANixAQEyv2R4IUE+7yP6fY=; b=uVh2S6/u6qJez+
-	WeTs4twxaudMhGuC9S1fyrAG02AQtRynWRpt75Mpel9RNci0KcGgY5HIkYddFJUFS0Pkv4YIqOyM+
-	MUH8b2oIknQ3ZJirnA95dVMRsl3C5cr6/kCxTm+WNPSAOveAAJ6FM7J8oztjoTEuW6C8w9jHx19lw
-	mbCuefkx/xRsOOmbx9W5Fdh9DyjGmTM5F+1GobfHruRZ3cFp4Fs2GrFkdzzPUqScShkYhxu5NBkhI
-	5uYjcUyRCqQAgzqSS46eS+BH6p/y2CfeE9RzSaS63vT8AGtHo2tEQNumoNOJfgzUkbbuuwoFV91BH
-	aCfV5inSduYmQEzQm1xw==;
+	List-Owner; bh=DXW/sNqLs5+k26UdtGQPTP5xmSnbk+WeTmanleokBU4=; b=Mi1ci9UXcPYTBl
+	5fnDZfPaTXuQvhYnU+U+biKLZ/hQpx5DCNOBc2s79P8YPpwQM4DvG9HshhuEgqqZm4ZI2wzDkLwRG
+	r/wXFJxEHUEX/giHmwIAyS6pVrh/f7I03EpuXCe9ZmbZ5hNNvn7deS1pC4rlpofJWgTxy0FMsyWtk
+	dkSHFrNcoS41JQGYhGb9ovQxGNpmqTB5mZDrT21hjMtk1E2PXLaizGXbtTsyAfZTbLOWydZZ4DMMj
+	uOGSN6GmvBWkrgXoJB7VGO2oPwxaNbcpSeDM/9/8+b0j/zuhKAofTSggEbnqblnfQahmnxaPyijUO
+	3+uDgKDIuubsmmfM0EDQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qNwSv-004bI6-0S;
-	Mon, 24 Jul 2023 14:23:13 +0000
-Received: from mga02.intel.com ([134.134.136.20])
+	id 1qNwbK-004cDk-18;
+	Mon, 24 Jul 2023 14:31:54 +0000
+Received: from mga01.intel.com ([192.55.52.88])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qNwSr-004bGb-2W
+	id 1qNwbH-004cDH-0m
 	for linux-um@lists.infradead.org;
-	Mon, 24 Jul 2023 14:23:11 +0000
+	Mon, 24 Jul 2023 14:31:52 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690208589; x=1721744589;
+  t=1690209111; x=1721745111;
   h=from:to:cc:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=OKaORiHPT85EF1/YMUxfys0MZti+NzPzdfUSYLi2rfU=;
-  b=QNd2e5f0YFnIPUSunM3Fk4/lgrdVeYsu48VC+L/QnclsRv46iHqS4uxq
-   h/4wO/jGdU8BWZYcR3WjHjLTEWiXKuYrksjYbkImObYtrwDmcgnB1wkPp
-   eRdDYuYpWUztdH9EmY2cspCrcydQzLdn2uPYLueAjno+xFAok61yNFbGT
-   b+mbH3dd0am7Pw8w9D0rgnhW3PNdK5lEtHi0aXBf0noaNxz2VZij8rrJ5
-   yNYZH4JuETghe8Akt0GiOrhCUcC5lO2DI6JjFH0G+1KLSpId/dgFMjfyd
-   tHQ4WuzCq7gg41Md1rIhWpmuzb7CtypyPCIvFybl5BtDgg+yUWXkqM6/V
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="357452192"
+  bh=+5gG+0+scvDqbfX5/L0lqS4BwovP5AcRlSaFF9Lgp1c=;
+  b=Jb97P5593vz06UfVWLJ/t3MTyPy/hLTgubVt91b5iKSWEuKdDVgQ4Lme
+   Yas36RxmsQGV4us6DWw4qKybgSQpple5WulnG1bwdvLvdGUY2ibWkqPJ0
+   3yhvQmE/kT6i2jWB7n0ZfzSxYQq9h95v+FvtHQ0UEQpjgaIQX/Hx5BI/T
+   HEwG5Rkevz2AaYEF1pm/YUXOz54ZDu/AqNEsuQMJ+zQOHLirDSyGBajjp
+   k9UQ6Wwtqnb3nihnXbUdfAG4MAhrXxff1hN0m6W9Tr85xp0kPFV6SEPuK
+   wdipZj0LQehWL5YMD9/4uhY2srsswDGBwjZgRbcQruST4dygwH8YZFH0N
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="398362898"
 X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="357452192"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 07:23:07 -0700
+   d="scan'208";a="398362898"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jul 2023 07:31:28 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="755319107"
+X-IronPort-AV: E=McAfee;i="6600,9927,10781"; a="790986713"
 X-IronPort-AV: E=Sophos;i="6.01,228,1684825200"; 
-   d="scan'208";a="755319107"
+   d="scan'208";a="790986713"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga008.jf.intel.com with ESMTP; 24 Jul 2023 07:23:04 -0700
+  by fmsmga008.fm.intel.com with ESMTP; 24 Jul 2023 07:31:24 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 77B501A6; Mon, 24 Jul 2023 17:23:12 +0300 (EEST)
+	id 08F591A6; Mon, 24 Jul 2023 17:31:32 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
 	linux-um@lists.infradead.org,
@@ -64,15 +64,16 @@ Cc: Richard Weinberger <richard@nod.at>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Herve Codina <herve.codina@bootlin.com>,
 	"Jason A. Donenfeld" <Jason@zx2c4.com>,
-	Yang Guang <yang.guang5@zte.com.cn>
-Subject: [PATCH v1 1/1] Revert "um: Use swap() to make code cleaner"
-Date: Mon, 24 Jul 2023 17:23:07 +0300
-Message-Id: <20230724142307.28411-1-andriy.shevchenko@linux.intel.com>
+	Yang Guang <yang.guang5@zte.com.cn>,
+	kernel test robot <lkp@intel.com>
+Subject: [PATCH v2 1/1] Revert "um: Use swap() to make code cleaner"
+Date: Mon, 24 Jul 2023 17:31:31 +0300
+Message-Id: <20230724143131.30090-1-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230724_072309_863513_EDFE2C09 
-X-CRM114-Status: GOOD (  12.84  )
+X-CRM114-CacheID: sfid-20230724_073151_326510_B4F33053 
+X-CRM114-Status: GOOD (  13.22  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,7 +92,7 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 This reverts commit 9b0da3f22307af693be80f5d3a89dc4c7f360a85.
 
-The sigio.h is clearly user space code which is handled by
+The sigio.c is clearly user space code which is handled by
 arch/um/scripts/Makefile.rules (see USER_OBJS rule).
 
 The above mentioned commit simply broke this agreement,
@@ -100,9 +101,11 @@ thorough thinking.
 
 Hence, revert the wrong commit.
 
+Reported-by: kernel test robot <lkp@intel.com>
 Closes: https://lore.kernel.org/oe-kbuild-all/202307212304.cH79zJp1-lkp@intel.com/
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
+v2: fixed typo (h --> c), added Reported-by tag
  arch/um/os-Linux/sigio.c | 7 ++++---
  1 file changed, 4 insertions(+), 3 deletions(-)
 
