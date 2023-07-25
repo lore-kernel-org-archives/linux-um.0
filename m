@@ -4,48 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C5B7EC001DF
-	for <linux-um@archiver.kernel.org>; Tue, 25 Jul 2023 18:19:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05218EB64DD
+	for <linux-um@archiver.kernel.org>; Tue, 25 Jul 2023 23:34:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4cFAf3nk2/k7N21CknmGpdF+k+zRqaRi8bZM8CgogZU=; b=lCPML5EYpjWvki
-	WFc4KwqgXpwC8dzcOvgUxL20kJXp3q2MGTL0g9Cq0HxIbMX4PHoYcu2sBJlREfFaZz348sw0x8dRG
-	3oWGHlmIJsJtC9tTQX/dmRa5Dn+FWhQzyEh0E8gcgcAj5C43wWA2UHN40ALa0Y88nRm3qiaoq35l8
-	0FI2MbrJsCajSiIVrxwdIBepSTvypiXOCgW7WnOc2Alw9TgdbMsHKns6vVL8aCQC23g6gxQFsURLp
-	CaxqKXjSslLRBYO4gbq2OPUJbJxbE60MU/EU/PE3rsmDrF3ocjq9ygMv0QoJOfzhpwV/gsW5hJp0d
-	pbhAyRHrfoIAEXPI49tQ==;
+	List-Owner; bh=zRrnVuveFSRqPN7uodhIbZAHpZgZ1Al8Pr1y9CUS0Fk=; b=XbzUHPM5Ia6PNA
+	yZdh43GKMCnOeDzz+W1CPxMWTMcA3/LiWdos2iTg8+8bLUjStvBYoTrrpsZhW5PiJ1fzoO72MvpLM
+	3XwMUDdhhaHJo8dCQRZu8PswYpuk9MLyWfZhxNHn4yMcE6UsuVNDdtNUjZdx9G7VSx/+du/IvLira
+	HEQeFqTKv6DAwoAwORtJiqYDzvH5hYG+Cvm5kHZ3jNDjU5mjot3HyFoHNfOx2kqH3BawantyAmJzr
+	qThjf3cmTO2XArnNBXQhMq6oRSS1Ns+ZLzPVeTuXUVrQpAKuAHHS2MEHR9wyQGHG4eB6AJjMoNaV6
+	KQdHXZbtzg2qzw5dcaCQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qOMdZ-008FQ9-1V;
-	Tue, 25 Jul 2023 18:19:57 +0000
-Received: from [2601:1c2:980:9ec0::2764]
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1qOMdQ-008FPM-33;
-	Tue, 25 Jul 2023 18:19:49 +0000
-Message-ID: <5e56d4a9-2671-caf7-c267-9beec6f14aa3@infradead.org>
-Date: Tue, 25 Jul 2023 11:19:46 -0700
+	id 1qORYL-008iyS-0H;
+	Tue, 25 Jul 2023 23:34:53 +0000
+Received: from mga04.intel.com ([192.55.52.120])
+	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1qORYG-008iwq-1O;
+	Tue, 25 Jul 2023 23:34:50 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690328088; x=1721864088;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=C5xyKe5/WjYZUNBE8/1FHjpgxl/fMdUuo5xkgVP7J8Y=;
+  b=llU5kCYtLQnZLIJR0scDnTIO/3NrSU5tj7KJY6h16C96omieHlkNWJZV
+   JezKNRMLgTxi6jKIuYdvmyX38RXIS6qP7cR3jMwaCnyG9u10YiZ86HCQZ
+   K8Y352ee88kFxUUplYUPB14kef9LnqIQYf3Gvg9B2l/IwUMWKNDhWkk6c
+   LDZ+B9laiCyArddliNRja8Jqx2hVxVmV+LHLt56sQ+DzfGNC54xWD/JxL
+   BDx6Q0NsT/lqjFJEi3gTIPk6QRIxH2VPrIcSxxSJLe8cMQ7uOHmZnLqhS
+   7EqPXudwSowMaQTKjdpav7nL52IceoVXoklaCf6ZGXYBWnexe23AEx8lU
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="366747681"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="scan'208";a="366747681"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jul 2023 16:34:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10782"; a="755945611"
+X-IronPort-AV: E=Sophos;i="6.01,231,1684825200"; 
+   d="scan'208";a="755945611"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 25 Jul 2023 16:34:40 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1qORY7-0000Qn-2W;
+	Tue, 25 Jul 2023 23:34:39 +0000
+Date: Wed, 26 Jul 2023 07:33:59 +0800
+From: kernel test robot <lkp@intel.com>
+To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+	xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
+	Hugh Dickins <hughd@google.com>,
+	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Mike Rapoport <rppt@kernel.org>
+Subject: Re: [PATCH mm-unstable v7 12/31] powerpc: Convert various functions
+ to use ptdescs
+Message-ID: <202307260706.qNPJSnjR-lkp@intel.com>
+References: <20230725042051.36691-13-vishal.moola@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] um/drivers: Kconfig: fix hostaudio build errors
-Content-Language: en-US
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
- Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org,
- Tejun Heo <tj@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Masahiro Yamada <masahiroy@kernel.org>, Nathan Chancellor
- <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>,
- Nicolas Schier <nicolas@fjasle.eu>, linux-kbuild@vger.kernel.org
-References: <20230723215756.18307-1-rdunlap@infradead.org>
- <87jzuoth7s.wl-tiwai@suse.de>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <87jzuoth7s.wl-tiwai@suse.de>
+Content-Disposition: inline
+In-Reply-To: <20230725042051.36691-13-vishal.moola@gmail.com>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20230725_163448_484001_85A618E6 
+X-CRM114-Status: GOOD (  13.46  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -62,85 +99,169 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+Hi Vishal,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on akpm-mm/mm-everything]
+[also build test ERROR on next-20230725]
+[cannot apply to powerpc/next powerpc/fixes s390/features geert-m68k/for-next geert-m68k/for-linus linus/master v6.5-rc3]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Vishal-Moola-Oracle/mm-Add-PAGE_TYPE_OP-folio-functions/20230725-122458
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20230725042051.36691-13-vishal.moola%40gmail.com
+patch subject: [PATCH mm-unstable v7 12/31] powerpc: Convert various functions to use ptdescs
+config: powerpc-randconfig-r034-20230725 (https://download.01.org/0day-ci/archive/20230726/202307260706.qNPJSnjR-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce: (https://download.01.org/0day-ci/archive/20230726/202307260706.qNPJSnjR-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307260706.qNPJSnjR-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from arch/powerpc/mm/pgtable-frag.c:12:
+   In file included from include/linux/hardirq.h:11:
+   In file included from arch/powerpc/include/asm/hardirq.h:6:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/powerpc/include/asm/io.h:672:
+   arch/powerpc/include/asm/io-defs.h:45:1: error: performing pointer arithmetic on a null pointer has undefined behavior [-Werror,-Wnull-pointer-arithmetic]
+      45 | DEF_PCI_AC_NORET(insw, (unsigned long p, void *b, unsigned long c),
+         | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      46 |                  (p, b, c), pio, p)
+         |                  ~~~~~~~~~~~~~~~~~~
+   arch/powerpc/include/asm/io.h:669:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+     669 |                 __do_##name al;                                 \
+         |                 ^~~~~~~~~~~~~~
+   <scratch space>:40:1: note: expanded from here
+      40 | __do_insw
+         | ^
+   arch/powerpc/include/asm/io.h:610:56: note: expanded from macro '__do_insw'
+     610 | #define __do_insw(p, b, n)      readsw((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
+         |                                        ~~~~~~~~~~~~~~~~~~~~~^
+   In file included from arch/powerpc/mm/pgtable-frag.c:12:
+   In file included from include/linux/hardirq.h:11:
+   In file included from arch/powerpc/include/asm/hardirq.h:6:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/powerpc/include/asm/io.h:672:
+   arch/powerpc/include/asm/io-defs.h:47:1: error: performing pointer arithmetic on a null pointer has undefined behavior [-Werror,-Wnull-pointer-arithmetic]
+      47 | DEF_PCI_AC_NORET(insl, (unsigned long p, void *b, unsigned long c),
+         | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      48 |                  (p, b, c), pio, p)
+         |                  ~~~~~~~~~~~~~~~~~~
+   arch/powerpc/include/asm/io.h:669:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+     669 |                 __do_##name al;                                 \
+         |                 ^~~~~~~~~~~~~~
+   <scratch space>:42:1: note: expanded from here
+      42 | __do_insl
+         | ^
+   arch/powerpc/include/asm/io.h:611:56: note: expanded from macro '__do_insl'
+     611 | #define __do_insl(p, b, n)      readsl((PCI_IO_ADDR)_IO_BASE+(p), (b), (n))
+         |                                        ~~~~~~~~~~~~~~~~~~~~~^
+   In file included from arch/powerpc/mm/pgtable-frag.c:12:
+   In file included from include/linux/hardirq.h:11:
+   In file included from arch/powerpc/include/asm/hardirq.h:6:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/powerpc/include/asm/io.h:672:
+   arch/powerpc/include/asm/io-defs.h:49:1: error: performing pointer arithmetic on a null pointer has undefined behavior [-Werror,-Wnull-pointer-arithmetic]
+      49 | DEF_PCI_AC_NORET(outsb, (unsigned long p, const void *b, unsigned long c),
+         | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      50 |                  (p, b, c), pio, p)
+         |                  ~~~~~~~~~~~~~~~~~~
+   arch/powerpc/include/asm/io.h:669:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+     669 |                 __do_##name al;                                 \
+         |                 ^~~~~~~~~~~~~~
+   <scratch space>:44:1: note: expanded from here
+      44 | __do_outsb
+         | ^
+   arch/powerpc/include/asm/io.h:612:58: note: expanded from macro '__do_outsb'
+     612 | #define __do_outsb(p, b, n)     writesb((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
+         |                                         ~~~~~~~~~~~~~~~~~~~~~^
+   In file included from arch/powerpc/mm/pgtable-frag.c:12:
+   In file included from include/linux/hardirq.h:11:
+   In file included from arch/powerpc/include/asm/hardirq.h:6:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/powerpc/include/asm/io.h:672:
+   arch/powerpc/include/asm/io-defs.h:51:1: error: performing pointer arithmetic on a null pointer has undefined behavior [-Werror,-Wnull-pointer-arithmetic]
+      51 | DEF_PCI_AC_NORET(outsw, (unsigned long p, const void *b, unsigned long c),
+         | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      52 |                  (p, b, c), pio, p)
+         |                  ~~~~~~~~~~~~~~~~~~
+   arch/powerpc/include/asm/io.h:669:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+     669 |                 __do_##name al;                                 \
+         |                 ^~~~~~~~~~~~~~
+   <scratch space>:46:1: note: expanded from here
+      46 | __do_outsw
+         | ^
+   arch/powerpc/include/asm/io.h:613:58: note: expanded from macro '__do_outsw'
+     613 | #define __do_outsw(p, b, n)     writesw((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
+         |                                         ~~~~~~~~~~~~~~~~~~~~~^
+   In file included from arch/powerpc/mm/pgtable-frag.c:12:
+   In file included from include/linux/hardirq.h:11:
+   In file included from arch/powerpc/include/asm/hardirq.h:6:
+   In file included from include/linux/irq.h:20:
+   In file included from include/linux/io.h:13:
+   In file included from arch/powerpc/include/asm/io.h:672:
+   arch/powerpc/include/asm/io-defs.h:53:1: error: performing pointer arithmetic on a null pointer has undefined behavior [-Werror,-Wnull-pointer-arithmetic]
+      53 | DEF_PCI_AC_NORET(outsl, (unsigned long p, const void *b, unsigned long c),
+         | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      54 |                  (p, b, c), pio, p)
+         |                  ~~~~~~~~~~~~~~~~~~
+   arch/powerpc/include/asm/io.h:669:3: note: expanded from macro 'DEF_PCI_AC_NORET'
+     669 |                 __do_##name al;                                 \
+         |                 ^~~~~~~~~~~~~~
+   <scratch space>:48:1: note: expanded from here
+      48 | __do_outsl
+         | ^
+   arch/powerpc/include/asm/io.h:614:58: note: expanded from macro '__do_outsl'
+     614 | #define __do_outsl(p, b, n)     writesl((PCI_IO_ADDR)_IO_BASE+(p),(b),(n))
+         |                                         ~~~~~~~~~~~~~~~~~~~~~^
+>> arch/powerpc/mm/pgtable-frag.c:125:22: error: use of undeclared identifier 'page'
+     125 |         BUG_ON(atomic_read(&page->pt_frag_refcount) <= 0);
+         |                             ^
+   7 errors generated.
+
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for HOTPLUG_CPU
+   Depends on [n]: SMP [=y] && (PPC_PSERIES [=n] || PPC_PMAC [=n] || PPC_POWERNV [=n] || FSL_SOC_BOOKE [=n])
+   Selected by [y]:
+   - PM_SLEEP_SMP [=y] && SMP [=y] && (ARCH_SUSPEND_POSSIBLE [=y] || ARCH_HIBERNATION_POSSIBLE [=y]) && PM_SLEEP [=y]
 
 
-On 7/25/23 03:31, Takashi Iwai wrote:
-> On Sun, 23 Jul 2023 23:57:56 +0200,
-> Randy Dunlap wrote:
->>
->> Use "select"s to ensure that the required kconfig symbols are set
->> as expected.
->>
->> This fixes build errors when CONFIG_SOUND is not set.
->>
->> ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_cleanup_module':
->> hostaudio_kern.c:(.exit.text+0xa): undefined reference to `unregister_sound_mixer'
->> ld: hostaudio_kern.c:(.exit.text+0x15): undefined reference to `unregister_sound_dsp'
->> ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_init_module':
->> hostaudio_kern.c:(.init.text+0x19): undefined reference to `register_sound_dsp'
->> ld: hostaudio_kern.c:(.init.text+0x31): undefined reference to `register_sound_mixer'
->> ld: hostaudio_kern.c:(.init.text+0x49): undefined reference to `unregister_sound_dsp'
->>
->> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
->> Fixes: d886e87cb82b ("sound: make OSS sound core optional")
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Link: lore.kernel.org/r/202307141416.vxuRVpFv-lkp@intel.com
->> Cc: Richard Weinberger <richard@nod.at>
->> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
->> Cc: Johannes Berg <johannes@sipsolutions.net>
->> Cc: linux-um@lists.infradead.org
->> Cc: Tejun Heo <tj@kernel.org>
->> Cc: Takashi Iwai <tiwai@suse.de>
->> Cc: Jaroslav Kysela <perex@perex.cz>
->> Cc: Masahiro Yamada <masahiroy@kernel.org>
->> Cc: Nathan Chancellor <nathan@kernel.org>
->> Cc: Nick Desaulniers <ndesaulniers@google.com>
->> Cc: Nicolas Schier <nicolas@fjasle.eu>
->> Cc: linux-kbuild@vger.kernel.org
->> ---
->> v2: don't delete the HOSTAUDIO Kconfig entry (Masahiro)
->>
->>  arch/um/drivers/Kconfig |   10 ++--------
->>  1 file changed, 2 insertions(+), 8 deletions(-)
->>
->> diff -- a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
->> --- a/arch/um/drivers/Kconfig
->> +++ b/arch/um/drivers/Kconfig
->> @@ -111,20 +111,14 @@ config SSL_CHAN
->>  
->>  config UML_SOUND
->>  	tristate "Sound support"
->> +	select SOUND
->> +	select SOUND_OSS_CORE
->>  	help
->>  	  This option enables UML sound support.  If enabled, it will pull in
->>  	  soundcore and the UML hostaudio relay, which acts as a intermediary
->>  	  between the host's dsp and mixer devices and the UML sound system.
->>  	  It is safe to say 'Y' here.
->>  
->> -config SOUND
->> -	tristate
->> -	default UML_SOUND
->> -
->> -config SOUND_OSS_CORE
->> -	bool
->> -	default UML_SOUND
->> -
->>  config HOSTAUDIO
->>  	tristate
->>  	default UML_SOUND
-> 
-> And now essentially CONFIG_HOSTAUDIO is equal with CONFIG_UML_SOUND.
-> Then isn't it better to replace CONFIG_HOSTAUDIO in
-> arch/um/drivers/Makefile with CONFIG_UML_SOUND, so that you can drop
-> CONFIG_HOSTAUDIO as well?
+vim +/page +125 arch/powerpc/mm/pgtable-frag.c
 
-OK, I'll send a v3 with that change.
+0203dd58d897cbd Hugh Dickins          2023-07-11  117  
+a95d133c8643cae Christophe Leroy      2018-11-29  118  void pte_fragment_free(unsigned long *table, int kernel)
+a95d133c8643cae Christophe Leroy      2018-11-29  119  {
+e18a6b21f4c0c0c Vishal Moola (Oracle  2023-07-24  120) 	struct ptdesc *ptdesc = virt_to_ptdesc(table);
+a95d133c8643cae Christophe Leroy      2018-11-29  121  
+e18a6b21f4c0c0c Vishal Moola (Oracle  2023-07-24  122) 	if (pagetable_is_reserved(ptdesc))
+e18a6b21f4c0c0c Vishal Moola (Oracle  2023-07-24  123) 		return free_reserved_ptdesc(ptdesc);
+645d5ce2f7d6cb4 Aneesh Kumar K.V      2020-07-09  124  
+a95d133c8643cae Christophe Leroy      2018-11-29 @125  	BUG_ON(atomic_read(&page->pt_frag_refcount) <= 0);
+e18a6b21f4c0c0c Vishal Moola (Oracle  2023-07-24  126) 	if (atomic_dec_and_test(&ptdesc->pt_frag_refcount)) {
+0203dd58d897cbd Hugh Dickins          2023-07-11  127  		if (kernel)
+e18a6b21f4c0c0c Vishal Moola (Oracle  2023-07-24  128) 			pagetable_free(ptdesc);
+e18a6b21f4c0c0c Vishal Moola (Oracle  2023-07-24  129) 		else if (folio_test_clear_active(ptdesc_folio(ptdesc)))
+e18a6b21f4c0c0c Vishal Moola (Oracle  2023-07-24  130) 			call_rcu(&ptdesc->pt_rcu_head, pte_free_now);
+0203dd58d897cbd Hugh Dickins          2023-07-11  131  		else
+e18a6b21f4c0c0c Vishal Moola (Oracle  2023-07-24  132) 			pte_free_now(&ptdesc->pt_rcu_head);
+0203dd58d897cbd Hugh Dickins          2023-07-11  133  	}
+a95d133c8643cae Christophe Leroy      2018-11-29  134  }
+0203dd58d897cbd Hugh Dickins          2023-07-11  135  
 
-thanks.
 -- 
-~Randy
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 _______________________________________________
 linux-um mailing list
