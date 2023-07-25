@@ -4,97 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E6F8C0015E
-	for <linux-um@archiver.kernel.org>; Tue, 25 Jul 2023 04:41:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8746FC04A6A
+	for <linux-um@archiver.kernel.org>; Tue, 25 Jul 2023 10:32:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:Message-ID:
-	In-Reply-To:Subject:cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Subject:Cc:To:From:Message-ID:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8L+UTdNYgJ8jJaj2YD5Tuoss0Q3te0WQ8FbmFHzzMjU=; b=G/jKvw8pxWEYqM
-	3Nt2//mCwKamhh2mF0REEbTu7C4iqpfnJV398g3DKojwahjwCxvzYQzoA5HbwfIS3hls5uH5DR6bZ
-	ZTLglG3rrJPLWGeMmUIZtMVfESphUJ+y6SwiiiAZiscQ1Lmu9qdbOylfcuNDW6HjhcrIg8G4vU/P0
-	G3wovTWQ5407fl2iqUE4zCA/QYscKO1ur6mUhGmrYkP9tfyoByfxngfA187nbmp44qzErbY6Mn3g0
-	TA1PAJiS6oO6oh1Unf2yWz8qsIggFaDpIRYCMFijXhdaQwkqWijKZF2DiOio5VpyaKzxF1klSz+Zj
-	lSa095kf/7W+B5ijAOhA==;
+	List-Owner; bh=9bRMqXg8TK2ekrr9WpuLaPJev0qvd57EFdT3GwR6mp8=; b=IpJkmgo4E2XAuh
+	xOaDizOWFM/l5SVzv93E6WOBEz72vBr+/nOc7WMT4Obo33UhFHPciNQW/IgdFmm1uZkNb8LcyoZmV
+	qGAkUmrEO4+1jFxAdufiOrXpIXqWBCID4nPCtpj1cVr6GYYsolfRyQcas+W+t+thGlFCwxXtyHwpE
+	egdEoprH5t2WoomcVtrx5ZgoH8JdT+Y+A8ZwAvh1DNKEs/FjVEC0yfKkjrSRRblHKElLDQPK6r4zy
+	KtT8SSFldZzkSl0yKr5MXazuf/ZdURl+7Wn0rgghHlOZarti6Ty2rPXJig2C2dFNy79H/GD5ZF4Vc
+	9hNLkS9Gn4oA87c2eDog==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qO9rq-006DDY-2I;
-	Tue, 25 Jul 2023 04:41:50 +0000
-Received: from mail-yb1-xb36.google.com ([2607:f8b0:4864:20::b36])
+	id 1qOFKi-0076s6-0S;
+	Tue, 25 Jul 2023 10:32:00 +0000
+Received: from smtp-out1.suse.de ([195.135.220.28])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qO9rn-006DBp-0w
+	id 1qOFKe-0076qT-2j
 	for linux-um@lists.infradead.org;
-	Tue, 25 Jul 2023 04:41:48 +0000
-Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-d0b597e7ac1so2729925276.1
-        for <linux-um@lists.infradead.org>; Mon, 24 Jul 2023 21:41:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690260106; x=1690864906;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4tFc7lI8l/TAp6N4SH/RnjHMrhDjcjpOS0NvhRjK3tI=;
-        b=syg9IyMH/gqJY1k4LT3S6JMx0fSLcgE37Cs+8KWCUO35fKCYg0MuLIIi0nsu37jtyV
-         JWnNbNndjflxoqEknhV3drMoPO1rLP5Mf2NwuEGG3uNqc6WCc3lC70F16ZnEeLC+MDXA
-         tlBtkvCExRePxNsWSrYSlIqtWo9fJaFXM7OzUrScUdzQ6XIpjZwJMknKg/XaSKKfA+Pp
-         NHjPm93xL9xpQDR+q+3gjlysNDu5FD2n2xMli6SN590GUy6WkS3ghg4fMC/PcVORHv0z
-         7pZwaHoSCWcs0DC0U/7aDMkjw3lDyZjRkGaSMnnCoKZ6Eh2nJ1AJW7AcIEll2MImoPAy
-         2Dhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690260106; x=1690864906;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4tFc7lI8l/TAp6N4SH/RnjHMrhDjcjpOS0NvhRjK3tI=;
-        b=ihJlnjyLQFsPkndeehh21Ywn4c3bl0f2hedagE4UwADTcdCj2ZOnxfhRQHmbJhLbok
-         DN1FjRMro6E2R2RcdrgWcgf5UD6pI4ll9RYHEw9HmJ3odcEXa/hfv53vxG0J6jfmsIOA
-         x9xSG+gI8/4phVYRkFM+CRaLCmEnR8enS2d2TqP4rqq04vmLil/NvP4Nr2iK5fh2OQbc
-         2NSz38A3QemiaG4ieAsufCQ6SGeI+BimR+aaVCtTYf4Gt/J2fM/b3/WOkaJuhonIb1Cn
-         M3/TU3tWLIE9tntnvT0GJQDPHfiHu6+4wxv35vleQmgZXyFmwvVD+hcjLV4mdYEzk9Er
-         bx3g==
-X-Gm-Message-State: ABy/qLbh2/LuTM2Ora7if/jDRcVZK6q5COhGEg2xsg+oarwwKBrvc8T3
-	AbATJ5MBxCKw5An7XCHWPGp0aQ==
-X-Google-Smtp-Source: APBJJlHQLTh3cgEYO+DVAD/fw8XSxxaq77z0mK7JibK/JjnN3wjA/kyDdlXYpJW7FLCpf9E01rW5SQ==
-X-Received: by 2002:a25:2342:0:b0:d0d:2d17:3f11 with SMTP id j63-20020a252342000000b00d0d2d173f11mr5304231ybj.17.1690260106082;
-        Mon, 24 Jul 2023 21:41:46 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id z16-20020a25e310000000b00c71e4833957sm2656725ybd.63.2023.07.24.21.41.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jul 2023 21:41:45 -0700 (PDT)
-Date: Mon, 24 Jul 2023 21:41:36 -0700 (PDT)
-From: Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-cc: Andrew Morton <akpm@linux-foundation.org>, 
-    Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org, 
-    linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-    linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
-    loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, 
-    linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, 
-    linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org, 
-    linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, 
-    sparclinux@vger.kernel.org, linux-um@lists.infradead.org, 
-    xen-devel@lists.xenproject.org, kvm@vger.kernel.org, 
-    Hugh Dickins <hughd@google.com>, Catalin Marinas <catalin.marinas@arm.com>, 
-    Huacai Chen <chenhuacai@kernel.org>, 
-    Geert Uytterhoeven <geert@linux-m68k.org>, 
-    Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-    Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>, 
-    David Hildenbrand <david@redhat.com>, 
-    Claudio Imbrenda <imbrenda@linux.ibm.com>, 
-    Paul Walmsley <paul.walmsley@sifive.com>, 
-    "David S. Miller" <davem@davemloft.net>, 
-    Richard Weinberger <richard@nod.at>, 
-    Yoshinori Sato <ysato@users.sourceforge.jp>, 
-    Dave Hansen <dave.hansen@linux.intel.com>, Arnd Bergmann <arnd@arndb.de>, 
-    Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: Re: [PATCH mm-unstable v7 00/31] Split ptdesc from struct page
-In-Reply-To: <20230725042051.36691-1-vishal.moola@gmail.com>
-Message-ID: <5296514f-cdd1-9526-2e83-a21e76e86e5@google.com>
-References: <20230725042051.36691-1-vishal.moola@gmail.com>
-MIME-Version: 1.0
+	Tue, 25 Jul 2023 10:31:58 +0000
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 58CE421B1C;
+	Tue, 25 Jul 2023 10:31:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1690281112; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dWo+Jm7Z/J00Cbkyh5PNtARF9DrmPfMqCwl8nGx+z2U=;
+	b=2E6InrqrO0fh9B/S8gCc7r8uaPULJu6d9QonzUOqig3Tqrg4zeuY7l+cD/cGOGgu88lcey
+	kUZHfG0/hn2fk6JKmcGosYlMVJIXwaP4rfbm23nDR7NT/7KFN5PzLM9BcVMAHyXpdWqysR
+	i4TEyyaFCwk2DSFjE7z58B7T3maCk9w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1690281112;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dWo+Jm7Z/J00Cbkyh5PNtARF9DrmPfMqCwl8nGx+z2U=;
+	b=jpSzcBP8X5BN69Mp94riZKXN5aC0pds9VC0lrxN/V8rtzZVJiy0Dtxf8WjhHqm3IXjnDpd
+	73t15FnLNugR6sDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F02A613342;
+	Tue, 25 Jul 2023 10:31:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id U4WHOZekv2ScfQAAMHmgww
+	(envelope-from <tiwai@suse.de>); Tue, 25 Jul 2023 10:31:51 +0000
+Date: Tue, 25 Jul 2023 12:31:51 +0200
+Message-ID: <87jzuoth7s.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-kernel@vger.kernel.org,
+	kernel test robot <lkp@intel.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	linux-um@lists.infradead.org,
+	Tejun Heo <tj@kernel.org>,
+	Takashi Iwai <tiwai@suse.de>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH v2] um/drivers: Kconfig: fix hostaudio build errors
+In-Reply-To: <20230723215756.18307-1-rdunlap@infradead.org>
+References: <20230723215756.18307-1-rdunlap@infradead.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230724_214147_351481_E1348F49 
-X-CRM114-Status: GOOD (  19.23  )
+X-CRM114-CacheID: sfid-20230725_033157_023162_311CDC11 
+X-CRM114-Status: GOOD (  20.35  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,111 +101,81 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, 24 Jul 2023, Vishal Moola (Oracle) wrote:
+On Sun, 23 Jul 2023 23:57:56 +0200,
+Randy Dunlap wrote:
+> 
+> Use "select"s to ensure that the required kconfig symbols are set
+> as expected.
+> 
+> This fixes build errors when CONFIG_SOUND is not set.
+> 
+> ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_cleanup_module':
+> hostaudio_kern.c:(.exit.text+0xa): undefined reference to `unregister_sound_mixer'
+> ld: hostaudio_kern.c:(.exit.text+0x15): undefined reference to `unregister_sound_dsp'
+> ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_init_module':
+> hostaudio_kern.c:(.init.text+0x19): undefined reference to `register_sound_dsp'
+> ld: hostaudio_kern.c:(.init.text+0x31): undefined reference to `register_sound_mixer'
+> ld: hostaudio_kern.c:(.init.text+0x49): undefined reference to `unregister_sound_dsp'
+> 
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Fixes: d886e87cb82b ("sound: make OSS sound core optional")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Link: lore.kernel.org/r/202307141416.vxuRVpFv-lkp@intel.com
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> Cc: Johannes Berg <johannes@sipsolutions.net>
+> Cc: linux-um@lists.infradead.org
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Takashi Iwai <tiwai@suse.de>
+> Cc: Jaroslav Kysela <perex@perex.cz>
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Cc: Nathan Chancellor <nathan@kernel.org>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: Nicolas Schier <nicolas@fjasle.eu>
+> Cc: linux-kbuild@vger.kernel.org
+> ---
+> v2: don't delete the HOSTAUDIO Kconfig entry (Masahiro)
+> 
+>  arch/um/drivers/Kconfig |   10 ++--------
+>  1 file changed, 2 insertions(+), 8 deletions(-)
+> 
+> diff -- a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
+> --- a/arch/um/drivers/Kconfig
+> +++ b/arch/um/drivers/Kconfig
+> @@ -111,20 +111,14 @@ config SSL_CHAN
+>  
+>  config UML_SOUND
+>  	tristate "Sound support"
+> +	select SOUND
+> +	select SOUND_OSS_CORE
+>  	help
+>  	  This option enables UML sound support.  If enabled, it will pull in
+>  	  soundcore and the UML hostaudio relay, which acts as a intermediary
+>  	  between the host's dsp and mixer devices and the UML sound system.
+>  	  It is safe to say 'Y' here.
+>  
+> -config SOUND
+> -	tristate
+> -	default UML_SOUND
+> -
+> -config SOUND_OSS_CORE
+> -	bool
+> -	default UML_SOUND
+> -
+>  config HOSTAUDIO
+>  	tristate
+>  	default UML_SOUND
 
-> The MM subsystem is trying to shrink struct page. This patchset
-> introduces a memory descriptor for page table tracking - struct ptdesc.
-> 
-> This patchset introduces ptdesc, splits ptdesc from struct page, and
-> converts many callers of page table constructor/destructors to use ptdescs.
-> 
-> Ptdesc is a foundation to further standardize page tables, and eventually
-> allow for dynamic allocation of page tables independent of struct page.
-> However, the use of pages for page table tracking is quite deeply
-> ingrained and varied across archictectures, so there is still a lot of
-> work to be done before that can happen.
+And now essentially CONFIG_HOSTAUDIO is equal with CONFIG_UML_SOUND.
+Then isn't it better to replace CONFIG_HOSTAUDIO in
+arch/um/drivers/Makefile with CONFIG_UML_SOUND, so that you can drop
+CONFIG_HOSTAUDIO as well?
 
-Others may differ, but it remains the case that I see no point to this
-patchset, until the minimal descriptor that replaces struct page is
-working, and struct page then becomes just overhead.  Until that time,
-let architectures continue to use struct page as they do - whyever not?
 
-Hugh
+thanks,
 
-> 
-> This is rebased on mm-unstable.
-> 
-> v7:
->   Drop s390 gmap ptdesc conversions - gmap is unecessary complication
->     that can be dealt with later
->   Be more thorough with ptdesc struct sanity checks and comments
->   Rebase onto mm-unstable
-> 
-> Vishal Moola (Oracle) (31):
->   mm: Add PAGE_TYPE_OP folio functions
->   pgtable: Create struct ptdesc
->   mm: add utility functions for ptdesc
->   mm: Convert pmd_pgtable_page() callers to use pmd_ptdesc()
->   mm: Convert ptlock_alloc() to use ptdescs
->   mm: Convert ptlock_ptr() to use ptdescs
->   mm: Convert pmd_ptlock_init() to use ptdescs
->   mm: Convert ptlock_init() to use ptdescs
->   mm: Convert pmd_ptlock_free() to use ptdescs
->   mm: Convert ptlock_free() to use ptdescs
->   mm: Create ptdesc equivalents for pgtable_{pte,pmd}_page_{ctor,dtor}
->   powerpc: Convert various functions to use ptdescs
->   x86: Convert various functions to use ptdescs
->   s390: Convert various pgalloc functions to use ptdescs
->   mm: Remove page table members from struct page
->   pgalloc: Convert various functions to use ptdescs
->   arm: Convert various functions to use ptdescs
->   arm64: Convert various functions to use ptdescs
->   csky: Convert __pte_free_tlb() to use ptdescs
->   hexagon: Convert __pte_free_tlb() to use ptdescs
->   loongarch: Convert various functions to use ptdescs
->   m68k: Convert various functions to use ptdescs
->   mips: Convert various functions to use ptdescs
->   nios2: Convert __pte_free_tlb() to use ptdescs
->   openrisc: Convert __pte_free_tlb() to use ptdescs
->   riscv: Convert alloc_{pmd, pte}_late() to use ptdescs
->   sh: Convert pte_free_tlb() to use ptdescs
->   sparc64: Convert various functions to use ptdescs
->   sparc: Convert pgtable_pte_page_{ctor, dtor}() to ptdesc equivalents
->   um: Convert {pmd, pte}_free_tlb() to use ptdescs
->   mm: Remove pgtable_{pmd, pte}_page_{ctor, dtor}() wrappers
-> 
->  Documentation/mm/split_page_table_lock.rst    |  12 +-
->  .../zh_CN/mm/split_page_table_lock.rst        |  14 +-
->  arch/arm/include/asm/tlb.h                    |  12 +-
->  arch/arm/mm/mmu.c                             |   7 +-
->  arch/arm64/include/asm/tlb.h                  |  14 +-
->  arch/arm64/mm/mmu.c                           |   7 +-
->  arch/csky/include/asm/pgalloc.h               |   4 +-
->  arch/hexagon/include/asm/pgalloc.h            |   8 +-
->  arch/loongarch/include/asm/pgalloc.h          |  27 ++--
->  arch/loongarch/mm/pgtable.c                   |   7 +-
->  arch/m68k/include/asm/mcf_pgalloc.h           |  47 +++---
->  arch/m68k/include/asm/sun3_pgalloc.h          |   8 +-
->  arch/m68k/mm/motorola.c                       |   4 +-
->  arch/mips/include/asm/pgalloc.h               |  32 ++--
->  arch/mips/mm/pgtable.c                        |   8 +-
->  arch/nios2/include/asm/pgalloc.h              |   8 +-
->  arch/openrisc/include/asm/pgalloc.h           |   8 +-
->  arch/powerpc/mm/book3s64/mmu_context.c        |  10 +-
->  arch/powerpc/mm/book3s64/pgtable.c            |  32 ++--
->  arch/powerpc/mm/pgtable-frag.c                |  56 +++----
->  arch/riscv/include/asm/pgalloc.h              |   8 +-
->  arch/riscv/mm/init.c                          |  16 +-
->  arch/s390/include/asm/pgalloc.h               |   4 +-
->  arch/s390/include/asm/tlb.h                   |   4 +-
->  arch/s390/mm/pgalloc.c                        | 128 +++++++--------
->  arch/sh/include/asm/pgalloc.h                 |   9 +-
->  arch/sparc/mm/init_64.c                       |  17 +-
->  arch/sparc/mm/srmmu.c                         |   5 +-
->  arch/um/include/asm/pgalloc.h                 |  18 +--
->  arch/x86/mm/pgtable.c                         |  47 +++---
->  arch/x86/xen/mmu_pv.c                         |   2 +-
->  include/asm-generic/pgalloc.h                 |  88 +++++-----
->  include/asm-generic/tlb.h                     |  11 ++
->  include/linux/mm.h                            | 151 +++++++++++++-----
->  include/linux/mm_types.h                      |  18 ---
->  include/linux/page-flags.h                    |  30 +++-
->  include/linux/pgtable.h                       |  80 ++++++++++
->  mm/memory.c                                   |   8 +-
->  38 files changed, 585 insertions(+), 384 deletions(-)
-> 
-> -- 
-> 2.40.1
+Takashi
 
 _______________________________________________
 linux-um mailing list
