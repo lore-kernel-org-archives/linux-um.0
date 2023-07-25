@@ -4,87 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8746FC04A6A
-	for <linux-um@archiver.kernel.org>; Tue, 25 Jul 2023 10:32:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 208D3C0015E
+	for <linux-um@archiver.kernel.org>; Tue, 25 Jul 2023 11:24:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Subject:Cc:To:From:Message-ID:Date:Reply-To:Content-ID:Content-Description:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9bRMqXg8TK2ekrr9WpuLaPJev0qvd57EFdT3GwR6mp8=; b=IpJkmgo4E2XAuh
-	xOaDizOWFM/l5SVzv93E6WOBEz72vBr+/nOc7WMT4Obo33UhFHPciNQW/IgdFmm1uZkNb8LcyoZmV
-	qGAkUmrEO4+1jFxAdufiOrXpIXqWBCID4nPCtpj1cVr6GYYsolfRyQcas+W+t+thGlFCwxXtyHwpE
-	egdEoprH5t2WoomcVtrx5ZgoH8JdT+Y+A8ZwAvh1DNKEs/FjVEC0yfKkjrSRRblHKElLDQPK6r4zy
-	KtT8SSFldZzkSl0yKr5MXazuf/ZdURl+7Wn0rgghHlOZarti6Ty2rPXJig2C2dFNy79H/GD5ZF4Vc
-	9hNLkS9Gn4oA87c2eDog==;
+	List-Owner; bh=TMaWLRkvs/kFrtzDAteGd4B0QEkZJCWMFZgLgmtjgnE=; b=3EwUNSS1PiZUwq
+	IE2n9koj7bPEW5Y6b5oUcz5qLS7a+YOYzygMmA7I6JWrstopiEcJbUsZ+LH8bWBCmxyt5QjrBUgyo
+	SehJwde53vaflABCXyeXBwmNdt20bsY4HX2oXFw/z2SM1NTcaBl2u4skg+9oxpOXDv29Abnotd0Zb
+	xB55npBOdPvvXCHHz4fxMXL2OLjuUg1oBBr2FjW7rqGxRLxjJVTjdDvDE2xT7663l07XFbn5D1G4r
+	IoKQ3dOvBAJaPcvpc5zes/ObsKhs0a2e5TenhyIi1UamYL/+WF7BHTHVFve7rluVB0+QKUxRyMJkO
+	52DcYmUxo61gIF4dSElA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qOFKi-0076s6-0S;
-	Tue, 25 Jul 2023 10:32:00 +0000
-Received: from smtp-out1.suse.de ([195.135.220.28])
+	id 1qOG9H-007OmT-0q;
+	Tue, 25 Jul 2023 11:24:15 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qOFKe-0076qT-2j
+	id 1qOG9F-007Om2-0t
 	for linux-um@lists.infradead.org;
-	Tue, 25 Jul 2023 10:31:58 +0000
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	Tue, 25 Jul 2023 11:24:14 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 58CE421B1C;
-	Tue, 25 Jul 2023 10:31:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1690281112; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dWo+Jm7Z/J00Cbkyh5PNtARF9DrmPfMqCwl8nGx+z2U=;
-	b=2E6InrqrO0fh9B/S8gCc7r8uaPULJu6d9QonzUOqig3Tqrg4zeuY7l+cD/cGOGgu88lcey
-	kUZHfG0/hn2fk6JKmcGosYlMVJIXwaP4rfbm23nDR7NT/7KFN5PzLM9BcVMAHyXpdWqysR
-	i4TEyyaFCwk2DSFjE7z58B7T3maCk9w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1690281112;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dWo+Jm7Z/J00Cbkyh5PNtARF9DrmPfMqCwl8nGx+z2U=;
-	b=jpSzcBP8X5BN69Mp94riZKXN5aC0pds9VC0lrxN/V8rtzZVJiy0Dtxf8WjhHqm3IXjnDpd
-	73t15FnLNugR6sDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F02A613342;
-	Tue, 25 Jul 2023 10:31:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id U4WHOZekv2ScfQAAMHmgww
-	(envelope-from <tiwai@suse.de>); Tue, 25 Jul 2023 10:31:51 +0000
-Date: Tue, 25 Jul 2023 12:31:51 +0200
-Message-ID: <87jzuoth7s.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: linux-kernel@vger.kernel.org,
-	kernel test robot <lkp@intel.com>,
+	by dfw.source.kernel.org (Postfix) with ESMTPS id BF7846168E;
+	Tue, 25 Jul 2023 11:24:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEC50C433C8;
+	Tue, 25 Jul 2023 11:24:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1690284252;
+	bh=kEs6/fj62ay6yBJWGV/C9EpEg+q41BOAvEpDhZ/zSDo=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=tYFLfhM0Vi2jZij4LOD7KPKiywKjr/BWqB340sfFru0Orn56YsJmsRifbjd7IbQVR
+	 5LuaB5igAocMyURhsUqrlCcQiQf79m3tYsO2W4r2wtDxBwGt6XiVH2iOK2NC92yewZ
+	 9TR7dRzSzBMJz79APL6/EdWOyzGURKFyflyv+EOg=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: stable@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	patches@lists.linux.dev,
 	Richard Weinberger <richard@nod.at>,
 	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
 	Johannes Berg <johannes@sipsolutions.net>,
+	Azeem Shaikh <azeemshaikh38@gmail.com>,
 	linux-um@lists.infradead.org,
-	Tejun Heo <tj@kernel.org>,
-	Takashi Iwai <tiwai@suse.de>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH v2] um/drivers: Kconfig: fix hostaudio build errors
-In-Reply-To: <20230723215756.18307-1-rdunlap@infradead.org>
-References: <20230723215756.18307-1-rdunlap@infradead.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+	Kees Cook <keescook@chromium.org>
+Subject: [PATCH 5.10 290/509] um: Use HOST_DIR for mrproper
+Date: Tue, 25 Jul 2023 12:43:49 +0200
+Message-ID: <20230725104607.015768103@linuxfoundation.org>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230725104553.588743331@linuxfoundation.org>
+References: <20230725104553.588743331@linuxfoundation.org>
+User-Agent: quilt/0.67
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230725_033157_023162_311CDC11 
-X-CRM114-Status: GOOD (  20.35  )
+X-CRM114-CacheID: sfid-20230725_042413_358040_3BC86644 
+X-CRM114-Status: GOOD (  11.44  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,81 +79,43 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sun, 23 Jul 2023 23:57:56 +0200,
-Randy Dunlap wrote:
-> 
-> Use "select"s to ensure that the required kconfig symbols are set
-> as expected.
-> 
-> This fixes build errors when CONFIG_SOUND is not set.
-> 
-> ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_cleanup_module':
-> hostaudio_kern.c:(.exit.text+0xa): undefined reference to `unregister_sound_mixer'
-> ld: hostaudio_kern.c:(.exit.text+0x15): undefined reference to `unregister_sound_dsp'
-> ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_init_module':
-> hostaudio_kern.c:(.init.text+0x19): undefined reference to `register_sound_dsp'
-> ld: hostaudio_kern.c:(.init.text+0x31): undefined reference to `register_sound_mixer'
-> ld: hostaudio_kern.c:(.init.text+0x49): undefined reference to `unregister_sound_dsp'
-> 
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Fixes: d886e87cb82b ("sound: make OSS sound core optional")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Link: lore.kernel.org/r/202307141416.vxuRVpFv-lkp@intel.com
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-> Cc: Johannes Berg <johannes@sipsolutions.net>
-> Cc: linux-um@lists.infradead.org
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: Takashi Iwai <tiwai@suse.de>
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Masahiro Yamada <masahiroy@kernel.org>
-> Cc: Nathan Chancellor <nathan@kernel.org>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: Nicolas Schier <nicolas@fjasle.eu>
-> Cc: linux-kbuild@vger.kernel.org
-> ---
-> v2: don't delete the HOSTAUDIO Kconfig entry (Masahiro)
-> 
->  arch/um/drivers/Kconfig |   10 ++--------
->  1 file changed, 2 insertions(+), 8 deletions(-)
-> 
-> diff -- a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
-> --- a/arch/um/drivers/Kconfig
-> +++ b/arch/um/drivers/Kconfig
-> @@ -111,20 +111,14 @@ config SSL_CHAN
->  
->  config UML_SOUND
->  	tristate "Sound support"
-> +	select SOUND
-> +	select SOUND_OSS_CORE
->  	help
->  	  This option enables UML sound support.  If enabled, it will pull in
->  	  soundcore and the UML hostaudio relay, which acts as a intermediary
->  	  between the host's dsp and mixer devices and the UML sound system.
->  	  It is safe to say 'Y' here.
->  
-> -config SOUND
-> -	tristate
-> -	default UML_SOUND
-> -
-> -config SOUND_OSS_CORE
-> -	bool
-> -	default UML_SOUND
-> -
->  config HOSTAUDIO
->  	tristate
->  	default UML_SOUND
+From: Kees Cook <keescook@chromium.org>
 
-And now essentially CONFIG_HOSTAUDIO is equal with CONFIG_UML_SOUND.
-Then isn't it better to replace CONFIG_HOSTAUDIO in
-arch/um/drivers/Makefile with CONFIG_UML_SOUND, so that you can drop
-CONFIG_HOSTAUDIO as well?
+commit a5a319ec2c2236bb96d147c16196d2f1f3799301 upstream.
+
+When HEADER_ARCH was introduced, the MRPROPER_FILES (then MRPROPER_DIRS)
+list wasn't adjusted, leaving SUBARCH as part of the path argument.
+This resulted in the "mrproper" target not cleaning up arch/x86/... when
+SUBARCH was specified. Since HOST_DIR is arch/$(HEADER_ARCH), use it
+instead to get the correct path.
+
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: Azeem Shaikh <azeemshaikh38@gmail.com>
+Cc: linux-um@lists.infradead.org
+Fixes: 7bbe7204e937 ("um: merge Makefile-{i386,x86_64}")
+Cc: stable@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/r/20230606222442.never.807-kees@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ arch/um/Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -147,7 +147,7 @@ export LDFLAGS_vmlinux := $(LDFLAGS_EXEC
+ # When cleaning we don't include .config, so we don't include
+ # TT or skas makefiles and don't clean skas_ptregs.h.
+ CLEAN_FILES += linux x.i gmon.out
+-MRPROPER_FILES += arch/$(SUBARCH)/include/generated
++MRPROPER_FILES += $(HOST_DIR)/include/generated
+ 
+ archclean:
+ 	@find . \( -name '*.bb' -o -name '*.bbg' -o -name '*.da' \
 
 
-thanks,
-
-Takashi
 
 _______________________________________________
 linux-um mailing list
