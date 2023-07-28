@@ -4,45 +4,50 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D6A5EB64DD
-	for <linux-um@archiver.kernel.org>; Thu, 27 Jul 2023 06:00:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9026C001DF
+	for <linux-um@archiver.kernel.org>; Fri, 28 Jul 2023 04:30:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:From:
-	Subject:MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Q+QDlMchyqK29kU2ODyrTJ2XbE1HUczKS79SRqjwnQ8=; b=v0j2ps6/hgpgR0
-	Qe/4E7duRAPm/cUTXlzWce3hi7sdOu4s5DOZcgBFG56627SMpKxsx4eCYNg6hcZz6VZGbl0xeNLra
-	YSrQSJvrqeM3ZnINcuARleS2vU6KjmB/rMNQqZ+1xl33yb9AcCWsg3tVGj+mxknNGJjTHJHdvaF9h
-	/0jD5z0PiTB/AfK82oYJcwIipo4WJCGj49umJ3W9lPz7AbwVr1Uw2MQ42Wynm3ZZ5pqu+gxiVlAaP
-	2WotZC/P6OUquOAv8VDgMEHoAdHMe8OT2v1g/Ox0V2m4InOUij/ka3Nix4QPvZXRS9s5i/reW6BPu
-	gVzvPMuD2fpOcR9RnlLw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=5bBMzcdfHl5wU2Bd6a246vnslFUXcXpkYYYcwW7a6NU=; b=EEq17fWKvIK+zI
+	KQssP3xQRtopvKxMCEhTla/KIhPFanP+aUlTo6VQdrj7egt5QvCtVVr6UtfLNp23crJA9molTeord
+	4K/CpaEVPNG6GSQFfSD8D1uEhdI2URdDVUg60STuSeRYBEQPySbllMU73BD0FKYPG4tnZv41AiTQ6
+	1mqvvCpSVutl921GrfzFA8UmGfcHzQLNbyu9NW1ViUUXAJm93ZOzeTD1hHHhgJEmJBDD3hTZtFnKG
+	lQDGuNTbFG9X7xgfzNR6q8ptUSoc3kH74E3JceS4FHKzVYiuoOhPFh72cRBcDryoyhbWsdwhlXMqB
+	0BR07BvZPfIfd0LqYOEQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qOu3T-00CHCJ-25;
-	Thu, 27 Jul 2023 06:00:55 +0000
-Received: from [2601:1c2:980:9ec0::2764]
+	id 1qPF7U-001aVf-0s;
+	Fri, 28 Jul 2023 04:30:28 +0000
+Received: from [2601:1c2:980:9ec0::2764] (helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1qOu3R-00CHBi-1c;
-	Thu, 27 Jul 2023 06:00:53 +0000
-Message-ID: <16a13cab-6974-e2a6-f4c5-45971ede258b@infradead.org>
-Date: Wed, 26 Jul 2023 23:00:52 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: linux-next: Tree for Jul 27 (fbdev/core/fbcon.o)
-Content-Language: en-US
+	id 1qPF7G-001aUX-2x;
+	Fri, 28 Jul 2023 04:30:14 +0000
 From: Randy Dunlap <rdunlap@infradead.org>
-To: Stephen Rothwell <sfr@canb.auug.org.au>,
- Linux Next Mailing List <linux-next@vger.kernel.org>,
- Javier Martinez Canillas <javierm@redhat.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, Helge Deller <deller@gmx.de>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-um <linux-um@lists.infradead.org>, linux-fbdev@vger.kernel.org
-References: <20230727143346.079d4e5a@canb.auug.org.au>
- <4c1ba872-156a-68d4-4d2f-ef459a8b7997@infradead.org>
-In-Reply-To: <4c1ba872-156a-68d4-4d2f-ef459a8b7997@infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	kernel test robot <lkp@intel.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	linux-um@lists.infradead.org,
+	Tejun Heo <tj@kernel.org>,
+	Takashi Iwai <tiwai@suse.de>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	linux-kbuild@vger.kernel.org,
+	alsa-devel@alsa-project.org
+Subject: [PATCH v3] um/drivers: fix hostaudio build errors
+Date: Thu, 27 Jul 2023 21:30:13 -0700
+Message-ID: <20230728043013.27776-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -59,185 +64,110 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+Use "select"s to ensure that the required kconfig symbols are set
+as expected.
+Drop HOSTAUDIO since it is now equivalent to UML_SOUND.
 
+Allow SOUND with UML regardless of HAS_IOMEM. Otherwise there is a
+kconfig warning for unmet dependencies. (This was not an issue when
+SOUND was defined in arch/um/drivers/Kconfig. I have done 50 randconfig
+builds and didn't find any issues.)
 
-On 7/26/23 22:56, Randy Dunlap wrote:
-> 
-> 
-> On 7/26/23 21:33, Stephen Rothwell wrote:
->> Hi all,
->>
->> Changes since 20230726:
->>
-> 
-> on ARCH=um, SUBARCH=i386:
-> 
-> many build errors for fbdev:
-> 
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `store_rotate_all':
-> UM32/../drivers/video/fbdev/core/fbcon.c:3205: undefined reference to `fg_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `store_rotate':
-> UM32/../drivers/video/fbdev/core/fbcon.c:3183: undefined reference to `fg_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `show_cursor_blink':
-> UM32/../drivers/video/fbdev/core/fbcon.c:3245: undefined reference to `fg_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `show_rotate':
-> UM32/../drivers/video/fbdev/core/fbcon.c:3225: undefined reference to `fg_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_modechange_possible':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2766: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `get_color':
-> UM32/../drivers/video/fbdev/core/fbcon.c:287: undefined reference to `console_blanked'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_set_palette':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2571: undefined reference to `con_is_visible'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_modechanged':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2678: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:2686: undefined reference to `con_is_visible'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:2692: undefined reference to `vc_resize'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:2702: undefined reference to `color_table'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:2703: undefined reference to `redraw_screen'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_set_all_vcs':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2718: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:2723: undefined reference to `con_is_visible'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:2735: undefined reference to `vc_resize'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_debug_enter':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2253: undefined reference to `color_table'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_resize':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2048: undefined reference to `con_is_visible'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_set_disp':
-> UM32/../drivers/video/fbdev/core/fbcon.c:1347: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:1391: undefined reference to `vc_resize'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:1393: undefined reference to `con_is_visible'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:1394: undefined reference to `redraw_screen'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_deinit':
-> UM32/../drivers/video/fbdev/core/fbcon.c:1190: undefined reference to `con_is_visible'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:1202: undefined reference to `con_is_bound'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `do_fbcon_takeover':
-> UM32/../drivers/video/fbdev/core/fbcon.c:530: undefined reference to `do_take_over_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_do_set_font':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2430: undefined reference to `vc_resize'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:2433: undefined reference to `con_is_visible'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:2436: undefined reference to `redraw_screen'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_set_def_font':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2544: undefined reference to `get_default_font'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:2546: undefined reference to `find_font'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_set_font':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2522: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_prepare_logo':
-> UM32/../drivers/video/fbdev/core/fbcon.c:612: undefined reference to `con_is_visible'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:614: undefined reference to `redraw_screen'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_init':
-> UM32/../drivers/video/fbdev/core/fbcon.c:1022: undefined reference to `fg_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:1025: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:1039: undefined reference to `find_font'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:1040: undefined reference to `get_default_font'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:1091: undefined reference to `con_is_visible'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:1123: undefined reference to `vc_resize'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:1133: undefined reference to `fg_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fb_flashcursor':
-> UM32/../drivers/video/fbdev/core/fbcon.c:368: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:370: undefined reference to `con_is_visible'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `store_cursor_blink':
-> UM32/../drivers/video/fbdev/core/fbcon.c:3271: undefined reference to `fg_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_switch':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2072: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:2171: undefined reference to `color_table'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:2176: undefined reference to `fg_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:2178: undefined reference to `update_region'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_blank':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2232: undefined reference to `redraw_screen'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_startup':
-> UM32/../drivers/video/fbdev/core/fbcon.c:923: undefined reference to `fg_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:924: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:962: undefined reference to `find_font'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:963: undefined reference to `get_default_font'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:977: undefined reference to `vc_resize'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `set_con2fb_map':
-> UM32/../drivers/video/fbdev/core/fbcon.c:822: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:836: undefined reference to `con_is_bound'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:861: undefined reference to `fg_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `con2fb_init_display':
-> UM32/../drivers/video/fbdev/core/fbcon.c:797: undefined reference to `fg_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:797: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:806: undefined reference to `fg_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:806: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:806: undefined reference to `redraw_screen'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_suspended':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2654: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_resumed':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2666: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:2666: undefined reference to `redraw_screen'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_fb_unregistered':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2910: undefined reference to `do_unregister_con_driver'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_remap_all':
-> UM32/../drivers/video/fbdev/core/fbcon.c:2930: undefined reference to `con_is_bound'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_fb_blanked':
-> UM32/../drivers/video/fbdev/core/fbcon.c:3039: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:3044: undefined reference to `con_is_visible'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:3046: undefined reference to `do_blank_screen'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:3048: undefined reference to `do_unblank_screen'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_new_modelist':
-> UM32/../drivers/video/fbdev/core/fbcon.c:3065: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_get_requirement':
-> UM32/../drivers/video/fbdev/core/fbcon.c:3083: undefined reference to `vc_cons'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:3094: undefined reference to `fg_console'
-> x86_64-suse-linux/13/../../../../x86_64-suse-linux/bin/ld: UM32/../drivers/video/fbdev/core/fbcon.c:3094: undefined reference to `vc_cons'
-> 
-> Full randconfig file is attached.
+This fixes build errors when CONFIG_SOUND is not set:
 
+ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_cleanup_module':
+hostaudio_kern.c:(.exit.text+0xa): undefined reference to `unregister_sound_mixer'
+ld: hostaudio_kern.c:(.exit.text+0x15): undefined reference to `unregister_sound_dsp'
+ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_init_module':
+hostaudio_kern.c:(.init.text+0x19): undefined reference to `register_sound_dsp'
+ld: hostaudio_kern.c:(.init.text+0x31): undefined reference to `register_sound_mixer'
+ld: hostaudio_kern.c:(.init.text+0x49): undefined reference to `unregister_sound_dsp'
 
-Sorry, I missed these kconfig warnings:
+and this kconfig warning:
+WARNING: unmet direct dependencies detected for SOUND
 
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Fixes: d886e87cb82b ("sound: make OSS sound core optional")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Link: lore.kernel.org/r/202307141416.vxuRVpFv-lkp@intel.com
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-um@lists.infradead.org
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Nicolas Schier <nicolas@fjasle.eu>
+Cc: linux-kbuild@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
+---
+v2: don't delete the HOSTAUDIO Kconfig entry (Masahiro)
+v3: drop HOSTAUDIO and use CONFIG_UML_SOUND for it in Makefile (Takashi);
+    add SOUND depends on "|| UML" to HAS_IOMEM
 
-WARNING: unmet direct dependencies detected for FRAMEBUFFER_CONSOLE
-  Depends on [n]: VT [=n] && FB_CORE [=y] && !UML [=y]
-  Selected by [y]:
-  - DRM_FBDEV_EMULATION [=y] && HAS_IOMEM [=y] && DRM [=y] && !EXPERT [=n]
+ arch/um/drivers/Kconfig  |   14 ++------------
+ arch/um/drivers/Makefile |    2 +-
+ sound/Kconfig            |    2 +-
+ 3 files changed, 4 insertions(+), 14 deletions(-)
 
-WARNING: unmet direct dependencies detected for FRAMEBUFFER_CONSOLE_DETECT_PRIMARY
-  Depends on [n]: VT [=n] && FRAMEBUFFER_CONSOLE [=y]
-  Selected by [y]:
-  - DRM_FBDEV_EMULATION [=y] && HAS_IOMEM [=y] && DRM [=y] && FRAMEBUFFER_CONSOLE [=y]
-
-WARNING: unmet direct dependencies detected for FONT_8x16
-  Depends on [n]: FONT_SUPPORT [=n]
-  Selected by [y]:
-  - FB_VT8623 [=y] && HAS_IOMEM [=y] && FB [=y] && PCI [=y] && FRAMEBUFFER_CONSOLE [=y]
-  - FB_ARK [=y] && HAS_IOMEM [=y] && FB [=y] && PCI [=y] && FRAMEBUFFER_CONSOLE [=y]
-
-WARNING: unmet direct dependencies detected for FRAMEBUFFER_CONSOLE
-  Depends on [n]: VT [=n] && FB_CORE [=y] && !UML [=y]
-  Selected by [y]:
-  - DRM_FBDEV_EMULATION [=y] && HAS_IOMEM [=y] && DRM [=y] && !EXPERT [=n]
-
-WARNING: unmet direct dependencies detected for FRAMEBUFFER_CONSOLE_DETECT_PRIMARY
-  Depends on [n]: VT [=n] && FRAMEBUFFER_CONSOLE [=y]
-  Selected by [y]:
-  - DRM_FBDEV_EMULATION [=y] && HAS_IOMEM [=y] && DRM [=y] && FRAMEBUFFER_CONSOLE [=y]
-
-WARNING: unmet direct dependencies detected for FONT_8x16
-  Depends on [n]: FONT_SUPPORT [=n]
-  Selected by [y]:
-  - FB_VT8623 [=y] && HAS_IOMEM [=y] && FB [=y] && PCI [=y] && FRAMEBUFFER_CONSOLE [=y]
-  - FB_ARK [=y] && HAS_IOMEM [=y] && FB [=y] && PCI [=y] && FRAMEBUFFER_CONSOLE [=y]
-
-WARNING: unmet direct dependencies detected for FRAMEBUFFER_CONSOLE
-  Depends on [n]: VT [=n] && FB_CORE [=y] && !UML [=y]
-  Selected by [y]:
-  - DRM_FBDEV_EMULATION [=y] && HAS_IOMEM [=y] && DRM [=y] && !EXPERT [=n]
-
-WARNING: unmet direct dependencies detected for FRAMEBUFFER_CONSOLE_DETECT_PRIMARY
-  Depends on [n]: VT [=n] && FRAMEBUFFER_CONSOLE [=y]
-  Selected by [y]:
-  - DRM_FBDEV_EMULATION [=y] && HAS_IOMEM [=y] && DRM [=y] && FRAMEBUFFER_CONSOLE [=y]
-
-WARNING: unmet direct dependencies detected for FONT_8x16
-  Depends on [n]: FONT_SUPPORT [=n]
-  Selected by [y]:
-  - FB_VT8623 [=y] && HAS_IOMEM [=y] && FB [=y] && PCI [=y] && FRAMEBUFFER_CONSOLE [=y]
-  - FB_ARK [=y] && HAS_IOMEM [=y] && FB [=y] && PCI [=y] && FRAMEBUFFER_CONSOLE [=y]
-
-
--- 
-~Randy
+diff -- a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
+--- a/arch/um/drivers/Kconfig
++++ b/arch/um/drivers/Kconfig
+@@ -111,24 +111,14 @@ config SSL_CHAN
+ 
+ config UML_SOUND
+ 	tristate "Sound support"
++	select SOUND
++	select SOUND_OSS_CORE
+ 	help
+ 	  This option enables UML sound support.  If enabled, it will pull in
+ 	  soundcore and the UML hostaudio relay, which acts as a intermediary
+ 	  between the host's dsp and mixer devices and the UML sound system.
+ 	  It is safe to say 'Y' here.
+ 
+-config SOUND
+-	tristate
+-	default UML_SOUND
+-
+-config SOUND_OSS_CORE
+-	bool
+-	default UML_SOUND
+-
+-config HOSTAUDIO
+-	tristate
+-	default UML_SOUND
+-
+ endmenu
+ 
+ menu "UML Network Devices"
+diff -- a/sound/Kconfig b/sound/Kconfig
+--- a/sound/Kconfig
++++ b/sound/Kconfig
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ menuconfig SOUND
+ 	tristate "Sound card support"
+-	depends on HAS_IOMEM
++	depends on HAS_IOMEM || UML
+ 	help
+ 	  If you have a sound card in your computer, i.e. if it can say more
+ 	  than an occasional beep, say Y.
+diff -- a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
+--- a/arch/um/drivers/Makefile
++++ b/arch/um/drivers/Makefile
+@@ -54,7 +54,7 @@ obj-$(CONFIG_UML_NET) += net.o
+ obj-$(CONFIG_MCONSOLE) += mconsole.o
+ obj-$(CONFIG_MMAPPER) += mmapper_kern.o 
+ obj-$(CONFIG_BLK_DEV_UBD) += ubd.o 
+-obj-$(CONFIG_HOSTAUDIO) += hostaudio.o
++obj-$(CONFIG_UML_SOUND) += hostaudio.o
+ obj-$(CONFIG_NULL_CHAN) += null.o 
+ obj-$(CONFIG_PORT_CHAN) += port.o
+ obj-$(CONFIG_PTY_CHAN) += pty.o
 
 _______________________________________________
 linux-um mailing list
