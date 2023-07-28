@@ -4,38 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9026C001DF
-	for <linux-um@archiver.kernel.org>; Fri, 28 Jul 2023 04:30:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08316C41513
+	for <linux-um@archiver.kernel.org>; Fri, 28 Jul 2023 06:40:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=5bBMzcdfHl5wU2Bd6a246vnslFUXcXpkYYYcwW7a6NU=; b=EEq17fWKvIK+zI
-	KQssP3xQRtopvKxMCEhTla/KIhPFanP+aUlTo6VQdrj7egt5QvCtVVr6UtfLNp23crJA9molTeord
-	4K/CpaEVPNG6GSQFfSD8D1uEhdI2URdDVUg60STuSeRYBEQPySbllMU73BD0FKYPG4tnZv41AiTQ6
-	1mqvvCpSVutl921GrfzFA8UmGfcHzQLNbyu9NW1ViUUXAJm93ZOzeTD1hHHhgJEmJBDD3hTZtFnKG
-	lQDGuNTbFG9X7xgfzNR6q8ptUSoc3kH74E3JceS4FHKzVYiuoOhPFh72cRBcDryoyhbWsdwhlXMqB
-	0BR07BvZPfIfd0LqYOEQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Subject:Cc:To:From:Message-ID:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=fbhabf2C16BmR+QxQkYKkgkVfgBtS6CLmEb5/3TklHc=; b=qrUzZk1wcOgaK4
+	E0xNxCGOvrgdjRA2EZG7EojWUxz6UsEEsrIzQapPsfGsidqs+nvJBt+PYywL9wsrAPHX+Emdj7J41
+	7//kS49Jbgd1hRYtXHcU0oUlw03SRouAnHGkWWduCtoBBDg5IY6jWF12HZRjsG7J4E1/fas9TZ2iz
+	mVwGnxFDZj9DVWjfAK9n8J9NjYymzG1bSrOcGOA0fEfDoDDT/n2QT0sf2sNfmLt73sqdVD8+GJW01
+	7BNRLDbbqNsV6OjvSsvBZinN1D4pO8bz3H9DTSuk97WWn3j91TkZfM8BdZCNSXi2511o78kRBugRK
+	Qer9MQsSj4bN8ABIAFuQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qPF7U-001aVf-0s;
-	Fri, 28 Jul 2023 04:30:28 +0000
-Received: from [2601:1c2:980:9ec0::2764] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1qPF7G-001aUX-2x;
-	Fri, 28 Jul 2023 04:30:14 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
+	id 1qPH9B-001v1l-0D;
+	Fri, 28 Jul 2023 06:40:21 +0000
+Received: from smtp-out1.suse.de ([195.135.220.28])
+	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1qPH98-001v0I-02
+	for linux-um@lists.infradead.org;
+	Fri, 28 Jul 2023 06:40:19 +0000
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id EB07721A20;
+	Fri, 28 Jul 2023 06:40:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1690526413; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XlKgVuBwxhBrU+hJz3skBfkXqX/gjlpigbuPenxR+bc=;
+	b=eBpRklMf4kgW3llIiRyhrQExSIw1EJ8BDlWkHRseOATFi/5nhpNeNB2sNrMaZ3Zo1WtwKt
+	gtfN8bEJUHdri7VSAX9P7vkEcxfcTbInPnzfrz7B0D97SMZ3TuuKvn32u5HWUqPRJd+J5D
+	PlMx4gEuNmSj2wvrx1u/QMknhzhZGnU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1690526413;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XlKgVuBwxhBrU+hJz3skBfkXqX/gjlpigbuPenxR+bc=;
+	b=R1b0Ocgu31yF3wBLbFHlfoCbniug7+w05J6NxZE3jfL/mRtBH2LyQOXVz/FLfS+J5dZrgC
+	3CC9RIYLgyf1icAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+	(No client certificate requested)
+	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9A7EA133F7;
+	Fri, 28 Jul 2023 06:40:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+	by imap2.suse-dmz.suse.de with ESMTPSA
+	id n5WvJM1iw2RzMgAAMHmgww
+	(envelope-from <tiwai@suse.de>); Fri, 28 Jul 2023 06:40:13 +0000
+Date: Fri, 28 Jul 2023 08:40:13 +0200
+Message-ID: <871qgs4jzm.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-kernel@vger.kernel.org,
 	kernel test robot <lkp@intel.com>,
 	Richard Weinberger <richard@nod.at>,
 	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
 	Johannes Berg <johannes@sipsolutions.net>,
 	linux-um@lists.infradead.org,
 	Tejun Heo <tj@kernel.org>,
-	Takashi Iwai <tiwai@suse.de>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Masahiro Yamada <masahiroy@kernel.org>,
 	Nathan Chancellor <nathan@kernel.org>,
@@ -43,11 +77,14 @@ Cc: Randy Dunlap <rdunlap@infradead.org>,
 	Nicolas Schier <nicolas@fjasle.eu>,
 	linux-kbuild@vger.kernel.org,
 	alsa-devel@alsa-project.org
-Subject: [PATCH v3] um/drivers: fix hostaudio build errors
-Date: Thu, 27 Jul 2023 21:30:13 -0700
-Message-ID: <20230728043013.27776-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.41.0
-MIME-Version: 1.0
+Subject: Re: [PATCH v3] um/drivers: fix hostaudio build errors
+In-Reply-To: <20230728043013.27776-1-rdunlap@infradead.org>
+References: <20230728043013.27776-1-rdunlap@infradead.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20230727_234018_218520_71F13AE8 
+X-CRM114-Status: GOOD (  16.90  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,110 +101,60 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Use "select"s to ensure that the required kconfig symbols are set
-as expected.
-Drop HOSTAUDIO since it is now equivalent to UML_SOUND.
+On Fri, 28 Jul 2023 06:30:13 +0200,
+Randy Dunlap wrote:
+> 
+> Use "select"s to ensure that the required kconfig symbols are set
+> as expected.
+> Drop HOSTAUDIO since it is now equivalent to UML_SOUND.
+> 
+> Allow SOUND with UML regardless of HAS_IOMEM. Otherwise there is a
+> kconfig warning for unmet dependencies. (This was not an issue when
+> SOUND was defined in arch/um/drivers/Kconfig. I have done 50 randconfig
+> builds and didn't find any issues.)
+> 
+> This fixes build errors when CONFIG_SOUND is not set:
+> 
+> ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_cleanup_module':
+> hostaudio_kern.c:(.exit.text+0xa): undefined reference to `unregister_sound_mixer'
+> ld: hostaudio_kern.c:(.exit.text+0x15): undefined reference to `unregister_sound_dsp'
+> ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_init_module':
+> hostaudio_kern.c:(.init.text+0x19): undefined reference to `register_sound_dsp'
+> ld: hostaudio_kern.c:(.init.text+0x31): undefined reference to `register_sound_mixer'
+> ld: hostaudio_kern.c:(.init.text+0x49): undefined reference to `unregister_sound_dsp'
+> 
+> and this kconfig warning:
+> WARNING: unmet direct dependencies detected for SOUND
+> 
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Fixes: d886e87cb82b ("sound: make OSS sound core optional")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Link: lore.kernel.org/r/202307141416.vxuRVpFv-lkp@intel.com
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> Cc: Johannes Berg <johannes@sipsolutions.net>
+> Cc: linux-um@lists.infradead.org
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Takashi Iwai <tiwai@suse.de>
+> Cc: Jaroslav Kysela <perex@perex.cz>
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Cc: Nathan Chancellor <nathan@kernel.org>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: Nicolas Schier <nicolas@fjasle.eu>
+> Cc: linux-kbuild@vger.kernel.org
+> Cc: alsa-devel@alsa-project.org
 
-Allow SOUND with UML regardless of HAS_IOMEM. Otherwise there is a
-kconfig warning for unmet dependencies. (This was not an issue when
-SOUND was defined in arch/um/drivers/Kconfig. I have done 50 randconfig
-builds and didn't find any issues.)
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
 
-This fixes build errors when CONFIG_SOUND is not set:
 
-ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_cleanup_module':
-hostaudio_kern.c:(.exit.text+0xa): undefined reference to `unregister_sound_mixer'
-ld: hostaudio_kern.c:(.exit.text+0x15): undefined reference to `unregister_sound_dsp'
-ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_init_module':
-hostaudio_kern.c:(.init.text+0x19): undefined reference to `register_sound_dsp'
-ld: hostaudio_kern.c:(.init.text+0x31): undefined reference to `register_sound_mixer'
-ld: hostaudio_kern.c:(.init.text+0x49): undefined reference to `unregister_sound_dsp'
+I'm not sure who should take it.  If it's preferred through sound.git
+tree, let me know.
 
-and this kconfig warning:
-WARNING: unmet direct dependencies detected for SOUND
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Fixes: d886e87cb82b ("sound: make OSS sound core optional")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Link: lore.kernel.org/r/202307141416.vxuRVpFv-lkp@intel.com
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-um@lists.infradead.org
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Nicolas Schier <nicolas@fjasle.eu>
-Cc: linux-kbuild@vger.kernel.org
-Cc: alsa-devel@alsa-project.org
----
-v2: don't delete the HOSTAUDIO Kconfig entry (Masahiro)
-v3: drop HOSTAUDIO and use CONFIG_UML_SOUND for it in Makefile (Takashi);
-    add SOUND depends on "|| UML" to HAS_IOMEM
+thanks,
 
- arch/um/drivers/Kconfig  |   14 ++------------
- arch/um/drivers/Makefile |    2 +-
- sound/Kconfig            |    2 +-
- 3 files changed, 4 insertions(+), 14 deletions(-)
-
-diff -- a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
---- a/arch/um/drivers/Kconfig
-+++ b/arch/um/drivers/Kconfig
-@@ -111,24 +111,14 @@ config SSL_CHAN
- 
- config UML_SOUND
- 	tristate "Sound support"
-+	select SOUND
-+	select SOUND_OSS_CORE
- 	help
- 	  This option enables UML sound support.  If enabled, it will pull in
- 	  soundcore and the UML hostaudio relay, which acts as a intermediary
- 	  between the host's dsp and mixer devices and the UML sound system.
- 	  It is safe to say 'Y' here.
- 
--config SOUND
--	tristate
--	default UML_SOUND
--
--config SOUND_OSS_CORE
--	bool
--	default UML_SOUND
--
--config HOSTAUDIO
--	tristate
--	default UML_SOUND
--
- endmenu
- 
- menu "UML Network Devices"
-diff -- a/sound/Kconfig b/sound/Kconfig
---- a/sound/Kconfig
-+++ b/sound/Kconfig
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- menuconfig SOUND
- 	tristate "Sound card support"
--	depends on HAS_IOMEM
-+	depends on HAS_IOMEM || UML
- 	help
- 	  If you have a sound card in your computer, i.e. if it can say more
- 	  than an occasional beep, say Y.
-diff -- a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
---- a/arch/um/drivers/Makefile
-+++ b/arch/um/drivers/Makefile
-@@ -54,7 +54,7 @@ obj-$(CONFIG_UML_NET) += net.o
- obj-$(CONFIG_MCONSOLE) += mconsole.o
- obj-$(CONFIG_MMAPPER) += mmapper_kern.o 
- obj-$(CONFIG_BLK_DEV_UBD) += ubd.o 
--obj-$(CONFIG_HOSTAUDIO) += hostaudio.o
-+obj-$(CONFIG_UML_SOUND) += hostaudio.o
- obj-$(CONFIG_NULL_CHAN) += null.o 
- obj-$(CONFIG_PORT_CHAN) += port.o
- obj-$(CONFIG_PTY_CHAN) += pty.o
+Takashi
 
 _______________________________________________
 linux-um mailing list
