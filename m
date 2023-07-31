@@ -4,73 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83ACEC001DE
-	for <linux-um@archiver.kernel.org>; Mon, 31 Jul 2023 05:28:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54C73C001DC
+	for <linux-um@archiver.kernel.org>; Mon, 31 Jul 2023 17:03:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=HyeUx8hrC6DL89E3mv0EL1aLkeLcMf1wL0OFoFrqFwg=; b=bWnLqKocwV6raL2kpL7DLpDJJP
-	xAu1lKSpyaHCAeo4+z1LaoP2HQQKUyXR0PQKmMSY/VDdA7XmgXnbV08D6u11xMir5xaBOTT17+i7E
-	S4QgXrIJlpG15VRD5pEnOTJm7lXtj/ySsIhbgBgd1Ma6prA+GSVh9kBLVffsz/CYy1zKIW9wDmRxb
-	TbCeG9SKQ4699MWmyjT5sC1HwlrBD2xKMreDxWmw9/l3Hab0IacJse0pLpPdMJW7SMtq1kxCFBf1T
-	3oMfkNg1tsUcOD3BH5RzTbbifb88bEo8skHcd7P2w96Qh/0+EiUuGqLJoh36xy1l8Tsh/b1drfU86
-	H2pNCsOQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=olKfo7xE+YV0i6UWWvZ+K2mQQuYfhiyJLYOYKjCJLvI=; b=G9JC37VUb/lhCD
+	j84RduQUN+y4GqGWenJPG0SZdh2RLd4SSGKb61+Ax5bVUsZZ/l7GJG1d6ekm+e0NIIBPj1m9rgrXK
+	l9J17z/2QwYMclrEkGhXsrUioZgRrHrqmLy0qj2IkFZ7LgSh1dWA7ZyH4kdPTx9PWaMl6nKU+he+Y
+	Hle5mgnip0pvUXsb6C9OjsCLZGoIoqn69/GtWYP6P+2c8/AlX6QxSVmSmYuoSYtqy2m39oMLxkvM6
+	sAfzYVlFZCpkSjcbD4nmBYlq75q0DgA2G1nvHeronvaAT2FyCEzv3nDy20fpVt1Z3dSwuQaqC7X2B
+	voweu83je86L1LKklh2g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qQLRv-00DyTJ-2H;
-	Mon, 31 Jul 2023 05:28:07 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1qQWJ6-00GjxW-0F;
+	Mon, 31 Jul 2023 17:03:44 +0000
+Received: from mail-yb1-xb2d.google.com ([2607:f8b0:4864:20::b2d])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qQLRs-00DyRu-1d
-	for linux-um@lists.infradead.org;
-	Mon, 31 Jul 2023 05:28:06 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 83FD563577C9;
-	Mon, 31 Jul 2023 07:27:55 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id G9JFjYMLxIRN; Mon, 31 Jul 2023 07:27:54 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 550AC63577D4;
-	Mon, 31 Jul 2023 07:27:54 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id nipuTvMz7oy1; Mon, 31 Jul 2023 07:27:54 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 2B97763577C9;
-	Mon, 31 Jul 2023 07:27:54 +0200 (CEST)
-Date: Mon, 31 Jul 2023 07:27:54 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: masahiroy <masahiroy@kernel.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, 
-	kernel test robot <lkp@intel.com>, 
-	anton ivanov <anton.ivanov@cambridgegreys.com>, 
-	Johannes Berg <johannes@sipsolutions.net>, 
-	linux-um <linux-um@lists.infradead.org>, tj <tj@kernel.org>, 
-	Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, 
-	Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, 
-	Nicolas Schier <nicolas@fjasle.eu>, 
-	linux-kbuild <linux-kbuild@vger.kernel.org>, 
-	alsa-devel <alsa-devel@alsa-project.org>
-Message-ID: <1063472755.889096.1690781274039.JavaMail.zimbra@nod.at>
-In-Reply-To: <3cd0e5b7-7e20-ce3b-e391-eb77443f63b1@infradead.org>
-References: <20230728043013.27776-1-rdunlap@infradead.org> <CAK7LNAR4BkAKhZZ8+Zybed3Jm3omxzzdgus-Nqj-9MjWAeSmiA@mail.gmail.com> <3cd0e5b7-7e20-ce3b-e391-eb77443f63b1@infradead.org>
-Subject: Re: [PATCH v3] um/drivers: fix hostaudio build errors
+	id 1qQWJ2-00GjuU-0x;
+	Mon, 31 Jul 2023 17:03:41 +0000
+Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d066d72eb12so6697961276.1;
+        Mon, 31 Jul 2023 10:03:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690823018; x=1691427818;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ryTLkHDnIGhrwoqJrwF4w+CKAk7Or3iQY3ycYEnzI1s=;
+        b=FItEz4g6fK8MUe9in0y5zvq54vvv6vRus4MvaXB5z0kFF5Wd4GxyLG45TIMFtswPBZ
+         o5hWJRASIfXbLHcyuajDu2shNzEC3fqz1lq+2UGzWjNRBxNrOGPJc7+FeZHb270T76uP
+         DVP8E3UCWoa73Cj1cemt4q3bHNezkBDrcXpoGHgWYyrjCA03wHK6cuEEIp3IlP9F3vH7
+         B0WVEfhX/KMZdz2qP55P02W/l5cO6EeJ2/dVRRpuTUrHoGO/LbskVtPeDS55S32mzgKs
+         4t8PJ/VzqvancbDUNXdKozgYa+ZBjOr6Csg18HLyiAYJhBTxnGsnAH6C4GyD3p+69e1s
+         v6hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690823018; x=1691427818;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ryTLkHDnIGhrwoqJrwF4w+CKAk7Or3iQY3ycYEnzI1s=;
+        b=E00lKzV7gmRl2s8SVH25AjjsnSco/teqv8CyOhr2BJQbCLVzfzHAJET7ljJPcCRq4P
+         sctY8DUeM/hTjfE2n5TiYL/IAWeqdhzQjybHFjvZcNKrkYZHOFA74EGoJDG2opVHHeT3
+         Bf7r7wh01FYPK5sah/sq3lzhcviDrixYvNd3WZ5dynbbM8DS8TVUnoExjjrPtbdl+TnI
+         INRNCv1IbkI06OidYImgSkiRrxjkjq81jrnJNOjD93kwwUNeoQEDBM/wNaIYNO/Dk8gS
+         eFZGsGbTxgyQ7mn7508sGLDIoUdncQUxQ9tTPbwKbpRYp3uy9aR3mBwKyjOEcsXUxcIk
+         Ayxw==
+X-Gm-Message-State: ABy/qLa+BYpLeKyotqil/+glD45Fmf40UNMzT4enz4uABJ8QD52604CR
+	feQs9d4hN3iea1akEdLSOfs=
+X-Google-Smtp-Source: APBJJlF+dh42RzdYn0EXh+W1YGBDbhVTCkZUXnYcADIxILBW8gkVGvh5Vx2rhlYPGGopBifzCd0Ntg==
+X-Received: by 2002:a25:d1d0:0:b0:d1c:5a9a:48d2 with SMTP id i199-20020a25d1d0000000b00d1c5a9a48d2mr11161535ybg.19.1690823017725;
+        Mon, 31 Jul 2023 10:03:37 -0700 (PDT)
+Received: from unknowna0e70b2ca394.attlocal.net ([2600:1700:2f7d:1800::16])
+        by smtp.googlemail.com with ESMTPSA id x31-20020a25ac9f000000b00c832ad2e2eesm2511833ybi.60.2023.07.31.10.03.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 10:03:37 -0700 (PDT)
+From: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>
+Cc: linux-mm@kvack.org,
+	linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	xen-devel@lists.xenproject.org,
+	kvm@vger.kernel.org,
+	Hugh Dickins <hughd@google.com>,
+	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Jonas Bonn <jonas@southpole.se>,
+	David Hildenbrand <david@redhat.com>,
+	Claudio Imbrenda <imbrenda@linux.ibm.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Richard Weinberger <richard@nod.at>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH mm-unstable v8 00/31] Split ptdesc from struct page
+Date: Mon, 31 Jul 2023 10:03:01 -0700
+Message-Id: <20230731170332.69404-1-vishal.moola@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Topic: um/drivers: fix hostaudio build errors
-Thread-Index: NkqIAPWFcMLKoL0J2Cdhb+WpEEOx+g==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230730_222804_715643_AD716A83 
-X-CRM114-Status: UNSURE (   5.08  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230731_100340_338782_7E37F412 
+X-CRM114-Status: GOOD (  12.36  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,18 +116,112 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIlJhbmR5IER1bmxhcCIgPHJk
-dW5sYXBAaW5mcmFkZWFkLm9yZz4KPiBPaCwgZ29vZCBwb2ludCwgYW5kIG9uZSB0aGF0IEkgYWdy
-ZWUgd2l0aC4KPiAKPiBJJ2xsIHNlbmQgYSB2NC4KCk9rIQogCj4+IAo+PiBSZXZpZXdlZC1ieTog
-TWFzYWhpcm8gWWFtYWRhIDxtYXNhaGlyb3lAa2VybmVsLm9yZz4KPiAKPiBUYWthc2hpLCBJIGRv
-bid0IGtub3cgd2hvIHdpbGwgbWVyZ2UgdGhlIHBhdGNoLCBidXQgSSB3b3VsZCBleHBlY3QKPiB0
-aGF0IG9uZSBvZiB0aGUgVU1MIG1haW50YWluZXJzIHRvIG1lcmdlIGl0Li4uLiBGV0lXLgoKWWVw
-LiBJJ2xsIGNhcnJ5IHRoaXMgZml4ICh2NCkgdGhyb3VnaCB0aGUgdW1sIHRyZWUuCgpUaGFua3Ms
-Ci8vcmljaGFyZAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
+The MM subsystem is trying to shrink struct page. This patchset
+introduces a memory descriptor for page table tracking - struct ptdesc.
+
+This patchset introduces ptdesc, splits ptdesc from struct page, and
+converts many callers of page table constructor/destructors to use ptdescs.
+
+Ptdesc is a foundation to further standardize page tables, and eventually
+allow for dynamic allocation of page tables independent of struct page.
+However, the use of pages for page table tracking is quite deeply
+ingrained and varied across archictectures, so there is still a lot of
+work to be done before that can happen.
+
+This is rebased on mm-unstable.
+
+v8:
+  Fix some compiler issues
+
+v7:
+  Drop s390 gmap ptdesc conversions - gmap is unecessary complication
+    that can be dealt with later
+  Be more thorough with ptdesc struct sanity checks and comments
+  Rebase onto mm-unstable
+
+Vishal Moola (Oracle) (31):
+  mm: Add PAGE_TYPE_OP folio functions
+  pgtable: Create struct ptdesc
+  mm: add utility functions for ptdesc
+  mm: Convert pmd_pgtable_page() callers to use pmd_ptdesc()
+  mm: Convert ptlock_alloc() to use ptdescs
+  mm: Convert ptlock_ptr() to use ptdescs
+  mm: Convert pmd_ptlock_init() to use ptdescs
+  mm: Convert ptlock_init() to use ptdescs
+  mm: Convert pmd_ptlock_free() to use ptdescs
+  mm: Convert ptlock_free() to use ptdescs
+  mm: Create ptdesc equivalents for pgtable_{pte,pmd}_page_{ctor,dtor}
+  powerpc: Convert various functions to use ptdescs
+  x86: Convert various functions to use ptdescs
+  s390: Convert various pgalloc functions to use ptdescs
+  mm: Remove page table members from struct page
+  pgalloc: Convert various functions to use ptdescs
+  arm: Convert various functions to use ptdescs
+  arm64: Convert various functions to use ptdescs
+  csky: Convert __pte_free_tlb() to use ptdescs
+  hexagon: Convert __pte_free_tlb() to use ptdescs
+  loongarch: Convert various functions to use ptdescs
+  m68k: Convert various functions to use ptdescs
+  mips: Convert various functions to use ptdescs
+  nios2: Convert __pte_free_tlb() to use ptdescs
+  openrisc: Convert __pte_free_tlb() to use ptdescs
+  riscv: Convert alloc_{pmd, pte}_late() to use ptdescs
+  sh: Convert pte_free_tlb() to use ptdescs
+  sparc64: Convert various functions to use ptdescs
+  sparc: Convert pgtable_pte_page_{ctor, dtor}() to ptdesc equivalents
+  um: Convert {pmd, pte}_free_tlb() to use ptdescs
+  mm: Remove pgtable_{pmd, pte}_page_{ctor, dtor}() wrappers
+
+ Documentation/mm/split_page_table_lock.rst    |  12 +-
+ .../zh_CN/mm/split_page_table_lock.rst        |  14 +-
+ arch/arm/include/asm/tlb.h                    |  12 +-
+ arch/arm/mm/mmu.c                             |   7 +-
+ arch/arm64/include/asm/tlb.h                  |  14 +-
+ arch/arm64/mm/mmu.c                           |   7 +-
+ arch/csky/include/asm/pgalloc.h               |   4 +-
+ arch/hexagon/include/asm/pgalloc.h            |   8 +-
+ arch/loongarch/include/asm/pgalloc.h          |  27 ++--
+ arch/loongarch/mm/pgtable.c                   |   7 +-
+ arch/m68k/include/asm/mcf_pgalloc.h           |  47 +++---
+ arch/m68k/include/asm/sun3_pgalloc.h          |   8 +-
+ arch/m68k/mm/motorola.c                       |   4 +-
+ arch/mips/include/asm/pgalloc.h               |  32 ++--
+ arch/mips/mm/pgtable.c                        |   8 +-
+ arch/nios2/include/asm/pgalloc.h              |   8 +-
+ arch/openrisc/include/asm/pgalloc.h           |   8 +-
+ arch/powerpc/mm/book3s64/mmu_context.c        |  10 +-
+ arch/powerpc/mm/book3s64/pgtable.c            |  32 ++--
+ arch/powerpc/mm/pgtable-frag.c                |  58 +++----
+ arch/riscv/include/asm/pgalloc.h              |   8 +-
+ arch/riscv/mm/init.c                          |  16 +-
+ arch/s390/include/asm/pgalloc.h               |   4 +-
+ arch/s390/include/asm/tlb.h                   |   4 +-
+ arch/s390/mm/pgalloc.c                        | 128 +++++++--------
+ arch/sh/include/asm/pgalloc.h                 |   9 +-
+ arch/sparc/mm/init_64.c                       |  17 +-
+ arch/sparc/mm/srmmu.c                         |   5 +-
+ arch/um/include/asm/pgalloc.h                 |  18 +--
+ arch/x86/mm/pgtable.c                         |  47 +++---
+ arch/x86/xen/mmu_pv.c                         |   2 +-
+ include/asm-generic/pgalloc.h                 |  88 +++++-----
+ include/asm-generic/tlb.h                     |  11 ++
+ include/linux/mm.h                            | 151 +++++++++++++-----
+ include/linux/mm_types.h                      |  18 ---
+ include/linux/page-flags.h                    |  30 +++-
+ include/linux/pgtable.h                       |  80 ++++++++++
+ mm/memory.c                                   |   8 +-
+ 38 files changed, 586 insertions(+), 385 deletions(-)
+
+-- 
+2.40.1
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
