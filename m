@@ -4,77 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 849DEC04FDF
-	for <linux-um@archiver.kernel.org>; Tue,  8 Aug 2023 18:24:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BD71C001DB
+	for <linux-um@archiver.kernel.org>; Tue,  8 Aug 2023 21:17:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=sisgXkeQevPIMoZeWOLALmPDJM/hRrFfrUOFnXTBerg=; b=Vz0iAVciP21B5m
-	CzC2/SKnUbaNc6PRB2BJcZxqU68Cx8+WVEDRKrsr8UV36BFz55/zp4jd39Hhg9D05HXE0l2lH/D0w
-	IR6HkMKeVE5/DOA7BbbSO9lzraBsQyQtjnLuScDSeHvHSYrjlwqWutXUlOpmvj/karnzXFKXZlmTT
-	yylBKUdH0t8eYbqktGXn9x4vQVQ9D/F/Fw4KqNAs03srqhFvh0vWx66de1/S4AtzL0esmf5hSJYW0
-	TZc+ZGcNake0kql7DHRoRphMVlrQVnlfsCSyPg8LmJwC9ohcBRN6WqMV1indntv40Dta1b5hy8huX
-	jq3D1eAYyEANkyC+TRfw==;
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:From:Subject:Message-ID:
+	Mime-Version:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Owner; bh=NKD5zbhAyvoyCUkvml76SIs6XngP8kLPBtANDY547lg=; b=dfI
+	xnwF3n//1EKVoLxiAuImlugks0R32iw5hvOrllEGZ8dTRUL0fwshB34G2BzJurHsbXhiu3AU/6rQQ
+	DJLiVR00GKIIO2SFBr51D1YZkXTTFnqmDaqeE4QmM3vGYoYGMQoqTfldXwHlQWziN10O2oL7p/sMV
+	BRnI3Prgq+dWCUQVAekpHP9OzFZNkJGotIQHfZlFV4nW2d2Q9haiiLHMG9TNZOJTA509glBU9yEvP
+	tXkZNqjX3vsUkCeXEgXJh4IOGuxJqdquySMBYMOaPfGL2MJvFaS7TThjNLoodcdzvg2loU0klrjR6
+	QwTbzkBTgvqVFFHGlt9iMRtynAoUxQA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTRNG-003DbE-20;
-	Tue, 08 Aug 2023 18:24:06 +0000
-Received: from mail-qv1-xf34.google.com ([2607:f8b0:4864:20::f34])
+	id 1qTU5K-003Uv9-0X;
+	Tue, 08 Aug 2023 21:17:46 +0000
+Received: from mail-yb1-xb4a.google.com ([2607:f8b0:4864:20::b4a])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qTRND-003Dai-2S
+	id 1qTU5H-003UuH-0K
 	for linux-um@lists.infradead.org;
-	Tue, 08 Aug 2023 18:24:05 +0000
-Received: by mail-qv1-xf34.google.com with SMTP id 6a1803df08f44-63f4f75b3a7so34451246d6.2
-        for <linux-um@lists.infradead.org>; Tue, 08 Aug 2023 11:24:02 -0700 (PDT)
+	Tue, 08 Aug 2023 21:17:44 +0000
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d437624b9c1so5142550276.0
+        for <linux-um@lists.infradead.org>; Tue, 08 Aug 2023 14:17:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691519041; x=1692123841;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SuHu2aaGBtXDGm6ZbqKeYvS7JNps7v7hBHb8nXUWyCA=;
-        b=Szm+Vlx1Tmywbd71ISdGfvHzo0S11pvxk8Zu8eH5AWgDVpVmjOfx9T2c/S7v9DhvRs
-         SVXeLVpS4LFejNPELELQsdXNFG3tqCy5u/IcY9VGm7ltFF/7Vgp3uc2y+dHfwx/XqGQ2
-         nyFbRp7LsFY2cYdWXCCJcG3UzplEGvdj86LimvE/TFAArOnUMZuFlGfKs9voq3fxRew/
-         Cdvbw0HwOsexbyJuW8dj4gf1S6ae8FY/Hqq3t7A18oz8ltfyxp32MHDoFE1gaHt7upqZ
-         cy2N5fqsx68LfVRUZCJX9Gf/hivW5Y17MUJ9aRcSEnxmHGAmt6kXHSftBagzVSxwEP4t
-         O8gg==
+        d=google.com; s=20221208; t=1691529458; x=1692134258;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=3FDxtd5TTI0yB6OcEaflPtTwnfjpX0FPpXrLyaUzpnI=;
+        b=ym9wbg9V5cG40hCkLxqz65tC4ED2P5AeQdHne3t/UygEjzZr8/a5m8SwO/AKizXomx
+         u8fEjD+U7gQowx2Dzh3O8+5wk3+PNe7gLkjAJevXZ83D5L8qAAo1cTMY/xAm2FCva8Uo
+         lbE0sLMOv4JtHE0YJU0tm49XmoGTvbj9P5GejXYtzRdmdWTFMl8J4dkbFKPaogpQoiER
+         4M7ck4LYlq5wCT989oZGduI+9Gx1DkTpCRIQQwzp5P3YARB34JJpq8lPHe9TEaOgr2F/
+         xvcUIK3cM/5fqej6ththcBfzqr0IbuQZnZCPkRH12fbhzkri0s6VksUok8wtQMbszUG9
+         vFWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691519041; x=1692123841;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SuHu2aaGBtXDGm6ZbqKeYvS7JNps7v7hBHb8nXUWyCA=;
-        b=QcCvMS9lyn4aeAnEktPKwf7OM6+zsf1v6OGq1QGv5RHyU6XHaD2w4j1pRDHhVZYxZC
-         WFUlVhJUouTwpZMIA2wC2Nc7LpBEkaWBPMcH1jFOSJVcbL/7tQ5ZMrSRCVhA2J+aJBNw
-         hZfJlEFdNJzfBI5/pES0boN0yRvFJgxTD5qHdilPTrjt9WjXPLT2vpOsspnlyPypD/io
-         2FyO/r5RzqeIZycIASK4qDfupgAFn7bnDPMU7/Thv1fkU/YMGXGAW3YkUNBEwsHm/isp
-         5T6cQ2NGlFHo3klB2mPii1qhliq8897hfP94p/T5WelSdYuNF/svN7aqaxLkg3lXHA6p
-         FCUA==
-X-Gm-Message-State: AOJu0YzRGZa94fSOQotJSStZP6F6u5jxlIcSPJxVsAgyQtkNPiMdvj0t
-	e+2ur8qCpdvBfqWfXwbf8zt4jVN3siR00tN3pM2yFqFPX7V/msvKU8A=
-X-Google-Smtp-Source: AGHT+IEuGYfM7Ti1gjPOBrG90iQRTcKJFDV2Zy0ZEcRXgZXpwwv/qmU8lNj+mqkZvmlZCUr5ZljsFeJuq0iBxNf/iao=
-X-Received: by 2002:a0c:aa94:0:b0:636:14d4:445b with SMTP id
- f20-20020a0caa94000000b0063614d4445bmr215145qvb.9.1691519041270; Tue, 08 Aug
- 2023 11:24:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAKwvOd=KCT-aqcWctRPVhEoOjkjP+y5TpNK1hV9mq6PuZDvApQ@mail.gmail.com>
- <CAK7LNASVZLYh1PZ_0QqVEfopGHUKq8fCVDmpKDZfODzgspPXEQ@mail.gmail.com>
-In-Reply-To: <CAK7LNASVZLYh1PZ_0QqVEfopGHUKq8fCVDmpKDZfODzgspPXEQ@mail.gmail.com>
-From: Nick Desaulniers <ndesaulniers@google.com>
-Date: Tue, 8 Aug 2023 11:23:50 -0700
-Message-ID: <CAKwvOdno6=XZsAfDpUMgoBtE2kOM+fiO_KOEbkfYMPi1hg+2HA@mail.gmail.com>
-Subject: Re: missing separator. Stop. after rebuild
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, 
-	Nathan Chancellor <nathan@kernel.org>, Richard Weinberger <richard@nod.at>, 
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
-	linux-um@lists.infradead.org
+        d=1e100.net; s=20221208; t=1691529458; x=1692134258;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3FDxtd5TTI0yB6OcEaflPtTwnfjpX0FPpXrLyaUzpnI=;
+        b=jam2SeTv35ZJTTL6+RJ+U1UstIrIvoFIAurm0mBJf6f13DI47fF2kAyLBqGmzfWaDH
+         Ccq4EkGaa+PBNOTs/ne//vLHIPDVVP2Wzf3/NphKa/8OiyifJa8O4Ai0foRE/1K8f7Yq
+         oMrYi+Q7+t+Qtd3ZKPhsCMwgug17RPwA0RPDo4oAudig5oiPciX6WW3uoQeZ3yuErfd5
+         KrzPOKSkB/1h+oPxwNA0P/DthGzdDk3uvAZW9Re/UjnYpYQfw/SMvB1DaC465Hd5oTbG
+         Hn0LUmFS+vS92twO5p5WXm35RStHcAyuiSuLXZsmM9+6fFEKPTSERSoiuZx8WHtOjN9t
+         KwWg==
+X-Gm-Message-State: AOJu0YzKooD8PL2GVRC7WREfhRQlhMx2o1A/j4WtA5sP4NABYsD5UHoW
+	ubwiSYSKKjr5JcYwNbbnHlJD91sYQX6fxuFlLg==
+X-Google-Smtp-Source: AGHT+IHRpFBahWyCsqDq2Jymqy4KmoaI/LjbwJfXSlsnxSeNP0O276Z+TuKwYj/2pYJWPJENuDtYuJ/tH9GWqqAQXw==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a25:e78e:0:b0:d0a:86fc:536c with SMTP
+ id e136-20020a25e78e000000b00d0a86fc536cmr15189ybh.2.1691529457883; Tue, 08
+ Aug 2023 14:17:37 -0700 (PDT)
+Date: Tue, 08 Aug 2023 21:17:35 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAO6w0mQC/2XMSw7CIBSF4a00dyyGl9I6ch+mg0Ivj8QWA0o0D
+ XsXO3X4n5x8G2RMATNcug0SlpBDXFvwQwfGT6tDEubWwCkXtKeKTMl48lqIQMulZEJyhdDej4Q 2vHfpNrb2IT9j+uxwYb/13yiMMNKfZ62tPg2KDlcXo7vj0cQFxlrrFxsjY9GfAAAA
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1691529456; l=1882;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=tgWFws4763lrVU2WbDNesL8iVYR+q5vLBUC0Li+5Ak0=; b=vgzwPI9m0aHfamLtzCxThUgHXsLWmmm/NJ8qfrQFiLO/W00KK2zwHm+9PrMop2SNbVKZcF4s5
+ FZtwZaG/Ic9CA3qj/qsfoXSdwko4/YOOl7N7PSyX01aDoDWnVNxCuru
+X-Mailer: b4 0.12.3
+Message-ID: <20230808-arch-um-v2-1-5fbe76eaf853@google.com>
+Subject: [PATCH v2] um: refactor deprecated strncpy to strtomem
+From: Justin Stitt <justinstitt@google.com>
+To: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-hardening@vger.kernel.org, linux-um@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>, 
+	Justin Stitt <justinstitt@google.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230808_112403_802321_419A2965 
-X-CRM114-Status: GOOD (  15.93  )
+X-CRM114-CacheID: sfid-20230808_141743_146089_06DB1C77 
+X-CRM114-Status: GOOD (  11.63  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,36 +90,70 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-T24gVHVlLCBBdWcgOCwgMjAyMyBhdCAxMTowMuKAr0FNIE1hc2FoaXJvIFlhbWFkYSA8bWFzYWhp
-cm95QGtlcm5lbC5vcmc+IHdyb3RlOgo+Cj4gT24gV2VkLCBBdWcgOSwgMjAyMyBhdCAyOjMx4oCv
-QU0gTmljayBEZXNhdWxuaWVycyA8bmRlc2F1bG5pZXJzQGdvb2dsZS5jb20+IHdyb3RlOgo+ID4K
-PiA+ICQgd2dldCBodHRwczovL2Rvd25sb2FkLjAxLm9yZy8wZGF5LWNpL2FyY2hpdmUvMjAyMzA4
-MDgvMjAyMzA4MDgxMDUwLnNaRXc0Y1E1LWxrcEBpbnRlbC5jb20vY29uZmlnCj4gPiAtTyAuY29u
-ZmlnCj4gPiAkIG1ha2UgTExWTT0xIEFSQ0g9dW0gLWoxMjggYXJjaC91bS9kcml2ZXJzL3BvcnRf
-a2Vybi5vCj4gPiAkIG1ha2UgTExWTT0xIEFSQ0g9dW0gLWoxMjggYXJjaC91bS9kcml2ZXJzL3Bv
-cnRfa2Vybi5vCj4gPiBhcmNoL3VtL2RyaXZlcnMvLmhvc3RhdWRpb19rZXJuLm8uY21kOjg0Mzog
-KioqIG1pc3Npbmcgc2VwYXJhdG9yLiAgU3RvcC4KPiA+ICQgc2VkIC1uIC1lIDg0MnAgLWUgODQz
-cCBhcmNoL3VtL2RyaXZlcnMvLmhvc3RhdWRpb19rZXJuLm8uY21kCj4gPiAkKGRlcHNfYXJjaC91
-bS9kcml2ZXJzL2hvc3RhdWRpb19rZXJuLm8pOgo+ID4gbykKPiA+Cj4gPiBBbnkgaWRlYSBpZiB0
-aGlzIGlzIHNvbWUgZm9ybSBvZiBtYWxmb3JtZWQgTWFrZWZpbGUgcnVsZSwgb3IgYWN0dWFsbHkK
-PiA+IGEgY29tcGlsZXIgYnVnIGdlbmVyYXRpbmcgdGhlc2UgLmNtZCBmaWxlcz8KPgo+Cj4gUHJl
-c3VtYWJseSwgdGhpcyBpcyB0aGUgc2FtZSBzeW1wdG9tIGFzIEppcmkgU2xhYnkgcmVwb3J0ZWQK
-PiBzb21lIHRpbWUgYWdvLgo+Cj4gSWYgeW91IHJ1biBhIHNpbmdsZSBidWlsZCBmb3IgYXJjaC91
-bS9kcml2ZXJzLyosIGJhZCB0aGluZ3MgbWF5IGhhcHBlbi4KPgo+IEhlIHJlcG9ydGVkLgo+ICAg
-VGhpcyBsZWFkcyBvZnRlbiB0byBjb3JydXB0ZWQgYXJjaC91bS9hcmNoL3VtL2RyaXZlcnMvLnNz
-bC5vLmNtZC4KPgo+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LWtidWlsZC85MmY0ZGZl
-OS1lYjg3LTc2NmItMjcxYS1lNTdhZGEzYTdkYmRAa2VybmVsLm9yZy8KPgo+Cj4gQSBwYXRjaCBl
-eGlzdHMgaW4gTUwuCj4KPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9hbGwvMjAyMzA3MjExNzE4
-NTcuMzYxMjYzOS0yLW1hc2FoaXJveUBrZXJuZWwub3JnLwoKVGhhbmtzLiBUaGF0IHJlc29sdmVz
-IHRoZSBpc3N1ZSBmb3IgbWUuIENhbiB5b3UgcGljayBpdCB1cCBpZiB0aGUgVU1MCmZvbGtzIGRv
-bid0PyAgSXQncyBiZWVuIG5lYXJseSAzIHdlZWtzLgoKPgo+Cj4KPiBJIHJlYWxseSB3YW50IHRv
-IHN0b3AgdXNpbmcgY29yZS15IG9yIGRyaXZlcnMteSBpbiBhcmNoLyovTWFrZWZpbGUuCj4KPgo+
-Cj4gLS0KPiBCZXN0IFJlZ2FyZHMKPiBNYXNhaGlybyBZYW1hZGEKCgoKLS0gClRoYW5rcywKfk5p
-Y2sgRGVzYXVsbmllcnMKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3Jn
-Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
+Favor a more robust and less ambiguous interface over `strncpy`.
+
+Use `strtomem` here since `console_buf` is not expected to be
+NUL-terminated.
+
+Also mark char buffer as `__nonstring` as per Kees' suggestion here [1]
+
+Link: https://github.com/KSPP/linux/issues/90 [1]
+Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Changes in v2:
+- Keep usage of ARRAY_SIZE (thanks Bill)
+- Remove unnecessary import (thanks Kees and Bill)
+- Link to v1: https://lore.kernel.org/r/20230807-arch-um-v1-1-86dbbfb59709@google.com
+---
+Notes:
+I only build tested this patch.
+
+I am also making an assumption that `console_buf` need not be
+NUL-terminated. Am I right in believing this?
+---
+ arch/um/drivers/mconsole_kern.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/um/drivers/mconsole_kern.c b/arch/um/drivers/mconsole_kern.c
+index 5026e7b9adfe..d5fa9c8dcd18 100644
+--- a/arch/um/drivers/mconsole_kern.c
++++ b/arch/um/drivers/mconsole_kern.c
+@@ -554,7 +554,7 @@ struct mconsole_output {
+ 
+ static DEFINE_SPINLOCK(client_lock);
+ static LIST_HEAD(clients);
+-static char console_buf[MCONSOLE_MAX_DATA];
++static char console_buf[MCONSOLE_MAX_DATA] __nonstring;
+ 
+ static void console_write(struct console *console, const char *string,
+ 			  unsigned int len)
+@@ -567,7 +567,7 @@ static void console_write(struct console *console, const char *string,
+ 
+ 	while (len > 0) {
+ 		n = min((size_t) len, ARRAY_SIZE(console_buf));
+-		strncpy(console_buf, string, n);
++		strtomem(console_buf, string);
+ 		string += n;
+ 		len -= n;
+ 
+
+---
+base-commit: c1a515d3c0270628df8ae5f5118ba859b85464a2
+change-id: 20230807-arch-um-3ef24413427e
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
