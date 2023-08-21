@@ -4,99 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50096EE49A5
-	for <linux-um@archiver.kernel.org>; Sat, 19 Aug 2023 23:13:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A575EE4993
+	for <linux-um@archiver.kernel.org>; Mon, 21 Aug 2023 08:20:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Subject:Cc:To:From:Date:References:
-	In-Reply-To:Message-Id:Mime-Version:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=CArllde9P+3JKghHJHB3xs8nCvS4QlcqGGUay2LOQl8=; b=tYAWOtzCDjXSqR
-	o6VG6WzGoQAChDQX6XTnMe/50ZrFubFlz7jyLgHF1Yu0gqvXQA+TAI1jpLGQVYOt9WCYRYiAsWQzz
-	usXiY0PNcGEDAxlXt6Jx22P3AGhMxJnPDwF1U/R/AzjPbvLL7oJybqOqwmPiiuaHbm2skXxhLc3x2
-	Tf2/Ayb8FJpCzDAYsHDtC/V+j5zNHsjaVR+ybfIGCQETvCTF6q5ZyS9NxDiVHM6qHL7WmeACJo2A9
-	/hSBb6UJGKgkLhJHqovxv/rIsKtCGxFXE+xGIwWRn2x6KengsptWwcRyAFxpfpnIRiWXQV66BSakZ
-	1PqKXNKuHNwnbwJUFA+w==;
+	List-Owner; bh=ouBxYZla657SuxaDwp1jKh0rDRPIfXhgzi8pXWmgb3k=; b=e3Bd3ghViLIqao
+	32G5CUSgbVu+3JFc0+ko1l88tzQWG/6vfcM14E6iqA4Kn5X7JO0QFQ42ioHIhv66DjCXHaKAV0Z10
+	aQjtScFLL8d/8GuGZTDzCAkJum64qdczh1UpTzbgRpqdRIi+fTRuv/c50CyL+JIZhQ6F0JZOJGUXv
+	YOHkRsa6KpvkV1Gy5eDVpqppky0M/lbDO9PhxZkDKvXEooCmDNtCQApJa+0fym+fHbt3i0+GVLqs6
+	yHwjCC0ZapF0oWYERs/EvTiADbU3QkNW4DK0OT+wivcCsvF274HoPUjPlmt9Jm/Dr1AJ5NwQim0Kt
+	QWLXRUqqWBOkfMHGSQPQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qXV86-00BEVn-0Z;
-	Sat, 19 Aug 2023 23:13:14 +0000
-Received: from new3-smtp.messagingengine.com ([66.111.4.229])
+	id 1qY09K-00DTLJ-0a;
+	Mon, 21 Aug 2023 08:20:34 +0000
+Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qXV82-00BEU5-1i
+	id 1qY09H-00DTKP-08
 	for linux-um@lists.infradead.org;
-	Sat, 19 Aug 2023 23:13:12 +0000
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailnew.nyi.internal (Postfix) with ESMTP id 0106B580126;
-	Sat, 19 Aug 2023 19:12:55 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Sat, 19 Aug 2023 19:12:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:sender
-	:subject:subject:to:to; s=fm3; t=1692486774; x=1692493974; bh=eF
-	p9xFgSVp+I1HTUH+y+7224okESMQ+VhbU3Am512Uw=; b=GXs5Ux18dB7s0wFIA7
-	EqEXXEICoPI+MlJNUcsMVjF7KAdxknUeboQC5nn/yYM6tgVpl/0TwWMvATMWmHtZ
-	hkhuQaHdleRtYpTuCi0aIVczwIb5ZMgxlN59ySsDf7vRpemRUuR2fS0+ICwtJJG7
-	qTqYF0dpBsTOaGt81+niyXp1SOH+gdl2UekcgeMO3ns+Hw/YckLwE91NXkRyH1LK
-	oLIZbt0G8sqGDBiWeWNOsvs48hgFiRT43a31LbgBuSD/BtnQI1UHBVTBXpkxygoW
-	+aMuYaE7TEx2ASCa1kooI7poXJi0tfN1WFo5UrMrfVYL5r+EhBOqC0koyppfKcTW
-	kjDw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm1; t=1692486774; x=1692493974; bh=eFp9xFgSVp+I1
-	HTUH+y+7224okESMQ+VhbU3Am512Uw=; b=Udursr+emtzG/itOBWyrlF2MXy/uT
-	JC8uydwvvtDYj3J6YYUbAp7hQSYTYVpNZkujBOjtQeedXkQuWLtN3LTll+AVzSwA
-	yECKLkED1sAXwOkHu0SecwJbyYfbTc8vhjKF+YVTplEZpTrz7bQTwjcp0Mfdf75N
-	CO3+YgwY/KEbAAWElpsSZTbhk83SrFMKVl6NFZXDq8LkSFtlTsVzmfZUGOsABvh9
-	SW8hntLOBpOe9NCE2I99ewFmBrUfl7T1ejFkCvr2ExDNM58bhUMwS2gZ+2cNPrdC
-	cUYhGlwW0psGSQtEJBJF5WtrasD3qV17MD7gOs+JDwzW2EaQ7hfC2ljyQ==
-X-ME-Sender: <xms:dUzhZDLE_dc_K6K0vpAUQcVXmUImZgpV1_84N9Yng8QEZeY_dQgoLQ>
-    <xme:dUzhZHKRX3cLgqezx5P2CgtwfNzFzojKxOmVe3o13tiG4DCgPanXrZS3O1CSXk0cM
-    ZyM7vzMVkA1bMsZK-U>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudduiedgvddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:dUzhZLux1Zi5xpS4iCD97tHjabzhI9G0FDo2K5c3WVlbJ1xD3dDhOQ>
-    <xmx:dUzhZMYa8lfbuwQNZ31QQc8XW_2lKi_-jfHs6gVm3JGhdoK6kRxoKg>
-    <xmx:dUzhZKYO75Qn0D2iw1RJooEoSom1tSj-PNdIlOspoRWfx4U6_GCtEQ>
-    <xmx:dkzhZCoWf9xiWHn0WlPoS7_tyK_KM9JWHPGnMtwc2JJfcAyVrBqQfQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id F0FB0B60089; Sat, 19 Aug 2023 19:12:52 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-624-g7714e4406d-fm-20230801.001-g7714e440
-Mime-Version: 1.0
-Message-Id: <320be16c-32a2-4f34-9a30-e352f8203671@app.fastmail.com>
-In-Reply-To: <20230704083022.692368-1-davidgow@google.com>
-References: <20230704083022.692368-1-davidgow@google.com>
-Date: Sat, 19 Aug 2023 19:12:29 -0400
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "David Gow" <davidgow@google.com>, "Richard Weinberger" <richard@nod.at>,
- "Anton Ivanov" <anton.ivanov@cambridgegreys.com>,
- "Johannes Berg" <johannes@sipsolutions.net>,
- "Thomas Gleixner" <tglx@linutronix.de>, "Ingo Molnar" <mingo@redhat.com>,
- "Borislav Petkov" <bp@alien8.de>,
- "Dave Hansen" <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, "Noah Goldstein" <goldstein.w.n@gmail.com>
-Cc: linux-um@lists.infradead.org, x86@kernel.org,
- Linux-Arch <linux-arch@vger.kernel.org>,
- "Geert Uytterhoeven" <geert@linux-m68k.org>, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] asm-generic: current: Don't include thread-info.h if building
- asm
+	Mon, 21 Aug 2023 08:20:32 +0000
+Received: from 212-39-89-85.ip.btc-net.bg ([212.39.89.85] helo=[192.168.14.227])
+	by www.kot-begemot.co.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.94.2)
+	(envelope-from <anton.ivanov@cambridgegreys.com>)
+	id 1qXzJj-001Ag5-3l; Mon, 21 Aug 2023 07:27:15 +0000
+Message-ID: <02404242-ab8a-5300-ec76-fb13dc3fb403@cambridgegreys.com>
+Date: Mon, 21 Aug 2023 08:27:12 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH v4] um: vector: Fix exception handling in
+ vector_eth_configure()
+Content-Language: en-US
+To: Richard Weinberger <richard@nod.at>, Minjie Du <duminjie@vivo.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>,
+ Stephen Rothwell <sfr@canb.auug.org.au>,
+ linux-um <linux-um@lists.infradead.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+ opensource kernel <opensource.kernel@vivo.com>
+References: <20230706013911.695-1-duminjie@vivo.com>
+ <888265629.6490567.1692478887611.JavaMail.zimbra@nod.at>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+In-Reply-To: <888265629.6490567.1692478887611.JavaMail.zimbra@nod.at>
+X-Clacks-Overhead: GNU Terry Pratchett
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230819_161310_638041_F161F79E 
-X-CRM114-Status: GOOD (  10.31  )
+X-CRM114-CacheID: sfid-20230821_012031_080502_140B2950 
+X-CRM114-Status: GOOD (  22.89  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,27 +65,48 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jul 4, 2023, at 04:30, David Gow wrote:
-> asm/current.h is included by some assembly files (either directly, or
-> indirectly). This works on some architectures (such as x86), as their
-> implementation of current.h is careful to not include any C, but the
-> asm-generic version includes linux/thread-info.h unconditionally, which
-> leads to errors when either C code or non-asm-compatible preprocessor
-> directives are included.
->
-> Just wrap the contents behind an #ifndef __ASSEMBLY__ to avoid any C
-> code making its way in.
->
-> Signed-off-by: David Gow <davidgow@google.com>
-
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+CgpPbiAxOS8wOC8yMDIzIDIyOjAxLCBSaWNoYXJkIFdlaW5iZXJnZXIgd3JvdGU6Cj4gLS0tLS0g
+VXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+PiBUaGUgcmVzb3VyY2UgY2xlYW51cCB3YXMgaW5j
+b21wbGV0ZSBpbiB0aGUgaW1wbGVtZW50YXRpb24KPj4gb2YgdGhlIGZ1bmN0aW9uICJ2ZWN0b3Jf
+ZXRoX2NvbmZpZ3VyZSIuCj4+IFRodXMgcmVwbGFjZSB0aGUganVtcCB0YXJnZXQKPj4gIm91dF91
+bmRvX3VzZXJfaW5pdCIgYnkgIm91dF9mcmVlX25ldGRldiIuCj4+IERlbGF0ZSB0aGUgb3JwaGFu
+IGZ1bmN0aW9uICJvdXRfdW5kb191c2VyX2luaXQiCj4+Cj4+IFBBVENIIHYxLXYzOiBNb2RpZnkg
+dGhlIHBhdGNoIGZvcm1hdC4KPj4KPj4gU2lnbmVkLW9mZi1ieTogTWluamllIER1IDxkdW1pbmpp
+ZUB2aXZvLmNvbT4KPj4gLS0tCj4+IGFyY2gvdW0vZHJpdmVycy92ZWN0b3Jfa2Vybi5jIHwgNCAr
+LS0tCj4+IDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMyBkZWxldGlvbnMoLSkKPj4K
+Pj4gZGlmZiAtLWdpdCBhL2FyY2gvdW0vZHJpdmVycy92ZWN0b3Jfa2Vybi5jIGIvYXJjaC91bS9k
+cml2ZXJzL3ZlY3Rvcl9rZXJuLmMKPj4gaW5kZXggMTMxYjdjYjI5Li43YWU2YWI4ZGYgMTAwNjQ0
+Cj4+IC0tLSBhL2FyY2gvdW0vZHJpdmVycy92ZWN0b3Jfa2Vybi5jCj4+ICsrKyBiL2FyY2gvdW0v
+ZHJpdmVycy92ZWN0b3Jfa2Vybi5jCj4+IEBAIC0xNjQ2LDcgKzE2NDYsNyBAQCBzdGF0aWMgdm9p
+ZCB2ZWN0b3JfZXRoX2NvbmZpZ3VyZSgKPj4gCWVyciA9IHJlZ2lzdGVyX25ldGRldmljZShkZXYp
+Owo+PiAJcnRubF91bmxvY2soKTsKPj4gCWlmIChlcnIpCj4+IC0JCWdvdG8gb3V0X3VuZG9fdXNl
+cl9pbml0Owo+PiArCQlnb3RvIG91dF9mcmVlX25ldGRldjsKPj4KPj4gCXNwaW5fbG9jaygmdmVj
+dG9yX2RldmljZXNfbG9jayk7Cj4+IAlsaXN0X2FkZCgmZGV2aWNlLT5saXN0LCAmdmVjdG9yX2Rl
+dmljZXMpOwo+PiBAQCAtMTY1NCw4ICsxNjU0LDYgQEAgc3RhdGljIHZvaWQgdmVjdG9yX2V0aF9j
+b25maWd1cmUoCj4+Cj4+IAlyZXR1cm47Cj4+Cj4+IC1vdXRfdW5kb191c2VyX2luaXQ6Cj4+IC0J
+cmV0dXJuOwo+IAo+IEkgZG9uJ3QgdGhpbmsgdGhpcyBpcyBjb3JyZWN0Lgo+IHZlY3Rvcl9ldGhf
+Y29uZmlndXJlKCkgY2Fubm90IGNvbW11bmljYXRlIHRoZSBmYWlsdXJlIHNpbmNlIGl0IGlzIG9m
+IHR5cGUgdm9pZC4KPiBTbywgdmVjdG9yX3JlbW92ZSgpIHdpbGwgcnVuIGFuZCB3aWxsIGNhbGwg
+dW5yZWdpc3Rlcl9uZXRkZXYoKS4gVGhhdCBjYW4gY2F1c2UgYSBkb3VibGUtZnJlZS4KCnZlY3Rv
+cl9yZW1vdmUoKSB3aWxsIGJlIGNhbGxlZCBvbmx5IG9uY2UgcGVyIGRldmljZS4gSXQgY2hlY2tz
+IGlmIHRoZSAKZGV2aWNlIGlzIGluIHRoZSBkZXZpY2UgbGlzdCBhbmQgaWYgaXQgaXMgbm90IC0g
+YmFpbHMuIElmIGl0IGlzIGluIHRoZSAKbGlzdCBpdCByZW1vdmVzIGl0IGZyb20gdGhlcmUgYW5k
+IGNhbGxzIHVucmVnaXN0ZXJfbmV0ZGV2KCkgYWZ0ZXIgdGhhdC4KClNvLCB1bmxlc3MgSSBhbSBt
+aXNzaW5nIHNvbWV0aGluZywgdGhlcmUgaXMgbm8gaGFybSBoZXJlIC0gdW5yZWdpc3RlciAKd2ls
+bCBub3QgYmUgY2FsbGVkIGZvciBhIGRldmljZSB0aGF0IGZhaWxlZCB0byByZWdpc3RlciwgYmVj
+YXVzZSB0aGUgCmxpc3QgaXMgdXBkYXRlZCBvbmx5IGlmIHRoZSBkZXZpY2UgaGFzIHJlZ2lzdGVy
+ZWQgc3VjY2Vzc2Z1bGx5LgoKSG93ZXZlciwgb24gc2Vjb25kIHJlYWQgLSBpZiByZWdpc3RlciBm
+YWlscywgdGhlIGN1cnJlbnQgY29kZSBsZWFrcyBhIAoqZGV2aWNlIHdoaWNoIHdhcyBhbGxvYy1l
+ZCBpbiB0aGUgYmVnaW5uaW5nIG9mIGNvbmZpZ3VyZS4gU28gZXZlbiBpZiB3ZSAKc2tpcCBmcmVl
+X25ldGRldiwgd2hpY2ggaW52b2tlcyByZW1vdmUgd2Ugc3RpbGwgbmVlZCB0byBmcmVlIHRoYXQg
+KmRldmljZS4KCj4gCj4gVGhhbmtzLAo+IC8vcmljaGFyZAo+IAoKLS0gCkFudG9uIFIuIEl2YW5v
+dgpDYW1icmlkZ2VncmV5cyBMaW1pdGVkLiBSZWdpc3RlcmVkIGluIEVuZ2xhbmQuIENvbXBhbnkg
+TnVtYmVyIDEwMjczNjYxCmh0dHBzOi8vd3d3LmNhbWJyaWRnZWdyZXlzLmNvbS8KCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcg
+bGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
+b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
