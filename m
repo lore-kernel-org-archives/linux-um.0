@@ -4,56 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4A575EE4993
-	for <linux-um@archiver.kernel.org>; Mon, 21 Aug 2023 08:20:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B88E0EE49B2
+	for <linux-um@archiver.kernel.org>; Wed, 23 Aug 2023 10:41:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=ouBxYZla657SuxaDwp1jKh0rDRPIfXhgzi8pXWmgb3k=; b=e3Bd3ghViLIqao
-	32G5CUSgbVu+3JFc0+ko1l88tzQWG/6vfcM14E6iqA4Kn5X7JO0QFQ42ioHIhv66DjCXHaKAV0Z10
-	aQjtScFLL8d/8GuGZTDzCAkJum64qdczh1UpTzbgRpqdRIi+fTRuv/c50CyL+JIZhQ6F0JZOJGUXv
-	YOHkRsa6KpvkV1Gy5eDVpqppky0M/lbDO9PhxZkDKvXEooCmDNtCQApJa+0fym+fHbt3i0+GVLqs6
-	yHwjCC0ZapF0oWYERs/EvTiADbU3QkNW4DK0OT+wivcCsvF274HoPUjPlmt9Jm/Dr1AJ5NwQim0Kt
-	QWLXRUqqWBOkfMHGSQPQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:CC:To:Message-ID:MIME-Version:Subject:
+	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=PfuHLs/PSyuXktZaR7SsLQM1Y2VCu+0N8mQprVr1e0I=; b=dlsRW7MB0k+NO/
+	k8ykgc3PFErkMDVzR0j2fgmVcCeFP/s0vF2itBuzUyzHuR0LWaMiJqbniAjpbMBCXt9vVWbL6ri5A
+	CGqQ7Dug5dwkFKeSEerB+p3j0HtTM/d5zazbGIisyVjVYVAhkke4RabU/O4N1dByPaW0zCoe8we8D
+	VViF6fIuYZoIHi/zRaSZsqo44RXYM738tAKDSt364qHXtCZ0Fdvc2xJVE3uXMp/QPcHNWb/NjYYUI
+	8yrp29KUfXFz84Rv54rFBF/vNljKzQ31YX8VsmfE2XcnAtQhuFIBLJPkPA2z/g648qkT1hnkQVFDE
+	y8XimIb2h5tgZIITlt+A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qY09K-00DTLJ-0a;
-	Mon, 21 Aug 2023 08:20:34 +0000
-Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
+	id 1qYlIP-000LDI-0L;
+	Wed, 23 Aug 2023 10:41:05 +0000
+Received: from smtp2.axis.com ([195.60.68.18])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qY09H-00DTKP-08
+	id 1qYlIG-000L8K-2r
 	for linux-um@lists.infradead.org;
-	Mon, 21 Aug 2023 08:20:32 +0000
-Received: from 212-39-89-85.ip.btc-net.bg ([212.39.89.85] helo=[192.168.14.227])
-	by www.kot-begemot.co.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.94.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1qXzJj-001Ag5-3l; Mon, 21 Aug 2023 07:27:15 +0000
-Message-ID: <02404242-ab8a-5300-ec76-fb13dc3fb403@cambridgegreys.com>
-Date: Mon, 21 Aug 2023 08:27:12 +0100
+	Wed, 23 Aug 2023 10:40:58 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1692787257;
+  x=1724323257;
+  h=from:date:subject:mime-version:content-transfer-encoding:
+   message-id:to:cc;
+  bh=6LJ6BHzjxEmUNS9AR+aQcWxz25DB+rK6TaYI29lFdFE=;
+  b=R+/jTePQNAtVDBhSJHxvKfBdCSmPdiPlDBfayz7s+rlkKJWaBrSGntcc
+   /cmPl56ZgIf3T64a+/4y0X6HFZlVs9nERRoJIz7UhiRRRQ7wNqPdnx8PA
+   qDZmAwlbTrQbm9Lyf8u4mgQD1ZwnWD705jLp34QpjkLfTSkT2o+3oGXJm
+   Ku6XF+EJdFSgkGz3VzsVsRwsqQglcGp1K84st9pG1f9M97BNwr411sTV3
+   hrZFuQiOba4vnK1HFHs1iZhoG+oDkzZugovstLg6OBn1NVjGAyq/5uv9E
+   c/nR0KAU8dov/VgA7BHQ0AD90sKkEr56q4PzcEEZOAGsKlo+3xdHFEM9c
+   w==;
+From: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Date: Wed, 23 Aug 2023 12:40:44 +0200
+Subject: [PATCH] um: virt-pci: fix missing declaration warning
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH v4] um: vector: Fix exception handling in
- vector_eth_configure()
-Content-Language: en-US
-To: Richard Weinberger <richard@nod.at>, Minjie Du <duminjie@vivo.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>,
- Stephen Rothwell <sfr@canb.auug.org.au>,
- linux-um <linux-um@lists.infradead.org>,
- linux-kernel <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
- opensource kernel <opensource.kernel@vivo.com>
-References: <20230706013911.695-1-duminjie@vivo.com>
- <888265629.6490567.1692478887611.JavaMail.zimbra@nod.at>
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-In-Reply-To: <888265629.6490567.1692478887611.JavaMail.zimbra@nod.at>
-X-Clacks-Overhead: GNU Terry Pratchett
+Message-ID: <20230823-uml-virt-pci-warn-v1-1-fd43183a10d6@axis.com>
+X-B4-Tracking: v=1; b=H4sIACvi5WQC/x3MSQqAMAxA0atI1ga04oBXERe1phrQKqkTFO9uc
+ fkW/wfwJEwe2iSA0MWeNxeRpwmYWbuJkMdoUJkqskYVeK4LXiwH7obx1uKwKgdt6rHR1lQQu13
+ I8vM/u/59P4J7sxRjAAAA
+To: Richard Weinberger <richard@nod.at>, Anton Ivanov
+	<anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>
+CC: <linux-um@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<kernel@axis.com>, kernel test robot <lkp@intel.com>, Vincent Whitchurch
+	<vincent.whitchurch@axis.com>
+X-Mailer: b4 0.12.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230821_012031_080502_140B2950 
-X-CRM114-Status: GOOD (  22.89  )
+X-CRM114-CacheID: sfid-20230823_034057_257267_2DC0B4FC 
+X-CRM114-Status: UNSURE (   6.72  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,48 +69,54 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-CgpPbiAxOS8wOC8yMDIzIDIyOjAxLCBSaWNoYXJkIFdlaW5iZXJnZXIgd3JvdGU6Cj4gLS0tLS0g
-VXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+PiBUaGUgcmVzb3VyY2UgY2xlYW51cCB3YXMgaW5j
-b21wbGV0ZSBpbiB0aGUgaW1wbGVtZW50YXRpb24KPj4gb2YgdGhlIGZ1bmN0aW9uICJ2ZWN0b3Jf
-ZXRoX2NvbmZpZ3VyZSIuCj4+IFRodXMgcmVwbGFjZSB0aGUganVtcCB0YXJnZXQKPj4gIm91dF91
-bmRvX3VzZXJfaW5pdCIgYnkgIm91dF9mcmVlX25ldGRldiIuCj4+IERlbGF0ZSB0aGUgb3JwaGFu
-IGZ1bmN0aW9uICJvdXRfdW5kb191c2VyX2luaXQiCj4+Cj4+IFBBVENIIHYxLXYzOiBNb2RpZnkg
-dGhlIHBhdGNoIGZvcm1hdC4KPj4KPj4gU2lnbmVkLW9mZi1ieTogTWluamllIER1IDxkdW1pbmpp
-ZUB2aXZvLmNvbT4KPj4gLS0tCj4+IGFyY2gvdW0vZHJpdmVycy92ZWN0b3Jfa2Vybi5jIHwgNCAr
-LS0tCj4+IDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMyBkZWxldGlvbnMoLSkKPj4K
-Pj4gZGlmZiAtLWdpdCBhL2FyY2gvdW0vZHJpdmVycy92ZWN0b3Jfa2Vybi5jIGIvYXJjaC91bS9k
-cml2ZXJzL3ZlY3Rvcl9rZXJuLmMKPj4gaW5kZXggMTMxYjdjYjI5Li43YWU2YWI4ZGYgMTAwNjQ0
-Cj4+IC0tLSBhL2FyY2gvdW0vZHJpdmVycy92ZWN0b3Jfa2Vybi5jCj4+ICsrKyBiL2FyY2gvdW0v
-ZHJpdmVycy92ZWN0b3Jfa2Vybi5jCj4+IEBAIC0xNjQ2LDcgKzE2NDYsNyBAQCBzdGF0aWMgdm9p
-ZCB2ZWN0b3JfZXRoX2NvbmZpZ3VyZSgKPj4gCWVyciA9IHJlZ2lzdGVyX25ldGRldmljZShkZXYp
-Owo+PiAJcnRubF91bmxvY2soKTsKPj4gCWlmIChlcnIpCj4+IC0JCWdvdG8gb3V0X3VuZG9fdXNl
-cl9pbml0Owo+PiArCQlnb3RvIG91dF9mcmVlX25ldGRldjsKPj4KPj4gCXNwaW5fbG9jaygmdmVj
-dG9yX2RldmljZXNfbG9jayk7Cj4+IAlsaXN0X2FkZCgmZGV2aWNlLT5saXN0LCAmdmVjdG9yX2Rl
-dmljZXMpOwo+PiBAQCAtMTY1NCw4ICsxNjU0LDYgQEAgc3RhdGljIHZvaWQgdmVjdG9yX2V0aF9j
-b25maWd1cmUoCj4+Cj4+IAlyZXR1cm47Cj4+Cj4+IC1vdXRfdW5kb191c2VyX2luaXQ6Cj4+IC0J
-cmV0dXJuOwo+IAo+IEkgZG9uJ3QgdGhpbmsgdGhpcyBpcyBjb3JyZWN0Lgo+IHZlY3Rvcl9ldGhf
-Y29uZmlndXJlKCkgY2Fubm90IGNvbW11bmljYXRlIHRoZSBmYWlsdXJlIHNpbmNlIGl0IGlzIG9m
-IHR5cGUgdm9pZC4KPiBTbywgdmVjdG9yX3JlbW92ZSgpIHdpbGwgcnVuIGFuZCB3aWxsIGNhbGwg
-dW5yZWdpc3Rlcl9uZXRkZXYoKS4gVGhhdCBjYW4gY2F1c2UgYSBkb3VibGUtZnJlZS4KCnZlY3Rv
-cl9yZW1vdmUoKSB3aWxsIGJlIGNhbGxlZCBvbmx5IG9uY2UgcGVyIGRldmljZS4gSXQgY2hlY2tz
-IGlmIHRoZSAKZGV2aWNlIGlzIGluIHRoZSBkZXZpY2UgbGlzdCBhbmQgaWYgaXQgaXMgbm90IC0g
-YmFpbHMuIElmIGl0IGlzIGluIHRoZSAKbGlzdCBpdCByZW1vdmVzIGl0IGZyb20gdGhlcmUgYW5k
-IGNhbGxzIHVucmVnaXN0ZXJfbmV0ZGV2KCkgYWZ0ZXIgdGhhdC4KClNvLCB1bmxlc3MgSSBhbSBt
-aXNzaW5nIHNvbWV0aGluZywgdGhlcmUgaXMgbm8gaGFybSBoZXJlIC0gdW5yZWdpc3RlciAKd2ls
-bCBub3QgYmUgY2FsbGVkIGZvciBhIGRldmljZSB0aGF0IGZhaWxlZCB0byByZWdpc3RlciwgYmVj
-YXVzZSB0aGUgCmxpc3QgaXMgdXBkYXRlZCBvbmx5IGlmIHRoZSBkZXZpY2UgaGFzIHJlZ2lzdGVy
-ZWQgc3VjY2Vzc2Z1bGx5LgoKSG93ZXZlciwgb24gc2Vjb25kIHJlYWQgLSBpZiByZWdpc3RlciBm
-YWlscywgdGhlIGN1cnJlbnQgY29kZSBsZWFrcyBhIAoqZGV2aWNlIHdoaWNoIHdhcyBhbGxvYy1l
-ZCBpbiB0aGUgYmVnaW5uaW5nIG9mIGNvbmZpZ3VyZS4gU28gZXZlbiBpZiB3ZSAKc2tpcCBmcmVl
-X25ldGRldiwgd2hpY2ggaW52b2tlcyByZW1vdmUgd2Ugc3RpbGwgbmVlZCB0byBmcmVlIHRoYXQg
-KmRldmljZS4KCj4gCj4gVGhhbmtzLAo+IC8vcmljaGFyZAo+IAoKLS0gCkFudG9uIFIuIEl2YW5v
-dgpDYW1icmlkZ2VncmV5cyBMaW1pdGVkLiBSZWdpc3RlcmVkIGluIEVuZ2xhbmQuIENvbXBhbnkg
-TnVtYmVyIDEwMjczNjYxCmh0dHBzOi8vd3d3LmNhbWJyaWRnZWdyZXlzLmNvbS8KCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcg
-bGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
+Fix this warning which appears with W=1 and without CONFIG_OF:
+
+ warning: no previous declaration for 'pcibios_get_phb_of_node'
+
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202308230949.PphIIlhq-lkp@intel.com/
+Fixes: 314a1408b79a ("um: virt-pci: implement pcibios_get_phb_of_node()")
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+---
+ arch/um/drivers/virt-pci.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
+index 7699ca5f35d4..ffe2ee8a0246 100644
+--- a/arch/um/drivers/virt-pci.c
++++ b/arch/um/drivers/virt-pci.c
+@@ -544,6 +544,7 @@ static void um_pci_irq_vq_cb(struct virtqueue *vq)
+ 	}
+ }
+ 
++#ifdef CONFIG_OF
+ /* Copied from arch/x86/kernel/devicetree.c */
+ struct device_node *pcibios_get_phb_of_node(struct pci_bus *bus)
+ {
+@@ -562,6 +563,7 @@ struct device_node *pcibios_get_phb_of_node(struct pci_bus *bus)
+ 	}
+ 	return NULL;
+ }
++#endif
+ 
+ static int um_pci_init_vqs(struct um_pci_device *dev)
+ {
+
+---
+base-commit: 706a741595047797872e669b3101429ab8d378ef
+change-id: 20230823-uml-virt-pci-warn-65bac7d8afc6
+
+Best regards,
+-- 
+Vincent Whitchurch <vincent.whitchurch@axis.com>
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
