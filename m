@@ -4,69 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C81D0C83F11
-	for <linux-um@archiver.kernel.org>; Mon, 28 Aug 2023 10:36:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF52EC83F15
+	for <linux-um@archiver.kernel.org>; Mon, 28 Aug 2023 12:09:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gE91Wpq112DgTUBqEPDj7wRhUlsJ4Pmo9GShITOL3/M=; b=Y18tEuDq6iVavl
-	C66+SyR74iu9Ozl+wIwSecLtZ4nKLBPIOGCDT9YenFLVraMZLVX/MshOiSqAAO1JK8Al489zObUvA
-	MXQDkCJm6iUAZGyGBkDv17Yt0mjMiLsQPk6WMiga4ksjqdnZ/wmLgEV7qNV8xpQCE4g0P7Pv4mVdM
-	5XZesHwB4OwAFp2bzrIau9gV25ZMNFXzpgFeWviEqfFceP7tdMpHyMwksx5QjGr2emGXCURVQb5fg
-	dv5IvSaH47VcywVKQz24sJFLBRlxkjT1UMj07C+E40Jup0byN3ToPet6Nk8+INz9PiybbhfqAK+hx
-	s2nyGd8IMBIpnH8UKr0g==;
+	List-Owner; bh=zPTpIdXfaVdwmiCVg4v8U9XdCPc/NV9nuRnAhZUD6XY=; b=dS+Kze7b8oO7Ti
+	NENi8uNxKfNMR4SV3G8cDyjmg9b7nKsr2g84SyCxqslfTu+5E1vNKw3birtg6OJRUiQWQkL7o2zFi
+	RsXMHCLIbn2hMuvFQo3Nxrd1hcpMeBbV3jgHuYXas8Phn+J02yJ4InLmyiYAM2ANdMHNcXwJZIlVT
+	9NYsQFyZHwJYBbf/DBBSxFTVTcITohVP47C1OKTFQjroHaRLMjIBfn8GVv/KiTd0yx3fzrxLEf6PY
+	5YIzlhuKCkW7Lq1rlzb0S16ajDo2rDrTaHYfg+SLAVTJmy4qquHdlF+yF1Y/iXGUvJ31yfjDMvZfe
+	z3k/rCyKfnZBxoQ30xDA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qaZbU-009RhP-2a;
-	Mon, 28 Aug 2023 10:36:16 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1qab43-009XFR-2X;
+	Mon, 28 Aug 2023 12:09:51 +0000
+Received: from verein.lst.de ([213.95.11.211])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qaZbS-009Rgn-0J
-	for linux-um@lists.infradead.org;
-	Mon, 28 Aug 2023 10:36:15 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 8477C63ECD;
-	Mon, 28 Aug 2023 10:36:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 922D4C433C8;
-	Mon, 28 Aug 2023 10:36:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1693218972;
-	bh=nhIU92xHKR1+NDGJ+YdsKJc1EKhBF9bbSg1vtZY1FoQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=auRVAIeJ2kjrjmZgJlVHrpPT4G4BEbJVfZWBx1oIDPWHOpVHqDi+a8R/KpfAnUSbf
-	 9xLrEZxmr0Hi62+PXaB6bOmqTXB8fm15l2LxPfJUr/mCSPVxuyFVA09Sx/t6bvJmyP
-	 DGdEK/dHCvR6gdwwQEtQJiHf+x+KsaRuOePK6L70=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: stable@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	patches@lists.linux.dev,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Fabio Estevam <festevam@gmail.com>,
+	id 1qab3z-009XEn-35;
+	Mon, 28 Aug 2023 12:09:49 +0000
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id CFEA56732A; Mon, 28 Aug 2023 14:09:40 +0200 (CEST)
+Date: Mon, 28 Aug 2023 14:09:40 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
 	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	linux-um@lists.infradead.org,
-	Mimi Zohar <zohar@linux.ibm.com>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 027/158] IMA: allow/fix UML builds
-Date: Mon, 28 Aug 2023 12:12:04 +0200
-Message-ID: <20230828101158.256821564@linuxfoundation.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230828101157.322319621@linuxfoundation.org>
-References: <20230828101157.322319621@linuxfoundation.org>
-User-Agent: quilt/0.67
-X-stable: review
-X-Patchwork-Hint: ignore
+	Josef Bacik <josef@toxicpanda.com>,
+	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+	Jack Wang <jinpu.wang@ionos.com>,
+	Phillip Potter <phil@philpotter.co.uk>, Coly Li <colyli@suse.de>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+	Christian Brauner <brauner@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Pavel Machek <pavel@ucw.cz>, dm-devel@redhat.com,
+	linux-block@vger.kernel.org, linux-um@lists.infradead.org,
+	linux-scsi@vger.kernel.org, linux-bcache@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-nvme@lists.infradead.org,
+	linux-btrfs@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	linux-nilfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-pm@vger.kernel.org, Hannes Reinecke <hare@suse.de>
+Subject: Re: [PATCH 01/30] block: also call ->open for incremental
+ partition opens
+Message-ID: <20230828120940.GB10552@lst.de>
+References: <20230608110258.189493-1-hch@lst.de> <20230608110258.189493-2-hch@lst.de> <20230825024457.GD95084@ZenIV>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20230825024457.GD95084@ZenIV>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230828_033614_177496_E1D40F40 
-X-CRM114-Status: GOOD (  13.42  )
+X-CRM114-CacheID: sfid-20230828_050948_161263_507EAC56 
+X-CRM114-Status: GOOD (  14.18  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,63 +77,22 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-5.4-stable review patch.  If anyone has any objections, please let me know.
+On Fri, Aug 25, 2023 at 03:44:57AM +0100, Al Viro wrote:
+> That got me curious about the ->bd_openers - do we need it atomic?
+> Most of the users (and all places that do modifications) are
+> under ->open_mutex; the only exceptions are
+> 	* early sync logics in blkdev_put(); it's explicitly racy -
+> see the comment there.
+> 	* callers of disk_openers() in loop and nbd (the ones in
+> zram are under ->open_mutex).  There's driver-private exclusion
+> around those, but in any case - READ_ONCE() is no worse than
+> atomic_read() in those cases.
+> 
+> Is there something subtle I'm missing here?
 
-------------------
-
-From: Randy Dunlap <rdunlap@infradead.org>
-
-[ Upstream commit 644f17412f5acf01a19af9d04a921937a2bc86c6 ]
-
-UML supports HAS_IOMEM since 0bbadafdc49d (um: allow disabling
-NO_IOMEM).
-
-Current IMA build on UML fails on allmodconfig (with TCG_TPM=m):
-
-ld: security/integrity/ima/ima_queue.o: in function `ima_add_template_entry':
-ima_queue.c:(.text+0x2d9): undefined reference to `tpm_pcr_extend'
-ld: security/integrity/ima/ima_init.o: in function `ima_init':
-ima_init.c:(.init.text+0x43f): undefined reference to `tpm_default_chip'
-ld: security/integrity/ima/ima_crypto.o: in function `ima_calc_boot_aggregate_tfm':
-ima_crypto.c:(.text+0x1044): undefined reference to `tpm_pcr_read'
-ld: ima_crypto.c:(.text+0x10d8): undefined reference to `tpm_pcr_read'
-
-Modify the IMA Kconfig entry so that it selects TCG_TPM if HAS_IOMEM
-is set, regardless of the UML Kconfig setting.
-This updates TCG_TPM from =m to =y and fixes the linker errors.
-
-Fixes: f4a0391dfa91 ("ima: fix Kconfig dependencies")
-Cc: Stable <stable@vger.kernel.org> # v5.14+
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Fabio Estevam <festevam@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-um@lists.infradead.org
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- security/integrity/ima/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/security/integrity/ima/Kconfig b/security/integrity/ima/Kconfig
-index 44b3315f32352..d90ead61f0def 100644
---- a/security/integrity/ima/Kconfig
-+++ b/security/integrity/ima/Kconfig
-@@ -8,7 +8,7 @@ config IMA
- 	select CRYPTO_HMAC
- 	select CRYPTO_SHA1
- 	select CRYPTO_HASH_INFO
--	select TCG_TPM if HAS_IOMEM && !UML
-+	select TCG_TPM if HAS_IOMEM
- 	select TCG_TIS if TCG_TPM && X86
- 	select TCG_CRB if TCG_TPM && ACPI
- 	select TCG_IBMVTPM if TCG_TPM && PPC_PSERIES
--- 
-2.40.1
-
-
-
+No.  When I had to add unlocked readers I did the READ_ONCE initially,
+but reviewers though the atomic_t would be better.  I didn't really feel
+like arguing so went with this version.
 
 _______________________________________________
 linux-um mailing list
