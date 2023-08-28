@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E108DC83F13
-	for <linux-um@archiver.kernel.org>; Mon, 28 Aug 2023 10:24:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C81D0C83F11
+	for <linux-um@archiver.kernel.org>; Mon, 28 Aug 2023 10:36:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=SVx3nIEcLPiyutBZlbtwNF/ti2HqiX5rGlnjGi4Khbs=; b=zyl808Zeh6lR9z
-	t07hkKxWYWcTuHB11gjRBV8mdcRLRJ+2BsWFDgqtSji8OYgHZ5RIa6M1n/izAdm6ginQPzZfDQZ8A
-	NCM86WSeHesYMZoOe2WHStM6HiD/+o08LaUb6bRoCt4XHJE+9b/IsynKQULe1KVxdnRCsWEiy8ud+
-	T18ng+FvJvGczewQWFQAEc9qBMBTXrjw2BbFFA2BHC55HJhVjncGd6zCRRYvVuFDPVt5dMdFMshPW
-	k39YfXMKUr1ab/Uhjm56dhuxIE5S6r/Eh8dZJD7J024YY5n8HEDLEYwETkSDxJgNKR3lwaaUW9Ysk
-	GA0wR1loG97G5QU7CDnQ==;
+	List-Owner; bh=gE91Wpq112DgTUBqEPDj7wRhUlsJ4Pmo9GShITOL3/M=; b=Y18tEuDq6iVavl
+	C66+SyR74iu9Ozl+wIwSecLtZ4nKLBPIOGCDT9YenFLVraMZLVX/MshOiSqAAO1JK8Al489zObUvA
+	MXQDkCJm6iUAZGyGBkDv17Yt0mjMiLsQPk6WMiga4ksjqdnZ/wmLgEV7qNV8xpQCE4g0P7Pv4mVdM
+	5XZesHwB4OwAFp2bzrIau9gV25ZMNFXzpgFeWviEqfFceP7tdMpHyMwksx5QjGr2emGXCURVQb5fg
+	dv5IvSaH47VcywVKQz24sJFLBRlxkjT1UMj07C+E40Jup0byN3ToPet6Nk8+INz9PiybbhfqAK+hx
+	s2nyGd8IMBIpnH8UKr0g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qaZPn-009OnN-2d;
-	Mon, 28 Aug 2023 10:24:11 +0000
+	id 1qaZbU-009RhP-2a;
+	Mon, 28 Aug 2023 10:36:16 +0000
 Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qaZPk-009Oku-2n
+	id 1qaZbS-009Rgn-0J
 	for linux-um@lists.infradead.org;
-	Mon, 28 Aug 2023 10:24:10 +0000
+	Mon, 28 Aug 2023 10:36:15 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by dfw.source.kernel.org (Postfix) with ESMTPS id 5298E639ED;
-	Mon, 28 Aug 2023 10:24:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62658C433C7;
-	Mon, 28 Aug 2023 10:24:07 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id 8477C63ECD;
+	Mon, 28 Aug 2023 10:36:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 922D4C433C8;
+	Mon, 28 Aug 2023 10:36:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1693218247;
-	bh=CO/3503KQEmfBcwsmEmbLLnYUEVr5nggNLXx1hmodPg=;
+	s=korg; t=1693218972;
+	bh=nhIU92xHKR1+NDGJ+YdsKJc1EKhBF9bbSg1vtZY1FoQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=j7JewtuSOJdnWDtgAGY4g+vt+bK8m/uEVUr1ZTPKqFLilj+0Kw41OmdN09LR/qs+Z
-	 kZHtTawvCr1MPs57PqDJ/fP79HimnY+jtAzugn61DIh/4N6iI7AilFIxOfWkG5FUd6
-	 NslCnUI+Da8atRZmC7I+aBU9XPMb5LYdW/c1jCLU=
+	b=auRVAIeJ2kjrjmZgJlVHrpPT4G4BEbJVfZWBx1oIDPWHOpVHqDi+a8R/KpfAnUSbf
+	 9xLrEZxmr0Hi62+PXaB6bOmqTXB8fm15l2LxPfJUr/mCSPVxuyFVA09Sx/t6bvJmyP
+	 DGdEK/dHCvR6gdwwQEtQJiHf+x+KsaRuOePK6L70=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -54,18 +54,18 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-um@lists.infradead.org,
 	Mimi Zohar <zohar@linux.ibm.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 019/129] IMA: allow/fix UML builds
-Date: Mon, 28 Aug 2023 12:11:53 +0200
-Message-ID: <20230828101153.770623384@linuxfoundation.org>
+Subject: [PATCH 5.4 027/158] IMA: allow/fix UML builds
+Date: Mon, 28 Aug 2023 12:12:04 +0200
+Message-ID: <20230828101158.256821564@linuxfoundation.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230828101153.030066927@linuxfoundation.org>
-References: <20230828101153.030066927@linuxfoundation.org>
+In-Reply-To: <20230828101157.322319621@linuxfoundation.org>
+References: <20230828101157.322319621@linuxfoundation.org>
 User-Agent: quilt/0.67
 X-stable: review
 X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230828_032408_949130_C8E304B1 
+X-CRM114-CacheID: sfid-20230828_033614_177496_E1D40F40 
 X-CRM114-Status: GOOD (  13.42  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -83,7 +83,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-4.19-stable review patch.  If anyone has any objections, please let me know.
+5.4-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
@@ -123,10 +123,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/security/integrity/ima/Kconfig b/security/integrity/ima/Kconfig
-index 3ec45028a8c54..cd32fe3311afe 100644
+index 44b3315f32352..d90ead61f0def 100644
 --- a/security/integrity/ima/Kconfig
 +++ b/security/integrity/ima/Kconfig
-@@ -7,7 +7,7 @@ config IMA
+@@ -8,7 +8,7 @@ config IMA
  	select CRYPTO_HMAC
  	select CRYPTO_SHA1
  	select CRYPTO_HASH_INFO
