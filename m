@@ -4,59 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B8F2C83F2D
-	for <linux-um@archiver.kernel.org>; Sun,  3 Sep 2023 19:14:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A5A2C83F3F
+	for <linux-um@archiver.kernel.org>; Mon,  4 Sep 2023 18:43:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:Message-ID:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=K6EfIpiJ85L/byTpfqU1pFG/0o/Hp+ye+GuLJBbof4c=; b=YJ6jCevywapmcV
-	jPs95Hy3hozywYRgC5Hl6QT8/pL6fRI8ofM9ROH3PgAUHHp+9oc5RZk1CzUf9lmLmlPgNOEELRRUi
-	EeyMAN1vnfytqlsqbvz63VDk3B0Voqa5zng2evHp4L2dbhHojVNUnyR7oSnh5BMmrxSsQG1xNuwKi
-	IIVvGiMrWHxDb506eyt+uuNuJ3sobudRwJpsqk1O+KuTVXywE4D1e2X41DJQz9Z1Din6j1FXlnw4G
-	ApdwgYVhBWp8+ELVLVAToudLP3Cf5Yzln9mo1RrzeLxZr+l1f6e5qN/AeblILWItF+4KLrofibpfD
-	E01Zefc76ysW0z7LuTzQ==;
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
+	References:In-Reply-To:From:Subject:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=UfZp61cm9awBUOoVKGKzZNL1eebwWbfk6o92u8vIqaU=; b=S7zYsa1jHcKUNO
+	ND7P6yJ6TL9CYj9XGOFkP3nSJaz68U76uqcisJvy81qGwaw8UK2HHO1u3noqgr4NLyQNwnk0xv5Ki
+	mlZDl4A44898QPIQX4XlDQYVUzWW5NHekJ5420E9qBsynI9ZxQWHac5DFNhq2Ztfe2mWGlMlSB2FG
+	noJV5WTdPeQZWh8z7QzvIsI+K8kvQaqnhslutdIQFbmxAd25xf8sd+e5pcXzHs5ZoVb+0IqwIBfHH
+	0rwrtSXgleV9TrBMgkm/YESpNilrmYkz4mnluzrNIfZ/jW3Wj8UwzO57wRV9ZKpRK8hkHwz701YQp
+	7uMDE9ggL8Njof15fFrA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qcsY0-002pmq-2b;
-	Sun, 03 Sep 2023 19:14:12 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1qdEY8-004boE-0U;
+	Mon, 04 Sep 2023 18:43:48 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qcsXw-002pmR-0E
+	id 1qdEY5-004bnn-06
 	for linux-um@lists.infradead.org;
-	Sun, 03 Sep 2023 19:14:10 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id A43AF623488E;
-	Sun,  3 Sep 2023 21:13:54 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id 4suBvoeprK1D; Sun,  3 Sep 2023 21:13:54 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 35E52623488F;
-	Sun,  3 Sep 2023 21:13:54 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id ea5wIfuo781e; Sun,  3 Sep 2023 21:13:54 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 175C0623488E;
-	Sun,  3 Sep 2023 21:13:54 +0200 (CEST)
-Date: Sun, 3 Sep 2023 21:13:54 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: torvalds <torvalds@linux-foundation.org>
-Cc: linux-um <linux-um@lists.infradead.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <1189803925.12843.1693768434048.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] UML Changes for v6.6-rc1
-MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Index: ghDboZa1hFHmnDsq+KMITPB5MegcYA==
-Thread-Topic: UML Changes for v6.6-rc1
+	Mon, 04 Sep 2023 18:43:46 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by sin.source.kernel.org (Postfix) with ESMTPS id 44A6BCE0F98;
+	Mon,  4 Sep 2023 18:43:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 79D84C433D9;
+	Mon,  4 Sep 2023 18:43:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1693853021;
+	bh=bI+YB52Xw74DRpIaQIe7SUhFxJoXxGzZRCttgmOOmMA=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=mdw4hmlFjTh68eHLoRK0v6dczI4TDOthZuMX9/3F/5lDXQgZhdDdrOPm38zNh3WJW
+	 LHQpFUVpkDQ8lQtCGbJs4o7Cxc2YjHg0ZbMNbUzj7KXqB8SeX5SnOaWtyoPBYoT9Z3
+	 za+X3gSoIN/nwJsF0gaDWen3i5gI+RosPgJLcN4MXe12g3N2j29WqeWlJ2vR2XuK/L
+	 WI40nrb5TRJ/nVvq0Hf3a+Oh/RAuwnx5yt8c5IVLrWwHWZQQA6mgffeHln26seBEGN
+	 AFqSOK35Jdc3Pf78RFOOlYN4CDwwwq8EqBqsU8lQHUXyk1+F7P0nDaMAzhFQWRkAiJ
+	 3SlmriiqMaY4A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5F109C04DD9;
+	Mon,  4 Sep 2023 18:43:41 +0000 (UTC)
+Subject: Re: [GIT PULL] UML Changes for v6.6-rc1
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <1189803925.12843.1693768434048.JavaMail.zimbra@nod.at>
+References: <1189803925.12843.1693768434048.JavaMail.zimbra@nod.at>
+X-PR-Tracked-List-Id: <linux-um.lists.infradead.org>
+X-PR-Tracked-Message-Id: <1189803925.12843.1693768434048.JavaMail.zimbra@nod.at>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-linus-6.6-rc1
+X-PR-Tracked-Commit-Id: 974b808d85abbc03c3914af63d60d5816aabf2ca
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 68d76d4e7e506664ffb7b28805469ed73044368f
+Message-Id: <169385302138.15626.673868116805116131.pr-tracker-bot@kernel.org>
+Date: Mon, 04 Sep 2023 18:43:41 +0000
+To: Richard Weinberger <richard@nod.at>
+Cc: torvalds <torvalds@linux-foundation.org>, linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230903_121408_431262_EF87B8FC 
-X-CRM114-Status: UNSURE (   6.67  )
+X-CRM114-CacheID: sfid-20230904_114345_273215_D62E10AE 
+X-CRM114-Status: UNSURE (   4.64  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -69,86 +78,24 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Linus,
+The pull request you sent on Sun, 3 Sep 2023 21:13:54 +0200 (CEST):
 
-The following changes since commit 2ccdd1b13c591d306f0401d98dedc4bdcd02b421:
+> git://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-linus-6.6-rc1
 
-  Linux 6.5-rc6 (2023-08-13 11:29:55 -0700)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/68d76d4e7e506664ffb7b28805469ed73044368f
 
-are available in the Git repository at:
+Thank you!
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-linus-6.6-rc1
-
-for you to fetch changes up to 974b808d85abbc03c3914af63d60d5816aabf2ca:
-
-  um: virt-pci: fix missing declaration warning (2023-08-26 22:49:49 +0200)
-
-----------------------------------------------------------------
-This pull request contains the following changes for UML:
-
-- Drop 32-bit checksum implementation and re-use it from arch/x86
-- String function cleanup
-- Fixes for -Wmissing-variable-declarations and -Wmissing-prototypes builds
-
-----------------------------------------------------------------
-Azeem Shaikh (1):
-      um: Remove strlcpy usage
-
-David Gow (2):
-      asm-generic: current: Don't include thread-info.h if building asm
-      um: Use the x86 checksum implementation on 32-bit
-
-Justin Stitt (2):
-      um: vector: refactor deprecated strncpy
-      um: Refactor deprecated strncpy to memcpy
-
-Masahiro Yamada (2):
-      um: Hard-code the result of 'uname -s'
-      um: use obj-y to descend into arch/um/*/
-
-Nick Desaulniers (3):
-      uml: audio: fix -Wmissing-variable-declarations
-      um: port_kern: fix -Wmissing-variable-declarations
-      um: fix 3 instances of -Wmissing-prototypes
-
-Randy Dunlap (1):
-      um: Fix hostaudio build errors
-
-Vincent Whitchurch (1):
-      um: virt-pci: fix missing declaration warning
-
-YueHaibing (1):
-      um: Remove unsued extern declaration ldt_host_info()
-
- arch/um/Kbuild                    |   2 +
- arch/um/Makefile                  |   9 +-
- arch/um/configs/i386_defconfig    |   1 +
- arch/um/configs/x86_64_defconfig  |   1 +
- arch/um/drivers/Kconfig           |  16 +--
- arch/um/drivers/Makefile          |   2 +-
- arch/um/drivers/hostaudio_kern.c  |   2 +-
- arch/um/drivers/mconsole_kern.c   |   4 +-
- arch/um/drivers/port_kern.c       |   2 +-
- arch/um/drivers/slirp_kern.c      |   2 +-
- arch/um/drivers/vector_user.c     |   4 +-
- arch/um/drivers/virt-pci.c        |   2 +
- arch/um/drivers/xterm_kern.c      |   1 +
- arch/um/include/shared/irq_kern.h |   1 +
- arch/um/include/shared/user.h     |   1 -
- arch/um/kernel/irq.c              |   2 -
- arch/um/os-Linux/umid.c           |   6 +-
- arch/x86/um/Makefile              |   5 +-
- arch/x86/um/asm/mm_context.h      |   2 -
- arch/x86/um/checksum_32.S         | 214 --------------------------------------
- include/asm-generic/current.h     |   2 +
- sound/Kconfig                     |   2 +-
- 22 files changed, 30 insertions(+), 253 deletions(-)
- delete mode 100644 arch/x86/um/checksum_32.S
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
 _______________________________________________
 linux-um mailing list
