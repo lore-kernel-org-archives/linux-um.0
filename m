@@ -4,74 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24E87EE801F
-	for <linux-um@archiver.kernel.org>; Mon, 11 Sep 2023 07:44:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C51BBEE57DF
+	for <linux-um@archiver.kernel.org>; Mon, 11 Sep 2023 08:56:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
-	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Owner;
-	bh=oNHsUzMalNYa5u7vt4KT3Yl8ZnEygpFmy8WPMzC2Ves=; b=1/ihaYRoNc546o9gChqU27/8jy
-	bMfqkRDZwcte/9DS/2cA5YXh7NH+/ORvcjSbS0wmv0KL8O4xjppEze5WuTRQyce7csxVE3cbaPrxg
-	SWcijA5nPB4pZfGYHSHk1Ndt3fEqsJYXDNMiP0V8bRzOuLYXBlcN1tGFVIJDd9HBIVwAEC//smMU+
-	apRNPr33mTo3dF+bq88RHDrc0w0k8JvWe8lmJTK9X6WfGFUF0aJom/f2Py1migDnJR8QflzUQ7ua+
-	SmqgytV2LvqPApxVNHGomyDyyC/ciHPHeB7xfJkrcdQ8dxAOcSBG3A2v+rYBoohJjTPRCG+ZsYrdd
-	pmDKkrRA==;
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=N/88tllEBHWTmVmadMNfpBsONV0eE08wsILmzn4I3G4=; b=uEx8sSDs6LU7YA
+	Z7KRkUx27fpm52wyquHX2tKubIamdv2Y7248+Kjzc6Dt3rmb131fWmdpO4g9WtUJnjfSVd4L6NzqN
+	pz+0GsTs24Xn5/qfqRvqq1AtQWZUIutPCuoHey/sX/XTUouJSRbSHLbfQBe3MeUcQ36rxjAb2231w
+	OhiWPiGyEy4+ogCeb4r9L5FOKIQVgcYlFEJyxa8FWdltVYNsvPK5RJuz+vjgm3lmzSNlZbLWexJKY
+	myYVEzQhH7lsT4vVPh38YWvgjPuwn70xNMu+OnDryasm1EKcCsmyfoevSaW/E5/9CmyYcdlAnlLQ+
+	fly3ztBkKlZwxqgz5/Fg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qfbac-00HS55-06;
-	Mon, 11 Sep 2023 07:44:10 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1qfcis-00HZvU-2R;
+	Mon, 11 Sep 2023 08:56:46 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qfbaV-00HRjQ-0o
-	for linux-um@lists.infradead.org;
-	Mon, 11 Sep 2023 07:44:05 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 62534635DB5B;
-	Mon, 11 Sep 2023 09:43:48 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id Zt4T-9st26DK; Mon, 11 Sep 2023 09:43:48 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 08DD16234896;
-	Mon, 11 Sep 2023 09:43:48 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id Bc_dpGCLszHV; Mon, 11 Sep 2023 09:43:47 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id D05ED635DB5B;
-	Mon, 11 Sep 2023 09:43:47 +0200 (CEST)
-Date: Mon, 11 Sep 2023 09:43:47 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: Vincent Whitchurch <Vincent.Whitchurch@axis.com>
-Cc: davidgow <davidgow@google.com>, x86 <x86@kernel.org>, 
-	dave hansen <dave.hansen@linux.intel.com>, kernel <kernel@axis.com>, 
-	rafael j wysocki <rafael.j.wysocki@intel.com>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, 
-	Johannes Berg <johannes@sipsolutions.net>, mingo <mingo@redhat.com>, 
-	linux-um <linux-um@lists.infradead.org>, tglx <tglx@linutronix.de>, 
-	andreyknvl@gmail.com, anton ivanov <anton.ivanov@cambridgegreys.com>, 
-	Dmitry Vyukov <dvyukov@google.com>, hpa <hpa@zytor.com>, 
-	Peter Zijlstra <peterz@infradead.org>, 
-	ryabinin a a <ryabinin.a.a@gmail.com>, frederic@kernel.org, 
-	bp <bp@alien8.de>, Alexander Potapenko <glider@google.com>, 
-	Vincenzo Frascino <vincenzo.frascino@arm.com>, 
-	kasan-dev <kasan-dev@googlegroups.com>
-Message-ID: <1681710160.12996.1694418227692.JavaMail.zimbra@nod.at>
-In-Reply-To: <f11475f922994b88f5adb14d23240716e16d5303.camel@axis.com>
-References: <20230609-uml-kasan-v1-1-5fac8d409d4f@axis.com> <CABVgOS=X1=NC9ad+WV4spFFh4MBHLodhcyQ=Ks=6-FpXrbRTdA@mail.gmail.com> <f11475f922994b88f5adb14d23240716e16d5303.camel@axis.com>
+	id 1qfcir-00HZvI-2W
+	for linux-um@bombadil.infradead.org;
+	Mon, 11 Sep 2023 08:56:45 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=LyggSFNgiy14BwIsDV/0K7QQu/1ltroH4K6t5ZXh5Ko=; b=KynaWtg4Ji1mqWYGq5dur9t/Y+
+	E+1k3GfenBxgLToV59RYvKzPzAvJkUEL1pWHhlI/xwgf6Ri0egTBJih9teF65YcC9rgFu2/n3qve/
+	6slJk/uLntE79CQfZryu3e0oewX/IFH4q1zToOqquqrivvO3CD6Atk0rD7V4bt1JbAyaAg/DMc+a8
+	Ew5iQPhcCoPl4PQx3/ynBhRDx8Baiq3TqdO36SFBAceY6tixLmIulmF8ysuW1muiWLz2utEM049D4
+	GxzeqrdK1EDoaDQJPJFN+Z3crp6dfW4vLUFMhiWMAV2slUDPwFMgY6w5z/m/1nm2vLPDONedlsOmg
+	Gml0+ZZw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1qfcii-004rWA-1F;
+	Mon, 11 Sep 2023 08:56:38 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 7B134300321; Mon, 11 Sep 2023 10:56:37 +0200 (CEST)
+Date: Mon, 11 Sep 2023 10:56:37 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	linux-um@lists.infradead.org,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Alexander Potapenko <glider@google.com>,
+	Andrey Konovalov <andreyknvl@gmail.com>,
+	Dmitry Vyukov <dvyukov@google.com>,
+	Vincenzo Frascino <vincenzo.frascino@arm.com>,
+	kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+	kernel@axis.com
 Subject: Re: [PATCH] x86: Fix build of UML with KASAN
+Message-ID: <20230911085637.GA9098@noisy.programming.kicks-ass.net>
+References: <20230609-uml-kasan-v1-1-5fac8d409d4f@axis.com>
 MIME-Version: 1.0
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Topic: x86: Fix build of UML with KASAN
-Thread-Index: AQHZmsQx3HM02RYVik+aPUiiZcEw2q+Dtz2AgJIVpwAaWaDaFg==
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230911_004403_466153_64E3D3D6 
-X-CRM114-Status: UNSURE (   5.79  )
-X-CRM114-Notice: Please train this message.
+Content-Disposition: inline
+In-Reply-To: <20230609-uml-kasan-v1-1-5fac8d409d4f@axis.com>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,20 +80,62 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogIlZpbmNlbnQgV2hpdGNodXJj
-aCIgPFZpbmNlbnQuV2hpdGNodXJjaEBheGlzLmNvbT4KPj4gVGhhbmtzOiBJIHN0dW1ibGVkIGlu
-dG8gdGhpcyB0aGUgb3RoZXIgZGF5IGFuZCByYW4gb3V0IG9mIHRpbWUgdG8gZGVidWcgaXQuCj4+
-IAo+PiBJJ3ZlIHRlc3RlZCB0aGF0IGl0IHdvcmtzIGhlcmUuCj4+IAo+PiBUZXN0ZWQtYnk6IERh
-dmlkIEdvdyA8ZGF2aWRnb3dAZ29vZ2xlLmNvbT4KPiAKPiBUaGFua3MuICBQZXJoYXBzIHNvbWVv
-bmUgY291bGQgcGljayB0aGlzIHVwPyAgSXQncyBiZWVuIGEgZmV3IG1vbnRocywKPiBhbmQgdGhl
-IGJ1aWxkIHByb2JsZW0gaXMgc3RpbGwgcHJlc2VudCBvbiB2Ni42LXJjMS4KCkknbGwgaGFwcGls
-eSBjYXJyeSBpdCB0aG91Z2ggdGhlIFVNTCB0cmVlIGlmIHdlIGdldCBhbiBBQ0sgZnJvbSB4ODYg
-bWFpbnRhaW5lcnMuCgpUaGFua3MsCi8vcmljaGFyZAoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxp
-c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9saW51eC11bQo=
+On Fri, Jun 09, 2023 at 01:18:54PM +0200, Vincent Whitchurch wrote:
+> Building UML with KASAN fails since commit 69d4c0d32186 ("entry, kasan,
+> x86: Disallow overriding mem*() functions") with the following errors:
+> 
+>  $ tools/testing/kunit/kunit.py run --kconfig_add CONFIG_KASAN=y
+>  ...
+>  ld: mm/kasan/shadow.o: in function `memset':
+>  shadow.c:(.text+0x40): multiple definition of `memset';
+>  arch/x86/lib/memset_64.o:(.noinstr.text+0x0): first defined here
+>  ld: mm/kasan/shadow.o: in function `memmove':
+>  shadow.c:(.text+0x90): multiple definition of `memmove';
+>  arch/x86/lib/memmove_64.o:(.noinstr.text+0x0): first defined here
+>  ld: mm/kasan/shadow.o: in function `memcpy':
+>  shadow.c:(.text+0x110): multiple definition of `memcpy';
+>  arch/x86/lib/memcpy_64.o:(.noinstr.text+0x0): first defined here
+> 
+> If I'm reading that commit right, the !GENERIC_ENTRY case is still
+> supposed to be allowed to override the mem*() functions, so use weak
+> aliases in that case.
+> 
+> Fixes: 69d4c0d32186 ("entry, kasan, x86: Disallow overriding mem*() functions")
+> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+> ---
+>  arch/x86/lib/memcpy_64.S  | 4 ++++
+>  arch/x86/lib/memmove_64.S | 4 ++++
+>  arch/x86/lib/memset_64.S  | 4 ++++
+>  3 files changed, 12 insertions(+)
+> 
+> diff --git a/arch/x86/lib/memcpy_64.S b/arch/x86/lib/memcpy_64.S
+> index 8f95fb267caa7..5dc265b36ef0b 100644
+> --- a/arch/x86/lib/memcpy_64.S
+> +++ b/arch/x86/lib/memcpy_64.S
+> @@ -40,7 +40,11 @@ SYM_TYPED_FUNC_START(__memcpy)
+>  SYM_FUNC_END(__memcpy)
+>  EXPORT_SYMBOL(__memcpy)
+>  
+> +#ifdef CONFIG_GENERIC_ENTRY
+>  SYM_FUNC_ALIAS(memcpy, __memcpy)
+> +#else
+> +SYM_FUNC_ALIAS_WEAK(memcpy, __memcpy)
+> +#endif
+>  EXPORT_SYMBOL(memcpy)
+>  
+>  SYM_FUNC_START_LOCAL(memcpy_orig)
+
+Urgh... 
+
+Can we use CONFIG_UML here to clarify things? It's a bit of a bother UML
+is diverging to much, but oh well.
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
