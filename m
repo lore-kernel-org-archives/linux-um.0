@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDEA1EE57DF
-	for <linux-um@archiver.kernel.org>; Mon, 11 Sep 2023 14:55:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83DE8EE57DF
+	for <linux-um@archiver.kernel.org>; Mon, 11 Sep 2023 15:25:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=GKX+KMY6ZhXKWt+NZOMUAHlTYsCzBIl8AZ5rwXEvAwg=; b=BjRhTPln/oZbIn
-	iy/7z+v6SwXXMa3kefON4MOONqkkBi+zvUIn7lchz1hZ9i0grivRCGiYX/fSlv2QanPHpgkoznPPf
-	R3oZ+QIy6jMpiytnjwe7qPFPupn0GCUt2C1LYXdG7kSRfjbo+rcEin8EwaUJbZVaGXHgBbxeeeLlf
-	yh4zfej15YmychfFEzAW63vR09PoYorzijKVlbc9IWP77gQLguy0sLsvW+V4jrW1djdwA0xhRWOkE
-	k04Es27CGglY/AI8UB3oh5oRsurtkePoKEjpDrVi0FkY6mBHSOwrOhzzsNZu9jDJGs2R5/FGvNMR1
-	SAa2T5izcc26M1HqvK3g==;
+	List-Owner; bh=c8bMaQzuc1Q7RoMJHN7a+9ybY/uswsbSrlhvngUbM/Q=; b=pgI4Jc237ifjG+
+	DUbM6p4vf5dLGVPsY0HLepa7h8avlyctE/FTwn9vfwdacFa7rDsZiEJJ2F86oi3pvaE0nLd7XPCAr
+	veuwoYZw5rsF3xfd4n17B7n38DLDuxAs8281JqbMGtRUVMdhVKc2X9E1MLof4bBfQUAS7of8sUx0b
+	uSESVgNaMXbujPLnqFKiKfQ554gd38RRguwJELKJsXJ7IlexwwB33UG8DutzD2GM3W64W0Sm9d565
+	5skFxGRHvezMGbfO/6f8Y9YGWuBUxMIf+ujE28M9yUqZ6WJj5O+6wRjLgn2ONRK8so+Dngu7mR/TZ
+	Af+kbk2rKPvuykkIxf0A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qfiKD-000mPK-1V;
-	Mon, 11 Sep 2023 14:55:41 +0000
+	id 1qfinV-000sjy-3B;
+	Mon, 11 Sep 2023 15:25:57 +0000
 Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qfiKA-000mNt-0c
+	id 1qfinS-000sgB-0w
 	for linux-um@lists.infradead.org;
-	Mon, 11 Sep 2023 14:55:40 +0000
+	Mon, 11 Sep 2023 15:25:56 +0000
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 6890FB80EC6;
-	Mon, 11 Sep 2023 14:55:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A737EC433C8;
-	Mon, 11 Sep 2023 14:55:34 +0000 (UTC)
+	by ams.source.kernel.org (Postfix) with ESMTPS id CBBAAB81696;
+	Mon, 11 Sep 2023 15:25:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECF2CC433C8;
+	Mon, 11 Sep 2023 15:25:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1694444135;
-	bh=Bxd4iBadiCksPMtXCU+Z466w/fNZ8R/SB/l+zVj+DaQ=;
+	s=korg; t=1694445951;
+	bh=8/6+KG0FZJN+OPTG6EeDl2K5ZOjK3JRC0tgCXBuvO+Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gnQ03gXiFomF/RbiXOR7zVIxOqgs4tjnfkNro1/3UKpTB52OuURRPnPCulR5OGE7J
-	 0faMK97fDUxbYVn6L/9CK9uiWLX0j9CA7R4spWhO8MTmIivaRCsHxsW1OX5aSQZ1N+
-	 GeUDFELmUUMcsIW5M02dDY0qTj5GgIvJOnhAx+Io=
+	b=VkBdJh42eC9h8RmLKS2c6TnRAgYNSEOhP9000lCHnKhz+YdxZpmYYySN0WjHGc/w3
+	 /UJEupLvL+kU/vViOMNNTxF+yf/Wjjfph6vXsMffq5kdbzzrEJD6XcoT8JVl63DPQD
+	 fR7lyROg5+jCuMUdyfGWL93rF5FaBTsGjiuW655s=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -62,18 +62,18 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	linux-kbuild@vger.kernel.org,
 	alsa-devel@alsa-project.org,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.4 623/737] um: Fix hostaudio build errors
-Date: Mon, 11 Sep 2023 15:48:02 +0200
-Message-ID: <20230911134707.934739546@linuxfoundation.org>
+Subject: [PATCH 6.1 512/600] um: Fix hostaudio build errors
+Date: Mon, 11 Sep 2023 15:49:05 +0200
+Message-ID: <20230911134648.730492117@linuxfoundation.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230911134650.286315610@linuxfoundation.org>
-References: <20230911134650.286315610@linuxfoundation.org>
+In-Reply-To: <20230911134633.619970489@linuxfoundation.org>
+References: <20230911134633.619970489@linuxfoundation.org>
 User-Agent: quilt/0.67
 X-stable: review
 X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230911_075538_636675_86723B69 
+X-CRM114-CacheID: sfid-20230911_082554_754543_858B2F79 
 X-CRM114-Status: GOOD (  18.04  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -91,7 +91,7 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-6.4-stable review patch.  If anyone has any objections, please let me know.
+6.1-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
@@ -178,7 +178,7 @@ index bec6e5d956873..df29f282b6ac2 100644
  CONFIG_DEVTMPFS=y
  CONFIG_DEVTMPFS_MOUNT=y
 diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
-index 36911b1fddcf0..b94b2618e7d84 100644
+index 5903e2b598aae..fe0210eaf9bb6 100644
 --- a/arch/um/drivers/Kconfig
 +++ b/arch/um/drivers/Kconfig
 @@ -111,24 +111,14 @@ config SSL_CHAN
@@ -210,7 +210,7 @@ index 36911b1fddcf0..b94b2618e7d84 100644
  
  menu "UML Network Devices"
 diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
-index a461a950f0518..0e6af81096fd5 100644
+index 65b449c992d2c..079556ec044b8 100644
 --- a/arch/um/drivers/Makefile
 +++ b/arch/um/drivers/Makefile
 @@ -54,7 +54,7 @@ obj-$(CONFIG_UML_NET) += net.o
@@ -223,7 +223,7 @@ index a461a950f0518..0e6af81096fd5 100644
  obj-$(CONFIG_PORT_CHAN) += port.o
  obj-$(CONFIG_PTY_CHAN) += pty.o
 diff --git a/sound/Kconfig b/sound/Kconfig
-index 0ddfb717b81dc..466e848689bd1 100644
+index e56d96d2b11ca..1903c35d799e1 100644
 --- a/sound/Kconfig
 +++ b/sound/Kconfig
 @@ -1,7 +1,7 @@
