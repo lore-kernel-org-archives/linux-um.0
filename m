@@ -4,70 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3786EE3F2F
-	for <linux-um@archiver.kernel.org>; Fri, 15 Sep 2023 14:44:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50426CD13CF
+	for <linux-um@archiver.kernel.org>; Sun, 17 Sep 2023 19:34:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=gpQ5NKRaLnvKktrP+v+8Rs8pufDI57KzpcvEGBUBuqE=; b=S2H9dJ7alPBbbj
-	p3o+i4YRqwVJFYrBc95FoHv5kn0qfuluPlHCnJxtRqPVjR22efe/e6TGrVo1mm9EQFVgNt6KaBkHb
-	DodqoP1n69hgGYUE1Krl2bciorGP8wNA8wbQBV4VhpWbXVGheFkW46W35hYsoU/2ZYak2ANUUOSN+
-	QGucr1dh91LF4ZR0rv5kMJEBJObH7DIa/DXdSogT86krgmDtIQcrWPK8U3mLxFnFBvYRB4anJ6Bw9
-	wf3tQ7Rjzs6fywVfRit94U15wPdtT/t6AXDxzPnxls7WTM+TNrMTl7HU4GS2xlf8qwixUJVloXByd
-	K+5tix/Ye0nYCh4i3SQQ==;
+	List-Owner; bh=elanSx3TCmwaa2EAdOripnG9Ah3q1LOgJ8l8L1QrXIU=; b=AMq5Qmz55XLa4a
+	AQP2BF+js/jnsU5gK10MFpEboiUsc46l6ff3eKQsafHKA+CSKCNpYeY/PEvNQ/2+CwfsORtILrnVH
+	HbYXcNTG7Y3bezjIywesU1nsEsjSKY8lcWl//sHlUsoZ0AnDmYWJ1roUazrZVcagXmWR9Zpubgu55
+	QBzK5oLhnTliqsPAbLJ2w255DDNDNJhqPe/JzwyFYIgd2zjvww6iNbIZ5Vw13NUUW1xnrUmb6ce5H
+	x6CImHslWUyZE9lNNmZULAdEIdM+wDEta+MJTTuNnn7Y8FNSGRtLNSHX1jrcLsy79jt7tpZJlywew
+	88ClxhN1sDfc6QSAFQTw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qhA3o-00AuPf-0F;
-	Fri, 15 Sep 2023 14:44:44 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1qhxXV-00DvyA-1K;
+	Sun, 17 Sep 2023 19:34:41 +0000
+Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qhA3l-00AuP3-1z
+	id 1qhxXN-00DvxC-1K
 	for linux-um@lists.infradead.org;
-	Fri, 15 Sep 2023 14:44:42 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=H8PZLMZCU0PDXbXjCCzMXnQDN3Es4h4xOXOxp4F6e+E=;
-	t=1694789081; x=1695998681; b=FcXBXo7TQkXbjJfg5fljfcl8UDxR6sSmHcXjn2/3BGlQK8b
-	hf6Kck0KBwpGQ1rSJVXwoUS9sDcuvknzfsA9e8gjVokocVPeAKzE3vg50LiuTMaWES4+psOAYqQJO
-	4tK9ma1YodGlVRd/HTM6ZNceI3AmcxiAv2JGQwivGVrbvHFUQ+c1pPT3Y8i0tqNYKrLSkoLFlVina
-	UY5Y4fw1wrrjflb/lGH8YtHNrYOCsyPFZ7iNOmY25gd6Fx4Xbdm4Nbg8D+JQ/Aiu1+1x+yATn3EOd
-	HdMNI19Nv15s6d4YTs9krJMYa7dxey1iTCowC+PmeNSAAMwU0TCFXNA3fvFGpkyg==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.96)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1qhA39-001WIR-0N;
-	Fri, 15 Sep 2023 16:44:03 +0200
-Message-ID: <115822422e97aac5ccd651681d74a2a4ae3cff89.camel@sipsolutions.net>
-Subject: Re: [PATCH v2] x86: Fix build of UML with KASAN
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Ingo Molnar <mingo@kernel.org>, Vincent Whitchurch
-	 <vincent.whitchurch@axis.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, Frederic Weisbecker
- <frederic@kernel.org>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
- Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
- linux-um@lists.infradead.org, Andrey Ryabinin <ryabinin.a.a@gmail.com>, 
- Alexander Potapenko <glider@google.com>, Andrey Konovalov
- <andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>, Vincenzo
- Frascino <vincenzo.frascino@arm.com>,  kasan-dev@googlegroups.com,
- linux-kernel@vger.kernel.org, kernel@axis.com
-Date: Fri, 15 Sep 2023 16:44:01 +0200
-In-Reply-To: <ZQQkthfNuV3dOhZe@gmail.com>
-References: <20230915-uml-kasan-v2-1-ef3f3ff4f144@axis.com>
-	 <ZQQkthfNuV3dOhZe@gmail.com>
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+	Sun, 17 Sep 2023 19:34:39 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by ams.source.kernel.org (Postfix) with ESMTPS id D37BCB80B27;
+	Sun, 17 Sep 2023 19:34:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA400C433C8;
+	Sun, 17 Sep 2023 19:34:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1694979270;
+	bh=qkyFRXgpmq4LAg1OeWTNwSNZo29c8o0GmrXlxn7ZiFE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=osRrqH+Z551BZdw2Fkeo7ljOwHChWm+rV6bwEjTvudPhdFQnNap0UqC3lVIiaKIeP
+	 yxs3VbnfM/PbJ4OXvTj+OPnFOJqvMUszT/PWDYAVtBFxSf/S3F2CDhSQseNEksW7ad
+	 fCCbhHQ6tjlmH6nLT919EP3XT3fZ0vDV/5esg9pE=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: stable@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	patches@lists.linux.dev,
+	Randy Dunlap <rdunlap@infradead.org>,
+	kernel test robot <lkp@intel.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	linux-um@lists.infradead.org,
+	Tejun Heo <tj@kernel.org>,
+	Takashi Iwai <tiwai@suse.de>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	linux-kbuild@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 264/406] um: Fix hostaudio build errors
+Date: Sun, 17 Sep 2023 21:11:58 +0200
+Message-ID: <20230917191108.188086382@linuxfoundation.org>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230917191101.035638219@linuxfoundation.org>
+References: <20230917191101.035638219@linuxfoundation.org>
+User-Agent: quilt/0.67
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230915_074441_656226_4073F733 
-X-CRM114-Status: GOOD (  11.80  )
+X-CRM114-CacheID: sfid-20230917_123433_756606_F7B70475 
+X-CRM114-Status: GOOD (  17.62  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,34 +91,155 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2023-09-15 at 11:32 +0200, Ingo Molnar wrote:
-> 
-> >  ld: mm/kasan/shadow.o: in function `memset':
-> >  shadow.c:(.text+0x40): multiple definition of `memset';
-> >  arch/x86/lib/memset_64.o:(.noinstr.text+0x0): first defined here
-> >  ld: mm/kasan/shadow.o: in function `memmove':
-> >  shadow.c:(.text+0x90): multiple definition of `memmove';
-> >  arch/x86/lib/memmove_64.o:(.noinstr.text+0x0): first defined here
-> >  ld: mm/kasan/shadow.o: in function `memcpy':
-> >  shadow.c:(.text+0x110): multiple definition of `memcpy';
-> >  arch/x86/lib/memcpy_64.o:(.noinstr.text+0x0): first defined here
-> 
-> So the breakage was ~9 months ago, and apparently nobody build-tested UML?
+5.10-stable review patch.  If anyone has any objections, please let me know.
 
-Well, first of all, it's only with KASAN, and then I think we probably
-all did and applied a similar fix or this one ... I have a in my tree
-that simplies marks the three symbols as weak again, for instance,
-dating back to March 27th. Didn't publish it at the time, it probably
-got lost in the shuffle, don't remember.
+------------------
+
+From: Randy Dunlap <rdunlap@infradead.org>
+
+[ Upstream commit db4bfcba7bb8d10f00bba2a3da6b9a9c2a1d7b71 ]
+
+Use "select" to ensure that the required kconfig symbols are set
+as expected.
+Drop HOSTAUDIO since it is now equivalent to UML_SOUND.
+
+Set CONFIG_SOUND=m in ARCH=um defconfig files to maintain the
+status quo of the default configs.
+
+Allow SOUND with UML regardless of HAS_IOMEM. Otherwise there is a
+kconfig warning for unmet dependencies. (This was not an issue when
+SOUND was defined in arch/um/drivers/Kconfig. I have done 50 randconfig
+builds and didn't find any issues.)
+
+This fixes build errors when CONFIG_SOUND is not set:
+
+ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_cleanup_module':
+hostaudio_kern.c:(.exit.text+0xa): undefined reference to `unregister_sound_mixer'
+ld: hostaudio_kern.c:(.exit.text+0x15): undefined reference to `unregister_sound_dsp'
+ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_init_module':
+hostaudio_kern.c:(.init.text+0x19): undefined reference to `register_sound_dsp'
+ld: hostaudio_kern.c:(.init.text+0x31): undefined reference to `register_sound_mixer'
+ld: hostaudio_kern.c:(.init.text+0x49): undefined reference to `unregister_sound_dsp'
+
+and this kconfig warning:
+WARNING: unmet direct dependencies detected for SOUND
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Fixes: d886e87cb82b ("sound: make OSS sound core optional")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: lore.kernel.org/r/202307141416.vxuRVpFv-lkp@intel.com
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-um@lists.infradead.org
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Nicolas Schier <nicolas@fjasle.eu>
+Cc: linux-kbuild@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
+Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/um/configs/i386_defconfig   |  1 +
+ arch/um/configs/x86_64_defconfig |  1 +
+ arch/um/drivers/Kconfig          | 16 +++-------------
+ arch/um/drivers/Makefile         |  2 +-
+ sound/Kconfig                    |  2 +-
+ 5 files changed, 7 insertions(+), 15 deletions(-)
+
+diff --git a/arch/um/configs/i386_defconfig b/arch/um/configs/i386_defconfig
+index fb51bd206dbed..4d7f99a02c1eb 100644
+--- a/arch/um/configs/i386_defconfig
++++ b/arch/um/configs/i386_defconfig
+@@ -35,6 +35,7 @@ CONFIG_TTY_CHAN=y
+ CONFIG_XTERM_CHAN=y
+ CONFIG_CON_CHAN="pts"
+ CONFIG_SSL_CHAN="pts"
++CONFIG_SOUND=m
+ CONFIG_UML_SOUND=m
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+diff --git a/arch/um/configs/x86_64_defconfig b/arch/um/configs/x86_64_defconfig
+index 477b873174243..4bdd83008f623 100644
+--- a/arch/um/configs/x86_64_defconfig
++++ b/arch/um/configs/x86_64_defconfig
+@@ -33,6 +33,7 @@ CONFIG_TTY_CHAN=y
+ CONFIG_XTERM_CHAN=y
+ CONFIG_CON_CHAN="pts"
+ CONFIG_SSL_CHAN="pts"
++CONFIG_SOUND=m
+ CONFIG_UML_SOUND=m
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
+index 2e7b8e0e7194b..01dfbd57e29d7 100644
+--- a/arch/um/drivers/Kconfig
++++ b/arch/um/drivers/Kconfig
+@@ -104,24 +104,14 @@ config SSL_CHAN
+ 
+ config UML_SOUND
+ 	tristate "Sound support"
++	depends on SOUND
++	select SOUND_OSS_CORE
+ 	help
+ 	  This option enables UML sound support.  If enabled, it will pull in
+-	  soundcore and the UML hostaudio relay, which acts as a intermediary
++	  the UML hostaudio relay, which acts as a intermediary
+ 	  between the host's dsp and mixer devices and the UML sound system.
+ 	  It is safe to say 'Y' here.
+ 
+-config SOUND
+-	tristate
+-	default UML_SOUND
+-
+-config SOUND_OSS_CORE
+-	bool
+-	default UML_SOUND
+-
+-config HOSTAUDIO
+-	tristate
+-	default UML_SOUND
+-
+ endmenu
+ 
+ menu "UML Network Devices"
+diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
+index 2a249f6194671..207d62ab519df 100644
+--- a/arch/um/drivers/Makefile
++++ b/arch/um/drivers/Makefile
+@@ -52,7 +52,7 @@ obj-$(CONFIG_UML_NET) += net.o
+ obj-$(CONFIG_MCONSOLE) += mconsole.o
+ obj-$(CONFIG_MMAPPER) += mmapper_kern.o 
+ obj-$(CONFIG_BLK_DEV_UBD) += ubd.o 
+-obj-$(CONFIG_HOSTAUDIO) += hostaudio.o
++obj-$(CONFIG_UML_SOUND) += hostaudio.o
+ obj-$(CONFIG_NULL_CHAN) += null.o 
+ obj-$(CONFIG_PORT_CHAN) += port.o
+ obj-$(CONFIG_PTY_CHAN) += pty.o
+diff --git a/sound/Kconfig b/sound/Kconfig
+index 36785410fbe15..aaf2022ffc57d 100644
+--- a/sound/Kconfig
++++ b/sound/Kconfig
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ menuconfig SOUND
+ 	tristate "Sound card support"
+-	depends on HAS_IOMEM
++	depends on HAS_IOMEM || UML
+ 	help
+ 	  If you have a sound card in your computer, i.e. if it can say more
+ 	  than an occasional beep, say Y.
+-- 
+2.40.1
 
 
-Also, a variant of this patch has been around for three months too.
 
-> Does UML boot with the fix?
-
-Sure, works fine as long as the symbols are marked weak _somehow_.
-
-johannes
 
 _______________________________________________
 linux-um mailing list
