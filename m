@@ -4,59 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24DFCCE7A88
-	for <linux-um@archiver.kernel.org>; Sat, 23 Sep 2023 05:30:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C578CE7A89
+	for <linux-um@archiver.kernel.org>; Sat, 23 Sep 2023 15:05:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:MIME-Version:
-	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=2nhxrkSAeTv5Qg0amkHst9Xfy4XTOFGA/d8LFCqb0k8=; b=OBalsiQ9nYb5sZsTYw6T4Tmp6b
-	SLuw9Ow+U2kUitBx5rV7zoX36wqLDpSAlVVfSr8z/KnLUsUaqs6+AgaYp3RHlYpcvuY9jLOxA917x
-	8Ssm0JfPfgP0F17/ZqQHzIy1R0igxSqaB0wvvkADg/UWLzfiIDikZgsUrHS3WoYwHMEIuB/UG/md5
-	WqeC/6pPauX16DJKP6nJB/Ym2QbcrkaIueXrS7G6+R97cynfEQSvsPAa5tf5BPvaRSXpSIJe3m4yl
-	797K9Taga5KghhdLgAGffUNuS5f2+7YS7B34dcqBA8rxZ1MQ9YseIk9egeDwJhmQmcP7TJO8bjnzZ
-	PYyKZANw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:From:To:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=1B8DOPf6RBy6VLkyDjKY0ktwX/nq7YL5TfxqOSWk7E4=; b=SBdliasNn5JKHi
+	O01ksvfaUk8hPgCcuS5OcQvq+NHpfPy9Hlb3RUi9yJSl0iOhNx4+cdaY2jrIstf/jzUGxuHcg6mXc
+	KWIKFwwSryl6KcwTDoHZNYkpQDRFU/dAWr+98Y4TuXThLin8fTrOsEu1ztLA/ae0iT5FtaePtYX6e
+	V0ODVtTTDOSROlMueTRN83cCVhxTTiDXBx6kbrZNM62UukrJ4oCrDU98+UQKaBiMFYEEpnzOQS7Ok
+	80sz83edgEuKDTLsnctZJ9Was71ziw7V/KzZ7cDuJcepvvVhke+IQm2XgYQ0OKfbBjlghlwEes4xM
+	7iY3kmnUTy2COj0Lvgfw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjvDS-00AT2A-0O;
-	Sat, 23 Sep 2023 05:30:06 +0000
-Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
+	id 1qk4CZ-00B7fx-0A;
+	Sat, 23 Sep 2023 15:05:47 +0000
+Received: from mail-4317.proton.ch ([185.70.43.17])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjvDO-00AT1G-2P
+	id 1qiHIX-00FtXd-2C
 	for linux-um@lists.infradead.org;
-	Sat, 23 Sep 2023 05:30:04 +0000
-Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
-	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1qjvCz-002e35-Hw; Sat, 23 Sep 2023 05:29:37 +0000
-Received: from madding.kot-begemot.co.uk ([192.168.3.98])
-	by jain.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.94.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1qjvCw-003Lty-TO; Sat, 23 Sep 2023 06:29:37 +0100
-Message-ID: <44c606c0-c846-0bcb-0269-66974dee3c4b@cambridgegreys.com>
-Date: Sat, 23 Sep 2023 06:29:34 +0100
+	Mon, 18 Sep 2023 16:40:35 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=n8pjl.ca;
+	s=protonmail2; t=1695055231; x=1695314431;
+	bh=MxvEGHu4PtwN8mGrIyQuS2LPbQNlvfj3VnD5jiLU7lc=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=VgM7sEMUObxhy8J/FthQz5uVyKAzVBVCMwGKG+3ouY5osT0Rb1fa86tMORiLFRjz8
+	 cGV4vKiEX+WES/DiNV0lIlKlHd4aSr7dnzsR0QgTgFXP06iCrX/AW2yQwkLyhbqeT7
+	 8lP1XTKgFPtQdDkGVx7/ZDVPz/ti0NLUlDayxIMork8EC4xUGPEMpTt1V4h2e2r1Bw
+	 bX7nkazpz3KeGSWLwAS/3zQ4q/hRmSOjAjHbbf+GXOofQSbQdV5zlEzUI3MITqLG4x
+	 OzqnYnrdRx7M+pWjb+3Gd64OygYOf85Uz+uvJBJRHvLdeBbMTVU9XTEZs3pelB+GWU
+	 6/gdC44vi6a+Q==
+Date: Mon, 18 Sep 2023 16:40:22 +0000
+To: peter@n8pjl.ca
+From: Peter Lafreniere <peter@n8pjl.ca>
+Cc: anton.ivanov@cambridgegreys.com, geert@linux-m68k.org, jack@suse.cz, johannes@sipsolutions.net, linux-um@lists.infradead.org, reiserfs-devel@vger.kernel.org, richard@nod.at
+Subject: um: Remove CONFIG_REISERFS_FS from defconfig
+Message-ID: <20230918164017.8827-1-peter@n8pjl.ca>
+In-Reply-To: <20230918163544.8604-1-peter@n8pjl.ca>
+References: <20230910232640.113938-1-peter@n8pjl.ca> <20230918125744.4342-1-peter@n8pjl.ca> <20230918132614.zmmuc72purc2psik@quack3> <CAMuHMdWzN0Gs2FTQDFeBLz2498dv3ZYCBL2xOvL5YdHAveaH9g@mail.gmail.com> <20230918163544.8604-1-peter@n8pjl.ca>
+Feedback-ID: 53133685:user:proton
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] um: clean up mm creation
-To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
-References: <20230922131638.2c57ec713d1c.Id11dff4b349e6a8f0136bb6bb09f6e01a80befbb@changeid>
- <88e0568b-6860-9042-7f8b-ab53edb4242e@cambridgegreys.com>
- <ce18cec1dbacb366f2cf74ebc941c9fbc4b1e116.camel@sipsolutions.net>
- <9cc73695-b3c7-d194-72e9-9bde142c81f8@cambridgegreys.com>
- <6bc1a06d1b91b2badd388a4e13d467ed4eace651.camel@sipsolutions.net>
-Content-Language: en-US
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Organization: Cambridge Greys
-In-Reply-To: <6bc1a06d1b91b2badd388a4e13d467ed4eace651.camel@sipsolutions.net>
-X-Clacks-Overhead: GNU Terry Pratchett
+X-Bad-Reply: References and In-Reply-To but no 'Re:' in Subject.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230922_223002_789163_F1F50A0C 
-X-CRM114-Status: GOOD (  15.92  )
+X-CRM114-CacheID: sfid-20230918_094033_893770_DADCDD07 
+X-CRM114-Status: GOOD (  18.42  )
+X-Mailman-Approved-At: Sat, 23 Sep 2023 08:05:44 -0700
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,58 +65,50 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 22/09/2023 21:12, Johannes Berg wrote:
-> On Fri, 2023-09-22 at 21:08 +0100, Anton Ivanov wrote:
->> On 22/09/2023 20:41, Johannes Berg wrote:
->>> On Fri, 2023-09-22 at 14:41 +0100, Anton Ivanov wrote:
->>>>
->>>> It is nearly twice slower than the current approach on a find /usr -type f -exec cat {} > /dev/null \;
->>>>
->>>
->>> Btw, I cannot reproduce that at all - seems about the same in my tests?
->>>
->>> Is there anything special in your setup?
->>>
->>> Or maybe it's because I'm using hostfs? But not sure why that would
->>> matter.
->>
->> I am using a ubd with ext4 sitting on an nfs server. The host, however,
->> has more than enough memory to cache all of it, so it is pretty much
->> like reading off a ramdisk as it is fully cached.
->>
->> It is quite clear in that case.
->>
+> > > Makes sense but I've noticed there are many more architectures that define
+> > > CONFIG_REISERFS_FS in their defconfig (sh, powerpc, mips, m68k, ia64, arm,
+> > > alpha). So perhaps we should do this for all of them when we are at it?
+> > 
+> > The policy for the m68k defconfigs is to enable all available exotic
+> > file systems as modules, so support for them is available when needed.
+> > 
+> > Please let me know why this should be changed, as long as ReiserFS is
+> > still available in the upstream kernel.
 > 
-> Did you have your preempt patch applied also, btw? Because I was working
-> off that now.
 > 
-> But even with PREEMPT turned off, I see basically no difference in such
+> I understand that policy and it makes particular sense for older/hobbyist
+> hardware like the m68k classic where ReiserFS is included in make defconfig.
+> 
+> However, ReiserFS is deprecated and should be phased out as best as possible
+> before its removal, and pruning config options for a filesystem that is
+> considered obsolete and should not be used on the newest kernels is a step
+> towards that.
+> 
+> ReiserFS is still availiable to be configured by anyone who builds their own
+> kernel and is still availiable in all(mod|yes)config. As such I can justify
+> the removal of some old config options that doesn't actually remove support for
+> the filesystem when it simplifies the deprecation and removal processes for an
+> ancient, largely unused filesystem.
+> 
+> Please remember that users who build and install their own kernel on hobbyist
+> hardware should be capable enough to select one Kconfig option if they happen to
+> need ReiserFS. If not, then removing ReiserFS from the defconfig on a kernel
+> update is an easier issue to work around than waiting to remove the filesystem
+> from the tree entirely.
 
-One more thing. Is your find "real" /bin/find or busybox.
+Though as Jan said, you're free to not accept a patch removing the config option
+until the filesystem is gone for good. I just feel like it's easier to remove
+ReiserFS from all defconfigs in one fell swoop.
 
-Real find will exec() /bin/cat
-Busybox find will shortcut internally to the code of its cat applet. As 
-a result it is much faster and there is no exec overhead.
+Cheers,
 
-> a benchmark. I was running only over /usr/bin/ because otherwise it's
-> just too much time on my system overall, but there's basically no
-> difference in the 4x4 matrix of
-> 
->   - preempt off / preempt voluntary
->   - with / without my patch
-> 
-> johannes
-> 
-
--- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
+Peter Lafreniere
+<peter@n8pjl.ca>
 
 
 _______________________________________________
