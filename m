@@ -4,84 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1111CCD13D2
-	for <linux-um@archiver.kernel.org>; Mon, 18 Sep 2023 16:32:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07150CD37B0
+	for <linux-um@archiver.kernel.org>; Mon, 18 Sep 2023 16:33:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:From:To:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=8G+AE66G2B+spT39TgokfNO5X/BIZLEyy5ECSzkNu0E=; b=l/v/w9JTsYMXBp
-	6S/C90EHlShefn8X0Ueeb9KkflBBeDA7IdiNPtvJ+b/rlmI2cQY/I05PbHgA62NelkM9xsMb1yW1E
-	9c41sS/a/rehqlSlmyN5hsqK88WkyqJmcWd0aw+VqeIwOwaVdKVGExDO4V914Ich74+agrhwSAv2B
-	4lWEnlA42Y4foCheZQLuQq50ACwTwnPQD5tvZQwTkrYLL48Z3SSwnJFl3O7o7+pn/e6JZkZgV6GnO
-	uiNEINoPI5mEeKaqCiokeyvcE/GD3lnj1Hi3uud7qnkxjYrK54yplZGlUwmRFM12omj7apx9/EZ/0
-	Ygpwplc9tXOMWdZBwzZQ==;
+	List-Owner; bh=0fUzcvVS2KRr+xQ1CNolJxMbnI9BleS2wfcJOdWRoHE=; b=SvktXmxhDJp6FC
+	3KE71tJbwdj7o4OMjGXyx5XzSIuZtvbeuVUrYG5JoI9I1AMyNk4COF6On0CKeGaowjw+P14THAqu1
+	QDTyu5+u+ExfMEtGUehSQXs3hYUBNgWBTG+1uO62ptktsQfui+HJ/9r7y98UQHV15KW+VcJiUL9ZT
+	paV2baTpiPIZFsEDVKZjFJgI7Epj7LuQ/OP6acIt1n+0pd9XdskfaOLw1ZjmhgU12pBM8ZInTyH0F
+	ubaSZBeyQQ3kmIfbNZESGmIm2SDBro1fE45wuKJwzZbdGmzEf3JdkaJI7uNaGNJPuiY0T+Exw0DiK
+	Xp439puLgtI8dk/rK6lg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiHAb-00FsXP-2q;
-	Mon, 18 Sep 2023 16:32:21 +0000
-Received: from smtp-out1.suse.de ([2001:67c:2178:6::1c])
+	id 1qiHBc-00Fsfs-0M;
+	Mon, 18 Sep 2023 16:33:24 +0000
+Received: from mail-4317.proton.ch ([185.70.43.17])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiHAT-00FsW1-2h
+	id 1qiHBT-00FsdG-2z
 	for linux-um@lists.infradead.org;
-	Mon, 18 Sep 2023 16:32:20 +0000
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 468B121D11;
-	Mon, 18 Sep 2023 16:32:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1695054728; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=65viRQYpB50dold0K4n5XzmsPEOTnLbffREamdAK1tQ=;
-	b=2QwSrhbDUIp5/TQREiRUVkEyjBl+gfB80m2OcJdPAl2M3FpoSeTejfBRq0Rn6xvipQ5EYf
-	F2yW5VECNNxjlp7qf60mnz1SYtY8iwM+OWdse4ZRfXxtAUSHjUwnhXNcZmGVVfcoX+c8MF
-	RnqPC+zRffsJnd+K6h7mORl1YtDtgFY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1695054728;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=65viRQYpB50dold0K4n5XzmsPEOTnLbffREamdAK1tQ=;
-	b=Pxgaal1PBWSS/Hac9Ux2fgXyaGG+k92ZBcLPSNgtabneSAz5Zd78iUFSV27CVkELMCaNbV
-	kAGjIUaTvxKqfLDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3737513480;
-	Mon, 18 Sep 2023 16:32:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id CeR4DYh7CGU1fQAAMHmgww
-	(envelope-from <jack@suse.cz>); Mon, 18 Sep 2023 16:32:08 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 9F95CA0759; Mon, 18 Sep 2023 18:32:07 +0200 (CEST)
-Date: Mon, 18 Sep 2023 18:32:07 +0200
-From: Jan Kara <jack@suse.cz>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Jan Kara <jack@suse.cz>, Peter Lafreniere <peter@n8pjl.ca>,
-	linux-um@lists.infradead.org, richard@nod.at,
-	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
-	reiserfs-devel@vger.kernel.org
+	Mon, 18 Sep 2023 16:33:22 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=n8pjl.ca;
+	s=protonmail2; t=1695054790; x=1695313990;
+	bh=Km91J5JZrnd7URdpT5rh0YawCfFvdMqpbXm9xOXQn1s=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=i0rmuUeQO8UXXFVQQYz64ITh+NJ1f3IIV9UF4KLDj1/0GNS3os5y1sECFShbREJs+
+	 bzmf4Uv8RbiXe7wbn/HkzlxUVhUayBb7Qe3Q0gOTpnJmPFFTMbbF7C3N+0UcUbqqtf
+	 5ZlJwFTT8X6EeWfUEYPQbfYII1IHwWH0ubH33A09OJy0weG1VS4iDXoO9VgzYmfQCM
+	 S700jPOLGEPrm/W8fKChRxSGkDe174AxmkvbdPDy++YRuQD4uDc7oEPhYLOeykB8IK
+	 Du+ai/T90jG/+2Xx3cMgGSBOxj0YergS0blnyHfzyqW8xfOroUx8oljcH5YtR0jVx8
+	 dXaJS+EMzb4Ng==
+Date: Mon, 18 Sep 2023 16:32:48 +0000
+To: geert@linux-m68k.org, jack@suse.cz
+From: Peter Lafreniere <peter@n8pjl.ca>
+Cc: anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, linux-um@lists.infradead.org, peter@n8pjl.ca, reiserfs-devel@vger.kernel.org, richard@nod.at
 Subject: Re: [PATCH RESEND] um: Remove CONFIG_REISERFS_FS from defconfig
-Message-ID: <20230918163207.3e2hev3zxnr3bakj@quack3>
-References: <20230910232640.113938-1-peter@n8pjl.ca>
- <20230918125744.4342-1-peter@n8pjl.ca>
- <20230918132614.zmmuc72purc2psik@quack3>
- <CAMuHMdWzN0Gs2FTQDFeBLz2498dv3ZYCBL2xOvL5YdHAveaH9g@mail.gmail.com>
+Message-ID: <20230918163234.8514-1-peter@n8pjl.ca>
+In-Reply-To: <20230918132614.zmmuc72purc2psik@quack3>
+References: <20230910232640.113938-1-peter@n8pjl.ca> <20230918125744.4342-1-peter@n8pjl.ca> <20230918132614.zmmuc72purc2psik@quack3>
+Feedback-ID: 53133685:user:proton
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdWzN0Gs2FTQDFeBLz2498dv3ZYCBL2xOvL5YdHAveaH9g@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230918_093214_037087_6EC0F0DB 
-X-CRM114-Status: GOOD (  21.55  )
+X-CRM114-CacheID: sfid-20230918_093317_312496_A16AF201 
+X-CRM114-Status: GOOD (  16.56  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,35 +63,75 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-T24gTW9uIDE4LTA5LTIzIDE2OjU4OjA1LCBHZWVydCBVeXR0ZXJob2V2ZW4gd3JvdGU6Cj4gSGkg
-SmFuLAo+IAo+IE9uIE1vbiwgU2VwIDE4LCAyMDIzIGF0IDM6MjbigK9QTSBKYW4gS2FyYSA8amFj
-a0BzdXNlLmN6PiB3cm90ZToKPiA+IE9uIE1vbiAxOC0wOS0yMyAxMjo1ODoyNiwgUGV0ZXIgTGFm
-cmVuaWVyZSB3cm90ZToKPiA+ID4gUmVpc2VyRlMgaGFzIGJlZW4gZGVwcmVjYXRlZCBmb3IgYSB5
-ZWFyIGFuZCBhIGhhbGYsIHlldCBpcyBzdGlsbCBidWlsdAo+ID4gPiBhcyBwYXJ0IG9mIGEgZGVm
-Y29uZmlnIFVNTCBrZXJuZWwuCj4gPiA+Cj4gPiA+IEFjY29yZGluZyB0byBjb21taXQgZWIxMDNh
-NTE2NDBlICgicmVpc2VyZnM6IERlcHJlY2F0ZSByZWlzZXJmcyIpLCB0aGUKPiA+ID4gZmlsZXN5
-c3RlbSBpcyBzbGF0ZWQgdG8gYmUgcmVtb3ZlZCBpbiAyMDI1LiBSZW1vdmUgaXQgZnJvbSB0aGUg
-ZGVmY29uZmlnCj4gPiA+IHByb2ZpbGUgbm93LCBhcyBwYXJ0IG9mIGl0cyBkZXByZWNhdGlvbiBw
-cm9jZXNzLgo+ID4gPgo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBQZXRlciBMYWZyZW5pZXJlIDxwZXRl
-ckBuOHBqbC5jYT4KPiA+Cj4gPiBNYWtlcyBzZW5zZSBidXQgSSd2ZSBub3RpY2VkIHRoZXJlIGFy
-ZSBtYW55IG1vcmUgYXJjaGl0ZWN0dXJlcyB0aGF0IGRlZmluZQo+ID4gQ09ORklHX1JFSVNFUkZT
-X0ZTIGluIHRoZWlyIGRlZmNvbmZpZyAoc2gsIHBvd2VycGMsIG1pcHMsIG02OGssIGlhNjQsIGFy
-bSwKPiA+IGFscGhhKS4gU28gcGVyaGFwcyB3ZSBzaG91bGQgZG8gdGhpcyBmb3IgYWxsIG9mIHRo
-ZW0gd2hlbiB3ZSBhcmUgYXQgaXQ/Cj4gCj4gVGhlIHBvbGljeSBmb3IgdGhlIG02OGsgZGVmY29u
-ZmlncyBpcyB0byBlbmFibGUgYWxsIGF2YWlsYWJsZSBleG90aWMKPiBmaWxlIHN5c3RlbXMgYXMg
-bW9kdWxlcywgc28gc3VwcG9ydCBmb3IgdGhlbSBpcyBhdmFpbGFibGUgd2hlbiBuZWVkZWQuCj4g
-Cj4gUGxlYXNlIGxldCBtZSBrbm93IHdoeSB0aGlzIHNob3VsZCBiZSBjaGFuZ2VkLCBhcyBsb25n
-IGFzIFJlaXNlckZTIGlzCj4gc3RpbGwgYXZhaWxhYmxlIGluIHRoZSB1cHN0cmVhbSBrZXJuZWwu
-CgpUaGVyZSdzIG5vIG5lZWQgdG8gY2hhbmdlIGlmIHlvdSBkb24ndCB3YW50IHRvLiBJIGNhbiBq
-dXN0IGltYWdpbmUgaG93IGZvcgpvdGhlciBhcmNocyB3aGljaCBzZWVtIHRvIGVuYWJsZSBvbmx5
-ICJ1c2VmdWwiIGZpbGVzeXN0ZW1zIGluIGRlZmNvbmZpZwpkaXNhYmxpbmcgYSBkZXByZWNhdGVk
-IGZpbGVzeXN0ZW0gbWFrZXMgc2Vuc2UuCgoJCQkJCQkJCUhvbnphCi0tIApKYW4gS2FyYSA8amFj
-a0BzdXNlLmNvbT4KU1VTRSBMYWJzLCBDUgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmlu
-ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
-aW51eC11bQo=
+On Monday, September 18th, 2023 at 09:26, Jan Kara <jack@suse.cz> wrote:
+> On Mon 18-09-23 12:58:26, Peter Lafreniere wrote:
+> 
+> > ReiserFS has been deprecated for a year and a half, yet is still built
+> > as part of a defconfig UML kernel.
+> > 
+> > According to commit eb103a51640e ("reiserfs: Deprecate reiserfs"), the
+> > filesystem is slated to be removed in 2025. Remove it from the defconfig
+> > profile now, as part of its deprecation process.
+> > 
+> > Signed-off-by: Peter Lafreniere peter@n8pjl.ca
+> 
+> 
+> Makes sense but I've noticed there are many more architectures that define
+> CONFIG_REISERFS_FS in their defconfig (sh, powerpc, mips, m68k, ia64, arm,
+> alpha). So perhaps we should do this for all of them when we are at it?
+
+I agree. I can send a patch series for those arches except for ia64, which has
+already been removed from linux-next.
+
+> 
+> Honza
+> 
+> > ---
+> > Fixed invalid DKIM settings causing the previous patch to be rejected.
+> > 
+> > arch/um/configs/i386_defconfig | 1 -
+> > arch/um/configs/x86_64_defconfig | 1 -
+> > 2 files changed, 2 deletions(-)
+> > 
+> > diff --git a/arch/um/configs/i386_defconfig b/arch/um/configs/i386_defconfig
+> > index e543cbac8792..9c9c77f1255a 100644
+> > --- a/arch/um/configs/i386_defconfig
+> > +++ b/arch/um/configs/i386_defconfig
+> > @@ -61,7 +61,6 @@ CONFIG_UML_NET_DAEMON=y
+> > CONFIG_UML_NET_MCAST=y
+> > CONFIG_UML_NET_SLIRP=y
+> > CONFIG_EXT4_FS=y
+> > -CONFIG_REISERFS_FS=y
+> > CONFIG_QUOTA=y
+> > CONFIG_AUTOFS_FS=m
+> > CONFIG_ISO9660_FS=m
+> > diff --git a/arch/um/configs/x86_64_defconfig b/arch/um/configs/x86_64_defconfig
+> > index 939cb12318ca..03b10d3f6816 100644
+> > --- a/arch/um/configs/x86_64_defconfig
+> > +++ b/arch/um/configs/x86_64_defconfig
+> > @@ -59,7 +59,6 @@ CONFIG_UML_NET_DAEMON=y
+> > CONFIG_UML_NET_MCAST=y
+> > CONFIG_UML_NET_SLIRP=y
+> > CONFIG_EXT4_FS=y
+> > -CONFIG_REISERFS_FS=y
+> > CONFIG_QUOTA=y
+> > CONFIG_AUTOFS_FS=m
+> > CONFIG_ISO9660_FS=m
+> > --
+> > 2.42.0
+> 
+> --
+> Jan Kara jack@suse.com
+> 
+> SUSE Labs, CRi
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
