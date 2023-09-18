@@ -4,68 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A13E0CD37B0
-	for <linux-um@archiver.kernel.org>; Mon, 18 Sep 2023 10:52:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00558CD37B0
+	for <linux-um@archiver.kernel.org>; Mon, 18 Sep 2023 12:58:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:CC:To:Message-ID:MIME-Version:Subject:
-	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=+Kec7uH+AnLLlovsLQAV+rnEmczEed7nG02szao0drs=; b=yjmoa6Gsf9JRgS
-	xfBC+XCmMe9cIMZMJ8UxGMSTibAHNDWfopmnr2lNK2nHXA8PVWDfMJdft2yPkU92MKlvqFaR03Kah
-	CkuhiGLnlcQN4k/ZsaqUwLS/GLc9d0YQSEhNt0DAqd/YqJKo8f4eY2wD/cvsJg0YgyyuLku6VqjcB
-	aG/T0uv5V+xNP1Gvdc8qo+UwpeUmq956p3q/UaDbiDuSzEXg56rvqyC9UW/Y0NwJNjwrFdF/Wn4g2
-	kccJPo6WR3nesVoG7yx0iiLUTEvCLunATM2vowT3NbRM/u4Aj3LfgYTOKGgISKWJoBg32FOBzTV26
-	LDwzoPZ6gmybLZcRCezQ==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:From:To:Date:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=fza+UVpdAE1DmMs1AaE7RFF9cYJXOrRqsvTSex7d50k=; b=YFXiDlgAVv8Agh
+	Y0tERZ9VcxTlNJ6xAuWxw/JSAU4jGjwLorcos0LfCCby3LTfG1B7jA+87DvuzT6lluQO+DyUIlv/a
+	kgzCGR0hMBMXc0ptzobqXvgGgwF89pCSjZU/6qjejmU+4GEzk057Gva4xYGr+0DM1ivUBVD0qp1/d
+	tou2Rb9ODFN0HSLWzecJBWdwIRXrDa7eGHthhgl0MnNW9zq7rm6e/1hpAwMsykJHG5NGJnqCrZASB
+	uY2pDt9aNAB+bKkFHesh6HZ5NWw66Bk9eAy7bzqBHB1pNyV/wSGBFAyWNcvU6+NVMIecOESG6S4/V
+	RIuJyqJ+D9WBm2hFAG3A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiBs0-00FGaJ-1b;
-	Mon, 18 Sep 2023 10:52:48 +0000
-Received: from smtp2.axis.com ([195.60.68.18])
+	id 1qiDq0-00FTw8-0t;
+	Mon, 18 Sep 2023 12:58:52 +0000
+Received: from mail-4317.proton.ch ([185.70.43.17])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiBrw-00FGYF-2n
+	id 1qiDpw-00FTvg-1P
 	for linux-um@lists.infradead.org;
-	Mon, 18 Sep 2023 10:52:47 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1695034365;
-  x=1726570365;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:to:cc;
-  bh=bOsEzjVQKBPn7rGdrNw3l2iC/L1VtxB+euAZfU+U4zs=;
-  b=hggS6tRep+WSkPpQFEO+ihQAUN7wj0fNwi/6EavLizvVd41Ry1bxYOpt
-   9e1YGneRLuhpwPV0kHNuG8ZA79MGJUfd8rKdyQA6Rf3qTlDUroTaS7n8D
-   juW746YLKiOl3w5uxkco8lSG2EW7PCSw9vZDw5GEMQsOl0RCFpg2o3cP+
-   DhF3IP3UCMTlb6ChUqRRy3gRH/De4rb68rlBNJl7OmLQbxy3BRRS+sUUK
-   IwtrcrUz3mO9WCjsCIhNxPYuxwN5PmYdCOiFfMckS6OAemRFVX4GOFVNX
-   Z3fZvyiafKeePEDg9JRW0Fj5RoF9AIVHvGqJOuQ4y9e0pq0Ljp7NepUXV
-   Q==;
-From: Vincent Whitchurch <vincent.whitchurch@axis.com>
-Date: Mon, 18 Sep 2023 12:52:34 +0200
-Subject: [PATCH v3] x86: Fix build of UML with KASAN
+	Mon, 18 Sep 2023 12:58:51 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=n8pjl.ca;
+	s=protonmail2; t=1695041922; x=1695301122;
+	bh=jFSuVM37gBzzT3DlSXH+u3vj6sxnz1gtZhD0blEKUx0=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=GQAKpSTbQf+pySgjFZNHQICah6ZILzxAU9AfMv5pQAjyU66s0cZYbmz8rQ3+PYlq8
+	 oVoFVbOeIsQao1ujOQR/gG9egtf8zBxaFZiuFEWZr8HbSJ2tdieT+7BlrwSzJSo9a0
+	 7HYc2nXVPue9w6ysyPH8ZErcqaXU1x7lPvSJztJk/xK+wbzfeRsRZzh1xIgzg7N2Zb
+	 MUnwqjmTJYKxKCITC9Q5F8qVI+DS/nFctPrkUW63TubposSC6dq04/U232yCCRpQNT
+	 6Jg8VUWY1qD0C8vnWSOCI5cYs2C4tvYs54l6JP61O/qyOvFwL79rFWCY4Y8PP9WCA0
+	 C2itn0Hub3BWQ==
+Date: Mon, 18 Sep 2023 12:58:26 +0000
+To: linux-um@lists.infradead.org
+From: Peter Lafreniere <peter@n8pjl.ca>
+Cc: Peter Lafreniere <peter@n8pjl.ca>, richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, reiserfs-devel@vger.kernel.org, jack@suse.cz
+Subject: [PATCH RESEND] um: Remove CONFIG_REISERFS_FS from defconfig
+Message-ID: <20230918125744.4342-1-peter@n8pjl.ca>
+In-Reply-To: <20230910232640.113938-1-peter@n8pjl.ca>
+References: <20230910232640.113938-1-peter@n8pjl.ca>
+Feedback-ID: 53133685:user:proton
 MIME-Version: 1.0
-Message-ID: <20230918-uml-kasan-v3-1-7ad6db477df6@axis.com>
-X-B4-Tracking: v=1; b=H4sIAPErCGUC/22Nyw7CIBBFf6VhLYZXTXHlfxgXFAZLtNCAkpqm/
- y50YxdmVudmzr0LShAdJHRuFhQhu+SCL8APDdKD8nfAzhRGjDBOTkTi9/jED5WUx4xLZozQvGs
- 7VP57lQD3UXk9VMOGwGo8RbBu3iaut8KDS68QP9tipjX9V54ppri1SndGEGmEvajZpaMOI6olm
- f1ESdu9yIoIlpezwlIhduK6rl9voZLC8QAAAA==
-To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
-	<x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Frederic Weisbecker
-	<frederic@kernel.org>, "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>
-CC: Richard Weinberger <richard@nod.at>, Anton Ivanov
-	<anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>,
-	<linux-um@lists.infradead.org>, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Alexander Potapenko <glider@google.com>, Andrey Konovalov
-	<andreyknvl@gmail.com>, Dmitry Vyukov <dvyukov@google.com>, Vincenzo Frascino
-	<vincenzo.frascino@arm.com>, <kasan-dev@googlegroups.com>,
-	<linux-kernel@vger.kernel.org>, <kernel@axis.com>, Vincent Whitchurch
-	<vincent.whitchurch@axis.com>
-X-Mailer: b4 0.12.3
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230918_035245_390961_A1863EAE 
-X-CRM114-Status: GOOD (  10.83  )
+X-CRM114-CacheID: sfid-20230918_055850_128438_CE78F875 
+X-CRM114-Status: UNSURE (   6.30  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,104 +69,48 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Building UML with KASAN fails since commit 69d4c0d32186 ("entry, kasan,
-x86: Disallow overriding mem*() functions") with the following errors:
+ReiserFS has been deprecated for a year and a half, yet is still built
+as part of a defconfig UML kernel.
 
- $ tools/testing/kunit/kunit.py run --kconfig_add CONFIG_KASAN=y
- ...
- ld: mm/kasan/shadow.o: in function `memset':
- shadow.c:(.text+0x40): multiple definition of `memset';
- arch/x86/lib/memset_64.o:(.noinstr.text+0x0): first defined here
- ld: mm/kasan/shadow.o: in function `memmove':
- shadow.c:(.text+0x90): multiple definition of `memmove';
- arch/x86/lib/memmove_64.o:(.noinstr.text+0x0): first defined here
- ld: mm/kasan/shadow.o: in function `memcpy':
- shadow.c:(.text+0x110): multiple definition of `memcpy';
- arch/x86/lib/memcpy_64.o:(.noinstr.text+0x0): first defined here
+According to commit eb103a51640e ("reiserfs: Deprecate reiserfs"), the
+filesystem is slated to be removed in 2025. Remove it from the defconfig
+profile now, as part of its deprecation process.
 
-UML does not use GENERIC_ENTRY and is still supposed to be allowed to
-override the mem*() functions, so use weak aliases in that case.
-
-Fixes: 69d4c0d32186 ("entry, kasan, x86: Disallow overriding mem*() functions")
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Signed-off-by: Peter Lafreniere <peter@n8pjl.ca>
 ---
-Changes in v3:
-- Add SYM_FUNC_ALIAS_MEMFUNC() macro to avoid ifdefs in multiple places.
-- Link to v2: https://lore.kernel.org/r/20230915-uml-kasan-v2-1-ef3f3ff4f144@axis.com
+Fixed invalid DKIM settings causing the previous patch to be rejected.
 
-Changes in v2:
-- Use CONFIG_UML instead of CONFIG_GENERIC_ENTRY.
-- Link to v1: https://lore.kernel.org/r/20230609-uml-kasan-v1-1-5fac8d409d4f@axis.com
----
- arch/x86/include/asm/linkage.h | 7 +++++++
- arch/x86/lib/memcpy_64.S       | 2 +-
- arch/x86/lib/memmove_64.S      | 2 +-
- arch/x86/lib/memset_64.S       | 2 +-
- 4 files changed, 10 insertions(+), 3 deletions(-)
+ arch/um/configs/i386_defconfig   | 1 -
+ arch/um/configs/x86_64_defconfig | 1 -
+ 2 files changed, 2 deletions(-)
 
-diff --git a/arch/x86/include/asm/linkage.h b/arch/x86/include/asm/linkage.h
-index 97a3de7892d3..32cdf1e92cfb 100644
---- a/arch/x86/include/asm/linkage.h
-+++ b/arch/x86/include/asm/linkage.h
-@@ -97,6 +97,13 @@
- 	CFI_POST_PADDING					\
- 	SYM_FUNC_END(__cfi_##name)
- 
-+/* UML needs to be able to override memcpy() and friends for KASAN. */
-+#ifdef CONFIG_UML
-+#define SYM_FUNC_ALIAS_MEMFUNC	SYM_FUNC_ALIAS_WEAK
-+#else
-+#define SYM_FUNC_ALIAS_MEMFUNC	SYM_FUNC_ALIAS
-+#endif
-+
- /* SYM_TYPED_FUNC_START -- use for indirectly called globals, w/ CFI type */
- #define SYM_TYPED_FUNC_START(name)				\
- 	SYM_TYPED_START(name, SYM_L_GLOBAL, SYM_F_ALIGN)	\
-diff --git a/arch/x86/lib/memcpy_64.S b/arch/x86/lib/memcpy_64.S
-index 8f95fb267caa..76697df8dfd5 100644
---- a/arch/x86/lib/memcpy_64.S
-+++ b/arch/x86/lib/memcpy_64.S
-@@ -40,7 +40,7 @@ SYM_TYPED_FUNC_START(__memcpy)
- SYM_FUNC_END(__memcpy)
- EXPORT_SYMBOL(__memcpy)
- 
--SYM_FUNC_ALIAS(memcpy, __memcpy)
-+SYM_FUNC_ALIAS_MEMFUNC(memcpy, __memcpy)
- EXPORT_SYMBOL(memcpy)
- 
- SYM_FUNC_START_LOCAL(memcpy_orig)
-diff --git a/arch/x86/lib/memmove_64.S b/arch/x86/lib/memmove_64.S
-index 0559b206fb11..ccdf3a597045 100644
---- a/arch/x86/lib/memmove_64.S
-+++ b/arch/x86/lib/memmove_64.S
-@@ -212,5 +212,5 @@ SYM_FUNC_START(__memmove)
- SYM_FUNC_END(__memmove)
- EXPORT_SYMBOL(__memmove)
- 
--SYM_FUNC_ALIAS(memmove, __memmove)
-+SYM_FUNC_ALIAS_MEMFUNC(memmove, __memmove)
- EXPORT_SYMBOL(memmove)
-diff --git a/arch/x86/lib/memset_64.S b/arch/x86/lib/memset_64.S
-index 7c59a704c458..3d818b849ec6 100644
---- a/arch/x86/lib/memset_64.S
-+++ b/arch/x86/lib/memset_64.S
-@@ -40,7 +40,7 @@ SYM_FUNC_START(__memset)
- SYM_FUNC_END(__memset)
- EXPORT_SYMBOL(__memset)
- 
--SYM_FUNC_ALIAS(memset, __memset)
-+SYM_FUNC_ALIAS_MEMFUNC(memset, __memset)
- EXPORT_SYMBOL(memset)
- 
- SYM_FUNC_START_LOCAL(memset_orig)
-
----
-base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-change-id: 20230609-uml-kasan-2392dd4c3858
-
-Best regards,
+diff --git a/arch/um/configs/i386_defconfig b/arch/um/configs/i386_defconfig
+index e543cbac8792..9c9c77f1255a 100644
+--- a/arch/um/configs/i386_defconfig
++++ b/arch/um/configs/i386_defconfig
+@@ -61,7 +61,6 @@ CONFIG_UML_NET_DAEMON=y
+ CONFIG_UML_NET_MCAST=y
+ CONFIG_UML_NET_SLIRP=y
+ CONFIG_EXT4_FS=y
+-CONFIG_REISERFS_FS=y
+ CONFIG_QUOTA=y
+ CONFIG_AUTOFS_FS=m
+ CONFIG_ISO9660_FS=m
+diff --git a/arch/um/configs/x86_64_defconfig b/arch/um/configs/x86_64_defconfig
+index 939cb12318ca..03b10d3f6816 100644
+--- a/arch/um/configs/x86_64_defconfig
++++ b/arch/um/configs/x86_64_defconfig
+@@ -59,7 +59,6 @@ CONFIG_UML_NET_DAEMON=y
+ CONFIG_UML_NET_MCAST=y
+ CONFIG_UML_NET_SLIRP=y
+ CONFIG_EXT4_FS=y
+-CONFIG_REISERFS_FS=y
+ CONFIG_QUOTA=y
+ CONFIG_AUTOFS_FS=m
+ CONFIG_ISO9660_FS=m
 -- 
-Vincent Whitchurch <vincent.whitchurch@axis.com>
+2.42.0
+
 
 
 _______________________________________________
