@@ -4,81 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C4281CD37B0
-	for <linux-um@archiver.kernel.org>; Mon, 18 Sep 2023 14:25:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05DE5CD37B0
+	for <linux-um@archiver.kernel.org>; Mon, 18 Sep 2023 14:58:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
+	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=k4Jz0yWz30JkyNNWQAuleOPvY0zavGr+CYFxUXYhC4o=; b=3f9CLghtpEKRxE
-	XXdge4gArSoKUGfdMJI+xcKIWxGiIuZ7GDToVAFya9/vHNwaNBlDU/p2mFpIwrZMPiHJrNadMUS6C
-	79KeSBEiQKhOkKNIzzf2LugHG6V8GaGgXgAquA4gANmFOay3Wb3A70E/+56YxFk7BU/e3/oJLZec4
-	jY7lGb8BuDGFoBdUjGeIwWbYVH17KOIlBni2+H2OohHYEhbcuerWkXNPigZBQMfOjmX+QPPWyTroA
-	QWA5a+2oUaIRnppayUpO5GDTGhNoLP+g71/iws0tKE2TzZJF6636Opnoo/Jk+0uqK7ZMWOa0YuiBa
-	N6E5cPK4DCkqqMu06psg==;
+	List-Owner; bh=oalVF5rskk13LsxYZPaMVXMiqE1K1wBZW+BOx0KtAdI=; b=HQmnpd5r1ePAJG
+	xTSflgd67v+Ju5vOA7vIiaf10p7sif0D4xmY7dmqNvS0O23eYnHMYrGptDjCSnNhI0Whg8kSqHY7I
+	8QnI18N3hck6Fb23vrlRA3RhWaGosUnn4EJO1AaPV+6yFzHUH1W3DZzQhTcVShE89n8Tv3mewFhg4
+	ykPnahcD7Sl3guX7koBfA4EElDDgM4T9HEi6IVwwVXJxw/jfiph7SHr8AjLxcG7vwBo8THTm8wP9I
+	6IWEbwhPIF/q5aonCbnD3/sqNbhbHmKB/XFGGnAJnOQmNWrLsHJxo5OpWDf4f950jfPvTiItE2chD
+	aNee7dlYTx4HZtLXD5rA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiFBS-00FedQ-0S;
-	Mon, 18 Sep 2023 14:25:06 +0000
-Received: from smtp-out2.suse.de ([2001:67c:2178:6::1d])
+	id 1qiFhf-00Fh7q-1d;
+	Mon, 18 Sep 2023 14:58:23 +0000
+Received: from mail-yw1-f174.google.com ([209.85.128.174])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiFBN-00Feci-08
+	id 1qiFhb-00Fh6y-2z
 	for linux-um@lists.infradead.org;
-	Mon, 18 Sep 2023 14:25:03 +0000
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 9CE631FF20;
-	Mon, 18 Sep 2023 14:24:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1695047099; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7k/zMUERva64SewvTMtFZgYEqcH6fC89q9sFyyJsq/k=;
-	b=Cl7e3mvx918s/0zUuN7kT7+zYVdL6sMszlDz1QEmDIXo/ku1cks5d61Bx6NZyKw2Hv/Z85
-	Yphvifl7ReKud1tVOfnn0uUb7N8e2IAF29cwib2jkC511YpIoBG1XcEJyOGlF2r6yo1ggp
-	oW6Ki1FdHP4dbew/XIolCDspW/mcoUY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1695047099;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7k/zMUERva64SewvTMtFZgYEqcH6fC89q9sFyyJsq/k=;
-	b=Zr+B2n9JSNfwINesiPLJEqTd0qEXVM/hfLdX0H6Zf3DZN9mgd19Tm8kzd0OsK/SwmAVWh6
-	s8dNKrYGpkvt1GCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8DB3113480;
-	Mon, 18 Sep 2023 14:24:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id 4yiKIrtdCGV7NgAAMHmgww
-	(envelope-from <jack@suse.cz>); Mon, 18 Sep 2023 14:24:59 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 0609FA0759; Mon, 18 Sep 2023 16:24:59 +0200 (CEST)
-Date: Mon, 18 Sep 2023 16:24:58 +0200
-From: Jan Kara <jack@suse.cz>
-To: Peter Lafreniere <peter@n8pjl.ca>
-Cc: jack@suse.cz, linux-um@lists.infradead.org,
-	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
-	reiserfs-devel@vger.kernel.org, richard@nod.at
-Subject: Re: [PATCH RESEND] um: Remove CONFIG_REISERFS_FS from defconfig
-Message-ID: <20230918142458.cwktedwchg5bm5cc@quack3>
-References: <20230910232640.113938-1-peter@n8pjl.ca>
- <20230918125744.4342-1-peter@n8pjl.ca>
- <20230918132614.zmmuc72purc2psik@quack3>
- <20230918141359.11097-1-peter@n8pjl.ca>
+	Mon, 18 Sep 2023 14:58:21 +0000
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-59bdb3d03b1so45620947b3.3
+        for <linux-um@lists.infradead.org>; Mon, 18 Sep 2023 07:58:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695049098; x=1695653898;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HL0rujHXVlNw13Fb7ZtkGEh5b6OFxFiF646QN9UA4CU=;
+        b=jAwr95dvB0nSmwiO0k0uEVq8K1ClA+uLpLMzTivG2IvTrB8Pg7Zf9vTxGpRsmo5/0q
+         m4oZSMhJ/ETjerdNRXcUMqnqA6WAvMR1eVYKlTpgys+40ORVHL0Iq5IXMyLnqyIimb0+
+         JEWClxyhT/Uy2lOVp3c4W+5OXPbYPR6+inxqxZkJ+cdHRyJ9vMRepXOJTkaU5HyVv1Uz
+         sFc6PpX0J+bzXK8QNcECer7qU91DP2NydbD4X3fUc0ACatu6iro5HvzB5EgQFZUIH88C
+         EbvRdqKrjWVdPoHahZ2dMjqdbAAyY5DdjSoIQ0LLivAS3ylsnXpiOxR7n1T+JG/YqW0a
+         IYPg==
+X-Gm-Message-State: AOJu0YyTJzVHE6ik79+aieKTYQrjtmS3bE/0qKBj9UHq4AkN/5lxCmnL
+	7512xTdG9xMuuZAqvxGE7DTay6MoAQlmow==
+X-Google-Smtp-Source: AGHT+IFLIm+asKLERFAHAMXlgsc1Yr71AMvjNVU8BDv2mTW7BvFf5wdMU2GOt+4uVlrr9FFMs0KRtA==
+X-Received: by 2002:a0d:d695:0:b0:59a:4898:8e13 with SMTP id y143-20020a0dd695000000b0059a48988e13mr9534639ywd.16.1695049097998;
+        Mon, 18 Sep 2023 07:58:17 -0700 (PDT)
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
+        by smtp.gmail.com with ESMTPSA id i3-20020a0dc603000000b0057a8de72338sm2587683ywd.68.2023.09.18.07.58.17
+        for <linux-um@lists.infradead.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Sep 2023 07:58:17 -0700 (PDT)
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-59bdb3d03b1so45620727b3.3
+        for <linux-um@lists.infradead.org>; Mon, 18 Sep 2023 07:58:17 -0700 (PDT)
+X-Received: by 2002:a0d:ee83:0:b0:573:bb84:737c with SMTP id
+ x125-20020a0dee83000000b00573bb84737cmr9358141ywe.26.1695049097356; Mon, 18
+ Sep 2023 07:58:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20230918141359.11097-1-peter@n8pjl.ca>
+References: <20230910232640.113938-1-peter@n8pjl.ca> <20230918125744.4342-1-peter@n8pjl.ca>
+ <20230918132614.zmmuc72purc2psik@quack3>
+In-Reply-To: <20230918132614.zmmuc72purc2psik@quack3>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 18 Sep 2023 16:58:05 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWzN0Gs2FTQDFeBLz2498dv3ZYCBL2xOvL5YdHAveaH9g@mail.gmail.com>
+Message-ID: <CAMuHMdWzN0Gs2FTQDFeBLz2498dv3ZYCBL2xOvL5YdHAveaH9g@mail.gmail.com>
+Subject: Re: [PATCH RESEND] um: Remove CONFIG_REISERFS_FS from defconfig
+To: Jan Kara <jack@suse.cz>
+Cc: Peter Lafreniere <peter@n8pjl.ca>, linux-um@lists.infradead.org, richard@nod.at, 
+	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, 
+	reiserfs-devel@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230918_072501_245848_245D02AE 
-X-CRM114-Status: GOOD (  18.14  )
+X-CRM114-CacheID: sfid-20230918_075819_969722_4A487178 
+X-CRM114-Status: GOOD (  20.12  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,40 +83,35 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon 18-09-23 14:14:21, Peter Lafreniere wrote:
-> On Monday, September 18th, 2023 at 09:26, Jan Kara <jack@suse.cz> wrote:
-> > On Mon 18-09-23 12:58:26, Peter Lafreniere wrote:
-> > 
-> > > ReiserFS has been deprecated for a year and a half, yet is still built
-> > > as part of a defconfig UML kernel.
-> > > 
-> > > According to commit eb103a51640e ("reiserfs: Deprecate reiserfs"), the
-> > > filesystem is slated to be removed in 2025. Remove it from the defconfig
-> > > profile now, as part of its deprecation process.
-> > > 
-> > > Signed-off-by: Peter Lafreniere peter@n8pjl.ca
-> > 
-> > 
-> > Makes sense but I've noticed there are many more architectures that define
-> > CONFIG_REISERFS_FS in their defconfig (sh, powerpc, mips, m68k, ia64, arm,
-> > alpha). So perhaps we should do this for all of them when we are at it?
-> 
-> I agree. I can send a patch series for those arches except for ia64, which has
-> already been removed from linux-next.
-
-Than would be great. Thanks!
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+SGkgSmFuLAoKT24gTW9uLCBTZXAgMTgsIDIwMjMgYXQgMzoyNuKAr1BNIEphbiBLYXJhIDxqYWNr
+QHN1c2UuY3o+IHdyb3RlOgo+IE9uIE1vbiAxOC0wOS0yMyAxMjo1ODoyNiwgUGV0ZXIgTGFmcmVu
+aWVyZSB3cm90ZToKPiA+IFJlaXNlckZTIGhhcyBiZWVuIGRlcHJlY2F0ZWQgZm9yIGEgeWVhciBh
+bmQgYSBoYWxmLCB5ZXQgaXMgc3RpbGwgYnVpbHQKPiA+IGFzIHBhcnQgb2YgYSBkZWZjb25maWcg
+VU1MIGtlcm5lbC4KPiA+Cj4gPiBBY2NvcmRpbmcgdG8gY29tbWl0IGViMTAzYTUxNjQwZSAoInJl
+aXNlcmZzOiBEZXByZWNhdGUgcmVpc2VyZnMiKSwgdGhlCj4gPiBmaWxlc3lzdGVtIGlzIHNsYXRl
+ZCB0byBiZSByZW1vdmVkIGluIDIwMjUuIFJlbW92ZSBpdCBmcm9tIHRoZSBkZWZjb25maWcKPiA+
+IHByb2ZpbGUgbm93LCBhcyBwYXJ0IG9mIGl0cyBkZXByZWNhdGlvbiBwcm9jZXNzLgo+ID4KPiA+
+IFNpZ25lZC1vZmYtYnk6IFBldGVyIExhZnJlbmllcmUgPHBldGVyQG44cGpsLmNhPgo+Cj4gTWFr
+ZXMgc2Vuc2UgYnV0IEkndmUgbm90aWNlZCB0aGVyZSBhcmUgbWFueSBtb3JlIGFyY2hpdGVjdHVy
+ZXMgdGhhdCBkZWZpbmUKPiBDT05GSUdfUkVJU0VSRlNfRlMgaW4gdGhlaXIgZGVmY29uZmlnIChz
+aCwgcG93ZXJwYywgbWlwcywgbTY4aywgaWE2NCwgYXJtLAo+IGFscGhhKS4gU28gcGVyaGFwcyB3
+ZSBzaG91bGQgZG8gdGhpcyBmb3IgYWxsIG9mIHRoZW0gd2hlbiB3ZSBhcmUgYXQgaXQ/CgpUaGUg
+cG9saWN5IGZvciB0aGUgbTY4ayBkZWZjb25maWdzIGlzIHRvIGVuYWJsZSBhbGwgYXZhaWxhYmxl
+IGV4b3RpYwpmaWxlIHN5c3RlbXMgYXMgbW9kdWxlcywgc28gc3VwcG9ydCBmb3IgdGhlbSBpcyBh
+dmFpbGFibGUgd2hlbiBuZWVkZWQuCgpQbGVhc2UgbGV0IG1lIGtub3cgd2h5IHRoaXMgc2hvdWxk
+IGJlIGNoYW5nZWQsIGFzIGxvbmcgYXMgUmVpc2VyRlMgaXMKc3RpbGwgYXZhaWxhYmxlIGluIHRo
+ZSB1cHN0cmVhbSBrZXJuZWwuCgpHcntvZXRqZSxlZXRpbmd9cywKCiAgICAgICAgICAgICAgICAg
+ICAgICAgIEdlZXJ0CgotLSAKR2VlcnQgVXl0dGVyaG9ldmVuIC0tIFRoZXJlJ3MgbG90cyBvZiBM
+aW51eCBiZXlvbmQgaWEzMiAtLSBnZWVydEBsaW51eC1tNjhrLm9yZwoKSW4gcGVyc29uYWwgY29u
+dmVyc2F0aW9ucyB3aXRoIHRlY2huaWNhbCBwZW9wbGUsIEkgY2FsbCBteXNlbGYgYSBoYWNrZXIu
+IEJ1dAp3aGVuIEknbSB0YWxraW5nIHRvIGpvdXJuYWxpc3RzIEkganVzdCBzYXkgInByb2dyYW1t
+ZXIiIG9yIHNvbWV0aGluZyBsaWtlIHRoYXQuCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgLS0gTGludXMgVG9ydmFsZHMKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRl
+YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgt
+dW0K
