@@ -4,99 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1473CE79A9
-	for <linux-um@archiver.kernel.org>; Tue, 19 Sep 2023 17:26:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 480FFCE79AB
+	for <linux-um@archiver.kernel.org>; Tue, 19 Sep 2023 17:34:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:Subject:Message-ID:Date:From:
-	In-Reply-To:References:MIME-Version:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
+	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Y6xeUXCB731hV8ALRmgdUBPZkm8C2g90vx1sFM/wPVo=; b=iDO4OD445Qb8KW
-	UAlr5Ff8yF3cDpombFGsw96y2J59Dy4ow4vER74ZkoAokDQI7sP/eD4IE7C32u+2oCRjdMtwSSNem
-	+N1Wytn0zIWZizs6YS68F0VLz0BmbIuO6i7qF4wB2g4z6qGksIyshK026axfnkyPpZINJTdpM5z9I
-	DfiDsGp3HBppMtxi3w+sxW7awPazXUqm7JpPxs0nnqgc3r+hXom465kCpFOrrkATWyVPWOJMbXion
-	1h49bsD33FsYUv815qIluTqnOmfDuyBX4ofQa1S122ge7x3jxtB+Vu3Edl7nv6ivGp41yoNzhQmPJ
-	GXlgqamATJ757BSiFb6w==;
+	List-Owner; bh=FcJmnNopCJ9EO0w8neKODdl36Fb80T77QVi43oc9QV4=; b=hXlKYzWrNCvWKM
+	b5ngKPD2YgTmwDs7nrbM5a86BDlTXJj2rNDpbdaAZLbNc2V0rjjU4guEp9+P/VsYgEefLD9KCJGXY
+	9bWtog2Wz6FOzXwcINaPWDe1ApgYz2nvcY9Ln3n7V8Qku5v52AezYPfk6w4YClHa4iwSh/vxARBHN
+	SH91hvizDjUTKGPlMzFy8RUDioj5cUe4wjo0KzZEfpnzi67A7lVZKiEfWFYAkojIow2Fnpj0QOEAS
+	7KHxfMCP2DPehlhCQTStBqlKMuB9UNH9A6Gwx4aoZLkXDoTgwvLnQCRdurrxvO02IltuhSOfQfiSk
+	Mu3XQkeEAVStmzc4bMfg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qieU6-000w6W-0q;
-	Tue, 19 Sep 2023 17:26:02 +0000
-Received: from mail-lf1-x130.google.com ([2a00:1450:4864:20::130])
+	id 1qiebs-000wgw-22;
+	Tue, 19 Sep 2023 17:34:04 +0000
+Received: from galois.linutronix.de ([193.142.43.55])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qieU3-000w5s-0f
+	id 1qiebp-000wfp-1A
 	for linux-um@lists.infradead.org;
-	Tue, 19 Sep 2023 17:26:01 +0000
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-50309daf971so4875349e87.3
-        for <linux-um@lists.infradead.org>; Tue, 19 Sep 2023 10:25:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1695144355; x=1695749155; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=PUjFUwCVE5/xUduoxjL7lC1W3crAzRPXEbwf2O/yhew=;
-        b=PeuvhZt6lgy/ZwYPOcdNYms+vDI/AWdsKvd4xjjEkvXATRb8/jBBe3rOyRXd1fZ4Uf
-         TlVcBkoRqHHDbe8OZHkoggzFQtsbvyAvPkgio3sUNh9BDoBhzhdomiKtChepRkXu+T1M
-         oTTBA/0BO2foKPFjOb+Bva6PPZw2M8GWaPeUU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695144355; x=1695749155;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PUjFUwCVE5/xUduoxjL7lC1W3crAzRPXEbwf2O/yhew=;
-        b=MuBeNsTYZNX7TyI1RRXb7iGqTPh8PmwctpwUxqNIu1DfOzzu1wZUW+pKaE04YcYJ4J
-         pvs46v9DR1fysVCu40LrnMjT1s+AKympdNHkMhu1bMMqtZbPRhLY6BOMuZ9ePjDVkg2G
-         zJK/Q41h74agGBWVsAoDq/cwShiTFvvENEcymMoMmXu38pPfPXToTSpSfcYa3K1ticm/
-         /BDjrxsPK8J2Q3ePm713d/fasF7OqS7kpbISwBQBliXxdIi60iRJ5bHkpiNjbS0bPrnT
-         gYD+IENCfNp1LnGRW9GSChz1OwVkkTuTGi77qKC8ziM8xYCrWhwO6ZcB73Iyu7nBnY8I
-         qNqw==
-X-Gm-Message-State: AOJu0YyYyqGIscEe+4igKVdrh103LuJeWcfHkGsJ+XaiQ0tHk11+H/rn
-	qbYmDNtaoGfwajMGg1K2kZM/cjTNHhMUQ3lNkkh685pR
-X-Google-Smtp-Source: AGHT+IHP8RRhSK5GDcf/wAsIBSaQiYX7RIQ0g/UQxlCVwVJx9p3/TTY9TbrwoWuOf8wLCgc0mazg4g==
-X-Received: by 2002:a05:6512:ea1:b0:503:ca:7b4c with SMTP id bi33-20020a0565120ea100b0050300ca7b4cmr372951lfb.8.1695144355254;
-        Tue, 19 Sep 2023 10:25:55 -0700 (PDT)
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com. [209.85.221.49])
-        by smtp.gmail.com with ESMTPSA id fi26-20020a170906da1a00b0099bc8db97bcsm8029717ejb.131.2023.09.19.10.25.54
-        for <linux-um@lists.infradead.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Sep 2023 10:25:54 -0700 (PDT)
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-31dd10c2b8bso5586064f8f.3
-        for <linux-um@lists.infradead.org>; Tue, 19 Sep 2023 10:25:54 -0700 (PDT)
-X-Received: by 2002:a19:e04b:0:b0:4fe:3724:fdae with SMTP id
- g11-20020a19e04b000000b004fe3724fdaemr269206lfj.66.1695144333866; Tue, 19 Sep
- 2023 10:25:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <87zg1u1h5t.fsf@oracle.com> <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
- <20230911150410.GC9098@noisy.programming.kicks-ass.net> <87h6o01w1a.fsf@oracle.com>
- <20230912082606.GB35261@noisy.programming.kicks-ass.net> <87cyyfxd4k.ffs@tglx>
- <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
- <87led2wdj0.ffs@tglx> <ZQmbhoQIINs8rLHp@casper.infradead.org>
- <0e69f7df80dc5878071deb0d80938138d19de1d1.camel@physik.fu-berlin.de>
- <20230919134218.GA39281@noisy.programming.kicks-ass.net> <a6c84803274116ec827cd4bdd4e72a8d0c304c27.camel@physik.fu-berlin.de>
-In-Reply-To: <a6c84803274116ec827cd4bdd4e72a8d0c304c27.camel@physik.fu-berlin.de>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 19 Sep 2023 10:25:17 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgUimqtF7PqFfRw4Ju5H1KYkp6+8F=hBz7amGQ8GaGKkA@mail.gmail.com>
-Message-ID: <CAHk-=wgUimqtF7PqFfRw4Ju5H1KYkp6+8F=hBz7amGQ8GaGKkA@mail.gmail.com>
+	Tue, 19 Sep 2023 17:34:02 +0000
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1695144838;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Q5XoD2rR1P7xfyZ4vS5WECNooPW5RHsWgoNmWq+2hMo=;
+	b=UJuEQFI+fVdHak0lB8fNvstykL9kpTeNJD+gjygB9iKFIoN1n7qL5fa8q1zibRy2IPQ6Qe
+	NyukDnTgIGP7wS4FzYHD5OGCHF62//LTFHZZ8yP9IQToCNuSqQ1GH+7YaaGPaBI/CX6Z8V
+	8Vzbr2wmmB33ZJMWTR30JR513dx/C+zEch08e6QwhmiWdN2hx57bNIhu4sFxTiAQXh1Xn1
+	G7Uqydw7R+LQiZU2Twrng6XRlmrm/mXOIsAXYOgo5eW8rhYLGVEvA9DBjj6ZiIG4ffl66+
+	NOsgtS0rfYpuBXj0rw8P+dSYdXzP2sFea+0Hqq+BkBT6knNGfVPF/+sEjn1HEA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1695144838;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Q5XoD2rR1P7xfyZ4vS5WECNooPW5RHsWgoNmWq+2hMo=;
+	b=FC96a8Jt867By47LPHSnv602OXYh1+2tD7k+Vqqy6gx0P6BeLouKDBbYI0Ubu/ALeBPwSe
+	ofg019sZqzn6gQAQ==
+To: Anton Ivanov <anton.ivanov@cambridgegreys.com>, Richard Weinberger
+ <richard@nod.at>
+Cc: Peter Zijlstra <peterz@infradead.org>, John Paul Adrian Glaubitz
+ <glaubitz@physik.fu-berlin.de>, Matthew Wilcox <willy@infradead.org>,
+ torvalds <torvalds@linux-foundation.org>, Ankur Arora
+ <ankur.a.arora@oracle.com>, linux-kernel <linux-kernel@vger.kernel.org>,
+ linux-mm <linux-mm@kvack.org>, x86 <x86@kernel.org>, Andrew Morton
+ <akpm@linux-foundation.org>, Andy Lutomirski <luto@kernel.org>, bp
+ <bp@alien8.de>, dave hansen <dave.hansen@linux.intel.com>, hpa
+ <hpa@zytor.com>, mingo <mingo@redhat.com>, juri lelli
+ <juri.lelli@redhat.com>, vincent guittot <vincent.guittot@linaro.org>,
+ mgorman@suse.de, Steven Rostedt <rostedt@goodmis.org>, jon grimm
+ <jon.grimm@amd.com>, bharata@amd.com, raghavendra kt
+ <raghavendra.kt@amd.com>, boris ostrovsky <boris.ostrovsky@oracle.com>,
+ konrad wilk <konrad.wilk@oracle.com>, jgross <jgross@suse.com>, andrew
+ cooper3 <andrew.cooper3@citrix.com>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>,
+ Johannes Berg <johannes@sipsolutions.net>, linux-um
+ <linux-um@lists.infradead.org>, Brian Cain <bcain@quicinc.com>,
+ linux-hexagon@vger.kernel.org, Richard Henderson
+ <richard.henderson@linaro.org>, Ivan Kokshaysky
+ <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, linux-alpha
+ <linux-alpha@vger.kernel.org>
 Subject: Re: Arches that don't support PREEMPT
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Peter Zijlstra <peterz@infradead.org>, Matthew Wilcox <willy@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ankur Arora <ankur.a.arora@oracle.com>, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org, 
-	akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de, 
-	dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com, 
-	juri.lelli@redhat.com, vincent.guittot@linaro.org, mgorman@suse.de, 
-	rostedt@goodmis.org, jon.grimm@amd.com, bharata@amd.com, 
-	raghavendra.kt@amd.com, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, 
-	jgross@suse.com, andrew.cooper3@citrix.com, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, 
-	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
-	Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, 
-	Brian Cain <bcain@quicinc.com>, linux-hexagon@vger.kernel.org, 
-	Richard Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, 
-	Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
+In-Reply-To: <de98424d-41f9-90f9-742d-623e2b55c564@cambridgegreys.com>
+References: <87zg1u1h5t.fsf@oracle.com> <87led2wdj0.ffs@tglx>
+ <ZQmbhoQIINs8rLHp@casper.infradead.org>
+ <0e69f7df80dc5878071deb0d80938138d19de1d1.camel@physik.fu-berlin.de>
+ <20230919134218.GA39281@noisy.programming.kicks-ass.net>
+ <bd664a61-4506-bab0-19c3-0011f57005b5@cambridgegreys.com>
+ <87y1h2ur98.ffs@tglx>
+ <9a5c0856-d542-9912-7494-53d7fe4538a3@cambridgegreys.com>
+ <551475267.58816.1695140566849.JavaMail.zimbra@nod.at>
+ <de98424d-41f9-90f9-742d-623e2b55c564@cambridgegreys.com>
+Date: Tue, 19 Sep 2023 19:33:57 +0200
+Message-ID: <87v8c6ukxm.ffs@tglx>
+MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230919_102559_274009_D641631B 
-X-CRM114-Status: GOOD (  15.21  )
+X-CRM114-CacheID: sfid-20230919_103401_540432_EF285AF3 
+X-CRM114-Status: GOOD (  18.36  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,48 +100,44 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, 19 Sept 2023 at 06:48, John Paul Adrian Glaubitz
-<glaubitz@physik.fu-berlin.de> wrote:
->
-> As Geert poined out, I'm not seeing anything particular problematic with the
-> architectures lacking CONFIG_PREEMPT at the moment. This seems to be more
-> something about organizing KConfig files.
-
-It can definitely be problematic.
-
-Not the Kconfig file part, and not the preempt count part itself.
-
-But the fact that it has never been used and tested means that there
-might be tons of "this architecture code knows it's not preemptible,
-because this architecture doesn't support preemption".
-
-So you may have basic architecture code that simply doesn't have the
-"preempt_disable()/enable()" pairs that it needs.
-
-PeterZ mentioned the generic entry code, which does this for the entry
-path. But it actually goes much deeper: just do a
-
-    git grep preempt_disable arch/x86/kernel
-
-and then do the same for some other architectures.
-
-Looking at alpha, for example, there *are* hits for it, so at least
-some of the code there clearly *tries* to do it. But does it cover all
-the required parts? If it's never been tested, I'd be surprised if
-it's all just ready to go.
-
-I do think we'd need to basically continue to support ARCH_NO_PREEMPT
-- and such architectures migth end up with the worst-cast latencies of
-only scheduling at return to user space.
-
-               Linus
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gVHVlLCBTZXAgMTkgMjAyMyBhdCAxNzo0MSwgQW50b24gSXZhbm92IHdyb3RlOgo+IE9uIDE5
+LzA5LzIwMjMgMTc6MjIsIFJpY2hhcmQgV2VpbmJlcmdlciB3cm90ZToKPj4gLS0tLS0gVXJzcHLD
+vG5nbGljaGUgTWFpbCAtLS0tLQo+Pj4gVm9uOiAiYW50b24gaXZhbm92IiA8YW50b24uaXZhbm92
+QGNhbWJyaWRnZWdyZXlzLmNvbT4KPj4+IEl0J3MgYmVlbiBhIHdoaWxlLiBJIHJlbWVtYmVyIHRo
+YXQgSSBkcm9wcGVkIGl0IGF0IHRoZSB0aW1lLCBidXQgZG8gbm90IHJlbWVtYmVyCj4+PiB0aGUg
+ZnVsbCBkZXRhaWxzLgo+Pj4KPj4+IFRoZXJlIHdhcyBzb21lIHN0dWZmIHJlbGF0ZWQgdG8gRlAg
+c3RhdGUgYW5kIGEgZmV3IG90aGVyIGlzc3VlcyBJIHJhbiBpbnRvIHdoaWxlCj4+PiByZXdyaXRp
+bmcgdGhlIGludGVycnVwdCBjb250cm9sbGVyLiBTb21lIG9mIGl0IG1heSBiZSByZXNvbHZlZCBi
+eSBub3cgYXMgd2UgYXJlCj4+PiB1c2luZyBob3N0IGNwdSBmbGFncywgZXRjLgo+PiAKPj4gSSBy
+ZW1lbWJlciBhbHNvIGhhdmluZyBhIGhhY2t5IGJ1dCB3b3JraW5nIHZlcnNpb24gYWxtb3N0IDEw
+IHllYXJzIGFnby4KPj4gSXQgd2FzIGhvcnJpYmxlIHNsb3cgYmVjYXVzZSBvZiB0aGUgZXh0cmEg
+c2NoZWR1bGVyIHJvdW5kcy4KCldoaWNoIGNhbiBiZSBjb21wbGV0ZWx5IGF2b2lkZWQgYXMgdGhl
+IHByb3Bvc2VkIGNoYW5nZSB3aWxsIGhhdmUgdGhlCnByZWVtcHRpb24gcG9pbnRzLCBidXQgdGhl
+eSBhcmUgb25seSB1dGlsaXplZCB3aGVuIHByZWVtcHQgRlVMTCBpcwplbmFibGVkIChhdCBib290
+IG9yIHJ1bnRpbWUpLiBTbyB0aGUgYmVoYXZpb3VyIGNhbiBzdGlsbCBiZSBsaWtlIHByZWVtcHQK
+Tk9ORSwgYnV0IHdpdGggYSB0d2lzdCB0byBnZXQgcmlkIG9mIHRoZSBjb25kX3Jlc2NoZWQoKS9t
+aWdodF9yZXNjaGVkKCkKYW5kIG90aGVyIGhldXJpc3RpYyBhcHByb2FjaGVzIHRvIHByZXZlbnQg
+c3RhcnZhdGlvbiBieSBsb25nIHJ1bm5pbmcKZnVuY3Rpb25zLiBUaGF0IHR3aXN0IG5lZWRzIHRo
+ZSBwcmVlbXB0aW9uIHBvaW50cy4KClNlZSBodHRwczovL2xvcmUua2VybmVsLm9yZy9sa21sLzg3
+Y3l5ZnhkNGsuZmZzQHRnbHgKCj4+IEJ1dCB5ZXMsIGlmIFBSRUVNUFQgd2lsbCBiZSBhIG11c3Qt
+aGF2ZSBmZWF0dXJlIHdlJ2xsIGhhdmUgdG8gdHJ5IGFnYWluLgo+Cj4gV2Ugd2lsbCBuZWVkIHBy
+b3BlciBmcHUgcHJpbWl0aXZlcyBmb3Igc3RhcnRlcnMgdGhhdCdzIGZvcgo+IHN1cmUuIGZwdV9z
+dGFyL2VuZCBpbiBVTUwgYXJlIHByZXNlbnRseSBOT09QLgo+Cj4gU29tZSBvZiB0aGUgZGVmYXVs
+dCBzcGlubG9ja3MgYW5kIG90aGVyIHN0dWZmIHdoaWNoIHdlIHBpY2sgdXAgZnJvbQo+IGdlbmVy
+aWMgbWF5IG5lZWQgdG8gY2hhbmdlIGFzIHdlbGwuCj4KPiBUaGlzIGlzIG9mZiB0aGUgdG9wIG9m
+IG15IGhlYWQgYW5kIHNvbWV0aGluZyB3aGljaCB3ZSBjYW4gZml4IHN0cmFpZ2h0Cj4gYXdheS4g
+SSB3aWxsIHNlbmQgc29tZSBwYXRjaGVzIHRvIHRoZSBtYWlsaW5nIGxpc3QgdG9tb3Jyb3cgb3Ig
+b24gVGh1LgoKSSB0aGluayBpdCBkb2VzIG5vdCBoYXZlIHRvIGJlIHBlcmZlY3QuIFVNIGlzIGZh
+ciBmcm9tIHBlcmZlY3QgaW4KbWltaWNpbmcgYSByZWFsIGtlcm5lbC4gVGhlIG1haW4gcG9pbnQg
+aXMgdGhhdCBpdCBwcm92aWRlcyB0aGUgcHJlZW1wdApjb3VudGVyIGluIHRoZSBmaXJzdCBwbGFj
+ZSBhbmQgc29tZSBtaW5pbWFsIGFtb3VudCBvZiBwcmVlbXB0aW9uIHBvaW50cwphc2lkZSBvZiB0
+aG9zZSB3aGljaCBjb21lIHdpdGggdGhlIHByZWVtcHRfZW5hYmxlKCkgbWFjaGluZXJ5IGZvciBm
+cmVlLgoKVGhhbmtzLAoKICAgICAgICB0Z2x4CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMu
+aW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2xpbnV4LXVtCg==
