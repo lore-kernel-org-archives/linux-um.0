@@ -4,81 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1850ECE79A8
-	for <linux-um@archiver.kernel.org>; Tue, 19 Sep 2023 21:18:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB2B8CE79AE
+	for <linux-um@archiver.kernel.org>; Tue, 19 Sep 2023 23:19:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=P/fSOLPyOVgLQSKouOtf+ZQK9AmdZ1MtEG6yLCK+moE=; b=N+k8kmID5ndp01
-	hy4Kiq7iGpaH74d0gosGXQfFcRdyrmJPCvdRLM4yW2ttJIJBOQf7+E2wh1dxCehDIoIkOGePQXDrX
-	NW730SdgNFBvGVb9ZUfW0aNRBetg/UpgdR9IU3f7oj+4r/PikrtG+M6RO7sbkCpopYtjmp3X2h0Pr
-	z46s23RVzgqeBrbR/QIZg9dvfR4yVMsTR5UaxcDH8CTyh4qbNTZTkmXtlTlfwlkxtDGeKNGIb80RR
-	PlD2TF4FIC736K7cnQRbHBvTe0Rff3CA+O9Lks0m37pw/hIqpOyy4R4wAmjksAIJXIbBuALnCuabq
-	pYv8Ykc6cStboYBgaLFA==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	List-Subscribe:List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:
+	Reply-To:Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=cCGeR/vkuw0AeILxB8B6GpRhs9w7eERx4DGlVCV5FtA=; b=I3rNXXs7MgaKvrHhVSfhaFbUIe
+	tvuD6XvAk6Fy5BpdavHAwBVan/J1knq90Z34cO9F8LP7Cl0lFJruo7Id8PPGioW2wCgZI17kpKkf9
+	KdGgVbjOmTFHNs6Emkr9GIrO2niTBfVaHvcllNPnH4zdI3O5C/JjENlp+A2ApyRZBNrB6kWA6Ra6b
+	P2iu5/osiYOjmiXWLQepbfvMfGfmldgT3BqmM52gxfg85+BTt25q5rt1q1po6GEjFzfkdeYrljeGv
+	CZPrnnfG08VLCTq+7Ier2nrRg8LDyoHtflSkuHN9U/ixVLuSqXTJWgEZDv2r8d+Lt682fS1zlX9+U
+	bJg5Ik/g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qii7P-001HaQ-2U;
-	Tue, 19 Sep 2023 21:18:51 +0000
-Received: from mail-pf1-x429.google.com ([2607:f8b0:4864:20::429])
+	id 1qijzi-001RqD-2y;
+	Tue, 19 Sep 2023 23:19:02 +0000
+Received: from mail.ozlabs.org ([2404:9400:2221:ea00::3] helo=gandalf.ozlabs.org)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qii7N-001HYn-0a
+	id 1qijzf-001Rni-23
 	for linux-um@lists.infradead.org;
-	Tue, 19 Sep 2023 21:18:50 +0000
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-68fb98745c1so4685402b3a.1
-        for <linux-um@lists.infradead.org>; Tue, 19 Sep 2023 14:18:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695158322; x=1695763122; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zUuiZDmU5EMTeO4CdiXdV5Ryvju9HaBb50QeYalbm10=;
-        b=au2n4ftfdUxmpnTXQhU0o3msnzqNWG+RUNKENsJ5aB0iC8nmjtElbSh0nfUBOOOffx
-         TK8CtCwwrJOIeAuzVsTB8FTOqzZ4Anq4kjpi7GR25oLsMJzYiISBvNiifR8fHF66G2fw
-         /M0jafN7adrjgGGjmmRXrq8EPZn/nll0gl4SEjve94x1aYu68lucCfu4jeWvye4l0Ova
-         EsmH2IiGN6XgNPNTuCBChu8we1+/rsTBVqkokU1TKeRKBKfi1EuAz2F/9cU9MjHIUI+G
-         Fg4YeDCg4RCDV+ZQmPJeIawjaWEaTpgeLIiW7mGPJE6bMjbb7XDAI2MmD3RUrmRE0+Y8
-         QbSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695158322; x=1695763122;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zUuiZDmU5EMTeO4CdiXdV5Ryvju9HaBb50QeYalbm10=;
-        b=KCieJut16vtqRDeQOh6SJ1GEx/6IJJ7toKdYswiwdL1Xe3jvCI2O7BbUoXhmKaxROn
-         FqkPQ07VD525Hh1iR3i/4p7jC8u4iXMMlfOWZeZ8PJlkmj/Qz+NCH4iXOuUl0BjTqgJ5
-         PhQY6uwXa2zh9wbeAHnYxzvFfF96LBl+93bTq2XO16Xb0+6zfzbhGvParkxwDjS83soy
-         SytM9sne5iTFXexzQ6qUzZyoS+sRP1G4q2kjMGSLqV/6JypOR8ka7vm+3tVw7pkuTYVG
-         fGO5eghNoeyjVLDT8DMhD3yPc79JtaPhnAnps+jj4PeU2SA2bz468pWmnunOZRdjFDTR
-         mTeA==
-X-Gm-Message-State: AOJu0YzPnnjUPg8amGzN7nzozh+cztBMmy5jF4teovdvqwonKGJsrzq5
-	mapEfdsqYd24MaNbWY4sbmRSVgD8vRQcEo0LmQCN8w==
-X-Google-Smtp-Source: AGHT+IH6dUDZ77/DJvfNaKnqCuhMLQbO7XX7jFgJOsx/GKqMs+XRvae/XJkRkp1vo0dCwYMw5veKww==
-X-Received: by 2002:a05:6a00:4783:b0:690:cd33:a582 with SMTP id dh3-20020a056a00478300b00690cd33a582mr641768pfb.7.1695158321630;
-        Tue, 19 Sep 2023 14:18:41 -0700 (PDT)
-Received: from google.com ([2620:15c:2d1:203:118e:eaf2:1433:f9fe])
-        by smtp.gmail.com with ESMTPSA id v3-20020a62a503000000b00682bec0b680sm9002891pfm.89.2023.09.19.14.18.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Sep 2023 14:18:40 -0700 (PDT)
-Date: Tue, 19 Sep 2023 14:18:36 -0700
-From: Nick Desaulniers <ndesaulniers@google.com>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	linux-um <linux-um@lists.infradead.org>,
-	Mike Rapoport <rppt@kernel.org>, llvm@lists.linux.dev
+	Tue, 19 Sep 2023 23:19:01 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1695165518;
+	bh=xY1RGG+/0gscDLeveLulvpHm4mxxLb1AS3ZtO6C8wPw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=u7IryiMQCWMYh8OgqVTiLRag6b+LKE68Td/Fqt2t8ejVaZYhpSZivUyUCXZfEyUNE
+	 KHYL90KSWCsmmFQmSKkU1Gn2t4Hl94ykWXllMSALprpWlo/CsAaQKep5yDwZJR8SNs
+	 31VSETOISiQ4DIHaS9I0eBmunvRBq8hRym1IgApCYaGfYEHTDFpdonLS7MMMJYypJH
+	 bhoPRtQIvzxG8/wMJxLKiNBQqFxsi8sivCfho6fFSOQqmfCMwDfHINpnwFKlzkObfq
+	 s3ws8q7IoAhampFqNxZfHJkdb5E0WEHZZmuA1BkruLzUt38h21e05w1PZPnxb0sDtr
+	 aWCVZIDgahaMg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4RqyJs0gcBz4x2X;
+	Wed, 20 Sep 2023 09:18:36 +1000 (AEST)
+Date: Wed, 20 Sep 2023 09:18:28 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Randy Dunlap <rdunlap@infradead.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, linux-um <linux-um@lists.infradead.org>,
+ Mike Rapoport <rppt@kernel.org>, llvm@lists.linux.dev
 Subject: Re: linux-next: Tree for Sep 19 (UML)
-Message-ID: <ZQoQLJnGFxjA8p5E@google.com>
+Message-ID: <20230920091714.10053ba5@canb.auug.org.au>
+In-Reply-To: <ZQoQLJnGFxjA8p5E@google.com>
 References: <20230919163728.78432283@canb.auug.org.au>
- <04b8a6de-2b20-4488-b20f-c8a8f6001fd2@infradead.org>
+	<04b8a6de-2b20-4488-b20f-c8a8f6001fd2@infradead.org>
+	<ZQoQLJnGFxjA8p5E@google.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <04b8a6de-2b20-4488-b20f-c8a8f6001fd2@infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230919_141849_238397_80ED4111 
-X-CRM114-Status: GOOD (  15.25  )
+X-CRM114-CacheID: sfid-20230919_161859_841745_2FB06569 
+X-CRM114-Status: GOOD (  17.29  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,61 +71,91 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1567156470532572252=="
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Sep 19, 2023 at 08:42:07AM -0700, Randy Dunlap wrote:
-> 
-> 
-> On 9/18/23 23:37, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > Changes since 20230918:
-> > 
-> > New tree: kvm-ppc
-> > 
-> > The mm tree gained a boot warning for which I reverted 5 commits.
-> > 
-> > Non-merge commits (relative to Linus' tree): 5750
-> >  3717 files changed, 446028 insertions(+), 107378 deletions(-)
-> > 
-> > ----------------------------------------------------------------------------
-> > 
-> 
-> on i386 or x86_64:
-> 
-> ../arch/x86/um/../kernel/module.c: In function 'execmem_arch_params':
-> ../arch/x86/um/../kernel/module.c:54:50: error: implicit declaration of function 'kaslr_enabled'; did you mean 'kasan_enabled'? [-Werror=implicit-function-declaration]
->    54 |         if (IS_ENABLED(CONFIG_RANDOMIZE_BASE) && kaslr_enabled())
->       |                                                  ^~~~~~~~~~~~~
->       |                                                  kasan_enabled
-> 
-> 
-> 
-> git blames this on:
-> 
-> commit 12633d679796
-> Author: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date:   Tue Sep 19 15:14:03 2023 +1000
-> 
->     Revert "arch: make execmem setup available regardless of CONFIG_MODULES"
->     
->     This reverts commit 3300c3af20090ff5e03e5c4bf2ef2cfaa03d4e9b.
+--===============1567156470532572252==
+Content-Type: multipart/signed; boundary="Sig_/8qozy5L20AH8hxRIxoLg6wM";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Thanks for the report, FWIW, our CI is hitting this, too.
+--Sig_/8qozy5L20AH8hxRIxoLg6wM
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Was 12633d679796 a pure revert, or was it manually modified?
+Hi Nick,
 
-Oh 3300c3 was patch 10/13; maybe a clean revert is not possible without
-other reverts in addition?
-https://lore.kernel.org/lkml/20230918072955.2507221-11-rppt@kernel.org/
+On Tue, 19 Sep 2023 14:18:36 -0700 Nick Desaulniers <ndesaulniers@google.co=
+m> wrote:
+>
+> On Tue, Sep 19, 2023 at 08:42:07AM -0700, Randy Dunlap wrote:
+> >=20
+> > on i386 or x86_64:
+> >=20
+> > ../arch/x86/um/../kernel/module.c: In function 'execmem_arch_params':
+> > ../arch/x86/um/../kernel/module.c:54:50: error: implicit declaration of=
+ function 'kaslr_enabled'; did you mean 'kasan_enabled'? [-Werror=3Dimplici=
+t-function-declaration]
+> >    54 |         if (IS_ENABLED(CONFIG_RANDOMIZE_BASE) && kaslr_enabled(=
+))
+> >       |                                                  ^~~~~~~~~~~~~
+> >       |                                                  kasan_enabled
+> >=20
+> >=20
+> >=20
+> > git blames this on:
+> >=20
+> > commit 12633d679796
+> > Author: Stephen Rothwell <sfr@canb.auug.org.au>
+> > Date:   Tue Sep 19 15:14:03 2023 +1000
+> >=20
+> >     Revert "arch: make execmem setup available regardless of CONFIG_MOD=
+ULES"
+> >    =20
+> >     This reverts commit 3300c3af20090ff5e03e5c4bf2ef2cfaa03d4e9b. =20
+>=20
+> Thanks for the report, FWIW, our CI is hitting this, too.
+>=20
+> Was 12633d679796 a pure revert, or was it manually modified?
 
-Seems like there's more info in this thread:
-https://lore.kernel.org/lkml/20230919152031.GF3303@kernel.org/
+It was a pure revert due to having to revert a previous commit to fix a
+boot warning.  These reverts should not need to be in the next
+linux-next as a patch has been applied to the appropriate included tree
+to fix the boot warning.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/8qozy5L20AH8hxRIxoLg6wM
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUKLEQACgkQAVBC80lX
+0GxoOQf/XQ7ER7U9A6iIEj9PX4LP6EQ/HJ58Pci1hVo+3wldY5AcTdhqK6i4QXwa
+xTyJfM/SDomXy+CiVDcLbl6x3Ep6xR1OKq0X1UITnkAFlzxPqpbWjDhVdWpCTNW1
+It3Ollb830saEKbHXeg0yYguhXT7xnBnp18O1qqfHlzkh7RP7ZptTGySM3x/WI+J
+W2ZUnsaMDBdHyApjTWvWJySVah7qzDAPugZ2AVNW0JptXNOOQFxkyOnllLAtTMcf
+LhYQYK0uhbOCzQFxRCSHR9u5+aNmO4c7+ik1+GYccuUYV5jnyKBj9u89W5o48Fyz
+vdzEljIWSpee4gAaGr+exX9mIDQvdg==
+=1tlz
+-----END PGP SIGNATURE-----
+
+--Sig_/8qozy5L20AH8hxRIxoLg6wM--
+
+
+--===============1567156470532572252==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 linux-um mailing list
 linux-um@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/linux-um
+
+--===============1567156470532572252==--
+
