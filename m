@@ -4,80 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFC50CD5BCA
-	for <linux-um@archiver.kernel.org>; Tue, 19 Sep 2023 14:32:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C2F3CD5BCE
+	for <linux-um@archiver.kernel.org>; Tue, 19 Sep 2023 14:50:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
-	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=3qzZ5QqVlcO5mNfNGbmbRviUaDRQSDEdLZbqk184E1A=; b=xtUPR8v2fWZ9UX
-	Kue1AZKdRwpF5gg5JzHwbpVtgIfYqTxVCb084Ot5Wwa2rt866WRxePy22TMT2e54+WwUo0mOjXXaB
-	mI0gUaDCUQ7+sf3uBmBkenWsii91P02CHL6sjW2jl/GdpX5nFIzKyUK8W30NkNM/If8qAGfw0s7/u
-	8KLmARxbBI1hS4GMweJGoCG8OmZntIeJqUW7WupW7y0uvItJcY/aUWcld84PrMnTwsZWEQGkRHdeh
-	TH5Iwijt7zxgwUn0PKmaXppcHLhswkdZ9CThVYyMOKd1NELSrJVrBvS0qDv+OY/wX61sgb2YbOTvu
-	AukqgfSWqceOwjiUSccg==;
+	List-Owner; bh=0ajKeV8XFtYB+f+fLl+jZ/0VNVDoKVatTacEDSGHON4=; b=mwkE3car1107fB
+	iBpcawqaXPw97V0bvJB7EMb9OiTTdQKkTa8sdwCvUNRixLuk5cE0mWxf7lz/GTEhZQYkDwaTobBEF
+	uJHsnFBneJWbrp3JAYPECDWTQwX9XEHzY1Om0SXtJXFWW1205GTliD6oaG0FwLCwhAPDGCAjdTimR
+	njDpVTjtYhhsPdtLqnyVM/V9IHP+qrN2Fj8ZM/0s3QvXFB3suc8/RE+J1oIcdp/m/+hcdFTp5M/QO
+	xjsRLd5UMYaqUSYHVMi5Gi3RwCtzsSyfl/UouEbsxaRay+vwZxqvZw9Gfl4j/6GR0UIYYUl2vA3sM
+	wnNRh3m4fQ8xNjF7elow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiblv-000fFB-2m;
-	Tue, 19 Sep 2023 14:32:15 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1qic3l-000hRy-00;
+	Tue, 19 Sep 2023 14:50:41 +0000
+Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiblu-000fF1-0J
-	for linux-um@bombadil.infradead.org;
-	Tue, 19 Sep 2023 14:32:14 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=SidCZEV6eW0lcJ6NuB/uLvR734BxaKgfVBoDR9i1ilY=; b=wU6JouyF8Bxm56RpaenERGdpUO
-	uCvAVUpRAqLEsiOGlctL7ZupHDmJIFbEljv7BpsiWCt0P+Eu8m9up5lt1qMWnxNwnJbtaVWvn2FQO
-	4pKdpCBLaE5AaX6Gst2Xuv0aasi95ZnKa4+CkMPcsqW3PJEhR/eMlp/4usTSnSmznL5I2UfrU1dem
-	V9TSusY7h9TQCeE1ORzWfmKqeJBq5CEAIc84YqLmNerMa9UNwMBCfOxHRGWc+rMCfeIV01jDcHqaB
-	/apAzpnS4eTJSYIuKueYpJsctmmF6g8UbjSkd+Xp1I9U0O/06u6cqRSZD5goB0T09jgJOfd51cvIn
-	2UW3Y5Cw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1qibll-0008Rn-TQ; Tue, 19 Sep 2023 14:32:05 +0000
-Date: Tue, 19 Sep 2023 15:32:05 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Ankur Arora <ankur.a.arora@oracle.com>,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
-	akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-	dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-	juri.lelli@redhat.com, vincent.guittot@linaro.org, mgorman@suse.de,
-	rostedt@goodmis.org, jon.grimm@amd.com, bharata@amd.com,
-	raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
-	konrad.wilk@oracle.com, jgross@suse.com, andrew.cooper3@citrix.com,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-m68k@lists.linux-m68k.org,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	linux-um@lists.infradead.org, Brian Cain <bcain@quicinc.com>,
-	linux-hexagon@vger.kernel.org,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-	Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
+	id 1qic3h-000hQd-39
+	for linux-um@lists.infradead.org;
+	Tue, 19 Sep 2023 14:50:39 +0000
+Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
+	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <anton.ivanov@cambridgegreys.com>)
+	id 1qibbi-002SAY-6X; Tue, 19 Sep 2023 14:21:42 +0000
+Received: from jain.kot-begemot.co.uk ([192.168.3.3])
+	by jain.kot-begemot.co.uk with esmtp (Exim 4.94.2)
+	(envelope-from <anton.ivanov@cambridgegreys.com>)
+	id 1qibbf-00FmyT-Fd; Tue, 19 Sep 2023 15:21:41 +0100
+Message-ID: <bd664a61-4506-bab0-19c3-0011f57005b5@cambridgegreys.com>
+Date: Tue, 19 Sep 2023 15:21:39 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
 Subject: Re: Arches that don't support PREEMPT
-Message-ID: <ZQmw5dUzcFOWjHdB@casper.infradead.org>
-References: <20230912082606.GB35261@noisy.programming.kicks-ass.net>
+Content-Language: en-US
+To: Peter Zijlstra <peterz@infradead.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Matthew Wilcox <willy@infradead.org>, Thomas Gleixner
+ <tglx@linutronix.de>, Linus Torvalds <torvalds@linux-foundation.org>,
+ Ankur Arora <ankur.a.arora@oracle.com>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
+ luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+ mingo@redhat.com, juri.lelli@redhat.com, vincent.guittot@linaro.org,
+ mgorman@suse.de, rostedt@goodmis.org, jon.grimm@amd.com, bharata@amd.com,
+ raghavendra.kt@amd.com, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+ jgross@suse.com, andrew.cooper3@citrix.com,
+ Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org,
+ Richard Weinberger <richard@nod.at>,
+ Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org,
+ Brian Cain <bcain@quicinc.com>, linux-hexagon@vger.kernel.org,
+ Richard Henderson <richard.henderson@linaro.org>,
+ Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
+ <mattst88@gmail.com>, linux-alpha@vger.kernel.org
+References: <87zg1u1h5t.fsf@oracle.com>
+ <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
+ <20230911150410.GC9098@noisy.programming.kicks-ass.net>
+ <87h6o01w1a.fsf@oracle.com>
+ <20230912082606.GB35261@noisy.programming.kicks-ass.net>
  <87cyyfxd4k.ffs@tglx>
  <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
- <87led2wdj0.ffs@tglx>
- <ZQmbhoQIINs8rLHp@casper.infradead.org>
+ <87led2wdj0.ffs@tglx> <ZQmbhoQIINs8rLHp@casper.infradead.org>
  <0e69f7df80dc5878071deb0d80938138d19de1d1.camel@physik.fu-berlin.de>
  <20230919134218.GA39281@noisy.programming.kicks-ass.net>
- <a6c84803274116ec827cd4bdd4e72a8d0c304c27.camel@physik.fu-berlin.de>
- <20230919141627.GB39281@noisy.programming.kicks-ass.net>
- <a428516ebeae71e33635edc83052c972ce40c85d.camel@physik.fu-berlin.de>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <a428516ebeae71e33635edc83052c972ce40c85d.camel@physik.fu-berlin.de>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+In-Reply-To: <20230919134218.GA39281@noisy.programming.kicks-ass.net>
+X-Clacks-Overhead: GNU Terry Pratchett
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20230919_075038_011690_EEF9DD1C 
+X-CRM114-Status: GOOD (  18.07  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,19 +88,48 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Sep 19, 2023 at 04:24:48PM +0200, John Paul Adrian Glaubitz wrote:
-> If the conversion isn't hard, why is the first reflex the urge to remove an architecture
-> instead of offering advise how to get the conversion done?
 
-Because PREEMPT has been around since before 2005 (cc19ca86a023 created
-Kconfig.preempt and I don't need to go back further than that to make my
-point), and you haven't done the work yet.  Clearly it takes the threat
-of removal to get some kind of motion.
+
+On 19/09/2023 14:42, Peter Zijlstra wrote:
+> On Tue, Sep 19, 2023 at 03:37:24PM +0200, John Paul Adrian Glaubitz wrote:
+>> On Tue, 2023-09-19 at 14:00 +0100, Matthew Wilcox wrote:
+>>> On Tue, Sep 19, 2023 at 02:30:59PM +0200, Thomas Gleixner wrote:
+>>>> Though it just occured to me that there are dragons lurking:
+>>>>
+>>>> arch/alpha/Kconfig:     select ARCH_NO_PREEMPT
+>>>> arch/hexagon/Kconfig:   select ARCH_NO_PREEMPT
+>>>> arch/m68k/Kconfig:      select ARCH_NO_PREEMPT if !COLDFIRE
+>>>> arch/um/Kconfig:        select ARCH_NO_PREEMPT
+>>>
+>>> Sounds like three-and-a-half architectures which could be queued up for
+>>> removal right behind ia64 ...
+>>
+>> The agreement to kill off ia64 wasn't an invitation to kill off other stuff
+>> that people are still working on! Can we please not do this?
+> 
+> If you're working on one of them, then surely it's a simple matter of
+> working on adding CONFIG_PREEMPT support :-)
+
+In the case of UML adding preempt will be quite difficult. I looked at this a few years back.
+
+At the same time it is used for kernel test and other stuff. It is not exactly abandonware on a CPU found in archaeological artifacts of past civilizations like ia64.
+
+> 
+> _______________________________________________
+> linux-um mailing list
+> linux-um@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-um
+> 
+
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
 _______________________________________________
 linux-um mailing list
