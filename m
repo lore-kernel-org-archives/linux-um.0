@@ -4,54 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5326ECD3423
-	for <linux-um@archiver.kernel.org>; Tue, 19 Sep 2023 00:00:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AB7CCD5BB3
+	for <linux-um@archiver.kernel.org>; Tue, 19 Sep 2023 13:01:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:From:To:Date:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Ncv8uWEvFLrjsrxiy0kbeJvTU6jYqHTFbCTf6/M1fCg=; b=QIcJbCxYf8O3x3
-	PcCg91QqI6XIEfWbU+k+DGZX0DZ74tqiHLJmFPxjfjXV6MGLe6rQFekjfWUXT2NcX1lrXx2KejoUk
-	6eBBPZsVrb/zLVV0mgeppe4kXs3JIKheKC8QqOHOhCt4+7OqDdwoN1kF/+jxFEMgLHzlcjHEEyWnu
-	JPnJBirEyzyThjWrABK5lKiP2tHc/p24yAatEKpakeCsOKB5CLcv9+Bhvw5AjWA6qqSorCD+YIkjt
-	eUdUZbThek6cogxZUYUaGfzcUTiVfadPSp1GS3J2Ozg/g2nyX3rxrHrV4PQ71J358sz8FWsxODFIM
-	jMgNtanglRgUVwjanWXw==;
+	List-Owner; bh=0mZ8ACdsK+VaAg7kKPasqutxqQcWQOsH9cuSizg07kA=; b=sq/syEJ+wc6LZ6
+	aZoF9JDbkMqNWC5RT/Vcm9ESyO9/ReHxT2aTS/HGr6l5VKInsIno6aWquCS8M2tiET2T5nTatwoLn
+	6MF3HwOv+lt2xjMLqEf523vXchaObHMkDzADE4ickyu2AfbluHAI0CoIFZe1k1EJfb5W6pJhyHLD6
+	dvXTLOvDeYGbGZwteD+IJLXj/mqzw4XA7GXX1xokvclW1esPK64wQj9utE2FMeVFSnFgjvWLl12oz
+	WVWIAGiOged+KbdQWZ50G3In0pnRhq4sIC1zhlJs8qKwXXNJ2o+qHV8TSD9M+QdzBbJdN7SuSy0if
+	ucD7y0xyWSiM34bMG7jg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiOAj-00GYYB-2T;
-	Tue, 19 Sep 2023 00:00:57 +0000
-Received: from mail-4022.proton.ch ([185.70.40.22])
+	id 1qiaLh-000TkM-12;
+	Tue, 19 Sep 2023 13:01:05 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiOAg-00GYWw-0X
-	for linux-um@lists.infradead.org;
-	Tue, 19 Sep 2023 00:00:56 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=n8pjl.ca;
-	s=protonmail2; t=1695081647; x=1695340847;
-	bh=Lli3Yj6tPCTPu+N9cNfbF8RCVOR8MAz0xLiJXkVxWMI=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=hlGTyd596DF2dmgY1RxK0nQKhn95J6GICdAnV17WrFbnFOG+MUmgHjlK7mvMUvSEW
-	 Ny4WgaiMDNZDqse07BwO8txDjO1zp+XCxYLRYfUVTs73ENUZWdUW3K0uwPYGnlgd/G
-	 BO/jK2xmW9w8NhmGRL9T08JW7TZ5A05Hcx9idS+msnB0qobVQ7g2S387X/W2cCyH+s
-	 +cfQQ5WzCJy/YxylDrE93+mUvvi8MVrAFAbcB+EdRp/WqkuaiR2cNd0V5FTmvVb5+f
-	 If3BANatKOYi35sl2kqXvBNdhpWK8CBBDctN/+jKC4EWv2dLWh3Nt1kHLo9r03mTki
-	 KBwkIvgnmCEaw==
-Date: Tue, 19 Sep 2023 00:00:34 +0000
-To: segher@kernel.crashing.org
-From: Peter Lafreniere <peter@n8pjl.ca>
-Cc: anton.ivanov@cambridgegreys.com, geert@linux-m68k.org, ink@jurassic.park.msu.ru, jack@suse.cz, johannes@sipsolutions.net, linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org, linux-mips@vger.kernel.org, linux-sh@vger.kernel.org, linux-um@lists.infradead.org, linux@armlinux.org.uk, linuxppc-dev@lists.ozlabs.org, peter@n8pjl.ca, reiserfs-devel@vger.kernel.org, richard.henderson@linaro.org, richard@nod.at, tsbogend@alpha.franken.de
-Subject: Re: [PATCH 0/7] arch/*: config: Remove ReiserFS from defconfig
-Message-ID: <20230919000026.7409-1-peter@n8pjl.ca>
-In-Reply-To: <20230918234108.GN19790@gate.crashing.org>
-References: <20230918175529.19011-1-peter@n8pjl.ca> <20230918234108.GN19790@gate.crashing.org>
-Feedback-ID: 53133685:user:proton
+	id 1qiaLg-000TkC-1K
+	for linux-um@bombadil.infradead.org;
+	Tue, 19 Sep 2023 13:01:04 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=UQqbtC4LU7CWz7n0Qti5YLvSVy7RAt2aZ0CW6vnfgZE=; b=Re/9h8bA2l5R9rS+t5jWP44yYf
+	BD+D17QDievItTZT8XCUjAygltixoCakyWJVYollwPJN+8J4YpztmZA/sMcUv90RlabAnSY9WQ4Q5
+	kljuiW6Cp/gHdVwZuPoajR8jGbsUenSGzi9mEG6tIRVZj0rpmnWEoTdwR4IlnbCmrhYh71f/ffZwD
+	zA71QJEsU16dBg8UTSfZAHBIFPXxlH+0HL85WXEeFNsoDqUzKX5tjdXYgp/4e6wfzSGAKQCk05a4i
+	Klv/roly2FY9BRa21dQGgYeEcWYYb7A4C+ID92Ny/pq8ytpWrLKuBOGrdB94Fc5u0I/Yvk/fJrDb0
+	xGCYQG0g==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1qiaLW-00HLve-Gs; Tue, 19 Sep 2023 13:00:54 +0000
+Date: Tue, 19 Sep 2023 14:00:54 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ankur Arora <ankur.a.arora@oracle.com>,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+	akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+	dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org, mgorman@suse.de,
+	rostedt@goodmis.org, jon.grimm@amd.com, bharata@amd.com,
+	raghavendra.kt@amd.com, boris.ostrovsky@oracle.com,
+	konrad.wilk@oracle.com, jgross@suse.com, andrew.cooper3@citrix.com,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	linux-m68k@lists.linux-m68k.org,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	linux-um@lists.infradead.org, Brian Cain <bcain@quicinc.com>,
+	linux-hexagon@vger.kernel.org,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
+Subject: Arches that don't support PREEMPT
+Message-ID: <ZQmbhoQIINs8rLHp@casper.infradead.org>
+References: <87edj64rj1.fsf@oracle.com>
+ <CAHk-=wi0bXpgULVVLc2AdJcta-fvQP7yyFQ_JtaoHUiPrqf--A@mail.gmail.com>
+ <87zg1u1h5t.fsf@oracle.com>
+ <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
+ <20230911150410.GC9098@noisy.programming.kicks-ass.net>
+ <87h6o01w1a.fsf@oracle.com>
+ <20230912082606.GB35261@noisy.programming.kicks-ass.net>
+ <87cyyfxd4k.ffs@tglx>
+ <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
+ <87led2wdj0.ffs@tglx>
 MIME-Version: 1.0
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230918_170055_120009_BFA8F8A1 
-X-CRM114-Status: GOOD (  10.76  )
+Content-Disposition: inline
+In-Reply-To: <87led2wdj0.ffs@tglx>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,32 +93,23 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Monday, September 18th, 2023 at 19:41, Segher Boessenkool <segher@kernel.crashing.org> wrote:
-> On Mon, Sep 18, 2023 at 05:56:09PM +0000, Peter Lafreniere wrote:
+On Tue, Sep 19, 2023 at 02:30:59PM +0200, Thomas Gleixner wrote:
+> Though it just occured to me that there are dragons lurking:
 > 
-> > ReiserFS has been considered deprecated for 19 months since commit
-> > eb103a51640e ("reiserfs: Deprecate reiserfs"). However, there are
-> > several architectures that still build it into their defconfig kernels.
-> > 
-> > As ReiserFS will be removed in 2025, delete all ReiserFS-related options
-> > from defconfig files before the filesystem's removal.
-> 
-> 
-> This is essentially equivalent to deleting the filesystem now. Why do
-> this? Is there such a hurry?
+> arch/alpha/Kconfig:     select ARCH_NO_PREEMPT
+> arch/hexagon/Kconfig:   select ARCH_NO_PREEMPT
+> arch/m68k/Kconfig:      select ARCH_NO_PREEMPT if !COLDFIRE
+> arch/um/Kconfig:        select ARCH_NO_PREEMPT
 
-This is not equivalent to deleting the filesystem. The filesystem can still
-be configured into kernels, and few distros use a defconfig kernel anyway.
+Sounds like three-and-a-half architectures which could be queued up for
+removal right behind ia64 ...
 
-> 
-> 
-> Segher
+I suspect none of these architecture maintainers have any idea there's a
+problem.  Look at commit 87a4c375995e and the discussion in
+https://lore.kernel.org/lkml/20180724175646.3621-1-hch@lst.de/
 
-Cheers,
-
-Peter Lafreniere
-<peter@n8pjl.ca>
-
+Let's cc those maintainers so they can remove this and fix whatever
+breaks.
 
 _______________________________________________
 linux-um mailing list
