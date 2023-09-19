@@ -4,91 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 480FFCE79AB
-	for <linux-um@archiver.kernel.org>; Tue, 19 Sep 2023 17:34:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D243CE79A8
+	for <linux-um@archiver.kernel.org>; Tue, 19 Sep 2023 17:59:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:References
-	:In-Reply-To:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FcJmnNopCJ9EO0w8neKODdl36Fb80T77QVi43oc9QV4=; b=hXlKYzWrNCvWKM
-	b5ngKPD2YgTmwDs7nrbM5a86BDlTXJj2rNDpbdaAZLbNc2V0rjjU4guEp9+P/VsYgEefLD9KCJGXY
-	9bWtog2Wz6FOzXwcINaPWDe1ApgYz2nvcY9Ln3n7V8Qku5v52AezYPfk6w4YClHa4iwSh/vxARBHN
-	SH91hvizDjUTKGPlMzFy8RUDioj5cUe4wjo0KzZEfpnzi67A7lVZKiEfWFYAkojIow2Fnpj0QOEAS
-	7KHxfMCP2DPehlhCQTStBqlKMuB9UNH9A6Gwx4aoZLkXDoTgwvLnQCRdurrxvO02IltuhSOfQfiSk
-	Mu3XQkeEAVStmzc4bMfg==;
+	List-Owner; bh=b47csQ0LtMzrFaQuU4CBlEyxEMSHAP6zD9tHpzh/xZk=; b=H7NWIRkHDt8FsQ
+	VDkrWb7I0BwxhwnoSyEVYbdFtA9HTbnY/kZCESdIHFGgp4cYyJe83GBw6yEV7PnqnmGe8/4h/udU0
+	66ZV0fl6B4b1dUcajEo8NSLYeY/wDYheeB7Y9KbAG5rA3IZQno+vXL22HDfuurMQM+/MJHlkLn15p
+	xysIk/+b55YdHs4jgXtvn5zNgcQK4xkGDSZ0cK//dHysr801//WiD2Olp3X4tzXEVGNmuxZNpPTnI
+	iLdBGWQVSJScCslz+hxwMDIZBWeaMhO+lrQyxl6LqX6gQc+hwM6entfCNK3QV7Zm8OtybNWBBa++8
+	JIs6GxWyW5thgSrGuIgg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiebs-000wgw-22;
-	Tue, 19 Sep 2023 17:34:04 +0000
-Received: from galois.linutronix.de ([193.142.43.55])
+	id 1qif0B-0011H5-02;
+	Tue, 19 Sep 2023 17:59:11 +0000
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiebp-000wfp-1A
+	id 1qif08-0011Fm-0G
 	for linux-um@lists.infradead.org;
-	Tue, 19 Sep 2023 17:34:02 +0000
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1695144838;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Q5XoD2rR1P7xfyZ4vS5WECNooPW5RHsWgoNmWq+2hMo=;
-	b=UJuEQFI+fVdHak0lB8fNvstykL9kpTeNJD+gjygB9iKFIoN1n7qL5fa8q1zibRy2IPQ6Qe
-	NyukDnTgIGP7wS4FzYHD5OGCHF62//LTFHZZ8yP9IQToCNuSqQ1GH+7YaaGPaBI/CX6Z8V
-	8Vzbr2wmmB33ZJMWTR30JR513dx/C+zEch08e6QwhmiWdN2hx57bNIhu4sFxTiAQXh1Xn1
-	G7Uqydw7R+LQiZU2Twrng6XRlmrm/mXOIsAXYOgo5eW8rhYLGVEvA9DBjj6ZiIG4ffl66+
-	NOsgtS0rfYpuBXj0rw8P+dSYdXzP2sFea+0Hqq+BkBT6knNGfVPF/+sEjn1HEA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1695144838;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Q5XoD2rR1P7xfyZ4vS5WECNooPW5RHsWgoNmWq+2hMo=;
-	b=FC96a8Jt867By47LPHSnv602OXYh1+2tD7k+Vqqy6gx0P6BeLouKDBbYI0Ubu/ALeBPwSe
-	ofg019sZqzn6gQAQ==
-To: Anton Ivanov <anton.ivanov@cambridgegreys.com>, Richard Weinberger
- <richard@nod.at>
-Cc: Peter Zijlstra <peterz@infradead.org>, John Paul Adrian Glaubitz
- <glaubitz@physik.fu-berlin.de>, Matthew Wilcox <willy@infradead.org>,
- torvalds <torvalds@linux-foundation.org>, Ankur Arora
- <ankur.a.arora@oracle.com>, linux-kernel <linux-kernel@vger.kernel.org>,
- linux-mm <linux-mm@kvack.org>, x86 <x86@kernel.org>, Andrew Morton
- <akpm@linux-foundation.org>, Andy Lutomirski <luto@kernel.org>, bp
- <bp@alien8.de>, dave hansen <dave.hansen@linux.intel.com>, hpa
- <hpa@zytor.com>, mingo <mingo@redhat.com>, juri lelli
- <juri.lelli@redhat.com>, vincent guittot <vincent.guittot@linaro.org>,
- mgorman@suse.de, Steven Rostedt <rostedt@goodmis.org>, jon grimm
- <jon.grimm@amd.com>, bharata@amd.com, raghavendra kt
- <raghavendra.kt@amd.com>, boris ostrovsky <boris.ostrovsky@oracle.com>,
- konrad wilk <konrad.wilk@oracle.com>, jgross <jgross@suse.com>, andrew
- cooper3 <andrew.cooper3@citrix.com>, Geert Uytterhoeven
- <geert@linux-m68k.org>, linux-m68k <linux-m68k@lists.linux-m68k.org>,
- Johannes Berg <johannes@sipsolutions.net>, linux-um
- <linux-um@lists.infradead.org>, Brian Cain <bcain@quicinc.com>,
- linux-hexagon@vger.kernel.org, Richard Henderson
- <richard.henderson@linaro.org>, Ivan Kokshaysky
- <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, linux-alpha
- <linux-alpha@vger.kernel.org>
+	Tue, 19 Sep 2023 17:59:09 +0000
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.95)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1qieza-002CLX-Et; Tue, 19 Sep 2023 19:58:34 +0200
+Received: from p5b13a40a.dip0.t-ipconnect.de ([91.19.164.10] helo=suse-laptop.fritz.box)
+          by inpost2.zedat.fu-berlin.de (Exim 4.95)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1qieza-002eoT-1f; Tue, 19 Sep 2023 19:58:34 +0200
+Message-ID: <64746d98b60f1677cecd26501511f140688801e1.camel@physik.fu-berlin.de>
 Subject: Re: Arches that don't support PREEMPT
-In-Reply-To: <de98424d-41f9-90f9-742d-623e2b55c564@cambridgegreys.com>
-References: <87zg1u1h5t.fsf@oracle.com> <87led2wdj0.ffs@tglx>
- <ZQmbhoQIINs8rLHp@casper.infradead.org>
- <0e69f7df80dc5878071deb0d80938138d19de1d1.camel@physik.fu-berlin.de>
- <20230919134218.GA39281@noisy.programming.kicks-ass.net>
- <bd664a61-4506-bab0-19c3-0011f57005b5@cambridgegreys.com>
- <87y1h2ur98.ffs@tglx>
- <9a5c0856-d542-9912-7494-53d7fe4538a3@cambridgegreys.com>
- <551475267.58816.1695140566849.JavaMail.zimbra@nod.at>
- <de98424d-41f9-90f9-742d-623e2b55c564@cambridgegreys.com>
-Date: Tue, 19 Sep 2023 19:33:57 +0200
-Message-ID: <87v8c6ukxm.ffs@tglx>
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Matthew Wilcox
+ <willy@infradead.org>,  Thomas Gleixner <tglx@linutronix.de>, Ankur Arora
+ <ankur.a.arora@oracle.com>, linux-kernel@vger.kernel.org, 
+ linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
+ luto@kernel.org,  bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+ mingo@redhat.com,  juri.lelli@redhat.com, vincent.guittot@linaro.org,
+ mgorman@suse.de,  rostedt@goodmis.org, jon.grimm@amd.com, bharata@amd.com,
+ raghavendra.kt@amd.com,  boris.ostrovsky@oracle.com,
+ konrad.wilk@oracle.com, jgross@suse.com,  andrew.cooper3@citrix.com, Geert
+ Uytterhoeven <geert@linux-m68k.org>,  linux-m68k@lists.linux-m68k.org,
+ Richard Weinberger <richard@nod.at>, Anton Ivanov
+ <anton.ivanov@cambridgegreys.com>, Johannes Berg
+ <johannes@sipsolutions.net>,  linux-um@lists.infradead.org, Brian Cain
+ <bcain@quicinc.com>,  linux-hexagon@vger.kernel.org, Richard Henderson
+ <richard.henderson@linaro.org>,  Ivan Kokshaysky
+ <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>,
+ linux-alpha@vger.kernel.org
+Date: Tue, 19 Sep 2023 19:58:31 +0200
+In-Reply-To: <CAHk-=wgUimqtF7PqFfRw4Ju5H1KYkp6+8F=hBz7amGQ8GaGKkA@mail.gmail.com>
+References: <87zg1u1h5t.fsf@oracle.com>
+	 <CAHk-=whMkp68vNxVn1H3qe_P7n=X2sWPL9kvW22dsvMFH8FcQQ@mail.gmail.com>
+	 <20230911150410.GC9098@noisy.programming.kicks-ass.net>
+	 <87h6o01w1a.fsf@oracle.com>
+	 <20230912082606.GB35261@noisy.programming.kicks-ass.net>
+	 <87cyyfxd4k.ffs@tglx>
+	 <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
+	 <87led2wdj0.ffs@tglx> <ZQmbhoQIINs8rLHp@casper.infradead.org>
+	 <0e69f7df80dc5878071deb0d80938138d19de1d1.camel@physik.fu-berlin.de>
+	 <20230919134218.GA39281@noisy.programming.kicks-ass.net>
+	 <a6c84803274116ec827cd4bdd4e72a8d0c304c27.camel@physik.fu-berlin.de>
+	 <CAHk-=wgUimqtF7PqFfRw4Ju5H1KYkp6+8F=hBz7amGQ8GaGKkA@mail.gmail.com>
+User-Agent: Evolution 3.48.4 
 MIME-Version: 1.0
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.164.10
+X-ZEDAT-Hint: PO
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230919_103401_540432_EF285AF3 
-X-CRM114-Status: GOOD (  18.36  )
+X-CRM114-CacheID: sfid-20230919_105908_264467_C5152A4B 
+X-CRM114-Status: GOOD (  21.83  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,44 +93,63 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-T24gVHVlLCBTZXAgMTkgMjAyMyBhdCAxNzo0MSwgQW50b24gSXZhbm92IHdyb3RlOgo+IE9uIDE5
-LzA5LzIwMjMgMTc6MjIsIFJpY2hhcmQgV2VpbmJlcmdlciB3cm90ZToKPj4gLS0tLS0gVXJzcHLD
-vG5nbGljaGUgTWFpbCAtLS0tLQo+Pj4gVm9uOiAiYW50b24gaXZhbm92IiA8YW50b24uaXZhbm92
-QGNhbWJyaWRnZWdyZXlzLmNvbT4KPj4+IEl0J3MgYmVlbiBhIHdoaWxlLiBJIHJlbWVtYmVyIHRo
-YXQgSSBkcm9wcGVkIGl0IGF0IHRoZSB0aW1lLCBidXQgZG8gbm90IHJlbWVtYmVyCj4+PiB0aGUg
-ZnVsbCBkZXRhaWxzLgo+Pj4KPj4+IFRoZXJlIHdhcyBzb21lIHN0dWZmIHJlbGF0ZWQgdG8gRlAg
-c3RhdGUgYW5kIGEgZmV3IG90aGVyIGlzc3VlcyBJIHJhbiBpbnRvIHdoaWxlCj4+PiByZXdyaXRp
-bmcgdGhlIGludGVycnVwdCBjb250cm9sbGVyLiBTb21lIG9mIGl0IG1heSBiZSByZXNvbHZlZCBi
-eSBub3cgYXMgd2UgYXJlCj4+PiB1c2luZyBob3N0IGNwdSBmbGFncywgZXRjLgo+PiAKPj4gSSBy
-ZW1lbWJlciBhbHNvIGhhdmluZyBhIGhhY2t5IGJ1dCB3b3JraW5nIHZlcnNpb24gYWxtb3N0IDEw
-IHllYXJzIGFnby4KPj4gSXQgd2FzIGhvcnJpYmxlIHNsb3cgYmVjYXVzZSBvZiB0aGUgZXh0cmEg
-c2NoZWR1bGVyIHJvdW5kcy4KCldoaWNoIGNhbiBiZSBjb21wbGV0ZWx5IGF2b2lkZWQgYXMgdGhl
-IHByb3Bvc2VkIGNoYW5nZSB3aWxsIGhhdmUgdGhlCnByZWVtcHRpb24gcG9pbnRzLCBidXQgdGhl
-eSBhcmUgb25seSB1dGlsaXplZCB3aGVuIHByZWVtcHQgRlVMTCBpcwplbmFibGVkIChhdCBib290
-IG9yIHJ1bnRpbWUpLiBTbyB0aGUgYmVoYXZpb3VyIGNhbiBzdGlsbCBiZSBsaWtlIHByZWVtcHQK
-Tk9ORSwgYnV0IHdpdGggYSB0d2lzdCB0byBnZXQgcmlkIG9mIHRoZSBjb25kX3Jlc2NoZWQoKS9t
-aWdodF9yZXNjaGVkKCkKYW5kIG90aGVyIGhldXJpc3RpYyBhcHByb2FjaGVzIHRvIHByZXZlbnQg
-c3RhcnZhdGlvbiBieSBsb25nIHJ1bm5pbmcKZnVuY3Rpb25zLiBUaGF0IHR3aXN0IG5lZWRzIHRo
-ZSBwcmVlbXB0aW9uIHBvaW50cy4KClNlZSBodHRwczovL2xvcmUua2VybmVsLm9yZy9sa21sLzg3
-Y3l5ZnhkNGsuZmZzQHRnbHgKCj4+IEJ1dCB5ZXMsIGlmIFBSRUVNUFQgd2lsbCBiZSBhIG11c3Qt
-aGF2ZSBmZWF0dXJlIHdlJ2xsIGhhdmUgdG8gdHJ5IGFnYWluLgo+Cj4gV2Ugd2lsbCBuZWVkIHBy
-b3BlciBmcHUgcHJpbWl0aXZlcyBmb3Igc3RhcnRlcnMgdGhhdCdzIGZvcgo+IHN1cmUuIGZwdV9z
-dGFyL2VuZCBpbiBVTUwgYXJlIHByZXNlbnRseSBOT09QLgo+Cj4gU29tZSBvZiB0aGUgZGVmYXVs
-dCBzcGlubG9ja3MgYW5kIG90aGVyIHN0dWZmIHdoaWNoIHdlIHBpY2sgdXAgZnJvbQo+IGdlbmVy
-aWMgbWF5IG5lZWQgdG8gY2hhbmdlIGFzIHdlbGwuCj4KPiBUaGlzIGlzIG9mZiB0aGUgdG9wIG9m
-IG15IGhlYWQgYW5kIHNvbWV0aGluZyB3aGljaCB3ZSBjYW4gZml4IHN0cmFpZ2h0Cj4gYXdheS4g
-SSB3aWxsIHNlbmQgc29tZSBwYXRjaGVzIHRvIHRoZSBtYWlsaW5nIGxpc3QgdG9tb3Jyb3cgb3Ig
-b24gVGh1LgoKSSB0aGluayBpdCBkb2VzIG5vdCBoYXZlIHRvIGJlIHBlcmZlY3QuIFVNIGlzIGZh
-ciBmcm9tIHBlcmZlY3QgaW4KbWltaWNpbmcgYSByZWFsIGtlcm5lbC4gVGhlIG1haW4gcG9pbnQg
-aXMgdGhhdCBpdCBwcm92aWRlcyB0aGUgcHJlZW1wdApjb3VudGVyIGluIHRoZSBmaXJzdCBwbGFj
-ZSBhbmQgc29tZSBtaW5pbWFsIGFtb3VudCBvZiBwcmVlbXB0aW9uIHBvaW50cwphc2lkZSBvZiB0
-aG9zZSB3aGljaCBjb21lIHdpdGggdGhlIHByZWVtcHRfZW5hYmxlKCkgbWFjaGluZXJ5IGZvciBm
-cmVlLgoKVGhhbmtzLAoKICAgICAgICB0Z2x4CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMu
-aW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2xpbnV4LXVtCg==
+Hi Linus!
+
+On Tue, 2023-09-19 at 10:25 -0700, Linus Torvalds wrote:
+> On Tue, 19 Sept 2023 at 06:48, John Paul Adrian Glaubitz
+> <glaubitz@physik.fu-berlin.de> wrote:
+> > 
+> > As Geert poined out, I'm not seeing anything particular problematic with the
+> > architectures lacking CONFIG_PREEMPT at the moment. This seems to be more
+> > something about organizing KConfig files.
+> 
+> It can definitely be problematic.
+> 
+> Not the Kconfig file part, and not the preempt count part itself.
+> 
+> But the fact that it has never been used and tested means that there
+> might be tons of "this architecture code knows it's not preemptible,
+> because this architecture doesn't support preemption".
+> 
+> So you may have basic architecture code that simply doesn't have the
+> "preempt_disable()/enable()" pairs that it needs.
+> 
+> PeterZ mentioned the generic entry code, which does this for the entry
+> path. But it actually goes much deeper: just do a
+> 
+>     git grep preempt_disable arch/x86/kernel
+> 
+> and then do the same for some other architectures.
+> 
+> Looking at alpha, for example, there *are* hits for it, so at least
+> some of the code there clearly *tries* to do it. But does it cover all
+> the required parts? If it's never been tested, I'd be surprised if
+> it's all just ready to go.
+
+Thanks for the detailed explanation.
+
+> I do think we'd need to basically continue to support ARCH_NO_PREEMPT
+> - and such architectures migth end up with the worst-cast latencies of
+> only scheduling at return to user space.
+
+Great to hear, thank you.
+
+And, yes, eventually I would be happy to help get alpha and m68k converted.
+
+Adrian
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
