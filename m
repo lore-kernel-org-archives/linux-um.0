@@ -4,77 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9DDC7CE79CF
-	for <linux-um@archiver.kernel.org>; Wed, 20 Sep 2023 12:17:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DFD2CE79CF
+	for <linux-um@archiver.kernel.org>; Wed, 20 Sep 2023 12:30:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=2JYPF4LgeIdCog2fYTmhy7eTdBfKviTqfVT9tYOhzIo=; b=wteW48fS4nXbBo
-	Tc/U8lBrmYgP2jLiMGHgoZ14d3WirvcEApEXo0lHIL7zAW5BrK/oUO/SeRCcM3xWWA73eSq8YbtfV
-	j68kgTm6IMOk30Y5RpQ8idvJ3mJBhMrbF206YqPIPstiUAVnrJeW+iStvPAz0kC3IdnmA17VwJT0r
-	xT6SFrU9Sl0jYAAoCoB1ykLlJTBxvSeqdhxjW3HPfgOf8rj7zvlcLqeDmAZ3Ert1DMwMARWrtIj87
-	4TwpQLjEdHiYk1dycS0/TTzahDQCcYS9OrfpdfGuVWwpYqisWvGQpYHxlSXQVqXFuygYy/rdlYkKq
-	j5DWifeiB06IkICXaLHQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:References:To:From:Subject:MIME-Version:
+	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=q3oLM3NSALQqwAfBWJ8Eb22HGs+QNfXRYxJLspb9zog=; b=raBi4l+zEWhje5qiOWP/Z+U5mx
+	jzAXzr/Yg14KHL3uybw2FrnBxqVjp7IFU8MBcIxTY0sG6elC+AaBiGx7vG+m3W+EXfpPtus5T3eKC
+	tEhxNOKYPzDq0vaKQvhQUAHrqWgg280Yxiu2fe/FKYPOgTzBg3G2GKi0V9MXryBL/aO1dFGDnORH6
+	zlBGmZv3OZUcwQi7q4lqv04ZzvuL6/wArawyaARm5g9GqEl97y1hoBuhFFtkMalDLdkj9xdvokR+O
+	gXRGJ+7eOZIC+msR6+xvF8T8mQyBs++lAetY7j6nZrdbY1yVGGV3O6IN+1yiw+yrFuMBv/Qa5Jlws
+	2A/5Dm6A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiw95-00302K-06;
-	Wed, 20 Sep 2023 12:17:31 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1qiwM6-0031gs-0B;
+	Wed, 20 Sep 2023 12:30:58 +0000
+Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiw91-003014-2C
+	id 1qiwM3-0031fI-1Y
 	for linux-um@lists.infradead.org;
-	Wed, 20 Sep 2023 12:17:29 +0000
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by ams.source.kernel.org (Postfix) with ESMTPS id 45DF7B81D36;
-	Wed, 20 Sep 2023 12:17:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 545BAC433B7;
-	Wed, 20 Sep 2023 12:17:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1695212244;
-	bh=uQfT1CrEBKgPRGDrz2daN9OzvE6cgnuzScJXZmkZwQc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FZFFK0XszUwRdEDI8JsbdUCeBUwIS3srfStQeU8L7GgMeK+1KM/aspStcwtWfhv4/
-	 pekamhVin8ZYu7Df7GcDHcgF1OVgpJw0W3rlS4op7khCYYt5a9OhWkFJlm/EMxk04h
-	 PXQ5nzwezYzPt+lKXhGijEVCok73Gjo5CWq8WJwA=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: stable@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	patches@lists.linux.dev,
-	Randy Dunlap <rdunlap@infradead.org>,
-	kernel test robot <lkp@intel.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	linux-um@lists.infradead.org,
-	Tejun Heo <tj@kernel.org>,
-	Takashi Iwai <tiwai@suse.de>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	linux-kbuild@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 163/273] um: Fix hostaudio build errors
-Date: Wed, 20 Sep 2023 13:30:03 +0200
-Message-ID: <20230920112851.561465885@linuxfoundation.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230920112846.440597133@linuxfoundation.org>
-References: <20230920112846.440597133@linuxfoundation.org>
-User-Agent: quilt/0.67
-X-stable: review
-X-Patchwork-Hint: ignore
+	Wed, 20 Sep 2023 12:30:56 +0000
+Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
+	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>)
+	id 1qiwM0-002Vqu-0a
+	for linux-um@lists.infradead.org; Wed, 20 Sep 2023 12:30:52 +0000
+Received: from jain.kot-begemot.co.uk ([192.168.3.3])
+	by jain.kot-begemot.co.uk with esmtp (Exim 4.94.2)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>)
+	id 1qiwLx-00HFGd-9G
+	for linux-um@lists.infradead.org; Wed, 20 Sep 2023 13:30:51 +0100
+Message-ID: <d1d9054e-197c-18b1-bb2d-ef7f5737495f@kot-begemot.co.uk>
+Date: Wed, 20 Sep 2023 13:30:49 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: Boots and seems to work with PREEMPT enabled
+Content-Language: en-US
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+To: User Mode Linux <linux-um@lists.infradead.org>
+References: <6eb21cc7-05d5-c9be-6abd-07bdda64dcb6@kot-begemot.co.uk>
+In-Reply-To: <6eb21cc7-05d5-c9be-6abd-07bdda64dcb6@kot-begemot.co.uk>
+X-Clacks-Overhead: GNU Terry Pratchett
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230920_051728_014256_2AB7558F 
-X-CRM114-Status: GOOD (  17.93  )
+X-CRM114-CacheID: sfid-20230920_053055_520986_0C29F24A 
+X-CRM114-Status: GOOD (  11.91  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,159 +64,55 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-4.19-stable review patch.  If anyone has any objections, please let me know.
 
-------------------
 
-From: Randy Dunlap <rdunlap@infradead.org>
+On 20/09/2023 12:14, Anton Ivanov wrote:
+> Added support for kernel side fpu store/restore and real kernel_fpu_begin/kernel_fpu_end using gcc intrinsics. Enabled PREEMPT.
+> 
+> It boots and seems to be alive and kicking. I do not notice any significant effect on performance either.
+> 
 
-[ Upstream commit db4bfcba7bb8d10f00bba2a3da6b9a9c2a1d7b71 ]
+I take my words back - I was testing with VOLUNTARY which seems to provide a difference withing the margin of error.
 
-Use "select" to ensure that the required kconfig symbols are set
-as expected.
-Drop HOSTAUDIO since it is now equivalent to UML_SOUND.
+Enabling forced preemption drops the time for
 
-Set CONFIG_SOUND=m in ARCH=um defconfig files to maintain the
-status quo of the default configs.
+find /usr -type f -exec cat {} > /dev/null \;
 
-Allow SOUND with UML regardless of HAS_IOMEM. Otherwise there is a
-kconfig warning for unmet dependencies. (This was not an issue when
-SOUND was defined in arch/um/drivers/Kconfig. I have done 50 randconfig
-builds and didn't find any issues.)
+from
 
-This fixes build errors when CONFIG_SOUND is not set:
+real	19m11.207s
+user	0m0.180s
+sys	2m41.160s
 
-ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_cleanup_module':
-hostaudio_kern.c:(.exit.text+0xa): undefined reference to `unregister_sound_mixer'
-ld: hostaudio_kern.c:(.exit.text+0x15): undefined reference to `unregister_sound_dsp'
-ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_init_module':
-hostaudio_kern.c:(.init.text+0x19): undefined reference to `register_sound_dsp'
-ld: hostaudio_kern.c:(.init.text+0x31): undefined reference to `register_sound_mixer'
-ld: hostaudio_kern.c:(.init.text+0x49): undefined reference to `unregister_sound_dsp'
+to
 
-and this kconfig warning:
-WARNING: unmet direct dependencies detected for SOUND
+real	3m13.647s
+user	0m0.000s
+sys	2m58.270s
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Fixes: d886e87cb82b ("sound: make OSS sound core optional")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: lore.kernel.org/r/202307141416.vxuRVpFv-lkp@intel.com
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-um@lists.infradead.org
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Nicolas Schier <nicolas@fjasle.eu>
-Cc: linux-kbuild@vger.kernel.org
-Cc: alsa-devel@alsa-project.org
-Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/um/configs/i386_defconfig   |  1 +
- arch/um/configs/x86_64_defconfig |  1 +
- arch/um/drivers/Kconfig          | 16 +++-------------
- arch/um/drivers/Makefile         |  2 +-
- sound/Kconfig                    |  2 +-
- 5 files changed, 7 insertions(+), 15 deletions(-)
+And boot time from 11.5s to 6s.
 
-diff --git a/arch/um/configs/i386_defconfig b/arch/um/configs/i386_defconfig
-index 8f114e3b0a7a3..8d06b799a0e4e 100644
---- a/arch/um/configs/i386_defconfig
-+++ b/arch/um/configs/i386_defconfig
-@@ -35,6 +35,7 @@ CONFIG_TTY_CHAN=y
- CONFIG_XTERM_CHAN=y
- CONFIG_CON_CHAN="pts"
- CONFIG_SSL_CHAN="pts"
-+CONFIG_SOUND=m
- CONFIG_UML_SOUND=m
- CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
- CONFIG_DEVTMPFS=y
-diff --git a/arch/um/configs/x86_64_defconfig b/arch/um/configs/x86_64_defconfig
-index 5d0875fc0db25..446bdda4cbfb6 100644
---- a/arch/um/configs/x86_64_defconfig
-+++ b/arch/um/configs/x86_64_defconfig
-@@ -33,6 +33,7 @@ CONFIG_TTY_CHAN=y
- CONFIG_XTERM_CHAN=y
- CONFIG_CON_CHAN="pts"
- CONFIG_SSL_CHAN="pts"
-+CONFIG_SOUND=m
- CONFIG_UML_SOUND=m
- CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
- CONFIG_DEVTMPFS=y
-diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
-index 2638e46f50ccd..494f7c27056e3 100644
---- a/arch/um/drivers/Kconfig
-+++ b/arch/um/drivers/Kconfig
-@@ -104,24 +104,14 @@ config SSL_CHAN
- 
- config UML_SOUND
- 	tristate "Sound support"
-+	depends on SOUND
-+	select SOUND_OSS_CORE
- 	help
- 	  This option enables UML sound support.  If enabled, it will pull in
--	  soundcore and the UML hostaudio relay, which acts as a intermediary
-+	  the UML hostaudio relay, which acts as a intermediary
- 	  between the host's dsp and mixer devices and the UML sound system.
- 	  It is safe to say 'Y' here.
- 
--config SOUND
--	tristate
--	default UML_SOUND
--
--config SOUND_OSS_CORE
--	bool
--	default UML_SOUND
--
--config HOSTAUDIO
--	tristate
--	default UML_SOUND
--
- endmenu
- 
- menu "UML Network Devices"
-diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
-index 693319839f69e..d945abf90c319 100644
---- a/arch/um/drivers/Makefile
-+++ b/arch/um/drivers/Makefile
-@@ -52,7 +52,7 @@ obj-$(CONFIG_UML_NET) += net.o
- obj-$(CONFIG_MCONSOLE) += mconsole.o
- obj-$(CONFIG_MMAPPER) += mmapper_kern.o 
- obj-$(CONFIG_BLK_DEV_UBD) += ubd.o 
--obj-$(CONFIG_HOSTAUDIO) += hostaudio.o
-+obj-$(CONFIG_UML_SOUND) += hostaudio.o
- obj-$(CONFIG_NULL_CHAN) += null.o 
- obj-$(CONFIG_PORT_CHAN) += port.o
- obj-$(CONFIG_PTY_CHAN) += pty.o
-diff --git a/sound/Kconfig b/sound/Kconfig
-index 1140e9988fc50..76febc37862de 100644
---- a/sound/Kconfig
-+++ b/sound/Kconfig
-@@ -1,6 +1,6 @@
- menuconfig SOUND
- 	tristate "Sound card support"
--	depends on HAS_IOMEM
-+	depends on HAS_IOMEM || UML
- 	help
- 	  If you have a sound card in your computer, i.e. if it can say more
- 	  than an occasional beep, say Y.
+It did complain on shutdown though with some traces. Nothing while running.
+
+The patch will hit the mailing list shortly.
+
+
+> How do I test it from here onwards?
+
+The question still stands. Can we use anything as a specific test suite? It is not an area I am familiar with, so any pointers will be welcome.
+
+> 
+> I am happy to throw the patches on the list as an RFC, though I would prefer to test first :)
+> 
+
 -- 
-2.40.1
-
-
-
+Anton R. Ivanov
+https://www.kot-begemot.co.uk/
 
 _______________________________________________
 linux-um mailing list
