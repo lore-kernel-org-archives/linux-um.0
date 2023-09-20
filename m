@@ -4,52 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AEEECE79D1
-	for <linux-um@archiver.kernel.org>; Wed, 20 Sep 2023 12:32:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26818CE79CF
+	for <linux-um@archiver.kernel.org>; Wed, 20 Sep 2023 12:33:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-Id:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=NKhUVXyLg15hONZoPF6mArKuPc3HSrSAYN/s8HCihR0=; b=DDJo9HmJ4iZ/s7
-	NfW6wx23J9cm1+547Lhb4bkx7tTmCYhl8YH7GvHWKUn6MylUHNcnfNhBDOPNwzQiUzojwMPLM2QD0
-	2lyrRgHebchrKe9eN+hKOxzqroRBqwOxyqlWHuacvYMewkpCqvpFt7o19WS2rq0roP1nQgioHm9ZJ
-	8S6vt1hvwsrrCE45it8JIk3SkgRgrpLHkhEdzTzmeRcZxpBj8PoF7FG+AB+uOv/V4+722snBpSGhY
-	uHwhjNymiRhDOCW/SOAXamQuBDUwdBO9E+sd/GaHb8ZsTvkWcg3MNohQPTu5Me7Ana4cNROjt3VPw
-	JvXzFXWsNL4YzyfPEg5w==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=e1VPs70nhQvHVa0dsexybx74tF0adYFb4xrmpxXrhIk=; b=kl7dMWa15bpbrl
+	Es72aA4vxw6uvF2DeZnLf6fEaC0twQ+wlZyR7TF0ViqgsSNHshDqHI2r/OhlXkdvF3LIFqqrmfUDD
+	N8Ap+jY8mMbVDVO09hEZPcputW6Lan7F3G14reP9lc6rCWniyYmkjPdtvPuultiiH8FCQICSfY4EU
+	HYaphQF5YOLkQYUURqDJKT+5NpHOL2icekr7PDyNfcSRRP5Fzs+HpZOFcNscNCx/OGzQ06+pPcufm
+	k7mgWYsqwVfcUMb8QwLN4JLIkIm/iFRLCDPQDN9JpciqDhUosifTkG21F69xm6/QSQjmVkIFkK4TZ
+	4/1UiFmZG0gG68NXTZbQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiwNG-0031wO-2d;
-	Wed, 20 Sep 2023 12:32:10 +0000
-Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
+	id 1qiwOa-0032I4-0C;
+	Wed, 20 Sep 2023 12:33:32 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiwNE-0031vI-1z
+	id 1qiwOX-0032Ge-0w
 	for linux-um@lists.infradead.org;
-	Wed, 20 Sep 2023 12:32:10 +0000
-Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
-	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1qiwNC-002Vr9-Uh; Wed, 20 Sep 2023 12:32:07 +0000
-Received: from jain.kot-begemot.co.uk ([192.168.3.3])
-	by jain.kot-begemot.co.uk with esmtp (Exim 4.94.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1qiwN9-00HFKA-6Z; Wed, 20 Sep 2023 13:32:05 +0100
-From: anton.ivanov@cambridgegreys.com
-To: linux-um@lists.infradead.org
-Cc: johannes@sipsolutions.net,
-	richard@nod.at,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Subject: [PATCH] um: Enable preemption in UML
-Date: Wed, 20 Sep 2023 13:31:15 +0100
-Message-Id: <20230920123115.4106721-1-anton.ivanov@cambridgegreys.com>
-X-Mailer: git-send-email 2.30.2
+	Wed, 20 Sep 2023 12:33:30 +0000
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by dfw.source.kernel.org (Postfix) with ESMTPS id B714961BCD;
+	Wed, 20 Sep 2023 12:33:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08058C433C8;
+	Wed, 20 Sep 2023 12:33:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1695213208;
+	bh=OQuFw530VvmmOoooiJfvcNZ3JlUlVfAUg5Wqop8iNp4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=FGmBKk/uTgxhE87zatDxYBYzCTcvsk6CjOT3XBt7bZDLtn2xJY0mYfTgL2cZyA+Cw
+	 GasB4JAzxYjYIlhjqUzatiiFh7gg4xrk+2QA0C9XywmXU8YpDK6m2r9lAVhBJ2nAvh
+	 +48edOgEbgXEsdqt7bSZGlohwNp0uUXer6N01ePA=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: stable@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	patches@lists.linux.dev,
+	Randy Dunlap <rdunlap@infradead.org>,
+	kernel test robot <lkp@intel.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	linux-um@lists.infradead.org,
+	Tejun Heo <tj@kernel.org>,
+	Takashi Iwai <tiwai@suse.de>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	linux-kbuild@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 200/367] um: Fix hostaudio build errors
+Date: Wed, 20 Sep 2023 13:29:37 +0200
+Message-ID: <20230920112903.802759535@linuxfoundation.org>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230920112858.471730572@linuxfoundation.org>
+References: <20230920112858.471730572@linuxfoundation.org>
+User-Agent: quilt/0.67
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
-X-Clacks-Overhead: GNU Terry Pratchett
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230920_053208_651090_8155EF02 
-X-CRM114-Status: GOOD (  14.54  )
+X-CRM114-CacheID: sfid-20230920_053329_418253_47E9529B 
+X-CRM114-Status: GOOD (  18.11  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,145 +91,154 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+5.4-stable review patch.  If anyone has any objections, please let me know.
 
-Preemption requires saving/restoring FPU state. This patch
-adds support for it using GCC intrinsics.
+------------------
 
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+
+[ Upstream commit db4bfcba7bb8d10f00bba2a3da6b9a9c2a1d7b71 ]
+
+Use "select" to ensure that the required kconfig symbols are set
+as expected.
+Drop HOSTAUDIO since it is now equivalent to UML_SOUND.
+
+Set CONFIG_SOUND=m in ARCH=um defconfig files to maintain the
+status quo of the default configs.
+
+Allow SOUND with UML regardless of HAS_IOMEM. Otherwise there is a
+kconfig warning for unmet dependencies. (This was not an issue when
+SOUND was defined in arch/um/drivers/Kconfig. I have done 50 randconfig
+builds and didn't find any issues.)
+
+This fixes build errors when CONFIG_SOUND is not set:
+
+ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_cleanup_module':
+hostaudio_kern.c:(.exit.text+0xa): undefined reference to `unregister_sound_mixer'
+ld: hostaudio_kern.c:(.exit.text+0x15): undefined reference to `unregister_sound_dsp'
+ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_init_module':
+hostaudio_kern.c:(.init.text+0x19): undefined reference to `register_sound_dsp'
+ld: hostaudio_kern.c:(.init.text+0x31): undefined reference to `register_sound_mixer'
+ld: hostaudio_kern.c:(.init.text+0x49): undefined reference to `unregister_sound_dsp'
+
+and this kconfig warning:
+WARNING: unmet direct dependencies detected for SOUND
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Fixes: d886e87cb82b ("sound: make OSS sound core optional")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: lore.kernel.org/r/202307141416.vxuRVpFv-lkp@intel.com
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-um@lists.infradead.org
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Nicolas Schier <nicolas@fjasle.eu>
+Cc: linux-kbuild@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
+Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/Kconfig                         |  1 -
- arch/um/Makefile                        |  3 +-
- arch/um/include/asm/fpu/api.h           |  4 +-
- arch/um/include/asm/processor-generic.h |  1 +
- arch/um/kernel/Makefile                 |  2 +-
- arch/um/kernel/fpu.c                    | 49 +++++++++++++++++++++++++
- 6 files changed, 55 insertions(+), 5 deletions(-)
- create mode 100644 arch/um/kernel/fpu.c
+ arch/um/configs/i386_defconfig   |  1 +
+ arch/um/configs/x86_64_defconfig |  1 +
+ arch/um/drivers/Kconfig          | 16 +++-------------
+ arch/um/drivers/Makefile         |  2 +-
+ sound/Kconfig                    |  2 +-
+ 5 files changed, 7 insertions(+), 15 deletions(-)
 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index b5e179360534..603f5fd82293 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -11,7 +11,6 @@ config UML
- 	select ARCH_HAS_KCOV
- 	select ARCH_HAS_STRNCPY_FROM_USER
- 	select ARCH_HAS_STRNLEN_USER
--	select ARCH_NO_PREEMPT
- 	select HAVE_ARCH_AUDITSYSCALL
- 	select HAVE_ARCH_KASAN if X86_64
- 	select HAVE_ARCH_KASAN_VMALLOC if HAVE_ARCH_KASAN
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index 82f05f250634..35a059baadeb 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -61,7 +61,8 @@ KBUILD_CFLAGS += $(CFLAGS) $(CFLAGS-y) -D__arch_um__ \
- 	$(ARCH_INCLUDE) $(MODE_INCLUDE) -Dvmap=kernel_vmap	\
- 	-Dlongjmp=kernel_longjmp -Dsetjmp=kernel_setjmp \
- 	-Din6addr_loopback=kernel_in6addr_loopback \
--	-Din6addr_any=kernel_in6addr_any -Dstrrchr=kernel_strrchr
-+	-Din6addr_any=kernel_in6addr_any -Dstrrchr=kernel_strrchr \
-+	-mxsave
+diff --git a/arch/um/configs/i386_defconfig b/arch/um/configs/i386_defconfig
+index 73e98bb57bf51..4229ac9165e83 100644
+--- a/arch/um/configs/i386_defconfig
++++ b/arch/um/configs/i386_defconfig
+@@ -35,6 +35,7 @@ CONFIG_TTY_CHAN=y
+ CONFIG_XTERM_CHAN=y
+ CONFIG_CON_CHAN="pts"
+ CONFIG_SSL_CHAN="pts"
++CONFIG_SOUND=m
+ CONFIG_UML_SOUND=m
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+diff --git a/arch/um/configs/x86_64_defconfig b/arch/um/configs/x86_64_defconfig
+index 3281d7600225b..f6993a0067272 100644
+--- a/arch/um/configs/x86_64_defconfig
++++ b/arch/um/configs/x86_64_defconfig
+@@ -33,6 +33,7 @@ CONFIG_TTY_CHAN=y
+ CONFIG_XTERM_CHAN=y
+ CONFIG_CON_CHAN="pts"
+ CONFIG_SSL_CHAN="pts"
++CONFIG_SOUND=m
+ CONFIG_UML_SOUND=m
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
+index 388096fb45a25..12f54a4a3747d 100644
+--- a/arch/um/drivers/Kconfig
++++ b/arch/um/drivers/Kconfig
+@@ -104,24 +104,14 @@ config SSL_CHAN
  
- KBUILD_RUSTFLAGS += -Crelocation-model=pie
+ config UML_SOUND
+ 	tristate "Sound support"
++	depends on SOUND
++	select SOUND_OSS_CORE
+ 	help
+ 	  This option enables UML sound support.  If enabled, it will pull in
+-	  soundcore and the UML hostaudio relay, which acts as a intermediary
++	  the UML hostaudio relay, which acts as a intermediary
+ 	  between the host's dsp and mixer devices and the UML sound system.
+ 	  It is safe to say 'Y' here.
  
-diff --git a/arch/um/include/asm/fpu/api.h b/arch/um/include/asm/fpu/api.h
-index 71bfd9ef3938..0094624ae9b4 100644
---- a/arch/um/include/asm/fpu/api.h
-+++ b/arch/um/include/asm/fpu/api.h
-@@ -8,8 +8,8 @@
-  * of x86 optimized copy, xor, etc routines into the
-  * UML code tree. */
+-config SOUND
+-	tristate
+-	default UML_SOUND
+-
+-config SOUND_OSS_CORE
+-	bool
+-	default UML_SOUND
+-
+-config HOSTAUDIO
+-	tristate
+-	default UML_SOUND
+-
+ endmenu
  
--#define kernel_fpu_begin() (void)0
--#define kernel_fpu_end() (void)0
-+void kernel_fpu_begin(void);
-+void kernel_fpu_end(void);
- 
- static inline bool irq_fpu_usable(void)
- {
-diff --git a/arch/um/include/asm/processor-generic.h b/arch/um/include/asm/processor-generic.h
-index 7414154b8e9a..1c3287f1a444 100644
---- a/arch/um/include/asm/processor-generic.h
-+++ b/arch/um/include/asm/processor-generic.h
-@@ -44,6 +44,7 @@ struct thread_struct {
- 			} cb;
- 		} u;
- 	} request;
-+    u8 fpu[512] __aligned(16); /* Intel docs require xsave/xrestore area to be aligned to 16 bytes */
- };
- 
- #define INIT_THREAD \
-diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
-index 811188be954c..5d9fbaa544be 100644
---- a/arch/um/kernel/Makefile
-+++ b/arch/um/kernel/Makefile
-@@ -16,7 +16,7 @@ extra-y := vmlinux.lds
- 
- obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
- 	physmem.o process.o ptrace.o reboot.o sigio.o \
--	signal.o sysrq.o time.o tlb.o trap.o \
-+	signal.o sysrq.o time.o tlb.o trap.o fpu.o\
- 	um_arch.o umid.o maccess.o kmsg_dump.o capflags.o skas/
- obj-y += load_file.o
- 
-diff --git a/arch/um/kernel/fpu.c b/arch/um/kernel/fpu.c
-new file mode 100644
-index 000000000000..4142a08c474d
---- /dev/null
-+++ b/arch/um/kernel/fpu.c
-@@ -0,0 +1,49 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2023 Cambridge Greys Ltd
-+ * Copyright (C) 2023 Red Hat Inc
-+ */
-+
-+#include <linux/cpu.h>
-+#include <linux/init.h>
-+#include <asm/fpu/api.h>
-+
-+/*
-+ * The critical section between kernel_fpu_begin() and kernel_fpu_end()
-+ * is non-reentrant. It is the caller's responsibility to avoid reentrance.
-+ */
-+
-+static DEFINE_PER_CPU(bool, in_kernel_fpu);
-+
-+void kernel_fpu_begin(void)
-+{
-+	preempt_disable();
-+
-+	WARN_ON(this_cpu_read(in_kernel_fpu));
-+
-+	this_cpu_write(in_kernel_fpu, true);
-+
-+#ifdef CONFIG_64BIT
-+	__builtin_ia32_fxsave64(&current->thread.fpu);
-+#else
-+	__builtin_ia32_fxsave(&current->thread.fpu);
-+#endif
-+}
-+
-+EXPORT_SYMBOL_GPL(kernel_fpu_begin);
-+
-+void kernel_fpu_end(void)
-+{
-+	WARN_ON(!this_cpu_read(in_kernel_fpu));
-+
-+#ifdef CONFIG_64BIT
-+	__builtin_ia32_fxrstor64(&current->thread.fpu);
-+#else
-+	__builtin_ia32_fxrstor(&current->thread.fpu);
-+#endif
-+	this_cpu_write(in_kernel_fpu, false);
-+
-+	preempt_enable();
-+}
-+EXPORT_SYMBOL_GPL(kernel_fpu_end);
-+
+ menu "UML Network Devices"
+diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
+index a290821e355c2..4d7fb606a5f04 100644
+--- a/arch/um/drivers/Makefile
++++ b/arch/um/drivers/Makefile
+@@ -52,7 +52,7 @@ obj-$(CONFIG_UML_NET) += net.o
+ obj-$(CONFIG_MCONSOLE) += mconsole.o
+ obj-$(CONFIG_MMAPPER) += mmapper_kern.o 
+ obj-$(CONFIG_BLK_DEV_UBD) += ubd.o 
+-obj-$(CONFIG_HOSTAUDIO) += hostaudio.o
++obj-$(CONFIG_UML_SOUND) += hostaudio.o
+ obj-$(CONFIG_NULL_CHAN) += null.o 
+ obj-$(CONFIG_PORT_CHAN) += port.o
+ obj-$(CONFIG_PTY_CHAN) += pty.o
+diff --git a/sound/Kconfig b/sound/Kconfig
+index 36785410fbe15..aaf2022ffc57d 100644
+--- a/sound/Kconfig
++++ b/sound/Kconfig
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ menuconfig SOUND
+ 	tristate "Sound card support"
+-	depends on HAS_IOMEM
++	depends on HAS_IOMEM || UML
+ 	help
+ 	  If you have a sound card in your computer, i.e. if it can say more
+ 	  than an occasional beep, say Y.
 -- 
-2.30.2
+2.40.1
+
+
 
 
 _______________________________________________
