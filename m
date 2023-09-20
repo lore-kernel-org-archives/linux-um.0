@@ -4,79 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 143C0CE79DD
-	for <linux-um@archiver.kernel.org>; Wed, 20 Sep 2023 14:39:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0493ECE79DE
+	for <linux-um@archiver.kernel.org>; Wed, 20 Sep 2023 14:50:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:From:To:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=rdN3ddq+RwnBD/OXMjMnMQsueNZZp52q1X1u3N45Ee0=; b=0BEA3AdoSZWvDp
-	VJVBWbom0ncelL/rgkskDS2dD1SuelnS6P57u3bOEBbjTaOkM+skv8WsgArW9LsWYeZspggjYmHOC
-	t3lHu0ozgLkBWaAP7af5n5yl6EXh29694dibIxZTw+A2dKD1J15sUyxDNZMM13eeq13WDJUCCmpWT
-	amiPSQ0EMlGzi5IquZ6eyu9F4j7RLaq+UgDuOzKu2qJLAeBoIhDBq4Grm++BKWVKA7rydx0ICg7HH
-	Bvw0lrjh89E2i90SawElds3WvO6Q5S8Gp99sIiK3E2z5dbdNTyRHMv8+xr/inUNZ7lGBuHbFMB7I4
-	xfXncCFDQvu0g2nYq9UQ==;
+	List-Owner; bh=6DBRzD+CHddyv3pNpI3/DYqwZHiLFmFssrJFSTLjvDI=; b=bD5CvLUOzlqL8T
+	ngDMzbnQbje8vhVb8MDF4cSMpwKH5fg9xfZkrSB9sGNSwiFe7OoUlb9129gDDDmlzzX5ASxxP0KaU
+	RHyn2xx/S0ZXoZ7cCtF2jGiUJEPi7DvYPZRdecLE+HHTUBwa4VPb19+Rp73/E3D8qjAdLcnPCzUDh
+	Qn8ol8J8uAk5zIy1fwE5PNjaPUK/6U62x5KvnjnrX9KUMrOwTNrzLV+n9B9OhSR/oDFJ9ELvRj9sB
+	MWX/L7/QdJRIjywwJ2H7HC7bf4jte4sEuRgNe/551U4uUWVHKdsDOob1XB8ntQd/jEUKXsC71jB5s
+	/uJauxhgxiw9/w+QCD1w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiyMp-003Oa5-2P;
-	Wed, 20 Sep 2023 14:39:51 +0000
-Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
+	id 1qiyWo-003Q9e-2M;
+	Wed, 20 Sep 2023 14:50:10 +0000
+Received: from mail-4317.proton.ch ([185.70.43.17])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiyMm-003OWd-09
+	id 1qiyWj-003Q7o-2P
 	for linux-um@lists.infradead.org;
-	Wed, 20 Sep 2023 14:39:49 +0000
-Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
-	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1qiyLd-002W2U-3v; Wed, 20 Sep 2023 14:38:37 +0000
-Received: from jain.kot-begemot.co.uk ([192.168.3.3])
-	by jain.kot-begemot.co.uk with esmtp (Exim 4.94.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1qiyLa-00HNGo-By; Wed, 20 Sep 2023 15:38:36 +0100
-Message-ID: <159b79fc-16d8-2d12-ed17-fb508879d791@cambridgegreys.com>
-Date: Wed, 20 Sep 2023 15:38:33 +0100
+	Wed, 20 Sep 2023 14:50:09 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=n8pjl.ca;
+	s=protonmail2; t=1695221399; x=1695480599;
+	bh=4VWNLXXLOELdOA1f44llnSxegZ0fzKMEoF5Sd7ZlvYA=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=e8U6UIaAETk8fB7cg/gyjHGpUy/XAXcOW7+Rt3EpDgplnOzJhVe61rx7JmxKdcNpP
+	 qKmiNNeooUPMZFlMxihvGfaPcgC9wUDLh9P8jxByv9AJAjDS3Tl2h3y3ShzYZ5KFaF
+	 KOHNrwQrpmYM2uInQIp+MjsmL5rG5fJ6Uj6ZgBaLDSmJoc+67oMSP+X8EPZZfAUuZp
+	 PhjYARGrQptvd9+TE3LBRpnP7c0ZficFaZH8yMH//Vp5+s47S0+4S6wUp/WfyT7w0M
+	 mipLSf8ICzcpLhHXJCqvxDp/M6kt5EEo6oD1qbt4e6D8Pyr7saz/Gm8Ho6IhuoSVKl
+	 Sq7t/JJE66OjA==
+Date: Wed, 20 Sep 2023 14:49:49 +0000
+To: anton.ivanov@cambridgegreys.com
+From: Peter Lafreniere <peter@n8pjl.ca>
+Cc: johannes@sipsolutions.net, linux-um@lists.infradead.org, richard@nod.at
+Subject: Re: [PATCH] um: Enable preemption in UML
+Message-ID: <20230920144943.19271-1-peter@n8pjl.ca>
+In-Reply-To: <20230920123115.4106721-1-anton.ivanov@cambridgegreys.com>
+References: <20230920123115.4106721-1-anton.ivanov@cambridgegreys.com>
+Feedback-ID: 53133685:user:proton
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: Arches that don't support PREEMPT
-Content-Language: en-US
-To: Peter Zijlstra <peterz@infradead.org>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Matthew Wilcox <willy@infradead.org>, Thomas Gleixner
- <tglx@linutronix.de>, Linus Torvalds <torvalds@linux-foundation.org>,
- Ankur Arora <ankur.a.arora@oracle.com>, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
- luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
- mingo@redhat.com, juri.lelli@redhat.com, vincent.guittot@linaro.org,
- mgorman@suse.de, rostedt@goodmis.org, jon.grimm@amd.com, bharata@amd.com,
- raghavendra.kt@amd.com, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
- jgross@suse.com, andrew.cooper3@citrix.com,
- Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org,
- Richard Weinberger <richard@nod.at>,
- Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org,
- Brian Cain <bcain@quicinc.com>, linux-hexagon@vger.kernel.org,
- Richard Henderson <richard.henderson@linaro.org>,
- Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
- <mattst88@gmail.com>, linux-alpha@vger.kernel.org
-References: <20230911150410.GC9098@noisy.programming.kicks-ass.net>
- <87h6o01w1a.fsf@oracle.com>
- <20230912082606.GB35261@noisy.programming.kicks-ass.net>
- <87cyyfxd4k.ffs@tglx>
- <CAHk-=whnwC01m_1f-gaM1xbvvwzwTiKitrWniA-ChZv+bM03dg@mail.gmail.com>
- <87led2wdj0.ffs@tglx> <ZQmbhoQIINs8rLHp@casper.infradead.org>
- <0e69f7df80dc5878071deb0d80938138d19de1d1.camel@physik.fu-berlin.de>
- <20230919134218.GA39281@noisy.programming.kicks-ass.net>
- <a6c84803274116ec827cd4bdd4e72a8d0c304c27.camel@physik.fu-berlin.de>
- <20230919141627.GB39281@noisy.programming.kicks-ass.net>
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20230919141627.GB39281@noisy.programming.kicks-ass.net>
-X-Clacks-Overhead: GNU Terry Pratchett
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230920_073948_115204_75E69919 
-X-CRM114-Status: GOOD (  22.81  )
+X-CRM114-CacheID: sfid-20230920_075007_509411_A46B871D 
+X-CRM114-Status: GOOD (  23.67  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,58 +63,181 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-
-
-On 19/09/2023 15:16, Peter Zijlstra wrote:
-> On Tue, Sep 19, 2023 at 03:48:09PM +0200, John Paul Adrian Glaubitz wrote:
->> On Tue, 2023-09-19 at 15:42 +0200, Peter Zijlstra wrote:
->>>> The agreement to kill off ia64 wasn't an invitation to kill off other stuff
->>>> that people are still working on! Can we please not do this?
->>>
->>> If you're working on one of them, then surely it's a simple matter of
->>> working on adding CONFIG_PREEMPT support :-)
->>
->> As Geert poined out, I'm not seeing anything particular problematic with the
->> architectures lacking CONFIG_PREEMPT at the moment. This seems to be more
->> something about organizing KConfig files.
+On Wed, Sep 20, 2023 at 08:31, anton.ivanov@cambridgegreys.com wrote:
 > 
-> The plan in the parent thread is to remove PREEMPT_NONE and
-> PREEMPT_VOLUNTARY and only keep PREEMPT_FULL.
+> From: Anton Ivanov anton.ivanov@cambridgegreys.com
 > 
->> I find it a bit unfair that maintainers of architectures that have huge companies
->> behind them use their manpower to urge less popular architectures for removal just
->> because they don't have 150 people working on the port so they can keep up with
->> design changes quickly.
 > 
-> PREEMPT isn't something new. Also, I don't think the arch part for
-> actually supporting it is particularly hard, mostly it is sticking the
-> preempt_schedule_irq() call in return from interrupt code path.
+> Preemption requires saving/restoring FPU state. This patch
+> adds support for it using GCC intrinsics.
+> 
+> Signed-off-by: Anton Ivanov anton.ivanov@cambridgegreys.com
+> 
+> ---
+> arch/um/Kconfig | 1 -
+> arch/um/Makefile | 3 +-
+> arch/um/include/asm/fpu/api.h | 4 +-
+> arch/um/include/asm/processor-generic.h | 1 +
+> arch/um/kernel/Makefile | 2 +-
+> arch/um/kernel/fpu.c | 49 +++++++++++++++++++++++++
+> 6 files changed, 55 insertions(+), 5 deletions(-)
+> create mode 100644 arch/um/kernel/fpu.c
+> 
+> diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+> index b5e179360534..603f5fd82293 100644
+> --- a/arch/um/Kconfig
+> +++ b/arch/um/Kconfig
+> @@ -11,7 +11,6 @@ config UML
+> select ARCH_HAS_KCOV
+> select ARCH_HAS_STRNCPY_FROM_USER
+> select ARCH_HAS_STRNLEN_USER
+> - select ARCH_NO_PREEMPT
+> select HAVE_ARCH_AUDITSYSCALL
+> select HAVE_ARCH_KASAN if X86_64
+> select HAVE_ARCH_KASAN_VMALLOC if HAVE_ARCH_KASAN
+> diff --git a/arch/um/Makefile b/arch/um/Makefile
+> index 82f05f250634..35a059baadeb 100644
+> --- a/arch/um/Makefile
+> +++ b/arch/um/Makefile
+> @@ -61,7 +61,8 @@ KBUILD_CFLAGS += $(CFLAGS) $(CFLAGS-y) -D__arch_um__ \
+> $(ARCH_INCLUDE) $(MODE_INCLUDE) -Dvmap=kernel_vmap \
+> -Dlongjmp=kernel_longjmp -Dsetjmp=kernel_setjmp \
+> -Din6addr_loopback=kernel_in6addr_loopback \
+> - -Din6addr_any=kernel_in6addr_any -Dstrrchr=kernel_strrchr
+> + -Din6addr_any=kernel_in6addr_any -Dstrrchr=kernel_strrchr \
+> + -mxsave
 
-That calls local_irq_enable() which does various signal related/irq pending work on UML. That in turn does no like being invoked again (as you may have already been invoked out of that) in the IRQ return path.
+Since we're now using a new isa extention, I would add a check in
+linux_main() with a warning message if xsave is not available.
 
-So it is likely to end up being slightly more difficult than that for UML - it will need to be wrapped so it can be invoked from the "host" side signal code as well as invoked with some additional checks to avoid making a hash out of the IRQ handling.
-
-It may be necessary to modify some of the existing reentrancy prevention logic in the signal handlers as well and change it to make use of the preempt count instead of its own flags/counters.
+It also wouldn't hurt to only require xsave if CONFIG_PREEMPT is enabled. 
 
 > 
-> If you convert the arch to generic-entry (a much larger undertaking)
-> then you get this for free.
+> KBUILD_RUSTFLAGS += -Crelocation-model=pie
 > 
-> _______________________________________________
-> linux-um mailing list
-> linux-um@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-um
+> diff --git a/arch/um/include/asm/fpu/api.h b/arch/um/include/asm/fpu/api.h
+> index 71bfd9ef3938..0094624ae9b4 100644
+> --- a/arch/um/include/asm/fpu/api.h
+> +++ b/arch/um/include/asm/fpu/api.h
+> @@ -8,8 +8,8 @@
+> * of x86 optimized copy, xor, etc routines into the
+> * UML code tree. /
 > 
+> -#define kernel_fpu_begin() (void)0
+> -#define kernel_fpu_end() (void)0
+> +void kernel_fpu_begin(void);
+> +void kernel_fpu_end(void);
+> 
+> static inline bool irq_fpu_usable(void)
+> {
+> diff --git a/arch/um/include/asm/processor-generic.h b/arch/um/include/asm/processor-generic.h
+> index 7414154b8e9a..1c3287f1a444 100644
+> --- a/arch/um/include/asm/processor-generic.h
+> +++ b/arch/um/include/asm/processor-generic.h
+> @@ -44,6 +44,7 @@ struct thread_struct {
+> } cb;
+> } u;
+> } request;
+> + u8 fpu[512] __aligned(16); / Intel docs require xsave/xrestore area to be aligned to 16 bytes /
+> };
+> 
+> #define INIT_THREAD \
+> diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
+> index 811188be954c..5d9fbaa544be 100644
+> --- a/arch/um/kernel/Makefile
+> +++ b/arch/um/kernel/Makefile
+> @@ -16,7 +16,7 @@ extra-y := vmlinux.lds
+> 
+> obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
+> physmem.o process.o ptrace.o reboot.o sigio.o \
+> - signal.o sysrq.o time.o tlb.o trap.o \
+> + signal.o sysrq.o time.o tlb.o trap.o fpu.o\
+> um_arch.o umid.o maccess.o kmsg_dump.o capflags.o skas/
+> obj-y += load_file.o
+> 
+> diff --git a/arch/um/kernel/fpu.c b/arch/um/kernel/fpu.c
+> new file mode 100644
+> index 000000000000..4142a08c474d
+> --- /dev/null
+> +++ b/arch/um/kernel/fpu.c
+> @@ -0,0 +1,49 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/
+> + * Copyright (C) 2023 Cambridge Greys Ltd
+> + * Copyright (C) 2023 Red Hat Inc
+> + */
+> +
+> +#include <linux/cpu.h>
+> 
+> +#include <linux/init.h>
+> 
+> +#include <asm/fpu/api.h>
+> 
+> +
+> +/*
+> + * The critical section between kernel_fpu_begin() and kernel_fpu_end()
+> + * is non-reentrant. It is the caller's responsibility to avoid reentrance.
+> + */
+> +
+> +static DEFINE_PER_CPU(bool, in_kernel_fpu);
+> +
+> +void kernel_fpu_begin(void)
+> +{
+> + preempt_disable();
+> +
+> + WARN_ON(this_cpu_read(in_kernel_fpu));
+> +
+> + this_cpu_write(in_kernel_fpu, true);
+> +
+> +#ifdef CONFIG_64BIT
+> + __builtin_ia32_fxsave64(&current->thread.fpu);
+> 
+> +#else
+> + __builtin_ia32_fxsave(&current->thread.fpu);
+> 
+> +#endif
+> +}
+> +
+> +EXPORT_SYMBOL_GPL(kernel_fpu_begin);
+> +
+> +void kernel_fpu_end(void)
+> +{
+> + WARN_ON(!this_cpu_read(in_kernel_fpu));
+> +
+> +#ifdef CONFIG_64BIT
+> + __builtin_ia32_fxrstor64(&current->thread.fpu);
+> 
+> +#else
+> + __builtin_ia32_fxrstor(&current->thread.fpu);
+> 
+> +#endif
+> + this_cpu_write(in_kernel_fpu, false);
+> +
+> + preempt_enable();
+> +}
+> +EXPORT_SYMBOL_GPL(kernel_fpu_end);
+> +
 
--- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
+According to https://www.felixcloutier.com/x86/fxsave, the fxsave and fxrstor
+instructions do not save ymm, zmm, or mask registers. Please make that explicit
+in your comment, or replace intrinsics with inline assembler to support those
+registers.
+
+Several x86 crypto routines use these larger registers which could overwrite
+userspace registers. These modules aren't built by default, and may not be
+available on UML. Even so, this issue is worth a comment, at the least.
+
+On my system, lscpu within uml shows all the feature flags that are available
+on the host system, which includes AVX extentions.
+
+Cheers,
+Peter Lafreniere
+
 
 _______________________________________________
 linux-um mailing list
