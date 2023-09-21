@@ -4,55 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E76A5CD342E
-	for <linux-um@archiver.kernel.org>; Thu, 21 Sep 2023 07:13:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 38B43CD5BD5
+	for <linux-um@archiver.kernel.org>; Thu, 21 Sep 2023 07:30:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=dapCm9PSuHjkC75e5MqslW0JA0KiqxoEVvLOR/z5zaA=; b=tF+sdaziJadHRR
-	n7QXmlQdb/yCVQ7J0e7D7teiD5NM+uX5IXFT8J+FYqqaVEfY3iGQUCvGdquoI0t6e682FPk87xIql
-	4geT4Y0alZ3I3WiOp58RkLeThmQ7G3AybX6slo0RjTmEwzT4kWq7S+3E4SF1eMZSANlA3ng59JQ5u
-	HUqI99p8UrwYNnRIpRHV+omcSGZi+wyB4YrjjNifHrMGRQO5Q/t8N3O0F1M3visULbA6LIvlqTdsr
-	QM/ftjdWs4J89vIWy7djTudssun8PZwGC7lu9cBczMSDelabl6IPvk80mR8Ipr1hikGngisraJcn4
-	fPs3eE5uatGvfBrhVUtw==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=XqjifYK0pcaWntjVPa1QfAloPAP4Aedv46yyb3+RWvQ=; b=H20XcxZz2EvLnhH1Pkj2bgGIBn
+	BBerqUSyAbhti4bWGQxSrc/zr2PNrsvXbheduBH4yzK/Jq0nXtOuMWR5Vyh9yanh87KVlADfqy5hM
+	hCUf5vKMoaBWzt7ECXTBaf29ogwE86ETW1An0XBO1AuKptzcr9VEIZoNk1LHfJpLXcCe0OgApEDHl
+	qX2i23Uf6RP/LLit6uzUjPD2zv+6iYK4BbalmJWmbPByUPeImFbNtE9MaaCzGR9kFJCWY5EAnuzHE
+	XpGYlFL58Rio0vQSw91d8ejuI+MGpG5VBmP18Bn2Bc4gkUKM6yiTYCeIaS9gSZS6j3JpqF/WQz7JU
+	zXeV1RmQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjDs0-005LfK-0r;
-	Thu, 21 Sep 2023 07:13:04 +0000
-Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
+	id 1qjE8r-005N52-22;
+	Thu, 21 Sep 2023 07:30:29 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjDrx-005LcV-2D
+	id 1qjE8o-005N3K-2o
 	for linux-um@lists.infradead.org;
-	Thu, 21 Sep 2023 07:13:03 +0000
-Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
-	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1qjDrY-002Y7j-Gw; Thu, 21 Sep 2023 07:12:36 +0000
-Received: from jain.kot-begemot.co.uk ([192.168.3.3])
-	by jain.kot-begemot.co.uk with esmtp (Exim 4.94.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1qjDrV-000fVZ-OM; Thu, 21 Sep 2023 08:12:36 +0100
-Message-ID: <a52c2c87-87d9-d93b-3089-976ffbcb089b@cambridgegreys.com>
-Date: Thu, 21 Sep 2023 08:12:33 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
+	Thu, 21 Sep 2023 07:30:28 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 03853635DB4D;
+	Thu, 21 Sep 2023 09:30:22 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id DhqprUd1DJ6z; Thu, 21 Sep 2023 09:30:21 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 69EEE6234894;
+	Thu, 21 Sep 2023 09:30:21 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id ZV62u1ISTiM7; Thu, 21 Sep 2023 09:30:21 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 3C1BA635DB4D;
+	Thu, 21 Sep 2023 09:30:21 +0200 (CEST)
+Date: Thu, 21 Sep 2023 09:30:21 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: anton ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Peter Lafreniere <peter@n8pjl.ca>, Johannes Berg <johannes@sipsolutions.net>, 
+	linux-um <linux-um@lists.infradead.org>
+Message-ID: <1267632977.64055.1695281421091.JavaMail.zimbra@nod.at>
+In-Reply-To: <a52c2c87-87d9-d93b-3089-976ffbcb089b@cambridgegreys.com>
+References: <20230920123115.4106721-1-anton.ivanov@cambridgegreys.com> <20230920144943.19271-1-peter@n8pjl.ca> <a52c2c87-87d9-d93b-3089-976ffbcb089b@cambridgegreys.com>
 Subject: Re: [PATCH] um: Enable preemption in UML
-Content-Language: en-US
-To: Peter Lafreniere <peter@n8pjl.ca>
-Cc: johannes@sipsolutions.net, linux-um@lists.infradead.org, richard@nod.at
-References: <20230920123115.4106721-1-anton.ivanov@cambridgegreys.com>
- <20230920144943.19271-1-peter@n8pjl.ca>
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20230920144943.19271-1-peter@n8pjl.ca>
-X-Clacks-Overhead: GNU Terry Pratchett
+MIME-Version: 1.0
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: Enable preemption in UML
+Thread-Index: 1mJuC8CkB8tajiG2KA40s6cq4c/DKA==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230921_001301_724483_99018CEF 
-X-CRM114-Status: GOOD (  27.08  )
+X-CRM114-CacheID: sfid-20230921_003027_085423_D22EABB2 
+X-CRM114-Status: UNSURE (   4.84  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,193 +72,26 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-
-On 20/09/2023 15:49, Peter Lafreniere wrote:
-> On Wed, Sep 20, 2023 at 08:31, anton.ivanov@cambridgegreys.com wrote:
->> From: Anton Ivanov anton.ivanov@cambridgegreys.com
->>
->>
->> Preemption requires saving/restoring FPU state. This patch
->> adds support for it using GCC intrinsics.
->>
->> Signed-off-by: Anton Ivanov anton.ivanov@cambridgegreys.com
->>
->> ---
->> arch/um/Kconfig | 1 -
->> arch/um/Makefile | 3 +-
->> arch/um/include/asm/fpu/api.h | 4 +-
->> arch/um/include/asm/processor-generic.h | 1 +
->> arch/um/kernel/Makefile | 2 +-
->> arch/um/kernel/fpu.c | 49 +++++++++++++++++++++++++
->> 6 files changed, 55 insertions(+), 5 deletions(-)
->> create mode 100644 arch/um/kernel/fpu.c
->>
->> diff --git a/arch/um/Kconfig b/arch/um/Kconfig
->> index b5e179360534..603f5fd82293 100644
->> --- a/arch/um/Kconfig
->> +++ b/arch/um/Kconfig
->> @@ -11,7 +11,6 @@ config UML
->> select ARCH_HAS_KCOV
->> select ARCH_HAS_STRNCPY_FROM_USER
->> select ARCH_HAS_STRNLEN_USER
->> - select ARCH_NO_PREEMPT
->> select HAVE_ARCH_AUDITSYSCALL
->> select HAVE_ARCH_KASAN if X86_64
->> select HAVE_ARCH_KASAN_VMALLOC if HAVE_ARCH_KASAN
->> diff --git a/arch/um/Makefile b/arch/um/Makefile
->> index 82f05f250634..35a059baadeb 100644
->> --- a/arch/um/Makefile
->> +++ b/arch/um/Makefile
->> @@ -61,7 +61,8 @@ KBUILD_CFLAGS += $(CFLAGS) $(CFLAGS-y) -D__arch_um__ \
->> $(ARCH_INCLUDE) $(MODE_INCLUDE) -Dvmap=kernel_vmap \
->> -Dlongjmp=kernel_longjmp -Dsetjmp=kernel_setjmp \
->> -Din6addr_loopback=kernel_in6addr_loopback \
->> - -Din6addr_any=kernel_in6addr_any -Dstrrchr=kernel_strrchr
->> + -Din6addr_any=kernel_in6addr_any -Dstrrchr=kernel_strrchr \
->> + -mxsave
-> Since we're now using a new isa extention, I would add a check in
-> linux_main() with a warning message if xsave is not available.
->
-> It also wouldn't hurt to only require xsave if CONFIG_PREEMPT is enabled.
-
-Indeed. The full area ends up being quite large - half a page or thereabouts.
-
->
->> KBUILD_RUSTFLAGS += -Crelocation-model=pie
->>
->> diff --git a/arch/um/include/asm/fpu/api.h b/arch/um/include/asm/fpu/api.h
->> index 71bfd9ef3938..0094624ae9b4 100644
->> --- a/arch/um/include/asm/fpu/api.h
->> +++ b/arch/um/include/asm/fpu/api.h
->> @@ -8,8 +8,8 @@
->> * of x86 optimized copy, xor, etc routines into the
->> * UML code tree. /
->>
->> -#define kernel_fpu_begin() (void)0
->> -#define kernel_fpu_end() (void)0
->> +void kernel_fpu_begin(void);
->> +void kernel_fpu_end(void);
->>
->> static inline bool irq_fpu_usable(void)
->> {
->> diff --git a/arch/um/include/asm/processor-generic.h b/arch/um/include/asm/processor-generic.h
->> index 7414154b8e9a..1c3287f1a444 100644
->> --- a/arch/um/include/asm/processor-generic.h
->> +++ b/arch/um/include/asm/processor-generic.h
->> @@ -44,6 +44,7 @@ struct thread_struct {
->> } cb;
->> } u;
->> } request;
->> + u8 fpu[512] __aligned(16); / Intel docs require xsave/xrestore area to be aligned to 16 bytes /
->> };
->>
->> #define INIT_THREAD \
->> diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
->> index 811188be954c..5d9fbaa544be 100644
->> --- a/arch/um/kernel/Makefile
->> +++ b/arch/um/kernel/Makefile
->> @@ -16,7 +16,7 @@ extra-y := vmlinux.lds
->>
->> obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
->> physmem.o process.o ptrace.o reboot.o sigio.o \
->> - signal.o sysrq.o time.o tlb.o trap.o \
->> + signal.o sysrq.o time.o tlb.o trap.o fpu.o\
->> um_arch.o umid.o maccess.o kmsg_dump.o capflags.o skas/
->> obj-y += load_file.o
->>
->> diff --git a/arch/um/kernel/fpu.c b/arch/um/kernel/fpu.c
->> new file mode 100644
->> index 000000000000..4142a08c474d
->> --- /dev/null
->> +++ b/arch/um/kernel/fpu.c
->> @@ -0,0 +1,49 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +/
->> + * Copyright (C) 2023 Cambridge Greys Ltd
->> + * Copyright (C) 2023 Red Hat Inc
->> + */
->> +
->> +#include <linux/cpu.h>
->>
->> +#include <linux/init.h>
->>
->> +#include <asm/fpu/api.h>
->>
->> +
->> +/*
->> + * The critical section between kernel_fpu_begin() and kernel_fpu_end()
->> + * is non-reentrant. It is the caller's responsibility to avoid reentrance.
->> + */
->> +
->> +static DEFINE_PER_CPU(bool, in_kernel_fpu);
->> +
->> +void kernel_fpu_begin(void)
->> +{
->> + preempt_disable();
->> +
->> + WARN_ON(this_cpu_read(in_kernel_fpu));
->> +
->> + this_cpu_write(in_kernel_fpu, true);
->> +
->> +#ifdef CONFIG_64BIT
->> + __builtin_ia32_fxsave64(&current->thread.fpu);
->>
->> +#else
->> + __builtin_ia32_fxsave(&current->thread.fpu);
->>
->> +#endif
->> +}
->> +
->> +EXPORT_SYMBOL_GPL(kernel_fpu_begin);
->> +
->> +void kernel_fpu_end(void)
->> +{
->> + WARN_ON(!this_cpu_read(in_kernel_fpu));
->> +
->> +#ifdef CONFIG_64BIT
->> + __builtin_ia32_fxrstor64(&current->thread.fpu);
->>
->> +#else
->> + __builtin_ia32_fxrstor(&current->thread.fpu);
->>
->> +#endif
->> + this_cpu_write(in_kernel_fpu, false);
->> +
->> + preempt_enable();
->> +}
->> +EXPORT_SYMBOL_GPL(kernel_fpu_end);
->> +
-> According to https://www.felixcloutier.com/x86/fxsave, the fxsave and fxrstor
-> instructions do not save ymm, zmm, or mask registers. Please make that explicit
-> in your comment, or replace intrinsics with inline assembler to support those
-> registers.
->
-> Several x86 crypto routines use these larger registers which could overwrite
-> userspace registers. These modules aren't built by default, and may not be
-> available on UML. Even so, this issue is worth a comment, at the least.
->
-> On my system, lscpu within uml shows all the feature flags that are available
-> on the host system, which includes AVX extentions.
-
-That should be xsave, not fxsave upgrading to xsaveopt if available.
-
->
-> Cheers,
-> Peter Lafreniere
->
->
--- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogImFudG9uIGl2YW5vdiIgPGFu
+dG9uLml2YW5vdkBjYW1icmlkZ2VncmV5cy5jb20+Cj4gQW46ICJQZXRlciBMYWZyZW5pZXJlIiA8
+cGV0ZXJAbjhwamwuY2E+Cj4gQ0M6ICJKb2hhbm5lcyBCZXJnIiA8am9oYW5uZXNAc2lwc29sdXRp
+b25zLm5ldD4sICJsaW51eC11bSIgPGxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5vcmc+LCAicmlj
+aGFyZCIgPHJpY2hhcmRAbm9kLmF0Pgo+IEdlc2VuZGV0OiBEb25uZXJzdGFnLCAyMS4gU2VwdGVt
+YmVyIDIwMjMgMDk6MTI6MzMKPiBCZXRyZWZmOiBSZTogW1BBVENIXSB1bTogRW5hYmxlIHByZWVt
+cHRpb24gaW4gVU1MCgo+IE9uIDIwLzA5LzIwMjMgMTU6NDksIFBldGVyIExhZnJlbmllcmUgd3Jv
+dGU6Cj4+IE9uIFdlZCwgU2VwIDIwLCAyMDIzIGF0IDA4OjMxLCBhbnRvbi5pdmFub3ZAY2FtYnJp
+ZGdlZ3JleXMuY29tIHdyb3RlOgo+Pj4gRnJvbTogQW50b24gSXZhbm92IGFudG9uLml2YW5vdkBj
+YW1icmlkZ2VncmV5cy5jb20KPj4+Cj4+Pgo+Pj4gUHJlZW1wdGlvbiByZXF1aXJlcyBzYXZpbmcv
+cmVzdG9yaW5nIEZQVSBzdGF0ZS4gVGhpcyBwYXRjaAo+Pj4gYWRkcyBzdXBwb3J0IGZvciBpdCB1
+c2luZyBHQ0MgaW50cmluc2ljcy4KPj4+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBBbnRvbiBJdmFub3Yg
+YW50b24uaXZhbm92QGNhbWJyaWRnZWdyZXlzLmNvbQoKSSdtIG5vdCBzbyBzdXJlIHdoZXRoZXIg
+d2Ugc2hvdWxkIHJlYWxseSBkaXJlY3RseSBzdGFydCB3aXRoIENPTkZJR19QUkVFTVBULgpIb3cg
+YWJvdXQgaW1wbGVtZW50aW5nIENPTkZJR19QUkVFTVBUX0NPVU5UIGZpcnN0PwoKVGhhbmtzLAov
+L3JpY2hhcmQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6
+Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
