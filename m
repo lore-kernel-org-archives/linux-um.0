@@ -4,54 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 385ACE71091
-	for <linux-um@archiver.kernel.org>; Thu, 21 Sep 2023 15:59:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4604AE71094
+	for <linux-um@archiver.kernel.org>; Thu, 21 Sep 2023 16:46:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
 	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UAZCG+Y4fVBeViccdYVQ9p8MGQiRa7B/wDQtuo1yjcU=; b=MRiXq8MQeyuXcX
-	5B4YCBam3GwQVzc8t1rpluVJvNA2JFCnab3tu7koL3Tps2Ig5UDJtT2HZvYCDGFLxWvFumJqzbpVY
-	GQlgjN4MOVyURys5dMNg5OoQV5CFkeJXG1M9myoe2+7hY1u56AL+hjSp5Dvrh9q5KbLowQgiYvAuz
-	L7Nyb08kevZ4mhWyS+vIYZY+UdZkLMYfyFO5pxXQSgV2ZIfVSvLYorL8oZ0RCB6OdXVhpTm3ZEzeR
-	9q76AoXsCQXY25K6cUEqqZeU0RW7aXGG7UhtoIIEbi0MANSH5LxoP04PUg9Bj26I5pz0iq42QzeJi
-	Zjs0zjOhmgyW1l0qd9dA==;
+	List-Owner; bh=e1TrgY9ZnrCnov3DstRH53lT1K/KyuPLIXYbK+ACbPI=; b=EFMFhHd4jMxF5p
+	TAe1GADUJPtiy6uGzzmj8AHoTGDKG+2FpqDUO+1eE7WQ0f+dOAIS3GoGt5YYiF/86DeUTG0o/HfIb
+	pziQci2X7dR0zSjlmVW6XN1bSxes5MVcwYl5Ap52X0CXYoq528ewXWb4H9jRq1BAfiDGB8cnBt263
+	A4fMOQWqIUXGaVeGfIKaKgnzuFIafc8Q9zwxjUVuBGdWdues8ao0orcM18PCGQSKgGbWhinu2iiel
+	By2uvDZp+aHdSpRXnv6ZJi3R7wV5nk16jA+9XK+lmYIw3BHwcqOorWCkGU8l6JNPEzMjU2iL7aeQL
+	4Xj1POSqfjXWZ8Fz9Z+g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjM5j-006Scb-38;
-	Thu, 21 Sep 2023 15:59:47 +0000
-Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
+	id 1qjMoa-006Y3f-1U;
+	Thu, 21 Sep 2023 16:46:08 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjM5g-006ScC-1Q
+	id 1qjLi2-006Pwp-1V
+	for linux-um@bombadil.infradead.org;
+	Thu, 21 Sep 2023 15:35:18 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=QSdkT7SfRvkh7ulUQaG3xU5IFpUrk6A3dRjY5u2cO5s=; b=VDf2zFnEUam488qAA/E1vKVcx5
+	LZmncugU7+QLNTAH53crmOjImJul10brK2RDRALeFMwFm8MXXVCJ3SCWXbBy9T57X0K8oteB6RETE
+	HSe9bJAQRLMgTAy63yuJq9ruJosxCBT1lCDtlZQlVlpC5HAF3akFQzy3VicRxgAFoIviQIQuY166F
+	hxNNRFxrEaYJYNGYgLNXAGI7leEmJWeYL+0WtTEC5kxrwEM0mq50z/1IRWRX30vhYFPTYluFdwfoc
+	e+U+zr8Ztas2NQ39csv4oALENxBIygoomc7DMPWu0BPBJxbGo/12AXmaiUYqmHpr4wFmd6SuCHSqJ
+	3pGUPntw==;
+Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
+	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1qjLhx-00FU4U-1s
 	for linux-um@lists.infradead.org;
-	Thu, 21 Sep 2023 15:59:46 +0000
+	Thu, 21 Sep 2023 15:35:17 +0000
 Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
 	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1qjM5e-002ZD7-T4; Thu, 21 Sep 2023 15:59:43 +0000
+	id 1qjLhy-002Z7d-1q; Thu, 21 Sep 2023 15:35:14 +0000
 Received: from jain.kot-begemot.co.uk ([192.168.3.3])
 	by jain.kot-begemot.co.uk with esmtp (Exim 4.94.2)
 	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1qjM5c-001CGA-6U; Thu, 21 Sep 2023 16:59:42 +0100
-Message-ID: <6940d7cf-e8a7-10e9-09b5-a3dce96d6902@cambridgegreys.com>
-Date: Thu, 21 Sep 2023 16:59:40 +0100
+	id 1qjLhv-001AhN-7i; Thu, 21 Sep 2023 16:35:13 +0100
+Message-ID: <40109d01-ee50-8844-7ec2-afe27ba9cd03@cambridgegreys.com>
+Date: Thu, 21 Sep 2023 16:35:11 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.10.0
-Subject: Re: [PATCH v4] um: Enable preemption in UML
+Subject: Re: [PATCH v3] um: Enable preemption in UML
 Content-Language: en-US
 To: linux-um@lists.infradead.org
 Cc: johannes@sipsolutions.net, richard@nod.at
-References: <20230921155522.283582-1-anton.ivanov@cambridgegreys.com>
+References: <20230921153204.278427-1-anton.ivanov@cambridgegreys.com>
 From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20230921155522.283582-1-anton.ivanov@cambridgegreys.com>
+In-Reply-To: <20230921153204.278427-1-anton.ivanov@cambridgegreys.com>
 X-Clacks-Overhead: GNU Terry Pratchett
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230921_085944_484081_CC87C8D2 
-X-CRM114-Status: GOOD (  26.04  )
+X-CRM114-CacheID: sfid-20230921_163515_207554_D662062D 
+X-CRM114-Status: GOOD (  27.39  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,7 +85,7 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 
 
-On 21/09/2023 16:55, anton.ivanov@cambridgegreys.com wrote:
+On 21/09/2023 16:32, anton.ivanov@cambridgegreys.com wrote:
 > From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 > 
 > Preemption requires saving/restoring FPU state. This patch
@@ -79,15 +94,23 @@ On 21/09/2023 16:55, anton.ivanov@cambridgegreys.com wrote:
 > Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 > ---
 >   arch/um/Kconfig                         |  1 -
->   arch/um/include/asm/fpu/api.h           |  9 ++-
+>   arch/um/include/asm/fpu/api.h           |  6 +-
 >   arch/um/include/asm/processor-generic.h |  3 +
 >   arch/um/kernel/Makefile                 |  4 ++
 >   arch/um/kernel/fpu.c                    | 77 +++++++++++++++++++++++++
 >   arch/um/kernel/irq.c                    |  2 +
->   6 files changed, 92 insertions(+), 4 deletions(-)
+>   6 files changed, 91 insertions(+), 2 deletions(-)
 >   create mode 100644 arch/um/kernel/fpu.c
 
-Cleanup of typos and stale comments from older versions.
+
+Fixes:
+	1. Defines. I messed them up in v2.
+	2. Makes build selective on CONFIG_PREEMPT. If preemption is not enabled fpu.o is
+not build.
+	3. CFLAGS are altered only for fpu.o
+
+Performance change is the same - from 20minutes for find /usr and cat to /dev/null down to 3
+and from unusable under stress to fairly reasonable.
 
 > 
 > diff --git a/arch/um/Kconfig b/arch/um/Kconfig
@@ -103,19 +126,15 @@ Cleanup of typos and stale comments from older versions.
 >   	select HAVE_ARCH_KASAN if X86_64
 >   	select HAVE_ARCH_KASAN_VMALLOC if HAVE_ARCH_KASAN
 > diff --git a/arch/um/include/asm/fpu/api.h b/arch/um/include/asm/fpu/api.h
-> index 71bfd9ef3938..9e7680bf48f0 100644
+> index 71bfd9ef3938..76ffa9c3c4b9 100644
 > --- a/arch/um/include/asm/fpu/api.h
 > +++ b/arch/um/include/asm/fpu/api.h
-> @@ -4,12 +4,15 @@
->   
->   /* Copyright (c) 2020 Cambridge Greys Ltd
->    * Copyright (c) 2020 Red Hat Inc.
-> - * A set of "dummy" defines to allow the direct inclusion
-> - * of x86 optimized copy, xor, etc routines into the
-> - * UML code tree. */
-> + */
->   
-> +#if defined(CONFIG_PREEMPT) || defined(CONFIG_PREEMPT_VOLUNTARY)
+> @@ -7,9 +7,13 @@
+>    * A set of "dummy" defines to allow the direct inclusion
+>    * of x86 optimized copy, xor, etc routines into the
+>    * UML code tree. */
+> -
+> +#if defined(CONFIG_PREEMPT) || defined(CONFIG_PREEMPT_VOLUNTRARY)
 > +extern void kernel_fpu_begin(void);
 > +extern void kernel_fpu_end(void);
 > +#else
@@ -126,15 +145,15 @@ Cleanup of typos and stale comments from older versions.
 >   static inline bool irq_fpu_usable(void)
 >   {
 > diff --git a/arch/um/include/asm/processor-generic.h b/arch/um/include/asm/processor-generic.h
-> index 7414154b8e9a..c08e8c5b0249 100644
+> index 7414154b8e9a..d9362f5a2212 100644
 > --- a/arch/um/include/asm/processor-generic.h
 > +++ b/arch/um/include/asm/processor-generic.h
 > @@ -44,6 +44,9 @@ struct thread_struct {
 >   			} cb;
 >   		} u;
 >   	} request;
-> +#if defined(CONFIG_PREEMPT) || defined(CONFIG_PREEMPT_VOLUNTARY)
-> +    u8 fpu[2048] __aligned(64); /* Intel docs require xsave/xrestore area to be aligned to 64 bytes */
+> +#if defined(CONFIG_PREEMPT) || defined(CONFIG_PREEMPT_VOLUNTRARY)
+> +    u8 fpu[2048] __aligned(64); /* Intel docs require xsave/xrestore area to be aligned to 16 bytes */
 > +#endif
 >   };
 >   
