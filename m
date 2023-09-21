@@ -4,57 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C135C04AB8
-	for <linux-um@archiver.kernel.org>; Wed, 20 Sep 2023 17:40:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E76A5CD342E
+	for <linux-um@archiver.kernel.org>; Thu, 21 Sep 2023 07:13:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:References:To:Subject:From:MIME-Version:
-	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=CUlR17XHAubjsFbRijl7s7Uy/i+flQmeLkR1ewc7W9w=; b=SxounqqlVnzbCIJjYU8e8Qc3iI
-	UUEyIiF6VoS0PRUNV6/RSQ8Qtg2vstnVUORtpuUQ86M+Y+V4cXXJXbBt+4vDBwNF7xeN0JOyFfuev
-	6FmFfErDWXUfALHXYpCbJ/Q1gDPLSNUqwZVLcVAXZFt6xtrImY8P8glE3viohgmZptjFdH0HjBuN7
-	7KVAffwEWAqmINP5ScPh8I43c86UhYDdcT7oQdVGFbYSCEMbtekq64nVPvXu7HnYX42EW6r1M3UeL
-	hTkgpsneGKiOFSdYaYL1rBLnA71HyKOJl/9DBcL+tacRVa/r0ALmyLEtKNDNrP+ubJbh3vgZdvRYZ
-	sYgqKIww==;
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=dapCm9PSuHjkC75e5MqslW0JA0KiqxoEVvLOR/z5zaA=; b=tF+sdaziJadHRR
+	n7QXmlQdb/yCVQ7J0e7D7teiD5NM+uX5IXFT8J+FYqqaVEfY3iGQUCvGdquoI0t6e682FPk87xIql
+	4geT4Y0alZ3I3WiOp58RkLeThmQ7G3AybX6slo0RjTmEwzT4kWq7S+3E4SF1eMZSANlA3ng59JQ5u
+	HUqI99p8UrwYNnRIpRHV+omcSGZi+wyB4YrjjNifHrMGRQO5Q/t8N3O0F1M3visULbA6LIvlqTdsr
+	QM/ftjdWs4J89vIWy7djTudssun8PZwGC7lu9cBczMSDelabl6IPvk80mR8Ipr1hikGngisraJcn4
+	fPs3eE5uatGvfBrhVUtw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qj1BB-003lLP-3A;
-	Wed, 20 Sep 2023 17:40:02 +0000
+	id 1qjDs0-005LfK-0r;
+	Thu, 21 Sep 2023 07:13:04 +0000
 Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qj1B8-003lKS-0U
+	id 1qjDrx-005LcV-2D
 	for linux-um@lists.infradead.org;
-	Wed, 20 Sep 2023 17:39:59 +0000
+	Thu, 21 Sep 2023 07:13:03 +0000
 Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
 	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>)
-	id 1qj1B5-002WIG-2M
-	for linux-um@lists.infradead.org; Wed, 20 Sep 2023 17:39:55 +0000
-Received: from madding.kot-begemot.co.uk ([192.168.3.98])
-	by jain.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.94.2)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>)
-	id 1qj1B2-00HY7Z-BU
-	for linux-um@lists.infradead.org; Wed, 20 Sep 2023 18:39:54 +0100
-Message-ID: <2ff833ca-51bf-e8a1-9c68-7a02b7b0d83b@kot-begemot.co.uk>
-Date: Wed, 20 Sep 2023 18:39:52 +0100
+	(envelope-from <anton.ivanov@cambridgegreys.com>)
+	id 1qjDrY-002Y7j-Gw; Thu, 21 Sep 2023 07:12:36 +0000
+Received: from jain.kot-begemot.co.uk ([192.168.3.3])
+	by jain.kot-begemot.co.uk with esmtp (Exim 4.94.2)
+	(envelope-from <anton.ivanov@cambridgegreys.com>)
+	id 1qjDrV-000fVZ-OM; Thu, 21 Sep 2023 08:12:36 +0100
+Message-ID: <a52c2c87-87d9-d93b-3089-976ffbcb089b@cambridgegreys.com>
+Date: Thu, 21 Sep 2023 08:12:33 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Subject: Re: Boots and seems to work with PREEMPT enabled
-To: User Mode Linux <linux-um@lists.infradead.org>
-References: <6eb21cc7-05d5-c9be-6abd-07bdda64dcb6@kot-begemot.co.uk>
- <d1d9054e-197c-18b1-bb2d-ef7f5737495f@kot-begemot.co.uk>
+ Thunderbird/102.10.0
+Subject: Re: [PATCH] um: Enable preemption in UML
 Content-Language: en-US
-In-Reply-To: <d1d9054e-197c-18b1-bb2d-ef7f5737495f@kot-begemot.co.uk>
+To: Peter Lafreniere <peter@n8pjl.ca>
+Cc: johannes@sipsolutions.net, linux-um@lists.infradead.org, richard@nod.at
+References: <20230920123115.4106721-1-anton.ivanov@cambridgegreys.com>
+ <20230920144943.19271-1-peter@n8pjl.ca>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+In-Reply-To: <20230920144943.19271-1-peter@n8pjl.ca>
 X-Clacks-Overhead: GNU Terry Pratchett
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230920_103958_206800_1B1C63F7 
-X-CRM114-Status: GOOD (  22.39  )
+X-CRM114-CacheID: sfid-20230921_001301_724483_99018CEF 
+X-CRM114-Status: GOOD (  27.08  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,53 +64,193 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Ck9uIDIwLzA5LzIwMjMgMTM6MzAsIEFudG9uIEl2YW5vdiB3cm90ZToKPgo+Cj4gT24gMjAvMDkv
-MjAyMyAxMjoxNCwgQW50b24gSXZhbm92IHdyb3RlOgo+PiBBZGRlZCBzdXBwb3J0IGZvciBrZXJu
-ZWwgc2lkZSBmcHUgc3RvcmUvcmVzdG9yZSBhbmQgcmVhbCAKPj4ga2VybmVsX2ZwdV9iZWdpbi9r
-ZXJuZWxfZnB1X2VuZCB1c2luZyBnY2MgaW50cmluc2ljcy4gRW5hYmxlZCBQUkVFTVBULgo+Pgo+
-PiBJdCBib290cyBhbmQgc2VlbXMgdG8gYmUgYWxpdmUgYW5kIGtpY2tpbmcuIEkgZG8gbm90IG5v
-dGljZSBhbnkgCj4+IHNpZ25pZmljYW50IGVmZmVjdCBvbiBwZXJmb3JtYW5jZSBlaXRoZXIuCj4+
-Cj4KPiBJIHRha2UgbXkgd29yZHMgYmFjayAtIEkgd2FzIHRlc3Rpbmcgd2l0aCBWT0xVTlRBUlkg
-d2hpY2ggc2VlbXMgdG8gCj4gcHJvdmlkZSBhIGRpZmZlcmVuY2Ugd2l0aGluZyB0aGUgbWFyZ2lu
-IG9mIGVycm9yLgo+Cj4gRW5hYmxpbmcgZm9yY2VkIHByZWVtcHRpb24gZHJvcHMgdGhlIHRpbWUg
-Zm9yCj4KPiBmaW5kIC91c3IgLXR5cGUgZiAtZXhlYyBjYXQge30gPiAvZGV2L251bGwgXDsKPgo+
-IGZyb20KPgo+IHJlYWzCoMKgwqAgMTltMTEuMjA3cwo+IHVzZXLCoMKgwqAgMG0wLjE4MHMKPiBz
-eXPCoMKgwqAgMm00MS4xNjBzCj4KPiB0bwo+Cj4gcmVhbMKgwqDCoCAzbTEzLjY0N3MKPiB1c2Vy
-wqDCoMKgIDBtMC4wMDBzCj4gc3lzwqDCoMKgIDJtNTguMjcwcwo+Cj4gQW5kIGJvb3QgdGltZSBm
-cm9tIDExLjVzIHRvIDZzLgo+Cj4gSXQgZGlkIGNvbXBsYWluIG9uIHNodXRkb3duIHRob3VnaCB3
-aXRoIHNvbWUgdHJhY2VzLiBOb3RoaW5nIHdoaWxlIAo+IHJ1bm5pbmcuCgpUaGlzIGlzIGZpeGVk
-IGJ5IGFkZGluZyBhIHByZWVtcHRfZW5hYmxlL2Rpc2FibGUgYXJvdW5kIHRoZSBpbnRlcnJ1cHQg
-CmxvdyBsZXZlbC4gV2Ugd2VyZSBxdWl0ZSBvYnZpb3VzbHkgbWlzc2luZyBpdC4KCj4KPiBUaGUg
-cGF0Y2ggd2lsbCBoaXQgdGhlIG1haWxpbmcgbGlzdCBzaG9ydGx5LgoKSSB3aWxsIHJldmlzZSB0
-aGUgcGF0Y2ggYW5kIGFkZHJlc3MgdGhlIGJ1ZyByZXBvcnQgb24gdGhlIGNvbmZpZy5kZWJ1Zy4K
-Cj4KPgo+PiBIb3cgZG8gSSB0ZXN0IGl0IGZyb20gaGVyZSBvbndhcmRzPwo+Cj4gVGhlIHF1ZXN0
-aW9uIHN0aWxsIHN0YW5kcy4gQ2FuIHdlIHVzZSBhbnl0aGluZyBhcyBhIHNwZWNpZmljIHRlc3Qg
-Cj4gc3VpdGU/IEl0IGlzIG5vdCBhbiBhcmVhIEkgYW0gZmFtaWxpYXIgd2l0aCwgc28gYW55IHBv
-aW50ZXJzIHdpbGwgYmUgCj4gd2VsY29tZS4KPgo+Pgo+PiBJIGFtIGhhcHB5IHRvIHRocm93IHRo
-ZSBwYXRjaGVzIG9uIHRoZSBsaXN0IGFzIGFuIFJGQywgdGhvdWdoIEkgd291bGQgCj4+IHByZWZl
-ciB0byB0ZXN0IGZpcnN0IDopCj4+Cj4KSG93ZXZlciwgdGhpcyBpcyBhYm91dCBhcyBtdWNoIHBy
-ZWVtcHRpb24gYXMgd2UgY2FuIGVuYWJsZS4KClRyeWluZyB0byBkbyB3aGF0IGlzIHN1Z2dlc3Rl
-ZCBieSBQZXRlciBaaWpsc3RyYSBpbiB0aGUgbWFpbiBQUkVNUFQgbWFpbCAKdGhyZWFkIG9uIExL
-TSBkb2VzIG5vdCB3b3JrIGZvciBVTUwuIEF0IGFsbC4KCkhpcyBzdWdnZXN0aW9uIGlzIHRvIGFk
-ZCBwcmVlbXB0X3NjaGVkdWxlX2lycSgpIGluIHRoZSBJUlEgZXhpdCBjb2RlLiBPbiAKVU1MIHRo
-YXQgY29kZSBpcyBtaXhlZCB3aXRoIGhvc3Qgc2lnbmFsIGhhbmRsaW5nIGFuZCB5b3UgY2Fubm90
-IGRvIHRoYXQsIApiZWNhdXNlIHRoZSBpcnFfZW5hYmxlL2Rpc2FibGUgaW4gdGhhdCBmdW5jdGlv
-biB0b3VjaCB0aGUgc2lnbmFsIG1hc2suIApUaGlzIG1ha2VzIGEgaGFzaCBvZiB0aGUgc2lnbmFs
-IGhhbmRsaW5nLiBJbiBhZGRpdGlvbiB0byB0aGF0LCB3ZSBoYXZlIAptaXNzaW5nIHByZWVtcHRf
-ZW5hYmxlL2Rpc2FibGUgYW5kL29yIGd1YXJkcyBhcm91bmQgdGhpcyBwYXJ0LiBJdCBoYXMgCnNv
-bWUgaGlzdG9yaWNhbCBsZXZlbCBvZiAicmVpbnZvY2F0aW9uIiBhbmQgInJlZW50cmFuY3kiIGJl
-aGF2aW91ciBhbmQgCml0IGdldHMgaW4gdGhlIHdheS4gVGhhdCB3aWxsIG5lZWQgdG8gYmUgdW50
-YW5nbGVkLCBmaXhlZCB0byBtYXRjaCAKcHJlZW1wdCBzZW1hbnRpY3MgYW5kIG1hZGUgdG8gd29y
-ay4gSSdsbCBiZSBob25lc3QgLSBJIGhhdmUgbm8gY2x1ZSBob3cgCmxvbmcgdGhpcyB3aWxsIHRh
-a2UuCgpNeSBzdWdnZXN0aW9uIGlzIHRoYXQgd2UgdGFrZSB0aGUgcmVzdCB3aXRoIHJlbGV2YW50
-IGZwdSByZWdpc3RlciAKc3RvcmUvcmVzdG9yZSBmaXhlcyBhbmQgdGhlIGltcHJvdmVtZW50cyBp
-dCBwcm92aWRlcyBhbmQgbGVhdmUgdGhlIApwcmVlbXB0X3NjaGVkdWxlX2lycSgpIHBhcnQgZm9y
-IGxhdGVyLgoKLS0gCkFudG9uIFIuIEl2YW5vdgpodHRwczovL3d3dy5rb3QtYmVnZW1vdC5jby51
-ay8KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51
-eC11bSBtYWlsaW5nIGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlz
-dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
+
+On 20/09/2023 15:49, Peter Lafreniere wrote:
+> On Wed, Sep 20, 2023 at 08:31, anton.ivanov@cambridgegreys.com wrote:
+>> From: Anton Ivanov anton.ivanov@cambridgegreys.com
+>>
+>>
+>> Preemption requires saving/restoring FPU state. This patch
+>> adds support for it using GCC intrinsics.
+>>
+>> Signed-off-by: Anton Ivanov anton.ivanov@cambridgegreys.com
+>>
+>> ---
+>> arch/um/Kconfig | 1 -
+>> arch/um/Makefile | 3 +-
+>> arch/um/include/asm/fpu/api.h | 4 +-
+>> arch/um/include/asm/processor-generic.h | 1 +
+>> arch/um/kernel/Makefile | 2 +-
+>> arch/um/kernel/fpu.c | 49 +++++++++++++++++++++++++
+>> 6 files changed, 55 insertions(+), 5 deletions(-)
+>> create mode 100644 arch/um/kernel/fpu.c
+>>
+>> diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+>> index b5e179360534..603f5fd82293 100644
+>> --- a/arch/um/Kconfig
+>> +++ b/arch/um/Kconfig
+>> @@ -11,7 +11,6 @@ config UML
+>> select ARCH_HAS_KCOV
+>> select ARCH_HAS_STRNCPY_FROM_USER
+>> select ARCH_HAS_STRNLEN_USER
+>> - select ARCH_NO_PREEMPT
+>> select HAVE_ARCH_AUDITSYSCALL
+>> select HAVE_ARCH_KASAN if X86_64
+>> select HAVE_ARCH_KASAN_VMALLOC if HAVE_ARCH_KASAN
+>> diff --git a/arch/um/Makefile b/arch/um/Makefile
+>> index 82f05f250634..35a059baadeb 100644
+>> --- a/arch/um/Makefile
+>> +++ b/arch/um/Makefile
+>> @@ -61,7 +61,8 @@ KBUILD_CFLAGS += $(CFLAGS) $(CFLAGS-y) -D__arch_um__ \
+>> $(ARCH_INCLUDE) $(MODE_INCLUDE) -Dvmap=kernel_vmap \
+>> -Dlongjmp=kernel_longjmp -Dsetjmp=kernel_setjmp \
+>> -Din6addr_loopback=kernel_in6addr_loopback \
+>> - -Din6addr_any=kernel_in6addr_any -Dstrrchr=kernel_strrchr
+>> + -Din6addr_any=kernel_in6addr_any -Dstrrchr=kernel_strrchr \
+>> + -mxsave
+> Since we're now using a new isa extention, I would add a check in
+> linux_main() with a warning message if xsave is not available.
+>
+> It also wouldn't hurt to only require xsave if CONFIG_PREEMPT is enabled.
+
+Indeed. The full area ends up being quite large - half a page or thereabouts.
+
+>
+>> KBUILD_RUSTFLAGS += -Crelocation-model=pie
+>>
+>> diff --git a/arch/um/include/asm/fpu/api.h b/arch/um/include/asm/fpu/api.h
+>> index 71bfd9ef3938..0094624ae9b4 100644
+>> --- a/arch/um/include/asm/fpu/api.h
+>> +++ b/arch/um/include/asm/fpu/api.h
+>> @@ -8,8 +8,8 @@
+>> * of x86 optimized copy, xor, etc routines into the
+>> * UML code tree. /
+>>
+>> -#define kernel_fpu_begin() (void)0
+>> -#define kernel_fpu_end() (void)0
+>> +void kernel_fpu_begin(void);
+>> +void kernel_fpu_end(void);
+>>
+>> static inline bool irq_fpu_usable(void)
+>> {
+>> diff --git a/arch/um/include/asm/processor-generic.h b/arch/um/include/asm/processor-generic.h
+>> index 7414154b8e9a..1c3287f1a444 100644
+>> --- a/arch/um/include/asm/processor-generic.h
+>> +++ b/arch/um/include/asm/processor-generic.h
+>> @@ -44,6 +44,7 @@ struct thread_struct {
+>> } cb;
+>> } u;
+>> } request;
+>> + u8 fpu[512] __aligned(16); / Intel docs require xsave/xrestore area to be aligned to 16 bytes /
+>> };
+>>
+>> #define INIT_THREAD \
+>> diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
+>> index 811188be954c..5d9fbaa544be 100644
+>> --- a/arch/um/kernel/Makefile
+>> +++ b/arch/um/kernel/Makefile
+>> @@ -16,7 +16,7 @@ extra-y := vmlinux.lds
+>>
+>> obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
+>> physmem.o process.o ptrace.o reboot.o sigio.o \
+>> - signal.o sysrq.o time.o tlb.o trap.o \
+>> + signal.o sysrq.o time.o tlb.o trap.o fpu.o\
+>> um_arch.o umid.o maccess.o kmsg_dump.o capflags.o skas/
+>> obj-y += load_file.o
+>>
+>> diff --git a/arch/um/kernel/fpu.c b/arch/um/kernel/fpu.c
+>> new file mode 100644
+>> index 000000000000..4142a08c474d
+>> --- /dev/null
+>> +++ b/arch/um/kernel/fpu.c
+>> @@ -0,0 +1,49 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +/
+>> + * Copyright (C) 2023 Cambridge Greys Ltd
+>> + * Copyright (C) 2023 Red Hat Inc
+>> + */
+>> +
+>> +#include <linux/cpu.h>
+>>
+>> +#include <linux/init.h>
+>>
+>> +#include <asm/fpu/api.h>
+>>
+>> +
+>> +/*
+>> + * The critical section between kernel_fpu_begin() and kernel_fpu_end()
+>> + * is non-reentrant. It is the caller's responsibility to avoid reentrance.
+>> + */
+>> +
+>> +static DEFINE_PER_CPU(bool, in_kernel_fpu);
+>> +
+>> +void kernel_fpu_begin(void)
+>> +{
+>> + preempt_disable();
+>> +
+>> + WARN_ON(this_cpu_read(in_kernel_fpu));
+>> +
+>> + this_cpu_write(in_kernel_fpu, true);
+>> +
+>> +#ifdef CONFIG_64BIT
+>> + __builtin_ia32_fxsave64(&current->thread.fpu);
+>>
+>> +#else
+>> + __builtin_ia32_fxsave(&current->thread.fpu);
+>>
+>> +#endif
+>> +}
+>> +
+>> +EXPORT_SYMBOL_GPL(kernel_fpu_begin);
+>> +
+>> +void kernel_fpu_end(void)
+>> +{
+>> + WARN_ON(!this_cpu_read(in_kernel_fpu));
+>> +
+>> +#ifdef CONFIG_64BIT
+>> + __builtin_ia32_fxrstor64(&current->thread.fpu);
+>>
+>> +#else
+>> + __builtin_ia32_fxrstor(&current->thread.fpu);
+>>
+>> +#endif
+>> + this_cpu_write(in_kernel_fpu, false);
+>> +
+>> + preempt_enable();
+>> +}
+>> +EXPORT_SYMBOL_GPL(kernel_fpu_end);
+>> +
+> According to https://www.felixcloutier.com/x86/fxsave, the fxsave and fxrstor
+> instructions do not save ymm, zmm, or mask registers. Please make that explicit
+> in your comment, or replace intrinsics with inline assembler to support those
+> registers.
+>
+> Several x86 crypto routines use these larger registers which could overwrite
+> userspace registers. These modules aren't built by default, and may not be
+> available on UML. Even so, this issue is worth a comment, at the least.
+>
+> On my system, lscpu within uml shows all the feature flags that are available
+> on the host system, which includes AVX extentions.
+
+That should be xsave, not fxsave upgrading to xsaveopt if available.
+
+>
+> Cheers,
+> Peter Lafreniere
+>
+>
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
