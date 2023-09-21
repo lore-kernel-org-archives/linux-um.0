@@ -4,58 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 458EEE706FC
-	for <linux-um@archiver.kernel.org>; Thu, 21 Sep 2023 09:36:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 02544E706FD
+	for <linux-um@archiver.kernel.org>; Thu, 21 Sep 2023 09:42:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=q130wZ+GjDSJwBZll08JQabQloZVougC5E4n1duP3L4=; b=CXmwLpR6FkWjRJ
-	N8EWq3UGCvbTmO+sAkWFNFJOTIZboxbFGaiB+rhjhmM+iGXfte/f4ZxqDCTDn9zDAVqEdtRQ2dp/g
-	0ENMt8PXtvospVDdLwkmx/BONfkekkVM5/ifr+xhLMtnAqdjjGECGQpXMe4NUdhFLEG24ECNHbVXw
-	6dw3aZNW80q7mqDFcwPm6jw/UVQbDo0F7ac61mPNCEQhAHmHA+NsUmP/rz0x5tSWUdjq3zdJzUfsx
-	XcQhrH51xry5zXkmZYL3zjBW7OEzx6ruQMpqn/tsm5vr2gQwSn3l1bnTB5tlbTNiH+JuMCyus4zyt
-	XjRQbUq6yWrBm3gHTC9Q==;
+	List-Owner; bh=3UFXHTPVL5lVW8Sgg4nPwvC5Vk6Yp5Q2j7vqcNOfWeI=; b=qP3C0gj8vKYbgV
+	8vgCH41X4KBKHTIitgjBQkRd/5YeXIkd9tRLt+NfbqVyOUDmQKaTQFR02kibssiPyF51+oqqMGG42
+	uVJC69m2EkT5zjMEhVediCj+7NrY37JBIbva0SRd3x4/tN6kOTLxI41XabgnDVX+ATRKZhDYGJLCn
+	8QN3Vthpx3rZGi3Ccqpd+jDoTGOWrONOX2vofmAXq0dqPcTtzsB5fDD1Cha9MqvFOitV8wY5GveQZ
+	P529bS52nEOtIyHUiZIix5Updil+E1ajeEeTCVIsH4hwneged5TZbqPPnsuF8X5xsezaLcNz2GKJf
+	z66HTTRZU5tbGUaWLN+g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjG6V-005bpe-1E;
-	Thu, 21 Sep 2023 09:36:11 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1qjGCQ-005cQ4-0F;
+	Thu, 21 Sep 2023 09:42:18 +0000
+Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjG6O-005bo6-2n
+	id 1qjGCM-005cP6-21
 	for linux-um@lists.infradead.org;
-	Thu, 21 Sep 2023 09:36:10 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=DB+5IwEwH7JFxV81kGxR0Qtl5i7N1YWDxdS5cxfGpGo=;
-	t=1695288961; x=1696498561; b=vXyBjux7wllX+UiY6KvrKHTt+uCO57doq3LNL7BtgmSxcBs
-	fNkYVCVbE2XuLVul8hFNyUwZ6OuNcB7X58JwkcjCWmGeIT6tya3ccYOA/XBO5EERlVnM8eNQfNI9V
-	QdDJRO05aT34Bn0EWVxQkFZ0Ih76AEQZNDlOSpI/jDlByf6Rni2X3J0rP9wVIwTVZeSiZGXuz77uE
-	Lf1CQqHGqh5nYIT4Xl+GyeVHibMyy1ua0uKMfu6u3rZPNAeIuqPxwzcPQwA0sGu9aNkB4k4aRKYXP
-	D1tHX5REwMeQhyX5d+pBM5KGben7ygSrT0razy6fL8fgx9prIrc8mPidlJSLkCIw==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.96)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1qjG6I-00D6YO-1u;
-	Thu, 21 Sep 2023 11:35:58 +0200
-Message-ID: <15376711a221bbeaf45a278f56b944dcc9b6f2cc.camel@sipsolutions.net>
-Subject: Re: [PATCH v2] um: Enable preemption in UML
-From: Johannes Berg <johannes@sipsolutions.net>
-To: anton.ivanov@cambridgegreys.com, linux-um@lists.infradead.org
-Cc: richard@nod.at
-Date: Thu, 21 Sep 2023 11:35:57 +0200
-In-Reply-To: <20230921092836.190291-1-anton.ivanov@cambridgegreys.com>
-References: <20230921092836.190291-1-anton.ivanov@cambridgegreys.com>
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+	Thu, 21 Sep 2023 09:42:16 +0000
+Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
+	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <anton.ivanov@cambridgegreys.com>)
+	id 1qjGCK-002YMV-VX; Thu, 21 Sep 2023 09:42:13 +0000
+Received: from jain.kot-begemot.co.uk ([192.168.3.3])
+	by jain.kot-begemot.co.uk with esmtp (Exim 4.94.2)
+	(envelope-from <anton.ivanov@cambridgegreys.com>)
+	id 1qjGCI-000oP0-92; Thu, 21 Sep 2023 10:42:12 +0100
+Message-ID: <ef73ff84-545a-b073-fcd5-87492828280a@cambridgegreys.com>
+Date: Thu, 21 Sep 2023 10:42:09 +0100
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v2] um: Enable preemption in UML
+Content-Language: en-US
+To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
+Cc: richard@nod.at
+References: <20230921092836.190291-1-anton.ivanov@cambridgegreys.com>
+ <15376711a221bbeaf45a278f56b944dcc9b6f2cc.camel@sipsolutions.net>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+In-Reply-To: <15376711a221bbeaf45a278f56b944dcc9b6f2cc.camel@sipsolutions.net>
+X-Clacks-Overhead: GNU Terry Pratchett
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230921_023605_186180_915492D9 
-X-CRM114-Status: GOOD (  13.30  )
+X-CRM114-CacheID: sfid-20230921_024214_667717_49332486 
+X-CRM114-Status: GOOD (  24.86  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,81 +64,109 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-Haven't chimed in here before, but thanks for looking at this! I
-actually really wanted at least the things you get for debug from this
-in the past, so much appreciated.
-
-I think I actually tried a simpler approach and it kind of even worked,
-but my userspace likely has very little FPU usage.
 
 
-> +/* UML knows about 387 features up to and including AVX512, tile, etc are not yet
-> + * supported.
-> + */
+On 21/09/2023 10:35, Johannes Berg wrote:
+> Hi,
+> 
+> Haven't chimed in here before, but thanks for looking at this! I
+> actually really wanted at least the things you get for debug from this
+> in the past, so much appreciated.
+> 
+> I think I actually tried a simpler approach and it kind of even worked,
+> but my userspace likely has very little FPU usage.
+> 
+> 
+>> +/* UML knows about 387 features up to and including AVX512, tile, etc are not yet
+>> + * supported.
+>> + */
+> 
+> Do you ensure that somehow? Warn if it's there at least? I may have
+> missed that.
 
-Do you ensure that somehow? Warn if it's there at least? I may have
-missed that.
+We can if we want. We can just cut-off feature reflection into the kernel in the
+setup. Presently it reflects all features. That can be filtered if we want to.
+For example - x86 has boot flags to disable xrestore and xrestoreopt
 
-Or is it just for the saving? But what if you don't save enough and the
-host CPU has more?
+> 
+> Or is it just for the saving? But what if you don't save enough and the
+> host CPU has more?
 
+This is just for the saving. AFAIK no linux module touches _TILE and the other recent
+fancy stuff. The host kernel source looks that way.
 
-> +void kernel_fpu_begin(void)
-> +{
-> +#if defined(PREEMPT) || defined(PREEMPT_VOLUNTRARY)
+> 
+> 
+>> +void kernel_fpu_begin(void)
+>> +{
+>> +#if defined(PREEMPT) || defined(PREEMPT_VOLUNTRARY)
+> 
+> maybe leave it as an inline in case it'd be empty, i.e. neither of these
+> are defined?
+> 
+>> +	preempt_disable();
+>> +
+>> +	WARN_ON(this_cpu_read(in_kernel_fpu));
+>> +
+>> +	this_cpu_write(in_kernel_fpu, true);
+>> +
+>> +#ifdef CONFIG_64BIT
+>> +	if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVEOPT)))
+>> +		__builtin_ia32_xsaveopt64(&current->thread.fpu, KNOWN_387_FEATURES);
+>> +	else {
+>> +		if (cpu_has(&boot_cpu_data, X86_FEATURE_XSAVE))
+>> +			__builtin_ia32_xsave64(&current->thread.fpu, KNOWN_387_FEATURES);
+>> +		else
+>> +			__builtin_ia32_fxsave64(&current->thread.fpu);
+>> +	}
+> 
+> nit: you could make all of these else if chains, and avoid the braces:
+> 
+> if (likely(...))
+> 	...
+> else if (cpu_has(...))
+> 	...
+> else
+> 	...
+> 
+> 
+>> +void kernel_fpu_end(void)
+> 
+> same comments as above apply here.
+> 
+> 
+>>   void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
+>>   {
+>> +	preempt_disable();
+>>   	_sigio_handler(regs, irqs_suspended);
+>> +	preempt_enable();
+>>
+> 
+> I may have to look at those time-travel bits here :)
 
-maybe leave it as an inline in case it'd be empty, i.e. neither of these
-are defined?
+Yes. I was going to ask you to double check if they all work as intended.
 
-> +	preempt_disable();
-> +
-> +	WARN_ON(this_cpu_read(in_kernel_fpu));
-> +
-> +	this_cpu_write(in_kernel_fpu, true);
-> +
-> +#ifdef CONFIG_64BIT
-> +	if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVEOPT)))
-> +		__builtin_ia32_xsaveopt64(&current->thread.fpu, KNOWN_387_FEATURES);
-> +	else {
-> +		if (cpu_has(&boot_cpu_data, X86_FEATURE_XSAVE))
-> +			__builtin_ia32_xsave64(&current->thread.fpu, KNOWN_387_FEATURES);
-> +		else
-> +			__builtin_ia32_fxsave64(&current->thread.fpu);
-> +	}
+Basic use seems without tt seems OK.
 
-nit: you could make all of these else if chains, and avoid the braces:
-
-if (likely(...))
-	...
-else if (cpu_has(...))
-	...
-else
-	...
-
-
-> +void kernel_fpu_end(void)
-
-same comments as above apply here.
-
-
->  void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
->  {
-> +	preempt_disable();
->  	_sigio_handler(regs, irqs_suspended);
-> +	preempt_enable();
+> 
+> Thanks,
+> johannes
+> 
+> _______________________________________________
+> linux-um mailing list
+> linux-um@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-um
 > 
 
-I may have to look at those time-travel bits here :)
-
-Thanks,
-johannes
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
 _______________________________________________
 linux-um mailing list
