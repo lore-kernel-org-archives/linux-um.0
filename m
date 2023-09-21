@@ -4,54 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0294EE7D0A1
-	for <linux-um@archiver.kernel.org>; Thu, 21 Sep 2023 17:11:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4BCDE7D0AB
+	for <linux-um@archiver.kernel.org>; Thu, 21 Sep 2023 21:02:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:From:To:Date:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4oUsiHd9qrDp5UlgMuXveeHqdlX6bUDcwMTWA+WYF6U=; b=p/yAlE0Hu5VF8H
-	NfME3SOyk6Ry3+zXQn/T40vK2hC4orz2IKVRDb7Uv1PY8H4Q0O9jqnCInkOSwtJjuxnijTgcwbuZn
-	A7/1eWu/nIb93F8KGRf6l5lV7HofoEHrrNAIPSnyLdr6Iu+P8M8B6XtTtRqGyfGOin5cQ2damD/qM
-	L11tZlTU35DN107h0NMFF9INZJrpSgBi92aBGQk+cZtOF0FgSXcaJDzkv/RDss5U6kzIJaC3D6fhg
-	qevdMEng/saSM/GRg+Uy23Vmd1d90zmTnr6XYdmagB+CmcnNDIQlWO4wG5PpACK6yLDLhNO9ef5su
-	CIJ1w8gVdysuwupWlIYA==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Subject:References:
+	In-Reply-To:Message-ID:Cc:To:From:Date:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Owner;
+	bh=40GZ8X7r7NctpWZ439KKo5tITcp8y+MH3QaBcVV++Fg=; b=nzQusCLemaKAXLdWG9YAtpYrUq
+	azxv67x4IWWFANJD0wpYmzaiAwZheveGQI2YLcANJGhKSSzOkUTR/Nx0ahyb9p7RRnjFbOIGRB9eW
+	Oh5uO0PvCiguoYjcCd1GugUgNI3KvgeSbyOOq6zhRDAPqZ4r/q4W/3MzxepjCt8n2Vn8UT6sH9hBF
+	4OEmwcoss7DhTsKAvTMb75E5osa63I8UbK3i1WF9YmlblQKSsMzi+q+38jUWKVgALpcyT4AIriB4c
+	UTxHav1OTNCsehTLM6qgPmu8tsJj/sCOoDdexMCf0kry+d2Ggm3r7++7n3eyDHn0OUyfOnkdTBl1W
+	Wn7gPlig==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjNDR-006byt-1W;
-	Thu, 21 Sep 2023 17:11:49 +0000
-Received: from mail-4317.proton.ch ([185.70.43.17])
+	id 1qjQoS-00795m-0k;
+	Thu, 21 Sep 2023 21:02:16 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjNDO-006bwt-0P
+	id 1qjQoP-00793y-0E
 	for linux-um@lists.infradead.org;
-	Thu, 21 Sep 2023 17:11:48 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=n8pjl.ca;
-	s=protonmail2; t=1695316301; x=1695575501;
-	bh=0HLkfJPmx0nAORPX8Lze3eXIf9CLrPiGy1o8ePDuds0=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=b5+xzJOhym/g2GyujU+KafkllniM9n6txYK+DUUuixPT9wPRQvEso2hKm8gemNLlM
-	 IODXxpSuj+sU+/0pKuW90Ecb+g23jXeMqjI++slh6fXXgHkvdJsouxX2zlZBmO16Ir
-	 rbxzV0ezdVi2zmLBc/I+1hHCla5L/+9Jsa7kW6shbkJP74DC5F/BUbBoT0WYdnO6wu
-	 uskGe2NPgPjFHvtcZd7waACxe7bMg35+pjPuJPzFq6zE6XuNDIE/t48g75LaMpIvlT
-	 JfQVrwShuZSFCDt5UFHMyGV0lpJUMbGa1xvWC5uvNd4KVpcZlVDoEzQ/OkGgTyqN6G
-	 7MsUngEkd9nNA==
-Date: Thu, 21 Sep 2023 17:11:19 +0000
-To: anton.ivanov@cambridgegreys.com
-From: Peter Lafreniere <peter@n8pjl.ca>
-Cc: johannes@sipsolutions.net, linux-um@lists.infradead.org, richard@nod.at, Peter Lafreniere <peter@n8pjl.ca>
-Subject: Re: [PATCH v4] um: Enable preemption in UML
-Message-ID: <20230921171040.4198-1-peter@n8pjl.ca>
+	Thu, 21 Sep 2023 21:02:14 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 64401622F589;
+	Thu, 21 Sep 2023 23:02:06 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id pC3oIc6GVz-n; Thu, 21 Sep 2023 23:02:05 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 53415622F59F;
+	Thu, 21 Sep 2023 23:02:05 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 9E3e4zO1iBXj; Thu, 21 Sep 2023 23:02:05 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 2763B622F589;
+	Thu, 21 Sep 2023 23:02:05 +0200 (CEST)
+Date: Thu, 21 Sep 2023 23:02:04 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: anton ivanov <anton.ivanov@cambridgegreys.com>
+Cc: linux-um <linux-um@lists.infradead.org>, 
+	Johannes Berg <johannes@sipsolutions.net>
+Message-ID: <992345997.66924.1695330124883.JavaMail.zimbra@nod.at>
 In-Reply-To: <20230921155522.283582-1-anton.ivanov@cambridgegreys.com>
 References: <20230921155522.283582-1-anton.ivanov@cambridgegreys.com>
-Feedback-ID: 53133685:user:proton
+Subject: Re: [PATCH v4] um: Enable preemption in UML
 MIME-Version: 1.0
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: Enable preemption in UML
+Thread-Index: SJXu9nQvwrm4Mbisr8mjrVA6zpm59w==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230921_101147_415261_030CA786 
-X-CRM114-Status: GOOD (  25.02  )
+X-CRM114-CacheID: sfid-20230921_140213_284415_3A1DE5EC 
+X-CRM114-Status: UNSURE (   5.13  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -63,227 +72,48 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, Sep 21, 2023 at 11:55, anton.ivanov@cambridgegreys.com wrote:
-> 
-> From: Anton Ivanov anton.ivanov@cambridgegreys.com
-> 
-> 
-> Preemption requires saving/restoring FPU state. This patch
-> adds support for it using GCC intrinsics.
-> 
-> Signed-off-by: Anton Ivanov anton.ivanov@cambridgegreys.com
-> 
-> ---
-> arch/um/Kconfig | 1 -
-> arch/um/include/asm/fpu/api.h | 9 ++-
-> arch/um/include/asm/processor-generic.h | 3 +
-> arch/um/kernel/Makefile | 4 ++
-> arch/um/kernel/fpu.c | 77 +++++++++++++++++++++++++
-> arch/um/kernel/irq.c | 2 +
-> 6 files changed, 92 insertions(+), 4 deletions(-)
-> create mode 100644 arch/um/kernel/fpu.c
-> 
-> diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-> index b5e179360534..603f5fd82293 100644
-> --- a/arch/um/Kconfig
-> +++ b/arch/um/Kconfig
-> @@ -11,7 +11,6 @@ config UML
-> select ARCH_HAS_KCOV
-> select ARCH_HAS_STRNCPY_FROM_USER
-> select ARCH_HAS_STRNLEN_USER
-> - select ARCH_NO_PREEMPT
-> select HAVE_ARCH_AUDITSYSCALL
-> select HAVE_ARCH_KASAN if X86_64
-> select HAVE_ARCH_KASAN_VMALLOC if HAVE_ARCH_KASAN
-> diff --git a/arch/um/include/asm/fpu/api.h b/arch/um/include/asm/fpu/api.h
-> index 71bfd9ef3938..9e7680bf48f0 100644
-> --- a/arch/um/include/asm/fpu/api.h
-> +++ b/arch/um/include/asm/fpu/api.h
-> @@ -4,12 +4,15 @@
-> 
-> /* Copyright (c) 2020 Cambridge Greys Ltd
-> * Copyright (c) 2020 Red Hat Inc.
-> - * A set of "dummy" defines to allow the direct inclusion
-> - * of x86 optimized copy, xor, etc routines into the
-> - * UML code tree. */
-> + /
-> 
-> +#if defined(CONFIG_PREEMPT) || defined(CONFIG_PREEMPT_VOLUNTARY)
-> +extern void kernel_fpu_begin(void);
-> +extern void kernel_fpu_end(void);
-> +#else
-> #define kernel_fpu_begin() (void)0
-> #define kernel_fpu_end() (void)0
-> +#endif
-> 
-> static inline bool irq_fpu_usable(void)
-> {
-> diff --git a/arch/um/include/asm/processor-generic.h b/arch/um/include/asm/processor-generic.h
-> index 7414154b8e9a..c08e8c5b0249 100644
-> --- a/arch/um/include/asm/processor-generic.h
-> +++ b/arch/um/include/asm/processor-generic.h
-> @@ -44,6 +44,9 @@ struct thread_struct {
-> } cb;
-> } u;
-> } request;
-> +#if defined(CONFIG_PREEMPT) || defined(CONFIG_PREEMPT_VOLUNTARY)
-> + u8 fpu[2048] __aligned(64); / Intel docs require xsave/xrestore area to be aligned to 64 bytes /
-> +#endif
-> };
-> 
-> #define INIT_THREAD \
-> diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
-> index 811188be954c..c616e884a488 100644
-> --- a/arch/um/kernel/Makefile
-> +++ b/arch/um/kernel/Makefile
-> @@ -26,9 +26,13 @@ obj-$(CONFIG_OF) += dtb.o
-> obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
-> obj-$(CONFIG_STACKTRACE) += stacktrace.o
-> obj-$(CONFIG_GENERIC_PCI_IOMAP) += ioport.o
-> +obj-$(CONFIG_PREEMPT) += fpu.o
-> +obj-$(CONFIG_PREEMPT_VOLUNTARY) += fpu.o
-> 
-> USER_OBJS := config.o
-> 
-> +CFLAGS_fpu.o += -mxsave -mxsaveopt
-> +
-> include $(srctree)/arch/um/scripts/Makefile.rules
-> 
-> targets := config.c config.tmp capflags.c
-> diff --git a/arch/um/kernel/fpu.c b/arch/um/kernel/fpu.c
-> new file mode 100644
-> index 000000000000..346c07236185
-> --- /dev/null
-> +++ b/arch/um/kernel/fpu.c
-> @@ -0,0 +1,77 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/
-> + * Copyright (C) 2023 Cambridge Greys Ltd
-> + * Copyright (C) 2023 Red Hat Inc
-> + */
-> +
-> +#include <linux/cpu.h>
-> 
-> +#include <linux/init.h>
-> 
-> +#include <asm/fpu/api.h>
-> 
-> +#include <asm/cpufeature.h>
-> 
-> +
-> +/*
-> + * The critical section between kernel_fpu_begin() and kernel_fpu_end()
-> + * is non-reentrant. It is the caller's responsibility to avoid reentrance.
-> + /
-> +
-> +static DEFINE_PER_CPU(bool, in_kernel_fpu);
-> +
-> +/ UML and driver code it pulls out of the x86 tree knows about 387 features
-> + * up to and including AVX512. TILE, etc are not yet supported.
-> + */
-
-Tiny nit, but you use two different styles of block comments here.
-You did the same with the copyright declarations.
-
-> +
-> +#define KNOWN_387_FEATURES 0xFF
-> +
-> +
-> +void kernel_fpu_begin(void)
-> +{
-> + preempt_disable();
-> +
-> + WARN_ON(this_cpu_read(in_kernel_fpu));
-> +
-> + this_cpu_write(in_kernel_fpu, true);
-> +
-> +#ifdef CONFIG_64BIT
-> + if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVEOPT)))
-> + __builtin_ia32_xsaveopt64(&current->thread.fpu, KNOWN_387_FEATURES);
-> 
-> + else {
-> + if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVE)))
-> + __builtin_ia32_xsave64(&current->thread.fpu, KNOWN_387_FEATURES);
-> 
-> + else
-> + __builtin_ia32_fxsave64(&current->thread.fpu);
-> 
-> + }
-> +#else
-> + if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVEOPT)))
-> + __builtin_ia32_xsaveopt(&current->thread.fpu, KNOWN_387_FEATURES);
-> 
-> + else {
-> + if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVE)))
-> + __builtin_ia32_xsave(&current->thread.fpu, KNOWN_387_FEATURES);
-> 
-> + else
-> + __builtin_ia32_fxsave(&current->thread.fpu);
-> 
-> + }
-> +#endif
-> +}
-> +
-> +EXPORT_SYMBOL_GPL(kernel_fpu_begin);
-> +
-> +void kernel_fpu_end(void)
-> +{
-> + WARN_ON(!this_cpu_read(in_kernel_fpu));
-> +
-> +#ifdef CONFIG_64BIT
-> + if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVE)))
-> + __builtin_ia32_xrstor64(&current->thread.fpu, KNOWN_387_FEATURES);
-> 
-> + else
-> + __builtin_ia32_fxrstor64(&current->thread.fpu);
-> 
-> +#else
-> + if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVE)))
-> + __builtin_ia32_xrstor(&current->thread.fpu, KNOWN_387_FEATURES);
-> 
-> + else
-> + __builtin_ia32_fxrstor(&current->thread.fpu);
-> 
-> +#endif
-> + this_cpu_write(in_kernel_fpu, false);
-> +
-> + preempt_enable();
-> +}
-> +EXPORT_SYMBOL_GPL(kernel_fpu_end);
-> +
-> diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-> index 635d44606bfe..c02525da45df 100644
-> --- a/arch/um/kernel/irq.c
-> +++ b/arch/um/kernel/irq.c
-> @@ -195,7 +195,9 @@ static void _sigio_handler(struct uml_pt_regs *regs,
-> 
-> void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
-> {
-> + preempt_disable();
-> _sigio_handler(regs, irqs_suspended);
-> + preempt_enable();
-> }
-> 
-> static struct irq_entry *get_irq_entry_by_fd(int fd)
-> --
-> 2.30.2
-
-I'm happy with this as it is. The issue with AVX registers being clobbered
-when xsave isn't supported is unlikely to matter in practice, and can
-be fixed with a patch afterwards.
-
-Reviewed-by: Peter Lafreniere <peter@n8pjl.ca>
-
-Cheers,
-Peter
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+LS0tLS0gVXJzcHLDvG5nbGljaGUgTWFpbCAtLS0tLQo+IFZvbjogImFudG9uIGl2YW5vdiIgPGFu
+dG9uLml2YW5vdkBjYW1icmlkZ2VncmV5cy5jb20+Cj4gQW46ICJsaW51eC11bSIgPGxpbnV4LXVt
+QGxpc3RzLmluZnJhZGVhZC5vcmc+Cj4gQ0M6ICJKb2hhbm5lcyBCZXJnIiA8am9oYW5uZXNAc2lw
+c29sdXRpb25zLm5ldD4sICJyaWNoYXJkIiA8cmljaGFyZEBub2QuYXQ+LCAiYW50b24gaXZhbm92
+Igo+IDxhbnRvbi5pdmFub3ZAY2FtYnJpZGdlZ3JleXMuY29tPgo+IEdlc2VuZGV0OiBEb25uZXJz
+dGFnLCAyMS4gU2VwdGVtYmVyIDIwMjMgMTc6NTU6MjIKPiBCZXRyZWZmOiBbUEFUQ0ggdjRdIHVt
+OiBFbmFibGUgcHJlZW1wdGlvbiBpbiBVTUwKCj4gRnJvbTogQW50b24gSXZhbm92IDxhbnRvbi5p
+dmFub3ZAY2FtYnJpZGdlZ3JleXMuY29tPgo+IAo+IFByZWVtcHRpb24gcmVxdWlyZXMgc2F2aW5n
+L3Jlc3RvcmluZyBGUFUgc3RhdGUuIFRoaXMgcGF0Y2gKPiBhZGRzIHN1cHBvcnQgZm9yIGl0IHVz
+aW5nIEdDQyBpbnRyaW5zaWNzLgoKVGhpcyBwYXRjaCB0cmlnZ2VycyBoZXJlIHRoZSBmb2xsb3dp
+bmcgc3BsYXQ6Ci0tLS0tLS0tLS0tLVsgY3V0IGhlcmUgXS0tLS0tLS0tLS0tLQpXQVJOSU5HOiBD
+UFU6IDAgUElEOiAwIGF0IGluaXQvbWFpbi5jOjk5MiBzdGFydF9rZXJuZWwrMHg1NDEvMHg2YjYK
+SW50ZXJydXB0cyB3ZXJlIGVuYWJsZWQgZWFybHkKTW9kdWxlcyBsaW5rZWQgaW46CkNQVTogMCBQ
+SUQ6IDAgQ29tbTogc3dhcHBlciBOb3QgdGFpbnRlZCA2LjYuMC1yYzItZ2E3NGQ4Zjg1OTJlNSAj
+MTI4ClN0YWNrOgogNjAzODFiOTQgMDAwMDAwMDEgNjA0ZDNkODAgNjAwMmI2ZjYKIDYwNDQ0YmRk
+IDAwMDAwMDAxIDYwNGQzZTIwIDYwMzdlY2ZhCiA2MDRkM2RiMCA2MDM4OWIyZiA2MDRkM2RhMCA2
+MDM4MWI5NApDYWxsIFRyYWNlOgogWzw2MDM4MWI5ND5dID8gX3ByaW50aysweDAvMHg5NAogWzw2
+MDAyMTJiMT5dIHNob3dfc3RhY2srMHgxM2MvMHgxNGIKIFs8NjAzODFiOTQ+XSA/IF9wcmludGsr
+MHgwLzB4OTQKIFs8NjAwMmI2ZjY+XSA/IHVtX3NldF9zaWduYWxzKzB4MC8weDNmCiBbPDYwMzdl
+Y2ZhPl0gPyBzcHJpbnRmKzB4MC8weDk1CiBbPDYwMzg5YjJmPl0gZHVtcF9zdGFja19sdmwrMHg0
+ZC8weDVhCiBbPDYwMzgxYjk0Pl0gPyBfcHJpbnRrKzB4MC8weDk0CiBbPDYwMzg5YjU2Pl0gZHVt
+cF9zdGFjaysweDFhLzB4MWMKIFs8NjAwMzNlYmM+XSBfX3dhcm4rMHhkOS8weDEwOQogWzw2MDAz
+M2ZiZD5dIHdhcm5fc2xvd3BhdGhfZm10KzB4ZDEvMHhkZgogWzw2MDAzM2VlYz5dID8gd2Fybl9z
+bG93cGF0aF9mbXQrMHgwLzB4ZGYKIFs8NjAzODFiOTQ+XSA/IF9wcmludGsrMHgwLzB4OTQKIFs8
+NjAwNTBlMmM+XSA/IF9fYmxvY2tpbmdfbm90aWZpZXJfY2hhaW5fcmVnaXN0ZXIrMHgzMy8weDc4
+CiBbPDYwMzgxYjk0Pl0gPyBfcHJpbnRrKzB4MC8weDk0CiBbPDYwMDUwZTgzPl0gPyBibG9ja2lu
+Z19ub3RpZmllcl9jaGFpbl9yZWdpc3RlcisweDEyLzB4MTQKIFs8NjAwNWZhOTI+XSA/IHJlZ2lz
+dGVyX3BtX25vdGlmaWVyKzB4MWQvMHgxZgogWzw2MDAxNTJjOT5dID8gcmFuZG9tX2luaXQrMHhj
+Mi8weDEyNgogWzw2MDM4MWI5ND5dID8gX3ByaW50aysweDAvMHg5NAogWzw2MDAwMWM0MD5dIHN0
+YXJ0X2tlcm5lbCsweDU0MS8weDZiNgogWzw2MDA0ZGViMD5dID8gcGFyc2VfYXJncysweDAvMHgy
+YjkKIFs8NjAwMmI2MDk+XSA/IGJsb2NrX3NpZ25hbHMrMHgwLzB4MTYKIFs8NjAwMDNiOWQ+XSBz
+dGFydF9rZXJuZWxfcHJvYysweDQ5LzB4NGQKIFs8NjAwNjE4NjM+XSA/IGttc2dfZHVtcF9yZWdp
+c3RlcisweDZkLzB4NzUKIFs8NjAwMWZmZGI+XSBuZXdfdGhyZWFkX2hhbmRsZXIrMHg4MS8weGIy
+CiBbPDYwMDAzYjUyPl0gPyBrbXNnX2R1bXBlcl9zdGRvdXRfaW5pdCsweDFhLzB4MWMKIFs8NjAw
+MjJlNTI+XSB1bWxfZmluaXNoc2V0dXArMHg1NC8weDU5Ci0tLVsgZW5kIHRyYWNlIDAwMDAwMDAw
+MDAwMDAwMDAgXS0tLQoKeDg2XzY0IGRlZmNvbmZpZyArIENPTkZJR19QUkVFTVBUX1ZPTFVOVEFS
+WT15CgpUaGFua3MsCi8vcmljaGFyZAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJh
+ZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51
+eC11bQo=
