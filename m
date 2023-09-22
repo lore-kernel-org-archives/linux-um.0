@@ -4,72 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C983CD4F5B
-	for <linux-um@archiver.kernel.org>; Fri, 22 Sep 2023 11:17:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF4F2CD4F5B
+	for <linux-um@archiver.kernel.org>; Fri, 22 Sep 2023 11:23:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=WzOyVOUpzyG7KpJuge7C1/nDcXpcd0WF37m41gdmrHc=; b=WkBIob2UfPplcI
-	oRJBJQY+8dSFU5/AtcpztnWca/LXzG8MH266O/DW8Hf6MmOoSDs/fCH51pwdz0MLeRbHYWV+RsxLf
-	fK14BtLPCGIcYlRB7onDlr9eGrGZjaHwasb+X7O6RL4BDXu9YbRCFiwYHnV+K9l6uwVAOEdOEmFks
-	AyYbX4aeX37ASfpYEtK4Py/8hSGP2adWf8nqOdMtqS5KcV6p6eMa1nBOzGZx21rdub3vJbIEiXx80
-	ksLAoZ/NKtvfvrlOSlriNuQ5zyyQgIVP+OYHJPc/DwDLZIklz1RO3dhNgTJaJ9Lx1Dh4jpKD0ZQ6w
-	yD0DFHmWaL8DAGdd0wCg==;
+	List-Owner; bh=fngI9iXD/Vt333vVElkGNHSilob1i0AAeft9TEJ0Eow=; b=3MYMAPXpxxItOZ
+	Ibm6PIjgOAU7Ghi+e82kyJFGGZzAuN76pdDXG9JNRo60tOOuzZvdQAMsl/CjsIjfEatlMfbeXXjPb
+	Dn1WzPVykH5TESpQ7dkccA/9QHTEGinjGq628SSt/MKUQl6tm7Wn+kw/PAdiI260EqonI5Ngyy4nh
+	QW48DGIkQvv3cMmoxtRmP86paj38myeYxxjpxzDCOJz+CHQYgZ0iY1Mq0ZaGvsunLviq+AYJ61oBE
+	Ax2mXbzLVveTkYK7hzP2iDEcLlGRyKZGdtnzp9XFHlI8FaLCj0le/tpHr5MGX35vVe/ceeB6ZVXaX
+	ZgqSnRSQY149cCla5B6A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjeAY-008w8o-0r;
-	Fri, 22 Sep 2023 11:17:58 +0000
+	id 1qjeFQ-008wix-1L;
+	Fri, 22 Sep 2023 11:23:00 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjeAV-008w8N-0X
+	id 1qjeFO-008wiQ-04
 	for linux-um@lists.infradead.org;
-	Fri, 22 Sep 2023 11:17:56 +0000
+	Fri, 22 Sep 2023 11:22:59 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
 	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=p7KVNgSt4gx3DVbSPAszIu3Kfybo1ApTYgSxtQ8aaXU=;
-	t=1695381475; x=1696591075; b=qC2CptMPXd15ei6/rpSGst9ARKrVqzGF6pUxuRSMZx4kLdi
-	DIsnaLPivGv7pAkvLUttPlGXi+RWYhwc7rz8DpZMpkZf8P7OFW1jmgRQvSQLdxI2t2vVRcLvHttzx
-	nJ0jvvas2RWUXE/ijbTGIRJvn9Jb4MKqKYl8noy9ZzDi/lxKfMp4ObMN2RNJdDvSgH3vZ4TrVSEZ7
-	OdydMD+sMn6YTlImFAZMZoYkMyQFvTk3z3WoAuVIhZ0Zx2ty9hzc54/AlK5qoLi4BSQOU/gqyTAvN
-	kVqOJVlWyqqejPC05dKe9NUq1wna6MvLImxRYV2BvIMrfZlUW58v+JPaJZ9VZbqw==;
+	Resent-Cc:Resent-Message-ID; bh=v9GSS8wG7Qox+rlkpZcscFaKok8LRPlfQlOBE7EbSII=;
+	t=1695381777; x=1696591377; b=fftr2IH90sQ+MdtBRsHzBBE7Ojqq/DCyb6UtIKF1/fqwAxH
+	IwVAsWWpO1b+kANUCgdAYJgqs42bFk7JVnVZNXNYSzloW0+9J84uc/ahp36pdpZE7dTv+caMtQbc8
+	E1xU54AIQmNmoJMc9ehta1Zbj8kudwIJLbYiy5q3dd7Eyi9y0Jw7sTHeJohZ1dZ69UX+e37aZ3tdW
+	Q30BpFHh76Wq6/8B9UHQsUSezXntwHwq83pKQGK1VD9tI98l45MHopgPv/GekVRkmZuRZF1AQfj7V
+	oIjaB+x05gb5/jQzAiiVLIsvH45fQ9SPD+5Duf124awc2tBN+Y1i+c5TmC8oHV8w==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.96)
 	(envelope-from <johannes@sipsolutions.net>)
-	id 1qjeAT-00FDOY-0a;
-	Fri, 22 Sep 2023 13:17:53 +0200
-Message-ID: <b6c39036cffa4a062fb89b8267e9ee618ee1313e.camel@sipsolutions.net>
-Subject: Re: [PATCH v5] um: Enable preemption in UML
+	id 1qjeFM-00FDgy-06;
+	Fri, 22 Sep 2023 13:22:56 +0200
+Message-ID: <389fbd9de31ccdaad52674b7de06312e57f2cd54.camel@sipsolutions.net>
+Subject: Re: [PATCH v6] um: Enable preemption in UML
 From: Johannes Berg <johannes@sipsolutions.net>
-To: Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
-	linux-um@lists.infradead.org
+To: anton.ivanov@cambridgegreys.com, linux-um@lists.infradead.org
 Cc: richard@nod.at
-Date: Fri, 22 Sep 2023 13:17:52 +0200
-In-Reply-To: <2e7356cb-07c9-bb62-7f4d-b0e4c7af88cf@cambridgegreys.com>
-References: <20230922065212.484385-1-anton.ivanov@cambridgegreys.com>
-	 <fae1103161cf8c7bac8a138b267d2288ebb32a08.camel@sipsolutions.net>
-	 <fa4069f1-e026-7672-4f71-9319cdd683a2@cambridgegreys.com>
-	 <2de07f54b33dc060b75d982d4d8189f12e0d4c45.camel@sipsolutions.net>
-	 <28f0be57-829b-9ddf-7b0d-a6c84932cbda@cambridgegreys.com>
-	 <423e8ee5126e1dffda5f8877d07611a21972eea7.camel@sipsolutions.net>
-	 <210bd25b2dcd9e4424923f55053086f67e219cc4.camel@sipsolutions.net>
-	 <40babfb4-ed65-dd0e-23aa-abdfaa9c7149@cambridgegreys.com>
-	 <efaa802bcd0369665b3dbc10030c9ca88aa2cb30.camel@sipsolutions.net>
-	 <1ce8c412b0d2bdfa176f1f783281e393da94ff6f.camel@sipsolutions.net>
-	 <b8769840-1e33-f9bf-7a55-6ea805a1639a@cambridgegreys.com>
-	 <428dc1a37ab12368e09c555e44b767b8aa042cfd.camel@sipsolutions.net>
-	 <ebed5822cb23b51208afa6c08187b486f8ed05bf.camel@sipsolutions.net>
-	 <2e7356cb-07c9-bb62-7f4d-b0e4c7af88cf@cambridgegreys.com>
+Date: Fri, 22 Sep 2023 13:22:55 +0200
+In-Reply-To: <20230922105609.545573-1-anton.ivanov@cambridgegreys.com>
+References: <20230922105609.545573-1-anton.ivanov@cambridgegreys.com>
 User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
 X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230922_041755_220582_9D53F5F9 
-X-CRM114-Status: GOOD (  14.57  )
+X-CRM114-CacheID: sfid-20230922_042258_059028_8108CEE7 
+X-CRM114-Status: GOOD (  19.75  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,31 +72,64 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2023-09-22 at 11:55 +0100, Anton Ivanov wrote:
-> On 22/09/2023 10:55, Johannes Berg wrote:
-> > On Fri, 2023-09-22 at 11:51 +0200, Johannes Berg wrote:
-> > > On Fri, 2023-09-22 at 10:19 +0100, Anton Ivanov wrote:
-> > > > > So maybe that works - perhaps with a big comment?
-> > > > Ack. Will add this to the patch and run it through its paces.
-> > > > 
-> > > We can also just get rid of it entirely:
-> > > 
-> > And then we can remove all the skas0 stuff, including init_thread_regs
-> > and all.
-> > 
-> > Seems the cost would be basically that we now pagefault everything
-> > that's used between fork() and exec()? But is that so much and so
-> > important?
 > 
-> Needs testing :)
+> 4. UML TLB flush is also invoked during a fork. This happens
+> with interrupts and preempt disabled which disagrees with the
+> standard mm locking via rwsem. The mm lock for this code path
+> had to be replaced with an rcu.
 
-Yes. I sent a patch just now, works for me.
+For the record, even if I figured out this gets rid of the complaints,
+I'm not entirely happy with this - yeah it's safe now, but it still
+feels entirely wrong.
 
-> Let's get the PREEMPT out of the door first.
+But I guess we can also do this and then remove it entirely like the
+patch I just posted. Order probably doesn't matter much.
 
-Dunno. It has a conflict, but I think it's kind of a bugfix, the whole
-mm creation copying from 'current' seems fishy when you consider
-clone(CLONE_VM).
+(Note my patch removes the locking completely since it's now invoked by
+the kernel even under write mmap lock.)
+
+> diff --git a/arch/um/kernel/fpu.c b/arch/um/kernel/fpu.c
+> new file mode 100644
+> index 000000000000..4817276b2a26
+> --- /dev/null
+> +++ b/arch/um/kernel/fpu.c
+
+> +#ifdef CONFIG_64BIT
+> +	if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVEOPT)))
+> +		__builtin_ia32_xsaveopt64(&current->thread.fpu, KNOWN_387_FEATURES);
+> +	else {
+> +		if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVE)))
+> +			__builtin_ia32_xsave64(&current->thread.fpu, KNOWN_387_FEATURES);
+> +		else
+> +			__builtin_ia32_fxsave64(&current->thread.fpu);
+
+:)
+
+OK, I'll stop mentioning it ;-)
+
+> +EXPORT_SYMBOL_GPL(kernel_fpu_end);
+> +
+
+git am complained here about blank line at EOF
+
+> @@ -597,8 +609,13 @@ void force_flush_all(void)
+>  	struct vm_area_struct *vma;
+>  	VMA_ITERATOR(vmi, mm, 0);
+>  
+> -	mmap_read_lock(mm);
+> +	/* We use a RCU lock instead of a mm lock, because
+> +	 * this can be invoked out of critical/atomic sections
+> +	 * and that does not agree with the sleepable semantics
+> +	 * of the standard semaphore based mm lock.
+> +	 */
+> +	rcu_read_lock();
+
+Yeah I guess ... Seems like a very mechanical description of what's
+going on, rather than a description of why this is correct (which
+assumes no preempt and no SMP)?
+
+I'd have preferred that, but with the patch I just posted we'll just
+kill this entirely so it doesn't matter in the end.
 
 johannes
 
