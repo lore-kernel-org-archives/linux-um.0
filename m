@@ -4,54 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB4A7C04AAB
-	for <linux-um@archiver.kernel.org>; Fri, 22 Sep 2023 12:00:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9B4CE6FE2F
+	for <linux-um@archiver.kernel.org>; Fri, 22 Sep 2023 13:42:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:From:To:Date:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=FgMlxOkWVSQlj/aOINZodOpci6lMzch100hLm9Quk0A=; b=wWVc5Gw4qHrns1
-	yohLSiEE8yB0IVEcXGWEgUjoWJIdYz29EWjpBVselAc27kz1K3KaNMQji1KXkpHd5e+RtvvtRRSPX
-	iC4J3Boqf6rlnc7OjGOVhXrBwrc0VfYDBNnJ0TXYSkCOIkyyI015s25kRDSyTqPL9qjw9YhfZLWCe
-	HfVGKx1PIu9EfL/0Nc7BGA4svijE63R+kfubTY/mQwHyIgtq9CHjZayK/6cSjfJuC2yOppyhYHf5D
-	9SOf911guT+RDXp7KjmVjK+aFvU5+wKc7TWgj1FLX8j4DzIWWHOsibI+zNH9Hw36DTYmjwuV3WTdq
-	+e/+nLdrOeZh+Ct4sUVg==;
+	List-Owner; bh=kA15SyK+xSrbmnMrg/f2dq29TToANEPk8wPT0b5ECEo=; b=MJdvrvXgeYH3NK
+	UV5Sokmv8iFEhypeDq2/JiWmCYtr95PKQEVBQEFgPilpFqlYljyD8GBesHUq1ULTQNM1QWXxhX6kd
+	Q20sZ1W+cx9Pbj46WY6x2LTleiRkv4VP/naDHxAgrTgx+HTqsBHbWQAd1SSVUDiiI0GYfyMLkpRrX
+	iHxOQrIiRCSbTxqmfHUIi4ztQ5x6zcOBmpxxeYWLkeD8bS9Sgo8X8LDdxzMfp+LuCvebRzTddvHTH
+	kvIOTtyA1rbNtm/wTLwEUeR9NVRb1QKpEFF0L2l0lw+/HoTvaZDuZcAldJlgUMYwvl7WiAP38z4VM
+	O0HZE9mAA9s2GVYDb8rw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjepG-0090eq-2d;
-	Fri, 22 Sep 2023 12:00:02 +0000
-Received: from mail-4317.proton.ch ([185.70.43.17])
+	id 1qjgQH-0098Sz-2B;
+	Fri, 22 Sep 2023 13:42:21 +0000
+Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qjepC-0090cb-00
+	id 1qjgQE-0098QS-0J
 	for linux-um@lists.infradead.org;
-	Fri, 22 Sep 2023 12:00:01 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=n8pjl.ca;
-	s=protonmail2; t=1695383993; x=1695643193;
-	bh=2ztYyA0wmiYS5Y9EhV45dkDdzhhhInwFVZf1GZKFTWM=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=YbBdquNCzhsSaYLErUK+8P7IqDvCuvfubAPWex89bC3X7nUtbBu6tHMyMXJuFYrtE
-	 yLGli9SV5xw0MfUKNl2X9ZT4dUj26LSbXd1jv6TWAETN9ptIc+fU6bgM0EeMxBiQSa
-	 XRyHCsA7Jsak6rIMewl8tMWjuwBad8kALCLWFAqCRMlJDNVbeSSYSA1jCIbYNkjPKP
-	 cL+cesir2Htkrh9aWvJhJTAuhvyPvNxD3vG2Ig9NgdkpOhzvmdkzEZsPInZkgigSg3
-	 r/P98ZTM3pzIQfcIJ6x+kAbfkuA9WwJuWRq9MlRGj8aoRORcTtP+CnMG6HhGAWJx+K
-	 ySqbC4xoRt99g==
-Date: Fri, 22 Sep 2023 11:59:48 +0000
-To: anton.ivanov@cambridgegreys.com
-From: Peter Lafreniere <peter@n8pjl.ca>
-Cc: johannes@sipsolutions.net, linux-um@lists.infradead.org, richard@nod.at
-Subject: Re: [PATCH v6] um: Enable preemption in UML
-Message-ID: <20230922115942.19988-1-peter@n8pjl.ca>
-In-Reply-To: <20230922105609.545573-1-anton.ivanov@cambridgegreys.com>
-References: <20230922105609.545573-1-anton.ivanov@cambridgegreys.com>
-Feedback-ID: 53133685:user:proton
+	Fri, 22 Sep 2023 13:42:20 +0000
+Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
+	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <anton.ivanov@cambridgegreys.com>)
+	id 1qjgPy-002cFz-Cg; Fri, 22 Sep 2023 13:42:03 +0000
+Received: from jain.kot-begemot.co.uk ([192.168.3.3])
+	by jain.kot-begemot.co.uk with esmtp (Exim 4.94.2)
+	(envelope-from <anton.ivanov@cambridgegreys.com>)
+	id 1qjgPv-002TUh-5J; Fri, 22 Sep 2023 14:42:01 +0100
+Message-ID: <88e0568b-6860-9042-7f8b-ab53edb4242e@cambridgegreys.com>
+Date: Fri, 22 Sep 2023 14:41:58 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH] um: clean up mm creation
+Content-Language: en-US
+To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
+References: <20230922131638.2c57ec713d1c.Id11dff4b349e6a8f0136bb6bb09f6e01a80befbb@changeid>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+In-Reply-To: <20230922131638.2c57ec713d1c.Id11dff4b349e6a8f0136bb6bb09f6e01a80befbb@changeid>
+X-Clacks-Overhead: GNU Terry Pratchett
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230922_045959_680764_F31B3AC5 
-X-CRM114-Status: GOOD (  34.01  )
+X-CRM114-CacheID: sfid-20230922_064218_420216_F3309A99 
+X-CRM114-Status: GOOD (  46.42  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -63,254 +63,465 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, Sept 22, 2023 at 06:56, anton.ivanov@cambridgegreys.com wrote:
-> 
-> From: Anton Ivanov anton.ivanov@cambridgegreys.com
-> 
-> 
-> 1. Preemption requires saving/restoring FPU state. This patch
-> adds support for it using GCC intrinsics as well as appropriate
-> storage space in the thread structure.
-> 
-> 2. irq critical sections need preempt_disable()/preempt_enable().
-> 
-> 3. TLB critical sections need preempt_disable()/preempt_enable().
-> 
-> 4. UML TLB flush is also invoked during a fork. This happens
-> with interrupts and preempt disabled which disagrees with the
-> standard mm locking via rwsem. The mm lock for this code path
-> had to be replaced with an rcu.
 
-"Had to be"? Why? It's a very unconventional locking method
-and should have some justification.
+On 22/09/2023 12:16, Johannes Berg wrote:
+> From: Johannes Berg <johannes.berg@intel.com>
+>
+> While enabling PREEMPT on UML, we found that the call to
+> force_flush_all() cannot be done where it is, it sleeps
+> while atomic.
+>
+> Further investigation shows that all this seems at least
+> a bit roundabout and possibly wrong wrong in the first
+> place - we copy from the 'current' process and then flush
+> when it starts running.
+>
+> What we really want is to start fresh with an empty mm
+> process, then have it all set up by the kernel (copying
+> the original mm contents as needed), and then sync it
+> in arch_dup_mmap().
 
-> 
-> 5. The FPU state area is statically allocated depending on
-> the enabled PREEMPT options. PREEMPT_DYNAMIC and chosing the
-> preemption model at start time is disabled for the UM arch.
-> 
-> Signed-off-by: Anton Ivanov anton.ivanov@cambridgegreys.com
-> 
+Is there a way we can come up with COW here?
+
+>
+> We should do the same for the LDT, so need to split that
+> to be able to do this.
+>
+> Note that this fixes what seems like an issue - we look
+> at current->mm when we copy, but that doesn't seem right
+> in the case of clone() without copying the MM. This is
+> probably saved by the forced flush later right now.
+
+We will need to work on this.
+
+It is nearly twice slower than the current approach on a find /usr -type f -exec cat {} > /dev/null \;
+
+>
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 > ---
-> arch/um/Kconfig | 2 +-
-> arch/um/include/asm/fpu/api.h | 9 ++-
-> arch/um/include/asm/processor-generic.h | 4 ++
-> arch/um/kernel/Makefile | 4 ++
-> arch/um/kernel/fpu.c | 75 +++++++++++++++++++++++++
-> arch/um/kernel/irq.c | 2 +
-> arch/um/kernel/tlb.c | 21 ++++++-
-> 7 files changed, 111 insertions(+), 6 deletions(-)
-> create mode 100644 arch/um/kernel/fpu.c
-> 
-> diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-> index b5e179360534..19176fde82f3 100644
-> --- a/arch/um/Kconfig
-> +++ b/arch/um/Kconfig
-> @@ -11,7 +11,7 @@ config UML
-> select ARCH_HAS_KCOV
-> select ARCH_HAS_STRNCPY_FROM_USER
-> select ARCH_HAS_STRNLEN_USER
-> - select ARCH_NO_PREEMPT
-> + select ARCH_NO_PREEMPT_DYNAMIC
-> select HAVE_ARCH_AUDITSYSCALL
-> select HAVE_ARCH_KASAN if X86_64
-> select HAVE_ARCH_KASAN_VMALLOC if HAVE_ARCH_KASAN
-> diff --git a/arch/um/include/asm/fpu/api.h b/arch/um/include/asm/fpu/api.h
-> index 71bfd9ef3938..9e7680bf48f0 100644
-> --- a/arch/um/include/asm/fpu/api.h
-> +++ b/arch/um/include/asm/fpu/api.h
-> @@ -4,12 +4,15 @@
-> 
-> /* Copyright (c) 2020 Cambridge Greys Ltd
-> * Copyright (c) 2020 Red Hat Inc.
-> - * A set of "dummy" defines to allow the direct inclusion
-> - * of x86 optimized copy, xor, etc routines into the
-> - * UML code tree. */
-> + /
-> 
-> +#if defined(CONFIG_PREEMPT) || defined(CONFIG_PREEMPT_VOLUNTARY)
-> +extern void kernel_fpu_begin(void);
-> +extern void kernel_fpu_end(void);
-> +#else
-> #define kernel_fpu_begin() (void)0
-> #define kernel_fpu_end() (void)0
-> +#endif
-> 
-> static inline bool irq_fpu_usable(void)
-> {
-> diff --git a/arch/um/include/asm/processor-generic.h b/arch/um/include/asm/processor-generic.h
-> index 7414154b8e9a..9970e70be1e4 100644
-> --- a/arch/um/include/asm/processor-generic.h
-> +++ b/arch/um/include/asm/processor-generic.h
-> @@ -44,6 +44,10 @@ struct thread_struct {
-> } cb;
-> } u;
-> } request;
-> +#if defined(CONFIG_PREEMPT) || defined(CONFIG_PREEMPT_VOLUNTARY)
-> +/ Intel docs require xsave/xrestore area to be aligned to 64 bytes /
-> + u8 fpu[2048] __aligned(64);
-> +#endif
-> };
-> 
-> #define INIT_THREAD \
-> diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
-> index 811188be954c..c616e884a488 100644
-> --- a/arch/um/kernel/Makefile
-> +++ b/arch/um/kernel/Makefile
-> @@ -26,9 +26,13 @@ obj-$(CONFIG_OF) += dtb.o
-> obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
-> obj-$(CONFIG_STACKTRACE) += stacktrace.o
-> obj-$(CONFIG_GENERIC_PCI_IOMAP) += ioport.o
-> +obj-$(CONFIG_PREEMPT) += fpu.o
-> +obj-$(CONFIG_PREEMPT_VOLUNTARY) += fpu.o
-> 
-> USER_OBJS := config.o
-> 
-> +CFLAGS_fpu.o += -mxsave -mxsaveopt
-> +
-> include $(srctree)/arch/um/scripts/Makefile.rules
-> 
-> targets := config.c config.tmp capflags.c
-> diff --git a/arch/um/kernel/fpu.c b/arch/um/kernel/fpu.c
+>   arch/um/include/asm/Kbuild        |   1 -
+>   arch/um/include/asm/mm_hooks.h    |  22 ++++++
+>   arch/um/include/asm/mmu.h         |   3 +-
+>   arch/um/include/asm/mmu_context.h |   2 +-
+>   arch/um/include/shared/os.h       |   1 -
+>   arch/um/kernel/process.c          |   3 -
+>   arch/um/kernel/skas/mmu.c         |  35 ++++++----
+>   arch/um/kernel/tlb.c              |   5 +-
+>   arch/um/os-Linux/skas/process.c   | 107 ------------------------------
+>   arch/x86/um/ldt.c                 |  53 +++++++--------
+>   10 files changed, 76 insertions(+), 156 deletions(-)
+>   create mode 100644 arch/um/include/asm/mm_hooks.h
+>
+> diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
+> index b2d834a29f3a..de8d82a6fd7b 100644
+> --- a/arch/um/include/asm/Kbuild
+> +++ b/arch/um/include/asm/Kbuild
+> @@ -26,5 +26,4 @@ generic-y += switch_to.h
+>   generic-y += topology.h
+>   generic-y += trace_clock.h
+>   generic-y += kprobes.h
+> -generic-y += mm_hooks.h
+>   generic-y += vga.h
+> diff --git a/arch/um/include/asm/mm_hooks.h b/arch/um/include/asm/mm_hooks.h
 > new file mode 100644
-> index 000000000000..4817276b2a26
+> index 000000000000..b1016520c5b8
 > --- /dev/null
-> +++ b/arch/um/kernel/fpu.c
-> @@ -0,0 +1,75 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/
-> + * Copyright (C) 2023 Cambridge Greys Ltd
-> + * Copyright (C) 2023 Red Hat Inc
-> + */
+> +++ b/arch/um/include/asm/mm_hooks.h
+> @@ -0,0 +1,22 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _ASM_UM_MM_HOOKS_H
+> +#define _ASM_UM_MM_HOOKS_H
 > +
-> +#include <linux/cpu.h>
-> 
-> +#include <linux/init.h>
-> 
-> +#include <asm/fpu/api.h>
-> 
-> +#include <asm/cpufeature.h>
-> 
+> +int arch_dup_mmap(struct mm_struct *oldmm, struct mm_struct *mm);
 > +
-> +/*
-> + * The critical section between kernel_fpu_begin() and kernel_fpu_end()
-> + * is non-reentrant. It is the caller's responsibility to avoid reentrance.
-> + /
-> +
-> +static DEFINE_PER_CPU(bool, in_kernel_fpu);
-> +
-> +/ UML and driver code it pulls out of the x86 tree knows about 387 features
-> + * up to and including AVX512. TILE, etc are not yet supported.
-> + */
-> +
-> +#define KNOWN_387_FEATURES 0xFF
-> +
-> +void kernel_fpu_begin(void)
+> +static inline void arch_exit_mmap(struct mm_struct *mm)
 > +{
-> + preempt_disable();
-> +
-> + WARN_ON(this_cpu_read(in_kernel_fpu));
-> +
-> + this_cpu_write(in_kernel_fpu, true);
-> +
-> +#ifdef CONFIG_64BIT
-> + if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVEOPT)))
-> + __builtin_ia32_xsaveopt64(&current->thread.fpu, KNOWN_387_FEATURES);
-> 
-> + else {
-> + if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVE)))
-> + __builtin_ia32_xsave64(&current->thread.fpu, KNOWN_387_FEATURES);
-> 
-> + else
-> + __builtin_ia32_fxsave64(&current->thread.fpu);
-> 
-> + }
-> +#else
-> + if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVEOPT)))
-> + __builtin_ia32_xsaveopt(&current->thread.fpu, KNOWN_387_FEATURES);
-> 
-> + else {
-> + if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVE)))
-> + __builtin_ia32_xsave(&current->thread.fpu, KNOWN_387_FEATURES);
-> 
-> + else
-> + __builtin_ia32_fxsave(&current->thread.fpu);
-> 
-> + }
-> +#endif
 > +}
-> +EXPORT_SYMBOL_GPL(kernel_fpu_begin);
 > +
-
-Johannes is right about how flattening the else branch makes
-it a bit more readable, imo.
-
-> +void kernel_fpu_end(void)
+> +static inline void arch_unmap(struct mm_struct *mm,
+> +			unsigned long start, unsigned long end)
 > +{
-> + WARN_ON(!this_cpu_read(in_kernel_fpu));
-> +
-> +#ifdef CONFIG_64BIT
-> + if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVE)))
-> + __builtin_ia32_xrstor64(&current->thread.fpu, KNOWN_387_FEATURES);
-> 
-> + else
-> + __builtin_ia32_fxrstor64(&current->thread.fpu);
-> 
-> +#else
-> + if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVE)))
-> + __builtin_ia32_xrstor(&current->thread.fpu, KNOWN_387_FEATURES);
-> 
-> + else
-> + __builtin_ia32_fxrstor(&current->thread.fpu);
-> 
-> +#endif
-> + this_cpu_write(in_kernel_fpu, false);
-> +
-> + preempt_enable();
 > +}
-> +EXPORT_SYMBOL_GPL(kernel_fpu_end);
+> +
+> +static inline bool arch_vma_access_permitted(struct vm_area_struct *vma,
+> +		bool write, bool execute, bool foreign)
+> +{
+> +	/* by default, allow everything */
+> +	return true;
+> +}
+> +#endif	/* _ASM_UM_MM_HOOKS_H */
+> diff --git a/arch/um/include/asm/mmu.h b/arch/um/include/asm/mmu.h
+> index 5b072aba5b65..68a710d23b5d 100644
+> --- a/arch/um/include/asm/mmu.h
+> +++ b/arch/um/include/asm/mmu.h
+> @@ -18,7 +18,8 @@ typedef struct mm_context {
+>   extern void __switch_mm(struct mm_id * mm_idp);
+>   
+>   /* Avoid tangled inclusion with asm/ldt.h */
+> -extern long init_new_ldt(struct mm_context *to_mm, struct mm_context *from_mm);
+> +extern int init_new_ldt(struct mm_context *to_mm);
+> +extern int copy_ldt(struct mm_context *to_mm, struct mm_context *from_mm);
+>   extern void free_ldt(struct mm_context *mm);
+>   
+>   #endif
+> diff --git a/arch/um/include/asm/mmu_context.h b/arch/um/include/asm/mmu_context.h
+> index 68e2eb9cfb47..8668861d4a85 100644
+> --- a/arch/um/include/asm/mmu_context.h
+> +++ b/arch/um/include/asm/mmu_context.h
+> @@ -13,7 +13,7 @@
+>   #include <asm/mm_hooks.h>
+>   #include <asm/mmu.h>
+>   
+> -extern void force_flush_all(void);
+> +void force_flush_all(struct mm_struct *mm);
+>   
+>   #define activate_mm activate_mm
+>   static inline void activate_mm(struct mm_struct *old, struct mm_struct *new)
+> diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+> index 1a82c6548dd5..c9acc28fe47c 100644
+> --- a/arch/um/include/shared/os.h
+> +++ b/arch/um/include/shared/os.h
+> @@ -289,7 +289,6 @@ extern int protect(struct mm_id * mm_idp, unsigned long addr,
+>   /* skas/process.c */
+>   extern int is_skas_winch(int pid, int fd, void *data);
+>   extern int start_userspace(unsigned long stub_stack);
+> -extern int copy_context_skas0(unsigned long stack, int pid);
+>   extern void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs);
+>   extern void new_thread(void *stack, jmp_buf *buf, void (*handler)(void));
+>   extern void switch_threads(jmp_buf *me, jmp_buf *you);
+> diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+> index 6daffb9d8a8d..a024acd6d85c 100644
+> --- a/arch/um/kernel/process.c
+> +++ b/arch/um/kernel/process.c
+> @@ -25,7 +25,6 @@
+>   #include <linux/threads.h>
+>   #include <linux/resume_user_mode.h>
+>   #include <asm/current.h>
+> -#include <asm/mmu_context.h>
+>   #include <linux/uaccess.h>
+>   #include <as-layout.h>
+>   #include <kern_util.h>
+> @@ -139,8 +138,6 @@ void new_thread_handler(void)
+>   /* Called magically, see new_thread_handler above */
+>   void fork_handler(void)
+>   {
+> -	force_flush_all();
+> -
+>   	schedule_tail(current->thread.prev_sched);
+>   
+>   	/*
+> diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
+> index 656fe16c9b63..ac4ca203ac24 100644
+> --- a/arch/um/kernel/skas/mmu.c
+> +++ b/arch/um/kernel/skas/mmu.c
+> @@ -10,13 +10,13 @@
+>   
+>   #include <asm/pgalloc.h>
+>   #include <asm/sections.h>
+> +#include <asm/mmu_context.h>
+>   #include <as-layout.h>
+>   #include <os.h>
+>   #include <skas.h>
+>   
+>   int init_new_context(struct task_struct *task, struct mm_struct *mm)
+>   {
+> - 	struct mm_context *from_mm = NULL;
+>   	struct mm_context *to_mm = &mm->context;
+>   	unsigned long stack = 0;
+>   	int ret = -ENOMEM;
+> @@ -26,14 +26,13 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
+>   		goto out;
+>   
+>   	to_mm->id.stack = stack;
+> -	if (current->mm != NULL && current->mm != &init_mm)
+> -		from_mm = &current->mm->context;
+>   
+> +	/*
+> +	 * Allocate a completely fresh mm. We'll sync the mappings once
+> +	 * the rest of the kernel is done, in arch_copy_mm().
+> +	 */
+>   	block_signals_trace();
+> -	if (from_mm)
+> -		to_mm->id.u.pid = copy_context_skas0(stack,
+> -						     from_mm->id.u.pid);
+> -	else to_mm->id.u.pid = start_userspace(stack);
+> +	to_mm->id.u.pid = start_userspace(stack);
+>   	unblock_signals_trace();
+>   
+>   	if (to_mm->id.u.pid < 0) {
+> @@ -41,12 +40,9 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
+>   		goto out_free;
+>   	}
+>   
+> -	ret = init_new_ldt(to_mm, from_mm);
+> -	if (ret < 0) {
+> -		printk(KERN_ERR "init_new_context_skas - init_ldt"
+> -		       " failed, errno = %d\n", ret);
+> +	ret = init_new_ldt(to_mm);
+> +	if (ret)
+>   		goto out_free;
+> -	}
+>   
+>   	return 0;
+>   
+> @@ -57,6 +53,21 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
+>   	return ret;
+>   }
+>   
+> +int arch_dup_mmap(struct mm_struct *oldmm, struct mm_struct *mm)
+> +{
+> +	int ret = copy_ldt(&mm->context, &oldmm->context);
+> +
+> +	if (ret < 0) {
+> +		printk(KERN_ERR "%s - copy_ldt failed, errno = %d\n",
+> +		       __func__, ret);
+> +		return ret;
+> +	}
+> +
+> +	force_flush_all(mm);
+> +	return 0;
+> +}
+> +
+> +
+>   void destroy_context(struct mm_struct *mm)
+>   {
+>   	struct mm_context *mmu = &mm->context;
+> diff --git a/arch/um/kernel/tlb.c b/arch/um/kernel/tlb.c
+> index 34ec8e677fb9..7c0161321fd9 100644
+> --- a/arch/um/kernel/tlb.c
+> +++ b/arch/um/kernel/tlb.c
+> @@ -600,14 +600,11 @@ void flush_tlb_mm(struct mm_struct *mm)
+>   		fix_range(mm, vma->vm_start, vma->vm_end, 0);
+>   }
+>   
+> -void force_flush_all(void)
+> +void force_flush_all(struct mm_struct *mm)
+>   {
+> -	struct mm_struct *mm = current->mm;
+>   	struct vm_area_struct *vma;
+>   	VMA_ITERATOR(vmi, mm, 0);
+>   
+> -	mmap_read_lock(mm);
+>   	for_each_vma(vmi, vma)
+>   		fix_range(mm, vma->vm_start, vma->vm_end, 1);
+> -	mmap_read_unlock(mm);
+>   }
+> diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+> index f92129bbf981..403f4c6082b6 100644
+> --- a/arch/um/os-Linux/skas/process.c
+> +++ b/arch/um/os-Linux/skas/process.c
+> @@ -508,113 +508,6 @@ void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
+>   	}
+>   }
+>   
+> -static unsigned long thread_regs[MAX_REG_NR];
+> -static unsigned long thread_fp_regs[FP_SIZE];
+> -
+> -static int __init init_thread_regs(void)
+> -{
+> -	get_safe_registers(thread_regs, thread_fp_regs);
+> -	/* Set parent's instruction pointer to start of clone-stub */
+> -	thread_regs[REGS_IP_INDEX] = STUB_CODE +
+> -				(unsigned long) stub_clone_handler -
+> -				(unsigned long) __syscall_stub_start;
+> -	thread_regs[REGS_SP_INDEX] = STUB_DATA + STUB_DATA_PAGES * UM_KERN_PAGE_SIZE -
+> -		sizeof(void *);
+> -#ifdef __SIGNAL_FRAMESIZE
+> -	thread_regs[REGS_SP_INDEX] -= __SIGNAL_FRAMESIZE;
+> -#endif
+> -	return 0;
+> -}
+> -
+> -__initcall(init_thread_regs);
+> -
+> -int copy_context_skas0(unsigned long new_stack, int pid)
+> -{
+> -	int err;
+> -	unsigned long current_stack = current_stub_stack();
+> -	struct stub_data *data = (struct stub_data *) current_stack;
+> -	struct stub_data *child_data = (struct stub_data *) new_stack;
+> -	unsigned long long new_offset;
+> -	int new_fd = phys_mapping(uml_to_phys((void *)new_stack), &new_offset);
+> -
+> -	/*
+> -	 * prepare offset and fd of child's stack as argument for parent's
+> -	 * and child's mmap2 calls
+> -	 */
+> -	*data = ((struct stub_data) {
+> -		.offset	= MMAP_OFFSET(new_offset),
+> -		.fd     = new_fd,
+> -		.parent_err = -ESRCH,
+> -		.child_err = 0,
+> -	});
+> -
+> -	*child_data = ((struct stub_data) {
+> -		.child_err = -ESRCH,
+> -	});
+> -
+> -	err = ptrace_setregs(pid, thread_regs);
+> -	if (err < 0) {
+> -		err = -errno;
+> -		printk(UM_KERN_ERR "%s : PTRACE_SETREGS failed, pid = %d, errno = %d\n",
+> -		      __func__, pid, -err);
+> -		return err;
+> -	}
+> -
+> -	err = put_fp_registers(pid, thread_fp_regs);
+> -	if (err < 0) {
+> -		printk(UM_KERN_ERR "%s : put_fp_registers failed, pid = %d, err = %d\n",
+> -		       __func__, pid, err);
+> -		return err;
+> -	}
+> -
+> -	/*
+> -	 * Wait, until parent has finished its work: read child's pid from
+> -	 * parent's stack, and check, if bad result.
+> -	 */
+> -	err = ptrace(PTRACE_CONT, pid, 0, 0);
+> -	if (err) {
+> -		err = -errno;
+> -		printk(UM_KERN_ERR "Failed to continue new process, pid = %d, errno = %d\n",
+> -		       pid, errno);
+> -		return err;
+> -	}
+> -
+> -	wait_stub_done(pid);
+> -
+> -	pid = data->parent_err;
+> -	if (pid < 0) {
+> -		printk(UM_KERN_ERR "%s - stub-parent reports error %d\n",
+> -		      __func__, -pid);
+> -		return pid;
+> -	}
+> -
+> -	/*
+> -	 * Wait, until child has finished too: read child's result from
+> -	 * child's stack and check it.
+> -	 */
+> -	wait_stub_done(pid);
+> -	if (child_data->child_err != STUB_DATA) {
+> -		printk(UM_KERN_ERR "%s - stub-child %d reports error %ld\n",
+> -		       __func__, pid, data->child_err);
+> -		err = data->child_err;
+> -		goto out_kill;
+> -	}
+> -
+> -	if (ptrace(PTRACE_OLDSETOPTIONS, pid, NULL,
+> -		   (void *)PTRACE_O_TRACESYSGOOD) < 0) {
+> -		err = -errno;
+> -		printk(UM_KERN_ERR "%s : PTRACE_OLDSETOPTIONS failed, errno = %d\n",
+> -		       __func__, errno);
+> -		goto out_kill;
+> -	}
+> -
+> -	return pid;
+> -
+> - out_kill:
+> -	os_kill_ptraced_process(pid, 1);
+> -	return err;
+> -}
+> -
+>   void new_thread(void *stack, jmp_buf *buf, void (*handler)(void))
+>   {
+>   	(*buf)[0].JB_IP = (unsigned long) handler;
+> diff --git a/arch/x86/um/ldt.c b/arch/x86/um/ldt.c
+> index 255a44dd415a..609feaeff23b 100644
+> --- a/arch/x86/um/ldt.c
+> +++ b/arch/x86/um/ldt.c
+> @@ -297,36 +297,37 @@ static void ldt_get_host_info(void)
+>   	free_pages((unsigned long)ldt, order);
+>   }
+>   
+> -long init_new_ldt(struct mm_context *new_mm, struct mm_context *from_mm)
+> +int init_new_ldt(struct mm_context *new_mm)
+>   {
+> -	struct user_desc desc;
+> +	struct user_desc desc = {};
+>   	short * num_p;
+> -	int i;
+> -	long page, err=0;
+> +	int err = 0;
+>   	void *addr = NULL;
+>   
+> -
+>   	mutex_init(&new_mm->arch.ldt.lock);
+>   
+> -	if (!from_mm) {
+> -		memset(&desc, 0, sizeof(desc));
+> -		/*
+> -		 * Now we try to retrieve info about the ldt, we
+> -		 * inherited from the host. All ldt-entries found
+> -		 * will be reset in the following loop
+> -		 */
+> -		ldt_get_host_info();
+> -		for (num_p=host_ldt_entries; *num_p != -1; num_p++) {
+> -			desc.entry_number = *num_p;
+> -			err = write_ldt_entry(&new_mm->id, 1, &desc,
+> -					      &addr, *(num_p + 1) == -1);
+> -			if (err)
+> -				break;
+> -		}
+> -		new_mm->arch.ldt.entry_count = 0;
+> -
+> -		goto out;
+> +	memset(&desc, 0, sizeof(desc));
+> +	/*
+> +	 * Now we try to retrieve info about the ldt, we
+> +	 * inherited from the host. All ldt-entries found
+> +	 * will be reset in the following loop
+> +	 */
+> +	ldt_get_host_info();
+> +	for (num_p=host_ldt_entries; *num_p != -1; num_p++) {
+> +		desc.entry_number = *num_p;
+> +		err = write_ldt_entry(&new_mm->id, 1, &desc,
+> +				      &addr, *(num_p + 1) == -1);
+> +		if (err)
+> +			break;
+>   	}
+> +	new_mm->arch.ldt.entry_count = 0;
+> +
+> +	return err;
+> +}
+> +
+> +int copy_ldt(struct mm_context *new_mm, struct mm_context *from_mm)
+> +{
+> +	int err = 0;
+>   
+>   	/*
+>   	 * Our local LDT is used to supply the data for
+> @@ -339,7 +340,9 @@ long init_new_ldt(struct mm_context *new_mm, struct mm_context *from_mm)
+>   		memcpy(new_mm->arch.ldt.u.entries, from_mm->arch.ldt.u.entries,
+>   		       sizeof(new_mm->arch.ldt.u.entries));
+>   	else {
+> -		i = from_mm->arch.ldt.entry_count / LDT_ENTRIES_PER_PAGE;
+> +		int i = from_mm->arch.ldt.entry_count / LDT_ENTRIES_PER_PAGE;
+> +		unsigned long page;
+> +
+>   		while (i-->0) {
+>   			page = __get_free_page(GFP_KERNEL|__GFP_ZERO);
+>   			if (!page) {
+> @@ -355,11 +358,9 @@ long init_new_ldt(struct mm_context *new_mm, struct mm_context *from_mm)
+>   	new_mm->arch.ldt.entry_count = from_mm->arch.ldt.entry_count;
+>   	mutex_unlock(&from_mm->arch.ldt.lock);
+>   
+> -    out:
+>   	return err;
+>   }
+>   
+> -
+>   void free_ldt(struct mm_context *mm)
+>   {
+>   	int i;
 
---->8---
-
-> @@ -597,8 +609,13 @@ void force_flush_all(void)
-> struct vm_area_struct vma;
-> VMA_ITERATOR(vmi, mm, 0);
-> 
-> - mmap_read_lock(mm);
-> + / We use a RCU lock instead of a mm lock, because
-> + * this can be invoked out of critical/atomic sections
-> + * and that does not agree with the sleepable semantics
-> + * of the standard semaphore based mm lock.
-> + */
-
-As Johannes said, this comment doesn't explain why it's needed,
-just that an rcu lock is needed.
-
-> + rcu_read_lock();
-> for_each_vma(vmi, vma)
-> fix_range(mm, vma->vm_start, vma->vm_end, 1);
-> 
-> - mmap_read_unlock(mm);
-> + rcu_read_unlock();
-> }
-> --
-> 2.30.2
-
-I didn't audit the assortment of preempt_{enable,disable}() pairs,
-but I did test this patch with defconfig + debug.config + CONFIG_PREEMPT=y
-for 15 minutes and I didn't see any warnings that used to show up.
-
-I think that we should fix what currently exists, then rebase this
-PREEMPT patch on top of the results. Plus that'll give me time to look
-into the avx + !xsave edge case :)
-
-Cheers,
-Peter
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
 
 _______________________________________________
