@@ -4,56 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C578CE7A89
-	for <linux-um@archiver.kernel.org>; Sat, 23 Sep 2023 15:05:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D46CCE7A89
+	for <linux-um@archiver.kernel.org>; Sat, 23 Sep 2023 19:58:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:Cc:From:To:Date:Reply-To:Content-ID:Content-Description:
+	Date:To:From:Subject:Message-ID:Reply-To:Cc:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=1B8DOPf6RBy6VLkyDjKY0ktwX/nq7YL5TfxqOSWk7E4=; b=SBdliasNn5JKHi
-	O01ksvfaUk8hPgCcuS5OcQvq+NHpfPy9Hlb3RUi9yJSl0iOhNx4+cdaY2jrIstf/jzUGxuHcg6mXc
-	KWIKFwwSryl6KcwTDoHZNYkpQDRFU/dAWr+98Y4TuXThLin8fTrOsEu1ztLA/ae0iT5FtaePtYX6e
-	V0ODVtTTDOSROlMueTRN83cCVhxTTiDXBx6kbrZNM62UukrJ4oCrDU98+UQKaBiMFYEEpnzOQS7Ok
-	80sz83edgEuKDTLsnctZJ9Was71ziw7V/KzZ7cDuJcepvvVhke+IQm2XgYQ0OKfbBjlghlwEes4xM
-	7iY3kmnUTy2COj0Lvgfw==;
+	List-Owner; bh=7ojkaOmffHM5OSf92g0A9Lh8XW6sOhji82sLh9qMRTA=; b=BLt/mRn4AUGTt+
+	UPIeBLY0mrRI+FzuMI1rMFpkhhqhA8LbHRE67etfKX9qDBWKT4edew3b4uWuTnlGczG9orRtrfKnh
+	nPI1cal9+VTQww3u+LKpDhAv9nHjBSNXEUyI+UjHHqPEMUWpAykZWKwmpgg2vRzReiaa7j/5nMBWv
+	YD/yr2eCyedlpKfHtb1MOznEZYLHxRjg+eu0a+cJL7uLY6RehLkdCTMJ+0pgaxEr44I4EEapzm+nB
+	TM61Nis5IZnVnIPt6yK4uN5JmjGQh/lMOzadnRBuWmMksmawUmX9i4Xd+nuQBGdPQWRfr2bR94nB5
+	CpetCod/pehPRCKbL1HA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qk4CZ-00B7fx-0A;
-	Sat, 23 Sep 2023 15:05:47 +0000
-Received: from mail-4317.proton.ch ([185.70.43.17])
+	id 1qk8mC-00BPS4-00;
+	Sat, 23 Sep 2023 19:58:52 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qiHIX-00FtXd-2C
+	id 1qk8m9-00BPRT-13
 	for linux-um@lists.infradead.org;
-	Mon, 18 Sep 2023 16:40:35 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=n8pjl.ca;
-	s=protonmail2; t=1695055231; x=1695314431;
-	bh=MxvEGHu4PtwN8mGrIyQuS2LPbQNlvfj3VnD5jiLU7lc=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=VgM7sEMUObxhy8J/FthQz5uVyKAzVBVCMwGKG+3ouY5osT0Rb1fa86tMORiLFRjz8
-	 cGV4vKiEX+WES/DiNV0lIlKlHd4aSr7dnzsR0QgTgFXP06iCrX/AW2yQwkLyhbqeT7
-	 8lP1XTKgFPtQdDkGVx7/ZDVPz/ti0NLUlDayxIMork8EC4xUGPEMpTt1V4h2e2r1Bw
-	 bX7nkazpz3KeGSWLwAS/3zQ4q/hRmSOjAjHbbf+GXOofQSbQdV5zlEzUI3MITqLG4x
-	 OzqnYnrdRx7M+pWjb+3Gd64OygYOf85Uz+uvJBJRHvLdeBbMTVU9XTEZs3pelB+GWU
-	 6/gdC44vi6a+Q==
-Date: Mon, 18 Sep 2023 16:40:22 +0000
-To: peter@n8pjl.ca
-From: Peter Lafreniere <peter@n8pjl.ca>
-Cc: anton.ivanov@cambridgegreys.com, geert@linux-m68k.org, jack@suse.cz, johannes@sipsolutions.net, linux-um@lists.infradead.org, reiserfs-devel@vger.kernel.org, richard@nod.at
-Subject: um: Remove CONFIG_REISERFS_FS from defconfig
-Message-ID: <20230918164017.8827-1-peter@n8pjl.ca>
-In-Reply-To: <20230918163544.8604-1-peter@n8pjl.ca>
-References: <20230910232640.113938-1-peter@n8pjl.ca> <20230918125744.4342-1-peter@n8pjl.ca> <20230918132614.zmmuc72purc2psik@quack3> <CAMuHMdWzN0Gs2FTQDFeBLz2498dv3ZYCBL2xOvL5YdHAveaH9g@mail.gmail.com> <20230918163544.8604-1-peter@n8pjl.ca>
-Feedback-ID: 53133685:user:proton
+	Sat, 23 Sep 2023 19:58:50 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:To:From:Subject:Message-ID:Sender:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=KEYlYocwZZ4dhDm+H51hLgIgasyvYqPbwSXN6ZTA0ds=;
+	t=1695499126; x=1696708726; b=uU8tf1RcSeyat21fcnStSJnGvPrGY/s2tD/+aGMDS5mbZPW
+	3op0NZfDVZG1NufWmtmTy7fER6lLV1ejaUkxyABdMLBETqM7NuZStBYumnCmkUq7BnV2QC+uPwg/I
+	LS2yBUahh2NOEOmpfJpD2FnvYSYFKXIMYGzCcrSNdRAi5kQDgRrliG1h7S6XDyf1EdVt5Iv4igeKS
+	a7T16xpfwcd+X8180/UIMKORZSzigqwP7AkvKfp1D2tZJIA7oLw7OGsW43K7kLARLhk0pf07uDGqo
+	GOe1D1G+KD5SSrskbvss9zia08ec1mZLBl7mEsdsFxC+y7vl82Wro0iUC/H8DIRA==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.96)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1qk8m3-00068p-11;
+	Sat, 23 Sep 2023 21:58:43 +0200
+Message-ID: <e25f9511095858d313cbc85aef486b891e530a00.camel@sipsolutions.net>
+Subject: Re: [PATCH] um: clean up mm creation
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+	linux-um@lists.infradead.org
+Date: Sat, 23 Sep 2023 21:58:42 +0200
+In-Reply-To: <44c606c0-c846-0bcb-0269-66974dee3c4b@cambridgegreys.com>
+References: <20230922131638.2c57ec713d1c.Id11dff4b349e6a8f0136bb6bb09f6e01a80befbb@changeid>
+	 <88e0568b-6860-9042-7f8b-ab53edb4242e@cambridgegreys.com>
+	 <ce18cec1dbacb366f2cf74ebc941c9fbc4b1e116.camel@sipsolutions.net>
+	 <9cc73695-b3c7-d194-72e9-9bde142c81f8@cambridgegreys.com>
+	 <6bc1a06d1b91b2badd388a4e13d467ed4eace651.camel@sipsolutions.net>
+	 <44c606c0-c846-0bcb-0269-66974dee3c4b@cambridgegreys.com>
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-X-Bad-Reply: References and In-Reply-To but no 'Re:' in Subject.
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230918_094033_893770_DADCDD07 
-X-CRM114-Status: GOOD (  18.42  )
-X-Mailman-Approved-At: Sat, 23 Sep 2023 08:05:44 -0700
+X-CRM114-CacheID: sfid-20230923_125849_660344_AD730726 
+X-CRM114-Status: UNSURE (   3.94  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,46 +78,14 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-> > > Makes sense but I've noticed there are many more architectures that define
-> > > CONFIG_REISERFS_FS in their defconfig (sh, powerpc, mips, m68k, ia64, arm,
-> > > alpha). So perhaps we should do this for all of them when we are at it?
-> > 
-> > The policy for the m68k defconfigs is to enable all available exotic
-> > file systems as modules, so support for them is available when needed.
-> > 
-> > Please let me know why this should be changed, as long as ReiserFS is
-> > still available in the upstream kernel.
+On Sat, 2023-09-23 at 06:29 +0100, Anton Ivanov wrote:
 > 
-> 
-> I understand that policy and it makes particular sense for older/hobbyist
-> hardware like the m68k classic where ReiserFS is included in make defconfig.
-> 
-> However, ReiserFS is deprecated and should be phased out as best as possible
-> before its removal, and pruning config options for a filesystem that is
-> considered obsolete and should not be used on the newest kernels is a step
-> towards that.
-> 
-> ReiserFS is still availiable to be configured by anyone who builds their own
-> kernel and is still availiable in all(mod|yes)config. As such I can justify
-> the removal of some old config options that doesn't actually remove support for
-> the filesystem when it simplifies the deprecation and removal processes for an
-> ancient, largely unused filesystem.
-> 
-> Please remember that users who build and install their own kernel on hobbyist
-> hardware should be capable enough to select one Kconfig option if they happen to
-> need ReiserFS. If not, then removing ReiserFS from the defconfig on a kernel
-> update is an easier issue to work around than waiting to remove the filesystem
-> from the tree entirely.
+> One more thing. Is your find "real" /bin/find or busybox.
 
-Though as Jan said, you're free to not accept a patch removing the config option
-until the filesystem is gone for good. I just feel like it's easier to remove
-ReiserFS from all defconfigs in one fell swoop.
+Yeah, definitely real find, it's my normal host system with hostfs after
+all :)
 
-Cheers,
-
-Peter Lafreniere
-<peter@n8pjl.ca>
-
+johannes
 
 _______________________________________________
 linux-um mailing list
