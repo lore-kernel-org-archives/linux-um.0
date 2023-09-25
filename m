@@ -4,64 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D46CCE7A89
-	for <linux-um@archiver.kernel.org>; Sat, 23 Sep 2023 19:58:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DEF65CE7A95
+	for <linux-um@archiver.kernel.org>; Mon, 25 Sep 2023 02:03:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:To:From:Subject:Message-ID:Reply-To:Cc:Content-ID:Content-Description:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:List-Subscribe:List-Help:
+	List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:
+	From:Date:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=7ojkaOmffHM5OSf92g0A9Lh8XW6sOhji82sLh9qMRTA=; b=BLt/mRn4AUGTt+
-	UPIeBLY0mrRI+FzuMI1rMFpkhhqhA8LbHRE67etfKX9qDBWKT4edew3b4uWuTnlGczG9orRtrfKnh
-	nPI1cal9+VTQww3u+LKpDhAv9nHjBSNXEUyI+UjHHqPEMUWpAykZWKwmpgg2vRzReiaa7j/5nMBWv
-	YD/yr2eCyedlpKfHtb1MOznEZYLHxRjg+eu0a+cJL7uLY6RehLkdCTMJ+0pgaxEr44I4EEapzm+nB
-	TM61Nis5IZnVnIPt6yK4uN5JmjGQh/lMOzadnRBuWmMksmawUmX9i4Xd+nuQBGdPQWRfr2bR94nB5
-	CpetCod/pehPRCKbL1HA==;
+	List-Owner; bh=B5HBBTK/GfyGemGrRhHqQl+0JnvtJwVsUY6rZw8k/Gs=; b=sx6iYS0JMnydYn
+	hF9rNeDVlDe80mI4lsk8nOcR9d2X9dzEGeyJKbIFuhthMHidRaivxHeNUqmbvkdObLFk00T379VT7
+	RZ9Wf1okGghkUDbpzYjeSUmHT3S2KyMTNLR15BkBRa/PHkNJJvPtvR/2jsnP87LNIznaET18p8Y/O
+	YnIIdQYGzIIzD8LWcsdc3RJdbAclz0mLyMWgYKzCBlLDRQT036g0DEX7c0sP3O3h00taSNpEDzELA
+	ijFsHE1VR7xphDkDuCtv4ldwbmQEtHWwY93onoitx9rbblupZ7gUEJmZ3FaLSYiguFLe3b+Zlebds
+	FIkOIpELiEqnOiklk4GA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qk8mC-00BPS4-00;
-	Sat, 23 Sep 2023 19:58:52 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1qkawz-00D86P-2j;
+	Mon, 25 Sep 2023 02:03:53 +0000
+Received: from out30-124.freemail.mail.aliyun.com ([115.124.30.124])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qk8m9-00BPRT-13
+	id 1qkawv-00D85E-2x
 	for linux-um@lists.infradead.org;
-	Sat, 23 Sep 2023 19:58:50 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:To:From:Subject:Message-ID:Sender:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=KEYlYocwZZ4dhDm+H51hLgIgasyvYqPbwSXN6ZTA0ds=;
-	t=1695499126; x=1696708726; b=uU8tf1RcSeyat21fcnStSJnGvPrGY/s2tD/+aGMDS5mbZPW
-	3op0NZfDVZG1NufWmtmTy7fER6lLV1ejaUkxyABdMLBETqM7NuZStBYumnCmkUq7BnV2QC+uPwg/I
-	LS2yBUahh2NOEOmpfJpD2FnvYSYFKXIMYGzCcrSNdRAi5kQDgRrliG1h7S6XDyf1EdVt5Iv4igeKS
-	a7T16xpfwcd+X8180/UIMKORZSzigqwP7AkvKfp1D2tZJIA7oLw7OGsW43K7kLARLhk0pf07uDGqo
-	GOe1D1G+KD5SSrskbvss9zia08ec1mZLBl7mEsdsFxC+y7vl82Wro0iUC/H8DIRA==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.96)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1qk8m3-00068p-11;
-	Sat, 23 Sep 2023 21:58:43 +0200
-Message-ID: <e25f9511095858d313cbc85aef486b891e530a00.camel@sipsolutions.net>
-Subject: Re: [PATCH] um: clean up mm creation
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
-	linux-um@lists.infradead.org
-Date: Sat, 23 Sep 2023 21:58:42 +0200
-In-Reply-To: <44c606c0-c846-0bcb-0269-66974dee3c4b@cambridgegreys.com>
-References: <20230922131638.2c57ec713d1c.Id11dff4b349e6a8f0136bb6bb09f6e01a80befbb@changeid>
-	 <88e0568b-6860-9042-7f8b-ab53edb4242e@cambridgegreys.com>
-	 <ce18cec1dbacb366f2cf74ebc941c9fbc4b1e116.camel@sipsolutions.net>
-	 <9cc73695-b3c7-d194-72e9-9bde142c81f8@cambridgegreys.com>
-	 <6bc1a06d1b91b2badd388a4e13d467ed4eace651.camel@sipsolutions.net>
-	 <44c606c0-c846-0bcb-0269-66974dee3c4b@cambridgegreys.com>
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+	Mon, 25 Sep 2023 02:03:52 +0000
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=36;SR=0;TI=SMTPD_---0VsjlAa9_1695607420;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VsjlAa9_1695607420)
+          by smtp.aliyun-inc.com;
+          Mon, 25 Sep 2023 10:03:41 +0800
+Message-ID: <1695607353.8416731-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH v14 30/42] virtio_pci: introduce helper to get/set queue reset
+Date: Mon, 25 Sep 2023 10:02:33 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: virtualization@lists.linux-foundation.org,
+ Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ Jason Wang <jasowang@redhat.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Hans de Goede <hdegoede@redhat.com>,
+ Mark Gross <markgross@kernel.org>,
+ Vadim Pasternak <vadimp@nvidia.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Cornelia Huck <cohuck@redhat.com>,
+ Halil Pasic <pasic@linux.ibm.com>,
+ Eric Farman <farman@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>,
+ Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>,
+ Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Vincent Whitchurch <vincent.whitchurch@axis.com>,
+ linux-um@lists.infradead.org,
+ netdev@vger.kernel.org,
+ platform-driver-x86@vger.kernel.org,
+ linux-remoteproc@vger.kernel.org,
+ linux-s390@vger.kernel.org,
+ kvm@vger.kernel.org,
+ bpf@vger.kernel.org,
+ kangjie.xu@linux.alibaba.com
+References: <20220801063902.129329-1-xuanzhuo@linux.alibaba.com>
+ <20220801063902.129329-31-xuanzhuo@linux.alibaba.com>
+ <20230921100112-mutt-send-email-mst@kernel.org>
+ <1695347358.2770545-1-xuanzhuo@linux.alibaba.com>
+ <20230922064550-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20230922064550-mutt-send-email-mst@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20230923_125849_660344_AD730726 
-X-CRM114-Status: UNSURE (   3.94  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20230924_190350_142520_2AF94646 
+X-CRM114-Status: GOOD (  27.58  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,19 +91,145 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sat, 2023-09-23 at 06:29 +0100, Anton Ivanov wrote:
-> 
-> One more thing. Is your find "real" /bin/find or busybox.
+On Fri, 22 Sep 2023 06:46:39 -0400, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> On Fri, Sep 22, 2023 at 09:49:18AM +0800, Xuan Zhuo wrote:
+> > On Thu, 21 Sep 2023 10:02:53 -0400, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> > > On Mon, Aug 01, 2022 at 02:38:50PM +0800, Xuan Zhuo wrote:
+> > > > Introduce new helpers to implement queue reset and get queue reset
+> > > > status.
+> > > >
+> > > >  https://github.com/oasis-tcs/virtio-spec/issues/124
+> > > >  https://github.com/oasis-tcs/virtio-spec/issues/139
+> > > >
+> > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > > Acked-by: Jason Wang <jasowang@redhat.com>
+> > > > ---
+> > > >  drivers/virtio/virtio_pci_modern_dev.c | 39 ++++++++++++++++++++++++++
+> > > >  include/linux/virtio_pci_modern.h      |  2 ++
+> > > >  2 files changed, 41 insertions(+)
+> > > >
+> > > > diff --git a/drivers/virtio/virtio_pci_modern_dev.c b/drivers/virtio/virtio_pci_modern_dev.c
+> > > > index fa2a9445bb18..869cb46bef96 100644
+> > > > --- a/drivers/virtio/virtio_pci_modern_dev.c
+> > > > +++ b/drivers/virtio/virtio_pci_modern_dev.c
+> > > > @@ -3,6 +3,7 @@
+> > > >  #include <linux/virtio_pci_modern.h>
+> > > >  #include <linux/module.h>
+> > > >  #include <linux/pci.h>
+> > > > +#include <linux/delay.h>
+> > > >
+> > > >  /*
+> > > >   * vp_modern_map_capability - map a part of virtio pci capability
+> > > > @@ -474,6 +475,44 @@ void vp_modern_set_status(struct virtio_pci_modern_device *mdev,
+> > > >  }
+> > > >  EXPORT_SYMBOL_GPL(vp_modern_set_status);
+> > > >
+> > > > +/*
+> > > > + * vp_modern_get_queue_reset - get the queue reset status
+> > > > + * @mdev: the modern virtio-pci device
+> > > > + * @index: queue index
+> > > > + */
+> > > > +int vp_modern_get_queue_reset(struct virtio_pci_modern_device *mdev, u16 index)
+> > > > +{
+> > > > +	struct virtio_pci_modern_common_cfg __iomem *cfg;
+> > > > +
+> > > > +	cfg = (struct virtio_pci_modern_common_cfg __iomem *)mdev->common;
+> > > > +
+> > > > +	vp_iowrite16(index, &cfg->cfg.queue_select);
+> > > > +	return vp_ioread16(&cfg->queue_reset);
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(vp_modern_get_queue_reset);
+> > > > +
+> > >
+> > > Actually, this does not validate that the config structure is big
+> > > enough. So it can access some unrelated memory. Don't know whether
+> > > that's exploitable e.g. for CoCo but not nice, anyway.
+> > > Need to validate the size and disable reset if it's too small.
+> >
+> >
+> > static int vp_modern_disable_vq_and_reset(struct virtqueue *vq)
+> > {
+> > 	struct virtio_pci_device *vp_dev = to_vp_device(vq->vdev);
+> > 	struct virtio_pci_modern_device *mdev = &vp_dev->mdev;
+> > 	struct virtio_pci_vq_info *info;
+> > 	unsigned long flags;
+> >
+> > ->	if (!virtio_has_feature(vq->vdev, VIRTIO_F_RING_RESET))
+> > 		return -ENOENT;
+> >
+> > 	vp_modern_set_queue_reset(mdev, vq->index);
+> >
+> >
+> > I checked VIRTIO_F_RING_RESET before call this.
+>
+> Yes but the point is that virtio is used with untrusted devices
+> (e.g. for SEV/TDX), so you can't really assume config structures
+> are in sync with feature bits.
 
-Yeah, definitely real find, it's my normal host system with hostfs after
-all :)
+I see.
 
-johannes
+I will post a patch to check the length of the common cfg.
+
+Thanks.
+
+
+>
+>
+> > Do you mean, we should put the check to this function.
+> >
+> >
+> > Thanks.
+> >
+> >
+> >
+> > >
+> > >
+> > > > +/*
+> > > > + * vp_modern_set_queue_reset - reset the queue
+> > > > + * @mdev: the modern virtio-pci device
+> > > > + * @index: queue index
+> > > > + */
+> > > > +void vp_modern_set_queue_reset(struct virtio_pci_modern_device *mdev, u16 index)
+> > > > +{
+> > > > +	struct virtio_pci_modern_common_cfg __iomem *cfg;
+> > > > +
+> > > > +	cfg = (struct virtio_pci_modern_common_cfg __iomem *)mdev->common;
+> > > > +
+> > > > +	vp_iowrite16(index, &cfg->cfg.queue_select);
+> > > > +	vp_iowrite16(1, &cfg->queue_reset);
+> > > > +
+> > > > +	while (vp_ioread16(&cfg->queue_reset))
+> > > > +		msleep(1);
+> > > > +
+> > > > +	while (vp_ioread16(&cfg->cfg.queue_enable))
+> > > > +		msleep(1);
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(vp_modern_set_queue_reset);
+> > > > +
+> > > >  /*
+> > > >   * vp_modern_queue_vector - set the MSIX vector for a specific virtqueue
+> > > >   * @mdev: the modern virtio-pci device
+> > > > diff --git a/include/linux/virtio_pci_modern.h b/include/linux/virtio_pci_modern.h
+> > > > index 05123b9a606f..c4eeb79b0139 100644
+> > > > --- a/include/linux/virtio_pci_modern.h
+> > > > +++ b/include/linux/virtio_pci_modern.h
+> > > > @@ -113,4 +113,6 @@ void __iomem * vp_modern_map_vq_notify(struct virtio_pci_modern_device *mdev,
+> > > >  				       u16 index, resource_size_t *pa);
+> > > >  int vp_modern_probe(struct virtio_pci_modern_device *mdev);
+> > > >  void vp_modern_remove(struct virtio_pci_modern_device *mdev);
+> > > > +int vp_modern_get_queue_reset(struct virtio_pci_modern_device *mdev, u16 index);
+> > > > +void vp_modern_set_queue_reset(struct virtio_pci_modern_device *mdev, u16 index);
+> > > >  #endif
+> > > > --
+> > > > 2.31.0
+> > >
+>
 
 _______________________________________________
 linux-um mailing list
