@@ -4,115 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B272ACDB474
-	for <linux-um@archiver.kernel.org>; Fri, 20 Oct 2023 14:47:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 976A8CDB474
+	for <linux-um@archiver.kernel.org>; Fri, 20 Oct 2023 15:48:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:CC:To:Message-ID:MIME-Version:Subject:
-	Date:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=/GfpYreAApgA5TXqiQKG2JjSJvodVniaUYyWKDbLs5c=; b=QovYX7ucQ/4g2n
-	GAsTqluu1jFSt6BGJaz/qkVVcBAlBNSSsGpNOSjInm9piLwkA7uBQGmx3+wpPzF0G+CWSbrQKj9Nv
-	m6pYqmEDElK8vlX3u6PrY3Qekjtx8iLKmWS1JAjO4aAHspGNNr6m/v2czK0Hr7m6LFo59vBqpnStT
-	fjTpjQT9Jb5Rw1++8sQEx33WdO1X7zLboWZkO4CRVOvwCUawRY84owy3K7WFWeOAmvnpoL3wAYAfC
-	io6IQxKhEVJsFdwjFoFxFCsCAIP1DEKhstI55bNwP1m7FVAq+B7EBgs1g1hvNFxh9wC8KXPObjU5h
-	Yj/JghnRbNlzRwYAjLUg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:MIME-Version:
+	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=CL8PAGLih1fC3vzCdD/EXxOLMqnvxf0bJlMNkZ5627w=; b=2m6S9+XOi1vZFwKbpGURVh/t9B
+	+KKACboF0CqSCrmPfPkm6Z8/KzmVeIZg/U8dbB6hxKj7J6zDL2pIKjejK48aYf0sJKTe6KfP4iIJR
+	WHwRgjZowfqxHKOOyKQGrU9JXc8S5wvmcM0ALmADGsDNJoznw9y1jL0AYDp1CY7FZTSeo+ayW8KNt
+	2CjLIFUEyVCkplhKp7g9voLetnk7ZMOLLksSJASIvJKFg9yvmsA469N7eUbhAV13PqtNX6/l8sJpn
+	E5t3VV6iNMK6EDIHKcs1qTzax+unFBdzZ60gIVwveCTRWrGybGLWAkMqFQl4aHhL7ZIBpT2PTWgak
+	HqMknGjw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qtqn4-002Wdk-0z;
-	Fri, 20 Oct 2023 14:47:54 +0000
-Received: from mail-he1eur04on0631.outbound.protection.outlook.com ([2a01:111:f400:fe0d::631] helo=EUR04-HE1-obe.outbound.protection.outlook.com)
+	id 1qtrjT-002djz-1L;
+	Fri, 20 Oct 2023 15:48:15 +0000
+Received: from mx2.uni-rostock.de ([139.30.22.72])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qtqn0-002Wcr-0Y
+	id 1qtrjN-002diA-1V
 	for linux-um@lists.infradead.org;
-	Fri, 20 Oct 2023 14:47:52 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WCPkh85UJrkyVGGJHxz/A+EGb7gzUIBfTE11/RPB4FTwt2LVLj+nH/JNXP49Z2l9lTpfFTSpxOaJQSOomnxSWK5zkxSCfJux6qLwNiR+w4pmNoqi3QAWQ7BBG9odBjyRo8ZONQj85rO61hTeYYGSAXFybOVSk7kcrhZX5VtRUjIZocrpJXS8W3TkdBz/2OnwIblASxXoggKSLfuqLJpBUgsEmZF0CWC6GUOTDvgSVoyDg1KY+D4bB+ekIzD2AM9FGElIFNySfYLnHwo8iGzfZ0XFgPWSe17YslURDiPg8szuneFzV3KPZxa2vs3+syqFT091IjtC9AsGgjaZmIArZA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=na5O4Qh8Ep60/F+xKOlkyWt1PratIgl4fxUa+ypbRuI=;
- b=RFMtt3ry4vMXviz/tIs/teDbMCqnvQJNpnk1tURzQvGQRwYkbTePQuDajA2L6zXpVbWuXbJ8NQPGgCCNAfofx5GJGRjz8Wx0+fo2UarFooXPKDHvw3yL2Pq4gy2HfwiPOP0POSeeKbISLr7qiamU52QqOeezixMqk55rwHf8S1CeNskZcF6apssjI5p7Bymvrsy8Ry4/0mcZe9EggS01TfYKsa3MK1voMj+ocxnDfWCG7vuh1cMf/sBg1AoAv2ev4Y+wf1MvD/TMy8tZ1X9U4W12Yw6GrB7A4lgo9My3hOV/3YkXb7eB0fgy2NS/UQrL53pCshRgxjR/g3sNIIxDbQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
- 195.60.68.100) smtp.rcpttodomain=cambridgegreys.com smtp.mailfrom=axis.com;
- dmarc=fail (p=none sp=none pct=100) action=none header.from=axis.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axis.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=na5O4Qh8Ep60/F+xKOlkyWt1PratIgl4fxUa+ypbRuI=;
- b=EOnhz2oqV6Hs03LwSqgTywPT5q1eZleBAp+dmxCjdjuZeQflbS2aIQ0hwdR1+9s8gC8cbGnOSLTn2oPqXTQJSpB7wKYdJHLFzPMSZcLLTSq+Iw6H+TcwAt5jQ8gUT8aBsMVCWJu6NlE2haFyA6xQDsqedBcZG/qRBaGXG0WTXYQ=
-Received: from AS9PR06CA0337.eurprd06.prod.outlook.com (2603:10a6:20b:466::13)
- by AS2PR02MB9692.eurprd02.prod.outlook.com (2603:10a6:20b:5e8::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.36; Fri, 20 Oct
- 2023 14:47:43 +0000
-Received: from AM1PEPF000252DC.eurprd07.prod.outlook.com
- (2603:10a6:20b:466:cafe::9e) by AS9PR06CA0337.outlook.office365.com
- (2603:10a6:20b:466::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6907.26 via Frontend
- Transport; Fri, 20 Oct 2023 14:47:43 +0000
-X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 195.60.68.100)
- smtp.mailfrom=axis.com; dkim=none (message not signed)
- header.d=none;dmarc=fail action=none header.from=axis.com;
-Received-SPF: Fail (protection.outlook.com: domain of axis.com does not
- designate 195.60.68.100 as permitted sender) receiver=protection.outlook.com;
- client-ip=195.60.68.100; helo=mail.axis.com;
-Received: from mail.axis.com (195.60.68.100) by
- AM1PEPF000252DC.mail.protection.outlook.com (10.167.16.54) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6907.20 via Frontend Transport; Fri, 20 Oct 2023 14:47:43 +0000
-Received: from SE-MAIL21W.axis.com (10.20.40.16) by se-mail02w.axis.com
- (10.20.40.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Fri, 20 Oct
- 2023 16:47:42 +0200
-Received: from se-mail01w.axis.com (10.20.40.7) by SE-MAIL21W.axis.com
- (10.20.40.16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Fri, 20 Oct
- 2023 16:47:42 +0200
-Received: from se-intmail01x.se.axis.com (10.0.5.60) by se-mail01w.axis.com
- (10.20.40.7) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
- Transport; Fri, 20 Oct 2023 16:47:42 +0200
-Received: from pc45945-2140.se.axis.com (pc45945-2140.se.axis.com [10.88.125.80])
-	by se-intmail01x.se.axis.com (Postfix) with ESMTP id 919CD367C;
-	Fri, 20 Oct 2023 16:47:42 +0200 (CEST)
-Received: by pc45945-2140.se.axis.com (Postfix, from userid 10564)
-	id 9F55E746BD68; Fri, 20 Oct 2023 16:47:42 +0200 (CEST)
-From: Vincent Whitchurch <vincent.whitchurch@axis.com>
-Date: Fri, 20 Oct 2023 16:47:39 +0200
-Subject: [PATCH] um: time-travel: fix time going backwards
+	Fri, 20 Oct 2023 15:48:14 +0000
+Received: from 139.30.22.84 by mx2.uni-rostock.de (Tls12, Aes256, Sha384,
+ DiffieHellmanEllipticKey384); Fri, 20 Oct 2023 15:48:00 GMT
+DKIM-Signature: v=1; c=relaxed/relaxed; d=uni-rostock.de; s=itmze; 
+ t=1697816880; bh=eGT9HMdgZvXhFsUZJnPqRlmN1CBn1feZxM2qRbv2mC8=; h=
+ Subject:Subject:From:From:Date:Date:ReplyTo:ReplyTo:Cc:Cc:Message-Id:Message-Id; 
+ a=ed25519-sha256; b=
+ N6mD8xONRYGnnnIMSztPAIWsQcf/sP5RdgkKrkJIV5Cp+UuiVtNNRAEQtVfMwYb64opUGeHMNX+BN8RMd6xNBA==
+DKIM-Signature: v=1; c=relaxed/relaxed; d=uni-rostock.de; s=itmz; 
+ t=1697816880; bh=eGT9HMdgZvXhFsUZJnPqRlmN1CBn1feZxM2qRbv2mC8=; h=
+ Subject:Subject:From:From:Date:Date:ReplyTo:ReplyTo:Cc:Cc:Message-Id:Message-Id; 
+ a=rsa-sha256; b=
+ B2v8jGbYz89tatnXEkwonU48Tm6nxTNXZz+FNF5t5QLXuGwc3C8oWUp3iYFNQp1ikghITi8WVvH+1NFr7H5+wQAYU+LF/izcCXluQxBcZQhw4onTKh8RofKS4OsofWJsohcgY1wov4xrPKEOw8MAOp2semKumSgNj2AkySJ/ocg=
+Received: from [139.30.201.32] (139.30.201.32) by mail1.uni-rostock.de
+ (139.30.22.84) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 20 Oct
+ 2023 17:47:59 +0200
+Message-ID: <fe6dc227-44f4-466e-a99b-e5e9e6afe7aa@uni-rostock.de>
+Date: Fri, 20 Oct 2023 17:47:58 +0200
 MIME-Version: 1.0
-Message-ID: <20231020-uml-time-backwards-v1-1-90b776fc6dfd@axis.com>
-X-B4-Tracking: v=1; b=H4sIAAqTMmUC/x3MSQqAMAxA0atI1gbaiCBeRVzUNmpwpHUC6d0tL
- t/i/xcCe+EAdfaC50uCbGuCzjOwo1kHRnHJQIoKrUjhucx4yMLYGTvdxruAZUm20oadowJSuHv
- u5fmnTRvjB9BuoQZkAAAA
-To: Richard Weinberger <richard@nod.at>, Anton Ivanov
-	<anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>
-CC: <linux-um@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<kernel@axis.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>
-X-Mailer: b4 0.12.3
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM1PEPF000252DC:EE_|AS2PR02MB9692:EE_
-X-MS-Office365-Filtering-Correlation-Id: b48aaed4-dcfe-49a5-3103-08dbd17b8444
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: W4VPyGoxDOT2UoW2xdLxLl19Bw2pBO2fYEXcKYqQljbgjqyUIvr8pLJ+RFCVI0DLqK36uuSMlB9z88e96pKqnS/G7YymzBPNU3gf6cBD4J69FXvFZdQIQu+svft0kjn27o0i4pOVIxe9JbY+SJbmVwtbxrr/QrR5pS8huPjOe2GEo3HQjU2GhVrle0/uWnhyllTrXu2JxeF+je7swKrYF0sdv4kRRGaOne/kQrapJScSyoAV9kmgjmRlbcWCTVRnqinU2yX33CWQX4L8bFksg7GyalQhzBpR2HIfQU30pFFGsrPBpBkUcVrD6sBFjnNSfKVi5BNvuHm2EDM0K8yL+UoXw5aAeiZmOb32mL85pn4BJ3b9rlLnfZoz4huLFeP8cSwHpFF/Fa4MB9SXtWvyOw1GCcyKHCmNgqVLmd9PVKK2O1aOob62H//waWv+PcVgPFbDYcgcxcoADU+TSTylDDfev7DCUchUH6h9fLMRmUaPfrO16lH7IE4GNHa6WAqAUmZscpNjPvM5tm0+pLHyrPTchWvWCQIm9yi2vVzg/f0rbfdm0sN38092CCVQHZl3TFyRjzDKovlG6nK9SGO6vsliEtVHFV2M0LwGLgB8LdfDHpzVkM0dV23L7fXzOwzoI/JQuGrzGSfh35Vxqf/rdP2nQOJ0II8+CtCdohrjD7RXwjYt3IrOTjO1MtEQpSzmsvZ9NOQMdBOUvPbpTwY32tWClDClW3Y7t3EWOKwE3WvBfoep9xQC2bNrg5ICARQSDNA3pq4JhaZxf55ZjWbe+w==
-X-Forefront-Antispam-Report: CIP:195.60.68.100;CTRY:SE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.axis.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(136003)(39860400002)(396003)(230922051799003)(451199024)(82310400011)(1800799009)(64100799003)(186009)(36840700001)(46966006)(40470700004)(2906002)(110136005)(40480700001)(86362001)(41300700001)(66899024)(4326008)(8676002)(70206006)(70586007)(40460700003)(5660300002)(44832011)(36756003)(316002)(54906003)(8936002)(42186006)(82740400003)(2616005)(356005)(107886003)(26005)(81166007)(83380400001)(336012)(6266002)(6666004)(36860700001)(47076005)(426003)(478600001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: axis.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Oct 2023 14:47:43.2988
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b48aaed4-dcfe-49a5-3103-08dbd17b8444
-X-MS-Exchange-CrossTenant-Id: 78703d3c-b907-432f-b066-88f7af9ca3af
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=78703d3c-b907-432f-b066-88f7af9ca3af;Ip=[195.60.68.100];Helo=[mail.axis.com]
-X-MS-Exchange-CrossTenant-AuthSource: AM1PEPF000252DC.eurprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR02MB9692
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] um: irqs: process outstanding IRQs when unblocking
+ signals
+Content-Language: de-DE
+To: Johannes Berg <johannes@sipsolutions.net>, <linux-um@lists.infradead.org>
+References: <20231018123643.1255813-1-benjamin@sipsolutions.net>
+ <6082036a-c7f9-4bd5-8234-14957ed9953d@uni-rostock.de>
+ <11ab4d47dd8fdcdc2148e00618cc496866016883.camel@sipsolutions.net>
+ <549de9c0-05f8-437e-8460-5b013b0cd87b@uni-rostock.de>
+ <348de3de5cbd6df96ac51bb07d6e485b2ecc5cc8.camel@sipsolutions.net>
+ <d77b66af-249d-4dd1-b78f-730d252bcf84@uni-rostock.de>
+ <10c4e61c2e62ba12cf88ddecd84271c5788c1e6b.camel@sipsolutions.net>
+ <93c958e1-a0ed-4787-adad-12c6f96c9999@uni-rostock.de>
+ <2315dd8321a86c52e2c7226889568068ffafe9a7.camel@sipsolutions.net>
+From: Benjamin Beichler <Benjamin.Beichler@uni-rostock.de>
+Organization: =?UTF-8?Q?Universit=C3=A4t_Rostock?=
+In-Reply-To: <2315dd8321a86c52e2c7226889568068ffafe9a7.camel@sipsolutions.net>
+X-Originating-IP: [139.30.201.32]
+X-ClientProxiedBy: email3.uni-rostock.de (139.30.22.83) To
+ mail1.uni-rostock.de (139.30.22.84)
+X-TM-SNTS-SMTP: ACEA82D81815E27523106E33BF8FBAF81C7035D9FBC88024E1D58EED7244C53F2000:8
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231020_074750_562857_AAB7A734 
-X-CRM114-Status: GOOD (  11.89  )
+X-CRM114-CacheID: sfid-20231020_084810_472526_705FFE6E 
+X-CRM114-Status: GOOD (  16.06  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,142 +81,52 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-In basic time travel mode, I sometimes see "time goes backwards" panics
-like the one below:
 
- Kernel panic: time-travel: time goes backwards 161689340000492 -> 161689339869814
- Call Trace:
-  panic+0x1a1/0x3d7
-  time_travel_update_time.cold+0xe9/0x133
-  timer_read+0xc1/0x100
-  ktime_get+0x10c/0x200
-  copy_process+0x1899/0x2230
-  kernel_clone+0x57/0x7a0
-  kernel_thread+0x4a/0x50
-  kthreadd+0x116/0x190
 
-The problem is a race between time_travel_handle_real_alarm() and
-timer_read().  time_travel_handle_real_alarm() changes the time after
-time_read() reads the current time but before time_travel_update_time()
-has had a chance to add the end event.
+>> My mind model is, that simulation time advances in the controller are 
+>> only done, If all parts of the simulation reached the current 
+>> simulation time and are at the event processed/idle/wait state. 
+> Yeah that's a simpler model, and in what we implemented it's true if 
+> you do have the ACK messages. If don't have free-until, that's also 
+> possibly true, although we might have implementation bugs in a sense 
+> with time_travel_add_irq_event() since that looks at the current time. 
+> And also, if you request something the controller thinks is already in 
+> the past because the other side updated the controller due to 
+> free-until, the simulation just crashes. It's also possible that B (in 
+> the situation above) actually *does* ask the controller who should run 
+> next, and the controller simply doesn't yet know: B sends message to 
+> A's stdin (say at 1000) B requests to run at 2000 from controller B 
+> releases time to controller controller sets time to 2000 and tells B 
+> to run A requests scheduling at 1000 controller *crashes* 
 
-Fix this by doing the time read and event add atomically with respect to
-time_travel_handle_real_alarm().
+I think, I get now, why I don't have this Problem: My virtio simulation 
+and my controller/simulation-master are tightly coupled and indeed the 
+same process. When I create a new event for the UML-instance, it is 
+anticipated in the simulation master.
 
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
----
- arch/um/kernel/time.c | 48 ++++++++++++++++++++++++++++++++++--------------
- 1 file changed, 34 insertions(+), 14 deletions(-)
+So my sequence is more like:
+B sends message to A's stdin (say at 1000)
+B tells the controller, that it activated A, and time should not advance 
+until A has sent a request for processing an interrupt and has gone back 
+to waiting state
+B requests to run at 2000 from controller
+B releases time to controller
+...
 
-diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
-index fddd1dec27e6..38a94dd41b8f 100644
---- a/arch/um/kernel/time.c
-+++ b/arch/um/kernel/time.c
-@@ -392,17 +392,11 @@ bool time_travel_del_event(struct time_travel_event *e)
- 	return true;
- }
- 
--static void time_travel_update_time(unsigned long long next, bool idle)
-+static void time_travel_update_to_event(struct time_travel_event *ne, bool idle)
- {
--	struct time_travel_event ne = {
--		.onstack = true,
--	};
- 	struct time_travel_event *e;
- 	bool finished = idle;
- 
--	/* add it without a handler - we deal with that specifically below */
--	__time_travel_add_event(&ne, next);
--
- 	do {
- 		e = time_travel_first_event();
- 
-@@ -414,7 +408,7 @@ static void time_travel_update_time(unsigned long long next, bool idle)
- 			BUG_ON(!time_travel_del_event(e));
- 			BUG_ON(time_travel_time != e->time);
- 
--			if (e == &ne) {
-+			if (e == ne) {
- 				finished = true;
- 			} else {
- 				if (e->onstack)
-@@ -427,14 +421,38 @@ static void time_travel_update_time(unsigned long long next, bool idle)
- 		e = time_travel_first_event();
- 		if (e)
- 			time_travel_ext_update_request(e->time);
--	} while (ne.pending && !finished);
-+	} while (ne->pending && !finished);
-+
-+	time_travel_del_event(ne);
-+}
- 
--	time_travel_del_event(&ne);
-+static void time_travel_update_time(unsigned long long next, bool idle)
-+{
-+	struct time_travel_event ne = {
-+		.onstack = true,
-+	};
-+
-+	__time_travel_add_event(&ne, next);
-+	time_travel_update_to_event(&ne, idle);
-+}
-+
-+static void time_travel_forward_time(unsigned long nsec, bool idle)
-+{
-+	struct time_travel_event ne = {
-+		.onstack = true,
-+	};
-+	unsigned long flags;
-+
-+	local_irq_save(flags);
-+	__time_travel_add_event(&ne, time_travel_time + nsec);
-+	local_irq_restore(flags);
-+
-+	time_travel_update_to_event(&ne, idle);
- }
- 
- void time_travel_ndelay(unsigned long nsec)
- {
--	time_travel_update_time(time_travel_time + nsec, false);
-+	time_travel_forward_time(nsec, false);
- }
- EXPORT_SYMBOL(time_travel_ndelay);
- 
-@@ -572,6 +590,10 @@ static inline void time_travel_update_time(unsigned long long ns, bool retearly)
- {
- }
- 
-+static void time_travel_forward_time(unsigned long nsec, bool idle)
-+{
-+}
-+
- static inline void time_travel_handle_real_alarm(void)
- {
- }
-@@ -720,9 +742,7 @@ static u64 timer_read(struct clocksource *cs)
- 		 */
- 		if (!irqs_disabled() && !in_interrupt() && !in_softirq() &&
- 		    !time_travel_ext_waiting)
--			time_travel_update_time(time_travel_time +
--						TIMER_MULTIPLIER,
--						false);
-+			time_travel_forward_time(TIMER_MULTIPLIER, false);
- 		return time_travel_time / TIMER_MULTIPLIER;
- 	}
- 
+I see that without further information from the device simulation to the 
+controller, it is quite harder.
 
----
-base-commit: 58720809f52779dc0f08e53e54b014209d13eebb
-change-id: 20231020-uml-time-backwards-552c81aedd23
+Nonetheless, I'm not totally sure, how this interacts with the timing 
+semantics of the interrupts here. Either the solution of Benjamin Berg 
+or mine (with the trivial tt-handler have the same problem).
 
-Best regards,
--- 
-Vincent Whitchurch <vincent.whitchurch@axis.com>
+I will post my patches the next days, you may have a look on them, maybe 
+you also experienced some of my problems :-)
 
 
 _______________________________________________
