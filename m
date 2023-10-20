@@ -4,67 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4B7F7C001DF
-	for <linux-um@archiver.kernel.org>; Fri, 20 Oct 2023 12:58:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A203FC001DF
+	for <linux-um@archiver.kernel.org>; Fri, 20 Oct 2023 12:58:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:To:From:Subject:Message-ID:Reply-To:Cc:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=UWPAaw+4tKx6fNg4h0iCSdT3yk0BO5FzKwbeEkDOfeA=; b=GLnnDuSuWWEcna
-	7YBLimxAUiqNu7e2/H3zA9mvMn9UV4Nuy4YkvNk5TO96CCsJk2RtA9sxYCyISaOX8RaEgt6RHIlkf
-	ihTf4Lg3XfenSpQDgYcueQHE2bEMZnFRspbSfciTNSrpUfh/+lsv5ZN3EqIjqkO5ep8ynDtHDd96n
-	ZJCJnbjwgU0t9JxOJen4oEWDOLmEVMiLShEo9BqpsUfhx9uM37YjgiKO/ttmldAyyruD7z2bfFIbA
-	uU+X9woHWF8EyS+T0iuO55sbgrIdrhHhGO26hD7zoUaVjKxj5OgbtLFrSd0U57Ke18rsPzIkCTuHL
-	BYN4GWyvi2jne2DN6fNQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:To:Subject:MIME-Version:
+	Date:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=CXLXDEtFLlsbZtL5eItADfdM3vwqW1UiIlov+DhNwLA=; b=NRNuPthv+FxcjDdnImtRL4oKEb
+	D5Rs7N71AgShmH7Vsy5vHJTmbJoXEiRlF/keM4+yA7trzs8T1Q0Yg4kSGfli28dhDdfSrzug0SNlo
+	8WG5vRKRZ8P6w0ywhvUnrpgtOi4s+EfdiRRm3qd5C9HRgsjP7rLbXSqFO8YxFYUjbaMxTw3tGuH3Q
+	FV6s3wBCiGfgKheIPwm1WyGJS0Z9e6rCaVKOizQ8zLApLh4cKAQas6BTHXJlKgab2WwOyYLnIXpUb
+	OLTc0mO4qy5mSTb8+ACtXcRb8INtNel6nEAh4zJYooy8/mpAEJFmlM/23V+iYWxWmy83KgYEFdt45
+	LdMglMSA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qtp4q-002I97-0f;
-	Fri, 20 Oct 2023 12:58:08 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1qtp5b-002ILw-0L;
+	Fri, 20 Oct 2023 12:58:55 +0000
+Received: from mx1.uni-rostock.de ([139.30.22.71])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qtp4n-002I7w-1S
+	id 1qtp5X-002IKB-1J
 	for linux-um@lists.infradead.org;
-	Fri, 20 Oct 2023 12:58:06 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:To:From:Subject:Message-ID:Sender:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=PlTM0J86TYodca7NfAdckhjmiEIu5xXmirhM+80DKFY=;
-	t=1697806684; x=1699016284; b=NjKjnB4+dcaaTga6HX8RWUjo+b4tbNqhZdQ7aVV5TNAz2A5
-	hA0ESL/o9q8xWremEazXnWEM21V7te6zoLg04Las+/LTJ7KPCyOcrip7NMiAUGjsySKyq4GMyByEI
-	9kK2R5GFECdVZB5LT4gPlKtiiiIwM9SmQlHpNtQufBIsHeqMtHLDaxDo7cAn9ji3pZkXpYjPj9+8l
-	0nW/HJAI96u9LKPlxmERsw29CCWrBgPIi9L8A2J/fzupW2VMEb8RBAUc6iUCSrUiPN0kXk66qtdOt
-	3a+aAvw+jJ/2+XmEQb29agCTVLbUA1Wcn3xufBjKR9+0/Gfwm0TQAn1WBIwRIEdA==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.97-RC1)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1qtp4j-0000000EYL0-1T9B;
-	Fri, 20 Oct 2023 14:58:01 +0200
-Message-ID: <7be4403e56526035e334b217c370f511060802fc.camel@sipsolutions.net>
+	Fri, 20 Oct 2023 12:58:53 +0000
+Received: from 139.30.22.84 by mx1.uni-rostock.de (Tls12, Aes256, Sha384,
+ DiffieHellmanEllipticKey384); Fri, 20 Oct 2023 12:58:48 GMT
+DKIM-Signature: v=1; c=relaxed/relaxed; d=uni-rostock.de; s=itmze; 
+ t=1697806728; bh=AxLYUDCmrtp9OooCBsUohoGXGBXkeObOujxS8td13Eo=; h=
+ Subject:Subject:From:From:Date:Date:ReplyTo:ReplyTo:Cc:Cc:Message-Id:Message-Id; 
+ a=ed25519-sha256; b=
+ SmFAmGijPPEPXMkNv7NLA9oJRdDdBPyAqJHgwREcKBV5wgHnEAqiS8s9siiNpNkyxlolvuGJIfjeX1zyeoorDg==
+DKIM-Signature: v=1; c=relaxed/relaxed; d=uni-rostock.de; s=itmz; 
+ t=1697806728; bh=AxLYUDCmrtp9OooCBsUohoGXGBXkeObOujxS8td13Eo=; h=
+ Subject:Subject:From:From:Date:Date:ReplyTo:ReplyTo:Cc:Cc:Message-Id:Message-Id; 
+ a=rsa-sha256; b=
+ k6CJw7FwKgmjdvnKwWdyLA3wfxH6Kjwb+tFHmnD80DVEkQ0DUy4Bq7P/97iokXPNWPWhn4R6qWswRTfCw1BSWvcmTINuNE9HKcOutp5Ys7q7Mji8Jp+AxeNFNd5aNSYEXSHCh5vifeZHiCUzce6lxQTz8tfdvSwxak+q1eEfHK4=
+Received: from [139.30.201.32] (139.30.201.32) by mail1.uni-rostock.de
+ (139.30.22.84) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 20 Oct
+ 2023 14:58:47 +0200
+Message-ID: <93c958e1-a0ed-4787-adad-12c6f96c9999@uni-rostock.de>
+Date: Fri, 20 Oct 2023 14:58:46 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 1/4] um: irqs: process outstanding IRQs when unblocking
  signals
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Benjamin Beichler <Benjamin.Beichler@uni-rostock.de>, 
-	linux-um@lists.infradead.org
-Date: Fri, 20 Oct 2023 14:58:00 +0200
-In-Reply-To: <9768bf43-5a73-4eba-ae4b-532b952f9e04@uni-rostock.de>
+Content-Language: de-DE
+To: Johannes Berg <johannes@sipsolutions.net>, <linux-um@lists.infradead.org>
 References: <20231018123643.1255813-1-benjamin@sipsolutions.net>
-	 <6082036a-c7f9-4bd5-8234-14957ed9953d@uni-rostock.de>
-	 <11ab4d47dd8fdcdc2148e00618cc496866016883.camel@sipsolutions.net>
-	 <549de9c0-05f8-437e-8460-5b013b0cd87b@uni-rostock.de>
-	 <348de3de5cbd6df96ac51bb07d6e485b2ecc5cc8.camel@sipsolutions.net>
-	 <d77b66af-249d-4dd1-b78f-730d252bcf84@uni-rostock.de>
-	 <10c4e61c2e62ba12cf88ddecd84271c5788c1e6b.camel@sipsolutions.net>
-	 <76ebb80dd7fca6ef2ed7108a541d3ea3c764a3d5.camel@sipsolutions.net>
-	 <9768bf43-5a73-4eba-ae4b-532b952f9e04@uni-rostock.de>
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+ <6082036a-c7f9-4bd5-8234-14957ed9953d@uni-rostock.de>
+ <11ab4d47dd8fdcdc2148e00618cc496866016883.camel@sipsolutions.net>
+ <549de9c0-05f8-437e-8460-5b013b0cd87b@uni-rostock.de>
+ <348de3de5cbd6df96ac51bb07d6e485b2ecc5cc8.camel@sipsolutions.net>
+ <d77b66af-249d-4dd1-b78f-730d252bcf84@uni-rostock.de>
+ <10c4e61c2e62ba12cf88ddecd84271c5788c1e6b.camel@sipsolutions.net>
+From: Benjamin Beichler <Benjamin.Beichler@uni-rostock.de>
+Organization: =?UTF-8?Q?Universit=C3=A4t_Rostock?=
+In-Reply-To: <10c4e61c2e62ba12cf88ddecd84271c5788c1e6b.camel@sipsolutions.net>
+X-Originating-IP: [139.30.201.32]
+X-ClientProxiedBy: email3.uni-rostock.de (139.30.22.83) To
+ mail1.uni-rostock.de (139.30.22.84)
+X-TM-SNTS-SMTP: 0906B6D2359AD22B92441A905F1E46E5175302BA3CE66E740434161E9B0ED99C2000:8
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231020_055805_505983_79BC1F04 
-X-CRM114-Status: GOOD (  16.86  )
+X-CRM114-CacheID: sfid-20231020_055851_778551_64F5C432 
+X-CRM114-Status: GOOD (  31.57  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,34 +79,93 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-T24gRnJpLCAyMDIzLTEwLTIwIGF0IDE0OjQzICswMjAwLCBCZW5qYW1pbiBCZWljaGxlciB3cm90
-ZToKPiA+ID4gWWVzIGJ1dCB5b3UgbmVlZCB0byBzY2hlZHVsZSBmb3IgdGhlIGludGVycnVwdCwg
-YW5kIHlvdSBkb24ndAo+ID4gPiBuZWNlc3NhcmlseSBrbm93IHdoYXQgJ2N1cnJlbnQgdGltZScg
-aXMgYXQgaW50ZXJydXB0IHRpbWUuCj4gPiA+IAo+ID4gPiBTbyBsZXQncyBzYXkgeW91IGhhdmUg
-InNvbWV0aGluZyIgdGhhdCdzIHNjaGVkdWxlZCB0byBydW4gYXQgdGltZXMKPiA+ID4gwqDCoC0g
-MTAwMAo+ID4gPiDCoMKgLSAyMDAwCj4gPiA+IMKgwqAtIDMwMDAKPiA+ID4gCj4gPiA+IGFuZCBm
-cmVlLXVudGlsIGlzIDEwMDAwIG9yIHNvbWV0aGluZyBoaWdoLgo+ID4gPiAKPiA+IEl0IGNhbiBh
-bHNvIGhhcHBlbiB3aXRob3V0IGZyZWUtdW50aWwsIHRoZW4gaXQganVzdCBkZXBlbmRzIHdoaWNo
-IG9uZSBvZgo+ID4gdGhlIHR3byAtIHRoZXkncmUgcnVubmluZyBpbiBwYXJhbGxlbCBub3cgKGxp
-bnV4IGRvaW5nIHRpbWUtdHJhdmVsCj4gPiBpbnRlcnJ1cHQgaGFuZGxpbmcgYW5kIGFkZGluZyB0
-aGUgZXZlbnQsIHRoZSBvdGhlciB0aGluZyBjb250aW51aW5nIHRvCj4gPiBzY2hlZHVsZSBhbmQg
-ZG9pbmcgdGhlIG5leHQgZW50cnkpICAtIGFza3MgdGhlIGNvbnRyb2xsZXIgZmlyc3QuCj4gCj4g
-U2luY2UgdGhleSBoYXBwZW4gYXQgdGhlIHNhbWUgdGltZSwgbW9zdCBkaXNjcmV0ZSBldmVudCBz
-aW11bGF0aW9ucyBtYWtlIAo+IHRoZSBhc3N1bXB0aW9uLCB0aGF0IHRoZSBhY3R1YWwgb3JkZXIg
-b2YgZXhlY3V0aW9uIHNob3VsZCBub3QgYmUgcGFydCBvZiAKPiB0aGUgc2VtYW50aWNzLgo+IAoK
-V2VsbCwgZmFpciwgYnV0IHRoZXkgY2FuIGJvdW5jZSBtb3JlIG1lc3NhZ2VzIGFyb3VuZCB0aGVt
-LCBhbmQgdGhhdApzaG91bGQgY2hhbmdlIHRoaW5ncy4gSSBkb24ndCB0aGluayB3ZSd2ZSBidWls
-dCBhIHNpbXVsYXRpb24gc3lzdGVtIGhlcmUKdGhhdCBjYW4gc3RyaWN0bHkgYXNzdW1lIHRoaXMg
-aXMgdHJ1ZS4KCkluIGFueSBjYXNlLCBpdCBjYW4gZ2V0IHdvcnNlIC0gaWYgaGUgc2VuZGVyIHBy
-b2Nlc3MgYWN0dWFsbHkgdXBkYXRlZAp0aGUgY29udHJvbGxlciB0byAyMDAwIGJ5IHRoZSB0aW1l
-IHRoZSBsaW51eCBhY3R1YWxseSBjYWxscwp0aW1lX3RyYXZlbF9hZGRfaXJxX2V2ZW50KCksIHRo
-ZSBsaW51eCBldmVudCB3aWxsIHJ1biBhdCAyMDAwIGluc3RlYWQgb2YKMTAwMC4KCkFsbCB0aGlz
-IGlzIHdoeSB3ZSBoYXZlIHRoZSB2aG9zdC11c2VyIGV4dGVuc2lvbnMgZm9yIEFDSyBtZXNzYWdl
-cyBldGMuCgpqb2hhbm5lcwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KbGludXgtdW0gbWFpbGluZyBsaXN0CmxpbnV4LXVtQGxpc3RzLmluZnJhZGVhZC5v
-cmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC11bQo=
+> On Fri, 2023-10-20 at 14:06 +0200, Benjamin Beichler wrote:
+>> Am 20.10.2023 um 13:39 schrieb Johannes Berg:
+>>> On Fri, 2023-10-20 at 12:38 +0200, Benjamin Beichler wrote:
+>>>> Can you explain, why a time travel handler for stdin may be bad? It
+>>>> sounds like you want to avoid it, but I see no immediate problem.
+>>>>
+>>> I need to read the thread, but this one's easy ;-)
+>>>
+>>> The thing is that on such a channel you don't send an ACK when you've
+>>> seen that there's something to handle. As a result, the sender will
+>>> continue running while you're trying to request a new schedule entry
+>>> from the controller. As a result, it may run past your new schedule
+>>> entry because it didn't know about it yet (this would likely bring down
+>>> the controller and crash the simulation), or the relative order of the
+>>> two entries is undefined, in the sense that it depends on the process
+>>> scheduling of the host.
+>> Sorry, but I did not get this. What may run past the schedule entry? Is
+>> your assumption, that the "thing" connected to stdin is always totally
+>> unaware of the time travel mode?
+> No, I'm not assuming that, if that's done all bets are off anyway. I'm
+> assuming that both are connected to the controller.
+>
+>> When our (to be published) simulation send something on serial lines (I
+>> think it does not matter whether it is a socket or a pipe), we expect
+>> that the uml instance needs to be run as long as it changes back to
+>> idle/wait state before the simulation time is advanced. Since the basis
+>> model of the time travel mode is, that you have infinite amount of
+>> processing power, the interrupt needs to be always handled at the
+>> current time.
+> Yes but you need to schedule for the interrupt, and you don't
+> necessarily know what 'current time' is at interrupt time.
+>
+> So let's say you have "something" that's scheduled to run at times
+>   - 1000
+>   - 2000
+>   - 3000
+>
+> and free-until is 10000 or something high.
+>
+> Now it sends a message to Linux stdio at 1000.
+>
+> But it doesn't have a way to wait for ack. So it continues, checks the
+> schedule and free-until, and can advance time to 2000 since it doesn't
+> yet know Linux requested time to run at 1000.
+
+Do I get it right, that you anticipate that all parts of the simulation 
+may run at different paces and the controller is only needed for 
+synchronization?
+
+My mind model is, that simulation time advances in the controller are 
+only done, If all parts of the simulation reached the current simulation 
+time and are at the event processed/idle/wait state. Therefore, the 
+thing connected to stdio will not advance to some other time, if some 
+other component has outstanding events (i.e., an interrupt at this 
+case). Of course free-running is a problematic in this mind model, but 
+in this mode you willingly sacrifice the precision of events for 
+performance.
+
+>
+> This gives you something not predictable - it depends on the host
+> scheduling, whichever ran first (Linux started next or the other
+> continued, or both and it gets messed up).
+>
+>> Maybe my think-model only holds for "smaller" amounts of data (maybe one
+>> page or something?) or not the free-running mode, but I'm not completely
+>> convinced. :-D
+> Nah it doesn't really matter how much data there is.
+>
+>> Maybe we need to define, a bit more formally, how the (designed)
+>> processing model of interrupts in time travel mode is.
+> That's probably a separate Master's thesis ;-)
+
+It could, but some basic definition for a common understanding might help.
+
+However, do you like to have a look at my current state of time travel 
+changes in github or do you think an RFC to the mailing list is better? 
+I like github for a quick dive into patches, but your whole workflow is 
+maybe different ;-)
+
+
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
