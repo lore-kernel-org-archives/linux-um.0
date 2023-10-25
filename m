@@ -4,67 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0D56C07545
-	for <linux-um@archiver.kernel.org>; Wed, 25 Oct 2023 20:41:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB5A8C0032E
+	for <linux-um@archiver.kernel.org>; Wed, 25 Oct 2023 20:45:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=BV8Hbda150urOvVHef1hty41/AMR85+HSsaBO6JtC1Y=; b=Clq7tlrMxvNYeU
-	bHMzwW/5HyU8Sg92P1+p+DekpPzxw34vTSf8VRpY4d2a/O8rmX/AUAnJyuJpStTrGnOhuUmb8zRBN
-	9bXgr65AYMuIIy+ZXEiQyOa2TfcyRi0g7UkgFCJ6GdZMkOx7PBbgMkysRvnxW64SyL4iAqM2Q8sJC
-	ki5Gblb7rmAeZ1L49mo7CoodRRA0i5ZD1dHVJwwG8ba3vNY6FskX+RnAxkKEu/XS/MLkAtge5V/wO
-	cH2HXHyv40gcUoOTm7MaMvyYQKYmUq5yL1dW3+y4t455ze+UWbgXJbloAgZ2cs7mefF/jipasTHJu
-	n3gBaBSZWdHPih+0NQhw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
+	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=9BzoEepa4HA28qMe1fopME+/9AivH9CJCTvLw3b8mBs=; b=VkR4hSw2+qZb+6
+	9gb0xAUJ9CJ1gX1CD+fOVLMUSSxqjdVyVHaiFnvXTdwC4ih881XEAua4uMR2bCRzr6t7DnUTbmGv6
+	AaN+hi8k1UgmIZ78mQ27JWophuoEFn3G9qMJ+WvP7b0abCKQ7Qgd/yg0bA2va3l8ITn8pTOlZYSN1
+	3lMK5xtmGq+To9r3Odr9xlaS9fKApKs+Hca/iQarHeWCzsIQz7SIt9Lt6Mcydv8C/3qsWnP+AZkgV
+	33+4bDM+8plJJfyZdd0KHBkMWGygLfAc6Gs5hUwfQdrxQqO8Gx6pajGrskHO8xeSx6dPL1JF8tzPA
+	wS9dDG3HRLlUkFc3k9yQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qvkhD-00D6S5-3C;
-	Wed, 25 Oct 2023 20:41:43 +0000
+	id 1qvkkb-00D6e3-2p;
+	Wed, 25 Oct 2023 20:45:13 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qvkhB-00D6R5-22
+	id 1qvkkY-00D6db-1i
 	for linux-um@lists.infradead.org;
-	Wed, 25 Oct 2023 20:41:42 +0000
+	Wed, 25 Oct 2023 20:45:11 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=DsYdjSLqGrd7t0Y6Nn+QoZo/dHfV0hHOlcoK0gUrZCY=;
-	t=1698266501; x=1699476101; b=kDmH0azXB7nUe1H+herAA2UDWRUX+ophhZx0B/qZI10fFcl
-	wxbN4rU9CMGW1Hpmv/coN6eQtR2eiKvlYlAiTsALBvaCFQENHYfDoYz48iykvVoHeuOnisI66Xado
-	6yzAyqYZ/vivLBftlk6bfPBNpTmF2yH++JyWGxiWWBLK3sXH0fmiwLQp3x/8Eb4JwKf/tsIpE1bDf
-	BFO1gaQT1DqQ2pwmj+iSTc3j0cRiDBPz05tune3yGbmBd8ofJ8g/IKNceJzzEB2ZJ/EjKuSKCK3iE
-	AYvf3vReJNU0uEko972I+WQorf7i+hEnX+r0+ClA4J8NB+ag3ftJqJ5gfB3bf0nQ==;
+	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
+	Resent-Message-ID:In-Reply-To:References;
+	bh=d6uWE8TJes2t/pcyR3HAkAuNhTqIW4lhggdYuoNXFFk=; t=1698266710; x=1699476310; 
+	b=rs+/fIj96AJimJDhPfD8yI9+eZWvyhIPrraLxvoB+34L261resSfIBzzuFmzkT2OMV6H9sTP98e
+	IaegK/5SOIxsAKy+wBlh+lWeafgMeu5XY3SF69ITlIqtk89BQIUzP22XQRafBxRpjUy255PwkyEWd
+	Oef1mDP719+Ej49Dq723S5cIQWOSlbZFswMZB+Lv2s5Evqh8oGOhw1F29A2GxaCnu+cGX8sFM3OK0
+	MPi1XsyXQXwdD6rw/prz90z8N7i2Y1epgHFJFKIFvRcr2SAIujUfV8U0bM34uTIx7OHAeogbhj0Cj
+	KtQxYWBzKy/oWnii3pKBk0JRoXvnSKS11+Aw==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.97-RC1)
 	(envelope-from <johannes@sipsolutions.net>)
-	id 1qvkh9-00000002iVb-0Mrm;
-	Wed, 25 Oct 2023 22:41:39 +0200
-Message-ID: <1f38d92435cc4f3a5e8d17dff3da9e34be2e6f24.camel@sipsolutions.net>
-Subject: Re: [PATCH] um: time-travel: fix time going backwards
+	id 1qvkkV-00000002ic9-3Bu2;
+	Wed, 25 Oct 2023 22:45:08 +0200
 From: Johannes Berg <johannes@sipsolutions.net>
-To: Vincent Whitchurch <Vincent.Whitchurch@axis.com>, 
-	"anton.ivanov@cambridgegreys.com"
-	 <anton.ivanov@cambridgegreys.com>, "richard@nod.at" <richard@nod.at>
-Cc: "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>, 
-	"linux-kernel@vger.kernel.org"
-	 <linux-kernel@vger.kernel.org>, kernel <kernel@axis.com>
-Date: Wed, 25 Oct 2023 22:41:38 +0200
-In-Reply-To: <68b18065d8be905c25522bd3f5a9b46dbe3a976d.camel@sipsolutions.net>
-References: <20231020-uml-time-backwards-v1-1-90b776fc6dfd@axis.com>
-	 <4a75c40636be267163dc30b5a6a2442089628e57.camel@axis.com>
-	 <4dbed8896c94a347dcb58b3a83792c52fdc1c04a.camel@sipsolutions.net>
-	 <cc7d340e4e06e42cd67b46bfa95da6129b0010cb.camel@axis.com>
-	 <a2f6e0cc8e498f72dfe1fcd5f2233ada8548a4d1.camel@sipsolutions.net>
-	 <68b18065d8be905c25522bd3f5a9b46dbe3a976d.camel@sipsolutions.net>
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+To: linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>,
+	Vincent Whitchurch <Vincent.Whitchurch@axis.com>
+Subject: [PATCH v2] um: time-travel: fix time corruption
+Date: Wed, 25 Oct 2023 22:45:05 +0200
+Message-ID: <20231025224504.7be512cdfeb4.Ia20103ef9899e53311bd671b8cfbca4f057a4668@changeid>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231025_134141_672304_69743262 
-X-CRM114-Status: GOOD (  14.98  )
+X-CRM114-CacheID: sfid-20231025_134510_593781_66F491D3 
+X-CRM114-Status: GOOD (  14.58  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,34 +71,92 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2023-10-25 at 22:02 +0200, Johannes Berg wrote:
-> On Wed, 2023-10-25 at 21:51 +0200, Johannes Berg wrote:
-> > On Wed, 2023-10-25 at 11:55 +0000, Vincent Whitchurch wrote:
-> > > On Mon, 2023-10-23 at 09:33 +0200, Johannes Berg wrote:
-> > > > Do you have a specific workload that tends to reproduce this?
-> > > 
-> > > I've been seeing it when running roadtest, but it's easily reproducible
-> > > without that by using the attached config and the following program as
-> > > init.
-> > > 
-> > >   cp repro.config .config
-> > >   make ARCH=um olddefconfig all
-> > >   gcc -Wall -static -o repro repro.c
-> > >   ./linux time-travel init=$PWD/repro rootfstype=hostfs
-> 
-> Ohhh.
-> 
-> Pure "time-travel" is actually something I hardly think about these
-> days, we mostly use time-travel=inf-cpu (or =ext).
-> 
-> That makes sense, here you actually *can* get interrupted. I'll need to
-> dig into what happens though.
+From: Johannes Berg <johannes.berg@intel.com>
 
-I just sent a patch, please take a look. It does seem to fix it - at
-least I got bored of waiting after running your test program for a few
-minutes :)
+In 'basic' time-travel mode (without =inf-cpu or =ext), we
+still get timer interrupts. These can happen at arbitrary
+points in time, i.e. while in timer_read(), which pushes
+time forward just a little bit. Then, if we happen to get
+the interrupt after calculating the new time to push to,
+but before actually finishing that, the interrupt will set
+the time to a value that's incompatible with the forward,
+and we'll crash because time goes backwards when we do the
+forwarding.
 
-johannes
+Fix this by reading the time_travel_time, calculating the
+adjustment, and doing the adjustment all with interrupts
+disabled.
+
+Reported-by: Vincent Whitchurch <Vincent.Whitchurch@axis.com>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+---
+v2: remove stray debug code
+---
+ arch/um/kernel/time.c | 32 +++++++++++++++++++++++++++-----
+ 1 file changed, 27 insertions(+), 5 deletions(-)
+
+diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
+index 8ff46bc86d09..0c01674e14d5 100644
+--- a/arch/um/kernel/time.c
++++ b/arch/um/kernel/time.c
+@@ -551,9 +551,29 @@ static void time_travel_update_time(unsigned long long next, bool idle)
+ 	time_travel_del_event(&ne);
+ }
+ 
++static void time_travel_update_time_rel(unsigned long long offs)
++{
++	unsigned long flags;
++
++	/*
++	 * Disable interrupts before calculating the new time so
++	 * that a real timer interrupt (signal) can't happen at
++	 * a bad time e.g. after we read time_travel_time but
++	 * before we've completed updating the time.
++	 */
++	local_irq_save(flags);
++	time_travel_update_time(time_travel_time + offs, false);
++	local_irq_restore(flags);
++}
++
+ void time_travel_ndelay(unsigned long nsec)
+ {
+-	time_travel_update_time(time_travel_time + nsec, false);
++	/*
++	 * Not strictly needed to use _rel() version since this is
++	 * only used in INFCPU/EXT modes, but it doesn't hurt and
++	 * is more readable too.
++	 */
++	time_travel_update_time_rel(nsec);
+ }
+ EXPORT_SYMBOL(time_travel_ndelay);
+ 
+@@ -687,7 +707,11 @@ static void time_travel_set_start(void)
+ #define time_travel_time 0
+ #define time_travel_ext_waiting 0
+ 
+-static inline void time_travel_update_time(unsigned long long ns, bool retearly)
++static inline void time_travel_update_time(unsigned long long ns, bool idle)
++{
++}
++
++static inline void time_travel_update_time_rel(unsigned long long offs)
+ {
+ }
+ 
+@@ -839,9 +863,7 @@ static u64 timer_read(struct clocksource *cs)
+ 		 */
+ 		if (!irqs_disabled() && !in_interrupt() && !in_softirq() &&
+ 		    !time_travel_ext_waiting)
+-			time_travel_update_time(time_travel_time +
+-						TIMER_MULTIPLIER,
+-						false);
++			time_travel_update_time_rel(TIMER_MULTIPLIER);
+ 		return time_travel_time / TIMER_MULTIPLIER;
+ 	}
+ 
+-- 
+2.41.0
+
 
 _______________________________________________
 linux-um mailing list
