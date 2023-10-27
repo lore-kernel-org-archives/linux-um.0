@@ -4,62 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BF5BC25B48
-	for <linux-um@archiver.kernel.org>; Thu, 26 Oct 2023 09:10:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A422C25B47
+	for <linux-um@archiver.kernel.org>; Fri, 27 Oct 2023 19:49:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Date:To:From:Subject:Message-ID:Reply-To:Cc:Content-ID:Content-Description:
+	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=nvx5uwt1nIZPGv/R2pUIbyizoNRPpbySHNvrq7oUZng=; b=N/y6+9DHJAzAG8
-	5AxGgjIfGm7oyFNx5aQO6Mi/wPKQINQ5/w0KILJqUfU3lwGGkMZRLIRth3o9Pv+BfI6FF8Hf0pRGR
-	sb6RM+yFsEvYaNu9IfwefsuOIpbhbo87g13v7OxiH0EBDs5xZk2IpKqUOhw1BEQLFENRbhxTfmFIU
-	yJTrQlQ7tsfZz1o+MKbwz7y7T+VEIWslEx/qRWE+bODr2EMkB5jd0k5xH0pYQHrG2vyHNnuffTc7h
-	Vfpdgf8ZksyKyX5SFc8JTwv0WJezGSPeRwLr6DM/RQQEK8TiygDgvpxDZ5rBK0fSZql4PdbFxvsKn
-	0UboRnzrCeBMCviqOq2A==;
+	List-Owner; bh=2H0xAkQUqIhN11PbdmPjGw6Wl/4nZRB4ntlArQICidM=; b=aqAylV7n8bjjmh
+	3r7OS01ht6VJuy3YBCFOdGmmggASiuxXBmC5YDaK5nk9ibN4AfoYGXGQvmD8hYndsSmR8HFxHE7WC
+	3bs9lGdXQfQk0/zfyq6zbbZ4Ee3NVxseMBDQKNXbAz/Xe1lOj+B0VpfyMNQPqxAI6i0pjb4KIU49f
+	fkPhRlWdOYab85lPDvqV5ASDnXHXBmiY2+PY2Ib4jKMmK2YcuB4j8Ho4wAX5vVUME9h+FpR1Jor4L
+	3zJOBKEMBABLC9xH+XYhH1GhFGsq0O6DC8F0M7gHyJXa0Dz1Lfc0x/rgPuXrDDJjsnSmh2n6o5FEa
+	KDXbZ6Hx64BrEX1lqynQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qvwNZ-00E2z2-16;
-	Thu, 26 Oct 2023 09:10:13 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1qwSpQ-00H8iQ-1M;
+	Fri, 27 Oct 2023 19:49:08 +0000
+Received: from pandora.armlinux.org.uk ([2001:4d48:ad52:32c8:5054:ff:fe00:142])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qvwNW-00E2y0-0S
-	for linux-um@lists.infradead.org;
-	Thu, 26 Oct 2023 09:10:11 +0000
+	id 1qwSpL-00H8hD-1E;
+	Fri, 27 Oct 2023 19:49:04 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:To:From:Subject:Message-ID:Sender:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=pkpRkhrnUDMQQDvLnnZKdZgVQJGQrSRTEUN5+bnqErk=;
-	t=1698311406; x=1699521006; b=eXStVjJfyieKiKx+eVIpjX5ezKJ32m2gL3Y9r5gSjyPR2a4
-	KORXv9m+ZHXcyiP0QqRrzothbngHtDgGYSsaTLw3UvPSBzRod8WoIdDFwQMg9LNYuqn+oPcAzy0f0
-	Qkw887m5NtmPnl7IzNH701TaC4RaGcXe3Xakf/WliEAIV2yEzf+q0iKmnjUBYEvGCZUyuQcmdG6kM
-	rIG1bwtymVuBSOXloh6POL/tvoX9byDccK420NhwCvaaum/B0dB8BXcA/V9ek8SUoN4sL7SwlmRou
-	gBuFodmF18+dh7JY89eiP2H3wKfHKrSqNAcW5IpTjz7MbbF1LhwWM02eyAUZ43AA==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.97-RC1)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1qvwNQ-00000003ZJA-1WGl;
-	Thu, 26 Oct 2023 11:10:04 +0200
-Message-ID: <a2a6c524ddb897d3c3b640d0f7262b506e51d983.camel@sipsolutions.net>
-Subject: Re: [PATCH v2] um: time-travel: fix time corruption
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Vincent Whitchurch <Vincent.Whitchurch@axis.com>, 
-	"linux-um@lists.infradead.org"
-	 <linux-um@lists.infradead.org>
-Date: Thu, 26 Oct 2023 11:10:03 +0200
-In-Reply-To: <04afd005c5566fcc6a46549afd7b9136a7cec7a9.camel@axis.com>
-References: <20231025224504.7be512cdfeb4.Ia20103ef9899e53311bd671b8cfbca4f057a4668@changeid>
-	 <d3beded8a25acced5905c8f251a5e91d0f514185.camel@axis.com>
-	 <39b6458f1214022e8a0d00c5cb70101a41296d74.camel@sipsolutions.net>
-	 <04afd005c5566fcc6a46549afd7b9136a7cec7a9.camel@axis.com>
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=x0iYI5oenjIZgr5Ea1ttq1u1uXaCUnuC+gyTKvhjOBk=; b=Ibrs5OOIynLh1ZqBHvo810vT2q
+	eZ2nAuEC+K8WhADZyxCD7xKQ7OjuqkB8rNWbweBGcKtCe8Efu7z905xSwkmaFhMWLogTpKeKp530c
+	y+snwDCtQLvQDi8jIBsm//i44Q6CVALD1DuRwOCHIrexGbVrRgcuPC0+OBgc0ect2BhZQxjhCQYj2
+	MSiZAfwX7ZMLxY1tPkBJ/kabOPASmDIlm14+ujvKWv7mtx2AMBdzfungg4OSeOdSvSQNubRBDCYW8
+	Wb6MfUkoZIBWsMA4dmC6oIypgl/PXBefZx7wAkV/9ynOow1ZBq2mVcMm41FTVxyfegcHh4AJBlsxe
+	Bi32VVuw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:59754)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1qwSpA-0008EM-0T;
+	Fri, 27 Oct 2023 20:48:52 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1qwSp5-00018G-6R; Fri, 27 Oct 2023 20:48:47 +0100
+Date: Fri, 27 Oct 2023 20:48:47 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-um@lists.infradead.org,
+	loongarch@lists.linux.dev, sparclinux@vger.kernel.org,
+	x86@kernel.org, Albert Ou <aou@eecs.berkeley.edu>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@alien8.de>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Guo Ren <guoren@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Vasily Gorbik <gor@linux.ibm.com>, WANG Xuerui <kernel@xen0n.name>,
+	Will Deacon <will@kernel.org>
+Subject: Re: [PATCH 4/5] kbuild: unify vdso_install rules
+Message-ID: <ZTwUH0uNESuWeKPR@shell.armlinux.org.uk>
+References: <20231009124210.1064021-1-masahiroy@kernel.org>
+ <20231009124210.1064021-4-masahiroy@kernel.org>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Disposition: inline
+In-Reply-To: <20231009124210.1064021-4-masahiroy@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231026_021010_205682_E1D9E00F 
-X-CRM114-Status: GOOD (  27.45  )
+X-CRM114-CacheID: sfid-20231027_124903_481184_49136F8C 
+X-CRM114-Status: UNSURE (   7.07  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,52 +96,24 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-T24gVGh1LCAyMDIzLTEwLTI2IGF0IDA4OjQ5ICswMDAwLCBWaW5jZW50IFdoaXRjaHVyY2ggd3Jv
-dGU6Cj4gT24gVGh1LCAyMDIzLTEwLTI2IGF0IDA5OjM4ICswMjAwLCBKb2hhbm5lcyBCZXJnIHdy
-b3RlOgo+ID4gT24gVGh1LCAyMDIzLTEwLTI2IGF0IDA3OjIzICswMDAwLCBWaW5jZW50IFdoaXRj
-aHVyY2ggd3JvdGU6Cj4gPiA+ID4gQEAgLTgzOSw5ICs4NjMsNyBAQCBzdGF0aWMgdTY0IHRpbWVy
-X3JlYWQoc3RydWN0IGNsb2Nrc291cmNlICpjcykKPiA+ID4gPiDCoAkJICovCj4gPiA+ID4gwqAJ
-CWlmICghaXJxc19kaXNhYmxlZCgpICYmICFpbl9pbnRlcnJ1cHQoKSAmJiAhaW5fc29mdGlycSgp
-ICYmCj4gPiA+ID4gwqAJCSAgICAhdGltZV90cmF2ZWxfZXh0X3dhaXRpbmcpCj4gPiA+ID4gLQkJ
-CXRpbWVfdHJhdmVsX3VwZGF0ZV90aW1lKHRpbWVfdHJhdmVsX3RpbWUgKwo+ID4gPiA+IC0JCQkJ
-CQlUSU1FUl9NVUxUSVBMSUVSLAo+ID4gPiA+IC0JCQkJCQlmYWxzZSk7Cj4gPiA+ID4gKwkJCXRp
-bWVfdHJhdmVsX3VwZGF0ZV90aW1lX3JlbChUSU1FUl9NVUxUSVBMSUVSKTsKPiA+ID4gPiDCoAkJ
-cmV0dXJuIHRpbWVfdHJhdmVsX3RpbWUgLyBUSU1FUl9NVUxUSVBMSUVSOwo+ID4gPiA+IMKgCX0K
-PiA+ID4gCj4gPiA+IFRoZSByZWFzb24gSSBoZXNpdGF0ZWQgd2l0aCBwdXR0aW5nIHRoZSB3aG9s
-ZSBvZgo+ID4gPiB0aW1lX3RyYXZlbF91cGRhdGVfdGltZSgpIHVuZGVyIGxvY2FsX2lycV9zYXZl
-KCkgaW4gbXkgYXR0ZW1wdCB3YXMKPiA+ID4gYmVjYXVzZSBJIGRpZG4ndCBxdWl0ZSB1bmRlcnN0
-YW5kIHRoZSByZWFzb24gZm9yIHRoZSAhaXJxc19kaXNhYmxlZCgpCj4gPiA+IGNvbmRpdGlvbiBo
-ZXJlIGFuZCB0aGUgY29tbWVudCBqdXN0IGFib3ZlIGl0IGFib3V0IHJlY3Vyc2lvbiBhbmQgdGhp
-bmdzCj4gPiA+IGdldHRpbmcgbWVzc2VkIHVwLiAgSWYgaXQncyBPSyB0byBkaXNhYmxlIGludGVy
-cnVwdHMgYXMgdGhpcyBwYXRjaCBkb2VzLAo+ID4gPiBpcyB0aGUgIWlycXNfZGlzYWJsZWQoKSBj
-b25kaXRpb24gdmFsaWQ/Cj4gPiAKPiA+IEhtbS4gSSB3YXMgZ29pbmcgdG8gc2F5IHRoYXQncyBk
-aWZmZXJlbnQsIGJlY2F1c2UgaXQgd2FudHMgdG8gb25seQo+ID4gcHJldmVudCB1cyBmcm9tIGRv
-aW5nIHRoaXMgd2hpbGUgd2UncmUgKmFscmVhZHkqIGluIElSUSBjb250ZXh0LCBhbmQgdGhlCj4g
-PiBidWcgeW91IGZvdW5kIGlzIGNhbGxpbmcgdGltZXJfcmVhZCgpIG5vdCBpbiBJUlEgY29udGV4
-dCwgYnV0IGdldHRpbmcgYW4KPiA+IGV2ZW50IHF1ZXVlZCBieSB0aGUgc2lnbmFsLgo+ID4gCj4g
-PiBCdXQgLi4uIG5vdyB0aGF0IEkgdGhpbmsgYWJvdXQgaXQsIEkgaGF2ZSBhIGZlZWxpbmcgdGhh
-dCB0aGlzIHdhcyBhCj4gPiB3b3JrYXJvdW5kIGZvciB0aGUgZXhhY3Qgc2FtZSBwcm9ibGVtLCBh
-bmQgSSBqdXN0IGRpZG4ndCB1bmRlcnN0YW5kIGl0Cj4gPiBhdCB0aGUgdGltZT8gSSBtZWFuLCBy
-ZWN1cnNpbmcgaW50byBvdXIgb3duIHByb2Nlc3NpbmcgaXMgbm93IGltcG9zc2libGUKPiA+IGhl
-cmUgYWZ0ZXIgdGhpcyBwYXRjaCAtIGVpdGhlciB3ZSdyZSBydW5uaW5nIG5vcm1hbGx5LCBvciB0
-aGUgaW50ZXJydXB0Cj4gPiBjYW5ub3QgaGl0IHRpbWVyX3JlYWQoKSBpbiB0aGUgbWlkZGxlLCBz
-YW1lIGFzIGl0IGNhbm5vdCBoaXQKPiA+IHRpbWVfdHJhdmVsX2hhbmRsZV9yZWFsX2FsYXJtKCkg
-aW4gdGhlIG1pZGRsZSBub3cuCj4gPiAKPiA+IFJlbW92aW5nIHRoYXQgc3RpbGwgc2VlbXMgdG8g
-d29yayB3aXRoIHlvdXIgdGVzdCwgYnV0IGl0J3MgYWxzbyBub3QgYQo+ID4gZ29vZCB0ZXN0IGZv
-ciB0aGlzLCBzaW5jZSB0aGVyZSBhcmUgbm8gZGV2aWNlcyBldGMuIHRoYXQgY291bGQgaGF2ZQo+
-ID4gaW50ZXJydXB0cywgbm90IHN1cmUgaG93IHRvIHRlc3QgaXQgcmlnaHQgbm93Pwo+ID4gCj4g
-PiBNYXliZSBJJ2xsIGFkZCBhIGNvbW1lbnQgdGhlcmUgc2F5aW5nIHRoaXMgbWlnaHQgbm8gbG9u
-Z2VyIGJlIG5lZWRlZD8KPiAKPiBJIHRyaWVkIHJlbW92aW5nIHRoZSAhaXJxc19kaXNhYmxlZCgp
-IGNoZWNrIGFuZCB0aGF0IGJsZXcgdXAgcHJldHR5Cj4gcXVpY2tseSAoYmVsb3cpIHdoZW4gcnVu
-bmluZyB0aGUgZnVsbCByb2FkdGVzdCBzdWl0ZS4gIEl0IHdvcmtzIGZpbmUKPiB3aXRoIHlvdXIg
-dW5tb2RpZmllZCBwYXRjaCBzbyBubyBuZWVkIHRvIGNoYW5nZSB0aGUgY29tbWVudC4KPiAKCkhh
-aCwgT0suIFNvIG1heWJlIHdoZW4vaWYgSSByZW1lbWJlciB3aGF0IGhhcHBlbnMgdGhlcmUgb3Ig
-Y2FuIGZpZ3VyZSBpdApvdXQgYWdhaW4sIEkgY2FuIHVwZGF0ZSB0aGUgY29tbWVudCA6KQoKam9o
-YW5uZXMKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxp
-bnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9s
-aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
+On Mon, Oct 09, 2023 at 09:42:09PM +0900, Masahiro Yamada wrote:
+>  arch/arm/Makefile                      |  7 +---
+>  arch/arm/vdso/Makefile                 | 25 --------------
+
+Acked-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+
+Thanks!
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
