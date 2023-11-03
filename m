@@ -4,71 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BB49FC0018A
-	for <linux-um@archiver.kernel.org>; Fri,  3 Nov 2023 16:42:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC4A4C4167D
+	for <linux-um@archiver.kernel.org>; Fri,  3 Nov 2023 16:42:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:CC:To:In-Reply-To:References:Message-ID
-	:MIME-Version:Subject:Date:From:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=9Gp7GpCdjhT7yJ32totTLE8q/enhiUqRyPoolax2FmA=; b=noaKt+icL1akus
-	SdAbn+n+XV4GfeJvi3PnCSVXQH/FDYndynlWxLd7iSghBovhcgfXOQWnVKVKgfdLlKULxSCzsz3ao
-	CIVLIABcSGu3B0MouXe6bdMe0SpQymfxFzGCPTjMhBN7nVAGBcqQH+TsNV/B68ATqLsMCca14pUwX
-	7plVDRd/Mq+vtCmaOa6TxmFhxYio8TjseSuyHj03aZ6TzYVOS2L/AoeevDL5hzorLmP8LVHhWyjlS
-	7wmrTEbVe9EfUkMq3c/UwK281QbE8oZlpm3Xe++nPIxHwgpSTTtEsgpHQn4OsluA6TPqcclWzAPl2
-	RswRlbVeKmjoc8WVrD9w==;
+	List-Archive:List-Unsubscribe:List-Id:CC:To:MIME-Version:Message-ID:Date:
+	Subject:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=gfdYRTDD31ZGpY4BltGLSo/tgy5RkEnAUEirr7+dDh4=; b=BBD5Di1svtvRqt
+	6zBE1lsLmGhdm7OZrFBBDLF2nC1jpuRbKThaARDikeedoZpd6nA8G6kT8BsATNIdPrQoBMc2XcqPP
+	bkW5sziWEPhL4yJxpQIZC0IaP5mNXk/S4a8Ff1y7AHo0Dnzy9qSm2vQp1be5G4K2fBawdYwFyi5Ir
+	6BcO5dw8y+c33nJBw4XXMkuueU5OVMhop2C4WJWMdP1m4Lni5DkmpHL4oOeyIeSr92oXDxolb3IHb
+	MxUV4EesGp3TCG7k14S+qpte+EP61xeAAo6xJ3lH1LR5D10i4qWkKZ7EkSU/Rk/pbOqqHWSjV6lO0
+	gDzpDLoWVIoV5PwMB6PA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qyxFV-00Bno5-1H;
-	Fri, 03 Nov 2023 16:42:21 +0000
+	id 1qyxFT-00BnmH-12;
+	Fri, 03 Nov 2023 16:42:19 +0000
 Received: from mx1.uni-rostock.de ([139.30.22.71])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qyxFS-00BnjS-0l
+	id 1qyxFJ-00BnjS-0e
 	for linux-um@lists.infradead.org;
-	Fri, 03 Nov 2023 16:42:20 +0000
+	Fri, 03 Nov 2023 16:42:17 +0000
 Received: from 139.30.22.84 by mx1.uni-rostock.de (Tls12, Aes256, Sha384,
- DiffieHellmanEllipticKey384); Fri, 03 Nov 2023 16:42:02 GMT
+ DiffieHellmanEllipticKey384); Fri, 03 Nov 2023 16:41:57 GMT
 DKIM-Signature: v=1; c=relaxed/relaxed; d=uni-rostock.de; s=itmze; 
- t=1699029722; bh=5oUNntIsz42ye+cbkNuzUBfKHPkK2L8T7r9lTsxpiH4=; h=
+ t=1699029717; bh=+j05XT0CRUrrDOVmtR20M6Lw7N++zOw+Njh+OmN3o4w=; h=
  Subject:Subject:From:From:Date:Date:ReplyTo:ReplyTo:Cc:Cc:Message-Id:Message-Id; 
  a=ed25519-sha256; b=
- J4805Dx/OmDjq8S8yaRkS8K4CfzUmeugydWNmdSvxcRxXyEzoozMfvwVg5jIMEzDAiuqsE8ANEn+QiEhTCp4DQ==
+ 8+K/A7+X1b7Tm2mlogffUWn7fVN1MVJAZchdzsldszdRgDqvnXpK8QfTTlsp+gTugODQGqIB8F0Aw6/yS55MBA==
 DKIM-Signature: v=1; c=relaxed/relaxed; d=uni-rostock.de; s=itmz; 
- t=1699029722; bh=5oUNntIsz42ye+cbkNuzUBfKHPkK2L8T7r9lTsxpiH4=; h=
+ t=1699029717; bh=+j05XT0CRUrrDOVmtR20M6Lw7N++zOw+Njh+OmN3o4w=; h=
  Subject:Subject:From:From:Date:Date:ReplyTo:ReplyTo:Cc:Cc:Message-Id:Message-Id; 
  a=rsa-sha256; b=
- psCf5uOoNRj5o6KDnf1hJG9teYGBD8MoGgxXDgorteiY8qK/fvx8l/Y0YPY2GKY/g4z30Zup40W+kqGalRxAUuiLuFgrO05ahpUW5zb2k8TBDRWOX3/74eTrToSA26yga0TLP1ZurdnOOszeBN2JYcO7axcbD5YgcxGNlJOXlvs=
+ T0Zfu7Gmop7eFVkYFNp+vv7kryUo6m37LuCe9+HKiQmU7fj8cmZTvRBiUljvvCfOQNC7ur4v7YSR4jfBb9Pl/UvMnZUau7FaChCXNLhrViqoo+BnqqIRdSp4c3ejPCzoH20TpnGLR1etOlgfLRgbBKe0KHuGwIkjrZhYev/T0Nc=
 Received: from mininet-experimente.amd.e-technik.uni-rostock.de (139.30.201.3)
  by mail1.uni-rostock.de (139.30.22.84) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Fri, 3 Nov 2023 17:41:57 +0100
+ 15.2.1118.39; Fri, 3 Nov 2023 17:41:56 +0100
 From: Benjamin Beichler <benjamin.beichler@uni-rostock.de>
-Date: Fri, 3 Nov 2023 16:41:43 +0000
-Subject: [PATCH RFC 05/11] um: Add final request time to TT wait message
+Subject: [PATCH RFC 00/11] Several Time Travel Mode Enhancements
+Date: Fri, 3 Nov 2023 16:41:38 +0000
+Message-ID: <20231103-bb-timetravel-patches-v1-0-e2c68efcf664@uni-rostock.de>
 MIME-Version: 1.0
-Message-ID: <20231103-bb-timetravel-patches-v1-5-e2c68efcf664@uni-rostock.de>
-References: <20231103-bb-timetravel-patches-v1-0-e2c68efcf664@uni-rostock.de>
-In-Reply-To: <20231103-bb-timetravel-patches-v1-0-e2c68efcf664@uni-rostock.de>
+X-B4-Tracking: v=1; b=H4sIAMMiRWUC/x3MPQqAMAxA4atIZgNpiwquggdwFYeqUQP+0RYRx
+ LtbHL/hvQc8O2EPZfKA40u8HHuEShMYFrvPjDJGgyZtlCKDfY9BNg7OXrziacOwsEcqspEUUTb
+ pHGJ7Op7k/r8tNHUF3ft+XSRoNWwAAAA=
 To: Richard Weinberger <richard@nod.at>, Anton Ivanov
 	<anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>
 CC: <linux-um@lists.infradead.org>, Benjamin Beichler
 	<benjamin.beichler@uni-rostock.de>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1699029716; l=2438;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1699029716; l=2235;
  i=benjamin.beichler@uni-rostock.de; s=20231103; h=from:subject:message-id;
- bh=cUx3FbldG98/2P5aQhm9/XrZgucPSi9rnu0lQ6fNFvM=;
- b=oD8qOm9vbsrzTMgmOLcFfxroUtYq8mUOYMPzJ+c4UMhlb3p0FBsHX9sTzfMnUd0GWfkHP6PWi
- pob4Mhxo+QgBomq2hTia2OlPmT4I52mPl0qRJvXvfJDG4Nx+GtLcw8Q
+ bh=cNIVD5zhjOHj8/xnK9zBHEeCVOhceTQFg79lfSEJga0=;
+ b=+0EFY/E1bHcNFwVLdSbaQJyW8JW8p7ulZKFbbgdeyhKRH3KYKTHeujaz1nJKBJCgxeeYPOXSQ
+ 99KJoW91/9+AppInRYgOjorMhYwZqVlV45w+Zsotcd85lQ/G/nWkHFZ
 X-Developer-Key: i=benjamin.beichler@uni-rostock.de; a=ed25519;
  pk=fla2/IRwqFWH5W+fACqQyDu/mTc6mEcSPQtqb/SoX8o=
 X-Originating-IP: [139.30.201.3]
 X-ClientProxiedBy: email3.uni-rostock.de (139.30.22.83) To
  mail1.uni-rostock.de (139.30.22.84)
-X-TM-SNTS-SMTP: 424959179161C38A1EFDF6737992251ABF54ABD2DA2DB807F91E2EFD2AB82AA32000:8
+X-TM-SNTS-SMTP: 11553BA75BD72CED6336409AB9A51A3615D6822F0D916A0DFA94D8F694E7F6502000:8
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231103_094218_570957_D6E08582 
-X-CRM114-Status: GOOD (  13.65  )
+X-CRM114-CacheID: sfid-20231103_094210_126950_FF7FEAF5 
+X-CRM114-Status: UNSURE (   8.36  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,68 +87,55 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Although the information for the next requested time was already sent in
-a prior message, this change introduces the otherwise unused time
-variable in the TT message. This addition enables an extra consistency
-check and can otherwise be ignored.
+I started to develop an alternative simulator based on time travel external
+mode. In the development process, I faced some issues, where I want to share
+my solutions.
 
-Signed-off-by: Benjamin Beichler <benjamin.beichler@uni-rostock.de>
+They group into 3 categories, which I would split up later.
+
+1-3 Add time travel handlers for some interrupts:
+These mainly address interrupts in drivers in TT mode.
+
+4-8 Fix problems in TT protocol:
+I encountered several problems like missing TT messages and weird
+behavior (e.g. backward jumping time). Additionally, I added
+some more information in the ACK message, which was unused before,
+to simplify the implementation of the simulation. The last patch,
+"Protect accesses to the timetravel event list," fixed the last
+corner cases in our setup, which were quite hard to debug.
+
+9-11 Optional patches enhancing simulation:
+This is mostly the RFC part of these patches. They are not needed,
+but make sense (at least for me).
+
 ---
- arch/um/kernel/time.c              | 6 +++---
- include/uapi/linux/um_timetravel.h | 6 +++---
- 2 files changed, 6 insertions(+), 6 deletions(-)
+Benjamin Beichler (11):
+      um: Make UBD requests synchronous in TT ext/infcpu mode
+      um: add a simple time_travel_handler implementation
+      um: Use a simple time travel handler for line interrupts
+      um: Handle UM_TIMETRAVEL_RUN only in idle loop, signal success in ACK
+      um: Add final request time to TT wait message
+      um: always send UM_TIMETRAVEL_REQUEST from ISRs
+      um: add TIMETRAVEL_REQUEST handler to request latest event
+      um: Protect accesses to the timetravel event list
+      um: Delay timer_read in time travel mode only after consecutive reads
+      um: Delay timer_read only in possible busy loops in TT-mode
+      um: Remove all TSC flags when using Time Travel Mode
 
-diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
-index ff5ef75bbb94..abd5fd0f62ee 100644
---- a/arch/um/kernel/time.c
-+++ b/arch/um/kernel/time.c
-@@ -220,7 +220,7 @@ static bool time_travel_ext_request(unsigned long long time)
- 	return true;
- }
- 
--static void time_travel_ext_wait(bool idle)
-+static void time_travel_ext_wait(bool idle, unsigned long long ns)
- {
- 	struct um_timetravel_msg msg = {
- 		.op = UM_TIMETRAVEL_ACK,
-@@ -230,7 +230,7 @@ static void time_travel_ext_wait(bool idle)
- 	time_travel_ext_free_until_valid = false;
- 	time_travel_ext_waiting++;
- 
--	time_travel_ext_req(UM_TIMETRAVEL_WAIT, -1);
-+	time_travel_ext_req(UM_TIMETRAVEL_WAIT, ns);
- 
- 	/*
- 	 * Here we are deep in the idle loop, so we have to break out of the
-@@ -256,7 +256,7 @@ static void time_travel_ext_get_time(void)
- static void __time_travel_update_time(unsigned long long ns, bool idle)
- {
- 	if (time_travel_mode == TT_MODE_EXTERNAL && time_travel_ext_request(ns))
--		time_travel_ext_wait(idle);
-+		time_travel_ext_wait(idle, ns);
- 	else
- 		time_travel_set_time(ns);
- }
-diff --git a/include/uapi/linux/um_timetravel.h b/include/uapi/linux/um_timetravel.h
-index ca3238222b6d..3127f069d9dc 100644
---- a/include/uapi/linux/um_timetravel.h
-+++ b/include/uapi/linux/um_timetravel.h
-@@ -77,9 +77,9 @@ enum um_timetravel_ops {
- 	/**
- 	 * @UM_TIMETRAVEL_WAIT: Indicate waiting for the previously requested
- 	 *	runtime, new requests may be made while waiting (e.g. due to
--	 *	interrupts); the time field is ignored. The calendar must process
--	 *	this message and later	send a %UM_TIMETRAVEL_RUN message when
--	 *	the host can run again.
-+	 *	interrupts); the time field contains the next requested runtime
-+	 *  for consistency checks. The calendar must process this message and
-+	 *  later send a %UM_TIMETRAVEL_RUN message when the host can run again.
- 	 *	(host -> calendar)
- 	 */
- 	UM_TIMETRAVEL_WAIT		= 3,
+ arch/um/drivers/line.c             |  8 ++---
+ arch/um/drivers/ubd_kern.c         | 45 ++++++++++++++++++++++-----
+ arch/um/include/shared/irq_user.h  |  7 +++++
+ arch/um/kernel/time.c              | 62 ++++++++++++++++++++++++++++++++++----
+ arch/um/kernel/um_arch.c           |  4 ++-
+ include/uapi/linux/um_timetravel.h |  6 ++--
+ 6 files changed, 111 insertions(+), 21 deletions(-)
+---
+base-commit: 21e80f3841c01aeaf32d7aee7bbc87b3db1aa0c6
+change-id: 20231103-bb-timetravel-patches-075d01005f26
 
+Best regards,
 -- 
-2.34.1
+Benjamin Beichler <benjamin.beichler@uni-rostock.de>
 
 
 
