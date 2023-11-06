@@ -4,86 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07335C4332F
-	for <linux-um@archiver.kernel.org>; Mon,  6 Nov 2023 11:33:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C96FC4332F
+	for <linux-um@archiver.kernel.org>; Mon,  6 Nov 2023 20:25:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:To:References:Message-Id:Cc:Date:
-	In-Reply-To:From:Subject:Mime-Version:Reply-To:Content-ID:Content-Description
-	:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=0RsqTr+/5fOYK36f25I74vZ3orznrXscJXVJPuaw+J0=; b=eoqhQbjLdpmsFg
-	vBq+EEbVD3abNQeDa4ZXmCwBdWDefrFXpN2Jwl3kkN53OSsxNNDaQ9VgsVBYIzqSB1VHTMslubvlp
-	qloxW8WCdufI5qjNpRDbzcvG+PCqFEZ33WHoFPApcDrs/1hKZrfxzradLRZshLO9Q2wtBu619aDSO
-	JjWacpBBAs13IJJtKUDZN796Sj9noUduEL3rZIAat0RCdzOgQ/KzxF05/AOShjs74N5QME9nJLtgl
-	r7HPJhgE8hhMT3KcFdcKMsLA75fyIR/exDxnTOP2d4G1Om7JxbhXYcLlrZhQm+xRFU9IyZQp9HQD2
-	A3sNkkxNOnSUBXxI2fiw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=bKNx4BB7QZxYLD02ea3LnwFViuj5Hwmxgx9366xcXK0=; b=33Qh8TG6ACgz1z
+	uTuBc40d/bj0Vuh7qH9VoB7OQrNx93ieim5DwJuinw6Lhoo5MaTZCt/JuiQSoapOV4kJ2fGJlFFfh
+	mWerRFghya5h3JXwmq98w6gAijN/n7jWxhjDcC5IspJl1M5NjTSyWar+1b+l1edyNTllYhAecQddT
+	sbWY4SOC7a8LCMINdkrjQVV0Y1C5cmo9meEpIFfJB4ybX2fjacl+ESgQy+BL3p/sWS0boMxtMpNHS
+	hrFN0T0SgYkd1+EGgxNgAZfuRDcjIlTV5xpOb1lBgN1hW3rls0GpaRUza3W0emd54TCz+EwbbUHQw
+	yOF5ksWF3V7U2bxWRbeA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1qzxrB-00GOVn-2R;
-	Mon, 06 Nov 2023 11:33:25 +0000
-Received: from mail-wm1-x331.google.com ([2a00:1450:4864:20::331])
+	id 1r069f-00HUkS-2w;
+	Mon, 06 Nov 2023 20:25:03 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1qzxr9-00GOVG-1D
+	id 1r069f-00HUk9-0U
+	for linux-um@bombadil.infradead.org;
+	Mon, 06 Nov 2023 20:25:03 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=MIME-Version:Content-Transfer-Encoding
+	:Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=9EDBdggPX18CBqjr7DTM7sdq+4gUFFVopTcBnvBd7Zs=; b=meG7CCr0U1bljEjL72gZgmKAOU
+	jDaZtZWu23lfIo1gtUAY2eaUqqZqnFX3P++jxmYj0eAD+fgr8bGCWI/CToByZThrh8rixO7fqZZM8
+	g5V0Y4ys1rKjuvbbFeC9jCtlLfd/Ftn3MqUykBNdZZYhnVkErTI/RkbM/Hfvn8CMWrosaPbP5M6ue
+	yR0WKO4GlHudkR08VzttKsnzVhbJ0sKWc5Mu24KAsqPqoIVCtucb2GT21vpMxAHIOfQTvKVu9AE/D
+	HVavIzigF6bQ7TR0jsHRSgyunkreSFCaAwHNEHAyrEGDiaTJ9/btIvxdv5NG6qkOvhSQqKQWgY+mm
+	joMd45ag==;
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	by desiato.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1r069Y-00AmKa-26
 	for linux-um@lists.infradead.org;
-	Mon, 06 Nov 2023 11:33:24 +0000
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40907b82ab9so31228335e9.1
-        for <linux-um@lists.infradead.org>; Mon, 06 Nov 2023 03:33:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699270401; x=1699875201; darn=lists.infradead.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oUKg4uVi4S/dFZ17di9VmvoE4aPOO4c2Mhi3gOlXYIY=;
-        b=Mcze9bxVXI2uCix/LiV84LCZkpGdgne4pp2fSXc2OP9W82UXzJOz6rP2SKyFwcnXkb
-         9NXc48QNVo70wj6bGAosxZlp+yWsR53Pp2OokhpsvMUbklaEIBKUnNbLwYjFepG5t6Nh
-         cLEkCUUYX0juT0nABLnMap8xo0XXO4mwmwAtzpCvC3AcBud/g1F8SOYI/sUH5b6trTWu
-         bwjzUYYorzH98mXNYJgmdCW61Cj8pGHT+GHBZbJySiRMJnOHinM0ZWNyizTKo/otbjAU
-         Bgqb2KidKAxTrcOb97T6YskgbrzKtJBPmptirmHxWoMjM0jQp+VRSiQn0SKxZ0+64tb8
-         GBiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699270401; x=1699875201;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oUKg4uVi4S/dFZ17di9VmvoE4aPOO4c2Mhi3gOlXYIY=;
-        b=mPfOA+F+0r1puGOliPP1WCI33Fd6tai+5q/AmBGjLHpdL9JVOOI1ix0X3e0KD4rv2A
-         AsUHRwqbINUG4LoMMsNbe4jfUb+ls0eDIVhlgnCpRVrAaCYlI5DMvDzJ172lQaT/LVPI
-         R6rw/ICoXllVFGMsfA5Vj55RdGRrlLtACuyCz9COrnxg0jzv7hwTDq1rBGx2vIIH74I1
-         bl6ZY2yizZMO9adtfZ+EcgJO/U4Jju3eoEX4XVboZD+JmuMf9MJHZotQL70Sb2MEaSzb
-         9me3OrfNUhZ5acWfvL3s3eTsSG/rE/okwqVXLEeIPGgpJcp1K08jS7eU2rOk0hknDhJ4
-         AZTw==
-X-Gm-Message-State: AOJu0Yx0AOOr3aoizt7YEaTZWF4r2LyBpdF26u+h4tu5Y/vYj7pniiTk
-	Rd4YDAB1ZX3k5Nbo+/jdTiI=
-X-Google-Smtp-Source: AGHT+IE2f8JmuTi8owPpBOZcT3du3yeq7e//eJgkT8TBc4/LbLa7lzX8PxyD4XIK6sHGvxBMtIDwwA==
-X-Received: by 2002:a7b:c851:0:b0:3fe:d67d:5040 with SMTP id c17-20020a7bc851000000b003fed67d5040mr11252842wml.5.1699270400711;
-        Mon, 06 Nov 2023 03:33:20 -0800 (PST)
-Received: from smtpclient.apple ([77.137.74.70])
-        by smtp.gmail.com with ESMTPSA id fc13-20020a05600c524d00b004068de50c64sm12045548wmb.46.2023.11.06.03.33.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 06 Nov 2023 03:33:20 -0800 (PST)
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.700.6\))
-Subject: Re: Missing clobber on alternative use on Linux UM 32-bit
-From: Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <41cac2e7ad9341259f356e1b3cf5f418@AcuMS.aculab.com>
-Date: Mon, 6 Nov 2023 13:33:08 +0200
-Cc: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>,
- Richard Weinberger <richard@nod.at>,
- "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Peter Zijlstra <peterz@infradead.org>
-Message-Id: <9D03E2C9-0571-418E-9075-6DD39DBA724F@gmail.com>
-References: <24BD0906-C6FE-499C-9A4A-00C56E6EE84A@gmail.com>
- <a55f6941-ddf6-2355-271d-5ed0db5a2a62@kot-begemot.co.uk>
- <1616BF59-5C18-46C7-86AB-92604B683652@gmail.com>
- <41cac2e7ad9341259f356e1b3cf5f418@AcuMS.aculab.com>
-To: David Laight <David.Laight@aculab.com>
-X-Mailer: Apple Mail (2.3731.700.6)
+	Mon, 06 Nov 2023 20:24:59 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=9EDBdggPX18CBqjr7DTM7sdq+4gUFFVopTcBnvBd7Zs=;
+	t=1699302290; x=1700511890; b=u5D+Xdh8amlTfruAamctRVQ7OUk13vCzk8TxWd4fF0Jxn3/
+	Owy5V1TUd5WJUHsemOdF1jPIo04Wt30+N5UzsjyQs7fjPbkctz7rkCrMD4Ky+HgbgyWlRgc8SU4wz
+	GSbWMGqNUCLO6AdG6iEUSlnG7UjXV5SF+5CiaFu0c65YyF7pjPY4kHPtHjzjbzyzOpi4H4FdONGln
+	5VRaFOI+8qF+1pTTYNEPh31XL1kGTCyPW+X153YbxzNhZsRTp7tDnhNjn4XedB7JZVh1Pnxcsv2+c
+	1Ot9WM7xtVEdPGssfnwcBOHwNt5cAZbsbnDnvFnB2l3yFxCYwgmuVEQ1wOPS80eg==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97-RC1)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1r069I-0000000FshH-2qQv;
+	Mon, 06 Nov 2023 21:24:41 +0100
+Message-ID: <84cd091dc90cf4102f84778f6b8ab724212152cc.camel@sipsolutions.net>
+Subject: Re: [PATCH RFC 01/11] um: Make UBD requests synchronous in TT
+ ext/infcpu mode
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Benjamin Beichler <benjamin.beichler@uni-rostock.de>, Richard Weinberger
+	 <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: linux-um@lists.infradead.org
+Date: Mon, 06 Nov 2023 21:24:39 +0100
+In-Reply-To: <20231103-bb-timetravel-patches-v1-1-e2c68efcf664@uni-rostock.de>
+References: <20231103-bb-timetravel-patches-v1-0-e2c68efcf664@uni-rostock.de>
+	 <20231103-bb-timetravel-patches-v1-1-e2c68efcf664@uni-rostock.de>
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231106_033323_429936_BF328C39 
-X-CRM114-Status: UNSURE (   9.54  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231106_202456_861924_F7820B44 
+X-CRM114-Status: GOOD (  17.51  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,14 +90,67 @@ Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-
-
-> On Nov 5, 2023, at 5:47 PM, David Laight <David.Laight@aculab.com> wrote:
+On Fri, 2023-11-03 at 16:41 +0000, Benjamin Beichler wrote:
+> The UBD driver employs multiple threads to enhance block device accesses
+> in userspace. These threads communicate via pipes and are triggered by
+> interrupts that utilize the SIGIO handler.
 > 
-> gcc always assumes that inline asm changes "cc" - there is no need
-> to add a 'clobber' for it.
+> However, in TT mode, both inf-cpu and external modes, this asynchronous,
+> multithreaded request processing lead to issues where requests are not
+> processed. This occurs because there is no dedicated time travel handler
+> for the UBD interrupt.
+> 
+> Since asynchronous, multithreaded request processing does not provide
+> substantial benefits in time travel mode and may even introduce
+> additional overhead (as multiple threads are scheduled sequentially to
+> execute requests in TT mode with infinite CPU power), this patch
+> switches to synchronous request processing directly within the
+> submit_request call for the respective TT modes.
 
-Thanks. I was unaware of this behavior.
+This makes perfect sense. We mostly use hostfs, but recently did the
+exact same thing there.
+
+> +#ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
+> +	/* do not initialize asynchronous io-thread and corresponding irq
+> +	 * in inf-cpu or ext time travel, as we need synchronous io logic
+> +	 */
+> +
+> +	if (time_travel_mode == TT_MODE_INFCPU ||
+> +	    time_travel_mode == TT_MODE_EXTERNAL)
+
+Maybe we should finally refactor these checks though ... :)
+
+And you don't need the ifdef, because time_travel_mode is defined to
+TT_MODE_OFF without CONFIG_UML_TIME_TRAVEL_SUPPORT, and then this just
+gets optimised out.
+
+>  static int ubd_submit_request(struct ubd *dev, struct request *req)
+>  {
+> +	int i;
+>  	int segs = 0;
+>  	struct io_thread_req *io_req;
+>  	int ret;
+> @@ -1334,6 +1354,17 @@ static int ubd_submit_request(struct ubd *dev, struct request *req)
+>  	if (segs)
+>  		ubd_map_req(dev, io_req, req);
+>  
+> +#ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
+> +	//do the request sychronous (bypass io_thread and ubd_handler)
+> +	if (time_travel_mode == TT_MODE_INFCPU ||
+> +	    time_travel_mode == TT_MODE_EXTERNAL) {
+> +		for (i = 0; !io_req->error && i < io_req->desc_cnt; i++)
+> +			do_io(io_req, &io_req->io_desc[i]);
+> +		finalize_request(io_req);
+> +		return 0;
+> +	}
+> +#endif
+> 
+
+Same here, and in fact with the ifdef you'd get an unused variable
+warning, but anyway you could move that into the block (or even into the
+for now that we require C99!)
+
+johannes
 
 _______________________________________________
 linux-um mailing list
