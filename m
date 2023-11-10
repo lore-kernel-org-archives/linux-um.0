@@ -4,68 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F4B2C4332F
-	for <linux-um@archiver.kernel.org>; Fri, 10 Nov 2023 16:53:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 848BFC4332F
+	for <linux-um@archiver.kernel.org>; Fri, 10 Nov 2023 17:16:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=5CZl9QV4/b2+9vzk2rNaRR4RuuB8R2JAMBCW8lQS+98=; b=Cq/FnKcCuuUzBU
-	79wkIWfmkBjuAIj3qb8z70pZmdTH227ZmqwR/FoFLxEWVz+x1EpacPue4FqYuLnFnqX0kKibtUqM6
-	4DLqrj6ufgEAWcXjV3wcg+ekRU9Q3LgB1ksGdAgjFLpA5Q76EIiqoHx48YoUN3ly0BxbXNb4QvcZD
-	Keab03PqRtwQzx/5M7uzRel+vUzLz4kdP3favKJFgcgG0McQvseO9GScHhYPnkARGGObH5Fs8URbv
-	n6fDG60yiIw725fsC6VxhH/DcyF/OPdzuVTHoSuPVK/qet2PSEB3/y4psi22AExC2qXfe2g4oeU6d
-	HoQlsFG7J4zm5VVhWEtw==;
+	List-Owner; bh=bgOjHbjf57JodzRiqE47Tkd7OrS5VRxBiRcvrOt7E5M=; b=Lk5kWEZSxnTP0G
+	68vBuKPR3H8BqpgKx7TBEoR3Y+mVkbztlrNmK7fMPK2nrp5hzihyyJDSxR2aeAWCAE+LmEpkKB8kf
+	ljPg5pet8WMVDG4cFUdAMR+l/gwrAGDnycYN2tCsfAbtl7OtBpKkuv9L9qUiGgICtdjAFjfo+BU4+
+	NDQRz7mWpfQHwv1SM6aHam8tm4QMxsY8V38h8r5iZ/9cfMfkZQjhGTLTkAGouFQ0PmmUccGmsC/ON
+	Qw7YbOIMuRlg74xsR/9f9TC+Uk2KUULuW4TCqHmTBoH8cSr4qCdF/w2OL5r21YAgOFSLtZqoAsDTU
+	BtqNB0ONq17gA+SQ3UTA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r1UlP-0096QB-2t;
-	Fri, 10 Nov 2023 16:53:47 +0000
-Received: from mx2.uni-rostock.de ([139.30.22.72])
+	id 1r1V7i-0097kA-0i;
+	Fri, 10 Nov 2023 17:16:50 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r1UlM-0096Pb-0B
+	id 1r1V7f-0097jq-1t
 	for linux-um@lists.infradead.org;
-	Fri, 10 Nov 2023 16:53:45 +0000
-Received: from 139.30.22.84 by mx2.uni-rostock.de (Tls12, Aes256, Sha384,
- DiffieHellmanEllipticKey384); Fri, 10 Nov 2023 16:53:40 GMT
-DKIM-Signature: v=1; c=relaxed/relaxed; d=uni-rostock.de; s=itmze; 
- t=1699635220; bh=iLJIeqR8pd/RG59qLPayhDm3T0SPgeFAbdNBoH8IkA4=; h=
- Subject:Subject:From:From:Date:Date:ReplyTo:ReplyTo:Cc:Cc:Message-Id:Message-Id; 
- a=ed25519-sha256; b=
- Sc79Pli5ZJMQuGbyPgmEuAcir5eUVi9ftZTwuL+Jyb5yospOmRZfkwEtz4iVkGsydjRHzeKaocnySpA1LuatCg==
-DKIM-Signature: v=1; c=relaxed/relaxed; d=uni-rostock.de; s=itmz; 
- t=1699635220; bh=iLJIeqR8pd/RG59qLPayhDm3T0SPgeFAbdNBoH8IkA4=; h=
- Subject:Subject:From:From:Date:Date:ReplyTo:ReplyTo:Cc:Cc:Message-Id:Message-Id; 
- a=rsa-sha256; b=
- ix6WaM+ATXbk4zqAXXohEExhZuG4lXGRp/ylQ3Auiv/6xiU216R88vy6iOrQeDaKIWiAdRFYubJxKXlLEA311FsQPzpaurf59TIF/9oYuGL+HF1hrv/N66wl2HPddl64VlVC/EUygUTjzecqdd1QpcMCYU9Q5PrATu4m0c/1jG0=
-Received: from [139.30.201.32] (139.30.201.32) by mail1.uni-rostock.de
- (139.30.22.84) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 10 Nov
- 2023 17:53:39 +0100
-Message-ID: <15d63c81-9e41-4965-b988-c4a934aecc52@uni-rostock.de>
-Date: Fri, 10 Nov 2023 17:53:39 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+	Fri, 10 Nov 2023 17:16:49 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=JUKnaVFPsM8FzBqLBhjTtC1UoYH8lYjc+1O1rDqd284=;
+	t=1699636605; x=1700846205; b=wGM9RA5emDs0N5ekrVMLA41h9H4g8I8yCCK3nfV3dih9yaE
+	CyMOUEuePwL4MmLEfkbA0j+MI+Y1oye92GltI0XeRFhO2WBX2Jnk2ENIwo2oesBuuSDS2Wcgn7pNU
+	htziCgk4+Rpofj+Vzv23y6TkhHn4hOqTtzueGhpwT6OL6dxTvPpOqq4BkBiOjA65v4Cs0nLPqnQtm
+	f6EDy6CtjrRW+lX1QURPcJrL3k+qtSMUbpXzWPjPlIBzAx/OOau5prmx+SU5Jd0FaFTe5Usj5qqN4
+	z+KjkOudQqUpWdpEiQp4yk2jn3nF3mSdfeHjwfrZyWhjIJMCko14MnfQ/bEsJpdQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1r1V7W-000000036YB-1TGX;
+	Fri, 10 Nov 2023 18:16:38 +0100
+Message-ID: <9d7509efed4292891b4ffbf063ae58f11af8b742.camel@sipsolutions.net>
 Subject: Re: [PATCH RFC 03/11] um: Use a simple time travel handler for line
  interrupts
-Content-Language: de-DE
-To: Johannes Berg <johannes@sipsolutions.net>, Richard Weinberger
-	<richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
-CC: <linux-um@lists.infradead.org>
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Benjamin Beichler <Benjamin.Beichler@uni-rostock.de>, Richard Weinberger
+	 <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: linux-um@lists.infradead.org
+Date: Fri, 10 Nov 2023 18:16:37 +0100
+In-Reply-To: <15d63c81-9e41-4965-b988-c4a934aecc52@uni-rostock.de>
 References: <20231103-bb-timetravel-patches-v1-0-e2c68efcf664@uni-rostock.de>
- <20231103-bb-timetravel-patches-v1-3-e2c68efcf664@uni-rostock.de>
- <71657ebd4a582b1a3c876de4d778ff67bd29c49d.camel@sipsolutions.net>
-From: Benjamin Beichler <Benjamin.Beichler@uni-rostock.de>
-Organization: =?UTF-8?Q?Universit=C3=A4t_Rostock?=
-In-Reply-To: <71657ebd4a582b1a3c876de4d778ff67bd29c49d.camel@sipsolutions.net>
-X-Originating-IP: [139.30.201.32]
-X-ClientProxiedBy: EMAIL2.uni-rostock.de (139.30.22.82) To
- mail1.uni-rostock.de (139.30.22.84)
-X-TM-SNTS-SMTP: 2DC8D564BAA42FE004C2B2BD53E042ADE0DD923A4CE21B83193C70400D7BA21E2000:8
+	 <20231103-bb-timetravel-patches-v1-3-e2c68efcf664@uni-rostock.de>
+	 <71657ebd4a582b1a3c876de4d778ff67bd29c49d.camel@sipsolutions.net>
+	 <15d63c81-9e41-4965-b988-c4a934aecc52@uni-rostock.de>
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231110_085344_392737_0A97D5CA 
-X-CRM114-Status: GOOD (  16.26  )
+X-CRM114-CacheID: sfid-20231110_091648_149489_6434C4B0 
+X-CRM114-Status: GOOD (  17.76  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,43 +72,48 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Am 06.11.2023 um 21:26 schrieb Johannes Berg:
-> ________________________________
->
-> On Fri, 2023-11-03 at 16:41 +0000, Benjamin Beichler wrote:
->> This change permits interrupts on serial lines in time travel mode,
->> especially in external mode. However, these interrupts are processed
->> with the simple handler that does not provide any acknowledgment.
->>
-> Yeah... we had this discussion in the other thread.
->
-> At least in my mental model this is broken because the sender of the
-> event basically has to prepare the calendar for it happening, which
-> feels ... odd.
-Actually, for me, this would make kind of sense. Why couldn't we be more 
-explicit in the time travel protocol to the calendar about interrupts?
-We could use the ID from the start-msg to identify um instances and 
-tell, in an additional msg, that we are going to trigger an interrupt at 
-the current time to that instance from the device simulation.
-Another way would be, to serve such information (if the device 
-simulation really need it) over the facilities we already established. 
-Why not send the ACK as MSG_OOB or ancillary data?
->
-> But I can see where you're coming from, and switching to virtio console
-> that does it all right might be tricky, so ... perhaps this still makes
-> some sense.
->
-> I'd still think we should put a warning into the code somewhere when you
-> actually use line interrupts though?
->
-> johannes
->
-Benjamin
+On Fri, 2023-11-10 at 17:53 +0100, Benjamin Beichler wrote:
+> > 
+> > At least in my mental model this is broken because the sender of the
+> > event basically has to prepare the calendar for it happening, which
+> > feels ... odd.
+
+> Actually, for me, this would make kind of sense.
+
+I'm not sure I agree, I guess. To me, the sender is just telling someone
+else "here's something going on I want you to look at". That doesn't
+really mean the receiver needs to actually handle it "right away". Maybe
+the receiver implements a model where it's modelling an interrupt
+latency (which _would_ be more realistic), so it only handles the
+message some (small amount of) time later. Maybe it's in a polling model
+right now and has disabled interrupt sources, and just wakes every so
+often to check for messages. Maybe something else.
+
+So I don't really agree that baking a "must be scheduled immediately"
+into any protocol really makes sense.
+
+> Why couldn't we be more 
+> explicit in the time travel protocol to the calendar about interrupts?
+> We could use the ID from the start-msg to identify um instances and 
+> tell, in an additional msg, that we are going to trigger an interrupt at 
+> the current time to that instance from the device simulation.
+
+But see above - I basically just don't think the sender of the event is
+the right position to know that information.
+
+> Another way would be, to serve such information (if the device 
+> simulation really need it) over the facilities we already established. 
+> Why not send the ACK as MSG_OOB or ancillary data?
+
+Don't think I understand that. Which "facilities" are you referring to
+here?
+
+johannes
 
 
 _______________________________________________
