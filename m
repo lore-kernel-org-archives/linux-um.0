@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB9F9C04E85
-	for <linux-um@archiver.kernel.org>; Fri, 10 Nov 2023 11:04:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FB9EC05027
+	for <linux-um@archiver.kernel.org>; Fri, 10 Nov 2023 11:04:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=eoRosyJiOuSg4iqppAHi8z0/hHFGsILUuD39cYpUKqg=; b=DAUIUlcqDH09TF
-	bL7IHsFpml7Mv8vT+KjgIUKz53e/MyZN2A1fgC9TiQL+p3foEAQqI4HGmQRywTMUBblqaDThMtI9e
-	VR+gbj/s1Gv4TcvIun0Xbn9AY9EU+7Da03MsPn8Jn8MXxZkmiMoGh4MBhNLiwLnMi7U+8hRXV9ILq
-	kmiCbEVB1R76yjVg2GIOytV0Dxtmgtzlzc1yKM0FEMy9yV8haNQhvgglyFL87F3LR0iPueaDQOooR
-	jOSEmEm3MIMLoqvaR8w5ej0F7ghQgUDmIn1C7lX+Yu62NBsJTtTdJ/2km9IR3pZPAkR/TDT7T/Bml
-	DJkwGjpA3g3Q39uuxtIg==;
+	List-Owner; bh=T7BE8F9Z+J0guliBKtWtRNuPHAvDdr1jh6jyyeU0wJ8=; b=fM4WbOWhNB0bc3
+	r37VtkOPmnV6qQtO32jrNU91gBVmjhXKIztHOaGW5gvDuwnMgWzSLkpihq69cbB0SaPde9hiyAs2Y
+	915Uizp0Ofmw9JEj6xdwqNS1NnnFZyZ+2Goo1F12Ruz4QwJXw3w6pGeFoB+YpphEl3xIzNL7pyF/z
+	yQFGA8Y+cSH4OzL8KKCuJiLEOfHnllSuDfSCRPHIQnv5suVcjapxhIF5i3TjgxwE25NX6JXWvp0h3
+	EOQz7hgdHYx2cmxlrBo9Bud5WTVD5UlCXYLhbA0jFadYFsCmq+30/32hABcGrwgpLS8oP82vpiZt4
+	qabCG37sa0o3agoLGZeQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r1PJI-008LyA-1S;
-	Fri, 10 Nov 2023 11:04:24 +0000
+	id 1r1PJL-008M1X-01;
+	Fri, 10 Nov 2023 11:04:27 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r1PJD-008LrD-13
+	id 1r1PJI-008LwQ-08
 	for linux-um@lists.infradead.org;
-	Fri, 10 Nov 2023 11:04:22 +0000
+	Fri, 10 Nov 2023 11:04:26 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=xnUyyZwUV9ryshQgB1CX/euD3YZ8nuBkkt4QL2PHyng=;
-	t=1699614255; x=1700823855; b=qHI/MseOSsR+VHZrDOKXFpXtzQAYm7fGQb3ZcUVXLjwSuoa
-	2fvLRyTctGzxnLVvPYk6jHVtwbg7yCC7G5ObGn+BHEET13x7NzH7I5t+1NgzMx3LIdsIDrf334qXr
-	QOx6KbB2Cgkg0h9ktWhAWkSRwVl5ArslweY60iLWtKLirkA/KSDGC/bq15H5zbF9atuCypKVNa16f
-	NjCSlEpNeyka2Ga172EaBTeB6GbhR4NelXy/3F1rXwQkdedyOAZbuuj3l3SqpX9qxVQNDidZS/jhw
-	xjyycqjyfhMee2yx8GSZWKXpGBJrp7kUe8OamXCOhI7pGW269gR4XMLiyxQhXmAw==;
+	Resent-Cc:Resent-Message-ID; bh=WdwOY9jks9cp9BDju2bazsV/9U4Wlw42c+a7tDbATns=;
+	t=1699614263; x=1700823863; b=HjJB0BUkb5WTXf4bY7reFr63QjXwrF44V0sUlLq9hOF4S5Q
+	J/hMFB/Dnsi8TPxv3Lvbzrk8KqPA9XHhqJArUmkr0gNKEpOb1AV613/f1yuo+ZzLJmu6hUojOn6A3
+	rkbK6BSRrASppgPHi4zGcKR0shEEqGfXJUwpwlMcA0+Mn8Pb44UMKOqHjsre13Fx/wF3N2XDzma2l
+	txQbh17DJ9Z1Co2PJ3cePbH1JQftRqJZc9tKCwCJ5iumA5Xjwa095Zp0geh1c8gvTjkoD0i5BnK4I
+	BSaNPkmLLwo4U44UO3oU9W8PbJ+PJL4V/jPWl9146I+61AxKWVTe/M6HDrJP2P6w==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.97)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1r1PJ6-00000002xHc-27BA;
-	Fri, 10 Nov 2023 12:04:12 +0100
+	id 1r1PJE-00000002xHc-1T3f;
+	Fri, 10 Nov 2023 12:04:20 +0100
 From: benjamin@sipsolutions.net
 To: linux-um@lists.infradead.org
 Cc: Benjamin Berg <benjamin@sipsolutions.net>
-Subject: [PATCH v3 01/11] um: Drop support for hosts without SYSEMU_SINGLESTEP support
-Date: Fri, 10 Nov 2023 12:03:38 +0100
-Message-ID: <20231110110348.1815612-2-benjamin@sipsolutions.net>
+Subject: [PATCH v3 09/11] um: Rely on PTRACE_SETREGSET to set FS/GS base registers
+Date: Fri, 10 Nov 2023 12:03:46 +0100
+Message-ID: <20231110110348.1815612-10-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231110110348.1815612-1-benjamin@sipsolutions.net>
 References: <20231110110348.1815612-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231110_030419_679494_86FABC81 
-X-CRM114-Status: GOOD (  30.90  )
+X-CRM114-CacheID: sfid-20231110_030424_246883_0784267F 
+X-CRM114-Status: GOOD (  25.73  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,517 +73,215 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Benjamin Berg <benjamin@sipsolutions.net>
 
-These features have existed since Linux 2.6.14 and can be considered
-widely available at this point. Also drop the backward compatibility
-code for PTRACE_SETOPTIONS.
+These registers are saved/restored together with the other general
+registers using ptrace. In arch_set_tls we then just need to set the
+register and it will be synced back normally.
+
+Most of this logic was introduced in commit f355559cf7845 ("[PATCH] uml:
+x86_64 thread fixes"). However, at least today we can rely on ptrace to
+restore the base registers for us. As such, only the part of the patch
+that tracks the FS register for use as thread local storage is actually
+needed.
 
 Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
-
-----
-
-v2:
- * Continue to define PTRACE_SYSEMU_SINGLESTEP as glibc only added it in
-   version 2.27.
 ---
- arch/um/include/asm/processor-generic.h |  1 -
- arch/um/include/shared/kern_util.h      |  3 +-
- arch/um/include/shared/ptrace_user.h    | 41 ---------------
- arch/um/kernel/process.c                | 12 +----
- arch/um/kernel/ptrace.c                 |  2 -
- arch/um/kernel/signal.c                 | 12 -----
- arch/um/os-Linux/skas/process.c         | 60 ++++-----------------
- arch/um/os-Linux/start_up.c             | 70 +++----------------------
- arch/x86/um/ptrace_32.c                 | 24 ---------
- arch/x86/um/ptrace_64.c                 | 26 ---------
- arch/x86/um/shared/sysdep/ptrace_32.h   |  4 --
- arch/x86/um/shared/sysdep/ptrace_user.h | 12 ++---
- 12 files changed, 24 insertions(+), 243 deletions(-)
+ arch/um/include/shared/os.h    |  3 --
+ arch/x86/um/asm/elf.h          |  4 +--
+ arch/x86/um/asm/processor_64.h |  3 --
+ arch/x86/um/os-Linux/Makefile  |  1 -
+ arch/x86/um/os-Linux/prctl.c   | 12 -------
+ arch/x86/um/syscalls_64.c      | 62 +++++++---------------------------
+ arch/x86/um/tls_64.c           |  2 +-
+ 7 files changed, 16 insertions(+), 71 deletions(-)
+ delete mode 100644 arch/x86/um/os-Linux/prctl.c
 
-diff --git a/arch/um/include/asm/processor-generic.h b/arch/um/include/asm/processor-generic.h
-index 7414154b8e9a..6c3779541845 100644
---- a/arch/um/include/asm/processor-generic.h
-+++ b/arch/um/include/asm/processor-generic.h
-@@ -22,7 +22,6 @@ struct mm_struct;
- struct thread_struct {
- 	struct pt_regs regs;
- 	struct pt_regs *segv_regs;
--	int singlestep_syscall;
- 	void *fault_addr;
- 	jmp_buf *fault_catcher;
- 	struct task_struct *prev_sched;
-diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
-index d8b8b4f07e42..11b4f3d7c18a 100644
---- a/arch/um/include/shared/kern_util.h
-+++ b/arch/um/include/shared/kern_util.h
-@@ -34,7 +34,6 @@ extern int handle_page_fault(unsigned long address, unsigned long ip,
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index 0df646c6651e..aff8906304ea 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -323,9 +323,6 @@ extern void sigio_broken(int fd);
+ extern int __add_sigio_fd(int fd);
+ extern int __ignore_sigio_fd(int fd);
  
- extern unsigned int do_IRQ(int irq, struct uml_pt_regs *regs);
- extern void initial_thread_cb(void (*proc)(void *), void *arg);
--extern int is_syscall(unsigned long addr);
- 
- extern void timer_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
- 
-@@ -58,7 +57,7 @@ extern char *uml_strdup(const char *string);
- extern unsigned long to_irq_stack(unsigned long *mask_out);
- extern unsigned long from_irq_stack(int nested);
- 
--extern int singlestepping(void *t);
-+extern int singlestepping(void);
- 
- extern void segv_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
- extern void bus_handler(int sig, struct siginfo *si, struct uml_pt_regs *regs);
-diff --git a/arch/um/include/shared/ptrace_user.h b/arch/um/include/shared/ptrace_user.h
-index 95455e8996e7..8a705d8f96ce 100644
---- a/arch/um/include/shared/ptrace_user.h
-+++ b/arch/um/include/shared/ptrace_user.h
-@@ -12,45 +12,4 @@
- extern int ptrace_getregs(long pid, unsigned long *regs_out);
- extern int ptrace_setregs(long pid, unsigned long *regs_in);
- 
--/* syscall emulation path in ptrace */
+-/* prctl.c */
+-extern int os_arch_prctl(int pid, int option, unsigned long *arg2);
 -
--#ifndef PTRACE_SYSEMU
--#define PTRACE_SYSEMU 31
--#endif
--#ifndef PTRACE_SYSEMU_SINGLESTEP
--#define PTRACE_SYSEMU_SINGLESTEP 32
--#endif
--
--/* On architectures, that started to support PTRACE_O_TRACESYSGOOD
-- * in linux 2.4, there are two different definitions of
-- * PTRACE_SETOPTIONS: linux 2.4 uses 21 while linux 2.6 uses 0x4200.
-- * For binary compatibility, 2.6 also supports the old "21", named
-- * PTRACE_OLDSETOPTION. On these architectures, UML always must use
-- * "21", to ensure the kernel runs on 2.4 and 2.6 host without
-- * recompilation. So, we use PTRACE_OLDSETOPTIONS in UML.
-- * We also want to be able to build the kernel on 2.4, which doesn't
-- * have PTRACE_OLDSETOPTIONS. So, if it is missing, we declare
-- * PTRACE_OLDSETOPTIONS to be the same as PTRACE_SETOPTIONS.
-- *
-- * On architectures, that start to support PTRACE_O_TRACESYSGOOD on
-- * linux 2.6, PTRACE_OLDSETOPTIONS never is defined, and also isn't
-- * supported by the host kernel. In that case, our trick lets us use
-- * the new 0x4200 with the name PTRACE_OLDSETOPTIONS.
-- */
--#ifndef PTRACE_OLDSETOPTIONS
--#define PTRACE_OLDSETOPTIONS PTRACE_SETOPTIONS
--#endif
--
--void set_using_sysemu(int value);
--int get_using_sysemu(void);
--extern int sysemu_supported;
--
--#define SELECT_PTRACE_OPERATION(sysemu_mode, singlestep_mode) \
--	(((int[3][3] ) { \
--		{ PTRACE_SYSCALL, PTRACE_SYSCALL, PTRACE_SINGLESTEP }, \
--		{ PTRACE_SYSEMU, PTRACE_SYSEMU, PTRACE_SINGLESTEP }, \
--		{ PTRACE_SYSEMU, PTRACE_SYSEMU_SINGLESTEP, \
--		  PTRACE_SYSEMU_SINGLESTEP } }) \
--		[sysemu_mode][singlestep_mode])
--
- #endif
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index 106b7da2f8d6..e10bcd6fb869 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -332,17 +332,9 @@ int __init make_proc_sysemu(void)
+ /* tty.c */
+ extern int get_pty(void);
  
- late_initcall(make_proc_sysemu);
+diff --git a/arch/x86/um/asm/elf.h b/arch/x86/um/asm/elf.h
+index 6523eb7c3bd1..6052200fe925 100644
+--- a/arch/x86/um/asm/elf.h
++++ b/arch/x86/um/asm/elf.h
+@@ -168,8 +168,8 @@ do {								\
+ 	(pr_reg)[18] = (_regs)->regs.gp[18];			\
+ 	(pr_reg)[19] = (_regs)->regs.gp[19];			\
+ 	(pr_reg)[20] = (_regs)->regs.gp[20];			\
+-	(pr_reg)[21] = current->thread.arch.fs;			\
+-	(pr_reg)[22] = 0;					\
++	(pr_reg)[21] = (_regs)->regs.gp[21];			\
++	(pr_reg)[22] = (_regs)->regs.gp[22];			\
+ 	(pr_reg)[23] = 0;					\
+ 	(pr_reg)[24] = 0;					\
+ 	(pr_reg)[25] = 0;					\
+diff --git a/arch/x86/um/asm/processor_64.h b/arch/x86/um/asm/processor_64.h
+index 1ef9c21877bc..f90159508936 100644
+--- a/arch/x86/um/asm/processor_64.h
++++ b/arch/x86/um/asm/processor_64.h
+@@ -10,13 +10,11 @@
+ struct arch_thread {
+         unsigned long debugregs[8];
+         int debugregs_seq;
+-        unsigned long fs;
+         struct faultinfo faultinfo;
+ };
  
--int singlestepping(void * t)
-+int singlestepping(void)
+ #define INIT_ARCH_THREAD { .debugregs  		= { [ 0 ... 7 ] = 0 }, \
+ 			   .debugregs_seq	= 0, \
+-			   .fs			= 0, \
+ 			   .faultinfo		= { 0, 0, 0 } }
+ 
+ #define STACKSLOTS_PER_LINE 4
+@@ -28,7 +26,6 @@ static inline void arch_flush_thread(struct arch_thread *thread)
+ static inline void arch_copy_thread(struct arch_thread *from,
+                                     struct arch_thread *to)
  {
--	struct task_struct *task = t ? t : current;
--
--	if (!test_thread_flag(TIF_SINGLESTEP))
--		return 0;
--
--	if (task->thread.singlestep_syscall)
--		return 1;
--
--	return 2;
-+	return test_thread_flag(TIF_SINGLESTEP);
+-	to->fs = from->fs;
  }
  
- /*
-diff --git a/arch/um/kernel/ptrace.c b/arch/um/kernel/ptrace.c
-index 5154b27de580..6600a2782796 100644
---- a/arch/um/kernel/ptrace.c
-+++ b/arch/um/kernel/ptrace.c
-@@ -12,7 +12,6 @@
- void user_enable_single_step(struct task_struct *child)
- {
- 	set_tsk_thread_flag(child, TIF_SINGLESTEP);
--	child->thread.singlestep_syscall = 0;
+ #define current_sp() ({ void *sp; __asm__("movq %%rsp, %0" : "=r" (sp) : ); sp; })
+diff --git a/arch/x86/um/os-Linux/Makefile b/arch/x86/um/os-Linux/Makefile
+index ae169125d03f..5249bbc30dcd 100644
+--- a/arch/x86/um/os-Linux/Makefile
++++ b/arch/x86/um/os-Linux/Makefile
+@@ -6,7 +6,6 @@
+ obj-y = registers.o task_size.o mcontext.o
  
- #ifdef SUBARCH_SET_SINGLESTEPPING
- 	SUBARCH_SET_SINGLESTEPPING(child, 1);
-@@ -22,7 +21,6 @@ void user_enable_single_step(struct task_struct *child)
- void user_disable_single_step(struct task_struct *child)
- {
- 	clear_tsk_thread_flag(child, TIF_SINGLESTEP);
--	child->thread.singlestep_syscall = 0;
+ obj-$(CONFIG_X86_32) += tls.o
+-obj-$(CONFIG_64BIT) += prctl.o
  
- #ifdef SUBARCH_SET_SINGLESTEPPING
- 	SUBARCH_SET_SINGLESTEPPING(child, 0);
-diff --git a/arch/um/kernel/signal.c b/arch/um/kernel/signal.c
-index ae4658f576ab..a56b44522766 100644
---- a/arch/um/kernel/signal.c
-+++ b/arch/um/kernel/signal.c
-@@ -120,18 +120,6 @@ void do_signal(struct pt_regs *regs)
- 		}
- 	}
+ USER_OBJS := $(obj-y)
  
--	/*
--	 * This closes a way to execute a system call on the host.  If
--	 * you set a breakpoint on a system call instruction and singlestep
--	 * from it, the tracing thread used to PTRACE_SINGLESTEP the process
--	 * rather than PTRACE_SYSCALL it, allowing the system call to execute
--	 * on the host.  The tracing thread will check this flag and
--	 * PTRACE_SYSCALL if necessary.
--	 */
--	if (test_thread_flag(TIF_SINGLESTEP))
--		current->thread.singlestep_syscall =
--			is_syscall(PT_REGS_IP(&current->thread.regs));
--
- 	/*
- 	 * if there's no signal to deliver, we just put the saved sigmask
- 	 * back
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 9464833e741a..43168c51850c 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -177,48 +177,11 @@ static void handle_segv(int pid, struct uml_pt_regs *regs, unsigned long *aux_fp
- 	segv(regs->faultinfo, 0, 1, NULL);
- }
- 
+diff --git a/arch/x86/um/os-Linux/prctl.c b/arch/x86/um/os-Linux/prctl.c
+deleted file mode 100644
+index 8431e87ac333..000000000000
+--- a/arch/x86/um/os-Linux/prctl.c
++++ /dev/null
+@@ -1,12 +0,0 @@
 -/*
-- * To use the same value of using_sysemu as the caller, ask it that value
-- * (in local_using_sysemu
+- * Copyright (C) 2007 Jeff Dike (jdike@{addtoit.com,linux.intel.com})
+- * Licensed under the GPL
 - */
--static void handle_trap(int pid, struct uml_pt_regs *regs,
--			int local_using_sysemu)
-+static void handle_trap(int pid, struct uml_pt_regs *regs)
- {
--	int err, status;
 -
- 	if ((UPT_IP(regs) >= STUB_START) && (UPT_IP(regs) < STUB_END))
- 		fatal_sigsegv();
- 
--	if (!local_using_sysemu)
--	{
--		err = ptrace(PTRACE_POKEUSER, pid, PT_SYSCALL_NR_OFFSET,
--			     __NR_getpid);
--		if (err < 0) {
--			printk(UM_KERN_ERR "%s - nullifying syscall failed, errno = %d\n",
--			       __func__, errno);
--			fatal_sigsegv();
--		}
+-#include <sys/ptrace.h>
+-#include <asm/ptrace.h>
 -
--		err = ptrace(PTRACE_SYSCALL, pid, 0, 0);
--		if (err < 0) {
--			printk(UM_KERN_ERR "%s - continuing to end of syscall failed, errno = %d\n",
--			       __func__, errno);
--			fatal_sigsegv();
--		}
--
--		CATCH_EINTR(err = waitpid(pid, &status, WUNTRACED | __WALL));
--		if ((err < 0) || !WIFSTOPPED(status) ||
--		    (WSTOPSIG(status) != SIGTRAP + 0x80)) {
--			err = ptrace_dump_regs(pid);
--			if (err)
--				printk(UM_KERN_ERR "Failed to get registers from process, errno = %d\n",
--				       -err);
--			printk(UM_KERN_ERR "%s - failed to wait at end of syscall, errno = %d, status = %d\n",
--			       __func__, errno, status);
--			fatal_sigsegv();
--		}
--	}
--
- 	handle_syscall(regs);
- }
- 
-@@ -355,10 +318,10 @@ int start_userspace(unsigned long stub_stack)
- 		goto out_kill;
- 	}
- 
--	if (ptrace(PTRACE_OLDSETOPTIONS, pid, NULL,
-+	if (ptrace(PTRACE_SETOPTIONS, pid, NULL,
- 		   (void *) PTRACE_O_TRACESYSGOOD) < 0) {
- 		err = -errno;
--		printk(UM_KERN_ERR "%s : PTRACE_OLDSETOPTIONS failed, errno = %d\n",
-+		printk(UM_KERN_ERR "%s : PTRACE_SETOPTIONS failed, errno = %d\n",
- 		       __func__, errno);
- 		goto out_kill;
- 	}
-@@ -380,8 +343,6 @@ int start_userspace(unsigned long stub_stack)
- void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
- {
- 	int err, status, op, pid = userspace_pid[0];
--	/* To prevent races if using_sysemu changes under us.*/
--	int local_using_sysemu;
- 	siginfo_t si;
- 
- 	/* Handle any immediate reschedules or signals */
-@@ -411,11 +372,10 @@ void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
- 			fatal_sigsegv();
- 		}
- 
--		/* Now we set local_using_sysemu to be used for one loop */
--		local_using_sysemu = get_using_sysemu();
--
--		op = SELECT_PTRACE_OPERATION(local_using_sysemu,
--					     singlestepping(NULL));
-+		if (singlestepping())
-+			op = PTRACE_SYSEMU_SINGLESTEP;
-+		else
-+			op = PTRACE_SYSEMU;
- 
- 		if (ptrace(op, pid, 0, 0)) {
- 			printk(UM_KERN_ERR "%s - ptrace continue failed, op = %d, errno = %d\n",
-@@ -474,7 +434,7 @@ void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
- 				else handle_segv(pid, regs, aux_fp_regs);
- 				break;
- 			case SIGTRAP + 0x80:
--			        handle_trap(pid, regs, local_using_sysemu);
-+				handle_trap(pid, regs);
- 				break;
- 			case SIGTRAP:
- 				relay_signal(SIGTRAP, (struct siginfo *)&si, regs);
-@@ -597,10 +557,10 @@ int copy_context_skas0(unsigned long new_stack, int pid)
- 		goto out_kill;
- 	}
- 
--	if (ptrace(PTRACE_OLDSETOPTIONS, pid, NULL,
-+	if (ptrace(PTRACE_SETOPTIONS, pid, NULL,
- 		   (void *)PTRACE_O_TRACESYSGOOD) < 0) {
- 		err = -errno;
--		printk(UM_KERN_ERR "%s : PTRACE_OLDSETOPTIONS failed, errno = %d\n",
-+		printk(UM_KERN_ERR "%s : PTRACE_SETOPTIONS failed, errno = %d\n",
- 		       __func__, errno);
- 		goto out_kill;
- 	}
-diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
-index e3ee4db58b40..561c08e0cc9c 100644
---- a/arch/um/os-Linux/start_up.c
-+++ b/arch/um/os-Linux/start_up.c
-@@ -143,71 +143,16 @@ static int stop_ptraced_child(int pid, int exitcode, int mustexit)
- 	return ret;
- }
- 
--/* Changed only during early boot */
--static int force_sysemu_disabled = 0;
--
--static int __init nosysemu_cmd_param(char *str, int* add)
+-int os_arch_prctl(int pid, int option, unsigned long *arg2)
 -{
--	force_sysemu_disabled = 1;
--	return 0;
+-	return ptrace(PTRACE_ARCH_PRCTL, pid, (unsigned long) arg2, option);
 -}
--
--__uml_setup("nosysemu", nosysemu_cmd_param,
--"nosysemu\n"
--"    Turns off syscall emulation patch for ptrace (SYSEMU).\n"
--"    SYSEMU is a performance-patch introduced by Laurent Vivier. It changes\n"
--"    behaviour of ptrace() and helps reduce host context switch rates.\n"
--"    To make it work, you need a kernel patch for your host, too.\n"
--"    See http://perso.wanadoo.fr/laurent.vivier/UML/ for further \n"
--"    information.\n\n");
--
- static void __init check_sysemu(void)
+diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
+index 27b29ae6c471..6a00a28c9cca 100644
+--- a/arch/x86/um/syscalls_64.c
++++ b/arch/x86/um/syscalls_64.c
+@@ -16,60 +16,24 @@
+ long arch_prctl(struct task_struct *task, int option,
+ 		unsigned long __user *arg2)
  {
--	unsigned long regs[MAX_REG_NR];
- 	int pid, n, status, count=0;
- 
--	os_info("Checking syscall emulation patch for ptrace...");
--	sysemu_supported = 0;
--	pid = start_ptraced_child();
+-	unsigned long *ptr = arg2, tmp;
+-	long ret;
+-	int pid = task->mm->context.id.u.pid;
 -
--	if (ptrace(PTRACE_SYSEMU, pid, 0, 0) < 0)
--		goto fail;
--
--	CATCH_EINTR(n = waitpid(pid, &status, WUNTRACED));
--	if (n < 0)
--		fatal_perror("check_sysemu : wait failed");
--	if (!WIFSTOPPED(status) || (WSTOPSIG(status) != SIGTRAP))
--		fatal("check_sysemu : expected SIGTRAP, got status = %d\n",
--		      status);
--
--	if (ptrace(PTRACE_GETREGS, pid, 0, regs) < 0)
--		fatal_perror("check_sysemu : PTRACE_GETREGS failed");
--	if (PT_SYSCALL_NR(regs) != __NR_getpid) {
--		non_fatal("check_sysemu got system call number %d, "
--			  "expected %d...", PT_SYSCALL_NR(regs), __NR_getpid);
--		goto fail;
--	}
--
--	n = ptrace(PTRACE_POKEUSER, pid, PT_SYSCALL_RET_OFFSET, os_getpid());
--	if (n < 0) {
--		non_fatal("check_sysemu : failed to modify system call "
--			  "return");
--		goto fail;
--	}
--
--	if (stop_ptraced_child(pid, 0, 0) < 0)
--		goto fail_stopped;
--
--	sysemu_supported = 1;
--	os_info("OK\n");
--	set_using_sysemu(!force_sysemu_disabled);
--
--	os_info("Checking advanced syscall emulation patch for ptrace...");
-+	os_info("Checking syscall emulation for ptrace...");
- 	pid = start_ptraced_child();
- 
--	if ((ptrace(PTRACE_OLDSETOPTIONS, pid, 0,
-+	if ((ptrace(PTRACE_SETOPTIONS, pid, 0,
- 		   (void *) PTRACE_O_TRACESYSGOOD) < 0))
--		fatal_perror("check_sysemu: PTRACE_OLDSETOPTIONS failed");
-+		fatal_perror("check_sysemu: PTRACE_SETOPTIONS failed");
- 
- 	while (1) {
- 		count++;
-@@ -243,17 +188,14 @@ static void __init check_sysemu(void)
- 	if (stop_ptraced_child(pid, 0, 0) < 0)
- 		goto fail_stopped;
- 
--	sysemu_supported = 2;
- 	os_info("OK\n");
- 
--	if (!force_sysemu_disabled)
--		set_using_sysemu(sysemu_supported);
- 	return;
- 
- fail:
- 	stop_ptraced_child(pid, 1, 0);
- fail_stopped:
--	non_fatal("missing\n");
-+	fatal("missing\n");
- }
- 
- static void __init check_ptrace(void)
-@@ -263,9 +205,9 @@ static void __init check_ptrace(void)
- 	os_info("Checking that ptrace can change system call numbers...");
- 	pid = start_ptraced_child();
- 
--	if ((ptrace(PTRACE_OLDSETOPTIONS, pid, 0,
-+	if ((ptrace(PTRACE_SETOPTIONS, pid, 0,
- 		   (void *) PTRACE_O_TRACESYSGOOD) < 0))
--		fatal_perror("check_ptrace: PTRACE_OLDSETOPTIONS failed");
-+		fatal_perror("check_ptrace: PTRACE_SETOPTIONS failed");
- 
- 	while (1) {
- 		if (ptrace(PTRACE_SYSCALL, pid, 0, 0) < 0)
-diff --git a/arch/x86/um/ptrace_32.c b/arch/x86/um/ptrace_32.c
-index 0bc4b73a9cde..7f1abde2c84b 100644
---- a/arch/x86/um/ptrace_32.c
-+++ b/arch/x86/um/ptrace_32.c
-@@ -25,30 +25,6 @@ void arch_switch_to(struct task_struct *to)
- 		printk(KERN_WARNING "arch_switch_tls failed, errno = EINVAL\n");
- }
- 
--int is_syscall(unsigned long addr)
--{
--	unsigned short instr;
--	int n;
--
--	n = copy_from_user(&instr, (void __user *) addr, sizeof(instr));
--	if (n) {
--		/* access_process_vm() grants access to vsyscall and stub,
--		 * while copy_from_user doesn't. Maybe access_process_vm is
--		 * slow, but that doesn't matter, since it will be called only
--		 * in case of singlestepping, if copy_from_user failed.
--		 */
--		n = access_process_vm(current, addr, &instr, sizeof(instr),
--				FOLL_FORCE);
--		if (n != sizeof(instr)) {
--			printk(KERN_ERR "is_syscall : failed to read "
--			       "instruction from 0x%lx\n", addr);
--			return 1;
--		}
--	}
--	/* int 0x80 or sysenter */
--	return (instr == 0x80cd) || (instr == 0x340f);
--}
--
- /* determines which flags the user has access to. */
- /* 1 = access 0 = no access */
- #define FLAG_MASK 0x00044dd5
-diff --git a/arch/x86/um/ptrace_64.c b/arch/x86/um/ptrace_64.c
-index 289d0159b041..aa68d83d3f44 100644
---- a/arch/x86/um/ptrace_64.c
-+++ b/arch/x86/um/ptrace_64.c
-@@ -188,32 +188,6 @@ int peek_user(struct task_struct *child, long addr, long data)
- 	return put_user(tmp, (unsigned long *) data);
- }
- 
--/* XXX Mostly copied from sys-i386 */
--int is_syscall(unsigned long addr)
--{
--	unsigned short instr;
--	int n;
--
--	n = copy_from_user(&instr, (void __user *) addr, sizeof(instr));
--	if (n) {
+-	/*
+-	 * With ARCH_SET_FS (and ARCH_SET_GS is treated similarly to
+-	 * be safe), we need to call arch_prctl on the host because
+-	 * setting %fs may result in something else happening (like a
+-	 * GDT or thread.fs being set instead).  So, we let the host
+-	 * fiddle the registers and thread struct and restore the
+-	 * registers afterwards.
+-	 *
+-	 * So, the saved registers are stored to the process (this
+-	 * needed because a stub may have been the last thing to run),
+-	 * arch_prctl is run on the host, then the registers are read
+-	 * back.
+-	 */
+-	switch (option) {
+-	case ARCH_SET_FS:
+-	case ARCH_SET_GS:
+-		ret = restore_pid_registers(pid, &current->thread.regs.regs);
+-		if (ret)
+-			return ret;
+-		break;
+-	case ARCH_GET_FS:
+-	case ARCH_GET_GS:
 -		/*
--		 * access_process_vm() grants access to vsyscall and stub,
--		 * while copy_from_user doesn't. Maybe access_process_vm is
--		 * slow, but that doesn't matter, since it will be called only
--		 * in case of singlestepping, if copy_from_user failed.
+-		 * With these two, we read to a local pointer and
+-		 * put_user it to the userspace pointer that we were
+-		 * given.  If addr isn't valid (because it hasn't been
+-		 * faulted in or is just bogus), we want put_user to
+-		 * fault it in (or return -EFAULT) instead of having
+-		 * the host return -EFAULT.
 -		 */
--		n = access_process_vm(current, addr, &instr, sizeof(instr),
--				FOLL_FORCE);
--		if (n != sizeof(instr)) {
--			printk("is_syscall : failed to read instruction from "
--			       "0x%lx\n", addr);
--			return 1;
--		}
+-		ptr = &tmp;
 -	}
--	/* sysenter */
--	return instr == 0x050f;
--}
 -
- static int get_fpregs(struct user_i387_struct __user *buf, struct task_struct *child)
+-	ret = os_arch_prctl(pid, option, ptr);
+-	if (ret)
+-		return ret;
++	long ret = -EINVAL;
+ 
+ 	switch (option) {
+ 	case ARCH_SET_FS:
+-		current->thread.arch.fs = (unsigned long) ptr;
+-		ret = save_registers(pid, &current->thread.regs.regs);
++		current->thread.regs.regs.gp[FS_BASE / sizeof(unsigned long)] =
++			(unsigned long) arg2;
++		ret = 0;
+ 		break;
+ 	case ARCH_SET_GS:
+-		ret = save_registers(pid, &current->thread.regs.regs);
++		current->thread.regs.regs.gp[GS_BASE / sizeof(unsigned long)] =
++			(unsigned long) arg2;
++		ret = 0;
+ 		break;
+ 	case ARCH_GET_FS:
+-		ret = put_user(tmp, arg2);
++		ret = put_user(current->thread.regs.regs.gp[FS_BASE / sizeof(unsigned long)], arg2);
+ 		break;
+ 	case ARCH_GET_GS:
+-		ret = put_user(tmp, arg2);
++		ret = put_user(current->thread.regs.regs.gp[GS_BASE / sizeof(unsigned long)], arg2);
+ 		break;
+ 	}
+ 
+@@ -83,10 +47,10 @@ SYSCALL_DEFINE2(arch_prctl, int, option, unsigned long, arg2)
+ 
+ void arch_switch_to(struct task_struct *to)
  {
- 	int err, n, cpu = ((struct thread_info *) child->stack)->cpu;
-diff --git a/arch/x86/um/shared/sysdep/ptrace_32.h b/arch/x86/um/shared/sysdep/ptrace_32.h
-index db8478a83a09..0c4989842fbe 100644
---- a/arch/x86/um/shared/sysdep/ptrace_32.h
-+++ b/arch/x86/um/shared/sysdep/ptrace_32.h
-@@ -8,10 +8,6 @@
- 
- #define MAX_FP_NR HOST_FPX_SIZE
- 
--void set_using_sysemu(int value);
--int get_using_sysemu(void);
--extern int sysemu_supported;
+-	if ((to->thread.arch.fs == 0) || (to->mm == NULL))
+-		return;
 -
- #define UPT_SYSCALL_ARG1(r) UPT_BX(r)
- #define UPT_SYSCALL_ARG2(r) UPT_CX(r)
- #define UPT_SYSCALL_ARG3(r) UPT_DX(r)
-diff --git a/arch/x86/um/shared/sysdep/ptrace_user.h b/arch/x86/um/shared/sysdep/ptrace_user.h
-index 44782bbad41e..1d1a824fa652 100644
---- a/arch/x86/um/shared/sysdep/ptrace_user.h
-+++ b/arch/x86/um/shared/sysdep/ptrace_user.h
-@@ -15,14 +15,12 @@
- #define FP_SIZE ((HOST_FPX_SIZE > HOST_FP_SIZE) ? HOST_FPX_SIZE : HOST_FP_SIZE)
- #else
- #define FP_SIZE HOST_FP_SIZE
-+#endif
+-	arch_prctl(to, ARCH_SET_FS, (void __user *) to->thread.arch.fs);
++	/*
++	 * Nothing needs to be done on x86_64.
++	 * The FS_BASE/GS_BASE registers are saved in the ptrace register set.
++	 */
+ }
  
- /*
-- * x86_64 FC3 doesn't define this in /usr/include/linux/ptrace.h even though
-- * it's defined in the kernel's include/linux/ptrace.h. Additionally, use the
-- * 2.4 name and value for 2.4 host compatibility.
-+ * glibc before 2.27 does not include PTRACE_SYSEMU_SINGLESTEP in its enum,
-+ * ensure we have a definition by (re-)defining it here.
-  */
--#ifndef PTRACE_OLDSETOPTIONS
--#define PTRACE_OLDSETOPTIONS 21
--#endif
--
-+#ifndef PTRACE_SYSEMU_SINGLESTEP
-+#define PTRACE_SYSEMU_SINGLESTEP 32
- #endif
+ SYSCALL_DEFINE6(mmap, unsigned long, addr, unsigned long, len,
+diff --git a/arch/x86/um/tls_64.c b/arch/x86/um/tls_64.c
+index ebd3855d9b13..c51a613f6f5c 100644
+--- a/arch/x86/um/tls_64.c
++++ b/arch/x86/um/tls_64.c
+@@ -12,7 +12,7 @@ int arch_set_tls(struct task_struct *t, unsigned long tls)
+ 	 * If CLONE_SETTLS is set, we need to save the thread id
+ 	 * so it can be set during context switches.
+ 	 */
+-	t->thread.arch.fs = tls;
++	t->thread.regs.regs.gp[FS_BASE / sizeof(unsigned long)] = tls;
+ 
+ 	return 0;
+ }
 -- 
 2.41.0
 
