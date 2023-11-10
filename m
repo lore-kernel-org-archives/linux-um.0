@@ -4,63 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0235C4332F
-	for <linux-um@archiver.kernel.org>; Fri, 10 Nov 2023 17:29:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 302ACC4332F
+	for <linux-um@archiver.kernel.org>; Fri, 10 Nov 2023 18:42:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=uAbvCRMbxa/hIOHikzD12+tqhzPsKGnx+PUpwzMR0d4=; b=T+z2925PuXZ77/
-	d3ab5pj8XQevfDGprQbvOl+VPPB7Poa3fE4LzzAHxeYjrzTTlHEoN2JMztBP4cP7r2PmSZjMfEDOz
-	jLPD1aLBOwN6pPoyNXzXR8bUusqPCyXvXwSDk9/bQRRl9wTerAUx8+d2SlMnSXn3FhGWNjwZBQoF4
-	WFqdLrPzVhPzJyLEvbAKTDJCgol/BUJ0LHv2VUIhyNgH7oE0YkQmJMCHAJTFGt3zvhTu1qglk5nHc
-	XeOw+dAD1kcKilXhJ9+IM48i57u3qlIR/dhRIJNkEIvnB9bIp/oer8bR8SlCHHCUdZu8ktQxS3Kqs
-	EqERy1lBVrVuj2YKKWhQ==;
+	List-Owner; bh=Y9jipEBCcF/WnfEazoiZ1sD0aOI2i1NUAxGdqQIz8dM=; b=pM8Ic76/OiTAxE
+	ezyNunLKf8ArqrS9yOF2wLLKRK0tXxV5Q1cWBXvmIYAMKdChrH7zb0DSACw4DiYNhLH4cAAAgmRid
+	yEXXU+kpvpkUIwgcdpkZCkr5l4SocGdc4NbNGfZdGqpY0H9O8E5iDXKZsilfiTT4u33dy6xLp9oX9
+	sCQtwlCNvaJva/qqyais2W1Bw2MVcD8ImMhTRrfrpuyaitLTKSsw9/HU5AQNN7uwxtIZtm4MLaUp9
+	6+BI92+3NvFQVWJRgfJe0RazEfGquvBaROUtxlWarXPJFZXvkU8Ql4AncWZ1qig6JK/kWzIFY8yDu
+	jKwr5NvZcA+VGcUaDOow==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r1VKG-0098Sg-0D;
-	Fri, 10 Nov 2023 17:29:48 +0000
+	id 1r1WSM-009Fda-0d;
+	Fri, 10 Nov 2023 18:42:14 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r1VKD-0098SJ-2T
+	id 1r1WSI-009Fcd-1X
 	for linux-um@lists.infradead.org;
-	Fri, 10 Nov 2023 17:29:47 +0000
+	Fri, 10 Nov 2023 18:42:12 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
 	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=rag7uRzEdfsCWb1y7J/iSAjhIG77B4f6ZQDgpUus/o0=;
-	t=1699637385; x=1700846985; b=rxtIoNd/XBg57ObG5etm6f9LwaI8do6ItWgvodPeN0nnnUE
-	n9E/WSeE/sAs0YHkH6o5uT9ohp+cB2oOXL0eQbomj2oOqERkZl3HxckkPg3jYUg5SMovNXAG22neW
-	BzSQHInhpkshGDTbcq5xevU+irlTBcNHFMF6brCFmh/oq8E7rhIJ7x8A2BlqFfguncMdykNpHz1/j
-	A9scKDztIAguYl6no3J3HmZVlMztQgyVnsTaQb/eEUa7RxyjwqirZJ1TaIcRPu5nfURaNy/SIgVtd
-	gv1JuRc6AwsWtXyGJjZaOobZb1zbUOr4mBggYlCaFj2BRhIzfNqbjQs9RAOpw3fw==;
+	Resent-Cc:Resent-Message-ID; bh=/K8QXTulra+klmhku7IMDjV1b0a+orC3IMvjF1nDZ2k=;
+	t=1699641711; x=1700851311; b=DYD/Wij4IBzYckqrH6vYPVeKz45dON/ruWP5/ZIcnXwp0gc
+	ahpJJD/50NLg+vby8yu0eOceuH/wNM+x8ph54bE63DvNfnAigLQieVBXqXGes5a4lLtDCrALMSO9p
+	tL8Cp1ofQnwuy9ndfsWv5HVfpxKpA0WYRMGI5TyqelQM24WhHzQJ86BEgq8+eQehwKlvQIPgTGcoI
+	YQptRz20IbVspchv8U78TG8SYMQkzygciDBBGbuL3goe71SUmG3YnE/IXc4cTVX+z/uWpDEndYgtc
+	qQXwQCZebtlhRyVqiWMWk0hWPwkfHE8mlu/Nu8E59fH8pe/FvLk7pNclmH1htmGA==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.97)
 	(envelope-from <johannes@sipsolutions.net>)
-	id 1r1VKB-000000036pT-30qf;
-	Fri, 10 Nov 2023 18:29:43 +0100
-Message-ID: <f3ab3489db72e21f877df82b8fec4fabcb5b2fdf.camel@sipsolutions.net>
-Subject: Re: [PATCH RFC 10/11] um: Delay timer_read only in possible busy
- loops in TT-mode
+	id 1r1WRx-0000000390b-13kL;
+	Fri, 10 Nov 2023 19:41:49 +0100
+Message-ID: <434592a91c1c7def768d6986ef263e65b8fb1241.camel@sipsolutions.net>
+Subject: Re: [PATCH RFC 04/11] um: Handle UM_TIMETRAVEL_RUN only in idle
+ loop, signal success in ACK
 From: Johannes Berg <johannes@sipsolutions.net>
-To: Benjamin Beichler <Benjamin.Beichler@uni-rostock.de>, Richard Weinberger
+To: Benjamin Beichler <benjamin.beichler@uni-rostock.de>, Richard Weinberger
 	 <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
 Cc: linux-um@lists.infradead.org
-Date: Fri, 10 Nov 2023 18:29:42 +0100
-In-Reply-To: <867df5dc-8e78-48de-aa1a-da7c8fedb5e6@uni-rostock.de>
+Date: Fri, 10 Nov 2023 19:41:48 +0100
+In-Reply-To: <20231103-bb-timetravel-patches-v1-4-e2c68efcf664@uni-rostock.de>
 References: <20231103-bb-timetravel-patches-v1-0-e2c68efcf664@uni-rostock.de>
-	 <20231103-bb-timetravel-patches-v1-10-e2c68efcf664@uni-rostock.de>
-	 <7daf6651289bd6b48e069f4d0dd7751244177a44.camel@sipsolutions.net>
-	 <867df5dc-8e78-48de-aa1a-da7c8fedb5e6@uni-rostock.de>
+	 <20231103-bb-timetravel-patches-v1-4-e2c68efcf664@uni-rostock.de>
 User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
 X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231110_092945_809200_C335F31D 
-X-CRM114-Status: GOOD (  36.76  )
+X-CRM114-CacheID: sfid-20231110_104210_691492_8806DD01 
+X-CRM114-Status: GOOD (  43.41  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,96 +70,163 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-T24gRnJpLCAyMDIzLTExLTEwIGF0IDE2OjU0ICswMTAwLCBCZW5qYW1pbiBCZWljaGxlciB3cm90
-ZToKPiBBbSAwNi4xMS4yMDIzIHVtIDIxOjUxIHNjaHJpZWIgSm9oYW5uZXMgQmVyZzoKPiA+IE9u
-IEZyaSwgMjAyMy0xMS0wMyBhdCAxNjo0MSArMDAwMCwgQmVuamFtaW4gQmVpY2hsZXIgd3JvdGU6
-Cj4gPiA+IFRoaXMgc2xvd3MgZG93biBleHRlcm5hbCBUVC1tb2RlIGFzIG1vcmUgc2ltdWxhdGlv
-biByb3VuZHRyaXBzIGFyZQo+ID4gPiByZXF1aXJlZCwgYW5kIGl0IHVubmVjZXNzYXJpbHkgYWZm
-ZWN0cyB0aGUgZGV0ZXJtaW5pc20gYW5kIGFjY3VyYWN5IG9mCj4gPiA+IHRoZSBzaW11bGF0aW9u
-Lgo+ID4gSSBzdGlsbCBkb24ndCB0aGluayB0aGlzIGlzIHJlYWxseSB0cnVlLCBpdCBkb2Vzbid0
-IHJlYWxseSBhZmZlY3QKPiA+IGRldGVybWluaXNtPyBJdCBtYWtlcyBpdCAuLi4gZGlmZmVyZW50
-LCBzdXJlLCBidXQgbm90IG5vbi1kZXRlcm1pbmlzdGljPwo+IEkgaW50ZW50aW9uYWxseSBrZXB0
-IGl0IHZhZ3VlLCBidXQgd2hhdCBJIG1lYW50IGlzIHRoYXQgaXQncyAKPiB1bm5lY2Vzc2FyaWx5
-IGNoYWxsZW5naW5nIHRvIGRldGVybWluZS4KClllYWgsIG9rLCBmYWlyIGVub3VnaC4KCj4gUGVy
-aGFwcyBJIHNob3VsZCBtZW50aW9uIHRoYXQgSSdtIHJ1bm5pbmcgYW4gdW5tb2RpZmllZCBVYnVu
-dHUgcm9vdGZzIAo+IHdpdGggc3lzdGVtZCwgd2hpY2ggc3RhcnRzIG1hbnkgZGFlbW9ucyBhbmQg
-b3RoZXIgcHJvY2Vzc2VzLgoKVGhhdCBzb3VuZHMgbGlrZSBhIGJpdCBvZiBhIG5pZ2h0bWFyZSwg
-dG8gYmUgaG9uZXN0LCB3b3VsZG4ndCB5b3Ugd2FudAp0byBrZWVwIHRoaW5ncyB1bmRlciB0aWdo
-dGVyIGNvbnRyb2w/IEJ1dCBJIGd1ZXNzIGl0IHJlYWxseSBkZXBlbmRzIG9uCndoYXQgeW91J3Jl
-IHRyeWluZyB0byBhY2hpZXZlLgoKPiBUbyBtZSwgaXQgc2VlbXMgaWxsb2dpY2FsIHRvIGRlbGF5
-IGV2ZXJ5dGhpbmcganVzdCBiZWNhdXNlIG9uZSBwcm9jZXNzIAo+IGlzIHdhaXRpbmcgZm9yIGEg
-dGltZXN0YW1wLgoKWWVhaCBJIGd1ZXNzIHdlJ2xsIGp1c3QgaGF2ZSB0byBkaXNhZ3JlZSA7LSkg
-WW91J3JlIHJ1bm5pbmcgc29tZQpwcm9jZXNzLCBzbyB5b3UndmUga2luZCBvZiBkZWNpZGVkIHRv
-ICJnaXZlIGl0IHRpbWUiIG9mIHNvcnRzLCBhbmQgaW4gYQpub3JtYWwgc3lzdGVtIHJlYWRpbmcg
-dGltZSB3aWxsIGFsd2F5cyB0YWtlIHRpbWUsIGp1c3QgbGlrZSBldmVyeXRoaW5nCmVsc2UgOikK
-CkJ1dCBhbnl3YXksIEknbSBub3QgcmVhbGx5IG9wcG9zZWQgdG8gdGhpcyBwYXRjaCwgaXQncyBq
-dXN0IC4uLiBub3QKZ3JlYXQsIEkgZ3Vlc3M/IEFuZCBsaWtlIEkgc2FpZCwgbWFrZXMgbW9yZSBz
-ZW5zZSB0byBzcXVhc2ggOSBhbmQgMTA/Cgo+IEF0IHRoZSBtb21lbnQsIHdlIGhhdmVuJ3QgcGF0
-Y2hlZCB0aGUgcmFuZG9tIGRldmljZSB0aGF0IGZldGNoZXMgcmFuZG9tIAo+IGJ5dGVzIGZyb20g
-dGhlIGhvc3QgKGRvIHlvdSBhbHJlYWR5IGhhdmUgYSBwYXRjaCBmb3IgdGhpcz8pLAo+IHNvIGNv
-bXBsZXRlIHJlcGVhdGFiaWxpdHkgaXNuJ3QgZ3VhcmFudGVlZCBhdCB0aGUgbW9tZW50LiBIb3dl
-dmVyLCB0aGF0IAo+IGNvdWxkIGJlIGEgbG9naWNhbCBuZXh0IHN0ZXAuCj4gPiA+ICtzdGF0aWMg
-Y29uc3QgaW50IHN1c3BpY2lvdXNfYnVzeV9sb29wX3N5c2NhbGxzW10gPSB7Cj4gPiA+ICsgICAg
-IDM2LCAvL3N5c19nZXRpdGltZXIKPiA+ID4gKyAgICAgOTYsIC8vc3lzX2dldHRpbWVvZmRheQo+
-ID4gPiArICAgICAyMDEsIC8vc3lzX3RpbWUKPiA+ID4gKyAgICAgMjI0LCAvL3N5c190aW1lcl9n
-ZXR0aW1lCj4gPiA+ICsgICAgIDIyOCwgLy9zeXNfY2xvY2tfZ2V0dGltZQo+ID4gPiArICAgICAy
-ODcsIC8vc3lzX3RpbWVyZmRfZ2V0dGltZQo+ID4gPiArfTsKPiA+IFRoYXQncyBraW5kIG9mIGF3
-ZnVsLiBTdXJlbHkgd2UgY2FuIHVzZSBfX05SX3RpbWVyX2dldHRpbWUgZXRjLiBoZXJlIGF0Cj4g
-PiBsZWFzdD8KPiBBY3R1YWxseSwgdGhpcyB3YXMgYSBxdWljayBhdHRlbXB0IHRvIGFkZHJlc3Mg
-dGhlIGlzc3VlLCBhbmQgZHVyaW5nIHRoYXQgCj4gcGVyaW9kLCBJIGNvdWxkbid0IGxvY2F0ZSB0
-aGUgYXBwcm9wcmlhdGUgbWFjcm9zLgo+IAo+IFRoZXNlIG51bWJlcnMgYXJlIGdlbmVyYXRlZCBm
-cm9tIGFyY2gveDg2L2VudHJ5L3N5c2NhbGxzL3N5c2NhbGxfNjQudGJsIAo+IChvciAzMiBpZiBj
-b25maWd1cmVkIGluIHRoYXQgbWFubmVyKS4KPiAKPiBJIG1pZ2h0IGJlIG92ZXJsb29raW5nIHNv
-bWV0aGluZywgYnV0IGl0IHNlZW1zIHRoYXQgX19OUl90aW1lcl9nZXR0aW1lIAo+IGlzbid0IGRl
-ZmluZWQgaW4gdGhlIGtlcm5lbC4gSWYgeW91IGhhdmUgYSBiZXR0ZXIgcmVmZXJlbmNlIGZvciB0
-aGlzIAo+IHRyYW5zbGF0aW9uLCBJJ2QgYXBwcmVjaWF0ZSBpdC4KCkxvb2sgYXQgdGhlIGFyY2gv
-eDg2L2luY2x1ZGUvZ2VuZXJhdGVkL3VhcGkvYXNtL3VuaXN0ZCouaCBmaWxlcyBhZnRlcgp5b3Ug
-YnVpbGQgdGhlIHRyZWUuIEhvdyBkbyB0aGV5IGFjdHVhbGx5IGdldCBnZW5lcmF0ZWQ/IEJlYXRz
-IG1lLgoKPiA+ID4gK3N0YXRpYyBib29sIHN1c3BpY2lvdXNfYnVzeV9sb29wKHZvaWQpCj4gPiA+
-ICt7Cj4gPiA+ICsgICAgIGludCBpOwo+ID4gPiArICAgICBpbnQgc3lzY2FsbCA9IHN5c2NhbGxf
-Z2V0X25yKGN1cnJlbnQsIHRhc2tfcHRfcmVncyhjdXJyZW50KSk7Cj4gPiA+ICsKPiA+ID4gKyAg
-ICAgZm9yIChpID0gMDsgaSA8IEFSUkFZX1NJWkUoc3VzcGljaW91c19idXN5X2xvb3Bfc3lzY2Fs
-bHMpOyBpKyspIHsKPiA+ID4gKyAgICAgICAgICAgICBpZiAoc3VzcGljaW91c19idXN5X2xvb3Bf
-c3lzY2FsbHNbaV0gPT0gc3lzY2FsbCkKPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgIHJldHVy
-biB0cnVlOwo+ID4gPiArICAgICB9Cj4gPiBNaWdodCBhbHNvIGJlIGZhc3RlciB0byBoYXZlIGEg
-Yml0bWFwPyBCdXQgLi4uIGFsc28ga2luZCBvZiBhd2t3YXJkIEkKPiA+IGd1ZXNzLgo+IEFjdHVh
-bGx5LCBhIHNob3J0IGZpeGVkIHNpemUgYXJyYXkgc2hvdWxkIGJlIG9wdGltaXplZCBxdWl0ZSB3
-ZWxsIHdpdGggCj4gbG9vcCB1bnJvbGxpbmcgb3Igb3RoZXIgc3R1ZmYsIGlzbid0IGl0PyBJIGNv
-dWxkIGFsc28gZG8gYSBzd2l0Y2ggd2l0aCAKPiBhbGwgY2FsbHMsIGJ1dCB0aGlzIGxvb3Agc2Vl
-bXMgZm9yIG1lIHRoZSBlYXNpZXN0LgoKWWVhaCwgbWF5YmUuIEkgaGF2ZW4ndCBjaGVja2VkIHRo
-ZSBvdXRwdXQuCgo+ID4gSSBkdW5uby4gSSdtIG5vdCBldmVuIHN1cmUgd2hhdCB5b3UncmUgdHJ5
-aW5nIHRvIGFjaGlldmUgLSBhcGFydCBmcm9tCj4gPiAiZGV0ZXJtaW5pc20iIHdoaWNoIHNlZW1z
-IG9kZCBvciBldmVuIHdyb25nLCBhbmQgc3BlZWQsIHdoaWNoIGlzCj4gPiBwcm9iYWJseSBlYXNp
-ZXIgZG9uZSB3aXRoIGEgYmV0dGVyIGZyZWUtdW50aWwgYW5kIHRoZSBzaGFyZWQgbWVtb3J5Cj4g
-PiBjYWxlbmRhciB3ZSBoYXZlIGJlZW4gd29ya2luZyBvbi4KPiBJbiBteSBwZXJzcGVjdGl2ZSwg
-ZGVsYXlpbmcgZ2V0X3RpbWVyIG9ubHkgc2VydmVzIGFzIGEgdGllLWJyZWFrZXIgZm9yIAo+IHBv
-b3JseSBiZWhhdmluZyBzb2Z0d2FyZSB0aGF0IHJlc29ydHMgdG8gYSBidXN5LWxvb3Agd2hpbGUg
-d2FpdGluZyBmb3IgCj4gdGltZSB0byBhZHZhbmNlLgoKWWVhaCBJIGd1ZXNzIHRoYXQncyB0cnVl
-LgoKPiBXaGlsZSB0aGlzIGJlaGF2aW9yIG1pZ2h0IG5vdCBiZSB1bmNvbW1vbiwgd2h5IHBlbmFs
-aXplIGFsbCBwcm9jZXNzZXMgCj4gZm9yIGl0PwoKV2VsbCBJIHRoaW5rIHdlIGhhdmUgYSBkaWZm
-ZXJlbnQgc2Vuc2Ugb2YgInBlbmFsaXplIiwgSSB3b3VsZG4ndCBzYXkKdGhhdC4gSSBtZWFuLCB5
-b3UgY2FuJ3QgcmVhc29uYWJseSBleHBlY3QgZ2V0dGluZyBhIHRpbWVzdGFtcCBkb2Vzbid0CnRh
-a2UgYW55IHRpbWUgYXQgYWxsLCB0aGF0J3MganVzdCBub3QgaG93IHBoeXNpY2FsIHJlYWxpdHkg
-d29ya3M/IE5vdwp3ZSdyZSBiZW5kaW5nIHRoZSBydWxlcyBoZXJlIGluIHRoYXQgYSBsb3Qgb2Yg
-dGhpbmdzIHRoYXQgbm9ybWFsbHkgdGFrZQp0aW1lIHN1ZGRlbmx5IGRvbid0LCBidXQgSSBndWVz
-cyBJIGRvbid0IGZ1bGx5IHVuZGVyc3RhbmQgd2h5IHlvdSdyZSBzbwprZWVuIG9uIGJlbmRpbmcg
-dGhlIHJ1bGVzIF9hbGwgdGhlIHdheV8uCgpCdXQgSSB0aGluayB0aGF0J3MgdGhpczoKCj4gQ29u
-c2lkZXIgYW4gZXhwZXJpbWVudCB3aGVyZSBJIGFpbSB0byBtZWFzdXJlIHRoZSBpbXBhY3Qgb2Yg
-bmV0d29yayAKPiBsYXRlbmN5IG9uIHNvZnR3YXJlLiBTb21ldGltZXMsIHRoZSByZXNwb25zZSBs
-YXRlbmN5IGZsdWN0dWF0ZXMKPiBiZWNhdXNlIGEgYmFja2dyb3VuZCB0YXNrIHdhcyBzY2hlZHVs
-ZWQgcmFuZG9tbHkgYnV0IGRldGVybWluaXN0aWNhbGx5IAoKInJhbmRvbWx5IGJ1dCBkZXRlcm1p
-bmlzdGljYWxseSIgaXMga2luZCBvZiBmdW4g8J+Ygu+4jwoKPiBhdCB0aGUgc2FtZSB0aW1lLCBv
-YnRhaW5pbmcgYSB0aW1lc3RhbXAgdGhhdCBibG9ja3MgYWxsIG90aGVyCj4gcHJvY2Vzc2VzIGFu
-ZCBhZHZhbmNlcyBzaW11bGF0aW9uIHRpbWUuIFRoaXMgYWN0aW9uIHNpbXBseSB1bmRlcm1pbmVz
-IAo+IHRoZSB1dGlsaXR5IG9mIHRoZSB0aW1lIHRyYXZlbCBtb2RlIHVubmVjZXNzYXJpbHkuCj4g
-Cj4gSG93ZXZlciwgc29mdHdhcmUgYWN0aXZlbHkgd2FpdGluZyBmb3IgdGltZSBhZHZhbmNlbWVu
-dCBpbiBhIGJ1c3kgbG9vcCAKPiBhY2hpZXZlcyBpdHMgZ29hbC4gSXTigJlzIGFsbW9zdCBhIHdp
-bi13aW4gc2l0dWF0aW9uLCBpc24ndCBpdD8KCkZhaXIgZW5vdWdoLgoKam9oYW5uZXMKCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxp
-bmcgbGlzdApsaW51eC11bUBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtdW0K
+So I guess now you reminded me of this thread ...
+
+> The Timetravel socket can be read from the SIGIO handler, which may
+> catch a RUN message that was expected to be received in the wait loop.
+> 
+> It can happen that the device simulation only "created" one interrupt,
+> but an uncertain (i.e., hard to predict by the calendar/device
+> simulation) number of SIGIOs are emitted, with each SIGIO interrupt
+> producing a GET message. The calendar might try to send a RUN message
+> after the first GET message, which is then processed in the SIGIO
+> handler, waiting for the response to a subsequent GET message. However,
+> time is advanced by the received RUN message. Typically, this doesn't
+> pose problems because the interrupt implies that the next RUN message
+> should be at the current time (as sent by the calendar with the GET
+> message). But there are corner cases, such as simultaneous other
+> interrupts, which may desynchronize the current time in the UML instance
+> from the expected time from the calendar. Since there is no real use
+> case for advancing time in the SIGIO handler with RUN messages (in
+> contrast to UPDATE messages), we logically only expect time to advance
+> in the idle loop in TT-ext mode. Therefore, with this patch, we restrict
+> time changes to the idle loop.
+
+OK, that mostly makes sense, so far. Although IIUC now you lost the time
+update, so you have to recover from that again somehow when you actually
+do the RUN (which we don't do from the SIGIO handler).
+
+> Additionally, since both the idle loop and the signal/interrupt handlers
+> do blocking reads from the TT socket, a deadlock can occur if a RUN
+> message intended for the idle loop is received in the SIGIO handler. In
+> this situation, the calendar expects the UML instance to run, but it
+> actually waits for another message, either in the SIGIO handler (e.g.,
+> a second interrupt) or in a poll in the idle loop, as the previous
+> message was handled by the signal handler, which returned execution to
+> the main loop and ultimately entered the idle loop.
+
+I'm not sure I understand this part. How can you get a RUN message when
+someone else is still running and sending you interrupts? Or are you
+sending interrupts (with time travel handlers because of patch 3?) from
+_outside_ of the simulation?! I guess that'd be a case of "don't do that
+then"? :)
+
+Or ... I'm still wrapping my head around the system you built ... are
+you saying that interrupts are actually delayed and we have something
+like this:
+
+Participant A   --- message ----------------> UML (socket)
+Participant A   --- WAIT --> calendar
+                                  SIGIO ----> UML
+calendar        <-- GET --------------------- UML (time_travel_handler)
+calendar        --- RUN --------------------> UML
+                                              (reads "RUN" instead
+                                               of GET response)
+
+But then that's again just because "you're doing it wrong", Participant
+A should be waiting for an ACK message? At least that was the intent.
+You're not using it that way with the line interrupts.
+
+But honestly, I think that's just another reason not to do things the
+way you're doing in patches 2 and 3.
+
+> Therefore, this patch also allows checking whether the current RUN
+> message was handled by the idle loop or by the signal/interrupt handlers
+> in the ACK of the RUN.
+> 
+> With the information in the ACK of the RUN message, the calendar knows
+> whether the RUN was answered in a signal handler and can act
+> accordingly.
+
+TBH, I don't like this at all. If I'm not completely off with my
+analysis above (or it's a similar situation), this just puts workaround
+requirements on the calendar because you don't synchronise communication
+in _other_ parts of the system properly.
+
+In the simulation that we had intended to build, the exact timing of the
+SIGIO wouldn't matter because UML would _always_ be in WAIT state when
+getting SIGIO, and would always have to fully process the SIGIO (and
+send an ACK on the respective socket) before the other side continues
+and we can get to any other part of the system.
+
+That's a pretty fundamental rule of the system because it allows us to
+reason how information flows, which part can be doing what at which
+time, and (mostly) ignore the inherently asynchronous nature of today's
+computing in the system, since things are always locally serialised.
+
+You broke that rule, and the system is coming apart at the seams. You
+already found - as I pointed out in the other email - that you now have
+to some assumptions on the sender side of the message about how the
+interrupt processing will be done on the receiver (although that
+assumption is perhaps not more than "may be immediate so I need to
+return to the calendar").
+
+You also found that when you broke that rule, you got other asynchronous
+things going on, and now need to handle that suddenly you can get a RUN
+message inside a SIGIO handler, because that's async and nothing waits
+for it to have finished.
+
+I honestly don't believe that removing this rule will do the system good
+in the long term. You'll almost certainly find other corner cases - we
+still find corner cases in the system _with_ the rule, and that's a
+_much_ simpler system.
+
+I also tend to think that the more complex system (without that rule)
+will be much harder to optimise. For example, the shared memory table of
+run requests (yes yes, I'll send it in a bit), you don't even have a GET
+message in time_travel_add_irq_event() any more. In fact you have no
+messages at all there! That maybe makes this part easier? But it also
+means now you have to reason about why that's actually still OK to not
+get the RUN message where you previously expected it, etc.
+
+
+Or if we consider further optimisations we've been thinking about (but
+not implemented yet) - one of them is to use signals for wait/run so we
+can hand off running between processes without going through the
+calendar (with the calendar still maintaining the new distributed
+protocol on behalf of clients that don't participate in a distributed
+protocol yet.) Not having the ACK would actually _defeat_ this
+optimisation, because you wouldn't actually know who to hand it off to,
+only the calendar would be able to do the handoff, since it's the only
+one communicating with everyone. With the ACK you know that as soon as
+you have the ACK, the shared table must be updated, and you can make the
+hand-off decision locally instead of going to the calendar.
+
+
+So ... I think all of this is an even longer-winded way than the last
+discussion over on patch 3 of saying I don't like your simulation model
+that doesn't require an ACK, and I don't think we should support it.
+
+
+FWIW, it really shouldn't be that hard to replace the 'lines' with
+virtio serial consoles or so. We've actually done that, we have a
+device-side implementation of this:
+
+#define VIRTIO_ID_RPROC_SERIAL          11 /* virtio remoteproc serial link */
+
+(which is really just a virtio console, shows up as /dev/vport*p0 inside
+the virtual system, rather than /dev/ssl* or whatever you have there
+now.
+
+With the usfstl vhost device abstraction [1] it's less than 150 LOC, and
+much of it is boilerplate/struct filling...
+
+[1] https://github.com/linux-test-project/usfstl/blob/main/include/usfstl/vhost.h
+
+
+Although our implementation only supports a single connection and is
+built into whatever generates the messages, if you want multiple UML
+instances to communicate you'd have to have an implementation that has a
+socket for each and a config file which is connected to where.
+
+johannes
+
+_______________________________________________
+linux-um mailing list
+linux-um@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-um
