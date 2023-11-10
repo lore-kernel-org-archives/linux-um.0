@@ -4,55 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D696C4332F
-	for <linux-um@archiver.kernel.org>; Fri, 10 Nov 2023 10:42:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7420C4332F
+	for <linux-um@archiver.kernel.org>; Fri, 10 Nov 2023 10:56:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
 	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To:From:Subject:
 	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=4hmdMKCjTAZ8PxaNjKpv7uFID5QVGK6kk/77ReB/Y38=; b=hQBB+ANQasI6R6
-	VzEGZoq2K6e55rgM2IVcCDwCcZ2fnPvGiOh2ETPXJk8ubP9Lb8hm9Nk5aykEO62li9Vu1j95V34Xk
-	whFaoEDD4JU31Sq3A75ycEWf4gmRchFEXQaNmOh2EvuX5vgMwa3U3YqfQ9HkAnbhaiMlFVEoSsRvw
-	mNUG9sjNfsOk1N61AwSvdt/ynbcKr6Aox7HaSVuFJgEiA8pNaFHpdHfDq13Kg+3ofG2GtCNDlkq41
-	lheuJnqeaYO7liu41XQ47EgpFkKRGGKguBcbZAgIRdsH1RrJ+VnJR8QGhPdd0t9wq9e16qHIaq3a+
-	OpI891VSTVIAIW3hegwA==;
+	List-Owner; bh=0VsDlsWf93t0yQEFVJR8K8Pp0f+BP8wmFIeZSee6piI=; b=EhEmeU6Z3+Ay9C
+	u3HyMybCIDQOr9bdAUC+RLroJXbTIU03imT7pMy3eXy0gZYqAD+j/VESnTmbKTPl8xQeU7DXSqFVG
+	6R1YmYudTUYku/1nj8xCORn0Y0wWwHpnrn60y1v3A7E+DkaWCDDD+6XAInZKQU7h+KJkeSPC9OwZa
+	TENZkL5EAps+fWhezCDJMNCeVXaiBuyzN/H6nV+IF7NFFoWzAlOqoxI/1cLBwsY1naaA4gcxmZkKn
+	7lVnt9AgqJIddgtLvpfxeBu6fJWxxVQXA2jGkHBALfR0Ce39YpB15nKi80/cfPY9AM4/YlIu6vaLU
+	OD9sAAPhXfMaFHx8/CkA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r1OyI-008KEl-28;
-	Fri, 10 Nov 2023 10:42:42 +0000
+	id 1r1PBr-008L7R-0A;
+	Fri, 10 Nov 2023 10:56:43 +0000
 Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r1OyE-008KDY-2J
+	id 1r1PBm-008L6z-2g
 	for linux-um@lists.infradead.org;
-	Fri, 10 Nov 2023 10:42:41 +0000
+	Fri, 10 Nov 2023 10:56:41 +0000
 Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
 	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <anton.ivanov@kot-begemot.co.uk>)
-	id 1r1Oy6-005eO9-4L; Fri, 10 Nov 2023 10:42:30 +0000
+	id 1r1PBk-005eRJ-2x; Fri, 10 Nov 2023 10:56:36 +0000
 Received: from jain.kot-begemot.co.uk ([192.168.3.3])
 	by jain.kot-begemot.co.uk with esmtp (Exim 4.96)
 	(envelope-from <anton.ivanov@kot-begemot.co.uk>)
-	id 1r1Oxx-00Achk-1g;
-	Fri, 10 Nov 2023 10:42:29 +0000
-Message-ID: <f0c614a6-cf3a-b6e1-6f40-ad6d59460fcf@kot-begemot.co.uk>
-Date: Fri, 10 Nov 2023 10:42:21 +0000
+	id 1r1PBf-00Af0L-0W;
+	Fri, 10 Nov 2023 10:56:35 +0000
+Message-ID: <458e033f-1769-fc04-c491-e9a69058c7da@kot-begemot.co.uk>
+Date: Fri, 10 Nov 2023 10:56:30 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
 Subject: Re: [PATCH] um: hostfs: catch EINTR and partial read/write
 Content-Language: en-US
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
 To: benjamin@sipsolutions.net, linux-um@lists.infradead.org
 Cc: Benjamin Berg <benjamin.berg@intel.com>
 References: <20231110094425.1810667-1-benjamin@sipsolutions.net>
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-In-Reply-To: <20231110094425.1810667-1-benjamin@sipsolutions.net>
+ <f0c614a6-cf3a-b6e1-6f40-ad6d59460fcf@kot-begemot.co.uk>
+In-Reply-To: <f0c614a6-cf3a-b6e1-6f40-ad6d59460fcf@kot-begemot.co.uk>
 X-Clacks-Overhead: GNU Terry Pratchett
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231110_024238_918750_2A7B9B78 
-X-CRM114-Status: GOOD (  28.86  )
+X-CRM114-CacheID: sfid-20231110_025639_034979_56559C66 
+X-CRM114-Status: GOOD (  23.84  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -64,374 +65,237 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-
-
-On 10/11/2023 09:44, benjamin@sipsolutions.net wrote:
-> From: Benjamin Berg <benjamin.berg@intel.com>
-> 
-> The UM kernel uses signals for various purposes (SIGALRM for scheduling
-> for example). These signals are interrupts for the UM kernel, which
-> should not affect file system operations from userspace processes.
-> 
-> Said differently, in hostfs all operations are directly forwarded to the
-> host and will block the entire UM kernel. As such, hostfs does not
-> permit other tasks to be scheduled while operations are ongoing and
-> these operations are fundamentally synchronous and not interruptible.
-> 
-> With all this, the only reasonable thing to do is to catch all EINTR
-> situations and retry them. This includes retrying short read/write
-> operations in order to ensure they finish.
-> 
-> If, at any point, hostfs becomes able to push operations into the
-> background in order to schedule another task, then an abortion mechanism
-> may be needed.
-> 
-> Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
-> ---
->   arch/um/include/shared/os.h |   7 ++-
->   fs/hostfs/hostfs_user.c     | 115 +++++++++++++++++++++++-------------
->   2 files changed, 80 insertions(+), 42 deletions(-)
-> 
-> diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-> index 0df646c6651e..7c5564ebc5bb 100644
-> --- a/arch/um/include/shared/os.h
-> +++ b/arch/um/include/shared/os.h
-> @@ -18,7 +18,12 @@
->   #include <sys/types.h>
->   #endif
->   
-> -#define CATCH_EINTR(expr) while ((errno = 0, ((expr) < 0)) && (errno == EINTR))
-> +#define CATCH_EINTR(expr) ({						\
-> +		int __result;						\
-> +		while ((errno = 0, ((__result = (expr)) < 0)) &&	\
-> +		       (errno == EINTR));				\
-> +		__result;						\
-> +	})
->   
->   #define OS_TYPE_FILE 1
->   #define OS_TYPE_DIR 2
-> diff --git a/fs/hostfs/hostfs_user.c b/fs/hostfs/hostfs_user.c
-> index 840619e39a1a..dd30bcc6d58f 100644
-> --- a/fs/hostfs/hostfs_user.c
-> +++ b/fs/hostfs/hostfs_user.c
-> @@ -17,6 +17,7 @@
->   #include <sys/syscall.h>
->   #include "hostfs.h"
->   #include <utime.h>
-> +#include <os.h>
->   
->   static void stat64_to_hostfs(const struct stat64 *buf, struct hostfs_stat *p)
->   {
-> @@ -44,9 +45,9 @@ int stat_file(const char *path, struct hostfs_stat *p, int fd)
->   	struct stat64 buf;
->   
->   	if (fd >= 0) {
-> -		if (fstat64(fd, &buf) < 0)
-> +		if (CATCH_EINTR(fstat64(fd, &buf)) < 0)
->   			return -errno;
-> -	} else if (lstat64(path, &buf) < 0) {
-> +	} else if (CATCH_EINTR(lstat64(path, &buf)) < 0) {
->   		return -errno;
->   	}
->   	stat64_to_hostfs(&buf, p);
-> @@ -63,7 +64,7 @@ int access_file(char *path, int r, int w, int x)
->   		mode |= W_OK;
->   	if (x)
->   		mode |= X_OK;
-> -	if (access(path, mode) != 0)
-> +	if (CATCH_EINTR(access(path, mode)) != 0)
->   		return -errno;
->   	else return 0;
->   }
-> @@ -82,7 +83,7 @@ int open_file(char *path, int r, int w, int append)
->   
->   	if (append)
->   		mode |= O_APPEND;
-> -	fd = open64(path, mode);
-> +	fd = CATCH_EINTR(open64(path, mode));
->   	if (fd < 0)
->   		return -errno;
->   	else return fd;
-> @@ -92,7 +93,11 @@ void *open_dir(char *path, int *err_out)
->   {
->   	DIR *dir;
->   
-> -	dir = opendir(path);
-> +	do {
-> +		errno = 0;
-> +		dir = opendir(path);
-> +	} while (dir == NULL && errno == -EINTR);
-> +
->   	*err_out = errno;
->   
->   	return dir;
-> @@ -112,9 +117,14 @@ char *read_dir(void *stream, unsigned long long *pos_out,
->   	DIR *dir = stream;
->   	struct dirent *ent;
->   
-> -	ent = readdir(dir);
-> +	do {
-> +		errno = 0;
-> +		ent = readdir(dir);
-> +	} while (ent == 0 && errno == EINTR);
-> +
->   	if (ent == NULL)
->   		return NULL;
-> +
->   	*len_out = strlen(ent->d_name);
->   	*ino_out = ent->d_ino;
->   	*type_out = ent->d_type;
-> @@ -125,30 +135,52 @@ char *read_dir(void *stream, unsigned long long *pos_out,
->   int read_file(int fd, unsigned long long *offset, char *buf, int len)
->   {
->   	int n;
-> +	int read = 0;
-> +
-> +	do {
-> +		errno = 0;
-> +		n = pread64(fd, buf, len, *offset);
-> +		if (n > 0) {
-> +			read += n;
-> +			*offset += n;
-> +			len -= n;
-> +			continue;
-> +		}
-> +	} while (n < 0 && errno == EINTR);
->   
-> -	n = pread64(fd, buf, len, *offset);
-> -	if (n < 0)
-> -		return -errno;
-> -	*offset += n;
-> -	return n;
-> +	if (read > 0)
-> +		return read;
-> +
-> +	return -errno;
->   }
->   
->   int write_file(int fd, unsigned long long *offset, const char *buf, int len)
->   {
->   	int n;
-> +	int written = 0;
-> +
-> +	do {
-> +		errno = 0;
-> +		n = pwrite64(fd, buf, len, *offset);
-> +		if (n > 0) {
-> +			written += n;
-> +			*offset += n;
-> +			len -= n;
-> +			continue;
-> +		}
-> +	} while (n < 0 && errno == EINTR);
->   
-> -	n = pwrite64(fd, buf, len, *offset);
-> -	if (n < 0)
-> -		return -errno;
-> -	*offset += n;
-> -	return n;
-> +	if (written > 0)
-> +		return written;
-> +
-> +	return -errno;
->   }
->   
->   int lseek_file(int fd, long long offset, int whence)
->   {
->   	int ret;
->   
-> -	ret = lseek64(fd, offset, whence);
-> +	ret = CATCH_EINTR(lseek64(fd, offset, whence));
->   	if (ret < 0)
->   		return -errno;
->   	return 0;
-> @@ -158,9 +190,9 @@ int fsync_file(int fd, int datasync)
->   {
->   	int ret;
->   	if (datasync)
-> -		ret = fdatasync(fd);
-> +		ret = CATCH_EINTR(fdatasync(fd));
->   	else
-> -		ret = fsync(fd);
-> +		ret = CATCH_EINTR(fsync(fd));
->   
->   	if (ret < 0)
->   		return -errno;
-> @@ -169,24 +201,24 @@ int fsync_file(int fd, int datasync)
->   
->   int replace_file(int oldfd, int fd)
->   {
-> -	return dup2(oldfd, fd);
-> +	return CATCH_EINTR(dup2(oldfd, fd));
->   }
->   
->   void close_file(void *stream)
->   {
-> -	close(*((int *) stream));
-> +	CATCH_EINTR(close(*((int *) stream)));
->   }
->   
->   void close_dir(void *stream)
->   {
-> -	closedir(stream);
-> +	CATCH_EINTR(closedir(stream));
->   }
->   
->   int file_create(char *name, int mode)
->   {
->   	int fd;
->   
-> -	fd = open64(name, O_CREAT | O_RDWR, mode);
-> +	fd = CATCH_EINTR(open64(name, O_CREAT | O_RDWR, mode));
->   	if (fd < 0)
->   		return -errno;
->   	return fd;
-> @@ -200,33 +232,33 @@ int set_attr(const char *file, struct hostfs_iattr *attrs, int fd)
->   
->   	if (attrs->ia_valid & HOSTFS_ATTR_MODE) {
->   		if (fd >= 0) {
-> -			if (fchmod(fd, attrs->ia_mode) != 0)
-> +			if (CATCH_EINTR(fchmod(fd, attrs->ia_mode)) != 0)
->   				return -errno;
-> -		} else if (chmod(file, attrs->ia_mode) != 0) {
-> +		} else if (CATCH_EINTR(chmod(file, attrs->ia_mode)) != 0) {
->   			return -errno;
->   		}
->   	}
->   	if (attrs->ia_valid & HOSTFS_ATTR_UID) {
->   		if (fd >= 0) {
-> -			if (fchown(fd, attrs->ia_uid, -1))
-> +			if (CATCH_EINTR(fchown(fd, attrs->ia_uid, -1)))
->   				return -errno;
-> -		} else if (chown(file, attrs->ia_uid, -1)) {
-> +		} else if (CATCH_EINTR(chown(file, attrs->ia_uid, -1))) {
->   			return -errno;
->   		}
->   	}
->   	if (attrs->ia_valid & HOSTFS_ATTR_GID) {
->   		if (fd >= 0) {
-> -			if (fchown(fd, -1, attrs->ia_gid))
-> +			if (CATCH_EINTR(fchown(fd, -1, attrs->ia_gid)))
->   				return -errno;
-> -		} else if (chown(file, -1, attrs->ia_gid)) {
-> +		} else if (CATCH_EINTR(chown(file, -1, attrs->ia_gid))) {
->   			return -errno;
->   		}
->   	}
->   	if (attrs->ia_valid & HOSTFS_ATTR_SIZE) {
->   		if (fd >= 0) {
-> -			if (ftruncate(fd, attrs->ia_size))
-> +			if (CATCH_EINTR(ftruncate(fd, attrs->ia_size)))
->   				return -errno;
-> -		} else if (truncate(file, attrs->ia_size)) {
-> +		} else if (CATCH_EINTR(truncate(file, attrs->ia_size))) {
->   			return -errno;
->   		}
->   	}
-> @@ -279,7 +311,7 @@ int make_symlink(const char *from, const char *to)
->   {
->   	int err;
->   
-> -	err = symlink(to, from);
-> +	err = CATCH_EINTR(symlink(to, from));
->   	if (err)
->   		return -errno;
->   	return 0;
-> @@ -289,7 +321,7 @@ int unlink_file(const char *file)
->   {
->   	int err;
->   
-> -	err = unlink(file);
-> +	err = CATCH_EINTR(unlink(file));
->   	if (err)
->   		return -errno;
->   	return 0;
-> @@ -299,7 +331,7 @@ int do_mkdir(const char *file, int mode)
->   {
->   	int err;
->   
-> -	err = mkdir(file, mode);
-> +	err = CATCH_EINTR(mkdir(file, mode));
->   	if (err)
->   		return -errno;
->   	return 0;
-> @@ -309,7 +341,7 @@ int hostfs_do_rmdir(const char *file)
->   {
->   	int err;
->   
-> -	err = rmdir(file);
-> +	err = CATCH_EINTR(rmdir(file));
->   	if (err)
->   		return -errno;
->   	return 0;
-> @@ -319,7 +351,7 @@ int do_mknod(const char *file, int mode, unsigned int major, unsigned int minor)
->   {
->   	int err;
->   
-> -	err = mknod(file, mode, os_makedev(major, minor));
-> +	err = CATCH_EINTR(mknod(file, mode, os_makedev(major, minor)));
->   	if (err)
->   		return -errno;
->   	return 0;
-> @@ -329,7 +361,7 @@ int link_file(const char *to, const char *from)
->   {
->   	int err;
->   
-> -	err = link(to, from);
-> +	err = CATCH_EINTR(link(to, from));
->   	if (err)
->   		return -errno;
->   	return 0;
-> @@ -339,7 +371,7 @@ int hostfs_do_readlink(char *file, char *buf, int size)
->   {
->   	int n;
->   
-> -	n = readlink(file, buf, size);
-> +	n = CATCH_EINTR(readlink(file, buf, size));
->   	if (n < 0)
->   		return -errno;
->   	if (n < size)
-> @@ -351,7 +383,7 @@ int rename_file(char *from, char *to)
->   {
->   	int err;
->   
-> -	err = rename(from, to);
-> +	err = CATCH_EINTR(rename(from, to));
->   	if (err < 0)
->   		return -errno;
->   	return 0;
-> @@ -371,7 +403,8 @@ int rename2_file(char *from, char *to, unsigned int flags)
->   #endif
->   
->   #ifdef SYS_renameat2
-> -	err = syscall(SYS_renameat2, AT_FDCWD, from, AT_FDCWD, to, flags);
-> +	err = CATCH_EINTR(syscall(SYS_renameat2, AT_FDCWD, from,
-> +				  AT_FDCWD, to, flags));
->   	if (err < 0) {
->   		if (errno != ENOSYS)
->   			return -errno;
-> @@ -392,7 +425,7 @@ int do_statfs(char *root, long *bsize_out, long long *blocks_out,
->   	struct statfs64 buf;
->   	int err;
->   
-> -	err = statfs64(root, &buf);
-> +	err = CATCH_EINTR(statfs64(root, &buf));
->   	if (err < 0)
->   		return -errno;
->   
-
-If we are going to use this definition of CATCH_EINTR throughout we might as well remove the partial read/write code in UBD and other places.
-
--- 
-Anton R. Ivanov
-https://www.kot-begemot.co.uk/
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+CgpPbiAxMC8xMS8yMDIzIDEwOjQyLCBBbnRvbiBJdmFub3Ygd3JvdGU6Cj4gCj4gCj4gT24gMTAv
+MTEvMjAyMyAwOTo0NCwgYmVuamFtaW5Ac2lwc29sdXRpb25zLm5ldCB3cm90ZToKPj4gRnJvbTog
+QmVuamFtaW4gQmVyZyA8YmVuamFtaW4uYmVyZ0BpbnRlbC5jb20+Cj4+Cj4+IFRoZSBVTSBrZXJu
+ZWwgdXNlcyBzaWduYWxzIGZvciB2YXJpb3VzIHB1cnBvc2VzIChTSUdBTFJNIGZvciBzY2hlZHVs
+aW5nCj4+IGZvciBleGFtcGxlKS4gVGhlc2Ugc2lnbmFscyBhcmUgaW50ZXJydXB0cyBmb3IgdGhl
+IFVNIGtlcm5lbCwgd2hpY2gKPj4gc2hvdWxkIG5vdCBhZmZlY3QgZmlsZSBzeXN0ZW0gb3BlcmF0
+aW9ucyBmcm9tIHVzZXJzcGFjZSBwcm9jZXNzZXMuCj4+Cj4+IFNhaWQgZGlmZmVyZW50bHksIGlu
+IGhvc3RmcyBhbGwgb3BlcmF0aW9ucyBhcmUgZGlyZWN0bHkgZm9yd2FyZGVkIHRvIHRoZQo+PiBo
+b3N0IGFuZCB3aWxsIGJsb2NrIHRoZSBlbnRpcmUgVU0ga2VybmVsLiBBcyBzdWNoLCBob3N0ZnMg
+ZG9lcyBub3QKPj4gcGVybWl0IG90aGVyIHRhc2tzIHRvIGJlIHNjaGVkdWxlZCB3aGlsZSBvcGVy
+YXRpb25zIGFyZSBvbmdvaW5nIGFuZAo+PiB0aGVzZSBvcGVyYXRpb25zIGFyZSBmdW5kYW1lbnRh
+bGx5IHN5bmNocm9ub3VzIGFuZCBub3QgaW50ZXJydXB0aWJsZS4KPj4KPj4gV2l0aCBhbGwgdGhp
+cywgdGhlIG9ubHkgcmVhc29uYWJsZSB0aGluZyB0byBkbyBpcyB0byBjYXRjaCBhbGwgRUlOVFIK
+Pj4gc2l0dWF0aW9ucyBhbmQgcmV0cnkgdGhlbS4gVGhpcyBpbmNsdWRlcyByZXRyeWluZyBzaG9y
+dCByZWFkL3dyaXRlCj4+IG9wZXJhdGlvbnMgaW4gb3JkZXIgdG8gZW5zdXJlIHRoZXkgZmluaXNo
+Lgo+Pgo+PiBJZiwgYXQgYW55IHBvaW50LCBob3N0ZnMgYmVjb21lcyBhYmxlIHRvIHB1c2ggb3Bl
+cmF0aW9ucyBpbnRvIHRoZQo+PiBiYWNrZ3JvdW5kIGluIG9yZGVyIHRvIHNjaGVkdWxlIGFub3Ro
+ZXIgdGFzaywgdGhlbiBhbiBhYm9ydGlvbiBtZWNoYW5pc20KPj4gbWF5IGJlIG5lZWRlZC4KPj4K
+Pj4gU2lnbmVkLW9mZi1ieTogQmVuamFtaW4gQmVyZyA8YmVuamFtaW4uYmVyZ0BpbnRlbC5jb20+
+Cj4+IC0tLQo+PiDCoCBhcmNoL3VtL2luY2x1ZGUvc2hhcmVkL29zLmggfMKgwqAgNyArKy0KPj4g
+wqAgZnMvaG9zdGZzL2hvc3Rmc191c2VyLmPCoMKgwqDCoCB8IDExNSArKysrKysrKysrKysrKysr
+KysrKysrKy0tLS0tLS0tLS0tLS0KPj4gwqAgMiBmaWxlcyBjaGFuZ2VkLCA4MCBpbnNlcnRpb25z
+KCspLCA0MiBkZWxldGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBhL2FyY2gvdW0vaW5jbHVkZS9z
+aGFyZWQvb3MuaCBiL2FyY2gvdW0vaW5jbHVkZS9zaGFyZWQvb3MuaAo+PiBpbmRleCAwZGY2NDZj
+NjY1MWUuLjdjNTU2NGViYzViYiAxMDA2NDQKPj4gLS0tIGEvYXJjaC91bS9pbmNsdWRlL3NoYXJl
+ZC9vcy5oCj4+ICsrKyBiL2FyY2gvdW0vaW5jbHVkZS9zaGFyZWQvb3MuaAo+PiBAQCAtMTgsNyAr
+MTgsMTIgQEAKPj4gwqAgI2luY2x1ZGUgPHN5cy90eXBlcy5oPgo+PiDCoCAjZW5kaWYKPj4gLSNk
+ZWZpbmUgQ0FUQ0hfRUlOVFIoZXhwcikgd2hpbGUgKChlcnJubyA9IDAsICgoZXhwcikgPCAwKSkg
+JiYgKGVycm5vID09IEVJTlRSKSkKPj4gKyNkZWZpbmUgQ0FUQ0hfRUlOVFIoZXhwcikgKHvCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFwKPj4gK8KgwqDCoMKg
+wqDCoMKgIGludCBfX3Jlc3VsdDvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgIFwKPj4gK8KgwqDCoMKgwqDCoMKgIHdoaWxlICgoZXJybm8gPSAwLCAoKF9fcmVz
+dWx0ID0gKGV4cHIpKSA8IDApKSAmJsKgwqDCoCBcCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIChlcnJubyA9PSBFSU5UUikpO8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBc
+Cj4+ICvCoMKgwqDCoMKgwqDCoCBfX3Jlc3VsdDvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIFwKPj4gK8KgwqDCoCB9KQo+PiDCoCAjZGVmaW5lIE9TX1RZUEVf
+RklMRSAxCj4+IMKgICNkZWZpbmUgT1NfVFlQRV9ESVIgMgo+PiBkaWZmIC0tZ2l0IGEvZnMvaG9z
+dGZzL2hvc3Rmc191c2VyLmMgYi9mcy9ob3N0ZnMvaG9zdGZzX3VzZXIuYwo+PiBpbmRleCA4NDA2
+MTllMzlhMWEuLmRkMzBiY2M2ZDU4ZiAxMDA2NDQKPj4gLS0tIGEvZnMvaG9zdGZzL2hvc3Rmc191
+c2VyLmMKPj4gKysrIGIvZnMvaG9zdGZzL2hvc3Rmc191c2VyLmMKPj4gQEAgLTE3LDYgKzE3LDcg
+QEAKPj4gwqAgI2luY2x1ZGUgPHN5cy9zeXNjYWxsLmg+Cj4+IMKgICNpbmNsdWRlICJob3N0ZnMu
+aCIKPj4gwqAgI2luY2x1ZGUgPHV0aW1lLmg+Cj4+ICsjaW5jbHVkZSA8b3MuaD4KPj4gwqAgc3Rh
+dGljIHZvaWQgc3RhdDY0X3RvX2hvc3Rmcyhjb25zdCBzdHJ1Y3Qgc3RhdDY0ICpidWYsIHN0cnVj
+dCBob3N0ZnNfc3RhdCAqcCkKPj4gwqAgewo+PiBAQCAtNDQsOSArNDUsOSBAQCBpbnQgc3RhdF9m
+aWxlKGNvbnN0IGNoYXIgKnBhdGgsIHN0cnVjdCBob3N0ZnNfc3RhdCAqcCwgaW50IGZkKQo+PiDC
+oMKgwqDCoMKgIHN0cnVjdCBzdGF0NjQgYnVmOwo+PiDCoMKgwqDCoMKgIGlmIChmZCA+PSAwKSB7
+Cj4+IC3CoMKgwqDCoMKgwqDCoCBpZiAoZnN0YXQ2NChmZCwgJmJ1ZikgPCAwKQo+PiArwqDCoMKg
+wqDCoMKgwqAgaWYgKENBVENIX0VJTlRSKGZzdGF0NjQoZmQsICZidWYpKSA8IDApCj4+IMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiAtZXJybm87Cj4+IC3CoMKgwqAgfSBlbHNlIGlm
+IChsc3RhdDY0KHBhdGgsICZidWYpIDwgMCkgewo+PiArwqDCoMKgIH0gZWxzZSBpZiAoQ0FUQ0hf
+RUlOVFIobHN0YXQ2NChwYXRoLCAmYnVmKSkgPCAwKSB7Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBy
+ZXR1cm4gLWVycm5vOwo+PiDCoMKgwqDCoMKgIH0KPj4gwqDCoMKgwqDCoCBzdGF0NjRfdG9faG9z
+dGZzKCZidWYsIHApOwo+PiBAQCAtNjMsNyArNjQsNyBAQCBpbnQgYWNjZXNzX2ZpbGUoY2hhciAq
+cGF0aCwgaW50IHIsIGludCB3LCBpbnQgeCkKPj4gwqDCoMKgwqDCoMKgwqDCoMKgIG1vZGUgfD0g
+V19PSzsKPj4gwqDCoMKgwqDCoCBpZiAoeCkKPj4gwqDCoMKgwqDCoMKgwqDCoMKgIG1vZGUgfD0g
+WF9PSzsKPj4gLcKgwqDCoCBpZiAoYWNjZXNzKHBhdGgsIG1vZGUpICE9IDApCj4+ICvCoMKgwqAg
+aWYgKENBVENIX0VJTlRSKGFjY2VzcyhwYXRoLCBtb2RlKSkgIT0gMCkKPj4gwqDCoMKgwqDCoMKg
+wqDCoMKgIHJldHVybiAtZXJybm87Cj4+IMKgwqDCoMKgwqAgZWxzZSByZXR1cm4gMDsKPj4gwqAg
+fQo+PiBAQCAtODIsNyArODMsNyBAQCBpbnQgb3Blbl9maWxlKGNoYXIgKnBhdGgsIGludCByLCBp
+bnQgdywgaW50IGFwcGVuZCkKPj4gwqDCoMKgwqDCoCBpZiAoYXBwZW5kKQo+PiDCoMKgwqDCoMKg
+wqDCoMKgwqAgbW9kZSB8PSBPX0FQUEVORDsKPj4gLcKgwqDCoCBmZCA9IG9wZW42NChwYXRoLCBt
+b2RlKTsKPj4gK8KgwqDCoCBmZCA9IENBVENIX0VJTlRSKG9wZW42NChwYXRoLCBtb2RlKSk7Cj4+
+IMKgwqDCoMKgwqAgaWYgKGZkIDwgMCkKPj4gwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiAtZXJy
+bm87Cj4+IMKgwqDCoMKgwqAgZWxzZSByZXR1cm4gZmQ7Cj4+IEBAIC05Miw3ICs5MywxMSBAQCB2
+b2lkICpvcGVuX2RpcihjaGFyICpwYXRoLCBpbnQgKmVycl9vdXQpCj4+IMKgIHsKPj4gwqDCoMKg
+wqDCoCBESVIgKmRpcjsKPj4gLcKgwqDCoCBkaXIgPSBvcGVuZGlyKHBhdGgpOwo+PiArwqDCoMKg
+IGRvIHsKPj4gK8KgwqDCoMKgwqDCoMKgIGVycm5vID0gMDsKPj4gK8KgwqDCoMKgwqDCoMKgIGRp
+ciA9IG9wZW5kaXIocGF0aCk7Cj4+ICvCoMKgwqAgfSB3aGlsZSAoZGlyID09IE5VTEwgJiYgZXJy
+bm8gPT0gLUVJTlRSKTsKPj4gKwo+PiDCoMKgwqDCoMKgICplcnJfb3V0ID0gZXJybm87Cj4+IMKg
+wqDCoMKgwqAgcmV0dXJuIGRpcjsKPj4gQEAgLTExMiw5ICsxMTcsMTQgQEAgY2hhciAqcmVhZF9k
+aXIodm9pZCAqc3RyZWFtLCB1bnNpZ25lZCBsb25nIGxvbmcgKnBvc19vdXQsCj4+IMKgwqDCoMKg
+wqAgRElSICpkaXIgPSBzdHJlYW07Cj4+IMKgwqDCoMKgwqAgc3RydWN0IGRpcmVudCAqZW50Owo+
+PiAtwqDCoMKgIGVudCA9IHJlYWRkaXIoZGlyKTsKPj4gK8KgwqDCoCBkbyB7Cj4+ICvCoMKgwqDC
+oMKgwqDCoCBlcnJubyA9IDA7Cj4+ICvCoMKgwqDCoMKgwqDCoCBlbnQgPSByZWFkZGlyKGRpcik7
+Cj4+ICvCoMKgwqAgfSB3aGlsZSAoZW50ID09IDAgJiYgZXJybm8gPT0gRUlOVFIpOwo+PiArCj4+
+IMKgwqDCoMKgwqAgaWYgKGVudCA9PSBOVUxMKQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJu
+IE5VTEw7Cj4+ICsKPj4gwqDCoMKgwqDCoCAqbGVuX291dCA9IHN0cmxlbihlbnQtPmRfbmFtZSk7
+Cj4+IMKgwqDCoMKgwqAgKmlub19vdXQgPSBlbnQtPmRfaW5vOwo+PiDCoMKgwqDCoMKgICp0eXBl
+X291dCA9IGVudC0+ZF90eXBlOwo+PiBAQCAtMTI1LDMwICsxMzUsNTIgQEAgY2hhciAqcmVhZF9k
+aXIodm9pZCAqc3RyZWFtLCB1bnNpZ25lZCBsb25nIGxvbmcgKnBvc19vdXQsCj4+IMKgIGludCBy
+ZWFkX2ZpbGUoaW50IGZkLCB1bnNpZ25lZCBsb25nIGxvbmcgKm9mZnNldCwgY2hhciAqYnVmLCBp
+bnQgbGVuKQo+PiDCoCB7Cj4+IMKgwqDCoMKgwqAgaW50IG47Cj4+ICvCoMKgwqAgaW50IHJlYWQg
+PSAwOwo+PiArCj4+ICvCoMKgwqAgZG8gewo+PiArwqDCoMKgwqDCoMKgwqAgZXJybm8gPSAwOwo+
+PiArwqDCoMKgwqDCoMKgwqAgbiA9IHByZWFkNjQoZmQsIGJ1ZiwgbGVuLCAqb2Zmc2V0KTsKPj4g
+K8KgwqDCoMKgwqDCoMKgIGlmIChuID4gMCkgewo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBy
+ZWFkICs9IG47Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICpvZmZzZXQgKz0gbjsKPj4gK8Kg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAgbGVuIC09IG47Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IGNvbnRpbnVlOwo+PiArwqDCoMKgwqDCoMKgwqAgfQo+PiArwqDCoMKgIH0gd2hpbGUgKG4gPCAw
+ICYmIGVycm5vID09IEVJTlRSKTsKPj4gLcKgwqDCoCBuID0gcHJlYWQ2NChmZCwgYnVmLCBsZW4s
+ICpvZmZzZXQpOwo+PiAtwqDCoMKgIGlmIChuIDwgMCkKPj4gLcKgwqDCoMKgwqDCoMKgIHJldHVy
+biAtZXJybm87Cj4+IC3CoMKgwqAgKm9mZnNldCArPSBuOwo+PiAtwqDCoMKgIHJldHVybiBuOwo+
+PiArwqDCoMKgIGlmIChyZWFkID4gMCkKPj4gK8KgwqDCoMKgwqDCoMKgIHJldHVybiByZWFkOwo+
+PiArCj4+ICvCoMKgwqAgcmV0dXJuIC1lcnJubzsKPj4gwqAgfQo+PiDCoCBpbnQgd3JpdGVfZmls
+ZShpbnQgZmQsIHVuc2lnbmVkIGxvbmcgbG9uZyAqb2Zmc2V0LCBjb25zdCBjaGFyICpidWYsIGlu
+dCBsZW4pCj4+IMKgIHsKPj4gwqDCoMKgwqDCoCBpbnQgbjsKPj4gK8KgwqDCoCBpbnQgd3JpdHRl
+biA9IDA7Cj4+ICsKPj4gK8KgwqDCoCBkbyB7Cj4+ICvCoMKgwqDCoMKgwqDCoCBlcnJubyA9IDA7
+Cj4+ICvCoMKgwqDCoMKgwqDCoCBuID0gcHdyaXRlNjQoZmQsIGJ1ZiwgbGVuLCAqb2Zmc2V0KTsK
+Pj4gK8KgwqDCoMKgwqDCoMKgIGlmIChuID4gMCkgewo+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCB3cml0dGVuICs9IG47Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICpvZmZzZXQgKz0gbjsK
+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgbGVuIC09IG47Cj4+ICvCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIGNvbnRpbnVlOwo+PiArwqDCoMKgwqDCoMKgwqAgfQo+PiArwqDCoMKgIH0gd2hpbGUg
+KG4gPCAwICYmIGVycm5vID09IEVJTlRSKTsKPj4gLcKgwqDCoCBuID0gcHdyaXRlNjQoZmQsIGJ1
+ZiwgbGVuLCAqb2Zmc2V0KTsKPj4gLcKgwqDCoCBpZiAobiA8IDApCj4+IC3CoMKgwqDCoMKgwqDC
+oCByZXR1cm4gLWVycm5vOwo+PiAtwqDCoMKgICpvZmZzZXQgKz0gbjsKPj4gLcKgwqDCoCByZXR1
+cm4gbjsKPj4gK8KgwqDCoCBpZiAod3JpdHRlbiA+IDApCj4+ICvCoMKgwqDCoMKgwqDCoCByZXR1
+cm4gd3JpdHRlbjsKPj4gKwo+PiArwqDCoMKgIHJldHVybiAtZXJybm87Cj4+IMKgIH0KPj4gwqAg
+aW50IGxzZWVrX2ZpbGUoaW50IGZkLCBsb25nIGxvbmcgb2Zmc2V0LCBpbnQgd2hlbmNlKQo+PiDC
+oCB7Cj4+IMKgwqDCoMKgwqAgaW50IHJldDsKPj4gLcKgwqDCoCByZXQgPSBsc2VlazY0KGZkLCBv
+ZmZzZXQsIHdoZW5jZSk7Cj4+ICvCoMKgwqAgcmV0ID0gQ0FUQ0hfRUlOVFIobHNlZWs2NChmZCwg
+b2Zmc2V0LCB3aGVuY2UpKTsKPj4gwqDCoMKgwqDCoCBpZiAocmV0IDwgMCkKPj4gwqDCoMKgwqDC
+oMKgwqDCoMKgIHJldHVybiAtZXJybm87Cj4+IMKgwqDCoMKgwqAgcmV0dXJuIDA7Cj4+IEBAIC0x
+NTgsOSArMTkwLDkgQEAgaW50IGZzeW5jX2ZpbGUoaW50IGZkLCBpbnQgZGF0YXN5bmMpCj4+IMKg
+IHsKPj4gwqDCoMKgwqDCoCBpbnQgcmV0Owo+PiDCoMKgwqDCoMKgIGlmIChkYXRhc3luYykKPj4g
+LcKgwqDCoMKgwqDCoMKgIHJldCA9IGZkYXRhc3luYyhmZCk7Cj4+ICvCoMKgwqDCoMKgwqDCoCBy
+ZXQgPSBDQVRDSF9FSU5UUihmZGF0YXN5bmMoZmQpKTsKPj4gwqDCoMKgwqDCoCBlbHNlCj4+IC3C
+oMKgwqDCoMKgwqDCoCByZXQgPSBmc3luYyhmZCk7Cj4+ICvCoMKgwqDCoMKgwqDCoCByZXQgPSBD
+QVRDSF9FSU5UUihmc3luYyhmZCkpOwo+PiDCoMKgwqDCoMKgIGlmIChyZXQgPCAwKQo+PiDCoMKg
+wqDCoMKgwqDCoMKgwqAgcmV0dXJuIC1lcnJubzsKPj4gQEAgLTE2OSwyNCArMjAxLDI0IEBAIGlu
+dCBmc3luY19maWxlKGludCBmZCwgaW50IGRhdGFzeW5jKQo+PiDCoCBpbnQgcmVwbGFjZV9maWxl
+KGludCBvbGRmZCwgaW50IGZkKQo+PiDCoCB7Cj4+IC3CoMKgwqAgcmV0dXJuIGR1cDIob2xkZmQs
+IGZkKTsKPj4gK8KgwqDCoCByZXR1cm4gQ0FUQ0hfRUlOVFIoZHVwMihvbGRmZCwgZmQpKTsKPj4g
+wqAgfQo+PiDCoCB2b2lkIGNsb3NlX2ZpbGUodm9pZCAqc3RyZWFtKQo+PiDCoCB7Cj4+IC3CoMKg
+wqAgY2xvc2UoKigoaW50ICopIHN0cmVhbSkpOwo+PiArwqDCoMKgIENBVENIX0VJTlRSKGNsb3Nl
+KCooKGludCAqKSBzdHJlYW0pKSk7Cj4+IMKgIH0KPj4gwqAgdm9pZCBjbG9zZV9kaXIodm9pZCAq
+c3RyZWFtKQo+PiDCoCB7Cj4+IC3CoMKgwqAgY2xvc2VkaXIoc3RyZWFtKTsKPj4gK8KgwqDCoCBD
+QVRDSF9FSU5UUihjbG9zZWRpcihzdHJlYW0pKTsKPj4gwqAgfQo+PiDCoCBpbnQgZmlsZV9jcmVh
+dGUoY2hhciAqbmFtZSwgaW50IG1vZGUpCj4+IMKgIHsKPj4gwqDCoMKgwqDCoCBpbnQgZmQ7Cj4+
+IC3CoMKgwqAgZmQgPSBvcGVuNjQobmFtZSwgT19DUkVBVCB8IE9fUkRXUiwgbW9kZSk7Cj4+ICvC
+oMKgwqAgZmQgPSBDQVRDSF9FSU5UUihvcGVuNjQobmFtZSwgT19DUkVBVCB8IE9fUkRXUiwgbW9k
+ZSkpOwo+PiDCoMKgwqDCoMKgIGlmIChmZCA8IDApCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1
+cm4gLWVycm5vOwo+PiDCoMKgwqDCoMKgIHJldHVybiBmZDsKPj4gQEAgLTIwMCwzMyArMjMyLDMz
+IEBAIGludCBzZXRfYXR0cihjb25zdCBjaGFyICpmaWxlLCBzdHJ1Y3QgaG9zdGZzX2lhdHRyICph
+dHRycywgaW50IGZkKQo+PiDCoMKgwqDCoMKgIGlmIChhdHRycy0+aWFfdmFsaWQgJiBIT1NURlNf
+QVRUUl9NT0RFKSB7Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAoZmQgPj0gMCkgewo+PiAtwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAoZmNobW9kKGZkLCBhdHRycy0+aWFfbW9kZSkgIT0gMCkK
+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKENBVENIX0VJTlRSKGZjaG1vZChmZCwgYXR0
+cnMtPmlhX21vZGUpKSAhPSAwKQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IHJldHVybiAtZXJybm87Cj4+IC3CoMKgwqDCoMKgwqDCoCB9IGVsc2UgaWYgKGNobW9kKGZpbGUs
+IGF0dHJzLT5pYV9tb2RlKSAhPSAwKSB7Cj4+ICvCoMKgwqDCoMKgwqDCoCB9IGVsc2UgaWYgKENB
+VENIX0VJTlRSKGNobW9kKGZpbGUsIGF0dHJzLT5pYV9tb2RlKSkgIT0gMCkgewo+PiDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gLWVycm5vOwo+PiDCoMKgwqDCoMKgwqDCoMKgwqAg
+fQo+PiDCoMKgwqDCoMKgIH0KPj4gwqDCoMKgwqDCoCBpZiAoYXR0cnMtPmlhX3ZhbGlkICYgSE9T
+VEZTX0FUVFJfVUlEKSB7Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAoZmQgPj0gMCkgewo+PiAt
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAoZmNob3duKGZkLCBhdHRycy0+aWFfdWlkLCAtMSkp
+Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlmIChDQVRDSF9FSU5UUihmY2hvd24oZmQsIGF0
+dHJzLT5pYV91aWQsIC0xKSkpCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
+cmV0dXJuIC1lcnJubzsKPj4gLcKgwqDCoMKgwqDCoMKgIH0gZWxzZSBpZiAoY2hvd24oZmlsZSwg
+YXR0cnMtPmlhX3VpZCwgLTEpKSB7Cj4+ICvCoMKgwqDCoMKgwqDCoCB9IGVsc2UgaWYgKENBVENI
+X0VJTlRSKGNob3duKGZpbGUsIGF0dHJzLT5pYV91aWQsIC0xKSkpIHsKPj4gwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgcmV0dXJuIC1lcnJubzsKPj4gwqDCoMKgwqDCoMKgwqDCoMKgIH0KPj4g
+wqDCoMKgwqDCoCB9Cj4+IMKgwqDCoMKgwqAgaWYgKGF0dHJzLT5pYV92YWxpZCAmIEhPU1RGU19B
+VFRSX0dJRCkgewo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKGZkID49IDApIHsKPj4gLcKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgaWYgKGZjaG93bihmZCwgLTEsIGF0dHJzLT5pYV9naWQpKQo+PiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAoQ0FUQ0hfRUlOVFIoZmNob3duKGZkLCAtMSwgYXR0
+cnMtPmlhX2dpZCkpKQo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVy
+biAtZXJybm87Cj4+IC3CoMKgwqDCoMKgwqDCoCB9IGVsc2UgaWYgKGNob3duKGZpbGUsIC0xLCBh
+dHRycy0+aWFfZ2lkKSkgewo+PiArwqDCoMKgwqDCoMKgwqAgfSBlbHNlIGlmIChDQVRDSF9FSU5U
+UihjaG93bihmaWxlLCAtMSwgYXR0cnMtPmlhX2dpZCkpKSB7Cj4+IMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgIHJldHVybiAtZXJybm87Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoCB9Cj4+IMKgwqDC
+oMKgwqAgfQo+PiDCoMKgwqDCoMKgIGlmIChhdHRycy0+aWFfdmFsaWQgJiBIT1NURlNfQVRUUl9T
+SVpFKSB7Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAoZmQgPj0gMCkgewo+PiAtwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCBpZiAoZnRydW5jYXRlKGZkLCBhdHRycy0+aWFfc2l6ZSkpCj4+ICvCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIGlmIChDQVRDSF9FSU5UUihmdHJ1bmNhdGUoZmQsIGF0dHJzLT5p
+YV9zaXplKSkpCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIC1l
+cnJubzsKPj4gLcKgwqDCoMKgwqDCoMKgIH0gZWxzZSBpZiAodHJ1bmNhdGUoZmlsZSwgYXR0cnMt
+PmlhX3NpemUpKSB7Cj4+ICvCoMKgwqDCoMKgwqDCoCB9IGVsc2UgaWYgKENBVENIX0VJTlRSKHRy
+dW5jYXRlKGZpbGUsIGF0dHJzLT5pYV9zaXplKSkpIHsKPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgcmV0dXJuIC1lcnJubzsKPj4gwqDCoMKgwqDCoMKgwqDCoMKgIH0KPj4gwqDCoMKgwqDC
+oCB9Cj4+IEBAIC0yNzksNyArMzExLDcgQEAgaW50IG1ha2Vfc3ltbGluayhjb25zdCBjaGFyICpm
+cm9tLCBjb25zdCBjaGFyICp0bykKPj4gwqAgewo+PiDCoMKgwqDCoMKgIGludCBlcnI7Cj4+IC3C
+oMKgwqAgZXJyID0gc3ltbGluayh0bywgZnJvbSk7Cj4+ICvCoMKgwqAgZXJyID0gQ0FUQ0hfRUlO
+VFIoc3ltbGluayh0bywgZnJvbSkpOwo+PiDCoMKgwqDCoMKgIGlmIChlcnIpCj4+IMKgwqDCoMKg
+wqDCoMKgwqDCoCByZXR1cm4gLWVycm5vOwo+PiDCoMKgwqDCoMKgIHJldHVybiAwOwo+PiBAQCAt
+Mjg5LDcgKzMyMSw3IEBAIGludCB1bmxpbmtfZmlsZShjb25zdCBjaGFyICpmaWxlKQo+PiDCoCB7
+Cj4+IMKgwqDCoMKgwqAgaW50IGVycjsKPj4gLcKgwqDCoCBlcnIgPSB1bmxpbmsoZmlsZSk7Cj4+
+ICvCoMKgwqAgZXJyID0gQ0FUQ0hfRUlOVFIodW5saW5rKGZpbGUpKTsKPj4gwqDCoMKgwqDCoCBp
+ZiAoZXJyKQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIC1lcnJubzsKPj4gwqDCoMKgwqDC
+oCByZXR1cm4gMDsKPj4gQEAgLTI5OSw3ICszMzEsNyBAQCBpbnQgZG9fbWtkaXIoY29uc3QgY2hh
+ciAqZmlsZSwgaW50IG1vZGUpCj4+IMKgIHsKPj4gwqDCoMKgwqDCoCBpbnQgZXJyOwo+PiAtwqDC
+oMKgIGVyciA9IG1rZGlyKGZpbGUsIG1vZGUpOwo+PiArwqDCoMKgIGVyciA9IENBVENIX0VJTlRS
+KG1rZGlyKGZpbGUsIG1vZGUpKTsKPj4gwqDCoMKgwqDCoCBpZiAoZXJyKQo+PiDCoMKgwqDCoMKg
+wqDCoMKgwqAgcmV0dXJuIC1lcnJubzsKPj4gwqDCoMKgwqDCoCByZXR1cm4gMDsKPj4gQEAgLTMw
+OSw3ICszNDEsNyBAQCBpbnQgaG9zdGZzX2RvX3JtZGlyKGNvbnN0IGNoYXIgKmZpbGUpCj4+IMKg
+IHsKPj4gwqDCoMKgwqDCoCBpbnQgZXJyOwo+PiAtwqDCoMKgIGVyciA9IHJtZGlyKGZpbGUpOwo+
+PiArwqDCoMKgIGVyciA9IENBVENIX0VJTlRSKHJtZGlyKGZpbGUpKTsKPj4gwqDCoMKgwqDCoCBp
+ZiAoZXJyKQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIC1lcnJubzsKPj4gwqDCoMKgwqDC
+oCByZXR1cm4gMDsKPj4gQEAgLTMxOSw3ICszNTEsNyBAQCBpbnQgZG9fbWtub2QoY29uc3QgY2hh
+ciAqZmlsZSwgaW50IG1vZGUsIHVuc2lnbmVkIGludCBtYWpvciwgdW5zaWduZWQgaW50IG1pbm9y
+KQo+PiDCoCB7Cj4+IMKgwqDCoMKgwqAgaW50IGVycjsKPj4gLcKgwqDCoCBlcnIgPSBta25vZChm
+aWxlLCBtb2RlLCBvc19tYWtlZGV2KG1ham9yLCBtaW5vcikpOwo+PiArwqDCoMKgIGVyciA9IENB
+VENIX0VJTlRSKG1rbm9kKGZpbGUsIG1vZGUsIG9zX21ha2VkZXYobWFqb3IsIG1pbm9yKSkpOwo+
+PiDCoMKgwqDCoMKgIGlmIChlcnIpCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gLWVycm5v
+Owo+PiDCoMKgwqDCoMKgIHJldHVybiAwOwo+PiBAQCAtMzI5LDcgKzM2MSw3IEBAIGludCBsaW5r
+X2ZpbGUoY29uc3QgY2hhciAqdG8sIGNvbnN0IGNoYXIgKmZyb20pCj4+IMKgIHsKPj4gwqDCoMKg
+wqDCoCBpbnQgZXJyOwo+PiAtwqDCoMKgIGVyciA9IGxpbmsodG8sIGZyb20pOwo+PiArwqDCoMKg
+IGVyciA9IENBVENIX0VJTlRSKGxpbmsodG8sIGZyb20pKTsKPj4gwqDCoMKgwqDCoCBpZiAoZXJy
+KQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIC1lcnJubzsKPj4gwqDCoMKgwqDCoCByZXR1
+cm4gMDsKPj4gQEAgLTMzOSw3ICszNzEsNyBAQCBpbnQgaG9zdGZzX2RvX3JlYWRsaW5rKGNoYXIg
+KmZpbGUsIGNoYXIgKmJ1ZiwgaW50IHNpemUpCj4+IMKgIHsKPj4gwqDCoMKgwqDCoCBpbnQgbjsK
+Pj4gLcKgwqDCoCBuID0gcmVhZGxpbmsoZmlsZSwgYnVmLCBzaXplKTsKPj4gK8KgwqDCoCBuID0g
+Q0FUQ0hfRUlOVFIocmVhZGxpbmsoZmlsZSwgYnVmLCBzaXplKSk7Cj4+IMKgwqDCoMKgwqAgaWYg
+KG4gPCAwKQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIC1lcnJubzsKPj4gwqDCoMKgwqDC
+oCBpZiAobiA8IHNpemUpCj4+IEBAIC0zNTEsNyArMzgzLDcgQEAgaW50IHJlbmFtZV9maWxlKGNo
+YXIgKmZyb20sIGNoYXIgKnRvKQo+PiDCoCB7Cj4+IMKgwqDCoMKgwqAgaW50IGVycjsKPj4gLcKg
+wqDCoCBlcnIgPSByZW5hbWUoZnJvbSwgdG8pOwo+PiArwqDCoMKgIGVyciA9IENBVENIX0VJTlRS
+KHJlbmFtZShmcm9tLCB0bykpOwo+PiDCoMKgwqDCoMKgIGlmIChlcnIgPCAwKQo+PiDCoMKgwqDC
+oMKgwqDCoMKgwqAgcmV0dXJuIC1lcnJubzsKPj4gwqDCoMKgwqDCoCByZXR1cm4gMDsKPj4gQEAg
+LTM3MSw3ICs0MDMsOCBAQCBpbnQgcmVuYW1lMl9maWxlKGNoYXIgKmZyb20sIGNoYXIgKnRvLCB1
+bnNpZ25lZCBpbnQgZmxhZ3MpCj4+IMKgICNlbmRpZgo+PiDCoCAjaWZkZWYgU1lTX3JlbmFtZWF0
+Mgo+PiAtwqDCoMKgIGVyciA9IHN5c2NhbGwoU1lTX3JlbmFtZWF0MiwgQVRfRkRDV0QsIGZyb20s
+IEFUX0ZEQ1dELCB0bywgZmxhZ3MpOwo+PiArwqDCoMKgIGVyciA9IENBVENIX0VJTlRSKHN5c2Nh
+bGwoU1lTX3JlbmFtZWF0MiwgQVRfRkRDV0QsIGZyb20sCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIEFUX0ZEQ1dELCB0bywgZmxhZ3MpKTsKPj4gwqDCoMKgwqDCoCBpZiAo
+ZXJyIDwgMCkgewo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKGVycm5vICE9IEVOT1NZUykKPj4g
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0dXJuIC1lcnJubzsKPj4gQEAgLTM5Miw3ICs0
+MjUsNyBAQCBpbnQgZG9fc3RhdGZzKGNoYXIgKnJvb3QsIGxvbmcgKmJzaXplX291dCwgbG9uZyBs
+b25nICpibG9ja3Nfb3V0LAo+PiDCoMKgwqDCoMKgIHN0cnVjdCBzdGF0ZnM2NCBidWY7Cj4+IMKg
+wqDCoMKgwqAgaW50IGVycjsKPj4gLcKgwqDCoCBlcnIgPSBzdGF0ZnM2NChyb290LCAmYnVmKTsK
+Pj4gK8KgwqDCoCBlcnIgPSBDQVRDSF9FSU5UUihzdGF0ZnM2NChyb290LCAmYnVmKSk7Cj4+IMKg
+wqDCoMKgwqAgaWYgKGVyciA8IDApCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gLWVycm5v
+Owo+IAo+IElmIHdlIGFyZSBnb2luZyB0byB1c2UgdGhpcyBkZWZpbml0aW9uIG9mIENBVENIX0VJ
+TlRSIHRocm91Z2hvdXQgd2UgbWlnaHQgYXMgd2VsbCByZW1vdmUgdGhlIHBhcnRpYWwgcmVhZC93
+cml0ZSBjb2RlIGluIFVCRCBhbmQgb3RoZXIgcGxhY2VzLgo+IAoKQWN0dWFsbHkgLSBzb21lIG9m
+IGl0LiBJbiBzb21lIHBsYWNlcyBpdCB3aWxsIHN0aWxsIGJlIG5lZWRlZCAodHJ5aW5nIHRvIGdl
+dCBteSBoZWFkIGFyb3VuZCB3aGVyZSB0aGlzIHdpbGwgd29yayBhbmQgd2hlcmUgbm90KS4KCi0t
+IApBbnRvbiBSLiBJdmFub3YKaHR0cHM6Ly93d3cua290LWJlZ2Vtb3QuY28udWsvCgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpsaW51eC11bSBtYWlsaW5n
+IGxpc3QKbGludXgtdW1AbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LXVtCg==
