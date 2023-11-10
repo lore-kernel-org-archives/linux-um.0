@@ -4,58 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43E78C4167B
-	for <linux-um@archiver.kernel.org>; Fri, 10 Nov 2023 18:54:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1C1F3C4332F
+	for <linux-um@archiver.kernel.org>; Fri, 10 Nov 2023 20:40:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
-	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:Cc:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=kmH2a/kGRi56Zl6HAd240qu+iaPRGuPxlFz7E8b6sDI=; b=hLu678IOkxPFMU
-	rQpikVaquOtJdkCfxswUXx2KfXqGcZCSRdQk2BgwUqllgI6xEhkL0kQDv0JbZi9bgXEq6YHcMreQv
-	lkgVOk9J+twPerJiSmnoGvoHTuEfZ+1NiYnJTZG9pmY9YYqfFhSfMrT3Ev1Nj7xfChoz4u0vcmLAG
-	Yw3gAcCkguP6+sWTT/H/gTUoMJjv7Nq/GOBQLJMQpje1iiadqKYs8xt8PIsK1F4cQDEEQNq1Rh7Uf
-	NSvwCzMxprT6dJq1GXfsieJ5eYae7iqs0J/WjyDBEl/HMxf7+2EqyVoYwW9fS/dB7iGiFNSZfJQ+n
-	SDmdC0kET0fBbKdHq2ww==;
+	List-Owner; bh=8SBfW9G1xyKZ9UgEhn8qAwVtXXUQ7dVOB7tizkxNzrs=; b=U0aBJptmVC1T9H
+	xfnYK42T2Raio5h1u3/5foQWyEzdR733xsvWM3R9MN/EqseKmeaI9mCx0Txlgp3Q2rmufV7sGQLTB
+	cOs1ArG94Fvi/+PAe0Y1l3RGzoDsGZsUa2jRbd34FcZxHW20eKbmVgccL0inTkfcPZLUoIfUWDbJ4
+	XMk/Nms7HWhIRvXua4uMJCNAnKlP87IHKM3NTAMY5UGHKDHz933wcikZUSt5oVlx44H2SKUtX2FsN
+	8KbiLtIqoepTSq1cbhjvlEyhjlAeUbOPp2TpCKTQG/222aduUrhMtgMFGt3+IhizRI9psKZQSpmx9
+	wUWDoZTpNZPIdA7n+uIg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r1WeI-009GWC-32;
-	Fri, 10 Nov 2023 18:54:34 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1r1YIx-009P0w-2j;
+	Fri, 10 Nov 2023 20:40:39 +0000
+Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r1WeE-009GSt-1R
+	id 1r1YIu-009Oz3-1K
 	for linux-um@lists.infradead.org;
-	Fri, 10 Nov 2023 18:54:33 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=xCxSDoNFs0fERnwts+SmKrShf3GF6HexLs46PiZBl5I=;
-	t=1699642470; x=1700852070; b=SOoSk7Um5O+tfIrkuwl9WsIj8n+dSMC/+vsVR1153ty9KNZ
-	YxVpC4OpPEcVvXORF2vQeSBGQ+1bfMRKiDNC78VsJBEvoqT++cF8UYW33Aies3cKjtpi6rLCPFJ4/
-	QJTSXyNiL11RFapE3KrinNkIYl1VUVhPEQo356C0jHJoqWdFxJmyNcVr0fRdkqEBIkL+8mnpb2EPz
-	jBPdaJxyJWsQrD666ENkBL58hQJlWury3VzCMvJ86HoUyi0zfepFnVJUyUVp0buq0Nek38SPosnly
-	iugNsNPsmaR1g0bEYFI/obsynVpX/lGR7yvwCjmr+0XIAFKYlTVdUYDD5ljQo0fQ==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.97)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1r1WeC-000000039LG-32xs;
-	Fri, 10 Nov 2023 19:54:28 +0100
-From: Johannes Berg <johannes@sipsolutions.net>
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>,
-	Mordechay Goodstein <mordechay.goodstein@intel.com>
-Subject: [PATCH 4/4] um: add shared memory optimisation for time-travel=ext
-Date: Fri, 10 Nov 2023 19:53:00 +0100
-Message-ID: <20231110195255.8e0d712ca3a7.Ie41206c8ce4507fe26b991937f47e86c24ca7a31@changeid>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231110185255.32006-5-johannes@sipsolutions.net>
-References: <20231110185255.32006-5-johannes@sipsolutions.net>
+	Fri, 10 Nov 2023 20:40:38 +0000
+Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
+	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>)
+	id 1r1YIl-005g72-1Z; Fri, 10 Nov 2023 20:40:27 +0000
+Received: from madding.kot-begemot.co.uk ([192.168.3.98])
+	by jain.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <anton.ivanov@kot-begemot.co.uk>)
+	id 1r1YIi-00C9jm-0Y;
+	Fri, 10 Nov 2023 20:40:26 +0000
+Message-ID: <11a25e62-be07-9a37-71f3-0607b0591623@kot-begemot.co.uk>
+Date: Fri, 10 Nov 2023 20:40:24 +0000
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 3/4] um: add mmap/mremap/munmap OS calls
+To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
+References: <20231110185255.32006-5-johannes@sipsolutions.net>
+ <20231110195255.711150d60a27.Ic2da1d3a983fe57340c1b693badfa9c5bd2d8c61@changeid>
+Content-Language: en-US
+From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+In-Reply-To: <20231110195255.711150d60a27.Ic2da1d3a983fe57340c1b693badfa9c5bd2d8c61@changeid>
+X-Clacks-Overhead: GNU Terry Pratchett
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231110_105430_804493_F6F5452E 
-X-CRM114-Status: GOOD (  40.68  )
+X-CRM114-CacheID: sfid-20231110_124036_443648_8482C093 
+X-CRM114-Status: GOOD (  14.90  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,497 +66,89 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+On 10/11/2023 18:52, Johannes Berg wrote:
+> From: Johannes Berg <johannes.berg@intel.com>
+> 
+> For the upcoming shared-memory time-travel external
+> optimisations, we need to be able to mmap/mremap
+> (and on error munmap). Add the necessary OS calls.
+> 
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+> ---
+>   arch/um/include/shared/os.h |  3 +++
+>   arch/um/os-Linux/file.c     | 28 ++++++++++++++++++++++++++++
+>   2 files changed, 31 insertions(+)
+> 
+> diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+> index 4fbe574eff4c..1a82c6548dd5 100644
+> --- a/arch/um/include/shared/os.h
+> +++ b/arch/um/include/shared/os.h
+> @@ -180,6 +180,9 @@ extern int os_eventfd(unsigned int initval, int flags);
+>   extern int os_sendmsg_fds(int fd, const void *buf, unsigned int len,
+>   			  const int *fds, unsigned int fds_num);
+>   int os_poll(unsigned int n, const int *fds);
+> +void *os_mmap_rw_shared(int fd, size_t size);
+> +void *os_mremap_rw_shared(void *old_addr, size_t old_size, size_t new_size);
+> +void os_munmap(void *addr, size_t size);
+>   
+>   /* start_up.c */
+>   extern void os_early_checks(void);
+> diff --git a/arch/um/os-Linux/file.c b/arch/um/os-Linux/file.c
+> index c972dfeab9a3..c482850f27d8 100644
+> --- a/arch/um/os-Linux/file.c
+> +++ b/arch/um/os-Linux/file.c
+> @@ -17,6 +17,7 @@
+>   #include <sys/stat.h>
+>   #include <sys/sysmacros.h>
+>   #include <sys/un.h>
+> +#include <sys/mman.h>
+>   #include <sys/types.h>
+>   #include <sys/eventfd.h>
+>   #include <poll.h>
+> @@ -708,3 +709,30 @@ int os_poll(unsigned int n, const int *fds)
+>   
+>   	return -EIO;
+>   }
+> +
+> +void *os_mmap_rw_shared(int fd, size_t size)
+> +{
+> +	void *res = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+> +
+> +	if (res == MAP_FAILED)
+> +		return NULL;
+> +
+> +	return res;
+> +}
+> +
+> +void *os_mremap_rw_shared(void *old_addr, size_t old_size, size_t new_size)
+> +{
+> +	void *res;
+> +
+> +	res = mremap(old_addr, old_size, new_size, MREMAP_MAYMOVE, NULL);
+> +
+> +	if (res == MAP_FAILED)
+> +		return NULL;
+> +
+> +	return res;
+> +}
+> +
+> +void os_munmap(void *addr, size_t size)
+> +{
+> +	munmap(addr, size);
+> +}
 
-With external time travel, a LOT of message can end up
-being exchanged on the socket, taking a significant
-amount of time just to do that.
 
-Add a new shared memory optimisation to that, where a
-number of changes are made:
- - the controller sends a client ID and a shared memory FD
-   (and a logging FD we don't use) in the ACK message to
-   the initial START
- - the shared memory holds the current time and the
-   free_until value, so that there's no need to exchange
-   messages for that
- - if the client that's running has shared memory support,
-   any client (the running one included) can request the
-   next time it wants to run inside the shared memory,
-   rather than sending a message, by also updating the
-   free_until value
- - when shared memory is enabled, RUN/WAIT messages no
-   longer have an ACK, further cutting down on messages
+os_munmap already exists as os_munmap_memory
 
-Together, this can reduce the number of messages very
-significantly, and reduce overall test/simulation run time.
-
-Co-developed-by: Mordechay Goodstein <mordechay.goodstein@intel.com>
-Signed-off-by: Mordechay Goodstein <mordechay.goodstein@intel.com>
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
----
- arch/um/kernel/time.c              | 130 +++++++++++++++++++--
- include/uapi/linux/um_timetravel.h | 182 ++++++++++++++++++++++++++---
- 2 files changed, 285 insertions(+), 27 deletions(-)
-
-diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
-index 1a9069f92600..8ff46bc86d09 100644
---- a/arch/um/kernel/time.c
-+++ b/arch/um/kernel/time.c
-@@ -30,6 +30,7 @@ EXPORT_SYMBOL_GPL(time_travel_mode);
- static bool time_travel_start_set;
- static unsigned long long time_travel_start;
- static unsigned long long time_travel_time;
-+static unsigned long long time_travel_shm_offset;
- static LIST_HEAD(time_travel_events);
- static LIST_HEAD(time_travel_irqs);
- static unsigned long long time_travel_timer_interval;
-@@ -39,8 +40,11 @@ static int time_travel_ext_fd = -1;
- static unsigned int time_travel_ext_waiting;
- static bool time_travel_ext_prev_request_valid;
- static unsigned long long time_travel_ext_prev_request;
--static bool time_travel_ext_free_until_valid;
--static unsigned long long time_travel_ext_free_until;
-+static unsigned long long *time_travel_ext_free_until;
-+static unsigned long long _time_travel_ext_free_until;
-+static u16 time_travel_shm_id;
-+static struct um_timetravel_schedshm *time_travel_shm;
-+static union um_timetravel_schedshm_client *time_travel_shm_client;
- 
- static void time_travel_set_time(unsigned long long ns)
- {
-@@ -57,6 +61,7 @@ enum time_travel_message_handling {
- 	TTMH_IDLE,
- 	TTMH_POLL,
- 	TTMH_READ,
-+	TTMH_READ_START_ACK,
- };
- 
- static u64 bc_message;
-@@ -68,6 +73,40 @@ void _time_travel_print_bc_msg(void)
- 	printk(KERN_INFO "time-travel: received broadcast 0x%llx\n", bc_message);
- }
- 
-+static void time_travel_setup_shm(int fd, u16 id)
-+{
-+	u32 len;
-+
-+	time_travel_shm = os_mmap_rw_shared(fd, sizeof(*time_travel_shm));
-+
-+	if (!time_travel_shm)
-+		goto out;
-+
-+	len = time_travel_shm->len;
-+
-+	if (time_travel_shm->version != UM_TIMETRAVEL_SCHEDSHM_VERSION ||
-+	    len < struct_size(time_travel_shm, clients, id + 1)) {
-+		os_munmap(time_travel_shm, sizeof(*time_travel_shm));
-+		time_travel_shm = NULL;
-+		goto out;
-+	}
-+
-+	time_travel_shm = os_mremap_rw_shared(time_travel_shm,
-+					      sizeof(*time_travel_shm),
-+					      len);
-+	if (!time_travel_shm)
-+		goto out;
-+
-+	time_travel_shm_offset = time_travel_shm->current_time;
-+	time_travel_shm_client = &time_travel_shm->clients[id];
-+	time_travel_shm_client->capa |= UM_TIMETRAVEL_SCHEDSHM_CAP_TIME_SHARE;
-+	time_travel_shm_id = id;
-+	/* always look at that free_until from now on */
-+	time_travel_ext_free_until = &time_travel_shm->free_until;
-+out:
-+	os_close_file(fd);
-+}
-+
- static void time_travel_handle_message(struct um_timetravel_msg *msg,
- 				       enum time_travel_message_handling mode)
- {
-@@ -88,7 +127,20 @@ static void time_travel_handle_message(struct um_timetravel_msg *msg,
- 		}
- 	}
- 
--	ret = os_read_file(time_travel_ext_fd, msg, sizeof(*msg));
-+	if (unlikely(mode == TTMH_READ_START_ACK)) {
-+		int fd[UM_TIMETRAVEL_SHARED_MAX_FDS];
-+
-+		ret = os_rcv_fd_msg(time_travel_ext_fd, fd,
-+				    ARRAY_SIZE(fd), msg, sizeof(*msg));
-+		if (ret == sizeof(*msg)) {
-+			time_travel_setup_shm(fd[UM_TIMETRAVEL_SHARED_MEMFD],
-+					      msg->time & UM_TIMETRAVEL_START_ACK_ID);
-+			/* we don't use the logging for now */
-+			os_close_file(fd[UM_TIMETRAVEL_SHARED_LOGFD]);
-+		}
-+	} else {
-+		ret = os_read_file(time_travel_ext_fd, msg, sizeof(*msg));
-+	}
- 
- 	if (ret == 0)
- 		panic("time-travel external link is broken\n");
-@@ -104,10 +156,20 @@ static void time_travel_handle_message(struct um_timetravel_msg *msg,
- 		return;
- 	case UM_TIMETRAVEL_RUN:
- 		time_travel_set_time(msg->time);
-+		if (time_travel_shm) {
-+			/* no request right now since we're running */
-+			time_travel_shm_client->flags &=
-+				~UM_TIMETRAVEL_SCHEDSHM_FLAGS_REQ_RUN;
-+			/* no ack for shared memory RUN */
-+			return;
-+		}
- 		break;
- 	case UM_TIMETRAVEL_FREE_UNTIL:
--		time_travel_ext_free_until_valid = true;
--		time_travel_ext_free_until = msg->time;
-+		/* not supposed to get this with shm, but ignore it */
-+		if (time_travel_shm)
-+			break;
-+		time_travel_ext_free_until = &_time_travel_ext_free_until;
-+		_time_travel_ext_free_until = msg->time;
- 		break;
- 	case UM_TIMETRAVEL_BROADCAST:
- 		bc_message = msg->time;
-@@ -148,8 +210,15 @@ static u64 time_travel_ext_req(u32 op, u64 time)
- 	block_signals_hard();
- 	os_write_file(time_travel_ext_fd, &msg, sizeof(msg));
- 
-+	/* no ACK expected for WAIT in shared memory mode */
-+	if (msg.op == UM_TIMETRAVEL_WAIT && time_travel_shm)
-+		goto done;
-+
- 	while (msg.op != UM_TIMETRAVEL_ACK)
--		time_travel_handle_message(&msg, TTMH_READ);
-+		time_travel_handle_message(&msg,
-+					   op == UM_TIMETRAVEL_START ?
-+						TTMH_READ_START_ACK :
-+						TTMH_READ);
- 
- 	if (msg.seq != mseq)
- 		panic("time-travel: ACK message has different seqno! op=%d, seq=%d != %d time=%lld\n",
-@@ -157,6 +226,7 @@ static u64 time_travel_ext_req(u32 op, u64 time)
- 
- 	if (op == UM_TIMETRAVEL_GET)
- 		time_travel_set_time(msg.time);
-+done:
- 	unblock_signals_hard();
- 
- 	return msg.time;
-@@ -192,13 +262,33 @@ static void time_travel_ext_update_request(unsigned long long time)
- 	/*
- 	 * if we're running and are allowed to run past the request
- 	 * then we don't need to update it either
-+	 *
-+	 * Note for shm we ignore FREE_UNTIL messages and leave the pointer
-+	 * to shared memory, and for non-shm the offset is 0.
- 	 */
--	if (!time_travel_ext_waiting && time_travel_ext_free_until_valid &&
--	    time < time_travel_ext_free_until)
-+	if (!time_travel_ext_waiting && time_travel_ext_free_until &&
-+	    time < (*time_travel_ext_free_until - time_travel_shm_offset))
- 		return;
- 
- 	time_travel_ext_prev_request = time;
- 	time_travel_ext_prev_request_valid = true;
-+
-+	if (time_travel_shm) {
-+		union um_timetravel_schedshm_client *running;
-+
-+		running = &time_travel_shm->clients[time_travel_shm->running_id];
-+
-+		if (running->capa & UM_TIMETRAVEL_SCHEDSHM_CAP_TIME_SHARE) {
-+			time_travel_shm_client->flags |=
-+				UM_TIMETRAVEL_SCHEDSHM_FLAGS_REQ_RUN;
-+			time += time_travel_shm_offset;
-+			time_travel_shm_client->req_time = time;
-+			if (time < time_travel_shm->free_until)
-+				time_travel_shm->free_until = time;
-+			return;
-+		}
-+	}
-+
- 	time_travel_ext_req(UM_TIMETRAVEL_REQUEST, time);
- }
- 
-@@ -206,6 +296,14 @@ void __time_travel_propagate_time(void)
- {
- 	static unsigned long long last_propagated;
- 
-+	if (time_travel_shm) {
-+		if (time_travel_shm->running_id != time_travel_shm_id)
-+			panic("time-travel: setting time while not running\n");
-+		time_travel_shm->current_time = time_travel_time +
-+						time_travel_shm_offset;
-+		return;
-+	}
-+
- 	if (last_propagated == time_travel_time)
- 		return;
- 
-@@ -221,9 +319,12 @@ static bool time_travel_ext_request(unsigned long long time)
- 	 * If we received an external sync point ("free until") then we
- 	 * don't have to request/wait for anything until then, unless
- 	 * we're already waiting.
-+	 *
-+	 * Note for shm we ignore FREE_UNTIL messages and leave the pointer
-+	 * to shared memory, and for non-shm the offset is 0.
- 	 */
--	if (!time_travel_ext_waiting && time_travel_ext_free_until_valid &&
--	    time < time_travel_ext_free_until)
-+	if (!time_travel_ext_waiting && time_travel_ext_free_until &&
-+	    time < (*time_travel_ext_free_until - time_travel_shm_offset))
- 		return false;
- 
- 	time_travel_ext_update_request(time);
-@@ -237,7 +338,8 @@ static void time_travel_ext_wait(bool idle)
- 	};
- 
- 	time_travel_ext_prev_request_valid = false;
--	time_travel_ext_free_until_valid = false;
-+	if (!time_travel_shm)
-+		time_travel_ext_free_until = NULL;
- 	time_travel_ext_waiting++;
- 
- 	time_travel_ext_req(UM_TIMETRAVEL_WAIT, -1);
-@@ -260,7 +362,11 @@ static void time_travel_ext_wait(bool idle)
- 
- static void time_travel_ext_get_time(void)
- {
--	time_travel_ext_req(UM_TIMETRAVEL_GET, -1);
-+	if (time_travel_shm)
-+		time_travel_set_time(time_travel_shm->current_time -
-+				     time_travel_shm_offset);
-+	else
-+		time_travel_ext_req(UM_TIMETRAVEL_GET, -1);
- }
- 
- static void __time_travel_update_time(unsigned long long ns, bool idle)
-diff --git a/include/uapi/linux/um_timetravel.h b/include/uapi/linux/um_timetravel.h
-index d119ce14f36a..546a690b0346 100644
---- a/include/uapi/linux/um_timetravel.h
-+++ b/include/uapi/linux/um_timetravel.h
-@@ -1,17 +1,6 @@
-+/* SPDX-License-Identifier: BSD-3-Clause */
- /*
-- * Permission to use, copy, modify, and/or distribute this software for any
-- * purpose with or without fee is hereby granted, provided that the above
-- * copyright notice and this permission notice appear in all copies.
-- *
-- * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-- * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-- * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-- * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-- * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-- * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-- * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-- *
-- * Copyright (C) 2019 Intel Corporation
-+ * Copyright (C) 2019 - 2023 Intel Corporation
-  */
- #ifndef _UAPI_LINUX_UM_TIMETRAVEL_H
- #define _UAPI_LINUX_UM_TIMETRAVEL_H
-@@ -50,6 +39,36 @@ struct um_timetravel_msg {
- 	__u64 time;
- };
- 
-+/* max number of file descriptors that can be sent/received in a message */
-+#define UM_TIMETRAVEL_MAX_FDS 2
-+
-+/**
-+ * enum um_timetravel_shared_mem_fds - fds sent in ACK message for START message
-+ */
-+enum um_timetravel_shared_mem_fds {
-+	/**
-+	 * @UM_TIMETRAVEL_SHARED_MEMFD: Index of the shared memory file
-+	 *	descriptor in the control message
-+	 */
-+	UM_TIMETRAVEL_SHARED_MEMFD,
-+	/**
-+	 * @UM_TIMETRAVEL_SHARED_LOGFD: Index of the logging file descriptor
-+	 *	in the control message
-+	 */
-+	UM_TIMETRAVEL_SHARED_LOGFD,
-+	UM_TIMETRAVEL_SHARED_MAX_FDS,
-+};
-+
-+/**
-+ * enum um_timetravel_start_ack - ack-time mask for start message
-+ */
-+enum um_timetravel_start_ack {
-+	/**
-+	 * @UM_TIMETRAVEL_START_ACK_ID: client ID that controller allocated.
-+	 */
-+	UM_TIMETRAVEL_START_ACK_ID = 0xffff,
-+};
-+
- /**
-  * enum um_timetravel_ops - Operation codes
-  */
-@@ -57,7 +76,9 @@ enum um_timetravel_ops {
- 	/**
- 	 * @UM_TIMETRAVEL_ACK: response (ACK) to any previous message,
- 	 *	this usually doesn't carry any data in the 'time' field
--	 *	unless otherwise specified below
-+	 *	unless otherwise specified below, note: while using shared
-+	 *	memory no ACK for WAIT and RUN messages, for more info see
-+	 *	&struct um_timetravel_schedshm.
- 	 */
- 	UM_TIMETRAVEL_ACK		= 0,
- 
-@@ -124,7 +145,8 @@ enum um_timetravel_ops {
- 	 */
- 	UM_TIMETRAVEL_GET_TOD		= 8,
- 
--	/** @UM_TIMETRAVEL_BROADCAST: Send/Receive a broadcast messge
-+	/**
-+	 * @UM_TIMETRAVEL_BROADCAST: Send/Receive a broadcast message.
- 	 *	This message can be used to sync all components in the system
- 	 *	with a single message, if the calender gets the message, the
- 	 *	calender broadcast the message to all components, and if a
-@@ -135,4 +157,134 @@ enum um_timetravel_ops {
- 	UM_TIMETRAVEL_BROADCAST		= 9,
- };
- 
-+/* version of struct um_timetravel_schedshm */
-+#define UM_TIMETRAVEL_SCHEDSHM_VERSION 2
-+
-+/**
-+ * enum um_timetravel_schedshm_cap - time travel capabilities of every client
-+ *
-+ * These flags must be set immediately after processing the ACK to
-+ * the START message, before sending any message to the controller.
-+ */
-+enum um_timetravel_schedshm_cap {
-+	/**
-+	 * @UM_TIMETRAVEL_SCHEDSHM_CAP_TIME_SHARE: client can read current time
-+	 *	update internal time request to shared memory and read
-+	 *	free until and send no Ack on RUN and doesn't expect ACK on
-+	 *	WAIT.
-+	 */
-+	UM_TIMETRAVEL_SCHEDSHM_CAP_TIME_SHARE = 0x1,
-+};
-+
-+/**
-+ * enum um_timetravel_schedshm_flags - time travel flags of every client
-+ */
-+enum um_timetravel_schedshm_flags {
-+	/**
-+	 * @UM_TIMETRAVEL_SCHEDSHM_FLAGS_REQ_RUN: client has a request to run.
-+	 *	It's set by client when it has a request to run, if (and only
-+	 *	if) the @running_id points to a client that is able to use
-+	 *	shared memory, i.e. has %UM_TIMETRAVEL_SCHEDSHM_CAP_TIME_SHARE
-+	 *	(this includes the client itself). Otherwise, a message must
-+	 *	be used.
-+	 */
-+	UM_TIMETRAVEL_SCHEDSHM_FLAGS_REQ_RUN = 0x1,
-+};
-+
-+/**
-+ * DOC: Time travel shared memory overview
-+ *
-+ * The main purpose of the shared memory is to avoid all time travel message
-+ * that don't need any action, for example current time can be held in shared
-+ * memory without the need of any client to send a message UM_TIMETRAVEL_GET
-+ * in order to know what's the time.
-+ *
-+ * Since this is shared memory with all clients and controller and controller
-+ * creates the shared memory space, all time values are absolute to controller
-+ * time. So first time client connects to shared memory mode it should take the
-+ * current_time value in shared memory and keep it internally as a diff to
-+ * shared memory times, and once shared memory is initialized, any interaction
-+ * with the controller must happen in the controller time domain, including any
-+ * messages (for clients that are not using shared memory, the controller will
-+ * handle an offset and make the clients think they start at time zero.)
-+ *
-+ * Along with the shared memory file descriptor is sent to the client a logging
-+ * file descriptor, to have all logs related to shared memory,
-+ * logged into one place. note: to have all logs synced into log file at write,
-+ * file should be flushed (fflush) after writing to it.
-+ *
-+ * To avoid memory corruption, we define below for each field who can write to
-+ * it at what time, defined in the structure fields.
-+ *
-+ * To avoid having to pack this struct, all fields in it must be naturally aligned
-+ * (i.e. aligned to their size).
-+ */
-+
-+/**
-+ * union um_timetravel_schedshm_client - UM time travel client struct
-+ *
-+ * Every entity using the shared memory including the controller has a place in
-+ * the um_timetravel_schedshm clients array, that holds info related to the client
-+ * using the shared memory, and can be set only by the client after it gets the
-+ * fd memory.
-+ *
-+ * @capa: bit fields with client capabilities see
-+ *	&enum um_timetravel_schedshm_cap, set by client once after getting the
-+ *	shared memory file descriptor.
-+ * @flags: bit fields for flags see &enum um_timetravel_schedshm_flags for doc.
-+ * @req_time: request time to run, set by client on every request it needs.
-+ * @name: unique id sent to the controller by client with START message.
-+ */
-+union um_timetravel_schedshm_client {
-+	struct {
-+		__u32 capa;
-+		__u32 flags;
-+		__u64 req_time;
-+		__u64 name;
-+	};
-+	char reserve[128]; /* reserved for future usage */
-+};
-+
-+/**
-+ * struct um_timetravel_schedshm - UM time travel shared memory struct
-+ *
-+ * @hdr: header fields:
-+ * @version: Current version struct UM_TIMETRAVEL_SCHEDSHM_VERSION,
-+ *	set by controller once at init, clients must check this after mapping
-+ *	and work without shared memory if they cannot handle the indicated
-+ *	version.
-+ * @len: Length of all the memory including header (@hdr), clients should once
-+ *	per connection first mmap the header and take the length (@len) to remap the entire size.
-+ *	This is done in order to support dynamic struct size letting number of
-+ *	clients be dynamic based on controller support.
-+ * @free_until: Stores the next request to run by any client, in order for the
-+ *	current client to know how long it can still run. A client needs to (at
-+ *	least) reload this value immediately after communicating with any other
-+ *	client, since the controller will update this field when a new request
-+ *	is made by any client. Clients also must update this value when they
-+ *	insert/update an own request into the shared memory while not running
-+ *	themselves, and the new request is before than the current value.
-+ * current_time: Current time, can only be set by the client in running state
-+ *	(indicated by @running_id), though that client may only run until @free_until,
-+ *	so it must remain smaller than @free_until.
-+ * @running_id: The current client in state running, set before a client is
-+ *	notified that it's now running.
-+ * @max_clients: size of @clients array, set once at init by the controller.
-+ * @clients: clients array see &union um_timetravel_schedshm_client for doc,
-+ *	set only by client.
-+ */
-+struct um_timetravel_schedshm {
-+	union {
-+		struct {
-+			__u32 version;
-+			__u32 len;
-+			__u64 free_until;
-+			__u64 current_time;
-+			__u16 running_id;
-+			__u16 max_clients;
-+		};
-+		char hdr[4096]; /* align to 4K page size */
-+	};
-+	union um_timetravel_schedshm_client clients[];
-+};
- #endif /* _UAPI_LINUX_UM_TIMETRAVEL_H */
+The other two are OK.
 -- 
-2.41.0
+Anton R. Ivanov
+https://www.kot-begemot.co.uk/
 
 
 _______________________________________________
