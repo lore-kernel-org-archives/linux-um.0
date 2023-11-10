@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F1C0C4167B
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF7F9C4332F
 	for <linux-um@archiver.kernel.org>; Fri, 10 Nov 2023 11:04:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
@@ -12,49 +12,50 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
 	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=NlNaL2kShNmariBRYZWGmseLNgBPJJi+PuXmpZddoX8=; b=fMY7zyo0dSDwzb
-	zfmSfG4R8bkhE2RH6cknfr6kOxtIr0qk4OmfwUAtQum0ro8W6O37briRe0xUucRMcywMwD6ZsbWCp
-	Djao/bdHp7KIKhEEim2zUcfF8FRVpwjF8HVr4te6efi4sN1kCH6Z7NghXhc5r808iJXNKGp9JoF61
-	pXfNHX9ZcviFmbP1hAeXlZws3UTywIbk3KFJpI15kZdVTQmoZBlme/vgpPKGiqOHP5u1Ps1153S0b
-	X/ez2uD/DX5TuOyI4JCHDk5LPABIhJTEu5jRI/pcSmzlf3LvTuqmMDfL8YXnhIVY4gJgb2n8oVVQn
-	U8FcX15jLpeOAZl9LBow==;
+	List-Owner; bh=JMqY2rLifcEMxT3c/LzoTksIAhexugAl9vbxQH8RoV8=; b=S9D+HjEdQfTJfF
+	GlMP0CnsQtUYzbmOZOpUP/jUwlkL018AuPDlKhxkj2J0rh8polEVwlM/G7zgxJ2sHT+34AN4ISPPt
+	KRT6jK1l0sTTG2ZEqc2/dbi0dxYpDoHWZqqQx9rz4uCMHa+AkX/BpV0n9B9KnNh+7fzwCKKJNzO07
+	OOePO64YSpExXZrNp3ayBxpcHvDAaV4lmbnCqcNe4YmB0R0N0Jh8tkGQObEF0SkLK41HP2/FfU3PF
+	R9jfg+b9o/pxa56NRp5NqpOotqeWOLKuCN8YQIdzuhaA1RHi318kPoz12dSEJxLjYS1HDVyPtfpVU
+	Sk9BcubUzjoudBByCe8g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r1PJJ-008Lzn-2P;
-	Fri, 10 Nov 2023 11:04:25 +0000
+	id 1r1PJK-008M0g-1c;
+	Fri, 10 Nov 2023 11:04:26 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r1PJF-008LuT-2o
+	id 1r1PJG-008Lul-1d
 	for linux-um@lists.infradead.org;
-	Fri, 10 Nov 2023 11:04:23 +0000
+	Fri, 10 Nov 2023 11:04:24 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=kexc/K+Nq5HRFzt+yhj0sNP4mY71RwwML0Sl9qXIlEk=;
-	t=1699614261; x=1700823861; b=uoVCDKGdLZE6jzLe0uu+aT12Yx+VDSkznXYr+zylxpaTPLU
-	ueia/cfIEI0cwDgIOWMUwlZNh5DngNtBfNp7ENQeVyrpgRQJ2CL+8ek9NJZ2R1hovfEg0oeDPt7cy
-	xu1gKtgpqxHIknFZSxcOTaA+uJCioJE3cs7QEAb092HbLhMTn6t/y0yGIvthTULVfiF6L+zMzyZGw
-	JcSeLsz0ePAWNW4CP2RWz3TOTguZJOKn/cUz/7I1iLDsX4CnbvjOiPBQBcsfo5R3e0sCwMjX7WytO
-	U3ZTKOQU4h7wEift9slRolQ62LqxQ/GQzPYrRrDzB0+Tz0SRmgMUo3vXOOhVfjMg==;
+	Resent-Cc:Resent-Message-ID; bh=s67VSzbs2v54qIJVCAjVjZlND69HlpZxUrRaqXpkg1g=;
+	t=1699614262; x=1700823862; b=O16/h0WrShHBpX0+4SaD/NOib5uZq3Il15nVgWKSPCZ1X6T
+	9JNnTJIuNqo0OHNM0fedQdY/pfctMDCRFPSc3ImnSGdn7SqIQxKqwjcGg1+zMEFR2CwXGvgeJxLvs
+	+m2bCSmoHTuiSnxYA788o0/G0/NoGipA3jxAe0RsuIM2dvu6UzYsgyt741k2s+wqbwpDVFPZsVleM
+	zn9AWHI59qLOKUIF51jOo+OQwXJ9IXgowrWCHCLWpZLAdzQgRInHBFowVSy6YFmqQ2RWncu3Oil5a
+	hEGwzwtxLds0w9gskzwsNLThjQRjI4K7LojCURBtkgEo1HdAUnyDnfDLWCidardA==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.97)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1r1PJ7-00000002xHc-25Uv;
-	Fri, 10 Nov 2023 12:04:14 +0100
+	id 1r1PJD-00000002xHc-04TD;
+	Fri, 10 Nov 2023 12:04:19 +0100
 From: benjamin@sipsolutions.net
 To: linux-um@lists.infradead.org
 Cc: Benjamin Berg <benjamin@sipsolutions.net>
-Subject: [PATCH v3 02/11] um: Drop NULL check from start_userspace
-Date: Fri, 10 Nov 2023 12:03:39 +0100
-Message-ID: <20231110110348.1815612-3-benjamin@sipsolutions.net>
+Subject: [PATCH v3 08/11] um: Always inline stub functions
+Date: Fri, 10 Nov 2023 12:03:45 +0100
+Message-ID: <20231110110348.1815612-9-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231110110348.1815612-1-benjamin@sipsolutions.net>
 References: <20231110110348.1815612-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231110_030421_966983_0924ED83 
-X-CRM114-Status: GOOD (  13.32  )
+X-CRM114-CacheID: sfid-20231110_030422_558881_2A918446 
+X-CRM114-Status: UNSURE (   9.30  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,105 +74,162 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Benjamin Berg <benjamin@sipsolutions.net>
 
-start_userspace is only called from exactly one location, and the passed
-pointer for the userspace process stack cannot be NULL.
-
-Remove the check, without changing the control flow.
+The stub executable page is remapped to a different location in the
+userland process. As these functions may be used by the stub, they
+really need to be always inlined rather than permitting the compiler to
+emit a function.
 
 Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
 ---
- arch/um/os-Linux/skas/process.c | 53 +++++++++++++++------------------
- 1 file changed, 24 insertions(+), 29 deletions(-)
+ arch/x86/um/shared/sysdep/stub_32.h | 21 +++++++++++----------
+ arch/x86/um/shared/sysdep/stub_64.h | 17 +++++++++--------
+ 2 files changed, 20 insertions(+), 18 deletions(-)
 
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 43168c51850c..ed20cefb2963 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -189,7 +189,7 @@ extern char __syscall_stub_start[];
+diff --git a/arch/x86/um/shared/sysdep/stub_32.h b/arch/x86/um/shared/sysdep/stub_32.h
+index 38fa894b65d0..4e763f8b380f 100644
+--- a/arch/x86/um/shared/sysdep/stub_32.h
++++ b/arch/x86/um/shared/sysdep/stub_32.h
+@@ -12,7 +12,7 @@
+ #define STUB_MMAP_NR __NR_mmap2
+ #define MMAP_OFFSET(o) ((o) >> UM_KERN_PAGE_SHIFT)
  
- /**
-  * userspace_tramp() - userspace trampoline
-- * @stack:	pointer to the new userspace stack page, can be NULL, if? FIXME:
-+ * @stack:	pointer to the new userspace stack page
-  *
-  * The userspace trampoline is used to setup a new userspace process in start_userspace() after it was clone()'ed.
-  * This function will run on a temporary stack page.
-@@ -204,9 +204,13 @@ extern char __syscall_stub_start[];
-  */
- static int userspace_tramp(void *stack)
+-static inline long stub_syscall0(long syscall)
++static __always_inline long stub_syscall0(long syscall)
  {
-+	struct sigaction sa;
- 	void *addr;
- 	int fd;
- 	unsigned long long offset;
-+	unsigned long segv_handler = STUB_CODE +
-+				     (unsigned long) stub_segv_handler -
-+				     (unsigned long) __syscall_stub_start;
+ 	long ret;
  
- 	ptrace(PTRACE_TRACEME, 0, 0, 0);
+@@ -21,7 +21,7 @@ static inline long stub_syscall0(long syscall)
+ 	return ret;
+ }
  
-@@ -222,34 +226,25 @@ static int userspace_tramp(void *stack)
- 		exit(1);
- 	}
+-static inline long stub_syscall1(long syscall, long arg1)
++static __always_inline long stub_syscall1(long syscall, long arg1)
+ {
+ 	long ret;
  
--	if (stack != NULL) {
--		fd = phys_mapping(uml_to_phys(stack), &offset);
--		addr = mmap((void *) STUB_DATA,
--			    STUB_DATA_PAGES * UM_KERN_PAGE_SIZE, PROT_READ | PROT_WRITE,
--			    MAP_FIXED | MAP_SHARED, fd, offset);
--		if (addr == MAP_FAILED) {
--			printk(UM_KERN_ERR "mapping segfault stack at 0x%lx failed, errno = %d\n",
--			       STUB_DATA, errno);
--			exit(1);
--		}
-+	fd = phys_mapping(uml_to_phys(stack), &offset);
-+	addr = mmap((void *) STUB_DATA,
-+		    STUB_DATA_PAGES * UM_KERN_PAGE_SIZE, PROT_READ | PROT_WRITE,
-+		    MAP_FIXED | MAP_SHARED, fd, offset);
-+	if (addr == MAP_FAILED) {
-+		printk(UM_KERN_ERR "mapping segfault stack at 0x%lx failed, errno = %d\n",
-+		       STUB_DATA, errno);
-+		exit(1);
- 	}
--	if (stack != NULL) {
--		struct sigaction sa;
--
--		unsigned long v = STUB_CODE +
--				  (unsigned long) stub_segv_handler -
--				  (unsigned long) __syscall_stub_start;
--
--		set_sigstack((void *) STUB_DATA, STUB_DATA_PAGES * UM_KERN_PAGE_SIZE);
--		sigemptyset(&sa.sa_mask);
--		sa.sa_flags = SA_ONSTACK | SA_NODEFER | SA_SIGINFO;
--		sa.sa_sigaction = (void *) v;
--		sa.sa_restorer = NULL;
--		if (sigaction(SIGSEGV, &sa, NULL) < 0) {
--			printk(UM_KERN_ERR "%s - setting SIGSEGV handler failed - errno = %d\n",
--			       __func__, errno);
--			exit(1);
--		}
-+
-+	set_sigstack((void *) STUB_DATA, STUB_DATA_PAGES * UM_KERN_PAGE_SIZE);
-+	sigemptyset(&sa.sa_mask);
-+	sa.sa_flags = SA_ONSTACK | SA_NODEFER | SA_SIGINFO;
-+	sa.sa_sigaction = (void *) segv_handler;
-+	sa.sa_restorer = NULL;
-+	if (sigaction(SIGSEGV, &sa, NULL) < 0) {
-+		printk(UM_KERN_ERR "%s - setting SIGSEGV handler failed - errno = %d\n",
-+		       __func__, errno);
-+		exit(1);
- 	}
+@@ -30,7 +30,7 @@ static inline long stub_syscall1(long syscall, long arg1)
+ 	return ret;
+ }
  
- 	kill(os_getpid(), SIGSTOP);
-@@ -261,7 +256,7 @@ int kill_userspace_mm[NR_CPUS];
+-static inline long stub_syscall2(long syscall, long arg1, long arg2)
++static __always_inline long stub_syscall2(long syscall, long arg1, long arg2)
+ {
+ 	long ret;
  
- /**
-  * start_userspace() - prepare a new userspace process
-- * @stub_stack:	pointer to the stub stack. Can be NULL, if? FIXME:
-+ * @stub_stack:	pointer to the stub stack.
-  *
-  * Setups a new temporary stack page that is used while userspace_tramp() runs
-  * Clones the kernel process into a new userspace process, with FDs only.
+@@ -40,7 +40,8 @@ static inline long stub_syscall2(long syscall, long arg1, long arg2)
+ 	return ret;
+ }
+ 
+-static inline long stub_syscall3(long syscall, long arg1, long arg2, long arg3)
++static __always_inline long stub_syscall3(long syscall, long arg1, long arg2,
++					  long arg3)
+ {
+ 	long ret;
+ 
+@@ -50,8 +51,8 @@ static inline long stub_syscall3(long syscall, long arg1, long arg2, long arg3)
+ 	return ret;
+ }
+ 
+-static inline long stub_syscall4(long syscall, long arg1, long arg2, long arg3,
+-				 long arg4)
++static __always_inline long stub_syscall4(long syscall, long arg1, long arg2,
++					  long arg3, long arg4)
+ {
+ 	long ret;
+ 
+@@ -61,8 +62,8 @@ static inline long stub_syscall4(long syscall, long arg1, long arg2, long arg3,
+ 	return ret;
+ }
+ 
+-static inline long stub_syscall5(long syscall, long arg1, long arg2, long arg3,
+-				 long arg4, long arg5)
++static __always_inline long stub_syscall5(long syscall, long arg1, long arg2,
++					  long arg3, long arg4, long arg5)
+ {
+ 	long ret;
+ 
+@@ -72,12 +73,12 @@ static inline long stub_syscall5(long syscall, long arg1, long arg2, long arg3,
+ 	return ret;
+ }
+ 
+-static inline void trap_myself(void)
++static __always_inline void trap_myself(void)
+ {
+ 	__asm("int3");
+ }
+ 
+-static inline void remap_stack_and_trap(void)
++static __always_inline void remap_stack_and_trap(void)
+ {
+ 	__asm__ volatile (
+ 		"movl %%esp,%%ebx ;"
+diff --git a/arch/x86/um/shared/sysdep/stub_64.h b/arch/x86/um/shared/sysdep/stub_64.h
+index 2de1c8f88173..b24168ef0ac4 100644
+--- a/arch/x86/um/shared/sysdep/stub_64.h
++++ b/arch/x86/um/shared/sysdep/stub_64.h
+@@ -16,7 +16,7 @@
+ #define __syscall_clobber "r11","rcx","memory"
+ #define __syscall "syscall"
+ 
+-static inline long stub_syscall0(long syscall)
++static __always_inline long stub_syscall0(long syscall)
+ {
+ 	long ret;
+ 
+@@ -27,7 +27,7 @@ static inline long stub_syscall0(long syscall)
+ 	return ret;
+ }
+ 
+-static inline long stub_syscall2(long syscall, long arg1, long arg2)
++static __always_inline long stub_syscall2(long syscall, long arg1, long arg2)
+ {
+ 	long ret;
+ 
+@@ -38,7 +38,8 @@ static inline long stub_syscall2(long syscall, long arg1, long arg2)
+ 	return ret;
+ }
+ 
+-static inline long stub_syscall3(long syscall, long arg1, long arg2, long arg3)
++static __always_inline long stub_syscall3(long syscall, long arg1, long arg2,
++					  long arg3)
+ {
+ 	long ret;
+ 
+@@ -50,7 +51,7 @@ static inline long stub_syscall3(long syscall, long arg1, long arg2, long arg3)
+ 	return ret;
+ }
+ 
+-static inline long stub_syscall4(long syscall, long arg1, long arg2, long arg3,
++static __always_inline long stub_syscall4(long syscall, long arg1, long arg2, long arg3,
+ 				 long arg4)
+ {
+ 	long ret;
+@@ -64,8 +65,8 @@ static inline long stub_syscall4(long syscall, long arg1, long arg2, long arg3,
+ 	return ret;
+ }
+ 
+-static inline long stub_syscall5(long syscall, long arg1, long arg2, long arg3,
+-				 long arg4, long arg5)
++static __always_inline long stub_syscall5(long syscall, long arg1, long arg2,
++					  long arg3, long arg4, long arg5)
+ {
+ 	long ret;
+ 
+@@ -78,12 +79,12 @@ static inline long stub_syscall5(long syscall, long arg1, long arg2, long arg3,
+ 	return ret;
+ }
+ 
+-static inline void trap_myself(void)
++static __always_inline void trap_myself(void)
+ {
+ 	__asm("int3");
+ }
+ 
+-static inline void remap_stack_and_trap(void)
++static __always_inline void remap_stack_and_trap(void)
+ {
+ 	__asm__ volatile (
+ 		"movq %0,%%rax ;"
 -- 
 2.41.0
 
