@@ -4,56 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A479EC4167B
-	for <linux-um@archiver.kernel.org>; Fri, 10 Nov 2023 11:04:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A8D5C4332F
+	for <linux-um@archiver.kernel.org>; Fri, 10 Nov 2023 11:04:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:MIME-Version:Message-ID:Date:Subject:Cc
-	:To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=/O1s6f5mtG9Lus+NxVEGe2Fk4f2PjIiKy6edJj/oiyE=; b=2SwBAVA+LvYGaB
-	EsrLTUbaEr5Qj9GvdyZyYor9Lpvu9ykPYOLA9hX5Hc2WahHInzt+Wcbe7IDQtVnre2VNWxXrYcqDj
-	f89g8GVIL8VRW5a5WArvpBMtGwxQf5yYJE9JzreplPPROBpyr/99qnj53ULBZfGYpauyEeiAdPaAz
-	lNz1fCJksBUfO+r67YHnfcZK5I/9c7BuDI60fYZ/+MYe+9LP0kPH3eg+WqppIqrvhGoxSImgbe9rd
-	zMr6KaTx6vDFl2p4DvyhYZA9A1sZlwVe6rDLwKibBSOx8QtNj9+oD0i+y2ulGgH7HVcRqTko11OZR
-	/Dz8w0nlXxL0CZh6mibw==;
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	List-Owner; bh=lzPDFT4zqCKAdybm/VU2g/N19AgoPaK6O64VvJuzG1s=; b=4v+bKOTGuF0x8u
+	Yd/sv+bdUc7UhTkml8MRuU41AapvIm6fr1j4rrJL+dL6fKglsPKRqmxYVO5wiH9VP1AVK08NyG4kz
+	vu436W6Q+LOlsOYc5pqDnqQSdaQKu6jiz2AXUVwqRQX6vhSwZ1y28EBEuTv8cRdoKnxy7rVPKbE30
+	C9TpE7b3V8Xc1B55ntB+avwQsJhqZiIuUi1Nkv0ReX2uyiTZHdXqt58RVAuJBlo0PXRErmS71dVpJ
+	yEAm72BUx6LbIFSJL8PFTGBv8nAdNys5OayHujFdaGxL3jN8FrDgtI9ss9Z4AGQyc5oavhXnW9otc
+	0A9x7f0WNU+kdTAm2YdA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r1PJF-008LuW-0q;
-	Fri, 10 Nov 2023 11:04:21 +0000
+	id 1r1PJG-008Lvw-2K;
+	Fri, 10 Nov 2023 11:04:22 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r1PJD-008LrE-12
+	id 1r1PJD-008Lry-12
 	for linux-um@lists.infradead.org;
-	Fri, 10 Nov 2023 11:04:20 +0000
+	Fri, 10 Nov 2023 11:04:21 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
-	Resent-Message-ID:In-Reply-To:References;
-	bh=1z6Smdd7o4NVLwjNVu0wZxj7u6lnVborwjyq7DlsI0U=; t=1699614255; x=1700823855; 
-	b=tvWPe89+4w7CDO/d/9fPeDg1odXoN6OZd/TJAQNfQXTCKEQvWWDx5LC3avvLf3YZzCaFhHhSiVI
-	1UVnY7AryMKWN/an4Nro/mIOPR+WtKYav+yM48z+QmDkmIfYRo/Soo7k8W3qS12D6bKOrW8xioMNL
-	UhyAOUOaTxw51cgOmwln4a/eM/eSnpU4vETZXfGIOnWH1g40l8BKcGomxJdbJ9dY6LMuMcUwdlF2/
-	00/MLgeemGq0dIRRdN1wDhKTosb4ruwuqIQl1i5JSPYRP2fyxxhHN4qtf6HWaa5XjnsZ1OyRJY5Mx
-	tWbkuwd7mU0RkD9HrBFctGwv1J6vFrWDsLxA==;
+	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=Tb5EnQGrvtNO/ZL5MiVWVQ917Xs3fMUTP6eCRZc/6Ng=;
+	t=1699614258; x=1700823858; b=YhzRKcPm6iIOH8pw+vKcq5q248Q2+f47YekiwNkTO1Bz0XB
+	9M2ONrt4KeOxfqsUDqU5Ix3q7O6zYdfxReL6CTpECy8HeH4pp4nITejzKyYbir39yQ6DKggXZ4UqL
+	21YEBA+runx1Ay6IlVFpc6VzyUG2qhJX+ZFF2WIHhnGFPZryBWRngXBFuUnV91BCwDRL5ameCAohS
+	XE28EFxC6pRt8iIBTMPUnJTaQOKjew9lSAi9VkAmFRsOpguveWEWgGeSAnbINve+IV87cSc25Lymi
+	1/POJ8LeRTRfqkkHMEUnJSh2Zq53ryYUU+vZhyc4+N/lc0fGIWkIxNW02gozF5Bw==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.97)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1r1PJ5-00000002xHc-3Z3g;
-	Fri, 10 Nov 2023 12:04:12 +0100
+	id 1r1PJ8-00000002xHc-33fw;
+	Fri, 10 Nov 2023 12:04:14 +0100
 From: benjamin@sipsolutions.net
 To: linux-um@lists.infradead.org
 Cc: Benjamin Berg <benjamin@sipsolutions.net>
-Subject: [PATCH v3 00/11] General cleanups and fixes from SECCOMP patchset
-Date: Fri, 10 Nov 2023 12:03:37 +0100
-Message-ID: <20231110110348.1815612-1-benjamin@sipsolutions.net>
+Subject: [PATCH v3 03/11] um: Make errors to stop ptraced child fatal during startup
+Date: Fri, 10 Nov 2023 12:03:40 +0100
+Message-ID: <20231110110348.1815612-4-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231110110348.1815612-1-benjamin@sipsolutions.net>
+References: <20231110110348.1815612-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231110_030419_360321_C6727FB0 
-X-CRM114-Status: GOOD (  12.49  )
+X-CRM114-CacheID: sfid-20231110_030419_360732_0ED31A85 
+X-CRM114-Status: GOOD (  14.63  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,62 +73,101 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Benjamin Berg <benjamin@sipsolutions.net>
 
-Hi,
+For the detection code to check whether SYSEMU_SINGLESTEP works
+correctly we needed some error cases while stopping to be non-fatal.
+However, at this point stop_ptraced_child must always succeed, and we
+can therefore simplify it slightly to exit immediately on error.
 
-the SECCOMP patchset is not ready yet as I need to change it quite a bit
-for the FD passing based security model that was proposed.
+Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
+---
+ arch/um/os-Linux/start_up.c | 41 +++++++++++--------------------------
+ 1 file changed, 12 insertions(+), 29 deletions(-)
 
-Until then, the cleanups and small fixes from the start of the patchset
-are still relevant and it could be nice to pull them in anyway. So I am
-resending just these.
-
-I purely rebased the patchset. There should be no other differences
-between v2 and v3 here.
-
-Benjamin
-
-Benjamin Berg (11):
-  um: Drop support for hosts without SYSEMU_SINGLESTEP support
-  um: Drop NULL check from start_userspace
-  um: Make errors to stop ptraced child fatal during startup
-  um: Don't use vfprintf() for os_info()
-  um: Do not use printk in SIGWINCH helper thread
-  um: Reap winch thread if it fails
-  um: Do not use printk in userspace trampoline
-  um: Always inline stub functions
-  um: Rely on PTRACE_SETREGSET to set FS/GS base registers
-  um: Remove unused register save/restore functions
-  um: Mark 32bit syscall helpers as clobbering memory
-
- arch/um/drivers/chan_user.c             |  42 +++++----
- arch/um/drivers/line.c                  |  13 ++-
- arch/um/include/asm/processor-generic.h |   1 -
- arch/um/include/shared/kern_util.h      |   3 +-
- arch/um/include/shared/os.h             |   3 -
- arch/um/include/shared/ptrace_user.h    |  41 ---------
- arch/um/include/shared/registers.h      |   2 -
- arch/um/kernel/process.c                |  12 +--
- arch/um/kernel/ptrace.c                 |   2 -
- arch/um/kernel/signal.c                 |  12 ---
- arch/um/os-Linux/registers.c            |  20 ----
- arch/um/os-Linux/skas/process.c         | 117 ++++++++----------------
- arch/um/os-Linux/start_up.c             | 111 ++++------------------
- arch/um/os-Linux/util.c                 |  19 +++-
- arch/x86/um/asm/elf.h                   |   4 +-
- arch/x86/um/asm/processor_64.h          |   3 -
- arch/x86/um/os-Linux/Makefile           |   1 -
- arch/x86/um/os-Linux/prctl.c            |  12 ---
- arch/x86/um/ptrace_32.c                 |  24 -----
- arch/x86/um/ptrace_64.c                 |  26 ------
- arch/x86/um/shared/sysdep/ptrace_32.h   |   4 -
- arch/x86/um/shared/sysdep/ptrace_user.h |  12 +--
- arch/x86/um/shared/sysdep/stub_32.h     |  39 ++++----
- arch/x86/um/shared/sysdep/stub_64.h     |  17 ++--
- arch/x86/um/syscalls_64.c               |  62 +++----------
- arch/x86/um/tls_64.c                    |   2 +-
- 26 files changed, 159 insertions(+), 445 deletions(-)
- delete mode 100644 arch/x86/um/os-Linux/prctl.c
-
+diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
+index 561c08e0cc9c..8b0e98ab842c 100644
+--- a/arch/um/os-Linux/start_up.c
++++ b/arch/um/os-Linux/start_up.c
+@@ -112,35 +112,20 @@ static int start_ptraced_child(void)
+ 	return pid;
+ }
+ 
+-/* When testing for SYSEMU support, if it is one of the broken versions, we
+- * must just avoid using sysemu, not panic, but only if SYSEMU features are
+- * broken.
+- * So only for SYSEMU features we test mustpanic, while normal host features
+- * must work anyway!
+- */
+-static int stop_ptraced_child(int pid, int exitcode, int mustexit)
++static void stop_ptraced_child(int pid, int exitcode)
+ {
+-	int status, n, ret = 0;
++	int status, n;
++
++	if (ptrace(PTRACE_CONT, pid, 0, 0) < 0)
++		fatal_perror("stop_ptraced_child : ptrace failed");
+ 
+-	if (ptrace(PTRACE_CONT, pid, 0, 0) < 0) {
+-		perror("stop_ptraced_child : ptrace failed");
+-		return -1;
+-	}
+ 	CATCH_EINTR(n = waitpid(pid, &status, 0));
+ 	if (!WIFEXITED(status) || (WEXITSTATUS(status) != exitcode)) {
+ 		int exit_with = WEXITSTATUS(status);
+-		if (exit_with == 2)
+-			non_fatal("check_ptrace : child exited with status 2. "
+-				  "\nDisabling SYSEMU support.\n");
+-		non_fatal("check_ptrace : child exited with exitcode %d, while "
+-			  "expecting %d; status 0x%x\n", exit_with,
+-			  exitcode, status);
+-		if (mustexit)
+-			exit(1);
+-		ret = -1;
++		fatal("stop_ptraced_child : child exited with exitcode %d, "
++		      "while expecting %d; status 0x%x\n", exit_with,
++		      exitcode, status);
+ 	}
+-
+-	return ret;
+ }
+ 
+ static void __init check_sysemu(void)
+@@ -185,16 +170,14 @@ static void __init check_sysemu(void)
+ 			goto fail;
+ 		}
+ 	}
+-	if (stop_ptraced_child(pid, 0, 0) < 0)
+-		goto fail_stopped;
++	stop_ptraced_child(pid, 0);
+ 
+ 	os_info("OK\n");
+ 
+ 	return;
+ 
+ fail:
+-	stop_ptraced_child(pid, 1, 0);
+-fail_stopped:
++	stop_ptraced_child(pid, 1);
+ 	fatal("missing\n");
+ }
+ 
+@@ -233,7 +216,7 @@ static void __init check_ptrace(void)
+ 			break;
+ 		}
+ 	}
+-	stop_ptraced_child(pid, 0, 1);
++	stop_ptraced_child(pid, 0);
+ 	os_info("OK\n");
+ 	check_sysemu();
+ }
+@@ -312,7 +295,7 @@ void __init os_early_checks(void)
+ 	pid = start_ptraced_child();
+ 	if (init_pid_registers(pid))
+ 		fatal("Failed to initialize default registers");
+-	stop_ptraced_child(pid, 1, 1);
++	stop_ptraced_child(pid, 1);
+ }
+ 
+ int __init parse_iomem(char *str, int *add)
 -- 
 2.41.0
 
