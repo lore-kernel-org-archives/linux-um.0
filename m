@@ -4,70 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C12A9C4332F
-	for <linux-um@archiver.kernel.org>; Mon, 13 Nov 2023 11:46:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CB0F1C4332F
+	for <linux-um@archiver.kernel.org>; Mon, 13 Nov 2023 21:22:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
-	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
-	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
-	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
+	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
+	List-Archive:List-Unsubscribe:List-Id:MIME-Version:References:In-Reply-To:
+	Date:Cc:To:From:Subject:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=Prc72FfUEXYeuSvBkaU9Nf3qRn/cDPgOdTM0LbsfIyI=; b=IHLv9R+sfBIyzB
-	PqUoKEulVZ2Pj2nexzp4WZzbp586UR751hKsZyetf0JjquOVsntF+cjB+JpkPQVdzlgyUjOOqpfK3
-	eutanXEAIjVGFyl73/nVXTg5Grz4206BM1NtiaiimnoeDVO89DD+GXGUV/nUWYPJZZVsR/b4ZlWkJ
-	KU8ivgX1MQzvE7NcfJLNa+DpLMAll0df1dtNM/A9nGuDJLH3ACsTNqAZzT3kECebv87twT7qPfchT
-	Ds+/R/tXzexu5/m0RoQ9OKihHH4LIU03yf5A4Qwzt+hjBBFTOxDCXunp1egE65IBu4xvx9fNn5JWA
-	dLtKXdjLr0eRvZNQJzsA==;
+	List-Owner; bh=m8QNgLT6kMNjXv5147ItR/F7npsH6VBezZvFj8d+5A8=; b=MWHCKfZStxVaPe
+	6HZYuHO/mKq2EvOGjllV4vgDuLdT79NxcBDj2Jq2/ZDkT2BRxQ5Ud4poALo0iUM2CcMTS4cYFyYPc
+	xwJv/cy5/EwTt4bh8CCBV5sw4r51Q1Afp3cSgjFjqejp9tJt69gZhnyLar5s10mXHIsutbLt8ZacW
+	psWJ0g7An5fpLghwzUfGyCnBccCw/9Y9OHfYS/ZRxiGeiQ5ewl4DHNSRQ/itatOekjNoqerS8PX44
+	eZBbxDSvcvylneVh+zv2gTNeC57cFfJ7Ud3amTr4OQRXEyO4koxiVa5AvHHI1PP7WpLSIH5uGnuCE
+	BGq5BVp+0Jlz+oQQJSDA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r2VOk-00DlF6-0j;
-	Mon, 13 Nov 2023 11:46:34 +0000
-Received: from mx1.uni-rostock.de ([139.30.22.71])
+	id 1r2eOR-00Ek4h-0W;
+	Mon, 13 Nov 2023 21:22:51 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r2VOf-00DlEk-2q
+	id 1r2eON-00Ek48-0y
 	for linux-um@lists.infradead.org;
-	Mon, 13 Nov 2023 11:46:32 +0000
-Received: from 139.30.22.84 by mx1.uni-rostock.de (Tls12, Aes256, Sha384,
- DiffieHellmanEllipticKey384); Mon, 13 Nov 2023 11:46:17 GMT
-DKIM-Signature: v=1; c=relaxed/relaxed; d=uni-rostock.de; s=itmze; 
- t=1699875977; bh=/prO9K2nlxADNXyBHI/QTCslbs/zLpwiVgAnjxoJsQY=; h=
- Subject:Subject:From:From:Date:Date:ReplyTo:ReplyTo:Cc:Cc:Message-Id:Message-Id; 
- a=ed25519-sha256; b=
- 20e5Q2Un7ZNHkHsf4/0J0bLszx2A1GqqesZrcH2inBCj7eGJMwL3SrDVKHhKXS8aSKW/xWVeHcsmOJ1YMCtCBA==
-DKIM-Signature: v=1; c=relaxed/relaxed; d=uni-rostock.de; s=itmz; 
- t=1699875977; bh=/prO9K2nlxADNXyBHI/QTCslbs/zLpwiVgAnjxoJsQY=; h=
- Subject:Subject:From:From:Date:Date:ReplyTo:ReplyTo:Cc:Cc:Message-Id:Message-Id; 
- a=rsa-sha256; b=
- M73NIEk/upP67Wtn60NbC9q5PRkDlRxOAFD83ndH7xcMRtEE962vl2wsda0BJldcC3TboGzHq9O+aUgREqviUHqU4SfkgzBs4XxvDcjjz8p8m5qR82vy6byxY9mYOfvjAAYPEqSU9bHYADDtU7n8bpivzuT/DD7WBTAlLmT0ynk=
-Received: from [139.30.201.32] (139.30.201.32) by mail1.uni-rostock.de
- (139.30.22.84) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 13 Nov
- 2023 12:46:16 +0100
-Message-ID: <c83d1520-277f-45a9-beff-3c65e63dfc7c@uni-rostock.de>
-Date: Mon, 13 Nov 2023 12:46:15 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+	Mon, 13 Nov 2023 21:22:49 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=Z6yPjEN0Pr/Bs4uwH2XXofv9vHLL/Gu8PMHJAUIO8hE=;
+	t=1699910564; x=1701120164; b=magf7kNBkvdPKs1UUa7k2xrTlWoXs4rCKzkUwk62GJ09r9r
+	x1SfzlVrYCE5jjxzH+du1T3Onpem42GrLTCK415N1XFjNsQa2IcOlzHYFd5Pd0tGJOWXvoDjIJzXI
+	mHeFjB3xB6ScOpvvTiE7V1dzoOlXX0Hq0kWrs1i+g0qM0vLzqbj3FTP+gHmZYPo9LfDgf/CFN+gQ2
+	Ve/Ygc0m6lS78WEpoiX1W6YajzCMME9gxyBX5JbWKEw3fI6Y7+RNxK7qyK4leJYbDSivF6Mnx3Jwe
+	DnBgWrDNPtYjmvkxJks7KYSBpw/38lFLSYvEk6qMtexhMkA168EgCXAscfRxtd8g==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1r2eOH-00000006w2j-3o9D;
+	Mon, 13 Nov 2023 22:22:42 +0100
+Message-ID: <9c7f83b15bd2c293c7ee0933d33fd9f294f11c87.camel@sipsolutions.net>
 Subject: Re: [PATCH RFC 03/11] um: Use a simple time travel handler for line
  interrupts
-Content-Language: de-DE
-To: Johannes Berg <johannes@sipsolutions.net>, Richard Weinberger
-	<richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
-CC: <linux-um@lists.infradead.org>
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Benjamin Beichler <Benjamin.Beichler@uni-rostock.de>, Richard Weinberger
+	 <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: linux-um@lists.infradead.org
+Date: Mon, 13 Nov 2023 22:22:40 +0100
+In-Reply-To: <c83d1520-277f-45a9-beff-3c65e63dfc7c@uni-rostock.de>
 References: <20231103-bb-timetravel-patches-v1-0-e2c68efcf664@uni-rostock.de>
- <20231103-bb-timetravel-patches-v1-3-e2c68efcf664@uni-rostock.de>
- <71657ebd4a582b1a3c876de4d778ff67bd29c49d.camel@sipsolutions.net>
- <15d63c81-9e41-4965-b988-c4a934aecc52@uni-rostock.de>
- <9d7509efed4292891b4ffbf063ae58f11af8b742.camel@sipsolutions.net>
-From: Benjamin Beichler <Benjamin.Beichler@uni-rostock.de>
-Organization: =?UTF-8?Q?Universit=C3=A4t_Rostock?=
-In-Reply-To: <9d7509efed4292891b4ffbf063ae58f11af8b742.camel@sipsolutions.net>
-X-Originating-IP: [139.30.201.32]
-X-ClientProxiedBy: email3.uni-rostock.de (139.30.22.83) To
- mail1.uni-rostock.de (139.30.22.84)
-X-TM-SNTS-SMTP: D39EBCE48F6B649B89CC6D502B50D4E8D7025E4CA190C43F237FB3D2DF467FE42000:8
+	 <20231103-bb-timetravel-patches-v1-3-e2c68efcf664@uni-rostock.de>
+	 <71657ebd4a582b1a3c876de4d778ff67bd29c49d.camel@sipsolutions.net>
+	 <15d63c81-9e41-4965-b988-c4a934aecc52@uni-rostock.de>
+	 <9d7509efed4292891b4ffbf063ae58f11af8b742.camel@sipsolutions.net>
+	 <c83d1520-277f-45a9-beff-3c65e63dfc7c@uni-rostock.de>
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231113_034630_845329_348316F6 
-X-CRM114-Status: GOOD (  27.37  )
+X-CRM114-CacheID: sfid-20231113_132247_722531_D8CDDD07 
+X-CRM114-Status: GOOD (  51.88  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,93 +74,141 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Am 10.11.2023 um 18:16 schrieb Johannes Berg:
-> ________________________________
->
-> On Fri, 2023-11-10 at 17:53 +0100, Benjamin Beichler wrote:
->>> At least in my mental model this is broken because the sender of the
->>> event basically has to prepare the calendar for it happening, which
->>> feels ... odd.
->> Actually, for me, this would make kind of sense.
-> I'm not sure I agree, I guess. To me, the sender is just telling someone
-> else "here's something going on I want you to look at". That doesn't
-> really mean the receiver needs to actually handle it "right away". Maybe
-> the receiver implements a model where it's modelling an interrupt
-> latency (which _would_ be more realistic), so it only handles the
-> message some (small amount of) time later. Maybe it's in a polling model
-> right now and has disabled interrupt sources, and just wakes every so
-> often to check for messages. Maybe something else.
->
-> So I don't really agree that baking a "must be scheduled immediately"
-> into any protocol really makes sense.
-I think you are mixing here some levels of abstraction. Some entity in 
-the "system" needs to
-react to an interrupt immediately. In the real world, this is mostly 
-done by some kind of interrupt controller
-which may latch the interrupt (if they are deactivated from CPU side). 
-Of course some more sophisticated
-bus protocols (i.e. virtio/vhost in this case) can also signal the 
-device to do no interrupts, but in the most
-basic case, e.g. a button at a GPIO pin, the device could not handle 
-that. Most of the interrupt abstraction
-in um is realized via signals, but some more seems (IMHO) to be needed 
-from the tt-protocol, if we have external
-device simulations. My suggestion was to add the virtual interrupt line 
-state change as a message to the calendar.
-
-Of course, you could argue, that the device simulation needs to be 
-clever enough (so distributing this task of the
-interrupt controller), but even therefore the device simulation need 
-some more information to reflect delayed interrupts,
-deactivated interrupts and so on.
-
-What confuses me is, that you explicitly use the immediate synchronous 
-response model on the interrupts from the vhost/virtio
-driver, but you seem to refuse this on other drivers.
->
->> Why couldn't we be more
->> explicit in the time travel protocol to the calendar about interrupts?
->> We could use the ID from the start-msg to identify um instances and
->> tell, in an additional msg, that we are going to trigger an interrupt at
->> the current time to that instance from the device simulation.
-> But see above - I basically just don't think the sender of the event is
-> the right position to know that information.
-Mhh if I apply that to the vhost/virtio simulations, that is, what is 
-implicitly modeled by
-the exchanged file descriptors and vhost/virtio protocol state.
-
-We may change the whole tt-ext-mode to only accept vhost/virtio drivers, 
-but that needs to
-be stated explicitly in the documentation. I'm not really in favor of 
-that, but if it is documented
-it is easier to understand.
->
->> Another way would be, to serve such information (if the device
->> simulation really need it) over the facilities we already established.
->> Why not send the ACK as MSG_OOB or ancillary data?
-> Don't think I understand that. Which "facilities" are you referring to
-> here?
-I hadn't researched that on Friday, but we could use a custom control 
-msg (cmsg) on the unix sockets
-attached to the (serial) line devices. The device simulation can then 
-wait on that ancillary data for
-synchronous interrupt handling, as you have proposed for vhost/virtio. 
-My first idea was to use
-MSG_OOB, which do not exit on Unix-Domain-Sockets. If someone does not 
-use uds as transport
-we may give a warning.
-
-
-Benjamin
-
-
-
-_______________________________________________
-linux-um mailing list
-linux-um@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-um
+T24gTW9uLCAyMDIzLTExLTEzIGF0IDEyOjQ2ICswMTAwLCBCZW5qYW1pbiBCZWljaGxlciB3cm90
+ZToKPiA+IFNvIEkgZG9uJ3QgcmVhbGx5IGFncmVlIHRoYXQgYmFraW5nIGEgIm11c3QgYmUgc2No
+ZWR1bGVkIGltbWVkaWF0ZWx5Igo+ID4gaW50byBhbnkgcHJvdG9jb2wgcmVhbGx5IG1ha2VzIHNl
+bnNlLgoKPiBJIHRoaW5rIHlvdSBhcmUgbWl4aW5nIGhlcmUgc29tZSBsZXZlbHMgb2YgYWJzdHJh
+Y3Rpb24uIFNvbWUgZW50aXR5IGluIAo+IHRoZSAic3lzdGVtIiBuZWVkcyB0byByZWFjdCB0byBh
+biBpbnRlcnJ1cHQgaW1tZWRpYXRlbHkuCgpEb24ndCB0aGluayBJIGFncmVlLCB0aGF0J3Mgbm90
+IHJlYWxseSBuZWNlc3NhcnkuCgo+IEluIHRoZSByZWFsIHdvcmxkLCB0aGlzIGlzIG1vc3RseSAK
+PiBkb25lIGJ5IHNvbWUga2luZCBvZiBpbnRlcnJ1cHQgY29udHJvbGxlcgo+IHdoaWNoIG1heSBs
+YXRjaCB0aGUgaW50ZXJydXB0IChpZiB0aGV5IGFyZSBkZWFjdGl2YXRlZCBmcm9tIENQVSBzaWRl
+KS4gCgpFdmVuIHRoYXQgaXRzZWxmIG1heSBqdXN0IGJlIHBvbGxpbmcgc29tZSBsaW5lcywgdGhl
+b3JldGljYWxseS4KCkJ1dCB0aGF0J3MgbW9zdGx5IHRoZW9yZXRpY2FsIC0gaWYgeW91IHdhbnRl
+ZCB0byBzaW11bGF0ZSBzb21lIGludGVycnVwdApsYXRlbmN5LCB5b3UnZCBzaW1wbHkgbm90IHJl
+YWN0ICdpbW1lZGlhdGVseScgYnV0IHJhdGhlciBzb21lIGFtb3VudCBvZgp0aW1lIGxhdGVyOyB0
+aGUgaW50ZXJydXB0IGNvbnRyb2xsZXIgYW5kIGFsbCB0aGF0IGlzIGJhc2ljYWxseSBhbGwgdGhl
+CnNhbWUgcGllY2Ugb2YgY29kZS4KCj4gT2YgY291cnNlIHNvbWUgbW9yZSBzb3BoaXN0aWNhdGVk
+Cj4gYnVzIHByb3RvY29scyAoaS5lLiB2aXJ0aW8vdmhvc3QgaW4gdGhpcyBjYXNlKSBjYW4gYWxz
+byBzaWduYWwgdGhlIAo+IGRldmljZSB0byBkbyBubyBpbnRlcnJ1cHRzLCBidXQgaW4gdGhlIG1v
+c3QKPiBiYXNpYyBjYXNlLCBlLmcuIGEgYnV0dG9uIGF0IGEgR1BJTyBwaW4sIHRoZSBkZXZpY2Ug
+Y291bGQgbm90IGhhbmRsZSAKPiB0aGF0LsKgCgpOb3Qgc3VyZSBJIGZvbGxvdyAtIGhvdydzIHRo
+YXQgcmVsYXRlZCB0byB0aGUgcHJvdG9jb2w/IEVpdGhlciB5b3UgZ2V0CmFuIGludGVycnVwdCBv
+ciB5b3UgZG9uJ3QsIGJ1dCBvbmNlIHlvdSBkbyBnZXQgaXQsIHRoZXJlJ3MgYWxzbyBub3RoaW5n
+CnRoYXQgc2F5cyB5b3Ugd2lsbCBoYW5kbGUgaXQgaW1tZWRpYXRlbHkuCgoKPiBNb3N0IG9mIHRo
+ZSBpbnRlcnJ1cHQgYWJzdHJhY3Rpb24gaW4gdW0gaXMgcmVhbGl6ZWQgdmlhIHNpZ25hbHMsCgpX
+aGljaCBpcyBhY3R1YWxseSB1bm5lY2Vzc2FyeSBmb3IgdGhpcyBraW5kIG9mIHNpbXVsYXRpb24g
+c2luY2UgdGhlIFVNTAppbnN0YW5jZSBtdXN0IGJlIGluIGlkbGUgYnkgZGVmaW5pdGlvbiBmb3Ig
+c29tZW9uZSBlbHNlIHRvIGJlIHJ1bm5pbmcKYW5kIHNlbmRpbmcgaXQgJ3JlYWwnIGludGVycnVw
+dHMuIFdlIGNvdWxkIGFzIHdlbGwganVzdCBkaXJlY3RseSBidWlsZAphbiBlcG9sbCBsb29wIHRo
+ZXJlLCBidXQgdGhhdCdzIG1vcmUgY29tcGxpY2F0ZWQgc3VyZ2VyeSBpbiB0aGUgaW5uYXJkcwpv
+ZiBVTUwncyBpbnRlcnJ1cHQgbW9kZWwgdGhhdCBpc24ndCByZWFsbHkgbmVlZGVkLgoKV2l0aG91
+dCB0aW1lLXRyYXZlbCwgaXQgX2lzXyBuZWVkZWQgc2luY2UgeW91IHdhbnQgdG8gaGF2ZSAncmVh
+bCcKaW50ZXJydXB0cyB0aGF0IGFjdHVhbGx5IHN0b3AgYSBwcm9jZXNzIGZyb20gcnVubmluZyBh
+bmQgeW91IGdldCBpbnRvCnRoZSBkZXZpY2UgZHJpdmVyIGFuZCBhbGwuCgo+IGJ1dCBzb21lIG1v
+cmUgc2VlbXMgKElNSE8pIHRvIGJlIG5lZWRlZCAKPiBmcm9tIHRoZSB0dC1wcm90b2NvbCwgaWYg
+d2UgaGF2ZSBleHRlcm5hbAo+IGRldmljZSBzaW11bGF0aW9ucy7CoAoKV2VsbCwgSSBqdXN0IHNh
+aWQgYWJvdmUgX2xlc3NfIGlzIGFjdHVhbGx5IG5lZWRlZCA7LSkKClRoZSBfbW9yZV8gdGhhdCdz
+IG5lZWRlZCBpcyB0byBhY3R1YWxseSBlbnN1cmUgdGhlICJvbmx5IG9uZSB0aGluZyBpcwpydW5u
+aW5nIiBwYXJ0LCB3aGljaCBJJ3ZlIGJ1aWx0IGludG8gdGhlIHN5c3RlbSB2aWEgYWNrbm93bGVk
+Z2VtZW50IChvcgpwZXJoYXBzIHJlcXVpcmVtZW50IGZvciB0aG9zZSkuCgo+IE15IHN1Z2dlc3Rp
+b24gd2FzIHRvIGFkZCB0aGUgdmlydHVhbCBpbnRlcnJ1cHQgbGluZSAKPiBzdGF0ZSBjaGFuZ2Ug
+YXMgYSBtZXNzYWdlIHRvIHRoZSBjYWxlbmRhci4KClllcyBidXQgaXQgZG9lc24ndCB3b3JrIHVu
+bGVzcyB0aGUgb3RoZXIgc2lkZSBfYWxyZWFkeV8ga25vd3MgdGhhdCBpdAp3aWxsIGhhcHBlbiwg
+YmVjYXVzZSBpdCBicm9rZSB0aGUgcnVsZSBvZiAib25seSBvbmUgdGhpbmcgaXMgcnVubmluZyIu
+CgpBZ2FpbiB5b3UgY2FuIGFyZ3VlIHRoYXQgaXQncyBmaW5lIHRvIHJldHVybiB0byB0aGUgY2Fs
+ZW5kYXIgZXZlbiBpZiB0aGUKcmVjZWl2aW5nIHByb2Nlc3Mgd29uJ3QgYWN0dWFsbHkgZG8gYW55
+dGhpbmcsIGJ1dCBiZWNhdXNlIHRoZSByZWNlaXZpbmcKcHJvY2VzcyBpcyBzdGlsbCB0aGlua2lu
+ZyBhYm91dCBpdCwgeW91IGVuZCB1cCB3aXRoIGFsbCB0aGUgY29udG9ydGlvbnMKeW91IGhhdmUg
+dG8gZG8gaW4gcGF0Y2ggNCBhbmQgNyAuLi4gYmVjYXVzZSBldmVuIHRoZSBfY2FsZW5kYXJfIGRv
+ZXNuJ3QKa25vdyB3aGVuIHRoZSByZXF1ZXN0IHdpbGwgYWN0dWFsbHkgY29tZSB0byBpdC4KClBl
+cmhhcHMgb25lIHdheSBvZiBoYW5kbGluZyB0aGlzIHRoYXQgZG9lc24ndCByZXF1aXJlIGFsbCB0
+aG9zZQpjb250b3J0aW9ucyB3b3VsZCBiZSBmb3IgdGhlIHNlbmRlciBvZiB0aGUgZXZlbnQgdG8g
+YWN0dWFsbHkKX2NvbXBsZXRlbHlfIGhhbmRsZSB0aGUgY2FsZW5kYXIgcmVxdWVzdCBmb3IgdGhl
+IGludGVycnVwdCBvbiBiZWhhbGYgb2YKdGhlIHJlY2VpdmVyLCBzbyB0aGF0IHRoZSByZWNlaXZl
+ciBkb2Vzbid0IGFjdHVhbGx5IGRvIF9hbnl0aGluZ18gYnV0Cm1hcmsgInRoaXMgSVJRIGlzIHBl
+bmRpbmciIGluIHRoaXMgY2FzZS4gT25jZSBpdCBhY3R1YWxseSBnZXRzIGEgUlVOCm1lc3NhZ2Ug
+aXQgd2lsbCBhY3R1YWxseSBzdGFydCBydW5uaW5nIHNpbmNlIGl0IGFzc3VtZXMgdGhhdCBpdCB3
+aWxsIG5vdApnZXQgYSBSVU4gbWVzc2FnZSB3aXRob3V0IGhhdmluZyByZXF1ZXN0ZWQgYSBjYWxl
+bmRhciBlbnRyeS4gSWYgdGhlCmNhbGVuZGFyIGVudHJ5IHdlcmUgYWxyZWFkeSBoYW5kbGUgb24g
+aXRzIGJlaGFsZiwgeW91J2Qgbm90IG5lZWQgdGhlCnJlcXVlc3QgYW5kIHRoZXJlZm9yZSBub3Qg
+bmVlZCB0aGUgc3BlY2lhbCBoYW5kbGluZyBmb3IgdGhlIHJlcXVlc3QgZnJvbQpwYXRjaCA0LgpZ
+b3UnZCBuZWVkIGEgZGlmZmVyZW50IGltcGxlbWVudGF0aW9uIG9mIHBhdGNoZXMgMi8zLCBhbmQg
+Z2V0IHJpZCBvZgpwYXRjaGVzIDQsIDYsIDcgYW5kIDguCgoKU28gLi4uIHRoaW5raW5nIGFib3V0
+IHRoYXQgbW9yZSwgdGhlIGlzc3VlIGlzbid0IHNvIG11Y2ggdGhhdCB5b3UncmUKbWFraW5nIGFu
+IGFzc3VtcHRpb24gdGhhdCB0aGUgaW50ZXJydXB0IHNob3VsZCBoYXBwZW4gcmlnaHQgYXdheSwg
+aXQncwp0aGF0IG9ubHkgc29tZSBwYXJ0cyBvZiB5b3VyIHN5c3RlbSBhcmUgbWFraW5nIHRoYXQg
+YXNzdW1wdGlvbiAodGhlCnNlbmRlciBvZiB0aGUgZXZlbnQgdGhhdCBjYXVzZXMgdGhlIGludGVy
+cnVwdCksIGFuZCB0aGVuIHlvdSdyZSBsZWF2aW5nCnRoZSByZXN0IG9mIHRoZSBzeXN0ZW0gdG8g
+Y2F0Y2ggdXAgd2l0aCBzb21ldGhpbmcgdGhhdCBhY3R1YWxseSBnZXRzCnByb2Nlc3NlZCBfYXN5
+bmNocm9ub3VzbHlfLCBjYXVzaW5nIGFsbCBraW5kcyBvZiB0cm91YmxlLgoKPiBPZiBjb3Vyc2Us
+IHlvdSBjb3VsZCBhcmd1ZSwgdGhhdCB0aGUgZGV2aWNlIHNpbXVsYXRpb24gbmVlZHMgdG8gYmUg
+Cj4gY2xldmVyIGVub3VnaCAoc28gZGlzdHJpYnV0aW5nIHRoaXMgdGFzayBvZiB0aGUKPiBpbnRl
+cnJ1cHQgY29udHJvbGxlciksIGJ1dCBldmVuIHRoZXJlZm9yZSB0aGUgZGV2aWNlIHNpbXVsYXRp
+b24gbmVlZCAKPiBzb21lIG1vcmUgaW5mb3JtYXRpb24gdG8gcmVmbGVjdCBkZWxheWVkIGludGVy
+cnVwdHMsCj4gZGVhY3RpdmF0ZWQgaW50ZXJydXB0cyBhbmQgc28gb24uCj4gCj4gV2hhdCBjb25m
+dXNlcyBtZSBpcywgdGhhdCB5b3UgZXhwbGljaXRseSB1c2UgdGhlIGltbWVkaWF0ZSBzeW5jaHJv
+bm91cyAKPiByZXNwb25zZSBtb2RlbCBvbiB0aGUgaW50ZXJydXB0cyBmcm9tIHRoZSB2aG9zdC92
+aXJ0aW8KPiBkcml2ZXIsIGJ1dCB5b3Ugc2VlbSB0byByZWZ1c2UgdGhpcyBvbiBvdGhlciBkcml2
+ZXJzLgoKSSBkaWRuJ3QgbWVhbiB0byBfcmVmdXNlXyBpdCwgYW5kIGFjdHVhbGx5IHlvdSdsbCBu
+b3RlIHRoYXQgSSBtYWRlIHRoZQp1c2ZzdGwgZGV2aWNlIGFic3RyYWN0aW9uIGFibGUgdG8gdHJp
+dmlhbGx5IGltcGxlbWVudCBpbnRlcnJ1cHQgbGF0ZW5jeQpieSBzZXR0aW5nIGEgc2luZ2xlIHBh
+cmFtZXRlciAobmFtZWQgImludGVycnVwdF9sYXRlbmN5IiA6LSkgKSwgc28gaXQncwpiZWVuIHNv
+bWV0aGluZyB0aGF0IHdhcyBkZWZpbml0ZWx5IG9uIG15IG1pbmQsIGJ1dCBzbyBmYXIgbm8gdGVz
+dGluZwpzY2VuYXJpbyBoYXMgbmVlZGVkIGl0LCBhbmQgdGhlIHNpbXVsYXRpb24gcnVucyBmYXN0
+ZXIgd2l0aG91dCBpdCA7LSkKClNvIG5vLCBJJ20gbm90IGFjdHVhbGx5IHRyeWluZyB0byB0ZWxs
+IHlvdSB0aGF0IHlvdSBtdXN0IGltcGxlbWVudAppbnRlcnJ1cHQgbGF0ZW5jeS4gU29ycnkgSSBj
+YW1lIGFjcm9zcyB0aGF0IHdheS4KCkkgd2FzIGp1c3QgdHJ5aW5nIHRvIHVzZSB0aGUgaW50ZXJy
+dXB0IGxhdGVuY3kgYXMgYSByZWFzb25pbmcgZm9yIHdoeQp0aGUgcmVjaXBpZW50IHNob3VsZCBi
+ZSBpbiBjb250cm9sLCBidXQgbm93IGhhdmluZyB0aG91Z2h0IGFib3V0IGl0Cm1vcmUsIEkgZG9u
+J3QgZXZlbiB0aGluayB0aGUgcmVjaXBpZW50IF9uZWVkc18gdG8gYmUgaW4gY29udHJvbCwganVz
+dAp0aGF0IG9uZSBzaWRlIG5lZWRzIHRvIGJlIF9mdWxseV8gaW4gY29udHJvbCwgYW5kIHRoZSBt
+b2RlbCB5b3UndmUgYnVpbHQKaGFzIGJvdGggc2lkZXMgaW4gY29udHJvbCBhbmQgcmFjaW5nIGFn
+YWluc3QgZWFjaCBvdGhlciAoYW5kIGluIHRoZSBjYXNlCm9mIFVNTCBldmVuIHdpdGggaXRzZWxm
+IGludGVybmFsbHkgcHJvY2Vzc2luZyB0aGUgc2lnbmFsLikKCj4gPiA+IFdoeSBjb3VsZG4ndCB3
+ZSBiZSBtb3JlCj4gPiA+IGV4cGxpY2l0IGluIHRoZSB0aW1lIHRyYXZlbCBwcm90b2NvbCB0byB0
+aGUgY2FsZW5kYXIgYWJvdXQgaW50ZXJydXB0cz8KPiA+ID4gV2UgY291bGQgdXNlIHRoZSBJRCBm
+cm9tIHRoZSBzdGFydC1tc2cgdG8gaWRlbnRpZnkgdW0gaW5zdGFuY2VzIGFuZAo+ID4gPiB0ZWxs
+LCBpbiBhbiBhZGRpdGlvbmFsIG1zZywgdGhhdCB3ZSBhcmUgZ29pbmcgdG8gdHJpZ2dlciBhbiBp
+bnRlcnJ1cHQgYXQKPiA+ID4gdGhlIGN1cnJlbnQgdGltZSB0byB0aGF0IGluc3RhbmNlIGZyb20g
+dGhlIGRldmljZSBzaW11bGF0aW9uLgo+ID4gQnV0IHNlZSBhYm92ZSAtIEkgYmFzaWNhbGx5IGp1
+c3QgZG9uJ3QgdGhpbmsgdGhlIHNlbmRlciBvZiB0aGUgZXZlbnQgaXMKPiA+IHRoZSByaWdodCBw
+b3NpdGlvbiB0byBrbm93IHRoYXQgaW5mb3JtYXRpb24uCgpZZWFoIHlvdSBrbm93IHdoYXQsIEkg
+cGFydGlhbGx5IHJldHJhY3QgdGhhdCBzdGF0ZW1lbnQuIEkgc3RpbGwgdGhpbmsKa2luZCBvZiB0
+aGUgcmlnaHQgd2F5IHRvIHRoaW5rIGFib3V0IGl0IGlzIHRvIGhhdmUgdGhlIHJlY2lwaWVudCBp
+bgpjb250cm9sLCBidXQgdGhlcmUgYXJlIGluZGVlZCB0aGluZ3MgbGlrZSB0aGUgbGluZSBpbnRl
+cnJ1cHRzIHdoZXJlCnBlcmhhcHMgaXQncyBiZXR0ZXIgdG8gcHV0IHRoZSBzZW5kZXIgaW4gY29u
+dHJvbC4gSXQncyBwZXJoYXBzIG5vdAp0cml2aWFsIHNpbmNlIHlvdSBtaWdodCB3YW50IHRvIGRv
+IGEgZmV3IHdyaXRlcz8gWW91J2QgaGF2ZSB0byBjb21iaW5lCnRoYXQgaW50byBtYWtpbmcgYSBz
+aW5nbGUgY2FsZW5kYXIgaW50ZXJydXB0IHByb2Nlc3NpbmcgZW50cnkgb24gYmVoYWxmCm9mIHRo
+ZSByZWNlaXZlci4KCgo+IE1oaCBpZiBJIGFwcGx5IHRoYXQgdG8gdGhlIHZob3N0L3ZpcnRpbyBz
+aW11bGF0aW9ucywgdGhhdCBpcywgd2hhdCBpcyAKPiBpbXBsaWNpdGx5IG1vZGVsZWQgYnkgdGhl
+IGV4Y2hhbmdlZCBmaWxlIGRlc2NyaXB0b3JzIGFuZCB2aG9zdC92aXJ0aW8KPiBwcm90b2NvbCBz
+dGF0ZS4KCk5vdCBzdXJlIEkgZm9sbG93PyBUaGUgd2hvbGUgZmlsZSBkZXNjcmlwdG9ycyBhbmQg
+YWxsIGFyZSBqdXN0CmVzdGFibGlzaGluZyBjb21tdW5pY2F0aW9uIG1lY2hhbmlzbXM/Cgo+IFdl
+IG1heSBjaGFuZ2UgdGhlIHdob2xlIHR0LWV4dC1tb2RlIHRvIG9ubHkgYWNjZXB0IHZob3N0L3Zp
+cnRpbyBkcml2ZXJzLCAKPiBidXQgdGhhdCBuZWVkcyB0bwo+IGJlIHN0YXRlZCBleHBsaWNpdGx5
+IGluIHRoZSBkb2N1bWVudGF0aW9uLiBJJ20gbm90IHJlYWxseSBpbiBmYXZvciBvZiAKPiB0aGF0
+LCBidXQgaWYgaXQgaXMgZG9jdW1lbnRlZAo+IGl0IGlzIGVhc2llciB0byB1bmRlcnN0YW5kLgoK
+U2VlIGFib3ZlLiBJIGd1ZXNzIHdlIGRvbid0IGhhdmUgdG8sIGlmIHdlIHB1dCBhIGJpdCBtb3Jl
+IHJlcXVpcmVtZW50IG9uCnRoZSBzZW5kZXIuCgo+ID4gRG9uJ3QgdGhpbmsgSSB1bmRlcnN0YW5k
+IHRoYXQuIFdoaWNoICJmYWNpbGl0aWVzIiBhcmUgeW91IHJlZmVycmluZyB0bwo+ID4gaGVyZT8K
+PiBJIGhhZG4ndCByZXNlYXJjaGVkIHRoYXQgb24gRnJpZGF5LCBidXQgd2UgY291bGQgdXNlIGEg
+Y3VzdG9tIGNvbnRyb2wgCj4gbXNnIChjbXNnKSBvbiB0aGUgdW5peCBzb2NrZXRzCj4gYXR0YWNo
+ZWQgdG8gdGhlIChzZXJpYWwpIGxpbmUgZGV2aWNlcy4gVGhlIGRldmljZSBzaW11bGF0aW9uIGNh
+biB0aGVuIAo+IHdhaXQgb24gdGhhdCBhbmNpbGxhcnkgZGF0YSBmb3IKPiBzeW5jaHJvbm91cyBp
+bnRlcnJ1cHQgaGFuZGxpbmcsIGFzIHlvdSBoYXZlIHByb3Bvc2VkIGZvciB2aG9zdC92aXJ0aW8u
+IAo+IE15IGZpcnN0IGlkZWEgd2FzIHRvIHVzZQo+IE1TR19PT0IsIHdoaWNoIGRvIG5vdCBleGl0
+IG9uIFVuaXgtRG9tYWluLVNvY2tldHMuIElmIHNvbWVvbmUgZG9lcyBub3QgCj4gdXNlIHVkcyBh
+cyB0cmFuc3BvcnQKPiB3ZSBtYXkgZ2l2ZSBhIHdhcm5pbmcuCgpOb3Qgc3VyZSB0aGF0IHJlYWxs
+eSB3b3Jrcywgd2hhdCB3b3VsZCB5b3UgdHJhbnNmZXIgaW4gdGhlIG90aGVyCmRpcmVjdGlvbj8g
+T3Igc2VuZCBhbiBmZCBhbmQgdGhlbiB3YWl0IGZvciBpdCB0byBnZXQgYSBtZXNzYWdlIG9uIHRo
+YXQKZmQgb3Igc29tZXRoaW5nPwoKam9oYW5uZXMKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCmxpbnV4LXVtIG1haWxpbmcgbGlzdApsaW51eC11bUBsaXN0
+cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vbGludXgtdW0K
