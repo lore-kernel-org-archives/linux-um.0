@@ -4,64 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAA19C4167D
-	for <linux-um@archiver.kernel.org>; Sun, 12 Nov 2023 00:56:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C12A9C4332F
+	for <linux-um@archiver.kernel.org>; Mon, 13 Nov 2023 11:46:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
-	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
-	List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References:Date:
-	Message-Id:From:Subject:MIME-Version:Reply-To:Content-ID:Content-Description:
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Content-Type:
+	Content-Transfer-Encoding:List-Subscribe:List-Help:List-Post:List-Archive:
+	List-Unsubscribe:List-Id:In-Reply-To:From:References:CC:To:Subject:
+	MIME-Version:Date:Message-ID:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=qv87uxQnJT4y7RGILcOv6LfxM5qpc/RF0BewSrSk6dg=; b=x4E3iV5FXVw3Pe
-	cEurKabBLbmn6Tde/nvMrGXqOSjO78nNFubZ7bc9tp/EXqE0ZTKWrD1twLIGs6Mcq0viUmTCCawhr
-	vzuhhJuJnv0GvDwdegOz9w70Xw4pk2URS1guBWRvte2hPR4xlsNFXWFkFM287xa2E5O5slH/0yK3N
-	2WqU3SVPFwKZZ3kchGBT0LXe0VxQuiDaVmg7negzxoAdE/1Da6aOpA6N1REaffSUPPTPKJ/cEUvyH
-	l7+ryn8fz8xqS6hcW9+WLOV39Pcwi4xRZ+Ad24TFFoM9+4+bbez0rlYuAhu26tQIi7UQcuebpBO7p
-	6ATHOtdphBmNyGojtgbw==;
+	List-Owner; bh=Prc72FfUEXYeuSvBkaU9Nf3qRn/cDPgOdTM0LbsfIyI=; b=IHLv9R+sfBIyzB
+	PqUoKEulVZ2Pj2nexzp4WZzbp586UR751hKsZyetf0JjquOVsntF+cjB+JpkPQVdzlgyUjOOqpfK3
+	eutanXEAIjVGFyl73/nVXTg5Grz4206BM1NtiaiimnoeDVO89DD+GXGUV/nUWYPJZZVsR/b4ZlWkJ
+	KU8ivgX1MQzvE7NcfJLNa+DpLMAll0df1dtNM/A9nGuDJLH3ACsTNqAZzT3kECebv87twT7qPfchT
+	Ds+/R/tXzexu5/m0RoQ9OKihHH4LIU03yf5A4Qwzt+hjBBFTOxDCXunp1egE65IBu4xvx9fNn5JWA
+	dLtKXdjLr0eRvZNQJzsA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r1ylc-00BWq5-2g;
-	Sun, 12 Nov 2023 00:56:00 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1r2VOk-00DlF6-0j;
+	Mon, 13 Nov 2023 11:46:34 +0000
+Received: from mx1.uni-rostock.de ([139.30.22.71])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r1ylR-00BWhE-35;
-	Sun, 12 Nov 2023 00:55:53 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id E9CBD60BED;
-	Sun, 12 Nov 2023 00:55:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8B3C5C433A9;
-	Sun, 12 Nov 2023 00:55:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699750546;
-	bh=XrSajqyIX/GMIupsbLdryjwZSJcnce+GPP7KDkPQhtc=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=eWIdIwNOLNdqkngfPRmCRaOwzQqWEdVf4fyQfsJ9hX51PDQ3bhmSI9QZtsMgYrcIF
-	 8aHZMYs4gOL/4gSqcMm7IRvWe1PcqRpqOtwPinsNQE/yPNH1jAjAZc0qUF+cE2rkNp
-	 nglRwyteoICzPFjGnf2iZ6kKToydLI7h8VBgwrPRWc0yrSSWvf4CHXHy6ARxGcy9DF
-	 YIFq9xAbPweOOdZvVR9AfcNgB3Ga1hsegS0aAjb+9DN11BMP4pAVieNjxsE9qae8rb
-	 FS/26AIT3WSbus8G7Vwa6iQL37+L3sU0hhWl6PyV4EpenSbokJHdqOpR8gqAekhlG3
-	 5K+C9ET1I0p3w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 68EEAE0008E;
-	Sun, 12 Nov 2023 00:55:46 +0000 (UTC)
+	id 1r2VOf-00DlEk-2q
+	for linux-um@lists.infradead.org;
+	Mon, 13 Nov 2023 11:46:32 +0000
+Received: from 139.30.22.84 by mx1.uni-rostock.de (Tls12, Aes256, Sha384,
+ DiffieHellmanEllipticKey384); Mon, 13 Nov 2023 11:46:17 GMT
+DKIM-Signature: v=1; c=relaxed/relaxed; d=uni-rostock.de; s=itmze; 
+ t=1699875977; bh=/prO9K2nlxADNXyBHI/QTCslbs/zLpwiVgAnjxoJsQY=; h=
+ Subject:Subject:From:From:Date:Date:ReplyTo:ReplyTo:Cc:Cc:Message-Id:Message-Id; 
+ a=ed25519-sha256; b=
+ 20e5Q2Un7ZNHkHsf4/0J0bLszx2A1GqqesZrcH2inBCj7eGJMwL3SrDVKHhKXS8aSKW/xWVeHcsmOJ1YMCtCBA==
+DKIM-Signature: v=1; c=relaxed/relaxed; d=uni-rostock.de; s=itmz; 
+ t=1699875977; bh=/prO9K2nlxADNXyBHI/QTCslbs/zLpwiVgAnjxoJsQY=; h=
+ Subject:Subject:From:From:Date:Date:ReplyTo:ReplyTo:Cc:Cc:Message-Id:Message-Id; 
+ a=rsa-sha256; b=
+ M73NIEk/upP67Wtn60NbC9q5PRkDlRxOAFD83ndH7xcMRtEE962vl2wsda0BJldcC3TboGzHq9O+aUgREqviUHqU4SfkgzBs4XxvDcjjz8p8m5qR82vy6byxY9mYOfvjAAYPEqSU9bHYADDtU7n8bpivzuT/DD7WBTAlLmT0ynk=
+Received: from [139.30.201.32] (139.30.201.32) by mail1.uni-rostock.de
+ (139.30.22.84) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 13 Nov
+ 2023 12:46:16 +0100
+Message-ID: <c83d1520-277f-45a9-beff-3c65e63dfc7c@uni-rostock.de>
+Date: Mon, 13 Nov 2023 12:46:15 +0100
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 1/2] kbuild: unify vdso_install rules
-From: patchwork-bot+linux-riscv@kernel.org
-Message-Id: <169975054642.11360.1289704479646976676.git-patchwork-notify@kernel.org>
-Date: Sun, 12 Nov 2023 00:55:46 +0000
-References: <20231014105436.2119702-1-masahiroy@kernel.org>
-In-Reply-To: <20231014105436.2119702-1-masahiroy@kernel.org>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-riscv@lists.infradead.org, linux-kbuild@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-csky@vger.kernel.org, linux-parisc@vger.kernel.org,
- linux-s390@vger.kernel.org, linux-um@lists.infradead.org,
- loongarch@lists.linux.dev, sparclinux@vger.kernel.org, x86@kernel.org,
- svens@linux.ibm.com, nicolas@fjasle.eu, guoren@kernel.org, deller@gmx.de
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 03/11] um: Use a simple time travel handler for line
+ interrupts
+Content-Language: de-DE
+To: Johannes Berg <johannes@sipsolutions.net>, Richard Weinberger
+	<richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>
+CC: <linux-um@lists.infradead.org>
+References: <20231103-bb-timetravel-patches-v1-0-e2c68efcf664@uni-rostock.de>
+ <20231103-bb-timetravel-patches-v1-3-e2c68efcf664@uni-rostock.de>
+ <71657ebd4a582b1a3c876de4d778ff67bd29c49d.camel@sipsolutions.net>
+ <15d63c81-9e41-4965-b988-c4a934aecc52@uni-rostock.de>
+ <9d7509efed4292891b4ffbf063ae58f11af8b742.camel@sipsolutions.net>
+From: Benjamin Beichler <Benjamin.Beichler@uni-rostock.de>
+Organization: =?UTF-8?Q?Universit=C3=A4t_Rostock?=
+In-Reply-To: <9d7509efed4292891b4ffbf063ae58f11af8b742.camel@sipsolutions.net>
+X-Originating-IP: [139.30.201.32]
+X-ClientProxiedBy: email3.uni-rostock.de (139.30.22.83) To
+ mail1.uni-rostock.de (139.30.22.84)
+X-TM-SNTS-SMTP: D39EBCE48F6B649B89CC6D502B50D4E8D7025E4CA190C43F237FB3D2DF467FE42000:8
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231111_165550_058972_933B3335 
-X-CRM114-Status: UNSURE (   7.75  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20231113_034630_845329_348316F6 
+X-CRM114-Status: GOOD (  27.37  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,37 +79,89 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hello:
+Am 10.11.2023 um 18:16 schrieb Johannes Berg:
+> ________________________________
+>
+> On Fri, 2023-11-10 at 17:53 +0100, Benjamin Beichler wrote:
+>>> At least in my mental model this is broken because the sender of the
+>>> event basically has to prepare the calendar for it happening, which
+>>> feels ... odd.
+>> Actually, for me, this would make kind of sense.
+> I'm not sure I agree, I guess. To me, the sender is just telling someone
+> else "here's something going on I want you to look at". That doesn't
+> really mean the receiver needs to actually handle it "right away". Maybe
+> the receiver implements a model where it's modelling an interrupt
+> latency (which _would_ be more realistic), so it only handles the
+> message some (small amount of) time later. Maybe it's in a polling model
+> right now and has disabled interrupt sources, and just wakes every so
+> often to check for messages. Maybe something else.
+>
+> So I don't really agree that baking a "must be scheduled immediately"
+> into any protocol really makes sense.
+I think you are mixing here some levels of abstraction. Some entity in 
+the "system" needs to
+react to an interrupt immediately. In the real world, this is mostly 
+done by some kind of interrupt controller
+which may latch the interrupt (if they are deactivated from CPU side). 
+Of course some more sophisticated
+bus protocols (i.e. virtio/vhost in this case) can also signal the 
+device to do no interrupts, but in the most
+basic case, e.g. a button at a GPIO pin, the device could not handle 
+that. Most of the interrupt abstraction
+in um is realized via signals, but some more seems (IMHO) to be needed 
+from the tt-protocol, if we have external
+device simulations. My suggestion was to add the virtual interrupt line 
+state change as a message to the calendar.
 
-This series was applied to riscv/linux.git (fixes)
-by Masahiro Yamada <masahiroy@kernel.org>:
+Of course, you could argue, that the device simulation needs to be 
+clever enough (so distributing this task of the
+interrupt controller), but even therefore the device simulation need 
+some more information to reflect delayed interrupts,
+deactivated interrupts and so on.
 
-On Sat, 14 Oct 2023 19:54:35 +0900 you wrote:
-> Currently, there is no standard implementation for vdso_install,
-> leading to various issues:
-> 
->  1. Code duplication
-> 
->     Many architectures duplicate similar code just for copying files
->     to the install destination.
-> 
-> [...]
+What confuses me is, that you explicitly use the immediate synchronous 
+response model on the interrupts from the vhost/virtio
+driver, but you seem to refuse this on other drivers.
+>
+>> Why couldn't we be more
+>> explicit in the time travel protocol to the calendar about interrupts?
+>> We could use the ID from the start-msg to identify um instances and
+>> tell, in an additional msg, that we are going to trigger an interrupt at
+>> the current time to that instance from the device simulation.
+> But see above - I basically just don't think the sender of the event is
+> the right position to know that information.
+Mhh if I apply that to the vhost/virtio simulations, that is, what is 
+implicitly modeled by
+the exchanged file descriptors and vhost/virtio protocol state.
 
-Here is the summary with links:
-  - [v2,1/2] kbuild: unify vdso_install rules
-    https://git.kernel.org/riscv/c/56769ba4b297
-  - [v2,2/2] kbuild: unify no-compiler-targets and no-sync-config-targets
-    https://git.kernel.org/riscv/c/9d361173edc4
+We may change the whole tt-ext-mode to only accept vhost/virtio drivers, 
+but that needs to
+be stated explicitly in the documentation. I'm not really in favor of 
+that, but if it is documented
+it is easier to understand.
+>
+>> Another way would be, to serve such information (if the device
+>> simulation really need it) over the facilities we already established.
+>> Why not send the ACK as MSG_OOB or ancillary data?
+> Don't think I understand that. Which "facilities" are you referring to
+> here?
+I hadn't researched that on Friday, but we could use a custom control 
+msg (cmsg) on the unix sockets
+attached to the (serial) line devices. The device simulation can then 
+wait on that ancillary data for
+synchronous interrupt handling, as you have proposed for vhost/virtio. 
+My first idea was to use
+MSG_OOB, which do not exit on Unix-Domain-Sockets. If someone does not 
+use uds as transport
+we may give a warning.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+
+Benjamin
 
 
 
