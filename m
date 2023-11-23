@@ -4,58 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40BB1C61D99
-	for <linux-um@archiver.kernel.org>; Wed, 22 Nov 2023 23:32:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A6D1C27C40
+	for <linux-um@archiver.kernel.org>; Thu, 23 Nov 2023 01:55:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:
 	Content-Transfer-Encoding:Content-Type:List-Subscribe:List-Help:List-Post:
 	List-Archive:List-Unsubscribe:List-Id:In-Reply-To:MIME-Version:References:
 	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:
 	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Owner; bh=PmaGiJh0A1q1SxLyW6xtU9IH4tk1nIqec6xkOQNy8L4=; b=4H37A1MaU9iy5s
-	2CoP7yeUNHlSvb2TbVwsa3l2Yvg5XpOYUxh7xQ0n+0rAHEMp5lPef6DJsy+Q8WBQGsAyYxoHHsrWs
-	MgNNf9uYO1vGE+SBaFmJNzGhnHunlKj1IfP1xcgUq5tKZ8UZpD6q7PZ3B8EyXv25yV0s/pYbo8Sei
-	DgFqhrmYZKh1Gjh9aawaMCwpe6/yd1aDZOfBD4d992K51Gaz+CzCo01HLWqqWrl2Y5R9h9kQfPf9L
-	sCB5pkS078I+VS8ZDegaVycajPasLuVvanbbzRij5og1wsbRGZLN2UlpmExPvePAw2eXGiW/tnumk
-	XILR+BXNr+L1lId9ektg==;
+	List-Owner; bh=ugwuVJEQvPhoOM59LwKqZ7CSeMInZP8i5/Kf56BxAEk=; b=dVew9gD+5Q5Vn2
+	aRcC2YyLais/9bKeRRMeZZVNoyGgkwWRCjFOJEygniu+L7WVyq7bfrnZ9b2UiPRbNUqIIcENfPYrc
+	fCQ2cj8xzLSrcqJwcDlhEUIyZ1F3si8HRKMn0yW1QDDBHfwGCgtohLDyEL3aNvtWJfrqZyNschAZX
+	WPrFU/C9iyCYVzvvp6iN7Gf0cTKvmiERH5cK0cvEIDmJB1CE3yKNMaaGNvdrM0+UJ/McVyokNZWbS
+	KawbrNc/nliy51lc5+qLegTMtop76CApw/4MaV8PPwac9oImVtItBhZGzTSVKTZnu/IyMn2HERw0x
+	oIr5iJpV72mW58Tu+9xQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1r5wi2-003Jn5-1I;
-	Wed, 22 Nov 2023 23:32:42 +0000
-Received: from mgamail.intel.com ([192.55.52.115])
+	id 1r5yw4-003Y29-08;
+	Thu, 23 Nov 2023 01:55:20 +0000
+Received: from mgamail.intel.com ([192.198.163.7])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1r5why-003Jkd-25
+	id 1r5yw0-003Y0Y-2A
 	for linux-um@lists.infradead.org;
-	Wed, 22 Nov 2023 23:32:40 +0000
+	Thu, 23 Nov 2023 01:55:18 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700695958; x=1732231958;
+  t=1700704516; x=1732240516;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=9cJ1ng2mXXK5ewpNB6+ptRqyDKNDtSOkI0dhJ9ArZGk=;
-  b=I/n4j+4XTXto0wbfoO+8YjKMVntVcRBuibpf/3wrqSB1C4YDvl4JD0YD
-   BJ4gM6VJDjyiFzEebhPXmBZhY+fNNRQWnH4SjW4KInMfPIISIPx7i3YGH
-   MZitEs1B8GlCQVM8MNwyFtZvu063KN7h3nbTL7WbNJLVACcgiJ7NCY4hB
-   M5RTmTWWFZht5qSj444GfW/Sj9zr1aRMt8YWx/msAGS18Ddyt9gt7sk3e
-   8HmD8gq4KeCVMA2YxKjA0IoJOG9bCOdMFG1cbqh8L5x1kizELaSP20pY7
-   5+YJYIJDWPRhgWmotEUtmkY2qXzKd9uYSHQpJbh/8oAHlfyuJO5vXIJrN
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="391936053"
-X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
-   d="scan'208";a="391936053"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 15:32:38 -0800
+  bh=Tv124qrk/IgCGAlbtvyJsHJxF3modJvGb4pfuyL/oPc=;
+  b=AOpPHicETN9ItR0wNdZiWm7ow8D6pWsYUmVlBbeHuBw4Yb4vL/glGDz4
+   kNdu28vTnF2ZbBRMhmMe6TOXhrgrMlzwhPZ2bOoqIEruxTiGwLBS2A0BR
+   VKp0EHh63+C+3OxjTuvFD03ddSQMLStvTUSFz4DsPh+aopSCrGHssOOaw
+   JEEezSH/p8NkSwRNDZUFKAf/tSiSZXOVWqqTBz6gE96yTd8l93A9l6QPw
+   WximIhbvNWAUJwbRAqJ7U5AD+aN5PCoMXNYlsb13ku0Wa1rUpXr3mUnlk
+   0LwfnMXt9Fgd6CtIW04Hd4PRF2jhA353q5NC8ouITwm8RTWgmNmq0yQcU
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="13737187"
+X-IronPort-AV: E=Sophos;i="6.04,220,1695711600"; 
+   d="scan'208";a="13737187"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 17:55:15 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="760510883"
-X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
-   d="scan'208";a="760510883"
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="801909598"
+X-IronPort-AV: E=Sophos;i="6.04,220,1695711600"; 
+   d="scan'208";a="801909598"
 Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 22 Nov 2023 15:32:34 -0800
+  by orsmga001.jf.intel.com with ESMTP; 22 Nov 2023 17:55:12 -0800
 Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1r5whs-0000zI-0s;
-	Wed, 22 Nov 2023 23:32:32 +0000
-Date: Thu, 23 Nov 2023 07:32:24 +0800
+	id 1r5yvu-00016N-0q;
+	Thu, 23 Nov 2023 01:55:10 +0000
+Date: Thu, 23 Nov 2023 09:54:38 +0800
 From: kernel test robot <lkp@intel.com>
 To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, richard@nod.at
 Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
@@ -64,14 +64,14 @@ Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
 	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
 	Abaci Robot <abaci@linux.alibaba.com>
 Subject: Re: [PATCH] um: Use swap() instead of open coding it
-Message-ID: <202311230408.bRL1q7pc-lkp@intel.com>
+Message-ID: <202311230538.6Fd2FqkL-lkp@intel.com>
 References: <20231122032518.53305-1-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <20231122032518.53305-1-jiapeng.chong@linux.alibaba.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231122_153238_693339_CA254EE2 
-X-CRM114-Status: GOOD (  14.17  )
+X-CRM114-CacheID: sfid-20231122_175516_721605_29E21174 
+X-CRM114-Status: GOOD (  15.40  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,24 +102,24 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Jiapeng-Chong/um-Use-swap
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/wireless/wireless-next.git main
 patch link:    https://lore.kernel.org/r/20231122032518.53305-1-jiapeng.chong%40linux.alibaba.com
 patch subject: [PATCH] um: Use swap() instead of open coding it
-config: um-randconfig-002-20231122 (https://download.01.org/0day-ci/archive/20231123/202311230408.bRL1q7pc-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231123/202311230408.bRL1q7pc-lkp@intel.com/reproduce)
+config: um-randconfig-001-20231122 (https://download.01.org/0day-ci/archive/20231123/202311230538.6Fd2FqkL-lkp@intel.com/config)
+compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231123/202311230538.6Fd2FqkL-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311230408.bRL1q7pc-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311230538.6Fd2FqkL-lkp@intel.com/
 
 All errors (new ones prefixed by >>):
 
->> arch/um/os-Linux/sigio.c:80:5: error: call to undeclared function 'swap'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-      80 |                                 swap(current_poll, next_poll);
-         |                                 ^
+>> arch/um/os-Linux/sigio.c:80:5: error: call to undeclared function 'swap'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
+                                   swap(current_poll, next_poll);
+                                   ^
    arch/um/os-Linux/sigio.c:80:5: note: did you mean 'swab'?
    /usr/include/unistd.h:1168:13: note: 'swab' declared here
-    1168 | extern void swab (const void *__restrict __from, void *__restrict __to,
-         |             ^
+   extern void swab (const void *__restrict __from, void *__restrict __to,
+               ^
    1 error generated.
 
 
