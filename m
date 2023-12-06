@@ -4,64 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53B23C4167B
-	for <linux-um@archiver.kernel.org>; Wed,  6 Dec 2023 07:38:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41F97C4167B
+	for <linux-um@archiver.kernel.org>; Wed,  6 Dec 2023 16:50:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=FP3DoF0lRbRHD7+p/Ffe73LO5f0g8XcMID2JVUBMxAs=; b=v3IAKdzBrWSR9FF7P1hn5SXbyj
-	s0gLVIihkwUrSVWSp37mRe1WGgNWH5lnWi0h+/C8RO56eX6wcf9DTpENKP5hd1J4LdAcTEp4cWrOP
-	uMISlCwDm+rpDd5cjqLZg4MHgfbET4sTsFeqi44Gwa/lkbsExKb1LKkHkfQH9cKrv2M7AdbnwnY2q
-	XzXAPYWF2cICUOlvTfOEhwbGudtbDDi85B1d0Hdfgq81Ni9vDDqozTFmW/LguydNfio5zHNihoryD
-	yMFnXA068QFc6EZHOL7vpfIWE2quMmzAsFxaNCBCGyadwtB6s7xH/dUYdgrfk8cEXJJ94tGYcLYgA
-	HmxbBLHw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-Id:Date:Subject:
+	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=0sqQiX4jidKSYz72HUI2YSV1qZhNi8KKqcjXPXGACMQ=; b=b6w76YSRU3rbM7
+	PJ2muRsQccJDxJ0PQaSjupdrGTI0L44tD03m8oTe81ec4sW+s9V/YUpw+9Pu22vzavWaIZdEAMJuT
+	Q/VR7TeGlfxOHat2zSxG3aGzPTSrnC7XZ2/vAbiDxVKK8iIZjRqMkJoOh/cf1FLl9RjzEQF/WFo/e
+	jmSnga5cWcXT3vxJ2h8tYmUjpqd5U419qAMvL7w11n9RVuE6okYeW7I5IL55CNYmjQy0XeN7o6uJU
+	z1HBuCn/BL+70tkm8lhdbvmKqIyOUneGyb6nEXNoEs/5zPmuJbybTGaFMiGtqftsSbc4k1SIaHc7m
+	KbhCZUkc8xB2Bc+tUyHg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAmU3-009JhB-2m;
-	Wed, 06 Dec 2023 07:38:15 +0000
-Received: from ams.source.kernel.org ([145.40.68.75])
+	id 1rAv5z-00AoDA-1M;
+	Wed, 06 Dec 2023 16:49:59 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAmU1-009Jge-0h
+	id 1rAv5x-00AoCC-0p
 	for linux-um@lists.infradead.org;
-	Wed, 06 Dec 2023 07:38:15 +0000
+	Wed, 06 Dec 2023 16:49:58 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id C9BB1B81EDB;
-	Wed,  6 Dec 2023 07:38:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15DB8C433B6;
-	Wed,  6 Dec 2023 07:38:08 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 3CF5D61DD8;
+	Wed,  6 Dec 2023 16:49:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B6A5C433C7;
+	Wed,  6 Dec 2023 16:49:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701848290;
-	bh=U/O3J9Sie7k4DGATt5KkwA0grhqAPkmoX1CjrG9lqhs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=VZ4zfrTQpB9JgbzRNJV7L4jle3ayX5T0uV7RGNoFMcm6v76qDBwtRF+D25Ht7Gf87
-	 On/lHvtFguyIxL4+OQ7Dck1eIvga2dF9qmtjfmv8PpfYDBXndX9bfFbgcJvI6qdsqv
-	 Gi4IUQpe7DjrDoQ26xYZ6iK9l4+20QBrEW4BxYY5xx+lRsDRkKXTWGrKVDkvq1tF1k
-	 PxgQ/yPSd8Bm4puAtoXJDkVGEk3WW8uID6+9l/vsg8JFmHST5GqgPGB8l1gbksPOsz
-	 F6BX3ctIELwXaDtCWbA6G/asCOwTVVXIYGYGZZDiTP4NGs+z99pD2tZguIw271oFSD
-	 9XEK6ynXsZeBg==
-From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-To: gregkh@linuxfoundation.org
-Cc: linux-serial@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	linux-um@lists.infradead.org
-Subject: [PATCH 26/27] tty: um: convert to u8/__u8 and size_t
-Date: Wed,  6 Dec 2023 08:37:11 +0100
-Message-ID: <20231206073712.17776-27-jirislaby@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231206073712.17776-1-jirislaby@kernel.org>
-References: <20231206073712.17776-1-jirislaby@kernel.org>
+	s=k20201202; t=1701881396;
+	bh=NSUOAVeSOFQWxSdqEOoUPgeLtKumWFEG5ZtMNjOmQwg=;
+	h=From:Subject:Date:To:Cc:From;
+	b=X+VQxK1xzmrzWqwWzGcG/rb9BcUkRKWGvxpFySO7SPTSHFMBF6LVTTBIPT8WacvUu
+	 kTF49NDmDEQ6HaBW0DZU+M4gBDkFAfBV48JGyILbSIq2J1d/TGtK4WwwZ524+bCI5h
+	 IvOAbGNE3xosJ4nAlmIjQp2tTHDoBO0Bhfpj8rq3Bhwt2AKdmQGBjI9OxFXECM2uGR
+	 8jbgz33ObyGucgW5UumUJa/KYC1Y2/JWrQh6KE1us8qIuva4wfcDzkLbwDuacIAbpn
+	 lV2VJAIzwVYnvR4NTsNYtlCgHOkIOvklOHnzxP2TBsEnCrutOkSiMvhGVwsgQx0o1b
+	 1L6sHs2pa39lQ==
+From: Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH v2 0/2] Enable -Wincompatible-function-pointer-types-strict
+ under W=1
+Date: Wed, 06 Dec 2023 09:49:45 -0700
+Message-Id: <20231206-enable-wincompatible-function-pointer-types-strict-w-1-v2-0-91311b4c37b0@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIACmmcGUC/6WOTQ6DIBCFr2JYdxqgarSr3qNxgTjqpBYIUK0x3
+ r3oFbp5yfeS97OxgJ4wsHu2MY8zBbImgbxkTI/KDAjUJWaSy5vgXAIa1U4ICxlt305FOqj/GB1
+ TEpwlE9FDXB0GCNGTjrCAgFwVZVvXbaXLnqVy57Gn7zn8bBKPFKL16/ljFof79+QsklS8Um1dF
+ F0uu8cLvcHpav3Amn3ffz+sMbP9AAAA
+To: masahiroy@kernel.org
+Cc: ndesaulniers@google.com, morbo@google.com, justinstitt@google.com, 
+ keescook@chromium.org, samitolvanen@google.com, nicolas@fjasle.eu, 
+ linux-kbuild@vger.kernel.org, llvm@lists.linux.dev, patches@lists.linux.dev, 
+ kernel test robot <lkp@intel.com>, 
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+ Nathan Chancellor <nathan@kernel.org>, richard@nod.at, 
+ johannes@sipsolutions.net, linux-um@lists.infradead.org
+X-Mailer: b4 0.13-dev
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1477; i=nathan@kernel.org;
+ h=from:subject:message-id; bh=NSUOAVeSOFQWxSdqEOoUPgeLtKumWFEG5ZtMNjOmQwg=;
+ b=owGbwMvMwCUmm602sfCA1DTG02pJDKkFy4zE9+79nxRYHv6xenZkNP+cmLnfvLg/FK0IdfPVd
+ Z7F15fRUcrCIMbFICumyFL9WPW4oeGcs4w3Tk2CmcPKBDKEgYtTACZiZsfwVyr1cPVloQ0heyTq
+ JBvXep3p/h7kPHVnhHLZlbLbWydVxDAydP1v2HH+7MHdweePmx2+0jzlzprrR5g+P2Hi3ppzPY3
+ /MBsA
+X-Developer-Key: i=nathan@kernel.org; a=openpgp;
+ fpr=2437CB76E544CB6AB3D9DFD399739260CB6CB716
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231205_233813_547020_AC7B7EF6 
-X-CRM114-Status: GOOD (  15.22  )
+X-CRM114-CacheID: sfid-20231206_084957_334302_4FB7886F 
+X-CRM114-Status: GOOD (  12.16  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,179 +88,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Switch character types to u8 and sizes to size_t. To conform to
-characters/sizes in the rest of the tty layer.
+-Wincompatible-function-pointer-types-strict is a warning in clang-16
+and newer that is designed to catch potential kCFI failures at runtime.
+There is one set of warnings in drivers/counter that I have not been
+able to figure out a solution for so this cannot be enabled for a
+default build but adding the warning under W=1 will allow various CI
+systems to catch and report new instances so it will be easier to
+enable in a default build in the future.
 
-Note we use __u8 in the userspace files.
+The kbuild test robot reported one instance in arch/um, which is cleared
+up by the first patch and has an ack from an arch/um maintainer, so this
+should be able to go in via the kbuild tree.
 
-Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-um@lists.infradead.org
 ---
- arch/um/drivers/chan.h      | 2 +-
- arch/um/drivers/chan_kern.c | 9 ++++-----
- arch/um/drivers/chan_user.c | 4 ++--
- arch/um/drivers/chan_user.h | 9 +++++----
- arch/um/drivers/line.c      | 2 +-
- arch/um/drivers/line.h      | 6 +++---
- arch/um/drivers/null.c      | 2 +-
- 7 files changed, 17 insertions(+), 17 deletions(-)
+Changes in v2:
+- Rebase on latest kbuild tree.
+- Pick up Nick's reviewed-by tag.
+- Include arch/um patch with Anton's ack to clear up warning reported by
+  kbuild test robot on v1.
+- Link to v1: https://lore.kernel.org/r/20231002-enable-wincompatible-function-pointer-types-strict-w-1-v1-1-808ab955d42d@kernel.org
 
-diff --git a/arch/um/drivers/chan.h b/arch/um/drivers/chan.h
-index 3fec3b8406e9..e14b9cdf7a33 100644
---- a/arch/um/drivers/chan.h
-+++ b/arch/um/drivers/chan.h
-@@ -30,7 +30,7 @@ struct chan {
- extern void chan_interrupt(struct line *line, int irq);
- extern int parse_chan_pair(char *str, struct line *line, int device,
- 			   const struct chan_opts *opts, char **error_out);
--extern int write_chan(struct chan *chan, const char *buf, int len,
-+extern int write_chan(struct chan *chan, const u8 *buf, size_t len,
- 			     int write_irq);
- extern int console_write_chan(struct chan *chan, const char *buf, 
- 			      int len);
-diff --git a/arch/um/drivers/chan_kern.c b/arch/um/drivers/chan_kern.c
-index 26a702a06515..37538b4168da 100644
---- a/arch/um/drivers/chan_kern.c
-+++ b/arch/um/drivers/chan_kern.c
-@@ -33,14 +33,14 @@ static void not_configged_close(int fd, void *data)
- 	       "UML\n");
- }
- 
--static int not_configged_read(int fd, char *c_out, void *data)
-+static int not_configged_read(int fd, u8 *c_out, void *data)
- {
- 	printk(KERN_ERR "Using a channel type which is configured out of "
- 	       "UML\n");
- 	return -EIO;
- }
- 
--static int not_configged_write(int fd, const char *buf, int len, void *data)
-+static int not_configged_write(int fd, const u8 *buf, size_t len, void *data)
- {
- 	printk(KERN_ERR "Using a channel type which is configured out of "
- 	       "UML\n");
-@@ -247,8 +247,7 @@ void deactivate_chan(struct chan *chan, int irq)
- 		deactivate_fd(chan->fd, irq);
- }
- 
--int write_chan(struct chan *chan, const char *buf, int len,
--	       int write_irq)
-+int write_chan(struct chan *chan, const u8 *buf, size_t len, int write_irq)
- {
- 	int n, ret = 0;
- 
-@@ -540,7 +539,7 @@ void chan_interrupt(struct line *line, int irq)
- 	struct tty_port *port = &line->port;
- 	struct chan *chan = line->chan_in;
- 	int err;
--	char c;
-+	u8 c;
- 
- 	if (!chan || !chan->ops->read)
- 		goto out;
-diff --git a/arch/um/drivers/chan_user.c b/arch/um/drivers/chan_user.c
-index 25727ed648b7..40d98dd23c8a 100644
---- a/arch/um/drivers/chan_user.c
-+++ b/arch/um/drivers/chan_user.c
-@@ -19,7 +19,7 @@ void generic_close(int fd, void *unused)
- 	close(fd);
- }
- 
--int generic_read(int fd, char *c_out, void *unused)
-+int generic_read(int fd, __u8 *c_out, void *unused)
- {
- 	int n;
- 
-@@ -35,7 +35,7 @@ int generic_read(int fd, char *c_out, void *unused)
- 
- /* XXX Trivial wrapper around write */
- 
--int generic_write(int fd, const char *buf, int n, void *unused)
-+int generic_write(int fd, const __u8 *buf, size_t n, void *unused)
- {
- 	int err;
- 
-diff --git a/arch/um/drivers/chan_user.h b/arch/um/drivers/chan_user.h
-index 4e51b85e2a23..e158e16fb3cc 100644
---- a/arch/um/drivers/chan_user.h
-+++ b/arch/um/drivers/chan_user.h
-@@ -7,6 +7,7 @@
- #define __CHAN_USER_H__
- 
- #include <init.h>
-+#include <linux/types.h>
- 
- struct chan_opts {
- 	void (*const announce)(char *dev_name, int dev);
-@@ -19,8 +20,8 @@ struct chan_ops {
- 	void *(*init)(char *, int, const struct chan_opts *);
- 	int (*open)(int, int, int, void *, char **);
- 	void (*close)(int, void *);
--	int (*read)(int, char *, void *);
--	int (*write)(int, const char *, int, void *);
-+	int (*read)(int, __u8 *, void *);
-+	int (*write)(int, const __u8 *, size_t, void *);
- 	int (*console_write)(int, const char *, int);
- 	int (*window_size)(int, void *, unsigned short *, unsigned short *);
- 	void (*free)(void *);
-@@ -31,8 +32,8 @@ extern const struct chan_ops fd_ops, null_ops, port_ops, pts_ops, pty_ops,
- 	tty_ops, xterm_ops;
- 
- extern void generic_close(int fd, void *unused);
--extern int generic_read(int fd, char *c_out, void *unused);
--extern int generic_write(int fd, const char *buf, int n, void *unused);
-+extern int generic_read(int fd, __u8 *c_out, void *unused);
-+extern int generic_write(int fd, const __u8 *buf, size_t n, void *unused);
- extern int generic_console_write(int fd, const char *buf, int n);
- extern int generic_window_size(int fd, void *unused, unsigned short *rows_out,
- 			       unsigned short *cols_out);
-diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
-index b98545f3edb5..c9403629cc56 100644
---- a/arch/um/drivers/line.c
-+++ b/arch/um/drivers/line.c
-@@ -83,7 +83,7 @@ unsigned int line_chars_in_buffer(struct tty_struct *tty)
-  *
-  * Must be called while holding line->lock!
-  */
--static int buffer_data(struct line *line, const char *buf, int len)
-+static int buffer_data(struct line *line, const u8 *buf, size_t len)
- {
- 	int end, room;
- 
-diff --git a/arch/um/drivers/line.h b/arch/um/drivers/line.h
-index e84fb9b4165e..e8bd6f3dfb50 100644
---- a/arch/um/drivers/line.h
-+++ b/arch/um/drivers/line.h
-@@ -47,9 +47,9 @@ struct line {
- 	 *
- 	 * buffer points to a buffer allocated on demand, of length
- 	 * LINE_BUFSIZE, head to the start of the ring, tail to the end.*/
--	char *buffer;
--	char *head;
--	char *tail;
-+	u8 *buffer;
-+	u8 *head;
-+	u8 *tail;
- 
- 	int sigio;
- 	struct delayed_work task;
-diff --git a/arch/um/drivers/null.c b/arch/um/drivers/null.c
-index 87087763a417..30d59b8481b4 100644
---- a/arch/um/drivers/null.c
-+++ b/arch/um/drivers/null.c
-@@ -28,7 +28,7 @@ static int null_open(int input, int output, int primary, void *d,
- 	return (fd < 0) ? -errno : fd;
- }
- 
--static int null_read(int fd, char *c_out, void *unused)
-+static int null_read(int fd, __u8 *c_out, void *unused)
- {
- 	return -ENODEV;
- }
+---
+Nathan Chancellor (2):
+      um: net: Fix return type of uml_net_start_xmit()
+      kbuild: Enable -Wincompatible-function-pointer-types-strict in W=1
+
+ arch/um/drivers/net_kern.c | 2 +-
+ scripts/Makefile.extrawarn | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+---
+base-commit: 4b391dcb7cda8d1353d3bd123d0989550d48c0c9
+change-id: 20231002-enable-wincompatible-function-pointer-types-strict-w-1-4a56b99b8c6f
+
+Best regards,
 -- 
-2.43.0
+Nathan Chancellor <nathan@kernel.org>
 
 
