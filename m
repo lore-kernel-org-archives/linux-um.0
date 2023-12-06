@@ -4,61 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F526C4167B
-	for <linux-um@archiver.kernel.org>; Wed,  6 Dec 2023 07:20:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 53B23C4167B
+	for <linux-um@archiver.kernel.org>; Wed,  6 Dec 2023 07:38:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=psj6ZRh34CPn0HndGHLNTXabBh2QAhScgqArPlMX/rU=; b=EIzCEsc67l0aHVqV0hyqxJwE/4
-	NmGVC7yDeMOe1+au2ZEihO49ox22y7A+ytX3Nca11bDNY8mKHeBfT8IbZwsDXIMe2yBCzc9NesWeL
-	viPwTJClMbDdhBUwWDHH6D8wTuSiaUjEWN9gOWrrxaSQ+gJ3APZDSAOu8RkxAeH/EhKdhlODvJBP+
-	D/glWJ6F/uYbz921NCB/YPRM6a81dltR7gOsubjJ8kroXv4cbeZ90t776U27QTKbJYk7HKvQkg4uo
-	fznLdFccGGJ6eL7zmtycxN2QJ01JjpZAe2vbw7OzFeWxqFykn4a6LVZEVI0VGzx+pQ5u/nHZM0Z8j
-	g6UH/dRg==;
+	bh=FP3DoF0lRbRHD7+p/Ffe73LO5f0g8XcMID2JVUBMxAs=; b=v3IAKdzBrWSR9FF7P1hn5SXbyj
+	s0gLVIihkwUrSVWSp37mRe1WGgNWH5lnWi0h+/C8RO56eX6wcf9DTpENKP5hd1J4LdAcTEp4cWrOP
+	uMISlCwDm+rpDd5cjqLZg4MHgfbET4sTsFeqi44Gwa/lkbsExKb1LKkHkfQH9cKrv2M7AdbnwnY2q
+	XzXAPYWF2cICUOlvTfOEhwbGudtbDDi85B1d0Hdfgq81Ni9vDDqozTFmW/LguydNfio5zHNihoryD
+	yMFnXA068QFc6EZHOL7vpfIWE2quMmzAsFxaNCBCGyadwtB6s7xH/dUYdgrfk8cEXJJ94tGYcLYgA
+	HmxbBLHw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAmCU-009Hdw-0E;
-	Wed, 06 Dec 2023 07:20:06 +0000
-Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
+	id 1rAmU3-009JhB-2m;
+	Wed, 06 Dec 2023 07:38:15 +0000
+Received: from ams.source.kernel.org ([145.40.68.75])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rAmCQ-009Hbk-2K
+	id 1rAmU1-009Jge-0h
 	for linux-um@lists.infradead.org;
-	Wed, 06 Dec 2023 07:20:04 +0000
-Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
-	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1rAmC4-007Lrx-1N; Wed, 06 Dec 2023 07:19:40 +0000
-Received: from jain.kot-begemot.co.uk ([192.168.3.3])
-	by jain.kot-begemot.co.uk with esmtp (Exim 4.96)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1rAmBz-002Ek0-0k;
-	Wed, 06 Dec 2023 07:19:39 +0000
-Message-ID: <62f83e94-27fc-1422-3999-1936e6b28625@cambridgegreys.com>
-Date: Wed, 6 Dec 2023 07:19:35 +0000
+	Wed, 06 Dec 2023 07:38:15 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by ams.source.kernel.org (Postfix) with ESMTP id C9BB1B81EDB;
+	Wed,  6 Dec 2023 07:38:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15DB8C433B6;
+	Wed,  6 Dec 2023 07:38:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1701848290;
+	bh=U/O3J9Sie7k4DGATt5KkwA0grhqAPkmoX1CjrG9lqhs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=VZ4zfrTQpB9JgbzRNJV7L4jle3ayX5T0uV7RGNoFMcm6v76qDBwtRF+D25Ht7Gf87
+	 On/lHvtFguyIxL4+OQ7Dck1eIvga2dF9qmtjfmv8PpfYDBXndX9bfFbgcJvI6qdsqv
+	 Gi4IUQpe7DjrDoQ26xYZ6iK9l4+20QBrEW4BxYY5xx+lRsDRkKXTWGrKVDkvq1tF1k
+	 PxgQ/yPSd8Bm4puAtoXJDkVGEk3WW8uID6+9l/vsg8JFmHST5GqgPGB8l1gbksPOsz
+	 F6BX3ctIELwXaDtCWbA6G/asCOwTVVXIYGYGZZDiTP4NGs+z99pD2tZguIw271oFSD
+	 9XEK6ynXsZeBg==
+From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+To: gregkh@linuxfoundation.org
+Cc: linux-serial@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	linux-um@lists.infradead.org
+Subject: [PATCH 26/27] tty: um: convert to u8/__u8 and size_t
+Date: Wed,  6 Dec 2023 08:37:11 +0100
+Message-ID: <20231206073712.17776-27-jirislaby@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231206073712.17776-1-jirislaby@kernel.org>
+References: <20231206073712.17776-1-jirislaby@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] um: net: Fix return type of uml_net_start_xmit()
-Content-Language: en-US
-To: Nathan Chancellor <nathan@kernel.org>, richard@nod.at,
- johannes@sipsolutions.net
-Cc: ndesaulniers@google.com, trix@redhat.com, linux-um@lists.infradead.org,
- llvm@lists.linux.dev, patches@lists.linux.dev,
- kernel test robot <lkp@intel.com>
-References: <20231003-um-net-wifpts-v1-1-02888c634ee7@kernel.org>
- <20231205175302.GA536347@dev-arch.thelio-3990X>
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20231205175302.GA536347@dev-arch.thelio-3990X>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Clacks-Overhead: GNU Terry Pratchett
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231205_232002_781270_D8D733CE 
-X-CRM114-Status: GOOD (  19.86  )
+X-CRM114-CacheID: sfid-20231205_233813_547020_AC7B7EF6 
+X-CRM114-Status: GOOD (  15.22  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,71 +76,179 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+Switch character types to u8 and sizes to size_t. To conform to
+characters/sizes in the rest of the tty layer.
 
+Note we use __u8 in the userspace files.
 
-On 05/12/2023 17:53, Nathan Chancellor wrote:
-> Ping? I would like to turn this warning on for W=1 and the kbuild test
-> robot flagged this instance. If the UML folks don't want to carry it,
-> could I get an ack so that it could go with the warning enablement in
-> the kbuild tree?
-> 
-> https://lore.kernel.org/20231002-enable-wincompatible-function-pointer-types-strict-w-1-v1-1-808ab955d42d@kernel.org/
-> 
-> On Tue, Oct 03, 2023 at 11:35:53AM -0700, Nathan Chancellor wrote:
->> With clang's kernel control flow integrity (kCFI, CONFIG_CFI_CLANG),
->> indirect call targets are validated against the expected function
->> pointer prototype to make sure the call target is valid to help mitigate
->> ROP attacks. If they are not identical, there is a failure at run time,
->> which manifests as either a kernel panic or thread getting killed. A
->> warning in clang aims to catch these at compile time, which reveals:
->>
->>    arch/um/drivers/net_kern.c:353:21: warning: incompatible function pointer types initializing 'netdev_tx_t (*)(struct sk_buff *, struct net_device *)' (aka 'enum netdev_tx (*)(struct sk_buff *, struct net_device *)') with an expression of type 'int (struct sk_buff *, struct net_device *)' [-Wincompatible-function-pointer-types-strict]
->>      353 |         .ndo_start_xmit         = uml_net_start_xmit,
->>          |                                   ^~~~~~~~~~~~~~~~~~
->>    1 warning generated.
->>
->> ->ndo_start_xmit() in 'struct net_device_ops' expects a return type of
->> 'netdev_tx_t', not 'int'. Adjust the return type of uml_net_start_xmit()
->> to match the prototype's to resolve the warning. While UML does not
->> currently implement support for kCFI, it could in the future, which
->> means this warning becomes a fatal CFI failure at run time.
->>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Closes: https://lore.kernel.org/oe-kbuild-all/202310031340.v1vPh207-lkp@intel.com/
->> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
->> ---
->>   arch/um/drivers/net_kern.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
->> index 3d7836c46507..cabcc501b448 100644
->> --- a/arch/um/drivers/net_kern.c
->> +++ b/arch/um/drivers/net_kern.c
->> @@ -204,7 +204,7 @@ static int uml_net_close(struct net_device *dev)
->>   	return 0;
->>   }
->>   
->> -static int uml_net_start_xmit(struct sk_buff *skb, struct net_device *dev)
->> +static netdev_tx_t uml_net_start_xmit(struct sk_buff *skb, struct net_device *dev)
->>   {
->>   	struct uml_net_private *lp = netdev_priv(dev);
->>   	unsigned long flags;
->>
->> ---
->> base-commit: 8a749fd1a8720d4619c91c8b6e7528c0a355c0aa
->> change-id: 20231003-um-net-wifpts-14a7429c7524
->>
->> Best regards,
->> -- 
->> Nathan Chancellor <nathan@kernel.org>
->>
-> 
-> 
+Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-um@lists.infradead.org
+---
+ arch/um/drivers/chan.h      | 2 +-
+ arch/um/drivers/chan_kern.c | 9 ++++-----
+ arch/um/drivers/chan_user.c | 4 ++--
+ arch/um/drivers/chan_user.h | 9 +++++----
+ arch/um/drivers/line.c      | 2 +-
+ arch/um/drivers/line.h      | 6 +++---
+ arch/um/drivers/null.c      | 2 +-
+ 7 files changed, 17 insertions(+), 17 deletions(-)
 
-Looks ok to me.
-Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+diff --git a/arch/um/drivers/chan.h b/arch/um/drivers/chan.h
+index 3fec3b8406e9..e14b9cdf7a33 100644
+--- a/arch/um/drivers/chan.h
++++ b/arch/um/drivers/chan.h
+@@ -30,7 +30,7 @@ struct chan {
+ extern void chan_interrupt(struct line *line, int irq);
+ extern int parse_chan_pair(char *str, struct line *line, int device,
+ 			   const struct chan_opts *opts, char **error_out);
+-extern int write_chan(struct chan *chan, const char *buf, int len,
++extern int write_chan(struct chan *chan, const u8 *buf, size_t len,
+ 			     int write_irq);
+ extern int console_write_chan(struct chan *chan, const char *buf, 
+ 			      int len);
+diff --git a/arch/um/drivers/chan_kern.c b/arch/um/drivers/chan_kern.c
+index 26a702a06515..37538b4168da 100644
+--- a/arch/um/drivers/chan_kern.c
++++ b/arch/um/drivers/chan_kern.c
+@@ -33,14 +33,14 @@ static void not_configged_close(int fd, void *data)
+ 	       "UML\n");
+ }
+ 
+-static int not_configged_read(int fd, char *c_out, void *data)
++static int not_configged_read(int fd, u8 *c_out, void *data)
+ {
+ 	printk(KERN_ERR "Using a channel type which is configured out of "
+ 	       "UML\n");
+ 	return -EIO;
+ }
+ 
+-static int not_configged_write(int fd, const char *buf, int len, void *data)
++static int not_configged_write(int fd, const u8 *buf, size_t len, void *data)
+ {
+ 	printk(KERN_ERR "Using a channel type which is configured out of "
+ 	       "UML\n");
+@@ -247,8 +247,7 @@ void deactivate_chan(struct chan *chan, int irq)
+ 		deactivate_fd(chan->fd, irq);
+ }
+ 
+-int write_chan(struct chan *chan, const char *buf, int len,
+-	       int write_irq)
++int write_chan(struct chan *chan, const u8 *buf, size_t len, int write_irq)
+ {
+ 	int n, ret = 0;
+ 
+@@ -540,7 +539,7 @@ void chan_interrupt(struct line *line, int irq)
+ 	struct tty_port *port = &line->port;
+ 	struct chan *chan = line->chan_in;
+ 	int err;
+-	char c;
++	u8 c;
+ 
+ 	if (!chan || !chan->ops->read)
+ 		goto out;
+diff --git a/arch/um/drivers/chan_user.c b/arch/um/drivers/chan_user.c
+index 25727ed648b7..40d98dd23c8a 100644
+--- a/arch/um/drivers/chan_user.c
++++ b/arch/um/drivers/chan_user.c
+@@ -19,7 +19,7 @@ void generic_close(int fd, void *unused)
+ 	close(fd);
+ }
+ 
+-int generic_read(int fd, char *c_out, void *unused)
++int generic_read(int fd, __u8 *c_out, void *unused)
+ {
+ 	int n;
+ 
+@@ -35,7 +35,7 @@ int generic_read(int fd, char *c_out, void *unused)
+ 
+ /* XXX Trivial wrapper around write */
+ 
+-int generic_write(int fd, const char *buf, int n, void *unused)
++int generic_write(int fd, const __u8 *buf, size_t n, void *unused)
+ {
+ 	int err;
+ 
+diff --git a/arch/um/drivers/chan_user.h b/arch/um/drivers/chan_user.h
+index 4e51b85e2a23..e158e16fb3cc 100644
+--- a/arch/um/drivers/chan_user.h
++++ b/arch/um/drivers/chan_user.h
+@@ -7,6 +7,7 @@
+ #define __CHAN_USER_H__
+ 
+ #include <init.h>
++#include <linux/types.h>
+ 
+ struct chan_opts {
+ 	void (*const announce)(char *dev_name, int dev);
+@@ -19,8 +20,8 @@ struct chan_ops {
+ 	void *(*init)(char *, int, const struct chan_opts *);
+ 	int (*open)(int, int, int, void *, char **);
+ 	void (*close)(int, void *);
+-	int (*read)(int, char *, void *);
+-	int (*write)(int, const char *, int, void *);
++	int (*read)(int, __u8 *, void *);
++	int (*write)(int, const __u8 *, size_t, void *);
+ 	int (*console_write)(int, const char *, int);
+ 	int (*window_size)(int, void *, unsigned short *, unsigned short *);
+ 	void (*free)(void *);
+@@ -31,8 +32,8 @@ extern const struct chan_ops fd_ops, null_ops, port_ops, pts_ops, pty_ops,
+ 	tty_ops, xterm_ops;
+ 
+ extern void generic_close(int fd, void *unused);
+-extern int generic_read(int fd, char *c_out, void *unused);
+-extern int generic_write(int fd, const char *buf, int n, void *unused);
++extern int generic_read(int fd, __u8 *c_out, void *unused);
++extern int generic_write(int fd, const __u8 *buf, size_t n, void *unused);
+ extern int generic_console_write(int fd, const char *buf, int n);
+ extern int generic_window_size(int fd, void *unused, unsigned short *rows_out,
+ 			       unsigned short *cols_out);
+diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
+index b98545f3edb5..c9403629cc56 100644
+--- a/arch/um/drivers/line.c
++++ b/arch/um/drivers/line.c
+@@ -83,7 +83,7 @@ unsigned int line_chars_in_buffer(struct tty_struct *tty)
+  *
+  * Must be called while holding line->lock!
+  */
+-static int buffer_data(struct line *line, const char *buf, int len)
++static int buffer_data(struct line *line, const u8 *buf, size_t len)
+ {
+ 	int end, room;
+ 
+diff --git a/arch/um/drivers/line.h b/arch/um/drivers/line.h
+index e84fb9b4165e..e8bd6f3dfb50 100644
+--- a/arch/um/drivers/line.h
++++ b/arch/um/drivers/line.h
+@@ -47,9 +47,9 @@ struct line {
+ 	 *
+ 	 * buffer points to a buffer allocated on demand, of length
+ 	 * LINE_BUFSIZE, head to the start of the ring, tail to the end.*/
+-	char *buffer;
+-	char *head;
+-	char *tail;
++	u8 *buffer;
++	u8 *head;
++	u8 *tail;
+ 
+ 	int sigio;
+ 	struct delayed_work task;
+diff --git a/arch/um/drivers/null.c b/arch/um/drivers/null.c
+index 87087763a417..30d59b8481b4 100644
+--- a/arch/um/drivers/null.c
++++ b/arch/um/drivers/null.c
+@@ -28,7 +28,7 @@ static int null_open(int input, int output, int primary, void *d,
+ 	return (fd < 0) ? -errno : fd;
+ }
+ 
+-static int null_read(int fd, char *c_out, void *unused)
++static int null_read(int fd, __u8 *c_out, void *unused)
+ {
+ 	return -ENODEV;
+ }
 -- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
+2.43.0
+
 
