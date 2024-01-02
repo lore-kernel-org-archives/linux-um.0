@@ -4,86 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07F9FC47073
-	for <linux-um@archiver.kernel.org>; Fri, 29 Dec 2023 15:44:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C687FC47074
+	for <linux-um@archiver.kernel.org>; Tue,  2 Jan 2024 01:16:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Date:Message-Id:Subject:References:In-Reply-To:Cc:
-	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=yQjXtcB6Oq3k74ay/cs5vR/HD/xg6rvyoXPDzdeumLU=; b=IGncjVV2RsKz2cBxKoOpTkO3Jy
-	EY23P2AL/71w/AQMNapHVH224TpAe2IEY5tpOXAtV1Ko8CWQRVQXrv7/bj5Diby7YbfcDti5d/2UV
-	lLcIMkq4dlf8251++C8K3ao69DttDJSG0lugLembLsVUoUaCVx8PXh7UGhTxP/MBh97cqDsO6qda+
-	QduCDxooSCBLl90WZ4pPfCFQmxt4iY6d84G4E5u5Yo2ENJoDQa4t147EHfB8gEBh++Pj4+ex65c3L
-	B/Mogb2cHFcQ4rlnmFcL6xCqCxnkvQzC9JJgv4lsil3XYGDTo84aIY9S6Ix/xIwR8/2rXL5fbqLx+
-	SPL8ynIQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=AiGwSYUXI9fxcYVwvEl26RBkMK69KBi7r4UwJQYgdE4=; b=ETYnjRNEtninAsRnItk5L2BS15
+	ppLIlTjwwB9i9683qmWWZvU7CjiI592OEx+GHsYJ8Tm72ycU2oJqlh8YmXWPQDVhhBj1QbXiDnr/v
+	sya7BYzWwq/gjrpXfMpGJcg4Pji86ocBWRVI6CBcc6P4JpRXnkuxDBoUPxbNEYjqueX+Apx1Wuw/0
+	2Ax8GUnAPssUvKd7yiXG5jkl6ZWpS0r0QHXE7dBqaqCLCkxQErS3KbYr8HQMOMxPCPZqHCnWmc7vL
+	SorltWDGEsKxzVZbtv1M2q13vbc2nxO8aC6MswIn7uu+RlWX876YqnnGH6Jg60l8IbyAbHiHALpgM
+	02gdEk1A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rJF2P-0018BV-1Q;
-	Fri, 29 Dec 2023 15:44:41 +0000
-Received: from mail-io1-xd35.google.com ([2607:f8b0:4864:20::d35])
+	id 1rKTNy-006sin-31;
+	Tue, 02 Jan 2024 01:16:02 +0000
+Received: from mail-oa1-x34.google.com ([2001:4860:4864:20::34])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rJF2L-0018AZ-0P
+	id 1rKTNt-006shy-10
 	for linux-um@lists.infradead.org;
-	Fri, 29 Dec 2023 15:44:39 +0000
-Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-7bb5be6742fso4711839f.1
-        for <linux-um@lists.infradead.org>; Fri, 29 Dec 2023 07:44:36 -0800 (PST)
+	Tue, 02 Jan 2024 01:15:58 +0000
+Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-2045bedb806so6338279fac.3
+        for <linux-um@lists.infradead.org>; Mon, 01 Jan 2024 17:15:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1703864675; x=1704469475; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yQjXtcB6Oq3k74ay/cs5vR/HD/xg6rvyoXPDzdeumLU=;
-        b=ABzLgOVTFx5Sm/Rfpevm1RUtEgFrseYi/PfARgyJM7y6elc0NABBLXA449IFrJc1qV
-         3pBq/mAfmmaQcSRzVa343KGJKkwPSW642FKxO57L+NjUywJ5MC0+Rw4hOktBnxwB0N9j
-         MQO+yqA+uhmR6XK1zpj9sdfYWmZsMvfMWBhZ+T0tZJD5vzUXihRQyDQtPU0PnIP25YA7
-         Oi6u7MTlgQuJNIIfXL8RqnJiJ5KII0I67N0CVe0SKNOdphagUHP+p7TUEn3LR6Vl8H4l
-         M0/PYVHOApQ9Lbb+GKADaZvtoUpUNe+S6O9gAScvA2jFIF8abYvJCkIuPcGKvE/zhEhQ
-         ne8A==
+        d=chromium.org; s=google; t=1704158150; x=1704762950; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=AiGwSYUXI9fxcYVwvEl26RBkMK69KBi7r4UwJQYgdE4=;
+        b=THe+j+mBI178+xWXShb7Aq11yR11zEMGbct6rolvy5eymhvyFg/O5oD0UqRr1ynACG
+         bjwNVvKk00tUWkbV3Fj8mnfpX76Nrivb9xBd33FZ7q4b5pABSqZs6mztkWLDnixut+ku
+         V/84EXMW1StobpOBuunkMzjIYlKfuIVuPGrZ0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703864675; x=1704469475;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yQjXtcB6Oq3k74ay/cs5vR/HD/xg6rvyoXPDzdeumLU=;
-        b=ofu/iOqcuweBZZZ7pKl62JSdx1rRkmwJPye87t0HEncem1R1jdJsM80VFOuzUHXXPr
-         DESNa7YLxsgHwcdEGJJPZIrKfSERtcJjpCJ+rjlnIQF4UCCPtgagndhBNUIsUxskHOcg
-         9ucfctfqftB8ZR3Q/yyFUCj1SpbhTcmnVZZsYHW1CwVoh7UCW+z+d2Iq5qTCLOCyJC/u
-         A8sTeKnOfueie6yyngWObN/PUM2NKrOiTIrgsIP7J05MNPfdWMA/V3A3cOHXfwMnFCAU
-         G7go+AesCotAA2CzWB1FNbFVuN15CksvUA7RYrII2irNlapVrD3jhmWeUDGcK9pkDwPj
-         f6xg==
-X-Gm-Message-State: AOJu0YyGpKTqid4ks/51yql7LCxufLUZdvmLzrUAwNQwCI0XNpOS6IoX
-	6f+TnFybW54xag85wOl/nzU5E4oQBzCTV9l3A8txwv74iO4PbA==
-X-Google-Smtp-Source: AGHT+IHAm0ro/JYGZ86leiXTCWBYht33pHhUQxq1wRsVw6jMpELsHFapyFrv/5iAU4fxQiP4l1Rgag==
-X-Received: by 2002:a05:6e02:1d13:b0:35f:da7a:3797 with SMTP id i19-20020a056e021d1300b0035fda7a3797mr22028997ila.1.1703864675229;
-        Fri, 29 Dec 2023 07:44:35 -0800 (PST)
-Received: from [127.0.0.1] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id z11-20020a634c0b000000b005ce6b79ab6asm1526889pga.82.2023.12.29.07.44.33
+        d=1e100.net; s=20230601; t=1704158150; x=1704762950;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AiGwSYUXI9fxcYVwvEl26RBkMK69KBi7r4UwJQYgdE4=;
+        b=MJPsVWfQlQWdab1G7qRG7j6m5ZXlFW8OTwDWoEj3Do9SChqx9nDupzGrImS2LZnMtH
+         LKAuLp9uELc4nGcdkNqrNIkzH/ItGaPa169pcrEAlVd+cWa2aOhE3goiSMY+JRZaspzs
+         pMnbzbBhfVN66sXt6RiM7Qhpe4C2OdR7Twb1bGTADEE8zjMbyi/Sh9ghUz/6lA0EYgHm
+         RWf9BSp5N8BIKWe6TaycqLgpqZ/1RyFqu/fzy6H6FBWoaXJIHsWwnyH4j5b6nk4cwww2
+         4Fy2PhYEzA2UYn//Pte9eLsR6hE/eDceCNSgPNwzjMJV32Sy9RoZ3Jk86reGfNJt5L6E
+         nuow==
+X-Gm-Message-State: AOJu0Yw6CtOe47qxTw+651V0SG8HMFdS7tjZEngERcXi1OBrCaTKjdgC
+	a/YofFs3dSIDnXXFtmbN6MQX7A8zv10T
+X-Google-Smtp-Source: AGHT+IH9S0eoxCJzaBceLRCqYyMLMz41Ex8ouKxN6Dp7H2vys3Lzl953E5tC2NyCU5dsGbkan5tlDA==
+X-Received: by 2002:a05:6871:8983:b0:204:5246:eda6 with SMTP id tj3-20020a056871898300b002045246eda6mr19443277oab.69.1704158150228;
+        Mon, 01 Jan 2024 17:15:50 -0800 (PST)
+Received: from google.com (KD124209171220.ppp-bb.dion.ne.jp. [124.209.171.220])
+        by smtp.gmail.com with ESMTPSA id si6-20020a17090b528600b0028b5812c477sm25447407pjb.35.2024.01.01.17.15.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Dec 2023 07:44:34 -0800 (PST)
-From: Jens Axboe <axboe@kernel.dk>
+        Mon, 01 Jan 2024 17:15:49 -0800 (PST)
+Date: Tue, 2 Jan 2024 10:15:43 +0900
+From: Sergey Senozhatsky <senozhatsky@chromium.org>
 To: Christoph Hellwig <hch@lst.de>
-Cc: Richard Weinberger <richard@nod.at>, 
- Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
- Josef Bacik <josef@toxicpanda.com>, Minchan Kim <minchan@kernel.org>, 
- Sergey Senozhatsky <senozhatsky@chromium.org>, Coly Li <colyli@suse.de>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, 
- Vignesh Raghavendra <vigneshr@ti.com>, linux-um@lists.infradead.org, 
- linux-block@vger.kernel.org, nbd@other.debian.org, 
- linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org
-In-Reply-To: <20231228075545.362768-1-hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Minchan Kim <minchan@kernel.org>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Coly Li <colyli@suse.de>, Miquel Raynal <miquel.raynal@bootlin.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>, linux-um@lists.infradead.org,
+	linux-block@vger.kernel.org, nbd@other.debian.org,
+	linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 7/9] zram: use the default discard granularity
+Message-ID: <20240102011543.GA21409@google.com>
 References: <20231228075545.362768-1-hch@lst.de>
-Subject: Re: provide a sane discard_granularity default
-Message-Id: <170386467352.1470147.12182761923584971917.b4-ty@kernel.dk>
-Date: Fri, 29 Dec 2023 08:44:33 -0700
+ <20231228075545.362768-8-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-7edf1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231228075545.362768-8-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20231229_074437_504741_EE8E8D66 
-X-CRM114-Status: GOOD (  10.71  )
+X-CRM114-CacheID: sfid-20240101_171557_431950_5C7FC312 
+X-CRM114-Status: GOOD (  10.38  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,51 +95,18 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-
-On Thu, 28 Dec 2023 07:55:36 +0000, Christoph Hellwig wrote:
-> this series defaults the discard_granularity to the sector size as
-> that is a very logical default for devices that have no further
-> restrictions.  This removes the need for trivial drivers to set
-> a discard granularity and cleans up the interface.
+On (23/12/28 07:55), Christoph Hellwig wrote:
 > 
-> Diffstat:
->  arch/um/drivers/ubd_kern.c    |    1 -
->  block/blk-merge.c             |    6 +-----
->  block/blk-settings.c          |    5 ++++-
->  drivers/block/nbd.c           |    6 +-----
->  drivers/block/null_blk/main.c |    1 -
->  drivers/block/zram/zram_drv.c |    1 -
->  drivers/md/bcache/super.c     |    1 -
->  drivers/mtd/mtd_blkdevs.c     |    4 +---
->  8 files changed, 7 insertions(+), 18 deletions(-)
-> 
-> [...]
+> The discard granularity now defaults to a single sector, so don't set
+> that value explicitly
 
-Applied, thanks!
+Hmm, but sector size != PAGE_SIZE
 
-[1/9] block: remove two comments in bio_split_discard
-      commit: 928a5dd3a849dc6d8298835bdcb25c360d41bccb
-[2/9] bcache: discard_granularity should not be smaller than a sector
-      commit: 5e7169e7f7c0989304dbe8467a1d703d614c64db
-[3/9] block: default the discard granularity to sector size
-      commit: 3c407dc723bbf914f3744b0c2bb82265b411a50c
-[4/9] ubd: use the default discard granularity
-      commit: 599d9d4eab7c3d5dc6f1e0f8f052fee9eaa54e50
-[5/9] nbd: use the default discard granularity
-      commit: 1e2ab2e8a98c9e0629b5b8bff8ee6f2cb3e8daac
-[6/9] null_blk: use the default discard granularity
-      commit: 724325477f8a48ce1defc2a49998bbc19fe85c88
-[7/9] zram: use the default discard granularity
-      commit: 3753039def5d0d1c43af847b507ba9b782db183a
-[8/9] bcache: use the default discard granularity
-      commit: 105c1a5f6ccef7f52f9e76664407ef96218272eb
-[9/9] mtd_blkdevs: use the default discard granularity
-      commit: 31e4fac930814f2f92eb6ebac9c4d4e3b09f7aaf
+[..]
 
-Best regards,
--- 
-Jens Axboe
-
-
-
+> @@ -2227,7 +2227,6 @@ static int zram_add(void)
+>  					ZRAM_LOGICAL_BLOCK_SIZE);
+>  	blk_queue_io_min(zram->disk->queue, PAGE_SIZE);
+>  	blk_queue_io_opt(zram->disk->queue, PAGE_SIZE);
+> -	zram->disk->queue->limits.discard_granularity = PAGE_SIZE;
 
