@@ -4,90 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F27CDC47077
-	for <linux-um@archiver.kernel.org>; Tue,  2 Jan 2024 15:47:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AE7DC46CD2
+	for <linux-um@archiver.kernel.org>; Tue,  2 Jan 2024 22:13:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ySBFOJIM0DSvIVDKhQcLqvBT2yyLab4gqIewIhfdbtY=; b=B/HqxR1b6Xuipykoqxe83jZ+yt
-	hOegRgvc4hPk7Rwh11B28RKW1GnoY8Oc/FcmKqlSU/ShfiOzzAK/Ggs3q129GtT36MYvquehAb2Iu
-	d4lOIzdI137UVcY26lmAaNEp8I2eA6tFw2cBkaZsJryjVZEH2/H1MVp5jBkG2voYCnPjcAL71/TPf
-	0u8k++JMhRoQ3zV80xNimQptkTNAgZBufdWZJjMQFSCQcKMrKPk9XRfegAnM5NaZ1nhdJPw4xTyTs
-	xfqCXFSHfYLkznP5+qJL5cuK7OIR8BKMs+fTgtrQOze03DdAQnxj4Ri8fUlxDOVVzkP0QxRdrf9JB
-	JjdxnJlA==;
+	bh=lBOv2jm2vjkJK88t9NbUPVCUIzSLH16o/dGCZ37tOWs=; b=juiLOz6/BIZxWZ6xzNlr9mh+eF
+	qWyDasRaUQicJdMP1repdAV+2LgdNkGZOWMtgIWi7snsDa9a5ggsnbbDdT+vxEJ3T5OvRiBlDFooW
+	PoPhFNvy2eIgNDiVv85uFuiu6Tp1ClyLzEfOwjzv14gQ10Sdg3JelvlTY779ai5HNy4Yd8xvdvtWb
+	K9U1MPeDN0UX1zGdplZ6STLnxuBrpoYoB+MijH7tJAOsTT1rLSmMUVMYRliKdxd7s9QU1UhZdPl7a
+	z6BAYhyKGjkGvY+Fz5kVphj9kFkX5h1HyVlEF5PigVcHdZ7Q3WZoafJ54V/2975yATYNFPZ7OgPE0
+	bgLNOm3w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rKgza-008Par-0n;
-	Tue, 02 Jan 2024 15:47:46 +0000
-Received: from mail-il1-x12e.google.com ([2607:f8b0:4864:20::12e])
+	id 1rKn0y-009BTw-1U;
+	Tue, 02 Jan 2024 22:13:36 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rKgzW-008Pa0-1V
+	id 1rKn0u-009BSt-0a
 	for linux-um@lists.infradead.org;
-	Tue, 02 Jan 2024 15:47:43 +0000
-Received: by mail-il1-x12e.google.com with SMTP id e9e14a558f8ab-36016c6e19eso4043485ab.1
-        for <linux-um@lists.infradead.org>; Tue, 02 Jan 2024 07:47:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1704210459; x=1704815259; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ySBFOJIM0DSvIVDKhQcLqvBT2yyLab4gqIewIhfdbtY=;
-        b=UbR5ql4lmhqDS68ixIqn5BKAK1SDQnFR2/tzDbUyoqlvpvG0GrM8mosW9M/z/n2e3c
-         Y4EMv80KNfBRf8OFIPUy0RmJJVsRn/P6rTVWa031Ym9Uvvry1q7CI79iEyMQGyWy+Oue
-         VISsUAHl1unepuwktHAHbJ/bv0rGISwhr5WdTQhitWmIuX/81Eh/qCTnu05Tfpqh+h++
-         D04ocsWuWyd0iWFjvFDSOIRsHgn48aN93eQLquGxOWHBlDbnWg784nY/n1q2RfrCMmrV
-         b+7/rVNwzneHiGmeJbN+/UNw6wohqGlSoIDTJTx2+TRlqmg1x/ms605/Xfj1x2G4R8aN
-         zVlQ==
+	Tue, 02 Jan 2024 22:13:33 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704233610;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lBOv2jm2vjkJK88t9NbUPVCUIzSLH16o/dGCZ37tOWs=;
+	b=VDPTMf5OxULvpZCYcKScKLu7iVFgJUuUKZS/iwoRBkk401XwjnpVwqPLwtKLQfqAEkG+59
+	7UGgUjhPf4S0sN9Jbe2faQKD/Z3gQzoqg4M0nZ8Y8R9fnxRsiGtSwAb1eWyKwpMqWHmnSq
+	GxjkqMOjTzasekLMqlNengK5hfHKEAo=
+Received: from mail-yw1-f200.google.com (mail-yw1-f200.google.com
+ [209.85.128.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-399-CxtBSZRON5SLptPmRGHpJQ-1; Tue, 02 Jan 2024 17:11:56 -0500
+X-MC-Unique: CxtBSZRON5SLptPmRGHpJQ-1
+Received: by mail-yw1-f200.google.com with SMTP id 00721157ae682-5f03e3e39f5so59460417b3.3
+        for <linux-um@lists.infradead.org>; Tue, 02 Jan 2024 14:11:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704210459; x=1704815259;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ySBFOJIM0DSvIVDKhQcLqvBT2yyLab4gqIewIhfdbtY=;
-        b=DFo8DNlbK1oinrUXEvkdBRnlwk9iNBzuE712C3RDEd0Z8JPKmBVlrBzfPJxgsJ9UEK
-         SEpS30qQbwLEPjsvSZ9T4iUMY35GI1SLazYjdnG6jOFCY0TtYV0EPZAqUtf03qDp1fED
-         7P2YBeNmbM093p1yBI+2DdJL08QBLpkt3vH9RmxKOcD0ub6MJwKSc67etUr2ucx3Viuz
-         VyRaqqi0KNvR3bs7EPIy7NQ89Fvfr7qqWWcTBcKZXz2Jsoi7L6/ym4kaMgCufb44GUf3
-         Lx3T39NqzS0wLZPDf8Lt+yFlYXjGCxQGU+ebA9DOcM7sypA5DqHr1bp6kbhiZ5hPxiEi
-         dU1Q==
-X-Gm-Message-State: AOJu0YxF+yZCH0FtorcqtfX8yTkhPlHB19PClicsITbmp4gK4YC98fxU
-	KghZKViUmkrD25FfSJSdpMI/PY2tUMnZaw==
-X-Google-Smtp-Source: AGHT+IFs9GZ/Ey7ptKHRHLLO93hZlIAauQjofaYqCnhw5oeOlPvARiPsQn3KTgYcoEx49b9b2zgL8Q==
-X-Received: by 2002:a92:c26f:0:b0:35f:efdc:7738 with SMTP id h15-20020a92c26f000000b0035fefdc7738mr26703798ild.2.1704210459220;
-        Tue, 02 Jan 2024 07:47:39 -0800 (PST)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id cb6-20020a056e02318600b0036003f7ce61sm5383610ilb.87.2024.01.02.07.47.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Jan 2024 07:47:38 -0800 (PST)
-Message-ID: <92011368-a4a5-428b-9801-26a6a6a96752@kernel.dk>
-Date: Tue, 2 Jan 2024 08:47:36 -0700
+        d=1e100.net; s=20230601; t=1704233516; x=1704838316;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lBOv2jm2vjkJK88t9NbUPVCUIzSLH16o/dGCZ37tOWs=;
+        b=HnK9TuzekggeJ7pzgAZv6YbPQQ1WEyVdMJON5te46SaNLjF7EkRaz7XD7JTiwCaXnl
+         Oqt+dUZ1zLdtjTrIYFIodoOVdBZuMV4+BO2AN/pdUeyWSboFmUyUCIYgq3GKR8xXCZZ1
+         nEgQNzOnmTWoKXcniGyvb8XiK0bfha/JZBUdDg9MKXYFQcWohsuNOqxMfUuo52w6Ng/l
+         wVri49f1nh6KkhY/vz3E/Rrrd3q8k92ydTUCRjcIyBnMZpKsZdu2aoOlNG+kZWy3DKl3
+         kETECKh0C0eTD4W/l50jMDsWoQeuEXcAZhGb3vAT2wCfEgRc0FgNEknbGvkHR/q4QPKr
+         xaPw==
+X-Gm-Message-State: AOJu0YxKPLwGDHZM6FG7RKX7TxXqX4QbP0O9kiAJT2DfdncaJnS7fFUZ
+	zz8XnkFr1XpSfs7KlPLbuPpSfY3OS0wYH2Qpy4xhLau8QV8/EDmRp6l0rIbrvr2r3FVjhp3FplL
+	KNYwhCsvF5Qgcubbji/XS/IUhKBPgFB7X8QjGwfXmHX5ZZwR5
+X-Received: by 2002:a0d:e615:0:b0:5e7:5246:8f7b with SMTP id p21-20020a0de615000000b005e752468f7bmr10650775ywe.79.1704233516168;
+        Tue, 02 Jan 2024 14:11:56 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGnz4shpbyeonHylop6FDEDEEVcbaCqR7iBp2aclsXjzz7g8rllaGLNWxCJxvlxS1qvAvVXIZDM72VDn9UiZCA=
+X-Received: by 2002:a0d:e615:0:b0:5e7:5246:8f7b with SMTP id
+ p21-20020a0de615000000b005e752468f7bmr10650769ywe.79.1704233515934; Tue, 02
+ Jan 2024 14:11:55 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 7/9] zram: use the default discard granularity
-Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
-To: Sergey Senozhatsky <senozhatsky@chromium.org>,
- Christoph Hellwig <hch@lst.de>
-Cc: Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Josef Bacik <josef@toxicpanda.com>, Minchan Kim <minchan@kernel.org>,
- Coly Li <colyli@suse.de>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, linux-um@lists.infradead.org,
- linux-block@vger.kernel.org, nbd@other.debian.org,
- linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org
-References: <20231228075545.362768-1-hch@lst.de>
- <20231228075545.362768-8-hch@lst.de> <20240102011543.GA21409@google.com>
- <400dbdbf-e99e-4747-94db-54fb6674fdd5@kernel.dk>
- <f3758a5a-986f-485c-9a6b-c11af20c3aa5@kernel.dk>
-In-Reply-To: <f3758a5a-986f-485c-9a6b-c11af20c3aa5@kernel.dk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20231228075545.362768-1-hch@lst.de> <20231228075545.362768-4-hch@lst.de>
+In-Reply-To: <20231228075545.362768-4-hch@lst.de>
+From: John Pittman <jpittman@redhat.com>
+Date: Tue, 2 Jan 2024 17:11:19 -0500
+Message-ID: <CA+RJvhwg3YXAzSk81nMGw=_3OMo6P=XcXBUFUAXSBcyXH6gkDg@mail.gmail.com>
+Subject: Re: [PATCH 3/9] block: default the discard granularity to sector size
+To: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, Richard Weinberger <richard@nod.at>, 
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Josef Bacik <josef@toxicpanda.com>, 
+	Minchan Kim <minchan@kernel.org>, Sergey Senozhatsky <senozhatsky@chromium.org>, Coly Li <colyli@suse.de>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, Vignesh Raghavendra <vigneshr@ti.com>, 
+	linux-um@lists.infradead.org, linux-block@vger.kernel.org, 
+	nbd@other.debian.org, linux-bcache@vger.kernel.org, 
+	linux-mtd@lists.infradead.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240102_074742_555667_997399F7 
-X-CRM114-Status: GOOD (  11.55  )
+X-CRM114-CacheID: sfid-20240102_141332_310532_6BB63E7D 
+X-CRM114-Status: GOOD (  18.59  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,38 +101,50 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 1/2/24 8:44 AM, Jens Axboe wrote:
-> On 1/2/24 8:40 AM, Jens Axboe wrote:
->> On 1/1/24 6:15 PM, Sergey Senozhatsky wrote:
->>> On (23/12/28 07:55), Christoph Hellwig wrote:
->>>>
->>>> The discard granularity now defaults to a single sector, so don't set
->>>> that value explicitly
->>>
->>> Hmm, but sector size != PAGE_SIZE
->>>
->>> [..]
->>>
->>>> @@ -2227,7 +2227,6 @@ static int zram_add(void)
->>>>  					ZRAM_LOGICAL_BLOCK_SIZE);
->>>>  	blk_queue_io_min(zram->disk->queue, PAGE_SIZE);
->>>>  	blk_queue_io_opt(zram->disk->queue, PAGE_SIZE);
->>>> -	zram->disk->queue->limits.discard_granularity = PAGE_SIZE;
->>
->> Yep, that does indeed look buggy.
-> 
-> Ah no it's fine, it'll default to the sector size of the device, which
-> is set before the discard limit/granularity. So should work fine as-is.
+Hi Christoph, is there a reason you used 512 instead of SECTOR_SIZE
+from include/linux/blk_types.h?  Thanks!
 
-Replying to myself again... It does then default it to the logical block
-size, not the physical one. Which does look odd, seems like that should
-be the physical size?
-
-In any case, this does change behavior for zram.
-
-Christoph?
-
--- 
-Jens Axboe
+On Thu, Dec 28, 2023 at 2:56=E2=80=AFAM Christoph Hellwig <hch@lst.de> wrot=
+e:
+>
+> Current the discard granularity defaults to 0 and must be initialized by
+> any driver that wants to support discard.  Default to the sector size
+> instead, which is the smallest possible value, and a very useful default.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  block/blk-settings.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/block/blk-settings.c b/block/blk-settings.c
+> index ba6e0e97118c08..d993d20dab3c6d 100644
+> --- a/block/blk-settings.c
+> +++ b/block/blk-settings.c
+> @@ -48,7 +48,7 @@ void blk_set_default_limits(struct queue_limits *lim)
+>         lim->max_discard_sectors =3D 0;
+>         lim->max_hw_discard_sectors =3D 0;
+>         lim->max_secure_erase_sectors =3D 0;
+> -       lim->discard_granularity =3D 0;
+> +       lim->discard_granularity =3D 512;
+>         lim->discard_alignment =3D 0;
+>         lim->discard_misaligned =3D 0;
+>         lim->logical_block_size =3D lim->physical_block_size =3D lim->io_=
+min =3D 512;
+> @@ -309,6 +309,9 @@ void blk_queue_logical_block_size(struct request_queu=
+e *q, unsigned int size)
+>
+>         limits->logical_block_size =3D size;
+>
+> +       if (limits->discard_granularity < limits->logical_block_size)
+> +               limits->discard_granularity =3D limits->logical_block_siz=
+e;
+> +
+>         if (limits->physical_block_size < size)
+>                 limits->physical_block_size =3D size;
+>
+> --
+> 2.39.2
+>
+>
 
 
