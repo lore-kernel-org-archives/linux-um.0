@@ -4,55 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3297DC3DA6E
-	for <linux-um@archiver.kernel.org>; Wed,  3 Jan 2024 07:57:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0B37C3DA6E
+	for <linux-um@archiver.kernel.org>; Wed,  3 Jan 2024 12:52:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=37eUrM0OQ1qCkv1uWZyGED5m0medXxAGlsnWDxUno00=; b=cA2pzH01SACGIimq/yKzgpw39z
-	N7uD/615jnYGXRY1S6DPXx8cq7jseCDy+o3jaAFzoeOcyMKeDmiz6hq+sJkRJXw+EU1fLhYucf5Xg
-	8Imj5OfU6EHYXSmegwPd2XiuMti/SqJh3k7BNSxbLTWj+PH9eJQM0T2RvVfbbBKWODwrY9kxjESVb
-	oc2gJegQDsXiEcXsFQrb62phCz5Bwbq4mz2OcyxcfYPsfTH1xW3JL1UJje9/laeQDCiU7unM3n/64
-	GHrU9HCbGnNFNwoTAGCjVcyzGTuljvmpwTIYH64nKJyFLZ5F3+iaSZb5hPJTHM/XEF274aTOxAWFZ
-	4mfTjHTA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=WoF2s0uRV+cqw1VWBTcFGBkH3Zao0oa/Uvqf0zzrfME=; b=DbvlWJNm/LHbFmqkULiuMKQaYC
+	e+34N63wWn9jMYCVP4umoqdjTmSSWWgezmao6gJ8tamKKlmbU/VP0tpd3CEIVibeeUWYJPeJWraPr
+	z+spbOtk/nsh7jFDR+dASgG2v6dgAYyD2DLD+WhhVSJp1Mx6mJeA76Fg+uXF7iklLliwbrypAkWfM
+	MmwkMiFNx2A0a7Ie/KehSdLXt35OQBacNX7D0Q1WOdy83/JQd/iJvfO53cu8JXa6urmmZ1eu0+Xgp
+	WQ6SoLnaV7Ljvy48iTZA6VgVwU3hjt8B2w2gvLvM2KIgOyCet37OIU8j1h3ain12AW5nhhr1oBjtj
+	UgEXRvvw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rKw8F-00A1sw-0O;
-	Wed, 03 Jan 2024 07:57:43 +0000
-Received: from verein.lst.de ([213.95.11.211])
+	id 1rL0jB-00ArT5-0W;
+	Wed, 03 Jan 2024 12:52:09 +0000
+Received: from bee.tesarici.cz ([2a03:3b40:fe:2d4::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rKw8B-00A1rA-29;
-	Wed, 03 Jan 2024 07:57:41 +0000
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id E3A7D68B05; Wed,  3 Jan 2024 08:57:29 +0100 (CET)
-Date: Wed, 3 Jan 2024 08:57:29 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: John Pittman <jpittman@redhat.com>
-Cc: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Minchan Kim <minchan@kernel.org>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Coly Li <colyli@suse.de>, Miquel Raynal <miquel.raynal@bootlin.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>, linux-um@lists.infradead.org,
-	linux-block@vger.kernel.org, nbd@other.debian.org,
-	linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 3/9] block: default the discard granularity to sector
- size
-Message-ID: <20240103075729.GA485@lst.de>
-References: <20231228075545.362768-1-hch@lst.de> <20231228075545.362768-4-hch@lst.de> <CA+RJvhwg3YXAzSk81nMGw=_3OMo6P=XcXBUFUAXSBcyXH6gkDg@mail.gmail.com>
+	id 1rL0j7-00ArSQ-2p
+	for linux-um@lists.infradead.org;
+	Wed, 03 Jan 2024 12:52:07 +0000
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by bee.tesarici.cz (Postfix) with ESMTPSA id E5C041A3C63;
+	Wed,  3 Jan 2024 13:51:54 +0100 (CET)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
+	t=1704286315; bh=wKn5TMlthQCZ3vs0qTpEXgCIHH7fKp9SdgkEDZ0ZHZc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=EvJXkIjHo6OQAa1ocgCSe/azb5fwTjmqztDGKgAZikY6aglX32yMZNKe35ufw5hWL
+	 p86sarBKbG+zkVlQoAjwg6iYJLw5G61op2fXj2it/MKk0+LahlcSNtEQ72VzgmabsH
+	 KkgkXuNoofUkg2jYlyLGnrSn/67JM221k1eEgIMibxlQ7YeBSq48rR03wgIo8rUmLa
+	 yctwIORqq5QZ1rzUTuqWMGwONlOZRFmnMOtp6E0S4On7zl/bHmeBL4Rm7vZkzB99BB
+	 npQaaM3Z1nni1vu1W9zCLLRHJd2sB6telxpL/mCn7RumviAndxz1CJ+USsDZqeqrBR
+	 EQpITYk0UGv3A==
+Date: Wed, 3 Jan 2024 13:51:53 +0100
+From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To: Richard Weinberger <richard@nod.at>, Anton Ivanov
+ <anton.ivanov@cambridgegreys.com>, Johannes Berg
+ <johannes@sipsolutions.net>
+Cc: Petr Tesarik <petrtesarik@huaweicloud.com>, linux-um@lists.infradead.org
+ (open list:USER-MODE LINUX (UML)), linux-kernel@vger.kernel.org (open
+ list), Roberto Sassu <roberto.sassu@huaweicloud.com>, Petr Tesarik
+ <petr.tesarik1@huawei-partners.com>
+Subject: Re: [PATCH 0/2] um: improve UML page fault handling
+Message-ID: <20240103135153.4696cb0f@meshulam.tesarici.cz>
+In-Reply-To: <20231215121431.680-1-petrtesarik@huaweicloud.com>
+References: <20231215121431.680-1-petrtesarik@huaweicloud.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+RJvhwg3YXAzSk81nMGw=_3OMo6P=XcXBUFUAXSBcyXH6gkDg@mail.gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240102_235739_850057_76A5CA1C 
-X-CRM114-Status: GOOD (  10.13  )
+X-CRM114-CacheID: sfid-20240103_045206_381672_AD5659D6 
+X-CRM114-Status: GOOD (  11.31  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,10 +77,32 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jan 02, 2024 at 05:11:19PM -0500, John Pittman wrote:
-> Hi Christoph, is there a reason you used 512 instead of SECTOR_SIZE
-> from include/linux/blk_types.h?  Thanks!
+Happy New Year, everyone!
 
-To match the logical_block_size/physical_block_size/io_min
-assignments just below.
+I can fully understand that you all have had other priorities around
+the year end; it was no different with me. ;-)
+
+However, may I kindly ask for some feedback on my proposed fixes?
+
+Petr T
+
+On Fri, 15 Dec 2023 13:14:29 +0100
+Petr Tesarik <petrtesarik@huaweicloud.com> wrote:
+
+> From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+> 
+> Improve UML handling of segmentation faults in kernel mode. Although
+> such page faults are generally caused by a kernel bug, it is annoying
+> if they cause an infinite loop, or panic the kernel. More importantly,
+> a robust implementation allows to write KUnit tests for various guard
+> pages, preventing potential kernel self-protection regressions.
+> 
+> Petr Tesarik (2):
+>   um: do not panic on kernel mode faults
+>   um: oops on accessing an non-present page in the vmalloc area
+> 
+>  arch/um/kernel/trap.c | 19 ++++++++++++++-----
+>  1 file changed, 14 insertions(+), 5 deletions(-)
+> 
+
 
