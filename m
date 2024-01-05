@@ -4,62 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 759BCC4707C
-	for <linux-um@archiver.kernel.org>; Fri,  5 Jan 2024 08:13:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 800C6C3DA6E
+	for <linux-um@archiver.kernel.org>; Fri,  5 Jan 2024 08:42:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
 	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
 	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=EHmRq5ttEdfAsFXY0yaV0xO5z0TOeJj9CPBqPduHyAU=; b=Fze3EjP2HsdodniRhX/qFHvujd
-	kwJaVLqx4FKWKcGpB4nS/4mWx9OuIumFghPjrRM3weBEcLfggnrGI0ROUGmbl6EV6kwnqXX0sq4iw
-	4hXHJmXtYjYzv9pCL36LaGCVqVgklm/QzvyxB1+rhiFW1s9h/bALYVXTU5Z4CworzpciRVowROHBt
-	yoj6AiqOiG5i539xF1V+fSQ3Ol2Nxl9WrOr8UsZza/49Yke0P3nPRLRcRB5jkCG/WM/TIOOxxOTCE
-	2NFIkA4nWti1oa/TphDT6cyJcDIWvawT5NLMNtPqum1rzLwUs/B1DxyIMTligPJZC8Fs0jACfbO7k
-	grcb9/Zw==;
+	bh=TZQ3khfsKLf+AmeAaE2I1LPoTpEix5mNeFyVVHSxfZc=; b=h4ViAaOSJdoUcRzHMwkW+Rawk9
+	UMd5lXctMQc21Bjtsszk8J6wouVakQLWdNs31dn9Uq+11LAM3X6Q6AL4Yaaav++eiSE+ymzLZndwb
+	IfYMsGDp0PDe7xV2FPydKYlb/cLiwGfaZm4i3vzwNF6MhOqX2GbFcT28j+LgojhuKHRbg2NP4tYnl
+	63vV566Fy2mf2ra7apvuEG3F/9483cGW4zsYfG3smlOkxQaXqn2ghB3oV3Dk/G9hEz7jB5WruvJoE
+	DUa2pNb39TX7o5Ltnh4f9aJMiQ34IbiUUc6p+4cxzkjIxY+z1xqHhiDnC6/P5qQ1BQBCwKh6jia2I
+	mbQrIDuw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rLfKE-00GDPZ-10;
-	Fri, 05 Jan 2024 08:13:06 +0000
+	id 1rLfma-00GHYz-22;
+	Fri, 05 Jan 2024 08:42:24 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rLfKB-00GDOQ-1P
+	id 1rLfmY-00GHXN-0f
 	for linux-um@lists.infradead.org;
-	Fri, 05 Jan 2024 08:13:05 +0000
+	Fri, 05 Jan 2024 08:42:23 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
 	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=EHmRq5ttEdfAsFXY0yaV0xO5z0TOeJj9CPBqPduHyAU=;
-	t=1704442380; x=1705651980; b=FO9bBaRDN8JyLEInT6f0IKSOmMxVADzEao3rjmSKoVauf/t
-	byXtLwFnnWJsui3gvN2tTWs2UEjfnlBou+UkwSL0sNIcIZhiRAQ9OBmIPviPcmpBa4g8ltALVf45x
-	gGpmln0aRgTL6GUzkTNTLwSRlEfkYQZ1iydpJUSbs32v1BwEaMrnqAmHif/RA9GUVT4ZKyo0trCHv
-	nzjubqv8iJiNtF6A3uGaHic5sA5mg1sMZ8uiXj9POXUn1pEm9CJ55yOeRW4zojfaQAnhty4JyrjmH
-	Kgi3OGdqUffFwvHCdk7NBRe28gyVmq+3rCt4Zy28J8uK2EU8uRjtLJqzQ4dF3kqg==;
+	Resent-Cc:Resent-Message-ID; bh=TZQ3khfsKLf+AmeAaE2I1LPoTpEix5mNeFyVVHSxfZc=;
+	t=1704444139; x=1705653739; b=mEVvTvyn6/eGZodcXHtYKj+0OufWQ/9pOIVXxqbIxCxp4Mo
+	+xOWxQUjaCPgPJ1dqKZfGnhXDiGVr6zHQhlPuCqqOpLeT8RwinInXvR+7yjZRKm9zmH+NxJrsH42I
+	xzh3B2FxVvPlt0QFYTOQkjP4nDTXXNYhMifFtUr/wKzZS3s1cyL4c4Z0pMgnqgNlNDwF4rT3w5/Sd
+	LfKaVfCrNrxthTHKQYDPVbIdRjrUWMrtSML0kxJFc167OWtrBmLGHaZtCLDC1Oa5wQAOmys7I9mtY
+	PyUhrP9yBIXub5gMF2FlHca5EH+l+ICCD4I9e5Fqsr+5j4OlE5lxJkk6NmpN8SQw==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.97)
-	(envelope-from <benjamin@sipsolutions.net>)
-	id 1rLfK5-00000005uaZ-1gHr;
-	Fri, 05 Jan 2024 09:12:57 +0100
-Message-ID: <a75fb1e3b92f748a81e032b5138e2cdccc4d2c92.camel@sipsolutions.net>
-Subject: Re: [PATCH v3 04/11] um: Don't use vfprintf() for os_info()
-From: Benjamin Berg <benjamin@sipsolutions.net>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Cc: linux-um@lists.infradead.org
-Date: Fri, 05 Jan 2024 09:12:55 +0100
-In-Reply-To: <CAFLxGvxads6JaAgm2MvXKKJrJiYGk1oLa2EDC0YLemcQ866cvg@mail.gmail.com>
-References: <20231110110348.1815612-1-benjamin@sipsolutions.net>
-	 <20231110110348.1815612-5-benjamin@sipsolutions.net>
-	 <CAFLxGvxads6JaAgm2MvXKKJrJiYGk1oLa2EDC0YLemcQ866cvg@mail.gmail.com>
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1rLfmP-00000005vmz-2A4u;
+	Fri, 05 Jan 2024 09:42:14 +0100
+Message-ID: <1c098c26132b60ebebc46a39e8b7827a29e3a166.camel@sipsolutions.net>
+Subject: Re: [PATCH] um: vector: fix return value check in vector_legacy_rx
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Richard Weinberger <richard.weinberger@gmail.com>, Ma Ke
+	 <make_ruc2021@163.com>
+Cc: richard@nod.at, anton.ivanov@cambridgegreys.com, xiangyang3@huawei.com, 
+	linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+Date: Fri, 05 Jan 2024 09:42:12 +0100
+In-Reply-To: <CAFLxGvytpwjXM0bdLrxt0itfEBPqJSmuM6otB7dTBmsTaAAPgw@mail.gmail.com>
+References: <20231006122717.3984017-1-make_ruc2021@163.com>
+	 <CAFLxGvytpwjXM0bdLrxt0itfEBPqJSmuM6otB7dTBmsTaAAPgw@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+User-Agent: Evolution 3.50.2 (3.50.2-1.fc39) 
 MIME-Version: 1.0
 X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240105_001303_681870_484C2154 
-X-CRM114-Status: GOOD (  10.22  )
+X-CRM114-CacheID: sfid-20240105_004222_240788_2C168FA6 
+X-CRM114-Status: GOOD (  16.89  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,30 +75,48 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi,
-
-On Thu, 2024-01-04 at 23:37 +0100, Richard Weinberger wrote:
-> On Fri, Nov 10, 2023 at 12:03=E2=80=AFPM <benjamin@sipsolutions.net> wrot=
-e:
+On Thu, 2024-01-04 at 22:05 +0100, Richard Weinberger wrote:
+> On Fri, Oct 6, 2023 at 2:28=E2=80=AFPM Ma Ke <make_ruc2021@163.com> wrote=
+:
 > >=20
-> > From: Benjamin Berg <benjamin@sipsolutions.net>
+> > In vector_legacy_rx, to avoid an unexpected result returned by
+> > pskb_trim, we should check the return value of pskb_trim().
 > >=20
-> > The threads allocated inside the kernel have only a single page of
-> > stack. Unfortunately, the vfprintf function in standard glibc may use
-> > too much stack-space, overflowing it.
+> > Signed-off-by: Ma Ke <make_ruc2021@163.com>
+> > ---
+> >  arch/um/drivers/vector_kern.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >=20
+> > diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_ker=
+n.c
+> > index 131b7cb29576..822a8c0cdcc1 100644
+> > --- a/arch/um/drivers/vector_kern.c
+> > +++ b/arch/um/drivers/vector_kern.c
+> > @@ -890,7 +890,8 @@ static int vector_legacy_rx(struct vector_private *=
+vp)
+> >                                         skb->ip_summed =3D CHECKSUM_UNN=
+ECESSARY;
+> >                                 }
+> >                         }
+> > -                       pskb_trim(skb, pkt_len - vp->rx_header_size);
+> > +                       if (pskb_trim(skb, pkt_len - vp->rx_header_size=
+))
+> > +                               return 0;
 >=20
-> Another option is giving the helper threads more memory, we don't have
-> that many.
-> Did you explore this option already?
+> I think this adds a memory leak. Also, can pskb_trim() really fail in
+> this scenario?
+> The function controls skb creation and knows all lengths.
+>=20
+We had pretty much the exact same discussion in the other patch ...
 
-I had not really considered that.
+https://patchwork.ozlabs.org/project/linux-um/patch/20231007005104.3994678-=
+1-make_ruc2021@163.com/
 
-One thing though is that userspace_tramp calls os_info while working
-with the stub stack. So that also means setting STUB_DATA_PAGES to 2.
-But, I suspect we may want to do that anyway eventually to fit the ever
-increasing mcontext size for all the AVX512 registers and such.
 
-As I said, I think that is fine to do.
+No point arguing with people who care about static checkers only, I
+guess. This person here never even came back to respond to the comments,
+my take is they're throwing patches over the wall they didn't think
+about, just to see what sticks.
 
-Benjamin
+johannes
 
