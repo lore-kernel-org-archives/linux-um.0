@@ -4,63 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E251EC3DA6E
-	for <linux-um@archiver.kernel.org>; Fri,  5 Jan 2024 11:50:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C019C3DA6E
+	for <linux-um@archiver.kernel.org>; Fri,  5 Jan 2024 13:30:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:MIME-Version:Subject:References:In-Reply-To:Message-ID:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=H1Kp4VIgTLQ/oxQc8cpwzAuuciZMbjy+saWp57HYYSY=; b=hx9r0r4EPXF5Ctaf/Q15besW8L
-	BmxRLzwldxX4cmetE4kljgMJMuI0lAffdWCrOxyUFSH6k86nbvIGDDlmoZhcRzKkE3QOznwE6hveY
-	IgLHtzf5yTjr9GFkjJcVkPQSNfCyDYuhignF8aAnDBJxv3iSy27m44Inypt7+YZtd3SAab4AgGOEU
-	MaET62KcuHOpZki727hxdCuJXiG1qXS1T3zRMQj9tLeynVN2iArJ5KQIqVwV1SZWk9aJ4PoTSvC75
-	bR87i99NJkiO0ZMS2bMdk+XUND1vwwJXynhsfdMvTh6Fs0IfhujFRyjVQviwAqmj7+bKtxSAPeH8m
-	Pnxr+eaw==;
+	bh=iQk2XLhF9BeCDwKseCnKpn4cB14xh9423iQVivqel7c=; b=OG5SrFEQvyJzHenZo4u9Zg5FMR
+	LL6gX5dCn/RI/t1ewHdJ5pADs+VwxsOe5FRK7OctjRw/p2+uDcEUSVw/s1XtIWqMhFQofWbOvEtiK
+	vUnAwoqC7Tdf2Ztwy9gMPtVasrvs7fu1RVWS1LSc2yzz12fgSEpSwl4Ow2PaTrN94sEAgWEwNCsx/
+	rfp2BuZcShfUpOqHAR5kE8UgLVueL/Pz0TfK9428PTPFoInTF5FMqgqGZy3wfrI4/cl7ZPvy/YQ2m
+	AKTPPQIR/milIzBq1+0KHqLvNotHgGuKwnkq991CW6iSOzlKUp9Wx3QN4bIokQbSG5RxkEP98tl51
+	8OOTX1mQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rLiix-00Gji3-0u;
-	Fri, 05 Jan 2024 11:50:51 +0000
-Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
+	id 1rLkH2-00Gy3K-08;
+	Fri, 05 Jan 2024 13:30:08 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rLiiu-00GjdE-08
+	id 1rLkGy-00Gy1w-0p
 	for linux-um@lists.infradead.org;
-	Fri, 05 Jan 2024 11:50:49 +0000
-Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
-	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1rLiIU-009MXW-Dv; Fri, 05 Jan 2024 11:23:31 +0000
-Received: from madding.kot-begemot.co.uk ([192.168.3.98])
-	by jain.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1rLiIN-0024Bu-2P;
-	Fri, 05 Jan 2024 11:23:30 +0000
-Message-ID: <d5859c6e-e924-4413-bff5-7009acd8718f@cambridgegreys.com>
-Date: Fri, 5 Jan 2024 11:23:23 +0000
+	Fri, 05 Jan 2024 13:30:06 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 81551626FAE4;
+	Fri,  5 Jan 2024 14:29:56 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id cL9c2lENbU2l; Fri,  5 Jan 2024 14:29:55 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id D8E726343B33;
+	Fri,  5 Jan 2024 14:29:55 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 5nUPE1HnGPSG; Fri,  5 Jan 2024 14:29:55 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 866B2626FAE4;
+	Fri,  5 Jan 2024 14:29:55 +0100 (CET)
+Date: Fri, 5 Jan 2024 14:29:55 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+To: Benjamin Berg <benjamin@sipsolutions.net>
+Cc: Richard Weinberger <richard.weinberger@gmail.com>, 
+	linux-um <linux-um@lists.infradead.org>
+Message-ID: <965367427.201125.1704461395241.JavaMail.zimbra@nod.at>
+In-Reply-To: <9ec2eafe0ea44e3bce1e5fa96c4a9488c3d43a8c.camel@sipsolutions.net>
+References: <20231110110348.1815612-1-benjamin@sipsolutions.net> <20231110110348.1815612-10-benjamin@sipsolutions.net> <CAFLxGvx6zVDy8pjacb8Dq9d884gTjpnPUapJ61GZAMy_39wGWg@mail.gmail.com> <9ec2eafe0ea44e3bce1e5fa96c4a9488c3d43a8c.camel@sipsolutions.net>
+Subject: Re: [PATCH v3 09/11] um: Rely on PTRACE_SETREGSET to set FS/GS base
+ registers
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] um: vector: fix return value check in vector_legacy_rx
-Content-Language: en-US
-To: Johannes Berg <johannes@sipsolutions.net>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- Ma Ke <make_ruc2021@163.com>
-Cc: richard@nod.at, xiangyang3@huawei.com, linux-um@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20231006122717.3984017-1-make_ruc2021@163.com>
- <CAFLxGvytpwjXM0bdLrxt0itfEBPqJSmuM6otB7dTBmsTaAAPgw@mail.gmail.com>
- <1c098c26132b60ebebc46a39e8b7827a29e3a166.camel@sipsolutions.net>
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Organization: Cambridge Greys
-In-Reply-To: <1c098c26132b60ebebc46a39e8b7827a29e3a166.camel@sipsolutions.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Clacks-Overhead: GNU Terry Pratchett
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: Rely on PTRACE_SETREGSET to set FS/GS base registers
+Thread-Index: inGGs1y1gTUWKZex4eU4OWVKaC/22w==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240105_035048_079186_6AE40FFE 
-X-CRM114-Status: GOOD (  15.58  )
+X-CRM114-CacheID: sfid-20240105_053004_479688_1E95989F 
+X-CRM114-Status: UNSURE (   9.72  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,55 +77,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 05/01/2024 08:42, Johannes Berg wrote:
-> On Thu, 2024-01-04 at 22:05 +0100, Richard Weinberger wrote:
->> On Fri, Oct 6, 2023 at 2:28 PM Ma Ke <make_ruc2021@163.com> wrote:
->>>
->>> In vector_legacy_rx, to avoid an unexpected result returned by
->>> pskb_trim, we should check the return value of pskb_trim().
->>>
->>> Signed-off-by: Ma Ke <make_ruc2021@163.com>
->>> ---
->>>   arch/um/drivers/vector_kern.c | 3 ++-
->>>   1 file changed, 2 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
->>> index 131b7cb29576..822a8c0cdcc1 100644
->>> --- a/arch/um/drivers/vector_kern.c
->>> +++ b/arch/um/drivers/vector_kern.c
->>> @@ -890,7 +890,8 @@ static int vector_legacy_rx(struct vector_private *vp)
->>>                                          skb->ip_summed = CHECKSUM_UNNECESSARY;
->>>                                  }
->>>                          }
->>> -                       pskb_trim(skb, pkt_len - vp->rx_header_size);
->>> +                       if (pskb_trim(skb, pkt_len - vp->rx_header_size))
->>> +                               return 0;
->>
->> I think this adds a memory leak. Also, can pskb_trim() really fail in
->> this scenario?
->> The function controls skb creation and knows all lengths.
->>
-> We had pretty much the exact same discussion in the other patch ...
-> 
-> https://patchwork.ozlabs.org/project/linux-um/patch/20231007005104.3994678-1-make_ruc2021@163.com/
-> 
-> 
-> No point arguing with people who care about static checkers only, I
-> guess. This person here never even came back to respond to the comments,
-> my take is they're throwing patches over the wall they didn't think
-> about, just to see what sticks.
+----- Urspr=C3=BCngliche Mail -----
+> Von: "Benjamin Berg" <benjamin@sipsolutions.net>
+> On Fri, 2024-01-05 at 00:05 +0100, Richard Weinberger wrote:
+>> On Fri, Nov 10, 2023 at 12:03=E2=80=AFPM <benjamin@sipsolutions.net> wro=
+te:
+>> >=20
+>> > From: Benjamin Berg <benjamin@sipsolutions.net>
+>> >=20
+>> > These registers are saved/restored together with the other general
+>> > registers using ptrace. In arch_set_tls we then just need to set
+>> > the
+>> > register and it will be synced back normally.
+>> >=20
+>> > Most of this logic was introduced in commit f355559cf7845 ("[PATCH]
+>> > uml:
+>> > x86_64 thread fixes"). However, at least today we can rely on
+>> > ptrace to
+>>=20
+>> Do you know since when exactly? I don't want to break UML in subtle ways
+>> on old kernels.
+>=20
+> To be honest, I don't remember, and I doubt I really understood what I
+> was doing.
+>=20
+> Anyway, I now found this commit now, which is contained in v2.6.25:
 
-CV padding, the 2024 way. Accomplishments: submitted 231 patches to the 
-linux kernel.
+Okay, 2.6.26 is way older than anything supported. So I'll apply our patch.=
+ :-)
 
-> 
-> johannes
-> 
-> 
-
--- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
-
+Thanks,
+//richard
 
