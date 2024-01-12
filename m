@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4546DC4706C
-	for <linux-um@archiver.kernel.org>; Fri, 12 Jan 2024 20:07:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00302C47422
+	for <linux-um@archiver.kernel.org>; Fri, 12 Jan 2024 20:08:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=Z+vJaJALI5V43EmrX5Wxb8NskSEgBni8qbj0Eg4YyDk=; b=bZwP1xu0StQeUklRR8HErhWmob
-	qFs6DLMaoP6rZnrzgWOXBxhpInKrWv9nE172HFVIj9XeRyWnSQv7r0Q3+4FcWFDy88RD/kIMxEYNE
-	6WanLY3QJBRniMPKCEodWIJwQ3DwYJkbfgodQFGoLVIa2qj6XhzyetCQdl3Ay6xOyxyYbf6jmqYxD
-	TrAMA8SVsktWaxxAwcm+0OpX5NSOoFqaE6n6sjvPVOm2eOEncL5+u3XgzsstohkSI0VvkvJNahqVc
-	pSw/VV2fF3JIxCa+RqHVRcZiXjXoaZ3HynBdRE9ybAGHKlyRN2ubQ1zBJA0ORzS8hzfZZAqXsAhRn
-	JdN1WTuw==;
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=4c9mWF8YgLblEXtBZS6u3l9ZtMToZFmO6GDr8hlYfo8=; b=SPRcze/wLozh4FyMwAFp524SFG
+	VxXOlkOqaMgOKYqKYNjKpjBc/YvNCUI7HMAKaCwQje9nDquDsK8U7bT4+PID+33mQBuvN7u2/e6JL
+	F4Sal/lPePu+Q3vStBUtfdxru7NoBmIJfek8P+gL/K1BsiygxF9l0fQ94gzAoF3Dyvoz3eMYiYkI8
+	5NVmzHya/Ruc8bzEeayqKZDopp31vG+M8UzxgwZKdhNXZumQGLiqbZBynDIlBuLJ+Wrf6gSlo3smK
+	Dl3LjdhHKBEhFVXJw6R0zVE8Ec40mqyU1P8oN61tNRcTO3FQcGV4wzktHkYgHF8ir4Ok8mgn3/cvO
+	GBaXZRDQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rONor-003ttK-1h;
-	Fri, 12 Jan 2024 20:07:57 +0000
+	id 1rONov-003twh-1v;
+	Fri, 12 Jan 2024 20:08:01 +0000
 Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rONon-003tql-2t;
-	Fri, 12 Jan 2024 20:07:55 +0000
+	id 1rONoo-003tr6-2L;
+	Fri, 12 Jan 2024 20:07:56 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id B168961DF5;
-	Fri, 12 Jan 2024 20:07:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93C27C433F1;
-	Fri, 12 Jan 2024 20:07:51 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 44A7761E47;
+	Fri, 12 Jan 2024 20:07:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA086C43394;
+	Fri, 12 Jan 2024 20:07:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705090072;
-	bh=OrQw0dbMF0js5SoZCQr9kcnhmqPonHSy4cpM0zYdF2w=;
-	h=From:To:Cc:Subject:Date:From;
-	b=gtxcC37X2WxJ4Ag5UD09FLbJ3nEwuGIhOGOu6DNMTfRiSgUvAiRWHv3/hQyJQpxKQ
-	 A1asoHh7C1ft4+IuEbfix1Gf1pt1YKCEzW7Y/XOaeNOUyUEv9ePpL23qc0FqrHzZqp
-	 vT3y2v8e52od6NzaKnSki/9n/gksekczLmkQVO1HYRmwE2logou69Sl7/ae1Peys+e
-	 OSjyJlHtTNAfgsEzTESnp2XR4K3Fx40Ac3xvUanMsNvTH4mh64puVDEqjC4QR9xuIS
-	 4XN4firdS38espv2NzXsbmhGVx95bDBpNtKxSdI3K1VifWNRQXzOCmz+sIxI3qs3A2
-	 cKz3F2pW1w9aA==
+	s=k20201202; t=1705090074;
+	bh=1E4tLOV0ALY1Bfj9SzYihrCA2jRIId2N3gEBgK6iS+E=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=OYIwB3Kd1lvLubS58Ch++gSwaNSb/vqhoixvSQvAvgqJG87S3gmJYw5VUSlzDs3f5
+	 csFg+vxWUSoiXPtNVuFSumlD4MkFRIRWVQQvyJHKayKu/EFkQOrj++jZToUtobBNP0
+	 +a6lIT2voVAlju/kYLtDzryGwEZQ1405vmmM1W72JkVpv11hygoOYl+3eaBb67Uo8Z
+	 fgWZ5l39gqdPbykAVXITXpN2i2VUar5SMcArxxcXvSr7KPRGwOQkaOsf0FcM7oOit/
+	 erSbIKrTVskKhMLrpWa6vgs3lAwIGQT3eFSn4oFjYtkdg8+ls0eBLzSmYOMruWNCnu
+	 TwQLUeGiY9tGQ==
 From: Stephen Boyd <sboyd@kernel.org>
 To: Rob Herring <robh+dt@kernel.org>
 Cc: linux-kernel@vger.kernel.org,
@@ -50,23 +50,18 @@ Cc: linux-kernel@vger.kernel.org,
 	kunit-dev@googlegroups.com,
 	linux-kselftest@vger.kernel.org,
 	devicetree@vger.kernel.org,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Brendan Higgins <brendan.higgins@linux.dev>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	David Gow <davidgow@google.com>,
-	Frank Rowand <frowand.list@gmail.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Richard Weinberger <richard@nod.at>,
-	Will Deacon <will@kernel.org>
-Subject: [PATCH 0/6] of: populate of_root node if bootloader doesn't
-Date: Fri, 12 Jan 2024 12:07:43 -0800
-Message-ID: <20240112200750.4062441-1-sboyd@kernel.org>
+	Frank Rowand <frowand.list@gmail.com>
+Subject: [PATCH 3/6] of: Always unflatten in unflatten_and_copy_device_tree()
+Date: Fri, 12 Jan 2024 12:07:46 -0800
+Message-ID: <20240112200750.4062441-4-sboyd@kernel.org>
 X-Mailer: git-send-email 2.43.0.275.g3460e3d667-goog
+In-Reply-To: <20240112200750.4062441-1-sboyd@kernel.org>
+References: <20240112200750.4062441-1-sboyd@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240112_120754_034473_58181CA3 
-X-CRM114-Status: GOOD (  12.28  )
+X-CRM114-CacheID: sfid-20240112_120754_802390_93C94A46 
+X-CRM114-Status: GOOD (  11.23  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,64 +76,72 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Arch maintainers, please ack/review patches.
+We want to populate an empty DT whenever CONFIG_OF is enabled so that
+overlays can be applied and the DT unit tests can be run. Make
+unflatten_and_copy_device_tree() stop printing a warning if the
+'initial_boot_params' pointer is NULL. Instead, simply copy the dtb if
+there is one and then unflatten it. If there isn't a DT to copy, then
+the call to unflatten_device_tree() is largely a no-op, so nothing
+really changes here.
 
-This is a resend of a series from Frank last year[1]. I worked in Rob's
-review comments to unconditionally call unflatten_device_tree() and
-fixup/audit calls to of_have_populated_dt() so that behavior doesn't
-change.
-
-I need this series so I can add DT based tests in the clk framework.
-Either I can merge it through the clk tree once everyone is happy, or
-Rob can merge it through the DT tree and provide some branch so I can
-base clk patches on it.
-
-Changes from Frank's series[1]:
- * Add a DTB loaded kunit test
- * Make of_have_populated_dt() return false if the DTB isn't from the
-   bootloader
- * Architecture calls made unconditional so that a root node is always
-   made
-
-Frank Rowand (2):
-  of: Create of_root if no dtb provided by firmware
-  of: unittest: treat missing of_root as error instead of fixing up
-
-Stephen Boyd (4):
-  arm64: Unconditionally call unflatten_device_tree()
-  um: Unconditionally call unflatten_device_tree()
-  of: Always unflatten in unflatten_and_copy_device_tree()
-  of: Add KUnit test to confirm DTB is loaded
-
- arch/arm64/kernel/setup.c |  3 +-
- arch/um/kernel/dtb.c      | 14 +++---
- drivers/of/.kunitconfig   |  3 ++
- drivers/of/Kconfig        | 16 ++++++-
- drivers/of/Makefile       |  4 +-
- drivers/of/empty_root.dts |  6 +++
- drivers/of/fdt.c          | 57 +++++++++++++++++------
- drivers/of/of_test.c      | 98 +++++++++++++++++++++++++++++++++++++++
- drivers/of/platform.c     |  3 --
- drivers/of/unittest.c     | 16 ++-----
- include/linux/of.h        | 17 +++++--
- 11 files changed, 191 insertions(+), 46 deletions(-)
- create mode 100644 drivers/of/.kunitconfig
- create mode 100644 drivers/of/empty_root.dts
- create mode 100644 drivers/of/of_test.c
-
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Brendan Higgins <brendan.higgins@linux.dev>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: David Gow <davidgow@google.com>
-Cc: Frank Rowand <frowand.list@gmail.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: Richard Weinberger <richard@nod.at>
 Cc: Rob Herring <robh+dt@kernel.org>
-Cc: Will Deacon <will@kernel.org>
+Cc: Frank Rowand <frowand.list@gmail.com>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+---
+ drivers/of/fdt.c | 32 +++++++++++++++++---------------
+ 1 file changed, 17 insertions(+), 15 deletions(-)
 
-[1] https://lore.kernel.org/r/20230317053415.2254616-1-frowand.list@gmail.com
-
-base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
+diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+index bf502ba8da95..b488ad86d456 100644
+--- a/drivers/of/fdt.c
++++ b/drivers/of/fdt.c
+@@ -1318,6 +1318,21 @@ bool __init early_init_dt_scan(void *params)
+ 	return true;
+ }
+ 
++static void __init copy_device_tree(void)
++{
++	int size;
++	void *dt;
++
++	size = fdt_totalsize(initial_boot_params);
++	dt = early_init_dt_alloc_memory_arch(size,
++					     roundup_pow_of_two(FDT_V17_SIZE));
++
++	if (dt) {
++		memcpy(dt, initial_boot_params, size);
++		initial_boot_params = dt;
++	}
++}
++
+ /**
+  * unflatten_device_tree - create tree of device_nodes from flat blob
+  *
+@@ -1350,22 +1365,9 @@ void __init unflatten_device_tree(void)
+  */
+ void __init unflatten_and_copy_device_tree(void)
+ {
+-	int size;
+-	void *dt;
++	if (initial_boot_params)
++		copy_device_tree();
+ 
+-	if (!initial_boot_params) {
+-		pr_warn("No valid device tree found, continuing without\n");
+-		return;
+-	}
+-
+-	size = fdt_totalsize(initial_boot_params);
+-	dt = early_init_dt_alloc_memory_arch(size,
+-					     roundup_pow_of_two(FDT_V17_SIZE));
+-
+-	if (dt) {
+-		memcpy(dt, initial_boot_params, size);
+-		initial_boot_params = dt;
+-	}
+ 	unflatten_device_tree();
+ }
+ 
 -- 
 https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
 https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
