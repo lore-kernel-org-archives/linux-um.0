@@ -4,66 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79E46C4706C
-	for <linux-um@archiver.kernel.org>; Fri, 12 Jan 2024 20:08:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0AA2C4706C
+	for <linux-um@archiver.kernel.org>; Sat, 13 Jan 2024 20:38:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=CqOU6E/fmILrxzO1+PqTUQ2BhTLfjR8U6sXhToy/ht4=; b=2d8K0YlPXXbNS0+/iqndo45Xmf
-	KYU3hpReX4ikGGddIbd2+zeRsV+R7Kbl9iGfl/9ymFKerZAf8FYYNXxvoAbSMs3HahoqQHK1S7eyT
-	sP48gDsaObZmqZmr+LSYTQ2zG5au+utaDUG2KE4BCBMegT1pgzUACQRSLvOgyHf7ZvNvi16ASOEIJ
-	3Xc4dTinAnFr0AndGbaO1vHPE92FhBEu5Sa/NarFZqsi1gqakuomulUA3QWuFcNdX8FoC2q1cjWIj
-	DOIcPjydhgJpu+LMPF+cbamefRHoz+yV94qFojcWMyaiAYfouO/9P9q3P+V/As4Y7HRhFTqC1NKz0
-	0/mVr3gw==;
+	Content-Type:MIME-Version:Subject:Message-ID:Cc:To:From:Date:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=gzTO+KctU/Oo5R+aMGpFM6bnejJUyAdug5yE0t9dLeU=; b=xVRggtZpuEYrmhbgPhnktpsoVW
+	xxv9Pj6WI+L7RZxEn1hFwX1L7pYi6r7ohmbOztQJ5490/oIvBbDVWb/2hYs4uN+6dexie+OT5RrYb
+	5yOgJ6IXqVc2moLx+xzdzSLXupFFWoqhxYEZpUA9GlH857u2Rh7aH2K5VfAFMocYWfwovxvSwluJz
+	ek00fKxPU/a6sPliUenlWRr7OD/XXr+f7bjhuJSygSQiqb7nHzBQVatMGrQioH2ud1xFOuTORujBJ
+	sCpcpasUu/n1hqLFUba2NwkfXDvZ4SHQLayKZt1neev3fQ2AT9FUSwz44MtnveM+FMAebTR8l+DpM
+	ws3r3iYw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rONp2-003u3f-03;
-	Fri, 12 Jan 2024 20:08:08 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1rOkm5-005fMC-0l;
+	Sat, 13 Jan 2024 20:38:37 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rONos-003tsl-24;
-	Fri, 12 Jan 2024 20:08:00 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id CE8ABCE2470;
-	Fri, 12 Jan 2024 20:07:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6629AC43390;
-	Fri, 12 Jan 2024 20:07:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705090072;
-	bh=Ftr3BKZw8coGMgoBGEKihNEJ4LajJ+HPG/Va2fa5Q/U=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=nGnzveG/zSlluWPqK50MsRXFZgcqSqsT+b/j0PKAXVP7ZtdQyKAg1m3guf/d+IBVA
-	 07pgc33Sbuh8cKPwsn4TbkcS4oenSfh3ljankCMJg+3KSR3xYKkq/FmivEMPbadwki
-	 Gnq+l6slqsgHmDwxM4NPuJLHDFpi9gubCjnjUfdn8Sxy8LDYoDjOakf6QcAqDVrAdr
-	 MDEBQQjx5CgxrWGB2llxj/Yj47M6+dU6XpmzgIP+dv/eye+gmUbhi9gVZJmKU4tJND
-	 6j9+++zKYkaAyoMnCs8uOcZrzTy3AjyU8ipiPD0bw/T6SgAUz0oA+ED7fSzqWiE2Uf
-	 xFRtahWLY3/DA==
-From: Stephen Boyd <sboyd@kernel.org>
-To: Rob Herring <robh+dt@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	patches@lists.linux.dev,
-	linux-um@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	kunit-dev@googlegroups.com,
-	linux-kselftest@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	Frank Rowand <frowand.list@gmail.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>
-Subject: [PATCH 1/6] arm64: Unconditionally call unflatten_device_tree()
-Date: Fri, 12 Jan 2024 12:07:44 -0800
-Message-ID: <20240112200750.4062441-2-sboyd@kernel.org>
-X-Mailer: git-send-email 2.43.0.275.g3460e3d667-goog
-In-Reply-To: <20240112200750.4062441-1-sboyd@kernel.org>
-References: <20240112200750.4062441-1-sboyd@kernel.org>
+	id 1rOkm0-005fKy-3A
+	for linux-um@lists.infradead.org;
+	Sat, 13 Jan 2024 20:38:34 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 6129064103FF;
+	Sat, 13 Jan 2024 21:38:25 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id QIpaonAs35a3; Sat, 13 Jan 2024 21:38:25 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 03BA163434F8;
+	Sat, 13 Jan 2024 21:38:25 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id Y492wK1HQJKy; Sat, 13 Jan 2024 21:38:24 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id E13A164103FF;
+	Sat, 13 Jan 2024 21:38:24 +0100 (CET)
+Date: Sat, 13 Jan 2024 21:38:24 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+To: torvalds <torvalds@linux-foundation.org>
+Cc: linux-um <linux-um@lists.infradead.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <618175332.231559.1705178304902.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] UML updates for v6.8-rc1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Index: idAAwHz3fxN2fDnKC6CSXjTnRbLUJQ==
+Thread-Topic: UML updates for v6.8-rc1
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240112_120758_874450_CC038352 
-X-CRM114-Status: GOOD (  10.23  )
+X-CRM114-CacheID: sfid-20240113_123833_349901_5CEF18E6 
+X-CRM114-Status: UNSURE (   8.08  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,38 +74,98 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Call this function unconditionally so that we can populate an empty DTB
-on platforms that don't boot with a firmware provided or builtin DTB.
-There's no harm in calling unflatten_device_tree() unconditionally. If
-there isn't a valid initial_boot_params dtb then unflatten_device_tree()
-returns early.
+Linus,
 
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: Frank Rowand <frowand.list@gmail.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: <linux-arm-kernel@lists.infradead.org>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
----
- arch/arm64/kernel/setup.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+The following changes since commit 861deac3b092f37b2c5e6871732f3e11486f7082=
+:
 
-diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-index 417a8a86b2db..ede3d59dabf0 100644
---- a/arch/arm64/kernel/setup.c
-+++ b/arch/arm64/kernel/setup.c
-@@ -351,8 +351,7 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
- 	/* Parse the ACPI tables for possible boot-time configuration */
- 	acpi_boot_table_init();
- 
--	if (acpi_disabled)
--		unflatten_device_tree();
-+	unflatten_device_tree();
- 
- 	bootmem_init();
- 
--- 
-https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
-https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
+  Linux 6.7-rc7 (2023-12-23 16:25:56 -0800)
 
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-=
+linus-6.8-rc1
+
+for you to fetch changes up to 83aec96c631e0fa75cfe6d6a1b113a32151aaa88:
+
+  um: Mark 32bit syscall helpers as clobbering memory (2024-01-05 16:28:57 =
++0100)
+
+----------------------------------------------------------------
+This pull request contains the following changes for UML:
+
+- Clang coverage support
+- Many cleanups from Benjamin Berg
+- Various minor fixes
+
+----------------------------------------------------------------
+Anton Ivanov (2):
+      um: Fix naming clash between UML and scheduler
+      um: document arch_futex_atomic_op_inuser
+
+Benjamin Berg (11):
+      um: Drop support for hosts without SYSEMU_SINGLESTEP support
+      um: Drop NULL check from start_userspace
+      um: Make errors to stop ptraced child fatal during startup
+      um: Don't use vfprintf() for os_info()
+      um: Do not use printk in SIGWINCH helper thread
+      um: Reap winch thread if it fails
+      um: Do not use printk in userspace trampoline
+      um: Always inline stub functions
+      um: Rely on PTRACE_SETREGSET to set FS/GS base registers
+      um: Remove unused register save/restore functions
+      um: Mark 32bit syscall helpers as clobbering memory
+
+Johannes Berg (2):
+      um: mmu: remove stub_pages
+      um: time-travel: fix time corruption
+
+Micha=C5=82 Winiarski (2):
+      arch: um: Add Clang coverage support
+      Documentation: kunit: Add clang UML coverage example
+
+Nathan Chancellor (1):
+      um: net: Fix return type of uml_net_start_xmit()
+
+Vincent Whitchurch (1):
+      um: virt-pci: fix platform map offset
+
+ Documentation/dev-tools/kunit/running_tips.rst |  11 +++
+ arch/um/Makefile-skas                          |   5 ++
+ arch/um/drivers/chan_user.c                    |  42 +++++----
+ arch/um/drivers/line.c                         |  13 +--
+ arch/um/drivers/net_kern.c                     |   2 +-
+ arch/um/drivers/virt-pci.c                     |   2 +-
+ arch/um/include/asm/mmu.h                      |   1 -
+ arch/um/include/asm/processor-generic.h        |   1 -
+ arch/um/include/shared/kern_util.h             |   5 +-
+ arch/um/include/shared/os.h                    |   3 -
+ arch/um/include/shared/ptrace_user.h           |  41 ---------
+ arch/um/include/shared/registers.h             |   2 -
+ arch/um/kernel/process.c                       |  14 +--
+ arch/um/kernel/ptrace.c                        |   2 -
+ arch/um/kernel/signal.c                        |  12 ---
+ arch/um/kernel/skas/uaccess.c                  |   4 +-
+ arch/um/kernel/time.c                          |  32 +++++--
+ arch/um/os-Linux/helper.c                      |   6 +-
+ arch/um/os-Linux/registers.c                   |  20 -----
+ arch/um/os-Linux/skas/process.c                | 117 ++++++++-------------=
+----
+ arch/um/os-Linux/start_up.c                    | 111 ++++-----------------=
+--
+ arch/um/os-Linux/util.c                        |  19 +++-
+ arch/x86/um/asm/elf.h                          |   4 +-
+ arch/x86/um/asm/processor_64.h                 |   3 -
+ arch/x86/um/os-Linux/Makefile                  |   1 -
+ arch/x86/um/os-Linux/prctl.c                   |  12 ---
+ arch/x86/um/ptrace_32.c                        |  24 -----
+ arch/x86/um/ptrace_64.c                        |  26 ------
+ arch/x86/um/shared/sysdep/ptrace_32.h          |   4 -
+ arch/x86/um/shared/sysdep/ptrace_user.h        |  12 ++-
+ arch/x86/um/shared/sysdep/stub_32.h            |  39 +++++----
+ arch/x86/um/shared/sysdep/stub_64.h            |  17 ++--
+ arch/x86/um/syscalls_64.c                      |  62 +++----------
+ arch/x86/um/tls_64.c                           |   2 +-
+ 34 files changed, 212 insertions(+), 459 deletions(-)
+ delete mode 100644 arch/x86/um/os-Linux/prctl.c
 
