@@ -4,55 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 14808C4706C
-	for <linux-um@archiver.kernel.org>; Tue, 16 Jan 2024 11:51:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AB7CC47077
+	for <linux-um@archiver.kernel.org>; Tue, 16 Jan 2024 14:14:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=NauUEfz2pO3mejpNkHDKuvbNLXuZ7XAFMAu6fTkOYgs=; b=tiLCLJSs7a9GSIDNNzl7HWdRiP
-	iRcAGpKpi2lRNS7CBOfn/Y5CCTZ/tGsvrzWQo5TbRD9/s4aglHSMoQKhaed7AZfxoR8Ff5YT5ZWqO
-	hFVTe6GvQfCQLVTGnYe/LAKICNaYKg1XUr76Jq0yXAjwHK+pR9wykJEtSvRYFKyBg80hG6aXF7k+E
-	l8GVCK/Nw+aUOeaEQRa/KGyY6Gk35nqlRCu+VjBLY7EBagAuShkhg76FDvCcje6LiFuaMLqoQ5Gr1
-	lSiJOsjb7P809EOFxDV3U39u1Q2LrsXvOfTGzG/k6ZCeNxB5mJ5UWbDMNTD/uW704le7pMqgxWoDv
-	ZhiIgPwA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=0sqbUk2C6b7oHNAWGCQckjFoAuDgEH4C3P1gTqqawwA=; b=fWrIUnzod03YIRrQiLzoFf7uVZ
+	WnPIqrilBSVMWu7eyEdvUCNBCVuGcDDxMFWNd/1tbhWDiG+7WzR/gtKUMYcbCZGJaXO96n4kTMsmd
+	vLBDrwbEQ+OIthogos0kkhu61m1mPqJFfTlMr/eWCwINxDxWNeTQ4GOapFcFWTOCmDV8QMoOJHL4t
+	pG1USP/UJs6DymAVBWV4ciWxzEfdnHpjlcIOoq4cEk0vuf1m8vHB/hM6OiXjS6uY0IaX3zg2wJfUp
+	7FiUe8CA8OiX5GfvOR16Fbm5r4w8rmRj7juNAxh5GxwHb6ORrrIPj/tw9mHg52vzkRQ9WLpyj9WqF
+	Ibw96e5Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rPhyc-00C015-2H;
-	Tue, 16 Jan 2024 11:51:30 +0000
-Received: from foss.arm.com ([217.140.110.172])
-	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rPhyZ-00Bzyw-1w;
-	Tue, 16 Jan 2024 11:51:29 +0000
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5BD412F4;
-	Tue, 16 Jan 2024 03:52:10 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.90.186])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 50E793F5A1;
-	Tue, 16 Jan 2024 03:51:20 -0800 (PST)
-Date: Tue, 16 Jan 2024 11:51:14 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Stephen Boyd <sboyd@kernel.org>
-Cc: Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-	patches@lists.linux.dev, linux-um@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, kunit-dev@googlegroups.com,
-	linux-kselftest@vger.kernel.org, devicetree@vger.kernel.org,
-	Frank Rowand <frowand.list@gmail.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 1/6] arm64: Unconditionally call unflatten_device_tree()
-Message-ID: <ZaZtbU9hre3YhZam@FVFF77S0Q05N>
-References: <20240112200750.4062441-1-sboyd@kernel.org>
- <20240112200750.4062441-2-sboyd@kernel.org>
+	id 1rPkCW-00CGlw-1x;
+	Tue, 16 Jan 2024 14:14:00 +0000
+Received: from mail-yb1-f179.google.com ([209.85.219.179])
+	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
+	id 1rPkCT-00CGl5-2X;
+	Tue, 16 Jan 2024 14:13:59 +0000
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dc221f01302so741580276.2;
+        Tue, 16 Jan 2024 06:13:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705414435; x=1706019235;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0sqbUk2C6b7oHNAWGCQckjFoAuDgEH4C3P1gTqqawwA=;
+        b=AS9sTSPKaxViYtu/k3LFGDZW4FsTW9N+e0fWQlhvSlpv7wavIQIn25b5iIp/8yYnAa
+         Op5TSKFu6vXFZ0Vn8kYrP/sBVKOFO9oZV4GwQxiD4d/4y25D0XYGzmwOe8KeMFsIuYL2
+         sePDOfBJNzE20ql/z2Dnm4aqEqW1Rw6MlJLcjXJJYA2Tx1S+ULZgKAOr5PEg1OfjzIY4
+         2y8/nxGeYWH3Ql2TA5bjYCKzomp4BQkOuUfGU7F8IXNf8XUFHfWEHTR+3QbGfuz4yWZW
+         O8ejVuspm+f/yrtSd2F/XZCMUoValVcCba5pZMAawECwI2lj2aXmWSHQP5XY5xuHpxM6
+         oUhA==
+X-Gm-Message-State: AOJu0YxkS6mDL2WX7riQc/eVTzjrJRNIfFS4Md9PqiuQbfUugtlBtNyX
+	BQpuy8coS/m95rURqM6GxF89+ElmqlTE2A==
+X-Google-Smtp-Source: AGHT+IGLf1iHSyAvHvzp/PD8JN1fyjWB1EEuD2eSJlu6IfFdLxf/bFgmlAl4ImgJAYx6GZdxA1BQbw==
+X-Received: by 2002:a5b:b89:0:b0:dc2:303b:db26 with SMTP id l9-20020a5b0b89000000b00dc2303bdb26mr252667ybq.80.1705414434990;
+        Tue, 16 Jan 2024 06:13:54 -0800 (PST)
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
+        by smtp.gmail.com with ESMTPSA id c18-20020a5b0152000000b00dc220621c06sm641276ybp.43.2024.01.16.06.13.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 16 Jan 2024 06:13:54 -0800 (PST)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5f8cf76ef5bso87108487b3.0;
+        Tue, 16 Jan 2024 06:13:54 -0800 (PST)
+X-Received: by 2002:a05:690c:1d:b0:5f6:e8c8:9b6c with SMTP id
+ bc29-20020a05690c001d00b005f6e8c89b6cmr6746864ywb.46.1705414434365; Tue, 16
+ Jan 2024 06:13:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240112200750.4062441-2-sboyd@kernel.org>
+References: <20240112200750.4062441-1-sboyd@kernel.org> <20240112200750.4062441-2-sboyd@kernel.org>
+ <ZaZtbU9hre3YhZam@FVFF77S0Q05N>
+In-Reply-To: <ZaZtbU9hre3YhZam@FVFF77S0Q05N>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 16 Jan 2024 15:13:42 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdU0qtMeX=7SY+32=30-QGMRniFVCCm217REJ1X+ZNJ=Aw@mail.gmail.com>
+Message-ID: <CAMuHMdU0qtMeX=7SY+32=30-QGMRniFVCCm217REJ1X+ZNJ=Aw@mail.gmail.com>
+Subject: Re: [PATCH 1/6] arm64: Unconditionally call unflatten_device_tree()
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, 
+	patches@lists.linux.dev, linux-um@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, kunit-dev@googlegroups.com, 
+	linux-kselftest@vger.kernel.org, devicetree@vger.kernel.org, 
+	Frank Rowand <frowand.list@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240116_035127_796909_B09559D8 
-X-CRM114-Status: GOOD (  18.04  )
+X-CRM114-CacheID: sfid-20240116_061357_825395_6C8CA41D 
+X-CRM114-Status: GOOD (  19.74  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,56 +89,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Stephen,
+Hi Mark,
 
-On Fri, Jan 12, 2024 at 12:07:44PM -0800, Stephen Boyd wrote:
-> Call this function unconditionally so that we can populate an empty DTB
-> on platforms that don't boot with a firmware provided or builtin DTB.
-> There's no harm in calling unflatten_device_tree() unconditionally.
+On Tue, Jan 16, 2024 at 12:51=E2=80=AFPM Mark Rutland <mark.rutland@arm.com=
+> wrote:
+> On Fri, Jan 12, 2024 at 12:07:44PM -0800, Stephen Boyd wrote:
+> > Call this function unconditionally so that we can populate an empty DTB
+> > on platforms that don't boot with a firmware provided or builtin DTB.
+> > There's no harm in calling unflatten_device_tree() unconditionally.
+>
+> For better or worse, that's not true: there are systems the provide both =
+a DTB
+> *and* ACPI tables, and we must not consume both at the same time as those=
+ can
+> clash and cause all sorts of problems. In addition, we don't want people =
+being
+> "clever" and describing disparate portions of their system in ACPI and DT=
+.
 
-For better or worse, that's not true: there are systems the provide both a DTB
-*and* ACPI tables, and we must not consume both at the same time as those can
-clash and cause all sorts of problems. In addition, we don't want people being
-"clever" and describing disparate portions of their system in ACPI and DT.
+We'd get to the latter anyway, when plugging in a USB device where the
+circuitry on/behind the USB device is described in DT.
 
-It is a very deliberate choice to not unflatten the DTB when ACPI is in use,
-and I don't think we want to reopen this can of worms.
+Gr{oetje,eeting}s,
 
-Given that, I'm afraid I must NAK this patch.
+                        Geert
 
-Thanks
-Mark.
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
 
-> If there isn't a valid initial_boot_params dtb then unflatten_device_tree()
-> returns early.
-> 
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Frank Rowand <frowand.list@gmail.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: <linux-arm-kernel@lists.infradead.org>
-> Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-> ---
->  arch/arm64/kernel/setup.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-> index 417a8a86b2db..ede3d59dabf0 100644
-> --- a/arch/arm64/kernel/setup.c
-> +++ b/arch/arm64/kernel/setup.c
-> @@ -351,8 +351,7 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
->  	/* Parse the ACPI tables for possible boot-time configuration */
->  	acpi_boot_table_init();
->  
-> -	if (acpi_disabled)
-> -		unflatten_device_tree();
-> +	unflatten_device_tree();
->  
->  	bootmem_init();
->  
-> -- 
-> https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
-> https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
-> 
-> 
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
