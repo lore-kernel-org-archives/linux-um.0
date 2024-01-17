@@ -4,58 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FC80C47077
-	for <linux-um@archiver.kernel.org>; Wed, 17 Jan 2024 01:27:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0BF59C47258
+	for <linux-um@archiver.kernel.org>; Wed, 17 Jan 2024 17:18:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:To:Cc:From:Subject:
-	References:In-Reply-To:Content-Transfer-Encoding:MIME-Version:Content-Type:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=u7BlLrJyg8NJtw6cjGr372yJi8HU88SzdYtGR597Yxg=; b=JVDc9jSQ6+Y6kEI9LWnQHDsdi1
-	M8Plx8nqVBlC++4ellx0gRJrp38TMnJJ5dcC/nPIby3coA+q2VSlPoMjejQN6e/CCrw89KO6uyf1p
-	kf9S2BMtE27i2pM3H1yCVrUVU3YFQI3lGHxhVF0zOnzadqNQYmBhhVOw1Ip+hrMgSFI9w/LJ/S6HN
-	MZ5YtYzd9FmUXQz1MmKwP0uH/qo5hDPzH2imJ0pJckKNRSZSJALMbls+YyaraU9pk5EsdOoMSzb8y
-	T3fDk7oSnX6xvYqqJ3AlF4oSZt7MSiMoAM7Amr4NLgK/67ZjwvVIao+4fplQUbzz+lA90AJIaDttj
-	rJSmb56Q==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:To:From:
+	Subject:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=66hUf+kqJAuqvNRFKaRnYvTc4CYNxUX/msZWcifrBjI=; b=2ETl2I+R3uVWpSDvrC/ZojOA5C
+	Jo9/2Li3py2gKoNTxWD0Hg4YzOwHnrEbVPdC0/b4chDhLrMXuVYiXo4qovlIoLl1g/bgRbJz5NZy0
+	5qRasdbyS2N0d3feUQYGPWKrEaysPH4Db3rEWCnpGN9sgQ7WDn94DiYkpewFfmy+D6kkyqbX3MD02
+	5QxEDMA7TN2+jBtPNx590tgKu2OkdL2KPd/YU7M/airnMlZacfBEOsJjYgla1KYe9EsMYOz9ScWpD
+	yy+SvSozedBZDRReDtxNS1MpnYsuNmDE1VN+HTL0r9lHG0qcKz1bVOdnJCRIyo5BLzPiDNBSeUhIf
+	WNSUX8Tg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rPuiH-00E9Xp-2Z;
-	Wed, 17 Jan 2024 01:27:29 +0000
-Received: from ams.source.kernel.org ([2604:1380:4601:e00::1])
+	id 1rQ9Y8-000CdB-2d;
+	Wed, 17 Jan 2024 17:18:00 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rPuiD-00E9WU-23;
-	Wed, 17 Jan 2024 01:27:27 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by ams.source.kernel.org (Postfix) with ESMTP id 1295FB80BFC;
-	Wed, 17 Jan 2024 01:27:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5737EC433F1;
-	Wed, 17 Jan 2024 01:27:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705454840;
-	bh=u7BlLrJyg8NJtw6cjGr372yJi8HU88SzdYtGR597Yxg=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=tC9n+TgGzJdYa9eJaNIrd6YETp5ouaQa3aG/Bsb5/+N9Ozvs5fVcYmBG3R+99pSr5
-	 6MQ+zqdLWmYJkkihzT5Ht0YQGPz5jNQVXsC52lwEWb6veqPJK0PgKqtIJWkAAsas2A
-	 ESvqojtCoN+ZsgPbnn0qdAQ83dvbZj1vzayHDMbAv4f8xzdUDnTPAV6JFSe5KGMIBP
-	 yO1jM5cRt4kuCl/+A2j/at9+4Kir3CEfkwNnX9m9EDx8HO8gBIGEM6Xd8aoajnN5sB
-	 GddFcKCgyWf5RXom2kEzyux5c/FbyuQ9jy3E+OHf8D8+0yBoSIBN3fGRnwpt7PN5gn
-	 NyOU6rMIxL3Kw==
-Message-ID: <434b21afe1899b1567f3617261594842.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
+	id 1rQ9Y5-000CYh-1L
+	for linux-um@lists.infradead.org;
+	Wed, 17 Jan 2024 17:17:59 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:To:From:Subject:Message-ID:Sender:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=66hUf+kqJAuqvNRFKaRnYvTc4CYNxUX/msZWcifrBjI=;
+	t=1705511874; x=1706721474; b=UxZ/Qrhp8JOGTmr0FIcxnwL3QgdF1MoN51XME+NM+dkb7iZ
+	fcf+tvGB3wj6naZlfh19z4xi3E/LhoCekFwpT4a+SJnnply5v0KTLGOdVC1N38wwm1BWyRIKQFe6m
+	+TgALYD5vplH6fjtkqFqJgwkY+AgHVaIuPbvEaCaaNiU6K0Q22t5FMuRDD4DzvwwqQN0F6RYmu6bb
+	ADP3DEyuzC/us6SESPY/pCGLpXCU7980KtLZjzlGDTB+7Kbco5vbuq4cm2XHiEtRwLfFzciLT+5cD
+	u7ccibRPWbrRzVUrePVD+Y33TxTtTS0qxpD4ajEOvaxjyE3IXRfvIu6mtzf/ihlA==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <benjamin@sipsolutions.net>)
+	id 1rQ9Xy-00000006eZh-3FGQ;
+	Wed, 17 Jan 2024 18:17:51 +0100
+Message-ID: <820dc103cce16124a195c490ecc80dab4a9af96c.camel@sipsolutions.net>
+Subject: Re: [RFC PATCH 0/3] um: clean up mm creation - another attempt
+From: Benjamin Berg <benjamin@sipsolutions.net>
+To: Johannes Berg <johannes@sipsolutions.net>, Anton Ivanov
+	 <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
+Date: Wed, 17 Jan 2024 18:17:49 +0100
+In-Reply-To: <300c0b28952b2837efbb5c59f38944b02b7722f2.camel@sipsolutions.net>
+References: <20230922223737.1206223-4-johannes@sipsolutions.net>
+	 <bcc1170b-89b9-7c5e-d047-7055f97c1716@cambridgegreys.com>
+	 <4f79b781db6d5892c86e103733c7c30cda78afdf.camel@sipsolutions.net>
+	 <4b5764f0-d2c0-12ce-56bb-73c07ab59ebc@cambridgegreys.com>
+	 <d6ac37b196ebc0443997a942f8efb16a69e424fc.camel@sipsolutions.net>
+	 <18290c11-2d97-3aec-3fd7-b3dd0d33a88b@cambridgegreys.com>
+	 <2d041a80-0ba4-d48b-07b1-b1bc835b3e0d@cambridgegreys.com>
+	 <4d772184b2b39944de8444b0a6f437581297e1d4.camel@sipsolutions.net>
+	 <300c0b28952b2837efbb5c59f38944b02b7722f2.camel@sipsolutions.net>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <ZaZtbU9hre3YhZam@FVFF77S0Q05N>
-References: <20240112200750.4062441-1-sboyd@kernel.org> <20240112200750.4062441-2-sboyd@kernel.org> <ZaZtbU9hre3YhZam@FVFF77S0Q05N>
-Subject: Re: [PATCH 1/6] arm64: Unconditionally call unflatten_device_tree()
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, patches@lists.linux.dev, linux-um@lists.infradead.org, linux-arm-kernel@lists.infradead.org, kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org, devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-To: Mark Rutland <mark.rutland@arm.com>
-Date: Tue, 16 Jan 2024 17:27:18 -0800
-User-Agent: alot/0.10
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+MIME-Version: 1.0
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240116_172725_817721_C97D23F5 
-X-CRM114-Status: GOOD (  11.99  )
+X-CRM114-CacheID: sfid-20240117_091757_755201_A8A3CEA2 
+X-CRM114-Status: GOOD (  16.56  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,26 +80,90 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Quoting Mark Rutland (2024-01-16 03:51:14)
-> Hi Stephen,
->=20
-> On Fri, Jan 12, 2024 at 12:07:44PM -0800, Stephen Boyd wrote:
-> > Call this function unconditionally so that we can populate an empty DTB
-> > on platforms that don't boot with a firmware provided or builtin DTB.
-> > There's no harm in calling unflatten_device_tree() unconditionally.
->=20
-> For better or worse, that's not true: there are systems the provide both =
-a DTB
-> *and* ACPI tables, and we must not consume both at the same time as those=
- can
-> clash and cause all sorts of problems. In addition, we don't want people =
-being
-> "clever" and describing disparate portions of their system in ACPI and DT.
->=20
-> It is a very deliberate choice to not unflatten the DTB when ACPI is in u=
-se,
-> and I don't think we want to reopen this can of worms.
+Hi,
 
-Hmm ok. I missed this part. Can we knock out the initial_boot_params in
-this case so that we don't unflatten a DTB when ACPI is in use?
+On Wed, 2023-09-27 at 11:52 +0200, Benjamin Berg wrote:
+> [SNIP]
+> Once we are there, we can look for optimizations. The fundamental
+> problem is that page faults (even minor ones) are extremely expensive
+> for us.
+>=20
+> Just throwing out ideas on what we could do:
+> =C2=A0=C2=A0 1. SECCOMP as that reduces the amount of context switches.
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (Yes, I know I should resubmit the patchse=
+t)
+> =C2=A0=C2=A0 2. Maybe we can disable/cripple page access tracking? If we =
+assume
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 initially mark all pages as accessed by us=
+erspace (i.e.
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pte_mkyoung), then we avoid a minor page f=
+ault on first access.
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Doing that will mess with page eviction th=
+ough.
+> =C2=A0=C2=A0 3. Do DAX (direct_access) for files. i.e. mmap files directl=
+y in the
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 host kernel rather than through UM.
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 With a hostfs like file system, one should=
+ be able to add an
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 intermediate block device that maps host f=
+iles to physical pages,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 then do DAX in the FS.
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 For disk images, the existing iomem infras=
+tructure should be
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 usable, this should work with any DAX enab=
+led filesystems (ext2,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ext4, xfs, virtiofs, erofs).
+
+So, I experimented quite a bit over Christmas (including getting DAX to
+work with virtiofs). At the end of all this my conclusion is that
+insufficient page table synchronization is our main problem.
+
+Basically, right now we rely on the flush_tlb_* functions from the
+kernel, but these are only called when TLB entries are removed, *not*
+when new PTEs are added (there is also update_mmu_cache, but it isn't
+enough either). Effectively this means that new page table entries will
+often only be synced because the userspace code runs into an
+unnecessary segfright now we rely on the flush_tlb_* functions from the
+kernel, but these are only called when TLB entries are removed, *not*
+when new PTEs are added (there is also update_mmu_cache, but it isn't
+enough either). Effectively this means that new page table entries will
+often only be synced because the userspace code runs into an
+unnecessary segfaultault.
+=20
+Really, what we need is a set_pte_at() implementation that marks the
+memory range for synchronization. Then we can make sure we sync it
+before switching to the userspace process (the equivalent of running
+flush_tlb_mm_range right now).
+
+I think we should:
+ * Rewrite the userspace syscall code
+   - Support delaying the execution of syscalls
+   - Only support mmap/munmap/mprotect and LDT
+   - Do simple compression of consecutive syscalls here
+   - Drop the hand-written assembler
+ * Improve the tlb.c code
+   - remove the HVC abstraction
+   - never force immediate syscall execution
+ * Let set_pte_at() track which memory ranges that need syncing
+ * At that point we should be able to:
+   - drop copy_context_skas0
+   - make flush_tlb_* no-ops
+   - drop flush_tlb_page from handle_page_fault
+   - move unmap() from flush_thread to init_new_context
+     (or do it as part of start_userspace)
+
+So, I did try this using nasty hacks and IIRC one of my runs was going
+from 21s to 16s and another from 63s to 56s. Which seems like a nice
+improvement.
+
+Benjamin
+
+
+PS: As for DAX, it doesn't really seem to help performance. It didn't
+seem to lower the amount of page faults in UML. And, from my
+perspective, it isn't really worth just for the memory sharing.
+
+PPS: dirty/young tracking seemed to be only cause a small amount of
+page faults in the grand scheme. So probably not something worth
+following up on.
 
