@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22A9AC47DAF
-	for <linux-um@archiver.kernel.org>; Thu, 18 Jan 2024 16:22:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2941C47DB3
+	for <linux-um@archiver.kernel.org>; Thu, 18 Jan 2024 16:23:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
 	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=J1ZHBh2IhHUk6R0mb0HwNUYRqWpgjfOFml5hWvgYMDU=; b=CR06pl8FoY7FIX72kvuabadh2o
-	dyI+h16uSE1LU5QIWh3o6ZmX/vsF0y1WWA6QPXr8As1tFqgt4h4gOcShwvFhLHmMMCVmq1GaZJnrI
-	0denTXTwrDISMU30cOIznxtp4Itsctmmpl6WmmegDip84dqc7xPLeQvKTvwFx+GZe6TJ6hSv2xbCm
-	bVjqeh8av+ZFyjAaV/YdYAWTnZJDdSj9UY3pYCU6vT9ZyEFXa8yE4nTXeT0g+9Z0ykHEfepF0owb+
-	QUUB0MlqQyQUIkX0mE1DWRoHa150u9m1l0HGyWL9dRJKoDjZxI9QNsZkfol5SX3gF6XqIdx5/qyVn
-	s0f56H0g==;
+	bh=Si052lwaQIxGIdPAiTDPdKrWDfItm8neDWdgcw4uLug=; b=c3U4n/SIyF2pAACVDSrDmcBmUc
+	n8W2Hj2K+u5JvEgulLR1vt16Mr1d7Z+aeqNu3hyzau83KtP+7Xl7Uv2NZ9UDda84bOWaFQ+YJgvRQ
+	78th2e7IVGLM1L4iOUEkxkDsIxMT+e+3Gx1l6zqBCrHL5Nu+pvpIcjOMuvSHod41fvAnj/P4037e5
+	oI6wCo8VbheooobHvr8Wz3YK2eI0i84O5s64fB9ISk5vI9evS0UTxt3tD/tnGlTFSd7FskW6jz5zF
+	M992ldmk76NsXPwF+CpFJ8tHimzrFJyXpU/9uWZV84Rz+KNsLNSuYZOTlFuboJ/9y3/LRbYjBQZBf
+	c79JsuHA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rQV9s-003F08-2J;
-	Thu, 18 Jan 2024 16:22:24 +0000
-Received: from mail-yw1-f178.google.com ([209.85.128.178])
+	id 1rQVBD-003FKT-2c;
+	Thu, 18 Jan 2024 16:23:47 +0000
+Received: from mail-yw1-f172.google.com ([209.85.128.172])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rQV9o-003EyM-37;
-	Thu, 18 Jan 2024 16:22:22 +0000
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5ff7a098ab8so13585827b3.3;
-        Thu, 18 Jan 2024 08:22:19 -0800 (PST)
+	id 1rQVBA-003FIn-1O;
+	Thu, 18 Jan 2024 16:23:45 +0000
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5f2d4aaa2fdso127764527b3.1;
+        Thu, 18 Jan 2024 08:23:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705594938; x=1706199738;
+        d=1e100.net; s=20230601; t=1705595022; x=1706199822;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=J1ZHBh2IhHUk6R0mb0HwNUYRqWpgjfOFml5hWvgYMDU=;
-        b=dwQ9gfvdGrOBk2jR4Q7mZKoUQHnByPpI2Cs7sNJmrODgOqkanGVQlcO97SmdrGwmk7
-         51KT/u8JGtvO+FqZJQ70jbCdqZKyEpUO8quY7EBOduNXND/otKlrsZLDdtGV+HV+UTYt
-         jV3HJY59qgpDEmBXMM61SYl9wm5JENMsnHLPDGp2QD+YXAH6oyPepffUrfqfN8JhDFLY
-         7eHT8D/vFsFiomEx2M7IOcU2FTCzgPu06C37n2jxChKFJbRRlOX5WlNlwO9g7sjFY/sx
-         O6nBHsPpiQTd0JYyxJVjmgndT0djAC2BwvyK8+JB6KpZSLM8ZE8nxiWMwbOvTEo7yyKl
-         +/0A==
-X-Gm-Message-State: AOJu0YypKgbQwIrTxqZnVrDXYFbU5azkMdsGuNFrl5ejPc96bO9whShU
-	SvPIW3ZZ3Emyf4FJif4A9QTTAKsv3J+ROXWeVETtPQ7TupgrZ0Q9BSXqWF8XvHU=
-X-Google-Smtp-Source: AGHT+IHwGQ8sg/ceZVthWijG3+nDKap0xwA/Zr4XawL/ayRDg2ZPmO7wkpx7aRyuDUh+uzVvIC95qA==
-X-Received: by 2002:a0d:f484:0:b0:5ff:7f77:8d97 with SMTP id d126-20020a0df484000000b005ff7f778d97mr1076122ywf.96.1705594938511;
-        Thu, 18 Jan 2024 08:22:18 -0800 (PST)
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com. [209.85.219.180])
-        by smtp.gmail.com with ESMTPSA id d77-20020a814f50000000b005ff98665f13sm28759ywb.95.2024.01.18.08.22.17
+        bh=Si052lwaQIxGIdPAiTDPdKrWDfItm8neDWdgcw4uLug=;
+        b=rlwsc2SGilCSq+EssgfG/dLbdBoLC/ZyEgSbV+8wT2EtuLKMEqe52E7NUH9h0OM2Uj
+         X0vr+4l9G9s8dDwmcCq3dfx2hOIoYJvZnbiIe52dJBeHTywNYE+j4Ep4aRU4t79ZGpL9
+         /yA1/S4B0YLXGDfUkRaoGIWvM87hZUYSBtnxlKximT6DVQBVUsGHmryytm0BCb/z8X+x
+         SUsx/JffwZ9D/2yvW3l8BvQz1fBD+sxqYXDtk/VBSWfbsUHlNQEk/0CXXMy5fKpVE6EU
+         mPVUb/7EfBTnObi4cXU5cZADeN45oMd3Rh7jhQnc4BjLiW+iRMcLOTVq10+aewWPFPeP
+         1F8w==
+X-Gm-Message-State: AOJu0Yw3Aufm/rvgjpnONGrcj1ZLM05/W12aYm+/rs/3AP9EtvlI10Xo
+	5IA2vFrw3ws9UniB3GCXBdz3zSlZNvuu7k8sSXiPhTmiMoLga8T+Smayb7l7eVY=
+X-Google-Smtp-Source: AGHT+IHZmyzhzvGHgbFp0uDsiwU4lw5qyt5kWhqs3n8gVCoiHIO3sVU+yWGb2pN3ZNAjvsX7jA13/w==
+X-Received: by 2002:a0d:ff02:0:b0:5ff:6564:77a9 with SMTP id p2-20020a0dff02000000b005ff656477a9mr946824ywf.95.1705595020895;
+        Thu, 18 Jan 2024 08:23:40 -0800 (PST)
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
+        by smtp.gmail.com with ESMTPSA id i72-20020a816d4b000000b005ff68b6a096sm1455218ywc.94.2024.01.18.08.23.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Jan 2024 08:22:18 -0800 (PST)
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dc221f01302so3210884276.2;
-        Thu, 18 Jan 2024 08:22:17 -0800 (PST)
-X-Received: by 2002:a25:748a:0:b0:da0:3bfc:b915 with SMTP id
- p132-20020a25748a000000b00da03bfcb915mr1030675ybc.11.1705594937194; Thu, 18
- Jan 2024 08:22:17 -0800 (PST)
+        Thu, 18 Jan 2024 08:23:40 -0800 (PST)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5ec7a5a4b34so130969577b3.0;
+        Thu, 18 Jan 2024 08:23:40 -0800 (PST)
+X-Received: by 2002:a0d:c201:0:b0:5f4:97a:ac87 with SMTP id
+ e1-20020a0dc201000000b005f4097aac87mr963234ywd.60.1705595019879; Thu, 18 Jan
+ 2024 08:23:39 -0800 (PST)
 MIME-Version: 1.0
 References: <20240112200750.4062441-1-sboyd@kernel.org> <20240112200750.4062441-2-sboyd@kernel.org>
- <ZaZtbU9hre3YhZam@FVFF77S0Q05N> <CAMuHMdU0qtMeX=7SY+32=30-QGMRniFVCCm217REJ1X+ZNJ=Aw@mail.gmail.com>
- <ZalCcivD0vXpQfr9@FVFF77S0Q05N.cambridge.arm.com>
-In-Reply-To: <ZalCcivD0vXpQfr9@FVFF77S0Q05N.cambridge.arm.com>
+ <ZaZtbU9hre3YhZam@FVFF77S0Q05N> <434b21afe1899b1567f3617261594842.sboyd@kernel.org>
+ <ZalDM90KoQ2Il0j7@FVFF77S0Q05N.cambridge.arm.com>
+In-Reply-To: <ZalDM90KoQ2Il0j7@FVFF77S0Q05N.cambridge.arm.com>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 18 Jan 2024 17:22:05 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVW+zBU-7OEpsMZKFfkFbyN98jatG0RsLuzZmXKWavNAA@mail.gmail.com>
-Message-ID: <CAMuHMdVW+zBU-7OEpsMZKFfkFbyN98jatG0RsLuzZmXKWavNAA@mail.gmail.com>
+Date: Thu, 18 Jan 2024 17:23:28 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXkwDA4WAe5qYujeP0sF+h-950GZNkg+6kERr6SSmfz6A@mail.gmail.com>
+Message-ID: <CAMuHMdXkwDA4WAe5qYujeP0sF+h-950GZNkg+6kERr6SSmfz6A@mail.gmail.com>
 Subject: Re: [PATCH 1/6] arm64: Unconditionally call unflatten_device_tree()
 To: Mark Rutland <mark.rutland@arm.com>
 Cc: Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, 
@@ -74,8 +74,8 @@ Cc: Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, linux-ker
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240118_082220_999595_07AD19D3 
-X-CRM114-Status: GOOD (  26.26  )
+X-CRM114-CacheID: sfid-20240118_082344_468551_8F3F81C8 
+X-CRM114-Status: GOOD (  28.57  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,11 +92,10 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 Hi Mark,
 
-On Thu, Jan 18, 2024 at 4:23=E2=80=AFPM Mark Rutland <mark.rutland@arm.com>=
+On Thu, Jan 18, 2024 at 4:27=E2=80=AFPM Mark Rutland <mark.rutland@arm.com>=
  wrote:
-> On Tue, Jan 16, 2024 at 03:13:42PM +0100, Geert Uytterhoeven wrote:
-> > On Tue, Jan 16, 2024 at 12:51=E2=80=AFPM Mark Rutland <mark.rutland@arm=
-.com> wrote:
+> On Tue, Jan 16, 2024 at 05:27:18PM -0800, Stephen Boyd wrote:
+> > Quoting Mark Rutland (2024-01-16 03:51:14)
 > > > On Fri, Jan 12, 2024 at 12:07:44PM -0800, Stephen Boyd wrote:
 > > > > Call this function unconditionally so that we can populate an empty=
  DTB
@@ -112,17 +111,27 @@ hose can
 ple being
 > > > "clever" and describing disparate portions of their system in ACPI an=
 d DT.
+> > >
+> > > It is a very deliberate choice to not unflatten the DTB when ACPI is =
+in use,
+> > > and I don't think we want to reopen this can of worms.
 > >
-> > We'd get to the latter anyway, when plugging in a USB device where the
-> > circuitry on/behind the USB device is described in DT.
+> > Hmm ok. I missed this part. Can we knock out the initial_boot_params in
+> > this case so that we don't unflatten a DTB when ACPI is in use?
 >
-> I don't understand what you mean there; where is the DT description of th=
-e USB
-> device coming from if the DTB hasn't been unflattened?
+> Why is that better than just not calling unflatten_device_tree(), as we d=
+o
+> today?
+>
+> The cover letter says this is all so that we can run DT tests for the clk
+> framework; why can't that just depend on the system being booted with DT =
+rather
+> than ACPI? We have other tests which are architecture and/or configuratio=
+n
+> dependent...
 
-Either stored in (FLASH) ROM on the USB device, or loaded from
-/lib/firmware/.  In both cases that would be handled by the USB driver
-for the device.
+There is definitely a merit in running (platform-independent) DT tests
+on any platform, whether the platform actually uses DT to boot or not.
 
 Gr{oetje,eeting}s,
 
