@@ -4,52 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9427C48286
-	for <linux-um@archiver.kernel.org>; Tue, 23 Jan 2024 11:04:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0B92C47DDC
+	for <linux-um@archiver.kernel.org>; Tue, 23 Jan 2024 23:00:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
-	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=/8KqudNuaG7VvEBlqjtQGdHbMnE7fCC7VmhB0VY50BA=; b=H0wrkhD8F2I7j8Zjlz9h5OzPV4
-	Ly1IlhBoSHGv3dINyu20332m7l45rWXZ0y9vw9hJoIkDPitKtzqPyV4/iEEf+jCOlF2eNg88lkPEH
-	PLFPJeVILIBbXGJJUDvaMEutmOjhrvJ+be2xV/L1pC9mg+ueZtTqDe0zDqiig9TTZ4K+D7xInfZxO
-	BNQCCNP2bkGa1POxeprrFrRFHln4EloLoLfb4V+RVq+QyARPzOe48wZXR9XufZFOfUx+NDS4i6n2K
-	M7YXhPVT9FS6Zab4scFcO7GwlUPwR/FFrVkJEZTm/hhd5WDLl7oFXUnqBQcFy0eAtDhCKObXnbwgx
-	OBQp+xJw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-Id:Date:Subject:
+	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
+	List-Owner; bh=kVWB2B6b1SkZxFbX8o1aqdzEjq9KkibZHN2ZlBQSy1A=; b=yjSnnR7z17CJIr
+	lpLWAslyn82ooEfODigkiKPWZVsUu9YzO5vhpXgcw5eSR4wiPIeMWDqRCxYX/krUZimKGJQ+ESOyE
+	FoC7mO21ARGvCZl2Kh91sVAatTHqnJ+Pm6axlKqG0LzNk1mgwVwoOoghPANinx5DLr103DI0lq+o+
+	JDaE42pvbE0X4iXzXySh15KQQm/QFrUEC2porNi5gUd4eTfDj4RUY4M3mUSNgANJipASqij3hD03t
+	6YA5KC+sLG4o6k4hjKWcPXxwhZftgD4K1ABGWtNi63ONVrmHSlMvCJUpgo3XPQ3M2llO99VA5vBKk
+	aRkdt09y9bAVIipNQXuA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSEZb-00G3pd-0e;
-	Tue, 23 Jan 2024 11:04:07 +0000
-Received: from out0-196.mail.aliyun.com ([140.205.0.196])
+	id 1rSPkf-000lcj-0e;
+	Tue, 23 Jan 2024 23:00:17 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSEZV-00G3jv-1T
+	id 1rSPkc-000la9-1M
 	for linux-um@lists.infradead.org;
-	Tue, 23 Jan 2024 11:04:05 +0000
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047205;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---.WDCKTkS_1706007837;
-Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.WDCKTkS_1706007837)
-          by smtp.aliyun-inc.com;
-          Tue, 23 Jan 2024 19:03:57 +0800
-From: "Tiwei Bie" <tiwei.btw@antgroup.com>
-To: richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net
-Cc: <linux-um@lists.infradead.org>,
-   <linux-kernel@vger.kernel.org>,
-  "Tiwei Bie" <tiwei.btw@antgroup.com>
-Subject: [PATCH 5/5] um: Add missing headers
-Date: Tue, 23 Jan 2024 19:03:47 +0800
-Message-Id: <20240123110347.1274217-6-tiwei.btw@antgroup.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240123110347.1274217-1-tiwei.btw@antgroup.com>
-References: <20240123110347.1274217-1-tiwei.btw@antgroup.com>
+	Tue, 23 Jan 2024 23:00:16 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 27B9ECE3024;
+	Tue, 23 Jan 2024 23:00:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 938A2C433F1;
+	Tue, 23 Jan 2024 23:00:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706050808;
+	bh=67FZIBdOOMCQ00N5ExH/7I5y2V442bu28UsHFtb9aa8=;
+	h=From:Subject:Date:To:Cc:From;
+	b=JaNthWnXcGwKpArT4gZBJLpz0LIWEXmCpSDD0+/8ZuNXyS2CWAwvKCmYXJq+DYD4U
+	 LnS7oKY33pmSxtlKQoD/rgTNf/egd/gKNvmrpb+Z66FnOzMbrjifw6SKak4nuUgHIK
+	 XeVstqf0j6Twv0YiV5mFl4qmC2qH+65woTdelyT8MRxzyKz556XrVBJ85kQnFCY5UW
+	 fV/y/mU4sbDiC0wyBzP3zlFa0TIMOv509gqAmj4oiSlyrj/8RXiqKhcM7SZQAxXFTv
+	 DXityBgBNutwWEv804J54v8W6jsnhgTJvGQmX/ReSmeF2qhjopSEsZZ3VkhWnkDm9o
+	 Y6WWicXzEF+8Q==
+From: Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH 0/2] Fix UML build with clang-18 and newer
+Date: Tue, 23 Jan 2024 15:59:53 -0700
+Message-Id: <20240123-fix-uml-clang-18-v1-0-efc095519cf9@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAOlEsGUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDQ0ML3bTMCt3S3Bzd5BygrC5QINXYzDTJwNTAONHIUgmoraAoFagGbGR
+ 0bG0tAKpI5MxiAAAA
+To: richard@nod.at, anton.ivanov@cambridgegreys.com, 
+ johannes@sipsolutions.net, masahiroy@kernel.org
+Cc: nathan@kernel.org, nicolas@fjasle.eu, ndesaulniers@google.com, 
+ morbo@google.com, justinstitt@google.com, linux-um@lists.infradead.org, 
+ linux-kbuild@vger.kernel.org, llvm@lists.linux.dev, patches@lists.linux.dev, 
+ stable@vger.kernel.org
+X-Mailer: b4 0.13-dev
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1383; i=nathan@kernel.org;
+ h=from:subject:message-id; bh=67FZIBdOOMCQ00N5ExH/7I5y2V442bu28UsHFtb9aa8=;
+ b=owGbwMvMwCUmm602sfCA1DTG02pJDKkbXL4LvJZlsGizYPisv8E0OzhMcnZHkoH7u5p9BR9rO
+ BLff/nfUcrCIMbFICumyFL9WPW4oeGcs4w3Tk2CmcPKBDKEgYtTACai/JmRYab++ijpXc8kine8
+ mrJv8+RIo90Zk+8s836w1e9xjcgR/kMMfwXuGnXtO7tSPqfhUY306w0zZ+X5Pjzf+H7GlX1+Ud7
+ c3UwA
+X-Developer-Key: i=nathan@kernel.org; a=openpgp;
+ fpr=2437CB76E544CB6AB3D9DFD399739260CB6CB716
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240123_030401_643693_3119B608 
-X-CRM114-Status: UNSURE (   6.99  )
+X-CRM114-CacheID: sfid-20240123_150014_654756_6723800D 
+X-CRM114-Status: UNSURE (   8.41  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -65,174 +85,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-This will address below -Wmissing-prototypes warnings:
+Hi all,
 
-arch/um/kernel/mem.c:202:8: warning: no previous prototype for ‘pgd_alloc’ [-Wmissing-prototypes]
-arch/um/kernel/mem.c:215:7: warning: no previous prototype for ‘uml_kmalloc’ [-Wmissing-prototypes]
-arch/um/kernel/process.c:207:6: warning: no previous prototype for ‘arch_cpu_idle’ [-Wmissing-prototypes]
-arch/um/kernel/process.c:328:15: warning: no previous prototype for ‘arch_align_stack’ [-Wmissing-prototypes]
-arch/um/kernel/reboot.c:45:6: warning: no previous prototype for ‘machine_restart’ [-Wmissing-prototypes]
-arch/um/kernel/reboot.c:51:6: warning: no previous prototype for ‘machine_power_off’ [-Wmissing-prototypes]
-arch/um/kernel/reboot.c:57:6: warning: no previous prototype for ‘machine_halt’ [-Wmissing-prototypes]
-arch/um/kernel/skas/mmu.c:17:5: warning: no previous prototype for ‘init_new_context’ [-Wmissing-prototypes]
-arch/um/kernel/skas/mmu.c:60:6: warning: no previous prototype for ‘destroy_context’ [-Wmissing-prototypes]
-arch/um/kernel/skas/process.c:36:12: warning: no previous prototype for ‘start_uml’ [-Wmissing-prototypes]
-arch/um/kernel/tlb.c:594:6: warning: no previous prototype for ‘force_flush_all’ [-Wmissing-prototypes]
-arch/x86/um/bugs_64.c:9:6: warning: no previous prototype for ‘arch_check_bugs’ [-Wmissing-prototypes]
-arch/x86/um/bugs_64.c:13:6: warning: no previous prototype for ‘arch_examine_signal’ [-Wmissing-prototypes]
-arch/x86/um/fault.c:18:5: warning: no previous prototype for ‘arch_fixup’ [-Wmissing-prototypes]
-arch/x86/um/os-Linux/mcontext.c:7:6: warning: no previous prototype for ‘get_regs_from_mc’ [-Wmissing-prototypes]
+This series resolves two independent but related issues that were
+recently exposed by two LLVM changes.
 
-Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
+https://github.com/llvm/llvm-project/commit/ec92d74a0ef89b9dd46aee6ec8aca6bfd3c66a54
+exposes that '-no-pie' is not getting added to the linker flags with
+clang, resulting in building objects with '-fno-PIE' that are linked
+with '-pie', to which the linker rightfully errors with:
+
+  /usr/sbin/ld: init/main.o: relocation R_X86_64_32 against symbol `saved_command_line' can not be used when making a PIE object; recompile with -fPIE
+  /usr/sbin/ld: failed to set dynamic section sizes: bad value
+
+https://github.com/llvm/llvm-project/commit/4bf8a688956a759b7b6b8d94f42d25c13c7af130
+adds '.ltext' (and '.ltext.*' with '-ffunction-sections') when using
+'-mcmodel=large' (which UML does), which causes a segmentation fault
+with modpost.
+
+I have tested these patches with all supported versions of clang,
+noticing no regressions.
+
 ---
- arch/um/kernel/mem.c            | 2 ++
- arch/um/kernel/process.c        | 2 ++
- arch/um/kernel/reboot.c         | 1 +
- arch/um/kernel/skas/mmu.c       | 1 +
- arch/um/kernel/skas/process.c   | 1 +
- arch/um/kernel/tlb.c            | 1 +
- arch/x86/um/bugs_32.c           | 1 +
- arch/x86/um/bugs_64.c           | 1 +
- arch/x86/um/fault.c             | 1 +
- arch/x86/um/os-Linux/mcontext.c | 1 +
- 10 files changed, 12 insertions(+)
+Nathan Chancellor (2):
+      um: Fix adding '-no-pie' for clang
+      modpost: Add '.ltext' and '.ltext.*' to TEXT_SECTIONS
 
-diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
-index 38d5a71a579b..ca91accd64fc 100644
---- a/arch/um/kernel/mem.c
-+++ b/arch/um/kernel/mem.c
-@@ -12,12 +12,14 @@
- #include <linux/slab.h>
- #include <asm/fixmap.h>
- #include <asm/page.h>
-+#include <asm/pgalloc.h>
- #include <as-layout.h>
- #include <init.h>
- #include <kern.h>
- #include <kern_util.h>
- #include <mem_user.h>
- #include <os.h>
-+#include <um_malloc.h>
- #include <linux/sched/task.h>
- 
- #ifdef CONFIG_KASAN
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index a7607ef1b02f..4235e2ca2664 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -15,6 +15,7 @@
- #include <linux/proc_fs.h>
- #include <linux/ptrace.h>
- #include <linux/random.h>
-+#include <linux/cpu.h>
- #include <linux/slab.h>
- #include <linux/sched.h>
- #include <linux/sched/debug.h>
-@@ -27,6 +28,7 @@
- #include <asm/current.h>
- #include <asm/mmu_context.h>
- #include <asm/switch_to.h>
-+#include <asm/exec.h>
- #include <linux/uaccess.h>
- #include <as-layout.h>
- #include <kern_util.h>
-diff --git a/arch/um/kernel/reboot.c b/arch/um/kernel/reboot.c
-index 48c0610d506e..25840eee1068 100644
---- a/arch/um/kernel/reboot.c
-+++ b/arch/um/kernel/reboot.c
-@@ -9,6 +9,7 @@
- #include <linux/spinlock.h>
- #include <linux/slab.h>
- #include <linux/oom.h>
-+#include <linux/reboot.h>
- #include <kern_util.h>
- #include <os.h>
- #include <skas.h>
-diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
-index 656fe16c9b63..aeed1c2aaf3c 100644
---- a/arch/um/kernel/skas/mmu.c
-+++ b/arch/um/kernel/skas/mmu.c
-@@ -10,6 +10,7 @@
- 
- #include <asm/pgalloc.h>
- #include <asm/sections.h>
-+#include <asm/mmu_context.h>
- #include <as-layout.h>
- #include <os.h>
- #include <skas.h>
-diff --git a/arch/um/kernel/skas/process.c b/arch/um/kernel/skas/process.c
-index f2ac134c9752..fdd5922f9222 100644
---- a/arch/um/kernel/skas/process.c
-+++ b/arch/um/kernel/skas/process.c
-@@ -12,6 +12,7 @@
- #include <kern.h>
- #include <os.h>
- #include <skas.h>
-+#include <kern_util.h>
- 
- extern void start_kernel(void);
- 
-diff --git a/arch/um/kernel/tlb.c b/arch/um/kernel/tlb.c
-index 70b5e47e9761..8784f03fa4a6 100644
---- a/arch/um/kernel/tlb.c
-+++ b/arch/um/kernel/tlb.c
-@@ -8,6 +8,7 @@
- #include <linux/sched/signal.h>
- 
- #include <asm/tlbflush.h>
-+#include <asm/mmu_context.h>
- #include <as-layout.h>
- #include <mem_user.h>
- #include <os.h>
-diff --git a/arch/x86/um/bugs_32.c b/arch/x86/um/bugs_32.c
-index 33daff4dade4..d29929efcc07 100644
---- a/arch/x86/um/bugs_32.c
-+++ b/arch/x86/um/bugs_32.c
-@@ -3,6 +3,7 @@
-  * Licensed under the GPL
-  */
- 
-+#include <arch.h>
- #include <signal.h>
- #include <kern_util.h>
- #include <longjmp.h>
-diff --git a/arch/x86/um/bugs_64.c b/arch/x86/um/bugs_64.c
-index 8cc8256c698d..b01295e8a676 100644
---- a/arch/x86/um/bugs_64.c
-+++ b/arch/x86/um/bugs_64.c
-@@ -4,6 +4,7 @@
-  * Licensed under the GPL
-  */
- 
-+#include <arch.h>
- #include <sysdep/ptrace.h>
- 
- void arch_check_bugs(void)
-diff --git a/arch/x86/um/fault.c b/arch/x86/um/fault.c
-index 84ac7f7b0257..0dde4d613a87 100644
---- a/arch/x86/um/fault.c
-+++ b/arch/x86/um/fault.c
-@@ -3,6 +3,7 @@
-  * Licensed under the GPL
-  */
- 
-+#include <arch.h>
- #include <sysdep/ptrace.h>
- 
- /* These two are from asm-um/uaccess.h and linux/module.h, check them. */
-diff --git a/arch/x86/um/os-Linux/mcontext.c b/arch/x86/um/os-Linux/mcontext.c
-index 49c3744cac37..e80ab7d28117 100644
---- a/arch/x86/um/os-Linux/mcontext.c
-+++ b/arch/x86/um/os-Linux/mcontext.c
-@@ -3,6 +3,7 @@
- #define __FRAME_OFFSETS
- #include <asm/ptrace.h>
- #include <sysdep/ptrace.h>
-+#include <sysdep/mcontext.h>
- 
- void get_regs_from_mc(struct uml_pt_regs *regs, mcontext_t *mc)
- {
+ arch/um/Makefile      | 4 +++-
+ scripts/mod/modpost.c | 3 ++-
+ 2 files changed, 5 insertions(+), 2 deletions(-)
+---
+base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
+change-id: 20240118-fix-uml-clang-18-e365b0503a29
+
+Best regards,
 -- 
-2.34.1
+Nathan Chancellor <nathan@kernel.org>
 
 
