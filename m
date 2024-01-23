@@ -4,31 +4,31 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 529C0C48285
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A9427C48286
 	for <linux-um@archiver.kernel.org>; Tue, 23 Jan 2024 11:04:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
+	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=gr7z/SlPhRJd7tsl4kQkoTMn2fox0E9luuadMesY+gA=; b=cIWSaNthYOn5crA70suh3SkBxy
-	v/u+chr9MnJmNBkmvv+zND39ZG7WL0Lmpu+4cGRaaPvE/Q1kdqi9L8wfSYox8YUaCevv2CV9sxiVv
-	lcNknH/xNZVIAP22Ga0i4fRFpmsFbS77Q1Iw7jbF8DJOCz9a8J1ah2A3yDi4dYE6u5Ts6lf/5GtMX
-	gRIGopBgGdn4gFvJzwARAVmGIUtmrlr/dI+QIWvKUmMgoauHQ5ldEo66cH4GahHN92QGqxDwkAL6x
-	lufnlm+VdZuJSXzINo/I2B8UiKRyeltJWVLgKIY1Dhn50um6hec/+jnOhE3NKAh0Ixfa03k90UKe0
-	D2cSNa2A==;
+	bh=/8KqudNuaG7VvEBlqjtQGdHbMnE7fCC7VmhB0VY50BA=; b=H0wrkhD8F2I7j8Zjlz9h5OzPV4
+	Ly1IlhBoSHGv3dINyu20332m7l45rWXZ0y9vw9hJoIkDPitKtzqPyV4/iEEf+jCOlF2eNg88lkPEH
+	PLFPJeVILIBbXGJJUDvaMEutmOjhrvJ+be2xV/L1pC9mg+ueZtTqDe0zDqiig9TTZ4K+D7xInfZxO
+	BNQCCNP2bkGa1POxeprrFrRFHln4EloLoLfb4V+RVq+QyARPzOe48wZXR9XufZFOfUx+NDS4i6n2K
+	M7YXhPVT9FS6Zab4scFcO7GwlUPwR/FFrVkJEZTm/hhd5WDLl7oFXUnqBQcFy0eAtDhCKObXnbwgx
+	OBQp+xJw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSEZa-00G3pA-2e;
-	Tue, 23 Jan 2024 11:04:06 +0000
-Received: from out0-210.mail.aliyun.com ([140.205.0.210])
+	id 1rSEZb-00G3pd-0e;
+	Tue, 23 Jan 2024 11:04:07 +0000
+Received: from out0-196.mail.aliyun.com ([140.205.0.196])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSEZU-00G3ja-1H
+	id 1rSEZV-00G3jv-1T
 	for linux-um@lists.infradead.org;
-	Tue, 23 Jan 2024 11:04:04 +0000
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047199;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---.WDCKTk8_1706007836;
-Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.WDCKTk8_1706007836)
+	Tue, 23 Jan 2024 11:04:05 +0000
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047205;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---.WDCKTkS_1706007837;
+Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.WDCKTkS_1706007837)
           by smtp.aliyun-inc.com;
           Tue, 23 Jan 2024 19:03:57 +0800
 From: "Tiwei Bie" <tiwei.btw@antgroup.com>
@@ -38,17 +38,18 @@ To: richard@nod.at,
 Cc: <linux-um@lists.infradead.org>,
    <linux-kernel@vger.kernel.org>,
   "Tiwei Bie" <tiwei.btw@antgroup.com>
-Subject: [PATCH 4/5] um: Fix the return type of __switch_to
-Date: Tue, 23 Jan 2024 19:03:46 +0800
-Message-Id: <20240123110347.1274217-5-tiwei.btw@antgroup.com>
+Subject: [PATCH 5/5] um: Add missing headers
+Date: Tue, 23 Jan 2024 19:03:47 +0800
+Message-Id: <20240123110347.1274217-6-tiwei.btw@antgroup.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240123110347.1274217-1-tiwei.btw@antgroup.com>
 References: <20240123110347.1274217-1-tiwei.btw@antgroup.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240123_030400_736554_56811EF5 
-X-CRM114-Status: UNSURE (   8.77  )
+X-CRM114-CacheID: sfid-20240123_030401_643693_3119B608 
+X-CRM114-Status: UNSURE (   6.99  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -64,35 +65,173 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Make it match the declaration in asm-generic/switch_to.h. And
-also include the header to allow the compiler to check it.
+This will address below -Wmissing-prototypes warnings:
+
+arch/um/kernel/mem.c:202:8: warning: no previous prototype for ‘pgd_alloc’ [-Wmissing-prototypes]
+arch/um/kernel/mem.c:215:7: warning: no previous prototype for ‘uml_kmalloc’ [-Wmissing-prototypes]
+arch/um/kernel/process.c:207:6: warning: no previous prototype for ‘arch_cpu_idle’ [-Wmissing-prototypes]
+arch/um/kernel/process.c:328:15: warning: no previous prototype for ‘arch_align_stack’ [-Wmissing-prototypes]
+arch/um/kernel/reboot.c:45:6: warning: no previous prototype for ‘machine_restart’ [-Wmissing-prototypes]
+arch/um/kernel/reboot.c:51:6: warning: no previous prototype for ‘machine_power_off’ [-Wmissing-prototypes]
+arch/um/kernel/reboot.c:57:6: warning: no previous prototype for ‘machine_halt’ [-Wmissing-prototypes]
+arch/um/kernel/skas/mmu.c:17:5: warning: no previous prototype for ‘init_new_context’ [-Wmissing-prototypes]
+arch/um/kernel/skas/mmu.c:60:6: warning: no previous prototype for ‘destroy_context’ [-Wmissing-prototypes]
+arch/um/kernel/skas/process.c:36:12: warning: no previous prototype for ‘start_uml’ [-Wmissing-prototypes]
+arch/um/kernel/tlb.c:594:6: warning: no previous prototype for ‘force_flush_all’ [-Wmissing-prototypes]
+arch/x86/um/bugs_64.c:9:6: warning: no previous prototype for ‘arch_check_bugs’ [-Wmissing-prototypes]
+arch/x86/um/bugs_64.c:13:6: warning: no previous prototype for ‘arch_examine_signal’ [-Wmissing-prototypes]
+arch/x86/um/fault.c:18:5: warning: no previous prototype for ‘arch_fixup’ [-Wmissing-prototypes]
+arch/x86/um/os-Linux/mcontext.c:7:6: warning: no previous prototype for ‘get_regs_from_mc’ [-Wmissing-prototypes]
 
 Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
 ---
- arch/um/kernel/process.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/um/kernel/mem.c            | 2 ++
+ arch/um/kernel/process.c        | 2 ++
+ arch/um/kernel/reboot.c         | 1 +
+ arch/um/kernel/skas/mmu.c       | 1 +
+ arch/um/kernel/skas/process.c   | 1 +
+ arch/um/kernel/tlb.c            | 1 +
+ arch/x86/um/bugs_32.c           | 1 +
+ arch/x86/um/bugs_64.c           | 1 +
+ arch/x86/um/fault.c             | 1 +
+ arch/x86/um/os-Linux/mcontext.c | 1 +
+ 10 files changed, 12 insertions(+)
 
+diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
+index 38d5a71a579b..ca91accd64fc 100644
+--- a/arch/um/kernel/mem.c
++++ b/arch/um/kernel/mem.c
+@@ -12,12 +12,14 @@
+ #include <linux/slab.h>
+ #include <asm/fixmap.h>
+ #include <asm/page.h>
++#include <asm/pgalloc.h>
+ #include <as-layout.h>
+ #include <init.h>
+ #include <kern.h>
+ #include <kern_util.h>
+ #include <mem_user.h>
+ #include <os.h>
++#include <um_malloc.h>
+ #include <linux/sched/task.h>
+ 
+ #ifdef CONFIG_KASAN
 diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index 292c8014aaa6..a7607ef1b02f 100644
+index a7607ef1b02f..4235e2ca2664 100644
 --- a/arch/um/kernel/process.c
 +++ b/arch/um/kernel/process.c
-@@ -26,6 +26,7 @@
- #include <linux/resume_user_mode.h>
+@@ -15,6 +15,7 @@
+ #include <linux/proc_fs.h>
+ #include <linux/ptrace.h>
+ #include <linux/random.h>
++#include <linux/cpu.h>
+ #include <linux/slab.h>
+ #include <linux/sched.h>
+ #include <linux/sched/debug.h>
+@@ -27,6 +28,7 @@
  #include <asm/current.h>
  #include <asm/mmu_context.h>
-+#include <asm/switch_to.h>
+ #include <asm/switch_to.h>
++#include <asm/exec.h>
  #include <linux/uaccess.h>
  #include <as-layout.h>
  #include <kern_util.h>
-@@ -73,7 +74,7 @@ static inline void set_current(struct task_struct *task)
+diff --git a/arch/um/kernel/reboot.c b/arch/um/kernel/reboot.c
+index 48c0610d506e..25840eee1068 100644
+--- a/arch/um/kernel/reboot.c
++++ b/arch/um/kernel/reboot.c
+@@ -9,6 +9,7 @@
+ #include <linux/spinlock.h>
+ #include <linux/slab.h>
+ #include <linux/oom.h>
++#include <linux/reboot.h>
+ #include <kern_util.h>
+ #include <os.h>
+ #include <skas.h>
+diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
+index 656fe16c9b63..aeed1c2aaf3c 100644
+--- a/arch/um/kernel/skas/mmu.c
++++ b/arch/um/kernel/skas/mmu.c
+@@ -10,6 +10,7 @@
  
- extern void arch_switch_to(struct task_struct *to);
+ #include <asm/pgalloc.h>
+ #include <asm/sections.h>
++#include <asm/mmu_context.h>
+ #include <as-layout.h>
+ #include <os.h>
+ #include <skas.h>
+diff --git a/arch/um/kernel/skas/process.c b/arch/um/kernel/skas/process.c
+index f2ac134c9752..fdd5922f9222 100644
+--- a/arch/um/kernel/skas/process.c
++++ b/arch/um/kernel/skas/process.c
+@@ -12,6 +12,7 @@
+ #include <kern.h>
+ #include <os.h>
+ #include <skas.h>
++#include <kern_util.h>
  
--void *__switch_to(struct task_struct *from, struct task_struct *to)
-+struct task_struct *__switch_to(struct task_struct *from, struct task_struct *to)
+ extern void start_kernel(void);
+ 
+diff --git a/arch/um/kernel/tlb.c b/arch/um/kernel/tlb.c
+index 70b5e47e9761..8784f03fa4a6 100644
+--- a/arch/um/kernel/tlb.c
++++ b/arch/um/kernel/tlb.c
+@@ -8,6 +8,7 @@
+ #include <linux/sched/signal.h>
+ 
+ #include <asm/tlbflush.h>
++#include <asm/mmu_context.h>
+ #include <as-layout.h>
+ #include <mem_user.h>
+ #include <os.h>
+diff --git a/arch/x86/um/bugs_32.c b/arch/x86/um/bugs_32.c
+index 33daff4dade4..d29929efcc07 100644
+--- a/arch/x86/um/bugs_32.c
++++ b/arch/x86/um/bugs_32.c
+@@ -3,6 +3,7 @@
+  * Licensed under the GPL
+  */
+ 
++#include <arch.h>
+ #include <signal.h>
+ #include <kern_util.h>
+ #include <longjmp.h>
+diff --git a/arch/x86/um/bugs_64.c b/arch/x86/um/bugs_64.c
+index 8cc8256c698d..b01295e8a676 100644
+--- a/arch/x86/um/bugs_64.c
++++ b/arch/x86/um/bugs_64.c
+@@ -4,6 +4,7 @@
+  * Licensed under the GPL
+  */
+ 
++#include <arch.h>
+ #include <sysdep/ptrace.h>
+ 
+ void arch_check_bugs(void)
+diff --git a/arch/x86/um/fault.c b/arch/x86/um/fault.c
+index 84ac7f7b0257..0dde4d613a87 100644
+--- a/arch/x86/um/fault.c
++++ b/arch/x86/um/fault.c
+@@ -3,6 +3,7 @@
+  * Licensed under the GPL
+  */
+ 
++#include <arch.h>
+ #include <sysdep/ptrace.h>
+ 
+ /* These two are from asm-um/uaccess.h and linux/module.h, check them. */
+diff --git a/arch/x86/um/os-Linux/mcontext.c b/arch/x86/um/os-Linux/mcontext.c
+index 49c3744cac37..e80ab7d28117 100644
+--- a/arch/x86/um/os-Linux/mcontext.c
++++ b/arch/x86/um/os-Linux/mcontext.c
+@@ -3,6 +3,7 @@
+ #define __FRAME_OFFSETS
+ #include <asm/ptrace.h>
+ #include <sysdep/ptrace.h>
++#include <sysdep/mcontext.h>
+ 
+ void get_regs_from_mc(struct uml_pt_regs *regs, mcontext_t *mc)
  {
- 	to->thread.prev_sched = from;
- 	set_current(to);
 -- 
 2.34.1
 
