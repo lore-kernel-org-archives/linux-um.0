@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35AE5C47E49
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33000C46CD2
 	for <linux-um@archiver.kernel.org>; Wed, 24 Jan 2024 14:28:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,48 +12,49 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=JEKMUnlVXClGT3m4fsCwsO03hA6baqrwiOcNBeXmKKs=; b=N1RbhDy9MZbz3haJHg6xop3HJi
-	kKcNSJkmBoiYyqYLKqGcfcieMiUbj5aFbP2fCWaPyNG/Bw8XcXhQxdhsaWcIv5Hl1N20qGeKvFBR5
-	42jLxapMM94QPdBtpY6t7To0nFBD3pEVRsI1Ze7oIJ6qFGjV0nF+jShGvDeZNuUg589UVSHKRZFrK
-	L7T6F7wu7nqK587THYT8s/dXdz7NWv6KzCJSrKt/dVVwTMuyenk+xpvO027HiAUQamDFj/mZoygSg
-	c1SB5Sz9TvaHBYluJ/v9O8bSUGJkRm4WDKUzHi83ertxP5sn0mIVhK3syZsfw7SK55XBscYeSh7ML
-	mD1R9n7g==;
+	bh=9zZJaAv48/nOkvsrImSqMXUR8tRouhhIbafLdiEYqRc=; b=oEihTpDplCUeemKRo/fxu0blqS
+	UUtdA1zZWlmuLv9cn3VHM2W9yzjmLYMOhV2xuAfuqK/PfZsG5WfJBy3ipTS8+a9QAP0uv40HZDNM4
+	xUvouoOlNowNzFRkWaWrqFjDpMgaOcTNKYZYqlkgWp3w2ePXu9U31stYdZurIIcpsSj5yWrgY3zcY
+	VhUz+kNZg3ooh3iNQL9I9aea1rKziVYZzAWMAmwZUJz3w9WAeVHDUeKT/MRjGiZEpFxrrAHjQa9z6
+	k+VFtwQAqTZ56NrC/OvfgWPF2dEeQKXSWxQBbLrC87P01LfDq4YKSX4T/TuidRJUr8nxBu6un9g60
+	7vkgvvpg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSeF4-003fJt-2U;
-	Wed, 24 Jan 2024 14:28:38 +0000
+	id 1rSeF5-003fKd-1M;
+	Wed, 24 Jan 2024 14:28:39 +0000
 Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSeF1-003fGL-10
+	id 1rSeF1-003fEc-10
 	for linux-um@lists.infradead.org;
 	Wed, 24 Jan 2024 14:28:36 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id BDB0B61947;
-	Wed, 24 Jan 2024 14:28:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A44DDC43601;
-	Wed, 24 Jan 2024 14:28:32 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 629CA61D45;
+	Wed, 24 Jan 2024 14:28:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E47BAC433F1;
+	Wed, 24 Jan 2024 14:28:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706106513;
-	bh=+qlLwOJdjpq6kAvTrgjUE93HI6aqQtx2W3k1oDhQX4Y=;
+	s=k20201202; t=1706106511;
+	bh=etpqgTLCOUAl7afUyBW+a+/hEzVb1lCoYgukDD8Etvo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WJhF0Gb2oRzpVbskHCoqylNrPZfnEjwiCgwWzCriBnW+6ALij6e6Dl1tIdJCaOtZR
-	 1PpJ/B30CIBnfZF96GCft46WoHHKOgk0Tp6ZyQasKqY4KEO1jAr3BNkdzbwcsnRb2p
-	 YAmw2xi1j7FkoHSxywicLR/fXjaRh36rj1I35vYEq9PQbLLeA+IbOXZ4YSuqF/jUGf
-	 nB8GxYN9qgPLUv9T6TBgAcWqPyO5b5tP7grONlyUmP7n23TbAwZvxbZmiFdj84iw+0
-	 NU/xrrHXOfN9OXDO3vf7m/WfMrYOGRSHNALfmuEf552R0w+Qx8fsm4lD7RWWSlf21I
-	 uD4VgUbZgWXJw==
+	b=gmsFxf185z40p/K4xjRF3mgJUFibEE9FYW+xD30g5kWR07zbnmlC5HMmwsnVktmLA
+	 H5YnUj1gx483jghKz6x9LDN9SsSJAzzsvkPO9b0/9ZUO4lr7j3h/3qFBV8WUEVa58P
+	 VvuNKWBFzOAao1Ix5r/WADZAfaPCMrBKjG5mFLa4MRtdLvz5ByEcBAX6DW0qZVHGZs
+	 YD5cgLAJWZbdgjszM3Eb0IHRVI2I28SwX13XVA3UewFo27oQFbbu2YQxus2Xj8AR4k
+	 L4XxofvUHXUTigSLOP3z/hzzs87oUTXsCGAIcNUkTBmybmaKhZab1hhpj+oKtVaCpF
+	 ftI67SONNud6w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Benjamin Berg <benjamin@sipsolutions.net>,
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Peter Lafreniere <peter@n8pjl.ca>,
 	Richard Weinberger <richard@nod.at>,
 	Sasha Levin <sashal@kernel.org>,
-	anton.ivanov@cambridgegreys.com,
 	johannes@sipsolutions.net,
+	benjamin@sipsolutions.net,
 	linux-um@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.7 04/13] um: Don't use vfprintf() for os_info()
-Date: Wed, 24 Jan 2024 09:27:57 -0500
-Message-ID: <20240124142820.1283206-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.7 03/13] um: Fix naming clash between UML and scheduler
+Date: Wed, 24 Jan 2024 09:27:56 -0500
+Message-ID: <20240124142820.1283206-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240124142820.1283206-1-sashal@kernel.org>
 References: <20240124142820.1283206-1-sashal@kernel.org>
@@ -63,8 +64,8 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7.1
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240124_062835_387745_11330349 
-X-CRM114-Status: GOOD (  11.44  )
+X-CRM114-CacheID: sfid-20240124_062835_434215_66B7E80A 
+X-CRM114-Status: GOOD (  11.87  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,70 +80,80 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Benjamin Berg <benjamin@sipsolutions.net>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-[ Upstream commit 236f9fe39b02c15fa5530b53e9cca48354394389 ]
+[ Upstream commit 541d4e4d435c8b9bfd29f70a1da4a2db97794e0a ]
 
-The threads allocated inside the kernel have only a single page of
-stack. Unfortunately, the vfprintf function in standard glibc may use
-too much stack-space, overflowing it.
+__cant_sleep was already used and exported by the scheduler.
+The name had to be changed to a UML specific one.
 
-To make os_info safe to be used by helper threads, use the kernel
-vscnprintf function into a smallish buffer and write out the information
-to stderr.
-
-Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Reviewed-by: Peter Lafreniere <peter@n8pjl.ca>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/os-Linux/util.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+ arch/um/include/shared/kern_util.h | 2 +-
+ arch/um/kernel/process.c           | 2 +-
+ arch/um/os-Linux/helper.c          | 6 +++---
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/um/os-Linux/util.c b/arch/um/os-Linux/util.c
-index fc0f2a9dee5a..1dca4ffbd572 100644
---- a/arch/um/os-Linux/util.c
-+++ b/arch/um/os-Linux/util.c
-@@ -173,23 +173,38 @@ __uml_setup("quiet", quiet_cmd_param,
- "quiet\n"
- "    Turns off information messages during boot.\n\n");
- 
-+/*
-+ * The os_info/os_warn functions will be called by helper threads. These
-+ * have a very limited stack size and using the libc formatting functions
-+ * may overflow the stack.
-+ * So pull in the kernel vscnprintf and use that instead with a fixed
-+ * on-stack buffer.
-+ */
-+int vscnprintf(char *buf, size_t size, const char *fmt, va_list args);
-+
- void os_info(const char *fmt, ...)
- {
-+	char buf[256];
- 	va_list list;
-+	int len;
- 
- 	if (quiet_info)
- 		return;
- 
- 	va_start(list, fmt);
--	vfprintf(stderr, fmt, list);
-+	len = vscnprintf(buf, sizeof(buf), fmt, list);
-+	fwrite(buf, len, 1, stderr);
- 	va_end(list);
+diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
+index d8b8b4f07e42..444bae755b16 100644
+--- a/arch/um/include/shared/kern_util.h
++++ b/arch/um/include/shared/kern_util.h
+@@ -50,7 +50,7 @@ extern void do_uml_exitcalls(void);
+  * Are we disallowed to sleep? Used to choose between GFP_KERNEL and
+  * GFP_ATOMIC.
+  */
+-extern int __cant_sleep(void);
++extern int __uml_cant_sleep(void);
+ extern int get_current_pid(void);
+ extern int copy_from_user_proc(void *to, void *from, int size);
+ extern char *uml_strdup(const char *string);
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index 106b7da2f8d6..6daffb9d8a8d 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -220,7 +220,7 @@ void arch_cpu_idle(void)
+ 	um_idle_sleep();
  }
  
- void os_warn(const char *fmt, ...)
- {
-+	char buf[256];
- 	va_list list;
-+	int len;
- 
- 	va_start(list, fmt);
--	vfprintf(stderr, fmt, list);
-+	len = vscnprintf(buf, sizeof(buf), fmt, list);
-+	fwrite(buf, len, 1, stderr);
- 	va_end(list);
+-int __cant_sleep(void) {
++int __uml_cant_sleep(void) {
+ 	return in_atomic() || irqs_disabled() || in_interrupt();
+ 	/* Is in_interrupt() really needed? */
  }
+diff --git a/arch/um/os-Linux/helper.c b/arch/um/os-Linux/helper.c
+index b459745f52e2..3cb8ac63be6e 100644
+--- a/arch/um/os-Linux/helper.c
++++ b/arch/um/os-Linux/helper.c
+@@ -46,7 +46,7 @@ int run_helper(void (*pre_exec)(void *), void *pre_data, char **argv)
+ 	unsigned long stack, sp;
+ 	int pid, fds[2], ret, n;
+ 
+-	stack = alloc_stack(0, __cant_sleep());
++	stack = alloc_stack(0, __uml_cant_sleep());
+ 	if (stack == 0)
+ 		return -ENOMEM;
+ 
+@@ -70,7 +70,7 @@ int run_helper(void (*pre_exec)(void *), void *pre_data, char **argv)
+ 	data.pre_data = pre_data;
+ 	data.argv = argv;
+ 	data.fd = fds[1];
+-	data.buf = __cant_sleep() ? uml_kmalloc(PATH_MAX, UM_GFP_ATOMIC) :
++	data.buf = __uml_cant_sleep() ? uml_kmalloc(PATH_MAX, UM_GFP_ATOMIC) :
+ 					uml_kmalloc(PATH_MAX, UM_GFP_KERNEL);
+ 	pid = clone(helper_child, (void *) sp, CLONE_VM, &data);
+ 	if (pid < 0) {
+@@ -121,7 +121,7 @@ int run_helper_thread(int (*proc)(void *), void *arg, unsigned int flags,
+ 	unsigned long stack, sp;
+ 	int pid, status, err;
+ 
+-	stack = alloc_stack(0, __cant_sleep());
++	stack = alloc_stack(0, __uml_cant_sleep());
+ 	if (stack == 0)
+ 		return -ENOMEM;
+ 
 -- 
 2.43.0
 
