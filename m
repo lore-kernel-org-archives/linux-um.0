@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6925AC47422
-	for <linux-um@archiver.kernel.org>; Wed, 24 Jan 2024 14:31:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3BF96C46CD2
+	for <linux-um@archiver.kernel.org>; Wed, 24 Jan 2024 14:32:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=zhkwsxrFZr7jS0YqiQwvNKEPYEpfxg7881ZFaaFWSbE=; b=HeH4LOlozgABp4snBRsvdy3gWK
-	6HVFpWtwm77O9wedt5f5Xf7INa0wbD8Lu1qKftw0G2Re5163JrI+y0gfVds/dRVW8pI3Bwbdxp0Ar
-	8ACkvxQu+m46UlUPKgR9Ojl0T+Wcee//YQUQpw8stbhFXnPtpCaGUpqV4OwQ/1Exobe4cLkQxtZw9
-	vqT3HozUY/H8Moh/tziG3aCRBt8RqYDnBh8TLwdUWilqBOMm2ZOVF0A1pebUHryBnde8JM0z+rHzQ
-	4pqlk1DuCo1geVre27Z6GYZSimkI8mdKJB426+nH3QdNjBxPHKE91+eYX/PYXNZ/OtzTE+3tGd6YH
-	U4c32mMA==;
+	bh=/0Y2dtuzH2b5Dt6y5k+l7aeNH3/1M/tvSEyAMo2Rhug=; b=ex3bJ5OpBw99upc9CGO2eIVdPm
+	vN6CPHyMRLoggcx8IrH8EAs47pTVPUIfM0+4FhFrYTycMCLzoenoiVP3XU9/eL9YrV28hJEKzbiaq
+	f+wRzlUN0GHQv8Cnu6vLzKJ8gMzclezj2JbNdt5KnCH5Nm8h3uZcYXqH91L5b1AaliPB9+lLOgwA1
+	FdgpTlTNaL43ccIRPnRJgaErdlrVlO+VnDhcBlPx5GwycAlb3PWosCZ0kP4M8HqLqIYD8rW1WxVbm
+	FltlOqkhbVSalAvVcXmIys3VALdDssFi72kOtMfe7Gi4RQf6loTLMrHy1F5mw3g8ygULkiESUu7mi
+	6peXBFKw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSeI5-003gor-2l;
-	Wed, 24 Jan 2024 14:31:45 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1rSeIL-003gvw-2H;
+	Wed, 24 Jan 2024 14:32:01 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSeI2-003gm8-15
+	id 1rSeII-003guN-22
 	for linux-um@lists.infradead.org;
-	Wed, 24 Jan 2024 14:31:44 +0000
+	Wed, 24 Jan 2024 14:32:00 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 2C285CE315D;
-	Wed, 24 Jan 2024 14:31:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0A6AC43390;
-	Wed, 24 Jan 2024 14:31:30 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id DE12461D7B;
+	Wed, 24 Jan 2024 14:31:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D9D8C433F1;
+	Wed, 24 Jan 2024 14:31:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706106692;
-	bh=QR5cb3O4qRcYhx5UaU4c5YGWaHFckDJiaZTC1iUTjKI=;
+	s=k20201202; t=1706106717;
+	bh=BBf0Tuwx4NrIr3rRhiQ+CrI7EiIN8xrZgPI5ENtuCvY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uPAG7ZV6IIocWVzaG4PvaK+jwoDT8lR6lCoj476DZiv2PENJow/QnM5N5BAXKc8fS
-	 njnSInW0Ee4cadkq7fZE+K3msSVAGjLIymLVEDCBTBaMRlrd98MDv6NqMzTXmsNWTO
-	 VPOEAyaIPl7ky7cYEP/Syga5G1kU3+6kWGe2O6ww6zhV3F7uqzY0cFjMLjqQbsUF4w
-	 hxyGHzc385ZiMS2VMvZzsJ47GYNK5R2X3FpXtOU7g/RF4dL0h5mHnPutRHzp7bkdux
-	 U4+4cZtiwtPr1wlsbuHFzK2GMMjmVvwzxYIdj5zOAsfdiP6iKgfO8qGwQ4W9K5ocTS
-	 v7oyJiXLgtk9w==
+	b=YJbZB/n/8u1AQ1xIsAk6yG1yU9pSrdwsLDn8MGfj9YpNqKRuQR1HwLn4XfggjS/UI
+	 2D0AFNmlsc4BWJ6hbnCx6qjZppvBLXJm2ZbJ7tNJ6p7zjWTk1ljA4Q323QZX/jm1k/
+	 HMUIAS/RA0isjC711s3q79fQU4jLf8YmDu/ZCRx1kozc+E1OCdbv0wg8pvpCUWUvK0
+	 IMQPOLiLUa5TEGFBcnTi46rFG2qGDEFERz4zHP3n8w/r3dgsMqJoQoFCj1uhVZvl5f
+	 YVurDL05B06YEnW2kNe0cbupYmv88E50v0mkHftmpLcNPR9/0EWpMe7OQabBT3zeVz
+	 ixZdzcQOURjAA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -52,19 +52,19 @@ Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>,
 	johannes@sipsolutions.net,
 	benjamin@sipsolutions.net,
 	linux-um@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.4 2/6] um: Fix naming clash between UML and scheduler
-Date: Wed, 24 Jan 2024 09:31:11 -0500
-Message-ID: <20240124143124.1284462-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 2/5] um: Fix naming clash between UML and scheduler
+Date: Wed, 24 Jan 2024 09:31:37 -0500
+Message-ID: <20240124143149.1284622-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240124143124.1284462-1-sashal@kernel.org>
-References: <20240124143124.1284462-1-sashal@kernel.org>
+In-Reply-To: <20240124143149.1284622-1-sashal@kernel.org>
+References: <20240124143149.1284622-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.4.267
+X-stable-base: Linux 4.19.305
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240124_063143_268325_7C157138 
+X-CRM114-CacheID: sfid-20240124_063158_756353_BBB6EE6B 
 X-CRM114-Status: GOOD (  11.56  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -98,7 +98,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  3 files changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
-index ccafb62e8cce..42dc0e47d3ad 100644
+index 35ab97e4bb9b..f2da8347d5f5 100644
 --- a/arch/um/include/shared/kern_util.h
 +++ b/arch/um/include/shared/kern_util.h
 @@ -49,7 +49,7 @@ extern void do_uml_exitcalls(void);
@@ -111,10 +111,10 @@ index ccafb62e8cce..42dc0e47d3ad 100644
  extern int copy_from_user_proc(void *to, void *from, int size);
  extern int cpu(void);
 diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index d71dd7725bef..f185d19fd9b6 100644
+index 691b83b10649..c9d09d04d19d 100644
 --- a/arch/um/kernel/process.c
 +++ b/arch/um/kernel/process.c
-@@ -258,7 +258,7 @@ void arch_cpu_idle(void)
+@@ -210,7 +210,7 @@ void arch_cpu_idle(void)
  	local_irq_enable();
  }
  
@@ -124,7 +124,7 @@ index d71dd7725bef..f185d19fd9b6 100644
  	/* Is in_interrupt() really needed? */
  }
 diff --git a/arch/um/os-Linux/helper.c b/arch/um/os-Linux/helper.c
-index 9fa6e4187d4f..57a27555092f 100644
+index 3f02d4232812..53d450e4a53a 100644
 --- a/arch/um/os-Linux/helper.c
 +++ b/arch/um/os-Linux/helper.c
 @@ -45,7 +45,7 @@ int run_helper(void (*pre_exec)(void *), void *pre_data, char **argv)
