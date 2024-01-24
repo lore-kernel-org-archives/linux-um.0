@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1BAD0C47422
-	for <linux-um@archiver.kernel.org>; Wed, 24 Jan 2024 14:29:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58055C46CD2
+	for <linux-um@archiver.kernel.org>; Wed, 24 Jan 2024 14:30:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=tU4Z4t/2NS4caT3RGgWYDQgyBGqG98yW2kj9Gr7ff08=; b=yolIy/5MmdUjnUIYM40l/+lHRG
-	LYEQR/nV7X9VPYekF8vhCLydTENsY5AiJm4Zv9mfuS1k12r9gzLZ9JDVNSvwXJpQeSt4wRIggULvE
-	KywCIUyzdZMUYWIKbpDw/RU0Ag8nZcjG6GsylCYgBRPjAk3BAChl5EQI9lyaocugcpY/1dXQAbyLL
-	zz2+tkl2Y2RIUvqQ1NJZi24tmsgNGkOclKlGM1ch0wJu2FpxMZdYuSfr/eOM0iRcNXJhGZwGE+jpW
-	RH9x1naiL4hQIhONF/BFkCAt1puacO68DyHO93BKl/wo+xuOyI3U8MKirA/M0E7GArZstreGkmoQy
-	LBBBTutQ==;
+	bh=kd+EyAaD1Wk7Y9YszYM4oS8Lo04lMpcicXyu6xKOTXk=; b=nOalfg8gRkBjONT3nTaEh926qp
+	S5p7wzpqPi/plvZL7xGWMcE6lbuvLE5zewMXtu1k3X6E+o+eycVFTDFnfkx0yCvPIpp33kuAagVGl
+	IHvEH0oo4D2MdPatpj3jvRWVrkb6ZP0C4EjuunDoA++ucm694nz0mdTBqvk9pJRLS59DHNwGZawki
+	bfNOI8bOG27QNYG4ey7VVhjXrfwXF1pFWxrwfkCRwMYlAehqUnmIKEQoTpByf6OWR9a+GjiAJpnGO
+	PyYugfcLak9OpF7cUp8iBjXvHbfF6lxDTgps68r/qBtjZHqHuHqOvaodQsml7S4dhfsySE61sb+Zq
+	FOIVdmkw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSeFu-003fkN-1z;
-	Wed, 24 Jan 2024 14:29:30 +0000
+	id 1rSeGO-003fy0-2Q;
+	Wed, 24 Jan 2024 14:30:00 +0000
 Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSeFr-003fii-2G
+	id 1rSeGL-003fwf-3A
 	for linux-um@lists.infradead.org;
-	Wed, 24 Jan 2024 14:29:29 +0000
+	Wed, 24 Jan 2024 14:29:59 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 3BC7261D4E;
-	Wed, 24 Jan 2024 14:29:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E188C43141;
-	Wed, 24 Jan 2024 14:29:25 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 6AE6661D53;
+	Wed, 24 Jan 2024 14:29:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3BF5C43399;
+	Wed, 24 Jan 2024 14:29:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706106567;
-	bh=0HoOYdpY7mCqkF6yX9oqUlAHYhcdLh1Mqx9QVhuN/ns=;
+	s=k20201202; t=1706106597;
+	bh=ri610qhq69wqJ2vXRJpKaI7Fc6roOtH5CYi/fFlKI6A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Eo7vvr+ckbTuBZat2RdWFJjHzIcP0SwYM1KZvHPgrEfBf7zFfOgH5WsdqsF+D0181
-	 0Rn89k7MWFiPAn0WOOgzBXeKIgQdIhqJ5YSL5ixbzTcQu8G7uLcrFiIq//+i0gc4/r
-	 3GUJOC1drJT6Kg5iCI1AzI2Uxrc3PhgJBrCTWQ23eJUzssoeJe9c6PXCQk4vP49zsD
-	 owTdleksy7oUCpd1tezRtQug4Plu65atsuG5KejaRxdpx5yPnONUIHeiGX+piDr+4T
-	 cBmvpw46e3xQISHuitZo2us19zLLSlWn5p2TX7lWTxdv96NrkN7emgUZHR5rbUQfON
-	 q8/X22xYxeLUA==
+	b=FUh16onVNI7rICjslpdCIQMiJYIVbtZXhHYb69rn9U4/M+V1mT+3VAzR+mTg6n+9F
+	 LzEOFAEHHIbS7dqf7H/50gIXje/XQ6gaBOe68upfyjkxfgGXzGdj/wXoe4+bb7s0Dz
+	 tn0UAYOI1JdrkUwLXG/PrVmKJ4053rH+Oy70aOH/ho7sTq4qy/9/QganM6BJc6cspu
+	 LlpJTbszHMM42UJKQLtEzqX/ICcOEPr4yQdh1tB+RZFZgSn9DwHiJ8L2ucHuavCKGm
+	 RS6eX0KaoPFggurImOHmizCv+3+ztmqEJFTmv1Wu+7aGeZAcRlw41HzL687JZ7iOPR
+	 eCFJoXsnolzsg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Johannes Berg <johannes.berg@intel.com>,
-	Vincent Whitchurch <Vincent.Whitchurch@axis.com>,
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Peter Lafreniere <peter@n8pjl.ca>,
 	Richard Weinberger <richard@nod.at>,
 	Sasha Levin <sashal@kernel.org>,
-	anton.ivanov@cambridgegreys.com,
 	johannes@sipsolutions.net,
+	benjamin@sipsolutions.net,
 	linux-um@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.6 06/11] um: time-travel: fix time corruption
-Date: Wed, 24 Jan 2024 09:28:49 -0500
-Message-ID: <20240124142907.1283546-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 2/9] um: Fix naming clash between UML and scheduler
+Date: Wed, 24 Jan 2024 09:29:32 -0500
+Message-ID: <20240124142949.1283818-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240124142907.1283546-1-sashal@kernel.org>
-References: <20240124142907.1283546-1-sashal@kernel.org>
+In-Reply-To: <20240124142949.1283818-1-sashal@kernel.org>
+References: <20240124142949.1283818-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.13
+X-stable-base: Linux 6.1.74
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240124_062927_825936_45F780A8 
-X-CRM114-Status: GOOD (  14.87  )
+X-CRM114-CacheID: sfid-20240124_062958_113554_FEAF8166 
+X-CRM114-Status: GOOD (  11.86  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,90 +80,79 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-[ Upstream commit abe4eaa8618bb36c2b33e9cdde0499296a23448c ]
+[ Upstream commit 541d4e4d435c8b9bfd29f70a1da4a2db97794e0a ]
 
-In 'basic' time-travel mode (without =inf-cpu or =ext), we
-still get timer interrupts. These can happen at arbitrary
-points in time, i.e. while in timer_read(), which pushes
-time forward just a little bit. Then, if we happen to get
-the interrupt after calculating the new time to push to,
-but before actually finishing that, the interrupt will set
-the time to a value that's incompatible with the forward,
-and we'll crash because time goes backwards when we do the
-forwarding.
+__cant_sleep was already used and exported by the scheduler.
+The name had to be changed to a UML specific one.
 
-Fix this by reading the time_travel_time, calculating the
-adjustment, and doing the adjustment all with interrupts
-disabled.
-
-Reported-by: Vincent Whitchurch <Vincent.Whitchurch@axis.com>
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Reviewed-by: Peter Lafreniere <peter@n8pjl.ca>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/kernel/time.c | 32 +++++++++++++++++++++++++++-----
- 1 file changed, 27 insertions(+), 5 deletions(-)
+ arch/um/include/shared/kern_util.h | 2 +-
+ arch/um/kernel/process.c           | 2 +-
+ arch/um/os-Linux/helper.c          | 6 +++---
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
-index fddd1dec27e6..3e270da6b6f6 100644
---- a/arch/um/kernel/time.c
-+++ b/arch/um/kernel/time.c
-@@ -432,9 +432,29 @@ static void time_travel_update_time(unsigned long long next, bool idle)
- 	time_travel_del_event(&ne);
+diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
+index d8b8b4f07e42..444bae755b16 100644
+--- a/arch/um/include/shared/kern_util.h
++++ b/arch/um/include/shared/kern_util.h
+@@ -50,7 +50,7 @@ extern void do_uml_exitcalls(void);
+  * Are we disallowed to sleep? Used to choose between GFP_KERNEL and
+  * GFP_ATOMIC.
+  */
+-extern int __cant_sleep(void);
++extern int __uml_cant_sleep(void);
+ extern int get_current_pid(void);
+ extern int copy_from_user_proc(void *to, void *from, int size);
+ extern char *uml_strdup(const char *string);
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index 010bc422a09d..a351c87db248 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -220,7 +220,7 @@ void arch_cpu_idle(void)
+ 	raw_local_irq_enable();
  }
  
-+static void time_travel_update_time_rel(unsigned long long offs)
-+{
-+	unsigned long flags;
-+
-+	/*
-+	 * Disable interrupts before calculating the new time so
-+	 * that a real timer interrupt (signal) can't happen at
-+	 * a bad time e.g. after we read time_travel_time but
-+	 * before we've completed updating the time.
-+	 */
-+	local_irq_save(flags);
-+	time_travel_update_time(time_travel_time + offs, false);
-+	local_irq_restore(flags);
-+}
-+
- void time_travel_ndelay(unsigned long nsec)
- {
--	time_travel_update_time(time_travel_time + nsec, false);
-+	/*
-+	 * Not strictly needed to use _rel() version since this is
-+	 * only used in INFCPU/EXT modes, but it doesn't hurt and
-+	 * is more readable too.
-+	 */
-+	time_travel_update_time_rel(nsec);
+-int __cant_sleep(void) {
++int __uml_cant_sleep(void) {
+ 	return in_atomic() || irqs_disabled() || in_interrupt();
+ 	/* Is in_interrupt() really needed? */
  }
- EXPORT_SYMBOL(time_travel_ndelay);
+diff --git a/arch/um/os-Linux/helper.c b/arch/um/os-Linux/helper.c
+index b459745f52e2..3cb8ac63be6e 100644
+--- a/arch/um/os-Linux/helper.c
++++ b/arch/um/os-Linux/helper.c
+@@ -46,7 +46,7 @@ int run_helper(void (*pre_exec)(void *), void *pre_data, char **argv)
+ 	unsigned long stack, sp;
+ 	int pid, fds[2], ret, n;
  
-@@ -568,7 +588,11 @@ static void time_travel_set_start(void)
- #define time_travel_time 0
- #define time_travel_ext_waiting 0
+-	stack = alloc_stack(0, __cant_sleep());
++	stack = alloc_stack(0, __uml_cant_sleep());
+ 	if (stack == 0)
+ 		return -ENOMEM;
  
--static inline void time_travel_update_time(unsigned long long ns, bool retearly)
-+static inline void time_travel_update_time(unsigned long long ns, bool idle)
-+{
-+}
-+
-+static inline void time_travel_update_time_rel(unsigned long long offs)
- {
- }
+@@ -70,7 +70,7 @@ int run_helper(void (*pre_exec)(void *), void *pre_data, char **argv)
+ 	data.pre_data = pre_data;
+ 	data.argv = argv;
+ 	data.fd = fds[1];
+-	data.buf = __cant_sleep() ? uml_kmalloc(PATH_MAX, UM_GFP_ATOMIC) :
++	data.buf = __uml_cant_sleep() ? uml_kmalloc(PATH_MAX, UM_GFP_ATOMIC) :
+ 					uml_kmalloc(PATH_MAX, UM_GFP_KERNEL);
+ 	pid = clone(helper_child, (void *) sp, CLONE_VM, &data);
+ 	if (pid < 0) {
+@@ -121,7 +121,7 @@ int run_helper_thread(int (*proc)(void *), void *arg, unsigned int flags,
+ 	unsigned long stack, sp;
+ 	int pid, status, err;
  
-@@ -720,9 +744,7 @@ static u64 timer_read(struct clocksource *cs)
- 		 */
- 		if (!irqs_disabled() && !in_interrupt() && !in_softirq() &&
- 		    !time_travel_ext_waiting)
--			time_travel_update_time(time_travel_time +
--						TIMER_MULTIPLIER,
--						false);
-+			time_travel_update_time_rel(TIMER_MULTIPLIER);
- 		return time_travel_time / TIMER_MULTIPLIER;
- 	}
+-	stack = alloc_stack(0, __cant_sleep());
++	stack = alloc_stack(0, __uml_cant_sleep());
+ 	if (stack == 0)
+ 		return -ENOMEM;
  
 -- 
 2.43.0
