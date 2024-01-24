@@ -4,69 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CCEE1C47422
-	for <linux-um@archiver.kernel.org>; Wed, 24 Jan 2024 14:30:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5AE5C46CD2
+	for <linux-um@archiver.kernel.org>; Wed, 24 Jan 2024 14:31:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=C5gqYkutP2Q8tUCYkBes7V4PP/t/869RDpEl8h7URoo=; b=vuo/sT0LBebi6xMTSJVME+3q4+
-	TYT36l+Hb0CC5OIdqTLxEZ15zXNDdKyz381hkO+diTUDYYpze6MPmdwgU1Ex4IlV9zlP+lAqyhrwp
-	UahpIAHAsusNCJ0a1Nezhc+iUM7qhaQhq0La86cmPeyk9fj/OeWlYY1TkNJ0ZlvCtBOOsdbFerUjm
-	2E+rh5mex7NsZPWbV9BJPtfj9aSGybvj1zYjTOINA2ssKI5K7dx+g8LlFGq6Rtqxa15JvH8ilycVJ
-	D2hfZAP/YrF9Be99uN0zFhyH54ag4YKUCMUUFIvase7+izE7N+GVylpX1/ypuEYIND8Rp1glCi0zd
-	62yuFKvg==;
+	bh=KJ1oJbDOrRRQb9sKXOWxOXfGnA54/Py0m4AiYwxlkRU=; b=hbSEybF8v/AQrGi27MTknj3c29
+	TfhQNw5nqoKnvMcSQsQBdyljlEno6UV65BVrpjnrXm02iPkAjeh9O2MPJc552JwH5NSOzsvp+lymQ
+	6MlBuS3FTGZHjwzPU2tDaPd4DPGjVeX2njO4jF11Hl3kHua7ZXmU2luE0lDlWDGZ5Fq8QJTFQZhXW
+	nlqtIdtTvstxR+Sth4lW0pbA4lDZNcXQvLSSNJBRxEGm4BAl3J8f2ml/+Hs9s/aWFdNLuFMWj0mYW
+	mgGbLl8CEOVbgUbBqF+sZvt8XPekgXD5iQ1sx9v8VpROBPiQMYaYJKxoMISWPvm3GkdlAUgjH382m
+	A62h7oqA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSeHJ-003gQc-19;
-	Wed, 24 Jan 2024 14:30:57 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1rSeHV-003gVt-1M;
+	Wed, 24 Jan 2024 14:31:09 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSeHG-003gNu-0d
+	id 1rSeHS-003gUH-0P
 	for linux-um@lists.infradead.org;
-	Wed, 24 Jan 2024 14:30:55 +0000
+	Wed, 24 Jan 2024 14:31:07 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 86281CE315D;
-	Wed, 24 Jan 2024 14:30:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01164C43394;
-	Wed, 24 Jan 2024 14:30:37 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 33F0961D5E;
+	Wed, 24 Jan 2024 14:31:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3803C433F1;
+	Wed, 24 Jan 2024 14:31:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706106639;
-	bh=NBFJOzl5bfKAkHYYmyRbiEGkZcNR0p56JZOagMWvQEY=;
+	s=k20201202; t=1706106665;
+	bh=ORsKfb77Q/aqEabcmDI07cPZuQckZtlN1IaOT+oLwKc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=o3qfDgTJ3sIGNruqgsTbmprWgZnQJMWmJJQ7/njYJ4fh27MIXyAWhjv3ydD3Ups3A
-	 fNg2wB63ENVO4CXARf5kBxkyzPNOfA9x3iEDwSiZJ2IHkGb24TUk33f7+TyuWyJBQY
-	 JVonFNEDEqXZrV92t4UBsEqqCrJviCCwmxhVpHCPlklkpBogqT+sxQuo6dXYbfBx7p
-	 j8Fdkta7UuuvfQY/FXCX6gSnhfAAOzqfbJ2xss03YLemP4h5/1T19DVARRIQTT6kgl
-	 1OLpADN6Vt2WTAjLNwnM/OQX2bi8iM+xobEcn3N6BRept2uEE/3TbjrdmNffC9y2Xx
-	 xcIsokphHnY3A==
+	b=liIUApqTzc3Zz4e/OixGgBnkjvogWdFtPl8Wmd9W5mdVnw/cuSniYTukE0TTpRvmH
+	 n5M34RZC4BE0SfddY21/nPjf2TquQYLnWIe9y/HFnIoCvwajafZs86dQDhBTZXk5u2
+	 jcx6E4Fx5Aq5jNxILVcq+AwV+tSn6vAsoKSdWo+91SVpfRjveDQhj5/ve2HCzioLiI
+	 c4vd799XjNi196ulIOQmOIRg/J85IkpocgkJyGmdV8gvQr8JbKGoYUI6bUw9uYBZn/
+	 5NVkqNEXQCIY7z41gHQiIKPqlPz95k3evGfpptgDHm7IzkC2y2XaQAR+7Kywt05L7O
+	 Y6WEeGzTWGoHw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Nathan Chancellor <nathan@kernel.org>,
-	kernel test robot <lkp@intel.com>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Peter Lafreniere <peter@n8pjl.ca>,
 	Richard Weinberger <richard@nod.at>,
 	Sasha Levin <sashal@kernel.org>,
 	johannes@sipsolutions.net,
-	linux-um@lists.infradead.org,
-	llvm@lists.linux.dev
-Subject: [PATCH AUTOSEL 5.15 4/9] um: net: Fix return type of uml_net_start_xmit()
-Date: Wed, 24 Jan 2024 09:30:07 -0500
-Message-ID: <20240124143024.1284046-4-sashal@kernel.org>
+	benjamin@sipsolutions.net,
+	linux-um@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.10 2/7] um: Fix naming clash between UML and scheduler
+Date: Wed, 24 Jan 2024 09:30:43 -0500
+Message-ID: <20240124143057.1284274-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240124143024.1284046-1-sashal@kernel.org>
-References: <20240124143024.1284046-1-sashal@kernel.org>
+In-Reply-To: <20240124143057.1284274-1-sashal@kernel.org>
+References: <20240124143057.1284274-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.147
+X-stable-base: Linux 5.10.208
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240124_063054_433914_B03BA418 
-X-CRM114-Status: GOOD (  13.78  )
+X-CRM114-CacheID: sfid-20240124_063106_248907_827516E1 
+X-CRM114-Status: GOOD (  11.35  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,51 +80,80 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-[ Upstream commit 7d748f60a4b82b50bf25fad1bd42d33f049f76aa ]
+[ Upstream commit 541d4e4d435c8b9bfd29f70a1da4a2db97794e0a ]
 
-With clang's kernel control flow integrity (kCFI, CONFIG_CFI_CLANG),
-indirect call targets are validated against the expected function
-pointer prototype to make sure the call target is valid to help mitigate
-ROP attacks. If they are not identical, there is a failure at run time,
-which manifests as either a kernel panic or thread getting killed. A
-warning in clang aims to catch these at compile time, which reveals:
+__cant_sleep was already used and exported by the scheduler.
+The name had to be changed to a UML specific one.
 
-  arch/um/drivers/net_kern.c:353:21: warning: incompatible function pointer types initializing 'netdev_tx_t (*)(struct sk_buff *, struct net_device *)' (aka 'enum netdev_tx (*)(struct sk_buff *, struct net_device *)') with an expression of type 'int (struct sk_buff *, struct net_device *)' [-Wincompatible-function-pointer-types-strict]
-    353 |         .ndo_start_xmit         = uml_net_start_xmit,
-        |                                   ^~~~~~~~~~~~~~~~~~
-  1 warning generated.
-
-->ndo_start_xmit() in 'struct net_device_ops' expects a return type of
-'netdev_tx_t', not 'int'. Adjust the return type of uml_net_start_xmit()
-to match the prototype's to resolve the warning. While UML does not
-currently implement support for kCFI, it could in the future, which
-means this warning becomes a fatal CFI failure at run time.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202310031340.v1vPh207-lkp@intel.com/
-Acked-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Reviewed-by: Peter Lafreniere <peter@n8pjl.ca>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/drivers/net_kern.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/um/include/shared/kern_util.h | 2 +-
+ arch/um/kernel/process.c           | 2 +-
+ arch/um/os-Linux/helper.c          | 6 +++---
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
-index 2fc0b038ff8a..e24bc9aaff4a 100644
---- a/arch/um/drivers/net_kern.c
-+++ b/arch/um/drivers/net_kern.c
-@@ -204,7 +204,7 @@ static int uml_net_close(struct net_device *dev)
- 	return 0;
+diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
+index 9c08e728a675..83171f9e0912 100644
+--- a/arch/um/include/shared/kern_util.h
++++ b/arch/um/include/shared/kern_util.h
+@@ -51,7 +51,7 @@ extern void do_uml_exitcalls(void);
+  * Are we disallowed to sleep? Used to choose between GFP_KERNEL and
+  * GFP_ATOMIC.
+  */
+-extern int __cant_sleep(void);
++extern int __uml_cant_sleep(void);
+ extern int get_current_pid(void);
+ extern int copy_from_user_proc(void *to, void *from, int size);
+ extern int cpu(void);
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index e6c9b11b2033..76faaf1082ce 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -221,7 +221,7 @@ void arch_cpu_idle(void)
+ 	raw_local_irq_enable();
  }
  
--static int uml_net_start_xmit(struct sk_buff *skb, struct net_device *dev)
-+static netdev_tx_t uml_net_start_xmit(struct sk_buff *skb, struct net_device *dev)
- {
- 	struct uml_net_private *lp = netdev_priv(dev);
- 	unsigned long flags;
+-int __cant_sleep(void) {
++int __uml_cant_sleep(void) {
+ 	return in_atomic() || irqs_disabled() || in_interrupt();
+ 	/* Is in_interrupt() really needed? */
+ }
+diff --git a/arch/um/os-Linux/helper.c b/arch/um/os-Linux/helper.c
+index 9fa6e4187d4f..57a27555092f 100644
+--- a/arch/um/os-Linux/helper.c
++++ b/arch/um/os-Linux/helper.c
+@@ -45,7 +45,7 @@ int run_helper(void (*pre_exec)(void *), void *pre_data, char **argv)
+ 	unsigned long stack, sp;
+ 	int pid, fds[2], ret, n;
+ 
+-	stack = alloc_stack(0, __cant_sleep());
++	stack = alloc_stack(0, __uml_cant_sleep());
+ 	if (stack == 0)
+ 		return -ENOMEM;
+ 
+@@ -69,7 +69,7 @@ int run_helper(void (*pre_exec)(void *), void *pre_data, char **argv)
+ 	data.pre_data = pre_data;
+ 	data.argv = argv;
+ 	data.fd = fds[1];
+-	data.buf = __cant_sleep() ? uml_kmalloc(PATH_MAX, UM_GFP_ATOMIC) :
++	data.buf = __uml_cant_sleep() ? uml_kmalloc(PATH_MAX, UM_GFP_ATOMIC) :
+ 					uml_kmalloc(PATH_MAX, UM_GFP_KERNEL);
+ 	pid = clone(helper_child, (void *) sp, CLONE_VM, &data);
+ 	if (pid < 0) {
+@@ -116,7 +116,7 @@ int run_helper_thread(int (*proc)(void *), void *arg, unsigned int flags,
+ 	unsigned long stack, sp;
+ 	int pid, status, err;
+ 
+-	stack = alloc_stack(0, __cant_sleep());
++	stack = alloc_stack(0, __uml_cant_sleep());
+ 	if (stack == 0)
+ 		return -ENOMEM;
+ 
 -- 
 2.43.0
 
