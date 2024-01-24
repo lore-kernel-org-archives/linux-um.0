@@ -4,56 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 051BEC47422
-	for <linux-um@archiver.kernel.org>; Wed, 24 Jan 2024 14:30:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2C420C47422
+	for <linux-um@archiver.kernel.org>; Wed, 24 Jan 2024 14:30:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=JEKMUnlVXClGT3m4fsCwsO03hA6baqrwiOcNBeXmKKs=; b=KV0p9HLh7Jsi1LR6avuVZJJATf
-	ZAnuH+gFHgiU1KT2X8Ro0U1zE2Tr2Yt9XCN+HRUsiiY6ghYlGb5EYSslRUmu86Wm0kuJV+VMoT+MU
-	qIQVPZQcDHawBhvrfWAqlLhrJ24i9bDv/rS3Td+Z1Yw+67ZxydRwFcmiMdpO1N9lYXMwfOeyY8eul
-	Apha3OXASJTEHvqNLgjSn1PWSc0FusFz9UAeM/8xdNIm9tLpjUZ0agya0KD957vxCY0nWf8cO5XXt
-	0wIdO0FGdrmW8jmusvbX0vKkjaX45SQwGQ9adCIrqpULYa+go6Oav7sAwlrEUgFjbdgCNNhc3chdQ
-	JeLy6RwQ==;
+	bh=SsCfmGxvbA7sxrxh086Ebk2iRnt1k0+Ezy4md1+KQQY=; b=3QTOkDnQFjMNkWOuli6RtK2iU2
+	rFTqPLAzR3wxCPjsN4dpiw/RfiYxrs6o/x5FhpxNbZI0vA9IUCNijbm7JbLsZVVML3cCT6EEFOw6n
+	GO/97E9kLx9EW826dWLxE3l2Lc+uNyHzZU9kl3j3h4BrCVE6k4p9PT7z2rHfCnaO7asHh1wSKbha2
+	vfkf4JZHWrT/ySSU09tbRMcrGDjvFspWchax/qukYrgaliGX9WN4GcZpELeyvYIKevuhQUNX6pQ9W
+	jwSDRC6PUGUcFZG9/7yoPKSjjPGTpf4TBWrYafvj377LBDmJHv3K/6RG4soJdC6UT0YqSZ7rQmZiS
+	+nGiHSng==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSeGR-003fze-1X;
-	Wed, 24 Jan 2024 14:30:03 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1rSeGV-003g2o-22;
+	Wed, 24 Jan 2024 14:30:07 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSeGO-003fxt-2W
+	id 1rSeGR-003fzd-1i
 	for linux-um@lists.infradead.org;
-	Wed, 24 Jan 2024 14:30:02 +0000
+	Wed, 24 Jan 2024 14:30:06 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 4D9D161D5F;
-	Wed, 24 Jan 2024 14:30:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE74CC43394;
-	Wed, 24 Jan 2024 14:29:58 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 1056461D14;
+	Wed, 24 Jan 2024 14:30:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98591C43394;
+	Wed, 24 Jan 2024 14:30:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706106600;
-	bh=+qlLwOJdjpq6kAvTrgjUE93HI6aqQtx2W3k1oDhQX4Y=;
+	s=k20201202; t=1706106602;
+	bh=wtfwbC0flSGPe7mDEkJ8Xw4cI7oiAV5gBbx/tJOQfFs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EBZmWUOWcgC74I7XjMyzWkgj6fiDrY8Dvg8zArIIQELw0esESOdGnW7geQWyq+689
-	 cuKREQV7dm/uY+VaCB0cXUx3NVG/iOECLGFuYli+8V+v0JyER4GHToAa9UMq8bg6a5
-	 XkndqnjYWihrlIzJtHWAU55+kktknydf3ujqFfcutKv+7S1l/d1iLIzXIwoLyDVH8V
-	 x3gsx6iDCtKyvaFShcfcv5CIlS/vzSm+ffenykCTwydSKMqs3aE4ksr2Boh6+ZNa95
-	 t3mxyMekII9XUJyEslfjmITHBP29b3ydGUt9ioe73/a0HL/0jyZopxkHrTJSp802OJ
-	 hhZlXQgyFk1hQ==
+	b=jtQCUZ2WiTKNORqSethBN18uwn8Q0wjKJBsFDo7tWFygB5Tt3iBw7It2vQUJJfNAP
+	 qgTnIM59R607PMCwFnw0CpxHGWcbMq2IRoAkB+JEBfTqh9Dcg+RwpLyN6G7q/Q2lQN
+	 QvF0Ml8gPAMX1Rj6FIImFSvU/M4NmRDTrkKco46pdloQ/cKsHVfJq7apE3FR3qmZOz
+	 1S38uZgE8rqQY2RrAJti4VZmLkwzN4kQ/DBOCtIAhvfo7UiaJRPPONiRDwa4mE6cZu
+	 CuSK54QD7zhyd8yoBsUtISGLh5auorsojB2mdVTJL8SY7AOziGBr3XmEuZyEU5E+Mb
+	 10wmmjxUUmSng==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Benjamin Berg <benjamin@sipsolutions.net>,
+Cc: Nathan Chancellor <nathan@kernel.org>,
+	kernel test robot <lkp@intel.com>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
 	Richard Weinberger <richard@nod.at>,
 	Sasha Levin <sashal@kernel.org>,
-	anton.ivanov@cambridgegreys.com,
 	johannes@sipsolutions.net,
-	linux-um@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.1 3/9] um: Don't use vfprintf() for os_info()
-Date: Wed, 24 Jan 2024 09:29:33 -0500
-Message-ID: <20240124142949.1283818-3-sashal@kernel.org>
+	linux-um@lists.infradead.org,
+	llvm@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.1 4/9] um: net: Fix return type of uml_net_start_xmit()
+Date: Wed, 24 Jan 2024 09:29:34 -0500
+Message-ID: <20240124142949.1283818-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240124142949.1283818-1-sashal@kernel.org>
 References: <20240124142949.1283818-1-sashal@kernel.org>
@@ -63,8 +65,8 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.74
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240124_063000_861810_679AEB43 
-X-CRM114-Status: GOOD (  11.50  )
+X-CRM114-CacheID: sfid-20240124_063003_646215_41E214B4 
+X-CRM114-Status: GOOD (  13.87  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,70 +81,51 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Benjamin Berg <benjamin@sipsolutions.net>
+From: Nathan Chancellor <nathan@kernel.org>
 
-[ Upstream commit 236f9fe39b02c15fa5530b53e9cca48354394389 ]
+[ Upstream commit 7d748f60a4b82b50bf25fad1bd42d33f049f76aa ]
 
-The threads allocated inside the kernel have only a single page of
-stack. Unfortunately, the vfprintf function in standard glibc may use
-too much stack-space, overflowing it.
+With clang's kernel control flow integrity (kCFI, CONFIG_CFI_CLANG),
+indirect call targets are validated against the expected function
+pointer prototype to make sure the call target is valid to help mitigate
+ROP attacks. If they are not identical, there is a failure at run time,
+which manifests as either a kernel panic or thread getting killed. A
+warning in clang aims to catch these at compile time, which reveals:
 
-To make os_info safe to be used by helper threads, use the kernel
-vscnprintf function into a smallish buffer and write out the information
-to stderr.
+  arch/um/drivers/net_kern.c:353:21: warning: incompatible function pointer types initializing 'netdev_tx_t (*)(struct sk_buff *, struct net_device *)' (aka 'enum netdev_tx (*)(struct sk_buff *, struct net_device *)') with an expression of type 'int (struct sk_buff *, struct net_device *)' [-Wincompatible-function-pointer-types-strict]
+    353 |         .ndo_start_xmit         = uml_net_start_xmit,
+        |                                   ^~~~~~~~~~~~~~~~~~
+  1 warning generated.
 
-Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
+->ndo_start_xmit() in 'struct net_device_ops' expects a return type of
+'netdev_tx_t', not 'int'. Adjust the return type of uml_net_start_xmit()
+to match the prototype's to resolve the warning. While UML does not
+currently implement support for kCFI, it could in the future, which
+means this warning becomes a fatal CFI failure at run time.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202310031340.v1vPh207-lkp@intel.com/
+Acked-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/os-Linux/util.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+ arch/um/drivers/net_kern.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/um/os-Linux/util.c b/arch/um/os-Linux/util.c
-index fc0f2a9dee5a..1dca4ffbd572 100644
---- a/arch/um/os-Linux/util.c
-+++ b/arch/um/os-Linux/util.c
-@@ -173,23 +173,38 @@ __uml_setup("quiet", quiet_cmd_param,
- "quiet\n"
- "    Turns off information messages during boot.\n\n");
- 
-+/*
-+ * The os_info/os_warn functions will be called by helper threads. These
-+ * have a very limited stack size and using the libc formatting functions
-+ * may overflow the stack.
-+ * So pull in the kernel vscnprintf and use that instead with a fixed
-+ * on-stack buffer.
-+ */
-+int vscnprintf(char *buf, size_t size, const char *fmt, va_list args);
-+
- void os_info(const char *fmt, ...)
- {
-+	char buf[256];
- 	va_list list;
-+	int len;
- 
- 	if (quiet_info)
- 		return;
- 
- 	va_start(list, fmt);
--	vfprintf(stderr, fmt, list);
-+	len = vscnprintf(buf, sizeof(buf), fmt, list);
-+	fwrite(buf, len, 1, stderr);
- 	va_end(list);
+diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
+index 3d7836c46507..cabcc501b448 100644
+--- a/arch/um/drivers/net_kern.c
++++ b/arch/um/drivers/net_kern.c
+@@ -204,7 +204,7 @@ static int uml_net_close(struct net_device *dev)
+ 	return 0;
  }
  
- void os_warn(const char *fmt, ...)
+-static int uml_net_start_xmit(struct sk_buff *skb, struct net_device *dev)
++static netdev_tx_t uml_net_start_xmit(struct sk_buff *skb, struct net_device *dev)
  {
-+	char buf[256];
- 	va_list list;
-+	int len;
- 
- 	va_start(list, fmt);
--	vfprintf(stderr, fmt, list);
-+	len = vscnprintf(buf, sizeof(buf), fmt, list);
-+	fwrite(buf, len, 1, stderr);
- 	va_end(list);
- }
+ 	struct uml_net_private *lp = netdev_priv(dev);
+ 	unsigned long flags;
 -- 
 2.43.0
 
