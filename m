@@ -4,69 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52F89C47422
-	for <linux-um@archiver.kernel.org>; Wed, 24 Jan 2024 14:32:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C0DCC47DDB
+	for <linux-um@archiver.kernel.org>; Fri, 26 Jan 2024 09:55:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=RMg6xPJQnQyMdhnsm7r6IrsUHhlg0dbkB6tTVSxoQ5Y=; b=LKUR+9NnHncmnlWPIgsIApRXZ9
-	XPOuytVCexoQ5pR/KUi3IQg09aukdnyJ7etSgCLDiE3Ni82hilGrkbB2x4rGN1OeTl8JXqHNfdzPc
-	o7UNkP0YE7oYvkmBXtapWvv8vtm6fRGs/QChlC0hH+ihGUbbCgsDH+V1g+r4MuqN+0Rns77qZsS1w
-	0QdkKVWk5pOXXnbP1vYMPBDfhKs4z0/EYvA5oSLyHoTsvXrQxMyygMIE6ZMpNPNG7bGrKjGzfOhHR
-	D9gOuGGPmVAMbT4OasagLlhlJvon2hMcQzWS6IUEB3zcbJh29BpNoCdU80UvfD9+osunDQGo8Wf3D
-	2WgiAWzw==;
+	bh=x2loWJgtIiYAU3JkiPQ2Kgc6YLbmwtXrr/lssGc0Kos=; b=OPUbsPLYhMrYH3RW2SnCOppbeH
+	4awbgBprdtFwiLeP2qbtjmGumYPt+DwF/Rdc+EqoKu/xcaNDi8nG47D6PVCrCVl76b9AoSukEHE6f
+	EbM44IhK1ywfMenhHrMruRyvRAs/TTLbs//VrGzOS01njV96zlqppnXroEJtqVOe19SA4q5gU0fYh
+	9n1TQgdCQC5UhVnx+TND3651MD1hKfIwdhsxL9NzHhSf4Iy4b9WZ5+h1unvHxdbn1o0HXe6PYErsD
+	j1wC6g61+sIIn6vP05u9l0R2GIKBRNbjOSbf2M+48gpGHawN6c9jW0VR7X0IeVqxJaVWyGU+WHFrJ
+	Y+VMo0Xg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtp (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSeIR-003gzc-2q;
-	Wed, 24 Jan 2024 14:32:07 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
-	by bombadil.infradead.org with esmtps (Exim 4.96 #2 (Red Hat Linux))
-	id 1rSeIO-003gx6-0m
+	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rTIvf-00000003kaz-3eFw;
+	Fri, 26 Jan 2024 09:55:20 +0000
+Received: from bee.tesarici.cz ([77.93.223.253])
+	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rTIvc-00000003kXb-3o1J
 	for linux-um@lists.infradead.org;
-	Wed, 24 Jan 2024 14:32:05 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 7DCC861D71;
-	Wed, 24 Jan 2024 14:32:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A558C433F1;
-	Wed, 24 Jan 2024 14:32:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706106723;
-	bh=mZYcVx9gMgfUQ5ilhRlIwp9WinJInYUB+SgCavnzUo4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NQR0AxObCk8di578tOlttQbYlmcmw2NvQ6tbKiG/IpVPfB6ESo/dbobmTbHAQIKO1
-	 HWBzpKP9JPPNuRTc/8E1tRzdyagqlDqF54rT7WaXUXKTT0p7uid5OywRZRYfDXnJnd
-	 zR+y4NP6l0+h/W3dz32O/ahfqYsOmmYp1SYdycsoK5BokHk3s22/e2AE5HD/wTTuw3
-	 a5fEzjzyqiJtWEwyp87iMW6jSbpNHrSTXw0HNNzGDl9T6nqSBT2vpeNNvUlugmdIdv
-	 037H2SFQDvBgH1KNwDFgRAARi2TWnqF06XzeO+7ydHajWP59edy+8rkrQ5Vv8/8glh
-	 uwP7GNhCe4zjg==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Nathan Chancellor <nathan@kernel.org>,
-	kernel test robot <lkp@intel.com>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Richard Weinberger <richard@nod.at>,
-	Sasha Levin <sashal@kernel.org>,
-	johannes@sipsolutions.net,
-	linux-um@lists.infradead.org,
-	llvm@lists.linux.dev
-Subject: [PATCH AUTOSEL 4.19 4/5] um: net: Fix return type of uml_net_start_xmit()
-Date: Wed, 24 Jan 2024 09:31:39 -0500
-Message-ID: <20240124143149.1284622-4-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240124143149.1284622-1-sashal@kernel.org>
-References: <20240124143149.1284622-1-sashal@kernel.org>
+	Fri, 26 Jan 2024 09:55:18 +0000
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by bee.tesarici.cz (Postfix) with ESMTPSA id 638D518D315;
+	Fri, 26 Jan 2024 10:55:07 +0100 (CET)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
+	t=1706262907; bh=98uBaqksOvo0/XWg1JQiFaXFzJAFgQLh1B1y254w2Xw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=QSiMTsIJxe31DkozMCoyJVoren/wta82mBeBHLVS6ZMxhSyeGQW5Nlhqj0lMpIoTH
+	 /sjCikjm280U0Sp4MB7LoIaOkgstCZNlz4FJkUO9WMj9fd0JYxCH0mNcHeQljXpQDJ
+	 qXVBPD0vmn4tsoZSr4vbYxTT+ukPLbKNfg+OBhzVHDMpBYLc1iWnTu8u6/08laDPaH
+	 bY9rLJxJ8IWA3GPhIhWatpqud/QCZ0T0H4dHvahnBBvxf/SOOiiAqL/7UpCoRlv7lx
+	 xOuVKFIXVgLEDMq3pq2w1xG+RewZgaRwWKTGUn9OWtgIM/SVWSRQ9godb5T+jcTvnj
+	 fAohKhJTuhTAQ==
+Date: Fri, 26 Jan 2024 10:55:05 +0100
+From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To: Richard Weinberger <richard@nod.at>
+Cc: Petr Tesarik <petrtesarik@huaweicloud.com>, anton ivanov
+ <anton.ivanov@cambridgegreys.com>, Johannes Berg
+ <johannes@sipsolutions.net>, linux-um <linux-um@lists.infradead.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>, Roberto Sassu
+ <roberto.sassu@huaweicloud.com>, Petr Tesarik
+ <petr.tesarik1@huawei-partners.com>
+Subject: Re: [PATCH 0/2] um: improve UML page fault handling
+Message-ID: <20240126105505.38440835@meshulam.tesarici.cz>
+In-Reply-To: <20240105075109.4f0e2785@meshulam.tesarici.cz>
+References: <20231215121431.680-1-petrtesarik@huaweicloud.com>
+	<435201914.200552.1704410531143.JavaMail.zimbra@nod.at>
+	<20240105075109.4f0e2785@meshulam.tesarici.cz>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.19.305
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240124_063204_348338_D1040DF5 
-X-CRM114-Status: GOOD (  13.67  )
+X-CRM114-CacheID: sfid-20240126_015517_129870_7D3A2457 
+X-CRM114-Status: GOOD (  21.07  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,52 +79,58 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Nathan Chancellor <nathan@kernel.org>
+On Fri, 5 Jan 2024 07:51:09 +0100
+Petr Tesa=C5=99=C3=ADk <petr@tesarici.cz> wrote:
 
-[ Upstream commit 7d748f60a4b82b50bf25fad1bd42d33f049f76aa ]
+> Helo Richard,
+>=20
+> Am Fri, 5 Jan 2024 00:22:11 +0100 (CET)
+> schrieb Richard Weinberger <richard@nod.at>:
+>=20
+> > ----- Urspr=C3=BCngliche Mail ----- =20
+> > > Von: "Petr Tesarik" <petrtesarik@huaweicloud.com>
+> > > An: "richard" <richard@nod.at>, "anton ivanov" <anton.ivanov@cambridg=
+egreys.com>, "Johannes Berg"
+> > > <johannes@sipsolutions.net>, "linux-um" <linux-um@lists.infradead.org=
+>, "linux-kernel" <linux-kernel@vger.kernel.org>
+> > > CC: "Roberto Sassu" <roberto.sassu@huaweicloud.com>, petr@tesarici.cz=
+, "Petr Tesarik"
+> > > <petr.tesarik1@huawei-partners.com>
+> > > Gesendet: Freitag, 15. Dezember 2023 13:14:29
+> > > Betreff: [PATCH 0/2] um: improve UML page fault handling   =20
+> >  =20
+> > > From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+> > >=20
+> > > Improve UML handling of segmentation faults in kernel mode. Although
+> > > such page faults are generally caused by a kernel bug, it is annoying
+> > > if they cause an infinite loop, or panic the kernel. More importantly,
+> > > a robust implementation allows to write KUnit tests for various guard
+> > > pages, preventing potential kernel self-protection regressions.
+> > >=20
+> > > Petr Tesarik (2):
+> > >  um: do not panic on kernel mode faults
+> > >  um: oops on accessing an non-present page in the vmalloc area   =20
+> >=20
+> > I think this is a good thing to have. =20
+>=20
+> Thanks for the feedback.
+>=20
+> > For the implementation side, this needs to use the oops_* helpers
+> > from kernel/panic.c and taint the kernel, etc... =20
+>=20
+> Yes, I did see that coming but wanted to get some confirmation that
+> it's worth the effort.
+>=20
+> > See arch/x86/kernel/dumpstack.c die() and friends. =20
+>=20
+> This implementation also calls die notifiers, but AFAICS different
+> architectures are not very consistent in their use. Do you also
+> require die notifiers for the UML implementation?
 
-With clang's kernel control flow integrity (kCFI, CONFIG_CFI_CLANG),
-indirect call targets are validated against the expected function
-pointer prototype to make sure the call target is valid to help mitigate
-ROP attacks. If they are not identical, there is a failure at run time,
-which manifests as either a kernel panic or thread getting killed. A
-warning in clang aims to catch these at compile time, which reveals:
+It seems I won't have time for this in the near future... Can I start
+by sending a trivial patch that panics the kernel if kernel mode tries
+to access a vmalloc guard page? That's something I can do immediately,
+and it's still better than getting page faults in an infinite loop...
 
-  arch/um/drivers/net_kern.c:353:21: warning: incompatible function pointer types initializing 'netdev_tx_t (*)(struct sk_buff *, struct net_device *)' (aka 'enum netdev_tx (*)(struct sk_buff *, struct net_device *)') with an expression of type 'int (struct sk_buff *, struct net_device *)' [-Wincompatible-function-pointer-types-strict]
-    353 |         .ndo_start_xmit         = uml_net_start_xmit,
-        |                                   ^~~~~~~~~~~~~~~~~~
-  1 warning generated.
-
-->ndo_start_xmit() in 'struct net_device_ops' expects a return type of
-'netdev_tx_t', not 'int'. Adjust the return type of uml_net_start_xmit()
-to match the prototype's to resolve the warning. While UML does not
-currently implement support for kCFI, it could in the future, which
-means this warning becomes a fatal CFI failure at run time.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202310031340.v1vPh207-lkp@intel.com/
-Acked-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/um/drivers/net_kern.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/um/drivers/net_kern.c b/arch/um/drivers/net_kern.c
-index 3ef1b48e064a..0216e3254c90 100644
---- a/arch/um/drivers/net_kern.c
-+++ b/arch/um/drivers/net_kern.c
-@@ -206,7 +206,7 @@ static int uml_net_close(struct net_device *dev)
- 	return 0;
- }
- 
--static int uml_net_start_xmit(struct sk_buff *skb, struct net_device *dev)
-+static netdev_tx_t uml_net_start_xmit(struct sk_buff *skb, struct net_device *dev)
- {
- 	struct uml_net_private *lp = netdev_priv(dev);
- 	unsigned long flags;
--- 
-2.43.0
-
+Petr T
 
