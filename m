@@ -4,67 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C0DCC47DDB
-	for <linux-um@archiver.kernel.org>; Fri, 26 Jan 2024 09:55:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2483DC46CD2
+	for <linux-um@archiver.kernel.org>; Sat, 27 Jan 2024 15:44:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=x2loWJgtIiYAU3JkiPQ2Kgc6YLbmwtXrr/lssGc0Kos=; b=OPUbsPLYhMrYH3RW2SnCOppbeH
-	4awbgBprdtFwiLeP2qbtjmGumYPt+DwF/Rdc+EqoKu/xcaNDi8nG47D6PVCrCVl76b9AoSukEHE6f
-	EbM44IhK1ywfMenhHrMruRyvRAs/TTLbs//VrGzOS01njV96zlqppnXroEJtqVOe19SA4q5gU0fYh
-	9n1TQgdCQC5UhVnx+TND3651MD1hKfIwdhsxL9NzHhSf4Iy4b9WZ5+h1unvHxdbn1o0HXe6PYErsD
-	j1wC6g61+sIIn6vP05u9l0R2GIKBRNbjOSbf2M+48gpGHawN6c9jW0VR7X0IeVqxJaVWyGU+WHFrJ
-	Y+VMo0Xg==;
+	bh=aTZ+4402c0HBHxOarRa3OjKtBlDuHofpwDkz2Py7qOQ=; b=dEa/nFTwQdM3ow7KL7KL2/x1sU
+	Ul3dO3q659DaabKehEPdzgu2S6pMmgjpWcrhDFS62jmdUMY1G+ZL+FYRJkiVEN9hcPmw+ew8jueg9
+	H3oRxW5BXwfXC8ooJj2Q1vxiVpZuWTcVaeEs1CI7vJO5fiIi/4OBMl1n7kNJHszK24asIA3N+jn1R
+	vnjcxHBDa6V28dgESxgnbWrKzeRZziQkbaDQxA5qDcQ7EZeESEeAJmZJZ9Vmb2WRbG9ZADXD2F2Yy
+	3Wt3693E4Hjs+ls8YWwmMftTdttOOVV68ym8JAkDSmrPVsEgKSlXiSAfihCywCCnSZ2mhHit+2PkR
+	ZBm0Bqyw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rTIvf-00000003kaz-3eFw;
-	Fri, 26 Jan 2024 09:55:20 +0000
-Received: from bee.tesarici.cz ([77.93.223.253])
+	id 1rTkrM-00000007hCr-3LEy;
+	Sat, 27 Jan 2024 15:44:44 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rTIvc-00000003kXb-3o1J
+	id 1rTkrJ-00000007hC2-2mWk
 	for linux-um@lists.infradead.org;
-	Fri, 26 Jan 2024 09:55:18 +0000
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by bee.tesarici.cz (Postfix) with ESMTPSA id 638D518D315;
-	Fri, 26 Jan 2024 10:55:07 +0100 (CET)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
-	t=1706262907; bh=98uBaqksOvo0/XWg1JQiFaXFzJAFgQLh1B1y254w2Xw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=QSiMTsIJxe31DkozMCoyJVoren/wta82mBeBHLVS6ZMxhSyeGQW5Nlhqj0lMpIoTH
-	 /sjCikjm280U0Sp4MB7LoIaOkgstCZNlz4FJkUO9WMj9fd0JYxCH0mNcHeQljXpQDJ
-	 qXVBPD0vmn4tsoZSr4vbYxTT+ukPLbKNfg+OBhzVHDMpBYLc1iWnTu8u6/08laDPaH
-	 bY9rLJxJ8IWA3GPhIhWatpqud/QCZ0T0H4dHvahnBBvxf/SOOiiAqL/7UpCoRlv7lx
-	 xOuVKFIXVgLEDMq3pq2w1xG+RewZgaRwWKTGUn9OWtgIM/SVWSRQ9godb5T+jcTvnj
-	 fAohKhJTuhTAQ==
-Date: Fri, 26 Jan 2024 10:55:05 +0100
-From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To: Richard Weinberger <richard@nod.at>
-Cc: Petr Tesarik <petrtesarik@huaweicloud.com>, anton ivanov
- <anton.ivanov@cambridgegreys.com>, Johannes Berg
- <johannes@sipsolutions.net>, linux-um <linux-um@lists.infradead.org>,
- linux-kernel <linux-kernel@vger.kernel.org>, Roberto Sassu
- <roberto.sassu@huaweicloud.com>, Petr Tesarik
- <petr.tesarik1@huawei-partners.com>
-Subject: Re: [PATCH 0/2] um: improve UML page fault handling
-Message-ID: <20240126105505.38440835@meshulam.tesarici.cz>
-In-Reply-To: <20240105075109.4f0e2785@meshulam.tesarici.cz>
-References: <20231215121431.680-1-petrtesarik@huaweicloud.com>
-	<435201914.200552.1704410531143.JavaMail.zimbra@nod.at>
-	<20240105075109.4f0e2785@meshulam.tesarici.cz>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
+	Sat, 27 Jan 2024 15:44:43 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id BDF83CE0F97
+	for <linux-um@lists.infradead.org>; Sat, 27 Jan 2024 15:44:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66F73C43390
+	for <linux-um@lists.infradead.org>; Sat, 27 Jan 2024 15:44:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706370276;
+	bh=EELGZfz9lAK1loDeD8w+xVM+cCGtcqj7CLX+2eCWnjA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=LeEO5kZ96OPVbvsuqrFBY5t8/3El+/M6PFnfIKMwYu3QQubqPuJck1PyNFQ+mDkLn
+	 cXuT+OAiMpWPc2E6BmL0PoKc4Wop1BgdwWd1PAu7XdHsS2cnYb5b6AT0ieUC5YMreg
+	 Yb/B0XWNT2Uc0gwv+K3ZdNs+mpYbYob+VoYLH7X5KsTEjTjNpQL3VKWZDDsOBueIiZ
+	 v6JgTgQS9Eiiq60v7QeL2Fd3vuyWC2/Anrc0LCZwV95zSIeuhBpU0u/CO9U1zQ0ow3
+	 vUrglhgVu0IkPrZ3v5lz5jvfyGuFC87O5FP11tNPgP2JsTU5FCIPz6wjOagpSpIZPR
+	 W+DbkHjXFT7Rg==
+Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-2185d5f4366so98032fac.2
+        for <linux-um@lists.infradead.org>; Sat, 27 Jan 2024 07:44:36 -0800 (PST)
+X-Gm-Message-State: AOJu0YyLp9tItOBjq6RcA/2poc+JrexkYymzhE91fuXfffZYKVRzUX6b
+	LHjZ4TK5CIeCuhlklJv6cqVGi8qtHuuM1NSuMPQN39zFz8iW1iIAztiAFVnGAVw7DVkhhK1HbCK
+	B40ZlPl1uO/Oo1jSB5xOoniCGehQ=
+X-Google-Smtp-Source: AGHT+IHKu7J4sPa55OVECUcHBRCyx9ZzSiCi17gfOvi7AHAWXZs8rsCFKBZguK0vE3/J1lnVbJu5h3QeBTUduqR8Jpo=
+X-Received: by 2002:a05:6871:5287:b0:214:7ef2:e8c with SMTP id
+ hu7-20020a056871528700b002147ef20e8cmr1060638oac.0.1706370275802; Sat, 27 Jan
+ 2024 07:44:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20240123-fix-uml-clang-18-v1-0-efc095519cf9@kernel.org>
+In-Reply-To: <20240123-fix-uml-clang-18-v1-0-efc095519cf9@kernel.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Sun, 28 Jan 2024 00:43:59 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQ7VauHgJK+939QjtOLtOPDOyGsYfwj+9f+1-jkFdtWnQ@mail.gmail.com>
+Message-ID: <CAK7LNAQ7VauHgJK+939QjtOLtOPDOyGsYfwj+9f+1-jkFdtWnQ@mail.gmail.com>
+Subject: Re: [PATCH 0/2] Fix UML build with clang-18 and newer
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, 
+	nicolas@fjasle.eu, ndesaulniers@google.com, morbo@google.com, 
+	justinstitt@google.com, linux-um@lists.infradead.org, 
+	linux-kbuild@vger.kernel.org, llvm@lists.linux.dev, patches@lists.linux.dev, 
+	stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240126_015517_129870_7D3A2457 
-X-CRM114-Status: GOOD (  21.07  )
+X-CRM114-CacheID: sfid-20240127_074442_078537_6F8C0333 
+X-CRM114-Status: GOOD (  16.49  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,58 +84,61 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, 5 Jan 2024 07:51:09 +0100
-Petr Tesa=C5=99=C3=ADk <petr@tesarici.cz> wrote:
+On Wed, Jan 24, 2024 at 8:00=E2=80=AFAM Nathan Chancellor <nathan@kernel.or=
+g> wrote:
+>
+> Hi all,
+>
+> This series resolves two independent but related issues that were
+> recently exposed by two LLVM changes.
+>
+> https://github.com/llvm/llvm-project/commit/ec92d74a0ef89b9dd46aee6ec8aca=
+6bfd3c66a54
+> exposes that '-no-pie' is not getting added to the linker flags with
+> clang, resulting in building objects with '-fno-PIE' that are linked
+> with '-pie', to which the linker rightfully errors with:
+>
+>   /usr/sbin/ld: init/main.o: relocation R_X86_64_32 against symbol `saved=
+_command_line' can not be used when making a PIE object; recompile with -fP=
+IE
+>   /usr/sbin/ld: failed to set dynamic section sizes: bad value
+>
+> https://github.com/llvm/llvm-project/commit/4bf8a688956a759b7b6b8d94f42d2=
+5c13c7af130
+> adds '.ltext' (and '.ltext.*' with '-ffunction-sections') when using
+> '-mcmodel=3Dlarge' (which UML does), which causes a segmentation fault
+> with modpost.
+>
+> I have tested these patches with all supported versions of clang,
+> noticing no regressions.
 
-> Helo Richard,
->=20
-> Am Fri, 5 Jan 2024 00:22:11 +0100 (CET)
-> schrieb Richard Weinberger <richard@nod.at>:
->=20
-> > ----- Urspr=C3=BCngliche Mail ----- =20
-> > > Von: "Petr Tesarik" <petrtesarik@huaweicloud.com>
-> > > An: "richard" <richard@nod.at>, "anton ivanov" <anton.ivanov@cambridg=
-egreys.com>, "Johannes Berg"
-> > > <johannes@sipsolutions.net>, "linux-um" <linux-um@lists.infradead.org=
->, "linux-kernel" <linux-kernel@vger.kernel.org>
-> > > CC: "Roberto Sassu" <roberto.sassu@huaweicloud.com>, petr@tesarici.cz=
-, "Petr Tesarik"
-> > > <petr.tesarik1@huawei-partners.com>
-> > > Gesendet: Freitag, 15. Dezember 2023 13:14:29
-> > > Betreff: [PATCH 0/2] um: improve UML page fault handling   =20
-> >  =20
-> > > From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
-> > >=20
-> > > Improve UML handling of segmentation faults in kernel mode. Although
-> > > such page faults are generally caused by a kernel bug, it is annoying
-> > > if they cause an infinite loop, or panic the kernel. More importantly,
-> > > a robust implementation allows to write KUnit tests for various guard
-> > > pages, preventing potential kernel self-protection regressions.
-> > >=20
-> > > Petr Tesarik (2):
-> > >  um: do not panic on kernel mode faults
-> > >  um: oops on accessing an non-present page in the vmalloc area   =20
-> >=20
-> > I think this is a good thing to have. =20
->=20
-> Thanks for the feedback.
->=20
-> > For the implementation side, this needs to use the oops_* helpers
-> > from kernel/panic.c and taint the kernel, etc... =20
->=20
-> Yes, I did see that coming but wanted to get some confirmation that
-> it's worth the effort.
->=20
-> > See arch/x86/kernel/dumpstack.c die() and friends. =20
->=20
-> This implementation also calls die notifiers, but AFAICS different
-> architectures are not very consistent in their use. Do you also
-> require die notifiers for the UML implementation?
 
-It seems I won't have time for this in the near future... Can I start
-by sending a trivial patch that panics the kernel if kernel mode tries
-to access a vmalloc guard page? That's something I can do immediately,
-and it's still better than getting page faults in an infinite loop...
+Both applied to linux-kbuild/fixes.
 
-Petr T
+Thanks.
+
+
+
+
+> ---
+> Nathan Chancellor (2):
+>       um: Fix adding '-no-pie' for clang
+>       modpost: Add '.ltext' and '.ltext.*' to TEXT_SECTIONS
+>
+>  arch/um/Makefile      | 4 +++-
+>  scripts/mod/modpost.c | 3 ++-
+>  2 files changed, 5 insertions(+), 2 deletions(-)
+> ---
+> base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
+> change-id: 20240118-fix-uml-clang-18-e365b0503a29
+>
+> Best regards,
+> --
+> Nathan Chancellor <nathan@kernel.org>
+>
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
