@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DDA08C47DDF
-	for <linux-um@archiver.kernel.org>; Tue, 30 Jan 2024 11:42:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83FACC46CD2
+	for <linux-um@archiver.kernel.org>; Tue, 30 Jan 2024 11:42:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=MJPPX0Mbe/Fi3ODIrg/IdS8p5bwqdjZiSVg8RtlcgFY=; b=xC57OgByxHGF9OBz9x0OEWRsoi
-	85yMTzyctc6xK+WrTnyaZTF2Kc+z9ObUNDDIEiY8MkEOkNIRgtK/tD2SJaSFjSNpzCIeU4MbZVEpf
-	ip2VmpW0uWV3aUPp7SSWiZ56fYUcj3pyErXTcH3pv1Th9l0jDeV4uL+/8ha93VIQVBCJ31Tsd9Veu
-	XeLBpRgSAaart62LQuXEZaX/93+OzcSaby6TkV+O33w+IV3F5+irUN/8IRP0T6zIKdPfidO6SHWgA
-	zSkiVoxYp4HaZk2fbGX2icT1Se2GbJi7QP2pzgN3gV1liqXne/dEEPIjSjOf+QdceU9kc/ND+Qtdk
-	wbuv6Jag==;
+	bh=P3G6i/Ax0Z+AAMFYFKvCu0HZ8Ra+Ilb8/1gq6QO23qs=; b=Nc+DY9mbh4eTYtHdhqeicjxJBX
+	efcYD6aURgNVJeSGnqOwFgIPTvkA4gb8tuo4yB39nzrcPwWWpuHVNDzno9unS2vd6bkGu3pjCZj12
+	tIsDw9SBKwokzbQMqibYxow2pmrDk3Spn/bNwjcglj85XpjDp5lY5VGcqsOhCdhZGgBIlpPKWHWaE
+	50WQ+6No3u/TG4nniw2iwf8cUID20MWClHhCF7Saf1JSB4qDoZ8K5KoaQbpaREGU45YeQyElrAUvl
+	3oQRxkOy66xiPnFXin1rnNtPqzWZUL8VDIHHIaqA+dtDo6iSZKDTeyHlQf92LZMsZrlNUFa7qGGHv
+	v87/iAyw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rUmW1-0000000GWKy-1lHf;
-	Tue, 30 Jan 2024 11:42:57 +0000
-Received: from out30-98.freemail.mail.aliyun.com ([115.124.30.98])
+	id 1rUmW1-0000000GWLe-4AB3;
+	Tue, 30 Jan 2024 11:42:58 +0000
+Received: from out30-97.freemail.mail.aliyun.com ([115.124.30.97])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rUmVx-0000000GWGK-06AV
+	id 1rUmVw-0000000GWGM-36sk
 	for linux-um@lists.infradead.org;
 	Tue, 30 Jan 2024 11:42:55 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
 	t=1706614971; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=MJPPX0Mbe/Fi3ODIrg/IdS8p5bwqdjZiSVg8RtlcgFY=;
-	b=Mr/kI40gA6UuVLl06blhLmxHgu262dxtSHuAYoxWcJIcOJkGGbATVvQz50ZivlVcGhjcyZvHHN9R1aLINriPkmD6DVBS5u+mBYn/es+NgAn5p/RcmeyShd5cdJuMvQaAj+IEccVGxrO1RQjDzgUakJ7OqybQNk1iSTqHQeiY7d4=
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=37;SR=0;TI=SMTPD_---0W.g5I9y_1706614969;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W.g5I9y_1706614969)
+	bh=P3G6i/Ax0Z+AAMFYFKvCu0HZ8Ra+Ilb8/1gq6QO23qs=;
+	b=C2d1vBUUIkB/NJfwn4X4WAj5kHldFdI55budwY4ZCZEfV5CnHSA/seIX4F92TZquckt6SwLCRZEMfFnmha55WL4OkCKpBVlMs4E7ByE5vrNbK6wVapJlysY7KUVZFaxlo5aw5sYjQPFhrfaNx7fV55991MpRMKhvMtboI4aP4Kw=
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=37;SR=0;TI=SMTPD_---0W.g5gEc_1706614967;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W.g5gEc_1706614967)
           by smtp.aliyun-inc.com;
-          Tue, 30 Jan 2024 19:42:50 +0800
+          Tue, 30 Jan 2024 19:42:48 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: virtualization@lists.linux.dev
 Cc: Richard Weinberger <richard@nod.at>,
@@ -74,9 +74,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-s390@vger.kernel.org,
 	kvm@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH vhost 15/17] virtio_net: unify the code for recycling the xmit ptr
-Date: Tue, 30 Jan 2024 19:42:22 +0800
-Message-Id: <20240130114224.86536-16-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH vhost 14/17] virtio_ring: introduce dma map api for page
+Date: Tue, 30 Jan 2024 19:42:21 +0800
+Message-Id: <20240130114224.86536-15-xuanzhuo@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 In-Reply-To: <20240130114224.86536-1-xuanzhuo@linux.alibaba.com>
 References: <20240130114224.86536-1-xuanzhuo@linux.alibaba.com>
@@ -84,8 +84,8 @@ MIME-Version: 1.0
 X-Git-Hash: 239d1d475be4
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240130_034253_383349_91333B3D 
-X-CRM114-Status: GOOD (  14.17  )
+X-CRM114-CacheID: sfid-20240130_034253_353359_A9506A55 
+X-CRM114-Status: GOOD (  10.23  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,120 +100,104 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-There are two completely similar and independent implementations. This
-is inconvenient for the subsequent addition of new types. So extract a
-function from this piece of code and call this function uniformly to
-recover old xmit ptr.
+The virtio-net sq will use these APIs to map the scatterlist.
+For scatterlist, the page dma APIs are more appropriate.
+
+dma_addr_t virtqueue_dma_map_page_attrs(struct virtqueue *_vq, struct page *page,
+                                       size_t offset, size_t size,
+                                       enum dma_data_direction dir,
+                                       unsigned long attrs);
+void virtqueue_dma_unmap_page_attrs(struct virtqueue *_vq, dma_addr_t addr,
+                                   size_t size, enum dma_data_direction dir,
+                                   unsigned long attrs);
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/net/virtio_net.c | 66 +++++++++++++++++-----------------------
- 1 file changed, 28 insertions(+), 38 deletions(-)
+ drivers/virtio/virtio_ring.c | 52 ++++++++++++++++++++++++++++++++++++
+ include/linux/virtio.h       |  7 +++++
+ 2 files changed, 59 insertions(+)
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 12961fc0879e..c7409344dda1 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -348,6 +348,30 @@ static struct xdp_frame *ptr_to_xdp(void *ptr)
- 	return (struct xdp_frame *)((unsigned long)ptr & ~VIRTIO_XDP_FLAG);
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index ccdd6dd3062f..47aa31ce69e7 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -3117,6 +3117,58 @@ void virtqueue_dma_unmap_single_attrs(struct virtqueue *_vq, dma_addr_t addr,
  }
+ EXPORT_SYMBOL_GPL(virtqueue_dma_unmap_single_attrs);
  
-+static void __free_old_xmit(struct send_queue *sq, bool in_napi,
-+			    u64 *bytes, u64 *packets)
++/**
++ * virtqueue_dma_map_page_attrs - map DMA for _vq
++ * @_vq: the struct virtqueue we're talking about.
++ * @page: the page to do dma
++ * @offset: the offset inside the page
++ * @size: the size of the page to do dma
++ * @dir: DMA direction
++ * @attrs: DMA Attrs
++ *
++ * The caller calls this to do dma mapping in advance. The DMA address can be
++ * passed to this _vq when it is in pre-mapped mode.
++ *
++ * return DMA address. Caller should check that by virtqueue_dma_mapping_error().
++ */
++dma_addr_t virtqueue_dma_map_page_attrs(struct virtqueue *_vq, struct page *page,
++					size_t offset, size_t size,
++					enum dma_data_direction dir,
++					unsigned long attrs)
 +{
-+	unsigned int len;
-+	void *ptr;
++	struct vring_virtqueue *vq = to_vvq(_vq);
 +
-+	while ((ptr = virtqueue_get_buf(sq->vq, &len)) != NULL) {
-+		if (!is_xdp_frame(ptr)) {
-+			struct sk_buff *skb = ptr;
++	if (!vq->use_dma_api)
++		return page_to_phys(page) + offset;
 +
-+			pr_debug("Sent skb %p\n", skb);
-+
-+			*bytes += skb->len;
-+			napi_consume_skb(skb, in_napi);
-+		} else {
-+			struct xdp_frame *frame = ptr_to_xdp(ptr);
-+
-+			*bytes += xdp_get_frame_len(frame);
-+			xdp_return_frame(frame);
-+		}
-+		(*packets)++;
-+	}
++	return dma_map_page_attrs(vring_dma_dev(vq), page, offset, size, dir, attrs);
 +}
++EXPORT_SYMBOL_GPL(virtqueue_dma_map_page_attrs);
 +
- /* Converting between virtqueue no. and kernel tx/rx queue no.
-  * 0:rx0 1:tx0 2:rx1 3:tx1 ... 2N:rxN 2N+1:txN 2N+2:cvq
-  */
-@@ -740,27 +764,9 @@ static void virtnet_rq_unmap_free_buf(struct virtqueue *vq, void *buf)
++/**
++ * virtqueue_dma_unmap_page_attrs - unmap DMA for _vq
++ * @_vq: the struct virtqueue we're talking about.
++ * @addr: the dma address to unmap
++ * @size: the size of the buffer
++ * @dir: DMA direction
++ * @attrs: DMA Attrs
++ *
++ * Unmap the address that is mapped by the virtqueue_dma_map_* APIs.
++ *
++ */
++void virtqueue_dma_unmap_page_attrs(struct virtqueue *_vq, dma_addr_t addr,
++				    size_t size, enum dma_data_direction dir,
++				    unsigned long attrs)
++{
++	struct vring_virtqueue *vq = to_vvq(_vq);
++
++	if (!vq->use_dma_api)
++		return;
++
++	dma_unmap_page_attrs(vring_dma_dev(vq), addr, size, dir, attrs);
++}
++EXPORT_SYMBOL_GPL(virtqueue_dma_unmap_page_attrs);
++
+ /**
+  * virtqueue_dma_mapping_error - check dma address
+  * @_vq: the struct virtqueue we're talking about.
+diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+index 7f16bacc6c49..8a8d282982ad 100644
+--- a/include/linux/virtio.h
++++ b/include/linux/virtio.h
+@@ -216,6 +216,13 @@ dma_addr_t virtqueue_dma_map_single_attrs(struct virtqueue *_vq, void *ptr, size
+ void virtqueue_dma_unmap_single_attrs(struct virtqueue *_vq, dma_addr_t addr,
+ 				      size_t size, enum dma_data_direction dir,
+ 				      unsigned long attrs);
++dma_addr_t virtqueue_dma_map_page_attrs(struct virtqueue *_vq, struct page *page,
++					size_t offset, size_t size,
++					enum dma_data_direction dir,
++					unsigned long attrs);
++void virtqueue_dma_unmap_page_attrs(struct virtqueue *_vq, dma_addr_t addr,
++				    size_t size, enum dma_data_direction dir,
++				    unsigned long attrs);
+ int virtqueue_dma_mapping_error(struct virtqueue *_vq, dma_addr_t addr);
  
- static void free_old_xmit_skbs(struct send_queue *sq, bool in_napi)
- {
--	unsigned int len;
--	unsigned int packets = 0;
--	unsigned int bytes = 0;
--	void *ptr;
--
--	while ((ptr = virtqueue_get_buf(sq->vq, &len)) != NULL) {
--		if (likely(!is_xdp_frame(ptr))) {
--			struct sk_buff *skb = ptr;
--
--			pr_debug("Sent skb %p\n", skb);
-+	u64 bytes = 0, packets = 0;
- 
--			bytes += skb->len;
--			napi_consume_skb(skb, in_napi);
--		} else {
--			struct xdp_frame *frame = ptr_to_xdp(ptr);
--
--			bytes += xdp_get_frame_len(frame);
--			xdp_return_frame(frame);
--		}
--		packets++;
--	}
-+	__free_old_xmit(sq, in_napi, &bytes, &packets);
- 
- 	/* Avoid overhead when no packets have been processed
- 	 * happens when called speculatively from start_xmit.
-@@ -910,14 +916,11 @@ static int virtnet_xdp_xmit(struct net_device *dev,
- {
- 	struct virtnet_info *vi = netdev_priv(dev);
- 	struct receive_queue *rq = vi->rq;
-+	u64 bytes = 0, packets = 0;
- 	struct bpf_prog *xdp_prog;
- 	struct send_queue *sq;
--	unsigned int len;
--	int packets = 0;
--	int bytes = 0;
- 	int nxmit = 0;
- 	int kicks = 0;
--	void *ptr;
- 	int ret;
- 	int i;
- 
-@@ -936,20 +939,7 @@ static int virtnet_xdp_xmit(struct net_device *dev,
- 	}
- 
- 	/* Free up any pending old buffers before queueing new ones. */
--	while ((ptr = virtqueue_get_buf(sq->vq, &len)) != NULL) {
--		if (likely(is_xdp_frame(ptr))) {
--			struct xdp_frame *frame = ptr_to_xdp(ptr);
--
--			bytes += xdp_get_frame_len(frame);
--			xdp_return_frame(frame);
--		} else {
--			struct sk_buff *skb = ptr;
--
--			bytes += skb->len;
--			napi_consume_skb(skb, false);
--		}
--		packets++;
--	}
-+	__free_old_xmit(sq, false, &bytes, &packets);
- 
- 	for (i = 0; i < n; i++) {
- 		struct xdp_frame *xdpf = frames[i];
+ bool virtqueue_dma_need_sync(struct virtqueue *_vq, dma_addr_t addr);
 -- 
 2.32.0.3.g01195cf9f
 
