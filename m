@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85DA8C47DB3
-	for <linux-um@archiver.kernel.org>; Tue, 30 Jan 2024 03:06:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B454EC46CD2
+	for <linux-um@archiver.kernel.org>; Tue, 30 Jan 2024 11:42:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=k3jrHVzeGbkw+MbEmyF2IW48EPUzLK1XdzB5/asDKLs=; b=QfTU+i1JBUHPcqt09rhx0a5S9w
-	xbMWMii1cROLy8jTd0Gz67oZoWNuJXsNchSqpxEIh2Zt0FBokVnJVDRcjHrrPP/yPuomQGflsnozj
-	VHNzbOP5ea+Ub88M6Tc208Roo9eB2LjgsNrZTAAL1FpQ8HoGgUMubG9zOb/ooVCwAvl5jtzAVV3d+
-	hIsAytSGU5yY3+/noPvN1sR3BZt9GdfMfQNZJ6Ky6gGJ3RmZha0NUwvJgWobtr+tW5jHOalrmLwV3
-	kgSVq0/A3UkkRNejuCurTL0C63/nt8DGodtwzuX70FSsVG3g985+/01WIAOeu9c3f8hiynhoKsUZX
-	WMUOH23g==;
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=xvo/NohFCvr1cLaN04Uc48tvSWy5BXAIcL5O2TECUPc=; b=4q0qeygdWQOhtfFEh+w4XETPyM
+	QtfHVsyvTPMWA1zkPJKicJ/9H0G9mgcPpesocCcnCeWA37UGh/JV/2EyhsU6dic4djjlNIopzPCru
+	s4l/s6sXTe48PHAwFrEmctbNrxpJhYFW0ay+BNSBg85EyOZiwCOzfv2Q6ufGDcab7felDReydZ5Uk
+	U1CCyX9G5xvix0tSdfn3KWd/sQeb32XcpxkpZtEyfSoTU3RPPg1qP2KS2UON0azV7oj8OPtxHrkFF
+	jS4+5TaVWBT5S4L33QyI3yEmFG1VUS8PAhremVjKUwEQ7LZj29QYiFlufeDRR1iRF4f2hgznaXDTc
+	n/BiK79Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rUeSP-0000000F43o-0qu2;
-	Tue, 30 Jan 2024 03:06:41 +0000
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130])
+	id 1rUmVc-0000000GW0w-3LPY;
+	Tue, 30 Jan 2024 11:42:32 +0000
+Received: from out30-97.freemail.mail.aliyun.com ([115.124.30.97])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rUeSH-0000000F3vZ-1rQ4
+	id 1rUmVZ-0000000GVz9-0Qom
 	for linux-um@lists.infradead.org;
-	Tue, 30 Jan 2024 03:06:35 +0000
+	Tue, 30 Jan 2024 11:42:30 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1706583991; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=k3jrHVzeGbkw+MbEmyF2IW48EPUzLK1XdzB5/asDKLs=;
-	b=aQ7NPX79OqH+vB8jlac9eQk8ej9p2KmvCGwo7Do8mrCmY0888JVRDkwLPpileHx4/w6NlNbonpubKbKEp8OFxpV7WlWl2/IXRAtOewaWD2xsr9NcT6+to1p9zCeuG297bgWsok9yqHDE7WtMcjFYX6s37IHEnhPVKRAPCSOkbXE=
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R591e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=37;SR=0;TI=SMTPD_---0W.efIYH_1706583987;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W.efIYH_1706583987)
+	t=1706614947; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=xvo/NohFCvr1cLaN04Uc48tvSWy5BXAIcL5O2TECUPc=;
+	b=e5vUpNfism1Uu57i2mN0SEtfLPPrgwzN4FDiK5DPxXBu4IOs5aFXHGalE3i6OgxMaoBCvl6dbweabnIiS1E5/tXHhnBvJepOGS2QtMUq8Xhawm9uCvt2m5WKHzbAuspruSnI/Tkqzb5SRaqb+NgAt2ExMjueAbBwvw2F9l/hws0=
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R651e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=37;SR=0;TI=SMTPD_---0W.g4wKb_1706614944;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W.g4wKb_1706614944)
           by smtp.aliyun-inc.com;
-          Tue, 30 Jan 2024 11:06:28 +0800
+          Tue, 30 Jan 2024 19:42:25 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: virtualization@lists.linux.dev
 Cc: Richard Weinberger <richard@nod.at>,
@@ -74,18 +74,16 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-s390@vger.kernel.org,
 	kvm@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH 14/14] virtio_net: sq support premapped mode
-Date: Tue, 30 Jan 2024 11:06:04 +0800
-Message-Id: <20240130030604.108463-15-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH vhost 00/17] virtio: drivers maintain dma info for premapped vq
+Date: Tue, 30 Jan 2024 19:42:07 +0800
+Message-Id: <20240130114224.86536-1-xuanzhuo@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0.3.g01195cf9f
-In-Reply-To: <20240130030604.108463-1-xuanzhuo@linux.alibaba.com>
-References: <20240130030604.108463-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-X-Git-Hash: ce068f9b825d
+X-Git-Hash: 239d1d475be4
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240129_190633_946402_EA550D42 
-X-CRM114-Status: GOOD (  17.96  )
+X-CRM114-CacheID: sfid-20240130_034229_507607_6F8926DE 
+X-CRM114-Status: GOOD (  10.77  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,265 +98,74 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-If the xsk is enabling, the xsk tx will share the send queue.
-But the xsk requires that the send queue use the premapped mode.
-So the send queue must support premapped mode.
+As discussed:
+http://lore.kernel.org/all/CACGkMEvq0No8QGC46U4mGsMtuD44fD_cfLcPaVmJ3rHYqRZxYg@mail.gmail.com
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/net/virtio_net.c | 167 ++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 163 insertions(+), 4 deletions(-)
+If the virtio is premapped mode, the driver should manage the dma info by self.
+So the virtio core should not store the dma info.
+So we can release the memory used to store the dma info.
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 1118aa0ebc53..e007759c60ba 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -46,6 +46,7 @@ module_param(napi_tx, bool, 0644);
- #define VIRTIO_XDP_REDIR	BIT(1)
- 
- #define VIRTIO_XDP_FLAG	BIT(0)
-+#define VIRTIO_DMA_FLAG	BIT(1)
- 
- /* RX packet size EWMA. The average packet size is used to determine the packet
-  * buffer size when refilling RX rings. As the entire RX ring may be refilled
-@@ -140,6 +141,21 @@ struct virtnet_rq_dma {
- 	u16 need_sync;
- };
- 
-+struct virtnet_sq_dma {
-+	union {
-+		struct virtnet_sq_dma *next;
-+		void *data;
-+	};
-+	dma_addr_t addr;
-+	u32 len;
-+	bool is_tail;
-+};
-+
-+struct virtnet_sq_dma_head {
-+	struct virtnet_sq_dma *free;
-+	struct virtnet_sq_dma *head;
-+};
-+
- /* Internal representation of a send virtqueue */
- struct send_queue {
- 	/* Virtqueue associated with this send _queue */
-@@ -159,6 +175,8 @@ struct send_queue {
- 
- 	/* Record whether sq is in reset state. */
- 	bool reset;
-+
-+	struct virtnet_sq_dma_head dmainfo;
- };
- 
- /* Internal representation of a receive virtqueue */
-@@ -348,6 +366,131 @@ static struct xdp_frame *ptr_to_xdp(void *ptr)
- 	return (struct xdp_frame *)((unsigned long)ptr & ~VIRTIO_XDP_FLAG);
- }
- 
-+static inline void *virtnet_sq_unmap(struct send_queue *sq, void *data)
-+{
-+	struct virtnet_sq_dma *head, *tail;
-+
-+	if (!((unsigned long)data & VIRTIO_DMA_FLAG))
-+		return data;
-+
-+	head = (void *)((unsigned long)data & ~VIRTIO_DMA_FLAG);
-+
-+	tail = head;
-+
-+	while (true) {
-+		virtqueue_dma_unmap_page_attrs(sq->vq, tail->addr, tail->len,
-+					       DMA_TO_DEVICE, 0);
-+
-+		if (tail->is_tail)
-+			break;
-+
-+		tail = tail->next;
-+	}
-+
-+	data = tail->data;
-+	tail->is_tail = false;
-+
-+	tail->next = sq->dmainfo.free;
-+	sq->dmainfo.free = head;
-+
-+	return data;
-+}
-+
-+static void *virtnet_sq_dma_splice(struct send_queue *sq,
-+				   struct virtnet_sq_dma *head,
-+				   struct virtnet_sq_dma *tail,
-+				   void *data)
-+{
-+	sq->dmainfo.free = tail->next;
-+
-+	tail->is_tail = true;
-+	tail->data = data;
-+
-+	head = (void *)((unsigned long)head | VIRTIO_DMA_FLAG);
-+
-+	return head;
-+}
-+
-+static struct virtnet_sq_dma *virtnet_sq_map_sg(struct send_queue *sq, int nents, void *data)
-+{
-+	struct virtnet_sq_dma *head, *tail, *p;
-+	struct scatterlist *sg;
-+	dma_addr_t addr;
-+	int i;
-+
-+	head = sq->dmainfo.free;
-+	p = head;
-+
-+	tail = NULL;
-+
-+	for_each_sg(sq->sg, sg, nents, i) {
-+		addr = virtqueue_dma_map_page_attrs(sq->vq, sg_page(sg),
-+						    sg->offset, sg->length,
-+						    DMA_TO_DEVICE, 0);
-+		if (virtqueue_dma_mapping_error(sq->vq, addr))
-+			goto err;
-+
-+		sg->dma_address = addr;
-+
-+		tail = p;
-+		tail->addr = sg->dma_address;
-+		tail->len = sg->length;
-+
-+		p = p->next;
-+	}
-+
-+	return virtnet_sq_dma_splice(sq, head, tail, data);
-+
-+err:
-+	if (tail)
-+		virtnet_sq_unmap(sq, virtnet_sq_dma_splice(sq, head, tail, data));
-+
-+	return NULL;
-+}
-+
-+static int virtnet_add_outbuf(struct send_queue *sq, u32 num, void *data)
-+{
-+	int ret;
-+
-+	if (sq->vq->premapped) {
-+		data = virtnet_sq_map_sg(sq, num, data);
-+		if (!data)
-+			return -ENOMEM;
-+	}
-+
-+	ret = virtqueue_add_outbuf(sq->vq, sq->sg, num, data, GFP_ATOMIC);
-+	if (ret && sq->vq->premapped)
-+		virtnet_sq_unmap(sq, data);
-+
-+	return ret;
-+}
-+
-+static int virtnet_sq_init_dma_mate(struct send_queue *sq)
-+{
-+	struct virtnet_sq_dma *d;
-+	int size, i;
-+
-+	size = virtqueue_get_vring_size(sq->vq);
-+
-+	size += MAX_SKB_FRAGS + 2;
-+
-+	sq->dmainfo.head = kcalloc(size, sizeof(*sq->dmainfo.head), GFP_KERNEL);
-+	if (!sq->dmainfo.head)
-+		return -ENOMEM;
-+
-+	sq->dmainfo.free = sq->dmainfo.head;
-+
-+	for (i = 0; i < size; ++i) {
-+		d = &sq->dmainfo.head[i];
-+		d->is_tail = false;
-+		d->next = d + 1;
-+	}
-+
-+	d->next = NULL;
-+
-+	return 0;
-+}
-+
- static void __free_old_xmit(struct send_queue *sq, bool in_napi,
- 			    u64 *bytes, u64 *packets)
- {
-@@ -355,6 +498,8 @@ static void __free_old_xmit(struct send_queue *sq, bool in_napi,
- 	void *ptr;
- 
- 	while ((ptr = virtqueue_get_buf(sq->vq, &len)) != NULL) {
-+		ptr = virtnet_sq_unmap(sq, ptr);
-+
- 		if (!is_xdp_frame(ptr)) {
- 			struct sk_buff *skb = ptr;
- 
-@@ -865,8 +1010,7 @@ static int __virtnet_xdp_xmit_one(struct virtnet_info *vi,
- 			    skb_frag_size(frag), skb_frag_off(frag));
- 	}
- 
--	err = virtqueue_add_outbuf(sq->vq, sq->sg, nr_frags + 1,
--				   xdp_to_ptr(xdpf), GFP_ATOMIC);
-+	err = virtnet_add_outbuf(sq, nr_frags + 1, xdp_to_ptr(xdpf));
- 	if (unlikely(err))
- 		return -ENOSPC; /* Caller handle free/refcnt */
- 
-@@ -2305,7 +2449,7 @@ static int xmit_skb(struct send_queue *sq, struct sk_buff *skb)
- 			return num_sg;
- 		num_sg++;
- 	}
--	return virtqueue_add_outbuf(sq->vq, sq->sg, num_sg, skb, GFP_ATOMIC);
-+	return virtnet_add_outbuf(sq, num_sg, skb);
- }
- 
- static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
-@@ -3961,6 +4105,8 @@ static void virtnet_free_queues(struct virtnet_info *vi)
- 	for (i = 0; i < vi->max_queue_pairs; i++) {
- 		__netif_napi_del(&vi->rq[i].napi);
- 		__netif_napi_del(&vi->sq[i].napi);
-+
-+		kfree(vi->sq[i].dmainfo.head);
- 	}
- 
- 	/* We called __netif_napi_del(),
-@@ -4009,6 +4155,14 @@ static void free_receive_page_frags(struct virtnet_info *vi)
- 
- static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf)
- {
-+	struct virtnet_info *vi = vq->vdev->priv;
-+	struct send_queue *sq;
-+	int i = vq2rxq(vq);
-+
-+	sq = &vi->sq[i];
-+
-+	buf = virtnet_sq_unmap(sq, buf);
-+
- 	if (!is_xdp_frame(buf))
- 		dev_kfree_skb(buf);
- 	else
-@@ -4120,8 +4274,10 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
- 		if (ctx)
- 			ctx[rxq2vq(i)] = true;
- 
--		if (premapped)
-+		if (premapped) {
- 			premapped[rxq2vq(i)] = true;
-+			premapped[txq2vq(i)] = true;
-+		}
- 	}
- 
- 	ret = virtio_find_vqs_ctx_premapped(vi->vdev, total_vqs, vqs, callbacks,
-@@ -4139,6 +4295,9 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
- 		vi->rq[i].vq = vqs[rxq2vq(i)];
- 		vi->rq[i].min_buf_len = mergeable_min_buf_len(vi, vi->rq[i].vq);
- 		vi->sq[i].vq = vqs[txq2vq(i)];
-+
-+		if (vi->sq[i].vq->premapped)
-+			virtnet_sq_init_dma_mate(&vi->sq[i]);
- 	}
- 
- 	/* run here: ret == 0. */
--- 
+But if the desc_extra has not dma info, we face a new question,
+it is hard to get the dma info of the desc with indirect flag.
+For split mode, that is easy from desc, but for the packed mode,
+it is hard to get the dma info from the desc. And for hardening
+the dma unmap is saft, we should store the dma info of indirect
+descs.
+
+So I introduce the "structure the indirect desc table" to
+allocate space to store dma info with the desc table.
+
+On the other side, we mix the descs with indirect flag
+with other descs together to share the unmap api. That
+is complex. I found if we we distinguish the descs with
+VRING_DESC_F_INDIRECT before unmap, thing will be clearer.
+
+Because of the dma array is allocated in the find_vqs(),
+so I introduce a new parameter to find_vqs().
+
+Please review.
+
+Thanks
+
+Xuan Zhuo (17):
+  virtio_ring: introduce vring_need_unmap_buffer
+  virtio_ring: packed: remove double check of the unmap ops
+  virtio_ring: packed: structure the indirect desc table
+  virtio_ring: split: remove double check of the unmap ops
+  virtio_ring: split: structure the indirect desc table
+  virtio_ring: no store dma info when unmap is not needed
+  virtio: find_vqs: pass struct instead of multi parameters
+  virtio: vring_new_virtqueue(): pass struct instead of multi parameters
+  virtio_ring: reuse the parameter struct of find_vqs()
+  virtio: find_vqs: add new parameter premapped
+  virtio_ring: export premapped to driver by struct virtqueue
+  virtio_net: set premapped mode by find_vqs()
+  virtio_ring: remove api of setting vq premapped
+  virtio_ring: introduce dma map api for page
+  virtio_net: unify the code for recycling the xmit ptr
+  virtio_net: rename free_old_xmit_skbs to free_old_xmit
+  virtio_net: sq support premapped mode
+
+ arch/um/drivers/virtio_uml.c             |  29 +-
+ drivers/net/virtio_net.c                 | 298 +++++++---
+ drivers/platform/mellanox/mlxbf-tmfifo.c |  24 +-
+ drivers/remoteproc/remoteproc_virtio.c   |  31 +-
+ drivers/s390/virtio/virtio_ccw.c         |  33 +-
+ drivers/virtio/virtio_mmio.c             |  30 +-
+ drivers/virtio/virtio_pci_common.c       |  59 +-
+ drivers/virtio/virtio_pci_common.h       |   9 +-
+ drivers/virtio/virtio_pci_legacy.c       |  16 +-
+ drivers/virtio/virtio_pci_modern.c       |  24 +-
+ drivers/virtio/virtio_ring.c             | 660 ++++++++++++-----------
+ drivers/virtio/virtio_vdpa.c             |  33 +-
+ include/linux/virtio.h                   |  10 +-
+ include/linux/virtio_config.h            |  48 +-
+ include/linux/virtio_ring.h              |  82 +--
+ tools/virtio/virtio_test.c               |   4 +-
+ tools/virtio/vringh_test.c               |  32 +-
+ 17 files changed, 812 insertions(+), 610 deletions(-)
+
+--
 2.32.0.3.g01195cf9f
 
 
