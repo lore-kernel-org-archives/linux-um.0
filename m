@@ -4,72 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 070D4C46CD2
-	for <linux-um@archiver.kernel.org>; Sat, 27 Jan 2024 15:50:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93598C47DB3
+	for <linux-um@archiver.kernel.org>; Tue, 30 Jan 2024 00:45:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=H1JFQuW7EupHOnFVPOKBJiDh0b1TZN/s6jsrNot8dxU=; b=2mI7Vznft2DNifSpFW9VxMDUaf
-	5QSdq9RjgN9WFC9qQvpJOOEKP/7FHXA+omKZqF6AcRlqMiyVYBBUluqyz7mwOFVzXPfTYklJE68B5
-	YVp+gO3nOuTkxWK1nROdi/dljhB9VuQxfPVEP51wkprqT8qFU07rXFS2W7GCyxyYPjM20GyY7TWKo
-	1GKw4viTyWZuDOgOEbjQvU13guHk4329PT1BYufQ+OtfBZ6Y+kVLL7fiStO+M4HF8NbiuWnGHXNRB
-	1/UjXBIHWcMN4W/qRmHsmqYH6rOSjnWcAjHv/XxrSorD65IJhGxpS8Ei9HwJXPX5oK8/u5GLrIfbt
-	zyOJoILg==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=esmLFoWEc7Lg06NBgO9C+HiyLZmtELGcj84DcSOPhKA=; b=IIhuplGqtiqT0o/1j7Na8LUEyz
+	n1/CYkaa1aOgib9djc8SqmuVhB6KycmvRi3ENc18MKrdUnMjIzNGd0/kFBPgDhxEnWtVJzXOE+uoU
+	HKE4zwx95wtFOY5+IyN/GcnNPkXi0TbPIA1wCLM+ibjXFwcjxJideuuWTi7Ep3ZghIITBwxuh8aPB
+	OxrK9FIRZ3MnqoW8eD1bNs8pBEXlrh6hXXg62aEF8K9uT0sCzrgAoz6p7NZPKv7rXq1nFmXgMh4zb
+	xT+Oy/ig7QGQ2Yc6i1Aa2Pvj7B393n6U6ietrZf+jLBjAZUdzQbbecjhK8oPxVStpVkOwdo3wjdN0
+	l1s2mBSQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rTkwY-00000007hi6-0pOS;
-	Sat, 27 Jan 2024 15:50:06 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1rUcFZ-0000000EjTU-496N;
+	Tue, 30 Jan 2024 00:45:17 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rTkwV-00000007hhf-3ULw
-	for linux-um@lists.infradead.org;
-	Sat, 27 Jan 2024 15:50:05 +0000
+	id 1rUcFU-0000000EjNo-1OVI;
+	Tue, 30 Jan 2024 00:45:13 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id A9E7C6108C
-	for <linux-um@lists.infradead.org>; Sat, 27 Jan 2024 15:50:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57A26C43390
-	for <linux-um@lists.infradead.org>; Sat, 27 Jan 2024 15:50:02 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 04F846238C;
+	Tue, 30 Jan 2024 00:45:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABDE5C433C7;
+	Tue, 30 Jan 2024 00:45:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706370602;
-	bh=xMum1nfS4Zw0xeihyEQn0dWh29rgau+LhppkJ/8YUbY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=d/djCDMNQTvN99njEZJfMV+GQJck3sqJIB5bHMhAmH04k+W+AV3NKVZ0UBUg16qtf
-	 9i3EmWQWwr4Oza332PQLzoAWfA671swctuiq+SVz58JOZ+6sjpWr1UMRVorjnt8t1z
-	 eELiPvi7w9PXHRjwiKU0ddy5c9TOn8fiWCS/f9a4IRufWhRNZZfN//05APyRUP8wa4
-	 vDkXHdnA0X05xIDcPgGU6lehHN3HK+rVADqF9NaKj1vshWO1vf8zat+JYMnmkgtUOP
-	 TonIhpn4i0KsR7JaUZq93JUBkgQNze5haPFDtkdbCWkf125m6TlSqQzERpUft5MmcF
-	 Z5oDLHuBsNyOQ==
-Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-206689895bfso894928fac.1
-        for <linux-um@lists.infradead.org>; Sat, 27 Jan 2024 07:50:02 -0800 (PST)
-X-Gm-Message-State: AOJu0YwvYJ+dyb/51WEs5W9sQIowaLQBOur8qMLLFmSvpOOLiOJYz5Q9
-	AfAmr0153a1Fu6i0BXix3Eu1BrcJlClPSZfF5Djo0BibD0qGycx5fMcycXavW6kQJp3DXFY2fPh
-	pRte6YA0bcwKft936KJb497N+kfQ=
-X-Google-Smtp-Source: AGHT+IFDy5SBpxGVQFs+UrOt0sr31INoe6WBxhB+4rEP6q675XfByIgB8DlqySVkP1CSlylWjc+vunEaHrVRYvYBUow=
-X-Received: by 2002:a05:6870:d208:b0:206:8e1b:3948 with SMTP id
- g8-20020a056870d20800b002068e1b3948mr1044837oac.25.1706370601678; Sat, 27 Jan
- 2024 07:50:01 -0800 (PST)
+	s=k20201202; t=1706575510;
+	bh=YC1N2oEpGjCqkxBB/gMBX4M8pPLAjOZSUACvgMPf924=;
+	h=From:To:Cc:Subject:Date:From;
+	b=EsVITYj953c4uFFFHZ/frw0EiUtZbrrMp+OVQxWbuOaE0N+CeP+uTVtvg0d1HkPbE
+	 dx1xjZuEYidzlqTiWFRGj+SkA/+U6udg9PcDME4tGk23K49tCxu8OA9a+i/MJUELpx
+	 zfgr06iNdTvvKa6poZRHyUzhaW+YgG3/JsUivUtxPgA0NlbZAhvfIincnmBqraRYq+
+	 Ym3kNoML2p6zAT5oQeRN8l7wcJqsH6fONUx2p6UMhh+ytFbKacXcsGSL9RW1n+KEnP
+	 3q3EOAXhUglqEegusNEH88D8ltv1cC/T02mXvBhkKWFf4BK6DTvW1m58/9L/m3VxHY
+	 ryyDMU5hgXARw==
+From: Stephen Boyd <sboyd@kernel.org>
+To: Rob Herring <robh+dt@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	patches@lists.linux.dev,
+	linux-um@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	kunit-dev@googlegroups.com,
+	linux-kselftest@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Brendan Higgins <brendan.higgins@linux.dev>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	David Gow <davidgow@google.com>,
+	Frank Rowand <frowand.list@gmail.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Richard Weinberger <richard@nod.at>,
+	Will Deacon <will@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Saurabh Sengar <ssengar@linux.microsoft.com>
+Subject: [PATCH v2 0/7] of: populate of_root node if bootloader doesn't
+Date: Mon, 29 Jan 2024 16:44:59 -0800
+Message-ID: <20240130004508.1700335-1-sboyd@kernel.org>
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
 MIME-Version: 1.0
-References: <20240123-fix-uml-clang-18-v1-0-efc095519cf9@kernel.org> <20240123-fix-uml-clang-18-v1-2-efc095519cf9@kernel.org>
-In-Reply-To: <20240123-fix-uml-clang-18-v1-2-efc095519cf9@kernel.org>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Sun, 28 Jan 2024 00:49:25 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASWAXwcHtzsW1vex6kuL7Jf+M2HiBhTGhHYfKnAoMqvPA@mail.gmail.com>
-Message-ID: <CAK7LNASWAXwcHtzsW1vex6kuL7Jf+M2HiBhTGhHYfKnAoMqvPA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] modpost: Add '.ltext' and '.ltext.*' to TEXT_SECTIONS
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, 
-	nicolas@fjasle.eu, ndesaulniers@google.com, morbo@google.com, 
-	justinstitt@google.com, linux-um@lists.infradead.org, 
-	linux-kbuild@vger.kernel.org, llvm@lists.linux.dev, patches@lists.linux.dev, 
-	stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240127_075003_982553_D79A9E96 
-X-CRM114-Status: GOOD (  21.23  )
+X-CRM114-CacheID: sfid-20240129_164512_485101_A638DB49 
+X-CRM114-Status: GOOD (  14.24  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -84,70 +88,80 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jan 24, 2024 at 8:00=E2=80=AFAM Nathan Chancellor <nathan@kernel.or=
-g> wrote:
->
-> After the linked LLVM change, building ARCH=3Dum defconfig results in a
-> segmentation fault in modpost.
+Arch maintainers, please ack/review patches.
 
-Yeah, this is a mistake in my commits.
-The NULL pointer access should be fixed, but that is a separate issue.
+This is a resend of a series from Frank last year[1]. I worked in Rob's
+review comments to unconditionally call unflatten_device_tree() and
+fixup/audit calls to of_have_populated_dt() so that behavior doesn't
+change.
 
-Anyway, I applied this patch.
+I need this series so I can add DT based tests in the clk framework.
+Either I can merge it through the clk tree once everyone is happy, or
+Rob can merge it through the DT tree and provide some branch so I can
+base clk patches on it.
 
+Changes from Frank's series[1]:
+ * Add a DTB loaded kunit test
+ * Make of_have_populated_dt() return false if the DTB isn't from the
+   bootloader
+ * Architecture calls made unconditional so that a root node is always
+   made
 
+Changes from v1 (https://lore.kernel.org/r/20240112200750.4062441-1-sboyd@kernel.org):
+ * x86 patch included
+ * arm64 knocks out initial dtb if acpi is in use
+ * keep Kconfig hidden but def_bool enabled otherwise
 
-> Prior to commit a23e7584ecf3 ("modpost:
-> unify 'sym' and 'to' in default_mismatch_handler()"), there was a
-> warning:
->
->   WARNING: modpost: vmlinux.o(__ex_table+0x88): Section mismatch in refer=
-ence to the .ltext:(unknown)
->   WARNING: modpost: The relocation at __ex_table+0x88 references
->   section ".ltext" which is not in the list of
->   authorized sections.  If you're adding a new section
->   and/or if this reference is valid, add ".ltext" to the
->   list of authorized sections to jump to on fault.
->   This can be achieved by adding ".ltext" to
->   OTHER_TEXT_SECTIONS in scripts/mod/modpost.c.
->
-> The linked LLVM change moves global objects to the '.ltext' (and
-> '.ltext.*' with '-ffunction-sections') sections with '-mcmodel=3Dlarge',
-> which ARCH=3Dum uses. These sections should be handled just as '.text'
-> and '.text.*' are, so add them to TEXT_SECTIONS.
->
-> Cc: stable@vger.kernel.org
-> Closes: https://github.com/ClangBuiltLinux/linux/issues/1981
-> Link: https://github.com/llvm/llvm-project/commit/4bf8a688956a759b7b6b8d9=
-4f42d25c13c7af130
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> ---
->  scripts/mod/modpost.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-> index cb6406f485a9..f7c4d3fe4381 100644
-> --- a/scripts/mod/modpost.c
-> +++ b/scripts/mod/modpost.c
-> @@ -807,7 +807,8 @@ static void check_section(const char *modname, struct=
- elf_info *elf,
->
->  #define DATA_SECTIONS ".data", ".data.rel"
->  #define TEXT_SECTIONS ".text", ".text.*", ".sched.text", \
-> -               ".kprobes.text", ".cpuidle.text", ".noinstr.text"
-> +               ".kprobes.text", ".cpuidle.text", ".noinstr.text", \
-> +               ".ltext", ".ltext.*"
->  #define OTHER_TEXT_SECTIONS ".ref.text", ".head.text", ".spinlock.text",=
- \
->                 ".fixup", ".entry.text", ".exception.text", \
->                 ".coldtext", ".softirqentry.text"
->
-> --
-> 2.43.0
->
+Frank Rowand (2):
+  of: Create of_root if no dtb provided by firmware
+  of: unittest: treat missing of_root as error instead of fixing up
 
+Stephen Boyd (5):
+  arm64: Unconditionally call unflatten_device_tree()
+  um: Unconditionally call unflatten_device_tree()
+  x86/of: Unconditionally call unflatten_and_copy_device_tree()
+  of: Always unflatten in unflatten_and_copy_device_tree()
+  of: Add KUnit test to confirm DTB is loaded
 
---=20
-Best Regards
-Masahiro Yamada
+ arch/arm64/kernel/setup.c    |  7 +++--
+ arch/um/kernel/dtb.c         | 14 +++++-----
+ arch/x86/kernel/devicetree.c | 24 +++++++++--------
+ drivers/of/.kunitconfig      |  3 +++
+ drivers/of/Kconfig           | 11 +++++++-
+ drivers/of/Makefile          |  4 ++-
+ drivers/of/empty_root.dts    |  6 +++++
+ drivers/of/fdt.c             | 52 +++++++++++++++++++++++++-----------
+ drivers/of/of_test.c         | 48 +++++++++++++++++++++++++++++++++
+ drivers/of/platform.c        |  3 ---
+ drivers/of/unittest.c        | 16 +++--------
+ include/linux/of.h           | 25 ++++++++++-------
+ 12 files changed, 151 insertions(+), 62 deletions(-)
+ create mode 100644 drivers/of/.kunitconfig
+ create mode 100644 drivers/of/empty_root.dts
+ create mode 100644 drivers/of/of_test.c
+
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Brendan Higgins <brendan.higgins@linux.dev>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Gow <davidgow@google.com>
+Cc: Frank Rowand <frowand.list@gmail.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: <x86@kernel.org>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Saurabh Sengar <ssengar@linux.microsoft.com>
+
+[1] https://lore.kernel.org/r/20230317053415.2254616-1-frowand.list@gmail.com
+
+base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
+-- 
+https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
+https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
+
 
