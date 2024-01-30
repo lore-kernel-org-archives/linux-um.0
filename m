@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 511EBC48285
-	for <linux-um@archiver.kernel.org>; Tue, 30 Jan 2024 11:42:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 797E5C46CD2
+	for <linux-um@archiver.kernel.org>; Tue, 30 Jan 2024 11:42:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Dgn6m2tLOO6WFRL4YWGeqj72OqIhjZpHBxeWCefu0YE=; b=JlGn9Y5kgm24uBftK1czT7OPa5
-	AL5/vceZNf5mIPqQ8Fp8bvpjPCmUEKCr7ptHLawEEIv6FLbTPBJkRSNC2eeMRS+Y31AJveBHA/IiD
-	rS3oG4asPfE5FEjW3Bp8L8ffjPMQy6kdrci8LYnIPb7LXXuK7wQxEz9/jM3m1d7NdADu+KhjjgEDq
-	jyZxiNHkSBbQZk1+mbZKwDhrAh2/CxRyy8l2L3E7ioL0eAL8yA08vw4nIGjC9JSa3Hqpc2b8hzK2I
-	8Yy81TIKRzC/OmCsB4BMzaSiY7FakQur5AwtSiztNym6YogJlhjjznJbo+/ESgap0TqahDqutUWFA
-	0qxZMc0w==;
+	bh=r6iCdzsV8xEvLLqA0Ba/UisWAzFxmo/I9b/Z3w5ndek=; b=NWWiHILHdDIXr1CpsPpGOQztPk
+	+O1LmGWwOt2qVgy2EY5cpwYyg4a+HB5kx1D5Z23p0jQFkkqMkEltAGRDdn0pcmd+m5RMLRx1dYlI9
+	MlU97mZSB6Lxsrk6rs3+/TTF9UHcg4kQQyh6+FogpdtCMosm+oOuRU1GS9/9NUhkEJNr4cJ6AtgmO
+	rnN4WgAtjlQxDwsQtV62/hp5elSvPVqSU1GAv/hnvjJI7RO/XeL71k4h4IndTHWecIAQFJ10o0l08
+	+qSRrE9spETMPgNHXMLa0Xo7moCUgxpcK3jRy2lGA6chQRsIuZCrFgBE5KgU8ksKR8mipoOnRHkXc
+	Maoix0XA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rUmVt-0000000GWEh-3sfU;
-	Tue, 30 Jan 2024 11:42:49 +0000
-Received: from out30-97.freemail.mail.aliyun.com ([115.124.30.97])
+	id 1rUmVw-0000000GWHN-3GLB;
+	Tue, 30 Jan 2024 11:42:52 +0000
+Received: from out30-118.freemail.mail.aliyun.com ([115.124.30.118])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rUmVp-0000000GWA5-3St5
+	id 1rUmVt-0000000GWDH-3RXV
 	for linux-um@lists.infradead.org;
-	Tue, 30 Jan 2024 11:42:47 +0000
+	Tue, 30 Jan 2024 11:42:51 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1706614964; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=Dgn6m2tLOO6WFRL4YWGeqj72OqIhjZpHBxeWCefu0YE=;
-	b=c/NwOmRYcGH7zZNPG26b2iPGT+oo9sDt7Wn2ZGnjK6cvIMUI9CF4kZu4LIP2bNVrCYzUv9s2DGv3QAVYTpyUa8ppiiT5Ihm2BGIxrjfwvkP5Zu/yUAHHoqzZIkN2YHq/RyrIKUrHbLgTUio1ro/dxNTcQss2jS2IQC2k+cFzzo0=
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=37;SR=0;TI=SMTPD_---0W.g78-7_1706614961;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W.g78-7_1706614961)
+	t=1706614968; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=r6iCdzsV8xEvLLqA0Ba/UisWAzFxmo/I9b/Z3w5ndek=;
+	b=CySrsmS8ySuizfrzaMKq39iCPDyWaz9SP7DEhv817FXW6LmrCKzfSU7R1ZuYQ4b2Fzj9vjReNPzUaxh6xU3qOCmEwBl4bLwRTajbIyVFiacBWUpLyEAOqqX5B7PV12rtFO063emdHtH39F9X70wtoaIdS8VvV7Xc/jyTDjmFFDI=
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=37;SR=0;TI=SMTPD_---0W.g78.V_1706614966;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W.g78.V_1706614966)
           by smtp.aliyun-inc.com;
-          Tue, 30 Jan 2024 19:42:42 +0800
+          Tue, 30 Jan 2024 19:42:46 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: virtualization@lists.linux.dev
 Cc: Richard Weinberger <richard@nod.at>,
@@ -74,9 +74,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-s390@vger.kernel.org,
 	kvm@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH vhost 10/17] virtio: find_vqs: add new parameter premapped
-Date: Tue, 30 Jan 2024 19:42:17 +0800
-Message-Id: <20240130114224.86536-11-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH vhost 13/17] virtio_ring: remove api of setting vq premapped
+Date: Tue, 30 Jan 2024 19:42:20 +0800
+Message-Id: <20240130114224.86536-14-xuanzhuo@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 In-Reply-To: <20240130114224.86536-1-xuanzhuo@linux.alibaba.com>
 References: <20240130114224.86536-1-xuanzhuo@linux.alibaba.com>
@@ -84,8 +84,8 @@ MIME-Version: 1.0
 X-Git-Hash: 239d1d475be4
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240130_034246_058977_65BE6F66 
-X-CRM114-Status: GOOD (  11.26  )
+X-CRM114-CacheID: sfid-20240130_034250_082190_B05FE634 
+X-CRM114-Status: GOOD (  11.83  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,55 +100,98 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-If the premapped mode is enabled, the dma array(struct vring_desc_dma) of
-virtio core will not be allocated. That is judged when find_vqs() is
-called. To avoid allocating dma array in find_vqs() and releasing it
-immediately by virtqueue_set_dma_premapped(). This patch introduces a
-new parameter to find_vqs(). Then we can judge should we allocate the
-dma array(struct vring_desc_dma) or not inside find_vqs().
+The virtio-net sets the premapped mode by find_vqs().
 
-The driver must check the premapped mode of every vq after find_vqs().
+So the below API is not used by anyone, we remove it.
+
+int virtqueue_set_dma_premapped(struct virtqueue *_vq);
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- drivers/virtio/virtio_ring.c  | 4 ++--
- include/linux/virtio_config.h | 1 +
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ drivers/virtio/virtio_ring.c | 56 ------------------------------------
+ include/linux/virtio.h       |  2 --
+ 2 files changed, 58 deletions(-)
 
 diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 769ec6360d7f..e5e9672b4ab2 100644
+index e7badc81642d..ccdd6dd3062f 100644
 --- a/drivers/virtio/virtio_ring.c
 +++ b/drivers/virtio/virtio_ring.c
-@@ -2145,7 +2145,7 @@ static struct virtqueue *vring_create_virtqueue_packed(struct virtio_device *vde
- 	vq->packed_ring = true;
- 	vq->dma_dev = dma_dev;
- 	vq->use_dma_api = vring_use_dma_api(vdev);
--	vq->premapped = false;
-+	vq->premapped = vq->use_dma_api && cfg_vq_get(cfg, premapped);
+@@ -2775,62 +2775,6 @@ int virtqueue_resize(struct virtqueue *_vq, u32 num,
+ }
+ EXPORT_SYMBOL_GPL(virtqueue_resize);
  
- 	vq->indirect = virtio_has_feature(vdev, VIRTIO_RING_F_INDIRECT_DESC) &&
- 		!cfg_vq_get(cfg, ctx);
-@@ -2687,7 +2687,7 @@ static struct virtqueue *__vring_new_virtqueue(struct virtio_device *vdev,
- #endif
- 	vq->dma_dev = tp_cfg->dma_dev;
- 	vq->use_dma_api = vring_use_dma_api(vdev);
--	vq->premapped = false;
-+	vq->premapped = vq->use_dma_api && cfg_vq_get(cfg, premapped);
+-/**
+- * virtqueue_set_dma_premapped - set the vring premapped mode
+- * @_vq: the struct virtqueue we're talking about.
+- *
+- * Enable the premapped mode of the vq.
+- *
+- * The vring in premapped mode does not do dma internally, so the driver must
+- * do dma mapping in advance. The driver must pass the dma_address through
+- * dma_address of scatterlist. When the driver got a used buffer from
+- * the vring, it has to unmap the dma address.
+- *
+- * This function must be called immediately after creating the vq, or after vq
+- * reset, and before adding any buffers to it.
+- *
+- * Caller must ensure we don't call this with other virtqueue operations
+- * at the same time (except where noted).
+- *
+- * Returns zero or a negative error.
+- * 0: success.
+- * -EINVAL: vring does not use the dma api, so we can not enable premapped mode.
+- */
+-int virtqueue_set_dma_premapped(struct virtqueue *_vq)
+-{
+-	struct vring_virtqueue *vq = to_vvq(_vq);
+-	u32 num;
+-
+-	START_USE(vq);
+-
+-	num = vq->packed_ring ? vq->packed.vring.num : vq->split.vring.num;
+-
+-	if (num != vq->vq.num_free) {
+-		END_USE(vq);
+-		return -EINVAL;
+-	}
+-
+-	if (!vq->use_dma_api) {
+-		END_USE(vq);
+-		return -EINVAL;
+-	}
+-
+-	vq->vq.premapped = true;
+-
+-	if (vq->packed_ring) {
+-		kfree(vq->packed.desc_dma);
+-		vq->packed.desc_dma = NULL;
+-	} else {
+-		kfree(vq->split.desc_dma);
+-		vq->split.desc_dma = NULL;
+-	}
+-
+-	END_USE(vq);
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL_GPL(virtqueue_set_dma_premapped);
+-
+ /**
+  * virtqueue_reset - detach and recycle all unused buffers
+  * @_vq: the struct virtqueue we're talking about.
+diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+index 37ba44dc34de..7f16bacc6c49 100644
+--- a/include/linux/virtio.h
++++ b/include/linux/virtio.h
+@@ -82,8 +82,6 @@ bool virtqueue_enable_cb(struct virtqueue *vq);
  
- 	vq->indirect = virtio_has_feature(vdev, VIRTIO_RING_F_INDIRECT_DESC) &&
- 		!cfg_vq_get(cfg, ctx);
-diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
-index e2c72e125dae..f462c3f1691c 100644
---- a/include/linux/virtio_config.h
-+++ b/include/linux/virtio_config.h
-@@ -105,6 +105,7 @@ struct virtio_vq_config {
- 	vq_callback_t **callbacks;
- 	const char *const *names;
- 	const bool *ctx;
-+	const bool *premapped;
- 	struct irq_affinity *desc;
- };
+ unsigned virtqueue_enable_cb_prepare(struct virtqueue *vq);
  
+-int virtqueue_set_dma_premapped(struct virtqueue *_vq);
+-
+ bool virtqueue_poll(struct virtqueue *vq, unsigned);
+ 
+ bool virtqueue_enable_cb_delayed(struct virtqueue *vq);
 -- 
 2.32.0.3.g01195cf9f
 
