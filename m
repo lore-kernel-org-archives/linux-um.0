@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23DEBC4828C
-	for <linux-um@archiver.kernel.org>; Tue, 30 Jan 2024 03:06:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B42BC47DDB
+	for <linux-um@archiver.kernel.org>; Tue, 30 Jan 2024 03:06:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=In+uheSTb8yqlBUteGC87q6ZU8VjjfZZMdZdMrF6NfA=; b=fp1AxOCEqoybEYUD/PneMtUIN8
-	jdAk2MKNyQVjLScQC+FBM4iAcM21b/zj+I5a2CnywdvNKKKnj4ZOXn2QuB6/rtyXSpwT50BC2woKq
-	DD6sWcWCF9fFRPQcjkxgJXKoFBlnZipOVHMS6oyZ6noKVktsNK+hKKeVmXbUFTsU3mdVitHlRu5wK
-	+xgmWwDI/HQZvNlJNjKHuLyUOpIaz97dy6KhzJKmOBm9oLERSSDQp9acFmonPANEFt335v4lpOHUT
-	CZOBmiJcaAcB5JueZg0UXg8LAbajA13u6rxU6+VZHgIq6PUuBm9sInbJieYw6OuVYWVEgTELGwfZu
-	340N2RQA==;
+	bh=zoyfNHAJCmyTBAcX034M6esKyxN0JDrAC5N4EOL9MWs=; b=KrTKCx00yVfyyPE+JlnoMAMTxa
+	0Yq8NJhbFnJST71iuAVOhRWn0TvwzGcAzGEvNwdURokSyBvIAEAwlgo4wlDdZZPJ6jnGcQYFK01Un
+	t6WloSJ8PpZepTyZx4GkwVqaL7ZLcuALgyh5mVYids0pVoVEiZZZm2Zw6RlgAya9CGTLcrO6vAamp
+	8DFQqpXdWWA8aQvxRH5tx6rmdYDKph0INOopx43kggMJGerJ0k3IaW4+9f9i3yv5rQSl/00Dr04ML
+	9wSdcsdvm7EkMMtO4ThYsJSadayfkzA77abBBTffO9TmgNpwi2grf2DQ3NcRq4dj+Fk+CScoKYXbV
+	GdYsNLQw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rUeSL-0000000F419-2jeB;
+	id 1rUeSL-0000000F40T-05lI;
 	Tue, 30 Jan 2024 03:06:37 +0000
-Received: from out30-98.freemail.mail.aliyun.com ([115.124.30.98])
+Received: from out30-100.freemail.mail.aliyun.com ([115.124.30.100])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rUeSE-0000000F3rz-0yPe
+	id 1rUeSD-0000000F3qp-23Y8
 	for linux-um@lists.infradead.org;
-	Tue, 30 Jan 2024 03:06:33 +0000
+	Tue, 30 Jan 2024 03:06:32 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1706583988; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=In+uheSTb8yqlBUteGC87q6ZU8VjjfZZMdZdMrF6NfA=;
-	b=UOlWV3MDco3yheBv1fDfb8PJjpkS/s4sPIm9NoB8txCJG7mGdbhiukP05hTrhiymJXkf5AMxq1D2IVlKey3s4EM/P5z5jrOfOpcHT4Cc+iEGyGMX9e4pU4uWDiHRJngkGNkAfGvPIRTtoOF6ssVg2EVyE18oXwWL6HPjRirDVoY=
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R291e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=37;SR=0;TI=SMTPD_---0W.eeCGK_1706583985;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W.eeCGK_1706583985)
+	t=1706583987; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=zoyfNHAJCmyTBAcX034M6esKyxN0JDrAC5N4EOL9MWs=;
+	b=FIM9MhTLCX0ci5s9qL7Dga/6zkISe+Ipf1Yc6tAs/WQ4jzoap457SJ29JNl9dRF0K3pPB2VnxcgeI3qxwXFw8X87LS00t/mUbCGFKZLNrNsosfmdg8i0sppb1MBRdkwv2x37nn7n13niekBBJfxoZV8fM+2ViJauHVWv8pidCqM=
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=37;SR=0;TI=SMTPD_---0W.efIX0_1706583984;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W.efIX0_1706583984)
           by smtp.aliyun-inc.com;
-          Tue, 30 Jan 2024 11:06:26 +0800
+          Tue, 30 Jan 2024 11:06:25 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: virtualization@lists.linux.dev
 Cc: Richard Weinberger <richard@nod.at>,
@@ -74,9 +74,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-s390@vger.kernel.org,
 	kvm@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH 13/14] virtio_net: rename free_old_xmit_skbs to free_old_xmit
-Date: Tue, 30 Jan 2024 11:06:03 +0800
-Message-Id: <20240130030604.108463-14-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH 12/14] virtio_net: unify the code for recycling the xmit ptr
+Date: Tue, 30 Jan 2024 11:06:02 +0800
+Message-Id: <20240130030604.108463-13-xuanzhuo@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 In-Reply-To: <20240130030604.108463-1-xuanzhuo@linux.alibaba.com>
 References: <20240130030604.108463-1-xuanzhuo@linux.alibaba.com>
@@ -84,8 +84,8 @@ MIME-Version: 1.0
 X-Git-Hash: ce068f9b825d
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240129_190630_668697_220D42C4 
-X-CRM114-Status: GOOD (  11.71  )
+X-CRM114-CacheID: sfid-20240129_190629_998345_39AED1E2 
+X-CRM114-Status: GOOD (  14.37  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,65 +100,120 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Since free_old_xmit_skbs not only deals with skb, but also xdp frame and
-subsequent added xsk, so change the name of this function to
-free_old_xmit.
+There are two completely similar and independent implementations. This
+is inconvenient for the subsequent addition of new types. So extract a
+function from this piece of code and call this function uniformly to
+recover old xmit ptr.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/net/virtio_net.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/virtio_net.c | 66 +++++++++++++++++-----------------------
+ 1 file changed, 28 insertions(+), 38 deletions(-)
 
 diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index b56f8617700f..1118aa0ebc53 100644
+index 660459b4c3e3..b56f8617700f 100644
 --- a/drivers/net/virtio_net.c
 +++ b/drivers/net/virtio_net.c
-@@ -762,7 +762,7 @@ static void virtnet_rq_unmap_free_buf(struct virtqueue *vq, void *buf)
- 	virtnet_rq_free_buf(vi, rq, buf);
+@@ -348,6 +348,30 @@ static struct xdp_frame *ptr_to_xdp(void *ptr)
+ 	return (struct xdp_frame *)((unsigned long)ptr & ~VIRTIO_XDP_FLAG);
  }
  
--static void free_old_xmit_skbs(struct send_queue *sq, bool in_napi)
-+static void free_old_xmit(struct send_queue *sq, bool in_napi)
++static void __free_old_xmit(struct send_queue *sq, bool in_napi,
++			    u64 *bytes, u64 *packets)
++{
++	unsigned int len;
++	void *ptr;
++
++	while ((ptr = virtqueue_get_buf(sq->vq, &len)) != NULL) {
++		if (!is_xdp_frame(ptr)) {
++			struct sk_buff *skb = ptr;
++
++			pr_debug("Sent skb %p\n", skb);
++
++			*bytes += skb->len;
++			napi_consume_skb(skb, in_napi);
++		} else {
++			struct xdp_frame *frame = ptr_to_xdp(ptr);
++
++			*bytes += xdp_get_frame_len(frame);
++			xdp_return_frame(frame);
++		}
++		(*packets)++;
++	}
++}
++
+ /* Converting between virtqueue no. and kernel tx/rx queue no.
+  * 0:rx0 1:tx0 2:rx1 3:tx1 ... 2N:rxN 2N+1:txN 2N+2:cvq
+  */
+@@ -740,27 +764,9 @@ static void virtnet_rq_unmap_free_buf(struct virtqueue *vq, void *buf)
+ 
+ static void free_old_xmit_skbs(struct send_queue *sq, bool in_napi)
  {
- 	u64 bytes = 0, packets = 0;
+-	unsigned int len;
+-	unsigned int packets = 0;
+-	unsigned int bytes = 0;
+-	void *ptr;
+-
+-	while ((ptr = virtqueue_get_buf(sq->vq, &len)) != NULL) {
+-		if (likely(!is_xdp_frame(ptr))) {
+-			struct sk_buff *skb = ptr;
+-
+-			pr_debug("Sent skb %p\n", skb);
++	u64 bytes = 0, packets = 0;
  
-@@ -816,7 +816,7 @@ static void check_sq_full_and_disable(struct virtnet_info *vi,
- 				virtqueue_napi_schedule(&sq->napi, sq->vq);
- 		} else if (unlikely(!virtqueue_enable_cb_delayed(sq->vq))) {
- 			/* More just got used, free them then recheck. */
--			free_old_xmit_skbs(sq, false);
-+			free_old_xmit(sq, false);
- 			if (sq->vq->num_free >= 2+MAX_SKB_FRAGS) {
- 				netif_start_subqueue(dev, qnum);
- 				virtqueue_disable_cb(sq->vq);
-@@ -2111,7 +2111,7 @@ static void virtnet_poll_cleantx(struct receive_queue *rq)
+-			bytes += skb->len;
+-			napi_consume_skb(skb, in_napi);
+-		} else {
+-			struct xdp_frame *frame = ptr_to_xdp(ptr);
+-
+-			bytes += xdp_get_frame_len(frame);
+-			xdp_return_frame(frame);
+-		}
+-		packets++;
+-	}
++	__free_old_xmit(sq, in_napi, &bytes, &packets);
  
- 		do {
- 			virtqueue_disable_cb(sq->vq);
--			free_old_xmit_skbs(sq, true);
-+			free_old_xmit(sq, true);
- 		} while (unlikely(!virtqueue_enable_cb_delayed(sq->vq)));
+ 	/* Avoid overhead when no packets have been processed
+ 	 * happens when called speculatively from start_xmit.
+@@ -910,14 +916,11 @@ static int virtnet_xdp_xmit(struct net_device *dev,
+ {
+ 	struct virtnet_info *vi = netdev_priv(dev);
+ 	struct receive_queue *rq = vi->rq;
++	u64 bytes = 0, packets = 0;
+ 	struct bpf_prog *xdp_prog;
+ 	struct send_queue *sq;
+-	unsigned int len;
+-	int packets = 0;
+-	int bytes = 0;
+ 	int nxmit = 0;
+ 	int kicks = 0;
+-	void *ptr;
+ 	int ret;
+ 	int i;
  
- 		if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
-@@ -2233,7 +2233,7 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
- 	txq = netdev_get_tx_queue(vi->dev, index);
- 	__netif_tx_lock(txq, raw_smp_processor_id());
- 	virtqueue_disable_cb(sq->vq);
--	free_old_xmit_skbs(sq, true);
-+	free_old_xmit(sq, true);
+@@ -936,20 +939,7 @@ static int virtnet_xdp_xmit(struct net_device *dev,
+ 	}
  
- 	if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
- 		netif_tx_wake_queue(txq);
-@@ -2323,7 +2323,7 @@ static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
- 		if (use_napi)
- 			virtqueue_disable_cb(sq->vq);
+ 	/* Free up any pending old buffers before queueing new ones. */
+-	while ((ptr = virtqueue_get_buf(sq->vq, &len)) != NULL) {
+-		if (likely(is_xdp_frame(ptr))) {
+-			struct xdp_frame *frame = ptr_to_xdp(ptr);
+-
+-			bytes += xdp_get_frame_len(frame);
+-			xdp_return_frame(frame);
+-		} else {
+-			struct sk_buff *skb = ptr;
+-
+-			bytes += skb->len;
+-			napi_consume_skb(skb, false);
+-		}
+-		packets++;
+-	}
++	__free_old_xmit(sq, false, &bytes, &packets);
  
--		free_old_xmit_skbs(sq, false);
-+		free_old_xmit(sq, false);
- 
- 	} while (use_napi && kick &&
- 	       unlikely(!virtqueue_enable_cb_delayed(sq->vq)));
+ 	for (i = 0; i < n; i++) {
+ 		struct xdp_frame *xdpf = frames[i];
 -- 
 2.32.0.3.g01195cf9f
 
