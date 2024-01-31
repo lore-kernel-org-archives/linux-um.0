@@ -4,105 +4,102 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A09FC47258
-	for <linux-um@archiver.kernel.org>; Wed, 31 Jan 2024 11:03:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFCD2C4828D
+	for <linux-um@archiver.kernel.org>; Wed, 31 Jan 2024 11:16:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	References:Message-ID:In-Reply-To:Subject:cc:To:Date:From:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=4SCD0rDarmz1iy62b4hdqUoGkjxINJp7K5S+g5qjGms=; b=GxI+53S6J/fY81xRjjMlBla9ot
-	o830m91qNGIvoOGr1pJ8VY3PBopK3t3cuGLoKPGzzlyFbgXigaf67qfZClUziuItaYbNKEWNS+qMa
-	9dfnFjhz8LCjIMFXYKEdYH5Hgulk9e56FCpt9gXOi8Gnu5DeKrzTYZ9Q4v4Qz6RvYU1rMySsvJ7N+
-	c0FzanQqyiz0MVuyyEWsSEwqN7PPt18ErIlaQoTpw97GLxBRMQIctysFk4ZGwZaPSS1sRX4R7fRI7
-	6iyqiEwu/GcBAtpPnoyJOiQOl7Eqvwbd7IGS6eCurQvGniy9KQGV6q1xE4SJC9p5PTN0KZFss5VI3
-	+r8/Eo0g==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:References:Cc:To:From:Date:Subject:Message-ID:
+	Reply-To:MIME-Version:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=hNzHtzVpBU2+0miP3b1vKMXJO0IZm/151kGzW+L2WI0=; b=Xw9xK9B3gV5izbItaU+1j+z4G8
+	ag98vhhfJGIZpwaeWo3Q1jYNcYPZjxG2OXJutoMXbD5MztiIn16d/ZVCddqD5CafqHaFBORse9rIx
+	TVwxZdFTloCBF+f25aV27UHh/vHOD6eF7r8osvEU08XfsumxaeU2UW2t0iS6J5vfgrWBNmPmtro88
+	jchV0UIcUeUuRS4iwe1OdtLisLTqVARq+OaptLz61FQxX0tqMGqi+od63o3cE81dgXgUznDZGbpry
+	1n+xtMA3kqnS7rAVElLRNedMFrRNFmY6ece+1ClSs4Zv7jb5x2m91w+H/KuSMJk+HdHAJgf47CR5F
+	esjbdDzQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rV8NO-00000002xuj-2L7i;
-	Wed, 31 Jan 2024 11:03:30 +0000
+	id 1rV8aC-000000032LF-3nL0;
+	Wed, 31 Jan 2024 11:16:44 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rV8NM-00000002xtr-1jgi
+	id 1rV7Ph-00000002dYC-1jNv
 	for linux-um@bombadil.infradead.org;
-	Wed, 31 Jan 2024 11:03:28 +0000
+	Wed, 31 Jan 2024 10:01:49 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
-	Message-ID:In-Reply-To:Subject:cc:To:Date:From:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=4SCD0rDarmz1iy62b4hdqUoGkjxINJp7K5S+g5qjGms=; b=XoMJyvTI6OhW1IR3w6lJ0aBMEG
-	HZX7r5tAA3aEhETbYwP4qVdySJc9u1d7Kbkw9re+pwWnWf5IhRpiTd6NMxDL8xwPLFjiib7j+sK8+
-	cEPJcLg2ow9stqpbOGJSiD6plDeBqywXiBW+wjlBfnJcV1aOaz0wthKmML6PtwpW6whyB7XVXoAPo
-	atac1jYoQgIBbHAg1m5Mw90P5IDMBMka7Slk5uSjiGAqYi+E+3ndGJyiAyxlyVVTQY6YwedKMzf01
-	/mJfTI9RKk223wOszN4Ic+WNAjc1zJvsDKzwMf4RP3Hp6ozE7Jyz1H4ZwuYX/xg3NixN2Z0Dd+xcM
-	Rfvy3fvQ==;
-Received: from mgamail.intel.com ([198.175.65.10])
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+	:In-Reply-To:References:Cc:To:From:Date:Subject:Message-ID:Sender:Reply-To:
+	MIME-Version:Content-ID:Content-Description;
+	bh=hNzHtzVpBU2+0miP3b1vKMXJO0IZm/151kGzW+L2WI0=; b=Gb99bhzrsWvytE5sQaehGzIwrd
+	+vUW/zbSJa4aQqoGQFnDAVMjLk5w4JAS6pyXfLX7uE9mLYuZCJS9lNBozhniF9nrpuo5tNX7teJ4i
+	ziJE+V3owZsB/rzvuGKBTvYW2sRVWe8a6cyWLvHPO4eAds98Tlq0qjrExQa6qeKXpmthEMR5/aXb5
+	laRqjIIr9UhiJ9hJBQX4rOFjUmCO3wj8l8ngqEdjuixHjd8I9P/zwisHRSHsKINOfFfu0pBgxvm1f
+	30Ai4s9HfpOVWjEVwaLZAbdf6gtaCUam7gi2Vl+g/3bdZIDtAfsw2f1pjSjQENIopHqwc3Hgtnr7a
+	U7hXt5vQ==;
+Received: from out30-124.freemail.mail.aliyun.com ([115.124.30.124])
 	by desiato.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rV8NJ-00000008zty-0cDd
+	id 1rV7PK-00000008wYS-23YI
 	for linux-um@lists.infradead.org;
-	Wed, 31 Jan 2024 11:03:27 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706699006; x=1738235006;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=w5tD2hF6VL4scoYvTlWDh0fos6f759HiGvpQ7AYLjAI=;
-  b=EvVcEaSTJFyQHuIK/5IbVhCVxHcLriahsqxHmIFnjk34IFkVpP0LR+A7
-   OMd25m8bu42DV3Z1coXKLYyZOxoxiKNC4E6ZhemumAfHrFTfuLp7gSHZK
-   5hQxokQRXqCDR4LBWBAjOkfA533Ey2ryfvYhjEbEY/vAUwWj+y1R7ZUur
-   oZOBLIWdKchw6EiUXyB3ZhAnHMTxarxrOy/wm+JbAWurly++cl4eMNgKS
-   BBGMK8f0KEIklr0Y7Ro98HizMt6hAdecYaFMfMLQOxct/EgPX/c02lnGX
-   b8XQjZRaXids+Vng2+KvZekfHOkSZMalRACHZTOl50s3iXJ7AmUKg3bkL
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="16947165"
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="16947165"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 03:03:19 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="30460973"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.35.167])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 03:03:08 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Wed, 31 Jan 2024 13:03:04 +0200 (EET)
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-cc: virtualization@lists.linux.dev, Richard Weinberger <richard@nod.at>, 
-    Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
-    Johannes Berg <johannes@sipsolutions.net>, 
-    "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
-    "David S. Miller" <davem@davemloft.net>, 
-    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-    Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, 
-    =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-    Vadim Pasternak <vadimp@nvidia.com>, 
-    Bjorn Andersson <andersson@kernel.org>, 
-    Mathieu Poirier <mathieu.poirier@linaro.org>, 
-    Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, 
-    Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, 
-    Vasily Gorbik <gor@linux.ibm.com>, 
-    Alexander Gordeev <agordeev@linux.ibm.com>, 
-    Christian Borntraeger <borntraeger@linux.ibm.com>, 
-    Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, 
-    Daniel Borkmann <daniel@iogearbox.net>, 
-    Jesper Dangaard Brouer <hawk@kernel.org>, 
-    John Fastabend <john.fastabend@gmail.com>, 
-    Benjamin Berg <benjamin.berg@intel.com>, 
-    Yang Li <yang.lee@linux.alibaba.com>, linux-um@lists.infradead.org, 
-    Netdev <netdev@vger.kernel.org>, platform-driver-x86@vger.kernel.org, 
-    linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, 
-    kvm@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH vhost 08/17] virtio: vring_new_virtqueue(): pass struct
- instead of multi parameters
-In-Reply-To: <20240130114224.86536-9-xuanzhuo@linux.alibaba.com>
-Message-ID: <bcd0e35e-e9a3-48b5-fc0a-117ba997439a@linux.intel.com>
-References: <20240130114224.86536-1-xuanzhuo@linux.alibaba.com> <20240130114224.86536-9-xuanzhuo@linux.alibaba.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	Wed, 31 Jan 2024 10:01:43 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1706695273; h=Message-ID:Subject:Date:From:To:Content-Type;
+	bh=hNzHtzVpBU2+0miP3b1vKMXJO0IZm/151kGzW+L2WI0=;
+	b=dPIX2M37FXzeuLvu/e7vAhw16m76USR7dwEXKk+PZrc9aEf2ot/6S6xUjYvDN8i9LLAQHAygyTsPkNWxAjyNkTUxy2YMzd+WpprVJeHLhBBXTtGa8aC3CClZl41W2CoZHoAb3Oih0ZsNq6T+b2V6+q4cqERNCPoRnkYhzWbOBXQ=
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R501e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=36;SR=0;TI=SMTPD_---0W.j9ASw_1706695270;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W.j9ASw_1706695270)
+          by smtp.aliyun-inc.com;
+          Wed, 31 Jan 2024 18:01:11 +0800
+Message-ID: <1706695212.333408-3-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH vhost 03/17] virtio_ring: packed: structure the indirect desc table
+Date: Wed, 31 Jan 2024 18:00:12 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: Jason Wang <jasowang@redhat.com>
+Cc: virtualization@lists.linux.dev,
+ Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ "Michael S. Tsirkin" <mst@redhat.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Hans de Goede <hdegoede@redhat.com>,
+ =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Vadim Pasternak <vadimp@nvidia.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Cornelia Huck <cohuck@redhat.com>,
+ Halil Pasic <pasic@linux.ibm.com>,
+ Eric Farman <farman@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>,
+ Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>,
+ Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Benjamin Berg <benjamin.berg@intel.com>,
+ Yang Li <yang.lee@linux.alibaba.com>,
+ linux-um@lists.infradead.org,
+ netdev@vger.kernel.org,
+ platform-driver-x86@vger.kernel.org,
+ linux-remoteproc@vger.kernel.org,
+ linux-s390@vger.kernel.org,
+ kvm@vger.kernel.org,
+ bpf@vger.kernel.org
+References: <20240130114224.86536-1-xuanzhuo@linux.alibaba.com>
+ <20240130114224.86536-4-xuanzhuo@linux.alibaba.com>
+ <CACGkMEvz55WO+TN2KCv+KLvdT-ZxLike81maahBeVanrCk_Lrg@mail.gmail.com>
+In-Reply-To: <CACGkMEvz55WO+TN2KCv+KLvdT-ZxLike81maahBeVanrCk_Lrg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240131_110325_631059_68A76CF3 
-X-CRM114-Status: GOOD (  10.92  )
+X-CRM114-CacheID: sfid-20240131_100135_232147_A26D50C3 
+X-CRM114-Status: GOOD (  24.29  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -117,40 +114,185 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, 30 Jan 2024, Xuan Zhuo wrote:
+On Wed, 31 Jan 2024 17:12:10 +0800, Jason Wang <jasowang@redhat.com> wrote:
+> On Tue, Jan 30, 2024 at 7:42=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba=
+.com> wrote:
+> >
+> > This commit structure the indirect desc table.
+> > Then we can get the desc num directly when doing unmap.
+> >
+> > And save the dma info to the struct, then the indirect
+> > will not use the dma fields of the desc_extra. The subsequent
+> > commits will make the dma fields are optional. But for
+> > the indirect case, we must record the dma info.
+> >
+> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > ---
+> >  drivers/virtio/virtio_ring.c | 63 ++++++++++++++++++++----------------
+> >  1 file changed, 35 insertions(+), 28 deletions(-)
+> >
+> > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> > index 7280a1706cca..dd03bc5a81fe 100644
+> > --- a/drivers/virtio/virtio_ring.c
+> > +++ b/drivers/virtio/virtio_ring.c
+> > @@ -72,9 +72,16 @@ struct vring_desc_state_split {
+> >         struct vring_desc *indir_desc;  /* Indirect descriptor, if any.=
+ */
+> >  };
+> >
+> > +struct vring_packed_desc_indir {
+> > +       dma_addr_t addr;                /* Descriptor Array DMA addr. */
+> > +       u32 len;                        /* Descriptor Array length. */
+> > +       u32 num;
+> > +       struct vring_packed_desc desc[];
+> > +};
+> > +
+> >  struct vring_desc_state_packed {
+> >         void *data;                     /* Data for callback. */
+> > -       struct vring_packed_desc *indir_desc; /* Indirect descriptor, i=
+f any. */
+> > +       struct vring_packed_desc_indir *indir_desc; /* Indirect descrip=
+tor, if any. */
+> >         u16 num;                        /* Descriptor list length. */
+> >         u16 last;                       /* The last desc state in a lis=
+t. */
+> >  };
+> > @@ -1249,10 +1256,13 @@ static void vring_unmap_desc_packed(const struc=
+t vring_virtqueue *vq,
+> >                        DMA_FROM_DEVICE : DMA_TO_DEVICE);
+> >  }
+> >
+> > -static struct vring_packed_desc *alloc_indirect_packed(unsigned int to=
+tal_sg,
+> > +static struct vring_packed_desc_indir *alloc_indirect_packed(unsigned =
+int total_sg,
+> >                                                        gfp_t gfp)
+> >  {
+> > -       struct vring_packed_desc *desc;
+> > +       struct vring_packed_desc_indir *in_desc;
+> > +       u32 size;
+> > +
+> > +       size =3D struct_size(in_desc, desc, total_sg);
+> >
+> >         /*
+> >          * We require lowmem mappings for the descriptors because
+> > @@ -1261,9 +1271,10 @@ static struct vring_packed_desc *alloc_indirect_=
+packed(unsigned int total_sg,
+> >          */
+> >         gfp &=3D ~__GFP_HIGHMEM;
+> >
+> > -       desc =3D kmalloc_array(total_sg, sizeof(struct vring_packed_des=
+c), gfp);
+> >
+> > -       return desc;
+> > +       in_desc =3D kmalloc(size, gfp);
+> > +
+> > +       return in_desc;
+> >  }
+> >
+> >  static int virtqueue_add_indirect_packed(struct vring_virtqueue *vq,
+> > @@ -1274,6 +1285,7 @@ static int virtqueue_add_indirect_packed(struct v=
+ring_virtqueue *vq,
+> >                                          void *data,
+> >                                          gfp_t gfp)
+> >  {
+> > +       struct vring_packed_desc_indir *in_desc;
+> >         struct vring_packed_desc *desc;
+> >         struct scatterlist *sg;
+> >         unsigned int i, n, err_idx;
+> > @@ -1281,10 +1293,12 @@ static int virtqueue_add_indirect_packed(struct=
+ vring_virtqueue *vq,
+> >         dma_addr_t addr;
+> >
+> >         head =3D vq->packed.next_avail_idx;
+> > -       desc =3D alloc_indirect_packed(total_sg, gfp);
+> > -       if (!desc)
+> > +       in_desc =3D alloc_indirect_packed(total_sg, gfp);
+> > +       if (!in_desc)
+> >                 return -ENOMEM;
+> >
+> > +       desc =3D in_desc->desc;
+> > +
+> >         if (unlikely(vq->vq.num_free < 1)) {
+> >                 pr_debug("Can't add buf len 1 - avail =3D 0\n");
+> >                 kfree(desc);
+> > @@ -1321,17 +1335,15 @@ static int virtqueue_add_indirect_packed(struct=
+ vring_virtqueue *vq,
+> >                 goto unmap_release;
+> >         }
+> >
+> > +       in_desc->num =3D i;
+> > +       in_desc->addr =3D addr;
+> > +       in_desc->len =3D total_sg * sizeof(struct vring_packed_desc);
+>
+> It looks to me if we don't use dma_api we don't even need these steps?
 
-> Just like find_vqs(), it is time to refactor the
-> vring_new_virtqueue(). We pass the similar struct to
-> vring_new_virtqueue.
-> 
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
-
-> diff --git a/tools/virtio/vringh_test.c b/tools/virtio/vringh_test.c
-> index 98ff808d6f0c..37f8c5d34285 100644
-> --- a/tools/virtio/vringh_test.c
-> +++ b/tools/virtio/vringh_test.c
-
-> @@ -391,7 +391,7 @@ static int parallel_test(u64 features,
->  				/* Swallow all notifies at once. */
->  				if (read(to_guest[0], buf, sizeof(buf)) < 1)
->  					break;
-> -				
-> +
->  				receives++;
->  				virtqueue_disable_cb(vq);
->  				continue;
-> @@ -424,7 +424,7 @@ static int parallel_test(u64 features,
->  				continue;
->  			if (read(to_guest[0], buf, sizeof(buf)) < 1)
->  				break;
-> -				
-> +
-
-Two unrelated space changes. Please remove them from this patch.
+YES
 
 
--- 
- i.
+>
+> > +
+> >         vq->packed.vring.desc[head].addr =3D cpu_to_le64(addr);
+> >         vq->packed.vring.desc[head].len =3D cpu_to_le32(total_sg *
+> >                                 sizeof(struct vring_packed_desc));
+> >         vq->packed.vring.desc[head].id =3D cpu_to_le16(id);
+> >
+> > -       if (vring_need_unmap_buffer(vq)) {
+> > -               vq->packed.desc_extra[id].addr =3D addr;
+> > -               vq->packed.desc_extra[id].len =3D total_sg *
+> > -                               sizeof(struct vring_packed_desc);
+> > -       }
+> > -
+> >         vq->packed.desc_extra[id].flags =3D VRING_DESC_F_INDIRECT |
+> >                 vq->packed.avail_used_flags;
+> >
+> > @@ -1362,7 +1374,7 @@ static int virtqueue_add_indirect_packed(struct v=
+ring_virtqueue *vq,
+> >         /* Store token and indirect buffer state. */
+> >         vq->packed.desc_state[id].num =3D 1;
+> >         vq->packed.desc_state[id].data =3D data;
+> > -       vq->packed.desc_state[id].indir_desc =3D desc;
+> > +       vq->packed.desc_state[id].indir_desc =3D in_desc;
+> >         vq->packed.desc_state[id].last =3D id;
+> >
+> >         vq->num_added +=3D 1;
+> > @@ -1381,7 +1393,7 @@ static int virtqueue_add_indirect_packed(struct v=
+ring_virtqueue *vq,
+> >                 vring_unmap_desc_packed(vq, &desc[i]);
+> >
+> >  free_desc:
+> > -       kfree(desc);
+> > +       kfree(in_desc);
+> >
+> >         END_USE(vq);
+> >         return -ENOMEM;
+> > @@ -1595,7 +1607,6 @@ static void detach_buf_packed(struct vring_virtqu=
+eue *vq,
+> >                               unsigned int id, void **ctx)
+> >  {
+> >         struct vring_desc_state_packed *state =3D NULL;
+> > -       struct vring_packed_desc *desc;
+> >         unsigned int i, curr;
+> >         u16 flags;
+> >
+> > @@ -1621,28 +1632,24 @@ static void detach_buf_packed(struct vring_virt=
+queue *vq,
+> >
+> >                 if (ctx)
+> >                         *ctx =3D state->indir_desc;
+> > +
+>
+> Unnecessary changes.
 
+
+Could you say more?
+You do not like this patch?
+
+Thanks.
+
+
+
+>
+> Thanks
+>
 
