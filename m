@@ -4,101 +4,105 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5476CC47258
-	for <linux-um@archiver.kernel.org>; Wed, 31 Jan 2024 10:16:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A09FC47258
+	for <linux-um@archiver.kernel.org>; Wed, 31 Jan 2024 11:03:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=zJLwocwtNUB8ZTp4FCceWuPM46tHyYM0Zkz28XCMF9w=; b=pjRzREGW3J0xhL/jp78jtJKJYh
-	AjqEvw441h8SiktItHP4ummiEViOiQzSWVyEl7IYo7kwoz8KiZzbvHx587qQItgwEx5hvSYmJIX+U
-	N+neFPRbPfE6RnY7VEF939h0GQ/aQ2/bnZRs97NXuk9E4XDEVUnVfCHXDBBqM2GoUdZ8dDfMFwzPk
-	DiXa7r52zoVczhXmNWsFlH14vbAaUbfw9Jc/sk4hV1UK71TnUA7T4pmNwdH3JLaNnrpVh1B6+YLhu
-	2zIu1hFfMcXJm3XAjXBQrzWN6qgVtIH7x9K5qTLADVIktLLdqvK8V3+uSkeO/qkzl/Uzt0zqBeDRK
-	kkPxFIpQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	References:Message-ID:In-Reply-To:Subject:cc:To:Date:From:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=4SCD0rDarmz1iy62b4hdqUoGkjxINJp7K5S+g5qjGms=; b=GxI+53S6J/fY81xRjjMlBla9ot
+	o830m91qNGIvoOGr1pJ8VY3PBopK3t3cuGLoKPGzzlyFbgXigaf67qfZClUziuItaYbNKEWNS+qMa
+	9dfnFjhz8LCjIMFXYKEdYH5Hgulk9e56FCpt9gXOi8Gnu5DeKrzTYZ9Q4v4Qz6RvYU1rMySsvJ7N+
+	c0FzanQqyiz0MVuyyEWsSEwqN7PPt18ErIlaQoTpw97GLxBRMQIctysFk4ZGwZaPSS1sRX4R7fRI7
+	6iyqiEwu/GcBAtpPnoyJOiQOl7Eqvwbd7IGS6eCurQvGniy9KQGV6q1xE4SJC9p5PTN0KZFss5VI3
+	+r8/Eo0g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rV7eC-00000002j62-31Dc;
-	Wed, 31 Jan 2024 10:16:48 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
+	id 1rV8NO-00000002xuj-2L7i;
+	Wed, 31 Jan 2024 11:03:30 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rV6fS-00000002NMm-47U0
+	id 1rV8NM-00000002xtr-1jgi
+	for linux-um@bombadil.infradead.org;
+	Wed, 31 Jan 2024 11:03:28 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
+	Message-ID:In-Reply-To:Subject:cc:To:Date:From:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=4SCD0rDarmz1iy62b4hdqUoGkjxINJp7K5S+g5qjGms=; b=XoMJyvTI6OhW1IR3w6lJ0aBMEG
+	HZX7r5tAA3aEhETbYwP4qVdySJc9u1d7Kbkw9re+pwWnWf5IhRpiTd6NMxDL8xwPLFjiib7j+sK8+
+	cEPJcLg2ow9stqpbOGJSiD6plDeBqywXiBW+wjlBfnJcV1aOaz0wthKmML6PtwpW6whyB7XVXoAPo
+	atac1jYoQgIBbHAg1m5Mw90P5IDMBMka7Slk5uSjiGAqYi+E+3ndGJyiAyxlyVVTQY6YwedKMzf01
+	/mJfTI9RKk223wOszN4Ic+WNAjc1zJvsDKzwMf4RP3Hp6ozE7Jyz1H4ZwuYX/xg3NixN2Z0Dd+xcM
+	Rfvy3fvQ==;
+Received: from mgamail.intel.com ([198.175.65.10])
+	by desiato.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rV8NJ-00000008zty-0cDd
 	for linux-um@lists.infradead.org;
-	Wed, 31 Jan 2024 09:14:04 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706692440;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zJLwocwtNUB8ZTp4FCceWuPM46tHyYM0Zkz28XCMF9w=;
-	b=PfNChhIg0M5MX1Vq378N3NHBzAVKvsMRvFIKi5kwm2MpoYaW0KtR75tVYBm9LLVEzPMQ/N
-	nlbX/cDui5J30BbCUcUnyKRAM584F32c9tqhu/hXQVN3ShtbA0GZ3OXMtOJA8mXFRBYIb/
-	M2nqPsoH/D5ioKzJgthu+46uuLnM0Ro=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-85-fcbNSQbDM9aeCcPPTkYNIQ-1; Wed, 31 Jan 2024 04:12:24 -0500
-X-MC-Unique: fcbNSQbDM9aeCcPPTkYNIQ-1
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-295aaffe58bso729559a91.1
-        for <linux-um@lists.infradead.org>; Wed, 31 Jan 2024 01:12:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706692343; x=1707297143;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zJLwocwtNUB8ZTp4FCceWuPM46tHyYM0Zkz28XCMF9w=;
-        b=xGZtUm8awsMqB7pv73C7WBKZ+1K3RIDiMpDZsqIBH61EHB+E9v+0l3ZK3K31Xq8nH2
-         S+LpTRmzM0DMf+Jz9p9ZFGXaw6+QnvyW51QqotN6blcKZeUr/v+ZWJ8uvoogo9knhepg
-         AQoDKEFBt+toj0nSlOgZt+Znh4wk9g6TQqT/Zy33ug/dj+WPHkXHJma7WaplCTYMFmvJ
-         jRNKj6B+8K5bm2yBU55tlchTpyLv2DJi96N26acrwKVmJqS7cLw6eKVoOVZNVI9ckUwc
-         at9Ut4U/I9c4gVXlOwJ3/HOYpaxVqQDVFeyevhkqrf3XF08qzHHhz5pEQW9iormiqShv
-         CpNQ==
-X-Gm-Message-State: AOJu0YzlwnuCpuzcJyURtRqLx60yil7fQaRTSa9uU+3q02f4W2PiSwjO
-	eusZvcdkcRk4qhLBvebvidJM2ciXZnZRw6w8rgxsaVgpfkk1STY7Ui/FsCFGLB3NMdFnJ/201EV
-	jA7wMrvRVSXPERtPwqADxcIII7DeCRR4pUkTVG+2SNM7zHSXHtc7M31XynXgKMoLn76P4Mf9gwF
-	afRvnn+sh8yTYt27eVbCZblTYDJP1V8l/6aNd1
-X-Received: by 2002:a17:90a:4812:b0:28e:850e:7e87 with SMTP id a18-20020a17090a481200b0028e850e7e87mr4055932pjh.41.1706692342963;
-        Wed, 31 Jan 2024 01:12:22 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHA19Z59zeHpR3nNimF0ZQi1mnwkJcouyhWsEmqEUBepD+NIxCTxSZH5EaaTBhFTcpXCqGmenq5iSv576m9gbY=
-X-Received: by 2002:a17:90a:4812:b0:28e:850e:7e87 with SMTP id
- a18-20020a17090a481200b0028e850e7e87mr4055914pjh.41.1706692342651; Wed, 31
- Jan 2024 01:12:22 -0800 (PST)
-MIME-Version: 1.0
-References: <20240130114224.86536-1-xuanzhuo@linux.alibaba.com> <20240130114224.86536-4-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20240130114224.86536-4-xuanzhuo@linux.alibaba.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Wed, 31 Jan 2024 17:12:10 +0800
-Message-ID: <CACGkMEvz55WO+TN2KCv+KLvdT-ZxLike81maahBeVanrCk_Lrg@mail.gmail.com>
-Subject: Re: [PATCH vhost 03/17] virtio_ring: packed: structure the indirect
- desc table
+	Wed, 31 Jan 2024 11:03:27 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706699006; x=1738235006;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=w5tD2hF6VL4scoYvTlWDh0fos6f759HiGvpQ7AYLjAI=;
+  b=EvVcEaSTJFyQHuIK/5IbVhCVxHcLriahsqxHmIFnjk34IFkVpP0LR+A7
+   OMd25m8bu42DV3Z1coXKLYyZOxoxiKNC4E6ZhemumAfHrFTfuLp7gSHZK
+   5hQxokQRXqCDR4LBWBAjOkfA533Ey2ryfvYhjEbEY/vAUwWj+y1R7ZUur
+   oZOBLIWdKchw6EiUXyB3ZhAnHMTxarxrOy/wm+JbAWurly++cl4eMNgKS
+   BBGMK8f0KEIklr0Y7Ro98HizMt6hAdecYaFMfMLQOxct/EgPX/c02lnGX
+   b8XQjZRaXids+Vng2+KvZekfHOkSZMalRACHZTOl50s3iXJ7AmUKg3bkL
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="16947165"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="16947165"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 03:03:19 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="30460973"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.35.167])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2024 03:03:08 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Wed, 31 Jan 2024 13:03:04 +0200 (EET)
 To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: virtualization@lists.linux.dev, Richard Weinberger <richard@nod.at>, 
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
-	"Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, 
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <andersson@kernel.org>, 
-	Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, 
-	Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, 
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Benjamin Berg <benjamin.berg@intel.com>, 
-	Yang Li <yang.lee@linux.alibaba.com>, linux-um@lists.infradead.org, 
-	netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, 
-	linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, 
-	kvm@vger.kernel.org, bpf@vger.kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+cc: virtualization@lists.linux.dev, Richard Weinberger <richard@nod.at>, 
+    Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+    Johannes Berg <johannes@sipsolutions.net>, 
+    "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
+    "David S. Miller" <davem@davemloft.net>, 
+    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+    Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, 
+    =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+    Vadim Pasternak <vadimp@nvidia.com>, 
+    Bjorn Andersson <andersson@kernel.org>, 
+    Mathieu Poirier <mathieu.poirier@linaro.org>, 
+    Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, 
+    Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, 
+    Vasily Gorbik <gor@linux.ibm.com>, 
+    Alexander Gordeev <agordeev@linux.ibm.com>, 
+    Christian Borntraeger <borntraeger@linux.ibm.com>, 
+    Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, 
+    Daniel Borkmann <daniel@iogearbox.net>, 
+    Jesper Dangaard Brouer <hawk@kernel.org>, 
+    John Fastabend <john.fastabend@gmail.com>, 
+    Benjamin Berg <benjamin.berg@intel.com>, 
+    Yang Li <yang.lee@linux.alibaba.com>, linux-um@lists.infradead.org, 
+    Netdev <netdev@vger.kernel.org>, platform-driver-x86@vger.kernel.org, 
+    linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, 
+    kvm@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH vhost 08/17] virtio: vring_new_virtqueue(): pass struct
+ instead of multi parameters
+In-Reply-To: <20240130114224.86536-9-xuanzhuo@linux.alibaba.com>
+Message-ID: <bcd0e35e-e9a3-48b5-fc0a-117ba997439a@linux.intel.com>
+References: <20240130114224.86536-1-xuanzhuo@linux.alibaba.com> <20240130114224.86536-9-xuanzhuo@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240131_011403_127564_4DC67F4A 
-X-CRM114-Status: GOOD (  23.99  )
+X-CRM114-CacheID: sfid-20240131_110325_631059_68A76CF3 
+X-CRM114-Status: GOOD (  10.92  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -113,171 +117,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jan 30, 2024 at 7:42=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
-om> wrote:
->
-> This commit structure the indirect desc table.
-> Then we can get the desc num directly when doing unmap.
->
-> And save the dma info to the struct, then the indirect
-> will not use the dma fields of the desc_extra. The subsequent
-> commits will make the dma fields are optional. But for
-> the indirect case, we must record the dma info.
->
+On Tue, 30 Jan 2024, Xuan Zhuo wrote:
+
+> Just like find_vqs(), it is time to refactor the
+> vring_new_virtqueue(). We pass the similar struct to
+> vring_new_virtqueue.
+> 
 > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 > ---
->  drivers/virtio/virtio_ring.c | 63 ++++++++++++++++++++----------------
->  1 file changed, 35 insertions(+), 28 deletions(-)
->
-> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> index 7280a1706cca..dd03bc5a81fe 100644
-> --- a/drivers/virtio/virtio_ring.c
-> +++ b/drivers/virtio/virtio_ring.c
-> @@ -72,9 +72,16 @@ struct vring_desc_state_split {
->         struct vring_desc *indir_desc;  /* Indirect descriptor, if any. *=
-/
->  };
->
-> +struct vring_packed_desc_indir {
-> +       dma_addr_t addr;                /* Descriptor Array DMA addr. */
-> +       u32 len;                        /* Descriptor Array length. */
-> +       u32 num;
-> +       struct vring_packed_desc desc[];
-> +};
-> +
->  struct vring_desc_state_packed {
->         void *data;                     /* Data for callback. */
-> -       struct vring_packed_desc *indir_desc; /* Indirect descriptor, if =
-any. */
-> +       struct vring_packed_desc_indir *indir_desc; /* Indirect descripto=
-r, if any. */
->         u16 num;                        /* Descriptor list length. */
->         u16 last;                       /* The last desc state in a list.=
- */
->  };
-> @@ -1249,10 +1256,13 @@ static void vring_unmap_desc_packed(const struct =
-vring_virtqueue *vq,
->                        DMA_FROM_DEVICE : DMA_TO_DEVICE);
->  }
->
-> -static struct vring_packed_desc *alloc_indirect_packed(unsigned int tota=
-l_sg,
-> +static struct vring_packed_desc_indir *alloc_indirect_packed(unsigned in=
-t total_sg,
->                                                        gfp_t gfp)
->  {
-> -       struct vring_packed_desc *desc;
-> +       struct vring_packed_desc_indir *in_desc;
-> +       u32 size;
-> +
-> +       size =3D struct_size(in_desc, desc, total_sg);
->
->         /*
->          * We require lowmem mappings for the descriptors because
-> @@ -1261,9 +1271,10 @@ static struct vring_packed_desc *alloc_indirect_pa=
-cked(unsigned int total_sg,
->          */
->         gfp &=3D ~__GFP_HIGHMEM;
->
-> -       desc =3D kmalloc_array(total_sg, sizeof(struct vring_packed_desc)=
-, gfp);
->
-> -       return desc;
-> +       in_desc =3D kmalloc(size, gfp);
-> +
-> +       return in_desc;
->  }
->
->  static int virtqueue_add_indirect_packed(struct vring_virtqueue *vq,
-> @@ -1274,6 +1285,7 @@ static int virtqueue_add_indirect_packed(struct vri=
-ng_virtqueue *vq,
->                                          void *data,
->                                          gfp_t gfp)
->  {
-> +       struct vring_packed_desc_indir *in_desc;
->         struct vring_packed_desc *desc;
->         struct scatterlist *sg;
->         unsigned int i, n, err_idx;
-> @@ -1281,10 +1293,12 @@ static int virtqueue_add_indirect_packed(struct v=
-ring_virtqueue *vq,
->         dma_addr_t addr;
->
->         head =3D vq->packed.next_avail_idx;
-> -       desc =3D alloc_indirect_packed(total_sg, gfp);
-> -       if (!desc)
-> +       in_desc =3D alloc_indirect_packed(total_sg, gfp);
-> +       if (!in_desc)
->                 return -ENOMEM;
->
-> +       desc =3D in_desc->desc;
-> +
->         if (unlikely(vq->vq.num_free < 1)) {
->                 pr_debug("Can't add buf len 1 - avail =3D 0\n");
->                 kfree(desc);
-> @@ -1321,17 +1335,15 @@ static int virtqueue_add_indirect_packed(struct v=
-ring_virtqueue *vq,
->                 goto unmap_release;
->         }
->
-> +       in_desc->num =3D i;
-> +       in_desc->addr =3D addr;
-> +       in_desc->len =3D total_sg * sizeof(struct vring_packed_desc);
 
-It looks to me if we don't use dma_api we don't even need these steps?
+> diff --git a/tools/virtio/vringh_test.c b/tools/virtio/vringh_test.c
+> index 98ff808d6f0c..37f8c5d34285 100644
+> --- a/tools/virtio/vringh_test.c
+> +++ b/tools/virtio/vringh_test.c
 
+> @@ -391,7 +391,7 @@ static int parallel_test(u64 features,
+>  				/* Swallow all notifies at once. */
+>  				if (read(to_guest[0], buf, sizeof(buf)) < 1)
+>  					break;
+> -				
 > +
->         vq->packed.vring.desc[head].addr =3D cpu_to_le64(addr);
->         vq->packed.vring.desc[head].len =3D cpu_to_le32(total_sg *
->                                 sizeof(struct vring_packed_desc));
->         vq->packed.vring.desc[head].id =3D cpu_to_le16(id);
->
-> -       if (vring_need_unmap_buffer(vq)) {
-> -               vq->packed.desc_extra[id].addr =3D addr;
-> -               vq->packed.desc_extra[id].len =3D total_sg *
-> -                               sizeof(struct vring_packed_desc);
-> -       }
-> -
->         vq->packed.desc_extra[id].flags =3D VRING_DESC_F_INDIRECT |
->                 vq->packed.avail_used_flags;
->
-> @@ -1362,7 +1374,7 @@ static int virtqueue_add_indirect_packed(struct vri=
-ng_virtqueue *vq,
->         /* Store token and indirect buffer state. */
->         vq->packed.desc_state[id].num =3D 1;
->         vq->packed.desc_state[id].data =3D data;
-> -       vq->packed.desc_state[id].indir_desc =3D desc;
-> +       vq->packed.desc_state[id].indir_desc =3D in_desc;
->         vq->packed.desc_state[id].last =3D id;
->
->         vq->num_added +=3D 1;
-> @@ -1381,7 +1393,7 @@ static int virtqueue_add_indirect_packed(struct vri=
-ng_virtqueue *vq,
->                 vring_unmap_desc_packed(vq, &desc[i]);
->
->  free_desc:
-> -       kfree(desc);
-> +       kfree(in_desc);
->
->         END_USE(vq);
->         return -ENOMEM;
-> @@ -1595,7 +1607,6 @@ static void detach_buf_packed(struct vring_virtqueu=
-e *vq,
->                               unsigned int id, void **ctx)
->  {
->         struct vring_desc_state_packed *state =3D NULL;
-> -       struct vring_packed_desc *desc;
->         unsigned int i, curr;
->         u16 flags;
->
-> @@ -1621,28 +1632,24 @@ static void detach_buf_packed(struct vring_virtqu=
-eue *vq,
->
->                 if (ctx)
->                         *ctx =3D state->indir_desc;
+>  				receives++;
+>  				virtqueue_disable_cb(vq);
+>  				continue;
+> @@ -424,7 +424,7 @@ static int parallel_test(u64 features,
+>  				continue;
+>  			if (read(to_guest[0], buf, sizeof(buf)) < 1)
+>  				break;
+> -				
 > +
 
-Unnecessary changes.
+Two unrelated space changes. Please remove them from this patch.
 
-Thanks
+
+-- 
+ i.
 
 
