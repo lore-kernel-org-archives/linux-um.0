@@ -4,78 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8AB4C4828E
-	for <linux-um@archiver.kernel.org>; Fri,  2 Feb 2024 20:01:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C0B9C4828E
+	for <linux-um@archiver.kernel.org>; Fri,  2 Feb 2024 21:03:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Vxm7GroJb1jr7a7SKxct7zVVLJ9MIYxfQSDNcHJxJs8=; b=3pD86dIBGiDgoGofm/uoq81Gfq
-	pMiKyfoZU6M2Asg3vBCL2QNkVqoqynW1jFBN7SrNHoKd/42jr3LM3L2+lXvibfJp1/RbHIntVoeYr
-	bNuxKXmN4fWMRU6r7V1WUSSRbsD7qwHuFDDtDBzQoVFW0ibpMprZNeP0O3k5SpsnbPAKkuGg7mWPz
-	xOdw7SityNF9q16jjsKGjGkTwJbxEcu483+kqnXOCo2/Ndl/g3KPDEVzy52Rrd+pE1pdEetTIZON1
-	sOftOuElgQugNrYCSe9ZTFj2W5dhHtnEoVD4OYn4CnWzx2PTX4deu+AuwnQ6hoi6Qm9uONWNU58B+
-	3j+u11rw==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=8L33DBBndo3NokgAYjpkdsaWW74PWfcxGD0pnplvp7U=; b=EhKdDHDB7S5O7HemZ4DSCVRX+w
+	1RqceCp8nJFpefFwkIe6SfMOQz3NkEbXu+yiYWp62KqK2KEOSCNW1P7+/6F8glxHH3qpJIihMG5FD
+	vq9fjQbqhbrKO3I3bWlaNSWGOABSRmaKgfn5u16JfO0fAAab6pK/7pbrhIgPVXp1N0y7/SnbvmCJl
+	Cy5rdFJ1dh8cRbYi0vHZwLsgcjdR7vunOCEGd2/yh7/ZAF0rj4xCTY3BgSlJf0lZrWxGEiy9fRs4U
+	HrEZ464ONAk7hbxdKF03M0Z/ep00MQhFkD0TTMReuXKOpod2e8AGr1DtkDjbw+1j9Nxac6WbdwRcP
+	iIT8AYWw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVziu-0000000DIwm-3hkZ;
-	Fri, 02 Feb 2024 20:01:17 +0000
-Received: from desiato.infradead.org ([90.155.92.199])
+	id 1rW0h0-0000000DStl-3X8I;
+	Fri, 02 Feb 2024 21:03:22 +0000
+Received: from mout02.posteo.de ([185.67.36.66])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVzhB-0000000DIAB-3tPa;
-	Fri, 02 Feb 2024 19:59:45 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=Vxm7GroJb1jr7a7SKxct7zVVLJ9MIYxfQSDNcHJxJs8=; b=ADcCMhtgu45cYRT+AdZgFD1Crv
-	ZUQpXQ7u40Js7ftA9RdoKyjeLJuWqC5J6DVqD3g004LvdvWqMk67DYGWVgxybX4Qx7woHvYnrQClp
-	doFvokvez71mlblXNOhnzqR5VxarifzxsvRL+t8xk8nm5ePko8mVNPiXFcn5L8kOB2FLiNgASIl6G
-	KYLJSW4PV48IujwaOeVJUiX/PvDizCByaoqUMACx2BrAmv+EsmeatNI1Yl5bcFTIRVaIKa5Th6xky
-	Mdk8wA+pVhzGKlCAbP86CId/DOedHsCmMWxsoeqyeKJovrtzRnyoXXJs+rzggATaerkOcPM3JkieO
-	E1ns2Sfg==;
-Received: from sin.source.kernel.org ([145.40.73.55])
-	by desiato.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVzh7-0000000AE9S-1T4k;
-	Fri, 02 Feb 2024 19:59:28 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 8D63BCE2E44;
-	Fri,  2 Feb 2024 19:59:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EB81C43141;
-	Fri,  2 Feb 2024 19:59:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706903955;
-	bh=QNmBS0brQeJSjUserQhzHk2Vt2IzcbhX82b9CN/v9CM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rqr1TVIkELbYe8QcCaThgPp5LfWi4EUBvIMppFR3VVYloXIkVaSj1nLdUvXnARg9u
-	 W4AepGXy6uRZGg2L9PFyE7fy9ii7eFqT6dlWogyio4PE7QIoBYNy7tMnDPJ8UfC7hG
-	 XFbmaFzRY/46VmL/ZfeffKX1wCpke+epxasSxyVyG3ZE8GhMyOB43ybYp65Se6knYS
-	 adbMjrvYBVdu4eZEpmkn75FnBt+KEP63nyZeBhz6u4l5XoVWgDQlttPxbupz2oLhsm
-	 s7YXw3hJ2rRF52Uz2vwU3YR5WfwgKeeO2H4/PfvHfC78HwzoSD7g5UczgKO8C9fD6x
-	 i93LlSW/kUN1g==
-From: Stephen Boyd <sboyd@kernel.org>
-To: Rob Herring <robh+dt@kernel.org>
-Cc: Frank Rowand <frowand.list@gmail.com>,
-	linux-kernel@vger.kernel.org,
-	patches@lists.linux.dev,
+	id 1rVzfn-0000000DHlC-0v9c
+	for linux-um@lists.infradead.org;
+	Fri, 02 Feb 2024 19:58:18 +0000
+Received: from submission (posteo.de [185.67.36.169]) 
+	by mout02.posteo.de (Postfix) with ESMTPS id 4A8E4240101
+	for <linux-um@lists.infradead.org>; Fri,  2 Feb 2024 20:57:59 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+	t=1706903879; bh=ZjzdVNfrMUY9UbVAc1VBiqKQvpy3NY8jNomBSoF8YQg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:
+	 Content-Transfer-Encoding:From;
+	b=hDqww7k1xSH3YS9NyU1U28mv8gyk1ry5awu7xlodsYIIk4O2fLsbBE9+M1IFr/WQM
+	 EUCeqAHXHalRpQx4KBL+zKeqTy2FsguPk6FfbeycHb8qTOfZ1PolxAbmmodMGoF189
+	 3CGyLU/yOj5WNm/1fw9MAg3AOZUfuo3wnXWRIotznjP91oZFPA7TdKrvbi2WzVt9X9
+	 vsWYrR7ys9VbaeQd+aK+P9LvRFC/EOoZ7sDSxdiCTUtOyzbu8batzONrJK4N+6DNPP
+	 cSmpXl6FyfNcrapy2G0aQk1q3TkmznRJIJssQsrV9bkLaYtbZyYqpGzN8bBKHYQbDL
+	 NqKkz9q4IxgMw==
+Received: from customer (localhost [127.0.0.1])
+	by submission (posteo.de) with ESMTPSA id 4TRRQW0V8Zz9rxG;
+	Fri,  2 Feb 2024 20:57:54 +0100 (CET)
+From: Yueh-Shun Li <shamrocklee@posteo.net>
+To: Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>
+Cc: Yueh-Shun Li <shamrocklee@posteo.net>,
 	linux-um@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	kunit-dev@googlegroups.com,
-	linux-kselftest@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: [PATCH v3 6/7] of: unittest: treat missing of_root as error instead of fixing up
-Date: Fri,  2 Feb 2024 11:59:07 -0800
-Message-ID: <20240202195909.3458162-7-sboyd@kernel.org>
-X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-In-Reply-To: <20240202195909.3458162-1-sboyd@kernel.org>
-References: <20240202195909.3458162-1-sboyd@kernel.org>
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] um: Makefile: use bash from the environment
+Date: Fri,  2 Feb 2024 19:56:33 +0000
+Message-ID: <20240202195645.3224648-1-shamrocklee@posteo.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240202_195925_943735_7CB8AF31 
-X-CRM114-Status: GOOD (  13.30  )
+X-CRM114-CacheID: sfid-20240202_115803_484516_3100E856 
+X-CRM114-Status: UNSURE (   8.81  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,54 +73,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Frank Rowand <frowand.list@gmail.com>
+Set Makefile SHELL to bash instead of /bin/bash for better portability.
 
-unflatten_device_tree() now ensures that the 'of_root' node is populated
-with the root of a default empty devicetree. Remove the unittest code
-that created 'of_root' if it was missing. Verify that 'of_root' is valid
-before attempting to attach the testcase-data subtree. Remove the
-unittest code that unflattens the unittest overlay base if architecture
-is UML because that is always done now.
+Some systems do not install binaries to /bin, and therefore do not
+provide /bin/bash. OS distributions such as NixOS and Guix System
+intentionally avoid implementing the Filesystem Hierarchy Standard (FHS).
 
-Signed-off-by: Frank Rowand <frowand.list@gmail.com>
-Link: https://lore.kernel.org/r/20230317053415.2254616-3-frowand.list@gmail.com
-Cc: Rob Herring <robh+dt@kernel.org>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+The recipies inside arch/um/Makefile don't require top-level Bash to
+build, and setting "SHELL" to "bash" makes Make pick the Bash executable
+from the environment[2], hence this patch.
+
+Signed-off-by: Yueh-Shun Li <shamrocklee@posteo.net>
 ---
- drivers/of/unittest.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ arch/um/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
-index a8b27dd16ecf..742d919e8ab4 100644
---- a/drivers/of/unittest.c
-+++ b/drivers/of/unittest.c
-@@ -1732,20 +1732,16 @@ static int __init unittest_data_add(void)
- 		return -EINVAL;
- 	}
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index 82f05f250634..904e2b990963 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -20,7 +20,7 @@ endif
+ ARCH_DIR := arch/um
+ # We require bash because the vmlinux link and loader script cpp use bash
+ # features.
+-SHELL := /bin/bash
++SHELL := bash
  
-+	/* attach the sub-tree to live tree */
- 	if (!of_root) {
--		of_root = unittest_data_node;
--		for_each_of_allnodes(np)
--			__of_attach_node_sysfs(np);
--		of_aliases = of_find_node_by_path("/aliases");
--		of_chosen = of_find_node_by_path("/chosen");
--		of_overlay_mutex_unlock();
--		return 0;
-+		pr_warn("%s: no live tree to attach sub-tree\n", __func__);
-+		kfree(unittest_data);
-+		return -ENODEV;
- 	}
+ MODE_INCLUDE	+= -I$(srctree)/$(ARCH_DIR)/include/shared/skas
  
- 	EXPECT_BEGIN(KERN_INFO,
- 		     "Duplicate name in testcase-data, renamed to \"duplicate-name#1\"");
- 
--	/* attach the sub-tree to live tree */
- 	np = unittest_data_node->child;
- 	while (np) {
- 		struct device_node *next = np->sibling;
 -- 
-https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
-https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
+2.42.0
 
 
