@@ -4,66 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85B3BC4828F
-	for <linux-um@archiver.kernel.org>; Fri,  2 Feb 2024 20:00:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8AB4C4828E
+	for <linux-um@archiver.kernel.org>; Fri,  2 Feb 2024 20:01:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=9nr8KgIXSlmrBRc5eTEs4Ft1WJ6sE76s1g3Xw61O8GM=; b=ZO6qhK4tyVDuX76X0T9W99e7DN
-	nD0/2mmuhWQcL/x2iZ8sXvT/Ji8Iuzr5/AdkmG3VuN4qKd1biGOQRIPbAAz3y64D7g4m57zVE1IWK
-	OXzO22X0/mdnUQNKCHRDy4EUQqe2ojqtCpUO/QmHAWwyqFsfqR2StHmkzuT7nzz1Tv+JiNA/VXTuZ
-	BAlqVA6Y4oPWOCR+MDG1XXaJDp9Mhlol2kLEIvlh3zO+32IiwvdYIOHvQZOeCOoevjMT532QzS9Hl
-	/QmRC5HaP34sr/h8YQGzn6C6iZKHrIU8wQoOMgqcnmz35dxbyQudqoLzXmpSpHSi4YwfF9LdFDIrS
-	bkw2FBVA==;
+	bh=Vxm7GroJb1jr7a7SKxct7zVVLJ9MIYxfQSDNcHJxJs8=; b=3pD86dIBGiDgoGofm/uoq81Gfq
+	pMiKyfoZU6M2Asg3vBCL2QNkVqoqynW1jFBN7SrNHoKd/42jr3LM3L2+lXvibfJp1/RbHIntVoeYr
+	bNuxKXmN4fWMRU6r7V1WUSSRbsD7qwHuFDDtDBzQoVFW0ibpMprZNeP0O3k5SpsnbPAKkuGg7mWPz
+	xOdw7SityNF9q16jjsKGjGkTwJbxEcu483+kqnXOCo2/Ndl/g3KPDEVzy52Rrd+pE1pdEetTIZON1
+	sOftOuElgQugNrYCSe9ZTFj2W5dhHtnEoVD4OYn4CnWzx2PTX4deu+AuwnQ6hoi6Qm9uONWNU58B+
+	3j+u11rw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVziQ-0000000DInK-0oWp;
-	Fri, 02 Feb 2024 20:00:46 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1rVziu-0000000DIwm-3hkZ;
+	Fri, 02 Feb 2024 20:01:17 +0000
+Received: from desiato.infradead.org ([90.155.92.199])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVzh0-0000000DI5l-1lmF;
-	Fri, 02 Feb 2024 19:59:22 +0000
+	id 1rVzhB-0000000DIAB-3tPa;
+	Fri, 02 Feb 2024 19:59:45 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+	:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-Type:Content-ID:Content-Description;
+	bh=Vxm7GroJb1jr7a7SKxct7zVVLJ9MIYxfQSDNcHJxJs8=; b=ADcCMhtgu45cYRT+AdZgFD1Crv
+	ZUQpXQ7u40Js7ftA9RdoKyjeLJuWqC5J6DVqD3g004LvdvWqMk67DYGWVgxybX4Qx7woHvYnrQClp
+	doFvokvez71mlblXNOhnzqR5VxarifzxsvRL+t8xk8nm5ePko8mVNPiXFcn5L8kOB2FLiNgASIl6G
+	KYLJSW4PV48IujwaOeVJUiX/PvDizCByaoqUMACx2BrAmv+EsmeatNI1Yl5bcFTIRVaIKa5Th6xky
+	Mdk8wA+pVhzGKlCAbP86CId/DOedHsCmMWxsoeqyeKJovrtzRnyoXXJs+rzggATaerkOcPM3JkieO
+	E1ns2Sfg==;
+Received: from sin.source.kernel.org ([145.40.73.55])
+	by desiato.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rVzh7-0000000AE9S-1T4k;
+	Fri, 02 Feb 2024 19:59:28 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id D03C5CE2E3F;
+	by sin.source.kernel.org (Postfix) with ESMTP id 8D63BCE2E44;
 	Fri,  2 Feb 2024 19:59:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0422C43390;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EB81C43141;
 	Fri,  2 Feb 2024 19:59:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706903956;
-	bh=PiweXFroDHF7yXaa82SMFRXH/FDbm1RzgiHTih6bLA8=;
+	s=k20201202; t=1706903955;
+	bh=QNmBS0brQeJSjUserQhzHk2Vt2IzcbhX82b9CN/v9CM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LUsABn4BtEE+3rLzRs0MQ2C02aC4eRavx+NnUEigQIDN5hEhEZNBOQJZPL8COpFiE
-	 lorefdZOxB8OV+F2B33bLbZYuCDULzTivEsiui+momrj0H+Q4M8bILqL6UXIb2VZG8
-	 2a4s2d8yNcFame9bG1gYjm7fRnJ0b1loqO9DK41wYC40o8K8MLf+BOFe1Y+PHMhias
-	 njRXktKCexQ9Yv8x4+YTqiHhB31aR091ZwIt79dQ9s29u1QvLULGcboC0mabkoiOis
-	 bdoKOrdCx2OSnf4HWEb5yIMklX06Ug8ejLsbsHsTP/c7+WG2Qd9+ZAF9Hq4PyzUetv
-	 l0y+61kYAJv5Q==
+	b=rqr1TVIkELbYe8QcCaThgPp5LfWi4EUBvIMppFR3VVYloXIkVaSj1nLdUvXnARg9u
+	 W4AepGXy6uRZGg2L9PFyE7fy9ii7eFqT6dlWogyio4PE7QIoBYNy7tMnDPJ8UfC7hG
+	 XFbmaFzRY/46VmL/ZfeffKX1wCpke+epxasSxyVyG3ZE8GhMyOB43ybYp65Se6knYS
+	 adbMjrvYBVdu4eZEpmkn75FnBt+KEP63nyZeBhz6u4l5XoVWgDQlttPxbupz2oLhsm
+	 s7YXw3hJ2rRF52Uz2vwU3YR5WfwgKeeO2H4/PfvHfC78HwzoSD7g5UczgKO8C9fD6x
+	 i93LlSW/kUN1g==
 From: Stephen Boyd <sboyd@kernel.org>
 To: Rob Herring <robh+dt@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
+Cc: Frank Rowand <frowand.list@gmail.com>,
+	linux-kernel@vger.kernel.org,
 	patches@lists.linux.dev,
 	linux-um@lists.infradead.org,
 	linux-arm-kernel@lists.infradead.org,
 	kunit-dev@googlegroups.com,
 	linux-kselftest@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	Frank Rowand <frowand.list@gmail.com>,
-	David Gow <davidgow@google.com>,
-	Brendan Higgins <brendan.higgins@linux.dev>
-Subject: [PATCH v3 7/7] of: Add KUnit test to confirm DTB is loaded
-Date: Fri,  2 Feb 2024 11:59:08 -0800
-Message-ID: <20240202195909.3458162-8-sboyd@kernel.org>
+	devicetree@vger.kernel.org
+Subject: [PATCH v3 6/7] of: unittest: treat missing of_root as error instead of fixing up
+Date: Fri,  2 Feb 2024 11:59:07 -0800
+Message-ID: <20240202195909.3458162-7-sboyd@kernel.org>
 X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
 In-Reply-To: <20240202195909.3458162-1-sboyd@kernel.org>
 References: <20240202195909.3458162-1-sboyd@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240202_115920_360723_DFBFCC56 
-X-CRM114-Status: GOOD (  18.15  )
+X-CRM114-CacheID: sfid-20240202_195925_943735_7CB8AF31 
+X-CRM114-Status: GOOD (  13.30  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,117 +90,52 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Add a KUnit test that confirms a DTB has been loaded, i.e. there is a
-root node, and that the of_have_populated_dt() API works properly.
+From: Frank Rowand <frowand.list@gmail.com>
 
+unflatten_device_tree() now ensures that the 'of_root' node is populated
+with the root of a default empty devicetree. Remove the unittest code
+that created 'of_root' if it was missing. Verify that 'of_root' is valid
+before attempting to attach the testcase-data subtree. Remove the
+unittest code that unflattens the unittest overlay base if architecture
+is UML because that is always done now.
+
+Signed-off-by: Frank Rowand <frowand.list@gmail.com>
+Link: https://lore.kernel.org/r/20230317053415.2254616-3-frowand.list@gmail.com
 Cc: Rob Herring <robh+dt@kernel.org>
-Cc: Frank Rowand <frowand.list@gmail.com>
-Cc: David Gow <davidgow@google.com>
-Cc: Brendan Higgins <brendan.higgins@linux.dev>
 Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 ---
- drivers/of/.kunitconfig |  3 +++
- drivers/of/Kconfig      |  9 ++++++++
- drivers/of/Makefile     |  2 ++
- drivers/of/of_test.c    | 48 +++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 62 insertions(+)
- create mode 100644 drivers/of/.kunitconfig
- create mode 100644 drivers/of/of_test.c
+ drivers/of/unittest.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/of/.kunitconfig b/drivers/of/.kunitconfig
-new file mode 100644
-index 000000000000..5a8fee11978c
---- /dev/null
-+++ b/drivers/of/.kunitconfig
-@@ -0,0 +1,3 @@
-+CONFIG_KUNIT=y
-+CONFIG_OF=y
-+CONFIG_OF_KUNIT_TEST=y
-diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
-index 17733285b415..53d1b5dd89e8 100644
---- a/drivers/of/Kconfig
-+++ b/drivers/of/Kconfig
-@@ -37,6 +37,15 @@ config OF_UNITTEST
+diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
+index a8b27dd16ecf..742d919e8ab4 100644
+--- a/drivers/of/unittest.c
++++ b/drivers/of/unittest.c
+@@ -1732,20 +1732,16 @@ static int __init unittest_data_add(void)
+ 		return -EINVAL;
+ 	}
  
- 	  If unsure, say N here. This option is not safe to enable.
++	/* attach the sub-tree to live tree */
+ 	if (!of_root) {
+-		of_root = unittest_data_node;
+-		for_each_of_allnodes(np)
+-			__of_attach_node_sysfs(np);
+-		of_aliases = of_find_node_by_path("/aliases");
+-		of_chosen = of_find_node_by_path("/chosen");
+-		of_overlay_mutex_unlock();
+-		return 0;
++		pr_warn("%s: no live tree to attach sub-tree\n", __func__);
++		kfree(unittest_data);
++		return -ENODEV;
+ 	}
  
-+config OF_KUNIT_TEST
-+	tristate "Devicetree KUnit Test" if !KUNIT_ALL_TESTS
-+	depends on KUNIT
-+	default KUNIT_ALL_TESTS
-+	help
-+	  This option builds KUnit unit tests for device tree infrastructure.
-+
-+	  If unsure, say N here, but this option is safe to enable.
-+
- config OF_ALL_DTBS
- 	bool "Build all Device Tree Blobs"
- 	depends on COMPILE_TEST
-diff --git a/drivers/of/Makefile b/drivers/of/Makefile
-index df305348d1cb..251d33532148 100644
---- a/drivers/of/Makefile
-+++ b/drivers/of/Makefile
-@@ -19,4 +19,6 @@ obj-y	+= kexec.o
- endif
- endif
+ 	EXPECT_BEGIN(KERN_INFO,
+ 		     "Duplicate name in testcase-data, renamed to \"duplicate-name#1\"");
  
-+obj-$(CONFIG_OF_KUNIT_TEST) += of_test.o
-+
- obj-$(CONFIG_OF_UNITTEST) += unittest-data/
-diff --git a/drivers/of/of_test.c b/drivers/of/of_test.c
-new file mode 100644
-index 000000000000..71a767b42b43
---- /dev/null
-+++ b/drivers/of/of_test.c
-@@ -0,0 +1,48 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * KUnit tests for OF APIs
-+ */
-+#include <linux/module.h>
-+#include <linux/of.h>
-+
-+#include <kunit/test.h>
-+
-+/*
-+ * Test that the root node "/" can be found by path.
-+ */
-+static void dtb_root_node_found_by_path(struct kunit *test)
-+{
-+	struct device_node *np;
-+
-+	np = of_find_node_by_path("/");
-+	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, np);
-+	of_node_put(np);
-+}
-+
-+/*
-+ * Test that the 'of_root' global variable is always populated when DT code is
-+ * enabled.
-+ */
-+static void dtb_root_node_populates_of_root(struct kunit *test)
-+{
-+	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, of_root);
-+}
-+
-+static struct kunit_case dtb_test_cases[] = {
-+	KUNIT_CASE(dtb_root_node_found_by_path),
-+	KUNIT_CASE(dtb_root_node_populates_of_root),
-+	{}
-+};
-+
-+/*
-+ * Test suite to confirm a DTB is loaded.
-+ */
-+static struct kunit_suite dtb_suite = {
-+	.name = "dtb",
-+	.test_cases = dtb_test_cases,
-+};
-+
-+kunit_test_suites(
-+	&dtb_suite,
-+);
-+MODULE_LICENSE("GPL");
+-	/* attach the sub-tree to live tree */
+ 	np = unittest_data_node->child;
+ 	while (np) {
+ 		struct device_node *next = np->sibling;
 -- 
 https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
 https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
