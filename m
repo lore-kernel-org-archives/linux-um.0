@@ -4,52 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3F30C4828E
-	for <linux-um@archiver.kernel.org>; Fri,  2 Feb 2024 09:40:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 301B7C48291
+	for <linux-um@archiver.kernel.org>; Fri,  2 Feb 2024 10:19:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=tVlTdeEcGcalzCdG6nwmVXT49iPRM8whSzQr6PYMHDo=; b=KlUcY1It8yFhVoV7zgF5pikSSx
-	a196IHBXOMon3Zl4qrVUmxGvp/4avj7bUCC6m41l7U7t2pmzgkVjZScQ+UNIgJOPjqYH+/3rSUwCI
-	bYdfFEERKoqhrCVdMAAh+zVecpHHapM2wsZhw3vQ0Kn19E/fgAfeW2n14kc+yzz3yQ3frpMludDOt
-	sS9D14p4Wl7xLDqeabfASuoYztd5bcx47zVb36GytnJbB+6XrHZr7Ns42fE/rD4DvzarqfVjUlG0h
-	CL0noewZaTL02fWyVu9juXOy1NPOkIHQeZs7TfPtCVPrru0j+fLgV03s1HUyh3Ucq3CZmQJhnfObW
-	GeqUVHlw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=cudxL0orcaJRfipzGfSxSgCZGlWMuSfJ1O08YaH9LK4=; b=JSdhDvI7+md1kx+2Ai1GmDfhrd
+	oML9k1qo5cZRkgeFeR9if4GYrFIdUeImAzJuY6VSMlVCl2q3+dv0C7l9b5+F6YsvwZ2ttEFBYpDk7
+	HLf5cputNJ1iiYncLNjL/+BPhMySCBVWb5U+nawnB8Xm3g4R5Wkd+ROGBhtGY9rKPioYhBLi3I0Ps
+	EJnFjcrOBjpOejOFsUHGZD9cu4rcfSJ8j34st1mLCslrYyHH60lN8Sw/Mr5x9Kcz5XG94exUJzDhU
+	thJxyOfikJKzUxRwcBM9K97sQyMBG+XTVJOUxMK5TD4+hULGC/2SJxKS+HvQpeljW7eSiu0ZQp9aZ
+	B/p4iGOA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVq2F-0000000B0kg-0s1A;
-	Fri, 02 Feb 2024 09:40:35 +0000
-Received: from out30-97.freemail.mail.aliyun.com ([115.124.30.97])
+	id 1rVqdc-0000000B85u-0Nhm;
+	Fri, 02 Feb 2024 10:19:12 +0000
+Received: from mgamail.intel.com ([198.175.65.15])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVq2B-0000000B0eS-2VqS
+	id 1rVqdZ-0000000B849-2xB9
 	for linux-um@lists.infradead.org;
-	Fri, 02 Feb 2024 09:40:33 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1706866825; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=tVlTdeEcGcalzCdG6nwmVXT49iPRM8whSzQr6PYMHDo=;
-	b=JpVgmPpE7yeArgD4iigBN2LBG0pHS2EMh9pkbZC1wkBw416zH7rzrl7kR43+B/DRH6Ncq4yGfhyo1iGSaNURDr/2j8bdT2+IePH+u4ZOv+2Upk157bwzQLfyh7KkUYRoi00IfCLN9tTWDQSHxmRZ1bZpOHi6mY6nvP9vx0jAVqE=
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=36;SR=0;TI=SMTPD_---0W.wgXJI_1706866822;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W.wgXJI_1706866822)
-          by smtp.aliyun-inc.com;
-          Fri, 02 Feb 2024 17:40:23 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: virtualization@lists.linux.dev
-Cc: Richard Weinberger <richard@nod.at>,
+	Fri, 02 Feb 2024 10:19:11 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706869150; x=1738405150;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=O0dlvz0rsuZkkrXwFE4VhXogz4lXzTTIUA+KqRGGRos=;
+  b=MD7YbPCxoqgyEQ/kw6xzSGiopwNdlT2H5dF/VrSaRQ/pbc2H5n8TZ+XV
+   9IS+6319CBHX1mOo00aIOincTWqNUDXz9VMxSvVrWa0dV+Jv+O5ldNVIs
+   GH7VEEuJj1eDx33JHHOJlPearn/24xo4W4/9f2bBKrGYtRrrKbsSdgcuM
+   pHkA5roKVfVG3eglN3gzBCCT/Irk/CNHm/v2snpqMQ6IO0IOZf3uSMaUc
+   3DwU9cCaFXbhnwmSM/uwVIYLYyJ6BotQjTVzOx6fzcVGrbzLXr5qfysi3
+   prKjOTCJpE4au4o2Z4VnQyWt2eVAff+WVhM5QbJXkPdRI6fzv0xvi4n4I
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="4028806"
+X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
+   d="scan'208";a="4028806"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 02:19:06 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="932436108"
+X-IronPort-AV: E=Sophos;i="6.05,237,1701158400"; 
+   d="scan'208";a="932436108"
+Received: from lkp-server02.sh.intel.com (HELO 59f4f4cd5935) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 02 Feb 2024 02:18:58 -0800
+Received: from kbuild by 59f4f4cd5935 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rVqdH-0003lw-1Y;
+	Fri, 02 Feb 2024 10:18:53 +0000
+Date: Fri, 2 Feb 2024 18:17:40 +0800
+From: kernel test robot <lkp@intel.com>
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, virtualization@lists.linux.dev
+Cc: oe-kbuild-all@lists.linux.dev, Richard Weinberger <richard@nod.at>,
 	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
 	Johannes Berg <johannes@sipsolutions.net>,
 	"Michael S. Tsirkin" <mst@redhat.com>,
 	Jason Wang <jasowang@redhat.com>,
 	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
 	Hans de Goede <hdegoede@redhat.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
 	Vadim Pasternak <vadimp@nvidia.com>,
 	Bjorn Andersson <andersson@kernel.org>,
 	Mathieu Poirier <mathieu.poirier@linaro.org>,
@@ -66,25 +84,18 @@ Cc: Richard Weinberger <richard@nod.at>,
 	Jesper Dangaard Brouer <hawk@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
 	Benjamin Berg <benjamin.berg@intel.com>,
-	linux-um@lists.infradead.org,
-	netdev@vger.kernel.org,
-	platform-driver-x86@vger.kernel.org,
-	linux-remoteproc@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	kvm@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH vhost v1 19/19] virtio_net: sq support premapped mode
-Date: Fri,  2 Feb 2024 17:39:51 +0800
-Message-Id: <20240202093951.120283-20-xuanzhuo@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0.3.g01195cf9f
-In-Reply-To: <20240202093951.120283-1-xuanzhuo@linux.alibaba.com>
-References: <20240202093951.120283-1-xuanzhuo@linux.alibaba.com>
+	Yang Li <yang.lee@linux.alibaba.com>, linux-um@lists.infradead.org
+Subject: Re: [PATCH vhost 07/17] virtio: find_vqs: pass struct instead of
+ multi parameters
+Message-ID: <202402021724.AisZOf9F-lkp@intel.com>
+References: <20240130114224.86536-8-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-X-Git-Hash: 4c7bacd05cb8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240130114224.86536-8-xuanzhuo@linux.alibaba.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240202_014031_886268_8561A98B 
-X-CRM114-Status: GOOD (  18.44  )
+X-CRM114-CacheID: sfid-20240202_021909_843563_77F9CDF8 
+X-CRM114-Status: GOOD (  24.23  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,271 +110,336 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-If the xsk is enabling, the xsk tx will share the send queue.
-But the xsk requires that the send queue use the premapped mode.
-So the send queue must support premapped mode.
+Hi Xuan,
 
-cmd:
-    sh samples/pktgen/pktgen_sample01_simple.sh -i eth0 \
-        -s 16 -d 10.0.0.128 -m 00:16:3e:2c:c8:2e -n 0 -p 100
-CPU:
-    Intel(R) Xeon(R) Platinum 8369B CPU @ 2.70GHz
+kernel test robot noticed the following build errors:
 
-Machine:
-    ecs.g7.2xlarge(Aliyun)
+[auto build test ERROR on v6.7]
+[also build test ERROR on next-20240202]
+[cannot apply to remoteproc/rproc-next uml/next s390/features linus/master uml/fixes v6.8-rc2 v6.8-rc1]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-before:              1600010.00
-after(no-premapped): 1599966.00
-after(premapped):    1600014.00
+url:    https://github.com/intel-lab-lkp/linux/commits/Xuan-Zhuo/virtio_ring-introduce-vring_need_unmap_buffer/20240130-195202
+base:   v6.7
+patch link:    https://lore.kernel.org/r/20240130114224.86536-8-xuanzhuo%40linux.alibaba.com
+patch subject: [PATCH vhost 07/17] virtio: find_vqs: pass struct instead of multi parameters
+config: m68k-allmodconfig (https://download.01.org/0day-ci/archive/20240202/202402021724.AisZOf9F-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240202/202402021724.AisZOf9F-lkp@intel.com/reproduce)
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/net/virtio_net.c | 160 ++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 156 insertions(+), 4 deletions(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402021724.AisZOf9F-lkp@intel.com/
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 226ab830870e..2b775a2ed045 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -46,6 +46,7 @@ module_param(napi_tx, bool, 0644);
- #define VIRTIO_XDP_REDIR	BIT(1)
- 
- #define VIRTIO_XDP_FLAG	BIT(0)
-+#define VIRTIO_DMA_FLAG	BIT(1)
- 
- /* RX packet size EWMA. The average packet size is used to determine the packet
-  * buffer size when refilling RX rings. As the entire RX ring may be refilled
-@@ -140,6 +141,23 @@ struct virtnet_rq_dma {
- 	u16 need_sync;
- };
- 
-+struct virtnet_sq_dma {
-+	union {
-+		struct virtnet_sq_dma *next;
-+		void *data;
-+	};
-+	dma_addr_t addr;
-+	u32 len;
-+	bool is_tail;
-+};
-+
-+struct virtnet_sq_dma_head {
-+	/* record for kfree */
-+	void *p;
-+
-+	struct virtnet_sq_dma *free;
-+};
-+
- /* Internal representation of a send virtqueue */
- struct send_queue {
- 	/* Virtqueue associated with this send _queue */
-@@ -159,6 +177,8 @@ struct send_queue {
- 
- 	/* Record whether sq is in reset state. */
- 	bool reset;
-+
-+	struct virtnet_sq_dma_head dmainfo;
- };
- 
- /* Internal representation of a receive virtqueue */
-@@ -348,6 +368,122 @@ static struct xdp_frame *ptr_to_xdp(void *ptr)
- 	return (struct xdp_frame *)((unsigned long)ptr & ~VIRTIO_XDP_FLAG);
- }
- 
-+static void *virtnet_sq_unmap(struct send_queue *sq, void *data)
-+{
-+	struct virtnet_sq_dma *head, *tail;
-+
-+	if (!((unsigned long)data & VIRTIO_DMA_FLAG))
-+		return data;
-+
-+	head = (void *)((unsigned long)data & ~VIRTIO_DMA_FLAG);
-+
-+	tail = head;
-+
-+	while (true) {
-+		virtqueue_dma_unmap_page_attrs(sq->vq, tail->addr, tail->len,
-+					       DMA_TO_DEVICE, 0);
-+		if (tail->is_tail)
-+			break;
-+
-+		tail = tail->next;
-+	}
-+
-+	data = tail->data;
-+	tail->is_tail = false;
-+
-+	tail->next = sq->dmainfo.free;
-+	sq->dmainfo.free = head;
-+
-+	return data;
-+}
-+
-+static void *virtnet_sq_dma_splice(struct send_queue *sq,
-+				   struct virtnet_sq_dma *head,
-+				   struct virtnet_sq_dma *tail,
-+				   void *data)
-+{
-+	sq->dmainfo.free = tail->next;
-+
-+	tail->is_tail = true;
-+	tail->data = data;
-+
-+	head = (void *)((unsigned long)head | VIRTIO_DMA_FLAG);
-+
-+	return head;
-+}
-+
-+static struct virtnet_sq_dma *virtnet_sq_map_sg(struct send_queue *sq, int nents, void *data)
-+{
-+	struct virtnet_sq_dma *head, *tail, *p;
-+	struct scatterlist *sg;
-+	int i;
-+
-+	head = sq->dmainfo.free;
-+	p = head;
-+
-+	tail = NULL;
-+
-+	for_each_sg(sq->sg, sg, nents, i) {
-+		if (virtqueue_dma_map_sg_attrs(sq->vq, sg, DMA_TO_DEVICE, 0))
-+			goto err;
-+
-+		tail = p;
-+		tail->addr = sg->dma_address;
-+		tail->len = sg->length;
-+
-+		p = p->next;
-+	}
-+
-+	return virtnet_sq_dma_splice(sq, head, tail, data);
-+
-+err:
-+	if (tail)
-+		virtnet_sq_unmap(sq, virtnet_sq_dma_splice(sq, head, tail, data));
-+
-+	return NULL;
-+}
-+
-+static int virtnet_add_outbuf(struct send_queue *sq, u32 num, void *data)
-+{
-+	int ret;
-+
-+	if (sq->vq->premapped) {
-+		data = virtnet_sq_map_sg(sq, num, data);
-+		if (!data)
-+			return -ENOMEM;
-+	}
-+
-+	ret = virtqueue_add_outbuf(sq->vq, sq->sg, num, data, GFP_ATOMIC);
-+	if (ret && sq->vq->premapped)
-+		virtnet_sq_unmap(sq, data);
-+
-+	return ret;
-+}
-+
-+static int virtnet_sq_init_dma_mate(struct send_queue *sq)
-+{
-+	struct virtnet_sq_dma *d;
-+	int num, i;
-+
-+	num = (virtqueue_get_vring_size(sq->vq) + 1) * ARRAY_SIZE(sq->sg);
-+
-+	sq->dmainfo.free = kcalloc(num, sizeof(*sq->dmainfo.free), GFP_KERNEL);
-+	if (!sq->dmainfo.free)
-+		return -ENOMEM;
-+
-+	sq->dmainfo.p = sq->dmainfo.free;
-+
-+	for (i = 0; i < num; ++i) {
-+		d = &sq->dmainfo.free[i];
-+		d->is_tail = false;
-+		d->next = d + 1;
-+	}
-+
-+	d->next = NULL;
-+
-+	return 0;
-+}
-+
- static void __free_old_xmit(struct send_queue *sq, bool in_napi,
- 			    u64 *bytes, u64 *packets)
- {
-@@ -355,6 +491,8 @@ static void __free_old_xmit(struct send_queue *sq, bool in_napi,
- 	void *ptr;
- 
- 	while ((ptr = virtqueue_get_buf(sq->vq, &len)) != NULL) {
-+		ptr = virtnet_sq_unmap(sq, ptr);
-+
- 		if (!is_xdp_frame(ptr)) {
- 			struct sk_buff *skb = ptr;
- 
-@@ -865,8 +1003,7 @@ static int __virtnet_xdp_xmit_one(struct virtnet_info *vi,
- 			    skb_frag_size(frag), skb_frag_off(frag));
- 	}
- 
--	err = virtqueue_add_outbuf(sq->vq, sq->sg, nr_frags + 1,
--				   xdp_to_ptr(xdpf), GFP_ATOMIC);
-+	err = virtnet_add_outbuf(sq, nr_frags + 1, xdp_to_ptr(xdpf));
- 	if (unlikely(err))
- 		return -ENOSPC; /* Caller handle free/refcnt */
- 
-@@ -2305,7 +2442,7 @@ static int xmit_skb(struct send_queue *sq, struct sk_buff *skb)
- 			return num_sg;
- 		num_sg++;
- 	}
--	return virtqueue_add_outbuf(sq->vq, sq->sg, num_sg, skb, GFP_ATOMIC);
-+	return virtnet_add_outbuf(sq, num_sg, skb);
- }
- 
- static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
-@@ -3961,6 +4098,8 @@ static void virtnet_free_queues(struct virtnet_info *vi)
- 	for (i = 0; i < vi->max_queue_pairs; i++) {
- 		__netif_napi_del(&vi->rq[i].napi);
- 		__netif_napi_del(&vi->sq[i].napi);
-+
-+		kfree(vi->sq[i].dmainfo.p);
- 	}
- 
- 	/* We called __netif_napi_del(),
-@@ -4009,6 +4148,14 @@ static void free_receive_page_frags(struct virtnet_info *vi)
- 
- static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf)
- {
-+	struct virtnet_info *vi = vq->vdev->priv;
-+	struct send_queue *sq;
-+	int i = vq2rxq(vq);
-+
-+	sq = &vi->sq[i];
-+
-+	buf = virtnet_sq_unmap(sq, buf);
-+
- 	if (!is_xdp_frame(buf))
- 		dev_kfree_skb(buf);
- 	else
-@@ -4121,8 +4268,10 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
- 		if (ctx)
- 			ctx[rxq2vq(i)] = true;
- 
--		if (premapped)
-+		if (premapped) {
- 			premapped[rxq2vq(i)] = true;
-+			premapped[txq2vq(i)] = true;
-+		}
- 	}
- 
- 	cfg.nvqs      = total_vqs;
-@@ -4146,6 +4295,9 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
- 		vi->rq[i].vq = vqs[rxq2vq(i)];
- 		vi->rq[i].min_buf_len = mergeable_min_buf_len(vi, vi->rq[i].vq);
- 		vi->sq[i].vq = vqs[txq2vq(i)];
-+
-+		if (vi->sq[i].vq->premapped)
-+			virtnet_sq_init_dma_mate(&vi->sq[i]);
- 	}
- 
- 	/* run here: ret == 0. */
+All errors (new ones prefixed by >>):
+
+   drivers/virtio/virtio_vdpa.c: In function 'virtio_vdpa_setup_vq':
+>> drivers/virtio/virtio_vdpa.c:212:59: error: 'cfg' undeclared (first use in this function)
+     212 |         vq = vring_create_virtqueue(vdev, index, &tp_cfg, cfg);
+         |                                                           ^~~
+   drivers/virtio/virtio_vdpa.c:212:59: note: each undeclared identifier is reported only once for each function it appears in
+   drivers/virtio/virtio_vdpa.c: In function 'virtio_vdpa_find_vqs':
+>> drivers/virtio/virtio_vdpa.c:389:66: error: passing argument 3 of 'virtio_vdpa_setup_vq' from incompatible pointer type [-Werror=incompatible-pointer-types]
+     389 |                 vqs[i] = virtio_vdpa_setup_vq(vdev, queue_idx++, cfg);
+         |                                                                  ^~~
+         |                                                                  |
+         |                                                                  struct virtio_vq_config *
+   drivers/virtio/virtio_vdpa.c:145:29: note: expected 'void (*)(struct virtqueue *)' but argument is of type 'struct virtio_vq_config *'
+     145 |                      void (*callback)(struct virtqueue *vq),
+         |                      ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> drivers/virtio/virtio_vdpa.c:389:26: error: too few arguments to function 'virtio_vdpa_setup_vq'
+     389 |                 vqs[i] = virtio_vdpa_setup_vq(vdev, queue_idx++, cfg);
+         |                          ^~~~~~~~~~~~~~~~~~~~
+   drivers/virtio/virtio_vdpa.c:144:1: note: declared here
+     144 | virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+         | ^~~~~~~~~~~~~~~~~~~~
+   drivers/virtio/virtio_vdpa.c: At top level:
+>> drivers/virtio/virtio_vdpa.c:473:27: error: initialization of 'int (*)(struct virtio_device *, struct virtio_vq_config *)' from incompatible pointer type 'int (*)(struct virtio_device *, struct virtio_vq_config *, struct irq_affinity *)' [-Werror=incompatible-pointer-types]
+     473 |         .find_vqs       = virtio_vdpa_find_vqs,
+         |                           ^~~~~~~~~~~~~~~~~~~~
+   drivers/virtio/virtio_vdpa.c:473:27: note: (near initialization for 'virtio_vdpa_config_ops.find_vqs')
+   cc1: some warnings being treated as errors
+
+
+vim +/cfg +212 drivers/virtio/virtio_vdpa.c
+
+   142	
+   143	static struct virtqueue *
+   144	virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+   145			     void (*callback)(struct virtqueue *vq),
+   146			     const char *name, bool ctx)
+   147	{
+   148		struct virtio_vdpa_device *vd_dev = to_virtio_vdpa_device(vdev);
+   149		struct vdpa_device *vdpa = vd_get_vdpa(vdev);
+   150		struct transport_vq_config tp_cfg = {};
+   151		const struct vdpa_config_ops *ops = vdpa->config;
+   152		struct virtio_vdpa_vq_info *info;
+   153		bool (*notify)(struct virtqueue *vq) = virtio_vdpa_notify;
+   154		struct vdpa_callback cb;
+   155		struct virtqueue *vq;
+   156		u64 desc_addr, driver_addr, device_addr;
+   157		/* Assume split virtqueue, switch to packed if necessary */
+   158		struct vdpa_vq_state state = {0};
+   159		unsigned long flags;
+   160		u32 align, max_num, min_num = 1;
+   161		bool may_reduce_num = true;
+   162		int err;
+   163	
+   164		if (!name)
+   165			return NULL;
+   166	
+   167		if (index >= vdpa->nvqs)
+   168			return ERR_PTR(-ENOENT);
+   169	
+   170		/* We cannot accept VIRTIO_F_NOTIFICATION_DATA without kick_vq_with_data */
+   171		if (__virtio_test_bit(vdev, VIRTIO_F_NOTIFICATION_DATA)) {
+   172			if (ops->kick_vq_with_data)
+   173				notify = virtio_vdpa_notify_with_data;
+   174			else
+   175				__virtio_clear_bit(vdev, VIRTIO_F_NOTIFICATION_DATA);
+   176		}
+   177	
+   178		/* Queue shouldn't already be set up. */
+   179		if (ops->get_vq_ready(vdpa, index))
+   180			return ERR_PTR(-ENOENT);
+   181	
+   182		/* Allocate and fill out our active queue description */
+   183		info = kmalloc(sizeof(*info), GFP_KERNEL);
+   184		if (!info)
+   185			return ERR_PTR(-ENOMEM);
+   186	
+   187		max_num = ops->get_vq_num_max(vdpa);
+   188		if (max_num == 0) {
+   189			err = -ENOENT;
+   190			goto error_new_virtqueue;
+   191		}
+   192	
+   193		if (ops->get_vq_num_min)
+   194			min_num = ops->get_vq_num_min(vdpa);
+   195	
+   196		may_reduce_num = (max_num == min_num) ? false : true;
+   197	
+   198		/* Create the vring */
+   199		align = ops->get_vq_align(vdpa);
+   200	
+   201		if (ops->get_vq_dma_dev)
+   202			tp_cfg.dma_dev = ops->get_vq_dma_dev(vdpa, index);
+   203		else
+   204			tp_cfg.dma_dev = vdpa_get_dma_dev(vdpa);
+   205	
+   206		tp_cfg.num = max_num;
+   207		tp_cfg.vring_align = align;
+   208		tp_cfg.weak_barriers = true;
+   209		tp_cfg.may_reduce_num = may_reduce_num;
+   210		tp_cfg.notify = notify;
+   211	
+ > 212		vq = vring_create_virtqueue(vdev, index, &tp_cfg, cfg);
+   213		if (!vq) {
+   214			err = -ENOMEM;
+   215			goto error_new_virtqueue;
+   216		}
+   217	
+   218		vq->num_max = max_num;
+   219	
+   220		/* Setup virtqueue callback */
+   221		cb.callback = callback ? virtio_vdpa_virtqueue_cb : NULL;
+   222		cb.private = info;
+   223		cb.trigger = NULL;
+   224		ops->set_vq_cb(vdpa, index, &cb);
+   225		ops->set_vq_num(vdpa, index, virtqueue_get_vring_size(vq));
+   226	
+   227		desc_addr = virtqueue_get_desc_addr(vq);
+   228		driver_addr = virtqueue_get_avail_addr(vq);
+   229		device_addr = virtqueue_get_used_addr(vq);
+   230	
+   231		if (ops->set_vq_address(vdpa, index,
+   232					desc_addr, driver_addr,
+   233					device_addr)) {
+   234			err = -EINVAL;
+   235			goto err_vq;
+   236		}
+   237	
+   238		/* reset virtqueue state index */
+   239		if (virtio_has_feature(vdev, VIRTIO_F_RING_PACKED)) {
+   240			struct vdpa_vq_state_packed *s = &state.packed;
+   241	
+   242			s->last_avail_counter = 1;
+   243			s->last_avail_idx = 0;
+   244			s->last_used_counter = 1;
+   245			s->last_used_idx = 0;
+   246		}
+   247		err = ops->set_vq_state(vdpa, index, &state);
+   248		if (err)
+   249			goto err_vq;
+   250	
+   251		ops->set_vq_ready(vdpa, index, 1);
+   252	
+   253		vq->priv = info;
+   254		info->vq = vq;
+   255	
+   256		spin_lock_irqsave(&vd_dev->lock, flags);
+   257		list_add(&info->node, &vd_dev->virtqueues);
+   258		spin_unlock_irqrestore(&vd_dev->lock, flags);
+   259	
+   260		return vq;
+   261	
+   262	err_vq:
+   263		vring_del_virtqueue(vq);
+   264	error_new_virtqueue:
+   265		ops->set_vq_ready(vdpa, index, 0);
+   266		/* VDPA driver should make sure vq is stopeed here */
+   267		WARN_ON(ops->get_vq_ready(vdpa, index));
+   268		kfree(info);
+   269		return ERR_PTR(err);
+   270	}
+   271	
+   272	static void virtio_vdpa_del_vq(struct virtqueue *vq)
+   273	{
+   274		struct virtio_vdpa_device *vd_dev = to_virtio_vdpa_device(vq->vdev);
+   275		struct vdpa_device *vdpa = vd_dev->vdpa;
+   276		const struct vdpa_config_ops *ops = vdpa->config;
+   277		struct virtio_vdpa_vq_info *info = vq->priv;
+   278		unsigned int index = vq->index;
+   279		unsigned long flags;
+   280	
+   281		spin_lock_irqsave(&vd_dev->lock, flags);
+   282		list_del(&info->node);
+   283		spin_unlock_irqrestore(&vd_dev->lock, flags);
+   284	
+   285		/* Select and deactivate the queue (best effort) */
+   286		ops->set_vq_ready(vdpa, index, 0);
+   287	
+   288		vring_del_virtqueue(vq);
+   289	
+   290		kfree(info);
+   291	}
+   292	
+   293	static void virtio_vdpa_del_vqs(struct virtio_device *vdev)
+   294	{
+   295		struct virtqueue *vq, *n;
+   296	
+   297		list_for_each_entry_safe(vq, n, &vdev->vqs, list)
+   298			virtio_vdpa_del_vq(vq);
+   299	}
+   300	
+   301	static void default_calc_sets(struct irq_affinity *affd, unsigned int affvecs)
+   302	{
+   303		affd->nr_sets = 1;
+   304		affd->set_size[0] = affvecs;
+   305	}
+   306	
+   307	static struct cpumask *
+   308	create_affinity_masks(unsigned int nvecs, struct irq_affinity *affd)
+   309	{
+   310		unsigned int affvecs = 0, curvec, usedvecs, i;
+   311		struct cpumask *masks = NULL;
+   312	
+   313		if (nvecs > affd->pre_vectors + affd->post_vectors)
+   314			affvecs = nvecs - affd->pre_vectors - affd->post_vectors;
+   315	
+   316		if (!affd->calc_sets)
+   317			affd->calc_sets = default_calc_sets;
+   318	
+   319		affd->calc_sets(affd, affvecs);
+   320	
+   321		if (!affvecs)
+   322			return NULL;
+   323	
+   324		masks = kcalloc(nvecs, sizeof(*masks), GFP_KERNEL);
+   325		if (!masks)
+   326			return NULL;
+   327	
+   328		/* Fill out vectors at the beginning that don't need affinity */
+   329		for (curvec = 0; curvec < affd->pre_vectors; curvec++)
+   330			cpumask_setall(&masks[curvec]);
+   331	
+   332		for (i = 0, usedvecs = 0; i < affd->nr_sets; i++) {
+   333			unsigned int this_vecs = affd->set_size[i];
+   334			int j;
+   335			struct cpumask *result = group_cpus_evenly(this_vecs);
+   336	
+   337			if (!result) {
+   338				kfree(masks);
+   339				return NULL;
+   340			}
+   341	
+   342			for (j = 0; j < this_vecs; j++)
+   343				cpumask_copy(&masks[curvec + j], &result[j]);
+   344			kfree(result);
+   345	
+   346			curvec += this_vecs;
+   347			usedvecs += this_vecs;
+   348		}
+   349	
+   350		/* Fill out vectors at the end that don't need affinity */
+   351		if (usedvecs >= affvecs)
+   352			curvec = affd->pre_vectors + affvecs;
+   353		else
+   354			curvec = affd->pre_vectors + usedvecs;
+   355		for (; curvec < nvecs; curvec++)
+   356			cpumask_setall(&masks[curvec]);
+   357	
+   358		return masks;
+   359	}
+   360	
+   361	static int virtio_vdpa_find_vqs(struct virtio_device *vdev,
+   362					struct virtio_vq_config *cfg,
+   363					struct irq_affinity *desc)
+   364	{
+   365		struct virtio_vdpa_device *vd_dev = to_virtio_vdpa_device(vdev);
+   366		struct vdpa_device *vdpa = vd_get_vdpa(vdev);
+   367		const struct vdpa_config_ops *ops = vdpa->config;
+   368		struct irq_affinity default_affd = { 0 };
+   369		struct cpumask *masks;
+   370		struct vdpa_callback cb;
+   371		bool has_affinity = desc && ops->set_vq_affinity;
+   372		struct virtqueue **vqs = cfg->vqs;
+   373		unsigned int nvqs = cfg->nvqs;
+   374		int i, err, queue_idx = 0;
+   375	
+   376		if (has_affinity) {
+   377			masks = create_affinity_masks(nvqs, desc ? desc : &default_affd);
+   378			if (!masks)
+   379				return -ENOMEM;
+   380		}
+   381	
+   382		for (i = 0; i < nvqs; ++i) {
+   383			if (!cfg->names[i]) {
+   384				vqs[i] = NULL;
+   385				continue;
+   386			}
+   387	
+   388			cfg->cfg_idx = i;
+ > 389			vqs[i] = virtio_vdpa_setup_vq(vdev, queue_idx++, cfg);
+   390			if (IS_ERR(vqs[i])) {
+   391				err = PTR_ERR(vqs[i]);
+   392				goto err_setup_vq;
+   393			}
+   394	
+   395			if (has_affinity)
+   396				ops->set_vq_affinity(vdpa, i, &masks[i]);
+   397		}
+   398	
+   399		cb.callback = virtio_vdpa_config_cb;
+   400		cb.private = vd_dev;
+   401		ops->set_config_cb(vdpa, &cb);
+   402		if (has_affinity)
+   403			kfree(masks);
+   404	
+   405		return 0;
+   406	
+   407	err_setup_vq:
+   408		virtio_vdpa_del_vqs(vdev);
+   409		if (has_affinity)
+   410			kfree(masks);
+   411		return err;
+   412	}
+   413	
+
 -- 
-2.32.0.3.g01195cf9f
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
