@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 61574C48291
-	for <linux-um@archiver.kernel.org>; Fri,  2 Feb 2024 09:40:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E87FAC4828E
+	for <linux-um@archiver.kernel.org>; Fri,  2 Feb 2024 09:40:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=+gwl2AwyjBymiKcd3C3Yugl+SaQmoHSbc313ciWO72I=; b=mSIWyeDj4g/HbJCvtVxazC8/Wt
-	L8EHG5bpjiCVVHxQvgnuOt+n7FgbrpG3jGLG5G59cD9r42cCf/nVzmcYO/MBh8dt44sG2mmAyRnnL
-	QS8+kq/MG/BCgHlvmfFwbFWRvRieNVwyVrzQUhy77lfWLWX1hzCAblhmNXHH9i3nKRtkFcj8c93NE
-	H5d5u+TMVL/P+7hH7mNoWFm2bjHbB0UNt7KDQJ5LbMw+KaN7Ovh5w/GB67ZABD8BBGoLwFXBHDUZ3
-	ykvZm1zJP3zz75GQzrU64OYoecM4N/8fTRnVFBzn45TClhVR//DP7vV8X5JCPXGcJrkH9OGoJLz9Z
-	TPjsRsGg==;
+	bh=whbQg9Hj72zpDvqZeylc7jKFj78AxwcTEDHqvHIwr+w=; b=ibeatEpv/ywAav+d/0jEdT+V2c
+	BliRtsDDAdnTOSD9ujo4DxwLXr+51YFWtxdANj+3fJGIiRHdZl+8tCz3gYhc/n/skxVwTISurJfw7
+	tPT9iwE6iHk5kpEJQnhgp9wI8vKjvVTZBEP5SRA1RNsR7DohPqoHzMR5hHhvaG32nlQ1aSjXuLleh
+	K/wnMN+MWU0mgPTCysDg08D9MeVQxgNDPCgPJDm7pLMRNtDj+aVzImLJjNQW0GPGPcPjrUdtTSe3a
+	ZXMhx+hbiKN8/tOoiy8GGZ4fUj9RpjJOfXhJora2FErK0nfu409x4Nd6IdMvo0FSkUQ+VzXdB6TlU
+	xk2sHwCA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVq1y-0000000B0Xq-47Fk;
+	id 1rVq1y-0000000B0XK-258j;
 	Fri, 02 Feb 2024 09:40:18 +0000
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132])
+Received: from out30-98.freemail.mail.aliyun.com ([115.124.30.98])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVq1t-0000000B0Rz-2fD0
+	id 1rVq1q-0000000B0Oy-1GMs
 	for linux-um@lists.infradead.org;
 	Fri, 02 Feb 2024 09:40:16 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1706866811; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=+gwl2AwyjBymiKcd3C3Yugl+SaQmoHSbc313ciWO72I=;
-	b=KbPL2hoC793VWuHEPpCuWAngMKM7bSY37nQIjmt19aLyb1jZgDVOdOI/3s0RvECsfA+/8vTnQ8wgpLmPfcTvGfNldGDotXLnexU9kFG2SriciUozrZc2W41JHXxGDGQxjFM/WJaWmn1OiEqa91lRTa1l4FjleeDGLz7ZowZp/2I=
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=36;SR=0;TI=SMTPD_---0W.wc6qw_1706866808;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W.wc6qw_1706866808)
+	t=1706866807; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=whbQg9Hj72zpDvqZeylc7jKFj78AxwcTEDHqvHIwr+w=;
+	b=V5jqOgXt4mI9zXO2mceWyxj21eZeDky6Mf0sncrjOT/cuC7twO8MrEhKql0ybwQHrT1U0FULsTBwg0cDzea2TSnpQ5FclX8/qjiyg5k2co7Q2m8wVZLxTCWOPqxVJCTOAp85VE44vmvfcj5Se35D5GYL3J0DHtzu37UQ1t3JryU=
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=36;SR=0;TI=SMTPD_---0W.wbNCH_1706866803;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W.wbNCH_1706866803)
           by smtp.aliyun-inc.com;
-          Fri, 02 Feb 2024 17:40:09 +0800
+          Fri, 02 Feb 2024 17:40:04 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: virtualization@lists.linux.dev
 Cc: Richard Weinberger <richard@nod.at>,
@@ -73,9 +73,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-s390@vger.kernel.org,
 	kvm@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH vhost v1 10/19] virtio_ring: reuse the parameter struct of find_vqs()
-Date: Fri,  2 Feb 2024 17:39:42 +0800
-Message-Id: <20240202093951.120283-11-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH vhost v1 07/19] virtio: find_vqs: pass struct instead of multi parameters
+Date: Fri,  2 Feb 2024 17:39:39 +0800
+Message-Id: <20240202093951.120283-8-xuanzhuo@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 In-Reply-To: <20240202093951.120283-1-xuanzhuo@linux.alibaba.com>
 References: <20240202093951.120283-1-xuanzhuo@linux.alibaba.com>
@@ -83,8 +83,8 @@ MIME-Version: 1.0
 X-Git-Hash: 4c7bacd05cb8
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240202_014013_949948_BAD36467 
-X-CRM114-Status: GOOD (  13.96  )
+X-CRM114-CacheID: sfid-20240202_014010_929159_A6C970D2 
+X-CRM114-Status: GOOD (  17.31  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,294 +99,814 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-As the refactor of find_vqs()/vring_new_virtqueue(),
-the cfg/tp_cfg are passed to vring.
+Now, we pass multi parameters to find_vqs. These parameters
+may work for transport or work for vring.
 
-This patch refactors the vring by this structure.
-This can simplify the code.
+And find_vqs has multi implements in many places:
+
+But every time,
+ arch/um/drivers/virtio_uml.c
+ drivers/platform/mellanox/mlxbf-tmfifo.c
+ drivers/remoteproc/remoteproc_virtio.c
+ drivers/s390/virtio/virtio_ccw.c
+ drivers/virtio/virtio_mmio.c
+ drivers/virtio/virtio_pci_legacy.c
+ drivers/virtio/virtio_pci_modern.c
+ drivers/virtio/virtio_vdpa.c
+
+Every time, we try to add a new parameter, that is difficult.
+We must change every find_vqs implement.
+
+One the other side, if we want to pass a parameter to vring,
+we must change the call path from transport to vring.
+Too many functions need to be changed.
+
+So it is time to refactor the find_vqs. We pass a structure
+cfg to find_vqs(), that will be passed to vring by transport.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- drivers/virtio/virtio_ring.c | 157 +++++++++++------------------------
- 1 file changed, 50 insertions(+), 107 deletions(-)
+ arch/um/drivers/virtio_uml.c             | 23 ++++-----
+ drivers/platform/mellanox/mlxbf-tmfifo.c | 13 ++----
+ drivers/remoteproc/remoteproc_virtio.c   | 28 ++++++-----
+ drivers/s390/virtio/virtio_ccw.c         | 29 ++++++------
+ drivers/virtio/virtio_mmio.c             | 26 +++++------
+ drivers/virtio/virtio_pci_common.c       | 59 +++++++++++-------------
+ drivers/virtio/virtio_pci_common.h       |  9 +---
+ drivers/virtio/virtio_pci_legacy.c       | 11 +++--
+ drivers/virtio/virtio_pci_modern.c       | 19 ++++----
+ drivers/virtio/virtio_vdpa.c             | 36 +++++++--------
+ include/linux/virtio_config.h            | 51 ++++++++++++++++----
+ 11 files changed, 160 insertions(+), 144 deletions(-)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 8ec1cd31680d..d09572dadd9e 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -237,15 +237,11 @@ struct vring_virtqueue {
- #endif
- };
- 
--static struct virtqueue *__vring_new_virtqueue(unsigned int index,
-+static struct virtqueue *__vring_new_virtqueue(struct virtio_device *vdev,
-+					       unsigned int index,
- 					       struct vring_virtqueue_split *vring_split,
--					       struct virtio_device *vdev,
--					       bool weak_barriers,
--					       bool context,
--					       bool (*notify)(struct virtqueue *),
--					       void (*callback)(struct virtqueue *),
--					       const char *name,
--					       struct device *dma_dev);
-+					       struct vq_transport_config *tp_cfg,
-+					       struct virtio_vq_config *cfg);
- static struct vring_desc_extra *vring_alloc_desc_extra(unsigned int num);
- static void vring_free(struct virtqueue *_vq);
- 
-@@ -254,6 +250,8 @@ static void vring_free(struct virtqueue *_vq);
-  */
- 
- #define to_vvq(_vq) container_of_const(_vq, struct vring_virtqueue, vq)
-+#define cfg_vq_val(cfg, key) (cfg->key[cfg->cfg_idx])
-+#define cfg_vq_get(cfg, key) (cfg->key ? cfg_vq_val(cfg, key) : false)
- 
- static bool virtqueue_use_indirect(const struct vring_virtqueue *vq,
- 				   unsigned int total_sg)
-@@ -1184,32 +1182,28 @@ static int vring_alloc_queue_split(struct vring_virtqueue_split *vring_split,
- 	return 0;
+diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
+index 8adca2000e51..c13dfeeb90c4 100644
+--- a/arch/um/drivers/virtio_uml.c
++++ b/arch/um/drivers/virtio_uml.c
+@@ -937,8 +937,8 @@ static int vu_setup_vq_call_fd(struct virtio_uml_device *vu_dev,
  }
  
--static struct virtqueue *vring_create_virtqueue_split(
--	unsigned int index,
--	unsigned int num,
--	unsigned int vring_align,
--	struct virtio_device *vdev,
--	bool weak_barriers,
--	bool may_reduce_num,
--	bool context,
--	bool (*notify)(struct virtqueue *),
--	void (*callback)(struct virtqueue *),
--	const char *name,
--	struct device *dma_dev)
-+static struct virtqueue *vring_create_virtqueue_split(struct virtio_device *vdev,
-+						      unsigned int index,
-+						      struct vq_transport_config *tp_cfg,
-+						      struct virtio_vq_config *cfg)
+ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
+-				     unsigned index, vq_callback_t *callback,
+-				     const char *name, bool ctx)
++				     unsigned index,
++				     struct virtio_vq_config *cfg)
  {
- 	struct vring_virtqueue_split vring_split = {};
- 	struct virtqueue *vq;
- 	int err;
+ 	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
+ 	struct platform_device *pdev = vu_dev->pdev;
+@@ -953,10 +953,12 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
+ 		goto error_kzalloc;
+ 	}
+ 	snprintf(info->name, sizeof(info->name), "%s.%d-%s", pdev->name,
+-		 pdev->id, name);
++		 pdev->id, cfg->names[cfg->cfg_idx]);
  
--	err = vring_alloc_queue_split(&vring_split, vdev, num, vring_align,
--				      may_reduce_num, dma_dev);
-+	tp_cfg->dma_dev = tp_cfg->dma_dev ? : vdev->dev.parent;
-+
-+	err = vring_alloc_queue_split(&vring_split, vdev,
-+				      tp_cfg->num,
-+				      tp_cfg->vring_align,
-+				      tp_cfg->may_reduce_num,
-+				      tp_cfg->dma_dev);
- 	if (err)
- 		return NULL;
- 
--	vq = __vring_new_virtqueue(index, &vring_split, vdev, weak_barriers,
--				   context, notify, callback, name, dma_dev);
-+	vq = __vring_new_virtqueue(vdev, index, &vring_split, tp_cfg, cfg);
+ 	vq = vring_create_virtqueue(index, num, PAGE_SIZE, vdev, true, true,
+-				    ctx, vu_notify, callback, info->name);
++				    cfg->ctx ? cfg->ctx[cfg->cfg_idx] : false,
++				    vu_notify,
++				    cfg->callbacks[cfg->cfg_idx], info->name);
  	if (!vq) {
--		vring_free_split(&vring_split, vdev, dma_dev);
-+		vring_free_split(&vring_split, vdev, tp_cfg->dma_dev);
+ 		rc = -ENOMEM;
+ 		goto error_create;
+@@ -1013,12 +1015,11 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
+ 	return ERR_PTR(rc);
+ }
+ 
+-static int vu_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+-		       struct virtqueue *vqs[], vq_callback_t *callbacks[],
+-		       const char * const names[], const bool *ctx,
+-		       struct irq_affinity *desc)
++static int vu_find_vqs(struct virtio_device *vdev, struct virtio_vq_config *cfg)
+ {
+ 	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
++	struct virtqueue **vqs = cfg->vqs;
++	unsigned int nvqs = cfg->nvqs;
+ 	int i, queue_idx = 0, rc;
+ 	struct virtqueue *vq;
+ 
+@@ -1031,13 +1032,13 @@ static int vu_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+ 		return rc;
+ 
+ 	for (i = 0; i < nvqs; ++i) {
+-		if (!names[i]) {
++		if (!cfg->names[i]) {
+ 			vqs[i] = NULL;
+ 			continue;
+ 		}
+ 
+-		vqs[i] = vu_setup_vq(vdev, queue_idx++, callbacks[i], names[i],
+-				     ctx ? ctx[i] : false);
++		cfg->cfg_idx = i;
++		vqs[i] = vu_setup_vq(vdev, queue_idx++, cfg);
+ 		if (IS_ERR(vqs[i])) {
+ 			rc = PTR_ERR(vqs[i]);
+ 			goto error_setup;
+diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
+index 5c683b4eaf10..a90d5da6200a 100644
+--- a/drivers/platform/mellanox/mlxbf-tmfifo.c
++++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
+@@ -989,15 +989,12 @@ static void mlxbf_tmfifo_virtio_del_vqs(struct virtio_device *vdev)
+ 
+ /* Create and initialize the virtual queues. */
+ static int mlxbf_tmfifo_virtio_find_vqs(struct virtio_device *vdev,
+-					unsigned int nvqs,
+-					struct virtqueue *vqs[],
+-					vq_callback_t *callbacks[],
+-					const char * const names[],
+-					const bool *ctx,
+-					struct irq_affinity *desc)
++					struct virtio_vq_config *cfg)
+ {
+ 	struct mlxbf_tmfifo_vdev *tm_vdev = mlxbf_vdev_to_tmfifo(vdev);
++	struct virtqueue **vqs = cfg->vqs;
+ 	struct mlxbf_tmfifo_vring *vring;
++	unsigned int nvqs = cfg->nvqs;
+ 	struct virtqueue *vq;
+ 	int i, ret, size;
+ 
+@@ -1005,7 +1002,7 @@ static int mlxbf_tmfifo_virtio_find_vqs(struct virtio_device *vdev,
+ 		return -EINVAL;
+ 
+ 	for (i = 0; i < nvqs; ++i) {
+-		if (!names[i]) {
++		if (!cfg->names[i]) {
+ 			ret = -EINVAL;
+ 			goto error;
+ 		}
+@@ -1017,7 +1014,7 @@ static int mlxbf_tmfifo_virtio_find_vqs(struct virtio_device *vdev,
+ 		vq = vring_new_virtqueue(i, vring->num, vring->align, vdev,
+ 					 false, false, vring->va,
+ 					 mlxbf_tmfifo_virtio_notify,
+-					 callbacks[i], names[i]);
++					 cfg->callbacks[i], cfg->names[i]);
+ 		if (!vq) {
+ 			dev_err(&vdev->dev, "vring_new_virtqueue failed\n");
+ 			ret = -ENOMEM;
+diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
+index 83d76915a6ad..57d51c9c7b63 100644
+--- a/drivers/remoteproc/remoteproc_virtio.c
++++ b/drivers/remoteproc/remoteproc_virtio.c
+@@ -102,8 +102,7 @@ EXPORT_SYMBOL(rproc_vq_interrupt);
+ 
+ static struct virtqueue *rp_find_vq(struct virtio_device *vdev,
+ 				    unsigned int id,
+-				    void (*callback)(struct virtqueue *vq),
+-				    const char *name, bool ctx)
++				    struct virtio_vq_config *cfg)
+ {
+ 	struct rproc_vdev *rvdev = vdev_to_rvdev(vdev);
+ 	struct rproc *rproc = vdev_to_rproc(vdev);
+@@ -119,7 +118,7 @@ static struct virtqueue *rp_find_vq(struct virtio_device *vdev,
+ 	if (id >= ARRAY_SIZE(rvdev->vring))
+ 		return ERR_PTR(-EINVAL);
+ 
+-	if (!name)
++	if (!cfg->names[cfg->cfg_idx])
  		return NULL;
+ 
+ 	/* Search allocated memory region by name */
+@@ -143,10 +142,12 @@ static struct virtqueue *rp_find_vq(struct virtio_device *vdev,
+ 	 * Create the new vq, and tell virtio we're not interested in
+ 	 * the 'weak' smp barriers, since we're talking with a real device.
+ 	 */
+-	vq = vring_new_virtqueue(id, num, rvring->align, vdev, false, ctx,
+-				 addr, rproc_virtio_notify, callback, name);
++	vq = vring_new_virtqueue(id, num, rvring->align, vdev, false,
++				 cfg->ctx ? cfg->ctx[cfg->cfg_idx] : false,
++				 addr, rproc_virtio_notify, cfg->callbacks[cfg->cfg_idx],
++				 cfg->names[cfg->cfg_idx]);
+ 	if (!vq) {
+-		dev_err(dev, "vring_new_virtqueue %s failed\n", name);
++		dev_err(dev, "vring_new_virtqueue %s failed\n", cfg->names[cfg->cfg_idx]);
+ 		rproc_free_vring(rvring);
+ 		return ERR_PTR(-ENOMEM);
+ 	}
+@@ -180,23 +181,20 @@ static void rproc_virtio_del_vqs(struct virtio_device *vdev)
+ 	__rproc_virtio_del_vqs(vdev);
+ }
+ 
+-static int rproc_virtio_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
+-				 struct virtqueue *vqs[],
+-				 vq_callback_t *callbacks[],
+-				 const char * const names[],
+-				 const bool * ctx,
+-				 struct irq_affinity *desc)
++static int rproc_virtio_find_vqs(struct virtio_device *vdev, struct virtio_vq_config *cfg)
+ {
++	struct virtqueue **vqs = cfg->vqs;
++	unsigned int nvqs = cfg->nvqs;
+ 	int i, ret, queue_idx = 0;
+ 
+ 	for (i = 0; i < nvqs; ++i) {
+-		if (!names[i]) {
++		if (!cfg->names[i]) {
+ 			vqs[i] = NULL;
+ 			continue;
+ 		}
+ 
+-		vqs[i] = rp_find_vq(vdev, queue_idx++, callbacks[i], names[i],
+-				    ctx ? ctx[i] : false);
++		cfg->cfg_idx = i;
++		vqs[i] = rp_find_vq(vdev, queue_idx++, cfg);
+ 		if (IS_ERR(vqs[i])) {
+ 			ret = PTR_ERR(vqs[i]);
+ 			goto error;
+diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
+index ac67576301bf..11eea5086cff 100644
+--- a/drivers/s390/virtio/virtio_ccw.c
++++ b/drivers/s390/virtio/virtio_ccw.c
+@@ -499,9 +499,8 @@ static void virtio_ccw_del_vqs(struct virtio_device *vdev)
+ }
+ 
+ static struct virtqueue *virtio_ccw_setup_vq(struct virtio_device *vdev,
+-					     int i, vq_callback_t *callback,
+-					     const char *name, bool ctx,
+-					     struct ccw1 *ccw)
++					     int i, struct ccw1 *ccw,
++					     struct virtio_vq_config *cfg)
+ {
+ 	struct virtio_ccw_device *vcdev = to_vc_device(vdev);
+ 	bool (*notify)(struct virtqueue *vq);
+@@ -538,8 +537,11 @@ static struct virtqueue *virtio_ccw_setup_vq(struct virtio_device *vdev,
+ 	}
+ 	may_reduce = vcdev->revision > 0;
+ 	vq = vring_create_virtqueue(i, info->num, KVM_VIRTIO_CCW_RING_ALIGN,
+-				    vdev, true, may_reduce, ctx,
+-				    notify, callback, name);
++				    vdev, true, may_reduce,
++				    cfg->ctx ? cfg->ctx[cfg->cfg_idx] : false,
++				    notify,
++				    cfg->callbacks[cfg->cfg_idx],
++				    cfg->names[cfg->cfg_idx]);
+ 
+ 	if (!vq) {
+ 		/* For now, we fail if we can't get the requested size. */
+@@ -650,15 +652,13 @@ static int virtio_ccw_register_adapter_ind(struct virtio_ccw_device *vcdev,
+ 	return ret;
+ }
+ 
+-static int virtio_ccw_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+-			       struct virtqueue *vqs[],
+-			       vq_callback_t *callbacks[],
+-			       const char * const names[],
+-			       const bool *ctx,
+-			       struct irq_affinity *desc)
++static int virtio_ccw_find_vqs(struct virtio_device *vdev,
++			       struct virtio_vq_config *cfg)
+ {
+ 	struct virtio_ccw_device *vcdev = to_vc_device(vdev);
++	struct virtqueue **vqs = cfg->vqs;
+ 	unsigned long *indicatorp = NULL;
++	unsigned int nvqs = cfg->nvqs;
+ 	int ret, i, queue_idx = 0;
+ 	struct ccw1 *ccw;
+ 
+@@ -667,14 +667,13 @@ static int virtio_ccw_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+ 		return -ENOMEM;
+ 
+ 	for (i = 0; i < nvqs; ++i) {
+-		if (!names[i]) {
++		if (!cfg->names[i]) {
+ 			vqs[i] = NULL;
+ 			continue;
+ 		}
+ 
+-		vqs[i] = virtio_ccw_setup_vq(vdev, queue_idx++, callbacks[i],
+-					     names[i], ctx ? ctx[i] : false,
+-					     ccw);
++		cfg->cfg_idx = i;
++		vqs[i] = virtio_ccw_setup_vq(vdev, queue_idx++, ccw, cfg);
+ 		if (IS_ERR(vqs[i])) {
+ 			ret = PTR_ERR(vqs[i]);
+ 			vqs[i] = NULL;
+diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
+index 59892a31cf76..feb823d279d2 100644
+--- a/drivers/virtio/virtio_mmio.c
++++ b/drivers/virtio/virtio_mmio.c
+@@ -370,8 +370,7 @@ static void vm_synchronize_cbs(struct virtio_device *vdev)
+ }
+ 
+ static struct virtqueue *vm_setup_vq(struct virtio_device *vdev, unsigned int index,
+-				  void (*callback)(struct virtqueue *vq),
+-				  const char *name, bool ctx)
++				     struct virtio_vq_config *cfg)
+ {
+ 	struct virtio_mmio_device *vm_dev = to_virtio_mmio_device(vdev);
+ 	bool (*notify)(struct virtqueue *vq);
+@@ -386,7 +385,7 @@ static struct virtqueue *vm_setup_vq(struct virtio_device *vdev, unsigned int in
+ 	else
+ 		notify = vm_notify;
+ 
+-	if (!name)
++	if (!cfg->names[index])
+ 		return NULL;
+ 
+ 	/* Select the queue we're interested in */
+@@ -414,7 +413,11 @@ static struct virtqueue *vm_setup_vq(struct virtio_device *vdev, unsigned int in
+ 
+ 	/* Create the vring */
+ 	vq = vring_create_virtqueue(index, num, VIRTIO_MMIO_VRING_ALIGN, vdev,
+-				 true, true, ctx, notify, callback, name);
++				 true, true,
++				 cfg->ctx ? cfg->ctx[cfg->cfg_idx] : false,
++				 notify,
++				 cfg->callbacks[cfg->cfg_idx],
++				 cfg->names[cfg->cfg_idx]);
+ 	if (!vq) {
+ 		err = -ENOMEM;
+ 		goto error_new_virtqueue;
+@@ -487,15 +490,12 @@ static struct virtqueue *vm_setup_vq(struct virtio_device *vdev, unsigned int in
+ 	return ERR_PTR(err);
+ }
+ 
+-static int vm_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
+-		       struct virtqueue *vqs[],
+-		       vq_callback_t *callbacks[],
+-		       const char * const names[],
+-		       const bool *ctx,
+-		       struct irq_affinity *desc)
++static int vm_find_vqs(struct virtio_device *vdev, struct virtio_vq_config *cfg)
+ {
+ 	struct virtio_mmio_device *vm_dev = to_virtio_mmio_device(vdev);
+ 	int irq = platform_get_irq(vm_dev->pdev, 0);
++	struct virtqueue **vqs = cfg->vqs;
++	unsigned int nvqs = cfg->nvqs;
+ 	int i, err, queue_idx = 0;
+ 
+ 	if (irq < 0)
+@@ -510,13 +510,13 @@ static int vm_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
+ 		enable_irq_wake(irq);
+ 
+ 	for (i = 0; i < nvqs; ++i) {
+-		if (!names[i]) {
++		if (!cfg->names[i]) {
+ 			vqs[i] = NULL;
+ 			continue;
+ 		}
+ 
+-		vqs[i] = vm_setup_vq(vdev, queue_idx++, callbacks[i], names[i],
+-				     ctx ? ctx[i] : false);
++		cfg->cfg_idx = i;
++		vqs[i] = vm_setup_vq(vdev, queue_idx++, cfg);
+ 		if (IS_ERR(vqs[i])) {
+ 			vm_del_vqs(vdev);
+ 			return PTR_ERR(vqs[i]);
+diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
+index 1d21d1a1b3f5..0ebee2b53eed 100644
+--- a/drivers/virtio/virtio_pci_common.c
++++ b/drivers/virtio/virtio_pci_common.c
+@@ -172,9 +172,7 @@ static int vp_request_msix_vectors(struct virtio_device *vdev, int nvectors,
+ }
+ 
+ static struct virtqueue *vp_setup_vq(struct virtio_device *vdev, unsigned int index,
+-				     void (*callback)(struct virtqueue *vq),
+-				     const char *name,
+-				     bool ctx,
++				     struct virtio_vq_config *cfg,
+ 				     u16 msix_vec)
+ {
+ 	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+@@ -186,13 +184,13 @@ static struct virtqueue *vp_setup_vq(struct virtio_device *vdev, unsigned int in
+ 	if (!info)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	vq = vp_dev->setup_vq(vp_dev, info, index, callback, name, ctx,
++	vq = vp_dev->setup_vq(vp_dev, info, index, cfg,
+ 			      msix_vec);
+ 	if (IS_ERR(vq))
+ 		goto out_info;
+ 
+ 	info->vq = vq;
+-	if (callback) {
++	if (cfg->callbacks[cfg->cfg_idx]) {
+ 		spin_lock_irqsave(&vp_dev->lock, flags);
+ 		list_add(&info->node, &vp_dev->virtqueues);
+ 		spin_unlock_irqrestore(&vp_dev->lock, flags);
+@@ -281,15 +279,15 @@ void vp_del_vqs(struct virtio_device *vdev)
+ 	vp_dev->vqs = NULL;
+ }
+ 
+-static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned int nvqs,
+-		struct virtqueue *vqs[], vq_callback_t *callbacks[],
+-		const char * const names[], bool per_vq_vectors,
+-		const bool *ctx,
+-		struct irq_affinity *desc)
++static int vp_find_vqs_msix(struct virtio_device *vdev,
++			    struct virtio_vq_config *cfg,
++			    bool per_vq_vectors)
+ {
+ 	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+ 	u16 msix_vec;
+ 	int i, err, nvectors, allocated_vectors, queue_idx = 0;
++	struct virtqueue **vqs = cfg->vqs;
++	unsigned int nvqs = cfg->nvqs;
+ 
+ 	vp_dev->vqs = kcalloc(nvqs, sizeof(*vp_dev->vqs), GFP_KERNEL);
+ 	if (!vp_dev->vqs)
+@@ -299,7 +297,7 @@ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned int nvqs,
+ 		/* Best option: one for change interrupt, one per vq. */
+ 		nvectors = 1;
+ 		for (i = 0; i < nvqs; ++i)
+-			if (names[i] && callbacks[i])
++			if (cfg->names[i] && cfg->callbacks[i])
+ 				++nvectors;
+ 	} else {
+ 		/* Second best: one for change, shared for all vqs. */
+@@ -307,27 +305,27 @@ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned int nvqs,
  	}
  
-@@ -2116,38 +2110,33 @@ static void virtqueue_reinit_packed(struct vring_virtqueue *vq)
- 	virtqueue_vring_init_packed(&vq->packed, !!vq->vq.callback);
- }
- 
--static struct virtqueue *vring_create_virtqueue_packed(
--	unsigned int index,
--	unsigned int num,
--	unsigned int vring_align,
--	struct virtio_device *vdev,
--	bool weak_barriers,
--	bool may_reduce_num,
--	bool context,
--	bool (*notify)(struct virtqueue *),
--	void (*callback)(struct virtqueue *),
--	const char *name,
--	struct device *dma_dev)
-+static struct virtqueue *vring_create_virtqueue_packed(struct virtio_device *vdev,
-+						       unsigned int index,
-+						       struct vq_transport_config *tp_cfg,
-+						       struct virtio_vq_config *cfg)
- {
- 	struct vring_virtqueue_packed vring_packed = {};
- 	struct vring_virtqueue *vq;
-+	struct device *dma_dev;
- 	int err;
- 
--	if (vring_alloc_queue_packed(&vring_packed, vdev, num, dma_dev))
-+	dma_dev = tp_cfg->dma_dev ? : vdev->dev.parent;
-+
-+	if (vring_alloc_queue_packed(&vring_packed, vdev, tp_cfg->num, dma_dev))
- 		goto err_ring;
- 
- 	vq = kmalloc(sizeof(*vq), GFP_KERNEL);
- 	if (!vq)
- 		goto err_vq;
- 
--	vq->vq.callback = callback;
-+	vq->vq.callback = cfg_vq_val(cfg, callbacks);
- 	vq->vq.vdev = vdev;
--	vq->vq.name = name;
-+	vq->vq.name = cfg_vq_val(cfg, names);
- 	vq->vq.index = index;
- 	vq->vq.reset = false;
- 	vq->we_own_ring = true;
--	vq->notify = notify;
--	vq->weak_barriers = weak_barriers;
-+	vq->notify = tp_cfg->notify;
-+	vq->weak_barriers = tp_cfg->weak_barriers;
- #ifdef CONFIG_VIRTIO_HARDEN_NOTIFICATION
- 	vq->broken = true;
- #else
-@@ -2159,7 +2148,7 @@ static struct virtqueue *vring_create_virtqueue_packed(
- 	vq->premapped = false;
- 
- 	vq->indirect = virtio_has_feature(vdev, VIRTIO_RING_F_INDIRECT_DESC) &&
--		!context;
-+		!cfg_vq_get(cfg, ctx);
- 	vq->event = virtio_has_feature(vdev, VIRTIO_RING_F_EVENT_IDX);
- 
- 	if (virtio_has_feature(vdev, VIRTIO_F_ORDER_PLATFORM))
-@@ -2170,9 +2159,9 @@ static struct virtqueue *vring_create_virtqueue_packed(
+ 	err = vp_request_msix_vectors(vdev, nvectors, per_vq_vectors,
+-				      per_vq_vectors ? desc : NULL);
++				      per_vq_vectors ? cfg->desc : NULL);
  	if (err)
- 		goto err_state_extra;
+ 		goto error_find;
  
--	virtqueue_vring_init_packed(&vring_packed, !!callback);
-+	virtqueue_vring_init_packed(&vring_packed, !!cfg_vq_val(cfg, callbacks));
+ 	vp_dev->per_vq_vectors = per_vq_vectors;
+ 	allocated_vectors = vp_dev->msix_used_vectors;
+ 	for (i = 0; i < nvqs; ++i) {
+-		if (!names[i]) {
++		if (!cfg->names[i]) {
+ 			vqs[i] = NULL;
+ 			continue;
+ 		}
  
--	virtqueue_init(vq, num);
-+	virtqueue_init(vq, tp_cfg->num);
- 	virtqueue_vring_attach_packed(vq, &vring_packed);
- 
- 	spin_lock(&vdev->vqs_list_lock);
-@@ -2666,15 +2655,11 @@ irqreturn_t vring_interrupt(int irq, void *_vq)
- EXPORT_SYMBOL_GPL(vring_interrupt);
- 
- /* Only available for split ring */
--static struct virtqueue *__vring_new_virtqueue(unsigned int index,
-+static struct virtqueue *__vring_new_virtqueue(struct virtio_device *vdev,
-+					       unsigned int index,
- 					       struct vring_virtqueue_split *vring_split,
--					       struct virtio_device *vdev,
--					       bool weak_barriers,
--					       bool context,
--					       bool (*notify)(struct virtqueue *),
--					       void (*callback)(struct virtqueue *),
--					       const char *name,
--					       struct device *dma_dev)
-+					       struct vq_transport_config *tp_cfg,
-+					       struct virtio_vq_config *cfg)
- {
- 	struct vring_virtqueue *vq;
- 	int err;
-@@ -2687,25 +2672,25 @@ static struct virtqueue *__vring_new_virtqueue(unsigned int index,
- 		return NULL;
- 
- 	vq->packed_ring = false;
--	vq->vq.callback = callback;
-+	vq->vq.callback = cfg_vq_val(cfg, callbacks);
- 	vq->vq.vdev = vdev;
--	vq->vq.name = name;
-+	vq->vq.name = cfg_vq_val(cfg, names);
- 	vq->vq.index = index;
- 	vq->vq.reset = false;
- 	vq->we_own_ring = false;
--	vq->notify = notify;
--	vq->weak_barriers = weak_barriers;
-+	vq->notify = tp_cfg->notify;
-+	vq->weak_barriers = tp_cfg->weak_barriers;
- #ifdef CONFIG_VIRTIO_HARDEN_NOTIFICATION
- 	vq->broken = true;
- #else
- 	vq->broken = false;
- #endif
--	vq->dma_dev = dma_dev;
-+	vq->dma_dev = tp_cfg->dma_dev;
- 	vq->use_dma_api = vring_use_dma_api(vdev);
- 	vq->premapped = false;
- 
- 	vq->indirect = virtio_has_feature(vdev, VIRTIO_RING_F_INDIRECT_DESC) &&
--		!context;
-+		!cfg_vq_get(cfg, ctx);
- 	vq->event = virtio_has_feature(vdev, VIRTIO_RING_F_EVENT_IDX);
- 
- 	if (virtio_has_feature(vdev, VIRTIO_F_ORDER_PLATFORM))
-@@ -2734,36 +2719,10 @@ struct virtqueue *vring_create_virtqueue(struct virtio_device *vdev,
- 					 struct vq_transport_config *tp_cfg,
- 					 struct virtio_vq_config *cfg)
- {
--	struct device *dma_dev;
--	unsigned int num;
--	unsigned int vring_align;
--	bool weak_barriers;
--	bool may_reduce_num;
--	bool context;
--	bool (*notify)(struct virtqueue *_);
--	void (*callback)(struct virtqueue *_);
--	const char *name;
--
--	dma_dev = tp_cfg->dma_dev ? : vdev->dev.parent;
--
--	num            = tp_cfg->num;
--	vring_align    = tp_cfg->vring_align;
--	weak_barriers  = tp_cfg->weak_barriers;
--	may_reduce_num = tp_cfg->may_reduce_num;
--	notify         = tp_cfg->notify;
--
--	name     = cfg->names[cfg->cfg_idx];
--	callback = cfg->callbacks[cfg->cfg_idx];
--	context  = cfg->ctx ? cfg->ctx[cfg->cfg_idx] : false;
--
- 	if (virtio_has_feature(vdev, VIRTIO_F_RING_PACKED))
--		return vring_create_virtqueue_packed(index, num, vring_align,
--				vdev, weak_barriers, may_reduce_num,
--				context, notify, callback, name, dma_dev);
-+		return vring_create_virtqueue_packed(vdev, index, tp_cfg, cfg);
- 
--	return vring_create_virtqueue_split(index, num, vring_align,
--			vdev, weak_barriers, may_reduce_num,
--			context, notify, callback, name, dma_dev);
-+	return vring_create_virtqueue_split(vdev, index, tp_cfg, cfg);
- }
- EXPORT_SYMBOL_GPL(vring_create_virtqueue);
- 
-@@ -2916,30 +2875,14 @@ struct virtqueue *vring_new_virtqueue(struct virtio_device *vdev,
- 				      struct virtio_vq_config *cfg)
- {
- 	struct vring_virtqueue_split vring_split = {};
--	unsigned int num;
--	unsigned int vring_align;
--	bool weak_barriers;
--	bool context;
--	bool (*notify)(struct virtqueue *_);
--	void (*callback)(struct virtqueue *_);
--	const char *name;
--
--	num            = tp_cfg->num;
--	vring_align    = tp_cfg->vring_align;
--	weak_barriers  = tp_cfg->weak_barriers;
--	notify         = tp_cfg->notify;
--
--	name     = cfg->names[cfg->cfg_idx];
--	callback = cfg->callbacks[cfg->cfg_idx];
--	context  = cfg->ctx ? cfg->ctx[cfg->cfg_idx] : false;
- 
- 	if (virtio_has_feature(vdev, VIRTIO_F_RING_PACKED))
- 		return NULL;
- 
--	vring_init(&vring_split.vring, num, pages, vring_align);
--	return __vring_new_virtqueue(index, &vring_split, vdev, weak_barriers,
--				     context, notify, callback, name,
--				     vdev->dev.parent);
-+	tp_cfg->dma_dev = vdev->dev.parent;
+-		if (!callbacks[i])
++		if (!cfg->callbacks[i])
+ 			msix_vec = VIRTIO_MSI_NO_VECTOR;
+ 		else if (vp_dev->per_vq_vectors)
+ 			msix_vec = allocated_vectors++;
+ 		else
+ 			msix_vec = VP_MSIX_VQ_VECTOR;
+-		vqs[i] = vp_setup_vq(vdev, queue_idx++, callbacks[i], names[i],
+-				     ctx ? ctx[i] : false,
+-				     msix_vec);
 +
-+	vring_init(&vring_split.vring, tp_cfg->num, pages, tp_cfg->vring_align);
-+	return __vring_new_virtqueue(vdev, index, &vring_split, tp_cfg, cfg);
++		cfg->cfg_idx = i;
++		vqs[i] = vp_setup_vq(vdev, queue_idx++, cfg, msix_vec);
+ 		if (IS_ERR(vqs[i])) {
+ 			err = PTR_ERR(vqs[i]);
+ 			goto error_find;
+@@ -340,7 +338,7 @@ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned int nvqs,
+ 		snprintf(vp_dev->msix_names[msix_vec],
+ 			 sizeof *vp_dev->msix_names,
+ 			 "%s-%s",
+-			 dev_name(&vp_dev->vdev.dev), names[i]);
++			 dev_name(&vp_dev->vdev.dev), cfg->names[i]);
+ 		err = request_irq(pci_irq_vector(vp_dev->pci_dev, msix_vec),
+ 				  vring_interrupt, 0,
+ 				  vp_dev->msix_names[msix_vec],
+@@ -355,11 +353,11 @@ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned int nvqs,
+ 	return err;
  }
- EXPORT_SYMBOL_GPL(vring_new_virtqueue);
  
+-static int vp_find_vqs_intx(struct virtio_device *vdev, unsigned int nvqs,
+-		struct virtqueue *vqs[], vq_callback_t *callbacks[],
+-		const char * const names[], const bool *ctx)
++static int vp_find_vqs_intx(struct virtio_device *vdev, struct virtio_vq_config *cfg)
+ {
+ 	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
++	struct virtqueue **vqs = cfg->vqs;
++	unsigned int nvqs = cfg->nvqs;
+ 	int i, err, queue_idx = 0;
+ 
+ 	vp_dev->vqs = kcalloc(nvqs, sizeof(*vp_dev->vqs), GFP_KERNEL);
+@@ -374,13 +372,13 @@ static int vp_find_vqs_intx(struct virtio_device *vdev, unsigned int nvqs,
+ 	vp_dev->intx_enabled = 1;
+ 	vp_dev->per_vq_vectors = false;
+ 	for (i = 0; i < nvqs; ++i) {
+-		if (!names[i]) {
++		if (!cfg->names[i]) {
+ 			vqs[i] = NULL;
+ 			continue;
+ 		}
+-		vqs[i] = vp_setup_vq(vdev, queue_idx++, callbacks[i], names[i],
+-				     ctx ? ctx[i] : false,
+-				     VIRTIO_MSI_NO_VECTOR);
++
++		cfg->cfg_idx = i;
++		vqs[i] = vp_setup_vq(vdev, queue_idx++, cfg, VIRTIO_MSI_NO_VECTOR);
+ 		if (IS_ERR(vqs[i])) {
+ 			err = PTR_ERR(vqs[i]);
+ 			goto out_del_vqs;
+@@ -394,26 +392,23 @@ static int vp_find_vqs_intx(struct virtio_device *vdev, unsigned int nvqs,
+ }
+ 
+ /* the config->find_vqs() implementation */
+-int vp_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
+-		struct virtqueue *vqs[], vq_callback_t *callbacks[],
+-		const char * const names[], const bool *ctx,
+-		struct irq_affinity *desc)
++int vp_find_vqs(struct virtio_device *vdev, struct virtio_vq_config *cfg)
+ {
+ 	int err;
+ 
+ 	/* Try MSI-X with one vector per queue. */
+-	err = vp_find_vqs_msix(vdev, nvqs, vqs, callbacks, names, true, ctx, desc);
++	err = vp_find_vqs_msix(vdev, cfg, true);
+ 	if (!err)
+ 		return 0;
+ 	/* Fallback: MSI-X with one vector for config, one shared for queues. */
+-	err = vp_find_vqs_msix(vdev, nvqs, vqs, callbacks, names, false, ctx, desc);
++	err = vp_find_vqs_msix(vdev, cfg, false);
+ 	if (!err)
+ 		return 0;
+ 	/* Is there an interrupt? If not give up. */
+ 	if (!(to_vp_device(vdev)->pci_dev->irq))
+ 		return err;
+ 	/* Finally fall back to regular interrupts. */
+-	return vp_find_vqs_intx(vdev, nvqs, vqs, callbacks, names, ctx);
++	return vp_find_vqs_intx(vdev, cfg);
+ }
+ 
+ const char *vp_bus_name(struct virtio_device *vdev)
+diff --git a/drivers/virtio/virtio_pci_common.h b/drivers/virtio/virtio_pci_common.h
+index 4b773bd7c58c..12b171364e54 100644
+--- a/drivers/virtio/virtio_pci_common.h
++++ b/drivers/virtio/virtio_pci_common.h
+@@ -79,9 +79,7 @@ struct virtio_pci_device {
+ 	struct virtqueue *(*setup_vq)(struct virtio_pci_device *vp_dev,
+ 				      struct virtio_pci_vq_info *info,
+ 				      unsigned int idx,
+-				      void (*callback)(struct virtqueue *vq),
+-				      const char *name,
+-				      bool ctx,
++				      struct virtio_vq_config *vq_cfg,
+ 				      u16 msix_vec);
+ 	void (*del_vq)(struct virtio_pci_vq_info *info);
+ 
+@@ -109,10 +107,7 @@ bool vp_notify(struct virtqueue *vq);
+ /* the config->del_vqs() implementation */
+ void vp_del_vqs(struct virtio_device *vdev);
+ /* the config->find_vqs() implementation */
+-int vp_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
+-		struct virtqueue *vqs[], vq_callback_t *callbacks[],
+-		const char * const names[], const bool *ctx,
+-		struct irq_affinity *desc);
++int vp_find_vqs(struct virtio_device *vdev, struct virtio_vq_config *cfg);
+ const char *vp_bus_name(struct virtio_device *vdev);
+ 
+ /* Setup the affinity for a virtqueue:
+diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virtio_pci_legacy.c
+index d9cbb02b35a1..e8d22fce32f5 100644
+--- a/drivers/virtio/virtio_pci_legacy.c
++++ b/drivers/virtio/virtio_pci_legacy.c
+@@ -110,9 +110,7 @@ static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vector)
+ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
+ 				  struct virtio_pci_vq_info *info,
+ 				  unsigned int index,
+-				  void (*callback)(struct virtqueue *vq),
+-				  const char *name,
+-				  bool ctx,
++				  struct virtio_vq_config *cfg,
+ 				  u16 msix_vec)
+ {
+ 	struct virtqueue *vq;
+@@ -130,8 +128,11 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
+ 	/* create the vring */
+ 	vq = vring_create_virtqueue(index, num,
+ 				    VIRTIO_PCI_VRING_ALIGN, &vp_dev->vdev,
+-				    true, false, ctx,
+-				    vp_notify, callback, name);
++				    true, false,
++				    cfg->ctx ? cfg->ctx[cfg->cfg_idx] : false,
++				    vp_notify,
++				    cfg->callbacks[cfg->cfg_idx],
++				    cfg->names[cfg->cfg_idx]);
+ 	if (!vq)
+ 		return ERR_PTR(-ENOMEM);
+ 
+diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
+index ee6a386d250b..b23792a26584 100644
+--- a/drivers/virtio/virtio_pci_modern.c
++++ b/drivers/virtio/virtio_pci_modern.c
+@@ -336,9 +336,7 @@ static bool vp_notify_with_data(struct virtqueue *vq)
+ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
+ 				  struct virtio_pci_vq_info *info,
+ 				  unsigned int index,
+-				  void (*callback)(struct virtqueue *vq),
+-				  const char *name,
+-				  bool ctx,
++				  struct virtio_vq_config *cfg,
+ 				  u16 msix_vec)
+ {
+ 
+@@ -366,8 +364,11 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
+ 	/* create the vring */
+ 	vq = vring_create_virtqueue(index, num,
+ 				    SMP_CACHE_BYTES, &vp_dev->vdev,
+-				    true, true, ctx,
+-				    notify, callback, name);
++				    true, true,
++				    cfg->ctx ? cfg->ctx[cfg->cfg_idx] : false,
++				    notify,
++				    cfg->callbacks[cfg->cfg_idx],
++				    cfg->names[cfg->cfg_idx]);
+ 	if (!vq)
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -390,15 +391,11 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
+ 	return ERR_PTR(err);
+ }
+ 
+-static int vp_modern_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
+-			      struct virtqueue *vqs[],
+-			      vq_callback_t *callbacks[],
+-			      const char * const names[], const bool *ctx,
+-			      struct irq_affinity *desc)
++static int vp_modern_find_vqs(struct virtio_device *vdev, struct virtio_vq_config *cfg)
+ {
+ 	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+ 	struct virtqueue *vq;
+-	int rc = vp_find_vqs(vdev, nvqs, vqs, callbacks, names, ctx, desc);
++	int rc = vp_find_vqs(vdev, cfg);
+ 
+ 	if (rc)
+ 		return rc;
+diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
+index 8d63e5923d24..4f26b0422797 100644
+--- a/drivers/virtio/virtio_vdpa.c
++++ b/drivers/virtio/virtio_vdpa.c
+@@ -142,8 +142,7 @@ static irqreturn_t virtio_vdpa_virtqueue_cb(void *private)
+ 
+ static struct virtqueue *
+ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+-		     void (*callback)(struct virtqueue *vq),
+-		     const char *name, bool ctx)
++		     struct virtio_vq_config *cfg)
+ {
+ 	struct virtio_vdpa_device *vd_dev = to_virtio_vdpa_device(vdev);
+ 	struct vdpa_device *vdpa = vd_get_vdpa(vdev);
+@@ -161,7 +160,7 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+ 	bool may_reduce_num = true;
+ 	int err;
+ 
+-	if (!name)
++	if (!cfg->names[cfg->cfg_idx])
+ 		return NULL;
+ 
+ 	if (index >= vdpa->nvqs)
+@@ -203,8 +202,12 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+ 	else
+ 		dma_dev = vdpa_get_dma_dev(vdpa);
+ 	vq = vring_create_virtqueue_dma(index, max_num, align, vdev,
+-					true, may_reduce_num, ctx,
+-					notify, callback, name, dma_dev);
++					true, may_reduce_num,
++					cfg->ctx ? cfg->ctx[cfg->cfg_idx] : false,
++					notify,
++					cfg->callbacks[cfg->cfg_idx],
++					cfg->names[cfg->cfg_idx],
++					dma_dev);
+ 	if (!vq) {
+ 		err = -ENOMEM;
+ 		goto error_new_virtqueue;
+@@ -213,7 +216,7 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+ 	vq->num_max = max_num;
+ 
+ 	/* Setup virtqueue callback */
+-	cb.callback = callback ? virtio_vdpa_virtqueue_cb : NULL;
++	cb.callback = cfg->callbacks[cfg->cfg_idx] ? virtio_vdpa_virtqueue_cb : NULL;
+ 	cb.private = info;
+ 	cb.trigger = NULL;
+ 	ops->set_vq_cb(vdpa, index, &cb);
+@@ -353,12 +356,8 @@ create_affinity_masks(unsigned int nvecs, struct irq_affinity *affd)
+ 	return masks;
+ }
+ 
+-static int virtio_vdpa_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
+-				struct virtqueue *vqs[],
+-				vq_callback_t *callbacks[],
+-				const char * const names[],
+-				const bool *ctx,
+-				struct irq_affinity *desc)
++static int virtio_vdpa_find_vqs(struct virtio_device *vdev,
++				struct virtio_vq_config *cfg)
+ {
+ 	struct virtio_vdpa_device *vd_dev = to_virtio_vdpa_device(vdev);
+ 	struct vdpa_device *vdpa = vd_get_vdpa(vdev);
+@@ -366,24 +365,25 @@ static int virtio_vdpa_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
+ 	struct irq_affinity default_affd = { 0 };
+ 	struct cpumask *masks;
+ 	struct vdpa_callback cb;
+-	bool has_affinity = desc && ops->set_vq_affinity;
++	bool has_affinity = cfg->desc && ops->set_vq_affinity;
++	struct virtqueue **vqs = cfg->vqs;
++	unsigned int nvqs = cfg->nvqs;
+ 	int i, err, queue_idx = 0;
+ 
+ 	if (has_affinity) {
+-		masks = create_affinity_masks(nvqs, desc ? desc : &default_affd);
++		masks = create_affinity_masks(nvqs, cfg->desc ? cfg->desc : &default_affd);
+ 		if (!masks)
+ 			return -ENOMEM;
+ 	}
+ 
+ 	for (i = 0; i < nvqs; ++i) {
+-		if (!names[i]) {
++		if (!cfg->names[i]) {
+ 			vqs[i] = NULL;
+ 			continue;
+ 		}
+ 
+-		vqs[i] = virtio_vdpa_setup_vq(vdev, queue_idx++,
+-					      callbacks[i], names[i], ctx ?
+-					      ctx[i] : false);
++		cfg->cfg_idx = i;
++		vqs[i] = virtio_vdpa_setup_vq(vdev, queue_idx++, cfg);
+ 		if (IS_ERR(vqs[i])) {
+ 			err = PTR_ERR(vqs[i]);
+ 			goto err_setup_vq;
+diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
+index 2b3438de2c4d..e2c72e125dae 100644
+--- a/include/linux/virtio_config.h
++++ b/include/linux/virtio_config.h
+@@ -94,6 +94,20 @@ typedef void vq_callback_t(struct virtqueue *);
+  *	If disable_vq_and_reset is set, then enable_vq_after_reset must also be
+  *	set.
+  */
++
++struct virtio_vq_config {
++	unsigned int nvqs;
++
++	/* the vq index may not eq to the cfg index of the other array items */
++	unsigned int cfg_idx;
++
++	struct virtqueue **vqs;
++	vq_callback_t **callbacks;
++	const char *const *names;
++	const bool *ctx;
++	struct irq_affinity *desc;
++};
++
+ struct virtio_config_ops {
+ 	void (*get)(struct virtio_device *vdev, unsigned offset,
+ 		    void *buf, unsigned len);
+@@ -103,10 +117,7 @@ struct virtio_config_ops {
+ 	u8 (*get_status)(struct virtio_device *vdev);
+ 	void (*set_status)(struct virtio_device *vdev, u8 status);
+ 	void (*reset)(struct virtio_device *vdev);
+-	int (*find_vqs)(struct virtio_device *, unsigned nvqs,
+-			struct virtqueue *vqs[], vq_callback_t *callbacks[],
+-			const char * const names[], const bool *ctx,
+-			struct irq_affinity *desc);
++	int (*find_vqs)(struct virtio_device *vdev, struct virtio_vq_config *cfg);
+ 	void (*del_vqs)(struct virtio_device *);
+ 	void (*synchronize_cbs)(struct virtio_device *);
+ 	u64 (*get_features)(struct virtio_device *vdev);
+@@ -213,8 +224,14 @@ struct virtqueue *virtio_find_single_vq(struct virtio_device *vdev,
+ 	vq_callback_t *callbacks[] = { c };
+ 	const char *names[] = { n };
+ 	struct virtqueue *vq;
+-	int err = vdev->config->find_vqs(vdev, 1, &vq, callbacks, names, NULL,
+-					 NULL);
++	struct virtio_vq_config cfg = {};
++
++	cfg.nvqs = 1;
++	cfg.vqs = &vq;
++	cfg.callbacks = callbacks;
++	cfg.names = names;
++
++	int err = vdev->config->find_vqs(vdev, &cfg);
+ 	if (err < 0)
+ 		return ERR_PTR(err);
+ 	return vq;
+@@ -226,7 +243,15 @@ int virtio_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+ 			const char * const names[],
+ 			struct irq_affinity *desc)
+ {
+-	return vdev->config->find_vqs(vdev, nvqs, vqs, callbacks, names, NULL, desc);
++	struct virtio_vq_config cfg = {};
++
++	cfg.nvqs = nvqs;
++	cfg.vqs = vqs;
++	cfg.callbacks = callbacks;
++	cfg.names = names;
++	cfg.desc = desc;
++
++	return vdev->config->find_vqs(vdev, &cfg);
+ }
+ 
+ static inline
+@@ -235,8 +260,16 @@ int virtio_find_vqs_ctx(struct virtio_device *vdev, unsigned nvqs,
+ 			const char * const names[], const bool *ctx,
+ 			struct irq_affinity *desc)
+ {
+-	return vdev->config->find_vqs(vdev, nvqs, vqs, callbacks, names, ctx,
+-				      desc);
++	struct virtio_vq_config cfg = {};
++
++	cfg.nvqs = nvqs;
++	cfg.vqs = vqs;
++	cfg.callbacks = callbacks;
++	cfg.names = names;
++	cfg.ctx = ctx;
++	cfg.desc = desc;
++
++	return vdev->config->find_vqs(vdev, &cfg);
+ }
+ 
+ /**
 -- 
 2.32.0.3.g01195cf9f
 
