@@ -4,103 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD3A4C48286
-	for <linux-um@archiver.kernel.org>; Fri,  2 Feb 2024 03:06:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 56B56C48291
+	for <linux-um@archiver.kernel.org>; Fri,  2 Feb 2024 09:40:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=p5MXqqYcm0nwNL3MENOJLZhnS+rtBOxM/i4dVzBZQWc=; b=S7BVEm5DIfl87YR2Gc5WqrE5tk
-	VyK1hwglvBUKM+MP9oO5ORauqju9M/oEMaEhkgkh5NtP6dF8fuuFKZvUcKl9P+5uJOVa/9muiDKIu
-	/TTKfbYRscr/6/WwvFAmBcfOg/Zm78rN0beTJCUpms07pB70+A73bJS91/rjIN3vQI/RBnb5MOTYp
-	spaQHykMLcqDP4LDWK+49o2G5vrwxto6lwfXJbQkyy2YP+g0OsR3263WESVY/MUYCmYP9hbS8kwzS
-	s7X3ShCwQuSolEwwd/N1cIsLVbb9KX6OSn67w6/+xUlSOW+21MKstJasdfF6wPu8VpNcwHVwAKLNA
-	awKjPDFg==;
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=peR8A4izAqgzsimxR/4ieXlIWtvCe7qrSUa+LFRRffU=; b=4pqQjIbpYO4Qt4+xuDLYQx12Rd
+	5DyDPkbCafBGtDSIFIFZexaz114Rc2iTESiM5YX8yGlNHrFBwcddOdSigveQYj7KbjrAsVB/l9Odc
+	8TdEhogA2jwhxSMx1y+Xz5DQJoOT99ye7JEp4v9ac8svZ/s/glAh8BfIjTmvBHCZWZAxs2HhkgKYb
+	qRBK24XrXU6JoeT2z90cKUaTXPy4PwlZWUKo9zbmnq5evn/SDAtYRQND44LCBQQvaWL7qY3q/i5R+
+	AXtj6HBQPnlCLn8gzmKG7EvI3XqpnKftysPCGoD16ImPT5qf25Svkm4xJC9zZVBp7o9fU39nParIi
+	Qx32RLOQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVjt1-00000009yav-1n4U;
-	Fri, 02 Feb 2024 03:06:39 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+	id 1rVq1j-0000000B0L8-3PZq;
+	Fri, 02 Feb 2024 09:40:03 +0000
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVjsy-00000009yZq-3QDj
+	id 1rVq1f-0000000B0Hq-34Mp
 	for linux-um@lists.infradead.org;
-	Fri, 02 Feb 2024 03:06:38 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706843195;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p5MXqqYcm0nwNL3MENOJLZhnS+rtBOxM/i4dVzBZQWc=;
-	b=WKpRfWkgaes3heAfZjfNQ+gVxfvS9KOX2Sw9rPGXu8vbsDiuhxFmJWDiac3upMXf4OksBd
-	X0CJlqmfJTl/rSf4wlX8/I6ADNi0KLllnPqayNZnUQaxI3HIVg4SWNVNyjy8lIJ6VT14+K
-	6Ggw0KILmugkMaOgS3FkluoWjZr6ot4=
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
- [209.85.161.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-184-D0xq_8V_PbmE_tJOtvVVEA-1; Thu, 01 Feb 2024 22:06:34 -0500
-X-MC-Unique: D0xq_8V_PbmE_tJOtvVVEA-1
-Received: by mail-oo1-f71.google.com with SMTP id 006d021491bc7-598fdf35732so1743931eaf.1
-        for <linux-um@lists.infradead.org>; Thu, 01 Feb 2024 19:06:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706843193; x=1707447993;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=p5MXqqYcm0nwNL3MENOJLZhnS+rtBOxM/i4dVzBZQWc=;
-        b=c5au588rd3txIt6qwpcXtITbBeTpU6XuzCFhBeqCwYcc4O50kDf5nmTjU5LU1n2njo
-         BYM9FKtFv6BOCxCJZQOJJO50kH9KNCbPfVZz/ZTaof4v3Ru43m05lx4vtKjkI/Zut8/q
-         EORuyu4Wvl4j4H8fIUwx4ggH2T/WPp/+4fkeIrJz+RYnMiq3oe1gXSk4AeTNpTRK9XlD
-         kuTf5QpLS35DHGAxyBZM8ENCu5N1dXdG74D/UOfZRX0CKgXsBIOAOHz3+GqWVX85hEkN
-         ErggBHa4iEAeIV5iE49y4z6yrunadT1fxYQRCqEiXI9Z6jPiSY9DeJTF9oLqsw/quTa5
-         kE+Q==
-X-Gm-Message-State: AOJu0YxRxdVlUr2xjId2hLJR4Bc7nYQ6uDRRkS84ffRPKUjb6BZjX0Zs
-	KQWsAnv7W2AwnQDm6HvltH64xeWzw/J/MFhdmrVdbLQqqvyDF3g54ga1/lxLujoRqRe4QmZhKA4
-	IYMXD6B40vH23eXepIvrwA/BtqIb5VOrTNXiCj8zGn8vN5r15gT/rfqkzPd4hCCuxks5OMzi13x
-	siwIR5RQ+DVKBtuFT341Mwnci6ZQ3Mij2wFvX9
-X-Received: by 2002:a05:6358:7e8b:b0:178:cb3e:b74c with SMTP id o11-20020a0563587e8b00b00178cb3eb74cmr721176rwn.28.1706843193258;
-        Thu, 01 Feb 2024 19:06:33 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGnnf0uYApnwJ8ot71PqIV/dtLwp0t3UGDcHzLTReGmnUTng7hr5CvYF6Rt6fg0aixEyvGJkwHqZoRSyzJB6TI=
-X-Received: by 2002:a05:6358:7e8b:b0:178:cb3e:b74c with SMTP id
- o11-20020a0563587e8b00b00178cb3eb74cmr721167rwn.28.1706843192958; Thu, 01 Feb
- 2024 19:06:32 -0800 (PST)
+	Fri, 02 Feb 2024 09:40:01 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1706866795; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=peR8A4izAqgzsimxR/4ieXlIWtvCe7qrSUa+LFRRffU=;
+	b=f9pJDUkyCq9Aq7iTJ9WEJiy8LiYP6i88lIIhl3oDW8hhrXP4ozIdAS/NyASNTJRBE3M1TdInxJIDAJw8cQMFLkqGX+eYEIewot3x9jCKDTuM/MqDSIJESIFgLNNHBU1vloze/iFsv71nqaRoPaXPunIco9sEkwiEOCdyu5mHYAs=
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=36;SR=0;TI=SMTPD_---0W.wc6kr_1706866791;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W.wc6kr_1706866791)
+          by smtp.aliyun-inc.com;
+          Fri, 02 Feb 2024 17:39:52 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: virtualization@lists.linux.dev
+Cc: Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Vadim Pasternak <vadimp@nvidia.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Mathieu Poirier <mathieu.poirier@linaro.org>,
+	Cornelia Huck <cohuck@redhat.com>,
+	Halil Pasic <pasic@linux.ibm.com>,
+	Eric Farman <farman@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Benjamin Berg <benjamin.berg@intel.com>,
+	linux-um@lists.infradead.org,
+	netdev@vger.kernel.org,
+	platform-driver-x86@vger.kernel.org,
+	linux-remoteproc@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	kvm@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH vhost v1 00/19] virtio: drivers maintain dma info for premapped vq
+Date: Fri,  2 Feb 2024 17:39:32 +0800
+Message-Id: <20240202093951.120283-1-xuanzhuo@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 MIME-Version: 1.0
-References: <20240130114224.86536-1-xuanzhuo@linux.alibaba.com>
- <20240130114224.86536-18-xuanzhuo@linux.alibaba.com> <CACGkMEv2cyuesaTx899hwZt7uDdqwmAwXJ8fZDv00W9FbVbTpw@mail.gmail.com>
- <1706757660.3554723-2-xuanzhuo@linux.alibaba.com> <CACGkMEtwWAijrLOrdgJ9ZPx5VjSfJtwVm1k1U8fsg9+tvgRHxg@mail.gmail.com>
- <1706766995.312187-2-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <1706766995.312187-2-xuanzhuo@linux.alibaba.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Fri, 2 Feb 2024 11:06:21 +0800
-Message-ID: <CACGkMEt-sveBvAGTVsqpFSAoDpdUk66oT8wtPASu7dhAb12oJw@mail.gmail.com>
-Subject: Re: [PATCH vhost 17/17] virtio_net: sq support premapped mode
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: virtualization@lists.linux.dev, Richard Weinberger <richard@nod.at>, 
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
-	"Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, 
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <andersson@kernel.org>, 
-	Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, 
-	Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, 
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Benjamin Berg <benjamin.berg@intel.com>, 
-	Yang Li <yang.lee@linux.alibaba.com>, linux-um@lists.infradead.org, 
-	netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, 
-	linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, 
-	kvm@vger.kernel.org, bpf@vger.kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Git-Hash: 4c7bacd05cb8
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240201_190636_958455_014EF9B3 
-X-CRM114-Status: GOOD (  35.12  )
+X-CRM114-CacheID: sfid-20240202_013959_966824_754869EF 
+X-CRM114-Status: GOOD (  10.61  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -115,156 +97,83 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, Feb 1, 2024 at 2:01=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.co=
-m> wrote:
->
-> On Thu, 1 Feb 2024 13:36:46 +0800, Jason Wang <jasowang@redhat.com> wrote=
-:
-> > On Thu, Feb 1, 2024 at 11:28=E2=80=AFAM Xuan Zhuo <xuanzhuo@linux.aliba=
-ba.com> wrote:
-> > >
-> > > On Wed, 31 Jan 2024 17:12:47 +0800, Jason Wang <jasowang@redhat.com> =
-wrote:
-> > > > On Tue, Jan 30, 2024 at 7:43=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.a=
-libaba.com> wrote:
-> > > > >
-> > > > > If the xsk is enabling, the xsk tx will share the send queue.
-> > > > > But the xsk requires that the send queue use the premapped mode.
-> > > > > So the send queue must support premapped mode.
-> > > > >
-> > > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > > > > ---
-> > > > >  drivers/net/virtio_net.c | 167 +++++++++++++++++++++++++++++++++=
-+++++-
-> > > > >  1 file changed, 163 insertions(+), 4 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > > > > index 226ab830870e..cf0c67380b07 100644
-> > > > > --- a/drivers/net/virtio_net.c
-> > > > > +++ b/drivers/net/virtio_net.c
-> > > > > @@ -46,6 +46,7 @@ module_param(napi_tx, bool, 0644);
-> > > > >  #define VIRTIO_XDP_REDIR       BIT(1)
-> > > > >
-> > > > >  #define VIRTIO_XDP_FLAG        BIT(0)
-> > > > > +#define VIRTIO_DMA_FLAG        BIT(1)
-> > > > >
-> > > > >  /* RX packet size EWMA. The average packet size is used to deter=
-mine the packet
-> > > > >   * buffer size when refilling RX rings. As the entire RX ring ma=
-y be refilled
-> > > > > @@ -140,6 +141,21 @@ struct virtnet_rq_dma {
-> > > > >         u16 need_sync;
-> > > > >  };
-> > > > >
-> > > > > +struct virtnet_sq_dma {
-> > > > > +       union {
-> > > > > +               struct virtnet_sq_dma *next;
-> > > > > +               void *data;
-> > > > > +       };
-> > > > > +       dma_addr_t addr;
-> > > > > +       u32 len;
-> > > > > +       bool is_tail;
-> > > > > +};
-> > > > > +
-> > > > > +struct virtnet_sq_dma_head {
-> > > > > +       struct virtnet_sq_dma *free;
-> > > > > +       struct virtnet_sq_dma *head;
-> > > >
-> > > > Any reason the head must be a pointer instead of a simple index?
-> > >
-> > >
-> > > The head is used for kfree.
-> > > Maybe I need to rename it.
-> > >
-> > > About the index(next) of the virtnet_sq_dma.
-> > > If we use the index, the struct will be:
-> > >
-> > > struct virtnet_sq_dma {
-> > >        dma_addr_t addr;
-> > >        u32 len;
-> > >
-> > >        u32 next;
-> > >        void *data
-> > > };
-> > >
-> > > The size of virtnet_sq_dma is same.
-> >
-> > Ok.
-> >
-> > >
-> > >
-> > > >
-> > > > > +};
-> > > > > +
-> > > > >  /* Internal representation of a send virtqueue */
-> > > > >  struct send_queue {
-> > > > >         /* Virtqueue associated with this send _queue */
-> > > > > @@ -159,6 +175,8 @@ struct send_queue {
-> > > > >
-> > > > >         /* Record whether sq is in reset state. */
-> > > > >         bool reset;
-> > > > > +
-> > > > > +       struct virtnet_sq_dma_head dmainfo;
-> > > > >  };
-> > > > >
-> > >
-> > > ....
-> > >
-> > > > > +
-> > > > > +static int virtnet_sq_init_dma_mate(struct send_queue *sq)
-> > > > > +{
-> > > > > +       struct virtnet_sq_dma *d;
-> > > > > +       int size, i;
-> > > > > +
-> > > > > +       size =3D virtqueue_get_vring_size(sq->vq);
-> > > > > +
-> > > > > +       size +=3D MAX_SKB_FRAGS + 2;
-> > > >
-> > > > Is this enough for the case where an indirect descriptor is used?
-> > >
-> > >
-> > > This is for the case, when the ring is full, the xmit_skb is called.
-> > >
-> > > I will add comment.
-> >
-> > Just to make sure we are at the same page.
-> >
-> > I meant, we could have more pending #sg than allocated here.
-> >
-> > For example, we can have up to (vring_size - 2 - MAX_SKB_FRAGS) *
-> > MAX_SKB_FRAGS number of pending sgs?
-> >
->
-> Oh, my was wrong.
->
-> But the max value a
-> But shouldn't the maximum value be vring_size * (2 + MAX_SKB_FRAGS)?
+As discussed:
+http://lore.kernel.org/all/CACGkMEvq0No8QGC46U4mGsMtuD44fD_cfLcPaVmJ3rHYqRZxYg@mail.gmail.com
 
-This seems to be safer, yes.
+If the virtio is premapped mode, the driver should manage the dma info by self.
+So the virtio core should not store the dma info.
+So we can release the memory used to store the dma info.
 
->
-> And for the reason above, we should allocate (vring_size + 1) * (2 + MAX_=
-SKB_FRAGS);
+But if the desc_extra has not dma info, we face a new question,
+it is hard to get the dma info of the desc with indirect flag.
+For split mode, that is easy from desc, but for the packed mode,
+it is hard to get the dma info from the desc. And for hardening
+the dma unmap is saft, we should store the dma info of indirect
+descs.
 
-Then we need to benchmark to see if it has an impact on the performance.
+So I introduce the "structure the indirect desc table" to
+allocate space to store dma info with the desc table.
+
+On the other side, we mix the descs with indirect flag
+with other descs together to share the unmap api. That
+is complex. I found if we we distinguish the descs with
+VRING_DESC_F_INDIRECT before unmap, thing will be clearer.
+
+Because of the dma array is allocated in the find_vqs(),
+so I introduce a new parameter to find_vqs().
+
+Please review.
 
 Thanks
 
->
-> Thanks.
->
->
-> > Thanks
-> >
-> > >
-> > > Thanks.
-> > >
-> > >
-> > > >
-> > > > Thanks
-> > > >
-> > >
-> >
->
+v1:
+    1. rename transport_vq_config to vq_transport_config
+    2. virtio-net set dma meta number to (ring-size + 1)(MAX_SKB_FRGAS +2)
+    3. introduce virtqueue_dma_map_sg_attrs
+    4. separate vring_create_virtqueue to an independent commit
+
+Xuan Zhuo (19):
+  virtio_ring: introduce vring_need_unmap_buffer
+  virtio_ring: packed: remove double check of the unmap ops
+  virtio_ring: packed: structure the indirect desc table
+  virtio_ring: split: remove double check of the unmap ops
+  virtio_ring: split: structure the indirect desc table
+  virtio_ring: no store dma info when unmap is not needed
+  virtio: find_vqs: pass struct instead of multi parameters
+  virtio: vring_create_virtqueue: pass struct instead of multi
+    parameters
+  virtio: vring_new_virtqueue(): pass struct instead of multi parameters
+  virtio_ring: reuse the parameter struct of find_vqs()
+  virtio: find_vqs: add new parameter premapped
+  virtio_ring: export premapped to driver by struct virtqueue
+  virtio_net: set premapped mode by find_vqs()
+  virtio_ring: remove api of setting vq premapped
+  virtio_ring: introduce dma map api for page
+  virtio_ring: introduce virtqueue_dma_map_sg_attrs
+  virtio_net: unify the code for recycling the xmit ptr
+  virtio_net: rename free_old_xmit_skbs to free_old_xmit
+  virtio_net: sq support premapped mode
+
+ arch/um/drivers/virtio_uml.c             |  31 +-
+ drivers/net/virtio_net.c                 | 291 +++++++---
+ drivers/platform/mellanox/mlxbf-tmfifo.c |  24 +-
+ drivers/remoteproc/remoteproc_virtio.c   |  31 +-
+ drivers/s390/virtio/virtio_ccw.c         |  33 +-
+ drivers/virtio/virtio_mmio.c             |  30 +-
+ drivers/virtio/virtio_pci_common.c       |  59 +-
+ drivers/virtio/virtio_pci_common.h       |   9 +-
+ drivers/virtio/virtio_pci_legacy.c       |  16 +-
+ drivers/virtio/virtio_pci_modern.c       |  24 +-
+ drivers/virtio/virtio_ring.c             | 698 ++++++++++++-----------
+ drivers/virtio/virtio_vdpa.c             |  45 +-
+ include/linux/virtio.h                   |  13 +-
+ include/linux/virtio_config.h            |  48 +-
+ include/linux/virtio_ring.h              |  82 +--
+ tools/virtio/virtio_test.c               |   4 +-
+ tools/virtio/vringh_test.c               |  28 +-
+ 17 files changed, 848 insertions(+), 618 deletions(-)
+
+--
+2.32.0.3.g01195cf9f
 
 
