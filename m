@@ -4,64 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B079C4828F
-	for <linux-um@archiver.kernel.org>; Fri,  2 Feb 2024 20:00:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 85B3BC4828F
+	for <linux-um@archiver.kernel.org>; Fri,  2 Feb 2024 20:00:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=vkC0MOvasOfRptlueg7DMIAScqcI1y89NBjfSLlZCkI=; b=PAvEBPQmtwaZuvkWitDCdj3sGj
-	MRU8z7xIdaNsJ6lmclCACA7Lh5p3fR/UUfY/Exx+OqlhkKAUrF8elJKQwJLH9/XCfV8XZg1nl4jCl
-	m2ubpwgt1g9nIgpbEyeKTQJlUwbnE7DPClSB5azC25oQZlAe0eKpWIFprNdRDfe01Ysq9w/OF5X4x
-	WgsWpQi0u3CZk/QJf46pcVrWX1l0Qi99qZrnFOOemiZe7HBANS2VYAQLiVj+BhMHfDP8gEfTSJxxK
-	wKlUI5PGIwSKu1qCQauvDPzmmjvFu2i7aUhwyyRoeIkVkFOxzVHYNQA4oWECEdRGocP5qEGHQYP9X
-	yZxeAFKQ==;
+	bh=9nr8KgIXSlmrBRc5eTEs4Ft1WJ6sE76s1g3Xw61O8GM=; b=ZO6qhK4tyVDuX76X0T9W99e7DN
+	nD0/2mmuhWQcL/x2iZ8sXvT/Ji8Iuzr5/AdkmG3VuN4qKd1biGOQRIPbAAz3y64D7g4m57zVE1IWK
+	OXzO22X0/mdnUQNKCHRDy4EUQqe2ojqtCpUO/QmHAWwyqFsfqR2StHmkzuT7nzz1Tv+JiNA/VXTuZ
+	BAlqVA6Y4oPWOCR+MDG1XXaJDp9Mhlol2kLEIvlh3zO+32IiwvdYIOHvQZOeCOoevjMT532QzS9Hl
+	/QmRC5HaP34sr/h8YQGzn6C6iZKHrIU8wQoOMgqcnmz35dxbyQudqoLzXmpSpHSi4YwfF9LdFDIrS
+	bkw2FBVA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVziJ-0000000DIin-3aAl;
-	Fri, 02 Feb 2024 20:00:40 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1rVziQ-0000000DInK-0oWp;
+	Fri, 02 Feb 2024 20:00:46 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVzgw-0000000DI2d-01d0;
-	Fri, 02 Feb 2024 19:59:18 +0000
+	id 1rVzh0-0000000DI5l-1lmF;
+	Fri, 02 Feb 2024 19:59:22 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 1412D62864;
-	Fri,  2 Feb 2024 19:59:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72B3FC433B2;
-	Fri,  2 Feb 2024 19:59:12 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id D03C5CE2E3F;
+	Fri,  2 Feb 2024 19:59:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0422C43390;
+	Fri,  2 Feb 2024 19:59:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706903952;
-	bh=t4kGvcZAyPHW38f5oPy9NpKLy61UGodk/h/wXqd7kZc=;
+	s=k20201202; t=1706903956;
+	bh=PiweXFroDHF7yXaa82SMFRXH/FDbm1RzgiHTih6bLA8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=XD5VFqukR7gqnIKSizGUPqXYHzgBeBJKgezSNDvrQQLwE+RLJIVEvo9kg+1ZLkSFP
-	 Rf0j8e4dZ8e02j/OJ5AF4IKu2oYfj4c8jDUeRGvFIMdBTpsYyfnzMC72xo89VizRmV
-	 t3LOQEwJvqHf6mlYvPdgQA2Yh4DPd2t+pbBTM6SNAfTuU4RZen6SmDT78SLYhCMS8B
-	 Ov9qHuZmwYX/g+HGG+LunPPZ5umeevN1FE6zIf04gXUwOz6ZmiiGCICGMhwCrom4DE
-	 en1VjYRQ68hjitBZfGCLeJCu5Lux1RHGhwzNeoD5fd7gERQzCKm+5crygydWH43/z3
-	 MvLbg0Q3I5rXw==
+	b=LUsABn4BtEE+3rLzRs0MQ2C02aC4eRavx+NnUEigQIDN5hEhEZNBOQJZPL8COpFiE
+	 lorefdZOxB8OV+F2B33bLbZYuCDULzTivEsiui+momrj0H+Q4M8bILqL6UXIb2VZG8
+	 2a4s2d8yNcFame9bG1gYjm7fRnJ0b1loqO9DK41wYC40o8K8MLf+BOFe1Y+PHMhias
+	 njRXktKCexQ9Yv8x4+YTqiHhB31aR091ZwIt79dQ9s29u1QvLULGcboC0mabkoiOis
+	 bdoKOrdCx2OSnf4HWEb5yIMklX06Ug8ejLsbsHsTP/c7+WG2Qd9+ZAF9Hq4PyzUetv
+	 l0y+61kYAJv5Q==
 From: Stephen Boyd <sboyd@kernel.org>
 To: Rob Herring <robh+dt@kernel.org>
-Cc: Frank Rowand <frowand.list@gmail.com>,
-	linux-kernel@vger.kernel.org,
+Cc: linux-kernel@vger.kernel.org,
 	patches@lists.linux.dev,
 	linux-um@lists.infradead.org,
 	linux-arm-kernel@lists.infradead.org,
 	kunit-dev@googlegroups.com,
 	linux-kselftest@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: [PATCH v3 2/7] of: Create of_root if no dtb provided by firmware
-Date: Fri,  2 Feb 2024 11:59:03 -0800
-Message-ID: <20240202195909.3458162-3-sboyd@kernel.org>
+	devicetree@vger.kernel.org,
+	Frank Rowand <frowand.list@gmail.com>,
+	David Gow <davidgow@google.com>,
+	Brendan Higgins <brendan.higgins@linux.dev>
+Subject: [PATCH v3 7/7] of: Add KUnit test to confirm DTB is loaded
+Date: Fri,  2 Feb 2024 11:59:08 -0800
+Message-ID: <20240202195909.3458162-8-sboyd@kernel.org>
 X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
 In-Reply-To: <20240202195909.3458162-1-sboyd@kernel.org>
 References: <20240202195909.3458162-1-sboyd@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240202_115915_538365_F05D0007 
-X-CRM114-Status: GOOD (  24.37  )
+X-CRM114-CacheID: sfid-20240202_115920_360723_DFBFCC56 
+X-CRM114-Status: GOOD (  18.15  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,198 +78,117 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Frank Rowand <frowand.list@gmail.com>
+Add a KUnit test that confirms a DTB has been loaded, i.e. there is a
+root node, and that the of_have_populated_dt() API works properly.
 
-When enabling CONFIG_OF on a platform where 'of_root' is not populated
-by firmware, we end up without a root node. In order to apply overlays
-and create subnodes of the root node, we need one. Create this root node
-by unflattening an empty builtin dtb.
-
-If firmware provides a flattened device tree (FDT) then the FDT is
-unflattened via setup_arch(). Otherwise, the call to
-unflatten(_and_copy)?_device_tree() will create an empty root node.
-
-We make of_have_populated_dt() return true only if the DTB was loaded by
-firmware so that existing callers don't change behavior after this
-patch. The call in the of platform code is removed because it prevents
-overlays from creating platform devices when the platform bus isn't
-fully initialized.
-
-Signed-off-by: Frank Rowand <frowand.list@gmail.com>
-Link: https://lore.kernel.org/r/20230317053415.2254616-2-frowand.list@gmail.com
 Cc: Rob Herring <robh+dt@kernel.org>
-[sboyd@kernel.org: Update of_have_populated_dt() to treat this empty dtb
-as not populated. Drop setup_of() initcall]
+Cc: Frank Rowand <frowand.list@gmail.com>
+Cc: David Gow <davidgow@google.com>
+Cc: Brendan Higgins <brendan.higgins@linux.dev>
 Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 ---
- drivers/of/Kconfig        |  2 +-
- drivers/of/Makefile       |  2 +-
- drivers/of/empty_root.dts |  6 ++++++
- drivers/of/fdt.c          | 32 +++++++++++++++++++++++++++++++-
- drivers/of/platform.c     |  3 ---
- include/linux/of.h        | 25 +++++++++++++++----------
- 6 files changed, 54 insertions(+), 16 deletions(-)
- create mode 100644 drivers/of/empty_root.dts
+ drivers/of/.kunitconfig |  3 +++
+ drivers/of/Kconfig      |  9 ++++++++
+ drivers/of/Makefile     |  2 ++
+ drivers/of/of_test.c    | 48 +++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 62 insertions(+)
+ create mode 100644 drivers/of/.kunitconfig
+ create mode 100644 drivers/of/of_test.c
 
+diff --git a/drivers/of/.kunitconfig b/drivers/of/.kunitconfig
+new file mode 100644
+index 000000000000..5a8fee11978c
+--- /dev/null
++++ b/drivers/of/.kunitconfig
+@@ -0,0 +1,3 @@
++CONFIG_KUNIT=y
++CONFIG_OF=y
++CONFIG_OF_KUNIT_TEST=y
 diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
-index da9826accb1b..17733285b415 100644
+index 17733285b415..53d1b5dd89e8 100644
 --- a/drivers/of/Kconfig
 +++ b/drivers/of/Kconfig
-@@ -54,7 +54,7 @@ config OF_FLATTREE
- 	select CRC32
+@@ -37,6 +37,15 @@ config OF_UNITTEST
  
- config OF_EARLY_FLATTREE
--	bool
-+	def_bool OF && !SPARC
- 	select DMA_DECLARE_COHERENT if HAS_DMA && HAS_IOMEM
- 	select OF_FLATTREE
+ 	  If unsure, say N here. This option is not safe to enable.
  
++config OF_KUNIT_TEST
++	tristate "Devicetree KUnit Test" if !KUNIT_ALL_TESTS
++	depends on KUNIT
++	default KUNIT_ALL_TESTS
++	help
++	  This option builds KUnit unit tests for device tree infrastructure.
++
++	  If unsure, say N here, but this option is safe to enable.
++
+ config OF_ALL_DTBS
+ 	bool "Build all Device Tree Blobs"
+ 	depends on COMPILE_TEST
 diff --git a/drivers/of/Makefile b/drivers/of/Makefile
-index eff624854575..df305348d1cb 100644
+index df305348d1cb..251d33532148 100644
 --- a/drivers/of/Makefile
 +++ b/drivers/of/Makefile
-@@ -2,7 +2,7 @@
- obj-y = base.o cpu.o device.o module.o platform.o property.o
- obj-$(CONFIG_OF_KOBJ) += kobj.o
- obj-$(CONFIG_OF_DYNAMIC) += dynamic.o
--obj-$(CONFIG_OF_FLATTREE) += fdt.o
-+obj-$(CONFIG_OF_FLATTREE) += fdt.o empty_root.dtb.o
- obj-$(CONFIG_OF_EARLY_FLATTREE) += fdt_address.o
- obj-$(CONFIG_OF_PROMTREE) += pdt.o
- obj-$(CONFIG_OF_ADDRESS)  += address.o
-diff --git a/drivers/of/empty_root.dts b/drivers/of/empty_root.dts
+@@ -19,4 +19,6 @@ obj-y	+= kexec.o
+ endif
+ endif
+ 
++obj-$(CONFIG_OF_KUNIT_TEST) += of_test.o
++
+ obj-$(CONFIG_OF_UNITTEST) += unittest-data/
+diff --git a/drivers/of/of_test.c b/drivers/of/of_test.c
 new file mode 100644
-index 000000000000..cf9e97a60f48
+index 000000000000..71a767b42b43
 --- /dev/null
-+++ b/drivers/of/empty_root.dts
-@@ -0,0 +1,6 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/dts-v1/;
-+
-+/ {
-+
-+};
-diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-index dfeba8b8ce94..e5a385285149 100644
---- a/drivers/of/fdt.c
-+++ b/drivers/of/fdt.c
-@@ -8,6 +8,7 @@
- 
- #define pr_fmt(fmt)	"OF: fdt: " fmt
- 
-+#include <linux/acpi.h>
- #include <linux/crash_dump.h>
- #include <linux/crc32.h>
- #include <linux/kernel.h>
-@@ -32,6 +33,13 @@
- 
- #include "of_private.h"
- 
++++ b/drivers/of/of_test.c
+@@ -0,0 +1,48 @@
++// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * __dtb_empty_root_begin[] and __dtb_empty_root_end[] magically created by
-+ * cmd_dt_S_dtb in scripts/Makefile.lib
++ * KUnit tests for OF APIs
 + */
-+extern uint8_t __dtb_empty_root_begin[];
-+extern uint8_t __dtb_empty_root_end[];
++#include <linux/module.h>
++#include <linux/of.h>
 +
- /*
-  * of_fdt_limit_memory - limit the number of regions in the /memory node
-  * @limit: maximum entries
-@@ -1343,7 +1351,29 @@ static void *__init copy_device_tree(void *fdt)
-  */
- void __init unflatten_device_tree(void)
- {
--	__unflatten_device_tree(initial_boot_params, NULL, &of_root,
-+	void *fdt = initial_boot_params;
++#include <kunit/test.h>
 +
-+	/* Don't use the bootloader provided DTB if ACPI is enabled */
-+	if (!acpi_disabled)
-+		fdt = NULL;
-+
-+	/*
-+	 * Populate an empty root node when ACPI is enabled or bootloader
-+	 * doesn't provide one.
-+	 */
-+	if (!fdt) {
-+		fdt = (void *) __dtb_empty_root_begin;
-+		/* fdt_totalsize() will be used for copy size */
-+		if (fdt_totalsize(fdt) >
-+		    __dtb_empty_root_end - __dtb_empty_root_begin) {
-+			pr_err("invalid size in dtb_empty_root\n");
-+			return;
-+		}
-+		of_fdt_crc32 = crc32_be(~0, fdt, fdt_totalsize(fdt));
-+		fdt = copy_device_tree(fdt);
-+	}
-+
-+	__unflatten_device_tree(fdt, NULL, &of_root,
- 				early_init_dt_alloc_memory_arch, false);
- 
- 	/* Get pointer to "/chosen" and "/aliases" nodes for use everywhere */
-diff --git a/drivers/of/platform.c b/drivers/of/platform.c
-index 126d265aa7d8..20087bb8a46b 100644
---- a/drivers/of/platform.c
-+++ b/drivers/of/platform.c
-@@ -549,9 +549,6 @@ static int __init of_platform_default_populate_init(void)
- 
- 	device_links_supplier_sync_state_pause();
- 
--	if (!of_have_populated_dt())
--		return -ENODEV;
--
- 	if (IS_ENABLED(CONFIG_PPC)) {
- 		struct device_node *boot_display = NULL;
- 		struct platform_device *dev;
-diff --git a/include/linux/of.h b/include/linux/of.h
-index 6a9ddf20e79a..52f6ad6a1c8c 100644
---- a/include/linux/of.h
-+++ b/include/linux/of.h
-@@ -180,11 +180,6 @@ static inline bool is_of_node(const struct fwnode_handle *fwnode)
- 			&__of_fwnode_handle_node->fwnode : NULL;	\
- 	})
- 
--static inline bool of_have_populated_dt(void)
--{
--	return of_root != NULL;
--}
--
- static inline bool of_node_is_root(const struct device_node *node)
- {
- 	return node && (node->parent == NULL);
-@@ -549,11 +544,6 @@ static inline struct device_node *of_find_node_with_property(
- 
- #define of_fwnode_handle(node) NULL
- 
--static inline bool of_have_populated_dt(void)
--{
--	return false;
--}
--
- static inline struct device_node *of_get_compatible_child(const struct device_node *parent,
- 					const char *compatible)
- {
-@@ -1634,6 +1624,21 @@ static inline bool of_device_is_system_power_controller(const struct device_node
- 	return of_property_read_bool(np, "system-power-controller");
- }
- 
-+/**
-+ * of_have_populated_dt() - Has DT been populated by bootloader
-+ *
-+ * Return: True if a DTB has been populated by the bootloader and it isn't the
-+ * empty builtin one. False otherwise.
++/*
++ * Test that the root node "/" can be found by path.
 + */
-+static inline bool of_have_populated_dt(void)
++static void dtb_root_node_found_by_path(struct kunit *test)
 +{
-+#ifdef CONFIG_OF
-+	return of_property_present(of_root, "compatible");
-+#else
-+	return false;
-+#endif
++	struct device_node *np;
++
++	np = of_find_node_by_path("/");
++	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, np);
++	of_node_put(np);
 +}
 +
- /*
-  * Overlay support
-  */
++/*
++ * Test that the 'of_root' global variable is always populated when DT code is
++ * enabled.
++ */
++static void dtb_root_node_populates_of_root(struct kunit *test)
++{
++	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, of_root);
++}
++
++static struct kunit_case dtb_test_cases[] = {
++	KUNIT_CASE(dtb_root_node_found_by_path),
++	KUNIT_CASE(dtb_root_node_populates_of_root),
++	{}
++};
++
++/*
++ * Test suite to confirm a DTB is loaded.
++ */
++static struct kunit_suite dtb_suite = {
++	.name = "dtb",
++	.test_cases = dtb_test_cases,
++};
++
++kunit_test_suites(
++	&dtb_suite,
++);
++MODULE_LICENSE("GPL");
 -- 
 https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
 https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
