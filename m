@@ -4,87 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F198C47DDB
-	for <linux-um@archiver.kernel.org>; Thu,  1 Feb 2024 09:58:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E5D6C48286
+	for <linux-um@archiver.kernel.org>; Fri,  2 Feb 2024 03:04:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:References:Cc:To:From:Date:Subject:Message-ID:
-	Reply-To:MIME-Version:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=90to8cwBJMQb8442ZR8q4xiN29UaF6MDG11lxdXfYpM=; b=VFfSXKkrPx8n9pqhSBOSu+0w43
-	xKmcz3I8ZZFl/BFlrE4SmsHJ6yrhWaBdPCdRdCmhT3djuoStIDNiKi3yeNf0F+6K6NtBgwVlmEdGa
-	rXijyesTUkdP0dSu7W5I2+SVaU7PzVApv75ApYC7ZUhDajrc5pmr5yatszFUXEUe7wVILf9JNM+q4
-	WD1hFnnx5aLPgr+yCerWEI7frV78TCQ/8PzkfFGD278OfVBU7+mdteFxhTWgcTAGQ8jfk3c0XcyNf
-	WJhFrQJJePLrdVjTY61ssZPOnyLc6XI36DQPenjfU9j4HB4LC7B8LoeqtAeTzS2xTSjCNIGm7HU95
-	xG4WYWnA==;
+	bh=+jjk3jE8PhNNZNmWy+1f2O2oViFlMeQMdnMn/9Z9Ruw=; b=2tLRSzyq+kEhSmOodwG/BRwAO9
+	CEgUwW/Q/Whr8UUalAMIvh97jMTwEJ3svlGlAgjED8tH6e7YAhCZIdGvL+kI3LD4QSU2CFtqfjsqC
+	W6WlPzIlDmaY9lNx20upnd6MTKJrjqT0/zGC+WeycxsvvtXnM1GWEv3cyYFDYD0VYd/h2/Z0mAdtO
+	jZRkHkfi7b1kn6n6roO7S3J3OG+7NPTKc0U81MqA6bNj59GrBk3LYisoI8iV+JKTg8ramQvYcDC+N
+	4iF5jV1nHtYVdhKSgbcNwK2ZpqKOb/4DQ1u7Bn1q7g/Pn/WKxW6vReOrwrRcYs5s+7yPF5ucdlkXL
+	NGrrgXqg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVTpX-00000007MgQ-2Tpi;
-	Thu, 01 Feb 2024 09:57:59 +0000
-Received: from out30-110.freemail.mail.aliyun.com ([115.124.30.110])
+	id 1rVjr3-00000009y3L-33fr;
+	Fri, 02 Feb 2024 03:04:37 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVTpU-00000007Mfy-1EW3
+	id 1rVjr1-00000009y1O-049G
 	for linux-um@lists.infradead.org;
-	Thu, 01 Feb 2024 09:57:58 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1706781471; h=Message-ID:Subject:Date:From:To:Content-Type;
-	bh=90to8cwBJMQb8442ZR8q4xiN29UaF6MDG11lxdXfYpM=;
-	b=yCHRXKIzH2vyssrt6aC07nP9lBW+5Swf9CNg2qdnlaBRV5llBTS4flRkIFlemcMG7eEAIA03dtPZQVlLZaBM97K1CKQoJKEEY4i8cJScDPsHCw1mTdeDaJ+bayuuceZGtfQteswLCuglrZ4ELoo/kiZILwe9/fkacawB3CRk8kU=
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=37;SR=0;TI=SMTPD_---0W.tM-xH_1706781468;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W.tM-xH_1706781468)
-          by smtp.aliyun-inc.com;
-          Thu, 01 Feb 2024 17:57:49 +0800
-Message-ID: <1706781420.4036775-6-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH vhost 00/17] virtio: drivers maintain dma info for premapped vq
-Date: Thu, 1 Feb 2024 17:57:00 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: Zhu Yanjun <yanjun.zhu@linux.dev>
-Cc: Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- "Michael S. Tsirkin" <mst@redhat.com>,
- Jason Wang <jasowang@redhat.com>,
- "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- Hans de Goede <hdegoede@redhat.com>,
- =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Vadim Pasternak <vadimp@nvidia.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Mathieu Poirier <mathieu.poirier@linaro.org>,
- Cornelia Huck <cohuck@redhat.com>,
- Halil Pasic <pasic@linux.ibm.com>,
- Eric Farman <farman@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>,
- Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>,
- Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Benjamin Berg <benjamin.berg@intel.com>,
- Yang Li <yang.lee@linux.alibaba.com>,
- linux-um@lists.infradead.org,
- netdev@vger.kernel.org,
- platform-driver-x86@vger.kernel.org,
- linux-remoteproc@vger.kernel.org,
- linux-s390@vger.kernel.org,
- kvm@vger.kernel.org,
- bpf@vger.kernel.org,
- virtualization@lists.linux.dev
+	Fri, 02 Feb 2024 03:04:36 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706843072;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+jjk3jE8PhNNZNmWy+1f2O2oViFlMeQMdnMn/9Z9Ruw=;
+	b=DG3nDFLJZk2HpdOZoW9VNcbL8pfike+8vtCrchmyVPYB0OQZaOgHpEyH6BWKp/eBD0nnBd
+	D9wNYmvZM1ttJ37bq9d8Viilu+Lnb3QnIk2hqqr6g55neLsBbs9tpiaEWL3B0YSLM5fcHn
+	pGJpw2mgkOvjLLxVivWqv1vnFs7e554=
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
+ [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-411-eb6H8rz_N3a_FaSdnmhVnQ-1; Thu, 01 Feb 2024 22:04:29 -0500
+X-MC-Unique: eb6H8rz_N3a_FaSdnmhVnQ-1
+Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-6de2116e7c2so1569584b3a.1
+        for <linux-um@lists.infradead.org>; Thu, 01 Feb 2024 19:04:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706843068; x=1707447868;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+jjk3jE8PhNNZNmWy+1f2O2oViFlMeQMdnMn/9Z9Ruw=;
+        b=RbCqDR14UG6ViKMsHp/rzv3ItAq/QBD5+ewkh2rW8OVjDfnBqgA1m8VmALSuAnOHec
+         J5364D8fPw034ff8xz41oKSXyY2pDmenKR8TGUFq35gAYHL2u2/GQmdy/+3dfCxEp/iR
+         vbhu6cb0mLn7THbg4+tLJWu78oANdIUgKdxZAlcmoiF+u7eSV2UCkCF8p6B+OqCpD5Gu
+         ILwqSfKw+EXyGpCNMHH86hSkNvQlBERemycWq+gZs9dJUSGiK/JIeapimYU8reN6r93/
+         6PLeuhvfs0pSCJbtmcQeBbRYh4O3PUg6O8Y5d/pWmb+sdL/lYQR+ALJ+dDDRRulSfKKf
+         3AEA==
+X-Gm-Message-State: AOJu0YwsHn3dac20/If1XuoE7FqWivfQV5MJIF6crWJycER8f6FrcCm+
+	Tv7Lzj2fSAohMl22fpRz6qihfj7XyufnCL51XSmp2iHF8FeqfJ6KyPuv2v8oBK+eLiaIRFPcGYI
+	G83rxPY2FL8mAiJc/le1I5wD0P342P88DAHj9W/LUy2ByVmPOWCRad9mR8vnORYOvm8ex67acdr
+	VhBVUJRJz7UT804wUzJmObtu/QPBwDyyykuXL3
+X-Received: by 2002:aa7:8a4f:0:b0:6d9:9613:cb9e with SMTP id n15-20020aa78a4f000000b006d99613cb9emr4121335pfa.29.1706843068413;
+        Thu, 01 Feb 2024 19:04:28 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHnfmCLPGlpseo2aKm7Vdc5x3EZtRZIzutRGAyaKH3V2ZuLamufaE9axFl8TAes1c8kVipviNI+/nVDsMZzFNU=
+X-Received: by 2002:aa7:8a4f:0:b0:6d9:9613:cb9e with SMTP id
+ n15-20020aa78a4f000000b006d99613cb9emr4121309pfa.29.1706843068115; Thu, 01
+ Feb 2024 19:04:28 -0800 (PST)
+MIME-Version: 1.0
 References: <20240130114224.86536-1-xuanzhuo@linux.alibaba.com>
- <fdc2da16-5680-44cf-bc18-b3e8c0f565fa@linux.dev>
-In-Reply-To: <fdc2da16-5680-44cf-bc18-b3e8c0f565fa@linux.dev>
+ <20240130114224.86536-7-xuanzhuo@linux.alibaba.com> <CACGkMEtNCjvtDWySzeAqETGZtBSL0MR6=JySBBtm3=s19wB=1w@mail.gmail.com>
+ <1706767497.2529867-3-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <1706767497.2529867-3-xuanzhuo@linux.alibaba.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Fri, 2 Feb 2024 11:04:17 +0800
+Message-ID: <CACGkMEs80VRVUaWJX6SFcQAzBy3Yo2M=0zkDspt10FyyzR7FqQ@mail.gmail.com>
+Subject: Re: [PATCH vhost 06/17] virtio_ring: no store dma info when unmap is
+ not needed
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: virtualization@lists.linux.dev, Richard Weinberger <richard@nod.at>, 
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
+	"Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Hans de Goede <hdegoede@redhat.com>, 
+	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+	Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <andersson@kernel.org>, 
+	Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, 
+	Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, 
+	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Benjamin Berg <benjamin.berg@intel.com>, 
+	Yang Li <yang.lee@linux.alibaba.com>, linux-um@lists.infradead.org, 
+	netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, 
+	linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, 
+	kvm@vger.kernel.org, bpf@vger.kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240201_015756_692467_294A88A6 
-X-CRM114-Status: GOOD (  22.64  )
+X-CRM114-CacheID: sfid-20240201_190435_156834_FAFDB6AA 
+X-CRM114-Status: GOOD (  22.42  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,97 +115,68 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, 1 Feb 2024 15:43:51 +0800, Zhu Yanjun <yanjun.zhu@linux.dev> wrote:
-> =E5=9C=A8 2024/1/30 19:42, Xuan Zhuo =E5=86=99=E9=81=93:
-> > As discussed:
-> > http://lore.kernel.org/all/CACGkMEvq0No8QGC46U4mGsMtuD44fD_cfLcPaVmJ3rH=
-YqRZxYg@mail.gmail.com
+On Thu, Feb 1, 2024 at 2:05=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.co=
+m> wrote:
+>
+> On Wed, 31 Jan 2024 17:12:29 +0800, Jason Wang <jasowang@redhat.com> wrot=
+e:
+> > On Tue, Jan 30, 2024 at 7:42=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.aliba=
+ba.com> wrote:
+> > >
+> > > As discussed:
+> > > http://lore.kernel.org/all/CACGkMEug-=3DC+VQhkMYSgUKMC=3D=3D04m7-uem_=
+yC21bgGkKZh845w@mail.gmail.com
+> > >
+> > > When the vq is premapped mode, the driver manages the dma
+> > > info is a good way.
+> > >
+> > > So this commit make the virtio core not to store the dma
+> > > info and release the memory which is used to store the dma
+> > > info.
+> > >
+> > > If the use_dma_api is false, the memory is also not allocated.
+> > >
+> > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > ---
+
+[...]
+
+> > >
+> > > @@ -1245,14 +1269,16 @@ static u16 packed_last_used(u16 last_used_idx=
+)
+> > >
+> > >  /* caller must check vring_need_unmap_buffer() */
+> > >  static void vring_unmap_extra_packed(const struct vring_virtqueue *v=
+q,
+> > > -                                    const struct vring_desc_extra *e=
+xtra)
+> > > +                                    unsigned int i)
+> > >  {
+> > > +       const struct vring_desc_extra *extra =3D &vq->packed.desc_ext=
+ra[i];
+> > > +       const struct vring_desc_dma *dma =3D &vq->packed.desc_dma[i];
+> > >         u16 flags;
+> > >
+> > >         flags =3D extra->flags;
 > >
-> > If the virtio is premapped mode, the driver should manage the dma info =
-by self.
-> > So the virtio core should not store the dma info.
-> > So we can release the memory used to store the dma info.
-> >
-> > But if the desc_extra has not dma info, we face a new question,
-> > it is hard to get the dma info of the desc with indirect flag.
-> > For split mode, that is easy from desc, but for the packed mode,
-> > it is hard to get the dma info from the desc. And for hardening
-> > the dma unmap is saft, we should store the dma info of indirect
-> > descs.
-> >
-> > So I introduce the "structure the indirect desc table" to
-> > allocate space to store dma info with the desc table.
-> >
-> > On the other side, we mix the descs with indirect flag
-> > with other descs together to share the unmap api. That
-> > is complex. I found if we we distinguish the descs with
-> > VRING_DESC_F_INDIRECT before unmap, thing will be clearer.
-> >
-> > Because of the dma array is allocated in the find_vqs(),
-> > so I introduce a new parameter to find_vqs().
-> >
-> > Please review.
+> > I don't think this can be compiled.
+>
+> I do not find any error.
+> Could you say more?
+
+Sorry, I misread the code.
+
+It should be fine.
+
+Thanks
+
+>
+> Thanks.
+>
+>
 > >
 > > Thanks
 > >
-> > Xuan Zhuo (17):
-> >    virtio_ring: introduce vring_need_unmap_buffer
-> >    virtio_ring: packed: remove double check of the unmap ops
-> >    virtio_ring: packed: structure the indirect desc table
-> >    virtio_ring: split: remove double check of the unmap ops
-> >    virtio_ring: split: structure the indirect desc table
-> >    virtio_ring: no store dma info when unmap is not needed
-> >    virtio: find_vqs: pass struct instead of multi parameters
-> >    virtio: vring_new_virtqueue(): pass struct instead of multi paramete=
-rs
-> >    virtio_ring: reuse the parameter struct of find_vqs()
-> >    virtio: find_vqs: add new parameter premapped
-> >    virtio_ring: export premapped to driver by struct virtqueue
-> >    virtio_net: set premapped mode by find_vqs()
-> >    virtio_ring: remove api of setting vq premapped
-> >    virtio_ring: introduce dma map api for page
-> >    virtio_net: unify the code for recycling the xmit ptr
-> >    virtio_net: rename free_old_xmit_skbs to free_old_xmit
-> >    virtio_net: sq support premapped mode
 >
-> The above can not be cleanly merged into kernel 6.8-rc2.
->
-> Perhaps a base-commit is needed. About base-commit, please see the link
-> https://people.kernel.org/monsieuricon/all-patches-must-include-base-comm=
-it-info
 
-The target branch is Michael's vhost.
-
-https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git/log/?h=3Dlinu=
-x-next
-
-Thanks.
-
->
-> Zhu Yanjun
->
-> >
-> >   arch/um/drivers/virtio_uml.c             |  29 +-
-> >   drivers/net/virtio_net.c                 | 298 +++++++---
-> >   drivers/platform/mellanox/mlxbf-tmfifo.c |  24 +-
-> >   drivers/remoteproc/remoteproc_virtio.c   |  31 +-
-> >   drivers/s390/virtio/virtio_ccw.c         |  33 +-
-> >   drivers/virtio/virtio_mmio.c             |  30 +-
-> >   drivers/virtio/virtio_pci_common.c       |  59 +-
-> >   drivers/virtio/virtio_pci_common.h       |   9 +-
-> >   drivers/virtio/virtio_pci_legacy.c       |  16 +-
-> >   drivers/virtio/virtio_pci_modern.c       |  24 +-
-> >   drivers/virtio/virtio_ring.c             | 660 ++++++++++++-----------
-> >   drivers/virtio/virtio_vdpa.c             |  33 +-
-> >   include/linux/virtio.h                   |  10 +-
-> >   include/linux/virtio_config.h            |  48 +-
-> >   include/linux/virtio_ring.h              |  82 +--
-> >   tools/virtio/virtio_test.c               |   4 +-
-> >   tools/virtio/vringh_test.c               |  32 +-
-> >   17 files changed, 812 insertions(+), 610 deletions(-)
-> >
-> > --
-> > 2.32.0.3.g01195cf9f
-> >
->
 
