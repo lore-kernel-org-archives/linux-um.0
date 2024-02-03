@@ -4,61 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C0B9C4828E
-	for <linux-um@archiver.kernel.org>; Fri,  2 Feb 2024 21:03:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EE91C4828D
+	for <linux-um@archiver.kernel.org>; Sat,  3 Feb 2024 06:33:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=8L33DBBndo3NokgAYjpkdsaWW74PWfcxGD0pnplvp7U=; b=EhKdDHDB7S5O7HemZ4DSCVRX+w
-	1RqceCp8nJFpefFwkIe6SfMOQz3NkEbXu+yiYWp62KqK2KEOSCNW1P7+/6F8glxHH3qpJIihMG5FD
-	vq9fjQbqhbrKO3I3bWlaNSWGOABSRmaKgfn5u16JfO0fAAab6pK/7pbrhIgPVXp1N0y7/SnbvmCJl
-	Cy5rdFJ1dh8cRbYi0vHZwLsgcjdR7vunOCEGd2/yh7/ZAF0rj4xCTY3BgSlJf0lZrWxGEiy9fRs4U
-	HrEZ464ONAk7hbxdKF03M0Z/ep00MQhFkD0TTMReuXKOpod2e8AGr1DtkDjbw+1j9Nxac6WbdwRcP
-	iIT8AYWw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
+	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=g4Y/rbXaWrly2xPTded2YqPlBwU94wEKIncIufFKLaM=; b=yk6a+zMcaTVzuU+AjsvDV5G2oL
+	7wpvytvaxifXjvaans6TnOd6xbAuhZoqxLHErYaCKc01CewgWcxwTDCC+6Lk8OqvmjJ085wJRGQsA
+	+zgp9Uui9PzKLlGBvLyEwTL5xonPcrtDqfBbiE5vymFkPUUMyCFBOKpK3uRhkCATUHWE0C+yk0ZpL
+	Ak0fziLmR8wGSFZshAT2/vQtrOP6oTI6iCAMqG7FpKGP0Z0u6zarUGlVlPLRZFZIeMGiHOHTdgTgY
+	eqrFI676jZVlzcAcxacSmNxeXWczDAJabwkk3v6X2DWnQN2gm9b7pwZ0SCiXld3t5COuH7I1B6G3G
+	p6c7gDIQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rW0h0-0000000DStl-3X8I;
-	Fri, 02 Feb 2024 21:03:22 +0000
-Received: from mout02.posteo.de ([185.67.36.66])
+	id 1rW9ar-0000000FdWs-3zis;
+	Sat, 03 Feb 2024 06:33:37 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rVzfn-0000000DHlC-0v9c
+	id 1rW7Mh-0000000F1Tc-2Z44
+	for linux-um@bombadil.infradead.org;
+	Sat, 03 Feb 2024 04:10:51 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Type:Cc:To:Subject:Message-ID:
+	Date:From:In-Reply-To:References:MIME-Version:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=g4Y/rbXaWrly2xPTded2YqPlBwU94wEKIncIufFKLaM=; b=NKyd9H56UadldOj6L/OJbWybz7
+	uQtW5ZPdlIC+A1GgS8BuEEiaASUjMeNw5MCV5UfeYFnKBYVQ6wY85eDanb4/VsDsMTFcncie6htr/
+	I64rxwc9/MTcQ1/dbfZqjdCl0Lnr50IGYLySnhwnohHEVCQ1OpXK0a9+uBdsXuv+iI8UonYIaNFnN
+	ovDulsz86NHz33DDvsndiywHRPEXJpJ+40ptRi25Mk5H16sWRG/sNmgJpjQ/S+m/5sH8U1EGlIdz6
+	P/tiYqdJHjQL4hmYVgIBJoMwgFxToaGZamK9fTvi/IL0TGA58P53WFg3fso48Rz87czpPkwyKsNa9
+	A4vSyw6Q==;
+Received: from mail-ed1-x536.google.com ([2a00:1450:4864:20::536])
+	by desiato.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rW7MP-0000000AYIP-2Ehp
 	for linux-um@lists.infradead.org;
-	Fri, 02 Feb 2024 19:58:18 +0000
-Received: from submission (posteo.de [185.67.36.169]) 
-	by mout02.posteo.de (Postfix) with ESMTPS id 4A8E4240101
-	for <linux-um@lists.infradead.org>; Fri,  2 Feb 2024 20:57:59 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-	t=1706903879; bh=ZjzdVNfrMUY9UbVAc1VBiqKQvpy3NY8jNomBSoF8YQg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:
-	 Content-Transfer-Encoding:From;
-	b=hDqww7k1xSH3YS9NyU1U28mv8gyk1ry5awu7xlodsYIIk4O2fLsbBE9+M1IFr/WQM
-	 EUCeqAHXHalRpQx4KBL+zKeqTy2FsguPk6FfbeycHb8qTOfZ1PolxAbmmodMGoF189
-	 3CGyLU/yOj5WNm/1fw9MAg3AOZUfuo3wnXWRIotznjP91oZFPA7TdKrvbi2WzVt9X9
-	 vsWYrR7ys9VbaeQd+aK+P9LvRFC/EOoZ7sDSxdiCTUtOyzbu8batzONrJK4N+6DNPP
-	 cSmpXl6FyfNcrapy2G0aQk1q3TkmznRJIJssQsrV9bkLaYtbZyYqpGzN8bBKHYQbDL
-	 NqKkz9q4IxgMw==
-Received: from customer (localhost [127.0.0.1])
-	by submission (posteo.de) with ESMTPSA id 4TRRQW0V8Zz9rxG;
-	Fri,  2 Feb 2024 20:57:54 +0100 (CET)
-From: Yueh-Shun Li <shamrocklee@posteo.net>
-To: Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>
-Cc: Yueh-Shun Li <shamrocklee@posteo.net>,
-	linux-um@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] um: Makefile: use bash from the environment
-Date: Fri,  2 Feb 2024 19:56:33 +0000
-Message-ID: <20240202195645.3224648-1-shamrocklee@posteo.net>
+	Sat, 03 Feb 2024 04:10:49 +0000
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-55fff7a874fso3184a12.1
+        for <linux-um@lists.infradead.org>; Fri, 02 Feb 2024 20:10:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706933430; x=1707538230; darn=lists.infradead.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=g4Y/rbXaWrly2xPTded2YqPlBwU94wEKIncIufFKLaM=;
+        b=uwUx9Wlx8TQAuTElj35Iwu/U43u9LUpNzyuTAUImqakvuEJynLSQoBJbnqKSN4dV2H
+         6ON781/8xKDYI1jS1pAhBrlShYTys6grkKFWKBu5k856QdnL1r9KTSgVAaUNls9aiqJN
+         8zqRQexwalZhUHXfeA+6OP3rZLxraiq3fkXeASYutCGfmqbs/0Grb+DCzTZFnQi0w2qz
+         7VXcJwOFezUS9rKvh31Ga80HHrDWxV5QuGXOP2OqFWsNw2jjLXlmCPr2WcubXocaNm5U
+         77ETMrsiR7Ql3WuWJRPdO4YKD4dcBlSomaCCk98JUxCxsMk1jWfEBLMHHljTpjiV5OL8
+         rUVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706933430; x=1707538230;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=g4Y/rbXaWrly2xPTded2YqPlBwU94wEKIncIufFKLaM=;
+        b=vJIc6zpOISivb7hRv2rKkeGwwCmTh7dttPrRtG48A9Vt1rtulkMGa/0acEyD9lgN6z
+         sfF/sVL6Tehzq0sGUg2UCeDmejhjW2UULrofQ2wuBehavyJoo268X008hzHt5Dfn6l7e
+         FWCpjmp4UxJhjV4U1AD/9BsosIzNAH2KhcgkzTnpp4395WbJBpWx/uMHtM/Sbvu5jB5D
+         RGGqkOLjNhzLU4w6clePXSgxVsxoQE+nv6hmbVfRQchnW5UiwQCSsqxLK6SK3RpbupoZ
+         f6SdP9MvuDQYFw7zxsutDhSlKfzbCYkUEgS40m3/M+u52YdzCZF4u3bADqRNifUjFry8
+         uJ9A==
+X-Gm-Message-State: AOJu0Yw67KFON2c0CpnERSh9/CBT56RC0ANkdjyLHBeBYerEgMcTIjUs
+	agPXJz7y8UVor99Kxb2zu1fHG/oE19v5RIOjg5xLqqQxEF0OIF5h9F+MzScfNNEXL3OS+PjWX+O
+	ATb/voqD1Yw+Q4P1YagkCqFlgVXUn8Pfkdy1P
+X-Google-Smtp-Source: AGHT+IG5lHPH49Ul4a7Msn5xJyxeIzakvenV7mNOmK2iTsRmvusCSk+vNETjzCfLqnIO58J7ejlduAElZZDzykkqdTc=
+X-Received: by 2002:a50:9996:0:b0:55f:e704:85ce with SMTP id
+ m22-20020a509996000000b0055fe70485cemr48388edb.3.1706933430442; Fri, 02 Feb
+ 2024 20:10:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240202195909.3458162-1-sboyd@kernel.org> <20240202195909.3458162-8-sboyd@kernel.org>
+In-Reply-To: <20240202195909.3458162-8-sboyd@kernel.org>
+From: David Gow <davidgow@google.com>
+Date: Sat, 3 Feb 2024 12:10:17 +0800
+Message-ID: <CABVgOS=A8BQ6HHpBKFqg-N10ckk2XYavaS-MPXvZ0wenrVm=1g@mail.gmail.com>
+Subject: Re: [PATCH v3 7/7] of: Add KUnit test to confirm DTB is loaded
+To: Stephen Boyd <sboyd@kernel.org>
+Cc: Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org, 
+	patches@lists.linux.dev, linux-um@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, kunit-dev@googlegroups.com, 
+	linux-kselftest@vger.kernel.org, devicetree@vger.kernel.org, 
+	Frank Rowand <frowand.list@gmail.com>, Brendan Higgins <brendan.higgins@linux.dev>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="000000000000cde60a061072689a"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240202_115803_484516_3100E856 
-X-CRM114-Status: UNSURE (   8.81  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240203_041042_435379_EAFC7D70 
+X-CRM114-Status: GOOD (  36.09  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,35 +106,257 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Set Makefile SHELL to bash instead of /bin/bash for better portability.
+--000000000000cde60a061072689a
+Content-Type: text/plain; charset="UTF-8"
 
-Some systems do not install binaries to /bin, and therefore do not
-provide /bin/bash. OS distributions such as NixOS and Guix System
-intentionally avoid implementing the Filesystem Hierarchy Standard (FHS).
+On Sat, 3 Feb 2024 at 03:59, Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Add a KUnit test that confirms a DTB has been loaded, i.e. there is a
+> root node, and that the of_have_populated_dt() API works properly.
+>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Frank Rowand <frowand.list@gmail.com>
+> Cc: David Gow <davidgow@google.com>
+> Cc: Brendan Higgins <brendan.higgins@linux.dev>
+> Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+> ---
 
-The recipies inside arch/um/Makefile don't require top-level Bash to
-build, and setting "SHELL" to "bash" makes Make pick the Bash executable
-from the environment[2], hence this patch.
+This looks pretty good to me test-wise, though it still fails on m68k.
+(Everything else I tried it on works, though I've definitely not tried
+_every_ architecture.)
 
-Signed-off-by: Yueh-Shun Li <shamrocklee@posteo.net>
----
- arch/um/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+aarch64: PASSED
+i386: PASSED
+x86_64: PASSED
+x86_64 KASAN: PASSED
+powerpc64: PASSED
+UML: PASSED
+UML LLVM: PASSED
+m68k: FAILED
+> $ qemu-system-m68k -nodefaults -m 1024 -kernel .kunit-all-m68k/vmlinux -append 'kunit.enable=1 console=hvc0 kunit_shutdown=reboot' -no-reboot -nographic -serial stdio -machine virt
+> [11:55:05] ===================== dtb (2 subtests) =====================
+> [11:55:05] # dtb_root_node_found_by_path: EXPECTATION FAILED at drivers/of/of_test.c:18
+> [11:55:05] Expected np is not null, but is
+> [11:55:05] [FAILED] dtb_root_node_found_by_path
+> [11:55:05] # dtb_root_node_populates_of_root: EXPECTATION FAILED at drivers/of/of_test.c:28
+> [11:55:05] Expected of_root is not null, but is
+> [11:55:05] [FAILED] dtb_root_node_populates_of_root
+> [11:55:05]     # module: of_test
+> [11:55:05] # dtb: pass:0 fail:2 skip:0 total:2
+> [11:55:05] # Totals: pass:0 fail:2 skip:0 total:2
+> [11:55:05] ======================= [FAILED] dtb =======================
 
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index 82f05f250634..904e2b990963 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -20,7 +20,7 @@ endif
- ARCH_DIR := arch/um
- # We require bash because the vmlinux link and loader script cpp use bash
- # features.
--SHELL := /bin/bash
-+SHELL := bash
- 
- MODE_INCLUDE	+= -I$(srctree)/$(ARCH_DIR)/include/shared/skas
- 
--- 
-2.42.0
 
+My only other question is about the test names: the mix of 'of' and
+'dtb' can be a bit confusing. As is, we have:
+kconfig name: OF_KUNIT_TEST
+module name: of_test
+suite name: dtb
+test names: all start with dtb_
+
+Given KUnit only really deals with the suite/test names directly, it's
+not trivial to see that 'dtb.dtb_*' is controlled by OF_KUNIT_TEST and
+in of_test if built as a module. (This is getting a bit easier now
+that we have the 'module' attribute in the output, but still.)
+
+Would 'of_dtb' work as a suite name if it's important to keep both
+'of' and 'dtb'?
+
+In general, though, this test looks good to me. Particularly if m68k
+can be fixed.
+
+Reviewed-by: David Gow <davidgow@google.com>
+
+Cheers,
+-- David
+
+>  drivers/of/.kunitconfig |  3 +++
+>  drivers/of/Kconfig      |  9 ++++++++
+>  drivers/of/Makefile     |  2 ++
+>  drivers/of/of_test.c    | 48 +++++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 62 insertions(+)
+>  create mode 100644 drivers/of/.kunitconfig
+>  create mode 100644 drivers/of/of_test.c
+>
+> diff --git a/drivers/of/.kunitconfig b/drivers/of/.kunitconfig
+> new file mode 100644
+> index 000000000000..5a8fee11978c
+> --- /dev/null
+> +++ b/drivers/of/.kunitconfig
+> @@ -0,0 +1,3 @@
+> +CONFIG_KUNIT=y
+> +CONFIG_OF=y
+> +CONFIG_OF_KUNIT_TEST=y
+> diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
+> index 17733285b415..53d1b5dd89e8 100644
+> --- a/drivers/of/Kconfig
+> +++ b/drivers/of/Kconfig
+> @@ -37,6 +37,15 @@ config OF_UNITTEST
+>
+>           If unsure, say N here. This option is not safe to enable.
+>
+> +config OF_KUNIT_TEST
+> +       tristate "Devicetree KUnit Test" if !KUNIT_ALL_TESTS
+> +       depends on KUNIT
+> +       default KUNIT_ALL_TESTS
+> +       help
+> +         This option builds KUnit unit tests for device tree infrastructure.
+> +
+> +         If unsure, say N here, but this option is safe to enable.
+> +
+>  config OF_ALL_DTBS
+>         bool "Build all Device Tree Blobs"
+>         depends on COMPILE_TEST
+> diff --git a/drivers/of/Makefile b/drivers/of/Makefile
+> index df305348d1cb..251d33532148 100644
+> --- a/drivers/of/Makefile
+> +++ b/drivers/of/Makefile
+> @@ -19,4 +19,6 @@ obj-y += kexec.o
+>  endif
+>  endif
+>
+> +obj-$(CONFIG_OF_KUNIT_TEST) += of_test.o
+> +
+>  obj-$(CONFIG_OF_UNITTEST) += unittest-data/
+> diff --git a/drivers/of/of_test.c b/drivers/of/of_test.c
+> new file mode 100644
+> index 000000000000..71a767b42b43
+> --- /dev/null
+> +++ b/drivers/of/of_test.c
+> @@ -0,0 +1,48 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * KUnit tests for OF APIs
+> + */
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +
+> +#include <kunit/test.h>
+> +
+> +/*
+> + * Test that the root node "/" can be found by path.
+> + */
+> +static void dtb_root_node_found_by_path(struct kunit *test)
+> +{
+> +       struct device_node *np;
+> +
+> +       np = of_find_node_by_path("/");
+> +       KUNIT_EXPECT_NOT_ERR_OR_NULL(test, np);
+> +       of_node_put(np);
+> +}
+> +
+> +/*
+> + * Test that the 'of_root' global variable is always populated when DT code is
+> + * enabled.
+> + */
+> +static void dtb_root_node_populates_of_root(struct kunit *test)
+> +{
+> +       KUNIT_EXPECT_NOT_ERR_OR_NULL(test, of_root);
+> +}
+> +
+> +static struct kunit_case dtb_test_cases[] = {
+> +       KUNIT_CASE(dtb_root_node_found_by_path),
+> +       KUNIT_CASE(dtb_root_node_populates_of_root),
+> +       {}
+> +};
+> +
+> +/*
+> + * Test suite to confirm a DTB is loaded.
+> + */
+> +static struct kunit_suite dtb_suite = {
+> +       .name = "dtb",
+> +       .test_cases = dtb_test_cases,
+> +};
+> +
+> +kunit_test_suites(
+> +       &dtb_suite,
+> +);
+> +MODULE_LICENSE("GPL");
+> --
+> https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
+> https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
+>
+> --
+> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/20240202195909.3458162-8-sboyd%40kernel.org.
+
+--000000000000cde60a061072689a
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIPqgYJKoZIhvcNAQcCoIIPmzCCD5cCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+gg0EMIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+7xDrOPfX3COqq162RFg/MFcGA1UdIARQME4wCQYHZ4EMAQUBATBBBgkrBgEEAaAyASgwNDAyBggr
+BgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wDAYDVR0TAQH/
+BAIwADCBmgYIKwYBBQUHAQEEgY0wgYowPgYIKwYBBQUHMAGGMmh0dHA6Ly9vY3NwLmdsb2JhbHNp
+Z24uY29tL2NhL2dzYXRsYXNyM3NtaW1lY2EyMDIwMEgGCCsGAQUFBzAChjxodHRwOi8vc2VjdXJl
+Lmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcnQwHwYDVR0jBBgw
+FoAUfMwKaNei6x4schvRzV2Vb4378mMwRgYDVR0fBD8wPTA7oDmgN4Y1aHR0cDovL2NybC5nbG9i
+YWxzaWduLmNvbS9jYS9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcmwwDQYJKoZIhvcNAQELBQADggEB
+AK0lDd6/eSh3qHmXaw1YUfIFy07B25BEcTvWgOdla99gF1O7sOsdYaTz/DFkZI5ghjgaPJCovgla
+mRMfNcxZCfoBtsB7mAS6iOYjuwFOZxi9cv6jhfiON6b89QWdMaPeDddg/F2Q0bxZ9Z2ZEBxyT34G
+wlDp+1p6RAqlDpHifQJW16h5jWIIwYisvm5QyfxQEVc+XH1lt+taSzCfiBT0ZLgjB9Sg+zAo8ys6
+5PHxFaT2a5Td/fj5yJ5hRSrqy/nj/hjT14w3/ZdX5uWg+cus6VjiiR/5qGSZRjHt8JoApD6t6/tg
+ITv8ZEy6ByumbU23nkHTMOzzQSxczHkT+0q10/MxggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJF
+MRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIz
+IFNNSU1FIENBIDIwMjACEAHS+TgZvH/tCq5FcDC0n9IwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZI
+hvcNAQkEMSIEIKLjezo2IKSo5FfYtp1eRxpiN5V5i3G0d8t3y9vBvKLwMBgGCSqGSIb3DQEJAzEL
+BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDIwMzA0MTAzMFowaQYJKoZIhvcNAQkPMVww
+WjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkq
+hkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQARpAOB
+Mv548MzSDNmJQF0ICR6huDtIxOQ88M/tS4pn7mNjhw9h58kxbRFfnMaNPbzFEG2XtH0mmudcBVEe
+m7/cSSqkPlP6moi+Hd5MibjTPhNcoqw7s33g+1Fe+JfF6tFbMXxRYXMby/svxPHL8bfuad7UgKJS
+Uoef00mfw06s3WGVmpFqqeep51ZLJQ6KS4HN+SKCCneUN+JRdjQq71Zc8JpWvJGa3OFUSMO2B5Sr
+u4v7Fb296fdiPzbajB++zkDzol54YDvcdJRBd6zS5CyQHqp4mWUWRXJ6Hdys+xy1qLy4vckr/VY8
+AMCb3km9hOiEQXDh1NDV0qz+5/0f1q0h
+--000000000000cde60a061072689a--
 
