@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 223A8C48BF5
-	for <linux-um@archiver.kernel.org>; Sat, 17 Feb 2024 01:06:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6AACC48BF5
+	for <linux-um@archiver.kernel.org>; Sat, 17 Feb 2024 01:06:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=YWxi4pmLeontrS8EkVTzHt4J8Of/kxPfQuPQpS8fPKQ=; b=Y7ro6VwC2UDtaSbGkDwUkQULtW
-	EzxhLcyHXib0pKVKdAXoIvkAGFdJmM2G8HWlBHmcNqnTDGD5ekWALDolo2D4Meub88JyJxR9E/aL8
-	UmwtiSBf2g5pZBjT8LGt0YiwfCDswUXVn8BMeb4QllNFPnOPm6mGcM3ApOh8F74JgzFHS2zcgP06c
-	9VNFLAXM8DsLKj/CGgJm5cGPkg4UkaIw6n828k7rsmVBF53Eui4nqCrCzuv9kOOdIVSE5UGwNQeNR
-	IaSUbGh7kK3AQBvW1aQZwDqHu+ts1BYBHcpmnxsrGWP9rtHBoXJwaCYZErn1XJZ7oA6/Y+5YHY3qX
-	u2xIB81w==;
+	bh=f6Ys8FPEhgXvqlylTOVJOo7KlGjQhGaUKR9xz0jyv0I=; b=jQUOShZpEkzp34lmQzkfL6RZAj
+	arJtAWQ7ofZFZIv12wu8/8QCDgcfy2MtzxX+BuKyQfPb36OFiFLnSIqZei8AgJVgsXBfsij/dG6UU
+	tbDNq1X4lnbbVHhdD9EzlgkL/3wjyDVp8B8eRa1RwmHHLlvvUHjnRyNe672tn7iA22PU1iFiHypCF
+	waOXAXhpBbyyF6SCZeOdT/rBP1kTyYy84Fqv1Oc3xYIYckO6uhy7R7Z8+hc5qQDjiomiuuavhC2JZ
+	nYVOrx+Z1RD4volAzh81AgUKbQvMOG+ADiMkXTuuCRzDIwB6NXD+5ykF+Ym3H23GLQRMQ06zs/86N
+	qKfRwnJA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rb99r-00000004Lvx-25Sj;
-	Sat, 17 Feb 2024 01:06:23 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1rb99u-00000004LyP-0caa;
+	Sat, 17 Feb 2024 01:06:26 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rb99W-00000004Lhg-2RMt;
+	id 1rb99X-00000004Lht-06Nt;
 	Sat, 17 Feb 2024 01:06:04 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id DA08361E68;
+	by dfw.source.kernel.org (Postfix) with ESMTP id 5F430620F4;
+	Sat, 17 Feb 2024 01:06:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68291C433B1;
 	Sat, 17 Feb 2024 01:06:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F5C5C433C7;
-	Sat, 17 Feb 2024 01:06:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708131961;
-	bh=cR6lBuTsNe2p1GQlv5k9m41XDe+JPSu/qcoX4YFfeKQ=;
+	s=k20201202; t=1708131962;
+	bh=1HWmL/t+ml480s8rBnTxQKeWVgi/0Mqu3CbJKyMEIU4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OLeOAuh9JcnWjMkP28AX6Wosr7CaT8IJDTe++OAPlHmV45oUdqI2baYVKvuONQLRM
-	 REHahxweGolZgJoq4cIcJM609d280RUEZ6QOylnu7b84K0JrmRW4grtFnLrDKr7DHm
-	 od2AR/PNbdj2WdEHoiw6v8AipspdwQHYwREzjurg2ModO/udqB4MN4PvqStRsntvhO
-	 wln6USBTGOZIWd5lhk/LBgFW7h/6nkbg9ak53wpgvk1GtkpGxA34gf8jlkqNrtppj+
-	 JGioc/KE+Kekqcl6YX6Z2urk1MRDsmJJzTSr56lOvTWTsRk1loY1rrmLedb/9jx56h
-	 wnp6VBWh8/MAQ==
+	b=mLu/fetqM+cb3tFtOHS4DOL5HzdsL62p8HCA7st+6zWovNRgJDBAgQnu6PXC1+c9G
+	 HFZmLUhjJAsUY3SYQrxRX0DJ51MCTu7WUqyLaRDBYT0p7U3hhqasKo3LofYMLnFUmS
+	 wyRODHMZMXZEjB75NprcfvwHNV/GncU03JL5Uh+3ni6KVVnTXs0sqEPcJRHZZ5VUhZ
+	 KDwZy/JMZPFcz3N3YG14+nEDcPwAloywz+fsCh01BgyNBj0GdXEtQLT9hc25xBrUQB
+	 JooWdwLPYjQZABiqq2n0BCu5ZwpDE4wcww/s7bAxn5H8dLXJcIiin859FkSNqXFBMd
+	 ex/bdl98FQEGg==
 From: Stephen Boyd <sboyd@kernel.org>
 To: Rob Herring <robh+dt@kernel.org>
 Cc: linux-kernel@vger.kernel.org,
@@ -51,24 +51,20 @@ Cc: linux-kernel@vger.kernel.org,
 	linux-kselftest@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	Frank Rowand <frowand.list@gmail.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Saurabh Sengar <ssengar@linux.microsoft.com>
-Subject: [PATCH v4 4/7] x86/of: Unconditionally call unflatten_and_copy_device_tree()
-Date: Fri, 16 Feb 2024 17:05:53 -0800
-Message-ID: <20240217010557.2381548-5-sboyd@kernel.org>
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH v4 5/7] arm64: Unconditionally call unflatten_device_tree()
+Date: Fri, 16 Feb 2024 17:05:54 -0800
+Message-ID: <20240217010557.2381548-6-sboyd@kernel.org>
 X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
 In-Reply-To: <20240217010557.2381548-1-sboyd@kernel.org>
 References: <20240217010557.2381548-1-sboyd@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240216_170602_748955_5076B400 
-X-CRM114-Status: GOOD (  12.36  )
+X-CRM114-CacheID: sfid-20240216_170603_192472_EB36F86F 
+X-CRM114-Status: GOOD (  11.23  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,63 +81,37 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 Call this function unconditionally so that we can populate an empty DTB
 on platforms that don't boot with a firmware provided or builtin DTB.
-There's no harm in calling unflatten_device_tree() unconditionally here.
-If there isn't a non-NULL 'initial_boot_params' pointer then
-unflatten_device_tree() returns early.
+When ACPI is in use, unflatten_device_tree() ignores the
+'initial_boot_params' pointer so the live DT on those systems won't be
+whatever that's pointing to. Similarly, when kexec copies the DT data
+the previous kernel to the new one on ACPI systems,
+of_kexec_alloc_and_setup_fdt() will ignore the live DT (the empty root
+one) and copy the 'initial_boot_params' data.
 
 Cc: Rob Herring <robh+dt@kernel.org>
 Cc: Frank Rowand <frowand.list@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: <x86@kernel.org>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Tested-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: <linux-arm-kernel@lists.infradead.org>
 Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 ---
- arch/x86/kernel/devicetree.c | 24 +++++++++++++-----------
- 1 file changed, 13 insertions(+), 11 deletions(-)
+ arch/arm64/kernel/setup.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/x86/kernel/devicetree.c b/arch/x86/kernel/devicetree.c
-index afd09924094e..650752d112a6 100644
---- a/arch/x86/kernel/devicetree.c
-+++ b/arch/x86/kernel/devicetree.c
-@@ -283,22 +283,24 @@ void __init x86_flattree_get_config(void)
- 	u32 size, map_len;
- 	void *dt;
+diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
+index 42c690bb2d60..0d210720d47d 100644
+--- a/arch/arm64/kernel/setup.c
++++ b/arch/arm64/kernel/setup.c
+@@ -351,8 +351,7 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
+ 	/* Parse the ACPI tables for possible boot-time configuration */
+ 	acpi_boot_table_init();
  
--	if (!initial_dtb)
--		return;
-+	if (initial_dtb) {
-+		map_len = max(PAGE_SIZE - (initial_dtb & ~PAGE_MASK), (u64)128);
+-	if (acpi_disabled)
+-		unflatten_device_tree();
++	unflatten_device_tree();
  
--	map_len = max(PAGE_SIZE - (initial_dtb & ~PAGE_MASK), (u64)128);
-+		dt = early_memremap(initial_dtb, map_len);
-+		size = fdt_totalsize(dt);
-+		if (map_len < size) {
-+			early_memunmap(dt, map_len);
-+			dt = early_memremap(initial_dtb, size);
-+			map_len = size;
-+		}
- 
--	dt = early_memremap(initial_dtb, map_len);
--	size = fdt_totalsize(dt);
--	if (map_len < size) {
--		early_memunmap(dt, map_len);
--		dt = early_memremap(initial_dtb, size);
--		map_len = size;
-+		early_init_dt_verify(dt);
- 	}
- 
--	early_init_dt_verify(dt);
- 	unflatten_and_copy_device_tree();
--	early_memunmap(dt, map_len);
-+
-+	if (initial_dtb)
-+		early_memunmap(dt, map_len);
- }
- #endif
+ 	bootmem_init();
  
 -- 
 https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
