@@ -4,64 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA4ABC48BF5
-	for <linux-um@archiver.kernel.org>; Sat, 17 Feb 2024 01:06:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 223A8C48BF5
+	for <linux-um@archiver.kernel.org>; Sat, 17 Feb 2024 01:06:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=DfuSqny34FTyvIax6XVMYeba2imfEJGlYeqlhgKMUH4=; b=opYaN/j14u6gM4m6CLQFKCUmqV
-	O4j5Zm1+R4OreeG3ebJ9EOMF/vhMBYGfe68nSWES8urhDsyXEUmraMLIBrEm79nA87tsyWugR/lPt
-	n+k3Mx8VCSfv+Tyubtxi5yAogbutSyEO+yVLQAJvEbtIQpCYraXzY+m6dB6ddjN3jHz5iCIsCO75C
-	SkD/KE//ewm8xtIjlM9ma04IkIDSu0slUv0W1X/MY1PAqk6tj7BRDkgrjBDk1kOn8ewrb9YMjU7jJ
-	TQKkn9B6d3LrMXah7xc5XhX+99pjFRxOXdX+iIIi+y0beGBjjKddIQ4QPtrHsxT4xo63CiLOn0tEz
-	BEBzcc1Q==;
+	bh=YWxi4pmLeontrS8EkVTzHt4J8Of/kxPfQuPQpS8fPKQ=; b=Y7ro6VwC2UDtaSbGkDwUkQULtW
+	EzxhLcyHXib0pKVKdAXoIvkAGFdJmM2G8HWlBHmcNqnTDGD5ekWALDolo2D4Meub88JyJxR9E/aL8
+	UmwtiSBf2g5pZBjT8LGt0YiwfCDswUXVn8BMeb4QllNFPnOPm6mGcM3ApOh8F74JgzFHS2zcgP06c
+	9VNFLAXM8DsLKj/CGgJm5cGPkg4UkaIw6n828k7rsmVBF53Eui4nqCrCzuv9kOOdIVSE5UGwNQeNR
+	IaSUbGh7kK3AQBvW1aQZwDqHu+ts1BYBHcpmnxsrGWP9rtHBoXJwaCYZErn1XJZ7oA6/Y+5YHY3qX
+	u2xIB81w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rb99i-00000004Lq9-1Qru;
-	Sat, 17 Feb 2024 01:06:14 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1rb99r-00000004Lvx-25Sj;
+	Sat, 17 Feb 2024 01:06:23 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rb99V-00000004Lgp-37sY;
-	Sat, 17 Feb 2024 01:06:03 +0000
+	id 1rb99W-00000004Lhg-2RMt;
+	Sat, 17 Feb 2024 01:06:04 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id E9F6062114;
+	by dfw.source.kernel.org (Postfix) with ESMTP id DA08361E68;
+	Sat, 17 Feb 2024 01:06:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F5C5C433C7;
 	Sat, 17 Feb 2024 01:06:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23BD7C43399;
-	Sat, 17 Feb 2024 01:05:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708131959;
-	bh=Adk2ER9i3tlkVMjMvc73lVWXC0x+6cw5DiD7ugMcLx4=;
+	s=k20201202; t=1708131961;
+	bh=cR6lBuTsNe2p1GQlv5k9m41XDe+JPSu/qcoX4YFfeKQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SSj1rfpdp/LgJBx9pEFSrJOk1uA3JTbALooINRtm6utHvyq4jpfyeJ753lfzkz5pz
-	 HiIpJ1gyqXRxjur5l5XGhE5mm4Gc101MEJ8Ti2BzAwdOjjkgTieaui46RyNap7jTcW
-	 ReBay+Gh0CGQ2GKK1csuJbykz3QFLQJaXNyempBYfsnOwCeq1YFN2fCZld0q0ZaV4H
-	 imiiXhAex0Ts68id4UoTYc74JQFf3Rclqarri4dij9FVDlS9aPchE//SXbkRuXWgJn
-	 DMRjZmSQGb4uw1yOw58RHDtRaFQc8gdWqYdiWPGMBHjOpp7QtONgltEGWpfNDTS3GQ
-	 vyhdLagRyADEw==
+	b=OLeOAuh9JcnWjMkP28AX6Wosr7CaT8IJDTe++OAPlHmV45oUdqI2baYVKvuONQLRM
+	 REHahxweGolZgJoq4cIcJM609d280RUEZ6QOylnu7b84K0JrmRW4grtFnLrDKr7DHm
+	 od2AR/PNbdj2WdEHoiw6v8AipspdwQHYwREzjurg2ModO/udqB4MN4PvqStRsntvhO
+	 wln6USBTGOZIWd5lhk/LBgFW7h/6nkbg9ak53wpgvk1GtkpGxA34gf8jlkqNrtppj+
+	 JGioc/KE+Kekqcl6YX6Z2urk1MRDsmJJzTSr56lOvTWTsRk1loY1rrmLedb/9jx56h
+	 wnp6VBWh8/MAQ==
 From: Stephen Boyd <sboyd@kernel.org>
 To: Rob Herring <robh+dt@kernel.org>
-Cc: Frank Rowand <frowand.list@gmail.com>,
-	linux-kernel@vger.kernel.org,
+Cc: linux-kernel@vger.kernel.org,
 	patches@lists.linux.dev,
 	linux-um@lists.infradead.org,
 	linux-arm-kernel@lists.infradead.org,
 	kunit-dev@googlegroups.com,
 	linux-kselftest@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: [PATCH v4 2/7] of: Create of_root if no dtb provided by firmware
-Date: Fri, 16 Feb 2024 17:05:51 -0800
-Message-ID: <20240217010557.2381548-3-sboyd@kernel.org>
+	devicetree@vger.kernel.org,
+	Frank Rowand <frowand.list@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Saurabh Sengar <ssengar@linux.microsoft.com>
+Subject: [PATCH v4 4/7] x86/of: Unconditionally call unflatten_and_copy_device_tree()
+Date: Fri, 16 Feb 2024 17:05:53 -0800
+Message-ID: <20240217010557.2381548-5-sboyd@kernel.org>
 X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
 In-Reply-To: <20240217010557.2381548-1-sboyd@kernel.org>
 References: <20240217010557.2381548-1-sboyd@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240216_170601_914389_2120F7E8 
-X-CRM114-Status: GOOD (  24.64  )
+X-CRM114-CacheID: sfid-20240216_170602_748955_5076B400 
+X-CRM114-Status: GOOD (  12.36  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,209 +83,66 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Frank Rowand <frowand.list@gmail.com>
+Call this function unconditionally so that we can populate an empty DTB
+on platforms that don't boot with a firmware provided or builtin DTB.
+There's no harm in calling unflatten_device_tree() unconditionally here.
+If there isn't a non-NULL 'initial_boot_params' pointer then
+unflatten_device_tree() returns early.
 
-When enabling CONFIG_OF on a platform where 'of_root' is not populated
-by firmware, we end up without a root node. In order to apply overlays
-and create subnodes of the root node, we need one. Create this root node
-by unflattening an empty builtin dtb.
-
-If firmware provides a flattened device tree (FDT) then the FDT is
-unflattened via setup_arch(). Otherwise, the call to
-unflatten(_and_copy)?_device_tree() will create an empty root node.
-
-We make of_have_populated_dt() return true only if the DTB was loaded by
-firmware so that existing callers don't change behavior after this
-patch. The call in the of platform code is removed because it prevents
-overlays from creating platform devices when the empty root node is
-used.
-
-Signed-off-by: Frank Rowand <frowand.list@gmail.com>
-Link: https://lore.kernel.org/r/20230317053415.2254616-2-frowand.list@gmail.com
 Cc: Rob Herring <robh+dt@kernel.org>
-[sboyd@kernel.org: Update of_have_populated_dt() to treat this empty dtb
-as not populated. Drop setup_of() initcall]
+Cc: Frank Rowand <frowand.list@gmail.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: <x86@kernel.org>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Tested-by: Saurabh Sengar <ssengar@linux.microsoft.com>
 Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 ---
- drivers/of/Kconfig        |  5 ++---
- drivers/of/Makefile       |  2 +-
- drivers/of/empty_root.dts |  6 ++++++
- drivers/of/fdt.c          | 32 +++++++++++++++++++++++++++++++-
- drivers/of/platform.c     |  3 ---
- include/linux/of.h        | 25 +++++++++++++++----------
- 6 files changed, 55 insertions(+), 18 deletions(-)
- create mode 100644 drivers/of/empty_root.dts
+ arch/x86/kernel/devicetree.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
-index da9826accb1b..d738fbad9c36 100644
---- a/drivers/of/Kconfig
-+++ b/drivers/of/Kconfig
-@@ -14,9 +14,8 @@ if OF
+diff --git a/arch/x86/kernel/devicetree.c b/arch/x86/kernel/devicetree.c
+index afd09924094e..650752d112a6 100644
+--- a/arch/x86/kernel/devicetree.c
++++ b/arch/x86/kernel/devicetree.c
+@@ -283,22 +283,24 @@ void __init x86_flattree_get_config(void)
+ 	u32 size, map_len;
+ 	void *dt;
  
- config OF_UNITTEST
- 	bool "Device Tree runtime unit tests"
--	depends on !SPARC
-+	depends on OF_EARLY_FLATTREE
- 	select IRQ_DOMAIN
--	select OF_EARLY_FLATTREE
- 	select OF_RESOLVE
- 	help
- 	  This option builds in test cases for the device tree infrastructure
-@@ -54,7 +53,7 @@ config OF_FLATTREE
- 	select CRC32
+-	if (!initial_dtb)
+-		return;
++	if (initial_dtb) {
++		map_len = max(PAGE_SIZE - (initial_dtb & ~PAGE_MASK), (u64)128);
  
- config OF_EARLY_FLATTREE
--	bool
-+	def_bool OF && !(SPARC || ALPHA || HEXAGON || M68K || PARISC || S390)
- 	select DMA_DECLARE_COHERENT if HAS_DMA && HAS_IOMEM
- 	select OF_FLATTREE
- 
-diff --git a/drivers/of/Makefile b/drivers/of/Makefile
-index eff624854575..df305348d1cb 100644
---- a/drivers/of/Makefile
-+++ b/drivers/of/Makefile
-@@ -2,7 +2,7 @@
- obj-y = base.o cpu.o device.o module.o platform.o property.o
- obj-$(CONFIG_OF_KOBJ) += kobj.o
- obj-$(CONFIG_OF_DYNAMIC) += dynamic.o
--obj-$(CONFIG_OF_FLATTREE) += fdt.o
-+obj-$(CONFIG_OF_FLATTREE) += fdt.o empty_root.dtb.o
- obj-$(CONFIG_OF_EARLY_FLATTREE) += fdt_address.o
- obj-$(CONFIG_OF_PROMTREE) += pdt.o
- obj-$(CONFIG_OF_ADDRESS)  += address.o
-diff --git a/drivers/of/empty_root.dts b/drivers/of/empty_root.dts
-new file mode 100644
-index 000000000000..cf9e97a60f48
---- /dev/null
-+++ b/drivers/of/empty_root.dts
-@@ -0,0 +1,6 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/dts-v1/;
-+
-+/ {
-+
-+};
-diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-index dfeba8b8ce94..e5a385285149 100644
---- a/drivers/of/fdt.c
-+++ b/drivers/of/fdt.c
-@@ -8,6 +8,7 @@
- 
- #define pr_fmt(fmt)	"OF: fdt: " fmt
- 
-+#include <linux/acpi.h>
- #include <linux/crash_dump.h>
- #include <linux/crc32.h>
- #include <linux/kernel.h>
-@@ -32,6 +33,13 @@
- 
- #include "of_private.h"
- 
-+/*
-+ * __dtb_empty_root_begin[] and __dtb_empty_root_end[] magically created by
-+ * cmd_dt_S_dtb in scripts/Makefile.lib
-+ */
-+extern uint8_t __dtb_empty_root_begin[];
-+extern uint8_t __dtb_empty_root_end[];
-+
- /*
-  * of_fdt_limit_memory - limit the number of regions in the /memory node
-  * @limit: maximum entries
-@@ -1343,7 +1351,29 @@ static void *__init copy_device_tree(void *fdt)
-  */
- void __init unflatten_device_tree(void)
- {
--	__unflatten_device_tree(initial_boot_params, NULL, &of_root,
-+	void *fdt = initial_boot_params;
-+
-+	/* Don't use the bootloader provided DTB if ACPI is enabled */
-+	if (!acpi_disabled)
-+		fdt = NULL;
-+
-+	/*
-+	 * Populate an empty root node when ACPI is enabled or bootloader
-+	 * doesn't provide one.
-+	 */
-+	if (!fdt) {
-+		fdt = (void *) __dtb_empty_root_begin;
-+		/* fdt_totalsize() will be used for copy size */
-+		if (fdt_totalsize(fdt) >
-+		    __dtb_empty_root_end - __dtb_empty_root_begin) {
-+			pr_err("invalid size in dtb_empty_root\n");
-+			return;
+-	map_len = max(PAGE_SIZE - (initial_dtb & ~PAGE_MASK), (u64)128);
++		dt = early_memremap(initial_dtb, map_len);
++		size = fdt_totalsize(dt);
++		if (map_len < size) {
++			early_memunmap(dt, map_len);
++			dt = early_memremap(initial_dtb, size);
++			map_len = size;
 +		}
-+		of_fdt_crc32 = crc32_be(~0, fdt, fdt_totalsize(fdt));
-+		fdt = copy_device_tree(fdt);
-+	}
+ 
+-	dt = early_memremap(initial_dtb, map_len);
+-	size = fdt_totalsize(dt);
+-	if (map_len < size) {
+-		early_memunmap(dt, map_len);
+-		dt = early_memremap(initial_dtb, size);
+-		map_len = size;
++		early_init_dt_verify(dt);
+ 	}
+ 
+-	early_init_dt_verify(dt);
+ 	unflatten_and_copy_device_tree();
+-	early_memunmap(dt, map_len);
 +
-+	__unflatten_device_tree(fdt, NULL, &of_root,
- 				early_init_dt_alloc_memory_arch, false);
- 
- 	/* Get pointer to "/chosen" and "/aliases" nodes for use everywhere */
-diff --git a/drivers/of/platform.c b/drivers/of/platform.c
-index b7708a06dc78..39c0ceee3e95 100644
---- a/drivers/of/platform.c
-+++ b/drivers/of/platform.c
-@@ -510,9 +510,6 @@ static int __init of_platform_default_populate_init(void)
- 
- 	device_links_supplier_sync_state_pause();
- 
--	if (!of_have_populated_dt())
--		return -ENODEV;
--
- 	if (IS_ENABLED(CONFIG_PPC)) {
- 		struct device_node *boot_display = NULL;
- 		struct platform_device *dev;
-diff --git a/include/linux/of.h b/include/linux/of.h
-index 6a9ddf20e79a..52f6ad6a1c8c 100644
---- a/include/linux/of.h
-+++ b/include/linux/of.h
-@@ -180,11 +180,6 @@ static inline bool is_of_node(const struct fwnode_handle *fwnode)
- 			&__of_fwnode_handle_node->fwnode : NULL;	\
- 	})
- 
--static inline bool of_have_populated_dt(void)
--{
--	return of_root != NULL;
--}
--
- static inline bool of_node_is_root(const struct device_node *node)
- {
- 	return node && (node->parent == NULL);
-@@ -549,11 +544,6 @@ static inline struct device_node *of_find_node_with_property(
- 
- #define of_fwnode_handle(node) NULL
- 
--static inline bool of_have_populated_dt(void)
--{
--	return false;
--}
--
- static inline struct device_node *of_get_compatible_child(const struct device_node *parent,
- 					const char *compatible)
- {
-@@ -1634,6 +1624,21 @@ static inline bool of_device_is_system_power_controller(const struct device_node
- 	return of_property_read_bool(np, "system-power-controller");
++	if (initial_dtb)
++		early_memunmap(dt, map_len);
  }
+ #endif
  
-+/**
-+ * of_have_populated_dt() - Has DT been populated by bootloader
-+ *
-+ * Return: True if a DTB has been populated by the bootloader and it isn't the
-+ * empty builtin one. False otherwise.
-+ */
-+static inline bool of_have_populated_dt(void)
-+{
-+#ifdef CONFIG_OF
-+	return of_property_present(of_root, "compatible");
-+#else
-+	return false;
-+#endif
-+}
-+
- /*
-  * Overlay support
-  */
 -- 
 https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
 https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
