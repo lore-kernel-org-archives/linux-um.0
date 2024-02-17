@@ -4,58 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CF051C48BC4
-	for <linux-um@archiver.kernel.org>; Thu, 15 Feb 2024 21:57:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E27E9C48260
+	for <linux-um@archiver.kernel.org>; Sat, 17 Feb 2024 01:06:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:To:Cc:From:Subject:
-	References:In-Reply-To:Content-Transfer-Encoding:MIME-Version:Content-Type:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=W8FAYdoi1ZheQkPrRNKVraB559xRrkBih6/hUdhUKI0=; b=wLjG48X87rYVuACWDCxVaLfXBW
-	oFsUTDRcDRULu54UMKwcxACZeBNssFUYMcOvV1hmEdlmVqvqZr586Xg4mM99L++4cqzobgJ6HvOcw
-	MPUkDjrk0e5j5nO2ogYawBX8NSdv5Fx72RDXl9eLW1QTo6DkvFG2H/T/4gCplV3vF+8b/yp8ItjN5
-	pJF8vvJg7GHKM7Cvx7bPgTGSugGtIXQ394UqPjTislW043cZQs367o0CUvfm69EY2po46KNGMAkKj
-	LYRx/LM3zU/dpP7UZozYenlwUmmBeDCqEXT+8Uw8mCa9ItLtrz1cxdRyL6YBeWUGvYnDuG1LwRlwH
-	WWqHv/uA==;
+	bh=txjo7axD3IOMj2sG8qZ7bqcXfpbTutPS/3Sn6RhFLnE=; b=HLaIgvr4ekVzUUBu/LN3vyK/NC
+	Hr+LABetb2aNqWxsrkNHVK13dlzTokRpFW8HmPhulavHjVmHGUZMUHK3DcLwnzoiDWUsO45Vvyeuk
+	gADnhmZLPaiKY+5pQ4zWOU44GVPT0Nsw4g3yAsleZmeJcFhaDBwYiuJsi45CKJoJOpNSbZiaLJx3s
+	h/PLOMXFomgE5hQCWSz1njL6d6mKW2A+LZ7y1dl1tIslxB1Cf9b9VXUsSP0WUfcajhoAltOvRQEFc
+	DEBOOfqtj3Ys3TI0OKwLu278n+LRQpYsQBBDQuYp/4KK/KLvYF8UDycgO8jbGT0McX3EF4uh2IBP+
+	6aQKXdrA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rajjm-00000000Fmk-1Jm9;
-	Thu, 15 Feb 2024 21:57:46 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1rb99a-00000004Llp-2yiG;
+	Sat, 17 Feb 2024 01:06:06 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rajjj-00000000FlS-26Bk;
-	Thu, 15 Feb 2024 21:57:44 +0000
+	id 1rb99U-00000004Lg7-3lKv;
+	Sat, 17 Feb 2024 01:06:02 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 763F161E1B;
-	Thu, 15 Feb 2024 21:57:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F234FC433C7;
-	Thu, 15 Feb 2024 21:57:41 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 92987620F4;
+	Sat, 17 Feb 2024 01:05:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85202C43390;
+	Sat, 17 Feb 2024 01:05:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708034262;
-	bh=T7MZeg+yLjaU4BtqowdnnpbuIdHLYtXGFMcH9SwnC3o=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=HKqLNhPXnNKvbiW3EkbP1vnJu/P3vG86/ySfYdF3/dkJRvBlKdC16LT5mZItEadLZ
-	 598aG+3ah3tkmZLOIrdMCA71Mv1dhqn/X9wN6XZE2PFnEQ6u9ytiCXPexNV6EfMqDL
-	 +S/VfoHHM1M1sW6VN+xeXqAf7GACRVuBldgxHQqrhOn1ISIO28LWtV2GGCUmEB3zYg
-	 LhUL9oistI6vrDdKAo/sunUbQYDUYBQ9qCuFzIPCyK9fbnmogWsbeD7/IbCkVRVYdg
-	 ZDB69vXMxMVXPPwP5isAT3K/QDz1xP57NY8LETK4c19bJ9dWpvu+gdz4RikrKAAj9r
-	 WXx8+d2ecNk+g==
-Message-ID: <3e67766fa85be7dd865c5ec9dea1b53b.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAL_JsqLrRXdPZ+u9XG960V7sXECBi5Ko7BYdreftYz-O=Hwieg@mail.gmail.com>
-References: <20240202195909.3458162-1-sboyd@kernel.org> <20240202195909.3458162-8-sboyd@kernel.org> <CABVgOS=A8BQ6HHpBKFqg-N10ckk2XYavaS-MPXvZ0wenrVm=1g@mail.gmail.com> <89892ecd6b1b043db58258705c32b02b.sboyd@kernel.org> <CAMuHMdUuP5Ya2gU3V_ET=Ji_+yx+jr7eCch5uDJSqvQN9jJM3g@mail.gmail.com> <2185a3cc3152a0b9a94b0c64353bc9a1.sboyd@kernel.org> <CAL_JsqLrRXdPZ+u9XG960V7sXECBi5Ko7BYdreftYz-O=Hwieg@mail.gmail.com>
-Subject: Re: [PATCH v3 7/7] of: Add KUnit test to confirm DTB is loaded
+	s=k20201202; t=1708131959;
+	bh=Qt8ricOYsTKcXJqQzKSKsHiM2MHdHGBlaBkQ7xeVb1w=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=L8xIBjCa+dP4TX6pBp3oF6oHj02qDWwzqY5w06pu4FHMPm4oM9+4GnK7hf5lo+VW6
+	 2PhfKNRoQPgxXisBnnsAXZ5oj4v4uKt3qaRh2dMgYSzp74qIOTG36ECnrrKJWd6Gxp
+	 +ecvRyAQwM3x1JuJba6WXapmpAKCdm8eSRGiU9p8mkN1XxFjmPHIhoWKTiFzdiJQs4
+	 9ZK2Gchk2QqCFqUS7c9+oZoeDjD7SyQ+xcnDPpBDiWeZtpaXTNx0xGVkdlYOzqvP4t
+	 ESOs5SV9vbgJoDEkCAm5iVKsa9Qt6LOu34Dp8u1jevaN5YhRuDc5pe+VVlc7noE4gq
+	 tJba78OWDOnEQ==
 From: Stephen Boyd <sboyd@kernel.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, David Gow <davidgow@google.com>, linux-kernel@vger.kernel.org, patches@lists.linux.dev, linux-um@lists.infradead.org, linux-arm-kernel@lists.infradead.org, kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org, devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>, Brendan Higgins <brendan.higgins@linux.dev>
 To: Rob Herring <robh+dt@kernel.org>
-Date: Thu, 15 Feb 2024 13:57:39 -0800
-User-Agent: alot/0.10
+Cc: linux-kernel@vger.kernel.org,
+	patches@lists.linux.dev,
+	linux-um@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	kunit-dev@googlegroups.com,
+	linux-kselftest@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	Frank Rowand <frowand.list@gmail.com>
+Subject: [PATCH v4 1/7] of: Always unflatten in unflatten_and_copy_device_tree()
+Date: Fri, 16 Feb 2024 17:05:50 -0800
+Message-ID: <20240217010557.2381548-2-sboyd@kernel.org>
+X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
+In-Reply-To: <20240217010557.2381548-1-sboyd@kernel.org>
+References: <20240217010557.2381548-1-sboyd@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240215_135743_606903_DA5A5E40 
-X-CRM114-Status: GOOD (  13.88  )
+X-CRM114-CacheID: sfid-20240216_170601_001095_94FE4425 
+X-CRM114-Status: GOOD (  10.80  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,52 +76,74 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Quoting Rob Herring (2024-02-13 09:52:00)
-> On Fri, Feb 9, 2024 at 8:59=E2=80=AFPM Stephen Boyd <sboyd@kernel.org> wr=
-ote:
-> >
-> > ---8<---
-> > diff --git a/init/main.c b/init/main.c
-> > index e24b0780fdff..02f5cf8be6c1 100644
-> > --- a/init/main.c
-> > +++ b/init/main.c
-> > @@ -97,6 +97,8 @@
-> >  #include <linux/jump_label.h>
-> >  #include <linux/kcsan.h>
-> >  #include <linux/init_syscalls.h>
-> > +#include <linux/of.h>
-> > +#include <linux/of_fdt.h>
-> >  #include <linux/stackdepot.h>
-> >  #include <linux/randomize_kstack.h>
-> >  #include <net/net_namespace.h>
-> > @@ -895,6 +897,8 @@ void start_kernel(void)
-> >         pr_notice("%s", linux_banner);
-> >         early_security_init();
-> >         setup_arch(&command_line);
-> > +       if (!of_root)
->=20
-> of_root is another thing I'd like to remove direct access to. That
-> check could be inside unflatten_device_tree().
+We want to populate an empty DT whenever CONFIG_OF is enabled so that
+overlays can be applied and the DT unit tests can be run. Make
+unflatten_and_copy_device_tree() stop printing a warning if the
+'initial_boot_params' pointer is NULL. Instead, simply copy the dtb if
+there is one and then unflatten it. If there isn't a DT to copy, then
+the call to unflatten_device_tree() is largely a no-op, so nothing
+really changes here.
 
-Ok.
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Frank Rowand <frowand.list@gmail.com>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+---
+ drivers/of/fdt.c | 32 +++++++++++++++++---------------
+ 1 file changed, 17 insertions(+), 15 deletions(-)
 
->=20
-> > +               unflatten_device_tree();
->=20
-> That's back to what Frank had essentially and I wanted to avoid.
+diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+index bf502ba8da95..dfeba8b8ce94 100644
+--- a/drivers/of/fdt.c
++++ b/drivers/of/fdt.c
+@@ -1318,6 +1318,21 @@ bool __init early_init_dt_scan(void *params)
+ 	return true;
+ }
+ 
++static void *__init copy_device_tree(void *fdt)
++{
++	int size;
++	void *dt;
++
++	size = fdt_totalsize(fdt);
++	dt = early_init_dt_alloc_memory_arch(size,
++					     roundup_pow_of_two(FDT_V17_SIZE));
++
++	if (dt)
++		memcpy(dt, fdt, size);
++
++	return dt;
++}
++
+ /**
+  * unflatten_device_tree - create tree of device_nodes from flat blob
+  *
+@@ -1350,22 +1365,9 @@ void __init unflatten_device_tree(void)
+  */
+ void __init unflatten_and_copy_device_tree(void)
+ {
+-	int size;
+-	void *dt;
++	if (initial_boot_params)
++		initial_boot_params = copy_device_tree(initial_boot_params);
+ 
+-	if (!initial_boot_params) {
+-		pr_warn("No valid device tree found, continuing without\n");
+-		return;
+-	}
+-
+-	size = fdt_totalsize(initial_boot_params);
+-	dt = early_init_dt_alloc_memory_arch(size,
+-					     roundup_pow_of_two(FDT_V17_SIZE));
+-
+-	if (dt) {
+-		memcpy(dt, initial_boot_params, size);
+-		initial_boot_params = dt;
+-	}
+ 	unflatten_device_tree();
+ }
+ 
+-- 
+https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
+https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
 
-Alright, fair enough.
-
->=20
-> I think I'd just disable the tests on the above arches and let them
-> opt-in. I could be convinced otherwise though.
->=20
-
-Kunit folks would prefer to skip tests when dependencies aren't
-satisfied. The OF_UNITTEST config already depends on !SPARC so perhaps
-it's simplest to have tests skip if OF_EARLY_FLATREE=3Dn. Then
-OF_EARLY_FLATREE can be def_bool OF && !(SPARC || M68K || other arches).
-The OF_UNITTEST config can depend on OF_EARLY_FLATREE instead of select
-it then. This way new supporting architectures can remove themselves
-from the def_bool line when they start calling unflatten_device_tree().
 
