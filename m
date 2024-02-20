@@ -4,66 +4,144 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A81BC48260
-	for <linux-um@archiver.kernel.org>; Sat, 17 Feb 2024 01:06:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58B18C5475B
+	for <linux-um@archiver.kernel.org>; Tue, 20 Feb 2024 14:18:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=OTFQw0Hn2uCZGL+HqUSSxUyu22cZBVpRF4Ub3VDWb2Y=; b=Y6Njb6y9krPFWzewCD5QEJj5FM
-	FthykoW/ByptfvjGSoyOrM+SfR/xWIUkJFKnJKea4CYpYbjIKxsxTQmAhuUk14gixftxkKg7O25md
-	eujrX/nzsQCAGxHHDblAc0soMTgxb1oX/tZLeBh/7hAAieD4OjL341ahXSbld7tg06WTrTDwCgVLe
-	sHNRpAGAZDIrFyXF7vD+P0GgALpwcZo1Uh7EHfAGIJqgK4pG24k4K8nDhlZYe3A8HidqRZNooIJOV
-	1F5XvOay4tsPtu0YwprGUEcdnwV2SHolUExXhRSAiJ1Y9OYsKMWkrjRQ+SKVGJF5IASOsspYHRCc6
-	DIj6gUCg==;
+	bh=lwg89Fejrts84YeaKU8repsaV4y5Gi7gxXNcjrj4/H0=; b=SQ9B4aP+hlEI4t/LUOOiqngOXy
+	OoaVu4Wp88mKTSOW6LOmdoqL3D1umxTiZdGJwn8qQufK2F2RnWuLDQi5bRekmat2y7i05wYVrB9pP
+	hxStpUkoFkXMSzc9tPf2uBubuLzdiNCBvpkt5BqRLYBXebzR30eak6u/ng+RHRintDg2RELLnN53q
+	wMUwLF48hbbCbgdEZeswo9yb7apWwkU9rl+sSBRVkLDJvAoqDsvt/uOPUuTA+UomWgiCeymnAjRDd
+	TGpNDIeoTb1E71sWZD8hXX4o0t28HLiXzdYSzIA9gfHxraMyTKxKIesqa0OoIso3vhDisFcsYQr3y
+	ffAFfmSw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rb9A7-00000004MCR-2nZv;
-	Sat, 17 Feb 2024 01:06:39 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1rcQxR-0000000F4lU-4AzX;
+	Tue, 20 Feb 2024 14:18:54 +0000
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rb99a-00000004Lk9-0Eja;
-	Sat, 17 Feb 2024 01:06:08 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 0669BCE2DA2;
-	Sat, 17 Feb 2024 01:06:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDE8DC433A6;
-	Sat, 17 Feb 2024 01:06:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708131963;
-	bh=J3WMalAjgz0rnHbmeT8QD4FpP4dD0hu4Yj+NzkEppQE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EAOa4fi46Q5W6L0e8l/qgg64ROvD783Ms6lXCLYZpxVg35KK7iz4ZOPqJG55vnPGq
-	 3UeRnJKaA3I3cKg6k8nOeUWz9METclLEOdD2v/vwKpzE0krhoMDcnzcf32fLp60VJM
-	 TsuqeU8cRg0jhmjmGbtWhR66ChQwQ7qIhwKmEc6mNkXVzW0mVxPXvpIFCOvDJP4Ug0
-	 5GQ1D1ccdPvjJlEHgSowFvSe0mQgCZKbefm6SWMC5Ip+4IplYU/9M+WdLtT1NdVNNg
-	 COT3rSgSj0bQbQPCU6igti603mJcNcGUWeyv11PFrXku2BBWdb9jKivpvYiB0ZyZVU
-	 Kkj8/nueN6ZGw==
-From: Stephen Boyd <sboyd@kernel.org>
-To: Rob Herring <robh+dt@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	patches@lists.linux.dev,
-	linux-um@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	kunit-dev@googlegroups.com,
-	linux-kselftest@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	Frank Rowand <frowand.list@gmail.com>,
-	David Gow <davidgow@google.com>,
-	Brendan Higgins <brendan.higgins@linux.dev>
-Subject: [PATCH v4 7/7] of: Add KUnit test to confirm DTB is loaded
-Date: Fri, 16 Feb 2024 17:05:56 -0800
-Message-ID: <20240217010557.2381548-8-sboyd@kernel.org>
-X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-In-Reply-To: <20240217010557.2381548-1-sboyd@kernel.org>
-References: <20240217010557.2381548-1-sboyd@kernel.org>
+	id 1rcQxO-0000000F4kk-3ddg
+	for linux-um@lists.infradead.org;
+	Tue, 20 Feb 2024 14:18:52 +0000
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41KDV1Hw025709;
+	Tue, 20 Feb 2024 14:18:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=lwg89Fejrts84YeaKU8repsaV4y5Gi7gxXNcjrj4/H0=;
+ b=fIWmtA/onYq24esqtZ73ktfPBTnYIpYFXlJDPahdh2CVKpi2f3XFRbRdvVoo8/s/Twg4
+ Gugfrif7lC51GwCtxaDT6NUorELWUYRjE7k3f01QR8KyA49d9i2RKOk3orwiBV9xTmGe
+ n1KjfGR6Vwu/m7F3FIG8MVapwpw3o9F2pqXNyZB6fFK+9Ucl/+slsOSzeK9EHXBxwrrp
+ yQzHgzl7VvPWC9Xmjdfao7dHj0DO5L5WBUq6WDygLhepqV9ES4qXld+TKnxrYVcTs736
+ HluvRBPiyKhzCPHYdcGLiVOE3cQ+IRmrOk1PP/IpgW6tphlXdeciCY5IEAkFpStTIop4 pA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wcunmkqgd-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Feb 2024 14:18:28 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41KE6dH7031572;
+	Tue, 20 Feb 2024 14:18:26 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wcunmkqfc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Feb 2024 14:18:26 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41KDjTcI013492;
+	Tue, 20 Feb 2024 14:18:24 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wb7h08ube-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Feb 2024 14:18:24 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41KEIIx511535068
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 20 Feb 2024 14:18:21 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id DC54F2006B;
+	Tue, 20 Feb 2024 14:18:18 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 789E22006A;
+	Tue, 20 Feb 2024 14:18:18 +0000 (GMT)
+Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.152.224.212])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 20 Feb 2024 14:18:18 +0000 (GMT)
+Date: Tue, 20 Feb 2024 15:18:15 +0100
+From: Halil Pasic <pasic@linux.ibm.com>
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: Jason Wang <jasowang@redhat.com>, virtualization@lists.linux.dev,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov
+ <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg
+ <johannes@sipsolutions.net>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "David
+ S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub
+ Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Hans de Goede
+ <hdegoede@redhat.com>,
+        Ilpo =?UTF-8?B?SsOkcnZpbmVu?=
+ <ilpo.jarvinen@linux.intel.com>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        Bjorn
+ Andersson <andersson@kernel.org>,
+        Mathieu Poirier
+ <mathieu.poirier@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>, Eric
+ Farman <farman@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily
+ Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle
+ <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann
+ <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John
+ Fastabend <john.fastabend@gmail.com>,
+        Benjamin Berg
+ <benjamin.berg@intel.com>,
+        Yang Li <yang.lee@linux.alibaba.com>, linux-um@lists.infradead.org,
+        netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, bpf@vger.kernel.org,
+        Halil
+ Pasic <pasic@linux.ibm.com>
+Subject: Re: [PATCH vhost 07/17] virtio: find_vqs: pass struct instead of
+ multi parameters
+Message-ID: <20240220151815.5c867cce.pasic@linux.ibm.com>
+In-Reply-To: <1706756442.5524123-1-xuanzhuo@linux.alibaba.com>
+References: <20240130114224.86536-1-xuanzhuo@linux.alibaba.com>
+	<20240130114224.86536-8-xuanzhuo@linux.alibaba.com>
+	<CACGkMEvb4N8kthr4qWXrLOh9v422OYhrYU6hQejusw-e5EacPw@mail.gmail.com>
+	<1706756442.5524123-1-xuanzhuo@linux.alibaba.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: eUllX_-qgAsmHKd_JgBJQZtujh7cPJYr
+X-Proofpoint-ORIG-GUID: RtiekxNRFN2wBWltsYALkmwUnLKUTe6e
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-20_06,2024-02-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1011
+ lowpriorityscore=0 spamscore=0 phishscore=0 priorityscore=1501 mlxscore=0
+ malwarescore=0 mlxlogscore=809 adultscore=0 suspectscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402200103
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240216_170606_594038_DB9E8394 
-X-CRM114-Status: GOOD (  18.31  )
+X-CRM114-CacheID: sfid-20240220_061850_930059_4AA728E0 
+X-CRM114-Status: GOOD (  17.65  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,131 +156,21 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Add a KUnit test that confirms a DTB has been loaded, i.e. there is a
-root node, and that the of_have_populated_dt() API works properly. We
-skip the test when CONFIG_OF_EARLY_FLATREE=n because in that case we
-know architecture code hasn't called unflatten_(and_copy_)?device_tree()
-which would populate some sort of root node.
+On Thu, 1 Feb 2024 11:00:42 +0800
+Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
 
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: Frank Rowand <frowand.list@gmail.com>
-Reviewed-by: David Gow <davidgow@google.com>
-Cc: Brendan Higgins <brendan.higgins@linux.dev>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
----
- drivers/of/.kunitconfig |  3 +++
- drivers/of/Kconfig      |  9 +++++++
- drivers/of/Makefile     |  2 ++
- drivers/of/of_test.c    | 57 +++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 71 insertions(+)
- create mode 100644 drivers/of/.kunitconfig
- create mode 100644 drivers/of/of_test.c
+> > > And squish the parameters from transport to a structure.  
+> > 
+> > The patch did more than what is described here, it also switch to use
+> > a structure for vring_create_virtqueue() etc.
+> > 
+> > Is it better to split?  
+> 
+> Sure.
 
-diff --git a/drivers/of/.kunitconfig b/drivers/of/.kunitconfig
-new file mode 100644
-index 000000000000..5a8fee11978c
---- /dev/null
-+++ b/drivers/of/.kunitconfig
-@@ -0,0 +1,3 @@
-+CONFIG_KUNIT=y
-+CONFIG_OF=y
-+CONFIG_OF_KUNIT_TEST=y
-diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
-index d738fbad9c36..dd726c7056bf 100644
---- a/drivers/of/Kconfig
-+++ b/drivers/of/Kconfig
-@@ -36,6 +36,15 @@ config OF_UNITTEST
- 
- 	  If unsure, say N here. This option is not safe to enable.
- 
-+config OF_KUNIT_TEST
-+	tristate "Devicetree KUnit Test" if !KUNIT_ALL_TESTS
-+	depends on KUNIT
-+	default KUNIT_ALL_TESTS
-+	help
-+	  This option builds KUnit unit tests for device tree infrastructure.
-+
-+	  If unsure, say N here, but this option is safe to enable.
-+
- config OF_ALL_DTBS
- 	bool "Build all Device Tree Blobs"
- 	depends on COMPILE_TEST
-diff --git a/drivers/of/Makefile b/drivers/of/Makefile
-index df305348d1cb..251d33532148 100644
---- a/drivers/of/Makefile
-+++ b/drivers/of/Makefile
-@@ -19,4 +19,6 @@ obj-y	+= kexec.o
- endif
- endif
- 
-+obj-$(CONFIG_OF_KUNIT_TEST) += of_test.o
-+
- obj-$(CONFIG_OF_UNITTEST) += unittest-data/
-diff --git a/drivers/of/of_test.c b/drivers/of/of_test.c
-new file mode 100644
-index 000000000000..a9301d293f01
---- /dev/null
-+++ b/drivers/of/of_test.c
-@@ -0,0 +1,57 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * KUnit tests for OF APIs
-+ */
-+#include <linux/module.h>
-+#include <linux/of.h>
-+
-+#include <kunit/test.h>
-+
-+/*
-+ * Test that the root node "/" can be found by path.
-+ */
-+static void of_dtb_root_node_found_by_path(struct kunit *test)
-+{
-+	struct device_node *np;
-+
-+	np = of_find_node_by_path("/");
-+	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, np);
-+	of_node_put(np);
-+}
-+
-+/*
-+ * Test that the 'of_root' global variable is always populated when DT code is
-+ * enabled. Remove this test once of_root is removed from global access.
-+ */
-+static void of_dtb_root_node_populates_of_root(struct kunit *test)
-+{
-+	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, of_root);
-+}
-+
-+static struct kunit_case of_dtb_test_cases[] = {
-+	KUNIT_CASE(of_dtb_root_node_found_by_path),
-+	KUNIT_CASE(of_dtb_root_node_populates_of_root),
-+	{}
-+};
-+
-+static int of_dtb_test_init(struct kunit *test)
-+{
-+	if (!IS_ENABLED(CONFIG_OF_EARLY_FLATTREE))
-+		kunit_skip(test, "requires CONFIG_OF_EARLY_FLATTREE");
-+
-+	return 0;
-+}
-+
-+/*
-+ * Test suite to confirm a DTB is loaded.
-+ */
-+static struct kunit_suite of_dtb_suite = {
-+	.name = "of_dtb",
-+	.test_cases = of_dtb_test_cases,
-+	.init = of_dtb_test_init,
-+};
-+
-+kunit_test_suites(
-+	&of_dtb_suite,
-+);
-+MODULE_LICENSE("GPL");
--- 
-https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
-https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
+I understand there will be a v2. From virtio-ccw perspective I have
+no objections.
 
+Regards,
+Halil
 
