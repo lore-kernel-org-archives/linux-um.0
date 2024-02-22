@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D96A7C48BEB
-	for <linux-um@archiver.kernel.org>; Thu, 22 Feb 2024 07:24:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 592D3C5478C
+	for <linux-um@archiver.kernel.org>; Thu, 22 Feb 2024 07:24:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=rSTF8EhkpxTeqhstKIyynLGq4fa8o7QHCgP9WngjV84=; b=W75qPho5vTcUJ6cYD0+vzLUE9w
-	JUhv2UA+3SiQoF0fkLbtw48E0ufYhNTA2fvzBJHlNv1yrxuCHRJORco17t0cob6fLE9ne1Dp0PGVB
-	qJVd3N0WMq2R+o9Pip2l8Oc8rIqQDhhtHACVoE08+n/wgL0u2hsnOa2p5Zp24PMyG70N0SnO5egcD
-	BaGElp+A3aMk2xjYXS4o/9J+tvMtqLF1gVKv9b/BHcXzflkVFo/ZaIbF+0reVmmbYXD29TFQgnvjF
-	xhtepUyIH7JGjYRBk0o0mj4XkrKlH7GRRbS+WJYJwcaoOhOS+Rcdv9zhug6a9OoOFwK1VSLGKhb5K
-	CGmNO+Kg==;
+	bh=g/2GmS4AXLXXjlfuzEY4M+H/g1Vi8otqWk2R/DkaXmE=; b=udyNuwU6P9c/K7zGtOoUXUyuyF
+	0/awGK5Pn6MUy0XSV5QWA0V3oaDriZWThyFILcFqNXgOQGOnE56heYPv6BoYr2+ICC+Oq1z2Bo3PO
+	nvghpS9c3FlylC7Yyl+MLjbVV8ViDpkOfjM6FOOZVZ4tcsEh01CA7HeF31FfSAQNF5RSYJIo7sUsJ
+	+LUFF1qTsZQbdczsjzr7Kd73Y+Z352vcm2p5WcFUwgqWgGh7ZnB9eeRYy6/um1oBpRsRwt/VnISGa
+	A238XgbLXJ0yjSnpyfrR/ay5T0v6Us99dyZWCkm+fzOOft43FwQ0Qi0uLXH12M0x4d/wRvbxYOzSH
+	0fZDJbSQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rd3Ra-00000003niC-2KWF;
-	Thu, 22 Feb 2024 07:24:34 +0000
+	id 1rd3Rb-00000003njR-47Rl;
+	Thu, 22 Feb 2024 07:24:35 +0000
 Received: from [2001:4bb8:19a:62b2:c70:4a89:bc61:3] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rd3RX-00000003nfv-4465;
-	Thu, 22 Feb 2024 07:24:32 +0000
+	id 1rd3Ra-00000003nhe-2Cdb;
+	Thu, 22 Feb 2024 07:24:34 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Richard Weinberger <richard@nod.at>,
 	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
@@ -33,9 +33,9 @@ To: Richard Weinberger <richard@nod.at>,
 	Jens Axboe <axboe@kernel.dk>
 Cc: linux-um@lists.infradead.org,
 	linux-block@vger.kernel.org
-Subject: [PATCH 5/7] ubd: move set_disk_ro to ubd_add
-Date: Thu, 22 Feb 2024 08:24:15 +0100
-Message-Id: <20240222072417.3773131-6-hch@lst.de>
+Subject: [PATCH 6/7] ubd: remove the queue pointer in struct ubd
+Date: Thu, 22 Feb 2024 08:24:16 +0100
+Message-Id: <20240222072417.3773131-7-hch@lst.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240222072417.3773131-1-hch@lst.de>
 References: <20240222072417.3773131-1-hch@lst.de>
@@ -55,33 +55,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-No need to delay this until open time.
+No need for it now, everything goes through the gendisk.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/um/drivers/ubd_kern.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/um/drivers/ubd_kern.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 26bc8306356263..c5d32e75426366 100644
+index c5d32e75426366..9bf1d6a88bae59 100644
 --- a/arch/um/drivers/ubd_kern.c
 +++ b/arch/um/drivers/ubd_kern.c
-@@ -903,6 +903,7 @@ static int ubd_add(int n, char **error_out)
- 	set_capacity(disk, ubd_dev->size / 512);
- 	sprintf(disk->disk_name, "ubd%c", 'a' + n);
- 	disk->private_data = ubd_dev;
-+	set_disk_ro(disk, !ubd_dev->openflags.w);
- 
- 	ubd_dev->pdev.id = n;
- 	ubd_dev->pdev.name = DRIVER_NAME;
-@@ -1159,7 +1160,6 @@ static int ubd_open(struct gendisk *disk, blk_mode_t mode)
- 		}
+@@ -163,7 +163,6 @@ struct ubd {
+ 	struct cow cow;
+ 	struct platform_device pdev;
+ 	struct gendisk *disk;
+-	struct request_queue *queue;
+ 	struct blk_mq_tag_set tag_set;
+ 	spinlock_t lock;
+ };
+@@ -892,10 +891,9 @@ static int ubd_add(int n, char **error_out)
+ 		err = PTR_ERR(disk);
+ 		goto out_cleanup_tags;
  	}
- 	ubd_dev->count++;
--	set_disk_ro(disk, !ubd_dev->openflags.w);
- out:
- 	mutex_unlock(&ubd_mutex);
- 	return err;
+-	ubd_dev->queue = disk->queue;
+ 
+ 	blk_queue_flag_set(QUEUE_FLAG_NONROT, disk->queue);
+-	blk_queue_write_cache(ubd_dev->queue, true, false);
++	blk_queue_write_cache(disk->queue, true, false);
+ 	disk->major = UBD_MAJOR;
+ 	disk->first_minor = n << UBD_SHIFT;
+ 	disk->minors = 1 << UBD_SHIFT;
 -- 
 2.39.2
 
