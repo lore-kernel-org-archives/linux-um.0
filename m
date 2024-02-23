@@ -4,43 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8CC3C48BF8
-	for <linux-um@archiver.kernel.org>; Thu, 22 Feb 2024 07:24:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 050BEC47DD9
+	for <linux-um@archiver.kernel.org>; Fri, 23 Feb 2024 00:03:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Fn+HB6bbM1pjLkNl/fg3PCRANt5VA3yO0I85pvryFgs=; b=jQlmXbQwjwqPwzFCfLGSKYOiK6
-	Gwv/8MJzDmJAd02zBON9HeeQLS8KK0qzaf3QRB8LMXZgpyLDHm2aVOLDpkhy21Af2sdTGfoiklvKo
-	NtNfZ6Pu4AJlYJx6IXFv11O+SPUphQ7dN/WIUMS/yFeWfaJxnjuujp6FAJsPCklzFiZgKwWnBZMIE
-	VfBTrRD3kNzuA/w74YG0hRWn7FelNMKea+JdqScOXTQfzWJoDmhTFeE94w8WjddD7l2ZL+oe46HUE
-	cnhsS8F+Zq2GNA67T1sS41UhVSer5mQ0ngc8UQo2anGWWLzx2HiWEQiNaW+Niu28Ynfs3By+QwT4H
-	DH3lYrOQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=ptAOfULggNO+IbVxMprkwBs1rny0N9tVPVvrHf1XTiM=; b=nn26syjX4mngBjr4PhI030m4Xd
+	DnSD6DP4hohXDC3eE8jPOaPDOGOUQwqqnFePyL9W2oXj0UcvrFDqJpB+MRmYt5MM9T2dqJy/AzZcM
+	AcT2Y1H1hX4wLilKfPbvui1BvUBLQ9rjQKLRHkBmlQZgUQ5E1DxSAGm3/+wILMXr9M9ZCDyr6LOzA
+	ZBGL9JK1K5U+nBIFj21pVjmrxpJBO5t2yZPUEUwgr7SnSpE6wcCqgSYB2TlWLgHz7Xuhx5vnXGxNS
+	C+6wxDjK7W/a9CER1Kbb8kDb5YGvtv3t7PCvnr4RroBQaBnKtvL1GRyDCzhQGgdV3LjwOUbMFYMxB
+	lF/aOb3A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rd3Rf-00000003nmI-2R1G;
-	Thu, 22 Feb 2024 07:24:39 +0000
-Received: from [2001:4bb8:19a:62b2:c70:4a89:bc61:3] (helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rd3Rd-00000003njL-0p4J;
-	Thu, 22 Feb 2024 07:24:37 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Jens Axboe <axboe@kernel.dk>
-Cc: linux-um@lists.infradead.org,
-	linux-block@vger.kernel.org
-Subject: [PATCH 7/7] ubd: open the backing files in ubd_add
-Date: Thu, 22 Feb 2024 08:24:17 +0100
-Message-Id: <20240222072417.3773131-8-hch@lst.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240222072417.3773131-1-hch@lst.de>
-References: <20240222072417.3773131-1-hch@lst.de>
+	id 1rdJ2k-000000077VK-04DX;
+	Fri, 23 Feb 2024 00:03:58 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
+	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rdJ2B-000000077Ph-2E9w;
+	Fri, 23 Feb 2024 00:03:25 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 08E316339E;
+	Fri, 23 Feb 2024 00:03:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02B1BC433C7;
+	Fri, 23 Feb 2024 00:03:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708646602;
+	bh=MoRpThz8BwfGmQI/tdKDwo2lq+nMd+Ual2CCuubziSk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cic+Typd/Jo4A8aZdMWorj3V/IJph/j22l1PdN+nPGCHm4iZfwiLNl65BzABHjIxm
+	 Iqz2LIvb4Dg1cGZe3e9wB5lF3jTkEm14dH2k4Vm1W+JG0BS9XVXV7s2LD9qSqiy8l+
+	 4dX1FShLh+4XcOIf5X6i22kZ0XvVyRQZWMWB923qnu/lMp1brWdCmuGOWMf7J8B1Ic
+	 0g2q737UYikU/jvWOKf8T+ebhFnAtVRYcWrMSHFHx8ZVBTzz20ajVetX/MiCuST/B4
+	 CAJnvBDzwmRczVF9VicJZS48AQ6Q2ib4yJfGeZuq4Q8zEAYpg4QoxfJcdiDMAJmOl4
+	 owPDQU0LZN0Bw==
+Date: Thu, 22 Feb 2024 17:03:17 -0700
+From: Rob Herring <robh@kernel.org>
+To: Stephen Boyd <sboyd@kernel.org>
+Cc: linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+	linux-um@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+	kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+	devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v4 5/7] arm64: Unconditionally call
+ unflatten_device_tree()
+Message-ID: <20240223000317.GA3835346-robh@kernel.org>
+References: <20240217010557.2381548-1-sboyd@kernel.org>
+ <20240217010557.2381548-6-sboyd@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240217010557.2381548-6-sboyd@kernel.org>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20240222_160324_029809_ECFCADED 
+X-CRM114-Status: GOOD (  14.09  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -55,145 +76,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Opening the backing device only when the block device is opened is
-a bit weird as no one configures block devices to not use them.
-Opend them at add time, close them at remove time and remove the
-now superflous opened counter as remove can simply check for
-disk_openers.
+On Fri, Feb 16, 2024 at 05:05:54PM -0800, Stephen Boyd wrote:
+> Call this function unconditionally so that we can populate an empty DTB
+> on platforms that don't boot with a firmware provided or builtin DTB.
+> When ACPI is in use, unflatten_device_tree() ignores the
+> 'initial_boot_params' pointer so the live DT on those systems won't be
+> whatever that's pointing to. Similarly, when kexec copies the DT data
+> the previous kernel to the new one on ACPI systems,
+> of_kexec_alloc_and_setup_fdt() will ignore the live DT (the empty root
+> one) and copy the 'initial_boot_params' data.
+> 
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Frank Rowand <frowand.list@gmail.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: <linux-arm-kernel@lists.infradead.org>
+> Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+> ---
+>  arch/arm64/kernel/setup.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- arch/um/drivers/ubd_kern.c | 58 +++++++++++---------------------------
- 1 file changed, 16 insertions(+), 42 deletions(-)
+Catalin, Will, Can I get an ack on this so I can take the series via the 
+DT tree.
 
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 9bf1d6a88bae59..63fc062add708c 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -108,8 +108,6 @@ static inline void ubd_set_bit(__u64 bit, unsigned char *data)
- static DEFINE_MUTEX(ubd_lock);
- static DEFINE_MUTEX(ubd_mutex); /* replaces BKL, might not be needed */
- 
--static int ubd_open(struct gendisk *disk, blk_mode_t mode);
--static void ubd_release(struct gendisk *disk);
- static int ubd_ioctl(struct block_device *bdev, blk_mode_t mode,
- 		     unsigned int cmd, unsigned long arg);
- static int ubd_getgeo(struct block_device *bdev, struct hd_geometry *geo);
-@@ -118,8 +116,6 @@ static int ubd_getgeo(struct block_device *bdev, struct hd_geometry *geo);
- 
- static const struct block_device_operations ubd_blops = {
-         .owner		= THIS_MODULE,
--        .open		= ubd_open,
--        .release	= ubd_release,
-         .ioctl		= ubd_ioctl,
-         .compat_ioctl	= blkdev_compat_ptr_ioctl,
- 	.getgeo		= ubd_getgeo,
-@@ -152,7 +148,6 @@ struct ubd {
- 	 * backing or the cow file. */
- 	char *file;
- 	char *serial;
--	int count;
- 	int fd;
- 	__u64 size;
- 	struct openflags boot_openflags;
-@@ -178,7 +173,6 @@ struct ubd {
- #define DEFAULT_UBD { \
- 	.file = 		NULL, \
- 	.serial =		NULL, \
--	.count =		0, \
- 	.fd =			-1, \
- 	.size =			-1, \
- 	.boot_openflags =	OPEN_FLAGS, \
-@@ -873,6 +867,13 @@ static int ubd_add(int n, char **error_out)
- 		goto out;
- 	}
- 
-+	err = ubd_open_dev(ubd_dev);
-+	if (err) {
-+		pr_err("ubd%c: Can't open \"%s\": errno = %d\n",
-+			'a' + n, ubd_dev->file, -err);
-+		goto out;
-+	}
-+
- 	ubd_dev->size = ROUND_BLOCK(ubd_dev->size);
- 
- 	ubd_dev->tag_set.ops = &ubd_mq_ops;
-@@ -884,7 +885,7 @@ static int ubd_add(int n, char **error_out)
- 
- 	err = blk_mq_alloc_tag_set(&ubd_dev->tag_set);
- 	if (err)
--		goto out;
-+		goto out_close;
- 
- 	disk = blk_mq_alloc_disk(&ubd_dev->tag_set, &lim, ubd_dev);
- 	if (IS_ERR(disk)) {
-@@ -919,6 +920,8 @@ static int ubd_add(int n, char **error_out)
- 	put_disk(disk);
- out_cleanup_tags:
- 	blk_mq_free_tag_set(&ubd_dev->tag_set);
-+out_close:
-+	ubd_close_dev(ubd_dev);
- out:
- 	return err;
- }
-@@ -1014,13 +1017,14 @@ static int ubd_remove(int n, char **error_out)
- 	if(ubd_dev->file == NULL)
- 		goto out;
- 
--	/* you cannot remove a open disk */
--	err = -EBUSY;
--	if(ubd_dev->count > 0)
--		goto out;
--
- 	if (ubd_dev->disk) {
-+		/* you cannot remove a open disk */
-+		err = -EBUSY;
-+		if (disk_openers(ubd_dev->disk))
-+			goto out;
-+
- 		del_gendisk(ubd_dev->disk);
-+		ubd_close_dev(ubd_dev);
- 		put_disk(ubd_dev->disk);
- 	}
- 
-@@ -1143,36 +1147,6 @@ static int __init ubd_driver_init(void){
- 
- device_initcall(ubd_driver_init);
- 
--static int ubd_open(struct gendisk *disk, blk_mode_t mode)
--{
--	struct ubd *ubd_dev = disk->private_data;
--	int err = 0;
--
--	mutex_lock(&ubd_mutex);
--	if(ubd_dev->count == 0){
--		err = ubd_open_dev(ubd_dev);
--		if(err){
--			printk(KERN_ERR "%s: Can't open \"%s\": errno = %d\n",
--			       disk->disk_name, ubd_dev->file, -err);
--			goto out;
--		}
--	}
--	ubd_dev->count++;
--out:
--	mutex_unlock(&ubd_mutex);
--	return err;
--}
--
--static void ubd_release(struct gendisk *disk)
--{
--	struct ubd *ubd_dev = disk->private_data;
--
--	mutex_lock(&ubd_mutex);
--	if(--ubd_dev->count == 0)
--		ubd_close_dev(ubd_dev);
--	mutex_unlock(&ubd_mutex);
--}
--
- static void cowify_bitmap(__u64 io_offset, int length, unsigned long *cow_mask,
- 			  __u64 *cow_offset, unsigned long *bitmap,
- 			  __u64 bitmap_offset, unsigned long *bitmap_words,
--- 
-2.39.2
-
+Rob
 
