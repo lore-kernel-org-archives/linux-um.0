@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9319DC5478C
-	for <linux-um@archiver.kernel.org>; Fri, 23 Feb 2024 08:29:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52719C5478C
+	for <linux-um@archiver.kernel.org>; Fri, 23 Feb 2024 08:29:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=QYXOQ6Cn7P8NNIEh4wiuPCzjHwvOSRqXsUiYMGC89fw=; b=fcVGvSVVhAQMrHfMndYGuS8DYO
-	R34ivNrz9uXb2lte81IhBuq/IV+JaXFybl4eJRjY0HqNfARulTp4HcPuAfqzt/OALeJi89zeN116q
-	4YVVX3PF7UdW9t/WWaMNzhJeHdTag92J7qHncDPoTsi1IhbE2eF6DUefohhKRKKz5ftVEdB9zoQwz
-	kg9U/UWmVbqF/iMj4qAMDJ0giy6L67AdxlKffC3BBHxiCL9rSZ4luHQUJL/eKXu6O+BIpon5e5DNa
-	o4tAc3+0J6X3a0Mc2Pii+AJNkQYTSqW45nJvlBsxlvnxV+3kMUEczFHZ1QUlMHfrVflPwArfyOML6
-	m3IeIocQ==;
+	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=6IMo6cIkJbw27Q1oQFwPBSLp5dDwzhNSd1jF51DsYTA=; b=XG6Oj8Ar/mzOZB7hIg2oJrVJIP
+	zXCuqTfdoSIIUHajHASxuxqszCo8OYWNieJ89LV9spB/SlnUAQvXSMWktqut5OUtVgTly8pHbyJFI
+	Rab8CCWhkHHas39LC1xITvVzM+5A/7PJ9JoR7efo8gVx8V3aTbIXv/bB6Oi9h5OC3FIEq+wdccq+8
+	9HtJHwgVmWIIAZ8/Ik4new1gAeIz80xMBcgy/aQPOsamn/eV+0iWuqzN0yU7SM77cHfIrHdZJ4J+b
+	bVElF7fFcf0SkRFduhCYnW4AwhDFEVSa0qByNgIHFhpHK6Nq3Jv83VRgVqou/Nj4Q4s/UZRfxNp1y
+	D69aD4WQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rdQw1-00000008TmJ-1IC4;
-	Fri, 23 Feb 2024 08:29:34 +0000
+	id 1rdQw3-00000008Tp3-34OU;
+	Fri, 23 Feb 2024 08:29:35 +0000
 Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rdQuH-00000008T05-38ja
+	id 1rdQuH-00000008T3S-3C7W
 	for linux-um@lists.infradead.org;
 	Fri, 23 Feb 2024 08:27:56 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1708676853; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=QYXOQ6Cn7P8NNIEh4wiuPCzjHwvOSRqXsUiYMGC89fw=;
-	b=MSIMRGahRT2JP++nbovEj/PYSJ1TgQ2sPnM96MQuuna3TPYd+j2HZPkDaR0OqJQWF8W98Z+MpSZa58B9US8T0Y8K7o09ZQiJ6LEtqKyQ3t1JuLxLrrQlFs+9Tjnb0OEaXqn36W7rq1rn9sa9FUosoGMLpKc665LKzCtykm+py6Y=
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R401e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=35;SR=0;TI=SMTPD_---0W13mUuX_1708676846;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W13mUuX_1708676846)
+	t=1708676855; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=6IMo6cIkJbw27Q1oQFwPBSLp5dDwzhNSd1jF51DsYTA=;
+	b=piHRdFnkq7sVQT1Z1PxWrVnWc//BKftKy9ikgMZa7AlwHMQIv1dh1uw3jXOykrcSuLa3F+/DM8jJUCH2bOlxfPumTymxf0GuX44kKOgbOzg/hRaGLshen6fEwbFTBaRD0nc/R1I2aOj69ftuPUHOm8tvY/Xrl1VUJG4yFnLuP+A=
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=35;SR=0;TI=SMTPD_---0W13nF3Y_1708676853;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W13nF3Y_1708676853)
           by smtp.aliyun-inc.com;
-          Fri, 23 Feb 2024 16:27:27 +0800
+          Fri, 23 Feb 2024 16:27:33 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: virtualization@lists.linux.dev
 Cc: Richard Weinberger <richard@nod.at>,
@@ -72,16 +72,18 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-s390@vger.kernel.org,
 	kvm@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH vhost v2 00/19] virtio: drivers maintain dma info for premapped vq
-Date: Fri, 23 Feb 2024 16:27:07 +0800
-Message-Id: <20240223082726.52915-1-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH vhost v2 04/19] virtio_ring: split: remove double check of the unmap ops
+Date: Fri, 23 Feb 2024 16:27:11 +0800
+Message-Id: <20240223082726.52915-5-xuanzhuo@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0.3.g01195cf9f
+In-Reply-To: <20240223082726.52915-1-xuanzhuo@linux.alibaba.com>
+References: <20240223082726.52915-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
 X-Git-Hash: 510995f33855
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240223_002746_078962_6A8C1A80 
-X-CRM114-Status: GOOD (  11.64  )
+X-CRM114-CacheID: sfid-20240223_002746_156084_8460D92A 
+X-CRM114-Status: GOOD (  14.59  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,95 +98,170 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-As discussed:
-http://lore.kernel.org/all/CACGkMEvq0No8QGC46U4mGsMtuD44fD_cfLcPaVmJ3rHYqRZxYg@mail.gmail.com
+In the functions vring_unmap_one_split and
+vring_unmap_one_split_indirect,
+multiple checks are made whether unmap is performed and whether it is
+INDIRECT.
 
-If the virtio is premapped mode, the driver should manage the dma info by self.
-So the virtio core should not store the dma info.
-So we can release the memory used to store the dma info.
+These two functions are usually called in a loop, and we should put the
+check outside the loop.
 
-But if the desc_extra has not dma info, we face a new question,
-it is hard to get the dma info of the desc with indirect flag.
-For split mode, that is easy from desc, but for the packed mode,
-it is hard to get the dma info from the desc. And for hardening
-the dma unmap is saft, we should store the dma info of indirect
-descs.
+And we unmap the descs with VRING_DESC_F_INDIRECT on the same path with
+other descs, that make the thing more complex. If we distinguish the
+descs with VRING_DESC_F_INDIRECT before unmap, thing will be clearer.
 
-So I introduce the "structure the indirect desc table" to
-allocate space to store dma info with the desc table.
+1. only one desc of the desc table is used, we do not need the loop
+2. the called unmap api is difference from the other desc
+3. the vq->premapped is not needed to check
+4. the vq->indirect is not needed to check
+5. the state->indir_desc must not be null
 
-On the other side, we mix the descs with indirect flag
-with other descs together to share the unmap api. That
-is complex. I found if we we distinguish the descs with
-VRING_DESC_F_INDIRECT before unmap, thing will be clearer.
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+---
+ drivers/virtio/virtio_ring.c | 79 +++++++++++++++++-------------------
+ 1 file changed, 38 insertions(+), 41 deletions(-)
 
-Because of the dma array is allocated in the find_vqs(),
-so I introduce a new parameter to find_vqs().
-
-Note:
-    this is on the top of
-        [PATCH vhost v1] virtio: packed: fix unmap leak for indirect desc table
-        http://lore.kernel.org/all/20240223071833.26095-1-xuanzhuo@linux.alibaba.com
-
-Please review.
-
-Thanks
-
-v2:
-    1. change the dma item of virtio-net, every item have MAX_SKB_FRAGS + 2
-        addr + len pairs.
-    2. introduce virtnet_sq_free_stats for __free_old_xmit
-
-v1:
-    1. rename transport_vq_config to vq_transport_config
-    2. virtio-net set dma meta number to (ring-size + 1)(MAX_SKB_FRGAS +2)
-    3. introduce virtqueue_dma_map_sg_attrs
-    4. separate vring_create_virtqueue to an independent commit
-
-
-Xuan Zhuo (19):
-  virtio_ring: introduce vring_need_unmap_buffer
-  virtio_ring: packed: remove double check of the unmap ops
-  virtio_ring: packed: structure the indirect desc table
-  virtio_ring: split: remove double check of the unmap ops
-  virtio_ring: split: structure the indirect desc table
-  virtio_ring: no store dma info when unmap is not needed
-  virtio: find_vqs: pass struct instead of multi parameters
-  virtio: vring_create_virtqueue: pass struct instead of multi
-    parameters
-  virtio: vring_new_virtqueue(): pass struct instead of multi parameters
-  virtio_ring: simplify the parameters of the funcs related to
-    vring_create/new_virtqueue()
-  virtio: find_vqs: add new parameter premapped
-  virtio_ring: export premapped to driver by struct virtqueue
-  virtio_net: set premapped mode by find_vqs()
-  virtio_ring: remove api of setting vq premapped
-  virtio_ring: introduce dma map api for page
-  virtio_ring: introduce virtqueue_dma_map_sg_attrs
-  virtio_net: unify the code for recycling the xmit ptr
-  virtio_net: rename free_old_xmit_skbs to free_old_xmit
-  virtio_net: sq support premapped mode
-
- arch/um/drivers/virtio_uml.c             |  31 +-
- drivers/net/virtio_net.c                 | 283 ++++++---
- drivers/platform/mellanox/mlxbf-tmfifo.c |  24 +-
- drivers/remoteproc/remoteproc_virtio.c   |  31 +-
- drivers/s390/virtio/virtio_ccw.c         |  33 +-
- drivers/virtio/virtio_mmio.c             |  30 +-
- drivers/virtio/virtio_pci_common.c       |  59 +-
- drivers/virtio/virtio_pci_common.h       |   9 +-
- drivers/virtio/virtio_pci_legacy.c       |  16 +-
- drivers/virtio/virtio_pci_modern.c       |  24 +-
- drivers/virtio/virtio_ring.c             | 698 ++++++++++++-----------
- drivers/virtio/virtio_vdpa.c             |  45 +-
- include/linux/virtio.h                   |  13 +-
- include/linux/virtio_config.h            |  48 +-
- include/linux/virtio_ring.h              |  82 +--
- tools/virtio/virtio_test.c               |   4 +-
- tools/virtio/vringh_test.c               |  28 +-
- 17 files changed, 835 insertions(+), 623 deletions(-)
-
---
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 2d4d1417a1d6..194bd877ab5a 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -452,9 +452,6 @@ static void vring_unmap_one_split_indirect(const struct vring_virtqueue *vq,
+ {
+ 	u16 flags;
+ 
+-	if (!vring_need_unmap_buffer(vq))
+-		return;
+-
+ 	flags = virtio16_to_cpu(vq->vq.vdev, desc->flags);
+ 
+ 	dma_unmap_page(vring_dma_dev(vq),
+@@ -472,27 +469,12 @@ static unsigned int vring_unmap_one_split(const struct vring_virtqueue *vq,
+ 
+ 	flags = extra[i].flags;
+ 
+-	if (flags & VRING_DESC_F_INDIRECT) {
+-		if (!vq->use_dma_api)
+-			goto out;
+-
+-		dma_unmap_single(vring_dma_dev(vq),
+-				 extra[i].addr,
+-				 extra[i].len,
+-				 (flags & VRING_DESC_F_WRITE) ?
+-				 DMA_FROM_DEVICE : DMA_TO_DEVICE);
+-	} else {
+-		if (!vring_need_unmap_buffer(vq))
+-			goto out;
+-
+-		dma_unmap_page(vring_dma_dev(vq),
+-			       extra[i].addr,
+-			       extra[i].len,
+-			       (flags & VRING_DESC_F_WRITE) ?
+-			       DMA_FROM_DEVICE : DMA_TO_DEVICE);
+-	}
++	dma_unmap_page(vring_dma_dev(vq),
++		       extra[i].addr,
++		       extra[i].len,
++		       (flags & VRING_DESC_F_WRITE) ?
++		       DMA_FROM_DEVICE : DMA_TO_DEVICE);
+ 
+-out:
+ 	return extra[i].next;
+ }
+ 
+@@ -660,7 +642,7 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
+ 			vq, desc, total_sg * sizeof(struct vring_desc),
+ 			DMA_TO_DEVICE);
+ 		if (vring_mapping_error(vq, addr)) {
+-			if (vq->premapped)
++			if (!vring_need_unmap_buffer(vq))
+ 				goto free_indirect;
+ 
+ 			goto unmap_release;
+@@ -713,6 +695,9 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
+ 	return 0;
+ 
+ unmap_release:
++
++	WARN_ON(!vring_need_unmap_buffer(vq));
++
+ 	err_idx = i;
+ 
+ 	if (indirect)
+@@ -774,34 +759,42 @@ static void detach_buf_split(struct vring_virtqueue *vq, unsigned int head,
+ {
+ 	unsigned int i, j;
+ 	__virtio16 nextflag = cpu_to_virtio16(vq->vq.vdev, VRING_DESC_F_NEXT);
++	u16 flags;
+ 
+ 	/* Clear data ptr. */
+ 	vq->split.desc_state[head].data = NULL;
++	flags = vq->split.desc_extra[head].flags;
+ 
+ 	/* Put back on free list: unmap first-level descriptors and find end */
+ 	i = head;
+ 
+-	while (vq->split.vring.desc[i].flags & nextflag) {
+-		vring_unmap_one_split(vq, i);
+-		i = vq->split.desc_extra[i].next;
+-		vq->vq.num_free++;
+-	}
+-
+-	vring_unmap_one_split(vq, i);
+-	vq->split.desc_extra[i].next = vq->free_head;
+-	vq->free_head = head;
++	if (!(flags & VRING_DESC_F_INDIRECT)) {
++		while (vq->split.vring.desc[i].flags & nextflag) {
++			if (vring_need_unmap_buffer(vq))
++				vring_unmap_one_split(vq, i);
++			i = vq->split.desc_extra[i].next;
++			vq->vq.num_free++;
++		}
+ 
+-	/* Plus final descriptor */
+-	vq->vq.num_free++;
++		if (vring_need_unmap_buffer(vq))
++			vring_unmap_one_split(vq, i);
+ 
+-	if (vq->indirect) {
++		if (ctx)
++			*ctx = vq->split.desc_state[head].indir_desc;
++	} else {
+ 		struct vring_desc *indir_desc =
+ 				vq->split.desc_state[head].indir_desc;
+ 		u32 len;
+ 
+-		/* Free the indirect table, if any, now that it's unmapped. */
+-		if (!indir_desc)
+-			return;
++		if (vq->use_dma_api) {
++			struct vring_desc_extra *extra = vq->split.desc_extra;
++
++			dma_unmap_single(vring_dma_dev(vq),
++					 extra[i].addr,
++					 extra[i].len,
++					 (flags & VRING_DESC_F_WRITE) ?
++					 DMA_FROM_DEVICE : DMA_TO_DEVICE);
++		}
+ 
+ 		len = vq->split.desc_extra[head].len;
+ 
+@@ -816,9 +809,13 @@ static void detach_buf_split(struct vring_virtqueue *vq, unsigned int head,
+ 
+ 		kfree(indir_desc);
+ 		vq->split.desc_state[head].indir_desc = NULL;
+-	} else if (ctx) {
+-		*ctx = vq->split.desc_state[head].indir_desc;
+ 	}
++
++	vq->split.desc_extra[i].next = vq->free_head;
++	vq->free_head = head;
++
++	/* Plus final descriptor */
++	vq->vq.num_free++;
+ }
+ 
+ static bool more_used_split(const struct vring_virtqueue *vq)
+-- 
 2.32.0.3.g01195cf9f
 
 
