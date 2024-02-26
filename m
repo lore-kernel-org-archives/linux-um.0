@@ -4,41 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69812C54E49
-	for <linux-um@archiver.kernel.org>; Mon, 26 Feb 2024 09:31:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22DAEC48BF6
+	for <linux-um@archiver.kernel.org>; Mon, 26 Feb 2024 11:23:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To
 	:From:Date:Subject:Message-ID:Reply-To:MIME-Version:Content-Type:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=xEH79XloeCWwYFRjbQWwvM/K3wpplCxfHiQw2CFFMEw=; b=UIoCeOBKvf3qnvVkV+OwJDNZnB
-	zvsM+qAvy0J0OT6SwhCMvuOtnC1E3vFsVKxxMneWATlwqpQwMEmTM4ThspUtx98xpBzBLaiJ3hj8a
-	52GBneBA4v/jh0XU/BdIOTGHIyOl9xuIOHQTkJRM54FeaIbEkiBJOft3SLpmuVKTDZyGD923fyW6d
-	dAoyns3YF8zflRB5eqGKhTRhjuXC3YzUqD5sUU50aaAZD98LdR9W0UhZR9TJnKPVbYHP0Jvi+fnQH
-	MjODLed3uFMyJpmThD79vfp+N1oDjaG9HMfhcn+zMljjGNcqqfO9Z2aDjMA1eVAxyI+ug8sEQMQIl
-	C2hKgSqA==;
+	bh=zVt/9g3Z86Qm2TQExnCYlvSUSDo5URogUSA9lArrC1g=; b=nz+YZIfMixSZ3/GgpR8+bzZpa3
+	leKUeZHu8rl1Dcon/Z50y0I/L0u6oGQh1si59qWKgQIoSH8f92+45Q23SjG9fmuoZVTLb/6hCB3Wk
+	kWVk8kJa91S2SsDYJMtkkxW+1QMp1dUBKzrhTmXBdcjlzXB0yZbTjj8bp8yoBxwYFhUkKdRqCQLIW
+	yMZUczvD6s7nlGawJ2nny0d0NzX2/fgDPcSkSjv2APp2ljdEcsyOg0BjeGw3bZjaFPUp69fFUpyQD
+	IpiLs08cmXeoFEJXUBf8/c4VFpuB1nKRGlqplvV4q5FrByl1+i6Du6pyaQ4RayUVtfS8nH1DHuSsj
+	p+JUuUXw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reXKE-0000000HLzb-042N;
-	Mon, 26 Feb 2024 09:31:06 +0000
-Received: from out30-98.freemail.mail.aliyun.com ([115.124.30.98])
+	id 1reZ50-00000000K8O-0GFY;
+	Mon, 26 Feb 2024 11:23:30 +0000
+Received: from out30-101.freemail.mail.aliyun.com ([115.124.30.101])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reXJv-0000000HLqD-0zQs
+	id 1reZ4w-00000000K75-3xDq
 	for linux-um@lists.infradead.org;
-	Mon, 26 Feb 2024 09:31:00 +0000
+	Mon, 26 Feb 2024 11:23:29 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1708939838; h=Message-ID:Subject:Date:From:To;
-	bh=xEH79XloeCWwYFRjbQWwvM/K3wpplCxfHiQw2CFFMEw=;
-	b=C1J5Z6CNpobwtdL/mJzebFYe3fObzQTeUIaFu0CGMFGZ6mgwmvPl4yF3KnR/Lhb9xxW0MnCnRWjr7lz9Evhy/4DMrnrLSLfP/IEaEOq6B7mN6OWERG7wLEXcnEoQghke/PGQFN++w1tB0SL3KSYlYcom7mWfwkJp/yozhbaKl7A=
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=34;SR=0;TI=SMTPD_---0W1FmByV_1708939835;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W1FmByV_1708939835)
+	t=1708946602; h=Message-ID:Subject:Date:From:To;
+	bh=zVt/9g3Z86Qm2TQExnCYlvSUSDo5URogUSA9lArrC1g=;
+	b=TJY6a21YeRLDEOoDF1YbPZx96PY1NxvlbCVwhl/aXX8ICiAH0hChFBiObQjJKOl3JmUodDhqNyIJT1QY9cl07C7b07V30SEZH8xxugJ8nOaf1ftsyEh2/GbUrtgRBZnYDAfnH76+6yabTFpLmK7wcm627/hGAEdYashD3UQZtBs=
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=35;SR=0;TI=SMTPD_---0W1H3Wyg_1708946597;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W1H3Wyg_1708946597)
           by smtp.aliyun-inc.com;
-          Mon, 26 Feb 2024 17:30:36 +0800
-Message-ID: <1708939451.7601678-3-xuanzhuo@linux.alibaba.com>
+          Mon, 26 Feb 2024 19:23:18 +0800
+Message-ID: <1708946440.799724-1-xuanzhuo@linux.alibaba.com>
 Subject: Re: [PATCH vhost v2 19/19] virtio_net: sq support premapped mode
-Date: Mon, 26 Feb 2024 17:24:11 +0800
+Date: Mon, 26 Feb 2024 19:20:40 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: "Michael S. Tsirkin" <mst@redhat.com>
 Cc: virtualization@lists.linux.dev,
@@ -73,14 +73,14 @@ Cc: virtualization@lists.linux.dev,
  linux-remoteproc@vger.kernel.org,
  linux-s390@vger.kernel.org,
  kvm@vger.kernel.org,
- bpf@vger.kernel.org
+ bpf@vger.kernel.org, "Christoph Hellwig" <hch@lst.de>
 References: <20240223082726.52915-1-xuanzhuo@linux.alibaba.com>
  <20240223082726.52915-20-xuanzhuo@linux.alibaba.com>
  <20240225032330-mutt-send-email-mst@kernel.org>
 In-Reply-To: <20240225032330-mutt-send-email-mst@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240226_013048_436050_EDB293FF 
-X-CRM114-Status: GOOD (  34.56  )
+X-CRM114-CacheID: sfid-20240226_032327_316298_923BF1E4 
+X-CRM114-Status: GOOD (  32.46  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -256,38 +256,22 @@ On Sun, 25 Feb 2024 03:38:48 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
 > A while ago I proposed:
 > - extend DMA APIs so one can query whether unmap is a nop
 
+I think such code is ok:
 
-We may have trouble for this.
-
-dma_addr_t dma_map_page_attrs(struct device *dev, struct page *page,
-		size_t offset, size_t size, enum dma_data_direction dir,
-		unsigned long attrs)
+bool dma_is_direct(struct device *dev)
 {
-	const struct dma_map_ops *ops = get_dma_ops(dev);
-	dma_addr_t addr;
+	if (!dma_map_direct(dev, ops))
+		return false;
 
-	BUG_ON(!valid_dma_direction(dir));
+	if (is_swiotlb_force_bounce(dev))
+		return false;
 
-	if (WARN_ON_ONCE(!dev->dma_mask))
-		return DMA_MAPPING_ERROR;
-
-	if (dma_map_direct(dev, ops) ||
-	    arch_dma_map_page_direct(dev, page_to_phys(page) + offset + size))
-		addr = dma_direct_map_page(dev, page, offset, size, dir, attrs);
-	else
-		addr = ops->map_page(dev, page, offset, size, dir, attrs);
-	kmsan_handle_dma(page, offset, size, dir);
-	debug_dma_map_page(dev, page, offset, size, dir, addr, attrs);
-
-	return addr;
+	return true;
 }
 
-arch_dma_map_page_direct will check the dma address.
-So we can not judge by the API in advance.
+@Christoph Hellwig
 
 Thanks.
-
-
 
 
 >   and whether sync is a nop
