@@ -4,100 +4,98 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7ED4C54E41
-	for <linux-um@archiver.kernel.org>; Mon, 26 Feb 2024 14:01:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D7CDC54E4A
+	for <linux-um@archiver.kernel.org>; Mon, 26 Feb 2024 16:14:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To
-	:From:Date:Subject:Message-ID:Reply-To:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=w54PmwyV0s9tFV5jocGx7O22Pyuye58ZHfjd5DpkDv0=; b=Y/KRRylWJFTuhXEACbyu9nUi8o
-	BIvc6Tit4xc/UojbZdfOpS16ckKNDHlq0xHOSK+9iBUznQHxGlRyGPhC9JSWD7qACD7erqG/o+X7L
-	QboAyEZIjP7BXi8JfLIdrxD8kQLjC86JXAuWzxti/MwiBERbrHP207ZbqhB5mrg8IdXmw2BdJNGFL
-	4geajIwcmrYTnQjhe7R5Lz6jwxK5y0Lzd71P7RveHV/v21hO3Au/XSPRh9EzwgKfoz1Y9yhAmuIUv
-	qTeA9fTDp28TmC4z4VGdUi/ch/oMl0o6x7wgEr8Ni72I3QSdyp9unJ0IBsQhM9OMX7vXqM58OYFQk
-	2FF0e2dA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=SZ/JLh/NSacC9JehElzjN/XIJz1UVIO+puJM10GPPSI=; b=U4ZI84lGcIj42Y4dBWvVLmpLNh
+	b8hHFKeHPirBxp55Zwu6Ac1/IU22XVbEdYPkjcMR9nxDwsvY7kSuPvGkr/ySMYljWpi7Sws+64QuU
+	kDaGDMpRjgOhD0osvhNx5aUA0sp6Z2a+kVkrPyBWJfwmhJI7ey9PBA0InaTmCCCGWlVxuGzdEH5px
+	NlgI2G3VZOp2z3MbuFr1Xm4zEPsxPRADbQJXxMArbDu2EkmLyrDZrTXwgJD3fgK25tQAipgmZDxf2
+	gdvF0xemzJtBR4zVQQ3PusjbPUywLyF2j9/OEqVUm7id8KCeCYsnnpbrPk+/dzZA3n7lsZH0gDqSm
+	t/9pj8dg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rebYI-00000000yFv-1XQK;
-	Mon, 26 Feb 2024 14:01:54 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1redcs-00000001b5j-3lI0;
+	Mon, 26 Feb 2024 16:14:46 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reZOP-00000000Ox0-2q8G
-	for linux-um@bombadil.infradead.org;
-	Mon, 26 Feb 2024 11:43:33 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:References:Cc:To:From:Date
-	:Subject:Message-ID:Sender:Reply-To:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=w54PmwyV0s9tFV5jocGx7O22Pyuye58ZHfjd5DpkDv0=; b=Or7vG/tkAOCFdCB0gkPyVvXxQp
-	r1q8+pEXOy4U4WdKjPFjWkN9VH8TalI84jGVEOgY0o8WzOWy71RnvjOGD1F3VkJjoAy8AgOpcG0YU
-	zJC1rcTooL3OUSX4FZ141wGxrGUHhOcnqAhM6XK9SCnGy/KglzbIyWKszmuABo/MXLa1MsIce4oiI
-	YImDAVd3KSMVwwdcBoYy93QSWXqryApFo4oxOKywnTHKMqHofXbfFJHydLGEqtRJtV1PQtgDuMheq
-	XBJKQNpruCT73KjasX6p5IcqN7H9BSCE4pj/7sxUMYOlpG47DHpi7i1CGrVwYOgnNZ9GvhXYB5qOo
-	nvZpkKDA==;
-Received: from out30-118.freemail.mail.aliyun.com ([115.124.30.118])
-	by desiato.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1reZOJ-000000019rt-18BE
-	for linux-um@lists.infradead.org;
-	Mon, 26 Feb 2024 11:43:32 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1708947794; h=Message-ID:Subject:Date:From:To;
-	bh=w54PmwyV0s9tFV5jocGx7O22Pyuye58ZHfjd5DpkDv0=;
-	b=aJlU6eY85rf2o5yJ3Vwx/O2vRDr3qGwZwYVCq548izWI46nI8ad3PfjFsb6QFvTT2YHsLMLktoAvu7y9qs0VbvDTqen0c5Op7dG2tB4jzFHXUnJsdIin3f7ysCF+4jGuiEuU2G43Si++lmLe/tD38L/RhxNauoirO2sZMQuGZqM=
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R861e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=34;SR=0;TI=SMTPD_---0W1HktSN_1708947791;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W1HktSN_1708947791)
-          by smtp.aliyun-inc.com;
-          Mon, 26 Feb 2024 19:43:12 +0800
-Message-ID: <1708947680.4503584-3-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH vhost v2 19/19] virtio_net: sq support premapped mode
-Date: Mon, 26 Feb 2024 19:41:20 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: virtualization@lists.linux.dev,
- Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- Jason Wang <jasowang@redhat.com>,
- "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- Hans de Goede <hdegoede@redhat.com>,
- =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Vadim Pasternak <vadimp@nvidia.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Mathieu Poirier <mathieu.poirier@linaro.org>,
- Cornelia Huck <cohuck@redhat.com>,
- Halil Pasic <pasic@linux.ibm.com>,
- Eric Farman <farman@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>,
- Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>,
- Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- linux-um@lists.infradead.org,
- netdev@vger.kernel.org,
- platform-driver-x86@vger.kernel.org,
- linux-remoteproc@vger.kernel.org,
- linux-s390@vger.kernel.org,
- kvm@vger.kernel.org,
- bpf@vger.kernel.org
-References: <20240223082726.52915-1-xuanzhuo@linux.alibaba.com>
- <20240223082726.52915-20-xuanzhuo@linux.alibaba.com>
- <20240225032330-mutt-send-email-mst@kernel.org>
- <1708939451.7601678-3-xuanzhuo@linux.alibaba.com>
- <20240226063843-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20240226063843-mutt-send-email-mst@kernel.org>
+	id 1redcl-00000001b2t-0eIi;
+	Mon, 26 Feb 2024 16:14:42 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 68305CE181F;
+	Mon, 26 Feb 2024 16:14:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5D63C433C7;
+	Mon, 26 Feb 2024 16:14:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708964073;
+	bh=zxbqCp3xg1MTZv6nVkuYc0VOPy7Z/0KoLu5xdBZOcDY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ouv+E5W1cQ1zHWEvJshxERHNgYSjJzR7JdvZMtKsmjTnnYsjb50xz7yQ6NNDLjL+R
+	 zIivYPxRBLqLiotGJhvVTBVfzRjkLFR+UKz+Blle7mLm83hZaxjZLxJiSIm8KsFpk8
+	 T2yQYC7g3LmUbscrU9t5jUZdMHfRtyoT7a/p66cZn/Wi8wvAOCFlueNWvORfaCli+Z
+	 S5t1BgjPEeJ3eGf1KMTEe7SIO0Rv5QLKXRaKqNQXL1yQWzRzHXLOOgf0gh7VMNEgGS
+	 /h/uyIFz30OGZTAygrSMurYRpnmZAOjoQMG9QUrFxlxLnbjp2UPK2IvIxVWUAhRAM9
+	 8PLY/d6Nx9Yzg==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Thomas Gleixner <tglx@linutronix.de>,
+	Vincenzo Frascino <vincenzo.frascino@arm.com>,
+	Kees Cook <keescook@chromium.org>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Matt Turner <mattst88@gmail.com>,
+	Vineet Gupta <vgupta@kernel.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Guo Ren <guoren@kernel.org>,
+	Brian Cain <bcain@quicinc.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Michal Simek <monstr@monstr.eu>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Helge Deller <deller@gmx.de>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Richard Weinberger <richard@nod.at>,
+	x86@kernel.org,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Jan Kiszka <jan.kiszka@siemens.com>,
+	Kieran Bingham <kbingham@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org,
+	linux-alpha@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org,
+	linux-um@lists.infradead.org
+Subject: [PATCH 0/4] arch: mm, vdso: consolidate PAGE_SIZE definition
+Date: Mon, 26 Feb 2024 17:14:10 +0100
+Message-Id: <20240226161414.2316610-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240226_114328_541622_F033C6AD 
-X-CRM114-Status: GOOD (  38.25  )
+X-CRM114-CacheID: sfid-20240226_081441_142650_59285C86 
+X-CRM114-Status: GOOD (  17.50  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,316 +110,124 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, 26 Feb 2024 06:39:51 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> On Mon, Feb 26, 2024 at 05:24:11PM +0800, Xuan Zhuo wrote:
-> > On Sun, 25 Feb 2024 03:38:48 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> > > On Fri, Feb 23, 2024 at 04:27:26PM +0800, Xuan Zhuo wrote:
-> > > > If the xsk is enabling, the xsk tx will share the send queue.
-> > > > But the xsk requires that the send queue use the premapped mode.
-> > > > So the send queue must support premapped mode.
-> > > >
-> > > > cmd:
-> > > >     sh samples/pktgen/pktgen_sample01_simple.sh -i eth0 \
-> > > >         -s 16 -d 10.0.0.128 -m 00:16:3e:2c:c8:2e -n 0 -p 100
-> > > > CPU:
-> > > >     Intel(R) Xeon(R) Platinum 8369B CPU @ 2.70GHz
-> > > >
-> > > > Machine:
-> > > >     ecs.g7.2xlarge(Aliyun)
-> > > >
-> > > > before:              1600010.00
-> > > > after(no-premapped): 1599966.00
-> > > > after(premapped):    1600014.00
-> > > >
-> > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > > > ---
-> > > >  drivers/net/virtio_net.c | 136 +++++++++++++++++++++++++++++++++++++--
-> > > >  1 file changed, 132 insertions(+), 4 deletions(-)
-> > > >
-> > > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > > > index 7715bb7032ec..b83ef6afc4fb 100644
-> > > > --- a/drivers/net/virtio_net.c
-> > > > +++ b/drivers/net/virtio_net.c
-> > > > @@ -146,6 +146,25 @@ struct virtnet_rq_dma {
-> > > >  	u16 need_sync;
-> > > >  };
-> > > >
-> > > > +struct virtnet_sq_dma {
-> > > > +	union {
-> > > > +		struct virtnet_sq_dma *next;
-> > > > +		void *data;
-> > > > +	};
-> > > > +
-> > > > +	u32 num;
-> > > > +
-> > > > +	dma_addr_t addr[MAX_SKB_FRAGS + 2];
-> > > > +	u32 len[MAX_SKB_FRAGS + 2];
-> > > > +};
-> > > > +
-> > > > +struct virtnet_sq_dma_head {
-> > > > +	/* record for kfree */
-> > > > +	void *p;
-> > > > +
-> > > > +	struct virtnet_sq_dma *free;
-> > > > +};
-> > > > +
-> > > >  /* Internal representation of a send virtqueue */
-> > > >  struct send_queue {
-> > > >  	/* Virtqueue associated with this send _queue */
-> > > > @@ -165,6 +184,8 @@ struct send_queue {
-> > > >
-> > > >  	/* Record whether sq is in reset state. */
-> > > >  	bool reset;
-> > > > +
-> > > > +	struct virtnet_sq_dma_head dmainfo;
-> > > >  };
-> > > >
-> > > >  /* Internal representation of a receive virtqueue */
-> > > > @@ -368,6 +389,95 @@ static struct xdp_frame *ptr_to_xdp(void *ptr)
-> > > >  	return (struct xdp_frame *)((unsigned long)ptr & ~VIRTIO_XDP_FLAG);
-> > > >  }
-> > > >
-> > > > +static struct virtnet_sq_dma *virtnet_sq_unmap(struct send_queue *sq, void **data)
-> > > > +{
-> > > > +	struct virtnet_sq_dma *d;
-> > > > +	int i;
-> > > > +
-> > > > +	d = *data;
-> > > > +	*data = d->data;
-> > > > +
-> > > > +	for (i = 0; i < d->num; ++i)
-> > > > +		virtqueue_dma_unmap_page_attrs(sq->vq, d->addr[i], d->len[i],
-> > > > +					       DMA_TO_DEVICE, 0);
-> > > > +
-> > > > +	d->next = sq->dmainfo.free;
-> > > > +	sq->dmainfo.free = d;
-> > > > +
-> > > > +	return d;
-> > > > +}
-> > > > +
-> > > > +static struct virtnet_sq_dma *virtnet_sq_map_sg(struct send_queue *sq,
-> > > > +						int nents, void *data)
-> > > > +{
-> > > > +	struct virtnet_sq_dma *d;
-> > > > +	struct scatterlist *sg;
-> > > > +	int i;
-> > > > +
-> > > > +	if (!sq->dmainfo.free)
-> > > > +		return NULL;
-> > > > +
-> > > > +	d = sq->dmainfo.free;
-> > > > +	sq->dmainfo.free = d->next;
-> > > > +
-> > > > +	for_each_sg(sq->sg, sg, nents, i) {
-> > > > +		if (virtqueue_dma_map_sg_attrs(sq->vq, sg, DMA_TO_DEVICE, 0))
-> > > > +			goto err;
-> > > > +
-> > > > +		d->addr[i] = sg->dma_address;
-> > > > +		d->len[i] = sg->length;
-> > > > +	}
-> > > > +
-> > > > +	d->data = data;
-> > > > +	d->num = i;
-> > > > +	return d;
-> > > > +
-> > > > +err:
-> > > > +	d->num = i;
-> > > > +	virtnet_sq_unmap(sq, (void **)&d);
-> > > > +	return NULL;
-> > > > +}
-> > >
-> > >
-> > > Do I see a reimplementation of linux/llist.h here?
-> > >
-> > >
-> > > > +
-> > > > +static int virtnet_add_outbuf(struct send_queue *sq, u32 num, void *data)
-> > > > +{
-> > > > +	int ret;
-> > > > +
-> > > > +	if (sq->vq->premapped) {
-> > > > +		data = virtnet_sq_map_sg(sq, num, data);
-> > > > +		if (!data)
-> > > > +			return -ENOMEM;
-> > > > +	}
-> > > > +
-> > > > +	ret = virtqueue_add_outbuf(sq->vq, sq->sg, num, data, GFP_ATOMIC);
-> > > > +	if (ret && sq->vq->premapped)
-> > > > +		virtnet_sq_unmap(sq, &data);
-> > > > +
-> > > > +	return ret;
-> > > > +}
-> > > > +
-> > > > +static int virtnet_sq_init_dma_mate(struct send_queue *sq)
-> > >
-> > > Mate? The popular south african drink?
-> > >
-> > > > +{
-> > > > +	struct virtnet_sq_dma *d;
-> > > > +	int num, i;
-> > > > +
-> > > > +	num = virtqueue_get_vring_size(sq->vq);
-> > > > +
-> > > > +	sq->dmainfo.free = kcalloc(num, sizeof(*sq->dmainfo.free), GFP_KERNEL);
-> > > > +	if (!sq->dmainfo.free)
-> > > > +		return -ENOMEM;
-> > >
-> > >
-> > > This could be quite a bit of memory for a large queue.  And for a bunch
-> > > of common cases where unmap is a nop (e.g. iommu pt) this does nothing
-> > > useful at all.  And also, this does nothing useful if PLATFORM_ACCESS is off
-> > > which is super common.
-> > >
-> > > A while ago I proposed:
-> > > - extend DMA APIs so one can query whether unmap is a nop
-> >
-> >
-> > We may have trouble for this.
-> >
-> > dma_addr_t dma_map_page_attrs(struct device *dev, struct page *page,
-> > 		size_t offset, size_t size, enum dma_data_direction dir,
-> > 		unsigned long attrs)
-> > {
-> > 	const struct dma_map_ops *ops = get_dma_ops(dev);
-> > 	dma_addr_t addr;
-> >
-> > 	BUG_ON(!valid_dma_direction(dir));
-> >
-> > 	if (WARN_ON_ONCE(!dev->dma_mask))
-> > 		return DMA_MAPPING_ERROR;
-> >
-> > 	if (dma_map_direct(dev, ops) ||
-> > 	    arch_dma_map_page_direct(dev, page_to_phys(page) + offset + size))
-> > 		addr = dma_direct_map_page(dev, page, offset, size, dir, attrs);
-> > 	else
-> > 		addr = ops->map_page(dev, page, offset, size, dir, attrs);
-> > 	kmsan_handle_dma(page, offset, size, dir);
-> > 	debug_dma_map_page(dev, page, offset, size, dir, addr, attrs);
-> >
-> > 	return addr;
-> > }
-> >
-> > arch_dma_map_page_direct will check the dma address.
-> > So we can not judge by the API in advance.
-> >
-> > Thanks.
->
-> So if dma_map_direct is false we'll still waste some memory.
-> So be it.
+From: Arnd Bergmann <arnd@arndb.de>
 
-arch_dma_map_page_direct default is marco (false), just for powerpc
-it is a function. So I think we can skip it.
+Naresh noticed that the newly added usage of the PAGE_SIZE macro in
+include/vdso/datapage.h introduced a build regression. I had an older
+patch that I revived to have this defined through Kconfig rather than
+through including asm/page.h, which is not allowed in vdso code.
 
-If the dma_map_direct is false, I think should save the dma info.
+I rebased and tested on top of the tip/timers/core branch that
+introduced the regression. If these patches get added, the
+compat VDSOs all build again, but the changes are a bit invasive.
 
-Thanks.
+      Arnd
 
->
->
-> >
-> >
-> >
-> > >   and whether sync is a nop
-> > > - virtio wrapper taking into account PLATFORM_ACCESS too
-> > >
-> > > then we can save all this work and memory when not needed.
-> > >
-> > >
-> > >
-> > > > +
-> > > > +	sq->dmainfo.p = sq->dmainfo.free;
-> > > > +
-> > > > +	for (i = 0; i < num; ++i) {
-> > > > +		d = &sq->dmainfo.free[i];
-> > > > +		d->next = d + 1;
-> > > > +	}
-> > > > +
-> > > > +	d->next = NULL;
-> > > > +
-> > > > +	return 0;
-> > > > +}
-> > > > +
-> > > >  static void __free_old_xmit(struct send_queue *sq, bool in_napi,
-> > > >  			    struct virtnet_sq_free_stats *stats)
-> > > >  {
-> > > > @@ -377,6 +487,9 @@ static void __free_old_xmit(struct send_queue *sq, bool in_napi,
-> > > >  	while ((ptr = virtqueue_get_buf(sq->vq, &len)) != NULL) {
-> > > >  		++stats->packets;
-> > > >
-> > > > +		if (sq->vq->premapped)
-> > > > +			virtnet_sq_unmap(sq, &ptr);
-> > > > +
-> > > >  		if (!is_xdp_frame(ptr)) {
-> > > >  			struct sk_buff *skb = ptr;
-> > > >
-> > > > @@ -890,8 +1003,7 @@ static int __virtnet_xdp_xmit_one(struct virtnet_info *vi,
-> > > >  			    skb_frag_size(frag), skb_frag_off(frag));
-> > > >  	}
-> > > >
-> > > > -	err = virtqueue_add_outbuf(sq->vq, sq->sg, nr_frags + 1,
-> > > > -				   xdp_to_ptr(xdpf), GFP_ATOMIC);
-> > > > +	err = virtnet_add_outbuf(sq, nr_frags + 1, xdp_to_ptr(xdpf));
-> > > >  	if (unlikely(err))
-> > > >  		return -ENOSPC; /* Caller handle free/refcnt */
-> > > >
-> > > > @@ -2357,7 +2469,7 @@ static int xmit_skb(struct send_queue *sq, struct sk_buff *skb)
-> > > >  			return num_sg;
-> > > >  		num_sg++;
-> > > >  	}
-> > > > -	return virtqueue_add_outbuf(sq->vq, sq->sg, num_sg, skb, GFP_ATOMIC);
-> > > > +	return virtnet_add_outbuf(sq, num_sg, skb);
-> > > >  }
-> > > >
-> > > >  static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
-> > > > @@ -4166,6 +4278,8 @@ static void virtnet_free_queues(struct virtnet_info *vi)
-> > > >  	for (i = 0; i < vi->max_queue_pairs; i++) {
-> > > >  		__netif_napi_del(&vi->rq[i].napi);
-> > > >  		__netif_napi_del(&vi->sq[i].napi);
-> > > > +
-> > > > +		kfree(vi->sq[i].dmainfo.p);
-> > > >  	}
-> > > >
-> > > >  	/* We called __netif_napi_del(),
-> > > > @@ -4214,6 +4328,15 @@ static void free_receive_page_frags(struct virtnet_info *vi)
-> > > >
-> > > >  static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf)
-> > > >  {
-> > > > +	struct virtnet_info *vi = vq->vdev->priv;
-> > > > +	struct send_queue *sq;
-> > > > +	int i = vq2rxq(vq);
-> > > > +
-> > > > +	sq = &vi->sq[i];
-> > > > +
-> > > > +	if (sq->vq->premapped)
-> > > > +		virtnet_sq_unmap(sq, &buf);
-> > > > +
-> > > >  	if (!is_xdp_frame(buf))
-> > > >  		dev_kfree_skb(buf);
-> > > >  	else
-> > > > @@ -4327,8 +4450,10 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
-> > > >  		if (ctx)
-> > > >  			ctx[rxq2vq(i)] = true;
-> > > >
-> > > > -		if (premapped)
-> > > > +		if (premapped) {
-> > > >  			premapped[rxq2vq(i)] = true;
-> > > > +			premapped[txq2vq(i)] = true;
-> > > > +		}
-> > > >  	}
-> > > >
-> > > >  	cfg.nvqs      = total_vqs;
-> > > > @@ -4352,6 +4477,9 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
-> > > >  		vi->rq[i].vq = vqs[rxq2vq(i)];
-> > > >  		vi->rq[i].min_buf_len = mergeable_min_buf_len(vi, vi->rq[i].vq);
-> > > >  		vi->sq[i].vq = vqs[txq2vq(i)];
-> > > > +
-> > > > +		if (vi->sq[i].vq->premapped)
-> > > > +			virtnet_sq_init_dma_mate(&vi->sq[i]);
-> > > >  	}
-> > > >
-> > > >  	/* run here: ret == 0. */
-> > > > --
-> > > > 2.32.0.3.g01195cf9f
-> > >
->
+Link: https://lore.kernel.org/lkml/CA+G9fYtrXXm_KO9fNPz3XaRxHV7UD_yQp-TEuPQrNRHU+_0W_Q@mail.gmail.com/
+Link: https://lore.kernel.org/all/65dc6c14.170a0220.f4a3f.91dd@mx.google.com/
+
+Arnd Bergmann (4):
+  arch: consolidate existing CONFIG_PAGE_SIZE_*KB definitions
+  arch: simplify architecture specific page size configuration
+  arch: define CONFIG_PAGE_SIZE_*KB on all architectures
+  vdso: avoid including asm/page.h
+
+ arch/Kconfig                       | 58 ++++++++++++++++++++++++++++--
+ arch/alpha/Kconfig                 |  1 +
+ arch/alpha/include/asm/page.h      |  2 +-
+ arch/arc/Kconfig                   |  3 ++
+ arch/arc/include/uapi/asm/page.h   |  6 ++--
+ arch/arm/Kconfig                   |  1 +
+ arch/arm/include/asm/page.h        |  2 +-
+ arch/arm64/Kconfig                 | 29 +++++++--------
+ arch/arm64/include/asm/page-def.h  |  2 +-
+ arch/csky/Kconfig                  |  1 +
+ arch/csky/include/asm/page.h       |  2 +-
+ arch/hexagon/Kconfig               | 25 +++----------
+ arch/hexagon/include/asm/page.h    |  6 +---
+ arch/loongarch/Kconfig             | 21 ++++-------
+ arch/loongarch/include/asm/page.h  | 10 +-----
+ arch/m68k/Kconfig                  |  3 ++
+ arch/m68k/Kconfig.cpu              |  2 ++
+ arch/m68k/include/asm/page.h       |  6 +---
+ arch/microblaze/Kconfig            |  1 +
+ arch/microblaze/include/asm/page.h |  2 +-
+ arch/mips/Kconfig                  | 58 +++---------------------------
+ arch/mips/include/asm/page.h       | 16 +--------
+ arch/nios2/Kconfig                 |  1 +
+ arch/nios2/include/asm/page.h      |  2 +-
+ arch/openrisc/Kconfig              |  1 +
+ arch/openrisc/include/asm/page.h   |  2 +-
+ arch/parisc/Kconfig                |  3 ++
+ arch/parisc/include/asm/page.h     | 10 +-----
+ arch/powerpc/Kconfig               | 31 ++++------------
+ arch/powerpc/include/asm/page.h    |  2 +-
+ arch/riscv/Kconfig                 |  1 +
+ arch/riscv/include/asm/page.h      |  2 +-
+ arch/s390/Kconfig                  |  1 +
+ arch/s390/include/asm/page.h       |  2 +-
+ arch/sh/include/asm/page.h         | 13 +------
+ arch/sh/mm/Kconfig                 | 42 +++++++---------------
+ arch/sparc/Kconfig                 |  2 ++
+ arch/sparc/include/asm/page_32.h   |  2 +-
+ arch/sparc/include/asm/page_64.h   |  3 +-
+ arch/um/Kconfig                    |  1 +
+ arch/um/include/asm/page.h         |  2 +-
+ arch/x86/Kconfig                   |  1 +
+ arch/x86/include/asm/page_types.h  |  2 +-
+ arch/xtensa/Kconfig                |  1 +
+ arch/xtensa/include/asm/page.h     |  2 +-
+ include/vdso/datapage.h            |  4 +--
+ scripts/gdb/linux/constants.py.in  |  2 +-
+ scripts/gdb/linux/mm.py            |  2 +-
+ 48 files changed, 153 insertions(+), 241 deletions(-)
+
+-- 
+2.39.2
+To: Thomas Gleixner <tglx@linutronix.de>
+To: Vincenzo Frascino <vincenzo.frascino@arm.com>
+To: Kees Cook <keescook@chromium.org>
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc: Matt Turner <mattst88@gmail.com>
+Cc: Vineet Gupta <vgupta@kernel.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Guo Ren <guoren@kernel.org>
+Cc: Brian Cain <bcain@quicinc.com>
+Cc: Huacai Chen <chenhuacai@kernel.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Michal Simek <monstr@monstr.eu>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Andreas Larsson <andreas@gaisler.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: x86@kernel.org
+Cc: Max Filippov <jcmvbkbc@gmail.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc: Jan Kiszka <jan.kiszka@siemens.com>
+Cc: Kieran Bingham <kbingham@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-alpha@vger.kernel.org
+Cc: linux-snps-arc@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-csky@vger.kernel.org
+Cc: linux-hexagon@vger.kernel.org
+Cc: loongarch@lists.linux.dev
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-mips@vger.kernel.org
+Cc: linux-openrisc@vger.kernel.org
+Cc: linux-parisc@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-riscv@lists.infradead.org
+Cc: linux-s390@vger.kernel.org
+Cc: linux-sh@vger.kernel.org
+Cc: sparclinux@vger.kernel.org
+Cc: linux-um@lists.infradead.org
 
