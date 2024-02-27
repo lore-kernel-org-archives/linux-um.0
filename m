@@ -4,59 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 44EA0C5478C
-	for <linux-um@archiver.kernel.org>; Tue, 27 Feb 2024 17:35:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 020CDC54E41
+	for <linux-um@archiver.kernel.org>; Tue, 27 Feb 2024 20:52:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=TPKPFDOL+Th5zpWtuhCgNu82ydg+ZTD0lvhOkSebkt4=; b=DdYTg3ymTEihmCzOv5mTAi2od2
-	0sYHB0oMKqmL5CmQdGnvYiylQwGR0dDXny3dP5lzyXpzpfYSqm8Wp7ijgG0cn3AspPlpqsvM/yk4e
-	Rxl+Wgqcmoo6XIRBOdfXmDUgdq6TxERp4dy5Kxlqwh6QRmb3GqoXUO4wWHHhtRBjUvDuZ2YJa3/cv
-	r1U8JQMl2V6SlX17v4gXQRxnpDzDxM0TAqEW1/IA+q75/w98St44pVmqPEcPiPQz4dnq02T3FuWfR
-	5ploFTz1lnmb0X00hUNTUH/mTkjYBoXtraxshY05s418Mvb45RqgxVOdndcFaHesaV+8hFh6k79BY
-	e15FgQhQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Subject:References:In-Reply-To:Message-ID:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=aUquLlW0AITQ80jfbVkD6Bw5E1g69IurU+CVZBc41Ew=; b=ie7No68TRC9+ZX/sslRNGKDCgS
+	1QOU9EX/1+jmo3VmL2Iyj9OCKrlo5+dhugSjcMjhyfzPRY4cb6iJZ/gxNmd+EM6C/WWkdhEifKvgL
+	Bb8m0YeXxEpf/N13a6kwBLpRzyU1KVIH6WvCdiEM76ORpPvAB7A89xtglm6Me4ZHmdD9pN22665QD
+	9JJP6f91TRMLiTSQ/HaIsMsx6lzd+NoP3be5EYosM49VR/ZjQjpjHl8LyrqeIFcTodk3dyEB0pxNS
+	Gp5+HBZmRB5+pdXbmLRAcWJlGfUkc+SvtRhKTxG8wk/sORlJsQt0QGacyNwaCdNwayMkKKdsTkdNT
+	alg+7MwA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rf1MG-00000006ER4-2yr2;
-	Tue, 27 Feb 2024 17:35:12 +0000
-Received: from foss.arm.com ([217.140.110.172])
-	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rf1MB-00000006ENi-38fE;
-	Tue, 27 Feb 2024 17:35:09 +0000
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6984ADA7;
-	Tue, 27 Feb 2024 09:35:43 -0800 (PST)
-Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.28.137])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DFCFE3F73F;
-	Tue, 27 Feb 2024 09:35:02 -0800 (PST)
-Date: Tue, 27 Feb 2024 17:34:58 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Will Deacon <will@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-	linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-	linux-um@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-	kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-	devicetree@vger.kernel.org, Frank Rowand <frowand.list@gmail.com>,
-	Catalin Marinas <catalin.marinas@arm.com>
-Subject: Re: [PATCH v4 5/7] arm64: Unconditionally call
- unflatten_device_tree()
-Message-ID: <Zd4dQpHO7em1ji67@FVFF77S0Q05N.cambridge.arm.com>
-References: <20240217010557.2381548-1-sboyd@kernel.org>
- <20240217010557.2381548-6-sboyd@kernel.org>
- <20240223000317.GA3835346-robh@kernel.org>
- <20240223102345.GA10274@willie-the-truck>
- <CAL_JsqJSeSHeWV3YJE9n2NuY+s_iE6f7N5C_oguEJn7jTZ20xA@mail.gmail.com>
+	id 1rf4RT-00000006oCr-0Knj;
+	Tue, 27 Feb 2024 20:52:47 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
+	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rf4RP-00000006oAM-1HGB
+	for linux-um@lists.infradead.org;
+	Tue, 27 Feb 2024 20:52:45 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 19047626FAEB;
+	Tue, 27 Feb 2024 21:52:38 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id xm0VuJW7DFlB; Tue, 27 Feb 2024 21:52:37 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 6036C626FAEC;
+	Tue, 27 Feb 2024 21:52:37 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id ggZPpoQ8IXPq; Tue, 27 Feb 2024 21:52:37 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 31C89626FAEB;
+	Tue, 27 Feb 2024 21:52:37 +0100 (CET)
+Date: Tue, 27 Feb 2024 21:52:37 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+To: hch <hch@lst.de>
+Cc: anton ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, 
+	Jens Axboe <axboe@kernel.dk>, 
+	linux-um <linux-um@lists.infradead.org>, 
+	linux-block <linux-block@vger.kernel.org>
+Message-ID: <1749218520.106417.1709067157062.JavaMail.zimbra@nod.at>
+In-Reply-To: <20240222072417.3773131-2-hch@lst.de>
+References: <20240222072417.3773131-1-hch@lst.de> <20240222072417.3773131-2-hch@lst.de>
+Subject: Re: [PATCH 1/7] ubd: remove the ubd_gendisk array
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL_JsqJSeSHeWV3YJE9n2NuY+s_iE6f7N5C_oguEJn7jTZ20xA@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: remove the ubd_gendisk array
+Thread-Index: cQzJaZjzWfjjT+4tdF6umrFdswpj1g==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240227_093507_908940_86DF7678 
-X-CRM114-Status: GOOD (  27.27  )
+X-CRM114-CacheID: sfid-20240227_125243_686621_CEF1AECC 
+X-CRM114-Status: GOOD (  12.79  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,60 +78,80 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, Feb 23, 2024 at 11:17:02AM -0700, Rob Herring wrote:
-> On Fri, Feb 23, 2024 at 3:23 AM Will Deacon <will@kernel.org> wrote:
-> >
-> > On Thu, Feb 22, 2024 at 05:03:17PM -0700, Rob Herring wrote:
-> > > On Fri, Feb 16, 2024 at 05:05:54PM -0800, Stephen Boyd wrote:
-> > > > Call this function unconditionally so that we can populate an empty DTB
-> > > > on platforms that don't boot with a firmware provided or builtin DTB.
-> > > > When ACPI is in use, unflatten_device_tree() ignores the
-> > > > 'initial_boot_params' pointer so the live DT on those systems won't be
-> > > > whatever that's pointing to. Similarly, when kexec copies the DT data
-> > > > the previous kernel to the new one on ACPI systems,
-> > > > of_kexec_alloc_and_setup_fdt() will ignore the live DT (the empty root
-> > > > one) and copy the 'initial_boot_params' data.
-> > > >
-> > > > Cc: Rob Herring <robh+dt@kernel.org>
-> > > > Cc: Frank Rowand <frowand.list@gmail.com>
-> > > > Cc: Catalin Marinas <catalin.marinas@arm.com>
-> > > > Cc: Will Deacon <will@kernel.org>
-> > > > Cc: Mark Rutland <mark.rutland@arm.com>
-> > > > Cc: <linux-arm-kernel@lists.infradead.org>
-> > > > Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-> > > > ---
-> > > >  arch/arm64/kernel/setup.c | 3 +--
-> > > >  1 file changed, 1 insertion(+), 2 deletions(-)
-> > >
-> > > Catalin, Will, Can I get an ack on this so I can take the series via the
-> > > DT tree.
-> >
-> > Mark had strong pretty strong objections to this in version one:
-> 
-> Yes, I had concerns with it as well.
-> 
-> > https://lore.kernel.org/all/ZaZtbU9hre3YhZam@FVFF77S0Q05N/
-> >
-> > and this patch looks the same now as it did then. Did something else
-> > change?
-> 
-> Yes, that version unflattened the bootloader passed DT. Now within
-> unflatten_devicetree(), the bootloader DT is ignored if ACPI is
-> enabled and we unflatten an empty tree. That will prevent the kernel
-> getting 2 h/w descriptions if/when a platform does such a thing. Also,
-> kexec still uses the bootloader provided DT as before.
+----- Urspr=C3=BCngliche Mail -----
+> Von: "hch" <hch@lst.de>
+> An: "richard" <richard@nod.at>, "anton ivanov" <anton.ivanov@cambridgegre=
+ys.com>, "Johannes Berg"
+> <johannes@sipsolutions.net>, "Jens Axboe" <axboe@kernel.dk>
+> CC: "linux-um" <linux-um@lists.infradead.org>, "linux-block" <linux-block=
+@vger.kernel.org>
+> Gesendet: Donnerstag, 22. Februar 2024 08:24:11
+> Betreff: [PATCH 1/7] ubd: remove the ubd_gendisk array
 
-That avoids the main instance of my concern, and means that this'll boot
-without issue, but IIUC this opens the door to dynamically instantiating DT
-devices atop an ACPI base system, which I think in general is something that's
-liable to cause more problems than it solves.
+> And add a disk pointer to the ubd structure instead to keep all
+> the per-device information together.
+>=20
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+> arch/um/drivers/ubd_kern.c | 13 ++++---------
+> 1 file changed, 4 insertions(+), 9 deletions(-)
+>=20
+> diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+> index 48e11f073551b4..b203ebb1785125 100644
+> --- a/arch/um/drivers/ubd_kern.c
+> +++ b/arch/um/drivers/ubd_kern.c
+> @@ -125,9 +125,6 @@ static const struct block_device_operations ubd_blops=
+ =3D {
+> =09.getgeo=09=09=3D ubd_getgeo,
+> };
+>=20
+> -/* Protected by ubd_lock */
+> -static struct gendisk *ubd_gendisk[MAX_DEV];
+> -
+> #ifdef CONFIG_BLK_DEV_UBD_SYNC
+> #define OPEN_FLAGS ((struct openflags) { .r =3D 1, .w =3D 1, .s =3D 1, .c=
+ =3D 0, \
+> =09=09=09=09=09 .cl =3D 1 })
+> @@ -165,6 +162,7 @@ struct ubd {
+> =09unsigned no_trim:1;
+> =09struct cow cow;
+> =09struct platform_device pdev;
+> +=09struct gendisk *disk;
+> =09struct request_queue *queue;
+> =09struct blk_mq_tag_set tag_set;
+> =09spinlock_t lock;
+> @@ -922,7 +920,6 @@ static int ubd_add(int n, char **error_out)
+> =09if (err)
+> =09=09goto out_cleanup_disk;
+>=20
+> -=09ubd_gendisk[n] =3D disk;
+> =09return 0;
+>=20
+> out_cleanup_disk:
+> @@ -1014,7 +1011,6 @@ static int ubd_id(char **str, int *start_out, int
+> *end_out)
+>=20
+> static int ubd_remove(int n, char **error_out)
+> {
+> -=09struct gendisk *disk =3D ubd_gendisk[n];
+> =09struct ubd *ubd_dev;
+> =09int err =3D -ENODEV;
+>=20
+> @@ -1030,10 +1026,9 @@ static int ubd_remove(int n, char **error_out)
+> =09if(ubd_dev->count > 0)
+> =09=09goto out;
+>=20
+> -=09ubd_gendisk[n] =3D NULL;
+> -=09if(disk !=3D NULL){
+> -=09=09del_gendisk(disk);
+> -=09=09put_disk(disk);
+> +=09if (ubd_dev->disk) {
+> +=09=09del_gendisk(ubd_dev->disk);
+> +=09=09put_disk(ubd_dev->disk);
+> =09}
 
-I understand that's desireable for the selftests, though I still don't believe
-it's strictly necessary -- there are plenty of other things that only work if
-the kernel is booted in a specific configuration.
+Reviewed-by: Richard Weinberger <richard@nod.at>
 
-Putting the selftests aside, why do we need to do this? Is there any other
-reason to enable this?
-
-Mark.
+Thanks,
+//richard
 
