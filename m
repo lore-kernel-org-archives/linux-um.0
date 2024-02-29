@@ -4,52 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35A1AC54798
-	for <linux-um@archiver.kernel.org>; Thu, 29 Feb 2024 07:21:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41B9BC54798
+	for <linux-um@archiver.kernel.org>; Thu, 29 Feb 2024 08:21:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=KkT5T/swMYJC+M1uG40XFtpIGk/ayvRaf2PNE7WpniY=; b=kywwkiCzSh+JZu0w4JIHbFMCyj
-	AOQiQOMpmiUNDGK2x487igARQ3JjS9nBaSoKuGbjRVbY4EcACSHVQ70LWDlCTmbudD9SItHhECTZP
-	gAVmRFMN+TVjrlsmuhwlPE/MN5AUOSLBMGNfoXSdp4ttpmiaQu10Y1nurxZrRmA7XSJb/WLtqP5eI
-	V5NAyBkPljR+GGhyEa+6GDom/ulz9XEgUFUfmk3lQSbdTVUgOeQpROAD3v8MJldP59sdXrS81ySaC
-	+Z/locu3CniYXT1V0YAEBhRnYR9fJlw4OSHZY8J/ajJLd3rXyKymQsvTd9Afsf0UdFSVdeUc0Cn+q
-	Mgm5rM8Q==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:In-Reply-To:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=yYWjbn49/FOaKnxv8tY8E/wAWpBZLZbrgSR43I6LPzc=; b=pgHWzGcttKs/SOwBzuymrvl1JA
+	1FHiNOv/Bmeut3xJjyndmuSu5lK7BDlO9zDqvpODE6cMp+Fu+u+y4wa4/I18v1ZywCq5LUli6QGGY
+	HllnNqTdjk/ZIJR+t6I5HCQZRJwFz6cG2jwWK2Jnqj+nUwsHwvHaxcSTMIjsEH9q4LGorvLbAS9M2
+	aV9heXXWpP5CRmn6uN+9ItWlmY2p4zn4ruejASmRFtgIAPtuPMXSVdX8wWT3klgfobhAlYXhUG9Df
+	kaq4GB0U8jk/Bjdb4hQCDh4tGbPWTaqNsF34RoA4FGIh6oLy6UlZcBM0shgviKaql4P6pi3iUIMOK
+	5DUABZoQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rfajO-0000000CSMB-2KMn;
-	Thu, 29 Feb 2024 07:21:26 +0000
-Received: from out30-101.freemail.mail.aliyun.com ([115.124.30.101])
+	id 1rfbfa-0000000Ccrg-1ons;
+	Thu, 29 Feb 2024 08:21:34 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rfajG-0000000CSCr-3kpD
+	id 1rfbfX-0000000CcqF-3oRS
 	for linux-um@lists.infradead.org;
-	Thu, 29 Feb 2024 07:21:22 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1709191277; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=KkT5T/swMYJC+M1uG40XFtpIGk/ayvRaf2PNE7WpniY=;
-	b=UOcpNvj/lkMHaRP0aydZKpnCsFII+48sp86Xxt5btDjrucyyqIh4xyEp+C/XvSTedWWtBOCoRpOls8nO9EGAmPhXDBfceHIFN5pB+9bYXQOZdKGSgUgvAvpcUFpXO7DQx1LOtVxcJe3N8Eb3iem96hm8bfHb/SM1Z1wP8/S2WxY=
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=35;SR=0;TI=SMTPD_---0W1SAVFD_1709191275;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W1SAVFD_1709191275)
-          by smtp.aliyun-inc.com;
-          Thu, 29 Feb 2024 15:21:16 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: virtualization@lists.linux.dev
-Cc: Richard Weinberger <richard@nod.at>,
+	Thu, 29 Feb 2024 08:21:33 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709194890;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yYWjbn49/FOaKnxv8tY8E/wAWpBZLZbrgSR43I6LPzc=;
+	b=T/Zygzf3dqVjgThhvj5sxatIHDR86p07Asu/pudn/xzjxzMv/2aoi6q38U/TEDbDuWuQtx
+	C0GxA7nXh0AwO8uQHYKiJQeLd9Fqv0dsYpA1orrA237nY/QcSEzkQGvO2v7UhAep0oxe0Y
+	N+a0fMyv7uzfTpQ24U7uUkYHm2ICsXo=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-451-IFaUkFEZOwubx7fuGPby5w-1; Thu, 29 Feb 2024 03:21:25 -0500
+X-MC-Unique: IFaUkFEZOwubx7fuGPby5w-1
+Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-5131aa087beso404348e87.2
+        for <linux-um@lists.infradead.org>; Thu, 29 Feb 2024 00:21:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709194883; x=1709799683;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yYWjbn49/FOaKnxv8tY8E/wAWpBZLZbrgSR43I6LPzc=;
+        b=oGCL3ATj0zbGl7x7BvTjic6RP3z9LIIQPFkWkNixzxAvFlo8xNrYKgCDZVP0bJSfJT
+         tUSiWFTGW1HzfCoZ/farY5mvffNm+jCy5IzCcmL3U6AWarhnVkpmii47euGpZ9tixs5o
+         SXLj7W/Dhf3GcQB97FMxHeMPPvGUH3qrnd7Ztfy+EKlVeTjZZlmx2YVUq5cVmjGuH7pV
+         OtYZyWuP6cqPxhlU2rEHPfpnGAh4Ys6phzpHfd7/F7JdL3gGQUMRErDvFfgE59vUtSDx
+         nlQhG0BHzJ6ri1PcmbUtRNsTM8cPAD57r96dg74R6qL15C8I21GFhSNfDqoR0xNoCkpN
+         K5uA==
+X-Forwarded-Encrypted: i=1; AJvYcCUaKHwahdX3SEsC1giIQFvgxSfnm4GRNjTOy3w0KJpC2fJTo0FRJHo8w4TnBHRpiJ/FWDfHq8cXw1oJ3xmVU5Ia5VbFS803QcKeKJIi
+X-Gm-Message-State: AOJu0YwSJBZaep0mwG6lnsoEJ4rprruJP5oYHDimoeRqtfUuGo8R8j7g
+	NYLrhL/Kx86xSkvlJ/XbT5L+mhDKiKmpV9X286JlssSVmR8+2/sz4STC4U+bR6dz2NAsTGc3M88
+	UxqhJh2KlFCeixJSGMl9x0ePuTjFWWWTr3bMTgVtQ8OWSmJ3jRX5u1yhz1L/5Tg==
+X-Received: by 2002:a05:6512:2388:b0:513:26e7:440c with SMTP id c8-20020a056512238800b0051326e7440cmr679715lfv.61.1709194883515;
+        Thu, 29 Feb 2024 00:21:23 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHnM+zAIJHxVsYzJ0TLR9J0gKcOujhg4JzZrjGf+sjNfANqyY2DOR0YHjNv8O6HjvN3PHqhFQ==
+X-Received: by 2002:a05:6512:2388:b0:513:26e7:440c with SMTP id c8-20020a056512238800b0051326e7440cmr679694lfv.61.1709194883093;
+        Thu, 29 Feb 2024 00:21:23 -0800 (PST)
+Received: from redhat.com ([2a02:14f:178:d6b0:a21c:61c4:2098:5db])
+        by smtp.gmail.com with ESMTPSA id bt6-20020a056000080600b0033db9383e70sm1078294wrb.81.2024.02.29.00.21.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 00:21:22 -0800 (PST)
+Date: Thu, 29 Feb 2024 03:21:14 -0500
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: virtualization@lists.linux.dev, Richard Weinberger <richard@nod.at>,
 	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
 	Johannes Berg <johannes@sipsolutions.net>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
 	Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
 	Hans de Goede <hdegoede@redhat.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
 	Vadim Pasternak <vadimp@nvidia.com>,
 	Bjorn Andersson <andersson@kernel.org>,
 	Mathieu Poirier <mathieu.poirier@linaro.org>,
@@ -65,25 +95,23 @@ Cc: Richard Weinberger <richard@nod.at>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Jesper Dangaard Brouer <hawk@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
-	linux-um@lists.infradead.org,
-	netdev@vger.kernel.org,
+	linux-um@lists.infradead.org, netdev@vger.kernel.org,
 	platform-driver-x86@vger.kernel.org,
-	linux-remoteproc@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	kvm@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH vhost v3 19/19] virtio_net: sq support premapped mode
-Date: Thu, 29 Feb 2024 15:20:44 +0800
-Message-Id: <20240229072044.77388-20-xuanzhuo@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0.3.g01195cf9f
-In-Reply-To: <20240229072044.77388-1-xuanzhuo@linux.alibaba.com>
+	linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+	kvm@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH vhost v3 00/19] virtio: drivers maintain dma info for
+ premapped vq
+Message-ID: <20240229031755-mutt-send-email-mst@kernel.org>
 References: <20240229072044.77388-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-X-Git-Hash: e3a3e51d6b70
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240229072044.77388-1-xuanzhuo@linux.alibaba.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240228_232119_550499_2B9D191D 
-X-CRM114-Status: GOOD (  17.22  )
+X-CRM114-CacheID: sfid-20240229_002132_053426_DDD8DCF1 
+X-CRM114-Status: GOOD (  27.33  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,240 +126,110 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-If the xsk is enabling, the xsk tx will share the send queue.
-But the xsk requires that the send queue use the premapped mode.
-So the send queue must support premapped mode.
+On Thu, Feb 29, 2024 at 03:20:25PM +0800, Xuan Zhuo wrote:
+> As discussed:
+> http://lore.kernel.org/all/CACGkMEvq0No8QGC46U4mGsMtuD44fD_cfLcPaVmJ3rHYqRZxYg@mail.gmail.com
+> 
+> If the virtio is premapped mode, the driver should manage the dma info by self.
+> So the virtio core should not store the dma info.
+> So we can release the memory used to store the dma info.
+> 
+> But if the desc_extra has not dma info, we face a new question,
+> it is hard to get the dma info of the desc with indirect flag.
+> For split mode, that is easy from desc, but for the packed mode,
+> it is hard to get the dma info from the desc. And for hardening
+> the dma unmap is saft, we should store the dma info of indirect
+> descs.
+> 
+> So I introduce the "structure the indirect desc table" to
+> allocate space to store dma info with the desc table.
+> 
+> On the other side, we mix the descs with indirect flag
+> with other descs together to share the unmap api. That
+> is complex. I found if we we distinguish the descs with
+> VRING_DESC_F_INDIRECT before unmap, thing will be clearer.
+> 
+> Because of the dma array is allocated in the find_vqs(),
+> so I introduce a new parameter to find_vqs().
+> 
+> Note:
+>     this is on the top of
+>         [PATCH vhost v1] virtio: packed: fix unmap leak for indirect desc table
+>         http://lore.kernel.org/all/20240223071833.26095-1-xuanzhuo@linux.alibaba.com
+> 
+> Please review.
+> 
+> Thanks
+> 
+> v3:
+>     1. fix the conflict with the vp_modern_create_avq().
 
-cmd:
-    sh samples/pktgen/pktgen_sample01_simple.sh -i eth0 \
-        -s 16 -d 10.0.0.128 -m 00:16:3e:2c:c8:2e -n 0 -p 100
-CPU:
-    Intel(R) Xeon(R) Platinum 8369B CPU @ 2.70GHz
+Okay but are you going to address huge memory waste all this is causing for
+- people who never do zero copy
+- systems where dma unmap is a nop
 
-Machine:
-    ecs.g7.2xlarge(Aliyun)
+?
 
-before:              1600010.00
-after(no-premapped): 1599966.00
-after(premapped):    1600014.00
+You should address all comments when you post a new version, not just
+what was expedient, or alternatively tag patch as RFC and explain
+in commit log that you plan to do it later.
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/net/virtio_net.c | 136 +++++++++++++++++++++++++++++++++++++--
- 1 file changed, 132 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 7715bb7032ec..b83ef6afc4fb 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -146,6 +146,25 @@ struct virtnet_rq_dma {
- 	u16 need_sync;
- };
- 
-+struct virtnet_sq_dma {
-+	union {
-+		struct virtnet_sq_dma *next;
-+		void *data;
-+	};
-+
-+	u32 num;
-+
-+	dma_addr_t addr[MAX_SKB_FRAGS + 2];
-+	u32 len[MAX_SKB_FRAGS + 2];
-+};
-+
-+struct virtnet_sq_dma_head {
-+	/* record for kfree */
-+	void *p;
-+
-+	struct virtnet_sq_dma *free;
-+};
-+
- /* Internal representation of a send virtqueue */
- struct send_queue {
- 	/* Virtqueue associated with this send _queue */
-@@ -165,6 +184,8 @@ struct send_queue {
- 
- 	/* Record whether sq is in reset state. */
- 	bool reset;
-+
-+	struct virtnet_sq_dma_head dmainfo;
- };
- 
- /* Internal representation of a receive virtqueue */
-@@ -368,6 +389,95 @@ static struct xdp_frame *ptr_to_xdp(void *ptr)
- 	return (struct xdp_frame *)((unsigned long)ptr & ~VIRTIO_XDP_FLAG);
- }
- 
-+static struct virtnet_sq_dma *virtnet_sq_unmap(struct send_queue *sq, void **data)
-+{
-+	struct virtnet_sq_dma *d;
-+	int i;
-+
-+	d = *data;
-+	*data = d->data;
-+
-+	for (i = 0; i < d->num; ++i)
-+		virtqueue_dma_unmap_page_attrs(sq->vq, d->addr[i], d->len[i],
-+					       DMA_TO_DEVICE, 0);
-+
-+	d->next = sq->dmainfo.free;
-+	sq->dmainfo.free = d;
-+
-+	return d;
-+}
-+
-+static struct virtnet_sq_dma *virtnet_sq_map_sg(struct send_queue *sq,
-+						int nents, void *data)
-+{
-+	struct virtnet_sq_dma *d;
-+	struct scatterlist *sg;
-+	int i;
-+
-+	if (!sq->dmainfo.free)
-+		return NULL;
-+
-+	d = sq->dmainfo.free;
-+	sq->dmainfo.free = d->next;
-+
-+	for_each_sg(sq->sg, sg, nents, i) {
-+		if (virtqueue_dma_map_sg_attrs(sq->vq, sg, DMA_TO_DEVICE, 0))
-+			goto err;
-+
-+		d->addr[i] = sg->dma_address;
-+		d->len[i] = sg->length;
-+	}
-+
-+	d->data = data;
-+	d->num = i;
-+	return d;
-+
-+err:
-+	d->num = i;
-+	virtnet_sq_unmap(sq, (void **)&d);
-+	return NULL;
-+}
-+
-+static int virtnet_add_outbuf(struct send_queue *sq, u32 num, void *data)
-+{
-+	int ret;
-+
-+	if (sq->vq->premapped) {
-+		data = virtnet_sq_map_sg(sq, num, data);
-+		if (!data)
-+			return -ENOMEM;
-+	}
-+
-+	ret = virtqueue_add_outbuf(sq->vq, sq->sg, num, data, GFP_ATOMIC);
-+	if (ret && sq->vq->premapped)
-+		virtnet_sq_unmap(sq, &data);
-+
-+	return ret;
-+}
-+
-+static int virtnet_sq_init_dma_mate(struct send_queue *sq)
-+{
-+	struct virtnet_sq_dma *d;
-+	int num, i;
-+
-+	num = virtqueue_get_vring_size(sq->vq);
-+
-+	sq->dmainfo.free = kcalloc(num, sizeof(*sq->dmainfo.free), GFP_KERNEL);
-+	if (!sq->dmainfo.free)
-+		return -ENOMEM;
-+
-+	sq->dmainfo.p = sq->dmainfo.free;
-+
-+	for (i = 0; i < num; ++i) {
-+		d = &sq->dmainfo.free[i];
-+		d->next = d + 1;
-+	}
-+
-+	d->next = NULL;
-+
-+	return 0;
-+}
-+
- static void __free_old_xmit(struct send_queue *sq, bool in_napi,
- 			    struct virtnet_sq_free_stats *stats)
- {
-@@ -377,6 +487,9 @@ static void __free_old_xmit(struct send_queue *sq, bool in_napi,
- 	while ((ptr = virtqueue_get_buf(sq->vq, &len)) != NULL) {
- 		++stats->packets;
- 
-+		if (sq->vq->premapped)
-+			virtnet_sq_unmap(sq, &ptr);
-+
- 		if (!is_xdp_frame(ptr)) {
- 			struct sk_buff *skb = ptr;
- 
-@@ -890,8 +1003,7 @@ static int __virtnet_xdp_xmit_one(struct virtnet_info *vi,
- 			    skb_frag_size(frag), skb_frag_off(frag));
- 	}
- 
--	err = virtqueue_add_outbuf(sq->vq, sq->sg, nr_frags + 1,
--				   xdp_to_ptr(xdpf), GFP_ATOMIC);
-+	err = virtnet_add_outbuf(sq, nr_frags + 1, xdp_to_ptr(xdpf));
- 	if (unlikely(err))
- 		return -ENOSPC; /* Caller handle free/refcnt */
- 
-@@ -2357,7 +2469,7 @@ static int xmit_skb(struct send_queue *sq, struct sk_buff *skb)
- 			return num_sg;
- 		num_sg++;
- 	}
--	return virtqueue_add_outbuf(sq->vq, sq->sg, num_sg, skb, GFP_ATOMIC);
-+	return virtnet_add_outbuf(sq, num_sg, skb);
- }
- 
- static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
-@@ -4166,6 +4278,8 @@ static void virtnet_free_queues(struct virtnet_info *vi)
- 	for (i = 0; i < vi->max_queue_pairs; i++) {
- 		__netif_napi_del(&vi->rq[i].napi);
- 		__netif_napi_del(&vi->sq[i].napi);
-+
-+		kfree(vi->sq[i].dmainfo.p);
- 	}
- 
- 	/* We called __netif_napi_del(),
-@@ -4214,6 +4328,15 @@ static void free_receive_page_frags(struct virtnet_info *vi)
- 
- static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf)
- {
-+	struct virtnet_info *vi = vq->vdev->priv;
-+	struct send_queue *sq;
-+	int i = vq2rxq(vq);
-+
-+	sq = &vi->sq[i];
-+
-+	if (sq->vq->premapped)
-+		virtnet_sq_unmap(sq, &buf);
-+
- 	if (!is_xdp_frame(buf))
- 		dev_kfree_skb(buf);
- 	else
-@@ -4327,8 +4450,10 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
- 		if (ctx)
- 			ctx[rxq2vq(i)] = true;
- 
--		if (premapped)
-+		if (premapped) {
- 			premapped[rxq2vq(i)] = true;
-+			premapped[txq2vq(i)] = true;
-+		}
- 	}
- 
- 	cfg.nvqs      = total_vqs;
-@@ -4352,6 +4477,9 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
- 		vi->rq[i].vq = vqs[rxq2vq(i)];
- 		vi->rq[i].min_buf_len = mergeable_min_buf_len(vi, vi->rq[i].vq);
- 		vi->sq[i].vq = vqs[txq2vq(i)];
-+
-+		if (vi->sq[i].vq->premapped)
-+			virtnet_sq_init_dma_mate(&vi->sq[i]);
- 	}
- 
- 	/* run here: ret == 0. */
--- 
-2.32.0.3.g01195cf9f
+> v2:
+>     1. change the dma item of virtio-net, every item have MAX_SKB_FRAGS + 2
+>         addr + len pairs.
+>     2. introduce virtnet_sq_free_stats for __free_old_xmit
+> 
+> v1:
+>     1. rename transport_vq_config to vq_transport_config
+>     2. virtio-net set dma meta number to (ring-size + 1)(MAX_SKB_FRGAS +2)
+>     3. introduce virtqueue_dma_map_sg_attrs
+>     4. separate vring_create_virtqueue to an independent commit
+> 
+> 
+> 
+> Xuan Zhuo (19):
+>   virtio_ring: introduce vring_need_unmap_buffer
+>   virtio_ring: packed: remove double check of the unmap ops
+>   virtio_ring: packed: structure the indirect desc table
+>   virtio_ring: split: remove double check of the unmap ops
+>   virtio_ring: split: structure the indirect desc table
+>   virtio_ring: no store dma info when unmap is not needed
+>   virtio: find_vqs: pass struct instead of multi parameters
+>   virtio: vring_create_virtqueue: pass struct instead of multi
+>     parameters
+>   virtio: vring_new_virtqueue(): pass struct instead of multi parameters
+>   virtio_ring: simplify the parameters of the funcs related to
+>     vring_create/new_virtqueue()
+>   virtio: find_vqs: add new parameter premapped
+>   virtio_ring: export premapped to driver by struct virtqueue
+>   virtio_net: set premapped mode by find_vqs()
+>   virtio_ring: remove api of setting vq premapped
+>   virtio_ring: introduce dma map api for page
+>   virtio_ring: introduce virtqueue_dma_map_sg_attrs
+>   virtio_net: unify the code for recycling the xmit ptr
+>   virtio_net: rename free_old_xmit_skbs to free_old_xmit
+>   virtio_net: sq support premapped mode
+> 
+>  arch/um/drivers/virtio_uml.c             |  31 +-
+>  drivers/net/virtio_net.c                 | 283 ++++++---
+>  drivers/platform/mellanox/mlxbf-tmfifo.c |  24 +-
+>  drivers/remoteproc/remoteproc_virtio.c   |  31 +-
+>  drivers/s390/virtio/virtio_ccw.c         |  33 +-
+>  drivers/virtio/virtio_mmio.c             |  30 +-
+>  drivers/virtio/virtio_pci_common.c       |  59 +-
+>  drivers/virtio/virtio_pci_common.h       |   9 +-
+>  drivers/virtio/virtio_pci_legacy.c       |  16 +-
+>  drivers/virtio/virtio_pci_modern.c       |  38 +-
+>  drivers/virtio/virtio_ring.c             | 698 ++++++++++++-----------
+>  drivers/virtio/virtio_vdpa.c             |  45 +-
+>  include/linux/virtio.h                   |  13 +-
+>  include/linux/virtio_config.h            |  48 +-
+>  include/linux/virtio_ring.h              |  82 +--
+>  tools/virtio/virtio_test.c               |   4 +-
+>  tools/virtio/vringh_test.c               |  28 +-
+>  17 files changed, 847 insertions(+), 625 deletions(-)
+> 
+> --
+> 2.32.0.3.g01195cf9f
 
 
