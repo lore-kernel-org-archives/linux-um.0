@@ -4,41 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36C4FC54E49
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 36C0CC48BF6
 	for <linux-um@archiver.kernel.org>; Thu, 29 Feb 2024 17:04:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=ZJ4iZR2qsWlZ4aapEky+vEYApfMYzxKzJ6l+O/T6keg=; b=a3eoZm+hHACpXAo8nKStADEoqE
-	RtxklA8wN2yLBxHP75itPGX3mjEN8hWv7rVTnXjJhy4AEMS9+0KAK+wiZij2LJm2pRGX7ukTD0Jem
-	EFBval9Dj0ZCDdFleaqw/H2rtJ0jg0I5A+64m+3TXVA9oYhrS+dDuiSrIq6Y2IxSD8sckJEn5/6lN
-	mp2SwwaChEodHxG3AClJWYnj7NtbYbk5Wn2hxCSbuARA5C8CKv3KI52ytlUv3Tr5Zu7+ay3OADpp0
-	KWBUVpCQf16HKV+dL6cwyTpPXrUxaawvzU2ixn31pxZvfTNME76Omt+U57QFVLZfcLFPIG/iMvXGD
-	OtsF2u2g==;
+	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
+	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=MNglwpmLEePBb8360PGrEXCzcK/Vl81TDbkPNteMmZg=; b=PZbQNkHZBW3dmtvZ7pxDN814Rr
+	g+DvDflX8Z6PNAYYwArPFP9n3vfh7caRsNc3IEw32DnMIrFWVPVf1Lkhro0HsRJm771jV0/giVxMc
+	cQs8ktym7zLVjDsCzXOleX95Zjk1gsJevLZOjbnqnkGMg6Om68HuAcdGvyEZKp2HxeUSnOlf4kXlD
+	wyWg5V3ivFOUL/gir/nGskWx04HX3oogoueXEv/Uq5IhAX36N2ATBNHNBK8zi27JSkLZV1quf7/WZ
+	ZRPaYtRbbw/UpgH1uAlG3sDvaeCoihp55rI/d3SBnGJXXRmhGB7noqG5u3cuUPwI/gBQKrOUyWMm/
+	qGKJX+xg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rfjpt-0000000EPjP-2o3a;
-	Thu, 29 Feb 2024 17:04:45 +0000
-Received: from smtp-8fa9.mail.infomaniak.ch ([2001:1600:7:10::8fa9])
+	id 1rfjpu-0000000EPji-1D9A;
+	Thu, 29 Feb 2024 17:04:46 +0000
+Received: from smtp-8fa8.mail.infomaniak.ch ([83.166.143.168])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rfjpo-0000000EPaq-1gZE
+	id 1rfjpo-0000000EPb0-26W0
 	for linux-um@lists.infradead.org;
-	Thu, 29 Feb 2024 17:04:43 +0000
-Received: from smtp-4-0000.mail.infomaniak.ch (smtp-4-0000.mail.infomaniak.ch [10.7.10.107])
-	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4TlyHp6JJMz5wk;
-	Thu, 29 Feb 2024 18:04:22 +0100 (CET)
-Received: from unknown by smtp-4-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4TlyHm47S2zYBH;
-	Thu, 29 Feb 2024 18:04:20 +0100 (CET)
+	Thu, 29 Feb 2024 17:04:44 +0000
+Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
+	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4TlyHt43J2zMrktk;
+	Thu, 29 Feb 2024 18:04:26 +0100 (CET)
+Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4TlyHt04GMz3g;
+	Thu, 29 Feb 2024 18:04:26 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-	s=20191114; t=1709226262;
-	bh=4wDdbt4I56G5n6LSUJ2u1jaEVBMsm/64WWZPbsYi9U0=;
-	h=From:To:Cc:Subject:Date:From;
-	b=nlVkoodRGG/+JH60co6QTYI+j/xS/kAvzRqTk/xdhkVfSSC5JtD7P7treNBKoqd0u
-	 U5gu49lO236cmDqZAiQi+oFIZbE1jszXjS2h0mslolmhNqIG4IKa/drMCKvMRTmYRX
-	 pKXV1VkrqQbG3nE+oEnjraDdG3Vrknapc8Mb93bc=
+	s=20191114; t=1709226266;
+	bh=f3wQ1gxeTPJnB2/Gx7Deo/AawwvRjdcM6xP+hwNtgJY=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=gcmoNxGKgHYnKVXBDTBQhQzczqpk0AxQqq9JNXYdDODHvh/MAoOXfB/kwfdeEagYp
+	 NERBG2Kr74hChpupRTAofgZCk4ummr2hEYGU9T9zi+Tiqlcq/wnfCSFRB+ktAVcOJM
+	 XfkR6BWeRDyyrWQGtYg1MRUyDHGWxF7r/xVDhEOA=
 From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
 To: Brendan Higgins <brendanhiggins@google.com>,
 	David Gow <davidgow@google.com>,
@@ -70,17 +70,18 @@ Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
 	linux-security-module@vger.kernel.org,
 	linux-um@lists.infradead.org,
 	x86@kernel.org
-Subject: [PATCH v1 0/8] Run KUnit tests late and handle faults
-Date: Thu, 29 Feb 2024 18:04:01 +0100
-Message-ID: <20240229170409.365386-1-mic@digikod.net>
+Subject: [PATCH v1 3/8] kunit: Fix kthread reference
+Date: Thu, 29 Feb 2024 18:04:04 +0100
+Message-ID: <20240229170409.365386-4-mic@digikod.net>
+In-Reply-To: <20240229170409.365386-1-mic@digikod.net>
+References: <20240229170409.365386-1-mic@digikod.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Infomaniak-Routing: alpha
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240229_090440_617129_473C8D2B 
-X-CRM114-Status: UNSURE (   8.56  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240229_090440_809713_B0A97746 
+X-CRM114-Status: GOOD (  10.48  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,49 +96,57 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi,
+There is a race condition when a kthread finishes after the deadline and
+before the call to kthread_stop(), which may lead to use after free.
 
-This patch series moves KUnit test execution at the very end of kernel
-initialization, just before launching the init process.  This opens the
-way to test any kernel code in its normal state (i.e. fully
-initialized).
+Cc: Brendan Higgins <brendanhiggins@google.com>
+Cc: David Gow <davidgow@google.com>
+Cc: Rae Moar <rmoar@google.com>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Signed-off-by: Mickaël Salaün <mic@digikod.net>
+---
+ lib/kunit/try-catch.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-This patch series also teaches KUnit to handle kthread faults as errors,
-and it brings a few related fixes and improvements.
-
-New tests check NULL pointer dereference and read-only memory, which
-wasn't possible before.
-
-This is useful to test current kernel self-protection mechanisms or
-future ones such as Heki: https://github.com/heki-linux
-
-Regards,
-
-Mickaël Salaün (8):
-  kunit: Run tests when the kernel is fully setup
-  kunit: Handle thread creation error
-  kunit: Fix kthread reference
-  kunit: Fix timeout message
-  kunit: Handle test faults
-  kunit: Fix KUNIT_SUCCESS() calls in iov_iter tests
-  kunit: Print last test location on fault
-  kunit: Add tests for faults
-
- include/kunit/test.h                |  24 +++++-
- include/kunit/try-catch.h           |   3 -
- init/main.c                         |   4 +-
- lib/bitfield_kunit.c                |   8 +-
- lib/checksum_kunit.c                |   2 +-
- lib/kunit/executor.c                |  81 ++++++++++++++------
- lib/kunit/kunit-example-test.c      |   6 +-
- lib/kunit/kunit-test.c              | 115 +++++++++++++++++++++++++++-
- lib/kunit/try-catch.c               |  33 +++++---
- lib/kunit_iov_iter.c                |  70 ++++++++---------
- tools/testing/kunit/kunit_kernel.py |   6 +-
- 11 files changed, 261 insertions(+), 91 deletions(-)
-
-
-base-commit: d206a76d7d2726f3b096037f2079ce0bd3ba329b
+diff --git a/lib/kunit/try-catch.c b/lib/kunit/try-catch.c
+index a5cb2ef70a25..73f5007f20ea 100644
+--- a/lib/kunit/try-catch.c
++++ b/lib/kunit/try-catch.c
+@@ -11,6 +11,7 @@
+ #include <linux/completion.h>
+ #include <linux/kernel.h>
+ #include <linux/kthread.h>
++#include <linux/sched/task.h>
+ 
+ #include "try-catch-impl.h"
+ 
+@@ -65,14 +66,15 @@ void kunit_try_catch_run(struct kunit_try_catch *try_catch, void *context)
+ 	try_catch->context = context;
+ 	try_catch->try_completion = &try_completion;
+ 	try_catch->try_result = 0;
+-	task_struct = kthread_run(kunit_generic_run_threadfn_adapter,
+-				  try_catch,
+-				  "kunit_try_catch_thread");
++	task_struct = kthread_create(kunit_generic_run_threadfn_adapter,
++				     try_catch, "kunit_try_catch_thread");
+ 	if (IS_ERR(task_struct)) {
+ 		try_catch->try_result = PTR_ERR(task_struct);
+ 		try_catch->catch(try_catch->context);
+ 		return;
+ 	}
++	get_task_struct(task_struct);
++	wake_up_process(task_struct);
+ 
+ 	time_remaining = wait_for_completion_timeout(&try_completion,
+ 						     kunit_test_timeout());
+@@ -82,6 +84,7 @@ void kunit_try_catch_run(struct kunit_try_catch *try_catch, void *context)
+ 		kthread_stop(task_struct);
+ 	}
+ 
++	put_task_struct(task_struct);
+ 	exit_code = try_catch->try_result;
+ 
+ 	if (!exit_code)
 -- 
 2.44.0
 
