@@ -4,41 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7521CC54E41
-	for <linux-um@archiver.kernel.org>; Thu, 29 Feb 2024 17:04:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0A0F0C48BF6
+	for <linux-um@archiver.kernel.org>; Thu, 29 Feb 2024 17:04:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
 	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=lESC8gxs86pPef6hNpQFjXj3/VCyI+yEnJq6wlPwrdo=; b=VTmLwHH2MM8EoWjlRgaujCzRKi
-	G72yCx5z5ISkwh+Kz1aI5nmCNxxiZBAvT7MTtTJlQDggYcjaXn2+uzP730a0GRed0jYlsillKqc4T
-	CA+i8vxh3mASsWapN4lXgHKtMM/fX7mMNYzd+E9fBvwUcSYYtUXOm/OTnWFMdXEoiIvC/R066wlEg
-	Fq/nrwUE8PQVzKqmxMXtx0R4aopHI9rpg36HjmNrFIl6B8OxEt4Fu7WoBG9GIT5aKwTxPx+nta1Iz
-	aGTXbg5EzvNFVGqbjkMgCu01WeS/AZPUH3u/6qJKyCRHQofGfk/uGE0aTTrHTzvc95nBv0L3fh9IM
-	Z6fkM0dg==;
+	bh=Te7vpsXVfxdwoFmnLIYHER1jf7gNvchbgmirQsPlYD0=; b=RGmbSmuTXMAUKrkSb7jfp7/tUk
+	DnTyCbTASypzcU2FyoW3vz0gIqM8onc3tsYCqsm+IzuTDIg5bRZYAzprKTPqEqhrmltS4IjoGF3Mo
+	4lYnqqdPCTNqx1ZeVBCrfuiYcOWrPGO9SPyBViQ1O3Yh7fUru43Mkk5kGgFGhMoKJymxYM15PAzh1
+	VeeiYZIQCBk/wJCVn5y/iAPW0X+p/e+TuUTzPY6I96RUU5zvol7jfrJRdhcftuS8VJdnjuFx8hw2u
+	FyqaTxeRw/SxRV0iYIK4XU2C3gtfW6s1vqvedXl1POTLiY5YIc8/HQFYfpnlSajX0LuzmtbpCdHUi
+	B3mBBPZw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rfjpz-0000000EPnQ-39ML;
-	Thu, 29 Feb 2024 17:04:51 +0000
-Received: from smtp-bc0a.mail.infomaniak.ch ([2001:1600:4:17::bc0a])
+	id 1rfjq0-0000000EPoN-2HMa;
+	Thu, 29 Feb 2024 17:04:52 +0000
+Received: from smtp-bc0e.mail.infomaniak.ch ([45.157.188.14])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rfjpp-0000000EPaw-3P2J
+	id 1rfjpp-0000000EPbN-3Huu
 	for linux-um@lists.infradead.org;
 	Thu, 29 Feb 2024 17:04:46 +0000
-Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
-	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4TlyHs3xr2zMrktf;
-	Thu, 29 Feb 2024 18:04:25 +0100 (CET)
-Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4TlyHr5l81zsG;
-	Thu, 29 Feb 2024 18:04:24 +0100 (CET)
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4TlyHy3694zMrkv9;
+	Thu, 29 Feb 2024 18:04:30 +0100 (CET)
+Received: from unknown by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4TlyHx3kNwzMppVF;
+	Thu, 29 Feb 2024 18:04:29 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-	s=20191114; t=1709226265;
-	bh=iEMsEf9vHd9/SI1OU/FMhsYF3Xf0RZ6zSUY0txBsePY=;
+	s=20191114; t=1709226270;
+	bh=njKd78Dlxcb8LNFqK0Y6SC5BCIGDfZPNfNKkSCugFkg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mt5sEYwZdJqMXsg2RNP3sZk7FXe2d42pQAwMlKqEqVeZoUnZxWKILpymJr3/osTy1
-	 HATdiX6VsrwoP0gD2blvTb19qjeTYzsRp4SafqrsoXPddY8xyBu1Qc8e4S1DueQbzl
-	 Gv250bTvI44E66febWNikJHzk267euM4+x5fW+J8=
+	b=tSl8YApK6lTMIm1P9is6nUyb70iS56zUvtW6vvPpqkeaUL8jxgCoM51JKQUjF9ssj
+	 cY8uUxa/dhGRdbk00nKuP/PM9L467aNrqqbYwMVsbB96Q4+RBvLJokVbpLp5r41i8A
+	 FSsOtrx+hLcfiz7OU/wAdcXDQcIhO/+DrngS1G5A=
 From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
 To: Brendan Higgins <brendanhiggins@google.com>,
 	David Gow <davidgow@google.com>,
@@ -70,9 +70,9 @@ Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
 	linux-security-module@vger.kernel.org,
 	linux-um@lists.infradead.org,
 	x86@kernel.org
-Subject: [PATCH v1 2/8] kunit: Handle thread creation error
-Date: Thu, 29 Feb 2024 18:04:03 +0100
-Message-ID: <20240229170409.365386-3-mic@digikod.net>
+Subject: [PATCH v1 6/8] kunit: Fix KUNIT_SUCCESS() calls in iov_iter tests
+Date: Thu, 29 Feb 2024 18:04:07 +0100
+Message-ID: <20240229170409.365386-7-mic@digikod.net>
 In-Reply-To: <20240229170409.365386-1-mic@digikod.net>
 References: <20240229170409.365386-1-mic@digikod.net>
 MIME-Version: 1.0
@@ -80,8 +80,8 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Infomaniak-Routing: alpha
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240229_090442_169298_C358E55E 
-X-CRM114-Status: UNSURE (   8.99  )
+X-CRM114-CacheID: sfid-20240229_090442_173463_704603A1 
+X-CRM114-Status: UNSURE (   8.85  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -97,11 +97,10 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Previously, if a thread creation failed (e.g. -ENOMEM), the function was
-called (kunit_catch_run_case or kunit_catch_run_case_cleanup) without
-marking the test as failed.  Instead, fill try_result with the error
-code returned by kthread_run(), which will mark the test as failed and
-print "internal error occurred...".
+Fix KUNIT_SUCCESS() calls to pass a test argument.
+
+This is a no-op for now because this macro does nothing, but it will be
+required for the next commit.
 
 Cc: Brendan Higgins <brendanhiggins@google.com>
 Cc: David Gow <davidgow@google.com>
@@ -109,21 +108,94 @@ Cc: Rae Moar <rmoar@google.com>
 Cc: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Mickaël Salaün <mic@digikod.net>
 ---
- lib/kunit/try-catch.c | 1 +
- 1 file changed, 1 insertion(+)
+ lib/kunit_iov_iter.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/lib/kunit/try-catch.c b/lib/kunit/try-catch.c
-index f7825991d576..a5cb2ef70a25 100644
---- a/lib/kunit/try-catch.c
-+++ b/lib/kunit/try-catch.c
-@@ -69,6 +69,7 @@ void kunit_try_catch_run(struct kunit_try_catch *try_catch, void *context)
- 				  try_catch,
- 				  "kunit_try_catch_thread");
- 	if (IS_ERR(task_struct)) {
-+		try_catch->try_result = PTR_ERR(task_struct);
- 		try_catch->catch(try_catch->context);
- 		return;
+diff --git a/lib/kunit_iov_iter.c b/lib/kunit_iov_iter.c
+index a77991a9bffb..b586aa19e45d 100644
+--- a/lib/kunit_iov_iter.c
++++ b/lib/kunit_iov_iter.c
+@@ -137,7 +137,7 @@ static void iov_kunit_copy_to_kvec(struct kunit *test)
+ 			return;
  	}
+ 
+-	KUNIT_SUCCEED();
++	KUNIT_SUCCEED(test);
+ }
+ 
+ /*
+@@ -192,7 +192,7 @@ static void iov_kunit_copy_from_kvec(struct kunit *test)
+ 			return;
+ 	}
+ 
+-	KUNIT_SUCCEED();
++	KUNIT_SUCCEED(test);
+ }
+ 
+ struct bvec_test_range {
+@@ -299,7 +299,7 @@ static void iov_kunit_copy_to_bvec(struct kunit *test)
+ 			return;
+ 	}
+ 
+-	KUNIT_SUCCEED();
++	KUNIT_SUCCEED(test);
+ }
+ 
+ /*
+@@ -356,7 +356,7 @@ static void iov_kunit_copy_from_bvec(struct kunit *test)
+ 			return;
+ 	}
+ 
+-	KUNIT_SUCCEED();
++	KUNIT_SUCCEED(test);
+ }
+ 
+ static void iov_kunit_destroy_xarray(void *data)
+@@ -449,7 +449,7 @@ static void iov_kunit_copy_to_xarray(struct kunit *test)
+ 			return;
+ 	}
+ 
+-	KUNIT_SUCCEED();
++	KUNIT_SUCCEED(test);
+ }
+ 
+ /*
+@@ -512,7 +512,7 @@ static void iov_kunit_copy_from_xarray(struct kunit *test)
+ 			return;
+ 	}
+ 
+-	KUNIT_SUCCEED();
++	KUNIT_SUCCEED(test);
+ }
+ 
+ /*
+@@ -592,7 +592,7 @@ static void iov_kunit_extract_pages_kvec(struct kunit *test)
+ stop:
+ 	KUNIT_EXPECT_EQ(test, size, 0);
+ 	KUNIT_EXPECT_EQ(test, iter.count, 0);
+-	KUNIT_SUCCEED();
++	KUNIT_SUCCEED(test);
+ }
+ 
+ /*
+@@ -670,7 +670,7 @@ static void iov_kunit_extract_pages_bvec(struct kunit *test)
+ stop:
+ 	KUNIT_EXPECT_EQ(test, size, 0);
+ 	KUNIT_EXPECT_EQ(test, iter.count, 0);
+-	KUNIT_SUCCEED();
++	KUNIT_SUCCEED(test);
+ }
+ 
+ /*
+@@ -749,7 +749,7 @@ static void iov_kunit_extract_pages_xarray(struct kunit *test)
+ 	}
+ 
+ stop:
+-	KUNIT_SUCCEED();
++	KUNIT_SUCCEED(test);
+ }
+ 
+ static struct kunit_case iov_kunit_cases[] = {
 -- 
 2.44.0
 
