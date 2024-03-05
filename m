@@ -4,41 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15E28C54E41
-	for <linux-um@archiver.kernel.org>; Tue,  5 Mar 2024 11:36:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 953FAC54798
+	for <linux-um@archiver.kernel.org>; Tue,  5 Mar 2024 11:36:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To
 	:From:Date:Subject:Message-ID:Reply-To:MIME-Version:Content-Type:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=iDsXs5ygMaEoDgafJxj7b9zePg5PQPw3gQKCRv5NXaY=; b=aMDZqWNAFHWpMK7IAU62oT2vTU
-	9oPkqIBAzKeJhmzhI0zgjXViYuNP5YlPZXxcS1INzWghFz48BtrgNw6p6wubnaKQbIA6Rr+6Hjm5E
-	xWP3UEF6gwEECwZ1NuoiHToSsU9/jcHGBFmUz/cMhPzZkb8IFg2x6aCOQsDDk0jR+7yjKmHfO5xJN
-	lvPbxwmh0fFRl1Ff7itehi25p2U2Ss1ne7NwkXUi0tgXLOb/Mw3+yl9HHf9FTQ8rAh9fRYqhu22fz
-	u2Ik9L3AAFz/n9Sl/iOWeDAaDaVvqYUeC/b0m2HmXKZPnAxB9ydkeGwfO9mN70ZP7FFvdKKxKgoEp
-	yes7zAQA==;
+	bh=JO+6AB9KzJnq15c7g9gV2LhFHu7FmUfPL9YGcXxQKUI=; b=nXgv8JNou2zpvpUSJtQvvgtwhb
+	j0Moi5WQS96PPYshRLWlaVyyrLpab/BkGmQF8vRfhYVzfaZsmU1mI4QGNVkSf/OiAvJhO3EbWZBQ7
+	W7iME0+7Bv5FsTCkX7aSxSnX0TayKMTnkR0NCiJus5Z17KG0/avskDlg68XWO/bEtqq+UikSDPW7w
+	kODlWdFBbS4Wcxh4eMHNwclDFoPrjCxfO5f2IlcOinH/U2xabdO5D0CX5I9Vim7Sx+bK0syD0xGht
+	Z/AEY5I9Q6c/q+LwbbADCCFdtzgEeR/zJQNWs5YljkYEhwNgRWutjvcxSMZ6xEc7OzgRy5lAHHP+u
+	1YSOfOkg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rhT5v-0000000DOTu-3vNw;
-	Tue, 05 Mar 2024 11:36:27 +0000
+	id 1rhT6L-0000000DObK-10nu;
+	Tue, 05 Mar 2024 11:36:53 +0000
 Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rhT5s-0000000DOSm-00Jf
+	id 1rhT6I-0000000DOaL-3OxC
 	for linux-um@lists.infradead.org;
-	Tue, 05 Mar 2024 11:36:26 +0000
+	Tue, 05 Mar 2024 11:36:52 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1709638579; h=Message-ID:Subject:Date:From:To;
-	bh=iDsXs5ygMaEoDgafJxj7b9zePg5PQPw3gQKCRv5NXaY=;
-	b=Z0eYMS6nhqgSRcibOyGdyEMBkHe5te3ffY8fflka3KX+kZHZpFWZONXxjnilDk2Nm9NVoJAGiMFDJQtMP1CNgy4D3qzkOecWdQwFEcwAeWbl8eQBT0BmUpD28Yf3/v3zhhKHcLzEqF+67A+1O+S3bu4ThyHUl/ecQ60bAm0XbNQ=
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R871e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=24;SR=0;TI=SMTPD_---0W1uARtD_1709638576;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W1uARtD_1709638576)
+	t=1709638609; h=Message-ID:Subject:Date:From:To;
+	bh=JO+6AB9KzJnq15c7g9gV2LhFHu7FmUfPL9YGcXxQKUI=;
+	b=wr4Xlb381T/rtgFhBsqCUkscRn+yOIMMUtsoUz1dUnX27jv9hsfPP+jME37K0KlNdgFokwPiLnYddpnvXUcIOtERcN253hLje+1l9d4a0eBZZBNgIOvR7ATBOIZ292+MKh974HZwZKbIvYD2RhXnP8anq/Vy+v6AFU9D/wc0Toc=
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R401e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=24;SR=0;TI=SMTPD_---0W1uAS0I_1709638606;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W1uAS0I_1709638606)
           by smtp.aliyun-inc.com;
-          Tue, 05 Mar 2024 19:36:17 +0800
-Message-ID: <1709638218.1460705-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH vhost 1/4] virtio: find_vqs: pass struct instead of multi parameters
-Date: Tue, 5 Mar 2024 19:30:18 +0800
+          Tue, 05 Mar 2024 19:36:47 +0800
+Message-ID: <1709638595.0478082-2-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH vhost 3/4] virtio: vring_new_virtqueue(): pass struct instead of multi parameters
+Date: Tue, 5 Mar 2024 19:36:35 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
 Cc: virtualization@lists.linux.dev,
@@ -65,12 +65,13 @@ Cc: virtualization@lists.linux.dev,
  linux-s390@vger.kernel.org,
  kvm@vger.kernel.org
 References: <20240304114719.3710-1-xuanzhuo@linux.alibaba.com>
- <20240304114719.3710-2-xuanzhuo@linux.alibaba.com>
- <f0ff7ef2-ba67-4091-efad-dc8eb8042dc3@linux.intel.com>
-In-Reply-To: <f0ff7ef2-ba67-4091-efad-dc8eb8042dc3@linux.intel.com>
+ <20240304114719.3710-4-xuanzhuo@linux.alibaba.com>
+ <0cbf4910-ec0c-4b06-681e-aafae3720455@linux.intel.com>
+In-Reply-To: <0cbf4910-ec0c-4b06-681e-aafae3720455@linux.intel.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240305_033624_884107_B6A0ABA7 
-X-CRM114-Status: GOOD (  33.96  )
+X-CRM114-CacheID: sfid-20240305_033651_027851_F1BBB9FF 
+X-CRM114-Status: UNSURE (   8.05  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,207 +86,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, 5 Mar 2024 13:23:25 +0200 (EET), =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com> wrote:
+On Tue, 5 Mar 2024 13:27:25 +0200 (EET), =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com> wrote:
 > On Mon, 4 Mar 2024, Xuan Zhuo wrote:
 >
-> > Now, we pass multi parameters to find_vqs. These parameters
-> > may work for transport or work for vring.
-> >
-> > And find_vqs has multi implements in many places:
-> >
-> >  arch/um/drivers/virtio_uml.c
-> >  drivers/platform/mellanox/mlxbf-tmfifo.c
-> >  drivers/remoteproc/remoteproc_virtio.c
-> >  drivers/s390/virtio/virtio_ccw.c
-> >  drivers/virtio/virtio_mmio.c
-> >  drivers/virtio/virtio_pci_legacy.c
-> >  drivers/virtio/virtio_pci_modern.c
-> >  drivers/virtio/virtio_vdpa.c
-> >
-> > Every time, we try to add a new parameter, that is difficult.
-> > We must change every find_vqs implement.
-> >
-> > One the other side, if we want to pass a parameter to vring,
-> > we must change the call path from transport to vring.
-> > Too many functions need to be changed.
-> >
-> > So it is time to refactor the find_vqs. We pass a structure
-> > cfg to find_vqs(), that will be passed to vring by transport.
-> >
-> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > ---
-> >  arch/um/drivers/virtio_uml.c             | 23 ++++-----
-> >  drivers/platform/mellanox/mlxbf-tmfifo.c | 13 ++----
-> >  drivers/remoteproc/remoteproc_virtio.c   | 28 ++++++-----
-> >  drivers/s390/virtio/virtio_ccw.c         | 29 ++++++------
-> >  drivers/virtio/virtio_mmio.c             | 26 +++++------
-> >  drivers/virtio/virtio_pci_common.c       | 59 +++++++++++-------------
-> >  drivers/virtio/virtio_pci_common.h       |  9 +---
-> >  drivers/virtio/virtio_pci_legacy.c       | 11 +++--
-> >  drivers/virtio/virtio_pci_modern.c       | 33 +++++++------
-> >  drivers/virtio/virtio_vdpa.c             | 36 +++++++--------
-> >  include/linux/virtio_config.h            | 51 ++++++++++++++++----
-> >  11 files changed, 172 insertions(+), 146 deletions(-)
-> >
-> > diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-> > index 8adca2000e51..c13dfeeb90c4 100644
-> > --- a/arch/um/drivers/virtio_uml.c
-> > +++ b/arch/um/drivers/virtio_uml.c
-> > @@ -937,8 +937,8 @@ static int vu_setup_vq_call_fd(struct virtio_uml_device *vu_dev,
-> >  }
-> >
-> >  static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
-> > -				     unsigned index, vq_callback_t *callback,
-> > -				     const char *name, bool ctx)
-> > +				     unsigned index,
-> > +				     struct virtio_vq_config *cfg)
-> >  {
-> >  	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
-> >  	struct platform_device *pdev = vu_dev->pdev;
-> > @@ -953,10 +953,12 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
-> >  		goto error_kzalloc;
-> >  	}
-> >  	snprintf(info->name, sizeof(info->name), "%s.%d-%s", pdev->name,
-> > -		 pdev->id, name);
-> > +		 pdev->id, cfg->names[cfg->cfg_idx]);
-> >
-> >  	vq = vring_create_virtqueue(index, num, PAGE_SIZE, vdev, true, true,
-> > -				    ctx, vu_notify, callback, info->name);
-> > +				    cfg->ctx ? cfg->ctx[cfg->cfg_idx] : false,
+> > Just like find_vqs(), it is time to refactor the
+> > vring_new_virtqueue(). We pass the similar struct to
+> > vring_new_virtqueue.
 >
-> Based on the commit message, I don't understand why this transformation
-> was made. It's perhaps some artifact of moving things around but please
-> state it in the commit message because this isn't 1:1 transformation
-> which would be just ctx -> cfg->ctx
+> Please write a proper commit message here and do not just refer to
+> some other commit to describe what's going on here.
 
-You can see the caller:
-
-	ctx ? ctx[i] : false
-
-ctx maybe array or null.
-vring_create_virtqueue just accept the bool. So we pass the cfg->ctx[cfg->
-cfg_idx] if it is array.
-
->
-> > +				    vu_notify,
-> > +				    cfg->callbacks[cfg->cfg_idx], info->name);
-> >  	if (!vq) {
-> >  		rc = -ENOMEM;
-> >  		goto error_create;
->
->
-> > diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
-> > index b655fccaf773..a9ae03904dcf 100644
-> > --- a/drivers/virtio/virtio_pci_common.c
-> > +++ b/drivers/virtio/virtio_pci_common.c
-> > @@ -172,9 +172,7 @@ static int vp_request_msix_vectors(struct virtio_device *vdev, int nvectors,
-> >  }
-> >
-> >  static struct virtqueue *vp_setup_vq(struct virtio_device *vdev, unsigned int index,
-> > -				     void (*callback)(struct virtqueue *vq),
-> > -				     const char *name,
-> > -				     bool ctx,
-> > +				     struct virtio_vq_config *cfg,
-> >  				     u16 msix_vec)
-> >  {
-> >  	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
-> > @@ -186,13 +184,13 @@ static struct virtqueue *vp_setup_vq(struct virtio_device *vdev, unsigned int in
-> >  	if (!info)
-> >  		return ERR_PTR(-ENOMEM);
-> >
-> > -	vq = vp_dev->setup_vq(vp_dev, info, index, callback, name, ctx,
-> > +	vq = vp_dev->setup_vq(vp_dev, info, index, cfg,
-> >  			      msix_vec);
->
-> Should now easily fit to one line.
 
 YES.
-
-
->
->
-> > @@ -126,10 +124,7 @@ bool vp_notify(struct virtqueue *vq);
-> >  /* the config->del_vqs() implementation */
-> >  void vp_del_vqs(struct virtio_device *vdev);
-> >  /* the config->find_vqs() implementation */
-> > -int vp_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
-> > -		struct virtqueue *vqs[], vq_callback_t *callbacks[],
-> > -		const char * const names[], const bool *ctx,
-> > -		struct irq_affinity *desc);
-> > +int vp_find_vqs(struct virtio_device *vdev, struct virtio_vq_config *cfg);
->
-> Without knowing better, do you expect cfg is mutated inside vp_find_vqs()?
-> If not, mark it as const.
-
-It can be changed.
-
-cfg_idx will be updated.
-
-
->
-> > diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
-> > index da9b271b54db..1df8634d1258 100644
-> > --- a/include/linux/virtio_config.h
-> > +++ b/include/linux/virtio_config.h
-> > @@ -96,6 +96,20 @@ typedef void vq_callback_t(struct virtqueue *);
-> >   * @create_avq: create admin virtqueue resource.
-> >   * @destroy_avq: destroy admin virtqueue resource.
-> >   */
-> > +
-> > +struct virtio_vq_config {
-> > +	unsigned int nvqs;
-> > +
-> > +	/* the vq index may not eq to the cfg index of the other array items */
->
-> Can you try to make this comment clearer, as is I don't understand what it
-> means. E.g. what is "the other array"? not eq = not equal ?
-
-The names, ctx, callbacks are array.
-
-In the process of vq setup, we need to know the current index.
-But we can not use the vq->index, because maybe the one of names
-is null, so we must record the current index.
-
-The comment will be updated.
-
->
-> > +	unsigned int cfg_idx;
-> > +
-> > +	struct virtqueue **vqs;
-> > +	vq_callback_t **callbacks;
-> > +	const char *const *names;
-> > +	const bool *ctx;
-> > +	struct irq_affinity *desc;
-> > +};
->
-> The placement of the struct is wrong. Now the documentation of struct
-> virtio_config_ops is above your struct!?!
->
-> Please also document the members of the newly added struct with kerneldoc.
-
-Will fix.
 
 Thanks.
 
 
->
-> > +
-> >  struct virtio_config_ops {
-> >  	void (*get)(struct virtio_device *vdev, unsigned offset,
-> >  		    void *buf, unsigned len);
-> > @@ -105,10 +119,7 @@ struct virtio_config_ops {
-> >  	u8 (*get_status)(struct virtio_device *vdev);
-> >  	void (*set_status)(struct virtio_device *vdev, u8 status);
-> >  	void (*reset)(struct virtio_device *vdev);
-> > -	int (*find_vqs)(struct virtio_device *, unsigned nvqs,
-> > -			struct virtqueue *vqs[], vq_callback_t *callbacks[],
-> > -			const char * const names[], const bool *ctx,
-> > -			struct irq_affinity *desc);
-> > +	int (*find_vqs)(struct virtio_device *vdev, struct virtio_vq_config *cfg);
-> >  	void (*del_vqs)(struct virtio_device *);
-> >  	void (*synchronize_cbs)(struct virtio_device *);
-> >  	u64 (*get_features)(struct virtio_device *vdev);
->
 >
 > --
 >  i.
