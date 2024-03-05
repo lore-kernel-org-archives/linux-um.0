@@ -4,73 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 953FAC54798
-	for <linux-um@archiver.kernel.org>; Tue,  5 Mar 2024 11:36:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 085BFC54798
+	for <linux-um@archiver.kernel.org>; Tue,  5 Mar 2024 13:46:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To
-	:From:Date:Subject:Message-ID:Reply-To:MIME-Version:Content-Type:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	Message-ID:Date:References:In-Reply-To:Subject:Cc:To:From:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=JO+6AB9KzJnq15c7g9gV2LhFHu7FmUfPL9YGcXxQKUI=; b=nXgv8JNou2zpvpUSJtQvvgtwhb
-	j0Moi5WQS96PPYshRLWlaVyyrLpab/BkGmQF8vRfhYVzfaZsmU1mI4QGNVkSf/OiAvJhO3EbWZBQ7
-	W7iME0+7Bv5FsTCkX7aSxSnX0TayKMTnkR0NCiJus5Z17KG0/avskDlg68XWO/bEtqq+UikSDPW7w
-	kODlWdFBbS4Wcxh4eMHNwclDFoPrjCxfO5f2IlcOinH/U2xabdO5D0CX5I9Vim7Sx+bK0syD0xGht
-	Z/AEY5I9Q6c/q+LwbbADCCFdtzgEeR/zJQNWs5YljkYEhwNgRWutjvcxSMZ6xEc7OzgRy5lAHHP+u
-	1YSOfOkg==;
+	bh=1yKYMtmdDbZPI6Evb2gqvFC2vUD/IFp5jq1YhO6Oc+Y=; b=0HKHD0wEiVkzh9OFiKgONWfV0K
+	v8EHPXYzVOl41jBQPwui3Sn1pIsvHHWCekPdq1umNyokRYNTBRRSV7tFL1CF6/v4L674VIhP34wq/
+	eewXkSv8gOwqfKd8OhPeR0wczBqxJF8A2SICYzaMzU1rhO1y8VtchVZ+O7MUYZUrKBRH1tkaeC7aS
+	etMjr8uy4OTRAD8RZOyEg+pXO3a3BdgI0kQNt00YU7pwfcTpV0QYCqLlgZdeAFOSGnYhFAN58aIL4
+	jpnhr2pnmIkiSq+OnruCthf4Z7nrVdz/faiGu/SUYbukLs7QWNnRblc4tYSr8Vl5DljpPELjCwAGm
+	x3RzwuCw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rhT6L-0000000DObK-10nu;
-	Tue, 05 Mar 2024 11:36:53 +0000
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131])
+	id 1rhV7L-0000000DsZY-3o5C;
+	Tue, 05 Mar 2024 13:46:03 +0000
+Received: from mgamail.intel.com ([198.175.65.19])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rhT6I-0000000DOaL-3OxC
+	id 1rhV7I-0000000DsYA-39xa
 	for linux-um@lists.infradead.org;
-	Tue, 05 Mar 2024 11:36:52 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1709638609; h=Message-ID:Subject:Date:From:To;
-	bh=JO+6AB9KzJnq15c7g9gV2LhFHu7FmUfPL9YGcXxQKUI=;
-	b=wr4Xlb381T/rtgFhBsqCUkscRn+yOIMMUtsoUz1dUnX27jv9hsfPP+jME37K0KlNdgFokwPiLnYddpnvXUcIOtERcN253hLje+1l9d4a0eBZZBNgIOvR7ATBOIZ292+MKh974HZwZKbIvYD2RhXnP8anq/Vy+v6AFU9D/wc0Toc=
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R401e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=24;SR=0;TI=SMTPD_---0W1uAS0I_1709638606;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W1uAS0I_1709638606)
-          by smtp.aliyun-inc.com;
-          Tue, 05 Mar 2024 19:36:47 +0800
-Message-ID: <1709638595.0478082-2-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH vhost 3/4] virtio: vring_new_virtqueue(): pass struct instead of multi parameters
-Date: Tue, 5 Mar 2024 19:36:35 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: virtualization@lists.linux.dev,
- Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- Hans de Goede <hdegoede@redhat.com>,
- Vadim Pasternak <vadimp@nvidia.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Mathieu Poirier <mathieu.poirier@linaro.org>,
- Cornelia Huck <cohuck@redhat.com>,
- Halil Pasic <pasic@linux.ibm.com>,
- Eric Farman <farman@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>,
- Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>,
- "Michael S. Tsirkin" <mst@redhat.com>,
- Jason Wang <jasowang@redhat.com>,
- linux-um@lists.infradead.org,
- platform-driver-x86@vger.kernel.org,
- linux-remoteproc@vger.kernel.org,
- linux-s390@vger.kernel.org,
- kvm@vger.kernel.org
-References: <20240304114719.3710-1-xuanzhuo@linux.alibaba.com>
- <20240304114719.3710-4-xuanzhuo@linux.alibaba.com>
- <0cbf4910-ec0c-4b06-681e-aafae3720455@linux.intel.com>
-In-Reply-To: <0cbf4910-ec0c-4b06-681e-aafae3720455@linux.intel.com>
+	Tue, 05 Mar 2024 13:46:02 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709646361; x=1741182361;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=9FYfbdaMxKGMXj+xYpy1/eVZZHsqi5THnS3dzKG2Y8E=;
+  b=KLKC5atenGJS6MckHprieZkdoXHUWRXgoaSqJ9E+KGTezu3alWYAPWrr
+   8gZ3RRNRVSwtEoT+HpyjXL7MKwa7bNDXtDcgTjfgMDa1au1UdBf/y0/8h
+   XVIIz08bOHQ0OCYHlz7EX0Usu5+IWGXTVqmjwfmDyqciKMVoJ0nk7jQF3
+   vhhdB7CFoOfQlfVTrO9uaE1nroB1pjdiY+bJla388v4qZnmc6V2VcaV+n
+   zx2HzBKO0jh3Pcw7jhv7xYgc2vI/vN5VQVebPly+U7gG/c56MMPjzKP+D
+   t4HF/gA6d8MOIgTVXpESiORw5ki1VTfm9Q8Zl6GVkJbAT7X9t4QKulvAQ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="4055537"
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="4055537"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 05:45:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="40374085"
+Received: from omakhlou-mobl4.amr.corp.intel.com (HELO localhost) ([10.252.51.143])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 05:45:56 -0800
+From: Jani Nikula <jani.nikula@intel.com>
+To: Tiwei Bie <tiwei.btw@antgroup.com>, Johannes Berg
+ <johannes@sipsolutions.net>, Richard Weinberger <richard@nod.at>, Anton
+ Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
+Cc: intel-xe@lists.freedesktop.org, Lucas De Marchi <lucas.demarchi@intel.com>
+Subject: Re: -Wmissing-prototypes warnings in user-mode linux
+In-Reply-To: <9d297bf5-4f54-431b-ab8d-c5be825f129e@antgroup.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <87jzmh2chs.fsf@intel.com>
+ <5d1dfb9fce5d7647ff3203080416eadc9806059a.camel@sipsolutions.net>
+ <87frx52btl.fsf@intel.com>
+ <9d297bf5-4f54-431b-ab8d-c5be825f129e@antgroup.com>
+Date: Tue, 05 Mar 2024 15:45:52 +0200
+Message-ID: <87y1aw23n3.fsf@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240305_033651_027851_F1BBB9FF 
-X-CRM114-Status: UNSURE (   8.05  )
+X-CRM114-CacheID: sfid-20240305_054600_892352_F8998A7F 
+X-CRM114-Status: UNSURE (   9.65  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -86,24 +84,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, 5 Mar 2024 13:27:25 +0200 (EET), =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com> wrote:
-> On Mon, 4 Mar 2024, Xuan Zhuo wrote:
+On Tue, 05 Mar 2024, Tiwei Bie <tiwei.btw@antgroup.com> wrote:
+> Thanks for raising this topic!                            
+>                                                               
+> Indeed. To make it easier to review, the current series only addressed
+> the -Wmissing-prototypes warnings that can be fixed straightforwardly (e.g.
+> by turning into static functions or including missing headers). The remaining 
+> -Wmissing-prototypes warnings mainly fall into the following categories:
 >
-> > Just like find_vqs(), it is time to refactor the
-> > vring_new_virtqueue(). We pass the similar struct to
-> > vring_new_virtqueue.
+> - Symbols defined and used in os-Linux/;                
+> - Symbols defined in os-Linux/, but declared in kernel headers;
+> - Symbols defined in individual files and not called explicitly;
 >
-> Please write a proper commit message here and do not just refer to
-> some other commit to describe what's going on here.
+> My plan was to fix the remaining warnings in followup series. Ultimately,
+> I wish we can let cc treat -Wmissing-prototypes warnings as errors.
+
+Yay! That's good to hear.
+
+If you want to get build testing from our CI, using our configs, please
+just Cc: intel-xe@lists.freedesktop.org when sending the patches. You'll
+get the results in reply.
 
 
-YES.
+Thanks,
+Jani.
 
-Thanks.
-
-
->
-> --
->  i.
->
+-- 
+Jani Nikula, Intel
 
