@@ -4,84 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3501C5475B
-	for <linux-um@archiver.kernel.org>; Wed,  6 Mar 2024 10:01:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6C18C54E5E
+	for <linux-um@archiver.kernel.org>; Wed,  6 Mar 2024 10:19:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To
-	:From:Date:Subject:Message-ID:Reply-To:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=GOjkAAzqq/27g06Pg1GabXYMzdzKRKWd++BBgioFjQk=; b=D+QDd750eIPylDKqGzHXx4xbmG
-	buuN89vyUBDLO9vVYy0ZZ7n9ZGDt03ZOxsw/uVtZx7tC2ke1QFJEFHVP5tYxeiS2KhllnIXZ/lTmu
-	cD6fdeYUMlAfKYnC6SqYjJ1MrUA3kT5/7v3WuPEFXnVjrK71imLADXj3Ez1kfe/4jRNDEtJmcsoho
-	FY2WbYfV77oL6RdUIIrAY4wJZAkF52uqiGzBUR25Xvpq5u71bjN6r/GibZJNST6ordfsYtvFyv3PZ
-	BrhCIEsIXrSIaDKADUYr8+I2knVwNyWMOo9FAtIyWp1RrSAP2Ij93y5/vYp8SWyVwR2XunXLj4dg7
-	9DQGz7yg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
+	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=ziLtKkSqhI/U3k69c0/nGLWMWV6YVEamH20E92a/bd4=; b=Bzcnd903v0Sk3gSmO1NikL6ftZ
+	Z9V2eX9rtUWECz1p+P6YnOGuet/A6b0UxShnprTbo4naW+yYHXnnwWeObg2ZMJmp0+YkXy3fyEdOy
+	ILWVVOUo+hxdJPA/Mkn3HIlgPW7+RjkWGNf/LMM4eiHf5Riijg+eZ6hL25k8k6t6eX54f/J8+7GKF
+	SFqhM88OzVrcp4xgCcETg/J005PeDJcDry++YS7KKGPuGfg1OZpcr3Yws5JIazyjgihaq4J39FyzP
+	gtqxgPoKf15k4qgA+g76lIYjNoGdGwE7BMPSTVW/lRxK4g97E4TmRuJyrXZqKduOs7K0A1zKpREEd
+	V6y8BuLA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rho5s-0000000HIij-3pQ3;
-	Wed, 06 Mar 2024 10:01:48 +0000
-Received: from out30-119.freemail.mail.aliyun.com ([115.124.30.119])
+	id 1rhoNJ-0000000HNBa-0qdP;
+	Wed, 06 Mar 2024 10:19:49 +0000
+Received: from out0-214.mail.aliyun.com ([140.205.0.214])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rho5n-0000000HIeV-3YZx
+	id 1rhoNF-0000000HN88-1UYs
 	for linux-um@lists.infradead.org;
-	Wed, 06 Mar 2024 10:01:46 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1709719298; h=Message-ID:Subject:Date:From:To;
-	bh=GOjkAAzqq/27g06Pg1GabXYMzdzKRKWd++BBgioFjQk=;
-	b=HPMyf8f/u+rYz6KQJjjwez8/YKwfRAa3evUoVNI+Q8ZYeWbCP9j7Eq8DsahsvyhVS+Vvsor1yw44J/BXmlZ6uj5QMpy7xjfnIEgnsgyt+3LIzbNqVU3ElXErc3yliTNUsy2cHwP9VEVJ1ZXfWm3D+bhNmNltmIeHHIRGKc6jQzw=
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R711e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=34;SR=0;TI=SMTPD_---0W1x7Wv2_1709719294;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W1x7Wv2_1709719294)
+	Wed, 06 Mar 2024 10:19:47 +0000
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047187;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---.Wgbn-JT_1709720381;
+Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.Wgbn-JT_1709720381)
           by smtp.aliyun-inc.com;
-          Wed, 06 Mar 2024 18:01:35 +0800
-Message-ID: <1709718889.4420547-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH vhost v3 00/19] virtio: drivers maintain dma info for premapped vq
-Date: Wed, 6 Mar 2024 17:54:49 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: virtualization@lists.linux.dev,
- Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- Jason Wang <jasowang@redhat.com>,
- "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- Hans de Goede <hdegoede@redhat.com>,
- =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Vadim Pasternak <vadimp@nvidia.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Mathieu Poirier <mathieu.poirier@linaro.org>,
- Cornelia Huck <cohuck@redhat.com>,
- Halil Pasic <pasic@linux.ibm.com>,
- Eric Farman <farman@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>,
- Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>,
- Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- linux-um@lists.infradead.org,
- netdev@vger.kernel.org,
- platform-driver-x86@vger.kernel.org,
- linux-remoteproc@vger.kernel.org,
- linux-s390@vger.kernel.org,
- kvm@vger.kernel.org,
- bpf@vger.kernel.org
-References: <20240229072044.77388-1-xuanzhuo@linux.alibaba.com>
- <20240229031755-mutt-send-email-mst@kernel.org>
- <1709197357.626784-1-xuanzhuo@linux.alibaba.com>
- <20240229043238-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20240229043238-mutt-send-email-mst@kernel.org>
+          Wed, 06 Mar 2024 18:19:41 +0800
+From: "Tiwei Bie" <tiwei.btw@antgroup.com>
+To: richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net
+Cc: <jani.nikula@intel.com>,
+   <linux-um@lists.infradead.org>,
+   <linux-kernel@vger.kernel.org>,
+   <intel-xe@lists.freedesktop.org>,
+  "Tiwei Bie" <tiwei.btw@antgroup.com>
+Subject: [PATCH v3 1/9] um: Make local functions and variables static
+Date: Wed, 06 Mar 2024 18:19:17 +0800
+Message-Id: <20240306101925.1088870-2-tiwei.btw@antgroup.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240306101925.1088870-1-tiwei.btw@antgroup.com>
+References: <20240306101925.1088870-1-tiwei.btw@antgroup.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240306_020144_613418_8B392DDD 
-X-CRM114-Status: GOOD (  36.35  )
+X-CRM114-CacheID: sfid-20240306_021945_696491_2D9E8089 
+X-CRM114-Status: GOOD (  16.26  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,145 +66,219 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, 29 Feb 2024 04:34:20 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> On Thu, Feb 29, 2024 at 05:02:37PM +0800, Xuan Zhuo wrote:
-> > On Thu, 29 Feb 2024 03:21:14 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> > > On Thu, Feb 29, 2024 at 03:20:25PM +0800, Xuan Zhuo wrote:
-> > > > As discussed:
-> > > > http://lore.kernel.org/all/CACGkMEvq0No8QGC46U4mGsMtuD44fD_cfLcPaVmJ3rHYqRZxYg@mail.gmail.com
-> > > >
-> > > > If the virtio is premapped mode, the driver should manage the dma info by self.
-> > > > So the virtio core should not store the dma info.
-> > > > So we can release the memory used to store the dma info.
-> > > >
-> > > > But if the desc_extra has not dma info, we face a new question,
-> > > > it is hard to get the dma info of the desc with indirect flag.
-> > > > For split mode, that is easy from desc, but for the packed mode,
-> > > > it is hard to get the dma info from the desc. And for hardening
-> > > > the dma unmap is saft, we should store the dma info of indirect
-> > > > descs.
-> > > >
-> > > > So I introduce the "structure the indirect desc table" to
-> > > > allocate space to store dma info with the desc table.
-> > > >
-> > > > On the other side, we mix the descs with indirect flag
-> > > > with other descs together to share the unmap api. That
-> > > > is complex. I found if we we distinguish the descs with
-> > > > VRING_DESC_F_INDIRECT before unmap, thing will be clearer.
-> > > >
-> > > > Because of the dma array is allocated in the find_vqs(),
-> > > > so I introduce a new parameter to find_vqs().
-> > > >
-> > > > Note:
-> > > >     this is on the top of
-> > > >         [PATCH vhost v1] virtio: packed: fix unmap leak for indirect desc table
-> > > >         http://lore.kernel.org/all/20240223071833.26095-1-xuanzhuo@linux.alibaba.com
-> > > >
-> > > > Please review.
-> > > >
-> > > > Thanks
-> > > >
-> > > > v3:
-> > > >     1. fix the conflict with the vp_modern_create_avq().
-> > >
-> > > Okay but are you going to address huge memory waste all this is causing for
-> > > - people who never do zero copy
-> > > - systems where dma unmap is a nop
-> > >
-> > > ?
-> > >
-> > > You should address all comments when you post a new version, not just
-> > > what was expedient, or alternatively tag patch as RFC and explain
-> > > in commit log that you plan to do it later.
-> >
-> >
-> > Do you miss this one?
-> > http://lore.kernel.org/all/1708997579.5613105-1-xuanzhuo@linux.alibaba.com
->
->
-> I did. The answer is that no, you don't get to regress memory usage
-> for lots of people then fix it up.
-> So the patchset is big, I guess it will take a couple of cycles to
-> merge gradually.
+This will also fix the warnings like:
 
-Hi @Michael
+warning: no previous prototype for ‘fork_handler’ [-Wmissing-prototypes]
+  140 | void fork_handler(void)
+      |      ^~~~~~~~~~~~
 
-So, how about this patch set?
+Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
+---
+ arch/um/drivers/pcap_kern.c              | 4 ++--
+ arch/um/drivers/ubd_user.c               | 2 +-
+ arch/um/kernel/kmsg_dump.c               | 2 +-
+ arch/um/kernel/process.c                 | 8 ++++----
+ arch/um/kernel/time.c                    | 6 +++---
+ arch/um/os-Linux/drivers/ethertap_kern.c | 2 +-
+ arch/um/os-Linux/drivers/tuntap_kern.c   | 2 +-
+ arch/um/os-Linux/signal.c                | 4 ++--
+ arch/x86/um/os-Linux/registers.c         | 2 +-
+ arch/x86/um/tls_32.c                     | 2 +-
+ 10 files changed, 17 insertions(+), 17 deletions(-)
 
-I do not think they (dma maintainers) will agree the API dma_can_skip_unmap().
+diff --git a/arch/um/drivers/pcap_kern.c b/arch/um/drivers/pcap_kern.c
+index 25ee2c97ca21..d9bf95d7867b 100644
+--- a/arch/um/drivers/pcap_kern.c
++++ b/arch/um/drivers/pcap_kern.c
+@@ -15,7 +15,7 @@ struct pcap_init {
+ 	char *filter;
+ };
+ 
+-void pcap_init_kern(struct net_device *dev, void *data)
++static void pcap_init_kern(struct net_device *dev, void *data)
+ {
+ 	struct uml_net_private *pri;
+ 	struct pcap_data *ppri;
+@@ -50,7 +50,7 @@ static const struct net_kern_info pcap_kern_info = {
+ 	.write			= pcap_write,
+ };
+ 
+-int pcap_setup(char *str, char **mac_out, void *data)
++static int pcap_setup(char *str, char **mac_out, void *data)
+ {
+ 	struct pcap_init *init = data;
+ 	char *remain, *host_if = NULL, *options[2] = { NULL, NULL };
+diff --git a/arch/um/drivers/ubd_user.c b/arch/um/drivers/ubd_user.c
+index a1afe414ce48..b4f8b8e60564 100644
+--- a/arch/um/drivers/ubd_user.c
++++ b/arch/um/drivers/ubd_user.c
+@@ -23,7 +23,7 @@
+ #include <os.h>
+ #include <poll.h>
+ 
+-struct pollfd kernel_pollfd;
++static struct pollfd kernel_pollfd;
+ 
+ int start_io_thread(unsigned long sp, int *fd_out)
+ {
+diff --git a/arch/um/kernel/kmsg_dump.c b/arch/um/kernel/kmsg_dump.c
+index 427dd5a61a38..4382cf02a6d1 100644
+--- a/arch/um/kernel/kmsg_dump.c
++++ b/arch/um/kernel/kmsg_dump.c
+@@ -57,7 +57,7 @@ static struct kmsg_dumper kmsg_dumper = {
+ 	.dump = kmsg_dumper_stdout
+ };
+ 
+-int __init kmsg_dumper_stdout_init(void)
++static int __init kmsg_dumper_stdout_init(void)
+ {
+ 	return kmsg_dump_register(&kmsg_dumper);
+ }
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index ab95648e93e1..20f3813143d8 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -137,7 +137,7 @@ void new_thread_handler(void)
+ }
+ 
+ /* Called magically, see new_thread_handler above */
+-void fork_handler(void)
++static void fork_handler(void)
+ {
+ 	force_flush_all();
+ 
+@@ -268,14 +268,14 @@ int clear_user_proc(void __user *buf, int size)
+ static atomic_t using_sysemu = ATOMIC_INIT(0);
+ int sysemu_supported;
+ 
+-void set_using_sysemu(int value)
++static void set_using_sysemu(int value)
+ {
+ 	if (value > sysemu_supported)
+ 		return;
+ 	atomic_set(&using_sysemu, value);
+ }
+ 
+-int get_using_sysemu(void)
++static int get_using_sysemu(void)
+ {
+ 	return atomic_read(&using_sysemu);
+ }
+@@ -313,7 +313,7 @@ static const struct proc_ops sysemu_proc_ops = {
+ 	.proc_write	= sysemu_proc_write,
+ };
+ 
+-int __init make_proc_sysemu(void)
++static int __init make_proc_sysemu(void)
+ {
+ 	struct proc_dir_entry *ent;
+ 	if (!sysemu_supported)
+diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
+index 3e270da6b6f6..efa5b9c97992 100644
+--- a/arch/um/kernel/time.c
++++ b/arch/um/kernel/time.c
+@@ -319,7 +319,7 @@ void time_travel_add_event_rel(struct time_travel_event *e,
+ 	time_travel_add_event(e, time_travel_time + delay_ns);
+ }
+ 
+-void time_travel_periodic_timer(struct time_travel_event *e)
++static void time_travel_periodic_timer(struct time_travel_event *e)
+ {
+ 	time_travel_add_event(&time_travel_timer_event,
+ 			      time_travel_time + time_travel_timer_interval);
+@@ -812,7 +812,7 @@ unsigned long calibrate_delay_is_known(void)
+ 	return 0;
+ }
+ 
+-int setup_time_travel(char *str)
++static int setup_time_travel(char *str)
+ {
+ 	if (strcmp(str, "=inf-cpu") == 0) {
+ 		time_travel_mode = TT_MODE_INFCPU;
+@@ -862,7 +862,7 @@ __uml_help(setup_time_travel,
+ "devices using it, assuming the device has the right capabilities.\n"
+ "The optional ID is a 64-bit integer that's sent to the central scheduler.\n");
+ 
+-int setup_time_travel_start(char *str)
++static int setup_time_travel_start(char *str)
+ {
+ 	int err;
+ 
+diff --git a/arch/um/os-Linux/drivers/ethertap_kern.c b/arch/um/os-Linux/drivers/ethertap_kern.c
+index 3182e759d8de..5e5ee40680ce 100644
+--- a/arch/um/os-Linux/drivers/ethertap_kern.c
++++ b/arch/um/os-Linux/drivers/ethertap_kern.c
+@@ -63,7 +63,7 @@ const struct net_kern_info ethertap_kern_info = {
+ 	.write 			= etap_write,
+ };
+ 
+-int ethertap_setup(char *str, char **mac_out, void *data)
++static int ethertap_setup(char *str, char **mac_out, void *data)
+ {
+ 	struct ethertap_init *init = data;
+ 
+diff --git a/arch/um/os-Linux/drivers/tuntap_kern.c b/arch/um/os-Linux/drivers/tuntap_kern.c
+index adcb6717be6f..ff022d9cf0dd 100644
+--- a/arch/um/os-Linux/drivers/tuntap_kern.c
++++ b/arch/um/os-Linux/drivers/tuntap_kern.c
+@@ -53,7 +53,7 @@ const struct net_kern_info tuntap_kern_info = {
+ 	.write 			= tuntap_write,
+ };
+ 
+-int tuntap_setup(char *str, char **mac_out, void *data)
++static int tuntap_setup(char *str, char **mac_out, void *data)
+ {
+ 	struct tuntap_init *init = data;
+ 
+diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
+index 24a403a70a02..787cfb9a0308 100644
+--- a/arch/um/os-Linux/signal.c
++++ b/arch/um/os-Linux/signal.c
+@@ -72,7 +72,7 @@ static int signals_blocked;
+ static unsigned int signals_pending;
+ static unsigned int signals_active = 0;
+ 
+-void sig_handler(int sig, struct siginfo *si, mcontext_t *mc)
++static void sig_handler(int sig, struct siginfo *si, mcontext_t *mc)
+ {
+ 	int enabled = signals_enabled;
+ 
+@@ -108,7 +108,7 @@ static void timer_real_alarm_handler(mcontext_t *mc)
+ 	timer_handler(SIGALRM, NULL, &regs);
+ }
+ 
+-void timer_alarm_handler(int sig, struct siginfo *unused_si, mcontext_t *mc)
++static void timer_alarm_handler(int sig, struct siginfo *unused_si, mcontext_t *mc)
+ {
+ 	int enabled;
+ 
+diff --git a/arch/x86/um/os-Linux/registers.c b/arch/x86/um/os-Linux/registers.c
+index df8f4b4bf98b..f3638dd09cec 100644
+--- a/arch/x86/um/os-Linux/registers.c
++++ b/arch/x86/um/os-Linux/registers.c
+@@ -17,7 +17,7 @@
+ #include <linux/elf.h>
+ #include <registers.h>
+ 
+-int have_xstate_support;
++static int have_xstate_support;
+ 
+ int save_i387_registers(int pid, unsigned long *fp_regs)
+ {
+diff --git a/arch/x86/um/tls_32.c b/arch/x86/um/tls_32.c
+index 66162eafd8e8..ba40b1b8e179 100644
+--- a/arch/x86/um/tls_32.c
++++ b/arch/x86/um/tls_32.c
+@@ -20,7 +20,7 @@
+ static int host_supports_tls = -1;
+ int host_gdt_entry_tls_min;
+ 
+-int do_set_thread_area(struct user_desc *info)
++static int do_set_thread_area(struct user_desc *info)
+ {
+ 	int ret;
+ 	u32 cpu;
+-- 
+2.34.1
 
-If you think sq wastes too much memory using pre-mapped dma mode, how about
-we only enable it when xsk is bond?
-
-Could you give me some advice?
-
-Thanks.
-
-
->
-> > I asked you. But I didnot recv your answer.
-> >
-> > Thanks.
-> >
-> >
-> > >
-> > > > v2:
-> > > >     1. change the dma item of virtio-net, every item have MAX_SKB_FRAGS + 2
-> > > >         addr + len pairs.
-> > > >     2. introduce virtnet_sq_free_stats for __free_old_xmit
-> > > >
-> > > > v1:
-> > > >     1. rename transport_vq_config to vq_transport_config
-> > > >     2. virtio-net set dma meta number to (ring-size + 1)(MAX_SKB_FRGAS +2)
-> > > >     3. introduce virtqueue_dma_map_sg_attrs
-> > > >     4. separate vring_create_virtqueue to an independent commit
-> > > >
-> > > >
-> > > >
-> > > > Xuan Zhuo (19):
-> > > >   virtio_ring: introduce vring_need_unmap_buffer
-> > > >   virtio_ring: packed: remove double check of the unmap ops
-> > > >   virtio_ring: packed: structure the indirect desc table
-> > > >   virtio_ring: split: remove double check of the unmap ops
-> > > >   virtio_ring: split: structure the indirect desc table
-> > > >   virtio_ring: no store dma info when unmap is not needed
-> > > >   virtio: find_vqs: pass struct instead of multi parameters
-> > > >   virtio: vring_create_virtqueue: pass struct instead of multi
-> > > >     parameters
-> > > >   virtio: vring_new_virtqueue(): pass struct instead of multi parameters
-> > > >   virtio_ring: simplify the parameters of the funcs related to
-> > > >     vring_create/new_virtqueue()
-> > > >   virtio: find_vqs: add new parameter premapped
-> > > >   virtio_ring: export premapped to driver by struct virtqueue
-> > > >   virtio_net: set premapped mode by find_vqs()
-> > > >   virtio_ring: remove api of setting vq premapped
-> > > >   virtio_ring: introduce dma map api for page
-> > > >   virtio_ring: introduce virtqueue_dma_map_sg_attrs
-> > > >   virtio_net: unify the code for recycling the xmit ptr
-> > > >   virtio_net: rename free_old_xmit_skbs to free_old_xmit
-> > > >   virtio_net: sq support premapped mode
-> > > >
-> > > >  arch/um/drivers/virtio_uml.c             |  31 +-
-> > > >  drivers/net/virtio_net.c                 | 283 ++++++---
-> > > >  drivers/platform/mellanox/mlxbf-tmfifo.c |  24 +-
-> > > >  drivers/remoteproc/remoteproc_virtio.c   |  31 +-
-> > > >  drivers/s390/virtio/virtio_ccw.c         |  33 +-
-> > > >  drivers/virtio/virtio_mmio.c             |  30 +-
-> > > >  drivers/virtio/virtio_pci_common.c       |  59 +-
-> > > >  drivers/virtio/virtio_pci_common.h       |   9 +-
-> > > >  drivers/virtio/virtio_pci_legacy.c       |  16 +-
-> > > >  drivers/virtio/virtio_pci_modern.c       |  38 +-
-> > > >  drivers/virtio/virtio_ring.c             | 698 ++++++++++++-----------
-> > > >  drivers/virtio/virtio_vdpa.c             |  45 +-
-> > > >  include/linux/virtio.h                   |  13 +-
-> > > >  include/linux/virtio_config.h            |  48 +-
-> > > >  include/linux/virtio_ring.h              |  82 +--
-> > > >  tools/virtio/virtio_test.c               |   4 +-
-> > > >  tools/virtio/vringh_test.c               |  28 +-
-> > > >  17 files changed, 847 insertions(+), 625 deletions(-)
-> > > >
-> > > > --
-> > > > 2.32.0.3.g01195cf9f
-> > >
->
 
