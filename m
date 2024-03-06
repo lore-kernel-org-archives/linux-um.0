@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95C15C54E41
-	for <linux-um@archiver.kernel.org>; Wed,  6 Mar 2024 17:16:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 26097C5475B
+	for <linux-um@archiver.kernel.org>; Wed,  6 Mar 2024 17:17:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
 	Message-ID:Date:References:In-Reply-To:Subject:Cc:To:From:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=bRnUqxYmz7US3PiJQqP3g2Rv7dTwvUQyVio9ZZY8LKI=; b=BKoJjziX48F70fhrVZi0QcqcRo
-	DywllIF1jxQfX3Q/xfRJoP7y7m52a1GMtcMSoEqC0yezAgpwJQObnhEVeJ1sPDK9i4McJtbYPAwuX
-	7ZiUvOP2ctYXJMX2WyiNkZIn56zCnr3Tp90nUseNL5l37vWafjxilOaJOexJm6YsNMzpIP52vu5+9
-	xvvRdZywAre8gxJ6SDNIcnOTHNs9pPfeCaVhbwFA8VsTSVF5dFShzO1rVy0MUKcc8kLSsce8Rm1wP
-	lQZ9gqbZVM3YdUecDcuyJqE698JbwM14jeLXqBPQu2f/lV2DY9ATI0Mlaj8oqRHl/4CTZZmslxXiW
-	fFMQ8UVw==;
+	bh=vbQn+OoB0S0JSESblEPZvsiWW6fd58wDKWFuC+9wmuM=; b=OYDZnp2J17jsOug4SRwsiok8Ao
+	oNk5LVBsvKf9HgSCdGbFC7toGSe0X1e63aQJOY4EOdIDdbeJTnqgY4QVvMXLKZ7uLQh0SuL1SEQwH
+	0t61+/myTbQJajEBxtZySgfRlLh1AFMjGxVa0MN+8WJu3R3Ofwf1gHW6sHaT67nc0A4D8FcowPTz1
+	u3/24lvJmaVTtgHE5bgWIKwXhMYcgLnHH17v129EWExjG3BY5YKCxlukcS9MZQXqRPrBdvCv1+bUn
+	+xmoUzGtqIwwqXGOAg2X1qih4JpW0Lraia19gI7VKjpaPSI+dQwKBeJpAf7UCVq9XsY3bjkxPrcrY
+	xAHcQewg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rhusG-0000000198H-3Xvt;
-	Wed, 06 Mar 2024 17:16:12 +0000
+	id 1rhutH-000000019Vq-2smd;
+	Wed, 06 Mar 2024 17:17:15 +0000
 Received: from galois.linutronix.de ([193.142.43.55])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rhus8-0000000193p-0gqB;
-	Wed, 06 Mar 2024 17:16:08 +0000
+	id 1rhut8-000000019QU-3Ceg;
+	Wed, 06 Mar 2024 17:17:10 +0000
 From: Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1709745362;
+	s=2020; t=1709745424;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bRnUqxYmz7US3PiJQqP3g2Rv7dTwvUQyVio9ZZY8LKI=;
-	b=x/PfoZyLbxCtOLtwhNHZrAjQXk47NM0qm+OUuf1jx9diwAf0o8l0QrENFNc7WZ0SAcP2iu
-	1E3xoLIGmEOu+hfn0K2lPNJvO3b46lm0DOxOiCCku7OS5SbvnNXS1k5nodzwqKqNeT+fYS
-	RkGr9j0rFdgc3W9X3lUHXNB8NKrW75TUo1Im1jkI3tbQA3Xu8jc29FwyOiIOPW69kZ5gI2
-	HFqFMyez91owlk6gDCMWjLsasDv2ZUcIrJ1LGI20cJzK1UAtbOHuYuAhisXVvC2Z9efSuo
-	0ZgOB7XFUmDTVtjkDtaAS4S/3WfhiuenOt6DaTQZiQk6K2C7Z37rod5h/TSpug==
+	bh=vbQn+OoB0S0JSESblEPZvsiWW6fd58wDKWFuC+9wmuM=;
+	b=hqrivvwV8/uKaYSb4vgXogwmxXcmvHD/vpzX4SBT0qMvFOUGrraEFjzmhKWJFdAjgFwGGu
+	i0YzuY8UAmRYf0nsjTLgEHobhCl5xrMUkpEssGQL2qsxjWjlfnV1WwwZsck0s/iT0LXTQv
+	0Rl1eNFX6Z2fuzs4m8UZFZe3NmzD9v+oOARm8YY+Fk5f6y7mGuzj3DqaTd7Ikfe/xxEDxk
+	o/Gn2QgDdLN/gW/30q5PkH4obkwRFVxPLxZYjQeciiXq9oUFO60wX+E19iH4m+YvzQnm17
+	bk4e9hBXQ4eLzXkZtwKVSF+vzA64I5Uh6wxpGU8BVYlxcOrJXuu6QcrFCrnF8w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1709745362;
+	s=2020e; t=1709745424;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bRnUqxYmz7US3PiJQqP3g2Rv7dTwvUQyVio9ZZY8LKI=;
-	b=LO7ZB53rWp+dyfEzJwj+/7uvMaejjC+uiKbRNMUR/894l60M5BZc+f+41YHx9zRBlkGwEN
-	IuyIzAJJmTm/VdBw==
+	bh=vbQn+OoB0S0JSESblEPZvsiWW6fd58wDKWFuC+9wmuM=;
+	b=V6wMfLDOUa0xxXybHidon5vJJmDL46LPJZaLPA1eJ+JCds6w+m0GI846wFu3s4IZ8nf3hV
+	tO38zJpHmpndsvDg==
 To: Arnd Bergmann <arnd@kernel.org>, Anna-Maria Behnsen
  <anna-maria@linutronix.de>, Vincenzo Frascino <vincenzo.frascino@arm.com>,
  Kees Cook <keescook@chromium.org>
@@ -70,19 +70,20 @@ Cc: Arnd Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>, Vineet
  linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
  linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
  linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-um@lists.infradead.org
-Subject: Re: [PATCH v2 2/3] arch: simplify architecture specific page size
- configuration
-In-Reply-To: <20240306141453.3900574-3-arnd@kernel.org>
+ linux-um@lists.infradead.org, Heiko Carstens <hca@linux.ibm.com>, Stafford
+ Horne <shorne@gmail.com>, Johannes Berg <johannes@sipsolutions.net>
+Subject: Re: [PATCH v2 3/3] arch: define CONFIG_PAGE_SIZE_*KB on all
+ architectures
+In-Reply-To: <20240306141453.3900574-4-arnd@kernel.org>
 References: <20240306141453.3900574-1-arnd@kernel.org>
- <20240306141453.3900574-3-arnd@kernel.org>
-Date: Wed, 06 Mar 2024 18:16:02 +0100
-Message-ID: <8734t3uvql.ffs@tglx>
+ <20240306141453.3900574-4-arnd@kernel.org>
+Date: Wed, 06 Mar 2024 18:17:04 +0100
+Message-ID: <87zfvbth4f.ffs@tglx>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240306_091604_637734_09258BF9 
-X-CRM114-Status: UNSURE (   7.65  )
+X-CRM114-CacheID: sfid-20240306_091706_989337_501D864E 
+X-CRM114-Status: UNSURE (   8.59  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -99,17 +100,18 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On Wed, Mar 06 2024 at 15:14, Arnd Bergmann wrote:
+
 > From: Arnd Bergmann <arnd@arndb.de>
 >
-> arc, arm64, parisc and powerpc all have their own Kconfig symbols
-> in place of the common CONFIG_PAGE_SIZE_4KB symbols. Change these
-> so the common symbols are the ones that are actually used, while
-> leaving the arhcitecture specific ones as the user visible
-> place for configuring it, to avoid breaking user configs.
+> Most architectures only support a single hardcoded page size. In order
+> to ensure that each one of these sets the corresponding Kconfig symbols,
+> change over the PAGE_SHIFT definition to the common one and allow
+> only the hardware page size to be selected.
 >
-> Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu> (powerpc32)
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-> Acked-by: Helge Deller <deller@gmx.de> # parisc
+> Acked-by: Guo Ren <guoren@kernel.org>
+> Acked-by: Heiko Carstens <hca@linux.ibm.com>
+> Acked-by: Stafford Horne <shorne@gmail.com>
+> Acked-by: Johannes Berg <johannes@sipsolutions.net>
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
 Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
