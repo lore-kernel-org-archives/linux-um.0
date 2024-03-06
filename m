@@ -4,33 +4,33 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B08D5C54E49
-	for <linux-um@archiver.kernel.org>; Wed,  6 Mar 2024 10:19:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A9CDC54E41
+	for <linux-um@archiver.kernel.org>; Wed,  6 Mar 2024 10:19:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
+	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=h1sc6HXuCrxiSnNkExDrDx4LaNTePU3zIJt7nkVPy0U=; b=nddeNagKghPWePbD8g61+NDbIg
-	HRdYADm3RO9uLndi0gUCQdYiZ9TU8u3l/NuPlhGaiQpn86mVR6kkHdIZSpYntEtuKyeOGGY5Jim+/
-	BQRP2Tdl43bcVltG2CM2MW1G98sq/dQGzJHPs6TgvZhUvXKrnGQVSeVTg39IvRYZ2ViP+m/yI6TUp
-	D7eOPlIQMyUbla40+gjAOeqh4OP7ErvAWxqmaTxiumHyUcMlMPM6ByjTKLs2Td3eUbzYB/xGEiRSD
-	6H8Xlsf99nqdVH1aQSpUkbOSNcw+l35SrtPTN9dd37AZi/IM7UsrqTRTB5eFLSqWgTLbwT/+rlzdC
-	5+IkbPWQ==;
+	bh=kWilWoZVgn4lyROhgRRHHfX/plr+3pJHP+in0Q+peQM=; b=1Cst30/i4Lx67Y1CenMc1DOjNu
+	rRhUxGnVw3sygsjJbCPvPIhOUHDZnVL+hRRdT70nEpBysph61iXnPIICaxmNeMit0fIKY2Ml/+cxs
+	qrp9Nkkwgbn1hq9fmnfwiJpV8Y+3OOWl4uEJQ3TvbBDpp/55tYCjOtTs/eu3O1WJqbQRBtBZZVzU7
+	eLwrQZ/4tCEiUZoAOvch7LoK2sRKbQWiKoBQhct7+FaHbd4C6ILfb+GDF7chU+JfR8LL+B9qtmRBi
+	ytANeF1q4V/ACy4Fm2pu9igxXwkARz8jJDrNhrWnXFThE5FAtr2bErdsFpO5Ua3ZPAlF5syzey1dK
+	tfRF73kQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rhoNQ-0000000HNJX-1b9l;
-	Wed, 06 Mar 2024 10:19:56 +0000
-Received: from out0-220.mail.aliyun.com ([140.205.0.220])
+	id 1rhoNR-0000000HNKb-3XOe;
+	Wed, 06 Mar 2024 10:19:57 +0000
+Received: from out0-219.mail.aliyun.com ([140.205.0.219])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rhoNG-0000000HN8m-3FMK
+	id 1rhoNI-0000000HNA8-1MhK
 	for linux-um@lists.infradead.org;
 	Wed, 06 Mar 2024 10:19:49 +0000
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R321e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047193;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---.Wgbn-Jv_1709720383;
-Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.Wgbn-Jv_1709720383)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047205;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---.Wgbn-K9_1709720384;
+Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.Wgbn-K9_1709720384)
           by smtp.aliyun-inc.com;
-          Wed, 06 Mar 2024 18:19:43 +0800
+          Wed, 06 Mar 2024 18:19:44 +0800
 From: "Tiwei Bie" <tiwei.btw@antgroup.com>
 To: richard@nod.at,
 	anton.ivanov@cambridgegreys.com,
@@ -40,17 +40,19 @@ Cc: <jani.nikula@intel.com>,
    <linux-kernel@vger.kernel.org>,
    <intel-xe@lists.freedesktop.org>,
   "Tiwei Bie" <tiwei.btw@antgroup.com>
-Subject: [PATCH v3 6/9] um: Stop tracking host PID in cpu_tasks
-Date: Wed, 06 Mar 2024 18:19:22 +0800
-Message-Id: <20240306101925.1088870-7-tiwei.btw@antgroup.com>
+Subject: [PATCH v3 9/9] um: Fix -Wmissing-prototypes warnings for __warp_* and foo
+Date: Wed, 06 Mar 2024 18:19:25 +0800
+Message-Id: <20240306101925.1088870-10-tiwei.btw@antgroup.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240306101925.1088870-1-tiwei.btw@antgroup.com>
 References: <20240306101925.1088870-1-tiwei.btw@antgroup.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240306_021946_999906_76A0D5C9 
-X-CRM114-Status: GOOD (  10.36  )
+X-CRM114-CacheID: sfid-20240306_021948_617816_A40A12FB 
+X-CRM114-Status: UNSURE (   8.46  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,82 +67,69 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-The host PID tracked in 'cpu_tasks' is no longer used. Stopping
-tracking it will also save some cycles.
+These functions are not called explicitly. Let's just workaround
+the -Wmissing-prototypes warnings by declaring them locally similar
+to what was done in arch/x86/kernel/asm-offsets_32.c.
+
+This will address below -Wmissing-prototypes warnings:
+
+./arch/x86/um/shared/sysdep/kernel-offsets.h:9:6: warning: no previous prototype for ‘foo’ [-Wmissing-prototypes]
+arch/um/os-Linux/main.c:187:7: warning: no previous prototype for ‘__wrap_malloc’ [-Wmissing-prototypes]
+arch/um/os-Linux/main.c:208:7: warning: no previous prototype for ‘__wrap_calloc’ [-Wmissing-prototypes]
+arch/um/os-Linux/main.c:222:6: warning: no previous prototype for ‘__wrap_free’ [-Wmissing-prototypes]
+arch/x86/um/user-offsets.c:17:6: warning: no previous prototype for ‘foo’ [-Wmissing-prototypes]
 
 Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
 ---
- arch/um/include/shared/as-layout.h |  1 -
- arch/um/kernel/process.c           | 12 ++----------
- arch/um/kernel/skas/process.c      |  4 ----
- 3 files changed, 2 insertions(+), 15 deletions(-)
+ arch/um/os-Linux/main.c                    | 5 +++++
+ arch/x86/um/shared/sysdep/kernel-offsets.h | 3 +++
+ arch/x86/um/user-offsets.c                 | 3 +++
+ 3 files changed, 11 insertions(+)
 
-diff --git a/arch/um/include/shared/as-layout.h b/arch/um/include/shared/as-layout.h
-index 9ec3015bc5e2..c22f46a757dc 100644
---- a/arch/um/include/shared/as-layout.h
-+++ b/arch/um/include/shared/as-layout.h
-@@ -31,7 +31,6 @@
- #include <sysdep/ptrace.h>
+diff --git a/arch/um/os-Linux/main.c b/arch/um/os-Linux/main.c
+index c8a42ecbd7a2..e82164f90288 100644
+--- a/arch/um/os-Linux/main.c
++++ b/arch/um/os-Linux/main.c
+@@ -184,6 +184,11 @@ int __init main(int argc, char **argv, char **envp)
  
- struct cpu_task {
--	int pid;
- 	void *task;
- };
+ extern void *__real_malloc(int);
  
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index 4235e2ca2664..1201c1a79b23 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -43,13 +43,7 @@
-  * cares about its entry, so it's OK if another processor is modifying its
-  * entry.
-  */
--struct cpu_task cpu_tasks[NR_CPUS] = { [0 ... NR_CPUS - 1] = { -1, NULL } };
--
--static inline int external_pid(void)
--{
--	/* FIXME: Need to look up userspace_pid by cpu */
--	return userspace_pid[0];
--}
-+struct cpu_task cpu_tasks[NR_CPUS] = { [0 ... NR_CPUS - 1] = { NULL } };
- 
- void free_stack(unsigned long stack, int order)
++/* workaround for -Wmissing-prototypes warnings */
++void *__wrap_malloc(int size);
++void *__wrap_calloc(int n, int size);
++void __wrap_free(void *ptr);
++
+ void *__wrap_malloc(int size)
  {
-@@ -70,8 +64,7 @@ unsigned long alloc_stack(int order, int atomic)
+ 	void *ret;
+diff --git a/arch/x86/um/shared/sysdep/kernel-offsets.h b/arch/x86/um/shared/sysdep/kernel-offsets.h
+index a004bffb7b8d..48de3a71f845 100644
+--- a/arch/x86/um/shared/sysdep/kernel-offsets.h
++++ b/arch/x86/um/shared/sysdep/kernel-offsets.h
+@@ -6,6 +6,9 @@
+ #include <linux/kbuild.h>
+ #include <asm/mman.h>
  
- static inline void set_current(struct task_struct *task)
++/* workaround for a warning with -Wmissing-prototypes */
++void foo(void);
++
+ void foo(void)
  {
--	cpu_tasks[task_thread_info(task)->cpu] = ((struct cpu_task)
--		{ external_pid(), task });
-+	cpu_tasks[task_thread_info(task)->cpu] = ((struct cpu_task) { task });
- }
+ #include <common-offsets.h>
+diff --git a/arch/x86/um/user-offsets.c b/arch/x86/um/user-offsets.c
+index e54a9814ccf1..1c77d9946199 100644
+--- a/arch/x86/um/user-offsets.c
++++ b/arch/x86/um/user-offsets.c
+@@ -14,6 +14,9 @@
+ 	COMMENT(#val " / sizeof(unsigned long)");	\
+ 	DEFINE(sym, val / sizeof(unsigned long))
  
- extern void arch_switch_to(struct task_struct *to);
-@@ -208,7 +201,6 @@ void um_idle_sleep(void)
- 
- void arch_cpu_idle(void)
++/* workaround for a warning with -Wmissing-prototypes */
++void foo(void);
++
+ void foo(void)
  {
--	cpu_tasks[current_thread_info()->cpu].pid = os_getpid();
- 	um_idle_sleep();
- }
- 
-diff --git a/arch/um/kernel/skas/process.c b/arch/um/kernel/skas/process.c
-index fdd5922f9222..99a5cbb36083 100644
---- a/arch/um/kernel/skas/process.c
-+++ b/arch/um/kernel/skas/process.c
-@@ -18,12 +18,8 @@ extern void start_kernel(void);
- 
- static int __init start_kernel_proc(void *unused)
- {
--	int pid;
--
- 	block_signals_trace();
--	pid = os_getpid();
- 
--	cpu_tasks[0].pid = pid;
- 	cpu_tasks[0].task = current;
- 
- 	start_kernel();
+ #ifdef __i386__
 -- 
 2.34.1
 
