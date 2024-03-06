@@ -4,69 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 557D2C5475B
-	for <linux-um@archiver.kernel.org>; Wed,  6 Mar 2024 09:13:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3501C5475B
+	for <linux-um@archiver.kernel.org>; Wed,  6 Mar 2024 10:01:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:
-	To:From:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=tetrM2/lVoO6b6MoahszNtPEy7BfcDE3luQSqTYJhgU=; b=HKaVwnPUhhCAUKidHdhZubkjnK
-	17isC0UFx5RIyO8FkFt1GtDZiul3YO3Gch50neoNoIv48j79+7L7zIw82fGdVg7SI7fi3fXywRbk4
-	xRpUppXgM3zzV9ebMd4pUoCRbBj3gFB52jh5VU5kKJ8su1gkJ+AH0RYY/LBiAYA1wadU8yMz8lMUh
-	nvAb7LnNw7KkFxJJrmpniUQlzZOjdCesQuWDifwIaoSwW8Fs3ftfX97oCohGE3fu/CPldMUZkFtNT
-	LYEPMrrV49Xu0RhDtik8t3Gx0S5LcLxh/lOYHiphW6KLXsSrjiDKY7Y0SSCnVMR5kqmpAmFyImJOG
-	WcIIWdcA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To
+	:From:Date:Subject:Message-ID:Reply-To:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=GOjkAAzqq/27g06Pg1GabXYMzdzKRKWd++BBgioFjQk=; b=D+QDd750eIPylDKqGzHXx4xbmG
+	buuN89vyUBDLO9vVYy0ZZ7n9ZGDt03ZOxsw/uVtZx7tC2ke1QFJEFHVP5tYxeiS2KhllnIXZ/lTmu
+	cD6fdeYUMlAfKYnC6SqYjJ1MrUA3kT5/7v3WuPEFXnVjrK71imLADXj3Ez1kfe/4jRNDEtJmcsoho
+	FY2WbYfV77oL6RdUIIrAY4wJZAkF52uqiGzBUR25Xvpq5u71bjN6r/GibZJNST6ordfsYtvFyv3PZ
+	BrhCIEsIXrSIaDKADUYr8+I2knVwNyWMOo9FAtIyWp1RrSAP2Ij93y5/vYp8SWyVwR2XunXLj4dg7
+	9DQGz7yg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rhnLE-0000000H6Uh-3mBF;
-	Wed, 06 Mar 2024 09:13:36 +0000
-Received: from azure-sdnproxy.icoremail.net ([20.231.56.155])
-	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rhnLA-0000000H6Re-2S6y
+	id 1rho5s-0000000HIij-3pQ3;
+	Wed, 06 Mar 2024 10:01:48 +0000
+Received: from out30-119.freemail.mail.aliyun.com ([115.124.30.119])
+	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rho5n-0000000HIeV-3YZx
 	for linux-um@lists.infradead.org;
-	Wed, 06 Mar 2024 09:13:35 +0000
-Received: from ubuntu.localdomain (unknown [218.12.17.6])
-	by mail-app3 (Coremail) with SMTP id cC_KCgDXbjqcM+hl8KcCAg--.1124S2;
-	Wed, 06 Mar 2024 17:13:10 +0800 (CST)
-From: Duoming Zhou <duoming@zju.edu.cn>
-To: linux-kernel@vger.kernel.org
-Cc: linux-um@lists.infradead.org,
-	richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net,
-	axboe@kernel.dk,
-	brauner@kernel.org,
-	hare@suse.de,
-	jinpu.wang@ionos.com,
-	Duoming Zhou <duoming@zju.edu.cn>
-Subject: [PATCH] um: Fix return value in ubd_init()
-Date: Wed,  6 Mar 2024 17:12:59 +0800
-Message-Id: <20240306091259.18605-1-duoming@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgDXbjqcM+hl8KcCAg--.1124S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7GF18Gw4rtw4UuFWfZw1kZrb_yoWDCwcEkr
-	ykXr9ruw4DKr47Jry2v343Z3sIya1jkrs3ZayIvry3JFsxCw4avw4fCrn8Aw4UWrsa9FWq
-	yrWIyr93CF47ujkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbTxFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_GcCE
-	3s1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s
-	1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0
-	cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8Jw
-	ACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFylc2xSY4AK67AK6r4fMxAIw28IcxkI7VAKI48JMx
-	C20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAF
-	wI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20x
-	vE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v2
-	0xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxV
-	W8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUb0tC7UUUUU==
-X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAwIMAWXnadMR0wACs0
+	Wed, 06 Mar 2024 10:01:46 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1709719298; h=Message-ID:Subject:Date:From:To;
+	bh=GOjkAAzqq/27g06Pg1GabXYMzdzKRKWd++BBgioFjQk=;
+	b=HPMyf8f/u+rYz6KQJjjwez8/YKwfRAa3evUoVNI+Q8ZYeWbCP9j7Eq8DsahsvyhVS+Vvsor1yw44J/BXmlZ6uj5QMpy7xjfnIEgnsgyt+3LIzbNqVU3ElXErc3yliTNUsy2cHwP9VEVJ1ZXfWm3D+bhNmNltmIeHHIRGKc6jQzw=
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R711e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=34;SR=0;TI=SMTPD_---0W1x7Wv2_1709719294;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W1x7Wv2_1709719294)
+          by smtp.aliyun-inc.com;
+          Wed, 06 Mar 2024 18:01:35 +0800
+Message-ID: <1709718889.4420547-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH vhost v3 00/19] virtio: drivers maintain dma info for premapped vq
+Date: Wed, 6 Mar 2024 17:54:49 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: virtualization@lists.linux.dev,
+ Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ Jason Wang <jasowang@redhat.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Hans de Goede <hdegoede@redhat.com>,
+ =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Vadim Pasternak <vadimp@nvidia.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Cornelia Huck <cohuck@redhat.com>,
+ Halil Pasic <pasic@linux.ibm.com>,
+ Eric Farman <farman@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>,
+ Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>,
+ Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ linux-um@lists.infradead.org,
+ netdev@vger.kernel.org,
+ platform-driver-x86@vger.kernel.org,
+ linux-remoteproc@vger.kernel.org,
+ linux-s390@vger.kernel.org,
+ kvm@vger.kernel.org,
+ bpf@vger.kernel.org
+References: <20240229072044.77388-1-xuanzhuo@linux.alibaba.com>
+ <20240229031755-mutt-send-email-mst@kernel.org>
+ <1709197357.626784-1-xuanzhuo@linux.alibaba.com>
+ <20240229043238-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20240229043238-mutt-send-email-mst@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240306_011332_786221_8CCD9C6F 
-X-CRM114-Status: UNSURE (   9.02  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240306_020144_613418_8B392DDD 
+X-CRM114-Status: GOOD (  36.35  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,38 +96,145 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-When kmalloc_array() fails to allocate memory, the ubd_init()
-should return -ENOMEM instead of -1. So, fix it.
+On Thu, 29 Feb 2024 04:34:20 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> On Thu, Feb 29, 2024 at 05:02:37PM +0800, Xuan Zhuo wrote:
+> > On Thu, 29 Feb 2024 03:21:14 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> > > On Thu, Feb 29, 2024 at 03:20:25PM +0800, Xuan Zhuo wrote:
+> > > > As discussed:
+> > > > http://lore.kernel.org/all/CACGkMEvq0No8QGC46U4mGsMtuD44fD_cfLcPaVmJ3rHYqRZxYg@mail.gmail.com
+> > > >
+> > > > If the virtio is premapped mode, the driver should manage the dma info by self.
+> > > > So the virtio core should not store the dma info.
+> > > > So we can release the memory used to store the dma info.
+> > > >
+> > > > But if the desc_extra has not dma info, we face a new question,
+> > > > it is hard to get the dma info of the desc with indirect flag.
+> > > > For split mode, that is easy from desc, but for the packed mode,
+> > > > it is hard to get the dma info from the desc. And for hardening
+> > > > the dma unmap is saft, we should store the dma info of indirect
+> > > > descs.
+> > > >
+> > > > So I introduce the "structure the indirect desc table" to
+> > > > allocate space to store dma info with the desc table.
+> > > >
+> > > > On the other side, we mix the descs with indirect flag
+> > > > with other descs together to share the unmap api. That
+> > > > is complex. I found if we we distinguish the descs with
+> > > > VRING_DESC_F_INDIRECT before unmap, thing will be clearer.
+> > > >
+> > > > Because of the dma array is allocated in the find_vqs(),
+> > > > so I introduce a new parameter to find_vqs().
+> > > >
+> > > > Note:
+> > > >     this is on the top of
+> > > >         [PATCH vhost v1] virtio: packed: fix unmap leak for indirect desc table
+> > > >         http://lore.kernel.org/all/20240223071833.26095-1-xuanzhuo@linux.alibaba.com
+> > > >
+> > > > Please review.
+> > > >
+> > > > Thanks
+> > > >
+> > > > v3:
+> > > >     1. fix the conflict with the vp_modern_create_avq().
+> > >
+> > > Okay but are you going to address huge memory waste all this is causing for
+> > > - people who never do zero copy
+> > > - systems where dma unmap is a nop
+> > >
+> > > ?
+> > >
+> > > You should address all comments when you post a new version, not just
+> > > what was expedient, or alternatively tag patch as RFC and explain
+> > > in commit log that you plan to do it later.
+> >
+> >
+> > Do you miss this one?
+> > http://lore.kernel.org/all/1708997579.5613105-1-xuanzhuo@linux.alibaba.com
+>
+>
+> I did. The answer is that no, you don't get to regress memory usage
+> for lots of people then fix it up.
+> So the patchset is big, I guess it will take a couple of cycles to
+> merge gradually.
 
-Fixes: f88f0bdfc32f ("um: UBD Improvements")
-Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
----
- arch/um/drivers/ubd_kern.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Hi @Michael
 
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 92ee2697ff3..85e33caf62a 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -1098,7 +1098,7 @@ static int __init ubd_init(void)
- 
- 	if (irq_req_buffer == NULL) {
- 		printk(KERN_ERR "Failed to initialize ubd buffering\n");
--		return -1;
-+		return -ENOMEM;
- 	}
- 	io_req_buffer = kmalloc_array(UBD_REQ_BUFFER_SIZE,
- 				      sizeof(struct io_thread_req *),
-@@ -1109,7 +1109,7 @@ static int __init ubd_init(void)
- 
- 	if (io_req_buffer == NULL) {
- 		printk(KERN_ERR "Failed to initialize ubd buffering\n");
--		return -1;
-+		return -ENOMEM;
- 	}
- 	platform_driver_register(&ubd_driver);
- 	mutex_lock(&ubd_lock);
--- 
-2.17.1
+So, how about this patch set?
 
+I do not think they (dma maintainers) will agree the API dma_can_skip_unmap().
+
+If you think sq wastes too much memory using pre-mapped dma mode, how about
+we only enable it when xsk is bond?
+
+Could you give me some advice?
+
+Thanks.
+
+
+>
+> > I asked you. But I didnot recv your answer.
+> >
+> > Thanks.
+> >
+> >
+> > >
+> > > > v2:
+> > > >     1. change the dma item of virtio-net, every item have MAX_SKB_FRAGS + 2
+> > > >         addr + len pairs.
+> > > >     2. introduce virtnet_sq_free_stats for __free_old_xmit
+> > > >
+> > > > v1:
+> > > >     1. rename transport_vq_config to vq_transport_config
+> > > >     2. virtio-net set dma meta number to (ring-size + 1)(MAX_SKB_FRGAS +2)
+> > > >     3. introduce virtqueue_dma_map_sg_attrs
+> > > >     4. separate vring_create_virtqueue to an independent commit
+> > > >
+> > > >
+> > > >
+> > > > Xuan Zhuo (19):
+> > > >   virtio_ring: introduce vring_need_unmap_buffer
+> > > >   virtio_ring: packed: remove double check of the unmap ops
+> > > >   virtio_ring: packed: structure the indirect desc table
+> > > >   virtio_ring: split: remove double check of the unmap ops
+> > > >   virtio_ring: split: structure the indirect desc table
+> > > >   virtio_ring: no store dma info when unmap is not needed
+> > > >   virtio: find_vqs: pass struct instead of multi parameters
+> > > >   virtio: vring_create_virtqueue: pass struct instead of multi
+> > > >     parameters
+> > > >   virtio: vring_new_virtqueue(): pass struct instead of multi parameters
+> > > >   virtio_ring: simplify the parameters of the funcs related to
+> > > >     vring_create/new_virtqueue()
+> > > >   virtio: find_vqs: add new parameter premapped
+> > > >   virtio_ring: export premapped to driver by struct virtqueue
+> > > >   virtio_net: set premapped mode by find_vqs()
+> > > >   virtio_ring: remove api of setting vq premapped
+> > > >   virtio_ring: introduce dma map api for page
+> > > >   virtio_ring: introduce virtqueue_dma_map_sg_attrs
+> > > >   virtio_net: unify the code for recycling the xmit ptr
+> > > >   virtio_net: rename free_old_xmit_skbs to free_old_xmit
+> > > >   virtio_net: sq support premapped mode
+> > > >
+> > > >  arch/um/drivers/virtio_uml.c             |  31 +-
+> > > >  drivers/net/virtio_net.c                 | 283 ++++++---
+> > > >  drivers/platform/mellanox/mlxbf-tmfifo.c |  24 +-
+> > > >  drivers/remoteproc/remoteproc_virtio.c   |  31 +-
+> > > >  drivers/s390/virtio/virtio_ccw.c         |  33 +-
+> > > >  drivers/virtio/virtio_mmio.c             |  30 +-
+> > > >  drivers/virtio/virtio_pci_common.c       |  59 +-
+> > > >  drivers/virtio/virtio_pci_common.h       |   9 +-
+> > > >  drivers/virtio/virtio_pci_legacy.c       |  16 +-
+> > > >  drivers/virtio/virtio_pci_modern.c       |  38 +-
+> > > >  drivers/virtio/virtio_ring.c             | 698 ++++++++++++-----------
+> > > >  drivers/virtio/virtio_vdpa.c             |  45 +-
+> > > >  include/linux/virtio.h                   |  13 +-
+> > > >  include/linux/virtio_config.h            |  48 +-
+> > > >  include/linux/virtio_ring.h              |  82 +--
+> > > >  tools/virtio/virtio_test.c               |   4 +-
+> > > >  tools/virtio/vringh_test.c               |  28 +-
+> > > >  17 files changed, 847 insertions(+), 625 deletions(-)
+> > > >
+> > > > --
+> > > > 2.32.0.3.g01195cf9f
+> > >
+>
 
