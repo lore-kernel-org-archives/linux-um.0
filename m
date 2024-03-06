@@ -4,31 +4,31 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83E24C54E60
-	for <linux-um@archiver.kernel.org>; Wed,  6 Mar 2024 10:19:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 71778C54E49
+	for <linux-um@archiver.kernel.org>; Wed,  6 Mar 2024 10:19:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
+	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=gr7z/SlPhRJd7tsl4kQkoTMn2fox0E9luuadMesY+gA=; b=TYZXGINZq7CfLm+GaG3mJVS782
-	ol5iLnUpca2LpbPiK9Biv8CeyP9hgKxyXi4YhoBHPZf05g40DDrUi3t3t0yHQyD3QO+BeOvK6O6bT
-	/XF0sCt6Qr+w1mVcIKVRUj/IDA+HmFHGR7WTbg5x2xblPNixkK5HdRwdDnM+rn+Q3IC7W7E2XS9Gx
-	daqtT2pkocZw863kiLm1HmOR3AHNsCVUgY6QHxDr3b0fE33Yoi/EJBF3nu9sfd0AQk8+IrdftAlxK
-	nxpoD5ji3oAc5oqMP6v7lKMoH3fF0jrb6mj/6zyuMdlnfSwyMLTXf+0+tOyzYrH0ZAjh/N3m1Jq6Z
-	BUP/REuA==;
+	bh=4+a6MSyPXgEKom2aMNv4B3aI5DSh2DcgVCjXb8KtvOY=; b=1f1seWGynnkAopaRsxFfRjIISZ
+	W53svTieVnuvvelppIEqz4oJM1eHdcCuNveB2pGR+Gzs5uVaqFgheKzZH4LSkg9ZFYWxB0IMYTxFS
+	QS3GsxFyczaO4ZXH6jtZ3kQcmGSgIFsl+XdI9jYF/ECGv8w8q8OX2dHwt7neHeQfrQIt06B5ccVOU
+	ZDtY8P9sungsFyqnhRHLVLtJfJIz0y9YzZaAxYwYwf0I08Yr+hjkfQQTGu9KlXatcHv//wsdsPbwA
+	ydIcYetYcNHYVScND/dtIWdj+EcsQ8QJ9DwyTMeTngHeL8BZMf196glwKTiWdzCaGBi9K17L9JHuA
+	KR5bF6RA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rhoNL-0000000HNDD-0ir3;
+	id 1rhoNL-0000000HNEE-40wn;
 	Wed, 06 Mar 2024 10:19:51 +0000
-Received: from out0-212.mail.aliyun.com ([140.205.0.212])
+Received: from out0-216.mail.aliyun.com ([140.205.0.216])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rhoNF-0000000HN8B-2OCE
+	id 1rhoNF-0000000HN8Y-2L4y
 	for linux-um@lists.infradead.org;
 	Wed, 06 Mar 2024 10:19:48 +0000
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047211;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---.Wgbn-Jk_1709720382;
-Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.Wgbn-Jk_1709720382)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R451e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047213;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---.Wgbn-Jf_1709720382;
+Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.Wgbn-Jf_1709720382)
           by smtp.aliyun-inc.com;
           Wed, 06 Mar 2024 18:19:42 +0800
 From: "Tiwei Bie" <tiwei.btw@antgroup.com>
@@ -40,17 +40,18 @@ Cc: <jani.nikula@intel.com>,
    <linux-kernel@vger.kernel.org>,
    <intel-xe@lists.freedesktop.org>,
   "Tiwei Bie" <tiwei.btw@antgroup.com>
-Subject: [PATCH v3 4/9] um: Fix the return type of __switch_to
-Date: Wed, 06 Mar 2024 18:19:20 +0800
-Message-Id: <20240306101925.1088870-5-tiwei.btw@antgroup.com>
+Subject: [PATCH v3 3/9] um: Remove unused functions
+Date: Wed, 06 Mar 2024 18:19:19 +0800
+Message-Id: <20240306101925.1088870-4-tiwei.btw@antgroup.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240306101925.1088870-1-tiwei.btw@antgroup.com>
 References: <20240306101925.1088870-1-tiwei.btw@antgroup.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240306_021945_813363_41F81DB3 
-X-CRM114-Status: UNSURE (   8.49  )
+X-CRM114-CacheID: sfid-20240306_021945_913726_DE2B2358 
+X-CRM114-Status: UNSURE (   7.48  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -66,35 +67,81 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Make it match the declaration in asm-generic/switch_to.h. And
-also include the header to allow the compiler to check it.
+These functions are not used anymore. Removing them will also address
+below -Wmissing-prototypes warnings:
+
+arch/um/kernel/process.c:51:5: warning: no previous prototype for ‘pid_to_processor_id’ [-Wmissing-prototypes]
+arch/um/kernel/process.c:253:5: warning: no previous prototype for ‘copy_to_user_proc’ [-Wmissing-prototypes]
+arch/um/kernel/process.c:263:5: warning: no previous prototype for ‘clear_user_proc’ [-Wmissing-prototypes]
+arch/um/kernel/tlb.c:579:6: warning: no previous prototype for ‘flush_tlb_mm_range’ [-Wmissing-prototypes]
 
 Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
 ---
- arch/um/kernel/process.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/um/kernel/process.c | 21 ---------------------
+ arch/um/kernel/tlb.c     |  6 ------
+ 2 files changed, 27 deletions(-)
 
 diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index 292c8014aaa6..a7607ef1b02f 100644
+index 20f3813143d8..292c8014aaa6 100644
 --- a/arch/um/kernel/process.c
 +++ b/arch/um/kernel/process.c
-@@ -26,6 +26,7 @@
- #include <linux/resume_user_mode.h>
- #include <asm/current.h>
- #include <asm/mmu_context.h>
-+#include <asm/switch_to.h>
- #include <linux/uaccess.h>
- #include <as-layout.h>
- #include <kern_util.h>
-@@ -73,7 +74,7 @@ static inline void set_current(struct task_struct *task)
+@@ -48,17 +48,6 @@ static inline int external_pid(void)
+ 	return userspace_pid[0];
+ }
  
- extern void arch_switch_to(struct task_struct *to);
- 
--void *__switch_to(struct task_struct *from, struct task_struct *to)
-+struct task_struct *__switch_to(struct task_struct *from, struct task_struct *to)
+-int pid_to_processor_id(int pid)
+-{
+-	int i;
+-
+-	for (i = 0; i < ncpus; i++) {
+-		if (cpu_tasks[i].pid == pid)
+-			return i;
+-	}
+-	return -1;
+-}
+-
+ void free_stack(unsigned long stack, int order)
  {
- 	to->thread.prev_sched = from;
- 	set_current(to);
+ 	free_pages(stack, order);
+@@ -250,21 +239,11 @@ char *uml_strdup(const char *string)
+ }
+ EXPORT_SYMBOL(uml_strdup);
+ 
+-int copy_to_user_proc(void __user *to, void *from, int size)
+-{
+-	return copy_to_user(to, from, size);
+-}
+-
+ int copy_from_user_proc(void *to, void __user *from, int size)
+ {
+ 	return copy_from_user(to, from, size);
+ }
+ 
+-int clear_user_proc(void __user *buf, int size)
+-{
+-	return clear_user(buf, size);
+-}
+-
+ static atomic_t using_sysemu = ATOMIC_INIT(0);
+ int sysemu_supported;
+ 
+diff --git a/arch/um/kernel/tlb.c b/arch/um/kernel/tlb.c
+index 7d050ab0f78a..70b5e47e9761 100644
+--- a/arch/um/kernel/tlb.c
++++ b/arch/um/kernel/tlb.c
+@@ -576,12 +576,6 @@ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+ }
+ EXPORT_SYMBOL(flush_tlb_range);
+ 
+-void flush_tlb_mm_range(struct mm_struct *mm, unsigned long start,
+-			unsigned long end)
+-{
+-	fix_range(mm, start, end, 0);
+-}
+-
+ void flush_tlb_mm(struct mm_struct *mm)
+ {
+ 	struct vm_area_struct *vma;
 -- 
 2.34.1
 
