@@ -4,90 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48849C54798
-	for <linux-um@archiver.kernel.org>; Tue,  5 Mar 2024 20:58:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 557D2C5475B
+	for <linux-um@archiver.kernel.org>; Wed,  6 Mar 2024 09:13:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=NM9bu0HcRSpvQ/lk6AsEXTNfL1CGnBbQK/LGwtIb+y4=; b=175SnSLC9Gbi4IrQ9S9h067TRF
-	QUyx0+CB9PQ4DcZc+0EmbMofLnw0Wig8GIl5iMR9eDEW10/weRujFvT64poSo7/dDju84ZV7z35IE
-	o0XD9PMncrAy853cBCGApWZUHYAXcite0iUAUEy/1aJzIDwHbMthQmw+IxaQc19mKd6wq5w+rmz8y
-	3x/IpnManAupRZCEGyNpQWIGpW3otHBOWQxgyQ4LiYn8GJyNwNuZaJl+F3HpFQDeCfGWkllCGVgzg
-	l/SESA0zH0YbQ2/rRam7kIc7ZAOttpfm72MCtBoDHQgMN0DVi6L/0Hn1AG/8rcKRzyrCtVsC/nFkQ
-	zZ+kLrMA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-Id:Date:Subject:Cc:
+	To:From:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=tetrM2/lVoO6b6MoahszNtPEy7BfcDE3luQSqTYJhgU=; b=HKaVwnPUhhCAUKidHdhZubkjnK
+	17isC0UFx5RIyO8FkFt1GtDZiul3YO3Gch50neoNoIv48j79+7L7zIw82fGdVg7SI7fi3fXywRbk4
+	xRpUppXgM3zzV9ebMd4pUoCRbBj3gFB52jh5VU5kKJ8su1gkJ+AH0RYY/LBiAYA1wadU8yMz8lMUh
+	nvAb7LnNw7KkFxJJrmpniUQlzZOjdCesQuWDifwIaoSwW8Fs3ftfX97oCohGE3fu/CPldMUZkFtNT
+	LYEPMrrV49Xu0RhDtik8t3Gx0S5LcLxh/lOYHiphW6KLXsSrjiDKY7Y0SSCnVMR5kqmpAmFyImJOG
+	WcIIWdcA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rhbrg-0000000FFjF-3u3Z;
-	Tue, 05 Mar 2024 20:58:20 +0000
-Received: from mail-qt1-x82d.google.com ([2607:f8b0:4864:20::82d])
-	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rhbre-0000000FFiK-1DP5
+	id 1rhnLE-0000000H6Uh-3mBF;
+	Wed, 06 Mar 2024 09:13:36 +0000
+Received: from azure-sdnproxy.icoremail.net ([20.231.56.155])
+	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rhnLA-0000000H6Re-2S6y
 	for linux-um@lists.infradead.org;
-	Tue, 05 Mar 2024 20:58:19 +0000
-Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-428405a0205so75861cf.1
-        for <linux-um@lists.infradead.org>; Tue, 05 Mar 2024 12:58:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709672297; x=1710277097; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NM9bu0HcRSpvQ/lk6AsEXTNfL1CGnBbQK/LGwtIb+y4=;
-        b=T0cQlMwpfch+PyXbdZRR5fB+19OeviRKHElfyNn9SG8PO/dp0dDKxYiKKuEBQiOzDV
-         ELGTEZA4qSv7BFwBRip0RmOfDEFwq2ap5NXLXt06aWLMOYsGrY2WtQ4xv3fJpizYoElh
-         pb1cshRIHV3Id2lRF3odM3WJ2btxuJgp2nYvBoFJbpPMte9rTArdkxD/M8rUAHSGpVEp
-         7YbmajbN99odoPlfvOeC/ToK/4cimKLSRDakg95cOdCa5c/xPIYt3eRdVj9vmQbovcCo
-         N6XORuQITXwCP5ulfCsl3fiYCgkqrE3+mNdxYMEfUjFpVTHX8k4bB9sIXSz8q+fbRnPb
-         phPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709672297; x=1710277097;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NM9bu0HcRSpvQ/lk6AsEXTNfL1CGnBbQK/LGwtIb+y4=;
-        b=aI1aIPNcnga6siSzY4SqejrIXIZ3M1ADi5/rthmEJ3c7bRnKMj9zBTLB4mg73hVEei
-         5vvTRRdBsovmXSAQW7jg2DQ8ljq8agah8ERDff3r097FlEOglXT3hmc4XQIZQLs9qcyA
-         5NW2x37iaE5VFNYm4ngvmuo+9R1PZoOY7DnjI6IZsUYzo7u5y5WLe692KIgPxLsCmWbE
-         ICuf9TwjflTKp5tedTFzdvyu/kJXkt+/sobKOuDa1i85r9q+QlVneQy6j7sT1Vq8sF3x
-         Lz09GLkYIDlNKFOfR2ltBknZLKB9p+vvgqwiuj/ovRm/3seIttX/l7KQbXIl52TwVpyB
-         h90A==
-X-Forwarded-Encrypted: i=1; AJvYcCU1Ji8WJ3olOyxmsFW3FUFvOYsbTHS/ma670/EtuGkhnej2mn6pp14iDHw93gxGBaaRgATjIR2RvLJFDWpFrdMv97MdcLVyGLPWPWpf
-X-Gm-Message-State: AOJu0YyCKVk5oI5a4wAB5c7uxLevetRHRgOP7P0nJdtZD+fWbSpO2srJ
-	blpRxwdlSWAiYGu8vLw+2yuRbCkP3vh6DnmYkkGlz2dk0Akui9CYZmMGlYxii3IHVgwkoOAZsDR
-	E6YxhGgyA5l6E0kHkG6OqzNknjms4YAFWr3Gz
-X-Google-Smtp-Source: AGHT+IGJuhFV2CSZhTpphuYInlBxp0BhTfrnQUeh2OvKsSqzEL4tX1NuAVfzJjBoxId+yPuVZh+Ut8IQpuDDq6mQdxI=
-X-Received: by 2002:ac8:59d5:0:b0:42f:a3c:2d4c with SMTP id
- f21-20020ac859d5000000b0042f0a3c2d4cmr72229qtf.13.1709672297226; Tue, 05 Mar
- 2024 12:58:17 -0800 (PST)
-MIME-Version: 1.0
-References: <20240301194037.532117-1-mic@digikod.net> <20240301194037.532117-4-mic@digikod.net>
-In-Reply-To: <20240301194037.532117-4-mic@digikod.net>
-From: Rae Moar <rmoar@google.com>
-Date: Tue, 5 Mar 2024 15:58:05 -0500
-Message-ID: <CA+GJov4BPGuuu+oivgX3Z0J8sb1bYLhrNRrex7qza45WNMtBcQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/7] kunit: Fix timeout message
-To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc: Brendan Higgins <brendanhiggins@google.com>, David Gow <davidgow@google.com>, 
-	Kees Cook <keescook@chromium.org>, Shuah Khan <skhan@linuxfoundation.org>, 
-	Alan Maguire <alan.maguire@oracle.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, 
-	Ingo Molnar <mingo@redhat.com>, James Morris <jamorris@linux.microsoft.com>, 
-	Luis Chamberlain <mcgrof@kernel.org>, 
-	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>, Marco Pagani <marpagan@redhat.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Thara Gopinath <tgopinath@microsoft.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Vitaly Kuznetsov <vkuznets@redhat.com>, Wanpeng Li <wanpengli@tencent.com>, 
-	Zahra Tarkhani <ztarkhani@microsoft.com>, kvm@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-um@lists.infradead.org, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	Wed, 06 Mar 2024 09:13:35 +0000
+Received: from ubuntu.localdomain (unknown [218.12.17.6])
+	by mail-app3 (Coremail) with SMTP id cC_KCgDXbjqcM+hl8KcCAg--.1124S2;
+	Wed, 06 Mar 2024 17:13:10 +0800 (CST)
+From: Duoming Zhou <duoming@zju.edu.cn>
+To: linux-kernel@vger.kernel.org
+Cc: linux-um@lists.infradead.org,
+	richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net,
+	axboe@kernel.dk,
+	brauner@kernel.org,
+	hare@suse.de,
+	jinpu.wang@ionos.com,
+	Duoming Zhou <duoming@zju.edu.cn>
+Subject: [PATCH] um: Fix return value in ubd_init()
+Date: Wed,  6 Mar 2024 17:12:59 +0800
+Message-Id: <20240306091259.18605-1-duoming@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cC_KCgDXbjqcM+hl8KcCAg--.1124S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7GF18Gw4rtw4UuFWfZw1kZrb_yoWDCwcEkr
+	ykXr9ruw4DKr47Jry2v343Z3sIya1jkrs3ZayIvry3JFsxCw4avw4fCrn8Aw4UWrsa9FWq
+	yrWIyr93CF47ujkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbTxFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_GcCE
+	3s1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s
+	1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0
+	cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8Jw
+	ACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+	0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFylc2xSY4AK67AK6r4fMxAIw28IcxkI7VAKI48JMx
+	C20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAF
+	wI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20x
+	vE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v2
+	0xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxV
+	W8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUb0tC7UUUUU==
+X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAwIMAWXnadMR0wACs0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240305_125818_436546_0B02958F 
-X-CRM114-Status: GOOD (  16.56  )
+X-CRM114-CacheID: sfid-20240306_011332_786221_8CCD9C6F 
+X-CRM114-Status: UNSURE (   9.02  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,61 +81,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, Mar 1, 2024 at 2:40=E2=80=AFPM Micka=C3=ABl Sala=C3=BCn <mic@digiko=
-d.net> wrote:
->
-> The exit code is always checked, so let's properly handle the -ETIMEDOUT
-> error code.
+When kmalloc_array() fails to allocate memory, the ubd_init()
+should return -ENOMEM instead of -1. So, fix it.
 
-Hello!
+Fixes: f88f0bdfc32f ("um: UBD Improvements")
+Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
+---
+ arch/um/drivers/ubd_kern.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-This change looks good to me. Thanks!
--Rae
+diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
+index 92ee2697ff3..85e33caf62a 100644
+--- a/arch/um/drivers/ubd_kern.c
++++ b/arch/um/drivers/ubd_kern.c
+@@ -1098,7 +1098,7 @@ static int __init ubd_init(void)
+ 
+ 	if (irq_req_buffer == NULL) {
+ 		printk(KERN_ERR "Failed to initialize ubd buffering\n");
+-		return -1;
++		return -ENOMEM;
+ 	}
+ 	io_req_buffer = kmalloc_array(UBD_REQ_BUFFER_SIZE,
+ 				      sizeof(struct io_thread_req *),
+@@ -1109,7 +1109,7 @@ static int __init ubd_init(void)
+ 
+ 	if (io_req_buffer == NULL) {
+ 		printk(KERN_ERR "Failed to initialize ubd buffering\n");
+-		return -1;
++		return -ENOMEM;
+ 	}
+ 	platform_driver_register(&ubd_driver);
+ 	mutex_lock(&ubd_lock);
+-- 
+2.17.1
 
-Reviewed-by: Rae Moar <rmoar@google.com>
-
-
->
-> Cc: Brendan Higgins <brendanhiggins@google.com>
-> Cc: David Gow <davidgow@google.com>
-> Cc: Rae Moar <rmoar@google.com>
-> Cc: Shuah Khan <skhan@linuxfoundation.org>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-> Link: https://lore.kernel.org/r/20240301194037.532117-4-mic@digikod.net
-> ---
->
-> Changes since v1:
-> * Added Kees's Reviewed-by.
-> ---
->  lib/kunit/try-catch.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/lib/kunit/try-catch.c b/lib/kunit/try-catch.c
-> index 73f5007f20ea..cab8b24b5d5a 100644
-> --- a/lib/kunit/try-catch.c
-> +++ b/lib/kunit/try-catch.c
-> @@ -79,7 +79,6 @@ void kunit_try_catch_run(struct kunit_try_catch *try_ca=
-tch, void *context)
->         time_remaining =3D wait_for_completion_timeout(&try_completion,
->                                                      kunit_test_timeout()=
-);
->         if (time_remaining =3D=3D 0) {
-> -               kunit_err(test, "try timed out\n");
->                 try_catch->try_result =3D -ETIMEDOUT;
->                 kthread_stop(task_struct);
->         }
-> @@ -94,6 +93,8 @@ void kunit_try_catch_run(struct kunit_try_catch *try_ca=
-tch, void *context)
->                 try_catch->try_result =3D 0;
->         else if (exit_code =3D=3D -EINTR)
->                 kunit_err(test, "wake_up_process() was never called\n");
-> +       else if (exit_code =3D=3D -ETIMEDOUT)
-> +               kunit_err(test, "try timed out\n");
->         else if (exit_code)
->                 kunit_err(test, "Unknown error: %d\n", exit_code);
->
-> --
-> 2.44.0
->
 
