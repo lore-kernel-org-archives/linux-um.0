@@ -4,81 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A0B8CC54E41
-	for <linux-um@archiver.kernel.org>; Wed,  6 Mar 2024 23:41:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29F2DC48BF6
+	for <linux-um@archiver.kernel.org>; Thu,  7 Mar 2024 05:28:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	Message-ID:Date:References:In-Reply-To:Subject:Cc:To:From:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=OHx3bVLlXnvaD4Lk/LqRAXihRU8d5iuk+jHowRU57+A=; b=pGGSDFUPBFKP3VjJbvjXuX5Zyw
-	SY9ZYdpiHLSaluW2vYIDWjaJJoJAjrVszMo5ZmDukqNc2f4KAbXIeD1IjyojHZKft0Yk01k+fC6q8
-	JTDecu2DAt5O8euPMW/eir5ZXH4gQJNgVFQKLt5QLRhDOZ26iNMdDPx2zab82CHHLJz5WQEolgF6C
-	vRsYFA+1BB01RVprH0bGDmQ8bjkFtCv1y3Z7tZzOHvAa5BSa71GNLW1fz4eHxXEwTspjKEjVBLPef
-	0LCmdTcB8QUXpUR8PQAcQvI86THNfqxhgw67ovTJrl2UbB0QGM/+HpQHQIF6fXF/OY42S2ZPvfqwP
-	2oNg5qbw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=tFF3SdzrPB5k9mPw8VciaVK/KbIaE86hBRyAcg4GkOg=; b=GO8o6nnTNzjqocDhAVN+foOJtx
+	bxphsaUIFcxaOj9T6y+MoJOw7/eexSiUiR1Q3mkZEvOIQjSLI/ZWk2xIfz/9wnM4koBS25/aCLT77
+	A5pS9o2zUF+mIlKyM8Jsw1aIT2KcrsyK6dx44MBmJqO7QZvtUq6nGDCYM5TQJrLKUGwlVEIAM5dO+
+	5xVZleya+Xj3qy6x9RBl2TfKVeDQvnFDUaDOcPHZGpAFejIhFruv1WT0IHAMhmnpRttg3UKjqLHam
+	Zjg4i/TOODKiySNe3Eq9yww5CvElcDY5+PH6F0p3TNz/6g4XVFJnTeHxcZ1JCJUY7tbhIpJufpmvx
+	wbqQFRUg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ri0t5-00000002HVG-0x7D;
-	Wed, 06 Mar 2024 23:41:27 +0000
-Received: from mail.ozlabs.org ([2404:9400:2221:ea00::3] helo=gandalf.ozlabs.org)
+	id 1ri6JE-000000038Dm-3aem;
+	Thu, 07 Mar 2024 05:28:48 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ri0sy-00000002HQ6-0q8Y;
-	Wed, 06 Mar 2024 23:41:22 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1709768472;
-	bh=OHx3bVLlXnvaD4Lk/LqRAXihRU8d5iuk+jHowRU57+A=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=dfxSn7ESt9feXa7Ah5VgnrgsTR94t0TrfqG0PcTuTf3mOM2nYClb7KzncEO44oWvJ
-	 z177IwNoKxwaRwuRElWO9dM9vGP1BGgcQEfox5PbPq0mqdcUVphkGszRXScQ0d7mcO
-	 jW4ikoUKpq/rq3DBl50CSj6CPBHJDbwDqtBF6NxW+foiGgFyBpZYE+I728npTZNMg3
-	 1t/2+QbQypMyzr9+0O+l4J8vO9YugJeJGU6R2JxmPiIz07vqQ4qeSoMI/Ta1CVt4Pi
-	 EW9aQ8ONAeTLEZ2I6yd+B+il/wLckJElOl67KFtvN0q8NsP2LkndTztEXc4YygJJsv
-	 te7iy+1YEdhjg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tqppm50HGz4wcN;
-	Thu,  7 Mar 2024 10:41:04 +1100 (AEDT)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Arnd Bergmann <arnd@kernel.org>, Anna-Maria Behnsen
- <anna-maria@linutronix.de>, Thomas Gleixner <tglx@linutronix.de>, Vincenzo
- Frascino <vincenzo.frascino@arm.com>, Kees Cook <keescook@chromium.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>, Vineet
- Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>, Catalin
- Marinas <catalin.marinas@arm.com>, Guo Ren <guoren@kernel.org>, Brian Cain
- <bcain@quicinc.com>, Huacai Chen <chenhuacai@kernel.org>, Geert
- Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Helge Deller
- <deller@gmx.de>, Christophe Leroy <christophe.leroy@csgroup.eu>, Palmer
- Dabbelt <palmer@dabbelt.com>, John Paul Adrian Glaubitz
- <glaubitz@physik.fu-berlin.de>, Andreas Larsson <andreas@gaisler.com>,
- Richard Weinberger <richard@nod.at>, x86@kernel.org, Max Filippov
- <jcmvbkbc@gmail.com>, Andy Lutomirski <luto@kernel.org>, Jan Kiszka
- <jan.kiszka@siemens.com>, Kieran Bingham <kbingham@kernel.org>, Andrew
- Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
- linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
- linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
- linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-um@lists.infradead.org
-Subject: Re: [PATCH v2 1/3] arch: consolidate existing CONFIG_PAGE_SIZE_*KB
- definitions
-In-Reply-To: <20240306141453.3900574-2-arnd@kernel.org>
-References: <20240306141453.3900574-1-arnd@kernel.org>
- <20240306141453.3900574-2-arnd@kernel.org>
-Date: Thu, 07 Mar 2024 10:41:02 +1100
-Message-ID: <87sf13nd2p.fsf@mail.lhotse>
+	id 1ri6JB-000000038Bw-1Wpw
+	for linux-um@lists.infradead.org;
+	Thu, 07 Mar 2024 05:28:47 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709789321;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tFF3SdzrPB5k9mPw8VciaVK/KbIaE86hBRyAcg4GkOg=;
+	b=fAxy1GMNpU2fojGsCss8+l3473s3Hxv4Qqz4OkaIPsDn7WGzwoCw4V98ZsOtLeiCnyfyTV
+	OmqB1rnItwY41FnqCWVH7TFmnSVjD3dFiaGhyaiwP5Cton8EeNpcBmMhJiMKpSFvs71Brs
+	RhamWHOU/GJWoVewelawSe2NtTHSQVc=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-85-imLeKlZUMWir7G20mk_YkQ-1; Thu, 07 Mar 2024 00:28:39 -0500
+X-MC-Unique: imLeKlZUMWir7G20mk_YkQ-1
+Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-2992c1d4e7fso323825a91.3
+        for <linux-um@lists.infradead.org>; Wed, 06 Mar 2024 21:28:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709789318; x=1710394118;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tFF3SdzrPB5k9mPw8VciaVK/KbIaE86hBRyAcg4GkOg=;
+        b=iytE5hwexnn8pduXLvzwa69BVa0ccDMkh5pQnySruM0wgQOU6dJetlu99QMCrF1Wc1
+         W2sSFXb4gbPFHBOM+9SjUFanOCR3h2dCZIG37nrZkO7ot+b40+IubTlQ8hAzlk4pumdE
+         Mg85QQuHHBHaBVzB/3jPEtFY8e7NunqY5DvJdVKrXHLtJ9vCqAIx49bcFM3ajcEh+3mg
+         sDOmePIxu+ZIgZEQpwKMoZ+UgsXVQFaC5EyLna16dOyz2IFE1loh/AqGppuMqPZUWeiZ
+         Z6Ac8hGo1ig5rjUEh9YuU+fT6ZcGa9mPzbJHkWCG4gG4mkCmpKizZJQ+aEVWwIUnFR1+
+         ODzQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVz5QA2vmGvDpgOTxo6k/Rdwx8vvYi24BRkIXWo7HPlwXPeuP0kAU7hNaW4Ka4kqwxBfy1SJFH+jU6sbeL8bCTjnGWJYcHIl7D/3Sx1
+X-Gm-Message-State: AOJu0YxdU8soBRyeNB60LnOZl647+sfMVxybCiA1dyfjkuipi8koIn6+
+	zThjlsmmn7+xN0ml6jjXCP3hMqIGBVATOpDQknaB8l9Aydb5R5GlZSAsiMwS419PHAB7Jg4GWdo
+	O46g1F18LlqKM5WyLCTVuvNx50yLa6VsOw8qwGlNYttOjXHTzJObJih0GW83fbP7d18G3hR942k
+	TGTthtsLgMNx7ZouEXl2Su3UTdTwdsyK1f1xjcRrdz/vrI
+X-Received: by 2002:a17:90a:d315:b0:299:8ff:40c0 with SMTP id p21-20020a17090ad31500b0029908ff40c0mr13843124pju.28.1709789318483;
+        Wed, 06 Mar 2024 21:28:38 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFjlNjcTJfkYmthsYkTIYD+6dKrjtynluBSb9Ic08P4WJbd2Iq9ksuZjvEPBh8JZf8Bm+xUFE5g9BmBqFTSRbY=
+X-Received: by 2002:a17:90a:d315:b0:299:8ff:40c0 with SMTP id
+ p21-20020a17090ad31500b0029908ff40c0mr13843101pju.28.1709789318165; Wed, 06
+ Mar 2024 21:28:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240229072044.77388-1-xuanzhuo@linux.alibaba.com>
+ <20240229031755-mutt-send-email-mst@kernel.org> <1709197357.626784-1-xuanzhuo@linux.alibaba.com>
+ <20240229043238-mutt-send-email-mst@kernel.org> <1709718889.4420547-1-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <1709718889.4420547-1-xuanzhuo@linux.alibaba.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Thu, 7 Mar 2024 13:28:27 +0800
+Message-ID: <CACGkMEu5=DKJfXsvOoXDDH7KJ-DWt83jj=vf8GoRnq-9zUeOOg@mail.gmail.com>
+Subject: Re: [PATCH vhost v3 00/19] virtio: drivers maintain dma info for
+ premapped vq
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>, virtualization@lists.linux.dev, 
+	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Hans de Goede <hdegoede@redhat.com>, =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+	Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <andersson@kernel.org>, 
+	Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, 
+	Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, 
+	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, linux-um@lists.infradead.org, 
+	netdev@vger.kernel.org, platform-driver-x86@vger.kernel.org, 
+	linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org, 
+	kvm@vger.kernel.org, bpf@vger.kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240306_154120_663912_9E9767F6 
-X-CRM114-Status: GOOD (  13.41  )
+X-CRM114-CacheID: sfid-20240306_212845_601100_3FE8A13B 
+X-CRM114-Status: GOOD (  41.99  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,78 +115,174 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Arnd,
-
-Arnd Bergmann <arnd@kernel.org> writes:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Wed, Mar 6, 2024 at 6:01=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.co=
+m> wrote:
 >
-> These four architectures define the same Kconfig symbols for configuring
-> the page size. Move the logic into a common place where it can be shared
-> with all other architectures.
+> On Thu, 29 Feb 2024 04:34:20 -0500, "Michael S. Tsirkin" <mst@redhat.com>=
+ wrote:
+> > On Thu, Feb 29, 2024 at 05:02:37PM +0800, Xuan Zhuo wrote:
+> > > On Thu, 29 Feb 2024 03:21:14 -0500, "Michael S. Tsirkin" <mst@redhat.=
+com> wrote:
+> > > > On Thu, Feb 29, 2024 at 03:20:25PM +0800, Xuan Zhuo wrote:
+> > > > > As discussed:
+> > > > > http://lore.kernel.org/all/CACGkMEvq0No8QGC46U4mGsMtuD44fD_cfLcPa=
+VmJ3rHYqRZxYg@mail.gmail.com
+> > > > >
+> > > > > If the virtio is premapped mode, the driver should manage the dma=
+ info by self.
+> > > > > So the virtio core should not store the dma info.
+> > > > > So we can release the memory used to store the dma info.
+> > > > >
+> > > > > But if the desc_extra has not dma info, we face a new question,
+> > > > > it is hard to get the dma info of the desc with indirect flag.
+> > > > > For split mode, that is easy from desc, but for the packed mode,
+> > > > > it is hard to get the dma info from the desc. And for hardening
+> > > > > the dma unmap is saft, we should store the dma info of indirect
+> > > > > descs.
+> > > > >
+> > > > > So I introduce the "structure the indirect desc table" to
+> > > > > allocate space to store dma info with the desc table.
+> > > > >
+> > > > > On the other side, we mix the descs with indirect flag
+> > > > > with other descs together to share the unmap api. That
+> > > > > is complex. I found if we we distinguish the descs with
+> > > > > VRING_DESC_F_INDIRECT before unmap, thing will be clearer.
+> > > > >
+> > > > > Because of the dma array is allocated in the find_vqs(),
+> > > > > so I introduce a new parameter to find_vqs().
+> > > > >
+> > > > > Note:
+> > > > >     this is on the top of
+> > > > >         [PATCH vhost v1] virtio: packed: fix unmap leak for indir=
+ect desc table
+> > > > >         http://lore.kernel.org/all/20240223071833.26095-1-xuanzhu=
+o@linux.alibaba.com
+> > > > >
+> > > > > Please review.
+> > > > >
+> > > > > Thanks
+> > > > >
+> > > > > v3:
+> > > > >     1. fix the conflict with the vp_modern_create_avq().
+> > > >
+> > > > Okay but are you going to address huge memory waste all this is cau=
+sing for
+> > > > - people who never do zero copy
+> > > > - systems where dma unmap is a nop
+> > > >
+> > > > ?
+> > > >
+> > > > You should address all comments when you post a new version, not ju=
+st
+> > > > what was expedient, or alternatively tag patch as RFC and explain
+> > > > in commit log that you plan to do it later.
+> > >
+> > >
+> > > Do you miss this one?
+> > > http://lore.kernel.org/all/1708997579.5613105-1-xuanzhuo@linux.alibab=
+a.com
+> >
+> >
+> > I did. The answer is that no, you don't get to regress memory usage
+> > for lots of people then fix it up.
+> > So the patchset is big, I guess it will take a couple of cycles to
+> > merge gradually.
 >
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> Changes from v1:
->  - improve Kconfig help texts
->  - fix Hexagon Kconfig
+> Hi @Michael
 >
->  arch/Kconfig                      | 92 ++++++++++++++++++++++++++++++-
->  arch/hexagon/Kconfig              | 24 ++------
->  arch/hexagon/include/asm/page.h   |  6 +-
->  arch/loongarch/Kconfig            | 21 ++-----
->  arch/loongarch/include/asm/page.h | 10 +---
->  arch/mips/Kconfig                 | 58 ++-----------------
->  arch/mips/include/asm/page.h      | 16 +-----
->  arch/sh/include/asm/page.h        | 13 +----
->  arch/sh/mm/Kconfig                | 42 ++++----------
->  9 files changed, 121 insertions(+), 161 deletions(-)
+> So, how about this patch set?
+>
+> I do not think they (dma maintainers) will agree the API dma_can_skip_unm=
+ap().
+>
+> If you think sq wastes too much memory using pre-mapped dma mode, how abo=
+ut
+> we only enable it when xsk is bond?
+>
+> Could you give me some advice?
 
-There's a few "help" lines missing, which breaks the build:
+I think we have some discussion, one possible solution is:
 
-  arch/Kconfig:1134: syntax error
-  arch/Kconfig:1133: invalid statement
-  arch/Kconfig:1134: invalid statement
-  arch/Kconfig:1135:warning: ignoring unsupported character '.'
-  arch/Kconfig:1135:warning: ignoring unsupported character '.'
-  arch/Kconfig:1135: invalid statement
-  arch/Kconfig:1136: invalid statement
-  arch/Kconfig:1137:warning: ignoring unsupported character '.'
-  arch/Kconfig:1137: invalid statement
-  arch/Kconfig:1143: syntax error
-  arch/Kconfig:1142: invalid statement
-  arch/Kconfig:1143: invalid statement
-  arch/Kconfig:1144:warning: ignoring unsupported character '.'
-  arch/Kconfig:1144: invalid statement
-  arch/Kconfig:1145: invalid statement
-  arch/Kconfig:1146: invalid statement
-  arch/Kconfig:1147: invalid statement
-  arch/Kconfig:1148:warning: ignoring unsupported character '.'
-  arch/Kconfig:1148: invalid statement
-  make[4]: *** [../scripts/kconfig/Makefile:85: syncconfig] Error 1
+when pre mapping is enabled, virtio core won't store dma metadatas.
 
-Fixup diff is:
+Then it makes virtio-net align with other NIC.
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 56d45a75f625..f2295fa3b48c 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -1130,6 +1130,7 @@ config PAGE_SIZE_16KB
- config PAGE_SIZE_32KB
-        bool "32KiB pages"
-        depends on HAVE_PAGE_SIZE_32KB
-+       help
-          Using 32KiB page size will result in slightly higher performance
-          kernel at the price of higher memory consumption compared to
-          16KiB pages.  This option is available only on cnMIPS cores.
-@@ -1139,6 +1140,7 @@ config PAGE_SIZE_32KB
- config PAGE_SIZE_64KB
-        bool "64KiB pages"
-        depends on HAVE_PAGE_SIZE_64KB
-+       help
-          Using 64KiB page size will result in slightly higher performance
-          kernel at the price of much higher memory consumption compared to
-          4KiB or 16KiB pages.
+Thanks
 
+>
+> Thanks.
+>
+>
+> >
+> > > I asked you. But I didnot recv your answer.
+> > >
+> > > Thanks.
+> > >
+> > >
+> > > >
+> > > > > v2:
+> > > > >     1. change the dma item of virtio-net, every item have MAX_SKB=
+_FRAGS + 2
+> > > > >         addr + len pairs.
+> > > > >     2. introduce virtnet_sq_free_stats for __free_old_xmit
+> > > > >
+> > > > > v1:
+> > > > >     1. rename transport_vq_config to vq_transport_config
+> > > > >     2. virtio-net set dma meta number to (ring-size + 1)(MAX_SKB_=
+FRGAS +2)
+> > > > >     3. introduce virtqueue_dma_map_sg_attrs
+> > > > >     4. separate vring_create_virtqueue to an independent commit
+> > > > >
+> > > > >
+> > > > >
+> > > > > Xuan Zhuo (19):
+> > > > >   virtio_ring: introduce vring_need_unmap_buffer
+> > > > >   virtio_ring: packed: remove double check of the unmap ops
+> > > > >   virtio_ring: packed: structure the indirect desc table
+> > > > >   virtio_ring: split: remove double check of the unmap ops
+> > > > >   virtio_ring: split: structure the indirect desc table
+> > > > >   virtio_ring: no store dma info when unmap is not needed
+> > > > >   virtio: find_vqs: pass struct instead of multi parameters
+> > > > >   virtio: vring_create_virtqueue: pass struct instead of multi
+> > > > >     parameters
+> > > > >   virtio: vring_new_virtqueue(): pass struct instead of multi par=
+ameters
+> > > > >   virtio_ring: simplify the parameters of the funcs related to
+> > > > >     vring_create/new_virtqueue()
+> > > > >   virtio: find_vqs: add new parameter premapped
+> > > > >   virtio_ring: export premapped to driver by struct virtqueue
+> > > > >   virtio_net: set premapped mode by find_vqs()
+> > > > >   virtio_ring: remove api of setting vq premapped
+> > > > >   virtio_ring: introduce dma map api for page
+> > > > >   virtio_ring: introduce virtqueue_dma_map_sg_attrs
+> > > > >   virtio_net: unify the code for recycling the xmit ptr
+> > > > >   virtio_net: rename free_old_xmit_skbs to free_old_xmit
+> > > > >   virtio_net: sq support premapped mode
+> > > > >
+> > > > >  arch/um/drivers/virtio_uml.c             |  31 +-
+> > > > >  drivers/net/virtio_net.c                 | 283 ++++++---
+> > > > >  drivers/platform/mellanox/mlxbf-tmfifo.c |  24 +-
+> > > > >  drivers/remoteproc/remoteproc_virtio.c   |  31 +-
+> > > > >  drivers/s390/virtio/virtio_ccw.c         |  33 +-
+> > > > >  drivers/virtio/virtio_mmio.c             |  30 +-
+> > > > >  drivers/virtio/virtio_pci_common.c       |  59 +-
+> > > > >  drivers/virtio/virtio_pci_common.h       |   9 +-
+> > > > >  drivers/virtio/virtio_pci_legacy.c       |  16 +-
+> > > > >  drivers/virtio/virtio_pci_modern.c       |  38 +-
+> > > > >  drivers/virtio/virtio_ring.c             | 698 ++++++++++++-----=
+------
+> > > > >  drivers/virtio/virtio_vdpa.c             |  45 +-
+> > > > >  include/linux/virtio.h                   |  13 +-
+> > > > >  include/linux/virtio_config.h            |  48 +-
+> > > > >  include/linux/virtio_ring.h              |  82 +--
+> > > > >  tools/virtio/virtio_test.c               |   4 +-
+> > > > >  tools/virtio/vringh_test.c               |  28 +-
+> > > > >  17 files changed, 847 insertions(+), 625 deletions(-)
+> > > > >
+> > > > > --
+> > > > > 2.32.0.3.g01195cf9f
+> > > >
+> >
+>
 
-cheers
 
