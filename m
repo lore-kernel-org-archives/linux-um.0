@@ -4,78 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F7BDC5475B
-	for <linux-um@archiver.kernel.org>; Mon, 11 Mar 2024 08:23:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2772CC5475B
+	for <linux-um@archiver.kernel.org>; Mon, 11 Mar 2024 12:24:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=x4cb4wP5R1IVWpnMMZEZbpylTIidpKGZgRpSMKZ+Rgw=; b=gG4pet38PkmmhMYOkRq2PMTGAt
-	YgxLnEJiKO9zTKFRZm52LXKj2To0mUkvGqrwJV0RPMZizxKPkB9pCJQC0Et7p+TNPG2uX1ZlbbvMP
-	QHsQ41TwxxPlUKu748Uh6xk3lwycPWOwGOPQfP7twmA7R9mo2pbWPcikDpjd0d6qBeJzGKp1nGVo8
-	2aZlIOGcACVJekICtcrk+R2EOYeZ8T+aAiWxuU/refY+QFl6HEkbO0HcZBOq0cgNMO37ZtARVbbY8
-	CeSWIEH3lutdv3Aqo1HcF0IFxrgnWsQ5l7ef60qXUGcPz5Ac4mDXNnJuOxyTXAYm6rvlBj+wpK6EI
-	eF39+o3w==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-ID:Content-Type:
+	MIME-Version:References:Message-ID:In-Reply-To:Subject:cc:To:Date:From:
+	Reply-To:Content-Transfer-Encoding:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=BF0iv9HGoEWlT/2eHkMATRMWUfurYWFgkDd7XV/QqP8=; b=41bxaX6JSlZONgFvkyKQdcedZP
+	OP/XT3DMweB9gyYCf8g9N9eSm6ZMXKip4qzoPzsWa2PAd3f/AobiDTH63YB+qdsP+CZvnZ9lQIoMD
+	dpRqsR8Rea6RZiREtFY4zpEcAfw3BooVzA3p5226X0oIlpBvM0B73FFf6n9eiRyU2TelaEMtywj4Q
+	zSu15TQQHmz0wxCEvjgiGO6vlB5Hnv1UGIHRAva3TfYFHSHGcc6PeK34J4zueLc/uVRARpZvZt+Fi
+	3nyQy/tOexym1F1mue1SNFQaWJwogQ6MVr3O/XtQAorDalG11yUduIRrnEIOG7vO/dJXrHjPNL2pD
+	q89Xu7NA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rjawE-00000000c7K-13ZK;
-	Mon, 11 Mar 2024 08:23:14 +0000
-Received: from mail-yw1-f178.google.com ([209.85.128.178])
+	id 1rjehh-00000001SDx-0L7w;
+	Mon, 11 Mar 2024 12:24:29 +0000
+Received: from mgamail.intel.com ([198.175.65.13])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rjawC-00000000c6w-2AEP
+	id 1rjehd-00000001SCu-2hOl
 	for linux-um@lists.infradead.org;
-	Mon, 11 Mar 2024 08:23:13 +0000
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-60a15449303so11535927b3.0
-        for <linux-um@lists.infradead.org>; Mon, 11 Mar 2024 01:23:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710145391; x=1710750191;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x4cb4wP5R1IVWpnMMZEZbpylTIidpKGZgRpSMKZ+Rgw=;
-        b=nEpFgbUk2OBgRVqSILazb5ZKyhheTBtm3B1NeIxj9pIEsI7wxB/5lOF3/sHmWK9V6Y
-         Tj79wQI9ItrFGHKYx9IWT0qTKhd10wpwF6hfA+jWK+LKP7+Sn8hWvKZSnuUwK9eb8+HO
-         AR8Krnm+wPE9l32iP/uE2KG7UiawB4rtVUEvbxoZo0YCzIPGCSu3EnlNirofoNpOSaWn
-         todNIO7Lrs65U6OAhT71OYUB3X90rg4J+vpbW908AJdkbxievCNIUd0gTHt7te+8RiFu
-         u6/JcHcrjy1qq7BpJOXCM5ftEky9b0/qKDksFm+iNqhHeD7ZXEZhsUPu0879ovTLtii1
-         /d7g==
-X-Forwarded-Encrypted: i=1; AJvYcCV9qpnQ6qtKK8CwBK50aIOhljBlx2EjplqtrLLuzeJyOxEwL3jSli3kI47nS59BewQWzGXIzZIVCBf+5x+UywMSO3EEcumGi4ITJoiZ
-X-Gm-Message-State: AOJu0YyZGraVaVFaqq2SzUVqTPYvy/6la2ktEKY+h+k4GKd4EaFsuQ/d
-	YpfLHCH9ir7LD5MWOa9WSyqLxKyWJyojeNklQMU9iRml0gL5yH3mOdpCOEOTc8Q=
-X-Google-Smtp-Source: AGHT+IGxYwl2OpZL05y+l9FWysUAHQQgNWasNAH9lrjpB9rcc/GZvxy0tWaaywPEX3XW4E5vpJrcNA==
-X-Received: by 2002:a05:690c:3484:b0:60a:2140:99b3 with SMTP id fo4-20020a05690c348400b0060a214099b3mr2298514ywb.1.1710145391466;
-        Mon, 11 Mar 2024 01:23:11 -0700 (PDT)
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com. [209.85.128.178])
-        by smtp.gmail.com with ESMTPSA id g78-20020a815251000000b006098431a49dsm1213321ywb.124.2024.03.11.01.23.11
-        for <linux-um@lists.infradead.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Mar 2024 01:23:11 -0700 (PDT)
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-6099703e530so21139037b3.3
-        for <linux-um@lists.infradead.org>; Mon, 11 Mar 2024 01:23:11 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVFvgxiHiG2ei2y+2JVl1QobmIDAQgPHkBTNuYcB2I0PjP2ToqNCphqZ4beYexzwXZXYyFUtrubIRahWHR8lPLn7oF8HxacVCUwYDcR
-X-Received: by 2002:a81:72c2:0:b0:609:fb70:2a96 with SMTP id
- n185-20020a8172c2000000b00609fb702a96mr3743518ywc.20.1710145391061; Mon, 11
- Mar 2024 01:23:11 -0700 (PDT)
+	Mon, 11 Mar 2024 12:24:27 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710159866; x=1741695866;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=uvc2srdklbEZWRyAUkveO2lIu9fiESGPXlIMmlZAhO4=;
+  b=PdwbUZF0PeJRQ0jGSJrP9BymHKRlzCj6LdoMhxBmNsics1sfaeHX9HWk
+   TIG7jQHWFZBPHHBXlnaNpbf3aQG1Lw/9AlyNtO9ANup7U5DnSvdcxqQcG
+   /u7wnG2CW5fZB0EY6kCoWzywCV9YdBc9aHLXa9iC+rMFYlKqjak13Obi5
+   R2HdZQgxX6X9RtEXjTe0KnIzikKi9w2oVJEjWooM9gY7oCgy8YMqaBQ2a
+   GRSRleyoueLnq185KTNXjngsbyIli8b55EwUk8tCltlWsgiHihpA9xJ8r
+   WD3u733Ye1rwkJmnRyZRDICNO6HaWvxu/FczVC59aKmRerQU8SawvGTRT
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11009"; a="15956663"
+X-IronPort-AV: E=Sophos;i="6.07,116,1708416000"; 
+   d="scan'208";a="15956663"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 05:24:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,116,1708416000"; 
+   d="scan'208";a="11240984"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.244.201])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 05:24:16 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Mon, 11 Mar 2024 14:24:11 +0200 (EET)
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+cc: virtualization@lists.linux.dev, Richard Weinberger <richard@nod.at>, 
+    Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+    Johannes Berg <johannes@sipsolutions.net>, 
+    Hans de Goede <hdegoede@redhat.com>, Vadim Pasternak <vadimp@nvidia.com>, 
+    Bjorn Andersson <andersson@kernel.org>, 
+    Mathieu Poirier <mathieu.poirier@linaro.org>, 
+    Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, 
+    Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, 
+    Vasily Gorbik <gor@linux.ibm.com>, 
+    Alexander Gordeev <agordeev@linux.ibm.com>, 
+    Christian Borntraeger <borntraeger@linux.ibm.com>, 
+    Sven Schnelle <svens@linux.ibm.com>, "Michael S. Tsirkin" <mst@redhat.com>, 
+    Jason Wang <jasowang@redhat.com>, linux-um@lists.infradead.org, 
+    platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, 
+    linux-s390@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH vhost v2 0/4] refactor the params of find_vqs()
+In-Reply-To: <20240311072113.67673-1-xuanzhuo@linux.alibaba.com>
+Message-ID: <576263bc-5e86-5288-7fc5-de214dc622dd@linux.intel.com>
+References: <20240311072113.67673-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-References: <cover.1710056894.git.u.kleine-koenig@pengutronix.de> <d5222e85a8557c660d26df00138001e4907605fa.1710056894.git.u.kleine-koenig@pengutronix.de>
-In-Reply-To: <d5222e85a8557c660d26df00138001e4907605fa.1710056894.git.u.kleine-koenig@pengutronix.de>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 11 Mar 2024 09:22:59 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdV67gnbdatH0O0dL0mAm0eak=6NjHCJY84gCFH9yOcBtg@mail.gmail.com>
-Message-ID: <CAMuHMdV67gnbdatH0O0dL0mAm0eak=6NjHCJY84gCFH9yOcBtg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] um: virtio_uml: Convert to platform remove callback
- returning void
-To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
-	Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, 
-	kernel@pengutronix.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; BOUNDARY="8323328-925155278-1710159757=:1071"
+Content-ID: <c2f52b25-b189-ac04-112b-c9f04d16b66f@linux.intel.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240311_012312_567782_85F36752 
-X-CRM114-Status: GOOD (  18.50  )
+X-CRM114-CacheID: sfid-20240311_052425_841559_62D46722 
+X-CRM114-Status: GOOD (  12.67  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,36 +92,53 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sun, Mar 10, 2024 at 8:52=E2=80=AFAM Uwe Kleine-K=C3=B6nig
-<u.kleine-koenig@pengutronix.de> wrote:
-> The .remove() callback for a platform driver returns an int which makes
-> many driver authors wrongly assume it's possible to do error handling by
-> returning an error code. However the value returned is ignored (apart
-> from emitting a warning) and this typically results in resource leaks.
->
-> To improve here there is a quest to make the remove callback return
-> void. In the first step of this quest all drivers are converted to
-> .remove_new(), which already returns void. Eventually after all drivers
-> are converted, .remove_new() will be renamed to .remove().
->
-> Trivially convert this driver from always returning zero in the remove
-> callback to the void returning variant.
->
-> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+--8323328-925155278-1710159757=:1071
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-ID: <f3d0e1c1-ebcb-baa0-324b-5ca93ffa7301@linux.intel.com>
 
-Gr{oetje,eeting}s,
+On Mon, 11 Mar 2024, Xuan Zhuo wrote:
 
-                        Geert
+> This pathset is splited from the
+>=20
+>      http://lore.kernel.org/all/20240229072044.77388-1-xuanzhuo@linux.ali=
+baba.com
+>=20
+> That may needs some cycles to discuss. But that notifies too many people.
+>=20
+> But just the four commits need to notify so many people.
+> And four commits are independent. So I split that patch set,
+> let us review these first.
+>=20
+> The patch set try to  refactor the params of find_vqs().
+> Then we can just change the structure, when introducing new
+> features.
+>=20
+> Thanks.
+>=20
+> v2:
+>   1. add kerneldoc for "struct vq_transport_config" @ilpo.jarvinen
+>=20
+> v1:
+>   1. fix some comments from ilpo.jarvinen@linux.intel.com
+>=20
+>=20
+> Xuan Zhuo (4):
+>   virtio: find_vqs: pass struct instead of multi parameters
+>   virtio: vring_create_virtqueue: pass struct instead of multi
+>     parameters
+>   virtio: vring_new_virtqueue(): pass struct instead of multi parameters
+>   virtio_ring: simplify the parameters of the funcs related to
+>     vring_create/new_virtqueue()
+
+FWIW,
+
+Reviewed-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
 
 --=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+ i.
+--8323328-925155278-1710159757=:1071--
 
