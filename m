@@ -4,80 +4,125 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2772CC5475B
-	for <linux-um@archiver.kernel.org>; Mon, 11 Mar 2024 12:24:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CAE4C5475B
+	for <linux-um@archiver.kernel.org>; Mon, 11 Mar 2024 15:56:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-ID:Content-Type:
-	MIME-Version:References:Message-ID:In-Reply-To:Subject:cc:To:Date:From:
-	Reply-To:Content-Transfer-Encoding:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=BF0iv9HGoEWlT/2eHkMATRMWUfurYWFgkDd7XV/QqP8=; b=41bxaX6JSlZONgFvkyKQdcedZP
-	OP/XT3DMweB9gyYCf8g9N9eSm6ZMXKip4qzoPzsWa2PAd3f/AobiDTH63YB+qdsP+CZvnZ9lQIoMD
-	dpRqsR8Rea6RZiREtFY4zpEcAfw3BooVzA3p5226X0oIlpBvM0B73FFf6n9eiRyU2TelaEMtywj4Q
-	zSu15TQQHmz0wxCEvjgiGO6vlB5Hnv1UGIHRAva3TfYFHSHGcc6PeK34J4zueLc/uVRARpZvZt+Fi
-	3nyQy/tOexym1F1mue1SNFQaWJwogQ6MVr3O/XtQAorDalG11yUduIRrnEIOG7vO/dJXrHjPNL2pD
-	q89Xu7NA==;
+	bh=YX+/25KQmDMtuk6beAw4gYUoyBzSATAPBx7GNiWq54Q=; b=eTAY8D1aPEFr7/7jpVUvUe72Iw
+	fYEtr5M0El+GtaxKukOdhuUeuvvd4ZriPQL9xefq1MTvgLPueBvauWkYqVx1JAXS3kIWHmMbS73Sh
+	sIom0CwnSI6+OWUMZ4NZOApvJ4zd3xZjU2ZkQO35ey0VbAgTy4nJAwQY7lI6leSJgDYTndMYQrhH4
+	eJLSuc83HqurIzFLqN2nykd2STrEuqHLM+4U2q73BaC0gHcFmrpavBJDIXsV/m/b3huOWbSywcOF4
+	un4l/98oTJL7zJ8iJTeUtccZB90V0ZfZxGpAhNMfPaihLqdwRE049qt8nqirCyL5ajtoneLxIWjIu
+	JRi9vHuA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rjehh-00000001SDx-0L7w;
-	Mon, 11 Mar 2024 12:24:29 +0000
-Received: from mgamail.intel.com ([198.175.65.13])
+	id 1rji12-00000002APz-1F3M;
+	Mon, 11 Mar 2024 15:56:40 +0000
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rjehd-00000001SCu-2hOl
+	id 1rji0v-00000002ADT-3wbN
 	for linux-um@lists.infradead.org;
-	Mon, 11 Mar 2024 12:24:27 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710159866; x=1741695866;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=uvc2srdklbEZWRyAUkveO2lIu9fiESGPXlIMmlZAhO4=;
-  b=PdwbUZF0PeJRQ0jGSJrP9BymHKRlzCj6LdoMhxBmNsics1sfaeHX9HWk
-   TIG7jQHWFZBPHHBXlnaNpbf3aQG1Lw/9AlyNtO9ANup7U5DnSvdcxqQcG
-   /u7wnG2CW5fZB0EY6kCoWzywCV9YdBc9aHLXa9iC+rMFYlKqjak13Obi5
-   R2HdZQgxX6X9RtEXjTe0KnIzikKi9w2oVJEjWooM9gY7oCgy8YMqaBQ2a
-   GRSRleyoueLnq185KTNXjngsbyIli8b55EwUk8tCltlWsgiHihpA9xJ8r
-   WD3u733Ye1rwkJmnRyZRDICNO6HaWvxu/FczVC59aKmRerQU8SawvGTRT
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11009"; a="15956663"
-X-IronPort-AV: E=Sophos;i="6.07,116,1708416000"; 
-   d="scan'208";a="15956663"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 05:24:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,116,1708416000"; 
-   d="scan'208";a="11240984"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.244.201])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2024 05:24:16 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Mon, 11 Mar 2024 14:24:11 +0200 (EET)
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-cc: virtualization@lists.linux.dev, Richard Weinberger <richard@nod.at>, 
-    Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
-    Johannes Berg <johannes@sipsolutions.net>, 
-    Hans de Goede <hdegoede@redhat.com>, Vadim Pasternak <vadimp@nvidia.com>, 
-    Bjorn Andersson <andersson@kernel.org>, 
-    Mathieu Poirier <mathieu.poirier@linaro.org>, 
-    Cornelia Huck <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, 
-    Eric Farman <farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, 
-    Vasily Gorbik <gor@linux.ibm.com>, 
-    Alexander Gordeev <agordeev@linux.ibm.com>, 
-    Christian Borntraeger <borntraeger@linux.ibm.com>, 
-    Sven Schnelle <svens@linux.ibm.com>, "Michael S. Tsirkin" <mst@redhat.com>, 
-    Jason Wang <jasowang@redhat.com>, linux-um@lists.infradead.org, 
-    platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, 
-    linux-s390@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH vhost v2 0/4] refactor the params of find_vqs()
-In-Reply-To: <20240311072113.67673-1-xuanzhuo@linux.alibaba.com>
-Message-ID: <576263bc-5e86-5288-7fc5-de214dc622dd@linux.intel.com>
+	Mon, 11 Mar 2024 15:56:36 +0000
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42BFsGpW014793;
+	Mon, 11 Mar 2024 15:54:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=YX+/25KQmDMtuk6beAw4gYUoyBzSATAPBx7GNiWq54Q=;
+ b=YmdYOxDolyGbGPL9tNk9GWxfrU6bez1t6A6uuOAgfd3c6gPF7a8F1wV6/IEn6+LzkZJb
+ mg9Hf5CQ05nV96S4Cp87LwWzUCJA3HogqsdJHQxWEYDWi4YWX2tgMekg8J2sAknj6B0H
+ MM7RKnRQzTD2A9yM+iNhFtcKaFagcuiF/oIKVN22uKkHz7b42w8nG3JD+UuSEnRIxVQA
+ u9duTtkS3VLU02VwH1MxYWgMrlS4Dv28MiKOO57SrmGm40faReKgcaU4jvZCBqdu298a
+ h0v6nCOZ2YSRYC14JfkznihYWVDqsZIHpMGmyU+6RCcmc69cbk+fDTK2dQ1vtDl8MDqU Bg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wt4p88ex0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 Mar 2024 15:54:25 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42BFXPgD024404;
+	Mon, 11 Mar 2024 15:54:24 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wt4p88er3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 Mar 2024 15:54:24 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42BCx5tT015485;
+	Mon, 11 Mar 2024 15:52:25 GMT
+Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ws2fyhk6h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 11 Mar 2024 15:52:25 +0000
+Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
+	by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42BFqMDW45548004
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 11 Mar 2024 15:52:24 GMT
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0212C58053;
+	Mon, 11 Mar 2024 15:52:22 +0000 (GMT)
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9B30958059;
+	Mon, 11 Mar 2024 15:52:19 +0000 (GMT)
+Received: from li-479af74c-31f9-11b2-a85c-e4ddee11713b.ibm.com (unknown [9.61.78.110])
+	by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 11 Mar 2024 15:52:19 +0000 (GMT)
+Message-ID: <77e02ecf8b87ab83ee6e34d1118f13c8fb83353b.camel@linux.ibm.com>
+Subject: Re: [PATCH vhost v2 1/4] virtio: find_vqs: pass struct instead of
+ multi parameters
+From: Eric Farman <farman@linux.ibm.com>
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, virtualization@lists.linux.dev
+Cc: Richard Weinberger <richard@nod.at>,
+        Anton Ivanov
+ <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg
+ <johannes@sipsolutions.net>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Ilpo
+ =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Vadim
+ Pasternak <vadimp@nvidia.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Cornelia Huck
+ <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>,
+        Heiko Carstens
+ <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev
+ <agordeev@linux.ibm.com>,
+        Christian Borntraeger
+ <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        "Michael
+ S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>, linux-um@lists.infradead.org,
+        platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-s390@vger.kernel.org, kvm@vger.kernel.org
+Date: Mon, 11 Mar 2024 11:52:19 -0400
+In-Reply-To: <20240311072113.67673-2-xuanzhuo@linux.alibaba.com>
 References: <20240311072113.67673-1-xuanzhuo@linux.alibaba.com>
+	 <20240311072113.67673-2-xuanzhuo@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323328-925155278-1710159757=:1071"
-Content-ID: <c2f52b25-b189-ac04-112b-c9f04d16b66f@linux.intel.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: FMt9OmBDBX8TW4TdSfNa-7EqZo2-lqc6
+X-Proofpoint-GUID: yINxBnMN9NkSpBInJ1GIjKG1RBbYvE1Y
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-11_10,2024-03-11_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 mlxlogscore=999 mlxscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 malwarescore=0 phishscore=0 bulkscore=0
+ priorityscore=1501 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311290000 definitions=main-2403110120
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240311_052425_841559_62D46722 
-X-CRM114-Status: GOOD (  12.67  )
+X-CRM114-CacheID: sfid-20240311_085634_250170_93D34D5E 
+X-CRM114-Status: GOOD (  26.42  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,53 +137,159 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Mon, 2024-03-11 at 15:21 +0800, Xuan Zhuo wrote:
+> Now, we pass multi parameters to find_vqs. These parameters
+> may work for transport or work for vring.
+>=20
+> And find_vqs has multi implements in many places:
+>=20
+> =C2=A0arch/um/drivers/virtio_uml.c
+> =C2=A0drivers/platform/mellanox/mlxbf-tmfifo.c
+> =C2=A0drivers/remoteproc/remoteproc_virtio.c
+> =C2=A0drivers/s390/virtio/virtio_ccw.c
+> =C2=A0drivers/virtio/virtio_mmio.c
+> =C2=A0drivers/virtio/virtio_pci_legacy.c
+> =C2=A0drivers/virtio/virtio_pci_modern.c
+> =C2=A0drivers/virtio/virtio_vdpa.c
+>=20
+> Every time, we try to add a new parameter, that is difficult.
+> We must change every find_vqs implement.
+>=20
+> One the other side, if we want to pass a parameter to vring,
+> we must change the call path from transport to vring.
+> Too many functions need to be changed.
+>=20
+> So it is time to refactor the find_vqs. We pass a structure
+> cfg to find_vqs(), that will be passed to vring by transport.
+>=20
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> Acked-by: Johannes Berg <johannes@sipsolutions.net>
+> ---
+> =C2=A0arch/um/drivers/virtio_uml.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 23 +++----
+> =C2=A0drivers/platform/mellanox/mlxbf-tmfifo.c | 13 ++--
+> =C2=A0drivers/remoteproc/remoteproc_virtio.c=C2=A0=C2=A0 | 28 ++++-----
+> =C2=A0drivers/s390/virtio/virtio_ccw.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 | 29 +++++----
+> =C2=A0drivers/virtio/virtio_mmio.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 26 ++++----
+> =C2=A0drivers/virtio/virtio_pci_common.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 | 60 +++++++++---------
+> =C2=A0drivers/virtio/virtio_pci_common.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 |=C2=A0 9 +--
+> =C2=A0drivers/virtio/virtio_pci_legacy.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 | 11 ++--
+> =C2=A0drivers/virtio/virtio_pci_modern.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 | 33 ++++++----
+> =C2=A0drivers/virtio/virtio_vdpa.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 36 +++++------
+> =C2=A0include/linux/virtio_config.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 77 +++++++++++++++++++---
+> --
+> =C2=A011 files changed, 192 insertions(+), 153 deletions(-)
+>=20
+>=20
 
---8323328-925155278-1710159757=:1071
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Content-ID: <f3d0e1c1-ebcb-baa0-324b-5ca93ffa7301@linux.intel.com>
+...snip...
 
-On Mon, 11 Mar 2024, Xuan Zhuo wrote:
+>=20
+> diff --git a/drivers/virtio/virtio_pci_modern.c
+> b/drivers/virtio/virtio_pci_modern.c
+> index f62b530aa3b5..b2cdf5d3824d 100644
+> --- a/drivers/virtio/virtio_pci_modern.c
+> +++ b/drivers/virtio/virtio_pci_modern.c
+> @@ -530,9 +530,7 @@ static bool vp_notify_with_data(struct virtqueue
+> *vq)
+> =C2=A0static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
+> =C2=A0				=C2=A0 struct virtio_pci_vq_info *info,
+> =C2=A0				=C2=A0 unsigned int index,
+> -				=C2=A0 void (*callback)(struct virtqueue
+> *vq),
+> -				=C2=A0 const char *name,
+> -				=C2=A0 bool ctx,
+> +				=C2=A0 struct virtio_vq_config *cfg,
+> =C2=A0				=C2=A0 u16 msix_vec)
+> =C2=A0{
+> =C2=A0
+> @@ -563,8 +561,11 @@ static struct virtqueue *setup_vq(struct
+> virtio_pci_device *vp_dev,
+> =C2=A0	/* create the vring */
+> =C2=A0	vq =3D vring_create_virtqueue(index, num,
+> =C2=A0				=C2=A0=C2=A0=C2=A0 SMP_CACHE_BYTES, &vp_dev->vdev,
+> -				=C2=A0=C2=A0=C2=A0 true, true, ctx,
+> -				=C2=A0=C2=A0=C2=A0 notify, callback, name);
+> +				=C2=A0=C2=A0=C2=A0 true, true,
+> +				=C2=A0=C2=A0=C2=A0 cfg->ctx ? cfg->ctx[cfg-
+> >cfg_idx] : false,
+> +				=C2=A0=C2=A0=C2=A0 notify,
+> +				=C2=A0=C2=A0=C2=A0 cfg->callbacks[cfg->cfg_idx],
+> +				=C2=A0=C2=A0=C2=A0 cfg->names[cfg->cfg_idx]);
+> =C2=A0	if (!vq)
+> =C2=A0		return ERR_PTR(-ENOMEM);
+> =C2=A0
+> @@ -593,15 +594,11 @@ static struct virtqueue *setup_vq(struct
+> virtio_pci_device *vp_dev,
+> =C2=A0	return ERR_PTR(err);
+> =C2=A0}
+> =C2=A0
+> -static int vp_modern_find_vqs(struct virtio_device *vdev, unsigned
+> int nvqs,
+> -			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct virtqueue *vqs[],
+> -			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 vq_callback_t *callbacks[],
+> -			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const char * const names[], const bool
+> *ctx,
+> -			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct irq_affinity *desc)
+> +static int vp_modern_find_vqs(struct virtio_device *vdev, struct
+> virtio_vq_config *cfg)
+> =C2=A0{
+> =C2=A0	struct virtio_pci_device *vp_dev =3D to_vp_device(vdev);
+> =C2=A0	struct virtqueue *vq;
+> -	int rc =3D vp_find_vqs(vdev, nvqs, vqs, callbacks, names, ctx,
+> desc);
+> +	int rc =3D vp_find_vqs(vdev, cfg);
+> =C2=A0
+> =C2=A0	if (rc)
+> =C2=A0		return rc;
+> @@ -739,10 +736,17 @@ static bool vp_get_shm_region(struct
+> virtio_device *vdev,
+> =C2=A0static int vp_modern_create_avq(struct virtio_device *vdev)
+> =C2=A0{
+> =C2=A0	struct virtio_pci_device *vp_dev =3D to_vp_device(vdev);
+> +	vq_callback_t *callbacks[] =3D { NULL };
+> +	struct virtio_vq_config cfg =3D {};
+> =C2=A0	struct virtio_pci_admin_vq *avq;
+> =C2=A0	struct virtqueue *vq;
+> +	const char *names[1];
+> =C2=A0	u16 admin_q_num;
+> =C2=A0
+> +	cfg.nvqs =3D 1;
+> +	cfg.callbacks =3D callbacks;
+> +	cfg.names =3D names;
+> +
+> =C2=A0	if (!virtio_has_feature(vdev, VIRTIO_F_ADMIN_VQ))
+> =C2=A0		return 0;
+> =C2=A0
+> @@ -753,8 +757,11 @@ static int vp_modern_create_avq(struct
+> virtio_device *vdev)
+> =C2=A0	avq =3D &vp_dev->admin_vq;
+> =C2=A0	avq->vq_index =3D vp_modern_avq_index(&vp_dev->mdev);
+> =C2=A0	sprintf(avq->name, "avq.%u", avq->vq_index);
+> -	vq =3D vp_dev->setup_vq(vp_dev, &vp_dev->admin_vq.info, avq-
+> >vq_index, NULL,
+> -			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 avq->name, NULL,
+> VIRTIO_MSI_NO_VECTOR);
+> +
+> +	cfg.names[0] =3D avq->name;
 
-> This pathset is splited from the
->=20
->      http://lore.kernel.org/all/20240229072044.77388-1-xuanzhuo@linux.ali=
-baba.com
->=20
-> That may needs some cycles to discuss. But that notifies too many people.
->=20
-> But just the four commits need to notify so many people.
-> And four commits are independent. So I split that patch set,
-> let us review these first.
->=20
-> The patch set try to  refactor the params of find_vqs().
-> Then we can just change the structure, when introducing new
-> features.
->=20
-> Thanks.
->=20
-> v2:
->   1. add kerneldoc for "struct vq_transport_config" @ilpo.jarvinen
->=20
-> v1:
->   1. fix some comments from ilpo.jarvinen@linux.intel.com
->=20
->=20
-> Xuan Zhuo (4):
->   virtio: find_vqs: pass struct instead of multi parameters
->   virtio: vring_create_virtqueue: pass struct instead of multi
->     parameters
->   virtio: vring_new_virtqueue(): pass struct instead of multi parameters
->   virtio_ring: simplify the parameters of the funcs related to
->     vring_create/new_virtqueue()
+While looking at the s390 changes, I observe that the above fails to
+compile and is subsequently fixed in patch 2:
 
-FWIW,
+drivers/virtio/virtio_pci_modern.c: In function =E2=80=98vp_modern_create_a=
+vq=E2=80=99:
+drivers/virtio/virtio_pci_modern.c:761:22: error: assignment of read-
+only location =E2=80=98*cfg.names=E2=80=99
+  761 |         cfg.names[0] =3D avq->name;
+      |                      ^
 
-Reviewed-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
 
---=20
- i.
---8323328-925155278-1710159757=:1071--
 
