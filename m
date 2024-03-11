@@ -4,125 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2CAE4C5475B
-	for <linux-um@archiver.kernel.org>; Mon, 11 Mar 2024 15:56:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98718C5475B
+	for <linux-um@archiver.kernel.org>; Mon, 11 Mar 2024 21:21:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=YX+/25KQmDMtuk6beAw4gYUoyBzSATAPBx7GNiWq54Q=; b=eTAY8D1aPEFr7/7jpVUvUe72Iw
-	fYEtr5M0El+GtaxKukOdhuUeuvvd4ZriPQL9xefq1MTvgLPueBvauWkYqVx1JAXS3kIWHmMbS73Sh
-	sIom0CwnSI6+OWUMZ4NZOApvJ4zd3xZjU2ZkQO35ey0VbAgTy4nJAwQY7lI6leSJgDYTndMYQrhH4
-	eJLSuc83HqurIzFLqN2nykd2STrEuqHLM+4U2q73BaC0gHcFmrpavBJDIXsV/m/b3huOWbSywcOF4
-	un4l/98oTJL7zJ8iJTeUtccZB90V0ZfZxGpAhNMfPaihLqdwRE049qt8nqirCyL5ajtoneLxIWjIu
-	JRi9vHuA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=TWb2A9iIkGs3AmFlz53bU5Efj9ZUWJhfOe0zRp0tGRc=; b=WvvyYD9r5WYzEleh43fMXo9w9a
+	4/Rq99FNuVTKZGN/oydmIRkMVRXYwlVWi+6GbfEJ9a1XBsGB2sYI7VrRUXil3s5Q2F2QVU7puBCO3
+	KKVLf5hKTu637hUxLKGSjoWJrAU6V925kOm+LBG34qciYL2JGQHWhL3lebspYRm+9BekXg6JrxJF6
+	mO50L6HIe7mwHfTzAL4BmcgvyGwi24c0JNvcyqeuU3vBs+cQMaojywi8azRfuGI9BpbVx5/96i3PG
+	JEDFnybGSomAwo43p3U4iWYgSZFFlPzz7RzRSZF7qQD7f7D3ZzO7+IeaRCrOt2UrX1Y5SHO05/5Lb
+	1DJccTsA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rji12-00000002APz-1F3M;
-	Mon, 11 Mar 2024 15:56:40 +0000
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
+	id 1rjn5R-00000003Eyd-1whb;
+	Mon, 11 Mar 2024 21:21:35 +0000
+Received: from mail-qt1-x831.google.com ([2607:f8b0:4864:20::831])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rji0v-00000002ADT-3wbN
+	id 1rjn5M-00000003Ew8-22E2
 	for linux-um@lists.infradead.org;
-	Mon, 11 Mar 2024 15:56:36 +0000
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42BFsGpW014793;
-	Mon, 11 Mar 2024 15:54:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=YX+/25KQmDMtuk6beAw4gYUoyBzSATAPBx7GNiWq54Q=;
- b=YmdYOxDolyGbGPL9tNk9GWxfrU6bez1t6A6uuOAgfd3c6gPF7a8F1wV6/IEn6+LzkZJb
- mg9Hf5CQ05nV96S4Cp87LwWzUCJA3HogqsdJHQxWEYDWi4YWX2tgMekg8J2sAknj6B0H
- MM7RKnRQzTD2A9yM+iNhFtcKaFagcuiF/oIKVN22uKkHz7b42w8nG3JD+UuSEnRIxVQA
- u9duTtkS3VLU02VwH1MxYWgMrlS4Dv28MiKOO57SrmGm40faReKgcaU4jvZCBqdu298a
- h0v6nCOZ2YSRYC14JfkznihYWVDqsZIHpMGmyU+6RCcmc69cbk+fDTK2dQ1vtDl8MDqU Bg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wt4p88ex0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Mar 2024 15:54:25 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42BFXPgD024404;
-	Mon, 11 Mar 2024 15:54:24 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wt4p88er3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Mar 2024 15:54:24 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42BCx5tT015485;
-	Mon, 11 Mar 2024 15:52:25 GMT
-Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ws2fyhk6h-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Mar 2024 15:52:25 +0000
-Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
-	by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42BFqMDW45548004
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 11 Mar 2024 15:52:24 GMT
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0212C58053;
-	Mon, 11 Mar 2024 15:52:22 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 9B30958059;
-	Mon, 11 Mar 2024 15:52:19 +0000 (GMT)
-Received: from li-479af74c-31f9-11b2-a85c-e4ddee11713b.ibm.com (unknown [9.61.78.110])
-	by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 11 Mar 2024 15:52:19 +0000 (GMT)
-Message-ID: <77e02ecf8b87ab83ee6e34d1118f13c8fb83353b.camel@linux.ibm.com>
-Subject: Re: [PATCH vhost v2 1/4] virtio: find_vqs: pass struct instead of
- multi parameters
-From: Eric Farman <farman@linux.ibm.com>
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, virtualization@lists.linux.dev
-Cc: Richard Weinberger <richard@nod.at>,
-        Anton Ivanov
- <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg
- <johannes@sipsolutions.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ilpo
- =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Vadim
- Pasternak <vadimp@nvidia.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Cornelia Huck
- <cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>,
-        Heiko Carstens
- <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev
- <agordeev@linux.ibm.com>,
-        Christian Borntraeger
- <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        "Michael
- S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, linux-um@lists.infradead.org,
-        platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-s390@vger.kernel.org, kvm@vger.kernel.org
-Date: Mon, 11 Mar 2024 11:52:19 -0400
-In-Reply-To: <20240311072113.67673-2-xuanzhuo@linux.alibaba.com>
-References: <20240311072113.67673-1-xuanzhuo@linux.alibaba.com>
-	 <20240311072113.67673-2-xuanzhuo@linux.alibaba.com>
+	Mon, 11 Mar 2024 21:21:30 +0000
+Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-42ef8193ae6so20671cf.1
+        for <linux-um@lists.infradead.org>; Mon, 11 Mar 2024 14:21:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710192084; x=1710796884; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TWb2A9iIkGs3AmFlz53bU5Efj9ZUWJhfOe0zRp0tGRc=;
+        b=NJrcwS63NEA65QqpZqMCdYx2Z3OhyD4gTv7+Sqt8QlU6VG4HnRJIrDPftlF28rbF4g
+         vHnMfuSmzjqsiZO6TWT2o+GysjYQdbKO0WTO4G5Cj7wWKnDNa2geiDXBYpK4YUHVBoc9
+         IC5x330VP20ERTv+SGVos/zh4fz/e1sbNhb1RwvEWCFlIBvMGTDFe0tTZLOtPKn3JES2
+         LtapKbSvjUFwOwUIlBvZGZCQQ6OJD2hdmdtAtJvr+GQL8K447nxv1O8ogHo91+Q2pUzi
+         Evrm0BQLygh5VyddnA1WE4Xxkh2vc/c8gVUVIHArZTL8TeUcG4WQRwFgDpTt57n5dmLN
+         aHxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710192084; x=1710796884;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TWb2A9iIkGs3AmFlz53bU5Efj9ZUWJhfOe0zRp0tGRc=;
+        b=sECVaaij2unCYbqreOdLsp9TzD6JT+enEZwSeQ6HfZVnHp7NG9oJTVjJe7sPX65SdD
+         AwRkCyTm4EzeApway4RSpdoLXRw8zfi61faYU2lVbts4kPJBII5ahTJaH4utIqxb3Xxi
+         6wsPuR1lHqB3Cq0p+6EX3PjFaC6qoO3mxGIveQzOAvpHoykdg14vJ3vtW45YToxEJvbx
+         43woS7bxTDHb0W/te4Re8DFWMwH3nxInvwVtzEYrFp8pPJ8Q9OL403H+c/mYL+b0lhNb
+         sYioqGOua5M9XMIImdAZpfwEhtGn/Hy2jTupn9oYa82sQ4L0s46J04s1ZE3ReWzvzUCD
+         IefQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXUq6/EhBisfZ2JJJp4Bt9odSt6oW0b/24A2I4MQiVJbSAu0bZqP9jbBGAvG6wVs+xdNqEw47fspinmDd+Tai6EvlSHvqj4xvdhvwqf
+X-Gm-Message-State: AOJu0Yya6INi4AjBEzsbGVPtj2w+BfXK68ZhmyCzBv5KZpesllAw8o1m
+	rW2cEYPTyeTnabwDNl33S48wwv03vg4FCuILKMtqZB0ZiyXrQMHqryw3tbN74hdU04KTVPGWFxv
+	HAiFu1nXM7J9NW5bwXEo9uyyNvq4SJHbmEbro
+X-Google-Smtp-Source: AGHT+IGiw3N/c7EMgtHBYf+GhpaM4BMFpUmbsLp7eZNB/I9uRFUCN7Phn/vKm3/rRq1HFpGOLfkrYTvw5DSVfzOksbM=
+X-Received: by 2002:ac8:748f:0:b0:42f:213a:dc9b with SMTP id
+ v15-20020ac8748f000000b0042f213adc9bmr36743qtq.19.1710192084473; Mon, 11 Mar
+ 2024 14:21:24 -0700 (PDT)
+MIME-Version: 1.0
+References: <20240301194037.532117-1-mic@digikod.net> <20240301194037.532117-5-mic@digikod.net>
+In-Reply-To: <20240301194037.532117-5-mic@digikod.net>
+From: Rae Moar <rmoar@google.com>
+Date: Mon, 11 Mar 2024 17:21:11 -0400
+Message-ID: <CA+GJov7in4o6bXt_JDqeGjjD08yOweiUshesS4cUWTHYfgJAwQ@mail.gmail.com>
+Subject: Re: [PATCH v2 4/7] kunit: Handle test faults
+To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
+Cc: Brendan Higgins <brendanhiggins@google.com>, David Gow <davidgow@google.com>, 
+	Kees Cook <keescook@chromium.org>, Shuah Khan <skhan@linuxfoundation.org>, 
+	Alan Maguire <alan.maguire@oracle.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, 
+	Ingo Molnar <mingo@redhat.com>, James Morris <jamorris@linux.microsoft.com>, 
+	Luis Chamberlain <mcgrof@kernel.org>, 
+	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>, Marco Pagani <marpagan@redhat.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Thara Gopinath <tgopinath@microsoft.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Vitaly Kuznetsov <vkuznets@redhat.com>, Wanpeng Li <wanpengli@tencent.com>, 
+	Zahra Tarkhani <ztarkhani@microsoft.com>, kvm@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	linux-um@lists.infradead.org, x86@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
-MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: FMt9OmBDBX8TW4TdSfNa-7EqZo2-lqc6
-X-Proofpoint-GUID: yINxBnMN9NkSpBInJ1GIjKG1RBbYvE1Y
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-11_10,2024-03-11_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 mlxlogscore=999 mlxscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 malwarescore=0 phishscore=0 bulkscore=0
- priorityscore=1501 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311290000 definitions=main-2403110120
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240311_085634_250170_93D34D5E 
-X-CRM114-Status: GOOD (  26.42  )
+X-CRM114-CacheID: sfid-20240311_142128_551823_7B01389E 
+X-CRM114-Status: GOOD (  31.61  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -137,159 +102,159 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2024-03-11 at 15:21 +0800, Xuan Zhuo wrote:
-> Now, we pass multi parameters to find_vqs. These parameters
-> may work for transport or work for vring.
->=20
-> And find_vqs has multi implements in many places:
->=20
-> =C2=A0arch/um/drivers/virtio_uml.c
-> =C2=A0drivers/platform/mellanox/mlxbf-tmfifo.c
-> =C2=A0drivers/remoteproc/remoteproc_virtio.c
-> =C2=A0drivers/s390/virtio/virtio_ccw.c
-> =C2=A0drivers/virtio/virtio_mmio.c
-> =C2=A0drivers/virtio/virtio_pci_legacy.c
-> =C2=A0drivers/virtio/virtio_pci_modern.c
-> =C2=A0drivers/virtio/virtio_vdpa.c
->=20
-> Every time, we try to add a new parameter, that is difficult.
-> We must change every find_vqs implement.
->=20
-> One the other side, if we want to pass a parameter to vring,
-> we must change the call path from transport to vring.
-> Too many functions need to be changed.
->=20
-> So it is time to refactor the find_vqs. We pass a structure
-> cfg to find_vqs(), that will be passed to vring by transport.
->=20
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> Acked-by: Johannes Berg <johannes@sipsolutions.net>
+On Fri, Mar 1, 2024 at 2:40=E2=80=AFPM Micka=C3=ABl Sala=C3=BCn <mic@digiko=
+d.net> wrote:
+>
+> Previously, when a kernel test thread crashed (e.g. NULL pointer
+> dereference, general protection fault), the KUnit test hanged for 30
+> seconds and exited with a timeout error.
+>
+> Fix this issue by waiting on task_struct->vfork_done instead of the
+> custom kunit_try_catch.try_completion, and track the execution state by
+> initially setting try_result with -EFAULT and only setting it to 0 if
+
+Hello!
+
+Thanks for your patch! This has been tested and seems pretty good to
+me but I just have a few questions. First, do you mean here "setting
+try_result with -EINTR"  instead?
+
+But happy to add the tested-by.
+
+Tested-by: Rae Moar <rmoar@google.com>
+
+Thanks!
+-Rae
+
+> the test passed.
+>
+> Fix kunit_generic_run_threadfn_adapter() signature by returning 0
+> instead of calling kthread_complete_and_exit().  Because thread's exit
+> code is never checked, always set it to 0 to make it clear.
+>
+> Fix the -EINTR error message, which couldn't be reached until now.
+>
+> This is tested with a following patch.
+>
+> Cc: Brendan Higgins <brendanhiggins@google.com>
+> Cc: David Gow <davidgow@google.com>
+> Cc: Rae Moar <rmoar@google.com>
+> Cc: Shuah Khan <skhan@linuxfoundation.org>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
+> Link: https://lore.kernel.org/r/20240301194037.532117-5-mic@digikod.net
 > ---
-> =C2=A0arch/um/drivers/virtio_uml.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 23 +++----
-> =C2=A0drivers/platform/mellanox/mlxbf-tmfifo.c | 13 ++--
-> =C2=A0drivers/remoteproc/remoteproc_virtio.c=C2=A0=C2=A0 | 28 ++++-----
-> =C2=A0drivers/s390/virtio/virtio_ccw.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 | 29 +++++----
-> =C2=A0drivers/virtio/virtio_mmio.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 26 ++++----
-> =C2=A0drivers/virtio/virtio_pci_common.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 | 60 +++++++++---------
-> =C2=A0drivers/virtio/virtio_pci_common.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 |=C2=A0 9 +--
-> =C2=A0drivers/virtio/virtio_pci_legacy.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 | 11 ++--
-> =C2=A0drivers/virtio/virtio_pci_modern.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 | 33 ++++++----
-> =C2=A0drivers/virtio/virtio_vdpa.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 36 +++++------
-> =C2=A0include/linux/virtio_config.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 77 +++++++++++++++++++---
+>
+> Changes since v1:
+> * Added Kees's Reviewed-by.
+> ---
+>  include/kunit/try-catch.h |  3 ---
+>  lib/kunit/try-catch.c     | 14 +++++++-------
+>  2 files changed, 7 insertions(+), 10 deletions(-)
+>
+> diff --git a/include/kunit/try-catch.h b/include/kunit/try-catch.h
+> index c507dd43119d..7c966a1adbd3 100644
+> --- a/include/kunit/try-catch.h
+> +++ b/include/kunit/try-catch.h
+> @@ -14,13 +14,11 @@
+>
+>  typedef void (*kunit_try_catch_func_t)(void *);
+>
+> -struct completion;
+>  struct kunit;
+>
+>  /**
+>   * struct kunit_try_catch - provides a generic way to run code which mig=
+ht fail.
+>   * @test: The test case that is currently being executed.
+> - * @try_completion: Completion that the control thread waits on while te=
+st runs.
+>   * @try_result: Contains any errno obtained while running test case.
+>   * @try: The function, the test case, to attempt to run.
+>   * @catch: The function called if @try bails out.
+> @@ -46,7 +44,6 @@ struct kunit;
+>  struct kunit_try_catch {
+>         /* private: internal use only. */
+>         struct kunit *test;
+> -       struct completion *try_completion;
+>         int try_result;
+>         kunit_try_catch_func_t try;
+>         kunit_try_catch_func_t catch;
+> diff --git a/lib/kunit/try-catch.c b/lib/kunit/try-catch.c
+> index cab8b24b5d5a..c6ee4db0b3bd 100644
+> --- a/lib/kunit/try-catch.c
+> +++ b/lib/kunit/try-catch.c
+> @@ -18,7 +18,7 @@
+>  void __noreturn kunit_try_catch_throw(struct kunit_try_catch *try_catch)
+>  {
+>         try_catch->try_result =3D -EFAULT;
+> -       kthread_complete_and_exit(try_catch->try_completion, -EFAULT);
+> +       kthread_exit(0);
+>  }
+>  EXPORT_SYMBOL_GPL(kunit_try_catch_throw);
+>
+> @@ -26,9 +26,12 @@ static int kunit_generic_run_threadfn_adapter(void *da=
+ta)
+>  {
+>         struct kunit_try_catch *try_catch =3D data;
+>
+> +       try_catch->try_result =3D -EINTR;
+>         try_catch->try(try_catch->context);
+> +       if (try_catch->try_result =3D=3D -EINTR)
+> +               try_catch->try_result =3D 0;
+>
+> -       kthread_complete_and_exit(try_catch->try_completion, 0);
+> +       return 0;
+
+Really my only question is why we do not need to still do a
+kthread_exit(0) here? I realize we are not checking the thread's exit
+code but isn't it safer to call kthread_exit(). I'm new to kthread so
+I am not too sure.
+
+>  }
+>
+>  static unsigned long kunit_test_timeout(void)
+> @@ -58,13 +61,11 @@ static unsigned long kunit_test_timeout(void)
+>
+>  void kunit_try_catch_run(struct kunit_try_catch *try_catch, void *contex=
+t)
+>  {
+> -       DECLARE_COMPLETION_ONSTACK(try_completion);
+>         struct kunit *test =3D try_catch->test;
+>         struct task_struct *task_struct;
+>         int exit_code, time_remaining;
+>
+>         try_catch->context =3D context;
+> -       try_catch->try_completion =3D &try_completion;
+>         try_catch->try_result =3D 0;
+>         task_struct =3D kthread_create(kunit_generic_run_threadfn_adapter=
+,
+>                                      try_catch, "kunit_try_catch_thread")=
+;
+> @@ -75,8 +76,7 @@ void kunit_try_catch_run(struct kunit_try_catch *try_ca=
+tch, void *context)
+>         }
+>         get_task_struct(task_struct);
+>         wake_up_process(task_struct);
+> -
+> -       time_remaining =3D wait_for_completion_timeout(&try_completion,
+> +       time_remaining =3D wait_for_completion_timeout(task_struct->vfork=
+_done,
+>                                                      kunit_test_timeout()=
+);
+>         if (time_remaining =3D=3D 0) {
+>                 try_catch->try_result =3D -ETIMEDOUT;
+> @@ -92,7 +92,7 @@ void kunit_try_catch_run(struct kunit_try_catch *try_ca=
+tch, void *context)
+>         if (exit_code =3D=3D -EFAULT)
+>                 try_catch->try_result =3D 0;
+>         else if (exit_code =3D=3D -EINTR)
+> -               kunit_err(test, "wake_up_process() was never called\n");
+> +               kunit_err(test, "try faulted\n");
+>         else if (exit_code =3D=3D -ETIMEDOUT)
+>                 kunit_err(test, "try timed out\n");
+>         else if (exit_code)
 > --
-> =C2=A011 files changed, 192 insertions(+), 153 deletions(-)
->=20
->=20
-
-...snip...
-
->=20
-> diff --git a/drivers/virtio/virtio_pci_modern.c
-> b/drivers/virtio/virtio_pci_modern.c
-> index f62b530aa3b5..b2cdf5d3824d 100644
-> --- a/drivers/virtio/virtio_pci_modern.c
-> +++ b/drivers/virtio/virtio_pci_modern.c
-> @@ -530,9 +530,7 @@ static bool vp_notify_with_data(struct virtqueue
-> *vq)
-> =C2=A0static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
-> =C2=A0				=C2=A0 struct virtio_pci_vq_info *info,
-> =C2=A0				=C2=A0 unsigned int index,
-> -				=C2=A0 void (*callback)(struct virtqueue
-> *vq),
-> -				=C2=A0 const char *name,
-> -				=C2=A0 bool ctx,
-> +				=C2=A0 struct virtio_vq_config *cfg,
-> =C2=A0				=C2=A0 u16 msix_vec)
-> =C2=A0{
-> =C2=A0
-> @@ -563,8 +561,11 @@ static struct virtqueue *setup_vq(struct
-> virtio_pci_device *vp_dev,
-> =C2=A0	/* create the vring */
-> =C2=A0	vq =3D vring_create_virtqueue(index, num,
-> =C2=A0				=C2=A0=C2=A0=C2=A0 SMP_CACHE_BYTES, &vp_dev->vdev,
-> -				=C2=A0=C2=A0=C2=A0 true, true, ctx,
-> -				=C2=A0=C2=A0=C2=A0 notify, callback, name);
-> +				=C2=A0=C2=A0=C2=A0 true, true,
-> +				=C2=A0=C2=A0=C2=A0 cfg->ctx ? cfg->ctx[cfg-
-> >cfg_idx] : false,
-> +				=C2=A0=C2=A0=C2=A0 notify,
-> +				=C2=A0=C2=A0=C2=A0 cfg->callbacks[cfg->cfg_idx],
-> +				=C2=A0=C2=A0=C2=A0 cfg->names[cfg->cfg_idx]);
-> =C2=A0	if (!vq)
-> =C2=A0		return ERR_PTR(-ENOMEM);
-> =C2=A0
-> @@ -593,15 +594,11 @@ static struct virtqueue *setup_vq(struct
-> virtio_pci_device *vp_dev,
-> =C2=A0	return ERR_PTR(err);
-> =C2=A0}
-> =C2=A0
-> -static int vp_modern_find_vqs(struct virtio_device *vdev, unsigned
-> int nvqs,
-> -			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct virtqueue *vqs[],
-> -			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 vq_callback_t *callbacks[],
-> -			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const char * const names[], const bool
-> *ctx,
-> -			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct irq_affinity *desc)
-> +static int vp_modern_find_vqs(struct virtio_device *vdev, struct
-> virtio_vq_config *cfg)
-> =C2=A0{
-> =C2=A0	struct virtio_pci_device *vp_dev =3D to_vp_device(vdev);
-> =C2=A0	struct virtqueue *vq;
-> -	int rc =3D vp_find_vqs(vdev, nvqs, vqs, callbacks, names, ctx,
-> desc);
-> +	int rc =3D vp_find_vqs(vdev, cfg);
-> =C2=A0
-> =C2=A0	if (rc)
-> =C2=A0		return rc;
-> @@ -739,10 +736,17 @@ static bool vp_get_shm_region(struct
-> virtio_device *vdev,
-> =C2=A0static int vp_modern_create_avq(struct virtio_device *vdev)
-> =C2=A0{
-> =C2=A0	struct virtio_pci_device *vp_dev =3D to_vp_device(vdev);
-> +	vq_callback_t *callbacks[] =3D { NULL };
-> +	struct virtio_vq_config cfg =3D {};
-> =C2=A0	struct virtio_pci_admin_vq *avq;
-> =C2=A0	struct virtqueue *vq;
-> +	const char *names[1];
-> =C2=A0	u16 admin_q_num;
-> =C2=A0
-> +	cfg.nvqs =3D 1;
-> +	cfg.callbacks =3D callbacks;
-> +	cfg.names =3D names;
-> +
-> =C2=A0	if (!virtio_has_feature(vdev, VIRTIO_F_ADMIN_VQ))
-> =C2=A0		return 0;
-> =C2=A0
-> @@ -753,8 +757,11 @@ static int vp_modern_create_avq(struct
-> virtio_device *vdev)
-> =C2=A0	avq =3D &vp_dev->admin_vq;
-> =C2=A0	avq->vq_index =3D vp_modern_avq_index(&vp_dev->mdev);
-> =C2=A0	sprintf(avq->name, "avq.%u", avq->vq_index);
-> -	vq =3D vp_dev->setup_vq(vp_dev, &vp_dev->admin_vq.info, avq-
-> >vq_index, NULL,
-> -			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 avq->name, NULL,
-> VIRTIO_MSI_NO_VECTOR);
-> +
-> +	cfg.names[0] =3D avq->name;
-
-While looking at the s390 changes, I observe that the above fails to
-compile and is subsequently fixed in patch 2:
-
-drivers/virtio/virtio_pci_modern.c: In function =E2=80=98vp_modern_create_a=
-vq=E2=80=99:
-drivers/virtio/virtio_pci_modern.c:761:22: error: assignment of read-
-only location =E2=80=98*cfg.names=E2=80=99
-  761 |         cfg.names[0] =3D avq->name;
-      |                      ^
-
-
+> 2.44.0
+>
 
