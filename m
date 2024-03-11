@@ -4,73 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B038C54791
-	for <linux-um@archiver.kernel.org>; Mon, 11 Mar 2024 02:25:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64CFBC54E66
+	for <linux-um@archiver.kernel.org>; Mon, 11 Mar 2024 07:21:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To
-	:From:Date:Subject:Message-ID:Reply-To:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=IjggKy7HR74Lw2lFaJO8aNhkimYBeigCUfT94zbJh7Y=; b=FRW+tJvRTlYU73NetnA/dBsu/5
-	ICkhyYVZ+YwjZ7S0396Qtx6Ao+Xq/v1d9Lxf3xXZgx3qdU5gPv/vRuDCkD2IsYe/PLKm/JK1Z58Ug
-	349j4yOW6AErewtvflc7bXdydbN6JOO8ktat00y0vj8q0h7RnqN57gomo6W8auNE0tcYtd7NluWEs
-	yUgg0hGvI0XrqPr2KbOcu59fdo0Bgytb/npF3ZwiHCItl18CVj71e5TygxCmpQEsHdi/8V+ADKiTT
-	eUZjh0gVfM1+HiVpsAQspYB28aSbc66AwTr0DCUVawtOa16rhvkyhA+ZDAdbdQQVBxRGE75cIMZoU
-	F8peI7sw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=B/vgOfJBc0D/jF4kmbmspaO6Yw6G39IlnXaT1uAqGck=; b=vDaoSsmE0wMjj5dQzqpHDVUYn3
+	KS3sMzCw+6Iu9oTnC3KtkgcBAtmDxWCbg1f+qbMrwFztbs8XlrOqfkfmd2qlYgdnvmGGcUE6lt7oY
+	kzcjjNymgVYyLCwR6QWyMBYd2uVM4Ml+ctYvFXxZbe4DweII6Y+vQjMpPXFbowWA4ogjEeyPzdN5m
+	ym57HNFu9uDA8tLTxWCvSVcxsMS/DM3O2ADn0Y7S0Xjg/0eZeRbWfaeFexy07YZLqDlodyxuvLPOG
+	HkYx60mYcbTxbe3bsnTZ98mlvARV4cwc3/Ae8YIbSt7Bqu8DHb3Y4r2/7wt3OIaP0jvsbTgJmQE3d
+	KJhzGXPg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rjVLk-0000000HWZS-0mfT;
-	Mon, 11 Mar 2024 02:25:12 +0000
-Received: from out30-110.freemail.mail.aliyun.com ([115.124.30.110])
+	id 1rjZyS-00000000Ta9-0gI7;
+	Mon, 11 Mar 2024 07:21:28 +0000
+Received: from out30-97.freemail.mail.aliyun.com ([115.124.30.97])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rjVLg-0000000HWYS-1Pdm
+	id 1rjZyM-00000000TXt-2H2Z
 	for linux-um@lists.infradead.org;
-	Mon, 11 Mar 2024 02:25:10 +0000
+	Mon, 11 Mar 2024 07:21:24 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1710123900; h=Message-ID:Subject:Date:From:To;
-	bh=IjggKy7HR74Lw2lFaJO8aNhkimYBeigCUfT94zbJh7Y=;
-	b=peHY19esr8GZu3ZFrKHE8JGArjyzDGiliiRylykqu+Wopec8Yu9ro/Djkhy/1NZAQw7urykcPmByq0/GA05fbwdt39EP5SZZ6Y9cJS4DybBNukqH0jOeKG2e78Gjm/B+koQJkOMhFHkBCurwYac2Y4q9DTjjXQdaGTIFdkUg2AU=
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=24;SR=0;TI=SMTPD_---0W29MS6c_1710123896;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W29MS6c_1710123896)
+	t=1710141676; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=B/vgOfJBc0D/jF4kmbmspaO6Yw6G39IlnXaT1uAqGck=;
+	b=jDp2KdD4rmAGNnpqqX2zHsH1cEcqCKm5i8phd+CuU6IVMz70QJfvijJy7lIozsZEW7F8BRoiL3h6Iv3jpbhcfGwam2Jfldbh11Xnk82SeHbUsezm2tzI1Lnfro3gL0vhCIxa62EvZz4Nz/eVQwmIAQy9XizTblOr/T6p9thztEc=
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=25;SR=0;TI=SMTPD_---0W2CL6Hl_1710141673;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W2CL6Hl_1710141673)
           by smtp.aliyun-inc.com;
-          Mon, 11 Mar 2024 10:24:57 +0800
-Message-ID: <1710123875.2753754-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH vhost v1 2/4] virtio: vring_create_virtqueue: pass struct instead of multi parameters
-Date: Mon, 11 Mar 2024 10:24:35 +0800
+          Mon, 11 Mar 2024 15:21:14 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: virtualization@lists.linux.dev,
- Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- Hans de Goede <hdegoede@redhat.com>,
- Vadim Pasternak <vadimp@nvidia.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Mathieu Poirier <mathieu.poirier@linaro.org>,
- Cornelia Huck <cohuck@redhat.com>,
- Halil Pasic <pasic@linux.ibm.com>,
- Eric Farman <farman@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>,
- Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>,
- "Michael S. Tsirkin" <mst@redhat.com>,
- Jason Wang <jasowang@redhat.com>,
- linux-um@lists.infradead.org,
- platform-driver-x86@vger.kernel.org,
- linux-remoteproc@vger.kernel.org,
- linux-s390@vger.kernel.org,
- kvm@vger.kernel.org
-References: <20240306114615.88770-1-xuanzhuo@linux.alibaba.com>
- <20240306114615.88770-3-xuanzhuo@linux.alibaba.com>
- <8f77a787-0bb7-96ad-0dac-f8ef36879ae3@linux.intel.com>
-In-Reply-To: <8f77a787-0bb7-96ad-0dac-f8ef36879ae3@linux.intel.com>
+To: virtualization@lists.linux.dev
+Cc: Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Hans de Goede <hdegoede@redhat.com>,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Vadim Pasternak <vadimp@nvidia.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Mathieu Poirier <mathieu.poirier@linaro.org>,
+	Cornelia Huck <cohuck@redhat.com>,
+	Halil Pasic <pasic@linux.ibm.com>,
+	Eric Farman <farman@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	linux-um@lists.infradead.org,
+	platform-driver-x86@vger.kernel.org,
+	linux-remoteproc@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	kvm@vger.kernel.org
+Subject: [PATCH vhost v2 0/4] refactor the params of find_vqs()
+Date: Mon, 11 Mar 2024 15:21:09 +0800
+Message-Id: <20240311072113.67673-1-xuanzhuo@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0.3.g01195cf9f
+MIME-Version: 1.0
+X-Git-Hash: a38f8a85b807
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240310_192508_903966_0D227BE9 
-X-CRM114-Status: GOOD (  16.91  )
+X-CRM114-CacheID: sfid-20240311_002123_150216_53CFF193 
+X-CRM114-Status: UNSURE (   7.06  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,56 +87,55 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, 8 Mar 2024 12:19:21 +0200 (EET), =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com> wrote:
-> On Wed, 6 Mar 2024, Xuan Zhuo wrote:
->
-> > Now, we pass multi parameters to vring_create_virtqueue. These parameters
-> > may from transport or from driver.
-> >
-> > vring_create_virtqueue is called by many places.
-> > Every time, we try to add a new parameter, that is difficult.
-> >
-> > If parameters from the driver, that should directly be passed to vring.
-> > Then the vring can access the config from driver directly.
-> >
-> > If parameters from the transport, we squish the parameters to a
-> > structure. That will be helpful to add new parameter.
-> >
-> > Because the virtio_uml.c changes the name, so change the "names" inside
-> > the virtio_vq_config from "const char *const *names" to
-> > "const char **names".
-> >
-> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > Acked-by: Johannes Berg <johannes@sipsolutions.net>
->
-> > @@ -60,38 +61,25 @@ struct virtio_device;
-> >  struct virtqueue;
-> >  struct device;
-> >
-> > +struct vq_transport_config {
-> > +	unsigned int num;
-> > +	unsigned int vring_align;
-> > +	bool weak_barriers;
-> > +	bool may_reduce_num;
-> > +	bool (*notify)(struct virtqueue *vq);
-> > +	struct device *dma_dev;
-> > +};
->
-> kerneldoc is missing from this struct too.
->
-> It would be generally helpful if you are proactive when somebody comments
-> your series by checking if there are similar cases within your series,
-> instead of waiting them to be pointed out for you specificly.
+This pathset is splited from the
 
-Sorry. I missed it.
+     http://lore.kernel.org/all/20240229072044.77388-1-xuanzhuo@linux.alibaba.com
 
-Will fix in next version.
+That may needs some cycles to discuss. But that notifies too many people.
 
-Thanks
+But just the four commits need to notify so many people.
+And four commits are independent. So I split that patch set,
+let us review these first.
+
+The patch set try to  refactor the params of find_vqs().
+Then we can just change the structure, when introducing new
+features.
+
+Thanks.
+
+v2:
+  1. add kerneldoc for "struct vq_transport_config" @ilpo.jarvinen
+
+v1:
+  1. fix some comments from ilpo.jarvinen@linux.intel.com
 
 
->
-> --
->  i.
->
+Xuan Zhuo (4):
+  virtio: find_vqs: pass struct instead of multi parameters
+  virtio: vring_create_virtqueue: pass struct instead of multi
+    parameters
+  virtio: vring_new_virtqueue(): pass struct instead of multi parameters
+  virtio_ring: simplify the parameters of the funcs related to
+    vring_create/new_virtqueue()
+
+ arch/um/drivers/virtio_uml.c             |  31 ++--
+ drivers/platform/mellanox/mlxbf-tmfifo.c |  24 ++--
+ drivers/remoteproc/remoteproc_virtio.c   |  31 ++--
+ drivers/s390/virtio/virtio_ccw.c         |  33 ++---
+ drivers/virtio/virtio_mmio.c             |  30 ++--
+ drivers/virtio/virtio_pci_common.c       |  60 ++++----
+ drivers/virtio/virtio_pci_common.h       |   9 +-
+ drivers/virtio/virtio_pci_legacy.c       |  16 ++-
+ drivers/virtio/virtio_pci_modern.c       |  38 +++--
+ drivers/virtio/virtio_ring.c             | 173 ++++++++---------------
+ drivers/virtio/virtio_vdpa.c             |  45 +++---
+ include/linux/virtio_config.h            |  77 ++++++++--
+ include/linux/virtio_ring.h              |  93 +++++++-----
+ tools/virtio/virtio_test.c               |   4 +-
+ tools/virtio/vringh_test.c               |  28 ++--
+ 15 files changed, 359 insertions(+), 333 deletions(-)
+
+--
+2.32.0.3.g01195cf9f
+
 
