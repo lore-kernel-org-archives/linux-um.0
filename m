@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 523A6C54E58
-	for <linux-um@archiver.kernel.org>; Tue, 12 Mar 2024 04:55:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73584C54E49
+	for <linux-um@archiver.kernel.org>; Tue, 12 Mar 2024 05:05:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
 	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=3KbkcUqwNvcYvv36FEp8Fti3oaxSjF9ajh7s9Lzx+eM=; b=nPUBnVir3o8Ry/XyeUPeuq+jHy
-	K9jUUeVvO4Ogpkm3ZqXPdK+CqEL5cQ7cGQdTD5J/0Oddxq3zFcq1QNqqMfdaCEILJY2JeMRSUqWHW
-	cbHtxFilPcriXrYvRqaURkTD32b0LWQL2BiXhbkpUgdw+ZpG/kJmaBST0OTKycCZrc76mxKgWjexx
-	XRtaHW6ia0PPWanPagN9ItmgXCl03C1LzUA/qrQL5oBXEciWbRsZSPvd+ZIUgmfEk+m8jISKbE0gN
-	1O9j1oG7ZTZcrBmaQPnqZD9v0wkIAzWPANNAl49TYE6o3X/P9iV5HY02z0qzPx+ksF+dTIXzCh8zu
-	JuayfrnA==;
+	bh=tcC97ajvLrfrFTiORExC2FYzd6KSLFrOswEUipJeTQ8=; b=yEXZw359CEkhhbg2/AAUNbu9zh
+	2TqaCYflmUYdgNuCUJg98RUtek2OoAcvjBaneZT+hmVYmcZy+0y/VOArTyiAhHnVHL0K7+tFlVYfP
+	YdzDHx0BUudJnb7JON4Ohjt+29GluJPCIuuPWYGlIIrnjNXBK0jumvzMb2w9xUDe3brrydWRQvpAo
+	+7e4UdaLUoy/SZusBDQ2aPoh1tWaH7PU4jzwlDm/QB9Vh+fS5zETSzK1O7+PHVDYAnk6azr1mV7nG
+	6+em7gFfsDgYMA0/FskLiC8Phi/v3HJ/EP5X4YWW8ajV6P8ugEBQrgTI76jRpZwmUsbOV5T2f0OZL
+	5yXkHh3Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rjuAZ-00000004KUE-42b3;
-	Tue, 12 Mar 2024 04:55:19 +0000
-Received: from mail-ed1-x52e.google.com ([2a00:1450:4864:20::52e])
+	id 1rjuKo-00000004LlL-1DZX;
+	Tue, 12 Mar 2024 05:05:54 +0000
+Received: from mail-ed1-x52f.google.com ([2a00:1450:4864:20::52f])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rjuAQ-00000004KRg-2C5T
+	id 1rjuKl-00000004Lkk-0RDu
 	for linux-um@lists.infradead.org;
-	Tue, 12 Mar 2024 04:55:17 +0000
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-568251882d7so10157a12.0
-        for <linux-um@lists.infradead.org>; Mon, 11 Mar 2024 21:55:09 -0700 (PDT)
+	Tue, 12 Mar 2024 05:05:52 +0000
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-566b160f6eeso3819a12.1
+        for <linux-um@lists.infradead.org>; Mon, 11 Mar 2024 22:05:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710219308; x=1710824108; darn=lists.infradead.org;
+        d=google.com; s=20230601; t=1710219949; x=1710824749; darn=lists.infradead.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=3KbkcUqwNvcYvv36FEp8Fti3oaxSjF9ajh7s9Lzx+eM=;
-        b=cAtHIVee9rq+r1Iu6hKevLA3hTOILNlcB4AIt4q2KWZE5UuIjzI67mILaQ/qia+oPU
-         xRNsQWx3P6wiAxfC6TWJyQVJhDkF2cZ6x33POm1OJSk8ATBi4IgOR0c7zmdPi1eLL2GA
-         JvNGyYBq7A4sX6rJhaRUiroWb9srekV55uf8mbCGdHRGSrDP7yEgSyUCmbERNOyqPJf4
-         j8QWQlAqbjoAFuUV9JskDlD7iTT17JLvxcEq/j9fQgII2GY56aphNbZZFmSxUgby5TW9
-         jKe4Zw6SkH6hYrkJrX65wGag+8oJJgyOKlecQzTR3x+sAIyGIfHgU8nhgXRztRHV6anj
-         bvgQ==
+        bh=tcC97ajvLrfrFTiORExC2FYzd6KSLFrOswEUipJeTQ8=;
+        b=Lnsj0mD7HPninyzjdOjnvwldOOnTdzTBXhSMdg0qrodqluJWly442yzKcLpBK3Xmxz
+         Q8MOZdMcq9fjmPVrTMyh/hmdrcJVQ7GdsJ+NxpxU3fdS/x1hUd5rOX8pdx9zkBSUzN2h
+         +dLHv6LYnrDFXb6vDgrH7mLJEuhmPjg6ro/vAZaiAAEF0pUbUN/DdoDhqQEm9AfYy5im
+         ky8ldBltO9Zj14y2/QO8L6+D6pt1KdlnCCMCHnP/7pbwOaDW3Gmy1w4XYaoagCxQStS6
+         Ae6VrmRjekJ//GD0Kz1Gwb9FUbfVVCkNF+UeCMFcNHMlDmcRCiYy3jDM4wLrzkRPOD8Q
+         aY8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710219308; x=1710824108;
+        d=1e100.net; s=20230601; t=1710219949; x=1710824749;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=3KbkcUqwNvcYvv36FEp8Fti3oaxSjF9ajh7s9Lzx+eM=;
-        b=H4llxheOQw6zN8wsAXH7Tr2gRe5V2RymqEjhGUivJqb9AHEmxpkPKtJ4Dq7G4t3SfL
-         VyCszhcpXoK8dLqqi1h+24op5olm8m92+ofUPWqNX0+tWDVoX9uqCCflViI9OBuAGoTJ
-         Wu4zLCxD6SFxazMxWtJYhogO02P4uWzTf3JogNjwSAb0GTAqDsfeeIqgvWued2qUn6RO
-         qFmHYbMPu8W7BIDhmJsZubOoEEXmqzYMyhPXUzDFBcUJKTSYTp7UVCFdYKoJ9m5d0RTy
-         jEzfMu6zlOGwZMu7HDRbYXzS7IoUwIHCeqZYL36i6MhAJ4yuV3Hs3ik+syhJ66YIqOLJ
-         y6HQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV46GERv8aSR06MQIK8fZO/ISAd0DLVHVkGAeoyawwrWy9nHuGcZQDPY+QNeVBgcAMOCfE/qtIsWraMSNCjAEMtz13n+jkNdZz0cyL0
-X-Gm-Message-State: AOJu0Yw/2bin+iw4I2ntAVJBpC74a46TGDpf3AHvWIl6IoxU4y9ix0Vb
-	MSDSPPSFDKOKeE4rRUhM20Vc4r6YmDrpF//UMrSVGdviGFLMJTuTwt6XvwQ70XqGi4BI8rYgSot
-	ZEzr4SdATtoT3cFhA+WrJMWQwYwhJyJ3mY4al
-X-Google-Smtp-Source: AGHT+IGU5iSaMuUMD3OWkgCq+HPlwyciThiIOt12D5freNFWYAnSma6L8D3ymybDwqVGF32n/LebfHUfkgbXb3HlaVY=
+        bh=tcC97ajvLrfrFTiORExC2FYzd6KSLFrOswEUipJeTQ8=;
+        b=o4k2MhClkEQpJy49HarlQlzcSzL9kLuZC+asFglRXi3K7+/VQXfkd2jbUHx0qtzN9l
+         zsutztdSLutbCeQGMByHe/mMmoa7TFq0Hulwp1Kss7zNDfQ+GUKAFuOJ+2KeyOh5qhzd
+         doF5oAn/royez0leBeb88kDmHzn/Y3BhJNh8IRMetr+9V4iVNjzEKY+KZWuwar8WCGze
+         L8uDHjrGQMUhRyKxOZxDUuVDQvEeiFNZRydLn5UfwUphnSRh50dU+Xbu0SuLD0DqKdgh
+         +BxO42lTOdU3ech7259OerjBLfsDW3+Iu1lCNBtvuGF5gX6CzTbBnrvuFRSZxBqy2M7W
+         lISQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWuTyj8eAXf9qF2Lm+40VRRrwV6SKb5Xhj3LfPwAcY+Ub6m4k/Ws5YllYM4kirNf1gbdxWsFuZlf9VvK2t1eMVzEbb7/lel8/5oLXoM
+X-Gm-Message-State: AOJu0Yx48YPpbgRFeQfwVmLkZKO+IMqy3pSyjMaRStUFFzVJVT0Ush37
+	qrU8sPUHSTU9yXO+jMGyOT8CO7obzEiHn99mD+C2rCoOUIo3UZNVO4PRKRwRT3AabUF1uNCK059
+	c7oSE2xWhBm8XiV1fJBBEAp+HeYvx8Fk40x/M
+X-Google-Smtp-Source: AGHT+IGRElbVD0Y6B6qmm2ZO+w6/salLKCB0NWwCiMf7AWYvsPywYoNQYDET87p1th+nlq1sLCVVSvrfXFG40uKoRWg=
 X-Received: by 2002:aa7:c2d9:0:b0:568:5e6c:a3c4 with SMTP id
- m25-20020aa7c2d9000000b005685e6ca3c4mr109961edp.0.1710219308194; Mon, 11 Mar
- 2024 21:55:08 -0700 (PDT)
+ m25-20020aa7c2d9000000b005685e6ca3c4mr110847edp.0.1710219948786; Mon, 11 Mar
+ 2024 22:05:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20240301194037.532117-1-mic@digikod.net> <20240301194037.532117-8-mic@digikod.net>
-In-Reply-To: <20240301194037.532117-8-mic@digikod.net>
+References: <20240301194037.532117-1-mic@digikod.net> <20240301194037.532117-5-mic@digikod.net>
+In-Reply-To: <20240301194037.532117-5-mic@digikod.net>
 From: David Gow <davidgow@google.com>
-Date: Tue, 12 Mar 2024 12:54:57 +0800
-Message-ID: <CABVgOSmq5JhBdis1rDoD3eYQ_dhaWyEjXNfwasL9sWFMwLpjzA@mail.gmail.com>
-Subject: Re: [PATCH v2 7/7] kunit: Add tests for fault
+Date: Tue, 12 Mar 2024 13:05:37 +0800
+Message-ID: <CABVgOSnzaO7EUdSW_xTZd22oc-q_yT9uVoSwTm2jn5pw5pP8Eg@mail.gmail.com>
+Subject: Re: [PATCH v2 4/7] kunit: Handle test faults
 To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
 Cc: Brendan Higgins <brendanhiggins@google.com>, Kees Cook <keescook@chromium.org>, 
 	Rae Moar <rmoar@google.com>, Shuah Khan <skhan@linuxfoundation.org>, 
@@ -83,10 +83,10 @@ Cc: Brendan Higgins <brendanhiggins@google.com>, Kees Cook <keescook@chromium.or
 	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
 	linux-um@lists.infradead.org, x86@kernel.org
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000005fe88306136f763c"
+	boundary="00000000000091000f06136f9cb9"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240311_215510_646994_AD51548B 
-X-CRM114-Status: GOOD (  29.34  )
+X-CRM114-CacheID: sfid-20240311_220551_203691_D94F0E01 
+X-CRM114-Status: GOOD (  36.07  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,124 +101,167 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
---0000000000005fe88306136f763c
+--00000000000091000f06136f9cb9
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Sat, 2 Mar 2024 at 03:40, Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> wro=
 te:
 >
-> Add a test case to check NULL pointer dereference and make sure it would
-> result as a failed test.
+> Previously, when a kernel test thread crashed (e.g. NULL pointer
+> dereference, general protection fault), the KUnit test hanged for 30
+> seconds and exited with a timeout error.
 >
-> The full kunit_fault test suite is marked as skipped when run on UML
-> because it would result to a kernel panic.
+> Fix this issue by waiting on task_struct->vfork_done instead of the
+> custom kunit_try_catch.try_completion, and track the execution state by
+> initially setting try_result with -EFAULT and only setting it to 0 if
+> the test passed.
 >
-> Tested with:
-> ./tools/testing/kunit/kunit.py run --arch x86_64 kunit_fault
-> ./tools/testing/kunit/kunit.py run --arch arm64 \
->   --cross_compile=3Daarch64-linux-gnu- kunit_fault
+> Fix kunit_generic_run_threadfn_adapter() signature by returning 0
+> instead of calling kthread_complete_and_exit().  Because thread's exit
+> code is never checked, always set it to 0 to make it clear.
+>
+> Fix the -EINTR error message, which couldn't be reached until now.
+>
+> This is tested with a following patch.
 >
 > Cc: Brendan Higgins <brendanhiggins@google.com>
 > Cc: David Gow <davidgow@google.com>
 > Cc: Rae Moar <rmoar@google.com>
 > Cc: Shuah Khan <skhan@linuxfoundation.org>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
 > Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-> Link: https://lore.kernel.org/r/20240301194037.532117-8-mic@digikod.net
-> ---
->
-> Changes since v1:
-> * Removed the rodata and const test cases for now.
-> * Replace CONFIG_X86 check with !CONFIG_UML, and remove the "_x86"
->   references.
+> Link: https://lore.kernel.org/r/20240301194037.532117-5-mic@digikod.net
 > ---
 
-I think UML _should_ be able to handle this with signal handlers, but
-I tested it and agree that it's broken, so disabling for now makes
-sense.
+This works fine here, and looks good.
 
-In general, I'd prefer to have an empty test which SKIP()s here, but
-since the suite is empty, KUnit does that anyway, so this is fine.
+The use of task_struct->vfork_done is a bit confusing, as there's no
+documentation (that I could find) about what vfork_done means for
+kthreads. From the code, it looks to just be a copy of
+kthread->exited, which is much more obvious a name.
 
+Would it make sense to either (a) replace this with a call to
+to_kthread(), and kthread->exited, or (b) add a comment explaining
+what vfork_done means here. kthread_stop() itself is using
+to_kthread() and kthread->exited -- even though task_struct is also
+there -- so I'd feel a bit more comfortable with that option.
+
+Otherwise,
 Reviewed-by: David Gow <davidgow@google.com>
 
 Cheers,
 -- David
 
-
->  lib/kunit/kunit-test.c | 45 +++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 44 insertions(+), 1 deletion(-)
 >
-> diff --git a/lib/kunit/kunit-test.c b/lib/kunit/kunit-test.c
-> index f7980ef236a3..0fdca5fffaec 100644
-> --- a/lib/kunit/kunit-test.c
-> +++ b/lib/kunit/kunit-test.c
-> @@ -109,6 +109,48 @@ static struct kunit_suite kunit_try_catch_test_suite=
- =3D {
->         .test_cases =3D kunit_try_catch_test_cases,
->  };
+> Changes since v1:
+> * Added Kees's Reviewed-by.
+> ---
+>  include/kunit/try-catch.h |  3 ---
+>  lib/kunit/try-catch.c     | 14 +++++++-------
+>  2 files changed, 7 insertions(+), 10 deletions(-)
 >
-> +#ifndef CONFIG_UML
-> +
-> +static void kunit_test_null_dereference(void *data)
-> +{
-> +       struct kunit *test =3D data;
-> +       int *null =3D NULL;
-> +
-> +       *null =3D 0;
-> +
-> +       KUNIT_FAIL(test, "This line should never be reached\n");
-> +}
-> +
-> +static void kunit_test_fault_null_dereference(struct kunit *test)
-> +{
-> +       struct kunit_try_catch_test_context *ctx =3D test->priv;
-> +       struct kunit_try_catch *try_catch =3D ctx->try_catch;
-> +
-> +       kunit_try_catch_init(try_catch,
-> +                            test,
-> +                            kunit_test_null_dereference,
-> +                            kunit_test_catch);
-> +       kunit_try_catch_run(try_catch, test);
-> +
-> +       KUNIT_EXPECT_EQ(test, try_catch->try_result, -EINTR);
-> +       KUNIT_EXPECT_TRUE(test, ctx->function_called);
-> +}
-> +
-> +#endif /* !CONFIG_UML */
-> +
-> +static struct kunit_case kunit_fault_test_cases[] =3D {
-> +#ifndef CONFIG_UML
-> +       KUNIT_CASE(kunit_test_fault_null_dereference),
-> +#endif /* !CONFIG_UML */
-> +       {}
-> +};
-> +
-> +static struct kunit_suite kunit_fault_test_suite =3D {
-> +       .name =3D "kunit_fault",
-> +       .init =3D kunit_try_catch_test_init,
-> +       .test_cases =3D kunit_fault_test_cases,
-> +};
-> +
->  /*
->   * Context for testing test managed resources
->   * is_resource_initialized is used to test arbitrary resources
-> @@ -826,6 +868,7 @@ static struct kunit_suite kunit_current_test_suite =
-=3D {
+> diff --git a/include/kunit/try-catch.h b/include/kunit/try-catch.h
+> index c507dd43119d..7c966a1adbd3 100644
+> --- a/include/kunit/try-catch.h
+> +++ b/include/kunit/try-catch.h
+> @@ -14,13 +14,11 @@
 >
->  kunit_test_suites(&kunit_try_catch_test_suite, &kunit_resource_test_suit=
-e,
->                   &kunit_log_test_suite, &kunit_status_test_suite,
-> -                 &kunit_current_test_suite, &kunit_device_test_suite);
-> +                 &kunit_current_test_suite, &kunit_device_test_suite,
-> +                 &kunit_fault_test_suite);
+>  typedef void (*kunit_try_catch_func_t)(void *);
 >
->  MODULE_LICENSE("GPL v2");
+> -struct completion;
+>  struct kunit;
+>
+>  /**
+>   * struct kunit_try_catch - provides a generic way to run code which mig=
+ht fail.
+>   * @test: The test case that is currently being executed.
+> - * @try_completion: Completion that the control thread waits on while te=
+st runs.
+>   * @try_result: Contains any errno obtained while running test case.
+>   * @try: The function, the test case, to attempt to run.
+>   * @catch: The function called if @try bails out.
+> @@ -46,7 +44,6 @@ struct kunit;
+>  struct kunit_try_catch {
+>         /* private: internal use only. */
+>         struct kunit *test;
+> -       struct completion *try_completion;
+>         int try_result;
+>         kunit_try_catch_func_t try;
+>         kunit_try_catch_func_t catch;
+> diff --git a/lib/kunit/try-catch.c b/lib/kunit/try-catch.c
+> index cab8b24b5d5a..c6ee4db0b3bd 100644
+> --- a/lib/kunit/try-catch.c
+> +++ b/lib/kunit/try-catch.c
+> @@ -18,7 +18,7 @@
+>  void __noreturn kunit_try_catch_throw(struct kunit_try_catch *try_catch)
+>  {
+>         try_catch->try_result =3D -EFAULT;
+> -       kthread_complete_and_exit(try_catch->try_completion, -EFAULT);
+> +       kthread_exit(0);
+>  }
+>  EXPORT_SYMBOL_GPL(kunit_try_catch_throw);
+>
+> @@ -26,9 +26,12 @@ static int kunit_generic_run_threadfn_adapter(void *da=
+ta)
+>  {
+>         struct kunit_try_catch *try_catch =3D data;
+>
+> +       try_catch->try_result =3D -EINTR;
+>         try_catch->try(try_catch->context);
+> +       if (try_catch->try_result =3D=3D -EINTR)
+> +               try_catch->try_result =3D 0;
+>
+> -       kthread_complete_and_exit(try_catch->try_completion, 0);
+> +       return 0;
+>  }
+>
+>  static unsigned long kunit_test_timeout(void)
+> @@ -58,13 +61,11 @@ static unsigned long kunit_test_timeout(void)
+>
+>  void kunit_try_catch_run(struct kunit_try_catch *try_catch, void *contex=
+t)
+>  {
+> -       DECLARE_COMPLETION_ONSTACK(try_completion);
+>         struct kunit *test =3D try_catch->test;
+>         struct task_struct *task_struct;
+>         int exit_code, time_remaining;
+>
+>         try_catch->context =3D context;
+> -       try_catch->try_completion =3D &try_completion;
+>         try_catch->try_result =3D 0;
+>         task_struct =3D kthread_create(kunit_generic_run_threadfn_adapter=
+,
+>                                      try_catch, "kunit_try_catch_thread")=
+;
+> @@ -75,8 +76,7 @@ void kunit_try_catch_run(struct kunit_try_catch *try_ca=
+tch, void *context)
+>         }
+>         get_task_struct(task_struct);
+>         wake_up_process(task_struct);
+> -
+> -       time_remaining =3D wait_for_completion_timeout(&try_completion,
+> +       time_remaining =3D wait_for_completion_timeout(task_struct->vfork=
+_done,
+>                                                      kunit_test_timeout()=
+);
+>         if (time_remaining =3D=3D 0) {
+>                 try_catch->try_result =3D -ETIMEDOUT;
+> @@ -92,7 +92,7 @@ void kunit_try_catch_run(struct kunit_try_catch *try_ca=
+tch, void *context)
+>         if (exit_code =3D=3D -EFAULT)
+>                 try_catch->try_result =3D 0;
+>         else if (exit_code =3D=3D -EINTR)
+> -               kunit_err(test, "wake_up_process() was never called\n");
+> +               kunit_err(test, "try faulted\n");
+>         else if (exit_code =3D=3D -ETIMEDOUT)
+>                 kunit_err(test, "try timed out\n");
+>         else if (exit_code)
 > --
 > 2.44.0
 >
 
---0000000000005fe88306136f763c
+--00000000000091000f06136f9cb9
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -286,14 +329,14 @@ wlDp+1p6RAqlDpHifQJW16h5jWIIwYisvm5QyfxQEVc+XH1lt+taSzCfiBT0ZLgjB9Sg+zAo8ys6
 ITv8ZEy6ByumbU23nkHTMOzzQSxczHkT+0q10/MxggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJF
 MRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIz
 IFNNSU1FIENBIDIwMjACEAHS+TgZvH/tCq5FcDC0n9IwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZI
-hvcNAQkEMSIEIH104oDLt2YJXGY2Th/tOIltj+ysdkZwtuJlBc32SJA0MBgGCSqGSIb3DQEJAzEL
-BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDMxMjA0NTUwOFowaQYJKoZIhvcNAQkPMVww
+hvcNAQkEMSIEIJfI7FFT1hk5kEePurOKEQopyEMAeRpCSPqaHED/OhmeMBgGCSqGSIb3DQEJAzEL
+BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDMxMjA1MDU0OVowaQYJKoZIhvcNAQkPMVww
 WjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkq
-hkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBrXvUN
-G/lKjLxrVJtJuNu0UXjEq4q9AyzPP3ilyTKUn6C2JhGJg23/TCAOvjouYFywkRnygEUjOkA1ZGZO
-jM3lQhXi9GZq6eq/B+3SGs7zQs+lkp6pL3z/iaFRSl4g+Yh5oXMDsw8XeMiFcvbXYuFQ46bEBfxA
-1bITNoyIvKAVKky3fj20sTBCmBcsEvH6JEzv11HE5MtTQmr1d5t4MvDV2clv30x2G27URt9YVmdT
-hiwIHvUiaOPgcwZlx1WSgdmcUA2la0mxbi2ivqN1ttncxmNFn0/s4Vi2GAfT8ePnQihW9np0eOHO
-Mt8DI8UhWtpTHPthmF/9eHcv6tw/iuFd
---0000000000005fe88306136f763c--
+hkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQA7KrbG
+1GQCdjphAh9ZYbU3FD6k+ZQb4U/vtZduRXTlviunKYY7u767bxtj3dSk1V8GNy/r3MMMqpLOoZK4
+HvkmStF3b3Reh+b0qUpRoUcXtSmgmbbyNsxWIk74PQhyOshB152wbRjRGkr1K1u0J0Cfm9HXBjQV
+Il58pJqeb71jRcZgF7UUhiffPnfjyD160gpe0vEsh6mPV+WncXB85rBPYxWeZrI61iD5UdIVPdAW
+pUvKKpvQIjTugbeHa7TM3a+G0YTRAIw4jp8X+FVDlQkXObD5qyWvhnyTs/G9Mp9GERVLI+Foclle
+gUIAJJtr29mJC48jpgKxFE2OFyskpD0g
+--00000000000091000f06136f9cb9--
 
