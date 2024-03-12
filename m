@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 452D5C54E49
-	for <linux-um@archiver.kernel.org>; Tue, 12 Mar 2024 04:53:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8C10C54E49
+	for <linux-um@archiver.kernel.org>; Tue, 12 Mar 2024 04:53:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
 	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Rx6uaJA5GaTA6x0A03YxbYQQZ8SnjBq3KBc25hb9xtY=; b=hJxPOEygv8Mplk0/rCnAxfbhoH
-	Yub723klx8uke+OLgBrLhPylVqZkxwKofrdDxha3L5QLHHrJKCQgw2cmW87UFOihfj3V8jWAML3O/
-	STg0zSMRlUpfztb1IQ7eXE8z3VXdD066hs5hMnyqFzu2Rfc+Bg9oeObTihwp10ofqc9eYDZKmRY37
-	u7bAEJCuFbIs2rz95OGHHfaLH4lToq6f/pVUZXJjnrFkh5pQfxC70yrgZXLCgGn1MnepWuBAD7Og4
-	O1qbfK0t8VBNHR9F6TqDcRr8+FHbHwjNo93H99nIq/xWUFBSXA42pYTPXtr4NB8TWOxSzaXRdc7wR
-	0947+2hw==;
+	bh=weawOnUPMVuYgBpax1HIGwgZ0bs55MVehj4ZZakgvVw=; b=LzfMvsaH10HIx8ZRaHEVSyIspm
+	/h6OrOdytdL01cBbptEDooRD15/I/9Qpy8qDB+gAlYDRNoOdmXaiEWygQKvmzNyL3hwIEhXlhyglS
+	419G/sR8ICWler1Ma5OijpsQRCwTBzk1WQE5H8XUekEoMOBwxv+cRKxGPVBwF4r5J+GYP0AbcjkHK
+	xZElUluDS1+oIi070tM2qvWtj9sviuhJDGRaGaLHZZbUAv4Ey5UxugFlPgtpYFGrRTGiSdXi082Zo
+	DCBFV557H2kYYwS/A+pubrnf05dkEynsUVdYilsopg+rwNPH08ZXbab10BGb6c1Gi5By79rMhcDMA
+	/7gNylLQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rju98-00000004K36-3FEA;
-	Tue, 12 Mar 2024 04:53:50 +0000
-Received: from mail-ed1-x533.google.com ([2a00:1450:4864:20::533])
+	id 1rju9F-00000004K5A-22fM;
+	Tue, 12 Mar 2024 04:53:57 +0000
+Received: from mail-wm1-x32c.google.com ([2a00:1450:4864:20::32c])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rju94-00000004JzV-2Y9a
+	id 1rju9B-00000004K3t-3pLL
 	for linux-um@lists.infradead.org;
-	Tue, 12 Mar 2024 04:53:48 +0000
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-566b160f6eeso3732a12.1
-        for <linux-um@lists.infradead.org>; Mon, 11 Mar 2024 21:53:45 -0700 (PDT)
+	Tue, 12 Mar 2024 04:53:55 +0000
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-412d84ffbfaso45575e9.0
+        for <linux-um@lists.infradead.org>; Mon, 11 Mar 2024 21:53:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710219224; x=1710824024; darn=lists.infradead.org;
+        d=google.com; s=20230601; t=1710219232; x=1710824032; darn=lists.infradead.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Rx6uaJA5GaTA6x0A03YxbYQQZ8SnjBq3KBc25hb9xtY=;
-        b=Ypipf1eFyX+9K8AbSD3I/bKWIVScC2TpPvdrgnf9nIMgSrv0tSOGvho1Q0MszzDgl3
-         hrzX2jr3YiYhhb6mwASOXsrWkZ5auUk1NQ+4gDhoFTpPHdH3KVzHROC+Iw53EQPLcScH
-         JxWTx5nQYwCGy8Y/Kyc5CWuZ1w7w9fHLjwUdx2C09ZOrtjHs7uxKGxjvDlyI9SA0Gboe
-         m/wslqYM9APLruneg8YxYP/Le71Q311amrU9pT1EEmJwprkLnTcDrkeqXIhSefiRgswH
-         Co5LZUPC6ZlhppjQz5H3+9OoGJ1/wJewLCSGQYGgn4KOVw0UXwkC82C5EjCRAOs4E9iX
-         cnDA==
+        bh=weawOnUPMVuYgBpax1HIGwgZ0bs55MVehj4ZZakgvVw=;
+        b=lDo4zz5/GU5qDE8WZ9oLXs8D6dn2mnGb1Rmc7C943C9vIS4T7tvizisqQYihrqtBh+
+         uOrFQjO9omtpAmRr0MiI2dJM+xC/P35Ovd2Nb+3wHHKerOpETvt2SPzkGdqCO3adZ1ia
+         VysVaYI16BZd5XQ/MiANuz4PVOZlpa+g3uL+y5nDp60WgjxQkOuejHv0JOy1Ch+hexEl
+         0cTErzAcp9AMbjDnjUuX8Of0D7l4TFvo32kIOOCEccXoWp0gnFkFGckFDK5koeBwXsEo
+         Da4Lp56Bzlw2n3zE5vYdZQw2hSfhWMAj3qIzPL6WzRetbbts+VRGWpQqN9xKMZc1Hysl
+         5nkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710219224; x=1710824024;
+        d=1e100.net; s=20230601; t=1710219232; x=1710824032;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Rx6uaJA5GaTA6x0A03YxbYQQZ8SnjBq3KBc25hb9xtY=;
-        b=Jbvj1tWk3vi8b8EC+PKUByjNN/m2d/mCFcZzCMIyXH8FBPm8Ri0At7m6xizePxjZey
-         kxHFObAcljlPYYwGxjSN/MA9dnPXljZv7e2L2Vy5i5KBk4dBQ6WWSlBeftunAe6mQM1o
-         SmZxtY7L4Z9Urw1SJT1k9q3H+GvuLNtZeX/UWz3IGLQ9FkWsK9LLove8NrrX87UUNDde
-         cpOx07e7imUbyLqb/ScdyeHsO+2W6cL0nm6avapDXLqDjp1/ktVK79QNsoW2sa7R2Qmy
-         uYtZyvQgQWzvPvo/HwIJOSIArqnncGuMS4V9wJ6PdhjbYWFBsupHoABkgMyNEhed6XbT
-         IqIw==
-X-Forwarded-Encrypted: i=1; AJvYcCWaV1frbcJnUADAn+dFD0T7QpT0Hn1AltOUgipUFYa1v15go05Ps1HIQsPe17O/LhpF53IkM7ynOsoHy8ni+IgXlpSPZT3m/V1BgMoa
-X-Gm-Message-State: AOJu0YydEV7p421U9h3XCpB1PrbUjJ5NU69QYZZXQE0RgxGJ/uZ50l0/
-	rmjij+dF5fen7PiJeU6BhtY4NfFV5CZSCjJhjJjay7x6dVvpgdf5TK9sqeHDlNs+9WLKK4pEA4g
-	JeEN9I+6+ldn4F2JmZ1AzmrCKTjHIylzM/se5
-X-Google-Smtp-Source: AGHT+IHDyL7/kwgr/0FC8GfwKZO4dzMG+0nGwiUgO+KM0lSe1OBVxz/fJ1q0orM6NTZxI9cNT/o09ctwDuxQhsewYqc=
-X-Received: by 2002:aa7:c31a:0:b0:568:5606:71f9 with SMTP id
- l26-20020aa7c31a000000b00568560671f9mr56360edq.5.1710219224544; Mon, 11 Mar
- 2024 21:53:44 -0700 (PDT)
+        bh=weawOnUPMVuYgBpax1HIGwgZ0bs55MVehj4ZZakgvVw=;
+        b=R6KBXqb8rxEdeJ0ESzDOLWVVuM9XxMMNpUdwRZHdzS74mP7PXYDhS+M2Yg9p7ayJ9Q
+         TgGWsvaATYB2XZFqSeLqzFqJzgoc0q6o+8fQWgl/n3I66h5/SsytxJxeJUtlbhF1jzNv
+         G0uFMlkMjCmP0UEcHQ6oefTl34hnBCmQp/RuCZVCI5OvlefCq1qim/kePKo0U1sPo9CY
+         PCYdwAbW6+H+VMkXxwE23fCixsMUUjFIXx6c7LNgrkpDdDToeG3Ex+814LOYhbG0zT69
+         eWt3ZGNzAEDbvGhw1+HjT3OjruWkk6M1mBSXrBeAe2YIR39HthwI0/qSlyROqJtn2GzQ
+         DEug==
+X-Forwarded-Encrypted: i=1; AJvYcCWkcFArqO+D69KUw5nY2bLX+gCSY765LDstOQcLxJzFaQTnqfsYH66+4tIhQBcqQajjaX02vzPc99jJPSeQybKDoNGC0+Q205d6dThp
+X-Gm-Message-State: AOJu0YyqJRRch5MOFZbV5ubHFhGunPW63It0iOG8t76JDUIROCLSFipc
+	/ssCdZ1Wc9pO9SG8YDk1TS1kRknCmbfmmdg6ockRsHgOaI+dI+gjNiEm0g6D+gYnl+k1+W8lpXJ
+	WDhiNCuT2v7iKDlCm5DkpKc9dhRHrn77Wb47T
+X-Google-Smtp-Source: AGHT+IH6+m5w8TGGzuwdUpiEXcJqv00NfGEP/ve9y5SjfQ9XDC9z4o16zHLoCUxftJDTzGASqpMs5DoDZfsu+kGAcvM=
+X-Received: by 2002:a05:600c:a007:b0:413:4d2c:91de with SMTP id
+ jg7-20020a05600ca00700b004134d2c91demr12632wmb.0.1710219231893; Mon, 11 Mar
+ 2024 21:53:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20240301194037.532117-1-mic@digikod.net> <20240301194037.532117-3-mic@digikod.net>
-In-Reply-To: <20240301194037.532117-3-mic@digikod.net>
+References: <20240301194037.532117-1-mic@digikod.net> <20240301194037.532117-4-mic@digikod.net>
+In-Reply-To: <20240301194037.532117-4-mic@digikod.net>
 From: David Gow <davidgow@google.com>
-Date: Tue, 12 Mar 2024 12:53:33 +0800
-Message-ID: <CABVgOS=WjRuFLbJt5DgJv7X7ouFOXXOvXeRUSFSSfi=m5iYD+A@mail.gmail.com>
-Subject: Re: [PATCH v2 2/7] kunit: Fix kthread reference
+Date: Tue, 12 Mar 2024 12:53:40 +0800
+Message-ID: <CABVgOSkwfis8rUHFZQ41NGEWritwZGf4+4704FzBREb2Y-G3Zw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/7] kunit: Fix timeout message
 To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
 Cc: Brendan Higgins <brendanhiggins@google.com>, Kees Cook <keescook@chromium.org>, 
 	Rae Moar <rmoar@google.com>, Shuah Khan <skhan@linuxfoundation.org>, 
@@ -83,10 +83,10 @@ Cc: Brendan Higgins <brendanhiggins@google.com>, Kees Cook <keescook@chromium.or
 	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
 	linux-um@lists.infradead.org, x86@kernel.org
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="00000000000063288606136f7110"
+	boundary="000000000000d2ad4406136f71f9"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240311_215346_673027_A2133F3B 
-X-CRM114-Status: GOOD (  22.36  )
+X-CRM114-CacheID: sfid-20240311_215353_983360_6D640EB7 
+X-CRM114-Status: GOOD (  22.92  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,15 +101,15 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
---00000000000063288606136f7110
+--000000000000d2ad4406136f71f9
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Sat, 2 Mar 2024 at 03:40, Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> wro=
 te:
 >
-> There is a race condition when a kthread finishes after the deadline and
-> before the call to kthread_stop(), which may lead to use after free.
+> The exit code is always checked, so let's properly handle the -ETIMEDOUT
+> error code.
 >
 > Cc: Brendan Higgins <brendanhiggins@google.com>
 > Cc: David Gow <davidgow@google.com>
@@ -117,76 +117,55 @@ te:
 > Cc: Shuah Khan <skhan@linuxfoundation.org>
 > Reviewed-by: Kees Cook <keescook@chromium.org>
 > Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-> Link: https://lore.kernel.org/r/20240301194037.532117-3-mic@digikod.net
+> Link: https://lore.kernel.org/r/20240301194037.532117-4-mic@digikod.net
 > ---
 
-Thanks: I've never been unlucky enough to hit this, but it's definitely a b=
-ug.
-We should ideally mark it with a fixes tag:
-Fixes: adf505457032 ("kunit: fix UAF when run kfence test case test_gfpzero=
-")
+This looks good to me. It might make sense to use a switch statement
+rather than a change of else-ifs if we end up handling more errors in
+the future, but this is fine for now.
 
 Reviewed-by: David Gow <davidgow@google.com>
 
 Cheers,
 -- David
 
+
 >
 > Changes since v1:
 > * Added Kees's Reviewed-by.
 > ---
->  lib/kunit/try-catch.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
+>  lib/kunit/try-catch.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 >
 > diff --git a/lib/kunit/try-catch.c b/lib/kunit/try-catch.c
-> index a5cb2ef70a25..73f5007f20ea 100644
+> index 73f5007f20ea..cab8b24b5d5a 100644
 > --- a/lib/kunit/try-catch.c
 > +++ b/lib/kunit/try-catch.c
-> @@ -11,6 +11,7 @@
->  #include <linux/completion.h>
->  #include <linux/kernel.h>
->  #include <linux/kthread.h>
-> +#include <linux/sched/task.h>
->
->  #include "try-catch-impl.h"
->
-> @@ -65,14 +66,15 @@ void kunit_try_catch_run(struct kunit_try_catch *try_=
-catch, void *context)
->         try_catch->context =3D context;
->         try_catch->try_completion =3D &try_completion;
->         try_catch->try_result =3D 0;
-> -       task_struct =3D kthread_run(kunit_generic_run_threadfn_adapter,
-> -                                 try_catch,
-> -                                 "kunit_try_catch_thread");
-> +       task_struct =3D kthread_create(kunit_generic_run_threadfn_adapter=
-,
-> +                                    try_catch, "kunit_try_catch_thread")=
-;
->         if (IS_ERR(task_struct)) {
->                 try_catch->try_result =3D PTR_ERR(task_struct);
->                 try_catch->catch(try_catch->context);
->                 return;
->         }
-> +       get_task_struct(task_struct);
-> +       wake_up_process(task_struct);
->
+> @@ -79,7 +79,6 @@ void kunit_try_catch_run(struct kunit_try_catch *try_ca=
+tch, void *context)
 >         time_remaining =3D wait_for_completion_timeout(&try_completion,
 >                                                      kunit_test_timeout()=
 );
-> @@ -82,6 +84,7 @@ void kunit_try_catch_run(struct kunit_try_catch *try_ca=
-tch, void *context)
+>         if (time_remaining =3D=3D 0) {
+> -               kunit_err(test, "try timed out\n");
+>                 try_catch->try_result =3D -ETIMEDOUT;
 >                 kthread_stop(task_struct);
 >         }
+> @@ -94,6 +93,8 @@ void kunit_try_catch_run(struct kunit_try_catch *try_ca=
+tch, void *context)
+>                 try_catch->try_result =3D 0;
+>         else if (exit_code =3D=3D -EINTR)
+>                 kunit_err(test, "wake_up_process() was never called\n");
+> +       else if (exit_code =3D=3D -ETIMEDOUT)
+> +               kunit_err(test, "try timed out\n");
+>         else if (exit_code)
+>                 kunit_err(test, "Unknown error: %d\n", exit_code);
 >
-> +       put_task_struct(task_struct);
->         exit_code =3D try_catch->try_result;
->
->         if (!exit_code)
 > --
 > 2.44.0
 >
 
---00000000000063288606136f7110
+--000000000000d2ad4406136f71f9
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -254,14 +233,14 @@ wlDp+1p6RAqlDpHifQJW16h5jWIIwYisvm5QyfxQEVc+XH1lt+taSzCfiBT0ZLgjB9Sg+zAo8ys6
 ITv8ZEy6ByumbU23nkHTMOzzQSxczHkT+0q10/MxggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJF
 MRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIz
 IFNNSU1FIENBIDIwMjACEAHS+TgZvH/tCq5FcDC0n9IwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZI
-hvcNAQkEMSIEIA+Iivc9sGB5XvNfiEsi2BqxDoDHSaxYzcQTh0ZrrlQqMBgGCSqGSIb3DQEJAzEL
-BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDMxMjA0NTM0NFowaQYJKoZIhvcNAQkPMVww
+hvcNAQkEMSIEIIRwYpLx+UFgLCJwnaN23WnpzIUS6mZGqq9hDDaszYkwMBgGCSqGSIb3DQEJAzEL
+BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDMxMjA0NTM1MlowaQYJKoZIhvcNAQkPMVww
 WjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkq
-hkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAQq/La
-jnnImYcqOuobgr7Ddfs5z7pagFP0+FuKyz5kC29UICH0HmdekGhlRUK8I5eLevWfGP+Ag0gzdtZg
-a5wlxP1bF19ygUNNLLHRiJI8d6eONS+4vZBOECrTnX1BR/WqhyVHwAjQ7cV1ucBwUEjFSyZDPnOT
-HZmXHENaa8CGIEYI8dLMNAoN4RKM2PWHOXBkpeD1MZcA+y8mgbW1OLsH8XSiwqW3JP/h21zR6dUd
-4vONLq6K7HB/tTffOqOU6tWZQx/QREhco3obrAdS4FgtrxCmkwr6eBZb82fri99WBnuBjIN+v5rO
-9WDBQVi4woq62YIE91oUaSF5bqRlv2Z7
---00000000000063288606136f7110--
+hkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAtLDUz
+GSm8/FzLAdaZmcdDM5iXD38aJNkLoFKluOH5QTlfL+y0wIfpUNZnKn8umG9UTtQSRq8+AWbSsv77
+5Ub71Y1LS0zS/sQUsAm7JFFfX5ssbQmLfsT12ZraDe63s2nK9eG2MJLmjkLXvdT6+wkxQ3xvuzNk
+skEvt5hRoESacPBfeQlJZrYcDyQWuPHiXytxsj+U6AwR21DztlpKaoh0CZAK5OWLi2+3++ZNIRVF
+4W7CbKpJdbNi+udW42lPRnw2EyI4zCcsb7FzZITeowt8CPHa6KQWp/mXO0UcWUbHk6vqJUjefo4g
+/r6ZLy9d5v7uhJy4gc/99uY/pmHvqpFw
+--000000000000d2ad4406136f71f9--
 
