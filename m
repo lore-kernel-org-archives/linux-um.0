@@ -4,79 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7AAB3C54E5D
-	for <linux-um@archiver.kernel.org>; Tue, 12 Mar 2024 14:52:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 678F4C54E58
+	for <linux-um@archiver.kernel.org>; Tue, 12 Mar 2024 15:08:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=4YdHy//nTWN9K6sgwTweLyEZnjTzGOH6tr4kEOlMF6A=; b=On8ytysYk+rG1OYKMvA6YPVTUf
-	K/stl7yrZAuBujHgxdiICLp5GWCKaTK5vLK0n0uipOkoKOsk7jLuVcuaIxDjow2/RIhbmIENWv7O+
-	5cUan8+A6ztaG5WjgnM04OSLVRu5XhpM7IEKYznhxuXWgR9n++rnaLfByN1Q/qNHcPms5zn0QVbNM
-	uvFgkvPZ/mzaeBYkgk2YDuejB5SmcpV9xZDYbYfOPF7EtcqsRUV4aX7N44BYw5dUWX2Y2UrJDLcj5
-	OfzJG8xYBgZImEBRdS8FFRSC9+uV35f2aGHSEJ9T3eWAMUocx2rlrR0eM5Q4/OA6ftlrT0Yi45MMM
-	j3AJ7p2w==;
+	bh=OoK/XK2/J9dxETVPu2u7VN1315OHGZsWZA9KpKsKYRA=; b=sQ+tqkB4pFETeaApXTHXG7MEU4
+	T5/Yw+/IKqvgTX9cuzSgj0G0B7EUwx6LMn03DJTc/SjS+jp7kp4vJCRFoWiKmnbR2Vu+1B4X8HKdX
+	FhS9wd2vAnCNAMknEwlGfMRqGVmumYbcUYe4rZ3vWl3fEg5Go6wNgMPt2arjHjF13EjCd057d26tf
+	4fXhRwEEX7bifEsWyY5lq7SykQgBJFaKr3CBCZNhFgLeGo8HDzc35PA6dnSddFMyXQHBtlSYZNVbS
+	Eujqk6DdSjArIs773CakWYH/ORn9fa8BNRtabpDheqKJqHHq8tGCS3tqh768RC0gxN5RXlvaOHSpQ
+	cSNqnb6w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rk3UW-00000006Ez8-1pkb;
-	Tue, 12 Mar 2024 14:52:32 +0000
-Received: from mail-yw1-f177.google.com ([209.85.128.177])
+	id 1rk3jp-00000006ILo-3AAl;
+	Tue, 12 Mar 2024 15:08:21 +0000
+Received: from frasgout12.his.huawei.com ([14.137.139.154])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rk3UT-00000006Ewv-28S6;
-	Tue, 12 Mar 2024 14:52:30 +0000
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-60a068e26d8so46177027b3.3;
-        Tue, 12 Mar 2024 07:52:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710255147; x=1710859947;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4YdHy//nTWN9K6sgwTweLyEZnjTzGOH6tr4kEOlMF6A=;
-        b=o6Y5ybfZF8eeaeXsO+jXurZuXH9nifMUrWWdwi6YA/NAPilkO/L6SrAYa306z5O4tH
-         LPhblXaSdUWIeJIhaVWe5zguo7Ci1qjSDbW0QgS7Ikr7OVWyIjSfpmUMVcjoBEYRj1Uv
-         qg/7Om7YL/J6h3BdEqOnng7C2aATc7soyM0hdA3QDIX3rOg88MFeIrcPadlBk25QzcG5
-         SV0E6D5QwJTSgqDfG5vpzKOIYFcRYUfJFFd3JpdlEt4Njo4UnOkSzkXfXr90V+dO52Ii
-         3pT3rfHZDwHnUHSIKWDgpytt3fkjRiD7nEC7UUCW79McbbBxr2PZZ1bG22JcTTMSMV28
-         Xw5A==
-X-Forwarded-Encrypted: i=1; AJvYcCWTuMJHHR3rOHspMpKhMrkwj0Uugo1EQDWkccImr+E25QQfMtWALFzuSJZ3FzsJnwKRB5xhpGIQPcXvCQoWJidNHiikVzHIsDCuyV0f1s5JfYNF6vDhN8aSDBRm81rK4ryusfHjwkTDMkBDXC9zd844F1k=
-X-Gm-Message-State: AOJu0YzXLOCXELPKDysXHihLbzxoAg+qvZu5Uf//8kG5KY036fhBSauI
-	RdB4cM6ayHPHqJk59ek98IHoWflMPvRjWnI824FJpX6lOZpqZhQVCdE6Aohs3ZE=
-X-Google-Smtp-Source: AGHT+IEwOra9rFfXZQCfL7YlVT1OXeusZYY8w/HmLoFO0JGvA0mmMUqTBm3Kxf/jsYuwbrz129XwYA==
-X-Received: by 2002:a81:c311:0:b0:609:fff2:3bbc with SMTP id r17-20020a81c311000000b00609fff23bbcmr8648743ywk.49.1710255147275;
-        Tue, 12 Mar 2024 07:52:27 -0700 (PDT)
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
-        by smtp.gmail.com with ESMTPSA id p195-20020a0de6cc000000b0060a08edc81dsm1962884ywe.4.2024.03.12.07.52.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Mar 2024 07:52:26 -0700 (PDT)
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dcc80d6006aso4126780276.0;
-        Tue, 12 Mar 2024 07:52:26 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVWDialz3aU2wUZBFJQCVPTMg+9GD3HX4ECpRCI5elxbcpf/6D7gA9HEUZxPG7p8CYMCm3N5JC3uouMiA8D3kACslA1r97oak4piCRjTgyvxgizPkOYniQ1AkygGjAzMt4294T2KxYFvboZpM+ogmgjz0U=
-X-Received: by 2002:a25:26cd:0:b0:dcd:ef35:91d5 with SMTP id
- m196-20020a2526cd000000b00dcdef3591d5mr6727921ybm.2.1710255146517; Tue, 12
- Mar 2024 07:52:26 -0700 (PDT)
+	id 1rk3jk-00000006IHb-2J8l
+	for linux-um@lists.infradead.org;
+	Tue, 12 Mar 2024 15:08:18 +0000
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4TvGj117p9z9xFZm
+	for <linux-um@lists.infradead.org>; Tue, 12 Mar 2024 22:48:05 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.27])
+	by mail.maildlp.com (Postfix) with ESMTP id 2D0A814040D
+	for <linux-um@lists.infradead.org>; Tue, 12 Mar 2024 23:07:54 +0800 (CST)
+Received: from [10.48.131.93] (unknown [10.48.131.93])
+	by APP2 (Coremail) with SMTP id GxC2BwAXUCTDb_BlMeMqBA--.36492S2;
+	Tue, 12 Mar 2024 16:07:53 +0100 (CET)
+Message-ID: <9284cda7-d7e3-4390-bf62-58092e97d1c8@huaweicloud.com>
+Date: Tue, 12 Mar 2024 16:07:45 +0100
 MIME-Version: 1.0
-References: <20240217060843.GA16460@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <CAL_Jsq+Feu9NnzTNx=XU5vgHhibGAQXvkuTeWbpu8gJ3rVrzcw@mail.gmail.com> <CAMuHMdUKa-KdWfYswEpFvj3RjQPM+ThhU85myfBGVkXxZqbHWw@mail.gmail.com>
-In-Reply-To: <CAMuHMdUKa-KdWfYswEpFvj3RjQPM+ThhU85myfBGVkXxZqbHWw@mail.gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 12 Mar 2024 15:52:14 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdU83qwmO5swSQq79Zci7SP_xkNsjmQ4dYo-Pjw8d65fmg@mail.gmail.com>
-Message-ID: <CAMuHMdU83qwmO5swSQq79Zci7SP_xkNsjmQ4dYo-Pjw8d65fmg@mail.gmail.com>
-Subject: Re: [PATCH 2/7] of: Create of_root if no dtb provided by firmware
-To: Rob Herring <robh+dt@kernel.org>
-Cc: Saurabh Singh Sengar <ssengar@linux.microsoft.com>, Frank Rowand <frowand.list@gmail.com>, 
-	linux-kernel@vger.kernel.org, patches@lists.linux.dev, 
-	linux-um@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org, 
-	devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>, 
-	"Gabriel L. Somlo" <gsomlo@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RESEND 1/1] um: oops on accessing a non-present page in
+ the vmalloc area
+Content-Language: en-US
+To: Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ "open list:USER-MODE LINUX (UML)" <linux-um@lists.infradead.org>,
+ open list <linux-kernel@vger.kernel.org>
+Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>,
+ =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?= <petr@tesarici.cz>
+References: <20240223140435.1240-1-petrtesarik@huaweicloud.com>
+From: Petr Tesarik <petrtesarik@huaweicloud.com>
+In-Reply-To: <20240223140435.1240-1-petrtesarik@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: GxC2BwAXUCTDb_BlMeMqBA--.36492S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7uryxuF1fWr4kuw17XF1UZFb_yoW8XF4DpF
+	W5Ga18trZFg3W2kanrX3sFvr4IkasrJ3W2kr4DA34Fvw1q9FyfArW3GwnxCw1j9ryrGa18
+	KrWYyr9Fyw4DJw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyq14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+	6F4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4j6r
+	4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCF
+	x2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14
+	v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY
+	67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2
+	IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v2
+	6r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUouWlDUUUU
+X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240312_075229_576439_29D259F7 
-X-CRM114-Status: GOOD (  20.99  )
+X-CRM114-CacheID: sfid-20240312_080816_929904_37AE77DD 
+X-CRM114-Status: GOOD (  16.00  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,40 +89,48 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Mar 12, 2024 at 3:41=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68=
-k.org> wrote:
-> On Wed, Feb 21, 2024 at 3:06=E2=80=AFPM Rob Herring <robh+dt@kernel.org> =
-wrote:
-> > On Fri, Feb 16, 2024 at 11:08=E2=80=AFPM Saurabh Singh Sengar
-> > <ssengar@linux.microsoft.com> wrote:
-> > > This adds the strict check for compatible which makes compatible
-> > > to be mandatory for root nodes. So far, DeviceTree without compatible
-> > > property in root nodes can work. Do we want to make this documented
-> > > somewhere ?
-> >
-> > It already is in the DT spec and schemas.
->
-> How many systems in the wild violate this?
->
-> Apparently the DTS generated by LiteX does not have a root compatible
-> (and model) property, hence of_have_populated_dt() returns false.
-> While my gateware and DTS is quite old, a quick look at recent
-> litex_json2dts_linux.py history shows this is still true for current Lite=
-X.
+On 2/23/2024 3:04 PM, Petr Tesarik wrote:
+> From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+> 
+> If a segmentation fault is caused by accessing an address in the vmalloc
+> area, check that the target page is present.
+> 
+> Currently, if the kernel hits a guard page in the vmalloc area, UML blindly
+> assumes that the fault is caused by a stale mapping and will be fixed by
+> flush_tlb_kernel_vm(). Unsurprisingly, if the fault is caused by accessing
+> a guard page, no mapping is created, and when the faulting instruction is
+> restarted, it will cause exactly the same fault again, effectively creating
+> an infinite loop.
 
-https://github.com/enjoy-digital/litex/issues/1905
+Ping. Any comment on this fix?
 
-Gr{oetje,eeting}s,
+Petr T
 
-                        Geert
+> 
+> Signed-off-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+> ---
+>  arch/um/kernel/trap.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
+> index 6d8ae86ae978..d5b85f1bfe33 100644
+> --- a/arch/um/kernel/trap.c
+> +++ b/arch/um/kernel/trap.c
+> @@ -206,11 +206,15 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
+>  	int err;
+>  	int is_write = FAULT_WRITE(fi);
+>  	unsigned long address = FAULT_ADDRESS(fi);
+> +	pte_t *pte;
+>  
+>  	if (!is_user && regs)
+>  		current->thread.segv_regs = container_of(regs, struct pt_regs, regs);
+>  
+>  	if (!is_user && (address >= start_vm) && (address < end_vm)) {
+> +		pte = virt_to_pte(&init_mm, address);
+> +		if (!pte_present(*pte))
+> +			page_fault_oops(regs, address, ip);
+>  		flush_tlb_kernel_vm();
+>  		goto out;
+>  	}
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
