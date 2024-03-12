@@ -4,69 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E0FB0C54E49
-	for <linux-um@archiver.kernel.org>; Tue, 12 Mar 2024 04:53:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 452D5C54E49
+	for <linux-um@archiver.kernel.org>; Tue, 12 Mar 2024 04:53:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
 	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Y25WjcOhKiXJ/crEGtWqXD5rQ/m/1X6BesmbkJZu758=; b=Z7mU+gTCmKSb2JhwEDBUFyF6n4
-	ZLx7Q/CoqueAWgynrxdDfEOT5VPgMPMHa5zno0uT2UhuUxcDVPtHUJYdqbZFSY2U9+36p8kMkcOuW
-	wsvVLY9z3w24pGRlbgxs53nuotRgmsQ00GUnnokgpOPtRZQErrMFguewgBAaFKj15RbHXKTYm64Y6
-	fvFISbAmA9VqAHXsEGm4zzqjhIklHZ3qv6N6FUJ152Wwi9aTWxQVPnPGIn6Xp2Iu6XXNOxaFRiqRV
-	ITbUMH3aVNl7lIwwLbFlPV2PPRNEZT4rDMuJ8NZ+rrkWHS3mNo0U85xTNy3DBS8LNpvwwI4Nw0aOd
-	uNacB1wA==;
+	bh=Rx6uaJA5GaTA6x0A03YxbYQQZ8SnjBq3KBc25hb9xtY=; b=hJxPOEygv8Mplk0/rCnAxfbhoH
+	Yub723klx8uke+OLgBrLhPylVqZkxwKofrdDxha3L5QLHHrJKCQgw2cmW87UFOihfj3V8jWAML3O/
+	STg0zSMRlUpfztb1IQ7eXE8z3VXdD066hs5hMnyqFzu2Rfc+Bg9oeObTihwp10ofqc9eYDZKmRY37
+	u7bAEJCuFbIs2rz95OGHHfaLH4lToq6f/pVUZXJjnrFkh5pQfxC70yrgZXLCgGn1MnepWuBAD7Og4
+	O1qbfK0t8VBNHR9F6TqDcRr8+FHbHwjNo93H99nIq/xWUFBSXA42pYTPXtr4NB8TWOxSzaXRdc7wR
+	0947+2hw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rju8q-00000004JvX-3VJr;
-	Tue, 12 Mar 2024 04:53:32 +0000
-Received: from mail-ed1-x530.google.com ([2a00:1450:4864:20::530])
+	id 1rju98-00000004K36-3FEA;
+	Tue, 12 Mar 2024 04:53:50 +0000
+Received: from mail-ed1-x533.google.com ([2a00:1450:4864:20::533])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rju8o-00000004JtM-1V9g
+	id 1rju94-00000004JzV-2Y9a
 	for linux-um@lists.infradead.org;
-	Tue, 12 Mar 2024 04:53:31 +0000
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-566b160f6eeso3720a12.1
-        for <linux-um@lists.infradead.org>; Mon, 11 Mar 2024 21:53:25 -0700 (PDT)
+	Tue, 12 Mar 2024 04:53:48 +0000
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-566b160f6eeso3732a12.1
+        for <linux-um@lists.infradead.org>; Mon, 11 Mar 2024 21:53:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710219204; x=1710824004; darn=lists.infradead.org;
+        d=google.com; s=20230601; t=1710219224; x=1710824024; darn=lists.infradead.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y25WjcOhKiXJ/crEGtWqXD5rQ/m/1X6BesmbkJZu758=;
-        b=lWSFJs6I9OhE4evdLo1xn8uEVKhNuc0nCI6jXN0l9t6cipMMoNH+gA5PBZBxyikDGE
-         D9lJuEftf9vBBysz3secP/7CmQf0k9o6q0ltBgwiBTdSiGO4aJsjOD7u1QxDiQtSkLCa
-         j9PbJUzyqNsXLA/IuzxeEvlP8oiw1P2v1rRSLwQdYIKx1OVm5vW9LQDW48IFf1OQj2KY
-         osZw0kaSKknXPJKEReFrGHDdtJkJg56mV8z1vXLJspfPztcQmMb+WHuFqqpvFn+9J3OI
-         ynB3rN8rRYu2hPLrwdBjMvugmFGiilGvUYbz2TCh9e34PgJn4fzJala+WqeGBIavcMOq
-         MMHQ==
+        bh=Rx6uaJA5GaTA6x0A03YxbYQQZ8SnjBq3KBc25hb9xtY=;
+        b=Ypipf1eFyX+9K8AbSD3I/bKWIVScC2TpPvdrgnf9nIMgSrv0tSOGvho1Q0MszzDgl3
+         hrzX2jr3YiYhhb6mwASOXsrWkZ5auUk1NQ+4gDhoFTpPHdH3KVzHROC+Iw53EQPLcScH
+         JxWTx5nQYwCGy8Y/Kyc5CWuZ1w7w9fHLjwUdx2C09ZOrtjHs7uxKGxjvDlyI9SA0Gboe
+         m/wslqYM9APLruneg8YxYP/Le71Q311amrU9pT1EEmJwprkLnTcDrkeqXIhSefiRgswH
+         Co5LZUPC6ZlhppjQz5H3+9OoGJ1/wJewLCSGQYGgn4KOVw0UXwkC82C5EjCRAOs4E9iX
+         cnDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710219204; x=1710824004;
+        d=1e100.net; s=20230601; t=1710219224; x=1710824024;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Y25WjcOhKiXJ/crEGtWqXD5rQ/m/1X6BesmbkJZu758=;
-        b=l8Ct6CvjbT7gvQwJnfwaJh0Jd3ojQdqmN837HZJl/jUWIF7N3S+kxHMUu2mrqf/pV2
-         KxwQwN3m0zythgsl75xUmfZX1ETlhS2Zbk12ewu07JTKqqvKd5AdALrTNaQ2bLPaYysq
-         jrzIJEj2rYfw1jaGYUOIT7+RFzxePmR+X1Jln/jXoAy8i/Wn6e6J6Pll7PyoHSYQEJbD
-         B1mBoYORiCvrwRyH9ibOUPMc2+w/9A1Eyv/vxap2T1LWL89GdLnukmJgrneYxz1wf5sQ
-         MhbaILPl0hjtP1EXFQpBHRkwY3VH6Lnmj1B4LEkAEhp2n0AdfQj8rpFfNtKnY/H2Ku6x
-         thiA==
-X-Forwarded-Encrypted: i=1; AJvYcCWutP2P4rSSQ4daHvUdEzdi2uPr4/+vZx+8dyXGcMj1TuW7UJlNAb4AVIaELzW1g+iHD39wU8kyBWqHIAz/RrkxWMfArKhrHntRwnkk
-X-Gm-Message-State: AOJu0YwyX0w7lexVSfaRb/SgN521aKH2ty5ONVjOOhtLqxbOso1mCx1b
-	QBzINIi4bIda6TXVm9id3H8YM3o49fZiJztW1S8LwUilPNods2O6WowtaoL6e51J4O/BRJzRZEg
-	SzI1w5FrIBad6EClkZFU+g2OhkV6xQCF9V1mI
-X-Google-Smtp-Source: AGHT+IH+eRjk4kWn4zCzKyXtEzK8QgDBUlPe7kpZgNL6bj5mJsRgXBZltTcTULwT4749I6vLJYbVLoaaEbdgMditABE=
-X-Received: by 2002:aa7:da44:0:b0:568:55db:8c69 with SMTP id
- w4-20020aa7da44000000b0056855db8c69mr107780eds.4.1710219204196; Mon, 11 Mar
- 2024 21:53:24 -0700 (PDT)
+        bh=Rx6uaJA5GaTA6x0A03YxbYQQZ8SnjBq3KBc25hb9xtY=;
+        b=Jbvj1tWk3vi8b8EC+PKUByjNN/m2d/mCFcZzCMIyXH8FBPm8Ri0At7m6xizePxjZey
+         kxHFObAcljlPYYwGxjSN/MA9dnPXljZv7e2L2Vy5i5KBk4dBQ6WWSlBeftunAe6mQM1o
+         SmZxtY7L4Z9Urw1SJT1k9q3H+GvuLNtZeX/UWz3IGLQ9FkWsK9LLove8NrrX87UUNDde
+         cpOx07e7imUbyLqb/ScdyeHsO+2W6cL0nm6avapDXLqDjp1/ktVK79QNsoW2sa7R2Qmy
+         uYtZyvQgQWzvPvo/HwIJOSIArqnncGuMS4V9wJ6PdhjbYWFBsupHoABkgMyNEhed6XbT
+         IqIw==
+X-Forwarded-Encrypted: i=1; AJvYcCWaV1frbcJnUADAn+dFD0T7QpT0Hn1AltOUgipUFYa1v15go05Ps1HIQsPe17O/LhpF53IkM7ynOsoHy8ni+IgXlpSPZT3m/V1BgMoa
+X-Gm-Message-State: AOJu0YydEV7p421U9h3XCpB1PrbUjJ5NU69QYZZXQE0RgxGJ/uZ50l0/
+	rmjij+dF5fen7PiJeU6BhtY4NfFV5CZSCjJhjJjay7x6dVvpgdf5TK9sqeHDlNs+9WLKK4pEA4g
+	JeEN9I+6+ldn4F2JmZ1AzmrCKTjHIylzM/se5
+X-Google-Smtp-Source: AGHT+IHDyL7/kwgr/0FC8GfwKZO4dzMG+0nGwiUgO+KM0lSe1OBVxz/fJ1q0orM6NTZxI9cNT/o09ctwDuxQhsewYqc=
+X-Received: by 2002:aa7:c31a:0:b0:568:5606:71f9 with SMTP id
+ l26-20020aa7c31a000000b00568560671f9mr56360edq.5.1710219224544; Mon, 11 Mar
+ 2024 21:53:44 -0700 (PDT)
 MIME-Version: 1.0
-References: <20240301194037.532117-1-mic@digikod.net> <20240301194037.532117-2-mic@digikod.net>
-In-Reply-To: <20240301194037.532117-2-mic@digikod.net>
+References: <20240301194037.532117-1-mic@digikod.net> <20240301194037.532117-3-mic@digikod.net>
+In-Reply-To: <20240301194037.532117-3-mic@digikod.net>
 From: David Gow <davidgow@google.com>
-Date: Tue, 12 Mar 2024 12:53:10 +0800
-Message-ID: <CABVgOS=MHQbDH83s-PP2dPtxeDDoNr9K37kvUsTxaZVxDeVq6g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/7] kunit: Handle thread creation error
+Date: Tue, 12 Mar 2024 12:53:33 +0800
+Message-ID: <CABVgOS=WjRuFLbJt5DgJv7X7ouFOXXOvXeRUSFSSfi=m5iYD+A@mail.gmail.com>
+Subject: Re: [PATCH v2 2/7] kunit: Fix kthread reference
 To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
 Cc: Brendan Higgins <brendanhiggins@google.com>, Kees Cook <keescook@chromium.org>, 
 	Rae Moar <rmoar@google.com>, Shuah Khan <skhan@linuxfoundation.org>, 
@@ -83,10 +83,10 @@ Cc: Brendan Higgins <brendanhiggins@google.com>, Kees Cook <keescook@chromium.or
 	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
 	linux-um@lists.infradead.org, x86@kernel.org
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="0000000000002eff1006136f70c7"
+	boundary="00000000000063288606136f7110"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240311_215330_461853_2603065E 
-X-CRM114-Status: GOOD (  20.95  )
+X-CRM114-CacheID: sfid-20240311_215346_673027_A2133F3B 
+X-CRM114-Status: GOOD (  22.36  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,18 +101,15 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
---0000000000002eff1006136f70c7
+--00000000000063288606136f7110
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Sat, 2 Mar 2024 at 03:40, Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> wro=
 te:
 >
-> Previously, if a thread creation failed (e.g. -ENOMEM), the function was
-> called (kunit_catch_run_case or kunit_catch_run_case_cleanup) without
-> marking the test as failed.  Instead, fill try_result with the error
-> code returned by kthread_run(), which will mark the test as failed and
-> print "internal error occurred...".
+> There is a race condition when a kthread finishes after the deadline and
+> before the call to kthread_stop(), which may lead to use after free.
 >
 > Cc: Brendan Higgins <brendanhiggins@google.com>
 > Cc: David Gow <davidgow@google.com>
@@ -120,43 +117,76 @@ te:
 > Cc: Shuah Khan <skhan@linuxfoundation.org>
 > Reviewed-by: Kees Cook <keescook@chromium.org>
 > Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-> Link: https://lore.kernel.org/r/20240301194037.532117-2-mic@digikod.net
+> Link: https://lore.kernel.org/r/20240301194037.532117-3-mic@digikod.net
 > ---
+
+Thanks: I've never been unlucky enough to hit this, but it's definitely a b=
+ug.
+We should ideally mark it with a fixes tag:
+Fixes: adf505457032 ("kunit: fix UAF when run kfence test case test_gfpzero=
+")
+
+Reviewed-by: David Gow <davidgow@google.com>
+
+Cheers,
+-- David
+
 >
 > Changes since v1:
 > * Added Kees's Reviewed-by.
 > ---
-
-Thanks for catching this!
-
-Reviewed-by: David Gow <davidgow@google.com>
-
-Thanks,
--- David
-
-
--- David
->  lib/kunit/try-catch.c | 1 +
->  1 file changed, 1 insertion(+)
+>  lib/kunit/try-catch.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
 >
 > diff --git a/lib/kunit/try-catch.c b/lib/kunit/try-catch.c
-> index f7825991d576..a5cb2ef70a25 100644
+> index a5cb2ef70a25..73f5007f20ea 100644
 > --- a/lib/kunit/try-catch.c
 > +++ b/lib/kunit/try-catch.c
-> @@ -69,6 +69,7 @@ void kunit_try_catch_run(struct kunit_try_catch *try_ca=
-tch, void *context)
->                                   try_catch,
->                                   "kunit_try_catch_thread");
+> @@ -11,6 +11,7 @@
+>  #include <linux/completion.h>
+>  #include <linux/kernel.h>
+>  #include <linux/kthread.h>
+> +#include <linux/sched/task.h>
+>
+>  #include "try-catch-impl.h"
+>
+> @@ -65,14 +66,15 @@ void kunit_try_catch_run(struct kunit_try_catch *try_=
+catch, void *context)
+>         try_catch->context =3D context;
+>         try_catch->try_completion =3D &try_completion;
+>         try_catch->try_result =3D 0;
+> -       task_struct =3D kthread_run(kunit_generic_run_threadfn_adapter,
+> -                                 try_catch,
+> -                                 "kunit_try_catch_thread");
+> +       task_struct =3D kthread_create(kunit_generic_run_threadfn_adapter=
+,
+> +                                    try_catch, "kunit_try_catch_thread")=
+;
 >         if (IS_ERR(task_struct)) {
-> +               try_catch->try_result =3D PTR_ERR(task_struct);
+>                 try_catch->try_result =3D PTR_ERR(task_struct);
 >                 try_catch->catch(try_catch->context);
 >                 return;
 >         }
+> +       get_task_struct(task_struct);
+> +       wake_up_process(task_struct);
+>
+>         time_remaining =3D wait_for_completion_timeout(&try_completion,
+>                                                      kunit_test_timeout()=
+);
+> @@ -82,6 +84,7 @@ void kunit_try_catch_run(struct kunit_try_catch *try_ca=
+tch, void *context)
+>                 kthread_stop(task_struct);
+>         }
+>
+> +       put_task_struct(task_struct);
+>         exit_code =3D try_catch->try_result;
+>
+>         if (!exit_code)
 > --
 > 2.44.0
 >
 
---0000000000002eff1006136f70c7
+--00000000000063288606136f7110
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -224,14 +254,14 @@ wlDp+1p6RAqlDpHifQJW16h5jWIIwYisvm5QyfxQEVc+XH1lt+taSzCfiBT0ZLgjB9Sg+zAo8ys6
 ITv8ZEy6ByumbU23nkHTMOzzQSxczHkT+0q10/MxggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJF
 MRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIz
 IFNNSU1FIENBIDIwMjACEAHS+TgZvH/tCq5FcDC0n9IwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZI
-hvcNAQkEMSIEIL/yVJViF7lzzYUKtD5/T+GT76dxmtQmVrwe2o2WoeGDMBgGCSqGSIb3DQEJAzEL
-BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDMxMjA0NTMyNFowaQYJKoZIhvcNAQkPMVww
+hvcNAQkEMSIEIA+Iivc9sGB5XvNfiEsi2BqxDoDHSaxYzcQTh0ZrrlQqMBgGCSqGSIb3DQEJAzEL
+BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDMxMjA0NTM0NFowaQYJKoZIhvcNAQkPMVww
 WjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkq
-hkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBTIWOo
-amdrznSm376sckH83fVT4hBnYNRI/7GOcDs1vVQ6Cjwd7O1hkfhddLBR06vnlP2vqREnmUMAI11o
-oUQzB0paSwtygNDgZ5pEYhl4aYRxb8sN80U0yVkDyFWMdahwBKGNgIctZhdwnuOjP2DTuj/UB2I1
-KBhxSjyhJI8oRLTv38SW2paZ4OE2BX8xwqLWJp6rukfI2DGodaCoYPwLXd+YUkfh9U9vWeB6eZto
-PlVFFUSQ3qcGNPHBu+2wbSTU56FYWcwqyAMhplt/SWhtudv3d9xkMqvJcv+yNBQBnNpTgip87PbW
-vv+lZGdk7nkZLDSKviYL9QktSmYbemD4
---0000000000002eff1006136f70c7--
+hkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAQq/La
+jnnImYcqOuobgr7Ddfs5z7pagFP0+FuKyz5kC29UICH0HmdekGhlRUK8I5eLevWfGP+Ag0gzdtZg
+a5wlxP1bF19ygUNNLLHRiJI8d6eONS+4vZBOECrTnX1BR/WqhyVHwAjQ7cV1ucBwUEjFSyZDPnOT
+HZmXHENaa8CGIEYI8dLMNAoN4RKM2PWHOXBkpeD1MZcA+y8mgbW1OLsH8XSiwqW3JP/h21zR6dUd
+4vONLq6K7HB/tTffOqOU6tWZQx/QREhco3obrAdS4FgtrxCmkwr6eBZb82fri99WBnuBjIN+v5rO
+9WDBQVi4woq62YIE91oUaSF5bqRlv2Z7
+--00000000000063288606136f7110--
 
