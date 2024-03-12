@@ -4,71 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C944C54E60
-	for <linux-um@archiver.kernel.org>; Tue, 12 Mar 2024 12:16:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BA5DC54E68
+	for <linux-um@archiver.kernel.org>; Tue, 12 Mar 2024 14:41:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=NhrZY8MVg6zKgLguHT7IxsggtgIolYWIDFBuHNvr5us=; b=HIHJ4yCk96ut5SYdZeg9Ng5g4a
-	itBmgYgfoZikhI6VAyOYdbyNgXzw8r/l4rhLNI4gdjJDQZSZFk3l/qGEsZhbTVAylNXVjzWciQvfo
-	5qbFQtU5E5Vt3FOgUQEhqFXNwXP+SL3IDGtwIePfQtan/RnaKplLnhQe5uDp+nD+11HMo5xNVmRpn
-	4f0grYUuEGOcNKwoSdTWDklRYVHA6YVs2ziUb7ntWTMSEQJvPkaQjAdteTFxKmCpzJBZGN7jaQfcC
-	2ltmKQaVpSuYsfESUsaCgFI2nQO/osvXtqsKdGjP6RlQkjEFpeAbSWTSRy/1SC04vC++QzZd8zWWO
-	dO7oboLg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=FXmOsnx/ac8DtMDdTaI7xWpzg70Sr5+vs/F3ep2Teoo=; b=m6WI0WVhnI5sXGnrrka2ThbZQj
+	cN5Cb/lT86yMiKFT/LhHMkUCvTVaRyYCtvEMkCUAOyv1Y+gKYn2R0qYvXEre21g+73p4zn9VWTxaS
+	LYU4XE12CFv0ztgl2af6J9uoNuKlVLHbfaihFkI6wTka13DchoxyhWp14mx62dYbJOdoenilQP71D
+	achlZmacCUFTf4IZHjmGYghVdTylDsrxEr6Ex6EFui2I2A53VKhgC3zLNCB9q04lSsV617GZ/6yEF
+	SJn28LttC1oFzvwCcL9qBdlvrQ+dpaY+2GR594QetzenOUerHYOGPeMH4Mj3MHjdKOzwj0M4ZI6yG
+	msHuG5tQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rk136-00000005hRy-1XCS;
-	Tue, 12 Mar 2024 12:16:04 +0000
-Received: from smtp-8fa8.mail.infomaniak.ch ([2001:1600:4:17::8fa8])
+	id 1rk3K9-00000006Aut-0JG6;
+	Tue, 12 Mar 2024 14:41:49 +0000
+Received: from mail-yb1-f176.google.com ([209.85.219.176])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rk130-00000005hP8-3zX6
-	for linux-um@lists.infradead.org;
-	Tue, 12 Mar 2024 12:16:01 +0000
-Received: from smtp-4-0001.mail.infomaniak.ch (unknown [10.7.10.108])
-	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4TvCKR2dbfzMq0WP;
-	Tue, 12 Mar 2024 13:15:55 +0100 (CET)
-Received: from unknown by smtp-4-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4TvCKQ0rNKzhRP;
-	Tue, 12 Mar 2024 13:15:54 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-	s=20191114; t=1710245755;
-	bh=toSAL6LOqqiAcHCFf2a7KtT/GkwF4PILGROHmUBWIwU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qAo3RkH4vnvOXezdBsHKVdull/R1EkYTke/fr8cEyftmemu+MgRBRD/0RcN+EPCaG
-	 EUdqDuICfGoyovJLyRKBQ5wMhZjn3FSHKL9MM4TRX7SU5KCMHkdmzm5XJt5suSvpBx
-	 8B6TWfN5IyjrCbk70Iong7MQSOB1Kknnk8bSCZSo=
-Date: Tue, 12 Mar 2024 13:15:43 +0100
-From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-To: David Gow <davidgow@google.com>
-Cc: Brendan Higgins <brendanhiggins@google.com>, 
-	Kees Cook <keescook@chromium.org>, Rae Moar <rmoar@google.com>, 
-	Shuah Khan <skhan@linuxfoundation.org>, Alan Maguire <alan.maguire@oracle.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, 
-	James Morris <jamorris@linux.microsoft.com>, Luis Chamberlain <mcgrof@kernel.org>, 
-	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>, Marco Pagani <marpagan@redhat.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>, 
-	Stephen Boyd <sboyd@kernel.org>, Thara Gopinath <tgopinath@microsoft.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Vitaly Kuznetsov <vkuznets@redhat.com>, 
-	Wanpeng Li <wanpengli@tencent.com>, Zahra Tarkhani <ztarkhani@microsoft.com>, kvm@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org
-Subject: Re: [PATCH v2 6/7] kunit: Print last test location on fault
-Message-ID: <20240312.ku4TaiC9uosh@digikod.net>
-References: <20240301194037.532117-1-mic@digikod.net>
- <20240301194037.532117-7-mic@digikod.net>
- <CABVgOSk_vea-LrPwJet6hQ4D3PBQOLVg32nZ_gE4c9kgGDEEnQ@mail.gmail.com>
+	id 1rk3K6-00000006Att-45IH;
+	Tue, 12 Mar 2024 14:41:48 +0000
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-db3a09e96daso4788468276.3;
+        Tue, 12 Mar 2024 07:41:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710254505; x=1710859305;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FXmOsnx/ac8DtMDdTaI7xWpzg70Sr5+vs/F3ep2Teoo=;
+        b=UgS5OjJmh3cPBEkaa2V7bvGRGx5dfPHJMUq2YLT8eu3Kws8flelsv0lLJ5M3leaPpw
+         nHuSFJ6tZJ8y9s8wqajwaQLv+IQMC5wtXjBm1R03GJuUq6+U7RoPkejO1m2EBYnWVtEK
+         nLQpqfQ6cox8iQOINyQj5rRr9jibaxH5VMVlJbe2TOxDqhD0ICE5XiwXL5L5P4rd7g3U
+         0s5NbEwi5D4RNV+7sSAFkwhi6C+YTkUaVIl9OPh9aEkX5rav/uNxmwjsAQT5+GoAaEtr
+         Kp8kRKxbcfVZVoBAnxyz7CvKwWmLJDIWk/MY8BYDfaNxXCpMuDq4UHXilzJG+g5SY9RT
+         au3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU8NKvo9k1hmdsrkhwTQpG52i970R7Vp74BKepHoMzyh8Bkn89zuVkoMx3eM+1l74xuGK6fMXajCa9gR2oaL9NuR+NQJyS0dpdQeAVQw8e5jBEF/5buXLGFk7Og9mk1pcKAACHtEJMlnuj+pFtWRqog9xU=
+X-Gm-Message-State: AOJu0YyTAGMt8/FC5yWf/D3lI55kEfNs80M+sjjWqmy/whL0vNlKITR+
+	nrzYoLZ0uGerH/NmXUv27vYNYzcnKW1bMRWddtWYnYkq2smKNmpCBLvmYxJgt/Q=
+X-Google-Smtp-Source: AGHT+IHIbphOsJ36vh9zUPAA2qCaYOXNCztCpfyhkg+RfK/aGxJdFmaJX+bUSCOSGgKTXT5Xu+/seg==
+X-Received: by 2002:a5b:a83:0:b0:dcc:3a3:9150 with SMTP id h3-20020a5b0a83000000b00dcc03a39150mr6452317ybq.22.1710254504988;
+        Tue, 12 Mar 2024 07:41:44 -0700 (PDT)
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
+        by smtp.gmail.com with ESMTPSA id a15-20020a25938f000000b00dcd25ce965esm1671802ybm.41.2024.03.12.07.41.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Mar 2024 07:41:44 -0700 (PDT)
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc74e33fe1bso5092407276.0;
+        Tue, 12 Mar 2024 07:41:44 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUMHtlBy4iKf9mgwvpFDSwfGguXDoMIUbzFb6ZVdJ0UtWDYQyDmiGWFZibKstWUaALK6qOG+nx/mDY9QZsPcGWmv8kufWJJve/mNLAvwI2p94aDlBhNXslOgU4PLt0lfaNDq15bmqQ3c6JmSgfUspHQP5s=
+X-Received: by 2002:a25:4886:0:b0:dbe:9509:141c with SMTP id
+ v128-20020a254886000000b00dbe9509141cmr6367424yba.30.1710254504263; Tue, 12
+ Mar 2024 07:41:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABVgOSk_vea-LrPwJet6hQ4D3PBQOLVg32nZ_gE4c9kgGDEEnQ@mail.gmail.com>
-X-Infomaniak-Routing: alpha
+References: <20240217060843.GA16460@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <CAL_Jsq+Feu9NnzTNx=XU5vgHhibGAQXvkuTeWbpu8gJ3rVrzcw@mail.gmail.com>
+In-Reply-To: <CAL_Jsq+Feu9NnzTNx=XU5vgHhibGAQXvkuTeWbpu8gJ3rVrzcw@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 12 Mar 2024 15:41:32 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUKa-KdWfYswEpFvj3RjQPM+ThhU85myfBGVkXxZqbHWw@mail.gmail.com>
+Message-ID: <CAMuHMdUKa-KdWfYswEpFvj3RjQPM+ThhU85myfBGVkXxZqbHWw@mail.gmail.com>
+Subject: Re: [PATCH 2/7] of: Create of_root if no dtb provided by firmware
+To: Rob Herring <robh+dt@kernel.org>
+Cc: Saurabh Singh Sengar <ssengar@linux.microsoft.com>, Frank Rowand <frowand.list@gmail.com>, 
+	linux-kernel@vger.kernel.org, patches@lists.linux.dev, 
+	linux-um@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+	kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org, 
+	devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>, 
+	"Gabriel L. Somlo" <gsomlo@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240312_051559_327060_12806BC3 
-X-CRM114-Status: GOOD (  49.04  )
+X-CRM114-CacheID: sfid-20240312_074147_037932_BE17B1B7 
+X-CRM114-Status: GOOD (  35.24  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,209 +91,132 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Mar 12, 2024 at 12:54:48PM +0800, David Gow wrote:
-> On Sat, 2 Mar 2024 at 03:40, Mickaël Salaün <mic@digikod.net> wrote:
-> >
-> > This helps identify the location of test faults.
-> >
-> > Cc: Brendan Higgins <brendanhiggins@google.com>
-> > Cc: David Gow <davidgow@google.com>
-> > Cc: Rae Moar <rmoar@google.com>
-> > Cc: Shuah Khan <skhan@linuxfoundation.org>
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > Signed-off-by: Mickaël Salaün <mic@digikod.net>
-> > Link: https://lore.kernel.org/r/20240301194037.532117-7-mic@digikod.net
-> > ---
-> 
-> I like the idea of this, but am a little bit worried about how
-> confusing it might be, given that the location only updates on those
-> particular macros.
-> 
-> Maybe the answer is to make the __KUNIT_SAVE_LOC() macro, or something
-> equivalent, a supported API.
-> 
-> One possibility would be to have a KUNIT_MARKER() macro. If we really
-> wanted to, we could expand it to take a string so we can have a more
-> user-friendly KUNIT_MARKER(test, "parsing packet") description of
-> where things went wrong. Another could be to extend this to use the
-> code tagging framework[1], if that lands.
-> 
-> That being said, I think this is still an improvement without any of
-> those features. I've left a few comments below. Let me know what you
-> think.
+Hi Rob,
 
-This patch adds opportunistic markers to test code.  Because an uncaught
-fault would be a bug, I think in practice nobody would use
-KUNIT_MARKER() explicitly.  I found _KUNIT_SAVE_LOC() to be useful while
-writing tests or debugging them.  With this patch, it is still possible
-to call KUNIT_SUCCESS() if someone wants to add an explicit mark, and I
-think it would make more sense.
+CC broonie
+CC somlo
 
-> 
-> Cheers,
-> -- David
-> 
-> [1]: https://lwn.net/Articles/906660/
-> >
-> > Changes since v1:
-> > * Added Kees's Reviewed-by.
-> > ---
-> >  include/kunit/test.h  | 24 +++++++++++++++++++++---
-> >  lib/kunit/try-catch.c | 10 +++++++---
-> >  2 files changed, 28 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/include/kunit/test.h b/include/kunit/test.h
-> > index fcb4a4940ace..f3aa66eb0087 100644
-> > --- a/include/kunit/test.h
-> > +++ b/include/kunit/test.h
-> > @@ -301,6 +301,8 @@ struct kunit {
-> >         struct list_head resources; /* Protected by lock. */
-> >
-> >         char status_comment[KUNIT_STATUS_COMMENT_SIZE];
-> > +       /* Saves the last seen test. Useful to help with faults. */
-> > +       struct kunit_loc last_seen;
-> >  };
-> >
-> >  static inline void kunit_set_failure(struct kunit *test)
-> > @@ -567,6 +569,15 @@ void __printf(2, 3) kunit_log_append(struct string_stream *log, const char *fmt,
-> >  #define kunit_err(test, fmt, ...) \
-> >         kunit_printk(KERN_ERR, test, fmt, ##__VA_ARGS__)
-> >
-> > +/*
-> > + * Must be called at the beginning of each KUNIT_*_ASSERTION().
-> > + * Cf. KUNIT_CURRENT_LOC.
-> > + */
-> > +#define _KUNIT_SAVE_LOC(test) do {                                            \
-> > +       WRITE_ONCE(test->last_seen.file, __FILE__);                            \
-> > +       WRITE_ONCE(test->last_seen.line, __LINE__);                            \
-> > +} while (0)
-> 
-> Can we get rid of the leading '_', make this public, and document it?
-> If we want to rename it to KUNIT_MARKER() or similar, that might work
-> better, too.
+On Wed, Feb 21, 2024 at 3:06=E2=80=AFPM Rob Herring <robh+dt@kernel.org> wr=
+ote:
+> On Fri, Feb 16, 2024 at 11:08=E2=80=AFPM Saurabh Singh Sengar
+> <ssengar@linux.microsoft.com> wrote:
+> > On Fri, Feb 16, 2024 at 05:05:51PM -0800, Frank Rowand wrote:
+> > > When enabling CONFIG_OF on a platform where 'of_root' is not populate=
+d
+> > > by firmware, we end up without a root node. In order to apply overlay=
+s
+> > > and create subnodes of the root node, we need one. Create this root n=
+ode
+> > > by unflattening an empty builtin dtb.
+> > >
+> > > If firmware provides a flattened device tree (FDT) then the FDT is
+> > > unflattened via setup_arch(). Otherwise, the call to
+> > > unflatten(_and_copy)?_device_tree() will create an empty root node.
+> > >
+> > > We make of_have_populated_dt() return true only if the DTB was loaded=
+ by
+> > > firmware so that existing callers don't change behavior after this
+> > > patch. The call in the of platform code is removed because it prevent=
+s
+> > > overlays from creating platform devices when the empty root node is
+> > > used.
+> > >
+> > > [sboyd@kernel.org: Update of_have_populated_dt() to treat this empty =
+dtb
+> > > as not populated. Drop setup_of() initcall]
+> > >
+> > > Signed-off-by: Frank Rowand <frowand.list@gmail.com>
+> > > Link: https://lore.kernel.org/r/20230317053415.2254616-2-frowand.list=
+@gmail.com
+> > > Cc: Rob Herring <robh+dt@kernel.org>
+> > > Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 
-We can do that but I'm not convinced it would be useful.
+Thanks for your patch, which is now commit 7b937cc243e5b1df ("of:
+Create of_root if no dtb provided by firmware") in dt-rh/for-next
+(next-20240312 and later).
 
-> 
-> > +
-> >  /**
-> >   * KUNIT_SUCCEED() - A no-op expectation. Only exists for code clarity.
-> >   * @test: The test context object.
-> > @@ -575,7 +586,7 @@ void __printf(2, 3) kunit_log_append(struct string_stream *log, const char *fmt,
-> >   * words, it does nothing and only exists for code clarity. See
-> >   * KUNIT_EXPECT_TRUE() for more information.
-> >   */
-> > -#define KUNIT_SUCCEED(test) do {} while (0)
-> > +#define KUNIT_SUCCEED(test) _KUNIT_SAVE_LOC(test)
+On my OrangeCrab FPGA running Linux on LiteX/VexRiscv-V, the attached
+OLED display now fails to probe:
+
+    -ssd130x-i2c 0-003c: supply vcc not found, using dummy regulator
+    -[drm] Initialized ssd130x 1.0.0 20220131 for 0-003c on minor 0
+    +ssd130x-i2c 0-003c: incomplete constraints, dummy supplies not allowed
+    +ssd130x-i2c 0-003c: error -ENODEV: Failed to get VCC regulator
+
+> > > @@ -1645,6 +1635,21 @@ static inline bool of_device_is_system_power_c=
+ontroller(const struct device_node
+> > >       return of_property_read_bool(np, "system-power-controller");
+> > >  }
+> > >
+> > > +/**
+> > > + * of_have_populated_dt() - Has DT been populated by bootloader
+> > > + *
+> > > + * Return: True if a DTB has been populated by the bootloader and it=
+ isn't the
+> > > + * empty builtin one. False otherwise.
+> > > + */
+> > > +static inline bool of_have_populated_dt(void)
+> > > +{
+> > > +#ifdef CONFIG_OF
+> > > +     return of_property_present(of_root, "compatible");
 > >
-> >  void __noreturn __kunit_abort(struct kunit *test);
-> >
-> > @@ -601,14 +612,16 @@ void __kunit_do_failed_assertion(struct kunit *test,
-> >  } while (0)
-> >
-> >
-> > -#define KUNIT_FAIL_ASSERTION(test, assert_type, fmt, ...)                     \
-> > +#define KUNIT_FAIL_ASSERTION(test, assert_type, fmt, ...) do {                \
-> > +       _KUNIT_SAVE_LOC(test);                                                 \
-> >         _KUNIT_FAILED(test,                                                    \
-> >                       assert_type,                                             \
-> >                       kunit_fail_assert,                                       \
-> >                       kunit_fail_assert_format,                                \
-> >                       {},                                                      \
-> >                       fmt,                                                     \
-> > -                     ##__VA_ARGS__)
-> > +                     ##__VA_ARGS__);                                          \
-> > +} while (0)
-> >
-> >  /**
-> >   * KUNIT_FAIL() - Always causes a test to fail when evaluated.
-> > @@ -637,6 +650,7 @@ void __kunit_do_failed_assertion(struct kunit *test,
-> >                               fmt,                                             \
-> >                               ...)                                             \
-> >  do {                                                                          \
-> > +       _KUNIT_SAVE_LOC(test);                                                 \
-> >         if (likely(!!(condition_) == !!expected_true_))                        \
-> >                 break;                                                         \
-> >                                                                                \
-> > @@ -698,6 +712,7 @@ do {                                                                               \
-> >                 .right_text = #right,                                          \
-> >         };                                                                     \
-> >                                                                                \
-> > +       _KUNIT_SAVE_LOC(test);                                                 \
-> >         if (likely(__left op __right))                                         \
-> >                 break;                                                         \
-> >                                                                                \
-> > @@ -758,6 +773,7 @@ do {                                                                               \
-> >                 .right_text = #right,                                          \
-> >         };                                                                     \
-> >                                                                                \
-> > +       _KUNIT_SAVE_LOC(test);                                                 \
-> >         if (likely((__left) && (__right) && (strcmp(__left, __right) op 0)))   \
-> >                 break;                                                         \
-> >                                                                                \
-> > @@ -791,6 +807,7 @@ do {                                                                               \
-> >                 .right_text = #right,                                          \
-> >         };                                                                     \
-> >                                                                                \
-> > +       _KUNIT_SAVE_LOC(test);                                                 \
-> >         if (likely(__left && __right))                                         \
-> >                 if (likely(memcmp(__left, __right, __size) op 0))              \
-> >                         break;                                                 \
-> > @@ -815,6 +832,7 @@ do {                                                                               \
-> >  do {                                                                          \
-> >         const typeof(ptr) __ptr = (ptr);                                       \
-> >                                                                                \
-> > +       _KUNIT_SAVE_LOC(test);                                                 \
-> >         if (!IS_ERR_OR_NULL(__ptr))                                            \
-> >                 break;                                                         \
-> >                                                                                \
-> > diff --git a/lib/kunit/try-catch.c b/lib/kunit/try-catch.c
-> > index c6ee4db0b3bd..2ec21c6918f3 100644
-> > --- a/lib/kunit/try-catch.c
-> > +++ b/lib/kunit/try-catch.c
-> > @@ -91,9 +91,13 @@ void kunit_try_catch_run(struct kunit_try_catch *try_catch, void *context)
-> >
-> >         if (exit_code == -EFAULT)
-> >                 try_catch->try_result = 0;
-> > -       else if (exit_code == -EINTR)
-> > -               kunit_err(test, "try faulted\n");
-> > -       else if (exit_code == -ETIMEDOUT)
-> > +       else if (exit_code == -EINTR) {
-> > +               if (test->last_seen.file)
-> > +                       kunit_err(test, "try faulted after %s:%d\n",
-> > +                                 test->last_seen.file, test->last_seen.line);
-> 
-> It's possibly a bit confusing to just say "after file:line",
-> particularly if we then loop or call a function "higher up" in the
-> file. Maybe something like "try faulted: last line seen %s:%d" is
-> clearer.
+> > This adds the strict check for compatible which makes compatible
+> > to be mandatory for root nodes. So far, DeviceTree without compatible
+> > property in root nodes can work. Do we want to make this documented
+> > somewhere ?
+>
+> It already is in the DT spec and schemas.
 
-OK
+How many systems in the wild violate this?
 
-> 
-> > +               else
-> > +                       kunit_err(test, "try faulted before the first test\n");
-> 
-> I don't like using "test" here, as it introduces ambiguity between
-> "kunit tests" and "assertions/expectations" if we call them both
-> tests. Maybe just "try faulted" here, or "try faulted (no markers
-> seen)" or similar?
+Apparently the DTS generated by LiteX does not have a root compatible
+(and model) property, hence of_have_populated_dt() returns false.
+While my gateware and DTS is quite old, a quick look at recent
+litex_json2dts_linux.py history shows this is still true for current LiteX.
 
-I agree that "try faulted" would be enough.  I'm totally OK for you to
-update this patch directly. Please let me know if you'd prefer me to
-send another version with these fixes though.
+Now, how is this related to the failure I am seeing?
 
-Do you plan to merge this patches with the v6.9 merge window?
+drivers/regulator/core.c has:
 
-> 
-> 
-> > +       } else if (exit_code == -ETIMEDOUT)
-> >                 kunit_err(test, "try timed out\n");
-> >         else if (exit_code)
-> >                 kunit_err(test, "Unknown error: %d\n", exit_code);
-> > --
-> > 2.44.0
-> >
+    static bool have_full_constraints(void)
+    {
+            return has_full_constraints || of_have_populated_dt();
+    }
 
+and
 
+    static int __init regulator_init_complete(void)
+    {
+            /*
+             * Since DT doesn't provide an idiomatic mechanism for
+             * enabling full constraints and since it's much more natural
+             * with DT to provide them just assume that a DT enabled
+             * system has full constraints.
+             */
+            if (of_have_populated_dt())
+                    has_full_constraints =3D true;
+
+            ...
+    }
+    late_initcall_sync(regulator_init_complete);
+
+(The latter looks a bit futile, as have_full_constraints() already
+ contains a check for of_have_populated_dt()?)
+
+When have_full_constraints() returns false, any dummy regulator will
+fail to probe.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
