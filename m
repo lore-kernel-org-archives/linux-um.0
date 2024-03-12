@@ -4,90 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98718C5475B
-	for <linux-um@archiver.kernel.org>; Mon, 11 Mar 2024 21:21:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ECBBEC54E58
+	for <linux-um@archiver.kernel.org>; Tue, 12 Mar 2024 02:10:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=TWb2A9iIkGs3AmFlz53bU5Efj9ZUWJhfOe0zRp0tGRc=; b=WvvyYD9r5WYzEleh43fMXo9w9a
-	4/Rq99FNuVTKZGN/oydmIRkMVRXYwlVWi+6GbfEJ9a1XBsGB2sYI7VrRUXil3s5Q2F2QVU7puBCO3
-	KKVLf5hKTu637hUxLKGSjoWJrAU6V925kOm+LBG34qciYL2JGQHWhL3lebspYRm+9BekXg6JrxJF6
-	mO50L6HIe7mwHfTzAL4BmcgvyGwi24c0JNvcyqeuU3vBs+cQMaojywi8azRfuGI9BpbVx5/96i3PG
-	JEDFnybGSomAwo43p3U4iWYgSZFFlPzz7RzRSZF7qQD7f7D3ZzO7+IeaRCrOt2UrX1Y5SHO05/5Lb
-	1DJccTsA==;
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=93N4BPytBZxlC/Q2oeD9Rd8EctJjuaPCcnJKvMa7iTk=; b=SS0LfIXMvzl+7AMaboblXe5Ln5
+	xa4zOY67I7MD3LPGmdqm/OHI4EjNIe0ZxofxXAa4kBhB0uvv1xngEIKos4gXcwRqzfdyOYA82dyfe
+	fcY24WwdVkkO3RGG7ePDJwzdwhyOdNCou51+NZCXqS9SG1wo4sIFqtHhj3o1NQjGyJEkQifSe+OPY
+	rTwHdQf6Ty4g6/03K9AWa2FFMjEbPH0b1jGcdIcsPJ1lO+p2mwH/9X4Hx/bxQMKG3GBtRYtuF7ooW
+	79v1UVWk3LS+6C39fDU6m/zNH21OET4KCZ14/n7M2rrpievj4xLj6yLEYcEQOnOcZM3lWJLvmahCH
+	htLBI+Sg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rjn5R-00000003Eyd-1whb;
-	Mon, 11 Mar 2024 21:21:35 +0000
-Received: from mail-qt1-x831.google.com ([2607:f8b0:4864:20::831])
+	id 1rjrb4-00000003wq7-1Dlm;
+	Tue, 12 Mar 2024 02:10:30 +0000
+Received: from out30-112.freemail.mail.aliyun.com ([115.124.30.112])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rjn5M-00000003Ew8-22E2
+	id 1rjrau-00000003wlJ-36pL
 	for linux-um@lists.infradead.org;
-	Mon, 11 Mar 2024 21:21:30 +0000
-Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-42ef8193ae6so20671cf.1
-        for <linux-um@lists.infradead.org>; Mon, 11 Mar 2024 14:21:25 -0700 (PDT)
+	Tue, 12 Mar 2024 02:10:24 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710192084; x=1710796884; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TWb2A9iIkGs3AmFlz53bU5Efj9ZUWJhfOe0zRp0tGRc=;
-        b=NJrcwS63NEA65QqpZqMCdYx2Z3OhyD4gTv7+Sqt8QlU6VG4HnRJIrDPftlF28rbF4g
-         vHnMfuSmzjqsiZO6TWT2o+GysjYQdbKO0WTO4G5Cj7wWKnDNa2geiDXBYpK4YUHVBoc9
-         IC5x330VP20ERTv+SGVos/zh4fz/e1sbNhb1RwvEWCFlIBvMGTDFe0tTZLOtPKn3JES2
-         LtapKbSvjUFwOwUIlBvZGZCQQ6OJD2hdmdtAtJvr+GQL8K447nxv1O8ogHo91+Q2pUzi
-         Evrm0BQLygh5VyddnA1WE4Xxkh2vc/c8gVUVIHArZTL8TeUcG4WQRwFgDpTt57n5dmLN
-         aHxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710192084; x=1710796884;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TWb2A9iIkGs3AmFlz53bU5Efj9ZUWJhfOe0zRp0tGRc=;
-        b=sECVaaij2unCYbqreOdLsp9TzD6JT+enEZwSeQ6HfZVnHp7NG9oJTVjJe7sPX65SdD
-         AwRkCyTm4EzeApway4RSpdoLXRw8zfi61faYU2lVbts4kPJBII5ahTJaH4utIqxb3Xxi
-         6wsPuR1lHqB3Cq0p+6EX3PjFaC6qoO3mxGIveQzOAvpHoykdg14vJ3vtW45YToxEJvbx
-         43woS7bxTDHb0W/te4Re8DFWMwH3nxInvwVtzEYrFp8pPJ8Q9OL403H+c/mYL+b0lhNb
-         sYioqGOua5M9XMIImdAZpfwEhtGn/Hy2jTupn9oYa82sQ4L0s46J04s1ZE3ReWzvzUCD
-         IefQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXUq6/EhBisfZ2JJJp4Bt9odSt6oW0b/24A2I4MQiVJbSAu0bZqP9jbBGAvG6wVs+xdNqEw47fspinmDd+Tai6EvlSHvqj4xvdhvwqf
-X-Gm-Message-State: AOJu0Yya6INi4AjBEzsbGVPtj2w+BfXK68ZhmyCzBv5KZpesllAw8o1m
-	rW2cEYPTyeTnabwDNl33S48wwv03vg4FCuILKMtqZB0ZiyXrQMHqryw3tbN74hdU04KTVPGWFxv
-	HAiFu1nXM7J9NW5bwXEo9uyyNvq4SJHbmEbro
-X-Google-Smtp-Source: AGHT+IGiw3N/c7EMgtHBYf+GhpaM4BMFpUmbsLp7eZNB/I9uRFUCN7Phn/vKm3/rRq1HFpGOLfkrYTvw5DSVfzOksbM=
-X-Received: by 2002:ac8:748f:0:b0:42f:213a:dc9b with SMTP id
- v15-20020ac8748f000000b0042f213adc9bmr36743qtq.19.1710192084473; Mon, 11 Mar
- 2024 14:21:24 -0700 (PDT)
+	d=linux.alibaba.com; s=default;
+	t=1710209417; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=93N4BPytBZxlC/Q2oeD9Rd8EctJjuaPCcnJKvMa7iTk=;
+	b=aUvVSqsqcIvvgCtkZEgFiUDfUaWUptCgQLUpxZ3y2dlCUmAOnoYGdCprnWFr7QHg5eZUcvbuAA2gg+Z8QDGjF5bofDj3CtBcJuR17uzyDUAXi11F0FpxC1kpeFB+IXI+ND3e9c+4eYe04ImHKoX07S6CmPv8i3S0gjjKta3p+dQ=
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R811e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=25;SR=0;TI=SMTPD_---0W2JwVQv_1710209413;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W2JwVQv_1710209413)
+          by smtp.aliyun-inc.com;
+          Tue, 12 Mar 2024 10:10:14 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: virtualization@lists.linux.dev
+Cc: Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Hans de Goede <hdegoede@redhat.com>,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Vadim Pasternak <vadimp@nvidia.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Mathieu Poirier <mathieu.poirier@linaro.org>,
+	Cornelia Huck <cohuck@redhat.com>,
+	Halil Pasic <pasic@linux.ibm.com>,
+	Eric Farman <farman@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	linux-um@lists.infradead.org,
+	platform-driver-x86@vger.kernel.org,
+	linux-remoteproc@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	kvm@vger.kernel.org
+Subject: [PATCH vhost v3 0/4] refactor the params of find_vqs()
+Date: Tue, 12 Mar 2024 10:10:09 +0800
+Message-Id: <20240312021013.88656-1-xuanzhuo@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 MIME-Version: 1.0
-References: <20240301194037.532117-1-mic@digikod.net> <20240301194037.532117-5-mic@digikod.net>
-In-Reply-To: <20240301194037.532117-5-mic@digikod.net>
-From: Rae Moar <rmoar@google.com>
-Date: Mon, 11 Mar 2024 17:21:11 -0400
-Message-ID: <CA+GJov7in4o6bXt_JDqeGjjD08yOweiUshesS4cUWTHYfgJAwQ@mail.gmail.com>
-Subject: Re: [PATCH v2 4/7] kunit: Handle test faults
-To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc: Brendan Higgins <brendanhiggins@google.com>, David Gow <davidgow@google.com>, 
-	Kees Cook <keescook@chromium.org>, Shuah Khan <skhan@linuxfoundation.org>, 
-	Alan Maguire <alan.maguire@oracle.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, 
-	Ingo Molnar <mingo@redhat.com>, James Morris <jamorris@linux.microsoft.com>, 
-	Luis Chamberlain <mcgrof@kernel.org>, 
-	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>, Marco Pagani <marpagan@redhat.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Thara Gopinath <tgopinath@microsoft.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Vitaly Kuznetsov <vkuznets@redhat.com>, Wanpeng Li <wanpengli@tencent.com>, 
-	Zahra Tarkhani <ztarkhani@microsoft.com>, kvm@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-um@lists.infradead.org, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Git-Hash: 8d1a4cfe2924
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240311_142128_551823_7B01389E 
-X-CRM114-Status: GOOD (  31.61  )
+X-CRM114-CacheID: sfid-20240311_191021_448444_66885FCE 
+X-CRM114-Status: UNSURE (   7.40  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,159 +87,59 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, Mar 1, 2024 at 2:40=E2=80=AFPM Micka=C3=ABl Sala=C3=BCn <mic@digiko=
-d.net> wrote:
->
-> Previously, when a kernel test thread crashed (e.g. NULL pointer
-> dereference, general protection fault), the KUnit test hanged for 30
-> seconds and exited with a timeout error.
->
-> Fix this issue by waiting on task_struct->vfork_done instead of the
-> custom kunit_try_catch.try_completion, and track the execution state by
-> initially setting try_result with -EFAULT and only setting it to 0 if
+This pathset is splited from the
 
-Hello!
+     http://lore.kernel.org/all/20240229072044.77388-1-xuanzhuo@linux.alibaba.com
 
-Thanks for your patch! This has been tested and seems pretty good to
-me but I just have a few questions. First, do you mean here "setting
-try_result with -EINTR"  instead?
+That may needs some cycles to discuss. But that notifies too many people.
 
-But happy to add the tested-by.
+But just the four commits need to notify so many people.
+And four commits are independent. So I split that patch set,
+let us review these first.
 
-Tested-by: Rae Moar <rmoar@google.com>
+The patch set try to  refactor the params of find_vqs().
+Then we can just change the structure, when introducing new
+features.
 
-Thanks!
--Rae
+Thanks.
 
-> the test passed.
->
-> Fix kunit_generic_run_threadfn_adapter() signature by returning 0
-> instead of calling kthread_complete_and_exit().  Because thread's exit
-> code is never checked, always set it to 0 to make it clear.
->
-> Fix the -EINTR error message, which couldn't be reached until now.
->
-> This is tested with a following patch.
->
-> Cc: Brendan Higgins <brendanhiggins@google.com>
-> Cc: David Gow <davidgow@google.com>
-> Cc: Rae Moar <rmoar@google.com>
-> Cc: Shuah Khan <skhan@linuxfoundation.org>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-> Link: https://lore.kernel.org/r/20240301194037.532117-5-mic@digikod.net
-> ---
->
-> Changes since v1:
-> * Added Kees's Reviewed-by.
-> ---
->  include/kunit/try-catch.h |  3 ---
->  lib/kunit/try-catch.c     | 14 +++++++-------
->  2 files changed, 7 insertions(+), 10 deletions(-)
->
-> diff --git a/include/kunit/try-catch.h b/include/kunit/try-catch.h
-> index c507dd43119d..7c966a1adbd3 100644
-> --- a/include/kunit/try-catch.h
-> +++ b/include/kunit/try-catch.h
-> @@ -14,13 +14,11 @@
->
->  typedef void (*kunit_try_catch_func_t)(void *);
->
-> -struct completion;
->  struct kunit;
->
->  /**
->   * struct kunit_try_catch - provides a generic way to run code which mig=
-ht fail.
->   * @test: The test case that is currently being executed.
-> - * @try_completion: Completion that the control thread waits on while te=
-st runs.
->   * @try_result: Contains any errno obtained while running test case.
->   * @try: The function, the test case, to attempt to run.
->   * @catch: The function called if @try bails out.
-> @@ -46,7 +44,6 @@ struct kunit;
->  struct kunit_try_catch {
->         /* private: internal use only. */
->         struct kunit *test;
-> -       struct completion *try_completion;
->         int try_result;
->         kunit_try_catch_func_t try;
->         kunit_try_catch_func_t catch;
-> diff --git a/lib/kunit/try-catch.c b/lib/kunit/try-catch.c
-> index cab8b24b5d5a..c6ee4db0b3bd 100644
-> --- a/lib/kunit/try-catch.c
-> +++ b/lib/kunit/try-catch.c
-> @@ -18,7 +18,7 @@
->  void __noreturn kunit_try_catch_throw(struct kunit_try_catch *try_catch)
->  {
->         try_catch->try_result =3D -EFAULT;
-> -       kthread_complete_and_exit(try_catch->try_completion, -EFAULT);
-> +       kthread_exit(0);
->  }
->  EXPORT_SYMBOL_GPL(kunit_try_catch_throw);
->
-> @@ -26,9 +26,12 @@ static int kunit_generic_run_threadfn_adapter(void *da=
-ta)
->  {
->         struct kunit_try_catch *try_catch =3D data;
->
-> +       try_catch->try_result =3D -EINTR;
->         try_catch->try(try_catch->context);
-> +       if (try_catch->try_result =3D=3D -EINTR)
-> +               try_catch->try_result =3D 0;
->
-> -       kthread_complete_and_exit(try_catch->try_completion, 0);
-> +       return 0;
+v3:
+  1. fix the bug: "assignment of read-only location '*cfg.names'"
 
-Really my only question is why we do not need to still do a
-kthread_exit(0) here? I realize we are not checking the thread's exit
-code but isn't it safer to call kthread_exit(). I'm new to kthread so
-I am not too sure.
+v2:
+  1. add kerneldoc for "struct vq_transport_config" @ilpo.jarvinen
 
->  }
->
->  static unsigned long kunit_test_timeout(void)
-> @@ -58,13 +61,11 @@ static unsigned long kunit_test_timeout(void)
->
->  void kunit_try_catch_run(struct kunit_try_catch *try_catch, void *contex=
-t)
->  {
-> -       DECLARE_COMPLETION_ONSTACK(try_completion);
->         struct kunit *test =3D try_catch->test;
->         struct task_struct *task_struct;
->         int exit_code, time_remaining;
->
->         try_catch->context =3D context;
-> -       try_catch->try_completion =3D &try_completion;
->         try_catch->try_result =3D 0;
->         task_struct =3D kthread_create(kunit_generic_run_threadfn_adapter=
-,
->                                      try_catch, "kunit_try_catch_thread")=
-;
-> @@ -75,8 +76,7 @@ void kunit_try_catch_run(struct kunit_try_catch *try_ca=
-tch, void *context)
->         }
->         get_task_struct(task_struct);
->         wake_up_process(task_struct);
-> -
-> -       time_remaining =3D wait_for_completion_timeout(&try_completion,
-> +       time_remaining =3D wait_for_completion_timeout(task_struct->vfork=
-_done,
->                                                      kunit_test_timeout()=
-);
->         if (time_remaining =3D=3D 0) {
->                 try_catch->try_result =3D -ETIMEDOUT;
-> @@ -92,7 +92,7 @@ void kunit_try_catch_run(struct kunit_try_catch *try_ca=
-tch, void *context)
->         if (exit_code =3D=3D -EFAULT)
->                 try_catch->try_result =3D 0;
->         else if (exit_code =3D=3D -EINTR)
-> -               kunit_err(test, "wake_up_process() was never called\n");
-> +               kunit_err(test, "try faulted\n");
->         else if (exit_code =3D=3D -ETIMEDOUT)
->                 kunit_err(test, "try timed out\n");
->         else if (exit_code)
-> --
-> 2.44.0
->
+v1:
+  1. fix some comments from ilpo.jarvinen@linux.intel.com
+
+
+
+Xuan Zhuo (4):
+  virtio: find_vqs: pass struct instead of multi parameters
+  virtio: vring_create_virtqueue: pass struct instead of multi
+    parameters
+  virtio: vring_new_virtqueue(): pass struct instead of multi parameters
+  virtio_ring: simplify the parameters of the funcs related to
+    vring_create/new_virtqueue()
+
+ arch/um/drivers/virtio_uml.c             |  31 ++--
+ drivers/platform/mellanox/mlxbf-tmfifo.c |  24 ++--
+ drivers/remoteproc/remoteproc_virtio.c   |  31 ++--
+ drivers/s390/virtio/virtio_ccw.c         |  33 ++---
+ drivers/virtio/virtio_mmio.c             |  30 ++--
+ drivers/virtio/virtio_pci_common.c       |  60 ++++----
+ drivers/virtio/virtio_pci_common.h       |   9 +-
+ drivers/virtio/virtio_pci_legacy.c       |  16 ++-
+ drivers/virtio/virtio_pci_modern.c       |  38 +++--
+ drivers/virtio/virtio_ring.c             | 173 ++++++++---------------
+ drivers/virtio/virtio_vdpa.c             |  45 +++---
+ include/linux/virtio_config.h            |  85 ++++++++---
+ include/linux/virtio_ring.h              |  93 +++++++-----
+ tools/virtio/virtio_test.c               |   4 +-
+ tools/virtio/vringh_test.c               |  28 ++--
+ 15 files changed, 363 insertions(+), 337 deletions(-)
+
+--
+2.32.0.3.g01195cf9f
+
 
