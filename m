@@ -4,69 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0A80C54E68
-	for <linux-um@archiver.kernel.org>; Tue, 19 Mar 2024 22:18:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B6E78C54E67
+	for <linux-um@archiver.kernel.org>; Wed, 20 Mar 2024 09:23:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Subject:References:In-Reply-To:Message-ID:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=yLckV8zdpwBC7lLU1aS75M7QQR1x8wHlYNEMkhCPHqY=; b=N90w42/yAI7UArl4zqot8oFPOG
-	90ETHVww6h4LqRP/f1IcqdsqA6XrUxa/hOQacn62BF2FltZ/80m3TursgNblNd3zkIbwmnHwmVYJJ
-	lKgqVvvSenfWjWHUjXBlabKRJ6Enj09fKHv9zg+p/BrGv2tKONkVl3Rc0mpsSM0iKKduUPZFULeWp
-	45wGT8zFz+PvYWVNVSRzKnTDA31+cvikaNKANryexxW8fZqFXmF7CZUblUK8whyF6DXi5MdQFuR5Y
-	5mQVfTvSBZX/KkImifpHoP8HSPhj2eHRQhZkr4DWxV71SpCftbFcKQ2Dqbqjxn9N3OTc2E/3Nlz2Z
-	5ZVrM5qw==;
+	bh=9Vjg8zrCnFg/tqbys7l4j13t+oLp9giExjkF7oHtAuI=; b=0WMc8JTG9f31cohMOp+EK9CPN0
+	mGIj5fMk/MoSmzbK+fQphXiBXd6GW5ExzTn/OiXSF+7pRoT+qRSgzM/cM88bHDDvKyk21FJkCzJkD
+	FKliYLcqoIVA36EPBl6hwMNJPsu4enyBkziz7CyfADNqQ2p/y3DO0whsfYd9t6qIXHJtGdrxWsHM6
+	2tTl5cDseOJPRD55HsUSQTo2LvDCHstvKOyFA3eeufVLpWrTuCXgNRnEmdzqu7jws9OwfGeSy/DY1
+	sAYxFcA91FXAy3Vzih2xcpnJyTkYaxKHiJPXjBuDE6mpY1kkXc5OxexBX6tqIiJjvZVzvxd+1fbgM
+	qqGpJhtw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rmhmr-0000000ER4M-307w;
-	Tue, 19 Mar 2024 22:18:25 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1rmsAB-0000000GSgH-04vg;
+	Wed, 20 Mar 2024 09:23:11 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rmhmf-0000000EQw9-0scx
+	id 1rmsA8-0000000GSfg-1yIC
 	for linux-um@lists.infradead.org;
-	Tue, 19 Mar 2024 22:18:22 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 6DD706450963;
-	Tue, 19 Mar 2024 23:18:07 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id eBsVIj-qbrJE; Tue, 19 Mar 2024 23:18:06 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 5F2536450966;
-	Tue, 19 Mar 2024 23:18:06 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id wa50cn74hycn; Tue, 19 Mar 2024 23:18:06 +0100 (CET)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 194C86450963;
-	Tue, 19 Mar 2024 23:18:06 +0100 (CET)
-Date: Tue, 19 Mar 2024 23:18:05 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-To: Petr Tesarik <petrtesarik@huaweicloud.com>
-Cc: anton ivanov <anton.ivanov@cambridgegreys.com>, 
-	Johannes Berg <johannes@sipsolutions.net>, 
-	linux-um <linux-um@lists.infradead.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, 
-	Roberto Sassu <roberto.sassu@huaweicloud.com>, 
-	petr <petr@tesarici.cz>
-Message-ID: <1418379493.78340.1710886685735.JavaMail.zimbra@nod.at>
-In-Reply-To: <8d45f94c-bce1-4327-9573-cec254a4e9c3@huaweicloud.com>
-References: <20240223140435.1240-1-petrtesarik@huaweicloud.com> <9284cda7-d7e3-4390-bf62-58092e97d1c8@huaweicloud.com> <8d45f94c-bce1-4327-9573-cec254a4e9c3@huaweicloud.com>
-Subject: Re: [PATCH RESEND 1/1] um: oops on accessing a non-present page in
- the vmalloc area
+	Wed, 20 Mar 2024 09:23:10 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710926586;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9Vjg8zrCnFg/tqbys7l4j13t+oLp9giExjkF7oHtAuI=;
+	b=QhCoCYhRI2MbWBXPLyH3Uy3IhBeQ0I4z65vOwTr5zjLVg2ZXwQ0igsLHf4TE/OxgCsHRyG
+	MmbJOMkFB5EDnnS9BezpAAN1lNOGnzk65ckb2D2+Q8mUTVFH9wqQZwfR0sNEX3rq1LdDW0
+	8Luhf/W+dKe0fGQRx1B6esSTB2CXDcc=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-458-YaN209UrO8SlvIVlORwqmg-1; Wed, 20 Mar 2024 05:23:02 -0400
+X-MC-Unique: YaN209UrO8SlvIVlORwqmg-1
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1e02a62332fso30363865ad.2
+        for <linux-um@lists.infradead.org>; Wed, 20 Mar 2024 02:23:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710926582; x=1711531382;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9Vjg8zrCnFg/tqbys7l4j13t+oLp9giExjkF7oHtAuI=;
+        b=K/Z2wGD/JxHYUvhSLWsKo77EZdRfsw4hbEd7c++R8IYQznn+MIIMpcO7NgQrE0234K
+         nX3u5QvZYmqrsZ8HDhC7FD52fKCAGwC3wfD58rMcz41w5rTynFsvnO+bnqVyNe4929jV
+         icnz1fp+8PJyVXxyfi5P5dNpzw4fMCUaHqXhYrfMA2reQkv2WGmP4VuIF6VeBiQtstPT
+         RKrTJIwObYVBRj0gh7Fj8OnSBhRRZTeEIhElK+38Ka+5O9Guo/2qbjZ8feGN4rB/kCWf
+         ijEDxJwmtMmE1cbbacaI1uYq6JoPUPwEoU32kBmYRfVE87lEIQCYo5Cr+1MSzlU3AQFa
+         cJPQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVuU3+YBI5L25ndr9tHviSwfaEcUKw77gtni6pphKeX6AokkWbBo+juyDjelay0c+BUMs8mvFirjGhKUKKgcLxu3snlCzyUlsOXGHxp
+X-Gm-Message-State: AOJu0YxC3V8R31jxrNA2HW3xrnG8dgR8U7g2dL0TnKSLUiuOlN/QnDrJ
+	g/KEm8JGTBStkGQmedTXkeOBe8Z9Ppenabi4KuPT5ZcpE1mZmq6LXGqYDUjtyg0vRjRsVy/lGwR
+	KeY9gAnJ32gy4dDliTa3SeLGsA7fDLaX17hrAmXpd/Vwmd2Q242wNYFp+avfzX69qN2FOZMQhxb
+	lG0Jb7yLhTxYU1hi0UdYAylajS0xxDW9SFMtYR
+X-Received: by 2002:a17:90b:3649:b0:29e:926:b582 with SMTP id nh9-20020a17090b364900b0029e0926b582mr10780655pjb.23.1710926581649;
+        Wed, 20 Mar 2024 02:23:01 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGa5t5yKeGVgUBrB/m7ZYinl2zOV2h69MtzYov0EG5AwEvBxWiWBFcij6dKejn6wI3bBgvnbbPLiFiqn5O6R+A=
+X-Received: by 2002:a17:90b:3649:b0:29e:926:b582 with SMTP id
+ nh9-20020a17090b364900b0029e0926b582mr10780641pjb.23.1710926581319; Wed, 20
+ Mar 2024 02:23:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20240312021013.88656-1-xuanzhuo@linux.alibaba.com>
+ <20240312021013.88656-2-xuanzhuo@linux.alibaba.com> <CACGkMEvVgfgAxLoKeFTgy-1GR0W07ciPYFuqs6PiWtKCnXuWTw@mail.gmail.com>
+ <1710395908.7915084-1-xuanzhuo@linux.alibaba.com> <CACGkMEsT2JqJ1r_kStUzW0+-f+qT0C05n2A+Yrjpc-mHMZD_mQ@mail.gmail.com>
+ <1710487245.6843069-1-xuanzhuo@linux.alibaba.com> <CACGkMEspzDTZP1yxkBz17MgU9meyfCUBDxG8mjm=acXHNxAxhg@mail.gmail.com>
+ <1710741592.205804-1-xuanzhuo@linux.alibaba.com> <20240319025726-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20240319025726-mutt-send-email-mst@kernel.org>
+From: Jason Wang <jasowang@redhat.com>
+Date: Wed, 20 Mar 2024 17:22:50 +0800
+Message-ID: <CACGkMEsO6e2=v36F=ezhHCEaXqG0+AhkCM2ZgmKAtyWncnif5Q@mail.gmail.com>
+Subject: Re: [PATCH vhost v3 1/4] virtio: find_vqs: pass struct instead of
+ multi parameters
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, virtualization@lists.linux.dev, 
+	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, Hans de Goede <hdegoede@redhat.com>, 
+	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+	Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <andersson@kernel.org>, 
+	Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, 
+	Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, 
+	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Sven Schnelle <svens@linux.ibm.com>, linux-um@lists.infradead.org, 
+	platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, 
+	linux-s390@vger.kernel.org, kvm@vger.kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Topic: oops on accessing a non-present page in the vmalloc area
-Thread-Index: OdzHbbhSrpqdStaC7MekET1pCSEHow==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240319_151813_496775_7B6A37EA 
-X-CRM114-Status: UNSURE (   9.51  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240320_022308_610429_7A53A41D 
+X-CRM114-Status: GOOD (  39.16  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,47 +113,224 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
------ Urspr=C3=BCngliche Mail -----
-> Von: "Petr Tesarik" <petrtesarik@huaweicloud.com>
-> An: "richard" <richard@nod.at>, "anton ivanov" <anton.ivanov@cambridgegre=
-ys.com>, "Johannes Berg"
-> <johannes@sipsolutions.net>, "linux-um" <linux-um@lists.infradead.org>, "=
-linux-kernel" <linux-kernel@vger.kernel.org>
-> CC: "Roberto Sassu" <roberto.sassu@huaweicloud.com>, "petr" <petr@tesaric=
-i.cz>
-> Gesendet: Montag, 18. M=C3=A4rz 2024 14:09:07
-> Betreff: Re: [PATCH RESEND 1/1] um: oops on accessing a non-present page =
-in the vmalloc area
+On Tue, Mar 19, 2024 at 2:58=E2=80=AFPM Michael S. Tsirkin <mst@redhat.com>=
+ wrote:
+>
+> On Mon, Mar 18, 2024 at 01:59:52PM +0800, Xuan Zhuo wrote:
+> > On Mon, 18 Mar 2024 12:18:23 +0800, Jason Wang <jasowang@redhat.com> wr=
+ote:
+> > > On Fri, Mar 15, 2024 at 3:26=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.ali=
+baba.com> wrote:
+> > > >
+> > > > On Fri, 15 Mar 2024 11:51:48 +0800, Jason Wang <jasowang@redhat.com=
+> wrote:
+> > > > > On Thu, Mar 14, 2024 at 2:00=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux=
+.alibaba.com> wrote:
+> > > > > >
+> > > > > > On Thu, 14 Mar 2024 11:12:24 +0800, Jason Wang <jasowang@redhat=
+.com> wrote:
+> > > > > > > On Tue, Mar 12, 2024 at 10:10=E2=80=AFAM Xuan Zhuo <xuanzhuo@=
+linux.alibaba.com> wrote:
+> > > > > > > >
+> > > > > > > > Now, we pass multi parameters to find_vqs. These parameters
+> > > > > > > > may work for transport or work for vring.
+> > > > > > > >
+> > > > > > > > And find_vqs has multi implements in many places:
+> > > > > > > >
+> > > > > > > >  arch/um/drivers/virtio_uml.c
+> > > > > > > >  drivers/platform/mellanox/mlxbf-tmfifo.c
+> > > > > > > >  drivers/remoteproc/remoteproc_virtio.c
+> > > > > > > >  drivers/s390/virtio/virtio_ccw.c
+> > > > > > > >  drivers/virtio/virtio_mmio.c
+> > > > > > > >  drivers/virtio/virtio_pci_legacy.c
+> > > > > > > >  drivers/virtio/virtio_pci_modern.c
+> > > > > > > >  drivers/virtio/virtio_vdpa.c
+> > > > > > > >
+> > > > > > > > Every time, we try to add a new parameter, that is difficul=
+t.
+> > > > > > > > We must change every find_vqs implement.
+> > > > > > > >
+> > > > > > > > One the other side, if we want to pass a parameter to vring=
+,
+> > > > > > > > we must change the call path from transport to vring.
+> > > > > > > > Too many functions need to be changed.
+> > > > > > > >
+> > > > > > > > So it is time to refactor the find_vqs. We pass a structure
+> > > > > > > > cfg to find_vqs(), that will be passed to vring by transpor=
+t.
+> > > > > > > >
+> > > > > > > > Because the vp_modern_create_avq() use the "const char *nam=
+es[]",
+> > > > > > > > and the virtio_uml.c changes the name in the subsequent com=
+mit, so
+> > > > > > > > change the "names" inside the virtio_vq_config from "const =
+char *const
+> > > > > > > > *names" to "const char **names".
+> > > > > > > >
+> > > > > > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > > > > > > Acked-by: Johannes Berg <johannes@sipsolutions.net>
+> > > > > > > > Reviewed-by: Ilpo J=3DE4rvinen <ilpo.jarvinen@linux.intel.c=
+om>
+> > > > > > >
+> > > > > > > The name seems broken here.
+> > > > > >
+> > > > > > Email APP bug.
+> > > > > >
+> > > > > > I will fix.
+> > > > > >
+> > > > > >
+> > > > > > >
+> > > > > > > [...]
+> > > > > > >
+> > > > > > > >
+> > > > > > > >  typedef void vq_callback_t(struct virtqueue *);
+> > > > > > > >
+> > > > > > > > +/**
+> > > > > > > > + * struct virtio_vq_config - configure for find_vqs()
+> > > > > > > > + * @cfg_idx: Used by virtio core. The drivers should set t=
+his to 0.
+> > > > > > > > + *     During the initialization of each vq(vring setup), =
+we need to know which
+> > > > > > > > + *     item in the array should be used at that time. But =
+since the item in
+> > > > > > > > + *     names can be null, which causes some item of array =
+to be skipped, we
+> > > > > > > > + *     cannot use vq.index as the current id. So add a cfg=
+_idx to let vring
+> > > > > > > > + *     know how to get the current configuration from the =
+array when
+> > > > > > > > + *     initializing vq.
+> > > > > > >
+> > > > > > > So this design is not good. If it is not something that the d=
+river
+> > > > > > > needs to care about, the core needs to hide it from the API.
+> > > > > >
+> > > > > > The driver just ignore it. That will be beneficial to the virti=
+o core.
+> > > > > > Otherwise, we must pass one more parameter everywhere.
+> > > > >
+> > > > > I don't get here, it's an internal logic and we've already done t=
+hat.
+> > > >
+> > > >
+> > > > ## Then these must add one param "cfg_idx";
+> > > >
+> > > >  struct virtqueue *vring_create_virtqueue(struct virtio_device *vde=
+v,
+> > > >                                          unsigned int index,
+> > > >                                          struct vq_transport_config=
+ *tp_cfg,
+> > > >                                          struct virtio_vq_config *c=
+fg,
+> > > > -->                                      uint cfg_idx);
+> > > >
+> > > >  struct virtqueue *vring_new_virtqueue(struct virtio_device *vdev,
+> > > >                                       unsigned int index,
+> > > >                                       void *pages,
+> > > >                                       struct vq_transport_config *t=
+p_cfg,
+> > > >                                       struct virtio_vq_config *cfg,
+> > > > -->                                      uint cfg_idx);
+> > > >
+> > > >
+> > > > ## The functions inside virtio_ring also need to add a new param, s=
+uch as:
+> > > >
+> > > >  static struct virtqueue *vring_create_virtqueue_split(struct virti=
+o_device *vdev,
+> > > >                                                       unsigned int =
+index,
+> > > >                                                       struct vq_tra=
+nsport_config *tp_cfg,
+> > > >                                                       struct virtio=
+_vq_config,
+> > > > -->                                                   uint cfg_idx)=
+;
+> > > >
+> > > >
+> > > >
+> > >
+> > > I guess what I'm missing is when could the index differ from cfg_idx?
+> >
+> >
+> >  @cfg_idx: Used by virtio core. The drivers should set this to 0.
+> >      During the initialization of each vq(vring setup), we need to know=
+ which
+> >      item in the array should be used at that time. But since the item =
+in
+> >      names can be null, which causes some item of array to be skipped, =
+we
+> >      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> >      cannot use vq.index as the current id. So add a cfg_idx to let vri=
+ng
+> >      know how to get the current configuration from the array when
+> >      initializing vq.
+> >
+> >
+> > static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned int nv=
+qs,
+> >
+> >       ................
+> >
+> >       for (i =3D 0; i < nvqs; ++i) {
+> >               if (!names[i]) {
+> >                       vqs[i] =3D NULL;
+> >                       continue;
+> >               }
+> >
+> >               if (!callbacks[i])
+> >                       msix_vec =3D VIRTIO_MSI_NO_VECTOR;
+> >               else if (vp_dev->per_vq_vectors)
+> >                       msix_vec =3D allocated_vectors++;
+> >               else
+> >                       msix_vec =3D VP_MSIX_VQ_VECTOR;
+> >               vqs[i] =3D vp_setup_vq(vdev, queue_idx++, callbacks[i], n=
+ames[i],
+> >                                    ctx ? ctx[i] : false,
+> >                                    msix_vec);
+> >
+> >
+> > Thanks.
+>
+>
+> Jason what do you think is the way to resolve this?
 
-> On 3/12/2024 4:07 PM, Petr Tesarik wrote:
->> On 2/23/2024 3:04 PM, Petr Tesarik wrote:
->>> From: Petr Tesarik <petr.tesarik1@huawei-partners.com>
->>>
->>> If a segmentation fault is caused by accessing an address in the vmallo=
-c
->>> area, check that the target page is present.
->>>
->>> Currently, if the kernel hits a guard page in the vmalloc area, UML bli=
-ndly
->>> assumes that the fault is caused by a stale mapping and will be fixed b=
-y
->>> flush_tlb_kernel_vm(). Unsurprisingly, if the fault is caused by access=
-ing
->>> a guard page, no mapping is created, and when the faulting instruction =
-is
->>> restarted, it will cause exactly the same fault again, effectively crea=
-ting
->>> an infinite loop.
->>=20
->> Ping. Any comment on this fix?
->=20
-> I don't think I have seen a reply from you. If you did comment, then
-> your email has not reached me.
->=20
-> Please, can you confirm you have seen my patch?
+I wonder which driver doesn't use a specific virtqueue in this case.
 
-Yes. I'm just way behind my maintainer schedule. :-/
+And it looks to me, introducing a per-vq-config struct might be better
+then we have
 
-Thanks,
-//richard
+virtio_vqs_config {
+      unsigned int nvqs;
+      struct virtio_vq_config *configs;
+}
+
+So we don't need the cfg_idx stuff.
+
+Thanks
+
+>
+> > >
+> > > Thanks
+> > >
+> > > > Thanks.
+> > > >
+> > > >
+> > > >
+> > > >
+> > > > >
+> > > > > Thanks
+> > > > >
+> > > > > >
+> > > > > > Thanks.
+> > > > > >
+> > > > > > >
+> > > > > > > Thanks
+> > > > > > >
+> > > > > >
+> > > > >
+> > > >
+> > >
+>
+
 
