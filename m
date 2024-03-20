@@ -4,102 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60CB8C54E67
-	for <linux-um@archiver.kernel.org>; Wed, 20 Mar 2024 09:31:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 41672C54E67
+	for <linux-um@archiver.kernel.org>; Wed, 20 Mar 2024 09:41:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:In-Reply-To:References:Cc:To:From:Date:Subject:Message-ID:
+	Reply-To:MIME-Version:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=NcpPpj8COzr4sFGDjPc9DI4s95FhBo7rGSMdOcO4pRA=; b=LmqIgN5GwrVJiEWDeqkgmPdVma
-	P+NiJUlrwr+5arfI+0NxqrubCM9aXxII1XXHsnKuqvVPpVD+7i37fCfV3XxfJWVkZ2XuZwEWlsMPc
-	u1cVDcCYm2AEV7D4GWqaj8VNWxfRNgdYsbkCQbNavTwAPNjKT34QXWYLdQxTjWMOWAdTx6MlxVGi2
-	pGpHXOxE8l5W0WquX8IHEWT2r/mQjspGeAKBYsmRuJwRI3JocTerkhOR1PpfNPLU5TlbiaHkQ4ksi
-	ov2epdR2Li0QPZ8iDDDHKSG0lB52DZX9WGprbJ9T9TxeCzTh3kNylNTlaG68TKdpuRiKGGcURIuL+
-	nUc/hRUQ==;
+	bh=wXKu2e8VFSQ0AuTa9FlsNWoTmcdj8Yv+4aiz4H2u7Po=; b=XsG1S4jrScSdrvvIjLm07lLiO2
+	1YOq4kL62+mRdMfwO4wozPlTA9G96DoCAVJG+lQqLcoKNBrlCqC+cNTcV80yBJgyhMbPa2QavIIA5
+	R7ZOco3Y+5xJgHVGI5/Uf6YbZ0mhxujFnrPTr4G1KA5eMUhK/65FTdsZC5eu/5/+dSOBrvCrJMO85
+	nkns+0M9lrE77xxFYMbXw7l2a7gbD1TRW/3IBdR2T4iVrkGvIPCYB6ErineFYGMdLBS9lu+GFf06h
+	M00Izrcc41dFTlnBL1vnqYPgL+FSF1/hh4+6TsjvCOMbA2e6yWGIvEKTLTOx5YoE9AB48qtM/SXei
+	2DLpjK1w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rmsIM-0000000GUk5-0uIJ;
-	Wed, 20 Mar 2024 09:31:38 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
+	id 1rmsSK-0000000GXJq-2hjz;
+	Wed, 20 Mar 2024 09:41:56 +0000
+Received: from out30-110.freemail.mail.aliyun.com ([115.124.30.110])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rmsII-0000000GUi6-0CyA
+	id 1rmsSH-0000000GXDr-05Yt
 	for linux-um@lists.infradead.org;
-	Wed, 20 Mar 2024 09:31:35 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710927092;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NcpPpj8COzr4sFGDjPc9DI4s95FhBo7rGSMdOcO4pRA=;
-	b=QYRGyXGXp9M6MgxZ8UkRuABuhH+UBnm9dIafJ5HoGUFLeteHeISATx1hkGKtf0MR8Z1ZQF
-	ezGY94/7TKWgvfSc+syDsKQOZrYpu8eDFrySGSQN2gUD2oxJo3s57/48Cuqy7vjRB3NYXG
-	sdYLQA5JkF6bRtuyeOMWvt3oA+T7DIo=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-454-RoJQ3UZQMGGT2EQylSFZcA-1; Wed, 20 Mar 2024 05:31:31 -0400
-X-MC-Unique: RoJQ3UZQMGGT2EQylSFZcA-1
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5cfc2041cdfso4358911a12.2
-        for <linux-um@lists.infradead.org>; Wed, 20 Mar 2024 02:31:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710927090; x=1711531890;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NcpPpj8COzr4sFGDjPc9DI4s95FhBo7rGSMdOcO4pRA=;
-        b=jk26vGeFbVmiCcRoSmCMftmS8PXLSey9XFd1PjEJBleIZqXzjoGFMo5HBUAIyEL+JF
-         FyeUN0/K+1Ah58FOUnEm/WUTEle8ZEdIIAUHA1gyRNA5pT6+zm1YYoMRjfeCaviWrNb5
-         Yt5mHmXN9AiBlcxKAIecO59dgu0vlRTegJFLPX3pLXSuvv8HWL76rG1vVf+SXT51iXTJ
-         1aLQgLZNF+FCtLG5vC8RsbtDQcJGGuX7AG2LzGOsVH6VD6zCIwP2G7WXZGjNvt2nDrXS
-         uyZvmJ3PA4Pb0MKsjxlH7PzxCsp1S1TcQ3Fdlqx6kKhvVmVKrdtYd7SJ3HIzRsYSzY4j
-         E/iw==
-X-Forwarded-Encrypted: i=1; AJvYcCUNIvoyXu/hJosD4h4UO+6ItmYX3sGXxxm2elTNYeQweCTuBA24X+juMFUvq7pqpp3+ZJHCxneTBJXqLjIdHnIAfdwqtwDdd7rx604a
-X-Gm-Message-State: AOJu0YypRnlQWTYCTnCChBzVRuPKRVpOCCl7WG+0w8wG1OZCS0b+8Mb/
-	CJ8y+VmAQRGdmaIClP/jDdt+i4IYzA7/kmUE+RzFnhylZuxyrZ4KMGFhIjps/bkBcNXjdsA4X7n
-	Yg1oXjgF8W5wvWM71ylcj4BQExILP99s4HuW/wVZiwsmG6Czd91ksaWk3lW0IWi1CZRCWt6PXKO
-	SD/eDxRLRdKOWgDdxLx4iN1AtBaj8Nvwf9OFQw
-X-Received: by 2002:a05:6a20:e01:b0:1a3:6f61:200d with SMTP id ej1-20020a056a200e0100b001a36f61200dmr4956857pzb.9.1710927090295;
-        Wed, 20 Mar 2024 02:31:30 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH8qe09t4g3HfkRiIbfxrA8Ju1f60Up1DuN2Huw8OLenlVMbWpJINYFcOydIKj7JhZrxkyZn+X3zIVTMeJ8+is=
-X-Received: by 2002:a05:6a20:e01:b0:1a3:6f61:200d with SMTP id
- ej1-20020a056a200e0100b001a36f61200dmr4956832pzb.9.1710927089974; Wed, 20 Mar
- 2024 02:31:29 -0700 (PDT)
-MIME-Version: 1.0
+	Wed, 20 Mar 2024 09:41:54 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1710927702; h=Message-ID:Subject:Date:From:To:Content-Type;
+	bh=wXKu2e8VFSQ0AuTa9FlsNWoTmcdj8Yv+4aiz4H2u7Po=;
+	b=u4czDL4lcyf8JDFr88LxdA0krT4sydSC5kyPqss25GNohyXqpksau9rARVSPclspF0w6cjObdDpKmt+0n8lxGbtxlnc7igbicslgjQ2m28Uh1aiIiq1kvhRX3yiRZbxdiSYq4p7Y9HWhcIlZ+QabseDq65NZVxjP37fGkYJ4iXE=
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=24;SR=0;TI=SMTPD_---0W2wqjEi_1710927697;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W2wqjEi_1710927697)
+          by smtp.aliyun-inc.com;
+          Wed, 20 Mar 2024 17:41:38 +0800
+Message-ID: <1710927569.5383172-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH vhost v3 1/4] virtio: find_vqs: pass struct instead of multi parameters
+Date: Wed, 20 Mar 2024 17:39:29 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: Jason Wang <jasowang@redhat.com>
+Cc: virtualization@lists.linux.dev,
+ Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ Hans de Goede <hdegoede@redhat.com>,
+ =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Vadim Pasternak <vadimp@nvidia.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Cornelia Huck <cohuck@redhat.com>,
+ Halil Pasic <pasic@linux.ibm.com>,
+ Eric Farman <farman@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>,
+ Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>,
+ linux-um@lists.infradead.org,
+ platform-driver-x86@vger.kernel.org,
+ linux-remoteproc@vger.kernel.org,
+ linux-s390@vger.kernel.org,
+ kvm@vger.kernel.org,
+ "Michael S. Tsirkin" <mst@redhat.com>
 References: <20240312021013.88656-1-xuanzhuo@linux.alibaba.com>
- <20240312021013.88656-2-xuanzhuo@linux.alibaba.com> <CACGkMEvVgfgAxLoKeFTgy-1GR0W07ciPYFuqs6PiWtKCnXuWTw@mail.gmail.com>
- <1710395908.7915084-1-xuanzhuo@linux.alibaba.com> <CACGkMEsT2JqJ1r_kStUzW0+-f+qT0C05n2A+Yrjpc-mHMZD_mQ@mail.gmail.com>
- <1710487245.6843069-1-xuanzhuo@linux.alibaba.com> <CACGkMEspzDTZP1yxkBz17MgU9meyfCUBDxG8mjm=acXHNxAxhg@mail.gmail.com>
- <1710741592.205804-1-xuanzhuo@linux.alibaba.com> <20240319025726-mutt-send-email-mst@kernel.org>
+ <20240312021013.88656-2-xuanzhuo@linux.alibaba.com>
+ <CACGkMEvVgfgAxLoKeFTgy-1GR0W07ciPYFuqs6PiWtKCnXuWTw@mail.gmail.com>
+ <1710395908.7915084-1-xuanzhuo@linux.alibaba.com>
+ <CACGkMEsT2JqJ1r_kStUzW0+-f+qT0C05n2A+Yrjpc-mHMZD_mQ@mail.gmail.com>
+ <1710487245.6843069-1-xuanzhuo@linux.alibaba.com>
+ <CACGkMEspzDTZP1yxkBz17MgU9meyfCUBDxG8mjm=acXHNxAxhg@mail.gmail.com>
+ <1710741592.205804-1-xuanzhuo@linux.alibaba.com>
+ <20240319025726-mutt-send-email-mst@kernel.org>
  <CACGkMEsO6e2=v36F=ezhHCEaXqG0+AhkCM2ZgmKAtyWncnif5Q@mail.gmail.com>
 In-Reply-To: <CACGkMEsO6e2=v36F=ezhHCEaXqG0+AhkCM2ZgmKAtyWncnif5Q@mail.gmail.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Wed, 20 Mar 2024 17:31:18 +0800
-Message-ID: <CACGkMEtfZx3+PcR7pCKQ9feLSERX6W-UKR0iJWEXVt7Q7ssZNA@mail.gmail.com>
-Subject: Re: [PATCH vhost v3 1/4] virtio: find_vqs: pass struct instead of
- multi parameters
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, virtualization@lists.linux.dev, 
-	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
-	Johannes Berg <johannes@sipsolutions.net>, Hans de Goede <hdegoede@redhat.com>, 
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	Vadim Pasternak <vadimp@nvidia.com>, Bjorn Andersson <andersson@kernel.org>, 
-	Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck <cohuck@redhat.com>, 
-	Halil Pasic <pasic@linux.ibm.com>, Eric Farman <farman@linux.ibm.com>, 
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, linux-um@lists.infradead.org, 
-	platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org, 
-	linux-s390@vger.kernel.org, kvm@vger.kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240320_023134_191500_FDD8CCB5 
-X-CRM114-Status: GOOD (  41.36  )
+X-CRM114-CacheID: sfid-20240320_024153_428452_7B53EA38 
+X-CRM114-Status: GOOD (  41.33  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -114,9 +94,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Mar 20, 2024 at 5:22=E2=80=AFPM Jason Wang <jasowang@redhat.com> wr=
-ote:
->
+On Wed, 20 Mar 2024 17:22:50 +0800, Jason Wang <jasowang@redhat.com> wrote:
 > On Tue, Mar 19, 2024 at 2:58=E2=80=AFPM Michael S. Tsirkin <mst@redhat.co=
 m> wrote:
 > >
@@ -209,8 +187,7 @@ e array when
 > > > > > > > >
 > > > > > > > > So this design is not good. If it is not something that the=
  driver
-> > > > > > > > needs to care about, the core needs to hide it from the API=
-.
+> > > > > > > > needs to care about, the core needs to hide it from the API.
 > > > > > > >
 > > > > > > > The driver just ignore it. That will be beneficial to the vir=
 tio core.
@@ -231,8 +208,7 @@ ig *tp_cfg,
 *cfg,
 > > > > > -->                                      uint cfg_idx);
 > > > > >
-> > > > >  struct virtqueue *vring_new_virtqueue(struct virtio_device *vdev=
-,
+> > > > >  struct virtqueue *vring_new_virtqueue(struct virtio_device *vdev,
 > > > > >                                       unsigned int index,
 > > > > >                                       void *pages,
 > > > > >                                       struct vq_transport_config =
@@ -306,6 +282,33 @@ nvqs,
 > > Jason what do you think is the way to resolve this?
 >
 > I wonder which driver doesn't use a specific virtqueue in this case.
+
+
+commit 6457f126c888b3481fdae6f702e616cd0c79646e
+Author: Michael S. Tsirkin <mst@redhat.com>
+Date:   Wed Sep 5 21:47:45 2012 +0300
+
+    virtio: support reserved vqs
+
+    virtio network device multiqueue support reserves
+    vq 3 for future use (useful both for future extensions and to make it
+    pretty - this way receive vqs have even and transmit - odd numbers).
+    Make it possible to skip initialization for
+    specific vq numbers by specifying NULL for name.
+    Document this usage as well as (existing) NULL callback.
+
+    Drivers using this not coded up yet, so I simply tested
+    with virtio-pci and verified that this patch does
+    not break existing drivers.
+
+    Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+    Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
+
+This patch introduced this.
+
+Could we remove this? Then we can use the vq.index directly. That will
+be great.
+
 >
 > And it looks to me, introducing a per-vq-config struct might be better
 > then we have
@@ -314,14 +317,16 @@ nvqs,
 >       unsigned int nvqs;
 >       struct virtio_vq_config *configs;
 > }
+
+YES. I prefer this. But we need to refactor every driver.
+
 >
 > So we don't need the cfg_idx stuff.
 
-And actually, I'm also ok to have cfg_idx internally, it's better than
-having an API which has a field that the user doesn't need to care
-about.
+This still needs cfg_idx.
 
 Thanks
+
 
 >
 > Thanks
@@ -349,5 +354,5 @@ Thanks
 > > > > >
 > > > >
 > >
-
+>
 
