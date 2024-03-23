@@ -4,89 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1AEB5C54E58
-	for <linux-um@archiver.kernel.org>; Sat, 23 Mar 2024 07:37:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ADA77C54E58
+	for <linux-um@archiver.kernel.org>; Sat, 23 Mar 2024 17:45:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
-	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=z/T0tVPPL0wdMN6D/c7oLD15mt8cywvGxRwXHf2V1Vo=; b=4KUo7Sb9DPAnSPGzFdzlXLpsKZ
-	RkZ3Zep0Wexy4yX3k2sv8zYGE14bWVgv0BDpKQ1IefjuymB2zN/FXcO6Xa/p7GYNEn+ZG78TD9niL
-	ppd1h7P22gKbBXGWOD6aSTGcSQ+Sn4y0oCyVyx2PWmEPR8BGBP9SOymKvOMnHAbewl9hPdePxluJb
-	2orwQ40nfBhOX0p2coO8wjc+T0B3B6R4Hj2Y/rbDXvleCbXPygtGI/kxoGF5dgapNBiy8jl0H8h11
-	3YSl0C42c5DxXEpvbMlw31knH9Hunqcj3uPwc91S8hYcjhMjdvCN7rLD+dWcNmJojxeWohXUTrTom
-	7TZ92Teg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=/ldEO+n1bBDG05t+5FSx1BqkhYCaDri73vSlnPxHKik=; b=smmj1RlrVrqJLnWTW7Ajexqy+d
+	d5XSMx11bgv6bsuTR+o+KiczuxzX8wcyK/4wq3NzN0gZTflUcV/SheDatugIxp6IJWuKfA/KFAMd0
+	R/eZv1A94GMtXr0wp/6SGR4Yn5QXAJpkMAgx55EKDaPT4AFt0n17Hyxx4qcht09ND+HFl/g6aV3Ed
+	nCwG6QNOeUA4MZYqEYcaDWj8LYqapZrMtoK4+PTwqa71JHMk6+T07lLdRIo0KjImfDtvIm1//PbTV
+	PMslq8h8+7EDZb3tRL7eJJver2TYKVm8Et12h+etAWDtqKbxGu83dgJoU8Lmft0O9uh62OrG4OWLT
+	ReauopWQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rnvwn-00000009rRa-2O0e;
-	Sat, 23 Mar 2024 07:37:45 +0000
-Received: from mail-ed1-x52f.google.com ([2a00:1450:4864:20::52f])
+	id 1ro5Qs-0000000Aqjy-2Afa;
+	Sat, 23 Mar 2024 17:45:26 +0000
+Received: from mout02.posteo.de ([185.67.36.66])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rnvwj-00000009rPi-3cuB
+	id 1ro5Qo-0000000Aqiy-1iZB
 	for linux-um@lists.infradead.org;
-	Sat, 23 Mar 2024 07:37:43 +0000
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-56bb5b9ab89so3019a12.1
-        for <linux-um@lists.infradead.org>; Sat, 23 Mar 2024 00:37:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711179456; x=1711784256; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=z/T0tVPPL0wdMN6D/c7oLD15mt8cywvGxRwXHf2V1Vo=;
-        b=rGc8D7B3X/8JplJn3zZ7lAy5wcayL5/wWTnzeVXU5VBZIGiJFlbaJ/bRcUBuSgw1Rz
-         7DnCxuGhttWw7/es09GqJs5XTq/ppf2pFaqqcH8KPtGBdhcZcEAwSKrfYhTvMsgySCtD
-         44qpit1V+TeztpEAgUJrTP9X+ODBy/fZks+sbh0VwI+q/P/tvvdYl3XzC8ptDomj+/Ni
-         c2gRHv1N9nkBACfzZ1/hmJutUQPVfqG38x4heI436hD5FX9o+apl54gLnuNp5qWLsymu
-         ApyfQGmDeAz6ljvT1lzrPDX0yrPtuhZ7+E6OsgleZ0nH3bHJ3QbcwoB29Ej9q/bC8YgT
-         htxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711179456; x=1711784256;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=z/T0tVPPL0wdMN6D/c7oLD15mt8cywvGxRwXHf2V1Vo=;
-        b=g4ceQeABeOmgoNJjS5IieKcdJdJU3vH7bli+Lirya0byvHv90jMNSScnQzV+0w4+us
-         RdokKyP+tsR8yEkwWrNM2yxt765osqQlIemmmKXqo7onqhirgj8DEFf9dNIWvQHRkHYV
-         TvN6pnfAteA7qYt+osfsWssxBUH3etUaKcmO8EhusiyBQksZBEgBjfzxk8pze+bfwZjr
-         dtceocXt5XBUb4GLZZaVGZeBTRSuD2gkUtXjg8zK348wr01u7KQvj4JugiIN74jpcrjw
-         ySZ27ez44nb0LnNKfHfuG24s+AmqHTugIT3l+EgJq6CsbHBTZPbnGrnF+OIuKYRsrcSY
-         3BEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWK0gBCeJAaHw0NbwVz6eOmIk1XIKppnEOD9AQ6NUWJRCJfQ7Bi+RStPkQxGqKakbxXBm+y4P3auo287cw4o61HYOi6XL8HCHXvuwGl
-X-Gm-Message-State: AOJu0Yz8PsoaSxtVqRjIAQfvAyFMPXSU3v35VhmxdlgC9ndDGjMye+wl
-	XKawu+jID6RSLh56C7PUiGsx/CXArYdjdPrYyflKT+wsAeODAj+xSDqIaH2pJ+4anMxy0aW8h2E
-	/7Vb0wtGM/mG3UbfazHOM1OlEkx+66hy0ufb/
-X-Google-Smtp-Source: AGHT+IHoSCOy0iQP/pMF3d7tGchN3NXJm8dNECET/DoxfxKmnGUQPfY7JLX3nKLMol3Kg4hkIRlrgYhoFRIcHE3aVjY=
-X-Received: by 2002:a05:6402:612:b0:56b:fc63:5558 with SMTP id
- n18-20020a056402061200b0056bfc635558mr8005edv.5.1711179455724; Sat, 23 Mar
- 2024 00:37:35 -0700 (PDT)
+	Sat, 23 Mar 2024 17:45:24 +0000
+Received: from submission (posteo.de [185.67.36.169]) 
+	by mout02.posteo.de (Postfix) with ESMTPS id 9948D240105
+	for <linux-um@lists.infradead.org>; Sat, 23 Mar 2024 18:45:15 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+	t=1711215915; bh=mAKeHSlYlC/WNK86vCepUm6fXPa8vRXSPBcHY+AH2vY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:
+	 Content-Transfer-Encoding:From;
+	b=H+9BUtGkmp4iY3MVqwcV17UUsFPV0Xmb/I74X3EoRIYMrFXXpPsDbICjakUOv+SFg
+	 qBT/U5qrgxYId/m5vNljIxp5gsCyYVFRBWodBRQ04o8cGQW1G5cPw5vNHpGQPlnguS
+	 FAQKBbesL6p4hkYu/hz6D38zK/O3DhyLbfenigxX1XyoSKykDlIvTht6ecK4IHgmb1
+	 I7vucXnyprPnMxkriX7Li6XVTP8BQyHRY4UDRJbg47LUAindU78S7P0+T69SpInoy6
+	 NPgEvmes5kHsCL9lQxvr7CEZutI5tIpKkmZ9L8qR3iPTMN+GLxw5w0CfQRKQATv3FP
+	 dikMPp8tcDWyA==
+Received: from customer (localhost [127.0.0.1])
+	by submission (posteo.de) with ESMTPSA id 4V266H52Wwz9rxB;
+	Sat, 23 Mar 2024 18:45:11 +0100 (CET)
+From: Yueh-Shun Li <shamrocklee@posteo.net>
+To: Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>
+Cc: Yueh-Shun Li <shamrocklee@posteo.net>,
+	linux-um@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] um: Makefile: use bash from the environment
+Date: Sat, 23 Mar 2024 17:44:25 +0000
+Message-ID: <20240323174450.18376-1-shamrocklee@posteo.net>
 MIME-Version: 1.0
-References: <20240319104857.70783-1-mic@digikod.net> <20240319104857.70783-5-mic@digikod.net>
-In-Reply-To: <20240319104857.70783-5-mic@digikod.net>
-From: David Gow <davidgow@google.com>
-Date: Sat, 23 Mar 2024 15:37:21 +0800
-Message-ID: <CABVgOSksVq5_AeObEBZFAezZpiQ41C7ZHWEtRBR_1d2UQQYXbw@mail.gmail.com>
-Subject: Re: [PATCH v3 4/7] kunit: Handle test faults
-To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc: Brendan Higgins <brendanhiggins@google.com>, Rae Moar <rmoar@google.com>, 
-	Shuah Khan <skhan@linuxfoundation.org>, Alan Maguire <alan.maguire@oracle.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	"H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>, 
-	James Morris <jamorris@linux.microsoft.com>, Kees Cook <keescook@chromium.org>, 
-	Luis Chamberlain <mcgrof@kernel.org>, 
-	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>, Marco Pagani <marpagan@redhat.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Thara Gopinath <tgopinath@microsoft.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Vitaly Kuznetsov <vkuznets@redhat.com>, Wanpeng Li <wanpengli@tencent.com>, 
-	Zahra Tarkhani <ztarkhani@microsoft.com>, kvm@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-um@lists.infradead.org, x86@kernel.org
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000a2c3a506144f0367"
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240323_003741_920351_E203A355 
-X-CRM114-Status: GOOD (  35.62  )
+X-CRM114-CacheID: sfid-20240323_104522_622740_3A6A5E3E 
+X-CRM114-Status: UNSURE (   9.29  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,248 +73,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
---000000000000a2c3a506144f0367
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Set Makefile SHELL to bash instead of /bin/bash for better portability.
 
-On Tue, 19 Mar 2024 at 18:49, Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> wr=
-ote:
->
-> Previously, when a kernel test thread crashed (e.g. NULL pointer
-> dereference, general protection fault), the KUnit test hanged for 30
-> seconds and exited with a timeout error.
->
-> Fix this issue by waiting on task_struct->vfork_done instead of the
-> custom kunit_try_catch.try_completion, and track the execution state by
-> initially setting try_result with -EINTR and only setting it to 0 if
-> the test passed.
->
-> Fix kunit_generic_run_threadfn_adapter() signature by returning 0
-> instead of calling kthread_complete_and_exit().  Because thread's exit
-> code is never checked, always set it to 0 to make it clear.
->
-> Fix the -EINTR error message, which couldn't be reached until now.
->
-> This is tested with a following patch.
->
-> Cc: Brendan Higgins <brendanhiggins@google.com>
-> Cc: Shuah Khan <skhan@linuxfoundation.org>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Reviewed-by: David Gow <davidgow@google.com>
-> Tested-by: Rae Moar <rmoar@google.com>
-> Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-> Link: https://lore.kernel.org/r/20240319104857.70783-5-mic@digikod.net
-> ---
->
-> Changes since v2:
-> * s/-EFAULT/-EINTR/ in commit message as spotted by Rae.
-> * Add a comment explaining vfork_done as suggested by David.
-> * Add David's Reviewed-by.
-> * Add Rae's Tested-by.
->
-> Changes since v1:
-> * Add Kees's Reviewed-by.
-> ---
->  include/kunit/try-catch.h |  3 ---
->  lib/kunit/try-catch.c     | 19 ++++++++++++-------
->  2 files changed, 12 insertions(+), 10 deletions(-)
->
-> diff --git a/include/kunit/try-catch.h b/include/kunit/try-catch.h
-> index c507dd43119d..7c966a1adbd3 100644
-> --- a/include/kunit/try-catch.h
-> +++ b/include/kunit/try-catch.h
-> @@ -14,13 +14,11 @@
->
->  typedef void (*kunit_try_catch_func_t)(void *);
->
-> -struct completion;
->  struct kunit;
->
->  /**
->   * struct kunit_try_catch - provides a generic way to run code which mig=
-ht fail.
->   * @test: The test case that is currently being executed.
-> - * @try_completion: Completion that the control thread waits on while te=
-st runs.
->   * @try_result: Contains any errno obtained while running test case.
->   * @try: The function, the test case, to attempt to run.
->   * @catch: The function called if @try bails out.
-> @@ -46,7 +44,6 @@ struct kunit;
->  struct kunit_try_catch {
->         /* private: internal use only. */
->         struct kunit *test;
-> -       struct completion *try_completion;
->         int try_result;
->         kunit_try_catch_func_t try;
->         kunit_try_catch_func_t catch;
-> diff --git a/lib/kunit/try-catch.c b/lib/kunit/try-catch.c
-> index cab8b24b5d5a..7a3910dd78a6 100644
-> --- a/lib/kunit/try-catch.c
-> +++ b/lib/kunit/try-catch.c
-> @@ -18,7 +18,7 @@
->  void __noreturn kunit_try_catch_throw(struct kunit_try_catch *try_catch)
->  {
->         try_catch->try_result =3D -EFAULT;
-> -       kthread_complete_and_exit(try_catch->try_completion, -EFAULT);
-> +       kthread_exit(0);
+Some systems do not install binaries to /bin, and therefore do not
+provide /bin/bash. This includes Linux distros which intentionally avoid
+implementing the Filesystem Hierarchy Standard (FHS), such as NixOS and
+Guix System.
 
-It turns out kthread_exit() is not exported, so this doesn't work if
-KUnit is built as a module.
+The recipies inside arch/um/Makefile don't require top-level Bash to
+build, and setting "SHELL" to "bash" makes Make pick the Bash executable
+from the environment, hence this patch.
 
-I think the options we have are:
-- Add EXPORT_SYMBOL(kthread_exit).
-- Keep using out own completion, and kthread_complete_and_exit()
-- try_get_module() before spawning the thread, and use
-module_put_and_kthread_exit().
+Changes since last roll:
+- Rebase onto a more recent commit on the master branch.
+- Remove a dangling in-text citation from the change log.
+- Reword the change log.
 
-I think all of these would be okay, but I could've missed something.
+Signed-off-by: Yueh-Shun Li <shamrocklee@posteo.net>
+---
+ arch/um/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
--- David
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index 34957dcb88b9..00b63bac5eff 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -20,7 +20,7 @@ endif
+ ARCH_DIR := arch/um
+ # We require bash because the vmlinux link and loader script cpp use bash
+ # features.
+-SHELL := /bin/bash
++SHELL := bash
+ 
+ MODE_INCLUDE	+= -I$(srctree)/$(ARCH_DIR)/include/shared/skas
+ 
+-- 
+2.42.0
 
->  }
->  EXPORT_SYMBOL_GPL(kunit_try_catch_throw);
->
-> @@ -26,9 +26,12 @@ static int kunit_generic_run_threadfn_adapter(void *da=
-ta)
->  {
->         struct kunit_try_catch *try_catch =3D data;
->
-> +       try_catch->try_result =3D -EINTR;
->         try_catch->try(try_catch->context);
-> +       if (try_catch->try_result =3D=3D -EINTR)
-> +               try_catch->try_result =3D 0;
->
-> -       kthread_complete_and_exit(try_catch->try_completion, 0);
-> +       return 0;
->  }
->
->  static unsigned long kunit_test_timeout(void)
-> @@ -58,13 +61,11 @@ static unsigned long kunit_test_timeout(void)
->
->  void kunit_try_catch_run(struct kunit_try_catch *try_catch, void *contex=
-t)
->  {
-> -       DECLARE_COMPLETION_ONSTACK(try_completion);
->         struct kunit *test =3D try_catch->test;
->         struct task_struct *task_struct;
->         int exit_code, time_remaining;
->
->         try_catch->context =3D context;
-> -       try_catch->try_completion =3D &try_completion;
->         try_catch->try_result =3D 0;
->         task_struct =3D kthread_create(kunit_generic_run_threadfn_adapter=
-,
->                                      try_catch, "kunit_try_catch_thread")=
-;
-> @@ -75,8 +76,12 @@ void kunit_try_catch_run(struct kunit_try_catch *try_c=
-atch, void *context)
->         }
->         get_task_struct(task_struct);
->         wake_up_process(task_struct);
-> -
-> -       time_remaining =3D wait_for_completion_timeout(&try_completion,
-> +       /*
-> +        * As for a vfork(2), task_struct->vfork_done (pointing to the
-> +        * underlying kthread->exited) can be used to wait for the end of=
- a
-> +        * kernel thread.
-> +        */
-> +       time_remaining =3D wait_for_completion_timeout(task_struct->vfork=
-_done,
->                                                      kunit_test_timeout()=
-);
->         if (time_remaining =3D=3D 0) {
->                 try_catch->try_result =3D -ETIMEDOUT;
-> @@ -92,7 +97,7 @@ void kunit_try_catch_run(struct kunit_try_catch *try_ca=
-tch, void *context)
->         if (exit_code =3D=3D -EFAULT)
->                 try_catch->try_result =3D 0;
->         else if (exit_code =3D=3D -EINTR)
-> -               kunit_err(test, "wake_up_process() was never called\n");
-> +               kunit_err(test, "try faulted\n");
->         else if (exit_code =3D=3D -ETIMEDOUT)
->                 kunit_err(test, "try timed out\n");
->         else if (exit_code)
-> --
-> 2.44.0
->
-
---000000000000a2c3a506144f0367
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIPqgYJKoZIhvcNAQcCoIIPmzCCD5cCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-gg0EMIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-7xDrOPfX3COqq162RFg/MFcGA1UdIARQME4wCQYHZ4EMAQUBATBBBgkrBgEEAaAyASgwNDAyBggr
-BgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wDAYDVR0TAQH/
-BAIwADCBmgYIKwYBBQUHAQEEgY0wgYowPgYIKwYBBQUHMAGGMmh0dHA6Ly9vY3NwLmdsb2JhbHNp
-Z24uY29tL2NhL2dzYXRsYXNyM3NtaW1lY2EyMDIwMEgGCCsGAQUFBzAChjxodHRwOi8vc2VjdXJl
-Lmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcnQwHwYDVR0jBBgw
-FoAUfMwKaNei6x4schvRzV2Vb4378mMwRgYDVR0fBD8wPTA7oDmgN4Y1aHR0cDovL2NybC5nbG9i
-YWxzaWduLmNvbS9jYS9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcmwwDQYJKoZIhvcNAQELBQADggEB
-AK0lDd6/eSh3qHmXaw1YUfIFy07B25BEcTvWgOdla99gF1O7sOsdYaTz/DFkZI5ghjgaPJCovgla
-mRMfNcxZCfoBtsB7mAS6iOYjuwFOZxi9cv6jhfiON6b89QWdMaPeDddg/F2Q0bxZ9Z2ZEBxyT34G
-wlDp+1p6RAqlDpHifQJW16h5jWIIwYisvm5QyfxQEVc+XH1lt+taSzCfiBT0ZLgjB9Sg+zAo8ys6
-5PHxFaT2a5Td/fj5yJ5hRSrqy/nj/hjT14w3/ZdX5uWg+cus6VjiiR/5qGSZRjHt8JoApD6t6/tg
-ITv8ZEy6ByumbU23nkHTMOzzQSxczHkT+0q10/MxggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJF
-MRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIz
-IFNNSU1FIENBIDIwMjACEAHS+TgZvH/tCq5FcDC0n9IwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZI
-hvcNAQkEMSIEIJvt7h5o12z8IiD0t5jRS/DC8KtWReNf4h1gSZ0qRHv7MBgGCSqGSIb3DQEJAzEL
-BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDMyMzA3MzczNlowaQYJKoZIhvcNAQkPMVww
-WjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkq
-hkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBMTp5b
-Td1xJx+p44tCgJ0yL8S6nZE2lo5pXW1B1GdQtEXo9I2vKE9YysMJlUqVOOvMUtDJp2Kx5yZTqHPM
-GGkVnOZs8j7XrB9/G4FjLNsu/729mAgQe+7+1xYQGSzHuPEfXXj2Yh6DNVg7Vzp3Fnw7WgmNtL2Z
-XnCn0ezoSBk+76eTUX4Sox2U/QsZxeGT2tZNt370NDICs+QqCJMADye7y4balXahUPfOcsCjvV/S
-b5Ok+sXchNr05gJlfldWTsgAgl8IcCsL1duBN/2bU/sU2xR35XZyXQtH/lKVtxLh1fVCg4ne/MaU
-Q7KiSn5c0eY1Q/T3GmPMFYChhCiWnJ2Y
---000000000000a2c3a506144f0367--
 
