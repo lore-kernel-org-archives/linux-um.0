@@ -4,80 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 79887C54E64
-	for <linux-um@archiver.kernel.org>; Mon, 25 Mar 2024 09:11:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1EE9FC54E58
+	for <linux-um@archiver.kernel.org>; Mon, 25 Mar 2024 09:13:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=eodL44A0zmP+nkw2anBS4wOysdDIJWPYzeL/IC8ftqI=; b=ijJjhFVFkrjWHsaqV6feisxSj7
-	STOMtGYSaV+e3f9AH/xjqgK+ysaVhU6R+vlJkBdF7njazscUproqO+BfxpVk55ziluj4BE7xCXx8f
-	Aj+4SG2nhtdmmGFCtOkzpfMUw4juOKVEKhFWSUVcSdNlHotvVNVcbcBcuGUyest1Q29DX3cOOMkTt
-	P9ArVxcVQIsVqKcEFasgPK/6C3+V4ufb/yLYb5gClYkVUt+4ObeIu1tVBIfMPXgS0pA6UfPz8MVi2
-	n/XcO6h0L4S+E19Ck7gE1sZAW+9MS78bRlC0VtqMK7K1cc/JeNn9/Dk2Nf38gN36ZEdMh7f4ltHtt
-	bhLkSdwg==;
+	bh=1sxJG9Rd8JSB6G8M3v8VO1p5IgxWq/SJrawonCcKSfU=; b=J4vwRzsy2vZ8qn2i6YG3fXq4Vm
+	Ol+pQG8HnTTDDT4LIubddriUBe5xnb6qOw72jB5bnfsQoUaGJwWrwvEC1oMx6/Of39EpWed3cC5X/
+	AmS+vku1fr8trVf8eiUTuLbPj5Kgc9hWi3GsuOey/E85Fm9ZYFuBtB4XNS+jVgEwTZeESlPkNpi4a
+	87wOzYdpvpm9YBDXv98tqtUIkd0dqW3nhPNRJszWPKtTmgQFNJFoVGk5UlbYr96xnZUhWz/5rLjGK
+	Lqb3A0/yUlmEKbZHNz/s9sH9Sp3v+4LgPhEX+tx7nIqrXhvakohm/PNrKM8Q/iw3TAR2LV4pu0SMe
+	60rJQA4A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rogMR-0000000GMbR-04pQ;
-	Mon, 25 Mar 2024 09:11:19 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
+	id 1rogOB-0000000GNBZ-1Kbk;
+	Mon, 25 Mar 2024 09:13:07 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rogML-0000000GMXc-4AO6
+	id 1rogO5-0000000GN7z-21ca
 	for linux-um@lists.infradead.org;
-	Mon, 25 Mar 2024 09:11:16 +0000
+	Mon, 25 Mar 2024 09:13:05 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711357869;
+	s=mimecast20190719; t=1711357976;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=eodL44A0zmP+nkw2anBS4wOysdDIJWPYzeL/IC8ftqI=;
-	b=d94IAmgPehhHSjyN+E9tAV1AgzIhH11yJGNzH/EvqN8+N2c5CYIlrzzoNQim1nIik/HDbo
-	M/KLWBZB20ViVUaG+I18NogjwTpn1PwZui3T+xxSou/yOM5bOvt8km+s0Ep2/ReMyA84Yn
-	eTyxcpBh9jlzgRu4Z3b78V73nZ8hQJU=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=1sxJG9Rd8JSB6G8M3v8VO1p5IgxWq/SJrawonCcKSfU=;
+	b=JlzDEhpBBq5SVSm4XaOZSi7NcxTJbd8rE8WrSXyUT4mqEvN3JThOpEGmf+Vlk6LeL60XZ7
+	Iosks3Su6JCPXZrzJrmycBYL9iFustYaBkTtYOPPfnYfEMDeHVvZAvB4HKRt/UuwGT5VCO
+	XeVsO9FFHoe+P6p/ADBKKFBC2XzsZD4=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-237-SPtEeEfdOeSLGKvI8O8-zQ-1; Mon, 25 Mar 2024 05:11:07 -0400
-X-MC-Unique: SPtEeEfdOeSLGKvI8O8-zQ-1
-Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2d486c08c6eso40093501fa.0
-        for <linux-um@lists.infradead.org>; Mon, 25 Mar 2024 02:11:06 -0700 (PDT)
+ us-mta-434-Wg44ZdCjPUKRRt4bN6qSRg-1; Mon, 25 Mar 2024 05:12:55 -0400
+X-MC-Unique: Wg44ZdCjPUKRRt4bN6qSRg-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4147ddecd52so11733265e9.0
+        for <linux-um@lists.infradead.org>; Mon, 25 Mar 2024 02:12:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711357866; x=1711962666;
+        d=1e100.net; s=20230601; t=1711357974; x=1711962774;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
          :references:cc:to:content-language:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=eodL44A0zmP+nkw2anBS4wOysdDIJWPYzeL/IC8ftqI=;
-        b=nvAM9xgCdXAkW4GhPRzeO+ucFnjCLGuxFUJtBBGgDhfHIbuOgNaaDOx9CY7k6MbRGy
-         tUsxTNKTZ1KF7k/ocH9VxkXUENsL/g8SUkbHsWHsmlCvKUSnH6EDVkq5JvkaYSipys0p
-         2+kDxvl7bUSKoSrR6BsepA+/IARQJiVb0MYFUjt9SaNow2CctsZupp1PQPwr21xxfLdU
-         eHF89NENrp8gEB0lm406Cg8ThnqOyJpwRW66ON6uuVdqEAydMIoZtBwIkt4LUFgCTpaO
-         Guej2A6weU7TX5hr66WFbWy8xUaPojSGrgFDrqC4/uN1jczzHS8AXiBfJsdbWWwTI6gZ
-         MAmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVeFTkAR9q6bqUBw/7TRs1ECRcdevp2Frk8HimffPLr6sSs/Td3UKoOYA0YEzuCt63BqtHaoDZT1rRWq3mQ26xuB5/E9dXT34tck3DG
-X-Gm-Message-State: AOJu0YyVO1shnhmdDrWr4XsWRNzQPdcZtSaCyCBaQNOd/rzxtTcjHN+P
-	LcmT16Wf/GHmdk01J/SyK7IsgFaChrEGjHYT+za0S65TvwAyWGUyrQXfLnDhg2Fe/sfumUkVJnC
-	Tx0s58o4iAd+ijDgiQZ67jyNFgynXAvRKgWuORNNu/1xkRG7vOeQp2GY/LzVnvg==
-X-Received: by 2002:a2e:8947:0:b0:2d4:7777:b7fb with SMTP id b7-20020a2e8947000000b002d47777b7fbmr4359251ljk.17.1711357865745;
-        Mon, 25 Mar 2024 02:11:05 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE7PlfCmimUoKtTJDbsbLoVaILrVOW6htqejyhlsq8LubUc6twBMEH8AEMoGLTKITdy3ouCHg==
-X-Received: by 2002:a2e:8947:0:b0:2d4:7777:b7fb with SMTP id b7-20020a2e8947000000b002d47777b7fbmr4359222ljk.17.1711357865235;
-        Mon, 25 Mar 2024 02:11:05 -0700 (PDT)
+        bh=1sxJG9Rd8JSB6G8M3v8VO1p5IgxWq/SJrawonCcKSfU=;
+        b=rwx4JqTRqmVK4iA3iO07Q3oDzF+KIjnYA6HHd5WdnfBTjBNWKSV6ZW7lrTIfFvcOUX
+         UTbiFY3G/482nvkRQVQtqgeCtECgCJa62+RKuWfx2I9s0Aa0WnQA0luuLEofo4/dtx+z
+         qtSgqtrO1H9ORuUVWi3cRIB4zl2vkSUlRcMM3KSTBhwkr5XuZXjIjeAK2t7A8Z69WyNn
+         d2avLHA0n+0ijmAd/Z3QRVloZXery7JxSVpDbPN0HHdFlWGF8h+yLVjrkiCYRXFduIfQ
+         vwxdZsaVHxaV5Wk6It79CXxXgmkdDqkCihompVwLU9VrAt+sHw5CTb5IyCKz9BeA9cbN
+         IcHA==
+X-Forwarded-Encrypted: i=1; AJvYcCU67x+L4WdGkFLej992UDV5Z4BDIObXcdnX10oVwazOvpld6a4iqiijhz5UNFBMKsbnv0s+I5wxNpwXaH5zVPX51ATbvDRFlhAvQm0X
+X-Gm-Message-State: AOJu0YzGiShdlrj0oGrFcNmYMkGOdoCw1rTlqU6TRO7HtvuJw3YHkD1c
+	4ffNsuoKA4g5NUif6W475KfArXpBI56aR2H3tILAwvLIPLWsXakbpjJ2I4GpPKHX/fOBjC5H/Lk
+	dwPqWZ8/OSul7h3ZZ9t61uZ5kOH0SbhpTKRd5YwOWCeUk//JyIHMy74hAE4s1sg==
+X-Received: by 2002:a05:600c:1c13:b0:414:37f:18dc with SMTP id j19-20020a05600c1c1300b00414037f18dcmr4633345wms.1.1711357973787;
+        Mon, 25 Mar 2024 02:12:53 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEGbDxVphxm4LD39Nm0ODG91JF+LM1ahBlILvI0fg8O9MuHA0Av59aSpiVzAeU8+H/e1DLG/A==
+X-Received: by 2002:a05:600c:1c13:b0:414:37f:18dc with SMTP id j19-20020a05600c1c1300b00414037f18dcmr4633326wms.1.1711357973418;
+        Mon, 25 Mar 2024 02:12:53 -0700 (PDT)
 Received: from ?IPV6:2003:cb:c738:b400:6a82:1eac:2b5:8fca? (p200300cbc738b4006a821eac02b58fca.dip0.t-ipconnect.de. [2003:cb:c738:b400:6a82:1eac:2b5:8fca])
-        by smtp.gmail.com with ESMTPSA id h20-20020a05600c351400b0041477f95cf6sm7785217wmq.13.2024.03.25.02.11.03
+        by smtp.gmail.com with ESMTPSA id gw8-20020a05600c850800b004146dd6bfe2sm7745532wmb.47.2024.03.25.02.12.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Mar 2024 02:11:04 -0700 (PDT)
-Message-ID: <041867ab-6cff-4bd1-9a44-2ca847c1ad63@redhat.com>
-Date: Mon, 25 Mar 2024 10:11:03 +0100
+        Mon, 25 Mar 2024 02:12:53 -0700 (PDT)
+Message-ID: <1b5123f9-6fd8-4783-aec7-5cc5507ee3b4@redhat.com>
+Date: Mon, 25 Mar 2024 10:12:51 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH vhost v4 1/6] virtio_balloon: remove the dependence where
+Subject: Re: [PATCH vhost v5 1/6] virtio_balloon: remove the dependence where
  names[] is null
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: virtualization@lists.linux.dev, Richard Weinberger <richard@nod.at>,
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, virtualization@lists.linux.dev
+Cc: Richard Weinberger <richard@nod.at>,
  Anton Ivanov <anton.ivanov@cambridgegreys.com>,
  Johannes Berg <johannes@sipsolutions.net>,
  Hans de Goede <hdegoede@redhat.com>,
@@ -91,13 +91,9 @@ Cc: virtualization@lists.linux.dev, Richard Weinberger <richard@nod.at>,
  Sven Schnelle <svens@linux.ibm.com>, "Michael S. Tsirkin" <mst@redhat.com>,
  Jason Wang <jasowang@redhat.com>, linux-um@lists.infradead.org,
  platform-driver-x86@vger.kernel.org, linux-remoteproc@vger.kernel.org,
- linux-s390@vger.kernel.org, kvm@vger.kernel.org,
- Daniel Verkamp <dverkamp@chromium.org>
-References: <20240321101532.59272-1-xuanzhuo@linux.alibaba.com>
- <20240321101532.59272-2-xuanzhuo@linux.alibaba.com>
- <CABVzXAkwcKMb7pC21aUDLEM=RoyOtGA2Vim+LF0oWQ7mjUx68g@mail.gmail.com>
- <b420a545-0a7a-431c-aa48-c5db3d221420@redhat.com>
- <1711346901.0977402-2-xuanzhuo@linux.alibaba.com>
+ linux-s390@vger.kernel.org, kvm@vger.kernel.org
+References: <20240325090419.33677-1-xuanzhuo@linux.alibaba.com>
+ <20240325090419.33677-2-xuanzhuo@linux.alibaba.com>
 From: David Hildenbrand <david@redhat.com>
 Autocrypt: addr=david@redhat.com; keydata=
  xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
@@ -144,15 +140,15 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <1711346901.0977402-2-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20240325090419.33677-2-xuanzhuo@linux.alibaba.com>
 X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: redhat.com
 Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240325_021114_222965_4CE7A455 
-X-CRM114-Status: GOOD (  26.51  )
+X-CRM114-CacheID: sfid-20240325_021303_726372_63E853DC 
+X-CRM114-Status: GOOD (  14.65  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -167,85 +163,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 25.03.24 07:08, Xuan Zhuo wrote:
-> On Fri, 22 Mar 2024 22:02:27 +0100, David Hildenbrand <david@redhat.com> wrote:
->> On 22.03.24 20:16, Daniel Verkamp wrote:
->>> On Thu, Mar 21, 2024 at 3:16 AM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
->>>>
->>>> Currently, the init_vqs function within the virtio_balloon driver relies
->>>> on the condition that certain names array entries are null in order to
->>>> skip the initialization of some virtual queues (vqs). This behavior is
->>>> unique to this part of the codebase. In an upcoming commit, we plan to
->>>> eliminate this dependency by removing the function entirely. Therefore,
->>>> with this change, we are ensuring that the virtio_balloon no longer
->>>> depends on the aforementioned function.
->>>
->>> This is a behavior change, and I believe means that the driver no
->>> longer follows the spec [1].
->>>
->>> For example, the spec says that virtqueue 4 is reporting_vq, and
->>> reporting_vq only exists if VIRTIO_BALLOON_F_PAGE_REPORTING is set,
->>> but there is no mention of its virtqueue number changing if other
->>> features are not set. If a device/driver combination negotiates
->>> VIRTIO_BALLOON_F_PAGE_REPORTING but not VIRTIO_BALLOON_F_STATS_VQ or
->>> VIRTIO_BALLOON_F_FREE_PAGE_HINT, my reading of the specification is
->>> that reporting_vq should still be vq number 4, and vq 2 and 3 should
->>> be unused. This patch would make the reporting_vq use vq 2 instead in
->>> this case.
->>>
->>> If the new behavior is truly intended, then the spec does not match
->>> reality, and it would need to be changed first (IMO); however,
->>> changing the spec would mean that any devices implemented correctly
->>> per the previous spec would now be wrong, so some kind of mechanism
->>> for detecting the new behavior would be warranted, e.g. a new
->>> non-device-specific virtio feature flag.
->>>
->>> I have brought this up previously on the virtio-comment list [2], but
->>> it did not receive any satisfying answers at that time.
->>
->> Rings a bell, but staring at this patch, I thought that there would be
->> no behavioral change. Maybe I missed it :/
->>
->> I stared at virtio_ccw_find_vqs(), and it contains:
->>
->> 	for (i = 0; i < nvqs; ++i) {
->> 		if (!names[i]) {
->> 			vqs[i] = NULL;
->> 			continue;
->> 		}
->>
->> 		vqs[i] = virtio_ccw_setup_vq(vdev, queue_idx++, callbacks[i],
->> 					     names[i], ctx ? ctx[i] : false,
->> 					     ccw);
->> 		if (IS_ERR(vqs[i])) {
->> 			ret = PTR_ERR(vqs[i]);
->> 			vqs[i] = NULL;
->> 			goto out;
->> 		}
->> 	}
->>
->> We increment queue_idx only if an entry was not NULL. SO I thought no
->> behavioral change? (at least on s390x :) )
->>
->> It's late here in Germany, so maybe I'm missing something.
+On 25.03.24 10:04, Xuan Zhuo wrote:
+> Currently, the init_vqs function within the virtio_balloon driver relies
+> on the condition that certain names array entries are null in order to
+> skip the initialization of some virtual queues (vqs). This behavior is
+> unique to this part of the codebase. In an upcoming commit, we plan to
+> eliminate this dependency by removing the function entirely. Therefore,
+> with this change, we are ensuring that the virtio_balloon no longer
+> depends on the aforementioned function.
 > 
-> I think we've encountered a tricky issue. Currently, all transports handle queue
-> id by incrementing them in order, without skipping any queue id. So, I'm quite
-> surprised that my changes would affect the spec. The fact that the
-> 'names' value is null is just a small trick in the Linux kernel implementation
-> and should not have an impact on the queue id.
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> ---
+>   drivers/virtio/virtio_balloon.c | 46 +++++++++++++--------------------
+>   1 file changed, 18 insertions(+), 28 deletions(-)
 > 
-> I believe that my recent modification will not affect the spec. So, let's
-> consider the issues with this patch set separately for now. Regarding the Memory
-> Balloon Device, it has been operational for many years, and perhaps we should
-> add to the spec that if a certain vq does not exist, then subsequent vqs will
-> take over its id.
+> diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
+> index 1f5b3dd31fcf..8409642e54d7 100644
+> --- a/drivers/virtio/virtio_balloon.c
+> +++ b/drivers/virtio/virtio_balloon.c
+> @@ -531,49 +531,39 @@ static int init_vqs(struct virtio_balloon *vb)
+>   	struct virtqueue *vqs[VIRTIO_BALLOON_VQ_MAX];
+>   	vq_callback_t *callbacks[VIRTIO_BALLOON_VQ_MAX];
+>   	const char *names[VIRTIO_BALLOON_VQ_MAX];
+> -	int err;
+> +	int err, nvqs = 0, idx = 0;
 
-Right, if I am not missing something your patch should have no 
-functional change in that regard (that the current 
-behavior/implementation might not match the spec is a different discussion).
+Re-reading, you could just use a single variable for both purposes.
 
-@Daniel, if I'm missing something, please shout.
+Assuming I didn't miss a functional change
+
+Acked-by: David Hildenbrand <david@redhat.com>
 
 -- 
 Cheers,
