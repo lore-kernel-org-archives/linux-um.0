@@ -4,41 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7A10CD11DF
-	for <linux-um@archiver.kernel.org>; Tue, 26 Mar 2024 09:51:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8526C6FD1F
+	for <linux-um@archiver.kernel.org>; Tue, 26 Mar 2024 09:51:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
 	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=il8rn8osJnLqQl2Euq+N5nsDjwO7o1nmnOpjt3aGDwY=; b=SFVAyeeo3FKC7JmK2yKlRfeAfa
-	90YakktLHAq5ctPqh6Ec/VnlApUPsWxUwf8+doxL4dnFXWM5PrNDlyF7zA/UUhg9CnVk4Qr1xHOId
-	UDp5FPiOihlgaRQnWh4DZAJ1GnXhxuUsrj9mQeNKAv2Nh8d41RKePRxM6QSmcMEcPefFmBrkdSiqZ
-	ldv8Onp9h+6GTmMXD88ZbYOCYE1vRkKr6hp6DVwppMfNZQ37RJfEvzTqoJGpmtjkFmM/h1QQu5cu6
-	mhjt5ELTg+derHF+QbxbakyuBlyBYmJrpjtNnbQS6+R1UwhThq1ishEcxKFfq0mBwnQq7vU9ioqru
-	Yc2g3Btg==;
+	bh=g1uOF8lG0cEpWZafj+AZGrLxcwyZ+ioKnYwyjTpRY/I=; b=teAXHwbUfjXe2mShJX38cJ4TW7
+	d2r/BkLvYnmaF4dIM54UXaBh4OumcsU7ZAugONALrzcsIKsc2efr7UiXVsCCsPXu3KtPfWcOMPHCt
+	4qvV/uOZR+ewWjoH8qyZlbbuaXSEAQJZ1rxeGJdNHniKRaV80kTXncW6xng34Mgn73YDb2oNP/jCa
+	Ce5q+JDxvfcBfFtA6/c4vFWuTLi7yEe6cah8ScR5HKPeKLovkUYDWQBWBwzeiIq/O8LSUtjgGdOXR
+	B5IO4MVEbMkxBVZNzX2D8TM5X/HVTOaOQtHLtj/5mVM0WDs58EVDoatWclJbjR6XKmtnYgJdNEbj0
+	2KBmQZNw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rp3TF-00000003uBU-48um;
-	Tue, 26 Mar 2024 09:51:54 +0000
-Received: from smtp-190b.mail.infomaniak.ch ([185.125.25.11])
+	id 1rp3TI-00000003uEb-1MR4;
+	Tue, 26 Mar 2024 09:51:56 +0000
+Received: from smtp-8fab.mail.infomaniak.ch ([83.166.143.171])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rp3T6-00000003u1J-1xmU
+	id 1rp3T7-00000003u1t-306V
 	for linux-um@lists.infradead.org;
-	Tue, 26 Mar 2024 09:51:46 +0000
-Received: from smtp-3-0000.mail.infomaniak.ch (smtp-3-0000.mail.infomaniak.ch [10.4.36.107])
-	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4V3lSY6gXQzcRv;
-	Tue, 26 Mar 2024 10:51:41 +0100 (CET)
-Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4V3lSY1h5Dzr0;
-	Tue, 26 Mar 2024 10:51:41 +0100 (CET)
+	Tue, 26 Mar 2024 09:51:50 +0000
+Received: from smtp-4-0001.mail.infomaniak.ch (smtp-4-0001.mail.infomaniak.ch [10.7.10.108])
+	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4V3lSZ71BPzbYZ;
+	Tue, 26 Mar 2024 10:51:42 +0100 (CET)
+Received: from unknown by smtp-4-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4V3lSZ2K2bzKQ0;
+	Tue, 26 Mar 2024 10:51:42 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-	s=20191114; t=1711446701;
-	bh=Sr1caux620dLkN80hIUUGInJ9ZYXWuNl1zRVFNFI4jc=;
+	s=20191114; t=1711446702;
+	bh=VwZxvUQPVph+NebLcCZQeB0+ANm/1LnxkgU/PHwfhyE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SFJMlria6c6WWYrRJJ0FcNpGUywmgumDPj0DYWlW0LkJgDrxSzp0uSpDiR/yjQ2o7
-	 sOTXjL5Us8QjQmNodvT5I2Ma+fgEhmzZzlYwfHuF3kM9G4vt6ybt/BSnKmwIW9WkdK
-	 P7ut+4oKbJdS2QjIvjv/I/42MgDj7m/3PKG1nY90=
+	b=WMzokmcsGZ79WBn7AEb+orlII6XtoyVNZGG1dsY3l5PPHCyfs7cglkNI3nQ7/gLOi
+	 I4O5Qyp03FyEMp62eEFw3qMfkIxK6zH0ddlgJdYIB+0XY3mdrqhPAETKBNRtNgHcVx
+	 MDVtIaxPUX0WwGBf/Gd4HHn/ioXPHROZVrIlpJmw=
 From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
 To: Brendan Higgins <brendanhiggins@google.com>,
 	David Gow <davidgow@google.com>,
@@ -70,9 +70,9 @@ Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
 	linux-security-module@vger.kernel.org,
 	linux-um@lists.infradead.org,
 	x86@kernel.org
-Subject: [PATCH v4 6/7] kunit: Print last test location on fault
-Date: Tue, 26 Mar 2024 10:51:17 +0100
-Message-ID: <20240326095118.126696-7-mic@digikod.net>
+Subject: [PATCH v4 7/7] kunit: Add tests for fault
+Date: Tue, 26 Mar 2024 10:51:18 +0100
+Message-ID: <20240326095118.126696-8-mic@digikod.net>
 In-Reply-To: <20240326095118.126696-1-mic@digikod.net>
 References: <20240326095118.126696-1-mic@digikod.net>
 MIME-Version: 1.0
@@ -80,8 +80,8 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Infomaniak-Routing: alpha
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240326_025144_885884_08FEAFEB 
-X-CRM114-Status: GOOD (  17.75  )
+X-CRM114-CacheID: sfid-20240326_025146_010960_BE4B47B0 
+X-CRM114-Status: GOOD (  14.28  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,151 +96,98 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-This helps identify the location of test faults with opportunistic calls
-to _KUNIT_SAVE_LOC().  This can be useful while writing tests or
-debugging them.  It is possible to call KUNIT_SUCCESS() to explicit save
-last location.
+Add a test case to check NULL pointer dereference and make sure it would
+result as a failed test.
+
+The full kunit_fault test suite is marked as skipped when run on UML
+because it would result to a kernel panic.
+
+Tested with:
+./tools/testing/kunit/kunit.py run --arch x86_64 kunit_fault
+./tools/testing/kunit/kunit.py run --arch arm64 \
+  --cross_compile=aarch64-linux-gnu- kunit_fault
 
 Cc: Brendan Higgins <brendanhiggins@google.com>
-Cc: David Gow <davidgow@google.com>
 Cc: Rae Moar <rmoar@google.com>
 Cc: Shuah Khan <skhan@linuxfoundation.org>
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: David Gow <davidgow@google.com>
 Signed-off-by: Mickaël Salaün <mic@digikod.net>
-Link: https://lore.kernel.org/r/20240326095118.126696-7-mic@digikod.net
+Link: https://lore.kernel.org/r/20240326095118.126696-8-mic@digikod.net
 ---
-
-Changes since v3:
-* Improve the try-fault error message as suggested by David.
 
 Changes since v2:
-* Extend the commit message according to discussion with David.
+* Add David's Reviewed-by.
 
 Changes since v1:
-* Add Kees's Reviewed-by.
+* Remove the rodata and const test cases for now.
+* Replace CONFIG_X86 check with !CONFIG_UML, and remove the "_x86"
+  references.
 ---
- include/kunit/test.h  | 24 +++++++++++++++++++++---
- lib/kunit/try-catch.c | 10 +++++++---
- 2 files changed, 28 insertions(+), 6 deletions(-)
+ lib/kunit/kunit-test.c | 45 +++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 44 insertions(+), 1 deletion(-)
 
-diff --git a/include/kunit/test.h b/include/kunit/test.h
-index fcb4a4940ace..f3aa66eb0087 100644
---- a/include/kunit/test.h
-+++ b/include/kunit/test.h
-@@ -301,6 +301,8 @@ struct kunit {
- 	struct list_head resources; /* Protected by lock. */
- 
- 	char status_comment[KUNIT_STATUS_COMMENT_SIZE];
-+	/* Saves the last seen test. Useful to help with faults. */
-+	struct kunit_loc last_seen;
+diff --git a/lib/kunit/kunit-test.c b/lib/kunit/kunit-test.c
+index f7980ef236a3..0fdca5fffaec 100644
+--- a/lib/kunit/kunit-test.c
++++ b/lib/kunit/kunit-test.c
+@@ -109,6 +109,48 @@ static struct kunit_suite kunit_try_catch_test_suite = {
+ 	.test_cases = kunit_try_catch_test_cases,
  };
  
- static inline void kunit_set_failure(struct kunit *test)
-@@ -567,6 +569,15 @@ void __printf(2, 3) kunit_log_append(struct string_stream *log, const char *fmt,
- #define kunit_err(test, fmt, ...) \
- 	kunit_printk(KERN_ERR, test, fmt, ##__VA_ARGS__)
- 
-+/*
-+ * Must be called at the beginning of each KUNIT_*_ASSERTION().
-+ * Cf. KUNIT_CURRENT_LOC.
-+ */
-+#define _KUNIT_SAVE_LOC(test) do {					       \
-+	WRITE_ONCE(test->last_seen.file, __FILE__);			       \
-+	WRITE_ONCE(test->last_seen.line, __LINE__);			       \
-+} while (0)
++#ifndef CONFIG_UML
 +
- /**
-  * KUNIT_SUCCEED() - A no-op expectation. Only exists for code clarity.
-  * @test: The test context object.
-@@ -575,7 +586,7 @@ void __printf(2, 3) kunit_log_append(struct string_stream *log, const char *fmt,
-  * words, it does nothing and only exists for code clarity. See
-  * KUNIT_EXPECT_TRUE() for more information.
-  */
--#define KUNIT_SUCCEED(test) do {} while (0)
-+#define KUNIT_SUCCEED(test) _KUNIT_SAVE_LOC(test)
++static void kunit_test_null_dereference(void *data)
++{
++	struct kunit *test = data;
++	int *null = NULL;
++
++	*null = 0;
++
++	KUNIT_FAIL(test, "This line should never be reached\n");
++}
++
++static void kunit_test_fault_null_dereference(struct kunit *test)
++{
++	struct kunit_try_catch_test_context *ctx = test->priv;
++	struct kunit_try_catch *try_catch = ctx->try_catch;
++
++	kunit_try_catch_init(try_catch,
++			     test,
++			     kunit_test_null_dereference,
++			     kunit_test_catch);
++	kunit_try_catch_run(try_catch, test);
++
++	KUNIT_EXPECT_EQ(test, try_catch->try_result, -EINTR);
++	KUNIT_EXPECT_TRUE(test, ctx->function_called);
++}
++
++#endif /* !CONFIG_UML */
++
++static struct kunit_case kunit_fault_test_cases[] = {
++#ifndef CONFIG_UML
++	KUNIT_CASE(kunit_test_fault_null_dereference),
++#endif /* !CONFIG_UML */
++	{}
++};
++
++static struct kunit_suite kunit_fault_test_suite = {
++	.name = "kunit_fault",
++	.init = kunit_try_catch_test_init,
++	.test_cases = kunit_fault_test_cases,
++};
++
+ /*
+  * Context for testing test managed resources
+  * is_resource_initialized is used to test arbitrary resources
+@@ -826,6 +868,7 @@ static struct kunit_suite kunit_current_test_suite = {
  
- void __noreturn __kunit_abort(struct kunit *test);
+ kunit_test_suites(&kunit_try_catch_test_suite, &kunit_resource_test_suite,
+ 		  &kunit_log_test_suite, &kunit_status_test_suite,
+-		  &kunit_current_test_suite, &kunit_device_test_suite);
++		  &kunit_current_test_suite, &kunit_device_test_suite,
++		  &kunit_fault_test_suite);
  
-@@ -601,14 +612,16 @@ void __kunit_do_failed_assertion(struct kunit *test,
- } while (0)
- 
- 
--#define KUNIT_FAIL_ASSERTION(test, assert_type, fmt, ...)		       \
-+#define KUNIT_FAIL_ASSERTION(test, assert_type, fmt, ...) do {		       \
-+	_KUNIT_SAVE_LOC(test);						       \
- 	_KUNIT_FAILED(test,						       \
- 		      assert_type,					       \
- 		      kunit_fail_assert,				       \
- 		      kunit_fail_assert_format,				       \
- 		      {},						       \
- 		      fmt,						       \
--		      ##__VA_ARGS__)
-+		      ##__VA_ARGS__);					       \
-+} while (0)
- 
- /**
-  * KUNIT_FAIL() - Always causes a test to fail when evaluated.
-@@ -637,6 +650,7 @@ void __kunit_do_failed_assertion(struct kunit *test,
- 			      fmt,					       \
- 			      ...)					       \
- do {									       \
-+	_KUNIT_SAVE_LOC(test);						       \
- 	if (likely(!!(condition_) == !!expected_true_))			       \
- 		break;							       \
- 									       \
-@@ -698,6 +712,7 @@ do {									       \
- 		.right_text = #right,					       \
- 	};								       \
- 									       \
-+	_KUNIT_SAVE_LOC(test);						       \
- 	if (likely(__left op __right))					       \
- 		break;							       \
- 									       \
-@@ -758,6 +773,7 @@ do {									       \
- 		.right_text = #right,					       \
- 	};								       \
- 									       \
-+	_KUNIT_SAVE_LOC(test);						       \
- 	if (likely((__left) && (__right) && (strcmp(__left, __right) op 0)))   \
- 		break;							       \
- 									       \
-@@ -791,6 +807,7 @@ do {									       \
- 		.right_text = #right,					       \
- 	};								       \
- 									       \
-+	_KUNIT_SAVE_LOC(test);						       \
- 	if (likely(__left && __right))					       \
- 		if (likely(memcmp(__left, __right, __size) op 0))	       \
- 			break;						       \
-@@ -815,6 +832,7 @@ do {									       \
- do {									       \
- 	const typeof(ptr) __ptr = (ptr);				       \
- 									       \
-+	_KUNIT_SAVE_LOC(test);						       \
- 	if (!IS_ERR_OR_NULL(__ptr))					       \
- 		break;							       \
- 									       \
-diff --git a/lib/kunit/try-catch.c b/lib/kunit/try-catch.c
-index 7a3910dd78a6..fa687278ccc9 100644
---- a/lib/kunit/try-catch.c
-+++ b/lib/kunit/try-catch.c
-@@ -96,9 +96,13 @@ void kunit_try_catch_run(struct kunit_try_catch *try_catch, void *context)
- 
- 	if (exit_code == -EFAULT)
- 		try_catch->try_result = 0;
--	else if (exit_code == -EINTR)
--		kunit_err(test, "try faulted\n");
--	else if (exit_code == -ETIMEDOUT)
-+	else if (exit_code == -EINTR) {
-+		if (test->last_seen.file)
-+			kunit_err(test, "try faulted: last line seen %s:%d\n",
-+				  test->last_seen.file, test->last_seen.line);
-+		else
-+			kunit_err(test, "try faulted\n");
-+	} else if (exit_code == -ETIMEDOUT)
- 		kunit_err(test, "try timed out\n");
- 	else if (exit_code)
- 		kunit_err(test, "Unknown error: %d\n", exit_code);
+ MODULE_LICENSE("GPL v2");
 -- 
 2.44.0
 
