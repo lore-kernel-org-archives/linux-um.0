@@ -4,71 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C46DBCD11DB
-	for <linux-um@archiver.kernel.org>; Tue, 26 Mar 2024 09:03:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2610CD1280
+	for <linux-um@archiver.kernel.org>; Tue, 26 Mar 2024 09:51:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=tNTqP3K72+F1EfoVulbDP4WkzmaEQwdJwakQorN2vx0=; b=WQzg8AgxKdiJMm2zBwF9cocD4Z
-	f3SkCl6boV/gB7FH7ntPg5aShplWAeM3qjw5DR5A5QSklElDwbNWXFnTDOyQrMLMUFw//2hlUTPhn
-	OOIXs6ygAc1KaqkAVpChrCtgaJjaH0bRGdMD1oSVMxZkGyPU1KKYxtWfYHbJFY4VgxnJyJ+2qxAut
-	llvVtLuO0+N0/0qW5U2GY30cutCyXD5JViAy8NjpWqP1AWkPpdSySpZpMVCL9NkwoV40oJKskbKkB
-	SB3IaLVujgoox3QCTr15HkW1CeoowRpdAOZgBOkwOk93LIitNFpediVq+RRccn9HHN9IMEAVNUo/0
-	xgr9ZLFA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=GI1gJNZFClgkzKRmXVhdn80Q3atwCrMS3IHkC4a5qp4=; b=mqRmscMf6KS9Tc0JSFagYWAOXa
+	dibXSkDvdbO+KTi+6YmC1lGfSKSN5h1k0T+dX8yFE9KnWI3702Cn9S6fWgU6Me7awp4PCMfh/uV9X
+	YRZ8HEpZ5h6RCvapoVa1oosrq3+qVUFnFOyOOBBYvStEn8bGqrd0pM3hEZHzREO2oJDMmm1qvyAEu
+	IAgcN/DyNNh+pn7JDYh4SWSvV0CrBFn+1AWmojzHMSPRsIOHNmIujQ2c5sHSB6BvpOS40kaFgIikb
+	ZoDf2RIXAkb7dbf+NiDeJYBM5KcFQldA0fKJH79FumxFL9DX50Gkiy5w0bxfp8llWbLFjubAg4wQ2
+	sDZ1DJ3Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rp2i7-00000003izd-1KRO;
-	Tue, 26 Mar 2024 09:03:12 +0000
-Received: from smtp-8faf.mail.infomaniak.ch ([83.166.143.175])
+	id 1rp3T6-00000003u2B-1GhT;
+	Tue, 26 Mar 2024 09:51:44 +0000
+Received: from smtp-bc0d.mail.infomaniak.ch ([45.157.188.13])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rp2i1-00000003itg-1LpD
+	id 1rp3T2-00000003tzq-3Q9u
 	for linux-um@lists.infradead.org;
-	Tue, 26 Mar 2024 09:03:09 +0000
-Received: from smtp-3-0001.mail.infomaniak.ch (smtp-3-0001.mail.infomaniak.ch [10.4.36.108])
-	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4V3kNF53NkzZBV;
-	Tue, 26 Mar 2024 10:02:53 +0100 (CET)
-Received: from unknown by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4V3kND05yKzMppKc;
-	Tue, 26 Mar 2024 10:02:52 +0100 (CET)
+	Tue, 26 Mar 2024 09:51:42 +0000
+Received: from smtp-3-0000.mail.infomaniak.ch (smtp-3-0000.mail.infomaniak.ch [10.4.36.107])
+	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4V3lSR0KsWzfNp;
+	Tue, 26 Mar 2024 10:51:35 +0100 (CET)
+Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4V3lSL1PnJzr3;
+	Tue, 26 Mar 2024 10:51:30 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-	s=20191114; t=1711443773;
-	bh=aG1FdaTbcKd3XGgGWnmx/xvaQsHHK4Rz/c5f2D3Q9m0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IZBmrADhOaPt+S5+Ai5jbfmQE6NDEfhlQ7oPI5KvdxY6OFxpZqdyc/bT9FtkXBfR6
-	 aF4p1CvP1HyDpI7noNPncdLGg4YV1hCzZZ9kkE16vyFVLnQKlUCxqBlsP+0Vj3fgyL
-	 h1vzPtWDDxEvqYWWo+GxoH+jFFPSjPNKofKIbZeA=
-Date: Tue, 26 Mar 2024 10:02:51 +0100
-From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-To: David Gow <davidgow@google.com>
-Cc: Brendan Higgins <brendanhiggins@google.com>, 
-	Rae Moar <rmoar@google.com>, Shuah Khan <skhan@linuxfoundation.org>, 
-	Alan Maguire <alan.maguire@oracle.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, 
-	Ingo Molnar <mingo@redhat.com>, James Morris <jamorris@linux.microsoft.com>, 
-	Kees Cook <keescook@chromium.org>, Luis Chamberlain <mcgrof@kernel.org>, 
-	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>, Marco Pagani <marpagan@redhat.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>, 
-	Stephen Boyd <sboyd@kernel.org>, Thara Gopinath <tgopinath@microsoft.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Vitaly Kuznetsov <vkuznets@redhat.com>, 
-	Wanpeng Li <wanpengli@tencent.com>, Zahra Tarkhani <ztarkhani@microsoft.com>, kvm@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org
-Subject: Re: [PATCH v3 4/7] kunit: Handle test faults
-Message-ID: <20240326.ieB8Phit1Ob8@digikod.net>
-References: <20240319104857.70783-1-mic@digikod.net>
- <20240319104857.70783-5-mic@digikod.net>
- <CABVgOSksVq5_AeObEBZFAezZpiQ41C7ZHWEtRBR_1d2UQQYXbw@mail.gmail.com>
+	s=20191114; t=1711446694;
+	bh=Yw7gXVy/DL5VfiZ97miPEyVcUDPjJaMAJFbpu/mcTYE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=i86c2MNcWhiGwgGVEbjabP59wToLSKeSCaSIWMqbCFLQCt664qe3uZxImx4wWAaLy
+	 JoHopq+YsGtBfJMgzCR9dpPgnYuJLI1QfHTgcFXwc1BbUOqzSMd6oBs9Ky3a55+P+e
+	 peXAzoer/H8q92XzDYW7LwoJnVX0flBfuuAR1yvc=
+From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+To: Brendan Higgins <brendanhiggins@google.com>,
+	David Gow <davidgow@google.com>,
+	Rae Moar <rmoar@google.com>,
+	Shuah Khan <skhan@linuxfoundation.org>
+Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"Eric W . Biederman" <ebiederm@xmission.com>,
+	"H . Peter Anvin" <hpa@zytor.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	James Morris <jamorris@linux.microsoft.com>,
+	Kees Cook <keescook@chromium.org>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>,
+	Marco Pagani <marpagan@redhat.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Thara Gopinath <tgopinath@microsoft.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Vitaly Kuznetsov <vkuznets@redhat.com>,
+	Zahra Tarkhani <ztarkhani@microsoft.com>,
+	kvm@vger.kernel.org,
+	linux-hardening@vger.kernel.org,
+	linux-hyperv@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	x86@kernel.org
+Subject: [PATCH v4 0/7] Handle faults in KUnit tests
+Date: Tue, 26 Mar 2024 10:51:11 +0100
+Message-ID: <20240326095118.126696-1-mic@digikod.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABVgOSksVq5_AeObEBZFAezZpiQ41C7ZHWEtRBR_1d2UQQYXbw@mail.gmail.com>
 X-Infomaniak-Routing: alpha
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240326_020306_125253_BB6179FB 
-X-CRM114-Status: GOOD (  31.97  )
+X-CRM114-CacheID: sfid-20240326_025141_023263_8D9DB1ED 
+X-CRM114-Status: UNSURE (   6.85  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,100 +95,54 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sat, Mar 23, 2024 at 03:37:21PM +0800, David Gow wrote:
-> On Tue, 19 Mar 2024 at 18:49, Mickaël Salaün <mic@digikod.net> wrote:
-> >
-> > Previously, when a kernel test thread crashed (e.g. NULL pointer
-> > dereference, general protection fault), the KUnit test hanged for 30
-> > seconds and exited with a timeout error.
-> >
-> > Fix this issue by waiting on task_struct->vfork_done instead of the
-> > custom kunit_try_catch.try_completion, and track the execution state by
-> > initially setting try_result with -EINTR and only setting it to 0 if
-> > the test passed.
-> >
-> > Fix kunit_generic_run_threadfn_adapter() signature by returning 0
-> > instead of calling kthread_complete_and_exit().  Because thread's exit
-> > code is never checked, always set it to 0 to make it clear.
-> >
-> > Fix the -EINTR error message, which couldn't be reached until now.
-> >
-> > This is tested with a following patch.
-> >
-> > Cc: Brendan Higgins <brendanhiggins@google.com>
-> > Cc: Shuah Khan <skhan@linuxfoundation.org>
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > Reviewed-by: David Gow <davidgow@google.com>
-> > Tested-by: Rae Moar <rmoar@google.com>
-> > Signed-off-by: Mickaël Salaün <mic@digikod.net>
-> > Link: https://lore.kernel.org/r/20240319104857.70783-5-mic@digikod.net
-> > ---
-> >
-> > Changes since v2:
-> > * s/-EFAULT/-EINTR/ in commit message as spotted by Rae.
-> > * Add a comment explaining vfork_done as suggested by David.
-> > * Add David's Reviewed-by.
-> > * Add Rae's Tested-by.
-> >
-> > Changes since v1:
-> > * Add Kees's Reviewed-by.
-> > ---
-> >  include/kunit/try-catch.h |  3 ---
-> >  lib/kunit/try-catch.c     | 19 ++++++++++++-------
-> >  2 files changed, 12 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/include/kunit/try-catch.h b/include/kunit/try-catch.h
-> > index c507dd43119d..7c966a1adbd3 100644
-> > --- a/include/kunit/try-catch.h
-> > +++ b/include/kunit/try-catch.h
-> > @@ -14,13 +14,11 @@
-> >
-> >  typedef void (*kunit_try_catch_func_t)(void *);
-> >
-> > -struct completion;
-> >  struct kunit;
-> >
-> >  /**
-> >   * struct kunit_try_catch - provides a generic way to run code which might fail.
-> >   * @test: The test case that is currently being executed.
-> > - * @try_completion: Completion that the control thread waits on while test runs.
-> >   * @try_result: Contains any errno obtained while running test case.
-> >   * @try: The function, the test case, to attempt to run.
-> >   * @catch: The function called if @try bails out.
-> > @@ -46,7 +44,6 @@ struct kunit;
-> >  struct kunit_try_catch {
-> >         /* private: internal use only. */
-> >         struct kunit *test;
-> > -       struct completion *try_completion;
-> >         int try_result;
-> >         kunit_try_catch_func_t try;
-> >         kunit_try_catch_func_t catch;
-> > diff --git a/lib/kunit/try-catch.c b/lib/kunit/try-catch.c
-> > index cab8b24b5d5a..7a3910dd78a6 100644
-> > --- a/lib/kunit/try-catch.c
-> > +++ b/lib/kunit/try-catch.c
-> > @@ -18,7 +18,7 @@
-> >  void __noreturn kunit_try_catch_throw(struct kunit_try_catch *try_catch)
-> >  {
-> >         try_catch->try_result = -EFAULT;
-> > -       kthread_complete_and_exit(try_catch->try_completion, -EFAULT);
-> > +       kthread_exit(0);
-> 
-> It turns out kthread_exit() is not exported, so this doesn't work if
-> KUnit is built as a module.
-> 
-> I think the options we have are:
-> - Add EXPORT_SYMBOL(kthread_exit).
+Hi,
 
-I'll go this way. This should not be an issue because
-kthread_complete_and_exit() can already (only) call kthread_exit() if
-the completion is NULL, but directly calling kthread_exit() is cleaner.
+This patch series teaches KUnit to handle kthread faults as errors, and
+it brings a few related fixes and improvements.
 
-> - Keep using out own completion, and kthread_complete_and_exit()
-> - try_get_module() before spawning the thread, and use
-> module_put_and_kthread_exit().
-> 
-> I think all of these would be okay, but I could've missed something.
-> 
-> -- David
+Shuah, everything should be OK now, could you please merge this series?
+
+All these tests pass (on top of v6.8):
+./tools/testing/kunit/kunit.py run --alltests
+./tools/testing/kunit/kunit.py run --alltests --arch x86_64
+./tools/testing/kunit/kunit.py run --alltests --arch arm64 \
+  --cross_compile=aarch64-linux-gnu-
+
+I also built and ran KUnit tests as a kernel module.
+
+A new test case check NULL pointer dereference, which wasn't possible
+before.
+
+This is useful to test current kernel self-protection mechanisms or
+future ones such as Heki: https://github.com/heki-linux
+
+Previous versions:
+v3: https://lore.kernel.org/r/20240319104857.70783-1-mic@digikod.net
+v2: https://lore.kernel.org/r/20240301194037.532117-1-mic@digikod.net
+v1: https://lore.kernel.org/r/20240229170409.365386-1-mic@digikod.net
+
+Regards,
+
+Mickaël Salaün (7):
+  kunit: Handle thread creation error
+  kunit: Fix kthread reference
+  kunit: Fix timeout message
+  kunit: Handle test faults
+  kunit: Fix KUNIT_SUCCESS() calls in iov_iter tests
+  kunit: Print last test location on fault
+  kunit: Add tests for fault
+
+ include/kunit/test.h      | 24 ++++++++++++++++++---
+ include/kunit/try-catch.h |  3 ---
+ kernel/kthread.c          |  1 +
+ lib/kunit/kunit-test.c    | 45 ++++++++++++++++++++++++++++++++++++++-
+ lib/kunit/try-catch.c     | 38 ++++++++++++++++++++++-----------
+ lib/kunit_iov_iter.c      | 18 ++++++++--------
+ 6 files changed, 101 insertions(+), 28 deletions(-)
+
+
+base-commit: e8f897f4afef0031fe618a8e94127a0934896aba
+-- 
+2.44.0
+
 
