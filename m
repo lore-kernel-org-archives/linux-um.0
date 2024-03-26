@@ -4,41 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 284CDC6FD1F
-	for <linux-um@archiver.kernel.org>; Tue, 26 Mar 2024 09:51:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7A10CD11DF
+	for <linux-um@archiver.kernel.org>; Tue, 26 Mar 2024 09:51:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
 	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=kaw91OLGRm8YtY6JxNT8qLdTQH+0IQYXXrrZEmsnIQc=; b=ZDKse+XNsCsAraMwhJdmEdAGwE
-	Mnnyk5B6CIZA6A0rEo1G2mjHYyVKpAK+Ettqo2QxUzRuontm6GCC/wMd+NHxK+RGu6SHj2UwNhsGJ
-	mkpp0MB9pF5nAVh2gDmfX7Evh6KtUFGxmm50tWcn42V05UmRtRmYuOIOiU3t3JhXixtMYlz7BWx+R
-	WGtg9JFx98a1IvtmRLe+LD5Kh90E9/Zuu/xV3vEOY4VEuWDaOVJRC+fQCaKr8MzD/cH+j0LaElzom
-	xKT7YOq9bbbGXPKms7rCk1egxJaiXtXh8SgGRsNr4cOJvJcQCPnGUmtJDCuc32Jte4dJgRm8TSIYG
-	UW89+WTg==;
+	bh=il8rn8osJnLqQl2Euq+N5nsDjwO7o1nmnOpjt3aGDwY=; b=SFVAyeeo3FKC7JmK2yKlRfeAfa
+	90YakktLHAq5ctPqh6Ec/VnlApUPsWxUwf8+doxL4dnFXWM5PrNDlyF7zA/UUhg9CnVk4Qr1xHOId
+	UDp5FPiOihlgaRQnWh4DZAJ1GnXhxuUsrj9mQeNKAv2Nh8d41RKePRxM6QSmcMEcPefFmBrkdSiqZ
+	ldv8Onp9h+6GTmMXD88ZbYOCYE1vRkKr6hp6DVwppMfNZQ37RJfEvzTqoJGpmtjkFmM/h1QQu5cu6
+	mhjt5ELTg+derHF+QbxbakyuBlyBYmJrpjtNnbQS6+R1UwhThq1ishEcxKFfq0mBwnQq7vU9ioqru
+	Yc2g3Btg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rp3T9-00000003u5j-2IBJ;
-	Tue, 26 Mar 2024 09:51:47 +0000
-Received: from smtp-190d.mail.infomaniak.ch ([185.125.25.13])
+	id 1rp3TF-00000003uBU-48um;
+	Tue, 26 Mar 2024 09:51:54 +0000
+Received: from smtp-190b.mail.infomaniak.ch ([185.125.25.11])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rp3T3-00000003u0P-49OV
+	id 1rp3T6-00000003u1J-1xmU
 	for linux-um@lists.infradead.org;
-	Tue, 26 Mar 2024 09:51:45 +0000
+	Tue, 26 Mar 2024 09:51:46 +0000
 Received: from smtp-3-0000.mail.infomaniak.ch (smtp-3-0000.mail.infomaniak.ch [10.4.36.107])
-	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4V3lSW5Mc6zcnF;
-	Tue, 26 Mar 2024 10:51:39 +0100 (CET)
-Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4V3lSV6N5vzr1;
-	Tue, 26 Mar 2024 10:51:38 +0100 (CET)
+	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4V3lSY6gXQzcRv;
+	Tue, 26 Mar 2024 10:51:41 +0100 (CET)
+Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4V3lSY1h5Dzr0;
+	Tue, 26 Mar 2024 10:51:41 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-	s=20191114; t=1711446699;
-	bh=raYOg3FDLnYzxat4KKO/e8ZSHhTV3Va2ltF0PaZ1ar0=;
+	s=20191114; t=1711446701;
+	bh=Sr1caux620dLkN80hIUUGInJ9ZYXWuNl1zRVFNFI4jc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=iQE1kpa3csr5WjCdjfgjU8KHXLpd7PQLFbpI3jqRlK3c4BiB3NmoXBk4Trc2n5SJ+
-	 MUhh7m73G9Gffzc0BAe5eplq4HaMWGrWOQEOXhyXCSPwyEAVQZK8QUcPLMPs0ld8fm
-	 Oie0+3ZzjWBFJuNedg4mFN2yD2GU64ENdhCWvWz0=
+	b=SFJMlria6c6WWYrRJJ0FcNpGUywmgumDPj0DYWlW0LkJgDrxSzp0uSpDiR/yjQ2o7
+	 sOTXjL5Us8QjQmNodvT5I2Ma+fgEhmzZzlYwfHuF3kM9G4vt6ybt/BSnKmwIW9WkdK
+	 P7ut+4oKbJdS2QjIvjv/I/42MgDj7m/3PKG1nY90=
 From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
 To: Brendan Higgins <brendanhiggins@google.com>,
 	David Gow <davidgow@google.com>,
@@ -70,9 +70,9 @@ Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
 	linux-security-module@vger.kernel.org,
 	linux-um@lists.infradead.org,
 	x86@kernel.org
-Subject: [PATCH v4 4/7] kunit: Handle test faults
-Date: Tue, 26 Mar 2024 10:51:15 +0100
-Message-ID: <20240326095118.126696-5-mic@digikod.net>
+Subject: [PATCH v4 6/7] kunit: Print last test location on fault
+Date: Tue, 26 Mar 2024 10:51:17 +0100
+Message-ID: <20240326095118.126696-7-mic@digikod.net>
 In-Reply-To: <20240326095118.126696-1-mic@digikod.net>
 References: <20240326095118.126696-1-mic@digikod.net>
 MIME-Version: 1.0
@@ -80,8 +80,8 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Infomaniak-Routing: alpha
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240326_025142_615273_66451F4A 
-X-CRM114-Status: GOOD (  19.51  )
+X-CRM114-CacheID: sfid-20240326_025144_885884_08FEAFEB 
+X-CRM114-Status: GOOD (  17.75  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,155 +96,151 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Previously, when a kernel test thread crashed (e.g. NULL pointer
-dereference, general protection fault), the KUnit test hanged for 30
-seconds and exited with a timeout error.
-
-Fix this issue by waiting on task_struct->vfork_done instead of the
-custom kunit_try_catch.try_completion, and track the execution state by
-initially setting try_result with -EINTR and only setting it to 0 if
-the test passed.
-
-Fix kunit_generic_run_threadfn_adapter() signature by returning 0
-instead of calling kthread_complete_and_exit().  Because thread's exit
-code is never checked, always set it to 0 to make it clear.  To make
-this explicit, export kthread_exit() for KUnit tests built as module.
-
-Fix the -EINTR error message, which couldn't be reached until now.
-
-This is tested with a following patch.
+This helps identify the location of test faults with opportunistic calls
+to _KUNIT_SAVE_LOC().  This can be useful while writing tests or
+debugging them.  It is possible to call KUNIT_SUCCESS() to explicit save
+last location.
 
 Cc: Brendan Higgins <brendanhiggins@google.com>
-Cc: Eric W. Biederman <ebiederm@xmission.com>
+Cc: David Gow <davidgow@google.com>
+Cc: Rae Moar <rmoar@google.com>
 Cc: Shuah Khan <skhan@linuxfoundation.org>
 Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: David Gow <davidgow@google.com>
-Tested-by: Rae Moar <rmoar@google.com>
 Signed-off-by: Mickaël Salaün <mic@digikod.net>
-Link: https://lore.kernel.org/r/20240326095118.126696-5-mic@digikod.net
+Link: https://lore.kernel.org/r/20240326095118.126696-7-mic@digikod.net
 ---
 
 Changes since v3:
-* Export kthread_exit() for KUnit tests built as module, as suggested by
-  David.
+* Improve the try-fault error message as suggested by David.
 
 Changes since v2:
-* s/-EFAULT/-EINTR/ in commit message as spotted by Rae.
-* Add a comment explaining vfork_done as suggested by David.
-* Add David's Reviewed-by.
-* Add Rae's Tested-by.
+* Extend the commit message according to discussion with David.
 
 Changes since v1:
 * Add Kees's Reviewed-by.
 ---
- include/kunit/try-catch.h |  3 ---
- kernel/kthread.c          |  1 +
- lib/kunit/try-catch.c     | 19 ++++++++++++-------
- 3 files changed, 13 insertions(+), 10 deletions(-)
+ include/kunit/test.h  | 24 +++++++++++++++++++++---
+ lib/kunit/try-catch.c | 10 +++++++---
+ 2 files changed, 28 insertions(+), 6 deletions(-)
 
-diff --git a/include/kunit/try-catch.h b/include/kunit/try-catch.h
-index c507dd43119d..7c966a1adbd3 100644
---- a/include/kunit/try-catch.h
-+++ b/include/kunit/try-catch.h
-@@ -14,13 +14,11 @@
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+index fcb4a4940ace..f3aa66eb0087 100644
+--- a/include/kunit/test.h
++++ b/include/kunit/test.h
+@@ -301,6 +301,8 @@ struct kunit {
+ 	struct list_head resources; /* Protected by lock. */
  
- typedef void (*kunit_try_catch_func_t)(void *);
+ 	char status_comment[KUNIT_STATUS_COMMENT_SIZE];
++	/* Saves the last seen test. Useful to help with faults. */
++	struct kunit_loc last_seen;
+ };
  
--struct completion;
- struct kunit;
+ static inline void kunit_set_failure(struct kunit *test)
+@@ -567,6 +569,15 @@ void __printf(2, 3) kunit_log_append(struct string_stream *log, const char *fmt,
+ #define kunit_err(test, fmt, ...) \
+ 	kunit_printk(KERN_ERR, test, fmt, ##__VA_ARGS__)
+ 
++/*
++ * Must be called at the beginning of each KUNIT_*_ASSERTION().
++ * Cf. KUNIT_CURRENT_LOC.
++ */
++#define _KUNIT_SAVE_LOC(test) do {					       \
++	WRITE_ONCE(test->last_seen.file, __FILE__);			       \
++	WRITE_ONCE(test->last_seen.line, __LINE__);			       \
++} while (0)
++
+ /**
+  * KUNIT_SUCCEED() - A no-op expectation. Only exists for code clarity.
+  * @test: The test context object.
+@@ -575,7 +586,7 @@ void __printf(2, 3) kunit_log_append(struct string_stream *log, const char *fmt,
+  * words, it does nothing and only exists for code clarity. See
+  * KUNIT_EXPECT_TRUE() for more information.
+  */
+-#define KUNIT_SUCCEED(test) do {} while (0)
++#define KUNIT_SUCCEED(test) _KUNIT_SAVE_LOC(test)
+ 
+ void __noreturn __kunit_abort(struct kunit *test);
+ 
+@@ -601,14 +612,16 @@ void __kunit_do_failed_assertion(struct kunit *test,
+ } while (0)
+ 
+ 
+-#define KUNIT_FAIL_ASSERTION(test, assert_type, fmt, ...)		       \
++#define KUNIT_FAIL_ASSERTION(test, assert_type, fmt, ...) do {		       \
++	_KUNIT_SAVE_LOC(test);						       \
+ 	_KUNIT_FAILED(test,						       \
+ 		      assert_type,					       \
+ 		      kunit_fail_assert,				       \
+ 		      kunit_fail_assert_format,				       \
+ 		      {},						       \
+ 		      fmt,						       \
+-		      ##__VA_ARGS__)
++		      ##__VA_ARGS__);					       \
++} while (0)
  
  /**
-  * struct kunit_try_catch - provides a generic way to run code which might fail.
-  * @test: The test case that is currently being executed.
-- * @try_completion: Completion that the control thread waits on while test runs.
-  * @try_result: Contains any errno obtained while running test case.
-  * @try: The function, the test case, to attempt to run.
-  * @catch: The function called if @try bails out.
-@@ -46,7 +44,6 @@ struct kunit;
- struct kunit_try_catch {
- 	/* private: internal use only. */
- 	struct kunit *test;
--	struct completion *try_completion;
- 	int try_result;
- 	kunit_try_catch_func_t try;
- 	kunit_try_catch_func_t catch;
-diff --git a/kernel/kthread.c b/kernel/kthread.c
-index c5e40830c1f2..f7be976ff88a 100644
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -315,6 +315,7 @@ void __noreturn kthread_exit(long result)
- 	kthread->result = result;
- 	do_exit(0);
- }
-+EXPORT_SYMBOL(kthread_exit);
- 
- /**
-  * kthread_complete_and_exit - Exit the current kthread.
+  * KUNIT_FAIL() - Always causes a test to fail when evaluated.
+@@ -637,6 +650,7 @@ void __kunit_do_failed_assertion(struct kunit *test,
+ 			      fmt,					       \
+ 			      ...)					       \
+ do {									       \
++	_KUNIT_SAVE_LOC(test);						       \
+ 	if (likely(!!(condition_) == !!expected_true_))			       \
+ 		break;							       \
+ 									       \
+@@ -698,6 +712,7 @@ do {									       \
+ 		.right_text = #right,					       \
+ 	};								       \
+ 									       \
++	_KUNIT_SAVE_LOC(test);						       \
+ 	if (likely(__left op __right))					       \
+ 		break;							       \
+ 									       \
+@@ -758,6 +773,7 @@ do {									       \
+ 		.right_text = #right,					       \
+ 	};								       \
+ 									       \
++	_KUNIT_SAVE_LOC(test);						       \
+ 	if (likely((__left) && (__right) && (strcmp(__left, __right) op 0)))   \
+ 		break;							       \
+ 									       \
+@@ -791,6 +807,7 @@ do {									       \
+ 		.right_text = #right,					       \
+ 	};								       \
+ 									       \
++	_KUNIT_SAVE_LOC(test);						       \
+ 	if (likely(__left && __right))					       \
+ 		if (likely(memcmp(__left, __right, __size) op 0))	       \
+ 			break;						       \
+@@ -815,6 +832,7 @@ do {									       \
+ do {									       \
+ 	const typeof(ptr) __ptr = (ptr);				       \
+ 									       \
++	_KUNIT_SAVE_LOC(test);						       \
+ 	if (!IS_ERR_OR_NULL(__ptr))					       \
+ 		break;							       \
+ 									       \
 diff --git a/lib/kunit/try-catch.c b/lib/kunit/try-catch.c
-index cab8b24b5d5a..7a3910dd78a6 100644
+index 7a3910dd78a6..fa687278ccc9 100644
 --- a/lib/kunit/try-catch.c
 +++ b/lib/kunit/try-catch.c
-@@ -18,7 +18,7 @@
- void __noreturn kunit_try_catch_throw(struct kunit_try_catch *try_catch)
- {
- 	try_catch->try_result = -EFAULT;
--	kthread_complete_and_exit(try_catch->try_completion, -EFAULT);
-+	kthread_exit(0);
- }
- EXPORT_SYMBOL_GPL(kunit_try_catch_throw);
+@@ -96,9 +96,13 @@ void kunit_try_catch_run(struct kunit_try_catch *try_catch, void *context)
  
-@@ -26,9 +26,12 @@ static int kunit_generic_run_threadfn_adapter(void *data)
- {
- 	struct kunit_try_catch *try_catch = data;
- 
-+	try_catch->try_result = -EINTR;
- 	try_catch->try(try_catch->context);
-+	if (try_catch->try_result == -EINTR)
-+		try_catch->try_result = 0;
- 
--	kthread_complete_and_exit(try_catch->try_completion, 0);
-+	return 0;
- }
- 
- static unsigned long kunit_test_timeout(void)
-@@ -58,13 +61,11 @@ static unsigned long kunit_test_timeout(void)
- 
- void kunit_try_catch_run(struct kunit_try_catch *try_catch, void *context)
- {
--	DECLARE_COMPLETION_ONSTACK(try_completion);
- 	struct kunit *test = try_catch->test;
- 	struct task_struct *task_struct;
- 	int exit_code, time_remaining;
- 
- 	try_catch->context = context;
--	try_catch->try_completion = &try_completion;
- 	try_catch->try_result = 0;
- 	task_struct = kthread_create(kunit_generic_run_threadfn_adapter,
- 				     try_catch, "kunit_try_catch_thread");
-@@ -75,8 +76,12 @@ void kunit_try_catch_run(struct kunit_try_catch *try_catch, void *context)
- 	}
- 	get_task_struct(task_struct);
- 	wake_up_process(task_struct);
--
--	time_remaining = wait_for_completion_timeout(&try_completion,
-+	/*
-+	 * As for a vfork(2), task_struct->vfork_done (pointing to the
-+	 * underlying kthread->exited) can be used to wait for the end of a
-+	 * kernel thread.
-+	 */
-+	time_remaining = wait_for_completion_timeout(task_struct->vfork_done,
- 						     kunit_test_timeout());
- 	if (time_remaining == 0) {
- 		try_catch->try_result = -ETIMEDOUT;
-@@ -92,7 +97,7 @@ void kunit_try_catch_run(struct kunit_try_catch *try_catch, void *context)
  	if (exit_code == -EFAULT)
  		try_catch->try_result = 0;
- 	else if (exit_code == -EINTR)
--		kunit_err(test, "wake_up_process() was never called\n");
-+		kunit_err(test, "try faulted\n");
- 	else if (exit_code == -ETIMEDOUT)
+-	else if (exit_code == -EINTR)
+-		kunit_err(test, "try faulted\n");
+-	else if (exit_code == -ETIMEDOUT)
++	else if (exit_code == -EINTR) {
++		if (test->last_seen.file)
++			kunit_err(test, "try faulted: last line seen %s:%d\n",
++				  test->last_seen.file, test->last_seen.line);
++		else
++			kunit_err(test, "try faulted\n");
++	} else if (exit_code == -ETIMEDOUT)
  		kunit_err(test, "try timed out\n");
  	else if (exit_code)
+ 		kunit_err(test, "Unknown error: %d\n", exit_code);
 -- 
 2.44.0
 
