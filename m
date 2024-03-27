@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7D211C47DD9
-	for <linux-um@archiver.kernel.org>; Wed, 27 Mar 2024 12:45:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8B7FEC47DD9
+	for <linux-um@archiver.kernel.org>; Wed, 27 Mar 2024 12:45:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=M0hmLEhtDW+HCSY30P31S1H131D4FuLuLKkbSxHVWro=; b=Mj7bQG5B/7h4ILfn/tN02AwxLq
-	fQescylbutL20XGlLE+E645AgjZOLJvJFr9/RW248woaqK/Qf4PQp1EjL/jhOSV1dJGZ55qhmBB6y
-	WJeP0gjnkFzsdrIRU+jENzKQ47rK02gUMhkAW3gl+Rqaz/MMCVY5V8XjZYJbxZnoLMGuB6MCLum2o
-	IcoePOvYEG4Lh97ydFLaLuPUN/8o9heodCaH6ZQPpMNcmaS5ejn48GGBUs1HyQT0ExFZm4oec+Wir
-	XRk/oyQ90ZKs6BqjnfA+voR4tK7zDhVs4WpC/nfwQQqRWS6QzCQaena3+f2uPs+afKR8jocnxHfoA
-	RB2FGf+A==;
+	bh=OIGX0zkEWaN83RrWauYFLuhRKQU73+opfJC/SaE++k0=; b=QoMgHb1B2H1VAiZtlT/EyXLXiI
+	DvJ7YatLk0loB7n0WRZ01BJCVqMhqmlQt15UjNnJsKt1N7B4VU2bP++F1AzYV/3UM/AXg90HDcgKo
+	Lfd54byIkbpd5xGu82a1umyle8p3SlPke5BKyyg65nAj+rKtvbHZXDHd+/FwpQ8OTKgG9uE+Ru9O4
+	CxE47z6UCACGMC97QQBN6kGa6Ev8m+iLljmywqiHK/l9LAGF/ytkM98b4U+w/iLpEWoy7BuqpAGmO
+	5UXn6SDb4bij0PGIX6XapC87dKfEvQ668WpwYTr9MqeIiyjqUWVYcLfMoyj7NWBc05du1C1I7xSM2
+	7LHORruA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpSee-00000008yFt-1bOy;
-	Wed, 27 Mar 2024 12:45:20 +0000
-Received: from mail-ej1-x62d.google.com ([2a00:1450:4864:20::62d])
+	id 1rpSeq-00000008yL7-0BZk;
+	Wed, 27 Mar 2024 12:45:32 +0000
+Received: from mail-lf1-x12b.google.com ([2a00:1450:4864:20::12b])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpSeO-00000008yAc-2RaG
+	id 1rpSem-00000008yIV-28ng
 	for linux-um@lists.infradead.org;
-	Wed, 27 Mar 2024 12:45:15 +0000
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-a46ba938de0so890750666b.3
-        for <linux-um@lists.infradead.org>; Wed, 27 Mar 2024 05:45:03 -0700 (PDT)
+	Wed, 27 Mar 2024 12:45:29 +0000
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-515a81928a1so5827596e87.3
+        for <linux-um@lists.infradead.org>; Wed, 27 Mar 2024 05:45:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711543502; x=1712148302; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1711543527; x=1712148327; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=M0hmLEhtDW+HCSY30P31S1H131D4FuLuLKkbSxHVWro=;
-        b=nwwqGIJwtoLvKKaCvNIgf4iWC6dMmbkzgd0MkBpmpxRHAO+z24j9W/+VdgF2s7zVOk
-         Qdid5jrUR7JNIKT/mfB4vU03/u8QsDS410uIB5kzl7uVqO1jKOP1QGAHaHe0HqS/Yba1
-         12ffrV0gFW2i/2pqM7wzhsePwDhgPZIvocwDFklh2gK3+mj3F7qZaU58KIC6mAbm2QWC
-         HfcpBMy6Z4wyZ85EqkG0xaDKa8xPEB5szZ3cOQPmAAQyEY9GbNMBwtrmp+ofE3NLuj7v
-         XLiQYwFrjXczAJvsfKeHocu9lKFPWZS9CS92Nkm3nPalSCVHcYx/LTR6/Ck/PQ9n5TgH
-         GiuQ==
+        bh=OIGX0zkEWaN83RrWauYFLuhRKQU73+opfJC/SaE++k0=;
+        b=YYvhNrc8Fpn+MqcojVaa6wa//l+gihqcISMFsbVooWHH7utj54cKZSQIbZubbAN5Xq
+         FP/KfVUMpcatNafwibv0oe9mLFGp9eES55/1kgDr1YOEEuAE/edf8sWCMJmBpDtTbmof
+         h8KzBLmhIAZfN14Y8r7egq5bpeC9X4sJ0MZ4GoCZbt8eb2No0LmxP2C6/PdKcLd4kgn6
+         F9wQwxsI6ZeBKoiycH8b/Sanda/cP3KlW/WL4c1MIM/rr48TIam55A4wkXFGBE7uJE4E
+         6gglRYaLg4nioZXTTW9OszE6EAJakONRYiisMnWs9e86+djBk7Y+TD4m7bKk/CpaKjf5
+         8hTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711543502; x=1712148302;
+        d=1e100.net; s=20230601; t=1711543527; x=1712148327;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=M0hmLEhtDW+HCSY30P31S1H131D4FuLuLKkbSxHVWro=;
-        b=EG5d/+3YQOIrsTpEmSun/r7a46rGYDzFZ3AgVg06qD4fz/95X0Gg5wVIXymXaQtsVY
-         XqKMWAeLSw5cjQE0h+TDBe+Wbx3qIINXWurID7Y02r40vAx6snJytRCAMfYGziVbZQH+
-         DW5LZVCMBrovUsGGXevwkKVQi1iR1UEFbOxoBBe172B8W/osJjT/avIFI+FoMRJUBK7w
-         Cnm2WCg5tfhcgbzIWpAc1e2WsJ8M+CDe1gb1/lBN6bengAkRg7YBHYbzsYPxsJ/NRqFd
-         XRAwaG84nRX3ZkPeufnqZw6TFO2z7nJQXMDnmaQY7aEb22DwAlqVggUqK4DVnvsTSTCZ
-         C4vQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVGegJnyISxe/MVm2LzhCw7rNOJ9/3FYXqD6arsQLox15VVg5HHI89WNYGwclhTJjBxQeM0oPW1tr0FgVU2/P7irb738KGiIWYN6pIM
-X-Gm-Message-State: AOJu0Yx68BP1J4GpXjnAV3JwY/KtpecdbfAcCTMHnP1GPYqVh+Kgsg/V
-	zb4mzS9XLIn228ASb0YXsKIjNVO5tv1sgzlP+nPs2XQOmIyfpxdQEmw38kNpqC8=
-X-Google-Smtp-Source: AGHT+IEn6vRTkmoHQ1wiFr8qmjh3PJ0Q6up00xiHporN+nJtNCU2vs+jLj3PzJepGOiy+pfR8eLRwA==
-X-Received: by 2002:a17:907:9729:b0:a47:38c0:fb4e with SMTP id jg41-20020a170907972900b00a4738c0fb4emr4546499ejc.19.1711543501964;
-        Wed, 27 Mar 2024 05:45:01 -0700 (PDT)
+        bh=OIGX0zkEWaN83RrWauYFLuhRKQU73+opfJC/SaE++k0=;
+        b=imgV3iJN8GMIBqdV+DaV7+QBKMZMX2qpvBP1TDdwpTKe+eDKO1QJ2lEGHhpXV5eUeu
+         AIOlbvb5hCfmPcflD/EWxcBmsL3x5wVylBT9iea8OMwmm19mVMAtBMd1WbHnNjqX7+7R
+         +aVUjZ8A/Vyh7MK5L32/NkIn+hbq9m0zsUlUW8HcJ92sZw0BQ2h1Th6C7gAZN0OwVQTB
+         BvY/JwwWbSD+t5OKd3nPprh4aucCXg21RSf8exN3GvXYbOMTphnoUC4sFLwfxoP7uZjr
+         8oWlhNEbFjUKzRNlphE2d9vd/DIpPPDUI/Y1yP/+KsSLRMx+5g6YbG7eZVz6Rvz5RP07
+         aUIg==
+X-Forwarded-Encrypted: i=1; AJvYcCXSO8dz07dAtgU+MplvpAR3B2if5/8SwqbjJH1t5jfIOckAV0YuHRrcLvKzvapv9r6jIjjdkk2RjPmQyUVn60vN81/y4vQF/ojKkdfv
+X-Gm-Message-State: AOJu0YxRqempY4OnGkEMzuigRu52j8RJq/jDJs8nnpi5giEWfMNLAaYn
+	Rede62uHA1DhKHNvu6dWPf/eVTPf3aqc/Ng79aZ0+zRAWyJNbZLJQhDdfo1y4fY=
+X-Google-Smtp-Source: AGHT+IFTe6KK5NzzAQw6DLzrYupzSMTGssF+U7deLYZAVBSrCE4A0Uj/ENe1tzZVoUoWNlZVC8fZZg==
+X-Received: by 2002:a19:5e10:0:b0:513:e14d:15e1 with SMTP id s16-20020a195e10000000b00513e14d15e1mr2258015lfb.57.1711543526649;
+        Wed, 27 Mar 2024 05:45:26 -0700 (PDT)
 Received: from [127.0.1.1] ([178.197.206.205])
-        by smtp.gmail.com with ESMTPSA id gx16-20020a170906f1d000b00a4707ec7c34sm5379175ejb.166.2024.03.27.05.44.41
+        by smtp.gmail.com with ESMTPSA id gx16-20020a170906f1d000b00a4707ec7c34sm5379175ejb.166.2024.03.27.05.45.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Mar 2024 05:45:01 -0700 (PDT)
+        Wed, 27 Mar 2024 05:45:25 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Wed, 27 Mar 2024 13:41:02 +0100
-Subject: [PATCH 09/22] gpio: virtio: drop owner assignment
+Date: Wed, 27 Mar 2024 13:41:03 +0100
+Subject: [PATCH 10/22] drm/virtio: drop owner assignment
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240327-module-owner-virtio-v1-9-0feffab77d99@linaro.org>
+Message-Id: <20240327-module-owner-virtio-v1-10-0feffab77d99@linaro.org>
 References: <20240327-module-owner-virtio-v1-0-0feffab77d99@linaro.org>
 In-Reply-To: <20240327-module-owner-virtio-v1-0-0feffab77d99@linaro.org>
 To: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
@@ -119,26 +119,26 @@ Cc: virtualization@lists.linux.dev, linux-doc@vger.kernel.org,
  linux-sound@vger.kernel.org, 
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=678;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=794;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=//Clpegv8bBxUlHlrbVbhwLuVMMJ/bk7DPF0aGjgRRI=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmBBPhAflQ1FGJhDAzbOegIOtyn0DiKBCT3tO0B
- s7IjiqYlSaJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgQT4QAKCRDBN2bmhouD
- 1wlSD/43RfNzYMYcTE6YGm6f/+zF4ZOeA7+AFzoz25hWACnn09ZJUKsqo8b4OOQmqYEITbWY9+h
- XPRwnPPXeNlc4DgWGOJbLmvCBCUuBSqKMyqIVUHeiKQYkKcodvybd1f5lbAL+Uom9vSnbje9Plv
- wIiwg36QHAiGjrP6FCrbFTARU+u3TVSo9UrmxbOR/Cs2zcsROAS787ue6dERDMHRhTICDHzchGs
- 8lirSnX2eLweIUdLVeflXwAHFaVpdj5k9bUmCEJ9y8Dy0+5TaOREm3IIC+BMGqKTPwXr2xpX3Dd
- iUxBWyxquOdJ4D2K/0LVhYSSC+VtEt5ZZuC3ZoWa4HTxJM5tAElcgWaOQps1lNfT5UbRtK8uoQi
- iqAyMFhheEhnye6diL6L4H3hulkrYJw6LN27JtLkTStHd3lYU+1MW7TqZMKXQcujQNGhdzO9d+m
- 3of1UO+mt5KeIH2CAx/mgbR5MLfW609xLhuHPWn3i/GzYYdKJxXMrj25rctSRtBvtmGHD8iF6o7
- CMdorn7Yl1SzBIoYcHUmygb3XOTnW7Zn+L9RB2k2epy90G6CsuIsaV5Plxhgk41/NsTCYyh6gWq
- GCkiLrJ9HW5biRhItd0RUt02PbEl7Tg1O0q20/cwbVq4IAyTVScxVYfx4ilMNlem9KQg/2l7ayl
- fFGCYquCVzZZykw==
+ bh=nkRw+hEyffQkd47xH6yhTGRY43bQKFbnoktzkBjZ19w=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmBBPi5ln/NE6yYKe/g2hSdNaOWNown5itxMAzc
+ cWpPjO510+JAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgQT4gAKCRDBN2bmhouD
+ 11JMD/9Dt0RXRxFqSwBoM243YFGwfb5rVSQTy5OQh673qccdjX4eVM7SH9KlmSEgdTRMu4skrvI
+ TfWq6TFqSZmtEnLc+eNLQkIfdFU+wIY2BonQcKxwqaCVqKm5g0IFaZ07Cdol7LLV4bzHyqatim9
+ YT9oVJlOnK6xwmVsULUXLNqldmTbnAjwDv/8saYEC/2HwNY6MdGJxwZuMEdCfTtd4S7BIs1Igp3
+ Kd1gVLGKaUTYSbKGotlfnWBfXe+leesFc8cG2JNru47NKJ9dPuIOzgc6BpoGvAZPvD/cGGCmJR1
+ V7mEZK1DEES84YfWjv7MUh3LAH4N2q+eelTKo7zg/E3uZx35ujWPAfSWc4M2LoAFVKs6yBPBdV3
+ G7sGHXO3ijYLapANaowLjkLX2F+idzDM0PHiKDJzKg4vHGd0DKxKtEU+556d8L4FRriH6NHgtRO
+ f2CiZT8Lxy97gIjC+CP4ASmNGWXNHrSNcw5kJ3xBkIf4EIaZOZfym/vTS9bZdLBHt7vcnAnjnsv
+ YvU49CRKoalhEetDEz31X9vW2OpnC4ihmhy6KNGzG3Q85EQX7G0ltCu8IlYsqkGB25rpP79kdG3
+ h6bMp4fQteqgCj4rtFzlGJkrOXJ/U9k9jcDUnvZtNzm/kvSDib52qqN37X7Asb5pv/RYggWh6DE
+ bcqvemCVVipRGCg==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240327_054513_533904_89DBCD92 
-X-CRM114-Status: GOOD (  12.08  )
+X-CRM114-CacheID: sfid-20240327_054528_607049_86CB6995 
+X-CRM114-Status: GOOD (  11.71  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -161,21 +161,21 @@ Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Depends on the first patch.
 ---
- drivers/gpio/gpio-virtio.c | 1 -
+ drivers/gpu/drm/virtio/virtgpu_drv.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/gpio/gpio-virtio.c b/drivers/gpio/gpio-virtio.c
-index fcc5e8c08973..9fae8e396c58 100644
---- a/drivers/gpio/gpio-virtio.c
-+++ b/drivers/gpio/gpio-virtio.c
-@@ -653,7 +653,6 @@ static struct virtio_driver virtio_gpio_driver = {
- 	.remove			= virtio_gpio_remove,
- 	.driver			= {
- 		.name		= KBUILD_MODNAME,
--		.owner		= THIS_MODULE,
- 	},
- };
- module_virtio_driver(virtio_gpio_driver);
+diff --git a/drivers/gpu/drm/virtio/virtgpu_drv.c b/drivers/gpu/drm/virtio/virtgpu_drv.c
+index 9539aa28937f..188e126383c2 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_drv.c
++++ b/drivers/gpu/drm/virtio/virtgpu_drv.c
+@@ -154,7 +154,6 @@ static struct virtio_driver virtio_gpu_driver = {
+ 	.feature_table = features,
+ 	.feature_table_size = ARRAY_SIZE(features),
+ 	.driver.name = KBUILD_MODNAME,
+-	.driver.owner = THIS_MODULE,
+ 	.id_table = id_table,
+ 	.probe = virtio_gpu_probe,
+ 	.remove = virtio_gpu_remove,
 
 -- 
 2.34.1
