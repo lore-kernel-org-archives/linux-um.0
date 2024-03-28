@@ -4,129 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7959C54E64
-	for <linux-um@archiver.kernel.org>; Thu, 28 Mar 2024 15:39:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0479CD11DD
+	for <linux-um@archiver.kernel.org>; Thu, 28 Mar 2024 19:50:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=mPjQD/vT8EW8FIsS5EhEUvjw7Yq2DPw74odbleQjQC0=; b=ca3FRPVFrrx3295G0OczDxd20m
-	MsqClret78aIzm1UMHnYQGBR9AxVUMLCZiKccsaofDyZxQMtrWaqjbs2cvIakAEZrYNruf1sNFoKz
-	wzGuT0pKFw7m65r9YnOrHswpMTw2bSalC6Z/upzv7cwGiaIsKR66EjQVcS1cwYRQuQUWce/yua13d
-	CHP2SDiDQSQsIDrXgwoQ7r03DUARhKGFY/Dr6hLD6lNB5jqYahBUdfly42SXLWcy/XsuDG1LDKrN3
-	Ro+rxNMa+jkCZUWoP2uLSIjaOdirv3mpPos0hBckWfhoQTmckP7wvtGZLJTeyqc6dgw2sBen1L8E0
-	WbRpco/w==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=aYiS4Er6Bqdn4yeGqFDbbMROYzGsgB9on7F3K8V/nwY=; b=iy+PSSkNheZkfxf7F1iC9nw0an
+	fkh1R/8OmLxmw1gSz9CmYADnLNzkiBuLtxbpeQiyQqVClwj0f/ihcrwkpl534WuLrCcnZ6Vo5laG9
+	/1S92+86NzK4grX9HTofBJfLfkELxsU2F7dnmi1+tWCbRkHwggnyOtsbbb3pJ9UA5L0+Eql/ppSFw
+	6XG0yMnHr4hwpQdpADLHVFwYZudyqhTJTnPy7DAliN4FN9tFNBd535AzzT99MUcucTPZY9TZ2w97v
+	AYcoqnn0t8R2IYE/QYOT4BiIvOxnbYNKIkyCvDBXCzzoO2PEYOYXjoOb8B/plKRt5mRr+NKD/MG8M
+	6p6sX/hg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rprqe-0000000EXwN-0W9g;
-	Thu, 28 Mar 2024 15:39:24 +0000
-Received: from mail-pf1-x433.google.com ([2607:f8b0:4864:20::433])
+	id 1rpvm1-0000000FSSO-03X7;
+	Thu, 28 Mar 2024 19:50:53 +0000
+Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rprqa-0000000EXu1-0MYf
+	id 1rpvlx-0000000FSPS-1YK1
 	for linux-um@lists.infradead.org;
-	Thu, 28 Mar 2024 15:39:21 +0000
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6ea80de0e97so827745b3a.2
-        for <linux-um@lists.infradead.org>; Thu, 28 Mar 2024 08:39:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711640358; x=1712245158; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mPjQD/vT8EW8FIsS5EhEUvjw7Yq2DPw74odbleQjQC0=;
-        b=Uvu6FBgIhahYPC0ve1OJ9KAaeYMZ8bSN4C4MzIVvnfiKZlsrzp9JmqB+MBgvkZWlOR
-         u9pUqFWvUZUhCtwu1HL2YdMCBLogk8ofCTvNM64ehJchAX3NOmUb89oAbBgjufqKPGVi
-         LWRhshhpaZy41y/ZXHARneO+IxLg8STaKFOYw3nfysnPH3kw3JEpYzUxHNXaXBWRpbME
-         LjTdpmodFwzg9hQcd6G3ptpjOBECMjC2m9ZwiD9cEEdgmIMy2WFKXZwDtQjWbiwmVeHP
-         McdfchlssXMXHih23+DomOHhALmBCAdR+2QumFEQG+CBKVhOxJSje88KM4vuheAKqR3X
-         nocQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711640358; x=1712245158;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mPjQD/vT8EW8FIsS5EhEUvjw7Yq2DPw74odbleQjQC0=;
-        b=QGfWRW8SGy1Ikv6RNqI8fc8k0pjfyrxoc3oo5p4EjcYGwIXA4vQLoM+he8AkcQbv2s
-         kLe3g4pYKihmgTKR6UgHJSs5YNBkQwmB31BcZhHsQTgqQ+r1R4NWVOVpYf4LBGviKrHL
-         VA2TlsIqiUtCjJqpa//s156aLmelA53n0+50giFnV+wCkC8Pbwuew4snhNuQSPGDxV4D
-         alESO6t2dyhO/zbXTEJhiSRNt95QcRuleqwWKJHTlFZ/qdY33HA8mqMfob9NyGoI6rMY
-         NnZOwC1XR7AgUo9ZTj0QJkWeXpwabpOQDu+xhSDwRRkP9eMXf3jyOpjf8aif9si1YLm5
-         mfpg==
-X-Forwarded-Encrypted: i=1; AJvYcCVOklraZN9KqptX7J8sJQZtFhGyZ5cK9mLw62QUH6Xlgd49lqk70dV3Di3YZ88flMAYDEge/6pXXjVXBgQxgKxN6ZIXNUILUgn1Pbqp
-X-Gm-Message-State: AOJu0Yy/s7ibMC1MxvNc9Ve6zemjznzStCCQP6A6dsuy3ZZJv+hOSnBt
-	qQo0lCyXIqHi76h8+54Cb9nVOKiJ3QYW7sVFMqpTJyF+leMIPWU/cSBqnHIBa2c=
-X-Google-Smtp-Source: AGHT+IGhUQYINGDQ7hWfiGCoXweY10vLCz/e/x+HjJ8dVvYs43ivIcKXZCgoqnZGIv+19J3DIwIpug==
-X-Received: by 2002:a05:6a00:a12:b0:6ea:92a7:fb82 with SMTP id p18-20020a056a000a1200b006ea92a7fb82mr3800870pfh.27.1711640357806;
-        Thu, 28 Mar 2024 08:39:17 -0700 (PDT)
-Received: from p14s ([2604:3d09:148c:c800:ff63:c57b:4625:b68c])
-        by smtp.gmail.com with ESMTPSA id e2-20020aa798c2000000b006ea923678a6sm1505830pfm.137.2024.03.28.08.39.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 08:39:17 -0700 (PDT)
-Date: Thu, 28 Mar 2024 09:39:10 -0600
-From: Mathieu Poirier <mathieu.poirier@linaro.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Stefan Hajnoczi <stefanha@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-	Marcel Holtmann <marcel@holtmann.org>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	Olivia Mackall <olivia@selenic.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Gonglei <arei.gonglei@huawei.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Viresh Kumar <vireshk@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	David Airlie <airlied@redhat.com>,
-	Gerd Hoffmann <kraxel@redhat.com>,
-	Gurchetan Singh <gurchetansingh@chromium.org>,
-	Chia-I Wu <olvaffe@gmail.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	Joerg Roedel <joro@8bytes.org>, Alexander Graf <graf@amazon.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Christian Schoenebeck <linux_oss@crudebyte.com>,
-	Stefano Garzarella <sgarzare@redhat.com>,
-	Kalle Valo <kvalo@kernel.org>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>, Ira Weiny <ira.weiny@intel.com>,
-	Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Vivek Goyal <vgoyal@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>,
-	Anton Yakovlev <anton.yakovlev@opensynergy.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	virtualization@lists.linux.dev, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	iommu@lists.linux.dev, netdev@vger.kernel.org, v9fs@lists.linux.dev,
-	kvm@vger.kernel.org, linux-wireless@vger.kernel.org,
-	nvdimm@lists.linux.dev, linux-remoteproc@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
-Subject: Re: [PATCH 19/22] rpmsg: virtio: drop owner assignment
-Message-ID: <ZgWPHntosUk+5qac@p14s>
-References: <20240327-module-owner-virtio-v1-0-0feffab77d99@linaro.org>
- <20240327-module-owner-virtio-v1-19-0feffab77d99@linaro.org>
+	Thu, 28 Mar 2024 19:50:51 +0000
+Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
+	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <anton.ivanov@cambridgegreys.com>)
+	id 1rpvlt-00FbqL-1T; Thu, 28 Mar 2024 19:50:45 +0000
+Received: from jain.kot-begemot.co.uk ([192.168.3.3])
+	by jain.kot-begemot.co.uk with esmtp (Exim 4.96)
+	(envelope-from <anton.ivanov@cambridgegreys.com>)
+	id 1rpvlp-005t3H-15;
+	Thu, 28 Mar 2024 19:50:43 +0000
+From: anton.ivanov@cambridgegreys.com
+To: linux-um@lists.infradead.org
+Cc: richard@nod.at,
+	johannes@sipsolutions.net,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Subject: [PATCH v8] um: Enable preemption in UML
+Date: Thu, 28 Mar 2024 19:50:38 +0000
+Message-Id: <20240328195038.1403093-1-anton.ivanov@cambridgegreys.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240327-module-owner-virtio-v1-19-0feffab77d99@linaro.org>
+Content-Transfer-Encoding: 8bit
+X-Clacks-Overhead: GNU Terry Pratchett
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240328_083920_269130_867B0D73 
-X-CRM114-Status: GOOD (  17.77  )
+X-CRM114-CacheID: sfid-20240328_125049_600071_427D2743 
+X-CRM114-Status: GOOD (  23.15  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -141,35 +66,254 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Mar 27, 2024 at 01:41:12PM +0100, Krzysztof Kozlowski wrote:
-> virtio core already sets the .owner, so driver does not need to.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-> ---
-> 
-> Depends on the first patch.
-> ---
->  drivers/rpmsg/virtio_rpmsg_bus.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
-> index 1062939c3264..e9e8c1f7829f 100644
-> --- a/drivers/rpmsg/virtio_rpmsg_bus.c
-> +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
-> @@ -1053,7 +1053,6 @@ static struct virtio_driver virtio_ipc_driver = {
->  	.feature_table	= features,
->  	.feature_table_size = ARRAY_SIZE(features),
->  	.driver.name	= KBUILD_MODNAME,
-> -	.driver.owner	= THIS_MODULE,
->  	.id_table	= id_table,
->  	.probe		= rpmsg_probe,
->  	.remove		= rpmsg_remove,
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+1. Preemption requires saving/restoring FPU state. This patch
+adds support for it using GCC intrinsics as well as appropriate
+storage space in the thread structure. We reuse the space
+which is already allocated for the userspace threads in the
+thread_info structure.
 
-> 
-> -- 
-> 2.34.1
-> 
+2. irq critical sections need preempt_disable()/preempt_enable().
+
+3. TLB critical sections need preempt_disable()/preempt_enable().
+
+4. UML TLB flush is also invoked during a fork. This happens
+with interrupts and preempt disabled which disagrees with the
+standard mm locking via rwsem. The mm lock for this code path
+had to be replaced with an rcu.
+
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+---
+ arch/um/Kconfig                   |  2 +-
+ arch/um/include/asm/fpu/api.h     |  9 ++--
+ arch/um/include/asm/thread_info.h |  4 +-
+ arch/um/kernel/Makefile           |  4 ++
+ arch/um/kernel/fpu.c              | 71 +++++++++++++++++++++++++++++++
+ arch/um/kernel/irq.c              |  2 +
+ arch/um/kernel/tlb.c              | 12 ++++++
+ 7 files changed, 98 insertions(+), 6 deletions(-)
+ create mode 100644 arch/um/kernel/fpu.c
+
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index 93a5a8999b07..5b2a8991f6c8 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -11,7 +11,7 @@ config UML
+ 	select ARCH_HAS_KCOV
+ 	select ARCH_HAS_STRNCPY_FROM_USER
+ 	select ARCH_HAS_STRNLEN_USER
+-	select ARCH_NO_PREEMPT
++	select ARCH_NO_PREEMPT_DYNAMIC
+ 	select HAVE_ARCH_AUDITSYSCALL
+ 	select HAVE_ARCH_KASAN if X86_64
+ 	select HAVE_ARCH_KASAN_VMALLOC if HAVE_ARCH_KASAN
+diff --git a/arch/um/include/asm/fpu/api.h b/arch/um/include/asm/fpu/api.h
+index 71bfd9ef3938..9e7680bf48f0 100644
+--- a/arch/um/include/asm/fpu/api.h
++++ b/arch/um/include/asm/fpu/api.h
+@@ -4,12 +4,15 @@
+ 
+ /* Copyright (c) 2020 Cambridge Greys Ltd
+  * Copyright (c) 2020 Red Hat Inc.
+- * A set of "dummy" defines to allow the direct inclusion
+- * of x86 optimized copy, xor, etc routines into the
+- * UML code tree. */
++ */
+ 
++#if defined(CONFIG_PREEMPT) || defined(CONFIG_PREEMPT_VOLUNTARY)
++extern void kernel_fpu_begin(void);
++extern void kernel_fpu_end(void);
++#else
+ #define kernel_fpu_begin() (void)0
+ #define kernel_fpu_end() (void)0
++#endif
+ 
+ static inline bool irq_fpu_usable(void)
+ {
+diff --git a/arch/um/include/asm/thread_info.h b/arch/um/include/asm/thread_info.h
+index c7b4b49826a2..8f5f9b51eb75 100644
+--- a/arch/um/include/asm/thread_info.h
++++ b/arch/um/include/asm/thread_info.h
+@@ -23,8 +23,8 @@ struct thread_info {
+ 	int			preempt_count;  /* 0 => preemptable,
+ 						   <0 => BUG */
+ 	struct thread_info	*real_thread;    /* Points to non-IRQ stack */
+-	unsigned long aux_fp_regs[FP_SIZE];	/* auxiliary fp_regs to save/restore
+-						   them out-of-band */
++	/* auxiliary fp_regs to save/restore them out-of-band */
++	unsigned long aux_fp_regs[FP_SIZE] __aligned(64);
+ };
+ 
+ #define INIT_THREAD_INFO(tsk)			\
+diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
+index 811188be954c..c616e884a488 100644
+--- a/arch/um/kernel/Makefile
++++ b/arch/um/kernel/Makefile
+@@ -26,9 +26,13 @@ obj-$(CONFIG_OF) += dtb.o
+ obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
+ obj-$(CONFIG_STACKTRACE) += stacktrace.o
+ obj-$(CONFIG_GENERIC_PCI_IOMAP) += ioport.o
++obj-$(CONFIG_PREEMPT) += fpu.o
++obj-$(CONFIG_PREEMPT_VOLUNTARY) += fpu.o
+ 
+ USER_OBJS := config.o
+ 
++CFLAGS_fpu.o += -mxsave -mxsaveopt
++
+ include $(srctree)/arch/um/scripts/Makefile.rules
+ 
+ targets := config.c config.tmp capflags.c
+diff --git a/arch/um/kernel/fpu.c b/arch/um/kernel/fpu.c
+new file mode 100644
+index 000000000000..14ef88b4d1f1
+--- /dev/null
++++ b/arch/um/kernel/fpu.c
+@@ -0,0 +1,71 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (C) 2023 Cambridge Greys Ltd
++ * Copyright (C) 2023 Red Hat Inc
++ */
++
++#include <linux/cpu.h>
++#include <linux/init.h>
++#include <asm/fpu/api.h>
++#include <asm/cpufeature.h>
++
++/*
++ * The critical section between kernel_fpu_begin() and kernel_fpu_end()
++ * is non-reentrant. It is the caller's responsibility to avoid reentrance.
++ */
++
++static DEFINE_PER_CPU(bool, in_kernel_fpu);
++
++/* UML and driver code it pulls out of the x86 tree knows about 387 features
++ * up to and including AVX512. TILE, etc are not yet supported.
++ */
++
++#define KNOWN_387_FEATURES 0xFF
++
++void kernel_fpu_begin(void)
++{
++	preempt_disable();
++
++	WARN_ON(this_cpu_read(in_kernel_fpu));
++
++	this_cpu_write(in_kernel_fpu, true);
++
++#ifdef CONFIG_64BIT
++	if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVEOPT)))
++		__builtin_ia32_xsaveopt64(&current_thread_info()->aux_fp_regs, KNOWN_387_FEATURES);
++	else if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVE)))
++			__builtin_ia32_xsave64(&current_thread_info()->aux_fp_regs, KNOWN_387_FEATURES);
++	else
++		__builtin_ia32_fxsave64(&current_thread_info()->aux_fp_regs);
++#else
++	if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVEOPT)))
++		__builtin_ia32_xsaveopt(&current->aux_fp_regs, KNOWN_387_FEATURES);
++	else if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVE)))
++			__builtin_ia32_xsave(&current->aux_fp_regs, KNOWN_387_FEATURES);
++	else
++		__builtin_ia32_fxsave(&current->aux_fp_regs);
++#endif
++}
++EXPORT_SYMBOL_GPL(kernel_fpu_begin);
++
++void kernel_fpu_end(void)
++{
++	WARN_ON(!this_cpu_read(in_kernel_fpu));
++
++#ifdef CONFIG_64BIT
++	if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVE)))
++		__builtin_ia32_xrstor64(&current_thread_info()->aux_fp_regs, KNOWN_387_FEATURES);
++	else
++		__builtin_ia32_fxrstor64(&current_thread_info()->aux_fp_regs);
++#else
++	if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVE)))
++		__builtin_ia32_xrstor(&current_tread_info()->aux_fp_regs, KNOWN_387_FEATURES);
++	else
++		__builtin_ia32_fxrstor(&current_thread_info()->aux_fp_regs);
++#endif
++	this_cpu_write(in_kernel_fpu, false);
++
++	preempt_enable();
++}
++EXPORT_SYMBOL_GPL(kernel_fpu_end);
++
+diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
+index 635d44606bfe..c02525da45df 100644
+--- a/arch/um/kernel/irq.c
++++ b/arch/um/kernel/irq.c
+@@ -195,7 +195,9 @@ static void _sigio_handler(struct uml_pt_regs *regs,
+ 
+ void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
+ {
++	preempt_disable();
+ 	_sigio_handler(regs, irqs_suspended);
++	preempt_enable();
+ }
+ 
+ static struct irq_entry *get_irq_entry_by_fd(int fd)
+diff --git a/arch/um/kernel/tlb.c b/arch/um/kernel/tlb.c
+index 247396b732e5..862174a2a3f5 100644
+--- a/arch/um/kernel/tlb.c
++++ b/arch/um/kernel/tlb.c
+@@ -322,6 +322,8 @@ static void fix_range_common(struct mm_struct *mm, unsigned long start_addr,
+ 	unsigned long addr = start_addr, next;
+ 	int ret = 0, userspace = 1;
+ 
++	preempt_disable();
++
+ 	hvc = INIT_HVC(mm, force, userspace);
+ 	pgd = pgd_offset(mm, addr);
+ 	do {
+@@ -346,6 +348,7 @@ static void fix_range_common(struct mm_struct *mm, unsigned long start_addr,
+ 		       "process: %d\n", task_tgid_vnr(current));
+ 		mm_idp->kill = 1;
+ 	}
++	preempt_enable();
+ }
+ 
+ static int flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
+@@ -362,6 +365,9 @@ static int flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
+ 
+ 	mm = &init_mm;
+ 	hvc = INIT_HVC(mm, force, userspace);
++
++	preempt_disable();
++
+ 	for (addr = start; addr < end;) {
+ 		pgd = pgd_offset(mm, addr);
+ 		if (!pgd_present(*pgd)) {
+@@ -449,6 +455,9 @@ static int flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
+ 
+ 	if (err < 0)
+ 		panic("flush_tlb_kernel failed, errno = %d\n", err);
++
++	preempt_enable();
++
+ 	return updated;
+ }
+ 
+@@ -466,6 +475,8 @@ void flush_tlb_page(struct vm_area_struct *vma, unsigned long address)
+ 
+ 	address &= PAGE_MASK;
+ 
++	preempt_disable();
++
+ 	pgd = pgd_offset(mm, address);
+ 	if (!pgd_present(*pgd))
+ 		goto kill;
+@@ -520,6 +531,7 @@ void flush_tlb_page(struct vm_area_struct *vma, unsigned long address)
+ 
+ 	*pte = pte_mkuptodate(*pte);
+ 
++	preempt_enable();
+ 	return;
+ 
+ kill:
+-- 
+2.39.2
+
 
