@@ -4,49 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4ECFC6FD1F
-	for <linux-um@archiver.kernel.org>; Fri, 29 Mar 2024 04:20:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CBF4CD11DD
+	for <linux-um@archiver.kernel.org>; Fri, 29 Mar 2024 10:27:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=tjyFrTWiuSDbqffCtgabiwtFrJl0nn6TPVE2ErBhTuc=; b=Mnnms2QYc3DPAKTzpTNe7MGQNn
-	JhOMv33RQ0IB0AIRqFRNhJy2fu7DJ0Bp36/ZULEYdIN2qBSxxwFPZ+IngXcWOdvAmh7IiwDh7tahn
-	INEaK1GsVynlLKb3BCGXC7/SXp2aLplIr7UcNdCLxoot5DWEZ6SpdDpEeS/Z5T+IMKy++iBjskIqT
-	zJ8U5AEmxq8uR0eIQXrl8rkIGmg/PAxQu5egP+YkjB6uS0PNM/l6mdtv6lyQLyxJyTU9lZ8qO18bi
-	pSQ3FycOqI4QUrCK6VKWbCbjO7gg2OBqkRrjGl10fx/OWsdi6O8q4s+vhEFXMR0gzi67FlfJxP58N
-	p44vn4bg==;
+	bh=uPUqPHiAYDsvF7c6mpbUarOnTLvyyWG07eUiOIJt2gQ=; b=rlMGxyDkUS5tScdhYbLF5AGkzc
+	KtL+h76JUQF3ZqwLKxGFarDI8Hf7WhirVGgWdZRnLJtmD1cyNcip8S3wRnlEVtOv1HCs4u9VCesOJ
+	SMr54XmQMPhNZ9dSI3BFi8KZHNJsnw11c4yxJamrNoZQ+1IJxmOG+6IijdWcxdKf3ez/CuX4SJ81C
+	sl9e+y5mg4tcTgasXtcZ7vKRdGAtHBBc5KQSrWqFGH1/WnhL3w4fEXY4U9Zlx+5fxddpuG2FSg0Re
+	2oKWfhKjGj1aIXjzOzHjLDXFYysWTERh8MuMt8QucN848aPRlC4Go3miYaPkdQPrxqSeE9xtDqk6I
+	ir6qwHxA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rq3jH-0000000Gkha-0nWa;
-	Fri, 29 Mar 2024 04:20:35 +0000
-Received: from out0-211.mail.aliyun.com ([140.205.0.211])
+	id 1rq9SU-000000002NM-0n3i;
+	Fri, 29 Mar 2024 10:27:38 +0000
+Received: from mail-lf1-x12a.google.com ([2a00:1450:4864:20::12a])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rq3jC-0000000Gkfk-3rjH
+	id 1rq9SQ-000000002LS-2ceI
 	for linux-um@lists.infradead.org;
-	Fri, 29 Mar 2024 04:20:33 +0000
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R601e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047208;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---.Wz6JxcY_1711686014;
-Received: from 30.230.92.186(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.Wz6JxcY_1711686014)
-          by smtp.aliyun-inc.com;
-          Fri, 29 Mar 2024 12:20:20 +0800
-Message-ID: <57825fac-d4d1-4f8e-acb8-f2e8af95bd5c@antgroup.com>
-Date: Fri, 29 Mar 2024 12:20:14 +0800
+	Fri, 29 Mar 2024 10:27:36 +0000
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-513d212f818so1993691e87.2
+        for <linux-um@lists.infradead.org>; Fri, 29 Mar 2024 03:27:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1711708050; x=1712312850; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uPUqPHiAYDsvF7c6mpbUarOnTLvyyWG07eUiOIJt2gQ=;
+        b=sAuXhUUOMlkUM1LdY2GoeVX5HzTJ9IhfCn+IUnZZUthPI4UXlR9pO7GMNC884E/BXg
+         ebbS96SPBJsngYZYJJ06VYEBy72+XYJNYFu8f6Iieg2lV/n+8YQn5OShYS1++zHKDeFC
+         mAYFt+n4gBwmekfOdWUfO+3HGHqEjNRd/6LfyE7Gh1oxkjcEzjySKC1++J6K4/pNNbke
+         2Zr3KVCCig5BJzbKBNptWeQQscCrh422xp44o8i3crkOS1Fkt1tPLSITF9+ZmujNOvqH
+         5Sk/aGt25uwZiO131bFbREQ4WXjBXwAETWyBSolZCZYrI0Cfx6F9XQSc3hauCCBn4FjE
+         mVFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711708050; x=1712312850;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uPUqPHiAYDsvF7c6mpbUarOnTLvyyWG07eUiOIJt2gQ=;
+        b=CZzvo3Rl7xbV1cmSPUTCl+xfDrnjcCNP6h+9IIDe3BcX2CLqBPgutvv9pQ+qR/L8OU
+         fSW1doSZbjl4nV3n0RBcYUOQN9I8PpopXajMW/OmgImCXAfNSBxe/hPMvkxF+6XYQZ9k
+         9f6XwE/7B/TT4WcpSm0y+FDpHmbSEVdl0yalf4+rjqjWDak2fVVIP7DC+tSk0uJ32kHM
+         V0k/SKrx3OMr9JHBq8c97JDqZ1DMzrb4NfKwcVC+86awgSb4aMXPk9vL2b+JHH9NDKAV
+         g+Cha0z2mdIcMXTOMXkrFaPFKWhrWg92LQ4qhiPUwQSipRszFQkNUZgDXJOGvK64Olie
+         OGEA==
+X-Forwarded-Encrypted: i=1; AJvYcCUFIk0v1LWrLAW/iyLzpxw3PlZvj5PdJpB161xnAibH9BrXO1s2NfHxT6JQBL7+siwGIMq64Oc9zJYSDdjRVPAeIjpzwUp76boCfIPR
+X-Gm-Message-State: AOJu0Yw56T31kX4MvTUheBGCvuhOgwwHL0nJMSeFlPHyjR81WJCcyswf
+	46bBk3utSEsIQmMf7iL/WYVLYE8aMvrTHTH3zBLgJYg1HyjSL6zvS4sxA/bZxWY4jSqtZV4T5cP
+	cmuGtIKeg6+ZCyHp29Wh+oH/D7DoPfrhpVeQMLA==
+X-Google-Smtp-Source: AGHT+IGkJetMoIDH9w2TQurNFFXLK7XsHfl+lPbtCC+0MeMFYTkyF7Alb8el7pzIkiwo9JvBX9h3ULKBGoxrg4XKpUU=
+X-Received: by 2002:a05:6512:33ce:b0:513:af27:df1c with SMTP id
+ d14-20020a05651233ce00b00513af27df1cmr1559870lfg.11.1711708050041; Fri, 29
+ Mar 2024 03:27:30 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/5] um: signal: move pid variable where needed
-To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>
-References: <20240328100640.d3ffb37dc64b.I2e2e713d6a78ea24e6508db9d3ef2882b88861da@changeid>
-Content-Language: en-US
-From: "Tiwei Bie" <tiwei.btw@antgroup.com>
-In-Reply-To: <20240328100640.d3ffb37dc64b.I2e2e713d6a78ea24e6508db9d3ef2882b88861da@changeid>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240327-module-owner-virtio-v1-0-0feffab77d99@linaro.org> <20240327-module-owner-virtio-v1-9-0feffab77d99@linaro.org>
+In-Reply-To: <20240327-module-owner-virtio-v1-9-0feffab77d99@linaro.org>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Fri, 29 Mar 2024 11:27:19 +0100
+Message-ID: <CAMRc=McY6PJj7fmLkNv07ogcYq=8fUb2o6w2uA1=D9cbzyoRoA@mail.gmail.com>
+Subject: Re: [PATCH 09/22] gpio: virtio: drop owner assignment
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Richard Weinberger <richard@nod.at>, 
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, Jens Axboe <axboe@kernel.dk>, 
+	Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
+	Olivia Mackall <olivia@selenic.com>, Herbert Xu <herbert@gondor.apana.org.au>, 
+	Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Gonglei <arei.gonglei@huawei.com>, 
+	"David S. Miller" <davem@davemloft.net>, Viresh Kumar <vireshk@kernel.org>, 
+	Linus Walleij <linus.walleij@linaro.org>, David Airlie <airlied@redhat.com>, 
+	Gerd Hoffmann <kraxel@redhat.com>, Gurchetan Singh <gurchetansingh@chromium.org>, 
+	Chia-I Wu <olvaffe@gmail.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>, 
+	Joerg Roedel <joro@8bytes.org>, Alexander Graf <graf@amazon.com>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Eric Van Hensbergen <ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, 
+	Dominique Martinet <asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>, 
+	Stefano Garzarella <sgarzare@redhat.com>, Kalle Valo <kvalo@kernel.org>, 
+	Dan Williams <dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
+	Dave Jiang <dave.jiang@intel.com>, Ira Weiny <ira.weiny@intel.com>, 
+	Pankaj Gupta <pankaj.gupta.linux@gmail.com>, Bjorn Andersson <andersson@kernel.org>, 
+	Mathieu Poirier <mathieu.poirier@linaro.org>, 
+	"Martin K. Petersen" <martin.petersen@oracle.com>, Vivek Goyal <vgoyal@redhat.com>, 
+	Miklos Szeredi <miklos@szeredi.hu>, Anton Yakovlev <anton.yakovlev@opensynergy.com>, 
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, virtualization@lists.linux.dev, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-um@lists.infradead.org, linux-block@vger.kernel.org, 
+	linux-bluetooth@vger.kernel.org, linux-crypto@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, iommu@lists.linux.dev, 
+	netdev@vger.kernel.org, v9fs@lists.linux.dev, kvm@vger.kernel.org, 
+	linux-wireless@vger.kernel.org, nvdimm@lists.linux.dev, 
+	linux-remoteproc@vger.kernel.org, linux-scsi@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, alsa-devel@alsa-project.org, 
+	linux-sound@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240328_212031_199098_58768260 
-X-CRM114-Status: GOOD (  15.56  )
+X-CRM114-CacheID: sfid-20240329_032734_689568_C360281A 
+X-CRM114-Status: GOOD (  18.13  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -61,71 +122,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 3/28/24 5:06 PM, Johannes Berg wrote:
-> From: Johannes Berg <johannes.berg@intel.com>
-> 
-> We have W=1 warnings on 64-bit because the pid is only
-> used in branches on 32-bit; move it inside to get rid of
-> the warnings.
-> 
-> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+On Wed, Mar 27, 2024 at 1:45=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> virtio core already sets the .owner, so driver does not need to.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>
 > ---
->  arch/x86/um/signal.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/um/signal.c b/arch/x86/um/signal.c
-> index 263e1d08f216..16ff097e790d 100644
-> --- a/arch/x86/um/signal.c
-> +++ b/arch/x86/um/signal.c
-> @@ -155,7 +155,7 @@ static int copy_sc_from_user(struct pt_regs *regs,
->  			     struct sigcontext __user *from)
->  {
->  	struct sigcontext sc;
-> -	int err, pid;
-> +	int err;
->  
->  	/* Always make any pending restarted system calls return -EINTR */
->  	current->restart_block.fn = do_no_restart_syscall;
-> @@ -201,10 +201,10 @@ static int copy_sc_from_user(struct pt_regs *regs,
->  
->  #undef GETREG
->  
-> -	pid = userspace_pid[current_thread_info()->cpu];
->  #ifdef CONFIG_X86_32
->  	if (have_fpx_regs) {
->  		struct user_fxsr_struct fpx;
-> +		int pid = userspace_pid[current_thread_info()->cpu];
+>
+> Depends on the first patch.
+> ---
+>  drivers/gpio/gpio-virtio.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/gpio/gpio-virtio.c b/drivers/gpio/gpio-virtio.c
+> index fcc5e8c08973..9fae8e396c58 100644
+> --- a/drivers/gpio/gpio-virtio.c
+> +++ b/drivers/gpio/gpio-virtio.c
+> @@ -653,7 +653,6 @@ static struct virtio_driver virtio_gpio_driver =3D {
+>         .remove                 =3D virtio_gpio_remove,
+>         .driver                 =3D {
+>                 .name           =3D KBUILD_MODNAME,
+> -               .owner          =3D THIS_MODULE,
+>         },
+>  };
+>  module_virtio_driver(virtio_gpio_driver);
+>
+> --
+> 2.34.1
+>
 
-Tiny nit: might be better to move it before "struct user_fxsr_struct fpx;".
-And it will be more consistent with the other change in this patch. :)
+Applied, thanks!
 
->  
->  		err = copy_from_user(&fpx,
->  			&((struct _fpstate __user *)sc.fpstate)->_fxsr_env[0],
-> @@ -240,7 +240,7 @@ static int copy_sc_to_user(struct sigcontext __user *to,
->  {
->  	struct sigcontext sc;
->  	struct faultinfo * fi = &current->thread.arch.faultinfo;
-> -	int err, pid;
-> +	int err;
->  	memset(&sc, 0, sizeof(struct sigcontext));
->  
->  #define PUTREG(regno, regname) sc.regname = regs->regs.gp[HOST_##regno]
-> @@ -288,10 +288,9 @@ static int copy_sc_to_user(struct sigcontext __user *to,
->  	if (err)
->  		return 1;
->  
-> -	pid = userspace_pid[current_thread_info()->cpu];
-> -
->  #ifdef CONFIG_X86_32
->  	if (have_fpx_regs) {
-> +		int pid = userspace_pid[current_thread_info()->cpu];
->  		struct user_fxsr_struct fpx;
->  
->  		err = save_fpx_registers(pid, (unsigned long *) &fpx);
-
-For the series, feel free to add my Reviewed-by: Tiwei Bie <tiwei.btw@antgroup.com>
-
-Regards,
-Tiwei
+Bart
 
