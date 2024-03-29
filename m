@@ -4,54 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0479CD11DD
-	for <linux-um@archiver.kernel.org>; Thu, 28 Mar 2024 19:50:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4ECFC6FD1F
+	for <linux-um@archiver.kernel.org>; Fri, 29 Mar 2024 04:20:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=aYiS4Er6Bqdn4yeGqFDbbMROYzGsgB9on7F3K8V/nwY=; b=iy+PSSkNheZkfxf7F1iC9nw0an
-	fkh1R/8OmLxmw1gSz9CmYADnLNzkiBuLtxbpeQiyQqVClwj0f/ihcrwkpl534WuLrCcnZ6Vo5laG9
-	/1S92+86NzK4grX9HTofBJfLfkELxsU2F7dnmi1+tWCbRkHwggnyOtsbbb3pJ9UA5L0+Eql/ppSFw
-	6XG0yMnHr4hwpQdpADLHVFwYZudyqhTJTnPy7DAliN4FN9tFNBd535AzzT99MUcucTPZY9TZ2w97v
-	AYcoqnn0t8R2IYE/QYOT4BiIvOxnbYNKIkyCvDBXCzzoO2PEYOYXjoOb8B/plKRt5mRr+NKD/MG8M
-	6p6sX/hg==;
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=tjyFrTWiuSDbqffCtgabiwtFrJl0nn6TPVE2ErBhTuc=; b=Mnnms2QYc3DPAKTzpTNe7MGQNn
+	JhOMv33RQ0IB0AIRqFRNhJy2fu7DJ0Bp36/ZULEYdIN2qBSxxwFPZ+IngXcWOdvAmh7IiwDh7tahn
+	INEaK1GsVynlLKb3BCGXC7/SXp2aLplIr7UcNdCLxoot5DWEZ6SpdDpEeS/Z5T+IMKy++iBjskIqT
+	zJ8U5AEmxq8uR0eIQXrl8rkIGmg/PAxQu5egP+YkjB6uS0PNM/l6mdtv6lyQLyxJyTU9lZ8qO18bi
+	pSQ3FycOqI4QUrCK6VKWbCbjO7gg2OBqkRrjGl10fx/OWsdi6O8q4s+vhEFXMR0gzi67FlfJxP58N
+	p44vn4bg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpvm1-0000000FSSO-03X7;
-	Thu, 28 Mar 2024 19:50:53 +0000
-Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
+	id 1rq3jH-0000000Gkha-0nWa;
+	Fri, 29 Mar 2024 04:20:35 +0000
+Received: from out0-211.mail.aliyun.com ([140.205.0.211])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rpvlx-0000000FSPS-1YK1
+	id 1rq3jC-0000000Gkfk-3rjH
 	for linux-um@lists.infradead.org;
-	Thu, 28 Mar 2024 19:50:51 +0000
-Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
-	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1rpvlt-00FbqL-1T; Thu, 28 Mar 2024 19:50:45 +0000
-Received: from jain.kot-begemot.co.uk ([192.168.3.3])
-	by jain.kot-begemot.co.uk with esmtp (Exim 4.96)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1rpvlp-005t3H-15;
-	Thu, 28 Mar 2024 19:50:43 +0000
-From: anton.ivanov@cambridgegreys.com
-To: linux-um@lists.infradead.org
-Cc: richard@nod.at,
-	johannes@sipsolutions.net,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Subject: [PATCH v8] um: Enable preemption in UML
-Date: Thu, 28 Mar 2024 19:50:38 +0000
-Message-Id: <20240328195038.1403093-1-anton.ivanov@cambridgegreys.com>
-X-Mailer: git-send-email 2.39.2
+	Fri, 29 Mar 2024 04:20:33 +0000
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R601e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047208;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---.Wz6JxcY_1711686014;
+Received: from 30.230.92.186(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.Wz6JxcY_1711686014)
+          by smtp.aliyun-inc.com;
+          Fri, 29 Mar 2024 12:20:20 +0800
+Message-ID: <57825fac-d4d1-4f8e-acb8-f2e8af95bd5c@antgroup.com>
+Date: Fri, 29 Mar 2024 12:20:14 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Clacks-Overhead: GNU Terry Pratchett
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/5] um: signal: move pid variable where needed
+To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
+References: <20240328100640.d3ffb37dc64b.I2e2e713d6a78ea24e6508db9d3ef2882b88861da@changeid>
+Content-Language: en-US
+From: "Tiwei Bie" <tiwei.btw@antgroup.com>
+In-Reply-To: <20240328100640.d3ffb37dc64b.I2e2e713d6a78ea24e6508db9d3ef2882b88861da@changeid>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240328_125049_600071_427D2743 
-X-CRM114-Status: GOOD (  23.15  )
+X-CRM114-CacheID: sfid-20240328_212031_199098_58768260 
+X-CRM114-Status: GOOD (  15.56  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,254 +61,71 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+On 3/28/24 5:06 PM, Johannes Berg wrote:
+> From: Johannes Berg <johannes.berg@intel.com>
+> 
+> We have W=1 warnings on 64-bit because the pid is only
+> used in branches on 32-bit; move it inside to get rid of
+> the warnings.
+> 
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+> ---
+>  arch/x86/um/signal.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/um/signal.c b/arch/x86/um/signal.c
+> index 263e1d08f216..16ff097e790d 100644
+> --- a/arch/x86/um/signal.c
+> +++ b/arch/x86/um/signal.c
+> @@ -155,7 +155,7 @@ static int copy_sc_from_user(struct pt_regs *regs,
+>  			     struct sigcontext __user *from)
+>  {
+>  	struct sigcontext sc;
+> -	int err, pid;
+> +	int err;
+>  
+>  	/* Always make any pending restarted system calls return -EINTR */
+>  	current->restart_block.fn = do_no_restart_syscall;
+> @@ -201,10 +201,10 @@ static int copy_sc_from_user(struct pt_regs *regs,
+>  
+>  #undef GETREG
+>  
+> -	pid = userspace_pid[current_thread_info()->cpu];
+>  #ifdef CONFIG_X86_32
+>  	if (have_fpx_regs) {
+>  		struct user_fxsr_struct fpx;
+> +		int pid = userspace_pid[current_thread_info()->cpu];
 
-1. Preemption requires saving/restoring FPU state. This patch
-adds support for it using GCC intrinsics as well as appropriate
-storage space in the thread structure. We reuse the space
-which is already allocated for the userspace threads in the
-thread_info structure.
+Tiny nit: might be better to move it before "struct user_fxsr_struct fpx;".
+And it will be more consistent with the other change in this patch. :)
 
-2. irq critical sections need preempt_disable()/preempt_enable().
+>  
+>  		err = copy_from_user(&fpx,
+>  			&((struct _fpstate __user *)sc.fpstate)->_fxsr_env[0],
+> @@ -240,7 +240,7 @@ static int copy_sc_to_user(struct sigcontext __user *to,
+>  {
+>  	struct sigcontext sc;
+>  	struct faultinfo * fi = &current->thread.arch.faultinfo;
+> -	int err, pid;
+> +	int err;
+>  	memset(&sc, 0, sizeof(struct sigcontext));
+>  
+>  #define PUTREG(regno, regname) sc.regname = regs->regs.gp[HOST_##regno]
+> @@ -288,10 +288,9 @@ static int copy_sc_to_user(struct sigcontext __user *to,
+>  	if (err)
+>  		return 1;
+>  
+> -	pid = userspace_pid[current_thread_info()->cpu];
+> -
+>  #ifdef CONFIG_X86_32
+>  	if (have_fpx_regs) {
+> +		int pid = userspace_pid[current_thread_info()->cpu];
+>  		struct user_fxsr_struct fpx;
+>  
+>  		err = save_fpx_registers(pid, (unsigned long *) &fpx);
 
-3. TLB critical sections need preempt_disable()/preempt_enable().
+For the series, feel free to add my Reviewed-by: Tiwei Bie <tiwei.btw@antgroup.com>
 
-4. UML TLB flush is also invoked during a fork. This happens
-with interrupts and preempt disabled which disagrees with the
-standard mm locking via rwsem. The mm lock for this code path
-had to be replaced with an rcu.
-
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
----
- arch/um/Kconfig                   |  2 +-
- arch/um/include/asm/fpu/api.h     |  9 ++--
- arch/um/include/asm/thread_info.h |  4 +-
- arch/um/kernel/Makefile           |  4 ++
- arch/um/kernel/fpu.c              | 71 +++++++++++++++++++++++++++++++
- arch/um/kernel/irq.c              |  2 +
- arch/um/kernel/tlb.c              | 12 ++++++
- 7 files changed, 98 insertions(+), 6 deletions(-)
- create mode 100644 arch/um/kernel/fpu.c
-
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 93a5a8999b07..5b2a8991f6c8 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -11,7 +11,7 @@ config UML
- 	select ARCH_HAS_KCOV
- 	select ARCH_HAS_STRNCPY_FROM_USER
- 	select ARCH_HAS_STRNLEN_USER
--	select ARCH_NO_PREEMPT
-+	select ARCH_NO_PREEMPT_DYNAMIC
- 	select HAVE_ARCH_AUDITSYSCALL
- 	select HAVE_ARCH_KASAN if X86_64
- 	select HAVE_ARCH_KASAN_VMALLOC if HAVE_ARCH_KASAN
-diff --git a/arch/um/include/asm/fpu/api.h b/arch/um/include/asm/fpu/api.h
-index 71bfd9ef3938..9e7680bf48f0 100644
---- a/arch/um/include/asm/fpu/api.h
-+++ b/arch/um/include/asm/fpu/api.h
-@@ -4,12 +4,15 @@
- 
- /* Copyright (c) 2020 Cambridge Greys Ltd
-  * Copyright (c) 2020 Red Hat Inc.
-- * A set of "dummy" defines to allow the direct inclusion
-- * of x86 optimized copy, xor, etc routines into the
-- * UML code tree. */
-+ */
- 
-+#if defined(CONFIG_PREEMPT) || defined(CONFIG_PREEMPT_VOLUNTARY)
-+extern void kernel_fpu_begin(void);
-+extern void kernel_fpu_end(void);
-+#else
- #define kernel_fpu_begin() (void)0
- #define kernel_fpu_end() (void)0
-+#endif
- 
- static inline bool irq_fpu_usable(void)
- {
-diff --git a/arch/um/include/asm/thread_info.h b/arch/um/include/asm/thread_info.h
-index c7b4b49826a2..8f5f9b51eb75 100644
---- a/arch/um/include/asm/thread_info.h
-+++ b/arch/um/include/asm/thread_info.h
-@@ -23,8 +23,8 @@ struct thread_info {
- 	int			preempt_count;  /* 0 => preemptable,
- 						   <0 => BUG */
- 	struct thread_info	*real_thread;    /* Points to non-IRQ stack */
--	unsigned long aux_fp_regs[FP_SIZE];	/* auxiliary fp_regs to save/restore
--						   them out-of-band */
-+	/* auxiliary fp_regs to save/restore them out-of-band */
-+	unsigned long aux_fp_regs[FP_SIZE] __aligned(64);
- };
- 
- #define INIT_THREAD_INFO(tsk)			\
-diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
-index 811188be954c..c616e884a488 100644
---- a/arch/um/kernel/Makefile
-+++ b/arch/um/kernel/Makefile
-@@ -26,9 +26,13 @@ obj-$(CONFIG_OF) += dtb.o
- obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
- obj-$(CONFIG_STACKTRACE) += stacktrace.o
- obj-$(CONFIG_GENERIC_PCI_IOMAP) += ioport.o
-+obj-$(CONFIG_PREEMPT) += fpu.o
-+obj-$(CONFIG_PREEMPT_VOLUNTARY) += fpu.o
- 
- USER_OBJS := config.o
- 
-+CFLAGS_fpu.o += -mxsave -mxsaveopt
-+
- include $(srctree)/arch/um/scripts/Makefile.rules
- 
- targets := config.c config.tmp capflags.c
-diff --git a/arch/um/kernel/fpu.c b/arch/um/kernel/fpu.c
-new file mode 100644
-index 000000000000..14ef88b4d1f1
---- /dev/null
-+++ b/arch/um/kernel/fpu.c
-@@ -0,0 +1,71 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2023 Cambridge Greys Ltd
-+ * Copyright (C) 2023 Red Hat Inc
-+ */
-+
-+#include <linux/cpu.h>
-+#include <linux/init.h>
-+#include <asm/fpu/api.h>
-+#include <asm/cpufeature.h>
-+
-+/*
-+ * The critical section between kernel_fpu_begin() and kernel_fpu_end()
-+ * is non-reentrant. It is the caller's responsibility to avoid reentrance.
-+ */
-+
-+static DEFINE_PER_CPU(bool, in_kernel_fpu);
-+
-+/* UML and driver code it pulls out of the x86 tree knows about 387 features
-+ * up to and including AVX512. TILE, etc are not yet supported.
-+ */
-+
-+#define KNOWN_387_FEATURES 0xFF
-+
-+void kernel_fpu_begin(void)
-+{
-+	preempt_disable();
-+
-+	WARN_ON(this_cpu_read(in_kernel_fpu));
-+
-+	this_cpu_write(in_kernel_fpu, true);
-+
-+#ifdef CONFIG_64BIT
-+	if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVEOPT)))
-+		__builtin_ia32_xsaveopt64(&current_thread_info()->aux_fp_regs, KNOWN_387_FEATURES);
-+	else if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVE)))
-+			__builtin_ia32_xsave64(&current_thread_info()->aux_fp_regs, KNOWN_387_FEATURES);
-+	else
-+		__builtin_ia32_fxsave64(&current_thread_info()->aux_fp_regs);
-+#else
-+	if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVEOPT)))
-+		__builtin_ia32_xsaveopt(&current->aux_fp_regs, KNOWN_387_FEATURES);
-+	else if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVE)))
-+			__builtin_ia32_xsave(&current->aux_fp_regs, KNOWN_387_FEATURES);
-+	else
-+		__builtin_ia32_fxsave(&current->aux_fp_regs);
-+#endif
-+}
-+EXPORT_SYMBOL_GPL(kernel_fpu_begin);
-+
-+void kernel_fpu_end(void)
-+{
-+	WARN_ON(!this_cpu_read(in_kernel_fpu));
-+
-+#ifdef CONFIG_64BIT
-+	if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVE)))
-+		__builtin_ia32_xrstor64(&current_thread_info()->aux_fp_regs, KNOWN_387_FEATURES);
-+	else
-+		__builtin_ia32_fxrstor64(&current_thread_info()->aux_fp_regs);
-+#else
-+	if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVE)))
-+		__builtin_ia32_xrstor(&current_tread_info()->aux_fp_regs, KNOWN_387_FEATURES);
-+	else
-+		__builtin_ia32_fxrstor(&current_thread_info()->aux_fp_regs);
-+#endif
-+	this_cpu_write(in_kernel_fpu, false);
-+
-+	preempt_enable();
-+}
-+EXPORT_SYMBOL_GPL(kernel_fpu_end);
-+
-diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index 635d44606bfe..c02525da45df 100644
---- a/arch/um/kernel/irq.c
-+++ b/arch/um/kernel/irq.c
-@@ -195,7 +195,9 @@ static void _sigio_handler(struct uml_pt_regs *regs,
- 
- void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
- {
-+	preempt_disable();
- 	_sigio_handler(regs, irqs_suspended);
-+	preempt_enable();
- }
- 
- static struct irq_entry *get_irq_entry_by_fd(int fd)
-diff --git a/arch/um/kernel/tlb.c b/arch/um/kernel/tlb.c
-index 247396b732e5..862174a2a3f5 100644
---- a/arch/um/kernel/tlb.c
-+++ b/arch/um/kernel/tlb.c
-@@ -322,6 +322,8 @@ static void fix_range_common(struct mm_struct *mm, unsigned long start_addr,
- 	unsigned long addr = start_addr, next;
- 	int ret = 0, userspace = 1;
- 
-+	preempt_disable();
-+
- 	hvc = INIT_HVC(mm, force, userspace);
- 	pgd = pgd_offset(mm, addr);
- 	do {
-@@ -346,6 +348,7 @@ static void fix_range_common(struct mm_struct *mm, unsigned long start_addr,
- 		       "process: %d\n", task_tgid_vnr(current));
- 		mm_idp->kill = 1;
- 	}
-+	preempt_enable();
- }
- 
- static int flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
-@@ -362,6 +365,9 @@ static int flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
- 
- 	mm = &init_mm;
- 	hvc = INIT_HVC(mm, force, userspace);
-+
-+	preempt_disable();
-+
- 	for (addr = start; addr < end;) {
- 		pgd = pgd_offset(mm, addr);
- 		if (!pgd_present(*pgd)) {
-@@ -449,6 +455,9 @@ static int flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
- 
- 	if (err < 0)
- 		panic("flush_tlb_kernel failed, errno = %d\n", err);
-+
-+	preempt_enable();
-+
- 	return updated;
- }
- 
-@@ -466,6 +475,8 @@ void flush_tlb_page(struct vm_area_struct *vma, unsigned long address)
- 
- 	address &= PAGE_MASK;
- 
-+	preempt_disable();
-+
- 	pgd = pgd_offset(mm, address);
- 	if (!pgd_present(*pgd))
- 		goto kill;
-@@ -520,6 +531,7 @@ void flush_tlb_page(struct vm_area_struct *vma, unsigned long address)
- 
- 	*pte = pte_mkuptodate(*pte);
- 
-+	preempt_enable();
- 	return;
- 
- kill:
--- 
-2.39.2
-
+Regards,
+Tiwei
 
