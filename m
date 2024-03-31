@@ -4,72 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC1E7CD1288
-	for <linux-um@archiver.kernel.org>; Sun, 31 Mar 2024 08:45:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8B8ECD1288
+	for <linux-um@archiver.kernel.org>; Sun, 31 Mar 2024 08:45:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=EPamPBtPxW6+pkIV3m4EaBMhb46zDx5KgvXpbm+zagg=; b=V70LypiOO44IhwaIlV96p5tCr9
-	QzU+zYnbhoekw48MYk0w77qi3ty292mKPC0lm2oZL9LHnltVZDGD54qmv/F5mZMvn7Jyo0BRVco+n
-	P1XVPQPBAafAVvj1EOZxEwqYCBd+snvNf9Q+U5NrFXXydv2O5h29vR3mfxq0NewpbqAR2CURTq4Q3
-	fTpCMxwrvay9TBAarfO6bH+2UJkCzI//aVZOulJhlqhsYg1vmyTezhTwY10wU5h/PrQwUoh+CSHjv
-	Q45iXPk8/XNvwuU6NI34/c4uKHR2fWCo1/CbPm4lkxSt1TOEfWT1Ycy6OdQmPFVp8Nc1xyLi1NpJB
-	b4c+Ef+g==;
+	bh=/vBka3ABZcniwH/u8QWX2xHT7esEXtapMcD7AcTvpic=; b=tVmg1E2jXiO/YCKM2AfGXvUzjz
+	EYl9ULVJyheisrf5N/g37Zy8YVqIUcJu+0rhYnRFrGsfytPF0TC17+cKvOLaDNtL3MXf17NihSnUG
+	7Io5P9BNH2KBQ1mMbviNws++jROVSkkdQ8Rik6CQh4ceJ4rc7fchfwM50pJZ0+uH9rPYPZQBr0W+j
+	SbgCyRlDvvOO2P32qfxMGSZclFh948KPBCdfQAVt/zFDRI93z2Zm7oG0C/do5HwzrY9MZ67x1538t
+	dmDGZW0heyMWF7vamJ/GfiTE14c2rgsCASYidFeqLgQyMwX108J3kZlOOlXeX1Z0TgoBUTNXGRciL
+	lejNfhLg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rqqoZ-000000053MM-0l3P;
-	Sun, 31 Mar 2024 08:45:19 +0000
-Received: from mail-wr1-x429.google.com ([2a00:1450:4864:20::429])
+	id 1rqqoc-000000053Ov-0XAG;
+	Sun, 31 Mar 2024 08:45:22 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rqqoQ-000000053G6-36aI
+	id 1rqqoU-000000053Hz-2h6W
+	for linux-um@bombadil.infradead.org;
+	Sun, 31 Mar 2024 08:45:14 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Cc:To:In-Reply-To:References:
+	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
+	From:Sender:Reply-To:Content-ID:Content-Description;
+	bh=/vBka3ABZcniwH/u8QWX2xHT7esEXtapMcD7AcTvpic=; b=K0jLOsaqtxLHBBCwQleFm3b1/i
+	HTqmv27aJN0TXlUNHeK15QMvsHHZa0moJkHMwMd/04qjXiaFxvoIpajuB5Sd/KbouvQapIory4GiX
+	HCEhWvVumZyKdmXwBQjPaY4Ao7U6ezUeF5Myki3JxsNh9PYG4yispDtIW4/3jPAILAs9Hg/4+IRL/
+	VQvt5c1h5vGOJW5uGopvOIzscwJpINSpu8q33eo6oIvytKC67PBSEA498DV2FdBaIwUzLXYX6+yE5
+	HlO/MhLIiclUm+sAR1uND1CjfW3cGP02LPXLst/BCLSfg+7s8B15OD4giJnNIfYeWZ+4/QfiVWIaw
+	KzQSSDkg==;
+Received: from mail-wr1-x431.google.com ([2a00:1450:4864:20::431])
+	by desiato.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rqqoK-00000002SFh-1VEf
 	for linux-um@lists.infradead.org;
-	Sun, 31 Mar 2024 08:45:13 +0000
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-341e3682c78so1878142f8f.0
-        for <linux-um@lists.infradead.org>; Sun, 31 Mar 2024 01:45:10 -0700 (PDT)
+	Sun, 31 Mar 2024 08:45:12 +0000
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-3416a975840so2611919f8f.0
+        for <linux-um@lists.infradead.org>; Sun, 31 Mar 2024 01:45:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1711874709; x=1712479509; darn=lists.infradead.org;
+        d=linaro.org; s=google; t=1711874700; x=1712479500; darn=lists.infradead.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=EPamPBtPxW6+pkIV3m4EaBMhb46zDx5KgvXpbm+zagg=;
-        b=FECfwljdkJbUSYMWwZbxo6eyietlyjkX24r9FLsl5qotpCdCU9tebh9xb/7GtzFJHd
-         m8/prCQcL3NFKIgMqppwcZYejfnj+np5cDLalYhvXGJ5BapIUsJqZ+zAgUCcGD26/52w
-         +TJAxyIBajlEOCYphPgzkSQnWqA0RSVN2hPLN4siP9F9j/E0/eNIomkmXK4Pf4vVOlLl
-         iU/aRkqP4WvafNtyPeJEUCYO0LoQ91EbRQX5lfei1mFzg2zbKS1iuUX2nyINqbHcrw8Q
-         x51zt4SZk4YeFKmpmI4vQQE3XXu9qBVm6FgDcgmRknBkzbA+c1ljD/DVhy+fpxKk8Gv+
-         O4og==
+        bh=/vBka3ABZcniwH/u8QWX2xHT7esEXtapMcD7AcTvpic=;
+        b=VHSdxC8BzRsAFpsptZswXWRTX9gY6dmTPKmpXpQGaBgvx6mT4N7S/ZLpnfIXRARP2d
+         cUk4FwgdhUHoRJcyk2lLlPs0a+Wq7+uMTNXUegNyyUB/MFt+yybW1DK1IFXeboOv6lh6
+         2cMi/oDktXvgQDhTjnSniUhnJr8n9cVgvdOwnIUmJ1kKQgPOO9oDUWa/5+KESUvHjfhJ
+         WuiyMMGGxAwHuPTqOWuaPmcLqSPe5kbJyq+kViGZMIl5FZIooAClDZjgwvP583Qmz/1V
+         t3INlafRdANCJFmlkPBq0iHoe+EK47U9yuh5PrIDD16ohkuzsxDlENZnTQgo2/zjOsRa
+         rUOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711874709; x=1712479509;
+        d=1e100.net; s=20230601; t=1711874700; x=1712479500;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=EPamPBtPxW6+pkIV3m4EaBMhb46zDx5KgvXpbm+zagg=;
-        b=K/jgJBkdROR0VRaIcC8uczqSuqbaW7DeLfPGV7EuWEC+N+fAKeJPPpDzzWfA5bZ/ib
-         xuU/eMVGEqKoaJRBKJvoUaoRQ+q6/mU249XKfhayF4LETLHiMxGtGnBmFeqOiuiO4yCR
-         fOk5LUvwBf+eCDR2gvxHlCldVbilqBo9IA/EYAlma7rr4hQmHvLew5bg06YVab8b5+Az
-         RPCZPqL84T2N3UKwbWnni2X8vVUUfe8Y7J8LdiaadMY8UWpFDUX7gjq1ABfJnN91YIX+
-         b0wb6jfPPu20BglA9BiQZK4r0tAAM1ykk7piwktWUCYBgfvZJNA6MR8CZqksDea86L5m
-         l9SA==
-X-Forwarded-Encrypted: i=1; AJvYcCUSWC/+iW9J1lpLFiE0pFTf6iRjrUQAAaeBnbuglAPd0Nt5DdofRIQRgo+fLaH/sAavp5FxgQ7xFQi4XvcwI8YcmSQ8Hkwnaoy9yVqX
-X-Gm-Message-State: AOJu0Ywwaya1q/a1U79EUV38FQ3PWztZwL1CbkT4axnBUikVQl96W00u
-	f9X8VbWib1QbKAwhMkWW/ESrkx0Kbw/p+6j/UZTf5KagIceot9/VFBFXmEx9A18=
-X-Google-Smtp-Source: AGHT+IG3jSNF7268J0E1HJfmQrmSXJ4Wl8mFjBEZXGvEomzawa1g4Wm2Mox5PQKcv6wxXeChlF8YxA==
-X-Received: by 2002:adf:fe87:0:b0:33e:ce15:8a15 with SMTP id l7-20020adffe87000000b0033ece158a15mr3641010wrr.5.1711874709483;
-        Sun, 31 Mar 2024 01:45:09 -0700 (PDT)
+        bh=/vBka3ABZcniwH/u8QWX2xHT7esEXtapMcD7AcTvpic=;
+        b=jWyhKv34zKSZrErlb9s6TBOsNRLTkONkEc6yp8+agwn5GdE6mgWt9yKiyaFVavJPRl
+         KfgWzgT/vktuDS6fVeBgaUWao+jtHzWFejJL1VDBJl9OhY4rcWtr+DgBQ7BJsradQYON
+         X/jjK9x873QKdqrdagfZ1O9/SJpi7c4XyotmF/W6eVlREd3FMJdyR3VjbPLRMKdLCs4L
+         Du0B4mSlhYVS/bM/WmjLqAFhPtP1TCZsfk/I0/wuLLUQF4ji2Q79D1rzYacsTAWqQc6r
+         IUkvdnuSHCBSS3XSkRHnJ0ocxGfngPRnFPVqW+5NScbcrnxWJ0kUP6L59RukV7WfRM19
+         MnMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVU9lIsLEIltdsEieJTSO7Vz+wm2NWQ6xncrZ7OM5A+kVUHGlAsCJqZe0Hg+DBmQhqCdTobcwOhfY5oCH0cJsogYSloyVaXfBqkEuFB
+X-Gm-Message-State: AOJu0YwsREQdy7fIwDtuK/HCTi6Cp7d7HU/eUl/u3hXeC993nvz1EaL+
+	QqH8t/alNR7wcKv+AZjQzTXthC+uXdNvCxwAAIfYHhaz0Io2cP3RezbsENCffWc=
+X-Google-Smtp-Source: AGHT+IGHu2FLUbvwsuKAjPidSr353dvDp7GuCk2BJH42ai3YiGwqE+E/4IAqydG6le1xjhRiCRJmlw==
+X-Received: by 2002:a5d:4246:0:b0:341:bf35:5088 with SMTP id s6-20020a5d4246000000b00341bf355088mr3888713wrr.52.1711874700246;
+        Sun, 31 Mar 2024 01:45:00 -0700 (PDT)
 Received: from [127.0.1.1] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id k17-20020adff5d1000000b00341b7388dafsm8436003wrp.77.2024.03.31.01.45.04
+        by smtp.gmail.com with ESMTPSA id k17-20020adff5d1000000b00341b7388dafsm8436003wrp.77.2024.03.31.01.44.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Mar 2024 01:45:08 -0700 (PDT)
+        Sun, 31 Mar 2024 01:44:59 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Sun, 31 Mar 2024 10:43:56 +0200
-Subject: [PATCH v2 09/25] virtio_console: drop owner assignment
+Date: Sun, 31 Mar 2024 10:43:54 +0200
+Subject: [PATCH v2 07/25] bluetooth: virtio: drop owner assignment
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240331-module-owner-virtio-v2-9-98f04bfaf46a@linaro.org>
+Message-Id: <20240331-module-owner-virtio-v2-7-98f04bfaf46a@linaro.org>
 References: <20240331-module-owner-virtio-v2-0-98f04bfaf46a@linaro.org>
 In-Reply-To: <20240331-module-owner-virtio-v2-0-98f04bfaf46a@linaro.org>
 To: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
@@ -127,26 +142,26 @@ Cc: virtualization@lists.linux.dev, linux-doc@vger.kernel.org,
  linux-sound@vger.kernel.org, 
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1103;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=797;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=CUCGqZGlbwrgPkwPeA7fzEXfYZ5lWG+kw/qtWPfvSV4=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmCSJY2K0WgWstI+JyoJVlI8wvHUdkoPQyLPDHn
- 4y16zZ8fXiJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgkiWAAKCRDBN2bmhouD
- 180zD/9DCleQCk0epueksPN87k8Rp6GpcfhV+x4ryTb7+1K/feJB0wQfepIMa34bCTenS9UDOq2
- 17ccCayDu3cNPaVqPJkWZB7UHFd3M2I8rG5Zqv528TsLUB5P3GbKEzcbyWqO5e4agxHE8cl7Tj7
- WxP1hYOzNaXSzfgBdmLEdZnCkyjCjsj/RIsXHYE8MS+ZSxOj7lM0opJpEh0nm1LFrwJ2qBc7/He
- vC502dc39B5RmOcBsqj3ddPhdRhpLfNdx4gAx6ZVOKGRozzVnMD+nk2Fq+qw5cTF65PYbNVfiW3
- AjKdSMYJ3DeXggQXymSeoR1ShLp7brAPxaXnmtWrxc85IQfO8gZWq1+hMhjUZF7ufo60dkFBjDz
- mCwrbXy88PJtANZ1FIpswOU8JKtrv46Htzjm7Z9zDzUDY9iXPHJFYH1Pg/cXtyi8vzEjpE2XW6L
- SnnfiTn3zE+JLip/Gk6QPHvHJc3RjcXC8N675rP1wBc1xZ/5JkNuCSCMUHTviSCx1VCcyP9vfPw
- nrbK2ErijtG+z1HgWesUOmEVRyAKQsJr3pzDuAHRRgxKPPP7fuZHNBH1ddvq7lYw/S5sxT4q+pm
- wU3Fapsvk4HWIMkJhBfYxaHhi6SKit31adV0tbCNXvebNcsyFe6pgKRsPlRXbNuSiMeYZy4VS4p
- 80u8Jql9MNv6YBQ==
+ bh=RVE008LGGmmk5WXgZGxtm6p/ays+12n/AyoNVnX9umo=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBmCSJWgux1UKxOir90nq5+7EUMXVeKU7DwLrCzk
+ Bafs1coq9uJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZgkiVgAKCRDBN2bmhouD
+ 15K8EACUu9gS/2wREcsuKbu+4sGKqkB6ND2x9NAo7i3nS2L/g7FIP1Gc2f2b1l8GlP/qgmcBRbN
+ TJjhPbgppsLyX5MMxYZertsyVFSDRJBiGa3jDd8mSsTsoYqXIt2UoVs3ZeO2Jki+GcyhW32Pgld
+ m26G72p2dXSd3XuTzpVDgu3bOz34rS+9oLDdRYLTX7+To0LTokkqgw/e/+xMhymvX829JWhBVnH
+ /dt3ZSSONvJohlbPbFwK76FJmeWWcXhZtc9Gh6gM5CWsPWu5dH18kKxnzKLVvCLsy3mmuaAiZFG
+ 6RwnaAnltaplfrZ1DDLtUO6vPioQnE1Fm30MZy3AU9bmL9q6+Dz8OllTFWiQNp5V6TyvPbjwNG4
+ 5PB7mKgdP89TmkRPG1O/jdnh/ZuvWyId6soz08SjKDH11xgp2rB4OUqCXiBBxPVG3uSkB8tCopY
+ KsZe6kFLp18/n+fx5upudyi72boGRNmz29kOvLkwQv3WMSb3Yd5t7r1stSxwLbCzkFW6jRc2x+e
+ DWXW3ZLyHFjkYGy2XwPdkGs/ERm+7prUHx/AKf5MOHewCtJKunxib85KPyF1E9qXwxjhL95S5eK
+ z+nGbNkOAyQC1HwpKNQz+jh76cI3BSefUT0gDs+XTiN/JnmB1sg06tEJ98+Ed1Gym7uUR9QUMXw
+ 52ZuE329cJlElMQ==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240331_014511_359520_679B1ADA 
-X-CRM114-Status: GOOD (  11.93  )
+X-CRM114-CacheID: sfid-20240331_094506_807366_A72CD05B 
+X-CRM114-Status: GOOD (  12.91  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -169,29 +184,21 @@ Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Depends on the first patch.
 ---
- drivers/char/virtio_console.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/bluetooth/virtio_bt.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
-index 035f89f1a251..d9ee2dbc7eab 100644
---- a/drivers/char/virtio_console.c
-+++ b/drivers/char/virtio_console.c
-@@ -2173,7 +2173,6 @@ static struct virtio_driver virtio_console = {
- 	.feature_table = features,
- 	.feature_table_size = ARRAY_SIZE(features),
- 	.driver.name =	KBUILD_MODNAME,
--	.driver.owner =	THIS_MODULE,
- 	.id_table =	id_table,
- 	.probe =	virtcons_probe,
- 	.remove =	virtcons_remove,
-@@ -2188,7 +2187,6 @@ static struct virtio_driver virtio_rproc_serial = {
- 	.feature_table = rproc_serial_features,
- 	.feature_table_size = ARRAY_SIZE(rproc_serial_features),
- 	.driver.name =	"virtio_rproc_serial",
--	.driver.owner =	THIS_MODULE,
- 	.id_table =	rproc_serial_id_table,
- 	.probe =	virtcons_probe,
- 	.remove =	virtcons_remove,
+diff --git a/drivers/bluetooth/virtio_bt.c b/drivers/bluetooth/virtio_bt.c
+index 2ac70b560c46..463b49ca2492 100644
+--- a/drivers/bluetooth/virtio_bt.c
++++ b/drivers/bluetooth/virtio_bt.c
+@@ -417,7 +417,6 @@ static const unsigned int virtbt_features[] = {
+ 
+ static struct virtio_driver virtbt_driver = {
+ 	.driver.name         = KBUILD_MODNAME,
+-	.driver.owner        = THIS_MODULE,
+ 	.feature_table       = virtbt_features,
+ 	.feature_table_size  = ARRAY_SIZE(virtbt_features),
+ 	.id_table            = virtbt_table,
 
 -- 
 2.34.1
