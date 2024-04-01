@@ -4,112 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42FADCD1284
-	for <linux-um@archiver.kernel.org>; Sun, 31 Mar 2024 19:15:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64CB2CD1288
+	for <linux-um@archiver.kernel.org>; Mon,  1 Apr 2024 11:05:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=9l5MqegH7Simo3kuL9PR9df38NBYYLEAIAEIbsnnXJ0=; b=HOFfsezgB0JXmnDqer/rbMBy4Q
-	e+v+jLKombau5bKnGPwHeWL7DBIrJoZpUdnmoaVO/pQuFxLOWH+HU44AMhXkwcxN0V1MBBQVdeEHH
-	P/wFgO5hGluhRgMsYpMT21qJkfRqoqN0v8rVZtN7hkydd2vPzmxbdnFjKxi+eGpRj4Gkai1cAU26Q
-	dSSLvN1gk9Xh+rXP2VK/BGscDMssg9QdikA8tZsXuTAaDkc9/Jb/UMrDA+VoFU3D8kz72128zWV1i
-	gPPLaxevwt6T9LINcNMRLG9d+eCB4R53usm8tCt3KKmmMZCARC5bQYP3vg0RCnsMs0Ya2uXwwGwKL
-	X25PXBTA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=REYLSSPl3HAZZ6VAY/+hq9TrYv8ZstlMccIloC6fHHA=; b=iE3zitX/iWhiAoi7BFFccix7jB
+	pHFgDiVHxHgri2mCv1LvbX6TtKC2XLaw8inqC+ANHtowQZeGJYjZLFxl7cl3iXVkbwfP189GCNYWC
+	115ipIuiHIOw1RNSNJ2zreyfwx6NVo0uHE54aWJOVSKSww3wV36PUHYDOBVg4RAh46szxXkYrg6oC
+	nVPttEIxAd18X4eFuVIkcC278e0NTXLgfb5EId/khC7XTylGKfUOmLvpTDuj6YMwh/XKuTYmGo0HC
+	9eR0ETXfxxXX16W57Bx6oEOVoYwGLlPNRDd2JodK9nvt2xTOIL88p1x+j6qPknA3hqasxXSiHwRIt
+	Sz0EmZCQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rr0e8-000000069N1-3RlQ;
-	Sun, 31 Mar 2024 19:15:12 +0000
-Received: from foss.arm.com ([217.140.110.172])
-	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rr0dt-000000069E2-1vtN;
-	Sun, 31 Mar 2024 19:14:59 +0000
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E8F3F11FB;
-	Sun, 31 Mar 2024 12:15:20 -0700 (PDT)
-Received: from bogus (unknown [10.57.81.195])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0E84A3F64C;
-	Sun, 31 Mar 2024 12:14:34 -0700 (PDT)
-Date: Sun, 31 Mar 2024 20:14:32 +0100
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	David Hildenbrand <david@redhat.com>,
-	Gerd Hoffmann <kraxel@redhat.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Stefan Hajnoczi <stefanha@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-	Marcel Holtmann <marcel@holtmann.org>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	Olivia Mackall <olivia@selenic.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Amit Shah <amit@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Gonglei <arei.gonglei@huawei.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Cristian Marussi <cristian.marussi@arm.com>,
-	Viresh Kumar <vireshk@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	David Airlie <airlied@redhat.com>,
-	Gurchetan Singh <gurchetansingh@chromium.org>,
-	Chia-I Wu <olvaffe@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Alexander Graf <graf@amazon.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Christian Schoenebeck <linux_oss@crudebyte.com>,
-	Stefano Garzarella <sgarzare@redhat.com>,
-	Kalle Valo <kvalo@kernel.org>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>, Ira Weiny <ira.weiny@intel.com>,
-	Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Vivek Goyal <vgoyal@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>,
-	Anton Yakovlev <anton.yakovlev@opensynergy.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	virtualization@lists.linux.dev, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	iommu@lists.linux.dev, netdev@vger.kernel.org, v9fs@lists.linux.dev,
-	kvm@vger.kernel.org, linux-wireless@vger.kernel.org,
-	nvdimm@lists.linux.dev, linux-remoteproc@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	Sudeep Holla <sudeep.holla@arm.com>, alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org
-Subject: Re: [PATCH v2 11/25] firmware: arm_scmi: virtio: drop owner
- assignment
-Message-ID: <20240331191432.sfp5dq6nyvf4yf34@bogus>
-References: <20240331-module-owner-virtio-v2-0-98f04bfaf46a@linaro.org>
- <20240331-module-owner-virtio-v2-11-98f04bfaf46a@linaro.org>
+	id 1rrFTS-00000007WrW-2P3D;
+	Mon, 01 Apr 2024 11:05:10 +0000
+Received: from out0-218.mail.aliyun.com ([140.205.0.218])
+	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rrFTO-00000007Wq1-0URt
+	for linux-um@lists.infradead.org;
+	Mon, 01 Apr 2024 11:05:08 +0000
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R761e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047202;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---.X.JOBTr_1711969484;
+Received: from 30.230.81.244(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.X.JOBTr_1711969484)
+          by smtp.aliyun-inc.com;
+          Mon, 01 Apr 2024 19:04:51 +0800
+Message-ID: <39038eba-ecd7-4332-b7a0-bfd2c963f5ef@antgroup.com>
+Date: Mon, 01 Apr 2024 19:04:42 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240331-module-owner-virtio-v2-11-98f04bfaf46a@linaro.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8] um: Enable preemption in UML
+To: anton.ivanov@cambridgegreys.com, linux-um@lists.infradead.org
+Cc: richard@nod.at, johannes@sipsolutions.net
+References: <20240328195038.1403093-1-anton.ivanov@cambridgegreys.com>
+Content-Language: en-US
+From: "Tiwei Bie" <tiwei.btw@antgroup.com>
+In-Reply-To: <20240328195038.1403093-1-anton.ivanov@cambridgegreys.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240331_121457_710777_5CD4B99E 
-X-CRM114-Status: UNSURE (   8.73  )
+X-CRM114-CacheID: sfid-20240401_040506_395203_3A05DD11 
+X-CRM114-Status: UNSURE (   6.21  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -125,13 +62,63 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sun, Mar 31, 2024 at 10:43:58AM +0200, Krzysztof Kozlowski wrote:
-> virtio core already sets the .owner, so driver does not need to.
->
+On 3/29/24 3:50 AM, anton.ivanov@cambridgegreys.com wrote:
+[...]
+> +
+> +void kernel_fpu_begin(void)
+> +{
+> +	preempt_disable();
+> +
+> +	WARN_ON(this_cpu_read(in_kernel_fpu));
+> +
+> +	this_cpu_write(in_kernel_fpu, true);
+> +
+> +#ifdef CONFIG_64BIT
+> +	if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVEOPT)))
+> +		__builtin_ia32_xsaveopt64(&current_thread_info()->aux_fp_regs, KNOWN_387_FEATURES);
+> +	else if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVE)))
+> +			__builtin_ia32_xsave64(&current_thread_info()->aux_fp_regs, KNOWN_387_FEATURES);
 
-Acked-by: Sudeep Holla <sudeep.holla@arm.com>
+Only need two levels of indentation (i.e. two tabs) here.
 
--- 
+> +	else
+> +		__builtin_ia32_fxsave64(&current_thread_info()->aux_fp_regs);
+> +#else
+> +	if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVEOPT)))
+> +		__builtin_ia32_xsaveopt(&current->aux_fp_regs, KNOWN_387_FEATURES);
+> +	else if (likely(cpu_has(&boot_cpu_data, X86_FEATURE_XSAVE)))
+> +			__builtin_ia32_xsave(&current->aux_fp_regs, KNOWN_387_FEATURES);
+
+Ditto.
+
+> +	else
+> +		__builtin_ia32_fxsave(&current->aux_fp_regs);
+> +#endif
+> +}
+> +EXPORT_SYMBOL_GPL(kernel_fpu_begin);
+> +
+[...]
+>  
+> @@ -466,6 +475,8 @@ void flush_tlb_page(struct vm_area_struct *vma, unsigned long address)
+>  
+>  	address &= PAGE_MASK;
+>  
+> +	preempt_disable();
+> +
+>  	pgd = pgd_offset(mm, address);
+>  	if (!pgd_present(*pgd))
+>  		goto kill;
+> @@ -520,6 +531,7 @@ void flush_tlb_page(struct vm_area_struct *vma, unsigned long address)
+>  
+>  	*pte = pte_mkuptodate(*pte);
+>  
+> +	preempt_enable();
+>  	return;
+>  
+>  kill:
+
+Preemption isn't enabled in the error path.
+
 Regards,
-Sudeep
+Tiwei
 
