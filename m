@@ -4,78 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DB70AC41513
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DAC47C04FF6
 	for <linux-um@archiver.kernel.org>; Tue, 16 Apr 2024 21:46:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Date:Subject:From:Cc:To:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Subject:Date:From:Cc:To:
 	References:In-Reply-To:Message-Id:Reply-To:MIME-Version:Content-Type:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=9vTyU2l3t+ufezl9NM7trdVAZw+NQOYaPFZvexa2H5c=; b=ik3htiDg1PenD7uJejPDBYwgeB
-	Id+t9XadTteBj3kXUVVvyZtYKc/NS6zFbitlP7F+yzjDmWfFToe/LAPiA8hxkBakBgEyjKmJI7A7v
-	CDkuufQlPOWXtuzzLX56m87KR+SGv6KDFgdmFtbu92eHVMIImKJioAZ0edb3LPDQLHpUqJ87P1YMw
-	5BorDmffbJ2PsGA9Pp+IDbn5BtWkavi8xMfZ31cTMVAChjQt9rA/GKJmep9vAt0L1k6sAa/RrRj1M
-	T2PwQmIfVFsR0mfjtb4JhgfBWVrCOydk+OzmbcsAJTnMQHtPGKq2sC+Ua+9PDpAYNNBidy1PU4GZG
-	QqnoafbQ==;
+	bh=9vTyU2l3t+ufezl9NM7trdVAZw+NQOYaPFZvexa2H5c=; b=tTFlwDMQ93c5gau3Y3vjdEuNrL
+	J9u2nrLKDvjsIP1u56NjUwhHYAk61C6Q3qQ7xS+PNJ5fHZEPqen+yOxSfK7FFj7XtVQjCBJsSWrul
+	RgRqCqUlVqnsI5YrXUe7zXB8ujploy6iOeEmF+waZJw03ya4QBiQSp1iGpvipe1miCh/NeMoWAEdd
+	P9XNTSmkTElozt3JWK1RVRp2qhv3JnLH/+crEqZ7R8eu6X6lU+FYwyul8t6HNju3qvN0QMAE/LcV/
+	NxWPNEdvpMtmoFzuBcjBtLhpWFm15eJqetp8Opo6qKKsFvsmA+Oh/RmZYcmOPc3YDLZG4nefDw/IB
+	RS7872yQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rwqdI-0000000DwSS-1hpD;
+	id 1rwqdI-0000000DwSG-0A36;
 	Tue, 16 Apr 2024 21:46:28 +0000
 Received: from mx0b-00823401.pphosted.com ([148.163.152.46])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rwoLJ-0000000DVhW-0O0o;
-	Tue, 16 Apr 2024 19:19:52 +0000
-Received: from pps.filterd (m0355091.ppops.net [127.0.0.1])
-	by mx0b-00823401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43GGDbkO026743;
-	Tue, 16 Apr 2024 19:19:23 GMT
+	id 1rwmYr-0000000DALo-2kSd;
+	Tue, 16 Apr 2024 17:25:45 +0000
+Received: from pps.filterd (m0355092.ppops.net [127.0.0.1])
+	by mx0b-00823401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43GFcLBT010095;
+	Tue, 16 Apr 2024 17:24:58 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=motorola.com; h=
-	message-id:in-reply-to:references:to:cc:from:subject:date; s=
-	DKIM202306; bh=9vTyU2l3t+ufezl9NM7trdVAZw+NQOYaPFZvexa2H5c=; b=Q
-	la0/1lagQ+CRwBPmfuSMHqN/BmkLBAxYzvtE5AgErO/S0QtIQyXCkBGaZQh/o+e8
-	U1sruERg1FQY7Gxhx1ZDI55iL21Ck2ejCYnX2DFnh2/85yarjsbufcIcWAcqpsQu
-	QChNWY0l++bLFGpMgyifp69z9tpd43PzV6VWZGrbPF/BxpdxqrmwKyHobmPvQ2Xy
-	qR8+dgxqO2ZJCLu8z0+M5RxIKSr4iBso5Cy+2TZBJgpxFGxsraDqmmcN9xQxQ4XR
-	uH5BYRrkhUDg7Syx5AgOy2XBoSs7JlpQ47UYf+5hTgmf4b/1YkF5y4GxQO+ngpCS
-	sSghLiKpHLFrj734kjoNQ==
-Received: from va32lpfpp04.lenovo.com ([104.232.228.24])
-	by mx0b-00823401.pphosted.com (PPS) with ESMTPS id 3xhjbekf1q-1
+	message-id:in-reply-to:references:to:cc:from:date:subject; s=
+	DKIM202306; bh=9vTyU2l3t+ufezl9NM7trdVAZw+NQOYaPFZvexa2H5c=; b=0
+	QtJvqArI8oZRnth8heREoJc8AumCg45RyB1sbtTAEfW5J+L/RORkTOSJrlQ9H+fU
+	i4M8nTuI6oQI/uGnQR4cA4iXkyzsGq318AwnxFEGJr3FMtBjKwDheclHEbuiH3Ft
+	xPEB3HaUI/jctn1nM86DsICaVCePG5dXuh+wuOXlzLFXsQ2JZHxY25wob1vcxzOo
+	arSMuM1q43dNlOFqzeOEumfathsziVmDCLszeic//xV1Rc6uBGhaLbjySsaHCvrE
+	0QtBb07boX8KpawF7af1zfVeWmjbFJCn/TSk25+4NGBeOrahsbNKBoAMK/GBtlYQ
+	fuvsgDUTr3t2jkivAlRYg==
+Received: from ilclpfpp01.lenovo.com ([144.188.128.67])
+	by mx0b-00823401.pphosted.com (PPS) with ESMTPS id 3xha96c2tj-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 19:19:22 +0000 (GMT)
-Received: from va32lmmrp02.lenovo.com (va32lmmrp02.mot.com [10.62.176.191])
+	Tue, 16 Apr 2024 17:24:58 +0000 (GMT)
+Received: from va32lmmrp01.lenovo.com (va32lmmrp01.mot.com [10.62.177.113])
 	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by va32lpfpp04.lenovo.com (Postfix) with ESMTPS id 4VJv3t0jJrzgK7d;
-	Tue, 16 Apr 2024 19:19:22 +0000 (UTC)
+	by ilclpfpp01.lenovo.com (Postfix) with ESMTPS id 4VJrWs2NM6zdDsy;
+	Tue, 16 Apr 2024 17:24:57 +0000 (UTC)
 Received: from ilclbld243.mot.com (ilclbld243.mot.com [100.64.22.29])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: mbland)
-	by va32lmmrp02.lenovo.com (Postfix) with ESMTPSA id 4VJv3t09CVz2Z11p;
-	Tue, 16 Apr 2024 19:19:22 +0000 (UTC)
-Message-Id: <20240416122254.868007168-4-mbland@motorola.com>
+	by va32lmmrp01.lenovo.com (Postfix) with ESMTPSA id 4VJrWs0l8Zz2VZS7;
+	Tue, 16 Apr 2024 17:24:57 +0000 (UTC)
+Message-ID: <20240416122254.868007168-4-mbland@motorola.com>
 In-Reply-To: <20240416122254.868007168-1-mbland@motorola.com>
 References: <20240416122254.868007168-1-mbland@motorola.com>
 To: linux-mm@kvack.org
 Cc: Maxwell Bland <mbland@motorola.com>, Richard Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@kernel.org>, Alexander Potapenko <glider@google.com>, Marco Elver <elver@google.com>, Dmitry Vyukov <dvyukov@google.com>, Russell King <linux@armlinux.org.uk>, Andrey Ryabinin <ryabinin.a.a@gmail.com>, Andrey Konovalov <andreyknvl@gmail.com>, Vincenzo Frascino <vincenzo.frascino@arm.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>, Brian Cain <bcain@quicinc.com>, Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Geert Uytterhoeven <geert@linux-m68k.org>, Sam Creasey <sammy@sammy.net>, Michal Simek <monstr@monstr.eu>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>, Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>, Stafford Horne <shorne@gmail.com>, "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, "David S. Miller" <davem@davemloft.net>, Andreas Larsson <andreas@gaisler.com>, Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Muchun Song <muchun.song@linux.dev>, Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>, Maxwell Bland <mbland@motorola.com>, Linus Walleij <linus.walleij@linaro.org>, David Hildenbrand <david@redhat.com>, Arnd Bergmann <arnd@arndb.de>, Ard Biesheuvel <ardb@kernel.org>, Ryan Roberts <ryan.roberts@arm.com>, Mark Rutland <mark.rutland@arm.com>, Nikhil V <quic_nprakash@quicinc.com>, Rick Edgecombe <rick.p.edgecombe@intel.com>, Baolin Wang <baolin.wang@linux.alibaba.com>, Bibo Mao <maobibo@loongson.cn>, Tianrui Zhao <zhaotianrui@loongson.cn>, Randy Dunlap <rdunlap@infradead.org>, Vlastimil Babka <vbabka@suse.cz>, Kent Overstreet <kent.overstreet@linux.dev>, Peter Xu <peterx@redhat.com>, Jiangfeng Xiao <xiaojiangfeng@huawei.com>, Alexandre Ghiti <alexghiti@rivosinc.com>, Jisheng Zhang <jszhang@kernel.org>, Conor Dooley <conor.dooley@microchip.com>, Mason Huo <mason.huo@starfivetech.com>, Sia Jee Heng <jeeheng.sia@starfivetech.com>, Song Shuai <songshuaishuai@tinylab.org>, Gerald Schaefer <gerald.schaefer@linux.ibm.com>, Qi Zheng <zhengqi.arch@bytedance.com>, Hugh Dickins <hughd@google.com>, Jason Gunthorpe <jgg@ziepe.ca>, Breno Leitao <leitao@debian.org>, Josh Poimboeuf <jpoimboe@kernel.org>, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org, kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, kvm@vger.kernel.org, linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Christoph Hellwig <hch@infradead.org>, Christophe Leroy <christophe.leroy@csgroup.eu>, David Hildenbrand <david@redhat.com>, Conor Dooley <conor.dooley@microchip.com>, linux-um@lists.infradead.org
+ linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-um@lists.infradead.org
 From: Maxwell Bland <mbland@motorola.com>
-Subject: [PATCH 3/5 RESEND] mm: add vaddr param to pmd_populate_kernel
-Date: Tue, 16 Apr 2024 14:18:17 -0500
-X-Proofpoint-ORIG-GUID: ums4jeNcJVpj771Dp40VIiexoS2QWl9Y
-X-Proofpoint-GUID: ums4jeNcJVpj771Dp40VIiexoS2QWl9Y
+Date: Fri, 5 Apr 2024 13:37:00 -0500
+Subject: [PATCH 3/5] mm: add vaddr param to pmd_populate_kernel
+X-Proofpoint-GUID: FM6JEqnvdEu616iriwx9HZz23RgSOkSt
+X-Proofpoint-ORIG-GUID: FM6JEqnvdEu616iriwx9HZz23RgSOkSt
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-16_16,2024-04-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- spamscore=0 impostorscore=0 suspectscore=0 bulkscore=0 clxscore=1015
- mlxscore=0 lowpriorityscore=0 malwarescore=0 phishscore=0 adultscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404160120
+ definitions=2024-04-16_14,2024-04-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
+ impostorscore=0 mlxlogscore=999 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 clxscore=1015 malwarescore=0 spamscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404160108
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240416_121945_361660_497C465B 
-X-CRM114-Status: GOOD (  25.14  )
+X-CRM114-CacheID: sfid-20240416_102538_058288_D229F19F 
+X-CRM114-Status: GOOD (  23.75  )
 X-Mailman-Approved-At: Tue, 16 Apr 2024 14:46:26 -0700
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -90,6 +90,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
+Message-ID: <20240405183700.3lQowZFKUlSY4ByrM5iAKaY255lbNYhiK8Zkm3Iuxxs@z>
 
 This patch affords each architecture the ability to condition the
 population of page middle directory entries on the virtual address being
