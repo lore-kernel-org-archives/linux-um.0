@@ -4,86 +4,116 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F84BCD1292
-	for <linux-um@archiver.kernel.org>; Mon,  8 Apr 2024 07:47:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E9E9ACD1296
+	for <linux-um@archiver.kernel.org>; Tue,  9 Apr 2024 11:46:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
-	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=C9PeWQPDu98Kc1qd0+KMUFqgm5qvhnhgLIgLamBMyUE=; b=vOHdIEIYFDym/8nuKByfCRX9DC
-	spfho8V5issuwdSgzpHa6k+Q3rC/fLprjm69o1Sa4jc9nHhUAglu6hGnkrKnOIjTjmhYVgx8c14VE
-	iWq07BfROUC1Xv8Omqdqo6nLMX3IQwqx8onetQy329gdlDYjqiEQW7biycBcvBeaAIe2WApoBB5r8
-	BVjFsrx6V3+u04rnsXG0OvGqUm5n82DPKZYWEJ3McH9MheLT43sDYJn7chI9f6BNJwqARt46ho1gs
-	h8R4bmtdaoV30dp8+VIz6P9konpl9z2UCdY3JZqX7KX0g6+3ZIwhvgljgQtvK/IH+39Rgm1CicEYp
-	FynwQ6HQ==;
+	bh=GFjr+qUI/xJlRfC49pDYbbQ+5mOHCUk/2gN5wZX0VPA=; b=iJCqRWQfkqXq8Xh5c8rof+L3FN
+	0F/iBL58iBU++RSNqmyQryh/ffjdNBOPYN56rpJyAkFoc7FB8PYcNUM8r0aUL5k+ew43RdQbgaCTx
+	NVq2Y+paeF3qIhSoFbcfGjLFm/mxml93SGmSuQSL7143hHWxvAjqPoEudrmw7/ICptPhO7m6m3psL
+	c42NQbY2aCA9f0YUyCV4oSL2Yl/gjaTxzq9wa7yJXzuVQGOCy1Rdfi8p+EkWliR8qg6BNnfB7W+Kw
+	AOiHLkdu6fysbwhQyiuiZjLcyZUCNZV4TOu1WA7piTErw2IsRsow6da7SKB+hWEXuU2ZLVfepN3yM
+	km3L+PpA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rtjiv-0000000EjsE-1xY9;
-	Mon, 08 Apr 2024 07:47:25 +0000
-Received: from smtp-190a.mail.infomaniak.ch ([2001:1600:4:17::190a])
+	id 1ru9vL-00000001lui-20cw;
+	Tue, 09 Apr 2024 11:45:59 +0000
+Received: from smtp-fw-52003.amazon.com ([52.119.213.152])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rtjiY-0000000EjaB-2jwP
-	for linux-um@lists.infradead.org;
-	Mon, 08 Apr 2024 07:47:07 +0000
-Received: from smtp-3-0000.mail.infomaniak.ch (smtp-3-0000.mail.infomaniak.ch [10.4.36.107])
-	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4VCh4d3WYzzNSJ;
-	Mon,  8 Apr 2024 09:46:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-	s=20191114; t=1712562417;
-	bh=g0OJqBJvqd+2I5FizdlSOhG5NQKxDPvB2u6ov1eaMnc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=L7Ik5Nr963cU/3FO4wvol+yWjal/E+rl9Ui+vQg8boC+1r26cJLnsQYMxGLdMWlv7
-	 JvZEThlHTn8xtdPmB0PDMcFVLUbLpOulam4ft5TkOg1ADfG0IAN1d9R9NvhvQaGJJ/
-	 Pen1LCs95LGu/Z9XrmAfUBFGYPta1BKtUPFo8Fiw=
-Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4VCh4c4wCnzcNL;
-	Mon,  8 Apr 2024 09:46:56 +0200 (CEST)
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To: Brendan Higgins <brendanhiggins@google.com>,
-	David Gow <davidgow@google.com>,
-	Rae Moar <rmoar@google.com>,
-	Shuah Khan <skhan@linuxfoundation.org>
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"Eric W . Biederman" <ebiederm@xmission.com>,
-	"H . Peter Anvin" <hpa@zytor.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	James Morris <jamorris@linux.microsoft.com>,
-	Kees Cook <keescook@chromium.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>,
-	Marco Pagani <marpagan@redhat.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Thara Gopinath <tgopinath@microsoft.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Zahra Tarkhani <ztarkhani@microsoft.com>,
-	kunit-dev@googlegroups.com,
-	kvm@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	linux-hyperv@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	x86@kernel.org
-Subject: [PATCH v4 RESEND 5/7] kunit: Fix KUNIT_SUCCESS() calls in iov_iter tests
-Date: Mon,  8 Apr 2024 09:46:23 +0200
-Message-ID: <20240408074625.65017-6-mic@digikod.net>
-In-Reply-To: <20240408074625.65017-1-mic@digikod.net>
-References: <20240408074625.65017-1-mic@digikod.net>
+	id 1ru9vG-00000001lpg-3amI;
+	Tue, 09 Apr 2024 11:45:56 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1712663155; x=1744199155;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=GFjr+qUI/xJlRfC49pDYbbQ+5mOHCUk/2gN5wZX0VPA=;
+  b=Y0dE9rV0z2FXP12OtblaxUZjMvOPuxmhZ16LVMXdx9JQNy80EP/SFZsD
+   6DD6HHqkgj9lRStK89cyy0tlfICcQaH5Q0oqaxHuG2HbZ5+m8S5S5QUVs
+   x5l/Lhn2VTh5+F4S0CFHZ5IZROZ75FQFBcwIc5zs3KbzBinvnxytc3XvT
+   Y=;
+X-IronPort-AV: E=Sophos;i="6.07,189,1708387200"; 
+   d="scan'208";a="650727234"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
+  by smtp-border-fw-52003.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 11:45:43 +0000
+Received: from EX19MTAUWC002.ant.amazon.com [10.0.21.151:49900]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.27.169:2525] with esmtp (Farcaster)
+ id 3f52ccb2-10c8-4639-a2de-4651f9e21034; Tue, 9 Apr 2024 11:45:42 +0000 (UTC)
+X-Farcaster-Flow-ID: 3f52ccb2-10c8-4639-a2de-4651f9e21034
+Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Tue, 9 Apr 2024 11:45:38 +0000
+Received: from [0.0.0.0] (10.253.83.51) by EX19D020UWC004.ant.amazon.com
+ (10.13.138.149) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Tue, 9 Apr
+ 2024 11:45:22 +0000
+Message-ID: <7c82670e-6063-4b0f-9bbf-805a0d949d84@amazon.com>
+Date: Tue, 9 Apr 2024 13:45:18 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Infomaniak-Routing: alpha
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 15/25] misc: nsm: drop owner assignment
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, "Michael S. Tsirkin"
+	<mst@redhat.com>, Jason Wang <jasowang@redhat.com>, Xuan Zhuo
+	<xuanzhuo@linux.alibaba.com>, Jonathan Corbet <corbet@lwn.net>, "David
+ Hildenbrand" <david@redhat.com>, Gerd Hoffmann <kraxel@redhat.com>, "Richard
+ Weinberger" <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>, Paolo Bonzini
+	<pbonzini@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, Jens Axboe
+	<axboe@kernel.dk>, Marcel Holtmann <marcel@holtmann.org>, "Luiz Augusto von
+ Dentz" <luiz.dentz@gmail.com>, Olivia Mackall <olivia@selenic.com>, Herbert
+ Xu <herbert@gondor.apana.org.au>, Amit Shah <amit@kernel.org>, Arnd Bergmann
+	<arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Gonglei
+	<arei.gonglei@huawei.com>, "David S. Miller" <davem@davemloft.net>, "Sudeep
+ Holla" <sudeep.holla@arm.com>, Cristian Marussi <cristian.marussi@arm.com>,
+	Viresh Kumar <vireshk@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>, David Airlie <airlied@redhat.com>,
+	Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu <olvaffe@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+	<mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, Daniel Vetter
+	<daniel@ffwll.ch>, Jean-Philippe Brucker <jean-philippe@linaro.org>, "Joerg
+ Roedel" <joro@8bytes.org>, Will Deacon <will@kernel.org>, Robin Murphy
+	<robin.murphy@arm.com>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Eric Van Hensbergen
+	<ericvh@kernel.org>, Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet
+	<asmadeus@codewreck.org>, Christian Schoenebeck <linux_oss@crudebyte.com>,
+	Stefano Garzarella <sgarzare@redhat.com>, Kalle Valo <kvalo@kernel.org>, "Dan
+ Williams" <dan.j.williams@intel.com>, Vishal Verma
+	<vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, Ira Weiny
+	<ira.weiny@intel.com>, "Pankaj Gupta" <pankaj.gupta.linux@gmail.com>, Bjorn
+ Andersson <andersson@kernel.org>, Mathieu Poirier
+	<mathieu.poirier@linaro.org>, "James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>, Vivek Goyal
+	<vgoyal@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>, "Anton Yakovlev"
+	<anton.yakovlev@opensynergy.com>, Jaroslav Kysela <perex@perex.cz>, Takashi
+ Iwai <tiwai@suse.com>
+CC: <virtualization@lists.linux.dev>, <linux-doc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-um@lists.infradead.org>,
+	<linux-block@vger.kernel.org>, <linux-bluetooth@vger.kernel.org>,
+	<linux-crypto@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-gpio@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+	<iommu@lists.linux.dev>, <netdev@vger.kernel.org>, <v9fs@lists.linux.dev>,
+	<kvm@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
+	<nvdimm@lists.linux.dev>, <linux-remoteproc@vger.kernel.org>,
+	<linux-scsi@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+	<alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>
+References: <20240331-module-owner-virtio-v2-0-98f04bfaf46a@linaro.org>
+ <20240331-module-owner-virtio-v2-15-98f04bfaf46a@linaro.org>
+From: Alexander Graf <graf@amazon.com>
+In-Reply-To: <20240331-module-owner-virtio-v2-15-98f04bfaf46a@linaro.org>
+X-Originating-IP: [10.253.83.51]
+X-ClientProxiedBy: EX19D035UWA002.ant.amazon.com (10.13.139.60) To
+ EX19D020UWC004.ant.amazon.com (10.13.138.149)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240408_004704_209970_8051C92B 
-X-CRM114-Status: UNSURE (   7.39  )
+X-CRM114-CacheID: sfid-20240409_044555_166420_A4AAC9CE 
+X-CRM114-Status: UNSURE (   7.27  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -99,115 +129,14 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Fix KUNIT_SUCCESS() calls to pass a test argument.
-
-This is a no-op for now because this macro does nothing, but it will be
-required for the next commit.
-
-Cc: Brendan Higgins <brendanhiggins@google.com>
-Cc: Rae Moar <rmoar@google.com>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: David Gow <davidgow@google.com>
-Signed-off-by: Mickaël Salaün <mic@digikod.net>
-Link: https://lore.kernel.org/r/20240408074625.65017-6-mic@digikod.net
----
-
-Changes since v2:
-* Add David's Reviewed-by.
-
-Changes since v1:
-* Add Kees's Reviewed-by.
----
- lib/kunit_iov_iter.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
-
-diff --git a/lib/kunit_iov_iter.c b/lib/kunit_iov_iter.c
-index 859b67c4d697..27e0c8ee71d8 100644
---- a/lib/kunit_iov_iter.c
-+++ b/lib/kunit_iov_iter.c
-@@ -139,7 +139,7 @@ static void __init iov_kunit_copy_to_kvec(struct kunit *test)
- 			return;
- 	}
- 
--	KUNIT_SUCCEED();
-+	KUNIT_SUCCEED(test);
- }
- 
- /*
-@@ -194,7 +194,7 @@ static void __init iov_kunit_copy_from_kvec(struct kunit *test)
- 			return;
- 	}
- 
--	KUNIT_SUCCEED();
-+	KUNIT_SUCCEED(test);
- }
- 
- struct bvec_test_range {
-@@ -302,7 +302,7 @@ static void __init iov_kunit_copy_to_bvec(struct kunit *test)
- 			return;
- 	}
- 
--	KUNIT_SUCCEED();
-+	KUNIT_SUCCEED(test);
- }
- 
- /*
-@@ -359,7 +359,7 @@ static void __init iov_kunit_copy_from_bvec(struct kunit *test)
- 			return;
- 	}
- 
--	KUNIT_SUCCEED();
-+	KUNIT_SUCCEED(test);
- }
- 
- static void iov_kunit_destroy_xarray(void *data)
-@@ -453,7 +453,7 @@ static void __init iov_kunit_copy_to_xarray(struct kunit *test)
- 			return;
- 	}
- 
--	KUNIT_SUCCEED();
-+	KUNIT_SUCCEED(test);
- }
- 
- /*
-@@ -516,7 +516,7 @@ static void __init iov_kunit_copy_from_xarray(struct kunit *test)
- 			return;
- 	}
- 
--	KUNIT_SUCCEED();
-+	KUNIT_SUCCEED(test);
- }
- 
- /*
-@@ -596,7 +596,7 @@ static void __init iov_kunit_extract_pages_kvec(struct kunit *test)
- stop:
- 	KUNIT_EXPECT_EQ(test, size, 0);
- 	KUNIT_EXPECT_EQ(test, iter.count, 0);
--	KUNIT_SUCCEED();
-+	KUNIT_SUCCEED(test);
- }
- 
- /*
-@@ -674,7 +674,7 @@ static void __init iov_kunit_extract_pages_bvec(struct kunit *test)
- stop:
- 	KUNIT_EXPECT_EQ(test, size, 0);
- 	KUNIT_EXPECT_EQ(test, iter.count, 0);
--	KUNIT_SUCCEED();
-+	KUNIT_SUCCEED(test);
- }
- 
- /*
-@@ -753,7 +753,7 @@ static void __init iov_kunit_extract_pages_xarray(struct kunit *test)
- 	}
- 
- stop:
--	KUNIT_SUCCEED();
-+	KUNIT_SUCCEED(test);
- }
- 
- static struct kunit_case __refdata iov_kunit_cases[] = {
--- 
-2.44.0
+Ck9uIDMxLjAzLjI0IDEwOjQ0LCBLcnp5c3p0b2YgS296bG93c2tpIHdyb3RlOgo+IHZpcnRpbyBj
+b3JlIGFscmVhZHkgc2V0cyB0aGUgLm93bmVyLCBzbyBkcml2ZXIgZG9lcyBub3QgbmVlZCB0by4K
+Pgo+IFNpZ25lZC1vZmYtYnk6IEtyenlzenRvZiBLb3psb3dza2kgPGtyenlzenRvZi5rb3psb3dz
+a2lAbGluYXJvLm9yZz4KCgpSZXZpZXdlZC1ieTogQWxleGFuZGVyIEdyYWYgPGdyYWZAYW1hem9u
+LmNvbT4KCgpBbGV4CgoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVyIEdlcm1hbnkgR21iSApL
+cmF1c2Vuc3RyLiAzOAoxMDExNyBCZXJsaW4KR2VzY2hhZWZ0c2Z1ZWhydW5nOiBDaHJpc3RpYW4g
+U2NobGFlZ2VyLCBKb25hdGhhbiBXZWlzcwpFaW5nZXRyYWdlbiBhbSBBbXRzZ2VyaWNodCBDaGFy
+bG90dGVuYnVyZyB1bnRlciBIUkIgMTQ5MTczIEIKU2l0ejogQmVybGluClVzdC1JRDogREUgMjg5
+IDIzNyA4NzkKCgo=
 
 
