@@ -4,96 +4,178 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78060CD128A
-	for <linux-um@archiver.kernel.org>; Tue,  9 Apr 2024 17:28:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EC09CD1297
+	for <linux-um@archiver.kernel.org>; Wed, 10 Apr 2024 07:42:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=bzDpECgxcv/gVK2Eh47txfcjeUm+DcSXrEiDNVslfT0=; b=IeWNX77lAROYpW9p2pEIQWh6uX
-	2Mabjm6XI5C9rMCMHqpUCVXtiwRiMkRBu6SwLovYEFEO+uR+KHtMd9vp1F6sC6pG0L+RvvVSV0T7Q
-	dHJwD4l8sqNb219zisjpUdgVBFbMx0TYtuuaPXpJwwKyQaUGLm8GZeulaElbH2xys7sr/eb+M2U2k
-	2tew6pS3Tc6tztdlKQtMu0a3P8XtSIN8j2gGmfaT4vCp+gcCCA2dSULgwKwUw4N9ggM7D9PehYaGR
-	ZePzoACMIrHuvNDpUznsKtCPy9brMuYZh8mjeoI4RM4wY/yzpLtnLRKjoJq5LsofylKWYePBftG62
-	kMQAs5fQ==;
+	bh=k3mXYs19jtAC2YbwmDdropY4/qIjzCwyc3vsFS2GcGA=; b=GyEGHyd9LmzYK75RXHh5smS2BS
+	AqkOmAgcdVZxB9WlQnFuQniNt3Awu47nEd8tX2LCxsPg3C3z4+yv2o7lFlCbG71lNDxFhwVrf62Ye
+	mOkFjHaen7ql4JGlJe9FlyyDIZ1Frl+1d2cTLNwr2UoBGAkAdLFxpPLkt/BzY7ADkgoMcf6inlu5C
+	OtvAi/nymvuMA6m6UnMsky6ntbRvbtaiCO17E902fKf+Gj8A/yB+1ujzjQAK9NqIm4lgctNpqhpYr
+	3u6eD7XCEPqTGc8HfSkR+y3XEjpXkhxZUF39aY1v8uiG8BDxzbyw/PGvcfOhoMFRthgE5yNNtHkhM
+	QoiIR/CQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ruFGY-000000039OB-18TB;
-	Tue, 09 Apr 2024 17:28:14 +0000
-Received: from mail-io1-xd34.google.com ([2607:f8b0:4864:20::d34])
+	id 1ruSaw-00000005f1w-2iJM;
+	Wed, 10 Apr 2024 07:42:10 +0000
+Received: from mail-ed1-x52c.google.com ([2a00:1450:4864:20::52c])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ruFGT-000000039ME-3mTI
+	id 1ruSas-00000005exh-07EP
 	for linux-um@lists.infradead.org;
-	Tue, 09 Apr 2024 17:28:12 +0000
-Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-7c8e4c0412dso47333539f.1
-        for <linux-um@lists.infradead.org>; Tue, 09 Apr 2024 10:28:08 -0700 (PDT)
+	Wed, 10 Apr 2024 07:42:08 +0000
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-56e477db7fbso5816539a12.3
+        for <linux-um@lists.infradead.org>; Wed, 10 Apr 2024 00:42:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1712683688; x=1713288488; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bzDpECgxcv/gVK2Eh47txfcjeUm+DcSXrEiDNVslfT0=;
-        b=HeRKowOmF+qMJjT23U/LnrxhyMt0exlofSCDAvte2LDhjJQnURHNuZUEXhvMi8q4do
-         8GbFRyTYutvjl944qXScrM3Ciua5w3oSPc7X9pimaKXQW6yIQNMoM7agzmRAUF1XSeY3
-         Bx31YCAkGk4ttdw/F5T/4FBK5KTNxAX8Pa3FE=
+        d=linaro.org; s=google; t=1712734923; x=1713339723; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=k3mXYs19jtAC2YbwmDdropY4/qIjzCwyc3vsFS2GcGA=;
+        b=vxmBzVDActittyElLTxLl/dUHlNs6a0gJ328b92/i7DgDwbglJN0QKn9YASzHlgfep
+         pYzAIA2LRKXx8IQ1lr0uD4iCc0bqqtkGZQC0RHFk+2VTjHzjwkp0Tmgxgh21wO2IBVH0
+         tIXuK25NyyNCizNLkgToAdCnDE+E4HePOHmYA+g/oEFG2R2yh7nm4nTSZUtJdTyAkO9O
+         M5ZCbY5jllMGyG5IxZoTzNNDA74BpCETfqlJeCk/e4UQF3JFRk7I19rmkRvMNGFW3VfH
+         zaQSBU4qsD6pmW1gRJIUFsPxEsqfByGrzdSTy9S8rlJ6TJcwvCAvpAmIoTP1a6F2L/Eu
+         Gv3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712683688; x=1713288488;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bzDpECgxcv/gVK2Eh47txfcjeUm+DcSXrEiDNVslfT0=;
-        b=TpnKaVldtRUD6cK6hnNjsP7KmymNYgSaSduQGuCBz61N7eCxI0Ijf5ERFyIcj33CKx
-         H7DtFrVB4t4i9zti+FuKNKfrbjQ/ZmzD2fqwTG1UPsXKkfcEphQJhpZgRbcUbwW30RNX
-         3t8Ky99xbIqq5tDVGZvwIzRusIJMk3PwyNbykeXEi+CB5387xWglesAZMVLohX5oCXSm
-         w709gpBcT6QLfJsydLeUaa5etUk6QERqfR118dcn8SguJv+jSX9whJtSdyQDFB/S7+3g
-         8DGtpE2dSQQJbB3zSgJkRU4QYRAeFKau+xy5v0rWYXmNl1K+vo03arHZ35kj20BB46v9
-         VsrQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWESfnStT1+NeaY5ZmaabSdHt37h12TKI6BClZ8Zryi1/Ot53E8W0bgnuKXO26FPaCItN6QTZV4l2iQmbQmHGGO/KV3WdfUdq3AEa4I
-X-Gm-Message-State: AOJu0YyKj42Vho73c4csxui4w68VRAt19XiDO3WzZnppRrs0qbQCcVaM
-	C6QzhmNe1RXYVlKCNy7Vwg5peESFwTibGK710EF+ms6GiTk6nIW8Ve1339LaNZI=
-X-Google-Smtp-Source: AGHT+IFk5z8PoAK3T9resPRUq+Mhgn4hfhcghzxIpzPidDvzpWozapI9Iaz2Vi75WE2H0KeSIVTCNQ==
-X-Received: by 2002:a05:6602:3b98:b0:7d5:de5b:1ac2 with SMTP id dm24-20020a0566023b9800b007d5de5b1ac2mr468468iob.2.1712683688027;
-        Tue, 09 Apr 2024 10:28:08 -0700 (PDT)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id cn23-20020a0566383a1700b00482b4a8f07esm35302jab.61.2024.04.09.10.28.06
+        d=1e100.net; s=20230601; t=1712734923; x=1713339723;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=k3mXYs19jtAC2YbwmDdropY4/qIjzCwyc3vsFS2GcGA=;
+        b=th/w1xa/woANpjH1GcvuWQx4UYHoGQ92MNEh+gACZRrrcB2PQ14BFxumCTbLC4dmkY
+         vK/A5+XNp60F/aR+91Ho6dKrEUmqTfOaJXwclll/RR0D0fQhrkqAnKiJIzvz7TKCR/u0
+         gegxLtcYI5IVidkVjqXWgMd43OnM+B7E4vHX5z7CMeDqi0/5DOlxVacXOVUTf37EMd+K
+         OpibREkLwnMUiBmZXmYRgqErE7wiEo2og2CScjtaKi5WHnkgTqvqkxK6habYo3woM2+B
+         5uHl478DU397yZDVCpNsYRqEkL/DGxUHR2b7A4jWIsV2r8DrtfmFvrV5a5jdOlMtoN4k
+         1Okw==
+X-Forwarded-Encrypted: i=1; AJvYcCVbPWK7Ntblznmrkr8lHNdzbdb5gHV8JO4eJRSd671bp16sHT4BnT83WGoqv7Hp8dO9fLvis6ngNkkaTu82QKDsuP8jkCQOt6f/HgHf
+X-Gm-Message-State: AOJu0YxF76cFP3v2UelxNWPIamAD/iuiI81L3S+6aCWXlyxS+SLIzASn
+	LysDpZfaOWA4lYqia5K9BR6+VdEKDylHs5VkqaOHR/xGXf7i4RN7eYTW3EnxFm0=
+X-Google-Smtp-Source: AGHT+IHbsaGMHaULq45hB1RQzGJ2jQouzCDk/Qs5dl99Xk4dB9Un2GtOpuqSHCNaJjxWq+FiwtopyQ==
+X-Received: by 2002:a17:907:9914:b0:a51:a688:3e9c with SMTP id ka20-20020a170907991400b00a51a6883e9cmr887114ejc.35.1712734923162;
+        Wed, 10 Apr 2024 00:42:03 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id y6-20020a17090668c600b00a46d049ff63sm6575359ejr.21.2024.04.10.00.41.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Apr 2024 10:28:07 -0700 (PDT)
-Message-ID: <5a04e40c-daba-4a1d-b5db-f70d2e51c403@linuxfoundation.org>
-Date: Tue, 9 Apr 2024 11:28:06 -0600
+        Wed, 10 Apr 2024 00:42:02 -0700 (PDT)
+Message-ID: <285be63c-8939-495c-8411-ce2a68e25b2b@linaro.org>
+Date: Wed, 10 Apr 2024 09:41:57 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 RESEND 0/7] Handle faults in KUnit tests
-To: =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
- Brendan Higgins <brendanhiggins@google.com>, David Gow
- <davidgow@google.com>, Rae Moar <rmoar@google.com>
-Cc: Alan Maguire <alan.maguire@oracle.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- "Eric W . Biederman" <ebiederm@xmission.com>, "H . Peter Anvin"
- <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
- James Morris <jamorris@linux.microsoft.com>,
- Kees Cook <keescook@chromium.org>, Luis Chamberlain <mcgrof@kernel.org>,
- "Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>,
- Marco Pagani <marpagan@redhat.com>, Paolo Bonzini <pbonzini@redhat.com>,
- Sean Christopherson <seanjc@google.com>, Stephen Boyd <sboyd@kernel.org>,
- Thara Gopinath <tgopinath@microsoft.com>,
- Thomas Gleixner <tglx@linutronix.de>, Vitaly Kuznetsov
- <vkuznets@redhat.com>, Zahra Tarkhani <ztarkhani@microsoft.com>,
- kunit-dev@googlegroups.com, kvm@vger.kernel.org,
- linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-security-module@vger.kernel.org, linux-um@lists.infradead.org,
- x86@kernel.org, Shuah Khan <skhan@linuxfoundation.org>
-References: <20240408074625.65017-1-mic@digikod.net>
+Subject: Re: [PATCH v2 00/25] virtio: store owner from modules with
+ register_virtio_driver()
+To: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
+ Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Jonathan Corbet <corbet@lwn.net>,
+ David Hildenbrand <david@redhat.com>, Gerd Hoffmann <kraxel@redhat.com>,
+ Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ Paolo Bonzini <pbonzini@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>,
+ Jens Axboe <axboe@kernel.dk>, Marcel Holtmann <marcel@holtmann.org>,
+ Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+ Olivia Mackall <olivia@selenic.com>, Herbert Xu
+ <herbert@gondor.apana.org.au>, Amit Shah <amit@kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Gonglei <arei.gonglei@huawei.com>, "David S. Miller" <davem@davemloft.net>,
+ Sudeep Holla <sudeep.holla@arm.com>,
+ Cristian Marussi <cristian.marussi@arm.com>,
+ Viresh Kumar <vireshk@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
+ Bartosz Golaszewski <brgl@bgdev.pl>, David Airlie <airlied@redhat.com>,
+ Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
+ <olvaffe@gmail.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+ Robin Murphy <robin.murphy@arm.com>, Alexander Graf <graf@amazon.com>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Eric Van Hensbergen <ericvh@kernel.org>,
+ Latchesar Ionkov <lucho@ionkov.net>,
+ Dominique Martinet <asmadeus@codewreck.org>,
+ Christian Schoenebeck <linux_oss@crudebyte.com>,
+ Stefano Garzarella <sgarzare@redhat.com>, Kalle Valo <kvalo@kernel.org>,
+ Dan Williams <dan.j.williams@intel.com>,
+ Vishal Verma <vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+ Ira Weiny <ira.weiny@intel.com>, Pankaj Gupta
+ <pankaj.gupta.linux@gmail.com>, Bjorn Andersson <andersson@kernel.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ "James E.J. Bottomley" <jejb@linux.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ Vivek Goyal <vgoyal@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>,
+ Anton Yakovlev <anton.yakovlev@opensynergy.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: virtualization@lists.linux.dev, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+ linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+ linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ iommu@lists.linux.dev, netdev@vger.kernel.org, v9fs@lists.linux.dev,
+ kvm@vger.kernel.org, linux-wireless@vger.kernel.org, nvdimm@lists.linux.dev,
+ linux-remoteproc@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-sound@vger.kernel.org,
+ Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+ Viresh Kumar <viresh.kumar@linaro.org>
+References: <20240331-module-owner-virtio-v2-0-98f04bfaf46a@linaro.org>
 Content-Language: en-US
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240408074625.65017-1-mic@digikod.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240331-module-owner-virtio-v2-0-98f04bfaf46a@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240409_102810_188060_E0C38D7D 
-X-CRM114-Status: GOOD (  13.21  )
+X-CRM114-CacheID: sfid-20240410_004206_339982_E47E8B25 
+X-CRM114-Status: GOOD (  10.45  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -108,49 +190,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 4/8/24 01:46, Mickaël Salaün wrote:
-> Hi,
+On 31/03/2024 10:43, Krzysztof Kozlowski wrote:
+> Changes in v2:
+> - Three new patches: virtio mem+input+balloon
+> - Minor commit msg adjustments
+> - Add tags
+> - Link to v1: https://lore.kernel.org/r/20240327-module-owner-virtio-v1-0-0feffab77d99@linaro.org
 > 
-> This patch series teaches KUnit to handle kthread faults as errors, and
-> it brings a few related fixes and improvements.
-> 
-> Shuah, everything should be OK now, could you please merge this series?
-> 
-> All these tests pass (on top of v6.8):
-> ./tools/testing/kunit/kunit.py run --alltests
-> ./tools/testing/kunit/kunit.py run --alltests --arch x86_64
-> ./tools/testing/kunit/kunit.py run --alltests --arch arm64 \
->    --cross_compile=aarch64-linux-gnu-
-> 
-> I also built and ran KUnit tests as a kernel module.
-> 
-> A new test case check NULL pointer dereference, which wasn't possible
-> before.
-> 
-> This is useful to test current kernel self-protection mechanisms or
-> future ones such as Heki: https://github.com/heki-linux
-> 
-> Previous versions:
-> v3: https://lore.kernel.org/r/20240319104857.70783-1-mic@digikod.net
-> v2: https://lore.kernel.org/r/20240301194037.532117-1-mic@digikod.net
-> v1: https://lore.kernel.org/r/20240229170409.365386-1-mic@digikod.net
-> 
-> Regards,
-> 
-> Mickaël Salaün (7):
->    kunit: Handle thread creation error
->    kunit: Fix kthread reference
->    kunit: Fix timeout message
->    kunit: Handle test faults
->    kunit: Fix KUNIT_SUCCESS() calls in iov_iter tests
->    kunit: Print last test location on fault
->    kunit: Add tests for fault
-> 
+> Merging
+> =======
+> All further patches depend on the first virtio patch, therefore please ack
+> and this should go via one tree: maybe virtio?
 
-Thank you for the resend. Applied to linux-kselftest kunit branch
-for Linux 6.10-rc1.
+Michael, Jason, Xuan,
 
-thanks,
--- Shuah
+Will you be able to take the entire patchset through virtio?
+
+Best regards,
+Krzysztof
 
 
