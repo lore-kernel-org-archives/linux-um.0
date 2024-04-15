@@ -4,50 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5A82FC4345F
-	for <linux-um@archiver.kernel.org>; Mon, 15 Apr 2024 02:18:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 11F42C4345F
+	for <linux-um@archiver.kernel.org>; Mon, 15 Apr 2024 13:38:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=rHGLU3hUN/k+Q4N4vZFwYW057AsuOMF6JOX5D/tfY1w=; b=Ix5oKEq28cKiUZDoMNWmGa1Kyv
-	+JK6jSrkOMKWON8Q+srXCiC4cIydbmvnXBlQ1aVkDeBDiflqoj/Sr03FqujCvOzmrr9R2Fn+26RBa
-	Au+fzlAL1g/dSpkfhvM+l4dcFgNnTFOIuZHjMP92rq3jefa103hs3FNj9WKGzopGoztArq5jpPy/6
-	uwNUHQ0Opod23frrx6GBUm+O+s3vWVnDdvzXruthm7rlnWqRYRpJ87G4zubz3Yts615BeDsHZQ/2p
-	yobpLCuRTqLb55bE6SpGEHmGEIWrK+Y+2hJ0LJWj3nGR4KVJjuv4GYNPdifzOwL0p10TGE13RDzco
-	+yfr7Gpg==;
+	bh=IgtY6P0/VUZ5ybOHoy7cdx/X8BD2OKG8M8Nz4l3BUUA=; b=uAGGUbNpgjkwbNHCFaV+j/UGvb
+	WnPXyyXdmZwSHCC6YZr+VCrSRSSt4eNjGucbiU7cmKXBRsz6C6YVI8DYxctFVCA1YQux8Ek4PWdQK
+	o4eHheBdduUdgMNWUp6JVxej6AtR3vaGfUsSWrhGd93UNs98Gs1oucGXvg5fkDsNjD0P0WKWr5BIb
+	eS54EHO4Zyzliyuci7XucC1bmU+/Cm/w9/ll7Aji6ZbCJMJpJEH8lVj7pFFHfkvut7AKS9wVKuDga
+	QBoz68T6oGmgjIMwQ4k7Rg+0WtCL2/uPejowJQhubQoynFxdR3KriSWVKjuLD8vY6C0dPfJykXIKf
+	A551w3rA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rwBvo-00000006lsX-1Dii;
-	Mon, 15 Apr 2024 02:18:52 +0000
-Received: from out0-206.mail.aliyun.com ([140.205.0.206])
+	id 1rwMXT-00000008W7V-3tzh;
+	Mon, 15 Apr 2024 13:38:27 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rwBvk-00000006lrf-1tmq
+	id 1rwMXN-00000008W4y-2IQU
 	for linux-um@lists.infradead.org;
-	Mon, 15 Apr 2024 02:18:50 +0000
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047198;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---.XABLjhE_1713147512;
-Received: from 30.230.91.4(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.XABLjhE_1713147512)
-          by smtp.aliyun-inc.com;
-          Mon, 15 Apr 2024 10:18:39 +0800
-Message-ID: <54e7d96b-20b7-4f9b-af20-f602438b78fc@antgroup.com>
-Date: Mon, 15 Apr 2024 10:18:31 +0800
+	Mon, 15 Apr 2024 13:38:26 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id D0A4FCE0BA1;
+	Mon, 15 Apr 2024 13:38:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFFA3C113CC;
+	Mon, 15 Apr 2024 13:38:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713188299;
+	bh=lvCjzgnykqyNnw5Vrwmo08lX30HbVWMQg86MwppAylM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=kvkwA1bE2x3jDXNNfuCGOPl1XXKgZjFhv6cJH8W3E7tVXbCbjKi3OZubmi9p3JECP
+	 wfzEWQmTrerZN5uaXNmVypXHHhyrDoqU0HBK4BwApcDtRKFkvyX70EJn51hsMUCafv
+	 dRPzByQW0/OaTYPnEyx96F949lJ024eL20D1b48HXiOKSN/daNrgXFx0pgZH9LfKPB
+	 +2o3FLYJJb4BlpYFwgDwxUlZLAuQrP3UF723Rh3NoO8kTJB2aDP348v4aepH3/FCo/
+	 N4/U/VuHVPvzR+tZCOQZAi0N2rnm+EWmvyiuIZYd2I/uWn5J2FXp8GwjUebv2u/bLy
+	 pUjGAkHM+z7Jg==
+From: Sasha Levin <sashal@kernel.org>
+To: kernel-lts@openela.org
+Cc: Randy Dunlap <rdunlap@infradead.org>,
+	Stable <stable@vger.kernel.org>,
+	Fabio Estevam <festevam@gmail.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	linux-um@lists.infradead.org,
+	Mimi Zohar <zohar@linux.ibm.com>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14-openela 007/190] IMA: allow/fix UML builds
+Date: Mon, 15 Apr 2024 06:48:57 -0400
+Message-ID: <20240415105208.3137874-8-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240415105208.3137874-1-sashal@kernel.org>
+References: <20240415105208.3137874-1-sashal@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] um: tlb: Remove unused flush_tlb_mm_range function
-To: Ivan Orlov <ivan.orlov0322@gmail.com>, richard@nod.at,
- anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240414211934.393303-1-ivan.orlov0322@gmail.com>
-Content-Language: en-US
-From: "Tiwei Bie" <tiwei.btw@antgroup.com>
-In-Reply-To: <20240414211934.393303-1-ivan.orlov0322@gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240414_191848_670342_814F8003 
-X-CRM114-Status: GOOD (  12.15  )
+X-CRM114-CacheID: sfid-20240415_063821_789663_83A22941 
+X-CRM114-Status: GOOD (  10.87  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -62,44 +78,55 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 4/15/24 5:19 AM, Ivan Orlov wrote:
-> GCC 11.4.0 produces the following warning when compiling the kernel for
-> UML architecture (with UML defconfig):
-> 
-> arch/um/kernel/tlb.c:579:6: warning: no previous prototype for ‘flush_tlb_mm_range’ [-Wmissing-prototypes]
->   579 | void flush_tlb_mm_range(struct mm_struct *mm, unsigned long start,)
-> 
-> This function is not used anywhere. It is not exported with
-> `EXPORT_SYMBOL` either, and therefore it is not usable for dynamically
-> loaded modules. Remove this function.
-> 
-> Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
-> ---
->  arch/um/kernel/tlb.c | 6 ------
->  1 file changed, 6 deletions(-)
-> 
-> diff --git a/arch/um/kernel/tlb.c b/arch/um/kernel/tlb.c
-> index 7d050ab0f78a..70b5e47e9761 100644
-> --- a/arch/um/kernel/tlb.c
-> +++ b/arch/um/kernel/tlb.c
-> @@ -576,12 +576,6 @@ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
->  }
->  EXPORT_SYMBOL(flush_tlb_range);
->  
-> -void flush_tlb_mm_range(struct mm_struct *mm, unsigned long start,
-> -			unsigned long end)
-> -{
-> -	fix_range(mm, start, end, 0);
-> -}
-> -
->  void flush_tlb_mm(struct mm_struct *mm)
->  {
->  	struct vm_area_struct *vma;
+From: Randy Dunlap <rdunlap@infradead.org>
 
-Thanks for the patch. I also posted a fix for this earlier (but not merged yet):
+[ Upstream commit 644f17412f5acf01a19af9d04a921937a2bc86c6 ]
 
-https://lore.kernel.org/linux-um/20240306101925.1088870-4-tiwei.btw@antgroup.com/
+UML supports HAS_IOMEM since 0bbadafdc49d (um: allow disabling
+NO_IOMEM).
 
-Regards,
-Tiwei
+Current IMA build on UML fails on allmodconfig (with TCG_TPM=m):
+
+ld: security/integrity/ima/ima_queue.o: in function `ima_add_template_entry':
+ima_queue.c:(.text+0x2d9): undefined reference to `tpm_pcr_extend'
+ld: security/integrity/ima/ima_init.o: in function `ima_init':
+ima_init.c:(.init.text+0x43f): undefined reference to `tpm_default_chip'
+ld: security/integrity/ima/ima_crypto.o: in function `ima_calc_boot_aggregate_tfm':
+ima_crypto.c:(.text+0x1044): undefined reference to `tpm_pcr_read'
+ld: ima_crypto.c:(.text+0x10d8): undefined reference to `tpm_pcr_read'
+
+Modify the IMA Kconfig entry so that it selects TCG_TPM if HAS_IOMEM
+is set, regardless of the UML Kconfig setting.
+This updates TCG_TPM from =m to =y and fixes the linker errors.
+
+Fixes: f4a0391dfa91 ("ima: fix Kconfig dependencies")
+Cc: Stable <stable@vger.kernel.org> # v5.14+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-um@lists.infradead.org
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ security/integrity/ima/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/security/integrity/ima/Kconfig b/security/integrity/ima/Kconfig
+index 6a8f67714c831..a8bf67557eb54 100644
+--- a/security/integrity/ima/Kconfig
++++ b/security/integrity/ima/Kconfig
+@@ -8,7 +8,7 @@ config IMA
+ 	select CRYPTO_MD5
+ 	select CRYPTO_SHA1
+ 	select CRYPTO_HASH_INFO
+-	select TCG_TPM if HAS_IOMEM && !UML
++	select TCG_TPM if HAS_IOMEM
+ 	select TCG_TIS if TCG_TPM && X86
+ 	select TCG_CRB if TCG_TPM && ACPI
+ 	select TCG_IBMVTPM if TCG_TPM && PPC_PSERIES
+-- 
+2.43.0
+
 
