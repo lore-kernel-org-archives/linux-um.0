@@ -4,57 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58099C04FF8
-	for <linux-um@archiver.kernel.org>; Thu, 18 Apr 2024 09:24:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24292C4345F
+	for <linux-um@archiver.kernel.org>; Thu, 18 Apr 2024 09:25:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=QAqu1EObyO2AUUPkmwjgqPM1zMAXA//Yf/WXvlkBwzs=; b=Z2nwyUkbby1dQKXRXMNfrYVmy+
-	Jm4ZtnaJfw8ytdxvFllnjNNQAZfIc41xStZjbVn20npz7bm5NWrXFv7ZxUKcnpj8BQByPjr9MRGyH
-	zYPODD17H2jjWWAHalo3z5/Ujwzrcy7u6Zj4EuK+Y82S39RQYXR9DyDt8UEfxrXy2w1UonMJEJ2vt
-	Zu4aJRa1HmtDWcblLOllyxlg0JK78xwjF2NhnsMXqb/j/NmzIUbYszVHTTdVC+PTXa7Fg/U1osywT
-	bHWC+4YLAJ/NISvHuo/N/Re2OmFPkhzjJZJmokIJw3xO1QPGBjFrN4Awc+jlzuYhizklnuvhDqXXt
-	NRetZ1MA==;
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=jFnktfA7KDmPiUBV86Ah4dqe2aPPnejhlOne6jVQTGQ=; b=EIQvoZzQ0qVDE8UFVqPelprda1
+	WoxkCp/ypeC/9w49E3yQ/Pqaaw2luErSUJAZIxpGUCyz6E+qPTxERatnQtfZN9xxaYD3iJ/chDaey
+	Ii+r+wuR04dSywH/Ub4P0T3y29rXJxUrC5WxeYcdQ0IH5l5nmASmCqkSjRrzV/+34lIodtWsaCsgF
+	nti78D2IDiDBRxnsmnqfKEaGwWBdUs4zg7hZOU7djo8IB1u3fhaX4Ev4cE4hSK5IcFep4WKg2PqDn
+	cdQ+aD1IYqTp7Lz4ASIWPsWUlJsgjaV1GFQTp9OA730WuoHsQU769u66EQfDyzPLzugOptkIb7TRy
+	uWiVaINg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rxO0n-00000001bGi-39jt;
-	Thu, 18 Apr 2024 09:24:57 +0000
+	id 1rxO0q-00000001bIV-2Nwi;
+	Thu, 18 Apr 2024 09:25:00 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rxO0k-00000001bBy-0GxF
+	id 1rxO0l-00000001bDT-05lb
 	for linux-um@lists.infradead.org;
-	Thu, 18 Apr 2024 09:24:55 +0000
+	Thu, 18 Apr 2024 09:24:57 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
-	Resent-Message-ID:In-Reply-To:References;
-	bh=QAqu1EObyO2AUUPkmwjgqPM1zMAXA//Yf/WXvlkBwzs=; t=1713432291; x=1714641891; 
-	b=S3T4PTiUz0NdAbmoOnxubwNa9AePYmN57mqvCR9XvbZIPqXnU8+sKokkFinrihyYjNFep3jn1oU
-	Cuz49gYWCxLr58lCmTT6PX+myA33bOkAxvUSaStaV4FzvDirUnLrENMS7EopB4j7A6GtvGgBHCCfn
-	xY+DvTpZZkOYWdGG/a0l3YnR5nhQEOtNhBUnkswRkis77vxYTV8EkLRrmzNeC8XurNz7zSVtT2xil
-	VWm2kE0osHeqjN2uQ8VWGeeCuCx/mNQFZuNDzYFOZjtrv1uqnQFGiNCEOJBa7oyzIvoZ6aJmhD2PQ
-	ou/QmBeSdXgVd7D7z1fYwlyHHMUPmdIVLjUw==;
+	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=jFnktfA7KDmPiUBV86Ah4dqe2aPPnejhlOne6jVQTGQ=;
+	t=1713432293; x=1714641893; b=I3TMC3ep//I6p83AJcLdUbHvbln1ARjZCh4PldOzHattQPV
+	1MuFDHxRSb7M44DTyxeFz8P755g+vzmBgZPuo1wJQRlaVvdx7H5qZg3dc21TWUtpHz455VTnZ/47u
+	umvH3eDeUlb5TU/91LtEobvsWKvZklxEqHuccC/sylScG3nHClrcvzJpa1ngROZHiG5dXXqZp7/Mw
+	zzrRVLSI09l+zKb/ylkVf2sHjzQsM5eVVUhZgKrXOavrP15dJjd4lLv5OkXf2topBCM6RuihNeMgh
+	EvvtYwsgOAJ9oKVHiVqzG9XAXOZmM7yevTT2y/6sbYiFce6h9put3zKjtCy+tLGg==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.97)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1rxO0d-0000000CKXH-4C2F;
-	Thu, 18 Apr 2024 11:24:48 +0200
+	id 1rxO0g-0000000CKXH-1J9v;
+	Thu, 18 Apr 2024 11:24:50 +0200
 From: benjamin@sipsolutions.net
 To: linux-um@lists.infradead.org
-Cc: Benjamin Berg <benjamin.berg@intel.com>
-Subject: [PATCH 00/12] Rework stub syscall and page table handling
-Date: Thu, 18 Apr 2024 11:23:15 +0200
-Message-ID: <20240418092327.860135-1-benjamin@sipsolutions.net>
+Cc: Benjamin Berg <benjamin@sipsolutions.net>
+Subject: [PATCH 03/12] um: Add generic stub_syscall6 function
+Date: Thu, 18 Apr 2024 11:23:18 +0200
+Message-ID: <20240418092327.860135-4-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240418092327.860135-1-benjamin@sipsolutions.net>
+References: <20240418092327.860135-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240418_022454_592261_3A0B2E05 
-X-CRM114-Status: GOOD (  11.96  )
+X-CRM114-CacheID: sfid-20240418_022455_136843_AA940111 
+X-CRM114-Status: UNSURE (   7.72  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,81 +71,76 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Benjamin Berg <benjamin.berg@intel.com>
+From: Benjamin Berg <benjamin@sipsolutions.net>
 
-This patchset reworks the stub syscall handling and also redos how page
-table updates are tracked and synchronized. Some of this originated in
-the SECCOMP patchset, but it became clear that these refactorings make
-sense independently as they result in a considerably fewer page faults.
+This function will be used by the new syscall handling code.
 
-As an example, these changes bring the runtime of one of the hostapd
-hwsim test modules from 121 seconds down to 103 seconds. Actual results
-will depend heavily on how pagefault heavy the workload is.
+Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
+---
+ arch/x86/um/shared/sysdep/stub_32.h | 22 ++++++++++++++++++++++
+ arch/x86/um/shared/sysdep/stub_64.h | 16 ++++++++++++++++
+ 2 files changed, 38 insertions(+)
 
-Lowering the amount of pagefaults is due to proactively syncing PTEs
-that are set (and were previously unset) and also delaying
-synchronization so that multiple updates can be done in one step rather
-than requiring multiple task switches.
-
-This refactoring also fixes various odd corner cases in how UML was
-handling memory and cloning of MMs. As part of this work, support for
-LDTs has been dropped. My expectation is that this is not a problem as
-it should only be needed by legacy applications.
-
-Benjamin Berg (12):
-  um: Remove stub-data.h include from common-offsets.h
-  um: Create signal stack memory assignment in stub_data
-  um: Add generic stub_syscall6 function
-  um: Rework syscall handling
-  um: compress memory related stub syscalls while adding them
-  um: remove LDT support
-  um: remove copy_context_skas0
-  um: Delay flushing syscalls until the thread is restarted
-  um: Do not flush MM in flush_thread
-  um: remove force_flush_all from fork_handler
-  um: simplify and consolidate TLB updates
-  um: refactor TLB update handling
-
- arch/um/include/asm/mmu.h               |  10 +-
- arch/um/include/asm/mmu_context.h       |   2 -
- arch/um/include/asm/pgtable.h           |  32 ++
- arch/um/include/asm/tlbflush.h          |  46 +-
- arch/um/include/shared/as-layout.h      |   2 +-
- arch/um/include/shared/common-offsets.h |   5 -
- arch/um/include/shared/os.h             |  27 +-
- arch/um/include/shared/skas/mm_id.h     |   2 +-
- arch/um/include/shared/skas/skas.h      |   2 +
- arch/um/include/shared/skas/stub-data.h |  35 +-
- arch/um/include/shared/user.h           |   8 +
- arch/um/kernel/exec.c                   |   9 -
- arch/um/kernel/process.c                |   2 -
- arch/um/kernel/skas/Makefile            |   9 +-
- arch/um/kernel/skas/clone.c             |  48 ---
- arch/um/kernel/skas/mmu.c               |  33 +-
- arch/um/kernel/skas/process.c           |  18 +
- arch/um/kernel/skas/stub.c              |  69 +++
- arch/um/kernel/tlb.c                    | 551 ++++--------------------
- arch/um/kernel/trap.c                   |  15 +-
- arch/um/os-Linux/skas/mem.c             | 248 ++++++-----
- arch/um/os-Linux/skas/process.c         | 121 +-----
- arch/um/os-Linux/start_up.c             |   1 +
- arch/x86/um/Makefile                    |   4 +-
- arch/x86/um/asm/mm_context.h            |  70 ---
- arch/x86/um/ldt.c                       | 380 ----------------
- arch/x86/um/shared/sysdep/stub.h        |   1 +
- arch/x86/um/shared/sysdep/stub_32.h     |  29 +-
- arch/x86/um/shared/sysdep/stub_64.h     |  23 +-
- arch/x86/um/stub_32.S                   |  56 ---
- arch/x86/um/stub_64.S                   |  50 ---
- arch/x86/um/tls_32.c                    |   1 +
- 32 files changed, 543 insertions(+), 1366 deletions(-)
- delete mode 100644 arch/um/kernel/skas/clone.c
- create mode 100644 arch/um/kernel/skas/stub.c
- delete mode 100644 arch/x86/um/asm/mm_context.h
- delete mode 100644 arch/x86/um/ldt.c
- delete mode 100644 arch/x86/um/stub_32.S
- delete mode 100644 arch/x86/um/stub_64.S
-
+diff --git a/arch/x86/um/shared/sysdep/stub_32.h b/arch/x86/um/shared/sysdep/stub_32.h
+index 2748b7ee031a..ab08a69fb57f 100644
+--- a/arch/x86/um/shared/sysdep/stub_32.h
++++ b/arch/x86/um/shared/sysdep/stub_32.h
+@@ -80,6 +80,28 @@ static __always_inline long stub_syscall5(long syscall, long arg1, long arg2,
+ 	return ret;
+ }
+ 
++static __always_inline long stub_syscall6(long syscall, long arg1, long arg2,
++					  long arg3, long arg4, long arg5,
++					  long arg6)
++{
++	struct syscall_args {
++		int ebx, ebp;
++	} args = { arg1, arg6 };
++	long ret;
++
++	__asm__ volatile ("pushl %%ebp;"
++			"movl 0x4(%%ebx),%%ebp;"
++			"movl (%%ebx),%%ebx;"
++			"int $0x80;"
++			"popl %%ebp"
++			: "=a" (ret)
++			: "0" (syscall), "b" (&args),
++			"c" (arg2), "d" (arg3), "S" (arg4), "D" (arg5)
++			: "memory");
++
++	return ret;
++}
++
+ static __always_inline void trap_myself(void)
+ {
+ 	__asm("int3");
+diff --git a/arch/x86/um/shared/sysdep/stub_64.h b/arch/x86/um/shared/sysdep/stub_64.h
+index 50c5e0529dfb..d27b34d75d70 100644
+--- a/arch/x86/um/shared/sysdep/stub_64.h
++++ b/arch/x86/um/shared/sysdep/stub_64.h
+@@ -80,6 +80,22 @@ static __always_inline long stub_syscall5(long syscall, long arg1, long arg2,
+ 	return ret;
+ }
+ 
++static __always_inline long stub_syscall6(long syscall, long arg1, long arg2,
++					  long arg3, long arg4, long arg5,
++					  long arg6)
++{
++	long ret;
++
++	__asm__ volatile ("movq %5,%%r10 ; movq %6,%%r8 ; movq %7,%%r9 ; "
++		__syscall
++		: "=a" (ret)
++		: "0" (syscall), "D" (arg1), "S" (arg2), "d" (arg3),
++		  "g" (arg4), "g" (arg5), "g" (arg6)
++		: __syscall_clobber, "r10", "r8", "r9");
++
++	return ret;
++}
++
+ static __always_inline void trap_myself(void)
+ {
+ 	__asm("int3");
 -- 
 2.44.0
 
