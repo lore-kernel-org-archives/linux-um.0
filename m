@@ -4,58 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD813C04FF8
-	for <linux-um@archiver.kernel.org>; Thu, 18 Apr 2024 09:25:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D5B9C04FFF
+	for <linux-um@archiver.kernel.org>; Thu, 18 Apr 2024 09:25:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=cZJr/itt6AGI6qV5OZKLhUEPuP/79ht/6lzAeJhcYVA=; b=wapvL2mnFlHaIa4CAdhYtdZdAc
-	0iAinI6cPbW3BSTVEI7VVEQluGdgahQLIRa9QvkKFx8L6ktuyS4ZCD+OYz/LukCOPQnjWLluk9MEH
-	ZuhSgAjBYrSVhGDgtACJvuvybqFSBXkYl7mNz9WXTediklwqSeH4PsE56lrmSHUuPJ5bPNLmAwNR7
-	PNP/Veel+leV1+qjnSEipYPK+Fb9y1n8shFh1V0fjdz3uiB4T5kywrOCfwIBI4J4uXdmV2Zhk1hmn
-	9l5bhgE9QquVzhVjJ5i+JyYcXMhaAe92aT2sR8IYUegjlB671E3vc7TcZqOeE8KeyfawQAa2FBban
-	/txY4StQ==;
+	bh=lfLirlIO5BytxMkbjqxVOrqeH2iL5E0u/c6pHVBFujI=; b=s0GpXtwkmMjNc4AGTxSADuFwLZ
+	4cA7pnNie58xER3PK5U7A1JQOPEpA4NwjXTsPOZqxbVyVHKE2PcCs4aqWcBKR2Z8LMYpnefSgYwjv
+	pfzycEAZ8sNP/hcY1OyfdbUNk7taAF4TxNBwA/J9d2eWnVhmTm+IWSO3VJVWcpw0LjaxYTX/oc1/x
+	ugzrLMDxcMp5TwhtHMT64prPyLHkI6Jp/PCcL8sqPWSCxk4bxKN0m6eALKViUKTxMwe1pAD31GYwy
+	3wvYNgULdgJ5spr5O4jpGjraOX+P+SUTyIPBY9mTKp2NBRW++A7wbXwVM9ReZtMz09+1VEn+uyhfp
+	G+9T+7eA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rxO0w-00000001bPL-0glu;
-	Thu, 18 Apr 2024 09:25:06 +0000
+	id 1rxO0x-00000001bQA-1VAZ;
+	Thu, 18 Apr 2024 09:25:07 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rxO0p-00000001bHW-08Gr
+	id 1rxO0o-00000001bGS-0p6b
 	for linux-um@lists.infradead.org;
-	Thu, 18 Apr 2024 09:25:02 +0000
+	Thu, 18 Apr 2024 09:25:03 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=cZJr/itt6AGI6qV5OZKLhUEPuP/79ht/6lzAeJhcYVA=;
-	t=1713432298; x=1714641898; b=WUqhiV8zui+EdSmscw93X88YIErStZvWvJFJo8T8QDl1n6C
-	1+PsJrN2EmQuM0WdOzJ2E/FceoJPC6sZcnTHvwv3O2aa5s99cLC1TGjCGQpOVDx0Krz4xY4tYfqoo
-	c5L331EnWtC5ztU5e6hPhgUjtX1UHUXzKFyPRKkvvi7/rOx7+8T1D8DmEckB261FVd8eODmyH/OAv
-	PIMQIiEQXSia8hDXfU25COGFp1ZLocBvbRondI8QPtoJLvLFcJq+v3Cdcjv54K2gwH9vAeumseRk9
-	bodHqVuJunzydrhY8eGJPQiyM1JaBFtVjIDgxz+zFe5RXYIaMQMrbOyXNaEdh9bg==;
+	Resent-Cc:Resent-Message-ID; bh=lfLirlIO5BytxMkbjqxVOrqeH2iL5E0u/c6pHVBFujI=;
+	t=1713432298; x=1714641898; b=f42ZLamFlJZAYZgoPSdSsHZeZI5e+ybJpdalaOqYzEypuVA
+	wV4o1F9kokRT2FPfL9pybew9HYGXT3JlAi2tOLVQbmrtBvw/qs37+uK/kDNlpgsIJwUqzq5wHPsze
+	2pjo3/8ezhV8FI0R5Ca+U/5MFGp+2cLjn+bBKqjr016xiqoTPMHd4KpvtOKeLjwb6now5Q/YuT9ww
+	b8Uiut6KG8gDxUfBk28yH4TYyfI0bTaZfwIpbizKVwltW1W7a9kKr1tnlo+sS08kW0B2erjA+sUTF
+	Ex2fdAUeFAjPAE7TjEBTu8h7auxuvqwO9EpH6vKx4CVfw2aV7eARQqOP5JC76n7Q==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.97)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1rxO0m-0000000CKXH-2leW;
-	Thu, 18 Apr 2024 11:24:56 +0200
+	id 1rxO0l-0000000CKXH-1odO;
+	Thu, 18 Apr 2024 11:24:55 +0200
 From: benjamin@sipsolutions.net
 To: linux-um@lists.infradead.org
 Cc: Benjamin Berg <benjamin.berg@intel.com>
-Subject: [PATCH 07/12] um: remove copy_context_skas0
-Date: Thu, 18 Apr 2024 11:23:22 +0200
-Message-ID: <20240418092327.860135-8-benjamin@sipsolutions.net>
+Subject: [PATCH 06/12] um: remove LDT support
+Date: Thu, 18 Apr 2024 11:23:21 +0200
+Message-ID: <20240418092327.860135-7-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240418092327.860135-1-benjamin@sipsolutions.net>
 References: <20240418092327.860135-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240418_022459_592569_2BA4EB89 
-X-CRM114-Status: GOOD (  19.54  )
+X-CRM114-CacheID: sfid-20240418_022458_609307_47C894A0 
+X-CRM114-Status: GOOD (  31.83  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,279 +72,625 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Benjamin Berg <benjamin.berg@intel.com>
 
-The kernel flushes the memory ranges anyway for CoW and does not assume
-that the userspace process has anything set up already. So, start with a
-fresh process for the new mm context.
+The current LDT code has a few issues that mean it should be redone in a
+different way once we always start with a fresh MM even when cloning.
+
+In a new and better world, the kernel would just ensure its own LDT is
+clear at startup. At that point, all that is needed is a simple function
+to populate the LDT from another MM in arch_dup_mmap combined with some
+tracking of the installed LDT entries for each MM.
+
+Note that the old implementation was even incorrect with regard to
+reading, as it copied out the LDT entries in the internal format rather
+than converting them to the userspace structure.
+
+Removal should be fine as the LDT is not used for thread-local storage
+anymore.
 
 Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
 ---
- arch/um/include/shared/os.h     |   1 -
- arch/um/kernel/skas/Makefile    |   8 +--
- arch/um/kernel/skas/clone.c     |  50 ---------------
- arch/um/kernel/skas/mmu.c       |  20 +++---
- arch/um/os-Linux/skas/process.c | 108 --------------------------------
- 5 files changed, 10 insertions(+), 177 deletions(-)
- delete mode 100644 arch/um/kernel/skas/clone.c
+ arch/um/include/asm/mmu.h               |   6 -
+ arch/um/include/shared/skas/stub-data.h |  21 +-
+ arch/um/kernel/skas/mmu.c               |   8 -
+ arch/um/kernel/skas/stub.c              |  11 -
+ arch/um/os-Linux/start_up.c             |   1 +
+ arch/x86/um/Makefile                    |   2 +-
+ arch/x86/um/asm/mm_context.h            |  70 -----
+ arch/x86/um/ldt.c                       | 367 ------------------------
+ arch/x86/um/tls_32.c                    |   1 +
+ 9 files changed, 10 insertions(+), 477 deletions(-)
+ delete mode 100644 arch/x86/um/asm/mm_context.h
+ delete mode 100644 arch/x86/um/ldt.c
 
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index 16d726f3df84..dc341ed4724e 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -281,7 +281,6 @@ void protect(struct mm_id *mm_idp, unsigned long addr,
- /* skas/process.c */
- extern int is_skas_winch(int pid, int fd, void *data);
- extern int start_userspace(unsigned long stub_stack);
--extern int copy_context_skas0(unsigned long stack, int pid);
- extern void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs);
- extern void new_thread(void *stack, jmp_buf *buf, void (*handler)(void));
- extern void switch_threads(jmp_buf *me, jmp_buf *you);
-diff --git a/arch/um/kernel/skas/Makefile b/arch/um/kernel/skas/Makefile
-index dd8bc2167e36..6f86d53e3d69 100644
---- a/arch/um/kernel/skas/Makefile
-+++ b/arch/um/kernel/skas/Makefile
-@@ -3,16 +3,14 @@
- # Copyright (C) 2002 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
- #
+diff --git a/arch/um/include/asm/mmu.h b/arch/um/include/asm/mmu.h
+index a7555e43ed14..37eb6e89e79a 100644
+--- a/arch/um/include/asm/mmu.h
++++ b/arch/um/include/asm/mmu.h
+@@ -7,17 +7,11 @@
+ #define __ARCH_UM_MMU_H
  
--obj-y := clone.o stub.o mmu.o process.o syscall.o uaccess.o
-+obj-y := stub.o mmu.o process.o syscall.o uaccess.o
+ #include <mm_id.h>
+-#include <asm/mm_context.h>
  
--# clone.o and stub.o are in the stub, so it can't be built with profiling
-+# stub.o is in the stub, so it can't be built with profiling
- # GCC hardened also auto-enables -fpic, but we need %ebx so it can't work ->
- # disable it
+ typedef struct mm_context {
+ 	struct mm_id id;
+-	struct uml_arch_mm_context arch;
+ } mm_context_t;
  
--CFLAGS_clone.o := $(CFLAGS_NO_HARDENING)
- CFLAGS_stub.o := $(CFLAGS_NO_HARDENING)
--UNPROFILE_OBJS := clone.o stub.o
--
-+UNPROFILE_OBJS := stub.o
- KCOV_INSTRUMENT := n
+ extern void __switch_mm(struct mm_id * mm_idp);
  
- include $(srctree)/arch/um/scripts/Makefile.rules
-diff --git a/arch/um/kernel/skas/clone.c b/arch/um/kernel/skas/clone.c
-deleted file mode 100644
-index b59fa43d68ce..000000000000
---- a/arch/um/kernel/skas/clone.c
-+++ /dev/null
-@@ -1,50 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * Copyright (C) 2015 Thomas Meyer (thomas@m3y3r.de)
-- * Copyright (C) 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-- */
+-/* Avoid tangled inclusion with asm/ldt.h */
+-extern long init_new_ldt(struct mm_context *to_mm, struct mm_context *from_mm);
+-extern void free_ldt(struct mm_context *mm);
 -
--#include <signal.h>
--#include <sched.h>
--#include <asm/unistd.h>
--#include <sys/time.h>
--#include <as-layout.h>
--#include <ptrace_user.h>
--#include <stub-data.h>
--#include <sysdep/stub.h>
--
--/*
-- * This is in a separate file because it needs to be compiled with any
-- * extraneous gcc flags (-pg, -fprofile-arcs, -ftest-coverage) disabled
-- *
-- * Use UM_KERN_PAGE_SIZE instead of PAGE_SIZE because that calls getpagesize
-- * on some systems.
-- */
--
--void __attribute__ ((__section__ (".__syscall_stub")))
--stub_clone_handler(void)
--{
--	struct stub_data *data = get_stub_data();
--	long err;
--
--	/* syscall data as a temporary stack area (bottom half). */
--	err = stub_syscall2(__NR_clone, CLONE_PARENT | CLONE_FILES | SIGCHLD,
--			    (unsigned long) data->syscall_data +
--					    sizeof(data->syscall_data) / 2 -
--					    sizeof(void *));
--	if (err) {
--		data->err = err;
--		goto done;
--	}
--
--	err = stub_syscall4(__NR_ptrace, PTRACE_TRACEME, 0, 0, 0);
--	if (err) {
--		data->child_err = err;
--		goto done;
--	}
--
--	remap_stack_and_trap();
--
-- done:
--	trap_myself();
--}
+ #endif
+diff --git a/arch/um/include/shared/skas/stub-data.h b/arch/um/include/shared/skas/stub-data.h
+index 6ffa9fb5218c..6b8caf6b8283 100644
+--- a/arch/um/include/shared/skas/stub-data.h
++++ b/arch/um/include/shared/skas/stub-data.h
+@@ -20,23 +20,16 @@ enum stub_syscall_type {
+ 	STUB_SYSCALL_MMAP,
+ 	STUB_SYSCALL_MUNMAP,
+ 	STUB_SYSCALL_MPROTECT,
+-	STUB_SYSCALL_LDT,
+ };
+ 
+ struct stub_syscall {
+-	union {
+-		struct {
+-			unsigned long addr;
+-			unsigned long length;
+-			unsigned long offset;
+-			int fd;
+-			int prot;
+-		} mem;
+-		struct {
+-			user_desc_t desc;
+-			int func;
+-		} ldt;
+-	};
++	struct {
++		unsigned long addr;
++		unsigned long length;
++		unsigned long offset;
++		int fd;
++		int prot;
++	} mem;
+ 
+ 	enum stub_syscall_type syscall;
+ };
 diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
-index d6183cfd51fe..76c0c7d600a8 100644
+index b6b9679e6e11..d6183cfd51fe 100644
 --- a/arch/um/kernel/skas/mmu.c
 +++ b/arch/um/kernel/skas/mmu.c
-@@ -20,8 +20,7 @@ static_assert(sizeof(struct stub_data) == STUB_DATA_PAGES * UM_KERN_PAGE_SIZE);
- 
- int init_new_context(struct task_struct *task, struct mm_struct *mm)
- {
-- 	struct mm_context *from_mm = NULL;
--	struct mm_context *to_mm = &mm->context;
-+	struct mm_id *new_id = &mm->context.id;
- 	unsigned long stack = 0;
- 	int ret = -ENOMEM;
- 
-@@ -29,27 +28,22 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
- 	if (stack == 0)
- 		goto out;
- 
--	to_mm->id.stack = stack;
--	if (current->mm != NULL && current->mm != &init_mm)
--		from_mm = &current->mm->context;
-+	new_id->stack = stack;
- 
- 	block_signals_trace();
--	if (from_mm)
--		to_mm->id.u.pid = copy_context_skas0(stack,
--						     from_mm->id.u.pid);
--	else to_mm->id.u.pid = start_userspace(stack);
-+	new_id->u.pid = start_userspace(stack);
- 	unblock_signals_trace();
- 
--	if (to_mm->id.u.pid < 0) {
--		ret = to_mm->id.u.pid;
-+	if (new_id->u.pid < 0) {
-+		ret = new_id->u.pid;
+@@ -45,13 +45,6 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
  		goto out_free;
  	}
  
+-	ret = init_new_ldt(to_mm, from_mm);
+-	if (ret < 0) {
+-		printk(KERN_ERR "init_new_context_skas - init_ldt"
+-		       " failed, errno = %d\n", ret);
+-		goto out_free;
+-	}
+-
  	return 0;
  
   out_free:
--	if (to_mm->id.stack != 0)
--		free_pages(to_mm->id.stack, ilog2(STUB_DATA_PAGES));
-+	if (new_id->stack != 0)
-+		free_pages(new_id->stack, ilog2(STUB_DATA_PAGES));
-  out:
- 	return ret;
- }
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 2bf03115817c..70c43e4a9cf0 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -460,114 +460,6 @@ void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
- 	}
- }
+@@ -79,5 +72,4 @@ void destroy_context(struct mm_struct *mm)
+ 	os_kill_ptraced_process(mmu->id.u.pid, 1);
  
--static unsigned long thread_regs[MAX_REG_NR];
--static unsigned long thread_fp_regs[FP_SIZE];
+ 	free_pages(mmu->id.stack, ilog2(STUB_DATA_PAGES));
+-	free_ldt(mmu);
+ }
+diff --git a/arch/um/kernel/skas/stub.c b/arch/um/kernel/skas/stub.c
+index d17536612aa8..144fb133294e 100644
+--- a/arch/um/kernel/skas/stub.c
++++ b/arch/um/kernel/skas/stub.c
+@@ -45,17 +45,6 @@ static __always_inline int syscall_handler(struct stub_data *d)
+ 				return -1;
+ 			}
+ 			break;
+-		case STUB_SYSCALL_LDT:
+-			res = stub_syscall3(__NR_modify_ldt, sc->ldt.func,
+-					    (unsigned long) &sc->ldt.desc,
+-					    sizeof(sc->ldt.desc));
+-			/* We only write, so the expected result is zero */
+-			if (res) {
+-				d->err = res;
+-				d->syscall_data_len = i;
+-				return -1;
+-			}
+-			break;
+ 		default:
+ 			d->err = -95; /* EOPNOTSUPP */
+ 			d->syscall_data_len = i;
+diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
+index 8b0e98ab842c..1baabcc9bbd5 100644
+--- a/arch/um/os-Linux/start_up.c
++++ b/arch/um/os-Linux/start_up.c
+@@ -17,6 +17,7 @@
+ #include <sys/wait.h>
+ #include <sys/time.h>
+ #include <sys/resource.h>
++#include <asm/ldt.h>
+ #include <asm/unistd.h>
+ #include <init.h>
+ #include <os.h>
+diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
+index 4559d2a693c4..17b85209c43d 100644
+--- a/arch/x86/um/Makefile
++++ b/arch/x86/um/Makefile
+@@ -9,7 +9,7 @@ else
+ 	BITS := 64
+ endif
+ 
+-obj-y = bugs_$(BITS).o delay.o fault.o ldt.o \
++obj-y = bugs_$(BITS).o delay.o fault.o \
+ 	ptrace_$(BITS).o ptrace_user.o setjmp_$(BITS).o signal.o \
+ 	stub_segv.o \
+ 	sys_call_table_$(BITS).o sysrq_$(BITS).o tls_$(BITS).o \
+diff --git a/arch/x86/um/asm/mm_context.h b/arch/x86/um/asm/mm_context.h
+deleted file mode 100644
+index dc32dc023c2f..000000000000
+--- a/arch/x86/um/asm/mm_context.h
++++ /dev/null
+@@ -1,70 +0,0 @@
+-/*
+- * Copyright (C) 2004 Fujitsu Siemens Computers GmbH
+- * Licensed under the GPL
+- *
+- * Author: Bodo Stroesser <bstroesser@fujitsu-siemens.com>
+- */
 -
--static int __init init_thread_regs(void)
+-#ifndef __ASM_LDT_H
+-#define __ASM_LDT_H
+-
+-#include <linux/mutex.h>
+-#include <asm/ldt.h>
+-
+-#define LDT_PAGES_MAX \
+-	((LDT_ENTRIES * LDT_ENTRY_SIZE)/PAGE_SIZE)
+-#define LDT_ENTRIES_PER_PAGE \
+-	(PAGE_SIZE/LDT_ENTRY_SIZE)
+-#define LDT_DIRECT_ENTRIES \
+-	((LDT_PAGES_MAX*sizeof(void *))/LDT_ENTRY_SIZE)
+-
+-struct ldt_entry {
+-	__u32 a;
+-	__u32 b;
+-};
+-
+-typedef struct uml_ldt {
+-	int entry_count;
+-	struct mutex lock;
+-	union {
+-		struct ldt_entry * pages[LDT_PAGES_MAX];
+-		struct ldt_entry entries[LDT_DIRECT_ENTRIES];
+-	} u;
+-} uml_ldt_t;
+-
+-#define LDT_entry_a(info) \
+-	((((info)->base_addr & 0x0000ffff) << 16) | ((info)->limit & 0x0ffff))
+-
+-#define LDT_entry_b(info) \
+-	(((info)->base_addr & 0xff000000) | \
+-	(((info)->base_addr & 0x00ff0000) >> 16) | \
+-	((info)->limit & 0xf0000) | \
+-	(((info)->read_exec_only ^ 1) << 9) | \
+-	((info)->contents << 10) | \
+-	(((info)->seg_not_present ^ 1) << 15) | \
+-	((info)->seg_32bit << 22) | \
+-	((info)->limit_in_pages << 23) | \
+-	((info)->useable << 20) | \
+-	0x7000)
+-
+-#define _LDT_empty(info) (\
+-	(info)->base_addr	== 0	&& \
+-	(info)->limit		== 0	&& \
+-	(info)->contents	== 0	&& \
+-	(info)->read_exec_only	== 1	&& \
+-	(info)->seg_32bit	== 0	&& \
+-	(info)->limit_in_pages	== 0	&& \
+-	(info)->seg_not_present	== 1	&& \
+-	(info)->useable		== 0	)
+-
+-#ifdef CONFIG_X86_64
+-#define LDT_empty(info) (_LDT_empty(info) && ((info)->lm == 0))
+-#else
+-#define LDT_empty(info) (_LDT_empty(info))
+-#endif
+-
+-struct uml_arch_mm_context {
+-	uml_ldt_t ldt;
+-};
+-
+-#endif
+diff --git a/arch/x86/um/ldt.c b/arch/x86/um/ldt.c
+deleted file mode 100644
+index c99fc23b1290..000000000000
+--- a/arch/x86/um/ldt.c
++++ /dev/null
+@@ -1,367 +0,0 @@
+-/*
+- * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+- * Licensed under the GPL
+- */
+-
+-#include <linux/mm.h>
+-#include <linux/sched.h>
+-#include <linux/slab.h>
+-#include <linux/syscalls.h>
+-#include <linux/uaccess.h>
+-#include <asm/unistd.h>
+-#include <os.h>
+-#include <skas.h>
+-#include <sysdep/tls.h>
+-#include <stub-data.h>
+-
+-static inline int modify_ldt (int func, void *ptr, unsigned long bytecount)
 -{
--	get_safe_registers(thread_regs, thread_fp_regs);
--	/* Set parent's instruction pointer to start of clone-stub */
--	thread_regs[REGS_IP_INDEX] = STUB_CODE +
--				(unsigned long) stub_clone_handler -
--				(unsigned long) __syscall_stub_start;
--
--	/* syscall data as a temporary stack area (top half). */
--	thread_regs[REGS_SP_INDEX] = STUB_DATA +
--				     offsetof(struct stub_data, syscall_data) +
--				     sizeof(((struct stub_data *) 0)->syscall_data) -
--				     sizeof(void *);
--	return 0;
+-	return syscall(__NR_modify_ldt, func, ptr, bytecount);
 -}
 -
--__initcall(init_thread_regs);
--
--int copy_context_skas0(unsigned long new_stack, int pid)
+-static void write_ldt_entry(struct mm_id *mm_idp, int func,
+-		     struct user_desc *desc)
 -{
--	int err;
--	unsigned long current_stack = current_stub_stack();
--	struct stub_data *data = (struct stub_data *) current_stack;
--	struct stub_data *child_data = (struct stub_data *) new_stack;
--	unsigned long long new_offset;
--	int new_fd = phys_mapping(uml_to_phys((void *)new_stack), &new_offset);
+-	struct stub_syscall *sc;
 -
--	/*
--	 * prepare offset and fd of child's stack as argument for parent's
--	 * and child's mmap2 calls
--	 */
--	*data = ((struct stub_data) {
--		.offset	= MMAP_OFFSET(new_offset),
--		.fd     = new_fd,
--		.err    = -ESRCH,
--		.child_err = 0,
--	});
+-	sc = syscall_stub_alloc(mm_idp);
+-	sc->syscall = STUB_SYSCALL_LDT;
+-	sc->ldt.func = func;
+-	memcpy(&sc->ldt.desc, desc, sizeof(*desc));
+-}
 -
--	*child_data = ((struct stub_data) {
--		.child_err = -ESRCH,
--	});
+-/*
+- * In skas mode, we hold our own ldt data in UML.
+- * Thus, the code implementing sys_modify_ldt_skas
+- * is very similar to (and mostly stolen from) sys_modify_ldt
+- * for arch/i386/kernel/ldt.c
+- * The routines copied and modified in part are:
+- * - read_ldt
+- * - read_default_ldt
+- * - write_ldt
+- * - sys_modify_ldt_skas
+- */
 -
--	err = ptrace_setregs(pid, thread_regs);
--	if (err < 0) {
--		err = -errno;
--		printk(UM_KERN_ERR "%s : PTRACE_SETREGS failed, pid = %d, errno = %d\n",
--		      __func__, pid, -err);
--		return err;
+-static int read_ldt(void __user * ptr, unsigned long bytecount)
+-{
+-	int i, err = 0;
+-	unsigned long size;
+-	uml_ldt_t *ldt = &current->mm->context.arch.ldt;
+-
+-	if (!ldt->entry_count)
+-		goto out;
+-	if (bytecount > LDT_ENTRY_SIZE*LDT_ENTRIES)
+-		bytecount = LDT_ENTRY_SIZE*LDT_ENTRIES;
+-	err = bytecount;
+-
+-	mutex_lock(&ldt->lock);
+-	if (ldt->entry_count <= LDT_DIRECT_ENTRIES) {
+-		size = LDT_ENTRY_SIZE*LDT_DIRECT_ENTRIES;
+-		if (size > bytecount)
+-			size = bytecount;
+-		if (copy_to_user(ptr, ldt->u.entries, size))
+-			err = -EFAULT;
+-		bytecount -= size;
+-		ptr += size;
 -	}
--
--	err = put_fp_registers(pid, thread_fp_regs);
--	if (err < 0) {
--		printk(UM_KERN_ERR "%s : put_fp_registers failed, pid = %d, err = %d\n",
--		       __func__, pid, err);
--		return err;
+-	else {
+-		for (i=0; i<ldt->entry_count/LDT_ENTRIES_PER_PAGE && bytecount;
+-		     i++) {
+-			size = PAGE_SIZE;
+-			if (size > bytecount)
+-				size = bytecount;
+-			if (copy_to_user(ptr, ldt->u.pages[i], size)) {
+-				err = -EFAULT;
+-				break;
+-			}
+-			bytecount -= size;
+-			ptr += size;
+-		}
 -	}
+-	mutex_unlock(&ldt->lock);
 -
--	/*
--	 * Wait, until parent has finished its work: read child's pid from
--	 * parent's stack, and check, if bad result.
--	 */
--	err = ptrace(PTRACE_CONT, pid, 0, 0);
--	if (err) {
--		err = -errno;
--		printk(UM_KERN_ERR "Failed to continue new process, pid = %d, errno = %d\n",
--		       pid, errno);
--		return err;
--	}
+-	if (bytecount == 0 || err == -EFAULT)
+-		goto out;
 -
--	wait_stub_done(pid);
+-	if (clear_user(ptr, bytecount))
+-		err = -EFAULT;
 -
--	pid = data->err;
--	if (pid < 0) {
--		printk(UM_KERN_ERR "%s - stub-parent reports error %d\n",
--		      __func__, -pid);
--		return pid;
--	}
--
--	/*
--	 * Wait, until child has finished too: read child's result from
--	 * child's stack and check it.
--	 */
--	wait_stub_done(pid);
--	if (child_data->child_err != STUB_DATA) {
--		printk(UM_KERN_ERR "%s - stub-child %d reports error %ld\n",
--		       __func__, pid, data->child_err);
--		err = data->child_err;
--		goto out_kill;
--	}
--
--	if (ptrace(PTRACE_SETOPTIONS, pid, NULL,
--		   (void *)PTRACE_O_TRACESYSGOOD) < 0) {
--		err = -errno;
--		printk(UM_KERN_ERR "%s : PTRACE_SETOPTIONS failed, errno = %d\n",
--		       __func__, errno);
--		goto out_kill;
--	}
--
--	return pid;
--
-- out_kill:
--	os_kill_ptraced_process(pid, 1);
+-out:
 -	return err;
 -}
 -
- void new_thread(void *stack, jmp_buf *buf, void (*handler)(void))
- {
- 	(*buf)[0].JB_IP = (unsigned long) handler;
+-static int read_default_ldt(void __user * ptr, unsigned long bytecount)
+-{
+-	int err;
+-
+-	if (bytecount > 5*LDT_ENTRY_SIZE)
+-		bytecount = 5*LDT_ENTRY_SIZE;
+-
+-	err = bytecount;
+-	/*
+-	 * UML doesn't support lcall7 and lcall27.
+-	 * So, we don't really have a default ldt, but emulate
+-	 * an empty ldt of common host default ldt size.
+-	 */
+-	if (clear_user(ptr, bytecount))
+-		err = -EFAULT;
+-
+-	return err;
+-}
+-
+-static int write_ldt(void __user * ptr, unsigned long bytecount, int func)
+-{
+-	uml_ldt_t *ldt = &current->mm->context.arch.ldt;
+-	struct mm_id * mm_idp = &current->mm->context.id;
+-	int i, err;
+-	struct user_desc ldt_info;
+-	struct ldt_entry entry0, *ldt_p;
+-
+-	err = -EINVAL;
+-	if (bytecount != sizeof(ldt_info))
+-		goto out;
+-	err = -EFAULT;
+-	if (copy_from_user(&ldt_info, ptr, sizeof(ldt_info)))
+-		goto out;
+-
+-	err = -EINVAL;
+-	if (ldt_info.entry_number >= LDT_ENTRIES)
+-		goto out;
+-	if (ldt_info.contents == 3) {
+-		if (func == 1)
+-			goto out;
+-		if (ldt_info.seg_not_present == 0)
+-			goto out;
+-	}
+-
+-	mutex_lock(&ldt->lock);
+-
+-	write_ldt_entry(mm_idp, func, &ldt_info);
+-	err = syscall_stub_flush(mm_idp);
+-	if (err)
+-		goto out_unlock;
+-
+-	if (ldt_info.entry_number >= ldt->entry_count &&
+-	    ldt_info.entry_number >= LDT_DIRECT_ENTRIES) {
+-		for (i=ldt->entry_count/LDT_ENTRIES_PER_PAGE;
+-		     i*LDT_ENTRIES_PER_PAGE <= ldt_info.entry_number;
+-		     i++) {
+-			if (i == 0)
+-				memcpy(&entry0, ldt->u.entries,
+-				       sizeof(entry0));
+-			ldt->u.pages[i] = (struct ldt_entry *)
+-				__get_free_page(GFP_KERNEL|__GFP_ZERO);
+-			if (!ldt->u.pages[i]) {
+-				err = -ENOMEM;
+-				/* Undo the change in host */
+-				memset(&ldt_info, 0, sizeof(ldt_info));
+-				write_ldt_entry(mm_idp, 1, &ldt_info);
+-				err = syscall_stub_flush(mm_idp);
+-				goto out_unlock;
+-			}
+-			if (i == 0) {
+-				memcpy(ldt->u.pages[0], &entry0,
+-				       sizeof(entry0));
+-				memcpy(ldt->u.pages[0]+1, ldt->u.entries+1,
+-				       sizeof(entry0)*(LDT_DIRECT_ENTRIES-1));
+-			}
+-			ldt->entry_count = (i + 1) * LDT_ENTRIES_PER_PAGE;
+-		}
+-	}
+-	if (ldt->entry_count <= ldt_info.entry_number)
+-		ldt->entry_count = ldt_info.entry_number + 1;
+-
+-	if (ldt->entry_count <= LDT_DIRECT_ENTRIES)
+-		ldt_p = ldt->u.entries + ldt_info.entry_number;
+-	else
+-		ldt_p = ldt->u.pages[ldt_info.entry_number/LDT_ENTRIES_PER_PAGE] +
+-			ldt_info.entry_number%LDT_ENTRIES_PER_PAGE;
+-
+-	if (ldt_info.base_addr == 0 && ldt_info.limit == 0 &&
+-	   (func == 1 || LDT_empty(&ldt_info))) {
+-		ldt_p->a = 0;
+-		ldt_p->b = 0;
+-	}
+-	else{
+-		if (func == 1)
+-			ldt_info.useable = 0;
+-		ldt_p->a = LDT_entry_a(&ldt_info);
+-		ldt_p->b = LDT_entry_b(&ldt_info);
+-	}
+-	err = 0;
+-
+-out_unlock:
+-	mutex_unlock(&ldt->lock);
+-out:
+-	return err;
+-}
+-
+-static long do_modify_ldt_skas(int func, void __user *ptr,
+-			       unsigned long bytecount)
+-{
+-	int ret = -ENOSYS;
+-
+-	switch (func) {
+-		case 0:
+-			ret = read_ldt(ptr, bytecount);
+-			break;
+-		case 1:
+-		case 0x11:
+-			ret = write_ldt(ptr, bytecount, func);
+-			break;
+-		case 2:
+-			ret = read_default_ldt(ptr, bytecount);
+-			break;
+-	}
+-	return ret;
+-}
+-
+-static DEFINE_SPINLOCK(host_ldt_lock);
+-static short dummy_list[9] = {0, -1};
+-static short * host_ldt_entries = NULL;
+-
+-static void ldt_get_host_info(void)
+-{
+-	long ret;
+-	struct ldt_entry * ldt;
+-	short *tmp;
+-	int i, size, k, order;
+-
+-	spin_lock(&host_ldt_lock);
+-
+-	if (host_ldt_entries != NULL) {
+-		spin_unlock(&host_ldt_lock);
+-		return;
+-	}
+-	host_ldt_entries = dummy_list+1;
+-
+-	spin_unlock(&host_ldt_lock);
+-
+-	for (i = LDT_PAGES_MAX-1, order=0; i; i>>=1, order++)
+-		;
+-
+-	ldt = (struct ldt_entry *)
+-	      __get_free_pages(GFP_KERNEL|__GFP_ZERO, order);
+-	if (ldt == NULL) {
+-		printk(KERN_ERR "ldt_get_host_info: couldn't allocate buffer "
+-		       "for host ldt\n");
+-		return;
+-	}
+-
+-	ret = modify_ldt(0, ldt, (1<<order)*PAGE_SIZE);
+-	if (ret < 0) {
+-		printk(KERN_ERR "ldt_get_host_info: couldn't read host ldt\n");
+-		goto out_free;
+-	}
+-	if (ret == 0) {
+-		/* default_ldt is active, simply write an empty entry 0 */
+-		host_ldt_entries = dummy_list;
+-		goto out_free;
+-	}
+-
+-	for (i=0, size=0; i<ret/LDT_ENTRY_SIZE; i++) {
+-		if (ldt[i].a != 0 || ldt[i].b != 0)
+-			size++;
+-	}
+-
+-	if (size < ARRAY_SIZE(dummy_list))
+-		host_ldt_entries = dummy_list;
+-	else {
+-		size = (size + 1) * sizeof(dummy_list[0]);
+-		tmp = kmalloc(size, GFP_KERNEL);
+-		if (tmp == NULL) {
+-			printk(KERN_ERR "ldt_get_host_info: couldn't allocate "
+-			       "host ldt list\n");
+-			goto out_free;
+-		}
+-		host_ldt_entries = tmp;
+-	}
+-
+-	for (i=0, k=0; i<ret/LDT_ENTRY_SIZE; i++) {
+-		if (ldt[i].a != 0 || ldt[i].b != 0)
+-			host_ldt_entries[k++] = i;
+-	}
+-	host_ldt_entries[k] = -1;
+-
+-out_free:
+-	free_pages((unsigned long)ldt, order);
+-}
+-
+-long init_new_ldt(struct mm_context *new_mm, struct mm_context *from_mm)
+-{
+-	struct user_desc desc;
+-	short * num_p;
+-	int i;
+-	long page, err=0;
+-
+-
+-	mutex_init(&new_mm->arch.ldt.lock);
+-
+-	if (!from_mm) {
+-		memset(&desc, 0, sizeof(desc));
+-		/*
+-		 * Now we try to retrieve info about the ldt, we
+-		 * inherited from the host. All ldt-entries found
+-		 * will be reset in the following loop
+-		 */
+-		ldt_get_host_info();
+-		for (num_p=host_ldt_entries; *num_p != -1; num_p++) {
+-			desc.entry_number = *num_p;
+-			write_ldt_entry(&new_mm->id, 1, &desc);
+-		}
+-		err = syscall_stub_flush(&new_mm->id);
+-		new_mm->arch.ldt.entry_count = 0;
+-
+-		goto out;
+-	}
+-
+-	/*
+-	 * Our local LDT is used to supply the data for
+-	 * modify_ldt(READLDT), if PTRACE_LDT isn't available,
+-	 * i.e., we have to use the stub for modify_ldt, which
+-	 * can't handle the big read buffer of up to 64kB.
+-	 */
+-	mutex_lock(&from_mm->arch.ldt.lock);
+-	if (from_mm->arch.ldt.entry_count <= LDT_DIRECT_ENTRIES)
+-		memcpy(new_mm->arch.ldt.u.entries, from_mm->arch.ldt.u.entries,
+-		       sizeof(new_mm->arch.ldt.u.entries));
+-	else {
+-		i = from_mm->arch.ldt.entry_count / LDT_ENTRIES_PER_PAGE;
+-		while (i-->0) {
+-			page = __get_free_page(GFP_KERNEL|__GFP_ZERO);
+-			if (!page) {
+-				err = -ENOMEM;
+-				break;
+-			}
+-			new_mm->arch.ldt.u.pages[i] =
+-				(struct ldt_entry *) page;
+-			memcpy(new_mm->arch.ldt.u.pages[i],
+-			       from_mm->arch.ldt.u.pages[i], PAGE_SIZE);
+-		}
+-	}
+-	new_mm->arch.ldt.entry_count = from_mm->arch.ldt.entry_count;
+-	mutex_unlock(&from_mm->arch.ldt.lock);
+-
+-    out:
+-	return err;
+-}
+-
+-
+-void free_ldt(struct mm_context *mm)
+-{
+-	int i;
+-
+-	if (mm->arch.ldt.entry_count > LDT_DIRECT_ENTRIES) {
+-		i = mm->arch.ldt.entry_count / LDT_ENTRIES_PER_PAGE;
+-		while (i-- > 0)
+-			free_page((long) mm->arch.ldt.u.pages[i]);
+-	}
+-	mm->arch.ldt.entry_count = 0;
+-}
+-
+-SYSCALL_DEFINE3(modify_ldt, int , func , void __user * , ptr ,
+-		unsigned long , bytecount)
+-{
+-	/* See non-um modify_ldt() for why we do this cast */
+-	return (unsigned int)do_modify_ldt_skas(func, ptr, bytecount);
+-}
+diff --git a/arch/x86/um/tls_32.c b/arch/x86/um/tls_32.c
+index 66162eafd8e8..8d6a6656a5cf 100644
+--- a/arch/x86/um/tls_32.c
++++ b/arch/x86/um/tls_32.c
+@@ -11,6 +11,7 @@
+ #include <os.h>
+ #include <skas.h>
+ #include <sysdep/tls.h>
++#include <asm/desc.h>
+ 
+ /*
+  * If needed we can detect when it's uninitialized.
 -- 
 2.44.0
 
