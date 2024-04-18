@@ -4,58 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5B0D7C04FF8
-	for <linux-um@archiver.kernel.org>; Thu, 18 Apr 2024 09:25:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D881FC4345F
+	for <linux-um@archiver.kernel.org>; Thu, 18 Apr 2024 09:25:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=3XyIcK244+pYqqocJJuuDzK2yLbPFlm2Fu5rhS9icdo=; b=qMt07yJoWCeR0MM1jDjkUEpGR8
-	xV6yX6lqGYMGBxJioI89GE6/FsrWWfsHtFDQ0Bn3DEXhlJMQ7Xb55UylPVRHD7QFu710jUBIURtfE
-	KatvuIL7PsKplxpNTESxxJf90quKLiSQWwLy24E4DMexFjlTTSvK3qWfw0Lo4GB7G+SqDhRDdFo1I
-	mGFzZZ8yhRl99oP7PkE7+NLSbUPrwVmBjUDa8n7sZ5+TFux4ikIplgN9NFGFVgqj00a5xqfkmGXdD
-	ThONXB8k4HwDdPzuYntvk13pGQ212uTbN4z00GlGylroY8ahPAcXftTsTVjlYUV8ZzTiVLLvOIHKL
-	A+CmQJoA==;
+	bh=o4orJLpxsZK8i0WVCsdc0iwdcn15fKcS/0Xvy4M6SqA=; b=42mUnQqlRoKuJtRJr4f0aTDqWJ
+	r+W/BLCey1kqoYAcC3fpdnrGxLipNvtK2k4J06jLFzzYWBUYBgfZzEKljyTdnXrTi7QqWy6O/G8yx
+	vLgdmRdrJ7pXoqTANxGNXbfr+xnkeA1a+Q7pPP3mnuN1tRWnFK9Cxrmt7pAVxGLs2Un0C7VAUNVil
+	Y1xcVQZZ0gNPFYEfkcFwCAdtdgJmjjzMBdeE+b1facX718duFjcN3YwTgeLyqHKqbjAhObcpNlfN5
+	VzUDuf5p14IQU3p+yPGndJa+vb2dt9MMZTzEQOJMM0X7kFdbctbKrCcwBZ6j+cfE+hP5/T8oRHZTi
+	2WN+hsjg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rxO12-00000001bV9-3VYa;
-	Thu, 18 Apr 2024 09:25:12 +0000
+	id 1rxO15-00000001bWz-1wsJ;
+	Thu, 18 Apr 2024 09:25:15 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rxO0m-00000001bFJ-3AkQ
+	id 1rxO0t-00000001bM9-0Sj2
 	for linux-um@lists.infradead.org;
-	Thu, 18 Apr 2024 09:25:06 +0000
+	Thu, 18 Apr 2024 09:25:11 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=3XyIcK244+pYqqocJJuuDzK2yLbPFlm2Fu5rhS9icdo=;
-	t=1713432296; x=1714641896; b=LhVnly1fYjvSziKTYGCXbAVA1wnNRcIZkAW8gxtiN+pJ1dY
-	PK0ymMaVU+DFTASGWkD7e+MTiaCz3k1WvZxa+lgu2uVI7hXhEw9wyxP5kTzTorKSJ0NwgtCNTP8Wq
-	Qr7TDwlNe9zQbtEU+wjxRqSJNCCVRnpdmpG+JAnX3flxAaVi8X7DvWrBEkck5YUOrnabdTRxPmj2N
-	iau0s9ExCzFwf74CcSzqIcR4LR5NuRCgLfQs1zuLj+nl5lS/ybIYs+sHgCOKxRV2BGE42SXgB/SEF
-	k4ncFxwTABEkhJnFOLqROWD9VXKl7hMWuzpiVPH1H59TjvTAasm9G4WaTznwr8AA==;
+	Resent-Cc:Resent-Message-ID; bh=o4orJLpxsZK8i0WVCsdc0iwdcn15fKcS/0Xvy4M6SqA=;
+	t=1713432302; x=1714641902; b=xGCaO+jEOJepX1336VXfq9cfIbYUEIu0fGv1vsxMlH7nNnP
+	kNJKDO79ioUeCr9C+qkh4b7l0/GiUHNhmIwBMVeK8hgjc4euGnWYvSchuQNA96nGvI+kMkX36xXqP
+	cXpMyWjBaRDwju5Y5OmlIGdXUK3TktI7Sy1LTcB0iS8XlW2uLs64zOlA5g4WqN3X2iFURIvKsDR/o
+	pNX9xV65VXqyqAufAFtjLkVKV9r7X2ro/BXET5bkiqCmF52QECvh+VjlGaJ4UyraPIDlyvxtTd/iC
+	SqxMFoMXd6RY0R83L4sThYARDrWvRRq26OvIfhowQPPdUWfeKSbBRTgf084Q0tXA==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.97)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1rxO0h-0000000CKXH-2Fro;
-	Thu, 18 Apr 2024 11:24:52 +0200
+	id 1rxO0q-0000000CKXH-3cCM;
+	Thu, 18 Apr 2024 11:25:01 +0200
 From: benjamin@sipsolutions.net
 To: linux-um@lists.infradead.org
-Cc: Benjamin Berg <benjamin@sipsolutions.net>
-Subject: [PATCH 04/12] um: Rework syscall handling
-Date: Thu, 18 Apr 2024 11:23:19 +0200
-Message-ID: <20240418092327.860135-5-benjamin@sipsolutions.net>
+Cc: Benjamin Berg <benjamin.berg@intel.com>
+Subject: [PATCH 12/12] um: refactor TLB update handling
+Date: Thu, 18 Apr 2024 11:23:27 +0200
+Message-ID: <20240418092327.860135-13-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240418092327.860135-1-benjamin@sipsolutions.net>
 References: <20240418092327.860135-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240418_022457_231176_910A4DE9 
-X-CRM114-Status: GOOD (  31.07  )
+X-CRM114-CacheID: sfid-20240418_022503_521822_F4424C0F 
+X-CRM114-Status: GOOD (  30.62  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,938 +70,422 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Benjamin Berg <benjamin@sipsolutions.net>
+From: Benjamin Berg <benjamin.berg@intel.com>
 
-Rework syscall handling to be platform independent. Also create a clean
-split between queueing of syscalls and flushing them out, removing the
-need to keep state in the code that triggers the syscalls.
+Conceptually, we want the memory mappings to always be up to date and
+represent whatever is in the TLB. To ensure that, we need to sync them
+over in the userspace case and for the kernel we need to process the
+mappings.
 
-The code adds syscall_data_len to the global mm_id structure. This will
-be used later to allow surrounding code to track whether syscalls still
-need to run and if errors occurred.
+The kernel will call flush_tlb_* if page table entries that were valid
+before become invalid. Unfortunately, this is not the case if entries
+are added.
 
-Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
+As such, change both flush_tlb_* and set_ptes to track the memory range
+that has to be synchronized. For the kernel, we need to execute a
+flush_tlb_kern_* immediately but we can wait for the first page fault in
+case of set_ptes. For userspace in contrast we only store that a range
+of memory needs to be synced and do so whenever we switch to that
+process.
+
+Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
 ---
- arch/um/include/shared/os.h             |  22 +--
- arch/um/include/shared/skas/mm_id.h     |   1 +
- arch/um/include/shared/skas/stub-data.h |  35 +++-
- arch/um/include/shared/user.h           |   8 +
- arch/um/kernel/exec.c                   |  10 +-
- arch/um/kernel/skas/Makefile            |   7 +-
- arch/um/kernel/skas/clone.c             |   2 +-
- arch/um/kernel/skas/stub.c              |  80 +++++++++
- arch/um/kernel/tlb.c                    |  42 +++--
- arch/um/os-Linux/skas/mem.c             | 212 +++++++++++-------------
- arch/um/os-Linux/skas/process.c         |   4 +-
- arch/x86/um/Makefile                    |   2 +-
- arch/x86/um/ldt.c                       |  41 ++---
- arch/x86/um/shared/sysdep/stub.h        |   1 +
- arch/x86/um/stub_32.S                   |  56 -------
- arch/x86/um/stub_64.S                   |  50 ------
- 16 files changed, 275 insertions(+), 298 deletions(-)
- create mode 100644 arch/um/kernel/skas/stub.c
- delete mode 100644 arch/x86/um/stub_32.S
- delete mode 100644 arch/x86/um/stub_64.S
+ arch/um/include/asm/mmu.h          |   4 +
+ arch/um/include/asm/pgtable.h      |  32 +++++++
+ arch/um/include/asm/tlbflush.h     |  44 ++++++++--
+ arch/um/include/shared/skas/skas.h |   1 +
+ arch/um/kernel/skas/process.c      |  10 +++
+ arch/um/kernel/tlb.c               | 136 +++--------------------------
+ arch/um/kernel/trap.c              |  15 +++-
+ arch/um/os-Linux/skas/process.c    |   2 +
+ 8 files changed, 108 insertions(+), 136 deletions(-)
 
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index aff8906304ea..16d726f3df84 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -268,19 +268,15 @@ extern long long os_persistent_clock_emulation(void);
- extern long long os_nsecs(void);
+diff --git a/arch/um/include/asm/mmu.h b/arch/um/include/asm/mmu.h
+index 37eb6e89e79a..bf8da736609c 100644
+--- a/arch/um/include/asm/mmu.h
++++ b/arch/um/include/asm/mmu.h
+@@ -10,6 +10,10 @@
  
- /* skas/mem.c */
--extern long run_syscall_stub(struct mm_id * mm_idp,
--			     int syscall, unsigned long *args, long expected,
--			     void **addr, int done);
--extern long syscall_stub_data(struct mm_id * mm_idp,
--			      unsigned long *data, int data_count,
--			      void **addr, void **stub_addr);
--extern int map(struct mm_id * mm_idp, unsigned long virt,
--	       unsigned long len, int prot, int phys_fd,
--	       unsigned long long offset, int done, void **data);
--extern int unmap(struct mm_id * mm_idp, unsigned long addr, unsigned long len,
--		 int done, void **data);
--extern int protect(struct mm_id * mm_idp, unsigned long addr,
--		   unsigned long len, unsigned int prot, int done, void **data);
-+int syscall_stub_flush(struct mm_id *mm_idp);
-+struct stub_syscall *syscall_stub_alloc(struct mm_id *mm_idp);
+ typedef struct mm_context {
+ 	struct mm_id id;
 +
-+void map(struct mm_id *mm_idp, unsigned long virt,
-+	 unsigned long len, int prot, int phys_fd,
-+	 unsigned long long offset);
-+void unmap(struct mm_id *mm_idp, unsigned long addr, unsigned long len);
-+void protect(struct mm_id *mm_idp, unsigned long addr,
-+	     unsigned long len, unsigned int prot);
++	/* Address range in need of a TLB sync */
++	long int sync_tlb_range_from;
++	long int sync_tlb_range_to;
+ } mm_context_t;
  
- /* skas/process.c */
- extern int is_skas_winch(int pid, int fd, void *data);
-diff --git a/arch/um/include/shared/skas/mm_id.h b/arch/um/include/shared/skas/mm_id.h
-index e82e203f5f41..bcb951719b51 100644
---- a/arch/um/include/shared/skas/mm_id.h
-+++ b/arch/um/include/shared/skas/mm_id.h
-@@ -13,6 +13,7 @@ struct mm_id {
- 	} u;
- 	unsigned long stack;
- 	int kill;
-+	int syscall_data_len;
- };
+ extern void __switch_mm(struct mm_id * mm_idp);
+diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.h
+index e1ece21dbe3f..5bb397b65efb 100644
+--- a/arch/um/include/asm/pgtable.h
++++ b/arch/um/include/asm/pgtable.h
+@@ -244,6 +244,38 @@ static inline void set_pte(pte_t *pteptr, pte_t pteval)
  
- #endif
-diff --git a/arch/um/include/shared/skas/stub-data.h b/arch/um/include/shared/skas/stub-data.h
-index 779d2a3bac5d..6ffa9fb5218c 100644
---- a/arch/um/include/shared/skas/stub-data.h
-+++ b/arch/um/include/shared/skas/stub-data.h
-@@ -10,14 +10,45 @@
+ #define PFN_PTE_SHIFT		PAGE_SHIFT
  
- #include <linux/compiler_types.h>
- #include <as-layout.h>
-+#include <sysdep/tls.h>
-+
-+#define STUB_NEXT_SYSCALL(s) \
-+	((struct stub_syscall *) (((unsigned long) s) + (s)->cmd_len))
-+
-+enum stub_syscall_type {
-+	STUB_SYSCALL_UNSET = 0,
-+	STUB_SYSCALL_MMAP,
-+	STUB_SYSCALL_MUNMAP,
-+	STUB_SYSCALL_MPROTECT,
-+	STUB_SYSCALL_LDT,
-+};
-+
-+struct stub_syscall {
-+	union {
-+		struct {
-+			unsigned long addr;
-+			unsigned long length;
-+			unsigned long offset;
-+			int fd;
-+			int prot;
-+		} mem;
-+		struct {
-+			user_desc_t desc;
-+			int func;
-+		} ldt;
-+	};
-+
-+	enum stub_syscall_type syscall;
-+};
- 
- struct stub_data {
- 	unsigned long offset;
- 	int fd;
--	long parent_err, child_err;
-+	long err, child_err;
- 
-+	int syscall_data_len;
- 	/* 128 leaves enough room for additional fields in the struct */
--	unsigned char syscall_data[UM_KERN_PAGE_SIZE - 128] __aligned(16);
-+	struct stub_syscall syscall_data[(UM_KERN_PAGE_SIZE - 128) / sizeof(struct stub_syscall)] __aligned(16);
- 
- 	/* Stack for our signal handlers and for calling into . */
- 	unsigned char sigstack[UM_KERN_PAGE_SIZE] __aligned(UM_KERN_PAGE_SIZE);
-diff --git a/arch/um/include/shared/user.h b/arch/um/include/shared/user.h
-index 326e52450e41..bbab79c0c074 100644
---- a/arch/um/include/shared/user.h
-+++ b/arch/um/include/shared/user.h
-@@ -42,11 +42,19 @@ extern void panic(const char *fmt, ...)
- #define printk(...) _printk(__VA_ARGS__)
- extern int _printk(const char *fmt, ...)
- 	__attribute__ ((format (printf, 1, 2)));
-+extern void print_hex_dump(const char *level, const char *prefix_str,
-+			   int prefix_type, int rowsize, int groupsize,
-+			   const void *buf, size_t len, _Bool ascii);
- #else
- static inline int printk(const char *fmt, ...)
- {
- 	return 0;
- }
-+static inline void print_hex_dump(const char *level, const char *prefix_str,
-+				  int prefix_type, int rowsize, int groupsize,
-+				  const void *buf, size_t len, _Bool ascii)
++static inline void um_tlb_mark_sync(struct mm_struct *mm, unsigned long start,
++				    unsigned long end)
 +{
++	if (!mm->context.sync_tlb_range_to) {
++		mm->context.sync_tlb_range_from = start;
++		mm->context.sync_tlb_range_to = end;
++	} else {
++		if (start < mm->context.sync_tlb_range_from)
++			mm->context.sync_tlb_range_from = start;
++		if (end > mm->context.sync_tlb_range_to)
++			mm->context.sync_tlb_range_to = end;
++	}
 +}
- #endif
- 
- extern int in_aton(char *str);
-diff --git a/arch/um/kernel/exec.c b/arch/um/kernel/exec.c
-index 827a0d3fa589..5c8836b012e9 100644
---- a/arch/um/kernel/exec.c
-+++ b/arch/um/kernel/exec.c
-@@ -22,15 +22,11 @@
- 
- void flush_thread(void)
- {
--	void *data = NULL;
--	int ret;
--
- 	arch_flush_thread(&current->thread.arch);
- 
--	ret = unmap(&current->mm->context.id, 0, TASK_SIZE, 1, &data);
--	if (ret) {
--		printk(KERN_ERR "%s - clearing address space failed, err = %d\n",
--		       __func__, ret);
-+	unmap(&current->mm->context.id, 0, TASK_SIZE);
-+	if (syscall_stub_flush(&current->mm->context.id) < 0) {
-+		printk(KERN_ERR "%s - clearing address space failed", __func__);
- 		force_sig(SIGKILL);
- 	}
- 	get_safe_registers(current_pt_regs()->regs.gp,
-diff --git a/arch/um/kernel/skas/Makefile b/arch/um/kernel/skas/Makefile
-index f93972a25765..dd8bc2167e36 100644
---- a/arch/um/kernel/skas/Makefile
-+++ b/arch/um/kernel/skas/Makefile
-@@ -3,14 +3,15 @@
- # Copyright (C) 2002 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
- #
- 
--obj-y := clone.o mmu.o process.o syscall.o uaccess.o
-+obj-y := clone.o stub.o mmu.o process.o syscall.o uaccess.o
- 
--# clone.o is in the stub, so it can't be built with profiling
-+# clone.o and stub.o are in the stub, so it can't be built with profiling
- # GCC hardened also auto-enables -fpic, but we need %ebx so it can't work ->
- # disable it
- 
- CFLAGS_clone.o := $(CFLAGS_NO_HARDENING)
--UNPROFILE_OBJS := clone.o
-+CFLAGS_stub.o := $(CFLAGS_NO_HARDENING)
-+UNPROFILE_OBJS := clone.o stub.o
- 
- KCOV_INSTRUMENT := n
- 
-diff --git a/arch/um/kernel/skas/clone.c b/arch/um/kernel/skas/clone.c
-index 906f7454887c..b59fa43d68ce 100644
---- a/arch/um/kernel/skas/clone.c
-+++ b/arch/um/kernel/skas/clone.c
-@@ -33,7 +33,7 @@ stub_clone_handler(void)
- 					    sizeof(data->syscall_data) / 2 -
- 					    sizeof(void *));
- 	if (err) {
--		data->parent_err = err;
-+		data->err = err;
- 		goto done;
- 	}
- 
-diff --git a/arch/um/kernel/skas/stub.c b/arch/um/kernel/skas/stub.c
-new file mode 100644
-index 000000000000..d17536612aa8
---- /dev/null
-+++ b/arch/um/kernel/skas/stub.c
-@@ -0,0 +1,80 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2021 Benjamin Berg <benjamin@sipsolutions.net>
-+ */
 +
-+#include <sysdep/stub.h>
-+
-+static __always_inline int syscall_handler(struct stub_data *d)
++#define set_ptes set_ptes
++static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
++			    pte_t *ptep, pte_t pte, int nr)
 +{
-+	int i;
-+	unsigned long res;
++	/* Basically the default implementation */
++	size_t length = nr * PAGE_SIZE;
 +
-+	for (i = 0; i < d->syscall_data_len; i++) {
-+		struct stub_syscall *sc = &d->syscall_data[i];
-+
-+		switch (sc->syscall) {
-+		case STUB_SYSCALL_MMAP:
-+			res = stub_syscall6(STUB_MMAP_NR,
-+					    sc->mem.addr, sc->mem.length,
-+					    sc->mem.prot,
-+					    MAP_SHARED | MAP_FIXED,
-+					    sc->mem.fd, sc->mem.offset);
-+			if (res != sc->mem.addr) {
-+				d->err = res;
-+				d->syscall_data_len = i;
-+				return -1;
-+			}
++	for (;;) {
++		set_pte(ptep, pte);
++		if (--nr == 0)
 +			break;
-+		case STUB_SYSCALL_MUNMAP:
-+			res = stub_syscall2(__NR_munmap,
-+					    sc->mem.addr, sc->mem.length);
-+			if (res) {
-+				d->err = res;
-+				d->syscall_data_len = i;
-+				return -1;
-+			}
-+			break;
-+		case STUB_SYSCALL_MPROTECT:
-+			res = stub_syscall3(__NR_munmap,
-+					    sc->mem.addr, sc->mem.length,
-+					    sc->mem.prot);
-+			if (res) {
-+				d->err = res;
-+				d->syscall_data_len = i;
-+				return -1;
-+			}
-+			break;
-+		case STUB_SYSCALL_LDT:
-+			res = stub_syscall3(__NR_modify_ldt, sc->ldt.func,
-+					    (unsigned long) &sc->ldt.desc,
-+					    sizeof(sc->ldt.desc));
-+			/* We only write, so the expected result is zero */
-+			if (res) {
-+				d->err = res;
-+				d->syscall_data_len = i;
-+				return -1;
-+			}
-+			break;
-+		default:
-+			d->err = -95; /* EOPNOTSUPP */
-+			d->syscall_data_len = i;
-+			return -1;
-+		}
++		ptep++;
++		pte = __pte(pte_val(pte) + (nr << PFN_PTE_SHIFT));
 +	}
 +
-+	d->err = 0;
-+	d->syscall_data_len = 0;
-+
-+	return 0;
++	um_tlb_mark_sync(mm, addr, addr + length);
 +}
 +
-+void __section(".__syscall_stub")
-+stub_syscall_handler(void)
+ #define __HAVE_ARCH_PTE_SAME
+ static inline int pte_same(pte_t pte_a, pte_t pte_b)
+ {
+diff --git a/arch/um/include/asm/tlbflush.h b/arch/um/include/asm/tlbflush.h
+index d7cf82023b74..62816f6f1c91 100644
+--- a/arch/um/include/asm/tlbflush.h
++++ b/arch/um/include/asm/tlbflush.h
+@@ -9,24 +9,50 @@
+ #include <linux/mm.h>
+ 
+ /*
+- * TLB flushing:
++ * In UML, we need to sync the TLB over by using mmap/munmap/mprotect syscalls
++ * from the process handling the MM (which can be the kernel itself).
++ *
++ * To track updates, we can hook into set_ptes and flush_tlb_*. With set_ptes
++ * we catch all PTE transitions where memory that was unusable becomes usable.
++ * While with flush_tlb_* we can track any memory that becomes unusable and
++ * even if a higher layer of the page table was modified.
++ *
++ * So, we simply track updates using both methods and mark the memory area to
++ * be synced later on. The only special case is that flush_tlb_kern_* needs to
++ * be executed immediately as there is no good synchronization point in that
++ * case. In contrast, in the set_ptes case we can wait for the next kernel
++ * segfault before we do the synchornization.
+  *
+- *  - flush_tlb() flushes the current mm struct TLBs
+  *  - flush_tlb_all() flushes all processes TLBs
+  *  - flush_tlb_mm(mm) flushes the specified mm context TLB's
+  *  - flush_tlb_page(vma, vmaddr) flushes one page
+- *  - flush_tlb_kernel_vm() flushes the kernel vm area
+  *  - flush_tlb_range(vma, start, end) flushes a range of pages
++ *  - flush_tlb_kernel_range(start, end) flushes a range of kernel pages
+  */
+ 
++extern int um_tlb_sync(struct mm_struct *mm);
++
+ extern void flush_tlb_all(void);
+ extern void flush_tlb_mm(struct mm_struct *mm);
+-extern void flush_tlb_range(struct vm_area_struct *vma, unsigned long start, 
+-			    unsigned long end);
+-extern void flush_tlb_page(struct vm_area_struct *vma, unsigned long address);
+-extern void flush_tlb_kernel_vm(void);
+-extern void flush_tlb_kernel_range(unsigned long start, unsigned long end);
+-extern void __flush_tlb_one(unsigned long addr);
++
++static void flush_tlb_page(struct vm_area_struct *vma, unsigned long address)
 +{
-+	struct stub_data *d = get_stub_data();
++	um_tlb_mark_sync(vma->vm_mm, address, address + PAGE_SIZE);
++}
 +
-+	syscall_handler(d);
++static void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
++			    unsigned long end)
++{
++	um_tlb_mark_sync(vma->vm_mm, start, end);
++}
 +
-+	trap_myself();
++static void flush_tlb_kernel_range(unsigned long start, unsigned long end)
++{
++	um_tlb_mark_sync(&init_mm, start, end);
++
++	/* Kernel needs to be synced immediately */
++	um_tlb_sync(&init_mm);
++}
+ 
+ void report_enomem(void);
+ 
+diff --git a/arch/um/include/shared/skas/skas.h b/arch/um/include/shared/skas/skas.h
+index 5c78b0cc3dd4..ebaa116de30b 100644
+--- a/arch/um/include/shared/skas/skas.h
++++ b/arch/um/include/shared/skas/skas.h
+@@ -16,5 +16,6 @@ extern void handle_syscall(struct uml_pt_regs *regs);
+ extern long execute_syscall_skas(void *r);
+ extern unsigned long current_stub_stack(void);
+ extern struct mm_id *current_mm_id(void);
++extern void current_mm_sync(void);
+ 
+ #endif
+diff --git a/arch/um/kernel/skas/process.c b/arch/um/kernel/skas/process.c
+index c7345c83e07b..26c12db3eca9 100644
+--- a/arch/um/kernel/skas/process.c
++++ b/arch/um/kernel/skas/process.c
+@@ -8,6 +8,8 @@
+ #include <linux/sched/task_stack.h>
+ #include <linux/sched/task.h>
+ 
++#include <asm/tlbflush.h>
++
+ #include <as-layout.h>
+ #include <kern.h>
+ #include <os.h>
+@@ -61,3 +63,11 @@ struct mm_id *current_mm_id(void)
+ 
+ 	return &current->mm->context.id;
+ }
++
++void current_mm_sync(void)
++{
++	if (current->mm == NULL)
++		return;
++
++	um_tlb_sync(current->mm);
 +}
 diff --git a/arch/um/kernel/tlb.c b/arch/um/kernel/tlb.c
-index 7d050ab0f78a..2a7b66b6e367 100644
+index c137ff6f84dd..232aa7601d5d 100644
 --- a/arch/um/kernel/tlb.c
 +++ b/arch/um/kernel/tlb.c
-@@ -70,21 +70,19 @@ static int do_ops(struct host_vm_change *hvc, int end,
- 		switch (op->type) {
- 		case MMAP:
- 			if (hvc->userspace)
--				ret = map(&hvc->mm->context.id, op->u.mmap.addr,
--					  op->u.mmap.len, op->u.mmap.prot,
--					  op->u.mmap.fd,
--					  op->u.mmap.offset, finished,
--					  &hvc->data);
-+				map(&hvc->mm->context.id, op->u.mmap.addr,
-+				    op->u.mmap.len, op->u.mmap.prot,
-+				    op->u.mmap.fd,
-+				    op->u.mmap.offset);
- 			else
- 				map_memory(op->u.mmap.addr, op->u.mmap.offset,
- 					   op->u.mmap.len, 1, 1, 1);
- 			break;
- 		case MUNMAP:
- 			if (hvc->userspace)
--				ret = unmap(&hvc->mm->context.id,
--					    op->u.munmap.addr,
--					    op->u.munmap.len, finished,
--					    &hvc->data);
-+				unmap(&hvc->mm->context.id,
-+				      op->u.munmap.addr,
-+				      op->u.munmap.len);
- 			else
- 				ret = os_unmap_memory(
- 					(void *) op->u.munmap.addr,
-@@ -93,11 +91,10 @@ static int do_ops(struct host_vm_change *hvc, int end,
- 			break;
- 		case MPROTECT:
- 			if (hvc->userspace)
--				ret = protect(&hvc->mm->context.id,
--					      op->u.mprotect.addr,
--					      op->u.mprotect.len,
--					      op->u.mprotect.prot,
--					      finished, &hvc->data);
-+				protect(&hvc->mm->context.id,
-+					op->u.mprotect.addr,
-+					op->u.mprotect.len,
-+					op->u.mprotect.prot);
- 			else
- 				ret = os_protect_memory(
- 					(void *) op->u.mprotect.addr,
-@@ -112,6 +109,9 @@ static int do_ops(struct host_vm_change *hvc, int end,
- 		}
- 	}
+@@ -169,14 +169,16 @@ static inline int update_p4d_range(pgd_t *pgd, unsigned long addr,
+ 	return ret;
+ }
  
-+	if (hvc->userspace && finished)
-+		ret = syscall_stub_flush(&hvc->mm->context.id);
+-static int fix_range_common(struct mm_struct *mm, unsigned long start_addr,
+-			     unsigned long end_addr)
++int um_tlb_sync(struct mm_struct *mm)
+ {
+ 	pgd_t *pgd;
+ 	struct vm_ops ops;
+-	unsigned long addr = start_addr, next;
++	unsigned long addr = mm->context.sync_tlb_range_from, next;
+ 	int ret = 0;
+ 
++	if (mm->context.sync_tlb_range_to == 0)
++		return 0;
 +
+ 	ops.mm_idp = &mm->context.id;
+ 	if (mm == &init_mm) {
+ 		ops.mmap = kern_map;
+@@ -190,7 +192,7 @@ static int fix_range_common(struct mm_struct *mm, unsigned long start_addr,
+ 
+ 	pgd = pgd_offset(mm, addr);
+ 	do {
+-		next = pgd_addr_end(addr, end_addr);
++		next = pgd_addr_end(addr, mm->context.sync_tlb_range_to);
+ 		if (!pgd_present(*pgd)) {
+ 			if (pgd_newpage(*pgd)) {
+ 				ret = ops.unmap(ops.mm_idp, addr,
+@@ -199,87 +201,16 @@ static int fix_range_common(struct mm_struct *mm, unsigned long start_addr,
+ 			}
+ 		} else
+ 			ret = update_p4d_range(pgd, addr, next, &ops);
+-	} while (pgd++, addr = next, ((addr < end_addr) && !ret));
++	} while (pgd++, addr = next,
++		 ((addr < mm->context.sync_tlb_range_to) && !ret));
+ 
  	if (ret == -ENOMEM)
  		report_enomem();
  
-@@ -460,7 +460,6 @@ void flush_tlb_page(struct vm_area_struct *vma, unsigned long address)
- 	pmd_t *pmd;
- 	pte_t *pte;
- 	struct mm_struct *mm = vma->vm_mm;
--	void *flush = NULL;
- 	int r, w, x, prot, err = 0;
- 	struct mm_id *mm_id;
- 
-@@ -503,14 +502,13 @@ void flush_tlb_page(struct vm_area_struct *vma, unsigned long address)
- 			int fd;
- 
- 			fd = phys_mapping(pte_val(*pte) & PAGE_MASK, &offset);
--			err = map(mm_id, address, PAGE_SIZE, prot, fd, offset,
--				  1, &flush);
--		}
--		else err = unmap(mm_id, address, PAGE_SIZE, 1, &flush);
--	}
--	else if (pte_newprot(*pte))
--		err = protect(mm_id, address, PAGE_SIZE, prot, 1, &flush);
-+			map(mm_id, address, PAGE_SIZE, prot, fd, offset);
-+		} else
-+			unmap(mm_id, address, PAGE_SIZE);
-+	} else if (pte_newprot(*pte))
-+		protect(mm_id, address, PAGE_SIZE, prot);
- 
-+	err = syscall_stub_flush(mm_id);
- 	if (err) {
- 		if (err == -ENOMEM)
- 			report_enomem();
-diff --git a/arch/um/os-Linux/skas/mem.c b/arch/um/os-Linux/skas/mem.c
-index 953fb10f3f93..03c8cde0b89b 100644
---- a/arch/um/os-Linux/skas/mem.c
-+++ b/arch/um/os-Linux/skas/mem.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-+ * Copyright (C) 2021 Benjamin Berg <benjamin@sipsolutions.net>
-  * Copyright (C) 2002 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-  */
- 
-@@ -18,11 +19,11 @@
- #include <sysdep/ptrace.h>
- #include <sysdep/stub.h>
- 
--extern char batch_syscall_stub[], __syscall_stub_start[];
-+extern char __syscall_stub_start[];
- 
- extern void wait_stub_done(int pid);
- 
--static inline unsigned long *check_init_stack(struct mm_id * mm_idp,
-+static inline unsigned long *check_init_stack(struct mm_id *mm_idp,
- 					      unsigned long *stack)
- {
- 	if (stack == NULL) {
-@@ -37,22 +38,24 @@ static unsigned long syscall_regs[MAX_REG_NR];
- static int __init init_syscall_regs(void)
- {
- 	get_safe_registers(syscall_regs, NULL);
-+
- 	syscall_regs[REGS_IP_INDEX] = STUB_CODE +
--		((unsigned long) batch_syscall_stub -
-+		((unsigned long) stub_syscall_handler -
- 		 (unsigned long) __syscall_stub_start);
--	syscall_regs[REGS_SP_INDEX] = STUB_DATA;
-+	syscall_regs[REGS_SP_INDEX] = STUB_DATA +
-+		offsetof(struct stub_data, sigstack) +
-+		sizeof(((struct stub_data *) 0)->sigstack) -
-+		sizeof(void *);
- 
- 	return 0;
- }
- 
- __initcall(init_syscall_regs);
- 
--static inline long do_syscall_stub(struct mm_id * mm_idp, void **addr)
-+static inline long do_syscall_stub(struct mm_id *mm_idp)
- {
-+	struct stub_data *proc_data = (void *)mm_idp->stack;
- 	int n, i;
--	long ret, offset;
--	unsigned long * data;
--	unsigned long * syscall;
- 	int err, pid = mm_idp->u.pid;
- 
- 	n = ptrace_setregs(pid, syscall_regs);
-@@ -64,6 +67,9 @@ static inline long do_syscall_stub(struct mm_id * mm_idp, void **addr)
- 		      __func__, -n);
- 	}
- 
-+	/* Inform process how much we have filled in. */
-+	proc_data->syscall_data_len = mm_idp->syscall_data_len;
-+
- 	err = ptrace(PTRACE_CONT, pid, 0, 0);
- 	if (err)
- 		panic("Failed to continue stub, pid = %d, errno = %d\n", pid,
-@@ -72,135 +78,113 @@ static inline long do_syscall_stub(struct mm_id * mm_idp, void **addr)
- 	wait_stub_done(pid);
- 
- 	/*
--	 * When the stub stops, we find the following values on the
--	 * beginning of the stack:
--	 * (long )return_value
--	 * (long )offset to failed sycall-data (0, if no error)
-+	 * proc_data->err will be non-zero if there was an (unexpected) error.
-+	 * In that case, syscall_data_len points to the last executed syscall,
-+	 * otherwise it will be zero (but we do not need to rely on that).
- 	 */
--	ret = *((unsigned long *) mm_idp->stack);
--	offset = *((unsigned long *) mm_idp->stack + 1);
--	if (offset) {
--		data = (unsigned long *)(mm_idp->stack + offset - STUB_DATA);
--		printk(UM_KERN_ERR "%s : ret = %ld, offset = %ld, data = %p\n",
--		       __func__, ret, offset, data);
--		syscall = (unsigned long *)((unsigned long)data + data[0]);
--		printk(UM_KERN_ERR "%s: syscall %ld failed, return value = 0x%lx, expected return value = 0x%lx\n",
--		       __func__, syscall[0], ret, syscall[7]);
--		printk(UM_KERN_ERR "    syscall parameters: 0x%lx 0x%lx 0x%lx 0x%lx 0x%lx 0x%lx\n",
--		       syscall[1], syscall[2], syscall[3],
--		       syscall[4], syscall[5], syscall[6]);
--		for (n = 1; n < data[0]/sizeof(long); n++) {
--			if (n == 1)
--				printk(UM_KERN_ERR "    additional syscall data:");
--			if (n % 4 == 1)
--				printk("\n" UM_KERN_ERR "      ");
--			printk("  0x%lx", data[n]);
--		}
--		if (n > 1)
--			printk("\n");
-+	if (proc_data->err < 0) {
-+		struct stub_syscall *sc;
-+
-+		if (proc_data->syscall_data_len < 0 ||
-+		    proc_data->syscall_data_len >= ARRAY_SIZE(proc_data->syscall_data))
-+			panic("Syscall data was corrupted by stub (len is: %d, expected maximum: %d)!",
-+			      proc_data->syscall_data_len,
-+			      mm_idp->syscall_data_len);
-+
-+		sc = &proc_data->syscall_data[proc_data->syscall_data_len];
-+
-+		printk(UM_KERN_ERR "%s : length = %d, last offset = %d",
-+		       __func__, mm_idp->syscall_data_len,
-+		       proc_data->syscall_data_len);
-+		printk(UM_KERN_ERR "%s : stub syscall type %d failed, return value = 0x%lx\n",
-+		       __func__, sc->syscall, proc_data->err);
-+
-+		print_hex_dump(UM_KERN_ERR,
-+			       "    syscall data: ", 0,
-+			       16, 4, sc, sizeof(*sc), 0);
-+
-+		mm_idp->syscall_data_len = proc_data->err;
-+	} else {
-+		mm_idp->syscall_data_len = 0;
- 	}
--	else ret = 0;
--
--	*addr = check_init_stack(mm_idp, NULL);
- 
 -	return ret;
-+	return mm_idp->syscall_data_len;
- }
- 
--long run_syscall_stub(struct mm_id * mm_idp, int syscall,
--		      unsigned long *args, long expected, void **addr,
--		      int done)
-+int syscall_stub_flush(struct mm_id *mm_idp)
- {
--	unsigned long *stack = check_init_stack(mm_idp, *addr);
+-}
 -
--	*stack += sizeof(long);
--	stack += *stack / sizeof(long);
--
--	*stack++ = syscall;
--	*stack++ = args[0];
--	*stack++ = args[1];
--	*stack++ = args[2];
--	*stack++ = args[3];
--	*stack++ = args[4];
--	*stack++ = args[5];
--	*stack++ = expected;
--	*stack = 0;
--
--	if (!done && ((((unsigned long) stack) & ~UM_KERN_PAGE_MASK) <
--		     UM_KERN_PAGE_SIZE - 10 * sizeof(long))) {
--		*addr = stack;
-+	int res;
-+
-+	if (mm_idp->syscall_data_len == 0)
- 		return 0;
-+
-+	/* If an error happened already, report it and reset the state. */
-+	if (mm_idp->syscall_data_len < 0) {
-+		res = mm_idp->syscall_data_len;
-+		mm_idp->syscall_data_len = 0;
-+		return res;
- 	}
- 
--	return do_syscall_stub(mm_idp, addr);
-+	res = do_syscall_stub(mm_idp);
-+	mm_idp->syscall_data_len = 0;
-+
-+	return res;
- }
- 
--long syscall_stub_data(struct mm_id * mm_idp,
--		       unsigned long *data, int data_count,
--		       void **addr, void **stub_addr)
-+struct stub_syscall *syscall_stub_alloc(struct mm_id *mm_idp)
- {
--	unsigned long *stack;
--	int ret = 0;
--
--	/*
--	 * If *addr still is uninitialized, it *must* contain NULL.
--	 * Thus in this case do_syscall_stub correctly won't be called.
--	 */
--	if ((((unsigned long) *addr) & ~UM_KERN_PAGE_MASK) >=
--	   UM_KERN_PAGE_SIZE - (10 + data_count) * sizeof(long)) {
--		ret = do_syscall_stub(mm_idp, addr);
--		/* in case of error, don't overwrite data on stack */
--		if (ret)
--			return ret;
-+	struct stub_syscall *sc;
-+	struct stub_data *proc_data = (struct stub_data *) mm_idp->stack;
-+
-+	if (mm_idp->syscall_data_len > 0 &&
-+	    mm_idp->syscall_data_len == ARRAY_SIZE(proc_data->syscall_data))
-+		do_syscall_stub(mm_idp);
-+
-+	if (mm_idp->syscall_data_len < 0) {
-+		/* Return dummy to retain error state. */
-+		sc = &proc_data->syscall_data[0];
-+	} else {
-+		sc = &proc_data->syscall_data[mm_idp->syscall_data_len];
-+		mm_idp->syscall_data_len += 1;
- 	}
-+	memset(sc, 0, sizeof(*sc));
- 
--	stack = check_init_stack(mm_idp, *addr);
--	*addr = stack;
--
--	*stack = data_count * sizeof(long);
--
--	memcpy(stack + 1, data, data_count * sizeof(long));
--
--	*stub_addr = (void *)(((unsigned long)(stack + 1) &
--			       ~UM_KERN_PAGE_MASK) + STUB_DATA);
--
--	return 0;
-+	return sc;
- }
- 
--int map(struct mm_id * mm_idp, unsigned long virt, unsigned long len, int prot,
--	int phys_fd, unsigned long long offset, int done, void **data)
+-static void flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
 -{
--	int ret;
--	unsigned long args[] = { virt, len, prot,
--				 MAP_SHARED | MAP_FIXED, phys_fd,
--				 MMAP_OFFSET(offset) };
- 
--	ret = run_syscall_stub(mm_idp, STUB_MMAP_NR, args, virt,
--			       data, done);
+-	int err;
 -
--	return ret;
-+void map(struct mm_id *mm_idp, unsigned long virt, unsigned long len, int prot,
-+	int phys_fd, unsigned long long offset)
-+{
-+	struct stub_syscall *sc;
+-	err = fix_range_common(&init_mm, start, end);
+-
+-	if (err)
+-		panic("flush_tlb_kernel failed, errno = %d\n", err);
+-}
+-
+-void flush_tlb_page(struct vm_area_struct *vma, unsigned long address)
+-{
+-	pgd_t *pgd;
+-	p4d_t *p4d;
+-	pud_t *pud;
+-	pmd_t *pmd;
+-	pte_t *pte;
+-	struct mm_struct *mm = vma->vm_mm;
+-	int r, w, x, prot;
+-	struct mm_id *mm_id;
+-
+-	address &= PAGE_MASK;
+-
+-	pgd = pgd_offset(mm, address);
+-	if (!pgd_present(*pgd))
+-		goto kill;
+-
+-	p4d = p4d_offset(pgd, address);
+-	if (!p4d_present(*p4d))
+-		goto kill;
+-
+-	pud = pud_offset(p4d, address);
+-	if (!pud_present(*pud))
+-		goto kill;
+-
+-	pmd = pmd_offset(pud, address);
+-	if (!pmd_present(*pmd))
+-		goto kill;
+-
+-	pte = pte_offset_kernel(pmd, address);
+-
+-	r = pte_read(*pte);
+-	w = pte_write(*pte);
+-	x = pte_exec(*pte);
+-	if (!pte_young(*pte)) {
+-		r = 0;
+-		w = 0;
+-	} else if (!pte_dirty(*pte)) {
+-		w = 0;
+-	}
+-
+-	mm_id = &mm->context.id;
+-	prot = ((r ? UM_PROT_READ : 0) | (w ? UM_PROT_WRITE : 0) |
+-		(x ? UM_PROT_EXEC : 0));
+-	if (pte_newpage(*pte)) {
+-		if (pte_present(*pte)) {
+-			unsigned long long offset;
+-			int fd;
+-
+-			fd = phys_mapping(pte_val(*pte) & PAGE_MASK, &offset);
+-			map(mm_id, address, PAGE_SIZE, prot, fd, offset);
+-		} else
+-			unmap(mm_id, address, PAGE_SIZE);
+-	} else if (pte_newprot(*pte))
+-		protect(mm_id, address, PAGE_SIZE, prot);
+-
+-	*pte = pte_mkuptodate(*pte);
++	mm->context.sync_tlb_range_from = 0;
++	mm->context.sync_tlb_range_to = 0;
+ 
+-	return;
+-
+-kill:
+-	printk(KERN_ERR "Failed to flush page for address 0x%lx\n", address);
+-	force_sig(SIGKILL);
++	return ret;
+ }
+ 
+ void flush_tlb_all(void)
+@@ -294,54 +225,11 @@ void flush_tlb_all(void)
+ 	flush_tlb_mm(current->mm);
+ }
+ 
+-void flush_tlb_kernel_range(unsigned long start, unsigned long end)
+-{
+-	flush_tlb_kernel_range_common(start, end);
+-}
+-
+-void flush_tlb_kernel_vm(void)
+-{
+-	flush_tlb_kernel_range_common(start_vm, end_vm);
+-}
+-
+-void __flush_tlb_one(unsigned long addr)
+-{
+-	flush_tlb_kernel_range_common(addr, addr + PAGE_SIZE);
+-}
+-
+-static void fix_range(struct mm_struct *mm, unsigned long start_addr,
+-		      unsigned long end_addr)
+-{
+-	/*
+-	 * Don't bother flushing if this address space is about to be
+-	 * destroyed.
+-	 */
+-	if (atomic_read(&mm->mm_users) == 0)
+-		return;
+-
+-	fix_range_common(mm, start_addr, end_addr);
+-}
+-
+-void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+-		     unsigned long end)
+-{
+-	if (vma->vm_mm == NULL)
+-		flush_tlb_kernel_range_common(start, end);
+-	else fix_range(vma->vm_mm, start, end);
+-}
+-EXPORT_SYMBOL(flush_tlb_range);
+-
+-void flush_tlb_mm_range(struct mm_struct *mm, unsigned long start,
+-			unsigned long end)
+-{
+-	fix_range(mm, start, end);
+-}
+-
+ void flush_tlb_mm(struct mm_struct *mm)
+ {
+ 	struct vm_area_struct *vma;
+ 	VMA_ITERATOR(vmi, mm, 0);
+ 
+ 	for_each_vma(vmi, vma)
+-		fix_range(mm, vma->vm_start, vma->vm_end);
++		um_tlb_mark_sync(mm, vma->vm_start, vma->vm_end);
+ }
+diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
+index 6d8ae86ae978..97c8df9c4401 100644
+--- a/arch/um/kernel/trap.c
++++ b/arch/um/kernel/trap.c
+@@ -113,7 +113,7 @@ int handle_page_fault(unsigned long address, unsigned long ip,
+ #if 0
+ 	WARN_ON(!pte_young(*pte) || (is_write && !pte_dirty(*pte)));
+ #endif
+-	flush_tlb_page(vma, address);
 +
-+	sc = syscall_stub_alloc(mm_idp);
-+	sc->syscall = STUB_SYSCALL_MMAP;
-+	sc->mem.addr = virt;
-+	sc->mem.length = len;
-+	sc->mem.prot = prot;
-+	sc->mem.fd = phys_fd;
-+	sc->mem.offset = MMAP_OFFSET(offset);
- }
+ out:
+ 	mmap_read_unlock(mm);
+ out_nosemaphore:
+@@ -210,8 +210,17 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
+ 	if (!is_user && regs)
+ 		current->thread.segv_regs = container_of(regs, struct pt_regs, regs);
  
--int unmap(struct mm_id * mm_idp, unsigned long addr, unsigned long len,
--	  int done, void **data)
-+void unmap(struct mm_id *mm_idp, unsigned long addr, unsigned long len)
- {
--	int ret;
--	unsigned long args[] = { (unsigned long) addr, len, 0, 0, 0,
--				 0 };
-+	struct stub_syscall *sc;
- 
--	ret = run_syscall_stub(mm_idp, __NR_munmap, args, 0,
--			       data, done);
--
--	return ret;
-+	sc = syscall_stub_alloc(mm_idp);
-+	sc->syscall = STUB_SYSCALL_MUNMAP;
-+	sc->mem.addr = addr;
-+	sc->mem.length = len;
- }
- 
--int protect(struct mm_id * mm_idp, unsigned long addr, unsigned long len,
--	    unsigned int prot, int done, void **data)
-+void protect(struct mm_id *mm_idp, unsigned long addr, unsigned long len,
-+	    unsigned int prot)
- {
--	int ret;
--	unsigned long args[] = { addr, len, prot, 0, 0, 0 };
--
--	ret = run_syscall_stub(mm_idp, __NR_mprotect, args, 0,
--			       data, done);
-+	struct stub_syscall *sc;
- 
--	return ret;
-+	sc = syscall_stub_alloc(mm_idp);
-+	sc->syscall = STUB_SYSCALL_MPROTECT;
-+	sc->mem.addr = addr;
-+	sc->mem.length = len;
-+	sc->mem.prot = prot;
- }
+-	if (!is_user && (address >= start_vm) && (address < end_vm)) {
+-		flush_tlb_kernel_vm();
++	if (!is_user && init_mm.context.sync_tlb_range_to) {
++		/*
++		 * Kernel has pending updates from set_ptes that were not
++		 * flushed yet. Syncing them should fix the pagefault (if not
++		 * we'll get here again and panic).
++		 */
++		err = um_tlb_sync(&init_mm);
++		if (err == -ENOMEM)
++			report_enomem();
++		if (err)
++			panic("Failed to sync kernel TLBs: %d", err);
+ 		goto out;
+ 	}
+ 	else if (current->mm == NULL) {
 diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 72114720be10..2bf03115817c 100644
+index 8dca42627f39..06e23cf870e2 100644
 --- a/arch/um/os-Linux/skas/process.c
 +++ b/arch/um/os-Linux/skas/process.c
-@@ -497,7 +497,7 @@ int copy_context_skas0(unsigned long new_stack, int pid)
- 	*data = ((struct stub_data) {
- 		.offset	= MMAP_OFFSET(new_offset),
- 		.fd     = new_fd,
--		.parent_err = -ESRCH,
-+		.err    = -ESRCH,
- 		.child_err = 0,
- 	});
+@@ -343,6 +343,8 @@ void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
+ 	interrupt_end();
  
-@@ -534,7 +534,7 @@ int copy_context_skas0(unsigned long new_stack, int pid)
- 
- 	wait_stub_done(pid);
- 
--	pid = data->parent_err;
-+	pid = data->err;
- 	if (pid < 0) {
- 		printk(UM_KERN_ERR "%s - stub-parent reports error %d\n",
- 		      __func__, -pid);
-diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
-index 8bc72a51b257..4559d2a693c4 100644
---- a/arch/x86/um/Makefile
-+++ b/arch/x86/um/Makefile
-@@ -11,7 +11,7 @@ endif
- 
- obj-y = bugs_$(BITS).o delay.o fault.o ldt.o \
- 	ptrace_$(BITS).o ptrace_user.o setjmp_$(BITS).o signal.o \
--	stub_$(BITS).o stub_segv.o \
-+	stub_segv.o \
- 	sys_call_table_$(BITS).o sysrq_$(BITS).o tls_$(BITS).o \
- 	mem_$(BITS).o subarch.o os-Linux/
- 
-diff --git a/arch/x86/um/ldt.c b/arch/x86/um/ldt.c
-index 255a44dd415a..c99fc23b1290 100644
---- a/arch/x86/um/ldt.c
-+++ b/arch/x86/um/ldt.c
-@@ -12,33 +12,22 @@
- #include <os.h>
- #include <skas.h>
- #include <sysdep/tls.h>
-+#include <stub-data.h>
- 
- static inline int modify_ldt (int func, void *ptr, unsigned long bytecount)
- {
- 	return syscall(__NR_modify_ldt, func, ptr, bytecount);
- }
- 
--static long write_ldt_entry(struct mm_id *mm_idp, int func,
--		     struct user_desc *desc, void **addr, int done)
-+static void write_ldt_entry(struct mm_id *mm_idp, int func,
-+		     struct user_desc *desc)
- {
--	long res;
--	void *stub_addr;
--
--	BUILD_BUG_ON(sizeof(*desc) % sizeof(long));
--
--	res = syscall_stub_data(mm_idp, (unsigned long *)desc,
--				sizeof(*desc) / sizeof(long),
--				addr, &stub_addr);
--	if (!res) {
--		unsigned long args[] = { func,
--					 (unsigned long)stub_addr,
--					 sizeof(*desc),
--					 0, 0, 0 };
--		res = run_syscall_stub(mm_idp, __NR_modify_ldt, args,
--				       0, addr, done);
--	}
-+	struct stub_syscall *sc;
- 
--	return res;
-+	sc = syscall_stub_alloc(mm_idp);
-+	sc->syscall = STUB_SYSCALL_LDT;
-+	sc->ldt.func = func;
-+	memcpy(&sc->ldt.desc, desc, sizeof(*desc));
- }
- 
- /*
-@@ -127,7 +116,6 @@ static int write_ldt(void __user * ptr, unsigned long bytecount, int func)
- 	int i, err;
- 	struct user_desc ldt_info;
- 	struct ldt_entry entry0, *ldt_p;
--	void *addr = NULL;
- 
- 	err = -EINVAL;
- 	if (bytecount != sizeof(ldt_info))
-@@ -148,7 +136,8 @@ static int write_ldt(void __user * ptr, unsigned long bytecount, int func)
- 
- 	mutex_lock(&ldt->lock);
- 
--	err = write_ldt_entry(mm_idp, func, &ldt_info, &addr, 1);
-+	write_ldt_entry(mm_idp, func, &ldt_info);
-+	err = syscall_stub_flush(mm_idp);
- 	if (err)
- 		goto out_unlock;
- 
-@@ -166,7 +155,8 @@ static int write_ldt(void __user * ptr, unsigned long bytecount, int func)
- 				err = -ENOMEM;
- 				/* Undo the change in host */
- 				memset(&ldt_info, 0, sizeof(ldt_info));
--				write_ldt_entry(mm_idp, 1, &ldt_info, &addr, 1);
-+				write_ldt_entry(mm_idp, 1, &ldt_info);
-+				err = syscall_stub_flush(mm_idp);
- 				goto out_unlock;
- 			}
- 			if (i == 0) {
-@@ -303,7 +293,6 @@ long init_new_ldt(struct mm_context *new_mm, struct mm_context *from_mm)
- 	short * num_p;
- 	int i;
- 	long page, err=0;
--	void *addr = NULL;
- 
- 
- 	mutex_init(&new_mm->arch.ldt.lock);
-@@ -318,11 +307,9 @@ long init_new_ldt(struct mm_context *new_mm, struct mm_context *from_mm)
- 		ldt_get_host_info();
- 		for (num_p=host_ldt_entries; *num_p != -1; num_p++) {
- 			desc.entry_number = *num_p;
--			err = write_ldt_entry(&new_mm->id, 1, &desc,
--					      &addr, *(num_p + 1) == -1);
--			if (err)
--				break;
-+			write_ldt_entry(&new_mm->id, 1, &desc);
- 		}
-+		err = syscall_stub_flush(&new_mm->id);
- 		new_mm->arch.ldt.entry_count = 0;
- 
- 		goto out;
-diff --git a/arch/x86/um/shared/sysdep/stub.h b/arch/x86/um/shared/sysdep/stub.h
-index ce0ca46ad383..579681d12158 100644
---- a/arch/x86/um/shared/sysdep/stub.h
-+++ b/arch/x86/um/shared/sysdep/stub.h
-@@ -12,4 +12,5 @@
- #endif
- 
- extern void stub_segv_handler(int, siginfo_t *, void *);
-+extern void stub_syscall_handler(void);
- extern void stub_clone_handler(void);
-diff --git a/arch/x86/um/stub_32.S b/arch/x86/um/stub_32.S
-deleted file mode 100644
-index 8291899e6aaf..000000000000
---- a/arch/x86/um/stub_32.S
-+++ /dev/null
-@@ -1,56 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#include <as-layout.h>
--
--.section .__syscall_stub, "ax"
--
--	.globl batch_syscall_stub
--batch_syscall_stub:
--	/* %esp comes in as "top of page" */
--	mov %esp, %ecx
--	/* %esp has pointer to first operation */
--	add $8, %esp
--again:
--	/* load length of additional data */
--	mov	0x0(%esp), %eax
--
--	/* if(length == 0) : end of list */
--	/* write possible 0 to header */
--	mov	%eax, 0x4(%ecx)
--	cmpl	$0, %eax
--	jz	done
--
--	/* save current pointer */
--	mov	%esp, 0x4(%ecx)
--
--	/* skip additional data */
--	add	%eax, %esp
--
--	/* load syscall-# */
--	pop	%eax
--
--	/* load syscall params */
--	pop	%ebx
--	pop	%ecx
--	pop	%edx
--	pop	%esi
-- 	pop	%edi
--	pop	%ebp
--
--	/* execute syscall */
--	int	$0x80
--
--	/* restore top of page pointer in %ecx */
--	mov	%esp, %ecx
--	andl	$(~UM_KERN_PAGE_SIZE) + 1, %ecx
--
--	/* check return value */
--	pop	%ebx
--	cmp	%ebx, %eax
--	je	again
--
--done:
--	/* save return value */
--	mov	%eax, (%ecx)
--
--	/* stop */
--	int3
-diff --git a/arch/x86/um/stub_64.S b/arch/x86/um/stub_64.S
-deleted file mode 100644
-index f3404640197a..000000000000
---- a/arch/x86/um/stub_64.S
-+++ /dev/null
-@@ -1,50 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#include <as-layout.h>
--
--.section .__syscall_stub, "ax"
--	.globl batch_syscall_stub
--batch_syscall_stub:
--	/* %rsp has the pointer to first operation */
--	mov	%rsp, %rbx
--	add	$0x10, %rsp
--again:
--	/* load length of additional data */
--	mov	0x0(%rsp), %rax
--
--	/* if(length == 0) : end of list */
--	/* write possible 0 to header */
--	mov	%rax, 8(%rbx)
--	cmp	$0, %rax
--	jz	done
--
--	/* save current pointer */
--	mov	%rsp, 8(%rbx)
--
--	/* skip additional data */
--	add	%rax, %rsp
--
--	/* load syscall-# */
--	pop	%rax
--
--	/* load syscall params */
--	pop	%rdi
--	pop	%rsi
--	pop	%rdx
--	pop	%r10
-- 	pop	%r8
--	pop	%r9
--
--	/* execute syscall */
--	syscall
--
--	/* check return value */
--	pop	%rcx
--	cmp	%rcx, %rax
--	je	again
--
--done:
--	/* save return value */
--	mov	%rax, (%rbx)
--
--	/* stop */
--	int3
+ 	while (1) {
++		current_mm_sync();
++
+ 		/* Flush out any pending syscalls */
+ 		err = syscall_stub_flush(current_mm_id());
+ 		if (err) {
 -- 
 2.44.0
 
