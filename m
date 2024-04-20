@@ -4,57 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 045E5C4345F
-	for <linux-um@archiver.kernel.org>; Sat, 20 Apr 2024 02:51:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9717EC4345F
+	for <linux-um@archiver.kernel.org>; Sat, 20 Apr 2024 13:01:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=9DNYu25PsP7kPSgGts/yb+luWRPbPj48AdRNc25boMg=; b=Fd1vCzFBecsEgMBN8T7BQFYW7/
-	fc0+fMVSzbug6HnUuJShBHULr074VH57cv50QqPHN4Vw+KWYweoi6S4To/f5hfICT/gjWGglVfJ9J
-	9jl8kWSgVNTFXlsVtsUb98fPHbtIDX5MCgGL1KjUWrWFrelupvfS+drAPwnIXOJO+m8rMLeXutFwa
-	99a+M4jV/cJq+1qVm12kAHH3WZx1e/PimY4fmqyZ2XT2cqjCe8QydmR0hHz7JGbSYKI4DCYrKMV51
-	Xw/Z8EcmjPsXHAzKQDc45nQ8SWFPYoGVgF+CvYD6F0ymM1YtGGjtyZURC5uXmeOWXXLwa1nY3PSby
-	Y5Ran1dA==;
+	bh=hIk9MkyOCvIGRlqWvTZ9i+HZUx/nxgjt5VWpOtUlMf8=; b=Uijh7Ek8kUXb7mv2Hyr04tjN5o
+	KHwyabTl3L/elQ6vk0ACAjIGHzBBQrLpMmti7Azb8zd+pG0fk2qWRJUSE2lFbkuIz2hrlyDErrmHU
+	xm7CZP7dzwIcmUlMP0zMGbWrd0ufGrcgUeP+GUr+TH1SDpTOUwcCmpJOgzNnPKPdOi02zb80mKyJc
+	4NQlN4l01BYOUrttuaerEkzwGdcQFUjMiUACHVzg4NQC4cuylppuvst0kkuZQ13wVpl10P0YHoNFX
+	IRzK+gnho2KrlntqeUrTov9a6fXo/6kVn3IJe6EN1xWTPPS+NuZGJIK5Xcicgu806vEhkUs73CNRx
+	lKB867VQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ry0of-00000007dVH-0oxh;
-	Sat, 20 Apr 2024 02:51:01 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1ryALf-00000008W70-3pic;
+	Sat, 20 Apr 2024 13:01:43 +0000
+Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ry0od-00000007dV2-3IvU
-	for linux-um@bombadil.infradead.org;
-	Sat, 20 Apr 2024 02:50:59 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=9DNYu25PsP7kPSgGts/yb+luWRPbPj48AdRNc25boMg=; b=ubi+VSlCphTsd5AtD9cNNkb+HS
-	nB/FMrouSxmA1uW+1Vxn+g98ve7pogJOK8MnjiaX3HIupI/wSrLZ3Sk0vyNgLubyrkD9i5YRmAmeX
-	NsaMUr0g4f4Qp3IOBnTR1yCAi1HQ16jImzYPH91cMfTfFN2Z3rvEgIxhmYf6Flk95MtWplsxJaB/J
-	ZKW/niTOR7NdHbEKV1qUkEtdncbL91pWCOZPe1fhsLW/K4r3wt5dsHyyRpM0yHuFsCUkk0LnhEXW9
-	699fPezQifdLcWOPNiyQ87VmwvgFRoL4cwBVcu6yVn533CSmzwg7CQdJG4o/3xBiCynO8D4/Xeibt
-	SPmp2suA==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ry0oU-000000095f0-2u7G;
-	Sat, 20 Apr 2024 02:50:50 +0000
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To: linux-fsdevel@vger.kernel.org
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	linux-um@lists.infradead.org
-Subject: [PATCH 12/30] hostfs: Convert hostfs_read_folio() to use a folio
-Date: Sat, 20 Apr 2024 03:50:07 +0100
-Message-ID: <20240420025029.2166544-13-willy@infradead.org>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240420025029.2166544-1-willy@infradead.org>
-References: <20240420025029.2166544-1-willy@infradead.org>
+	id 1ryALa-00000008W6D-30fU
+	for linux-um@lists.infradead.org;
+	Sat, 20 Apr 2024 13:01:40 +0000
+Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
+	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <anton.ivanov@cambridgegreys.com>)
+	id 1ry9k7-000HF0-4M; Sat, 20 Apr 2024 12:22:55 +0000
+Received: from madding.kot-begemot.co.uk ([192.168.3.98])
+	by jain.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <anton.ivanov@cambridgegreys.com>)
+	id 1ry9k4-006X1A-0r;
+	Sat, 20 Apr 2024 13:22:54 +0100
+Message-ID: <f70c5eda-0d2f-4845-843d-d770e4ed507f@cambridgegreys.com>
+Date: Sat, 20 Apr 2024 13:22:52 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9] um: Enable preemption in UML
+Content-Language: en-US
+To: Benjamin Berg <benjamin@sipsolutions.net>, linux-um@lists.infradead.org
+Cc: richard@nod.at, johannes@sipsolutions.net
+References: <20240403062754.124752-1-anton.ivanov@cambridgegreys.com>
+ <4d5e9840b3603dbee17a1218bdcc4f8cea3c4240.camel@sipsolutions.net>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Organization: Cambridge Greys
+In-Reply-To: <4d5e9840b3603dbee17a1218bdcc4f8cea3c4240.camel@sipsolutions.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Clacks-Overhead: GNU Terry Pratchett
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20240420_060138_797655_FC763557 
+X-CRM114-Status: GOOD (  19.69  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,62 +71,70 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Remove the use of page APIs, including setting/clearing the error flag
-which is never checked on hostfs folios.  This does not include support
-for large folios as kmap_local_folio() maps only one page at a time.
+On 19/04/2024 14:47, Benjamin Berg wrote:
+> Hi,
+> 
+> On Wed, 2024-04-03 at 07:27 +0100, anton.ivanov@cambridgegreys.com
+> wrote:
+>> From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+>>
+>> 1. Preemption requires saving/restoring FPU state. This patch
+>> adds support for it using GCC intrinsics as well as appropriate
+>> storage space in the thread structure. We reuse the space
+>> which is already allocated for the userspace threads in the
+>> thread_info structure.
+> 
+> Do we need to store the FPU state even? 
 
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-um@lists.infradead.org
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- fs/hostfs/hostfs_kern.c | 23 ++++++-----------------
- 1 file changed, 6 insertions(+), 17 deletions(-)
+Everybody else does :)
 
-diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index a73d27c4dd58..e7c72f2634f6 100644
---- a/fs/hostfs/hostfs_kern.c
-+++ b/fs/hostfs/hostfs_kern.c
-@@ -432,31 +432,20 @@ static int hostfs_writepage(struct page *page, struct writeback_control *wbc)
- 
- static int hostfs_read_folio(struct file *file, struct folio *folio)
- {
--	struct page *page = &folio->page;
- 	char *buffer;
--	loff_t start = page_offset(page);
-+	loff_t start = folio_pos(folio);
- 	int bytes_read, ret = 0;
- 
--	buffer = kmap_local_page(page);
-+	buffer = kmap_local_folio(folio, 0);
- 	bytes_read = read_file(FILE_HOSTFS_I(file)->fd, &start, buffer,
- 			PAGE_SIZE);
--	if (bytes_read < 0) {
--		ClearPageUptodate(page);
--		SetPageError(page);
-+	if (bytes_read < 0)
- 		ret = bytes_read;
--		goto out;
--	}
--
--	memset(buffer + bytes_read, 0, PAGE_SIZE - bytes_read);
--
--	ClearPageError(page);
--	SetPageUptodate(page);
--
-- out:
--	flush_dcache_page(page);
-+	else
-+		buffer = folio_zero_tail(folio, bytes_read, buffer);
- 	kunmap_local(buffer);
--	unlock_page(page);
- 
-+	folio_end_read(folio, ret == 0);
- 	return ret;
- }
- 
+> After all, we cannot simply
+> overwrite userspace FPU registers in UML.
+
+Correct, but you can have kernel threads as well.
+> 
+> Seriously wondering about that. It seems to me it would be sufficient
+> to ensure that only one kernel task is in a
+> kern_fpu_begin()/kern_fpu_end() section at any point in time.
+
+So what happens if you have a task which wants fpu and cannot get it at 
+this point?
+
+> 
+> Now, I don't know how preempt_disable()/preempt_enable() behaves
+> exactly. But I would assume it makes such a guarantee and then we can
+> simply map kern_fpu_begin to preempt_disable and kern_fpu_end to
+> preempt_enable.
+> 
+>> 2. irq critical sections need preempt_disable()/preempt_enable().
+
+Yes. Otherwise RAID, crypto, ipsec can mess up things.
+
+>>
+>> 3. TLB critical sections need preempt_disable()/preempt_enable().
+
+I think I added those.
+
+>>
+>> 4. UML TLB flush is also invoked during a fork. This happens
+>> with interrupts and preempt disabled which disagrees with the
+>> standard mm locking via rwsem. The mm lock for this code path
+>> had to be replaced with an rcu.
+> 
+> Hopefully that flush during fork will be gone soon :-)
+
+Hurrah!!!
+
+> 
+> Benjamin
+> 
+>> [...]
+> 
+> 
+
 -- 
-2.43.0
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
 
