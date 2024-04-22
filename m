@@ -4,146 +4,195 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35D6FC4345F
-	for <linux-um@archiver.kernel.org>; Mon, 22 Apr 2024 13:36:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC8B0C4345F
+	for <linux-um@archiver.kernel.org>; Mon, 22 Apr 2024 14:29:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=KkBtQ14FO+0NGu2+k0AcqXPVmwhs5oyX89ZVVK1/Ay4=; b=mhiD5e9ifyi3QaXtOXLl/quXsu
-	mIu4BUAoHIX+Ueyhr5G0QYZbhe2AmN7Q7MMPMM7pzht/P+bcj39ee6XJPmSPNSPLQfFGuXb7BUm4y
-	6XWW3AVi6kZpuXk7ITSKNdrjYxGmHf7LEiZUNYmkdFSbj9F+FN7k/iURli0T6F/Viy1xDUEO1VMe9
-	hgJCSlBPJ83o5NyNxAE5hJE4jBV57pJFOeK8b3sjMmfEfgkpfvykNU3PZxPGjvXNimcxJy3pl9P4Z
-	gzC7luG2adAbU4xhdo/7CRJcwDXIiBpROalmNyza2/9RgHVserQvPGt7gJRLUsSSIv+kH3u4xQvjx
-	OzIh8Mpw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:Message-ID:Subject:CC:To:From:Date:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:References:List-Owner;
+	bh=9Nu4W9Y1XlMKyhTxu5Hwf+DExfYws3whP6olsxmB+FE=; b=r5ixM0Uyj9JgRvsR1iJcIHRmYW
+	bPR6QHlml48v1nT9ByONNEvnbBWJGIXZhNoO3ktg5pPK0JCzp6BmLfCYbcZj7xYAG7zaGiP6PYddD
+	MvE4QU0UZy+DU0BToskxzJ6PFrzWwgqoptuI0HZMvcn248mQ2qHTuQ5lC7o+035fRzZ5O5+qSmEZo
+	fkLlzuABv5rkelG9wr42Mp4ZxMRtXUHGsjqzBgCOgscUt7DiQpmBxDFaToD3QUUNu2Rzw+8a0vOCK
+	/oo5iPGsHSAM8mk17bXCEEJu7QHBREytoxm/XKnJXIHZFrndcGlWabm+aLQS4hHvxkQIC+ijHYS3K
+	Q+gxCumQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rytq4-0000000DlaZ-3ZR1;
-	Mon, 22 Apr 2024 13:36:08 +0000
-Received: from mail-pl1-x62a.google.com ([2607:f8b0:4864:20::62a])
+	id 1ryufU-0000000Dv4s-0eT1;
+	Mon, 22 Apr 2024 14:29:16 +0000
+Received: from mgamail.intel.com ([192.198.163.12])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rytq2-0000000DlZO-1AdT
+	id 1ryufR-0000000Dv3X-44fU
 	for linux-um@lists.infradead.org;
-	Mon, 22 Apr 2024 13:36:08 +0000
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1e3ca4fe4cfso31210125ad.2
-        for <linux-um@lists.infradead.org>; Mon, 22 Apr 2024 06:36:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713792962; x=1714397762; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=KkBtQ14FO+0NGu2+k0AcqXPVmwhs5oyX89ZVVK1/Ay4=;
-        b=OTaHPdUkdVYVw7wiU3Xjsn04qTarRDDVQKWteXh07JsosshG7EqrQ5+1YbOnxjPmwF
-         0144v0tGPcJqnWT6wStPu0xDaJ1+Ezqx4f8kqNxEUHY9CKOYWNlTig11upH/YlmfX0SY
-         9W3NKsZcGGU/kRLBIVdGOoaahKjoYLizCkC73EK1rqwEL0027sddt9Lv9K1cqQ9TZQ09
-         Z2S6JseKU2g89C+qUQShJv/4YnyDU/fPU7jBYgBVXHmyedH2bWL7qumE62/68D/BRv+X
-         iaYKe5RbUls7+4v89ZsvPd0EuFRldcf0L4mjmg9fdlm88vvEFQul+dVpu42N92D8NFeX
-         YeXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713792962; x=1714397762;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KkBtQ14FO+0NGu2+k0AcqXPVmwhs5oyX89ZVVK1/Ay4=;
-        b=LZvpMVJBO0lUJpywxDVeFW1V3uGfQuelv/gOGI7LY9N/vQAS8letSykhBg9bH5F+cC
-         RpSKDDs39PUHmlmqFozDwOGUpRe7oHvVbCI1KAh1t4FD4n2ouWTCIF0KXtlJ+kty50je
-         2YNvdWh148iuN/u01lHEAMJymyJpr3eS2p0aBQQu6FDvvEeh4Z8JADG4zvltQnHaUQEi
-         VGLSW9pejbo8gya+T6LIYnaamSNZRjCzIMwUsU8dASnHlG2ZlYGVlXA1Z2/HkcE9o0VQ
-         u7FW0wLbjd/1tIj1HJAV1TaHh2dprbhsPB3B8OMRNEmZVphu/WAs8ehHr0hR7veuMjwp
-         og7A==
-X-Forwarded-Encrypted: i=1; AJvYcCU4zc54t+2ecCp/rJpjIErs/BnRVp0c03OjsiZs3TaB3rYAK6JqB76PKtffWgsal3qclF8GALCxBXIKHT85Mdhj9nubgcEy8SQrjrsN
-X-Gm-Message-State: AOJu0YwPPzjQYJZjt6qLrYFyHNvxCMPUvm+Rjh/N5fGmlHAbEWDwbGsA
-	Rfy873HCySZ3aDuHheVKimB4hJnqFo61K0F/13BNbWhlOqgAtQZK
-X-Google-Smtp-Source: AGHT+IHkfetYNQjtXgJOGuSH2tF757po7WuioKhZ1WKUmUVhuKFeVc+0OLJzUKRopydwbd5Qo+FIMw==
-X-Received: by 2002:a17:902:ccc6:b0:1e2:d4da:6c72 with SMTP id z6-20020a170902ccc600b001e2d4da6c72mr14625676ple.0.1713792962514;
-        Mon, 22 Apr 2024 06:36:02 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f12-20020a170902684c00b001e284b9b28asm8230382pln.129.2024.04.22.06.35.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Apr 2024 06:36:01 -0700 (PDT)
-Message-ID: <a0179848-99a2-4169-b7b2-1a8cddb27615@roeck-us.net>
-Date: Mon, 22 Apr 2024 06:35:58 -0700
+	Mon, 22 Apr 2024 14:29:15 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713796154; x=1745332154;
+  h=date:from:to:cc:subject:message-id:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=xnEZg8IQmV9yvJdGddbEkgHjt5YS3GrKwgYGA1swLIM=;
+  b=mg8jqQu+SOr+6wVUcGK/6/Vfzs7VxmOAHG7LqFCsj2npMx1VsjcVNUVc
+   rh1SOb3oyDzQJd19UT2NE7gEGOdXiQd2SYKwWqIAgvNtX34TkQQ2sZ3V0
+   4x8JDqJCxZZ7GPzZxbPgZSkU7qLoVBiLwLdO87eS+lnR8o9eChlMQRiGu
+   jx7d2nx95KuNZfYW+gbdIn9yKjfBzimn/d2/eH6QADau+FXHp/QJGe2+O
+   ggpFAPNG/ZHJQX4HUTQwReMGQ9FMJ7D3ix0ve6IqnH4zOqxiUFSaiTumD
+   37MSvjl5YXsUQxMinBjwrGLN4JP0nzfXf/RBN+wMk4ZM2d1iNIl2opXKk
+   Q==;
+X-CSE-ConnectionGUID: E/97Ob5iTwCZhM5lJwpRAA==
+X-CSE-MsgGUID: L3fUgWSwSf+/tMnTVdKKBw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="13117131"
+X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
+   d="scan'208";a="13117131"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 07:26:43 -0700
+X-CSE-ConnectionGUID: VE3SPw0LRP6hUDFwlnEKVQ==
+X-CSE-MsgGUID: o2Q+vhWMRI6ykMu1mvoh7Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,220,1708416000"; 
+   d="scan'208";a="28543973"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmviesa003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Apr 2024 07:26:42 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 22 Apr 2024 07:26:42 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 22 Apr 2024 07:26:41 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 22 Apr 2024 07:26:41 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.173)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 22 Apr 2024 07:26:41 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=c27RkUZutEb/o2JFxxMJMJape7kxUL0Jj4fh9Dq2u2TGnjYzmZl6y6SPRMlcZxOAdaRinzlZW98O1vFuTdsAOjMORvCJlovRUQxl5Qi1O6hUrR+TYx9qhBWQFxIogPjrPWTiED5hdJ1lndh7Ok49M3DTLDU2xrEhBQM74jPZ+vJ8XjfEPVZps2wQdGFGlcUgDfdm8BQadUpM9IBkV0gcyyOn5+Ojh4a36QVqnHsD1CMisfwSDsi/jiA8HWjNW46sORqggeazxMQAE39oPqTcAb0wBLD6MvTnVHP9jujYu7objw0E4XBTZBxd4/aAUMheV1q7WCAMCSxfhg+snyK04g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9Nu4W9Y1XlMKyhTxu5Hwf+DExfYws3whP6olsxmB+FE=;
+ b=T8nN35yW52SbOIC4Z2OW9FbNvrW75pJ7pi9M/V729QjQQ4N0mOoyRACjDrttwfmxm9QATfzroU23qbkeXKLtGL6N951alLRerkNOeN+qY/sm4plHimSRDG/5e3rsY0GQ0FgSeodWPUfIWgyFdLA2YiAa8BiPhs3ckfOmU5AcMC1a2b9OytpziXNEzyLeVGds+2AIcwTg5IwhUmIiY9aM3fL9w1SeCpRG9tYvs6B8uz0NyNpo6F5ZGFC41PXcwsvpzbT6trr8sWjuRfVpqBvp29Tc5NGU5RSsaR4wM9F/Uta1pwEjMp+u2+0enQl5LnfCmOFQlBq1ycl6zRemkHI2Pg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
+ by MW4PR11MB6982.namprd11.prod.outlook.com (2603:10b6:303:228::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.21; Mon, 22 Apr
+ 2024 14:26:38 +0000
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::58dd:99ca:74a6:2e3e]) by LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::58dd:99ca:74a6:2e3e%3]) with mapi id 15.20.7519.020; Mon, 22 Apr 2024
+ 14:26:38 +0000
+Date: Mon, 22 Apr 2024 22:26:23 +0800
+From: kernel test robot <oliver.sang@intel.com>
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+CC: <oe-lkp@lists.linux.dev>, <lkp@intel.com>, Ilpo
+ =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>, Jason Wang
+	<jasowang@redhat.com>, <virtualization@lists.linux.dev>, Richard Weinberger
+	<richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, "Johannes
+ Berg" <johannes@sipsolutions.net>, Hans de Goede <hdegoede@redhat.com>, Vadim
+ Pasternak <vadimp@nvidia.com>, Bjorn Andersson <andersson@kernel.org>,
+	Mathieu Poirier <mathieu.poirier@linaro.org>, Cornelia Huck
+	<cohuck@redhat.com>, Halil Pasic <pasic@linux.ibm.com>, "Eric Farman"
+	<farman@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, "Vasily Gorbik"
+	<gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Christian
+ Borntraeger <borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>, "David Hildenbrand"
+	<david@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	<linux-um@lists.infradead.org>, <platform-driver-x86@vger.kernel.org>,
+	<linux-remoteproc@vger.kernel.org>, <linux-s390@vger.kernel.org>,
+	<kvm@vger.kernel.org>, <oliver.sang@intel.com>
+Subject: Re: [PATCH vhost v8 6/6] virtio_ring: simplify the parameters of the
+ funcs related to vring_create/new_virtqueue()
+Message-ID: <202404221626.b938f1d6-oliver.sang@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240411023528.10914-7-xuanzhuo@linux.alibaba.com>
+X-ClientProxiedBy: SG2PR06CA0191.apcprd06.prod.outlook.com (2603:1096:4:1::23)
+ To LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 7/7] kunit: Add tests for fault
-To: =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
- David Gow <davidgow@google.com>
-Cc: Brendan Higgins <brendanhiggins@google.com>, Rae Moar <rmoar@google.com>,
- Shuah Khan <skhan@linuxfoundation.org>,
- Alan Maguire <alan.maguire@oracle.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin"
- <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
- James Morris <jamorris@linux.microsoft.com>,
- Kees Cook <keescook@chromium.org>, Luis Chamberlain <mcgrof@kernel.org>,
- "Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>,
- Marco Pagani <marpagan@redhat.com>, Paolo Bonzini <pbonzini@redhat.com>,
- Sean Christopherson <seanjc@google.com>, Stephen Boyd <sboyd@kernel.org>,
- Thara Gopinath <tgopinath@microsoft.com>,
- Thomas Gleixner <tglx@linutronix.de>, Vitaly Kuznetsov
- <vkuznets@redhat.com>, Wanpeng Li <wanpengli@tencent.com>,
- Zahra Tarkhani <ztarkhani@microsoft.com>, kvm@vger.kernel.org,
- linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
- linux-um@lists.infradead.org, x86@kernel.org
-References: <20240319104857.70783-1-mic@digikod.net>
- <20240319104857.70783-8-mic@digikod.net>
- <928249cc-e027-4f7f-b43f-502f99a1ea63@roeck-us.net>
- <b70332b0-3e55-4375-935f-35ef3167a151@roeck-us.net>
- <20240422.thesh7quoo0U@digikod.net>
-Content-Language: en-US
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20240422.thesh7quoo0U@digikod.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|MW4PR11MB6982:EE_
+X-MS-Office365-Filtering-Correlation-Id: 96f8bd01-2ca9-4232-928a-08dc62d838ce
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|1800799015|7416005|376005|366007;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?0FS4VgIPuycHJAZn3EAsvA8ucw8RiN14lih0IfUd/DNzFxuB9iyjtzq69q7c?=
+ =?us-ascii?Q?9TlwBlOFLbyhSH/kvDC3PsfXqpyTB376IS49aNdoyA7j/WKZfBhKU0ABnzV1?=
+ =?us-ascii?Q?YfQLyYiCC3HtKukRMcDCC19NggcPynq6UnGiG0QK6dk/oAzmotw+NsC6RmBF?=
+ =?us-ascii?Q?cXmPQju92egmq1aysgOzo3qdy/YFFcyx5Hbv3jFmX0o08LmqXMlj624L9OYE?=
+ =?us-ascii?Q?Tv52KK2JGka9pfTCFjUsZCINgG8Yzh1I+iP8qetHmECpGOGBJXR9V8DwsQoU?=
+ =?us-ascii?Q?pxTrhQgB4omDvgeyw/CRT5NKSNUDNFDOiza/w5nbMrr/U55ohWiUomYtTZLd?=
+ =?us-ascii?Q?oI+yJKZ9t8VQcruK59ugIm/E7VsIyaYdseWxvfCKks4rP59rEX6nJF/h7vjj?=
+ =?us-ascii?Q?0mmxl3m/IH9odo9VJ7dm/JIKQFCbhkvJdnMhB1OHKPIGWjNH3gzsvuXLiIoC?=
+ =?us-ascii?Q?2d7DHvOrql1kTgYhCpthXd0xyy3Ymx/h3jMxF5fB+HD8pkeHJJMh+z4ypCMW?=
+ =?us-ascii?Q?i9ywJpzBp1e5pZqjzO7RJFLHsnBgnHvM2LfoD0X1WrWaY3doCeXSE1+pBTp2?=
+ =?us-ascii?Q?JtMeIY6cSyCCXG8Ht8MANYunh9Q0itzkfh+1pFXh+7vouXj32i1MzQ1WEIen?=
+ =?us-ascii?Q?Z4EiaI4HsdcyMIzvmt4YSDMbfHRmHe4CVZd3ZIvVeTc6khoy4u4pC3PkhPlF?=
+ =?us-ascii?Q?nQB2nrr0hAzxWIPrw60IYQT4OZsmP1z0fBktZrHoXpFTbXqGdy/K5bZTnrCU?=
+ =?us-ascii?Q?tws+z/qVUGm7akAkjHveWxFrmelzhTy+dKKUc6TLsNZtHNP9ilkRpFMLB3lD?=
+ =?us-ascii?Q?K2RUZyYaKcj/rjRNHjORk9Z2CdFH6o3h5n6tsh0H3AHBimDm2d71QNmGvbjO?=
+ =?us-ascii?Q?NxkD7saxi1+04uiTRUCihf+rwI+Km6ymZ4S/l9V919E9KEJbwzeqlYghN6wM?=
+ =?us-ascii?Q?FeIOXfLy65NrdsNIyk1a23Z4mocZhz+h7LHXYITARw6RU3Zycw8I926VFUWp?=
+ =?us-ascii?Q?dnG9fKzV2OQR92CI7Gg4vpdLlCxcWyYIhDRZS1MT9kakcHoM2nGOA4sGZXFq?=
+ =?us-ascii?Q?8MjMWN6zkq4zKOwYxJ0uWVA/6ebf65wtSxiDAwT1MpUJ7fAV4fPPbsM0bcQy?=
+ =?us-ascii?Q?ILq+T4z/MiM1O3eY2x8uekq23IjvJAEsWplzQXmQzwwMWj0D22Nqc2b3FzgS?=
+ =?us-ascii?Q?jXHswVz8gpoXzzS4zDF/ofbKkQVhBGzEiWv29VsRc9YsU8Y4yDD6XwMXxHU?=
+ =?us-ascii?Q?=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(376005)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?xCDVpyZ9sAWJ9qfEQ9BdpkoaMyk3T3gC5BZudpEHHUIr77BhUBPKZO4vLzU3?=
+ =?us-ascii?Q?TfnKw22RAiKywJLEkZDsBFuQMCedAAf1S6Uq/dawTyTp4J3jIvVnsnufDpUg?=
+ =?us-ascii?Q?mvasxj+Ym4sul5OEeY2dOjqC9fs2dFXx0ndTU0W3ohZWQGQrclYs0bpAZfjM?=
+ =?us-ascii?Q?JV2ey+MiwmzkDwz7Rh0A48wUqwOdCZhqHiJEmNdiA+OUwpcJwAhNQchHMEBf?=
+ =?us-ascii?Q?RrA4jK8sxhZ8tOv49aph21v5z50nci74ABGBdCBx0TWzA0ld4PaUosxVZ0sh?=
+ =?us-ascii?Q?gP1ZK88V7wNKyTag24Y+cpFOx5sRULy323JxomvPW5aZ01AjVWm995uhwcvG?=
+ =?us-ascii?Q?pL3YusZrXsaIvhpj/1Ci2/qNM1oS6FQirP+kr/DcEg+I/lOXU9xymi5f6yBo?=
+ =?us-ascii?Q?D2nlFPfJhVJr1N0kr4mbRzdNIafLiD+ogIqrPaL5sZIaNyJMvIUq5EkZ5fL0?=
+ =?us-ascii?Q?DYCpq3JDDMp1zgYtD5NJeEbFMIp5MtMuyDnC13sWSuHBGW2BtBhCRmZG8srx?=
+ =?us-ascii?Q?zBr7GuwcZhuWVv+GEDB3iC4QSHLJ2iKVOrlgSGd1cdLpJW0MRl+hB86g/WHb?=
+ =?us-ascii?Q?6LDisEKpPYwTuMICSltK7Imv2jH/0k2yDsJM0qQMG7HzU61/7eUi+w/yArtu?=
+ =?us-ascii?Q?LLCdDHhT9exkJGOCNa+Z+9yKng04COsl2yCveTbBh11PLtRzYGln+u2STCSG?=
+ =?us-ascii?Q?86eAcuEx1/9aDDoYbl6rjJQV+4F6UB4SdHTqxw+wu++yiOH74mwa4jzN+y+x?=
+ =?us-ascii?Q?qgzUaXLA6plr8ZDkPVcxnYI9aNH4iqcnIb+BENyugHPGAs3sbjHiQ0meN7+X?=
+ =?us-ascii?Q?Avm0H8GE/4XaM3woCesozkpdL9bSqNNhwg4GrIqDitLHvK/DdbU+IZm1SDeB?=
+ =?us-ascii?Q?Ht2jvEmazxvjgrAGUyN8OtomfFFLRrUleSO0JqczCbCHXjUs7b9F7X80E7J+?=
+ =?us-ascii?Q?Ro9VuTBdLSA3z+TGRGknO1TGDdt8roLrsHu4PRA2C9kT2jBL3WVbuSY5aGiq?=
+ =?us-ascii?Q?0rP/C7n5qyIoYejaYoKG0XntPxZ2dYVwkT+KxiTL2L5SYLgQbvpIGcLx6g+U?=
+ =?us-ascii?Q?w2L0XzmCkleqHQKa1DZnTRF3yufIgZr41s0ZLAyeL4jNeUsEZajl48dVT75n?=
+ =?us-ascii?Q?kEHp8ad/EUO+45tEH4W1q5Xjfm9YjQjgMPpTO6kDZb60cGZ+ERlRhBFaaHrl?=
+ =?us-ascii?Q?h/4pF0d2f3rosdokpiomKu1akOsxM8PNb3sHkNpWOj0VabHrXApKFXHAL3V5?=
+ =?us-ascii?Q?EKBmg+qJ0/Xxjk6YL8Ec5hpDGeZK9btIkIIbih0qXkemmq3GjVZaiYw6Sufd?=
+ =?us-ascii?Q?xqEsl06pq+vY9p1hAjDzxQQUaOIJkQskULHle4C0kvhehyXStG/LolljLddz?=
+ =?us-ascii?Q?9ZHtPFXmpUkOcOEgIF5128JVV3THalKmHIpiEbXkpWPjYXBC2f53MDn0hv7A?=
+ =?us-ascii?Q?94lejup1hMBr8Q0xz1u3Uosmr47lEDZr9z1GeDvkc8PRwJCQU47GTJnW3LSR?=
+ =?us-ascii?Q?SJRCyUVbopZDMStlwO/3YFTINhwwaBKZjKYVWK+nDd9CsgGu/HUy+hDxAdN0?=
+ =?us-ascii?Q?YuX5KWE4/pGuGlmxS4VkT8k8AzI+7MSlLwi9tRnbmGAojDsw+Y/qvmjlq0O1?=
+ =?us-ascii?Q?4Q=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 96f8bd01-2ca9-4232-928a-08dc62d838ce
+X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Apr 2024 14:26:38.7493
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fLpi/a1Ky0Ot1NcZyA6kZIDsKj/3CDm7iwCowna2okq7p1S8PP2v/wcZA6Pp4xdaioYuP/XbA+OhgdvwwSjZOw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB6982
+X-OriginatorOrg: intel.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240422_063606_452625_D06D8B94 
-X-CRM114-Status: GOOD (  19.61  )
+X-CRM114-CacheID: sfid-20240422_072914_136183_022B8027 
+X-CRM114-Status: UNSURE (   7.45  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -158,60 +207,93 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 4/22/24 06:08, Mickaël Salaün wrote:
-> On Fri, Apr 19, 2024 at 04:38:01PM -0700, Guenter Roeck wrote:
->> On Fri, Apr 19, 2024 at 03:33:49PM -0700, Guenter Roeck wrote:
->>> Hi,
->>>
->>> On Tue, Mar 19, 2024 at 11:48:57AM +0100, Mickaël Salaün wrote:
->>>> Add a test case to check NULL pointer dereference and make sure it would
->>>> result as a failed test.
->>>>
->>>> The full kunit_fault test suite is marked as skipped when run on UML
->>>> because it would result to a kernel panic.
->>>>
->>>> Tested with:
->>>> ./tools/testing/kunit/kunit.py run --arch x86_64 kunit_fault
->>>> ./tools/testing/kunit/kunit.py run --arch arm64 \
->>>>    --cross_compile=aarch64-linux-gnu- kunit_fault
->>>>
->>>
->>> What is the rationale for adding those tests unconditionally whenever
->>> CONFIG_KUNIT_TEST is enabled ? This completely messes up my test system
->>> because it concludes that it is pointless to continue testing
->>> after the "Unable to handle kernel NULL pointer dereference" backtrace.
->>> At the same time, it is all or nothing, meaning I can not disable
->>> it but still run other kunit tests.
->>>
-> 
-> CONFIG_KUNIT_TEST is to test KUnit itself.  Why does this messes up your
-> test system, and what is your test system?  Is it related to the kernel
-> warning and then the message you previously sent?
 
-It is not a warning, it is a BUG which terminates the affected kernel thread.
-NULL pointer dereferences are normally fatal, which is why I abort tests
-if one is encountered. I am not going to start introducing code into my
-scripts to ignore such warnings (or BUG messages) on a case by case basis;
-this would be unmaintainable.
 
-> https://lore.kernel.org/r/fd604ae0-5630-4745-acf2-1e51c69cf0c0@roeck-us.net
-> It seems David has a solution to suppress such warning.
-> 
+Hello,
 
-I don't think so. My series tried to suppress warning backtraces, not BUG
-messages. BUG messages can not easily be suppressed since the reaction is
-architecture specific and typically fatal.
+kernel test robot noticed "BUG:kernel_reboot-without-warning_in_boot_stage"=
+ on:
 
-As I said below, never mind, I just disabled CONFIG_KUNIT_TEST in my testing.
+commit: fce2775b7bb39424d5ed656612a1d83fd265b670 ("[PATCH vhost v8 6/6] vir=
+tio_ring: simplify the parameters of the funcs related to vring_create/new_=
+virtqueue()")
+url: https://github.com/intel-lab-lkp/linux/commits/Xuan-Zhuo/virtio_balloo=
+n-remove-the-dependence-where-names-is-null/20240411-103822
+base: git://git.kernel.org/cgit/linux/kernel/git/remoteproc/linux.git rproc=
+-next
+patch link: https://lore.kernel.org/all/20240411023528.10914-7-xuanzhuo@lin=
+ux.alibaba.com/
+patch subject: [PATCH vhost v8 6/6] virtio_ring: simplify the parameters of=
+ the funcs related to vring_create/new_virtqueue()
 
-Guenter
+in testcase: boot
 
->>
->> Oh, never mind. I just disabled CONFIG_KUNIT_TEST in my test bed
->> to "solve" the problem. I'll take that as one of those "unintended
->> consequences" items: Instead of more tests, there are fewer.
->>
->> Guenter
->>
+compiler: gcc-13
+test machine: qemu-system-riscv64 -machine virt -device virtio-net-device,n=
+etdev=3Dnet0 -netdev user,id=3Dnet0 -smp 2 -m 16G
+
+(please refer to attached dmesg/kmsg for entire log/backtrace)
+
+
++-------------------------------------------------+------------+-----------=
+-+
+|                                                 | 3235a471eb | fce2775b7b=
+ |
++-------------------------------------------------+------------+-----------=
+-+
+| boot_successes                                  | 30         | 2         =
+ |
+| boot_failures                                   | 0          | 28        =
+ |
+| BUG:kernel_reboot-without-warning_in_boot_stage | 0          | 28        =
+ |
++-------------------------------------------------+------------+-----------=
+-+
+
+
+If you fix the issue in a separate patch/commit (i.e. not just a new versio=
+n of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <oliver.sang@intel.com>
+| Closes: https://lore.kernel.org/oe-lkp/202404221626.b938f1d6-oliver.sang@=
+intel.com
+
+
+Boot HART PMP Granularity : 4
+Boot HART PMP Address Bits: 54
+Boot HART MHPM Count      : 16
+Boot HART MIDELEG         : 0x0000000000001666
+Boot HART MEDELEG         : 0x0000000000f0b509
+BUG: kernel reboot-without-warning in boot stage
+Linux version  #
+Command line: ip=3D::::vm-meta-11::dhcp root=3D/dev/ram0 RESULT_ROOT=3D/res=
+ult/boot/1/vm-snb-riscv64/debian-13-riscv64-20240310.cgz/riscv-defconfig/gc=
+c-13/fce2775b7bb39424d5ed656612a1d83fd265b670/6 BOOT_IMAGE=3D/pkg/linux/ris=
+cv-defconfig/gcc-13/fce2775b7bb39424d5ed656612a1d83fd265b670/vmlinuz-6.9.0-=
+rc1-00009-gfce2775b7bb3 branch=3Dlinux-review/Xuan-Zhuo/virtio_balloon-remo=
+ve-the-dependence-where-names-is-null/20240411-103822 job=3D/lkp/jobs/sched=
+uled/vm-meta-11/boot-1-debian-13-riscv64-20240310.cgz-fce2775b7bb3-20240417=
+-37917-x2hsv1-16.yaml user=3Dlkp ARCH=3Driscv kconfig=3Driscv-defconfig com=
+mit=3Dfce2775b7bb39424d5ed656612a1d83fd265b670 nmi_watchdog=3D0 intremap=3D=
+posted_msi vmalloc=3D256M initramfs_async=3D0 page_owner=3Don max_uptime=3D=
+600 LKP_SERVER=3Dinternal-lkp-server selinux=3D0 debug apic=3Ddebug sysrq_a=
+lways_enabled rcupdate.rcu_cpu_stall_timeout=3D100 net.ifnames=3D0 printk.d=
+evkmsg=3Don panic=3D-1 softlockup_panic=3D1 nmi_watchdog=3Dpanic oops=3Dpan=
+ic load_ramdisk=3D2 prompt_ramdisk=3D0 drbd.minor_count=3D8 systemd.log_lev=
+el=3Derr ignore_loglevel console=3Dtty0 earlyprintk=3DttyS0,115200 console=
+=3DttyS0,115200 vga=3Dnormal rw rcuperf.shutdown=3D0 watchdog_thresh=3D240 =
+audit=3D0
+
+
+
+The kernel config and materials to reproduce are available at:
+https://download.01.org/0day-ci/archive/20240422/202404221626.b938f1d6-oliv=
+er.sang@intel.com
+
+
+
+--=20
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 
