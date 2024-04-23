@@ -4,59 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94726C4345F
-	for <linux-um@archiver.kernel.org>; Tue, 23 Apr 2024 12:11:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9EB8C4345F
+	for <linux-um@archiver.kernel.org>; Tue, 23 Apr 2024 12:22:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=zGpCGDLM61ejMNOyLJt8CjD5GKhvUW/9uVClM+cy3Nw=; b=VeM0S/y7EDeSjpzcZclr7KBzXz
-	ailpLh9QDfb32Cjqko5ZPCPOiXKCLIJb5vxpMksnYHmxgdUd5l3wyCV9d3VW0xNE7OkNGj3+jcrH2
-	L76a+CVWorS9sk5zi4gkz1qXzPhJi3ayV8Mbq+vHgL/ryMTNEliJIDNIBBjz3RvmJp/53o+gGKir/
-	pa9Pc/WSvUkFcDKxgra3z7ZIhql9L5PBhtaXQoHPZmDEzPzozGGh1ZzTVEyYJGD/lVKwtsoIfCo7K
-	ZonIcfCW0wxmQHvOtBnHsmiC1SSuf5d2Xlmjob+yTKj/hoFa2EEI++VGTDimIxsQstzKxjWJay/iZ
-	LwuTJBpw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=sOweXI35fJEX7TaL1KY6lKJ4Ci7OIE04l9EyjKhOXZM=; b=pc5V20IE/8DSxF6xz6v8v7ciiR
+	E/43A9tXYu3hFd84wleciu0Bal4gg+1+UOJL3zmnoD80ouRNKQVRqC2qQ7rMfKfcLVbqCm+MWj/bF
+	Qep686RX2oN+PFCjGqt8hBrEhvqRH1nkHochivYOvT7XGXjxEB2wXvtafZJ/xZIbnQn78YWyT8S7q
+	aOknuHMQX2CjvFTEhvpvh0i/XecQ3ETuxr96ONUSQq8XrFLaNqLZs0Yw/dqRGQLT2xuJ+J1C1vj8E
+	kc9cBXfdjTCV4JriWqsSXItcbVTIG4wEDWNvLUNDuyJKJpO17W2ohHOnniqY9+N5E/mUWOOrDLWgo
+	8fJSkTQA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rzEzb-0000000HK7P-1FFs;
-	Tue, 23 Apr 2024 12:11:23 +0000
-Received: from out0-196.mail.aliyun.com ([140.205.0.196])
+	id 1rzFAZ-0000000HMQC-3ivI;
+	Tue, 23 Apr 2024 12:22:43 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rzEzX-0000000HK51-058M
+	id 1rzFAX-0000000HMHl-1J7p
 	for linux-um@lists.infradead.org;
-	Tue, 23 Apr 2024 12:11:21 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=antgroup.com; s=default;
-	t=1713874277; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=zGpCGDLM61ejMNOyLJt8CjD5GKhvUW/9uVClM+cy3Nw=;
-	b=qv4GEanAMxzYxWuOm1HrZtKbkEqwv7HERJTHVgAy+hV/vhLR1cSas3/LVrlGp6n/MIZeuK0JzkgG+Vl6oeHRMWeMqYswELtB5jPH1ebLA/gwh8SowmkyhILVwSTh6qFm5OUirJnIlFaIZcH1eqxg1OqBM92A/JsPUrA+oFXA1jw=
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047198;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---.XJXNWHL_1713874275;
-Received: from 30.230.91.3(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.XJXNWHL_1713874275)
-          by smtp.aliyun-inc.com;
-          Tue, 23 Apr 2024 20:11:16 +0800
-Message-ID: <c2d61760-ca89-49d0-b366-89b3cd76438f@antgroup.com>
-Date: Tue, 23 Apr 2024 20:11:15 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/7] um: Fix the -Wmissing-prototypes warning for
- __switch_mm
-To: Johannes Berg <johannes@sipsolutions.net>, richard@nod.at,
- anton.ivanov@cambridgegreys.com
+	Tue, 23 Apr 2024 12:22:42 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=sOweXI35fJEX7TaL1KY6lKJ4Ci7OIE04l9EyjKhOXZM=;
+	t=1713874925; x=1715084525; b=R7elTYlwbPQgVzpF/DXNAGMkidjTLcnkxULM2FH17jS5NyZ
+	NnNPYjL0Va9tBskvQqiP1O8YObhKkbc//slToW2vOgSSiwSTUBCJQu/gXHOqGnYMj4ITIy7X07AvM
+	FZmHvIuQwEK//wOAVCgasxhPtBqBmbxYHSADTriUsvmj81PHDjjJqLr4cIQoEQzpnsyZDsrPzsRpQ
+	yspXRH0OACsAP8pZ7QO/QO0roA8ImnCal1CqhuEomMN85YIydgPEJwyyBz7Kh7V3JcKRpEtap0qf8
+	h2cDA1cnGa1k2rJpyF0vJPS6NxMNr4d3Wq3UaRdMfv0KXTYGqeCgb/bkaTLDNL6A==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1rzF9t-000000027hu-3mGu;
+	Tue, 23 Apr 2024 14:22:02 +0200
+Message-ID: <21cd05c895abc4f4e66190b26632543ff7990b32.camel@sipsolutions.net>
+Subject: Re: [PATCH 5/7] um: Add an internal header shared among the user
+ code
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Tiwei Bie <tiwei.btw@antgroup.com>, richard@nod.at, 
+	anton.ivanov@cambridgegreys.com
 Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+Date: Tue, 23 Apr 2024 14:22:00 +0200
+In-Reply-To: <ee636701-3f92-4424-8b04-dd2cecd8313a@antgroup.com>
 References: <20240423112457.2409319-1-tiwei.btw@antgroup.com>
- <20240423112457.2409319-3-tiwei.btw@antgroup.com>
- <8134c423c1a7f911cb5ae2f2e8e40e80f2e5270f.camel@sipsolutions.net>
-Content-Language: en-US
-From: "Tiwei Bie" <tiwei.btw@antgroup.com>
-In-Reply-To: <8134c423c1a7f911cb5ae2f2e8e40e80f2e5270f.camel@sipsolutions.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+	 <20240423112457.2409319-6-tiwei.btw@antgroup.com>
+	 <e850e5016348805e7e2f427ed98cb1eb539fc434.camel@sipsolutions.net>
+	 <ee636701-3f92-4424-8b04-dd2cecd8313a@antgroup.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+MIME-Version: 1.0
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240423_051119_727588_60F46ADB 
-X-CRM114-Status: UNSURE (   5.09  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240423_052241_370471_39C0F6A1 
+X-CRM114-Status: GOOD (  15.06  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,23 +77,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 4/23/24 7:29 PM, Johannes Berg wrote:
-> On Tue, 2024-04-23 at 19:24 +0800, Tiwei Bie wrote:
->>
->> --- a/arch/um/include/shared/skas/mm_id.h
->> +++ b/arch/um/include/shared/skas/mm_id.h
->> @@ -15,4 +15,6 @@ struct mm_id {
->>  	int kill;
->>  };
->>  
->> +extern void __switch_mm(struct mm_id *mm_idp);
->>
-> 
-> Maybe drop the extern while at it?
+On Tue, 2024-04-23 at 20:09 +0800, Tiwei Bie wrote:
+> On 4/23/24 7:30 PM, Johannes Berg wrote:
+> > On Tue, 2024-04-23 at 19:24 +0800, Tiwei Bie wrote:
+> > >=20
+> > >  $(USER_OBJS:.o=3D.%): \
+> > > -	c_flags =3D -Wp,-MD,$(depfile) $(USER_CFLAGS) -include $(srctree)/i=
+nclude/linux/kern_levels.h -include user.h $(CFLAGS_$(basetarget).o)
+> > > +	c_flags =3D -Wp,-MD,$(depfile) $(USER_CFLAGS) -include $(srctree)/i=
+nclude/linux/kern_levels.h \
+> > > +		-include user.h -include $(srctree)/arch/um/os-Linux/internal.h $(=
+CFLAGS_$(basetarget).o)
+> > >=20
+> >=20
+> > Why not just include it explicitly?
+>=20
+> I think it might be more convenient if we include it implicitly,
+> especially since there are two levels of directories under os-Linux/.
+> But I don't have a strong opinion on this. I'm also willing to
+> include it explicitly.
 
-Sure, will do. I also prefer to drop the extern.
-Thanks for the review! :)
+Yeah, ok, dunno.
 
-Regards,
-Tiwei
+> > We do have the warnings?
+>=20
+> Yeah. Without this patch, I can get below warnings with `make ARCH=3Dum d=
+efconfig && make ARCH=3Dum`:
+>=20
+
+Sure. I meant, we don't need to hide the include, if we need to add it
+to some other file, we'll have the warnings as a reminder. :)
+
+I don't think anyone today would write the code as it is now ...
+
+johannes
 
