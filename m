@@ -4,63 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7334C4345F
-	for <linux-um@archiver.kernel.org>; Tue, 23 Apr 2024 11:31:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9BBB5C4345F
+	for <linux-um@archiver.kernel.org>; Tue, 23 Apr 2024 12:09:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=CGVLx9qgz3TjtRvUwHvGwoshAcQcOViHaUvMOEjBRm0=; b=UyCNFXMbsCB/zJ/k/GSS3BK12s
-	l2o/cyEaWfqe4vlqOvdfEqdRYoMU+sFH+6W9Anqu1iDTxTJwk/rqyNCNaXYtnTwcg9SvjECNJNkUL
-	W4SLc2N1sQn5x7zDWh1kvtM9vnmEIAhCQxp5AQOzaDfwaQsON3JoOchLpH3nR2SFwKgH+KsDaSiF5
-	OcZaylOPxKsotzpXJlLWS/hDZKxBIxnl+WNX7IAbHSgA5BLPz5PgRM7iHcrOFJTwoH2j8GzwsMHyn
-	iPq9E3x1qVFa1K6xXS2e3LxUr6d50L2/Y8pxn8GwWo/TlZ+quAKcOV7hKvx3q88cKELKzanYpFLlC
-	Stpe4zGQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=0ToxibymbxSxXu/3U2e7lO1wHttOZIGCXSzIiNxS0Sw=; b=d3GxiSPEU6B0gCgFKZDuZojKQT
+	DTVpYf4MrfPBf6caJUBwc43+618h/2HhGVXksHCRwf+XeDv8r8GYeS8FCzt3Mrht4kAwBYFUy4N7g
+	cYeVSbEVs6i28Baak53ZrR5W+RdnB2W4CcY1VMm5w4h+KAFavtGi8jeGRgWGTOyB1wU+02t1wwkRa
+	UBTOKn7VxUfO2fMOEFOQd48zzWpalCPbmh9nDoZYpWAa0y8OOHS41SiNqpuRTXV3erDVknWy57sZH
+	jZ0yzzSY8wxLySSpmgZO387bGu0floi+Vl8oRzhCGBY7xSGyd5f8DhJ6GMwz4YAFzUVZIRsqSLE/4
+	EzQkq5kw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rzEMb-0000000H6lf-03CO;
-	Tue, 23 Apr 2024 11:31:05 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1rzEy1-0000000HJUq-32Ow;
+	Tue, 23 Apr 2024 12:09:45 +0000
+Received: from out0-199.mail.aliyun.com ([140.205.0.199])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rzEMX-0000000H6ik-14jF
+	id 1rzExw-0000000HJRv-3FBO
 	for linux-um@lists.infradead.org;
-	Tue, 23 Apr 2024 11:31:02 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=CGVLx9qgz3TjtRvUwHvGwoshAcQcOViHaUvMOEjBRm0=;
-	t=1713871861; x=1715081461; b=FdCuzhTxSv/4k8l3LA58KdA/UGS7Ihi5yxjbDQz5WK1h/gu
-	Mkj1YfMUzl0pjJ8/1PDoxJHs965Mgl1ePzqoPbyzbxP8hitOuV4ztwscqHWtrkp98GPqlLdYlGnTh
-	qS7bOUE89vWSMIcEfaopcDwE0M5NYdC8HnFe9fUujZgP3DcBFsqTWUMs6ivoVE4y/J4LgsBBEdcAX
-	6D6QIbAORIMu8OyIEly7Dyk8DLAZ9e8Lz8RnWerhiUxZDct524RovX0l88nlLAFBaH8Zk3j/mtOOB
-	gsYFs25fHD5fSTwp1wxLQsNNXfZOeEDChK8J45MN6ZBFOh2lmIw6OO4byIWf4cdg==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.97)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1rzEMU-0000000261M-2zNz;
-	Tue, 23 Apr 2024 13:30:58 +0200
-Message-ID: <e850e5016348805e7e2f427ed98cb1eb539fc434.camel@sipsolutions.net>
-Subject: Re: [PATCH 5/7] um: Add an internal header shared among the user
- code
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Tiwei Bie <tiwei.btw@antgroup.com>, richard@nod.at, 
-	anton.ivanov@cambridgegreys.com
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-Date: Tue, 23 Apr 2024 13:30:57 +0200
-In-Reply-To: <20240423112457.2409319-6-tiwei.btw@antgroup.com>
-References: <20240423112457.2409319-1-tiwei.btw@antgroup.com>
-	 <20240423112457.2409319-6-tiwei.btw@antgroup.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	Tue, 23 Apr 2024 12:09:42 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=antgroup.com; s=default;
+	t=1713874177; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=0ToxibymbxSxXu/3U2e7lO1wHttOZIGCXSzIiNxS0Sw=;
+	b=eeP9ttq8wi5tPTGNaKsw8maO0a8PJtKXYY2lPBxlQpOX3cTi90Rfx732QryQ2TS4byt1hpTrGglfk9lwkzPq5tZcr7OlaeL173UqN7o2bdTGvoYmDPu2rXaD/Lv7IZgjwYcNGZDSdO69WItn1k2mfAFTC6Rcz7R8vmHC38Lcaoc=
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047213;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---.XJWNYgx_1713874168;
+Received: from 30.230.91.3(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.XJWNYgx_1713874168)
+          by smtp.aliyun-inc.com;
+          Tue, 23 Apr 2024 20:09:35 +0800
+Message-ID: <ee636701-3f92-4424-8b04-dd2cecd8313a@antgroup.com>
+Date: Tue, 23 Apr 2024 20:09:28 +0800
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/7] um: Add an internal header shared among the user code
+To: Johannes Berg <johannes@sipsolutions.net>, richard@nod.at,
+ anton.ivanov@cambridgegreys.com
+Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240423112457.2409319-1-tiwei.btw@antgroup.com>
+ <20240423112457.2409319-6-tiwei.btw@antgroup.com>
+ <e850e5016348805e7e2f427ed98cb1eb539fc434.camel@sipsolutions.net>
+Content-Language: en-US
+From: "Tiwei Bie" <tiwei.btw@antgroup.com>
+In-Reply-To: <e850e5016348805e7e2f427ed98cb1eb539fc434.camel@sipsolutions.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240423_043101_317434_99C9691E 
-X-CRM114-Status: UNSURE (   4.75  )
+X-CRM114-CacheID: sfid-20240423_050941_114072_BF707E84 
+X-CRM114-Status: UNSURE (   8.05  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -76,18 +70,47 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2024-04-23 at 19:24 +0800, Tiwei Bie wrote:
->=20
->  $(USER_OBJS:.o=3D.%): \
-> -	c_flags =3D -Wp,-MD,$(depfile) $(USER_CFLAGS) -include $(srctree)/inclu=
-de/linux/kern_levels.h -include user.h $(CFLAGS_$(basetarget).o)
-> +	c_flags =3D -Wp,-MD,$(depfile) $(USER_CFLAGS) -include $(srctree)/inclu=
-de/linux/kern_levels.h \
-> +		-include user.h -include $(srctree)/arch/um/os-Linux/internal.h $(CFLA=
-GS_$(basetarget).o)
->=20
+On 4/23/24 7:30 PM, Johannes Berg wrote:
+> On Tue, 2024-04-23 at 19:24 +0800, Tiwei Bie wrote:
+>>
+>>  $(USER_OBJS:.o=.%): \
+>> -	c_flags = -Wp,-MD,$(depfile) $(USER_CFLAGS) -include $(srctree)/include/linux/kern_levels.h -include user.h $(CFLAGS_$(basetarget).o)
+>> +	c_flags = -Wp,-MD,$(depfile) $(USER_CFLAGS) -include $(srctree)/include/linux/kern_levels.h \
+>> +		-include user.h -include $(srctree)/arch/um/os-Linux/internal.h $(CFLAGS_$(basetarget).o)
+>>
+> 
+> Why not just include it explicitly?
 
-Why not just include it explicitly? We do have the warnings?
+I think it might be more convenient if we include it implicitly,
+especially since there are two levels of directories under os-Linux/.
+But I don't have a strong opinion on this. I'm also willing to
+include it explicitly.
 
-johannes
+> We do have the warnings?
+
+Yeah. Without this patch, I can get below warnings with `make ARCH=um defconfig && make ARCH=um`:
+
+arch/um/os-Linux/skas/process.c:107:6: warning: no previous prototype for ‘wait_stub_done’ [-Wmissing-prototypes]
+  107 | void wait_stub_done(int pid)
+      |      ^~~~~~~~~~~~~~
+arch/um/os-Linux/mem.c:213:13: warning: no previous prototype for ‘check_tmpexec’ [-Wmissing-prototypes]
+  213 | void __init check_tmpexec(void)
+      |             ^~~~~~~~~~~~~
+
+And below warnings with `make ARCH=um SUBARCH=i386 defconfig && make ARCH=um SUBARCH=i386`:
+
+arch/um/os-Linux/elf_aux.c:26:13: warning: no previous prototype for ‘scan_elf_aux’ [-Wmissing-prototypes]
+   26 | __init void scan_elf_aux( char **envp)
+      |             ^~~~~~~~~~~~
+arch/um/os-Linux/skas/process.c:107:6: warning: no previous prototype for ‘wait_stub_done’ [-Wmissing-prototypes]
+  107 | void wait_stub_done(int pid)
+      |      ^~~~~~~~~~~~~~
+arch/um/os-Linux/mem.c:213:13: warning: no previous prototype for ‘check_tmpexec’ [-Wmissing-prototypes]
+  213 | void __init check_tmpexec(void)
+      |             ^~~~~~~~~~~~~
+
+The compiler I'm using is: gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0
+
+Regards,
+Tiwei
 
