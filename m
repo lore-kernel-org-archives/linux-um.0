@@ -4,36 +4,36 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF414C10F15
-	for <linux-um@archiver.kernel.org>; Tue, 23 Apr 2024 12:59:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A5114C16B13
+	for <linux-um@archiver.kernel.org>; Tue, 23 Apr 2024 12:59:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
 	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=lumfKnRDCzxzbmj8wJ/Hznk5zzPAE/pxByFtYHy06AQ=; b=oPjtAqUwevDt9fxpGm0A49imc1
-	S8H7yPSGkXV8E5sMRTTTr8I0pxQgrqcjLjmvpENwOj2G2L12eQIRfmNyPVR0DaqZqTdt3QMMQ2nnw
-	qZEch55ugS2D3kVU3aemmAJ9L97Lv8ddCqeRaBBP0Aq0OYBTaFP0wotuz0+5JVDkr7mkzGSDZfmQq
-	m3ol8AvtooaJ/Fy887p+N+MQqQucKAqFKvmXdfgcnwF1Y/nR1Ge4VHMhsQ99i5mHInQIL0KOEceHy
-	UIH6tFhiZE0VgnqiDtZgBQPEyb/BxwAKEevl4FM7Z1k8zt11WVxZd5mXWbYjbCgWBR/XkF7ZLzcB3
-	2kNFnIHA==;
+	bh=64KorjYk0sx2nDSk7hiRZHzNhfBx4ybSJcgKjrQvbD8=; b=3bNbAAuY6ORLyL3wttcqwzWxEr
+	SxZ8aC8boJNfproGcNXVmIlVCyKo75EArGWtlqFsYOzN3pHjjVudFJA05Xc6tGthC4xG5OXlZ+Fcg
+	XsTKGXc3ZDwD5MfaxexW1IInxGHZqneQ8Ymx4qzBnQhT3Sh7eWM++Qb39TTysiZnUXx6EYA7q4czC
+	Cbip0pwuXr84Bt0j+j6p8p4JnHSE38PYPNX7Xsfgyv8v5KFR45l6qKzuBJJ+wlKigLDoDEPp98mYT
+	+kOury0yR96l0+41pO6e378RF4XknykHVt+wYiH9LFohsonv55nrwykrLCuDW0pJPOEFq/CJxj7GA
+	vM8UioFg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rzFk2-0000000HXzS-09SJ;
-	Tue, 23 Apr 2024 12:59:22 +0000
-Received: from out0-202.mail.aliyun.com ([140.205.0.202])
+	id 1rzFk4-0000000HY1F-10Od;
+	Tue, 23 Apr 2024 12:59:24 +0000
+Received: from out0-211.mail.aliyun.com ([140.205.0.211])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rzFjt-0000000HXv6-0JVH
+	id 1rzFju-0000000HXvH-3GrE
 	for linux-um@lists.infradead.org;
-	Tue, 23 Apr 2024 12:59:19 +0000
+	Tue, 23 Apr 2024 12:59:21 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=antgroup.com; s=default;
-	t=1713877149; h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
-	bh=lumfKnRDCzxzbmj8wJ/Hznk5zzPAE/pxByFtYHy06AQ=;
-	b=n0HVDqsy9gqwPYdqOSn/UILDsSEH+3yxlEjWow3mT8gKzmrJX5uRX3i6D/jErMEZBzLCxOZXPe7RItbXgIQ7h75CG8iX73vowU6csFKXqbrug/drQ6jiebmIGQuAIZ79HGFYpVARI+ANq1X/pjvDSiCF8173iu9rHGOH5g1oQdE=
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R311e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047208;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---.XJXNjT6_1713877148;
-Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.XJXNjT6_1713877148)
+	t=1713877150; h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
+	bh=64KorjYk0sx2nDSk7hiRZHzNhfBx4ybSJcgKjrQvbD8=;
+	b=TOQfcjgCAeyXDh2yappDAJka2AMm2ud5T++EXDeuK7KanSTOanpLVNyJ5s1A1bNFx1IlRtlkIYV7DufTJdKXdONEcmcYoTRdzCN/GoLpuusjvXjMKNOmloGqL1s9QIHihAjSZnxI+JI6l3YSkCY4nJPfHTAnyX5WfrIy4wttGbk=
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018047209;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---.XJXNjSx_1713877148;
+Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.XJXNjSx_1713877148)
           by smtp.aliyun-inc.com;
           Tue, 23 Apr 2024 20:59:08 +0800
 From: "Tiwei Bie" <tiwei.btw@antgroup.com>
@@ -43,9 +43,9 @@ To: richard@nod.at,
 Cc: <linux-um@lists.infradead.org>,
    <linux-kernel@vger.kernel.org>,
   "Tiwei Bie" <tiwei.btw@antgroup.com>
-Subject: [PATCH v2 7/7] um: Remove unused do_get_thread_area function
-Date: Tue, 23 Apr 2024 20:58:58 +0800
-Message-Id: <20240423125858.137709-8-tiwei.btw@antgroup.com>
+Subject: [PATCH v2 6/7] um: Fix -Wmissing-prototypes warnings for __vdso_*
+Date: Tue, 23 Apr 2024 20:58:57 +0800
+Message-Id: <20240423125858.137709-7-tiwei.btw@antgroup.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240423125858.137709-1-tiwei.btw@antgroup.com>
 References: <20240423125858.137709-1-tiwei.btw@antgroup.com>
@@ -53,8 +53,8 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240423_055914_770045_EA277981 
-X-CRM114-Status: UNSURE (   7.22  )
+X-CRM114-CacheID: sfid-20240423_055917_697823_754A86B1 
+X-CRM114-Status: UNSURE (   7.87  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -70,57 +70,58 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-It's not used since it was introduced by commit aa6758d4867c ("[PATCH]
-uml: implement {get,set}_thread_area for i386"). Now, it's causing a
--Wmissing-prototypes warning:
+The VDSO functions are defined as globals and intended to be called
+from userspace. Let's just workaround the -Wmissing-prototypes warnings
+by declaring them locally.
 
-arch/x86/um/tls_32.c:39:5: warning: no previous prototype for ‘do_get_thread_area’ [-Wmissing-prototypes]
-   39 | int do_get_thread_area(struct user_desc *info)
-      |     ^~~~~~~~~~~~~~~~~~
+This will address below -Wmissing-prototypes warnings:
 
-The original author also had doubts about whether it should be used.
-Considering that 18 years have passed, let's just remove it.
+arch/x86/um/vdso/um_vdso.c:16:5: warning: no previous prototype for ‘__vdso_clock_gettime’ [-Wmissing-prototypes]
+arch/x86/um/vdso/um_vdso.c:30:5: warning: no previous prototype for ‘__vdso_gettimeofday’ [-Wmissing-prototypes]
+arch/x86/um/vdso/um_vdso.c:44:21: warning: no previous prototype for ‘__vdso_time’ [-Wmissing-prototypes]
+arch/x86/um/vdso/um_vdso.c:57:1: warning: no previous prototype for ‘__vdso_getcpu’ [-Wmissing-prototypes]
+
+While at it, also fix the "WARNING: Prefer 'unsigned int *' to bare
+use of 'unsigned *'" checkpatch warning.
 
 Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
 ---
- arch/x86/um/tls_32.c | 17 -----------------
- 1 file changed, 17 deletions(-)
+ arch/x86/um/vdso/um_vdso.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/um/tls_32.c b/arch/x86/um/tls_32.c
-index ba40b1b8e179..d301deee041f 100644
---- a/arch/x86/um/tls_32.c
-+++ b/arch/x86/um/tls_32.c
-@@ -36,22 +36,6 @@ static int do_set_thread_area(struct user_desc *info)
- 	return ret;
- }
+diff --git a/arch/x86/um/vdso/um_vdso.c b/arch/x86/um/vdso/um_vdso.c
+index ff0f3b4b6c45..cbae2584124f 100644
+--- a/arch/x86/um/vdso/um_vdso.c
++++ b/arch/x86/um/vdso/um_vdso.c
+@@ -13,6 +13,12 @@
+ #include <linux/getcpu.h>
+ #include <asm/unistd.h>
  
--int do_get_thread_area(struct user_desc *info)
--{
--	int ret;
--	u32 cpu;
--
--	cpu = get_cpu();
--	ret = os_get_thread_area(info, userspace_pid[cpu]);
--	put_cpu();
--
--	if (ret)
--		printk(KERN_ERR "PTRACE_GET_THREAD_AREA failed, err = %d, "
--		       "index = %d\n", ret, info->entry_number);
--
--	return ret;
--}
--
- /*
-  * sys_get_thread_area: get a yet unused TLS descriptor index.
-  * XXX: Consider leaving one free slot for glibc usage at first place. This must
-@@ -231,7 +215,6 @@ int arch_set_tls(struct task_struct *new, unsigned long tls)
- 	return ret;
- }
- 
--/* XXX: use do_get_thread_area to read the host value? I'm not at all sure! */
- static int get_tls_entry(struct task_struct *task, struct user_desc *info,
- 			 int idx)
++/* workaround for -Wmissing-prototypes warnings */
++int __vdso_clock_gettime(clockid_t clock, struct __kernel_old_timespec *ts);
++int __vdso_gettimeofday(struct __kernel_old_timeval *tv, struct timezone *tz);
++__kernel_old_time_t __vdso_time(__kernel_old_time_t *t);
++long __vdso_getcpu(unsigned int *cpu, unsigned int *node, struct getcpu_cache *unused);
++
+ int __vdso_clock_gettime(clockid_t clock, struct __kernel_old_timespec *ts)
  {
+ 	long ret;
+@@ -54,7 +60,7 @@ __kernel_old_time_t __vdso_time(__kernel_old_time_t *t)
+ __kernel_old_time_t time(__kernel_old_time_t *t) __attribute__((weak, alias("__vdso_time")));
+ 
+ long
+-__vdso_getcpu(unsigned *cpu, unsigned *node, struct getcpu_cache *unused)
++__vdso_getcpu(unsigned int *cpu, unsigned int *node, struct getcpu_cache *unused)
+ {
+ 	/*
+ 	 * UML does not support SMP, we can cheat here. :)
+@@ -68,5 +74,5 @@ __vdso_getcpu(unsigned *cpu, unsigned *node, struct getcpu_cache *unused)
+ 	return 0;
+ }
+ 
+-long getcpu(unsigned *cpu, unsigned *node, struct getcpu_cache *tcache)
++long getcpu(unsigned int *cpu, unsigned int *node, struct getcpu_cache *tcache)
+ 	__attribute__((weak, alias("__vdso_getcpu")));
 -- 
 2.34.1
 
