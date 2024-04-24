@@ -4,38 +4,38 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAA81C4345F
-	for <linux-um@archiver.kernel.org>; Wed, 24 Apr 2024 09:15:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0145EC07E8E
+	for <linux-um@archiver.kernel.org>; Wed, 24 Apr 2024 09:15:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=cYH6nuPV+ukxc4q3ctbCjioUc9rbgmodHni+uxe6ecQ=; b=qnfhUdDWrbXSTzCJVefr3caGrz
-	1XlQKd8+QTV5sTU1ya488uJekyxdkFt0F871gcHZbYWBlPpmQeoGMTG4+BL9j5XH2oA3yDDgtAbeh
-	WpB5FGL9+1iHl/2ayE7Md+eAcX675ZwkAfIaCaJbq7HVuNtz+kdVQTYjKt/YfMDZMZp8LxUDs+KvA
-	wG0b91VuGd0j/DkbZC+MAJucd0DfOIgIB1cNVQIjLjBLBg7jcgJIxgOrxBuPRmpcFXTdFOezGR5mD
-	/FK8uh1kvWbW97sJN2Za3GxqaFsrSCXVWDvsISeV9G3dL8f4IcSBDj9rJO8Z4dpoRx+r2JghhI3Q0
-	EC9TyhnA==;
+	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=uFRHL08YisCGy8GeaiyxV8AxhBzMdE8E0bvCSQlulIE=; b=D+hjtHISdBWTNPXkvnIsryZRu/
+	bpdGp4xdW5Q3LzgGfM500xoBowpOMkNUh0ZXP5htkpgXdr2po7Hyao4lPLn93OEg4wV4vN8Z+B1KC
+	nyuPKcutJC+Ze8p9gq1JLsX7ofPulul9iyKswWoNSRaxtAw07cD0wwyjOckS+zJV/LC5x0kweShld
+	kEPb/bj2UbWxKvuFBlmvhem/V8vWT/nOHpDMDoxyyew9RuPoiUuGAwsq7FjGywvUcD3bhWh1txg2b
+	T8RzcIX3ALO8TsPiIERsHqVIg/M/y/vj3RbTHNkFY5FyHKckjxzXDMThwMSIyEDI3as8Jm0Eec7q4
+	2tvNS8tA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rzYjA-00000003SSL-0Axi;
-	Wed, 24 Apr 2024 09:15:44 +0000
+	id 1rzYjB-00000003STz-2hvD;
+	Wed, 24 Apr 2024 09:15:45 +0000
 Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rzYj5-00000003SNX-0h56
+	id 1rzYj5-00000003SOW-3Kln
 	for linux-um@lists.infradead.org;
 	Wed, 24 Apr 2024 09:15:41 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1713950136; h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
-	bh=cYH6nuPV+ukxc4q3ctbCjioUc9rbgmodHni+uxe6ecQ=;
-	b=a3LTDPm6Kj6ndGbHcZyvvaDUw3olXRYr3W1eiQJkp2HfVqkEeKA+PcLIOhlslpuTXif26VeQEV7NdEpvUAMG5FAaNMpUG3QK4peQhXP4iVBS5z4yJPP3GYNfHXL9UdvSsG3rbTv3K6qSa7elDk0L56Ln0qQeb+Z6UqgQYuh0P44=
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R491e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033022160150;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=26;SR=0;TI=SMTPD_---0W5BsEmF_1713950133;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W5BsEmF_1713950133)
+	t=1713950138; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=uFRHL08YisCGy8GeaiyxV8AxhBzMdE8E0bvCSQlulIE=;
+	b=p8Wtd7t/fiFfJW3/r1rGvewytfET6d8FnC+JwjVLLejdOQjJx+EkmCKSaIyqWn2LZ0rFv4zjYyNqmYToVkEBRstuVzOcm8o4ZRylOinOyoLGwRp9r9lxAOEogGLuB9a9gyXNf5RNXNKcAvJBk7++ImK8Sr/7yz8LSHO+t90fYOQ=
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R891e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033045046011;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=26;SR=0;TI=SMTPD_---0W5BsEmw_1713950135;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W5BsEmw_1713950135)
           by smtp.aliyun-inc.com;
-          Wed, 24 Apr 2024 17:15:34 +0800
+          Wed, 24 Apr 2024 17:15:36 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: virtualization@lists.linux.dev
 Cc: Richard Weinberger <richard@nod.at>,
@@ -63,18 +63,18 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-remoteproc@vger.kernel.org,
 	linux-s390@vger.kernel.org,
 	kvm@vger.kernel.org
-Subject: [PATCH vhost v9 0/6] refactor the params of find_vqs()
-Date: Wed, 24 Apr 2024 17:15:27 +0800
-Message-Id: <20240424091533.86949-1-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH vhost v9 1/6] virtio_balloon: remove the dependence where names[] is null
+Date: Wed, 24 Apr 2024 17:15:28 +0800
+Message-Id: <20240424091533.86949-2-xuanzhuo@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0.3.g01195cf9f
+In-Reply-To: <20240424091533.86949-1-xuanzhuo@linux.alibaba.com>
+References: <20240424091533.86949-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-Git-Hash: bdb00f35db89
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240424_021539_407177_50D00653 
-X-CRM114-Status: UNSURE (   8.51  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240424_021540_090356_2F981970 
+X-CRM114-Status: GOOD (  13.82  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,87 +89,113 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-This pathset is splited from the
+Currently, the init_vqs function within the virtio_balloon driver relies
+on the condition that certain names array entries are null in order to
+skip the initialization of some virtual queues (vqs). This behavior is
+unique to this part of the codebase. In an upcoming commit, we plan to
+eliminate this dependency by removing the function entirely. Therefore,
+with this change, we are ensuring that the virtio_balloon no longer
+depends on the aforementioned function.
 
-     http://lore.kernel.org/all/20240229072044.77388-1-xuanzhuo@linux.alibaba.com
+As specification 1.0-1.2, vq indexes should not be contiguous if some
+vq does not exist. But currently the virtqueue index is contiguous for
+all existing devices. The Linux kernel does not implement functionality
+to allow vq indexes to be discontinuous. So the current behavior of the
+virtio-balloon device is different for the spec. But this commit has no
+functional changes.
 
-That may needs some cycles to discuss. But that notifies too many people.
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Acked-by: David Hildenbrand <david@redhat.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
+---
+ drivers/virtio/virtio_balloon.c | 48 ++++++++++++++-------------------
+ 1 file changed, 20 insertions(+), 28 deletions(-)
 
-But just the four commits need to notify so many people.
-And four commits are independent. So I split that patch set,
-let us review these first.
-
-The patch set try to  refactor the params of find_vqs().
-Then we can just change the structure, when introducing new
-features.
-
-Thanks.
-
-v8:
-  1. rebase the vhost branch
-
-v7:
-  1. fix two bugs. @Jason
-
-v6:
-  1. virtio_balloon: a single variable for both purposes.
-  2. if names[i] is null, return error
-
-v5:
-  1. virtio_balloon: follow David Hildenbrand's suggest
-    http://lore.kernel.org/all/3620be9c-e288-4ff2-a7be-1fcf806e6e6e@redhat.com
-  2. fix bug of the reference of "cfg_idx"
-    http://lore.kernel.org/all/202403222227.Sdp23Lcb-lkp@intel.com
-
-v4:
-  1. remove support for names array entries being null
-  2. remove cfg_idx from virtio_vq_config
-
-v3:
-  1. fix the bug: "assignment of read-only location '*cfg.names'"
-
-v2:
-  1. add kerneldoc for "struct vq_transport_config" @ilpo.jarvinen
-
-v1:
-  1. fix some comments from ilpo.jarvinen@linux.intel.com
-
-
-
-
-
-
-
-
-
-Xuan Zhuo (6):
-  virtio_balloon: remove the dependence where names[] is null
-  virtio: remove support for names array entries being null.
-  virtio: find_vqs: pass struct instead of multi parameters
-  virtio: vring_create_virtqueue: pass struct instead of multi
-    parameters
-  virtio: vring_new_virtqueue(): pass struct instead of multi parameters
-  virtio_ring: simplify the parameters of the funcs related to
-    vring_create/new_virtqueue()
-
- arch/um/drivers/virtio_uml.c             |  36 +++--
- drivers/platform/mellanox/mlxbf-tmfifo.c |  23 +--
- drivers/remoteproc/remoteproc_virtio.c   |  37 +++--
- drivers/s390/virtio/virtio_ccw.c         |  38 ++---
- drivers/virtio/virtio_balloon.c          |  48 +++---
- drivers/virtio/virtio_mmio.c             |  36 +++--
- drivers/virtio/virtio_pci_common.c       |  69 ++++-----
- drivers/virtio/virtio_pci_common.h       |   9 +-
- drivers/virtio/virtio_pci_legacy.c       |  16 +-
- drivers/virtio/virtio_pci_modern.c       |  37 +++--
- drivers/virtio/virtio_ring.c             | 177 ++++++++---------------
- drivers/virtio/virtio_vdpa.c             |  51 +++----
- include/linux/virtio_config.h            |  76 +++++++---
- include/linux/virtio_ring.h              |  93 +++++++-----
- tools/virtio/virtio_test.c               |   4 +-
- tools/virtio/vringh_test.c               |  28 ++--
- 16 files changed, 384 insertions(+), 394 deletions(-)
-
+diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
+index c0a63638f95e..ccda6d08493f 100644
+--- a/drivers/virtio/virtio_balloon.c
++++ b/drivers/virtio/virtio_balloon.c
+@@ -548,49 +548,41 @@ static int init_vqs(struct virtio_balloon *vb)
+ 	struct virtqueue *vqs[VIRTIO_BALLOON_VQ_MAX];
+ 	vq_callback_t *callbacks[VIRTIO_BALLOON_VQ_MAX];
+ 	const char *names[VIRTIO_BALLOON_VQ_MAX];
+-	int err;
++	int err, idx = 0;
+ 
+-	/*
+-	 * Inflateq and deflateq are used unconditionally. The names[]
+-	 * will be NULL if the related feature is not enabled, which will
+-	 * cause no allocation for the corresponding virtqueue in find_vqs.
+-	 */
+-	callbacks[VIRTIO_BALLOON_VQ_INFLATE] = balloon_ack;
+-	names[VIRTIO_BALLOON_VQ_INFLATE] = "inflate";
+-	callbacks[VIRTIO_BALLOON_VQ_DEFLATE] = balloon_ack;
+-	names[VIRTIO_BALLOON_VQ_DEFLATE] = "deflate";
+-	callbacks[VIRTIO_BALLOON_VQ_STATS] = NULL;
+-	names[VIRTIO_BALLOON_VQ_STATS] = NULL;
+-	callbacks[VIRTIO_BALLOON_VQ_FREE_PAGE] = NULL;
+-	names[VIRTIO_BALLOON_VQ_FREE_PAGE] = NULL;
+-	names[VIRTIO_BALLOON_VQ_REPORTING] = NULL;
++	callbacks[idx] = balloon_ack;
++	names[idx++] = "inflate";
++	callbacks[idx] = balloon_ack;
++	names[idx++] = "deflate";
+ 
+ 	if (virtio_has_feature(vb->vdev, VIRTIO_BALLOON_F_STATS_VQ)) {
+-		names[VIRTIO_BALLOON_VQ_STATS] = "stats";
+-		callbacks[VIRTIO_BALLOON_VQ_STATS] = stats_request;
++		names[idx] = "stats";
++		callbacks[idx++] = stats_request;
+ 	}
+ 
+ 	if (virtio_has_feature(vb->vdev, VIRTIO_BALLOON_F_FREE_PAGE_HINT)) {
+-		names[VIRTIO_BALLOON_VQ_FREE_PAGE] = "free_page_vq";
+-		callbacks[VIRTIO_BALLOON_VQ_FREE_PAGE] = NULL;
++		names[idx] = "free_page_vq";
++		callbacks[idx++] = NULL;
+ 	}
+ 
+ 	if (virtio_has_feature(vb->vdev, VIRTIO_BALLOON_F_REPORTING)) {
+-		names[VIRTIO_BALLOON_VQ_REPORTING] = "reporting_vq";
+-		callbacks[VIRTIO_BALLOON_VQ_REPORTING] = balloon_ack;
++		names[idx] = "reporting_vq";
++		callbacks[idx++] = balloon_ack;
+ 	}
+ 
+-	err = virtio_find_vqs(vb->vdev, VIRTIO_BALLOON_VQ_MAX, vqs,
+-			      callbacks, names, NULL);
++	err = virtio_find_vqs(vb->vdev, idx, vqs, callbacks, names, NULL);
+ 	if (err)
+ 		return err;
+ 
+-	vb->inflate_vq = vqs[VIRTIO_BALLOON_VQ_INFLATE];
+-	vb->deflate_vq = vqs[VIRTIO_BALLOON_VQ_DEFLATE];
++	idx = 0;
++
++	vb->inflate_vq = vqs[idx++];
++	vb->deflate_vq = vqs[idx++];
++
+ 	if (virtio_has_feature(vb->vdev, VIRTIO_BALLOON_F_STATS_VQ)) {
+ 		struct scatterlist sg;
+ 		unsigned int num_stats;
+-		vb->stats_vq = vqs[VIRTIO_BALLOON_VQ_STATS];
++		vb->stats_vq = vqs[idx++];
+ 
+ 		/*
+ 		 * Prime this virtqueue with one buffer so the hypervisor can
+@@ -610,10 +602,10 @@ static int init_vqs(struct virtio_balloon *vb)
+ 	}
+ 
+ 	if (virtio_has_feature(vb->vdev, VIRTIO_BALLOON_F_FREE_PAGE_HINT))
+-		vb->free_page_vq = vqs[VIRTIO_BALLOON_VQ_FREE_PAGE];
++		vb->free_page_vq = vqs[idx++];
+ 
+ 	if (virtio_has_feature(vb->vdev, VIRTIO_BALLOON_F_REPORTING))
+-		vb->reporting_vq = vqs[VIRTIO_BALLOON_VQ_REPORTING];
++		vb->reporting_vq = vqs[idx++];
+ 
+ 	return 0;
+ }
 -- 
 2.32.0.3.g01195cf9f
 
