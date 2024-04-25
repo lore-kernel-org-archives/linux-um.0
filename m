@@ -4,78 +4,222 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B2D5C4345F
-	for <linux-um@archiver.kernel.org>; Wed, 24 Apr 2024 09:15:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA21FC4345F
+	for <linux-um@archiver.kernel.org>; Thu, 25 Apr 2024 20:59:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:
-	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=eaZv5SE1uOIfPtEus/qKV6shYDjU+krGNOlpJdEiTn4=; b=cK6FrcqH9MLMQOqbMdqWQPcbhc
-	9sCWeRS1FNxZK+YraPJ7xRDyAfvTd4ueqeW8b3sv4gx31DwbzD6js7OJkaASgOtVNkpuBUNAlkEYJ
-	rmJwbj1oraIzbVZ5maOIVRH+SyzE9r9kfSlzYZGFk80QTPaTJmT6iGKHHJQUw/n/XvElqn9NIJTiV
-	EppCFwKchF+xq0zKn1lMn5bj4GO13DYQIu/+eYee8BEL4pYIiSxK9LAqPEBY/trbxsDQuX3uqXqxK
-	HcoQq1RlmCrT9+Q/fTabEboANsm/s1B1z93rJOISD/gYpJn4NHzZDDkoenw4Pq9kQfbo60FRnfhk1
-	GknVZDiA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:
+	Content-Type:References:Message-ID:Subject:CC:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=UtnnUUtpRLPE1JKhMifN/g9LnRUjDmKhaP1b8NExrdM=; b=31mPzj01IyAHGUxD7KML+OvZ7U
+	zP3FdD+3bDEHoSO2czn7HV982RVmuM1uXJVLqz2G7HH/31Jl+1D6EBoOT/2KZ3fjDwYlmDGw9ppLO
+	f9bFkTGem5TSW4Tu7NT5yRyR/0ErSWLe7O3Em92QJBFHtUHTLZnt4wbH/ifWg13+Y77Ul/5e3eN6k
+	b/v3dWIPVHXQPYnEls1F7AMBHxhawZ7gA0n6nGHCm8LrBk4D6l76vQ+Upjm6ZxRS4N4aUvWiSw89y
+	Xl78BcKftJo9+z1WQCHNE71uDzogCp272yl6DeX3USl2xbbBPOaJ6AP4ClH/A/HlrQlG7B3nrHp1y
+	kGOdufgQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rzYjM-00000003SbF-0gx1;
-	Wed, 24 Apr 2024 09:15:56 +0000
-Received: from out30-99.freemail.mail.aliyun.com ([115.124.30.99])
+	id 1s06Bp-0000000AAjA-0q5U;
+	Thu, 25 Apr 2024 20:59:33 +0000
+Received: from mgamail.intel.com ([192.198.163.7])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rzYjC-00000003SRM-2fTz
-	for linux-um@lists.infradead.org;
-	Wed, 24 Apr 2024 09:15:51 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1713950141; h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
-	bh=eaZv5SE1uOIfPtEus/qKV6shYDjU+krGNOlpJdEiTn4=;
-	b=ePQV2JSSDYnxkHEED3Zh9ucc0AKkGNPHEwuBLJvzgRN/59eAT5JGatKFtscZNgr9JPfAHY7/IfYTSYguU73xHc2luqYsc2OO40UTkiYYzYjHSzF/LXLbrsERKFCDtMv/f+moZW/iwHfcVSqAJuU+Yi2yxXanFh5xLOKjZtalRVw=
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R351e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033068173054;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=26;SR=0;TI=SMTPD_---0W5BsEoC_1713950138;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W5BsEoC_1713950138)
-          by smtp.aliyun-inc.com;
-          Wed, 24 Apr 2024 17:15:39 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: virtualization@lists.linux.dev
-Cc: Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Hans de Goede <hdegoede@redhat.com>,
-	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Vadim Pasternak <vadimp@nvidia.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>,
-	Cornelia Huck <cohuck@redhat.com>,
-	Halil Pasic <pasic@linux.ibm.com>,
-	Eric Farman <farman@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	David Hildenbrand <david@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	linux-um@lists.infradead.org,
-	platform-driver-x86@vger.kernel.org,
-	linux-remoteproc@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	kvm@vger.kernel.org
-Subject: [PATCH vhost v9 3/6] virtio: find_vqs: pass struct instead of multi parameters
-Date: Wed, 24 Apr 2024 17:15:30 +0800
-Message-Id: <20240424091533.86949-4-xuanzhuo@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0.3.g01195cf9f
-In-Reply-To: <20240424091533.86949-1-xuanzhuo@linux.alibaba.com>
-References: <20240424091533.86949-1-xuanzhuo@linux.alibaba.com>
+	id 1s06Bl-0000000AAhZ-3dsd;
+	Thu, 25 Apr 2024 20:59:31 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714078769; x=1745614769;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=ad6+sb9BGBwAXehYW3z4es0bpiKnw8BSr7KBTi8bx/0=;
+  b=K6sOOoM3D2FF9vwGWQqvw3EkWpTNJLx/BZp0LFIFFE0N0kfEHbQAO2jA
+   gWpgHyQMqot0lHoKS+0/hNYM/+rHQM5s2LNZaSuqc13yf0rdCZJs5WFjM
+   tOTAOdQ3R0EBnkfPyMZxvtDm5WMT5P9Q30BXneFcoD5myfa84D0W6Pv5u
+   D+jjLxZvjPUXL3BEEblKR3bfZGYtfe2IVen7az5nOO4fmSQtScLNR1Iub
+   GJvK0VRgkjslIQEpGayva1jRSESB0jKLCYJapol0m7LHHazbbzADfTG6+
+   HL07PTYoNNw5/+8cSgWxfR2XxdSQ59gSokNXezTj2wONa3HEscsPpe1Pk
+   g==;
+X-CSE-ConnectionGUID: g1MjLaMYT6mvI23l17Uqfw==
+X-CSE-MsgGUID: HTFVdGBvTiOseSwBm9PR0Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11055"; a="35186851"
+X-IronPort-AV: E=Sophos;i="6.07,230,1708416000"; 
+   d="scan'208";a="35186851"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2024 13:59:24 -0700
+X-CSE-ConnectionGUID: rpsyjb1RQUig6bkdj/tEdA==
+X-CSE-MsgGUID: uyPFEYKUR2yVpQFnrkyj2A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,230,1708416000"; 
+   d="scan'208";a="29849700"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orviesa003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 25 Apr 2024 13:59:24 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 25 Apr 2024 13:59:23 -0700
+Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 25 Apr 2024 13:59:23 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 25 Apr 2024 13:59:23 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 25 Apr 2024 13:59:23 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BwkjZJofZXmzYHTqY6R4TPyjeLA9XcGmtqUzDWss/2grK8o6QLtXN4W3Rm8gUlJjK97ZnXkRuEs6zAiZe3tUBQHBVbXefNn13peKXykeBo48O4ysfijlVXrOiCkXkq7vnv81+SsgBSQZXXRM5o6ag/kLA/bHGfE/y1N6sTGoFNfqGtBKAEILVs3U1erttPw7jUKHKjHciUgAoK1LYKc6qk28oSI7qGGAS7k1LKa1wdzqs4kEj1MXN3/yKlINp5dIuC6UfW8r0ie3e05PPckH31J/gRl9TMrwszxfJGCdZaUj2gLgztaWa2S1LoMGc29WHjrpIhgMl0dmcLHzODr0Ag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=UtnnUUtpRLPE1JKhMifN/g9LnRUjDmKhaP1b8NExrdM=;
+ b=TccY8FCswQMqCTj16oSTkc+DNAjJghY/KJdzY01PZ0x5PIKY31oBGZyW4G6hhNh9JavVtOwi/6+zw7EBz/8bx6QI65LS3UfRykx/vFZ4ZnuG3oK4+fDmutm36myYTm2+PdWvbuNIJl9q20JewTXn2L8E7yhype3gukEnxJhDPFFjOLcDtipRChjI2dgXu5bRj5tqvc6lXu9PJk161RKUlyruwpqtFt/ZJKf1dHf7F3imGOQRdYNyMeU8qjbFQRkbMfCgh996cKexaKBGEMUE8fpJEqRvnNLfWnhmZeBaRf+n0EyuFgx1VdAKArzlyXLr1LcJ45rDMgHha3oBUX/eOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
+ by SJ2PR11MB8586.namprd11.prod.outlook.com (2603:10b6:a03:56e::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.22; Thu, 25 Apr
+ 2024 20:59:20 +0000
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::d543:d6c2:6eee:4ec]) by SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::d543:d6c2:6eee:4ec%4]) with mapi id 15.20.7519.020; Thu, 25 Apr 2024
+ 20:59:20 +0000
+Date: Thu, 25 Apr 2024 13:59:09 -0700
+From: Ira Weiny <ira.weiny@intel.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, "Michael S. Tsirkin"
+	<mst@redhat.com>, Jason Wang <jasowang@redhat.com>, Xuan Zhuo
+	<xuanzhuo@linux.alibaba.com>, Jonathan Corbet <corbet@lwn.net>, "David
+ Hildenbrand" <david@redhat.com>, Gerd Hoffmann <kraxel@redhat.com>, "Richard
+ Weinberger" <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>, Paolo Bonzini
+	<pbonzini@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, Jens Axboe
+	<axboe@kernel.dk>, Marcel Holtmann <marcel@holtmann.org>, "Luiz Augusto von
+ Dentz" <luiz.dentz@gmail.com>, Olivia Mackall <olivia@selenic.com>, "Herbert
+ Xu" <herbert@gondor.apana.org.au>, Amit Shah <amit@kernel.org>, Arnd Bergmann
+	<arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Gonglei
+	<arei.gonglei@huawei.com>, "David S. Miller" <davem@davemloft.net>, "Sudeep
+ Holla" <sudeep.holla@arm.com>, Cristian Marussi <cristian.marussi@arm.com>,
+	Viresh Kumar <vireshk@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>, David Airlie <airlied@redhat.com>,
+	Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu <olvaffe@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+	<mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, Daniel Vetter
+	<daniel@ffwll.ch>, Jean-Philippe Brucker <jean-philippe@linaro.org>, "Joerg
+ Roedel" <joro@8bytes.org>, Will Deacon <will@kernel.org>, Robin Murphy
+	<robin.murphy@arm.com>, Alexander Graf <graf@amazon.com>, Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, Eric Van Hensbergen <ericvh@kernel.org>, "Latchesar
+ Ionkov" <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>, Stefano Garzarella
+	<sgarzare@redhat.com>, Kalle Valo <kvalo@kernel.org>, Dan Williams
+	<dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, "Dave
+ Jiang" <dave.jiang@intel.com>, Ira Weiny <ira.weiny@intel.com>, Pankaj Gupta
+	<pankaj.gupta.linux@gmail.com>, Bjorn Andersson <andersson@kernel.org>,
+	Mathieu Poirier <mathieu.poirier@linaro.org>, "James E.J. Bottomley"
+	<jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>,
+	Vivek Goyal <vgoyal@redhat.com>, Miklos Szeredi <miklos@szeredi.hu>, "Anton
+ Yakovlev" <anton.yakovlev@opensynergy.com>, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+CC: <virtualization@lists.linux.dev>, <linux-doc@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-um@lists.infradead.org>,
+	<linux-block@vger.kernel.org>, <linux-bluetooth@vger.kernel.org>,
+	<linux-crypto@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-gpio@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+	<iommu@lists.linux.dev>, <netdev@vger.kernel.org>, <v9fs@lists.linux.dev>,
+	<kvm@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
+	<nvdimm@lists.linux.dev>, <linux-remoteproc@vger.kernel.org>,
+	<linux-scsi@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+	<alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>, "Krzysztof
+ Kozlowski" <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v2 21/25] nvdimm: virtio_pmem: drop owner assignment
+Message-ID: <662ac41d1655a_108a3c294c0@iweiny-mobl.notmuch>
+References: <20240331-module-owner-virtio-v2-0-98f04bfaf46a@linaro.org>
+ <20240331-module-owner-virtio-v2-21-98f04bfaf46a@linaro.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240331-module-owner-virtio-v2-21-98f04bfaf46a@linaro.org>
+X-ClientProxiedBy: BYAPR01CA0039.prod.exchangelabs.com (2603:10b6:a03:94::16)
+ To SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Git-Hash: bdb00f35db89
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|SJ2PR11MB8586:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4a1e0950-9458-48d9-541b-08dc656a93d9
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|1800799015|376005|7416005|366007|921011;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?p4Pyvc1s10sc+1IhRVCgrka7N17JI8shpKV9e+qyo0zoB5fQBt09qhs/sKrY?=
+ =?us-ascii?Q?E2+mMbn2LeGPlwtKggkfSUJWmwlPSZuPRp1J6Jue9X1dR74+/AyxHAjobEH0?=
+ =?us-ascii?Q?WQGt3AiJM9GYXGDc23KiyG9FA6iqGOSXvJT2B7lk4IwKfd1DP2EaCUrlPzje?=
+ =?us-ascii?Q?XDfveANJWNuO9Gy7+XeQLWg7g8nKveuVWNOmnPx3iUgCpFN0A1smk8d7v1Nh?=
+ =?us-ascii?Q?Xkw5QspejlB+puqNeXnYrbMMHqHbyx3FnQ0QTCb5sjPTvK2EulzgN1mzuJCu?=
+ =?us-ascii?Q?asj+PD1MPLZFkKHD3JxdXa1PUxMF1KlGKwEDHSjaI9o8SwCNMSwKUV0kPoF8?=
+ =?us-ascii?Q?UyIsbaV0Q2NenIHOPrPAORzYXPno3jn1sV1OWN9nD6wGugDyScBB24A0UPAK?=
+ =?us-ascii?Q?Xl1Yw7vlZBfnhDOZrVHr4K0mFt/VUqdn5BgKDgmK6s8MSlm7FD+fr0Kg2VCZ?=
+ =?us-ascii?Q?/3H2W0xBSg2+LiHhbRiP63m1gi492rwD21Y/AxuHTfVkZGTRXD7PtcS+R1E2?=
+ =?us-ascii?Q?mg9IquTiLx9NJOXC8xb0SuG+KxgLTpQIQdCz1FegVg8c/85/kQcbhK570UHn?=
+ =?us-ascii?Q?oL4gj815Xf4bdBEhjrtuuMkUA/U0fkMeXSPZ0W+KGHAjwV/Z77LAzIVTdb34?=
+ =?us-ascii?Q?zFwwvW3hmxwch129QmUrtnH0HegY9iikAxAZrI47mteg5YT6xCHcCn+0LAoZ?=
+ =?us-ascii?Q?Vh1uRKxwaYciv5KUAaeopaLjzAdK2UnMAqSl7mFTa2XhHVAcoeW5SZfqQ6mI?=
+ =?us-ascii?Q?Ef9Ou6sjsJRNRMAqlHZDc+BU91w89febeyepipwh2E5j4Y0qQvKnBgInNg4Q?=
+ =?us-ascii?Q?1szmwA78wF7RUHF4mnzHXV+qOOnFPsp4pT9IPyEyk8WfQLYXyU2+G8k3NYYU?=
+ =?us-ascii?Q?LzUiz+kJEaq18cA9QUumZ3x6qZiOVCkytIg9nvY/7JMxRRhGvmNq10pLFS3I?=
+ =?us-ascii?Q?yxU843oCFnMIrPsomQnj9a6XVOxEUAPzV2a8m37ac7p6lFIC0f0nZGTaMdpN?=
+ =?us-ascii?Q?gjBOU9wQgHETI3EP20RewReN6Twd4KRZc6gHju/IVnyFRQG/a0ZdmcLUg589?=
+ =?us-ascii?Q?8DLFAKiGv4W0hJe7AsE3U70wX/MNSh0BCXvsy1nTqn9q2yt5OJrdKmxt2aEG?=
+ =?us-ascii?Q?RLTTyPIf2cnNonmNlnzhsO30KOSG/B0m3e7O6w00kVsw1x6EpKjGnQpue6k/?=
+ =?us-ascii?Q?3FiSlZKerTZdGeDvrR+yvsN/C/wzUXxaWd4u8CT5wDx2mB/F8dxLColXv/2B?=
+ =?us-ascii?Q?O8nhvq2PsisgGZ1csGP9/hKUZNKzSD4fYRrYmZbM+iTXei8aeRxqJZmkiqSY?=
+ =?us-ascii?Q?p7ccIMK+w/ETQCT56Po+IwHc?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(7416005)(366007)(921011);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?wsgct7QwEtK35653A630MZZbe6OGEV6cvtUwSO58Z1F4ZjIxu8O/C3XQG/oy?=
+ =?us-ascii?Q?k/U3l3549wv24vu4Vn5YpLE/1R7HZd6yFj3K8xZunc5DwDNSqOoTnbZZWH2r?=
+ =?us-ascii?Q?9/u9Anm4StTkF6qIoUQuWF/Ok7zggCKO6Mkcc6Nbf+JYqkc4NW6YpVlAvNkZ?=
+ =?us-ascii?Q?Z8J39CEZFlKD1P6iFpxIr7NdSpW6rbdV6kqpsjhLzzMD7d03nvQdfd558bPn?=
+ =?us-ascii?Q?JOtIpqweL4Yp5UnYGXXPGkn2XosYvlK9obqtRSuwLHpvkTazk8L7RFL4gvTS?=
+ =?us-ascii?Q?r2822/0umLruRmyU5zMrMiExe6kpLm5NH/bCiLz+mb3qRH5B2e6RfKps4CX0?=
+ =?us-ascii?Q?cz8Q7s2FU7+YeBts744pBuioAihe7xZ2jC4U6mLqhKpLH+fEz55MoYeHsWot?=
+ =?us-ascii?Q?3phklxO5JZmIs54B26n76OOFdj4UqEEZxkGn7QPEoJBSfbpyklYcuik8y3RG?=
+ =?us-ascii?Q?6AvDNcI4ICU3LJ4VMY5cSZhpey4npddVqOPdiKKsOgqE+2Enxo23RpSwdlzG?=
+ =?us-ascii?Q?SCvHVf1vTDtOudUyrZolDF3tVPDZ5Bt1UsvJme9ckKVwO0GF/g+uooeprli6?=
+ =?us-ascii?Q?e8tnPUkhMSH9a5wmPiaoKCxuOnftMSRFgyE1cRMudoUwEM3UoIUAO8pu0Ne+?=
+ =?us-ascii?Q?iZkGaYiEmTY60BOHtguH5Iyu/75zXnd6s8PBaBlsa11hyyB/cpfVoeTo6Rnw?=
+ =?us-ascii?Q?p+0gX+vv4uzPytF+Q4oUTPDmxA4tImSFm3y7GH4QmMf6RpAVbBDuEMUYMM1E?=
+ =?us-ascii?Q?X7J3ZLS5CXgP+Yci6/COyMUgiqQiahNxfoTjBOxdkj1/HhKr0UfCPkwPweh7?=
+ =?us-ascii?Q?4Te3N0yxJY/yB0Ica2AePGO0ifByjOEH211v0P6jblkpSGCdC4q1PDnw68zM?=
+ =?us-ascii?Q?dFxDVNBShwQd8XwctHY07gYzecJsGLApVnXVnH2aJ7J94uU/iMtGA/Be2zGe?=
+ =?us-ascii?Q?4rHSo5GpPtqrm4lvw7yN420p7GFaiJR+DjLgaMX6pVhFXYChGvk1Se2qlMcH?=
+ =?us-ascii?Q?orXZmmAam0Io/XqqIReWh4DBg7uXkHQW2pbO3RqCGbeFO9+OsTBH6/3PGpvv?=
+ =?us-ascii?Q?NkKapXF/nYaZ4KoBzwmA2W0LjG7dgTvo1emYmZ8NM1BihO3K1qHbPOSdBF5n?=
+ =?us-ascii?Q?7iL/9m5JQacbQIGvpprGmc/b0drCTmhB12TGqeVntk59CuZh66N5BRGQaX6v?=
+ =?us-ascii?Q?B4IsB60HU9xFc6B5RquFclB43lTkiTI/jYxtZFBs2w7se2XR/7i7pitm+HwD?=
+ =?us-ascii?Q?+HhjfxciHg7FRXDQH1j8EYOYnlWGd3oIqoudOoBiQaVhblKR3XEeJ2piNVWZ?=
+ =?us-ascii?Q?wIrVdxzdN3iUGh/3TCwCYq5a3uJOVvZuYwoP6tgG/Y4TT4YDIeEEWsIEa4v4?=
+ =?us-ascii?Q?Qn8HUIgJat4puxTyG78/wKuyCBj/tY5GTO1D5k+w2mlHatjA/GveypbBn7Dy?=
+ =?us-ascii?Q?5Hbdn2EGydBcORjF9HoPyIEN3Zc0MTZlmS9Zz138CGq0ze9X+c+zWWpTZSFU?=
+ =?us-ascii?Q?4Xzm9KH6bCV05PLlC9L8gxl43enHlypa+H6a2tOEeUxslfEjaqpFeQQlIoNP?=
+ =?us-ascii?Q?BvYLfmniArrPmDLga8Wojh+vlOeQjwwu5vbMg2N+?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a1e0950-9458-48d9-541b-08dc656a93d9
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2024 20:59:20.2948
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: px3Eb8ILOwKiaQoVN8oktVBLNHHqIyrhbL4GczJuNngr6LtPzi8db4gjyL2OGxCp8pY2FlscDiwIlQqVIPv2wg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB8586
+X-OriginatorOrg: intel.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240424_021547_086562_2CFC0AC5 
-X-CRM114-Status: GOOD (  18.07  )
+X-CRM114-CacheID: sfid-20240425_135929_985308_907714BE 
+X-CRM114-Status: GOOD (  17.81  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,859 +234,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Now, we pass multi parameters to find_vqs. These parameters
-may work for transport or work for vring.
+Krzysztof Kozlowski wrote:
+> virtio core already sets the .owner, so driver does not need to.
+> 
+> Acked-by: Dave Jiang <dave.jiang@intel.com>
 
-And find_vqs has multi implements in many places:
+Acked-by: Ira Weiny <ira.weiny@intel.com>
 
- arch/um/drivers/virtio_uml.c
- drivers/platform/mellanox/mlxbf-tmfifo.c
- drivers/remoteproc/remoteproc_virtio.c
- drivers/s390/virtio/virtio_ccw.c
- drivers/virtio/virtio_mmio.c
- drivers/virtio/virtio_pci_legacy.c
- drivers/virtio/virtio_pci_modern.c
- drivers/virtio/virtio_vdpa.c
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+> 
+> Depends on the first patch.
+> ---
+>  drivers/nvdimm/virtio_pmem.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/nvdimm/virtio_pmem.c b/drivers/nvdimm/virtio_pmem.c
+> index 4ceced5cefcf..c9b97aeabf85 100644
+> --- a/drivers/nvdimm/virtio_pmem.c
+> +++ b/drivers/nvdimm/virtio_pmem.c
+> @@ -151,7 +151,6 @@ static struct virtio_driver virtio_pmem_driver = {
+>  	.feature_table		= features,
+>  	.feature_table_size	= ARRAY_SIZE(features),
+>  	.driver.name		= KBUILD_MODNAME,
+> -	.driver.owner		= THIS_MODULE,
+>  	.id_table		= id_table,
+>  	.validate		= virtio_pmem_validate,
+>  	.probe			= virtio_pmem_probe,
+> 
+> -- 
+> 2.34.1
+> 
 
-Every time, we try to add a new parameter, that is difficult.
-We must change every find_vqs implement.
-
-One the other side, if we want to pass a parameter to vring,
-we must change the call path from transport to vring.
-Too many functions need to be changed.
-
-So it is time to refactor the find_vqs. We pass a structure
-cfg to find_vqs(), that will be passed to vring by transport.
-
-Because the vp_modern_create_avq() use the "const char *names[]",
-and the virtio_uml.c changes the name in the subsequent commit, so
-change the "names" inside the virtio_vq_config from "const char *const
-*names" to "const char **names".
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Johannes Berg <johannes@sipsolutions.net>
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
-Acked-by: Eric Farman <farman@linux.ibm.com> # s390
-Acked-by: Halil Pasic <pasic@linux.ibm.com>
----
- arch/um/drivers/virtio_uml.c             | 22 +++----
- drivers/platform/mellanox/mlxbf-tmfifo.c | 13 ++--
- drivers/remoteproc/remoteproc_virtio.c   | 25 ++++----
- drivers/s390/virtio/virtio_ccw.c         | 28 ++++-----
- drivers/virtio/virtio_mmio.c             | 23 ++++---
- drivers/virtio/virtio_pci_common.c       | 57 ++++++++----------
- drivers/virtio/virtio_pci_common.h       |  9 +--
- drivers/virtio/virtio_pci_legacy.c       | 11 ++--
- drivers/virtio/virtio_pci_modern.c       | 32 ++++++----
- drivers/virtio/virtio_vdpa.c             | 33 +++++-----
- include/linux/virtio_config.h            | 76 ++++++++++++++++++------
- 11 files changed, 175 insertions(+), 154 deletions(-)
-
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index 773f9fc4d582..adc619362cc0 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -937,8 +937,8 @@ static int vu_setup_vq_call_fd(struct virtio_uml_device *vu_dev,
- }
- 
- static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
--				     unsigned index, vq_callback_t *callback,
--				     const char *name, bool ctx)
-+				     unsigned index,
-+				     struct virtio_vq_config *cfg)
- {
- 	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
- 	struct platform_device *pdev = vu_dev->pdev;
-@@ -953,10 +953,12 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
- 		goto error_kzalloc;
- 	}
- 	snprintf(info->name, sizeof(info->name), "%s.%d-%s", pdev->name,
--		 pdev->id, name);
-+		 pdev->id, cfg->names[index]);
- 
- 	vq = vring_create_virtqueue(index, num, PAGE_SIZE, vdev, true, true,
--				    ctx, vu_notify, callback, info->name);
-+				    cfg->ctx ? cfg->ctx[index] : false,
-+				    vu_notify,
-+				    cfg->callbacks[index], info->name);
- 	if (!vq) {
- 		rc = -ENOMEM;
- 		goto error_create;
-@@ -1013,12 +1015,11 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
- 	return ERR_PTR(rc);
- }
- 
--static int vu_find_vqs(struct virtio_device *vdev, unsigned nvqs,
--		       struct virtqueue *vqs[], vq_callback_t *callbacks[],
--		       const char * const names[], const bool *ctx,
--		       struct irq_affinity *desc)
-+static int vu_find_vqs(struct virtio_device *vdev, struct virtio_vq_config *cfg)
- {
- 	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
-+	struct virtqueue **vqs = cfg->vqs;
-+	unsigned int nvqs = cfg->nvqs;
- 	struct virtqueue *vq;
- 	int i, rc;
- 
-@@ -1031,13 +1032,12 @@ static int vu_find_vqs(struct virtio_device *vdev, unsigned nvqs,
- 		return rc;
- 
- 	for (i = 0; i < nvqs; ++i) {
--		if (!names[i]) {
-+		if (!cfg->names[i]) {
- 			rc = -EINVAL;
- 			goto error_setup;
- 		}
- 
--		vqs[i] = vu_setup_vq(vdev, i, callbacks[i], names[i],
--				     ctx ? ctx[i] : false);
-+		vqs[i] = vu_setup_vq(vdev, i, cfg);
- 		if (IS_ERR(vqs[i])) {
- 			rc = PTR_ERR(vqs[i]);
- 			goto error_setup;
-diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
-index b8d1e32e97eb..4252388f52a2 100644
---- a/drivers/platform/mellanox/mlxbf-tmfifo.c
-+++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
-@@ -1056,15 +1056,12 @@ static void mlxbf_tmfifo_virtio_del_vqs(struct virtio_device *vdev)
- 
- /* Create and initialize the virtual queues. */
- static int mlxbf_tmfifo_virtio_find_vqs(struct virtio_device *vdev,
--					unsigned int nvqs,
--					struct virtqueue *vqs[],
--					vq_callback_t *callbacks[],
--					const char * const names[],
--					const bool *ctx,
--					struct irq_affinity *desc)
-+					struct virtio_vq_config *cfg)
- {
- 	struct mlxbf_tmfifo_vdev *tm_vdev = mlxbf_vdev_to_tmfifo(vdev);
-+	struct virtqueue **vqs = cfg->vqs;
- 	struct mlxbf_tmfifo_vring *vring;
-+	unsigned int nvqs = cfg->nvqs;
- 	struct virtqueue *vq;
- 	int i, ret, size;
- 
-@@ -1072,7 +1069,7 @@ static int mlxbf_tmfifo_virtio_find_vqs(struct virtio_device *vdev,
- 		return -EINVAL;
- 
- 	for (i = 0; i < nvqs; ++i) {
--		if (!names[i]) {
-+		if (!cfg->names[i]) {
- 			ret = -EINVAL;
- 			goto error;
- 		}
-@@ -1084,7 +1081,7 @@ static int mlxbf_tmfifo_virtio_find_vqs(struct virtio_device *vdev,
- 		vq = vring_new_virtqueue(i, vring->num, vring->align, vdev,
- 					 false, false, vring->va,
- 					 mlxbf_tmfifo_virtio_notify,
--					 callbacks[i], names[i]);
-+					 cfg->callbacks[i], cfg->names[i]);
- 		if (!vq) {
- 			dev_err(&vdev->dev, "vring_new_virtqueue failed\n");
- 			ret = -ENOMEM;
-diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
-index 7f58634fcc41..bbde11287f8a 100644
---- a/drivers/remoteproc/remoteproc_virtio.c
-+++ b/drivers/remoteproc/remoteproc_virtio.c
-@@ -102,8 +102,7 @@ EXPORT_SYMBOL(rproc_vq_interrupt);
- 
- static struct virtqueue *rp_find_vq(struct virtio_device *vdev,
- 				    unsigned int id,
--				    void (*callback)(struct virtqueue *vq),
--				    const char *name, bool ctx)
-+				    struct virtio_vq_config *cfg)
- {
- 	struct rproc_vdev *rvdev = vdev_to_rvdev(vdev);
- 	struct rproc *rproc = vdev_to_rproc(vdev);
-@@ -140,10 +139,12 @@ static struct virtqueue *rp_find_vq(struct virtio_device *vdev,
- 	 * Create the new vq, and tell virtio we're not interested in
- 	 * the 'weak' smp barriers, since we're talking with a real device.
- 	 */
--	vq = vring_new_virtqueue(id, num, rvring->align, vdev, false, ctx,
--				 addr, rproc_virtio_notify, callback, name);
-+	vq = vring_new_virtqueue(id, num, rvring->align, vdev, false,
-+				 cfg->ctx ? cfg->ctx[id] : false,
-+				 addr, rproc_virtio_notify, cfg->callbacks[id],
-+				 cfg->names[id]);
- 	if (!vq) {
--		dev_err(dev, "vring_new_virtqueue %s failed\n", name);
-+		dev_err(dev, "vring_new_virtqueue %s failed\n", cfg->names[id]);
- 		rproc_free_vring(rvring);
- 		return ERR_PTR(-ENOMEM);
- 	}
-@@ -177,23 +178,19 @@ static void rproc_virtio_del_vqs(struct virtio_device *vdev)
- 	__rproc_virtio_del_vqs(vdev);
- }
- 
--static int rproc_virtio_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
--				 struct virtqueue *vqs[],
--				 vq_callback_t *callbacks[],
--				 const char * const names[],
--				 const bool * ctx,
--				 struct irq_affinity *desc)
-+static int rproc_virtio_find_vqs(struct virtio_device *vdev, struct virtio_vq_config *cfg)
- {
-+	struct virtqueue **vqs = cfg->vqs;
-+	unsigned int nvqs = cfg->nvqs;
- 	int i, ret;
- 
- 	for (i = 0; i < nvqs; ++i) {
--		if (!names[i]) {
-+		if (!cfg->names[i]) {
- 			ret = -EINVAL;
- 			goto error;
- 		}
- 
--		vqs[i] = rp_find_vq(vdev, i, callbacks[i], names[i],
--				    ctx ? ctx[i] : false);
-+		vqs[i] = rp_find_vq(vdev, i, cfg);
- 		if (IS_ERR(vqs[i])) {
- 			ret = PTR_ERR(vqs[i]);
- 			goto error;
-diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
-index 6cdd29952bc0..4d94d20b253a 100644
---- a/drivers/s390/virtio/virtio_ccw.c
-+++ b/drivers/s390/virtio/virtio_ccw.c
-@@ -536,9 +536,8 @@ static void virtio_ccw_del_vqs(struct virtio_device *vdev)
- }
- 
- static struct virtqueue *virtio_ccw_setup_vq(struct virtio_device *vdev,
--					     int i, vq_callback_t *callback,
--					     const char *name, bool ctx,
--					     struct ccw1 *ccw)
-+					     int i, struct ccw1 *ccw,
-+					     struct virtio_vq_config *cfg)
- {
- 	struct virtio_ccw_device *vcdev = to_vc_device(vdev);
- 	bool (*notify)(struct virtqueue *vq);
-@@ -576,8 +575,11 @@ static struct virtqueue *virtio_ccw_setup_vq(struct virtio_device *vdev,
- 	}
- 	may_reduce = vcdev->revision > 0;
- 	vq = vring_create_virtqueue(i, info->num, KVM_VIRTIO_CCW_RING_ALIGN,
--				    vdev, true, may_reduce, ctx,
--				    notify, callback, name);
-+				    vdev, true, may_reduce,
-+				    cfg->ctx ? cfg->ctx[i] : false,
-+				    notify,
-+				    cfg->callbacks[i],
-+				    cfg->names[i]);
- 
- 	if (!vq) {
- 		/* For now, we fail if we can't get the requested size. */
-@@ -687,14 +689,12 @@ static int virtio_ccw_register_adapter_ind(struct virtio_ccw_device *vcdev,
- 	return ret;
- }
- 
--static int virtio_ccw_find_vqs(struct virtio_device *vdev, unsigned nvqs,
--			       struct virtqueue *vqs[],
--			       vq_callback_t *callbacks[],
--			       const char * const names[],
--			       const bool *ctx,
--			       struct irq_affinity *desc)
-+static int virtio_ccw_find_vqs(struct virtio_device *vdev,
-+			       struct virtio_vq_config *cfg)
- {
- 	struct virtio_ccw_device *vcdev = to_vc_device(vdev);
-+	struct virtqueue **vqs = cfg->vqs;
-+	unsigned int nvqs = cfg->nvqs;
- 	dma64_t *indicatorp = NULL;
- 	int ret, i;
- 	struct ccw1 *ccw;
-@@ -704,14 +704,12 @@ static int virtio_ccw_find_vqs(struct virtio_device *vdev, unsigned nvqs,
- 		return -ENOMEM;
- 
- 	for (i = 0; i < nvqs; ++i) {
--		if (!names[i]) {
-+		if (!cfg->names[i]) {
- 			ret = -EINVAL;
- 			goto out;
- 		}
- 
--		vqs[i] = virtio_ccw_setup_vq(vdev, i, callbacks[i],
--					     names[i], ctx ? ctx[i] : false,
--					     ccw);
-+		vqs[i] = virtio_ccw_setup_vq(vdev, i, ccw, cfg);
- 		if (IS_ERR(vqs[i])) {
- 			ret = PTR_ERR(vqs[i]);
- 			vqs[i] = NULL;
-diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
-index c3c8dd282952..4ebb28b6b0ec 100644
---- a/drivers/virtio/virtio_mmio.c
-+++ b/drivers/virtio/virtio_mmio.c
-@@ -370,8 +370,7 @@ static void vm_synchronize_cbs(struct virtio_device *vdev)
- }
- 
- static struct virtqueue *vm_setup_vq(struct virtio_device *vdev, unsigned int index,
--				  void (*callback)(struct virtqueue *vq),
--				  const char *name, bool ctx)
-+				     struct virtio_vq_config *cfg)
- {
- 	struct virtio_mmio_device *vm_dev = to_virtio_mmio_device(vdev);
- 	bool (*notify)(struct virtqueue *vq);
-@@ -411,7 +410,11 @@ static struct virtqueue *vm_setup_vq(struct virtio_device *vdev, unsigned int in
- 
- 	/* Create the vring */
- 	vq = vring_create_virtqueue(index, num, VIRTIO_MMIO_VRING_ALIGN, vdev,
--				 true, true, ctx, notify, callback, name);
-+				    true, true,
-+				    cfg->ctx ? cfg->ctx[index] : false,
-+				    notify,
-+				    cfg->callbacks[index],
-+				    cfg->names[index]);
- 	if (!vq) {
- 		err = -ENOMEM;
- 		goto error_new_virtqueue;
-@@ -484,15 +487,12 @@ static struct virtqueue *vm_setup_vq(struct virtio_device *vdev, unsigned int in
- 	return ERR_PTR(err);
- }
- 
--static int vm_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
--		       struct virtqueue *vqs[],
--		       vq_callback_t *callbacks[],
--		       const char * const names[],
--		       const bool *ctx,
--		       struct irq_affinity *desc)
-+static int vm_find_vqs(struct virtio_device *vdev, struct virtio_vq_config *cfg)
- {
- 	struct virtio_mmio_device *vm_dev = to_virtio_mmio_device(vdev);
- 	int irq = platform_get_irq(vm_dev->pdev, 0);
-+	struct virtqueue **vqs = cfg->vqs;
-+	unsigned int nvqs = cfg->nvqs;
- 	int i, err;
- 
- 	if (irq < 0)
-@@ -507,13 +507,12 @@ static int vm_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
- 		enable_irq_wake(irq);
- 
- 	for (i = 0; i < nvqs; ++i) {
--		if (!names[i]) {
-+		if (!cfg->names[i]) {
- 			vm_del_vqs(vdev);
- 			return -EINVAL;
- 		}
- 
--		vqs[i] = vm_setup_vq(vdev, i, callbacks[i], names[i],
--				     ctx ? ctx[i] : false);
-+		vqs[i] = vm_setup_vq(vdev, i, cfg);
- 		if (IS_ERR(vqs[i])) {
- 			vm_del_vqs(vdev);
- 			return PTR_ERR(vqs[i]);
-diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
-index eda71c6e87ee..cb2776e3d0e1 100644
---- a/drivers/virtio/virtio_pci_common.c
-+++ b/drivers/virtio/virtio_pci_common.c
-@@ -172,9 +172,7 @@ static int vp_request_msix_vectors(struct virtio_device *vdev, int nvectors,
- }
- 
- static struct virtqueue *vp_setup_vq(struct virtio_device *vdev, unsigned int index,
--				     void (*callback)(struct virtqueue *vq),
--				     const char *name,
--				     bool ctx,
-+				     struct virtio_vq_config *cfg,
- 				     u16 msix_vec)
- {
- 	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
-@@ -186,13 +184,12 @@ static struct virtqueue *vp_setup_vq(struct virtio_device *vdev, unsigned int in
- 	if (!info)
- 		return ERR_PTR(-ENOMEM);
- 
--	vq = vp_dev->setup_vq(vp_dev, info, index, callback, name, ctx,
--			      msix_vec);
-+	vq = vp_dev->setup_vq(vp_dev, info, index, cfg, msix_vec);
- 	if (IS_ERR(vq))
- 		goto out_info;
- 
- 	info->vq = vq;
--	if (callback) {
-+	if (cfg->callbacks[index]) {
- 		spin_lock_irqsave(&vp_dev->lock, flags);
- 		list_add(&info->node, &vp_dev->virtqueues);
- 		spin_unlock_irqrestore(&vp_dev->lock, flags);
-@@ -284,15 +281,15 @@ void vp_del_vqs(struct virtio_device *vdev)
- 	vp_dev->vqs = NULL;
- }
- 
--static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned int nvqs,
--		struct virtqueue *vqs[], vq_callback_t *callbacks[],
--		const char * const names[], bool per_vq_vectors,
--		const bool *ctx,
--		struct irq_affinity *desc)
-+static int vp_find_vqs_msix(struct virtio_device *vdev,
-+			    struct virtio_vq_config *cfg,
-+			    bool per_vq_vectors)
- {
- 	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
- 	u16 msix_vec;
- 	int i, err, nvectors, allocated_vectors;
-+	struct virtqueue **vqs = cfg->vqs;
-+	unsigned int nvqs = cfg->nvqs;
- 
- 	vp_dev->vqs = kcalloc(nvqs, sizeof(*vp_dev->vqs), GFP_KERNEL);
- 	if (!vp_dev->vqs)
-@@ -302,7 +299,7 @@ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned int nvqs,
- 		/* Best option: one for change interrupt, one per vq. */
- 		nvectors = 1;
- 		for (i = 0; i < nvqs; ++i)
--			if (callbacks[i])
-+			if (cfg->callbacks[i])
- 				++nvectors;
- 	} else {
- 		/* Second best: one for change, shared for all vqs. */
-@@ -310,27 +307,26 @@ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned int nvqs,
- 	}
- 
- 	err = vp_request_msix_vectors(vdev, nvectors, per_vq_vectors,
--				      per_vq_vectors ? desc : NULL);
-+				      per_vq_vectors ? cfg->desc : NULL);
- 	if (err)
- 		goto error_find;
- 
- 	vp_dev->per_vq_vectors = per_vq_vectors;
- 	allocated_vectors = vp_dev->msix_used_vectors;
- 	for (i = 0; i < nvqs; ++i) {
--		if (!names[i]) {
-+		if (!cfg->names[i]) {
- 			err = -EINVAL;
- 			goto error_find;
- 		}
- 
--		if (!callbacks[i])
-+		if (!cfg->callbacks[i])
- 			msix_vec = VIRTIO_MSI_NO_VECTOR;
- 		else if (vp_dev->per_vq_vectors)
- 			msix_vec = allocated_vectors++;
- 		else
- 			msix_vec = VP_MSIX_VQ_VECTOR;
--		vqs[i] = vp_setup_vq(vdev, i, callbacks[i], names[i],
--				     ctx ? ctx[i] : false,
--				     msix_vec);
-+
-+		vqs[i] = vp_setup_vq(vdev, i, cfg, msix_vec);
- 		if (IS_ERR(vqs[i])) {
- 			err = PTR_ERR(vqs[i]);
- 			goto error_find;
-@@ -343,7 +339,7 @@ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned int nvqs,
- 		snprintf(vp_dev->msix_names[msix_vec],
- 			 sizeof *vp_dev->msix_names,
- 			 "%s-%s",
--			 dev_name(&vp_dev->vdev.dev), names[i]);
-+			 dev_name(&vp_dev->vdev.dev), cfg->names[i]);
- 		err = request_irq(pci_irq_vector(vp_dev->pci_dev, msix_vec),
- 				  vring_interrupt, 0,
- 				  vp_dev->msix_names[msix_vec],
-@@ -358,11 +354,11 @@ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned int nvqs,
- 	return err;
- }
- 
--static int vp_find_vqs_intx(struct virtio_device *vdev, unsigned int nvqs,
--		struct virtqueue *vqs[], vq_callback_t *callbacks[],
--		const char * const names[], const bool *ctx)
-+static int vp_find_vqs_intx(struct virtio_device *vdev, struct virtio_vq_config *cfg)
- {
- 	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
-+	struct virtqueue **vqs = cfg->vqs;
-+	unsigned int nvqs = cfg->nvqs;
- 	int i, err;
- 
- 	vp_dev->vqs = kcalloc(nvqs, sizeof(*vp_dev->vqs), GFP_KERNEL);
-@@ -377,13 +373,11 @@ static int vp_find_vqs_intx(struct virtio_device *vdev, unsigned int nvqs,
- 	vp_dev->intx_enabled = 1;
- 	vp_dev->per_vq_vectors = false;
- 	for (i = 0; i < nvqs; ++i) {
--		if (!names[i]) {
-+		if (!cfg->names[i]) {
- 			err = -EINVAL;
- 			goto out_del_vqs;
- 		}
--		vqs[i] = vp_setup_vq(vdev, i, callbacks[i], names[i],
--				     ctx ? ctx[i] : false,
--				     VIRTIO_MSI_NO_VECTOR);
-+		vqs[i] = vp_setup_vq(vdev, i, cfg, VIRTIO_MSI_NO_VECTOR);
- 		if (IS_ERR(vqs[i])) {
- 			err = PTR_ERR(vqs[i]);
- 			goto out_del_vqs;
-@@ -397,26 +391,23 @@ static int vp_find_vqs_intx(struct virtio_device *vdev, unsigned int nvqs,
- }
- 
- /* the config->find_vqs() implementation */
--int vp_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
--		struct virtqueue *vqs[], vq_callback_t *callbacks[],
--		const char * const names[], const bool *ctx,
--		struct irq_affinity *desc)
-+int vp_find_vqs(struct virtio_device *vdev, struct virtio_vq_config *cfg)
- {
- 	int err;
- 
- 	/* Try MSI-X with one vector per queue. */
--	err = vp_find_vqs_msix(vdev, nvqs, vqs, callbacks, names, true, ctx, desc);
-+	err = vp_find_vqs_msix(vdev, cfg, true);
- 	if (!err)
- 		return 0;
- 	/* Fallback: MSI-X with one vector for config, one shared for queues. */
--	err = vp_find_vqs_msix(vdev, nvqs, vqs, callbacks, names, false, ctx, desc);
-+	err = vp_find_vqs_msix(vdev, cfg, false);
- 	if (!err)
- 		return 0;
- 	/* Is there an interrupt? If not give up. */
- 	if (!(to_vp_device(vdev)->pci_dev->irq))
- 		return err;
- 	/* Finally fall back to regular interrupts. */
--	return vp_find_vqs_intx(vdev, nvqs, vqs, callbacks, names, ctx);
-+	return vp_find_vqs_intx(vdev, cfg);
- }
- 
- const char *vp_bus_name(struct virtio_device *vdev)
-diff --git a/drivers/virtio/virtio_pci_common.h b/drivers/virtio/virtio_pci_common.h
-index 7fef52bee455..5ba8b82fb765 100644
---- a/drivers/virtio/virtio_pci_common.h
-+++ b/drivers/virtio/virtio_pci_common.h
-@@ -95,9 +95,7 @@ struct virtio_pci_device {
- 	struct virtqueue *(*setup_vq)(struct virtio_pci_device *vp_dev,
- 				      struct virtio_pci_vq_info *info,
- 				      unsigned int idx,
--				      void (*callback)(struct virtqueue *vq),
--				      const char *name,
--				      bool ctx,
-+				      struct virtio_vq_config *vq_cfg,
- 				      u16 msix_vec);
- 	void (*del_vq)(struct virtio_pci_vq_info *info);
- 
-@@ -126,10 +124,7 @@ bool vp_notify(struct virtqueue *vq);
- /* the config->del_vqs() implementation */
- void vp_del_vqs(struct virtio_device *vdev);
- /* the config->find_vqs() implementation */
--int vp_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
--		struct virtqueue *vqs[], vq_callback_t *callbacks[],
--		const char * const names[], const bool *ctx,
--		struct irq_affinity *desc);
-+int vp_find_vqs(struct virtio_device *vdev, struct virtio_vq_config *cfg);
- const char *vp_bus_name(struct virtio_device *vdev);
- 
- /* Setup the affinity for a virtqueue:
-diff --git a/drivers/virtio/virtio_pci_legacy.c b/drivers/virtio/virtio_pci_legacy.c
-index d9cbb02b35a1..a8de653dd7a7 100644
---- a/drivers/virtio/virtio_pci_legacy.c
-+++ b/drivers/virtio/virtio_pci_legacy.c
-@@ -110,9 +110,7 @@ static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vector)
- static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 				  struct virtio_pci_vq_info *info,
- 				  unsigned int index,
--				  void (*callback)(struct virtqueue *vq),
--				  const char *name,
--				  bool ctx,
-+				  struct virtio_vq_config *cfg,
- 				  u16 msix_vec)
- {
- 	struct virtqueue *vq;
-@@ -130,8 +128,11 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 	/* create the vring */
- 	vq = vring_create_virtqueue(index, num,
- 				    VIRTIO_PCI_VRING_ALIGN, &vp_dev->vdev,
--				    true, false, ctx,
--				    vp_notify, callback, name);
-+				    true, false,
-+				    cfg->ctx ? cfg->ctx[index] : false,
-+				    vp_notify,
-+				    cfg->callbacks[index],
-+				    cfg->names[index]);
- 	if (!vq)
- 		return ERR_PTR(-ENOMEM);
- 
-diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
-index f62b530aa3b5..bcb829ffec64 100644
---- a/drivers/virtio/virtio_pci_modern.c
-+++ b/drivers/virtio/virtio_pci_modern.c
-@@ -530,9 +530,7 @@ static bool vp_notify_with_data(struct virtqueue *vq)
- static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 				  struct virtio_pci_vq_info *info,
- 				  unsigned int index,
--				  void (*callback)(struct virtqueue *vq),
--				  const char *name,
--				  bool ctx,
-+				  struct virtio_vq_config *cfg,
- 				  u16 msix_vec)
- {
- 
-@@ -563,8 +561,11 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 	/* create the vring */
- 	vq = vring_create_virtqueue(index, num,
- 				    SMP_CACHE_BYTES, &vp_dev->vdev,
--				    true, true, ctx,
--				    notify, callback, name);
-+				    true, true,
-+				    cfg->ctx ? cfg->ctx[index] : false,
-+				    notify,
-+				    cfg->callbacks[index],
-+				    cfg->names[index]);
- 	if (!vq)
- 		return ERR_PTR(-ENOMEM);
- 
-@@ -593,15 +594,11 @@ static struct virtqueue *setup_vq(struct virtio_pci_device *vp_dev,
- 	return ERR_PTR(err);
- }
- 
--static int vp_modern_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
--			      struct virtqueue *vqs[],
--			      vq_callback_t *callbacks[],
--			      const char * const names[], const bool *ctx,
--			      struct irq_affinity *desc)
-+static int vp_modern_find_vqs(struct virtio_device *vdev, struct virtio_vq_config *cfg)
- {
- 	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
- 	struct virtqueue *vq;
--	int rc = vp_find_vqs(vdev, nvqs, vqs, callbacks, names, ctx, desc);
-+	int rc = vp_find_vqs(vdev, cfg);
- 
- 	if (rc)
- 		return rc;
-@@ -739,10 +736,17 @@ static bool vp_get_shm_region(struct virtio_device *vdev,
- static int vp_modern_create_avq(struct virtio_device *vdev)
- {
- 	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
-+	vq_callback_t *callbacks[] = { NULL };
-+	struct virtio_vq_config cfg = {};
- 	struct virtio_pci_admin_vq *avq;
- 	struct virtqueue *vq;
-+	const char *names[1];
- 	u16 admin_q_num;
- 
-+	cfg.nvqs = 1;
-+	cfg.callbacks = callbacks;
-+	cfg.names = names;
-+
- 	if (!virtio_has_feature(vdev, VIRTIO_F_ADMIN_VQ))
- 		return 0;
- 
-@@ -753,8 +757,10 @@ static int vp_modern_create_avq(struct virtio_device *vdev)
- 	avq = &vp_dev->admin_vq;
- 	avq->vq_index = vp_modern_avq_index(&vp_dev->mdev);
- 	sprintf(avq->name, "avq.%u", avq->vq_index);
--	vq = vp_dev->setup_vq(vp_dev, &vp_dev->admin_vq.info, avq->vq_index, NULL,
--			      avq->name, NULL, VIRTIO_MSI_NO_VECTOR);
-+
-+	cfg.names[0] = avq->name;
-+	vq = vp_dev->setup_vq(vp_dev, &vp_dev->admin_vq.info, avq->vq_index,
-+			      &cfg, VIRTIO_MSI_NO_VECTOR);
- 	if (IS_ERR(vq)) {
- 		dev_err(&vdev->dev, "failed to setup admin virtqueue, err=%ld",
- 			PTR_ERR(vq));
-diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
-index e82cca24d6e6..6e7aafb42100 100644
---- a/drivers/virtio/virtio_vdpa.c
-+++ b/drivers/virtio/virtio_vdpa.c
-@@ -142,8 +142,7 @@ static irqreturn_t virtio_vdpa_virtqueue_cb(void *private)
- 
- static struct virtqueue *
- virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
--		     void (*callback)(struct virtqueue *vq),
--		     const char *name, bool ctx)
-+		     struct virtio_vq_config *cfg)
- {
- 	struct virtio_vdpa_device *vd_dev = to_virtio_vdpa_device(vdev);
- 	struct vdpa_device *vdpa = vd_get_vdpa(vdev);
-@@ -203,8 +202,12 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
- 	else
- 		dma_dev = vdpa_get_dma_dev(vdpa);
- 	vq = vring_create_virtqueue_dma(index, max_num, align, vdev,
--					true, may_reduce_num, ctx,
--					notify, callback, name, dma_dev);
-+					true, may_reduce_num,
-+					cfg->ctx ? cfg->ctx[index] : false,
-+					notify,
-+					cfg->callbacks[index],
-+					cfg->names[index],
-+					dma_dev);
- 	if (!vq) {
- 		err = -ENOMEM;
- 		goto error_new_virtqueue;
-@@ -213,7 +216,7 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
- 	vq->num_max = max_num;
- 
- 	/* Setup virtqueue callback */
--	cb.callback = callback ? virtio_vdpa_virtqueue_cb : NULL;
-+	cb.callback = cfg->callbacks[index] ? virtio_vdpa_virtqueue_cb : NULL;
- 	cb.private = info;
- 	cb.trigger = NULL;
- 	ops->set_vq_cb(vdpa, index, &cb);
-@@ -353,12 +356,8 @@ create_affinity_masks(unsigned int nvecs, struct irq_affinity *affd)
- 	return masks;
- }
- 
--static int virtio_vdpa_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
--				struct virtqueue *vqs[],
--				vq_callback_t *callbacks[],
--				const char * const names[],
--				const bool *ctx,
--				struct irq_affinity *desc)
-+static int virtio_vdpa_find_vqs(struct virtio_device *vdev,
-+				struct virtio_vq_config *cfg)
- {
- 	struct virtio_vdpa_device *vd_dev = to_virtio_vdpa_device(vdev);
- 	struct vdpa_device *vdpa = vd_get_vdpa(vdev);
-@@ -366,24 +365,24 @@ static int virtio_vdpa_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
- 	struct irq_affinity default_affd = { 0 };
- 	struct cpumask *masks;
- 	struct vdpa_callback cb;
--	bool has_affinity = desc && ops->set_vq_affinity;
-+	bool has_affinity = cfg->desc && ops->set_vq_affinity;
-+	struct virtqueue **vqs = cfg->vqs;
-+	unsigned int nvqs = cfg->nvqs;
- 	int i, err;
- 
- 	if (has_affinity) {
--		masks = create_affinity_masks(nvqs, desc ? desc : &default_affd);
-+		masks = create_affinity_masks(nvqs, cfg->desc ? cfg->desc : &default_affd);
- 		if (!masks)
- 			return -ENOMEM;
- 	}
- 
- 	for (i = 0; i < nvqs; ++i) {
--		if (!names[i]) {
-+		if (!cfg->names[i]) {
- 			err = -EINVAL;
- 			goto err_setup_vq;
- 		}
- 
--		vqs[i] = virtio_vdpa_setup_vq(vdev, i,
--					      callbacks[i], names[i], ctx ?
--					      ctx[i] : false);
-+		vqs[i] = virtio_vdpa_setup_vq(vdev, i, cfg);
- 		if (IS_ERR(vqs[i])) {
- 			err = PTR_ERR(vqs[i]);
- 			goto err_setup_vq;
-diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
-index 1c79cec258f4..370e79df50c4 100644
---- a/include/linux/virtio_config.h
-+++ b/include/linux/virtio_config.h
-@@ -18,6 +18,29 @@ struct virtio_shm_region {
- 
- typedef void vq_callback_t(struct virtqueue *);
- 
-+/**
-+ * struct virtio_vq_config - configure for find_vqs()
-+ * @nvqs: the number of virtqueues to find
-+ * @vqs: on success, includes new virtqueues
-+ * @callbacks: array of callbacks, for each virtqueue
-+ *	include a NULL entry for vqs that do not need a callback
-+ * @names: array of virtqueue names (mainly for debugging)
-+ *		MUST NOT be NULL
-+ * @ctx: (optional) array of context. If the value of the vq in the array
-+ *	is true, the driver can pass ctx to virtio core when adding bufs to
-+ *	virtqueue.
-+ * @desc: desc for interrupts
-+ */
-+struct virtio_vq_config {
-+	unsigned int nvqs;
-+
-+	struct virtqueue   **vqs;
-+	vq_callback_t      **callbacks;
-+	const char         **names;
-+	const bool          *ctx;
-+	struct irq_affinity *desc;
-+};
-+
- /**
-  * struct virtio_config_ops - operations for configuring a virtio device
-  * Note: Do not assume that a transport implements all of the operations
-@@ -51,12 +74,7 @@ typedef void vq_callback_t(struct virtqueue *);
-  *	parallel with being added/removed.
-  * @find_vqs: find virtqueues and instantiate them.
-  *	vdev: the virtio_device
-- *	nvqs: the number of virtqueues to find
-- *	vqs: on success, includes new virtqueues
-- *	callbacks: array of callbacks, for each virtqueue
-- *		include a NULL entry for vqs that do not need a callback
-- *	names: array of virtqueue names (mainly for debugging)
-- *		MUST NOT be NULL
-+ *	cfg: the config from the driver
-  *	Returns 0 on success or error status
-  * @del_vqs: free virtqueues found by find_vqs().
-  * @synchronize_cbs: synchronize with the virtqueue callbacks (optional)
-@@ -96,6 +114,7 @@ typedef void vq_callback_t(struct virtqueue *);
-  * @create_avq: create admin virtqueue resource.
-  * @destroy_avq: destroy admin virtqueue resource.
-  */
-+
- struct virtio_config_ops {
- 	void (*get)(struct virtio_device *vdev, unsigned offset,
- 		    void *buf, unsigned len);
-@@ -105,10 +124,7 @@ struct virtio_config_ops {
- 	u8 (*get_status)(struct virtio_device *vdev);
- 	void (*set_status)(struct virtio_device *vdev, u8 status);
- 	void (*reset)(struct virtio_device *vdev);
--	int (*find_vqs)(struct virtio_device *, unsigned nvqs,
--			struct virtqueue *vqs[], vq_callback_t *callbacks[],
--			const char * const names[], const bool *ctx,
--			struct irq_affinity *desc);
-+	int (*find_vqs)(struct virtio_device *vdev, struct virtio_vq_config *cfg);
- 	void (*del_vqs)(struct virtio_device *);
- 	void (*synchronize_cbs)(struct virtio_device *);
- 	u64 (*get_features)(struct virtio_device *vdev);
-@@ -217,8 +233,14 @@ struct virtqueue *virtio_find_single_vq(struct virtio_device *vdev,
- 	vq_callback_t *callbacks[] = { c };
- 	const char *names[] = { n };
- 	struct virtqueue *vq;
--	int err = vdev->config->find_vqs(vdev, 1, &vq, callbacks, names, NULL,
--					 NULL);
-+	struct virtio_vq_config cfg = {};
-+
-+	cfg.nvqs = 1;
-+	cfg.vqs = &vq;
-+	cfg.callbacks = callbacks;
-+	cfg.names = names;
-+
-+	int err = vdev->config->find_vqs(vdev, &cfg);
- 	if (err < 0)
- 		return ERR_PTR(err);
- 	return vq;
-@@ -226,21 +248,37 @@ struct virtqueue *virtio_find_single_vq(struct virtio_device *vdev,
- 
- static inline
- int virtio_find_vqs(struct virtio_device *vdev, unsigned nvqs,
--			struct virtqueue *vqs[], vq_callback_t *callbacks[],
--			const char * const names[],
--			struct irq_affinity *desc)
-+		    struct virtqueue *vqs[], vq_callback_t *callbacks[],
-+		    const char * const names[],
-+		    struct irq_affinity *desc)
- {
--	return vdev->config->find_vqs(vdev, nvqs, vqs, callbacks, names, NULL, desc);
-+	struct virtio_vq_config cfg = {};
-+
-+	cfg.nvqs = nvqs;
-+	cfg.vqs = vqs;
-+	cfg.callbacks = callbacks;
-+	cfg.names = (const char **)names;
-+	cfg.desc = desc;
-+
-+	return vdev->config->find_vqs(vdev, &cfg);
- }
- 
- static inline
- int virtio_find_vqs_ctx(struct virtio_device *vdev, unsigned nvqs,
- 			struct virtqueue *vqs[], vq_callback_t *callbacks[],
--			const char * const names[], const bool *ctx,
-+			const char *names[], const bool *ctx,
- 			struct irq_affinity *desc)
- {
--	return vdev->config->find_vqs(vdev, nvqs, vqs, callbacks, names, ctx,
--				      desc);
-+	struct virtio_vq_config cfg = {};
-+
-+	cfg.nvqs = nvqs;
-+	cfg.vqs = vqs;
-+	cfg.callbacks = callbacks;
-+	cfg.names = names;
-+	cfg.ctx = ctx;
-+	cfg.desc = desc;
-+
-+	return vdev->config->find_vqs(vdev, &cfg);
- }
- 
- /**
--- 
-2.32.0.3.g01195cf9f
 
 
