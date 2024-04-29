@@ -4,58 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 589A9C4345F
-	for <linux-um@archiver.kernel.org>; Mon, 29 Apr 2024 13:48:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 357EFC19F4F
+	for <linux-um@archiver.kernel.org>; Mon, 29 Apr 2024 13:48:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=wKIv9ZTEQJHowCmh5eLbzPs57ClB41hs/bkkn+RVMsE=; b=o+XAFr+9xCByaSbINHcM4hCF8E
-	WKtcJsfjx3YUmjK/OdPLVQ9jBL9JRZvY+jjjNmvu/5A+/l1Kgx/Txem6bpLOfKUMsJErKuYUPTWn2
-	NeYSXSpgMNFoVD9n0S9ebESh1UiQ+zOpNAZ/CwKFozCCVnagbNiwHGTmcjpa7oQMJcolBFX2ZZDgO
-	gvgp4zlstoQ0VfvASMJkYc9hl7bGC/0yAns20Uc5qGxp2ZKa4+1melawIQl/DFjnFWprgzCxJActV
-	JIDpoC1SRBD244cgYPmzOXpndE8C/OHYgpQI79EpdrBHeE4fNoCrvrvwS0TpeeeYV9hiH0j3Jm0uI
-	kGq8Scmw==;
+	bh=zXigasBLPYw9UvvHud1UMYjBllTNiVgifvAAbw3YvH4=; b=0Cxyun+oAqoXY+kVOjVuRKqzdc
+	UA7CXvSoPSJQY5fcqw0heRJRpl2KRYrzAKDBto/6Nv7Oe+ydctYuMSMwnH4FK7XQ9AAQtXFv3z5Bq
+	xGlkvHQHFq6+G1TdeSc7WQ37ZZvSg4/u7JuqOQqN4phQYh085fucESoz1t/sjN4VysSsO7s4i5ILM
+	tIgyoDfVNaZMyZ/Hpw0EpVl0WFlbWAdtwQNBxBAxNej/T27UZs2OoeFR2C5uu6JquSgSCOrfqj35T
+	rOGTgtmGPt2SHEdAO64km6rcEyjTNYOy3wy7Pr7CgX/rNorrwCkyWW0Ly36Ohg4q8qsxdKXAKGMhs
+	qiUE93fw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s1RN7-0000000308Y-014C;
+	id 1s1RN7-0000000309B-2GmO;
 	Mon, 29 Apr 2024 13:48:45 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s1RMu-00000002zvy-0oCZ
+	id 1s1RMv-00000002zy0-1gz0
 	for linux-um@lists.infradead.org;
-	Mon, 29 Apr 2024 13:48:36 +0000
+	Mon, 29 Apr 2024 13:48:40 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=wKIv9ZTEQJHowCmh5eLbzPs57ClB41hs/bkkn+RVMsE=;
-	t=1714398511; x=1715608111; b=Wc4Lo1gyT2tsle+ygrND34RzNe4eOhLgo//C03wI4c5/9Mr
-	gdy9P3dQmimcG7QzB7QxRgVfmkMYHqMRbYxouqGZpcBoSzchUDw0Y7fQeKL8SPIq6mbt2l2LY8zHp
-	cV80ElSj7SHikYcZiJS84x3CxRPLvFtz1hHpp7ee9aNLTNbAc1xNWiVPkJqCHccmdOgnzgoVnghWK
-	neOKi+PHSsqf4gvsIh/CujBAMzc6BtqXJkBUhkrDI6ZCfooKA7GBHo5+VyXVlKGweBMJf5PkWjK/w
-	J7G8CA8evRq62V5JD73WZeabVoQHVeyZjsI2K2QoEmZLStoFbwBbMAhPl5nd91yA==;
+	Resent-Cc:Resent-Message-ID; bh=zXigasBLPYw9UvvHud1UMYjBllTNiVgifvAAbw3YvH4=;
+	t=1714398513; x=1715608113; b=YepdWesFgJofyd1giZSlLLU/pkH7rqDbJqdS9MnMJoSV3iE
+	G91pp03OImREzfYyeFC0FwAsuX+DA2hl1fnS3T88TSMXd3PPlFq5HcbX5/ASN4ND1pVLi6rybFnsZ
+	Ds+lpet4ZMP8AIazKtzRaZqxZpkMyE6VSmmxig9oGbVwYAwWltTXzVNneqtkT0GQTZl7rxYIVf8Da
+	gr1FTgu2rs6PSA49uU9w6giWTz41cTsyvDwMN7bf7sgPAdPTFYd4ezWPB73yUFtFjpK3FrG31uFZR
+	0XaL1NkqqXbbD9/yuwW2byIc1+ktEr+c8ABzaP/qOb7MQ7b8t2LU22StWIaRH8YQ==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.97)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1s1RMq-0000000CW0d-3zAZ;
-	Mon, 29 Apr 2024 15:48:29 +0200
+	id 1s1RMs-0000000CW0d-3n9q;
+	Mon, 29 Apr 2024 15:48:31 +0200
 From: benjamin@sipsolutions.net
 To: linux-um@lists.infradead.org
 Cc: Benjamin Berg <benjamin.berg@intel.com>
-Subject: [PATCH v2 09/12] um: Do not flush MM in flush_thread
-Date: Mon, 29 Apr 2024 15:47:56 +0200
-Message-ID: <20240429134759.244517-10-benjamin@sipsolutions.net>
+Subject: [PATCH v2 10/12] um: remove force_flush_all from fork_handler
+Date: Mon, 29 Apr 2024 15:47:57 +0200
+Message-ID: <20240429134759.244517-11-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240429134759.244517-1-benjamin@sipsolutions.net>
 References: <20240429134759.244517-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240429_064832_658332_143AC437 
-X-CRM114-Status: GOOD (  10.37  )
+X-CRM114-CacheID: sfid-20240429_064833_797355_E2DD5C67 
+X-CRM114-Status: GOOD (  15.77  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,50 +72,193 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Benjamin Berg <benjamin.berg@intel.com>
 
-There should be no need to flush the memory in flush_thread. Doing this
-likely worked around some issue where memory was still incorrectly
-mapped when creating or cloning an MM.
-
-With the removal of the special clone path, that isn't relevant anymore.
-However, add the flush into MM initialization so that any new userspace
-MM is guaranteed to be clean.
+There should be no need for this. It may be that this used to work
+around another issue where after a clone the MM was in a bad state.
 
 Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
 ---
- arch/um/kernel/exec.c     | 5 -----
- arch/um/kernel/skas/mmu.c | 3 +++
- 2 files changed, 3 insertions(+), 5 deletions(-)
+ arch/um/include/asm/mmu_context.h |  2 --
+ arch/um/kernel/process.c          |  2 --
+ arch/um/kernel/tlb.c              | 46 +++++++++++--------------------
+ 3 files changed, 16 insertions(+), 34 deletions(-)
 
-diff --git a/arch/um/kernel/exec.c b/arch/um/kernel/exec.c
-index 5c8836b012e9..2c15bb2c104c 100644
---- a/arch/um/kernel/exec.c
-+++ b/arch/um/kernel/exec.c
-@@ -24,11 +24,6 @@ void flush_thread(void)
+diff --git a/arch/um/include/asm/mmu_context.h b/arch/um/include/asm/mmu_context.h
+index 68e2eb9cfb47..23dcc914d44e 100644
+--- a/arch/um/include/asm/mmu_context.h
++++ b/arch/um/include/asm/mmu_context.h
+@@ -13,8 +13,6 @@
+ #include <asm/mm_hooks.h>
+ #include <asm/mmu.h>
+ 
+-extern void force_flush_all(void);
+-
+ #define activate_mm activate_mm
+ static inline void activate_mm(struct mm_struct *old, struct mm_struct *new)
  {
- 	arch_flush_thread(&current->thread.arch);
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index ab95648e93e1..390bf711fbd1 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -139,8 +139,6 @@ void new_thread_handler(void)
+ /* Called magically, see new_thread_handler above */
+ void fork_handler(void)
+ {
+-	force_flush_all();
+-
+ 	schedule_tail(current->thread.prev_sched);
  
--	unmap(&current->mm->context.id, 0, TASK_SIZE);
--	if (syscall_stub_flush(&current->mm->context.id) < 0) {
--		printk(KERN_ERR "%s - clearing address space failed", __func__);
--		force_sig(SIGKILL);
--	}
- 	get_safe_registers(current_pt_regs()->regs.gp,
- 			   current_pt_regs()->regs.fp);
+ 	/*
+diff --git a/arch/um/kernel/tlb.c b/arch/um/kernel/tlb.c
+index 391c98137890..f183a9b9ff7b 100644
+--- a/arch/um/kernel/tlb.c
++++ b/arch/um/kernel/tlb.c
+@@ -40,17 +40,15 @@ struct host_vm_change {
+ 	int index;
+ 	struct mm_struct *mm;
+ 	void *data;
+-	int force;
+ };
  
-diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
-index 76c0c7d600a8..9bfefcd33f36 100644
---- a/arch/um/kernel/skas/mmu.c
-+++ b/arch/um/kernel/skas/mmu.c
-@@ -39,6 +39,9 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
- 		goto out_free;
- 	}
+-#define INIT_HVC(mm, force, userspace) \
++#define INIT_HVC(mm, userspace) \
+ 	((struct host_vm_change) \
+ 	 { .ops		= { { .type = NONE } },	\
+ 	   .mm		= mm, \
+        	   .data	= NULL, \
+ 	   .userspace	= userspace, \
+-	   .index	= 0, \
+-	   .force	= force })
++	   .index	= 0 })
  
-+	/* Ensure the new MM is clean and nothing unwanted is mapped */
-+	unmap(new_id, 0, TASK_SIZE);
-+
- 	return 0;
+ void report_enomem(void)
+ {
+@@ -234,7 +232,7 @@ static inline int update_pte_range(pmd_t *pmd, unsigned long addr,
  
-  out_free:
+ 		prot = ((r ? UM_PROT_READ : 0) | (w ? UM_PROT_WRITE : 0) |
+ 			(x ? UM_PROT_EXEC : 0));
+-		if (hvc->force || pte_newpage(*pte)) {
++		if (pte_newpage(*pte)) {
+ 			if (pte_present(*pte)) {
+ 				if (pte_newpage(*pte))
+ 					ret = add_mmap(addr, pte_val(*pte) & PAGE_MASK,
+@@ -260,7 +258,7 @@ static inline int update_pmd_range(pud_t *pud, unsigned long addr,
+ 	do {
+ 		next = pmd_addr_end(addr, end);
+ 		if (!pmd_present(*pmd)) {
+-			if (hvc->force || pmd_newpage(*pmd)) {
++			if (pmd_newpage(*pmd)) {
+ 				ret = add_munmap(addr, next - addr, hvc);
+ 				pmd_mkuptodate(*pmd);
+ 			}
+@@ -282,7 +280,7 @@ static inline int update_pud_range(p4d_t *p4d, unsigned long addr,
+ 	do {
+ 		next = pud_addr_end(addr, end);
+ 		if (!pud_present(*pud)) {
+-			if (hvc->force || pud_newpage(*pud)) {
++			if (pud_newpage(*pud)) {
+ 				ret = add_munmap(addr, next - addr, hvc);
+ 				pud_mkuptodate(*pud);
+ 			}
+@@ -304,7 +302,7 @@ static inline int update_p4d_range(pgd_t *pgd, unsigned long addr,
+ 	do {
+ 		next = p4d_addr_end(addr, end);
+ 		if (!p4d_present(*p4d)) {
+-			if (hvc->force || p4d_newpage(*p4d)) {
++			if (p4d_newpage(*p4d)) {
+ 				ret = add_munmap(addr, next - addr, hvc);
+ 				p4d_mkuptodate(*p4d);
+ 			}
+@@ -315,19 +313,19 @@ static inline int update_p4d_range(pgd_t *pgd, unsigned long addr,
+ }
+ 
+ static void fix_range_common(struct mm_struct *mm, unsigned long start_addr,
+-			     unsigned long end_addr, int force)
++			     unsigned long end_addr)
+ {
+ 	pgd_t *pgd;
+ 	struct host_vm_change hvc;
+ 	unsigned long addr = start_addr, next;
+ 	int ret = 0, userspace = 1;
+ 
+-	hvc = INIT_HVC(mm, force, userspace);
++	hvc = INIT_HVC(mm, userspace);
+ 	pgd = pgd_offset(mm, addr);
+ 	do {
+ 		next = pgd_addr_end(addr, end_addr);
+ 		if (!pgd_present(*pgd)) {
+-			if (force || pgd_newpage(*pgd)) {
++			if (pgd_newpage(*pgd)) {
+ 				ret = add_munmap(addr, next - addr, &hvc);
+ 				pgd_mkuptodate(*pgd);
+ 			}
+@@ -348,11 +346,11 @@ static int flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
+ 	pmd_t *pmd;
+ 	pte_t *pte;
+ 	unsigned long addr, last;
+-	int updated = 0, err = 0, force = 0, userspace = 0;
++	int updated = 0, err = 0,  userspace = 0;
+ 	struct host_vm_change hvc;
+ 
+ 	mm = &init_mm;
+-	hvc = INIT_HVC(mm, force, userspace);
++	hvc = INIT_HVC(mm, userspace);
+ 	for (addr = start; addr < end;) {
+ 		pgd = pgd_offset(mm, addr);
+ 		if (!pgd_present(*pgd)) {
+@@ -536,7 +534,7 @@ void __flush_tlb_one(unsigned long addr)
+ }
+ 
+ static void fix_range(struct mm_struct *mm, unsigned long start_addr,
+-		      unsigned long end_addr, int force)
++		      unsigned long end_addr)
+ {
+ 	/*
+ 	 * Don't bother flushing if this address space is about to be
+@@ -545,7 +543,7 @@ static void fix_range(struct mm_struct *mm, unsigned long start_addr,
+ 	if (atomic_read(&mm->mm_users) == 0)
+ 		return;
+ 
+-	fix_range_common(mm, start_addr, end_addr, force);
++	fix_range_common(mm, start_addr, end_addr);
+ }
+ 
+ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+@@ -553,14 +551,14 @@ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+ {
+ 	if (vma->vm_mm == NULL)
+ 		flush_tlb_kernel_range_common(start, end);
+-	else fix_range(vma->vm_mm, start, end, 0);
++	else fix_range(vma->vm_mm, start, end);
+ }
+ EXPORT_SYMBOL(flush_tlb_range);
+ 
+ void flush_tlb_mm_range(struct mm_struct *mm, unsigned long start,
+ 			unsigned long end)
+ {
+-	fix_range(mm, start, end, 0);
++	fix_range(mm, start, end);
+ }
+ 
+ void flush_tlb_mm(struct mm_struct *mm)
+@@ -569,17 +567,5 @@ void flush_tlb_mm(struct mm_struct *mm)
+ 	VMA_ITERATOR(vmi, mm, 0);
+ 
+ 	for_each_vma(vmi, vma)
+-		fix_range(mm, vma->vm_start, vma->vm_end, 0);
+-}
+-
+-void force_flush_all(void)
+-{
+-	struct mm_struct *mm = current->mm;
+-	struct vm_area_struct *vma;
+-	VMA_ITERATOR(vmi, mm, 0);
+-
+-	mmap_read_lock(mm);
+-	for_each_vma(vmi, vma)
+-		fix_range(mm, vma->vm_start, vma->vm_end, 1);
+-	mmap_read_unlock(mm);
++		fix_range(mm, vma->vm_start, vma->vm_end);
+ }
 -- 
 2.44.0
 
