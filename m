@@ -4,57 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E930DC04FFE
-	for <linux-um@archiver.kernel.org>; Wed, 15 May 2024 02:55:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98DDFC25B77
+	for <linux-um@archiver.kernel.org>; Fri, 17 May 2024 01:31:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:
-	Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=ouXJVfqirafrtWZt4mvqvvqfKlfBsqMEfLhGRNFEWhk=; b=reWAMZDpP3g8gKdkY3ZezOYHvp
-	JiReXkHaFb/1/tEwDi6Y/g8klzB/n/R2FP4LgpvPcmpron7uLwF+DrxFMkg2G9ksz7dvNgSBsvwsR
-	hI1yUppQh3mOMYpUOdlk5GNWAyf6TRGa0RjcsIe1+MRn3IWhrHEpi6QycgUl6DQOkKE5J9zSZrWk+
-	WHVu7QR5iu7rg29Vjnsf1oaDZ7KUsTGNirIk7M7F0YrTaVWAPkpwn0iACvCjwf1Nt9Z1Zx0QDafco
-	jA5j728SKQckFOHwWfggVKLc+mhueevAYUthZCyqJ63zkNedFK5QNgraPJ474+Plw2MDDobWM6usF
-	0hkl2Jsg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To
+	:From:Date:Subject:Message-ID:Reply-To:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=KrEPs691Td3NZbxOFWTzxJL2b3bXbcRVeAlZkrnOcRA=; b=Vx4fqgn3RObamckzOCKS3uuHSk
+	A0ObH8NEEUN0UTpWaDmjDvNcc2fMtcZbZpZIWGr1/pB7rBIGPyoX2jTbMfCI3UN7bnfFjUTv/16+n
+	HCjJjJEnNzRCGgv1Eou5N6QRIq/oxl/9z9AjyGfsavQPAjSotdINmpQHIiQrz78xWDg8wW9QKb2LT
+	kSqPd3m2i8iCRTxlhelqoKij4T1sKrFX5ycMxn/KaFs9cRmACTMi334DNZu+A+Yvk27n7/yRBJMj2
+	30jj3Aw023co2uLJUa8NtlpN64X9HcCoE9uFCgu2UgkRW70uaMljm+AOhpKwOR8Edh0dMc4Xdq71a
+	9AjQbQLQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s74o9-00000000C5Z-1Ioa;
-	Wed, 15 May 2024 02:55:57 +0000
-Received: from szxga01-in.huawei.com ([45.249.212.187])
+	id 1s7mR6-00000006Z0c-28Qf;
+	Fri, 17 May 2024 01:31:04 +0000
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s74o5-00000000C32-2NG1
+	id 1s7mR2-00000006YwK-1TBO
 	for linux-um@lists.infradead.org;
-	Wed, 15 May 2024 02:55:55 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VfHnP6mcYzvYkZ;
-	Wed, 15 May 2024 10:52:09 +0800 (CST)
-Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9D8C5180060;
-	Wed, 15 May 2024 10:55:38 +0800 (CST)
-Received: from huawei.com (10.90.53.73) by dggpeml500022.china.huawei.com
- (7.185.36.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 15 May
- 2024 10:55:38 +0800
-From: Hongbo Li <lihongbo22@huawei.com>
-To: <richard@nod.at>, <anton.ivanov@cambridgegreys.com>,
-	<johannes@sipsolutions.net>
-CC: <linux-um@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
-	<lihongbo22@huawei.com>
-Subject: [PATCH] hostfs: convert hostfs to use the new mount API
-Date: Wed, 15 May 2024 10:55:36 +0800
-Message-ID: <20240515025536.3667017-1-lihongbo22@huawei.com>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.90.53.73]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500022.china.huawei.com (7.185.36.66)
+	Fri, 17 May 2024 01:31:03 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1715909450; h=Message-ID:Subject:Date:From:To;
+	bh=KrEPs691Td3NZbxOFWTzxJL2b3bXbcRVeAlZkrnOcRA=;
+	b=q36dcOsHYOGMsQBTMHzU6uh6h8ojhX/cxKsFrj+EEHsQ42MwEeY8wsRwPKIVjqLQ0e70ZZKKAHhHqCQ95k06o9GSb+eQJYWFXrHypkUAdOfNjhSPZgkd3u5ckO7vBNB1rd8Rlf/MxIcK6qmLyut5YEXY3JRS8i2xb/WNYm4l3J8=
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033022160150;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=26;SR=0;TI=SMTPD_---0W6cslx7_1715909446;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W6cslx7_1715909446)
+          by smtp.aliyun-inc.com;
+          Fri, 17 May 2024 09:30:47 +0800
+Message-ID: <1715909158.0435698-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH vhost v9 0/6] refactor the params of find_vqs()
+Date: Fri, 17 May 2024 09:25:58 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ Hans de Goede <hdegoede@redhat.com>,
+ =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Vadim Pasternak <vadimp@nvidia.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Mathieu Poirier <mathieu.poirier@linaro.org>,
+ Cornelia Huck <cohuck@redhat.com>,
+ Halil Pasic <pasic@linux.ibm.com>,
+ Eric Farman <farman@linux.ibm.com>,
+ Heiko Carstens <hca@linux.ibm.com>,
+ Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>,
+ "Michael S. Tsirkin" <mst@redhat.com>,
+ David Hildenbrand <david@redhat.com>,
+ Jason Wang <jasowang@redhat.com>,
+ linux-um@lists.infradead.org,
+ platform-driver-x86@vger.kernel.org,
+ linux-remoteproc@vger.kernel.org,
+ linux-s390@vger.kernel.org,
+ kvm@vger.kernel.org,
+ virtualization@lists.linux.dev
+References: <20240424091533.86949-1-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20240424091533.86949-1-xuanzhuo@linux.alibaba.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240514_195553_952913_30B5B4B9 
-X-CRM114-Status: GOOD (  15.69  )
+X-CRM114-CacheID: sfid-20240516_183100_751450_0582CA5A 
+X-CRM114-Status: GOOD (  16.98  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,182 +85,110 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Convert the hostfs filesystem to the new internal mount API as the old
-one will be obsoleted and removed.  This allows greater flexibility in
-communication of mount parameters between userspace, the VFS and the
-filesystem.
+Hi, Michael
 
-See Documentation/filesystems/mount_api.txt for more information.
+I hope this in your for_linus branch to merge to Linux 6.9.
 
-Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
----
- fs/hostfs/hostfs_kern.c | 83 ++++++++++++++++++++++++++++++-----------
- 1 file changed, 62 insertions(+), 21 deletions(-)
+	https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git/log/?h=linux-next
 
-diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index a73d27c4dd58..6ec3c368d7bf 100644
---- a/fs/hostfs/hostfs_kern.c
-+++ b/fs/hostfs/hostfs_kern.c
-@@ -16,11 +16,16 @@
- #include <linux/seq_file.h>
- #include <linux/writeback.h>
- #include <linux/mount.h>
-+#include <linux/fs_context.h>
- #include <linux/namei.h>
- #include "hostfs.h"
- #include <init.h>
- #include <kern.h>
- 
-+struct hostfs_fs_info {
-+	char *host_root_path;
-+};
-+
- struct hostfs_inode_info {
- 	int fd;
- 	fmode_t mode;
-@@ -90,8 +95,10 @@ static char *__dentry_name(struct dentry *dentry, char *name)
- 	char *p = dentry_path_raw(dentry, name, PATH_MAX);
- 	char *root;
- 	size_t len;
-+	struct hostfs_fs_info *fsi;
- 
--	root = dentry->d_sb->s_fs_info;
-+	fsi = dentry->d_sb->s_fs_info;
-+	root = fsi->host_root_path;
- 	len = strlen(root);
- 	if (IS_ERR(p)) {
- 		__putname(name);
-@@ -196,8 +203,10 @@ static int hostfs_statfs(struct dentry *dentry, struct kstatfs *sf)
- 	long long f_bavail;
- 	long long f_files;
- 	long long f_ffree;
-+	struct hostfs_fs_info *fsi;
- 
--	err = do_statfs(dentry->d_sb->s_fs_info,
-+	fsi = dentry->d_sb->s_fs_info;
-+	err = do_statfs(fsi->host_root_path,
- 			&sf->f_bsize, &f_blocks, &f_bfree, &f_bavail, &f_files,
- 			&f_ffree, &sf->f_fsid, sizeof(sf->f_fsid),
- 			&sf->f_namelen);
-@@ -245,7 +254,11 @@ static void hostfs_free_inode(struct inode *inode)
- 
- static int hostfs_show_options(struct seq_file *seq, struct dentry *root)
- {
--	const char *root_path = root->d_sb->s_fs_info;
-+	struct hostfs_fs_info *fsi;
-+	const char *root_path;
-+
-+	fsi = root->d_sb->s_fs_info;
-+	root_path = fsi->host_root_path;
- 	size_t offset = strlen(root_ino) + 1;
- 
- 	if (strlen(root_path) > offset)
-@@ -922,10 +935,11 @@ static const struct inode_operations hostfs_link_iops = {
- 	.get_link	= hostfs_get_link,
- };
- 
--static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
-+static int hostfs_fill_super(struct super_block *sb, struct fs_context *fc)
- {
-+	struct hostfs_fs_info *fsi = sb->s_fs_info;
- 	struct inode *root_inode;
--	char *host_root_path, *req_root = d;
-+	char *host_root = fc->source;
- 	int err;
- 
- 	sb->s_blocksize = 1024;
-@@ -939,15 +953,15 @@ static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
- 		return err;
- 
- 	/* NULL is printed as '(null)' by printf(): avoid that. */
--	if (req_root == NULL)
--		req_root = "";
-+	if (fc->source == NULL)
-+		host_root = "";
- 
--	sb->s_fs_info = host_root_path =
--		kasprintf(GFP_KERNEL, "%s/%s", root_ino, req_root);
--	if (host_root_path == NULL)
-+	fsi->host_root_path =
-+		kasprintf(GFP_KERNEL, "%s/%s", root_ino, host_root);
-+	if (fsi->host_root_path == NULL)
- 		return -ENOMEM;
- 
--	root_inode = hostfs_iget(sb, host_root_path);
-+	root_inode = hostfs_iget(sb, fsi->host_root_path);
- 	if (IS_ERR(root_inode))
- 		return PTR_ERR(root_inode);
- 
-@@ -955,7 +969,7 @@ static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
- 		char *name;
- 
- 		iput(root_inode);
--		name = follow_link(host_root_path);
-+		name = follow_link(fsi->host_root_path);
- 		if (IS_ERR(name))
- 			return PTR_ERR(name);
- 
-@@ -972,11 +986,38 @@ static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
- 	return 0;
- }
- 
--static struct dentry *hostfs_read_sb(struct file_system_type *type,
--			  int flags, const char *dev_name,
--			  void *data)
-+static int hostfs_fc_get_tree(struct fs_context *fc)
- {
--	return mount_nodev(type, flags, data, hostfs_fill_sb_common);
-+	return get_tree_nodev(fc, hostfs_fill_super);
-+}
-+
-+static void hostfs_fc_free(struct fs_context *fc)
-+{
-+	struct hostfs_fs_info *fsi = fc->s_fs_info;
-+
-+	if (!fsi)
-+		return;
-+
-+	kfree(fsi->host_root_path);
-+	kfree(fsi);
-+}
-+
-+static const struct fs_context_operations hostfs_context_ops = {
-+	.get_tree	= hostfs_fc_get_tree,
-+	.free		= hostfs_fc_free,
-+};
-+
-+static int hostfs_init_fs_context(struct fs_context *fc)
-+{
-+	struct hostfs_fs_info *fsi;
-+
-+	fsi = kzalloc(sizeof(*fsi), GFP_KERNEL);
-+	if (!fsi)
-+		return -ENOMEM;
-+
-+	fc->s_fs_info = fsi;
-+	fc->ops = &hostfs_context_ops;
-+	return 0;
- }
- 
- static void hostfs_kill_sb(struct super_block *s)
-@@ -986,11 +1027,11 @@ static void hostfs_kill_sb(struct super_block *s)
- }
- 
- static struct file_system_type hostfs_type = {
--	.owner 		= THIS_MODULE,
--	.name 		= "hostfs",
--	.mount	 	= hostfs_read_sb,
--	.kill_sb	= hostfs_kill_sb,
--	.fs_flags 	= 0,
-+	.owner			= THIS_MODULE,
-+	.name			= "hostfs",
-+	.init_fs_context	= hostfs_init_fs_context,
-+	.kill_sb		= hostfs_kill_sb,
-+	.fs_flags		= 0,
- };
- MODULE_ALIAS_FS("hostfs");
- 
--- 
-2.34.1
+And some commits from me in your branch are changed after you picked them.
+And there are merged by net-next.
 
+virtio_net: remove the misleading comment
+virtio_net: rx remove premapped failover code
+virtio_net: enable premapped by default
+virtio_net: big mode support premapped
+virtio_net: replace private by pp struct inside page
+virtio_ring: enable premapped mode whatever use_dma_api
+virtio_ring: introduce dma map api for page
+
+Thanks.
+
+
+
+On Wed, 24 Apr 2024 17:15:27 +0800, Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
+> This pathset is splited from the
+>
+>      http://lore.kernel.org/all/20240229072044.77388-1-xuanzhuo@linux.alibaba.com
+>
+> That may needs some cycles to discuss. But that notifies too many people.
+>
+> But just the four commits need to notify so many people.
+> And four commits are independent. So I split that patch set,
+> let us review these first.
+>
+> The patch set try to  refactor the params of find_vqs().
+> Then we can just change the structure, when introducing new
+> features.
+>
+> Thanks.
+>
+> v8:
+>   1. rebase the vhost branch
+>
+> v7:
+>   1. fix two bugs. @Jason
+>
+> v6:
+>   1. virtio_balloon: a single variable for both purposes.
+>   2. if names[i] is null, return error
+>
+> v5:
+>   1. virtio_balloon: follow David Hildenbrand's suggest
+>     http://lore.kernel.org/all/3620be9c-e288-4ff2-a7be-1fcf806e6e6e@redhat.com
+>   2. fix bug of the reference of "cfg_idx"
+>     http://lore.kernel.org/all/202403222227.Sdp23Lcb-lkp@intel.com
+>
+> v4:
+>   1. remove support for names array entries being null
+>   2. remove cfg_idx from virtio_vq_config
+>
+> v3:
+>   1. fix the bug: "assignment of read-only location '*cfg.names'"
+>
+> v2:
+>   1. add kerneldoc for "struct vq_transport_config" @ilpo.jarvinen
+>
+> v1:
+>   1. fix some comments from ilpo.jarvinen@linux.intel.com
+>
+>
+>
+>
+>
+>
+>
+>
+>
+> Xuan Zhuo (6):
+>   virtio_balloon: remove the dependence where names[] is null
+>   virtio: remove support for names array entries being null.
+>   virtio: find_vqs: pass struct instead of multi parameters
+>   virtio: vring_create_virtqueue: pass struct instead of multi
+>     parameters
+>   virtio: vring_new_virtqueue(): pass struct instead of multi parameters
+>   virtio_ring: simplify the parameters of the funcs related to
+>     vring_create/new_virtqueue()
+>
+>  arch/um/drivers/virtio_uml.c             |  36 +++--
+>  drivers/platform/mellanox/mlxbf-tmfifo.c |  23 +--
+>  drivers/remoteproc/remoteproc_virtio.c   |  37 +++--
+>  drivers/s390/virtio/virtio_ccw.c         |  38 ++---
+>  drivers/virtio/virtio_balloon.c          |  48 +++---
+>  drivers/virtio/virtio_mmio.c             |  36 +++--
+>  drivers/virtio/virtio_pci_common.c       |  69 ++++-----
+>  drivers/virtio/virtio_pci_common.h       |   9 +-
+>  drivers/virtio/virtio_pci_legacy.c       |  16 +-
+>  drivers/virtio/virtio_pci_modern.c       |  37 +++--
+>  drivers/virtio/virtio_ring.c             | 177 ++++++++---------------
+>  drivers/virtio/virtio_vdpa.c             |  51 +++----
+>  include/linux/virtio_config.h            |  76 +++++++---
+>  include/linux/virtio_ring.h              |  93 +++++++-----
+>  tools/virtio/virtio_test.c               |   4 +-
+>  tools/virtio/vringh_test.c               |  28 ++--
+>  16 files changed, 384 insertions(+), 394 deletions(-)
+>
+> --
+> 2.32.0.3.g01195cf9f
+>
 
