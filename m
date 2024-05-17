@@ -4,73 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98DDFC25B77
-	for <linux-um@archiver.kernel.org>; Fri, 17 May 2024 01:31:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF7D0C04FFE
+	for <linux-um@archiver.kernel.org>; Fri, 17 May 2024 11:01:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To
-	:From:Date:Subject:Message-ID:Reply-To:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=KrEPs691Td3NZbxOFWTzxJL2b3bXbcRVeAlZkrnOcRA=; b=Vx4fqgn3RObamckzOCKS3uuHSk
-	A0ObH8NEEUN0UTpWaDmjDvNcc2fMtcZbZpZIWGr1/pB7rBIGPyoX2jTbMfCI3UN7bnfFjUTv/16+n
-	HCjJjJEnNzRCGgv1Eou5N6QRIq/oxl/9z9AjyGfsavQPAjSotdINmpQHIiQrz78xWDg8wW9QKb2LT
-	kSqPd3m2i8iCRTxlhelqoKij4T1sKrFX5ycMxn/KaFs9cRmACTMi334DNZu+A+Yvk27n7/yRBJMj2
-	30jj3Aw023co2uLJUa8NtlpN64X9HcCoE9uFCgu2UgkRW70uaMljm+AOhpKwOR8Edh0dMc4Xdq71a
-	9AjQbQLQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:References:List-Owner;
+	bh=8VnQm4Wzd0jj3I6yb4jC8r7D5oR7hIr9rTTosx/fIZs=; b=JxD3VXpQ3YXnE1mAX0+UluSgA1
+	Hw8GIl8W2WAtsROXGZd/r2KcvccfU4z2ZNuhuJP8dy4YQtHx5zTPKtyxADI5Is+LS6bxfbPY3NsBi
+	5HigFBjMymQo57Hw4FPxgsul7yb36dsv90BATl1hjYFz5PiUL5rudIduZmcLagreAJfEuqikg1mXg
+	tn4TtJfygDV2eZgIjEnhcgbVSO+X6OaFiIyMBW2HX/g/hF+gRvAHj9VI6a5raxK9WO9NDgjfsCtrp
+	Jq6RiMlfWjUS9mctz3nF1sI60MoGxJU58lKAiv8qckylyrWfF0vfigta+57pnbCf1V7HH/jaxthjq
+	zB7S9iKA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s7mR6-00000006Z0c-28Qf;
-	Fri, 17 May 2024 01:31:04 +0000
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132])
+	id 1s7vLK-00000007aHh-1Oun;
+	Fri, 17 May 2024 11:01:42 +0000
+Received: from mail-ej1-x635.google.com ([2a00:1450:4864:20::635])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s7mR2-00000006YwK-1TBO
+	id 1s7vLG-00000007aH9-0MZn
 	for linux-um@lists.infradead.org;
-	Fri, 17 May 2024 01:31:03 +0000
+	Fri, 17 May 2024 11:01:40 +0000
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-a59b58fe083so363213466b.0
+        for <linux-um@lists.infradead.org>; Fri, 17 May 2024 04:01:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1715909450; h=Message-ID:Subject:Date:From:To;
-	bh=KrEPs691Td3NZbxOFWTzxJL2b3bXbcRVeAlZkrnOcRA=;
-	b=q36dcOsHYOGMsQBTMHzU6uh6h8ojhX/cxKsFrj+EEHsQ42MwEeY8wsRwPKIVjqLQ0e70ZZKKAHhHqCQ95k06o9GSb+eQJYWFXrHypkUAdOfNjhSPZgkd3u5ckO7vBNB1rd8Rlf/MxIcK6qmLyut5YEXY3JRS8i2xb/WNYm4l3J8=
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033022160150;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=26;SR=0;TI=SMTPD_---0W6cslx7_1715909446;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W6cslx7_1715909446)
-          by smtp.aliyun-inc.com;
-          Fri, 17 May 2024 09:30:47 +0800
-Message-ID: <1715909158.0435698-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH vhost v9 0/6] refactor the params of find_vqs()
-Date: Fri, 17 May 2024 09:25:58 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- Hans de Goede <hdegoede@redhat.com>,
- =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Vadim Pasternak <vadimp@nvidia.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Mathieu Poirier <mathieu.poirier@linaro.org>,
- Cornelia Huck <cohuck@redhat.com>,
- Halil Pasic <pasic@linux.ibm.com>,
- Eric Farman <farman@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>,
- Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>,
- "Michael S. Tsirkin" <mst@redhat.com>,
- David Hildenbrand <david@redhat.com>,
- Jason Wang <jasowang@redhat.com>,
- linux-um@lists.infradead.org,
- platform-driver-x86@vger.kernel.org,
- linux-remoteproc@vger.kernel.org,
- linux-s390@vger.kernel.org,
- kvm@vger.kernel.org,
- virtualization@lists.linux.dev
-References: <20240424091533.86949-1-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20240424091533.86949-1-xuanzhuo@linux.alibaba.com>
+        d=linaro.org; s=google; t=1715943694; x=1716548494; darn=lists.infradead.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=8VnQm4Wzd0jj3I6yb4jC8r7D5oR7hIr9rTTosx/fIZs=;
+        b=DRawm73HcccVEK/QPNv85lwlZ4FU4txzVLw1Ez5ineI2DKn+K2qjsbgASH6RdMZxZp
+         184n+pGessAvSJeH8fC7jgoPLr0XxPnbSXcujgIeji5PbOsNv1r7W99fgZhDz0yfrkoO
+         yFyH5wUSIwO5VsqWc/ehICHeGGyScAL2Nuy7IjGH5lVt5Xfw/ROdVBDeohp0z7uCoDkf
+         4R+CcoNIrMwF7oA6I3T1b+lEUVq/VJ0f4kSV/MPscxiGUA+sAC1CIyuK9+I7M0VTWwVn
+         bLSb1nMSn8XP5MFRL6T8fl2PKvf1SBBfNd0Rf3+yT/DQP5s+IuIjp2Ig8HlAPYo7MwhQ
+         HHbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715943694; x=1716548494;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:message-id:subject:cc:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8VnQm4Wzd0jj3I6yb4jC8r7D5oR7hIr9rTTosx/fIZs=;
+        b=r0/KCof2GDnS72bneqPfjeF92UIOh5M9HMjZ5IBg0Tsx/K9k1A19LHV+82Z5gzwNaI
+         WtIPL2C6iKoul1YCoJt00jlffPHkMy+9KDYGwKj/1UYhfbAUmEBFa5a2lQCCV1beyf7A
+         XM+A7nXtrt9fXd8QOLdBUnB9D2ywveF/mrOhQd+z6GeXr/RtunRP0/NKr3py6ETxcciM
+         y20D/B0lwKrPZychW8abMoRXGFP3mWyk6Ik8DvBK5EcsQdZDPjincoqAbWQncg442v9B
+         4rbdVaisoiuvjhsIen/OEir4W1YDUxmlxz50ICixQnHAA2Uf0mcm4fwRXwbmhlZuKcHD
+         sTnw==
+X-Forwarded-Encrypted: i=1; AJvYcCV0IvCr4NhlT1HB9UIxLcY3AjuqFWNv64PoSZeM9LmknwXpC3U043qagn0V24x7AG/J5oHJcNxNgwWq4z0fGnrEmMukXS/Z6Kq35Z/w
+X-Gm-Message-State: AOJu0Yw2QzeaNZiRPPGYX7mlFBFm7BPsIH1YGr/hEoLxb2h0bgnUdMJK
+	Y3DOT6alXLX7HLfOSTfXdiL6WWtQB3fdWD3/GBnpXjIo/GsGrymZI1fE5sYkdXM=
+X-Google-Smtp-Source: AGHT+IGo0vF44PU8Flj2L8GcXH3uM02w5tyFNQ9qE8+bL2lhGta8EhoiS+njX2Y3R8ShLB5wWk0tPw==
+X-Received: by 2002:a17:906:8315:b0:a5a:d6c:a30b with SMTP id a640c23a62f3a-a5a2d65f265mr1511949966b.58.1715943694164;
+        Fri, 17 May 2024 04:01:34 -0700 (PDT)
+Received: from localhost ([149.14.240.163])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a5a17b01968sm1108799366b.166.2024.05.17.04.01.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 May 2024 04:01:33 -0700 (PDT)
+Date: Fri, 17 May 2024 13:01:31 +0200
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: oe-kbuild@lists.linux.dev, Hongbo Li <lihongbo22@huawei.com>,
+	richard@nod.at, anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net
+Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+	linux-um@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+	lihongbo22@huawei.com
+Subject: Re: [PATCH] hostfs: convert hostfs to use the new mount api
+Message-ID: <d845ba1a-2b10-4d83-a687-56406ce657c9@suswa.mountain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240513124141.3788846-1-lihongbo22@huawei.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240516_183100_751450_0582CA5A 
-X-CRM114-Status: GOOD (  16.98  )
+X-CRM114-CacheID: sfid-20240517_040138_155611_113C9F45 
+X-CRM114-Status: UNSURE (   6.96  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,110 +96,64 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi, Michael
+Hi Hongbo,
 
-I hope this in your for_linus branch to merge to Linux 6.9.
+kernel test robot noticed the following build warnings:
 
-	https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git/log/?h=linux-next
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-And some commits from me in your branch are changed after you picked them.
-And there are merged by net-next.
+url:    https://github.com/intel-lab-lkp/linux/commits/Hongbo-Li/hostfs-convert-hostfs-to-use-the-new-mount-api/20240513-204233
+base:   git://git.kernel.org/pub/scm/linux/kernel/git/uml/linux next
+patch link:    https://lore.kernel.org/r/20240513124141.3788846-1-lihongbo22%40huawei.com
+patch subject: [PATCH] hostfs: convert hostfs to use the new mount api
+config: um-randconfig-r081-20240517 (https://download.01.org/0day-ci/archive/20240517/202405171154.21q42SWy-lkp@intel.com/config)
+compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project d3455f4ddd16811401fa153298fadd2f59f6914e)
 
-virtio_net: remove the misleading comment
-virtio_net: rx remove premapped failover code
-virtio_net: enable premapped by default
-virtio_net: big mode support premapped
-virtio_net: replace private by pp struct inside page
-virtio_ring: enable premapped mode whatever use_dma_api
-virtio_ring: introduce dma map api for page
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+| Closes: https://lore.kernel.org/r/202405171154.21q42SWy-lkp@intel.com/
 
-Thanks.
+smatch warnings:
+fs/hostfs/hostfs_kern.c:960 hostfs_fill_super() error: uninitialized symbol 'host_root'.
+
+vim +/host_root +960 fs/hostfs/hostfs_kern.c
+
+2c2593890079e8 Hongbo Li         2024-05-13  938  static int hostfs_fill_super(struct super_block *sb, struct fs_context *fc)
+^1da177e4c3f41 Linus Torvalds    2005-04-16  939  {
+2c2593890079e8 Hongbo Li         2024-05-13  940  	struct hostfs_fs_info *fsi = sb->s_fs_info;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  941  	struct inode *root_inode;
+2c2593890079e8 Hongbo Li         2024-05-13  942  	char *host_root;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  943  	int err;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  944  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  945  	sb->s_blocksize = 1024;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  946  	sb->s_blocksize_bits = 10;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  947  	sb->s_magic = HOSTFS_SUPER_MAGIC;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  948  	sb->s_op = &hostfs_sbops;
+b26d4cd385fc51 Al Viro           2013-10-25  949  	sb->s_d_op = &simple_dentry_operations;
+752fa51e4c5182 Wolfgang Illmeyer 2009-06-30  950  	sb->s_maxbytes = MAX_LFS_FILESIZE;
+ce72750f04d68a Sjoerd Simons     2021-11-05  951  	err = super_setup_bdi(sb);
+ce72750f04d68a Sjoerd Simons     2021-11-05  952  	if (err)
+74ce793bcbde5c Mickaël Salaün    2023-06-12  953  		return err;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  954  
+b58c4e96192ee7 Andy Shevchenko   2020-03-20  955  	/* NULL is printed as '(null)' by printf(): avoid that. */
+2c2593890079e8 Hongbo Li         2024-05-13  956  	if (fc->source == NULL)
+2c2593890079e8 Hongbo Li         2024-05-13  957  		host_root = "";
+
+Uninitialized on else path
+
+^1da177e4c3f41 Linus Torvalds    2005-04-16  958  
+2c2593890079e8 Hongbo Li         2024-05-13  959  	fsi->host_root_path =
+2c2593890079e8 Hongbo Li         2024-05-13 @960  		kasprintf(GFP_KERNEL, "%s/%s", root_ino, host_root);
+                                                                                                         ^^^^^^^^^
 
 
+2c2593890079e8 Hongbo Li         2024-05-13  961  	if (fsi->host_root_path == NULL)
+74ce793bcbde5c Mickaël Salaün    2023-06-12  962  		return -ENOMEM;
 
-On Wed, 24 Apr 2024 17:15:27 +0800, Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
-> This pathset is splited from the
->
->      http://lore.kernel.org/all/20240229072044.77388-1-xuanzhuo@linux.alibaba.com
->
-> That may needs some cycles to discuss. But that notifies too many people.
->
-> But just the four commits need to notify so many people.
-> And four commits are independent. So I split that patch set,
-> let us review these first.
->
-> The patch set try to  refactor the params of find_vqs().
-> Then we can just change the structure, when introducing new
-> features.
->
-> Thanks.
->
-> v8:
->   1. rebase the vhost branch
->
-> v7:
->   1. fix two bugs. @Jason
->
-> v6:
->   1. virtio_balloon: a single variable for both purposes.
->   2. if names[i] is null, return error
->
-> v5:
->   1. virtio_balloon: follow David Hildenbrand's suggest
->     http://lore.kernel.org/all/3620be9c-e288-4ff2-a7be-1fcf806e6e6e@redhat.com
->   2. fix bug of the reference of "cfg_idx"
->     http://lore.kernel.org/all/202403222227.Sdp23Lcb-lkp@intel.com
->
-> v4:
->   1. remove support for names array entries being null
->   2. remove cfg_idx from virtio_vq_config
->
-> v3:
->   1. fix the bug: "assignment of read-only location '*cfg.names'"
->
-> v2:
->   1. add kerneldoc for "struct vq_transport_config" @ilpo.jarvinen
->
-> v1:
->   1. fix some comments from ilpo.jarvinen@linux.intel.com
->
->
->
->
->
->
->
->
->
-> Xuan Zhuo (6):
->   virtio_balloon: remove the dependence where names[] is null
->   virtio: remove support for names array entries being null.
->   virtio: find_vqs: pass struct instead of multi parameters
->   virtio: vring_create_virtqueue: pass struct instead of multi
->     parameters
->   virtio: vring_new_virtqueue(): pass struct instead of multi parameters
->   virtio_ring: simplify the parameters of the funcs related to
->     vring_create/new_virtqueue()
->
->  arch/um/drivers/virtio_uml.c             |  36 +++--
->  drivers/platform/mellanox/mlxbf-tmfifo.c |  23 +--
->  drivers/remoteproc/remoteproc_virtio.c   |  37 +++--
->  drivers/s390/virtio/virtio_ccw.c         |  38 ++---
->  drivers/virtio/virtio_balloon.c          |  48 +++---
->  drivers/virtio/virtio_mmio.c             |  36 +++--
->  drivers/virtio/virtio_pci_common.c       |  69 ++++-----
->  drivers/virtio/virtio_pci_common.h       |   9 +-
->  drivers/virtio/virtio_pci_legacy.c       |  16 +-
->  drivers/virtio/virtio_pci_modern.c       |  37 +++--
->  drivers/virtio/virtio_ring.c             | 177 ++++++++---------------
->  drivers/virtio/virtio_vdpa.c             |  51 +++----
->  include/linux/virtio_config.h            |  76 +++++++---
->  include/linux/virtio_ring.h              |  93 +++++++-----
->  tools/virtio/virtio_test.c               |   4 +-
->  tools/virtio/vringh_test.c               |  28 ++--
->  16 files changed, 384 insertions(+), 394 deletions(-)
->
-> --
-> 2.32.0.3.g01195cf9f
->
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
 
