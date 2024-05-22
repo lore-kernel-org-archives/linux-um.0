@@ -4,65 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49504C25B77
-	for <linux-um@archiver.kernel.org>; Mon, 20 May 2024 19:24:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D94A1C25B77
+	for <linux-um@archiver.kernel.org>; Wed, 22 May 2024 12:29:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Subject:References:In-Reply-To:Message-ID:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=G36Cx8GySjdHNtcYSHoIRZuKeuqegAU39EJK3W+NhBc=; b=nRpmNVjv/bJsLR006z+6jdF5k8
-	3Vl2jGXgNIh7Vm/HwPunD51UnY+xBcJAArxYtNPju9VqOSCX1AOkevx4NJ0HttTMyUzfzcIG5tmnf
-	UelvHFJDptvaLZ51vZ5M2LjO9yK0i6Nklx2+JnRMl+E4EDjySCKrUGYezDfeaRh9Ft0w56Oy2QmVN
-	BtZ1oaFoKIuFMVggWeIorM+dbC/gSLI9XB6zZ8c0TEkv2G452zuohFrWmNcIk3oHx1Qb8hkHNyizu
-	tlQRlLCrv9URFbLSD7py293vRSfUhsJW18Yh5X8oZNFNU1yk9OLYc5xYr6RbA9BeicK4sir06Ien7
-	+hlcSYzQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:In-Reply-To:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=a+cu2mi6DrTCATyynjShlX3nyC2W5Pcy/CJyML1HBmE=; b=3lRjhR3Z181TVx1E+uiZB8OmZc
+	WtvV8SgXwF2pQjnnjbXGu0rFaE+F4ugy7wJYaW9v0fxRDkmeqNUnnWUR+IBGoRWWz26LGkByBal10
+	C+xnEYro7z5abWZKayqfnqJKmTWPUnWK1NruQGBzXCsvdpdV12mMQ3sxAvD/oXwVwfgYhqHcHFQUF
+	wno/vE/bZ1WN1iH35t3jSJu8NsShIUIfHDlrTVX47tMtAZYOhOlfhYDvDFICLF4tqZH8c9YRsrSDw
+	W0kvfEWPpgpcfSoI5tjBmye0aOlJaBgBd8rbgqvqK0M6c0vsKRhxtPW8k0c+cbnm9d3+R99OSt2+3
+	bB1tGuvQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s98cP-0000000FMS0-2kjW;
-	Mon, 20 May 2024 19:24:21 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1s9l5a-00000002vS7-008z;
+	Wed, 22 May 2024 12:29:02 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s98cM-0000000FMQS-0u6o
+	id 1s9l5W-00000002vQG-0O2g
 	for linux-um@lists.infradead.org;
-	Mon, 20 May 2024 19:24:20 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 1B8E96195FC2;
-	Mon, 20 May 2024 21:24:07 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id 6z9Gs4OLXYbU; Mon, 20 May 2024 21:24:06 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 678D96195FD7;
-	Mon, 20 May 2024 21:24:06 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id cPpfmcUIF8d4; Mon, 20 May 2024 21:24:06 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 09C736195FC2;
-	Mon, 20 May 2024 21:24:05 +0200 (CEST)
-Date: Mon, 20 May 2024 21:24:05 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: hch <hch@lst.de>
-Cc: "Dr. David Alan Gilbert" <linux@treblig.org>, 
-	linux-um <linux-um@lists.infradead.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <1300720405.125947.1716233045712.JavaMail.zimbra@nod.at>
-In-Reply-To: <20240520152049.GB398@lst.de>
-References: <20240505001508.255096-1-linux@treblig.org> <20240506070648.GA6506@lst.de> <ZktoVIG500he350_@gallifrey> <20240520152049.GB398@lst.de>
-Subject: Re: [PATCH] ubd: Remove unused mutex 'ubd_mutex'
+	Wed, 22 May 2024 12:28:59 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1716380935;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=a+cu2mi6DrTCATyynjShlX3nyC2W5Pcy/CJyML1HBmE=;
+	b=Qds0YO0+JqDsQm2ufPGkIWdTqt2K5G4Lz39qw6me2gHUrprn5tECSLMLJoLccAwJR/6RM3
+	8zd6MLL/HMdoCrIov/JzKejUfYOa8VlbcGYuL63RtQXfsJcnUgb7SbMIRhp3vvCJ2qwUYT
+	n46ZLWWZ28C/vaBZjW5VpEQl44U3Aw4=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-215-8qCvU7OAOK2GSIklIPCIXQ-1; Wed, 22 May 2024 08:28:53 -0400
+X-MC-Unique: 8qCvU7OAOK2GSIklIPCIXQ-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-354cbc79848so480417f8f.0
+        for <linux-um@lists.infradead.org>; Wed, 22 May 2024 05:28:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716380932; x=1716985732;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a+cu2mi6DrTCATyynjShlX3nyC2W5Pcy/CJyML1HBmE=;
+        b=CLw60ecu6Uu58Vym3gr3A4kd6ez/MojWn5ASL5rJisgrXLuStX06CUt2IY/+Xdqc9y
+         jleNEAxayKzBpB7SIG2oBxsp22y07hYZFciYZHmP+llVIpGUGDnhherLLPUzAiuFo95+
+         AZ/hS4bctfTRQyOYD89x6YGcO6Wt2OoxVwgVYh3csgKo4yeqGvGk30MqsqKLvRKPy1yE
+         xuBnEL3bmtAZO48D/ET3SkQ90O0MvfibBIOyfIErpFKglUiDo8hCv5nwjqzKcIWTzbQa
+         kBOZwtGwtrl6GP5fO4le9JOtxgCIOm3lcHtkGPMf6TNSYK2k60CrYJslMxqcqDC5l6i8
+         HXKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXFOrDndSp4YAzfdm8s6ueqvTyZqN81VD3D3s1G4b2ucKe57l6iHLLL5+pE0WTRu7GhrkWkiSYIzJXoUQCmRyXKRS7lZUsmWqa+Kryd
+X-Gm-Message-State: AOJu0YygLZJFFFf+e4TkgR/o3DujuOHDlla4CN0vyPTw34lgYBjasWxS
+	7V67reVL8d7s9Z07K8BbovYs9V/LrS2ELmk+p0p/Kc3iuHaAnmIkHRAZT304F9AtS0SldOHAGuy
+	1qH2poL/CNGFVUnyC1Gb8CWq+rmxXzxwQ4AugP+dI9BVd9ktqklXNhWG/2VRiKA==
+X-Received: by 2002:adf:e60a:0:b0:354:e22c:ea86 with SMTP id ffacd0b85a97d-354e22cebaemr1323581f8f.9.1716380932414;
+        Wed, 22 May 2024 05:28:52 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGzJHem68umXpabzX/QCksQommVuGzFjAE3Wqkqn0Byb8srELzLVtz9M/YE9lepG/jLnJp0Rg==
+X-Received: by 2002:adf:e60a:0:b0:354:e22c:ea86 with SMTP id ffacd0b85a97d-354e22cebaemr1323532f8f.9.1716380931656;
+        Wed, 22 May 2024 05:28:51 -0700 (PDT)
+Received: from redhat.com ([2a0d:6fc7:55d:e862:558a:a573:a176:1825])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3502b79bdc7sm34184149f8f.22.2024.05.22.05.28.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 May 2024 05:28:50 -0700 (PDT)
+Date: Wed, 22 May 2024 08:28:43 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: virtualization@lists.linux.dev, Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Vadim Pasternak <vadimp@nvidia.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Mathieu Poirier <mathieu.poirier@linaro.org>,
+	Cornelia Huck <cohuck@redhat.com>,
+	Halil Pasic <pasic@linux.ibm.com>,
+	Eric Farman <farman@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	David Hildenbrand <david@redhat.com>,
+	Jason Wang <jasowang@redhat.com>, linux-um@lists.infradead.org,
+	platform-driver-x86@vger.kernel.org,
+	linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+	kvm@vger.kernel.org
+Subject: Re: [PATCH vhost v9 0/6] refactor the params of find_vqs()
+Message-ID: <20240522082732-mutt-send-email-mst@kernel.org>
+References: <20240424091533.86949-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Topic: Remove unused mutex 'ubd_mutex'
-Thread-Index: sUO+fPwo/Hce3VfngHxEy05naTFOLg==
+In-Reply-To: <20240424091533.86949-1-xuanzhuo@linux.alibaba.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240520_122418_421161_02A0EC6A 
-X-CRM114-Status: UNSURE (   5.58  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240522_052858_240291_D123A83C 
+X-CRM114-Status: GOOD (  21.74  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,27 +118,92 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
------ Urspr=C3=BCngliche Mail -----
-> Von: "hch" <hch@lst.de>
-> An: "Dr. David Alan Gilbert" <linux@treblig.org>
-> CC: "hch" <hch@lst.de>, "richard" <richard@nod.at>, "linux-um" <linux-um@=
-lists.infradead.org>, "linux-kernel"
-> <linux-kernel@vger.kernel.org>
-> Gesendet: Montag, 20. Mai 2024 17:20:49
-> Betreff: Re: [PATCH] ubd: Remove unused mutex 'ubd_mutex'
+On Wed, Apr 24, 2024 at 05:15:27PM +0800, Xuan Zhuo wrote:
+> This pathset is splited from the
+> 
+>      http://lore.kernel.org/all/20240229072044.77388-1-xuanzhuo@linux.alibaba.com
+> 
+> That may needs some cycles to discuss. But that notifies too many people.
+> 
+> But just the four commits need to notify so many people.
+> And four commits are independent. So I split that patch set,
+> let us review these first.
+> 
+> The patch set try to  refactor the params of find_vqs().
+> Then we can just change the structure, when introducing new
+> features.
+> 
+> Thanks.
 
-> On Mon, May 20, 2024 at 03:12:20PM +0000, Dr. David Alan Gilbert wrote:
->> * Christoph Hellwig (hch@lst.de) wrote:
->> > Looks good:
->> >=20
->> > Reviewed-by: Christoph Hellwig <hch@lst.de>
->>=20
->> Thanks Christoph; any ideas who might take this?
->=20
-> Probably Richard who is alredy on Cc.
+It's nice but I'd like to see something that uses this before I bother
+merging. IIUC premapped is dropped - are we going to use this in practice?
 
-Yes, after the merge window.
+> v8:
+>   1. rebase the vhost branch
+> 
+> v7:
+>   1. fix two bugs. @Jason
+> 
+> v6:
+>   1. virtio_balloon: a single variable for both purposes.
+>   2. if names[i] is null, return error
+> 
+> v5:
+>   1. virtio_balloon: follow David Hildenbrand's suggest
+>     http://lore.kernel.org/all/3620be9c-e288-4ff2-a7be-1fcf806e6e6e@redhat.com
+>   2. fix bug of the reference of "cfg_idx"
+>     http://lore.kernel.org/all/202403222227.Sdp23Lcb-lkp@intel.com
+> 
+> v4:
+>   1. remove support for names array entries being null
+>   2. remove cfg_idx from virtio_vq_config
+> 
+> v3:
+>   1. fix the bug: "assignment of read-only location '*cfg.names'"
+> 
+> v2:
+>   1. add kerneldoc for "struct vq_transport_config" @ilpo.jarvinen
+> 
+> v1:
+>   1. fix some comments from ilpo.jarvinen@linux.intel.com
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> Xuan Zhuo (6):
+>   virtio_balloon: remove the dependence where names[] is null
+>   virtio: remove support for names array entries being null.
+>   virtio: find_vqs: pass struct instead of multi parameters
+>   virtio: vring_create_virtqueue: pass struct instead of multi
+>     parameters
+>   virtio: vring_new_virtqueue(): pass struct instead of multi parameters
+>   virtio_ring: simplify the parameters of the funcs related to
+>     vring_create/new_virtqueue()
+> 
+>  arch/um/drivers/virtio_uml.c             |  36 +++--
+>  drivers/platform/mellanox/mlxbf-tmfifo.c |  23 +--
+>  drivers/remoteproc/remoteproc_virtio.c   |  37 +++--
+>  drivers/s390/virtio/virtio_ccw.c         |  38 ++---
+>  drivers/virtio/virtio_balloon.c          |  48 +++---
+>  drivers/virtio/virtio_mmio.c             |  36 +++--
+>  drivers/virtio/virtio_pci_common.c       |  69 ++++-----
+>  drivers/virtio/virtio_pci_common.h       |   9 +-
+>  drivers/virtio/virtio_pci_legacy.c       |  16 +-
+>  drivers/virtio/virtio_pci_modern.c       |  37 +++--
+>  drivers/virtio/virtio_ring.c             | 177 ++++++++---------------
+>  drivers/virtio/virtio_vdpa.c             |  51 +++----
+>  include/linux/virtio_config.h            |  76 +++++++---
+>  include/linux/virtio_ring.h              |  93 +++++++-----
+>  tools/virtio/virtio_test.c               |   4 +-
+>  tools/virtio/vringh_test.c               |  28 ++--
+>  16 files changed, 384 insertions(+), 394 deletions(-)
+> 
+> -- 
+> 2.32.0.3.g01195cf9f
 
-Thanks,
-//richard
 
