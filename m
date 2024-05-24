@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07E45C25B74
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F6F5C25B7E
 	for <linux-um@archiver.kernel.org>; Fri, 24 May 2024 21:41:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,50 +12,51 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=OKRbwg6k/XkB+TKFABA68fa6mU9oKgzdmv5p+8modO8=; b=MNg105+sUBJN1rqnGIXRMINqOh
-	QR254kzYvYnYsa8728GVI8BqU8P7dX8yfRtysq7eLZLg7/OL50jWm9LYUaqePQB+YQvW/HyfQXeAt
-	8uIPPKiE+oHGtdc3skH05vSIAhB2H1taQm5wd8yygDbZvSbbGEJj1Jj4x8NRWGxtE9mNiVwXL2yVH
-	iUW+H4cJvXmyQX3FsXsVupW4kGJfKT32ovdF7mR3oK0JixiL0ncFoordjuhN4YdpuOujjxA5v4u2b
-	A5xQ64Noe/foy8+Iv7bd6PabzmRnr/qWmpOcacUH4c+d7PO6WHM3FfVq1tf0J3cuchjkV5pMMlYmm
-	L1NRXQtQ==;
+	bh=5X9CarTZOZz/hX62aVwrPYvmCyVkmX8OGcWnOfO/GhY=; b=V5UqyQxVuy4Y8RriyH3jVTnkn2
+	a1bnwEtezg3HlPTiQeh6BznixD8iT21PdJpGFfUGm7KfoSMILSoiZU3RY7DgV86S3/Kxgg8he/+u0
+	9Ncs9pLXIpTJG8GiCmGHRJbUZ2+jLQQS8UFo4Ne89hiQV9kXgxVMbwYQ+njSo5aFjSXdlTCAe4j5C
+	aRQKbCWXX/IIVlkBEA6dtbc1xu6gv2KJ+IRxoLQgXDSVkFaHQCCqy656Tnn9HhohtKMEJdSgSlchk
+	9QEk36wBR3FlIMckytn8Bib+I5bci5GpLS5Jp8L70MMkwUbQS/oSolwE60cSUnrjhlR+67rX5OGmS
+	IjXWV1Fg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sAcf3-00000009wbU-08ns;
-	Fri, 24 May 2024 21:41:13 +0000
+	id 1sAcf2-00000009wbK-2oyR;
+	Fri, 24 May 2024 21:41:12 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sAcew-00000009wZg-2Ed3
+	id 1sAcev-00000009wZC-0kP5
 	for linux-um@lists.infradead.org;
-	Fri, 24 May 2024 21:41:11 +0000
+	Fri, 24 May 2024 21:41:10 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=OKRbwg6k/XkB+TKFABA68fa6mU9oKgzdmv5p+8modO8=;
-	t=1716586866; x=1717796466; b=mC3ddadfFuZxTczyNWbRVKZgtZJv6gjdpQ6j72MslgW/NDr
-	xi/UuC2Odn2L6oF9nYh7WtbheMXaUgaegdijuLAzw6/SoFej8gkRTz0sqbq+4YzKVGOjPIWQhnV3P
-	DyyQujw6HMfUNqZqe+HW2qg0DPwqbpQHu18ZlKz/BufVh8ld3SiZ5XWYEnYhV/WZ7/o9qTrZev+wt
-	qeCsh4miCMG5Ycyz9qvRSJxSmKEVgr83MHhVBMPrLZPOrX9s2pycF3BE04vFdYgzNl8LA/FXoz42y
-	WXQh/1CvfxMzdBrVL3lbelBl+Y9RSgyfkRLocxkjalRewo7cOWors4oEMyTYePrg==;
+	Resent-Cc:Resent-Message-ID; bh=5X9CarTZOZz/hX62aVwrPYvmCyVkmX8OGcWnOfO/GhY=;
+	t=1716586865; x=1717796465; b=wBYXTxYuFhwaGZ/zJXiG7i3hW955enGkh3hHG0akMThwVZy
+	cWf6lNRVMgqBYv0UojDZWuntS6POUtNM5cgs7BpYko1UxlgHiV7GWzxXivvMXlmxxF/RF9e5vigS5
+	IZVO4dg3EA2eeDwQhe7fkFdEbWnkm1cKNn3zMOQjMmCD/OmIO8s6+5SojGBDxNGGI6R25oL1MLgAq
+	bxQMPz/sn6Dxmb0btJ/O89PtN/YwLYBW8IrDSnIjbH+nTC0meGQMq1seS3zyfMHUJ0lOtEp0yRiXr
+	kMoWPW2pHBS6Vek+728iXVyVnTEIe6JFTWeVYkoxrt/XFo9dbrlEZ9xGtll2tXsQ==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.97)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1sAces-00000008ke7-1oeF;
-	Fri, 24 May 2024 23:41:03 +0200
+	id 1sAceq-00000008ke7-3RRF;
+	Fri, 24 May 2024 23:41:01 +0200
 From: benjamin@sipsolutions.net
 To: linux-um@lists.infradead.org
 Cc: Benjamin Berg <benjamin@sipsolutions.net>
-Subject: [PATCH v3 02/12] um: Create signal stack memory assignment in stub_data
-Date: Fri, 24 May 2024 23:37:08 +0200
-Message-ID: <20240524213718.1757703-3-benjamin@sipsolutions.net>
+Subject: [PATCH v3 01/12] um: Remove stub-data.h include from common-offsets.h
+Date: Fri, 24 May 2024 23:37:07 +0200
+Message-ID: <20240524213718.1757703-2-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.45.1
 In-Reply-To: <20240524213718.1757703-1-benjamin@sipsolutions.net>
 References: <20240524213718.1757703-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240524_144106_601074_0CA19041 
-X-CRM114-Status: GOOD (  14.79  )
+X-CRM114-CacheID: sfid-20240524_144105_289904_7D8F62B4 
+X-CRM114-Status: UNSURE (   7.44  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,118 +73,86 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Benjamin Berg <benjamin@sipsolutions.net>
 
-When we switch to use seccomp, we need both the signal stack and other
-data (i.e. syscall information) to co-exist in the stub data. To
-facilitate this, start by defining separate memory areas for the stack
-and syscall data.
-
-This moves the signal stack onto a new page as the memory area is not
-sufficient to hold both signal stack and syscall information.
-
-Only change the signal stack setup for now, as the syscall code will be
-reworked later.
+Further commits will require values from common-offsets.h inside
+stub-data.h. Resolve the possible circular dependency and simply use
+offsetof() inside stub_32.h and stub_64.h.
 
 Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
 ---
- arch/um/include/shared/as-layout.h      |  2 +-
- arch/um/include/shared/skas/stub-data.h |  9 +++++++++
- arch/um/kernel/skas/clone.c             |  6 ++++--
- arch/um/kernel/skas/mmu.c               |  4 ++++
- arch/um/os-Linux/skas/process.c         | 11 ++++++-----
- 5 files changed, 24 insertions(+), 8 deletions(-)
+ arch/um/include/shared/common-offsets.h | 5 -----
+ arch/x86/um/shared/sysdep/stub_32.h     | 7 ++++---
+ arch/x86/um/shared/sysdep/stub_64.h     | 7 ++++---
+ 3 files changed, 8 insertions(+), 11 deletions(-)
 
-diff --git a/arch/um/include/shared/as-layout.h b/arch/um/include/shared/as-layout.h
-index 9ec3015bc5e2..4ef98c0339fa 100644
---- a/arch/um/include/shared/as-layout.h
-+++ b/arch/um/include/shared/as-layout.h
-@@ -23,7 +23,7 @@
- #define STUB_START stub_start
- #define STUB_CODE STUB_START
- #define STUB_DATA (STUB_CODE + UM_KERN_PAGE_SIZE)
--#define STUB_DATA_PAGES 1 /* must be a power of two */
-+#define STUB_DATA_PAGES 2 /* must be a power of two */
- #define STUB_END (STUB_DATA + STUB_DATA_PAGES * UM_KERN_PAGE_SIZE)
+diff --git a/arch/um/include/shared/common-offsets.h b/arch/um/include/shared/common-offsets.h
+index 96195483fbd0..579ed946a3a9 100644
+--- a/arch/um/include/shared/common-offsets.h
++++ b/arch/um/include/shared/common-offsets.h
+@@ -1,6 +1,5 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ /* for use by sys-$SUBARCH/kernel-offsets.c */
+-#include <stub-data.h>
  
- #ifndef __ASSEMBLY__
-diff --git a/arch/um/include/shared/skas/stub-data.h b/arch/um/include/shared/skas/stub-data.h
-index 5e3ade3fb38b..779d2a3bac5d 100644
---- a/arch/um/include/shared/skas/stub-data.h
-+++ b/arch/um/include/shared/skas/stub-data.h
-@@ -8,10 +8,19 @@
- #ifndef __STUB_DATA_H
- #define __STUB_DATA_H
+ DEFINE(KERNEL_MADV_REMOVE, MADV_REMOVE);
  
-+#include <linux/compiler_types.h>
-+#include <as-layout.h>
-+
- struct stub_data {
- 	unsigned long offset;
- 	int fd;
- 	long parent_err, child_err;
-+
-+	/* 128 leaves enough room for additional fields in the struct */
-+	unsigned char syscall_data[UM_KERN_PAGE_SIZE - 128] __aligned(16);
-+
-+	/* Stack for our signal handlers and for calling into . */
-+	unsigned char sigstack[UM_KERN_PAGE_SIZE] __aligned(UM_KERN_PAGE_SIZE);
- };
- 
+@@ -30,7 +29,3 @@ DEFINE(UML_CONFIG_64BIT, CONFIG_64BIT);
+ DEFINE(UML_CONFIG_UML_TIME_TRAVEL_SUPPORT, CONFIG_UML_TIME_TRAVEL_SUPPORT);
  #endif
-diff --git a/arch/um/kernel/skas/clone.c b/arch/um/kernel/skas/clone.c
-index 62435187dda4..906f7454887c 100644
---- a/arch/um/kernel/skas/clone.c
-+++ b/arch/um/kernel/skas/clone.c
-@@ -27,9 +27,11 @@ stub_clone_handler(void)
- 	struct stub_data *data = get_stub_data();
- 	long err;
  
-+	/* syscall data as a temporary stack area (bottom half). */
- 	err = stub_syscall2(__NR_clone, CLONE_PARENT | CLONE_FILES | SIGCHLD,
--			    (unsigned long)data +
--				STUB_DATA_PAGES * UM_KERN_PAGE_SIZE / 2);
-+			    (unsigned long) data->syscall_data +
-+					    sizeof(data->syscall_data) / 2 -
-+					    sizeof(void *));
- 	if (err) {
- 		data->parent_err = err;
- 		goto done;
-diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
-index 656fe16c9b63..b6b9679e6e11 100644
---- a/arch/um/kernel/skas/mmu.c
-+++ b/arch/um/kernel/skas/mmu.c
-@@ -13,6 +13,10 @@
- #include <as-layout.h>
- #include <os.h>
- #include <skas.h>
-+#include <stub-data.h>
-+
-+/* Ensure the stub_data struct covers the allocated area */
-+static_assert(sizeof(struct stub_data) == STUB_DATA_PAGES * UM_KERN_PAGE_SIZE);
+-/* for stub */
+-DEFINE(UML_STUB_FIELD_OFFSET, offsetof(struct stub_data, offset));
+-DEFINE(UML_STUB_FIELD_CHILD_ERR, offsetof(struct stub_data, child_err));
+-DEFINE(UML_STUB_FIELD_FD, offsetof(struct stub_data, fd));
+diff --git a/arch/x86/um/shared/sysdep/stub_32.h b/arch/x86/um/shared/sysdep/stub_32.h
+index ea8b5a2d67af..2748b7ee031a 100644
+--- a/arch/x86/um/shared/sysdep/stub_32.h
++++ b/arch/x86/um/shared/sysdep/stub_32.h
+@@ -6,6 +6,7 @@
+ #ifndef __SYSDEP_STUB_H
+ #define __SYSDEP_STUB_H
  
- int init_new_context(struct task_struct *task, struct mm_struct *mm)
- {
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 1f5c3f2523d1..72114720be10 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -470,11 +470,12 @@ static int __init init_thread_regs(void)
- 	thread_regs[REGS_IP_INDEX] = STUB_CODE +
- 				(unsigned long) stub_clone_handler -
- 				(unsigned long) __syscall_stub_start;
--	thread_regs[REGS_SP_INDEX] = STUB_DATA + STUB_DATA_PAGES * UM_KERN_PAGE_SIZE -
--		sizeof(void *);
--#ifdef __SIGNAL_FRAMESIZE
--	thread_regs[REGS_SP_INDEX] -= __SIGNAL_FRAMESIZE;
--#endif
-+
-+	/* syscall data as a temporary stack area (top half). */
-+	thread_regs[REGS_SP_INDEX] = STUB_DATA +
-+				     offsetof(struct stub_data, syscall_data) +
-+				     sizeof(((struct stub_data *) 0)->syscall_data) -
-+				     sizeof(void *);
- 	return 0;
- }
++#include <stddef.h>
+ #include <asm/ptrace.h>
+ #include <generated/asm-offsets.h>
  
+@@ -98,9 +99,9 @@ static __always_inline void remap_stack_and_trap(void)
+ 		: :
+ 		"g" (~(STUB_DATA_PAGES * UM_KERN_PAGE_SIZE - 1)),
+ 		"g" (STUB_MMAP_NR),
+-		"g" (UML_STUB_FIELD_FD),
+-		"g" (UML_STUB_FIELD_OFFSET),
+-		"g" (UML_STUB_FIELD_CHILD_ERR),
++		"g" (offsetof(struct stub_data, fd)),
++		"g" (offsetof(struct stub_data, offset)),
++		"g" (offsetof(struct stub_data, child_err)),
+ 		"c" (STUB_DATA_PAGES * UM_KERN_PAGE_SIZE),
+ 		"d" (PROT_READ | PROT_WRITE),
+ 		"S" (MAP_FIXED | MAP_SHARED)
+diff --git a/arch/x86/um/shared/sysdep/stub_64.h b/arch/x86/um/shared/sysdep/stub_64.h
+index b24168ef0ac4..50c5e0529dfb 100644
+--- a/arch/x86/um/shared/sysdep/stub_64.h
++++ b/arch/x86/um/shared/sysdep/stub_64.h
+@@ -6,6 +6,7 @@
+ #ifndef __SYSDEP_STUB_H
+ #define __SYSDEP_STUB_H
+ 
++#include <stddef.h>
+ #include <sysdep/ptrace_user.h>
+ #include <generated/asm-offsets.h>
+ #include <linux/stddef.h>
+@@ -101,9 +102,9 @@ static __always_inline void remap_stack_and_trap(void)
+ 		"g" (STUB_MMAP_NR),
+ 		"g" (~(STUB_DATA_PAGES * UM_KERN_PAGE_SIZE - 1)),
+ 		"g" (MAP_FIXED | MAP_SHARED),
+-		"g" (UML_STUB_FIELD_FD),
+-		"g" (UML_STUB_FIELD_OFFSET),
+-		"g" (UML_STUB_FIELD_CHILD_ERR),
++		"g" (offsetof(struct stub_data, fd)),
++		"g" (offsetof(struct stub_data, offset)),
++		"g" (offsetof(struct stub_data, child_err)),
+ 		"S" (STUB_DATA_PAGES * UM_KERN_PAGE_SIZE),
+ 		"d" (PROT_READ | PROT_WRITE)
+ 		:
 -- 
 2.45.1
 
