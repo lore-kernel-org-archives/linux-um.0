@@ -4,62 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0E831C25B7D
-	for <linux-um@archiver.kernel.org>; Fri, 24 May 2024 21:26:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 07E45C25B74
+	for <linux-um@archiver.kernel.org>; Fri, 24 May 2024 21:41:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Subject:Message-ID:Cc:To:From:Date:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=2EUA3J1arkoV6v7aKefqQ84Fx6SWAbJS2ETQPj87gAI=; b=tkF27suQ599bd4J0+PCkKjvbQA
-	X+23RTzDWldQCfV9nRWRIWvCzwW8v0BFRYMFnwcnthtSKWCMnJzIQWVHVRFT51Idx8eRY9Pl2rDPh
-	hPXgp4hpAGJYYbJhitxWcSnBS8TiIoIXn2wkRN0JTlMsYY0sdy2k5Ov1csyWr2QRflgVjhsZLHC4Y
-	8Bmvw3H2ibc5drqJwD0hyx0XbmpcN2xfzAxPZNSHlwmJE2R6zmUW2WeCsrPQR4HzUR1vGUUGLseu1
-	96ytMBpeRqzz7jsz6pjWdQh86xyQDXo9/QS0IrB6AUbQD0lrUvt7VDMbHY/fUIr+P82P341+ZxAy+
-	O+qpQ5fw==;
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=OKRbwg6k/XkB+TKFABA68fa6mU9oKgzdmv5p+8modO8=; b=MNg105+sUBJN1rqnGIXRMINqOh
+	QR254kzYvYnYsa8728GVI8BqU8P7dX8yfRtysq7eLZLg7/OL50jWm9LYUaqePQB+YQvW/HyfQXeAt
+	8uIPPKiE+oHGtdc3skH05vSIAhB2H1taQm5wd8yygDbZvSbbGEJj1Jj4x8NRWGxtE9mNiVwXL2yVH
+	iUW+H4cJvXmyQX3FsXsVupW4kGJfKT32ovdF7mR3oK0JixiL0ncFoordjuhN4YdpuOujjxA5v4u2b
+	A5xQ64Noe/foy8+Iv7bd6PabzmRnr/qWmpOcacUH4c+d7PO6WHM3FfVq1tf0J3cuchjkV5pMMlYmm
+	L1NRXQtQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sAcQl-00000009v9W-1K1z;
-	Fri, 24 May 2024 21:26:27 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1sAcf3-00000009wbU-08ns;
+	Fri, 24 May 2024 21:41:13 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sAcQh-00000009v8Z-4C90
+	id 1sAcew-00000009wZg-2Ed3
 	for linux-um@lists.infradead.org;
-	Fri, 24 May 2024 21:26:25 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 3ABEF6195FCA;
-	Fri, 24 May 2024 23:26:13 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id cmVIACII7s2V; Fri, 24 May 2024 23:26:12 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id C4E036195FCC;
-	Fri, 24 May 2024 23:26:12 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id nBDwiu23_hNP; Fri, 24 May 2024 23:26:12 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id A9C4F6195FCA;
-	Fri, 24 May 2024 23:26:12 +0200 (CEST)
-Date: Fri, 24 May 2024 23:26:12 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, 
-	linux-um <linux-um@lists.infradead.org>
-Message-ID: <291644210.144818.1716585972644.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] UML changes for v6.10-rc1
+	Fri, 24 May 2024 21:41:11 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=OKRbwg6k/XkB+TKFABA68fa6mU9oKgzdmv5p+8modO8=;
+	t=1716586866; x=1717796466; b=mC3ddadfFuZxTczyNWbRVKZgtZJv6gjdpQ6j72MslgW/NDr
+	xi/UuC2Odn2L6oF9nYh7WtbheMXaUgaegdijuLAzw6/SoFej8gkRTz0sqbq+4YzKVGOjPIWQhnV3P
+	DyyQujw6HMfUNqZqe+HW2qg0DPwqbpQHu18ZlKz/BufVh8ld3SiZ5XWYEnYhV/WZ7/o9qTrZev+wt
+	qeCsh4miCMG5Ycyz9qvRSJxSmKEVgr83MHhVBMPrLZPOrX9s2pycF3BE04vFdYgzNl8LA/FXoz42y
+	WXQh/1CvfxMzdBrVL3lbelBl+Y9RSgyfkRLocxkjalRewo7cOWors4oEMyTYePrg==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <benjamin@sipsolutions.net>)
+	id 1sAces-00000008ke7-1oeF;
+	Fri, 24 May 2024 23:41:03 +0200
+From: benjamin@sipsolutions.net
+To: linux-um@lists.infradead.org
+Cc: Benjamin Berg <benjamin@sipsolutions.net>
+Subject: [PATCH v3 02/12] um: Create signal stack memory assignment in stub_data
+Date: Fri, 24 May 2024 23:37:08 +0200
+Message-ID: <20240524213718.1757703-3-benjamin@sipsolutions.net>
+X-Mailer: git-send-email 2.45.1
+In-Reply-To: <20240524213718.1757703-1-benjamin@sipsolutions.net>
+References: <20240524213718.1757703-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Index: xBd1AgElQDu67oKGTzsCTOWQJc5Ing==
-Thread-Topic: UML changes for v6.10-rc1
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240524_142624_353472_04D3A535 
-X-CRM114-Status: UNSURE (   8.43  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240524_144106_601074_0CA19041 
+X-CRM114-Status: GOOD (  14.79  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,124 +70,121 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Linus,
+From: Benjamin Berg <benjamin@sipsolutions.net>
 
-The following changes since commit ed30a4a51bb196781c8058073ea720133a65596f=
-:
+When we switch to use seccomp, we need both the signal stack and other
+data (i.e. syscall information) to co-exist in the stub data. To
+facilitate this, start by defining separate memory areas for the stack
+and syscall data.
 
-  Linux 6.9-rc5 (2024-04-21 12:35:54 -0700)
+This moves the signal stack onto a new page as the memory area is not
+sufficient to hold both signal stack and syscall information.
 
-are available in the Git repository at:
+Only change the signal stack setup for now, as the syscall code will be
+reworked later.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-=
-linus-6.10-rc1
+Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
+---
+ arch/um/include/shared/as-layout.h      |  2 +-
+ arch/um/include/shared/skas/stub-data.h |  9 +++++++++
+ arch/um/kernel/skas/clone.c             |  6 ++++--
+ arch/um/kernel/skas/mmu.c               |  4 ++++
+ arch/um/os-Linux/skas/process.c         | 11 ++++++-----
+ 5 files changed, 24 insertions(+), 8 deletions(-)
 
-for you to fetch changes up to 919e3ece7f5aaf7b5f3c54538d5303b6eeeb053b:
+diff --git a/arch/um/include/shared/as-layout.h b/arch/um/include/shared/as-layout.h
+index 9ec3015bc5e2..4ef98c0339fa 100644
+--- a/arch/um/include/shared/as-layout.h
++++ b/arch/um/include/shared/as-layout.h
+@@ -23,7 +23,7 @@
+ #define STUB_START stub_start
+ #define STUB_CODE STUB_START
+ #define STUB_DATA (STUB_CODE + UM_KERN_PAGE_SIZE)
+-#define STUB_DATA_PAGES 1 /* must be a power of two */
++#define STUB_DATA_PAGES 2 /* must be a power of two */
+ #define STUB_END (STUB_DATA + STUB_DATA_PAGES * UM_KERN_PAGE_SIZE)
+ 
+ #ifndef __ASSEMBLY__
+diff --git a/arch/um/include/shared/skas/stub-data.h b/arch/um/include/shared/skas/stub-data.h
+index 5e3ade3fb38b..779d2a3bac5d 100644
+--- a/arch/um/include/shared/skas/stub-data.h
++++ b/arch/um/include/shared/skas/stub-data.h
+@@ -8,10 +8,19 @@
+ #ifndef __STUB_DATA_H
+ #define __STUB_DATA_H
+ 
++#include <linux/compiler_types.h>
++#include <as-layout.h>
++
+ struct stub_data {
+ 	unsigned long offset;
+ 	int fd;
+ 	long parent_err, child_err;
++
++	/* 128 leaves enough room for additional fields in the struct */
++	unsigned char syscall_data[UM_KERN_PAGE_SIZE - 128] __aligned(16);
++
++	/* Stack for our signal handlers and for calling into . */
++	unsigned char sigstack[UM_KERN_PAGE_SIZE] __aligned(UM_KERN_PAGE_SIZE);
+ };
+ 
+ #endif
+diff --git a/arch/um/kernel/skas/clone.c b/arch/um/kernel/skas/clone.c
+index 62435187dda4..906f7454887c 100644
+--- a/arch/um/kernel/skas/clone.c
++++ b/arch/um/kernel/skas/clone.c
+@@ -27,9 +27,11 @@ stub_clone_handler(void)
+ 	struct stub_data *data = get_stub_data();
+ 	long err;
+ 
++	/* syscall data as a temporary stack area (bottom half). */
+ 	err = stub_syscall2(__NR_clone, CLONE_PARENT | CLONE_FILES | SIGCHLD,
+-			    (unsigned long)data +
+-				STUB_DATA_PAGES * UM_KERN_PAGE_SIZE / 2);
++			    (unsigned long) data->syscall_data +
++					    sizeof(data->syscall_data) / 2 -
++					    sizeof(void *));
+ 	if (err) {
+ 		data->parent_err = err;
+ 		goto done;
+diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
+index 656fe16c9b63..b6b9679e6e11 100644
+--- a/arch/um/kernel/skas/mmu.c
++++ b/arch/um/kernel/skas/mmu.c
+@@ -13,6 +13,10 @@
+ #include <as-layout.h>
+ #include <os.h>
+ #include <skas.h>
++#include <stub-data.h>
++
++/* Ensure the stub_data struct covers the allocated area */
++static_assert(sizeof(struct stub_data) == STUB_DATA_PAGES * UM_KERN_PAGE_SIZE);
+ 
+ int init_new_context(struct task_struct *task, struct mm_struct *mm)
+ {
+diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+index 1f5c3f2523d1..72114720be10 100644
+--- a/arch/um/os-Linux/skas/process.c
++++ b/arch/um/os-Linux/skas/process.c
+@@ -470,11 +470,12 @@ static int __init init_thread_regs(void)
+ 	thread_regs[REGS_IP_INDEX] = STUB_CODE +
+ 				(unsigned long) stub_clone_handler -
+ 				(unsigned long) __syscall_stub_start;
+-	thread_regs[REGS_SP_INDEX] = STUB_DATA + STUB_DATA_PAGES * UM_KERN_PAGE_SIZE -
+-		sizeof(void *);
+-#ifdef __SIGNAL_FRAMESIZE
+-	thread_regs[REGS_SP_INDEX] -= __SIGNAL_FRAMESIZE;
+-#endif
++
++	/* syscall data as a temporary stack area (top half). */
++	thread_regs[REGS_SP_INDEX] = STUB_DATA +
++				     offsetof(struct stub_data, syscall_data) +
++				     sizeof(((struct stub_data *) 0)->syscall_data) -
++				     sizeof(void *);
+ 	return 0;
+ }
+ 
+-- 
+2.45.1
 
-  um: virtio_uml: Convert to platform remove callback returning void (2024-=
-04-30 14:19:03 +0200)
-
-----------------------------------------------------------------
-This pull request contains the following changes for UML:
-
-- Fixes for -Wmissing-prototypes warnings and further cleanup
-- Remove callback returning void from rtc and virtio drivers
-- Fix bash location
-
-----------------------------------------------------------------
-Duoming Zhou (1):
-      um: Fix return value in ubd_init()
-
-Johannes Berg (5):
-      um: signal: move pid variable where needed
-      um: slirp: remove set but unused variable 'pid'
-      um: vector: fix bpfflash parameter evaluation
-      um: vector: remove unused len variable/calculation
-      um: process: remove unused 'n' variable
-
-Roberto Sassu (1):
-      um: Add winch to winch_handlers before registering winch IRQ
-
-Tiwei Bie (16):
-      um: Make local functions and variables static
-      um: Fix the declaration of vfree
-      um: Remove unused functions
-      um: Fix the return type of __switch_to
-      um: Add missing headers
-      um: Move declarations to proper headers
-      um: Fix -Wmissing-prototypes warnings for text_poke*
-      um: Fix -Wmissing-prototypes warnings for __warp_* and foo
-      um: Stop tracking host PID in cpu_tasks
-      um: Fix -Wmissing-prototypes warnings for (rt_)sigreturn
-      um: Fix the -Wmissing-prototypes warning for __switch_mm
-      um: Fix the -Wmissing-prototypes warning for get_thread_reg
-      um: Fix the declaration of kasan_map_memory
-      um: Add an internal header shared among the user code
-      um: Fix -Wmissing-prototypes warnings for __vdso_*
-      um: Remove unused do_get_thread_area function
-
-Uwe Kleine-K=C3=B6nig (2):
-      um: rtc: Convert to platform remove callback returning void
-      um: virtio_uml: Convert to platform remove callback returning void
-
-Yueh-Shun Li (1):
-      um: Makefile: use bash from the environment
-
- arch/um/Makefile                           |  2 +-
- arch/um/drivers/line.c                     | 14 ++++----
- arch/um/drivers/pcap_kern.c                |  4 +--
- arch/um/drivers/rtc_kern.c                 |  5 ++-
- arch/um/drivers/slirp_user.c               |  3 +-
- arch/um/drivers/ubd_kern.c                 |  4 +--
- arch/um/drivers/ubd_user.c                 |  2 +-
- arch/um/drivers/vector_kern.c              |  6 ++--
- arch/um/drivers/virtio_uml.c               |  5 ++-
- arch/um/include/asm/kasan.h                |  1 -
- arch/um/include/asm/mmu.h                  |  2 --
- arch/um/include/asm/processor-generic.h    |  1 -
- arch/um/include/asm/ptrace-generic.h       |  3 ++
- arch/um/include/shared/as-layout.h         |  1 -
- arch/um/include/shared/kern_util.h         |  3 ++
- arch/um/include/shared/skas/mm_id.h        |  2 ++
- arch/um/include/shared/um_malloc.h         |  2 +-
- arch/um/kernel/kmsg_dump.c                 |  2 +-
- arch/um/kernel/mem.c                       |  2 ++
- arch/um/kernel/physmem.c                   |  3 +-
- arch/um/kernel/process.c                   | 52 +++++++-------------------=
-----
- arch/um/kernel/ptrace.c                    |  3 --
- arch/um/kernel/reboot.c                    |  1 +
- arch/um/kernel/skas/mmu.c                  |  1 +
- arch/um/kernel/skas/process.c              |  5 +--
- arch/um/kernel/time.c                      |  7 ++--
- arch/um/kernel/tlb.c                       |  7 +---
- arch/um/kernel/um_arch.c                   |  1 +
- arch/um/kernel/um_arch.h                   |  2 ++
- arch/um/os-Linux/drivers/ethertap_kern.c   |  2 +-
- arch/um/os-Linux/drivers/tuntap_kern.c     |  2 +-
- arch/um/os-Linux/elf_aux.c                 |  1 +
- arch/um/os-Linux/internal.h                | 20 ++++++++++++
- arch/um/os-Linux/main.c                    |  8 +++--
- arch/um/os-Linux/mem.c                     |  2 ++
- arch/um/os-Linux/signal.c                  |  4 +--
- arch/um/os-Linux/skas/mem.c                |  3 +-
- arch/um/os-Linux/skas/process.c            |  1 +
- arch/um/os-Linux/start_up.c                |  4 +--
- arch/x86/um/asm/ptrace.h                   |  6 ++++
- arch/x86/um/bugs_32.c                      |  1 +
- arch/x86/um/bugs_64.c                      |  1 +
- arch/x86/um/elfcore.c                      |  1 +
- arch/x86/um/fault.c                        |  1 +
- arch/x86/um/os-Linux/mcontext.c            |  1 +
- arch/x86/um/os-Linux/registers.c           |  2 +-
- arch/x86/um/os-Linux/tls.c                 |  1 +
- arch/x86/um/ptrace_32.c                    |  2 --
- arch/x86/um/shared/sysdep/archsetjmp.h     |  7 ++++
- arch/x86/um/shared/sysdep/kernel-offsets.h |  3 ++
- arch/x86/um/signal.c                       | 14 ++++----
- arch/x86/um/tls_32.c                       | 19 +----------
- arch/x86/um/user-offsets.c                 |  3 ++
- arch/x86/um/vdso/um_vdso.c                 | 10 ++++--
- 54 files changed, 136 insertions(+), 129 deletions(-)
- create mode 100644 arch/um/os-Linux/internal.h
 
