@@ -4,58 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D131DC25B79
-	for <linux-um@archiver.kernel.org>; Fri, 24 May 2024 21:41:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2603C25B74
+	for <linux-um@archiver.kernel.org>; Fri, 24 May 2024 21:41:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=SQJZEULlc6TLYDgzviYjycQE9l+B9lJPhRU6mAfZUPQ=; b=c86L4chqpyF9s2CDDWmYK/EfpS
-	r9ZP5DWD3md/3Ezm54XKV7F0ZEqkVNtR6Ytm+Tfjxnq8+tkY2VNi9nwAj11/3W3cUjIp+rBqW62sy
-	yRibzz8eFsWUgct/TH4dioaQpc/fssPTnSzqnSV6E1TjlZEyZcgtvdxTSNGX/sUSjjCDUMLcx3vLr
-	9wHc3L6DI1xO1AsHZrN3zJBAKfyai7wZYoqlb9vjwLhsrO/9PwccRIW81MNrA3KuV8cIkvMoLJImq
-	TkdAm1txmuc0WIDW5oPhzXx4LrxVUSogZXl4hMqKPgc4Iq1ZgHO4m+BBhhRrwzxMUbwzHcMpDUgIw
-	mtcaO2DA==;
+	bh=OfVjvD7azwaVYTcmN7MOir1ljo0mRX8QF8KyFDv+Pfo=; b=TexsemaqEpw35O9TP3UHLmUKv9
+	oavxrsw3wjQD8mALoHFXnShJMi+za1owhyeOeEYPN8mqNS7UIaIskNEcJgUsYC8xCeTKPqp5HhjEO
+	E9k8L3fqEMAaaO7J4E6LmIipzgnOb/xOXgwZ5dMwINELG1z5os6K4h/YBnJ0qTPFIFU1418X3M+xx
+	7pWpQ2A9/OkwpRpL6KbFYlZHQaCVtkuK2r7Ubr/iFRzK0tXN8Yrntpqgd8TDS8Y4Ho7pXkBU01k3n
+	89BU2LqMPI7BKVAUCM7WjdBHWonS9Ibqjb27ePX1/fp5VtiAKd5BeZRWXMWN2M8eUnBZYG7dn9g3t
+	KB8hZLUw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sAcf9-00000009wgK-2Dvf;
-	Fri, 24 May 2024 21:41:19 +0000
+	id 1sAcfD-00000009wig-22f8;
+	Fri, 24 May 2024 21:41:23 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sAcf5-00000009wd4-2pBQ
+	id 1sAcfA-00000009wgG-0q5x
 	for linux-um@lists.infradead.org;
-	Fri, 24 May 2024 21:41:17 +0000
+	Fri, 24 May 2024 21:41:22 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=SQJZEULlc6TLYDgzviYjycQE9l+B9lJPhRU6mAfZUPQ=;
-	t=1716586875; x=1717796475; b=E3wfLkwJc0g7gx6OvIvOv3GTKiMCJeJrcP/qe8Ra1Eh2wUU
-	hS4i3BK/8mhtppYHCd+ZYWa2SiO1J8h6/QFL/fCu1ZeWBLxo0QlSOQP+nhOnNk7CvcY8kKCWuasdl
-	A0tvAe0CCK9BuHcG6brTD84apoCOJ6DBZewZILk8TkO+O93MWW6UB0VzvxHAXe2lwtkrr0JJ8EzE5
-	lnb6OEE4vklmCR2AUBW5L3LF9jdoxSB58PYcTYvnXg+jN+ixO8xd6Pb11PEozGsvhU8o80JFDkUru
-	FEr5JjnjX9Pm2NJNri4Wd9hCkDanQ0+qFFD3i2oQCXDFUzzucg/JiZpgQMi6sVuQ==;
+	Resent-Cc:Resent-Message-ID; bh=OfVjvD7azwaVYTcmN7MOir1ljo0mRX8QF8KyFDv+Pfo=;
+	t=1716586880; x=1717796480; b=e9bdu1PsLAro5ZJ3TNorRj+4uk9IBDgPmtSdUiA8iCcrPDi
+	BOTip1Cv/UavtdSDufW/qXpt/eqT+uW5RV11/+hXt9g46OYkidEcIzBspu6TYU8alIUMlKKuQoPo0
+	Be5nPPGRhUyrWHPTeAWQVmceUJV6ge7+thqShudfSVv73qHWSz3YZXxcMzXCdxLPrBxGM+fNU1ghV
+	srzM8+k3Fcs01yJL2TBH2/ymzbXZrlfhNpnMe7YHqeg9SUApI+m+PNlveKxJcFChixDq1259jTcJ1
+	+LXzj7Re1x3HjZ0Hm4yL0LdPRXTd9O+F1h06eWN5XWOGtyRlkO1iMkGpiUnkoX+A==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.97)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1sAcf3-00000008ke7-2fhK;
-	Fri, 24 May 2024 23:41:14 +0200
+	id 1sAcf5-00000008ke7-0VgT;
+	Fri, 24 May 2024 23:41:15 +0200
 From: benjamin@sipsolutions.net
 To: linux-um@lists.infradead.org
-Cc: Benjamin Berg <benjamin.berg@intel.com>
-Subject: [PATCH v3 07/12] um: remove copy_context_skas0
-Date: Fri, 24 May 2024 23:37:13 +0200
-Message-ID: <20240524213718.1757703-8-benjamin@sipsolutions.net>
+Cc: Benjamin Berg <benjamin@sipsolutions.net>
+Subject: [PATCH v3 08/12] um: Delay flushing syscalls until the thread is restarted
+Date: Fri, 24 May 2024 23:37:14 +0200
+Message-ID: <20240524213718.1757703-9-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.45.1
 In-Reply-To: <20240524213718.1757703-1-benjamin@sipsolutions.net>
 References: <20240524213718.1757703-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240524_144116_085870_FB3AFED7 
-X-CRM114-Status: GOOD (  20.72  )
+X-CRM114-CacheID: sfid-20240524_144120_500518_84746FA7 
+X-CRM114-Status: GOOD (  22.30  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,382 +70,243 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Benjamin Berg <benjamin.berg@intel.com>
+From: Benjamin Berg <benjamin@sipsolutions.net>
 
-The kernel flushes the memory ranges anyway for CoW and does not assume
-that the userspace process has anything set up already. So, start with a
-fresh process for the new mm context.
+As running the syscalls is expensive due to context switches, we should
+do so as late as possible in case more syscalls need to be queued later
+on. This will also benefit a later move to a SECCOMP enabled userspace
+as in that case the need of extra context switches is removed entirely.
 
-Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
+Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
 
 ---
 
-v3: Remove further unused code
+v2:
+ * Remove report_enomem from tlbflush.h, it was never needed there
 ---
- arch/um/include/shared/os.h             |   1 -
- arch/um/include/shared/skas/stub-data.h |   1 -
- arch/um/kernel/skas/Makefile            |   8 +-
- arch/um/kernel/skas/clone.c             |  50 -----------
- arch/um/kernel/skas/mmu.c               |  20 ++---
- arch/um/os-Linux/skas/process.c         | 108 ------------------------
- arch/x86/um/shared/sysdep/stub.h        |   1 -
- arch/x86/um/shared/sysdep/stub_32.h     |  24 ------
- arch/x86/um/shared/sysdep/stub_64.h     |  26 ------
- 9 files changed, 10 insertions(+), 229 deletions(-)
- delete mode 100644 arch/um/kernel/skas/clone.c
+ arch/um/include/shared/os.h         |  4 +++
+ arch/um/include/shared/skas/mm_id.h |  1 -
+ arch/um/include/shared/skas/skas.h  |  1 +
+ arch/um/kernel/skas/process.c       |  8 +++++
+ arch/um/kernel/tlb.c                | 21 ++------------
+ arch/um/os-Linux/skas/mem.c         | 45 +++++++++++++++++------------
+ arch/um/os-Linux/skas/process.c     | 12 ++++++--
+ 7 files changed, 50 insertions(+), 42 deletions(-)
 
 diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index 16d726f3df84..dc341ed4724e 100644
+index dc341ed4724e..ecc1273fd230 100644
 --- a/arch/um/include/shared/os.h
 +++ b/arch/um/include/shared/os.h
-@@ -281,7 +281,6 @@ void protect(struct mm_id *mm_idp, unsigned long addr,
- /* skas/process.c */
- extern int is_skas_winch(int pid, int fd, void *data);
- extern int start_userspace(unsigned long stub_stack);
--extern int copy_context_skas0(unsigned long stack, int pid);
- extern void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs);
- extern void new_thread(void *stack, jmp_buf *buf, void (*handler)(void));
- extern void switch_threads(jmp_buf *me, jmp_buf *you);
-diff --git a/arch/um/include/shared/skas/stub-data.h b/arch/um/include/shared/skas/stub-data.h
-index 6b8caf6b8283..2b6b44759dfa 100644
---- a/arch/um/include/shared/skas/stub-data.h
-+++ b/arch/um/include/shared/skas/stub-data.h
-@@ -36,7 +36,6 @@ struct stub_syscall {
+@@ -191,6 +191,9 @@ extern void get_host_cpu_features(
+ /* mem.c */
+ extern int create_mem_file(unsigned long long len);
  
- struct stub_data {
- 	unsigned long offset;
--	int fd;
- 	long err, child_err;
++/* tlb.c */
++extern void report_enomem(void);
++
+ /* process.c */
+ extern unsigned long os_process_pc(int pid);
+ extern int os_process_parent(int pid);
+@@ -270,6 +273,7 @@ extern long long os_nsecs(void);
+ /* skas/mem.c */
+ int syscall_stub_flush(struct mm_id *mm_idp);
+ struct stub_syscall *syscall_stub_alloc(struct mm_id *mm_idp);
++void syscall_stub_dump_error(struct mm_id *mm_idp);
  
+ void map(struct mm_id *mm_idp, unsigned long virt,
+ 	 unsigned long len, int prot, int phys_fd,
+diff --git a/arch/um/include/shared/skas/mm_id.h b/arch/um/include/shared/skas/mm_id.h
+index bcb951719b51..10edf40f60e9 100644
+--- a/arch/um/include/shared/skas/mm_id.h
++++ b/arch/um/include/shared/skas/mm_id.h
+@@ -12,7 +12,6 @@ struct mm_id {
+ 		int pid;
+ 	} u;
+ 	unsigned long stack;
+-	int kill;
  	int syscall_data_len;
-diff --git a/arch/um/kernel/skas/Makefile b/arch/um/kernel/skas/Makefile
-index dd8bc2167e36..6f86d53e3d69 100644
---- a/arch/um/kernel/skas/Makefile
-+++ b/arch/um/kernel/skas/Makefile
-@@ -3,16 +3,14 @@
- # Copyright (C) 2002 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
- #
+ };
  
--obj-y := clone.o stub.o mmu.o process.o syscall.o uaccess.o
-+obj-y := stub.o mmu.o process.o syscall.o uaccess.o
+diff --git a/arch/um/include/shared/skas/skas.h b/arch/um/include/shared/skas/skas.h
+index c93d2cbc8f32..5c78b0cc3dd4 100644
+--- a/arch/um/include/shared/skas/skas.h
++++ b/arch/um/include/shared/skas/skas.h
+@@ -15,5 +15,6 @@ extern void new_thread_handler(void);
+ extern void handle_syscall(struct uml_pt_regs *regs);
+ extern long execute_syscall_skas(void *r);
+ extern unsigned long current_stub_stack(void);
++extern struct mm_id *current_mm_id(void);
  
--# clone.o and stub.o are in the stub, so it can't be built with profiling
-+# stub.o is in the stub, so it can't be built with profiling
- # GCC hardened also auto-enables -fpic, but we need %ebx so it can't work ->
- # disable it
+ #endif
+diff --git a/arch/um/kernel/skas/process.c b/arch/um/kernel/skas/process.c
+index f2ac134c9752..c7345c83e07b 100644
+--- a/arch/um/kernel/skas/process.c
++++ b/arch/um/kernel/skas/process.c
+@@ -53,3 +53,11 @@ unsigned long current_stub_stack(void)
  
--CFLAGS_clone.o := $(CFLAGS_NO_HARDENING)
- CFLAGS_stub.o := $(CFLAGS_NO_HARDENING)
--UNPROFILE_OBJS := clone.o stub.o
--
-+UNPROFILE_OBJS := stub.o
- KCOV_INSTRUMENT := n
- 
- include $(srctree)/arch/um/scripts/Makefile.rules
-diff --git a/arch/um/kernel/skas/clone.c b/arch/um/kernel/skas/clone.c
-deleted file mode 100644
-index b59fa43d68ce..000000000000
---- a/arch/um/kernel/skas/clone.c
-+++ /dev/null
-@@ -1,50 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * Copyright (C) 2015 Thomas Meyer (thomas@m3y3r.de)
-- * Copyright (C) 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-- */
--
--#include <signal.h>
--#include <sched.h>
--#include <asm/unistd.h>
--#include <sys/time.h>
--#include <as-layout.h>
--#include <ptrace_user.h>
--#include <stub-data.h>
--#include <sysdep/stub.h>
--
--/*
-- * This is in a separate file because it needs to be compiled with any
-- * extraneous gcc flags (-pg, -fprofile-arcs, -ftest-coverage) disabled
-- *
-- * Use UM_KERN_PAGE_SIZE instead of PAGE_SIZE because that calls getpagesize
-- * on some systems.
-- */
--
--void __attribute__ ((__section__ (".__syscall_stub")))
--stub_clone_handler(void)
--{
--	struct stub_data *data = get_stub_data();
--	long err;
--
--	/* syscall data as a temporary stack area (bottom half). */
--	err = stub_syscall2(__NR_clone, CLONE_PARENT | CLONE_FILES | SIGCHLD,
--			    (unsigned long) data->syscall_data +
--					    sizeof(data->syscall_data) / 2 -
--					    sizeof(void *));
--	if (err) {
--		data->err = err;
--		goto done;
--	}
--
--	err = stub_syscall4(__NR_ptrace, PTRACE_TRACEME, 0, 0, 0);
--	if (err) {
--		data->child_err = err;
--		goto done;
--	}
--
--	remap_stack_and_trap();
--
-- done:
--	trap_myself();
--}
-diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
-index d6183cfd51fe..76c0c7d600a8 100644
---- a/arch/um/kernel/skas/mmu.c
-+++ b/arch/um/kernel/skas/mmu.c
-@@ -20,8 +20,7 @@ static_assert(sizeof(struct stub_data) == STUB_DATA_PAGES * UM_KERN_PAGE_SIZE);
- 
- int init_new_context(struct task_struct *task, struct mm_struct *mm)
- {
-- 	struct mm_context *from_mm = NULL;
--	struct mm_context *to_mm = &mm->context;
-+	struct mm_id *new_id = &mm->context.id;
- 	unsigned long stack = 0;
- 	int ret = -ENOMEM;
- 
-@@ -29,27 +28,22 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
- 	if (stack == 0)
- 		goto out;
- 
--	to_mm->id.stack = stack;
--	if (current->mm != NULL && current->mm != &init_mm)
--		from_mm = &current->mm->context;
-+	new_id->stack = stack;
- 
- 	block_signals_trace();
--	if (from_mm)
--		to_mm->id.u.pid = copy_context_skas0(stack,
--						     from_mm->id.u.pid);
--	else to_mm->id.u.pid = start_userspace(stack);
-+	new_id->u.pid = start_userspace(stack);
- 	unblock_signals_trace();
- 
--	if (to_mm->id.u.pid < 0) {
--		ret = to_mm->id.u.pid;
-+	if (new_id->u.pid < 0) {
-+		ret = new_id->u.pid;
- 		goto out_free;
- 	}
- 
- 	return 0;
- 
-  out_free:
--	if (to_mm->id.stack != 0)
--		free_pages(to_mm->id.stack, ilog2(STUB_DATA_PAGES));
-+	if (new_id->stack != 0)
-+		free_pages(new_id->stack, ilog2(STUB_DATA_PAGES));
-  out:
- 	return ret;
+ 	return current->mm->context.id.stack;
  }
++
++struct mm_id *current_mm_id(void)
++{
++	if (current->mm == NULL)
++		return NULL;
++
++	return &current->mm->context.id;
++}
+diff --git a/arch/um/kernel/tlb.c b/arch/um/kernel/tlb.c
+index 2a7b66b6e367..391c98137890 100644
+--- a/arch/um/kernel/tlb.c
++++ b/arch/um/kernel/tlb.c
+@@ -52,7 +52,7 @@ struct host_vm_change {
+ 	   .index	= 0, \
+ 	   .force	= force })
+ 
+-static void report_enomem(void)
++void report_enomem(void)
+ {
+ 	printk(KERN_ERR "UML ran out of memory on the host side! "
+ 			"This can happen due to a memory limitation or "
+@@ -337,15 +337,6 @@ static void fix_range_common(struct mm_struct *mm, unsigned long start_addr,
+ 
+ 	if (!ret)
+ 		ret = do_ops(&hvc, hvc.index, 1);
+-
+-	/* This is not an else because ret is modified above */
+-	if (ret) {
+-		struct mm_id *mm_idp = &current->mm->context.id;
+-
+-		printk(KERN_ERR "fix_range_common: failed, killing current "
+-		       "process: %d\n", task_tgid_vnr(current));
+-		mm_idp->kill = 1;
+-	}
+ }
+ 
+ static int flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
+@@ -460,7 +451,7 @@ void flush_tlb_page(struct vm_area_struct *vma, unsigned long address)
+ 	pmd_t *pmd;
+ 	pte_t *pte;
+ 	struct mm_struct *mm = vma->vm_mm;
+-	int r, w, x, prot, err = 0;
++	int r, w, x, prot;
+ 	struct mm_id *mm_id;
+ 
+ 	address &= PAGE_MASK;
+@@ -508,14 +499,6 @@ void flush_tlb_page(struct vm_area_struct *vma, unsigned long address)
+ 	} else if (pte_newprot(*pte))
+ 		protect(mm_id, address, PAGE_SIZE, prot);
+ 
+-	err = syscall_stub_flush(mm_id);
+-	if (err) {
+-		if (err == -ENOMEM)
+-			report_enomem();
+-
+-		goto kill;
+-	}
+-
+ 	*pte = pte_mkuptodate(*pte);
+ 
+ 	return;
+diff --git a/arch/um/os-Linux/skas/mem.c b/arch/um/os-Linux/skas/mem.c
+index e3128e080365..bb7eace4feac 100644
+--- a/arch/um/os-Linux/skas/mem.c
++++ b/arch/um/os-Linux/skas/mem.c
+@@ -23,6 +23,30 @@ extern char __syscall_stub_start[];
+ 
+ extern void wait_stub_done(int pid);
+ 
++void syscall_stub_dump_error(struct mm_id *mm_idp)
++{
++	struct stub_data *proc_data = (void *)mm_idp->stack;
++	struct stub_syscall *sc;
++
++	if (proc_data->syscall_data_len < 0 ||
++	    proc_data->syscall_data_len >= ARRAY_SIZE(proc_data->syscall_data))
++		panic("Syscall data was corrupted by stub (len is: %d, expected maximum: %d)!",
++			proc_data->syscall_data_len,
++			mm_idp->syscall_data_len);
++
++	sc = &proc_data->syscall_data[proc_data->syscall_data_len];
++
++	printk(UM_KERN_ERR "%s : length = %d, last offset = %d",
++		__func__, mm_idp->syscall_data_len,
++		proc_data->syscall_data_len);
++	printk(UM_KERN_ERR "%s : stub syscall type %d failed, return value = 0x%lx\n",
++		__func__, sc->syscall, proc_data->err);
++
++	print_hex_dump(UM_KERN_ERR,
++			"    syscall data: ", 0,
++			16, 4, sc, sizeof(*sc), 0);
++}
++
+ static inline unsigned long *check_init_stack(struct mm_id *mm_idp,
+ 					      unsigned long *stack)
+ {
+@@ -83,26 +107,9 @@ static inline long do_syscall_stub(struct mm_id *mm_idp)
+ 	 * otherwise it will be zero (but we do not need to rely on that).
+ 	 */
+ 	if (proc_data->err < 0) {
+-		struct stub_syscall *sc;
+-
+-		if (proc_data->syscall_data_len < 0 ||
+-		    proc_data->syscall_data_len >= ARRAY_SIZE(proc_data->syscall_data))
+-			panic("Syscall data was corrupted by stub (len is: %d, expected maximum: %d)!",
+-			      proc_data->syscall_data_len,
+-			      mm_idp->syscall_data_len);
+-
+-		sc = &proc_data->syscall_data[proc_data->syscall_data_len];
+-
+-		printk(UM_KERN_ERR "%s : length = %d, last offset = %d",
+-		       __func__, mm_idp->syscall_data_len,
+-		       proc_data->syscall_data_len);
+-		printk(UM_KERN_ERR "%s : stub syscall type %d failed, return value = 0x%lx\n",
+-		       __func__, sc->syscall, proc_data->err);
+-
+-		print_hex_dump(UM_KERN_ERR,
+-			       "    syscall data: ", 0,
+-			       16, 4, sc, sizeof(*sc), 0);
++		syscall_stub_dump_error(mm_idp);
+ 
++		/* Store error code in case someone tries to add more syscalls */
+ 		mm_idp->syscall_data_len = proc_data->err;
+ 	} else {
+ 		mm_idp->syscall_data_len = 0;
 diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 2bf03115817c..70c43e4a9cf0 100644
+index 70c43e4a9cf0..8dca42627f39 100644
 --- a/arch/um/os-Linux/skas/process.c
 +++ b/arch/um/os-Linux/skas/process.c
-@@ -460,114 +460,6 @@ void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
- 	}
+@@ -252,7 +252,6 @@ static int userspace_tramp(void *stack)
  }
  
--static unsigned long thread_regs[MAX_REG_NR];
--static unsigned long thread_fp_regs[FP_SIZE];
--
--static int __init init_thread_regs(void)
--{
--	get_safe_registers(thread_regs, thread_fp_regs);
--	/* Set parent's instruction pointer to start of clone-stub */
--	thread_regs[REGS_IP_INDEX] = STUB_CODE +
--				(unsigned long) stub_clone_handler -
--				(unsigned long) __syscall_stub_start;
--
--	/* syscall data as a temporary stack area (top half). */
--	thread_regs[REGS_SP_INDEX] = STUB_DATA +
--				     offsetof(struct stub_data, syscall_data) +
--				     sizeof(((struct stub_data *) 0)->syscall_data) -
--				     sizeof(void *);
--	return 0;
--}
--
--__initcall(init_thread_regs);
--
--int copy_context_skas0(unsigned long new_stack, int pid)
--{
--	int err;
--	unsigned long current_stack = current_stub_stack();
--	struct stub_data *data = (struct stub_data *) current_stack;
--	struct stub_data *child_data = (struct stub_data *) new_stack;
--	unsigned long long new_offset;
--	int new_fd = phys_mapping(uml_to_phys((void *)new_stack), &new_offset);
--
--	/*
--	 * prepare offset and fd of child's stack as argument for parent's
--	 * and child's mmap2 calls
--	 */
--	*data = ((struct stub_data) {
--		.offset	= MMAP_OFFSET(new_offset),
--		.fd     = new_fd,
--		.err    = -ESRCH,
--		.child_err = 0,
--	});
--
--	*child_data = ((struct stub_data) {
--		.child_err = -ESRCH,
--	});
--
--	err = ptrace_setregs(pid, thread_regs);
--	if (err < 0) {
--		err = -errno;
--		printk(UM_KERN_ERR "%s : PTRACE_SETREGS failed, pid = %d, errno = %d\n",
--		      __func__, pid, -err);
--		return err;
--	}
--
--	err = put_fp_registers(pid, thread_fp_regs);
--	if (err < 0) {
--		printk(UM_KERN_ERR "%s : put_fp_registers failed, pid = %d, err = %d\n",
--		       __func__, pid, err);
--		return err;
--	}
--
--	/*
--	 * Wait, until parent has finished its work: read child's pid from
--	 * parent's stack, and check, if bad result.
--	 */
--	err = ptrace(PTRACE_CONT, pid, 0, 0);
--	if (err) {
--		err = -errno;
--		printk(UM_KERN_ERR "Failed to continue new process, pid = %d, errno = %d\n",
--		       pid, errno);
--		return err;
--	}
--
--	wait_stub_done(pid);
--
--	pid = data->err;
--	if (pid < 0) {
--		printk(UM_KERN_ERR "%s - stub-parent reports error %d\n",
--		      __func__, -pid);
--		return pid;
--	}
--
--	/*
--	 * Wait, until child has finished too: read child's result from
--	 * child's stack and check it.
--	 */
--	wait_stub_done(pid);
--	if (child_data->child_err != STUB_DATA) {
--		printk(UM_KERN_ERR "%s - stub-child %d reports error %ld\n",
--		       __func__, pid, data->child_err);
--		err = data->child_err;
--		goto out_kill;
--	}
--
--	if (ptrace(PTRACE_SETOPTIONS, pid, NULL,
--		   (void *)PTRACE_O_TRACESYSGOOD) < 0) {
--		err = -errno;
--		printk(UM_KERN_ERR "%s : PTRACE_SETOPTIONS failed, errno = %d\n",
--		       __func__, errno);
--		goto out_kill;
--	}
--
--	return pid;
--
-- out_kill:
--	os_kill_ptraced_process(pid, 1);
--	return err;
--}
--
- void new_thread(void *stack, jmp_buf *buf, void (*handler)(void))
- {
- 	(*buf)[0].JB_IP = (unsigned long) handler;
-diff --git a/arch/x86/um/shared/sysdep/stub.h b/arch/x86/um/shared/sysdep/stub.h
-index 579681d12158..dc89f4423454 100644
---- a/arch/x86/um/shared/sysdep/stub.h
-+++ b/arch/x86/um/shared/sysdep/stub.h
-@@ -13,4 +13,3 @@
+ int userspace_pid[NR_CPUS];
+-int kill_userspace_mm[NR_CPUS];
  
- extern void stub_segv_handler(int, siginfo_t *, void *);
- extern void stub_syscall_handler(void);
--extern void stub_clone_handler(void);
-diff --git a/arch/x86/um/shared/sysdep/stub_32.h b/arch/x86/um/shared/sysdep/stub_32.h
-index ab08a69fb57f..0b44a86dd346 100644
---- a/arch/x86/um/shared/sysdep/stub_32.h
-+++ b/arch/x86/um/shared/sysdep/stub_32.h
-@@ -107,30 +107,6 @@ static __always_inline void trap_myself(void)
- 	__asm("int3");
+ /**
+  * start_userspace() - prepare a new userspace process
+@@ -344,8 +343,16 @@ void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
+ 	interrupt_end();
+ 
+ 	while (1) {
+-		if (kill_userspace_mm[0])
++		/* Flush out any pending syscalls */
++		err = syscall_stub_flush(current_mm_id());
++		if (err) {
++			if (err == -ENOMEM)
++				report_enomem();
++
++			printk(UM_KERN_ERR "%s - Error flushing stub syscalls: %d",
++				__func__, -err);
+ 			fatal_sigsegv();
++		}
+ 
+ 		/*
+ 		 * This can legitimately fail if the process loads a
+@@ -576,5 +583,4 @@ void reboot_skas(void)
+ void __switch_mm(struct mm_id *mm_idp)
+ {
+ 	userspace_pid[0] = mm_idp->u.pid;
+-	kill_userspace_mm[0] = mm_idp->kill;
  }
- 
--static __always_inline void remap_stack_and_trap(void)
--{
--	__asm__ volatile (
--		"movl %%esp,%%ebx ;"
--		"andl %0,%%ebx ;"
--		"movl %1,%%eax ;"
--		"movl %%ebx,%%edi ; addl %2,%%edi ; movl (%%edi),%%edi ;"
--		"movl %%ebx,%%ebp ; addl %3,%%ebp ; movl (%%ebp),%%ebp ;"
--		"int $0x80 ;"
--		"addl %4,%%ebx ; movl %%eax, (%%ebx) ;"
--		"int $3"
--		: :
--		"g" (~(STUB_DATA_PAGES * UM_KERN_PAGE_SIZE - 1)),
--		"g" (STUB_MMAP_NR),
--		"g" (offsetof(struct stub_data, fd)),
--		"g" (offsetof(struct stub_data, offset)),
--		"g" (offsetof(struct stub_data, child_err)),
--		"c" (STUB_DATA_PAGES * UM_KERN_PAGE_SIZE),
--		"d" (PROT_READ | PROT_WRITE),
--		"S" (MAP_FIXED | MAP_SHARED)
--		:
--		"memory");
--}
--
- static __always_inline void *get_stub_data(void)
- {
- 	unsigned long ret;
-diff --git a/arch/x86/um/shared/sysdep/stub_64.h b/arch/x86/um/shared/sysdep/stub_64.h
-index d27b34d75d70..67f44284f1aa 100644
---- a/arch/x86/um/shared/sysdep/stub_64.h
-+++ b/arch/x86/um/shared/sysdep/stub_64.h
-@@ -101,32 +101,6 @@ static __always_inline void trap_myself(void)
- 	__asm("int3");
- }
- 
--static __always_inline void remap_stack_and_trap(void)
--{
--	__asm__ volatile (
--		"movq %0,%%rax ;"
--		"movq %%rsp,%%rdi ;"
--		"andq %1,%%rdi ;"
--		"movq %2,%%r10 ;"
--		"movq %%rdi,%%r8 ; addq %3,%%r8 ; movq (%%r8),%%r8 ;"
--		"movq %%rdi,%%r9 ; addq %4,%%r9 ; movq (%%r9),%%r9 ;"
--		__syscall ";"
--		"movq %%rsp,%%rdi ; andq %1,%%rdi ;"
--		"addq %5,%%rdi ; movq %%rax, (%%rdi) ;"
--		"int3"
--		: :
--		"g" (STUB_MMAP_NR),
--		"g" (~(STUB_DATA_PAGES * UM_KERN_PAGE_SIZE - 1)),
--		"g" (MAP_FIXED | MAP_SHARED),
--		"g" (offsetof(struct stub_data, fd)),
--		"g" (offsetof(struct stub_data, offset)),
--		"g" (offsetof(struct stub_data, child_err)),
--		"S" (STUB_DATA_PAGES * UM_KERN_PAGE_SIZE),
--		"d" (PROT_READ | PROT_WRITE)
--		:
--		__syscall_clobber, "r10", "r8", "r9");
--}
--
- static __always_inline void *get_stub_data(void)
- {
- 	unsigned long ret;
 -- 
 2.45.1
 
