@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 81630C25B74
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96191C25B7D
 	for <linux-um@archiver.kernel.org>; Mon, 27 May 2024 13:40:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,30 +12,30 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=98TUkS0b+gRj1ZLjZVnojSNV/GxHrgmcGS9QODi+eTo=; b=AXaMfUA6F3k3YtFURedbIqATbM
-	9gsVqACfpBnV8E2x6jgqnk316d1yCNHIYxsoJRyWR/kKJfSoDYRloR8BX0ZXHEeB4ZP6T/Ev+k1Z1
-	dwEIC7owXaQ+MBOqOjTUEFUM0SSeRq9TK/8nxUK4onVxlTKWxvD48hB6qkf9rSb4sh6iGYYqIpnqj
-	m59rjAFXF34d3u0tTShW/ZbFA71lD0HZA1frl5x0LgBIQWaaPtyM0iCcVjPw/GupraLIgb9YSyP/w
-	OdFYL51z+A1zejBzwEni24q1h+hxBEWEI3o/6Rgqp5BhN0uVvSxNT8ohhVcpUdNIAyTq4E6Woe1w4
-	iqXEAg8w==;
+	bh=aPhgJtNbevvD4n484o242Ca+ulgY/TKUr1VEB8WBEMY=; b=DFYw1fPU5p7Oq50D0MlkGqtIv0
+	5PTlPDrZFWS2MGA7VGzeGTXFKCkZUpLua/NOcQgGOEteLlmkD6zUzupR1rU6CWKIoaXGvuN/I+a5e
+	0ep3xa/WA31J08ZS0ZDYxJrubwwa4xYZm1GLbOUDVGXRmSpmyi2jenhFA7fW4a0I2tNa1WKCRA0+R
+	rwoJuoBX2y9qvsxIu4Zk3b1mN0tNuPzAt7/+M9/FdclcSC7xdDUNF7Byw+ciPxZXyWOa3MXFMqPR0
+	7+XWeF7UcOmtYGAPFQJMq36JLQdHNRSbQSyHUGS36eK+dLFaG/oJj4JlfTLN6SIwsFMXm9FPfXOXX
+	Zzq8E0dw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sBaaq-0000000F9MK-3txX;
-	Mon, 27 May 2024 13:40:52 +0000
-Received: from out0-214.mail.aliyun.com ([140.205.0.214])
+	id 1sBaar-0000000F9Mh-1Fgc;
+	Mon, 27 May 2024 13:40:53 +0000
+Received: from out0-216.mail.aliyun.com ([140.205.0.216])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sBaal-0000000F9Hw-0R4y
+	id 1sBaam-0000000F9If-1QYb
 	for linux-um@lists.infradead.org;
-	Mon, 27 May 2024 13:40:49 +0000
+	Mon, 27 May 2024 13:40:50 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=antgroup.com; s=default;
-	t=1716817239; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=98TUkS0b+gRj1ZLjZVnojSNV/GxHrgmcGS9QODi+eTo=;
-	b=N1iNNaj/6gf/zRZIOuRiuJXPRl/5QGFCPM+oIz5+MFcMyFKqWBbWNcGXOhCGx2o//h4FvkBzd8oJNAEUwE2yH5NhAuHx8wum3Vj7WMaXGQmpZ/JbgrWmD6Tvd2sa29l5Q44NXni8LRr8qh8mnUBpExpk0qdTioplxY2egcMxWdk=
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033070043001;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---.XofsrHJ_1716817237;
-Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.XofsrHJ_1716817237)
+	t=1716817242; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=aPhgJtNbevvD4n484o242Ca+ulgY/TKUr1VEB8WBEMY=;
+	b=OtnmIl3/yZRV0edkh4EGzshltXPZmSryZsuhBZh6PHyRz4UtbH4xe43PTZiMc/cu6ow2RFXcvZVmI3YDrI2LbmYbILe+I9zgWiFZXpUBhxJok8C8ljCt/0qil83opvFEsAOjSxVZWPhh5C5nXrF1aN5F0XaErw6vvW8wgdl3ZXY=
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033070021168;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---.XofsrHN_1716817238;
+Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.XofsrHN_1716817238)
           by smtp.aliyun-inc.com;
-          Mon, 27 May 2024 21:40:37 +0800
+          Mon, 27 May 2024 21:40:38 +0800
 From: "Tiwei Bie" <tiwei.btw@antgroup.com>
 To: richard@nod.at,
 	anton.ivanov@cambridgegreys.com,
@@ -43,17 +43,17 @@ To: richard@nod.at,
 Cc: <linux-um@lists.infradead.org>,
    <linux-kernel@vger.kernel.org>,
   "Tiwei Bie" <tiwei.btw@antgroup.com>
-Subject: [PATCH 1/2] um: Remove unused ncpus variable
-Date: Mon, 27 May 2024 21:40:23 +0800
-Message-Id: <20240527134024.1539848-2-tiwei.btw@antgroup.com>
+Subject: [PATCH 2/2] um: Remove /proc/sysemu support code
+Date: Mon, 27 May 2024 21:40:24 +0800
+Message-Id: <20240527134024.1539848-3-tiwei.btw@antgroup.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240527134024.1539848-1-tiwei.btw@antgroup.com>
 References: <20240527134024.1539848-1-tiwei.btw@antgroup.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240527_064047_736761_305A333E 
-X-CRM114-Status: UNSURE (   6.86  )
+X-CRM114-CacheID: sfid-20240527_064049_037946_AC292844 
+X-CRM114-Status: UNSURE (   7.41  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -69,40 +69,93 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-It's no longer used. And uml_ncpus_setup doesn't exist anymore.
+Currently /proc/sysemu will never be registered, as sysemu_supported
+is initialized to zero implicitly and no code updates it. And there is
+also nothing to configure via sysemu in UML anymore.
 
 Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
 ---
- arch/um/include/shared/kern_util.h | 1 -
- arch/um/kernel/um_arch.c           | 3 ---
- 2 files changed, 4 deletions(-)
+ arch/um/kernel/process.c | 67 ----------------------------------------
+ 1 file changed, 67 deletions(-)
 
-diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
-index 95521b1f5b20..d8ffd2db168e 100644
---- a/arch/um/include/shared/kern_util.h
-+++ b/arch/um/include/shared/kern_util.h
-@@ -13,7 +13,6 @@ struct siginfo;
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index d2134802f6a8..79f41f06a98f 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -237,73 +237,6 @@ int copy_from_user_proc(void *to, void __user *from, int size)
+ 	return copy_from_user(to, from, size);
+ }
  
- extern int uml_exitcode;
- 
--extern int ncpus;
- extern int kmalloc_ok;
- 
- #define UML_ROUND_UP(addr) \
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index e95f805e5004..8e594cda6d77 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -126,9 +126,6 @@ unsigned long uml_reserved; /* Also modified in mem_init */
- unsigned long start_vm;
- unsigned long end_vm;
- 
--/* Set in uml_ncpus_setup */
--int ncpus = 1;
+-static atomic_t using_sysemu = ATOMIC_INIT(0);
+-int sysemu_supported;
 -
- /* Set in early boot */
- static int have_root __initdata;
- static int have_console __initdata;
+-static void set_using_sysemu(int value)
+-{
+-	if (value > sysemu_supported)
+-		return;
+-	atomic_set(&using_sysemu, value);
+-}
+-
+-static int get_using_sysemu(void)
+-{
+-	return atomic_read(&using_sysemu);
+-}
+-
+-static int sysemu_proc_show(struct seq_file *m, void *v)
+-{
+-	seq_printf(m, "%d\n", get_using_sysemu());
+-	return 0;
+-}
+-
+-static int sysemu_proc_open(struct inode *inode, struct file *file)
+-{
+-	return single_open(file, sysemu_proc_show, NULL);
+-}
+-
+-static ssize_t sysemu_proc_write(struct file *file, const char __user *buf,
+-				 size_t count, loff_t *pos)
+-{
+-	char tmp[2];
+-
+-	if (copy_from_user(tmp, buf, 1))
+-		return -EFAULT;
+-
+-	if (tmp[0] >= '0' && tmp[0] <= '2')
+-		set_using_sysemu(tmp[0] - '0');
+-	/* We use the first char, but pretend to write everything */
+-	return count;
+-}
+-
+-static const struct proc_ops sysemu_proc_ops = {
+-	.proc_open	= sysemu_proc_open,
+-	.proc_read	= seq_read,
+-	.proc_lseek	= seq_lseek,
+-	.proc_release	= single_release,
+-	.proc_write	= sysemu_proc_write,
+-};
+-
+-static int __init make_proc_sysemu(void)
+-{
+-	struct proc_dir_entry *ent;
+-	if (!sysemu_supported)
+-		return 0;
+-
+-	ent = proc_create("sysemu", 0600, NULL, &sysemu_proc_ops);
+-
+-	if (ent == NULL)
+-	{
+-		printk(KERN_WARNING "Failed to register /proc/sysemu\n");
+-		return 0;
+-	}
+-
+-	return 0;
+-}
+-
+-late_initcall(make_proc_sysemu);
+-
+ int singlestepping(void)
+ {
+ 	return test_thread_flag(TIF_SINGLESTEP);
 -- 
 2.34.1
 
