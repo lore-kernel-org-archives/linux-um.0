@@ -4,58 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01A5CC25B78
-	for <linux-um@archiver.kernel.org>; Tue, 28 May 2024 08:54:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9B34C27C44
+	for <linux-um@archiver.kernel.org>; Tue, 28 May 2024 08:54:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=OefifXSN/EV7YftSO4xnY4e21SDEgBce03i6HkE0zS4=; b=pnXfAvt/mGW07Bn6oOigoseMrE
-	3Bv45Lk8ysM7sSFL4lveO6gsxQ5NDUOn1FUYdBBI5EshaHpZ+MAlf+QbG/FPYF4ocvtEMIHL6gTar
-	vKUbmXcB617+AnNpKT+SVQSj0lURWf/UYhOD278U3L6x6Wf4QsJsWfZ19xTWM2UhdgUI9KRB62HVN
-	PC6O9Gvj+ypjC39n1pch2sQzWbMD82erKJDnQt1cf/NBSWRqfexT5AYZNoQQLCd0Bjpt3hJ1U4AVf
-	xTiKO8meKadywbE+mYYbu6pUE0279WjI4TtJ9z9cwf7KcSEzOkAdlxMbiu364viyHg4VaN3WX8qkY
-	0ilHjyGA==;
+	bh=sZKYPw3Q92yZz/F1QWYTOSsG86byIIZiDCd6DunBWuM=; b=pq6/0PRNi8NAVryRjHZFx5nX/s
+	JG63rmABsWWQDJAJGrE+pqg7t5XXIUqTKsW3cCPKmlRNO0TA4QEuO4h7pFLKZ4eFqqi5Ca6TWiaK8
+	GMD9TyyH70ZH5uGHKGUa+ZSCVJgoV6iKGhk+FQJh8UiJAq+K0oLuxjfkte9V7+7W/hYOcEld6sk+1
+	3GX6brf6fddzVwsL5uo/DiDUiYOkJsrxhyKLEZZP8x8Rr7mhnRmzjGwU1TdQTy7DixmQyyUHXFYUc
+	gn3o82p+ADutyWLYW5++ZjtBsowbm278guhFzM1AecILER1CJWk0sXp5MdkIqycLNv4918zQ5tvxM
+	05fqOkiw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sBsbU-0000000HY7V-2emi;
-	Tue, 28 May 2024 08:54:44 +0000
+	id 1sBsbW-0000000HY8N-23mG;
+	Tue, 28 May 2024 08:54:46 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sBsbR-0000000HY5Z-43S3
+	id 1sBsbT-0000000HY6E-3bkA
 	for linux-um@lists.infradead.org;
-	Tue, 28 May 2024 08:54:43 +0000
+	Tue, 28 May 2024 08:54:45 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=OefifXSN/EV7YftSO4xnY4e21SDEgBce03i6HkE0zS4=;
-	t=1716886481; x=1718096081; b=CD5JcPkEUf5DRTsJtlAZZ3w3N2EPCPp+wNqncPxcWF+wkfs
-	1mgky09u/CaoWjSJWGp/JH0k3vH/ANttCNcbYIT4J0I8K/7YQAzrqAdLA/S1YSvh4CN3r7D/c0Z+A
-	cIAQcQAhum7AjQIIA//csQRv5dZjNcF0n4EsmXEcxSt4fpGb9afyqS6+I4dAisbSXX5Yxjg0LtBI3
-	ErR509fT64BJ5diqHdVi9aLlK0mNuKIJ8yweTfM6IlTVghDZ68vhnZuMG06qjWEHsBRVHDbTp6FX4
-	WpLayQ8Q7Ag/YIzcXvhqi0FR7HN6ANYNLi9C0G22bqfrXcz4CtC45f5PudarCYbg==;
+	Resent-Cc:Resent-Message-ID; bh=sZKYPw3Q92yZz/F1QWYTOSsG86byIIZiDCd6DunBWuM=;
+	t=1716886483; x=1718096083; b=A9h5E38RYPidkJqY6QH+YiRJHLeo4WMvfezVmnDsG0BegCk
+	ZCnfXqgeWoenAnET2Kw6rIpciLRxyW0aesFWTe0rwq4/XkVPgmIFrj3nT1dC4q5ITOujgEEUqcXhL
+	t99uqX9duS7trLWJdeUI3dCk4m8s2gemRmVEkn7hNMgKPZE3bIp4Q08osS+7rdIr783NphH1YRyyj
+	h63pPYjp80X84Hpv8v6pYFps2Tw2m8Bnhm9hyWkCPdqv4rzc59BG19R+3rh1GUm5ZrDsw3dYAp/Vk
+	6L0OQzrJVPhZcu7KTI61v96V0lZ9onyjqjGbZd0/XyHoVvOFaGFRVxmgiiUlMuDA==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.97)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1sBsbP-0000000EAlo-3PKY;
-	Tue, 28 May 2024 10:54:40 +0200
+	id 1sBsbR-0000000EAlo-2L3e;
+	Tue, 28 May 2024 10:54:41 +0200
 From: benjamin@sipsolutions.net
 To: linux-um@lists.infradead.org
 Cc: Benjamin Berg <benjamin.berg@intel.com>
-Subject: [PATCH 4/5] um: Discover host_task_size from envp
-Date: Tue, 28 May 2024 10:54:18 +0200
-Message-ID: <20240528085419.1964424-5-benjamin@sipsolutions.net>
+Subject: [PATCH 5/5] um: Add 4 level page table support
+Date: Tue, 28 May 2024 10:54:19 +0200
+Message-ID: <20240528085419.1964424-6-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.45.1
 In-Reply-To: <20240528085419.1964424-1-benjamin@sipsolutions.net>
 References: <20240528085419.1964424-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240528_015442_032667_756C2055 
-X-CRM114-Status: GOOD (  19.69  )
+X-CRM114-CacheID: sfid-20240528_015444_105844_0A281D44 
+X-CRM114-Status: GOOD (  20.93  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,147 +72,328 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Benjamin Berg <benjamin.berg@intel.com>
 
-When loading the UML binary, the host kernel will place the stack at the
-highest possible address. It will then map the program name and
-environment variables onto the start of the stack.
-
-As such, an easy way to figure out the host_task_size is to use the
-highest pointer to an environment variable as a reference.
-
-Ensure that this works by disabling address layout randomization and
-re-executing UML in case it was enabled.
-
-This increases the available TASK_SIZE for 64 bit UML considerably.
+The larger memory space is useful to support more applications inside
+UML. One example for this is ASAN instrumentation of userspace
+applications which requires addresses that would otherwise not be
+available.
 
 Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
 ---
- arch/um/include/shared/as-layout.h |  2 +-
- arch/um/include/shared/os.h        |  2 +-
- arch/um/kernel/um_arch.c           |  4 ++--
- arch/um/os-Linux/main.c            |  9 ++++++++-
- arch/x86/um/os-Linux/task_size.c   | 19 +++++++++++++++----
- 5 files changed, 27 insertions(+), 9 deletions(-)
+ arch/um/Kconfig                      |   1 +
+ arch/um/include/asm/page.h           |  14 +++-
+ arch/um/include/asm/pgalloc.h        |  11 ++-
+ arch/um/include/asm/pgtable-4level.h | 119 +++++++++++++++++++++++++++
+ arch/um/include/asm/pgtable.h        |   6 +-
+ arch/um/kernel/mem.c                 |  17 +++-
+ arch/x86/um/Kconfig                  |  38 ++++++---
+ 7 files changed, 189 insertions(+), 17 deletions(-)
+ create mode 100644 arch/um/include/asm/pgtable-4level.h
 
-diff --git a/arch/um/include/shared/as-layout.h b/arch/um/include/shared/as-layout.h
-index c22f46a757dc..480bb44ea1f2 100644
---- a/arch/um/include/shared/as-layout.h
-+++ b/arch/um/include/shared/as-layout.h
-@@ -48,7 +48,7 @@ extern unsigned long brk_start;
- extern unsigned long host_task_size;
- extern unsigned long stub_start;
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index 93a5a8999b07..5d111fc8ccb7 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -208,6 +208,7 @@ config MMAPPER
  
--extern int linux_main(int argc, char **argv);
-+extern int linux_main(int argc, char **argv, char **envp);
- extern void uml_finishsetup(void);
+ config PGTABLE_LEVELS
+ 	int
++	default 4 if 4_LEVEL_PGTABLES
+ 	default 3 if 3_LEVEL_PGTABLES
+ 	default 2
  
- struct siginfo;
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index aff8906304ea..db644fc67069 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -327,7 +327,7 @@ extern int __ignore_sigio_fd(int fd);
- extern int get_pty(void);
+diff --git a/arch/um/include/asm/page.h b/arch/um/include/asm/page.h
+index 9ef9a8aedfa6..c3b2ae03b60c 100644
+--- a/arch/um/include/asm/page.h
++++ b/arch/um/include/asm/page.h
+@@ -57,14 +57,22 @@ typedef unsigned long long phys_t;
+ typedef struct { unsigned long pte; } pte_t;
+ typedef struct { unsigned long pgd; } pgd_t;
  
- /* sys-$ARCH/task_size.c */
--extern unsigned long os_get_top_address(void);
-+extern unsigned long os_get_top_address(char **envp);
- 
- long syscall(long number, ...);
- 
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 5ab1a92b6bf7..046eaf356b28 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -305,7 +305,7 @@ static void parse_cache_line(char *line)
- 	}
- }
- 
--int __init linux_main(int argc, char **argv)
-+int __init linux_main(int argc, char **argv, char **envp)
- {
- 	unsigned long avail, diff;
- 	unsigned long virtmem_size, max_physmem;
-@@ -327,7 +327,7 @@ int __init linux_main(int argc, char **argv)
- 	if (have_console == 0)
- 		add_arg(DEFAULT_COMMAND_LINE_CONSOLE);
- 
--	host_task_size = os_get_top_address();
-+	host_task_size = os_get_top_address(envp);
- 	/* reserve a few pages for the stubs (taking care of data alignment) */
- 	/* align the data portion */
- 	BUILD_BUG_ON(!is_power_of_2(STUB_DATA_PAGES));
-diff --git a/arch/um/os-Linux/main.c b/arch/um/os-Linux/main.c
-index f98ff79cdbf7..9a61b1767795 100644
---- a/arch/um/os-Linux/main.c
-+++ b/arch/um/os-Linux/main.c
-@@ -11,6 +11,7 @@
- #include <signal.h>
- #include <string.h>
- #include <sys/resource.h>
-+#include <sys/personality.h>
- #include <as-layout.h>
- #include <init.h>
- #include <kern_util.h>
-@@ -108,6 +109,12 @@ int __init main(int argc, char **argv, char **envp)
- 	char **new_argv;
- 	int ret, i, err;
- 
-+	/* Disable randomization and re-exec if it was changed successfully */
-+	ret = personality(PER_LINUX | ADDR_NO_RANDOMIZE);
-+	if (ret >= 0 && (ret & (PER_LINUX | ADDR_NO_RANDOMIZE)) !=
-+			 (PER_LINUX | ADDR_NO_RANDOMIZE))
-+		execve("/proc/self/exe", argv, envp);
+-#ifdef CONFIG_3_LEVEL_PGTABLES
++#if CONFIG_PGTABLE_LEVELS > 2
 +
- 	set_stklim();
+ typedef struct { unsigned long pmd; } pmd_t;
+ #define pmd_val(x)	((x).pmd)
+ #define __pmd(x) ((pmd_t) { (x) } )
+-#endif
  
- 	setup_env_path();
-@@ -140,7 +147,7 @@ int __init main(int argc, char **argv, char **envp)
+-#define pte_val(x)	((x).pte)
++#if CONFIG_PGTABLE_LEVELS > 3
+ 
++typedef struct { unsigned long pud; } pud_t;
++#define pud_val(x)	((x).pud)
++#define __pud(x) ((pud_t) { (x) } )
++
++#endif /* CONFIG_PGTABLE_LEVELS > 3 */
++#endif /* CONFIG_PGTABLE_LEVELS > 2 */
++
++#define pte_val(x)	((x).pte)
+ 
+ #define pte_get_bits(p, bits) ((p).pte & (bits))
+ #define pte_set_bits(p, bits) ((p).pte |= (bits))
+diff --git a/arch/um/include/asm/pgalloc.h b/arch/um/include/asm/pgalloc.h
+index de5e31c64793..04fb4e6969a4 100644
+--- a/arch/um/include/asm/pgalloc.h
++++ b/arch/um/include/asm/pgalloc.h
+@@ -31,7 +31,7 @@ do {								\
+ 	tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)));	\
+ } while (0)
+ 
+-#ifdef CONFIG_3_LEVEL_PGTABLES
++#if CONFIG_PGTABLE_LEVELS > 2
+ 
+ #define __pmd_free_tlb(tlb, pmd, address)			\
+ do {								\
+@@ -39,6 +39,15 @@ do {								\
+ 	tlb_remove_page_ptdesc((tlb), virt_to_ptdesc(pmd));	\
+ } while (0)
+ 
++#if CONFIG_PGTABLE_LEVELS > 3
++
++#define __pud_free_tlb(tlb, pud, address)			\
++do {								\
++	pagetable_pud_dtor(virt_to_ptdesc(pud));		\
++	tlb_remove_page_ptdesc((tlb), virt_to_ptdesc(pud));	\
++} while (0)
++
++#endif
  #endif
  
- 	change_sig(SIGPIPE, 0);
--	ret = linux_main(argc, argv);
-+	ret = linux_main(argc, argv, envp);
- 
- 	/*
- 	 * Disable SIGPROF - I have no idea why libc doesn't do this or turn
-diff --git a/arch/x86/um/os-Linux/task_size.c b/arch/x86/um/os-Linux/task_size.c
-index 1dc9adc20b1c..33c26291545a 100644
---- a/arch/x86/um/os-Linux/task_size.c
-+++ b/arch/x86/um/os-Linux/task_size.c
-@@ -65,7 +65,7 @@ static int page_ok(unsigned long page)
- 	return ok;
- }
- 
--unsigned long os_get_top_address(void)
-+unsigned long os_get_top_address(char **envp)
- {
- 	struct sigaction sa, old;
- 	unsigned long bottom = 0;
-@@ -142,10 +142,21 @@ unsigned long os_get_top_address(void)
- 
- #else
- 
--unsigned long os_get_top_address(void)
-+unsigned long os_get_top_address(char **envp)
- {
--	/* The old value of CONFIG_TOP_ADDR */
--	return 0x7fc0002000;
-+	unsigned long top_addr = (unsigned long) &top_addr;
-+	int i;
-+
-+	/* The earliest variable should be after the program name in ELF */
-+	for (i = 0; envp[i]; i++) {
-+		if ((unsigned long) envp[i] > top_addr)
-+			top_addr = (unsigned long) envp[i];
-+	}
-+
-+	top_addr &= ~(UM_KERN_PAGE_SIZE - 1);
-+	top_addr += UM_KERN_PAGE_SIZE;
-+
-+	return top_addr;
- }
- 
  #endif
+diff --git a/arch/um/include/asm/pgtable-4level.h b/arch/um/include/asm/pgtable-4level.h
+new file mode 100644
+index 000000000000..f912fcc16b7a
+--- /dev/null
++++ b/arch/um/include/asm/pgtable-4level.h
+@@ -0,0 +1,119 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright 2003 PathScale Inc
++ * Derived from include/asm-i386/pgtable.h
++ */
++
++#ifndef __UM_PGTABLE_4LEVEL_H
++#define __UM_PGTABLE_4LEVEL_H
++
++#include <asm-generic/pgtable-nop4d.h>
++
++/* PGDIR_SHIFT determines what a fourth-level page table entry can map */
++
++#define PGDIR_SHIFT	39
++#define PGDIR_SIZE	(1UL << PGDIR_SHIFT)
++#define PGDIR_MASK	(~(PGDIR_SIZE-1))
++
++/* PUD_SHIFT determines the size of the area a third-level page table can
++ * map
++ */
++
++#define PUD_SHIFT	30
++#define PUD_SIZE	(1UL << PUD_SHIFT)
++#define PUD_MASK	(~(PUD_SIZE-1))
++
++/* PMD_SHIFT determines the size of the area a second-level page table can
++ * map
++ */
++
++#define PMD_SHIFT	21
++#define PMD_SIZE	(1UL << PMD_SHIFT)
++#define PMD_MASK	(~(PMD_SIZE-1))
++
++/*
++ * entries per page directory level
++ */
++
++#define PTRS_PER_PTE 512
++#define PTRS_PER_PMD 512
++#define PTRS_PER_PUD 512
++#define PTRS_PER_PGD 512
++
++#define USER_PTRS_PER_PGD ((TASK_SIZE + (PGDIR_SIZE - 1)) / PGDIR_SIZE)
++
++#define pte_ERROR(e) \
++        printk("%s:%d: bad pte %p(%016lx).\n", __FILE__, __LINE__, &(e), \
++	       pte_val(e))
++#define pmd_ERROR(e) \
++        printk("%s:%d: bad pmd %p(%016lx).\n", __FILE__, __LINE__, &(e), \
++	       pmd_val(e))
++#define pud_ERROR(e) \
++        printk("%s:%d: bad pud %p(%016lx).\n", __FILE__, __LINE__, &(e), \
++	       pud_val(e))
++#define pgd_ERROR(e) \
++        printk("%s:%d: bad pgd %p(%016lx).\n", __FILE__, __LINE__, &(e), \
++	       pgd_val(e))
++
++#define pud_none(x)	(!(pud_val(x) & ~_PAGE_NEWPAGE))
++#define	pud_bad(x)	((pud_val(x) & (~PAGE_MASK & ~_PAGE_USER)) != _KERNPG_TABLE)
++#define pud_present(x)	(pud_val(x) & _PAGE_PRESENT)
++#define pud_populate(mm, pud, pmd) \
++	set_pud(pud, __pud(_PAGE_TABLE + __pa(pmd)))
++
++#define set_pud(pudptr, pudval) (*(pudptr) = (pudval))
++
++#define p4d_none(x)	(!(p4d_val(x) & ~_PAGE_NEWPAGE))
++#define	p4d_bad(x)	((p4d_val(x) & (~PAGE_MASK & ~_PAGE_USER)) != _KERNPG_TABLE)
++#define p4d_present(x)	(p4d_val(x) & _PAGE_PRESENT)
++#define p4d_populate(mm, p4d, pud) \
++	set_p4d(p4d, __p4d(_PAGE_TABLE + __pa(pud)))
++
++#define set_p4d(p4dptr, p4dval) (*(p4dptr) = (p4dval))
++
++
++static inline int pgd_newpage(pgd_t pgd)
++{
++	return(pgd_val(pgd) & _PAGE_NEWPAGE);
++}
++
++static inline void pgd_mkuptodate(pgd_t pgd) { pgd_val(pgd) &= ~_PAGE_NEWPAGE; }
++
++#define set_pmd(pmdptr, pmdval) (*(pmdptr) = (pmdval))
++
++static inline void pud_clear (pud_t *pud)
++{
++	set_pud(pud, __pud(_PAGE_NEWPAGE));
++}
++
++static inline void p4d_clear (p4d_t *p4d)
++{
++	set_p4d(p4d, __p4d(_PAGE_NEWPAGE));
++}
++
++#define pud_page(pud) phys_to_page(pud_val(pud) & PAGE_MASK)
++#define pud_pgtable(pud) ((pmd_t *) __va(pud_val(pud) & PAGE_MASK))
++
++#define p4d_page(p4d) phys_to_page(p4d_val(p4d) & PAGE_MASK)
++#define p4d_pgtable(p4d) ((pud_t *) __va(p4d_val(p4d) & PAGE_MASK))
++
++static inline unsigned long pte_pfn(pte_t pte)
++{
++	return phys_to_pfn(pte_val(pte));
++}
++
++static inline pte_t pfn_pte(unsigned long page_nr, pgprot_t pgprot)
++{
++	pte_t pte;
++	phys_t phys = pfn_to_phys(page_nr);
++
++	pte_set_val(pte, phys, pgprot);
++	return pte;
++}
++
++static inline pmd_t pfn_pmd(unsigned long page_nr, pgprot_t pgprot)
++{
++	return __pmd((page_nr << PAGE_SHIFT) | pgprot_val(pgprot));
++}
++
++#endif
+diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.h
+index e1ece21dbe3f..71a7651e2db7 100644
+--- a/arch/um/include/asm/pgtable.h
++++ b/arch/um/include/asm/pgtable.h
+@@ -24,9 +24,11 @@
+ /* We borrow bit 10 to store the exclusive marker in swap PTEs. */
+ #define _PAGE_SWP_EXCLUSIVE	0x400
+ 
+-#ifdef CONFIG_3_LEVEL_PGTABLES
++#if CONFIG_PGTABLE_LEVELS == 4
++#include <asm/pgtable-4level.h>
++#elif CONFIG_PGTABLE_LEVELS == 3
+ #include <asm/pgtable-3level.h>
+-#else
++#elif CONFIG_PGTABLE_LEVELS == 2
+ #include <asm/pgtable-2level.h>
+ #endif
+ 
+diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
+index ca91accd64fc..2dc0d90c0550 100644
+--- a/arch/um/kernel/mem.c
++++ b/arch/um/kernel/mem.c
+@@ -99,7 +99,7 @@ static void __init one_page_table_init(pmd_t *pmd)
+ 
+ static void __init one_md_table_init(pud_t *pud)
+ {
+-#ifdef CONFIG_3_LEVEL_PGTABLES
++#if CONFIG_PGTABLE_LEVELS > 2
+ 	pmd_t *pmd_table = (pmd_t *) memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
+ 	if (!pmd_table)
+ 		panic("%s: Failed to allocate %lu bytes align=%lx\n",
+@@ -110,6 +110,19 @@ static void __init one_md_table_init(pud_t *pud)
+ #endif
+ }
+ 
++static void __init one_ud_table_init(p4d_t *p4d)
++{
++#if CONFIG_PGTABLE_LEVELS > 3
++	pud_t *pud_table = (pud_t *) memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
++	if (!pud_table)
++		panic("%s: Failed to allocate %lu bytes align=%lx\n",
++		      __func__, PAGE_SIZE, PAGE_SIZE);
++
++	set_p4d(p4d, __p4d(_KERNPG_TABLE + (unsigned long) __pa(pud_table)));
++	BUG_ON(pud_table != pud_offset(p4d, 0));
++#endif
++}
++
+ static void __init fixrange_init(unsigned long start, unsigned long end,
+ 				 pgd_t *pgd_base)
+ {
+@@ -127,6 +140,8 @@ static void __init fixrange_init(unsigned long start, unsigned long end,
+ 
+ 	for ( ; (i < PTRS_PER_PGD) && (vaddr < end); pgd++, i++) {
+ 		p4d = p4d_offset(pgd, vaddr);
++		if (p4d_none(*p4d))
++			one_ud_table_init(p4d);
+ 		pud = pud_offset(p4d, vaddr);
+ 		if (pud_none(*pud))
+ 			one_md_table_init(pud);
+diff --git a/arch/x86/um/Kconfig b/arch/x86/um/Kconfig
+index 186f13268401..72dc7b0b3a33 100644
+--- a/arch/x86/um/Kconfig
++++ b/arch/x86/um/Kconfig
+@@ -28,16 +28,34 @@ config X86_64
+ 	def_bool 64BIT
+ 	select MODULES_USE_ELF_RELA
+ 
+-config 3_LEVEL_PGTABLES
+-	bool "Three-level pagetables" if !64BIT
+-	default 64BIT
+-	help
+-	  Three-level pagetables will let UML have more than 4G of physical
+-	  memory.  All the memory that can't be mapped directly will be treated
+-	  as high memory.
+-
+-	  However, this it experimental on 32-bit architectures, so if unsure say
+-	  N (on x86-64 it's automatically enabled, instead, as it's safe there).
++choice
++	prompt "Pagetable levels" if EXPERT
++	default 2_LEVEL_PGTABLES if !64BIT
++	default 4_LEVEL_PGTABLES if 64BIT
++
++	config 2_LEVEL_PGTABLES
++		bool "Three-level pagetables" if !64BIT
++		depends on !64BIT
++		help
++		  Two-level page table for 32-bit architectures.
++
++	config 3_LEVEL_PGTABLES
++		bool "Three-level pagetables" if 64BIT
++		help
++		  Three-level pagetables will let UML have more than 4G of physical
++		  memory.  All the memory that can't be mapped directly will be treated
++		  as high memory.
++
++		  However, this it experimental on 32-bit architectures, so if unsure say
++		  N (on x86-64 it's automatically enabled, instead, as it's safe there).
++
++	config 4_LEVEL_PGTABLES
++		bool "Four-level pagetables" if 64BIT
++		depends on 64BIT
++		help
++		  Four-level pagetables, gives a bigger address space which can be
++		  useful for some applications (e.g. ASAN).
++endchoice
+ 
+ config ARCH_HAS_SC_SIGNALS
+ 	def_bool !64BIT
 -- 
 2.45.1
 
