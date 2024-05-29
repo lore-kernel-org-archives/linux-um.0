@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B64AFC25B7C
-	for <linux-um@archiver.kernel.org>; Wed, 29 May 2024 05:05:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C4D4C25B75
+	for <linux-um@archiver.kernel.org>; Wed, 29 May 2024 05:05:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=1JKlKb0rmvW5PqJBHaV8Z8irK92Phe1LJwE6MWVRDfE=; b=LHJBMM7vrqH3gP4CqjvlB34IHq
-	/YqsNllLI6Tm+aMNqsycuj7y/IN7dTCizGSlbZUdmlzCeP4sn/pBEh5uHI7C9PxhAt10XF1Q5pS2V
-	GFl+kpfWBUfTV/6CE/5ST3Ap9qWvf+wyhl+1jTNHE8Sn8gEYQJbr+HemzXJkwkl9LHWUYjswtPG0u
-	k6ir0yKLLlJtiVksoY/FLzVuT/uoBL1IahGRfaF/4BD8VLtdM5qOZR9KruKScszu108KnbXbxbqSp
-	qAqGTJcHhaYowpJNkL10UgO+o8jLOuwuj5F18t3c7oPNQy1ylTtD7zMIV14JJnon+aEticWFzmjMf
-	UZLI+Dng==;
+	bh=TFSwqKWMmudUxPiHaYQymKxOAPLlhLvIfGoe7lZ0Qm8=; b=Zsml69QkWifc9uEceokh7ccihz
+	D5YFrli21494GOyMs+He/qhTHVqlfL/kmYVX/SIkHWF5kwsmJ2eu7m2gcgjrpV84n6qECenzF7A3P
+	3AI/yzLY4AHV1+HPDm/AcTQtqCdxRLtursg9Uz/ATCBdmy74KXLIsqVsz445ar5qIiyx32kZs9aVi
+	HsXj/7KGLlpwt+EAblPUH+fCAli+C2IGrtMzI4WUQutFrcJ0k00AXUuunMQM8coWZIROp103epQGL
+	58wyYSnmBQTl0Mner3+pUICrm0Qee/pA+1bErpUxwz/08lUBkFL3b3eETtWfXeS5Ss4wRvCFfvNoH
+	YNS0YmYg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sCBV5-00000002pXv-18Tn;
-	Wed, 29 May 2024 05:05:23 +0000
+	id 1sCBV6-00000002pZJ-3jcV;
+	Wed, 29 May 2024 05:05:24 +0000
 Received: from 2a02-8389-2341-5b80-7775-b725-99f7-3344.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:7775:b725:99f7:3344] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sCBV3-00000002pVu-0qka;
-	Wed, 29 May 2024 05:05:21 +0000
+	id 1sCBV5-00000002pXT-2RwQ;
+	Wed, 29 May 2024 05:05:24 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>,
 	"Martin K. Petersen" <martin.petersen@oracle.com>
@@ -42,9 +42,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	ceph-devel@vger.kernel.org,
 	xen-devel@lists.xenproject.org,
 	linux-scsi@vger.kernel.org
-Subject: [PATCH 04/12] sd: add a sd_disable_discard helper
-Date: Wed, 29 May 2024 07:04:06 +0200
-Message-ID: <20240529050507.1392041-5-hch@lst.de>
+Subject: [PATCH 05/12] sd: add a sd_disable_write_same helper
+Date: Wed, 29 May 2024 07:04:07 +0200
+Message-ID: <20240529050507.1392041-6-hch@lst.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240529050507.1392041-1-hch@lst.de>
 References: <20240529050507.1392041-1-hch@lst.de>
@@ -64,10 +64,10 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Add helper to disable discard when it is not supported and use it
-instead of sd_config_discard in the I/O completion handler.  This avoids
-touching more fields than required in the I/O completion handler and
-prepares for converting sd to use the atomic queue limits API.
+Add helper to disable WRITE SAME when it is not supported and use it
+instead of sd_config_write_same in the I/O completion handler.  This
+avoids touching more fields than required in the I/O completion handler
+and  prepares for converting sd to use the atomic queue limits API.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
@@ -75,37 +75,33 @@ Signed-off-by: Christoph Hellwig <hch@lst.de>
  1 file changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-index 15d0035048d902..a8838381823254 100644
+index a8838381823254..09ffe9d826aeac 100644
 --- a/drivers/scsi/sd.c
 +++ b/drivers/scsi/sd.c
-@@ -821,6 +821,12 @@ static unsigned char sd_setup_protect_cmnd(struct scsi_cmnd *scmd,
- 	return protect;
+@@ -1004,6 +1004,13 @@ static blk_status_t sd_setup_write_zeroes_cmnd(struct scsi_cmnd *cmd)
+ 	return sd_setup_write_same10_cmnd(cmd, false);
  }
  
-+static void sd_disable_discard(struct scsi_disk *sdkp)
++static void sd_disable_write_same(struct scsi_disk *sdkp)
 +{
-+	sdkp->provisioning_mode = SD_LBP_DISABLE;
-+	blk_queue_max_discard_sectors(sdkp->disk->queue, 0);
++	sdkp->device->no_write_same = 1;
++	sdkp->max_ws_blocks = 0;
++	blk_queue_max_write_zeroes_sectors(sdkp->disk->queue, 0);
 +}
 +
- static void sd_config_discard(struct scsi_disk *sdkp, unsigned int mode)
+ static void sd_config_write_same(struct scsi_disk *sdkp)
  {
  	struct request_queue *q = sdkp->disk->queue;
-@@ -2245,12 +2251,12 @@ static int sd_done(struct scsi_cmnd *SCpnt)
- 		case 0x24:	/* INVALID FIELD IN CDB */
- 			switch (SCpnt->cmnd[0]) {
- 			case UNMAP:
--				sd_config_discard(sdkp, SD_LBP_DISABLE);
-+				sd_disable_discard(sdkp);
- 				break;
- 			case WRITE_SAME_16:
- 			case WRITE_SAME:
+@@ -2258,8 +2265,7 @@ static int sd_done(struct scsi_cmnd *SCpnt)
  				if (SCpnt->cmnd[1] & 8) { /* UNMAP */
--					sd_config_discard(sdkp, SD_LBP_DISABLE);
-+					sd_disable_discard(sdkp);
+ 					sd_disable_discard(sdkp);
  				} else {
- 					sdkp->device->no_write_same = 1;
- 					sd_config_write_same(sdkp);
+-					sdkp->device->no_write_same = 1;
+-					sd_config_write_same(sdkp);
++					sd_disable_write_same(sdkp);
+ 					req->rq_flags |= RQF_QUIET;
+ 				}
+ 				break;
 -- 
 2.43.0
 
