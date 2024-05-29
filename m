@@ -4,50 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A134C25B75
-	for <linux-um@archiver.kernel.org>; Wed, 29 May 2024 08:08:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7EC44C25B7C
+	for <linux-um@archiver.kernel.org>; Wed, 29 May 2024 08:11:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=d6hJEHkEcqK07Rj/G8T5BOakWCfMNHRd0/bNCbNm/4s=; b=h9GZV07O0HQjlwrY22HAcwzguM
-	i5bUpq8O5uQuGgE6fwchgCaPi7fOuEUn8vtak+a1gxcpsGVqFpud5UG+CFdzDvenwmcEvA+YTRhFX
-	58SjAljSUamq8qMtZ3Bozj376p+gymBrsU0rXwI+jl6XcPLwoKB0TWsTDiptLOUHGI+H4XqYLRYnF
-	fht+3hS2k9HYHB9GjM+HYH5QI8cR5xJzHdws/rB7BjpGpGMIlZ8WGZ8aDFFLH0VHgWQ5nu0jmi64E
-	4dGXH0F+QJLnA5Sg90XIzr3mlcVTwHHycfWpk0tuNUO60JdouWlXViLvUeRwEkcHhVzPqxONxfvue
-	EuSH9+5Q==;
+	bh=tmorW89wVy0TqVci1X0dEC3lm+ETqY8c4f618REt8LM=; b=Zp7eXV9HZp7DIx6r8Cfvn3KhWS
+	gdG7JP2pgVQEzeoezqwaeebINnO0hYKVth3BKsfqzBWcmHbqVVfz1eGb2rRCgfYmXWBDEnKiu41J/
+	Kby65qau40IvIkBKonz6/Qe0qceaka5e+AADhIq7y4CWK5ZqkW8Ar+u0cBrWFKvYOt1zFrIyzDBcM
+	C+JnOBe5nREnkaeyV7Pp7TV15WpEzdQlTiFpiB1smHItmQXkRcdD4tNCCLdhmZvkZtNdzAa6YZGM1
+	g+dVF+jkT9mQrl/JG4lBRI3MQTBWQiTsSCJO7y4veZqxb07U1mJkWqqoaKphZUXQpQfiOnb6H0YF2
+	Lyh+FX3w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sCELs-00000003HzE-2sAA;
-	Wed, 29 May 2024 08:08:04 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1sCEOh-00000003Iwi-3Vxe;
+	Wed, 29 May 2024 08:10:59 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sCELn-00000003Hwv-0mRa
+	id 1sCEOZ-00000003IsL-0Nsq
 	for linux-um@lists.infradead.org;
-	Wed, 29 May 2024 08:08:02 +0000
+	Wed, 29 May 2024 08:10:58 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 34657CE17E7;
-	Wed, 29 May 2024 08:07:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 775ACC2BD10;
-	Wed, 29 May 2024 08:07:54 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 8CFE16280B;
+	Wed, 29 May 2024 08:10:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 485B6C2BD10;
+	Wed, 29 May 2024 08:10:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716970076;
-	bh=03smAZVJ+ZngbkLzugn+0eqk3vVwA0F29enlttGAPng=;
+	s=k20201202; t=1716970250;
+	bh=PgFyg9WLnPMWyhLQvcC3XtuqulgVK5WUqskSxNXqJas=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=bpShr1IttagkOMnjhsCdo/g2zCZdY/J9hEgnQoOTkwd/TZHIkKASoDSf8+3m+pnEU
-	 5dgEnznMnW+pmlqrkv7jTaUFTY8kya1x2kUeM5RGbZFNTb0NPcdTvktgyScpIfQiJz
-	 9SYMygauOoY+shIGTFDnwWQBHpng4+D37VR3bFWoOFjpfjsD6ALyH7jGpvSUfQiild
-	 6MYzCPhcHg2QsVviU+udRgGt0N3LKskHM5NeZnp90eaxAQpCTzBcjNqXPPgoNsWukV
-	 tC4NqjBN6Q6n3ZjWDlVJ+cmaEz8hv6lMBRlGWijOn043mJOWWcO86EQJdQiEIrkwsT
-	 sU1UkJ18oQYDg==
-Message-ID: <24cad983-a1a0-4983-989d-79bcc9fd8a0a@kernel.org>
-Date: Wed, 29 May 2024 17:07:53 +0900
+	b=DZK1VEReps9AHETpZWUhqpsG+MI00Z0ABB6+gsyW4Gi/Z5H2wxRpGys0fUV/CkDBi
+	 ekm5UCfe5kEy0dcpfusrq9SB9N1ZwavpRU82ufk8JfWE2lzM+/YXbDY2BXVIIMJY0E
+	 T5zQzfJHsOYj5o65HP0rDO9kO+0LU/4axtrqsBUXTVh+zCLdt4IzBnkae9F0/64AST
+	 gqMNnuwWzByDW5WKf7i4hE7fr6Q5anX+m2We3adJ81nyxudkw5rtlBVLP6JZkCEX3i
+	 Pcy2SlsuFxqd5emx5tb3bXdTCobvVRykH3xWoY1UPtWqs2G9X7g/qXHlmyyZj0p92U
+	 NdB9TJbaHuhIA==
+Message-ID: <868a031d-a6f5-4f89-b0ee-f74f6ab38dbc@kernel.org>
+Date: Wed, 29 May 2024 17:10:47 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 03/12] sd: simplify the ZBC case in
- provisioning_mode_store
+Subject: Re: [PATCH 04/12] sd: add a sd_disable_discard helper
 To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
  "Martin K. Petersen" <martin.petersen@oracle.com>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -60,16 +59,17 @@ Cc: Richard Weinberger <richard@nod.at>,
  nbd@other.debian.org, ceph-devel@vger.kernel.org,
  xen-devel@lists.xenproject.org, linux-scsi@vger.kernel.org
 References: <20240529050507.1392041-1-hch@lst.de>
- <20240529050507.1392041-4-hch@lst.de>
-Content-Language: en-US
+ <20240529050507.1392041-5-hch@lst.de>
 From: Damien Le Moal <dlemoal@kernel.org>
+Content-Language: en-US
 Organization: Western Digital Research
-In-Reply-To: <20240529050507.1392041-4-hch@lst.de>
+In-Reply-To: <20240529050507.1392041-5-hch@lst.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240529_010759_452339_067E2900 
-X-CRM114-Status: GOOD (  18.51  )
+X-CRM114-CacheID: sfid-20240529_011051_219085_7D868D2A 
+X-CRM114-Status: UNSURE (   8.45  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,48 +85,16 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On 5/29/24 14:04, Christoph Hellwig wrote:
-> Don't reset the discard settings to no-op over and over when a user
-> writes to the provisioning attribute as that is already the default
-> mode for ZBC devices.  In hindsight we should have made writing to
-> the attribute fail for ZBC devices, but the code has probably been
-> around for far too long to change this now.
+> Add helper to disable discard when it is not supported and use it
+> instead of sd_config_discard in the I/O completion handler.  This avoids
+> touching more fields than required in the I/O completion handler and
+> prepares for converting sd to use the atomic queue limits API.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  drivers/scsi/sd.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-> index 3dff9150ce11e2..15d0035048d902 100644
-> --- a/drivers/scsi/sd.c
-> +++ b/drivers/scsi/sd.c
-> @@ -461,14 +461,13 @@ provisioning_mode_store(struct device *dev, struct device_attribute *attr,
->  	if (!capable(CAP_SYS_ADMIN))
->  		return -EACCES;
->  
-> -	if (sd_is_zoned(sdkp)) {
-> -		sd_config_discard(sdkp, SD_LBP_DISABLE);
-> -		return count;
-> -	}
-> -
->  	if (sdp->type != TYPE_DISK)
->  		return -EINVAL;
->  
-> +	/* ignore the proivisioning mode for ZBB devices */
 
-s/proivisioning/provisioning
-s/ZBB/ZBC
-
-With that fixed,
+Looks good.
 
 Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
-
-> +	if (sd_is_zoned(sdkp))
-> +		return count;
-> +
->  	mode = sysfs_match_string(lbp_mode, buf);
->  	if (mode < 0)
->  		return -EINVAL;
 
 -- 
 Damien Le Moal
