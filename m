@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 15AD6C25B75
-	for <linux-um@archiver.kernel.org>; Wed, 29 May 2024 05:05:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B64AFC25B7C
+	for <linux-um@archiver.kernel.org>; Wed, 29 May 2024 05:05:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=82BW6iQIk3FEFa4vhGtCkVzTHLP2megWywmDpB65ENg=; b=m7abNehAurFN9cXtxRT2ooYGLo
-	4Q4DSD+/AwUH4W8tUpGAeRJV2NtxuMPpej3Dd5rhBN7vd2HjVYU9ceKSDzUKdgNKFErsWQmhhKq3o
-	kCTrdhsM0EbzojJ5C7GEIpYKN+N9FpM8lkZmW3UBIn++8/H9UKM/mtw5t8jNp4XSx30JbRYNH1vcF
-	35G8YuejLWAfDjgSOqG59eQ8DaKZCmEi6ykaFQ4vq7Es9Yhn2b7PfqbwgjZ+q6NHl0543jjroekB9
-	/qrhmlpOD+w2WGh4UFW7Q9+gjECb6wSJIZF4HHlbH4WBtW0wPmsWB7snTlNU1uvBy0xe9vs0Il3sO
-	QU0oxHOw==;
+	bh=1JKlKb0rmvW5PqJBHaV8Z8irK92Phe1LJwE6MWVRDfE=; b=LHJBMM7vrqH3gP4CqjvlB34IHq
+	/YqsNllLI6Tm+aMNqsycuj7y/IN7dTCizGSlbZUdmlzCeP4sn/pBEh5uHI7C9PxhAt10XF1Q5pS2V
+	GFl+kpfWBUfTV/6CE/5ST3Ap9qWvf+wyhl+1jTNHE8Sn8gEYQJbr+HemzXJkwkl9LHWUYjswtPG0u
+	k6ir0yKLLlJtiVksoY/FLzVuT/uoBL1IahGRfaF/4BD8VLtdM5qOZR9KruKScszu108KnbXbxbqSp
+	qAqGTJcHhaYowpJNkL10UgO+o8jLOuwuj5F18t3c7oPNQy1ylTtD7zMIV14JJnon+aEticWFzmjMf
+	UZLI+Dng==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sCBV2-00000002pW4-2G9H;
-	Wed, 29 May 2024 05:05:20 +0000
+	id 1sCBV5-00000002pXv-18Tn;
+	Wed, 29 May 2024 05:05:23 +0000
 Received: from 2a02-8389-2341-5b80-7775-b725-99f7-3344.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:7775:b725:99f7:3344] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sCBV0-00000002pUR-1qVO;
-	Wed, 29 May 2024 05:05:18 +0000
+	id 1sCBV3-00000002pVu-0qka;
+	Wed, 29 May 2024 05:05:21 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>,
 	"Martin K. Petersen" <martin.petersen@oracle.com>
@@ -42,9 +42,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	ceph-devel@vger.kernel.org,
 	xen-devel@lists.xenproject.org,
 	linux-scsi@vger.kernel.org
-Subject: [PATCH 03/12] sd: simplify the ZBC case in provisioning_mode_store
-Date: Wed, 29 May 2024 07:04:05 +0200
-Message-ID: <20240529050507.1392041-4-hch@lst.de>
+Subject: [PATCH 04/12] sd: add a sd_disable_discard helper
+Date: Wed, 29 May 2024 07:04:06 +0200
+Message-ID: <20240529050507.1392041-5-hch@lst.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240529050507.1392041-1-hch@lst.de>
 References: <20240529050507.1392041-1-hch@lst.de>
@@ -64,40 +64,48 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Don't reset the discard settings to no-op over and over when a user
-writes to the provisioning attribute as that is already the default
-mode for ZBC devices.  In hindsight we should have made writing to
-the attribute fail for ZBC devices, but the code has probably been
-around for far too long to change this now.
+Add helper to disable discard when it is not supported and use it
+instead of sd_config_discard in the I/O completion handler.  This avoids
+touching more fields than required in the I/O completion handler and
+prepares for converting sd to use the atomic queue limits API.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/scsi/sd.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/scsi/sd.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-index 3dff9150ce11e2..15d0035048d902 100644
+index 15d0035048d902..a8838381823254 100644
 --- a/drivers/scsi/sd.c
 +++ b/drivers/scsi/sd.c
-@@ -461,14 +461,13 @@ provisioning_mode_store(struct device *dev, struct device_attribute *attr,
- 	if (!capable(CAP_SYS_ADMIN))
- 		return -EACCES;
+@@ -821,6 +821,12 @@ static unsigned char sd_setup_protect_cmnd(struct scsi_cmnd *scmd,
+ 	return protect;
+ }
  
--	if (sd_is_zoned(sdkp)) {
--		sd_config_discard(sdkp, SD_LBP_DISABLE);
--		return count;
--	}
--
- 	if (sdp->type != TYPE_DISK)
- 		return -EINVAL;
- 
-+	/* ignore the proivisioning mode for ZBB devices */
-+	if (sd_is_zoned(sdkp))
-+		return count;
++static void sd_disable_discard(struct scsi_disk *sdkp)
++{
++	sdkp->provisioning_mode = SD_LBP_DISABLE;
++	blk_queue_max_discard_sectors(sdkp->disk->queue, 0);
++}
 +
- 	mode = sysfs_match_string(lbp_mode, buf);
- 	if (mode < 0)
- 		return -EINVAL;
+ static void sd_config_discard(struct scsi_disk *sdkp, unsigned int mode)
+ {
+ 	struct request_queue *q = sdkp->disk->queue;
+@@ -2245,12 +2251,12 @@ static int sd_done(struct scsi_cmnd *SCpnt)
+ 		case 0x24:	/* INVALID FIELD IN CDB */
+ 			switch (SCpnt->cmnd[0]) {
+ 			case UNMAP:
+-				sd_config_discard(sdkp, SD_LBP_DISABLE);
++				sd_disable_discard(sdkp);
+ 				break;
+ 			case WRITE_SAME_16:
+ 			case WRITE_SAME:
+ 				if (SCpnt->cmnd[1] & 8) { /* UNMAP */
+-					sd_config_discard(sdkp, SD_LBP_DISABLE);
++					sd_disable_discard(sdkp);
+ 				} else {
+ 					sdkp->device->no_write_same = 1;
+ 					sd_config_write_same(sdkp);
 -- 
 2.43.0
 
