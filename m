@@ -4,55 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8EA9C25B75
-	for <linux-um@archiver.kernel.org>; Thu, 30 May 2024 03:07:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD8F6C25B78
+	for <linux-um@archiver.kernel.org>; Thu, 30 May 2024 08:54:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Ql/X5MPHOqz0Dazk+XvHqGrsSkDLGOl071tj+kglOgU=; b=YD/xp61hpSqoaKI42J1yxghGSd
-	wjPjEzlvpqDfKwmuAuqFplESXeoQeOi66SbjNdRnYyVm/WT2e/C0m04vDysr5i6Daugt8+OMDODH9
-	CoSIw9IcPf6cGHBZH6Z+1HfBsbxGlQJ2NEggbQxHtzkSyuaHSBZ+0CyISiUTuiF/lhEtvg5GL88eE
-	UNwsLH45d/al8UEbHngikhsoSQyD5KXeeUnQeEp2X6r+FD083bzTbqKTMYwqczrSnSzbmeFpBAxml
-	WzYc6DFusnU31qK0S9jItpZUxLQe1NQ3xUVfFr+3MRpETVdUMTXXM7y5QDb9sSa6k//T8pqoUPCYI
-	p+bMtVNQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:To:From:
+	Subject:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=kdfBd8EH3eRGtnH7TLrvqUejoNS9YTFjNs9j1O2nDas=; b=AfoeANycgJPPrrdfUx88PHEbVc
+	36qCV2h8EfN7u795/3us+49UCn5l96G//p/c7PkKu+SZp8Hd58A5G8N9N2JO49EPsUBndM50fqp+S
+	NGjaQNubDN3lVmEeMQ3BKR9QtBbr1fRClYmERc5cm2XIgtuR8rYk8Pt1TPwTDDEXgIaA2RXVonwPS
+	v7hjy3/uw+TRc/JubM9VBpMKCkT0mY0jrvXXXVRqETA9h+4eOllDyYEA1OzZlMMnKZ2hchvFV1msP
+	ivHHhLDy/AqGIaZX3zPtTYuqDXNCxwzTbNvqUe0/VFHfx7IYkDb+iQPD9q/YlxoqPYcWDcMlaMiFZ
+	9LxWmTtQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sCW8T-000000069sZ-1zyl;
-	Thu, 30 May 2024 03:07:25 +0000
-Received: from out0-211.mail.aliyun.com ([140.205.0.211])
+	id 1sCbYX-00000006hRb-3gAC;
+	Thu, 30 May 2024 08:54:41 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sCW8Q-000000069rw-0CfA
+	id 1sCbYU-00000006hR4-1x4y
 	for linux-um@lists.infradead.org;
-	Thu, 30 May 2024 03:07:24 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=antgroup.com; s=default;
-	t=1717038436; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=Ql/X5MPHOqz0Dazk+XvHqGrsSkDLGOl071tj+kglOgU=;
-	b=WiXswMgju5FYpjPEwLpf726vBuJOvgE7tBaSjlVEBkO7zfNPO+MuuZiIUZ+JCOwx2CDxNpW0h/fIjr0sixpm29osUAQ5kHfObd897TFaFc54hJubHdERY4PxVW0BNGqPTV8/Z3cQuGFBZlpcQxBLrVXARlQieNUq7oTNsRnsvW8=
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033068221070;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---.XqsjMz6_1717038433;
-Received: from 30.177.168.159(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.XqsjMz6_1717038433)
-          by smtp.aliyun-inc.com;
-          Thu, 30 May 2024 11:07:14 +0800
-Message-ID: <64fc3b3f-50c7-42c1-a30d-c3eb90c76286@antgroup.com>
-Date: Thu, 30 May 2024 11:07:11 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/5] um: Add 4 level page table support
-To: benjamin@sipsolutions.net, linux-um@lists.infradead.org
-Cc: Benjamin Berg <benjamin.berg@intel.com>
+	Thu, 30 May 2024 08:54:40 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:To:From:Subject:Message-ID:Sender:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=kdfBd8EH3eRGtnH7TLrvqUejoNS9YTFjNs9j1O2nDas=;
+	t=1717059276; x=1718268876; b=PnxTx0i6GdlowOrRRI+QWJuTuIZ2ToBSdl+pG6dbrf4fed9
+	zKTAD1rbp7/1xYCHULaCOpGrNX0s/YJZOCGwNYS953danh0wGFEdGkkaVS8bUWB7pwNGAdtvvVEgr
+	X66i2PZ35Yev00/B8TY3ElvS0ld6f+TFv9FgSf6w7Tv7yDjwr6wWussNJ6SAmkSOcuIb65tFelJWV
+	Sc7n6KDBIm/aNEjzpffKTsdW4pM+KSSpqr4Cp1eouTgNpyIYC9vAjH4zQSKIbv5inufsqvlk9uLvO
+	5LqD9LwYbzzJHHg19twShrx6tHMlVhddd66JhrMGiT/yzSGzTFIzPS544ujY7mmQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <benjamin@sipsolutions.net>)
+	id 1sCbYM-00000000wxc-0M63;
+	Thu, 30 May 2024 10:54:30 +0200
+Message-ID: <6a1a9b9fe5c7d8c7ecd2b42c9f61346318a5f659.camel@sipsolutions.net>
+Subject: Re: [PATCH 3/5] um: Do a double clone to disable rseq
+From: Benjamin Berg <benjamin@sipsolutions.net>
+To: Tiwei Bie <tiwei.btw@antgroup.com>, Johannes Berg
+	 <johannes@sipsolutions.net>, linux-um@lists.infradead.org
+Date: Thu, 30 May 2024 10:54:27 +0200
+In-Reply-To: <759a6a53-efbc-4b11-8065-622702eb120b@antgroup.com>
 References: <20240528085419.1964424-1-benjamin@sipsolutions.net>
- <20240528085419.1964424-6-benjamin@sipsolutions.net>
-Content-Language: en-US
-From: "Tiwei Bie" <tiwei.btw@antgroup.com>
-In-Reply-To: <20240528085419.1964424-6-benjamin@sipsolutions.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+	 <20240528085419.1964424-4-benjamin@sipsolutions.net>
+	 <5f5505da-ba67-421e-b0f5-6a5c19955f27@antgroup.com>
+	 <4a9d3075304f39b818009081d496b0f245bad450.camel@sipsolutions.net>
+	 <37d6a0e2-bbc2-4a93-bd7c-3cef847eba54@antgroup.com>
+	 <759a6a53-efbc-4b11-8065-622702eb120b@antgroup.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.1 (3.52.1-1.fc40) 
+MIME-Version: 1.0
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240529_200722_745523_FA308971 
-X-CRM114-Status: GOOD (  11.24  )
+X-CRM114-CacheID: sfid-20240530_015438_747678_60621658 
+X-CRM114-Status: GOOD (  24.15  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,93 +77,77 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 5/28/24 4:54 PM, benjamin@sipsolutions.net wrote:
-[...]
-> diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-> index 93a5a8999b07..5d111fc8ccb7 100644
-> --- a/arch/um/Kconfig
-> +++ b/arch/um/Kconfig
-> @@ -208,6 +208,7 @@ config MMAPPER
->  
->  config PGTABLE_LEVELS
->  	int
-> +	default 4 if 4_LEVEL_PGTABLES
->  	default 3 if 3_LEVEL_PGTABLES
->  	default 2
->  
-[...]
-> diff --git a/arch/x86/um/Kconfig b/arch/x86/um/Kconfig
-> index 186f13268401..72dc7b0b3a33 100644
-> --- a/arch/x86/um/Kconfig
-> +++ b/arch/x86/um/Kconfig
-> @@ -28,16 +28,34 @@ config X86_64
->  	def_bool 64BIT
->  	select MODULES_USE_ELF_RELA
->  
-> -config 3_LEVEL_PGTABLES
-> -	bool "Three-level pagetables" if !64BIT
-> -	default 64BIT
-> -	help
-> -	  Three-level pagetables will let UML have more than 4G of physical
-> -	  memory.  All the memory that can't be mapped directly will be treated
-> -	  as high memory.
-> -
-> -	  However, this it experimental on 32-bit architectures, so if unsure say
-> -	  N (on x86-64 it's automatically enabled, instead, as it's safe there).
-> +choice
-> +	prompt "Pagetable levels" if EXPERT
-> +	default 2_LEVEL_PGTABLES if !64BIT
-> +	default 4_LEVEL_PGTABLES if 64BIT
-> +
-> +	config 2_LEVEL_PGTABLES
-> +		bool "Three-level pagetables" if !64BIT
+Hi,
 
-Nit: s/Three-level/Two-level/
+On Thu, 2024-05-30 at 10:54 +0800, Tiwei Bie wrote:
+> On 5/28/24 10:13 PM, Tiwei Bie wrote:
+> > On 5/28/24 7:57 PM, Johannes Berg wrote:
+> > > On Tue, 2024-05-28 at 18:16 +0800, Tiwei Bie wrote:
+> > > > On 5/28/24 4:54 PM, benjamin@sipsolutions.net=C2=A0wrote:
+> > > > > From: Benjamin Berg <benjamin.berg@intel.com>
+> > > > >=20
+> > > > > Newer glibc versions are enabling rseq support by default. This r=
+emains
+> > > > > enabled in the cloned child process, potentially causing the host=
+ kernel
+> > > > > to write/read memory in the child.
+> > > > >=20
+> > > > > It appears that this was purely not an issue because the used mem=
+ory
+> > > > > area happened to be above TASK_SIZE and remains mapped.
+> > > >=20
+> > > > I also encountered this issue. In my case, with "Force a static lin=
+k"
+> > > > (CONFIG_STATIC_LINK) enabled, UML will crash immediately every time
+> > > > it starts up. I worked around this by setting the glibc.pthread.rse=
+q
+> > > > tunable via GLIBC_TUNABLES [1] before launching UML.
+> > > >=20
+> > > > So another easy way to work around this issue without introducing r=
+untime
+> > > > overhead might be to add the GLIBC_TUNABLES=3Dglibc.pthread.rseq=3D=
+0 environment
+> > > > variable and exec /proc/self/exe in UML on startup.
+> > > >=20
+> > >=20
+> > > It's also a bit of a question what to rely on - this would introduce =
+a
+> > > dependency on glibc behaviour, whereas doing the double-clone propose=
+d
+> > > here will work purely because of host kernel behaviour, regardless of
+> > > what part of the system set up rseq, how the tunables work, etc.
+> >=20
+> > Makes sense. My previous concern was primarily about the runtime overhe=
+ad,
+> > but after taking a closer look at the patch, I realized that the double=
+-clone
+> > won't happen on the critical path, so there shouldn't be any performanc=
+e
+> > issues. I also think the double-clone proposal is better. :)
+>=20
+> But when combined with this series [1], things might be different..
+> Double-clone will happen for each new mm context. That's something
+> we might want to avoid.
 
-> +		depends on !64BIT
-> +		help
-> +		  Two-level page table for 32-bit architectures.
-> +
-> +	config 3_LEVEL_PGTABLES
-> +		bool "Three-level pagetables" if 64BIT
-> +		help
-> +		  Three-level pagetables will let UML have more than 4G of physical
-> +		  memory.  All the memory that can't be mapped directly will be treated
-> +		  as high memory.
-> +
-> +		  However, this it experimental on 32-bit architectures, so if unsure say
-> +		  N (on x86-64 it's automatically enabled, instead, as it's safe there).
-> +
-> +	config 4_LEVEL_PGTABLES
-> +		bool "Four-level pagetables" if 64BIT
-> +		depends on 64BIT
-> +		help
-> +		  Four-level pagetables, gives a bigger address space which can be
-> +		  useful for some applications (e.g. ASAN).
+I cannot believe that this overhead is something to worry about. The
+CLONE_VM step should be really fast compared to the second clone as it
+runs in the same MM as the kernel (it is how posix_spawn avoids the
+fork overhead to execute another process if possible).
 
-On 64bit, it appears that 4_LEVEL_PGTABLES won't be selected by running
-"make ARCH=um defconfig", and PGTABLE_LEVELS will be 2.
+Note that using execve in the second step would speed things up even
+more as the process will then run in a new MM instead of copying the
+kernel MM and cleaning it.
 
-I got the following search result in "make ARCH=um menuconfig":
+That said, this patch can be made simpler by using CLONE_VFORK.
 
-  │ Symbol: 4_LEVEL_PGTABLES [=n]
-  │ Type  : bool
-  │ Defined at arch/x86/um/Kconfig:51
-  │   Prompt: Four-level pagetables
-  │   Depends on: <choice> && 64BIT [=y]
-  │   Location:
-  │ (1) -> UML-specific options
-  │       -> Pagetable levels (<choice> [=n])
-  │         -> Four-level pagetables (4_LEVEL_PGTABLES [=n])
+Benjamin
 
-And 4_LEVEL_PGTABLES will be selected if I turn on EXPERT manually.
-
-Regards,
-Tiwei
-
-> +endchoice
->  
->  config ARCH_HAS_SC_SIGNALS
->  	def_bool !64BIT
+>=20
+> [1] https://patchwork.ozlabs.org/project/linux-um/list/?series=3D408104
+>=20
+> Regards,
+> Tiwei
+>=20
+>=20
 
 
