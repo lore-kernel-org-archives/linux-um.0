@@ -4,63 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C445BC25B74
-	for <linux-um@archiver.kernel.org>; Thu, 30 May 2024 11:48:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6CD88C25B74
+	for <linux-um@archiver.kernel.org>; Thu, 30 May 2024 12:00:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=yYL8uItYjLvX4XXmJVewmmoWRUKbv1uKkHOYIVSiw1Y=; b=EFWaG+U38heeS5/UhGv4YtlNAV
-	SDmQXcdvfN9WF/dgKR7vfYqawU7XmrjmtlBQrmygcdleJalTtM6bl3gNaBdaaeiyorseVoCvDyhz7
-	yZujlFNfdEs3262fjgraRqFtxzXqCYRFJBZh6Y9YhV4OrajEMoykj3Wrd7z5NSlvPfnZucpIs4j3O
-	wbe4iIu3LWKa6Adveny8dweMHFFZfA0fqqeqrpnFB6M/hFliI7jCmBR20p+Trjt3izUrYGHCPUIJr
-	hDgwaz8Nn+ojwx7f8WZLWi6b7GMPGodSd+wEMnfQcV6c0yqPucfCkFlb0aFD5RpdVhFWDG9j4jgK5
-	IIkgO6Zw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:
+	Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From:
+	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=JEq2Mh0Rlq08t7izyLbxxhiNFXu0zEokYecsL7S78cs=; b=4s9Y4041ro4bZHmr9elzbTXKIq
+	sqlZ96+WIkPcRTQyaAea+HH8fnwZKy5sYsebMS4m1gQGjJ6RnjW9GSGhoXrtpa3zAJNSuF6DZc1Om
+	YbbxPmX3RjNiTWY51Me/XAe/397btH5Mzg2xcUWbYxFsX1CsxkrGiH60AQJqzlYe8C0rXadkY8Xdh
+	AHc8EkdCh0fcGHvREj+qR39Sa6QBDHBkP9o+oG1uymxgpf+Sa7k7aM0FJGmsOFXV9wStpKtxovu57
+	bdlWstxxxd9MKpsd/yD3Z3ejG5vpoG3mDRQCZmn9Q/aWZhxyYME0xP3hwgJ9Qgkc41Y7rEHgqS3Tn
+	l7X0S4MQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sCeGR-0000000796z-3ZWA;
-	Thu, 30 May 2024 11:48:11 +0000
-Received: from szxga02-in.huawei.com ([45.249.212.188])
+	id 1sCeSF-00000007AlU-0eZ6;
+	Thu, 30 May 2024 12:00:23 +0000
+Received: from szxga01-in.huawei.com ([45.249.212.187])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sCeGN-0000000794Y-1QwK
+	id 1sCeS7-00000007Aj5-0Jwd
 	for linux-um@lists.infradead.org;
-	Thu, 30 May 2024 11:48:10 +0000
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VqksY3crKzmWyJ;
-	Thu, 30 May 2024 19:43:29 +0800 (CST)
+	Thu, 30 May 2024 12:00:21 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Vql8G56dvzwQb9;
+	Thu, 30 May 2024 19:56:14 +0800 (CST)
 Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id AAEA0140382;
-	Thu, 30 May 2024 19:47:53 +0800 (CST)
-Received: from [10.67.111.104] (10.67.111.104) by
- dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 30 May 2024 19:47:53 +0800
-Message-ID: <49f5cd14-987f-4d72-8606-496fca08a708@huawei.com>
-Date: Thu, 30 May 2024 19:47:52 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] hostfs: convert hostfs to use the new mount api
-To: Dan Carpenter <dan.carpenter@linaro.org>
-CC: <oe-kbuild@lists.linux.dev>, <richard@nod.at>,
-	<anton.ivanov@cambridgegreys.com>, <johannes@sipsolutions.net>,
-	<lkp@intel.com>, <oe-kbuild-all@lists.linux.dev>,
-	<linux-um@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>
-References: <d845ba1a-2b10-4d83-a687-56406ce657c9@suswa.mountain>
- <74576c52-5eca-4961-ada4-a9ec99fb16cf@huawei.com>
- <df349a89-e638-41de-858b-04341d89774e@moroto.mountain>
-Content-Language: en-US
+	by mail.maildlp.com (Postfix) with ESMTPS id 8668F180AA5;
+	Thu, 30 May 2024 20:00:03 +0800 (CST)
+Received: from huawei.com (10.90.53.73) by dggpeml500022.china.huawei.com
+ (7.185.36.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 30 May
+ 2024 20:00:03 +0800
 From: Hongbo Li <lihongbo22@huawei.com>
-In-Reply-To: <df349a89-e638-41de-858b-04341d89774e@moroto.mountain>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.111.104]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+To: <richard@nod.at>, <anton.ivanov@cambridgegreys.com>,
+	<johannes@sipsolutions.net>
+CC: <brauner@kernel.org>, <viro@zeniv.linux.org.uk>,
+	<linux-um@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
+	<lihongbo22@huawei.com>
+Subject: [PATCH v2] hostfs: convert hostfs to use the new mount API
+Date: Thu, 30 May 2024 20:01:11 +0800
+Message-ID: <20240530120111.3794664-1-lihongbo22@huawei.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.90.53.73]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  dggpeml500022.china.huawei.com (7.185.36.66)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240530_044807_624131_D22D1BA2 
-X-CRM114-Status: GOOD (  13.02  )
+X-CRM114-CacheID: sfid-20240530_050019_492887_A231E6EC 
+X-CRM114-Status: GOOD (  16.16  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,40 +70,185 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Thanks for replying.
+Convert the hostfs filesystem to the new internal mount API as the old
+one will be obsoleted and removed.  This allows greater flexibility in
+communication of mount parameters between userspace, the VFS and the
+filesystem.
 
-I will send the new patch marked with v2 later.
+See Documentation/filesystems/mount_api.txt for more information.
 
-regards,
-Hongbo Li
+Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
+---
+Changes since v1:
+  - Fixed uninitialized variable warning and rebase on latest code.
+---
+ fs/hostfs/hostfs_kern.c | 83 ++++++++++++++++++++++++++++++-----------
+ 1 file changed, 62 insertions(+), 21 deletions(-)
 
-On 2024/5/23 18:43, Dan Carpenter wrote:
-> On Fri, May 17, 2024 at 07:21:09PM +0800, Hongbo Li wrote:
->> Thanks for your attention, I have solved the warnings in the following patch
->> (the similar title: hostfs: convert hostfs to use the new mount API):
->>
->> https://lore.kernel.org/all/20240515025536.3667017-1-lihongbo22@huawei.com/
->>
->> or
->>
->> https://patchwork.ozlabs.org/project/linux-um/patch/20240515025536.3667017-1-lihongbo22@huawei.com/
->>
->> It was strange that the kernel test robot did not send the results on the
->> new patch.
-> 
-> With uninitialized variable warnings, quite often Smatch is not the only
-> or first checker to report the bug so I normally search lore to see if
-> it has already been fixed.  In this case there were no bug reports from
-> Nathan Chancelor and the second version of the patch wasn't marked as a
-> v2 and there was no note explaining it like:
-> 
-> ---
-> v2: fixed uninitialized variable warning
-> 
-> So it wasn't immediately clear that it had been fixed already.
-> https://staticthinking.wordpress.com/2022/07/27/how-to-send-a-v2-patch/
-> 
-> regards,
-> dan carpenter
-> 
+diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+index a73d27c4dd58..6ec3c368d7bf 100644
+--- a/fs/hostfs/hostfs_kern.c
++++ b/fs/hostfs/hostfs_kern.c
+@@ -16,11 +16,16 @@
+ #include <linux/seq_file.h>
+ #include <linux/writeback.h>
+ #include <linux/mount.h>
++#include <linux/fs_context.h>
+ #include <linux/namei.h>
+ #include "hostfs.h"
+ #include <init.h>
+ #include <kern.h>
+ 
++struct hostfs_fs_info {
++	char *host_root_path;
++};
++
+ struct hostfs_inode_info {
+ 	int fd;
+ 	fmode_t mode;
+@@ -90,8 +95,10 @@ static char *__dentry_name(struct dentry *dentry, char *name)
+ 	char *p = dentry_path_raw(dentry, name, PATH_MAX);
+ 	char *root;
+ 	size_t len;
++	struct hostfs_fs_info *fsi;
+ 
+-	root = dentry->d_sb->s_fs_info;
++	fsi = dentry->d_sb->s_fs_info;
++	root = fsi->host_root_path;
+ 	len = strlen(root);
+ 	if (IS_ERR(p)) {
+ 		__putname(name);
+@@ -196,8 +203,10 @@ static int hostfs_statfs(struct dentry *dentry, struct kstatfs *sf)
+ 	long long f_bavail;
+ 	long long f_files;
+ 	long long f_ffree;
++	struct hostfs_fs_info *fsi;
+ 
+-	err = do_statfs(dentry->d_sb->s_fs_info,
++	fsi = dentry->d_sb->s_fs_info;
++	err = do_statfs(fsi->host_root_path,
+ 			&sf->f_bsize, &f_blocks, &f_bfree, &f_bavail, &f_files,
+ 			&f_ffree, &sf->f_fsid, sizeof(sf->f_fsid),
+ 			&sf->f_namelen);
+@@ -245,7 +254,11 @@ static void hostfs_free_inode(struct inode *inode)
+ 
+ static int hostfs_show_options(struct seq_file *seq, struct dentry *root)
+ {
+-	const char *root_path = root->d_sb->s_fs_info;
++	struct hostfs_fs_info *fsi;
++	const char *root_path;
++
++	fsi = root->d_sb->s_fs_info;
++	root_path = fsi->host_root_path;
+ 	size_t offset = strlen(root_ino) + 1;
+ 
+ 	if (strlen(root_path) > offset)
+@@ -922,10 +935,11 @@ static const struct inode_operations hostfs_link_iops = {
+ 	.get_link	= hostfs_get_link,
+ };
+ 
+-static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
++static int hostfs_fill_super(struct super_block *sb, struct fs_context *fc)
+ {
++	struct hostfs_fs_info *fsi = sb->s_fs_info;
+ 	struct inode *root_inode;
+-	char *host_root_path, *req_root = d;
++	char *host_root = fc->source;
+ 	int err;
+ 
+ 	sb->s_blocksize = 1024;
+@@ -939,15 +953,15 @@ static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
+ 		return err;
+ 
+ 	/* NULL is printed as '(null)' by printf(): avoid that. */
+-	if (req_root == NULL)
+-		req_root = "";
++	if (fc->source == NULL)
++		host_root = "";
+ 
+-	sb->s_fs_info = host_root_path =
+-		kasprintf(GFP_KERNEL, "%s/%s", root_ino, req_root);
+-	if (host_root_path == NULL)
++	fsi->host_root_path =
++		kasprintf(GFP_KERNEL, "%s/%s", root_ino, host_root);
++	if (fsi->host_root_path == NULL)
+ 		return -ENOMEM;
+ 
+-	root_inode = hostfs_iget(sb, host_root_path);
++	root_inode = hostfs_iget(sb, fsi->host_root_path);
+ 	if (IS_ERR(root_inode))
+ 		return PTR_ERR(root_inode);
+ 
+@@ -955,7 +969,7 @@ static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
+ 		char *name;
+ 
+ 		iput(root_inode);
+-		name = follow_link(host_root_path);
++		name = follow_link(fsi->host_root_path);
+ 		if (IS_ERR(name))
+ 			return PTR_ERR(name);
+ 
+@@ -972,11 +986,38 @@ static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
+ 	return 0;
+ }
+ 
+-static struct dentry *hostfs_read_sb(struct file_system_type *type,
+-			  int flags, const char *dev_name,
+-			  void *data)
++static int hostfs_fc_get_tree(struct fs_context *fc)
+ {
+-	return mount_nodev(type, flags, data, hostfs_fill_sb_common);
++	return get_tree_nodev(fc, hostfs_fill_super);
++}
++
++static void hostfs_fc_free(struct fs_context *fc)
++{
++	struct hostfs_fs_info *fsi = fc->s_fs_info;
++
++	if (!fsi)
++		return;
++
++	kfree(fsi->host_root_path);
++	kfree(fsi);
++}
++
++static const struct fs_context_operations hostfs_context_ops = {
++	.get_tree	= hostfs_fc_get_tree,
++	.free		= hostfs_fc_free,
++};
++
++static int hostfs_init_fs_context(struct fs_context *fc)
++{
++	struct hostfs_fs_info *fsi;
++
++	fsi = kzalloc(sizeof(*fsi), GFP_KERNEL);
++	if (!fsi)
++		return -ENOMEM;
++
++	fc->s_fs_info = fsi;
++	fc->ops = &hostfs_context_ops;
++	return 0;
+ }
+ 
+ static void hostfs_kill_sb(struct super_block *s)
+@@ -986,11 +1027,11 @@ static void hostfs_kill_sb(struct super_block *s)
+ }
+ 
+ static struct file_system_type hostfs_type = {
+-	.owner 		= THIS_MODULE,
+-	.name 		= "hostfs",
+-	.mount	 	= hostfs_read_sb,
+-	.kill_sb	= hostfs_kill_sb,
+-	.fs_flags 	= 0,
++	.owner			= THIS_MODULE,
++	.name			= "hostfs",
++	.init_fs_context	= hostfs_init_fs_context,
++	.kill_sb		= hostfs_kill_sb,
++	.fs_flags		= 0,
+ };
+ MODULE_ALIAS_FS("hostfs");
+ 
+-- 
+2.34.1
+
 
