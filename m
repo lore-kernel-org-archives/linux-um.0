@@ -4,81 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C1DA7C25B75
-	for <linux-um@archiver.kernel.org>; Wed, 29 May 2024 21:11:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 08795C25B75
+	for <linux-um@archiver.kernel.org>; Thu, 30 May 2024 02:55:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Content-Type:In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=wVUy7o3bXf/noy6YSu0RsfBfkRiwLQrgb5cMP2Pa7q8=; b=w8A4g2uk5JFuEAlUaDm+f+YWDT
-	Db3cm9x+l1vwtOh5EZKyZpLhoUUvWl6QUl2UsyUpQTWT6rjcN/voJ7uOsiG0Uv7j8UyioFaqiEVud
-	s5t22a9ZsVieVA5rKbw5pTZbHZQlGAaOt/HleYx6o+suSZJ2uKks2ol9RssHnK/6uHUs+nJVWkTgJ
-	AesuEyPiNlsfNO12WQD1X1S2SjAmUVlT3qVMffRNw0rA8aMBXtbpcn8Gq9aSkf0IT6pDzXwFYzAvS
-	YPtOAHDG2gX4hBJ1JqR1fN0d0tnzKr+94sk6sr6Mk5MdUyTX/rw+kSAvZrvohueoRCAFtTJ94FihN
-	KVPseDtg==;
+	bh=JT19DqDzQbqOC26Y9YKzFGJsTzvnll4uLJKhf5AOlFs=; b=ZUu8wu7MxJSNspKfbgAlmhhzCQ
+	uocFWNJ2xIkhVDQfsOAmMKaDIeQTJqwMsrX7jCTlCyjO36wqeWqBqf/Lumk5HvV2iaTJbrTm+Gkkr
+	3KGTPMxMoRccOpiuJJzUFeIMCXl0F2R5vEuZNOYvNM49S/kkpQwcGOQiSzAeL/Pxi1ABkNWI+mS96
+	AbSzXMKvVeTc7Xm0mNECNWVM1dpWwxiPnrH2wScBqbQfojI/6OSL3kdjvqBnoZ2dAePBnwJzBZJd6
+	mJ28QaG11aIIGeT9muI87GrFbTr+mrsBLvifNXb38pHHMfeSg/Ge4XllqgVBAwArBCyAwNpYfqTyu
+	h37ewHmg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sCQaK-00000005Wpw-2dK1;
-	Wed, 29 May 2024 21:11:48 +0000
-Received: from 008.lax.mailroute.net ([199.89.1.11])
+	id 1sCVwY-000000068wa-3z2R;
+	Thu, 30 May 2024 02:55:06 +0000
+Received: from out0-201.mail.aliyun.com ([140.205.0.201])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sCQaG-00000005Wny-2i6R
+	id 1sCVwT-000000068ve-2QIN
 	for linux-um@lists.infradead.org;
-	Wed, 29 May 2024 21:11:47 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by 008.lax.mailroute.net (Postfix) with ESMTP id 4VqMWZ58Ltz6Cnk97;
-	Wed, 29 May 2024 21:11:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
-	content-transfer-encoding:content-type:content-type:in-reply-to
-	:from:from:content-language:references:subject:subject
-	:user-agent:mime-version:date:date:message-id:received:received;
-	 s=mr01; t=1717017094; x=1719609095; bh=wVUy7o3bXf/noy6YSu0RsfBf
-	kRiwLQrgb5cMP2Pa7q8=; b=QFjHmHY3/zEesfTR56+Y2SAfx/9kF8USAaPfodaa
-	1NlbISeQtFhMQo5eKeT71tNXYkxOsczf07HR2Jg7kDECPZHbMqyg4jYdehcmpc6U
-	pDScRpKKu8Rjyhm7pbf60HZtmxriYQ66+aBloWTpP6m/aGYjU5d8dR4eSVUqQ/OA
-	xYtc6lzNLpfolCh3T1Mfx+tpCeFXkuhAlul/aC6d93xzuIXsbbqvGhKw9HLqQ8Hv
-	yZpoz1hZaaNwZnzsSClMVINGA6pWnoN6MCYirTHscroKGo27eDVHIhGrEeOJHh7Z
-	7W5OQwUFrkBQjwlsjPeC4wUGmMgkfdxis25NEBJvc3gvXQ==
-X-Virus-Scanned: by MailRoute
-Received: from 008.lax.mailroute.net ([127.0.0.1])
- by localhost (008.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id MByd4wIRut8R; Wed, 29 May 2024 21:11:34 +0000 (UTC)
-Received: from [100.96.154.26] (unknown [104.132.0.90])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bvanassche@acm.org)
-	by 008.lax.mailroute.net (Postfix) with ESMTPSA id 4VqMWR0L4Mz6Cnk95;
-	Wed, 29 May 2024 21:11:30 +0000 (UTC)
-Message-ID: <7828c48b-2a37-4033-a634-7a4fad4f94fd@acm.org>
-Date: Wed, 29 May 2024 14:11:28 -0700
+	Thu, 30 May 2024 02:55:04 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=antgroup.com; s=default;
+	t=1717037692; h=Message-ID:Date:MIME-Version:Subject:From:To:Content-Type;
+	bh=JT19DqDzQbqOC26Y9YKzFGJsTzvnll4uLJKhf5AOlFs=;
+	b=d0xCTW1P6XIcyGmw6+SV+ouQLtMh5m9iIdhC5bERnIZmzGQTB4wfg3M431GK1sDDx8ohZcTs3vhAd9BunMh/UHXNzasWbBq7qGDE2kWGQb0sC4MhYOQsl338NWMitTyYhtYJy86Lyx7lPkuZUgIH1KeR9BVnnuvFzaFCMJ601os=
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033045129160;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---.XqrMNtM_1717037688;
+Received: from 30.177.168.159(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.XqrMNtM_1717037688)
+          by smtp.aliyun-inc.com;
+          Thu, 30 May 2024 10:54:49 +0800
+Message-ID: <759a6a53-efbc-4b11-8065-622702eb120b@antgroup.com>
+Date: Thu, 30 May 2024 10:54:45 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 07/12] sd: factor out a sd_discard_mode helper
-To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
- "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>, Josef Bacik
- <josef@toxicpanda.com>, Ilya Dryomov <idryomov@gmail.com>,
- Dongsheng Yang <dongsheng.yang@easystack.cn>,
- =?UTF-8?Q?Roger_Pau_Monn=C3=A9?= <roger.pau@citrix.com>,
- linux-um@lists.infradead.org, linux-block@vger.kernel.org,
- nbd@other.debian.org, ceph-devel@vger.kernel.org,
- xen-devel@lists.xenproject.org, linux-scsi@vger.kernel.org
-References: <20240529050507.1392041-1-hch@lst.de>
- <20240529050507.1392041-8-hch@lst.de>
+Subject: Re: [PATCH 3/5] um: Do a double clone to disable rseq
+From: "Tiwei Bie" <tiwei.btw@antgroup.com>
+To: Johannes Berg <johannes@sipsolutions.net>, benjamin@sipsolutions.net,
+ linux-um@lists.infradead.org
+Cc: Benjamin Berg <benjamin.berg@intel.com>
+References: <20240528085419.1964424-1-benjamin@sipsolutions.net>
+ <20240528085419.1964424-4-benjamin@sipsolutions.net>
+ <5f5505da-ba67-421e-b0f5-6a5c19955f27@antgroup.com>
+ <4a9d3075304f39b818009081d496b0f245bad450.camel@sipsolutions.net>
+ <37d6a0e2-bbc2-4a93-bd7c-3cef847eba54@antgroup.com>
 Content-Language: en-US
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20240529050507.1392041-8-hch@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <37d6a0e2-bbc2-4a93-bd7c-3cef847eba54@antgroup.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240529_141144_742103_8193BB00 
-X-CRM114-Status: UNSURE (   6.54  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240529_195502_418716_70FDA416 
+X-CRM114-Status: GOOD (  12.42  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,9 +71,46 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 5/28/24 22:04, Christoph Hellwig wrote:
-> Split the logic to pick the right discard mode into a little helper
-> to prepare for further changes.
+On 5/28/24 10:13 PM, Tiwei Bie wrote:
+> On 5/28/24 7:57 PM, Johannes Berg wrote:
+>> On Tue, 2024-05-28 at 18:16 +0800, Tiwei Bie wrote:
+>>> On 5/28/24 4:54 PM, benjamin@sipsolutions.net wrote:
+>>>> From: Benjamin Berg <benjamin.berg@intel.com>
+>>>>
+>>>> Newer glibc versions are enabling rseq support by default. This remains
+>>>> enabled in the cloned child process, potentially causing the host kernel
+>>>> to write/read memory in the child.
+>>>>
+>>>> It appears that this was purely not an issue because the used memory
+>>>> area happened to be above TASK_SIZE and remains mapped.
+>>>
+>>> I also encountered this issue. In my case, with "Force a static link"
+>>> (CONFIG_STATIC_LINK) enabled, UML will crash immediately every time
+>>> it starts up. I worked around this by setting the glibc.pthread.rseq
+>>> tunable via GLIBC_TUNABLES [1] before launching UML.
+>>>
+>>> So another easy way to work around this issue without introducing runtime
+>>> overhead might be to add the GLIBC_TUNABLES=glibc.pthread.rseq=0 environment
+>>> variable and exec /proc/self/exe in UML on startup.
+>>>
+>>
+>> It's also a bit of a question what to rely on - this would introduce a
+>> dependency on glibc behaviour, whereas doing the double-clone proposed
+>> here will work purely because of host kernel behaviour, regardless of
+>> what part of the system set up rseq, how the tunables work, etc.
+> 
+> Makes sense. My previous concern was primarily about the runtime overhead,
+> but after taking a closer look at the patch, I realized that the double-clone
+> won't happen on the critical path, so there shouldn't be any performance
+> issues. I also think the double-clone proposal is better. :)
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+But when combined with this series [1], things might be different..
+Double-clone will happen for each new mm context. That's something
+we might want to avoid.
+
+[1] https://patchwork.ozlabs.org/project/linux-um/list/?series=408104
+
+Regards,
+Tiwei
+
 
