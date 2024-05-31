@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75895C27C44
-	for <linux-um@archiver.kernel.org>; Fri, 31 May 2024 07:49:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 62A73C25B75
+	for <linux-um@archiver.kernel.org>; Fri, 31 May 2024 07:49:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=HN2Hktsuqrp8T8GVou6AHcXHJfFLm1CDuoHLTArZtbQ=; b=2xywWSOmxfIGzUZN11Lma49kZr
-	PgoTWzM8OgIujUV6OI5ud3nGybdK1DHUnR+E9VH7hD8mvD0lc3zofUWYB8/N7ZZz8+yorh05YbzOU
-	V7QW4lN6hV6VwR5OLVAFODOk7NwCfdGzieQkvljNhswokeBgjDcNl3f2QPxUDvWkTB67E8lAgfjaZ
-	WYavhm2ORClLPj+P7WD4Ea4dLeZ00HqdMrFJY3Ke9CtZQ8IePWmenskNQJqGUPp1Abq+DcC9R93c8
-	FW07B5fBz1LwOkMJTnPujQ8tAW+YS9znwRoTVAmfp/lCcSuwTyy2T9PnwdBN3HHAViyXxoRk4dVWg
-	ACzXLXaA==;
+	bh=rb1OF73CoqNaiVO8CqTHVc8xH4T7Xk6a2c9CxacCVxo=; b=wjBCIJ1S/R0/0Ml8zHjJ1aDRzA
+	QJ7YDtiwtUZleMV8tOAecVHFNX/telwbWUbZ5sFxXcy9sXkkOrlCV07q+qmGkP+ABYjtqxHlM5YmK
+	6XZgxsPsxrSODttiFUiWPjCstxXrj1T0F1U1Te0nk8Kax7QnwX7AyRAMfRYEKGJMbBbYWDJtXOU8Y
+	R6FaVSntP6AUSwZGmIEt+ZobRek3qPZpwfOR4Z+Ez1YNvPbMcQ3oS81mXoT5Z89kDyZgdPpZAH43e
+	EZ6UCRdJw4RRjqiQMX9pRQUGPvu3TIfdUvXvZiBgiQkZj3yrZG/gCeSWxez8qo2+GsN5BaAmLMDe+
+	eqppWQxA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sCx0c-00000009Xh6-3dhK;
-	Fri, 31 May 2024 07:49:06 +0000
+	id 1sCx0f-00000009XjV-3Ir5;
+	Fri, 31 May 2024 07:49:09 +0000
 Received: from 2a02-8389-2341-5b80-5ba9-f4da-76fa-44a9.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:5ba9:f4da:76fa:44a9] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sCx0a-00000009Xfo-0bb2;
-	Fri, 31 May 2024 07:49:04 +0000
+	id 1sCx0c-00000009Xgz-3ZvO;
+	Fri, 31 May 2024 07:49:08 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>,
 	"Martin K. Petersen" <martin.petersen@oracle.com>
@@ -44,9 +44,9 @@ Cc: Richard Weinberger <richard@nod.at>,
 	linux-scsi@vger.kernel.org,
 	Bart Van Assche <bvanassche@acm.org>,
 	Damien Le Moal <dlemoal@kernel.org>
-Subject: [PATCH 08/14] sd: simplify the disable case in sd_config_discard
-Date: Fri, 31 May 2024 09:48:03 +0200
-Message-ID: <20240531074837.1648501-9-hch@lst.de>
+Subject: [PATCH 09/14] sd: factor out a sd_discard_mode helper
+Date: Fri, 31 May 2024 09:48:04 +0200
+Message-ID: <20240531074837.1648501-10-hch@lst.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240531074837.1648501-1-hch@lst.de>
 References: <20240531074837.1648501-1-hch@lst.de>
@@ -66,31 +66,71 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Fall through to the main call to blk_queue_max_discard_sectors given that
-max_blocks has been initialized to zero above instead of duplicating the
-call.
+Split the logic to pick the right discard mode into a little helper
+to prepare for further changes.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
 ---
- drivers/scsi/sd.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/scsi/sd.c | 37 ++++++++++++++++++++-----------------
+ 1 file changed, 20 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-index 70211d0b187652..0dbc6eb7a7cac3 100644
+index 0dbc6eb7a7cac3..39eddfac09ef8f 100644
 --- a/drivers/scsi/sd.c
 +++ b/drivers/scsi/sd.c
-@@ -844,8 +844,7 @@ static void sd_config_discard(struct scsi_disk *sdkp, unsigned int mode)
+@@ -3201,6 +3201,25 @@ static void sd_read_app_tag_own(struct scsi_disk *sdkp, unsigned char *buffer)
+ 	return;
+ }
  
- 	case SD_LBP_FULL:
- 	case SD_LBP_DISABLE:
--		blk_queue_max_discard_sectors(q, 0);
--		return;
-+		break;
++static unsigned int sd_discard_mode(struct scsi_disk *sdkp)
++{
++	if (!sdkp->lbpvpd) {
++		/* LBP VPD page not provided */
++		if (sdkp->max_unmap_blocks)
++			return SD_LBP_UNMAP;
++		return SD_LBP_WS16;
++	}
++
++	/* LBP VPD page tells us what to use */
++	if (sdkp->lbpu && sdkp->max_unmap_blocks)
++		return SD_LBP_UNMAP;
++	if (sdkp->lbpws)
++		return SD_LBP_WS16;
++	if (sdkp->lbpws10)
++		return SD_LBP_WS10;
++	return SD_LBP_DISABLE;
++}
++
+ /**
+  * sd_read_block_limits - Query disk device for preferred I/O sizes.
+  * @sdkp: disk to query
+@@ -3239,23 +3258,7 @@ static void sd_read_block_limits(struct scsi_disk *sdkp)
+ 			sdkp->unmap_alignment =
+ 				get_unaligned_be32(&vpd->data[32]) & ~(1 << 31);
  
- 	case SD_LBP_UNMAP:
- 		max_blocks = min_not_zero(sdkp->max_unmap_blocks,
+-		if (!sdkp->lbpvpd) { /* LBP VPD page not provided */
+-
+-			if (sdkp->max_unmap_blocks)
+-				sd_config_discard(sdkp, SD_LBP_UNMAP);
+-			else
+-				sd_config_discard(sdkp, SD_LBP_WS16);
+-
+-		} else {	/* LBP VPD page tells us what to use */
+-			if (sdkp->lbpu && sdkp->max_unmap_blocks)
+-				sd_config_discard(sdkp, SD_LBP_UNMAP);
+-			else if (sdkp->lbpws)
+-				sd_config_discard(sdkp, SD_LBP_WS16);
+-			else if (sdkp->lbpws10)
+-				sd_config_discard(sdkp, SD_LBP_WS10);
+-			else
+-				sd_config_discard(sdkp, SD_LBP_DISABLE);
+-		}
++		sd_config_discard(sdkp, sd_discard_mode(sdkp));
+ 	}
+ 
+  out:
 -- 
 2.43.0
 
