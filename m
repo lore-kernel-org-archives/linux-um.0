@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80878C25B75
-	for <linux-um@archiver.kernel.org>; Fri, 31 May 2024 09:09:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C120EC27C44
+	for <linux-um@archiver.kernel.org>; Fri, 31 May 2024 09:11:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
 	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=V7TiTdx/nEWXXgHHbHN78B+YsjlKDnX0w9LWVG0G2x4=; b=Yvcj9RKp5Zsa1xxN96TG+h3Ee1
-	8rVlWECKSPkZ/C1JyQ25UKpxweYvZCuhUGnzCVBVqXuFEN4A2itZOfIsFSyXiR9iwOKUe1PfkhRoy
-	hlI8jFaH8tn0CoLUZln3DTTYQbIwSsge91AtmUlvrMPDycCX5irXgPP+caX5UbV7zlUW4hczuWSGq
-	69SqyNZhohvtG2qtcaf44RiApX7zG8ry98ulmZAcOYBTykkCgkxjnhIxCjnQgh89VDRRmVJnF9B1V
-	WMbOYKFjsyiYC6N4GUQVcqrCGmBFBOCVEs15dMYwZ0a0AkdayJPFDuitE+TvNnQgmHw53bRxzTqk/
-	t6QBHJcA==;
+	bh=JHySJ52Pl0hABImbEf8CzUryCpcO6Vzdug5aWyPJAWM=; b=Jhvz9eBNwXoBj0hcyI9WJzC11G
+	hR9cGRlaXEte2UC8oxD6XtJVg4SCYP4m2eoFHAvjSatnsmmsW1G1Y6EgElWjuIXWxo7a4Y/09B6L5
+	HordrwiqPdMazoyj9G8TZf9vovX4E/1mLDKcX3HdQoqjxCfbQ/Sm6r/wuJzAxPjZiq8csZyakB2XO
+	iGjuItCmcQ99Xjhxpr81p8NYgPlsiMm+Tqeks9/gi4QTqZPTGQJjDQFzwlAxfJlbMPOrH58qShbhX
+	r86bejTY0WePCuLfhw0eI15NclGz0tZdElqjgHw1x6YSbNgca68nYrTbpMgW0KnxZ/jt16Yypoee8
+	kzs56a+w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sCyG1-00000009k7a-08Xz;
-	Fri, 31 May 2024 09:09:05 +0000
-Received: from mail-oa1-x36.google.com ([2001:4860:4864:20::36])
+	id 1sCyI9-00000009kbj-2DXy;
+	Fri, 31 May 2024 09:11:17 +0000
+Received: from mail-oa1-x2e.google.com ([2001:4860:4864:20::2e])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sCyFy-00000009k6Q-0kGE
+	id 1sCyI6-00000009kb6-3FGZ
 	for linux-um@lists.infradead.org;
-	Fri, 31 May 2024 09:09:03 +0000
-Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-25076dde95eso532007fac.0
-        for <linux-um@lists.infradead.org>; Fri, 31 May 2024 02:09:01 -0700 (PDT)
+	Fri, 31 May 2024 09:11:16 +0000
+Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-24ca2f48031so890667fac.0
+        for <linux-um@lists.infradead.org>; Fri, 31 May 2024 02:11:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717146540; x=1717751340; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1717146672; x=1717751472; darn=lists.infradead.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=V7TiTdx/nEWXXgHHbHN78B+YsjlKDnX0w9LWVG0G2x4=;
-        b=DgbNtpARljMWu/4iiPPZzIobFDhSiPo+B7H8ygSIGALUnCdEBMmbh0ePaars/rZgQ/
-         lDb78+iv5n00TsCyBS62cZ9SopKbvvw0dIgcSqO+jeEY+tWmTZsLC4apvbXxgCvMbTcB
-         PIHEz6cU2eVnhYBHhgMenkWKnNGo5fU9j84lyBkINqIkxf4wiop69AHL8aOJxOr0CiWR
-         /a58dzAuIMCL8ewVeWHMTJIaYFzktD0dt6ZgRVUMS719A6mb2PVn5N+CQpUEc4E/Mp9D
-         rIo2iPqLYJI2Ne/bwJsFDwFWLFL2JYkt2q5611i0OsRL7pirPnJpDuKER85ExuYxeHEs
-         x65g==
+        bh=JHySJ52Pl0hABImbEf8CzUryCpcO6Vzdug5aWyPJAWM=;
+        b=IO3l6rT0ygG/0LCskgOuoRuXpkYIl1wfDQ/TD0eOoZR9WjrbvUg9J01IUrG46XkYDu
+         3kq6xXNc6oF/v7F8qCBxfP0VdXdIbuK50wlowAyyCsPk2dLLJNoBpEXCfqu33ctWB4Eg
+         rSmGWz3AyJMBPg1USpIAAYlAN3+Q/Xgh1nv8/SS9yQ3NItBWCSSy0xCEGS9HgulLd2Yr
+         BykYvdF9pMZQGCbiLb8JHN52CckjzKzzLSCR2T24GPwAxvINhBZ8Z/8j5nfNy/PanVSY
+         gVhdX6ZHfOGTCPocAr9fj1VU56ey+JRqJcT1WQKIBZN/7yCBhN9Feg0XGBPPK1pq5f6+
+         ILiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717146540; x=1717751340;
+        d=1e100.net; s=20230601; t=1717146672; x=1717751472;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=V7TiTdx/nEWXXgHHbHN78B+YsjlKDnX0w9LWVG0G2x4=;
-        b=YdtI+4lKFDjMd8o/u8hgs+R8mIf3YH2hJAxO7xNgYMqwW/wQ7dkzJAtja+Tv2i+Ru+
-         eARbeK0JrWMGS779plkptYFklxZevhyc0x5BrtGhxi3vCDgrqSsEs+n7MqD8oqVf4cpP
-         c7WqvR6i+hlTg7TlWdy6VtJRTuLYrrkOtPExmfs9CWVDE6MlwLla91OingwffD7fgJdk
-         Sys/mAG68EedD/tATRyxCkA22ti1lPaGmOxBttBeOXm77JGj0q1tfAwZxZtr7gaSNk8n
-         6e0Q+Xmf1nCQwaNge23l0FJ5KcKXHsE8AfRfI8JSGTpqTmxMF2ghrgLqnbJWU0Uxysnm
-         WVKg==
-X-Forwarded-Encrypted: i=1; AJvYcCXtptWBs/oNguz5DWuNtB6O8AYzFi0wEM0DX5FketJYicYu1VnqMOzVAltSSIycHsg+ZBuCYaP4mUGlxaMLnaBt39PSu2E9IKXqDAcR
-X-Gm-Message-State: AOJu0YwZu4VmQO8bk3R4j5ym8SN3hTNHBnzlTCBcISIh5Xe+JR9xXJak
-	V6V3kAXdE7vrwfp8n+eJnMFtbYhw0zLsgqEWy4PLbV2MvO4DkcMY+5In1UxgfdNgX1VMfZLzUhC
-	u9V+Buk+CbGh53fvStaX8PxBRlcM=
-X-Google-Smtp-Source: AGHT+IHoKiJiwn0RUfGlBR1LOXIQjJEAP/TieA174CPldpRPuDqgZrspO+vxp9UsllxKnQz9RUjusbGg9aknaFlS5Ec=
-X-Received: by 2002:a05:6870:9346:b0:250:6422:86a with SMTP id
- 586e51a60fabf-25065b70997mr1985845fac.10.1717146540364; Fri, 31 May 2024
- 02:09:00 -0700 (PDT)
+        bh=JHySJ52Pl0hABImbEf8CzUryCpcO6Vzdug5aWyPJAWM=;
+        b=ZBu+rnl9Q4HBibr0wG3xz6VnxQrl/A6UdNkXjzn5HowP5ldedB+jfUTnUNqCUpgyIN
+         jEKoPmPbwqosJbcyt7spdDcIF/hgCir1nB8VGNstc4hY+pMmRt+Wtmkwd/7zo7j6fYeZ
+         uLXNoITQl1E4kThJdE+0Sx6b/IqCmooCF7lxtA7T4waGFJMTJJM9AV19mO/3/HqoKW4J
+         Xd5w/CaXWXfC7zaWYJ9L4p0YmrnHGzjh9R3Rw4DerVroCfwQnscLdVvkn2yuIWXPCm03
+         vZJJPyNG5WM3xJS1N2CoIrRzfjnAOzeAbSFW4suh0pI1sPEdYybC1Hj59veQ/g2/NQQM
+         w2OA==
+X-Forwarded-Encrypted: i=1; AJvYcCVyl5t5U6T/cVOyvhdzh6CL0GFymoKLSeLy8pJ9Y2viv3H3P1z+1Yw5j2kSJ+lj/zIV4cYl1RI4GtC6L6a4bYbyQFH1fQHNtISjmwYp
+X-Gm-Message-State: AOJu0YyJlmBqWKl90jIzZePh5afXFBPSJ4FJgVsFkO77zQ/9D79eVpYN
+	Ck3Peqtg/ErcxWTCwzzwzDfAc6UCw/ljOfKfXJatWaysuTbCI9EAUEqAK2pBVEf/0qDKPg6B7OB
+	wcvUvlF7w6/Ru5cyx/sir/FIOmk0=
+X-Google-Smtp-Source: AGHT+IGvsAs1mcJwvgWnNqWcEhu7b6x8mgHTIAZ0GzBV17r0EcNcgsUewUXES03iA8vPcRMr9oo8aonYpNodLH6h808=
+X-Received: by 2002:a05:6871:339a:b0:250:75cd:34f2 with SMTP id
+ 586e51a60fabf-2508b99ababmr1494585fac.22.1717146672346; Fri, 31 May 2024
+ 02:11:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20240531074837.1648501-1-hch@lst.de> <20240531074837.1648501-4-hch@lst.de>
-In-Reply-To: <20240531074837.1648501-4-hch@lst.de>
+References: <20240531074837.1648501-1-hch@lst.de> <20240531074837.1648501-5-hch@lst.de>
+In-Reply-To: <20240531074837.1648501-5-hch@lst.de>
 From: Ilya Dryomov <idryomov@gmail.com>
-Date: Fri, 31 May 2024 11:08:48 +0200
-Message-ID: <CAOi1vP_mY-a7aiWod-eVz8xuhGz4mHBBoZZgr2FoxS5wVUym3w@mail.gmail.com>
-Subject: Re: [PATCH 03/14] rbd: increase io_opt again
+Date: Fri, 31 May 2024 11:11:00 +0200
+Message-ID: <CAOi1vP-+j-RHLmnDLpsZREnYb_f7QGGhRC9YOgctsFNuE7yM3Q@mail.gmail.com>
+Subject: Re: [PATCH 04/14] block: take io_opt and io_min into account for max_sectors
 To: Christoph Hellwig <hch@lst.de>
 Cc: Jens Axboe <axboe@kernel.dk>, "Martin K. Petersen" <martin.petersen@oracle.com>, 
 	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
@@ -75,12 +75,13 @@ Cc: Jens Axboe <axboe@kernel.dk>, "Martin K. Petersen" <martin.petersen@oracle.c
 	Dongsheng Yang <dongsheng.yang@easystack.cn>, =?UTF-8?Q?Roger_Pau_Monn=C3=A9?= <roger.pau@citrix.com>, 
 	linux-um@lists.infradead.org, linux-block@vger.kernel.org, 
 	nbd@other.debian.org, ceph-devel@vger.kernel.org, 
-	xen-devel@lists.xenproject.org, linux-scsi@vger.kernel.org
+	xen-devel@lists.xenproject.org, linux-scsi@vger.kernel.org, 
+	Bart Van Assche <bvanassche@acm.org>, Damien Le Moal <dlemoal@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240531_020902_247365_0FEA2767 
-X-CRM114-Status: GOOD (  20.06  )
+X-CRM114-CacheID: sfid-20240531_021114_832320_B72700DF 
+X-CRM114-Status: GOOD (  17.79  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,42 +99,31 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 On Fri, May 31, 2024 at 9:48=E2=80=AFAM Christoph Hellwig <hch@lst.de> wrot=
 e:
 >
-> Commit 16d80c54ad42 ("rbd: set io_min, io_opt and discard_granularity to
-> alloc_size") lowered the io_opt size for rbd from objset_bytes which is
-> 4MB for typical setup to alloc_size which is typically 64KB.
+> The soft max_sectors limit is normally capped by the hardware limits and
+> an arbitrary upper limit enforced by the kernel, but can be modified by
+> the user.  A few drivers want to increase this limit (nbd, rbd) or
+> adjust it up or down based on hardware capabilities (sd).
 >
-> The commit mostly talks about discard behavior and does mention io_min
-> in passing.  Reducing io_opt means reducing the readahead size, which
-> seems counter-intuitive given that rbd currently abuses the user
-> max_sectors setting to actually increase the I/O size.  Switch back
-> to the old setting to allow larger reads (the readahead size despite it's
-> name actually limits the size of any buffered read) and to prepare
-> for using io_opt in the max_sectors calculation and getting drivers out
-> of the business of overriding the max_user_sectors value.
+> Change blk_validate_limits to default max_sectors to the optimal I/O
+> size, or upgrade it to the preferred minimal I/O size if that is
+> larger than the kernel default if no optimal I/O size is provided based
+> on the logic in the SD driver.
+>
+> This keeps the existing kernel default for drivers that do not provide
+> an io_opt or very big io_min value, but picks a much more useful
+> default for those who provide these hints, and allows to remove the
+> hacks to set the user max_sectors limit in nbd, rbd and sd.
 >
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+> Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
 > ---
->  drivers/block/rbd.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/block/rbd.c b/drivers/block/rbd.c
-> index 26ff5cd2bf0abc..46dc487ccc17eb 100644
-> --- a/drivers/block/rbd.c
-> +++ b/drivers/block/rbd.c
-> @@ -4955,8 +4955,8 @@ static int rbd_init_disk(struct rbd_device *rbd_dev=
-)
->         struct queue_limits lim =3D {
->                 .max_hw_sectors         =3D objset_bytes >> SECTOR_SHIFT,
->                 .max_user_sectors       =3D objset_bytes >> SECTOR_SHIFT,
-> +               .io_opt                 =3D objset_bytes,
->                 .io_min                 =3D rbd_dev->opts->alloc_size,
-> -               .io_opt                 =3D rbd_dev->opts->alloc_size,
->                 .max_segments           =3D USHRT_MAX,
->                 .max_segment_size       =3D UINT_MAX,
->         };
-> --
-> 2.43.0
->
+>  block/blk-settings.c |  7 +++++++
+>  drivers/block/nbd.c  |  2 +-
+
+For rbd
+
+>  drivers/block/rbd.c  |  1 -
 
 Acked-by: Ilya Dryomov <idryomov@gmail.com>
 
