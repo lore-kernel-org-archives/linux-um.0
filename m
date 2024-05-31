@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89ACCC27C53
-	for <linux-um@archiver.kernel.org>; Fri, 31 May 2024 07:49:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F6D1C25B75
+	for <linux-um@archiver.kernel.org>; Fri, 31 May 2024 07:49:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=iMhM+qb16rWeYhTsrEp/EIKofeiSWWDmAm8PBvcX+R4=; b=Z17NK2yrI8cuMoLQIKlsmmmz9W
-	JfWWjZgWC8B+axR5xWK5HHvyL2LEcLP2yfkpSbCqOpLac7bRKNy2goqklDDI8bmsAh4HIxE9ptdBE
-	jQg57+SpEp6YLEgfRGdbEut80E2D46tLPuPRDLepfqLbNk3nYunpfw2akzeSs576WXfnA0B7v8Jx/
-	IT8L3M3Oe8NMZaAzEFnpkXqHERbj3+YDDPuR9cZKioMEEovb0Q3BCCrdcQitTeylmODjo3DoZjWVf
-	d6I9soUDgIo7A/Rv/JvpU/5BLMLjtKVYRPGDf6P4oV9j/cnqCOGuDVHBaQzxtTvuFxCJ4VUfUWveR
-	+yc5jwKA==;
+	bh=VM6XeFxtmVkC4/0tlWYKENrMzCOxD79VPgH4x5Iftu4=; b=OjLJxc9QlkPVin5Q3XoBv2dYWL
+	q5fQVWlbiM3I+vm94K8nWw3KkoMQ+2zjPAgDvI/VR5l2rc2Xw3MsiX0c5u87TiejQTCEhtH+m2Y0Y
+	vWHdkyeIhBSB1EFS1irnWD1NGqS8hWZkUpONmLN/XtsYcA5jP/ktAu5MjKB1A5qggWtMtNyQaIASb
+	XT5AV3gN+7EYwWwWTBRepoXSEVR5rd64sNTO0JIAltY6Uqr8jTrz5IEs8qH+E+J+5m4pbM+5LPOjC
+	7WtSwoeO2Vqnqj+BusglMxa72UQ4Qb9Galm0WR8kjz2c+hsZlc5zKioUUeQXPlAb8Y0LbbdUmgppk
+	2Joog2lg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sCx0n-00000009Xnh-0Tgh;
-	Fri, 31 May 2024 07:49:17 +0000
+	id 1sCx0q-00000009XpU-40Lb;
+	Fri, 31 May 2024 07:49:20 +0000
 Received: from 2a02-8389-2341-5b80-5ba9-f4da-76fa-44a9.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:5ba9:f4da:76fa:44a9] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sCx0l-00000009XmW-2kNJ;
-	Fri, 31 May 2024 07:49:16 +0000
+	id 1sCx0o-00000009Xnc-0qaG;
+	Fri, 31 May 2024 07:49:18 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>,
 	"Martin K. Petersen" <martin.petersen@oracle.com>
@@ -42,10 +42,10 @@ Cc: Richard Weinberger <richard@nod.at>,
 	ceph-devel@vger.kernel.org,
 	xen-devel@lists.xenproject.org,
 	linux-scsi@vger.kernel.org,
-	Damien Le Moal <dlemoal@kernel.org>
-Subject: [PATCH 12/14] sr: convert to the atomic queue limits API
-Date: Fri, 31 May 2024 09:48:07 +0200
-Message-ID: <20240531074837.1648501-13-hch@lst.de>
+	Bart Van Assche <bvanassche@acm.org>
+Subject: [PATCH 13/14] block: remove unused queue limits API
+Date: Fri, 31 May 2024 09:48:08 +0200
+Message-ID: <20240531074837.1648501-14-hch@lst.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240531074837.1648501-1-hch@lst.de>
 References: <20240531074837.1648501-1-hch@lst.de>
@@ -65,130 +65,295 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Assign all queue limits through a local queue_limits variable and
-queue_limits_commit_update so that we can't race updating them from
-multiple places, and free the queue when updating them so that
-in-progress I/O submissions don't see half-updated limits.
-
-Also use the chance to clean up variable names to standard ones.
+Remove all APIs that are unused now that sd and sr have been converted
+to the atomic queue limits API.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 ---
- drivers/scsi/sr.c | 42 +++++++++++++++++++++++++-----------------
- 1 file changed, 25 insertions(+), 17 deletions(-)
+ block/blk-settings.c   | 190 -----------------------------------------
+ include/linux/blkdev.h |  24 ------
+ 2 files changed, 214 deletions(-)
 
-diff --git a/drivers/scsi/sr.c b/drivers/scsi/sr.c
-index 7ab000942b97fc..3f491019103e0c 100644
---- a/drivers/scsi/sr.c
-+++ b/drivers/scsi/sr.c
-@@ -111,7 +111,7 @@ static struct lock_class_key sr_bio_compl_lkclass;
- static int sr_open(struct cdrom_device_info *, int);
- static void sr_release(struct cdrom_device_info *);
- 
--static void get_sectorsize(struct scsi_cd *);
-+static int get_sectorsize(struct scsi_cd *);
- static int get_capabilities(struct scsi_cd *);
- 
- static unsigned int sr_check_events(struct cdrom_device_info *cdi,
-@@ -473,15 +473,15 @@ static blk_status_t sr_init_command(struct scsi_cmnd *SCpnt)
- 	return BLK_STS_IOERR;
+diff --git a/block/blk-settings.c b/block/blk-settings.c
+index a49abdb3554834..0b038729608f4b 100644
+--- a/block/blk-settings.c
++++ b/block/blk-settings.c
+@@ -293,24 +293,6 @@ int queue_limits_set(struct request_queue *q, struct queue_limits *lim)
  }
+ EXPORT_SYMBOL_GPL(queue_limits_set);
  
--static void sr_revalidate_disk(struct scsi_cd *cd)
-+static int sr_revalidate_disk(struct scsi_cd *cd)
- {
- 	struct scsi_sense_hdr sshdr;
+-/**
+- * blk_queue_chunk_sectors - set size of the chunk for this queue
+- * @q:  the request queue for the device
+- * @chunk_sectors:  chunk sectors in the usual 512b unit
+- *
+- * Description:
+- *    If a driver doesn't want IOs to cross a given chunk size, it can set
+- *    this limit and prevent merging across chunks. Note that the block layer
+- *    must accept a page worth of data at any offset. So if the crossing of
+- *    chunks is a hard limitation in the driver, it must still be prepared
+- *    to split single page bios.
+- **/
+-void blk_queue_chunk_sectors(struct request_queue *q, unsigned int chunk_sectors)
+-{
+-	q->limits.chunk_sectors = chunk_sectors;
+-}
+-EXPORT_SYMBOL(blk_queue_chunk_sectors);
+-
+ /**
+  * blk_queue_max_discard_sectors - set max sectors for a single discard
+  * @q:  the request queue for the device
+@@ -352,139 +334,6 @@ void blk_queue_max_write_zeroes_sectors(struct request_queue *q,
+ }
+ EXPORT_SYMBOL(blk_queue_max_write_zeroes_sectors);
  
- 	/* if the unit is not ready, nothing more to do */
- 	if (scsi_test_unit_ready(cd->device, SR_TIMEOUT, MAX_RETRIES, &sshdr))
+-/**
+- * blk_queue_max_zone_append_sectors - set max sectors for a single zone append
+- * @q:  the request queue for the device
+- * @max_zone_append_sectors: maximum number of sectors to write per command
+- *
+- * Sets the maximum number of sectors allowed for zone append commands. If
+- * Specifying 0 for @max_zone_append_sectors indicates that the queue does
+- * not natively support zone append operations and that the block layer must
+- * emulate these operations using regular writes.
+- **/
+-void blk_queue_max_zone_append_sectors(struct request_queue *q,
+-		unsigned int max_zone_append_sectors)
+-{
+-	unsigned int max_sectors = 0;
+-
+-	if (WARN_ON(!blk_queue_is_zoned(q)))
 -		return;
-+		return 0;
- 	sr_cd_check(&cd->cdi);
--	get_sectorsize(cd);
-+	return get_sectorsize(cd);
- }
- 
- static int sr_block_open(struct gendisk *disk, blk_mode_t mode)
-@@ -494,13 +494,16 @@ static int sr_block_open(struct gendisk *disk, blk_mode_t mode)
- 		return -ENXIO;
- 
- 	scsi_autopm_get_device(sdev);
--	if (disk_check_media_change(disk))
--		sr_revalidate_disk(cd);
-+	if (disk_check_media_change(disk)) {
-+		ret = sr_revalidate_disk(cd);
-+		if (ret)
-+			goto out;
-+	}
- 
- 	mutex_lock(&cd->lock);
- 	ret = cdrom_open(&cd->cdi, mode);
- 	mutex_unlock(&cd->lock);
 -
-+out:
- 	scsi_autopm_put_device(sdev);
- 	if (ret)
- 		scsi_device_put(cd->device);
-@@ -685,7 +688,9 @@ static int sr_probe(struct device *dev)
- 	blk_pm_runtime_init(sdev->request_queue, dev);
- 
- 	dev_set_drvdata(dev, cd);
--	sr_revalidate_disk(cd);
-+	error = sr_revalidate_disk(cd);
-+	if (error)
-+		goto unregister_cdrom;
- 
- 	error = device_add_disk(&sdev->sdev_gendev, disk, NULL);
- 	if (error)
-@@ -714,13 +719,14 @@ static int sr_probe(struct device *dev)
- }
- 
- 
--static void get_sectorsize(struct scsi_cd *cd)
-+static int get_sectorsize(struct scsi_cd *cd)
+-	if (max_zone_append_sectors) {
+-		max_sectors = min(q->limits.max_hw_sectors,
+-				  max_zone_append_sectors);
+-		max_sectors = min(q->limits.chunk_sectors, max_sectors);
+-
+-		/*
+-		 * Signal eventual driver bugs resulting in the max_zone_append
+-		 * sectors limit being 0 due to the chunk_sectors limit (zone
+-		 * size) not set or the max_hw_sectors limit not set.
+-		 */
+-		WARN_ON_ONCE(!max_sectors);
+-	}
+-
+-	q->limits.max_zone_append_sectors = max_sectors;
+-}
+-EXPORT_SYMBOL_GPL(blk_queue_max_zone_append_sectors);
+-
+-/**
+- * blk_queue_logical_block_size - set logical block size for the queue
+- * @q:  the request queue for the device
+- * @size:  the logical block size, in bytes
+- *
+- * Description:
+- *   This should be set to the lowest possible block size that the
+- *   storage device can address.  The default of 512 covers most
+- *   hardware.
+- **/
+-void blk_queue_logical_block_size(struct request_queue *q, unsigned int size)
+-{
+-	struct queue_limits *limits = &q->limits;
+-
+-	limits->logical_block_size = size;
+-
+-	if (limits->discard_granularity < limits->logical_block_size)
+-		limits->discard_granularity = limits->logical_block_size;
+-
+-	if (limits->physical_block_size < size)
+-		limits->physical_block_size = size;
+-
+-	if (limits->io_min < limits->physical_block_size)
+-		limits->io_min = limits->physical_block_size;
+-
+-	limits->max_hw_sectors =
+-		round_down(limits->max_hw_sectors, size >> SECTOR_SHIFT);
+-	limits->max_sectors =
+-		round_down(limits->max_sectors, size >> SECTOR_SHIFT);
+-}
+-EXPORT_SYMBOL(blk_queue_logical_block_size);
+-
+-/**
+- * blk_queue_physical_block_size - set physical block size for the queue
+- * @q:  the request queue for the device
+- * @size:  the physical block size, in bytes
+- *
+- * Description:
+- *   This should be set to the lowest possible sector size that the
+- *   hardware can operate on without reverting to read-modify-write
+- *   operations.
+- */
+-void blk_queue_physical_block_size(struct request_queue *q, unsigned int size)
+-{
+-	q->limits.physical_block_size = size;
+-
+-	if (q->limits.physical_block_size < q->limits.logical_block_size)
+-		q->limits.physical_block_size = q->limits.logical_block_size;
+-
+-	if (q->limits.discard_granularity < q->limits.physical_block_size)
+-		q->limits.discard_granularity = q->limits.physical_block_size;
+-
+-	if (q->limits.io_min < q->limits.physical_block_size)
+-		q->limits.io_min = q->limits.physical_block_size;
+-}
+-EXPORT_SYMBOL(blk_queue_physical_block_size);
+-
+-/**
+- * blk_queue_zone_write_granularity - set zone write granularity for the queue
+- * @q:  the request queue for the zoned device
+- * @size:  the zone write granularity size, in bytes
+- *
+- * Description:
+- *   This should be set to the lowest possible size allowing to write in
+- *   sequential zones of a zoned block device.
+- */
+-void blk_queue_zone_write_granularity(struct request_queue *q,
+-				      unsigned int size)
+-{
+-	if (WARN_ON_ONCE(!blk_queue_is_zoned(q)))
+-		return;
+-
+-	q->limits.zone_write_granularity = size;
+-
+-	if (q->limits.zone_write_granularity < q->limits.logical_block_size)
+-		q->limits.zone_write_granularity = q->limits.logical_block_size;
+-}
+-EXPORT_SYMBOL_GPL(blk_queue_zone_write_granularity);
+-
+-/**
+- * blk_queue_alignment_offset - set physical block alignment offset
+- * @q:	the request queue for the device
+- * @offset: alignment offset in bytes
+- *
+- * Description:
+- *   Some devices are naturally misaligned to compensate for things like
+- *   the legacy DOS partition table 63-sector offset.  Low-level drivers
+- *   should call this function for devices whose first sector is not
+- *   naturally aligned.
+- */
+-void blk_queue_alignment_offset(struct request_queue *q, unsigned int offset)
+-{
+-	q->limits.alignment_offset =
+-		offset & (q->limits.physical_block_size - 1);
+-	q->limits.misaligned = 0;
+-}
+-EXPORT_SYMBOL(blk_queue_alignment_offset);
+-
+ void disk_update_readahead(struct gendisk *disk)
  {
-+	struct request_queue *q = cd->device->request_queue;
- 	static const u8 cmd[10] = { READ_CAPACITY };
- 	unsigned char buffer[8] = { };
--	int the_result;
-+	struct queue_limits lim;
-+	int err;
- 	int sector_size;
--	struct request_queue *queue;
- 	struct scsi_failure failure_defs[] = {
- 		{
- 			.result = SCMD_FAILURE_RESULT_ANY,
-@@ -736,10 +742,10 @@ static void get_sectorsize(struct scsi_cd *cd)
- 	};
+ 	blk_apply_bdi_limits(disk->bdi, &disk->queue->limits);
+@@ -514,26 +363,6 @@ void blk_limits_io_min(struct queue_limits *limits, unsigned int min)
+ }
+ EXPORT_SYMBOL(blk_limits_io_min);
  
- 	/* Do the command and wait.. */
--	the_result = scsi_execute_cmd(cd->device, cmd, REQ_OP_DRV_IN, buffer,
-+	err = scsi_execute_cmd(cd->device, cmd, REQ_OP_DRV_IN, buffer,
- 				      sizeof(buffer), SR_TIMEOUT, MAX_RETRIES,
- 				      &exec_args);
--	if (the_result) {
-+	if (err) {
- 		cd->capacity = 0x1fffff;
- 		sector_size = 2048;	/* A guess, just in case */
- 	} else {
-@@ -789,10 +795,12 @@ static void get_sectorsize(struct scsi_cd *cd)
- 		set_capacity(cd->disk, cd->capacity);
- 	}
- 
--	queue = cd->device->request_queue;
--	blk_queue_logical_block_size(queue, sector_size);
+-/**
+- * blk_queue_io_min - set minimum request size for the queue
+- * @q:	the request queue for the device
+- * @min:  smallest I/O size in bytes
+- *
+- * Description:
+- *   Storage devices may report a granularity or preferred minimum I/O
+- *   size which is the smallest request the device can perform without
+- *   incurring a performance penalty.  For disk drives this is often the
+- *   physical block size.  For RAID arrays it is often the stripe chunk
+- *   size.  A properly aligned multiple of minimum_io_size is the
+- *   preferred request size for workloads where a high number of I/O
+- *   operations is desired.
+- */
+-void blk_queue_io_min(struct request_queue *q, unsigned int min)
+-{
+-	blk_limits_io_min(&q->limits, min);
+-}
+-EXPORT_SYMBOL(blk_queue_io_min);
 -
--	return;
-+	lim = queue_limits_start_update(q);
-+	lim.logical_block_size = sector_size;
-+	blk_mq_freeze_queue(q);
-+	err = queue_limits_commit_update(q, &lim);
-+	blk_mq_unfreeze_queue(q);
-+	return err;
+ /**
+  * blk_limits_io_opt - set optimal request size for a device
+  * @limits: the queue limits
+@@ -841,25 +670,6 @@ void blk_queue_write_cache(struct request_queue *q, bool wc, bool fua)
+ }
+ EXPORT_SYMBOL_GPL(blk_queue_write_cache);
+ 
+-/**
+- * disk_set_zoned - inidicate a zoned device
+- * @disk:	gendisk to configure
+- */
+-void disk_set_zoned(struct gendisk *disk)
+-{
+-	struct request_queue *q = disk->queue;
+-
+-	WARN_ON_ONCE(!IS_ENABLED(CONFIG_BLK_DEV_ZONED));
+-
+-	/*
+-	 * Set the zone write granularity to the device logical block
+-	 * size by default. The driver can change this value if needed.
+-	 */
+-	q->limits.zoned = true;
+-	blk_queue_zone_write_granularity(q, queue_logical_block_size(q));
+-}
+-EXPORT_SYMBOL_GPL(disk_set_zoned);
+-
+ int bdev_alignment_offset(struct block_device *bdev)
+ {
+ 	struct request_queue *q = bdev_get_queue(bdev);
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 24c36929920b76..ad995e7a769811 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -332,8 +332,6 @@ struct queue_limits {
+ typedef int (*report_zones_cb)(struct blk_zone *zone, unsigned int idx,
+ 			       void *data);
+ 
+-void disk_set_zoned(struct gendisk *disk);
+-
+ #define BLK_ALL_ZONES  ((unsigned int)-1)
+ int blkdev_report_zones(struct block_device *bdev, sector_t sector,
+ 		unsigned int nr_zones, report_zones_cb cb, void *data);
+@@ -638,18 +636,6 @@ static inline unsigned int disk_zone_no(struct gendisk *disk, sector_t sector)
+ 	return sector >> ilog2(disk->queue->limits.chunk_sectors);
  }
  
- static int get_capabilities(struct scsi_cd *cd)
+-static inline void disk_set_max_open_zones(struct gendisk *disk,
+-		unsigned int max_open_zones)
+-{
+-	disk->queue->limits.max_open_zones = max_open_zones;
+-}
+-
+-static inline void disk_set_max_active_zones(struct gendisk *disk,
+-		unsigned int max_active_zones)
+-{
+-	disk->queue->limits.max_active_zones = max_active_zones;
+-}
+-
+ static inline unsigned int bdev_max_open_zones(struct block_device *bdev)
+ {
+ 	return bdev->bd_disk->queue->limits.max_open_zones;
+@@ -929,24 +915,14 @@ static inline void queue_limits_cancel_update(struct request_queue *q)
+ /*
+  * Access functions for manipulating queue properties
+  */
+-extern void blk_queue_chunk_sectors(struct request_queue *, unsigned int);
+ void blk_queue_max_secure_erase_sectors(struct request_queue *q,
+ 		unsigned int max_sectors);
+ extern void blk_queue_max_discard_sectors(struct request_queue *q,
+ 		unsigned int max_discard_sectors);
+ extern void blk_queue_max_write_zeroes_sectors(struct request_queue *q,
+ 		unsigned int max_write_same_sectors);
+-extern void blk_queue_logical_block_size(struct request_queue *, unsigned int);
+-extern void blk_queue_max_zone_append_sectors(struct request_queue *q,
+-		unsigned int max_zone_append_sectors);
+-extern void blk_queue_physical_block_size(struct request_queue *, unsigned int);
+-void blk_queue_zone_write_granularity(struct request_queue *q,
+-				      unsigned int size);
+-extern void blk_queue_alignment_offset(struct request_queue *q,
+-				       unsigned int alignment);
+ void disk_update_readahead(struct gendisk *disk);
+ extern void blk_limits_io_min(struct queue_limits *limits, unsigned int min);
+-extern void blk_queue_io_min(struct request_queue *q, unsigned int min);
+ extern void blk_limits_io_opt(struct queue_limits *limits, unsigned int opt);
+ extern void blk_set_queue_depth(struct request_queue *q, unsigned int depth);
+ extern void blk_set_stacking_limits(struct queue_limits *lim);
 -- 
 2.43.0
 
