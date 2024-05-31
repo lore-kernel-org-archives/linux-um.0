@@ -4,54 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22AE6C27C44
-	for <linux-um@archiver.kernel.org>; Fri, 31 May 2024 07:49:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 80878C25B75
+	for <linux-um@archiver.kernel.org>; Fri, 31 May 2024 09:09:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=puwKRK0RcHItIRFrYIY/fDmsBtElHLDF9wXWafbLcHw=; b=gRLyFPFGcrrF3l4gPcAFD2ouF4
-	6ahWwGYA7/tEOK9H9K/yHaCxArdeizbQO8+70Rl8hJ7KrjrIRYnUMKw7HIvjnIp6zaCoTDbqA5Oap
-	CSegVuqGd+ujbf5jKI390LwirLRdItaehudauuDrrZkSNqFCv8w6pTcFbQ5i/fz9Yj3PbqirD9h2x
-	NEF3b59hkYvhAN2LPxuN7mCiEf34KvBZ4yNahHyB4f6GqJeRBX2OfAfuNiCEUdrcEinIjJqNT713G
-	omRDxmxl5vvCejqtOCyZrOBBP/6vWPZOp4J9o7YVAlp7AjP8Yv/2TeM4k8os7qfuPQFmnKQjZWHt8
-	8FTKu65g==;
+	bh=V7TiTdx/nEWXXgHHbHN78B+YsjlKDnX0w9LWVG0G2x4=; b=Yvcj9RKp5Zsa1xxN96TG+h3Ee1
+	8rVlWECKSPkZ/C1JyQ25UKpxweYvZCuhUGnzCVBVqXuFEN4A2itZOfIsFSyXiR9iwOKUe1PfkhRoy
+	hlI8jFaH8tn0CoLUZln3DTTYQbIwSsge91AtmUlvrMPDycCX5irXgPP+caX5UbV7zlUW4hczuWSGq
+	69SqyNZhohvtG2qtcaf44RiApX7zG8ry98ulmZAcOYBTykkCgkxjnhIxCjnQgh89VDRRmVJnF9B1V
+	WMbOYKFjsyiYC6N4GUQVcqrCGmBFBOCVEs15dMYwZ0a0AkdayJPFDuitE+TvNnQgmHw53bRxzTqk/
+	t6QBHJcA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sCx0t-00000009Xr4-2KXw;
-	Fri, 31 May 2024 07:49:23 +0000
-Received: from 2a02-8389-2341-5b80-5ba9-f4da-76fa-44a9.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:5ba9:f4da:76fa:44a9] helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sCx0q-00000009XpF-495X;
-	Fri, 31 May 2024 07:49:21 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: Jens Axboe <axboe@kernel.dk>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Ilya Dryomov <idryomov@gmail.com>,
-	Dongsheng Yang <dongsheng.yang@easystack.cn>,
-	=?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>,
-	linux-um@lists.infradead.org,
-	linux-block@vger.kernel.org,
-	nbd@other.debian.org,
-	ceph-devel@vger.kernel.org,
-	xen-devel@lists.xenproject.org,
-	linux-scsi@vger.kernel.org,
-	Bart Van Assche <bvanassche@acm.org>,
-	Damien Le Moal <dlemoal@kernel.org>
-Subject: [PATCH 14/14] block: add special APIs for run-time disabling of discard and friends
-Date: Fri, 31 May 2024 09:48:09 +0200
-Message-ID: <20240531074837.1648501-15-hch@lst.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240531074837.1648501-1-hch@lst.de>
-References: <20240531074837.1648501-1-hch@lst.de>
+	id 1sCyG1-00000009k7a-08Xz;
+	Fri, 31 May 2024 09:09:05 +0000
+Received: from mail-oa1-x36.google.com ([2001:4860:4864:20::36])
+	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sCyFy-00000009k6Q-0kGE
+	for linux-um@lists.infradead.org;
+	Fri, 31 May 2024 09:09:03 +0000
+Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-25076dde95eso532007fac.0
+        for <linux-um@lists.infradead.org>; Fri, 31 May 2024 02:09:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1717146540; x=1717751340; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V7TiTdx/nEWXXgHHbHN78B+YsjlKDnX0w9LWVG0G2x4=;
+        b=DgbNtpARljMWu/4iiPPZzIobFDhSiPo+B7H8ygSIGALUnCdEBMmbh0ePaars/rZgQ/
+         lDb78+iv5n00TsCyBS62cZ9SopKbvvw0dIgcSqO+jeEY+tWmTZsLC4apvbXxgCvMbTcB
+         PIHEz6cU2eVnhYBHhgMenkWKnNGo5fU9j84lyBkINqIkxf4wiop69AHL8aOJxOr0CiWR
+         /a58dzAuIMCL8ewVeWHMTJIaYFzktD0dt6ZgRVUMS719A6mb2PVn5N+CQpUEc4E/Mp9D
+         rIo2iPqLYJI2Ne/bwJsFDwFWLFL2JYkt2q5611i0OsRL7pirPnJpDuKER85ExuYxeHEs
+         x65g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717146540; x=1717751340;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=V7TiTdx/nEWXXgHHbHN78B+YsjlKDnX0w9LWVG0G2x4=;
+        b=YdtI+4lKFDjMd8o/u8hgs+R8mIf3YH2hJAxO7xNgYMqwW/wQ7dkzJAtja+Tv2i+Ru+
+         eARbeK0JrWMGS779plkptYFklxZevhyc0x5BrtGhxi3vCDgrqSsEs+n7MqD8oqVf4cpP
+         c7WqvR6i+hlTg7TlWdy6VtJRTuLYrrkOtPExmfs9CWVDE6MlwLla91OingwffD7fgJdk
+         Sys/mAG68EedD/tATRyxCkA22ti1lPaGmOxBttBeOXm77JGj0q1tfAwZxZtr7gaSNk8n
+         6e0Q+Xmf1nCQwaNge23l0FJ5KcKXHsE8AfRfI8JSGTpqTmxMF2ghrgLqnbJWU0Uxysnm
+         WVKg==
+X-Forwarded-Encrypted: i=1; AJvYcCXtptWBs/oNguz5DWuNtB6O8AYzFi0wEM0DX5FketJYicYu1VnqMOzVAltSSIycHsg+ZBuCYaP4mUGlxaMLnaBt39PSu2E9IKXqDAcR
+X-Gm-Message-State: AOJu0YwZu4VmQO8bk3R4j5ym8SN3hTNHBnzlTCBcISIh5Xe+JR9xXJak
+	V6V3kAXdE7vrwfp8n+eJnMFtbYhw0zLsgqEWy4PLbV2MvO4DkcMY+5In1UxgfdNgX1VMfZLzUhC
+	u9V+Buk+CbGh53fvStaX8PxBRlcM=
+X-Google-Smtp-Source: AGHT+IHoKiJiwn0RUfGlBR1LOXIQjJEAP/TieA174CPldpRPuDqgZrspO+vxp9UsllxKnQz9RUjusbGg9aknaFlS5Ec=
+X-Received: by 2002:a05:6870:9346:b0:250:6422:86a with SMTP id
+ 586e51a60fabf-25065b70997mr1985845fac.10.1717146540364; Fri, 31 May 2024
+ 02:09:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240531074837.1648501-1-hch@lst.de> <20240531074837.1648501-4-hch@lst.de>
+In-Reply-To: <20240531074837.1648501-4-hch@lst.de>
+From: Ilya Dryomov <idryomov@gmail.com>
+Date: Fri, 31 May 2024 11:08:48 +0200
+Message-ID: <CAOi1vP_mY-a7aiWod-eVz8xuhGz4mHBBoZZgr2FoxS5wVUym3w@mail.gmail.com>
+Subject: Re: [PATCH 03/14] rbd: increase io_opt again
+To: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, "Martin K. Petersen" <martin.petersen@oracle.com>, 
+	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, Josef Bacik <josef@toxicpanda.com>, 
+	Dongsheng Yang <dongsheng.yang@easystack.cn>, =?UTF-8?Q?Roger_Pau_Monn=C3=A9?= <roger.pau@citrix.com>, 
+	linux-um@lists.infradead.org, linux-block@vger.kernel.org, 
+	nbd@other.debian.org, ceph-devel@vger.kernel.org, 
+	xen-devel@lists.xenproject.org, linux-scsi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20240531_020902_247365_0FEA2767 
+X-CRM114-Status: GOOD (  20.06  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,173 +95,49 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-A few drivers optimistically try to support discard, write zeroes and
-secure erase and disable the features from the I/O completion handler
-if the hardware can't support them.  This disable can't be done using
-the atomic queue limits API because the I/O completion handlers can't
-take sleeping locks or freeze the queue.  Keep the existing clearing
-of the relevant field to zero, but replace the old blk_queue_max_*
-APIs with new disable APIs that force the value to 0.
+On Fri, May 31, 2024 at 9:48=E2=80=AFAM Christoph Hellwig <hch@lst.de> wrot=
+e:
+>
+> Commit 16d80c54ad42 ("rbd: set io_min, io_opt and discard_granularity to
+> alloc_size") lowered the io_opt size for rbd from objset_bytes which is
+> 4MB for typical setup to alloc_size which is typically 64KB.
+>
+> The commit mostly talks about discard behavior and does mention io_min
+> in passing.  Reducing io_opt means reducing the readahead size, which
+> seems counter-intuitive given that rbd currently abuses the user
+> max_sectors setting to actually increase the I/O size.  Switch back
+> to the old setting to allow larger reads (the readahead size despite it's
+> name actually limits the size of any buffered read) and to prepare
+> for using io_opt in the max_sectors calculation and getting drivers out
+> of the business of overriding the max_user_sectors value.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  drivers/block/rbd.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/block/rbd.c b/drivers/block/rbd.c
+> index 26ff5cd2bf0abc..46dc487ccc17eb 100644
+> --- a/drivers/block/rbd.c
+> +++ b/drivers/block/rbd.c
+> @@ -4955,8 +4955,8 @@ static int rbd_init_disk(struct rbd_device *rbd_dev=
+)
+>         struct queue_limits lim =3D {
+>                 .max_hw_sectors         =3D objset_bytes >> SECTOR_SHIFT,
+>                 .max_user_sectors       =3D objset_bytes >> SECTOR_SHIFT,
+> +               .io_opt                 =3D objset_bytes,
+>                 .io_min                 =3D rbd_dev->opts->alloc_size,
+> -               .io_opt                 =3D rbd_dev->opts->alloc_size,
+>                 .max_segments           =3D USHRT_MAX,
+>                 .max_segment_size       =3D UINT_MAX,
+>         };
+> --
+> 2.43.0
+>
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
----
- arch/um/drivers/ubd_kern.c   |  4 ++--
- block/blk-settings.c         | 41 ------------------------------------
- drivers/block/xen-blkfront.c |  4 ++--
- drivers/scsi/sd.c            |  4 ++--
- include/linux/blkdev.h       | 28 ++++++++++++++++++------
- 5 files changed, 28 insertions(+), 53 deletions(-)
+Acked-by: Ilya Dryomov <idryomov@gmail.com>
 
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 093c87879d08ba..cdcb75a68989dd 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -451,9 +451,9 @@ static void ubd_end_request(struct io_thread_req *io_req)
- {
- 	if (io_req->error == BLK_STS_NOTSUPP) {
- 		if (req_op(io_req->req) == REQ_OP_DISCARD)
--			blk_queue_max_discard_sectors(io_req->req->q, 0);
-+			blk_queue_disable_discard(io_req->req->q);
- 		else if (req_op(io_req->req) == REQ_OP_WRITE_ZEROES)
--			blk_queue_max_write_zeroes_sectors(io_req->req->q, 0);
-+			blk_queue_disable_write_zeroes(io_req->req->q);
- 	}
- 	blk_mq_end_request(io_req->req, io_req->error);
- 	kfree(io_req);
-diff --git a/block/blk-settings.c b/block/blk-settings.c
-index 0b038729608f4b..996f247fc98e80 100644
---- a/block/blk-settings.c
-+++ b/block/blk-settings.c
-@@ -293,47 +293,6 @@ int queue_limits_set(struct request_queue *q, struct queue_limits *lim)
- }
- EXPORT_SYMBOL_GPL(queue_limits_set);
- 
--/**
-- * blk_queue_max_discard_sectors - set max sectors for a single discard
-- * @q:  the request queue for the device
-- * @max_discard_sectors: maximum number of sectors to discard
-- **/
--void blk_queue_max_discard_sectors(struct request_queue *q,
--		unsigned int max_discard_sectors)
--{
--	struct queue_limits *lim = &q->limits;
--
--	lim->max_hw_discard_sectors = max_discard_sectors;
--	lim->max_discard_sectors =
--		min(max_discard_sectors, lim->max_user_discard_sectors);
--}
--EXPORT_SYMBOL(blk_queue_max_discard_sectors);
--
--/**
-- * blk_queue_max_secure_erase_sectors - set max sectors for a secure erase
-- * @q:  the request queue for the device
-- * @max_sectors: maximum number of sectors to secure_erase
-- **/
--void blk_queue_max_secure_erase_sectors(struct request_queue *q,
--		unsigned int max_sectors)
--{
--	q->limits.max_secure_erase_sectors = max_sectors;
--}
--EXPORT_SYMBOL(blk_queue_max_secure_erase_sectors);
--
--/**
-- * blk_queue_max_write_zeroes_sectors - set max sectors for a single
-- *                                      write zeroes
-- * @q:  the request queue for the device
-- * @max_write_zeroes_sectors: maximum number of sectors to write per command
-- **/
--void blk_queue_max_write_zeroes_sectors(struct request_queue *q,
--		unsigned int max_write_zeroes_sectors)
--{
--	q->limits.max_write_zeroes_sectors = max_write_zeroes_sectors;
--}
--EXPORT_SYMBOL(blk_queue_max_write_zeroes_sectors);
--
- void disk_update_readahead(struct gendisk *disk)
- {
- 	blk_apply_bdi_limits(disk->bdi, &disk->queue->limits);
-diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront.c
-index fd7c0ff2139cee..9b4ec3e4908cce 100644
---- a/drivers/block/xen-blkfront.c
-+++ b/drivers/block/xen-blkfront.c
-@@ -1605,8 +1605,8 @@ static irqreturn_t blkif_interrupt(int irq, void *dev_id)
- 				blkif_req(req)->error = BLK_STS_NOTSUPP;
- 				info->feature_discard = 0;
- 				info->feature_secdiscard = 0;
--				blk_queue_max_discard_sectors(rq, 0);
--				blk_queue_max_secure_erase_sectors(rq, 0);
-+				blk_queue_disable_discard(rq);
-+				blk_queue_disable_secure_erase(rq);
- 			}
- 			break;
- 		case BLKIF_OP_FLUSH_DISKCACHE:
-diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-index 049071b5681989..d957e29b17a98a 100644
---- a/drivers/scsi/sd.c
-+++ b/drivers/scsi/sd.c
-@@ -837,7 +837,7 @@ static unsigned char sd_setup_protect_cmnd(struct scsi_cmnd *scmd,
- static void sd_disable_discard(struct scsi_disk *sdkp)
- {
- 	sdkp->provisioning_mode = SD_LBP_DISABLE;
--	blk_queue_max_discard_sectors(sdkp->disk->queue, 0);
-+	blk_queue_disable_discard(sdkp->disk->queue);
- }
- 
- static void sd_config_discard(struct scsi_disk *sdkp, struct queue_limits *lim,
-@@ -1019,7 +1019,7 @@ static void sd_disable_write_same(struct scsi_disk *sdkp)
- {
- 	sdkp->device->no_write_same = 1;
- 	sdkp->max_ws_blocks = 0;
--	blk_queue_max_write_zeroes_sectors(sdkp->disk->queue, 0);
-+	blk_queue_disable_write_zeroes(sdkp->disk->queue);
- }
- 
- static void sd_config_write_same(struct scsi_disk *sdkp,
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index ad995e7a769811..ac8e0cb2353a0e 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -912,15 +912,31 @@ static inline void queue_limits_cancel_update(struct request_queue *q)
- 	mutex_unlock(&q->limits_lock);
- }
- 
-+/*
-+ * These helpers are for drivers that have sloppy feature negotiation and might
-+ * have to disable DISCARD, WRITE_ZEROES or SECURE_DISCARD from the I/O
-+ * completion handler when the device returned an indicator that the respective
-+ * feature is not actually supported.  They are racy and the driver needs to
-+ * cope with that.  Try to avoid this scheme if you can.
-+ */
-+static inline void blk_queue_disable_discard(struct request_queue *q)
-+{
-+	q->limits.max_discard_sectors = 0;
-+}
-+
-+static inline void blk_queue_disable_secure_erase(struct request_queue *q)
-+{
-+	q->limits.max_secure_erase_sectors = 0;
-+}
-+
-+static inline void blk_queue_disable_write_zeroes(struct request_queue *q)
-+{
-+	q->limits.max_write_zeroes_sectors = 0;
-+}
-+
- /*
-  * Access functions for manipulating queue properties
-  */
--void blk_queue_max_secure_erase_sectors(struct request_queue *q,
--		unsigned int max_sectors);
--extern void blk_queue_max_discard_sectors(struct request_queue *q,
--		unsigned int max_discard_sectors);
--extern void blk_queue_max_write_zeroes_sectors(struct request_queue *q,
--		unsigned int max_write_same_sectors);
- void disk_update_readahead(struct gendisk *disk);
- extern void blk_limits_io_min(struct queue_limits *limits, unsigned int min);
- extern void blk_limits_io_opt(struct queue_limits *limits, unsigned int opt);
--- 
-2.43.0
+Thanks,
 
+                Ilya
 
