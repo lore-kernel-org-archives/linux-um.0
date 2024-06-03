@@ -4,133 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DCBB1C25B74
-	for <linux-um@archiver.kernel.org>; Sun,  2 Jun 2024 13:02:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 764DCC25B75
+	for <linux-um@archiver.kernel.org>; Mon,  3 Jun 2024 14:30:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:References:Content-Type:
-	In-Reply-To:MIME-Version:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=rHCZCFCbAOCe+0obDysUSNu4wORZPi6NKPSAyIbFDII=; b=HgGoVCZ9kuOpm1w9nM/4kxXwIP
-	qMIu9SE4IJ3wlRrDNPz7sTFkkZfhdvWSuzRffjnvi9cbpkj0bnoSkl32z21mCyqBIzOqKFyhEZbQf
-	5ePoVB4Q9JxcMKA6+DmR/fg5robt/CAOL9dExOOMZ6JWA6QUhP//GVWq4Nxir8HuubiPCZ89AA1Xs
-	vtRpm0f/LHJjWV4EWlJTTbTur3awpr6L18JOTPPyq4s4DXeVKr0iEs+bmyBRruxDsXMwXy1GLjaG/
-	dh27gwqAg9OHWDY8rmZZpDwIYAXXjEbqYSH5COtqYkNiTBepwAnHhyg+fw1/71O5HMgVxOwe/+wqh
-	FBYTLCQg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
+	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=BxWlkWcsDy/eoSCSnK+cTkZ5UFIZV593cKPAyj+V1B4=; b=E8jxOBahFXQWH/LIW9KNI/6CkJ
+	iUCQzA/taSVhYk0EIFQxZWLWBd2eZ1O8dtBS2SzKVPfBQ7r6+msq4gq55GRQ6Ysef5vOv+XvSYYEd
+	zZim3cyX+dXq9lDw1zm55S1ZuKbQKw5Fk+qeJPXXKDzxsRBPSU49haLOAfB2oRP0QXDYHec3uQhf5
+	cRrm9ocDB9Qgnn6HsIGl6+0IZf9A+jBRk5+QkkhwIm9AbT1aYG1m249F7MB4KErbACh0vQ3xkrNfI
+	RcjV8/pQRj7g1JB1XaBBP6s1OhlGV+Y4wqqSOdwqZtj7nBGcxQHQky/9unnMJscFu4TbIci6UUISo
+	GpVK7oMw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sDkqf-0000000EGqq-2wu6;
-	Sun, 02 Jun 2024 13:02:09 +0000
-Received: from mailout4.samsung.com ([203.254.224.34])
+	id 1sE8hT-0000000H4iq-0ujj;
+	Mon, 03 Jun 2024 14:30:15 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sDkqV-0000000EGlH-1aFs
+	id 1sE8hQ-0000000H4h2-09bl
 	for linux-um@lists.infradead.org;
-	Sun, 02 Jun 2024 13:02:05 +0000
-Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
-	by mailout4.samsung.com (KnoxPortal) with ESMTP id 20240602130141epoutp0419d06d922888bfb61c31bec3ba2f12b7~VMYn1jGTM2412624126epoutp04z
-	for <linux-um@lists.infradead.org>; Sun,  2 Jun 2024 13:01:41 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20240602130141epoutp0419d06d922888bfb61c31bec3ba2f12b7~VMYn1jGTM2412624126epoutp04z
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1717333301;
-	bh=rHCZCFCbAOCe+0obDysUSNu4wORZPi6NKPSAyIbFDII=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=SKRqhHmfBSPkcAIqZvms8GLmHDo2PwGcOTDGLPbSti0I/AVPzEX3DbCyTMq5p0VfY
-	 G3MlwRC4bK5x8QDJZbX4sDElfRe+jHDX+V3f+0TZ0rGxg9GMBwd4Pau0mHmFtxPILu
-	 hnmwyKfX+W6O1XXAzG1BwU2eozdlCtGVS0illt5w=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-	epcas5p2.samsung.com (KnoxPortal) with ESMTP id
-	20240602130140epcas5p25c2d695eda36cf366a0a4a4a01c4d72e~VMYnNGZ7q1672216722epcas5p2-;
-	Sun,  2 Jun 2024 13:01:40 +0000 (GMT)
-Received: from epsmgec5p1new.samsung.com (unknown [182.195.38.183]) by
-	epsnrtp1.localdomain (Postfix) with ESMTP id 4VscSM49VPz4x9Ps; Sun,  2 Jun
-	2024 13:01:39 +0000 (GMT)
-Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
-	epsmgec5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	1B.21.08853.33D6C566; Sun,  2 Jun 2024 22:01:39 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-	epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
-	20240531140203epcas5p1fed913b6729b684e0916dfd62787be13~Ul6w9HJG72010620106epcas5p1W;
-	Fri, 31 May 2024 14:02:03 +0000 (GMT)
-Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
-	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240531140203epsmtrp1d3e14a45850cff935f0c63202c392ca7~Ul6w8M3W40787407874epsmtrp1N;
-	Fri, 31 May 2024 14:02:03 +0000 (GMT)
-X-AuditID: b6c32a44-d67ff70000002295-79-665c6d33bd5b
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-	epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
-	35.7D.18846.B58D9566; Fri, 31 May 2024 23:02:03 +0900 (KST)
-Received: from nj.shetty?samsung.com (unknown [107.99.41.245]) by
-	epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240531140201epsmtip127bef841828dca583bedc8f707b5bfe0~Ul6uqPXcn2218222182epsmtip19;
-	Fri, 31 May 2024 14:02:01 +0000 (GMT)
-Date: Fri, 31 May 2024 13:55:01 +0000
-From: Nitesh Shetty <nj.shetty@samsung.com>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, "Martin K. Petersen"
-	<martin.petersen@oracle.com>, Richard Weinberger <richard@nod.at>, Anton
-	Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg
-	<johannes@sipsolutions.net>, Josef Bacik <josef@toxicpanda.com>, Ilya
-	Dryomov <idryomov@gmail.com>, Dongsheng Yang <dongsheng.yang@easystack.cn>,
-	Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>,
-	linux-um@lists.infradead.org, linux-block@vger.kernel.org,
-	nbd@other.debian.org, ceph-devel@vger.kernel.org,
-	xen-devel@lists.xenproject.org, linux-scsi@vger.kernel.org, Bart Van Assche
-	<bvanassche@acm.org>
-Subject: Re: [PATCH 13/14] block: remove unused queue limits API
-Message-ID: <20240531135501.c3yes3jbg7dl3g5w@nj.shetty@samsung.com>
+	Mon, 03 Jun 2024 14:30:13 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 514C5CE0CE3;
+	Mon,  3 Jun 2024 14:30:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BE2CC2BD10;
+	Mon,  3 Jun 2024 14:30:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717425007;
+	bh=ilP/mqfminFIlL/9jrVY6neS/CASV0S8jeIG1imK2Z4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=SOUaAi1xXGHSyy/rlD1HUDAyHs9dC0Lx8iSP2YfHHmW42T5/f6kpJWZgv6+Frblt3
+	 vT1M6mHyqooUYneH4d2q2PGWBVkleqxNimOZGnBg2ihwKVECFcSWPxMNej1Nyuy4/D
+	 NZWY1INWnnzXVAfMM/mlbM6pV7UtP17AjQ2mwc6JGxtBq20Y5rq+T7cf6+S8wsVCHv
+	 7H71i9p70n4REHuC55bFd1Wyp9Wf/AqK76FVsmDgA0Tm5wO0BzunobTWqlQl4V2Qyq
+	 hg9yDdpAqijewZqMwf6Pa/uhIepp8SixlcRNtrm8WQpMk1iywEP2/p3FAffZGkzIik
+	 GIaXMAnorwJ0g==
+From: Christian Brauner <brauner@kernel.org>
+To: Hongbo Li <lihongbo22@huawei.com>
+Cc: Christian Brauner <brauner@kernel.org>,
+	viro@zeniv.linux.org.uk,
+	linux-um@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org,
+	richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net
+Subject: Re: [PATCH v2] hostfs: convert hostfs to use the new mount API
+Date: Mon,  3 Jun 2024 16:29:52 +0200
+Message-ID: <20240603-abklingen-zutreffen-1bc4c642168b@brauner>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240530120111.3794664-1-lihongbo22@huawei.com>
+References: <20240530120111.3794664-1-lihongbo22@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20240531074837.1648501-14-hch@lst.de>
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Tf1RTZRg+371328UaXSYcPyA8eD1WQsAWY1xIFI8cuxzMFvpHPw+N7bIR
-	+9U2JLEQTKoxCQjiwIIpVCJoioAIEnCCgwocwYJE6ICa48gPicEy6EirwYbH/573ed/nfb/n
-	e78PR3lzbD88VW1gdGqJkmRvwJq7t78YEq56L4VfXBhAPSy7iFFnxwvYVKntH5SyjX6NUKWW
-	YUDVnu1BqDuWL9jUQv0iRq3cE1DtY8GUaaSFTeXX7aNqrjkQ6vHkjwhV3PoQUGWD37GopaZi
-	JNaLHhpOoB/Unkbp2eJCQOdeeoZuNY9z6KEb6XTj90fpbtswRreNZrPpUctH9MLkGEb/9vdn
-	KF2Q34zRhY0XWbS9YbP4uXfSdigYiYzRBTJqqUaWqpbHkAkHkvYkRYj4ghBBFBVJBqolKiaG
-	jNsnDtmbqnRaJAMPSZTpTkos0evJsJ07dJp0AxOo0OgNMSSjlSm1Qm2oXqLSp6vloWrGEC3g
-	81+JcBZ+kKa4XDoFtEbWx01/5nGyQQeWBzxwSAjhlyvL7DywAecRbQA2LPZwXMEigPMDd8GT
-	4NJVK7Iu+aOxAnElWgHsnx3CXIEdwKqiCbBahRHb4LlyCysP4DibCIb9/+GrtDdBwsmZG2td
-	UeIuBud+6ljrupGIhY9Kbq1pucQeONE6jbqwF+wtt2KrfTyIcDifd3hVCwkbDvN/nuK4ThQH
-	/6276ja0Ec5ca3LzfnC64HM3zoC1JWfYLvFxAM0jZuBK7IK5fQVrw1BCAevn7G4+AH7Tdx5x
-	8Z4w//G6fS5ssazjrfDchVNsF/aFt5Zy3JiG1ok+9xWdB3B2YBgtBJvNTxkyPzXPhaOh0XaM
-	ZXYaRQl/WOPAXXA7vHAl7BRg1QFfRqtXyRlphFagZjKerFmqUTWAtXcfFNcCbp90hHYBBAdd
-	AOIo6c39KuvdFB5XJjmcyeg0Sbp0JaPvAhHOBRWhfj5SjfPjqA1JAmEUXygSiYRR4SIBuYk7
-	m1sp4xFyiYFJYxgto1vXIbiHXzbiFfns7jSrDakcXzkoDYqt3zL1a8eRm1s4C6I7jClr28jr
-	XP83tZ1hh2bzOMZXl+vGgnrt3sKZxF3enUm+Ro71jUd6n5qdwX9JM+9Z7NU+g4tG0w9bPzkx
-	ai17O96abD16OqJNMcWoxidr24ubxcrMhIrfddoMqV6crJtJmV8uqRT7H7Dw9zvOvHAzsQo+
-	32Lq2XSlyDjQzSn7BXn/2GAv6Xm/IUv4rcCRfV22d8kUudumO1jd451TwXopueStFc/5+M7+
-	/ZdfSwF4dahg4cPpHMeRsZL4cB56XK6hh5GeyHL5g1hWP2uhShVwn/fpbVWDyaPmut0+Fn2y
-	3X/y5aBEEtMrJIIgVKeX/A8paUBugAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrOIsWRmVeSWpSXmKPExsWy7bCSnG70jcg0g1vHTS3ezNjIYrH6bj+b
-	xbQPP5ktPtycxGQxbd4VRouVq48yWdyf185m8XHDJxaLPw8NLfbe0rbovr6DzaJ3lY/F8uP/
-	mCx+P13LZDF55xtGixnnF7NafN8ymclB0OPyFW+P5yuXMXu8njyB0aN1K7fHzll32T0uny31
-	2Lyk3uPwhyssHrtvNrB53JxX6PHx6S0Wj6vfmpk9+nu3sXhM2LyR1ePzJrkA/igum5TUnMyy
-	1CJ9uwSujD/7bQt2M1V8enaMrYGxi6mLkZNDQsBE4tHmOUA2F4eQwHZGiSnbN7FDJCQllv09
-	wgxhC0us/PecHaLoI6PEnJPnWUESLAKqEmtmzgOyOTjYBLQlTv/nAAmLCChJPH11lhGknlng
-	GYtE39JLjCAJYQEHia9TroHZvALOEvd2vgRbICQQJdE96SQTRFxQ4uTMJywgNrOAmcS8zQ+Z
-	QeYzC0hLLP/HAWJyChhLvO+qnMAoMAtJwywkDbMQGhYwMq9iFE0tKM5Nz00uMNQrTswtLs1L
-	10vOz93ECI5LraAdjMvW/9U7xMjEwXiIUYKDWUmE91d6RJoQb0piZVVqUX58UWlOavEhRmkO
-	FiVxXuWczhQhgfTEktTs1NSC1CKYLBMHp1QDU92Ng1vsGPLZ9/Q3P6mtF/45JfwVp+XRWxsW
-	apxjUN5zSTn9x97PQjtt5hWJVNTdbBAvnpmak8O3T19A1IH3/3uhr9PzeZwuyp+6p5068b/2
-	Hb7Ddlpxl3Z8eJcsea0gdc5h+U3zNBmru1/vKYx7nXojdu2t/6/CL3/+I/p8qtLl3847l/5I
-	+hpaaCMbIiBwtjV3+znPnq+mtwT3cV5/6Nhav/KTjWQiry5nqdvE889vHWljnrvFWmF3widZ
-	Jh5PsaeyPenOihs/rz4wo6X+69O0LY+uO5zK4zue1bpstc3vov3FFnpScyVmdtadnPWge7ag
-	6hZ7nlV37kiItZ5dy7z6pSATKw+vXcq5aeV3NZVYijMSDbWYi4oTAW59SSg6AwAA
-X-CMS-MailID: 20240531140203epcas5p1fed913b6729b684e0916dfd62787be13
-X-Msg-Generator: CA
-Content-Type: multipart/mixed;
-	boundary="----4kURd6qQA_jt7Hem8gQqXiu1-FVD8qSeML2_RvQot6TDP4ZY=_48cac_"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20240531140203epcas5p1fed913b6729b684e0916dfd62787be13
-References: <20240531074837.1648501-1-hch@lst.de>
-	<20240531074837.1648501-14-hch@lst.de>
-	<CGME20240531140203epcas5p1fed913b6729b684e0916dfd62787be13@epcas5p1.samsung.com>
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1149; i=brauner@kernel.org; h=from:subject:message-id; bh=ilP/mqfminFIlL/9jrVY6neS/CASV0S8jeIG1imK2Z4=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaTFXk4PFwi+9HLBfoUs/j9XBXONXbh+2ec1TLm73/3Bu ZXVHJquHaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABOpYmH4Hyi90DLxY4tmUQXD U+kTd6ty2pdP37TT3vpr+Krrs5d/qWdk+Mp5tcb6/Kd/66Vsk/6HN+xncH8ie80ui0/BTeBCz2J eDgA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240602_060159_780021_6184767A 
-X-CRM114-Status: GOOD (  10.20  )
+X-CRM114-CacheID: sfid-20240603_073012_383033_32064B26 
+X-CRM114-Status: GOOD (  11.38  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -145,22 +79,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-------4kURd6qQA_jt7Hem8gQqXiu1-FVD8qSeML2_RvQot6TDP4ZY=_48cac_
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Disposition: inline
+On Thu, 30 May 2024 20:01:11 +0800, Hongbo Li wrote:
+> Convert the hostfs filesystem to the new internal mount API as the old
+> one will be obsoleted and removed.  This allows greater flexibility in
+> communication of mount parameters between userspace, the VFS and the
+> filesystem.
+> 
+> See Documentation/filesystems/mount_api.txt for more information.
+> 
+> [...]
 
-On 31/05/24 09:48AM, Christoph Hellwig wrote:
->Remove all APIs that are unused now that sd and sr have been converted
->to the atomic queue limits API.
->
->Signed-off-by: Christoph Hellwig <hch@lst.de>
->Reviewed-by: Bart Van Assche <bvanassche@acm.org>
->---
-Reviewed-by: Nitesh Shetty <nj.shetty@samsung.com>
+Applied to the vfs.mount.api branch of the vfs/vfs.git tree.
+Patches in the vfs.mount.api branch should appear in linux-next soon.
 
-------4kURd6qQA_jt7Hem8gQqXiu1-FVD8qSeML2_RvQot6TDP4ZY=_48cac_
-Content-Type: text/plain; charset="utf-8"
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
 
-------4kURd6qQA_jt7Hem8gQqXiu1-FVD8qSeML2_RvQot6TDP4ZY=_48cac_--
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.mount.api
+
+[1/1] hostfs: convert hostfs to use the new mount API
+      https://git.kernel.org/vfs/vfs/c/cd140ce9f611
 
