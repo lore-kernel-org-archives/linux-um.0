@@ -4,49 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22B6EC25B76
-	for <linux-um@archiver.kernel.org>; Tue, 11 Jun 2024 08:25:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8C50DC25B76
+	for <linux-um@archiver.kernel.org>; Tue, 11 Jun 2024 08:27:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=G6ueuYcgNyPg+H14jas1l6tjqwo8OtVCGswmLs1Z/js=; b=ndzyLBC6ULTkJDk1JDO1IFMveY
-	rYaBu+kEw2UAUVTS3egkANkdciru/a9yEGGsCmBxTuOo2vJ1BZkHVUs2hbHzlnuy/62KhmaL/tm6w
-	1iyUJat0Zipemenoct6JbRrKN7ERorRYANcu4t5sQGockHB3o7yPRGVs21zoWoFL6JtoAYxhTOYw2
-	3Z9ItCfOxBX5uFYUJRsINL0U3PG4Ji8FTlu6uiVAh4Iv/ePtVqRTPwPYd5zJwK9ucKknQqnrQCSwl
-	RlFcZqllCXYYLwqLA92vU1prrklhmTBtZOp8Eh40UzNiTF/k/RLGXXeok+IQBc0riKW3SvJ0ioz7i
-	c2Gz//yw==;
+	bh=BK6MYxsMPpsyL/WkHBuONQDq5GU+4DOlTVqEYfzgp/E=; b=qOGgBSt8aRjEFicS7GrMWXEXF7
+	IybGVt7v1MBjlHi/5H2zAi8QAWfkmksg5gGp5pBeej/YU7WNsmFg5XsuZcFu1vk648OU32AKGVjlI
+	/9jMKhFY0ZrxmOTntwzc5krwMAeBjUZIhnfPtuAdiKTh261ODNCZAc3k854zZWVb8+ImsNC/Fksmn
+	meey1whfQxcxo8siQCMa5F6dLaT3Oal00NaHGxPQcgbUEmEhsv1NFpNE2LY+Q7IU7fASbMACxbfzg
+	62B9i9Kj+ikeFz7WwneooZ7YComgCNcrYmAa17Br0I8x3Cc16g2g4OIsp+RwUizwlKKQax4q914tx
+	BUJ5Us+w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGwpD-000000086CF-21Ix;
-	Tue, 11 Jun 2024 08:25:51 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1sGwqN-000000086cc-3kmT;
+	Tue, 11 Jun 2024 08:27:03 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGwp8-000000086AT-3AQe;
-	Tue, 11 Jun 2024 08:25:49 +0000
+	id 1sGwqG-000000086bN-2qJO;
+	Tue, 11 Jun 2024 08:26:58 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 142C8CE1A1B;
-	Tue, 11 Jun 2024 08:25:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 617E6C2BD10;
-	Tue, 11 Jun 2024 08:25:40 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id A868E60D2E;
+	Tue, 11 Jun 2024 08:26:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C91B8C2BD10;
+	Tue, 11 Jun 2024 08:26:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718094344;
-	bh=SsjtIxdZTv9alxTM6s+eXXe/b4WXYQcjMfNg5CfEKdc=;
+	s=k20201202; t=1718094415;
+	bh=zPCa8xPO5T29Ue6m/rGvsIVSedmfYpv71DR4OREdVBQ=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ZQZg1j5YVztWgVvkxKyPKd72qqKRNzGYuDroL0hLwlP4ltRHp2mvUzylgapCjo/QX
-	 /9JUYHtH9lVcV7U8Irn9NtQ6Tf4T6BlUFQm06rRyckQkTNr9Kms7oXAKJzeYMkpiMK
-	 Ybljnp8uYPvlerlZvfIK+8/5AdyU/rT7kIsgR7AlzPHmM2fE435z6Gjn2Vvlo55KVu
-	 JYmLy8lPunL3Cs67SCKuZOcNFm3ArkP7Bsy0nS3RPixSC4k7DYJ0IbBTowTxu4OiQO
-	 q7okcClLynGKcjyF6P0660uu2Ke9bJiS/94AvjFYJ69OKCMBI3EL8IsbNDCkR/OILW
-	 7cbHkjEZuN7bA==
-Message-ID: <f4497895-93ce-4d96-bcaa-6ad77be83c83@kernel.org>
-Date: Tue, 11 Jun 2024 17:25:39 +0900
+	b=ez17pQw3y3AnnRAsbp/TeB/EKjEe7TyilW2EVLSJJrew7wwyol5eLtQF972oIfLpG
+	 oYcDa9ge7GLmbENS0nP9E6ta6tD7CQef1VnquDAuNjK/vmtFTMl8qc2CWkRZn6DFMS
+	 raKMjYT80FmXY5BCGp2iWYpN2mIcXyE1s1Z58hYCCGi8z4FHsqMGJz+kXo4P2Nk278
+	 r+zW/RpHA3mNDdc41rCNeksvCw0askxtETJGNAUBwkUPNPgC4kqE5kupqRA+Iycdzy
+	 jj5qMbPiZljguvK2fsauAxET3ATsJgfsyWMl0BAtw4WiWIzM56ISDOgnDaaVGyV3zf
+	 MkLh4tzLpuL/g==
+Message-ID: <b5db88d4-5639-47a9-9611-2628235f4244@kernel.org>
+Date: Tue, 11 Jun 2024 17:26:49 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 25/26] block: move the skip_tagset_quiesce flag to
- queue_limits
+Subject: Re: [PATCH 26/26] block: move the bounce flag into the feature field
 To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  Richard Weinberger <richard@nod.at>,
@@ -70,16 +69,16 @@ Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
  linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
 References: <20240611051929.513387-1-hch@lst.de>
- <20240611051929.513387-26-hch@lst.de>
+ <20240611051929.513387-27-hch@lst.de>
 Content-Language: en-US
 From: Damien Le Moal <dlemoal@kernel.org>
 Organization: Western Digital Research
-In-Reply-To: <20240611051929.513387-26-hch@lst.de>
+In-Reply-To: <20240611051929.513387-27-hch@lst.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240611_012547_069244_D236FDBB 
-X-CRM114-Status: UNSURE (   7.71  )
+X-CRM114-CacheID: sfid-20240611_012656_898200_934B19E5 
+X-CRM114-Status: UNSURE (   7.03  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -96,9 +95,11 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On 6/11/24 2:19 PM, Christoph Hellwig wrote:
-> Move the skip_tagset_quiesce flag into the queue_limits feature field so
-> that it can be set atomically and all I/O is frozen when changing the
-> flag.
+> Move the bounce field into the flags field to reclaim a little bit of
+
+s/flags/feature
+
+> space.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 
