@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19E27C25B76
-	for <linux-um@archiver.kernel.org>; Tue, 11 Jun 2024 05:20:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1B829C27C65
+	for <linux-um@archiver.kernel.org>; Tue, 11 Jun 2024 05:20:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=rkSQ+6nZApqoAfrjo6q+Wq9Ws51k8by9JfSQNhUShHI=; b=LfEYQlSSCwd6YTDpcJFNLTSLGA
-	eY06efphV8x6JulT2fmWPqRQTBAdc+VFjd+dGiOb3ycWXx6v5+IY2FHJTbAxmtRb+l2JmZd6SFLTT
-	HA1/m8OTla81kKhcTFdnIZSopHA7wvQ/AWI4AzieXJDN5rLn52qPKPWV6AzJ7DQ9a81pQq8RzqzsD
-	F3lJ8/oeY1rkIB1gXLD4dB7uGenTwuSdhngtN2VyMyjvWlzppyUfiTuOCfVsN2HdggUXB1WbgYZPO
-	QOc8NoEtX84eR3RHfLCXXCFE3taOYpdmgX/fa2RnlDWEO622i5sbFWQNXS6daC/Xm7vGPOzUo7VD6
-	nJzVmlTw==;
+	bh=kL0f+BmFpJHwuUReMJjo5PGBiELHza4z/Zsrvg8Z7ys=; b=li5Yi1n4i3B6y9RRFePgVMadw9
+	ekwM+bl/jtZFF7WxzxmHu0M+y1cJwrjhRW0OMVA2/cnt7bb3B6lJA6GyIufzIfJCNlEE3o4h1qIMQ
+	yEWJEB2oibX65cJgpnaXtBOabvm3/0UEH2n3ET9cPqoLkG7B0UpuFXrIgoUai0a+2LdCUmi2ul17p
+	mQ5XYf86ClvTs5iCtK3eyaDV0Tky1uVrGUdPQDPGmbgZXRIbJ4AcYw6oSx/RinSl3TJfHNqkHYS21
+	YMv+qla940jD8VSjCBYmeo60VTLHV7Vgl07aaJFrJBfjzLxaVdFA7RwgfATRllbvSDZiEFOyoTBHV
+	YdzxL+uQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGtvi-00000007RM0-1x6B;
-	Tue, 11 Jun 2024 05:20:22 +0000
+	id 1sGtvr-00000007RUD-1PZn;
+	Tue, 11 Jun 2024 05:20:31 +0000
 Received: from 2a02-8389-2341-5b80-cdb4-8e7d-405d-6b77.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:cdb4:8e7d:405d:6b77] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGtvF-00000007Qwk-2PPi;
-	Tue, 11 Jun 2024 05:19:54 +0000
+	id 1sGtvI-00000007Qyl-3It7;
+	Tue, 11 Jun 2024 05:19:57 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
@@ -63,9 +63,9 @@ Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
 	linux-s390@vger.kernel.org,
 	linux-scsi@vger.kernel.org,
 	linux-block@vger.kernel.org
-Subject: [PATCH 07/26] loop: fold loop_update_rotational into loop_reconfigure_limits
-Date: Tue, 11 Jun 2024 07:19:07 +0200
-Message-ID: <20240611051929.513387-8-hch@lst.de>
+Subject: [PATCH 08/26] virtio_blk: remove virtblk_update_cache_mode
+Date: Tue, 11 Jun 2024 07:19:08 +0200
+Message-ID: <20240611051929.513387-9-hch@lst.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240611051929.513387-1-hch@lst.de>
 References: <20240611051929.513387-1-hch@lst.de>
@@ -85,63 +85,53 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-This prepares for moving the rotational flag into the queue_limits and
-also fixes it for the case where the loop device is backed by a block
-device.
+virtblk_update_cache_mode boils down to a single call to
+blk_queue_write_cache.  Remove it in preparation for moving the cache
+control flags into the queue_limits.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/block/loop.c | 23 ++++-------------------
- 1 file changed, 4 insertions(+), 19 deletions(-)
+ drivers/block/virtio_blk.c | 13 +++----------
+ 1 file changed, 3 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index d7cf6bbbfb1b86..2c4a5eb3a6a7f9 100644
---- a/drivers/block/loop.c
-+++ b/drivers/block/loop.c
-@@ -916,24 +916,6 @@ static void loop_free_idle_workers_timer(struct timer_list *timer)
- 	return loop_free_idle_workers(lo, false);
+diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+index 2351f411fa4680..378b241911ca87 100644
+--- a/drivers/block/virtio_blk.c
++++ b/drivers/block/virtio_blk.c
+@@ -1089,14 +1089,6 @@ static int virtblk_get_cache_mode(struct virtio_device *vdev)
+ 	return writeback;
  }
  
--static void loop_update_rotational(struct loop_device *lo)
+-static void virtblk_update_cache_mode(struct virtio_device *vdev)
 -{
--	struct file *file = lo->lo_backing_file;
--	struct inode *file_inode = file->f_mapping->host;
--	struct block_device *file_bdev = file_inode->i_sb->s_bdev;
--	struct request_queue *q = lo->lo_queue;
--	bool nonrot = true;
+-	u8 writeback = virtblk_get_cache_mode(vdev);
+-	struct virtio_blk *vblk = vdev->priv;
 -
--	/* not all filesystems (e.g. tmpfs) have a sb->s_bdev */
--	if (file_bdev)
--		nonrot = bdev_nonrot(file_bdev);
--
--	if (nonrot)
--		blk_queue_flag_set(QUEUE_FLAG_NONROT, q);
--	else
--		blk_queue_flag_clear(QUEUE_FLAG_NONROT, q);
+-	blk_queue_write_cache(vblk->disk->queue, writeback, false);
 -}
 -
- /**
-  * loop_set_status_from_info - configure device from loop_info
-  * @lo: struct loop_device to configure
-@@ -1003,6 +985,10 @@ static int loop_reconfigure_limits(struct loop_device *lo, unsigned short bsize)
- 	lim.logical_block_size = bsize;
- 	lim.physical_block_size = bsize;
- 	lim.io_min = bsize;
-+	if (!backing_bdev || bdev_nonrot(backing_bdev))
-+		blk_queue_flag_set(QUEUE_FLAG_NONROT, lo->lo_queue);
-+	else
-+		blk_queue_flag_clear(QUEUE_FLAG_NONROT, lo->lo_queue);
- 	loop_config_discard(lo, &lim);
- 	return queue_limits_commit_update(lo->lo_queue, &lim);
+ static const char *const virtblk_cache_types[] = {
+ 	"write through", "write back"
+ };
+@@ -1116,7 +1108,7 @@ cache_type_store(struct device *dev, struct device_attribute *attr,
+ 		return i;
+ 
+ 	virtio_cwrite8(vdev, offsetof(struct virtio_blk_config, wce), i);
+-	virtblk_update_cache_mode(vdev);
++	blk_queue_write_cache(disk->queue, virtblk_get_cache_mode(vdev), false);
+ 	return count;
  }
-@@ -1099,7 +1085,6 @@ static int loop_configure(struct loop_device *lo, blk_mode_t mode,
- 	if (WARN_ON_ONCE(error))
- 		goto out_unlock;
  
--	loop_update_rotational(lo);
- 	loop_update_dio(lo);
- 	loop_sysfs_init(lo);
+@@ -1528,7 +1520,8 @@ static int virtblk_probe(struct virtio_device *vdev)
+ 	vblk->index = index;
  
+ 	/* configure queue flush support */
+-	virtblk_update_cache_mode(vdev);
++	blk_queue_write_cache(vblk->disk->queue, virtblk_get_cache_mode(vdev),
++			false);
+ 
+ 	/* If disk is read-only in the host, the guest should obey */
+ 	if (virtio_has_feature(vdev, VIRTIO_BLK_F_RO))
 -- 
 2.43.0
 
