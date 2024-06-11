@@ -4,77 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D61EEC25B76
-	for <linux-um@archiver.kernel.org>; Wed,  5 Jun 2024 18:02:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 55E82C27C65
+	for <linux-um@archiver.kernel.org>; Tue, 11 Jun 2024 05:19:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=uwUrfu/yzS/YNseKipCZSPaE2sZQzojPJmfSYmfQ2II=; b=lY0Wvi+4NN6PY8d5ifN682C86v
-	sufDclRPpMwK1L0SsmeNlyvyCxtDvGTiNsuNOyOZISNqzIEU7jTcACdd39VbE/KhBB5+6cxVbQjl0
-	skH+n53mIvWboDFXu8R0Ri18YhfQnHWu1qanpgurw3yUmZlphGlmfbXofKhgxVQpjk2M2Pbpm9uRs
-	tZiQ0MZwN491vFxWTtaq0mpRr7IAPeEQg2iKHRMrRsUXjlzx1Tan7zsccdhvlRZoRTgNHuQYG5fFB
-	eoCEkYeUTNY6J8FzwjewndjlVWDxh2FCierMWBuVG7QGYZt8sthA3jY9pVH7SAZxn6CjZtfJBxtNM
-	vzCH7Wng==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=lvXE5gTUk5P3TVKgX5q5Q8J1/DjEMwO75JeCg7ieY7s=; b=WnllQF6QhpYCr7T17to+X9bFNA
+	2DP8DUnFRhFvI0B4ORyHjSLmASRXBMniz54HEZN1mFvGCr1SV6lLbW67qWKC9AGQhM+rB2oei0HE7
+	uhtakwHzeM71Nq+MoCl5F51UyUOZFh6BgkpkcecbbR55aJ9LXwOfN5kBGs0mxYiu8JnUNNFkALxTH
+	Q+zYKhlT7n0UuTAGmv/dqhiXs7YY5//h3gxmy1p0Y/jbueHk0uv5F9KHGkIWguZxJ1wLiFWfLbPYO
+	6yKKTrdOJ3Ackv/jhFUadXrjh5I2KeuNjftV83go9U0g7N10CZp9edcSEoi1pXljtJWOzzgx/J20V
+	9KTcKrnA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEuyC-000000074TD-111x;
-	Wed, 05 Jun 2024 18:02:44 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
-	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sEuy8-000000074QE-2GT9
-	for linux-um@lists.infradead.org;
-	Wed, 05 Jun 2024 18:02:42 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=uwUrfu/yzS/YNseKipCZSPaE2sZQzojPJmfSYmfQ2II=;
-	t=1717610554; x=1718820154; b=t+5Ci8C2peLMrX96AuFHHM54i3YVYZCBnWJShFHSDQnf9XM
-	MFIgiptGSnhzw0fhQA/z9oHCeUNyfPWCKz+JZ94bcSdlh+K6WpPVMgcmyVyYbc6sxy1mLgWodcZlz
-	6mLxTGfcXZ8iGLc59lpsXBvOg0+rSvxhzNDAdsac5ePlgcxJtW8YSw8G+1+tewDpHipRrPnHIkItF
-	sAEz8IeO3T0pvIGBPUHqmkhk0tAVYt/KQ+jMmcIER/c/PiTPZXxbeKA2BmGckNz5PSgIywX8GOitV
-	nR4g0kmj5Fcf6MBTPQBZwTvP/7wdXctHoVl2yk7cTR1MrCeliNCN8lZkW0YTOGOA==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.97)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1sEuxm-0000000ErED-3wIf;
-	Wed, 05 Jun 2024 20:02:19 +0200
-Message-ID: <b46fd359f62fc7c50790fb19a8814c89a10a7c1c.camel@sipsolutions.net>
-Subject: Re: [PATCH] arch: um: rust: Add i386 support for Rust
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Ard Biesheuvel <ardb@kernel.org>, Nathan Chancellor <nathan@kernel.org>
-Cc: David Gow <davidgow@google.com>, Brendan Higgins
- <brendan.higgins@linux.dev>,  Rae Moar <rmoar@google.com>, Thomas Gleixner
- <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,  Miguel Ojeda
- <ojeda@kernel.org>, "H . Peter Anvin" <hpa@zytor.com>, Masahiro Yamada
- <masahiroy@kernel.org>,  Richard Weinberger <richard@nod.at>, Anton Ivanov
- <anton.ivanov@cambridgegreys.com>,  kunit-dev@googlegroups.com,
- linux-kernel@vger.kernel.org,  linux-um@lists.infradead.org,
- rust-for-linux@vger.kernel.org, x86@kernel.org,  Wedson Almeida Filho
- <wedsonaf@gmail.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
- <dave.hansen@linux.intel.com>, Alex Gaynor <alex.gaynor@gmail.com>, Boqun
- Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
- =?ISO-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>, Benno Lossin
- <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, Alice
- Ryhl <aliceryhl@google.com>, linux-doc@vger.kernel.org, 
- linux-kbuild@vger.kernel.org, llvm@lists.linux.dev
-Date: Wed, 05 Jun 2024 20:02:17 +0200
-In-Reply-To: <CAMj1kXHa58Zcq3extXw4VXGnpVHbd5urzCGnh_oCo-BLMxMrJQ@mail.gmail.com>
-References: <20240604224052.3138504-1-davidgow@google.com>
-	 <20240605062234.GE279426@thelio-3990X>
-	 <CAMj1kXHa58Zcq3extXw4VXGnpVHbd5urzCGnh_oCo-BLMxMrJQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	id 1sGtv2-00000007Qpk-08Ko;
+	Tue, 11 Jun 2024 05:19:40 +0000
+Received: from 2a02-8389-2341-5b80-cdb4-8e7d-405d-6b77.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:cdb4:8e7d:405d:6b77] helo=localhost)
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sGtux-00000007Qnu-0nLE;
+	Tue, 11 Jun 2024 05:19:35 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+	Richard Weinberger <richard@nod.at>,
+	Philipp Reisner <philipp.reisner@linbit.com>,
+	Lars Ellenberg <lars.ellenberg@linbit.com>,
+	=?UTF-8?q?Christoph=20B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Ming Lei <ming.lei@redhat.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	=?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>,
+	Alasdair Kergon <agk@redhat.com>,
+	Mike Snitzer <snitzer@kernel.org>,
+	Mikulas Patocka <mpatocka@redhat.com>,
+	Song Liu <song@kernel.org>,
+	Yu Kuai <yukuai3@huawei.com>,
+	Vineeth Vijayan <vneethv@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	linux-m68k@lists.linux-m68k.org,
+	linux-um@lists.infradead.org,
+	drbd-dev@lists.linbit.com,
+	nbd@other.debian.org,
+	linuxppc-dev@lists.ozlabs.org,
+	ceph-devel@vger.kernel.org,
+	virtualization@lists.linux.dev,
+	xen-devel@lists.xenproject.org,
+	linux-bcache@vger.kernel.org,
+	dm-devel@lists.linux.dev,
+	linux-raid@vger.kernel.org,
+	linux-mmc@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	nvdimm@lists.linux.dev,
+	linux-nvme@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org,
+	linux-block@vger.kernel.org
+Subject: [PATCH 01/26] sd: fix sd_is_zoned
+Date: Tue, 11 Jun 2024 07:19:01 +0200
+Message-ID: <20240611051929.513387-2-hch@lst.de>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240611051929.513387-1-hch@lst.de>
+References: <20240611051929.513387-1-hch@lst.de>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240605_110240_722707_0BC50309 
-X-CRM114-Status: UNSURE (   8.87  )
-X-CRM114-Notice: Please train this message.
+Content-Transfer-Encoding: 8bit
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,24 +85,57 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, 2024-06-05 at 19:59 +0200, Ard Biesheuvel wrote:
->=20
-> > > -ifdef CONFIG_X86_64
-> > > +ifneq ($(or $(CONFIG_X86_64),$(CONFIG_X86_32)),)
-> >=20
-> > These configurations are mutually exclusive, so would it look more
-> > readable to have it be:
-> >=20
-> >=20
-> > ifeq ($(CONFIG_X86_32)$(CONFIG_X86_64),y)
-> >=20
->=20
-> Or simply
->=20
-> ifdef CONFIG_X86
+Since commit 7437bb73f087 ("block: remove support for the host aware zone
+model"), only ZBC devices expose a zoned access model.  sd_is_zoned is
+used to check for that and thus return false for host aware devices.
 
-No, we're talking about ARCH=3Dum, so CONFIG_X86 isn't set, but
-CONFIG_X86_{32,64} are set as the "sub" or "host" arch. :)
+Fixes: 7437bb73f087 ("block: remove support for the host aware zone model")
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ drivers/scsi/sd.h     | 7 ++++++-
+ drivers/scsi/sd_zbc.c | 7 +------
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-johannes
+diff --git a/drivers/scsi/sd.h b/drivers/scsi/sd.h
+index 726f1613f6cb56..65dff3c2108926 100644
+--- a/drivers/scsi/sd.h
++++ b/drivers/scsi/sd.h
+@@ -222,9 +222,14 @@ static inline sector_t sectors_to_logical(struct scsi_device *sdev, sector_t sec
+ 
+ void sd_dif_config_host(struct scsi_disk *sdkp, struct queue_limits *lim);
+ 
++/*
++ * Check if we support a zoned model for this device.
++ *
++ * Note that host aware devices are treated as conventional by Linux.
++ */
+ static inline int sd_is_zoned(struct scsi_disk *sdkp)
+ {
+-	return sdkp->zoned == 1 || sdkp->device->type == TYPE_ZBC;
++	return sdkp->device->type == TYPE_ZBC;
+ }
+ 
+ #ifdef CONFIG_BLK_DEV_ZONED
+diff --git a/drivers/scsi/sd_zbc.c b/drivers/scsi/sd_zbc.c
+index f685838d9ed214..422eaed8457227 100644
+--- a/drivers/scsi/sd_zbc.c
++++ b/drivers/scsi/sd_zbc.c
+@@ -598,13 +598,8 @@ int sd_zbc_read_zones(struct scsi_disk *sdkp, struct queue_limits *lim,
+ 	u32 zone_blocks = 0;
+ 	int ret;
+ 
+-	if (!sd_is_zoned(sdkp)) {
+-		/*
+-		 * Device managed or normal SCSI disk, no special handling
+-		 * required.
+-		 */
++	if (!sd_is_zoned(sdkp))
+ 		return 0;
+-	}
+ 
+ 	/* READ16/WRITE16/SYNC16 is mandatory for ZBC devices */
+ 	sdkp->device->use_16_for_rw = 1;
+-- 
+2.43.0
+
 
