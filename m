@@ -4,59 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E8AFCC27C65
-	for <linux-um@archiver.kernel.org>; Tue, 11 Jun 2024 19:31:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C450BC27C65
+	for <linux-um@archiver.kernel.org>; Tue, 11 Jun 2024 19:32:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Cf7GcJGKcu7D5BiBoZvRx6x3LTfH72Sz+jyW+IP4PGw=; b=z6dV4TN58sOJYdnBUa+uhN61Fv
-	KQX0QHeKF8aWWma5Sosc5zeWzILkC8PqOq3ySARiVWgMgiEZdxFVJQyVDTNY1R0nzIp6gaXazj4lL
-	7/Y+iJzE2diD5RIrUbnj111WN/HnjsPaAOQqFvoAwTyk+yCx4ha1xCKZlMW0qYqgNH+q+/Qb7gWPc
-	cOcTcxcI16euakt+U4aAu/ezNkdu2YO0mAuoZ9+vBhIx71jVC/dm6gyYlx0dAjUuVTNZKAkkZaLu4
-	yFwK0NZFd183zLY878+sbNA9KmLUeujshgPofdAZurCY2w6oEhGOrRn5jdHDXkDSyJBxfLeGkKOfm
-	M2ngwA9Q==;
+	bh=NinUkL0nGF4zzUpzdC8fXnN/I9QzcU4DY70U0/CiXlk=; b=FqFMShxhinPRYW8p3cR9kZUbCE
+	ZtVSBjnNilkVCfd3fUk4JM20clEgVlwvkgc2zLvuqkBAlxI50UlA5A1zLUSJBSETjfYRHnUYFpHPq
+	sb7GZgiYpqyKRr3DXQNe+ce+4JWWkTIQrQdo7/nJndlEzWfiBXOGmwul5oV/cSRPqQlDfcp9OrXUh
+	6ffhIfgwMXeFQ+jbussl+fCrADYV28O5I1HkNJUH2XQVEEpqRPoJmrmjyA0qsPBZOtOuZR4u3eXxL
+	oXfktu6v6m9k6A7s3/LmQPFqEv3KA55V2r/Zo3tUexsKXX3h2PR8xoWag3n16SKp0nDVKDNCAZsuv
+	X9dPww3g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sH7Dc-0000000A0rq-2c8s;
-	Tue, 11 Jun 2024 19:31:44 +0000
+	id 1sH7Eg-0000000A1FV-06Kb;
+	Tue, 11 Jun 2024 19:32:50 +0000
 Received: from 009.lax.mailroute.net ([199.89.1.12])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sH7DY-0000000A0qO-1dC2;
-	Tue, 11 Jun 2024 19:31:42 +0000
+	id 1sH7Ec-0000000A1E7-1VW0;
+	Tue, 11 Jun 2024 19:32:47 +0000
 Received: from localhost (localhost [127.0.0.1])
-	by 009.lax.mailroute.net (Postfix) with ESMTP id 4VzJhC6RZtzlgMVP;
-	Tue, 11 Jun 2024 19:31:39 +0000 (UTC)
+	by 009.lax.mailroute.net (Postfix) with ESMTP id 4VzJjV1BYPzlgMVP;
+	Tue, 11 Jun 2024 19:32:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
 	content-transfer-encoding:content-type:content-type:in-reply-to
 	:from:from:content-language:references:subject:subject
 	:user-agent:mime-version:date:date:message-id:received:received;
-	 s=mr01; t=1718134291; x=1720726292; bh=Cf7GcJGKcu7D5BiBoZvRx6x3
-	LTfH72Sz+jyW+IP4PGw=; b=d+QkU/8VZ6Dq+WOkUNTA34lPXUILl3LVbu6kO4uj
-	dRf9ZLceTOdlVMVrbZoxWEf4u5ywVZd7xmS7z7Qu9fGFq3c09JpTwe9Izw4JtWWY
-	tHhkQiq7BjVQmgAeymktZWCjgXvLtR18TTk9AbAP5hLoxcQzO5YN29aNyMj+6U8N
-	mnLgDc3DfcoUZU+HIpoj33PjIC9sY+avSJ5HN8s208j4yIUXD3pm8VAHyLZOImgN
-	bjIvKsv7Fn1K4+4dykzuQT4iVGBagOEJKDZaAYW7tHizV3z3TzNCBZqR7MTEAs6D
-	ikorZXLPiNhCfCU2hPtZjpFb2ahQxj4wO1mOgHFaYmHiNQ==
+	 s=mr01; t=1718134358; x=1720726359; bh=NinUkL0nGF4zzUpzdC8fXnN/
+	I9QzcU4DY70U0/CiXlk=; b=tydEMcbkmjZvUgM3BMYGB8ptZaiX1xSWkqvzlXjS
+	N+d6qsqQsAQuVet9UxqHiZLwEopChIDKNIIFy8hqfGJbWbRcsptm4r1eCxxBB7bS
+	zJlCWiRgrj9C771wRVNgaqEgeb47b1UPK6RX0EWnJz2fmGzdd9Yle0FBhwOb2shG
+	s5V6Vwq4SlacZgToBgTwE4ROC+lC73bVlCAAnBKs9iY/9mXR1a7bE0gFdSzJ8o4Z
+	AAmvlaj1apsee5D+9h6qX3hN9wQGqsRU9xb9fn79I+qilXROStdod47NBQuzB6lE
+	Cuk8ybjhW1/CdxDOGi4kQk7/IXQCqfKZONnPRP3FnS4gWw==
 X-Virus-Scanned: by MailRoute
 Received: from 009.lax.mailroute.net ([127.0.0.1])
  by localhost (009.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id DQP8SoW0yS3G; Tue, 11 Jun 2024 19:31:31 +0000 (UTC)
+ id Y1jELP_gqM3e; Tue, 11 Jun 2024 19:32:38 +0000 (UTC)
 Received: from [100.96.154.26] (unknown [104.132.0.90])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: bvanassche@acm.org)
-	by 009.lax.mailroute.net (Postfix) with ESMTPSA id 4VzJgv1SgJzlgMVN;
-	Tue, 11 Jun 2024 19:31:22 +0000 (UTC)
-Message-ID: <8206c0cf-1787-4282-bcec-746d7c7f3880@acm.org>
-Date: Tue, 11 Jun 2024 12:31:21 -0700
+	by 009.lax.mailroute.net (Postfix) with ESMTPSA id 4VzJj93JfNzlgMVN;
+	Tue, 11 Jun 2024 19:32:29 +0000 (UTC)
+Message-ID: <69663f60-1d42-4f95-97cc-acb73ed5d7c8@acm.org>
+Date: Tue, 11 Jun 2024 12:32:27 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 07/26] loop: fold loop_update_rotational into
- loop_reconfigure_limits
+Subject: Re: [PATCH 08/26] virtio_blk: remove virtblk_update_cache_mode
 To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  Richard Weinberger <richard@nod.at>,
@@ -80,15 +79,15 @@ Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
  linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
 References: <20240611051929.513387-1-hch@lst.de>
- <20240611051929.513387-8-hch@lst.de>
+ <20240611051929.513387-9-hch@lst.de>
 Content-Language: en-US
 From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20240611051929.513387-8-hch@lst.de>
+In-Reply-To: <20240611051929.513387-9-hch@lst.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240611_123140_563396_94D0960D 
-X-CRM114-Status: UNSURE (   7.88  )
+X-CRM114-CacheID: sfid-20240611_123246_447927_258B4D9D 
+X-CRM114-Status: UNSURE (   7.30  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -105,9 +104,9 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On 6/10/24 10:19 PM, Christoph Hellwig wrote:
-> This prepares for moving the rotational flag into the queue_limits and
-> also fixes it for the case where the loop device is backed by a block
-> device.
+> virtblk_update_cache_mode boils down to a single call to
+> blk_queue_write_cache.  Remove it in preparation for moving the cache
+> control flags into the queue_limits.
 
 Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 
