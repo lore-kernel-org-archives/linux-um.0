@@ -4,48 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DA971C25B76
-	for <linux-um@archiver.kernel.org>; Tue, 11 Jun 2024 08:16:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96BF2C25B76
+	for <linux-um@archiver.kernel.org>; Tue, 11 Jun 2024 08:17:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=CgcblUpzyUwbJkITE/Ew+ODNfANKL5vFh4qMmuNo50M=; b=C2u+7Qk2VjKoyX2RzvCo8D5f9l
-	s0zRnwd6pmv+Mkbw8g34EKGjYL2RtUDJD/oVZEuWGLa1qA2cvsh3ryYAprz++oB3KhlgGjJDSwsvl
-	/Plom8LrCEGnlZyb+DpL63qPZtkEC1ITTEvNMOwbtPG44veOVpiMkTrZXst10fx0mZhh29YTFQv1A
-	KnZ3yBRGBKXMoIiMPUJpZrcZgY+fB+Sbm7VkXj6fG3yvHgbVGhHH0AvzniMv+7JZeuoxt9rE403Fl
-	i674KRoSfHCMoEmMxVHYNotdOn2mn10BtOXMA2isYT04nKJ2YMvrW9/w/SjJq8yC4Ezg9YJWPXNl9
-	IGpk//Ow==;
+	bh=OwoX/M+vO+dzLEwf5qlZ5oQ7TgrEujQUgrUgs6AHKro=; b=FeSWi8cQY6bohPT0UibSgLlQFQ
+	UpclMaJOQ/8bcbiseuxzCZ8VUzCzRiv8LYTCYkRg5f2hmJrVIAG8EJcSwE++ARSC6/tVq5NdG9qjO
+	7wCielcjxxhtZHv0BZsLyd0VeGhwMAiXWvPWoN9BTN4bV8oD3UAzfDTbBgVY/cJZ8Fm4yf2YgnjjO
+	0yO4ri6dYFwbQ/Tt6zv4XMT49Cwl6L8ySiLgf4X+CEsreqmMyV1g+LdMOYXX+0Y9bjcSgF6prbG+C
+	X2xNkOvE6idYnaYTToaZlTAdk2WNPFQ3SgqQ3a+cFwNswIQxBz8MHKSxoRE8fIxzx3aq4rarNB58/
+	++72RJWQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGwgS-000000082Ys-2DO6;
-	Tue, 11 Jun 2024 08:16:48 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1sGwgh-000000082gU-0RyV;
+	Tue, 11 Jun 2024 08:17:03 +0000
+Received: from smtp-out1.suse.de ([195.135.223.130])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGwgN-000000082X7-2rDG;
-	Tue, 11 Jun 2024 08:16:45 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id E04C060C3E;
-	Tue, 11 Jun 2024 08:16:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A204C2BD10;
-	Tue, 11 Jun 2024 08:16:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718093802;
-	bh=0xCsZy2WAGO31vOt2jMux3XsQG5JzkwMLoCsgqbDM7s=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=BshMQEOFKHQCAeU7Uq7D/QqRf+yvZZUvvFAljFVHRMbxOyzti+TjMe0D1IJKi9gMV
-	 zyUA+05eoWqeEmhuLL8uoXj2uFvoj39+EiUXirtXWtXQFdTuvV4hWDH4qLaMCjLfy+
-	 AnqgnZ0xCGWpIVHNkCHGqby5QcQzPelY2FXqqGrtk4KASWZEpNZldaxiF+wB3Rw9dc
-	 xbMnzOX/e3WR+yoGOTEoauLs/X9V3dTUosPnw+YpOF05bIeErHzOz8DqMDnd798OeG
-	 g23Oj4HG5YREgeqkRw2UIxm1G6V2rlg7SUCDzzjKvw7jq8xou/AYaSDtybrj1/IgEi
-	 S8SrLRUjTG4qQ==
-Message-ID: <4845aae8-ad03-407e-bf31-f164b8f684d4@kernel.org>
-Date: Tue, 11 Jun 2024 17:16:37 +0900
+	id 1sGwgd-000000082eO-1qOC;
+	Tue, 11 Jun 2024 08:17:00 +0000
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 2899F22D2F;
+	Tue, 11 Jun 2024 08:16:58 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
+	none
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BFD26137DF;
+	Tue, 11 Jun 2024 08:16:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 2a1qLvkHaGY8WwAAD6G6ig
+	(envelope-from <hare@suse.de>); Tue, 11 Jun 2024 08:16:57 +0000
+Message-ID: <e25047ab-2c01-4704-b554-df85a8d34cd7@suse.de>
+Date: Tue, 11 Jun 2024 10:16:57 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 19/26] block: move the nowait flag to queue_limits
+Subject: Re: [PATCH 05/26] loop: regularize upgrading the lock size for direct
+ I/O
 To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  Richard Weinberger <richard@nod.at>,
@@ -69,16 +73,26 @@ Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
  linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
 References: <20240611051929.513387-1-hch@lst.de>
- <20240611051929.513387-20-hch@lst.de>
+ <20240611051929.513387-6-hch@lst.de>
 Content-Language: en-US
-From: Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <20240611051929.513387-20-hch@lst.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Hannes Reinecke <hare@suse.de>
+In-Reply-To: <20240611051929.513387-6-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Queue-Id: 2899F22D2F
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
+X-Rspamd-Action: no action
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240611_011643_852483_52DECB4C 
-X-CRM114-Status: GOOD (  12.22  )
+X-CRM114-CacheID: sfid-20240611_011659_665834_F6ECF323 
+X-CRM114-Status: GOOD (  10.56  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,30 +107,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 6/11/24 2:19 PM, Christoph Hellwig wrote:
-> Move the nowait flag into the queue_limits feature field so that it
-> can be set atomically and all I/O is frozen when changing the flag.
-> 
-> Stacking drivers are simplified in that they now can simply set the
-> flag, and blk_stack_limits will clear it when the features is not
-> supported by any of the underlying devices.
+On 6/11/24 07:19, Christoph Hellwig wrote:
+> The LOOP_CONFIGURE path automatically upgrades the block size to that
+> of the underlying file for O_DIRECT file descriptors, but the
+> LOOP_SET_BLOCK_SIZE path does not.  Fix this by lifting the code to
+> pick the block size into common code.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>   drivers/block/loop.c | 25 +++++++++++++++----------
+>   1 file changed, 15 insertions(+), 10 deletions(-)
+> 
+Reviewed-by: Hannes Reinecke <hare@suse.de>
 
+Cheers,
 
-> @@ -1825,9 +1815,7 @@ int dm_table_set_restrictions(struct dm_table *t, struct request_queue *q,
->  	int r;
->  
->  	if (dm_table_supports_nowait(t))
-> -		blk_queue_flag_set(QUEUE_FLAG_NOWAIT, q);
-> -	else
-> -		blk_queue_flag_clear(QUEUE_FLAG_NOWAIT, q);
-> +		limits->features &= ~BLK_FEAT_NOWAIT;
-
-Shouldn't you set the flag here instead of clearing it ?
-
+Hannes
 -- 
-Damien Le Moal
-Western Digital Research
+Dr. Hannes Reinecke                  Kernel Storage Architect
+hare@suse.de                                +49 911 74053 688
+SUSE Software Solutions GmbH, Frankenstr. 146, 90461 Nürnberg
+HRB 36809 (AG Nürnberg), GF: I. Totev, A. McDonald, W. Knoblich
 
 
