@@ -4,48 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4034CC25B76
-	for <linux-um@archiver.kernel.org>; Tue, 11 Jun 2024 08:06:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 560FFC25B76
+	for <linux-um@archiver.kernel.org>; Tue, 11 Jun 2024 08:09:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=p05Oa+soL5UqVPbydlN73TzAKOotfP33ep8J8JHpMPI=; b=ujlAX6AfYy3v+Xav9sLmt7IT+k
-	y6p6mKxf0gPZU0RFw5Y9tLxKbLtBpFLcTfWEUBMMzWrUwrCxUHavTznNMh3URIFDzCNsvsIO8ddb2
-	COfUXyXd4bUtqPbQ4mz/xMxzX3d93LdzwQ2ovqVbpEWVrD0IvE1sIGUSKdjNTuXasgVoiNNzmg5Mj
-	FY35sD6VabU/2154AxhYjTnwccj4/80ryEyIhU6kaYXsDbUjEPn0YDzQfXS/vHeQaFF3EyillnecH
-	v9kJ4PE9C60d6aRxwvafIe4wH3tx5HpVe5HnAosat3I0wo4WHpenjiJ1Q8NeE3ABH5Vsv5VVYIWWU
-	ZpZjxBEw==;
+	bh=NyRtEwJ4SZLCWBHsUm/a6ctBPFuyO4BjFg1zxEzh67w=; b=lvDfxpG0cVvdimedoTWMg2cnGW
+	joQtsYHKCKEo8Nody6uy5huv2zydCDG+bk+PnqzGN6QOHTH6T8M4FXxgHgVImAZNLiLsE5wetXRrO
+	xOXYcRAtFZsrNTb18xzSbX39CRIjF0KYMv22HIFoloQ0AzrB2Q9sOvE/4gLrGKb3H516PXXzcfXg8
+	psena0gS4tEomokocxMTW3QB8yofEb7/8cIU5Xb44gUCPTOiMqb2cs7kKLY7mSphy0e2IiRh7VoTN
+	uoG6fqlK2r9nRl2FL27eDt3I2V5E9lvGj0s2E26jNb4j1TPNLSu6yr7QuaSndArmJpK0kR6yT5267
+	IjKhRPfw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGwWf-00000007zbX-3PaI;
-	Tue, 11 Jun 2024 08:06:41 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1sGwZo-00000008057-3xye;
+	Tue, 11 Jun 2024 08:09:56 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGwWb-00000007zZn-1Do4;
-	Tue, 11 Jun 2024 08:06:38 +0000
+	id 1sGwZl-0000000804M-2X3x;
+	Tue, 11 Jun 2024 08:09:54 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id A0AEDCE193F;
-	Tue, 11 Jun 2024 08:06:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59A7BC2BD10;
-	Tue, 11 Jun 2024 08:06:30 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 7900960D2E;
+	Tue, 11 Jun 2024 08:09:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F729C2BD10;
+	Tue, 11 Jun 2024 08:09:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718093195;
-	bh=jCn0oX3HrJ6Qlcw/LuQoAhJRxhLaDvFIki6GqIikVDs=;
+	s=k20201202; t=1718093392;
+	bh=q0QC/DwdDecsb+SsO2WPgUlAOrUNDUio/s56qnb48bM=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=d/4pmxeJzHoEeQ+g2h36PLWMNipYFVLUgldUlVqiJ/oHVrEeGGWvSVD8Qj0WOLs1h
-	 W+bfZgsci1Mj1j7xr+uUvjowbUTryqU8M7niWdxvm06YM2JVc8jmnbjYFRmHHcrBjc
-	 35EtrgT1CO5oyRbn/EfIn5kNPHJPwVOwHupvi057HyipWOQnDb4p6IBWsy9PJTe2z7
-	 aguwef6PSD/S3jnHhAFsQmA+8/MCfLVtbrqTe0OoYvK6gaKfrbg4IMTS8YbzdTrpnX
-	 ruwuQZ89i04k1WQRZE0wdLm48U3gwb4DUnNOpOrrhv3eKIrI6XQd7uuU3njn1J65js
-	 90POvgbQ696Tw==
-Message-ID: <0f01ed9c-6f85-427c-9690-1551e67e46a9@kernel.org>
-Date: Tue, 11 Jun 2024 17:06:29 +0900
+	b=ASIoL/u9H/6b4lUyYk5oEzSADY2SPITglYQKbn22RE2v5Zmv+Bdu4yXt2dx4LBuyj
+	 NVG1rUDMHnNTWyjPGwlGMS7q0dEKke4PAWQg/UzftKu/Ly2DNOhNfxEkKQj6EFDaHU
+	 gbMPLXlbaDGII4KmlbUUWCoStYYGCahBnCwU3sHyUUKQqZ1YdU0vcRocoxwls2ROg2
+	 gKF/wxkN6x65ww9rMbS9NJlQNYUg7Y5U2acfwFYdpXRWwDXOcSxo1CVQbqP3uooiqP
+	 0hvYmqaICGemmnL938SwljJXBPejQKyIB0+ALAtSSclYdQCRHYhtFi/CQNV4wF5aIA
+	 8HiTkYhUDl6Cg==
+Message-ID: <d51e4163-99e3-4435-870d-faef3887ab6a@kernel.org>
+Date: Tue, 11 Jun 2024 17:09:45 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 15/26] block: move the add_random flag to queue_limits
+Subject: Re: [PATCH 16/26] block: move the io_stat flag setting to
+ queue_limits
 To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  Richard Weinberger <richard@nod.at>,
@@ -69,17 +70,16 @@ Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
  linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
 References: <20240611051929.513387-1-hch@lst.de>
- <20240611051929.513387-16-hch@lst.de>
+ <20240611051929.513387-17-hch@lst.de>
 Content-Language: en-US
 From: Damien Le Moal <dlemoal@kernel.org>
 Organization: Western Digital Research
-In-Reply-To: <20240611051929.513387-16-hch@lst.de>
+In-Reply-To: <20240611051929.513387-17-hch@lst.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240611_010637_544345_2D865024 
-X-CRM114-Status: UNSURE (   9.74  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240611_010953_759625_D6434AFA 
+X-CRM114-Status: GOOD (  11.25  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -95,21 +95,18 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On 6/11/24 2:19 PM, Christoph Hellwig wrote:
-> Move the add_random flag into the queue_limits feature field so that it
+> Move the io_stat flag into the queue_limits feature field so that it
 > can be set atomically and all I/O is frozen when changing the flag.
 
-Same remark as the previous patches for the end of this sentence.c
+Why a feature ? It seems more appropriate for io_stat to be a flag rather than
+a feature as that is a block layer thing rather than a device characteristic, no ?
 
 > 
-> Note that this also removes code from dm to clear the flag based on
-> the underlying devices, which can't be reached as dm devices will
-> always start out without the flag set.
+> Simplify md and dm to set the flag unconditionally instead of avoiding
+> setting a simple flag for cases where it already is set by other means,
+> which is a bit pointless.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
-
-Other than that, looks OK to me.
-
-Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
 
 -- 
 Damien Le Moal
