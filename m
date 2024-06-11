@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 415B8C25B76
-	for <linux-um@archiver.kernel.org>; Tue, 11 Jun 2024 05:20:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3B3D0C27C65
+	for <linux-um@archiver.kernel.org>; Tue, 11 Jun 2024 05:20:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=eTQ/ypSzK4lWAaVunDc3tjHt1iOpV7nN08jg8TeOXAw=; b=Qkdjex8qvaKOiw4UIY4YxjNe4S
-	9pu2S98zVfpZRFtFI5FAD+q0t2NjvHbv0fFKSVxiS7dx8rKlpmchXp+GZHp4R3nJI9kVHPUm6nbcG
-	spH2xZ98Uzjk30rrRoF61M2Ep/IS3goZpJd2hu0WH1mOzXF5NAq0kSdk0CsYLCpZgnIAjAlK8UKQG
-	jWpcE7JvtisfKB2Aqzc9ZuaYYUMUvL4BU48JgXdbljnMYn2VbDYy6/Zi5VJrs+ltCYgbKGck6UvRG
-	v6dro5AvGqQLMzF8gCKQCjVlG5PfMdTIVYTTZjNMFYrYx4yIXr1AJcbMuFK7TE5eEt5Vqlm5MXkpm
-	c8SYOCqA==;
+	bh=ssio61bxvyjbVvX4GR2JkhWcuVQT+rCdDVvaw5rJLVc=; b=sXkj+Ja6biQcZf1gjQ1OEFFUTs
+	ZeQYa72/BuSbA6ztPVCtlOE6o2s479tNPUq1gVG26fp8PvmN49mmhXxIdqTFqOkQLLV5iiJzjWG6X
+	SSnMJkRAJRsI339jtx1c3fpoPYKUHflehSZLXG5zhWU/jKOAF58IjtC00sMSUq/25xb8gYQHoVwkT
+	zUBmbJMwpAGCmQwu3oX909jKIk3tjqlBMQifs/XKcHDZLPA8ap0SVQdEwRbNvugqQ5TF43GsKUQ7E
+	q8xCq/KwgfraMVf30K8Gd+4pS8wKs/Iu8+2P1YN6JyMeSx9bCMVyu1ojEov4N6OlGj0+Geu8uKp2F
+	Ug95l+Wg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGtvR-00000007R6h-0VJ6;
-	Tue, 11 Jun 2024 05:20:05 +0000
+	id 1sGtvX-00000007RD1-2a1w;
+	Tue, 11 Jun 2024 05:20:12 +0000
 Received: from 2a02-8389-2341-5b80-cdb4-8e7d-405d-6b77.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:cdb4:8e7d:405d:6b77] helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGtv6-00000007Qry-3x0S;
-	Tue, 11 Jun 2024 05:19:48 +0000
+	id 1sGtvC-00000007QuL-20ql;
+	Tue, 11 Jun 2024 05:19:51 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
@@ -63,9 +63,9 @@ Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
 	linux-s390@vger.kernel.org,
 	linux-scsi@vger.kernel.org,
 	linux-block@vger.kernel.org
-Subject: [PATCH 05/26] loop: regularize upgrading the lock size for direct I/O
-Date: Tue, 11 Jun 2024 07:19:05 +0200
-Message-ID: <20240611051929.513387-6-hch@lst.de>
+Subject: [PATCH 06/26] loop: also use the default block size from an underlying block device
+Date: Tue, 11 Jun 2024 07:19:06 +0200
+Message-ID: <20240611051929.513387-7-hch@lst.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240611051929.513387-1-hch@lst.de>
 References: <20240611051929.513387-1-hch@lst.de>
@@ -85,70 +85,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-The LOOP_CONFIGURE path automatically upgrades the block size to that
-of the underlying file for O_DIRECT file descriptors, but the
-LOOP_SET_BLOCK_SIZE path does not.  Fix this by lifting the code to
-pick the block size into common code.
+Fix the code in loop_reconfigure_limits to pick a default block size for
+O_DIRECT file descriptors to also work when the loop device sits on top
+of a block device and not just on a regular file on a block device based
+file system.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- drivers/block/loop.c | 25 +++++++++++++++----------
- 1 file changed, 15 insertions(+), 10 deletions(-)
+ drivers/block/loop.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index c658282454af1b..4f6d8514d19bd6 100644
+index 4f6d8514d19bd6..d7cf6bbbfb1b86 100644
 --- a/drivers/block/loop.c
 +++ b/drivers/block/loop.c
-@@ -975,10 +975,24 @@ loop_set_status_from_info(struct loop_device *lo,
- 	return 0;
- }
- 
-+static unsigned short loop_default_blocksize(struct loop_device *lo,
-+		struct block_device *backing_bdev)
-+{
-+	/* In case of direct I/O, match underlying block size */
-+	if ((lo->lo_backing_file->f_flags & O_DIRECT) && backing_bdev)
-+		return bdev_logical_block_size(backing_bdev);
-+	return 512;
-+}
-+
- static int loop_reconfigure_limits(struct loop_device *lo, unsigned short bsize)
+@@ -988,10 +988,16 @@ static int loop_reconfigure_limits(struct loop_device *lo, unsigned short bsize)
  {
-+	struct file *file = lo->lo_backing_file;
-+	struct inode *inode = file->f_mapping->host;
+ 	struct file *file = lo->lo_backing_file;
+ 	struct inode *inode = file->f_mapping->host;
++	struct block_device *backing_bdev = NULL;
  	struct queue_limits lim;
  
-+	if (!bsize)
-+		bsize = loop_default_blocksize(lo, inode->i_sb->s_bdev);
++	if (S_ISBLK(inode->i_mode))
++		backing_bdev = I_BDEV(inode);
++	else if (inode->i_sb->s_bdev)
++		backing_bdev = inode->i_sb->s_bdev;
 +
+ 	if (!bsize)
+-		bsize = loop_default_blocksize(lo, inode->i_sb->s_bdev);
++		bsize = loop_default_blocksize(lo, backing_bdev);
+ 
  	lim = queue_limits_start_update(lo->lo_queue);
  	lim.logical_block_size = bsize;
- 	lim.physical_block_size = bsize;
-@@ -997,7 +1011,6 @@ static int loop_configure(struct loop_device *lo, blk_mode_t mode,
- 	int error;
- 	loff_t size;
- 	bool partscan;
--	unsigned short bsize;
- 	bool is_loop;
- 
- 	if (!file)
-@@ -1076,15 +1089,7 @@ static int loop_configure(struct loop_device *lo, blk_mode_t mode,
- 	if (!(lo->lo_flags & LO_FLAGS_READ_ONLY) && file->f_op->fsync)
- 		blk_queue_write_cache(lo->lo_queue, true, false);
- 
--	if (config->block_size)
--		bsize = config->block_size;
--	else if ((lo->lo_backing_file->f_flags & O_DIRECT) && inode->i_sb->s_bdev)
--		/* In case of direct I/O, match underlying block size */
--		bsize = bdev_logical_block_size(inode->i_sb->s_bdev);
--	else
--		bsize = 512;
--
--	error = loop_reconfigure_limits(lo, bsize);
-+	error = loop_reconfigure_limits(lo, config->block_size);
- 	if (WARN_ON_ONCE(error))
- 		goto out_unlock;
- 
 -- 
 2.43.0
 
