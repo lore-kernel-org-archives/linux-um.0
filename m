@@ -4,95 +4,214 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A899C25B76
-	for <linux-um@archiver.kernel.org>; Tue, 11 Jun 2024 09:58:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54ABCC25B76
+	for <linux-um@archiver.kernel.org>; Tue, 11 Jun 2024 11:49:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=vGlUfe2G/RmmVDxWVUy52AKfPecSQ6xQORQI7+oKlwM=; b=1w/PYZxWEqZeP+2byrzOvDqyRp
-	4ZRd16dGZwjkP3s1jmNIHTulW9OAeyWNg3OB0Rp+PuH6DPyoc2FtGLSuTuK7cRkTpbgkvtRiu/AqI
-	aWxCyflkbmRRMGobrAnVZYJXFrfAELDEATsisjNkUiRjA+iVyhxrp6Tau7Guh3wvZtd/y/gFuXEJo
-	mMIbD8hfmzCsLL8krDOe5DvEfqZw9PwtTmG9BH0iyi01nYq73CKxC9+V0BrMkdOlmZY+ZA8kGHdFG
-	7g0c6hCtwk9O+6q0z43WRbqS6JsJ1ilq8hNvsQpUha5LhfKPfwS5Mzqz6iuS8T2Es4y4Jw+kWN+T5
-	ZZqpntdw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:
+	Message-ID:Date:Subject:CC:To:From:Reply-To:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=; b=VZ9IG6+qmkzurb6kcAKiN7rau4
+	JCGs278dHAcrpzOUp4roZpmjnqn7wSl342fbeHsHi57EGnTPt1DR2+Vd92uklg6osVHf5g//FRELr
+	+i2UwtKHEjPLGVMUUlYng8Itls7KR0/GK0cpUje5pLd+nxhHArZBUeuCvMIhofNYFN9vWCmSCvYJ3
+	S5oPhm1UsrSlTebcQh4ZV7SV6cCsptpREWnjk1uZ/1tk+Ijw6XTFiWJvT81cICNFeCxXbE9zCIZ6m
+	VQRbJklOtgp+b7bt4VxAIxO5tnKIIKonS/lMHiPzMSSNnma1Qze9BdQXttuMFwandbvqg33qTfSxT
+	2kkdKFvg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGyGo-00000008MB3-3F1C;
-	Tue, 11 Jun 2024 09:58:26 +0000
-Received: from smtp-out2.suse.de ([2a07:de40:b251:101:10:150:64:2])
+	id 1sH00K-00000008jbq-03zH;
+	Tue, 11 Jun 2024 11:49:32 +0000
+Received: from esa6.hgst.iphmx.com ([216.71.154.45])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGyGl-00000008MAP-0of5;
-	Tue, 11 Jun 2024 09:58:24 +0000
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B119320601;
-	Tue, 11 Jun 2024 09:58:20 +0000 (UTC)
-Authentication-Results: smtp-out2.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 565AB13A55;
-	Tue, 11 Jun 2024 09:58:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Igo1E7wfaGa8fAAAD6G6ig
-	(envelope-from <hare@suse.de>); Tue, 11 Jun 2024 09:58:20 +0000
-Message-ID: <34a7b2a4-b0cb-4580-85c9-b598fd70449e@suse.de>
-Date: Tue, 11 Jun 2024 11:58:19 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 13/26] block: move cache control settings out of
- queue->flags
+	id 1sH00F-00000008jaa-2v97;
+	Tue, 11 Jun 2024 11:49:29 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1718106567; x=1749642567;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+  b=DHrfbkb7HFgM+yY8xguhjN/BM9AHkYQ3wW2Fsr0n9hfchTIIvEFJnc/R
+   6AMdCPWUTYWbhS2AIqaICVidx2Pspvq/2dMqvUN87PxLrbOis5j70CUUa
+   SqmKFEyKLNbtk2Ew2CT7oMcYL72vIRkpfCmXpn9PkB1lrVHo1O7JIexOl
+   SIbjWdH+cn/ZjFqZUCcX/Xo/9q6KVt0kutPjYHJq9uupsL+z04aDirP2Y
+   BubvzwbryFGPVmcNxYTtOQTWQbBAh1gyKygheo+YWdC+Pi1F24IiM3cMn
+   W8pKw1yGmXLU+EEEbl3YeL3ED7c2G0aRnaqaZghhWIsapoYzVHqQwhGln
+   g==;
+X-CSE-ConnectionGUID: JrPDpdWfRG+ZqkmmTiOxOg==
+X-CSE-MsgGUID: E3cjbR6US1mJc3gvMlH95g==
+X-IronPort-AV: E=Sophos;i="6.08,229,1712592000"; 
+   d="scan'208";a="18781831"
+Received: from mail-mw2nam10lp2048.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.48])
+  by ob1.hgst.iphmx.com with ESMTP; 11 Jun 2024 19:49:22 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CRmGq6iSB90y4s8aNIFdy1KnNncJpFLUxVfTcv/yRxyNve+RltmXcIEvt1bSKHThU0VlPg28INa8JFeIncYLOuyorWyLraqrqYhY47AVMStS6ZTLCDwkMEjP6L+Yh6V51U04Q4Klft0CXv3xJNk9KWDjp7k/5jUlOH1jzctSHglGH9KsLVwzkAa1XRekLwtWywu/5nkkrWCp/FJ6z2CvjW63ZPFOUPwrzLmDsPHp8HlrGLhAcsuxOpL1BF83X/qmDVRhp3hnqj1UksYcbIADlUWBSzXIEQAynQOHBvd8tumoZlS9CNtm6EOqNQbcBQIc3+mA6UjNEiFzI+Q4WRkp4w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+ b=iO5F3SwUN3X3j77HvgMjY6jG5O7gm7dZZrLDmD0WIOFQAxdRfIZ7BR8wEU9ZMv4qxZjdQcX3RgrKsJCQB5+h7FBo5Rvnzxh9yf/qPpCr5YaaKLndyFNj4h+fxJUnM1HmgMYzeut5iGT+BkoJmEiFET4CVOUNbTIbY1mACXiR3q88O5AVnDLouz7DGwaVjNsrDkBVAyD/80TfEsWxlq0bDJ/WMzaXVkibVOHG9JeCsGBPocarfWyz2IMj7vU2zcKVHi+5hB15gzYfYsZw2ioCshBWZOhEQaY21G8mUhGAF+eCX6MOfsqKJ33eacPbQldtHmTlG2v/gNRzVvspJxF0lA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=joufdrNO2/FLdgGzlnaieoHfZ28FYCwNXGhrZ08f24E=;
+ b=OVto4xmIBCZSfAUJmn/NJAVGklt21Os5hPTqNzTajqHqfyRNN/xQkPzIx0w4SrbcjO3PrBonbpVhNOJ+smxroDnUEuwHQyNRVuh8sJ6rhfRV1AdlkCaURdQyWxJ38Jr2v842hXjWVaNAOZs2wpsNceCT0GfYnZH6a+RyQfLDbDA=
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com (2603:10b6:510:12::17)
+ by PH0PR04MB7688.namprd04.prod.outlook.com (2603:10b6:510:5f::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7633.37; Tue, 11 Jun
+ 2024 11:49:20 +0000
+Received: from PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::ee22:5d81:bfcf:7969]) by PH0PR04MB7416.namprd04.prod.outlook.com
+ ([fe80::ee22:5d81:bfcf:7969%4]) with mapi id 15.20.7633.037; Tue, 11 Jun 2024
+ 11:49:20 +0000
+From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
 To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
- Richard Weinberger <richard@nod.at>,
- Philipp Reisner <philipp.reisner@linbit.com>,
- Lars Ellenberg <lars.ellenberg@linbit.com>,
- =?UTF-8?Q?Christoph_B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>,
- Josef Bacik <josef@toxicpanda.com>, Ming Lei <ming.lei@redhat.com>,
- "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
- =?UTF-8?Q?Roger_Pau_Monn=C3=A9?= <roger.pau@citrix.com>,
- Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>,
- Mikulas Patocka <mpatocka@redhat.com>, Song Liu <song@kernel.org>,
- Yu Kuai <yukuai3@huawei.com>, Vineeth Vijayan <vneethv@linux.ibm.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org,
- drbd-dev@lists.linbit.com, nbd@other.debian.org,
- linuxppc-dev@lists.ozlabs.org, ceph-devel@vger.kernel.org,
- virtualization@lists.linux.dev, xen-devel@lists.xenproject.org,
- linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev,
- linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-mtd@lists.infradead.org, nvdimm@lists.linux.dev,
- linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
+CC: Geert Uytterhoeven <geert@linux-m68k.org>, Richard Weinberger
+	<richard@nod.at>, Philipp Reisner <philipp.reisner@linbit.com>, Lars
+ Ellenberg <lars.ellenberg@linbit.com>,
+	=?utf-8?B?Q2hyaXN0b3BoIELDtmhtd2FsZGVy?= <christoph.boehmwalder@linbit.com>,
+	Josef Bacik <josef@toxicpanda.com>, Ming Lei <ming.lei@redhat.com>, "Michael
+ S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
+	=?utf-8?B?Um9nZXIgUGF1IE1vbm7DqQ==?= <roger.pau@citrix.com>, Alasdair Kergon
+	<agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>, Mikulas Patocka
+	<mpatocka@redhat.com>, Song Liu <song@kernel.org>, Yu Kuai
+	<yukuai3@huawei.com>, Vineeth Vijayan <vneethv@linux.ibm.com>, "Martin K.
+ Petersen" <martin.petersen@oracle.com>, "linux-m68k@lists.linux-m68k.org"
+	<linux-m68k@lists.linux-m68k.org>, "linux-um@lists.infradead.org"
+	<linux-um@lists.infradead.org>, "drbd-dev@lists.linbit.com"
+	<drbd-dev@lists.linbit.com>, "nbd@other.debian.org" <nbd@other.debian.org>,
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+	"ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
+	"virtualization@lists.linux.dev" <virtualization@lists.linux.dev>,
+	"xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+	"linux-bcache@vger.kernel.org" <linux-bcache@vger.kernel.org>,
+	"dm-devel@lists.linux.dev" <dm-devel@lists.linux.dev>,
+	"linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+	"linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
+	"linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+	"linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+	"linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
+Subject: Re: [PATCH 08/26] virtio_blk: remove virtblk_update_cache_mode
+Thread-Topic: [PATCH 08/26] virtio_blk: remove virtblk_update_cache_mode
+Thread-Index: AQHau79kF7G5+NsLzE2Hf/a9e+yyI7HCc0sA
+Date: Tue, 11 Jun 2024 11:49:20 +0000
+Message-ID: <89d4138d-92b7-4899-a028-277dde4b662f@wdc.com>
 References: <20240611051929.513387-1-hch@lst.de>
- <20240611051929.513387-14-hch@lst.de>
+ <20240611051929.513387-9-hch@lst.de>
+In-Reply-To: <20240611051929.513387-9-hch@lst.de>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-From: Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20240611051929.513387-14-hch@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: B119320601
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR04MB7416:EE_|PH0PR04MB7688:EE_
+x-ms-office365-filtering-correlation-id: 89a728e8-ce41-4765-5853-08dc8a0c87ff
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230031|366007|376005|1800799015|7416005|38070700009;
+x-microsoft-antispam-message-info: =?utf-8?B?NWQ0OExuMTY3TGJVTzcxS0JUanpBVE9EYWRXNEI2K1BJTmV5a0dpQ0NncXpk?=
+ =?utf-8?B?cE9WY3VHRnJtdU9BZzdKUjZGdHkvN2p4MWo3WVI1RUt6V0k4aXVXeng3WEln?=
+ =?utf-8?B?QkRXRTYxSUovc2IybSthSUF3NlRMYmwwdTk1cWY4Vk1oc1UrWUlyT1NRRnQ2?=
+ =?utf-8?B?ckpac2xud0VldFF1MWZUM3VmY0xWRURCNk9pNEtqZ0VseUF3ejJHUWhDUFFW?=
+ =?utf-8?B?M09pbWF4blowenFHNHJSb3oxS2krTDc0eWM0Y2FEenFYOVROd3Y5SGg3Smpv?=
+ =?utf-8?B?Q1Rib1FzSkIrdWkvUFg1ajJ5b2QwL3ZIUHlmNDY5QlhlUWhXcWtKRzIvOUdK?=
+ =?utf-8?B?dmJMRWJxcVJjNHNYV000QmVBVVl1amFHL2d4SDN1ZnBxNXc1ejR6VjBZU2Ri?=
+ =?utf-8?B?NDRVVDlJTFRRSkMvQm1sUGM3NmdQU0t6c0FvY2hENC9paE4yQnlyQWIzNlV1?=
+ =?utf-8?B?MnNLQ0JGOFM1VWdwbThtUWJ5Q2orS2kvVDdqOGlxUGdmL2g3K3p1SytBcllq?=
+ =?utf-8?B?M2hUeVBMaVZ5VFUxK1BtNTE5TnpDRVc1NHJSL0YvT0tsank0aDRXVG1SVkdL?=
+ =?utf-8?B?eTJvcENsMUFvdTZVa24rTWtMRDc0Vlh4SCszRkd5RGxlU0pZMWF0RmZtYWgv?=
+ =?utf-8?B?TjZzT21Oem51ci9TcCt1ckx1YURTVVlIOTh3SjRzem9FdTEwWVNSZCt0Y2NO?=
+ =?utf-8?B?djhNbkQ0N3FTajEwUThXUzhiQTBnK0FPWklYRy9IamhCL0NXbDBaaksvVVdy?=
+ =?utf-8?B?SC9IM3JrMDVsZm9wcjExSHhMUFNqeUpmcjhCNS9IN1pHVGRycVFlRWE4T29w?=
+ =?utf-8?B?cXpEZGorNnZrLyszdEpZN1NnS1NweDRTKytCVWNOSjVSVFhscDMzSWZnbmNM?=
+ =?utf-8?B?VE13Z3pvcXBraGZNRjBjWU9UYlFXYkRMaCthMmI0MitYbjA2VlI0UEdyUTFT?=
+ =?utf-8?B?OVBTbW5qTDBpYlNmRCthbHpUaC8zUHVaL2ptNUZ2b0ZTR2VIYjkvSURxK29o?=
+ =?utf-8?B?elkrSDhDRkx3ZC9rbm5qM1h3aEx2c2FqUWJVSEpYaUlxRVAxUFJrU0toWkps?=
+ =?utf-8?B?RDBwdmFDcVhtZlFRaHZQNC9TL1RvbitBc3lLTzh6M2I1dVRYWUdkS1V6ZlBV?=
+ =?utf-8?B?RmFJNkVUZHF4eFdRMjNUUkQxUnJJSzlzTFFQQ1E0M1RKWUpESzViWkZMaWNC?=
+ =?utf-8?B?c1FHSUpTRTRsbXlUWWpRekhTUzBlcUk3dzNJY0xZbVNBcGVKWmdSZ1hpRVVs?=
+ =?utf-8?B?WGs3djN3SDZpMmRKVnlJZ0xFdTFLUkNORlhxTlBLZ2dWK1lZdDc2eEN0QnBW?=
+ =?utf-8?B?N0ttQUZReGpGZW9qTFE4MDZYTk12dGI1THg1alo0b0NJQkhiQ2xTd3ljc21B?=
+ =?utf-8?B?aVNwVnRzTm9wQTM1ZjBKQ2ZXdXRNd0dWY0NYNkI3cFZnVkdEWHZIYWVJeExZ?=
+ =?utf-8?B?UEVKODB2MDM5V2V4TVJtcnRxTXVoRDUzMThkZHhVTUtySUJ1blJjazk5Nmhx?=
+ =?utf-8?B?cUhmcDAxQ1IvNW16RmlwQ2ZERFdIcXRGMHlQRW1PQXdMMngraE9KOVlxZi92?=
+ =?utf-8?B?S0JaUXBYQnJtU1FtNkNaa2JCYjFwWXNXSU5uaE5vTGxDR3RnVGxnU0x0OEx2?=
+ =?utf-8?B?RzlNcG1WWHRUVU9LWXd6S2FDMm1kQUd2WnhVK096TU56UXZteWZ6ZnFWNndL?=
+ =?utf-8?B?bm5sVXk1dnkrT0loSjQ2RHp1bktzN3hyM0x0M0tHdzFXT090bW5sR3B0R1Fy?=
+ =?utf-8?B?S0NEWVNiY0tNUUtvdFQ1L2FSMnIrL2R4U3RYMExRcHFQY1VsMFJpY1V0OThu?=
+ =?utf-8?Q?fHqIqB2e0zMkLzeieOsvwqCrxfD1ZTx3fy5Pw=3D?=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR04MB7416.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(7416005)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MHA5UVJ0K1JMZDFzVVBqQllHbHFJbWd6ZEpRSFJGQTVmRFlxbmhMYndCcm91?=
+ =?utf-8?B?M3ZzcG1rV0llY3dpZlFtWWNBWm0wenJpNGpPbnR0NUdvMlF4RmxrTHZsWUZC?=
+ =?utf-8?B?bGhhWThzQ1hIYTYzaGJjbHR2bVcyaU0wSU54OElwaDlQNk04Y1lXU2RHOFBi?=
+ =?utf-8?B?dUwwdklCMHRPOGlmQnU2bkEzV0xFckdzRmVPL2hKZUJDVWFXVU16TkdUTTZI?=
+ =?utf-8?B?ZkVWR3VraCtwdlNvbWZnTXVyNWFoWEFMWkcxUk40NmU3VGYxVDZxNDVtRklQ?=
+ =?utf-8?B?TjN5K3Z1ZnFBNkREYnpFd2dobWNFTUpDb2VVOGFjM3NxcjRUekd2Sm96UVRP?=
+ =?utf-8?B?QzZEN0FlU1R0d1Nub041OU8yNlNIcnJCQzM2ZTJ3dTVHWERBWU1TVEdVSlI5?=
+ =?utf-8?B?dTVWN2tMdTJqZFNNKzZXMkdNaFhTRVJHUlFsY0h2YU4rVUNzUDFWdUpwQVFK?=
+ =?utf-8?B?ZXdwVVpBSHQ4b2xPRmozR0xEdndZOGRBRjdacUFUU0lqZGtPelh3R3NRQmVh?=
+ =?utf-8?B?TkJKbTdycTBEREFhbFdVaGRJQjVPOSt5UGh1QVNRVDFtT2hMeURIVWlXcnZk?=
+ =?utf-8?B?UmVSNTFwK05ZNU9OZXZMSklrTUw5UmhMSE5QWlhHbDgrd08xemE0UENoR3JU?=
+ =?utf-8?B?SmFQWEUzZmZIbm5UVStmYklKQmtaRDFzMUNLZmFLSFdtN2FuSlZMYmtmcHVv?=
+ =?utf-8?B?SlAwL0NWZVpZZ1ViMDNTQjV0TWMxV2RRbXlzZzl2eWtabHJQV3h2aGJLUkRX?=
+ =?utf-8?B?RElzbjQ2YXNISjk5K0VkNFRQdndoMnppMXlIQUpFVFdwT1g4TCt3dW1sOWZq?=
+ =?utf-8?B?a0NsRVJXcjVSR21mUVpybTJQYzhtd3owbncxRGVPV2lYYjJpenpucFlVcTQ5?=
+ =?utf-8?B?Yk8rUDZFODBXbmhuOS82RHpGWVN6dG1TaSs1ajd0Rk5wYzJpU2c3V2IrdWR0?=
+ =?utf-8?B?RUhlUjFodTYyT0ZldjBaejhwU21aemZMT3JsL1p1VENWenhoUm1DRzFWMVJq?=
+ =?utf-8?B?a2dGYXZKV2Y1VHh2L2RuY2NsVjMvN28zQTVRYXRlcy9hOXNqMW1aME5qLzgw?=
+ =?utf-8?B?em5xZzFCekZZblZ2QWd0YWFhQ1cvbmVHZVlGbk9OSlFZdDlDYUZYUjNzVWtY?=
+ =?utf-8?B?RjVGSVBOWGRaU1ZKQ1cyMkpTOVN5clM5ejRQTlJkYmljbCtrN0VRQm1SdWYv?=
+ =?utf-8?B?bzMxbmZjZHZ2ZTNyajVwejZJcWo1RmhZclNzMjNTUTlhZVEyZGxVZW5RSmtp?=
+ =?utf-8?B?ak5LVHQzTEYxSVYrTUppdWtMNHV0d2JScHcyT2N4RXQ0UXl1QVEzNGhBaXNK?=
+ =?utf-8?B?UG9yV01iY1g2NlhyVE5aU1FpS08wUXBJTWJDOU1iLzZMNDhzdUVaS21PVlAy?=
+ =?utf-8?B?YWR0QkVuSlRyamJFcm9BTGJYZWFjZm0wbklzMlRIUnlxTTRvT0FvYWYwazND?=
+ =?utf-8?B?ZjRpZEg3VHFrTHRWWWlLZkVWSHFlT1RFeGpzU3RYQzl3eVF3UE56aWhwQ2d1?=
+ =?utf-8?B?TXl2UmVoaVhVVTBKR2JnSDROUGUvUUFUait3WVhGakJDV1U5dGJXTFcxK21Z?=
+ =?utf-8?B?dGhGWGszMXJhQ0k3VWo3bU04ZE80VkIzMWVHelVGR244RGlRZzUraHAxaDU4?=
+ =?utf-8?B?am9oS2F1L09aUkFNMWtBbjF4NXM3dnYrZFlJK3J6NVBDSFNJbUhSM0RaeHo2?=
+ =?utf-8?B?VjFva0RraDZEMlBrM0p1bjE3RGlnVEZjK1NBNUNjWmo5eEpZNnYrU2pMSC90?=
+ =?utf-8?B?V21McGNXU2R3UWkwTjdiVXBPTXRaRjJLMmJTUUJ6a2tpQkw2N0J3MzFsb1Q4?=
+ =?utf-8?B?VjV5R2lSbkFxSXpVZ3ZmdU8vbXVJRlBqaEpHWFRveUtQbVhrYzhDcjVyWWJF?=
+ =?utf-8?B?dGh3MzZBdWlJZUEyQUhsNFY3ZDZvdWd3UXNaQmFPQjZTTk1Cb05qUElIWEJn?=
+ =?utf-8?B?OHpqU0ozUXc0SzU5UlRqNXZVVUZuSVdqKy9qQ1RxZXdacGd6cVBBWFJoRjV3?=
+ =?utf-8?B?aWJ2eEIxVXB1V3Q3eDZ6b20ydXI2RmZ6N1I3QVRyZDg1Qm81dE9JbVhyMEZv?=
+ =?utf-8?B?OWkxcGtwNHBqT3R2L3RJMnE1MUpkU0d6YlFheHUvU2szdW1BQWg0azQrYkd4?=
+ =?utf-8?B?QTQ4Yi9IczdobFdDUjdLdkxXSndueG9vcUUvU2Z4bWpJRkJzeWdTYTZmT2JZ?=
+ =?utf-8?B?ckE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <958B41E259453E438A1DB5FF9C75C781@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: dQw6uzYdE/FnnfxnwjpkW3OgbullM0F/pcQuDv92l5TOph4sKR0fHczCbXxBw5zc/h60Jk6v/g3kf2aFVPiuMYLmWdD0uus26oDDOJnKvSHw1PpSaq1SUGVz9WMxpAbTLRrCBg58vEAS81mnY2M6ZdEKxT3tO0V75X+/r4mD7jv50QHA4T7278REL+/T5ypizLl6wveIKs6Hd+x5S2E4mRyXbI4zaV6X8Xn8uWAHW4jAN0XPGOPnO3ZzoPPrElb8IXZoCbsl97XQ0CeESxrs38qWCIcod6s4IxVQJzqwhjUcWHEMeW7+VrX/9G50f+AqmURZpsBXKQYlUfxe8Et4gh6VmGIBq07SRRlZNsbv8+bWjNvLgimrs1dLC2S73xbMhTos/fTubBOobNUt+fTThGB0KkMSVFOBg7QtJmjsSURPD64/mJdvZJ/OfJEhjL7v/KUMw0qvWDDlBOo7/rCOiqtXADNz03e7C8x2nDeKj81cMMuQHaXiQ5eouZNYjgYxFMfhTr3k3i9YLe6BNPjyoGuAnmmqKfxO0PzdFSP583TCIdW9/1NQFqb4BSKjTAxVZdKv/v7c8BeWp4wpV1/FgyDUGFmobj5x7AOPWeiIqLXmG8/FPKX+vxrn7nf6qOPE
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR04MB7416.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 89a728e8-ce41-4765-5853-08dc8a0c87ff
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jun 2024 11:49:20.5036
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: abShtI8J+M5F2N3VJfAC6CnUQqnjNC8m27YeKFq1a1ey9sM9Qw5Nzs0SS0ktb01VOGcWcXfhjpCV/tqsv6p866q7FWxCaD+jL++RMAczM2c=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7688
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240611_025823_630100_DF1C7158 
-X-CRM114-Status: GOOD (  47.21  )
+X-CRM114-CacheID: sfid-20240611_044927_891524_D620D67D 
+X-CRM114-Status: GOOD (  10.42  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,312 +226,6 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 6/11/24 07:19, Christoph Hellwig wrote:
-> Move the cache control settings into the queue_limits so that they
-> can be set atomically and all I/O is frozen when changing the
-> flags.
-> 
-> Add new features and flags field for the driver set flags, and internal
-> (usually sysfs-controlled) flags in the block layer.  Note that we'll
-> eventually remove enough field from queue_limits to bring it back to the
-> previous size.
-> 
-> The disable flag is inverted compared to the previous meaning, which
-> means it now survives a rescan, similar to the max_sectors and
-> max_discard_sectors user limits.
-> 
-> The FLUSH and FUA flags are now inherited by blk_stack_limits, which
-> simplified the code in dm a lot, but also causes a slight behavior
-> change in that dm-switch and dm-unstripe now advertise a write cache
-> despite setting num_flush_bios to 0.  The I/O path will handle this
-> gracefully, but as far as I can tell the lack of num_flush_bios
-> and thus flush support is a pre-existing data integrity bug in those
-> targets that really needs fixing, after which a non-zero num_flush_bios
-> should be required in dm for targets that map to underlying devices.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->   .../block/writeback_cache_control.rst         | 67 +++++++++++--------
->   arch/um/drivers/ubd_kern.c                    |  2 +-
->   block/blk-core.c                              |  2 +-
->   block/blk-flush.c                             |  9 ++-
->   block/blk-mq-debugfs.c                        |  2 -
->   block/blk-settings.c                          | 29 ++------
->   block/blk-sysfs.c                             | 29 +++++---
->   block/blk-wbt.c                               |  4 +-
->   drivers/block/drbd/drbd_main.c                |  2 +-
->   drivers/block/loop.c                          |  9 +--
->   drivers/block/nbd.c                           | 14 ++--
->   drivers/block/null_blk/main.c                 | 12 ++--
->   drivers/block/ps3disk.c                       |  7 +-
->   drivers/block/rnbd/rnbd-clt.c                 | 10 +--
->   drivers/block/ublk_drv.c                      |  8 ++-
->   drivers/block/virtio_blk.c                    | 20 ++++--
->   drivers/block/xen-blkfront.c                  |  9 ++-
->   drivers/md/bcache/super.c                     |  7 +-
->   drivers/md/dm-table.c                         | 39 +++--------
->   drivers/md/md.c                               |  8 ++-
->   drivers/mmc/core/block.c                      | 42 ++++++------
->   drivers/mmc/core/queue.c                      | 12 ++--
->   drivers/mmc/core/queue.h                      |  3 +-
->   drivers/mtd/mtd_blkdevs.c                     |  5 +-
->   drivers/nvdimm/pmem.c                         |  4 +-
->   drivers/nvme/host/core.c                      |  7 +-
->   drivers/nvme/host/multipath.c                 |  6 --
->   drivers/scsi/sd.c                             | 28 +++++---
->   include/linux/blkdev.h                        | 38 +++++++++--
->   29 files changed, 227 insertions(+), 207 deletions(-)
-> 
-> diff --git a/Documentation/block/writeback_cache_control.rst b/Documentation/block/writeback_cache_control.rst
-> index b208488d0aae85..9cfe27f90253c7 100644
-> --- a/Documentation/block/writeback_cache_control.rst
-> +++ b/Documentation/block/writeback_cache_control.rst
-> @@ -46,41 +46,50 @@ worry if the underlying devices need any explicit cache flushing and how
->   the Forced Unit Access is implemented.  The REQ_PREFLUSH and REQ_FUA flags
->   may both be set on a single bio.
->   
-> +Feature settings for block drivers
-> +----------------------------------
->   
-> -Implementation details for bio based block drivers
-> ---------------------------------------------------------------
-> +For devices that do not support volatile write caches there is no driver
-> +support required, the block layer completes empty REQ_PREFLUSH requests before
-> +entering the driver and strips off the REQ_PREFLUSH and REQ_FUA bits from
-> +requests that have a payload.
->   
-> -These drivers will always see the REQ_PREFLUSH and REQ_FUA bits as they sit
-> -directly below the submit_bio interface.  For remapping drivers the REQ_FUA
-> -bits need to be propagated to underlying devices, and a global flush needs
-> -to be implemented for bios with the REQ_PREFLUSH bit set.  For real device
-> -drivers that do not have a volatile cache the REQ_PREFLUSH and REQ_FUA bits
-> -on non-empty bios can simply be ignored, and REQ_PREFLUSH requests without
-> -data can be completed successfully without doing any work.  Drivers for
-> -devices with volatile caches need to implement the support for these
-> -flags themselves without any help from the block layer.
-> +For devices with volatile write caches the driver needs to tell the block layer
-> +that it supports flushing caches by setting the
->   
-> +   BLK_FEAT_WRITE_CACHE
->   
-> -Implementation details for request_fn based block drivers
-> ----------------------------------------------------------
-> +flag in the queue_limits feature field.  For devices that also support the FUA
-> +bit the block layer needs to be told to pass on the REQ_FUA bit by also setting
-> +the
->   
-> -For devices that do not support volatile write caches there is no driver
-> -support required, the block layer completes empty REQ_PREFLUSH requests before
-> -entering the driver and strips off the REQ_PREFLUSH and REQ_FUA bits from
-> -requests that have a payload.  For devices with volatile write caches the
-> -driver needs to tell the block layer that it supports flushing caches by
-> -doing::
-> +   BLK_FEAT_FUA
-> +
-> +flag in the features field of the queue_limits structure.
-> +
-> +Implementation details for bio based block drivers
-> +--------------------------------------------------
-> +
-> +For bio based drivers the REQ_PREFLUSH and REQ_FUA bit are simplify passed on
-> +to the driver if the drivers sets the BLK_FEAT_WRITE_CACHE flag and the drivers
-> +needs to handle them.
-> +
-> +*NOTE*: The REQ_FUA bit also gets passed on when the BLK_FEAT_FUA flags is
-> +_not_ set.  Any bio based driver that sets BLK_FEAT_WRITE_CACHE also needs to
-> +handle REQ_FUA.
->   
-> -	blk_queue_write_cache(sdkp->disk->queue, true, false);
-> +For remapping drivers the REQ_FUA bits need to be propagated to underlying
-> +devices, and a global flush needs to be implemented for bios with the
-> +REQ_PREFLUSH bit set.
->   
-> -and handle empty REQ_OP_FLUSH requests in its prep_fn/request_fn.  Note that
-> -REQ_PREFLUSH requests with a payload are automatically turned into a sequence
-> -of an empty REQ_OP_FLUSH request followed by the actual write by the block
-> -layer.  For devices that also support the FUA bit the block layer needs
-> -to be told to pass through the REQ_FUA bit using::
-> +Implementation details for blk-mq drivers
-> +-----------------------------------------
->   
-> -	blk_queue_write_cache(sdkp->disk->queue, true, true);
-> +When the BLK_FEAT_WRITE_CACHE flag is set, REQ_OP_WRITE | REQ_PREFLUSH requests
-> +with a payload are automatically turned into a sequence of a REQ_OP_FLUSH
-> +request followed by the actual write by the block layer.
->   
-> -and the driver must handle write requests that have the REQ_FUA bit set
-> -in prep_fn/request_fn.  If the FUA bit is not natively supported the block
-> -layer turns it into an empty REQ_OP_FLUSH request after the actual write.
-> +When the BLK_FEA_FUA flags is set, the REQ_FUA bit simplify passed on for the
-> +REQ_OP_WRITE request, else a REQ_OP_FLUSH request is sent by the block layer
-> +after the completion of the write request for bio submissions with the REQ_FUA
-> +bit set.
-> diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-> index cdcb75a68989dd..19e01691ea0ea7 100644
-> --- a/arch/um/drivers/ubd_kern.c
-> +++ b/arch/um/drivers/ubd_kern.c
-> @@ -835,6 +835,7 @@ static int ubd_add(int n, char **error_out)
->   	struct queue_limits lim = {
->   		.max_segments		= MAX_SG,
->   		.seg_boundary_mask	= PAGE_SIZE - 1,
-> +		.features		= BLK_FEAT_WRITE_CACHE,
->   	};
->   	struct gendisk *disk;
->   	int err = 0;
-> @@ -882,7 +883,6 @@ static int ubd_add(int n, char **error_out)
->   	}
->   
->   	blk_queue_flag_set(QUEUE_FLAG_NONROT, disk->queue);
-> -	blk_queue_write_cache(disk->queue, true, false);
->   	disk->major = UBD_MAJOR;
->   	disk->first_minor = n << UBD_SHIFT;
->   	disk->minors = 1 << UBD_SHIFT;
-> diff --git a/block/blk-core.c b/block/blk-core.c
-> index 82c3ae22d76d88..2b45a4df9a1aa1 100644
-> --- a/block/blk-core.c
-> +++ b/block/blk-core.c
-> @@ -782,7 +782,7 @@ void submit_bio_noacct(struct bio *bio)
->   		if (WARN_ON_ONCE(bio_op(bio) != REQ_OP_WRITE &&
->   				 bio_op(bio) != REQ_OP_ZONE_APPEND))
->   			goto end_io;
-> -		if (!test_bit(QUEUE_FLAG_WC, &q->queue_flags)) {
-> +		if (!bdev_write_cache(bdev)) {
->   			bio->bi_opf &= ~(REQ_PREFLUSH | REQ_FUA);
->   			if (!bio_sectors(bio)) {
->   				status = BLK_STS_OK;
-> diff --git a/block/blk-flush.c b/block/blk-flush.c
-> index 2234f8b3fc05f2..30b9d5033a2b85 100644
-> --- a/block/blk-flush.c
-> +++ b/block/blk-flush.c
-> @@ -381,8 +381,8 @@ static void blk_rq_init_flush(struct request *rq)
->   bool blk_insert_flush(struct request *rq)
->   {
->   	struct request_queue *q = rq->q;
-> -	unsigned long fflags = q->queue_flags;	/* may change, cache */
->   	struct blk_flush_queue *fq = blk_get_flush_queue(q, rq->mq_ctx);
-> +	bool supports_fua = q->limits.features & BLK_FEAT_FUA;
-
-Shouldn't we have a helper like blk_feat_fua() here?
-
->   	unsigned int policy = 0;
->   
->   	/* FLUSH/FUA request must never be merged */
-> @@ -394,11 +394,10 @@ bool blk_insert_flush(struct request *rq)
->   	/*
->   	 * Check which flushes we need to sequence for this operation.
->   	 */
-> -	if (fflags & (1UL << QUEUE_FLAG_WC)) {
-> +	if (blk_queue_write_cache(q)) {
->   		if (rq->cmd_flags & REQ_PREFLUSH)
->   			policy |= REQ_FSEQ_PREFLUSH;
-> -		if (!(fflags & (1UL << QUEUE_FLAG_FUA)) &&
-> -		    (rq->cmd_flags & REQ_FUA))
-> +		if ((rq->cmd_flags & REQ_FUA) && !supports_fua)
->   			policy |= REQ_FSEQ_POSTFLUSH;
->   	}
->   
-> @@ -407,7 +406,7 @@ bool blk_insert_flush(struct request *rq)
->   	 * REQ_PREFLUSH and FUA for the driver.
->   	 */
->   	rq->cmd_flags &= ~REQ_PREFLUSH;
-> -	if (!(fflags & (1UL << QUEUE_FLAG_FUA)))
-> +	if (!supports_fua)
->   		rq->cmd_flags &= ~REQ_FUA;
->   
->   	/*
-> diff --git a/block/blk-mq-debugfs.c b/block/blk-mq-debugfs.c
-> index 770c0c2b72faaa..e8b9db7c30c455 100644
-> --- a/block/blk-mq-debugfs.c
-> +++ b/block/blk-mq-debugfs.c
-> @@ -93,8 +93,6 @@ static const char *const blk_queue_flag_name[] = {
->   	QUEUE_FLAG_NAME(INIT_DONE),
->   	QUEUE_FLAG_NAME(STABLE_WRITES),
->   	QUEUE_FLAG_NAME(POLL),
-> -	QUEUE_FLAG_NAME(WC),
-> -	QUEUE_FLAG_NAME(FUA),
->   	QUEUE_FLAG_NAME(DAX),
->   	QUEUE_FLAG_NAME(STATS),
->   	QUEUE_FLAG_NAME(REGISTERED),
-> diff --git a/block/blk-settings.c b/block/blk-settings.c
-> index f11c8676eb4c67..536ee202fcdccb 100644
-> --- a/block/blk-settings.c
-> +++ b/block/blk-settings.c
-> @@ -261,6 +261,9 @@ static int blk_validate_limits(struct queue_limits *lim)
->   		lim->misaligned = 0;
->   	}
->   
-> +	if (!(lim->features & BLK_FEAT_WRITE_CACHE))
-> +		lim->features &= ~BLK_FEAT_FUA;
-> +
->   	err = blk_validate_integrity_limits(lim);
->   	if (err)
->   		return err;
-> @@ -454,6 +457,8 @@ int blk_stack_limits(struct queue_limits *t, struct queue_limits *b,
->   {
->   	unsigned int top, bottom, alignment, ret = 0;
->   
-> +	t->features |= (b->features & BLK_FEAT_INHERIT_MASK);
-> +
->   	t->max_sectors = min_not_zero(t->max_sectors, b->max_sectors);
->   	t->max_user_sectors = min_not_zero(t->max_user_sectors,
->   			b->max_user_sectors);
-> @@ -711,30 +716,6 @@ void blk_set_queue_depth(struct request_queue *q, unsigned int depth)
->   }
->   EXPORT_SYMBOL(blk_set_queue_depth);
->   
-> -/**
-> - * blk_queue_write_cache - configure queue's write cache
-> - * @q:		the request queue for the device
-> - * @wc:		write back cache on or off
-> - * @fua:	device supports FUA writes, if true
-> - *
-> - * Tell the block layer about the write cache of @q.
-> - */
-> -void blk_queue_write_cache(struct request_queue *q, bool wc, bool fua)
-> -{
-> -	if (wc) {
-> -		blk_queue_flag_set(QUEUE_FLAG_HW_WC, q);
-> -		blk_queue_flag_set(QUEUE_FLAG_WC, q);
-> -	} else {
-> -		blk_queue_flag_clear(QUEUE_FLAG_HW_WC, q);
-> -		blk_queue_flag_clear(QUEUE_FLAG_WC, q);
-> -	}
-> -	if (fua)
-> -		blk_queue_flag_set(QUEUE_FLAG_FUA, q);
-> -	else
-> -		blk_queue_flag_clear(QUEUE_FLAG_FUA, q);
-> -}
-> -EXPORT_SYMBOL_GPL(blk_queue_write_cache);
-> -
->   int bdev_alignment_offset(struct block_device *bdev)
->   {
->   	struct request_queue *q = bdev_get_queue(bdev);
-> diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
-> index 5c787965b7d09e..4f524c1d5e08bd 100644
-> --- a/block/blk-sysfs.c
-> +++ b/block/blk-sysfs.c
-> @@ -423,32 +423,41 @@ static ssize_t queue_io_timeout_store(struct request_queue *q, const char *page,
->   
->   static ssize_t queue_wc_show(struct request_queue *q, char *page)
->   {
-> -	if (test_bit(QUEUE_FLAG_WC, &q->queue_flags))
-> -		return sprintf(page, "write back\n");
-> -
-> -	return sprintf(page, "write through\n");
-> +	if (q->limits.features & BLK_FLAGS_WRITE_CACHE_DISABLED)
-
-Where is the difference between 'flags' and 'features'?
-Ie why is is named BLK_FEAT_FUA but BLK_FLAGS_WRITE_CACHE_DISABLED?
-And if the feature is the existence of a capability, and the flag is
-the setting of that capability, can you make it clear in the documentation?
-
-Cheers,
-
-Hannes
--- 
-Dr. Hannes Reinecke                  Kernel Storage Architect
-hare@suse.de                                +49 911 74053 688
-SUSE Software Solutions GmbH, Frankenstr. 146, 90461 Nürnberg
-HRB 36809 (AG Nürnberg), GF: I. Totev, A. McDonald, W. Knoblich
-
+TG9va3MgZ29vZCwNClJldmlld2VkLWJ5OiBKb2hhbm5lcyBUaHVtc2hpcm4gPGpvaGFubmVzLnRo
+dW1zaGlybkB3ZGMuY29tPg0K
 
