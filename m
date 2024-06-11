@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52BEFC25B76
-	for <linux-um@archiver.kernel.org>; Tue, 11 Jun 2024 08:24:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5AA73C25B76
+	for <linux-um@archiver.kernel.org>; Tue, 11 Jun 2024 08:24:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=WSEALwKinGRubobndCMce83Egj4M6eE4OAi1eD7Z1nY=; b=VTUW8yi8v0Pt0aGGJcp7rYVoRH
-	AiQXEX/vfZPVT0f/WZAMvpTh8E5xnMjga6eXnML7IAEUIpBPr+QeDFQr7Y62psnWVddFlOmP7Wnfj
-	W8DuTvF3XJ/Ia03AhBzqD8aWgceEp4+ilshtlUHiezONOjQAM7tuNT37BadqyKf3cyVUgywzL6k12
-	Au7vhIhptC5ZBVc+fZWNzM3f6n0ltU9LsvBxc/dUIVTiRvrnXHchOmiNNr/I4zOYJ6o8bAl/M/oJf
-	saIfmnEHoZhvZs8Ab0AaEIDE5UtlLg9DJRGbmqBp+gvfMkcIe4T5DTlMny4KOHPhlgMhyi/sJT7ls
-	Y8kmji0A==;
+	bh=9CyZ1q0qKpbTi0q0ed0vVvII/IKPqBaRSde2KXNO+Aw=; b=JEqR4FU1pfOMcCVw/0rurtIMyl
+	WDn/26BZ3sAwa3wiDs1CjRBF9HXpuafo89xpadyJNCqTm4R38E+P+zN4lcGE5UyLhss2KEjV7NhQ0
+	tnqMPksK2SKNcmLgCZMFloyG1AN4uIdQlwEoyx796HFpYHaFG8HzUPH2l2noa1ORi5G8SDJpq/KEI
+	gtEOxeDvL0biyn3eGHx/D/IlHTJ54tD4SrDjIJNjHoPYA1D+Zp0UzWD69LBimvD5MoIltJr/hSGYW
+	8b3YCA5cMMh16msCW4OAGw8bns9tq2ORz678+cG4kCqZqMSzqfzQzXcUguwneo6Vz5tobQ4BjwzAh
+	bj4sC9lw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGwnm-000000085Wt-3tan;
-	Tue, 11 Jun 2024 08:24:22 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1sGwoC-000000085ld-3lVP;
+	Tue, 11 Jun 2024 08:24:48 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGwnc-000000085Qw-3DO3;
-	Tue, 11 Jun 2024 08:24:18 +0000
+	id 1sGwo9-000000085iW-0reU;
+	Tue, 11 Jun 2024 08:24:46 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id CD28C60D2E;
-	Tue, 11 Jun 2024 08:24:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD2C5C2BD10;
-	Tue, 11 Jun 2024 08:24:05 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id 8C529CE1986;
+	Tue, 11 Jun 2024 08:24:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22FE3C2BD10;
+	Tue, 11 Jun 2024 08:24:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718094251;
-	bh=EFLCVdoWVXgI8x+vDqpH+KGLXZNaxOUmiQChqNs4meI=;
+	s=k20201202; t=1718094282;
+	bh=aa39oj6grsQuWCvXe8Xg/GJ/V11Jvezu/rMLECj5P4s=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Q/kBEFZ/0xrAI2sEu9TaynLfxDXFSelXwQfPVhceWBMJF67rXnsoSf0WPmrSssyjG
-	 wAyQEjvNKOSDuGTW99P/n/USyXBpEs/hJPBtWDhhYK8Vw7vkoUePhP/xVsLzFkoqW6
-	 lvKTjjxF0YRUZJg2F6zMuxFTCUXMjyMw9CECUZorzcdjTlaZUCv5Igv6ct9+LSc3ef
-	 11G6zLnpcAxQhEGJrLPj98OB8egVZFZCicz/XL1AiLWkTGFK+0l5ihYD/pd34iBMBZ
-	 L/cJqhcyVqLZ5BGlUzg23fH/c4iANFyH2WwiPuUXno5waidx9DiZljw1OQFE15jkSs
-	 eG4YOkLzWNcuA==
-Message-ID: <cb865b5b-ea4d-49cc-b41b-7f46b62b9dd0@kernel.org>
-Date: Tue, 11 Jun 2024 17:24:04 +0900
+	b=aV9kUDMWPWfXNXmeOO+XWzXEhkoXq7ADFSgqT6UOp6QmIpyBhYF9XRI2luZ1jDGrm
+	 fjnG6eWakSd1CNbsGjF5O5LrabvpJGoxEOU9IkGiZiHR46HxhFdMHk0kIvmZI9wx0L
+	 JOsygBPd1TdA6IDc/8xDg7nKHyfJ/2D590dnIGGMTWnavCtGtya+9Az2pKzwaIFhFJ
+	 j4onYH3Luprc5hdFhkVV5RWd7C4hgmyLZChJZgAFOBU129M9EEZQ0rLACWD8TZ/l9S
+	 OXq+G88IRiQo0zQ3DlC2WKDuqnhjQLUQDaVvY8Aat/yU/aTyp6lpmYzMIDEOv1I7i1
+	 CT8Dtiuz6hADg==
+Message-ID: <d457fc95-9231-4bc8-a2dd-2991aa8732ec@kernel.org>
+Date: Tue, 11 Jun 2024 17:24:38 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 23/26] block: move the zone_resetall flag to queue_limits
+Subject: Re: [PATCH 24/26] block: move the pci_p2pdma flag to queue_limits
 To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  Richard Weinberger <richard@nod.at>,
@@ -69,16 +69,16 @@ Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
  linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
 References: <20240611051929.513387-1-hch@lst.de>
- <20240611051929.513387-24-hch@lst.de>
+ <20240611051929.513387-25-hch@lst.de>
 Content-Language: en-US
 From: Damien Le Moal <dlemoal@kernel.org>
 Organization: Western Digital Research
-In-Reply-To: <20240611051929.513387-24-hch@lst.de>
+In-Reply-To: <20240611051929.513387-25-hch@lst.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240611_012413_054261_7445079B 
-X-CRM114-Status: UNSURE (   7.31  )
+X-CRM114-CacheID: sfid-20240611_012445_465723_D3B2C3A5 
+X-CRM114-Status: UNSURE (   7.26  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -95,8 +95,8 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On 6/11/24 2:19 PM, Christoph Hellwig wrote:
-> Move the zone_resetall flag into the queue_limits feature field so that
-> it can be set atomically and all I/O is frozen when changing the flag.
+> Move the pci_p2pdma flag into the queue_limits feature field so that it
+> can be set atomically and all I/O is frozen when changing the flag.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 
