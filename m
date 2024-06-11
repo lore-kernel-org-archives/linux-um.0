@@ -4,59 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5E01EC27C78
-	for <linux-um@archiver.kernel.org>; Tue, 11 Jun 2024 19:35:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DBEDDC27C75
+	for <linux-um@archiver.kernel.org>; Tue, 11 Jun 2024 19:37:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=qIoic/+Eicm2rmoTh1GHTDwZkragJhr4fvW17JXrG0M=; b=J9U7chncfCHWQiHZntwaicAHuV
-	IbmnaSBjdKbBnH8qgAv0pYt/3QBKzJVJCT1BbNr/5oLHHexym9s4EsBKwOuaUY/YY+3+cDKZ5zJWr
-	6l3eYdKmJg9l+01Tg/DDAZ9olTTBETJZIZGVYVh377vGmZ4qe9yzoAS7WhrtYVZoO/GOPpyItA1UU
-	BtMy6+kOyRIstNN0nmdR1MPqh+ctC5UtIYFk5nz7FWgTuZO3+77ts2fJnx5rIgnylwYi5UWiG8uJI
-	IdYnnQfz7Bys3C3gdtO6lCZaP4fkB9hcJNBxm+RuuF1gmdj5t2+td1k/EvPKC/93AUcIekEs4bN5G
-	l9yp21oA==;
+	bh=nxeAEPoRIF1w17Vf6H50avwRd47tQeq24V55mlSo6Fo=; b=WGmQIxoTbNJOVN3YmI5nLCfRwN
+	kZTf299ows1FIj9j18fCuj/bkoIbUjOulSDs+Odw60IoSEM+WepqNGIjSUwLPZ90Q36QCFvX2j6JK
+	d65Pdm9edinujmw6SklskwcFhjPlvvI8PaGiXvhfWpuQPnWJkO2key1i3x/JljiXec9a/UDj6pKaC
+	4xrUX7qYaL2OVzR34BWWoCn+5WqaIp+TsHQkTN2Rfu6tu4NI57qwKvmJniqkgJ2AUWL4Q9SEXEbnZ
+	pbKh4qsi2eJdtxkNCjMD6sg80iag2t/Cddi3xTvojR6h+LcCij4U6T7H6Gq7AYlBkQ4QhxPL8ELAE
+	pbUQbmJA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sH7HJ-0000000A25A-06Ib;
-	Tue, 11 Jun 2024 19:35:33 +0000
+	id 1sH7J1-0000000A2Y6-1s9e;
+	Tue, 11 Jun 2024 19:37:19 +0000
 Received: from 009.lax.mailroute.net ([199.89.1.12])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sH7HE-0000000A23B-3GFn;
-	Tue, 11 Jun 2024 19:35:30 +0000
+	id 1sH7Ix-0000000A2X3-39rd;
+	Tue, 11 Jun 2024 19:37:16 +0000
 Received: from localhost (localhost [127.0.0.1])
-	by 009.lax.mailroute.net (Postfix) with ESMTP id 4VzJmc1ZkpzlgMVP;
-	Tue, 11 Jun 2024 19:35:28 +0000 (UTC)
+	by 009.lax.mailroute.net (Postfix) with ESMTP id 4VzJpg3N77zlgMVP;
+	Tue, 11 Jun 2024 19:37:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
 	content-transfer-encoding:content-type:content-type:in-reply-to
 	:from:from:content-language:references:subject:subject
 	:user-agent:mime-version:date:date:message-id:received:received;
-	 s=mr01; t=1718134520; x=1720726521; bh=qIoic/+Eicm2rmoTh1GHTDwZ
-	kragJhr4fvW17JXrG0M=; b=map4zviGJJNMHWZcL0XSQcKZOt8HWwKs4uPCn6h8
-	ClKZM//GsD59uwkW/BTQY4EwjOkcFI8O/2h1lvfA4LAL1jmbGgLTNuYoF0Q6mH/f
-	f0c9ECm+XNFBDbP6yRxg58slOwTWkCmc/bwd3R9+TXJ6JNN+7VCrT6hBYuAJbGau
-	cP0Ibr0GKyH9NB+v4g+CkSDs2g8BRJcKK2rvBZA6bcKGt4wBGdtuJJyCZ9IkY8vH
-	+jBWfaKTTSMD0aQJ/O6PovdqQWYkZxLId41z+BCIcQxfQOcW8v1mrgpZgFJMJsy7
-	Jf+H2kPgaFs82OcmUoGRFeFKF0L/aVmUOEUaFL7Q+8CSAQ==
+	 s=mr01; t=1718134626; x=1720726627; bh=nxeAEPoRIF1w17Vf6H50avwR
+	d47tQeq24V55mlSo6Fo=; b=n4YdDdBfOscNrfscK2NP2xV4LYi1o1AdP30LHl21
+	+IbqLgtMyNqee6SbzA50sLVTZE0Ji6k+2w0WLmPh57DienJvg5IuAQuKYp0InUsK
+	R6rrYr54yHJbztT/cndM4ZANOd0BSHTpKcctiVeFtmZFjzrLeHPbM9VtSJmKwf7X
+	Af8olT+2oDMLUTt1MIpMS3WiRglrB6WCMiAEgpmD+A4upmkHshWHc+3fJHBYgE5i
+	tD5snqlsdZGaJP09e2u2aXuuDiqbxQTmEF2zfjaEm7Jr+gWSnF6gfshEHOyMC1oC
+	wY6QiEq3x8Ed+pcVJd6N4WwEZhVXh/S1bVC6eE1yI7Gx6w==
 X-Virus-Scanned: by MailRoute
 Received: from 009.lax.mailroute.net ([127.0.0.1])
  by localhost (009.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id kM3NVR9fxZIH; Tue, 11 Jun 2024 19:35:20 +0000 (UTC)
+ id I78Iw22WN8VT; Tue, 11 Jun 2024 19:37:06 +0000 (UTC)
 Received: from [100.96.154.26] (unknown [104.132.0.90])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: bvanassche@acm.org)
-	by 009.lax.mailroute.net (Postfix) with ESMTPSA id 4VzJm40fCWzlgMVN;
-	Tue, 11 Jun 2024 19:34:59 +0000 (UTC)
-Message-ID: <5a806e25-554f-4179-b73e-d3fd9f440441@acm.org>
-Date: Tue, 11 Jun 2024 12:34:58 -0700
+	by 009.lax.mailroute.net (Postfix) with ESMTPSA id 4VzJpL0wGgzlgMVN;
+	Tue, 11 Jun 2024 19:36:57 +0000 (UTC)
+Message-ID: <1f7c1123-0f80-42a4-8252-c082ded33ca6@acm.org>
+Date: Tue, 11 Jun 2024 12:36:55 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 09/26] nbd: move setting the cache control flags to
- __nbd_set_size
+Subject: Re: [PATCH 11/26] block: freeze the queue in queue_attr_store
 To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  Richard Weinberger <richard@nod.at>,
@@ -80,15 +79,15 @@ Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
  linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
 References: <20240611051929.513387-1-hch@lst.de>
- <20240611051929.513387-10-hch@lst.de>
+ <20240611051929.513387-12-hch@lst.de>
 Content-Language: en-US
 From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20240611051929.513387-10-hch@lst.de>
+In-Reply-To: <20240611051929.513387-12-hch@lst.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240611_123528_867156_2A688AE7 
-X-CRM114-Status: UNSURE (   6.02  )
+X-CRM114-CacheID: sfid-20240611_123715_843321_0F9406F1 
+X-CRM114-Status: UNSURE (   7.57  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -105,8 +104,9 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On 6/10/24 10:19 PM, Christoph Hellwig wrote:
-> Move setting the cache control flags in nbd in preparation for moving
-> these flags into the queue_limits structure.
+> queue_attr_store updates attributes used to control generating I/O, and
+> can cause malformed bios if changed with I/O in flight.  Freeze the queue
+> in common code instead of adding it to almost every attribute.
 
 Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 
