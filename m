@@ -4,48 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E88A5C25B76
-	for <linux-um@archiver.kernel.org>; Tue, 11 Jun 2024 08:02:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4034CC25B76
+	for <linux-um@archiver.kernel.org>; Tue, 11 Jun 2024 08:06:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=XnkBdRyeKEq8GatAdP4gEuJwY7uWBuIGWyjm2pfwk3o=; b=QFXWBZsDCH25Zx3hSETlfypu2a
-	xZtjRQZJbf/yzj4Gem/y2WjmQR4mVoArdMUPx3gaWiRhlcdRUOGDpyW7V5Mqf4nroRSUlsXlXpWBZ
-	4vcDhLqlmB66zRmgfCB8Ej8yl6cYHZi5BDPxyYvdo2XtpW5OmEmAWKB9DL2+dODL1ARd/gyaAc+0O
-	gP3I/okPeAyZi6XX1+C7/7Mv73FbYQS73mmUJjlNYX+dVqBY5rEMer0+I2g6JabslxsBXKfuk4GMB
-	/Ll/l2za9lkN6WgnSU1ak15h90AazL/okaFcyKHsQLzIanQMPqiAtNtyu6w8hKfspeHFLMU+9OSbZ
-	o/4fzsIg==;
+	bh=p05Oa+soL5UqVPbydlN73TzAKOotfP33ep8J8JHpMPI=; b=ujlAX6AfYy3v+Xav9sLmt7IT+k
+	y6p6mKxf0gPZU0RFw5Y9tLxKbLtBpFLcTfWEUBMMzWrUwrCxUHavTznNMh3URIFDzCNsvsIO8ddb2
+	COfUXyXd4bUtqPbQ4mz/xMxzX3d93LdzwQ2ovqVbpEWVrD0IvE1sIGUSKdjNTuXasgVoiNNzmg5Mj
+	FY35sD6VabU/2154AxhYjTnwccj4/80ryEyIhU6kaYXsDbUjEPn0YDzQfXS/vHeQaFF3EyillnecH
+	v9kJ4PE9C60d6aRxwvafIe4wH3tx5HpVe5HnAosat3I0wo4WHpenjiJ1Q8NeE3ABH5Vsv5VVYIWWU
+	ZpZjxBEw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGwSn-00000007xer-1EIv;
-	Tue, 11 Jun 2024 08:02:41 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1sGwWf-00000007zbX-3PaI;
+	Tue, 11 Jun 2024 08:06:41 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sGwSj-00000007xdX-0mrX;
-	Tue, 11 Jun 2024 08:02:38 +0000
+	id 1sGwWb-00000007zZn-1Do4;
+	Tue, 11 Jun 2024 08:06:38 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 58DC4CE10F6;
-	Tue, 11 Jun 2024 08:02:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAD55C2BD10;
-	Tue, 11 Jun 2024 08:02:29 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id A0AEDCE193F;
+	Tue, 11 Jun 2024 08:06:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59A7BC2BD10;
+	Tue, 11 Jun 2024 08:06:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718092954;
-	bh=9448E2ZQUrvNp7ZURrtI3/D86m7bLK+HS2+4F3/kAbo=;
+	s=k20201202; t=1718093195;
+	bh=jCn0oX3HrJ6Qlcw/LuQoAhJRxhLaDvFIki6GqIikVDs=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=cVm1t8g2Dmo9pyaeFexP0cVZp2V9+zrzLaosx0fHWpCgyVMjhJafz/YjIRFcP6e/N
-	 JiQrRCWm2cXvKJW25gK4jKXdI9z1r5PiGAPnVoL3Jgi9iLA+RTBXO3LhS10/kQ9VJv
-	 S0HFEAZmlsLJdqInbsOGCHZ7lARtlpYV0wnusyawzuHxpb/RclmLX5rlq1DxBTsAuq
-	 DUc+w0vOa4IhkCXuAcAxPK35SsjdXOHX0tyGNoT44IBIj7FNuzH/TkqH47YX1TuM03
-	 t8bqET45kpSSPx+5HvwwYL7yfxY/bG8VgPBzRal4b99z62CNkY4oDCrnC6ah7dxmTJ
-	 PwVnGOKYPVpoA==
-Message-ID: <01366bae-699e-45dc-bad1-9541883a8b42@kernel.org>
-Date: Tue, 11 Jun 2024 17:02:28 +0900
+	b=d/4pmxeJzHoEeQ+g2h36PLWMNipYFVLUgldUlVqiJ/oHVrEeGGWvSVD8Qj0WOLs1h
+	 W+bfZgsci1Mj1j7xr+uUvjowbUTryqU8M7niWdxvm06YM2JVc8jmnbjYFRmHHcrBjc
+	 35EtrgT1CO5oyRbn/EfIn5kNPHJPwVOwHupvi057HyipWOQnDb4p6IBWsy9PJTe2z7
+	 aguwef6PSD/S3jnHhAFsQmA+8/MCfLVtbrqTe0OoYvK6gaKfrbg4IMTS8YbzdTrpnX
+	 ruwuQZ89i04k1WQRZE0wdLm48U3gwb4DUnNOpOrrhv3eKIrI6XQd7uuU3njn1J65js
+	 90POvgbQ696Tw==
+Message-ID: <0f01ed9c-6f85-427c-9690-1551e67e46a9@kernel.org>
+Date: Tue, 11 Jun 2024 17:06:29 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 14/26] block: move the nonrot flag to queue_limits
+Subject: Re: [PATCH 15/26] block: move the add_random flag to queue_limits
 To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  Richard Weinberger <richard@nod.at>,
@@ -69,16 +69,17 @@ Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
  linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
 References: <20240611051929.513387-1-hch@lst.de>
- <20240611051929.513387-15-hch@lst.de>
+ <20240611051929.513387-16-hch@lst.de>
 Content-Language: en-US
 From: Damien Le Moal <dlemoal@kernel.org>
 Organization: Western Digital Research
-In-Reply-To: <20240611051929.513387-15-hch@lst.de>
+In-Reply-To: <20240611051929.513387-16-hch@lst.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240611_010237_512888_E7A4CFDB 
-X-CRM114-Status: GOOD (  15.18  )
+X-CRM114-CacheID: sfid-20240611_010637_544345_2D865024 
+X-CRM114-Status: UNSURE (   9.74  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,32 +95,19 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On 6/11/24 2:19 PM, Christoph Hellwig wrote:
-> Move the norot flag into the queue_limits feature field so that it can be
+> Move the add_random flag into the queue_limits feature field so that it
+> can be set atomically and all I/O is frozen when changing the flag.
 
-s/norot/nonrot
-
-> set atomically and all I/O is frozen when changing the flag.
-
-and... -> with the queue frozen when... ?
+Same remark as the previous patches for the end of this sentence.c
 
 > 
-> Use the chance to switch to defaulting to non-rotational and require
-> the driver to opt into rotational, which matches the polarity of the
-> sysfs interface.
-> 
-> For the z2ram, ps3vram, 2x memstick, ubiblock and dcssblk the new
-> rotational flag is not set as they clearly are not rotational despite
-> this being a behavior change.  There are some other drivers that
-> unconditionally set the rotational flag to keep the existing behavior
-> as they arguably can be used on rotational devices even if that is
-> probably not their main use today (e.g. virtio_blk and drbd).
-> 
-> The flag is automatically inherited in blk_stack_limits matching the
-> existing behavior in dm and md.
+> Note that this also removes code from dm to clear the flag based on
+> the underlying devices, which can't be reached as dm devices will
+> always start out without the flag set.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Other than that, looks good to me.
+Other than that, looks OK to me.
 
 Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
 
