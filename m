@@ -4,98 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 52BB7C27C53
-	for <linux-um@archiver.kernel.org>; Wed, 12 Jun 2024 08:01:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A6CC7C27C53
+	for <linux-um@archiver.kernel.org>; Wed, 12 Jun 2024 13:48:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=1PGf6HlJc1ANQenmlixWu1Sno9FA8D3ndcnX4NZVy9I=; b=GFBr3Lw09IaAxE63Y0rbQBsVcC
-	7Jdgx85mTI//gkdkZ+cQyWPtis6aDL23l9orzh/mEaZa61XZkl8V121lQoT4dI754uwq0rSR96hPv
-	5NgTk89yZAmFyZV6gVUDuuQmmLyK+kieU/QJ1QqTL7JWIZVouOeFVNAKDZx4mhXsiMQ3ze061DugH
-	vKKRBJqVn+y8O4cQEmhKM6Gt237Zzl4a+5V4MXYL3b1QxSvu8y3+UlKtcJrR02bhfbF0V0v2239wd
-	IdJWv6TUuIhMi0FTyjhQ2H9LiFVU/xFV8bMuStxxlVxlsiWC4Jr43tICzF8GKPNZYcq8tmgU5Iqsq
-	zyCJWKaQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=2zUirtCZ/cdwbbd8Dv3VvUvuOonejBGJ+V456KzLKDg=; b=T2xrtY6vT17+6OKOZ/ypck3Vcu
+	6bljBMYLArd65r1DDFOCngR/c0hAD5N3VkzlWArHu3swN6sOyRbR3uvBDL7kEni/dYolcL9BKfmjf
+	2jLE8JTXnQULduWAv9H6mru5BED+tr02gfppDE4KnbgchLcrADwirXd2bG0qLhVHzgYWJpwEkcTEw
+	FrfISV6XSnltbgp+6XVh+d5BARpMNQofpeXWLolfo9915CnADLSHu9KWKg9EK6Y5KhfXLVG+YEy+f
+	Axv8TGpinQek1WKFklgb+pF07H0O37gHcsRu4nJ1zCTIb4+b6wSyVUYtup1co7WzRMq2O3b3bhvdg
+	MVqsP3eQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sHIvF-0000000BZkx-3Zfm;
-	Wed, 12 Jun 2024 08:01:33 +0000
-Received: from mail-yw1-x112d.google.com ([2607:f8b0:4864:20::112d])
+	id 1sHOKz-0000000CnTZ-2seK;
+	Wed, 12 Jun 2024 13:48:29 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sHIvB-0000000BZjZ-1cwr
+	id 1sHOKw-0000000CnRa-3laS
 	for linux-um@lists.infradead.org;
-	Wed, 12 Jun 2024 08:01:31 +0000
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-62fa71027b1so5142677b3.3
-        for <linux-um@lists.infradead.org>; Wed, 12 Jun 2024 01:01:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1718179283; x=1718784083; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1PGf6HlJc1ANQenmlixWu1Sno9FA8D3ndcnX4NZVy9I=;
-        b=P5TG9aFCeBdgebSp1hkjD/eJq4G0jkRHU2xEY4GnuJJ/BRhpYXVLv4jTBqwr+4SThN
-         1nlPE/mriFMNl74zBBbia66Zce22GTWY8xd7VCY7ykyAQi160YmcsFqdTuoQMdDEAxks
-         nkO7jl6jrRMwFmqFNYYLdv8tst1uT4wFWk4is=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718179283; x=1718784083;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1PGf6HlJc1ANQenmlixWu1Sno9FA8D3ndcnX4NZVy9I=;
-        b=TogWKzTAfJikbCSqThc4fXMUVupwA2bUdIGHK3ePtzkGGbOeoNff96HunW1tD2QXXF
-         xzUUVEW5rOjGGvBB+PPzgFig3pEXzZl8BF0Fy86uP/Jx7JNQfV2N6/EvAvzaewWyAozS
-         SCO1jfns/fq49t50QjNH3gDNG7dWHnoVAYq17D3bM4QRzS7IjgVOhfhQm/OgzHvbBU3S
-         Pq2+JZrIcu4ZG5NOL6QjH4ntdnyALpg/OrFul6XLJ9ojcZpRjzXG/TAuy4yluQHSHIX3
-         bmQurpy2JnWADWnPVhahtDewTzP+wBKmMQWXeZJwAgSyO4vOmAYMOFkALPxobUpcZa9w
-         HwaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWY4qKrlIN94mM1XV+JW+8iYeELti/d75Q1lGn3GvIYojBcHx7tDzUYholzZwpAAnqV8HNuRqC4Qtu5nDd0kK7Wa3iswcx/Orto4dFb
-X-Gm-Message-State: AOJu0YxW6mhyOcUT/HhsIRIJqNeWT1ItaTn5UqnAgisjzW2QHF4JXMON
-	9hScbgdpbtUPHXDzWtZ5Hs5wmADzAWffOVEX6PiJZzM4zQjUsmD4o58wIGKihgk=
-X-Google-Smtp-Source: AGHT+IEk5bObzz8qCZsqdRqFNOU7a/dh67daOPgnEKJGJzh0sP06pKqPApTvT03CHGJxr8rf1zPYww==
-X-Received: by 2002:a81:b647:0:b0:61b:e62e:73f1 with SMTP id 00721157ae682-62fb8a58273mr12605907b3.3.1718179282688;
-        Wed, 12 Jun 2024 01:01:22 -0700 (PDT)
-Received: from localhost ([46.222.2.38])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6b093aff889sm6894416d6.101.2024.06.12.01.01.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jun 2024 01:01:22 -0700 (PDT)
-Date: Wed, 12 Jun 2024 10:01:18 +0200
-From: Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, Geert Uytterhoeven <geert@linux-m68k.org>,
-	Richard Weinberger <richard@nod.at>,
-	Philipp Reisner <philipp.reisner@linbit.com>,
-	Lars Ellenberg <lars.ellenberg@linbit.com>,
-	Christoph =?utf-8?Q?B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>,
-	Josef Bacik <josef@toxicpanda.com>, Ming Lei <ming.lei@redhat.com>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>, Alasdair Kergon <agk@redhat.com>,
-	Mike Snitzer <snitzer@kernel.org>,
-	Mikulas Patocka <mpatocka@redhat.com>, Song Liu <song@kernel.org>,
-	Yu Kuai <yukuai3@huawei.com>,
-	Vineeth Vijayan <vneethv@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org,
-	drbd-dev@lists.linbit.com, nbd@other.debian.org,
-	linuxppc-dev@lists.ozlabs.org, ceph-devel@vger.kernel.org,
-	virtualization@lists.linux.dev, xen-devel@lists.xenproject.org,
-	linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev,
-	linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
-	linux-mtd@lists.infradead.org, nvdimm@lists.linux.dev,
-	linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
-Subject: Re: [PATCH 10/26] xen-blkfront: don't disable cache flushes when
- they fail
-Message-ID: <ZmlVziizbaboaBSn@macbook>
-References: <20240611051929.513387-1-hch@lst.de>
- <20240611051929.513387-11-hch@lst.de>
+	Wed, 12 Jun 2024 13:48:28 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
+	Resent-Message-ID:In-Reply-To:References;
+	bh=2zUirtCZ/cdwbbd8Dv3VvUvuOonejBGJ+V456KzLKDg=; t=1718200104; x=1719409704; 
+	b=LKU0eID+G1eIJXQYXtAboDp0LZHm4nxl0zFNm71yHvzSCLxOlVNoUJuRiHOOZKW8g7PuK85Ow97
+	H35cwksRk0s2oUvMe/BGaRDkL802Vn8cMFQpwzu8lq1YOnQBfAqOW9xHzSE8rv7vpZWNRimjFavLu
+	NPFnFEqmGyv1cpqSH4fv0Z0API8JEVikpRsXQ4NQlfoiSO/e+BpponxU9KxtImfpNh72nTK1CzENO
+	bM6w4HCfapraH9STt3lTTDzhn2Pg40QOJWVabREeV5Kz8kDV3NB90/P3zVjenetOU1yVbhqeWBIoV
+	KXga8DySHNTLUbjZfRk96qtFvNt6PpbAQK9A==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <benjamin@sipsolutions.net>)
+	id 1sHOKr-0000000ALhN-1Fqd;
+	Wed, 12 Jun 2024 15:48:21 +0200
+From: benjamin@sipsolutions.net
+To: linux-um@lists.infradead.org
+Cc: Benjamin Berg <benjamin.berg@intel.com>
+Subject: [PATCH v2 0/5] Increased address space for 64 bit
+Date: Wed, 12 Jun 2024 15:47:59 +0200
+Message-ID: <20240612134804.1626427-1-benjamin@sipsolutions.net>
+X-Mailer: git-send-email 2.45.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240611051929.513387-11-hch@lst.de>
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240612_010129_644890_2984CF3B 
-X-CRM114-Status: GOOD (  13.35  )
+X-CRM114-CacheID: sfid-20240612_064826_967064_D1F4E585 
+X-CRM114-Status: UNSURE (   7.92  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,49 +70,45 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Jun 11, 2024 at 07:19:10AM +0200, Christoph Hellwig wrote:
-> blkfront always had a robust negotiation protocol for detecting a write
-> cache.  Stop simply disabling cache flushes when they fail as that is
-> a grave error.
+From: Benjamin Berg <benjamin.berg@intel.com>
 
-It's my understanding the current code attempts to cover up for the
-lack of guarantees the feature itself provides:
+This patchset fixes a few bugs, adds a new method of discovering the
+host task size and finally adds four level page table support. All of
+this means the userspace TASK_SIZE is much larger and in turns permits
+userspace applications that need a lot of virtual addresses to work
+fine.
 
- * feature-barrier
- *      Values:         0/1 (boolean)
- *      Default Value:  0
- *
- *      A value of "1" indicates that the backend can process requests
- *      containing the BLKIF_OP_WRITE_BARRIER request opcode.  Requests
- *      of this type may still be returned at any time with the
- *      BLKIF_RSP_EOPNOTSUPP result code.
- *
- * feature-flush-cache
- *      Values:         0/1 (boolean)
- *      Default Value:  0
- *
- *      A value of "1" indicates that the backend can process requests
- *      containing the BLKIF_OP_FLUSH_DISKCACHE request opcode.  Requests
- *      of this type may still be returned at any time with the
- *      BLKIF_RSP_EOPNOTSUPP result code.
+One such application is ASAN which uses a fixed address in memory that
+would otherwise not be addressable.
 
-So even when the feature is exposed, the backend might return
-EOPNOTSUPP for the flush/barrier operations.
+v2:
+* Improved double clone logic using CLONE_VFORK
+* Kconfig fixes pointed out by Tiwei Bie
 
-Such failure is tied on whether the underlying blkback storage
-supports REQ_OP_WRITE with REQ_PREFLUSH operation.  blkback will
-expose "feature-barrier" and/or "feature-flush-cache" without knowing
-whether the underlying backend supports those operations, hence the
-weird fallback in blkfront.
+Benjamin Berg (5):
+  um: Fix stub_start address calculation
+  um: Limit TASK_SIZE to the addressable range
+  um: Do a double clone to disable rseq
+  um: Discover host_task_size from envp
+  um: Add 4 level page table support
 
-I'm unsure whether lack of REQ_PREFLUSH support is not something that
-we should worry about, it seems like it was when the code was
-introduced, but that's > 10y ago.
+ arch/um/Kconfig                      |   1 +
+ arch/um/include/asm/page.h           |  14 +++-
+ arch/um/include/asm/pgalloc.h        |  11 ++-
+ arch/um/include/asm/pgtable-4level.h | 119 +++++++++++++++++++++++++++
+ arch/um/include/asm/pgtable.h        |   6 +-
+ arch/um/include/shared/as-layout.h   |   2 +-
+ arch/um/include/shared/os.h          |   2 +-
+ arch/um/kernel/mem.c                 |  17 +++-
+ arch/um/kernel/um_arch.c             |  14 +++-
+ arch/um/os-Linux/main.c              |   9 +-
+ arch/um/os-Linux/skas/process.c      |  55 +++++++++++--
+ arch/x86/um/Kconfig                  |  38 ++++++---
+ arch/x86/um/os-Linux/task_size.c     |  19 ++++-
+ 13 files changed, 274 insertions(+), 33 deletions(-)
+ create mode 100644 arch/um/include/asm/pgtable-4level.h
 
-Overall blkback should ensure that REQ_PREFLUSH is supported before
-exposing "feature-barrier" or "feature-flush-cache", as then the
-exposed features would really match what the underlying backend
-supports (rather than the commands blkback knows about).
+-- 
+2.45.1
 
-Thanks, Roger.
 
