@@ -4,58 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF385C27C77
-	for <linux-um@archiver.kernel.org>; Wed, 12 Jun 2024 14:11:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C293C27C77
+	for <linux-um@archiver.kernel.org>; Wed, 12 Jun 2024 14:11:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=06O7KD27dDt6/JbC4nSakEksMS+RytzAyNmfSIrT4UM=; b=v2aE34Z0nt/naputy1+dfLypY8
-	8fRYhOg0tQB/Uz7qEWUYg4Ddu64Of84CS2wioAieFkvpQfV6JKMQVdWGeSCkokcjCRdx6IRfj0k0D
-	li72b1xGtrP5hTa7rdTQ3B26agCPyTu1a6R6C/M7UKirMHhyrR6yruGJOLY4aF9wc5b5bwA4lbCFZ
-	2RiAxyYlHjmmE9LMtX5I1laNlMQ0Cl6iYDUSbk/vM8Qq1F5/XQj50cIYZJxdnZaPDy9Qf1iJg+Ul+
-	nxyWKYEcEhYH34evangSSFhyhXXC4hD4Em6iYP6eHgWz94RjnpLY/NxziVuLkgphRSYBnkAQ1Q+eG
-	cTyEfRfQ==;
+	bh=OefifXSN/EV7YftSO4xnY4e21SDEgBce03i6HkE0zS4=; b=AZ4lSBLZSm6ETYMdlg/t8L1nIy
+	gFhISFVB3XSYU9nlg7vgLQLOvm0uspSAgqlLud8BnPzrFDqhKd8pJQ1RB4r5H4vCbkPmN+DU4BRNg
+	ve0UegOpsXrCZvcTaVMALS9FgJE6Lj1BZyCP5sCli8J63URmE3tzYfg6spPq855gl7CSrEndv2HQs
+	UMDusCCwwRk0bwwRR+iHXzW2qwm3+brZG/7bCWURYZGu3FBPDfjAoVBHmdZxktkVh9MFI6GY/QeZK
+	5MHQmlOuvQ5uLh9+AvCL0L+20aHlG8ac/F90pZD+Q4ya3CKLFhqAb4A4kMI0UwLmxHRfw8MTTWeRc
+	Hcu4Mf7g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sHOgs-0000000Cteg-0Z8p;
-	Wed, 12 Jun 2024 14:11:06 +0000
+	id 1sHOgv-0000000Ctgx-3mEr;
+	Wed, 12 Jun 2024 14:11:09 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sHOgp-0000000CtcR-2SSU
+	id 1sHOgs-0000000CteL-1Ncx
 	for linux-um@lists.infradead.org;
-	Wed, 12 Jun 2024 14:11:04 +0000
+	Wed, 12 Jun 2024 14:11:07 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=06O7KD27dDt6/JbC4nSakEksMS+RytzAyNmfSIrT4UM=;
-	t=1718201463; x=1719411063; b=EOyodHMd8gedXWV/P+LFFkluKvVfK6omrnYiAlvg8lxy+DZ
-	805yHCNjb/mocWwPFUynnucapBxZY94tReDX93g5/Gb+qa6P3ZU6vJNAAcV/dl2j1jLVb6y5DvHEC
-	Lq8t31l4qqkp2aj5HyT3jiJ8TvJ8DSWhwjhQ7wKj9HQvbVFaXqHGrU4YmndSIO+7psS857BxBwt/D
-	GIoVOCEA2jxbz2mI93zR//zAQqvxWRhXpTSiXWRHHLbcvZNnpyIV1qxr53syG39KqOkLYmCH3o1oM
-	uiu1zG0c6pg1RUpFwLIJrhCO/bOilfdl6aZOTlndKRQ2KWHOi+tOZMC7Xi2JmlIQ==;
+	Resent-Cc:Resent-Message-ID; bh=OefifXSN/EV7YftSO4xnY4e21SDEgBce03i6HkE0zS4=;
+	t=1718201465; x=1719411065; b=H6DjkYkNsfQyAJmZnLi2Yxadk2WfHonGQSS2GqBp2LrUT5k
+	P/ewQ6aGU1CJLn+Xe8k8rx1AjY54HyeNVpfPiY4BesL1TEZ1M4GX9qW8aqHLBjKaUfiPsNnDqv4pG
+	ft72rL3mXQBosZupetjefE+7lHTLkb2nXpMywKeE77OuJH7naMp8JRyhu64OTKey4z6fdJLwFcaoi
+	4ewewJUtRDgqKT5I5o1jW7GeVJ2qi0q3Rfjd58HgEkl0loAKHEAY5BkKAXu9ZTfQoTo4xXXi2upmo
+	7Glko7FisV+mZ+oJ8xmoYydeqUFimNzIFWO8iJZXu8Pd+LIIU4gGHkpSuN8oNxaA==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.97)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1sHOgm-0000000AN5N-3qw5;
-	Wed, 12 Jun 2024 16:11:01 +0200
+	id 1sHOgp-0000000AN5N-11qo;
+	Wed, 12 Jun 2024 16:11:03 +0200
 From: benjamin@sipsolutions.net
 To: linux-um@lists.infradead.org
 Cc: Benjamin Berg <benjamin.berg@intel.com>
-Subject: [PATCH v3 3/5] um: Do a double clone to disable rseq
-Date: Wed, 12 Jun 2024 16:10:45 +0200
-Message-ID: <20240612141047.1633303-4-benjamin@sipsolutions.net>
+Subject: [PATCH v3 4/5] um: Discover host_task_size from envp
+Date: Wed, 12 Jun 2024 16:10:46 +0200
+Message-ID: <20240612141047.1633303-5-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.45.1
 In-Reply-To: <20240612141047.1633303-1-benjamin@sipsolutions.net>
 References: <20240612141047.1633303-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240612_071103_687326_AC910AF2 
-X-CRM114-Status: GOOD (  17.33  )
+X-CRM114-CacheID: sfid-20240612_071106_434317_43D4E81A 
+X-CRM114-Status: GOOD (  19.64  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,116 +72,147 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Benjamin Berg <benjamin.berg@intel.com>
 
-Newer glibc versions are enabling rseq support by default. This remains
-enabled in the cloned child process, potentially causing the host kernel
-to write/read memory in the child.
+When loading the UML binary, the host kernel will place the stack at the
+highest possible address. It will then map the program name and
+environment variables onto the start of the stack.
 
-It appears that this was purely not an issue because the used memory
-area happened to be above TASK_SIZE and remains mapped.
+As such, an easy way to figure out the host_task_size is to use the
+highest pointer to an environment variable as a reference.
 
-Note that a better approach would be to exec a small static binary that
-does not link with other libraries. Using a memfd and execveat the
-binary could be embedded into UML itself and it would result in an
-entirely clean execution environment for userspace.
+Ensure that this works by disabling address layout randomization and
+re-executing UML in case it was enabled.
+
+This increases the available TASK_SIZE for 64 bit UML considerably.
 
 Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
-
 ---
+ arch/um/include/shared/as-layout.h |  2 +-
+ arch/um/include/shared/os.h        |  2 +-
+ arch/um/kernel/um_arch.c           |  4 ++--
+ arch/um/os-Linux/main.c            |  9 ++++++++-
+ arch/x86/um/os-Linux/task_size.c   | 19 +++++++++++++++----
+ 5 files changed, 27 insertions(+), 9 deletions(-)
 
-v2: Improved clone logic using CLONE_VFORK
-v3: Undo incorrect change in child wait loop
----
- arch/um/os-Linux/skas/process.c | 53 ++++++++++++++++++++++++++++++---
- 1 file changed, 49 insertions(+), 4 deletions(-)
-
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 41a288dcfc34..93d3d44337cd 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -255,6 +255,32 @@ static int userspace_tramp(void *stack)
- int userspace_pid[NR_CPUS];
- int kill_userspace_mm[NR_CPUS];
+diff --git a/arch/um/include/shared/as-layout.h b/arch/um/include/shared/as-layout.h
+index c22f46a757dc..480bb44ea1f2 100644
+--- a/arch/um/include/shared/as-layout.h
++++ b/arch/um/include/shared/as-layout.h
+@@ -48,7 +48,7 @@ extern unsigned long brk_start;
+ extern unsigned long host_task_size;
+ extern unsigned long stub_start;
  
-+struct tramp_data {
-+	int pid;
-+	void *clone_sp;
-+	void *stack;
-+};
-+
-+static int userspace_tramp_clone_vm(void *data)
-+{
-+	struct tramp_data *tramp_data = data;
-+
-+	/*
-+	 * At this point we are still in the same VM as the parent, but rseq
-+	 * has been disabled for this process.
-+	 * Continue with the clone into the new userspace process, the kernel
-+	 * continues as soon as this process quits (CLONE_VFORK).
-+	 */
-+
-+	tramp_data->pid = clone(userspace_tramp, tramp_data->clone_sp,
-+				CLONE_PARENT | CLONE_FILES | SIGCHLD,
-+				tramp_data->stack);
-+	if (tramp_data->pid < 0)
-+		tramp_data->pid = -errno;
-+
-+	exit(0);
-+}
-+
- /**
-  * start_userspace() - prepare a new userspace process
-  * @stub_stack:	pointer to the stub stack.
-@@ -268,9 +294,10 @@ int kill_userspace_mm[NR_CPUS];
-  */
- int start_userspace(unsigned long stub_stack)
- {
-+	struct tramp_data tramp_data;
- 	void *stack;
- 	unsigned long sp;
--	int pid, status, n, flags, err;
-+	int pid, status, n, err;
+-extern int linux_main(int argc, char **argv);
++extern int linux_main(int argc, char **argv, char **envp);
+ extern void uml_finishsetup(void);
  
- 	/* setup a temporary stack page */
- 	stack = mmap(NULL, UM_KERN_PAGE_SIZE,
-@@ -286,10 +313,13 @@ int start_userspace(unsigned long stub_stack)
- 	/* set stack pointer to the end of the stack page, so it can grow downwards */
- 	sp = (unsigned long)stack + UM_KERN_PAGE_SIZE;
+ struct siginfo;
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index aff8906304ea..db644fc67069 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -327,7 +327,7 @@ extern int __ignore_sigio_fd(int fd);
+ extern int get_pty(void);
  
--	flags = CLONE_FILES | SIGCHLD;
-+	tramp_data.stack = (void *) stub_stack;
-+	tramp_data.clone_sp = (void *) sp;
-+	tramp_data.pid = -EINVAL;
+ /* sys-$ARCH/task_size.c */
+-extern unsigned long os_get_top_address(void);
++extern unsigned long os_get_top_address(char **envp);
  
--	/* clone into new userspace process */
--	pid = clone(userspace_tramp, (void *) sp, flags, (void *) stub_stack);
-+	/* first stage CLONE_VM clone using VFORK and no signal notification */
-+	pid = clone(userspace_tramp_clone_vm, (void *) sp,
-+		    CLONE_VM | CLONE_FILES | CLONE_VFORK, &tramp_data);
- 	if (pid < 0) {
- 		err = -errno;
- 		printk(UM_KERN_ERR "%s : clone failed, errno = %d\n",
-@@ -297,6 +327,21 @@ int start_userspace(unsigned long stub_stack)
- 		return err;
+ long syscall(long number, ...);
+ 
+diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
+index 5ab1a92b6bf7..046eaf356b28 100644
+--- a/arch/um/kernel/um_arch.c
++++ b/arch/um/kernel/um_arch.c
+@@ -305,7 +305,7 @@ static void parse_cache_line(char *line)
  	}
+ }
  
-+	n = waitpid(pid, &status, WUNTRACED | WNOHANG | __WCLONE);
-+	if (n < 0 || !WIFEXITED(status) || WEXITSTATUS(status)) {
-+		err = -errno;
-+		printk(UM_KERN_ERR "%s : wait failed, errno = %d, status = %d\n",
-+		       __func__, n < 0 ? errno : 0, status);
-+		goto out_kill;
+-int __init linux_main(int argc, char **argv)
++int __init linux_main(int argc, char **argv, char **envp)
+ {
+ 	unsigned long avail, diff;
+ 	unsigned long virtmem_size, max_physmem;
+@@ -327,7 +327,7 @@ int __init linux_main(int argc, char **argv)
+ 	if (have_console == 0)
+ 		add_arg(DEFAULT_COMMAND_LINE_CONSOLE);
+ 
+-	host_task_size = os_get_top_address();
++	host_task_size = os_get_top_address(envp);
+ 	/* reserve a few pages for the stubs (taking care of data alignment) */
+ 	/* align the data portion */
+ 	BUILD_BUG_ON(!is_power_of_2(STUB_DATA_PAGES));
+diff --git a/arch/um/os-Linux/main.c b/arch/um/os-Linux/main.c
+index f98ff79cdbf7..9a61b1767795 100644
+--- a/arch/um/os-Linux/main.c
++++ b/arch/um/os-Linux/main.c
+@@ -11,6 +11,7 @@
+ #include <signal.h>
+ #include <string.h>
+ #include <sys/resource.h>
++#include <sys/personality.h>
+ #include <as-layout.h>
+ #include <init.h>
+ #include <kern_util.h>
+@@ -108,6 +109,12 @@ int __init main(int argc, char **argv, char **envp)
+ 	char **new_argv;
+ 	int ret, i, err;
+ 
++	/* Disable randomization and re-exec if it was changed successfully */
++	ret = personality(PER_LINUX | ADDR_NO_RANDOMIZE);
++	if (ret >= 0 && (ret & (PER_LINUX | ADDR_NO_RANDOMIZE)) !=
++			 (PER_LINUX | ADDR_NO_RANDOMIZE))
++		execve("/proc/self/exe", argv, envp);
++
+ 	set_stklim();
+ 
+ 	setup_env_path();
+@@ -140,7 +147,7 @@ int __init main(int argc, char **argv, char **envp)
+ #endif
+ 
+ 	change_sig(SIGPIPE, 0);
+-	ret = linux_main(argc, argv);
++	ret = linux_main(argc, argv, envp);
+ 
+ 	/*
+ 	 * Disable SIGPROF - I have no idea why libc doesn't do this or turn
+diff --git a/arch/x86/um/os-Linux/task_size.c b/arch/x86/um/os-Linux/task_size.c
+index 1dc9adc20b1c..33c26291545a 100644
+--- a/arch/x86/um/os-Linux/task_size.c
++++ b/arch/x86/um/os-Linux/task_size.c
+@@ -65,7 +65,7 @@ static int page_ok(unsigned long page)
+ 	return ok;
+ }
+ 
+-unsigned long os_get_top_address(void)
++unsigned long os_get_top_address(char **envp)
+ {
+ 	struct sigaction sa, old;
+ 	unsigned long bottom = 0;
+@@ -142,10 +142,21 @@ unsigned long os_get_top_address(void)
+ 
+ #else
+ 
+-unsigned long os_get_top_address(void)
++unsigned long os_get_top_address(char **envp)
+ {
+-	/* The old value of CONFIG_TOP_ADDR */
+-	return 0x7fc0002000;
++	unsigned long top_addr = (unsigned long) &top_addr;
++	int i;
++
++	/* The earliest variable should be after the program name in ELF */
++	for (i = 0; envp[i]; i++) {
++		if ((unsigned long) envp[i] > top_addr)
++			top_addr = (unsigned long) envp[i];
 +	}
 +
-+	pid = tramp_data.pid;
-+	if (pid < 0) {
-+		printk(UM_KERN_ERR "%s : second clone failed, errno = %d\n",
-+		       __func__, -pid);
-+		return pid;
-+	}
++	top_addr &= ~(UM_KERN_PAGE_SIZE - 1);
++	top_addr += UM_KERN_PAGE_SIZE;
 +
- 	do {
- 		CATCH_EINTR(n = waitpid(pid, &status, WUNTRACED | __WALL));
- 		if (n < 0) {
++	return top_addr;
+ }
+ 
+ #endif
 -- 
 2.45.1
 
