@@ -4,89 +4,69 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 986C6C27C77
-	for <linux-um@archiver.kernel.org>; Tue, 11 Jun 2024 22:08:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B8980C27C53
+	for <linux-um@archiver.kernel.org>; Wed, 12 Jun 2024 04:46:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=xDAi/LehtiGuKcebgCW9P5JNBdnm/nWvTWG7gETgqwU=; b=jbBgKu0T2XHQjFm/56/hVtT5jD
-	5dF+ZnmiADAc3Dd54ME4nB2kFw6FZhGqItCGMDhrPVjgCbDhZdySU2BdClSi50la9W2JbspNWQ+FI
-	FK7kavrSK7LFTAXRrWiWNksYaRd1aPEPuKVI3I50vaWbnhwrDJOLJDIMitcfE2+yl6XxtPEavbtcd
-	Q/VV8v19GCtQVd1DFy7H8I7mHtzRVuk203w4CYsL31xKQUcFK6+z2Mr8a2bdbZuBDS6OvX8rrwMnI
-	EuLsjUsY2tlHvNpJXFzoN5DeRAnu9rzC68WDPPo1wGTt5K+hGv5Re/jhxSPKDl7wrbhYSz4P7jcXB
-	irmsq0Gw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=PGOd57mUzOgQI5e9iuxGqd2C8sSrUT6mpjALhkO2Dj0=; b=feZP+WKi4kfHHfBEMtFApFBNU/
+	zfUvJZviZZomLIpXHSU+8Ff94TY+pOxTRkXcUNTorrN0gzypRsnf2CFmbUnaMep18mE5C6nztupw5
+	TqvUG6VRmHuhUwJV8sF248DyUXXrVPvnQ1bTHvQQEXhlU4xjussbrWAykxFAzVZUeeCaKyHfdMfz0
+	PcK0470lJeWmze2qW0rQAtktZJxTfBTDV1xNpQ2W9E+g76snS3Bx83//A0FAkaAodWiog0To3frII
+	eIDRdIgaWpEVq1YpbjnSp2Ru+s78iWVFb+ZLbSra8US8s9Wrv73b5gKAbWcHrUIyTy+cFs1VX554k
+	bRrDjukw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sH9fc-0000000AMv5-42bS;
-	Tue, 11 Jun 2024 22:08:48 +0000
-Received: from mail-pj1-x102b.google.com ([2607:f8b0:4864:20::102b])
+	id 1sHFsB-0000000B3XJ-2ufV;
+	Wed, 12 Jun 2024 04:46:11 +0000
+Received: from verein.lst.de ([213.95.11.211])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sH9fa-0000000AMuN-0onU
-	for linux-um@lists.infradead.org;
-	Tue, 11 Jun 2024 22:08:47 +0000
-Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-2c2e0ca8f90so3013325a91.0
-        for <linux-um@lists.infradead.org>; Tue, 11 Jun 2024 15:08:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718143723; x=1718748523; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xDAi/LehtiGuKcebgCW9P5JNBdnm/nWvTWG7gETgqwU=;
-        b=QhvWbpuqzHwefoiS6AJfzfyLcb9BPJt51fakPoke9Qmz1EyBXN7Xs/WvVXf3AJ9+LQ
-         K4I9aKxX1Ccw99vvG2/lCkNlFMO6pAm2QCGOrBTEPDfyEj3r9hdEAMMxHmh8WuuTa6RY
-         wHWand07hoP4Rb9EK68Ve6gEimSonI9iGaGhjP9pYCXbmzmc3QlWQ1GjpLiFxVeYXUI7
-         0RLaCtRWbXcLSKuKJOkTNqBDAhDtjbJnFjbEsDBPvdNpj2bf0GcR43IM7XOkkq13GVjO
-         77mVYx52VtUA2Kta18kiLikkWKlQVB70osLiO2BKgWAKPWc4rtqBQcMFAdPPvkB4Qro/
-         w91A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718143723; x=1718748523;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xDAi/LehtiGuKcebgCW9P5JNBdnm/nWvTWG7gETgqwU=;
-        b=qzafJOgHj25qv7YP14/8tM8kPlZ2dWnLyrxixWXgVdzrcS1NHr2VRmtdZSU+fLYWlP
-         Ce2Y86MkjgKVjExjK6eUSJFqNOZrVzPrmmAnvJQ6h43GjhtApvof2+RwfUks5UB6yfUL
-         UCRZoaNAAEja7f0xZMBBn3azjqbJdvFPjxKOSIRqCgvQNNpPnpOraF3orUKZ5gbZxzsh
-         GRdBBPfnQea6Hm1V4inKONt9t955ogasO6rUuuEdN0ADKVb0+UEbaEzD2CDg5hK3zkrP
-         IEDAbq4MMg19ffe3GGefT7zTphx/PDh5b1gSDVRRBSOMgDGAmp2Ehm+2y4s9k0GfSuFz
-         tW9g==
-X-Forwarded-Encrypted: i=1; AJvYcCUWuI0CgGPN7dzvKQdHiWARyTkxiL+JLz0LxWj5DXiwsEJRf4TCHK4itqrgsvXix/7TKkPH9XqCXESs9iBG8RyBaVkmx17KR43fLCrc
-X-Gm-Message-State: AOJu0YySeSEcLHzktgS7q7tDLVDgpzARj14RcL72rejN9dqJp3/KnHdC
-	xgcwjQjCd0qBw0LnkH+lEZTGfZFl+IDsksNt+1a+PxaA6X5fXYljVMTyu/to2Fx2wt3lHGmvOzy
-	1QyjACmqEz7aRw3POxMU+n6bSI48=
-X-Google-Smtp-Source: AGHT+IFBHffem54xLZczBJ5Xe/oS4MPcXIdYx89tohNq89Cp7pMB4O45YjeNBKL1s1OfEMOCHqgJQtN9Pa89PVrrbZU=
-X-Received: by 2002:a17:90b:b06:b0:2bd:8378:af81 with SMTP id
- 98e67ed59e1d1-2c4a7602018mr213853a91.4.1718143723147; Tue, 11 Jun 2024
- 15:08:43 -0700 (PDT)
+	id 1sHFs4-0000000B3WI-2fz6;
+	Wed, 12 Jun 2024 04:46:09 +0000
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 2B0FA68BEB; Wed, 12 Jun 2024 06:45:59 +0200 (CEST)
+Date: Wed, 12 Jun 2024 06:45:58 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Damien Le Moal <dlemoal@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Richard Weinberger <richard@nod.at>,
+	Philipp Reisner <philipp.reisner@linbit.com>,
+	Lars Ellenberg <lars.ellenberg@linbit.com>,
+	Christoph =?iso-8859-1?Q?B=F6hmwalder?= <christoph.boehmwalder@linbit.com>,
+	Josef Bacik <josef@toxicpanda.com>, Ming Lei <ming.lei@redhat.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Roger Pau =?iso-8859-1?Q?Monn=E9?= <roger.pau@citrix.com>,
+	Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>,
+	Mikulas Patocka <mpatocka@redhat.com>, Song Liu <song@kernel.org>,
+	Yu Kuai <yukuai3@huawei.com>,
+	Vineeth Vijayan <vneethv@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org,
+	drbd-dev@lists.linbit.com, nbd@other.debian.org,
+	linuxppc-dev@lists.ozlabs.org, ceph-devel@vger.kernel.org,
+	virtualization@lists.linux.dev, xen-devel@lists.xenproject.org,
+	linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev,
+	linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
+	linux-mtd@lists.infradead.org, nvdimm@lists.linux.dev,
+	linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: [PATCH 02/26] sd: move zone limits setup out of
+ sd_read_block_characteristics
+Message-ID: <20240612044558.GA26468@lst.de>
+References: <20240611051929.513387-1-hch@lst.de> <20240611051929.513387-3-hch@lst.de> <40ca8052-6ac1-4c1b-8c39-b0a7948839f8@kernel.org>
 MIME-Version: 1.0
-References: <20240529093336.4075206-1-davidgow@google.com>
-In-Reply-To: <20240529093336.4075206-1-davidgow@google.com>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Wed, 12 Jun 2024 00:08:30 +0200
-Message-ID: <CANiq72mXWERtFSqQRtcgP28aLokwZmXaBiqcrn_zoASawjfdsQ@mail.gmail.com>
-Subject: Re: [PATCH] arch: um: rust: Use the generated target.json again
-To: David Gow <davidgow@google.com>
-Cc: Rae Moar <rmoar@google.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Miguel Ojeda <ojeda@kernel.org>, "H . Peter Anvin" <hpa@zytor.com>, Masahiro Yamada <masahiroy@kernel.org>, 
-	Jamie Cunliffe <Jamie.Cunliffe@arm.com>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
-	Johannes Berg <johannes@sipsolutions.net>, kunit-dev@googlegroups.com, 
-	linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, 
-	rust-for-linux@vger.kernel.org, x86@kernel.org, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <40ca8052-6ac1-4c1b-8c39-b0a7948839f8@kernel.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240611_150846_274437_655D74F3 
-X-CRM114-Status: GOOD (  15.34  )
+X-CRM114-CacheID: sfid-20240611_214604_850913_2219E376 
+X-CRM114-Status: GOOD (  13.71  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,42 +81,19 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, May 29, 2024 at 11:33=E2=80=AFAM David Gow <davidgow@google.com> wr=
-ote:
->
-> The Rust compiler can take a target config from 'target.json', which is
-> generated by scripts/generate_rust_target.rs. It used to be that all
-> Linux architectures used this to generate a target.json, but now
-> architectures must opt-in to this, or they will default to the Rust
-> compiler's built-in target definition.
->
-> This is mostly okay for (64-bit) x86 and UML, except that it can
-> generate SSE instructions, which we can't use in the kernel. So
-> re-instate the custom target.json, which disables SSE (and generally
-> enables the 'soft-float' feature). This fixes the following compile
-> error:
->
-> error: <unknown>:0:0: in function _RNvMNtCs5QSdWC790r4_4core3f32f7next_up=
- float (float): SSE register return with SSE disabled
->
-> Fixes: f82811e22b48 ("rust: Refactor the build target to allow the use of=
- builtin targets")
-> Signed-off-by: David Gow <davidgow@google.com>
+On Tue, Jun 11, 2024 at 02:51:24PM +0900, Damien Le Moal wrote:
+> > -	if (!sd_is_zoned(sdkp))
+> > +	if (!sd_is_zoned(sdkp)) {
+> > +		lim->zoned = false;
+> 
+> Maybe we should clear the other zone related limits here ? If the drive is
+> reformatted/converted from SMR to CMR (FORMAT WITH PRESET), the other zone
+> limits may be set already, no ?
 
-I guess this should go through UML, but please let me know otherwise
-(I don't see it in next).
+Yes, but we would not end up here.  The device type is constant over
+the struct of the scsi_device and we'd have to fully reprobe it.
 
-Tested-by: Miguel Ojeda <ojeda@kernel.org>
-Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
+So we don't need to clear any flags, including the actual zoned flag
+here.
 
-Should this have a
-
-Cc: stable@vger.kernel.org
-
-too?
-
-Thanks!
-
-Cheers,
-Miguel
 
