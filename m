@@ -4,58 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6057DC27C53
-	for <linux-um@archiver.kernel.org>; Wed, 12 Jun 2024 16:41:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A2E27C27C53
+	for <linux-um@archiver.kernel.org>; Wed, 12 Jun 2024 16:41:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=r+d+FOolDhN243bZu3JialY3bClijATFuLLrMCW4LL8=; b=pKmmRmEAxeg9zDvRfT/RA+I0Op
-	I3yA5ISLjbvW69ezzc5bfn0BHifZ8QVW+amK+Ud+drVE+xjye23UMzLWWmRk/wgfcTVn8NGBegDfX
-	9jhLFfVf1zT1ARs1Szer19fydIbmWVVf/V6glHcbn2pueExGPxmzSMvnVckJeEkRZ+cNFOSA3efaS
-	J7NHxrJD7C9e8DOQEKbZo2CnZBpkIHuBfkBxtic0anavdqsj/NtOIBPaeghb27ed3iARz80uDiwVB
-	Z6ZLy06M3JH+4A2EXdZ8UH6yYlKNkhuzBhJ94NdfWvN0olCb9Bx/894Sw18l9l1HIKB54xQnKdbc6
-	q6jAM65w==;
+	bh=1ptfbVqJUdBMkiMQWsuOZNzQuJBWjBmvDYyBTkNWUBU=; b=iqG0N6iBmjPAqQhTocWpRwyfJi
+	tDdzYAFDJabygUPNXuW/kQiYIAa9qVlnvV1IGHWpUyYlkkLFqT228YGP3j0afFGJwbq+0rbkXfAE9
+	NSRO7FYqVsx/E1AvZ2Cs3Dc1e86wRr7trJ/2TB2WOZbyvYm5PNBdNhvl4F7ZzkCNtEcHXGD+sT0nJ
+	BDzL1Vjkw5tGq7X9ytTJyKQxsTW3vjz2KU99XayuNBdNvFrHZFwEqGMfkSiWy3pjnjUQDpzqkomsX
+	t0XRtfWzQSWyH8dKS44x7eZcVW6o0NpkNwA+ixLjl4wCorTq2A7czpnlvq0X/7MSE2KUMDScVPlSD
+	WYecYUEQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sHR2h-0000000DPwT-0Gsv;
-	Wed, 12 Jun 2024 16:41:47 +0000
+	id 1sHR2k-0000000DPyI-1P8N;
+	Wed, 12 Jun 2024 16:41:50 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sHR2b-0000000DPtE-37QU
+	id 1sHR2g-0000000DPvZ-26GV
 	for linux-um@lists.infradead.org;
-	Wed, 12 Jun 2024 16:41:45 +0000
+	Wed, 12 Jun 2024 16:41:48 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=r+d+FOolDhN243bZu3JialY3bClijATFuLLrMCW4LL8=;
-	t=1718210501; x=1719420101; b=ghmbpS2y4RatTf1fnlUefQi0Lk2ka/fEr5WsWghwVYTQ12h
-	cB9zulN5Fc9FgNfQ4TOUNBEWne/dbgjMpjcBS1NV3XlADg59GEVhyrzDYMbStiCJFLlnJQi+AKJpm
-	aNlAm7RpEraHUuS0Ko4HfkD7mskHCo52F+7G789mB3BcB0/Avu8dRPY5EdjZaOnkaM2MSbP3qSr10
-	umCX8I52rwpF+zMeHfklGBRzex4cYcdY18Dkh1U/eVqr9f6vxFtoG8rbVijS1zXmTXKHUxodqT3/9
-	ZXUiZpV/Y0UdBVxpmujwtwB3qe1yzNMnNXFTJ9truM4s2Z5lTX5Iz7eavyszDH1A==;
+	Resent-Cc:Resent-Message-ID; bh=1ptfbVqJUdBMkiMQWsuOZNzQuJBWjBmvDYyBTkNWUBU=;
+	t=1718210506; x=1719420106; b=msEMd/WVJ35MUjvnplAkTEx0Sajf6Lmb74/vIJCvcB5GYEV
+	9pdZ7dChV/L0aZNyoAqEagYafWy2LzWJxajCQDNTvkbKGeDQRa5H45jCQZX/FeRAipa3NHDXoeVTB
+	RjkOAPVNAJBQpFTFUBOge2jZcBzYE2D2fgADKxZo0YDq8hPTacBLtGDhMPUdNO0A3hvH2txUfN7sd
+	OhjyHTYL8UAzDXlz3ZGK0JJkRILP2xaxgu8iSvNWrEyTHmi+Z0JKbl9v6nIoq852spm3Hkg28AVew
+	YEPNSP2tN6ciVgmwQbSekk92Ho4mF5aS6Op2zVy6VnPLs/ie8WbvlzQ6pLRzpfdw==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.97)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1sHR2Z-0000000AUQy-2rrA;
-	Wed, 12 Jun 2024 18:41:40 +0200
+	id 1sHR2d-0000000AUQy-3hnF;
+	Wed, 12 Jun 2024 18:41:44 +0200
 From: benjamin@sipsolutions.net
 To: linux-um@lists.infradead.org
 Cc: Benjamin Berg <benjamin.berg@intel.com>
-Subject: [PATCH v4 3/5] um: Do a double clone to disable rseq
-Date: Wed, 12 Jun 2024 18:41:06 +0200
-Message-ID: <20240612164108.1742106-4-benjamin@sipsolutions.net>
+Subject: [PATCH v4 5/5] um: Add 4 level page table support
+Date: Wed, 12 Jun 2024 18:41:08 +0200
+Message-ID: <20240612164108.1742106-6-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.45.1
 In-Reply-To: <20240612164108.1742106-1-benjamin@sipsolutions.net>
 References: <20240612164108.1742106-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240612_094141_816602_8C52CE7C 
-X-CRM114-Status: GOOD (  17.50  )
+X-CRM114-CacheID: sfid-20240612_094146_711292_DFFFB6F8 
+X-CRM114-Status: GOOD (  21.50  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,118 +72,334 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Benjamin Berg <benjamin.berg@intel.com>
 
-Newer glibc versions are enabling rseq support by default. This remains
-enabled in the cloned child process, potentially causing the host kernel
-to write/read memory in the child.
-
-It appears that this was purely not an issue because the used memory
-area happened to be above TASK_SIZE and remains mapped.
-
-Note that a better approach would be to exec a small static binary that
-does not link with other libraries. Using a memfd and execveat the
-binary could be embedded into UML itself and it would result in an
-entirely clean execution environment for userspace.
+The larger memory space is useful to support more applications inside
+UML. One example for this is ASAN instrumentation of userspace
+applications which requires addresses that would otherwise not be
+available.
 
 Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
 
 ---
 
-v2: Improved clone logic using CLONE_VFORK
-v3: Undo incorrect change in child wait loop
-v4: Do not use WNOHANG in wait for CLONE_VFORK, this seems to fail on
-    older host kernel versions.
+v2:
+- Do not hide option behind the EXPERT flag
+- Fix typo in new "Two-level pagetables" option
 ---
- arch/um/os-Linux/skas/process.c | 53 ++++++++++++++++++++++++++++++---
- 1 file changed, 49 insertions(+), 4 deletions(-)
+ arch/um/Kconfig                      |   1 +
+ arch/um/include/asm/page.h           |  14 +++-
+ arch/um/include/asm/pgalloc.h        |  11 ++-
+ arch/um/include/asm/pgtable-4level.h | 119 +++++++++++++++++++++++++++
+ arch/um/include/asm/pgtable.h        |   6 +-
+ arch/um/kernel/mem.c                 |  17 +++-
+ arch/x86/um/Kconfig                  |  38 ++++++---
+ 7 files changed, 189 insertions(+), 17 deletions(-)
+ create mode 100644 arch/um/include/asm/pgtable-4level.h
 
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 41a288dcfc34..8fa2d06faef4 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -255,6 +255,32 @@ static int userspace_tramp(void *stack)
- int userspace_pid[NR_CPUS];
- int kill_userspace_mm[NR_CPUS];
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index 93a5a8999b07..5d111fc8ccb7 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -208,6 +208,7 @@ config MMAPPER
  
-+struct tramp_data {
-+	int pid;
-+	void *clone_sp;
-+	void *stack;
-+};
+ config PGTABLE_LEVELS
+ 	int
++	default 4 if 4_LEVEL_PGTABLES
+ 	default 3 if 3_LEVEL_PGTABLES
+ 	default 2
+ 
+diff --git a/arch/um/include/asm/page.h b/arch/um/include/asm/page.h
+index 9ef9a8aedfa6..c3b2ae03b60c 100644
+--- a/arch/um/include/asm/page.h
++++ b/arch/um/include/asm/page.h
+@@ -57,14 +57,22 @@ typedef unsigned long long phys_t;
+ typedef struct { unsigned long pte; } pte_t;
+ typedef struct { unsigned long pgd; } pgd_t;
+ 
+-#ifdef CONFIG_3_LEVEL_PGTABLES
++#if CONFIG_PGTABLE_LEVELS > 2
 +
-+static int userspace_tramp_clone_vm(void *data)
+ typedef struct { unsigned long pmd; } pmd_t;
+ #define pmd_val(x)	((x).pmd)
+ #define __pmd(x) ((pmd_t) { (x) } )
+-#endif
+ 
+-#define pte_val(x)	((x).pte)
++#if CONFIG_PGTABLE_LEVELS > 3
+ 
++typedef struct { unsigned long pud; } pud_t;
++#define pud_val(x)	((x).pud)
++#define __pud(x) ((pud_t) { (x) } )
++
++#endif /* CONFIG_PGTABLE_LEVELS > 3 */
++#endif /* CONFIG_PGTABLE_LEVELS > 2 */
++
++#define pte_val(x)	((x).pte)
+ 
+ #define pte_get_bits(p, bits) ((p).pte & (bits))
+ #define pte_set_bits(p, bits) ((p).pte |= (bits))
+diff --git a/arch/um/include/asm/pgalloc.h b/arch/um/include/asm/pgalloc.h
+index de5e31c64793..04fb4e6969a4 100644
+--- a/arch/um/include/asm/pgalloc.h
++++ b/arch/um/include/asm/pgalloc.h
+@@ -31,7 +31,7 @@ do {								\
+ 	tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)));	\
+ } while (0)
+ 
+-#ifdef CONFIG_3_LEVEL_PGTABLES
++#if CONFIG_PGTABLE_LEVELS > 2
+ 
+ #define __pmd_free_tlb(tlb, pmd, address)			\
+ do {								\
+@@ -39,6 +39,15 @@ do {								\
+ 	tlb_remove_page_ptdesc((tlb), virt_to_ptdesc(pmd));	\
+ } while (0)
+ 
++#if CONFIG_PGTABLE_LEVELS > 3
++
++#define __pud_free_tlb(tlb, pud, address)			\
++do {								\
++	pagetable_pud_dtor(virt_to_ptdesc(pud));		\
++	tlb_remove_page_ptdesc((tlb), virt_to_ptdesc(pud));	\
++} while (0)
++
++#endif
+ #endif
+ 
+ #endif
+diff --git a/arch/um/include/asm/pgtable-4level.h b/arch/um/include/asm/pgtable-4level.h
+new file mode 100644
+index 000000000000..f912fcc16b7a
+--- /dev/null
++++ b/arch/um/include/asm/pgtable-4level.h
+@@ -0,0 +1,119 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright 2003 PathScale Inc
++ * Derived from include/asm-i386/pgtable.h
++ */
++
++#ifndef __UM_PGTABLE_4LEVEL_H
++#define __UM_PGTABLE_4LEVEL_H
++
++#include <asm-generic/pgtable-nop4d.h>
++
++/* PGDIR_SHIFT determines what a fourth-level page table entry can map */
++
++#define PGDIR_SHIFT	39
++#define PGDIR_SIZE	(1UL << PGDIR_SHIFT)
++#define PGDIR_MASK	(~(PGDIR_SIZE-1))
++
++/* PUD_SHIFT determines the size of the area a third-level page table can
++ * map
++ */
++
++#define PUD_SHIFT	30
++#define PUD_SIZE	(1UL << PUD_SHIFT)
++#define PUD_MASK	(~(PUD_SIZE-1))
++
++/* PMD_SHIFT determines the size of the area a second-level page table can
++ * map
++ */
++
++#define PMD_SHIFT	21
++#define PMD_SIZE	(1UL << PMD_SHIFT)
++#define PMD_MASK	(~(PMD_SIZE-1))
++
++/*
++ * entries per page directory level
++ */
++
++#define PTRS_PER_PTE 512
++#define PTRS_PER_PMD 512
++#define PTRS_PER_PUD 512
++#define PTRS_PER_PGD 512
++
++#define USER_PTRS_PER_PGD ((TASK_SIZE + (PGDIR_SIZE - 1)) / PGDIR_SIZE)
++
++#define pte_ERROR(e) \
++        printk("%s:%d: bad pte %p(%016lx).\n", __FILE__, __LINE__, &(e), \
++	       pte_val(e))
++#define pmd_ERROR(e) \
++        printk("%s:%d: bad pmd %p(%016lx).\n", __FILE__, __LINE__, &(e), \
++	       pmd_val(e))
++#define pud_ERROR(e) \
++        printk("%s:%d: bad pud %p(%016lx).\n", __FILE__, __LINE__, &(e), \
++	       pud_val(e))
++#define pgd_ERROR(e) \
++        printk("%s:%d: bad pgd %p(%016lx).\n", __FILE__, __LINE__, &(e), \
++	       pgd_val(e))
++
++#define pud_none(x)	(!(pud_val(x) & ~_PAGE_NEWPAGE))
++#define	pud_bad(x)	((pud_val(x) & (~PAGE_MASK & ~_PAGE_USER)) != _KERNPG_TABLE)
++#define pud_present(x)	(pud_val(x) & _PAGE_PRESENT)
++#define pud_populate(mm, pud, pmd) \
++	set_pud(pud, __pud(_PAGE_TABLE + __pa(pmd)))
++
++#define set_pud(pudptr, pudval) (*(pudptr) = (pudval))
++
++#define p4d_none(x)	(!(p4d_val(x) & ~_PAGE_NEWPAGE))
++#define	p4d_bad(x)	((p4d_val(x) & (~PAGE_MASK & ~_PAGE_USER)) != _KERNPG_TABLE)
++#define p4d_present(x)	(p4d_val(x) & _PAGE_PRESENT)
++#define p4d_populate(mm, p4d, pud) \
++	set_p4d(p4d, __p4d(_PAGE_TABLE + __pa(pud)))
++
++#define set_p4d(p4dptr, p4dval) (*(p4dptr) = (p4dval))
++
++
++static inline int pgd_newpage(pgd_t pgd)
 +{
-+	struct tramp_data *tramp_data = data;
-+
-+	/*
-+	 * At this point we are still in the same VM as the parent, but rseq
-+	 * has been disabled for this process.
-+	 * Continue with the clone into the new userspace process, the kernel
-+	 * continues as soon as this process quits (CLONE_VFORK).
-+	 */
-+
-+	tramp_data->pid = clone(userspace_tramp, tramp_data->clone_sp,
-+				CLONE_PARENT | CLONE_FILES | SIGCHLD,
-+				tramp_data->stack);
-+	if (tramp_data->pid < 0)
-+		tramp_data->pid = -errno;
-+
-+	exit(0);
++	return(pgd_val(pgd) & _PAGE_NEWPAGE);
 +}
 +
- /**
-  * start_userspace() - prepare a new userspace process
-  * @stub_stack:	pointer to the stub stack.
-@@ -268,9 +294,10 @@ int kill_userspace_mm[NR_CPUS];
-  */
- int start_userspace(unsigned long stub_stack)
++static inline void pgd_mkuptodate(pgd_t pgd) { pgd_val(pgd) &= ~_PAGE_NEWPAGE; }
++
++#define set_pmd(pmdptr, pmdval) (*(pmdptr) = (pmdval))
++
++static inline void pud_clear (pud_t *pud)
++{
++	set_pud(pud, __pud(_PAGE_NEWPAGE));
++}
++
++static inline void p4d_clear (p4d_t *p4d)
++{
++	set_p4d(p4d, __p4d(_PAGE_NEWPAGE));
++}
++
++#define pud_page(pud) phys_to_page(pud_val(pud) & PAGE_MASK)
++#define pud_pgtable(pud) ((pmd_t *) __va(pud_val(pud) & PAGE_MASK))
++
++#define p4d_page(p4d) phys_to_page(p4d_val(p4d) & PAGE_MASK)
++#define p4d_pgtable(p4d) ((pud_t *) __va(p4d_val(p4d) & PAGE_MASK))
++
++static inline unsigned long pte_pfn(pte_t pte)
++{
++	return phys_to_pfn(pte_val(pte));
++}
++
++static inline pte_t pfn_pte(unsigned long page_nr, pgprot_t pgprot)
++{
++	pte_t pte;
++	phys_t phys = pfn_to_phys(page_nr);
++
++	pte_set_val(pte, phys, pgprot);
++	return pte;
++}
++
++static inline pmd_t pfn_pmd(unsigned long page_nr, pgprot_t pgprot)
++{
++	return __pmd((page_nr << PAGE_SHIFT) | pgprot_val(pgprot));
++}
++
++#endif
+diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.h
+index e1ece21dbe3f..71a7651e2db7 100644
+--- a/arch/um/include/asm/pgtable.h
++++ b/arch/um/include/asm/pgtable.h
+@@ -24,9 +24,11 @@
+ /* We borrow bit 10 to store the exclusive marker in swap PTEs. */
+ #define _PAGE_SWP_EXCLUSIVE	0x400
+ 
+-#ifdef CONFIG_3_LEVEL_PGTABLES
++#if CONFIG_PGTABLE_LEVELS == 4
++#include <asm/pgtable-4level.h>
++#elif CONFIG_PGTABLE_LEVELS == 3
+ #include <asm/pgtable-3level.h>
+-#else
++#elif CONFIG_PGTABLE_LEVELS == 2
+ #include <asm/pgtable-2level.h>
+ #endif
+ 
+diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
+index ca91accd64fc..2dc0d90c0550 100644
+--- a/arch/um/kernel/mem.c
++++ b/arch/um/kernel/mem.c
+@@ -99,7 +99,7 @@ static void __init one_page_table_init(pmd_t *pmd)
+ 
+ static void __init one_md_table_init(pud_t *pud)
  {
-+	struct tramp_data tramp_data;
- 	void *stack;
- 	unsigned long sp;
--	int pid, status, n, flags, err;
-+	int pid, status, n, err;
+-#ifdef CONFIG_3_LEVEL_PGTABLES
++#if CONFIG_PGTABLE_LEVELS > 2
+ 	pmd_t *pmd_table = (pmd_t *) memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
+ 	if (!pmd_table)
+ 		panic("%s: Failed to allocate %lu bytes align=%lx\n",
+@@ -110,6 +110,19 @@ static void __init one_md_table_init(pud_t *pud)
+ #endif
+ }
  
- 	/* setup a temporary stack page */
- 	stack = mmap(NULL, UM_KERN_PAGE_SIZE,
-@@ -286,10 +313,13 @@ int start_userspace(unsigned long stub_stack)
- 	/* set stack pointer to the end of the stack page, so it can grow downwards */
- 	sp = (unsigned long)stack + UM_KERN_PAGE_SIZE;
- 
--	flags = CLONE_FILES | SIGCHLD;
-+	tramp_data.stack = (void *) stub_stack;
-+	tramp_data.clone_sp = (void *) sp;
-+	tramp_data.pid = -EINVAL;
- 
--	/* clone into new userspace process */
--	pid = clone(userspace_tramp, (void *) sp, flags, (void *) stub_stack);
-+	/* first stage CLONE_VM clone using VFORK and no signal notification */
-+	pid = clone(userspace_tramp_clone_vm, (void *) sp,
-+		    CLONE_VM | CLONE_FILES | CLONE_VFORK, &tramp_data);
- 	if (pid < 0) {
- 		err = -errno;
- 		printk(UM_KERN_ERR "%s : clone failed, errno = %d\n",
-@@ -297,6 +327,21 @@ int start_userspace(unsigned long stub_stack)
- 		return err;
- 	}
- 
-+	CATCH_EINTR(n = waitpid(pid, &status, WUNTRACED | __WALL));
-+	if (n < 0 || !WIFEXITED(status) || WEXITSTATUS(status)) {
-+		err = -errno;
-+		printk(UM_KERN_ERR "%s : wait failed, errno = %d, status = %d\n",
-+		       __func__, n < 0 ? errno : 0, status);
-+		goto out_kill;
-+	}
++static void __init one_ud_table_init(p4d_t *p4d)
++{
++#if CONFIG_PGTABLE_LEVELS > 3
++	pud_t *pud_table = (pud_t *) memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
++	if (!pud_table)
++		panic("%s: Failed to allocate %lu bytes align=%lx\n",
++		      __func__, PAGE_SIZE, PAGE_SIZE);
 +
-+	pid = tramp_data.pid;
-+	if (pid < 0) {
-+		printk(UM_KERN_ERR "%s : second clone failed, errno = %d\n",
-+		       __func__, -pid);
-+		return pid;
-+	}
++	set_p4d(p4d, __p4d(_KERNPG_TABLE + (unsigned long) __pa(pud_table)));
++	BUG_ON(pud_table != pud_offset(p4d, 0));
++#endif
++}
 +
- 	do {
- 		CATCH_EINTR(n = waitpid(pid, &status, WUNTRACED | __WALL));
- 		if (n < 0) {
+ static void __init fixrange_init(unsigned long start, unsigned long end,
+ 				 pgd_t *pgd_base)
+ {
+@@ -127,6 +140,8 @@ static void __init fixrange_init(unsigned long start, unsigned long end,
+ 
+ 	for ( ; (i < PTRS_PER_PGD) && (vaddr < end); pgd++, i++) {
+ 		p4d = p4d_offset(pgd, vaddr);
++		if (p4d_none(*p4d))
++			one_ud_table_init(p4d);
+ 		pud = pud_offset(p4d, vaddr);
+ 		if (pud_none(*pud))
+ 			one_md_table_init(pud);
+diff --git a/arch/x86/um/Kconfig b/arch/x86/um/Kconfig
+index 186f13268401..454ad560f627 100644
+--- a/arch/x86/um/Kconfig
++++ b/arch/x86/um/Kconfig
+@@ -28,16 +28,34 @@ config X86_64
+ 	def_bool 64BIT
+ 	select MODULES_USE_ELF_RELA
+ 
+-config 3_LEVEL_PGTABLES
+-	bool "Three-level pagetables" if !64BIT
+-	default 64BIT
+-	help
+-	  Three-level pagetables will let UML have more than 4G of physical
+-	  memory.  All the memory that can't be mapped directly will be treated
+-	  as high memory.
+-
+-	  However, this it experimental on 32-bit architectures, so if unsure say
+-	  N (on x86-64 it's automatically enabled, instead, as it's safe there).
++choice
++	prompt "Pagetable levels"
++	default 2_LEVEL_PGTABLES if !64BIT
++	default 4_LEVEL_PGTABLES if 64BIT
++
++	config 2_LEVEL_PGTABLES
++		bool "Two-level pagetables" if !64BIT
++		depends on !64BIT
++		help
++		  Two-level page table for 32-bit architectures.
++
++	config 3_LEVEL_PGTABLES
++		bool "Three-level pagetables" if 64BIT
++		help
++		  Three-level pagetables will let UML have more than 4G of physical
++		  memory.  All the memory that can't be mapped directly will be treated
++		  as high memory.
++
++		  However, this it experimental on 32-bit architectures, so if unsure say
++		  N (on x86-64 it's automatically enabled, instead, as it's safe there).
++
++	config 4_LEVEL_PGTABLES
++		bool "Four-level pagetables" if 64BIT
++		depends on 64BIT
++		help
++		  Four-level pagetables, gives a bigger address space which can be
++		  useful for some applications (e.g. ASAN).
++endchoice
+ 
+ config ARCH_HAS_SC_SIGNALS
+ 	def_bool !64BIT
 -- 
 2.45.1
 
