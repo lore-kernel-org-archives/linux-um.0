@@ -4,69 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8EDFC27C6E
-	for <linux-um@archiver.kernel.org>; Thu, 13 Jun 2024 14:05:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 076C6C27C4F
+	for <linux-um@archiver.kernel.org>; Thu, 13 Jun 2024 20:25:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=UcuQ/c4/ztu9sABr0HcaA4MQ46Je8/Q+/Z71Hmltl5U=; b=uZaa99ZyPLyFXJOSQ9FMZAQd1Y
-	0YzBCKiIGio/Su8fEe4TPIZmE58Ej0TZyJ74BqA+2Yw1XE8GqJ2jQL+hJFA7Ol4g6K8SAHd1T4SyU
-	nxex74WRabCZVD5rxOxycxhXqD8RVQWK0O1KN0RHQNEbwndyJy7uP6euuXvKpNclO50rHWEBtRxbH
-	FvCX5RpfCuamaiu+5+PcZojyn0BAkw9trQkAjbqSLVgcay4GLgX4HFWWOIJq6uax/x+LWi21ercNF
-	DPbvCSVNXW57oYzq0I8o5MrSsTLkNa3JqwU8DPFTM/q2ijoNWHwm5KWfBOSKOaR+OwcSa0ATeeK1a
-	j5Vo6dbg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Subject:References:In-Reply-To:Message-ID:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=ULWkbbB/Ba2zTcxEXHNh/JybJCOg3HoCv6YwNpHEtEQ=; b=QuYBfcaZie7HIwVcSSp4Knu35L
+	KkvZ4cyghl7laZXwrbAlo6po8bfTIdSBSRCy4x4QnQ6s/MyvQL7ccFsEwp4p1XWqZe9v+Mg6pGloh
+	H63CiBzSRMOG4Im6iuUuiejRBLKCdeFgPi/5WwmSXRP4xK0GHAnv4MfK4XVqEckB5gchpefKqAVaT
+	jARSzZjY+Kn4jAANxL9PyRQR50g0hjl2XLP4tQ1Ft60PJi64jigipbV4zXoBI6JcvxWueBcrg7n+W
+	Zusry1HjAMQMGsWBL+qJnwsscAtparFHPsQDW955RlTw6H+flrujkogpYlsIJkr+HUuzqel6dXFba
+	oszObCjg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sHl4o-0000000GsM5-2wJ6;
-	Thu, 13 Jun 2024 14:05:18 +0000
-Received: from verein.lst.de ([213.95.11.211])
+	id 1sHr18-00000000Pvr-0IXL;
+	Thu, 13 Jun 2024 20:25:54 +0000
+Received: from lithops.sigma-star.at ([195.201.40.130])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sHl4k-0000000GsKk-3Ry0;
-	Thu, 13 Jun 2024 14:05:16 +0000
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id C2B2968BEB; Thu, 13 Jun 2024 16:05:08 +0200 (CEST)
-Date: Thu, 13 Jun 2024 16:05:08 +0200
-From: Christoph Hellwig <hch@lst.de>
-To: Roger Pau =?iso-8859-1?Q?Monn=E9?= <roger.pau@citrix.com>
-Cc: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Richard Weinberger <richard@nod.at>,
-	Philipp Reisner <philipp.reisner@linbit.com>,
-	Lars Ellenberg <lars.ellenberg@linbit.com>,
-	Christoph =?iso-8859-1?Q?B=F6hmwalder?= <christoph.boehmwalder@linbit.com>,
-	Josef Bacik <josef@toxicpanda.com>, Ming Lei <ming.lei@redhat.com>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>, Alasdair Kergon <agk@redhat.com>,
-	Mike Snitzer <snitzer@kernel.org>,
-	Mikulas Patocka <mpatocka@redhat.com>, Song Liu <song@kernel.org>,
-	Yu Kuai <yukuai3@huawei.com>,
-	Vineeth Vijayan <vneethv@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org,
-	drbd-dev@lists.linbit.com, nbd@other.debian.org,
-	linuxppc-dev@lists.ozlabs.org, ceph-devel@vger.kernel.org,
-	virtualization@lists.linux.dev, xen-devel@lists.xenproject.org,
-	linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev,
-	linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
-	linux-mtd@lists.infradead.org, nvdimm@lists.linux.dev,
-	linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
-Subject: Re: [PATCH 10/26] xen-blkfront: don't disable cache flushes when
- they fail
-Message-ID: <20240613140508.GA16529@lst.de>
-References: <20240611051929.513387-1-hch@lst.de> <20240611051929.513387-11-hch@lst.de> <ZmlVziizbaboaBSn@macbook> <20240612150030.GA29188@lst.de> <ZmnFH17bTV2Ot_iR@macbook>
+	id 1sHr14-00000000PuV-3ltu
+	for linux-um@lists.infradead.org;
+	Thu, 13 Jun 2024 20:25:53 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 7CB1961966A0;
+	Thu, 13 Jun 2024 22:25:45 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id Wa49bRMWQqQj; Thu, 13 Jun 2024 22:25:45 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 1B1DA61966B5;
+	Thu, 13 Jun 2024 22:25:45 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id u3JPqG5GZGqO; Thu, 13 Jun 2024 22:25:45 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id D6A5661966A0;
+	Thu, 13 Jun 2024 22:25:44 +0200 (CEST)
+Date: Thu, 13 Jun 2024 22:25:44 +0200 (CEST)
+From: Richard Weinberger <richard@nod.at>
+To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc: davidgow <davidgow@google.com>, Rae Moar <rmoar@google.com>, 
+	tglx <tglx@linutronix.de>, mingo <mingo@redhat.com>, 
+	Miguel Ojeda <ojeda@kernel.org>, hpa <hpa@zytor.com>, 
+	masahiroy <masahiroy@kernel.org>, 
+	Jamie Cunliffe <Jamie.Cunliffe@arm.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, 
+	anton ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, 
+	kunit-dev <kunit-dev@googlegroups.com>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, 
+	linux-um <linux-um@lists.infradead.org>, 
+	Rust for Linux Kernel <rust-for-linux@vger.kernel.org>, 
+	x86 <x86@kernel.org>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	bp <bp@alien8.de>, dave hansen <dave.hansen@linux.intel.com>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?utf-8?Q?Bj=C3=B6rn?= Roy Baron <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>
+Message-ID: <965895223.231524.1718310344716.JavaMail.zimbra@nod.at>
+In-Reply-To: <CANiq72mXWERtFSqQRtcgP28aLokwZmXaBiqcrn_zoASawjfdsQ@mail.gmail.com>
+References: <20240529093336.4075206-1-davidgow@google.com> <CANiq72mXWERtFSqQRtcgP28aLokwZmXaBiqcrn_zoASawjfdsQ@mail.gmail.com>
+Subject: Re: [PATCH] arch: um: rust: Use the generated target.json again
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZmnFH17bTV2Ot_iR@macbook>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: arch: um: rust: Use the generated target.json again
+Thread-Index: sd4HK7HM+iXRR4lpujN6qFDOxf77yA==
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240613_070515_227385_C12388BF 
-X-CRM114-Status: GOOD (  33.65  )
+X-CRM114-CacheID: sfid-20240613_132551_189625_C68AC994 
+X-CRM114-Status: UNSURE (   4.89  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,147 +94,28 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jun 12, 2024 at 05:56:15PM +0200, Roger Pau Monné wrote:
-> Right.  AFAICT advertising "feature-barrier" and/or
-> "feature-flush-cache" could be done based on whether blkback
-> understand those commands, not on whether the underlying storage
-> supports the equivalent of them.
-> 
-> Worst case we can print a warning message once about the underlying
-> storage failing to complete flush/barrier requests, and that data
-> integrity might not be guaranteed going forward, and not propagate the
-> error to the upper layer?
-> 
-> What would be the consequence of propagating a flush error to the
-> upper layers?
+----- Urspr=C3=BCngliche Mail -----
+> Von: "Miguel Ojeda" <miguel.ojeda.sandonis@gmail.com>
+>> Fixes: f82811e22b48 ("rust: Refactor the build target to allow the use o=
+f
+>> builtin targets")
+>> Signed-off-by: David Gow <davidgow@google.com>
+>=20
+> I guess this should go through UML, but please let me know otherwise
 
-If you propage the error to the upper layer you will generate an
-I/O error there, which usually leads to a file system shutdown.
+Yeah, that's the plan.
 
-> Given the description of the feature in the blkif header, I'm afraid
-> we cannot guarantee that seeing the feature exposed implies barrier or
-> flush support, since the request could fail at any time (or even from
-> the start of the disk attachment) and it would still sadly be a correct
-> implementation given the description of the options.
+> Tested-by: Miguel Ojeda <ojeda@kernel.org>
+> Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
+>=20
+> Should this have a
+>=20
+> Cc: stable@vger.kernel.org
+>=20
+> too?
 
-Well, then we could do something like the patch below, which keeps
-the existing behavior, but insolates the block layer from it and
-removes the only user of blk_queue_write_cache from interrupt
-context:
+Ok!
 
----
-From e6e82c769ab209a77302994c3829cf6ff7a595b8 Mon Sep 17 00:00:00 2001
-From: Christoph Hellwig <hch@lst.de>
-Date: Thu, 30 May 2024 08:58:52 +0200
-Subject: xen-blkfront: don't disable cache flushes when they fail
-
-blkfront always had a robust negotiation protocol for detecting a write
-cache.  Stop simply disabling cache flushes in the block layer as the
-flags handling is moving to the atomic queue limits API that needs
-user context to freeze the queue for that.  Instead handle the case
-of the feature flags cleared inside of blkfront.  This removes old
-debug code to check for such a mismatch which was previously impossible
-to hit, including the check for passthrough requests that blkfront
-never used to start with.
-
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/block/xen-blkfront.c | 44 +++++++++++++++++++-----------------
- 1 file changed, 23 insertions(+), 21 deletions(-)
-
-diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront.c
-index 9b4ec3e4908cce..e2c92d5095ff17 100644
---- a/drivers/block/xen-blkfront.c
-+++ b/drivers/block/xen-blkfront.c
-@@ -788,6 +788,14 @@ static int blkif_queue_rw_req(struct request *req, struct blkfront_ring_info *ri
- 			 * A barrier request a superset of FUA, so we can
- 			 * implement it the same way.  (It's also a FLUSH+FUA,
- 			 * since it is guaranteed ordered WRT previous writes.)
-+			 *
-+			 * Note that can end up here with a FUA write and the
-+			 * flags cleared.  This happens when the flag was
-+			 * run-time disabled and raced with I/O submission in
-+			 * the block layer.  We submit it as a normal write
-+			 * here.  A pure flush should never end up here with
-+			 * the flags cleared as they are completed earlier for
-+			 * the !feature_flush case.
- 			 */
- 			if (info->feature_flush && info->feature_fua)
- 				ring_req->operation =
-@@ -795,8 +803,6 @@ static int blkif_queue_rw_req(struct request *req, struct blkfront_ring_info *ri
- 			else if (info->feature_flush)
- 				ring_req->operation =
- 					BLKIF_OP_FLUSH_DISKCACHE;
--			else
--				ring_req->operation = 0;
- 		}
- 		ring_req->u.rw.nr_segments = num_grant;
- 		if (unlikely(require_extra_req)) {
-@@ -887,16 +893,6 @@ static inline void flush_requests(struct blkfront_ring_info *rinfo)
- 		notify_remote_via_irq(rinfo->irq);
- }
- 
--static inline bool blkif_request_flush_invalid(struct request *req,
--					       struct blkfront_info *info)
--{
--	return (blk_rq_is_passthrough(req) ||
--		((req_op(req) == REQ_OP_FLUSH) &&
--		 !info->feature_flush) ||
--		((req->cmd_flags & REQ_FUA) &&
--		 !info->feature_fua));
--}
--
- static blk_status_t blkif_queue_rq(struct blk_mq_hw_ctx *hctx,
- 			  const struct blk_mq_queue_data *qd)
- {
-@@ -908,23 +904,30 @@ static blk_status_t blkif_queue_rq(struct blk_mq_hw_ctx *hctx,
- 	rinfo = get_rinfo(info, qid);
- 	blk_mq_start_request(qd->rq);
- 	spin_lock_irqsave(&rinfo->ring_lock, flags);
--	if (RING_FULL(&rinfo->ring))
--		goto out_busy;
- 
--	if (blkif_request_flush_invalid(qd->rq, rinfo->dev_info))
--		goto out_err;
-+	/*
-+	 * Check if the backend actually supports flushes.
-+	 *
-+	 * While the block layer won't send us flushes if we don't claim to
-+	 * support them, the Xen protocol allows the backend to revoke support
-+	 * at any time.  That is of course a really bad idea and dangerous, but
-+	 * has been allowed for 10+ years.  In that case we simply clear the
-+	 * flags, and directly return here for an empty flush and ignore the
-+	 * FUA flag later on.
-+	 */
-+	if (unlikely(req_op(qd->rq) == REQ_OP_FLUSH && !info->feature_flush))
-+		goto out;
- 
-+	if (RING_FULL(&rinfo->ring))
-+		goto out_busy;
- 	if (blkif_queue_request(qd->rq, rinfo))
- 		goto out_busy;
- 
- 	flush_requests(rinfo);
-+out:
- 	spin_unlock_irqrestore(&rinfo->ring_lock, flags);
- 	return BLK_STS_OK;
- 
--out_err:
--	spin_unlock_irqrestore(&rinfo->ring_lock, flags);
--	return BLK_STS_IOERR;
--
- out_busy:
- 	blk_mq_stop_hw_queue(hctx);
- 	spin_unlock_irqrestore(&rinfo->ring_lock, flags);
-@@ -1627,7 +1630,6 @@ static irqreturn_t blkif_interrupt(int irq, void *dev_id)
- 					blkif_req(req)->error = BLK_STS_OK;
- 				info->feature_fua = 0;
- 				info->feature_flush = 0;
--				xlvbd_flush(info);
- 			}
- 			fallthrough;
- 		case BLKIF_OP_READ:
--- 
-2.43.0
-
+Thanks,
+//richard
 
