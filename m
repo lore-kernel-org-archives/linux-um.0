@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19CE9C27C77
-	for <linux-um@archiver.kernel.org>; Fri, 14 Jun 2024 17:33:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 99889C27C6E
+	for <linux-um@archiver.kernel.org>; Fri, 14 Jun 2024 17:33:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=+NkYxenKEC9OO3jJ3gxAE6moq1UMvEUEbQkI5OAK8Bk=; b=0VlIjiFL3yM3c5oHfp41Jj6UN6
-	iHHJnsvVHJAGEvbekkTg8ywXc6Tcoe4/WRJigunni9gK2OZIjhyvvkobt/6c4XsexAtiVFWdoUu3H
-	YtmwQw07rEsJ2oBNPJ3gLwx1AuN+EIVrtocjT2WKqYT9jpXpxABTwvAT/8ZutgCz9h1W+X6mXCaPn
-	LWmDnGLip1jau3mkMmJfvmbAsmP+l9hTSQTuUIcIgThFvBy8/45HKlQMyhfCgXOSOUQH+bUwCF/0C
-	W7yUkPSKnyrdtSyeOqcNO1U6ax/3ahxQtWrtmAEf0+jV08RdKBSQ+zhriKQZdOp0ELcgz+miVfPgY
-	JmUDA1pw==;
+	bh=dX/NvEFRPKEGikk8fwukiwvaTdASJSmA9+QFa3LM6Fo=; b=gu5N+CYQUt+GdYF/8SHxBBQGu3
+	54XeAwravTlazYiXvRl3qNeCf8qW1kI9aNyL7zYOEODgrAF+jgQ24jER5qU/R08HMDRrya2Yiwr1u
+	WPYKTh3dD9cCfav4ERcQngucrOV88Bnnh32tSzhYYk/MNDDevcWcfXLXVuqLABmWxE3NId3QHwwV4
+	N45Rr+FvFqpZZrbE9J0d/hCST8lAK4x0onu41xWQuTjnxKql9TIWF8d59w+MOzqYjaasO64FKyjYP
+	WhMaOsc4nQsPRKtjD61q8EKhBiMjorvUA79KVGb3DLESclxjyNXft4wrj5aIzJRm9sAxEUZ5mRPat
+	cDClT5vw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sIAnP-00000003eKq-1jvm;
-	Fri, 14 Jun 2024 17:33:03 +0000
-Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
+	id 1sIAnQ-00000003eMV-2F9E;
+	Fri, 14 Jun 2024 17:33:04 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sIAnG-00000003eAD-22ih
+	id 1sIAnH-00000003eBG-192S
 	for linux-um@lists.infradead.org;
-	Fri, 14 Jun 2024 17:32:56 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPA id 2C61DFF80C;
+	Fri, 14 Jun 2024 17:32:57 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPA id 042AEFF80B;
 	Fri, 14 Jun 2024 17:32:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1718386372;
+	t=1718386373;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+NkYxenKEC9OO3jJ3gxAE6moq1UMvEUEbQkI5OAK8Bk=;
-	b=VQBWA83dpargUL4CS6k35jbg8SKlxJAGPHYkzdgEEmtSl5vL1cntkYI6XkIIjtpa9pDh4C
-	Av7cVO9vJakY5eylBEXku6OTiL6KMd2IOoKoyZB1SLoNStAzpyvs85hnVXiKH67aGUg5LB
-	cNwthBjvoeORgsoaoJphzeU0KPfxvLfHwOvCaJdYipR1WwrcdSwhr4lt7trgfKo87JTomj
-	eYlaobYjgGaP/5//iadWWn3YmYO8hWG7wTbkm86mYcq0xYCQouc+z91tocA0gslxRiXzir
-	ZjNP2Vq6LDpRBig9FY/deNx2YTwmjqn037zuEpG0NOWpBeyNn9I+8emIGlKV9A==
+	bh=dX/NvEFRPKEGikk8fwukiwvaTdASJSmA9+QFa3LM6Fo=;
+	b=cdBiBEETH3brboDNfayAgM3woKf5vj4k+CQ5YUUbP085D876D2hYH2lP6MDnIMck9yqphV
+	qNvDKs53bNCkYxZ/qE7ENTcj33R3ZaHdCOBFx48ljIbzv84YnX5c26N+NfhBXupdgYPrpQ
+	ZhrhAR0ZAm5TyFduZdBIrvG1jX4I0354HZsoQ3sD/vzpqqWzLyZUUxLecKtVQy5oIphQa1
+	2yTpLY+ZiVxBlstiUK721FfVjz2datIWgNf3wXPsDnAHBvVv+bv/wk5X/47L2rq1VAQ6Qu
+	Y4wc720rwxdXpS7aM38Dm8sAxyxMIx348GFv22vG8cCa4FS2punTlySJ/AJs/g==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Matti Vaittinen <mazziesaccount@gmail.com>,
 	Herve Codina <herve.codina@bootlin.com>,
@@ -59,9 +59,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Horatiu Vultur <horatiu.vultur@microchip.com>,
 	Steen Hegelund <steen.hegelund@microchip.com>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH 08/23] irqdomain: Handle domain hierarchy parent in irq_domain_instantiate()
-Date: Fri, 14 Jun 2024 19:32:09 +0200
-Message-ID: <20240614173232.1184015-9-herve.codina@bootlin.com>
+Subject: [PATCH 09/23] irqdomain: Use irq_domain_instantiate() for hierarchy domain creation
+Date: Fri, 14 Jun 2024 19:32:10 +0200
+Message-ID: <20240614173232.1184015-10-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.45.0
 In-Reply-To: <20240614173232.1184015-1-herve.codina@bootlin.com>
 References: <20240614173232.1184015-1-herve.codina@bootlin.com>
@@ -69,8 +69,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: herve.codina@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240614_103254_746161_1DC0C682 
-X-CRM114-Status: UNSURE (   8.79  )
+X-CRM114-CacheID: sfid-20240614_103255_503469_89B11383 
+X-CRM114-Status: UNSURE (   8.77  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -86,52 +86,50 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-To use irq_domain_instantiate() from irq_domain_create_hierarchy(),
-irq_domain_instantiate() needs to handle the domain hierarchy parent.
+irq_domain_instantiate() handles all needs to be used in
+irq_domain_create_hierarchy()
 
-Handle this parent.
+Avoid code duplication and use directly irq_domain_instantiate() for
+hierarchy domain creation.
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 ---
- include/linux/irqdomain.h | 6 ++++++
- kernel/irq/irqdomain.c    | 7 +++++++
- 2 files changed, 13 insertions(+)
+ kernel/irq/irqdomain.c | 17 +++++------------
+ 1 file changed, 5 insertions(+), 12 deletions(-)
 
-diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
-index 4683b66eded9..e52fd5e5494c 100644
---- a/include/linux/irqdomain.h
-+++ b/include/linux/irqdomain.h
-@@ -276,6 +276,12 @@ struct irq_domain_info {
- 	int					direct_max;
- 	const struct irq_domain_ops		*ops;
- 	void					*host_data;
-+#ifdef CONFIG_IRQ_DOMAIN_HIERARCHY
-+	/**
-+	 * @parent: Pointer to the parent irq domain used in a hierarchy domain
-+	 */
-+	struct irq_domain			*parent;
-+#endif
- };
- 
- struct irq_domain *irq_domain_instantiate(const struct irq_domain_info *info);
 diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-index 34acc2ccfee7..7e4a1da63549 100644
+index 7e4a1da63549..edfd386be985 100644
 --- a/kernel/irq/irqdomain.c
 +++ b/kernel/irq/irqdomain.c
-@@ -265,6 +265,13 @@ struct irq_domain *irq_domain_instantiate(const struct irq_domain_info *info)
+@@ -1213,23 +1213,16 @@ struct irq_domain *irq_domain_create_hierarchy(struct irq_domain *parent,
+ 		.hwirq_max = size,
+ 		.ops = ops,
+ 		.host_data = host_data,
++		.domain_flags = flags,
++		.parent = parent,
+ 	};
+-	struct irq_domain *domain;
++	struct irq_domain *d;
  
- 	domain->flags |= info->domain_flags;
+ 	if (!info.size)
+ 		info.hwirq_max = ~0U;
  
-+#ifdef CONFIG_IRQ_DOMAIN_HIERARCHY
-+	if (info->parent) {
-+		domain->root = info->parent->root;
-+		domain->parent = info->parent;
-+	}
-+#endif
-+
- 	__irq_domain_publish(domain);
+-	domain = __irq_domain_create(&info);
+-	if (domain) {
+-		if (parent)
+-			domain->root = parent->root;
+-		domain->parent = parent;
+-		domain->flags |= flags;
+-
+-		__irq_domain_publish(domain);
+-	}
+-
+-	return domain;
++	d = irq_domain_instantiate(&info);
++	return IS_ERR(d) ? NULL : d;
+ }
+ EXPORT_SYMBOL_GPL(irq_domain_create_hierarchy);
  
- 	return domain;
 -- 
 2.45.0
 
