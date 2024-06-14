@@ -4,67 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F029C27C6E
-	for <linux-um@archiver.kernel.org>; Fri, 14 Jun 2024 07:53:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20D6BC27C6E
+	for <linux-um@archiver.kernel.org>; Fri, 14 Jun 2024 07:56:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=i0sWIEGLKtKBH/fny7BtcjHZ6cxqhkIlHlCdeRJ1H6c=; b=M142P07HKeWRKLNPgjQm8/k82L
-	uxRjuCNvwduRXprAjzAI83dEuXY3OqCsZFRMgLJnMOChy16uSwV9x/NtmWqCjnJFhRLkYYJtXHoO6
-	jNxgubGqbtKtRIr9njmv0CpV6hQ7EbiCMc4tuOE0pNwYqzYD1S+v06FKFMGWQSDqlCAJYPEiyU7Md
-	nwBg65082GIeFxUk2s/Qz3WRsVkeONBI1lgIbkuF1BBNYvTUyK3UHWO2sGLBXTBRbYhn1fojkC/ZW
-	p2Sess+67oEU+CI8He8ZbbbODp6CqLlhZtd76rpZzrPfkuOc5e+PwEAh2ZeiJXAbCKBDyuw5JG5Na
-	AGyttbgQ==;
+	bh=BedO1x12znmji4xt7UpC8XDe1FvgdzsEI86mvlWGudA=; b=wt3uimkXslS3Fh9/38JT9b9YyM
+	XpeYgvHa/7yKyCDSsMs+lUgCrexca6iToDhS7Ky+cEO0G5HWAo5r9u7W4KMt8qB66Rix2/EpSSnCW
+	aO16caCc7zUl3/0hREIe9xQakEZxl7lSOKCu0g8EM+GYyjoXtdz4FJhEB5vdWavI0EMMF6WdZknmK
+	YpM1o6Nel+yOAV6HxXV2iq8P13vDeQA+QIktZVJ844Rmy+MqzNyXrhX5L4YN8diMKNZZ2t9f3ZxJt
+	eOuET6521q+VUYPDaRQX5jNeXiTsifKtEZDF/Bys4tIcZVgqczUya6IBHEr55534V98Nyc8pclEnX
+	lyA/xMog==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sI1kv-00000001rXL-3X2i;
-	Fri, 14 Jun 2024 07:53:53 +0000
-Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
+	id 1sI1np-00000001rzw-0ugR;
+	Fri, 14 Jun 2024 07:56:53 +0000
+Received: from mail-qt1-x82c.google.com ([2607:f8b0:4864:20::82c])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sI1kt-00000001rWh-2RtD
+	id 1sI1nl-00000001ryX-3Vl4
 	for linux-um@lists.infradead.org;
-	Fri, 14 Jun 2024 07:53:53 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 83C57CE29B0;
-	Fri, 14 Jun 2024 07:53:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC066C32786;
-	Fri, 14 Jun 2024 07:53:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718351624;
-	bh=h+/wniDhffow13/0x9wXBCH5L3m2C2ifbo5JQH39Ctk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CXEgI2L5Juu2diryLHebBXJlQBjclK3htRMxEw0WSoJqLMQgpfzrVv3Y/hlN7Q+DP
-	 h6q2O8Nhe1Yo6QsTaxnC5TWrG0Sh7Zuz2mB9WnqJUUJd3oezlYlxKSsEIKgKSA2cNT
-	 Ykv1S5Kz4eDALY0OaYLeJeYwouQptu3s8nf8Bv6+9KVgWKux4Pa5TUt9D5cD3238Nk
-	 nZyoyAnxUqzp/ctsyIokKtInIGmZQWaoSdeIcmduVd9lYELIkv0dXgvydC5t11oD8v
-	 gAc9skRkCs/bopuIkcNd/ONi/uWZPZ9p2+FuToFXRluCFtTANJD5jBY80k+WOoKlO3
-	 vZTjgYjgiC7lw==
-Date: Fri, 14 Jun 2024 10:51:32 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: David Hildenbrand <david@redhat.com>
-Cc: Wei Yang <richard.weiyang@gmail.com>, richard@nod.at,
-	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
-	linux-um@lists.infradead.org, linux-mm@kvack.org,
-	Jason Lunz <lunz@falooley.org>, Jeff Dike <jdike@linux.intel.com>,
-	Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>,
-	Alasdair G Kergon <agk@redhat.com>,
-	Jens Axboe <jens.axboe@oracle.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: Re: [PATCH] um/mm: get max_low_pfn from memblock
-Message-ID: <Zmv2hHamxBh0_Gew@kernel.org>
-References: <20240614015840.12632-1-richard.weiyang@gmail.com>
- <d21c00f1-bd9d-48ae-bb54-86cf126c45ef@redhat.com>
+	Fri, 14 Jun 2024 07:56:51 +0000
+Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-440f1d9377dso9547791cf.0
+        for <linux-um@lists.infradead.org>; Fri, 14 Jun 2024 00:56:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=citrix.com; s=google; t=1718351805; x=1718956605; darn=lists.infradead.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=BedO1x12znmji4xt7UpC8XDe1FvgdzsEI86mvlWGudA=;
+        b=RaIl4x/adI/HuNOc3VwbvU4uzLYKtkqKRWQ80BHrpZC5GbHDiZnP4JzreUyoFVzgqt
+         9xw9ntMGnEtX/px4pV4l1WCY/aB/VN6z86GjIstb0stV2pbCIJKqw1tS0JdlPWeUHJGX
+         AZ+F+C17IleGHh1XY9koLX+jaBCQVbz3P3FAM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718351805; x=1718956605;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BedO1x12znmji4xt7UpC8XDe1FvgdzsEI86mvlWGudA=;
+        b=YRh8X/nZtPnb/mHlLGOeQrZnayy9HJ+bMT7QdzaQtidSuHcgGy0B2go1x0+9maPlNQ
+         Kr7nxsoi9HR7n+8OaRKJ1zrgPtScOWAkvCJsRjRyvCAd9JMz+hp45kmGoIyYX2TZsP37
+         EWqUG2GB00HeNgQUjYEYUw0TkRCkGCRci3kIaQ/IExiE/ru5/dJ++/PjQUBmI7GVICnF
+         7vUZXiN16gSQDs+wQi1+82xLBdOs10U3iFgdDV1wP7NTVM2x0ii4o7RGSI0AkugWxpVK
+         S4XTW++lOptbGC4s3bbUzdkH6LIRD5oieAXtquS0nHcRNd2qiYkfr7mCSp0Mct5GyAar
+         AiTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXbxBc1Q90zebGU8aC7/6e3ss+Cof83lVEeQx67YizPnwXDZkdUIc5JxSHF8VPWtxN+DOspBkZaqe6UzXiI1LitbSPiaVMw/5H7Ltn3
+X-Gm-Message-State: AOJu0YyJhDRoVal30dZcYY2k/rm93GLTw4mcP7P+TPItKaPKAGm/oRtG
+	Xjqakh+roqxyxPwrgeOjaST94954Zn2CeHo5jIE4BgeIcMin0+aTkdoRemFpDnE=
+X-Google-Smtp-Source: AGHT+IEDi8BhVjLu2vbVbmBxB83hP6gyIibQXt+H84ODwaVrhmTedMPZYFZeMGGsfo/+7hGiDnXdRg==
+X-Received: by 2002:a05:622a:1822:b0:43e:2639:a987 with SMTP id d75a77b69052e-44216b3a874mr27744421cf.59.1718351804940;
+        Fri, 14 Jun 2024 00:56:44 -0700 (PDT)
+Received: from localhost ([213.195.124.163])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-441f2ff9ef8sm13823221cf.89.2024.06.14.00.56.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jun 2024 00:56:44 -0700 (PDT)
+Date: Fri, 14 Jun 2024 09:56:42 +0200
+From: Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, Geert Uytterhoeven <geert@linux-m68k.org>,
+	Richard Weinberger <richard@nod.at>,
+	Philipp Reisner <philipp.reisner@linbit.com>,
+	Lars Ellenberg <lars.ellenberg@linbit.com>,
+	Christoph =?utf-8?Q?B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>,
+	Josef Bacik <josef@toxicpanda.com>, Ming Lei <ming.lei@redhat.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>, Alasdair Kergon <agk@redhat.com>,
+	Mike Snitzer <snitzer@kernel.org>,
+	Mikulas Patocka <mpatocka@redhat.com>, Song Liu <song@kernel.org>,
+	Yu Kuai <yukuai3@huawei.com>,
+	Vineeth Vijayan <vneethv@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org,
+	drbd-dev@lists.linbit.com, nbd@other.debian.org,
+	linuxppc-dev@lists.ozlabs.org, ceph-devel@vger.kernel.org,
+	virtualization@lists.linux.dev, xen-devel@lists.xenproject.org,
+	linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev,
+	linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
+	linux-mtd@lists.infradead.org, nvdimm@lists.linux.dev,
+	linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: [PATCH 10/26] xen-blkfront: don't disable cache flushes when
+ they fail
+Message-ID: <Zmv3usMvGGK7ZbMT@macbook>
+References: <20240611051929.513387-1-hch@lst.de>
+ <20240611051929.513387-11-hch@lst.de>
+ <ZmlVziizbaboaBSn@macbook>
+ <20240612150030.GA29188@lst.de>
+ <ZmnFH17bTV2Ot_iR@macbook>
+ <20240613140508.GA16529@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <d21c00f1-bd9d-48ae-bb54-86cf126c45ef@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240613140508.GA16529@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240614_005352_007840_3849A5B1 
-X-CRM114-Status: GOOD (  28.38  )
+X-CRM114-CacheID: sfid-20240614_005650_136681_8CB43E1A 
+X-CRM114-Status: GOOD (  47.55  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,88 +116,129 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, Jun 14, 2024 at 09:31:59AM +0200, David Hildenbrand wrote:
-> On 14.06.24 03:58, Wei Yang wrote:
-> > Current calculation of max_low_pfn is introduced in commit af84eab20891
-> > ("[PATCH] uml: fix LVM crash"). It is intended to set max_low_pfn to the
-> > same value as max_pfn.
+On Thu, Jun 13, 2024 at 04:05:08PM +0200, Christoph Hellwig wrote:
+> On Wed, Jun 12, 2024 at 05:56:15PM +0200, Roger Pau Monné wrote:
+> > Right.  AFAICT advertising "feature-barrier" and/or
+> > "feature-flush-cache" could be done based on whether blkback
+> > understand those commands, not on whether the underlying storage
+> > supports the equivalent of them.
 > > 
-> > But I am not sure why the max_pfn is set to totalram_pages, which
-> > represents the number of usable pages in system instead of an absolute
-> > page frame number. (The change history stops there.)
+> > Worst case we can print a warning message once about the underlying
+> > storage failing to complete flush/barrier requests, and that data
+> > integrity might not be guaranteed going forward, and not propagate the
+> > error to the upper layer?
 > > 
-> > While we can get the maximum page frame number from memblock, this looks
-> > more reasonable than setting to totalram_pages.
-> > 
-> > Also this would help changing totalram_pages accounting, since we plan
-> > to move the accounting into __free_pages_core(). With this change,
-> > totalram_pages may not represent the total usable pages at this point,
-> > since some pages would be deferred initialized.
+> > What would be the consequence of propagating a flush error to the
+> > upper layers?
 > 
-> Question is if deferred page init is even a thing on UM. But it certainly looks odd+suspiciously wrong to rely on totalram_pages().
- 
-As long as there is no HIGHMEM, 
+> If you propage the error to the upper layer you will generate an
+> I/O error there, which usually leads to a file system shutdown.
+> 
+> > Given the description of the feature in the blkif header, I'm afraid
+> > we cannot guarantee that seeing the feature exposed implies barrier or
+> > flush support, since the request could fail at any time (or even from
+> > the start of the disk attachment) and it would still sadly be a correct
+> > implementation given the description of the options.
+> 
+> Well, then we could do something like the patch below, which keeps
+> the existing behavior, but insolates the block layer from it and
+> removes the only user of blk_queue_write_cache from interrupt
+> context:
 
-max_pfn = max_low_pfn = PFN_DOWN(memblock_end_of_DRAM())
+LGTM, I'm not sure there's much else we can do.
 
-should be ok.
- 
-> > Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
-> > CC: Jason Lunz <lunz@falooley.org>
-> > CC: Jeff Dike <jdike@linux.intel.com>
-> > Cc: Paolo 'Blaisorblade' Giarrusso <blaisorblade@yahoo.it>
-> > Cc: Alasdair G Kergon <agk@redhat.com>
-> > Cc: Jens Axboe <jens.axboe@oracle.com>
-> > CC: Andrew Morton <akpm@linux-foundation.org>
-> > CC: Mike Rapoport (IBM) <rppt@kernel.org>
-> > CC: David Hildenbrand <david@redhat.com>
-> > 
-> > ---
-> > A simple UML bootup test looks good.
-> > ---
-> >   arch/um/kernel/mem.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
-> > index ca91accd64fc..ca682879e28f 100644
-> > --- a/arch/um/kernel/mem.c
-> > +++ b/arch/um/kernel/mem.c
-> > @@ -73,7 +73,7 @@ void __init mem_init(void)
-> >   	/* this will put all low memory onto the freelists */
-> >   	memblock_free_all();
-> > -	max_low_pfn = totalram_pages();
-> > +	max_low_pfn = PFN_DOWN(memblock_end_of_DRAM());
+> ---
+> From e6e82c769ab209a77302994c3829cf6ff7a595b8 Mon Sep 17 00:00:00 2001
+> From: Christoph Hellwig <hch@lst.de>
+> Date: Thu, 30 May 2024 08:58:52 +0200
+> Subject: xen-blkfront: don't disable cache flushes when they fail
+> 
+> blkfront always had a robust negotiation protocol for detecting a write
+> cache.  Stop simply disabling cache flushes in the block layer as the
+> flags handling is moving to the atomic queue limits API that needs
+> user context to freeze the queue for that.  Instead handle the case
+> of the feature flags cleared inside of blkfront.  This removes old
+> debug code to check for such a mismatch which was previously impossible
+> to hit, including the check for passthrough requests that blkfront
+> never used to start with.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  drivers/block/xen-blkfront.c | 44 +++++++++++++++++++-----------------
+>  1 file changed, 23 insertions(+), 21 deletions(-)
+> 
+> diff --git a/drivers/block/xen-blkfront.c b/drivers/block/xen-blkfront.c
+> index 9b4ec3e4908cce..e2c92d5095ff17 100644
+> --- a/drivers/block/xen-blkfront.c
+> +++ b/drivers/block/xen-blkfront.c
+> @@ -788,6 +788,14 @@ static int blkif_queue_rw_req(struct request *req, struct blkfront_ring_info *ri
+>  			 * A barrier request a superset of FUA, so we can
+>  			 * implement it the same way.  (It's also a FLUSH+FUA,
+>  			 * since it is guaranteed ordered WRT previous writes.)
+> +			 *
+> +			 * Note that can end up here with a FUA write and the
+> +			 * flags cleared.  This happens when the flag was
+> +			 * run-time disabled and raced with I/O submission in
+> +			 * the block layer.  We submit it as a normal write
 
-This assignment seem redundant as there is already
+Since blkfront no longer signals that FUA is no longer available for the
+device, getting a request with FUA is not actually a race I think?
 
-	max_low_pfn = min_low_pfn + (map_size >> PAGE_SHIFT);
+> +			 * here.  A pure flush should never end up here with
+> +			 * the flags cleared as they are completed earlier for
+> +			 * the !feature_flush case.
+>  			 */
+>  			if (info->feature_flush && info->feature_fua)
+>  				ring_req->operation =
+> @@ -795,8 +803,6 @@ static int blkif_queue_rw_req(struct request *req, struct blkfront_ring_info *ri
+>  			else if (info->feature_flush)
+>  				ring_req->operation =
+>  					BLKIF_OP_FLUSH_DISKCACHE;
+> -			else
+> -				ring_req->operation = 0;
+>  		}
+>  		ring_req->u.rw.nr_segments = num_grant;
+>  		if (unlikely(require_extra_req)) {
+> @@ -887,16 +893,6 @@ static inline void flush_requests(struct blkfront_ring_info *rinfo)
+>  		notify_remote_via_irq(rinfo->irq);
+>  }
+>  
+> -static inline bool blkif_request_flush_invalid(struct request *req,
+> -					       struct blkfront_info *info)
+> -{
+> -	return (blk_rq_is_passthrough(req) ||
+> -		((req_op(req) == REQ_OP_FLUSH) &&
+> -		 !info->feature_flush) ||
+> -		((req->cmd_flags & REQ_FUA) &&
+> -		 !info->feature_fua));
+> -}
+> -
+>  static blk_status_t blkif_queue_rq(struct blk_mq_hw_ctx *hctx,
+>  			  const struct blk_mq_queue_data *qd)
+>  {
+> @@ -908,23 +904,30 @@ static blk_status_t blkif_queue_rq(struct blk_mq_hw_ctx *hctx,
+>  	rinfo = get_rinfo(info, qid);
+>  	blk_mq_start_request(qd->rq);
+>  	spin_lock_irqsave(&rinfo->ring_lock, flags);
+> -	if (RING_FULL(&rinfo->ring))
+> -		goto out_busy;
+>  
+> -	if (blkif_request_flush_invalid(qd->rq, rinfo->dev_info))
+> -		goto out_err;
+> +	/*
+> +	 * Check if the backend actually supports flushes.
+> +	 *
+> +	 * While the block layer won't send us flushes if we don't claim to
+> +	 * support them, the Xen protocol allows the backend to revoke support
+> +	 * at any time.  That is of course a really bad idea and dangerous, but
+> +	 * has been allowed for 10+ years.  In that case we simply clear the
+> +	 * flags, and directly return here for an empty flush and ignore the
+> +	 * FUA flag later on.
+> +	 */
+> +	if (unlikely(req_op(qd->rq) == REQ_OP_FLUSH && !info->feature_flush))
+> +		goto out;
 
-in setup_physmem
+Don't you need to complete the request here?
 
-> >   	max_pfn = max_low_pfn;
-> >   	kmalloc_ok = 1;
-> >   }
-> 
-> Matches what a bunch of other archs do.
-> 
-> Acked-by: David Hildenbrand <david@redhat.com>
-> 
-> 
-> Randomly staring at other users:
-> 
-> arch/loongarch/kernel/numa.c:   max_low_pfn = PHYS_PFN(memblock_end_of_DRAM());
-> arch/loongarch/kernel/setup.c:  max_low_pfn = PFN_PHYS(memblock_end_of_DRAM());
-> 
-> What? the latter cannot possibly be right, no? Looks odd at least.
-> Only applies to CONFIG_OF_EARLY_FLATTREE. CCing loongarch maintainer.
-> 
-> -- 
-> Cheers,
-> 
-> David / dhildenb
-> 
-
--- 
-Sincerely yours,
-Mike.
+Thanks, Roger.
 
