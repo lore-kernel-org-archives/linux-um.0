@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39F39C27C7B
-	for <linux-um@archiver.kernel.org>; Fri, 14 Jun 2024 17:33:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D46EC27C6E
+	for <linux-um@archiver.kernel.org>; Fri, 14 Jun 2024 17:33:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=lrO21D/F1M18TMwOh5nDZl9q9v++C9Qwkdmyr7nENho=; b=EhXkDKZrHpuXeUaQSJfCIWeYTM
-	MoToHXr49JSvuyykE1GzCnIytOAfsaS0j/ito19HFK5i6G9d2atQn/oLRV4Gn9ZAoFwSPh5UCSCvD
-	pyTok8iSyTyaC8ygPgWg+D5LnLV4/PjywHY5p2m+WmZ7ysJq4797VPAkKYBelf3hLwyVW/8AoJKtc
-	jPsreu+LWA6qOgp9Yq1R6Zhg5ybrh+KvImW1EObp6yIqVuHa9lUaTx8bDy5my4uNdaMPeKpZNRC1X
-	XZbmig12Yd+YaCy7HsueGPeCXK8Z/4K/639nXs27SVXinjMuRNlENyYYZag9qsxyfnKOx5UUNI0eq
-	AzaPYbmA==;
+	bh=w3cpBYdF6cMVxUW5Waih2GLzWLev0FdUvUlF6XEkz6w=; b=MBBOE8yUi/ek7s0JXn/Jg2t5HN
+	/f9zJSmPBU6cEnaUSNOFTjFF9bLRh/bYqOPm5l3x4Ta83+6be7nT8Y1s4GctVO3jkILGEvkIluiOD
+	hlJiK3PoSNbQ7kK11AIZ8XMPz3JPFw2PwNxgnkTtFyu4hSY2Qp90aUPiY0ZSzrQnR7RwEv6bW4TrD
+	ND0UBG0wcQnJHciekupCd7n5Z0ceAa+bdFFoCitfIB5kB+hhaV8+FA4mMZbxuvP08vT1AZO7s+aXd
+	NfWFSl2oeK5Cc6TOCX3jP6ALzqoGBHiIVPz0z1zN6rLmsm53tNtkNVvmK+tKRjz9bx0jU1D66ttNE
+	SUvCR6qw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sIAnd-00000003eY5-3Dfr;
-	Fri, 14 Jun 2024 17:33:17 +0000
+	id 1sIAne-00000003eZG-3X0x;
+	Fri, 14 Jun 2024 17:33:18 +0000
 Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sIAnO-00000003eIc-1LrT
+	id 1sIAnQ-00000003eKL-0bBZ
 	for linux-um@lists.infradead.org;
-	Fri, 14 Jun 2024 17:33:06 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPA id DA020FF807;
-	Fri, 14 Jun 2024 17:32:59 +0000 (UTC)
+	Fri, 14 Jun 2024 17:33:09 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPA id 91E50FF812;
+	Fri, 14 Jun 2024 17:33:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1718386380;
+	t=1718386382;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=lrO21D/F1M18TMwOh5nDZl9q9v++C9Qwkdmyr7nENho=;
-	b=aP3N0jiRHNCo/PI9Tmqi+m5BiLjCBPomS0d3Lp7pX3CPht3E5bXpuBNeafgNXjcQLIIejB
-	x6LmGLn8nncQ6TZnXR42IpSud3pbCGNMnyrm6XUayFplZ3syjkO6Lfu9VfxpcE2ZZcp1L9
-	RkeQ+nFgaN3u6Ev22GPXJpznyhr7TTsaDTSAG8ZOeIn7owqypv+Y0fhHuXbKFoxlia3Hag
-	JmBynUt4HWat6VA6ZRUZjcELmcRxX1in1l9+XaLY7C6PFRSMdkEuVH+J4pJRkwjoF+exb8
-	vpa0LYbN1O3E9GQvGkQHhJM0mTyTIZOf7MUQYnFlBOPkCN5t1koRO/SSX17FnA==
+	bh=w3cpBYdF6cMVxUW5Waih2GLzWLev0FdUvUlF6XEkz6w=;
+	b=hOHqyhLOwwkkxkU6/4uv0vGXq4lG0/g6HnaOmVENSryxC7pYTsnYvJxvJl38DoAigBwEpJ
+	UnSGTd+bGOyJHsZm7oqnQrIgUvs8hTf0mrBxs2OuvXXwpR+I65zbUCKj50dn6GjFB+bqCc
+	qgl6Te/E5Q0wVwnbmAppzcm9etiqmeDEzfH2+YnaW99FoA3OvjlAoGrUmrmf8sF4RaSgn0
+	dx9OButAg7KJoQOEdH9WsgqCvEY1Mxq209udmJTu43BenpEOI/8GrX2OidK2AJDpr4Oy/k
+	oImLWkZ9rxOa82WSkXTHxNBSSB0oqLxd66T+Q4FgGdVj5OyFqkbpLDccQuR1yg==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Matti Vaittinen <mazziesaccount@gmail.com>,
 	Herve Codina <herve.codina@bootlin.com>,
@@ -59,9 +59,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Horatiu Vultur <horatiu.vultur@microchip.com>,
 	Steen Hegelund <steen.hegelund@microchip.com>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH 17/23] irqdomain: Convert __irq_domain_add() wrappers to irq_domain_instantiate()
-Date: Fri, 14 Jun 2024 19:32:18 +0200
-Message-ID: <20240614173232.1184015-18-herve.codina@bootlin.com>
+Subject: [PATCH 19/23] um: virt-pci: Use irq_domain_instantiate()
+Date: Fri, 14 Jun 2024 19:32:20 +0200
+Message-ID: <20240614173232.1184015-20-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.45.0
 In-Reply-To: <20240614173232.1184015-1-herve.codina@bootlin.com>
 References: <20240614173232.1184015-1-herve.codina@bootlin.com>
@@ -69,9 +69,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: herve.codina@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240614_103302_906164_86F34AEE 
-X-CRM114-Status: UNSURE (   9.10  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240614_103304_635337_2D0E00AA 
+X-CRM114-Status: GOOD (  10.35  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,114 +85,58 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-__irq_domain_add() wrappers use directly __irq_domain_add(). With the
-introduction of irq_domain_instantiate(), __irq_domain_add() becomes
-obsolete.
+um_pci_init() uses __irq_domain_add(). With the introduction of
+irq_domain_instantiate(), __irq_domain_add() becomes obsolete.
 
-In order to fully remove __irq_domain_add(), convert wrappers to
-irq_domain_instantiate()
+In order to fully remove __irq_domain_add(), use directly
+irq_domain_instantiate().
 
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 ---
- include/linux/irqdomain.h | 58 +++++++++++++++++++++++++++++++++++----
- 1 file changed, 53 insertions(+), 5 deletions(-)
+ arch/um/drivers/virt-pci.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
-index 8820317582c4..1cd1cbf57736 100644
---- a/include/linux/irqdomain.h
-+++ b/include/linux/irqdomain.h
-@@ -400,7 +400,17 @@ static inline struct irq_domain *irq_domain_add_linear(struct device_node *of_no
- 					 const struct irq_domain_ops *ops,
- 					 void *host_data)
- {
--	return __irq_domain_add(of_node_to_fwnode(of_node), size, size, 0, ops, host_data);
-+	struct irq_domain_info info = {
-+		.fwnode = of_node_to_fwnode(of_node),
-+		.size = size,
-+		.hwirq_max = size,
-+		.ops = ops,
-+		.host_data = host_data,
-+	};
-+	struct irq_domain *d;
-+
-+	d = irq_domain_instantiate(&info);
-+	return IS_ERR(d) ? NULL : d;
- }
+diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
+index 7cb503469bbd..597d89338693 100644
+--- a/arch/um/drivers/virt-pci.c
++++ b/arch/um/drivers/virt-pci.c
+@@ -986,6 +986,11 @@ static struct resource virt_platform_resource = {
  
- #ifdef CONFIG_IRQ_DOMAIN_NOMAP
-@@ -409,7 +419,17 @@ static inline struct irq_domain *irq_domain_add_nomap(struct device_node *of_nod
- 					 const struct irq_domain_ops *ops,
- 					 void *host_data)
+ static int __init um_pci_init(void)
  {
--	return __irq_domain_add(of_node_to_fwnode(of_node), 0, max_irq, max_irq, ops, host_data);
-+	struct irq_domain_info info = {
-+		.fwnode = of_node_to_fwnode(of_node),
-+		.hwirq_max = max_irq,
-+		.direct_max = max_irq,
-+		.ops = ops,
-+		.host_data = host_data,
++	struct irq_domain_info inner_domain_info = {
++		.size = MAX_MSI_VECTORS,
++		.hwirq_max = MAX_MSI_VECTORS,
++		.ops = &um_pci_inner_domain_ops,
 +	};
-+	struct irq_domain *d;
-+
-+	d = irq_domain_instantiate(&info);
-+	return IS_ERR(d) ? NULL : d;
- }
+ 	int err, i;
  
- extern unsigned int irq_create_direct_mapping(struct irq_domain *host);
-@@ -419,7 +439,16 @@ static inline struct irq_domain *irq_domain_add_tree(struct device_node *of_node
- 					 const struct irq_domain_ops *ops,
- 					 void *host_data)
- {
--	return __irq_domain_add(of_node_to_fwnode(of_node), 0, ~0, 0, ops, host_data);
-+	struct irq_domain_info info = {
-+		.fwnode = of_node_to_fwnode(of_node),
-+		.hwirq_max = ~0U,
-+		.ops = ops,
-+		.host_data = host_data,
-+	};
-+	struct irq_domain *d;
-+
-+	d = irq_domain_instantiate(&info);
-+	return IS_ERR(d) ? NULL : d;
- }
+ 	WARN_ON(logic_iomem_add_region(&virt_cfgspace_resource,
+@@ -1015,11 +1020,10 @@ static int __init um_pci_init(void)
+ 		goto free;
+ 	}
  
- static inline struct irq_domain *irq_domain_create_linear(struct fwnode_handle *fwnode,
-@@ -427,14 +456,33 @@ static inline struct irq_domain *irq_domain_create_linear(struct fwnode_handle *
- 					 const struct irq_domain_ops *ops,
- 					 void *host_data)
- {
--	return __irq_domain_add(fwnode, size, size, 0, ops, host_data);
-+	struct irq_domain_info info = {
-+		.fwnode = fwnode,
-+		.size = size,
-+		.hwirq_max = size,
-+		.ops = ops,
-+		.host_data = host_data,
-+	};
-+	struct irq_domain *d;
-+
-+	d = irq_domain_instantiate(&info);
-+	return IS_ERR(d) ? NULL : d;
- }
+-	um_pci_inner_domain = __irq_domain_add(um_pci_fwnode, MAX_MSI_VECTORS,
+-					       MAX_MSI_VECTORS, 0,
+-					       &um_pci_inner_domain_ops, NULL);
+-	if (!um_pci_inner_domain) {
+-		err = -ENOMEM;
++	inner_domain_info.fwnode = um_pci_fwnode;
++	um_pci_inner_domain = irq_domain_instantiate(&inner_domain_info);
++	if (IS_ERR(um_pci_inner_domain)) {
++		err = PTR_ERR(um_pci_inner_domain);
+ 		goto free;
+ 	}
  
- static inline struct irq_domain *irq_domain_create_tree(struct fwnode_handle *fwnode,
- 					 const struct irq_domain_ops *ops,
- 					 void *host_data)
- {
--	return __irq_domain_add(fwnode, 0, ~0, 0, ops, host_data);
-+	struct irq_domain_info info = {
-+		.fwnode = fwnode,
-+		.hwirq_max = ~0,
-+		.ops = ops,
-+		.host_data = host_data,
-+	};
-+	struct irq_domain *d;
-+
-+	d = irq_domain_instantiate(&info);
-+	return IS_ERR(d) ? NULL : d;
- }
- 
- extern void irq_domain_remove(struct irq_domain *host);
+@@ -1056,7 +1060,7 @@ static int __init um_pci_init(void)
+ 		goto free;
+ 	return 0;
+ free:
+-	if (um_pci_inner_domain)
++	if (!IS_ERR_OR_NULL(um_pci_inner_domain))
+ 		irq_domain_remove(um_pci_inner_domain);
+ 	if (um_pci_fwnode)
+ 		irq_domain_free_fwnode(um_pci_fwnode);
 -- 
 2.45.0
 
