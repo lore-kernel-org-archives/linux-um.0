@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72E64C27C7B
-	for <linux-um@archiver.kernel.org>; Fri, 14 Jun 2024 17:33:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0009BC27C6E
+	for <linux-um@archiver.kernel.org>; Fri, 14 Jun 2024 17:33:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=uMFasbEf4choChQbQW4o5B2GzIDXCZom8Jh+XZJZcAQ=; b=rFUiy7ZxOm5I1KHDNiVGWZ+zM/
-	IPNbOUwbDmNIOzVPQbrHz/Rz9xC6dzgl/2DpTplWLOut4c26FWMKqFSGa1jMqFYN/+DeLE4sIqqkT
-	ik7otTTZfYlYKkTwSJ+0sGSIAqwrNpgvHo1dfLyNr5+qxPo+cCC0DTpDL2fJODcbF2V5/3HfdPB4R
-	DMp1FyHAdGRTP8TP20rgkHIKRGz76BLPNU1AXuOU0r48SqQoUYHt+1H3Z1fOKtCor4jBkEQ4Fpy9S
-	6f0TdOYUfT79Z3WToxb/QsdqeWhQOIU1wrYxUGJ58HvpIWBFYsSltt35Vt7OMHctyhMn3jT5sqcSg
-	HXNA8pfA==;
+	bh=bCrIqBOqgd8IhI1XvRqpnH65nvLXt6DnzPIXbQl0ooU=; b=AS1bKCDlglfpqWWfMTeT1TwGQz
+	2Xc5Gb7ojdthe5DLmqNYJJJhUZl88anvCJoUCEKyXcQBMph72tZUQJ/JiaorULCqrQqGGXfvrfpts
+	cbr+7UyLzlMIdGAzCJnDSLHTljWp3DU3t7NyP0u/SnThatHBqjxO3D2oICEjQKT6ilRI2UM0O0mhU
+	JHUUbnI+TxnonudvgxKZ7rJIr4lzAElsTxc+YUrkiqD/tTytYRQau4ApEpj7Zk5qlPEw90Y1JYZOS
+	lUK1DCo2pIjMitHgF4MKa8MICqP7GZNhMjrRSc0j22adQj6pR9+dpsnZbNIC/NcEBhKKS+mqbo/Uz
+	FKhPrVVg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sIAnT-00000003ePF-1BnY;
-	Fri, 14 Jun 2024 17:33:07 +0000
+	id 1sIAnZ-00000003eU4-1b4Y;
+	Fri, 14 Jun 2024 17:33:13 +0000
 Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sIAnJ-00000003eDG-0rRQ
+	id 1sIAnK-00000003eER-0XkG
 	for linux-um@lists.infradead.org;
-	Fri, 14 Jun 2024 17:32:59 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPA id BD2CFFF810;
-	Fri, 14 Jun 2024 17:32:54 +0000 (UTC)
+	Fri, 14 Jun 2024 17:33:00 +0000
+Received: by mail.gandi.net (Postfix) with ESMTPA id 97823FF805;
+	Fri, 14 Jun 2024 17:32:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1718386375;
+	t=1718386376;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uMFasbEf4choChQbQW4o5B2GzIDXCZom8Jh+XZJZcAQ=;
-	b=L3yUXNMmtoZUUu0QU2ABzSlGH7KCqmQtblTAJMJ0qkuOSvfL6rmG1OI01zFrciWoPYQ26L
-	MDEn87KyfQjaZCbqijbzCUElhO9yOpKhj/OAqXNUdpKufLurMnI6PgA/Ly3Zq9dkDbUKSM
-	PjGgfE+KxJEmXSVzW8Q4OXKMp8huOvWSGWwyF0c1V2HAM/OA3657yRUE0pcIvEuV1O4T/Z
-	Pg/0aq3G8lKpkKqkJSQVNEeBMLUsK0hWxUQWXJBO6MS2xXsI0KuVcIYCgayWU+pSH8siUn
-	bXBigm/JwElpb9az7tADwJ/JGu6d4j6oi5Y3UGhVtPbOabRoJ2uAe6WcGMutYw==
+	bh=bCrIqBOqgd8IhI1XvRqpnH65nvLXt6DnzPIXbQl0ooU=;
+	b=lKjvYVPRbwgWGiXtVyYKgzayJgQnlEq99TCZ2S90A2zRcZKPLUMG57o2C+Bqs3YVLxQ75b
+	v+mbvSRxvEw60jOeDANphC7wTr/NggD0ZQaLgOdLB7V2PRg4OoueEPT44gRJ4xpam0WoP6
+	BzIuaxb8+IZ0T4rV4St3oiO1tpkW8YbOH+if7Jrj0qK3AgM7PeU76pb9Tz44jySjHBnBbp
+	Ew+xB06m7amr/lpmIqo4yWNv/TLS+T4ru/C1bPNW0mEPdslWQFgO1IDzmruDmQ0BeSeu9i
+	/a3z35N9d0ECq9wDzBOBAWMtVxq7jI0cx/nLbt9Zd7LBHpejcrS3PdBgZ+4vEA==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Matti Vaittinen <mazziesaccount@gmail.com>,
 	Herve Codina <herve.codina@bootlin.com>,
@@ -59,9 +59,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Horatiu Vultur <horatiu.vultur@microchip.com>,
 	Steen Hegelund <steen.hegelund@microchip.com>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH 11/23] irqdomain: Handle domain bus token in irq_domain_create()
-Date: Fri, 14 Jun 2024 19:32:12 +0200
-Message-ID: <20240614173232.1184015-12-herve.codina@bootlin.com>
+Subject: [PATCH 12/23] irqdomain: Introduce init() and exit() hooks
+Date: Fri, 14 Jun 2024 19:32:13 +0200
+Message-ID: <20240614173232.1184015-13-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.45.0
 In-Reply-To: <20240614173232.1184015-1-herve.codina@bootlin.com>
 References: <20240614173232.1184015-1-herve.codina@bootlin.com>
@@ -69,8 +69,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: herve.codina@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240614_103257_896486_A00E139A 
-X-CRM114-Status: GOOD (  17.02  )
+X-CRM114-CacheID: sfid-20240614_103258_552711_BED76C1F 
+X-CRM114-Status: GOOD (  14.01  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,123 +85,111 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-irq_domain_update_bus_token() is the only way to set the domain bus
-token. This is sub-optimal as irq_domain_update_bus_token() can be
-called only once the domain is created and needs to revert some
-operations, change the domain name and redo the operations.
+The current API does not allow additional initialization before the
+domain is published. This can lead to a race condition between consumers
+and supplier as a domain can be available for consumers before being
+fully ready.
 
-In order to avoid this revert/change/redo sequence, take into account
-the domain bus token during the domain creation.
+Introduce the init() hook to allow additional initialization before
+plublishing the domain. Also introduce the exit() hook to revert
+operations done in init() on domain removal.
 
 Suggested-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Herve Codina <herve.codina@bootlin.com>
 ---
- include/linux/irqdomain.h |  2 ++
- kernel/irq/irqdomain.c    | 30 ++++++++++++++++++++++++------
- 2 files changed, 26 insertions(+), 6 deletions(-)
+ include/linux/irqdomain.h |  8 ++++++++
+ kernel/irq/irqdomain.c    | 15 +++++++++++++++
+ 2 files changed, 23 insertions(+)
 
 diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
-index e52fd5e5494c..52bed23e5c61 100644
+index 52bed23e5c61..2c927edc4d43 100644
 --- a/include/linux/irqdomain.h
 +++ b/include/linux/irqdomain.h
-@@ -265,6 +265,7 @@ void irq_domain_free_fwnode(struct fwnode_handle *fwnode);
-  * @hwirq_max:		Maximum number of interrupts supported by controller
-  * @direct_max:		Maximum value of direct maps;
-  *			Use ~0 for no limit; 0 for no direct mapping
-+ * @bus_token:		Domain bus token
+@@ -141,6 +141,7 @@ struct irq_domain_chip_generic;
+  *		purposes related to the irq domain.
+  * @parent:	Pointer to parent irq_domain to support hierarchy irq_domains
+  * @msi_parent_ops: Pointer to MSI parent domain methods for per device domain init
++ * @exit:	Function called when the domain is destroyed
+  *
+  * Revmap data, used internally by the irq domain code:
+  * @revmap_size:	Size of the linear map table @revmap[]
+@@ -169,6 +170,7 @@ struct irq_domain {
+ #ifdef CONFIG_GENERIC_MSI_IRQ
+ 	const struct msi_parent_ops	*msi_parent_ops;
+ #endif
++	void				(*exit)(struct irq_domain *d);
+ 
+ 	/* reverse map data. The linear map gets appended to the irq_domain */
+ 	irq_hw_number_t			hwirq_max;
+@@ -268,6 +270,10 @@ void irq_domain_free_fwnode(struct fwnode_handle *fwnode);
+  * @bus_token:		Domain bus token
   * @ops:		Domain operation callbacks
   * @host_data:		Controller private data pointer
++ * @init:		Function called when the domain is created.
++ *			Allow to do some additional domain initialisation.
++ * @exit:		Function called when the domain is destroyed.
++ *			Allow to do some additional cleanup operation.
   */
-@@ -274,6 +275,7 @@ struct irq_domain_info {
- 	unsigned int				size;
- 	irq_hw_number_t				hwirq_max;
- 	int					direct_max;
-+	enum irq_domain_bus_token		bus_token;
- 	const struct irq_domain_ops		*ops;
- 	void					*host_data;
- #ifdef CONFIG_IRQ_DOMAIN_HIERARCHY
+ struct irq_domain_info {
+ 	struct fwnode_handle			*fwnode;
+@@ -284,6 +290,8 @@ struct irq_domain_info {
+ 	 */
+ 	struct irq_domain			*parent;
+ #endif
++	int					(*init)(struct irq_domain *d);
++	void					(*exit)(struct irq_domain *d);
+ };
+ 
+ struct irq_domain *irq_domain_instantiate(const struct irq_domain_info *info);
 diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-index 5090b1c572c6..d05aeb9c0a67 100644
+index d05aeb9c0a67..9efc9f180308 100644
 --- a/kernel/irq/irqdomain.c
 +++ b/kernel/irq/irqdomain.c
-@@ -129,7 +129,8 @@ void irq_domain_free_fwnode(struct fwnode_handle *fwnode)
- EXPORT_SYMBOL_GPL(irq_domain_free_fwnode);
- 
- static int irq_domain_set_name(struct irq_domain *domain,
--			       const struct fwnode_handle *fwnode)
-+			       const struct fwnode_handle *fwnode,
-+			       enum irq_domain_bus_token bus_token)
+@@ -276,12 +276,14 @@ static void irq_domain_free(struct irq_domain *domain)
+ struct irq_domain *irq_domain_instantiate(const struct irq_domain_info *info)
  {
- 	static atomic_t unknown_domains;
- 	struct irqchip_fwid *fwid;
-@@ -140,13 +141,23 @@ static int irq_domain_set_name(struct irq_domain *domain,
- 		switch (fwid->type) {
- 		case IRQCHIP_FWNODE_NAMED:
- 		case IRQCHIP_FWNODE_NAMED_ID:
--			domain->name = kstrdup(fwid->name, GFP_KERNEL);
-+			domain->name = bus_token ?
-+					kasprintf(GFP_KERNEL, "%s-%d",
-+						  fwid->name, bus_token) :
-+					kstrdup(fwid->name, GFP_KERNEL);
- 			if (!domain->name)
- 				return -ENOMEM;
- 			domain->flags |= IRQ_DOMAIN_NAME_ALLOCATED;
- 			break;
- 		default:
- 			domain->name = fwid->name;
-+			if (bus_token) {
-+				domain->name = kasprintf(GFP_KERNEL, "%s-%d",
-+							 fwid->name, bus_token);
-+				if (!domain->name)
-+					return -ENOMEM;
-+				domain->flags |= IRQ_DOMAIN_NAME_ALLOCATED;
-+			}
- 			break;
- 		}
- 	} else if (is_of_node(fwnode) || is_acpi_device_node(fwnode) ||
-@@ -158,7 +169,9 @@ static int irq_domain_set_name(struct irq_domain *domain,
- 		 * unhappy about. Replace them with ':', which does
- 		 * the trick and is not as offensive as '\'...
- 		 */
--		name = kasprintf(GFP_KERNEL, "%pfw", fwnode);
-+		name = bus_token ?
-+			kasprintf(GFP_KERNEL, "%pfw-%d", fwnode, bus_token) :
-+			kasprintf(GFP_KERNEL, "%pfw", fwnode);
- 		if (!name)
- 			return -ENOMEM;
+ 	struct irq_domain *domain;
++	int err;
  
-@@ -169,8 +182,12 @@ static int irq_domain_set_name(struct irq_domain *domain,
- 	if (!domain->name) {
- 		if (fwnode)
- 			pr_err("Invalid fwnode type for irqdomain\n");
--		domain->name = kasprintf(GFP_KERNEL, "unknown-%d",
--					 atomic_inc_return(&unknown_domains));
-+		domain->name = bus_token ?
-+				kasprintf(GFP_KERNEL, "unknown-%d-%d",
-+					  atomic_inc_return(&unknown_domains),
-+					  bus_token) :
-+				kasprintf(GFP_KERNEL, "unknown-%d",
-+					  atomic_inc_return(&unknown_domains));
- 		if (!domain->name)
- 			return -ENOMEM;
- 		domain->flags |= IRQ_DOMAIN_NAME_ALLOCATED;
-@@ -194,7 +211,7 @@ static struct irq_domain *__irq_domain_create(const struct irq_domain_info *info
- 	if (!domain)
- 		return ERR_PTR(-ENOMEM);
+ 	domain = __irq_domain_create(info);
+ 	if (IS_ERR(domain))
+ 		return ERR_CAST(domain);
  
--	err = irq_domain_set_name(domain, info->fwnode);
-+	err = irq_domain_set_name(domain, info->fwnode, info->bus_token);
- 	if (err) {
- 		kfree(domain);
- 		return ERR_PTR(err);
-@@ -207,6 +224,7 @@ static struct irq_domain *__irq_domain_create(const struct irq_domain_info *info
- 	INIT_RADIX_TREE(&domain->revmap_tree, GFP_KERNEL);
- 	domain->ops = info->ops;
- 	domain->host_data = info->host_data;
-+	domain->bus_token = info->bus_token;
- 	domain->hwirq_max = info->hwirq_max;
+ 	domain->flags |= info->domain_flags;
++	domain->exit = info->exit;
  
- 	if (info->direct_max)
+ #ifdef CONFIG_IRQ_DOMAIN_HIERARCHY
+ 	if (info->parent) {
+@@ -290,9 +292,19 @@ struct irq_domain *irq_domain_instantiate(const struct irq_domain_info *info)
+ 	}
+ #endif
+ 
++	if (info->init) {
++		err = info->init(domain);
++		if (err)
++			goto err_domain_free;
++	}
++
+ 	__irq_domain_publish(domain);
+ 
+ 	return domain;
++
++err_domain_free:
++	irq_domain_free(domain);
++	return ERR_PTR(err);
+ }
+ EXPORT_SYMBOL_GPL(irq_domain_instantiate);
+ 
+@@ -339,6 +351,9 @@ EXPORT_SYMBOL_GPL(__irq_domain_add);
+  */
+ void irq_domain_remove(struct irq_domain *domain)
+ {
++	if (domain->exit)
++		domain->exit(domain);
++
+ 	mutex_lock(&irq_domain_mutex);
+ 	debugfs_remove_domain_dir(domain);
+ 
 -- 
 2.45.0
 
