@@ -4,42 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF80AC27C6E
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03FF9C27C79
 	for <linux-um@archiver.kernel.org>; Fri, 14 Jun 2024 17:32:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=67iEUNjiy7HOBuGoqBAJEp5jlBOCrSiBVzovVrhf8kQ=; b=iP40mrTBSa0J9O5rAqUV7re8pX
-	m5BHd2M1o5lg/BfpUdiKXLHKCvRHpTnWLrH8em57vrtBRSOjQPJZLiPyryPLOqv4bWVCHBJexoT1l
-	f/5Z+0jE7IzRVu/exEe6/+pIJa5p84sRHZj51jmIVWaUKWcqd/EvGdZRYelCEyOoIWKVVpWCezQ7u
-	thPaAhlQD4i7jRjV47t5Ffaf4pI7gPm+oKyGzs1b4S+Ko0O3M89nmQRE5QjBV0LHcsJgi2P1/dR1X
-	G1hi+9+Gu02EFsdq6o2POXHORA7RQoWOFlj/BghCxgcQyLYC7memrU3P9cB99aVIiJOQ/MqChDPHq
-	6RCeblOQ==;
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=+CQfiI+Nq1S9v1Nm6K78UW44sXVdGGexG8I5gR9gXYM=; b=MkJK5y5qsMaYFEL6KkRIkPMT4e
+	s9FO0PBa5rlTjA3M9orDtE2DSSQSytG8O7HOmf78YcS4mSH3lB7Jn6fqus9yKQyrQ4LynBCsq+bG0
+	YoQIVG194Px0AkeGBqoRueID6d3/njeQ1KSLMCa4HfPt+oH23LNm7SdylU3P0eQieEZLzZSRfLCv0
+	WBiC4gP0GtUhC5p5RqokONPyX9jqfRmPUMzHAjdp+HNCN/6qBnOV4h0rIxoniCTR099WNpN/r3CeW
+	KXkblmeym5EIXu+R25ZImnCngL9WwQsl1rLIaDWXlUPa3jjLHOVItFI7XzXiVkKOEQ0ri1++T204T
+	S4ETQzwg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sIAnG-00000003eBU-1z4B;
-	Fri, 14 Jun 2024 17:32:54 +0000
-Received: from relay9-d.mail.gandi.net ([2001:4b98:dc4:8::229])
+	id 1sIAnF-00000003eAg-3MJZ;
+	Fri, 14 Jun 2024 17:32:53 +0000
+Received: from relay9-d.mail.gandi.net ([217.70.183.199])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sIAnB-00000003e6x-2o5n
+	id 1sIAnB-00000003e7G-2YyC
 	for linux-um@lists.infradead.org;
 	Fri, 14 Jun 2024 17:32:52 +0000
-Received: by mail.gandi.net (Postfix) with ESMTPA id 6CE52FF805;
-	Fri, 14 Jun 2024 17:32:44 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPA id B4F37FF803;
+	Fri, 14 Jun 2024 17:32:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1718386365;
+	t=1718386366;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=67iEUNjiy7HOBuGoqBAJEp5jlBOCrSiBVzovVrhf8kQ=;
-	b=YL+iy83jqq9bl02hakJXSOJ8KfKOOy8vAED2NEWLHenMZYkURWV2Ti2k1eK1UpGEgUB56k
-	eUwzeRyIWpqAsfRuuYnkGXcMzkqByjT7TGLPBeMqm9tDIKbEDFQW3fffkzZxxUzeCEm45S
-	Go4DxkW+5egokQSkV6e29gOj54hKh80CIopS5TDttW5TsaXgGl5mlskYN5HDqM/xapM4kz
-	Ziy7Y4EJo4GJVn3VZdFPL5b3Qicvbfe18QZSY/B87DvHQk5kpXUKqkaj+1BxOAipVqb7Fh
-	28V2ITL5/G64cE5dY7IDu4JuSnKx6wCwSu/NdS6of2guL6k/bLE1nVEeLcoHiQ==
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+CQfiI+Nq1S9v1Nm6K78UW44sXVdGGexG8I5gR9gXYM=;
+	b=K4mjauuGA30E+3QwBWCUnq0ia7ivGj9hrqSLbujhgwzAtgq6x89MuJTpz1udhPcEH+ZIbw
+	nWaJiGSDGdXijQaZn6wMu+fvH4tWrcbD4fHzt5NlQa5Z4ORlpYZqssNWBeACWggtvYZcRc
+	ECER1RTDcsJY30Y+LfW5hSUCGKzMn34/0GNRLQzX377vdW7iXju7rLa3/feML2gMAJFjKv
+	0uUScPaUzURWX9ycbe21cdRoFjbnBjNoNgZRTfq1EPgjfe7cpiMypDSltLKfpiWla9T3OX
+	RSOd5yQIzXU+L8SV5QNM1v9fqXcE1HdDuIEOQJbDKF+5wr5s9x+EzLDEJGBWHw==
 From: Herve Codina <herve.codina@bootlin.com>
 To: Matti Vaittinen <mazziesaccount@gmail.com>,
 	Herve Codina <herve.codina@bootlin.com>,
@@ -58,17 +59,19 @@ Cc: linux-kernel@vger.kernel.org,
 	Horatiu Vultur <horatiu.vultur@microchip.com>,
 	Steen Hegelund <steen.hegelund@microchip.com>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH 00/23] Introduce irq_domain_instanciate()
-Date: Fri, 14 Jun 2024 19:32:01 +0200
-Message-ID: <20240614173232.1184015-1-herve.codina@bootlin.com>
+Subject: [PATCH 01/23] irqdomain: Introduce irq_domain_free()
+Date: Fri, 14 Jun 2024 19:32:02 +0200
+Message-ID: <20240614173232.1184015-2-herve.codina@bootlin.com>
 X-Mailer: git-send-email 2.45.0
+In-Reply-To: <20240614173232.1184015-1-herve.codina@bootlin.com>
+References: <20240614173232.1184015-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: herve.codina@bootlin.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240614_103250_023161_206FFDF9 
-X-CRM114-Status: GOOD (  15.90  )
+X-CRM114-CacheID: sfid-20240614_103249_823788_AF8BA338 
+X-CRM114-Status: UNSURE (   9.69  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,87 +86,53 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi,
+In preparation of the introduction of the irq domain instantiation,
+introduce irq_domain_free() to avoid code duplication on later
+modifications.
 
-Previously, I sent a series related the support for the LAN966x PCI
-device [1] and in particular several patches related irq domain
-modifications and the introduction of the Microchip LAN966x OIC driver.
+This new function is an extraction of the current operations performed
+to free the irq domain. No functional changes are introduced.
 
-During the review, it was asked to rework the irq domain modification in
-order to avoid more wrappers and a new irq_domain_instanciate() function
-was proposed [2].
+Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+---
+ kernel/irq/irqdomain.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-Also a patch [3] sent by Maitti Vaittinen can benefit of this new
-irq_domain_instanciate() function. Even if Maitti's use case is not
-handle yet in this series, it should not be a big deal add support for
-it on top of this current series.
-
-So, this current series introduces this new irq_domain_instanciate()
-function and migrate existing wrappers and functions to this new
-function (patches 1 to 20).
-
-It then introduces the first driver that uses directly this new function
-with the init()/exit() hooks set: the Microchip LAN966x OIC driver
-(patches 21 to 23).
-
-Existing irqchip drivers are not converted yet to use this new API
-function in the same way as the LAN966x OIC driver does.
-I prefer to have this series accepted first to avoid doing and re-doing
-several times the same modifications on existing drivers depending on
-changes requested on this current series review.
-
-[1] https://lore.kernel.org/lkml/20240527161450.326615-1-herve.codina@bootlin.com/
-[2] https://lore.kernel.org/lkml/8734pr5yq1.ffs@tglx/
-[3] https://lore.kernel.org/lkml/bbd219c95f4fe88752aee5f21232480fe9b949fb.1717486682.git.mazziesaccount@gmail.com/
-
-Best regards,
-Hervé
-
-Herve Codina (23):
-  irqdomain: Introduce irq_domain_free()
-  irqdomain: Introduce irq_domain_instantiate()
-  irqdomain: Fixed unbalanced fwnode get and put
-  irqdomain: Constify parameter in is_fwnode_irqchip()
-  irqdomain: Use a dedicated function to set the domain name
-  irqdomain: Convert __irq_domain_create() to use struct irq_domain_info
-  irqdomain: Handle additional domain flags in irq_domain_instantiate()
-  irqdomain: Handle domain hierarchy parent in irq_domain_instantiate()
-  irqdomain: Use irq_domain_instantiate() for hierarchy domain creation
-  irqdomain: Make __irq_domain_create() return an error code
-  irqdomain: Handle domain bus token in irq_domain_create()
-  irqdomain: Introduce init() and exit() hooks
-  genirq/generic_chip: Introduce
-    irq_domain_{alloc,remove}_generic_chips()
-  genirq/generic_chip: Introduce init() and exit() hooks
-  irqdomain: Add support for generic irq chips creation before
-    publishing a domain
-  irqdomain: Add a resource managed version of irq_domain_instantiate()
-  irqdomain: Convert __irq_domain_add() wrappers to
-    irq_domain_instantiate()
-  irqdomain: Convert domain creation functions to
-    irq_domain_instantiate()
-  um: virt-pci: Use irq_domain_instantiate()
-  irqdomain: Remove __irq_domain_add()
-  dt-bindings: interrupt-controller: Add support for Microchip LAN966x
-    OIC
-  irqchip: Add support for LAN966x OIC
-  MAINTAINERS: Add the Microchip LAN966x OIC driver entry
-
- .../microchip,lan966x-oic.yaml                |  55 ++++
- MAINTAINERS                                   |   6 +
- arch/um/drivers/virt-pci.c                    |  16 +-
- drivers/irqchip/Kconfig                       |  12 +
- drivers/irqchip/Makefile                      |   1 +
- drivers/irqchip/irq-lan966x-oic.c             | 278 ++++++++++++++++++
- include/linux/irq.h                           |  33 +++
- include/linux/irqdomain.h                     | 116 +++++++-
- kernel/irq/devres.c                           |  41 +++
- kernel/irq/generic-chip.c                     | 111 +++++--
- kernel/irq/irqdomain.c                        | 243 +++++++++------
- 11 files changed, 782 insertions(+), 130 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/interrupt-controller/microchip,lan966x-oic.yaml
- create mode 100644 drivers/irqchip/irq-lan966x-oic.c
-
+diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+index 86f8b91b0d3a..95eda206367f 100644
+--- a/kernel/irq/irqdomain.c
++++ b/kernel/irq/irqdomain.c
+@@ -241,6 +241,15 @@ static void __irq_domain_publish(struct irq_domain *domain)
+ 	pr_debug("Added domain %s\n", domain->name);
+ }
+ 
++static void irq_domain_free(struct irq_domain *domain)
++{
++	fwnode_dev_initialized(domain->fwnode, false);
++	fwnode_handle_put(domain->fwnode);
++	if (domain->flags & IRQ_DOMAIN_NAME_ALLOCATED)
++		kfree(domain->name);
++	kfree(domain);
++}
++
+ /**
+  * __irq_domain_add() - Allocate a new irq_domain data structure
+  * @fwnode: firmware node for the interrupt controller
+@@ -296,12 +305,7 @@ void irq_domain_remove(struct irq_domain *domain)
+ 	mutex_unlock(&irq_domain_mutex);
+ 
+ 	pr_debug("Removed domain %s\n", domain->name);
+-
+-	fwnode_dev_initialized(domain->fwnode, false);
+-	fwnode_handle_put(domain->fwnode);
+-	if (domain->flags & IRQ_DOMAIN_NAME_ALLOCATED)
+-		kfree(domain->name);
+-	kfree(domain);
++	irq_domain_free(domain);
+ }
+ EXPORT_SYMBOL_GPL(irq_domain_remove);
+ 
 -- 
 2.45.0
 
