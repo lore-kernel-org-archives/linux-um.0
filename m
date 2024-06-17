@@ -4,70 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70827C2BA15
-	for <linux-um@archiver.kernel.org>; Mon, 17 Jun 2024 13:57:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0DA99C27C79
+	for <linux-um@archiver.kernel.org>; Mon, 17 Jun 2024 14:35:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	Message-ID:Date:References:In-Reply-To:Subject:Cc:To:From:Reply-To:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=cpEnzyvYl+YaVf9FbH6u/ZTNCFgglA8tqPD5TzNXa4g=; b=my1Uq1vKheIR+9eTiHwF3zzXfx
-	dxKXc9tAHoGQjXXjnXDYI5DWqd7U582yYoL4dDn09gs6sd2+fc+fZbIQMG0hrv74ArcMFyBEwgpmG
-	IVABvJgEMwdR8na/mleO9EnrgTjrWv/aU/HNrlcsGR8Zp3I2SDZbL6Eda1ZNd8h0O6vHOw61XN5o4
-	511i+99AVFEy73Yh3i0RwnMCfS2J+eb8BtgIMonnrJabQZe8yzyF5AKPJgzultYhdchO72+Sfa/dj
-	WGurN97LWPhJE0aLxVrluMtoyfIjqVBQb3EXNRkgZQGllJeKHyDhFAAbVaD4QAW0kOQBh1e3UP7qQ
-	Ka33/3xg==;
+	bh=BU5Vd/NHpy0Dq8pwgP7JTu4kXjArbAgYR57DJj5QorI=; b=KsocSGzggcF+Pp5yYYuTepIwfj
+	ZN1LIUZCTUdQaA9TLXeXpW92ExIKYh1WMJSEdFZ7aZGI8IMzDXTNLRLEykbfMJMyu0qHYHp0lKvrW
+	j2n9x/b6aWFKJQJVUY9RMOrL7yc30IU4TxXnsaZcwCGE3Y7MoFj4Aexv7CxHiYiN7gRb3rfqOy8V0
+	ugpFDniKrius4FpTEjjZoLH+Z/myhli9jMWOl1jjOoXp/ue8aGKTVr8p4oALQkmleDETxMbYjwYLd
+	J1uEuYmQxgA3ohmM+Kz6uJRLA/+TrwKULekjMWbygun4va077FbxrYc8p6bnHHeBajPoF1Zb3dEY0
+	6jsbq2sQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJCrs-0000000B1eP-3XiV;
-	Mon, 17 Jun 2024 13:57:56 +0000
-Received: from galois.linutronix.de ([193.142.43.55])
+	id 1sJDRw-0000000BCoZ-2QHx;
+	Mon, 17 Jun 2024 14:35:12 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJCrk-0000000B1ay-3upX
-	for linux-um@lists.infradead.org;
-	Mon, 17 Jun 2024 13:57:54 +0000
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1718632665;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cpEnzyvYl+YaVf9FbH6u/ZTNCFgglA8tqPD5TzNXa4g=;
-	b=IRXQAY8i5u5H3G0pEHAgIlBooeneGbOUR0SHLVdD7vlW1S3L2eB9ph9FXzRVVrKWnZTE+G
-	fhCunBPiXPk8ejBEHBEQ2uq0dJN7FXf04PifvhPZsK9B7qMHek7ABXDl8dg4RDbG3xsWKq
-	h/eea0gbYTTFW7vlcIFBoUSlS0YRQa0CdOaWYO8ddcZHhG0USmcgDr3JIsMAbGs31d7E90
-	vPSwYSgFqCxom/DKvX6jgmLY8n83UPV0EgbSsjd8fKjOi/X8V2xy8H4ACUpmDVWIvR66pJ
-	NSbsN6Xu5k8ggMMtWVlfqwEPcnGODO+L0vY48V26wVG/Aqn6Z9Ne8WkqeNhsQw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1718632665;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cpEnzyvYl+YaVf9FbH6u/ZTNCFgglA8tqPD5TzNXa4g=;
-	b=HWmw9Z71jW4Ide4RbHzhgnJE9N2UmiLH3ab9yWM7XZcnwM82VMVdofO/Chd7raYj5Oo0Ou
-	iOlD+/JFzznXBoBg==
-To: Herve Codina <herve.codina@bootlin.com>, Matti Vaittinen
- <mazziesaccount@gmail.com>, Herve Codina <herve.codina@bootlin.com>, Rob
- Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor
- Dooley <conor+dt@kernel.org>, Richard Weinberger <richard@nod.at>, Anton
- Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg
- <johannes@sipsolutions.net>, Marc Zyngier <maz@kernel.org>
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-um@lists.infradead.org, Allan Nielsen <allan.nielsen@microchip.com>,
- Horatiu Vultur <horatiu.vultur@microchip.com>, Steen Hegelund
- <steen.hegelund@microchip.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 00/23] Introduce irq_domain_instanciate()
-In-Reply-To: <20240614173232.1184015-1-herve.codina@bootlin.com>
-References: <20240614173232.1184015-1-herve.codina@bootlin.com>
-Date: Mon, 17 Jun 2024 15:57:44 +0200
-Message-ID: <87msnju0x3.ffs@tglx>
+	id 1sJDRs-0000000BCmC-30Bo;
+	Mon, 17 Jun 2024 14:35:09 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 7CA6C60F73;
+	Mon, 17 Jun 2024 14:35:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7346C2BD10;
+	Mon, 17 Jun 2024 14:35:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718634907;
+	bh=zR4PmzG8eM11uEea9QT6dpcyWJEpQ/sobqtYRuY7p2o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=eD5n/nvWPH0mROLi1mYqjLG+6CkIkCxCEDr7KHYv5mCJ6cJ3axvL3iUR8FSfF/NAJ
+	 aWF+hMFp26+MYq12L40CvD0LxAzWJTFIpFvJFlT/13JJ1EJCWWsc/XXuMYInx3fYPk
+	 PVqFFZp9qinzyqQ1wbJp1uQUpFSEgZjA7/AJ/D87BnMG71EbVAfG4CFQOyKDe6kjS2
+	 0qjhzv59DCAwJqh60nhssiSotn3a1GiLXJljndQUFTrzdMkRj7pO46aG6KaDjyXOpw
+	 MXJnwDrZxtrM68cj9z93ToW3XbCMjuJFfQuHw/qbhAPx1AOR5+hjUoIbpzcdxhC3Vq
+	 UbiPTmWDLBjCA==
+Date: Mon, 17 Jun 2024 08:35:02 -0600
+From: Keith Busch <kbusch@kernel.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, Geert Uytterhoeven <geert@linux-m68k.org>,
+	Richard Weinberger <richard@nod.at>,
+	Philipp Reisner <philipp.reisner@linbit.com>,
+	Lars Ellenberg <lars.ellenberg@linbit.com>,
+	Christoph =?iso-8859-1?Q?B=F6hmwalder?= <christoph.boehmwalder@linbit.com>,
+	Josef Bacik <josef@toxicpanda.com>, Ming Lei <ming.lei@redhat.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Roger Pau =?iso-8859-1?Q?Monn=E9?= <roger.pau@citrix.com>,
+	Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>,
+	Mikulas Patocka <mpatocka@redhat.com>, Song Liu <song@kernel.org>,
+	Yu Kuai <yukuai3@huawei.com>,
+	Vineeth Vijayan <vneethv@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org,
+	drbd-dev@lists.linbit.com, nbd@other.debian.org,
+	linuxppc-dev@lists.ozlabs.org, ceph-devel@vger.kernel.org,
+	virtualization@lists.linux.dev, xen-devel@lists.xenproject.org,
+	linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev,
+	linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
+	linux-mtd@lists.infradead.org, nvdimm@lists.linux.dev,
+	linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
+	Damien Le Moal <dlemoal@kernel.org>
+Subject: Re: [PATCH 26/26] block: move the bounce flag into the features field
+Message-ID: <ZnBJlix63Fj_G1px@kbusch-mbp.dhcp.thefacebook.com>
+References: <20240617060532.127975-1-hch@lst.de>
+ <20240617060532.127975-27-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240617060532.127975-27-hch@lst.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240617_065749_160914_1342AEE1 
-X-CRM114-Status: GOOD (  17.51  )
+X-CRM114-CacheID: sfid-20240617_073508_920148_13B2A95D 
+X-CRM114-Status: UNSURE (   9.23  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,45 +94,14 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Herve!
+On Mon, Jun 17, 2024 at 08:04:53AM +0200, Christoph Hellwig wrote:
+> @@ -352,7 +355,6 @@ enum blk_bounce {
 
-On Fri, Jun 14 2024 at 19:32, Herve Codina wrote:
-> During the review, it was asked to rework the irq domain modification in
-> order to avoid more wrappers and a new irq_domain_instanciate() function
-> was proposed [2].
->
-> Also a patch [3] sent by Maitti Vaittinen can benefit of this new
-> irq_domain_instanciate() function. Even if Maitti's use case is not
-> handle yet in this series, it should not be a big deal add support for
-> it on top of this current series.
->
-> So, this current series introduces this new irq_domain_instanciate()
-> function and migrate existing wrappers and functions to this new
-> function (patches 1 to 20).
->
-> It then introduces the first driver that uses directly this new function
-> with the init()/exit() hooks set: the Microchip LAN966x OIC driver
-> (patches 21 to 23).
->
-> Existing irqchip drivers are not converted yet to use this new API
-> function in the same way as the LAN966x OIC driver does.
-> I prefer to have this series accepted first to avoid doing and re-doing
-> several times the same modifications on existing drivers depending on
-> changes requested on this current series review.
+No more users of "enum blk_bounce" after this, so you can delete that
+too.
 
-I'm truly impressed by the quality of this patch set.
-
-The only nitpicks I found was the formatting of the struct
-initializers. I fixed them up for you this time. Keep up the good work!
-
-The result can be found at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
-
-Matti, can you please build your extensions on top of that?
-
-Thanks,
-
-        tglx
-
+>  struct queue_limits {
+>  	unsigned int		features;
+>  	unsigned int		flags;
+> -	enum blk_bounce		bounce;
 
