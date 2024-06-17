@@ -4,74 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D85C4C27C6E
-	for <linux-um@archiver.kernel.org>; Mon, 17 Jun 2024 06:08:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 534C6C27C77
+	for <linux-um@archiver.kernel.org>; Mon, 17 Jun 2024 06:13:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=PjgmwXiuV7FK2oQNFsskA59bpZQJKHy+bIXVC2fbd1Q=; b=XwisBXt/kytPCJ5JCW6kQsqeQ1
-	Eb11p54AnMc7s0mSki4RG/s+D7DjmJVCXTZA54sZVYYkdmobPahYJ6veJHGExbI31mY+MMh03byhU
-	tlNKAzXkcdhGlAMczSYMn0LLoN9E7QtxYj6tXM7K1DH9onMCx5N+jNwSO3WRJX9LHNRGAGAlEX7AL
-	e2eEYU4fgNVksDHxpNBy3GkrlHbY1L52urge61HPPbMg0UdnotZYlhlqA1Osf+zMWV3EvGNeLaYJQ
-	pEH9I/rKVu9ZM0XyhbfLD/DGzNu96n5Z60P8Wtay1OeygXREeSebF3HwTisLLarHjN5cUsbX9Afr+
-	pdZgI6Lg==;
+	bh=D6Vvb8LBU5umTE53B1uu2WJSC19NXQ7RJZ59m5y/5A4=; b=TvVyp5KTSuMqw0W53LIqC57fV+
+	wLlWBdis3XR4EZcPf5BpkQEMbiHK6cUUnkYYdhxq8OmoDGIUTfRW/7ICXfyjdn3kfHHPsEJbC6PbG
+	UVf9lFNxxeVgLfgjL4fSNwzoO0RVx8E+aVSgTqqW3CIJzVkqfOISgsMTyuFxMjUuWky2AZHAqXG8f
+	j+S1afLZczOSskAfkBBUp1+a/aF0WOOlPxAP2Yf3FjcKdddP3iWgxL3UZ26aRdZFtrwnf/nXlC98j
+	mVIoaP2yuShsmTu26mXu+fMnq+pk27cICY2PUXfUpj/SqI/lYTgOOkXyQ8Cl8eHYbHth97J5m88wD
+	SWC8S+xA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJ5XZ-00000009KcN-2MoV;
-	Mon, 17 Jun 2024 06:08:29 +0000
-Received: from [91.187.204.140] (helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJ5W6-00000009JIp-3zn2;
-	Mon, 17 Jun 2024 06:06:59 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
-	Richard Weinberger <richard@nod.at>,
-	Philipp Reisner <philipp.reisner@linbit.com>,
-	Lars Ellenberg <lars.ellenberg@linbit.com>,
-	=?UTF-8?q?Christoph=20B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Ming Lei <ming.lei@redhat.com>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
-	=?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>,
-	Alasdair Kergon <agk@redhat.com>,
-	Mike Snitzer <snitzer@kernel.org>,
-	Mikulas Patocka <mpatocka@redhat.com>,
-	Song Liu <song@kernel.org>,
-	Yu Kuai <yukuai3@huawei.com>,
-	Vineeth Vijayan <vneethv@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	linux-m68k@lists.linux-m68k.org,
-	linux-um@lists.infradead.org,
-	drbd-dev@lists.linbit.com,
-	nbd@other.debian.org,
-	linuxppc-dev@lists.ozlabs.org,
-	ceph-devel@vger.kernel.org,
-	virtualization@lists.linux.dev,
-	xen-devel@lists.xenproject.org,
-	linux-bcache@vger.kernel.org,
-	dm-devel@lists.linux.dev,
-	linux-raid@vger.kernel.org,
-	linux-mmc@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	nvdimm@lists.linux.dev,
-	linux-nvme@lists.infradead.org,
-	linux-s390@vger.kernel.org,
-	linux-scsi@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	Damien Le Moal <dlemoal@kernel.org>
-Subject: [PATCH 26/26] block: move the bounce flag into the features field
-Date: Mon, 17 Jun 2024 08:04:53 +0200
-Message-ID: <20240617060532.127975-27-hch@lst.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240617060532.127975-1-hch@lst.de>
-References: <20240617060532.127975-1-hch@lst.de>
+	id 1sJ5ck-00000009Ny4-3X7v;
+	Mon, 17 Jun 2024 06:13:50 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
+	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sJ5cZ-00000009Nrh-2toz;
+	Mon, 17 Jun 2024 06:13:47 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 79463CE0FD1;
+	Mon, 17 Jun 2024 06:13:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E26F1C2BD10;
+	Mon, 17 Jun 2024 06:13:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718604815;
+	bh=i+c+RpVRjeaE7WIb31u0YOButoWpoMUXbmMH2ED9KM8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=NGDwf0zXEmzo9+7Yx4d9cGXV793JqUi91piwr9DLQr9gvYLzjssulS3nd0FDXod4o
+	 1NiEaNf9DKv91oATngwE6MlpuTxufePFFAUPAiGTMSZ8Iyqb43pbMY/AWpT0yfgG9x
+	 h7tK/rGWoSYR5lk30x+/zxQfjGaL8mJv2SH7mMjlqBwSC3JpHWjWgqv3xYEnVpUZ3T
+	 GLm2uelJLLxYyxbZLJP4lmiyxvgd2hfNI8V/LV1wIStwKjwJDXjuh7JmDm0LI0dTdZ
+	 pEsb3rbnrZU0AByYnkj2ZCWuHVBzn8LtTQfnCUTAC98K23Vza+t2P0C82aHVfqiJXZ
+	 7lE9UMorz5Ztg==
+Message-ID: <72e2cebc-a748-4e39-8783-440a82cd40c1@kernel.org>
+Date: Mon, 17 Jun 2024 15:13:29 +0900
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 06/26] loop: regularize upgrading the block size for
+ direct I/O
+To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+ Richard Weinberger <richard@nod.at>,
+ Philipp Reisner <philipp.reisner@linbit.com>,
+ Lars Ellenberg <lars.ellenberg@linbit.com>,
+ =?UTF-8?Q?Christoph_B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>,
+ Josef Bacik <josef@toxicpanda.com>, Ming Lei <ming.lei@redhat.com>,
+ "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
+ =?UTF-8?Q?Roger_Pau_Monn=C3=A9?= <roger.pau@citrix.com>,
+ Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>,
+ Mikulas Patocka <mpatocka@redhat.com>, Song Liu <song@kernel.org>,
+ Yu Kuai <yukuai3@huawei.com>, Vineeth Vijayan <vneethv@linux.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>,
+ linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org,
+ drbd-dev@lists.linbit.com, nbd@other.debian.org,
+ linuxppc-dev@lists.ozlabs.org, ceph-devel@vger.kernel.org,
+ virtualization@lists.linux.dev, xen-devel@lists.xenproject.org,
+ linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev,
+ linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, nvdimm@lists.linux.dev,
+ linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
+ Hannes Reinecke <hare@suse.de>, Bart Van Assche <bvanassche@acm.org>
+References: <20240617060532.127975-1-hch@lst.de>
+ <20240617060532.127975-7-hch@lst.de>
+From: Damien Le Moal <dlemoal@kernel.org>
+Content-Language: en-US
+Organization: Western Digital Research
+In-Reply-To: <20240617060532.127975-7-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20240616_231340_117834_4E9AE051 
+X-CRM114-Status: UNSURE (   8.36  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,88 +96,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Move the bounce flag into the features field to reclaim a little bit of
-space.
+On 6/17/24 15:04, Christoph Hellwig wrote:
+> The LOOP_CONFIGURE path automatically upgrades the block size to that
+> of the underlying file for O_DIRECT file descriptors, but the
+> LOOP_SET_BLOCK_SIZE path does not.  Fix this by lifting the code to
+> pick the block size into common code.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Hannes Reinecke <hare@suse.de>
+> Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Looks good to me.
+
 Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
----
- block/blk-settings.c    | 1 -
- block/blk.h             | 2 +-
- drivers/scsi/scsi_lib.c | 2 +-
- include/linux/blkdev.h  | 6 ++++--
- 4 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/block/blk-settings.c b/block/blk-settings.c
-index 96e07f24bd9aa1..d0e9096f93ca8a 100644
---- a/block/blk-settings.c
-+++ b/block/blk-settings.c
-@@ -479,7 +479,6 @@ int blk_stack_limits(struct queue_limits *t, struct queue_limits *b,
- 					b->max_write_zeroes_sectors);
- 	t->max_zone_append_sectors = min(queue_limits_max_zone_append_sectors(t),
- 					 queue_limits_max_zone_append_sectors(b));
--	t->bounce = max(t->bounce, b->bounce);
- 
- 	t->seg_boundary_mask = min_not_zero(t->seg_boundary_mask,
- 					    b->seg_boundary_mask);
-diff --git a/block/blk.h b/block/blk.h
-index 79e8d5d4fe0caf..fa32f7fad5d7e6 100644
---- a/block/blk.h
-+++ b/block/blk.h
-@@ -394,7 +394,7 @@ struct bio *__blk_queue_bounce(struct bio *bio, struct request_queue *q);
- static inline bool blk_queue_may_bounce(struct request_queue *q)
- {
- 	return IS_ENABLED(CONFIG_BOUNCE) &&
--		q->limits.bounce == BLK_BOUNCE_HIGH &&
-+		(q->limits.features & BLK_FEAT_BOUNCE_HIGH) &&
- 		max_low_pfn >= max_pfn;
- }
- 
-diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
-index 54f771ec8cfb5e..e2f7bfb2b9e450 100644
---- a/drivers/scsi/scsi_lib.c
-+++ b/drivers/scsi/scsi_lib.c
-@@ -1986,7 +1986,7 @@ void scsi_init_limits(struct Scsi_Host *shost, struct queue_limits *lim)
- 		shost->dma_alignment, dma_get_cache_alignment() - 1);
- 
- 	if (shost->no_highmem)
--		lim->bounce = BLK_BOUNCE_HIGH;
-+		lim->features |= BLK_FEAT_BOUNCE_HIGH;
- 
- 	dma_set_seg_boundary(dev, shost->dma_boundary);
- 	dma_set_max_seg_size(dev, shost->max_segment_size);
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 2c433ebf6f2030..e96ba7b97288d2 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -325,6 +325,9 @@ enum {
- 
- 	/* skip this queue in blk_mq_(un)quiesce_tagset */
- 	BLK_FEAT_SKIP_TAGSET_QUIESCE		= (1u << 13),
-+
-+	/* bounce all highmem pages */
-+	BLK_FEAT_BOUNCE_HIGH			= (1u << 14),
- };
- 
- /*
-@@ -332,7 +335,7 @@ enum {
-  */
- #define BLK_FEAT_INHERIT_MASK \
- 	(BLK_FEAT_WRITE_CACHE | BLK_FEAT_FUA | BLK_FEAT_ROTATIONAL | \
--	 BLK_FEAT_STABLE_WRITES | BLK_FEAT_ZONED)
-+	 BLK_FEAT_STABLE_WRITES | BLK_FEAT_ZONED | BLK_FEAT_BOUNCE_HIGH)
- 
- /* internal flags in queue_limits.flags */
- enum {
-@@ -352,7 +355,6 @@ enum blk_bounce {
- struct queue_limits {
- 	unsigned int		features;
- 	unsigned int		flags;
--	enum blk_bounce		bounce;
- 	unsigned long		seg_boundary_mask;
- 	unsigned long		virt_boundary_mask;
- 
 -- 
-2.43.0
+Damien Le Moal
+Western Digital Research
 
 
