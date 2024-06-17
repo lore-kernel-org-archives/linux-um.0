@@ -4,28 +4,28 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42A9DC27C6E
-	for <linux-um@archiver.kernel.org>; Mon, 17 Jun 2024 07:16:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E49E1C27C7B
+	for <linux-um@archiver.kernel.org>; Mon, 17 Jun 2024 07:16:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=an4ub3zkwPlcLTvgEigO1mSuXIiK/vRkYP+NZODSx0U=; b=zr9bCFiwMEZBo/Vb6SMnQXygar
-	Dz4m0zsedwXqlDS/KfKTcBWvHdkrNA4UaA1tU+a8OLz7NGacZirSWpHjiVwpGVKB3kAu1kmdwxvwQ
-	9dJBbY1pTZDY32/yXr35gsewyIUe+3tfm7AIz6hASBe+7ZPJMceCfogFyNiRgV8SX78aqPCJdQi9R
-	xl5tyo5pGKynLfRXweMqW5VV3ubMPHPEahP4iOjWezS+akjbY/bavxgRC3i69y9kC+L7A1AqqpvVj
-	HfsxHtKVyklnuUbSdPoKwYQe56f6nz0zomsCpafbfRrccsEijYe7mVzV+dhJU2BcBMVA72eozvdmh
-	i6VTwvxA==;
+	bh=j3/q6++/T0UiysNKT6ebBR3awbgnCQMkBzrPFvHZKQg=; b=ZvU+TGAtX6m+6X151Kf0JyJMl9
+	PdQnYY2o7LnAoeZtvdTl4VGUySzJsJIKasYPdKvnI72f0lBMOoSLvLvJNE8PUIxxDnnpWIFQhXfFh
+	1I831sHNlQENaaU92OrsfYGCxgIdxe6B1MYC4EgtbigoaxT6Q2SFFcRXu0YeBbVxMLN8FJ6AQhOdI
+	Kgr6qEZ7uzxCOYU3XamdnGrXXwFD9GplLJahvoSK7D1hdua6Sjtf37aLW0B9gBemtgabghuXRP0yU
+	RYs4zVwCHGHfVVHWIf/8Zpa6tLzaXV173NUznesnQkkjecpqzAaThhUlS/u3skLAgo+yQQCWFjHIR
+	ZqYeMimg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJ6av-00000009Zs3-40w2;
-	Mon, 17 Jun 2024 07:16:01 +0000
+	id 1sJ6b0-00000009Zul-29qp;
+	Mon, 17 Jun 2024 07:16:06 +0000
 Received: from [91.187.204.140] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJ5VU-00000009Ikw-1npw;
-	Mon, 17 Jun 2024 06:06:21 +0000
+	id 1sJ5Vs-00000009J7N-36FO;
+	Mon, 17 Jun 2024 06:06:45 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
@@ -64,9 +64,9 @@ Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
 	linux-scsi@vger.kernel.org,
 	linux-block@vger.kernel.org,
 	Damien Le Moal <dlemoal@kernel.org>
-Subject: [PATCH 15/26] block: move the add_random flag to queue_limits
-Date: Mon, 17 Jun 2024 08:04:42 +0200
-Message-ID: <20240617060532.127975-16-hch@lst.de>
+Subject: [PATCH 22/26] block: move the zoned flag into the features field
+Date: Mon, 17 Jun 2024 08:04:49 +0200
+Message-ID: <20240617060532.127975-23-hch@lst.de>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240617060532.127975-1-hch@lst.de>
 References: <20240617060532.127975-1-hch@lst.de>
@@ -86,255 +86,233 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Move the add_random flag into the queue_limits feature field so that it
-can be set atomically with the queue frozen.
-
-Note that this also removes code from dm to clear the flag based on
-the underlying devices, which can't be reached as dm devices will
-always start out without the flag set.
+Move the zoned flags into the features field to reclaim a little
+bit of space.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
 ---
- block/blk-mq-debugfs.c            |  1 -
- block/blk-sysfs.c                 |  6 +++---
- drivers/block/mtip32xx/mtip32xx.c |  1 -
- drivers/md/dm-table.c             | 18 ------------------
- drivers/mmc/core/queue.c          |  2 --
- drivers/mtd/mtd_blkdevs.c         |  3 ---
- drivers/s390/block/scm_blk.c      |  4 ----
- drivers/scsi/scsi_lib.c           |  3 +--
- drivers/scsi/sd.c                 | 11 +++--------
- include/linux/blkdev.h            |  5 +++--
- 10 files changed, 10 insertions(+), 44 deletions(-)
+ block/blk-settings.c           |  5 ++---
+ drivers/block/null_blk/zoned.c |  2 +-
+ drivers/block/ublk_drv.c       |  2 +-
+ drivers/block/virtio_blk.c     |  5 +++--
+ drivers/md/dm-table.c          | 11 ++++++-----
+ drivers/md/dm-zone.c           |  2 +-
+ drivers/md/dm-zoned-target.c   |  2 +-
+ drivers/nvme/host/zns.c        |  2 +-
+ drivers/scsi/sd_zbc.c          |  2 +-
+ include/linux/blkdev.h         |  9 ++++++---
+ 10 files changed, 23 insertions(+), 19 deletions(-)
 
-diff --git a/block/blk-mq-debugfs.c b/block/blk-mq-debugfs.c
-index 4d0e62ec88f033..6b7edb50bfd3fa 100644
---- a/block/blk-mq-debugfs.c
-+++ b/block/blk-mq-debugfs.c
-@@ -86,7 +86,6 @@ static const char *const blk_queue_flag_name[] = {
- 	QUEUE_FLAG_NAME(FAIL_IO),
- 	QUEUE_FLAG_NAME(IO_STAT),
- 	QUEUE_FLAG_NAME(NOXMERGES),
--	QUEUE_FLAG_NAME(ADD_RANDOM),
- 	QUEUE_FLAG_NAME(SYNCHRONOUS),
- 	QUEUE_FLAG_NAME(SAME_FORCE),
- 	QUEUE_FLAG_NAME(INIT_DONE),
-diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
-index 637ed3bbbfb46f..9174aca3b85526 100644
---- a/block/blk-sysfs.c
-+++ b/block/blk-sysfs.c
-@@ -323,7 +323,7 @@ queue_##name##_store(struct request_queue *q, const char *page, size_t count) \
- }
+diff --git a/block/blk-settings.c b/block/blk-settings.c
+index 026ba68d829856..96e07f24bd9aa1 100644
+--- a/block/blk-settings.c
++++ b/block/blk-settings.c
+@@ -68,7 +68,7 @@ static void blk_apply_bdi_limits(struct backing_dev_info *bdi,
  
- QUEUE_SYSFS_FEATURE(rotational, BLK_FEAT_ROTATIONAL)
--QUEUE_SYSFS_BIT_FNS(random, ADD_RANDOM, 0);
-+QUEUE_SYSFS_FEATURE(add_random, BLK_FEAT_ADD_RANDOM)
- QUEUE_SYSFS_BIT_FNS(iostats, IO_STAT, 0);
- QUEUE_SYSFS_BIT_FNS(stable_writes, STABLE_WRITES, 0);
- #undef QUEUE_SYSFS_BIT_FNS
-@@ -561,7 +561,7 @@ static struct queue_sysfs_entry queue_hw_sector_size_entry = {
+ static int blk_validate_zoned_limits(struct queue_limits *lim)
+ {
+-	if (!lim->zoned) {
++	if (!(lim->features & BLK_FEAT_ZONED)) {
+ 		if (WARN_ON_ONCE(lim->max_open_zones) ||
+ 		    WARN_ON_ONCE(lim->max_active_zones) ||
+ 		    WARN_ON_ONCE(lim->zone_write_granularity) ||
+@@ -602,8 +602,7 @@ int blk_stack_limits(struct queue_limits *t, struct queue_limits *b,
+ 						   b->max_secure_erase_sectors);
+ 	t->zone_write_granularity = max(t->zone_write_granularity,
+ 					b->zone_write_granularity);
+-	t->zoned = max(t->zoned, b->zoned);
+-	if (!t->zoned) {
++	if (!(t->features & BLK_FEAT_ZONED)) {
+ 		t->zone_write_granularity = 0;
+ 		t->max_zone_append_sectors = 0;
+ 	}
+diff --git a/drivers/block/null_blk/zoned.c b/drivers/block/null_blk/zoned.c
+index f118d304f31080..ca8e739e76b981 100644
+--- a/drivers/block/null_blk/zoned.c
++++ b/drivers/block/null_blk/zoned.c
+@@ -158,7 +158,7 @@ int null_init_zoned_dev(struct nullb_device *dev,
+ 		sector += dev->zone_size_sects;
+ 	}
  
- QUEUE_RW_ENTRY(queue_rotational, "rotational");
- QUEUE_RW_ENTRY(queue_iostats, "iostats");
--QUEUE_RW_ENTRY(queue_random, "add_random");
-+QUEUE_RW_ENTRY(queue_add_random, "add_random");
- QUEUE_RW_ENTRY(queue_stable_writes, "stable_writes");
+-	lim->zoned = true;
++	lim->features |= BLK_FEAT_ZONED;
+ 	lim->chunk_sectors = dev->zone_size_sects;
+ 	lim->max_zone_append_sectors = dev->zone_append_max_sectors;
+ 	lim->max_open_zones = dev->zone_max_open;
+diff --git a/drivers/block/ublk_drv.c b/drivers/block/ublk_drv.c
+index 4fcde099935868..69c16018cbb19a 100644
+--- a/drivers/block/ublk_drv.c
++++ b/drivers/block/ublk_drv.c
+@@ -2196,7 +2196,7 @@ static int ublk_ctrl_start_dev(struct ublk_device *ub, struct io_uring_cmd *cmd)
+ 		if (!IS_ENABLED(CONFIG_BLK_DEV_ZONED))
+ 			return -EOPNOTSUPP;
  
- #ifdef CONFIG_BLK_WBT
-@@ -665,7 +665,7 @@ static struct attribute *queue_attrs[] = {
- 	&queue_nomerges_entry.attr,
- 	&queue_iostats_entry.attr,
- 	&queue_stable_writes_entry.attr,
--	&queue_random_entry.attr,
-+	&queue_add_random_entry.attr,
- 	&queue_poll_entry.attr,
- 	&queue_wc_entry.attr,
- 	&queue_fua_entry.attr,
-diff --git a/drivers/block/mtip32xx/mtip32xx.c b/drivers/block/mtip32xx/mtip32xx.c
-index 1dbbf72659d549..c6ef0546ffc9d2 100644
---- a/drivers/block/mtip32xx/mtip32xx.c
-+++ b/drivers/block/mtip32xx/mtip32xx.c
-@@ -3485,7 +3485,6 @@ static int mtip_block_initialize(struct driver_data *dd)
- 		goto start_service_thread;
+-		lim.zoned = true;
++		lim.features |= BLK_FEAT_ZONED;
+ 		lim.max_active_zones = p->max_active_zones;
+ 		lim.max_open_zones =  p->max_open_zones;
+ 		lim.max_zone_append_sectors = p->max_zone_append_sectors;
+diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+index 13a2f24f176628..cea45b296f8bec 100644
+--- a/drivers/block/virtio_blk.c
++++ b/drivers/block/virtio_blk.c
+@@ -728,7 +728,7 @@ static int virtblk_read_zoned_limits(struct virtio_blk *vblk,
  
- 	/* Set device limits. */
--	blk_queue_flag_clear(QUEUE_FLAG_ADD_RANDOM, dd->queue);
- 	dma_set_max_seg_size(&dd->pdev->dev, 0x400000);
+ 	dev_dbg(&vdev->dev, "probing host-managed zoned device\n");
  
- 	/* Set the capacity of the device in 512 byte sectors. */
+-	lim->zoned = true;
++	lim->features |= BLK_FEAT_ZONED;
+ 
+ 	virtio_cread(vdev, struct virtio_blk_config,
+ 		     zoned.max_open_zones, &v);
+@@ -1546,7 +1546,8 @@ static int virtblk_probe(struct virtio_device *vdev)
+ 	 * All steps that follow use the VQs therefore they need to be
+ 	 * placed after the virtio_device_ready() call above.
+ 	 */
+-	if (IS_ENABLED(CONFIG_BLK_DEV_ZONED) && lim.zoned) {
++	if (IS_ENABLED(CONFIG_BLK_DEV_ZONED) &&
++	    (lim.features & BLK_FEAT_ZONED)) {
+ 		blk_queue_flag_set(QUEUE_FLAG_ZONE_RESETALL, vblk->disk->queue);
+ 		err = blk_revalidate_disk_zones(vblk->disk);
+ 		if (err)
 diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
-index c062af32970934..0a3838e45affd4 100644
+index ca1f136575cff4..df6313c3fe6ba4 100644
 --- a/drivers/md/dm-table.c
 +++ b/drivers/md/dm-table.c
-@@ -1716,14 +1716,6 @@ static int device_dax_write_cache_enabled(struct dm_target *ti,
- 	return false;
- }
+@@ -1605,12 +1605,12 @@ int dm_calculate_queue_limits(struct dm_table *t,
+ 		ti->type->iterate_devices(ti, dm_set_device_limits,
+ 					  &ti_limits);
  
--static int device_is_not_random(struct dm_target *ti, struct dm_dev *dev,
--			     sector_t start, sector_t len, void *data)
--{
--	struct request_queue *q = bdev_get_queue(dev->bdev);
--
--	return !blk_queue_add_random(q);
--}
--
- static int device_not_write_zeroes_capable(struct dm_target *ti, struct dm_dev *dev,
- 					   sector_t start, sector_t len, void *data)
- {
-@@ -1876,16 +1868,6 @@ int dm_table_set_restrictions(struct dm_table *t, struct request_queue *q,
- 	else
- 		blk_queue_flag_clear(QUEUE_FLAG_STABLE_WRITES, q);
+-		if (!zoned && ti_limits.zoned) {
++		if (!zoned && (ti_limits.features & BLK_FEAT_ZONED)) {
+ 			/*
+ 			 * After stacking all limits, validate all devices
+ 			 * in table support this zoned model and zone sectors.
+ 			 */
+-			zoned = ti_limits.zoned;
++			zoned = (ti_limits.features & BLK_FEAT_ZONED);
+ 			zone_sectors = ti_limits.chunk_sectors;
+ 		}
  
--	/*
--	 * Determine whether or not this queue's I/O timings contribute
--	 * to the entropy pool, Only request-based targets use this.
--	 * Clear QUEUE_FLAG_ADD_RANDOM if any underlying device does not
--	 * have it set.
--	 */
--	if (blk_queue_add_random(q) &&
--	    dm_table_any_dev_attr(t, device_is_not_random, NULL))
--		blk_queue_flag_clear(QUEUE_FLAG_ADD_RANDOM, q);
--
- 	/*
+@@ -1658,12 +1658,12 @@ int dm_calculate_queue_limits(struct dm_table *t,
+ 	 *   zoned model on host-managed zoned block devices.
+ 	 * BUT...
+ 	 */
+-	if (limits->zoned) {
++	if (limits->features & BLK_FEAT_ZONED) {
+ 		/*
+ 		 * ...IF the above limits stacking determined a zoned model
+ 		 * validate that all of the table's devices conform to it.
+ 		 */
+-		zoned = limits->zoned;
++		zoned = limits->features & BLK_FEAT_ZONED;
+ 		zone_sectors = limits->chunk_sectors;
+ 	}
+ 	if (validate_hardware_zoned(t, zoned, zone_sectors))
+@@ -1834,7 +1834,8 @@ int dm_table_set_restrictions(struct dm_table *t, struct request_queue *q,
  	 * For a zoned target, setup the zones related queue attributes
  	 * and resources necessary for zone append emulation if necessary.
-diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
-index b4f62fa845864c..da00904d4a3c7e 100644
---- a/drivers/mmc/core/queue.c
-+++ b/drivers/mmc/core/queue.c
-@@ -387,8 +387,6 @@ static struct gendisk *mmc_alloc_disk(struct mmc_queue *mq,
- 		blk_queue_flag_set(QUEUE_FLAG_STABLE_WRITES, mq->queue);
- 	blk_queue_rq_timeout(mq->queue, 60 * HZ);
+ 	 */
+-	if (IS_ENABLED(CONFIG_BLK_DEV_ZONED) && limits->zoned) {
++	if (IS_ENABLED(CONFIG_BLK_DEV_ZONED) &&
++	    (limits->features & limits->features & BLK_FEAT_ZONED)) {
+ 		r = dm_set_zones_restrictions(t, q, limits);
+ 		if (r)
+ 			return r;
+diff --git a/drivers/md/dm-zone.c b/drivers/md/dm-zone.c
+index 5d66d916730efa..88d313229b43ff 100644
+--- a/drivers/md/dm-zone.c
++++ b/drivers/md/dm-zone.c
+@@ -263,7 +263,7 @@ int dm_set_zones_restrictions(struct dm_table *t, struct request_queue *q,
+ 	if (nr_conv_zones >= ret) {
+ 		lim->max_open_zones = 0;
+ 		lim->max_active_zones = 0;
+-		lim->zoned = false;
++		lim->features &= ~BLK_FEAT_ZONED;
+ 		clear_bit(DMF_EMULATE_ZONE_APPEND, &md->flags);
+ 		disk->nr_zones = 0;
+ 		return 0;
+diff --git a/drivers/md/dm-zoned-target.c b/drivers/md/dm-zoned-target.c
+index 12236e6f46f39c..cd0ee144973f9f 100644
+--- a/drivers/md/dm-zoned-target.c
++++ b/drivers/md/dm-zoned-target.c
+@@ -1009,7 +1009,7 @@ static void dmz_io_hints(struct dm_target *ti, struct queue_limits *limits)
+ 	limits->max_sectors = chunk_sectors;
  
--	blk_queue_flag_clear(QUEUE_FLAG_ADD_RANDOM, mq->queue);
--
- 	dma_set_max_seg_size(mmc_dev(host), queue_max_segment_size(mq->queue));
+ 	/* We are exposing a drive-managed zoned block device */
+-	limits->zoned = false;
++	limits->features &= ~BLK_FEAT_ZONED;
+ }
  
- 	INIT_WORK(&mq->recovery_work, mmc_mq_recovery_handler);
-diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index bf8369ce7ddf1d..47ead84407cdcf 100644
---- a/drivers/mtd/mtd_blkdevs.c
-+++ b/drivers/mtd/mtd_blkdevs.c
-@@ -374,9 +374,6 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
- 	/* Create the request queue */
- 	spin_lock_init(&new->queue_lock);
- 	INIT_LIST_HEAD(&new->rq_list);
--
--	blk_queue_flag_clear(QUEUE_FLAG_ADD_RANDOM, new->rq);
--
- 	gd->queue = new->rq;
- 
- 	if (new->readonly)
-diff --git a/drivers/s390/block/scm_blk.c b/drivers/s390/block/scm_blk.c
-index 2e2309fa9a0b34..3fcfe029db1b3a 100644
---- a/drivers/s390/block/scm_blk.c
-+++ b/drivers/s390/block/scm_blk.c
-@@ -439,7 +439,6 @@ int scm_blk_dev_setup(struct scm_blk_dev *bdev, struct scm_device *scmdev)
- 		.logical_block_size	= 1 << 12,
- 	};
- 	unsigned int devindex;
--	struct request_queue *rq;
- 	int len, ret;
- 
- 	lim.max_segments = min(scmdev->nr_max_block,
-@@ -474,9 +473,6 @@ int scm_blk_dev_setup(struct scm_blk_dev *bdev, struct scm_device *scmdev)
- 		ret = PTR_ERR(bdev->gendisk);
- 		goto out_tag;
- 	}
--	rq = bdev->rq = bdev->gendisk->queue;
--	blk_queue_flag_clear(QUEUE_FLAG_ADD_RANDOM, rq);
--
- 	bdev->gendisk->private_data = scmdev;
- 	bdev->gendisk->fops = &scm_blk_devops;
- 	bdev->gendisk->major = scm_major;
-diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
-index ec39acc986d6ec..54f771ec8cfb5e 100644
---- a/drivers/scsi/scsi_lib.c
-+++ b/drivers/scsi/scsi_lib.c
-@@ -631,8 +631,7 @@ static bool scsi_end_request(struct request *req, blk_status_t error,
- 	if (blk_update_request(req, error, bytes))
- 		return true;
- 
--	// XXX:
--	if (blk_queue_add_random(q))
-+	if (q->limits.features & BLK_FEAT_ADD_RANDOM)
- 		add_disk_randomness(req->q->disk);
- 
- 	WARN_ON_ONCE(!blk_rq_is_passthrough(req) &&
-diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-index a42c3c45e86830..a27f1c7f1b61d5 100644
---- a/drivers/scsi/sd.c
-+++ b/drivers/scsi/sd.c
-@@ -3301,7 +3301,6 @@ static void sd_read_block_limits_ext(struct scsi_disk *sdkp)
- static void sd_read_block_characteristics(struct scsi_disk *sdkp,
- 		struct queue_limits *lim)
+ /*
+diff --git a/drivers/nvme/host/zns.c b/drivers/nvme/host/zns.c
+index 77aa0f440a6d2a..06f2417aa50de7 100644
+--- a/drivers/nvme/host/zns.c
++++ b/drivers/nvme/host/zns.c
+@@ -108,7 +108,7 @@ int nvme_query_zone_info(struct nvme_ns *ns, unsigned lbaf,
+ void nvme_update_zone_info(struct nvme_ns *ns, struct queue_limits *lim,
+ 		struct nvme_zone_info *zi)
  {
--	struct request_queue *q = sdkp->disk->queue;
- 	struct scsi_vpd *vpd;
- 	u16 rot;
+-	lim->zoned = 1;
++	lim->features |= BLK_FEAT_ZONED;
+ 	lim->max_open_zones = zi->max_open_zones;
+ 	lim->max_active_zones = zi->max_active_zones;
+ 	lim->max_zone_append_sectors = ns->ctrl->max_zone_append;
+diff --git a/drivers/scsi/sd_zbc.c b/drivers/scsi/sd_zbc.c
+index 360ec980499529..d3f84665946ec4 100644
+--- a/drivers/scsi/sd_zbc.c
++++ b/drivers/scsi/sd_zbc.c
+@@ -601,7 +601,7 @@ int sd_zbc_read_zones(struct scsi_disk *sdkp, struct queue_limits *lim,
+ 	if (sdkp->device->type != TYPE_ZBC)
+ 		return 0;
  
-@@ -3317,10 +3316,8 @@ static void sd_read_block_characteristics(struct scsi_disk *sdkp,
- 	sdkp->zoned = (vpd->data[8] >> 4) & 3;
- 	rcu_read_unlock();
+-	lim->zoned = true;
++	lim->features |= BLK_FEAT_ZONED;
  
--	if (rot == 1) {
--		lim->features &= ~BLK_FEAT_ROTATIONAL;
--		blk_queue_flag_clear(QUEUE_FLAG_ADD_RANDOM, q);
--	}
-+	if (rot == 1)
-+		lim->features &= ~(BLK_FEAT_ROTATIONAL | BLK_FEAT_ADD_RANDOM);
- 
- 	if (!sdkp->first_scan)
- 		return;
-@@ -3599,7 +3596,6 @@ static int sd_revalidate_disk(struct gendisk *disk)
- {
- 	struct scsi_disk *sdkp = scsi_disk(disk);
- 	struct scsi_device *sdp = sdkp->device;
--	struct request_queue *q = sdkp->disk->queue;
- 	sector_t old_capacity = sdkp->capacity;
- 	struct queue_limits lim;
- 	unsigned char *buffer;
-@@ -3646,8 +3642,7 @@ static int sd_revalidate_disk(struct gendisk *disk)
- 		 * cause this to be updated correctly and any device which
- 		 * doesn't support it should be treated as rotational.
- 		 */
--		lim.features |= BLK_FEAT_ROTATIONAL;
--		blk_queue_flag_set(QUEUE_FLAG_ADD_RANDOM, q);
-+		lim.features |= (BLK_FEAT_ROTATIONAL | BLK_FEAT_ADD_RANDOM);
- 
- 		if (scsi_device_supports_vpd(sdp)) {
- 			sd_read_block_provisioning(sdkp);
+ 	/*
+ 	 * Per ZBC and ZAC specifications, writes in sequential write required
 diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 988e3248cffeb7..cf1bbf566b2bcd 100644
+index cd27b66cbacc00..bdc30c1fb1b57b 100644
 --- a/include/linux/blkdev.h
 +++ b/include/linux/blkdev.h
-@@ -292,6 +292,9 @@ enum {
+@@ -313,6 +313,9 @@ enum {
  
- 	/* rotational device (hard drive or floppy) */
- 	BLK_FEAT_ROTATIONAL			= (1u << 2),
+ 	/* supports I/O polling */
+ 	BLK_FEAT_POLL				= (1u << 9),
 +
-+	/* contributes to the random number pool */
-+	BLK_FEAT_ADD_RANDOM			= (1u << 3),
++	/* is a zoned device */
++	BLK_FEAT_ZONED				= (1u << 10),
  };
  
  /*
-@@ -557,7 +560,6 @@ struct request_queue {
- #define QUEUE_FLAG_FAIL_IO	5	/* fake timeout */
- #define QUEUE_FLAG_IO_STAT	7	/* do disk/partitions IO accounting */
- #define QUEUE_FLAG_NOXMERGES	9	/* No extended merges */
--#define QUEUE_FLAG_ADD_RANDOM	10	/* Contributes to random pool */
- #define QUEUE_FLAG_SYNCHRONOUS	11	/* always completes in submit context */
- #define QUEUE_FLAG_SAME_FORCE	12	/* force complete on same CPU */
- #define QUEUE_FLAG_INIT_DONE	14	/* queue is initialized */
-@@ -591,7 +593,6 @@ bool blk_queue_flag_test_and_set(unsigned int flag, struct request_queue *q);
- 	test_bit(QUEUE_FLAG_NOXMERGES, &(q)->queue_flags)
- #define blk_queue_nonrot(q)	((q)->limits.features & BLK_FEAT_ROTATIONAL)
- #define blk_queue_io_stat(q)	test_bit(QUEUE_FLAG_IO_STAT, &(q)->queue_flags)
--#define blk_queue_add_random(q)	test_bit(QUEUE_FLAG_ADD_RANDOM, &(q)->queue_flags)
- #define blk_queue_zone_resetall(q)	\
- 	test_bit(QUEUE_FLAG_ZONE_RESETALL, &(q)->queue_flags)
- #define blk_queue_dax(q)	test_bit(QUEUE_FLAG_DAX, &(q)->queue_flags)
+@@ -320,7 +323,7 @@ enum {
+  */
+ #define BLK_FEAT_INHERIT_MASK \
+ 	(BLK_FEAT_WRITE_CACHE | BLK_FEAT_FUA | BLK_FEAT_ROTATIONAL | \
+-	 BLK_FEAT_STABLE_WRITES)
++	 BLK_FEAT_STABLE_WRITES | BLK_FEAT_ZONED)
+ 
+ /* internal flags in queue_limits.flags */
+ enum {
+@@ -372,7 +375,6 @@ struct queue_limits {
+ 	unsigned char		misaligned;
+ 	unsigned char		discard_misaligned;
+ 	unsigned char		raid_partial_stripes_expensive;
+-	bool			zoned;
+ 	unsigned int		max_open_zones;
+ 	unsigned int		max_active_zones;
+ 
+@@ -654,7 +656,8 @@ static inline enum rpm_status queue_rpm_status(struct request_queue *q)
+ 
+ static inline bool blk_queue_is_zoned(struct request_queue *q)
+ {
+-	return IS_ENABLED(CONFIG_BLK_DEV_ZONED) && q->limits.zoned;
++	return IS_ENABLED(CONFIG_BLK_DEV_ZONED) &&
++		(q->limits.features & BLK_FEAT_ZONED);
+ }
+ 
+ #ifdef CONFIG_BLK_DEV_ZONED
 -- 
 2.43.0
 
