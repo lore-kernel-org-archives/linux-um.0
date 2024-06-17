@@ -4,49 +4,49 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD9F5C27C77
-	for <linux-um@archiver.kernel.org>; Mon, 17 Jun 2024 06:23:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0B14C27C6E
+	for <linux-um@archiver.kernel.org>; Mon, 17 Jun 2024 06:25:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Hfir/suT4jqvwj4CNE2RCeQhRWCcVyZIwJR9csnj6yU=; b=pqrNjJZgwrWqQfynZJKoyBb/2y
-	QoUzwL8sIQbqD44/lfnsGGwtLVLtaOuS4EY1QL6XO4uuwIWpjinYI5hjZVQmt9S9miaNX/Yiu5zT9
-	Z92uSU+PMY1Rcmldrtd22uK/U7qsw+pQrRkMXni0MgEPlfjexftCN/lt5grOQTJu5jUJrfDy9MP0i
-	U8Jp/1CDXrtdU5hvMB2knQWuCR+keVY1OZGKCWwCsVMycBZ63cJcWQNgaeMMXngO+cXRLuB8jzEWk
-	yrmLtzpzkKnqJRor0Cbn8ct1CGpCU6gIu7uqOhhtK/3Zwm8rSfpJP24I4tFbaZauTiG0ure1Dvc5x
-	kLq+RTjg==;
+	bh=0WQECWhfepKpENrL/zOCm+7ze+13JS1wLYL/MAAw080=; b=K47iSFuavNIODl7zlEkYoJqB1z
+	sg04Pfd1DKj+YuT1afi6TG/naLMYoajjdqOTWm9rS1idyETFcr1kOVzq0kLaxGauT9b4sejzUctlZ
+	Q+nERnSJfMgIH0qMVcjgQvGYNjIOAIFas0Mi0BUw0SBW0exB4FCAzZMHalEYdionlXaEefs2QIcpj
+	hoFF98STengBagjwSyzURoULHLzV5IAm4B/zcc8C5vXiZO/CyTj3NL44K9AtcWD2VE7bmNIS/pVqw
+	f9Pe8dTrDTGHzU4c0/biaDjbMdBuYHj+V0bzwHwGwWsrtAxbaSjz2NSwlKo0dJGvxdABgFr3DNzvG
+	Kg4j+1PQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJ5mG-00000009QUI-1lwm;
-	Mon, 17 Jun 2024 06:23:40 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1sJ5nz-00000009QyD-1jEw;
+	Mon, 17 Jun 2024 06:25:27 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJ5mB-00000009QRf-38wo;
-	Mon, 17 Jun 2024 06:23:37 +0000
+	id 1sJ5nv-00000009Qww-1doW;
+	Mon, 17 Jun 2024 06:25:24 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 93B9FCE0FF0;
-	Mon, 17 Jun 2024 06:23:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B0EEC4AF1D;
-	Mon, 17 Jun 2024 06:23:28 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 3B2916114E;
+	Mon, 17 Jun 2024 06:25:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64B3DC2BD10;
+	Mon, 17 Jun 2024 06:25:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718605412;
-	bh=uMvSBiMCv5pxii/WRMe23vNNUZcfAqUN7YYlV2bv5Ko=;
+	s=k20201202; t=1718605521;
+	bh=b4C7oWXm6AiByOywGcEEC3GnqcHjFi/qcKpmuC4GSl4=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=BLJEJwmMsCdQfpgeuSDFFhnTeYFrqXQ3GLsKdxLZUdhrqVCdlccETSs3reVgf76Rb
-	 4NtHvzGyiVxgePozGjF6t5kslEhri7LHZl0DvN4BR4smuIdi3fWqPb/I1vVcfCYeYi
-	 fiVbKgy6qBR19yAJJ+QQiLpd0oScLx6sTzGkD0QZlko71H6Yz0ku2d3RgXA7QaUtXr
-	 GCCeiq+Ax8cIg0E+JxaozXjwtykL41yfJ3EoBVzh7JOK3qIJv+ADxMbH5/c2pw1ot4
-	 Uz1JoQGCWSohEy6+TWZP70VoRi8sStV1FCojepppq975Nhv9oB4B67NtvIDhRuNUUc
-	 t0DawHP78ZCMQ==
-Message-ID: <3247433c-b356-425c-a888-8f7904351a2f@kernel.org>
-Date: Mon, 17 Jun 2024 15:23:27 +0900
+	b=LEnK17zFqe+hZOSDUj/tOYJPTbrEr/iyN4UNL0SmIILaSKuqTSJ4sjLsh83tbNp98
+	 xMaGs3z4bHthSiIVUGgn6p6k1Hp4OFwjqTvBViQ5r26ZmMaTUT3kdJYmUDeoTb8K+4
+	 jT0vLs8Spfa7yPWU+yf5YKwUzdEIRo48lJNdqGhIlmZTb6k7761bMjs2rcyd0Hfqhj
+	 Vpk+ileeXJ565Q23YPjftwlXpdj9Xgx1bQhDcK36W/6YmID+8NvWJsHJ8cIkaSJCt0
+	 a65W2bmG0g0iV3m+rrO4imip0sJi5o8S5QSdLa4VJ1pKGoVgY8bkQ22MoITZxj7f6K
+	 IsTYJ2fK4dlcQ==
+Message-ID: <dd4ca62c-fc36-4439-a1ad-c55250f8d1a8@kernel.org>
+Date: Mon, 17 Jun 2024 15:25:16 +0900
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 13/26] block: move cache control settings out of
- queue->flags
+Subject: Re: [PATCH 16/26] block: move the io_stat flag setting to
+ queue_limits
 To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  Richard Weinberger <richard@nod.at>,
@@ -68,19 +68,19 @@ Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
  linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
  linux-mtd@lists.infradead.org, nvdimm@lists.linux.dev,
  linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
- Ulf Hansson <ulf.hansson@linaro.org>
+ linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
 References: <20240617060532.127975-1-hch@lst.de>
- <20240617060532.127975-14-hch@lst.de>
+ <20240617060532.127975-17-hch@lst.de>
 From: Damien Le Moal <dlemoal@kernel.org>
 Content-Language: en-US
 Organization: Western Digital Research
-In-Reply-To: <20240617060532.127975-14-hch@lst.de>
+In-Reply-To: <20240617060532.127975-17-hch@lst.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240616_232336_188244_352CD7AB 
-X-CRM114-Status: GOOD (  18.27  )
+X-CRM114-CacheID: sfid-20240616_232523_538925_BAD2CDB3 
+X-CRM114-Status: UNSURE (   9.15  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,53 +96,16 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On 6/17/24 15:04, Christoph Hellwig wrote:
-> Move the cache control settings into the queue_limits so that the flags
-> can be set atomically with the device queue frozen.
+> Move the io_stat flag into the queue_limits feature field so that it can
+> be set atomically with the queue frozen.
 > 
-> Add new features and flags field for the driver set flags, and internal
-> (usually sysfs-controlled) flags in the block layer.  Note that we'll
-> eventually remove enough field from queue_limits to bring it back to the
-> previous size.
-> 
-> The disable flag is inverted compared to the previous meaning, which
-> means it now survives a rescan, similar to the max_sectors and
-> max_discard_sectors user limits.
-> 
-> The FLUSH and FUA flags are now inherited by blk_stack_limits, which
-> simplified the code in dm a lot, but also causes a slight behavior
-> change in that dm-switch and dm-unstripe now advertise a write cache
-> despite setting num_flush_bios to 0.  The I/O path will handle this
-> gracefully, but as far as I can tell the lack of num_flush_bios
-> and thus flush support is a pre-existing data integrity bug in those
-> targets that really needs fixing, after which a non-zero num_flush_bios
-> should be required in dm for targets that map to underlying devices.
+> Simplify md and dm to set the flag unconditionally instead of avoiding
+> setting a simple flag for cases where it already is set by other means,
+> which is a bit pointless.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Acked-by: Ulf Hansson <ulf.hansson@linaro.org> [mmc]
-
-A few nits below. With these fixed,
 
 Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
-
-> +Implementation details for bio based block drivers
-> +--------------------------------------------------
-> +
-> +For bio based drivers the REQ_PREFLUSH and REQ_FUA bit are simplify passed on
-
-...bit are simplify... -> ...bits are simply...
-
-> +to the driver if the drivers sets the BLK_FEAT_WRITE_CACHE flag and the drivers
-> +needs to handle them.
-
-s/drivers/driver (2 times)
-
-> -and the driver must handle write requests that have the REQ_FUA bit set
-> -in prep_fn/request_fn.  If the FUA bit is not natively supported the block
-> -layer turns it into an empty REQ_OP_FLUSH request after the actual write.
-> +When the BLK_FEAT_FUA flags is set, the REQ_FUA bit simplify passed on for the
-
-s/bit simplify/bit is simply
-
 
 -- 
 Damien Le Moal
