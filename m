@@ -4,92 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6B2F7C2BA18
-	for <linux-um@archiver.kernel.org>; Tue, 18 Jun 2024 13:06:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A66F1C27C53
+	for <linux-um@archiver.kernel.org>; Wed, 19 Jun 2024 14:18:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:MIME-Version:Date:Message-Id:Subject:References:In-Reply-To:Cc:
+	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Yz2POXzlje0Rk92k3Asl8aSkFWAo/SOEkU2cZBWovB0=; b=XIRiYoP9ivxlrHIuBJNIhd1//A
-	wY7PPIXlJGnIHRn15oWdk40Km9A+p6rAOujQjzK2fmBCE5xYxalup2FhJ4dEWCgYGxcRFgUfRgGo+
-	TAE5+k6aeqL/fim0OEH7i1urez6OxlD1Re9AYZNceQtw+eFn9GuNupPY+nT11dSjZrXwwm0psqgv1
-	R+pBfnX3BCPwhD5nYgpqt4+jZM1wtuRXlbysXEufLxY0YIplhBDFEDuV3Wt+3a7YbGMDrjKkNOdcM
-	Rsfvj4P0BPUkrovrHiV50BUVrL00NAaWMAXKQtJmyLoEe+uO1R//43B9xcnQ2vl+Yv48LkgtLQalR
-	H5OMqS2Q==;
+	bh=kVFpcyqMw7891fhn8oME2l6O88u8sGFZorCmmUmii2A=; b=ClrCDZHZKS5Hk+hjPwJsWABxXJ
+	Nl2OwmTUSz4/ER/bGMVOrYeCO46cNza0uttOwVb7Lkb3K+d6Dv06mLi1dvgZuKzg0mbLb1S5px1+w
+	R3uqR5J1jJh01wlKOQio+fyKS/v4OiG2Hgrw9kuE8NYYBu3zRy/qa7ZlzwohONJmBvAPyN/BGksXg
+	KVsPcKYX9Qc8i5JKVUEmAETo/idCXcQ/UUq541JbiJzClDztzq2Ri1N4196B8XRfPqBsoe7IDhg5C
+	Xlz8pP2h9r63GZeYMyhxz/h7Jq0gmtZMczO3W1jzopa94ySFKyG2iZ/R9V2hjm+iM4e0lgrXg1raJ
+	6EdPHuvw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJYXE-0000000F1AH-2nFY;
-	Tue, 18 Jun 2024 13:06:04 +0000
-Received: from mail-lf1-x12c.google.com ([2a00:1450:4864:20::12c])
+	id 1sJw9E-00000001TtE-3a0I;
+	Wed, 19 Jun 2024 14:18:52 +0000
+Received: from mail-pl1-x62b.google.com ([2607:f8b0:4864:20::62b])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJYXB-0000000F18Z-3YBr
+	id 1sJw9A-00000001TpE-2jWC
 	for linux-um@lists.infradead.org;
-	Tue, 18 Jun 2024 13:06:03 +0000
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-52b7ffd9f6eso5388134e87.3
-        for <linux-um@lists.infradead.org>; Tue, 18 Jun 2024 06:05:59 -0700 (PDT)
+	Wed, 19 Jun 2024 14:18:50 +0000
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1f6daf644b0so4862525ad.2
+        for <linux-um@lists.infradead.org>; Wed, 19 Jun 2024 07:18:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718715958; x=1719320758; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Yz2POXzlje0Rk92k3Asl8aSkFWAo/SOEkU2cZBWovB0=;
-        b=A7q5CSzWsUcAsFPLMa0NzHjii6bzMb37rRkfOCDzL3cDXEhmqQxMhgLuRKI+DNfUUF
-         X9YHCIRFeBO1zVFjdpH7ZMMdFEVIXxACj9SfZpHJrQ/4WI77aVXHhlyjt+/IwGoxd6wK
-         yTgkRjaOslFKKnbVc7wwEtkho2w4jdqKkhQ8ZMvU8u/iZshBdkqc/cQn4XXYtLblJaO0
-         8GVlcDZ0KPipUKaYfmq411s0J/uRGSVM72kLFgZ6gYajdYfaRxqc0H0/5XAaBV39rxoy
-         xpntcNXlsh0G7cb5f8a3VEDJP+e9PDTL92SaCW4gC2HFVWzbow4r0fQydKX+ywW/PAak
-         2/WA==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1718806723; x=1719411523; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kVFpcyqMw7891fhn8oME2l6O88u8sGFZorCmmUmii2A=;
+        b=Zgq4/VSWnk8SF68xDCSWmSNNulB8ShhfelECBoOGv8EvHc6J5TWgw21qGT6PXTvy13
+         ymOjY1hCoET/MRw5AscTpEGlJYxnA+WWIbXKkhjCBJW5fX1ZJferbF4Xv+Z+G15iw9wP
+         CAIyDmuA6H7ynZsVP3wGiTbc5ZDUdIx09D0knhqoNdPJ7h7fmkkOFBMahKbeJLxRiD3u
+         eaSKLnVxalhJZgarrurqqdcUo2wH2J8ESvEnc3W/NkC7hY9drqnArpa1R3TKd5MNJU1q
+         JS3evlmTtp7p5W+W2CtLlGzqR1kVoYmFjWenbAuzUwjM3+PlFLGlzbHEguUak5QSj9S9
+         0Khw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718715958; x=1719320758;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Yz2POXzlje0Rk92k3Asl8aSkFWAo/SOEkU2cZBWovB0=;
-        b=v5Qe7MDE9TNIQcbozwDH8pl3kBo0de843TyQ3sJuiOP1XiF//toVkC+FTUCIRtVT/B
-         GJmCy15olF6JTQM+X83/5UwAU5L5j3RtnUTqiLIcidNygGdRLUNXfVl+l020yEer8wOs
-         61o+IXVKFwW8dxAMA/6Qjz+buDiPFsTsQ1lFv9HeSSjO4ST2jvZWEkrmdyZxc5WYAeGY
-         3iz+UjSA6qtVJZ5tzhI1/NLEWCIbICUT2E7WP4RPlCj+tCrq1nZx6ZZBdOKj8CZvshq7
-         EBRQfyRdwJ7cEBjFo8IvkoLh1IYvO/sinOweC9pdPnUm1+iNchujjtF9mNghYOCGZBXz
-         Hzyw==
-X-Forwarded-Encrypted: i=1; AJvYcCXPLn6bzL0H0H57kYUkCsbfTQqIdewUu7dCsVimtHLC9cGdpyfJuQnf+n9jJHVwSAF8NR/Bi8oacK++tZznCAafES8TzjQkAdI0utAk
-X-Gm-Message-State: AOJu0YzWvmgCI3owdDiBVjpCzK+Zm2mqEPdlN8REoQxvKMFGKGC+91kD
-	0jijSdpn9yNrmGIKAJcsbUaM1lygKfo6kU8keJ6kDUKgC6Is3CTu2y5aoQ==
-X-Google-Smtp-Source: AGHT+IFkWxc6pexL44K2yH98VVFydVomvNRifmX98LXDDM7htKW6C5Gq43bAc/V0TD+tZp6EJj5ywA==
-X-Received: by 2002:a05:6512:558:b0:52c:8318:dc14 with SMTP id 2adb3069b0e04-52ca6e66feemr7610912e87.25.1718715957839;
-        Tue, 18 Jun 2024 06:05:57 -0700 (PDT)
-Received: from ?IPV6:2a10:a5c0:800d:dd00:8cfe:d6e7:6701:9dfd? ([2a10:a5c0:800d:dd00:8cfe:d6e7:6701:9dfd])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-52cc067b35asm390974e87.103.2024.06.18.06.05.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Jun 2024 06:05:57 -0700 (PDT)
-Message-ID: <15685ef6-92a5-41df-9148-1a67ceaec47b@gmail.com>
-Date: Tue, 18 Jun 2024 16:05:55 +0300
+        d=1e100.net; s=20230601; t=1718806723; x=1719411523;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kVFpcyqMw7891fhn8oME2l6O88u8sGFZorCmmUmii2A=;
+        b=MZt/aKoYVOHdq5/+0CEPqBw8E+Gf4vB9N1DFxHO+oKY36v+LhXKo5XFKt9CkzHaKa7
+         pHlJmdEoI8O+1KK1Kg7gfd4P33p8n0iRzkD0Ab0KUuAX3t+LopQQo6vryRRJPFqrIdU0
+         a/Czyt3KKkwhDlb3v9tYll9sAewZva75B1cQ81qXvCgDOJ5OLaaGvPqjJEGoH8k+qRpc
+         FFuT+u3HWUiNBMLHyC2ps1Uf7aWca/1nE7Sw6kVQLpSBWLPbC9djEvJtESi/o/aVrScP
+         9+p+90COGrkzGteC4Hi2ZCDihj88fWI2OA1EUPMkinggRnt55g4wlfe1/sVvDcF1cFqL
+         AeCQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX3ucvBZhP+xcoTHl7qyIajyIuemogqZH/R2yT+dLQdVhcJQ1dzoWd0TKhK/rZK5Y8CRawzkzbhWZjw1v7hhCtXCRamTqotrPcZ/Gku
+X-Gm-Message-State: AOJu0YxsJEMUR2L9RwTLxre12/0GKv9JBnCSSvf13huKA3fQMmm90h3k
+	xJ8olcMwWaQuTRsW41TXcN30fOQvirl8ETfag7pzI5aoUvbj+7BuAAR1WF7JEdOe6T0Ew9bQ52H
+	g
+X-Google-Smtp-Source: AGHT+IEWR0naxsjqG6PjL5n5tEp1Ci8rJdxP3J1CbAApgRxLYFkmM+R0aL8qHW5Lv8+tjuuvrYAkhg==
+X-Received: by 2002:a05:6a20:3ca0:b0:1b6:fadd:8862 with SMTP id adf61e73a8af0-1bcbb8ce3e2mr2590711637.6.1718806723107;
+        Wed, 19 Jun 2024 07:18:43 -0700 (PDT)
+Received: from [127.0.0.1] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-705ccb3d2e8sm10689218b3a.107.2024.06.19.07.18.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Jun 2024 07:18:42 -0700 (PDT)
+From: Jens Axboe <axboe@kernel.dk>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, 
+ Richard Weinberger <richard@nod.at>, 
+ Philipp Reisner <philipp.reisner@linbit.com>, 
+ Lars Ellenberg <lars.ellenberg@linbit.com>, 
+ =?utf-8?q?Christoph_B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>, 
+ Josef Bacik <josef@toxicpanda.com>, Ming Lei <ming.lei@redhat.com>, 
+ "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
+ =?utf-8?q?Roger_Pau_Monn=C3=A9?= <roger.pau@citrix.com>, 
+ Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>, 
+ Mikulas Patocka <mpatocka@redhat.com>, Song Liu <song@kernel.org>, 
+ Yu Kuai <yukuai3@huawei.com>, Vineeth Vijayan <vneethv@linux.ibm.com>, 
+ "Martin K. Petersen" <martin.petersen@oracle.com>, 
+ linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org, 
+ drbd-dev@lists.linbit.com, nbd@other.debian.org, 
+ linuxppc-dev@lists.ozlabs.org, ceph-devel@vger.kernel.org, 
+ virtualization@lists.linux.dev, xen-devel@lists.xenproject.org, 
+ linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev, 
+ linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org, 
+ linux-mtd@lists.infradead.org, nvdimm@lists.linux.dev, 
+ linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org, 
+ linux-scsi@vger.kernel.org, linux-block@vger.kernel.org
+In-Reply-To: <20240617060532.127975-1-hch@lst.de>
+References: <20240617060532.127975-1-hch@lst.de>
+Subject: Re: move features flags into queue_limits v2
+Message-Id: <171880672048.115609.5962725096227627176.b4-ty@kernel.dk>
+Date: Wed, 19 Jun 2024 08:18:40 -0600
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/23] Introduce irq_domain_instanciate()
-To: Thomas Gleixner <tglx@linutronix.de>,
- Herve Codina <herve.codina@bootlin.com>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>, Marc Zyngier <maz@kernel.org>
-Cc: linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-um@lists.infradead.org, Allan Nielsen <allan.nielsen@microchip.com>,
- Horatiu Vultur <horatiu.vultur@microchip.com>,
- Steen Hegelund <steen.hegelund@microchip.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-References: <20240614173232.1184015-1-herve.codina@bootlin.com>
- <87msnju0x3.ffs@tglx>
-Content-Language: en-US, en-GB
-From: Matti Vaittinen <mazziesaccount@gmail.com>
-In-Reply-To: <87msnju0x3.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14.0
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240618_060601_918854_8A25B203 
-X-CRM114-Status: UNSURE (   9.13  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240619_071848_744088_CFA1FA20 
+X-CRM114-Status: GOOD (  13.28  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,25 +113,78 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 6/17/24 16:57, Thomas Gleixner wrote:
-> 
-> The result can be found at:
-> 
->     git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
-> 
-> Matti, can you please build your extensions on top of that?
 
-Will do, but it takes me a while as I'm on a vacation. I'll try to cook 
-it up when the next rainy day hits us ;) Thanks!
+On Mon, 17 Jun 2024 08:04:27 +0200, Christoph Hellwig wrote:
+> this is the third and last major series to convert settings to
+> queue_limits for this merge window.  After a bunch of prep patches to
+> get various drivers in shape, it moves all the queue_flags that specify
+> driver controlled features into the queue limits so that they can be
+> set atomically and are separated from the blk-mq internal flags.
+> 
+> Note that I've only Cc'ed the maintainers for drivers with non-mechanical
+> changes as the Cc list is already huge.
+> 
+> [...]
 
-Yours,
-	-- Matti
+Applied, thanks!
 
+[01/26] xen-blkfront: don't disable cache flushes when they fail
+        commit: dd9300e9eaeeb212f77ffeb72d1d8756107f1f1f
+[02/26] sd: remove sd_is_zoned
+        commit: be60e7700e6df1e16a2f60f45bece08e6140a46d
+[03/26] sd: move zone limits setup out of sd_read_block_characteristics
+        commit: 308ad58af49d6c4c3b7a36b98972cc9db4d7b36a
+[04/26] loop: stop using loop_reconfigure_limits in __loop_clr_fd
+        commit: c9055b44abe60da69aa4ee4fdcb78ee7fe733335
+[05/26] loop: always update discard settings in loop_reconfigure_limits
+        commit: ae0d40ff49642651f969883ef9fc79d69c1632d7
+[06/26] loop: regularize upgrading the block size for direct I/O
+        commit: a17ece76bcfe7b86327b19cae1652d7c62068a30
+[07/26] loop: also use the default block size from an underlying block device
+        commit: 4ce37fe0938b02b7b947029c40b72d76a22a3882
+[08/26] loop: fold loop_update_rotational into loop_reconfigure_limits
+        commit: 97dd4a43d69b74a114be466d6887e257971adfe9
+[09/26] virtio_blk: remove virtblk_update_cache_mode
+        commit: bbe5c84122b35c37f2706872fe34da66f0854b56
+[10/26] nbd: move setting the cache control flags to __nbd_set_size
+        commit: 6b377787a306253111404325aee98005b361e59a
+[11/26] block: freeze the queue in queue_attr_store
+        commit: af2814149883e2c1851866ea2afcd8eadc040f79
+[12/26] block: remove blk_flush_policy
+        commit: 70905f8706b62113ae32c8df721384ff6ffb6c6a
+[13/26] block: move cache control settings out of queue->flags
+        commit: 1122c0c1cc71f740fa4d5f14f239194e06a1d5e7
+[14/26] block: move the nonrot flag to queue_limits
+        commit: bd4a633b6f7c3c6b6ebc1a07317643270e751a94
+[15/26] block: move the add_random flag to queue_limits
+        commit: 39a9f1c334f9f27b3b3e6d0005c10ed667268346
+[16/26] block: move the io_stat flag setting to queue_limits
+        commit: cdb2497918cc2929691408bac87b58433b45b6d3
+[17/26] block: move the stable_writes flag to queue_limits
+        commit: 1a02f3a73f8c670eddeb44bf52a75ae7f67cfc11
+[18/26] block: move the synchronous flag to queue_limits
+        commit: aadd5c59c910427c0464c217d5ed588ff14e2502
+[19/26] block: move the nowait flag to queue_limits
+        commit: f76af42f8bf13d2620084f305f01691de9238fc7
+[20/26] block: move the dax flag to queue_limits
+        commit: f467fee48da4500786e145489787b37adae317c3
+[21/26] block: move the poll flag to queue_limits
+        commit: 8023e144f9d6e35f8786937e2f0c2fea0aba6dbc
+[22/26] block: move the zoned flag into the features field
+        commit: b1fc937a55f5735b98d9dceae5bb6ba262501f56
+[23/26] block: move the zone_resetall flag to queue_limits
+        commit: a52758a39768f441e468a41da6c15a59d6d6011a
+[24/26] block: move the pci_p2pdma flag to queue_limits
+        commit: 9c1e42e3c876c66796eda23e79836a4d92613a61
+[25/26] block: move the skip_tagset_quiesce flag to queue_limits
+        commit: 8c8f5c85b20d0a7dc0ab9b2a17318130d69ceb5a
+[26/26] block: move the bounce flag into the features field
+        commit: 339d3948c07b4aa2940aeb874294a7d6782cec16
+
+Best regards,
 -- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
+Jens Axboe
 
-~~ When things go utterly wrong vim users can always type :help! ~~
+
 
 
