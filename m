@@ -4,74 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70D49C2BA18
-	for <linux-um@archiver.kernel.org>; Thu, 20 Jun 2024 08:44:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1B51C2BA18
+	for <linux-um@archiver.kernel.org>; Thu, 20 Jun 2024 09:01:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:References:Cc:To
-	:From:Date:Subject:Message-ID:Reply-To:MIME-Version:Content-Type:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:In-Reply-To:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=uxEOLC+BYL67glPcCyaAEcZAqD6z7DdJedmKkGkTTKU=; b=tnj3GzjNgCp9Iah687kPmYYbHG
-	51uRSVIsD2sjVInOA6dL0y3wAPj+LdL2Asu6YITawJDhwGCRQRevGpyabKX2RYsGXWnI1/DteWJcc
-	YAVtZSrbtn1t/nGnp0Raqxy4U2PXAzt72hqsctPsMxi14pmv+NAcJjfRIJC4cuFZLutsWK2fc0PzS
-	wne7vl/n98dOfwM1OMJ0VMwj1/lg21RG3PZ4a431lr+n2aLniLB5wMByqHAR9j3tTEOEp2kFxDt8C
-	ukkJmm8a3KvkszUP0acLuFDFD07/e8j7e9ahrz4DhI/4pClKpNmlc0y41jqPpn5oHcYHzhQkOtGmX
-	bulzDv4Q==;
+	bh=XR61vx35OTZX9XFWt8YdyvsDaIUHY+xQKab0QtNP4Qc=; b=Sw0BqFPoIDrcoEF/eVqAAIF8IG
+	O1xh0aeLKSq2fU3rCpoJ2lxIX7eMeYTSfUHhRVxux9F7j/69/EWWyaqjjpsgRLwHTtBxOzyG5QffL
+	GatNLqbl87NvdofrInUmPvhAwbhYJagqisRz12OF8uD68Uxw2f9FfDDAi+WSqHPcxeae9TrL68f1J
+	2FRXf8rIBjCGtHZh7boxdJF+4/+10y14t0q/F2eBYB21pl7Umk8SsgxUlNPfgFMJa66gZJnpKHJWM
+	9V7oduEODX0b4oCYIZ4p83syTHrDpV6KhEXhOQyY6NtPXwhWakRqbu8ypwfYh2Of6I8WP7vOWrfMa
+	A5szZ54g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sKDPB-00000004Dio-2BME;
-	Thu, 20 Jun 2024 08:44:29 +0000
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130])
+	id 1sKDfY-00000004Iz6-09iX;
+	Thu, 20 Jun 2024 09:01:24 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sKDP8-00000004Df9-24Wi
+	id 1sKDfU-00000004Iws-2Wsv
 	for linux-um@lists.infradead.org;
-	Thu, 20 Jun 2024 08:44:28 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1718873062; h=Message-ID:Subject:Date:From:To;
-	bh=uxEOLC+BYL67glPcCyaAEcZAqD6z7DdJedmKkGkTTKU=;
-	b=jXhPvDcHEqoGysuJsfee+bQw0pHw7VCko94UPx3uMUKj0vCrQJrVAM/gU/rekkaz+z5EkSUvpor5Z3sqeD1sI88s+i4a82MbciJFWsP5ykmHcRNtHSffb6hwkJEbVWaaGbxTdPWTjlDqoAuwUt8tfW77oMfkx6F3ArLG8BVbq4o=
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033032014031;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=25;SR=0;TI=SMTPD_---0W8qglLH_1718873060;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W8qglLH_1718873060)
-          by smtp.aliyun-inc.com;
-          Thu, 20 Jun 2024 16:44:21 +0800
-Message-ID: <1718872778.4831812-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH vhost v9 2/6] virtio: remove support for names array entries being null.
-Date: Thu, 20 Jun 2024 16:39:38 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: virtualization@lists.linux.dev,
- Richard Weinberger <richard@nod.at>,
- Anton Ivanov <anton.ivanov@cambridgegreys.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- Hans de Goede <hdegoede@redhat.com>,
- =?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Vadim Pasternak <vadimp@nvidia.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Mathieu Poirier <mathieu.poirier@linaro.org>,
- Cornelia Huck <cohuck@redhat.com>,
- Halil Pasic <pasic@linux.ibm.com>,
- Eric Farman <farman@linux.ibm.com>,
- Heiko Carstens <hca@linux.ibm.com>,
- Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>,
- David Hildenbrand <david@redhat.com>,
- Jason Wang <jasowang@redhat.com>,
- linux-um@lists.infradead.org,
- platform-driver-x86@vger.kernel.org,
- linux-remoteproc@vger.kernel.org,
- linux-s390@vger.kernel.org,
- kvm@vger.kernel.org
+	Thu, 20 Jun 2024 09:01:22 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1718874079;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XR61vx35OTZX9XFWt8YdyvsDaIUHY+xQKab0QtNP4Qc=;
+	b=SR6WBTF4zh3aZRG1XLePLbTnMStpDw/t1Trbd4eLbGLuWtnSL23ee83scsGtEydvQnQfoG
+	iQ7puFwYVAXSJ3Hn6obiNwlhG6VOq6VClgjlzt9l+tRVAwCq5THmxV1aq+Nvtv8cjSDjaM
+	Dqm8Yo4MG82MV7P6WUxDQeI+HUWnJFA=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-79-kVlZeNlDMzmdqxRa8eQK4A-1; Thu, 20 Jun 2024 05:01:17 -0400
+X-MC-Unique: kVlZeNlDMzmdqxRa8eQK4A-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a6f3f614e58so34545366b.0
+        for <linux-um@lists.infradead.org>; Thu, 20 Jun 2024 02:01:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718874076; x=1719478876;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XR61vx35OTZX9XFWt8YdyvsDaIUHY+xQKab0QtNP4Qc=;
+        b=R69NxZhXSdTXfSfre0Nn4KFzTZFYTzSYdUAlUpeW9H9vBfgTlDv0cJKkSXN1QTRjKh
+         2n5t8VJ4QRyzpOy6Kz0BiOn7CyEmzH3Z4esZGV81Darl46o12bUdde+1QLy/XcL3XqQt
+         3wvXW96dShFBDb/gr7UNsX+xS/b9LApfyjCGKX7i0B2YfjA7fXdb81kwv4p2QH+Efz3M
+         2U1B4nvDRpLB5RvwfWdhwFZkzS68tcSEcb7yV3qB9fKtltr5ejVY9Big9Or+0zsODQnC
+         ogIxn4IDP8yfg1r3ahPGQGOqKRPpN9j6PuzpKNm3KXFyXCHN6rBCnMaiwK+JN1dtz8af
+         iwrw==
+X-Forwarded-Encrypted: i=1; AJvYcCVJkH2PZXzTO/FmT+/gLLFbEAF79zDvcAq2n/Ie6psyJvjjRXIeKNmZgli9BUeoegaPK3JOQInEbvM/G68AEuE9diMKC0fH2zxCvmK8
+X-Gm-Message-State: AOJu0YyCuKO3GZopXBCwZ21qX1BLvEBOl8bRmXW3B+r1769tSp+MGXsB
+	ArlQM9YtxwghJfSf/hFeRMMWQtSFz/TzABTyEg9qtgFTNUp0SPK2q7X/Nh40tYGOPsrCGDDwA2E
+	sK5BnDidtJU4+X0Dhu7NY6OxvLmpMECyYnEkZf1StNK1Zf4lWPmp67sekKJRDSw==
+X-Received: by 2002:a17:907:c805:b0:a68:b73d:30d0 with SMTP id a640c23a62f3a-a6fab609e47mr400228366b.6.1718874076402;
+        Thu, 20 Jun 2024 02:01:16 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH5+F4gugdmHhB163V4ULVbHnYMOFq3eTuk1V982iZ6yAjow4HL/6ytgFaWqg7nTSdPpnke9w==
+X-Received: by 2002:a17:907:c805:b0:a68:b73d:30d0 with SMTP id a640c23a62f3a-a6fab609e47mr400225566b.6.1718874075875;
+        Thu, 20 Jun 2024 02:01:15 -0700 (PDT)
+Received: from redhat.com ([2.52.146.100])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a6f56da3356sm742953866b.40.2024.06.20.02.01.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jun 2024 02:01:14 -0700 (PDT)
+Date: Thu, 20 Jun 2024 05:01:08 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: virtualization@lists.linux.dev, Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Vadim Pasternak <vadimp@nvidia.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Mathieu Poirier <mathieu.poirier@linaro.org>,
+	Cornelia Huck <cohuck@redhat.com>,
+	Halil Pasic <pasic@linux.ibm.com>,
+	Eric Farman <farman@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	David Hildenbrand <david@redhat.com>,
+	Jason Wang <jasowang@redhat.com>, linux-um@lists.infradead.org,
+	platform-driver-x86@vger.kernel.org,
+	linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+	kvm@vger.kernel.org
+Subject: Re: [PATCH vhost v9 2/6] virtio: remove support for names array
+ entries being null.
+Message-ID: <20240620044839-mutt-send-email-mst@kernel.org>
 References: <20240424091533.86949-1-xuanzhuo@linux.alibaba.com>
  <20240424091533.86949-3-xuanzhuo@linux.alibaba.com>
  <20240620035749-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20240620035749-mutt-send-email-mst@kernel.org>
+ <1718872778.4831812-1-xuanzhuo@linux.alibaba.com>
+MIME-Version: 1.0
+In-Reply-To: <1718872778.4831812-1-xuanzhuo@linux.alibaba.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240620_014426_721193_3B6E77C9 
-X-CRM114-Status: GOOD (  30.26  )
+X-CRM114-CacheID: sfid-20240620_020120_742231_0A907A97 
+X-CRM114-Status: GOOD (  21.80  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,302 +122,65 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, 20 Jun 2024 04:02:45 -0400, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> On Wed, Apr 24, 2024 at 05:15:29PM +0800, Xuan Zhuo wrote:
-> > commit 6457f126c888 ("virtio: support reserved vqs") introduced this
-> > support. Multiqueue virtio-net use 2N as ctrl vq finally, so the logic
-> > doesn't apply. And not one uses this.
+On Thu, Jun 20, 2024 at 04:39:38PM +0800, Xuan Zhuo wrote:
+> On Thu, 20 Jun 2024 04:02:45 -0400, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> > On Wed, Apr 24, 2024 at 05:15:29PM +0800, Xuan Zhuo wrote:
+> > > commit 6457f126c888 ("virtio: support reserved vqs") introduced this
+> > > support. Multiqueue virtio-net use 2N as ctrl vq finally, so the logic
+> > > doesn't apply. And not one uses this.
+> > >
+> > > On the other side, that makes some trouble for us to refactor the
+> > > find_vqs() params.
+> > >
+> > > So I remove this support.
+> > >
+> > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > Acked-by: Jason Wang <jasowang@redhat.com>
+> > > Acked-by: Eric Farman <farman@linux.ibm.com> # s390
+> > > Acked-by: Halil Pasic <pasic@linux.ibm.com>
 > >
-> > On the other side, that makes some trouble for us to refactor the
-> > find_vqs() params.
 > >
-> > So I remove this support.
-> >
-> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > Acked-by: Jason Wang <jasowang@redhat.com>
-> > Acked-by: Eric Farman <farman@linux.ibm.com> # s390
-> > Acked-by: Halil Pasic <pasic@linux.ibm.com>
->
->
-> I don't mind, but this patchset is too big already.
-> Why do we need to make this part of this patchset?
+> > I don't mind, but this patchset is too big already.
+> > Why do we need to make this part of this patchset?
+> 
+> 
+> If some the pointers of the names is NULL, then in the virtio ring,
+> we will have a trouble to index from the arrays(names, callbacks...).
+> Becasue that the idx of the vq is not the index of these arrays.
+> 
+> If the names is [NULL, "rx", "tx"], the first vq is the "rx", but index of the
+> vq is zero, but the index of the info of this vq inside the arrays is 1.
 
 
-If some the pointers of the names is NULL, then in the virtio ring,
-we will have a trouble to index from the arrays(names, callbacks...).
-Becasue that the idx of the vq is not the index of these arrays.
+Ah. So actually, it used to work.
 
-If the names is [NULL, "rx", "tx"], the first vq is the "rx", but index of the
-vq is zero, but the index of the info of this vq inside the arrays is 1.
+What this should refer to is
 
-So I do this commit.  I will update the commit log in next version.
+commit ddbeac07a39a81d82331a312d0578fab94fccbf1
+Author: Wei Wang <wei.w.wang@intel.com>
+Date:   Fri Dec 28 10:26:25 2018 +0800
 
-Thanks.
+    virtio_pci: use queue idx instead of array idx to set up the vq
+    
+    When find_vqs, there will be no vq[i] allocation if its corresponding
+    names[i] is NULL. For example, the caller may pass in names[i] (i=4)
+    with names[2] being NULL because the related feature bit is turned off,
+    so technically there are 3 queues on the device, and name[4] should
+    correspond to the 3rd queue on the device.
+    
+    So we use queue_idx as the queue index, which is increased only when the
+    queue exists.
+    
+    Signed-off-by: Wei Wang <wei.w.wang@intel.com>
+    Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 
 
+Which made it so setting names NULL actually does not reserve a vq.
 
->
->
-> > ---
-> >  arch/um/drivers/virtio_uml.c           |  8 ++++----
-> >  drivers/remoteproc/remoteproc_virtio.c | 11 ++++-------
-> >  drivers/s390/virtio/virtio_ccw.c       |  8 ++++----
-> >  drivers/virtio/virtio_mmio.c           | 11 ++++-------
-> >  drivers/virtio/virtio_pci_common.c     | 18 +++++++++---------
-> >  drivers/virtio/virtio_vdpa.c           | 11 ++++-------
-> >  include/linux/virtio_config.h          |  2 +-
-> >  7 files changed, 30 insertions(+), 39 deletions(-)
-> >
-> > diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-> > index 8adca2000e51..773f9fc4d582 100644
-> > --- a/arch/um/drivers/virtio_uml.c
-> > +++ b/arch/um/drivers/virtio_uml.c
-> > @@ -1019,8 +1019,8 @@ static int vu_find_vqs(struct virtio_device *vdev, unsigned nvqs,
-> >  		       struct irq_affinity *desc)
-> >  {
-> >  	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
-> > -	int i, queue_idx = 0, rc;
-> >  	struct virtqueue *vq;
-> > +	int i, rc;
-> >
-> >  	/* not supported for now */
-> >  	if (WARN_ON(nvqs > 64))
-> > @@ -1032,11 +1032,11 @@ static int vu_find_vqs(struct virtio_device *vdev, unsigned nvqs,
-> >
-> >  	for (i = 0; i < nvqs; ++i) {
-> >  		if (!names[i]) {
-> > -			vqs[i] = NULL;
-> > -			continue;
-> > +			rc = -EINVAL;
-> > +			goto error_setup;
-> >  		}
-> >
-> > -		vqs[i] = vu_setup_vq(vdev, queue_idx++, callbacks[i], names[i],
-> > +		vqs[i] = vu_setup_vq(vdev, i, callbacks[i], names[i],
-> >  				     ctx ? ctx[i] : false);
-> >  		if (IS_ERR(vqs[i])) {
-> >  			rc = PTR_ERR(vqs[i]);
-> > diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
-> > index 25b66b113b69..7f58634fcc41 100644
-> > --- a/drivers/remoteproc/remoteproc_virtio.c
-> > +++ b/drivers/remoteproc/remoteproc_virtio.c
-> > @@ -119,9 +119,6 @@ static struct virtqueue *rp_find_vq(struct virtio_device *vdev,
-> >  	if (id >= ARRAY_SIZE(rvdev->vring))
-> >  		return ERR_PTR(-EINVAL);
-> >
-> > -	if (!name)
-> > -		return NULL;
-> > -
-> >  	/* Search allocated memory region by name */
-> >  	mem = rproc_find_carveout_by_name(rproc, "vdev%dvring%d", rvdev->index,
-> >  					  id);
-> > @@ -187,15 +184,15 @@ static int rproc_virtio_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
-> >  				 const bool * ctx,
-> >  				 struct irq_affinity *desc)
-> >  {
-> > -	int i, ret, queue_idx = 0;
-> > +	int i, ret;
-> >
-> >  	for (i = 0; i < nvqs; ++i) {
-> >  		if (!names[i]) {
-> > -			vqs[i] = NULL;
-> > -			continue;
-> > +			ret = -EINVAL;
-> > +			goto error;
-> >  		}
-> >
-> > -		vqs[i] = rp_find_vq(vdev, queue_idx++, callbacks[i], names[i],
-> > +		vqs[i] = rp_find_vq(vdev, i, callbacks[i], names[i],
-> >  				    ctx ? ctx[i] : false);
-> >  		if (IS_ERR(vqs[i])) {
-> >  			ret = PTR_ERR(vqs[i]);
-> > diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
-> > index d7569f395559..6cdd29952bc0 100644
-> > --- a/drivers/s390/virtio/virtio_ccw.c
-> > +++ b/drivers/s390/virtio/virtio_ccw.c
-> > @@ -696,7 +696,7 @@ static int virtio_ccw_find_vqs(struct virtio_device *vdev, unsigned nvqs,
-> >  {
-> >  	struct virtio_ccw_device *vcdev = to_vc_device(vdev);
-> >  	dma64_t *indicatorp = NULL;
-> > -	int ret, i, queue_idx = 0;
-> > +	int ret, i;
-> >  	struct ccw1 *ccw;
-> >
-> >  	ccw = ccw_device_dma_zalloc(vcdev->cdev, sizeof(*ccw), NULL);
-> > @@ -705,11 +705,11 @@ static int virtio_ccw_find_vqs(struct virtio_device *vdev, unsigned nvqs,
-> >
-> >  	for (i = 0; i < nvqs; ++i) {
-> >  		if (!names[i]) {
-> > -			vqs[i] = NULL;
-> > -			continue;
-> > +			ret = -EINVAL;
-> > +			goto out;
-> >  		}
-> >
-> > -		vqs[i] = virtio_ccw_setup_vq(vdev, queue_idx++, callbacks[i],
-> > +		vqs[i] = virtio_ccw_setup_vq(vdev, i, callbacks[i],
-> >  					     names[i], ctx ? ctx[i] : false,
-> >  					     ccw);
-> >  		if (IS_ERR(vqs[i])) {
-> > diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
-> > index 173596589c71..c3c8dd282952 100644
-> > --- a/drivers/virtio/virtio_mmio.c
-> > +++ b/drivers/virtio/virtio_mmio.c
-> > @@ -386,9 +386,6 @@ static struct virtqueue *vm_setup_vq(struct virtio_device *vdev, unsigned int in
-> >  	else
-> >  		notify = vm_notify;
-> >
-> > -	if (!name)
-> > -		return NULL;
-> > -
-> >  	/* Select the queue we're interested in */
-> >  	writel(index, vm_dev->base + VIRTIO_MMIO_QUEUE_SEL);
-> >
-> > @@ -496,7 +493,7 @@ static int vm_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
-> >  {
-> >  	struct virtio_mmio_device *vm_dev = to_virtio_mmio_device(vdev);
-> >  	int irq = platform_get_irq(vm_dev->pdev, 0);
-> > -	int i, err, queue_idx = 0;
-> > +	int i, err;
-> >
-> >  	if (irq < 0)
-> >  		return irq;
-> > @@ -511,11 +508,11 @@ static int vm_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
-> >
-> >  	for (i = 0; i < nvqs; ++i) {
-> >  		if (!names[i]) {
-> > -			vqs[i] = NULL;
-> > -			continue;
-> > +			vm_del_vqs(vdev);
-> > +			return -EINVAL;
-> >  		}
-> >
-> > -		vqs[i] = vm_setup_vq(vdev, queue_idx++, callbacks[i], names[i],
-> > +		vqs[i] = vm_setup_vq(vdev, i, callbacks[i], names[i],
-> >  				     ctx ? ctx[i] : false);
-> >  		if (IS_ERR(vqs[i])) {
-> >  			vm_del_vqs(vdev);
-> > diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
-> > index b655fccaf773..eda71c6e87ee 100644
-> > --- a/drivers/virtio/virtio_pci_common.c
-> > +++ b/drivers/virtio/virtio_pci_common.c
-> > @@ -292,7 +292,7 @@ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned int nvqs,
-> >  {
-> >  	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
-> >  	u16 msix_vec;
-> > -	int i, err, nvectors, allocated_vectors, queue_idx = 0;
-> > +	int i, err, nvectors, allocated_vectors;
-> >
-> >  	vp_dev->vqs = kcalloc(nvqs, sizeof(*vp_dev->vqs), GFP_KERNEL);
-> >  	if (!vp_dev->vqs)
-> > @@ -302,7 +302,7 @@ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned int nvqs,
-> >  		/* Best option: one for change interrupt, one per vq. */
-> >  		nvectors = 1;
-> >  		for (i = 0; i < nvqs; ++i)
-> > -			if (names[i] && callbacks[i])
-> > +			if (callbacks[i])
-> >  				++nvectors;
-> >  	} else {
-> >  		/* Second best: one for change, shared for all vqs. */
-> > @@ -318,8 +318,8 @@ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned int nvqs,
-> >  	allocated_vectors = vp_dev->msix_used_vectors;
-> >  	for (i = 0; i < nvqs; ++i) {
-> >  		if (!names[i]) {
-> > -			vqs[i] = NULL;
-> > -			continue;
-> > +			err = -EINVAL;
-> > +			goto error_find;
-> >  		}
-> >
-> >  		if (!callbacks[i])
-> > @@ -328,7 +328,7 @@ static int vp_find_vqs_msix(struct virtio_device *vdev, unsigned int nvqs,
-> >  			msix_vec = allocated_vectors++;
-> >  		else
-> >  			msix_vec = VP_MSIX_VQ_VECTOR;
-> > -		vqs[i] = vp_setup_vq(vdev, queue_idx++, callbacks[i], names[i],
-> > +		vqs[i] = vp_setup_vq(vdev, i, callbacks[i], names[i],
-> >  				     ctx ? ctx[i] : false,
-> >  				     msix_vec);
-> >  		if (IS_ERR(vqs[i])) {
-> > @@ -363,7 +363,7 @@ static int vp_find_vqs_intx(struct virtio_device *vdev, unsigned int nvqs,
-> >  		const char * const names[], const bool *ctx)
-> >  {
-> >  	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
-> > -	int i, err, queue_idx = 0;
-> > +	int i, err;
-> >
-> >  	vp_dev->vqs = kcalloc(nvqs, sizeof(*vp_dev->vqs), GFP_KERNEL);
-> >  	if (!vp_dev->vqs)
-> > @@ -378,10 +378,10 @@ static int vp_find_vqs_intx(struct virtio_device *vdev, unsigned int nvqs,
-> >  	vp_dev->per_vq_vectors = false;
-> >  	for (i = 0; i < nvqs; ++i) {
-> >  		if (!names[i]) {
-> > -			vqs[i] = NULL;
-> > -			continue;
-> > +			err = -EINVAL;
-> > +			goto out_del_vqs;
-> >  		}
-> > -		vqs[i] = vp_setup_vq(vdev, queue_idx++, callbacks[i], names[i],
-> > +		vqs[i] = vp_setup_vq(vdev, i, callbacks[i], names[i],
-> >  				     ctx ? ctx[i] : false,
-> >  				     VIRTIO_MSI_NO_VECTOR);
-> >  		if (IS_ERR(vqs[i])) {
-> > diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
-> > index e803db0da307..e82cca24d6e6 100644
-> > --- a/drivers/virtio/virtio_vdpa.c
-> > +++ b/drivers/virtio/virtio_vdpa.c
-> > @@ -161,9 +161,6 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
-> >  	bool may_reduce_num = true;
-> >  	int err;
-> >
-> > -	if (!name)
-> > -		return NULL;
-> > -
-> >  	if (index >= vdpa->nvqs)
-> >  		return ERR_PTR(-ENOENT);
-> >
-> > @@ -370,7 +367,7 @@ static int virtio_vdpa_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
-> >  	struct cpumask *masks;
-> >  	struct vdpa_callback cb;
-> >  	bool has_affinity = desc && ops->set_vq_affinity;
-> > -	int i, err, queue_idx = 0;
-> > +	int i, err;
-> >
-> >  	if (has_affinity) {
-> >  		masks = create_affinity_masks(nvqs, desc ? desc : &default_affd);
-> > @@ -380,11 +377,11 @@ static int virtio_vdpa_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
-> >
-> >  	for (i = 0; i < nvqs; ++i) {
-> >  		if (!names[i]) {
-> > -			vqs[i] = NULL;
-> > -			continue;
-> > +			err = -EINVAL;
-> > +			goto err_setup_vq;
-> >  		}
-> >
-> > -		vqs[i] = virtio_vdpa_setup_vq(vdev, queue_idx++,
-> > +		vqs[i] = virtio_vdpa_setup_vq(vdev, i,
-> >  					      callbacks[i], names[i], ctx ?
-> >  					      ctx[i] : false);
-> >  		if (IS_ERR(vqs[i])) {
-> > diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
-> > index da9b271b54db..1c79cec258f4 100644
-> > --- a/include/linux/virtio_config.h
-> > +++ b/include/linux/virtio_config.h
-> > @@ -56,7 +56,7 @@ typedef void vq_callback_t(struct virtqueue *);
-> >   *	callbacks: array of callbacks, for each virtqueue
-> >   *		include a NULL entry for vqs that do not need a callback
-> >   *	names: array of virtqueue names (mainly for debugging)
-> > - *		include a NULL entry for vqs unused by driver
-> > + *		MUST NOT be NULL
->
-> Do not shout - just drop "include a NULL entry" text - not being NULL
-> is default assumption for pointers.
->
-> >   *	Returns 0 on success or error status
-> >   * @del_vqs: free virtqueues found by find_vqs().
-> >   * @synchronize_cbs: synchronize with the virtqueue callbacks (optional)
-> > --
-> > 2.32.0.3.g01195cf9f
->
+But I worry about non pci transports - there's a chance they used
+a different index with the balloon. Did you test some of these?
+
+-- 
+MST
+
 
