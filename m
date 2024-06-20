@@ -4,58 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2DAEFC27C79
-	for <linux-um@archiver.kernel.org>; Wed, 19 Jun 2024 15:36:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8A260C2BA18
+	for <linux-um@archiver.kernel.org>; Thu, 20 Jun 2024 07:20:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=1ptfbVqJUdBMkiMQWsuOZNzQuJBWjBmvDYyBTkNWUBU=; b=ipBIeqHGgg8md3I3VJVLqUXnmX
-	6ZX+/6+f8YHfe8dBzuACEG1277U6SqGIFvrn1wVuUZRZlUbtZjYwBGEtWgiwVU9jPPeIbslX+tOFM
-	CQJ0IBhSlRbqXiArBNMDavbkalw1i1tJ2Uxm3ogJLRnkE/XEfohjGLSXNUKXsPfoLQXRQrsYwICfx
-	hIWSZGvOYn2N7Xf/f2+Lj1qkc4b/hseJXPs68dAHJ1AvMMikLh1qN4/K7nh5JyLelNSDXcQlGrXi2
-	rsg+yo4NOJdJYWKRbHWGSVMI8OwD4/g/c+kvDDvHcgh4IFc0kXv+IWKUqJjx3ThxxId+c1Tv//1oh
-	aTkutFoA==;
+	bh=elHJYclT3cn65SE4oJPwzYsP1dHLBbICZB/RukRWt8M=; b=HYTGKBr96ZJMBNn6g/eb3QIpTp
+	fbPriG6+KMnC8voIgT8yPGXz4mrhqNOovYJDsay+ZgLxV8WzQfeWDRfShnTgI0kN2WhTcJHC7E25/
+	KHuyWhzgyEWOl82ouuezuQDeFZqgMnsz5CbwS6kj7iWPM2riWUDLnkEP2I43VQwvzmL+K9sLkY/oI
+	rjEY+1PVBrCb31XPAXsOHbfJZP9gvh9zOjbZ2zY7MVFDrpJ7llLQPDY+xiYuXk7/a3IfEeUfhd45Q
+	tq8SXqjZKAUZjqq1zd6axcQWmu4FZt3Q/QnQGAZERVGhH/Iz58SLRlRuxy0nEqJfIu14bi5oauNu0
+	qHXJdvew==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJxLw-00000001pW3-3RLN;
-	Wed, 19 Jun 2024 15:36:04 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1sKC5w-00000003xGV-0b5z;
+	Thu, 20 Jun 2024 07:20:32 +0000
+Received: from out0-203.mail.aliyun.com ([140.205.0.203])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sJxLs-00000001pSh-3J9C
+	id 1sKC5q-00000003xEw-3R4x
 	for linux-um@lists.infradead.org;
-	Wed, 19 Jun 2024 15:36:03 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=1ptfbVqJUdBMkiMQWsuOZNzQuJBWjBmvDYyBTkNWUBU=;
-	t=1718811360; x=1720020960; b=sKtH6pIuHUN4y+fMsMnVQAOZfhGOpdm0VySIbsXzYRLWU0I
-	3sQcohCOwuT0F0me1lZ5ObpL7RjZvtCXoc/iT7g3zzzIROoAHqCRp6to+sPLV1Ji+fs0o7+bwNIOE
-	lpwfkCZ7A9Jn97htHrhkycfwd8m+B6+MXlt6bSqDYC/WO6X2LQffol4t8iyDiGypQu6Yp0VwOaZuL
-	BADmw/AVgnsYO1aS/q+alG4Ze7h/tFxG1d5CI8890b945Z16V4esex9Qlz4Z+m4kcoM3GER5J/gAR
-	RG/BtuTKjlmKdZyklB0wEm4EZLLMV2cpyHCe97KNByHqIvmZvfk+PRsqBXag0PIQ==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.97)
-	(envelope-from <benjamin@sipsolutions.net>)
-	id 1sJxLp-000000072rR-45Ij;
-	Wed, 19 Jun 2024 17:35:58 +0200
-From: Benjamin Berg <benjamin@sipsolutions.net>
-To: linux-um@lists.infradead.org
-Cc: Benjamin Berg <benjamin.berg@intel.com>
-Subject: [PATCH v5 7/7] um: Add 4 level page table support
-Date: Wed, 19 Jun 2024 17:34:11 +0200
-Message-ID: <20240619153411.2596774-8-benjamin@sipsolutions.net>
-X-Mailer: git-send-email 2.45.1
-In-Reply-To: <20240619153411.2596774-1-benjamin@sipsolutions.net>
-References: <20240619153411.2596774-1-benjamin@sipsolutions.net>
+	Thu, 20 Jun 2024 07:20:30 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=antgroup.com; s=default;
+	t=1718868020; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=elHJYclT3cn65SE4oJPwzYsP1dHLBbICZB/RukRWt8M=;
+	b=yMTVX3Ck7zfR1YxwXvOBerMGol3Nh9GcF5I5vkObsznBHuu3y2SG62XFZZIIV52tvP9/XnwYy9Hqcl1nPsXe1xhKKg/UqNgBwHxSvbJ31AVPGMpA2HkVIqAg/Dlc9nCF+kKiGuxtV+tF98J3qiA5pI4DxdhyWM+n0MQaq/yWViw=
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R831e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033070021165;MF=tiwei.btw@antgroup.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---.Y5zZ1Tk_1718868008;
+Received: from 30.230.82.21(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.Y5zZ1Tk_1718868008)
+          by smtp.aliyun-inc.com;
+          Thu, 20 Jun 2024 15:20:15 +0800
+Message-ID: <7345517a-b85d-4ac3-ba91-0f4a31c727bd@antgroup.com>
+Date: Thu, 20 Jun 2024 15:20:08 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 3/7] um: use execveat on memfd to create userspace MMs
+To: Benjamin Berg <benjamin@sipsolutions.net>, linux-um@lists.infradead.org
+Cc: Benjamin Berg <benjamin.berg@intel.com>
+References: <20240619153411.2596774-1-benjamin@sipsolutions.net>
+ <20240619153411.2596774-4-benjamin@sipsolutions.net>
+Content-Language: en-US
+From: "Tiwei Bie" <tiwei.btw@antgroup.com>
+In-Reply-To: <20240619153411.2596774-4-benjamin@sipsolutions.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240619_083601_334856_67694E3C 
-X-CRM114-Status: GOOD (  21.57  )
+X-CRM114-CacheID: sfid-20240620_002027_488098_C6A7CFB8 
+X-CRM114-Status: GOOD (  35.39  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,337 +67,246 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Benjamin Berg <benjamin.berg@intel.com>
+On 6/19/24 11:34 PM, Benjamin Berg wrote:
+> From: Benjamin Berg <benjamin.berg@intel.com>
+> 
+> Using clone will not undo features that have been enabled by libc. An
+> example of this already happening is rseq, which could cause the kernel
+> to read/write memory of the userspace process. In the future the
+> standard library might also use mseal by default to protect itself,
+> which would also thwart our attempts at unmapping everything.
+> 
+> Solve all this by taking a step back and doing an execve into a tiny
+> static binary that sets up the minimal environment required for the
+> stub without using any standard library. That way we have a clean
+> execution environment that is fully under the control of UML.
+> 
+> Note that this changes things a bit as the FDs are not anymore shared
+> with the kernel. Instead, we explicitly share the FDs for the physical
+> memory and all existing iomem regions. Doing this is fine, as iomem
+> regions cannot be added at runtime.
 
-The larger memory space is useful to support more applications inside
-UML. One example for this is ASAN instrumentation of userspace
-applications which requires addresses that would otherwise not be
-available.
+This is pretty cool! :)
 
-Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
+> 
+> Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
+> ---
+>  arch/um/include/shared/skas/stub-data.h |  11 ++
+>  arch/um/os-Linux/skas/process.c         | 145 +++++++++++++++---------
+>  arch/x86/um/.gitignore                  |   2 +
+>  arch/x86/um/Makefile                    |  32 +++++-
+>  arch/x86/um/stub_elf.c                  |  84 ++++++++++++++
+>  arch/x86/um/stub_elf_embed.S            |  11 ++
+>  6 files changed, 227 insertions(+), 58 deletions(-)
+>  create mode 100644 arch/x86/um/.gitignore
+>  create mode 100644 arch/x86/um/stub_elf.c
+>  create mode 100644 arch/x86/um/stub_elf_embed.S
+> 
+> diff --git a/arch/um/include/shared/skas/stub-data.h b/arch/um/include/shared/skas/stub-data.h
+> index 5e3ade3fb38b..83d210f59956 100644
+> --- a/arch/um/include/shared/skas/stub-data.h
+> +++ b/arch/um/include/shared/skas/stub-data.h
+> @@ -8,6 +8,17 @@
+>  #ifndef __STUB_DATA_H
+>  #define __STUB_DATA_H
+>  
+> +struct stub_init_data {
+> +	unsigned long stub_start;
+> +
+> +	int stub_code_fd;
+> +	unsigned long stub_code_offset;
+> +	int stub_data_fd;
+> +	unsigned long stub_data_offset;
+> +
+> +	unsigned long segv_handler;
+> +};
+> +
+>  struct stub_data {
+>  	unsigned long offset;
+>  	int fd;
+> diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+> index 41a288dcfc34..6cd82ca7a43d 100644
+> --- a/arch/um/os-Linux/skas/process.c
+> +++ b/arch/um/os-Linux/skas/process.c
+> @@ -23,6 +23,8 @@
+>  #include <skas.h>
+>  #include <sysdep/stub.h>
+>  #include <linux/threads.h>
+> +#include <fcntl.h>
+> +#include <mem_user.h>
+>  #include "../internal.h"
+>  
+>  int is_skas_winch(int pid, int fd, void *data)
+> @@ -188,69 +190,100 @@ static void handle_trap(int pid, struct uml_pt_regs *regs)
+>  
+>  extern char __syscall_stub_start[];
+>  
+> -/**
+> - * userspace_tramp() - userspace trampoline
+> - * @stack:	pointer to the new userspace stack page
+> - *
+> - * The userspace trampoline is used to setup a new userspace process in start_userspace() after it was clone()'ed.
+> - * This function will run on a temporary stack page.
+> - * It ptrace()'es itself, then
+> - * Two pages are mapped into the userspace address space:
+> - * - STUB_CODE (with EXEC), which contains the skas stub code
+> - * - STUB_DATA (with R/W), which contains a data page that is used to transfer certain data between the UML userspace process and the UML kernel.
+> - * Also for the userspace process a SIGSEGV handler is installed to catch pagefaults in the userspace process.
+> - * And last the process stops itself to give control to the UML kernel for this userspace process.
+> - *
+> - * Return: Always zero, otherwise the current userspace process is ended with non null exit() call
+> - */
+> +int userspace_pid[NR_CPUS];
 
----
+Nit: userspace_pid is already defined in this file.
 
-v2:
-- Do not hide option behind the EXPERT flag
-- Fix typo in new "Two-level pagetables" option
----
- arch/um/Kconfig                      |   1 +
- arch/um/include/asm/page.h           |  14 +++-
- arch/um/include/asm/pgalloc.h        |  11 ++-
- arch/um/include/asm/pgtable-4level.h | 119 +++++++++++++++++++++++++++
- arch/um/include/asm/pgtable.h        |   6 +-
- arch/um/kernel/mem.c                 |  17 +++-
- arch/x86/um/Kconfig                  |  38 ++++++---
- 7 files changed, 189 insertions(+), 17 deletions(-)
- create mode 100644 arch/um/include/asm/pgtable-4level.h
+> +
+> +extern char stub_elf_start[];
+> +extern char stub_elf_end[];
+> +
+> +int stub_exec_fd;
 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 93a5a8999b07..5d111fc8ccb7 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -208,6 +208,7 @@ config MMAPPER
- 
- config PGTABLE_LEVELS
- 	int
-+	default 4 if 4_LEVEL_PGTABLES
- 	default 3 if 3_LEVEL_PGTABLES
- 	default 2
- 
-diff --git a/arch/um/include/asm/page.h b/arch/um/include/asm/page.h
-index 9ef9a8aedfa6..c3b2ae03b60c 100644
---- a/arch/um/include/asm/page.h
-+++ b/arch/um/include/asm/page.h
-@@ -57,14 +57,22 @@ typedef unsigned long long phys_t;
- typedef struct { unsigned long pte; } pte_t;
- typedef struct { unsigned long pgd; } pgd_t;
- 
--#ifdef CONFIG_3_LEVEL_PGTABLES
-+#if CONFIG_PGTABLE_LEVELS > 2
-+
- typedef struct { unsigned long pmd; } pmd_t;
- #define pmd_val(x)	((x).pmd)
- #define __pmd(x) ((pmd_t) { (x) } )
--#endif
- 
--#define pte_val(x)	((x).pte)
-+#if CONFIG_PGTABLE_LEVELS > 3
- 
-+typedef struct { unsigned long pud; } pud_t;
-+#define pud_val(x)	((x).pud)
-+#define __pud(x) ((pud_t) { (x) } )
-+
-+#endif /* CONFIG_PGTABLE_LEVELS > 3 */
-+#endif /* CONFIG_PGTABLE_LEVELS > 2 */
-+
-+#define pte_val(x)	((x).pte)
- 
- #define pte_get_bits(p, bits) ((p).pte & (bits))
- #define pte_set_bits(p, bits) ((p).pte |= (bits))
-diff --git a/arch/um/include/asm/pgalloc.h b/arch/um/include/asm/pgalloc.h
-index de5e31c64793..04fb4e6969a4 100644
---- a/arch/um/include/asm/pgalloc.h
-+++ b/arch/um/include/asm/pgalloc.h
-@@ -31,7 +31,7 @@ do {								\
- 	tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)));	\
- } while (0)
- 
--#ifdef CONFIG_3_LEVEL_PGTABLES
-+#if CONFIG_PGTABLE_LEVELS > 2
- 
- #define __pmd_free_tlb(tlb, pmd, address)			\
- do {								\
-@@ -39,6 +39,15 @@ do {								\
- 	tlb_remove_page_ptdesc((tlb), virt_to_ptdesc(pmd));	\
- } while (0)
- 
-+#if CONFIG_PGTABLE_LEVELS > 3
-+
-+#define __pud_free_tlb(tlb, pud, address)			\
-+do {								\
-+	pagetable_pud_dtor(virt_to_ptdesc(pud));		\
-+	tlb_remove_page_ptdesc((tlb), virt_to_ptdesc(pud));	\
-+} while (0)
-+
-+#endif
- #endif
- 
- #endif
-diff --git a/arch/um/include/asm/pgtable-4level.h b/arch/um/include/asm/pgtable-4level.h
-new file mode 100644
-index 000000000000..f912fcc16b7a
---- /dev/null
-+++ b/arch/um/include/asm/pgtable-4level.h
-@@ -0,0 +1,119 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright 2003 PathScale Inc
-+ * Derived from include/asm-i386/pgtable.h
-+ */
-+
-+#ifndef __UM_PGTABLE_4LEVEL_H
-+#define __UM_PGTABLE_4LEVEL_H
-+
-+#include <asm-generic/pgtable-nop4d.h>
-+
-+/* PGDIR_SHIFT determines what a fourth-level page table entry can map */
-+
-+#define PGDIR_SHIFT	39
-+#define PGDIR_SIZE	(1UL << PGDIR_SHIFT)
-+#define PGDIR_MASK	(~(PGDIR_SIZE-1))
-+
-+/* PUD_SHIFT determines the size of the area a third-level page table can
-+ * map
-+ */
-+
-+#define PUD_SHIFT	30
-+#define PUD_SIZE	(1UL << PUD_SHIFT)
-+#define PUD_MASK	(~(PUD_SIZE-1))
-+
-+/* PMD_SHIFT determines the size of the area a second-level page table can
-+ * map
-+ */
-+
-+#define PMD_SHIFT	21
-+#define PMD_SIZE	(1UL << PMD_SHIFT)
-+#define PMD_MASK	(~(PMD_SIZE-1))
-+
-+/*
-+ * entries per page directory level
-+ */
-+
-+#define PTRS_PER_PTE 512
-+#define PTRS_PER_PMD 512
-+#define PTRS_PER_PUD 512
-+#define PTRS_PER_PGD 512
-+
-+#define USER_PTRS_PER_PGD ((TASK_SIZE + (PGDIR_SIZE - 1)) / PGDIR_SIZE)
-+
-+#define pte_ERROR(e) \
-+        printk("%s:%d: bad pte %p(%016lx).\n", __FILE__, __LINE__, &(e), \
-+	       pte_val(e))
-+#define pmd_ERROR(e) \
-+        printk("%s:%d: bad pmd %p(%016lx).\n", __FILE__, __LINE__, &(e), \
-+	       pmd_val(e))
-+#define pud_ERROR(e) \
-+        printk("%s:%d: bad pud %p(%016lx).\n", __FILE__, __LINE__, &(e), \
-+	       pud_val(e))
-+#define pgd_ERROR(e) \
-+        printk("%s:%d: bad pgd %p(%016lx).\n", __FILE__, __LINE__, &(e), \
-+	       pgd_val(e))
-+
-+#define pud_none(x)	(!(pud_val(x) & ~_PAGE_NEWPAGE))
-+#define	pud_bad(x)	((pud_val(x) & (~PAGE_MASK & ~_PAGE_USER)) != _KERNPG_TABLE)
-+#define pud_present(x)	(pud_val(x) & _PAGE_PRESENT)
-+#define pud_populate(mm, pud, pmd) \
-+	set_pud(pud, __pud(_PAGE_TABLE + __pa(pmd)))
-+
-+#define set_pud(pudptr, pudval) (*(pudptr) = (pudval))
-+
-+#define p4d_none(x)	(!(p4d_val(x) & ~_PAGE_NEWPAGE))
-+#define	p4d_bad(x)	((p4d_val(x) & (~PAGE_MASK & ~_PAGE_USER)) != _KERNPG_TABLE)
-+#define p4d_present(x)	(p4d_val(x) & _PAGE_PRESENT)
-+#define p4d_populate(mm, p4d, pud) \
-+	set_p4d(p4d, __p4d(_PAGE_TABLE + __pa(pud)))
-+
-+#define set_p4d(p4dptr, p4dval) (*(p4dptr) = (p4dval))
-+
-+
-+static inline int pgd_newpage(pgd_t pgd)
-+{
-+	return(pgd_val(pgd) & _PAGE_NEWPAGE);
-+}
-+
-+static inline void pgd_mkuptodate(pgd_t pgd) { pgd_val(pgd) &= ~_PAGE_NEWPAGE; }
-+
-+#define set_pmd(pmdptr, pmdval) (*(pmdptr) = (pmdval))
-+
-+static inline void pud_clear (pud_t *pud)
-+{
-+	set_pud(pud, __pud(_PAGE_NEWPAGE));
-+}
-+
-+static inline void p4d_clear (p4d_t *p4d)
-+{
-+	set_p4d(p4d, __p4d(_PAGE_NEWPAGE));
-+}
-+
-+#define pud_page(pud) phys_to_page(pud_val(pud) & PAGE_MASK)
-+#define pud_pgtable(pud) ((pmd_t *) __va(pud_val(pud) & PAGE_MASK))
-+
-+#define p4d_page(p4d) phys_to_page(p4d_val(p4d) & PAGE_MASK)
-+#define p4d_pgtable(p4d) ((pud_t *) __va(p4d_val(p4d) & PAGE_MASK))
-+
-+static inline unsigned long pte_pfn(pte_t pte)
-+{
-+	return phys_to_pfn(pte_val(pte));
-+}
-+
-+static inline pte_t pfn_pte(unsigned long page_nr, pgprot_t pgprot)
-+{
-+	pte_t pte;
-+	phys_t phys = pfn_to_phys(page_nr);
-+
-+	pte_set_val(pte, phys, pgprot);
-+	return pte;
-+}
-+
-+static inline pmd_t pfn_pmd(unsigned long page_nr, pgprot_t pgprot)
-+{
-+	return __pmd((page_nr << PAGE_SHIFT) | pgprot_val(pgprot));
-+}
-+
-+#endif
-diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.h
-index e1ece21dbe3f..71a7651e2db7 100644
---- a/arch/um/include/asm/pgtable.h
-+++ b/arch/um/include/asm/pgtable.h
-@@ -24,9 +24,11 @@
- /* We borrow bit 10 to store the exclusive marker in swap PTEs. */
- #define _PAGE_SWP_EXCLUSIVE	0x400
- 
--#ifdef CONFIG_3_LEVEL_PGTABLES
-+#if CONFIG_PGTABLE_LEVELS == 4
-+#include <asm/pgtable-4level.h>
-+#elif CONFIG_PGTABLE_LEVELS == 3
- #include <asm/pgtable-3level.h>
--#else
-+#elif CONFIG_PGTABLE_LEVELS == 2
- #include <asm/pgtable-2level.h>
- #endif
- 
-diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
-index ca91accd64fc..2dc0d90c0550 100644
---- a/arch/um/kernel/mem.c
-+++ b/arch/um/kernel/mem.c
-@@ -99,7 +99,7 @@ static void __init one_page_table_init(pmd_t *pmd)
- 
- static void __init one_md_table_init(pud_t *pud)
- {
--#ifdef CONFIG_3_LEVEL_PGTABLES
-+#if CONFIG_PGTABLE_LEVELS > 2
- 	pmd_t *pmd_table = (pmd_t *) memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
- 	if (!pmd_table)
- 		panic("%s: Failed to allocate %lu bytes align=%lx\n",
-@@ -110,6 +110,19 @@ static void __init one_md_table_init(pud_t *pud)
- #endif
- }
- 
-+static void __init one_ud_table_init(p4d_t *p4d)
-+{
-+#if CONFIG_PGTABLE_LEVELS > 3
-+	pud_t *pud_table = (pud_t *) memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
-+	if (!pud_table)
-+		panic("%s: Failed to allocate %lu bytes align=%lx\n",
-+		      __func__, PAGE_SIZE, PAGE_SIZE);
-+
-+	set_p4d(p4d, __p4d(_KERNPG_TABLE + (unsigned long) __pa(pud_table)));
-+	BUG_ON(pud_table != pud_offset(p4d, 0));
-+#endif
-+}
-+
- static void __init fixrange_init(unsigned long start, unsigned long end,
- 				 pgd_t *pgd_base)
- {
-@@ -127,6 +140,8 @@ static void __init fixrange_init(unsigned long start, unsigned long end,
- 
- 	for ( ; (i < PTRS_PER_PGD) && (vaddr < end); pgd++, i++) {
- 		p4d = p4d_offset(pgd, vaddr);
-+		if (p4d_none(*p4d))
-+			one_ud_table_init(p4d);
- 		pud = pud_offset(p4d, vaddr);
- 		if (pud_none(*pud))
- 			one_md_table_init(pud);
-diff --git a/arch/x86/um/Kconfig b/arch/x86/um/Kconfig
-index 186f13268401..454ad560f627 100644
---- a/arch/x86/um/Kconfig
-+++ b/arch/x86/um/Kconfig
-@@ -28,16 +28,34 @@ config X86_64
- 	def_bool 64BIT
- 	select MODULES_USE_ELF_RELA
- 
--config 3_LEVEL_PGTABLES
--	bool "Three-level pagetables" if !64BIT
--	default 64BIT
--	help
--	  Three-level pagetables will let UML have more than 4G of physical
--	  memory.  All the memory that can't be mapped directly will be treated
--	  as high memory.
--
--	  However, this it experimental on 32-bit architectures, so if unsure say
--	  N (on x86-64 it's automatically enabled, instead, as it's safe there).
-+choice
-+	prompt "Pagetable levels"
-+	default 2_LEVEL_PGTABLES if !64BIT
-+	default 4_LEVEL_PGTABLES if 64BIT
-+
-+	config 2_LEVEL_PGTABLES
-+		bool "Two-level pagetables" if !64BIT
-+		depends on !64BIT
-+		help
-+		  Two-level page table for 32-bit architectures.
-+
-+	config 3_LEVEL_PGTABLES
-+		bool "Three-level pagetables" if 64BIT
-+		help
-+		  Three-level pagetables will let UML have more than 4G of physical
-+		  memory.  All the memory that can't be mapped directly will be treated
-+		  as high memory.
-+
-+		  However, this it experimental on 32-bit architectures, so if unsure say
-+		  N (on x86-64 it's automatically enabled, instead, as it's safe there).
-+
-+	config 4_LEVEL_PGTABLES
-+		bool "Four-level pagetables" if 64BIT
-+		depends on 64BIT
-+		help
-+		  Four-level pagetables, gives a bigger address space which can be
-+		  useful for some applications (e.g. ASAN).
-+endchoice
- 
- config ARCH_HAS_SC_SIGNALS
- 	def_bool !64BIT
--- 
-2.45.1
+stub_exec_fd isn't used outside this file. Might be better to make it static.
 
+> +
+>  static int userspace_tramp(void *stack)
+>  {
+> -	struct sigaction sa;
+> -	void *addr;
+> -	int fd;
+> +	char *const argv[] = { "uml-userspace", NULL };
+> +	int pipe_fds[2];
+>  	unsigned long long offset;
+> -	unsigned long segv_handler = STUB_CODE +
+> -				     (unsigned long) stub_segv_handler -
+> -				     (unsigned long) __syscall_stub_start;
+> -
+> -	ptrace(PTRACE_TRACEME, 0, 0, 0);
+> -
+> -	signal(SIGTERM, SIG_DFL);
+> -	signal(SIGWINCH, SIG_IGN);
+> -
+> -	fd = phys_mapping(uml_to_phys(__syscall_stub_start), &offset);
+> -	addr = mmap64((void *) STUB_CODE, UM_KERN_PAGE_SIZE,
+> -		      PROT_EXEC, MAP_FIXED | MAP_PRIVATE, fd, offset);
+> -	if (addr == MAP_FAILED) {
+> -		os_info("mapping mmap stub at 0x%lx failed, errno = %d\n",
+> -			STUB_CODE, errno);
+> -		exit(1);
+> +	struct stub_init_data init_data = {
+> +		.stub_start = STUB_START,
+> +		.segv_handler = STUB_CODE +
+> +				(unsigned long) stub_segv_handler -
+> +				(unsigned long) __syscall_stub_start,
+> +	};
+> +	struct iomem_region *iomem = iomem_regions;
+> +	int ret;
+> +
+> +	init_data.stub_code_fd = phys_mapping(uml_to_phys(__syscall_stub_start),
+> +					      &offset);
+> +	init_data.stub_code_offset = MMAP_OFFSET(offset);
+> +
+> +	init_data.stub_data_fd = phys_mapping(uml_to_phys(stack), &offset);
+> +	init_data.stub_data_offset = MMAP_OFFSET(offset);
+> +
+> +	/* Set CLOEXEC on all FDs and then unset on all memory related FDs */
+> +	close_range(0, ~0U, CLOSE_RANGE_CLOEXEC);
+> +
+> +	fcntl(init_data.stub_data_fd, F_SETFD, 0);
+> +	while (iomem) {
+> +		fcntl(init_data.stub_data_fd, F_SETFD, 0);
+
+Typo: this is supposed to be iomem->fd.
+
+> +		iomem = iomem->next;
+>  	}
+>  
+> -	fd = phys_mapping(uml_to_phys(stack), &offset);
+> -	addr = mmap((void *) STUB_DATA,
+> -		    STUB_DATA_PAGES * UM_KERN_PAGE_SIZE, PROT_READ | PROT_WRITE,
+> -		    MAP_FIXED | MAP_SHARED, fd, offset);
+> -	if (addr == MAP_FAILED) {
+> -		os_info("mapping segfault stack at 0x%lx failed, errno = %d\n",
+> -			STUB_DATA, errno);
+> -		exit(1);
+> +	/* Create a pipe for init_data (no CLOEXEC) and dup2 to STDIN */
+> +	if (pipe2(pipe_fds, 0))
+> +		exit(2);
+> +
+> +	close(0);
+> +	if (dup2(pipe_fds[0], 0) < 0) {
+> +		close(pipe_fds[0]);
+> +		close(pipe_fds[1]);
+> +		exit(3);
+>  	}
+> +	close(pipe_fds[0]);
+> +
+> +	/* Write init_data and close write side */
+> +	ret = write(pipe_fds[1], &init_data, sizeof(init_data));
+> +	close(pipe_fds[1]);
+> +
+> +	if (ret != sizeof(init_data))
+> +		exit(4);
+> +
+> +	execveat(stub_exec_fd, "", argv, NULL, AT_EMPTY_PATH);
+>  
+> -	set_sigstack((void *) STUB_DATA, STUB_DATA_PAGES * UM_KERN_PAGE_SIZE);
+> -	sigemptyset(&sa.sa_mask);
+> -	sa.sa_flags = SA_ONSTACK | SA_NODEFER | SA_SIGINFO;
+> -	sa.sa_sigaction = (void *) segv_handler;
+> -	sa.sa_restorer = NULL;
+> -	if (sigaction(SIGSEGV, &sa, NULL) < 0) {
+> -		os_info("%s - setting SIGSEGV handler failed - errno = %d\n",
+> -			__func__, errno);
+> -		exit(1);
+> +	close(0);
+> +
+> +	exit(4);
+
+Might be better to bump the exit code.
+
+> +}
+> +
+[...]
+> diff --git a/arch/x86/um/stub_elf.c b/arch/x86/um/stub_elf.c
+> new file mode 100644
+> index 000000000000..b634740a6a15
+> --- /dev/null
+> +++ b/arch/x86/um/stub_elf.c
+> @@ -0,0 +1,84 @@
+> +#include <sys/ptrace.h>
+> +#include <sys/prctl.h>
+> +#include <asm/unistd.h>
+> +#include <sysdep/stub.h>
+> +#include <stub-data.h>
+> +
+> +void _start(void);
+> +
+> +static void real_init(void)
+> +{
+> +	struct stub_init_data init_data;
+> +	unsigned long res;
+> +	struct {
+> +		void  *ss_sp;
+> +		int    ss_flags;
+> +		size_t ss_size;
+> +	} stack;
+> +	struct {
+> +		void *sa_handler_;
+> +		unsigned long sa_flags;
+> +		void *sa_restorer;
+> +		unsigned long sa_mask;
+> +	} sa = {};
+> +
+> +	/* set a nice name */
+> +	stub_syscall2(__NR_prctl, PR_SET_NAME, (unsigned long)"uml-userspace");
+> +
+> +	/* read information from STDIN and close it */
+> +	stub_syscall3(__NR_read, 0,
+> +		      (unsigned long)&init_data, sizeof(init_data));
+
+Might be better to check the number of bytes read.
+
+Regards,
+Tiwei
 
