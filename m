@@ -4,47 +4,35 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9F77AC2BD09
-	for <linux-um@archiver.kernel.org>; Mon, 24 Jun 2024 17:08:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93436C2BD09
+	for <linux-um@archiver.kernel.org>; Mon, 24 Jun 2024 17:24:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=QB/QY3IZEAJCnuV8VPwHDzUxBys4xUty8xpNZlp5G+E=; b=MFLRNZlAM0uvBdfhIS6woBhfpm
-	RomHsMTnZRubKUbPBfzVmeQBX8esdn3MIvyRFNoqgTJh3ezXPeW4vCs31YvUXuWt9cANQpogtIYNb
-	AwvWJ2SIFWK9+HFh5RfThWao68g9vDf1LC1GP1FSrWDiVH8YCJCIrJZjPMydiVN++Euywf4RsJYft
-	OAuEuFaq+pY7N6hlZHzvNT1ss0hSLOOptR5RCqOpNwZaAnWflogMA5ETdoEBhef7kL+6fL1d3fbcl
-	mwL7cLphZII62Z312IwAQV8QxrdEwnaABNmzp08IHbMANedjmZrLi7iAKtNryc6Bsj91s9rNzG07F
-	jg3wU88A==;
+	bh=lq8yHz3SRvos6ywZOBLbQutzrGtsEmT7wbdupW9vicw=; b=I1tFDH7uqpYHA7Q0KKJwroXuEa
+	C8UBfr+tvApwR1KgAsmKWX5ResJDIidXYusEWMgAEgcBv14SLU7RBirWwd0OL4Iz3maZP0d2G2xaU
+	iOHPMk8OwhN0wsYrgMwXfZOuf0wjZ7pz61ZmErrIMzdtrGo+0hD4gvQTugXLDE4ja5wBCr3KBKXKx
+	kGGFKsjj8wCUecm5LmGTDZhg78NPU4JLsH5/m5WcTXAwdUMsXOj0bTbdu2BwGgSIaNdLjJS0L3Cgs
+	SCmy/GE4YnldW+sAiEJEe0fYrI211+zkfoPYcRe2XythE6WUTGjmKogKrM2nUtD5V+CNnVTyuRqsr
+	LVTPNbDA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sLnB5-000000002ki-3L2g;
-	Mon, 24 Jun 2024 17:08:27 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1sLnQh-000000004n9-11AL;
+	Mon, 24 Jun 2024 17:24:35 +0000
+Received: from verein.lst.de ([213.95.11.211])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sLnB2-000000002js-1mEB;
-	Mon, 24 Jun 2024 17:08:25 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 5EF2B60E16;
-	Mon, 24 Jun 2024 17:08:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 682D2C2BBFC;
-	Mon, 24 Jun 2024 17:08:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719248903;
-	bh=c5IMwi2AkSm61J7nCdd2EBXV6o3vo+7AANeGa2JN45A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=d8C/s3NgDhBmDzX7X6Z3a8NgLG1XRNWm3AVon41eJewAqY4XNmD50+AdQpjukysaA
-	 0+c9peZEcs8AURzleAxgVmV3zaxrAP0+WMQxnkR3oNoVdRegLrw7QTozLmVentUZPE
-	 P0BMSL1dkoExQoFoaBFFudfcpEmdYCHeKJ0irUoLxUFwgxCKTvfHLKHNHL2RN4iLoh
-	 ki4NFa+liGK52kKToNiMhO53pIJVSGFwHndW7Uw+1UTH4eb3kjlEU/UFxvZz4PM4y3
-	 BbdO/dVn76ts+09ZmrGp9NorxeNYJ2cNYzLcTNejNMPSMmam7/bl5ZZAKhBMTTCFIl
-	 W6hH1Idyq3vZQ==
-Date: Mon, 24 Jun 2024 11:08:16 -0600
-From: Keith Busch <kbusch@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, Geert Uytterhoeven <geert@linux-m68k.org>,
+	id 1sLnQd-000000004mM-2Dui;
+	Mon, 24 Jun 2024 17:24:33 +0000
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id C072868CFE; Mon, 24 Jun 2024 19:24:25 +0200 (CEST)
+Date: Mon, 24 Jun 2024 19:24:25 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Keith Busch <kbusch@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
 	Richard Weinberger <richard@nod.at>,
 	Philipp Reisner <philipp.reisner@linbit.com>,
 	Lars Ellenberg <lars.ellenberg@linbit.com>,
@@ -69,17 +57,16 @@ Cc: Jens Axboe <axboe@kernel.dk>, Geert Uytterhoeven <geert@linux-m68k.org>,
 	linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
 	Damien Le Moal <dlemoal@kernel.org>
 Subject: Re: [PATCH 14/26] block: move the nonrot flag to queue_limits
-Message-ID: <ZnmoANp0TgpxWuF-@kbusch-mbp.dhcp.thefacebook.com>
-References: <20240617060532.127975-1-hch@lst.de>
- <20240617060532.127975-15-hch@lst.de>
+Message-ID: <20240624172425.GB22044@lst.de>
+References: <20240617060532.127975-1-hch@lst.de> <20240617060532.127975-15-hch@lst.de> <ZnmoANp0TgpxWuF-@kbusch-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240617060532.127975-15-hch@lst.de>
+In-Reply-To: <ZnmoANp0TgpxWuF-@kbusch-mbp.dhcp.thefacebook.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240624_100824_613741_F9A35BF6 
-X-CRM114-Status: UNSURE (   7.39  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240624_102431_912815_2B234A7F 
+X-CRM114-Status: GOOD (  12.22  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,11 +81,17 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jun 17, 2024 at 08:04:41AM +0200, Christoph Hellwig wrote:
-> -#define blk_queue_nonrot(q)	test_bit(QUEUE_FLAG_NONROT, &(q)->queue_flags)
-> +#define blk_queue_nonrot(q)	((q)->limits.features & BLK_FEAT_ROTATIONAL)
+On Mon, Jun 24, 2024 at 11:08:16AM -0600, Keith Busch wrote:
+> On Mon, Jun 17, 2024 at 08:04:41AM +0200, Christoph Hellwig wrote:
+> > -#define blk_queue_nonrot(q)	test_bit(QUEUE_FLAG_NONROT, &(q)->queue_flags)
+> > +#define blk_queue_nonrot(q)	((q)->limits.features & BLK_FEAT_ROTATIONAL)
+> 
+> This is inverted. Should be:
+> 
+>  #define blk_queue_nonrot(q)	(!((q)->limits.features & BLK_FEAT_ROTATIONAL))
 
-This is inverted. Should be:
+Ah yes.  And the sysfs attribute doesn't go through the macro and
+won't show the effect.  I'll send a fixup.
 
- #define blk_queue_nonrot(q)	(!((q)->limits.features & BLK_FEAT_ROTATIONAL))
+
 
