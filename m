@@ -4,58 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AA90AC27C4F
-	for <linux-um@archiver.kernel.org>; Wed, 26 Jun 2024 06:18:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 10152C3064D
+	for <linux-um@archiver.kernel.org>; Wed, 26 Jun 2024 13:56:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=WznNzAxamU/rn1oIsr/ujFQzA/utUjm7zji8ZcIyeu8=; b=hoSVOxxgrIW7AKRzITMk1YZB0Z
-	aZuiNGwCuEHqyQXJ06wygkiOJvvSI/IPiHxWYCPvLcFov2YDC8vbM8t3MwaeGAgHwi3E8o8SMLMr+
-	tVSCBxnoettvcdqh6ARRa30v6yw1p3SN1X4o/Ak0nY7eghyo/fCVgExICf08c+LYiigHYD5e/CJVK
-	tU/UcNkgJ+PzbzV7NeXT1TsXkoos55rRi3JlSlCXaJbNjXg22bWQf9MvEG0keq+D2Vr01V0HxootL
-	mOrb5M9BUC+4KauEHY/rv6Nlm3GuLM1QBLuETIFB6RqBlkHWWBJI+jOFw352THwS4ZfVYF7MAyi5A
-	SExmKKYw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=xzffW1bTuz165PYenVkxZMTgdkevsydgtegMvbjWw2c=; b=znGA2L8P3LzGt2A+1Y8OG0laHj
+	X7XRmW4+XLm2zBAlnW/b82iDiOkugszYTPOP14lSI7Ymm7ZWvTg9vyfI449hl3WYIRYmaF1/I4ar4
+	PYvI90Ir46HZUC85fn90CcOKEsGS9Fb5uaZ+7I+EC8SdIk7vfnPvOXILLDGehe4wWnJWt+FZ7WxNa
+	aCWBNaZxuaaAuNRB9JbSkIsgxlIla5QG5ue/kXunTb8+LDD+PqJsM61avkLeGI9NQtnrQ6cUE5i1d
+	LDAxIMb0MXdA13sIOC4v1ZaDButBmoHisQzX4OuixsDWC+4TcyyeF93ef+1jj1GhpiFPVKYwzfL/3
+	u052uYnA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sMLyw-00000005Z7X-4AFb;
-	Wed, 26 Jun 2024 06:18:14 +0000
-Received: from verein.lst.de ([213.95.11.211])
+	id 1sMT87-000000074fl-2koC;
+	Wed, 26 Jun 2024 13:56:11 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sMLys-00000005Z6Q-0smn;
-	Wed, 26 Jun 2024 06:18:11 +0000
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 85E4B68BEB; Wed, 26 Jun 2024 08:18:04 +0200 (CEST)
-Date: Wed, 26 Jun 2024 08:18:04 +0200
-From: Christoph Hellwig <hch@lst.de>
-To: Oliver Sang <oliver.sang@intel.com>
-Cc: Christoph Hellwig <hch@lst.de>, oe-lkp@lists.linux.dev, lkp@intel.com,
-	Jens Axboe <axboe@kernel.dk>, Damien Le Moal <dlemoal@kernel.org>,
-	Hannes Reinecke <hare@suse.de>, linux-m68k@lists.linux-m68k.org,
-	linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org, drbd-dev@lists.linbit.com,
-	nbd@other.debian.org, linuxppc-dev@lists.ozlabs.org,
-	ceph-devel@vger.kernel.org, virtualization@lists.linux.dev,
-	xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
-	dm-devel@lists.linux.dev, linux-raid@vger.kernel.org,
-	linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-	nvdimm@lists.linux.dev, linux-nvme@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-	ying.huang@intel.com, feng.tang@intel.com, fengwei.yin@intel.com
-Subject: Re: [axboe-block:for-next] [block]  bd4a633b6f:
- fsmark.files_per_sec -64.5% regression
-Message-ID: <20240626061804.GA23481@lst.de>
-References: <202406241546.6bbd44a7-oliver.sang@intel.com> <20240624083537.GA19941@lst.de> <Znuw/4zMD4w5Oq2a@xsang-OptiPlex-9020>
+	id 1sMT80-000000074d1-2oaa
+	for linux-um@lists.infradead.org;
+	Wed, 26 Jun 2024 13:56:09 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=xzffW1bTuz165PYenVkxZMTgdkevsydgtegMvbjWw2c=;
+	t=1719410164; x=1720619764; b=anhzQ9So1f9ToJGcLX08qye091TuHrOrB1SbqcNPI4VxnFw
+	XRWc8ZUCaqOmW4KAQRozs9swJvhnQreeCz94DwAAptRYq0cWjUCyy9+lnNYcLYYg3EV9wOu0+6AyG
+	5XOylc402qQTTVYVEjyMwKBxLw+ZTY96eVLGhdFEiMizqRYnQa8L/s42B6qRwsCVGds62vS/Co8Jq
+	p5a+K5ys68oDt6WM/tH15SIkco2Sst8g15jPIkwGo4FZNNKuILb2pUZs6kHsHTO/lXzghe9//x8xb
+	XwfIuGA4owQexgjIF5LSl7whQx7Taz1BEJHreGeLwSAyKyP/VOcG+O9d+rnO/E5g==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <benjamin@sipsolutions.net>)
+	id 1sMT7w-00000003rXd-2Fhm;
+	Wed, 26 Jun 2024 15:56:00 +0200
+From: Benjamin Berg <benjamin@sipsolutions.net>
+To: linux-um@lists.infradead.org
+Cc: Benjamin Berg <benjamin@sipsolutions.net>
+Subject: [PATCH v6 1/7] um: Add generic stub_syscall6 function
+Date: Wed, 26 Jun 2024 15:53:44 +0200
+Message-ID: <20240626135350.493110-2-benjamin@sipsolutions.net>
+X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20240626135350.493110-1-benjamin@sipsolutions.net>
+References: <20240626135350.493110-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Znuw/4zMD4w5Oq2a@xsang-OptiPlex-9020>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240625_231810_426520_B9A0AA9C 
-X-CRM114-Status: GOOD (  18.98  )
+X-CRM114-CacheID: sfid-20240626_065604_731347_9473A5DA 
+X-CRM114-Status: UNSURE (   7.10  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,24 +71,75 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jun 26, 2024 at 02:11:11PM +0800, Oliver Sang wrote:
-> hi, Christoph Hellwig,
-> 
-> On Mon, Jun 24, 2024 at 10:35:37AM +0200, Christoph Hellwig wrote:
-> > This is odd to say at least.  Any chance you can check the value
-> > of /sys/block/$DEVICE/queue/rotational for the relevant device before
-> > and after this commit?  And is this an ATA or NVMe SSD?
-> > 
-> 
-> yeah, as Niklas mentioned, it's an ATA SSD.
-> 
-> I checked the /sys/block/$DEVICE/queue/rotational before and after this commit,
-> both show '0'. not sure if this is expected.
-> 
-> anyway, I noticed you send a patch [1]
-> 
-> so I applied this patch upon bd4a633b6f, and found the performance restored.
+This function will be used by the new static stub binary.
 
-Thanks for testing!
+Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
+---
+ arch/x86/um/shared/sysdep/stub_32.h | 22 ++++++++++++++++++++++
+ arch/x86/um/shared/sysdep/stub_64.h | 16 ++++++++++++++++
+ 2 files changed, 38 insertions(+)
+
+diff --git a/arch/x86/um/shared/sysdep/stub_32.h b/arch/x86/um/shared/sysdep/stub_32.h
+index ea8b5a2d67af..ca2dd9263cf2 100644
+--- a/arch/x86/um/shared/sysdep/stub_32.h
++++ b/arch/x86/um/shared/sysdep/stub_32.h
+@@ -79,6 +79,28 @@ static __always_inline long stub_syscall5(long syscall, long arg1, long arg2,
+ 	return ret;
+ }
+ 
++static __always_inline long stub_syscall6(long syscall, long arg1, long arg2,
++					  long arg3, long arg4, long arg5,
++					  long arg6)
++{
++	struct syscall_args {
++		int ebx, ebp;
++	} args = { arg1, arg6 };
++	long ret;
++
++	__asm__ volatile ("pushl %%ebp;"
++			"movl 0x4(%%ebx),%%ebp;"
++			"movl (%%ebx),%%ebx;"
++			"int $0x80;"
++			"popl %%ebp"
++			: "=a" (ret)
++			: "0" (syscall), "b" (&args),
++			"c" (arg2), "d" (arg3), "S" (arg4), "D" (arg5)
++			: "memory");
++
++	return ret;
++}
++
+ static __always_inline void trap_myself(void)
+ {
+ 	__asm("int3");
+diff --git a/arch/x86/um/shared/sysdep/stub_64.h b/arch/x86/um/shared/sysdep/stub_64.h
+index b24168ef0ac4..c99ea6e06f96 100644
+--- a/arch/x86/um/shared/sysdep/stub_64.h
++++ b/arch/x86/um/shared/sysdep/stub_64.h
+@@ -79,6 +79,22 @@ static __always_inline long stub_syscall5(long syscall, long arg1, long arg2,
+ 	return ret;
+ }
+ 
++static __always_inline long stub_syscall6(long syscall, long arg1, long arg2,
++					  long arg3, long arg4, long arg5,
++					  long arg6)
++{
++	long ret;
++
++	__asm__ volatile ("movq %5,%%r10 ; movq %6,%%r8 ; movq %7,%%r9 ; "
++		__syscall
++		: "=a" (ret)
++		: "0" (syscall), "D" (arg1), "S" (arg2), "d" (arg3),
++		  "g" (arg4), "g" (arg5), "g" (arg6)
++		: __syscall_clobber, "r10", "r8", "r9");
++
++	return ret;
++}
++
+ static __always_inline void trap_myself(void)
+ {
+ 	__asm("int3");
+-- 
+2.45.2
 
 
