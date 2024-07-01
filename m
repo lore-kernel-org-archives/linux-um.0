@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 01481C30653
-	for <linux-um@archiver.kernel.org>; Mon,  1 Jul 2024 21:24:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76845C2BD09
+	for <linux-um@archiver.kernel.org>; Mon,  1 Jul 2024 21:32:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=muUfJ6s3a3BNIjt8G99laSGBwHXPCXt2UY+fErMXNHg=; b=AJXzzAwr2fHQIhbsSg5E34L01O
-	rkQssIm+NfiYGRd+9bDjq454fcCfxSHOxuB6Y72gPKCfqR2FYR8KhyAeiPMK5edHk68VDnZ4qGr0x
-	J2Dzstcy6g92xS5rgPVXBLyv2URHgFmV7xU5JNKoOFfyxrX2j8xebNeEXzLzjPhhblNBuoYo7auwX
-	lpPAjCBo+gAgQbNCMNcq1vO7116hYigV+iY2t8M0zxPCyoJI9A+rfvw7vL3vFQTlFdbXduk1L6Jxt
-	PCHxgR6SuGG6WiBvYkkpGRQcN95xsaldb0kjYaSNsiUga14f8YbDG4IbUcVx4Vpmvl3WBBjFYV5Ol
-	k8isH7Hw==;
+	bh=muUfJ6s3a3BNIjt8G99laSGBwHXPCXt2UY+fErMXNHg=; b=uGRS1ebVo8yATMrz9sZw5Szr+C
+	j3Gw3V4MHmPssc/LLq2C5UcamyumCQes/J4MPjb0PbMiSlWqLUiP+1KgWzb+3E9fgUvZYx/BSPDZE
+	7UNJCA8Ybr1Tcwt4FZ1HX58L6OhpWbW6wrbuoElIHzzlJs9nIGx20XbO27tbMl8lmXnKTPrPv+XsU
+	OaQ8OaK2SI4gd4NnQrHkohzLOmg91ISo9o0+GBPWP0X9fXDE/B5sXAFTMsnO2pddT9UcIIRkqIEpN
+	wZJXQk3BAvYi4gsJ9+f5gQvuQMUDTUNmPCrfejWIvWDbxcf2r+Fk4f1MffTeFx/5p4ci6uFuTlggF
+	BP21MIpw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sOOVs-00000004scM-2Nld;
-	Mon, 01 Jul 2024 21:24:40 +0000
+	id 1sOOd3-00000004th0-3KPj;
+	Mon, 01 Jul 2024 21:32:05 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sOOVo-00000004sX7-11Nx
+	id 1sOOd0-00000004tfX-34kd
 	for linux-um@lists.infradead.org;
-	Mon, 01 Jul 2024 21:24:38 +0000
+	Mon, 01 Jul 2024 21:32:04 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
 	Resent-Message-ID:In-Reply-To:References;
-	bh=muUfJ6s3a3BNIjt8G99laSGBwHXPCXt2UY+fErMXNHg=; t=1719869067; x=1721078667; 
-	b=UbdEDWwBWSDTot5QjclBWn5Sb8Dxyc1aLyzuHN8wYMmu28qdW+pEhYCPgmnJMhmKCp/+iPUSxJ9
-	fV6okchOW3rrIFmveUNOMDNSI4DbSx1Kw0Q05hFaKEkBeVZCfQsPEvCPESAajTieUFyuSP97xf5AY
-	73cE3Zbv0G6lSxuk17rdZosBMOSXXCkpTPfoTslS/VDKacTS5YARWRsUeOTF/my7LJT1MdO1uQ9Qt
-	Bkm+siSsKJtjixESYTtiHsC2DohsYekTW8GOUJiWywI9X4WByy+hxj5pRqM3+apYh2MI9OLLgfdJB
-	ZOL5ZNERAwk/IbG4fpTZifJqVGKKJ+mgR8VA==;
+	bh=muUfJ6s3a3BNIjt8G99laSGBwHXPCXt2UY+fErMXNHg=; t=1719869522; x=1721079122; 
+	b=Ut+vWHaozocP/TUlMIEJmzGk9wzkM+AwfLVXtdZn3+xjUkXWKukSp54JKiVq0tp4Ov7CYj0gf0+
+	RXbCi6PgsMxq+2HTyOHrkJyXrnyeXMtOMPOBrbmINzN1uUKeZV5PXM+Z1UvMnMA5vp5kT2L5uhurM
+	CTCMdQm7XOFgedMSnlFwkQtACUF5xB4S17wHOu1r6BDPA45jvxK7gtGYV4oCTrL+yOqFAZZk8hu+P
+	/AtRTWETXpyDsYVG8VxI5RxC8X7QExFIIJ4VTzRgqAlLVA2/uS166VZpQHr/70EcR5IKQNGxdzvwu
+	fdhCGMa7cb5fSMqIcCGP3qo7Q5B0nB3zNpcw==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.97)
 	(envelope-from <johannes@sipsolutions.net>)
-	id 1sOOVc-00000003JiD-2ib8;
-	Mon, 01 Jul 2024 23:24:24 +0200
+	id 1sOOcy-00000003LSU-0s4u;
+	Mon, 01 Jul 2024 23:32:00 +0200
 From: Johannes Berg <johannes@sipsolutions.net>
 To: linux-um@lists.infradead.org
 Cc: Mordechay Goodstein <mordechay.goodstein@intel.com>
-Subject: [PATCH 1/4] um: time-travel: support time-travel protocol broadcast messages
-Date: Mon,  1 Jul 2024 23:24:21 +0200
-Message-ID: <20240701232420.efd62bd0dcd4.I2ca8d006b67feeb866ac2017af7b741c9e06445a@changeid>
+Subject: [PATCH v3 1/4] um: time-travel: support time-travel protocol broadcast messages
+Date: Mon,  1 Jul 2024 23:31:56 +0200
+Message-ID: <20240701233155.4e9de8a682eb.I2ca8d006b67feeb866ac2017af7b741c9e06445a@changeid>
 X-Mailer: git-send-email 2.45.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240701_142436_324450_737F41AF 
-X-CRM114-Status: GOOD (  22.44  )
+X-CRM114-CacheID: sfid-20240701_143202_784250_5E2BFFD2 
+X-CRM114-Status: GOOD (  22.34  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
