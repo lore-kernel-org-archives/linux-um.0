@@ -4,57 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9A8B7C2BD09
-	for <linux-um@archiver.kernel.org>; Mon,  1 Jul 2024 21:11:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ACB2EC2BD09
+	for <linux-um@archiver.kernel.org>; Mon,  1 Jul 2024 21:24:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=+y+FPZXPkU8qRC+K22gxKocZmrvmYeuRsSAyppJPZp8=; b=c889xbFMEAHJeXRluhL39TjY9B
-	zurDK0huty6mHiE0PAW9aiQ04NiygZlMGx59jzukP+ZM29QFfaYC54uHJ1SDJzPvXmfYZsm1X0lKg
-	GTg08cXPTT4YD5evAAZJEI74cI31KvHKkevpyQINVn5O2sVdOzifANzO43eeARCLU8ALhMX0Gqkm6
-	u12cAQL/dvfRFaq4B82knepAhDzE8KISLHeNyz7rTxmK8lDKgT4s/xFZgEnEYhhAM5HZ2BZaLDwWN
-	+KI22DA19RfOSqV4hOTH2gxD71HPtgzkpzFGAIsJvLzvAIUh/UB+wjMqIxE5KdqZ6kATfZi2Z5LzY
-	NtmW4+FA==;
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=ESsixDdius8VNpPMiTAxMFI20QYcV6IBwjMbUVI52VI=; b=VzVcVVPGC2cgPz7+8BxxNo6dHt
+	NJws4lk98gi4jOyEVV2V0JjkI6NpTYpmRow8mjooHcrlnpwg2S/NVzmDSccCNRoi+K8piW+EVKPYZ
+	ROb6X2sFrfMnN8tF9X2VowVccloO30wInnJMPzHbTKSJ4aV2ah1OdkMjsB3Q3JN1tNnzCjzsqjI9+
+	0hvCWruaebSZYFSE2kdGPc/x8ZZ13FzSArS4ASg7UvEWeb+Jrk8yMHZpZf68Hv2BdQkIkR6Zwx0vz
+	6Zl2A5Fut7DDYcJJfEDoBCKT/YtdKwqAY0R7uQ0n+2zrGXkOLuGFn4tb8DmXyhkJpZ4cksW6sSFVL
+	0gcpqdvg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sOOJJ-00000004r3X-3HBU;
-	Mon, 01 Jul 2024 21:11:41 +0000
+	id 1sOOVq-00000004san-3H6f;
+	Mon, 01 Jul 2024 21:24:38 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sOOJH-00000004r36-0WSv
+	id 1sOOVo-00000004sXL-10yo
 	for linux-um@lists.infradead.org;
-	Mon, 01 Jul 2024 21:11:40 +0000
+	Mon, 01 Jul 2024 21:24:37 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
-	Resent-Message-ID:In-Reply-To:References;
-	bh=+y+FPZXPkU8qRC+K22gxKocZmrvmYeuRsSAyppJPZp8=; t=1719868298; x=1721077898; 
-	b=q9FjUxmoZzUK/kfRqDiqNXcv4jIdzqSOoodCgEdXXrZYuTBSlwyeJfAjozHISqvzAfI2doMGbLe
-	BYE984kixqnkpIssZq80KKd5ybNBiDOYNtwjbtaYQ6rqLvRUL6gbYAIXSPZE5OemmiGhkiHsILE2Z
-	vjtg1JKvgESLvRzco3EnwUtXvHWGqoFWY043tulH1uE+CuloC4vDRvkSKV0MYNbbAX1ROcYfjPFW9
-	9F9ygxD9piuG/K9fmWHSAtK3quDCBeMHp3aosM6BURYi0KW0ZBaGTm80/+S54haE+xZ6ZQ+vxFvUV
-	HhmnDof4bfJVH+GQNmpANU4GQxwhsCq8gAMw==;
+	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=ESsixDdius8VNpPMiTAxMFI20QYcV6IBwjMbUVI52VI=;
+	t=1719869068; x=1721078668; b=k6FgHm3moqD3tlRW9cVVLBbnBINw6F+cor7LCvCZYn6+J/Y
+	cvUstEPR5A64X5WYVeXHMp7mE4/9R4WPWVgdP9EnHsK7HNblQmBaDfSsjT80ZUtwIcYHV2RETUTms
+	cWS5Uq9fQUzEHw8rvPaaPPA+QL3LFOFKl+NCcmh6mjU7RNQyYcdWePm3nlA9rYR/ypBylZJ45VqV2
+	eBnsdfk08tddiVQLIggVO/GV/0Z/g0rWim84tenRDLrWBIliZ8S8IU7pej8etMUTc4UDGFshn9rza
+	9PY/u9YrMVApL4agy8RuaNOBajijvJ/sdJqxAMBiU3L4jIz54Rg45f3FNrSYfVwA==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.97)
 	(envelope-from <johannes@sipsolutions.net>)
-	id 1sOOJE-00000003Gtx-0OOT;
-	Mon, 01 Jul 2024 23:11:36 +0200
+	id 1sOOVe-00000003JiD-1fq3;
+	Mon, 01 Jul 2024 23:24:26 +0200
 From: Johannes Berg <johannes@sipsolutions.net>
 To: linux-um@lists.infradead.org
 Cc: Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH] um: time-travel: fix signal blocking race/hang
-Date: Mon,  1 Jul 2024 23:11:34 +0200
-Message-ID: <20240701231133.57dee498ec0f.Ibb90e3f7cee051927ac294748dafe0cebdd93925@changeid>
+Subject: [PATCH 3/4] um: add mmap/mremap OS calls
+Date: Mon,  1 Jul 2024 23:24:23 +0200
+Message-ID: <20240701232420.02e9893c99f5.Ic2da1d3a983fe57340c1b693badfa9c5bd2d8c61@changeid>
 X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20240701232420.efd62bd0dcd4.I2ca8d006b67feeb866ac2017af7b741c9e06445a@changeid>
+References: <20240701232420.efd62bd0dcd4.I2ca8d006b67feeb866ac2017af7b741c9e06445a@changeid>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240701_141139_352122_98FD6ED5 
-X-CRM114-Status: GOOD (  32.80  )
+X-CRM114-CacheID: sfid-20240701_142436_317423_5809C787 
+X-CRM114-Status: GOOD (  10.02  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,243 +72,69 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Johannes Berg <johannes.berg@intel.com>
 
-When signals are hard-blocked in order to do time-travel
-socket processing, we set signals_blocked and then handle
-SIGIO signals by setting the SIGIO bit in signals_pending.
-When unblocking, we first set signals_blocked to 0, and
-then handle all pending signals. We have to set it first,
-so that we can again properly block/unblock inside the
-unblock, if the time-travel handlers need to be processed.
+For the upcoming shared-memory time-travel external
+optimisations, we need to be able to mmap/mremap
+(and on error munmap). Add the necessary OS calls.
 
-Unfortunately, this is racy. We can get into this situation:
-
-// signals_pending = SIGIO_MASK
-
-unblock_signals_hard()
-   signals_blocked = 0;
-   if (signals_pending && signals_enabled) {
-     block_signals();
-     unblock_signals()
-       ...
-       sig_handler_common(SIGIO, NULL, NULL);
-         sigio_handler()
-           ...
-           sigio_reg_handler()
-             irq_do_timetravel_handler()
-               reg->timetravel_handler() ==
-               vu_req_interrupt_comm_handler()
-                 vu_req_read_message()
-                   vhost_user_recv_req()
-                     vhost_user_recv()
-                       vhost_user_recv_header()
-                         // reads 12 bytes header of
-                         // 20 bytes message
-<-- receive SIGIO here <--
-sig_handler()
-   int enabled = signals_enabled; // 1
-   if ((signals_blocked || !enabled) && (sig == SIGIO)) {
-     if (!signals_blocked && time_travel_mode == TT_MODE_EXTERNAL)
-       sigio_run_timetravel_handlers()
-         _sigio_handler()
-           sigio_reg_handler()
-             ... as above ...
-               vhost_user_recv_header()
-                 // reads 8 bytes that were message payload
-                 // as if it were header - but aborts since
-                 // it then gets -EAGAIN
-...
---> end signal handler -->
-                       // continue in vhost_user_recv()
-                       // full_read() for 8 bytes payload busy loops
-                       // entire process hangs here
-
-Conceptually, to fix this, we need to ensure that the
-signal handler cannot run while we hard-unblock signals.
-The thing that makes this more complex is that we can be
-doing hard-block/unblock while unblocking. Introduce a
-new signals_blocked_pending variable that we can keep at
-non-zero as long as pending signals are being processed,
-then we only need to ensure it's decremented safely and
-the signal handler will only increment it if it's already
-non-zero (or signals_blocked is set, of course.)
-
-Note also that only the outermost call to hard-unblock is
-allowed to decrement signals_blocked_pending, since it
-could otherwise reach zero in an inner call, and leave
-the same race happening if the timetravel_handler loops,
-but that's basically required of it.
-
-Fixes: d6b399a0e02a ("um: time-travel/signals: fix ndelay() in interrupt")
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+--
+v2: drop os_munmap()
 ---
- arch/um/os-Linux/signal.c | 115 +++++++++++++++++++++++++++++++-------
- 1 file changed, 95 insertions(+), 20 deletions(-)
+ arch/um/include/shared/os.h |  2 ++
+ arch/um/os-Linux/file.c     | 23 +++++++++++++++++++++++
+ 2 files changed, 25 insertions(+)
 
-diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
-index 787cfb9a0308..04a977dfa667 100644
---- a/arch/um/os-Linux/signal.c
-+++ b/arch/um/os-Linux/signal.c
-@@ -8,6 +8,7 @@
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index fc4091c127c8..d269637adcd6 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -181,6 +181,8 @@ extern int os_eventfd(unsigned int initval, int flags);
+ extern int os_sendmsg_fds(int fd, const void *buf, unsigned int len,
+ 			  const int *fds, unsigned int fds_num);
+ int os_poll(unsigned int n, const int *fds);
++void *os_mmap_rw_shared(int fd, size_t size);
++void *os_mremap_rw_shared(void *old_addr, size_t old_size, size_t new_size);
  
- #include <stdlib.h>
- #include <stdarg.h>
-+#include <stdbool.h>
- #include <errno.h>
- #include <signal.h>
- #include <string.h>
-@@ -65,9 +66,7 @@ static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
+ /* start_up.c */
+ extern void os_early_checks(void);
+diff --git a/arch/um/os-Linux/file.c b/arch/um/os-Linux/file.c
+index 6d3c73910946..5adf8f630049 100644
+--- a/arch/um/os-Linux/file.c
++++ b/arch/um/os-Linux/file.c
+@@ -17,6 +17,7 @@
+ #include <sys/stat.h>
+ #include <sys/sysmacros.h>
+ #include <sys/un.h>
++#include <sys/mman.h>
+ #include <sys/types.h>
+ #include <sys/eventfd.h>
+ #include <poll.h>
+@@ -718,3 +719,25 @@ int os_poll(unsigned int n, const int *fds)
  
- int signals_enabled;
- #ifdef UML_CONFIG_UML_TIME_TRAVEL_SUPPORT
--static int signals_blocked;
--#else
--#define signals_blocked 0
-+static int signals_blocked, signals_blocked_pending;
- #endif
- static unsigned int signals_pending;
- static unsigned int signals_active = 0;
-@@ -76,14 +75,24 @@ static void sig_handler(int sig, struct siginfo *si, mcontext_t *mc)
- {
- 	int enabled = signals_enabled;
- 
--	if ((signals_blocked || !enabled) && (sig == SIGIO)) {
-+#ifdef UML_CONFIG_UML_TIME_TRAVEL_SUPPORT
-+	if ((signals_blocked || signals_blocked_pending) && (sig == SIGIO)) {
-+		/* increment so unblock will do another round */
-+		signals_blocked_pending++;
-+		return;
-+	}
-+#endif
-+
-+	if (!enabled && (sig == SIGIO)) {
- 		/*
- 		 * In TT_MODE_EXTERNAL, need to still call time-travel
--		 * handlers unless signals are also blocked for the
--		 * external time message processing. This will mark
--		 * signals_pending by itself (only if necessary.)
-+		 * handlers. This will mark signals_pending by itself
-+		 * (only if necessary.)
-+		 * Note we won't get here if signals are hard-blocked
-+		 * (which is handled above), in that case the hard-
-+		 * unblock will handle things.
- 		 */
--		if (!signals_blocked && time_travel_mode == TT_MODE_EXTERNAL)
-+		if (time_travel_mode == TT_MODE_EXTERNAL)
- 			sigio_run_timetravel_handlers();
- 		else
- 			signals_pending |= SIGIO_MASK;
-@@ -380,33 +389,99 @@ int um_set_signals_trace(int enable)
- #ifdef UML_CONFIG_UML_TIME_TRAVEL_SUPPORT
- void mark_sigio_pending(void)
- {
-+	/*
-+	 * It would seem that this should be atomic so
-+	 * it isn't a read-modify-write with a signal
-+	 * that could happen in the middle, losing the
-+	 * value set by the signal.
-+	 *
-+	 * However, this function is only called when in
-+	 * time-travel=ext simulation mode, in which case
-+	 * the only signal ever pending is SIGIO, which
-+	 * is blocked while this can be called, and the
-+	 * timer signal (SIGALRM) cannot happen.
-+	 */
- 	signals_pending |= SIGIO_MASK;
+ 	return -EIO;
  }
- 
- void block_signals_hard(void)
- {
--	if (signals_blocked)
--		return;
--	signals_blocked = 1;
-+	signals_blocked++;
- 	barrier();
- }
- 
- void unblock_signals_hard(void)
- {
-+	static bool unblocking;
 +
- 	if (!signals_blocked)
-+		panic("unblocking signals while not blocked");
++void *os_mmap_rw_shared(int fd, size_t size)
++{
++	void *res = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
 +
-+	if (--signals_blocked)
- 		return;
--	/* Must be set to 0 before we check the pending bits etc. */
--	signals_blocked = 0;
-+	/*
-+	 * Must be set to 0 before we check pending so the
-+	 * SIGIO handler will run as normal unless we're still
-+	 * going to process signals_blocked_pending.
-+	 */
- 	barrier();
- 
--	if (signals_pending && signals_enabled) {
--		/* this is a bit inefficient, but that's not really important */
--		block_signals();
--		unblock_signals();
--	} else if (signals_pending & SIGIO_MASK) {
--		/* we need to run time-travel handlers even if not enabled */
--		sigio_run_timetravel_handlers();
-+	/*
-+	 * Note that block_signals_hard()/unblock_signals_hard() can be called
-+	 * within the unblock_signals()/sigio_run_timetravel_handlers() below.
-+	 * This would still be prone to race conditions since it's actually a
-+	 * call _within_ e.g. vu_req_read_message(), where we observed this
-+	 * issue, which loops. Thus, if the inner call handles the recorded
-+	 * pending signals, we can get out of the inner call with the real
-+	 * signal hander no longer blocked, and still have a race. Thus don't
-+	 * handle unblocking in the inner call, if it happens, but only in
-+	 * the outermost call - 'unblocking' serves as an ownership for the
-+	 * signals_blocked_pending decrement.
-+	 */
-+	if (unblocking)
-+		return;
-+	unblocking = true;
++	if (res == MAP_FAILED)
++		return NULL;
 +
-+	while (signals_blocked_pending) {
-+		if (signals_enabled) {
-+			/* signals are enabled so we can touch this */
-+			signals_pending |= SIGIO_MASK;
-+			/*
-+			 * this is a bit inefficient, but that's
-+			 * not really important
-+			 */
-+			block_signals();
-+			unblock_signals();
-+		} else {
-+			/*
-+			 * we need to run time-travel handlers even
-+			 * if not enabled
-+			 */
-+			sigio_run_timetravel_handlers();
-+		}
++	return res;
++}
 +
-+		/*
-+		 * The decrement of signals_blocked_pending must be atomic so
-+		 * that the signal handler will either happen before or after
-+		 * the decrement, not during a read-modify-write:
-+		 *  - If it happens before, it can increment it and we'll
-+		 *    decrement it and do another round in the loop.
-+		 *  - If it happens after it'll see 0 for both signals_blocked
-+		 *    and signals_blocked_pending and thus run the handler as
-+		 *    usual (subject to signals_enabled, but that's unrelated.)
-+		 *
-+		 * Note that a call to unblock_signals_hard() within the calls
-+		 * to unblock_signals() or sigio_run_timetravel_handlers() above
-+		 * will do nothing due to the 'unblocking' state, so this cannot
-+		 * underflow as the only one decrementing will be the outermost
-+		 * one.
-+		 */
-+		__sync_sub_and_fetch(&signals_blocked_pending, 1);
-+		if (signals_blocked_pending < 0)
-+			panic("signals_blocked_pending underflow");
- 	}
++void *os_mremap_rw_shared(void *old_addr, size_t old_size, size_t new_size)
++{
++	void *res;
 +
-+	unblocking = false;
- }
- #endif
- 
++	res = mremap(old_addr, old_size, new_size, MREMAP_MAYMOVE, NULL);
++
++	if (res == MAP_FAILED)
++		return NULL;
++
++	return res;
++}
 -- 
 2.45.2
 
