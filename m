@@ -4,59 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD202C3064D
-	for <linux-um@archiver.kernel.org>; Tue,  2 Jul 2024 10:21:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50A45C3064D
+	for <linux-um@archiver.kernel.org>; Tue,  2 Jul 2024 10:24:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ejnqKEj1NIrA62XRnFFu0iVVLC/5aj+CwJoPEYJFZV8=; b=dgs88IuPulZ0JJFVd/7x9Vk7um
-	r8zntQ/PeZk5siKRCz6h7immPzHM+Pw4erREsc7sK6Ayw3LCRyn7Y/4FTe9vVa7zupFuLVrYJ3Ntb
-	efjr0APSWaOf8hmcLkoCRDgYEA4cd6DULG3KIBE7D922Lpn0e8rAwfRQrka8GEvrW0DyTFgZ+sS87
-	UfdmWLTA4MvLXb4g0JS3ntXulw4yu/pfeIzaMTBQ7JZq5xfw7pHR8s3rBCb+WHI8bZJYe2/iH9yuq
-	wfXTDwZAu8KyLy0EiJxZXycWwNGWACqX19HqExEDCCxyRDGXjd2FYZBGNL/fponWrzxxq/qBx1Pps
-	h62//VcA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=PGN/Z4nHpXQCi6h5qSdSGZE78U7FokNZlM0EE7rRTNo=; b=0fd9VuiyLuT9IkWV4B/ixOGDTr
+	YcdW2Cd8mDHLNXx91ZS7DGDQfsjIfkBQYH4bNjJ3BJmgOb4InqzrNNXHWGd+eIPmh4mCkNTQHAGil
+	2i9B+mU73I1BTk2vlX5VVN8cYqTpO5XBZKt3vniblsUjI1jzVXbq73a4S6vFz8cZ+GPvZzbey92ko
+	IPbUBTzWElw/YKnVPmJ8pevqV5dGH5vXidmzW37VgTx0JXXfs5iUip/2ccSJkEk15cbKOIeRDwCyY
+	JB6cGWqi6D7GbwnFKUHDN2ao3bKEjaLE5YfAmuU04xNVP/2Hmwo0WPfwTiPdEuDNp6V1cQjQsvKc4
+	J/QxYDxw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sOadn-00000006KqL-0CKQ;
-	Tue, 02 Jul 2024 10:21:39 +0000
-Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
+	id 1sOagv-00000006LDd-2TU3;
+	Tue, 02 Jul 2024 10:24:53 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sOadi-00000006Kpk-1b7t
+	id 1sOagt-00000006LDE-2yau
 	for linux-um@lists.infradead.org;
-	Tue, 02 Jul 2024 10:21:37 +0000
-Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
-	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>)
-	id 1sOadf-005UNu-GF
-	for linux-um@lists.infradead.org; Tue, 02 Jul 2024 10:21:31 +0000
-Received: from jain.kot-begemot.co.uk ([192.168.3.3])
-	by jain.kot-begemot.co.uk with esmtp (Exim 4.96)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>)
-	id 1sOadc-001fiA-2W
-	for linux-um@lists.infradead.org;
-	Tue, 02 Jul 2024 11:21:31 +0100
-Message-ID: <6878d6fb-9d8f-45ce-86c5-95cb291ecc2b@kot-begemot.co.uk>
-Date: Tue, 2 Jul 2024 11:21:28 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+	Tue, 02 Jul 2024 10:24:52 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=PGN/Z4nHpXQCi6h5qSdSGZE78U7FokNZlM0EE7rRTNo=;
+	t=1719915891; x=1721125491; b=wgGLJhKJodk4hRjoV1jI0xG+IZtfYMTWb+iuACgKZhAM8Z5
+	OEPjgvvPqUdzCeLWJTMmM9nd/wZfPlxfK3AXcegwUoyg8h4nNlZPaprddzVp2O7VnA5i85tWRFH9M
+	dHDTHQ7VJrbfS/H9cSso9jiIV+WfTJSUzHz5Glzr2cKePVt4x1H2Zlr+wlOQhqJ9IUHhA647oiy62
+	iWw+cJDnBzv+Qv49JfhRq0EFuRUpPbAquFFifp9eUiKwtfECdktmfHc9bewVKB1YhKmH87NayC5Ta
+	gORlNQyoKhZNfhEAuOx7Ma+6SmOZqwHaXPaLxhV8UqwBMVbwDFsV/H56DD5bAqJg==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1sOagq-00000005CqG-29iD;
+	Tue, 02 Jul 2024 12:24:48 +0200
+Message-ID: <a7e7f619bc73fff0f54dccc1129feb3c721cb49d.camel@sipsolutions.net>
 Subject: Re: [PATCH v10] um: Enable preemption in UML
-Content-Language: en-US
+From: Johannes Berg <johannes@sipsolutions.net>
 To: linux-um@lists.infradead.org
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Date: Tue, 02 Jul 2024 12:24:47 +0200
+In-Reply-To: <20240702102549.d2fcea450854.I12f5a53d80ec1e425e66ef272b1e95cb523b608e@changeid>
 References: <20240702102549.d2fcea450854.I12f5a53d80ec1e425e66ef272b1e95cb523b608e@changeid>
- <2c584137-211b-4746-bb6b-ebdec4c486af@cambridgegreys.com>
- <6d4c32b6237f02b6f53ed91bbc7fdfc0b293874a.camel@sipsolutions.net>
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-In-Reply-To: <6d4c32b6237f02b6f53ed91bbc7fdfc0b293874a.camel@sipsolutions.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Clacks-Overhead: GNU Terry Pratchett
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.2 (3.52.2-1.fc40) 
+MIME-Version: 1.0
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240702_032135_857703_403DB0EC 
-X-CRM114-Status: GOOD (  12.63  )
+X-CRM114-CacheID: sfid-20240702_032451_768333_9AFAA54E 
+X-CRM114-Status: UNSURE (   6.94  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,44 +73,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+On Tue, 2024-07-02 at 10:25 +0200, Johannes Berg wrote:
+> From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+>=20
+> Since userspace state is saved in the MM process, kernel using
+> FPU still doesn't really need to do anything, so this really
+> is as simple as enabling preemption. The irq critical section
+> in sigio_handler() needs preempt_disable()/preempt_enable().
 
+For the record, my main interest in this is to unlock debugging for RCU
+lists, sleep, etc.
 
-On 02/07/2024 11:18, Johannes Berg wrote:
-> On Tue, 2024-07-02 at 11:07 +0100, Anton Ivanov wrote:
->>
->>
->> Is that all we have left?
-> 
-> I think so, yes.
-> 
->> I lost track of your mm patches and they do not apply cleanly to master at present.
-> 
-> Mine actually mostly went away, in favour of Benjamin's, but his also
-> didn't apply cleanly due to the compiler warning cleanups.
-
-Ack.
-
-> 
->> Otherwise, the fpu-less on top of the older mm works fine for me. Testing it at the moment.
-> 
-> :-)
-> 
-> We have 40 patches in patchwork now, including the 7 64-bit address
-> space ones from Benjamin where I think some rework is needed. I've
-> rebased/applied the other 33, I've just pushed that to the 'pending'
-> branch:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git/log/?h=pending
-
-Cool. It will be nice to see all of it in the tree at last.
-
-> 
-> johannes
-> 
-> 
-> 
-
--- 
-Anton R. Ivanov
-https://www.kot-begemot.co.uk/
+johannes
 
