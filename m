@@ -4,73 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 75394C3DA46
-	for <linux-um@archiver.kernel.org>; Wed,  3 Jul 2024 15:00:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E50EBC3DA43
+	for <linux-um@archiver.kernel.org>; Wed,  3 Jul 2024 15:00:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Ggqdf31D7ndgUuzbMqpPeLHvcsmL+lPocLQfLEdVYIU=; b=zzw+MkkC+g6fCKa1s931xi/mph
-	Dw3eOdHPBiXAcATIuytBFmU6tQXw9sH1/QAItcKliUy6yA0IS6oJMx3XeqelaIIxylB7l2mzbYd9q
-	NhDcR6DmPoWu3rjh5GLQVy+miusA2PAxqag9nqXWiF+4mHbpo3qElhCaPeh8aRMhdy5i04wTzv0k8
-	y4+1/sUs6JHJqPRgwuxzHKhloxgQ6g5zfnbtJVllzeHpEWtxDzVrj1rzyXc1mS3sPxrNtKDFicRJT
-	zNvI1gMMPJR0C5S/y64ywENwzdfU7l2see5B8xNRiFlXImQ9l+lPL36sHh9sj7Xk2sX3R0Z2Zg9qK
-	/v9Bbiew==;
+	bh=8im0tXgtEszBPy7Rtlr6ZeIpFN0rJu9QK4jobQlhPNw=; b=4iZRetFXoxtUdDtL4zV01E6k7t
+	H04d8JEnux3tHomV3SfrGQlElgLLFPHjyCBIXfXgmAXaQkmDZTmgX+nayA6j3OnjcXRauIbIEP4zQ
+	U1r3Aq+Ycq66Oe9/E0tfmrsVNd5jjHha5NswHCO2n8VlZP2bZLAzOtVRvHF4Yq7l/PTxVjjo+WbJi
+	Hmn3RnjXB66QE08x9O1TQBAelH6JFh9WEqih8jYTdEcuHpSXO2ibr3x1TyyO8RiHiXV14wWu/F9RM
+	QtTxK03lv/ePJwvHDV8q1qUtu8jaRkUyDWSq0ooXYZB7FhQ8hHSLK5WqkQTQt/WGvVW+PnZ/wWgNR
+	ZRerc2mA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sP1TY-0000000Aag7-3l5G;
-	Wed, 03 Jul 2024 15:00:52 +0000
+	id 1sP1TX-0000000Aaeh-2Vzp;
+	Wed, 03 Jul 2024 15:00:51 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sP0Jm-0000000ALNp-3eoS
+	id 1sP0Jg-0000000ALM7-2TMc
 	for linux-um@bombadil.infradead.org;
-	Wed, 03 Jul 2024 13:46:43 +0000
+	Wed, 03 Jul 2024 13:46:36 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
 	:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=Ggqdf31D7ndgUuzbMqpPeLHvcsmL+lPocLQfLEdVYIU=; b=c2zvZjf8UbCUhHlipbhkewATVJ
-	cM2Rn9ej7bb+Tk/29y2O8y6LrAET3j0IPLcqmaq756G6QWGLXWoaRUBLyBqftgRs0DzussvwGyNbC
-	JX3MxFHnVDx8IHBML5mcEH5uGJP905g4X/RItV+ALS1Df5OD+makj3JeuL8zjlcdw8Gbum8QQytRU
-	18lPRWkAzq9x2Sc2Q5ZHZfoHQ15YdbnlgHx9pSfrFHJb8ryiz0Dg7RdISu+I1rPB9kIG28Rhn6uyK
-	+fgZNzfjrq1UkuMyEChszjQUws3Qs4MSwusp/eXuSOVg2Ac6OrHouxV45a9kOEwgLz//auzm/iv5B
-	GxI8PjTg==;
+	bh=8im0tXgtEszBPy7Rtlr6ZeIpFN0rJu9QK4jobQlhPNw=; b=d4r8nQ4HCRRvTtT89xHhays5g8
+	JrrZHvD9QciOYItC/GEz2s71GzpXUZPytEgmZfbaCCRuawOIr2I2wopRoXMsZM+LQ2lgwqk9GEfdc
+	EaiUpWyuSewq1I/CGnzmbZcBm2thhMGrHX/FvHjIVP67KADFmkqWw5sLNPdWhujxV7CtMrZgatCHI
+	44Oj6gc5yA3Xwact75rqAOKjKRicC6N3XpIg79NyhbB1/OEq5AoHkfRxpfR2CxBcZOBKxcaDqPsJU
+	y4OAue4HJNpWqRBW10w8rdIyxUHBRP823SnaUcX88L1P5IVObdVboIn8TXXP4XRi7p6xsN2NFSjCw
+	5/gvEmGQ==;
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by desiato.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sP0Jc-0000000A1Js-1SNw
+	id 1sP0JW-0000000A1In-3LYY
 	for linux-um@lists.infradead.org;
-	Wed, 03 Jul 2024 13:46:39 +0000
+	Wed, 03 Jul 2024 13:46:30 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=Ggqdf31D7ndgUuzbMqpPeLHvcsmL+lPocLQfLEdVYIU=;
-	t=1720014392; x=1721223992; b=gAowapE1ektdYjVRVc6gPEI+oDNLAG+xJ0vAKe9dzMk6bzo
-	KfMfU9hidtfDgA9hzRK9pwEk9foTFWjyY/TRYyMXCye2bRXFTYiNwr1ZipdEllkrQtqJKE34LPAsf
-	1wcPHLEN9HFkz5tgmWRId/5W1KR7M3B88FwAzx3k6v7hWQkCdS4ppa4m/YvBD0YXagtPd5sf7vmv6
-	PdqRCJJWwyxoi8jEh+Wps0Oti+vHMmX5YlKRrWsFDiyP1otaahpf07OoDl/Hhfy+OdBlFE5mesv78
-	GiE9xoOpA+2FTXoLsvCUaCLDYIpy4ulc3z1L2EvvfRAwjZFDGngMA1JQqEj/aeFg==;
+	Resent-Cc:Resent-Message-ID; bh=8im0tXgtEszBPy7Rtlr6ZeIpFN0rJu9QK4jobQlhPNw=;
+	t=1720014386; x=1721223986; b=mG5qS4HZYD6nyUnfomMnH7immyhor7c2dBIauIZFE8x1p4E
+	eimd0Wi4/yHH+w0s+6JtsOC3+Jn+rwLTAvGPeBOmuqrnut7m97T8RctaI3dwwRLWyvq6KP2Bg7zvz
+	xoJThUfZmun3PqIrfVW+OtfX5q8FaZ0xXdybYFupUA6GPbDJ0gtzF8z99+5N+18/RPoKJWsMgoPWD
+	IeDLFmSDR/VrDE6vZqwt2zYmo3EgSTKDoAu/bksUuOYjKQ0aqOBQU3DNzElo/GfrPRNh56hbvIToM
+	LQOFocDzoYNlU89EcAPXvMXe8PSmMUNv6FmavHFo2T5l2KFBmkECmhTAry2ldpvw==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.97)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1sP0Jb-000000094nb-0FJI;
-	Wed, 03 Jul 2024 15:46:31 +0200
+	id 1sP0JS-000000094nb-2KS1;
+	Wed, 03 Jul 2024 15:46:22 +0200
 From: Benjamin Berg <benjamin@sipsolutions.net>
 To: linux-um@lists.infradead.org
-Cc: Benjamin Berg <benjamin.berg@intel.com>
-Subject: [PATCH v4 11/12] um: simplify and consolidate TLB updates
-Date: Wed,  3 Jul 2024 15:45:35 +0200
-Message-ID: <20240703134536.1161108-12-benjamin@sipsolutions.net>
+Cc: Benjamin Berg <benjamin@sipsolutions.net>
+Subject: [PATCH v4 08/12] um: Delay flushing syscalls until the thread is restarted
+Date: Wed,  3 Jul 2024 15:45:32 +0200
+Message-ID: <20240703134536.1161108-9-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240703134536.1161108-1-benjamin@sipsolutions.net>
 References: <20240703134536.1161108-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240703_144635_453402_1BBD77AE 
-X-CRM114-Status: GOOD (  22.31  )
+X-CRM114-CacheID: sfid-20240703_144627_321349_DB401859 
+X-CRM114-Status: GOOD (  22.58  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,613 +85,238 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Benjamin Berg <benjamin.berg@intel.com>
+As running the syscalls is expensive due to context switches, we should
+do so as late as possible in case more syscalls need to be queued later
+on. This will also benefit a later move to a SECCOMP enabled userspace
+as in that case the need for extra context switches is removed entirely.
 
-The HVC update was mostly used to compress consecutive calls into one.
-This is mostly relevant for userspace where it is already handled by the
-syscall stub code.
+Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
 
-Simplify the whole logic and consolidate it for both kernel and
-userspace. This does remove the sequential syscall compression for the
-kernel, however that shouldn't be the main factor in most runs.
-
-Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
 ---
- arch/um/include/shared/os.h |  12 +-
- arch/um/kernel/tlb.c        | 386 ++++++++----------------------------
- arch/um/os-Linux/skas/mem.c |  18 +-
- 3 files changed, 99 insertions(+), 317 deletions(-)
+
+v4: Fix indentation and typo in commit message
+---
+ arch/um/include/shared/os.h         |  4 +++
+ arch/um/include/shared/skas/mm_id.h |  1 -
+ arch/um/include/shared/skas/skas.h  |  1 +
+ arch/um/kernel/skas/process.c       |  8 ++++++
+ arch/um/kernel/tlb.c                | 21 ++------------
+ arch/um/os-Linux/skas/mem.c         | 44 ++++++++++++++++-------------
+ arch/um/os-Linux/skas/process.c     | 12 ++++++--
+ 7 files changed, 49 insertions(+), 42 deletions(-)
 
 diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index 345b117aff0b..9a039d6f1f74 100644
+index d12fec5d0b4d..345b117aff0b 100644
 --- a/arch/um/include/shared/os.h
 +++ b/arch/um/include/shared/os.h
-@@ -279,12 +279,12 @@ int syscall_stub_flush(struct mm_id *mm_idp);
- struct stub_syscall *syscall_stub_alloc(struct mm_id *mm_idp);
- void syscall_stub_dump_error(struct mm_id *mm_idp);
+@@ -195,6 +195,9 @@ extern void get_host_cpu_features(
+ /* mem.c */
+ extern int create_mem_file(unsigned long long len);
  
--void map(struct mm_id *mm_idp, unsigned long virt,
--	 unsigned long len, int prot, int phys_fd,
--	 unsigned long long offset);
--void unmap(struct mm_id *mm_idp, unsigned long addr, unsigned long len);
--void protect(struct mm_id *mm_idp, unsigned long addr,
--	     unsigned long len, unsigned int prot);
-+int map(struct mm_id *mm_idp, unsigned long virt,
-+	unsigned long len, int prot, int phys_fd,
-+	unsigned long long offset);
-+int unmap(struct mm_id *mm_idp, unsigned long addr, unsigned long len);
-+int protect(struct mm_id *mm_idp, unsigned long addr,
-+	    unsigned long len, unsigned int prot);
- 
- /* skas/process.c */
- extern int is_skas_winch(int pid, int fd, void *data);
-diff --git a/arch/um/kernel/tlb.c b/arch/um/kernel/tlb.c
-index 4f482b881adc..2ba1865679ae 100644
---- a/arch/um/kernel/tlb.c
-+++ b/arch/um/kernel/tlb.c
-@@ -15,207 +15,54 @@
- #include <skas.h>
- #include <kern_util.h>
- 
--struct host_vm_change {
--	struct host_vm_op {
--		enum { NONE, MMAP, MUNMAP, MPROTECT } type;
--		union {
--			struct {
--				unsigned long addr;
--				unsigned long len;
--				unsigned int prot;
--				int fd;
--				__u64 offset;
--			} mmap;
--			struct {
--				unsigned long addr;
--				unsigned long len;
--			} munmap;
--			struct {
--				unsigned long addr;
--				unsigned long len;
--				unsigned int prot;
--			} mprotect;
--		} u;
--	} ops[1];
--	int userspace;
--	int index;
--	struct mm_struct *mm;
--	void *data;
-+struct vm_ops {
-+	struct mm_id *mm_idp;
++/* tlb.c */
++extern void report_enomem(void);
 +
-+	int (*mmap)(struct mm_id *mm_idp,
-+		    unsigned long virt, unsigned long len, int prot,
-+		    int phys_fd, unsigned long long offset);
-+	int (*unmap)(struct mm_id *mm_idp,
-+		     unsigned long virt, unsigned long len);
-+	int (*mprotect)(struct mm_id *mm_idp,
-+			unsigned long virt, unsigned long len,
-+			unsigned int prot);
+ /* process.c */
+ extern unsigned long os_process_pc(int pid);
+ extern int os_process_parent(int pid);
+@@ -274,6 +277,7 @@ extern long long os_nsecs(void);
+ /* skas/mem.c */
+ int syscall_stub_flush(struct mm_id *mm_idp);
+ struct stub_syscall *syscall_stub_alloc(struct mm_id *mm_idp);
++void syscall_stub_dump_error(struct mm_id *mm_idp);
+ 
+ void map(struct mm_id *mm_idp, unsigned long virt,
+ 	 unsigned long len, int prot, int phys_fd,
+diff --git a/arch/um/include/shared/skas/mm_id.h b/arch/um/include/shared/skas/mm_id.h
+index 4c5311abe42c..1e76ba40feba 100644
+--- a/arch/um/include/shared/skas/mm_id.h
++++ b/arch/um/include/shared/skas/mm_id.h
+@@ -12,7 +12,6 @@ struct mm_id {
+ 		int pid;
+ 	} u;
+ 	unsigned long stack;
+-	int kill;
+ 	int syscall_data_len;
  };
  
--#define INIT_HVC(mm, userspace) \
--	((struct host_vm_change) \
--	 { .ops		= { { .type = NONE } },	\
--	   .mm		= mm, \
--       	   .data	= NULL, \
--	   .userspace	= userspace, \
--	   .index	= 0 })
--
--void report_enomem(void)
-+static int kern_map(struct mm_id *mm_idp,
-+		    unsigned long virt, unsigned long len, int prot,
-+		    int phys_fd, unsigned long long offset)
- {
--	printk(KERN_ERR "UML ran out of memory on the host side! "
--			"This can happen due to a memory limitation or "
--			"vm.max_map_count has been reached.\n");
-+	/* TODO: Why is executable needed to be always set in the kernel? */
-+	return os_map_memory((void *)virt, phys_fd, offset, len,
-+			     prot & UM_PROT_READ, prot & UM_PROT_WRITE,
-+			     1);
- }
+diff --git a/arch/um/include/shared/skas/skas.h b/arch/um/include/shared/skas/skas.h
+index c93d2cbc8f32..5c78b0cc3dd4 100644
+--- a/arch/um/include/shared/skas/skas.h
++++ b/arch/um/include/shared/skas/skas.h
+@@ -15,5 +15,6 @@ extern void new_thread_handler(void);
+ extern void handle_syscall(struct uml_pt_regs *regs);
+ extern long execute_syscall_skas(void *r);
+ extern unsigned long current_stub_stack(void);
++extern struct mm_id *current_mm_id(void);
  
--static int do_ops(struct host_vm_change *hvc, int end,
--		  int finished)
-+static int kern_unmap(struct mm_id *mm_idp,
-+		      unsigned long virt, unsigned long len)
- {
--	struct host_vm_op *op;
--	int i, ret = 0;
--
--	for (i = 0; i < end && !ret; i++) {
--		op = &hvc->ops[i];
--		switch (op->type) {
--		case MMAP:
--			if (hvc->userspace)
--				map(&hvc->mm->context.id, op->u.mmap.addr,
--				    op->u.mmap.len, op->u.mmap.prot,
--				    op->u.mmap.fd,
--				    op->u.mmap.offset);
--			else
--				map_memory(op->u.mmap.addr, op->u.mmap.offset,
--					   op->u.mmap.len, 1, 1, 1);
--			break;
--		case MUNMAP:
--			if (hvc->userspace)
--				unmap(&hvc->mm->context.id,
--				      op->u.munmap.addr,
--				      op->u.munmap.len);
--			else
--				ret = os_unmap_memory(
--					(void *) op->u.munmap.addr,
--						      op->u.munmap.len);
--
--			break;
--		case MPROTECT:
--			if (hvc->userspace)
--				protect(&hvc->mm->context.id,
--					op->u.mprotect.addr,
--					op->u.mprotect.len,
--					op->u.mprotect.prot);
--			else
--				ret = os_protect_memory(
--					(void *) op->u.mprotect.addr,
--							op->u.mprotect.len,
--							1, 1, 1);
--			break;
--		default:
--			printk(KERN_ERR "Unknown op type %d in do_ops\n",
--			       op->type);
--			BUG();
--			break;
--		}
--	}
--
--	if (hvc->userspace && finished)
--		ret = syscall_stub_flush(&hvc->mm->context.id);
--
--	if (ret == -ENOMEM)
--		report_enomem();
--
--	return ret;
-+	return os_unmap_memory((void *)virt, len);
- }
+ #endif
+diff --git a/arch/um/kernel/skas/process.c b/arch/um/kernel/skas/process.c
+index 99a5cbb36083..41901a74fccc 100644
+--- a/arch/um/kernel/skas/process.c
++++ b/arch/um/kernel/skas/process.c
+@@ -50,3 +50,11 @@ unsigned long current_stub_stack(void)
  
--static int add_mmap(unsigned long virt, unsigned long phys, unsigned long len,
--		    unsigned int prot, struct host_vm_change *hvc)
-+static int kern_mprotect(struct mm_id *mm_idp,
-+			 unsigned long virt, unsigned long len,
-+			 unsigned int prot)
- {
--	__u64 offset;
--	struct host_vm_op *last;
--	int fd = -1, ret = 0;
--
--	if (hvc->userspace)
--		fd = phys_mapping(phys, &offset);
--	else
--		offset = phys;
--	if (hvc->index != 0) {
--		last = &hvc->ops[hvc->index - 1];
--		if ((last->type == MMAP) &&
--		   (last->u.mmap.addr + last->u.mmap.len == virt) &&
--		   (last->u.mmap.prot == prot) && (last->u.mmap.fd == fd) &&
--		   (last->u.mmap.offset + last->u.mmap.len == offset)) {
--			last->u.mmap.len += len;
--			return 0;
--		}
--	}
--
--	if (hvc->index == ARRAY_SIZE(hvc->ops)) {
--		ret = do_ops(hvc, ARRAY_SIZE(hvc->ops), 0);
--		hvc->index = 0;
--	}
--
--	hvc->ops[hvc->index++] = ((struct host_vm_op)
--				  { .type	= MMAP,
--				    .u = { .mmap = { .addr	= virt,
--						     .len	= len,
--						     .prot	= prot,
--						     .fd	= fd,
--						     .offset	= offset }
--			   } });
--	return ret;
-+	return os_protect_memory((void *)virt, len,
-+				 prot & UM_PROT_READ, prot & UM_PROT_WRITE,
-+				 1);
+ 	return current->mm->context.id.stack;
  }
++
++struct mm_id *current_mm_id(void)
++{
++	if (current->mm == NULL)
++		return NULL;
++
++	return &current->mm->context.id;
++}
+diff --git a/arch/um/kernel/tlb.c b/arch/um/kernel/tlb.c
+index a89e2886485f..1eee7134cba8 100644
+--- a/arch/um/kernel/tlb.c
++++ b/arch/um/kernel/tlb.c
+@@ -53,7 +53,7 @@ struct host_vm_change {
+ 	   .index	= 0, \
+ 	   .force	= force })
  
--static int add_munmap(unsigned long addr, unsigned long len,
--		      struct host_vm_change *hvc)
--{
--	struct host_vm_op *last;
--	int ret = 0;
--
--	if (hvc->index != 0) {
--		last = &hvc->ops[hvc->index - 1];
--		if ((last->type == MUNMAP) &&
--		   (last->u.munmap.addr + last->u.mmap.len == addr)) {
--			last->u.munmap.len += len;
--			return 0;
--		}
--	}
--
--	if (hvc->index == ARRAY_SIZE(hvc->ops)) {
--		ret = do_ops(hvc, ARRAY_SIZE(hvc->ops), 0);
--		hvc->index = 0;
--	}
--
--	hvc->ops[hvc->index++] = ((struct host_vm_op)
--				  { .type	= MUNMAP,
--			     	    .u = { .munmap = { .addr	= addr,
--						       .len	= len } } });
--	return ret;
--}
--
--static int add_mprotect(unsigned long addr, unsigned long len,
--			unsigned int prot, struct host_vm_change *hvc)
+-static void report_enomem(void)
 +void report_enomem(void)
  {
--	struct host_vm_op *last;
--	int ret = 0;
+ 	printk(KERN_ERR "UML ran out of memory on the host side! "
+ 			"This can happen due to a memory limitation or "
+@@ -338,15 +338,6 @@ static void fix_range_common(struct mm_struct *mm, unsigned long start_addr,
+ 
+ 	if (!ret)
+ 		ret = do_ops(&hvc, hvc.index, 1);
 -
--	if (hvc->index != 0) {
--		last = &hvc->ops[hvc->index - 1];
--		if ((last->type == MPROTECT) &&
--		   (last->u.mprotect.addr + last->u.mprotect.len == addr) &&
--		   (last->u.mprotect.prot == prot)) {
--			last->u.mprotect.len += len;
--			return 0;
--		}
+-	/* This is not an else because ret is modified above */
+-	if (ret) {
+-		struct mm_id *mm_idp = &current->mm->context.id;
+-
+-		printk(KERN_ERR "fix_range_common: failed, killing current "
+-		       "process: %d\n", task_tgid_vnr(current));
+-		mm_idp->kill = 1;
 -	}
--
--	if (hvc->index == ARRAY_SIZE(hvc->ops)) {
--		ret = do_ops(hvc, ARRAY_SIZE(hvc->ops), 0);
--		hvc->index = 0;
--	}
--
--	hvc->ops[hvc->index++] = ((struct host_vm_op)
--				  { .type	= MPROTECT,
--			     	    .u = { .mprotect = { .addr	= addr,
--							 .len	= len,
--							 .prot	= prot } } });
--	return ret;
-+	printk(KERN_ERR "UML ran out of memory on the host side! "
-+			"This can happen due to a memory limitation or "
-+			"vm.max_map_count has been reached.\n");
  }
  
--#define ADD_ROUND(n, inc) (((n) + (inc)) & ~((inc) - 1))
--
- static inline int update_pte_range(pmd_t *pmd, unsigned long addr,
- 				   unsigned long end,
--				   struct host_vm_change *hvc)
-+				   struct vm_ops *ops)
- {
- 	pte_t *pte;
- 	int r, w, x, prot, ret = 0;
-@@ -235,13 +82,20 @@ static inline int update_pte_range(pmd_t *pmd, unsigned long addr,
- 			(x ? UM_PROT_EXEC : 0));
- 		if (pte_newpage(*pte)) {
- 			if (pte_present(*pte)) {
--				if (pte_newpage(*pte))
--					ret = add_mmap(addr, pte_val(*pte) & PAGE_MASK,
--						       PAGE_SIZE, prot, hvc);
-+				if (pte_newpage(*pte)) {
-+					__u64 offset;
-+					unsigned long phys =
-+						pte_val(*pte) & PAGE_MASK;
-+					int fd =  phys_mapping(phys, &offset);
-+
-+					ret = ops->mmap(ops->mm_idp, addr,
-+							PAGE_SIZE, prot, fd,
-+							offset);
-+				}
- 			} else
--				ret = add_munmap(addr, PAGE_SIZE, hvc);
-+				ret = ops->unmap(ops->mm_idp, addr, PAGE_SIZE);
- 		} else if (pte_newprot(*pte))
--			ret = add_mprotect(addr, PAGE_SIZE, prot, hvc);
-+			ret = ops->mprotect(ops->mm_idp, addr, PAGE_SIZE, prot);
- 		*pte = pte_mkuptodate(*pte);
- 	} while (pte++, addr += PAGE_SIZE, ((addr < end) && !ret));
- 	return ret;
-@@ -249,7 +103,7 @@ static inline int update_pte_range(pmd_t *pmd, unsigned long addr,
- 
- static inline int update_pmd_range(pud_t *pud, unsigned long addr,
- 				   unsigned long end,
--				   struct host_vm_change *hvc)
-+				   struct vm_ops *ops)
- {
+ static int flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
+@@ -461,7 +452,7 @@ void flush_tlb_page(struct vm_area_struct *vma, unsigned long address)
  	pmd_t *pmd;
- 	unsigned long next;
-@@ -260,18 +114,19 @@ static inline int update_pmd_range(pud_t *pud, unsigned long addr,
- 		next = pmd_addr_end(addr, end);
- 		if (!pmd_present(*pmd)) {
- 			if (pmd_newpage(*pmd)) {
--				ret = add_munmap(addr, next - addr, hvc);
-+				ret = ops->unmap(ops->mm_idp, addr,
-+						 next - addr);
- 				pmd_mkuptodate(*pmd);
- 			}
- 		}
--		else ret = update_pte_range(pmd, addr, next, hvc);
-+		else ret = update_pte_range(pmd, addr, next, ops);
- 	} while (pmd++, addr = next, ((addr < end) && !ret));
- 	return ret;
- }
+ 	pte_t *pte;
+ 	struct mm_struct *mm = vma->vm_mm;
+-	int r, w, x, prot, err = 0;
++	int r, w, x, prot;
+ 	struct mm_id *mm_id;
  
- static inline int update_pud_range(p4d_t *p4d, unsigned long addr,
- 				   unsigned long end,
--				   struct host_vm_change *hvc)
-+				   struct vm_ops *ops)
- {
- 	pud_t *pud;
- 	unsigned long next;
-@@ -282,18 +137,19 @@ static inline int update_pud_range(p4d_t *p4d, unsigned long addr,
- 		next = pud_addr_end(addr, end);
- 		if (!pud_present(*pud)) {
- 			if (pud_newpage(*pud)) {
--				ret = add_munmap(addr, next - addr, hvc);
-+				ret = ops->unmap(ops->mm_idp, addr,
-+						 next - addr);
- 				pud_mkuptodate(*pud);
- 			}
- 		}
--		else ret = update_pmd_range(pud, addr, next, hvc);
-+		else ret = update_pmd_range(pud, addr, next, ops);
- 	} while (pud++, addr = next, ((addr < end) && !ret));
- 	return ret;
- }
+ 	address &= PAGE_MASK;
+@@ -509,14 +500,6 @@ void flush_tlb_page(struct vm_area_struct *vma, unsigned long address)
+ 	} else if (pte_newprot(*pte))
+ 		protect(mm_id, address, PAGE_SIZE, prot);
  
- static inline int update_p4d_range(pgd_t *pgd, unsigned long addr,
- 				   unsigned long end,
--				   struct host_vm_change *hvc)
-+				   struct vm_ops *ops)
- {
- 	p4d_t *p4d;
- 	unsigned long next;
-@@ -304,142 +160,62 @@ static inline int update_p4d_range(pgd_t *pgd, unsigned long addr,
- 		next = p4d_addr_end(addr, end);
- 		if (!p4d_present(*p4d)) {
- 			if (p4d_newpage(*p4d)) {
--				ret = add_munmap(addr, next - addr, hvc);
-+				ret = ops->unmap(ops->mm_idp, addr,
-+						 next - addr);
- 				p4d_mkuptodate(*p4d);
- 			}
- 		} else
--			ret = update_pud_range(p4d, addr, next, hvc);
-+			ret = update_pud_range(p4d, addr, next, ops);
- 	} while (p4d++, addr = next, ((addr < end) && !ret));
- 	return ret;
- }
- 
--static void fix_range_common(struct mm_struct *mm, unsigned long start_addr,
-+static int fix_range_common(struct mm_struct *mm, unsigned long start_addr,
- 			     unsigned long end_addr)
- {
- 	pgd_t *pgd;
--	struct host_vm_change hvc;
-+	struct vm_ops ops;
- 	unsigned long addr = start_addr, next;
--	int ret = 0, userspace = 1;
-+	int ret = 0;
-+
-+	ops.mm_idp = &mm->context.id;
-+	if (mm == &init_mm) {
-+		ops.mmap = kern_map;
-+		ops.unmap = kern_unmap;
-+		ops.mprotect = kern_mprotect;
-+	} else {
-+		ops.mmap = map;
-+		ops.unmap = unmap;
-+		ops.mprotect = protect;
-+	}
- 
--	hvc = INIT_HVC(mm, userspace);
- 	pgd = pgd_offset(mm, addr);
- 	do {
- 		next = pgd_addr_end(addr, end_addr);
- 		if (!pgd_present(*pgd)) {
- 			if (pgd_newpage(*pgd)) {
--				ret = add_munmap(addr, next - addr, &hvc);
-+				ret = ops.unmap(ops.mm_idp, addr,
-+						next - addr);
- 				pgd_mkuptodate(*pgd);
- 			}
- 		} else
--			ret = update_p4d_range(pgd, addr, next, &hvc);
-+			ret = update_p4d_range(pgd, addr, next, &ops);
- 	} while (pgd++, addr = next, ((addr < end_addr) && !ret));
- 
--	if (!ret)
--		ret = do_ops(&hvc, hvc.index, 1);
-+	if (ret == -ENOMEM)
-+		report_enomem();
-+
-+	return ret;
- }
- 
--static int flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
-+static void flush_tlb_kernel_range_common(unsigned long start, unsigned long end)
- {
--	struct mm_struct *mm;
--	pgd_t *pgd;
--	p4d_t *p4d;
--	pud_t *pud;
--	pmd_t *pmd;
--	pte_t *pte;
--	unsigned long addr, last;
--	int updated = 0, err = 0,  userspace = 0;
--	struct host_vm_change hvc;
+-	err = syscall_stub_flush(mm_id);
+-	if (err) {
+-		if (err == -ENOMEM)
+-			report_enomem();
 -
--	mm = &init_mm;
--	hvc = INIT_HVC(mm, userspace);
--	for (addr = start; addr < end;) {
--		pgd = pgd_offset(mm, addr);
--		if (!pgd_present(*pgd)) {
--			last = ADD_ROUND(addr, PGDIR_SIZE);
--			if (last > end)
--				last = end;
--			if (pgd_newpage(*pgd)) {
--				updated = 1;
--				err = add_munmap(addr, last - addr, &hvc);
--				if (err < 0)
--					panic("munmap failed, errno = %d\n",
--					      -err);
--			}
--			addr = last;
--			continue;
--		}
--
--		p4d = p4d_offset(pgd, addr);
--		if (!p4d_present(*p4d)) {
--			last = ADD_ROUND(addr, P4D_SIZE);
--			if (last > end)
--				last = end;
--			if (p4d_newpage(*p4d)) {
--				updated = 1;
--				err = add_munmap(addr, last - addr, &hvc);
--				if (err < 0)
--					panic("munmap failed, errno = %d\n",
--					      -err);
--			}
--			addr = last;
--			continue;
--		}
-+	int err;
- 
--		pud = pud_offset(p4d, addr);
--		if (!pud_present(*pud)) {
--			last = ADD_ROUND(addr, PUD_SIZE);
--			if (last > end)
--				last = end;
--			if (pud_newpage(*pud)) {
--				updated = 1;
--				err = add_munmap(addr, last - addr, &hvc);
--				if (err < 0)
--					panic("munmap failed, errno = %d\n",
--					      -err);
--			}
--			addr = last;
--			continue;
--		}
--
--		pmd = pmd_offset(pud, addr);
--		if (!pmd_present(*pmd)) {
--			last = ADD_ROUND(addr, PMD_SIZE);
--			if (last > end)
--				last = end;
--			if (pmd_newpage(*pmd)) {
--				updated = 1;
--				err = add_munmap(addr, last - addr, &hvc);
--				if (err < 0)
--					panic("munmap failed, errno = %d\n",
--					      -err);
--			}
--			addr = last;
--			continue;
--		}
--
--		pte = pte_offset_kernel(pmd, addr);
--		if (!pte_present(*pte) || pte_newpage(*pte)) {
--			updated = 1;
--			err = add_munmap(addr, PAGE_SIZE, &hvc);
--			if (err < 0)
--				panic("munmap failed, errno = %d\n",
--				      -err);
--			if (pte_present(*pte))
--				err = add_mmap(addr, pte_val(*pte) & PAGE_MASK,
--					       PAGE_SIZE, 0, &hvc);
--		}
--		else if (pte_newprot(*pte)) {
--			updated = 1;
--			err = add_mprotect(addr, PAGE_SIZE, 0, &hvc);
--		}
--		addr += PAGE_SIZE;
+-		goto kill;
 -	}
--	if (!err)
--		err = do_ops(&hvc, hvc.index, 1);
-+	err = fix_range_common(&init_mm, start, end);
+-
+ 	*pte = pte_mkuptodate(*pte);
  
--	if (err < 0)
-+	if (err)
- 		panic("flush_tlb_kernel failed, errno = %d\n", err);
--	return updated;
- }
- 
- void flush_tlb_page(struct vm_area_struct *vma, unsigned long address)
+ 	return;
 diff --git a/arch/um/os-Linux/skas/mem.c b/arch/um/os-Linux/skas/mem.c
-index 46fa10ab9892..c55430775efd 100644
+index 32c61189110c..46fa10ab9892 100644
 --- a/arch/um/os-Linux/skas/mem.c
 +++ b/arch/um/os-Linux/skas/mem.c
-@@ -175,7 +175,7 @@ static struct stub_syscall *syscall_stub_get_previous(struct mm_id *mm_idp,
- 	return NULL;
+@@ -22,6 +22,29 @@
+ 
+ extern char __syscall_stub_start[];
+ 
++void syscall_stub_dump_error(struct mm_id *mm_idp)
++{
++	struct stub_data *proc_data = (void *)mm_idp->stack;
++	struct stub_syscall *sc;
++
++	if (proc_data->syscall_data_len < 0 ||
++	    proc_data->syscall_data_len >= ARRAY_SIZE(proc_data->syscall_data))
++		panic("Syscall data was corrupted by stub (len is: %d, expected maximum: %d)!",
++			proc_data->syscall_data_len,
++			mm_idp->syscall_data_len);
++
++	sc = &proc_data->syscall_data[proc_data->syscall_data_len];
++
++	printk(UM_KERN_ERR "%s : length = %d, last offset = %d",
++		__func__, mm_idp->syscall_data_len,
++		proc_data->syscall_data_len);
++	printk(UM_KERN_ERR "%s : stub syscall type %d failed, return value = 0x%lx\n",
++		__func__, sc->syscall, proc_data->err);
++
++	print_hex_dump(UM_KERN_ERR, "    syscall data: ", 0,
++		       16, 4, sc, sizeof(*sc), 0);
++}
++
+ static inline unsigned long *check_init_stack(struct mm_id * mm_idp,
+ 					      unsigned long *stack)
+ {
+@@ -82,26 +105,9 @@ static inline long do_syscall_stub(struct mm_id *mm_idp)
+ 	 * otherwise it will be zero (but we do not need to rely on that).
+ 	 */
+ 	if (proc_data->err < 0) {
+-		struct stub_syscall *sc;
+-
+-		if (proc_data->syscall_data_len < 0 ||
+-		    proc_data->syscall_data_len >= ARRAY_SIZE(proc_data->syscall_data))
+-			panic("Syscall data was corrupted by stub (len is: %d, expected maximum: %d)!",
+-			      proc_data->syscall_data_len,
+-			      mm_idp->syscall_data_len);
+-
+-		sc = &proc_data->syscall_data[proc_data->syscall_data_len];
+-
+-		printk(UM_KERN_ERR "%s : length = %d, last offset = %d",
+-		       __func__, mm_idp->syscall_data_len,
+-		       proc_data->syscall_data_len);
+-		printk(UM_KERN_ERR "%s : stub syscall type %d failed, return value = 0x%lx\n",
+-		       __func__, sc->syscall, proc_data->err);
+-
+-		print_hex_dump(UM_KERN_ERR,
+-			       "    syscall data: ", 0,
+-			       16, 4, sc, sizeof(*sc), 0);
++		syscall_stub_dump_error(mm_idp);
+ 
++		/* Store error code in case someone tries to add more syscalls */
+ 		mm_idp->syscall_data_len = proc_data->err;
+ 	} else {
+ 		mm_idp->syscall_data_len = 0;
+diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+index 566b8ecccc3f..9cb61610147a 100644
+--- a/arch/um/os-Linux/skas/process.c
++++ b/arch/um/os-Linux/skas/process.c
+@@ -254,7 +254,6 @@ static int userspace_tramp(void *stack)
  }
  
--void map(struct mm_id *mm_idp, unsigned long virt, unsigned long len, int prot,
-+int map(struct mm_id *mm_idp, unsigned long virt, unsigned long len, int prot,
- 	int phys_fd, unsigned long long offset)
- {
- 	struct stub_syscall *sc;
-@@ -185,7 +185,7 @@ void map(struct mm_id *mm_idp, unsigned long virt, unsigned long len, int prot,
- 	if (sc && sc->mem.prot == prot && sc->mem.fd == phys_fd &&
- 	    sc->mem.offset == MMAP_OFFSET(offset - sc->mem.length)) {
- 		sc->mem.length += len;
--		return;
-+		return 0;
- 	}
+ int userspace_pid[NR_CPUS];
+-int kill_userspace_mm[NR_CPUS];
  
- 	sc = syscall_stub_alloc(mm_idp);
-@@ -195,9 +195,11 @@ void map(struct mm_id *mm_idp, unsigned long virt, unsigned long len, int prot,
- 	sc->mem.prot = prot;
- 	sc->mem.fd = phys_fd;
- 	sc->mem.offset = MMAP_OFFSET(offset);
+ /**
+  * start_userspace() - prepare a new userspace process
+@@ -348,8 +347,16 @@ void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
+ 	while (1) {
+ 		time_travel_print_bc_msg();
+ 
+-		if (kill_userspace_mm[0])
++		/* Flush out any pending syscalls */
++		err = syscall_stub_flush(current_mm_id());
++		if (err) {
++			if (err == -ENOMEM)
++				report_enomem();
 +
-+	return 0;
- }
++			printk(UM_KERN_ERR "%s - Error flushing stub syscalls: %d",
++				__func__, -err);
+ 			fatal_sigsegv();
++		}
  
--void unmap(struct mm_id *mm_idp, unsigned long addr, unsigned long len)
-+int unmap(struct mm_id *mm_idp, unsigned long addr, unsigned long len)
+ 		/*
+ 		 * This can legitimately fail if the process loads a
+@@ -580,5 +587,4 @@ void reboot_skas(void)
+ void __switch_mm(struct mm_id *mm_idp)
  {
- 	struct stub_syscall *sc;
- 
-@@ -205,16 +207,18 @@ void unmap(struct mm_id *mm_idp, unsigned long addr, unsigned long len)
- 	sc = syscall_stub_get_previous(mm_idp, STUB_SYSCALL_MUNMAP, addr);
- 	if (sc) {
- 		sc->mem.length += len;
--		return;
-+		return 0;
- 	}
- 
- 	sc = syscall_stub_alloc(mm_idp);
- 	sc->syscall = STUB_SYSCALL_MUNMAP;
- 	sc->mem.addr = addr;
- 	sc->mem.length = len;
-+
-+	return 0;
- }
- 
--void protect(struct mm_id *mm_idp, unsigned long addr, unsigned long len,
-+int protect(struct mm_id *mm_idp, unsigned long addr, unsigned long len,
- 	    unsigned int prot)
- {
- 	struct stub_syscall *sc;
-@@ -223,7 +227,7 @@ void protect(struct mm_id *mm_idp, unsigned long addr, unsigned long len,
- 	sc = syscall_stub_get_previous(mm_idp, STUB_SYSCALL_MPROTECT, addr);
- 	if (sc && sc->mem.prot == prot) {
- 		sc->mem.length += len;
--		return;
-+		return 0;
- 	}
- 
- 	sc = syscall_stub_alloc(mm_idp);
-@@ -231,4 +235,6 @@ void protect(struct mm_id *mm_idp, unsigned long addr, unsigned long len,
- 	sc->mem.addr = addr;
- 	sc->mem.length = len;
- 	sc->mem.prot = prot;
-+
-+	return 0;
+ 	userspace_pid[0] = mm_idp->u.pid;
+-	kill_userspace_mm[0] = mm_idp->kill;
  }
 -- 
 2.45.2
