@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 756E8C2BD09
-	for <linux-um@archiver.kernel.org>; Wed,  3 Jul 2024 16:41:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED011C2BD09
+	for <linux-um@archiver.kernel.org>; Wed,  3 Jul 2024 16:46:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=Tn1UU9v+NFQD2yGlIKC9eH/4d9EC2c3TWh1gvVr9iEc=; b=nlFRrh+Ch46EihM5zxfqetQKzE
-	CzhlarGrkDtMzoF7KzbE293xI/Rjy/xCKkTG9GQ2gFpSN/Qy1mUp9oDnz5w+oqh1CfCXl2HtsYiPe
-	KKQYoGJhp2kbMnLnKmEqX7KShs4AxwKasTHfksOunlVfOxUlMyfL+XfeTcUKd5M6tvYUwNcPQBHLL
-	XB1mJ/CwuQKYH+j33GLe1qqDXjBKfp+Mm7DWY7rfIRwQfb7rWE6unRuQo2vwGaviSqL/npY1yEWVv
-	hLIdNXuyZtLr16o2+gxzkgsVnLcqgyF+m/mHgbGuANLn2kWe3yZL7TpGKSANi3vzx5wEIOpPQA+fn
-	NHwuJsXw==;
+	bh=tM1dU1PYo/YCGECaDeHMBh+M3JW9dSD0h0jacg0kdUo=; b=XhfmUDbdOKXTPNgNfETwuIWJMV
+	Si47jegRq906+DRBtMADoDdmDAo9m2hIGFQBTAvonEpyMUQrjl9pY8l4a7k/6FaQpIJLvWUVKTTC4
+	E28sdwhhIHUKR0C+kvhxt45Zh2/LxjTJnnoMVqY7e8KNd+FqgeRO8PqHfIZUUl1TiXItxzlXw43+/
+	zN+8dUOLcjff9lI71CEmSiOwu+EMvyr+u0eG2ETZVUfjSr6SSsJWEDdz275+BubN80bKlh95UPZ7i
+	iBgOvfABrYXXl04ESh8H+1wemeDIqFbPi5WZBbAPVDG32XMH4qiaO3Iw1PIxTOS19QV+1MCvnQ2XR
+	/No9fZ/g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sP33D-0000000Asoe-3Z1j;
-	Wed, 03 Jul 2024 16:41:47 +0000
+	id 1sP37W-0000000AtFA-0Wxq;
+	Wed, 03 Jul 2024 16:46:14 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sP33B-0000000AsoH-039E
+	id 1sP37T-0000000AtEm-2FG0
 	for linux-um@lists.infradead.org;
-	Wed, 03 Jul 2024 16:41:46 +0000
+	Wed, 03 Jul 2024 16:46:13 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
 	Resent-Message-ID:In-Reply-To:References;
-	bh=Tn1UU9v+NFQD2yGlIKC9eH/4d9EC2c3TWh1gvVr9iEc=; t=1720024904; x=1721234504; 
-	b=T5t4wjcwdpoZTdDo0q2PeP/oreO1rJxBXmWRjWtANn64IksB5IHmOUFVpUOEs5fE09Ry7MABkXg
-	34XWRhHU3htqXrxswmeuC8EVHZ7ynJpYCA4VInEMH5UWN9odz8r8sLSX6wOrnYu6OQXX/4EiXCFul
-	Pcjb8tIHEcDjtjODHZ7pDP5kFBX/MvCRBbFs+MxHy6o3O2XXSJrm3DzASNtbv+iNzoXf2YljCznYc
-	v+RlYF2KZtRade6d1jPttlogxUKDAIN5PWOQ1I4FtQOTgpf4019HXgb17hp+aUYYaQaPErMbcGYEC
-	hZCE9JPu+PgrmhnnobqXkID8Q7KjVOLvI9sw==;
+	bh=tM1dU1PYo/YCGECaDeHMBh+M3JW9dSD0h0jacg0kdUo=; t=1720025171; x=1721234771; 
+	b=qRyFFdel0/iQ3llc+6SWjsYCdGfnFRIhVgrvtT7Upc5vXhxiUNwUxCQM+dSoHVRYOXyeoFvQHg/
+	g5NzIu8xof3s9a4kl4CFcwpkQOB7LBNsaaiaw4JaTA6a6/UeTZi183tpugV3fzNadSwg9cdIArFh9
+	stDtSQUOJ+59w5GGjnxI+UTlgjoyeeGHYT4Mti9IfHEOGDESH1dPkJEPrQFQK7qrdEl4NIvmqulRg
+	oHT1E+mL6Sckj4gAtSqZ7/lNXG/iUcaVOVwTP2RHAgeY7pIoppt9uhejh0EavVrjmvzrkh/uXcbW5
+	xxcKfDUs0ELIvsXqw4qOenyCGRSt1qdoZcyw==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.97)
 	(envelope-from <johannes@sipsolutions.net>)
-	id 1sP338-00000009bwM-14Xw;
-	Wed, 03 Jul 2024 18:41:42 +0200
+	id 1sP37Q-00000009cvu-3LeK;
+	Wed, 03 Jul 2024 18:46:09 +0200
 From: Johannes Berg <johannes@sipsolutions.net>
 To: linux-um@lists.infradead.org
 Cc: Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH] um: vector: remove vp->lock
-Date: Wed,  3 Jul 2024 18:41:40 +0200
-Message-ID: <20240703184139.88e0baf9a4fe.I9cf5f2c4e35abd06cc89bf2e990fa755eb8e5f0f@changeid>
+Subject: [PATCH v2] um: vector: remove vp->lock
+Date: Wed,  3 Jul 2024 18:46:07 +0200
+Message-ID: <20240703184606.19aa35b14959.I9cf5f2c4e35abd06cc89bf2e990fa755eb8e5f0f@changeid>
 X-Mailer: git-send-email 2.45.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240703_094145_077187_8C145640 
-X-CRM114-Status: GOOD (  11.34  )
+X-CRM114-CacheID: sfid-20240703_094611_733542_AC9FB9D6 
+X-CRM114-Status: GOOD (  11.91  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,15 +77,25 @@ remove it.
 
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/um/drivers/vector_kern.c | 14 +-------------
+v2: remove unused flags variables
+---
+ arch/um/drivers/vector_kern.c | 16 +---------------
  arch/um/drivers/vector_kern.h |  1 -
- 2 files changed, 1 insertion(+), 14 deletions(-)
+ 2 files changed, 1 insertion(+), 16 deletions(-)
 
 diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-index 4279793b11b7..a46f7f6d131e 100644
+index 4279793b11b7..0861e32d2fbd 100644
 --- a/arch/um/drivers/vector_kern.c
 +++ b/arch/um/drivers/vector_kern.c
-@@ -1158,10 +1158,8 @@ static int vector_net_close(struct net_device *dev)
+@@ -1115,7 +1115,6 @@ static int irq_rr;
+ static int vector_net_close(struct net_device *dev)
+ {
+ 	struct vector_private *vp = netdev_priv(dev);
+-	unsigned long flags;
+ 
+ 	netif_stop_queue(dev);
+ 	del_timer(&vp->tl);
+@@ -1158,10 +1157,8 @@ static int vector_net_close(struct net_device *dev)
  		destroy_queue(vp->tx_queue);
  	kfree(vp->fds);
  	vp->fds = NULL;
@@ -96,7 +106,11 @@ index 4279793b11b7..a46f7f6d131e 100644
  	return 0;
  }
  
-@@ -1207,13 +1205,9 @@ static int vector_net_open(struct net_device *dev)
+@@ -1203,17 +1200,12 @@ static void vector_reset_tx(struct work_struct *work)
+ static int vector_net_open(struct net_device *dev)
+ {
+ 	struct vector_private *vp = netdev_priv(dev);
+-	unsigned long flags;
  	int err = -EINVAL;
  	struct vector_device *vdevice;
  
@@ -111,7 +125,7 @@ index 4279793b11b7..a46f7f6d131e 100644
  
  	vp->bpf = uml_vector_user_bpf(get_bpf_file(vp->parsed));
  
-@@ -1387,8 +1381,6 @@ static int vector_net_load_bpf_flash(struct net_device *dev,
+@@ -1387,8 +1379,6 @@ static int vector_net_load_bpf_flash(struct net_device *dev,
  		return -1;
  	}
  
@@ -120,7 +134,7 @@ index 4279793b11b7..a46f7f6d131e 100644
  	if (vp->bpf != NULL) {
  		if (vp->opened)
  			uml_vector_detach_bpf(vp->fds->rx_fd, vp->bpf);
-@@ -1417,15 +1409,12 @@ static int vector_net_load_bpf_flash(struct net_device *dev,
+@@ -1417,15 +1407,12 @@ static int vector_net_load_bpf_flash(struct net_device *dev,
  	if (vp->opened)
  		result = uml_vector_attach_bpf(vp->fds->rx_fd, vp->bpf);
  
@@ -136,7 +150,7 @@ index 4279793b11b7..a46f7f6d131e 100644
  	if (vp->bpf != NULL)
  		kfree(vp->bpf->filter);
  	kfree(vp->bpf);
-@@ -1631,7 +1620,6 @@ static void vector_eth_configure(
+@@ -1631,7 +1618,6 @@ static void vector_eth_configure(
  	INIT_WORK(&vp->reset_tx, vector_reset_tx);
  
  	timer_setup(&vp->tl, vector_timer_expire, 0);
