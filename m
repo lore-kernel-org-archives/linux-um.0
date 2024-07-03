@@ -4,73 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EEB73C3DA40
-	for <linux-um@archiver.kernel.org>; Wed,  3 Jul 2024 15:00:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40177C3271F
+	for <linux-um@archiver.kernel.org>; Wed,  3 Jul 2024 15:00:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=frONFhB+5TrylNa1+J9QPPMf9J+LSyLNMObbXG2XPdU=; b=VtQPbLj29R5F03OYqwscOQp/B7
-	w20QPJ4YKcx0upyH8aGzTcrqgVXOu8VMmeaGzdZNaO2cTzxMZgFtNi3mdGZ0szyFM4cI0afZ5JONe
-	hhCDoqXR9rWYwD7gjhOoAxZOMyS3G3vEhBSO/jQpu6iCwArXm9B/eGXVDu0g7PSldoMSc8gFvaxbF
-	g0HMcv+qe5MQvTXROQ+KDiPAh4Ea9gr+q79Ink4o6rTxfNiO6hW9M/b1PhP1y0xWZfZjHR6WqkaUA
-	Ix0PjB5bqOdMd6eM5Vs+MiuiBN4Wwkv9jnTyJ/ErqgqnQFnqgpCxuKtlWwAnDRBMq0we+S/Sy0tRz
-	AAq6v1lg==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=MXlJ8msdfDvSl+1pLP3tU8dF23G4Je/mG9j/KSsqqsM=; b=oMhbIsWiCN5Wu7WLRmD9GULg8X
+	3/9++PDV7HOAO+wK5fTycm1MWbDLzD/YiflWkWaZTbytHLC3wTDngEs+hyfwZpAdywyMSOlmZMUpk
+	8261x3H0i96iJgBlxZoF8Qj2rKMy4TNOPbID1tzIFwRNf7qnzi7lXY3A7Xp8loHdSRJwGZ+MNSUoI
+	ekSJj7MsVJgcLNglkOXqbgIyOMNg7PAZh75A0H7+a/JJHQiEUAvtFx+a4HHemXxE2AJDZL/pGv2Nv
+	ZOIk+7gTqwcuBuVEMGuXs2cAElfPMBJURWkouL+PL1Yg7/coXiVsdd6fEtnVgtKy982EjNvwvNbHl
+	6MM6LRrg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sP1TV-0000000AacT-2bzI;
-	Wed, 03 Jul 2024 15:00:49 +0000
+	id 1sP1TT-0000000AaaU-1Me1;
+	Wed, 03 Jul 2024 15:00:47 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sP0JU-0000000ALIj-16SS
+	id 1sP0JN-0000000ALGz-2L1p
 	for linux-um@bombadil.infradead.org;
-	Wed, 03 Jul 2024 13:46:24 +0000
+	Wed, 03 Jul 2024 13:46:17 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=frONFhB+5TrylNa1+J9QPPMf9J+LSyLNMObbXG2XPdU=; b=H0t+t/tT8vgUFEQKfKM/Jyo4Kx
-	SBo9qxdnvTaRZQeBp2kulEC+1cbOCLm1ZrcqqOpDud3HteRkM5DgR2X01H6q14SLEdzzAEH3hpATB
-	nvmv9PJz+sxReZ1zAfzENjwkwu2NVddQJntetrNY01FfxOAgMaho/QLZr/AI2GqJLFK8q2h9kYbQU
-	WPL1daU26t6rvXPwdicxluhyxKubFk6P1r+Qlwlw05KIllnaEUnvnz6KPqKmIEPZS1yHs9KFbYa/f
-	Opr4hWmohpCAoChttuf0EslcSWvDzAWLaHr88AeoCE+m6F/CHA+IVsyjdjmQ0isLSzEs3Qk+eoWpN
-	oqt731KA==;
+	:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=MXlJ8msdfDvSl+1pLP3tU8dF23G4Je/mG9j/KSsqqsM=; b=Qp4VBW3DgyW+XC3oAks4MPBXqa
+	xLjAcmN/8oEFKp9603hVr7Kx6X+i4BRccBH8l9Pi0fTt0lA4qKMh8bTZaXs0Zvhi/J/DrEBgmPEzJ
+	O/Dep3LERgcy4MwA0dqHTfvRX4TDATOsTSuwnuDHvP+zZcpDxFgJ2HDTD2ALmN+ZxYcA4r6FOe8xr
+	+/CpALyDmVPmM80RciNQ99mOnsVLDrJAQ2YDpVGXjQtP7EvhGZP62M0ucDQ1TGzvpZjiBEPZkDzae
+	bsm3Kvbf//07ypAn3ZXvcqVWWjRyBPGuJef0kucmL/X1KGEc7aZ64Zlxg0y3UQ5grhYoOtjsfZbo6
+	wshJofow==;
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by desiato.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sP0JQ-0000000A1HY-3Z3L
+	id 1sP0JK-0000000A1Fx-0CrW
 	for linux-um@lists.infradead.org;
-	Wed, 03 Jul 2024 13:46:22 +0000
+	Wed, 03 Jul 2024 13:46:16 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=frONFhB+5TrylNa1+J9QPPMf9J+LSyLNMObbXG2XPdU=;
-	t=1720014380; x=1721223980; b=jxALtmlvKZ7YgjudC0XmxjJ/STax+3D/ucBlZO/sc2IUGV4
-	GdyUEiP+MSXFB9xlvK2x/Uw/pYxLz2EqReWgG8kmaU5to5FjP+V5Db3pnL1XzI2m4Zyx0W+7PxPeM
-	yMKPlooDqvxhwKHKfEyTBIMnkady/+3XTSwyiCN1Rvl3HSFRk63bvjaK2LDPMeX0lPDaqrmpulKE1
-	s530ZwXOEhau5hDX5Bsc0DPB6PXuxQPNZaLCSEj4+rvCKVycauyw5Fr1wkq1pBeq0Wzh3Wht1qk8t
-	X9CYi+C7BvgBJK1IdQzBi+utEqD3qKSWqC5dfeaqTjIhNgTsbWobmludqIciR4FQ==;
+	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
+	Resent-Message-ID:In-Reply-To:References;
+	bh=MXlJ8msdfDvSl+1pLP3tU8dF23G4Je/mG9j/KSsqqsM=; t=1720014371; x=1721223971; 
+	b=TigXaRTC2ficIyrFp3VEuiLqtLQJ9N74/Maw6Evx+YGvAsYftrYVGi/L1u6iHdMTzHOifM6VUo0
+	PrKHGudUR8DVxjQeutXHfSSHM/Ied1Dn4x2drWadeEOsbh2QYsODURjFju4EXI0eIDlVu5DYUnaHr
+	ioIF8pJ54q8Nve7wqohYsp57rNE+sHlq5aWTYDcYCGMY4UrVBObztQ5ZWlaORwGu+FR8Lx2dnXPUt
+	19z5E5Tq8q/zD+IK+6/1KAZPJGfGRzrrbYKujRUEKA+8lug1StVj0ShynOiKrutg6VlyYjLteKstY
+	GAotIlcNLNzG4ueaP9VpTyY8G2ecG0nfyykA==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.97)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1sP0JN-000000094nb-2odJ;
-	Wed, 03 Jul 2024 15:46:18 +0200
+	id 1sP0JE-000000094nb-2829;
+	Wed, 03 Jul 2024 15:46:08 +0200
 From: Benjamin Berg <benjamin@sipsolutions.net>
 To: linux-um@lists.infradead.org
 Cc: Benjamin Berg <benjamin.berg@intel.com>
-Subject: [PATCH v4 05/12] um: compress memory related stub syscalls while adding them
-Date: Wed,  3 Jul 2024 15:45:29 +0200
-Message-ID: <20240703134536.1161108-6-benjamin@sipsolutions.net>
+Subject: [PATCH v4 00/12] Rework stub syscall and page table handling
+Date: Wed,  3 Jul 2024 15:45:24 +0200
+Message-ID: <20240703134536.1161108-1-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240703134536.1161108-1-benjamin@sipsolutions.net>
-References: <20240703134536.1161108-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240703_144621_196899_BBA145E7 
-X-CRM114-Status: GOOD (  12.71  )
+X-CRM114-CacheID: sfid-20240703_144614_462546_5DF6CE4E 
+X-CRM114-Status: GOOD (  12.11  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,85 +86,91 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Benjamin Berg <benjamin.berg@intel.com>
 
-To keep the number of syscalls that the stub has to do lower, compress
-two consecutive syscalls of the same type if the second is just a
-continuation of the first.
+This patchset reworks the stub syscall handling and also redos how page
+table updates are tracked and synchronized. Some of this originated in
+the SECCOMP patchset, but it became clear that these refactorings make
+sense independently as they result in a considerably fewer page faults.
 
-Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
----
- arch/um/os-Linux/skas/mem.c | 39 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+As an example, these changes bring the runtime of one of the hostapd
+hwsim test modules from 121 seconds down to 103 seconds. Actual results
+will depend heavily on how pagefault heavy the workload is.
 
-diff --git a/arch/um/os-Linux/skas/mem.c b/arch/um/os-Linux/skas/mem.c
-index 40be9085f65b..32c61189110c 100644
---- a/arch/um/os-Linux/skas/mem.c
-+++ b/arch/um/os-Linux/skas/mem.c
-@@ -151,12 +151,37 @@ struct stub_syscall *syscall_stub_alloc(struct mm_id *mm_idp)
- 	return sc;
- }
- 
-+static struct stub_syscall *syscall_stub_get_previous(struct mm_id *mm_idp,
-+						      int syscall_type,
-+						      unsigned long virt)
-+{
-+	if (mm_idp->syscall_data_len > 0) {
-+		struct stub_data *proc_data = (void *) mm_idp->stack;
-+		struct stub_syscall *sc;
-+
-+		sc = &proc_data->syscall_data[mm_idp->syscall_data_len - 1];
-+
-+		if (sc->syscall == syscall_type &&
-+		    sc->mem.addr + sc->mem.length == virt)
-+			return sc;
-+	}
-+
-+	return NULL;
-+}
- 
- void map(struct mm_id *mm_idp, unsigned long virt, unsigned long len, int prot,
- 	int phys_fd, unsigned long long offset)
- {
- 	struct stub_syscall *sc;
- 
-+	/* Compress with previous syscall if that is possible */
-+	sc = syscall_stub_get_previous(mm_idp, STUB_SYSCALL_MMAP, virt);
-+	if (sc && sc->mem.prot == prot && sc->mem.fd == phys_fd &&
-+	    sc->mem.offset == MMAP_OFFSET(offset - sc->mem.length)) {
-+		sc->mem.length += len;
-+		return;
-+	}
-+
- 	sc = syscall_stub_alloc(mm_idp);
- 	sc->syscall = STUB_SYSCALL_MMAP;
- 	sc->mem.addr = virt;
-@@ -170,6 +195,13 @@ void unmap(struct mm_id *mm_idp, unsigned long addr, unsigned long len)
- {
- 	struct stub_syscall *sc;
- 
-+	/* Compress with previous syscall if that is possible */
-+	sc = syscall_stub_get_previous(mm_idp, STUB_SYSCALL_MUNMAP, addr);
-+	if (sc) {
-+		sc->mem.length += len;
-+		return;
-+	}
-+
- 	sc = syscall_stub_alloc(mm_idp);
- 	sc->syscall = STUB_SYSCALL_MUNMAP;
- 	sc->mem.addr = addr;
-@@ -181,6 +213,13 @@ void protect(struct mm_id *mm_idp, unsigned long addr, unsigned long len,
- {
- 	struct stub_syscall *sc;
- 
-+	/* Compress with previous syscall if that is possible */
-+	sc = syscall_stub_get_previous(mm_idp, STUB_SYSCALL_MPROTECT, addr);
-+	if (sc && sc->mem.prot == prot) {
-+		sc->mem.length += len;
-+		return;
-+	}
-+
- 	sc = syscall_stub_alloc(mm_idp);
- 	sc->syscall = STUB_SYSCALL_MPROTECT;
- 	sc->mem.addr = addr;
+Lowering the amount of pagefaults is due to proactively syncing PTEs
+that are set (and were previously unset) and also delaying
+synchronization so that multiple updates can be done in one step rather
+than requiring multiple task switches.
+
+This refactoring also fixes various odd corner cases in how UML was
+handling memory and cloning of MMs. As part of this work, support for
+LDTs has been dropped. My expectation is that this is not a problem as
+it should only be needed by legacy applications.
+
+Changes in v4:
+* Only clear memory up to TASK_SIZE
+
+Changes in v3:
+* Remove more left over code from copy_context_skas0 removal
+* Fix mprotect syscall in stub
+
+Changes in v2:
+* Address comments from Tiwei Bie
+* Remove duplicate report_enomem declaration
+
+Benjamin Berg (12):
+  um: Remove stub-data.h include from common-offsets.h
+  um: Create signal stack memory assignment in stub_data
+  um: Add generic stub_syscall6 function
+  um: Rework syscall handling
+  um: compress memory related stub syscalls while adding them
+  um: remove LDT support
+  um: remove copy_context_skas0
+  um: Delay flushing syscalls until the thread is restarted
+  um: Do not flush MM in flush_thread
+  um: remove force_flush_all from fork_handler
+  um: simplify and consolidate TLB updates
+  um: refactor TLB update handling
+
+ arch/um/drivers/ubd_kern.c              |   2 -
+ arch/um/include/asm/mmu.h               |  10 +-
+ arch/um/include/asm/mmu_context.h       |   2 -
+ arch/um/include/asm/pgtable.h           |  32 ++
+ arch/um/include/asm/tlbflush.h          |  46 +-
+ arch/um/include/shared/as-layout.h      |   2 +-
+ arch/um/include/shared/common-offsets.h |   5 -
+ arch/um/include/shared/os.h             |  27 +-
+ arch/um/include/shared/skas/mm_id.h     |   2 +-
+ arch/um/include/shared/skas/skas.h      |   2 +
+ arch/um/include/shared/skas/stub-data.h |  36 +-
+ arch/um/include/shared/user.h           |   8 +
+ arch/um/kernel/exec.c                   |   9 -
+ arch/um/kernel/process.c                |   2 -
+ arch/um/kernel/skas/Makefile            |   9 +-
+ arch/um/kernel/skas/clone.c             |  48 ---
+ arch/um/kernel/skas/mmu.c               |  54 ++-
+ arch/um/kernel/skas/process.c           |  18 +
+ arch/um/kernel/skas/stub.c              |  69 +++
+ arch/um/kernel/tlb.c                    | 545 ++++--------------------
+ arch/um/kernel/trap.c                   |  15 +-
+ arch/um/os-Linux/skas/mem.c             | 245 ++++++-----
+ arch/um/os-Linux/skas/process.c         | 121 +-----
+ arch/um/os-Linux/start_up.c             |   1 +
+ arch/x86/um/Makefile                    |   4 +-
+ arch/x86/um/asm/mm_context.h            |  70 ---
+ arch/x86/um/ldt.c                       | 380 -----------------
+ arch/x86/um/shared/sysdep/stub.h        |   2 +-
+ arch/x86/um/shared/sysdep/stub_32.h     |  45 +-
+ arch/x86/um/shared/sysdep/stub_64.h     |  41 +-
+ arch/x86/um/stub_32.S                   |  56 ---
+ arch/x86/um/stub_64.S                   |  50 ---
+ arch/x86/um/tls_32.c                    |   1 +
+ 33 files changed, 554 insertions(+), 1405 deletions(-)
+ delete mode 100644 arch/um/kernel/skas/clone.c
+ create mode 100644 arch/um/kernel/skas/stub.c
+ delete mode 100644 arch/x86/um/asm/mm_context.h
+ delete mode 100644 arch/x86/um/ldt.c
+ delete mode 100644 arch/x86/um/stub_32.S
+ delete mode 100644 arch/x86/um/stub_64.S
+
 -- 
 2.45.2
 
