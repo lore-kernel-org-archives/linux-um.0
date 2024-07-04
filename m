@@ -4,59 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1FF57C30653
-	for <linux-um@archiver.kernel.org>; Thu,  4 Jul 2024 09:52:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D60ADC30653
+	for <linux-um@archiver.kernel.org>; Thu,  4 Jul 2024 09:54:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:References:Cc:To:From:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=s79iimqaR+uptF6mc/vPIWKNIxFcNLzdxFHxZrIQtH4=; b=If1jayHXQBVFoGEJILui7C0JZo
-	lEWoYPbEEQaFYyhijpmHliOR+66H/Gvr7HY4iiXeV89cZ03PNA7gzTgIqbKGBopHaKhoXv/MH/WuQ
-	d4n3F4wkWYp4IxgoTzb2lanaxU0E0Q43Y0qq/WFft0hhSZSnG5N2ngbjBuZydtPYvzy2s3pRIAFur
-	JpsouIXjD6Y3aj8g3eC9vIfOKt7GfmhHpNiJtlCtZG26+Teqs15YgH0aFVdDpwFqzrs7dmUeqRUD/
-	njAW2nS2790Ln0X0IL5roEAYaAunTflWG+RcqLBuB/sHx1Hmw6KLUUla620vqaxYqPCsnNr05qFvF
-	S5NZuViA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=4veJ38LZpMoUInhxbmLW4aiRNGM3HDRb02o00JQ+FGw=; b=mNd6Zq4olij5ZYx7hTRB5jl6MZ
+	f7R76muMx3vIKdkd053NtG0P0ERer053auWRs8VIvYMcDUMPlVOHPCGmZ24m0+/jBAwL/o81KSXY+
+	XwNsuf8RuzO+BCczyZ+7UWNIYwxKHn0k93sWE+OkJlv4tI8LKVlQGF3SqhfYed7ZfkvJttA6kKTl7
+	f+WbUiKDbqeA9vWlTrBK/AbhkEEPsolHtculAxlTEeZyhLmc+wrDqsvZ12NxUuOtDZlOnIP5qfZjD
+	GSt5O0ho5YqtXvYPeTBPAb0WBBGLWs7zr23ucYKrNitDmDU5eG9gsTrWWkH4r4ZMhjBe01r61QBfG
+	EhCsTDxQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sPJ8x-0000000CnMX-0oao;
-	Thu, 04 Jul 2024 09:52:47 +0000
-Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
+	id 1sPJAm-0000000CnXP-0zwC;
+	Thu, 04 Jul 2024 09:54:40 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sPJ8u-0000000CnLj-1pNP
+	id 1sPJAj-0000000CnX1-3I5B
 	for linux-um@lists.infradead.org;
-	Thu, 04 Jul 2024 09:52:46 +0000
-Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
-	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1sPJ8s-005csQ-DB; Thu, 04 Jul 2024 09:52:42 +0000
-Received: from jain.kot-begemot.co.uk ([192.168.3.3])
-	by jain.kot-begemot.co.uk with esmtp (Exim 4.96)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1sPJ8p-007Wk2-0J;
-	Thu, 04 Jul 2024 10:52:42 +0100
-Message-ID: <d9367dcf-5383-4dc4-ac84-fae5e104eccc@cambridgegreys.com>
-Date: Thu, 4 Jul 2024 10:52:38 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+	Thu, 04 Jul 2024 09:54:38 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=4veJ38LZpMoUInhxbmLW4aiRNGM3HDRb02o00JQ+FGw=;
+	t=1720086877; x=1721296477; b=Inw39uMP1EmjMrwIWCiVjZZh3c3bGc16Zd39gbLhLbZp9UI
+	4HTSWgAoE1Bzfyky1nwIgW0cJ79jg2SuL1aIQOVk5r1fGMAJ+lKmC0c9AQIGh+ZqcDuZzWL3TNVpU
+	RCSIHT+vwxsBoqRdRORSrtQONBZNHvqDcLOBy2Dzlsf0Z8rmEJrRsETduLWhzZ+qtTQl4BF1H0rHS
+	kMCx4d6tGDFVejqt0ZuIkf75oilD2Dlu0fPGSgsid2zyQi9XkW3Wkb3wyazaa1Zf/THfaNkY07sSm
+	2h4H3Y1+3TC+jG/DVx8YDmBb43BFDINYxkPs+bUhceoCUAiJQ2y/BHbm0mV12KHw==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1sPJAg-0000000CPsC-1QO0;
+	Thu, 04 Jul 2024 11:54:35 +0200
+Message-ID: <33657816fa30d286a76946b314388ecc3b3ee990.camel@sipsolutions.net>
 Subject: Re: [PATCH] um: vector: Replace locks guarding queue depth with
  atomics
-Content-Language: en-US
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-To: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+	linux-um@lists.infradead.org
 Cc: richard@nod.at
-References: <20240704072154.1716301-1-anton.ivanov@cambridgegreys.com>
- <43f01cf5b1e55730ee06a42136a8814a61a84951.camel@sipsolutions.net>
- <8b581760-1ac3-4aa0-9257-aac2799e02c0@cambridgegreys.com>
+Date: Thu, 04 Jul 2024 11:54:33 +0200
 In-Reply-To: <8b581760-1ac3-4aa0-9257-aac2799e02c0@cambridgegreys.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Clacks-Overhead: GNU Terry Pratchett
+References: <20240704072154.1716301-1-anton.ivanov@cambridgegreys.com>
+	 <43f01cf5b1e55730ee06a42136a8814a61a84951.camel@sipsolutions.net>
+	 <8b581760-1ac3-4aa0-9257-aac2799e02c0@cambridgegreys.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.3 (3.52.3-1.fc40) 
+MIME-Version: 1.0
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240704_025244_657834_C554D6D9 
-X-CRM114-Status: GOOD (  38.70  )
+X-CRM114-CacheID: sfid-20240704_025437_841769_A4618023 
+X-CRM114-Status: UNSURE (   9.11  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,211 +77,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+On Thu, 2024-07-04 at 10:45 +0100, Anton Ivanov wrote:
 
-
-On 04/07/2024 10:45, Anton Ivanov wrote:
-> 
-> 
-> On 04/07/2024 10:17, Johannes Berg wrote:
->> Hi Anton,
->>
->> Thanks for taking a look! Also thanks for the other explanation.
->>
->> On Thu, 2024-07-04 at 08:21 +0100, anton.ivanov@cambridgegreys.com
->> wrote:
->>> From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
->>>
->>> UML vector drivers use ring buffer structures which map
->>> preallocated skbs onto mmsg vectors for use with sendmmsg
->>> and recvmmsg. They are designed around a single consumer,
->>> single producer pattern allowing simultaneous enqueue and
->>> dequeue.
->>
->> Right, I didn't grok that from just the code yesterday :)
->>
->>> Lock debugging with preemption showed possible races when
->>> locking the queue depth. This patch addresses this by
->>> removing extra locks while making queue depth inc/dec and
->>> access atomic.
->>
->> I don't think this is fully correct in SMP, and I think we should fix it
->> even if we don't have SMP (yet?)
->>
->> See, the other thing about spinlocks is that they serve as barriers, and
->> I don't think the atomics you use have "enough" of them (per the docs in
->> atomic_t.txt)?
->>
->> If you have concurrent producers and consumers, you really want the
->> producer to actually have fully prepared the data before it's visible to
->> the consumer, which means you need to have a full barrier before
->> incrementing queue_length.
-> 
-> Indeed. I will add that for v2.
-> 
->>
->> But you're now incrementing it by just atomic_add(), and atomic_t.txt
->> says:
->>
->>   - RMW operations that have no return value are unordered;
->>
->> So I think the producer should have
->>
->>     /*
->>      * adding to queue_length makes the prepared buffers
->>      * visible to the consumer, ensure they're actually
->>      * completely written/visible before
->>      */
->>     smp_mb__before_atomic();
->>     atomic_add(...);
->>
->> Or so?
->>
->>
->>> +    atomic_sub(advance, &qi->queue_depth);
->>> -    if (qi->queue_depth == 0) {
->>> -        qi->head = 0;
->>> -        qi->tail = 0;
->>> -    }
->>> -    queue_depth = qi->queue_depth;
->>> -    spin_unlock(&qi->tail_lock);
->>> -    return queue_depth;
->>> +    return atomic_read(&qi->queue_depth);
->>
->> Or just use atomic_sub_return()? Though that also implies a barrier,
->> which I think isn't needed on the consumer side.
-> 
-> Let me have a look at it once again. IIRC you need only producer barriers.
-> 
->>
->> However I think it's clearer to just remove the return value and make
->> this function void.
->>
->>>   static int vector_advancetail(struct vector_queue *qi, int advance)
->>>   {
->>> -    int queue_depth;
->>> -
->>>       qi->tail =
->>>           (qi->tail + advance)
->>>               % qi->max_depth;
->>> -    spin_lock(&qi->head_lock);
->>> -    qi->queue_depth += advance;
->>> -    queue_depth = qi->queue_depth;
->>> -    spin_unlock(&qi->head_lock);
->>> -    return queue_depth;
->>> +    atomic_add(advance, &qi->queue_depth);
->>> +    return atomic_read(&qi->queue_depth);
->>>   }
->>
->> Or maybe here instead of the barrier use atomic_add_return() which
->> implies a full barrier on both sides, but I don't think you need that,
->> the barrier before is enough?
->>
->>
->>> @@ -411,61 +386,58 @@ static int vector_send(struct vector_queue *qi)
->>>       int result = 0, send_len, queue_depth = qi->max_depth;
->>>       if (spin_trylock(&qi->head_lock)) {
->> [...]
->>> +        /* update queue_depth to current value */
->>> +        queue_depth = atomic_read(&qi->queue_depth);
->>> +        while (queue_depth > 0) {
->>
->> I think it'd be clearer to write this as
->>
->>     while ((queue_depth = atomic_read(...))) {
->>
->> and simply not modify the queue_depth to the return value of
->> consume_vector_skbs() here:
->>
->> [...]
->>
->>> +            if (result > 0) {
->>> +                queue_depth =
->>> +                    consume_vector_skbs(qi, result);
->>> +                /* This is equivalent to an TX IRQ.
->>> +                 * Restart the upper layers to feed us
->>> +                 * more packets.
->>>                    */
->>> -                if (result != send_len) {
->>> -                    vp->estats.tx_restart_queue++;
->>> -                    break;
->>> -                }
->>> +                if (result > vp->estats.tx_queue_max)
->>> +                    vp->estats.tx_queue_max = result;
->>> +                vp->estats.tx_queue_running_average =
->>> +                    (vp->estats.tx_queue_running_average + result) >> 1;
->>> +            }
->>> +            netif_wake_queue(qi->dev);
->>> +            /* if TX is busy, break out of the send loop,
->>> +             *  poll write IRQ will reschedule xmit for us
->>> +             */
->>> +            if (result != send_len) {
->>> +                vp->estats.tx_restart_queue++;
->>> +                break;
->>>               }
->>>           }
->>
->> The loop doesn't need queue_depth until it goes back to the beginning
->> anyway.
->>
->> (it probably also never even executes twice unless you actually have SMP
->> or preemption?)
-> 
-> It does. If half of the vector is at the end of the array which is used to
-> imitate a ring buffer and the other half is at the beginning. Quite a common
+> > (it probably also never even executes twice unless you actually have SM=
+P
+> > or preemption?)
+>=20
+> It does. If half of the vector is at the end of the array which is used t=
+o
+> imitate a ring buffer and the other half is at the beginning. Quite a com=
+mon
 > condition actually.
-> 
-> There is an extra issue there - stats. I need to double-check the locking when
+
+Ah, right, I missed this bit:
+
+                        /* Adjust vector size if wraparound */
+                        if (send_len + qi->head > qi->max_depth)
+                                send_len =3D qi->max_depth - qi->head;
+
+> There is an extra issue there - stats. I need to double-check the locking=
+ when
 > they are being fetched.
 
-Same story - these need atomics. Otherwise we can potentially get the same ABBA
-lock issue when they are being fetched.
+The memcpy() is an issue, but I think reading them individually should
+be OK regardless?
 
-> 
->>
->>> @@ -675,11 +647,13 @@ static void prep_queue_for_rx(struct vector_queue *qi)
->>>       struct vector_private *vp = netdev_priv(qi->dev);
->>>       struct mmsghdr *mmsg_vector = qi->mmsg_vector;
->>>       void **skbuff_vector = qi->skbuff_vector;
->>> -    int i;
->>> +    int i, queue_depth;
->>> +
->>> +    queue_depth = atomic_read(&qi->queue_depth);
->>> -    if (qi->queue_depth == 0)
->>> +    if (queue_depth == 0)
->>>           return;
->>> -    for (i = 0; i < qi->queue_depth; i++) {
->>> +    for (i = 0; i < queue_depth; i++) {
->>>           /* it is OK if allocation fails - recvmmsg with NULL data in
->>>            * iov argument still performs an RX, just drops the packet
->>>            * This allows us stop faffing around with a "drop buffer"
->>> @@ -689,7 +663,7 @@ static void prep_queue_for_rx(struct vector_queue *qi)
->>>           skbuff_vector++;
->>>           mmsg_vector++;
->>>       }
->>> -    qi->queue_depth = 0;
->>> +    atomic_set(&qi->queue_depth, 0);
->>
->> atomic_read() and then atomic_set() rather than atomic_sub() seems
->> questionable, but you didn't have locks here before so maybe this is
->> somehow logically never in parallel? But it is done in NAPI polling via
->> vector_mmsg_rx(), so not sure I understand.
->>
->>> @@ -987,7 +961,7 @@ static int vector_mmsg_rx(struct vector_private *vp, int budget)
->>>        * many do we need to prep the next time prep_queue_for_rx() is called.
->>>        */
->>> -    qi->queue_depth = packet_count;
->>> +    atomic_add(packet_count, &qi->queue_depth);
->>>       for (i = 0; i < packet_count; i++) {
->>>           skb = (*skbuff_vector);
->>
->> especially since here you _did_ convert to atomic_add().
->>
->> johannes
->>
-> 
+But I suppose you could just take both locks there, hopefully nobody is
+accessing them _really_ frequently? At least I think you can take both
+locks since now no other path is taking both? But you'd need
+spin_lock_bh().
 
--- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
+
+johannes
 
