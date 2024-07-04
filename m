@@ -4,59 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EA6E7C38150
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A531CC30653
 	for <linux-um@archiver.kernel.org>; Thu,  4 Jul 2024 16:27:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=/RHcd/yUmz0Gk8fIDLX6wsZ8ME7gFNvXydNGe/JBc3w=; b=zeGbbiJIsPB2nDbPTmjp2xR+D6
-	cxEjam3leWr62sD22bVYPc3bQN+fmyB/jy/l8cmwwfaDd+nXvnCtCPMKgWm68p6RycFhNNWe/toHE
-	87xGRTMxtQBQeBzI9g1GaF13q1XsZbaUXGHpJ1Xjsu00vX99WWfWKpu/Ekkwx2D44rsaeGH9rtaK+
-	Je+T1UuDAmDz4kx0Rx5rcfCoXPTDr85r5w1ew5dIwZL127NhAjnpxn7IWbsj2QJfsKnMhhYRbdVgw
-	sANeqJG3DEbQMb0WXpfhrltTtOZtVCOZ7B9i1O578bef1t1p1SqqR6h4hYFfefffrdMd+DxzbMPTS
-	V+z0UWLA==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=JI+o9qabKZKnzLqVPB4yCqB+CIeHh33Z19W382DWCik=; b=BvoqvCs6FfkfBibgE5QfcJfU0w
+	U/izupCngOS5v3VIoU+Kgcylm5Q7SgxvRo8EVv8T6Bbd01RXXLLdqtcbZF49AMjUNERmYViwiwcZB
+	rBlagAs2Rz1NPRcd8v+6UU4FEAU+SmusRUKn1LFOUl7GRPq0c4U6LyIwZrQOL6Vw4vJrAzu3eL01s
+	k75SeS3f2Mg0fYNYEvlDjBaUTQrBgFXN4JpdykEDjtLqOezdD9TWytQ37O3d6lSWJ+AACGo2KszOO
+	LptYxOn2hwYk5StMdMBIkA+BxmGmVsAwqN2KjWgJyx60mPGFF8LzNOTAvbVEAhKlE8TtNvweyXSqe
+	VaE4M3Qw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sPPJF-0000000DqFF-2ins;
+	id 1sPPJF-0000000DqEw-1Hco;
 	Thu, 04 Jul 2024 16:27:49 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sPPJC-0000000DqDO-2TGp
+	id 1sPPJC-0000000DqD3-0ku7
 	for linux-um@lists.infradead.org;
-	Thu, 04 Jul 2024 16:27:48 +0000
+	Thu, 04 Jul 2024 16:27:47 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=/RHcd/yUmz0Gk8fIDLX6wsZ8ME7gFNvXydNGe/JBc3w=;
-	t=1720110466; x=1721320066; b=ph4fDmZ/iFKZj10Hch8KYx0eQHH4fzKNTl4W/nMulv/m6tF
-	V+fugDy9OUsraD8ltw6kcW259EF7mFQ+SNh4Y9d/1nUyCIa0kmZzTr1mPXx4D84H+aV4c5EXOihJf
-	zWBeRvM52Xo6FN0DESHXSweEtQfNosn47hTJ6SOnpM+fET6Ar7msvEI0eqmAFb8SV3QDd/uxqjZW3
-	JHsp117s7tzwt6OKotgby63naUbPa3F61a2b9joIU6Zg9+4nRbmoQ8RnTSrgqEcMmWYqnmJLKroV7
-	5GBdzuI+lUPM17+0fZ2aHgmwXHNBv2IU9fv0OEWqFYhaN5M2dwlLLLVMVlVVkMqQ==;
+	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
+	Resent-Message-ID:In-Reply-To:References;
+	bh=JI+o9qabKZKnzLqVPB4yCqB+CIeHh33Z19W382DWCik=; t=1720110464; x=1721320064; 
+	b=HBlaxG6p8a9xjCBtZj4TT79+XJrlPOUCLmGPTUvJ6VVHf+nFoa6wgPkSWbwStX0izbZxxdFa044
+	FQE8CYC4Gno/so27l3LNeSTyChXRqrCsopGyiwNkZrJCTXM6zg68JM9GOLu/yLL/JT5J1ot3vU3sK
+	eLk14jVpcXRHcBa9owB+R1ex3bXsA66sAAuGeQCLKEt1y45yY1EJ9ksetOiiRllxhl7rchUzBN9Db
+	fOXhYnYOKzbY0S/wxUMOxEoP/KVub2IF7g6w070QKvJaggwVnEcYLHAr+qOdjfTdxPxgLDIIqfTID
+	xvTKVzP8iKhNEBDbYORZU0ZpFmI4Of6rshKg==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.97)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1sPPJ9-0000000DOu8-06sm;
-	Thu, 04 Jul 2024 18:27:43 +0200
+	id 1sPPJ7-0000000DOu8-0hLQ;
+	Thu, 04 Jul 2024 18:27:41 +0200
 From: Benjamin Berg <benjamin@sipsolutions.net>
 To: linux-um@lists.infradead.org
 Cc: Benjamin Berg <benjamin.berg@intel.com>
-Subject: [PATCH v7 1/7] um: Add generic stub_syscall1 function
-Date: Thu,  4 Jul 2024 18:27:11 +0200
-Message-ID: <20240704162717.1417338-2-benjamin@sipsolutions.net>
+Subject: [PATCH v7 0/7] Increased address space for 64 bit
+Date: Thu,  4 Jul 2024 18:27:10 +0200
+Message-ID: <20240704162717.1417338-1-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240704162717.1417338-1-benjamin@sipsolutions.net>
-References: <20240704162717.1417338-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240704_092746_649922_B8E60712 
-X-CRM114-Status: UNSURE (   7.31  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240704_092746_246172_5BAD63B0 
+X-CRM114-Status: GOOD (  12.12  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,36 +71,75 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Benjamin Berg <benjamin.berg@intel.com>
 
-The 64bit version did not have a stub_syscall1 function yet. Add it as
-it will be useful to implement a static binary for stub loading.
+The new version of the patchset uses execveat on a memfd instead of
+cloning twice to disable rseq. This should be much more robust going
+forward as it will also avoid issues with other new features like mseal.
 
-Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
----
- arch/x86/um/shared/sysdep/stub_64.h | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+This patchset fixes a few bugs, adds a new method of discovering the
+host task size and finally adds four level page table support. All of
+this means the userspace TASK_SIZE is much larger and in turns permits
+userspace applications that need a lot of virtual addresses to work
+fine.
 
-diff --git a/arch/x86/um/shared/sysdep/stub_64.h b/arch/x86/um/shared/sysdep/stub_64.h
-index 67f44284f1aa..8e4ff39dcade 100644
---- a/arch/x86/um/shared/sysdep/stub_64.h
-+++ b/arch/x86/um/shared/sysdep/stub_64.h
-@@ -28,6 +28,17 @@ static __always_inline long stub_syscall0(long syscall)
- 	return ret;
- }
- 
-+static __always_inline long stub_syscall1(long syscall, long arg1)
-+{
-+	long ret;
-+
-+	__asm__ volatile (__syscall
-+		: "=a" (ret)
-+		: "0" (syscall), "D" (arg1) : __syscall_clobber );
-+
-+	return ret;
-+}
-+
- static __always_inline long stub_syscall2(long syscall, long arg1, long arg2)
- {
- 	long ret;
+One such application is ASAN which uses a fixed address in memory that
+would otherwise not be addressable.
+
+v7:
+* Plenty of changes to fix 32 bit and improve the logic
+
+v6:
+* Apply fixes pointed out by Tiwei Bie
+* Add temporary file fallback as memfd is not always supported
+
+v5:
+* Use execveat with memfd instead of double clone
+
+v4:
+* Do not use WNOHANG in wait for CLONE_VFORK
+
+v3:
+* Undo incorrect change in child wait loop
+
+v2:
+* Improved double clone logic using CLONE_VFORK
+* Kconfig fixes pointed out by Tiwei Bie
+
+Benjamin Berg (7):
+  um: Add generic stub_syscall1 function
+  um: use execveat to create userspace MMs
+  um: Fix stub_start address calculation
+  um: Limit TASK_SIZE to the addressable range
+  um: Discover host_task_size from envp
+  um: clear all memory in new userspace processes
+  um: Add 4 level page table support
+
+ arch/um/Kconfig                         |   1 +
+ arch/um/include/asm/page.h              |  14 +-
+ arch/um/include/asm/pgalloc.h           |  11 +-
+ arch/um/include/asm/pgtable-4level.h    | 119 +++++++++++++++
+ arch/um/include/asm/pgtable.h           |   6 +-
+ arch/um/include/shared/as-layout.h      |   2 +-
+ arch/um/include/shared/os.h             |   2 +-
+ arch/um/include/shared/skas/stub-data.h |  11 ++
+ arch/um/kernel/mem.c                    |  17 ++-
+ arch/um/kernel/skas/.gitignore          |   2 +
+ arch/um/kernel/skas/Makefile            |  33 ++++-
+ arch/um/kernel/skas/mmu.c               |  25 +---
+ arch/um/kernel/skas/stub_exe.c          |  86 +++++++++++
+ arch/um/kernel/skas/stub_exe_embed.S    |  11 ++
+ arch/um/kernel/um_arch.c                |  14 +-
+ arch/um/os-Linux/main.c                 |   9 +-
+ arch/um/os-Linux/mem.c                  |   2 +-
+ arch/um/os-Linux/skas/process.c         | 183 ++++++++++++++++--------
+ arch/x86/um/Kconfig                     |  38 +++--
+ arch/x86/um/os-Linux/task_size.c        | 152 ++------------------
+ arch/x86/um/shared/sysdep/stub_64.h     |  11 ++
+ 21 files changed, 501 insertions(+), 248 deletions(-)
+ create mode 100644 arch/um/include/asm/pgtable-4level.h
+ create mode 100644 arch/um/kernel/skas/.gitignore
+ create mode 100644 arch/um/kernel/skas/stub_exe.c
+ create mode 100644 arch/um/kernel/skas/stub_exe_embed.S
+
 -- 
 2.45.2
 
