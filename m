@@ -4,119 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 994FAC30653
-	for <linux-um@archiver.kernel.org>; Thu,  4 Jul 2024 11:11:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63A3BC30653
+	for <linux-um@archiver.kernel.org>; Thu,  4 Jul 2024 12:23:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:To:References:Message-Id:
-	Content-Transfer-Encoding:Cc:Date:In-Reply-To:From:Subject:Mime-Version:
-	Content-Type:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=qwBmB9TZGFjcG5R2+2N2tz93DvezoEGxh6PsIk8IO/w=; b=FwksYCBO4VWtw6TVn0bUAs3WsF
-	DVM8VOYfKfwoOuaOuxmcqz1Nz+b4Zf8UUQh7cIAH4LUT9awEiSKH3PNt1FBCrdRMKc8dPPyBLv8fW
-	56pqvOqIguiqD1GXBp4sGGgbE5vDlp/eea3PPC6dCFc5tno28YY73yS7VLOQ2e2jEW3nMExDI5CE2
-	o+mC+5gBMouGb8F3Vm1whdbE1++rdCVI/WOSQ/bkt4EIVLiatxsJ+VGtS2yHZSAGBBE+NruEl64YJ
-	eYs8NNw3D1xPHNEQ+qZ9HtiW0y7sZCTwISB41lNbq/GuMssi3V3OtYDVK/EIHq6D6ezfO6O26w7oE
-	29dQwmqQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=bhbgVVPQghTKiBF2P2I81kBpb7BKsHZLlCJbPLwidcs=; b=WBvh7Nx4KoKXIde//XqFZMV1ez
+	VILPHC2xsb7GV3rfGMiGAQEzVhNpTFrZVTtXrhydnI6N2lsyHKzS2Z0FX3XdrOC4Ea/N9TIV/n5jM
+	dg8dxhPhHb3VRcYi+KLIA1mbWeKU/D7ueSeAzc+J6yHprJsw5InLxPSkdg5P4DChz92yk2jLzpd/W
+	7lwU/HTmACUs+5Xp2CMl6cPR4McLI+yFWqpL3Rbot8NdRy8rD9DifFfE8BuHycjeouG1bShj2sx29
+	3/gjyTXTWo4UNSytSrx6EWU3EtbKQQ7s19age6VSHWmxwMKriQmr20VFwX+KfyyGh9xVZylyD1nrp
+	RSGmRjfA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sPKN2-0000000Cy5g-0ABY;
-	Thu, 04 Jul 2024 11:11:24 +0000
-Received: from mail-wr1-x431.google.com ([2a00:1450:4864:20::431])
+	id 1sPLUW-0000000D7ld-3oPE;
+	Thu, 04 Jul 2024 12:23:12 +0000
+Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sPKMz-0000000Cy4q-2OOQ;
-	Thu, 04 Jul 2024 11:11:23 +0000
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-36796d2e5a9so358761f8f.3;
-        Thu, 04 Jul 2024 04:11:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720091479; x=1720696279; darn=lists.infradead.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qwBmB9TZGFjcG5R2+2N2tz93DvezoEGxh6PsIk8IO/w=;
-        b=bi44KyFW1Qpq9svXEJl9nhvukiYw7NByM7LXUF3zPHrzzhRY9SjiSiyYE5IMHTHSSy
-         XUF5b/OyIKRFqRRAmOGmK24osGNqFVVesf5YUKuYSvJarUdeevtRLTfsULwMWCIQM2Km
-         l0Vj3LSSE/3mGLQEashfgSpTwuQiEUNExlUhVPjDhrZyFZbD/V/ajPy09M5yCMSBnHDO
-         qcOOJ9vhywvw/b3wv7poPKRx/CCGVQv23IHauCIhmADED+WJxha/wa+fv7ZCD1zxSsyr
-         RjdrGseBzsVhhkblCXDa4rG1Y83Xc8FS2exiwMAQuPm/lrxU+obsWkAz84MhAP9/SIzV
-         d7Pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720091479; x=1720696279;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qwBmB9TZGFjcG5R2+2N2tz93DvezoEGxh6PsIk8IO/w=;
-        b=olZN9Larm0oxVE9V/idCvsRvonq9xXraGv+zzNP89At4V0mwjvLfNpPPXA/eYI1ENJ
-         GiHHgAXnKhLGNTc+ZEIbGdOBKMu0QmaEVpPHclCx6gAi1Gh2mEKED0VPJ6HT3SANctHX
-         LuRunIMJNbWXOQ5R5xVlTm2+5VgfpI6GSwhxFHgrpZx8ww6aDhGu029a8FkL4HNc3Grb
-         WYTWF4hq9U8+L6ipRvWGY6nbfP65kcXOlc8pIeEJb+0Su8ATP9sEgJTS9UazxAyOC35f
-         0k6zE4SDA+Fyq/fIVKcuDp3YlYQQrB5vjLCLJp4PB7da5ccZCal3QuBJjO6d4ypkw8Oz
-         OgRA==
-X-Forwarded-Encrypted: i=1; AJvYcCUklKT6by09bejIZTHCKyy5mgZodBlQsfXo3trnmzm8Grd2NbmITltVsrTjidNJmF4Ge0evPOEqgYcFmS33muKYxxBEy4yM8n32V8qa9eglXHGYel4QaAp6ugWgZ8OMt4TSvc0mBhbMbp8IjifS5jbzqUcR3RpZ+I8Fu9y9P0Nf9jIQ/D7YX2+HzPfI
-X-Gm-Message-State: AOJu0YyvbluKgkvAlPhJ5nwVJpcHIh9CWBKhVrexooKbp4nuT1K6Fyl7
-	sXQo9974cp/CqyCO99nrLsm7Hfv/826NfwAa6oHBd3iqUCJUvTaW
-X-Google-Smtp-Source: AGHT+IFEzvL2jC2faLe/uaMvaq/UCJ26KrH1XFm9Ol6h8w0Rebt6hjx4X+gdY7pIVUfbtqQYexMuPw==
-X-Received: by 2002:a5d:5712:0:b0:367:94e7:958a with SMTP id ffacd0b85a97d-3679dd17ec1mr1153338f8f.6.1720091479417;
-        Thu, 04 Jul 2024 04:11:19 -0700 (PDT)
-Received: from [10.14.0.2] ([139.28.176.164])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-36787db4d12sm6821051f8f.110.2024.07.04.04.11.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 04 Jul 2024 04:11:18 -0700 (PDT)
-Content-Type: text/plain;
-	charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.7\))
-Subject: Re: [PATCH 14/26] block: move the nonrot flag to queue_limits
-From: Simon Fernandez <fernandez.simon@gmail.com>
-In-Reply-To: <ZnmoANp0TgpxWuF-@kbusch-mbp.dhcp.thefacebook.com>
-Date: Thu, 4 Jul 2024 12:11:16 +0100
-Cc: Christoph Hellwig <hch@lst.de>,
- Jens Axboe <axboe@kernel.dk>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Richard Weinberger <richard@nod.at>,
- Philipp Reisner <philipp.reisner@linbit.com>,
- Lars Ellenberg <lars.ellenberg@linbit.com>,
- =?utf-8?Q?Christoph_B=C3=B6hmwalder?= <christoph.boehmwalder@linbit.com>,
- Josef Bacik <josef@toxicpanda.com>,
- Ming Lei <ming.lei@redhat.com>,
- "Michael S. Tsirkin" <mst@redhat.com>,
- Jason Wang <jasowang@redhat.com>,
- =?utf-8?Q?Roger_Pau_Monn=C3=A9?= <roger.pau@citrix.com>,
- Alasdair Kergon <agk@redhat.com>,
- Mike Snitzer <snitzer@kernel.org>,
- Mikulas Patocka <mpatocka@redhat.com>,
- Song Liu <song@kernel.org>,
- Yu Kuai <yukuai3@huawei.com>,
- Vineeth Vijayan <vneethv@linux.ibm.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- linux-m68k@lists.linux-m68k.org,
- linux-um@lists.infradead.org,
- drbd-dev@lists.linbit.com,
- nbd@other.debian.org,
- linuxppc-dev@lists.ozlabs.org,
- ceph-devel@vger.kernel.org,
- virtualization@lists.linux.dev,
- xen-devel@lists.xenproject.org,
- linux-bcache@vger.kernel.org,
- dm-devel@lists.linux.dev,
- linux-raid@vger.kernel.org,
- linux-mmc@vger.kernel.org,
- linux-mtd@lists.infradead.org,
- nvdimm@lists.linux.dev,
- linux-nvme@lists.infradead.org,
- linux-s390@vger.kernel.org,
- linux-scsi@vger.kernel.org,
- linux-block@vger.kernel.org,
- Damien Le Moal <dlemoal@kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <78BDDF6A-1FC7-4DD7-AABF-E0B055772CBF@gmail.com>
-References: <20240617060532.127975-1-hch@lst.de>
- <20240617060532.127975-15-hch@lst.de>
- <ZnmoANp0TgpxWuF-@kbusch-mbp.dhcp.thefacebook.com>
-To: Keith Busch <kbusch@kernel.org>
-X-Mailer: Apple Mail (2.3608.120.23.2.7)
+	id 1sPLUT-0000000D7kt-3pBE
+	for linux-um@lists.infradead.org;
+	Thu, 04 Jul 2024 12:23:12 +0000
+Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
+	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <anton.ivanov@cambridgegreys.com>)
+	id 1sPLUQ-005d7u-SO; Thu, 04 Jul 2024 12:23:07 +0000
+Received: from jain.kot-begemot.co.uk ([192.168.3.3])
+	by jain.kot-begemot.co.uk with esmtp (Exim 4.96)
+	(envelope-from <anton.ivanov@cambridgegreys.com>)
+	id 1sPLUM-007qTl-0a;
+	Thu, 04 Jul 2024 13:23:04 +0100
+From: anton.ivanov@cambridgegreys.com
+To: linux-um@lists.infradead.org
+Cc: johannes@sipsolutions.net,
+	richard@nod.at,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Subject: [PATCH v2] um: vector: Replace locks guarding queue depth with atomics
+Date: Thu,  4 Jul 2024 13:22:59 +0100
+Message-Id: <20240704122259.1869198-1-anton.ivanov@cambridgegreys.com>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Clacks-Overhead: GNU Terry Pratchett
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240704_041121_630495_E2BC8113 
-X-CRM114-Status: GOOD (  11.88  )
+X-CRM114-CacheID: sfid-20240704_052310_132118_4625DF2C 
+X-CRM114-Status: GOOD (  28.93  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -131,22 +66,376 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi folks, how can I unsubscribe from this group.?
-Thanks in advance.
-S
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-> On 24 Jun 2024, at 18:08, Keith Busch <kbusch@kernel.org> wrote:
->=20
-> On Mon, Jun 17, 2024 at 08:04:41AM +0200, Christoph Hellwig wrote:
->> -#define blk_queue_nonrot(q)	test_bit(QUEUE_FLAG_NONROT, =
-&(q)->queue_flags)
->> +#define blk_queue_nonrot(q)	((q)->limits.features & =
-BLK_FEAT_ROTATIONAL)
->=20
-> This is inverted. Should be:
->=20
-> #define blk_queue_nonrot(q)	(!((q)->limits.features & =
-BLK_FEAT_ROTATIONAL))
->=20
+UML vector drivers use ring buffer structures which map
+preallocated skbs onto mmsg vectors for use with sendmmsg
+and recvmmsg. They are designed around a single consumer,
+single producer pattern allowing simultaneous enqueue and
+dequeue.
+
+Lock debugging with preemption showed possible races when
+locking the queue depth. This patch addresses this by
+removing extra locks, adding barriers and making queue
+depth inc/dec and access atomic.
+
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+---
+ arch/um/drivers/vector_kern.c | 191 +++++++++++++++++-----------------
+ arch/um/drivers/vector_kern.h |   4 +-
+ 2 files changed, 97 insertions(+), 98 deletions(-)
+
+diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
+index dc2feae789cb..2e09a2ace796 100644
+--- a/arch/um/drivers/vector_kern.c
++++ b/arch/um/drivers/vector_kern.c
+@@ -22,6 +22,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/firmware.h>
+ #include <linux/fs.h>
++#include <asm/atomic.h>
+ #include <uapi/linux/filter.h>
+ #include <init.h>
+ #include <irq_kern.h>
+@@ -102,18 +103,27 @@ static const struct {
+ 
+ static void vector_reset_stats(struct vector_private *vp)
+ {
++	spin_lock(&vp->rx_queue->head_lock);
+ 	vp->estats.rx_queue_max = 0;
+ 	vp->estats.rx_queue_running_average = 0;
+-	vp->estats.tx_queue_max = 0;
+-	vp->estats.tx_queue_running_average = 0;
+ 	vp->estats.rx_encaps_errors = 0;
++	vp->estats.sg_ok = 0;
++	vp->estats.sg_linearized = 0;
++	spin_unlock(&vp->rx_queue->head_lock);
++
++	/* TX stats are modified with TX head_lock held
++	 * in vector_send
++	 */
++
++	spin_lock(&vp->tx_queue->head_lock);
+ 	vp->estats.tx_timeout_count = 0;
+ 	vp->estats.tx_restart_queue = 0;
+ 	vp->estats.tx_kicks = 0;
+ 	vp->estats.tx_flow_control_xon = 0;
+ 	vp->estats.tx_flow_control_xoff = 0;
+-	vp->estats.sg_ok = 0;
+-	vp->estats.sg_linearized = 0;
++	vp->estats.tx_queue_max = 0;
++	vp->estats.tx_queue_running_average = 0;
++	spin_unlock(&vp->tx_queue->head_lock);
+ }
+ 
+ static int get_mtu(struct arglist *def)
+@@ -232,12 +242,6 @@ static int get_transport_options(struct arglist *def)
+ 
+ static char *drop_buffer;
+ 
+-/* Array backed queues optimized for bulk enqueue/dequeue and
+- * 1:N (small values of N) or 1:1 enqueuer/dequeuer ratios.
+- * For more details and full design rationale see
+- * http://foswiki.cambridgegreys.com/Main/EatYourTailAndEnjoyIt
+- */
+-
+ 
+ /*
+  * Advance the mmsg queue head by n = advance. Resets the queue to
+@@ -247,27 +251,14 @@ static char *drop_buffer;
+ 
+ static int vector_advancehead(struct vector_queue *qi, int advance)
+ {
+-	int queue_depth;
+-
+ 	qi->head =
+ 		(qi->head + advance)
+ 			% qi->max_depth;
+ 
+ 
+-	spin_lock(&qi->tail_lock);
+-	qi->queue_depth -= advance;
+-
+-	/* we are at 0, use this to
+-	 * reset head and tail so we can use max size vectors
+-	 */
++	atomic_sub(advance, &qi->queue_depth);
+ 
+-	if (qi->queue_depth == 0) {
+-		qi->head = 0;
+-		qi->tail = 0;
+-	}
+-	queue_depth = qi->queue_depth;
+-	spin_unlock(&qi->tail_lock);
+-	return queue_depth;
++	return atomic_read(&qi->queue_depth);
+ }
+ 
+ /*	Advance the queue tail by n = advance.
+@@ -277,16 +268,11 @@ static int vector_advancehead(struct vector_queue *qi, int advance)
+ 
+ static int vector_advancetail(struct vector_queue *qi, int advance)
+ {
+-	int queue_depth;
+-
+ 	qi->tail =
+ 		(qi->tail + advance)
+ 			% qi->max_depth;
+-	spin_lock(&qi->head_lock);
+-	qi->queue_depth += advance;
+-	queue_depth = qi->queue_depth;
+-	spin_unlock(&qi->head_lock);
+-	return queue_depth;
++	atomic_add(advance, &qi->queue_depth);
++	return atomic_read(&qi->queue_depth);
+ }
+ 
+ static int prep_msg(struct vector_private *vp,
+@@ -339,9 +325,7 @@ static int vector_enqueue(struct vector_queue *qi, struct sk_buff *skb)
+ 	int iov_count;
+ 
+ 	spin_lock(&qi->tail_lock);
+-	spin_lock(&qi->head_lock);
+-	queue_depth = qi->queue_depth;
+-	spin_unlock(&qi->head_lock);
++	queue_depth = atomic_read(&qi->queue_depth);
+ 
+ 	if (skb)
+ 		packet_len = skb->len;
+@@ -360,6 +344,7 @@ static int vector_enqueue(struct vector_queue *qi, struct sk_buff *skb)
+ 		mmsg_vector->msg_hdr.msg_iovlen = iov_count;
+ 		mmsg_vector->msg_hdr.msg_name = vp->fds->remote_addr;
+ 		mmsg_vector->msg_hdr.msg_namelen = vp->fds->remote_addr_size;
++		wmb(); /* Make the packet visible to the NAPI poll thread */
+ 		queue_depth = vector_advancetail(qi, 1);
+ 	} else
+ 		goto drop;
+@@ -411,61 +396,58 @@ static int vector_send(struct vector_queue *qi)
+ 	int result = 0, send_len, queue_depth = qi->max_depth;
+ 
+ 	if (spin_trylock(&qi->head_lock)) {
+-		if (spin_trylock(&qi->tail_lock)) {
+-			/* update queue_depth to current value */
+-			queue_depth = qi->queue_depth;
+-			spin_unlock(&qi->tail_lock);
+-			while (queue_depth > 0) {
+-				/* Calculate the start of the vector */
+-				send_len = queue_depth;
+-				send_from = qi->mmsg_vector;
+-				send_from += qi->head;
+-				/* Adjust vector size if wraparound */
+-				if (send_len + qi->head > qi->max_depth)
+-					send_len = qi->max_depth - qi->head;
+-				/* Try to TX as many packets as possible */
+-				if (send_len > 0) {
+-					result = uml_vector_sendmmsg(
+-						 vp->fds->tx_fd,
+-						 send_from,
+-						 send_len,
+-						 0
+-					);
+-					vp->in_write_poll =
+-						(result != send_len);
+-				}
+-				/* For some of the sendmmsg error scenarios
+-				 * we may end being unsure in the TX success
+-				 * for all packets. It is safer to declare
+-				 * them all TX-ed and blame the network.
+-				 */
+-				if (result < 0) {
+-					if (net_ratelimit())
+-						netdev_err(vp->dev, "sendmmsg err=%i\n",
+-							result);
+-					vp->in_error = true;
+-					result = send_len;
+-				}
+-				if (result > 0) {
+-					queue_depth =
+-						consume_vector_skbs(qi, result);
+-					/* This is equivalent to an TX IRQ.
+-					 * Restart the upper layers to feed us
+-					 * more packets.
+-					 */
+-					if (result > vp->estats.tx_queue_max)
+-						vp->estats.tx_queue_max = result;
+-					vp->estats.tx_queue_running_average =
+-						(vp->estats.tx_queue_running_average + result) >> 1;
+-				}
+-				netif_wake_queue(qi->dev);
+-				/* if TX is busy, break out of the send loop,
+-				 *  poll write IRQ will reschedule xmit for us
++		/* update queue_depth to current value */
++		queue_depth = atomic_read(&qi->queue_depth);
++		while (queue_depth > 0) {
++			/* Calculate the start of the vector */
++			send_len = queue_depth;
++			send_from = qi->mmsg_vector;
++			send_from += qi->head;
++			/* Adjust vector size if wraparound */
++			if (send_len + qi->head > qi->max_depth)
++				send_len = qi->max_depth - qi->head;
++			/* Try to TX as many packets as possible */
++			if (send_len > 0) {
++				result = uml_vector_sendmmsg(
++					 vp->fds->tx_fd,
++					 send_from,
++					 send_len,
++					 0
++				);
++				vp->in_write_poll =
++					(result != send_len);
++			}
++			/* For some of the sendmmsg error scenarios
++			 * we may end being unsure in the TX success
++			 * for all packets. It is safer to declare
++			 * them all TX-ed and blame the network.
++			 */
++			if (result < 0) {
++				if (net_ratelimit())
++					netdev_err(vp->dev, "sendmmsg err=%i\n",
++						result);
++				vp->in_error = true;
++				result = send_len;
++			}
++			if (result > 0) {
++				queue_depth =
++					consume_vector_skbs(qi, result);
++				/* This is equivalent to an TX IRQ.
++				 * Restart the upper layers to feed us
++				 * more packets.
+ 				 */
+-				if (result != send_len) {
+-					vp->estats.tx_restart_queue++;
+-					break;
+-				}
++				if (result > vp->estats.tx_queue_max)
++					vp->estats.tx_queue_max = result;
++				vp->estats.tx_queue_running_average =
++					(vp->estats.tx_queue_running_average + result) >> 1;
++			}
++			netif_wake_queue(qi->dev);
++			/* if TX is busy, break out of the send loop,
++			 *  poll write IRQ will reschedule xmit for us
++			 */
++			if (result != send_len) {
++				vp->estats.tx_restart_queue++;
++				break;
+ 			}
+ 		}
+ 		spin_unlock(&qi->head_lock);
+@@ -589,7 +571,7 @@ static struct vector_queue *create_queue(
+ 	}
+ 	spin_lock_init(&result->head_lock);
+ 	spin_lock_init(&result->tail_lock);
+-	result->queue_depth = 0;
++	atomic_set(&result->queue_depth, 0);
+ 	result->head = 0;
+ 	result->tail = 0;
+ 	return result;
+@@ -675,11 +657,20 @@ static void prep_queue_for_rx(struct vector_queue *qi)
+ 	struct vector_private *vp = netdev_priv(qi->dev);
+ 	struct mmsghdr *mmsg_vector = qi->mmsg_vector;
+ 	void **skbuff_vector = qi->skbuff_vector;
+-	int i;
++	int i, queue_depth;
++
++	queue_depth = atomic_read(&qi->queue_depth);
+ 
+-	if (qi->queue_depth == 0)
++	if (queue_depth == 0)
+ 		return;
+-	for (i = 0; i < qi->queue_depth; i++) {
++
++	/* RX is always emptied 100% during each cycle, so we do not
++	 * want to do the tail wraparound math for it
++	 */
++
++	qi->head = qi->tail = 0;
++
++	for (i = 0; i < queue_depth; i++) {
+ 		/* it is OK if allocation fails - recvmmsg with NULL data in
+ 		 * iov argument still performs an RX, just drops the packet
+ 		 * This allows us stop faffing around with a "drop buffer"
+@@ -689,7 +680,8 @@ static void prep_queue_for_rx(struct vector_queue *qi)
+ 		skbuff_vector++;
+ 		mmsg_vector++;
+ 	}
+-	qi->queue_depth = 0;
++	wmb(); /* Ensure that RX processing elsewhere sees the changes */
++	atomic_set(&qi->queue_depth, 0);
+ }
+ 
+ static struct vector_device *find_device(int n)
+@@ -987,7 +979,7 @@ static int vector_mmsg_rx(struct vector_private *vp, int budget)
+ 	 * many do we need to prep the next time prep_queue_for_rx() is called.
+ 	 */
+ 
+-	qi->queue_depth = packet_count;
++	atomic_add(packet_count, &qi->queue_depth);
+ 
+ 	for (i = 0; i < packet_count; i++) {
+ 		skb = (*skbuff_vector);
+@@ -1176,6 +1168,7 @@ static int vector_poll(struct napi_struct *napi, int budget)
+ 
+ 	if ((vp->options & VECTOR_TX) != 0)
+ 		tx_enqueued = (vector_send(vp->tx_queue) > 0);
++	spin_lock(&vp->rx_queue->head_lock);
+ 	if ((vp->options & VECTOR_RX) > 0)
+ 		err = vector_mmsg_rx(vp, budget);
+ 	else {
+@@ -1183,6 +1176,7 @@ static int vector_poll(struct napi_struct *napi, int budget)
+ 		if (err > 0)
+ 			err = 1;
+ 	}
++	spin_unlock(&vp->rx_queue->head_lock);
+ 	if (err > 0)
+ 		work_done += err;
+ 
+@@ -1234,7 +1228,7 @@ static int vector_net_open(struct net_device *dev)
+ 			vp->rx_header_size,
+ 			MAX_IOV_SIZE
+ 		);
+-		vp->rx_queue->queue_depth = get_depth(vp->parsed);
++		atomic_set(&vp->rx_queue->queue_depth, get_depth(vp->parsed));
+ 	} else {
+ 		vp->header_rxbuffer = kmalloc(
+ 			vp->rx_header_size,
+@@ -1480,8 +1474,11 @@ static void vector_get_ethtool_stats(struct net_device *dev,
+ 	u64 *tmp_stats)
+ {
+ 	struct vector_private *vp = netdev_priv(dev);
+-
++	spin_lock(&vp->tx_queue->head_lock);
++	spin_lock(&vp->rx_queue->head_lock);
+ 	memcpy(tmp_stats, &vp->estats, sizeof(struct vector_estats));
++	spin_unlock(&vp->rx_queue->head_lock);
++	spin_unlock(&vp->tx_queue->head_lock);
+ }
+ 
+ static int vector_get_coalesce(struct net_device *netdev,
+diff --git a/arch/um/drivers/vector_kern.h b/arch/um/drivers/vector_kern.h
+index 2a1fa8e0f3e1..1b8de936056d 100644
+--- a/arch/um/drivers/vector_kern.h
++++ b/arch/um/drivers/vector_kern.h
+@@ -14,6 +14,7 @@
+ #include <linux/ctype.h>
+ #include <linux/workqueue.h>
+ #include <linux/interrupt.h>
++#include <asm/atomic.h>
+ 
+ #include "vector_user.h"
+ 
+@@ -44,7 +45,8 @@ struct vector_queue {
+ 	struct net_device *dev;
+ 	spinlock_t head_lock;
+ 	spinlock_t tail_lock;
+-	int queue_depth, head, tail, max_depth, max_iov_frags;
++	atomic_t queue_depth;
++	int head, tail, max_depth, max_iov_frags;
+ 	short options;
+ };
+ 
+-- 
+2.39.2
 
 
