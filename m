@@ -4,85 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BAEB9C30653
-	for <linux-um@archiver.kernel.org>; Thu,  4 Jul 2024 12:38:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0C536C3271E
+	for <linux-um@archiver.kernel.org>; Thu,  4 Jul 2024 16:12:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=oswOPQ88LI9ZZ4dLvGzzNSGgsrVZFJ4bTKOLf0jSje0=; b=THqg3S7patG2IjbsECobqpAvm5
-	iy7/9K0Zd2flmJTXTJXPLFdNaoVn4/Q9CelGYk7KlhIU5u+Shg3rVXDigPb64b8KREHD6CDsPG9lU
-	oF1JgMkld66wkJviLN6NjNOeP6zJlJE5xuVJ9JFNVMUggxqqqRvDTlA0TGhuoBq3WKsZf9Yltku0G
-	nM6B9yHilRe5VWiL24Gbg7UH0Slf0w7FPIaOqtysPkOK5ghyMeYAXGfnuW3lyb884fDSZxKej4Ycf
-	SyfkhPYmLta+I3q9bnrH2e9qdOQ1oAnOxBsEiIsHpD6XnDUDAWXjOU4TRGuviU3LlItX1lHUSiKee
-	cVpU69cw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=9ATa20vENxLNEk04ESYJkNcAoEtJyAP5Lt/OAbQ3qHA=; b=yByrR/b6rT6K7+OgPue4TUtoek
+	YA29cIBjvHtOU2kgcEi8tyFRNaqrHeqwvdn+Ls8n9erSuyit/+tG5O9pn2C2hwzXwqMfYrc8PudNR
+	zp/LUUTmRWOUD0TVi5wlFuzy+WocvbuAKWUbQC+41TXcxBuR4/oXJoci7y5oUaPoEr/kpCI1dcfP4
+	+ELHsIxSfWAD6eQr8OZQaPeqCg3kclbE3vwZjW00sSSxejDcfHYWPygXjeoXTUiiCKA19N6ondm3b
+	YaomrmanfOL7pIpb4lO6qIJ/rxGXbG8wek6EYXO1qWKEvg7IX8IbjhO7FoqIzVOdO7KOINN/aWv8C
+	jOOvkyfA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sPLje-0000000D9bk-0EM4;
-	Thu, 04 Jul 2024 12:38:50 +0000
-Received: from smtp-bc08.mail.infomaniak.ch ([2001:1600:4:17::bc08])
+	id 1sPP4G-0000000Dnzw-2OSt;
+	Thu, 04 Jul 2024 16:12:20 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sPLjZ-0000000D9bD-2GwS
+	id 1sPP48-0000000DnzA-2PoJ
 	for linux-um@lists.infradead.org;
-	Thu, 04 Jul 2024 12:38:48 +0000
-Received: from smtp-4-0000.mail.infomaniak.ch (smtp-4-0000.mail.infomaniak.ch [10.7.10.107])
-	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4WFGR31j82zGlt;
-	Thu,  4 Jul 2024 14:38:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digikod.net;
-	s=20191114; t=1720096718;
-	bh=oswOPQ88LI9ZZ4dLvGzzNSGgsrVZFJ4bTKOLf0jSje0=;
-	h=From:To:Cc:Subject:Date:From;
-	b=v5xkoXT9pt4oLWpOuURpdCIOvi1n0uymB7k3u96ouDEmBvC0lD8MqV90lJsEHNyxb
-	 9LLj8NgKnPtojW0nAYAXI0k6VeBhNqPxWqzsReKLhg7KTFIRy0m7YhBk+U7Lzlswft
-	 y8jT8CBMTr2/BYwxKDDCRKEfmdIRJHlyzwNZgOZo=
-Received: from unknown by smtp-4-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4WFGQy0YxQz14Q;
-	Thu,  4 Jul 2024 14:38:33 +0200 (CEST)
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	Shuah Khan <shuah@kernel.org>
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Bagas Sanjaya <bagasdotme@gmail.com>,
-	Brendan Higgins <brendanhiggins@google.com>,
-	Christian Brauner <brauner@kernel.org>,
-	David Gow <davidgow@google.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	=?UTF-8?q?G=C3=BCnther=20Noack?= <gnoack@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Jon Hunter <jonathanh@nvidia.com>,
-	Kees Cook <keescook@chromium.org>,
-	Mark Brown <broonie@kernel.org>,
-	Richard Weinberger <richard@nod.at>,
-	Ron Economos <re@w6rz.net>,
-	Ronald Warsow <rwarsow@gmx.de>,
-	Sasha Levin <sashal@kernel.org>,
-	Sean Christopherson <seanjc@google.com>,
-	Shengyu Li <shengyu.li.evgeny@gmail.com>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	Will Drewry <wad@chromium.org>,
-	kernel test robot <oliver.sang@intel.com>,
-	kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	netdev@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [GIT PULL] Kselftest fixes for v6.10
-Date: Thu,  4 Jul 2024 14:38:16 +0200
-Message-ID: <20240704123816.669022-1-mic@digikod.net>
+	Thu, 04 Jul 2024 16:12:17 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=9ATa20vENxLNEk04ESYJkNcAoEtJyAP5Lt/OAbQ3qHA=;
+	t=1720109532; x=1721319132; b=Jaw1NF3OR8aHB9tjWORPvfFqcx75FGQlmIsHB4VOFglwVxD
+	Nr2ZC8f76toQQvHNJiyZjg91Cl75snBpQA+TOtv+6TqfT0z/knlv+OhGVMT+n1kTEFyG5JgUgUDoW
+	Q1+qI+UPac24HyHCGw2TqPk7X9MDurEDkwCbfMbgejRZYUx2dB9iZaVpE8UURr7Iv3t+CqbOrZnEO
+	5w6KbS4UEpe31YqohkXnOXuzP6U++IjV1tvKtnm9VM7gEz5luQpcp8RFUm2XyF7kA9LXnjzI2aVhM
+	V/cic3oLGhg9TvojcHFKyk3q6cIjDkuwaIpaCRu2JkyX3PG8BPNB97QHOUONiRbw==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1sPP41-0000000DLZ1-3I4p;
+	Thu, 04 Jul 2024 18:12:06 +0200
+Message-ID: <44d28d25de3d11458aef2755b44350d344a1caf8.camel@sipsolutions.net>
+Subject: Re: [PATCH v2] um: vector: Replace locks guarding queue depth with
+ atomics
+From: Johannes Berg <johannes@sipsolutions.net>
+To: anton.ivanov@cambridgegreys.com, linux-um@lists.infradead.org
+Cc: richard@nod.at
+Date: Thu, 04 Jul 2024 18:12:04 +0200
+In-Reply-To: <20240704122259.1869198-1-anton.ivanov@cambridgegreys.com>
+References: <20240704122259.1869198-1-anton.ivanov@cambridgegreys.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.3 (3.52.3-1.fc40) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Infomaniak-Routing: alpha
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240704_053846_044650_B97DA551 
-X-CRM114-Status: UNSURE (   5.39  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240704_091212_642123_E0E82E29 
+X-CRM114-Status: GOOD (  21.97  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,40 +73,95 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Linus,
+On Thu, 2024-07-04 at 13:22 +0100, anton.ivanov@cambridgegreys.com
+wrote:
+>=20
+> @@ -675,11 +657,20 @@ static void prep_queue_for_rx(struct vector_queue *=
+qi)
+>  	struct vector_private *vp =3D netdev_priv(qi->dev);
+>  	struct mmsghdr *mmsg_vector =3D qi->mmsg_vector;
+>  	void **skbuff_vector =3D qi->skbuff_vector;
+> -	int i;
+> +	int i, queue_depth;
+> +
+> +	queue_depth =3D atomic_read(&qi->queue_depth);
+> =20
+> -	if (qi->queue_depth =3D=3D 0)
+> +	if (queue_depth =3D=3D 0)
+>  		return;
+> -	for (i =3D 0; i < qi->queue_depth; i++) {
+> +
+> +	/* RX is always emptied 100% during each cycle, so we do not
+> +	 * want to do the tail wraparound math for it
+> +	 */
+> +
+> +	qi->head =3D qi->tail =3D 0;
+> +
+> +	for (i =3D 0; i < queue_depth; i++) {
+>  		/* it is OK if allocation fails - recvmmsg with NULL data in
+>  		 * iov argument still performs an RX, just drops the packet
+>  		 * This allows us stop faffing around with a "drop buffer"
+> @@ -689,7 +680,8 @@ static void prep_queue_for_rx(struct vector_queue *qi=
+)
+>  		skbuff_vector++;
+>  		mmsg_vector++;
+>  	}
+> -	qi->queue_depth =3D 0;
+> +	wmb(); /* Ensure that RX processing elsewhere sees the changes */
+> +	atomic_set(&qi->queue_depth, 0);
+>  }
 
-This PR fixes a few kselftests [1].  This has been in linux-next for a week and
-rebased to add Mark Brown's Tested-by.  The race condition found while writing
-this fix is not new and seems specific to UML's hostfs (I also tested against
-ext4 and btrfs without being able to trigger this issue).
+I don't understand this.
 
-Feel free to take this PR if you see fit.
+prep_queue_for_rx() is called by vector_mmsg_rx(), not in parallel or in
+a different thread or something, inside the NAPI polling. All it does is
+reset the queue to empty with all the SKBs allocated.
 
-Regards,
- Mickaël
+After that, prep_queue_for_rx() calls uml_vector_recvmmsg() [1] which
+fills the SKBs, and then vector_mmsg_rx() itself consumes them by going
+over it and calling napi_gro_receive() (or whatever else).
 
-[1] https://lore.kernel.org/r/9341d4db-5e21-418c-bf9e-9ae2da7877e1@sirena.org.uk
+There's no parallelism here? The RX queue wouldn't even need locking or
+atomic instructions at all at this point, since it's just "refill
+buffers, fill buffers, release buffers to network stack".
 
---
-The following changes since commit f2661062f16b2de5d7b6a5c42a9a5c96326b8454:
+What am I missing?
 
-  Linux 6.10-rc5 (2024-06-23 17:08:54 -0400)
 
-are available in the Git repository at:
+[1] btw, it should pass 'budget' to uml_vector_recvmmsg(), not the depth
+(qi->max_depth), and possibly even pass that to prep_queue_for_rx(), but
+that's a different patch.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/mic/linux.git tags/kselftest-fix-2024-07-04
+>  static struct vector_device *find_device(int n)
+> @@ -987,7 +979,7 @@ static int vector_mmsg_rx(struct vector_private *vp, =
+int budget)
+>  	 * many do we need to prep the next time prep_queue_for_rx() is called.
+>  	 */
+> =20
+> -	qi->queue_depth =3D packet_count;
+> +	atomic_add(packet_count, &qi->queue_depth);
 
-for you to fetch changes up to 130e42806773013e9cf32d211922c935ae2df86c:
+and that also means my earlier analysis was just confused - there's no
+need for _add here, _set is fine - in fact even non-atomic would be
+fine.
 
-  selftests/harness: Fix tests timeout and race condition (2024-06-28 16:06:03 +0200)
+> @@ -1176,6 +1168,7 @@ static int vector_poll(struct napi_struct *napi, in=
+t budget)
+> =20
+>  	if ((vp->options & VECTOR_TX) !=3D 0)
+>  		tx_enqueued =3D (vector_send(vp->tx_queue) > 0);
+> +	spin_lock(&vp->rx_queue->head_lock);
+>  	if ((vp->options & VECTOR_RX) > 0)
+>  		err =3D vector_mmsg_rx(vp, budget);
+>  	else {
+> @@ -1183,6 +1176,7 @@ static int vector_poll(struct napi_struct *napi, in=
+t budget)
+>  		if (err > 0)
+>  			err =3D 1;
+>  	}
+> +	spin_unlock(&vp->rx_queue->head_lock);
 
-----------------------------------------------------------------
-Fix Kselftests timeout and race condition
+that's needed for ... stats?
 
-----------------------------------------------------------------
-Mickaël Salaün (1):
-      selftests/harness: Fix tests timeout and race condition
-
- tools/testing/selftests/kselftest_harness.h | 43 ++++++++++++++++-------------
- 1 file changed, 24 insertions(+), 19 deletions(-)
+johannes
 
