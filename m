@@ -4,54 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 63A3BC30653
-	for <linux-um@archiver.kernel.org>; Thu,  4 Jul 2024 12:23:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BAEB9C30653
+	for <linux-um@archiver.kernel.org>; Thu,  4 Jul 2024 12:38:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-Type:MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=bhbgVVPQghTKiBF2P2I81kBpb7BKsHZLlCJbPLwidcs=; b=WBvh7Nx4KoKXIde//XqFZMV1ez
-	VILPHC2xsb7GV3rfGMiGAQEzVhNpTFrZVTtXrhydnI6N2lsyHKzS2Z0FX3XdrOC4Ea/N9TIV/n5jM
-	dg8dxhPhHb3VRcYi+KLIA1mbWeKU/D7ueSeAzc+J6yHprJsw5InLxPSkdg5P4DChz92yk2jLzpd/W
-	7lwU/HTmACUs+5Xp2CMl6cPR4McLI+yFWqpL3Rbot8NdRy8rD9DifFfE8BuHycjeouG1bShj2sx29
-	3/gjyTXTWo4UNSytSrx6EWU3EtbKQQ7s19age6VSHWmxwMKriQmr20VFwX+KfyyGh9xVZylyD1nrp
-	RSGmRjfA==;
+	bh=oswOPQ88LI9ZZ4dLvGzzNSGgsrVZFJ4bTKOLf0jSje0=; b=THqg3S7patG2IjbsECobqpAvm5
+	iy7/9K0Zd2flmJTXTJXPLFdNaoVn4/Q9CelGYk7KlhIU5u+Shg3rVXDigPb64b8KREHD6CDsPG9lU
+	oF1JgMkld66wkJviLN6NjNOeP6zJlJE5xuVJ9JFNVMUggxqqqRvDTlA0TGhuoBq3WKsZf9Yltku0G
+	nM6B9yHilRe5VWiL24Gbg7UH0Slf0w7FPIaOqtysPkOK5ghyMeYAXGfnuW3lyb884fDSZxKej4Ycf
+	SyfkhPYmLta+I3q9bnrH2e9qdOQ1oAnOxBsEiIsHpD6XnDUDAWXjOU4TRGuviU3LlItX1lHUSiKee
+	cVpU69cw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sPLUW-0000000D7ld-3oPE;
-	Thu, 04 Jul 2024 12:23:12 +0000
-Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
+	id 1sPLje-0000000D9bk-0EM4;
+	Thu, 04 Jul 2024 12:38:50 +0000
+Received: from smtp-bc08.mail.infomaniak.ch ([2001:1600:4:17::bc08])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sPLUT-0000000D7kt-3pBE
+	id 1sPLjZ-0000000D9bD-2GwS
 	for linux-um@lists.infradead.org;
-	Thu, 04 Jul 2024 12:23:12 +0000
-Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
-	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1sPLUQ-005d7u-SO; Thu, 04 Jul 2024 12:23:07 +0000
-Received: from jain.kot-begemot.co.uk ([192.168.3.3])
-	by jain.kot-begemot.co.uk with esmtp (Exim 4.96)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1sPLUM-007qTl-0a;
-	Thu, 04 Jul 2024 13:23:04 +0100
-From: anton.ivanov@cambridgegreys.com
-To: linux-um@lists.infradead.org
-Cc: johannes@sipsolutions.net,
-	richard@nod.at,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Subject: [PATCH v2] um: vector: Replace locks guarding queue depth with atomics
-Date: Thu,  4 Jul 2024 13:22:59 +0100
-Message-Id: <20240704122259.1869198-1-anton.ivanov@cambridgegreys.com>
-X-Mailer: git-send-email 2.39.2
+	Thu, 04 Jul 2024 12:38:48 +0000
+Received: from smtp-4-0000.mail.infomaniak.ch (smtp-4-0000.mail.infomaniak.ch [10.7.10.107])
+	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4WFGR31j82zGlt;
+	Thu,  4 Jul 2024 14:38:39 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digikod.net;
+	s=20191114; t=1720096718;
+	bh=oswOPQ88LI9ZZ4dLvGzzNSGgsrVZFJ4bTKOLf0jSje0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=v5xkoXT9pt4oLWpOuURpdCIOvi1n0uymB7k3u96ouDEmBvC0lD8MqV90lJsEHNyxb
+	 9LLj8NgKnPtojW0nAYAXI0k6VeBhNqPxWqzsReKLhg7KTFIRy0m7YhBk+U7Lzlswft
+	 y8jT8CBMTr2/BYwxKDDCRKEfmdIRJHlyzwNZgOZo=
+Received: from unknown by smtp-4-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4WFGQy0YxQz14Q;
+	Thu,  4 Jul 2024 14:38:33 +0200 (CEST)
+From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	Shuah Khan <shuah@kernel.org>
+Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Bagas Sanjaya <bagasdotme@gmail.com>,
+	Brendan Higgins <brendanhiggins@google.com>,
+	Christian Brauner <brauner@kernel.org>,
+	David Gow <davidgow@google.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	=?UTF-8?q?G=C3=BCnther=20Noack?= <gnoack@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Jon Hunter <jonathanh@nvidia.com>,
+	Kees Cook <keescook@chromium.org>,
+	Mark Brown <broonie@kernel.org>,
+	Richard Weinberger <richard@nod.at>,
+	Ron Economos <re@w6rz.net>,
+	Ronald Warsow <rwarsow@gmx.de>,
+	Sasha Levin <sashal@kernel.org>,
+	Sean Christopherson <seanjc@google.com>,
+	Shengyu Li <shengyu.li.evgeny@gmail.com>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	Will Drewry <wad@chromium.org>,
+	kernel test robot <oliver.sang@intel.com>,
+	kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	netdev@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [GIT PULL] Kselftest fixes for v6.10
+Date: Thu,  4 Jul 2024 14:38:16 +0200
+Message-ID: <20240704123816.669022-1-mic@digikod.net>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Clacks-Overhead: GNU Terry Pratchett
+X-Infomaniak-Routing: alpha
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240704_052310_132118_4625DF2C 
-X-CRM114-Status: GOOD (  28.93  )
+X-CRM114-CacheID: sfid-20240704_053846_044650_B97DA551 
+X-CRM114-Status: UNSURE (   5.39  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,376 +97,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Hi Linus,
 
-UML vector drivers use ring buffer structures which map
-preallocated skbs onto mmsg vectors for use with sendmmsg
-and recvmmsg. They are designed around a single consumer,
-single producer pattern allowing simultaneous enqueue and
-dequeue.
+This PR fixes a few kselftests [1].  This has been in linux-next for a week and
+rebased to add Mark Brown's Tested-by.  The race condition found while writing
+this fix is not new and seems specific to UML's hostfs (I also tested against
+ext4 and btrfs without being able to trigger this issue).
 
-Lock debugging with preemption showed possible races when
-locking the queue depth. This patch addresses this by
-removing extra locks, adding barriers and making queue
-depth inc/dec and access atomic.
+Feel free to take this PR if you see fit.
 
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
----
- arch/um/drivers/vector_kern.c | 191 +++++++++++++++++-----------------
- arch/um/drivers/vector_kern.h |   4 +-
- 2 files changed, 97 insertions(+), 98 deletions(-)
+Regards,
+ Mickaël
 
-diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
-index dc2feae789cb..2e09a2ace796 100644
---- a/arch/um/drivers/vector_kern.c
-+++ b/arch/um/drivers/vector_kern.c
-@@ -22,6 +22,7 @@
- #include <linux/interrupt.h>
- #include <linux/firmware.h>
- #include <linux/fs.h>
-+#include <asm/atomic.h>
- #include <uapi/linux/filter.h>
- #include <init.h>
- #include <irq_kern.h>
-@@ -102,18 +103,27 @@ static const struct {
- 
- static void vector_reset_stats(struct vector_private *vp)
- {
-+	spin_lock(&vp->rx_queue->head_lock);
- 	vp->estats.rx_queue_max = 0;
- 	vp->estats.rx_queue_running_average = 0;
--	vp->estats.tx_queue_max = 0;
--	vp->estats.tx_queue_running_average = 0;
- 	vp->estats.rx_encaps_errors = 0;
-+	vp->estats.sg_ok = 0;
-+	vp->estats.sg_linearized = 0;
-+	spin_unlock(&vp->rx_queue->head_lock);
-+
-+	/* TX stats are modified with TX head_lock held
-+	 * in vector_send
-+	 */
-+
-+	spin_lock(&vp->tx_queue->head_lock);
- 	vp->estats.tx_timeout_count = 0;
- 	vp->estats.tx_restart_queue = 0;
- 	vp->estats.tx_kicks = 0;
- 	vp->estats.tx_flow_control_xon = 0;
- 	vp->estats.tx_flow_control_xoff = 0;
--	vp->estats.sg_ok = 0;
--	vp->estats.sg_linearized = 0;
-+	vp->estats.tx_queue_max = 0;
-+	vp->estats.tx_queue_running_average = 0;
-+	spin_unlock(&vp->tx_queue->head_lock);
- }
- 
- static int get_mtu(struct arglist *def)
-@@ -232,12 +242,6 @@ static int get_transport_options(struct arglist *def)
- 
- static char *drop_buffer;
- 
--/* Array backed queues optimized for bulk enqueue/dequeue and
-- * 1:N (small values of N) or 1:1 enqueuer/dequeuer ratios.
-- * For more details and full design rationale see
-- * http://foswiki.cambridgegreys.com/Main/EatYourTailAndEnjoyIt
-- */
--
- 
- /*
-  * Advance the mmsg queue head by n = advance. Resets the queue to
-@@ -247,27 +251,14 @@ static char *drop_buffer;
- 
- static int vector_advancehead(struct vector_queue *qi, int advance)
- {
--	int queue_depth;
--
- 	qi->head =
- 		(qi->head + advance)
- 			% qi->max_depth;
- 
- 
--	spin_lock(&qi->tail_lock);
--	qi->queue_depth -= advance;
--
--	/* we are at 0, use this to
--	 * reset head and tail so we can use max size vectors
--	 */
-+	atomic_sub(advance, &qi->queue_depth);
- 
--	if (qi->queue_depth == 0) {
--		qi->head = 0;
--		qi->tail = 0;
--	}
--	queue_depth = qi->queue_depth;
--	spin_unlock(&qi->tail_lock);
--	return queue_depth;
-+	return atomic_read(&qi->queue_depth);
- }
- 
- /*	Advance the queue tail by n = advance.
-@@ -277,16 +268,11 @@ static int vector_advancehead(struct vector_queue *qi, int advance)
- 
- static int vector_advancetail(struct vector_queue *qi, int advance)
- {
--	int queue_depth;
--
- 	qi->tail =
- 		(qi->tail + advance)
- 			% qi->max_depth;
--	spin_lock(&qi->head_lock);
--	qi->queue_depth += advance;
--	queue_depth = qi->queue_depth;
--	spin_unlock(&qi->head_lock);
--	return queue_depth;
-+	atomic_add(advance, &qi->queue_depth);
-+	return atomic_read(&qi->queue_depth);
- }
- 
- static int prep_msg(struct vector_private *vp,
-@@ -339,9 +325,7 @@ static int vector_enqueue(struct vector_queue *qi, struct sk_buff *skb)
- 	int iov_count;
- 
- 	spin_lock(&qi->tail_lock);
--	spin_lock(&qi->head_lock);
--	queue_depth = qi->queue_depth;
--	spin_unlock(&qi->head_lock);
-+	queue_depth = atomic_read(&qi->queue_depth);
- 
- 	if (skb)
- 		packet_len = skb->len;
-@@ -360,6 +344,7 @@ static int vector_enqueue(struct vector_queue *qi, struct sk_buff *skb)
- 		mmsg_vector->msg_hdr.msg_iovlen = iov_count;
- 		mmsg_vector->msg_hdr.msg_name = vp->fds->remote_addr;
- 		mmsg_vector->msg_hdr.msg_namelen = vp->fds->remote_addr_size;
-+		wmb(); /* Make the packet visible to the NAPI poll thread */
- 		queue_depth = vector_advancetail(qi, 1);
- 	} else
- 		goto drop;
-@@ -411,61 +396,58 @@ static int vector_send(struct vector_queue *qi)
- 	int result = 0, send_len, queue_depth = qi->max_depth;
- 
- 	if (spin_trylock(&qi->head_lock)) {
--		if (spin_trylock(&qi->tail_lock)) {
--			/* update queue_depth to current value */
--			queue_depth = qi->queue_depth;
--			spin_unlock(&qi->tail_lock);
--			while (queue_depth > 0) {
--				/* Calculate the start of the vector */
--				send_len = queue_depth;
--				send_from = qi->mmsg_vector;
--				send_from += qi->head;
--				/* Adjust vector size if wraparound */
--				if (send_len + qi->head > qi->max_depth)
--					send_len = qi->max_depth - qi->head;
--				/* Try to TX as many packets as possible */
--				if (send_len > 0) {
--					result = uml_vector_sendmmsg(
--						 vp->fds->tx_fd,
--						 send_from,
--						 send_len,
--						 0
--					);
--					vp->in_write_poll =
--						(result != send_len);
--				}
--				/* For some of the sendmmsg error scenarios
--				 * we may end being unsure in the TX success
--				 * for all packets. It is safer to declare
--				 * them all TX-ed and blame the network.
--				 */
--				if (result < 0) {
--					if (net_ratelimit())
--						netdev_err(vp->dev, "sendmmsg err=%i\n",
--							result);
--					vp->in_error = true;
--					result = send_len;
--				}
--				if (result > 0) {
--					queue_depth =
--						consume_vector_skbs(qi, result);
--					/* This is equivalent to an TX IRQ.
--					 * Restart the upper layers to feed us
--					 * more packets.
--					 */
--					if (result > vp->estats.tx_queue_max)
--						vp->estats.tx_queue_max = result;
--					vp->estats.tx_queue_running_average =
--						(vp->estats.tx_queue_running_average + result) >> 1;
--				}
--				netif_wake_queue(qi->dev);
--				/* if TX is busy, break out of the send loop,
--				 *  poll write IRQ will reschedule xmit for us
-+		/* update queue_depth to current value */
-+		queue_depth = atomic_read(&qi->queue_depth);
-+		while (queue_depth > 0) {
-+			/* Calculate the start of the vector */
-+			send_len = queue_depth;
-+			send_from = qi->mmsg_vector;
-+			send_from += qi->head;
-+			/* Adjust vector size if wraparound */
-+			if (send_len + qi->head > qi->max_depth)
-+				send_len = qi->max_depth - qi->head;
-+			/* Try to TX as many packets as possible */
-+			if (send_len > 0) {
-+				result = uml_vector_sendmmsg(
-+					 vp->fds->tx_fd,
-+					 send_from,
-+					 send_len,
-+					 0
-+				);
-+				vp->in_write_poll =
-+					(result != send_len);
-+			}
-+			/* For some of the sendmmsg error scenarios
-+			 * we may end being unsure in the TX success
-+			 * for all packets. It is safer to declare
-+			 * them all TX-ed and blame the network.
-+			 */
-+			if (result < 0) {
-+				if (net_ratelimit())
-+					netdev_err(vp->dev, "sendmmsg err=%i\n",
-+						result);
-+				vp->in_error = true;
-+				result = send_len;
-+			}
-+			if (result > 0) {
-+				queue_depth =
-+					consume_vector_skbs(qi, result);
-+				/* This is equivalent to an TX IRQ.
-+				 * Restart the upper layers to feed us
-+				 * more packets.
- 				 */
--				if (result != send_len) {
--					vp->estats.tx_restart_queue++;
--					break;
--				}
-+				if (result > vp->estats.tx_queue_max)
-+					vp->estats.tx_queue_max = result;
-+				vp->estats.tx_queue_running_average =
-+					(vp->estats.tx_queue_running_average + result) >> 1;
-+			}
-+			netif_wake_queue(qi->dev);
-+			/* if TX is busy, break out of the send loop,
-+			 *  poll write IRQ will reschedule xmit for us
-+			 */
-+			if (result != send_len) {
-+				vp->estats.tx_restart_queue++;
-+				break;
- 			}
- 		}
- 		spin_unlock(&qi->head_lock);
-@@ -589,7 +571,7 @@ static struct vector_queue *create_queue(
- 	}
- 	spin_lock_init(&result->head_lock);
- 	spin_lock_init(&result->tail_lock);
--	result->queue_depth = 0;
-+	atomic_set(&result->queue_depth, 0);
- 	result->head = 0;
- 	result->tail = 0;
- 	return result;
-@@ -675,11 +657,20 @@ static void prep_queue_for_rx(struct vector_queue *qi)
- 	struct vector_private *vp = netdev_priv(qi->dev);
- 	struct mmsghdr *mmsg_vector = qi->mmsg_vector;
- 	void **skbuff_vector = qi->skbuff_vector;
--	int i;
-+	int i, queue_depth;
-+
-+	queue_depth = atomic_read(&qi->queue_depth);
- 
--	if (qi->queue_depth == 0)
-+	if (queue_depth == 0)
- 		return;
--	for (i = 0; i < qi->queue_depth; i++) {
-+
-+	/* RX is always emptied 100% during each cycle, so we do not
-+	 * want to do the tail wraparound math for it
-+	 */
-+
-+	qi->head = qi->tail = 0;
-+
-+	for (i = 0; i < queue_depth; i++) {
- 		/* it is OK if allocation fails - recvmmsg with NULL data in
- 		 * iov argument still performs an RX, just drops the packet
- 		 * This allows us stop faffing around with a "drop buffer"
-@@ -689,7 +680,8 @@ static void prep_queue_for_rx(struct vector_queue *qi)
- 		skbuff_vector++;
- 		mmsg_vector++;
- 	}
--	qi->queue_depth = 0;
-+	wmb(); /* Ensure that RX processing elsewhere sees the changes */
-+	atomic_set(&qi->queue_depth, 0);
- }
- 
- static struct vector_device *find_device(int n)
-@@ -987,7 +979,7 @@ static int vector_mmsg_rx(struct vector_private *vp, int budget)
- 	 * many do we need to prep the next time prep_queue_for_rx() is called.
- 	 */
- 
--	qi->queue_depth = packet_count;
-+	atomic_add(packet_count, &qi->queue_depth);
- 
- 	for (i = 0; i < packet_count; i++) {
- 		skb = (*skbuff_vector);
-@@ -1176,6 +1168,7 @@ static int vector_poll(struct napi_struct *napi, int budget)
- 
- 	if ((vp->options & VECTOR_TX) != 0)
- 		tx_enqueued = (vector_send(vp->tx_queue) > 0);
-+	spin_lock(&vp->rx_queue->head_lock);
- 	if ((vp->options & VECTOR_RX) > 0)
- 		err = vector_mmsg_rx(vp, budget);
- 	else {
-@@ -1183,6 +1176,7 @@ static int vector_poll(struct napi_struct *napi, int budget)
- 		if (err > 0)
- 			err = 1;
- 	}
-+	spin_unlock(&vp->rx_queue->head_lock);
- 	if (err > 0)
- 		work_done += err;
- 
-@@ -1234,7 +1228,7 @@ static int vector_net_open(struct net_device *dev)
- 			vp->rx_header_size,
- 			MAX_IOV_SIZE
- 		);
--		vp->rx_queue->queue_depth = get_depth(vp->parsed);
-+		atomic_set(&vp->rx_queue->queue_depth, get_depth(vp->parsed));
- 	} else {
- 		vp->header_rxbuffer = kmalloc(
- 			vp->rx_header_size,
-@@ -1480,8 +1474,11 @@ static void vector_get_ethtool_stats(struct net_device *dev,
- 	u64 *tmp_stats)
- {
- 	struct vector_private *vp = netdev_priv(dev);
--
-+	spin_lock(&vp->tx_queue->head_lock);
-+	spin_lock(&vp->rx_queue->head_lock);
- 	memcpy(tmp_stats, &vp->estats, sizeof(struct vector_estats));
-+	spin_unlock(&vp->rx_queue->head_lock);
-+	spin_unlock(&vp->tx_queue->head_lock);
- }
- 
- static int vector_get_coalesce(struct net_device *netdev,
-diff --git a/arch/um/drivers/vector_kern.h b/arch/um/drivers/vector_kern.h
-index 2a1fa8e0f3e1..1b8de936056d 100644
---- a/arch/um/drivers/vector_kern.h
-+++ b/arch/um/drivers/vector_kern.h
-@@ -14,6 +14,7 @@
- #include <linux/ctype.h>
- #include <linux/workqueue.h>
- #include <linux/interrupt.h>
-+#include <asm/atomic.h>
- 
- #include "vector_user.h"
- 
-@@ -44,7 +45,8 @@ struct vector_queue {
- 	struct net_device *dev;
- 	spinlock_t head_lock;
- 	spinlock_t tail_lock;
--	int queue_depth, head, tail, max_depth, max_iov_frags;
-+	atomic_t queue_depth;
-+	int head, tail, max_depth, max_iov_frags;
- 	short options;
- };
- 
--- 
-2.39.2
+[1] https://lore.kernel.org/r/9341d4db-5e21-418c-bf9e-9ae2da7877e1@sirena.org.uk
 
+--
+The following changes since commit f2661062f16b2de5d7b6a5c42a9a5c96326b8454:
+
+  Linux 6.10-rc5 (2024-06-23 17:08:54 -0400)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/mic/linux.git tags/kselftest-fix-2024-07-04
+
+for you to fetch changes up to 130e42806773013e9cf32d211922c935ae2df86c:
+
+  selftests/harness: Fix tests timeout and race condition (2024-06-28 16:06:03 +0200)
+
+----------------------------------------------------------------
+Fix Kselftests timeout and race condition
+
+----------------------------------------------------------------
+Mickaël Salaün (1):
+      selftests/harness: Fix tests timeout and race condition
+
+ tools/testing/selftests/kselftest_harness.h | 43 ++++++++++++++++-------------
+ 1 file changed, 24 insertions(+), 19 deletions(-)
 
