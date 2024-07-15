@@ -4,97 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73884C3DA41
-	for <linux-um@archiver.kernel.org>; Thu, 11 Jul 2024 13:24:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2551C2BD09
+	for <linux-um@archiver.kernel.org>; Mon, 15 Jul 2024 06:45:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=uD5F2KiZ8XLXHAGTMjuR6pDnMDoemCjCwFkeXsnWzb0=; b=GfblbYR9DIO1p9sjFXAmmsWB07
-	2iAAveeFm049u2ICEyygjvz1CIQjBzZnexgPUOhm1OZeLFadI1Q8y+hwbrtI/UJC90vhAtXuyUYxl
-	gEHV0aZ+st0uArOX+Y7XaVSym/Ww5VVNh70+2CFe4HLCnvs9rTQzcd26erG4n+w6SisnPwcZQMrIo
-	oUW4AvfQt9z+G1V3ASulBTjDYYOfbCr4m36Y05+qbJCqC310XMaqnp3w1+oIYD/vSsid6q1PDfSPk
-	B0zJv7f7DM5tMGgyiqSry/TOyXrPUi5YeHI5w8vi9i/yWkZpt+WbqWLeZc0yKK/1IsZeAz0XdyhCH
-	Q0QTCg+g==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
+	Message-ID:Date:From:MIME-Version:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=v8cE6GGeNU+RD+Q2LQy+7INYApFI5BbZGukwj8FEdiw=; b=ywchvNSGplGDb5IqNZFVfDHeUw
+	Ic8ydI6fSZZZDnF3UXcGMyp8dizzlsVN+1rbh55iRQPIxT0w+wR5841a0a5zUuZRTjiyvS71CP8N2
+	lkUJbjjgKSARhjE8yPGyt1ep7kBUAxp+ZCrBgwl62YVn4mq3dFV5/YydqWz2MkjQQqoD5sSVv+WEJ
+	u6RLN7dwGp0bBlWZ3OlH5FtEH1g/thheCE4RhFLwyQ+Y9jIugzgiNa6y4PUgqI0Dw+lZucRVuCS+2
+	MXRvaVwLEy9i10K+XyPlAiNS9dFsTWl9Ln/2poiwQ35C6xeTRc4pRsWGz+uwwf45yWkmE6/7/hUXt
+	Sr6x+1oA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sRtmo-0000000E8y6-0dmt;
-	Thu, 11 Jul 2024 13:24:38 +0000
-Received: from mgamail.intel.com ([198.175.65.11])
+	id 1sTFSL-000000064Rl-1YAJ;
+	Mon, 15 Jul 2024 06:45:05 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sRtmk-0000000E8w2-3UQR
+	id 1sTFSJ-000000064QL-1Nb1
 	for linux-um@lists.infradead.org;
-	Thu, 11 Jul 2024 13:24:36 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1720704275; x=1752240275;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=w1u81luxRSKXuuP8bL2ZtVySjx/0jxSrRzrfaS7TWpk=;
-  b=b2T5IZ2GZdT8ZktxdLJ2cl17QUSO50eTbflFdwejP4/sYogr/tZ2sPb2
-   b4yktKZj2Os2lmFTRdP+syQ8I/FGH3Tg4er0J/JYD7ec4zjgUYlLySjkS
-   FeqOFbpO/Wg8L0JKiJAdgs2nBW6oY6iNm8hhOxwZq9sTNqhmFQi6ppOcZ
-   mY7qzVrf7p+oqcAl410TwfqYisacZDD1UNRDm0D64MQ1bbYlXSLO2ovyZ
-   nUSQmOrpHkVPTUwO9fdDxp8Cv9reXDjaM7cVoyI8+xYr0aeamcOA8LEYm
-   TzIn07x/OQXPhTLr5OEfEzcpNCYjBPUSN3VzyQ98Qq/9xGlIu9TsZ0vB4
-   w==;
-X-CSE-ConnectionGUID: BWCMHxT7R+Wh0HOiUvAtyA==
-X-CSE-MsgGUID: BS640G0aTACLwpgdLz12SQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11130"; a="28676505"
-X-IronPort-AV: E=Sophos;i="6.09,200,1716274800"; 
-   d="scan'208";a="28676505"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jul 2024 06:24:33 -0700
-X-CSE-ConnectionGUID: w68rnNGyTX+raf3+ra/vZQ==
-X-CSE-MsgGUID: xfhpknJGQvakxEtM1SwOLA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.09,200,1716274800"; 
-   d="scan'208";a="53376105"
-Received: from lkp-server01.sh.intel.com (HELO 68891e0c336b) ([10.239.97.150])
-  by orviesa003.jf.intel.com with ESMTP; 11 Jul 2024 06:24:27 -0700
-Received: from kbuild by 68891e0c336b with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1sRtmZ-000ZJz-2y;
-	Thu, 11 Jul 2024 13:24:23 +0000
-Date: Thu, 11 Jul 2024 21:23:54 +0800
-From: kernel test robot <lkp@intel.com>
-To: "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	David Hildenbrand <david@redhat.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>,
-	Cornelia Huck <cohuck@redhat.com>,
-	Halil Pasic <pasic@linux.ibm.com>,
-	Eric Farman <farman@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
-	linux-um@lists.infradead.org, linux-remoteproc@vger.kernel.org,
-	linux-s390@vger.kernel.org, virtualization@lists.linux.dev,
-	kvm@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] virtio: fix vq # for balloon
-Message-ID: <202407112113.SzSpdDLK-lkp@intel.com>
-References: <3d655be73ce220f176b2c163839d83699f8faf43.1720611677.git.mst@redhat.com>
+	Mon, 15 Jul 2024 06:45:04 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1721025900;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=v8cE6GGeNU+RD+Q2LQy+7INYApFI5BbZGukwj8FEdiw=;
+	b=Cfd1gwl+twnC4JTRwsMqw1B0HvQ03pcws/kSrY9x30pY4VAGknp1HlAXbmdCgpPwSBIxOv
+	PM19EOtqnv1g3k0JXzDhdVZtzXYDubiohmOoLe+bBf2JbUqOOOpEdEdw+bN4t6LZbPpNk6
+	AkpebS9z+ook5cdhlQ4W6zANECXDovw=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-377-szTUac1GNaqu9a57bNzufg-1; Mon, 15 Jul 2024 02:42:41 -0400
+X-MC-Unique: szTUac1GNaqu9a57bNzufg-1
+Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-2c98c453912so3072817a91.2
+        for <linux-um@lists.infradead.org>; Sun, 14 Jul 2024 23:42:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721025760; x=1721630560;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=v8cE6GGeNU+RD+Q2LQy+7INYApFI5BbZGukwj8FEdiw=;
+        b=qWZm5Rykqke/mlffIODOfdzo5dtEkqIviSAcSOMlm7rnPKQFOdJZydqolGAFnWG2nS
+         CZyDM46oC5LVXaAMBfhYdGvQXNKure3Sty+BAk2v/fd8UXTyUJOS4wE6KxiwTLQOmXbj
+         ENREC3E2aKJ1Fa2neSJh4BxlBcJzK+doUTLTNzt7RieXp51CeBamf2hmS+Hc/LtRZKvj
+         gbQUIeXylL1y8ObdR9igta4GaTC3p7A6S+wxa8cdVySokNXLoPNHUGJFNtBCgq6wkobQ
+         rDRw4bqxEzn5lBEbMTYBTOKvAAd0igWWpijCKRnsRQw9UxnC9kNowQzjV7XIUPx4cNgY
+         hK5g==
+X-Forwarded-Encrypted: i=1; AJvYcCW7FM2XyGW0kNZPwGBC5oBATW+v5t8v0yRyFM7MV6ItPmFHicMG2E8RwR5OM0VMEuIUgBc5RYJwgX7Y5EG2kbbBT3KRurl5vk6bhgKb
+X-Gm-Message-State: AOJu0YzFBNVW5px/IaXMMsJFwa3jggm22Y2IsZJ/mcH5TB9SmyIlfof2
+	5iV7DRPKOzxjUA+i8YDjBsA1Ml2O/t92noMsfvXQw3kebm69ZhhyOcAtWRRWnkzj7glzWU3KAW8
+	s5f4Dp7lQaTVDnnAx6pV5vnnZYvqDK+Y3VDhblfJewxvIm8VT3ghdp6ModYMCBGZtRhDtQrDF+h
+	YLmDg16c6CU/MuHBMZtrM/83qGhVK2d6W9cSGL
+X-Received: by 2002:a17:90a:2dc6:b0:2c8:81b:e798 with SMTP id 98e67ed59e1d1-2ca35d3c7abmr12065013a91.30.1721025760457;
+        Sun, 14 Jul 2024 23:42:40 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGlYTBv4RNj4wkh9vEElzqL2vBUU600T1kPQZg9cxT7wUn/6RR1ZSvMIcKwDjEReH6NpcRRBTOd7ZzJ9SSfMhg=
+X-Received: by 2002:a17:90a:2dc6:b0:2c8:81b:e798 with SMTP id
+ 98e67ed59e1d1-2ca35d3c7abmr12065010a91.30.1721025760155; Sun, 14 Jul 2024
+ 23:42:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3d655be73ce220f176b2c163839d83699f8faf43.1720611677.git.mst@redhat.com>
+From: Lukas Bulwahn <lbulwahn@redhat.com>
+Date: Mon, 15 Jul 2024 08:42:29 +0200
+Message-ID: <CAOc5a3PhrEQ_xScfCxf+kirKg9aBKwEV2NnyKGEDgaDPUfYnjQ@mail.gmail.com>
+Subject: Selecting non-existing config in commit cd01672d64a3 ("um: Enable
+ preemption in UML")
+To: Johannes Berg <johannes.berg@intel.com>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>, Richard Weinberger <richard@nod.at>, 
+	linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: text/plain; charset="UTF-8"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240711_062434_949644_D084F737 
-X-CRM114-Status: GOOD (  13.79  )
+X-CRM114-CacheID: sfid-20240714_234503_451439_94982B00 
+X-CRM114-Status: UNSURE (   6.30  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,90 +94,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Michael,
+Dear Johannes,
 
-kernel test robot noticed the following build errors:
+Commit cd01672d64a3 ("um: Enable preemption in UML") changes the
+select in arch/um/Kconfig from selecting ARCH_NO_PREEMPT to selecting
+the non-existing config ARCH_NO_PREEMPT_DYNAMIC.
 
-[auto build test ERROR on next-20240710]
-[cannot apply to uml/next remoteproc/rproc-next s390/features linus/master uml/fixes v6.10-rc7 v6.10-rc6 v6.10-rc5 v6.10-rc7]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+As I do not fully understand the change, I do not know exactly if the
+change in this line was just an accident or if it intends to select
+HAVE_PREEMPT_DYNAMIC.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Michael-S-Tsirkin/virtio_balloon-add-work-around-for-out-of-spec-QEMU/20240711-004346
-base:   next-20240710
-patch link:    https://lore.kernel.org/r/3d655be73ce220f176b2c163839d83699f8faf43.1720611677.git.mst%40redhat.com
-patch subject: [PATCH v2 2/2] virtio: fix vq # for balloon
-config: i386-randconfig-014-20240711 (https://download.01.org/0day-ci/archive/20240711/202407112113.SzSpdDLK-lkp@intel.com/config)
-compiler: clang version 18.1.5 (https://github.com/llvm/llvm-project 617a15a9eac96088ae5e9134248d8236e34b91b1)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240711/202407112113.SzSpdDLK-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202407112113.SzSpdDLK-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> drivers/virtio/virtio_pci_common.c:391:1: error: version control conflict marker in file
-     391 | <<<<<<< HEAD
-         | ^
->> drivers/virtio/virtio_pci_common.c:392:30: error: use of undeclared identifier 'queue_idx'
-     392 |                 vqs[i] = vp_setup_vq(vdev, queue_idx++, vqi->callback,
-         |                                            ^
-   2 errors generated.
+Maybe you could have another look at this? At the moment, this select
+command is without effect, as the current config does not exist.
 
 
-vim +391 drivers/virtio/virtio_pci_common.c
+Best regards,
 
-   365	
-   366	static int vp_find_vqs_intx(struct virtio_device *vdev, unsigned int nvqs,
-   367				    struct virtqueue *vqs[],
-   368				    struct virtqueue_info vqs_info[])
-   369	{
-   370		struct virtio_pci_device *vp_dev = to_vp_device(vdev);
-   371		int i, err;
-   372	
-   373		vp_dev->vqs = kcalloc(nvqs, sizeof(*vp_dev->vqs), GFP_KERNEL);
-   374		if (!vp_dev->vqs)
-   375			return -ENOMEM;
-   376	
-   377		err = request_irq(vp_dev->pci_dev->irq, vp_interrupt, IRQF_SHARED,
-   378				dev_name(&vdev->dev), vp_dev);
-   379		if (err)
-   380			goto out_del_vqs;
-   381	
-   382		vp_dev->intx_enabled = 1;
-   383		vp_dev->per_vq_vectors = false;
-   384		for (i = 0; i < nvqs; ++i) {
-   385			struct virtqueue_info *vqi = &vqs_info[i];
-   386	
-   387			if (!vqi->name) {
-   388				vqs[i] = NULL;
-   389				continue;
-   390			}
- > 391	<<<<<<< HEAD
- > 392			vqs[i] = vp_setup_vq(vdev, queue_idx++, vqi->callback,
-   393					     vqi->name, vqi->ctx,
-   394	=======
-   395			vqs[i] = vp_setup_vq(vdev, i, callbacks[i], names[i],
-   396					     ctx ? ctx[i] : false,
-   397	>>>>>>> f814759f80b7... virtio: fix vq # for balloon
-   398					     VIRTIO_MSI_NO_VECTOR);
-   399			if (IS_ERR(vqs[i])) {
-   400				err = PTR_ERR(vqs[i]);
-   401				goto out_del_vqs;
-   402			}
-   403		}
-   404	
-   405		return 0;
-   406	out_del_vqs:
-   407		vp_del_vqs(vdev);
-   408		return err;
-   409	}
-   410	
+Lukas
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
