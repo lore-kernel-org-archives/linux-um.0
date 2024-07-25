@@ -4,61 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33C0DC3DA61
-	for <linux-um@archiver.kernel.org>; Wed, 24 Jul 2024 15:54:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 693E8C3DA49
+	for <linux-um@archiver.kernel.org>; Thu, 25 Jul 2024 06:46:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Subject:Message-ID:Cc:To:From:Date:Reply-To:
+	Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From:Reply-To:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=ze6r7/KhF9TjhphazFrIUVB9b7lRY0oWWGmfvsW+qjc=; b=f7DbwDa2CmU2pzg/a0OEkgwuxc
-	pBaXccyu8n2LEQyBVndOBlO6DKFQDy7T8dafMZfR9mOEVy5SxbB9BYYtAe9BNW+CxU3VzlJ9kK9gR
-	+pbUuO3pPgZr/Bg7eiodruypPm44UJ3nlDatWWifPOLD1+WUMJyPRCP9SRDbQ37ZFLs6KmDiuPaNm
-	I+8mPAMRYZ1xO4Lw/vZX5khBUtP65PmjnQNtMpTn6LFgSm1gLDcn+Y69F3HeUNH487VVuYy/95dux
-	iy6VPyyTO1jgDy+olGMHj5ePHdaOzpkCsGi5slrFPqqClB4s9Lod6A2jP0QwGFSR31DSXo4qvHsb4
-	w4bIz0oA==;
+	bh=4+uaxYAzUOG4otg01Vcjpn9RSFwR3O+Kw/IgkSDChug=; b=rONwuB+jALD2AmXz4j+eGz9hDc
+	bd21w7rM91ibb0WvRo2f7HukNICS81EgGH/hkOWrPZLDDxzfE1/R+M8DUh0GOrlas+Zogal814xRh
+	C2cDWX4151AgRfTJ/y3yU1nXcB/zyeyLqosRGILXWlZP5ksveaoKubT4tUT1EBKLUNt2ZJ7+jzjJj
+	z5iwnQaGV3AeVoi5zqUGtSaIerwDnqB7sCVmjCeVmksLKBH1VEaO36tQ4nRZgwopjp95X8xyhIW9u
+	cVs4vX6XkzRp5Fe3ZbzRwfM0FgQP/w6gHmZHUyBTwwtNTp2ijHpobZC90FHBC4Edwmss0o0uc+OUL
+	mJJf7ZGQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sWeJq-0000000FqS9-0Hhp;
-	Wed, 24 Jul 2024 15:54:22 +0000
-Received: from lithops.sigma-star.at ([195.201.40.130])
+	id 1sWsFC-000000005Mh-2rG3;
+	Thu, 25 Jul 2024 06:46:30 +0000
+Received: from szxga04-in.huawei.com ([45.249.212.190])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sWeJm-0000000FqPW-3NRc
+	id 1sWsF7-000000005K5-1sO6
 	for linux-um@lists.infradead.org;
-	Wed, 24 Jul 2024 15:54:20 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 5E0CB64A3D02;
-	Wed, 24 Jul 2024 17:54:07 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id 2N7Ivzn96uxj; Wed, 24 Jul 2024 17:54:06 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id C389E64A3D08;
-	Wed, 24 Jul 2024 17:54:06 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id L0jP27k3j6rD; Wed, 24 Jul 2024 17:54:06 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 99D0064A3D02;
-	Wed, 24 Jul 2024 17:54:06 +0200 (CEST)
-Date: Wed, 24 Jul 2024 17:54:06 +0200 (CEST)
-From: Richard Weinberger <richard@nod.at>
-To: torvalds <torvalds@linux-foundation.org>
-Cc: linux-um <linux-um@lists.infradead.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <158184774.112608.1721836446346.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] UML Changes for v6.11-rc1
+	Thu, 25 Jul 2024 06:46:28 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4WV1Wc1ML9z2ClPV;
+	Thu, 25 Jul 2024 14:41:48 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id CE06E14044F;
+	Thu, 25 Jul 2024 14:46:13 +0800 (CST)
+Received: from huawei.com (10.90.53.73) by dggpeml500022.china.huawei.com
+ (7.185.36.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Thu, 25 Jul
+ 2024 14:46:13 +0800
+From: Hongbo Li <lihongbo22@huawei.com>
+To: <richard@nod.at>, <anton.ivanov@cambridgegreys.com>,
+	<johannes@sipsolutions.net>, <brauner@kernel.org>
+CC: <viro@zeniv.linux.org.uk>, <maze@google.com>,
+	<linux-um@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
+	<lihongbo22@huawei.com>
+Subject: [PATCH] hostfs: fix the host directory parse when mounting.
+Date: Thu, 25 Jul 2024 14:51:30 +0800
+Message-ID: <20240725065130.1821964-1-lihongbo22@huawei.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Index: wQNab6Gx6T+BtYDYnsBlJQD6ezYbRg==
-Thread-Topic: UML Changes for v6.11-rc1
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.90.53.73]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240724_085419_179839_B4009E6D 
-X-CRM114-Status: GOOD (  10.47  )
+X-CRM114-CacheID: sfid-20240724_234625_825883_A0C7460D 
+X-CRM114-Status: GOOD (  15.17  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,168 +70,126 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Linus,
+hostfs not keep the host directory when mounting. When the host
+directory is none (default), fc->source is used as the host root
+directory, and this is wrong. Here we use `parse_monolithic` to
+handle the old mount path for parsing the root directory. For new
+mount path, The `parse_param` is used for the host directory parse.
 
-The following changes since commit 22a40d14b572deb80c0648557f4bd502d7e83826:
+Reported-and-tested-by: Maciej Żenczykowski <maze@google.com>
+Fixes: cd140ce9f611 ("hostfs: convert hostfs to use the new mount API")
+Link: https://lore.kernel.org/all/CANP3RGceNzwdb7w=vPf5=7BCid5HVQDmz1K5kC9JG42+HVAh_g@mail.gmail.com/
+Cc: Christian Brauner <brauner@kernel.org>
+Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
+---
+ fs/hostfs/hostfs_kern.c | 65 ++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 55 insertions(+), 10 deletions(-)
 
-  Linux 6.10-rc6 (2024-06-30 14:40:44 -0700)
+diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+index 2b532670a561..48d2a21c3380 100644
+--- a/fs/hostfs/hostfs_kern.c
++++ b/fs/hostfs/hostfs_kern.c
+@@ -17,6 +17,7 @@
+ #include <linux/writeback.h>
+ #include <linux/mount.h>
+ #include <linux/fs_context.h>
++#include <linux/fs_parser.h>
+ #include <linux/namei.h>
+ #include "hostfs.h"
+ #include <init.h>
+@@ -927,7 +928,6 @@ static const struct inode_operations hostfs_link_iops = {
+ static int hostfs_fill_super(struct super_block *sb, struct fs_context *fc)
+ {
+ 	struct hostfs_fs_info *fsi = sb->s_fs_info;
+-	const char *host_root = fc->source;
+ 	struct inode *root_inode;
+ 	int err;
+ 
+@@ -941,15 +941,6 @@ static int hostfs_fill_super(struct super_block *sb, struct fs_context *fc)
+ 	if (err)
+ 		return err;
+ 
+-	/* NULL is printed as '(null)' by printf(): avoid that. */
+-	if (fc->source == NULL)
+-		host_root = "";
+-
+-	fsi->host_root_path =
+-		kasprintf(GFP_KERNEL, "%s/%s", root_ino, host_root);
+-	if (fsi->host_root_path == NULL)
+-		return -ENOMEM;
+-
+ 	root_inode = hostfs_iget(sb, fsi->host_root_path);
+ 	if (IS_ERR(root_inode))
+ 		return PTR_ERR(root_inode);
+@@ -975,6 +966,58 @@ static int hostfs_fill_super(struct super_block *sb, struct fs_context *fc)
+ 	return 0;
+ }
+ 
++enum hostfs_parma {
++	Opt_hostfs,
++};
++
++static const struct fs_parameter_spec hostfs_param_specs[] = {
++	fsparam_string_empty("hostfs",		Opt_hostfs),
++	{}
++};
++
++static int hostfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
++{
++	struct hostfs_fs_info *fsi = fc->s_fs_info;
++	struct fs_parse_result result;
++	char *host_root;
++	int opt;
++
++	opt = fs_parse(fc, hostfs_param_specs, param, &result);
++	if (opt < 0)
++		return opt;
++
++	switch (opt) {
++	case Opt_hostfs:
++		host_root = param->string;
++		if (!host_root)
++			host_root = "";
++		fsi->host_root_path =
++			kasprintf(GFP_KERNEL, "%s/%s", root_ino, host_root);
++		if (fsi->host_root_path == NULL)
++			return -ENOMEM;
++		break;
++	}
++
++	return 0;
++}
++
++static int hostfs_parse_monolithic(struct fs_context *fc, void *data)
++{
++	struct hostfs_fs_info *fsi = fc->s_fs_info;
++	char *host_root = (char *)data;
++
++	/* NULL is printed as '(null)' by printf(): avoid that. */
++	if (host_root == NULL)
++		host_root = "";
++
++	fsi->host_root_path =
++		kasprintf(GFP_KERNEL, "%s/%s", root_ino, host_root);
++	if (fsi->host_root_path == NULL)
++		return -ENOMEM;
++
++	return 0;
++}
++
+ static int hostfs_fc_get_tree(struct fs_context *fc)
+ {
+ 	return get_tree_nodev(fc, hostfs_fill_super);
+@@ -992,6 +1035,8 @@ static void hostfs_fc_free(struct fs_context *fc)
+ }
+ 
+ static const struct fs_context_operations hostfs_context_ops = {
++	.parse_monolithic = hostfs_parse_monolithic,
++	.parse_param	= hostfs_parse_param,
+ 	.get_tree	= hostfs_fc_get_tree,
+ 	.free		= hostfs_fc_free,
+ };
+-- 
+2.34.1
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-linus-6.11-rc1
-
-for you to fetch changes up to 98ff534ec2cd02496c166614e6c1391d8e092e51:
-
-  um: vector: always reset vp->opened (2024-07-04 12:03:26 +0200)
-
-----------------------------------------------------------------
-This pull request contains the following changes for UML:
-
-- Support for preemption
-- i386 Rust support
-- Huge cleanup by Benjamin Berg
-- UBSAN support
-- Removal of dead code
-
-----------------------------------------------------------------
-Anton Ivanov (2):
-      um: Remove obsolete pcap driver
-      um: Enable preemption in UML
-
-Benjamin Berg (16):
-      um: irqs: process outstanding IRQs when unblocking signals
-      um: chan_user: catch EINTR when reading and writing
-      um: chan_user: retry partial writes
-      um: chan: use blocking IO for console output for time-travel
-      um: Remove stub-data.h include from common-offsets.h
-      um: Create signal stack memory assignment in stub_data
-      um: Add generic stub_syscall6 function
-      um: Rework syscall handling
-      um: compress memory related stub syscalls while adding them
-      um: remove LDT support
-      um: remove copy_context_skas0
-      um: Delay flushing syscalls until the thread is restarted
-      um: Do not flush MM in flush_thread
-      um: remove force_flush_all from fork_handler
-      um: simplify and consolidate TLB updates
-      um: refactor TLB update handling
-
-David Gow (2):
-      arch: um: rust: Use the generated target.json again
-      arch: um: rust: Add i386 support for Rust
-
-Dr. David Alan Gilbert (1):
-      ubd: Remove unused mutex 'ubd_mutex'
-
-Jeff Johnson (2):
-      um: harddog: add missing MODULE_DESCRIPTION() macro
-      hostfs: add missing MODULE_DESCRIPTION() macro
-
-Johannes Berg (13):
-      um: time-travel: fix time-travel-start option
-      um: enable UBSAN
-      hostfs: fix dev_t handling
-      um: generalize os_rcv_fd
-      um: add mmap/mremap OS calls
-      um: add shared memory optimisation for time-travel=ext
-      um: time-travel: remove time_exit()
-      um: time-travel: fix signal blocking race/hang
-      um: remove pcap driver from documentation
-      um: line: always fill *error_out in setup_one_line()
-      um: register power-off handler
-      um: vector: remove vp->lock
-      um: vector: always reset vp->opened
-
-Mordechay Goodstein (1):
-      um: time-travel: support time-travel protocol broadcast messages
-
-Niklas Schnelle (1):
-      um: Select HAS_IOREMAP for UML_IOMEM_EMULATION
-
-Tiwei Bie (2):
-      um: Remove unused ncpus variable
-      um: Remove /proc/sysemu support code
-
-Wei Yang (1):
-      um/mm: remove redundant assignment of max_low_pfn
-
- Documentation/rust/arch-support.rst                |   2 +-
- .../virt/uml/user_mode_linux_howto_v2.rst          |   2 -
- arch/um/Kconfig                                    |   8 +-
- arch/um/drivers/Kconfig                            |  20 -
- arch/um/drivers/Makefile                           |  10 +-
- arch/um/drivers/chan.h                             |   3 +-
- arch/um/drivers/chan_kern.c                        |  81 ++-
- arch/um/drivers/chan_user.c                        |  20 +-
- arch/um/drivers/harddog_kern.c                     |   1 +
- arch/um/drivers/line.c                             |   2 +
- arch/um/drivers/pcap_kern.c                        | 113 -----
- arch/um/drivers/pcap_user.c                        | 137 ------
- arch/um/drivers/pcap_user.h                        |  21 -
- arch/um/drivers/port_kern.c                        |  14 +-
- arch/um/drivers/ubd_kern.c                         |   3 -
- arch/um/drivers/vector_kern.c                      |  19 +-
- arch/um/drivers/vector_kern.h                      |   1 -
- arch/um/drivers/xterm.c                            |   2 +-
- arch/um/drivers/xterm_kern.c                       |  13 +-
- arch/um/include/asm/mmu.h                          |  10 +-
- arch/um/include/asm/mmu_context.h                  |   2 -
- arch/um/include/asm/pgtable.h                      |  32 ++
- arch/um/include/asm/tlbflush.h                     |  46 +-
- arch/um/include/shared/as-layout.h                 |   2 +-
- arch/um/include/shared/common-offsets.h            |   5 -
- arch/um/include/shared/kern_util.h                 |   1 -
- arch/um/include/shared/os.h                        |  33 +-
- arch/um/include/shared/skas/mm_id.h                |   2 +-
- arch/um/include/shared/skas/skas.h                 |   2 +
- arch/um/include/shared/skas/stub-data.h            |  36 +-
- arch/um/include/shared/timetravel.h                |   9 +
- arch/um/include/shared/user.h                      |   8 +
- arch/um/kernel/exec.c                              |   9 -
- arch/um/kernel/irq.c                               |  80 +--
- arch/um/kernel/ksyms.c                             |   2 +-
- arch/um/kernel/mem.c                               |   1 -
- arch/um/kernel/process.c                           |  69 ---
- arch/um/kernel/reboot.c                            |  15 +
- arch/um/kernel/skas/Makefile                       |   9 +-
- arch/um/kernel/skas/clone.c                        |  48 --
- arch/um/kernel/skas/mmu.c                          |  54 +-
- arch/um/kernel/skas/process.c                      |  18 +
- arch/um/kernel/skas/stub.c                         |  69 +++
- arch/um/kernel/time.c                              | 187 ++++++-
- arch/um/kernel/tlb.c                               | 545 ++++-----------------
- arch/um/kernel/trap.c                              |  15 +-
- arch/um/kernel/um_arch.c                           |   3 -
- arch/um/os-Linux/file.c                            |  94 ++--
- arch/um/os-Linux/signal.c                          | 118 ++++-
- arch/um/os-Linux/skas/mem.c                        | 245 +++++----
- arch/um/os-Linux/skas/process.c                    | 124 +----
- arch/um/os-Linux/start_up.c                        |   1 +
- arch/x86/Makefile.um                               |   1 +
- arch/x86/um/Makefile                               |   5 +-
- arch/x86/um/asm/mm_context.h                       |  70 ---
- arch/x86/um/ldt.c                                  | 380 --------------
- arch/x86/um/shared/sysdep/stub.h                   |   2 +-
- arch/x86/um/shared/sysdep/stub_32.h                |  45 +-
- arch/x86/um/shared/sysdep/stub_64.h                |  41 +-
- arch/x86/um/stub_32.S                              |  56 ---
- arch/x86/um/stub_64.S                              |  50 --
- arch/x86/um/tls_32.c                               |   1 +
- fs/hostfs/hostfs.h                                 |   7 +-
- fs/hostfs/hostfs_kern.c                            |  11 +-
- fs/hostfs/hostfs_user.c                            |   7 +-
- include/uapi/linux/um_timetravel.h                 | 190 ++++++-
- rust/Makefile                                      |   2 +-
- scripts/Makefile                                   |   2 +-
- scripts/generate_rust_target.rs                    |  17 +
- 69 files changed, 1297 insertions(+), 1956 deletions(-)
- delete mode 100644 arch/um/drivers/pcap_kern.c
- delete mode 100644 arch/um/drivers/pcap_user.c
- delete mode 100644 arch/um/drivers/pcap_user.h
- delete mode 100644 arch/um/kernel/skas/clone.c
- create mode 100644 arch/um/kernel/skas/stub.c
- delete mode 100644 arch/x86/um/asm/mm_context.h
- delete mode 100644 arch/x86/um/ldt.c
- delete mode 100644 arch/x86/um/stub_32.S
- delete mode 100644 arch/x86/um/stub_64.S
 
