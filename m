@@ -4,54 +4,35 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5ADBCC3DA49
-	for <linux-um@archiver.kernel.org>; Thu, 25 Jul 2024 11:36:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 691E3C3DA49
+	for <linux-um@archiver.kernel.org>; Thu, 25 Jul 2024 13:00:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=A2VuDAKeSGGGRwdNEgASvdRePK2jE6LTgdknFzfGiVg=; b=GS7VnoaICCaCSqUYLpjqPnL1zf
-	R+1faVdptWLrUomG7d+qO3UGBPWd40+j0zUAv3dFR4n9FQOpz5ndiGAVzCIuIPm2l9zgcCcMHfAWo
-	B58erz/CVx1afK1Yca9/P20+NZ/goDU/asUjTwIQsukwq9qBFhpSEh0+e1Ob6QOmVt8WPS15RrP22
-	9uDefA76ixXKW8AeY5SKqyzS0NsfGZFfdtMZJLQRR8Uts/wb/rawMSn2eNYbtYHJTdIqc9yCjP5qv
-	b0+OGweotflTTikCc+O75Q4vRtXGsMNCje6mapMz6mAlnIIHNX+I9By+DtGvVvy8Kxqmm24SUapZx
-	rAIieNfQ==;
+	bh=TOmpyDcm1CthrtcJk0B6SRkKyBUOYq6t4Cca/cnKfwU=; b=4IYQ92oWTWaXOhkiMZxYYCM455
+	kNFgF1PHizAIXUs9CFuBIwwGRF9VhA5Au3llf/qrFxeeOLOFndCC8AusoPwnFrZd9NlQ8YLTcYbqJ
+	aS31kl7XXDvZj9ny1xJ2dL9fm29XS7ujyj7JmJKCGp0mDPcGCwovxYGY5w7v8gGrJ+VUdEbRVFSHt
+	LdYyKl2wkZZqkS2S5XwUawcqqY6AV0VZbC3RRsNmHqar7eCh6cHM1FUKohxbqAaDBs1uHOOF2Txz7
+	CS3zS7g7GDZVSl8/VZXA3xqXKbqh9mtdGW8Oi2FISzt8ttFeDcLnEp4at1rnpNAinxGa9lfbB6w62
+	bPr6XKRQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sWwm8-00000000mTa-0Efg;
-	Thu, 25 Jul 2024 11:36:48 +0000
-Received: from lounge.grep.be ([2a01:4f8:200:91e8::2])
+	id 1sWy5D-000000010M1-2jaA;
+	Thu, 25 Jul 2024 13:00:35 +0000
+Received: from verein.lst.de ([213.95.11.211])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sWwm5-00000000mSv-07hW;
-	Thu, 25 Jul 2024 11:36:47 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=uter.be;
-	s=2021.lounge; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=A2VuDAKeSGGGRwdNEgASvdRePK2jE6LTgdknFzfGiVg=; b=HRSnzfY+SxqUo9lzjJBHswdyNO
-	izEqhcP/7tFCFgJJGzzhTZHV+hkIJ95lvet5keDsrZB2SVJh4LM2TT0rY+nfGtvBDiOATcCiQ/ZZp
-	NX14nRCfBdImELKCJsEds0YwtB87PNneYsFwhe69klvX8hKaVd3bPAdUOO5oKLpwqsdI1TpEV3xHA
-	zPeruYumASMydrGBh8+RD0p+DiFqZyJ0vUaImcbHlwd7Aik2LDO+RgK3xJUkwPiJj9pwJIeGrrPKF
-	y3yZwQEUsA40VBWzlQvQ+rZPVwPFNOT65DR9yRxPQziuObFSyUbJuGiw7PBH1R7FTtIfgagxi0sHi
-	wC/6XZ8A==;
-Received: from [102.39.153.168] (helo=pc220518)
-	by lounge.grep.be with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <w@uter.be>)
-	id 1sWwlF-001dJr-31;
-	Thu, 25 Jul 2024 13:35:53 +0200
-Received: from wouter by pc220518 with local (Exim 4.98)
-	(envelope-from <w@uter.be>)
-	id 1sWwl8-00000002sGZ-0mps;
-	Thu, 25 Jul 2024 13:35:46 +0200
-Date: Thu, 25 Jul 2024 13:35:46 +0200
-From: Wouter Verhelst <w@uter.be>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, Geert Uytterhoeven <geert@linux-m68k.org>,
+	id 1sWy52-000000010Fw-29Nf;
+	Thu, 25 Jul 2024 13:00:26 +0000
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id C4CD1227A8E; Thu, 25 Jul 2024 15:00:09 +0200 (CEST)
+Date: Thu, 25 Jul 2024 15:00:08 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Wouter Verhelst <w@uter.be>
+Cc: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
 	Richard Weinberger <richard@nod.at>,
 	Philipp Reisner <philipp.reisner@linbit.com>,
 	Lars Ellenberg <lars.ellenberg@linbit.com>,
@@ -76,18 +57,16 @@ Cc: Jens Axboe <axboe@kernel.dk>, Geert Uytterhoeven <geert@linux-m68k.org>,
 	linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
 	Damien Le Moal <dlemoal@kernel.org>
 Subject: Re: [PATCH 14/26] block: move the nonrot flag to queue_limits
-Message-ID: <ZqI4kosy20WkLC2P@pc220518.home.grep.be>
-References: <20240617060532.127975-1-hch@lst.de>
- <20240617060532.127975-15-hch@lst.de>
+Message-ID: <20240725130008.GA22625@lst.de>
+References: <20240617060532.127975-1-hch@lst.de> <20240617060532.127975-15-hch@lst.de> <ZqI4kosy20WkLC2P@pc220518.home.grep.be>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240617060532.127975-15-hch@lst.de>
-X-Speed: Gates' Law: Every 18 months, the speed of software halves.
-Organization: none
+In-Reply-To: <ZqI4kosy20WkLC2P@pc220518.home.grep.be>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240725_043645_521918_7A3ACEC0 
-X-CRM114-Status: GOOD (  17.58  )
+X-CRM114-CacheID: sfid-20240725_060024_819639_08BB032A 
+X-CRM114-Status: GOOD (  14.37  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,42 +81,18 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jun 17, 2024 at 08:04:41AM +0200, Christoph Hellwig wrote:
-> Use the chance to switch to defaulting to non-rotational and require
-> the driver to opt into rotational, which matches the polarity of the
-> sysfs interface.
-[...]
-> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-> index cb1c86a6a3fb9d..6cddf5baffe02a 100644
-> --- a/drivers/block/nbd.c
-> +++ b/drivers/block/nbd.c
-> @@ -1867,11 +1867,6 @@ static struct nbd_device *nbd_dev_add(int index, unsigned int refs)
->  		goto out_err_disk;
->  	}
->  
-> -	/*
-> -	 * Tell the block layer that we are not a rotational device
-> -	 */
-> -	blk_queue_flag_set(QUEUE_FLAG_NONROT, disk->queue);
-> -
->  	mutex_init(&nbd->config_lock);
->  	refcount_set(&nbd->config_refs, 0);
->  	/*
+On Thu, Jul 25, 2024 at 01:35:46PM +0200, Wouter Verhelst wrote:
+> NBD actually exports a flag for rotational devices; it's defined in
+> nbd.h in the NBD userland source as
+> 
+> #define NBD_FLAG_ROTATIONAL     (1 << 4)        /* Use elevator algorithm - rotational media */
+> 
+> which is passed in the same flags field which also contains the
+> NBD_FLAG_SEND_FLUSH and NBD_FLAG_SEND_FUA flags.
+> 
+> Perhaps we might want to look at that flag and set the device to
+> rotational if it is specified?
 
-NBD actually exports a flag for rotational devices; it's defined in
-nbd.h in the NBD userland source as
+Yes, that sounds good.  Can you send a patch?
 
-#define NBD_FLAG_ROTATIONAL     (1 << 4)        /* Use elevator algorithm - rotational media */
-
-which is passed in the same flags field which also contains the
-NBD_FLAG_SEND_FLUSH and NBD_FLAG_SEND_FUA flags.
-
-Perhaps we might want to look at that flag and set the device to
-rotational if it is specified?
-
--- 
-     w@uter.{be,co.za}
-wouter@{grep.be,fosdem.org,debian.org}
-
-I will have a Tin-Actinium-Potassium mixture, thanks.
 
