@@ -4,58 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 693E8C3DA49
-	for <linux-um@archiver.kernel.org>; Thu, 25 Jul 2024 06:46:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5ADBCC3DA49
+	for <linux-um@archiver.kernel.org>; Thu, 25 Jul 2024 11:36:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=4+uaxYAzUOG4otg01Vcjpn9RSFwR3O+Kw/IgkSDChug=; b=rONwuB+jALD2AmXz4j+eGz9hDc
-	bd21w7rM91ibb0WvRo2f7HukNICS81EgGH/hkOWrPZLDDxzfE1/R+M8DUh0GOrlas+Zogal814xRh
-	C2cDWX4151AgRfTJ/y3yU1nXcB/zyeyLqosRGILXWlZP5ksveaoKubT4tUT1EBKLUNt2ZJ7+jzjJj
-	z5iwnQaGV3AeVoi5zqUGtSaIerwDnqB7sCVmjCeVmksLKBH1VEaO36tQ4nRZgwopjp95X8xyhIW9u
-	cVs4vX6XkzRp5Fe3ZbzRwfM0FgQP/w6gHmZHUyBTwwtNTp2ijHpobZC90FHBC4Edwmss0o0uc+OUL
-	mJJf7ZGQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=A2VuDAKeSGGGRwdNEgASvdRePK2jE6LTgdknFzfGiVg=; b=GS7VnoaICCaCSqUYLpjqPnL1zf
+	R+1faVdptWLrUomG7d+qO3UGBPWd40+j0zUAv3dFR4n9FQOpz5ndiGAVzCIuIPm2l9zgcCcMHfAWo
+	B58erz/CVx1afK1Yca9/P20+NZ/goDU/asUjTwIQsukwq9qBFhpSEh0+e1Ob6QOmVt8WPS15RrP22
+	9uDefA76ixXKW8AeY5SKqyzS0NsfGZFfdtMZJLQRR8Uts/wb/rawMSn2eNYbtYHJTdIqc9yCjP5qv
+	b0+OGweotflTTikCc+O75Q4vRtXGsMNCje6mapMz6mAlnIIHNX+I9By+DtGvVvy8Kxqmm24SUapZx
+	rAIieNfQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sWsFC-000000005Mh-2rG3;
-	Thu, 25 Jul 2024 06:46:30 +0000
-Received: from szxga04-in.huawei.com ([45.249.212.190])
+	id 1sWwm8-00000000mTa-0Efg;
+	Thu, 25 Jul 2024 11:36:48 +0000
+Received: from lounge.grep.be ([2a01:4f8:200:91e8::2])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sWsF7-000000005K5-1sO6
-	for linux-um@lists.infradead.org;
-	Thu, 25 Jul 2024 06:46:28 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4WV1Wc1ML9z2ClPV;
-	Thu, 25 Jul 2024 14:41:48 +0800 (CST)
-Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id CE06E14044F;
-	Thu, 25 Jul 2024 14:46:13 +0800 (CST)
-Received: from huawei.com (10.90.53.73) by dggpeml500022.china.huawei.com
- (7.185.36.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Thu, 25 Jul
- 2024 14:46:13 +0800
-From: Hongbo Li <lihongbo22@huawei.com>
-To: <richard@nod.at>, <anton.ivanov@cambridgegreys.com>,
-	<johannes@sipsolutions.net>, <brauner@kernel.org>
-CC: <viro@zeniv.linux.org.uk>, <maze@google.com>,
-	<linux-um@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>,
-	<lihongbo22@huawei.com>
-Subject: [PATCH] hostfs: fix the host directory parse when mounting.
-Date: Thu, 25 Jul 2024 14:51:30 +0800
-Message-ID: <20240725065130.1821964-1-lihongbo22@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	id 1sWwm5-00000000mSv-07hW;
+	Thu, 25 Jul 2024 11:36:47 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=uter.be;
+	s=2021.lounge; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=A2VuDAKeSGGGRwdNEgASvdRePK2jE6LTgdknFzfGiVg=; b=HRSnzfY+SxqUo9lzjJBHswdyNO
+	izEqhcP/7tFCFgJJGzzhTZHV+hkIJ95lvet5keDsrZB2SVJh4LM2TT0rY+nfGtvBDiOATcCiQ/ZZp
+	NX14nRCfBdImELKCJsEds0YwtB87PNneYsFwhe69klvX8hKaVd3bPAdUOO5oKLpwqsdI1TpEV3xHA
+	zPeruYumASMydrGBh8+RD0p+DiFqZyJ0vUaImcbHlwd7Aik2LDO+RgK3xJUkwPiJj9pwJIeGrrPKF
+	y3yZwQEUsA40VBWzlQvQ+rZPVwPFNOT65DR9yRxPQziuObFSyUbJuGiw7PBH1R7FTtIfgagxi0sHi
+	wC/6XZ8A==;
+Received: from [102.39.153.168] (helo=pc220518)
+	by lounge.grep.be with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <w@uter.be>)
+	id 1sWwlF-001dJr-31;
+	Thu, 25 Jul 2024 13:35:53 +0200
+Received: from wouter by pc220518 with local (Exim 4.98)
+	(envelope-from <w@uter.be>)
+	id 1sWwl8-00000002sGZ-0mps;
+	Thu, 25 Jul 2024 13:35:46 +0200
+Date: Thu, 25 Jul 2024 13:35:46 +0200
+From: Wouter Verhelst <w@uter.be>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, Geert Uytterhoeven <geert@linux-m68k.org>,
+	Richard Weinberger <richard@nod.at>,
+	Philipp Reisner <philipp.reisner@linbit.com>,
+	Lars Ellenberg <lars.ellenberg@linbit.com>,
+	Christoph =?iso-8859-1?Q?B=F6hmwalder?= <christoph.boehmwalder@linbit.com>,
+	Josef Bacik <josef@toxicpanda.com>, Ming Lei <ming.lei@redhat.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Roger Pau =?iso-8859-1?Q?Monn=E9?= <roger.pau@citrix.com>,
+	Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>,
+	Mikulas Patocka <mpatocka@redhat.com>, Song Liu <song@kernel.org>,
+	Yu Kuai <yukuai3@huawei.com>,
+	Vineeth Vijayan <vneethv@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org,
+	drbd-dev@lists.linbit.com, nbd@other.debian.org,
+	linuxppc-dev@lists.ozlabs.org, ceph-devel@vger.kernel.org,
+	virtualization@lists.linux.dev, xen-devel@lists.xenproject.org,
+	linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev,
+	linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
+	linux-mtd@lists.infradead.org, nvdimm@lists.linux.dev,
+	linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
+	Damien Le Moal <dlemoal@kernel.org>
+Subject: Re: [PATCH 14/26] block: move the nonrot flag to queue_limits
+Message-ID: <ZqI4kosy20WkLC2P@pc220518.home.grep.be>
+References: <20240617060532.127975-1-hch@lst.de>
+ <20240617060532.127975-15-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.90.53.73]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500022.china.huawei.com (7.185.36.66)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240617060532.127975-15-hch@lst.de>
+X-Speed: Gates' Law: Every 18 months, the speed of software halves.
+Organization: none
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240724_234625_825883_A0C7460D 
-X-CRM114-Status: GOOD (  15.17  )
+X-CRM114-CacheID: sfid-20240725_043645_521918_7A3ACEC0 
+X-CRM114-Status: GOOD (  17.58  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,126 +102,42 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-hostfs not keep the host directory when mounting. When the host
-directory is none (default), fc->source is used as the host root
-directory, and this is wrong. Here we use `parse_monolithic` to
-handle the old mount path for parsing the root directory. For new
-mount path, The `parse_param` is used for the host directory parse.
+On Mon, Jun 17, 2024 at 08:04:41AM +0200, Christoph Hellwig wrote:
+> Use the chance to switch to defaulting to non-rotational and require
+> the driver to opt into rotational, which matches the polarity of the
+> sysfs interface.
+[...]
+> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+> index cb1c86a6a3fb9d..6cddf5baffe02a 100644
+> --- a/drivers/block/nbd.c
+> +++ b/drivers/block/nbd.c
+> @@ -1867,11 +1867,6 @@ static struct nbd_device *nbd_dev_add(int index, unsigned int refs)
+>  		goto out_err_disk;
+>  	}
+>  
+> -	/*
+> -	 * Tell the block layer that we are not a rotational device
+> -	 */
+> -	blk_queue_flag_set(QUEUE_FLAG_NONROT, disk->queue);
+> -
+>  	mutex_init(&nbd->config_lock);
+>  	refcount_set(&nbd->config_refs, 0);
+>  	/*
 
-Reported-and-tested-by: Maciej Żenczykowski <maze@google.com>
-Fixes: cd140ce9f611 ("hostfs: convert hostfs to use the new mount API")
-Link: https://lore.kernel.org/all/CANP3RGceNzwdb7w=vPf5=7BCid5HVQDmz1K5kC9JG42+HVAh_g@mail.gmail.com/
-Cc: Christian Brauner <brauner@kernel.org>
-Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
----
- fs/hostfs/hostfs_kern.c | 65 ++++++++++++++++++++++++++++++++++-------
- 1 file changed, 55 insertions(+), 10 deletions(-)
+NBD actually exports a flag for rotational devices; it's defined in
+nbd.h in the NBD userland source as
 
-diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index 2b532670a561..48d2a21c3380 100644
---- a/fs/hostfs/hostfs_kern.c
-+++ b/fs/hostfs/hostfs_kern.c
-@@ -17,6 +17,7 @@
- #include <linux/writeback.h>
- #include <linux/mount.h>
- #include <linux/fs_context.h>
-+#include <linux/fs_parser.h>
- #include <linux/namei.h>
- #include "hostfs.h"
- #include <init.h>
-@@ -927,7 +928,6 @@ static const struct inode_operations hostfs_link_iops = {
- static int hostfs_fill_super(struct super_block *sb, struct fs_context *fc)
- {
- 	struct hostfs_fs_info *fsi = sb->s_fs_info;
--	const char *host_root = fc->source;
- 	struct inode *root_inode;
- 	int err;
- 
-@@ -941,15 +941,6 @@ static int hostfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 	if (err)
- 		return err;
- 
--	/* NULL is printed as '(null)' by printf(): avoid that. */
--	if (fc->source == NULL)
--		host_root = "";
--
--	fsi->host_root_path =
--		kasprintf(GFP_KERNEL, "%s/%s", root_ino, host_root);
--	if (fsi->host_root_path == NULL)
--		return -ENOMEM;
--
- 	root_inode = hostfs_iget(sb, fsi->host_root_path);
- 	if (IS_ERR(root_inode))
- 		return PTR_ERR(root_inode);
-@@ -975,6 +966,58 @@ static int hostfs_fill_super(struct super_block *sb, struct fs_context *fc)
- 	return 0;
- }
- 
-+enum hostfs_parma {
-+	Opt_hostfs,
-+};
-+
-+static const struct fs_parameter_spec hostfs_param_specs[] = {
-+	fsparam_string_empty("hostfs",		Opt_hostfs),
-+	{}
-+};
-+
-+static int hostfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
-+{
-+	struct hostfs_fs_info *fsi = fc->s_fs_info;
-+	struct fs_parse_result result;
-+	char *host_root;
-+	int opt;
-+
-+	opt = fs_parse(fc, hostfs_param_specs, param, &result);
-+	if (opt < 0)
-+		return opt;
-+
-+	switch (opt) {
-+	case Opt_hostfs:
-+		host_root = param->string;
-+		if (!host_root)
-+			host_root = "";
-+		fsi->host_root_path =
-+			kasprintf(GFP_KERNEL, "%s/%s", root_ino, host_root);
-+		if (fsi->host_root_path == NULL)
-+			return -ENOMEM;
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int hostfs_parse_monolithic(struct fs_context *fc, void *data)
-+{
-+	struct hostfs_fs_info *fsi = fc->s_fs_info;
-+	char *host_root = (char *)data;
-+
-+	/* NULL is printed as '(null)' by printf(): avoid that. */
-+	if (host_root == NULL)
-+		host_root = "";
-+
-+	fsi->host_root_path =
-+		kasprintf(GFP_KERNEL, "%s/%s", root_ino, host_root);
-+	if (fsi->host_root_path == NULL)
-+		return -ENOMEM;
-+
-+	return 0;
-+}
-+
- static int hostfs_fc_get_tree(struct fs_context *fc)
- {
- 	return get_tree_nodev(fc, hostfs_fill_super);
-@@ -992,6 +1035,8 @@ static void hostfs_fc_free(struct fs_context *fc)
- }
- 
- static const struct fs_context_operations hostfs_context_ops = {
-+	.parse_monolithic = hostfs_parse_monolithic,
-+	.parse_param	= hostfs_parse_param,
- 	.get_tree	= hostfs_fc_get_tree,
- 	.free		= hostfs_fc_free,
- };
+#define NBD_FLAG_ROTATIONAL     (1 << 4)        /* Use elevator algorithm - rotational media */
+
+which is passed in the same flags field which also contains the
+NBD_FLAG_SEND_FLUSH and NBD_FLAG_SEND_FUA flags.
+
+Perhaps we might want to look at that flag and set the device to
+rotational if it is specified?
+
 -- 
-2.34.1
+     w@uter.{be,co.za}
+wouter@{grep.be,fosdem.org,debian.org}
 
+I will have a Tin-Actinium-Potassium mixture, thanks.
 
