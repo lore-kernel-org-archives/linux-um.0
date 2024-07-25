@@ -4,69 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 691E3C3DA49
-	for <linux-um@archiver.kernel.org>; Thu, 25 Jul 2024 13:00:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 876F9C3DA5D
+	for <linux-um@archiver.kernel.org>; Thu, 25 Jul 2024 20:37:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
+	References:In-Reply-To:From:Subject:Reply-To:MIME-Version:Content-Type:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=TOmpyDcm1CthrtcJk0B6SRkKyBUOYq6t4Cca/cnKfwU=; b=4IYQ92oWTWaXOhkiMZxYYCM455
-	kNFgF1PHizAIXUs9CFuBIwwGRF9VhA5Au3llf/qrFxeeOLOFndCC8AusoPwnFrZd9NlQ8YLTcYbqJ
-	aS31kl7XXDvZj9ny1xJ2dL9fm29XS7ujyj7JmJKCGp0mDPcGCwovxYGY5w7v8gGrJ+VUdEbRVFSHt
-	LdYyKl2wkZZqkS2S5XwUawcqqY6AV0VZbC3RRsNmHqar7eCh6cHM1FUKohxbqAaDBs1uHOOF2Txz7
-	CS3zS7g7GDZVSl8/VZXA3xqXKbqh9mtdGW8Oi2FISzt8ttFeDcLnEp4at1rnpNAinxGa9lfbB6w62
-	bPr6XKRQ==;
+	bh=OCIaIawHKdfpxvbGM0nvOPp/vxUa7udyHhEOqJXPxzE=; b=0hY9zAVb/WBR2JnPs/iAQaFZ4K
+	m9fKZAx6rhKYNcG9LmsADTSmtyE6RpXpplZ4EZgC9TVIDxbhKBIs8TBjTPMrYrBAmTCAy9Gaf75zV
+	/EhozsniviVQPTF28NklfC/7Ga8og9LSLuqVr5aoAimh47mOhiXUXlugVllr/EUISmXQDktrKTRXS
+	IMH0XGhrTCllUQ++T9xFL+UT1vYMcjgAH/iFAQ6jRCs1cGtH/x7BKXTs48EI863EBxgjAyww9fFrn
+	Gpe0IbsFjgFY+3R1mOek8wMaDDH6dej8dOl/hS7j0HU9ONYVZuViED+Hz8rZgOlGJ64pdvYR9oI+y
+	JZl+P8EQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sWy5D-000000010M1-2jaA;
-	Thu, 25 Jul 2024 13:00:35 +0000
-Received: from verein.lst.de ([213.95.11.211])
+	id 1sX5D4-000000023op-2M1E;
+	Thu, 25 Jul 2024 20:37:10 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sWy52-000000010Fw-29Nf;
-	Thu, 25 Jul 2024 13:00:26 +0000
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id C4CD1227A8E; Thu, 25 Jul 2024 15:00:09 +0200 (CEST)
-Date: Thu, 25 Jul 2024 15:00:08 +0200
-From: Christoph Hellwig <hch@lst.de>
-To: Wouter Verhelst <w@uter.be>
-Cc: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Richard Weinberger <richard@nod.at>,
-	Philipp Reisner <philipp.reisner@linbit.com>,
-	Lars Ellenberg <lars.ellenberg@linbit.com>,
-	Christoph =?iso-8859-1?Q?B=F6hmwalder?= <christoph.boehmwalder@linbit.com>,
-	Josef Bacik <josef@toxicpanda.com>, Ming Lei <ming.lei@redhat.com>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Roger Pau =?iso-8859-1?Q?Monn=E9?= <roger.pau@citrix.com>,
-	Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>,
-	Mikulas Patocka <mpatocka@redhat.com>, Song Liu <song@kernel.org>,
-	Yu Kuai <yukuai3@huawei.com>,
-	Vineeth Vijayan <vneethv@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	linux-m68k@lists.linux-m68k.org, linux-um@lists.infradead.org,
-	drbd-dev@lists.linbit.com, nbd@other.debian.org,
-	linuxppc-dev@lists.ozlabs.org, ceph-devel@vger.kernel.org,
-	virtualization@lists.linux.dev, xen-devel@lists.xenproject.org,
-	linux-bcache@vger.kernel.org, dm-devel@lists.linux.dev,
-	linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
-	linux-mtd@lists.infradead.org, nvdimm@lists.linux.dev,
-	linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
-	Damien Le Moal <dlemoal@kernel.org>
-Subject: Re: [PATCH 14/26] block: move the nonrot flag to queue_limits
-Message-ID: <20240725130008.GA22625@lst.de>
-References: <20240617060532.127975-1-hch@lst.de> <20240617060532.127975-15-hch@lst.de> <ZqI4kosy20WkLC2P@pc220518.home.grep.be>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZqI4kosy20WkLC2P@pc220518.home.grep.be>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+	id 1sX5D0-000000023mh-3ktv
+	for linux-um@lists.infradead.org;
+	Thu, 25 Jul 2024 20:37:08 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 888A66131B;
+	Thu, 25 Jul 2024 20:37:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3891BC116B1;
+	Thu, 25 Jul 2024 20:37:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721939825;
+	bh=D9RjB2jXGKqnWUMj3zxynbFufpuXvEAe+wy285cSBR8=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=ZYXJ5pXwE4+B3u1fKTQPHXLPtwWrtvZ7yGYwFes8SLDQC7hMBSSmHNPNxV9mQLPhT
+	 Ip7O5AIqCYtTGVZUWTEEJWenlYCsgrtdcmvl8y4eOtZaMtdkRs9eR70Gx4oqK5MVSH
+	 cmMQ4ScHZQGsmY18OYk4wUC3o7ElN9nBHjqoPYlohj76PtKKzXM4XAI0wMPtAXv/iy
+	 TUhWmFOrSeX0sFkm12VqTN3MvCMvEtrkQAhR2TkkqSPW5XzmbsWa/7ypi1+D7UmWSE
+	 ynBr4jan7cvjPpKOjHqP21JqHbKJW/ANd+dGBYzXdysXb4Wv/+ctSYjeHddcR+f1iO
+	 LA71ub4e/pZpw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2D172C43445;
+	Thu, 25 Jul 2024 20:37:05 +0000 (UTC)
+Subject: Re: [GIT PULL] UML Changes for v6.11-rc1
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <158184774.112608.1721836446346.JavaMail.zimbra@nod.at>
+References: <158184774.112608.1721836446346.JavaMail.zimbra@nod.at>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <158184774.112608.1721836446346.JavaMail.zimbra@nod.at>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-linus-6.11-rc1
+X-PR-Tracked-Commit-Id: 98ff534ec2cd02496c166614e6c1391d8e092e51
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: f9bcc61ad1fbe7dbc6bdd71d31254e429100a009
+Message-Id: <172193982517.17931.4930183829469370163.pr-tracker-bot@kernel.org>
+Date: Thu, 25 Jul 2024 20:37:05 +0000
+To: Richard Weinberger <richard@nod.at>
+Cc: torvalds <torvalds@linux-foundation.org>, linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240725_060024_819639_08BB032A 
-X-CRM114-Status: GOOD (  14.37  )
+X-CRM114-CacheID: sfid-20240725_133707_018136_5B9FD053 
+X-CRM114-Status: UNSURE (   3.44  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -81,18 +78,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, Jul 25, 2024 at 01:35:46PM +0200, Wouter Verhelst wrote:
-> NBD actually exports a flag for rotational devices; it's defined in
-> nbd.h in the NBD userland source as
-> 
-> #define NBD_FLAG_ROTATIONAL     (1 << 4)        /* Use elevator algorithm - rotational media */
-> 
-> which is passed in the same flags field which also contains the
-> NBD_FLAG_SEND_FLUSH and NBD_FLAG_SEND_FUA flags.
-> 
-> Perhaps we might want to look at that flag and set the device to
-> rotational if it is specified?
+The pull request you sent on Wed, 24 Jul 2024 17:54:06 +0200 (CEST):
 
-Yes, that sounds good.  Can you send a patch?
+> git://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-linus-6.11-rc1
 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/f9bcc61ad1fbe7dbc6bdd71d31254e429100a009
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
