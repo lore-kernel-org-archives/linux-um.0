@@ -4,66 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 876F9C3DA5D
-	for <linux-um@archiver.kernel.org>; Thu, 25 Jul 2024 20:37:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 66B27C3DA63
+	for <linux-um@archiver.kernel.org>; Fri, 26 Jul 2024 07:57:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Date:Message-Id:
-	References:In-Reply-To:From:Subject:Reply-To:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=OCIaIawHKdfpxvbGM0nvOPp/vxUa7udyHhEOqJXPxzE=; b=0hY9zAVb/WBR2JnPs/iAQaFZ4K
-	m9fKZAx6rhKYNcG9LmsADTSmtyE6RpXpplZ4EZgC9TVIDxbhKBIs8TBjTPMrYrBAmTCAy9Gaf75zV
-	/EhozsniviVQPTF28NklfC/7Ga8og9LSLuqVr5aoAimh47mOhiXUXlugVllr/EUISmXQDktrKTRXS
-	IMH0XGhrTCllUQ++T9xFL+UT1vYMcjgAH/iFAQ6jRCs1cGtH/x7BKXTs48EI863EBxgjAyww9fFrn
-	Gpe0IbsFjgFY+3R1mOek8wMaDDH6dej8dOl/hS7j0HU9ONYVZuViED+Hz8rZgOlGJ64pdvYR9oI+y
-	JZl+P8EQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:
+	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=QwwEr0sP3JYuVFZ17EDdbmD/jq5j735x4DaF/DrNGkE=; b=GSOaGMtDniIvumGXxgxccw/CQH
+	/ORXrJID73oD010WdCOCyNsxQhIr38fuP67tC5SqW4m/FuQ+kGxvBVdiUJ0aN9+B3/qeyyQEAkuHL
+	4EcQHBhtB9+ScUqgWn0l2cQOnC3ncJHV3VB5obOjMOYknpgAmh8XPf3AXspsX+LFSF3rTVSzHnCAJ
+	zk0nKzaE1bvXbQAGaKb9um6QspOmqM9Sxad5SzLuMVnXIoyZuKDmkcfpmkbsqIYsbW6QFKe4YWbjC
+	w4d0arICwrjRqpbJmHz8Q/1+nbASxAvb6xTs+1LtYwKS3TJjQTAtSC3fu6URrJRlT9j43Qm6+nTfb
+	84CBoyXQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sX5D4-000000023op-2M1E;
-	Thu, 25 Jul 2024 20:37:10 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1sXFpu-00000003FSw-1wk4;
+	Fri, 26 Jul 2024 07:57:58 +0000
+Received: from sin.source.kernel.org ([2604:1380:40e1:4800::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sX5D0-000000023mh-3ktv
+	id 1sXFpr-00000003FRh-3WM3
 	for linux-um@lists.infradead.org;
-	Thu, 25 Jul 2024 20:37:08 +0000
+	Fri, 26 Jul 2024 07:57:57 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 888A66131B;
-	Thu, 25 Jul 2024 20:37:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3891BC116B1;
-	Thu, 25 Jul 2024 20:37:05 +0000 (UTC)
+	by sin.source.kernel.org (Postfix) with ESMTP id AB13BCE1745;
+	Fri, 26 Jul 2024 07:57:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABE4AC32782;
+	Fri, 26 Jul 2024 07:57:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721939825;
-	bh=D9RjB2jXGKqnWUMj3zxynbFufpuXvEAe+wy285cSBR8=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=ZYXJ5pXwE4+B3u1fKTQPHXLPtwWrtvZ7yGYwFes8SLDQC7hMBSSmHNPNxV9mQLPhT
-	 Ip7O5AIqCYtTGVZUWTEEJWenlYCsgrtdcmvl8y4eOtZaMtdkRs9eR70Gx4oqK5MVSH
-	 cmMQ4ScHZQGsmY18OYk4wUC3o7ElN9nBHjqoPYlohj76PtKKzXM4XAI0wMPtAXv/iy
-	 TUhWmFOrSeX0sFkm12VqTN3MvCMvEtrkQAhR2TkkqSPW5XzmbsWa/7ypi1+D7UmWSE
-	 ynBr4jan7cvjPpKOjHqP21JqHbKJW/ANd+dGBYzXdysXb4Wv/+ctSYjeHddcR+f1iO
-	 LA71ub4e/pZpw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2D172C43445;
-	Thu, 25 Jul 2024 20:37:05 +0000 (UTC)
-Subject: Re: [GIT PULL] UML Changes for v6.11-rc1
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <158184774.112608.1721836446346.JavaMail.zimbra@nod.at>
-References: <158184774.112608.1721836446346.JavaMail.zimbra@nod.at>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <158184774.112608.1721836446346.JavaMail.zimbra@nod.at>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-linus-6.11-rc1
-X-PR-Tracked-Commit-Id: 98ff534ec2cd02496c166614e6c1391d8e092e51
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f9bcc61ad1fbe7dbc6bdd71d31254e429100a009
-Message-Id: <172193982517.17931.4930183829469370163.pr-tracker-bot@kernel.org>
-Date: Thu, 25 Jul 2024 20:37:05 +0000
-To: Richard Weinberger <richard@nod.at>
-Cc: torvalds <torvalds@linux-foundation.org>, linux-um <linux-um@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
+	s=k20201202; t=1721980673;
+	bh=8jTXfsrcnJXENs/Y0Aq1k8+dlxRjaFtrHUhzQhG6Mhs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=SDojCTwUuj6WrevadK2nRu+jFz62+W2UUXvdI0GpNUYwx7GZJrsgHUahGUq4KraBT
+	 jR61xVmTKHYvEU3t7kHUz5UsQF2tXV5pUGsV2NsbXiuI2SIxSwjqWLp41UGSyD3Cpy
+	 RwY0kRzL1qTDUY9hDpOQfFwoFa5SQh7MqgNn+FmxskIFJyLqCn3dPq8x3oAVKj8G+F
+	 cLXpdnl63OfVAPuYT989VtYBH6N4ocaCTl2BVv7SL92SzwfOEOpr+eaOR96ZEg79Fo
+	 cn2VK1InrLNs+I9QysWVaMxboedoa9L0ozCWv1ScPPRu+riK0RwMYZt2pl2h8/eh6W
+	 7dzwzLr+OegVg==
+From: Christian Brauner <brauner@kernel.org>
+To: Hongbo Li <lihongbo22@huawei.com>
+Cc: Christian Brauner <brauner@kernel.org>,
+	viro@zeniv.linux.org.uk,
+	maze@google.com,
+	linux-um@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org,
+	richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net
+Subject: Re: [PATCH] hostfs: fix the host directory parse when mounting.
+Date: Fri, 26 Jul 2024 09:57:43 +0200
+Message-ID: <20240726-bearbeiten-inkognito-0392543e5743@brauner>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240725065130.1821964-1-lihongbo22@huawei.com>
+References: <20240725065130.1821964-1-lihongbo22@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1321; i=brauner@kernel.org; h=from:subject:message-id; bh=8jTXfsrcnJXENs/Y0Aq1k8+dlxRjaFtrHUhzQhG6Mhs=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaQtDvvlkZMZmmtudF3F+oD0PtMt/G6G8jcv3X13xjk64 GJgwIeZHaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABN5Kc/wz+SWo6A621LN78m1 kfurf/+offzhQLzA2wPesh77piaWb2b4ZySpbjyxqvLt1yk7nl5dvtWZ0yNB0rd3n7Xxfe2nyy+ 2cgEA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240725_133707_018136_5B9FD053 
-X-CRM114-Status: UNSURE (   3.44  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240726_005756_076121_15F4A2C6 
+X-CRM114-Status: GOOD (  12.35  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -78,16 +80,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-The pull request you sent on Wed, 24 Jul 2024 17:54:06 +0200 (CEST):
+On Thu, 25 Jul 2024 14:51:30 +0800, Hongbo Li wrote:
+> hostfs not keep the host directory when mounting. When the host
+> directory is none (default), fc->source is used as the host root
+> directory, and this is wrong. Here we use `parse_monolithic` to
+> handle the old mount path for parsing the root directory. For new
+> mount path, The `parse_param` is used for the host directory parse.
+> 
+> 
+> [...]
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-linus-6.11-rc1
+As mentioned somewhere else the check for param->string being empty needs to
+check for empty string, not NULL. I've fixed that up.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f9bcc61ad1fbe7dbc6bdd71d31254e429100a009
+---
 
-Thank you!
+Applied to the vfs.fixes branch of the vfs/vfs.git tree.
+Patches in the vfs.fixes branch should appear in linux-next soon.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.fixes
+
+[1/1] hostfs: fix the host directory parse when mounting.
+      https://git.kernel.org/vfs/vfs/c/3ab8d61f1e4a
 
