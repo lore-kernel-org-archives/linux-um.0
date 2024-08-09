@@ -4,68 +4,56 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 710B1C3DA7F
-	for <linux-um@archiver.kernel.org>; Wed,  7 Aug 2024 09:36:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A617BC3DA4A
+	for <linux-um@archiver.kernel.org>; Fri,  9 Aug 2024 13:11:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=60H60kILv9Bav9pTakzp3GjJPhswXxdFsUwDJslrUzY=; b=SZAN2aLcWtAH2uVx8HCA1l1MkZ
-	65Ig/1thk6aL1JbIbV30jyOyMuHnSI7RdsAdabsyQCuopumy/Y1jYDWjfORYlhA6b59ESs/+2gUiv
-	SRBZTKJT3UJOr8ElSUEzKh7RChNhw2V5naHKnzT5oeZAlBuULYTIa0/GKebhvlq6f9Q4010LZnVOd
-	ytJ5G6ZQTUkcvYRGhKOA85vz7xNlhapZ2x8H32v62P2+pE+Akp6YvnBdbCxJHxvyav/qPNpUQ1Rsf
-	IXBiKOnhqh6qZ1/QF1M1UPzA1S34sN38lxwe3Xw0QClYY72VqIfJmnZJp5H/IxZqG1KpqfvWdIOl1
-	O/V0BxkQ==;
+	bh=cXTIkBeTV85CInmsU1beDXb9H0PRJIloAkaLQMqdCGc=; b=Etq1M82Om8dQ2mqRcUSKoqdJ0B
+	LApLiWDGTMJzSXo3/NVtBkhc7yj/ik+dygfd545X0BmI8X22jW4sJBGQVuM22nmr33tj7bg9qu/hJ
+	rRa1NYdZ4PG/XAPh3IZZZb88EtSKcMh26z8CczbsPZnxyppCeJq4XG+wzOv8lxytTZX5sc71n1ZW7
+	Jm6rckCt55qUzKx8Su7ZjlX62VECrMJxd9ete3LxGOmTVX8iXAVK78XCL59OJNxDailhyj9DKV81g
+	+Rbd5xcfmm7umbLwlSwfpG9hLPRjn5WU08BWwtLjuoGyKm3iXMpB8IJnFgafAxt/qPm6PJv7m1vWN
+	wX+3uRIA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sbd5U-00000004a8o-42X5;
-	Wed, 07 Aug 2024 09:36:08 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
-	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sbd5R-00000004a7E-2S9r;
-	Wed, 07 Aug 2024 09:36:07 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id A161561127;
-	Wed,  7 Aug 2024 09:36:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E42EDC4AF0B;
-	Wed,  7 Aug 2024 09:35:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723023364;
-	bh=SIN474AVw4y1MoDQyBN2l9zLDxAG8yJpM+IZg/xSlBk=;
+	id 1scPPO-0000000BHzt-3Oc2;
+	Fri, 09 Aug 2024 13:11:54 +0000
+Received: from mail.virtlab.unibo.it ([2001:760:2e00:f0a1::32])
+	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1scPPJ-0000000BHyV-1hg6
+	for linux-um@lists.infradead.org;
+	Fri, 09 Aug 2024 13:11:53 +0000
+Received: from cs.unibo.it (94-33-52-139.static.clienti.tiscali.it [94.33.52.139])
+	by mail.virtlab.unibo.it (Postfix) with ESMTPSA id 4BD511C007A;
+	Fri,  9 Aug 2024 15:11:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=cs.unibo.it;
+	s=virtlab; t=1723209092;
+	bh=lnlh77I0VHgNXGVtjJ14f3ZmVH3RHXTbcUQfv64+4Wc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=btbhCRAZArjLvUl8j5Ej+vHzQoO1vTjwqrNsQBIT0/x406nNG6tlbPi9O+sN17d4Y
-	 QICBpuxQ5Bjmn0gXNfW6CQYVZcH8G9ejnTHAA9QFo2zZkYlDWAI6Ot2tDmga9anM+b
-	 WGgtBA/ZIv47FtykXIpoPT2AFtuvlcGoPU21CF4LWL98hI/ZRbIPlQfOtpM6SjubXy
-	 OlCR91eQljQjrJdxLmEtfQYDLsvKApDB3/uWNI88bc+X4QiyQeaPCNomUP+ive0rEL
-	 gGm3BEKgE3wm60LcEtCDTOpcEofl8MTOn6i7t19oigLeiBJBu3URtJDBmLKsiEuJyf
-	 nO0JARebaxVPA==
-Date: Wed, 7 Aug 2024 11:35:56 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: kernel test robot <oliver.sang@intel.com>, 
-	Ryan Roberts <ryan.roberts@arm.com>, oe-lkp@lists.linux.dev, lkp@intel.com, 
-	Linux Memory Management List <linux-mm@kvack.org>, linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org, 
-	intel-gfx@lists.freedesktop.org, linux-bcachefs@vger.kernel.org, ceph-devel@vger.kernel.org, 
-	ecryptfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-um@lists.infradead.org, linux-mtd@lists.infradead.org, 
-	jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org, linux-nilfs@vger.kernel.org, 
-	ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev, 
-	linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org, reiserfs-devel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [linux-next:master] [fs]  cdc4ad36a8:
- kernel_BUG_at_include/linux/page-flags.h
-Message-ID: <20240807-fazit-bergbahn-25781f6167b7@brauner>
-References: <202408062249.2194d51b-lkp@intel.com>
- <ZrLuBz1eBdgFzIyC@casper.infradead.org>
+	b=CmgvXMi2JmHarhUiHWqqcehW1HN8S6TR8sWE9SzGHkvCi8EUE861BP/iA+OuawXzb
+	 mphGa8pAezLcwql/hcy068dXuCcAMe0R76RRORP1eaMw7YFZnsBpN02TjgMQE75ghw
+	 5zVvsHxWVVzCFJ0DKcsZyd5ckC1DQPGszd4/Xj4w=
+Date: Fri, 9 Aug 2024 15:11:31 +0200
+From: Renzo Davoli <renzo@cs.unibo.it>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-um@lists.infradead.org, luca.bassi14@studio.unibo.it,
+	davide.berardi@unimercatorum.it
+Subject: Re: [PATCH 2/2] user_mode_linux_howto_v2: add VDE vector support in
+ doc
+Message-ID: <ZrYVg8r5lhRheqoS@cs.unibo.it>
+References: <ZqjwuBOlysJl8kn_@cs.unibo.it>
+ <0bcb8271-4528-4833-bfdf-1ce0a3a650e2@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZrLuBz1eBdgFzIyC@casper.infradead.org>
+In-Reply-To: <0bcb8271-4528-4833-bfdf-1ce0a3a650e2@infradead.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240807_023605_707505_F3C82DDC 
-X-CRM114-Status: GOOD (  10.26  )
+X-CRM114-CacheID: sfid-20240809_061150_297738_8523EAC3 
+X-CRM114-Status: GOOD (  10.54  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,20 +68,72 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Aug 07, 2024 at 04:46:15AM GMT, Matthew Wilcox wrote:
-> On Tue, Aug 06, 2024 at 10:26:17PM +0800, kernel test robot wrote:
-> > kernel test robot noticed "kernel_BUG_at_include/linux/page-flags.h" on:
-> > 
-> > commit: cdc4ad36a871b7ac43fcc6b2891058d332ce60ce ("fs: Convert aops->write_begin to take a folio")
-> > https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
-> > 
-> > [test failed on linux-next/master 1e391b34f6aa043c7afa40a2103163a0ef06d179]
-> > 
-> > in testcase: boot
-> 
-> This patch should fix it.
-> 
-> Christian, can you squash the fix in?
+On Tue, Jul 30, 2024 at 07:18:04AM -0700, Randy Dunlap wrote:
+> Missing a close/right paren ')' somewhere.
+> I suppose that you meant the typo "automagically".
 
-Yep, done!
+thank you Randy. I have fixed the typos in the emended patch here below.
+
+Add a description of the VDE vector transport in user_mode_linux_howto_v2.rst.
+
+Signed-off-by: Renzo Davoi <renzo@cs.unibo.it>
+---
+ .../virt/uml/user_mode_linux_howto_v2.rst          | 37 ++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
+
+diff --git a/Documentation/virt/uml/user_mode_linux_howto_v2.rst b/Documentation/virt/uml/user_mode_linux_howto_v2.rst
+index 27942446f406..32a90baf263b 100644
+--- a/Documentation/virt/uml/user_mode_linux_howto_v2.rst
++++ b/Documentation/virt/uml/user_mode_linux_howto_v2.rst
+@@ -217,6 +217,8 @@ remote UML and other VM instances.
+ +-----------+--------+------------------------------------+------------+
+ | fd        | vector | dependent on fd type               | varies     |
+ +-----------+--------+------------------------------------+------------+
++| vde       | vector | dep. on VDE VPN: Virt.Net Locator  | varies     |
+++-----------+--------+------------------------------------+------------+
+ | tuntap    | legacy | none                               | ~ 500Mbit  |
+ +-----------+--------+------------------------------------+------------+
+ | daemon    | legacy | none                               | ~ 450Mbit  |
+@@ -573,6 +575,41 @@ https://github.com/NetSys/bess/wiki/Built-In-Modules-and-Ports
+ 
+ BESS transport does not require any special privileges.
+ 
++VDE vector transport
++--------------------
++
++Virtual Distributed Ethernet (VDE) is a project whose main goal is to provide a
++highly flexible support for virtual networking.
++
++http://wiki.virtualsquare.org/#/tutorials/vdebasics
++
++Common usages of VDE include fast prototyping and teaching.
++
++Examples:
++
++   ``vecX:transport=vde,vnl=tap://tap0``
++
++use tap0
++
++   ``vecX:transport=vde,vnl=slirp://``
++
++use slirp
++
++   ``vec0:transport=vde,vnl=vde:///tmp/switch``
++
++connect to a vde switch
++
++   ``vecX:transport=\"vde,vnl=cmd://ssh remote.host //tmp/sshlirp\"``
++
++connect to a remote slirp (instant VPN: convert ssh to VPN, it uses sshlirp)
++https://github.com/virtualsquare/sshlirp
++
++   ``vec0:transport=vde,vnl=vxvde://234.0.0.1``
++
++connect to a local area cloud: all the UML nodes using the same
++multicast address running on hosts in the same multicast domain (LAN)
++will be automatically connected together to a virtual LAN.
++
+ Configuring Legacy transports
+ =============================
+ 
 
