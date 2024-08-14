@@ -4,78 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 406B6C52D7C
-	for <linux-um@archiver.kernel.org>; Tue, 13 Aug 2024 23:48:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DFC60C52D7D
+	for <linux-um@archiver.kernel.org>; Wed, 14 Aug 2024 15:44:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:From:Subject:Message-ID:Mime-Version:Date:Reply-To:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=dbtX85OIvDZqZDvoebC/8Rwcxt4sIKvuHnf821Q6cFk=; b=TpI8dQ0VZe1NQiKdB/v77JziYo
-	rIOn2FU0RfImnoQ5SuP3KqT0D78zzsvCfathlykVUVlmowjw37n/YLSgluVnLbyk9zXtAAXGgxho4
-	VfukJbozU08WOCAAFAhbmpMjeuqsRmrqZGWGI2vKLAJWM6luOOF+uP/d1c1c61Tpu+KP4BjpI+gom
-	N1u9kr/X6VZM4XHGeWnCAwbUqogxtqA2a9VJQbH/oqSTZJGxk3C1A4Ib1sk4d7tvtQtHvbk1SxpXB
-	M4Kz7TGl0kbLqCJCHqmBcbiC5aKOi7xYNZnjnv/tXWIfQIaJmw5JmewFWFIetyczmswiWA2GtdB8d
-	2M67elOw==;
+	bh=Y8GzTtU2QoStw/WgTavIsPk3vntaV6mcfxUlw+vTkw4=; b=ItErEizn1TJJj5YntemBkIIwTJ
+	7bqEBKXof88QyKREx8BZR7ITcR2MfxhCERPV8p+CA5r5f+Dk3RMPhd6QguRAiE0CCEzxPL4V3A81X
+	/fzrbRfCvhlkpVFXL/b2EypFBPLQs0XTW+VTbCYv+3VkmYDqMaJknxlvR/M70gngcqsgaN26uGSzg
+	CRWV56JQln4rZz+t1FjP9/h60Gc+qRNg9Uog63OXvyqmPSlQjcniRvz/wk1ZZjxGVcO1e/5ZO70tn
+	p0UWcjLrFB2uSWxTvOSzDCHKA/sb8XOmtal3pj5gzrcGd1uAJfAicMnjjh3+A3tQQb/dI1Np8r66E
+	PzicOBtw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1se1FC-00000005DdJ-44QL;
-	Tue, 13 Aug 2024 23:48:02 +0000
-Received: from mail-yb1-xb49.google.com ([2607:f8b0:4864:20::b49])
+	id 1seGBF-00000007WF6-3uXb;
+	Wed, 14 Aug 2024 15:44:57 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1se1F9-00000005Dcn-39mF
-	for linux-um@lists.infradead.org;
-	Tue, 13 Aug 2024 23:48:01 +0000
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-e02a4de4f4eso10631607276.1
-        for <linux-um@lists.infradead.org>; Tue, 13 Aug 2024 16:47:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1723592878; x=1724197678; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=dbtX85OIvDZqZDvoebC/8Rwcxt4sIKvuHnf821Q6cFk=;
-        b=pMrGPMpf7NPPd/gQhGyTrH8zqnUVeiiaaVCCB2d0m3/d8nt+Do6YgyBcSatnVUiO4N
-         MuLRRx7RERtggAJqyqMmY2FWzDTcUcvELMsu9ZioVwoVyLJgc/slK5jt4vX48EwCmDgj
-         f9kXjymoAOiQZiG2DVoiXZI0zZd9mEAlLIYoFewYVyDDAXSb4more3a9pF7sIvGAwUX/
-         B7ihYtVapss4I+F3nMpblVoTRMugFLj7vYEVXIOuVEVbwiNWVJf++dmbtW3nsgw8EIR2
-         3yJdsrLx7AGQS7mDdUfgprDoWF5daise/u57Exkx9CER6UhW8p8Bkr4CI3R1PfHRCIBu
-         VTfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723592878; x=1724197678;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dbtX85OIvDZqZDvoebC/8Rwcxt4sIKvuHnf821Q6cFk=;
-        b=reVkyCaqZvLpbE9AJui4tLsW4CKYQ+s8x6VOPNj9l7uh6nbVyz5sPZLIxXSgGGlGc7
-         BOvo4mIitWPijcJBC3+L3Y0rofhvoyzo8lj/QZx2PC8ktfYCqoSuOBvndR5Ecpuq3+NR
-         sio0bAmlpZSYKBVDBBz4IfyhvFXQRr2kYDMnEhTxJrjJGuXcIU9XlRkBz2WTgp5DkK/q
-         eG8l3/m0nMKfeuMxmTwyVlfVaMaPBBjPqzfgWavYNEojTL1mjtfWT50RXVFQCthIcOMO
-         bY4S7LuQXhhewauH6NgJahgvLsF5A2Y//wF895s+3mZi2cT4ywGw4VbNaZhj1D077EQj
-         MbGw==
-X-Forwarded-Encrypted: i=1; AJvYcCVRXQlRyPH6FOAAhYb7Qqhpii1ENqxNjNbK9DiHqVb1CEneAPbt64FJlYcfbO2KTLQkFuf7oRQCLBn0BHSwVgOM2xip96kExWMDW7nl
-X-Gm-Message-State: AOJu0YxT0tkS2yGkOXk1wwau9Qg08CpVPOqtJBFA4KisU83j36EQvsrW
-	SC/u4+aWsEw5jMHkS+DTBwUUR3iPUIrI4ezytN9sIseBeC4MVJwWbfh3fRVWdDnujyWdkw==
-X-Google-Smtp-Source: AGHT+IGrjD1ml7A/TNR6lQFgx73bBKn21UdMK+Yp53+uTqPz9PLiWm/B6ur1ScVNlYzKlitVe/qxgYCP
-X-Received: from varda.mtv.corp.google.com ([2620:15c:211:200:7199:1729:2be2:5cf4])
- (user=maze job=sendgmr) by 2002:a25:cc3:0:b0:e05:f565:6bd3 with SMTP id
- 3f1490d57ef6-e1155bbe9dfmr1591276.12.1723592878254; Tue, 13 Aug 2024 16:47:58
- -0700 (PDT)
-Date: Tue, 13 Aug 2024 16:47:55 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.46.0.76.ge559c4bf1a-goog
-Message-ID: <20240813234755.3615697-1-maze@google.com>
-Subject: [PATCH] um: make personality(PER_LINUX32) work on x86_64
-From: "=?UTF-8?q?Maciej=20=C5=BBenczykowski?=" <maze@google.com>
-To: "=?UTF-8?q?Maciej=20=C5=BBenczykowski?=" <zenczykowski@gmail.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	"=?UTF-8?q?Maciej=20=C5=BBenczykowski?=" <maze@google.com>, Richard Weinberger <richard@nod.at>, 
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
-	linux-um@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240813_164759_845597_9CB02922 
-X-CRM114-Status: GOOD (  12.40  )
+	id 1seGAt-00000007W42-0lRH
+	for linux-um@bombadil.infradead.org;
+	Wed, 14 Aug 2024 15:44:35 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=Y8GzTtU2QoStw/WgTavIsPk3vntaV6mcfxUlw+vTkw4=; b=Nlp68Wv4gWlG8g9amXu9RSnoTE
+	bGIkORrON8YDkyXuNB3pHR0x3EWS8Cj46g5V0nmkoNra8NLu3eoLcdQDcSfXtQUcNoQv73JbO5irY
+	YO/2KtHV5uYXpcKre5wKy5/4Hv3pAdgjf5CgBoylTiilTIclax+k/Y1qqeGMWDIu25oBopw+ZSuo/
+	+PbCg3gzutTroTrptbNhWjqMZBqJlVGdigr+h7eL9Gwfxuq3uaXQEiYu6lJesN6VHloOF2NJxcVQ5
+	g8Bi5zp2BmmvlEC8p4EYP5Qf2CZacyuv2wEMcW0vqzDern12I/bCWq9yZIfLqu4qinNlF3KSoMUbe
+	DgnzBqVg==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1seGAr-00000000gH2-3gSE;
+	Wed, 14 Aug 2024 15:44:33 +0000
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To: linux-mm@kvack.org,
+	linux-arch@vger.kernel.org
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	linux-s390@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	x86@kernel.org
+Subject: [PATCH 0/5] Provide a single definition of mk_pte()
+Date: Wed, 14 Aug 2024 16:44:20 +0100
+Message-ID: <20240814154427.162475-1-willy@infradead.org>
+X-Mailer: git-send-email 2.45.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,63 +67,59 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Without this patch:
-  #!/usr/bin/python3
-  import ctypes
-  import os
-  personality =3D ctypes.CDLL(None).personality
-  personality.restype =3D ctypes.c_int
-  personality.argtypes =3D [ctypes.c_ulong]
-  PER_LINUX32=3D8
-  personality(PER_LINUX32)
-  print(os.uname().machine)
-returns:
-  x86_64
-instead of the desired:
-  i686
+Each architecturee must provide a definition of mk_pte() today.  They must
+also provide pfn_pte().  Usually the former is defined in terms of the
+latter, but not on some architectures.  I was trying to decide what we
+should do for creating PTEs in a folio world, and it struck me that we
+should have architectures only provide pfn_pte() and then I don't need
+to trouble the arch maintainers with whatever MM API I come up with.
 
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-um@lists.infradead.org
-Signed-off-by: Maciej =C5=BBenczykowski <maze@google.com>
----
- arch/um/include/asm/Kbuild   |  1 -
- arch/um/include/asm/compat.h | 12 ++++++++++++
- 2 files changed, 12 insertions(+), 1 deletion(-)
- create mode 100644 arch/um/include/asm/compat.h
+The architectures not on the cc list I considered trivial.  The
+architectures who have named patches are less trivial, and I did my
+best to write a decent commit message explaining why I did what I did
+to each architecture.
 
-diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
-index b2d834a29f3a..0b961dd089ab 100644
---- a/arch/um/include/asm/Kbuild
-+++ b/arch/um/include/asm/Kbuild
-@@ -1,7 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- generic-y +=3D bpf_perf_event.h
- generic-y +=3D bug.h
--generic-y +=3D compat.h
- generic-y +=3D current.h
- generic-y +=3D device.h
- generic-y +=3D dma-mapping.h
-diff --git a/arch/um/include/asm/compat.h b/arch/um/include/asm/compat.h
-new file mode 100644
-index 000000000000..110319031dcf
---- /dev/null
-+++ b/arch/um/include/asm/compat.h
-@@ -0,0 +1,12 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __UM_COMPAT_H
-+#define __UM_COMPAT_H
-+
-+#include <asm-generic/compat.h>
-+
-+#if defined(CONFIG_UML_X86) && defined(CONFIG_64BIT)
-+/* From arch/x86/include/asm/compat.h */
-+#define COMPAT_UTS_MACHINE     "i686\0\0"
-+#endif
-+
-+#endif
---=20
-2.46.0.76.ge559c4bf1a-goog
+I have some followup patches which remove folio->page conversions, but
+if this set of patches are wrong on any architecture, then they'll also
+be wrong, so I'm not sending them right now.
+
+Matthew Wilcox (Oracle) (5):
+  mm: Introduce a common definition of mk_pte()
+  x86: Remove custom definition of mk_pte()
+  um: Remove custom definition of mk_pte()
+  s390: Remove custom definition of mk_pte()
+  mm: Make mk_pte() definition unconditional
+
+ arch/alpha/include/asm/pgtable.h         |  7 -------
+ arch/arc/include/asm/pgtable-levels.h    |  1 -
+ arch/arm/include/asm/pgtable.h           |  1 -
+ arch/arm64/include/asm/pgtable.h         |  6 ------
+ arch/csky/include/asm/pgtable.h          |  5 -----
+ arch/hexagon/include/asm/pgtable.h       |  3 ---
+ arch/loongarch/include/asm/pgtable.h     |  6 ------
+ arch/m68k/include/asm/mcf_pgtable.h      |  6 ------
+ arch/m68k/include/asm/motorola_pgtable.h |  6 ------
+ arch/m68k/include/asm/sun3_pgtable.h     |  6 ------
+ arch/microblaze/include/asm/pgtable.h    |  8 --------
+ arch/mips/include/asm/pgtable.h          |  6 ------
+ arch/nios2/include/asm/pgtable.h         |  6 ------
+ arch/openrisc/include/asm/pgtable.h      |  2 --
+ arch/parisc/include/asm/pgtable.h        |  2 --
+ arch/powerpc/include/asm/pgtable.h       |  1 -
+ arch/riscv/include/asm/pgtable.h         |  2 --
+ arch/s390/include/asm/pgtable.h          | 10 ----------
+ arch/sh/include/asm/pgtable_32.h         |  8 --------
+ arch/sparc/include/asm/pgtable_32.h      |  9 ++-------
+ arch/sparc/include/asm/pgtable_64.h      |  1 -
+ arch/um/include/asm/pgtable-2level.h     |  1 -
+ arch/um/include/asm/pgtable-3level.h     |  9 ---------
+ arch/um/include/asm/pgtable.h            | 17 ++++++++++-------
+ arch/x86/include/asm/pgtable.h           | 19 +++----------------
+ arch/xtensa/include/asm/pgtable.h        |  1 -
+ include/linux/pgtable.h                  |  5 +++++
+ 27 files changed, 20 insertions(+), 134 deletions(-)
+
+-- 
+2.43.0
 
 
