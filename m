@@ -4,78 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1ED40C52D7C
-	for <linux-um@archiver.kernel.org>; Thu, 15 Aug 2024 04:09:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5584EC52D7C
+	for <linux-um@archiver.kernel.org>; Thu, 15 Aug 2024 12:13:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=NVDP1udvJo79ygBjuGCpYKk0L2EXPUaNPmwey8xY4J8=; b=v7ymg2rRoLzJyyFMA83EuvCBGi
-	4C5jD+tvg5tvT0cFuNjl1Rs9+OWJBuSlskPAT5XPJfF1Sygw4JYneVA9ebI3UbzRsFUIoNWr54z7V
-	UXfxe2QbsecLsdfCZy/nIUpXzJfoKO6x1dX2UDnXf0PeTffski1SSzjG44zAhn0TypyALlrMT7K5/
-	AC/W1B7QQ6Hm5K58GPeiX8cSyBCNgoQDK+yRKggnzHuoCMyXz3oJsKvVgKedUOfzU3sgVMWyr7nIn
-	PQxBDekRPV4gtdXaGl5cDe71ZmHNN8137YadC2fYFU5/Ry+PGOk6ifYtR7KfZ1We08Mjvexdao8dS
-	GvmYfsQw==;
+	bh=Xd64frNEOeLFKhWfmvTBNHEnJQbuJhSqIR8O1N+8JAw=; b=rdUOX3pD7MpbWkZDeroidRF+oN
+	cBhJxHPQSCctue+kDDqVPmXjxY63pDm/6AlM8B44GrZbpzmo549h25lx3tKhmtMbllBaLF6WmTDEU
+	/C0QIg7Swsqm9de37PEIWB/4/gud70ppGqQc8zPRQE52GNGp9VKqf/gfRDTUMbriqiyoBhobw3Lcr
+	ghotKVbnkkG+CI9H25ARb3ExSUOTzDiDgDXqTFmZ5V+DCUnWZ9H3xggdwRaYYIFRaiLPjxbBAVSIW
+	dqmQmI+DFacJg4ogDjpQGE2BiFiGhMckn19vd3N75rqd8DV0Gc7jaSbGpOP2Jkweq0wk7x0GxIspq
+	DCIUO0kQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1seRnO-00000008xUa-1CRa;
-	Thu, 15 Aug 2024 04:09:06 +0000
-Received: from mgamail.intel.com ([192.198.163.7])
+	id 1seZLg-00000009rTe-1cei;
+	Thu, 15 Aug 2024 12:13:00 +0000
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1seRnK-00000008xTH-09EU
+	id 1seZLc-00000009rQp-3KVd
 	for linux-um@lists.infradead.org;
-	Thu, 15 Aug 2024 04:09:04 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1723694942; x=1755230942;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9z4AfTVcoGr13kMqfy68br6N15Zt4R0Ze/WP37ZrMSw=;
-  b=FOS2QmcjV2Wkydxb0iifMDYMASYnfPmEJZg6lLY54c9CoIyngBKrBlsx
-   BhlEX++aMZOa0Tr5RqhMBKd4DIu8bTRRN+FRpxJzzd0/xURawSZqY7QHH
-   uy4GSLC+wU01JaxTdNdgytRZ/h+OSSx1SMWcd9WA0jE95MMuJC8hUpo9/
-   qdFhFwhQ3T5zqPvxsIbMUw4YPxQWAgA9uZk05SYEW8FAUZko0Iu4khwAs
-   Sx2g10XU86D/hFjpzunaBOA0DqweIGqYYKG/2at/+S5maD3ByryXcExmy
-   CF6/PqDmyJt+HVeia4krU7CZu+MmcM6BXkwfgx3jhu7/s050xDL/0/0yK
-   g==;
-X-CSE-ConnectionGUID: tgXMYXBuS+2GhENlGbnTAQ==
-X-CSE-MsgGUID: DsjDe5LJSsu3TjUmpnuTqg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11164"; a="47344022"
-X-IronPort-AV: E=Sophos;i="6.10,147,1719903600"; 
-   d="scan'208";a="47344022"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Aug 2024 21:08:57 -0700
-X-CSE-ConnectionGUID: GN/Tr+wuRC2pLnQX3oZfVQ==
-X-CSE-MsgGUID: PeZUkHPzRwGOa+UQ1jnVog==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.10,147,1719903600"; 
-   d="scan'208";a="96751066"
-Received: from lkp-server01.sh.intel.com (HELO 9a732dc145d3) ([10.239.97.150])
-  by orviesa001.jf.intel.com with ESMTP; 14 Aug 2024 21:08:55 -0700
-Received: from kbuild by 9a732dc145d3 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1seRnA-0003Ak-17;
-	Thu, 15 Aug 2024 04:08:52 +0000
-Date: Thu, 15 Aug 2024 12:08:51 +0800
-From: kernel test robot <lkp@intel.com>
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>, linux-mm@kvack.org,
-	linux-arch@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	linux-s390@vger.kernel.org, linux-um@lists.infradead.org,
-	x86@kernel.org
-Subject: Re: [PATCH 2/5] x86: Remove custom definition of mk_pte()
-Message-ID: <202408151133.BaOdxDkR-lkp@intel.com>
-References: <20240814154427.162475-3-willy@infradead.org>
+	Thu, 15 Aug 2024 12:12:58 +0000
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47FBKP9r026593;
+	Thu, 15 Aug 2024 12:12:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date
+	:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=pp1; bh=Xd64frNEOeLFKhWfmvTBNHEnJQb
+	uJhSqIR8O1N+8JAw=; b=aEtNSewIsOxiFfdSDm5P7ULut5AJ6szYIqS4Xh1ulKA
+	Jhj/jexK11owQT1/zINKb6NBI5WwhuhjEIEHXjYwv7cr/xys7VPKHfMLL8Ue7IHy
+	yqG1XOFjiei1f49LYzVJQZsrtjLRI0v5ZPxrsNaaTLh36Zsd7welFEZlVNrElhhL
+	6JsH2ooZH5VFVwsL/zHd/FOxtwgkAdNC0nHBjE0uDIw0dFC4frv3vlLdc95YTK3G
+	QlygyzeTjErADWAJFIzSqCu5K/vUueCZeuGjNKBre5MyvfCcLcp0I3qRlN1GJvFH
+	/x3WFQ8aY7gy4DDZSBdV08KlsK/Br6MYz5t7RpSVmfA==
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4111d6keaw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Aug 2024 12:12:42 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 47F8dU2n010055;
+	Thu, 15 Aug 2024 12:12:42 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 40xjx0xtgb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 15 Aug 2024 12:12:42 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 47FCCaGf34341270
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 15 Aug 2024 12:12:38 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3F38B2004B;
+	Thu, 15 Aug 2024 12:12:36 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5770220040;
+	Thu, 15 Aug 2024 12:12:35 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.171.11.33])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Thu, 15 Aug 2024 12:12:35 +0000 (GMT)
+Date: Thu, 15 Aug 2024 14:12:33 +0200
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>
+Cc: linux-mm@kvack.org, linux-arch@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-um@lists.infradead.org, x86@kernel.org
+Subject: Re: [PATCH 4/5] s390: Remove custom definition of mk_pte()
+Message-ID: <Zr3wsRHO+hcwv5Y0@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <20240814154427.162475-1-willy@infradead.org>
+ <20240814154427.162475-5-willy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240814154427.162475-3-willy@infradead.org>
+In-Reply-To: <20240814154427.162475-5-willy@infradead.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 35RWKvcTfZLS9yX681VV333VTIEl95d-
+X-Proofpoint-ORIG-GUID: 35RWKvcTfZLS9yX681VV333VTIEl95d-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-08-15_03,2024-08-15_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=306
+ spamscore=0 mlxscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
+ adultscore=0 impostorscore=0 clxscore=1011 lowpriorityscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2407110000 definitions=main-2408150087
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240814_210902_100885_CD86E8AE 
-X-CRM114-Status: GOOD (  11.83  )
+X-CRM114-CacheID: sfid-20240815_051256_989637_6920D232 
+X-CRM114-Status: GOOD (  14.90  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,95 +108,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+On Wed, Aug 14, 2024 at 04:44:24PM +0100, Matthew Wilcox (Oracle) wrote:
+
 Hi Matthew,
 
-kernel test robot noticed the following build errors:
+> I believe the test for PageDirty() is no longer needed.  The
+> commit adding it was abf09bed3cce with the rationale that this
+> avoided faults for tmpfs and shmem pages.  shmem does not mark
+> newly allocated folios as dirty since 2016 (commit 75edd345e8ed)
+> so this test has been ineffective since then.
 
-[auto build test ERROR on geert-m68k/for-next]
-[also build test ERROR on geert-m68k/for-linus uml/next linus/master v6.11-rc3 next-20240814]
-[cannot apply to uml/fixes]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+We will investigate if that is really safe thing to do.
+Some people on vacation, so we might be not too quick
+with the response.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Matthew-Wilcox-Oracle/mm-Introduce-a-common-definition-of-mk_pte/20240815-001852
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git for-next
-patch link:    https://lore.kernel.org/r/20240814154427.162475-3-willy%40infradead.org
-patch subject: [PATCH 2/5] x86: Remove custom definition of mk_pte()
-config: x86_64-buildonly-randconfig-003-20240815 (https://download.01.org/0day-ci/archive/20240815/202408151133.BaOdxDkR-lkp@intel.com/config)
-compiler: clang version 18.1.5 (https://github.com/llvm/llvm-project 617a15a9eac96088ae5e9134248d8236e34b91b1)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240815/202408151133.BaOdxDkR-lkp@intel.com/reproduce)
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>  arch/s390/include/asm/pgtable.h | 11 -----------
+>  1 file changed, 11 deletions(-)
+...
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202408151133.BaOdxDkR-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from arch/x86/kernel/asm-offsets.c:14:
-   In file included from include/linux/suspend.h:5:
-   In file included from include/linux/swap.h:9:
-   In file included from include/linux/memcontrol.h:21:
-   In file included from include/linux/mm.h:30:
->> include/linux/pgtable.h:47:17: error: call to undeclared function 'page_to_section'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-      47 |         return pfn_pte(page_to_pfn(page), pgprot);
-         |                        ^
-   include/asm-generic/memory_model.h:64:21: note: expanded from macro 'page_to_pfn'
-      64 | #define page_to_pfn __page_to_pfn
-         |                     ^
-   include/asm-generic/memory_model.h:47:14: note: expanded from macro '__page_to_pfn'
-      47 |         int __sec = page_to_section(__pg);                      \
-         |                     ^
-   include/linux/pgtable.h:47:17: note: did you mean '__nr_to_section'?
-   include/asm-generic/memory_model.h:64:21: note: expanded from macro 'page_to_pfn'
-      64 | #define page_to_pfn __page_to_pfn
-         |                     ^
-   include/asm-generic/memory_model.h:47:14: note: expanded from macro '__page_to_pfn'
-      47 |         int __sec = page_to_section(__pg);                      \
-         |                     ^
-   include/linux/mmzone.h:1853:35: note: '__nr_to_section' declared here
-    1853 | static inline struct mem_section *__nr_to_section(unsigned long nr)
-         |                                   ^
-   In file included from arch/x86/kernel/asm-offsets.c:14:
-   In file included from include/linux/suspend.h:5:
-   In file included from include/linux/swap.h:9:
-   In file included from include/linux/memcontrol.h:21:
->> include/linux/mm.h:1904:29: error: static declaration of 'page_to_section' follows non-static declaration
-    1904 | static inline unsigned long page_to_section(const struct page *page)
-         |                             ^
-   include/linux/pgtable.h:47:17: note: previous implicit declaration is here
-      47 |         return pfn_pte(page_to_pfn(page), pgprot);
-         |                        ^
-   include/asm-generic/memory_model.h:64:21: note: expanded from macro 'page_to_pfn'
-      64 | #define page_to_pfn __page_to_pfn
-         |                     ^
-   include/asm-generic/memory_model.h:47:14: note: expanded from macro '__page_to_pfn'
-      47 |         int __sec = page_to_section(__pg);                      \
-         |                     ^
-   2 errors generated.
-   make[3]: *** [scripts/Makefile.build:117: arch/x86/kernel/asm-offsets.s] Error 1 shuffle=262036656
-   make[3]: Target 'prepare' not remade because of errors.
-   make[2]: *** [Makefile:1208: prepare0] Error 2 shuffle=262036656
-   make[2]: Target 'prepare' not remade because of errors.
-   make[1]: *** [Makefile:240: __sub-make] Error 2 shuffle=262036656
-   make[1]: Target 'prepare' not remade because of errors.
-   make: *** [Makefile:240: __sub-make] Error 2 shuffle=262036656
-   make: Target 'prepare' not remade because of errors.
-
-
-vim +/page_to_section +47 include/linux/pgtable.h
-
-1c2f7d14d84f767 Anshuman Khandual       2021-06-30  43  
-9353c36cfa235ae Matthew Wilcox (Oracle  2024-08-14  44) #ifndef mk_pte
-9353c36cfa235ae Matthew Wilcox (Oracle  2024-08-14  45) static inline pte_t mk_pte(struct page *page, pgprot_t pgprot)
-9353c36cfa235ae Matthew Wilcox (Oracle  2024-08-14  46) {
-9353c36cfa235ae Matthew Wilcox (Oracle  2024-08-14 @47) 	return pfn_pte(page_to_pfn(page), pgprot);
-9353c36cfa235ae Matthew Wilcox (Oracle  2024-08-14  48) }
-9353c36cfa235ae Matthew Wilcox (Oracle  2024-08-14  49) #endif
-9353c36cfa235ae Matthew Wilcox (Oracle  2024-08-14  50) 
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks!
 
