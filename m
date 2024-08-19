@@ -4,55 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3E05CC531DC
-	for <linux-um@archiver.kernel.org>; Fri, 16 Aug 2024 10:00:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 830AEC3DA4A
+	for <linux-um@archiver.kernel.org>; Mon, 19 Aug 2024 12:24:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=MIeh/tkxVuBeL/Hw9D50Dh+vi6krP1UrWPdznGMpxyA=; b=IuheNrhbcLHGyrEohyiBhgT63D
-	GHLB8mrsUoSE6xRN16/PxQTmXv3XGMjOputc6X9l78cmFu19+BN7AMR2w85caspPfRJh5kQ9qtjfG
-	thVmOsvQNtVOp/JTk6LMpmeJjUNrbP1hu7RYloEc6n5Oj0iraYW8QiINCZjbdEnixXEjyNrXoddxw
-	xz1DAqattG3hGC+jBMyZX1Qt0nBTPlR8zIOYUk8YsXki3Uy6LYycIcei399osVp7zFIMobKQjMwYv
-	GUlUno21tIAGYEGeTmyZv6bQtTtxnFexSN4NoPLKnR3e9hDya5GRia/qSKImnNxEfpn9vchIabhj6
-	uZ51r2TQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=DXZ9OYYdz38AQ8gXsqwwGM7UvJTsd4FhVUqGMHaS2z4=; b=pctLxhfytirtQYDMHbzowZS34Z
+	85bDpD0nDKjJmDYPSC2DFsBg3eEoevxY9uk6vkn8pVI4TwmWr7BcicyqqlSLpwNHnfJC3gSZx3p8y
+	2q/krA3OnwPlQHAUDBLmKiJSNTwQrv3j2IzQW9GjxAu6X37PpQ5guox6mBYX05itXRPpWy5Ewrlxa
+	GMCITOsRykaOd1/xS3lMLKpOD60Ep93NaaUDHs5aAD/FkQpRoaB0TzmgxotGe45p0xRa2FFTGw3TJ
+	QMT4s1YAkh65yIrGxCY5RZ7D6Yt9g+Z5DXB4kaqO4HIvGVMGiYbRmJpDJlkdmkdH+WW+Ru3Ekh+43
+	jn9QP16w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1setlO-0000000CWb8-3wRS;
-	Fri, 16 Aug 2024 10:00:54 +0000
-Received: from out0-213.mail.aliyun.com ([140.205.0.213])
+	id 1sg1Qs-00000001Q8d-0fBj;
+	Mon, 19 Aug 2024 12:24:22 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1setke-0000000CWKB-0oc9
+	id 1sg1Pu-00000001Ppg-1PX7
 	for linux-um@lists.infradead.org;
-	Fri, 16 Aug 2024 10:00:12 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=antgroup.com; s=default;
-	t=1723802405; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=MIeh/tkxVuBeL/Hw9D50Dh+vi6krP1UrWPdznGMpxyA=;
-	b=zl6c25HpNA8zuIv8MBJTy5Y/lppVz6PKHS65q7z8o8x/GhOKaG8eUNqYuixMhjB6T3ar/hS5azPjMa7NHII12OxjM5sJlY5yxZlswNLmWh5Bn+W36q4NYQiYfFbzNK3oeI3XnFJ9OVmwXOyQ0r7R0sDWA0Pdd+qtBkxxUAu6PVo=
-Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.YtmFE8Z_1723802404)
-          by smtp.aliyun-inc.com;
-          Fri, 16 Aug 2024 18:00:04 +0800
-From: "Tiwei Bie" <tiwei.btw@antgroup.com>
-To: richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net
-Cc: <linux-um@lists.infradead.org>,
-   <linux-kernel@vger.kernel.org>,
-  "Tiwei Bie" <tiwei.btw@antgroup.com>
-Subject: [PATCH v2 4/6] um: Remove unused mm_fd field from mm_id
-Date: Fri, 16 Aug 2024 17:59:51 +0800
-Message-Id: <20240816095953.638401-5-tiwei.btw@antgroup.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240816095953.638401-1-tiwei.btw@antgroup.com>
-References: <20240816095953.638401-1-tiwei.btw@antgroup.com>
+	Mon, 19 Aug 2024 12:23:23 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=DXZ9OYYdz38AQ8gXsqwwGM7UvJTsd4FhVUqGMHaS2z4=;
+	t=1724070199; x=1725279799; b=h82oaNS6u/x+338QaHttTML+cEmDkurSXj3EDEJJYSDM8iZ
+	Lbnsvoib2+cdGYRIXwCFJtF4KLDCHY6peRZ68Zc93ucIJdCdEOQUrme390jB/U2wSKpUR7+Oi83DJ
+	Tm2HOfpjs1lyzdVhY9TFYpdWsqboRQU+15GSUAI7DC57vMqQUvWupFdMXWg45Vky91ImrjKNDRknl
+	c7MNI6Nbiq/62Jj2sQFo+qm/K51zu1TT638cMP3bdeMlOJ7r/QqghdQaeAxWGjsuBzLEHMGnVZOC6
+	WX+GgaV8BJAQCy01JgNPBjuvCkXpbLwpn1dBcOIyRuN1PjRLSEnlcAadVq/1CHDA==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1sg1Pl-00000007YDs-0Y6D;
+	Mon, 19 Aug 2024 14:23:13 +0200
+Message-ID: <efbb6394805f11de27cace9817418744d8e69506.camel@sipsolutions.net>
+Subject: Re: [PATCH] um: make personality(PER_LINUX32) work on x86_64
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Maciej =?UTF-8?Q?=C5=BBenczykowski?= <maze@google.com>, Maciej
+ =?UTF-8?Q?=C5=BBenczykowski?=
+	 <zenczykowski@gmail.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Richard
+ Weinberger <richard@nod.at>, Anton Ivanov
+ <anton.ivanov@cambridgegreys.com>,  linux-um@lists.infradead.org
+Date: Mon, 19 Aug 2024 14:23:12 +0200
+In-Reply-To: <20240813234755.3615697-1-maze@google.com>
+References: <20240813234755.3615697-1-maze@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240816_030008_744840_B180CFB5 
-X-CRM114-Status: GOOD (  12.23  )
+X-CRM114-CacheID: sfid-20240819_052322_430988_0C002465 
+X-CRM114-Status: UNSURE (   7.09  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -67,120 +77,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-It's no longer used since the removal of the SKAS3/4 support.
+On Tue, 2024-08-13 at 16:47 -0700, Maciej =C5=BBenczykowski wrote:
+> Without this patch:
+>   #!/usr/bin/python3
+>   import ctypes
+>   import os
+>   personality =3D ctypes.CDLL(None).personality
+>   personality.restype =3D ctypes.c_int
+>   personality.argtypes =3D [ctypes.c_ulong]
+>   PER_LINUX32=3D8
+>   personality(PER_LINUX32)
+>   print(os.uname().machine)
+> returns:
+>   x86_64
+> instead of the desired:
+>   i686
+>=20
 
-Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
----
- arch/um/include/shared/skas/mm_id.h |  5 +----
- arch/um/kernel/reboot.c             |  2 +-
- arch/um/kernel/skas/mmu.c           | 12 ++++++------
- arch/um/kernel/time.c               |  2 +-
- arch/um/os-Linux/skas/mem.c         |  2 +-
- arch/um/os-Linux/skas/process.c     |  2 +-
- 6 files changed, 11 insertions(+), 14 deletions(-)
+But ... why should it work? UML has no 32-bit compat support anyway.
 
-diff --git a/arch/um/include/shared/skas/mm_id.h b/arch/um/include/shared/skas/mm_id.h
-index 1e76ba40feba..140388c282f6 100644
---- a/arch/um/include/shared/skas/mm_id.h
-+++ b/arch/um/include/shared/skas/mm_id.h
-@@ -7,10 +7,7 @@
- #define __MM_ID_H
- 
- struct mm_id {
--	union {
--		int mm_fd;
--		int pid;
--	} u;
-+	int pid;
- 	unsigned long stack;
- 	int syscall_data_len;
- };
-diff --git a/arch/um/kernel/reboot.c b/arch/um/kernel/reboot.c
-index 3736bca626ba..680bce4bd8fa 100644
---- a/arch/um/kernel/reboot.c
-+++ b/arch/um/kernel/reboot.c
-@@ -29,7 +29,7 @@ static void kill_off_processes(void)
- 		t = find_lock_task_mm(p);
- 		if (!t)
- 			continue;
--		pid = t->mm->context.id.u.pid;
-+		pid = t->mm->context.id.pid;
- 		task_unlock(t);
- 		os_kill_ptraced_process(pid, 1);
- 	}
-diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
-index 47f98d87ea3c..886ed5e65674 100644
---- a/arch/um/kernel/skas/mmu.c
-+++ b/arch/um/kernel/skas/mmu.c
-@@ -32,11 +32,11 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
- 	new_id->stack = stack;
- 
- 	block_signals_trace();
--	new_id->u.pid = start_userspace(stack);
-+	new_id->pid = start_userspace(stack);
- 	unblock_signals_trace();
- 
--	if (new_id->u.pid < 0) {
--		ret = new_id->u.pid;
-+	if (new_id->pid < 0) {
-+		ret = new_id->pid;
- 		goto out_free;
- 	}
- 
-@@ -83,12 +83,12 @@ void destroy_context(struct mm_struct *mm)
- 	 * whole UML suddenly dying.  Also, cover negative and
- 	 * 1 cases, since they shouldn't happen either.
- 	 */
--	if (mmu->id.u.pid < 2) {
-+	if (mmu->id.pid < 2) {
- 		printk(KERN_ERR "corrupt mm_context - pid = %d\n",
--		       mmu->id.u.pid);
-+		       mmu->id.pid);
- 		return;
- 	}
--	os_kill_ptraced_process(mmu->id.u.pid, 1);
-+	os_kill_ptraced_process(mmu->id.pid, 1);
- 
- 	free_pages(mmu->id.stack, ilog2(STUB_DATA_PAGES));
- }
-diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
-index 47b9f5e63566..29b27b90581f 100644
---- a/arch/um/kernel/time.c
-+++ b/arch/um/kernel/time.c
-@@ -839,7 +839,7 @@ static irqreturn_t um_timer(int irq, void *dev)
- 	if (get_current()->mm != NULL)
- 	{
-         /* userspace - relay signal, results in correct userspace timers */
--		os_alarm_process(get_current()->mm->context.id.u.pid);
-+		os_alarm_process(get_current()->mm->context.id.pid);
- 	}
- 
- 	(*timer_clockevent.event_handler)(&timer_clockevent);
-diff --git a/arch/um/os-Linux/skas/mem.c b/arch/um/os-Linux/skas/mem.c
-index c55430775efd..9a13ac23c606 100644
---- a/arch/um/os-Linux/skas/mem.c
-+++ b/arch/um/os-Linux/skas/mem.c
-@@ -78,7 +78,7 @@ static inline long do_syscall_stub(struct mm_id *mm_idp)
- {
- 	struct stub_data *proc_data = (void *)mm_idp->stack;
- 	int n, i;
--	int err, pid = mm_idp->u.pid;
-+	int err, pid = mm_idp->pid;
- 
- 	n = ptrace_setregs(pid, syscall_regs);
- 	if (n < 0) {
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index f7088345b3fc..b6f656bcffb1 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -588,5 +588,5 @@ void reboot_skas(void)
- 
- void __switch_mm(struct mm_id *mm_idp)
- {
--	userspace_pid[0] = mm_idp->u.pid;
-+	userspace_pid[0] = mm_idp->pid;
- }
--- 
-2.34.1
-
+johannes
 
