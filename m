@@ -4,78 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2D20C52D7C
-	for <linux-um@archiver.kernel.org>; Mon, 19 Aug 2024 18:46:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E6712C3DA4A
+	for <linux-um@archiver.kernel.org>; Mon, 19 Aug 2024 18:53:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Y51dIf6Nc9jS2PsiVafQefSFQO48+Q7aOrp7xHNd1WU=; b=BIrseW6ZzvV/74kvmmxn1u9QYj
-	qkQ/vX19eQ68i9pHRa0IsxM9y+CGA2wblmZNqbQEjou3qvhJzPpYtUsMvukLKImbmfLSaBCt11fYS
-	D4PKnvakOvNm/vtXoeM3XF3zZaF4JWurIzL/I4Gt2dv8tdNOcUmmb+BHxTgVLKl1LrH5xd0UiNmPw
-	fKU7/mL/CAiE8/WWJuxIUkmWI0u7yWkLWuey3SKjKvq3kHeL5f27CbhuxHcnMwJ2KE6rH96f1uzo7
-	uExcSFT+cGCG/gV1swHm2aVBbAUtkWgm0vPhRrmncfyGxHkEIo+5J6wEBd0JUc+LfCSvLWjIM8wcj
-	6Je6zvdw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=iQcrNQIEiMiBwNG9NmgUmYGBt5rv83x8MrjFBzAI1Kg=; b=BZ7Dg8xk116VFF1jKP+CzNIUox
+	i4k3zuj1pZXoWpJWdYY+8ij3UAHzjB3hahf62DPdCMtMS/yoqsZqDMwy6wKy+6VVHe3qYFmZRPkg3
+	f0eNLGqZOfABSQ8F2Jd7IBG86gps7466LzpM7QiRiHQY6decp8eVYq833fHihkX6CKtcUXdK5Hzuz
+	4N0mhYCKpwyUYepC4ITnxL5nrK1oNirz/hYill+EmM0W8uYIUDqcF6CRKX005wZCUvLJe+7Gdu1r6
+	vHRkl1j1zxJThpF+72RI3ExTHmjXDL7ojiFLvkeYePPg29BkFaMEPeul2qvl6X+UYpxLYHml7/rGV
+	v4Lox7gw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sg7P2-00000002eC3-3JvT;
-	Mon, 19 Aug 2024 18:46:52 +0000
-Received: from mail-ed1-x533.google.com ([2a00:1450:4864:20::533])
+	id 1sg7V0-00000002f6J-0l36;
+	Mon, 19 Aug 2024 18:53:02 +0000
+Received: from sin.source.kernel.org ([145.40.73.55])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sg7Oz-00000002eB3-2LHI
+	id 1sg7Uw-00000002f5l-3KFV
 	for linux-um@lists.infradead.org;
-	Mon, 19 Aug 2024 18:46:50 +0000
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-5bebc830406so1475a12.0
-        for <linux-um@lists.infradead.org>; Mon, 19 Aug 2024 11:46:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1724093207; x=1724698007; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y51dIf6Nc9jS2PsiVafQefSFQO48+Q7aOrp7xHNd1WU=;
-        b=okZdE1myiGr3/sSt3HzcKQ5/gg4MxaS6JikGYhha03c/3G/Q8Wwmg4ORIpKHh7+A4F
-         cm4sJgyc9D7Ztumv3shkZtgnxgzUiqS1KGFksrvAyYFba/FmWCeFwFR9039CH1qWaq0Q
-         Sn/5gWRhbfd5Zqx0/xdl++9rJEZfTZRcNXFGEkBRJd2D637e9A3+eScBGISoHbaGay1S
-         har54+5yGCptZvsPvwkhthWC0pyYhPtzj4Vv+7SjTMqLzzvc4dNwbw7lgCsK4UYmzcaj
-         NZNJBngFOrHj7tqB4xm7ciWtvD1ERC/55sHv4aIEQdnIym8Q5ZzIbcrQiELCSaR0ARY+
-         d3yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724093207; x=1724698007;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Y51dIf6Nc9jS2PsiVafQefSFQO48+Q7aOrp7xHNd1WU=;
-        b=eJGZbd5zA22LCO0/s45gOjGrzunTd4b41EO+3uNIM/oBimpQMFomg+kDUYwdwUFAer
-         JGrYmKDW5pX+rR4Kivz3A47w6IeE0h0afVvAg9t++hDr6wny+rzqAKq74+L5ixZCNNSQ
-         0U+Llc9aP3uHjRuByY90o5DbHt2Jx8252pgJk2zlcoIfRssqEJPWdhRgckEUE96t2bGf
-         AiMldiAvZeN9GZ/Fiyrpu0NxEp4uUpeT6uZTHAGzs7ElUfvOVY53xEdR5/ajcXqLYDk3
-         JQnwzbaXSDb6KpfI11cR3WukBoA57SC+XtwtgTrcznx4HMdGAP04r2aFCi9NM1TsCJik
-         S0sg==
-X-Forwarded-Encrypted: i=1; AJvYcCXNBnCWy6nTlDUm7aQQZW7Ogcke5bGUG8CMAHc77znT+rVvT4cqOxzrrbkF6SvcuTtcpcLRY44qFQ==@lists.infradead.org
-X-Gm-Message-State: AOJu0YxzkTFMOD7y9ETh/y6bZQV0aFNZh0nOgfduqIqEJLFs9SM6Ly/w
-	iRxCyhQohCuSHWE3EHZXaTCs8ZFsBMkSYqpT+3QdhQqETkG1dNpHbz93oW3AmeLks6VfjtPvO4c
-	+BD0E9Qc35iXwGWqUnaskLMEM4I4I3naUkahL
-X-Google-Smtp-Source: AGHT+IHGyrw4ppuXQs+Ix4XJjG6GmLafWxNKCsWLnSoyTNB7TwMvjAoIf2VSsRB+F0laxTLGBLorjke5egWsMJdRpF4=
-X-Received: by 2002:a05:6402:26c4:b0:5be:c28a:97cf with SMTP id
- 4fb4d7f45d1cf-5bf0c5cf9bfmr6774a12.5.1724093206617; Mon, 19 Aug 2024 11:46:46
- -0700 (PDT)
+	Mon, 19 Aug 2024 18:53:00 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by sin.source.kernel.org (Postfix) with ESMTP id 9EF8FCE009F;
+	Mon, 19 Aug 2024 18:52:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D9DCC32782;
+	Mon, 19 Aug 2024 18:52:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1724093575;
+	bh=Wp8P3EgsiNnwHsyvJQy1pa44F8Ift7l2TbO0fFNdX+w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bo2X9Cdr8YfBof0Y+21pidQ9bPz8/eUiG8SHtFIpgb4EiOd5Ok3g8Wppp6R5mRP2Q
+	 e7yVdHKDwlRmEWj+l713ykXFTH21hteVqrCg0oOMdOHJxC7ITQLFA+6RPcrM+ilNeD
+	 91ABWUteHwZPfYZe7YlpwxdvK7jZ34rIjNCwwLW299GHqw/BrkRWhOdxnX5263QrkY
+	 QGichqXoQWR5JvRxaw3CMRKPg6NmDEZyiyTOYXZgnqSBuWhLKUUvLncaPbww8s+cR5
+	 nROe5YC5iZTtiU6GzbkWaw45SSBvnQQg7UZCV6HiNmhmypTkjO7FNtCLSWyvkQ8QMj
+	 yu5DpggJJ8zhA==
+Date: Mon, 19 Aug 2024 11:52:53 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Michael Ellerman <mpe@ellerman.id.au>
+Cc: linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+	torvalds@linux-foundation.org, akpm@linux-foundation.org,
+	christophe.leroy@csgroup.eu, jeffxu@google.com,
+	Liam.Howlett@oracle.com, linux-kernel@vger.kernel.org,
+	npiggin@gmail.com, oliver.sang@intel.com, pedro.falcato@gmail.com,
+	linux-um@lists.infradead.org
+Subject: Re: [PATCH v2 1/4] mm: Add optional close() to struct
+ vm_special_mapping
+Message-ID: <20240819185253.GA2333884@thelio-3990X>
+References: <20240812082605.743814-1-mpe@ellerman.id.au>
 MIME-Version: 1.0
-References: <20240813234755.3615697-1-maze@google.com> <efbb6394805f11de27cace9817418744d8e69506.camel@sipsolutions.net>
-In-Reply-To: <efbb6394805f11de27cace9817418744d8e69506.camel@sipsolutions.net>
-From: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
-Date: Mon, 19 Aug 2024 11:46:31 -0700
-Message-ID: <CANP3RGdxrKHsERYG+yW5fpRUrahkBJbHCKD24v182ZNKuJgfwg@mail.gmail.com>
-Subject: Re: [PATCH] um: make personality(PER_LINUX32) work on x86_64
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Richard Weinberger <richard@nod.at>, 
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>, linux-um@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240812082605.743814-1-mpe@ellerman.id.au>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240819_114649_617126_C038A0E9 
-X-CRM114-Status: GOOD (  13.35  )
+X-CRM114-CacheID: sfid-20240819_115259_210226_613D441E 
+X-CRM114-Status: GOOD (  32.97  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,40 +76,193 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, Aug 19, 2024 at 5:23=E2=80=AFAM Johannes Berg <johannes@sipsolution=
-s.net> wrote:
->
-> On Tue, 2024-08-13 at 16:47 -0700, Maciej =C5=BBenczykowski wrote:
-> > Without this patch:
-> >   #!/usr/bin/python3
-> >   import ctypes
-> >   import os
-> >   personality =3D ctypes.CDLL(None).personality
-> >   personality.restype =3D ctypes.c_int
-> >   personality.argtypes =3D [ctypes.c_ulong]
-> >   PER_LINUX32=3D8
-> >   personality(PER_LINUX32)
-> >   print(os.uname().machine)
-> > returns:
-> >   x86_64
-> > instead of the desired:
-> >   i686
-> >
->
-> But ... why should it work? UML has no 32-bit compat support anyway.
+Hi Michael,
 
-Well, that's certainly a fair point.
-On 'native' x86_64 this works even for 64-bit processes though.
-I wonder if that, in itself, is a feature or a bug...
+On Mon, Aug 12, 2024 at 06:26:02PM +1000, Michael Ellerman wrote:
+> Add an optional close() callback to struct vm_special_mapping. It will
+> be used, by powerpc at least, to handle unmapping of the VDSO.
+> 
+> Although support for unmapping the VDSO was initially added
+> for CRIU[1], it is not desirable to guard that support behind
+> CONFIG_CHECKPOINT_RESTORE.
+> 
+> There are other known users of unmapping the VDSO which are not related
+> to CRIU, eg. Valgrind [2] and void-ship [3].
+> 
+> The powerpc arch_unmap() hook has been in place for ~9 years, with no
+> ifdef, so there may be other unknown users that have come to rely on
+> unmapping the VDSO. Even if the code was behind an ifdef, major distros
+> enable CHECKPOINT_RESTORE so users may not realise unmapping the VDSO
+> depends on that configuration option.
+> 
+> It's also undesirable to have such core mm behaviour behind a relatively
+> obscure CONFIG option.
+> 
+> Longer term the unmap behaviour should be standardised across
+> architectures, however that is complicated by the fact the VDSO pointer
+> is stored differently across architectures. There was a previous attempt
+> to unify that handling [4], which could be revived.
+> 
+> See [5] for further discussion.
+> 
+> [1]: commit 83d3f0e90c6c ("powerpc/mm: tracking vDSO remap")
+> [2]: https://sourceware.org/git/?p=valgrind.git;a=commit;h=3a004915a2cbdcdebafc1612427576bf3321eef5
+> [3]: https://github.com/insanitybit/void-ship
+> [4]: https://lore.kernel.org/lkml/20210611180242.711399-17-dima@arista.com/
+> [5]: https://lore.kernel.org/linuxppc-dev/shiq5v3jrmyi6ncwke7wgl76ojysgbhrchsk32q4lbx2hadqqc@kzyy2igem256
+> 
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
+> ---
+>  include/linux/mm_types.h | 3 +++
+>  mm/mmap.c                | 6 ++++++
+>  2 files changed, 9 insertions(+)
+> 
+> v2:
+> - Add some blank lines as requested.
+> - Expand special_mapping_close() comment.
+> - Add David's reviewed-by.
+> - Expand change log to capture review discussion.
+> 
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index 485424979254..78bdfc59abe5 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -1313,6 +1313,9 @@ struct vm_special_mapping {
+>  
+>  	int (*mremap)(const struct vm_special_mapping *sm,
+>  		     struct vm_area_struct *new_vma);
+> +
+> +	void (*close)(const struct vm_special_mapping *sm,
+> +		      struct vm_area_struct *vma);
+>  };
+>  
+>  enum tlb_flush_reason {
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> index d0dfc85b209b..af4dbf0d3bd4 100644
+> --- a/mm/mmap.c
+> +++ b/mm/mmap.c
+> @@ -3620,10 +3620,16 @@ void vm_stat_account(struct mm_struct *mm, vm_flags_t flags, long npages)
+>  static vm_fault_t special_mapping_fault(struct vm_fault *vmf);
+>  
+>  /*
+> + * Close hook, called for unmap() and on the old vma for mremap().
+> + *
+>   * Having a close hook prevents vma merging regardless of flags.
+>   */
+>  static void special_mapping_close(struct vm_area_struct *vma)
+>  {
+> +	const struct vm_special_mapping *sm = vma->vm_private_data;
+> +
+> +	if (sm->close)
+> +		sm->close(sm, vma);
+>  }
+>  
+>  static const char *special_mapping_name(struct vm_area_struct *vma)
+> -- 
+> 2.45.2
+> 
 
-In my case I was writing some debug code (to print the environment
-some test code is running in, since I think it was failing due to
-running 32-bit code in PER_LINUX32 on 64-bit arm) and testing (the
-test code) on x86_64 UML.  I was surprised to discover the difference
-in UML vs my host desktop.
+This change is now in -next and I bisected a crash that our CI sees with
+ARCH=um to it:
 
-> johannes
+$ make -skj"$(nproc)" ARCH=um CROSS_COMPILE=x86_64-linux- defconfig linux
 
---
-Maciej =C5=BBenczykowski, Kernel Networking Developer @ Google
+$ ./linux ubd0=$PWD/rootfs.ext4
+...
+Linux version 6.11.0-rc4-next-20240819 (nathan@thelio-3990X) (x86_64-linux-gcc (GCC) 14.2.0, GNU ld (GNU Binutils) 2.42) #1 Mon Aug 19 11:42:20 MST 2024
+...
+Run /sbin/init as init process
+
+Modules linked in:
+Pid: 24, comm: mount Not tainted 6.11.0-rc4-next-20240819
+RIP: 0033:0x68006f6c
+RSP: 000000006c8bfc68  EFLAGS: 00010206
+RAX: 0000000068006f6c RBX: 0000000068a0aa18 RCX: 00000000600d8b09
+RDX: 0000000000000000 RSI: 0000000068a0aa18 RDI: 0000000068805120
+RBP: 000000006c8bfc70 R08: 0000000000000001 R09: 0000000068ae0308
+R10: 000000000000000e R11: ffffffffffffffff R12: 0000000000000001
+R13: 0000000068a0aa18 R14: 0000000000000015 R15: 0000000068944a88
+Kernel panic - not syncing: Segfault with no mm
+CPU: 0 UID: 0 PID: 24 Comm: mount Not tainted 6.11.0-rc4-next-20240819 #1
+Stack:
+ 600caeff 6c8bfc90 600d8b2a 68944a80
+ 00000047 6c8bfda0 600cbfd9 6c8bfd50
+ 68944ad0 68944a88 7f7ffff000 7f7fffffff
+Call Trace:
+ [<600caeff>] ? special_mapping_close+0x16/0x19
+ [<600d8b2a>] remove_vma+0x21/0x59
+ [<600cbfd9>] exit_mmap+0x1f3/0x2bc
+ [<60032a0c>] ? unblock_signals+0x0/0xbd
+ [<600329fd>] ? block_signals+0x0/0xf
+ [<6003831c>] __mmput+0x24/0x94
+ [<60067262>] ? up_read+0x0/0x2c
+ [<600383a1>] mmput+0x15/0x18
+ [<6003ce97>] do_exit+0x381/0x9b8
+ [<600e4b8d>] ? kfree+0x107/0x11b
+ [<6003d752>] sys_exit_group+0x0/0x16
+ [<6003d768>] pid_child_should_wake+0x0/0x42
+ [<60022e7a>] handle_syscall+0x79/0xa7
+ [<600358de>] userspace+0x4d3/0x505
+ [<60020927>] fork_handler+0x84/0x8b
+
+Passing this through scripts/decode_stacktrace.sh results in
+
+? special_mapping_close (mm/mmap.c:2056)
+remove_vma (mm/vma.c:144)
+exit_mmap (include/linux/sched.h:2049 mm/mmap.c:1947)
+? unblock_signals (arch/um/os-Linux/signal.c:296)
+? block_signals (arch/um/os-Linux/signal.c:282)
+__mmput (kernel/fork.c:1349)
+? up_read (arch/x86/include/asm/atomic64_64.h:79 (discriminator 5) include/linux/atomic/atomic-arch-fallback.h:2749 (discriminator 5) include/linux/atomic/atomic-long.h:184 (discriminator 5) include/linux/atomic/atomic-instrumented.h:3317 (discriminator 5) kernel/locking/rwsem.c:1347 (discriminator 5) kernel/locking/rwsem.c:1622 (discriminator 5))
+mmput (kernel/fork.c:1370)
+do_exit (arch/um/include/asm/thread_info.h:46 kernel/exit.c:572 kernel/exit.c:926)
+? kfree (mm/slub.c:4482 (discriminator 2) mm/slub.c:4522 (discriminator 2) mm/slub.c:4669 (discriminator 2))
+sys_exit_group (kernel/exit.c:1099 kernel/exit.c:1097)
+pid_child_should_wake (kernel/exit.c:1106 kernel/exit.c:1565)
+handle_syscall (arch/um/kernel/skas/syscall.c:45 (discriminator 1))
+userspace (arch/um/os-Linux/skas/process.c:466)
+fork_handler (arch/um/kernel/process.c:137)
+
+This change seems pretty innocuous but the bisect log does not lie :) I
+am guessing UML is just special here somehow?
+
+# bad: [367b5c3d53e57d51a5878816804652963da90950] Add linux-next specific files for 20240816
+# good: [e724918b3786252b985b0c2764c16a57d1937707] Merge tag 'hardening-v6.11-rc4' of git://git.kernel.org/pub/scm/linux/kernel/git/kees/linux
+git bisect start '367b5c3d53e57d51a5878816804652963da90950' 'e724918b3786252b985b0c2764c16a57d1937707'
+# bad: [b12bdbe2615f5426953ae1e64d74176674618edb] Merge branch 'for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/wireless/wireless-next.git
+git bisect bad b12bdbe2615f5426953ae1e64d74176674618edb
+# bad: [9ad9c8d6eea9063fe7309cdc8e76bd12377cd613] Merge branch 'for-next' of https://github.com/sophgo/linux.git
+git bisect bad 9ad9c8d6eea9063fe7309cdc8e76bd12377cd613
+# bad: [57c53c832b28ca79eddca47c5b599036be10d347] Merge branch 'perf-tools-next' of git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git
+git bisect bad 57c53c832b28ca79eddca47c5b599036be10d347
+# bad: [cbaf19e941bcd83cf50f569b3888f7db6dcaccfc] foo
+git bisect bad cbaf19e941bcd83cf50f569b3888f7db6dcaccfc
+# good: [cdb0e8eb648858f37bbe1d6245c3a3c49f265c1c] fixup! selftests/mm: Add mseal test for no-discard madvise
+git bisect good cdb0e8eb648858f37bbe1d6245c3a3c49f265c1c
+# bad: [4fdacc9ec44f04a9edc4ddd0c782ab698cd15257] mm: shmem: support large folio allocation for shmem_replace_folio()
+git bisect bad 4fdacc9ec44f04a9edc4ddd0c782ab698cd15257
+# good: [90f91965eee8256ffad811a6da097bc13b66aa2e] mm: reduce deferred struct page init ifdeffery
+git bisect good 90f91965eee8256ffad811a6da097bc13b66aa2e
+# good: [5ae759160c5df466f4ae7cb89c05cd963e91cc3c] mm: introduce a pageflag for partially mapped folios
+git bisect good 5ae759160c5df466f4ae7cb89c05cd963e91cc3c
+# good: [03683572685d2f8febfc022b758fdb4bddf8d783] maple_tree: fix comment typo with corresponding maple_status
+git bisect good 03683572685d2f8febfc022b758fdb4bddf8d783
+# bad: [74ef5018120b2a441428400a5f92891307d41b82] powerpc/vdso: refactor error handling
+git bisect bad 74ef5018120b2a441428400a5f92891307d41b82
+# bad: [5077f828c08424b81279341813a18b8923ebd42e] mm: add optional close() to struct vm_special_mapping
+git bisect bad 5077f828c08424b81279341813a18b8923ebd42e
+# good: [0ebac8817b5dce7b3a1afd6ff7197a75829d50ad] kfence: save freeing stack trace at calling time instead of freeing time
+git bisect good 0ebac8817b5dce7b3a1afd6ff7197a75829d50ad
+# first bad commit: [5077f828c08424b81279341813a18b8923ebd42e] mm: add optional close() to struct vm_special_mapping
+
+The rootfs is available from [1] in case it matters
+(x86_64-rootfs.ext4.zst, decompress it with zstd first); it just shuts
+down the machine on boot.
+
+Cheers,
+Nathan
+
+[1]: https://github.com/ClangBuiltLinux/boot-utils/releases/latest
 
