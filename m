@@ -4,80 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4357DC3DA4A
-	for <linux-um@archiver.kernel.org>; Wed, 21 Aug 2024 01:18:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B53A1C3DA4A
+	for <linux-um@archiver.kernel.org>; Thu, 22 Aug 2024 14:07:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Mime-Version:References:In-Reply-To:Message-Id:Subject:Cc:To:
-	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=bqLgu5rCY6FwxrHMn3oG9AZSGc/vl8klIaH3jFWN1QY=; b=SEMGkeo205qz9ORfVnB1+/NIC5
-	YCDOd1eOXrhaBX4K833TURgSV4PF6SbD94Ky5/MOYp2RYl6//dj6u6MXyvNeBtq1/aAp8Tptp+X1i
-	HxBldmYVUO3JWRn70LdX9wN+HELkZBKrYx4M1vcBxI1k8uegME/06Ru/xOJt1c9Itub3GQHKvSRRM
-	0bKG6oFMI9IbOVhFKsteks2RVNT1Fk6X7Rjw/K9W6mQJVLNRmVbniRVT6A+tUtfDVAX6qRY1UN+ex
-	oq4gXTLsxN42s9RWHNSMyC/Fdy+5BIMpgBGa/7QAKGl57HatDr3Vi1P+lzjHxHodvB/y09maIBcii
-	W1NrTZUQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=012mDUm2fCWZDcYIJ2hFYZSZaAjp60g7PcWojz+2NIk=; b=CsCVrIr9uMjDgcdiLhpDFDkM5W
+	iAc8RnV/daARX+vuTZiP9ZCmkuL6Ns5ldITTcqnHMrzdrXK8YPbgUkQ4pwfzihG7+5qrf4GABKLaV
+	WXoHMWzWFpvfqRSDjI4iOQcmOEqX4y0BnHSS0N7XMdrItq8IRyhfNHoLAMMolI0iTM43mgwH0X+Y9
+	meZgI7Tfg7j23hiFSppgoLSj4M2zUJJBonow7LpUz1Sh3owhTnrC0M4vhr7r5K8z90ydcCgxnOwCm
+	1seXGXDN/VRtd2qNvn9VZ6gkBD+9fGcSrW3JwDqkWtv0upbPpXkX17TSw2VpPtQwjEkqO7SctmAM8
+	QhCFGTQw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sgZzq-000000079mX-0Fns;
-	Wed, 21 Aug 2024 01:18:46 +0000
-Received: from sin.source.kernel.org ([145.40.73.55])
+	id 1sh8Th-0000000D5sg-3SC6;
+	Thu, 22 Aug 2024 14:07:53 +0000
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sgZzm-000000079m0-24Im
+	id 1sh8Te-0000000D5rO-3fbt
 	for linux-um@lists.infradead.org;
-	Wed, 21 Aug 2024 01:18:43 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by sin.source.kernel.org (Postfix) with ESMTP id 4C2BDCE0599;
-	Wed, 21 Aug 2024 01:18:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2772C4AF1C;
-	Wed, 21 Aug 2024 01:18:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1724203118;
-	bh=bqLgu5rCY6FwxrHMn3oG9AZSGc/vl8klIaH3jFWN1QY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=J7HW4rBxhF/HrPEjaCJdLiVU49cBPm7VSaD9bLo71rgfjuow5pC1T829ekAR5qhbt
-	 y0AJp1Dye1XHvNgijTcPSn/K+3aFMY0KrpEYB4Jf2LPy+9du5uUB+wosLhZdsiMS2H
-	 3sOrZ4VDg694Av7PSihHm8BXGsBxnjelk958OsxQ=
-Date: Tue, 20 Aug 2024 18:18:37 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Rob Landley <rob@landley.net>, Michael Ellerman <mpe@ellerman.id.au>,
- Nathan Chancellor <nathan@kernel.org>, Guo Ren <guoren@kernel.org>, Brian
- Cain <bcain@quicinc.com>, Dinh Nguyen <dinguyen@kernel.org>, Yoshinori Sato
- <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, John Paul
- Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Richard Weinberger
- <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes
- Berg <johannes@sipsolutions.net>, linux-mm@kvack.org,
- linuxppc-dev@lists.ozlabs.org, christophe.leroy@csgroup.eu,
- jeffxu@google.com, Liam.Howlett@oracle.com, linux-kernel@vger.kernel.org,
- npiggin@gmail.com, oliver.sang@intel.com, pedro.falcato@gmail.com,
- linux-um@lists.infradead.org, linux-csky@vger.kernel.org, linux-hexagon
- <linux-hexagon@vger.kernel.org>, Linux-sh list <linux-sh@vger.kernel.org>
-Subject: Re: [PATCH v2 1/4] mm: Add optional close() to struct
- vm_special_mapping
-Message-Id: <20240820181837.4d470b8837db618827b7bef7@linux-foundation.org>
-In-Reply-To: <CAHk-=whvR+z=0=0gzgdfUiK70JTa-=+9vxD-4T=3BagXR6dciA@mail.gmail.com>
-References: <20240812082605.743814-1-mpe@ellerman.id.au>
-	<20240819185253.GA2333884@thelio-3990X>
-	<CAHk-=wj9QPhG4CjiX8YLRC1wHj_Qs-T8wJi0WEhkfp0cszvB9w@mail.gmail.com>
-	<20240819195120.GA1113263@thelio-3990X>
-	<CAHk-=wgsDJ+sA1T01YT-z5TXs3zxJ54f0VDApkZ1pgcr8T=myQ@mail.gmail.com>
-	<CAHk-=wjzYKrwSDK3PFMC1C2x37aKzEuC7dVxg0kGt8h+vjZfjQ@mail.gmail.com>
-	<87y14rso9o.fsf@mail.lhotse>
-	<CAHk-=wiS7PMtL6oR6acNgWZr0NN4Ax4PQD_CYJKCiKS0mT=Z7A@mail.gmail.com>
-	<dff57198-7955-ec09-8909-671982834673@landley.net>
-	<CAHk-=wj78UV2ep6i5JZ-1qhLPZPHV4eUOtjWqqh_3zcqJ7pK-Q@mail.gmail.com>
-	<67108df9-7374-a64e-ca82-8c46d67fb55b@landley.net>
-	<CAHk-=whvR+z=0=0gzgdfUiK70JTa-=+9vxD-4T=3BagXR6dciA@mail.gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+	Thu, 22 Aug 2024 14:07:52 +0000
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47M578Q1027428;
+	Thu, 22 Aug 2024 14:07:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date
+	:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=pp1; bh=012mDUm2fCWZDcYIJ2hFYZSZaAj
+	p60g7PcWojz+2NIk=; b=lu8L21yGqnD+aEH/XD4Frt5dOHPwym/cMrn1uj3GVa4
+	kzuO1DKexUdezI3Lef1EROsNR0YJHwQ+cuoVaJlf9cJi1Tbga4uqgXuWbGE6Fmi0
+	UyFcLtbb+vfxAU9jq0xiHCPPxFfSSEq74r8E6OH3h1tTvu16J5LgXVWzoWUpMySt
+	tAEU8oFkFXuJWypIdR9T8o28/Ataz5dxpWlr5GJi4t7iHP3djTrVp/arawkT39Wg
+	JYtfqueMjZdj7SFCZfXa0UKh1s/hxbFRXw3/CrBYFdntLsM5EPyegxcQ1XstMtsl
+	PDly7cy4minOakIdflJ8HE3Wjg09J6vaTyHLbaWCfhQ==
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4141y20ptv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 22 Aug 2024 14:07:03 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 47MC1itj017651;
+	Thu, 22 Aug 2024 14:07:02 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4138w3cr2b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 22 Aug 2024 14:07:02 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 47ME6wj655837100
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 22 Aug 2024 14:07:00 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 60A5820043;
+	Thu, 22 Aug 2024 14:06:58 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2F6C320040;
+	Thu, 22 Aug 2024 14:06:58 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.155.204.135])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Thu, 22 Aug 2024 14:06:58 +0000 (GMT)
+Date: Thu, 22 Aug 2024 16:06:56 +0200
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: linux-mm@kvack.org, linux-arch@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-um@lists.infradead.org, x86@kernel.org
+Subject: Re: [PATCH 4/5] s390: Remove custom definition of mk_pte()
+Message-ID: <ZsdGAHP5rwG5yLr8@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <20240814154427.162475-1-willy@infradead.org>
+ <20240814154427.162475-5-willy@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240814154427.162475-5-willy@infradead.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: K53dTj0IefNPmG9sfYv2aFJl57u7cE44
+X-Proofpoint-ORIG-GUID: K53dTj0IefNPmG9sfYv2aFJl57u7cE44
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-08-22_07,2024-08-22_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ suspectscore=0 spamscore=0 mlxlogscore=312 bulkscore=0 impostorscore=0
+ malwarescore=0 lowpriorityscore=0 phishscore=0 clxscore=1015
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2407110000 definitions=main-2408220105
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240820_181842_743179_59BD7CAF 
-X-CRM114-Status: UNSURE (   9.46  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240822_070750_934234_5A66579B 
+X-CRM114-Status: GOOD (  18.62  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,11 +104,47 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, 20 Aug 2024 16:14:29 -0700 Linus Torvalds <torvalds@linux-foundation.org> wrote:
+On Wed, Aug 14, 2024 at 04:44:24PM +0100, Matthew Wilcox (Oracle) wrote:
 
-> Andrew - I think this is good, but there may be other issues lurking.
-> Do with it as you see fit,
+Hi Matthew,
 
-Hey you know me, I'll merge any old thing if I think it'll help nurture
-newbies.
+> I believe the test for PageDirty() is no longer needed.  The
+> commit adding it was abf09bed3cce with the rationale that this
+> avoided faults for tmpfs and shmem pages.  shmem does not mark
+> newly allocated folios as dirty since 2016 (commit 75edd345e8ed)
+> so this test has been ineffective since then.
+
+The PageDirty() test you suggest to remove is still entered.
+I initially thought that test could also be useful for other
+architectures as an optimization, but at least one path we
+take for shmem mapping is raising eyebrow, because it is a
+read accesss:
+
+handle_pte_fault() -> do_pte_missing() -> do_fault() ->
+do_read_fault() -> finish_fault() -> set_pte_range() -> mk_pte()
+
+A read fault causing the PTE dirtifying is something strange
+and your patch alone could be a nice cleanup.
+
+As other architectures do not do such a trick suggests that
+mk_pte() + pte_mkdirty() is called from the same handler
+or pte_mkdirty() is expected to be called from a follow-up
+write handler.
+
+I could not identify locations where that would not be the case,
+but may be you know?
+
+...
+> -static inline pte_t mk_pte(struct page *page, pgprot_t pgprot)
+> -{
+> -	unsigned long physpage = page_to_phys(page);
+> -	pte_t __pte = mk_pte_phys(physpage, pgprot);
+> -
+> -	if (pte_write(__pte) && PageDirty(page))
+> -		__pte = pte_mkdirty(__pte);
+> -	return __pte;
+> -}
+> -#define mk_pte mk_pte
+
+Thanks!
 
