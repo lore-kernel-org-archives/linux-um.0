@@ -4,50 +4,35 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E137C54732
-	for <linux-um@archiver.kernel.org>; Mon, 26 Aug 2024 10:16:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7B31C5472F
+	for <linux-um@archiver.kernel.org>; Mon, 26 Aug 2024 10:16:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ETHDtkvAR5yLwocf1NNAJDJIgmGgz2GYbC6AhVsHb1U=; b=F1dbw5d046Y+8BjX84mIZVC5B9
-	SmCtNNBS7C8AT1DWC/sKbLKI/PMRoh0UnThudNY0QTqLtW1T9AFmrb3379Rb8Smh/0+zgmBcM2sxY
-	KibUY486HImIwqFYWdBDwqH2Ite+vaRSQlcH/7PLTCzTeZBMNy0yYl6irbC2COk6A7h8Z2eCbITzL
-	KONnrUrU2dAiTgTxYTlFY0xFNQ9FKZNDqepFsVi5L9JAsHVUqJ2de1Jzye/lb57myS1+XgdQhgZe0
-	nN+9YiecUmuMkQJcyB2CBrxy6pMisR2dCZRHt3mFWkIjOHIRFLHSpHZDnB9Z2hMsKvToLfSZiElFS
-	hys4sSeg==;
+	bh=UE3KVmrhR4CaBxvq16dvb3ocgiXdhekFGviHku9aBeM=; b=EdewVI2KOxxzmospm2npaXLMPc
+	AKdO4zJiBBDdJUasSDV3ko9h0YTRcv+THiYEYPwo5F3qkfkkfd6ME3fLginQ0OAOeEF1gCSKXA3yR
+	OLOGXH9aTkbnNoe5sl0u93cD50d9JncaNeDHGkelPUogDPU10nnDMNMuiLZ3UsA9ojRVPGf45xmHe
+	uAkj7NlGa72D6V0cBcoLxG5EYjT46RxaKht1yQCl6WeYrJcvhRkWRh6YDm7XlRuC9nKZOxNnIvm+z
+	vqP7Ot0BJ0zXlKaO9qozyDXHZjbCRHB7soaJfu4uGslYKJFXGbJbv/oN1yzoCd0ekuTnkV5Xf0P8z
+	et2Jcc1w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1siWlm-00000006szQ-0hv2;
-	Mon, 26 Aug 2024 10:16:18 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1siWll-00000006syu-220g;
+	Mon, 26 Aug 2024 10:16:17 +0000
+Received: from out0-204.mail.aliyun.com ([140.205.0.204])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1siWeW-00000006r2v-0djG
-	for linux-um@bombadil.infradead.org;
-	Mon, 26 Aug 2024 10:08:48 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=ETHDtkvAR5yLwocf1NNAJDJIgmGgz2GYbC6AhVsHb1U=; b=IBYEN88EcrobRkr4KwrKUavYwI
-	nUJI1ejJYGmkz/pGXaGWXt3QMRxPNsFG+nMU5eMMm6Kza0Z010EvsxH9kgTfQ2v5z8zyB5EN8ZNAo
-	zyBrz2vEAZPLb4YxfKTDCYWQeY2hhOPouM2S9vw0o8/ET3jRNLsWO1OgggCrbzXZjzPYTPPRQlU8M
-	M4j1FCAjlQhvgBNPO8R4h3+OzeIVpp+zyJkVrF2jTTBK98mv5/NdbU7l4yqombZ1/FLE21x+BLIne
-	peok0vxmGf11VfGB16IexfOQYyfXDvWAr1WOYZ0D8hElewrrxL1r8g5SrauiC+PIZixCs4j5xj8fP
-	3bAE91kw==;
-Received: from out0-203.mail.aliyun.com ([140.205.0.203])
-	by desiato.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1siWeQ-0000000AdFi-1o7R
+	id 1siWeH-00000006quC-0Yel
 	for linux-um@lists.infradead.org;
-	Mon, 26 Aug 2024 10:08:47 +0000
+	Mon, 26 Aug 2024 10:08:36 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=antgroup.com; s=default;
-	t=1724666910; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=ETHDtkvAR5yLwocf1NNAJDJIgmGgz2GYbC6AhVsHb1U=;
-	b=ML/ux/WwZN/kzQCi1nUpBCEBidTBf+exhaTjy06+lHlJafMpLnqeX3gwJzI3Sa1nyhIICmYqLS2WMTXDPdh1zMCtK6ZuRmBXr4A+4RCtsxhvm34jfc7NXzKJYW/F2x0JVWEx/QfxdpVzSumHC1zDgRj9t2QKkfBmpzLZhOQwH7Y=
-Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.Z2YRsdE_1724666908)
+	t=1724666911; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=UE3KVmrhR4CaBxvq16dvb3ocgiXdhekFGviHku9aBeM=;
+	b=KpiKwewwCeJuypwK6j+/N3figu93mp7qvXSa6qg2gJmVCZse4g1OEmemn8K44eV7pDUtv5nV41O6h1ZCpafbWlqQElDcT+oCUS3uuR0q0HMLrwVUbHtnura10Xt2tTuiexoSVdnIfeOzNde02bZB5h/uaVeBxXtjYnnx2k7TR6U=
+Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.Z2YRsd5_1724666907)
           by smtp.aliyun-inc.com;
           Mon, 26 Aug 2024 18:08:28 +0800
 From: "Tiwei Bie" <tiwei.btw@antgroup.com>
@@ -57,17 +42,17 @@ To: richard@nod.at,
 Cc: <linux-um@lists.infradead.org>,
    <linux-kernel@vger.kernel.org>,
   "Tiwei Bie" <tiwei.btw@antgroup.com>
-Subject: [PATCH v3 6/7] um: Remove the declaration of user_thread function
-Date: Mon, 26 Aug 2024 18:08:14 +0800
-Message-Id: <20240826100815.904430-7-tiwei.btw@antgroup.com>
+Subject: [PATCH v3 5/7] um: Remove the call to SUBARCH_EXECVE1 macro
+Date: Mon, 26 Aug 2024 18:08:13 +0800
+Message-Id: <20240826100815.904430-6-tiwei.btw@antgroup.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240826100815.904430-1-tiwei.btw@antgroup.com>
 References: <20240826100815.904430-1-tiwei.btw@antgroup.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240826_110843_943998_32B5E0A8 
-X-CRM114-Status: UNSURE (   5.96  )
+X-CRM114-CacheID: sfid-20240826_030833_698886_B9500BAB 
+X-CRM114-Status: UNSURE (   4.97  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -83,26 +68,28 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-This function has never been defined since its declaration was
-introduced by commit 1da177e4c3f4 ("Linux-2.6.12-rc2").
+This macro has never been defined by any supported sub-architectures
+in tree since it was introduced by commit 1d3468a6643a ("[PATCH uml:
+move _kern.c files").
 
 Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
 ---
- arch/um/include/shared/skas/skas.h | 1 -
- 1 file changed, 1 deletion(-)
+ arch/um/kernel/exec.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/arch/um/include/shared/skas/skas.h b/arch/um/include/shared/skas/skas.h
-index ebaa116de30b..95f5d5d6389a 100644
---- a/arch/um/include/shared/skas/skas.h
-+++ b/arch/um/include/shared/skas/skas.h
-@@ -10,7 +10,6 @@
- 
- extern int userspace_pid[];
- 
--extern int user_thread(unsigned long stack, int flags);
- extern void new_thread_handler(void);
- extern void handle_syscall(struct uml_pt_regs *regs);
- extern long execute_syscall_skas(void *r);
+diff --git a/arch/um/kernel/exec.c b/arch/um/kernel/exec.c
+index 2c15bb2c104c..cb8b5cd9285c 100644
+--- a/arch/um/kernel/exec.c
++++ b/arch/um/kernel/exec.c
+@@ -35,8 +35,5 @@ void start_thread(struct pt_regs *regs, unsigned long eip, unsigned long esp)
+ 	PT_REGS_IP(regs) = eip;
+ 	PT_REGS_SP(regs) = esp;
+ 	clear_thread_flag(TIF_SINGLESTEP);
+-#ifdef SUBARCH_EXECVE1
+-	SUBARCH_EXECVE1(regs->regs);
+-#endif
+ }
+ EXPORT_SYMBOL(start_thread);
 -- 
 2.34.1
 
