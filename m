@@ -4,76 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A138BC5472E
-	for <linux-um@archiver.kernel.org>; Mon, 26 Aug 2024 11:00:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E704AC5321D
+	for <linux-um@archiver.kernel.org>; Mon, 26 Aug 2024 17:29:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
+	From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Fb2vFbZU1/uneDqqDL5XaTwiDdzbdGc48udHknNFNZo=; b=h/Dfhw7aN84C7wLWHEcXD+wWlU
-	THKf45CtPEtRFwj0OKl6JRHZZMMtgZzvT2b7/gBQKdv3UXg8C/6tcNFzeQSk+QV6NCZMVa1UXvEhk
-	oc4trO42bquGZZuie7RiBwz7CI3Zl11FTNU7lNBwo4tFHDL93yvObHDiI0iCOcu6GMfUGP1tOm94q
-	RgjAlP2kE2KNm6xUOFRDE6IWfe3Nwb/yWsRwFwc53HhckiEtOjwPHJnFf8LNduL5iZFy5EcPvX8ND
-	akoPiTolcM4cntnow/jLGkiGDXSmA0XR62Jls0y6GmVCL/7P2MG1Q32vXjymDlJpTzfba05eJDP7T
-	wvIkhKUQ==;
+	bh=4ZWLg5+gQ2MC14u4w9y/ExKKPt6x5L9tkEAX3YeiJo0=; b=thmh3uJoLFee06mK9ZoKIA4DjY
+	vdf6kmA8M8bxZXoKcci/702uiETeakRPogXAfe5ecUSd4QmOYSvIaJKI/aZgeVCp4ONPz5VpJxAXm
+	j64qOzi8Lrb/qBbvg4I/m7HG830P1pZUShuBDLCoZ9Mgs9Opf2KkuMCtOH/1F3nUegNy582zPu9FI
+	0syMZXCnhnjqfQecHiGZYmguxeU1kp+1QdRCTvcTQp/hXnnX1/oOjo7mjb0ZT/SIJr6F4gKM8q9wJ
+	+gIlYGwf6jkhzIkFno9zsJLXDpMsxDj7keRLS4Sl8aUrXIQ0oEGu9XoY+APrXXUPmnZh4rOKW4tRi
+	5TRtO2EA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1siXSP-000000073FY-1WTp;
-	Mon, 26 Aug 2024 11:00:21 +0000
-Received: from mail-yw1-f172.google.com ([209.85.128.172])
+	id 1sidX3-00000008Dmz-0EhC;
+	Mon, 26 Aug 2024 17:29:33 +0000
+Received: from nyc.source.kernel.org ([147.75.193.91])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1siWKn-00000006lCp-1JuM
-	for linux-um@lists.infradead.org;
-	Mon, 26 Aug 2024 09:48:26 +0000
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-6b5b65b1b9fso33749297b3.2
-        for <linux-um@lists.infradead.org>; Mon, 26 Aug 2024 02:48:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724665702; x=1725270502;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Fb2vFbZU1/uneDqqDL5XaTwiDdzbdGc48udHknNFNZo=;
-        b=HaiTpxkNGrV9zpxWINPj3UKlG46VLIe+nR4BtrKVu7MX5XBlOQxBItvHfefe/HGAJ8
-         WVrW5uzDRnBrwQX87LNzaBkcSAH9E/wXhJP0xlsjz6MKDHh12/kWFO2xp/Ew5WaHl7Fi
-         +yaq4nwzwQhHG66j0OyQ7al8PhNk0445MAi9vMYLnfzdPEJGS3ys54JF0V+Y8H2zA+gm
-         fehMu0E7n5yN8GDQepNMSXXPczXDfHYL75UF+yGk+BMtBHPU1ye3zmK84Vwt8a6BQVgU
-         YWKzIOxtanTZIMU4RW0pP2ZGe7ZN3AkMcnIelbwdnQjmRgvGX3H0hQiZHm81YXJBD+x7
-         CDjw==
-X-Forwarded-Encrypted: i=1; AJvYcCV7B8jOD1hMA/CELdeFyswXuVLQ0wOPekABAcFF1iiAcmpRg5w4sm5cQK6mefnlyG61IxRwLKKvgA==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yx7a+GuihjQIVKTPDrOm2J9UTpvMK4M1VFYawqrQ4ZQowEpR3aG
-	5PizhuFN9U0nWg1yUZyy+nzrA6chzjrNJaa8XioR3LcERRp5YekhY4LdaBk6
-X-Google-Smtp-Source: AGHT+IGeH84IR44rqIroU0zlsrLjQg4Gs7zgCDxSPaM98YIOqqJDQ1B+8/gTiCubTOlxgDkUEZAAdA==
-X-Received: by 2002:a05:690c:56c3:b0:6ae:6c9b:378d with SMTP id 00721157ae682-6c6286bd776mr101673747b3.31.1724665702482;
-        Mon, 26 Aug 2024 02:48:22 -0700 (PDT)
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com. [209.85.128.176])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6c39dc52875sm14515477b3.108.2024.08.26.02.48.21
-        for <linux-um@lists.infradead.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Aug 2024 02:48:22 -0700 (PDT)
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-6b44dd520ceso39748127b3.0
-        for <linux-um@lists.infradead.org>; Mon, 26 Aug 2024 02:48:21 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUI7RUd7KKru+7JvsZ6E1USWB5zzUi4pD+V1YcOzGdIjCp9LeHK6HoZNNH7MWvVbfQVWc+ZlkzIxw==@lists.infradead.org
-X-Received: by 2002:a05:690c:2fc4:b0:664:c541:60e5 with SMTP id
- 00721157ae682-6c6286b952cmr74076937b3.36.1724665701590; Mon, 26 Aug 2024
- 02:48:21 -0700 (PDT)
+	id 1sidWB-00000008DW2-0oGU;
+	Mon, 26 Aug 2024 17:28:40 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id B3469A40480;
+	Mon, 26 Aug 2024 17:28:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0E6AC8B7B5;
+	Mon, 26 Aug 2024 17:28:29 +0000 (UTC)
+Date: Mon, 26 Aug 2024 13:29:09 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Andreas Larsson
+ <andreas@gaisler.com>, Andy Lutomirski <luto@kernel.org>, Arnd Bergmann
+ <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>, Brian Cain
+ <bcain@quicinc.com>, Catalin Marinas <catalin.marinas@arm.com>, Christoph
+ Hellwig <hch@infradead.org>, Christophe Leroy
+ <christophe.leroy@csgroup.eu>, Dave Hansen <dave.hansen@linux.intel.com>,
+ Dinh Nguyen <dinguyen@kernel.org>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, Guo Ren <guoren@kernel.org>, Helge Deller
+ <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar
+ <mingo@redhat.com>, Johannes Berg <johannes@sipsolutions.net>, John Paul
+ Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Kent Overstreet
+ <kent.overstreet@linux.dev>, "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Luis Chamberlain <mcgrof@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Matt Turner <mattst88@gmail.com>,
+ Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>,
+ Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>, Palmer
+ Dabbelt <palmer@dabbelt.com>, Peter Zijlstra <peterz@infradead.org>,
+ Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
+ Song Liu <song@kernel.org>, Stafford Horne <shorne@gmail.com>, Thomas
+ Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner
+ <tglx@linutronix.de>, Uladzislau Rezki <urezki@gmail.com>, Vineet Gupta
+ <vgupta@kernel.org>, Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
+ linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+ linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+ linux-mm@kvack.org, linux-modules@vger.kernel.org,
+ linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, linux-trace-kernel@vger.kernel.org,
+ linux-um@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+ loongarch@lists.linux.dev, sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v2 5/8] ftrace: Add swap_func to ftrace_process_locs()
+Message-ID: <20240826132909.306b08fc@gandalf.local.home>
+In-Reply-To: <20240826065532.2618273-6-rppt@kernel.org>
+References: <20240826065532.2618273-1-rppt@kernel.org>
+	<20240826065532.2618273-6-rppt@kernel.org>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20240824120449.2517046-1-cuigaosheng1@huawei.com>
-In-Reply-To: <20240824120449.2517046-1-cuigaosheng1@huawei.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 26 Aug 2024 11:48:10 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWkAVQ2p-fGm2nanZz_sMxns09pgBijEtkP9sX2o7xgwQ@mail.gmail.com>
-Message-ID: <CAMuHMdWkAVQ2p-fGm2nanZz_sMxns09pgBijEtkP9sX2o7xgwQ@mail.gmail.com>
-Subject: Re: [PATCH -next] um: Remove obsoleted declaration for execute_syscall_skas
-To: Gaosheng Cui <cuigaosheng1@huawei.com>
-Cc: richard@nod.at, anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net, 
-	benjamin.berg@intel.com, linux-um@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240826_024825_375953_C42BB076 
-X-CRM114-Status: GOOD (  15.20  )
+X-CRM114-CacheID: sfid-20240826_102839_371595_5B8E8B78 
+X-CRM114-Status: GOOD (  22.11  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,27 +92,70 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sat, Aug 24, 2024 at 2:05=E2=80=AFPM Gaosheng Cui <cuigaosheng1@huawei.c=
-om> wrote:
-> The execute_syscall_skas() have been removed since
-> commit e32dacb9f481 ("[PATCH] uml: system call path cleanup"),
-> and now it is useless, so remove it.
->
-> Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
+On Mon, 26 Aug 2024 09:55:29 +0300
+Mike Rapoport <rppt@kernel.org> wrote:
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> From: Song Liu <song@kernel.org>
+> 
+> ftrace_process_locs sorts module mcount, which is inside RO memory. Add a
+> ftrace_swap_func so that archs can use RO-memory-poke function to do the
+> sorting.
 
-Gr{oetje,eeting}s,
+Can you add the above as a comment above the ftrace_swap_func() function?
 
-                        Geert
+Thanks,
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
+-- Steve
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+> 
+> Signed-off-by: Song Liu <song@kernel.org>
+> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+> ---
+>  include/linux/ftrace.h |  2 ++
+>  kernel/trace/ftrace.c  | 13 ++++++++++++-
+>  2 files changed, 14 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+> index fd5e84d0ec47..b794dcb7cae8 100644
+> --- a/include/linux/ftrace.h
+> +++ b/include/linux/ftrace.h
+> @@ -1188,4 +1188,6 @@ unsigned long arch_syscall_addr(int nr);
+>  
+>  #endif /* CONFIG_FTRACE_SYSCALLS */
+>  
+> +void ftrace_swap_func(void *a, void *b, int n);
+> +
+>  #endif /* _LINUX_FTRACE_H */
+> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> index 4c28dd177ca6..9829979f3a46 100644
+> --- a/kernel/trace/ftrace.c
+> +++ b/kernel/trace/ftrace.c
+> @@ -6989,6 +6989,17 @@ static void test_is_sorted(unsigned long *start,
+> unsigned long count) }
+>  #endif
+>  
+> +void __weak ftrace_swap_func(void *a, void *b, int n)
+> +{
+> +	unsigned long t;
+> +
+> +	WARN_ON_ONCE(n != sizeof(t));
+> +
+> +	t = *((unsigned long *)a);
+> +	*(unsigned long *)a = *(unsigned long *)b;
+> +	*(unsigned long *)b = t;
+> +}
+> +
+>  static int ftrace_process_locs(struct module *mod,
+>  			       unsigned long *start,
+>  			       unsigned long *end)
+> @@ -7016,7 +7027,7 @@ static int ftrace_process_locs(struct module *mod,
+>  	 */
+>  	if (!IS_ENABLED(CONFIG_BUILDTIME_MCOUNT_SORT) || mod) {
+>  		sort(start, count, sizeof(*start),
+> -		     ftrace_cmp_ips, NULL);
+> +		     ftrace_cmp_ips, ftrace_swap_func);
+>  	} else {
+>  		test_is_sorted(start, count);
+>  	}
+
 
