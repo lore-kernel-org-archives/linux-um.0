@@ -4,65 +4,54 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 22E0DC54FAA
-	for <linux-um@archiver.kernel.org>; Wed, 28 Aug 2024 13:00:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E612C54FB3
+	for <linux-um@archiver.kernel.org>; Wed, 28 Aug 2024 13:52:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=KWjiXUmmEV93LF5mPfA43uk7dNEjWIw+zBwu8kWYnKU=; b=UZ9gmtmiDd0GqKhgKEcgIl3YEa
-	qWoQDulA1FuqDPl5E+XVZlgi5acgy+EvpRKO8tjTCdr1hHR895Qu1RHF3x4Cqa7Fdp6kbkB2tOYUx
-	kGlph0HJsReJSbKANPqgNaY6HuX6MPpNOpF2PrmOm3zfof1roLwgJXlkBjqbAOEoXQxfBYLJi3ugR
-	62sJJl+rGQWXuxT3CcNV/1XNF1bBJQBQv+es6mHOBk7xx1WvcsNNXeB+iuRdMDSNYvMuS5gBVbiy7
-	p/lj/Or6pzyGNGVViDwvCWCTe+WH93JahFxpRtb1tStW0+YkaEU66mnsIa/FDOYwr/5EHsEXHgfQx
-	UHCLRYlg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=9u5p5kx6uh3e0Bb5YhuSL84dXaiVoWyd0IYSs5o/yK4=; b=womsfgP3yauNxIbg8buJFSUghW
+	IqeL03qt+uWiN7otZEU1NoTNuZeR3IXceRcKImgbw7nesBFL3Jm4ZvWul6PtgDzQYfDTN2adHFdPs
+	Dpu69NSbUwv8STYsTqMG9fliV9LdNhu9FWk35JERA06xnNX/+T9YnnP8VYz8CttgbC/L/87wt6um7
+	nwu9+PsAKzW3YQTJyuVP9owfBftxl5JV5RBERMjbXd+jOHranej030oZ8jU9QMUK3ZB0z7kbm4XaZ
+	oED4JTSSWh6Y7aSW6K9cE0shZfr+LXEEO50X051WUCBx+I8mobqM/Wgs2+oPdwgv0MvU5imvBXy3e
+	s2NBHtZA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sjIHo-0000000FRMK-0pJa;
-	Wed, 28 Aug 2024 13:00:32 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1sjJ5d-0000000Fb7Y-0sgM;
+	Wed, 28 Aug 2024 13:52:01 +0000
+Received: from out0-222.mail.aliyun.com ([140.205.0.222])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sjIG8-0000000FQmE-3NPh
+	id 1sjJ5Z-0000000Fb6J-09wp
 	for linux-um@lists.infradead.org;
-	Wed, 28 Aug 2024 12:58:51 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=KWjiXUmmEV93LF5mPfA43uk7dNEjWIw+zBwu8kWYnKU=;
-	t=1724849928; x=1726059528; b=XBT5l3ysQ3EK0uV+dIogJKcvtVF29LMgmS+FPN1sGqXQ/O8
-	Pa733AIEJwTmPkEOTBzPh3iacGAk/cvmPmCZ833KThx7TZd/e1e88jXTbemLA4qErbPlfAKEZeqdb
-	9I5aN80tGOdkB/IymjuTk0z2I1k6DDioOS3vGhYOsAIdhyg1IV4LkmgpBHqZmhjC3GPsTUg8pEwjA
-	J2IVeCerNA7smv/zO3Iw0vYIp8GH/5KQUArWNH8XNS2wENvPBRUPfX0E7gdOk7l0oRdjeOhvswUv1
-	YPqMLEV2Q4Qopl9bvtkjx/HKd9iHwDY+iLu5Tb+FNkDqsEigDFSpc0J1z8vmR7GQ==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.97)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1sjIG4-000000079YR-05cK;
-	Wed, 28 Aug 2024 14:58:44 +0200
-Message-ID: <d66103380179771d0655288a4d0d95e990876132.camel@sipsolutions.net>
-Subject: Re: [PATCH] um: make personality(PER_LINUX32) work on x86_64
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Maciej =?UTF-8?Q?=C5=BBenczykowski?= <maze@google.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Richard
- Weinberger <richard@nod.at>, Anton Ivanov
- <anton.ivanov@cambridgegreys.com>,  linux-um@lists.infradead.org,
- x86@kernel.org
-Date: Wed, 28 Aug 2024 14:58:43 +0200
-In-Reply-To: <CANP3RGdxrKHsERYG+yW5fpRUrahkBJbHCKD24v182ZNKuJgfwg@mail.gmail.com>
-References: <20240813234755.3615697-1-maze@google.com>
-	 <efbb6394805f11de27cace9817418744d8e69506.camel@sipsolutions.net>
-	 <CANP3RGdxrKHsERYG+yW5fpRUrahkBJbHCKD24v182ZNKuJgfwg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+	Wed, 28 Aug 2024 13:51:59 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=antgroup.com; s=default;
+	t=1724853110; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=9u5p5kx6uh3e0Bb5YhuSL84dXaiVoWyd0IYSs5o/yK4=;
+	b=1035wzZBM/t2DrFqh4kT/O2bt09rG6AJr376FILQwf1Wr/DIxbWVmOf1dzbu6NQ7mXY5MXmuJr7sExuRur+dTX3fvT2IjeBGJfPVMjAqu+/mh4ZGqGVCvbI3abrMWRs20iDBXAJ7jItrqk90457/BQgt7HFStpJf2KSssQsLxp4=
+Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.Z4l3S4N_1724853101)
+          by smtp.aliyun-inc.com;
+          Wed, 28 Aug 2024 21:51:45 +0800
+From: "Tiwei Bie" <tiwei.btw@antgroup.com>
+To: richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net
+Cc: <linux-um@lists.infradead.org>,
+   <linux-kernel@vger.kernel.org>,
+  "Tiwei Bie" <tiwei.btw@antgroup.com>
+Subject: [PATCH] um: Fix the return value of elf_core_copy_task_fpregs
+Date: Wed, 28 Aug 2024 21:51:40 +0800
+Message-Id: <20240828135140.1015940-1-tiwei.btw@antgroup.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240828_055848_877721_B4019C8E 
-X-CRM114-Status: GOOD (  18.67  )
+X-CRM114-CacheID: sfid-20240828_065157_554589_AF87F053 
+X-CRM114-Status: UNSURE (   6.89  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,46 +66,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2024-08-19 at 11:46 -0700, Maciej =C5=BBenczykowski wrote:
-> On Mon, Aug 19, 2024 at 5:23=E2=80=AFAM Johannes Berg <johannes@sipsoluti=
-ons.net> wrote:
-> >=20
-> > On Tue, 2024-08-13 at 16:47 -0700, Maciej =C5=BBenczykowski wrote:
-> > > Without this patch:
-> > >   #!/usr/bin/python3
-> > >   import ctypes
-> > >   import os
-> > >   personality =3D ctypes.CDLL(None).personality
-> > >   personality.restype =3D ctypes.c_int
-> > >   personality.argtypes =3D [ctypes.c_ulong]
-> > >   PER_LINUX32=3D8
-> > >   personality(PER_LINUX32)
-> > >   print(os.uname().machine)
-> > > returns:
-> > >   x86_64
-> > > instead of the desired:
-> > >   i686
-> > >=20
-> >=20
-> > But ... why should it work? UML has no 32-bit compat support anyway.
->=20
-> Well, that's certainly a fair point.
-> On 'native' x86_64 this works even for 64-bit processes though.
-> I wonder if that, in itself, is a feature or a bug...
->=20
-> In my case I was writing some debug code (to print the environment
-> some test code is running in, since I think it was failing due to
-> running 32-bit code in PER_LINUX32 on 64-bit arm) and testing (the
-> test code) on x86_64 UML.  I was surprised to discover the difference
-> in UML vs my host desktop.
->=20
+This function is expected to return a boolean value, which should be
+true on success and false on failure.
 
-Alright, I have no idea. This doesn't really seem to do anything else,
-so I'm not sure what the point is... It _was_ introduced for compat
-though, but obviously the binary doesn't suddenly change to a 32-bit
-binary when you do this :)
+Fixes: d1254b12c93e ("uml: fix x86_64 core dump crash")
+Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
+---
+ arch/um/kernel/process.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Maybe the x86 maintainers have any other comments?
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index be2856af6d4c..3cc2b663aa78 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -291,7 +291,8 @@ unsigned long __get_wchan(struct task_struct *p)
+ int elf_core_copy_task_fpregs(struct task_struct *t, elf_fpregset_t *fpu)
+ {
+ 	int cpu = current_thread_info()->cpu;
++	int pid = userspace_pid[cpu];
+ 
+-	return save_i387_registers(userspace_pid[cpu], (unsigned long *) fpu);
++	return save_i387_registers(pid, (unsigned long *) fpu) == 0;
+ }
+ 
+-- 
+2.34.1
 
-johannes
 
