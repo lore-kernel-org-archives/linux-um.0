@@ -4,54 +4,79 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2E612C54FB3
-	for <linux-um@archiver.kernel.org>; Wed, 28 Aug 2024 13:52:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93C07C83F2E
+	for <linux-um@archiver.kernel.org>; Thu, 29 Aug 2024 15:00:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=9u5p5kx6uh3e0Bb5YhuSL84dXaiVoWyd0IYSs5o/yK4=; b=womsfgP3yauNxIbg8buJFSUghW
-	IqeL03qt+uWiN7otZEU1NoTNuZeR3IXceRcKImgbw7nesBFL3Jm4ZvWul6PtgDzQYfDTN2adHFdPs
-	Dpu69NSbUwv8STYsTqMG9fliV9LdNhu9FWk35JERA06xnNX/+T9YnnP8VYz8CttgbC/L/87wt6um7
-	nwu9+PsAKzW3YQTJyuVP9owfBftxl5JV5RBERMjbXd+jOHranej030oZ8jU9QMUK3ZB0z7kbm4XaZ
-	oED4JTSSWh6Y7aSW6K9cE0shZfr+LXEEO50X051WUCBx+I8mobqM/Wgs2+oPdwgv0MvU5imvBXy3e
-	s2NBHtZA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=48pDeNkBWlaIORB8ItlbBUnxodjBvmJErDFHF+GmEmU=; b=SlKKUhuDDBEfcHIimhwsRIdc1n
+	DmZ/uGsT3+fQqU8RGpzIvXU/heoJx+HFPmS8b3ksLkY4aPQL0P6adyWn9qZPscR0UQSz/4TUCzCqy
+	5QlP+hKeNPKTPawJCLnNgsi3sur6aRElhzRsat2Ynthtw6hH+0iI3waRmQ0pclJ6IS8G8baPic9al
+	w4RhkgluTPZFQL4pI3X2DyFlrHjELpzb7WwrdYVJ9h5mlNT0cFiFcTESr8va0/EpCnni4uA82msX2
+	t4zxXeNU2VGz6TtPMYLbcIeBc7Tc8eiz34AHYX3ejVxeASTmdTYfn/LprbCxvqKfy/SD9hiaczy04
+	ZTduaUhA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sjJ5d-0000000Fb7Y-0sgM;
-	Wed, 28 Aug 2024 13:52:01 +0000
-Received: from out0-222.mail.aliyun.com ([140.205.0.222])
+	id 1sjgdV-00000002WGG-34kK;
+	Thu, 29 Aug 2024 15:00:33 +0000
+Received: from mgamail.intel.com ([192.198.163.16])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sjJ5Z-0000000Fb6J-09wp
-	for linux-um@lists.infradead.org;
-	Wed, 28 Aug 2024 13:51:59 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=antgroup.com; s=default;
-	t=1724853110; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=9u5p5kx6uh3e0Bb5YhuSL84dXaiVoWyd0IYSs5o/yK4=;
-	b=1035wzZBM/t2DrFqh4kT/O2bt09rG6AJr376FILQwf1Wr/DIxbWVmOf1dzbu6NQ7mXY5MXmuJr7sExuRur+dTX3fvT2IjeBGJfPVMjAqu+/mh4ZGqGVCvbI3abrMWRs20iDBXAJ7jItrqk90457/BQgt7HFStpJf2KSssQsLxp4=
-Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.Z4l3S4N_1724853101)
-          by smtp.aliyun-inc.com;
-          Wed, 28 Aug 2024 21:51:45 +0800
-From: "Tiwei Bie" <tiwei.btw@antgroup.com>
-To: richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net
-Cc: <linux-um@lists.infradead.org>,
-   <linux-kernel@vger.kernel.org>,
-  "Tiwei Bie" <tiwei.btw@antgroup.com>
-Subject: [PATCH] um: Fix the return value of elf_core_copy_task_fpregs
-Date: Wed, 28 Aug 2024 21:51:40 +0800
-Message-Id: <20240828135140.1015940-1-tiwei.btw@antgroup.com>
-X-Mailer: git-send-email 2.34.1
+	id 1sjgcU-00000002Vup-34j5;
+	Thu, 29 Aug 2024 14:59:34 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1724943571; x=1756479571;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=LuHSMRJORq3jqFFNMteS+Q2synOJkKn5xhtJHp7x/CE=;
+  b=evFNAoDXZBT5ipeseMKeJQ0mPLoUkSuPpXdgK+ktQkLTiqFurivkWM96
+   EO+kmiYWCQbrWUVyjC2XE8cPwNP3cyyirkge0nEjzeK9WMKG0zS51aKkl
+   UBIp/Gx3++YbgKBwj/ASyZpT6gnbEsewrJMKwHF9/4/yRH6EGfrjie6gH
+   iDEYfgA2xOMcJ9fRVu7uvST0e0Q9o/3yEyLevgT9jINYW5u8460nWxiaX
+   zha/Y9tFK4F1IVhiLQgvPFaTxAiuF/9onjDgv/P0b6ywPQIAq00Rucn5W
+   FLxioeTpDX9V+X1/LA/TDkW9Q+XBOGLVdIp84OF/AX72nndxgpqGUs6XG
+   Q==;
+X-CSE-ConnectionGUID: 3WmFcq+4SkOHu4ktzeJYnw==
+X-CSE-MsgGUID: yZbVd1HDQG6MvUsrGEGeRw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11179"; a="13282284"
+X-IronPort-AV: E=Sophos;i="6.10,185,1719903600"; 
+   d="scan'208";a="13282284"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2024 07:59:29 -0700
+X-CSE-ConnectionGUID: 8/mRw1n+QH6bo8TAogLHzw==
+X-CSE-MsgGUID: LVpn394rTTyiayzAEy+ASw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,185,1719903600"; 
+   d="scan'208";a="63229167"
+Received: from lkp-server01.sh.intel.com (HELO 9c6b1c7d3b50) ([10.239.97.150])
+  by fmviesa006.fm.intel.com with ESMTP; 29 Aug 2024 07:59:26 -0700
+Received: from kbuild by 9c6b1c7d3b50 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sjgcN-0000Ny-1N;
+	Thu, 29 Aug 2024 14:59:23 +0000
+Date: Thu, 29 Aug 2024 22:58:47 +0800
+From: kernel test robot <lkp@intel.com>
+To: Vegard Nossum <vegard.nossum@oracle.com>,
+	Masahiro Yamada <masahiroy@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-omap@vger.kernel.org, kvmarm@lists.linux.dev,
+	kvm@vger.kernel.org, linux-um@lists.infradead.org,
+	bpf@vger.kernel.org, llvm@lists.linux.dev,
+	Vegard Nossum <vegard.nossum@oracle.com>
+Subject: Re: [PATCH] kbuild: use objcopy to generate asm-offsets
+Message-ID: <202408292215.pEJKHLfT-lkp@intel.com>
+References: <20240828083605.3093701-1-vegard.nossum@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240828083605.3093701-1-vegard.nossum@oracle.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240828_065157_554589_AF87F053 
-X-CRM114-Status: UNSURE (   6.89  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240829_075930_968513_DAEA5BB3 
+X-CRM114-Status: GOOD (  11.82  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,30 +91,604 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-This function is expected to return a boolean value, which should be
-true on success and false on failure.
+Hi Vegard,
 
-Fixes: d1254b12c93e ("uml: fix x86_64 core dump crash")
-Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
----
- arch/um/kernel/process.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+kernel test robot noticed the following build errors:
 
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index be2856af6d4c..3cc2b663aa78 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -291,7 +291,8 @@ unsigned long __get_wchan(struct task_struct *p)
- int elf_core_copy_task_fpregs(struct task_struct *t, elf_fpregset_t *fpu)
- {
- 	int cpu = current_thread_info()->cpu;
-+	int pid = userspace_pid[cpu];
- 
--	return save_i387_registers(userspace_pid[cpu], (unsigned long *) fpu);
-+	return save_i387_registers(pid, (unsigned long *) fpu) == 0;
- }
- 
+[auto build test ERROR on masahiroy-kbuild/for-next]
+[also build test ERROR on masahiroy-kbuild/fixes soc/for-next kvmarm/next kvm/queue uml/next krzk-mem-ctrl/for-next bpf-next/master bpf/master linus/master v6.11-rc5 next-20240829]
+[cannot apply to tmlind-omap/for-next kvm/linux-next uml/fixes]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Vegard-Nossum/kbuild-use-objcopy-to-generate-asm-offsets/20240828-163854
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git for-next
+patch link:    https://lore.kernel.org/r/20240828083605.3093701-1-vegard.nossum%40oracle.com
+patch subject: [PATCH] kbuild: use objcopy to generate asm-offsets
+config: sh-randconfig-r072-20240829 (https://download.01.org/0day-ci/archive/20240829/202408292215.pEJKHLfT-lkp@intel.com/config)
+compiler: sh4-linux-gcc (GCC) 14.1.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240829/202408292215.pEJKHLfT-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202408292215.pEJKHLfT-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from scripts/mod/file2alias.c:13:
+   scripts/mod/file2alias.c: In function 'do_usb_entry':
+>> ./scripts/mod/devicetable-offsets.h:10:39: error: stray '#' in program
+      10 | #define OFF_usb_device_id_match_flags #0 /* offsetof(struct usb_device_id, match_flags) */
+         |                                       ^
+   scripts/mod/modpost.h:66:55: note: in definition of macro 'TO_NATIVE'
+      66 |         (target_is_big_endian == host_is_big_endian ? x : bswap(x))
+         |                                                       ^
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_match_flags'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:175:9: note: in expansion of macro 'DEF_FIELD'
+     175 |         DEF_FIELD(symval, usb_device_id, match_flags);
+         |         ^~~~~~~~~
+>> ./scripts/mod/devicetable-offsets.h:10:39: error: stray '#' in program
+      10 | #define OFF_usb_device_id_match_flags #0 /* offsetof(struct usb_device_id, match_flags) */
+         |                                       ^
+   scripts/mod/modpost.h:57:31: note: in definition of macro 'bswap'
+      57 |         _Static_assert(sizeof(x) == 1 || sizeof(x) == 2 || \
+         |                               ^
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_match_flags'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:175:9: note: in expansion of macro 'DEF_FIELD'
+     175 |         DEF_FIELD(symval, usb_device_id, match_flags);
+         |         ^~~~~~~~~
+>> ./scripts/mod/devicetable-offsets.h:10:39: error: stray '#' in program
+      10 | #define OFF_usb_device_id_match_flags #0 /* offsetof(struct usb_device_id, match_flags) */
+         |                                       ^
+   scripts/mod/modpost.h:57:49: note: in definition of macro 'bswap'
+      57 |         _Static_assert(sizeof(x) == 1 || sizeof(x) == 2 || \
+         |                                                 ^
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_match_flags'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:175:9: note: in expansion of macro 'DEF_FIELD'
+     175 |         DEF_FIELD(symval, usb_device_id, match_flags);
+         |         ^~~~~~~~~
+>> ./scripts/mod/devicetable-offsets.h:10:39: error: stray '#' in program
+      10 | #define OFF_usb_device_id_match_flags #0 /* offsetof(struct usb_device_id, match_flags) */
+         |                                       ^
+   scripts/mod/modpost.h:58:31: note: in definition of macro 'bswap'
+      58 |                        sizeof(x) == 4 || sizeof(x) == 8, "bug"); \
+         |                               ^
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_match_flags'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:175:9: note: in expansion of macro 'DEF_FIELD'
+     175 |         DEF_FIELD(symval, usb_device_id, match_flags);
+         |         ^~~~~~~~~
+>> ./scripts/mod/devicetable-offsets.h:10:39: error: stray '#' in program
+      10 | #define OFF_usb_device_id_match_flags #0 /* offsetof(struct usb_device_id, match_flags) */
+         |                                       ^
+   scripts/mod/modpost.h:58:49: note: in definition of macro 'bswap'
+      58 |                        sizeof(x) == 4 || sizeof(x) == 8, "bug"); \
+         |                                                 ^
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_match_flags'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:175:9: note: in expansion of macro 'DEF_FIELD'
+     175 |         DEF_FIELD(symval, usb_device_id, match_flags);
+         |         ^~~~~~~~~
+>> ./scripts/mod/devicetable-offsets.h:10:39: error: stray '#' in program
+      10 | #define OFF_usb_device_id_match_flags #0 /* offsetof(struct usb_device_id, match_flags) */
+         |                                       ^
+   scripts/mod/modpost.h:59:17: note: in definition of macro 'bswap'
+      59 |         (typeof(x))(sizeof(x) == 2 ? bswap_16(x) : \
+         |                 ^
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_match_flags'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:175:9: note: in expansion of macro 'DEF_FIELD'
+     175 |         DEF_FIELD(symval, usb_device_id, match_flags);
+         |         ^~~~~~~~~
+>> ./scripts/mod/devicetable-offsets.h:10:39: error: stray '#' in program
+      10 | #define OFF_usb_device_id_match_flags #0 /* offsetof(struct usb_device_id, match_flags) */
+         |                                       ^
+   scripts/mod/modpost.h:59:28: note: in definition of macro 'bswap'
+      59 |         (typeof(x))(sizeof(x) == 2 ? bswap_16(x) : \
+         |                            ^
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_match_flags'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:175:9: note: in expansion of macro 'DEF_FIELD'
+     175 |         DEF_FIELD(symval, usb_device_id, match_flags);
+         |         ^~~~~~~~~
+   In file included from scripts/mod/modpost.h:2:
+>> ./scripts/mod/devicetable-offsets.h:10:39: error: stray '#' in program
+      10 | #define OFF_usb_device_id_match_flags #0 /* offsetof(struct usb_device_id, match_flags) */
+         |                                       ^
+   scripts/mod/modpost.h:66:59: note: in expansion of macro 'bswap'
+      66 |         (target_is_big_endian == host_is_big_endian ? x : bswap(x))
+         |                                                           ^~~~~
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_match_flags'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:175:9: note: in expansion of macro 'DEF_FIELD'
+     175 |         DEF_FIELD(symval, usb_device_id, match_flags);
+         |         ^~~~~~~~~
+>> ./scripts/mod/devicetable-offsets.h:10:39: error: stray '#' in program
+      10 | #define OFF_usb_device_id_match_flags #0 /* offsetof(struct usb_device_id, match_flags) */
+         |                                       ^
+   scripts/mod/modpost.h:60:28: note: in definition of macro 'bswap'
+      60 |                     sizeof(x) == 4 ? bswap_32(x) : \
+         |                            ^
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_match_flags'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:175:9: note: in expansion of macro 'DEF_FIELD'
+     175 |         DEF_FIELD(symval, usb_device_id, match_flags);
+         |         ^~~~~~~~~
+>> ./scripts/mod/devicetable-offsets.h:10:39: error: stray '#' in program
+      10 | #define OFF_usb_device_id_match_flags #0 /* offsetof(struct usb_device_id, match_flags) */
+         |                                       ^
+   scripts/mod/modpost.h:66:59: note: in expansion of macro 'bswap'
+      66 |         (target_is_big_endian == host_is_big_endian ? x : bswap(x))
+         |                                                           ^~~~~
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_match_flags'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:175:9: note: in expansion of macro 'DEF_FIELD'
+     175 |         DEF_FIELD(symval, usb_device_id, match_flags);
+         |         ^~~~~~~~~
+>> ./scripts/mod/devicetable-offsets.h:10:39: error: stray '#' in program
+      10 | #define OFF_usb_device_id_match_flags #0 /* offsetof(struct usb_device_id, match_flags) */
+         |                                       ^
+   scripts/mod/modpost.h:61:28: note: in definition of macro 'bswap'
+      61 |                     sizeof(x) == 8 ? bswap_64(x) : \
+         |                            ^
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_match_flags'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:175:9: note: in expansion of macro 'DEF_FIELD'
+     175 |         DEF_FIELD(symval, usb_device_id, match_flags);
+         |         ^~~~~~~~~
+>> ./scripts/mod/devicetable-offsets.h:10:39: error: stray '#' in program
+      10 | #define OFF_usb_device_id_match_flags #0 /* offsetof(struct usb_device_id, match_flags) */
+         |                                       ^
+   scripts/mod/modpost.h:66:59: note: in expansion of macro 'bswap'
+      66 |         (target_is_big_endian == host_is_big_endian ? x : bswap(x))
+         |                                                           ^~~~~
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_match_flags'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:175:9: note: in expansion of macro 'DEF_FIELD'
+     175 |         DEF_FIELD(symval, usb_device_id, match_flags);
+         |         ^~~~~~~~~
+>> ./scripts/mod/devicetable-offsets.h:10:39: error: stray '#' in program
+      10 | #define OFF_usb_device_id_match_flags #0 /* offsetof(struct usb_device_id, match_flags) */
+         |                                       ^
+   scripts/mod/modpost.h:62:21: note: in definition of macro 'bswap'
+      62 |                     x); \
+         |                     ^
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_match_flags'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:175:9: note: in expansion of macro 'DEF_FIELD'
+     175 |         DEF_FIELD(symval, usb_device_id, match_flags);
+         |         ^~~~~~~~~
+   ./scripts/mod/devicetable-offsets.h:11:36: error: stray '#' in program
+      11 | #define OFF_usb_device_id_idVendor #2 /* offsetof(struct usb_device_id, idVendor) */
+         |                                    ^
+   scripts/mod/modpost.h:66:55: note: in definition of macro 'TO_NATIVE'
+      66 |         (target_is_big_endian == host_is_big_endian ? x : bswap(x))
+         |                                                       ^
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_idVendor'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:176:9: note: in expansion of macro 'DEF_FIELD'
+     176 |         DEF_FIELD(symval, usb_device_id, idVendor);
+         |         ^~~~~~~~~
+   ./scripts/mod/devicetable-offsets.h:11:36: error: stray '#' in program
+      11 | #define OFF_usb_device_id_idVendor #2 /* offsetof(struct usb_device_id, idVendor) */
+         |                                    ^
+   scripts/mod/modpost.h:57:31: note: in definition of macro 'bswap'
+      57 |         _Static_assert(sizeof(x) == 1 || sizeof(x) == 2 || \
+         |                               ^
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_idVendor'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:176:9: note: in expansion of macro 'DEF_FIELD'
+     176 |         DEF_FIELD(symval, usb_device_id, idVendor);
+         |         ^~~~~~~~~
+   ./scripts/mod/devicetable-offsets.h:11:36: error: stray '#' in program
+      11 | #define OFF_usb_device_id_idVendor #2 /* offsetof(struct usb_device_id, idVendor) */
+         |                                    ^
+   scripts/mod/modpost.h:57:49: note: in definition of macro 'bswap'
+      57 |         _Static_assert(sizeof(x) == 1 || sizeof(x) == 2 || \
+         |                                                 ^
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_idVendor'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:176:9: note: in expansion of macro 'DEF_FIELD'
+     176 |         DEF_FIELD(symval, usb_device_id, idVendor);
+         |         ^~~~~~~~~
+   ./scripts/mod/devicetable-offsets.h:11:36: error: stray '#' in program
+      11 | #define OFF_usb_device_id_idVendor #2 /* offsetof(struct usb_device_id, idVendor) */
+         |                                    ^
+   scripts/mod/modpost.h:58:31: note: in definition of macro 'bswap'
+      58 |                        sizeof(x) == 4 || sizeof(x) == 8, "bug"); \
+         |                               ^
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_idVendor'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:176:9: note: in expansion of macro 'DEF_FIELD'
+     176 |         DEF_FIELD(symval, usb_device_id, idVendor);
+         |         ^~~~~~~~~
+   ./scripts/mod/devicetable-offsets.h:11:36: error: stray '#' in program
+      11 | #define OFF_usb_device_id_idVendor #2 /* offsetof(struct usb_device_id, idVendor) */
+         |                                    ^
+   scripts/mod/modpost.h:58:49: note: in definition of macro 'bswap'
+      58 |                        sizeof(x) == 4 || sizeof(x) == 8, "bug"); \
+         |                                                 ^
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_idVendor'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:176:9: note: in expansion of macro 'DEF_FIELD'
+     176 |         DEF_FIELD(symval, usb_device_id, idVendor);
+         |         ^~~~~~~~~
+   ./scripts/mod/devicetable-offsets.h:11:36: error: stray '#' in program
+      11 | #define OFF_usb_device_id_idVendor #2 /* offsetof(struct usb_device_id, idVendor) */
+         |                                    ^
+   scripts/mod/modpost.h:59:17: note: in definition of macro 'bswap'
+      59 |         (typeof(x))(sizeof(x) == 2 ? bswap_16(x) : \
+         |                 ^
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_idVendor'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:176:9: note: in expansion of macro 'DEF_FIELD'
+     176 |         DEF_FIELD(symval, usb_device_id, idVendor);
+--
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_bInterfaceNumber'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:185:9: note: in expansion of macro 'DEF_FIELD'
+     185 |         DEF_FIELD(symval, usb_device_id, bInterfaceNumber);
+         |         ^~~~~~~~~
+   ./scripts/mod/devicetable-offsets.h:21:44: error: stray '#' in program
+      21 | #define OFF_usb_device_id_bInterfaceNumber #16 /* offsetof(struct usb_device_id, bInterfaceNumber) */
+         |                                            ^
+   scripts/mod/modpost.h:66:59: note: in expansion of macro 'bswap'
+      66 |         (target_is_big_endian == host_is_big_endian ? x : bswap(x))
+         |                                                           ^~~~~
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_bInterfaceNumber'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:185:9: note: in expansion of macro 'DEF_FIELD'
+     185 |         DEF_FIELD(symval, usb_device_id, bInterfaceNumber);
+         |         ^~~~~~~~~
+   ./scripts/mod/devicetable-offsets.h:21:44: error: stray '#' in program
+      21 | #define OFF_usb_device_id_bInterfaceNumber #16 /* offsetof(struct usb_device_id, bInterfaceNumber) */
+         |                                            ^
+   scripts/mod/modpost.h:60:28: note: in definition of macro 'bswap'
+      60 |                     sizeof(x) == 4 ? bswap_32(x) : \
+         |                            ^
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_bInterfaceNumber'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:185:9: note: in expansion of macro 'DEF_FIELD'
+     185 |         DEF_FIELD(symval, usb_device_id, bInterfaceNumber);
+         |         ^~~~~~~~~
+   ./scripts/mod/devicetable-offsets.h:21:44: error: stray '#' in program
+      21 | #define OFF_usb_device_id_bInterfaceNumber #16 /* offsetof(struct usb_device_id, bInterfaceNumber) */
+         |                                            ^
+   scripts/mod/modpost.h:66:59: note: in expansion of macro 'bswap'
+      66 |         (target_is_big_endian == host_is_big_endian ? x : bswap(x))
+         |                                                           ^~~~~
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_bInterfaceNumber'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:185:9: note: in expansion of macro 'DEF_FIELD'
+     185 |         DEF_FIELD(symval, usb_device_id, bInterfaceNumber);
+         |         ^~~~~~~~~
+   ./scripts/mod/devicetable-offsets.h:21:44: error: stray '#' in program
+      21 | #define OFF_usb_device_id_bInterfaceNumber #16 /* offsetof(struct usb_device_id, bInterfaceNumber) */
+         |                                            ^
+   scripts/mod/modpost.h:61:28: note: in definition of macro 'bswap'
+      61 |                     sizeof(x) == 8 ? bswap_64(x) : \
+         |                            ^
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_bInterfaceNumber'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:185:9: note: in expansion of macro 'DEF_FIELD'
+     185 |         DEF_FIELD(symval, usb_device_id, bInterfaceNumber);
+         |         ^~~~~~~~~
+   ./scripts/mod/devicetable-offsets.h:21:44: error: stray '#' in program
+      21 | #define OFF_usb_device_id_bInterfaceNumber #16 /* offsetof(struct usb_device_id, bInterfaceNumber) */
+         |                                            ^
+   scripts/mod/modpost.h:66:59: note: in expansion of macro 'bswap'
+      66 |         (target_is_big_endian == host_is_big_endian ? x : bswap(x))
+         |                                                           ^~~~~
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_bInterfaceNumber'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:185:9: note: in expansion of macro 'DEF_FIELD'
+     185 |         DEF_FIELD(symval, usb_device_id, bInterfaceNumber);
+         |         ^~~~~~~~~
+   ./scripts/mod/devicetable-offsets.h:21:44: error: stray '#' in program
+      21 | #define OFF_usb_device_id_bInterfaceNumber #16 /* offsetof(struct usb_device_id, bInterfaceNumber) */
+         |                                            ^
+   scripts/mod/modpost.h:62:21: note: in definition of macro 'bswap'
+      62 |                     x); \
+         |                     ^
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_bInterfaceNumber'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:185:9: note: in expansion of macro 'DEF_FIELD'
+     185 |         DEF_FIELD(symval, usb_device_id, bInterfaceNumber);
+         |         ^~~~~~~~~
+   scripts/mod/file2alias.c: In function 'do_usb_entry_multi':
+>> ./scripts/mod/devicetable-offsets.h:10:39: error: stray '#' in program
+      10 | #define OFF_usb_device_id_match_flags #0 /* offsetof(struct usb_device_id, match_flags) */
+         |                                       ^
+   scripts/mod/modpost.h:66:55: note: in definition of macro 'TO_NATIVE'
+      66 |         (target_is_big_endian == host_is_big_endian ? x : bswap(x))
+         |                                                       ^
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_match_flags'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:282:9: note: in expansion of macro 'DEF_FIELD'
+     282 |         DEF_FIELD(symval, usb_device_id, match_flags);
+         |         ^~~~~~~~~
+>> ./scripts/mod/devicetable-offsets.h:10:39: error: stray '#' in program
+      10 | #define OFF_usb_device_id_match_flags #0 /* offsetof(struct usb_device_id, match_flags) */
+         |                                       ^
+   scripts/mod/modpost.h:57:31: note: in definition of macro 'bswap'
+      57 |         _Static_assert(sizeof(x) == 1 || sizeof(x) == 2 || \
+         |                               ^
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_match_flags'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:282:9: note: in expansion of macro 'DEF_FIELD'
+     282 |         DEF_FIELD(symval, usb_device_id, match_flags);
+         |         ^~~~~~~~~
+>> ./scripts/mod/devicetable-offsets.h:10:39: error: stray '#' in program
+      10 | #define OFF_usb_device_id_match_flags #0 /* offsetof(struct usb_device_id, match_flags) */
+         |                                       ^
+   scripts/mod/modpost.h:57:49: note: in definition of macro 'bswap'
+      57 |         _Static_assert(sizeof(x) == 1 || sizeof(x) == 2 || \
+         |                                                 ^
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_match_flags'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:282:9: note: in expansion of macro 'DEF_FIELD'
+     282 |         DEF_FIELD(symval, usb_device_id, match_flags);
+         |         ^~~~~~~~~
+>> ./scripts/mod/devicetable-offsets.h:10:39: error: stray '#' in program
+      10 | #define OFF_usb_device_id_match_flags #0 /* offsetof(struct usb_device_id, match_flags) */
+         |                                       ^
+   scripts/mod/modpost.h:58:31: note: in definition of macro 'bswap'
+      58 |                        sizeof(x) == 4 || sizeof(x) == 8, "bug"); \
+         |                               ^
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_match_flags'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:282:9: note: in expansion of macro 'DEF_FIELD'
+     282 |         DEF_FIELD(symval, usb_device_id, match_flags);
+         |         ^~~~~~~~~
+>> ./scripts/mod/devicetable-offsets.h:10:39: error: stray '#' in program
+      10 | #define OFF_usb_device_id_match_flags #0 /* offsetof(struct usb_device_id, match_flags) */
+         |                                       ^
+   scripts/mod/modpost.h:58:49: note: in definition of macro 'bswap'
+      58 |                        sizeof(x) == 4 || sizeof(x) == 8, "bug"); \
+         |                                                 ^
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_match_flags'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:282:9: note: in expansion of macro 'DEF_FIELD'
+     282 |         DEF_FIELD(symval, usb_device_id, match_flags);
+         |         ^~~~~~~~~
+>> ./scripts/mod/devicetable-offsets.h:10:39: error: stray '#' in program
+      10 | #define OFF_usb_device_id_match_flags #0 /* offsetof(struct usb_device_id, match_flags) */
+         |                                       ^
+   scripts/mod/modpost.h:59:17: note: in definition of macro 'bswap'
+      59 |         (typeof(x))(sizeof(x) == 2 ? bswap_16(x) : \
+         |                 ^
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_match_flags'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:282:9: note: in expansion of macro 'DEF_FIELD'
+     282 |         DEF_FIELD(symval, usb_device_id, match_flags);
+         |         ^~~~~~~~~
+>> ./scripts/mod/devicetable-offsets.h:10:39: error: stray '#' in program
+      10 | #define OFF_usb_device_id_match_flags #0 /* offsetof(struct usb_device_id, match_flags) */
+         |                                       ^
+   scripts/mod/modpost.h:59:28: note: in definition of macro 'bswap'
+      59 |         (typeof(x))(sizeof(x) == 2 ? bswap_16(x) : \
+         |                            ^
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_match_flags'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:282:9: note: in expansion of macro 'DEF_FIELD'
+     282 |         DEF_FIELD(symval, usb_device_id, match_flags);
+         |         ^~~~~~~~~
+   ./scripts/mod/devicetable-offsets.h:10:39: error: stray '#' in program
+      10 | #define OFF_usb_device_id_match_flags #0 /* offsetof(struct usb_device_id, match_flags) */
+         |                                       ^
+   scripts/mod/modpost.h:66:59: note: in expansion of macro 'bswap'
+      66 |         (target_is_big_endian == host_is_big_endian ? x : bswap(x))
+         |                                                           ^~~~~
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_match_flags'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:282:9: note: in expansion of macro 'DEF_FIELD'
+     282 |         DEF_FIELD(symval, usb_device_id, match_flags);
+         |         ^~~~~~~~~
+   ./scripts/mod/devicetable-offsets.h:10:39: error: stray '#' in program
+      10 | #define OFF_usb_device_id_match_flags #0 /* offsetof(struct usb_device_id, match_flags) */
+         |                                       ^
+   scripts/mod/modpost.h:60:28: note: in definition of macro 'bswap'
+      60 |                     sizeof(x) == 4 ? bswap_32(x) : \
+         |                            ^
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_match_flags'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:282:9: note: in expansion of macro 'DEF_FIELD'
+     282 |         DEF_FIELD(symval, usb_device_id, match_flags);
+         |         ^~~~~~~~~
+   ./scripts/mod/devicetable-offsets.h:10:39: error: stray '#' in program
+      10 | #define OFF_usb_device_id_match_flags #0 /* offsetof(struct usb_device_id, match_flags) */
+         |                                       ^
+   scripts/mod/modpost.h:66:59: note: in expansion of macro 'bswap'
+      66 |         (target_is_big_endian == host_is_big_endian ? x : bswap(x))
+         |                                                           ^~~~~
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_match_flags'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:282:9: note: in expansion of macro 'DEF_FIELD'
+     282 |         DEF_FIELD(symval, usb_device_id, match_flags);
+         |         ^~~~~~~~~
+   ./scripts/mod/devicetable-offsets.h:10:39: error: stray '#' in program
+      10 | #define OFF_usb_device_id_match_flags #0 /* offsetof(struct usb_device_id, match_flags) */
+         |                                       ^
+   scripts/mod/modpost.h:61:28: note: in definition of macro 'bswap'
+      61 |                     sizeof(x) == 8 ? bswap_64(x) : \
+         |                            ^
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_match_flags'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:282:9: note: in expansion of macro 'DEF_FIELD'
+     282 |         DEF_FIELD(symval, usb_device_id, match_flags);
+         |         ^~~~~~~~~
+   ./scripts/mod/devicetable-offsets.h:10:39: error: stray '#' in program
+      10 | #define OFF_usb_device_id_match_flags #0 /* offsetof(struct usb_device_id, match_flags) */
+         |                                       ^
+   scripts/mod/modpost.h:66:59: note: in expansion of macro 'bswap'
+      66 |         (target_is_big_endian == host_is_big_endian ? x : bswap(x))
+         |                                                           ^~~~~
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_match_flags'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                                                           ^~~~
+   scripts/mod/file2alias.c:282:9: note: in expansion of macro 'DEF_FIELD'
+     282 |         DEF_FIELD(symval, usb_device_id, match_flags);
+         |         ^~~~~~~~~
+   ./scripts/mod/devicetable-offsets.h:10:39: error: stray '#' in program
+      10 | #define OFF_usb_device_id_match_flags #0 /* offsetof(struct usb_device_id, match_flags) */
+         |                                       ^
+   scripts/mod/modpost.h:62:21: note: in definition of macro 'bswap'
+      62 |                     x); \
+         |                     ^
+   scripts/mod/file2alias.c:73:44: note: in expansion of macro 'TO_NATIVE'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+         |                                            ^~~~~~~~~
+   scripts/mod/file2alias.c:73:75: note: in expansion of macro 'OFF_usb_device_id_match_flags'
+      73 |         typeof(((struct devid *)0)->f) f = TO_NATIVE(*(typeof(f) *)((m) + OFF_##devid##_##f))
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
