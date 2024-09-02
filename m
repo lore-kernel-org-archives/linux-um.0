@@ -4,146 +4,107 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69425CA0ED3
-	for <linux-um@archiver.kernel.org>; Mon,  2 Sep 2024 16:47:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AC881CA0ED3
+	for <linux-um@archiver.kernel.org>; Mon,  2 Sep 2024 19:07:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=sN52cpHdRrdru0pCcK4JXKDfBVCF3QpRMNtiOqVdu9M=; b=h6l9FumheaptWSehrSzhoOFIpk
-	SPxY1FTaybCWsI5g3xKCSNusqz+PwwRX8VdnLA/ji/5jmW60iNoAs72w/tr3SyoL7Zn4uGRkNkjVC
-	EeTS3sAm+un4SrHD5bhQfYnmOiicxsREdDMFAEeFMJSEfN+xYncGM7p6wbiQXx1omeydSFKY+Zvk+
-	y1O5l2HI/B5VuT2EIdiK/YltKVd2BhiRuw9R7PCy9Yr6qn/SzgGLM2uTNLa/pwLTnEc7b36ZMkiee
-	AjNA0h6YZ2L2w0aQTRNUChkk6Re5jb6KWGNOJO8V639XjglBIfIDp1S8gP7dONSH9onaRfqnOaS5l
-	WVRx4Idg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-Type:
+	Message-ID:Date:References:In-Reply-To:Subject:Cc:To:From:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=TDLWHOgFa39hzeST9WCzOqKuY4GJiAQ83qX40rWjgpc=; b=2QSSQA0PQnUcWYKL3lnnIpEtof
+	krVGVVENj1N47OqX8X90xYwQi7oyy8PisW+/Z5VCn1j/aHhC+3EAWuwLxSmX4LwTd7GXzpr2ab//U
+	yLWFFEp2TKCc/pjjyVezOS144P5UlIzVtwxFlwir25YRX5UehDiMNZFplEtcicvaziMehxxbpfNZG
+	cDGpFulTQefiosBwVLRBQN2uwLde7pZnR+Zqc1DOuK5SF/SL9pxglhwQuNLl4Q2wCWQvoTx7XJb3M
+	L72twN+WvYcBdTJScR3rqo9ffW7ox5j9H9alS8RDsKjx3hMNzAYpfUmMfrHCFquI9yy+hcLI7jyKC
+	uJ44nELA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1slADc-0000000F4yD-2C95;
-	Mon, 02 Sep 2024 16:47:56 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
+	id 1slCOO-0000000FMKf-3C1t;
+	Mon, 02 Sep 2024 19:07:12 +0000
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1slA5u-0000000F33X-26lV
+	id 1slCOL-0000000FMJg-2LsB
 	for linux-um@lists.infradead.org;
-	Mon, 02 Sep 2024 16:40:00 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1725295197;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=sN52cpHdRrdru0pCcK4JXKDfBVCF3QpRMNtiOqVdu9M=;
-	b=gvl5QXozY/cufezESXJvbCWidX+RoY+pxTIRVb0XM1+rSsKzqLSGLCPaNMoJeEL0D3a4Mg
-	4Z9qdNbpARb+unx5EWgWxq+CCaLZ7k/Nz+wEPEuaQLI2FRE/Z7LtVNaaqbItve7doJL2Qg
-	rP3i+uR9K92CYaWPMTV1eGUGXqymPOY=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-605-LM5LeVWCPwivRcLzpF9eLw-1; Mon, 02 Sep 2024 12:39:56 -0400
-X-MC-Unique: LM5LeVWCPwivRcLzpF9eLw-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-42c7b39e953so10257905e9.0
-        for <linux-um@lists.infradead.org>; Mon, 02 Sep 2024 09:39:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725295195; x=1725899995;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=sN52cpHdRrdru0pCcK4JXKDfBVCF3QpRMNtiOqVdu9M=;
-        b=PwOq2uc7reX35N72D8YcdSRbTtn8qj1ciiWtpMphX6FleX7UoUZIVvXt3Qf86Ylipz
-         sRfQDYN04w1ZXK3ja6gb9TNCufBf12e5jYpSBrN3/dmpys4QvbvrvQX9j6x1PE0vmX2b
-         H5hcVZdCf+wSbBufqcrSM6r7/tI6j2Lo/KAa9lantXfm9bJk5M4qBFi3DF/SDVRyz3oD
-         XrX8j+K6/5TcgmeVZLnq6TZOKrizqaISLoMnVrypIDJG4h/TNiJ2QH98s/ONt9cXIr2u
-         O11etb88QT6/J93hDZ9+8S4jK+vr5zidOAME7AAuMLOQfQqPE/roZyUZFOv4FNjOJfwi
-         vTtw==
-X-Forwarded-Encrypted: i=1; AJvYcCXg01qftc6HyXqz9+ALc6WnY8+GNrQM9z9rB3v9iVbrww0Xkxoa75tE4zaSmQNwlU30wfxrbr9LiA==@lists.infradead.org
-X-Gm-Message-State: AOJu0YyIG7Tpb8R+3rJ7wuqqCHLALc8ctb7xVArL+aj0ZK9O0uVfKJ6A
-	Ep2W/veYtOna0qa66WbkwJhth4o5VBYMK6mBH7J6Ac8J8OfjWwZqvGnIepeOTqgqvWQATgj8JSr
-	Bno4At3C6yjhaTnKNjByLacism6WnGhRX2tVwVThiQGZxR3qPdJgALFXaU+5Cdg==
-X-Received: by 2002:a05:600c:3ba3:b0:42a:a92b:8e06 with SMTP id 5b1f17b1804b1-42bb4c3e51bmr97930525e9.4.1725295194790;
-        Mon, 02 Sep 2024 09:39:54 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG9phZGFO80qt7wZJU2JQ9lMT8p4KQA1ByjuceIs5a81ZoCFG/S1B+NhesIR8p82ymaNDcdGw==
-X-Received: by 2002:a05:600c:3ba3:b0:42a:a92b:8e06 with SMTP id 5b1f17b1804b1-42bb4c3e51bmr97930195e9.4.1725295193873;
-        Mon, 02 Sep 2024 09:39:53 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c72d:6500:849a:c1af:a5bb:ba9d? (p200300cbc72d6500849ac1afa5bbba9d.dip0.t-ipconnect.de. [2003:cb:c72d:6500:849a:c1af:a5bb:ba9d])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42ba63abea3sm180516415e9.28.2024.09.02.09.39.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Sep 2024 09:39:53 -0700 (PDT)
-Message-ID: <995d18bb-16f1-4843-92bc-6c4a386a811d@redhat.com>
-Date: Mon, 2 Sep 2024 18:39:52 +0200
+	Mon, 02 Sep 2024 19:07:11 +0000
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 482HrJgu005683;
+	Mon, 2 Sep 2024 19:06:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from
+	:to:cc:subject:in-reply-to:references:date:message-id
+	:content-type:mime-version; s=pp1; bh=TDLWHOgFa39hzeST9WCzOqKuY4
+	GJiAQ83qX40rWjgpc=; b=aPqSyD8MIEk24hysCVxXQFcBr528odFWBwLepWRD/u
+	ICJ4d7GQmvrzKLtLUj/iASywH4+EWaHT5eOsAngG0hK4tbz0bXGhxTRimb/LdHJ2
+	pyZsEtFLzcXcK13aEAuB1zRbOK3JyUinMa2sZ+k1A/0ZlJMJBwW/yhVCQ9pAiJJX
+	8dc1azQDos0xCpnv+0BTFkg0Rh9lwmncAKI+DUoSD4X38AK9DnGZdf/rFiZWAYvD
+	znRTXnBwJ/sk9HBiwObvLwWc5fetfADTAHuHLQ+61i1KmO7U3Iqhtmjtur+qf2s5
+	cRIAf7K/tTs2BtqrWTKWKI9YzfIjDA4jhfMhX5WYojcw==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 41btwat91x-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 02 Sep 2024 19:06:53 +0000 (GMT)
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 482J6qSD020334;
+	Mon, 2 Sep 2024 19:06:52 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 41btwat91t-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 02 Sep 2024 19:06:52 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 482GVTRN012052;
+	Mon, 2 Sep 2024 19:06:51 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 41cegpqdnk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 02 Sep 2024 19:06:51 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 482J6nTu54854040
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 2 Sep 2024 19:06:49 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 147062004D;
+	Mon,  2 Sep 2024 19:06:49 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id CE20D20043;
+	Mon,  2 Sep 2024 19:06:48 +0000 (GMT)
+Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Mon,  2 Sep 2024 19:06:48 +0000 (GMT)
+From: Sven Schnelle <svens@linux.ibm.com>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>, linux-mm@kvack.org,
+        linuxppc-dev@lists.ozlabs.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, christophe.leroy@csgroup.eu,
+        jeffxu@google.com, Liam.Howlett@oracle.com,
+        linux-kernel@vger.kernel.org, npiggin@gmail.com, oliver.sang@intel.com,
+        pedro.falcato@gmail.com, linux-um@lists.infradead.org,
+        linux-s390@vger.kernel.org
+Subject: Re: [PATCH v2 1/4] mm: Add optional close() to struct
+ vm_special_mapping
+In-Reply-To: <20240819185253.GA2333884@thelio-3990X> (Nathan Chancellor's
+	message of "Mon, 19 Aug 2024 11:52:53 -0700")
+References: <20240812082605.743814-1-mpe@ellerman.id.au>
+	<20240819185253.GA2333884@thelio-3990X>
+Date: Mon, 02 Sep 2024 21:06:48 +0200
+Message-ID: <yt9dy149vprr.fsf@linux.ibm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: ig9nWOFROrXxhMnkacRWjO6cjHpu3JiF
+X-Proofpoint-GUID: UEMIupna5As0SbvxPRXsLjdC9M9WjhTf
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] mm: make copy_to_kernel_nofault() not fault on user
- addresses
-To: Omar Sandoval <osandov@osandov.com>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>, linux-mm@kvack.org,
- Andrew Morton <akpm@linux-foundation.org>, Christoph Hellwig <hch@lst.de>,
- x86@kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, loongarch@lists.linux.dev,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org,
- kernel-team@fb.com
-References: <cover.1725223574.git.osandov@fb.com>
- <5fa50d78-6764-4f99-87b3-7bd7edbeea5a@csgroup.eu>
- <ZtVbrM4rQsGFJo_t@telecaster>
- <861d448c-ce1d-4b74-87eb-9b211dfebbb1@redhat.com>
- <ZtXZFc9kZAUMD4e0@telecaster>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <ZtXZFc9kZAUMD4e0@telecaster>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
+ definitions=2024-09-02_04,2024-09-02_01,2024-09-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 bulkscore=0 mlxscore=0 clxscore=1011 malwarescore=0
+ lowpriorityscore=0 adultscore=0 spamscore=0 phishscore=0 mlxlogscore=999
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2407110000 definitions=main-2409020152
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240902_093958_654471_3EA0D6BF 
-X-CRM114-Status: GOOD (  31.09  )
+X-CRM114-CacheID: sfid-20240902_120709_619103_E2741E2B 
+X-CRM114-Status: GOOD (  32.42  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -158,105 +119,200 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 02.09.24 17:26, Omar Sandoval wrote:
-> On Mon, Sep 02, 2024 at 10:56:27AM +0200, David Hildenbrand wrote:
->> On 02.09.24 08:31, Omar Sandoval wrote:
->>> On Mon, Sep 02, 2024 at 08:19:33AM +0200, Christophe Leroy wrote:
->>>>
->>>>
->>>> Le 02/09/2024 à 07:31, Omar Sandoval a écrit :
->>>>> [Vous ne recevez pas souvent de courriers de osandov@osandov.com. Découvrez pourquoi ceci est important à https://aka.ms/LearnAboutSenderIdentification ]
->>>>>
->>>>> From: Omar Sandoval <osandov@fb.com>
->>>>>
->>>>> Hi,
->>>>>
->>>>> I hit a case where copy_to_kernel_nofault() will fault (lol): if the
->>>>> destination address is in userspace and x86 Supervisor Mode Access
->>>>> Prevention is enabled. Patch 2 has the details and the fix. Patch 1
->>>>> renames a helper function so that its use in patch 2 makes more sense.
->>>>> If the rename is too intrusive, I can drop it.
->>>>
->>>> The name of the function is "copy_to_kernel". If the destination is a user
->>>> address, it is not a copy to kernel but a copy to user and you already have
->>>> the function copy_to_user() for that. copy_to_user() properly handles SMAP.
->>>
->>> I'm not trying to copy to user. I am (well, KDB is) trying to copy to an
->>> arbitrary address, and I want it to return an error instead of crashing
->>> if the address is not a valid kernel address. As far as I can tell, that
->>> is the whole point of copy_to_kernel_nofault().
+Nathan Chancellor <nathan@kernel.org> writes:
+
+> Hi Michael,
+>
+> On Mon, Aug 12, 2024 at 06:26:02PM +1000, Michael Ellerman wrote:
+>> Add an optional close() callback to struct vm_special_mapping. It will
+>> be used, by powerpc at least, to handle unmapping of the VDSO.
 >>
->> The thing is that you (well, KDB) triggers something that would be
->> considered a real BUG when triggered from "ordinary" (non-debugging) code.
-> 
-> If that's the case, then it's a really weird inconsistency that it's OK
-> to call copy_from_kernel_nofault() with an invalid address but a bug to
-> call copy_to_kernel_nofault() on the same address. Again, isn't the
-> whole point of these functions to fail gracefully instead of crashing on
-> invalid addresses? (Modulo the offline and hwpoison cases you mention
-> for /proc/kcore.)
-
-I assume the difference is mostly historically, because usually, when 
-modifying something (ftrace, live patch, kdb) you better know what you 
-want to modify actually exist and can be modified. IOW, you usually 
-read-before-weite.
-
-In contrast, things like /proc/kcore, (I think) while limiting it to 
-sane addresses, might still read from areas where we remove entries from 
-the directmap (e.g., secretmem), I think.
-
-Like, in a compiler, modifying a variable you didn't read before is 
-rather rare as well. If you would have tried to read it, the 
-copy_from_kernel_nofault() would have failed.
-
-I agree that the difference is weird, and likely really "nobody ran into 
-this before in sane use cases".
-
-> 
->> But now I am confused: "if the destination address is in userspace" does not
->> really make sense in the context of KDB, no?
+>> Although support for unmapping the VDSO was initially added
+>> for CRIU[1], it is not desirable to guard that support behind
+>> CONFIG_CHECKPOINT_RESTORE.
 >>
->>    [15]kdb> mm 0 1234
->>    [   94.652476] BUG: kernel NULL pointer dereference, address:
->> 0000000000000000
+>> There are other known users of unmapping the VDSO which are not related
+>> to CRIU, eg. Valgrind [2] and void-ship [3].
 >>
->> Why is address 0 in "user space"? "Which" user space?
-> 
-> Sure, it's not really user space, but it's below TASK_SIZE_MAX, so
-> things like handle_page_fault() and fault_in_kernel_space() treat it as
-> if it were a user address. I could
-> s/userspace address/address that is less than TASK_SIZE_MAX or is_vsyscall_vaddr(address)/.
-
-Ah, okay, that's x86 specifics detail in 
-copy_from_kernel_nofault_allowed(), thanks.
-
-> 
->> Isn't the problem here that KDB lets you blindly write to any non-existing
->> memory address?
+>> The powerpc arch_unmap() hook has been in place for ~9 years, with no
+>> ifdef, so there may be other unknown users that have come to rely on
+>> unmapping the VDSO. Even if the code was behind an ifdef, major distros
+>> enable CHECKPOINT_RESTORE so users may not realise unmapping the VDSO
+>> depends on that configuration option.
 >>
+>> It's also undesirable to have such core mm behaviour behind a relatively
+>> obscure CONFIG option.
 >>
->> Likely it should do some proper filtering like we do in fs/proc/kcore.c:
+>> Longer term the unmap behaviour should be standardised across
+>> architectures, however that is complicated by the fact the VDSO pointer
+>> is stored differently across architectures. There was a previous attempt
+>> to unify that handling [4], which could be revived.
 >>
->> Take a look at the KCORE_RAM case where we make sure the page exists, is
->> online and may be accessed. Only then, we trigger a
->> copy_from_kernel_nofault(). Note that the KCORE_USER is a corner case only
->> for some special thingies on x86 (vsyscall), and can be ignored for our case
->> here.
-> 
-> Sure, it would be better to harden KDB against all of these special
-> cases. But you can break things in all sorts of fun ways with a
-> debugger, anyways. The point of this patch is that it's nonsense that a
-> function named copy_to_kernel_nofault() does indeed fault in a trivial
-> case like address < TASK_SIZE_MAX.
+>> See [5] for further discussion.
+>>
+>> [1]: commit 83d3f0e90c6c ("powerpc/mm: tracking vDSO remap")
+>> [2]: https://sourceware.org/git/?p=valgrind.git;a=commit;h=3a004915a2cbdcdebafc1612427576bf3321eef5
+>> [3]: https://github.com/insanitybit/void-ship
+>> [4]: https://lore.kernel.org/lkml/20210611180242.711399-17-dima@arista.com/
+>> [5]: https://lore.kernel.org/linuxppc-dev/shiq5v3jrmyi6ncwke7wgl76ojysgbhrchsk32q4lbx2hadqqc@kzyy2igem256
+>>
+>> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+>> Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+>> Reviewed-by: David Hildenbrand <david@redhat.com>
+>> ---
+>>  include/linux/mm_types.h | 3 +++
+>>  mm/mmap.c                | 6 ++++++
+>>  2 files changed, 9 insertions(+)
+>>
+>> v2:
+>> - Add some blank lines as requested.
+>> - Expand special_mapping_close() comment.
+>> - Add David's reviewed-by.
+>> - Expand change log to capture review discussion.
+>>
+>> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+>> index 485424979254..78bdfc59abe5 100644
+>> --- a/include/linux/mm_types.h
+>> +++ b/include/linux/mm_types.h
+>> @@ -1313,6 +1313,9 @@ struct vm_special_mapping {
+>>
+>>  	int (*mremap)(const struct vm_special_mapping *sm,
+>>  		     struct vm_area_struct *new_vma);
+>> +
+>> +	void (*close)(const struct vm_special_mapping *sm,
+>> +		      struct vm_area_struct *vma);
+>>  };
+>>
+>>  enum tlb_flush_reason {
+>> diff --git a/mm/mmap.c b/mm/mmap.c
+>> index d0dfc85b209b..af4dbf0d3bd4 100644
+>> --- a/mm/mmap.c
+>> +++ b/mm/mmap.c
+>> @@ -3620,10 +3620,16 @@ void vm_stat_account(struct mm_struct *mm, vm_flags_t flags, long npages)
+>>  static vm_fault_t special_mapping_fault(struct vm_fault *vmf);
+>>
+>>  /*
+>> + * Close hook, called for unmap() and on the old vma for mremap().
+>> + *
+>>   * Having a close hook prevents vma merging regardless of flags.
+>>   */
+>>  static void special_mapping_close(struct vm_area_struct *vma)
+>>  {
+>> +	const struct vm_special_mapping *sm = vma->vm_private_data;
+>> +
+>> +	if (sm->close)
+>> +		sm->close(sm, vma);
+>>  }
+>>
+>>  static const char *special_mapping_name(struct vm_area_struct *vma)
+>> --
+>> 2.45.2
+>>
+>
+> This change is now in -next and I bisected a crash that our CI sees with
+> ARCH=um to it:
 
-Yes, because the write-without-read to kernel memory "you don't know 
-even exists" is rather ... weird :)
+I see another crash on s390, which seems related, but rather an issue in
+uprobe. This can be reproduced by
 
-Anyhow, no strong opinion here. Patches look simple enough.
+# cd linux-next/tools/testing/selftests/ftrace
+# ./ftracetest ./test.d/dynevent/add_remove_uprobe.tc
 
--- 
-Cheers,
+The 'mm: Add optional close() to struct vm_special_mapping' patch just
+makes it visible. I enabled KASAN, and that shows me:
 
-David / dhildenb
+[   44.505448] ==================================================================                                                                      20:37:27 [3421/145075]
+[   44.505455] BUG: KASAN: slab-use-after-free in special_mapping_close+0x9c/0xc8
+[   44.505471] Read of size 8 at addr 00000000868dac48 by task sh/1384
+[   44.505479]
+[   44.505486] CPU: 51 UID: 0 PID: 1384 Comm: sh Not tainted 6.11.0-rc6-next-20240902-dirty #1496
+[   44.505503] Hardware name: IBM 3931 A01 704 (z/VM 7.3.0)
+[   44.505508] Call Trace:
+[   44.505511]  [<000b0324d2f78080>] dump_stack_lvl+0xd0/0x108
+[   44.505521]  [<000b0324d2f5435c>] print_address_description.constprop.0+0x34/0x2e0
+[   44.505529]  [<000b0324d2f5464c>] print_report+0x44/0x138
+[   44.505536]  [<000b0324d1383192>] kasan_report+0xc2/0x140
+[   44.505543]  [<000b0324d2f52904>] special_mapping_close+0x9c/0xc8
+[   44.505550]  [<000b0324d12c7978>] remove_vma+0x78/0x120
+[   44.505557]  [<000b0324d128a2c6>] exit_mmap+0x326/0x750
+[   44.505563]  [<000b0324d0ba655a>] __mmput+0x9a/0x370
+[   44.505570]  [<000b0324d0bbfbe0>] exit_mm+0x240/0x340
+[   44.505575]  [<000b0324d0bc0228>] do_exit+0x548/0xd70
+[   44.505580]  [<000b0324d0bc1102>] do_group_exit+0x132/0x390
+[   44.505586]  [<000b0324d0bc13b6>] __s390x_sys_exit_group+0x56/0x60
+[   44.505592]  [<000b0324d0adcbd6>] do_syscall+0x2f6/0x430
+[   44.505599]  [<000b0324d2f78434>] __do_syscall+0xa4/0x170
+[   44.505606]  [<000b0324d2f9454c>] system_call+0x74/0x98
+[   44.505614]
+[   44.505616] Allocated by task 1384:
+[   44.505621]  kasan_save_stack+0x40/0x70
+[   44.505630]  kasan_save_track+0x28/0x40
+[   44.505636]  __kasan_kmalloc+0xa0/0xc0
+[   44.505642]  __create_xol_area+0xfa/0x410
+[   44.505648]  get_xol_area+0xb0/0xf0
+[   44.505652]  uprobe_notify_resume+0x27a/0x470
+[   44.505657]  irqentry_exit_to_user_mode+0x15e/0x1d0
+[   44.505664]  pgm_check_handler+0x122/0x170
+[   44.505670]
+[   44.505672] Freed by task 1384:
+[   44.505676]  kasan_save_stack+0x40/0x70
+[   44.505682]  kasan_save_track+0x28/0x40
+[   44.505687]  kasan_save_free_info+0x4a/0x70
+[   44.505693]  __kasan_slab_free+0x5a/0x70
+[   44.505698]  kfree+0xe8/0x3f0
+[   44.505704]  __mmput+0x20/0x370
+[   44.505709]  exit_mm+0x240/0x340
+[   44.505713]  do_exit+0x548/0xd70
+[   44.505718]  do_group_exit+0x132/0x390
+[   44.505722]  __s390x_sys_exit_group+0x56/0x60
+[   44.505727]  do_syscall+0x2f6/0x430
+[   44.505732]  __do_syscall+0xa4/0x170
+[   44.505738]  system_call+0x74/0x98
+
+The problem is that uprobe_clear_state() kfree's struct xol_area, which
+contains struct vm_special_mapping *xol_mapping. This one is passed to
+_install_special_mapping() in xol_add_vma().
+
+__mput reads:
+
+static inline void __mmput(struct mm_struct *mm)
+{
+	VM_BUG_ON(atomic_read(&mm->mm_users));
+
+	uprobe_clear_state(mm);
+	exit_aio(mm);
+	ksm_exit(mm);
+	khugepaged_exit(mm); /* must run before exit_mmap */
+	exit_mmap(mm);
+	...
+}
+
+So uprobe_clear_state() in the beginning free's the memory area
+containing the vm_special_mapping data, but exit_mmap() uses this
+address later via vma->vm_private_data (which was set in _install_special_mapping().
+
+The following change fixes this for me, but i'm not sure about any side
+effects:
+
+diff --git a/kernel/fork.c b/kernel/fork.c
+index df8e4575ff01..cfcabba36c93 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -1340,11 +1340,11 @@ static inline void __mmput(struct mm_struct *mm)
+ {
+        VM_BUG_ON(atomic_read(&mm->mm_users));
+ 
+-       uprobe_clear_state(mm);
+        exit_aio(mm);
+        ksm_exit(mm);
+        khugepaged_exit(mm); /* must run before exit_mmap */
+        exit_mmap(mm);
++       uprobe_clear_state(mm);
+        mm_put_huge_zero_folio(mm);
+        set_mm_exe_file(mm, NULL);
+        if (!list_empty(&mm->mmlist)) {
+
+
+Any thoughts?
 
 
