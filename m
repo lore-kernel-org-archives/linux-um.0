@@ -4,144 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7A02ECA0ED3
-	for <linux-um@archiver.kernel.org>; Mon,  2 Sep 2024 08:57:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2874BCD13CF
+	for <linux-um@archiver.kernel.org>; Mon,  2 Sep 2024 15:27:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=LfF3KeynC9sZLbgUnP2jKMumdR02uRRJTldDSGFHy9s=; b=szjPQU+Ae1iLbghHtV5o6mCcQD
-	diF668PPhSQ3UVzowvkYeL4KHBwflvwlxxLjM98zB5NOSfle91YCLct3h0Oip//zup9GGW2QENwj3
-	DbXPwkVlVc56SKE86RrxGztlZG5KmXRCrcs4lf90rCk0ouQlhxj0ptJZB+WAF2maCZiytUYjPcfqs
-	L0aG1n0pDV71V2epBGzl0PaGSn9sOXphbJWp8lxT1kLRs6bJn4Jl3ccgXVsySelfyXGHGLJIZDGhF
-	96Jt+5WpklzWHJz7RyOb+qDWWKAJrA63IxS9h0Wgg1Hd0FtIR5xTVTtqcvvI73qtEL2C67qZeqkib
-	/QyZkyhw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=mQrdUk9Qs95YbYxvkhvXPIF077+rLJVqqSG6sH4DY10=; b=Gm/iBTIwB3bLk6p2hEUo9QZbKV
+	wsKXlmltp3i5bky/dreuBT+qK0P3/3+dSVOHlZj/wECO6mCQ1R43/84ITPQyqkyYIp9Y70ZBH9l9v
+	zwgMFh2QZ7scSlR87F8DxKyWyKKkajHeRSWtWoKu1cG2MRmRzFcMET4YmxnLCp0cKvVnj1c3FUHi2
+	AIkV1Ljife8Xj76LThWMxVPEAE/3CJ1NCoDf4SpJTthZgcLkfyHl8NbgRkVkEPAkf/Ik/NlUNrSY1
+	1fMHZ/p4DSNvYxvUUnuPasjfs6VKcoQ5k4xZKDHEPRTWmCqMUuLtPHWrKPqIawbxt2ssTmAqYOq0I
+	AN/f6Wxw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sl2sM-0000000DboN-3Emd;
-	Mon, 02 Sep 2024 08:57:30 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
+	id 1sl8xY-0000000Epxz-1JTw;
+	Mon, 02 Sep 2024 15:27:16 +0000
+Received: from mail-pl1-x634.google.com ([2607:f8b0:4864:20::634])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sl2rR-0000000DbXG-0a2g
+	id 1sl8wb-0000000EpeW-1zkr
 	for linux-um@lists.infradead.org;
-	Mon, 02 Sep 2024 08:56:34 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1725267392;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=LfF3KeynC9sZLbgUnP2jKMumdR02uRRJTldDSGFHy9s=;
-	b=ZAM78zw9ibAUeD77rEzKjOaUV/zitKqqmg5j8jqzCJgugCwZMLGuVfeb7Go3CXrYGUIG09
-	x5rB2TcsaK4lYNkMvafZ/igiIYv9ROzjmPeqsA75qXZxSdOWHm/dbUY2TlzAd+yoFRHDtT
-	GTpZ8zgWB7LKK7D0v3kmgYjDTQmi4OM=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-367-phdEbCDBPEGMxOS9dmfl5A-1; Mon, 02 Sep 2024 04:56:30 -0400
-X-MC-Unique: phdEbCDBPEGMxOS9dmfl5A-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-374c581ce35so623210f8f.3
-        for <linux-um@lists.infradead.org>; Mon, 02 Sep 2024 01:56:30 -0700 (PDT)
+	Mon, 02 Sep 2024 15:26:19 +0000
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-20549ca1fe3so2978775ad.1
+        for <linux-um@lists.infradead.org>; Mon, 02 Sep 2024 08:26:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20230601.gappssmtp.com; s=20230601; t=1725290776; x=1725895576; darn=lists.infradead.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=mQrdUk9Qs95YbYxvkhvXPIF077+rLJVqqSG6sH4DY10=;
+        b=lJH5wavFXiLHm9xkGovYTm8cw0ZplHoS2Ya1WNhJImw40Ipi5VGwNoV4HINNe4JnYb
+         HlmtwYO46BSEhkDwCDJGQFs9gwoH5icQMURr8LCOpEc+++iA0FYs0Msmizz9B/Q15T8H
+         ywf+KkPfSgp14BHYrr6fYY3ySW9aAy+61W1pNLjagwce50YFW7OLYK2ykisXWj8zf1bl
+         OMS8kUyXxWDbFGaLUWJAzt17N1660BIJfga0OyUX4bu7mogzF5PmsEEwD5L9fKdC8tVV
+         yIuYPYPMkJnv8t553vXaads/lkbCEuJTQrBCfumRejjuERHZCHrkZ8P5bsIrh1YjWG5s
+         vb3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725267389; x=1725872189;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=LfF3KeynC9sZLbgUnP2jKMumdR02uRRJTldDSGFHy9s=;
-        b=m+hp74ICBiXovjxw10NnOMHWojnjbMQKN1Nu9I6bnkjY+46bydw6X0VbrJyCrr6PWN
-         zOjm74Nzkyx2a+wwVp66eThFGkF4a8ppVjyjko0zT9HVrvpyWGG5iAARqdDRFuol6mEr
-         9jXK0sNisduvv51TKnVEmza8+azHODYl0Mqhv7HKzUEPdWn3HHB/yHi4zIF9+3gwTUWa
-         GNUy4xbFDg4GPNBvN5pcLuhBOYyK5Llyr3/96Qu3o3t+mvtuMnDqlk8iUfLYen0M9fxJ
-         jbquBdw60cl5KcEMSSUJAbd4UVQub59sq3lpM8SZ2Kr0rxOqhbm4XB0reVbpahK7szvM
-         INVA==
-X-Forwarded-Encrypted: i=1; AJvYcCWUQZPIdfMd91zvYJgLExo9CXJMJ3L84l3hLaZwPaYJR8uHd9tqrqMfybWnfAquT5/duyMaDFejHg==@lists.infradead.org
-X-Gm-Message-State: AOJu0YzcV6NjvnaUF2qYDxYKuMMNyBzI0p38oA12I0zG42uPS0JGbR4q
-	6DCtmUJWPqhUzGhbPWaQbra6Fq67UcRgkh/20GyoIfjUzBaWjZ6I9nayLv0qRz5Jbsdp2szkqT5
-	ay1q5ylVfVYhfJTLPW+VjHxFXbJOXzuRaMW7ZonS66R28zrGH/EYL+vjYYll73w==
-X-Received: by 2002:adf:e452:0:b0:374:ba7b:42af with SMTP id ffacd0b85a97d-374ba7b434dmr4372633f8f.26.1725267389508;
-        Mon, 02 Sep 2024 01:56:29 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE4sDToXZ9iQK2Utdqm24ufRZ+5W5OXr8AgS3H0PwzzxL8rRkjavgydF0LfAh+ynJv8zMPifw==
-X-Received: by 2002:adf:e452:0:b0:374:ba7b:42af with SMTP id ffacd0b85a97d-374ba7b434dmr4372598f8f.26.1725267388554;
-        Mon, 02 Sep 2024 01:56:28 -0700 (PDT)
-Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-374cd32fa01sm1307043f8f.85.2024.09.02.01.56.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Sep 2024 01:56:28 -0700 (PDT)
-Message-ID: <861d448c-ce1d-4b74-87eb-9b211dfebbb1@redhat.com>
-Date: Mon, 2 Sep 2024 10:56:27 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+        d=1e100.net; s=20230601; t=1725290776; x=1725895576;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mQrdUk9Qs95YbYxvkhvXPIF077+rLJVqqSG6sH4DY10=;
+        b=OdDBxSgi0NE5VCaY13ZJxvykhN8dxzXFCjYbeHv9BaaiWvpyl4UOtii2JSSPNtemFx
+         OzkbLaJ2NczzJttNGkWuqohUYcVeV7DE0bJSwjK/6kK1IR0K4+oZtiksFvhfe29/n9/M
+         Ozv799A3VoKrn2Yjhp469CA46a+mzLI5A7YP94O744KEcvV50Af5WW8A3Au/x7s1nIC1
+         HI2YBxWJugDn2i/feY5Iaj06u0SeoU+oGpyEo9lez7R29KGD7RHN6+Q2k8CBN0IFQayp
+         eebUU0gX7qjwg3rbPo+RS7syB1cwDRcIRNGxdjs/XJ3Eq3dNz0iXN4gXhr7GdvwTxK6Z
+         eOTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX8LXSI5wsJr61XF+19QkQ+XHVXyGR+XBGi45grwNqlTNU9u64S0qhUS0iW520oNIp1YSIQVSSM4g==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yym1mYA8owIphimH80VPj0vgtCqDrjnm8p0FcncZ9gQ4b6TOL5q
+	YtKx32W0E7cS+QXL4d//vsCfWu9hq9+Y+QQUEeRUP1wnfQyeA8sRpTH3A7zRYug=
+X-Google-Smtp-Source: AGHT+IEIj7UpxJT8a0mIACuZXNoTi9evmUotnGeb8wHYPTVQQPCrd38PWufROqKQIhaL5lvUsVlKgg==
+X-Received: by 2002:a17:902:e549:b0:205:8948:3578 with SMTP id d9443c01a7336-20589483694mr10763885ad.2.1725290776144;
+        Mon, 02 Sep 2024 08:26:16 -0700 (PDT)
+Received: from telecaster ([2601:602:8980:9170::901f])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-205152d04a3sm67470855ad.110.2024.09.02.08.26.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Sep 2024 08:26:14 -0700 (PDT)
+Date: Mon, 2 Sep 2024 08:26:13 -0700
+From: Omar Sandoval <osandov@osandov.com>
+To: David Hildenbrand <david@redhat.com>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>, linux-mm@kvack.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Hellwig <hch@lst.de>, x86@kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-um@lists.infradead.org, kernel-team@fb.com
 Subject: Re: [PATCH 0/2] mm: make copy_to_kernel_nofault() not fault on user
  addresses
-To: Omar Sandoval <osandov@osandov.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- Christoph Hellwig <hch@lst.de>, x86@kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-um@lists.infradead.org, kernel-team@fb.com
+Message-ID: <ZtXZFc9kZAUMD4e0@telecaster>
 References: <cover.1725223574.git.osandov@fb.com>
  <5fa50d78-6764-4f99-87b3-7bd7edbeea5a@csgroup.eu>
  <ZtVbrM4rQsGFJo_t@telecaster>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <ZtVbrM4rQsGFJo_t@telecaster>
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ <861d448c-ce1d-4b74-87eb-9b211dfebbb1@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <861d448c-ce1d-4b74-87eb-9b211dfebbb1@redhat.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240902_015633_279047_880B0F0E 
-X-CRM114-Status: GOOD (  17.90  )
+X-CRM114-CacheID: sfid-20240902_082617_649579_E2382E6A 
+X-CRM114-Status: GOOD (  32.45  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -156,59 +102,75 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 02.09.24 08:31, Omar Sandoval wrote:
-> On Mon, Sep 02, 2024 at 08:19:33AM +0200, Christophe Leroy wrote:
->>
->>
->> Le 02/09/2024 Ã  07:31, Omar Sandoval a Ã©critÂ :
->>> [Vous ne recevez pas souvent de courriers de osandov@osandov.com. DÃ©couvrez pourquoi ceci est important Ã  https://aka.ms/LearnAboutSenderIdentification ]
->>>
->>> From: Omar Sandoval <osandov@fb.com>
->>>
->>> Hi,
->>>
->>> I hit a case where copy_to_kernel_nofault() will fault (lol): if the
->>> destination address is in userspace and x86 Supervisor Mode Access
->>> Prevention is enabled. Patch 2 has the details and the fix. Patch 1
->>> renames a helper function so that its use in patch 2 makes more sense.
->>> If the rename is too intrusive, I can drop it.
->>
->> The name of the function is "copy_to_kernel". If the destination is a user
->> address, it is not a copy to kernel but a copy to user and you already have
->> the function copy_to_user() for that. copy_to_user() properly handles SMAP.
+On Mon, Sep 02, 2024 at 10:56:27AM +0200, David Hildenbrand wrote:
+> On 02.09.24 08:31, Omar Sandoval wrote:
+> > On Mon, Sep 02, 2024 at 08:19:33AM +0200, Christophe Leroy wrote:
+> > > 
+> > > 
+> > > Le 02/09/2024 à 07:31, Omar Sandoval a écrit :
+> > > > [Vous ne recevez pas souvent de courriers de osandov@osandov.com. Découvrez pourquoi ceci est important à https://aka.ms/LearnAboutSenderIdentification ]
+> > > > 
+> > > > From: Omar Sandoval <osandov@fb.com>
+> > > > 
+> > > > Hi,
+> > > > 
+> > > > I hit a case where copy_to_kernel_nofault() will fault (lol): if the
+> > > > destination address is in userspace and x86 Supervisor Mode Access
+> > > > Prevention is enabled. Patch 2 has the details and the fix. Patch 1
+> > > > renames a helper function so that its use in patch 2 makes more sense.
+> > > > If the rename is too intrusive, I can drop it.
+> > > 
+> > > The name of the function is "copy_to_kernel". If the destination is a user
+> > > address, it is not a copy to kernel but a copy to user and you already have
+> > > the function copy_to_user() for that. copy_to_user() properly handles SMAP.
+> > 
+> > I'm not trying to copy to user. I am (well, KDB is) trying to copy to an
+> > arbitrary address, and I want it to return an error instead of crashing
+> > if the address is not a valid kernel address. As far as I can tell, that
+> > is the whole point of copy_to_kernel_nofault().
 > 
-> I'm not trying to copy to user. I am (well, KDB is) trying to copy to an
-> arbitrary address, and I want it to return an error instead of crashing
-> if the address is not a valid kernel address. As far as I can tell, that
-> is the whole point of copy_to_kernel_nofault().
+> The thing is that you (well, KDB) triggers something that would be
+> considered a real BUG when triggered from "ordinary" (non-debugging) code.
 
-The thing is that you (well, KDB) triggers something that would be 
-considered a real BUG when triggered from "ordinary" (non-debugging) code.
+If that's the case, then it's a really weird inconsistency that it's OK
+to call copy_from_kernel_nofault() with an invalid address but a bug to
+call copy_to_kernel_nofault() on the same address. Again, isn't the
+whole point of these functions to fail gracefully instead of crashing on
+invalid addresses? (Modulo the offline and hwpoison cases you mention
+for /proc/kcore.)
 
-But now I am confused: "if the destination address is in userspace" does 
-not really make sense in the context of KDB, no?
+> But now I am confused: "if the destination address is in userspace" does not
+> really make sense in the context of KDB, no?
+> 
+>   [15]kdb> mm 0 1234
+>   [   94.652476] BUG: kernel NULL pointer dereference, address:
+> 0000000000000000
+> 
+> Why is address 0 in "user space"? "Which" user space?
 
-   [15]kdb> mm 0 1234
-   [   94.652476] BUG: kernel NULL pointer dereference, address: 
-0000000000000000
+Sure, it's not really user space, but it's below TASK_SIZE_MAX, so
+things like handle_page_fault() and fault_in_kernel_space() treat it as
+if it were a user address. I could
+s/userspace address/address that is less than TASK_SIZE_MAX or is_vsyscall_vaddr(address)/.
 
-Why is address 0 in "user space"? "Which" user space?
+> Isn't the problem here that KDB lets you blindly write to any non-existing
+> memory address?
+> 
+> 
+> Likely it should do some proper filtering like we do in fs/proc/kcore.c:
+> 
+> Take a look at the KCORE_RAM case where we make sure the page exists, is
+> online and may be accessed. Only then, we trigger a
+> copy_from_kernel_nofault(). Note that the KCORE_USER is a corner case only
+> for some special thingies on x86 (vsyscall), and can be ignored for our case
+> here.
 
-Isn't the problem here that KDB lets you blindly write to any 
-non-existing memory address?
+Sure, it would be better to harden KDB against all of these special
+cases. But you can break things in all sorts of fun ways with a
+debugger, anyways. The point of this patch is that it's nonsense that a
+function named copy_to_kernel_nofault() does indeed fault in a trivial
+case like address < TASK_SIZE_MAX.
 
-
-Likely it should do some proper filtering like we do in fs/proc/kcore.c:
-
-Take a look at the KCORE_RAM case where we make sure the page exists, is 
-online and may be accessed. Only then, we trigger a 
-copy_from_kernel_nofault(). Note that the KCORE_USER is a corner case 
-only for some special thingies on x86 (vsyscall), and can be ignored for 
-our case here.
-
--- 
-Cheers,
-
-David / dhildenb
-
+Thanks,
+Omar
 
