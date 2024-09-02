@@ -4,90 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2EC82CD3420
-	for <linux-um@archiver.kernel.org>; Mon,  2 Sep 2024 21:03:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD976C54FC6
+	for <linux-um@archiver.kernel.org>; Mon,  2 Sep 2024 23:46:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
-	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	Message-ID:Date:References:In-Reply-To:Subject:Cc:To:From:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=po+MmfD4nq5cLkClRRslOxFglpMwsYkFajj19L5Hzi0=; b=i5+oXwEfKANFTYbdlFTi5Bhgdy
-	L0S0ktUwo/4WvwQbmLFaeqsRABsykMbFMGp9ReJLxc9oEuA7k6VAMRSJq78wa7VrmjqSzEVlUAdCg
-	IwG901d2d0GwaHRqn90hfmPl46GJy1vVFhx+IL1fKtqaX9voUCui/LAbNTypLlXPMGq//ggndkXCa
-	SjXuLErr5Mp/LzgTDFyg6r5tZPuL+5hDn2Rl8q9ERY5ZZuBKquT5Eql1P1oy//tFmEaVoKR99Azgq
-	1DNBy9oXfyz3DjiyOiXQQ/RjPNprUuhYwpMK4BpZ9mrbwRJEqY1T33r2Z1+t/hutLIFhfP5qv/lTj
-	bAzXTbMQ==;
+	bh=UaJezUaY19zxJWqob2w1cOAk5qiAPl5VHmtR3xKChPw=; b=d/YJNXOeW4k5VGaCTTdi7J7azu
+	U968fpO2ufaMfs9hhuUNYdjNYxPvZFYurutCyc5/YcpoAhdqvTUQdgkXHLLW2Cp/PWtuMtp86IdzE
+	n3uCgeqK9cZ8EsNbgqzi0FEQcG0f72KBKUKj1I/EsdYSHfrk0l4wTCkUvlho5BdZzDkvLJpkg06GR
+	HrguW+99/8+AMF0B9httfGFqeHoJGMDHEkQk5vT7R1rk/szseuBfrV0OtuBttNzdRKVufo2JNcVHt
+	ARqElyR0JkpubQcTJpfcq+f92l8fDfc9hqEv8XN4ZDKbtSkWtY16PGJyZZz/eKP7UAycWd2OykxTB
+	z+pVti7Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1slECn-0000000FYOL-1sLX;
-	Mon, 02 Sep 2024 21:03:21 +0000
-Received: from mail-lf1-x134.google.com ([2a00:1450:4864:20::134])
+	id 1slGkb-0000000Fo8t-0LHC;
+	Mon, 02 Sep 2024 23:46:25 +0000
+Received: from gandalf.ozlabs.org ([150.107.74.76] helo=mail.ozlabs.org)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1slECk-0000000FYNW-0FEF
-	for linux-um@lists.infradead.org;
-	Mon, 02 Sep 2024 21:03:19 +0000
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-5353d0b7463so7764101e87.3
-        for <linux-um@lists.infradead.org>; Mon, 02 Sep 2024 14:03:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1725310995; x=1725915795; darn=lists.infradead.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=po+MmfD4nq5cLkClRRslOxFglpMwsYkFajj19L5Hzi0=;
-        b=V6gt8GjBB/+TCb785iwrPtElX3TG2Z8vlRTqh3RtHBUO1M/xxCj/Cx6uo8hv/vyQin
-         400/O5uJvL6P9z1gFNkGGmCzQ6ecrgnZkQVRxkIBq2n6n9Yc4+2Zp+UPCEBYdZsiVIdv
-         J31kwcwvH4JwpkIEuS6XmfAj8fYCQKyxNU2U8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725310995; x=1725915795;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=po+MmfD4nq5cLkClRRslOxFglpMwsYkFajj19L5Hzi0=;
-        b=U+rmDwuW5K9qBuKPdNJb0aLmoIXm4c5vcaxh2jyBq77HuMNpRRROK3weZD40rHO2YO
-         NNUbPOed6YiVSaPi+pwFsGMz8mdraFhldQc38SmDyECJGXsCHvuEUoUTmCHr6+feFCwv
-         Imat6AZ+NlRN6SgdL9oL8pWLb78hh4AKd1Wd/8jx3bgWq64zLO/byyAoWAkDmB9jM4eO
-         mKSM9PQJYbjoUQ/19dDdUhho0xRM+HinUI4+bLvXsz6397xtkJoQuPL8EoU4JvxI6ZCA
-         wora6Ke7y4C1f5eoHjZnFjLvud9SCxa8DSOTdZB4VhjEIToQK9cWRu9iKcrQeSnn1VT8
-         km2g==
-X-Forwarded-Encrypted: i=1; AJvYcCU3IFEkmlQ57gIC2oXaDlnsEuPwOHUzx5ZSWwPb66GeRLPTPSO6FsvuiQZsZHPhRickbCwrulqwfA==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yw7R7YwMUFxB6NHk12WNbnM10MCRU5LV2o7sz8QolaAcK+46Uqm
-	uZ4UxQC3GDOotES3n6cDPfQ6BdSnhSdaS9nlpbTjTR5LRHhsVLRIVrxct66XTyzqTRDbLPaTo+P
-	dROUKkQ==
-X-Google-Smtp-Source: AGHT+IHn4HL/Oq3WhP/gPS2U1uD8XzcEP59GYBOpO4fIFcp7aeMUS8qk0bwVnTGhl7KiMqFDgWBgKw==
-X-Received: by 2002:a05:6512:318a:b0:52e:d0f8:2d43 with SMTP id 2adb3069b0e04-53546b3627amr969954e87.17.1725310994954;
-        Mon, 02 Sep 2024 14:03:14 -0700 (PDT)
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com. [209.85.218.41])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a8988feb9f7sm600121866b.42.2024.09.02.14.03.13
-        for <linux-um@lists.infradead.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Sep 2024 14:03:13 -0700 (PDT)
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a8683dc3b17so284167466b.3
-        for <linux-um@lists.infradead.org>; Mon, 02 Sep 2024 14:03:13 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXwzls4QkWywA2y9S2fCogIpPrnBFNGv75RF5GPouG1IuUMC1YkoVoGonhXMpfMO99fCM6RAakU3w==@lists.infradead.org
-X-Received: by 2002:a05:6402:34d6:b0:5c2:5d34:a45a with SMTP id
- 4fb4d7f45d1cf-5c25d34a63fmr2793579a12.2.1725310993097; Mon, 02 Sep 2024
- 14:03:13 -0700 (PDT)
+	id 1slGjZ-0000000Fns4-3ZPB;
+	Mon, 02 Sep 2024 23:45:24 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1725320712;
+	bh=UaJezUaY19zxJWqob2w1cOAk5qiAPl5VHmtR3xKChPw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=SVJPlBNP8APfuR/jBD4BjKXOasjSRZ3dbEv80YacUUHbcdDw+XM6x2QOEMOi1xx0G
+	 2YI84S67i5/r6XZ2EhcaDv98rdhCTGlEoi1jECCm64pD3ZPLG9/H5Q/8B0fDuEFnn0
+	 ODaujSs7E9rewRWin3OvP+Wi7kVFPTMXmkAtlOVngxeC9c92hxF0K9sD5LWYyiAqz9
+	 XX/5QjfzVMkzcIC5jr62Zzp+L4JnzRecg6m4Zt5sMtEE1k/SNxRAfgO7Uhbr4eH27d
+	 TDyAw6f/mrTclwB3jDJ3y1IQnfoXHfFk61zd0A7zo2gIuket9WZa/x4aJ3zVCrY44b
+	 JAHuQDXFAf6gQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4WyQNR6tgxz4x1V;
+	Tue,  3 Sep 2024 09:45:11 +1000 (AEST)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Vegard Nossum <vegard.nossum@oracle.com>, Masahiro Yamada
+ <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+ kvmarm@lists.linux.dev, kvm@vger.kernel.org, linux-um@lists.infradead.org,
+ bpf@vger.kernel.org, llvm@lists.linux.dev, Vegard Nossum
+ <vegard.nossum@oracle.com>
+Subject: Re: [PATCH] kbuild: use objcopy to generate asm-offsets
+In-Reply-To: <20240828083605.3093701-1-vegard.nossum@oracle.com>
+References: <20240828083605.3093701-1-vegard.nossum@oracle.com>
+Date: Tue, 03 Sep 2024 09:45:11 +1000
+Message-ID: <875xrd7h88.fsf@mail.lhotse>
 MIME-Version: 1.0
-References: <20240812082605.743814-1-mpe@ellerman.id.au> <20240819185253.GA2333884@thelio-3990X>
- <yt9dy149vprr.fsf@linux.ibm.com> <20240902134953.e834bc2e57d36b1d3b1397e4@linux-foundation.org>
-In-Reply-To: <20240902134953.e834bc2e57d36b1d3b1397e4@linux-foundation.org>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 2 Sep 2024 14:02:56 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjD0XLhkzou89J-TK=L6B88pFoNYxN1uTWRQB3U5Czywg@mail.gmail.com>
-Message-ID: <CAHk-=wjD0XLhkzou89J-TK=L6B88pFoNYxN1uTWRQB3U5Czywg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] mm: Add optional close() to struct vm_special_mapping
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Sven Schnelle <svens@linux.ibm.com>, Nathan Chancellor <nathan@kernel.org>, 
-	Michael Ellerman <mpe@ellerman.id.au>, linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org, 
-	christophe.leroy@csgroup.eu, jeffxu@google.com, Liam.Howlett@oracle.com, 
-	linux-kernel@vger.kernel.org, npiggin@gmail.com, oliver.sang@intel.com, 
-	pedro.falcato@gmail.com, linux-um@lists.infradead.org, 
-	linux-s390@vger.kernel.org, Ravi Bangoria <ravi.bangoria@linux.ibm.com>, 
-	Steven Rostedt <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240902_140318_141964_B85A1079 
-X-CRM114-Status: GOOD (  11.12  )
+X-CRM114-CacheID: sfid-20240902_164522_340143_591C19A4 
+X-CRM114-Status: GOOD (  14.50  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -102,23 +74,82 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2 Sept 2024 at 13:49, Andrew Morton <akpm@linux-foundation.org> wrote:
+Vegard Nossum <vegard.nossum@oracle.com> writes:
+> In order to give assembly code access to C structs without having to
+> hardcore member offsets, the kernel compiles a C source file listing all
+> the structs and offsets that are needed in assembly code. Using some
+> C preprocessor trickery and a sed script, the compiled assembly code is
+> turned back into C preprocessor code that in turn can be used by the
+> asssembly code.
 >
-> uprobe_clear_state() is a pretty simple low-level thing.  Side-effects
-> seem unlikely?
+> This sed script is very hard to read and understand.
+>
+> Remove the sed script and compile the C source listing structs and
+> offsets to an object file (instead of assembly code) that embeds C source
+> directly. Then extract the C source using objcopy.
+>
 
-I think uprobe_clear_state() should be removed from fork.c entirely,
-made 'static', and then we'd have
+I threw some builders at this and hit a few errors:
 
-        area->xol_mapping.close = uprobe_clear_state;
+parisc:
+  # make -s -j 160 ARCH=parisc64 O=/kisskb/build/mpe_generic-64bit_defconfig_parisc64-gcc13 CROSS_COMPILE=/opt/cross/kisskb/korg/gcc-13.1.0-nolibc/hppa-linux/bin/hppa64-linux-  
+  {standard input}: Assembler messages:
+  {standard input}: Error: .size expression for main does not evaluate to a constant
+  make[3]: *** [/kisskb/src/scripts/Makefile.build:244: scripts/mod/devicetable-offsets.o] Error 1
 
-in __create_xol_area() instead (ok, the arguments change, instead of
-looking up "mm->uprobes_state.xol_area", it would get it as the vma
-argument)
+s390:
+  # make -s -j 32 ARCH=s390 O=/kisskb/build/mpe_defconfig_s390x-gcc13 CROSS_COMPILE=/opt/cross/kisskb/korg/gcc-13.1.0-nolibc/s390-linux/bin/s390-linux-  
+  In file included from /kisskb/src/arch/s390/include/asm/ptrace.h:11,
+                   from /kisskb/src/arch/s390/kernel/vdso64/vdso_user_wrapper.S:7:
+  /kisskb/src/arch/s390/include/uapi/asm/ptrace.h:167: warning: "STACK_FRAME_OVERHEAD" redefined
+    167 | #define STACK_FRAME_OVERHEAD    160      /* size of minimum stack frame */
+        | 
+  In file included from /kisskb/src/include/asm-generic/asm-offsets.h:1,
+                   from ./arch/s390/include/generated/asm/asm-offsets.h:1,
+                   from /kisskb/src/arch/s390/kernel/vdso64/vdso_user_wrapper.S:5:
+  ./include/generated/asm-offsets.h:51: note: this is the location of the previous definition
+     51 | #define STACK_FRAME_OVERHEAD -96 /* sizeof(struct stack_frame) */
 
-That's how it should always have been, except we didn't have a close() function.
+mips:
+  # make -s -j 32 ARCH=mips O=/kisskb/build/mpe_defconfig_mips-gcc13 CROSS_COMPILE=/opt/cross/kisskb/korg/gcc-13.1.0-nolibc/mips-linux/bin/mips-linux-  
+  {standard input}: Assembler messages:
+  {standard input}:27: Error: junk at end of line, first unrecognized character is `M'
+  {standard input}:212: Error: junk at end of line, first unrecognized character is `M'
+  {standard input}:265: Error: junk at end of line, first unrecognized character is `M'
+  {standard input}:338: Error: junk at end of line, first unrecognized character is `M'
+  {standard input}:596: Error: junk at end of line, first unrecognized character is `S'
+  {standard input}:608: Error: junk at end of line, first unrecognized character is `L'
+  {standard input}:721: Error: junk at end of line, first unrecognized character is `L'
+  {standard input}:806: Error: junk at end of line, first unrecognized character is `L'
+  {standard input}:963: Error: junk at end of line, first unrecognized character is `P'
+  {standard input}:996: Error: junk at end of line, first unrecognized character is `K'
+  {standard input}:1161: Error: junk at end of line, first unrecognized character is `M'
+  make[3]: *** [/kisskb/src/scripts/Makefile.build:244: arch/mips/kernel/asm-offsets.o] Error 1
 
-Hmm?
+riscv:
+  # make -s -j 160 ARCH=riscv O=/kisskb/build/mpe_defconfig_riscv-gcc13 CROSS_COMPILE=/opt/cross/kisskb/korg/gcc-13.1.0-nolibc/riscv64-linux/bin/riscv64-linux-  
+  In file included from /kisskb/src/arch/riscv/kernel/asm-offsets.c:9:
+  /kisskb/src/arch/riscv/kernel/asm-offsets.c: In function 'asm_offsets':
+  /kisskb/src/include/linux/kbuild.h:6:9: error: invalid 'asm': invalid use of '%c'
+      6 |         asm volatile( \
+        |         ^~~
+  /kisskb/src/include/linux/kbuild.h:12:9: note: in expansion of macro '_LINE'
+     12 |         _LINE("#define " #sym " %c0 /* " #val " */", "i" (val))
+        |         ^~~~~
+  /kisskb/src/include/linux/kbuild.h:15:9: note: in expansion of macro 'DEFINE'
+     15 |         DEFINE(sym, offsetof(struct str, mem))
+        |         ^~~~~~
+  /kisskb/src/arch/riscv/kernel/asm-offsets.c:25:9: note: in expansion of macro 'OFFSET'
+     25 |         OFFSET(TASK_THREAD_RA, task_struct, thread.ra);
+        |         ^~~~~~
+  /kisskb/src/include/linux/kbuild.h:6:9: error: invalid 'asm': invalid use of '%c'
+      6 |         asm volatile( \
+        |         ^~~
 
-            Linus
+
+Full list here, but note there are some unrelated pre-existing failures:
+  http://kisskb.ellerman.id.au/kisskb/head/259bba3447faaf5e5b12ae41a26a62978d4c1965/
+
+
+cheers
 
