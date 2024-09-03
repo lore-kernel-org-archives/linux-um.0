@@ -4,70 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 994D9CD13CF
-	for <linux-um@archiver.kernel.org>; Tue,  3 Sep 2024 09:22:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F8B1CD13CF
+	for <linux-um@archiver.kernel.org>; Tue,  3 Sep 2024 09:44:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
-	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:
-	To:From:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:
-	List-Owner; bh=G4BItOc8k/hB4suOfWWwTOg/U0FTlHwyCNnKCLPge2w=; b=JXDmbbJmsCnFXP
-	DqImyVnlIaKlSYhveH1eBrEmHa3/nAbFgpyHaQIfhZRdgiiYKjs5NMI5GIYmJMlwv0DlfcQzC5cq+
-	5tBoGjUBvVSo28Qg4jgllFMqn7WXRcpSfkaWH9xJgrZASnLo/Xwu5mub4tosgXHqI9Vur6oKs6Grg
-	tx5vMoWah6dBCZzOqdkzqIOXz99hZ4n0DPBWYePMooggZBFeqJ+auJAWz2E32xsr9QEToFgWsYlF2
-	eWDpm/Hb7eJ5vX5EG+896N73o1Pys3+96jdzgM7LTn9haGukHx7pqgu1r7PectR5QQkdTaPypF7E4
-	2D1WXnCK07MZaBD8lBaQ==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=V6Ts8UeyZzyhtsfr4GKAWGTzPe6MoHhPae1lOHa7ehM=; b=DlbBKeIQeXA5N09oxeuecgRxNO
+	MXu+N0CLlzJkJh2t5jSRe20Bd1yN80tkL+PBldZyYx7ZUT+YRDr2X8dxhdjdJ6KNQcjg/99JBCHPF
+	VNYPQL78qxz1nFsAjTPWRxVKMocrTE1+UkKNMgaYGQDUW0l7HM/eNL4eYRSbtnAEsaqD11NFncpJE
+	x/73RMuEvgwiinaRJ9adaI5ALWgu5rpYLmkRiQjs5jTs7kVE5W6AiHuGUIikGHmSWKpFpUbplA3uW
+	1PjPCUSWbcNFc7HQbHDIGJ3NqG80QO7aWIkc/vNoqhveeldhHkozmELsUNZi40u9SpcLcCUtmI8x4
+	yl1P6VYg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1slPkX-0000000H7ar-3ctS;
-	Tue, 03 Sep 2024 09:22:57 +0000
-Received: from mod.modforum.org ([192.254.136.77])
+	id 1slQ5V-0000000HDyr-3FAP;
+	Tue, 03 Sep 2024 09:44:37 +0000
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1slPjU-0000000H7DG-0Y7E
-	for linux-um@lists.infradead.org;
-	Tue, 03 Sep 2024 09:21:53 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=basantfashion.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	MIME-Version:Message-ID:Date:Subject:To:From:Reply-To:Sender:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=G4BItOc8k/hB4suOfWWwTOg/U0FTlHwyCNnKCLPge2w=; b=J9a7PK9HYFrZggX1+g+7FbkIJh
-	SdfQMxABxL1Co73TwE4xapm6q1lXJakoP4/cJpi0eaLxIF2ESxXcp+rzJOidNJVeOhz7AxXrW1mLI
-	XkLyz/KvgM8WmCePtd8cv5seS+/n1jdcfZCHv6og7l2+tM+ZYyYsJ/Qwo2x7TP6QvrDAPRkC8YObG
-	zB2GIAalVyUjVn7ebvs5MWEl8MwfHCSpMaP+PKQQ/WADHLzx9o50uzrUUI+KMMB8+a6pxWb44IDOo
-	JaCnDtArRofBGVuc2jBs5N/PIh2rSXX3BoYpYO3BHMDBuzZJErTNFhtYGaiHu3S82ep/adD8VsqwT
-	tt+tVLoA==;
-Received: from [162.244.210.121] (port=64888)
-	by mod.modforum.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.93)
-	(envelope-from <kuljeet@basantfashion.com>)
-	id 1slPiZ-0002Zx-7W
-	for linux-um@lists.infradead.org; Tue, 03 Sep 2024 04:20:55 -0500
-From: MERCURIA  <kuljeet@basantfashion.com>
-To: linux-um@lists.infradead.org
-Subject: Request for Quote and Meeting Availability
-Date: 3 Sep 2024 02:21:50 -0700
-Message-ID: <20240903022149.D4A3E821DCB4C949@basantfashion.com>
+	id 1slPqy-0000000H9QM-3EeV;
+	Tue, 03 Sep 2024 09:29:38 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id 9DFE8A42623;
+	Tue,  3 Sep 2024 09:29:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73C6AC4CEC5;
+	Tue,  3 Sep 2024 09:29:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725355775;
+	bh=V6Ts8UeyZzyhtsfr4GKAWGTzPe6MoHhPae1lOHa7ehM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=B2+DIvPMxoKjhFD7wiF+7h0l/cf/7MYT3BR0Zhx9vp7HBRO4mfIxwB9KqYB/sTeeC
+	 1G81qhU92qnFCiE/jliReBCBu6b2qHvBBHBVRrSMDGFA+JwuXas7widUz6aFtvxdkF
+	 4tjHzOkHd6/ex/78UYqR6cDfYnFj/Pq5XqY4K3a0iXYisf626Hp7/acc1DOSY/a6cg
+	 a2POT1sITjmIyfszLS/XUbkntiO3MqghfOGuiOpgHz9jatyaXxIOGO9cYBAqqbwA/B
+	 15wIL94JzUdR+NZ65E3bnzn2/+w0/WyZpdfxs3YRDoguIILWF4YT/rse1cCgfc4OyQ
+	 fg09k/DSfw2nw==
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-5343eeb4973so7815124e87.2;
+        Tue, 03 Sep 2024 02:29:35 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCU8mly9lAGlfnlByf9qY68XE/MX4peY1Y2cJCg+eQKp8STjoPzO799BlUEtbLAkQZKeeMrDw5DDTuSGmlrLqyXw@lists.infradead.org, AJvYcCUjiiaCaYT7uWcHDFV7MP26/BcV/xobpSJvA09yR7TPhv1xql75c266x7RRQy7ng+hHIvZbDGP+z5o=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzLmxeLqin7AFJgOWWjp+eegibQnhM0ffQbQ0g8HhyTr82Oj4VB
+	oljNGV2y2lBVYqanto9tGwc0q/e9fNhUvwoQcKvUakb4LAaEdztD4MCdlhFTPp1j4GeMM4uoRlp
+	rapSHcHqtw+utXHxlMddglmHyXaM=
+X-Google-Smtp-Source: AGHT+IHCtdlG38E/0l7FYyhNp/Eh+agXUP/x4m9X1sDISAuGOfE6COrF1RVXR4n+XrSU6Tf+eKwYmtlidm1SXvGzdlM=
+X-Received: by 2002:a05:6512:108f:b0:533:4785:82ab with SMTP id
+ 2adb3069b0e04-53546b223d3mr10683476e87.1.1725355774159; Tue, 03 Sep 2024
+ 02:29:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
+References: <20240828083605.3093701-1-vegard.nossum@oracle.com>
+ <875xrd7h88.fsf@mail.lhotse> <d1bb2638-2e0e-44ef-b8da-9746ed532ed1@oracle.com>
+In-Reply-To: <d1bb2638-2e0e-44ef-b8da-9746ed532ed1@oracle.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Tue, 3 Sep 2024 18:28:57 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAT84K0RgDfLoOOLjtyCqsS19bASXRv43HF8P=C9obJPVA@mail.gmail.com>
+Message-ID: <CAK7LNAT84K0RgDfLoOOLjtyCqsS19bASXRv43HF8P=C9obJPVA@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: use objcopy to generate asm-offsets
+To: Vegard Nossum <vegard.nossum@oracle.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-omap@vger.kernel.org, kvmarm@lists.linux.dev, kvm@vger.kernel.org, 
+	linux-um@lists.infradead.org, bpf@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - mod.modforum.org
-X-AntiAbuse: Original Domain - lists.infradead.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - basantfashion.com
-X-Get-Message-Sender-Via: mod.modforum.org: authenticated_id: kuljeet@basantfashion.com
-X-Authenticated-Sender: mod.modforum.org: kuljeet@basantfashion.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240903_022152_206375_FBC5C666 
-X-CRM114-Status: UNSURE (  -2.04  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240903_022936_962461_50BC7C6B 
+X-CRM114-Status: GOOD (  20.68  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -79,41 +81,53 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
-Reply-To: procurement@mercuira.com
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Greetings,
+On Tue, Sep 3, 2024 at 4:21=E2=80=AFPM Vegard Nossum <vegard.nossum@oracle.=
+com> wrote:
+>
+>
+> On 03/09/2024 01:45, Michael Ellerman wrote:
+> > Vegard Nossum <vegard.nossum@oracle.com> writes:
+> >> Remove the sed script and compile the C source listing structs and
+> >> offsets to an object file (instead of assembly code) that embeds C sou=
+rce
+> >> directly. Then extract the C source using objcopy.
+> >>
+> >
+> > I threw some builders at this and hit a few errors:
+>
+> Thanks, I also got the ones from kernel test robot and figured something
+> was going a bit wrong.
+>
+> There are several issues: clang wants - instead of /dev/stdout as an
+> argument to objcopy, and then gcc has some bugs that prevent the numbers
+> from appearing correctly on some architectures, also I had an extra # in
+> the COMMENT() macro which only resulted in an error on some
+> architectures. I've attached a tentative v2 that fixes these issues, but
+> I'm still trying to figure out why m68k is giving me slightly different
+> output for include/generated/asm-offsets.h and why the arc assembler
+> fails.
+>
+> In the end I'm wondering if this patch is really worth it, given all the
+> failures and little workarounds :-| If I can sort out the last few
+> failures I'll submit it as an RFC.
 
-I hope you are doing great.
+This patch has zero benefit.
 
-We have reviewed your products on your website, and several items=20
-have caught our interest. We would like to request a quote the=20
-following
+The current way (preprocess + sed) is faster than
+your way (preprocess + compile + objcopy) and works
+independently of tool quirks.
 
-Can you ship to the United States?
 
-What are your best prices?
 
-What support do you provide?
 
-We are also interested in your services for this project.
 
-Could you let us know your availability for a virtual meeting on=20
-Zoom to discuss this project further?
 
-Please advise us on these matters so that we can prepare a=20
-meeting notice for our company executives to effectively engage=20
-with you.
 
-Thank you for your attention to this inquiry. We look forward to=20
-your prompt response.
 
-Best regards,
-
-Nina Petrova
-Procurement Manager
-Email: procurement@mercuira.com
-12 Marina View, Asia Square Tower 2, #26-01, Singapore, 018961
-Phone: +65 641 1080
+--
+Best Regards
+Masahiro Yamada
 
