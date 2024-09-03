@@ -4,139 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EEA4ECD37AB
-	for <linux-um@archiver.kernel.org>; Tue,  3 Sep 2024 17:16:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42F59CD37AA
+	for <linux-um@archiver.kernel.org>; Tue,  3 Sep 2024 17:43:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
-	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=t3nDXJLzevMZ4WniFU7yDbmtsQYuSVyzF0RKOG2Eq3Y=; b=U9CwJgcVvP0j4iBNuz8mrt0fBA
-	0/3LIPsHNTqQaoir4Van3RhA0HSj+uaCNEyTOseJn0AWhBLCJiydFqTsV3sffBsADZVveZQC+rrHc
-	Mg/4RoXHWlfMu1YZ/ZraDZNpR0xa7euql3czw29eNhZscPYYNL+q6f97DF+/vKC/3KgR78etyIius
-	e0xYEkcsql98NdX2DoECCatTsLK4WodmuORxa0uG7xzKYRcNb0n2RjQmcghFP77Cz7c5pP0Fefn52
-	JJtu1y5BoCCRw/fu7uNjYbIB60d7MTPuxHLAY8nGYo8IjN/D5UcQDpa0WXjFFluHMcq+lpXijR8wh
-	k6BtHAJg==;
+	bh=fy49/AVvXvkuJP3eSVDqTTRc5F7gppOTJPxMN+eltxo=; b=EfMRiZZPja+lAc2yUoYnaO34z0
+	S6lQB7R/MVIHj3/BDs72AbFkGwa2AhEgVaMRzHwSqXkloJydJFOJcxZl5+o1sgkqC1aBFVr+xHaT8
+	gjE7+TBwdeD6zEp3PaYqtE4aHCftbUE6QPyMR8Dr1oDDyaQ9sYxBBruvdcIkdUAcQ6IYOcbwArJ4r
+	H7SePMn1tA1/EUcoYKBsY6Zpnbq7Bq89KeUVskAJoSpvMiw+kNMu7tsz8K74wFol7GuqlKHUOnYkt
+	AxGLuRECQb7rMMdzWPWnFbAJrlWQmGAOl4Pp2vv7L5zGyGUYevgShqD/g+gMijOt0MFfoP/m7gCiZ
+	Q2EjboSQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1slX8X-00000001GL9-2DzS;
-	Tue, 03 Sep 2024 17:16:13 +0000
-Received: from fhigh4-smtp.messagingengine.com ([103.168.172.155] helo=pfhigh4-smtp.messagingengine.com)
+	id 1slXZ2-00000001L1J-1Y8F;
+	Tue, 03 Sep 2024 17:43:36 +0000
+Received: from mail-pj1-x1036.google.com ([2607:f8b0:4864:20::1036])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1slX7O-00000001Fwz-2mY1
+	id 1slXYz-00000001L0m-3IXC
 	for linux-um@lists.infradead.org;
-	Tue, 03 Sep 2024 17:15:04 +0000
-Received: from phl-compute-02.internal (phl-compute-02.phl.internal [10.202.2.42])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 08C6C114037B;
-	Tue,  3 Sep 2024 13:15:02 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-02.internal (MEProxy); Tue, 03 Sep 2024 13:15:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1725383702;
-	 x=1725470102; bh=t3nDXJLzevMZ4WniFU7yDbmtsQYuSVyzF0RKOG2Eq3Y=; b=
-	YDbD8uF7KodEPa+ofyavsEOzxJCqurTp3SI0bB46dt7aDK1sX5kQBrGwupxnMynh
-	iGkmM2nm4qNMOiBMhFGF2ZkADqslUgiXdmdQ6XnE5AJUT0XcVHv5mkXQ4W9OoXaH
-	DDabE7QpdTvT8lNpzXoL9C96lBtrQQZKGfmUOmbl3afjhIyzJpg4t9pBNyxgiyd8
-	hGOjL+4uN6/ZprxVArrdD6FBodiaHuHWPGYmKjjwFNP90BozeTEeEi8jYkLdQ/WP
-	G6VwAcccN5kWe6jQPEBeFbrf0kFm8nV2+O00QeTAPg5Ml7yy2/A1hSg9aSjtLx/X
-	4WbKJrHSlByR3y44o9GP6g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1725383702; x=
-	1725470102; bh=t3nDXJLzevMZ4WniFU7yDbmtsQYuSVyzF0RKOG2Eq3Y=; b=k
-	IkyhErU6eL1hFHh3bFi8To9J6+sFo5ltkScOzTF/q2TO51XVl8j6EHZmG2fbrSh/
-	wmF9j0rGtO+i9Axlyu/xqYzszxuYvKz7bIzS9d7uenNBq+6xRp/80cj0SmOJ32Me
-	YMM91QTY8lMsyutWSmBATG/f+kpswrhl4Q7PJwfbwJL9l5Y+UMCpBobo1c7yYevG
-	y69PDitFPDonrXoMM1XKKqGmhwvV8XQFZQUYUjITwKnqWtKBBoUy4l1+Of3BC5fP
-	riyCDurWZoRDd63h9OyYZnDAlclfZLvpsxvUdKLuPvHTqcVPZ52rkKygHOmriq0p
-	yc+njotyHIwmP/umq3G8Q==
-X-ME-Sender: <xms:FUTXZmGK6hGyqPlt8xDuMC3-9nZOM7GhDNczcd-hRUHUvexuqgjUxg>
-    <xme:FUTXZnUtklDeY0RQlgzBRR1QMhVZYM9sq9bWQwisdBKdUSUjrahjewNx-D-YPx0Q9
-    AVv890g8Tk-dKoD7oo>
-X-ME-Received: <xmr:FUTXZgLRUPjx1bRQ0FwtjJpKbogidJEZZAT-6AEwK4Q2lANUvJ-5yJFSHiMtryWbMKs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudehhedguddutdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenucfjughrpefhfffugggtgffkfhgjvfevofesthejredtredt
-    jeenucfhrhhomheplfhirgiguhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflh
-    ihghhorghtrdgtohhmqeenucggtffrrghtthgvrhhnpedvkeeihfefveekueevteefleff
-    keegudeghfdtuddugefhueevgeffgedukeejleenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorght
-    rdgtohhmpdhnsggprhgtphhtthhopeegtddpmhhouggvpehsmhhtphhouhhtpdhrtghpth
-    htohepsggvnhhnohdrlhhoshhsihhnsehprhhothhonhdrmhgvpdhrtghpthhtohepthhs
-    sghoghgvnhgusegrlhhphhgrrdhfrhgrnhhkvghnrdguvgdprhgtphhtthhopehjohhhrg
-    hnnhgvshesshhiphhsohhluhhtihhonhhsrdhnvghtpdhrtghpthhtoheplhhlvhhmsehl
-    ihhsthhsrdhlihhnuhigrdguvghvpdhrtghpthhtohepghgrrhihsehgrghrhihguhhord
-    hnvghtpdhrtghpthhtoheprhhitghhrghrugesnhhougdrrghtpdhrtghpthhtohepthhg
-    lhigsehlihhnuhhtrhhonhhigidruggvpdhrtghpthhtohepsghjohhrnhefpghghhesph
-    hrohhtohhnmhgrihhlrdgtohhmpdhrtghpthhtohepnhgrthhhrghnsehkvghrnhgvlhdr
-    ohhrgh
-X-ME-Proxy: <xmx:FUTXZgE27AQ7bgMzvT65AKgrPb-kptbxYCIdL-phmkIs4kkyScFi3A>
-    <xmx:FUTXZsWoRzTxodD4nSFsAiM43xSQtSr6GOZotGWIcH7SdoadqGJeFw>
-    <xmx:FUTXZjN2ppCIZYzxGfiAdgM_NOMtrX8qY4LofKyZjwaHxXV-lgJ26Q>
-    <xmx:FUTXZj23s8ifDZow0j0X63zsNvoDeqBxYCGT3sQ7ITZtxYDeyWxD6Q>
-    <xmx:FUTXZpKw5p5hNVoFo6pAKpu1pgVrNKJACKiM4vKITOwg3zVlEZgdhEIu>
-Feedback-ID: ifd894703:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 3 Sep 2024 13:14:57 -0400 (EDT)
-From: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Date: Tue, 03 Sep 2024 18:14:35 +0100
-Subject: [PATCH 2/3] MIPS: Rename mips_instruction type to workaround
- bindgen issue
+	Tue, 03 Sep 2024 17:43:35 +0000
+Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-2d87182874fso147830a91.3
+        for <linux-um@lists.infradead.org>; Tue, 03 Sep 2024 10:43:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1725385412; x=1725990212; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fy49/AVvXvkuJP3eSVDqTTRc5F7gppOTJPxMN+eltxo=;
+        b=YOzAKXczCvDargFURJjlRSibIOqB/A/0/k++WSwbhkyEbTH5FYfUNlizFl6ZATzB1N
+         Y43t6i3WKEbb2Qh6U7BGtOQcdR1bYNr59v8luFcWIfC1zXeZVALqgztQt36sg9Mku9BY
+         fBA2U8Ulqh5zb0rM01d3m7Sy9sLxWxiHXBkifMNCWfgKH2raO/Aom1/EeO0RPYsOv4QF
+         S2LRr/nn6821JhRqqOvz1hHmjkgbMdox3JsWTwmQqEpdN530E+qhMixRMvYXddyauecc
+         YPoKnDDts4couQ47QwRu3Js5B5xaJksS6Ya+oNlGlgnF+D6DkOC1NLF4FWKXEVcTUXyu
+         GRSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725385412; x=1725990212;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fy49/AVvXvkuJP3eSVDqTTRc5F7gppOTJPxMN+eltxo=;
+        b=KxhNtjB02GxuF0e2Qr6Jq2c1+lvCTsy8MBB/9nnvZTDQvvIc75j7GS4zL76qcthUVq
+         4aSSzaYMPkgJP29F52Qjxxq8I/9ZJt4QHPs0sV6oI9p4G0zYDXKWUeRMUC56Z/pvYy6R
+         3KA25/GRCv/qnnqv0iWzIssidtV/K51du0froqm+O9zsrtV7jKzK1400DhTvNzLZklKD
+         wAE3td3B1l/W6obcLk/VXhYQBM5dWY7Npm/HbVBaKJkMiqbrv0oRdSa3rMVdn2JSuXfw
+         zxSq5a8BFHxZzXde+Ll+PhRFAXuqoAoBU7vlGj3TJgB1BAG8i1uHK8KlNxpqYzscbdFa
+         xPRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW1bY5I5iJkN6DD99XvJLrEBP99GSdqflw2i6VhoIOShqPJDcpovuSY2qaFMpJmt2v+iHr/QdzMww==@lists.infradead.org
+X-Gm-Message-State: AOJu0YynEg8OdaCuKC72XenYa1R1UIlBBSxx66ERERjzvoBtBzo2KlXV
+	iRPnuy6RUat/uvOL/ZR2BC6KUeYgD/iSMPssg9X7cqbW6aQg6KrQsUwoWjHq2Es/0ESix2tirgJ
+	fnydyZrJNlKprLE90+gAV5ldT9tc=
+X-Google-Smtp-Source: AGHT+IEqKH0OWriiC8wInpcf2ZECoytsMPUwBDofLFkYfPN9ogN181tpD7iUm1gfTEwa1l2o3VI73EHRfYV1D0wWJPU=
+X-Received: by 2002:a17:90a:ba93:b0:2d8:ca39:5972 with SMTP id
+ 98e67ed59e1d1-2d8ca3991a8mr4648735a91.1.1725385412437; Tue, 03 Sep 2024
+ 10:43:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240903-mips-rust-v1-2-0fdf0b2fd58f@flygoat.com>
-References: <20240903-mips-rust-v1-0-0fdf0b2fd58f@flygoat.com>
-In-Reply-To: <20240903-mips-rust-v1-0-0fdf0b2fd58f@flygoat.com>
-To: Masahiro Yamada <masahiroy@kernel.org>,
-  Nathan Chancellor <nathan@kernel.org>,
- Nicolas Schier <nicolas@fjasle.eu>,  Richard Weinberger <richard@nod.at>,
-  Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-  Johannes Berg <johannes@sipsolutions.net>,
-  Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-  Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>,  x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>,  Miguel Ojeda <ojeda@kernel.org>,
- Alex Gaynor <alex.gaynor@gmail.com>,
-  Wedson Almeida Filho <wedsonaf@gmail.com>,
-  Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-  =?utf-8?q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-  Benno Lossin <benno.lossin@proton.me>,
-  Andreas Hindborg <a.hindborg@samsung.com>,
-  Alice Ryhl <aliceryhl@google.com>,
-  Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-  Steven Rostedt <rostedt@goodmis.org>,
-  Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,  Jonathan Corbet <corbet@lwn.net>,
- Alex Shi <alexs@kernel.org>,  Yanteng Si <siyanteng@loongson.cn>,
-  Nick Desaulniers <ndesaulniers@google.com>,
-  Bill Wendling <morbo@google.com>,
- Justin Stitt <justinstitt@google.com>
-Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-um@lists.infradead.org, rust-for-linux@vger.kernel.org, 
- linux-mips@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
- linux-doc@vger.kernel.org, llvm@lists.linux.dev, 
- Jiaxun Yang <jiaxun.yang@flygoat.com>
-X-Mailer: b4 0.14.1
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6582;
- i=jiaxun.yang@flygoat.com; h=from:subject:message-id;
- bh=CIsXpNL4Xqbe4+3LwKSPPuuUUgffBKKKBhZHlqW00Cg=;
- b=owGbwMvMwCXmXMhTe71c8zDjabUkhrTrLmztR2edEbzKcelDgmzRh5tFU2fd27y66MKPxq7+x
- 6yCNrdjO0pZGMS4GGTFFFlCBJT6NjReXHD9QdYfmDmsTCBDGLg4BWAib+4y/NMya+8+epvzINv7
- btHfobmnhGV2FJqdzFU/UT1r6pH0rAhGhqUXrnoLvp13pdiOz6fiwZJ3P8O6l0ioVttlbWLKWWx
- zmRUA
-X-Developer-Key: i=jiaxun.yang@flygoat.com; a=openpgp;
- fpr=980379BEFEBFBF477EA04EF9C111949073FC0F67
+References: <20240903-mips-rust-v1-0-0fdf0b2fd58f@flygoat.com> <20240903-mips-rust-v1-1-0fdf0b2fd58f@flygoat.com>
+In-Reply-To: <20240903-mips-rust-v1-1-0fdf0b2fd58f@flygoat.com>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Tue, 3 Sep 2024 19:43:19 +0200
+Message-ID: <CANiq72kx+aJXJCGPv6PazCQ7BnSDN56WyVFj=6e0FNRYqunSfw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] rust: Introduce HAVE_GENERATE_RUST_TARGET config option
+To: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: Masahiro Yamada <masahiroy@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nicolas Schier <nicolas@fjasle.eu>, Richard Weinberger <richard@nod.at>, 
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Jonathan Corbet <corbet@lwn.net>, Alex Shi <alexs@kernel.org>, 
+	Yanteng Si <siyanteng@loongson.cn>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, 
+	rust-for-linux@vger.kernel.org, linux-mips@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240903_101502_915300_4B2CD75A 
-X-CRM114-Status: GOOD (  18.00  )
+X-CRM114-CacheID: sfid-20240903_104333_848272_EB182A3A 
+X-CRM114-Status: GOOD (  11.66  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -151,189 +106,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-We have a union and a type both named after mips_instruction,
-rust bindgen is not happy with this kind of naming alias.
+On Tue, Sep 3, 2024 at 7:15=E2=80=AFPM Jiaxun Yang <jiaxun.yang@flygoat.com=
+> wrote:
+>
+> +
 
-Given that union mips_instruction is a part of UAPI, the only
-thing we can do is to rename mips_instruction type.
+Spurious line?
 
-Rename it as mips_insn, which is not conflicting with anything
-and fits the name of header.
+> +config HAVE_GENERATE_RUST_TARGET
+> +       bool
+> +       depends on HAVE_RUST
+> +       help
+> +         This symbol should be selected by an architecture if it
+> +         supports generating Rust target files with
+> +         scripts/generate_rust_target.rs.
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
----
- arch/mips/include/asm/dsemul.h |  2 +-
- arch/mips/include/asm/inst.h   |  6 +++---
- arch/mips/kernel/ftrace.c      |  2 +-
- arch/mips/kernel/kprobes.c     |  2 +-
- arch/mips/math-emu/cp1emu.c    | 18 +++++++++---------
- arch/mips/math-emu/dsemul.c    |  8 ++++----
- 6 files changed, 19 insertions(+), 19 deletions(-)
+It should be more like "if it needs" rather than "if it supports",
+i.e. the `target.json` is something that should be avoided if
+possible, since the goal is to avoid depending on it in the future.
 
-diff --git a/arch/mips/include/asm/dsemul.h b/arch/mips/include/asm/dsemul.h
-index 08bfe8fa3b40..870597d6d1ad 100644
---- a/arch/mips/include/asm/dsemul.h
-+++ b/arch/mips/include/asm/dsemul.h
-@@ -34,7 +34,7 @@ struct task_struct;
-  *
-  * Return: Zero on success, negative if ir is a NOP, signal number on failure.
-  */
--extern int mips_dsemul(struct pt_regs *regs, mips_instruction ir,
-+extern int mips_dsemul(struct pt_regs *regs, mips_insn ir,
- 		       unsigned long branch_pc, unsigned long cont_pc);
- 
- /**
-diff --git a/arch/mips/include/asm/inst.h b/arch/mips/include/asm/inst.h
-index 2f98ced30263..0616b8eb7401 100644
---- a/arch/mips/include/asm/inst.h
-+++ b/arch/mips/include/asm/inst.h
-@@ -71,12 +71,12 @@
- #define I_FMA_FFMT_SFT	0
- #define MIPSInst_FMA_FFMT(x) (MIPSInst(x) & 0x00000007)
- 
--typedef unsigned int mips_instruction;
-+typedef unsigned int mips_insn;
- 
- /* microMIPS instruction decode structure. Do NOT export!!! */
- struct mm_decoded_insn {
--	mips_instruction insn;
--	mips_instruction next_insn;
-+	mips_insn insn;
-+	mips_insn next_insn;
- 	int pc_inc;
- 	int next_pc_inc;
- 	int micro_mips_mode;
-diff --git a/arch/mips/kernel/ftrace.c b/arch/mips/kernel/ftrace.c
-index 8c401e42301c..153c9666a77c 100644
---- a/arch/mips/kernel/ftrace.c
-+++ b/arch/mips/kernel/ftrace.c
-@@ -248,7 +248,7 @@ int ftrace_disable_ftrace_graph_caller(void)
- #define S_R_SP	(0xafb0 << 16)	/* s{d,w} R, offset(sp) */
- #define OFFSET_MASK	0xffff	/* stack offset range: 0 ~ PT_SIZE */
- 
--unsigned long ftrace_get_parent_ra_addr(unsigned long self_ra, unsigned long
-+static long ftrace_get_parent_ra_addr(unsigned long self_ra, unsigned long
- 		old_parent_ra, unsigned long parent_ra_addr, unsigned long fp)
- {
- 	unsigned long sp, ip, tmp;
-diff --git a/arch/mips/kernel/kprobes.c b/arch/mips/kernel/kprobes.c
-index dc39f5b3fb83..7a1b1c3674da 100644
---- a/arch/mips/kernel/kprobes.c
-+++ b/arch/mips/kernel/kprobes.c
-@@ -90,7 +90,7 @@ int arch_prepare_kprobe(struct kprobe *p)
- 	}
- 
- 	if (copy_from_kernel_nofault(&prev_insn, p->addr - 1,
--			sizeof(mips_instruction)) == 0 &&
-+			sizeof(kprobe_opcode_t)) == 0 &&
- 	    insn_has_delayslot(prev_insn)) {
- 		pr_notice("Kprobes for branch delayslot are not supported\n");
- 		ret = -EINVAL;
-diff --git a/arch/mips/math-emu/cp1emu.c b/arch/mips/math-emu/cp1emu.c
-index 265bc57819df..bcd6a6f0034c 100644
---- a/arch/mips/math-emu/cp1emu.c
-+++ b/arch/mips/math-emu/cp1emu.c
-@@ -43,10 +43,10 @@
- /* Function which emulates a floating point instruction. */
- 
- static int fpu_emu(struct pt_regs *, struct mips_fpu_struct *,
--	mips_instruction);
-+	mips_insn);
- 
- static int fpux_emu(struct pt_regs *,
--	struct mips_fpu_struct *, mips_instruction, void __user **);
-+	struct mips_fpu_struct *, mips_insn, void __user **);
- 
- /* Control registers */
- 
-@@ -846,7 +846,7 @@ do {									\
-  * Emulate a CFC1 instruction.
-  */
- static inline void cop1_cfc(struct pt_regs *xcp, struct mips_fpu_struct *ctx,
--			    mips_instruction ir)
-+			    mips_insn ir)
- {
- 	u32 fcr31 = ctx->fcr31;
- 	u32 value = 0;
-@@ -903,7 +903,7 @@ static inline void cop1_cfc(struct pt_regs *xcp, struct mips_fpu_struct *ctx,
-  * Emulate a CTC1 instruction.
-  */
- static inline void cop1_ctc(struct pt_regs *xcp, struct mips_fpu_struct *ctx,
--			    mips_instruction ir)
-+			    mips_insn ir)
- {
- 	u32 fcr31 = ctx->fcr31;
- 	u32 value;
-@@ -973,7 +973,7 @@ static int cop1Emulate(struct pt_regs *xcp, struct mips_fpu_struct *ctx,
- {
- 	unsigned long contpc = xcp->cp0_epc + dec_insn.pc_inc;
- 	unsigned int cond, cbit, bit0;
--	mips_instruction ir;
-+	mips_insn ir;
- 	int likely, pc_inc;
- 	union fpureg *fpr;
- 	u32 __user *wva;
-@@ -1461,7 +1461,7 @@ DEF3OP(nmadd, dp, ieee754dp_mul, ieee754dp_add, ieee754dp_neg);
- DEF3OP(nmsub, dp, ieee754dp_mul, ieee754dp_sub, ieee754dp_neg);
- 
- static int fpux_emu(struct pt_regs *xcp, struct mips_fpu_struct *ctx,
--	mips_instruction ir, void __user **fault_addr)
-+	mips_insn ir, void __user **fault_addr)
- {
- 	unsigned int rcsr = 0;	/* resulting csr */
- 
-@@ -1680,7 +1680,7 @@ static int fpux_emu(struct pt_regs *xcp, struct mips_fpu_struct *ctx,
-  * Emulate a single COP1 arithmetic instruction.
-  */
- static int fpu_emu(struct pt_regs *xcp, struct mips_fpu_struct *ctx,
--	mips_instruction ir)
-+	mips_insn ir)
- {
- 	int rfmt;		/* resulting format */
- 	unsigned int rcsr = 0;	/* resulting csr */
-@@ -2899,9 +2899,9 @@ int fpu_emulator_cop1Handler(struct pt_regs *xcp, struct mips_fpu_struct *ctx,
- 			dec_insn.micro_mips_mode = 1;
- 		} else {
- 			if ((get_user(dec_insn.insn,
--			    (mips_instruction __user *) xcp->cp0_epc)) ||
-+			    (mips_insn __user *) xcp->cp0_epc)) ||
- 			    (get_user(dec_insn.next_insn,
--			    (mips_instruction __user *)(xcp->cp0_epc+4)))) {
-+			    (mips_insn __user *)(xcp->cp0_epc+4)))) {
- 				MIPS_FPU_EMU_INC_STATS(errors);
- 				return SIGBUS;
- 			}
-diff --git a/arch/mips/math-emu/dsemul.c b/arch/mips/math-emu/dsemul.c
-index e02bd20b60a6..d4ea2cf89006 100644
---- a/arch/mips/math-emu/dsemul.c
-+++ b/arch/mips/math-emu/dsemul.c
-@@ -61,8 +61,8 @@
-  *   couldn't already.
-  */
- struct emuframe {
--	mips_instruction	emul;
--	mips_instruction	badinst;
-+	mips_insn	emul;
-+	mips_insn	badinst;
- };
- 
- static const int emupage_frame_count = PAGE_SIZE / sizeof(struct emuframe);
-@@ -206,11 +206,11 @@ void dsemul_mm_cleanup(struct mm_struct *mm)
- 	bitmap_free(mm_ctx->bd_emupage_allocmap);
- }
- 
--int mips_dsemul(struct pt_regs *regs, mips_instruction ir,
-+int mips_dsemul(struct pt_regs *regs, mips_insn ir,
- 		unsigned long branch_pc, unsigned long cont_pc)
- {
- 	int isa16 = get_isa16_mode(regs->cp0_epc);
--	mips_instruction break_math;
-+	mips_insn break_math;
- 	unsigned long fr_uaddr;
- 	struct emuframe fr;
- 	int fr_idx, ret;
-
--- 
-2.46.0
-
+Cheers,
+Miguel
 
