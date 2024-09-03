@@ -4,70 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F712CD37AB
-	for <linux-um@archiver.kernel.org>; Tue,  3 Sep 2024 17:44:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D30FCD37AB
+	for <linux-um@archiver.kernel.org>; Tue,  3 Sep 2024 17:46:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
 	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=DzpwJQwOT3F0kC0YR4xC7AP8eabN0PyPAbZ0DqFkPfA=; b=qZCnTthrqOyQJMA0JVi04fKdJJ
-	//SvVwyzln066GE2U7Ne+EtOuKmEauTiS0tq5mgaLJMXzQUPbI7tzQc+vI0u9PgLMXYpU3/volIuF
-	p+Urrx93IyWVKTzvBrGETa2CEp6/kNuzHqb66wWrz2dE8J6jXWm0ghFrGcvqzxhu81JhrvmYeqhAj
-	0pRqTPeEGXVrAEvgZ3A8LEIE2MSG/6dTBaEjtvxrTq0/ROfyj7lEcdnhPBkjzTYlaQsz5i1tzyxKi
-	g2+4jFf76jewCj9BIh5Tz+2bj23Z4BahkWLoCQn+UPXM4Z9VffT0/GVWG/25e0PenfgxfH+NAmhpS
-	kFVPBxrA==;
+	bh=0DofYcV1Ki+ENSwTIpZw+asSjmZojx2JbABHePOoO20=; b=rGECCu2B9nSen3XSjURCQZMZdt
+	7H84NTzW7i5DXc/x3KvigNzZ1VxKaJf54MtekLGumkmCQZgAH4qROsGUaURoD51XCpOus+OoCbVit
+	MwRA2ndu9UeygWwdYCUoqPoqz4J9xzYs0VxSmcJuAbQHNc3d0tN9ZEl8gK4oQruIxXrWKsgAAXloM
+	zvLuum6tWxP7jZ+nNmrXFybV9eY4UjH4kKgHl2zrEq1jedp/IIVv1pOetSFE9TSytK+A3Kj31W1dA
+	1x1WXEZCyLL3GTkGWykyLk2LWacb8p0Didy0sAnXlc21u6d8Z/hoJdSEDqMfzatUrsebphBQOdstu
+	owyB8jQw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1slXZo-00000001LEo-3Ur1;
-	Tue, 03 Sep 2024 17:44:24 +0000
-Received: from mail-pf1-x430.google.com ([2607:f8b0:4864:20::430])
+	id 1slXc0-00000001Lxw-0MN6;
+	Tue, 03 Sep 2024 17:46:40 +0000
+Received: from mail-pj1-x102c.google.com ([2607:f8b0:4864:20::102c])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1slXZm-00000001LDJ-2LTr
+	id 1slXay-00000001LSI-0eLV
 	for linux-um@lists.infradead.org;
-	Tue, 03 Sep 2024 17:44:23 +0000
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-71420e66ecfso448196b3a.0
-        for <linux-um@lists.infradead.org>; Tue, 03 Sep 2024 10:44:22 -0700 (PDT)
+	Tue, 03 Sep 2024 17:45:37 +0000
+Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-2d871bd95ffso387042a91.2
+        for <linux-um@lists.infradead.org>; Tue, 03 Sep 2024 10:45:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725385462; x=1725990262; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1725385535; x=1725990335; darn=lists.infradead.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DzpwJQwOT3F0kC0YR4xC7AP8eabN0PyPAbZ0DqFkPfA=;
-        b=M2lYzgecnTGnpf8TNYrWiUcuBpF11EWTZI9ps40gzyZYfJFV3qSbrJ6vPTj5TX1Z1o
-         tP7hIaa0aFHxlhzZXQtT4lwvl9h6eEy1q8Z/zhx9mRZzV+u0r9LdTOYuf1AMT9jCGAeI
-         22SGu3xCX+JlZpS+DKVTXa8gfdEZmrv5cDIM1fHToLdr6l9VAEw0Jkcb2Iu3UZEb+6RW
-         HiTCXN8Z5bV0Z39uyTzBRAf+HVXtofab+4Pvd8pqRDOAhM09UUw/6Bbxw63hCpoADTCz
-         0+xQ/WZi4ISmCivWIcmctfzkEhvxlAzJdd37D3RC+3v2ff10F+1Fc67EJmDY3+BZ7rEb
-         c/Tg==
+        bh=0DofYcV1Ki+ENSwTIpZw+asSjmZojx2JbABHePOoO20=;
+        b=WaqVwoRMTQiFzJJLYV+kcdWPmTd04uJ3Oj3xjsgFTAKgz1tAcr4/50sr3zXdFmkLmh
+         N/dYN+RYvjTzGroydADo2HxxQJnlJuE65ef37uRRr575BvszTWG87mNajLyj8no8Vy5P
+         W6xXmuU7/2v+0EPUpnpl7xBvs3dG7qF5JY1Fbb8ZDnf1v2T55HtuGiMI5QmInRZlwB83
+         ycmpWMqmD3S0gkSadXFjuG7M+njvJOOE0FABzt01dvkFp4iiPkpFgwTm2sG3FlFBB6rh
+         pSyyfGnRhXzr1mnGSLo3O3OskUhI+uY3wu7f6B3y+WtrHy7170CY2mBFCkObBj6UdDck
+         mJGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725385462; x=1725990262;
+        d=1e100.net; s=20230601; t=1725385535; x=1725990335;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DzpwJQwOT3F0kC0YR4xC7AP8eabN0PyPAbZ0DqFkPfA=;
-        b=fOvsrEfIJ6MNiybz8tx5RSkObbxkzcw4si0y4arCUUQRw/3yaw1RKhsIyiTRillCzN
-         yr/kV8DbhZgoZg8pmHgm2RBp3wxD5bWIDSjE72vGfSJVxkqZGJ7d+uQY2so0M9V+8mS6
-         +eth8hp7miUegZj4CglARSbjg/aYVMwP0DCTAs1ujvZ00LIGV1FpXK50ucHk8QSt4Ieq
-         hjWX1ao0lu9zr6nqueEEu0oxS+0DHbo0y7XtQ3Z8WUYAajFkSvmKahP+pF16U3QZibdn
-         hddph2XTJA2bjISIMd9p/bYwLCDQgvsXhxbEMeQbYVNeF3I0eVmsCprUiRSzFUSineFT
-         D9rA==
-X-Forwarded-Encrypted: i=1; AJvYcCX8HemoaBCc3Vn7leKFD9xgeWJQwCWRH0bF43sTDyfXvgijEqG9fJM1ax5g57LKhq8gwhAP/NsTWQ==@lists.infradead.org
-X-Gm-Message-State: AOJu0YzD5XN5XRsSq9tJDd73pwgKX3dwKCQlV1TDMPkwJKnJ5R/TQLMP
-	hC4OJVlQcuWYWCkZd+/DP6Ak5g3at11HES0Wb2tzAfMPHhpb81srIRNG1MEM5HEz9PTLlQ9OmKa
-	m8TLjADo10r3+BWtXfPZ86fpcezg=
-X-Google-Smtp-Source: AGHT+IEr2msm5yg48J8o10JFNcKqa18Qf0QpuKetck9mzQgqKhHQ/7Pg+OEHdxchtehB6dyn3bXmyxfB4BSsSfVqxbo=
-X-Received: by 2002:a05:6a00:1816:b0:70e:acd0:d8b6 with SMTP id
- d2e1a72fcca58-71730458903mr8460968b3a.0.1725385461577; Tue, 03 Sep 2024
- 10:44:21 -0700 (PDT)
+        bh=0DofYcV1Ki+ENSwTIpZw+asSjmZojx2JbABHePOoO20=;
+        b=Y/SHZH7ZZGdUeH/PB3b/4xeI/wZ9KjSswGtMJEBn6ad3fyrPTYN7gmInSXr/UUD/Ow
+         rnAh3jQDpgMClrTkWrNcdS3xSYrIFB6eJdPOe5MA/OFdg0qFt+3YXKersTQVM2PpcX1o
+         X+cnhrpz0RNVPmm9/8J+OFlNqkYu5hGNXiwBX/m9rvDLBTKO9vPTlK4DjWUQ8UWQ+I9e
+         Y9GVdHsC1zf0ySwaCwJ//o6j2fe6ieJFkbek3MFpgR6eOKfubjQyMbHsg8pxwXDkpnQj
+         3gd62+iQqAKpK2xD708HJ7jbrcO68yBSuuZvqIGIYynnpOh9d+hsvg6jtoGRvSUPo6ve
+         D89Q==
+X-Forwarded-Encrypted: i=1; AJvYcCW927EaLKl/HPsoTAwiamRMNzcPVdLANjR9ygSx3sDPSyDBAHNYadUNig1ZUzDM8d0M8DhXgGZdyQ==@lists.infradead.org
+X-Gm-Message-State: AOJu0YxgS9SkG3pGc64spdrIKPx+QetW9+Wq7/ICSHL4XBTJKZydy+uG
+	spoU2PoktqqAdRdXn7XNn/+5Oj9R6gVlFMQSjpnWst8SEro7WVlsJ2rdwTYDkXjjPRN+twN8fAl
+	6XkZgiaBzcPRXGhZrHCQ+hNbtegI=
+X-Google-Smtp-Source: AGHT+IGSJaGwOM9WSS6C4CfJ5n+iQPEV9+ern3LlVZwrkMxCoO8ICwpxdMLXqIAiQmi7uSiY7KxVOTk+pY+MMkXUU6k=
+X-Received: by 2002:a17:90b:207:b0:2d8:792e:9b22 with SMTP id
+ 98e67ed59e1d1-2d8792e9cc0mr7985254a91.0.1725385535089; Tue, 03 Sep 2024
+ 10:45:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20240903-mips-rust-v1-0-0fdf0b2fd58f@flygoat.com> <20240903-mips-rust-v1-3-0fdf0b2fd58f@flygoat.com>
-In-Reply-To: <20240903-mips-rust-v1-3-0fdf0b2fd58f@flygoat.com>
+References: <20240903-mips-rust-v1-0-0fdf0b2fd58f@flygoat.com>
+In-Reply-To: <20240903-mips-rust-v1-0-0fdf0b2fd58f@flygoat.com>
 From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Tue, 3 Sep 2024 19:44:08 +0200
-Message-ID: <CANiq72=z1yJm-B_ie=GfueOF1qksaSD9txgFU1YQo2tZx0qQPg@mail.gmail.com>
-Subject: Re: [PATCH 3/3] rust: Enable for MIPS
+Date: Tue, 3 Sep 2024 19:45:22 +0200
+Message-ID: <CANiq72nG-7Zbd11S=VkMdhpSON8vJOpDe4qhGy3czrKgrJ0DXA@mail.gmail.com>
+Subject: Re: [PATCH 0/3] rust: Initial MIPS support
 To: Jiaxun Yang <jiaxun.yang@flygoat.com>
 Cc: Masahiro Yamada <masahiroy@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
 	Nicolas Schier <nicolas@fjasle.eu>, Richard Weinberger <richard@nod.at>, 
@@ -90,8 +90,8 @@ Cc: Masahiro Yamada <masahiroy@kernel.org>, Nathan Chancellor <nathan@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240903_104422_617233_89FC2191 
-X-CRM114-Status: GOOD (  12.77  )
+X-CRM114-CacheID: sfid-20240903_104536_217411_5EDA62D3 
+X-CRM114-Status: GOOD (  10.78  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,20 +106,18 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Sep 3, 2024 at 7:15=E2=80=AFPM Jiaxun Yang <jiaxun.yang@flygoat.com=
+On Tue, Sep 3, 2024 at 7:14=E2=80=AFPM Jiaxun Yang <jiaxun.yang@flygoat.com=
 > wrote:
 >
-> We don't use builtin target as there is no sutiable baremetal
-> target for us that can cover all ISA variants supported by kernel.
+> This series added MIPS arch support to rust for linux,
+> hopefully MIPS is not too late to the party :-)
 
-Since we should try to go away from using `target.json`: what was not
-possible to enable via e.g. `-Ctarget-features` or other flags? i.e. I
-see the `+mips*` features there in the supported list, and from a
-quick test the data layout also seems to match, but I assume I missed
-something.
+Definitely not late :)
 
-If it is not possible, then we should definitely ping upstream Rust about i=
-t. :)
+> Sample rust module tested on R4000(el),mips32,mips32r2el,mips64,
+> mips64r2el,mips64r6el.
+
+That is great, thanks for this!
 
 Cheers,
 Miguel
