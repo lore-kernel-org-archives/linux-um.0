@@ -4,136 +4,97 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30A0BCD37AB
-	for <linux-um@archiver.kernel.org>; Tue,  3 Sep 2024 18:32:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05A89CD37AA
+	for <linux-um@archiver.kernel.org>; Tue,  3 Sep 2024 19:01:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Subject:References:In-Reply-To:Message-Id:Cc:To:From:Date:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
 	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=QTHNtCQXEbyRoEVNXRHOicO5bA9YYIgsZ2P/O0iUxhs=; b=jDFFOBFfAhvP42ngQtjEpvp9vn
-	hcMBZGK4KS+uGsSt4svNRm8lTqwSIli5f1jovsgJFo7EdLlXsbTlSHRYteauRsr17TAdIDckqcuT4
-	34jNLHHq+xwO7UAEcxvoGdpEweHjmeWQ5ultbQWytNfJq+KK4JNN6YJds/aWVcNb62xfAHAGJvAJi
-	WhdsrKStOmFM1YKJRek5R7k9201D7DnHA3WlIyY2P2zgBIp8jxM3wmRQJbSom3e034vmPOGQRULQA
-	hZCySekPhVqm3Y2LqBQXDPHeNPCMbZ2mH7AA3+ZxaeRWLVnPXjzZP4lHoKtTLj99b3ME2pnAF2V9B
-	3d07Uz6w==;
+	bh=KE5xWwHnPm+WIDf2FbxryrsTqOGezFO5SQcRnazmxKM=; b=evsDknkNsLYbCa4WudEcW7ZVRJ
+	hEIb1kdVSKlNlSKfCnUjesM5lbUtDn+YXrHKawPkWiH8RavbF6GYSiHTsJKnCAP+M4NTOvwdQxNeY
+	GGzlST45YlctgXPpEa/ifMjy6WxuMDbrzXbxehYOzK/dWy9lhd4T+ZjwiD5w6en0SoXHFpUk8MQQT
+	jHKX+ASqoujTpTdMES5uBl/UJB/v9PPrlEWLbskA72FVfHUXi57rZuC95JVXIcptDljUpeCxt3YHX
+	Gsufn6s6KbwTw0SsuzuRkCMTUpsxl3PHWtX+rm7fpMYWjHjR+mInvAZjRtJ/+kadgQKxsrTpMmOzH
+	AynyyyGg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1slYJz-00000001StY-1t5k;
-	Tue, 03 Sep 2024 18:32:07 +0000
-Received: from fout8-smtp.messagingengine.com ([103.168.172.151] helo=pfout8-smtp.messagingengine.com)
+	id 1slYmc-00000001Y1n-3Bs6;
+	Tue, 03 Sep 2024 19:01:42 +0000
+Received: from mail-pj1-x1030.google.com ([2607:f8b0:4864:20::1030])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1slYJv-00000001Sre-38xJ
+	id 1slYmZ-00000001Y0s-2dWc
 	for linux-um@lists.infradead.org;
-	Tue, 03 Sep 2024 18:32:05 +0000
-Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
-	by mailfout.phl.internal (Postfix) with ESMTP id 881F9138050C;
-	Tue,  3 Sep 2024 14:32:02 -0400 (EDT)
-Received: from phl-imap-12 ([10.202.2.86])
-  by phl-compute-05.internal (MEProxy); Tue, 03 Sep 2024 14:32:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1725388322;
-	 x=1725474722; bh=QTHNtCQXEbyRoEVNXRHOicO5bA9YYIgsZ2P/O0iUxhs=; b=
-	g2r3JUtqSmrK0x0Yr/wvIsUmAYdPctkhGizPtq8K6kaAHLfwoXstTKAot1nGbrbP
-	AgcpjcCYyXncT3na7LIANrlzdH1RzY9YdrRNJyEPL94YVVsUAY8QiEzqYRiCzNJp
-	FskISg185NuOXXVtTkeqz8xJUQUaD0flMrRA1CvMAIqHdKQv8PP1S+pbGNpamvyV
-	nTsQuG6tVSCkHFzeyC6b5jwoGQdozlrAdAu0L2Ml+sxN88gv7WLSeTePJDnD1686
-	2lbaN8JrVjuExzZALZJGYWDVyGJbFYtkAPixHPTINl+4raStqJGRPj7f16/O9yyn
-	kNy7srHtHEM1SxtE7jMXKg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1725388322; x=
-	1725474722; bh=QTHNtCQXEbyRoEVNXRHOicO5bA9YYIgsZ2P/O0iUxhs=; b=O
-	aUDd5AeVJ58TDfwcQH4W6wkvzPV2HnKXzAo5SrwzRzU9mNY0p/+iwK8u6k6Osm7e
-	jLnBe/goCUZoS9RdDxU6YLOaPHGKMknGKdUu2S+BjXV4T7VaAe7lbbpzf7BuAALC
-	+8MFhj9C85edOuZh5dCPQhmdALEm7+pMtBo9TvFGMuy4XoDNy77Y2x6eNoN7sZ3e
-	lFRe5La0dInfmcopH6tz3A0bWz0/HTW+QmjI9T4JoLu1pJKo0PG0c8vfd3GKfIy3
-	7h3mg4vsnWlokWi4b9P3cJHD/GUbE0TiMaZ4IGE5LTxl66iqJXIa4lfIb6AQ8kj4
-	Ug52yDVLs9RJmnOpsqwjg==
-X-ME-Sender: <xms:IFbXZmuzbetct1Potwb4I0CDHGtloUMmUWrdj5ITG0gEi6el2w26Hw>
-    <xme:IFbXZreigUVEPuW0HjVGmy0VV4Ii7jyBTlLc3NtN9tvBsIqwJX2gvrgJazyoqoc69
-    QpD7d2QQIsbWRmm70A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudehhedguddvhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenucfjughrpefoggffhffvvefkjghfufgtgfesthhqredtredt
-    jeenucfhrhhomhepfdflihgrgihunhcujggrnhhgfdcuoehjihgrgihunhdrhigrnhhgse
-    hflhihghhorghtrdgtohhmqeenucggtffrrghtthgvrhhnpeeiiefhveegkefhledvheet
-    vddugefglefhgefhheffgedvvefhveefhfefjeehgeenucffohhmrghinhepghhithhhuh
-    gsrdgtohhmpdhtrghrghgvthgpfhgvrghtuhhrvghsrdhrshenucevlhhushhtvghrufhi
-    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflh
-    ihghhorghtrdgtohhmpdhnsggprhgtphhtthhopeegtddpmhhouggvpehsmhhtphhouhht
-    pdhrtghpthhtohepsghpsegrlhhivghnkedruggvpdhrtghpthhtohepthhssghoghgvnh
-    gusegrlhhphhgrrdhfrhgrnhhkvghnrdguvgdprhgtphhtthhopehmrghrkhdrrhhuthhl
-    rghnugesrghrmhdrtghomhdprhgtphhtthhopegrnhhtohhnrdhivhgrnhhovhestggrmh
-    gsrhhiughgvghgrhgvhihsrdgtohhmpdhrtghpthhtohepnhhitgholhgrshesfhhjrghs
-    lhgvrdgvuhdprhgtphhtthhopehgrghrhiesghgrrhihghhuohdrnhgvthdprhgtphhtth
-    hopegrlhgvgidrghgrhihnohhrsehgmhgrihhlrdgtohhmpdhrtghpthhtohepsghoqhhu
-    nhdrfhgvnhhgsehgmhgrihhlrdgtohhmpdhrtghpthhtohepmhhighhuvghlrdhojhgvug
-    grrdhsrghnughonhhishesghhmrghilhdrtghomh
-X-ME-Proxy: <xmx:IFbXZhwKd7rhNIrd_E3zxNavuN5QE1DDs9hYg1KQ618je_gf8MSmpw>
-    <xmx:IFbXZhPidzb5GQEpud934zocMdlWmKV4aEMN2kuQbAsBcdh1b2IVYg>
-    <xmx:IFbXZm8Y8AWeoZPpZIpEgiyeSCxJntt87dffXYm1IUfviK2F7klIpg>
-    <xmx:IFbXZpW9aIYTEU5R1yu1hiTqFhEeHIF6F3xtsV5bFqCLArLCXWsI6g>
-    <xmx:IlbXZn_mpE9ZkasXSwfonUIt6sg7L_yac9gMiwmFf56gNXqFn8jQQudl>
-Feedback-ID: ifd894703:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 05D991C207BB; Tue,  3 Sep 2024 14:32:00 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	Tue, 03 Sep 2024 19:01:41 +0000
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-2d8a9a15a7fso257296a91.0
+        for <linux-um@lists.infradead.org>; Tue, 03 Sep 2024 12:01:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1725390098; x=1725994898; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KE5xWwHnPm+WIDf2FbxryrsTqOGezFO5SQcRnazmxKM=;
+        b=jTk1WmmPSpbuSaQi4c4PDtud1pAhaphLTu6yKsZ/3U+qVzAHr/N1HpVpB5keedvvGn
+         YQpN3AQvq0fIbGxSDcKCfiTUFXvxaWt1vIbSnAgXkKAxjLdWXE/vGUAT86RrrASULCGF
+         n3Ekerk+Km2/2gePMEkeilnHF/ThlDMG6iLPLC5WG3ydfmSTtkIgXYpLdWtEy+sdxz/D
+         hp1LvVgrPZxfuCuI9qpC586noLZR1bJ4p2/jh35vnfPpeSNZVtwtUTWIH2rmEoebkU6L
+         UFD8Vt1jQD55d16S+gVEJBQQU9Frk6X+vizVIUI2vfK/ipIJeJ362iy93+vztPXvCvua
+         u+0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725390098; x=1725994898;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KE5xWwHnPm+WIDf2FbxryrsTqOGezFO5SQcRnazmxKM=;
+        b=eTVhE1wb7rF3irvD7jDHQY6kUgvjbOFxsBbwHhrfopOdwU6swc6b40mRF+lwRE0VAa
+         r+KNULTLdYZa/2ljqGeYB2E3LuE9CbSTBr2pVo4wyy3qdl27VfhYEZbV9bJC4AeIb7Yv
+         Abusylpnij5LdYsk/X0FX0av3TViEaXCFSPk13aer929uwGXcUey98asYDYbsM2cxAEW
+         G4GqskoDANwCJ9MN12FKBQyJ3H5cWcSjTs9YgWsSVBJvWFT6ntVQv8nwciCPw4xN4FSE
+         O9ns9hNsL2szk8/DadEs5RHNTerHIXDshDJrKEmhv/6e4BUxQuLHQom8VpchxIxScX57
+         GeFg==
+X-Forwarded-Encrypted: i=1; AJvYcCXPXG02anIW1GNiJTtb9gwsPdxy17woDYuV015cfFVMRggeu8Dd1EQTQXJb5P7LV3QQoBxA87qwhQ==@lists.infradead.org
+X-Gm-Message-State: AOJu0YwRQcYPkbQDj7qRgBcpJmtHan5+lu6Y7tFA9HnT0eubsdm6t/Th
+	8rd/Zef4PGnuSFd0+nkPu//BpfqoJQJMQkIYmyVSZkTeiEBQQCdBKljdk+8O7uZfR2PCh+g0Mr9
+	BKXVJ85wpD3nAw+W2JBiNIn+qmto=
+X-Google-Smtp-Source: AGHT+IGRHnvtSIMPglv/36A6hpMPDiFKSZKiUYGzC4lWBAVbp+fP4jGwB7yTCWBdu31Z0QsqEhbQ0JnFGvwe1zJu2gc=
+X-Received: by 2002:a17:90a:dd88:b0:2c9:863c:604 with SMTP id
+ 98e67ed59e1d1-2d86b82a57amr8603316a91.3.1725390098481; Tue, 03 Sep 2024
+ 12:01:38 -0700 (PDT)
 MIME-Version: 1.0
-Date: Tue, 03 Sep 2024 19:31:39 +0100
-From: "Jiaxun Yang" <jiaxun.yang@flygoat.com>
-To: "Miguel Ojeda" <miguel.ojeda.sandonis@gmail.com>
-Cc: "Masahiro Yamada" <masahiroy@kernel.org>,
- "Nathan Chancellor" <nathan@kernel.org>,
- "Nicolas Schier" <nicolas@fjasle.eu>,
- "Richard Weinberger" <richard@nod.at>,
- "Anton Ivanov" <anton.ivanov@cambridgegreys.com>,
- "Johannes Berg" <johannes@sipsolutions.net>,
- "Thomas Gleixner" <tglx@linutronix.de>, "Ingo Molnar" <mingo@redhat.com>,
- "Borislav Petkov" <bp@alien8.de>,
- "Dave Hansen" <dave.hansen@linux.intel.com>, x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>, "Miguel Ojeda" <ojeda@kernel.org>,
- "Alex Gaynor" <alex.gaynor@gmail.com>,
- "Wedson Almeida Filho" <wedsonaf@gmail.com>,
- "Boqun Feng" <boqun.feng@gmail.com>, "Gary Guo" <gary@garyguo.net>,
- =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
- "Benno Lossin" <benno.lossin@proton.me>,
- "Andreas Hindborg" <a.hindborg@samsung.com>,
- "Alice Ryhl" <aliceryhl@google.com>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- "Steven Rostedt" <rostedt@goodmis.org>,
- "Masami Hiramatsu" <mhiramat@kernel.org>,
- "Mark Rutland" <mark.rutland@arm.com>,
- "Jonathan Corbet" <corbet@lwn.net>, "Alex Shi" <alexs@kernel.org>,
- "Yanteng Si" <siyanteng@loongson.cn>,
- "Nick Desaulniers" <ndesaulniers@google.com>,
- "Bill Wendling" <morbo@google.com>,
- "Justin Stitt" <justinstitt@google.com>, linux-kbuild@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-um@lists.infradead.org,
- rust-for-linux@vger.kernel.org,
- "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
- linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- llvm@lists.linux.dev
-Message-Id: <6f6f04d7-55b3-4714-9bcd-cb4e1ae6c86a@app.fastmail.com>
-In-Reply-To: <CANiq72m5iFcqRU_qdUCZkoV8ayPhtQQq3TTEDRUYfMEsnNqTDg@mail.gmail.com>
 References: <20240903-mips-rust-v1-0-0fdf0b2fd58f@flygoat.com>
- <20240903-mips-rust-v1-3-0fdf0b2fd58f@flygoat.com>
- <CANiq72=z1yJm-B_ie=GfueOF1qksaSD9txgFU1YQo2tZx0qQPg@mail.gmail.com>
- <d9591a84-9a0f-4046-9b2a-437061f6882b@app.fastmail.com>
- <CANiq72m5iFcqRU_qdUCZkoV8ayPhtQQq3TTEDRUYfMEsnNqTDg@mail.gmail.com>
+ <20240903-mips-rust-v1-3-0fdf0b2fd58f@flygoat.com> <CANiq72=z1yJm-B_ie=GfueOF1qksaSD9txgFU1YQo2tZx0qQPg@mail.gmail.com>
+ <d9591a84-9a0f-4046-9b2a-437061f6882b@app.fastmail.com> <CANiq72m5iFcqRU_qdUCZkoV8ayPhtQQq3TTEDRUYfMEsnNqTDg@mail.gmail.com>
+ <6f6f04d7-55b3-4714-9bcd-cb4e1ae6c86a@app.fastmail.com>
+In-Reply-To: <6f6f04d7-55b3-4714-9bcd-cb4e1ae6c86a@app.fastmail.com>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Tue, 3 Sep 2024 21:01:23 +0200
+Message-ID: <CANiq72mvTTgyTjDCWBz_kOdY1f4gopAtWxyC4P4c+Lr0YVkzLA@mail.gmail.com>
 Subject: Re: [PATCH 3/3] rust: Enable for MIPS
-Content-Type: text/plain; charset=utf-8
+To: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: Masahiro Yamada <masahiroy@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nicolas Schier <nicolas@fjasle.eu>, Richard Weinberger <richard@nod.at>, 
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Jonathan Corbet <corbet@lwn.net>, Alex Shi <alexs@kernel.org>, 
+	Yanteng Si <siyanteng@loongson.cn>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, 
+	rust-for-linux@vger.kernel.org, 
+	"linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240903_113204_083047_2648F967 
-X-CRM114-Status: GOOD (  14.00  )
+X-CRM114-CacheID: sfid-20240903_120139_802881_E0261D5D 
+X-CRM114-Status: GOOD (  13.63  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -148,62 +109,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-
-
-=E5=9C=A82024=E5=B9=B49=E6=9C=883=E6=97=A5=E4=B9=9D=E6=9C=88 =E4=B8=8B=E5=
-=8D=887:17=EF=BC=8CMiguel Ojeda=E5=86=99=E9=81=93=EF=BC=9A
-[...]
+On Tue, Sep 3, 2024 at 8:32=E2=80=AFPM Jiaxun Yang <jiaxun.yang@flygoat.com=
+> wrote:
 >
-> I guess you mean you are getting the warning about the
-> unknown/unstable feature passed to the backend? i.e. `rustc` knows
-> about those LLVM ones and forwards them when enabled via
-> `-Ctarget-feature` (with a warning):
->
->     rustc --target mips64-unknown-linux-gnuabi64 --print target-featur=
-es
->
-> So they would need to be added to the list at [1] (or targeted flags c=
-reated).
->
-> Until those do not emit a warning, it is fine using the `target.json`,
-> but I wanted to understand if there is something else you may need,
-> since we will need to eventually avoid the `target.json`, so it is
-> best asking upstream as soon as possible.
+> Ahh thanks for the elaboration.
 
-Ahh thanks for the elaboration.
+You're welcome!
 
-So there are some targets vs feature stuff which is still not clear for
-rust upstream.
+> However, kernel supports many ISA variants that are not defined by any ru=
+st target
+> triple, I'm not really sure if it's appropriate to define them all in ups=
+tream.
 
-For example, on ISA level (things like +mips64r2, +mips3), currently for
-rust upstream, it is handled by target name. (i.e. regular mips64-unknow=
-n-linux-gnuabi64
-triple would pass +mips64r2 to backend, mips64isar6-unknown-linux-gnuabi=
-64
-would pass +mips64r6).
+They need to be in upstream Rust somehow, because upstream Rust does
+not want to stabilize `target.json` since it is too tied to LLVM (as
+far as we have been told). Whether that is via `-Ctarget-feature`, or a
+new `-Cglobal-target-feature`, or specific flags like `-Zfixed-x18`
+(originally `-Ctarget-feature=3D+reserve-x18`), or (many) new target
+triples for different combinations, or something else, it depends on
+the case and what upstream Rust wants to do.
 
-However, kernel supports many ISA variants that are not defined by any r=
-ust target
-triple, I'm not really sure if it's appropriate to define them all in up=
-stream.
+That is why we should tell them what is needed, ideally in a new issue
+in upstream Rust, and link it in
+https://github.com/Rust-for-Linux/linux/issues/355 (please see that
+list for similar examples).
 
-The same applies to +soft-float and +noabicalls options as well. It seem=
-s like
-+soft-float and +noabicalls are only enabled by bare-metal toolchains as=
- rust
-recognise them as a target defined features.
+I hope that explains a bit more the context.
 
-Thanks
->
-> Thanks!
->
-> [1]=20
-> https://github.com/rust-lang/rust/blob/d6c8169c186ab16a3404cd0d0866674=
-018e8a19e/compiler/rustc_target/src/target_features.rs#L368
->
-> Cheers,
-> Miguel
-
---=20
-- Jiaxun
+Cheers,
+Miguel
 
