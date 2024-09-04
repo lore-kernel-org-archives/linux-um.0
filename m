@@ -4,138 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58FCBCD4847
-	for <linux-um@archiver.kernel.org>; Wed,  4 Sep 2024 07:38:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE742CA0ED3
+	for <linux-um@archiver.kernel.org>; Wed,  4 Sep 2024 07:52:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Subject:References:In-Reply-To:Message-Id:Cc:To:From:Date:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=sz6ZXnptgCPAXnQbA/qYwtmPVRCJO0RfwwN0oTEtnVE=; b=FuUHaIa0qEMmy/YYJHmremqLYX
-	a3ON62EEQFXFtoRNNZoB7OUfXec3Zq6m4x7oYgBqIy+mKkad2qB10PPY5Mo+5H/BVPgMz+QYuy9WX
-	Teen7p5TkRjITQ1Nem2pgG21zvKKoqQttclfAVxeojtKaJt/IqQr5nddoer2UrNAVH0T9v2R+1DOo
-	O4IlUOGVF25If6iuE+FJSNBAXF1IquM+t58aMeKfzhWSzdfY9Hk9tpgVf09NR4ZNeDT23chb6FQAB
-	pvQef5o+UgzZkinCuATAvrL5oLm4HCYutowKrhSFuSPwEj+lW9Sd7zUMsuUurTKkM4jeNJx1mGS9O
-	Y9oCjkQg==;
+	bh=AU1p1DXBVmXIl6YxYAEjEuw7v6nXJYuynqitO9fDnNA=; b=f1YbtGknFsvVZl5EuXKzdjAYUe
+	3z9cQbYVgd/ptwUN2L+pg/robp+LcZ0cpkG57sNlN+4QO3mQtaEnojTWdPtb+mTcGtwWIENZBXNvO
+	zUsw/ifYw/xDrk5OHsz4Pr+uig4QR6abndRYwYON8JUbVKv//m7BzO7dgVro6T2qEH3Qnt9imu+0v
+	ac+jJ/Ecq1SNU3kwmZbwyyVOL0uellKnDYc0DPpIp/7aC6eU39Dx8BJ9Lj9texOvZVpm0gCvdGeEo
+	qy6osaHSXYDLFzycwDasm9nZOrKyHssH78V7gN+xiTZUcTo7uO788GUl7g5x/m7I+s7vg1Efue1qB
+	1lMS+luw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1slkb1-00000003DgS-2seQ;
-	Wed, 04 Sep 2024 07:38:31 +0000
-Received: from fout8-smtp.messagingengine.com ([103.168.172.151])
+	id 1slkoF-00000003Gg4-1Ygy;
+	Wed, 04 Sep 2024 07:52:11 +0000
+Received: from pegase2.c-s.fr ([93.17.235.10])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1slkay-00000003Dfx-1G5A
-	for linux-um@lists.infradead.org;
-	Wed, 04 Sep 2024 07:38:30 +0000
-Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
-	by mailfout.phl.internal (Postfix) with ESMTP id CA46F138017F;
-	Wed,  4 Sep 2024 03:38:26 -0400 (EDT)
-Received: from phl-imap-12 ([10.202.2.86])
-  by phl-compute-05.internal (MEProxy); Wed, 04 Sep 2024 03:38:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1725435506;
-	 x=1725521906; bh=sz6ZXnptgCPAXnQbA/qYwtmPVRCJO0RfwwN0oTEtnVE=; b=
-	rfNHq06S+/FbiJrjcoOAISVrJY1dv8k4g+acB71qeIe0yoy8tEYuiuX6duhHot0X
-	pnl4Iv+jSo1NbgXY27Sm6bOV4qZGIbsxcYq1KA6O7qp3Gv/QXwLbfO8thQJHWS3Q
-	4cLKRt7uqNAaIKrt2TBz5bcums1IZHW3zWq2AysZvWT1FXBRMTYO6Ug7R8MAVuoB
-	3rWV9jPuGkruOmjZMEU/e+2OAMc/GE9oK8kvjNfq6TMiuw5V9pqid8KdfeXQEG0s
-	Y1tdgKvxCvK0hle8lBgZUObKDBQqSNtQDQJN6p+CK2QxAVMDWch6RSMqs0CL2BEM
-	99k/hnes1guZnUoy8uSlpw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1725435506; x=
-	1725521906; bh=sz6ZXnptgCPAXnQbA/qYwtmPVRCJO0RfwwN0oTEtnVE=; b=B
-	iFOEq1sVqpbBj1w9LMAEZgDjMzrAxYO5IHVpeDFFhntFPf128oUA/18aSRhUV9lt
-	SjTwO1VpWlAVLcHFnIK53Uh65HRATfjliGXh4mjrwEVBt7ypXoKoq7z6ztq4VmKS
-	j9oWFRgn4sfUWeeZbX7j/P4W3nU0xEzcO4z3m0NAdClE47/ikZ0WlI1KHqSqrgiy
-	STUHs83TLL2fjm39nos9JCPme3s5LawmO/KM9/Q2AQZakvZ67FNHsfftPHcObHoz
-	MmaLCMTA2TfvqKjTLC+pmp68EZbbIoTFXuDQWfGlk09BUpDTn4jOwgURKst5b4IF
-	p5c/y86CfrkJwoV8fqdTg==
-X-ME-Sender: <xms:cA7YZpsfXod5rMH1QTlm0kTIPWxJqwPiszVY5eBC46ewJFhh3iw5CQ>
-    <xme:cA7YZifTUghUpf-WKUM0pFh-ulBKmpAalims9KaeyULKphrFiIFxxqcDgax3OHQUi
-    ywmBY4QNB45dm8KCc0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudehiedguddvtdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenucfjughrpefoggffhffvvefkjghfufgtgfesthhqredtredt
-    jeenucfhrhhomhepfdflihgrgihunhcujggrnhhgfdcuoehjihgrgihunhdrhigrnhhgse
-    hflhihghhorghtrdgtohhmqeenucggtffrrghtthgvrhhnpeevueffteefkeehhfdthfel
-    feffjedvffekgfeiuedugeekgeejvedtffeiledtueenucffohhmrghinhepghhithhhuh
-    gsrdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhho
-    mhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomhdpnhgspghrtghpthhtoh
-    epgedtpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopegsphesrghlihgvnhekrdgu
-    vgdprhgtphhtthhopehtshgsohhgvghnugesrghlphhhrgdrfhhrrghnkhgvnhdruggvpd
-    hrtghpthhtohepmhgrrhhkrdhruhhtlhgrnhgusegrrhhmrdgtohhmpdhrtghpthhtohep
-    rghnthhonhdrihhvrghnohhvsegtrghmsghrihgughgvghhrvgihshdrtghomhdprhgtph
-    htthhopehnihgtohhlrghssehfjhgrshhlvgdrvghupdhrtghpthhtohepghgrrhihsehg
-    rghrhihguhhordhnvghtpdhrtghpthhtoheprghlvgigrdhgrgihnhhorhesghhmrghilh
-    drtghomhdprhgtphhtthhopegsohhquhhnrdhfvghnghesghhmrghilhdrtghomhdprhgt
-    phhtthhopehmihhguhgvlhdrohhjvggurgdrshgrnhguohhnihhssehgmhgrihhlrdgtoh
-    hm
-X-ME-Proxy: <xmx:cA7YZsxJTWa516B1amj6UWURaphYpQG7A_CZANJjeHUVSV9pyNfcWg>
-    <xmx:cA7YZgMgKTSMs2eNfwkAsPGl3QfC0ElKD-WFY0SQxWw9BMzetozcJQ>
-    <xmx:cA7YZp8XTYFkwebvCNZsdfsBNO62gvaU4g82IG_p09N7BGZtG4pzAA>
-    <xmx:cA7YZgWFhnrDB95x5DNuYD5ky5Bo6vtbXwU8siGEdfpJ0b4-IAyzCQ>
-    <xmx:cg7YZu8KItrX9IUQjFOMUxdHGLKL6ymyzV556PeKCfMCW0g4shDq4p8v>
-Feedback-ID: ifd894703:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 680AD1C207BB; Wed,  4 Sep 2024 03:38:24 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	id 1slknB-00000003GF9-0jii;
+	Wed, 04 Sep 2024 07:51:10 +0000
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+	by localhost (Postfix) with ESMTP id 4WzF6T6FRvz9sSC;
+	Wed,  4 Sep 2024 09:50:57 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+	by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id MyT5AqoNw1ah; Wed,  4 Sep 2024 09:50:57 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+	by pegase2.c-s.fr (Postfix) with ESMTP id 4WzF6T53SRz9sS7;
+	Wed,  4 Sep 2024 09:50:57 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 9D7618B77A;
+	Wed,  4 Sep 2024 09:50:57 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+	with ESMTP id XVy8Rvp824KA; Wed,  4 Sep 2024 09:50:57 +0200 (CEST)
+Received: from [192.168.234.246] (unknown [192.168.234.246])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id EC5188B778;
+	Wed,  4 Sep 2024 09:50:56 +0200 (CEST)
+Message-ID: <64e74f4d-948d-442e-9810-69907915401c@csgroup.eu>
+Date: Wed, 4 Sep 2024 09:50:56 +0200
 MIME-Version: 1.0
-Date: Wed, 04 Sep 2024 08:38:04 +0100
-From: "Jiaxun Yang" <jiaxun.yang@flygoat.com>
-To: "Miguel Ojeda" <miguel.ojeda.sandonis@gmail.com>
-Cc: "Masahiro Yamada" <masahiroy@kernel.org>,
- "Nathan Chancellor" <nathan@kernel.org>,
- "Nicolas Schier" <nicolas@fjasle.eu>,
- "Richard Weinberger" <richard@nod.at>,
- "Anton Ivanov" <anton.ivanov@cambridgegreys.com>,
- "Johannes Berg" <johannes@sipsolutions.net>,
- "Thomas Gleixner" <tglx@linutronix.de>, "Ingo Molnar" <mingo@redhat.com>,
- "Borislav Petkov" <bp@alien8.de>,
- "Dave Hansen" <dave.hansen@linux.intel.com>, x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>, "Miguel Ojeda" <ojeda@kernel.org>,
- "Alex Gaynor" <alex.gaynor@gmail.com>,
- "Wedson Almeida Filho" <wedsonaf@gmail.com>,
- "Boqun Feng" <boqun.feng@gmail.com>, "Gary Guo" <gary@garyguo.net>,
- =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
- "Benno Lossin" <benno.lossin@proton.me>,
- "Andreas Hindborg" <a.hindborg@samsung.com>,
- "Alice Ryhl" <aliceryhl@google.com>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- "Steven Rostedt" <rostedt@goodmis.org>,
- "Masami Hiramatsu" <mhiramat@kernel.org>,
- "Mark Rutland" <mark.rutland@arm.com>,
- "Jonathan Corbet" <corbet@lwn.net>, "Alex Shi" <alexs@kernel.org>,
- "Yanteng Si" <siyanteng@loongson.cn>,
- "Nick Desaulniers" <ndesaulniers@google.com>,
- "Bill Wendling" <morbo@google.com>,
- "Justin Stitt" <justinstitt@google.com>, linux-kbuild@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-um@lists.infradead.org,
- rust-for-linux@vger.kernel.org,
- "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
- linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- llvm@lists.linux.dev
-Message-Id: <a6959bc0-f0bb-425b-b3b1-3123d3b809b5@app.fastmail.com>
-In-Reply-To: <CANiq72mvTTgyTjDCWBz_kOdY1f4gopAtWxyC4P4c+Lr0YVkzLA@mail.gmail.com>
-References: <20240903-mips-rust-v1-0-0fdf0b2fd58f@flygoat.com>
- <20240903-mips-rust-v1-3-0fdf0b2fd58f@flygoat.com>
- <CANiq72=z1yJm-B_ie=GfueOF1qksaSD9txgFU1YQo2tZx0qQPg@mail.gmail.com>
- <d9591a84-9a0f-4046-9b2a-437061f6882b@app.fastmail.com>
- <CANiq72m5iFcqRU_qdUCZkoV8ayPhtQQq3TTEDRUYfMEsnNqTDg@mail.gmail.com>
- <6f6f04d7-55b3-4714-9bcd-cb4e1ae6c86a@app.fastmail.com>
- <CANiq72mvTTgyTjDCWBz_kOdY1f4gopAtWxyC4P4c+Lr0YVkzLA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] rust: Enable for MIPS
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] mm: make copy_to_kernel_nofault() not fault on user
+ addresses
+To: Omar Sandoval <osandov@osandov.com>, linux-mm@kvack.org,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Benjamin Gray <bgray@linux.ibm.com>,
+ "Christopher M. Riedl" <cmr@bluescreens.de>
+Cc: Christoph Hellwig <hch@lst.de>, x86@kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-um@lists.infradead.org, kernel-team@fb.com
+References: <cover.1725223574.git.osandov@fb.com>
+ <f0e171cbae576758d9387cee374dd65088e75b07.1725223574.git.osandov@fb.com>
+Content-Language: fr-FR
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+In-Reply-To: <f0e171cbae576758d9387cee374dd65088e75b07.1725223574.git.osandov@fb.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240904_003828_615184_10050EBF 
-X-CRM114-Status: GOOD (  15.10  )
+X-CRM114-CacheID: sfid-20240904_005105_395531_C6CDD467 
+X-CRM114-Status: GOOD (  19.09  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -150,47 +85,73 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+Hi,
 
+Le 02/09/2024 à 07:31, Omar Sandoval a écrit :
+> [Vous ne recevez pas souvent de courriers de osandov@osandov.com. Découvrez pourquoi ceci est important à https://aka.ms/LearnAboutSenderIdentification ]
+> 
+> From: Omar Sandoval <osandov@fb.com>
+> 
+> I found that on x86, copy_to_kernel_nofault() still faults on addresses
+> outside of the kernel address range (including NULL):
+> 
+>    # echo ttyS0 > /sys/module/kgdboc/parameters/kgdboc
+>    # echo g > /proc/sysrq-trigger
+>    ...
+>    [15]kdb> mm 0 1234
+>    [   94.652476] BUG: kernel NULL pointer dereference, address: 0000000000000000
+...
+> 
+> Note that copy_to_kernel_nofault() uses pagefault_disable(), but it
+> still faults. This is because with Supervisor Mode Access Prevention
+> (SMAP) enabled, do_user_addr_fault() Oopses on a fault for a user
+> address from kernel space _before_ checking faulthandler_disabled().
+> 
+> copy_from_kernel_nofault() avoids this by checking that the address is
+> in the kernel before doing the actual memory access. Do the same in
+> copy_to_kernel_nofault() so that we get an error as expected:
+> 
+>    # echo ttyS0 > /sys/module/kgdboc/parameters/kgdboc
+>    # echo g > /proc/sysrq-trigger
+>    ...
+>    [17]kdb> mm 0 1234
+>    kdb_putarea_size: Bad address 0x0
+>    diag: -21: Invalid address
+> 
+> Signed-off-by: Omar Sandoval <osandov@fb.com>
+> ---
+>   mm/maccess.c | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/mm/maccess.c b/mm/maccess.c
+> index 72e9c03ea37f..d67dee51a1cc 100644
+> --- a/mm/maccess.c
+> +++ b/mm/maccess.c
+> @@ -61,6 +61,9 @@ long copy_to_kernel_nofault(void *dst, const void *src, size_t size)
+>          if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS))
+>                  align = (unsigned long)dst | (unsigned long)src;
+> 
+> +       if (!copy_kernel_nofault_allowed(dst, size))
+> +               return -ERANGE;
+> +
+>          pagefault_disable();
+>          if (!(align & 7))
+>                  copy_to_kernel_nofault_loop(dst, src, size, u64, Efault);
+> --
+> 2.46.0
+> 
 
-=E5=9C=A82024=E5=B9=B49=E6=9C=883=E6=97=A5=E4=B9=9D=E6=9C=88 =E4=B8=8B=E5=
-=8D=888:01=EF=BC=8CMiguel Ojeda=E5=86=99=E9=81=93=EF=BC=9A
-> On Tue, Sep 3, 2024 at 8:32=E2=80=AFPM Jiaxun Yang <jiaxun.yang@flygoa=
-t.com> wrote:
->>
->> Ahh thanks for the elaboration.
->
-> You're welcome!
->
->> However, kernel supports many ISA variants that are not defined by an=
-y rust target
->> triple, I'm not really sure if it's appropriate to define them all in=
- upstream.
->
-> They need to be in upstream Rust somehow, because upstream Rust does
-> not want to stabilize `target.json` since it is too tied to LLVM (as
-> far as we have been told). Whether that is via `-Ctarget-feature`, or a
-> new `-Cglobal-target-feature`, or specific flags like `-Zfixed-x18`
-> (originally `-Ctarget-feature=3D+reserve-x18`), or (many) new target
-> triples for different combinations, or something else, it depends on
-> the case and what upstream Rust wants to do.
->
-> That is why we should tell them what is needed, ideally in a new issue
-> in upstream Rust, and link it in
-> https://github.com/Rust-for-Linux/linux/issues/355 (please see that
-> list for similar examples).
+This patch leads to the following errors on ppc64le_defconfig:
 
-Seems like this topic is covered by an existing issue
+[    2.423930][    T1] Running code patching self-tests ...
+[    2.428912][    T1] code-patching: test failed at line 395
+[    2.429085][    T1] code-patching: test failed at line 398
+[    2.429561][    T1] code-patching: test failed at line 432
+[    2.429679][    T1] code-patching: test failed at line 435
 
-Reported at:
-https://github.com/rust-embedded/wg/issues/792#issuecomment-2328133517
+This seems to be linked to commit c28c15b6d28a ("powerpc/code-patching: 
+Use temporary mm for Radix MMU"), copy_from_kernel_nofault_allowed() 
+returns false for the patching area.
 
-Thanks!
->
-> I hope that explains a bit more the context.
->
-> Cheers,
-> Miguel
-
---=20
-- Jiaxun
+Christophe
 
