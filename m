@@ -4,73 +4,93 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DE742CA0ED3
-	for <linux-um@archiver.kernel.org>; Wed,  4 Sep 2024 07:52:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D6C8ECD3431
+	for <linux-um@archiver.kernel.org>; Wed,  4 Sep 2024 08:12:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=AU1p1DXBVmXIl6YxYAEjEuw7v6nXJYuynqitO9fDnNA=; b=f1YbtGknFsvVZl5EuXKzdjAYUe
-	3z9cQbYVgd/ptwUN2L+pg/robp+LcZ0cpkG57sNlN+4QO3mQtaEnojTWdPtb+mTcGtwWIENZBXNvO
-	zUsw/ifYw/xDrk5OHsz4Pr+uig4QR6abndRYwYON8JUbVKv//m7BzO7dgVro6T2qEH3Qnt9imu+0v
-	ac+jJ/Ecq1SNU3kwmZbwyyVOL0uellKnDYc0DPpIp/7aC6eU39Dx8BJ9Lj9texOvZVpm0gCvdGeEo
-	qy6osaHSXYDLFzycwDasm9nZOrKyHssH78V7gN+xiTZUcTo7uO788GUl7g5x/m7I+s7vg1Efue1qB
-	1lMS+luw==;
+	bh=Mclf5cWZ7doo82bxSJ1tInXWyUxki/hxkifyVYswtWM=; b=SScHBvdL8I3jk01Y/eADDk+CcF
+	VoIMbllWtH25k0S7MWtEhXOE9k8GQV+jJ59ayMU+brFYEL3skMDhM66S/vQuv865Si8IDsiyBUsCK
+	prIWIX5Jfpv0i1tEMaRf2BAzFfTKIxI8g/qWcwKOb5kl6nhosZKA4MBpjKNkmfjWmki9al2oFNzAM
+	LLLlQweZW4FzBFgoAIWCsJNx4R1gqP8TUEnyZaHic/jOZyeuQ6Kd2ajARz3M7C4SDQXLll+d70o1K
+	FICnNtQ54dYHtGIUwIBB4hqzwiiCXh6bO+ZtFPkWONoVy27Y2Yyrxq0B6SRAEoFfck+agSd38vZNZ
+	kP5WtxlA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1slkoF-00000003Gg4-1Ygy;
-	Wed, 04 Sep 2024 07:52:11 +0000
-Received: from pegase2.c-s.fr ([93.17.235.10])
+	id 1sll8H-00000003KUF-12ui;
+	Wed, 04 Sep 2024 08:12:53 +0000
+Received: from mail-yw1-f173.google.com ([209.85.128.173])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1slknB-00000003GF9-0jii;
-	Wed, 04 Sep 2024 07:51:10 +0000
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-	by localhost (Postfix) with ESMTP id 4WzF6T6FRvz9sSC;
-	Wed,  4 Sep 2024 09:50:57 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-	by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id MyT5AqoNw1ah; Wed,  4 Sep 2024 09:50:57 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-	by pegase2.c-s.fr (Postfix) with ESMTP id 4WzF6T53SRz9sS7;
-	Wed,  4 Sep 2024 09:50:57 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 9D7618B77A;
-	Wed,  4 Sep 2024 09:50:57 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-	with ESMTP id XVy8Rvp824KA; Wed,  4 Sep 2024 09:50:57 +0200 (CEST)
-Received: from [192.168.234.246] (unknown [192.168.234.246])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id EC5188B778;
-	Wed,  4 Sep 2024 09:50:56 +0200 (CEST)
-Message-ID: <64e74f4d-948d-442e-9810-69907915401c@csgroup.eu>
-Date: Wed, 4 Sep 2024 09:50:56 +0200
+	id 1sll8E-00000003KTg-0ivA
+	for linux-um@lists.infradead.org;
+	Wed, 04 Sep 2024 08:12:51 +0000
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-6db2a9da800so1109347b3.0
+        for <linux-um@lists.infradead.org>; Wed, 04 Sep 2024 01:12:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725437568; x=1726042368;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Mclf5cWZ7doo82bxSJ1tInXWyUxki/hxkifyVYswtWM=;
+        b=qnVArBDSmXiP4mC2UA+HOyqq1MRkeG6H55uob5EEQGurIREadWhKIFaHjdOKiL+XdJ
+         nKrbdy9iQtkUHNYSWrsKIRDKxvFXWbYL/JM9IxhLGIBTcvNJFEcf6XyE2fj5Fp+YAtZ7
+         enPZSafECG3iPjtfFnWV+t+uC+b6j47VnedZPBafIgLuVGS1w1ZkLGUkYNLuTfOmT3mp
+         /JJGHb+MT+9ar7/80TfkVgW30/6xKvhs5kNqz73UkAZ6yRp1w3zLhyYsQcWMo1Kj5YIQ
+         I/XPCmRlovLfrivv66pxe27qiNo5Kn50MmMsqIMzYXBue+r1JRkV7OCK7SZLt28i+pw4
+         4yKA==
+X-Forwarded-Encrypted: i=1; AJvYcCWo1KUcl2SrM5LMuMsKTzRWtOaL4+4g2jeS63dbfC0k7ALmOy/qFVV1l259EueHpDMCzrMUpvtfHw==@lists.infradead.org
+X-Gm-Message-State: AOJu0YzoflPCRZ93IkCQbZOri040eRjTGtZjEmUov+FefFt3AaC9CvEl
+	vqemRRwbXjJIbdzZcvpHWCp4uwPRwG7QtOxrUZEB5WZ6d6/zHgl99X/Vs1fb
+X-Google-Smtp-Source: AGHT+IHJkWSQJWTRW9Ls24bUgifKLUvCOl9Yu75isjc49X4JTLMazQ2jvZ8jPf/ep+nHLzCvPdm8fg==
+X-Received: by 2002:a05:690c:c04:b0:65f:cdb7:46a7 with SMTP id 00721157ae682-6db2600ba38mr8385027b3.22.1725437567891;
+        Wed, 04 Sep 2024 01:12:47 -0700 (PDT)
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com. [209.85.128.171])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6d2d5ea58d4sm22947797b3.129.2024.09.04.01.12.46
+        for <linux-um@lists.infradead.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Sep 2024 01:12:47 -0700 (PDT)
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-6cdae28014dso3826957b3.1
+        for <linux-um@lists.infradead.org>; Wed, 04 Sep 2024 01:12:46 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVaP5zzTScrj79YWu9eKS5SeKuK2BVB4PjVgB/Rmn6df0FscJg8DlPI9wzaQoEBqwS2VFnEecZ9Og==@lists.infradead.org
+X-Received: by 2002:a05:690c:680b:b0:664:74cd:5548 with SMTP id
+ 00721157ae682-6db25f47819mr8680237b3.1.1725437566641; Wed, 04 Sep 2024
+ 01:12:46 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] mm: make copy_to_kernel_nofault() not fault on user
- addresses
-To: Omar Sandoval <osandov@osandov.com>, linux-mm@kvack.org,
- Andrew Morton <akpm@linux-foundation.org>,
- Benjamin Gray <bgray@linux.ibm.com>,
- "Christopher M. Riedl" <cmr@bluescreens.de>
-Cc: Christoph Hellwig <hch@lst.de>, x86@kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-um@lists.infradead.org, kernel-team@fb.com
-References: <cover.1725223574.git.osandov@fb.com>
- <f0e171cbae576758d9387cee374dd65088e75b07.1725223574.git.osandov@fb.com>
-Content-Language: fr-FR
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-In-Reply-To: <f0e171cbae576758d9387cee374dd65088e75b07.1725223574.git.osandov@fb.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240903-mips-rust-v1-0-0fdf0b2fd58f@flygoat.com> <20240903-mips-rust-v1-2-0fdf0b2fd58f@flygoat.com>
+In-Reply-To: <20240903-mips-rust-v1-2-0fdf0b2fd58f@flygoat.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Wed, 4 Sep 2024 10:12:35 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXC0ZBJibi=60VVG5mW1rwz=VgWxduph7SUxA4uyL5Mvw@mail.gmail.com>
+Message-ID: <CAMuHMdXC0ZBJibi=60VVG5mW1rwz=VgWxduph7SUxA4uyL5Mvw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] MIPS: Rename mips_instruction type to workaround
+ bindgen issue
+To: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: Masahiro Yamada <masahiroy@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nicolas Schier <nicolas@fjasle.eu>, Richard Weinberger <richard@nod.at>, 
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Jonathan Corbet <corbet@lwn.net>, Alex Shi <alexs@kernel.org>, 
+	Yanteng Si <siyanteng@loongson.cn>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-um@lists.infradead.org, 
+	rust-for-linux@vger.kernel.org, linux-mips@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240904_005105_395531_C6CDD467 
-X-CRM114-Status: GOOD (  19.09  )
+X-CRM114-CacheID: sfid-20240904_011250_232367_DD384573 
+X-CRM114-Status: GOOD (  20.02  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,73 +105,39 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi,
+Hi Jiaxun,
 
-Le 02/09/2024 à 07:31, Omar Sandoval a écrit :
-> [Vous ne recevez pas souvent de courriers de osandov@osandov.com. Découvrez pourquoi ceci est important à https://aka.ms/LearnAboutSenderIdentification ]
-> 
-> From: Omar Sandoval <osandov@fb.com>
-> 
-> I found that on x86, copy_to_kernel_nofault() still faults on addresses
-> outside of the kernel address range (including NULL):
-> 
->    # echo ttyS0 > /sys/module/kgdboc/parameters/kgdboc
->    # echo g > /proc/sysrq-trigger
->    ...
->    [15]kdb> mm 0 1234
->    [   94.652476] BUG: kernel NULL pointer dereference, address: 0000000000000000
-...
-> 
-> Note that copy_to_kernel_nofault() uses pagefault_disable(), but it
-> still faults. This is because with Supervisor Mode Access Prevention
-> (SMAP) enabled, do_user_addr_fault() Oopses on a fault for a user
-> address from kernel space _before_ checking faulthandler_disabled().
-> 
-> copy_from_kernel_nofault() avoids this by checking that the address is
-> in the kernel before doing the actual memory access. Do the same in
-> copy_to_kernel_nofault() so that we get an error as expected:
-> 
->    # echo ttyS0 > /sys/module/kgdboc/parameters/kgdboc
->    # echo g > /proc/sysrq-trigger
->    ...
->    [17]kdb> mm 0 1234
->    kdb_putarea_size: Bad address 0x0
->    diag: -21: Invalid address
-> 
-> Signed-off-by: Omar Sandoval <osandov@fb.com>
+Thanks for your patch!
+
+On Tue, Sep 3, 2024 at 7:15=E2=80=AFPM Jiaxun Yang <jiaxun.yang@flygoat.com=
+> wrote:
+> We have a union and a type both named after mips_instruction,
+> rust bindgen is not happy with this kind of naming alias.
+>
+> Given that union mips_instruction is a part of UAPI, the only
+> thing we can do is to rename mips_instruction type.
+>
+> Rename it as mips_insn, which is not conflicting with anything
+> and fits the name of header.
+
+Nit: the header is called inst.h, not insn.h.
+
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 > ---
->   mm/maccess.c | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/mm/maccess.c b/mm/maccess.c
-> index 72e9c03ea37f..d67dee51a1cc 100644
-> --- a/mm/maccess.c
-> +++ b/mm/maccess.c
-> @@ -61,6 +61,9 @@ long copy_to_kernel_nofault(void *dst, const void *src, size_t size)
->          if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS))
->                  align = (unsigned long)dst | (unsigned long)src;
-> 
-> +       if (!copy_kernel_nofault_allowed(dst, size))
-> +               return -ERANGE;
-> +
->          pagefault_disable();
->          if (!(align & 7))
->                  copy_to_kernel_nofault_loop(dst, src, size, u64, Efault);
-> --
-> 2.46.0
-> 
+>  arch/mips/include/asm/dsemul.h |  2 +-
+>  arch/mips/include/asm/inst.h   |  6 +++---
 
-This patch leads to the following errors on ppc64le_defconfig:
+Gr{oetje,eeting}s,
 
-[    2.423930][    T1] Running code patching self-tests ...
-[    2.428912][    T1] code-patching: test failed at line 395
-[    2.429085][    T1] code-patching: test failed at line 398
-[    2.429561][    T1] code-patching: test failed at line 432
-[    2.429679][    T1] code-patching: test failed at line 435
+                        Geert
 
-This seems to be linked to commit c28c15b6d28a ("powerpc/code-patching: 
-Use temporary mm for Radix MMU"), copy_from_kernel_nofault_allowed() 
-returns false for the patching area.
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
 
-Christophe
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
