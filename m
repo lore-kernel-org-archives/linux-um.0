@@ -4,95 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DDD6CD5BC7
-	for <linux-um@archiver.kernel.org>; Thu,  5 Sep 2024 13:33:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0FD17CD5BC9
+	for <linux-um@archiver.kernel.org>; Thu,  5 Sep 2024 13:33:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
 	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=qimAV3wto6Axv7quLFDukEk8DBO0+3lc2rfy5X5Nb2s=; b=ZlV1vxfA8nRCOlAgSYLDtGuyJA
-	+awGVbOa1HM6Q8NLvK4Utf/2OJTc9tMpGDcqTQVqqxcRxdoOuvehdeJ7aQMx4pCKOLVHyQzfhX6z/
-	+kSNRA6jkg/8xR+QKERww8akCl2snUSCOfLWtdxdzuw/LkmTm6NS1fYJKaySxeKh94i4vJEV6uTjU
-	H4WylRZdEtC0cSAk9JHvc0MVzNOpKoer7EB3ZJLMuW5g4EGzIUOLHm3d3lgN2fzqWcMV40/yuAXfP
-	WUJR6t9IU1lPbAa5QUoN1vQnD9MlyG1KBvHEiWAWGXCq1X3gdVTHjZidf81pNl7kR3Yb/IeqQ63VG
-	e2ZNJ8oA==;
+	bh=z2B0F8060umJHdopRQNGtZEBNjqM4wVRBCzxrvcUhSw=; b=SwptytHn+JJ4agpBBdtJdEpBTr
+	64U598OsANMAHpvlc6uaH1uMymB1/Bv1040VKWe3px+/l94y/NZCPj0OTh2iv+u6A74kIa0pV2SNL
+	YwHGECX+K919/L6hSJrfXU+qp0w7JUwtpB4dy8LiWxMhm1LA/A691Wu/gFl+gx6tSX7c74PaSkMdY
+	Fa8sAa9VK5opqLZNiS0TkKqcAKA6GZ4HNT86OSDu3L2fXXL9glv55emYqml17sKOWIlB5HWqYsEvh
+	8fPNuxqN9LWbt+8+sTaRU/7+xamZbsWudBl/62sbwLO0hxLwey0CwaOL91AVSCWaefwS4DzhGmyrj
+	AyrYExXg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1smCcX-00000008YBZ-0tYO;
-	Thu, 05 Sep 2024 13:33:57 +0000
+	id 1smCcY-00000008YD4-33WV;
+	Thu, 05 Sep 2024 13:33:58 +0000
 Received: from fout3-smtp.messagingengine.com ([103.168.172.146])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1smCbz-00000008Y0W-1yxP
+	id 1smCc8-00000008Y3V-1sXN
 	for linux-um@lists.infradead.org;
-	Thu, 05 Sep 2024 13:33:25 +0000
+	Thu, 05 Sep 2024 13:33:34 +0000
 Received: from phl-compute-02.internal (phl-compute-02.phl.internal [10.202.2.42])
-	by mailfout.phl.internal (Postfix) with ESMTP id 65A101380053;
-	Thu,  5 Sep 2024 09:33:22 -0400 (EDT)
+	by mailfout.phl.internal (Postfix) with ESMTP id 8E231138026D;
+	Thu,  5 Sep 2024 09:33:31 -0400 (EDT)
 Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-02.internal (MEProxy); Thu, 05 Sep 2024 09:33:22 -0400
+  by phl-compute-02.internal (MEProxy); Thu, 05 Sep 2024 09:33:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
 	cc:cc:content-transfer-encoding:content-type:content-type:date
 	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1725543202;
-	 x=1725629602; bh=qimAV3wto6Axv7quLFDukEk8DBO0+3lc2rfy5X5Nb2s=; b=
-	1Pws76qzQNZM1pa1R+KK6JsBF3Al4dbNjWYmyzUrwIUI+NvaGLSjzc5SdBBrL39W
-	tBgJ6p27gWFXKgrRj0xqk262W5X55vQJLXODRqhx5hcnrdqpWkmPvTmyvHorVOJ+
-	AO0I5/7PqWAj02Dtup8WABYQTdo5Hp/kZv/m4fjuqONmUbOVQq+Y+LeMIh5vtsSU
-	op8kjSpIgRx9/H/Ow+4K3vrtC/qCUXiyclB3RxgJ+WpfUw34RhGEAEFTl0Tbfs/D
-	A3HPt/5CMUWW0QiDEBRmMwdAOS9qDts5Rfv6T9J5Eoyo+XF6BXouex0eACOY9aVW
-	/mV4m8YtpqDGjwE/dyUgFA==
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1725543211;
+	 x=1725629611; bh=z2B0F8060umJHdopRQNGtZEBNjqM4wVRBCzxrvcUhSw=; b=
+	DUFu6lhN0qGUhUYatTxIHgIP6kNGLyzy1blThsogwkg/3YJpEEBIwCKMlq7I0x1Z
+	oNoQpZ7ZheO+hVtlcv1fYCYq0CtsOuy+HKefI8MWS0ZeJaelN7SuOW8O6ZUXrlJt
+	uU4qjMH6EuOul/uAKLiSvEeJkShmOkA9Jwwy5p5M8Yfz+uWlTrRBo53fEH9KXY40
+	0yZ8ycmK43QeHVOIt6J3CqM05Ukl9bQwSMsHXMWXLdv9hq7IJunrKt8nVwKIE3DC
+	72Br4R32cdWaCV0zXCznxc+4/lCjeg6gjLTlIKzV6RrV9Gr4lm3Z+PX45ocQkjOy
+	gcwLmR3WuFRHE21bU32Ccw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:content-type:date:date:feedback-id:feedback-id
 	:from:from:in-reply-to:in-reply-to:message-id:mime-version
 	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1725543202; x=
-	1725629602; bh=qimAV3wto6Axv7quLFDukEk8DBO0+3lc2rfy5X5Nb2s=; b=A
-	49hOezDYQg+JjV7UcPnkQoEUBGJ/TDSUkAYROcKNbAG/N7BwFq63a61MsUc9Pgh7
-	UWJhAMLP9XgkfxL1c/P/TgttJ4nE/q3aSl5vhek7IvXzFaZ3usBMYs9D4rkoydZm
-	Im/6kP2dBgnW+259kyYfXye/gsj5YBxQ4abq8mPDtiJ3MPKZXSGtcBGXIptjf2eL
-	88v+NsneTSV1KCmgNwarWwH/kalUekqAwqKDh9Jtw25/fzMI5V8NfKgt5JOJpqox
-	o+dfu+eMHIJnJjR2fabdRm6XoiAy8an3bKMZRFucnbBuU9/H9X2TS5BcOQYN+1K7
-	rLlziB0/4kstO41pINU5Q==
-X-ME-Sender: <xms:IrPZZmPK-tG53VZTF1yJlr_KIDkpizDKB2tt1cgJMdVp4MO4lvJDwQ>
-    <xme:IrPZZk86127yn3f9DxcmR2qhKqpNXiGEJofAna-UpauIxTcknbwrM5kqpSmqljhz5
-    VGqOgxr3QAJS34rGjE>
-X-ME-Received: <xmr:IrPZZtQlO8pi3UueL6--QHrquCTSXvTKNesWgI_m-Ou9ogjUwm4C_N2xWv315MklQg>
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1725543211; x=
+	1725629611; bh=z2B0F8060umJHdopRQNGtZEBNjqM4wVRBCzxrvcUhSw=; b=h
+	CRduZd0GkqMWAd0FuBYs1gHD3z8D+TUxc1eo7fMCVsiIYH3kObPBA/342p5kcXg9
+	GxyRnK1t0guZHd7ZQo3Piq60+XURaNkjhXRwue3GC1TftadQbqdPLOdBMqc8r+H1
+	jn3e3/jAR/HKeqwpz5wqlAhRDiTw8ey7B33eHHw9GLZjYB3397AgnhERzjZ95wjI
+	TPzwx2CbDmQR45ldUA8hCNeuRkHLP8qudFe7IFqWE22Sb53Kr/UVw3L2tMB+BYzs
+	K+bU/hx8BZfGXIbONG2oJj4BQljaPFU/pqrMIrd+khsmwZq1Kze1Ph5WKIxnvkfI
+	fd//X7b4hXlRN0BZQ0hUA==
+X-ME-Sender: <xms:K7PZZikKuo4dBB9dwPUZk80GPVNUM3Zvo_WEJlipLLW0vdx7xKKPIQ>
+    <xme:K7PZZp1FGR5i7xRiXcWunZ-3fIAK0OGYYWNQmPAeFcO42mDdrcHBKDGcjS3gyAoJf
+    nhJgsy3BRbVoSOV6-k>
+X-ME-Received: <xmr:K7PZZgoKas-EFPjTj6M2xizcnuAFOIOEgq-HxZV-La4ZM9Wzo8NIm0CNfS7AAZcF4Q>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudehledgieehucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
     rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnecujfgurhephfffufggtgfgkfhfjgfvvefosehtjeertdertdej
+    htshculddquddttddmnecujfgurhephfffufggtgfgkfhfjgfvvefosehtkeertdertdej
     necuhfhrohhmpeflihgrgihunhcujggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhi
-    hgohgrthdrtghomheqnecuggftrfgrthhtvghrnheptdekieeugedtffetueffjeelvdek
-    keffgeduleegudefkedtgefhhffhieegiefgnecuffhomhgrihhnpehgnhhurdhorhhgne
-    cuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgig
-    uhhnrdihrghnghesfhhlhihgohgrthdrtghomhdpnhgspghrtghpthhtohepgedtpdhmoh
-    guvgepshhmthhpohhuthdprhgtphhtthhopehnuggvshgruhhlnhhivghrshesghhoohhg
-    lhgvrdgtohhmpdhrtghpthhtohepmhhinhhgohesrhgvughhrghtrdgtohhmpdhrtghpth
-    htoheprhhoshhtvgguthesghhoohgumhhishdrohhrghdprhgtphhtthhopehmhhhirhgr
-    mhgrtheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprgdrhhhinhgusghorhhgsehsrg
-    hmshhunhhgrdgtohhmpdhrtghpthhtohepsghjohhrnhefpghghhesphhrohhtohhnmhgr
-    ihhlrdgtohhmpdhrtghpthhtohepgiekieeskhgvrhhnvghlrdhorhhgpdhrtghpthhtoh
-    epfigvughsohhnrghfsehgmhgrihhlrdgtohhmpdhrtghpthhtoheplhhinhhugidqmhhi
-    phhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:IrPZZmv_fjshiZqQwvmYIbQhZxnnfwKkI4D89NNOOhJz18t8mrppAA>
-    <xmx:IrPZZuemdOt8-L8LY-ntSYMH46orQKjLcWX7-C4Urw5glkMqEcacUw>
-    <xmx:IrPZZq02eb5b6ungje_adaPAXH8RRI_UpTZYjuMgsLx1V7D7G2vGsg>
-    <xmx:IrPZZi9H1eD70w28nUL9flejLuuNfNi69wtEIuctdbsqm4tNADt-aQ>
-    <xmx:IrPZZuTuQhiJCBkDnaV8cWfPz6_ay8z2FA7uuQfP42twGjlw8C3LZHDV>
+    hgohgrthdrtghomheqnecuggftrfgrthhtvghrnhepledutdeigeehvdegkedvudevffdt
+    hedttddtjeevuddtgfektdekgfdtgedtieevnecuffhomhgrihhnpehgihhthhhusgdrtg
+    homhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehj
+    ihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmpdhnsggprhgtphhtthhopeegtd
+    dpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepnhguvghsrghulhhnihgvrhhssehg
+    ohhoghhlvgdrtghomhdprhgtphhtthhopehmihhnghhosehrvgguhhgrthdrtghomhdprh
+    gtphhtthhopehrohhsthgvughtsehgohhoughmihhsrdhorhhgpdhrtghpthhtohepmhhh
+    ihhrrghmrghtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrrdhhihhnuggsohhrgh
+    esshgrmhhsuhhnghdrtghomhdprhgtphhtthhopegsjhhorhhnfegpghhhsehprhhothho
+    nhhmrghilhdrtghomhdprhgtphhtthhopeigkeeisehkvghrnhgvlhdrohhrghdprhgtph
+    htthhopeifvggushhonhgrfhesghhmrghilhdrtghomhdprhgtphhtthhopehlihhnuhig
+    qdhmihhpshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:K7PZZmmuRsdvqfTkmRryL-SDkL3pNEWsJoFpaoneO3Qet3U9AWJMvA>
+    <xmx:K7PZZg1d2myNx9xVVoFzDWf_ZFLSYvoPZl-Vq7FoDLyn0B-enpRdbw>
+    <xmx:K7PZZtvodRceTSBHOW1A5rJfgMLO7_6byu6CKbSfLqTyr4rLQYf54Q>
+    <xmx:K7PZZsV46vKg8iGkmtpIP5NYFvd4GbSUI3YZoAKgjBiaCmNlJ0EKvg>
+    <xmx:K7PZZppfaojp8iFBlAPZHohDQMbFXKzobUe2qMIZfC1yh3KPpusjNJvt>
 Feedback-ID: ifd894703:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 5 Sep 2024 09:33:18 -0400 (EDT)
+ 5 Sep 2024 09:33:27 -0400 (EDT)
 From: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Date: Thu, 05 Sep 2024 14:33:05 +0100
-Subject: [PATCH v2 1/3] rust: Introduce HAVE_GENERATE_RUST_TARGET config
- option
+Date: Thu, 05 Sep 2024 14:33:07 +0100
+Subject: [PATCH v2 3/3] rust: Enable for MIPS
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240905-mips-rust-v2-1-409d66819418@flygoat.com>
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240905-mips-rust-v2-3-409d66819418@flygoat.com>
 References: <20240905-mips-rust-v2-0-409d66819418@flygoat.com>
 In-Reply-To: <20240905-mips-rust-v2-0-409d66819418@flygoat.com>
 To: Masahiro Yamada <masahiroy@kernel.org>,
@@ -125,18 +124,18 @@ Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-doc@vger.kernel.org, llvm@lists.linux.dev, 
  Jiaxun Yang <jiaxun.yang@flygoat.com>
 X-Mailer: b4 0.14.1
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4405;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5800;
  i=jiaxun.yang@flygoat.com; h=from:subject:message-id;
- bh=q9PK02pd92y+v95I+RdQsTEBNzvKFSGnPjB2K/vbR1o=;
- b=owGbwMvMwCXmXMhTe71c8zDjabUkhrSbm8WZX2o4zdgxVyZfmPWpzcW7/39KRB/htN5QpH9If
- eOqrW9/dJSyMIhxMciKKbKECCj1bWi8uOD6g6w/MHNYmUCGMHBxCsBEPFkYGdaoZFjN/TVR8sSp
- hWK3ZWLWFqvr9p4Tjn/lcuuZ8Jp7K8wZGe5GJrZPidTY8fb3KsaNHVolOa+WCTmGOZ17yFpbmPl
- 1BhcA
+ bh=dVkj/exm1KSiU0b/0TGp9u+BBn+LGdFz9eAdIeMiN8A=;
+ b=owGbwMvMwCXmXMhTe71c8zDjabUkhrSbm8Xny0wpaS6zMgrh3PNl5YuLz+8Zsv5d7N0mF9oho
+ p24+WxwRykLgxgXg6yYIkuIgFLfhsaLC64/yPoDM4eVCWQIAxenAExEIJaRoe9RxA3OG0se3WJ6
+ lOPL4i1dUTfX6Kdsc/8qDvWVAusyXjAydDeeWrP5vHfo5tqXnse38Po/+p/++EsJD/+NDq7tRj0
+ H+AE=
 X-Developer-Key: i=jiaxun.yang@flygoat.com; a=openpgp;
  fpr=980379BEFEBFBF477EA04EF9C111949073FC0F67
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240905_063323_622184_06189280 
-X-CRM114-Status: GOOD (  13.23  )
+X-CRM114-CacheID: sfid-20240905_063332_618517_BAA2DB10 
+X-CRM114-Status: GOOD (  13.02  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -151,131 +150,148 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-scripts/generate_rust_target.rs is used by several architectures
-to generate target.json target spec file.
+Enable rust for linux by implement generate_rust_target.rs
+and select relevant Kconfig options.
 
-However the enablement of this feature was controlled by target
-specific Makefile pieces spreading everywhere.
+We don't use builtin target as there is no sutiable baremetal
+target for us that can cover all ISA variants supported by kernel.
 
-Introduce HAVE_GENERATE_RUST_TARGET config option as a centralized
-switch to control the per-arch usage of generate_rust_target.rs.
-
+Link: https://github.com/Rust-for-Linux/linux/issues/107
 Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 ---
 v2:
-	- Reword Kconfig help
-	- Remove x86 specific condition for UM
+	- Add micromips flags
+	- Sync issues with upstream
 ---
- Makefile             | 3 +++
- arch/Kconfig         | 8 ++++++++
- arch/um/Kconfig      | 1 +
- arch/x86/Makefile    | 1 -
- arch/x86/Makefile.um | 1 -
- rust/Makefile        | 2 +-
- scripts/Makefile     | 4 +---
- 7 files changed, 14 insertions(+), 6 deletions(-)
+ Documentation/rust/arch-support.rst                |  1 +
+ .../translations/zh_CN/rust/arch-support.rst       |  1 +
+ arch/mips/Kconfig                                  |  2 +
+ scripts/generate_rust_target.rs                    | 68 ++++++++++++++++++++++
+ 4 files changed, 72 insertions(+)
 
-diff --git a/Makefile b/Makefile
-index 2c1db7a6f793..b183855c34ea 100644
---- a/Makefile
-+++ b/Makefile
-@@ -807,6 +807,9 @@ KBUILD_CFLAGS += -Os
- KBUILD_RUSTFLAGS += -Copt-level=s
- endif
- 
-+ifdef CONFIG_HAVE_GENERATE_RUST_TARGET
-+KBUILD_RUSTFLAGS += --target=$(objtree)/scripts/target.json
-+endif
- # Always set `debug-assertions` and `overflow-checks` because their default
- # depends on `opt-level` and `debug-assertions`, respectively.
- KBUILD_RUSTFLAGS += -Cdebug-assertions=$(if $(CONFIG_RUST_DEBUG_ASSERTIONS),y,n)
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 4e2eaba9e305..0865ff4796e7 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -377,6 +377,14 @@ config HAVE_RUST
- 	  This symbol should be selected by an architecture if it
- 	  supports Rust.
- 
-+config HAVE_GENERATE_RUST_TARGET
-+	bool
-+	depends on HAVE_RUST
-+	help
-+	  This symbol should be selected by an architecture if it
-+	  needs generating Rust target.json file with
-+	  scripts/generate_rust_target.rs.
-+
- config HAVE_FUNCTION_ARG_ACCESS_API
- 	bool
- 	help
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index dca84fd6d00a..6b1c8ae2422d 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -32,6 +32,7 @@ config UML
- 	select TTY # Needed for line.c
- 	select HAVE_ARCH_VMAP_STACK
- 	select HAVE_RUST
+diff --git a/Documentation/rust/arch-support.rst b/Documentation/rust/arch-support.rst
+index 750ff371570a..ab6c0ae5a407 100644
+--- a/Documentation/rust/arch-support.rst
++++ b/Documentation/rust/arch-support.rst
+@@ -17,6 +17,7 @@ Architecture   Level of support  Constraints
+ =============  ================  ==============================================
+ ``arm64``      Maintained        Little Endian only.
+ ``loongarch``  Maintained        \-
++``mips``       Maintained        \-
+ ``riscv``      Maintained        ``riscv64`` only.
+ ``um``         Maintained        \-
+ ``x86``        Maintained        ``x86_64`` only.
+diff --git a/Documentation/translations/zh_CN/rust/arch-support.rst b/Documentation/translations/zh_CN/rust/arch-support.rst
+index abd708d48f82..1eaa6c3297ac 100644
+--- a/Documentation/translations/zh_CN/rust/arch-support.rst
++++ b/Documentation/translations/zh_CN/rust/arch-support.rst
+@@ -21,6 +21,7 @@
+ =============  ================  ==============================================
+ ``arm64``      Maintained        只有小端序
+ ``loongarch``  Maintained        \-
++``mips``       Maintained        \-
+ ``riscv``      Maintained        只有 ``riscv64``
+ ``um``         Maintained        只有 ``x86_64``
+ ``x86``        Maintained        只有 ``x86_64``
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 43da6d596e2b..a91f0a4fd8e9 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -90,6 +90,8 @@ config MIPS
+ 	select HAVE_PERF_USER_STACK_DUMP
+ 	select HAVE_REGS_AND_STACK_ACCESS_API
+ 	select HAVE_RSEQ
++	select HAVE_RUST
 +	select HAVE_GENERATE_RUST_TARGET
- 	select ARCH_HAS_UBSAN
+ 	select HAVE_SPARSE_SYSCALL_NR
+ 	select HAVE_STACKPROTECTOR
+ 	select HAVE_SYSCALL_TRACEPOINTS
+diff --git a/scripts/generate_rust_target.rs b/scripts/generate_rust_target.rs
+index 863720777313..bbdf8a4dd169 100644
+--- a/scripts/generate_rust_target.rs
++++ b/scripts/generate_rust_target.rs
+@@ -141,6 +141,13 @@ fn has(&self, option: &str) -> bool {
+         let option = "CONFIG_".to_owned() + option;
+         self.0.contains_key(&option)
+     }
++
++    /// Returns the value of the option in the configuration.
++    /// The argument must be passed without the `CONFIG_` prefix.
++    fn get(&self, option: &str) -> Option<&String> {
++        let option = "CONFIG_".to_owned() + option;
++        self.0.get(&option)
++    }
+ }
  
- config MMU
-diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index a1883a30a5d8..cbd707f88a63 100644
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -75,7 +75,6 @@ export BITS
- #    https://gcc.gnu.org/bugzilla/show_bug.cgi?id=53383
- #
- KBUILD_CFLAGS += -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx
--KBUILD_RUSTFLAGS += --target=$(objtree)/scripts/target.json
- KBUILD_RUSTFLAGS += -Ctarget-feature=-sse,-sse2,-sse3,-ssse3,-sse4.1,-sse4.2,-avx,-avx2
- 
- #
-diff --git a/arch/x86/Makefile.um b/arch/x86/Makefile.um
-index a46b1397ad01..2106a2bd152b 100644
---- a/arch/x86/Makefile.um
-+++ b/arch/x86/Makefile.um
-@@ -9,7 +9,6 @@ core-y += arch/x86/crypto/
- #
- ifeq ($(CONFIG_CC_IS_CLANG),y)
- KBUILD_CFLAGS += -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx
--KBUILD_RUSTFLAGS += --target=$(objtree)/scripts/target.json
- KBUILD_RUSTFLAGS += -Ctarget-feature=-sse,-sse2,-sse3,-ssse3,-sse4.1,-sse4.2,-avx,-avx2
- endif
- 
-diff --git a/rust/Makefile b/rust/Makefile
-index 99204e33f1dd..fe3640b98011 100644
---- a/rust/Makefile
-+++ b/rust/Makefile
-@@ -378,7 +378,7 @@ $(obj)/core.o: private rustc_objcopy = $(foreach sym,$(redirect-intrinsics),--re
- $(obj)/core.o: private rustc_target_flags = $(core-cfgs)
- $(obj)/core.o: $(RUST_LIB_SRC)/core/src/lib.rs FORCE
- 	+$(call if_changed_rule,rustc_library)
--ifneq ($(or $(CONFIG_X86_64),$(CONFIG_X86_32)),)
-+ifdef CONFIG_HAVE_GENERATE_RUST_TARGET
- $(obj)/core.o: scripts/target.json
- endif
- 
-diff --git a/scripts/Makefile b/scripts/Makefile
-index dccef663ca82..33258a856a1a 100644
---- a/scripts/Makefile
-+++ b/scripts/Makefile
-@@ -12,13 +12,11 @@ hostprogs-always-$(CONFIG_SYSTEM_EXTRA_CERTIFICATE)	+= insert-sys-cert
- hostprogs-always-$(CONFIG_RUST_KERNEL_DOCTESTS)		+= rustdoc_test_builder
- hostprogs-always-$(CONFIG_RUST_KERNEL_DOCTESTS)		+= rustdoc_test_gen
- 
--ifneq ($(or $(CONFIG_X86_64),$(CONFIG_X86_32)),)
--always-$(CONFIG_RUST)					+= target.json
-+always-$(CONFIG_HAVE_GENERATE_RUST_TARGET)		+= target.json
- filechk_rust_target = $< < include/config/auto.conf
- 
- $(obj)/target.json: scripts/generate_rust_target include/config/auto.conf FORCE
- 	$(call filechk,rust_target)
--endif
- 
- hostprogs += generate_rust_target
- generate_rust_target-rust := y
+ fn main() {
+@@ -203,6 +210,67 @@ fn main() {
+         ts.push("target-pointer-width", "32");
+     } else if cfg.has("LOONGARCH") {
+         panic!("loongarch uses the builtin rustc loongarch64-unknown-none-softfloat target");
++    } else if cfg.has("MIPS") {
++        let mut features = "+soft-float,+noabicalls".to_string();
++
++        if cfg.has("CPU_MICROMIPS") {
++            features += ",+micromips";
++        }
++
++        if cfg.has("64BIT") {
++            ts.push("arch", "mips64");
++            ts.push("abi", "abi64");
++            cfg.get("TARGET_ISA_REV").map(|isa_rev| {
++                let feature = match isa_rev.as_str() {
++                    "1" => ",+mips64",
++                    "2" => ",+mips64r2",
++                    "5" => ",+mips64r5",
++                    "6" => ",+mips64r6",
++                    _ => ",+mips3",
++                };
++                features += feature;
++            });
++
++            ts.push("features", features);
++            if cfg.has("CPU_BIG_ENDIAN") {
++                ts.push(
++                    "data-layout",
++                    "E-m:e-i8:8:32-i16:16:32-i64:64-n32:64-S128",
++                );
++                ts.push("llvm-target", "mips64-unknown-linux-gnuabi64");
++            } else {
++                ts.push(
++                    "data-layout",
++                    "e-m:e-i8:8:32-i16:16:32-i64:64-n32:64-S128",
++                );
++                ts.push("llvm-target", "mips64el-unknown-linux-gnuabi64");
++            }
++            ts.push("target-pointer-width", "64");
++        } else {
++            ts.push("arch", "mips");
++            cfg.get("TARGET_ISA_REV").map(|isa_rev| {
++                let feature = match isa_rev.as_str() {
++                    "1" => ",+mips32",
++                    "2" => ",+mips32r2",
++                    "5" => ",+mips32r5",
++                    "6" => ",+mips32r6",
++                    _ => ",+mips2",
++                };
++                features += feature;
++            });
++
++            ts.push("features", features);
++            if cfg.has("CPU_BIG_ENDIAN") {
++                ts.push("data-layout",
++                        "E-m:m-p:32:32-i8:8:32-i16:16:32-i64:64-n32-S64");
++                ts.push("llvm-target", "mips-unknown-linux-gnu");
++            } else {
++                ts.push("data-layout",
++                        "e-m:m-p:32:32-i8:8:32-i16:16:32-i64:64-n32-S64");
++                ts.push("llvm-target", "mipsel-unknown-linux-gnu");
++            }
++            ts.push("target-pointer-width", "32");
++        }
+     } else {
+         panic!("Unsupported architecture");
+     }
 
 -- 
 2.46.0
