@@ -4,81 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 978BDCD4F59
-	for <linux-um@archiver.kernel.org>; Thu,  5 Sep 2024 07:55:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 96600CD5BAA
+	for <linux-um@archiver.kernel.org>; Thu,  5 Sep 2024 11:43:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=edlhfocYTBb5RSXGKhxyCJoY2mjSJV4yCAz+HGPdhB4=; b=p8aVdn4fzs3PTI8q0aUs5Y0oGZ
-	Y8NmYFy/oT8munzKRROHINDxjxt5AIB7P3Z2L1IImrDFih1p0NEsGEGY4vtBOzuPmOmB0exTWjYKd
-	KHNKvFS+zQFqvmvEeiBxP8iJZt4aUqhGvfk/Yg4dqa09Hb0E39H+FWbyHNZdOGu7uZB5Hq7znEFxw
-	5TbEQBG6KiJquPnwak7O3xIAMCQ78FK1+PpYJUhyGT91+yre3yHd1YxYQeNAyo772Gp/+Ad6JyR2K
-	ebRtFv/mkw4jUGluQ+E8wTg9RqamCf6ukEI7gTzCXVAsDyC6GR7uk+SSZfY/tNMpCwzQqqm8kSLea
-	Y4c3tXXg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=JpEbd8fA8WeQjycJ3JHHB1dLu4AmBZQUJJ0p5zUhBXQ=; b=KbfSyhl6PnjXp+BE3XO1Ph3he7
+	hQTBDvfr9XL/XgPV+0oy6IjMUQdQsXSaU1NGAuiJDsehAFOkvdgiRWTrBITWNxqTUTNX0rBGOUOho
+	3oQfDwkdCG5VNdlEW+8zUhj+MvnKkmaNtxkwDDBPkfdRM+CPOrTOUOExEf45agSmTdY9hhuk7lyNL
+	4WnwB1oPUf/nE0x/sUWmftY5Iiy8PXYDkaOw+5C/NGOjA76f8Ja40qQfslZq9exxE7PiVFwY2HBBa
+	k8lFbO0kimgmyRhVKKT9QA10kRg49yvF7Lmhh1FRmXGtytVMcsLH2Ih6F73h/l30puE6ZcNue6TzK
+	nz1+uQAg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sm7L1-00000007Rbv-2VS6;
-	Thu, 05 Sep 2024 07:55:31 +0000
-Received: from mail-wr1-x42f.google.com ([2a00:1450:4864:20::42f])
+	id 1smAtd-00000008A9p-2w0s;
+	Thu, 05 Sep 2024 11:43:29 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sm7IM-00000007R22-2FZI
-	for linux-um@lists.infradead.org;
-	Thu, 05 Sep 2024 07:52:48 +0000
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-374bd059b12so225461f8f.1
-        for <linux-um@lists.infradead.org>; Thu, 05 Sep 2024 00:52:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1725522760; x=1726127560; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=edlhfocYTBb5RSXGKhxyCJoY2mjSJV4yCAz+HGPdhB4=;
-        b=bo4hHL+DaKSOFXdYtjOQo4qXa+U87l2aTW3li2PeDdOSrQ7H+qdhVs2E+f+Y1/yqU0
-         CE0BHCotx0N+FxrlohT+0DZza0Zuv9/sPQyXa5jvt0Vk5T4M9EeTw9g/brCe0WKDDNAK
-         ezyB0e1uVoQ3dq8+4y8zzg0w8ARIaYnkln9sN+EXVFBjl+XdWOJYGJAGyoOz/Z8KuKkl
-         5QNENIg0p9QJw5wR6rhEcLxWi5n4ezMH7dpQpZ4mUmN4jBMs2eWf7OWrX2z+g/uOZUQU
-         jUr/99Tuz7Md9IELzhuOWg3eyD49k7WvyoW2KXf2sILQ7tM/5UZO7GfJHanpKepIbU9f
-         22PQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725522760; x=1726127560;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=edlhfocYTBb5RSXGKhxyCJoY2mjSJV4yCAz+HGPdhB4=;
-        b=NFrjsuOyrdbnAKfXlqyqtQ4ig1PhHEMprvJJDCuuBxnhNqcPQKIGZg1jCm3VN0ZBZV
-         11YowAGSVl7lEfRKAO0QDf/h2W4zyCeWs0mm7zhf3mJ/WuVonxHUB/jqOtYv99+SNZc/
-         R6b5C+upZTTIBUNdD42khHYKKpP8h8naD+WHAJ84ffw3js9Zjn7Tv27VJXwAZ3rRAZ4y
-         vDA/X9cdnsCjuUWj7o9+hZIgqvdwYjcThY1wv0z1UESxp0oyNsfjUMOAlKprJf+usToz
-         Gj8fof/nD002DYe8h4pmSsA9pEmp5nWFOeFCKaZhwmGa3IkE+j9aqquUeyII92jin/Oa
-         rNBg==
-X-Forwarded-Encrypted: i=1; AJvYcCUd5OGdn1YvRaKEEcykgm4oeH6tckOyQTskNg19CT0jIfnnOGKeimauNbXdY8tDfbO0jgGJxUPreg==@lists.infradead.org
-X-Gm-Message-State: AOJu0YzYDYD/NznL7h3CHJc83TkHQfX2R3MnZWiLuQAfmLWA3LIwXMwO
-	QAfr70dmJsyhyFozENzYdV3r9+sQLd8uIArdnD+y7QGi5YhciePr0hikAKdgiBbttUrjvFbA7yY
-	MtkhmNJw4JpJFpzf0TIgIgI3VqFLWLzHLabUS
-X-Google-Smtp-Source: AGHT+IFK43pFnPLGUXRCs6+/ppb+2QpfbK6ADGGjBpmf0Lo7PhrrA57wrAnEXXwtIovQ4N0HLObZaRzV3HTp0jsNSrg=
-X-Received: by 2002:adf:a351:0:b0:374:baeb:2fb with SMTP id
- ffacd0b85a97d-374baeb0c2amr10826925f8f.35.1725522759687; Thu, 05 Sep 2024
- 00:52:39 -0700 (PDT)
+	id 1smAs4-000000089pW-3hAZ
+	for linux-um@bombadil.infradead.org;
+	Thu, 05 Sep 2024 11:41:53 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=JpEbd8fA8WeQjycJ3JHHB1dLu4AmBZQUJJ0p5zUhBXQ=; b=IuLd52ZWKCTv5OWFW5IPewnBSQ
+	w65QXej7zDLHdXC1XA6q3xdcVd5EXfLI50mvw/UlURbLNXsFL7D2a6aXHozDE2rtZyYVTsoe383TK
+	1G3GWxbgKGC4932Ye1DYW+hJNIlGJZWVL9ExS1xUfLJuJc77TD7zcQo+qPidDN7l5koqGb1X+sHy4
+	krJsQ4+wuQtOMnBrh5x/AAnP7xUvwDHsFgl82aEY8/mYKGf14z7+YN4iTF0INVP4IqO/xzTPvRXdF
+	WYCca0aqU+3DhjDPLgArdc2cujUClb7h4+a7Zh75Kgn6h5zzIEgSAX1VNSnq0I8MitYeROBZ2LUey
+	oUTvSjVA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1smArr-00000002LN6-2rKY;
+	Thu, 05 Sep 2024 11:41:41 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 28197300599; Thu,  5 Sep 2024 13:41:40 +0200 (CEST)
+Date: Thu, 5 Sep 2024 13:41:40 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Wentao Zhang <wentaoz5@illinois.edu>
+Cc: Matt.Kelly2@boeing.com, akpm@linux-foundation.org,
+	andrew.j.oppelt@boeing.com, anton.ivanov@cambridgegreys.com,
+	ardb@kernel.org, arnd@arndb.de, bhelgaas@google.com, bp@alien8.de,
+	chuck.wolber@boeing.com, dave.hansen@linux.intel.com,
+	dvyukov@google.com, hpa@zytor.com, jinghao7@illinois.edu,
+	johannes@sipsolutions.net, jpoimboe@kernel.org,
+	justinstitt@google.com, kees@kernel.org, kent.overstreet@linux.dev,
+	linux-arch@vger.kernel.org, linux-efi@vger.kernel.org,
+	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+	llvm@lists.linux.dev, luto@kernel.org, marinov@illinois.edu,
+	masahiroy@kernel.org, maskray@google.com,
+	mathieu.desnoyers@efficios.com, matthew.l.weber3@boeing.com,
+	mhiramat@kernel.org, mingo@redhat.com, morbo@google.com,
+	nathan@kernel.org, ndesaulniers@google.com, oberpar@linux.ibm.com,
+	paulmck@kernel.org, richard@nod.at, rostedt@goodmis.org,
+	samitolvanen@google.com, samuel.sarkisian@boeing.com,
+	steven.h.vanderleest@boeing.com, tglx@linutronix.de,
+	tingxur@illinois.edu, tyxu@illinois.edu, x86@kernel.org
+Subject: Re: [PATCH v2 0/4] Enable measuring the kernel's Source-based Code
+ Coverage and MC/DC with Clang
+Message-ID: <20240905114140.GN4723@noisy.programming.kicks-ass.net>
+References: <20240824230641.385839-1-wentaoz5@illinois.edu>
+ <20240905043245.1389509-1-wentaoz5@illinois.edu>
 MIME-Version: 1.0
-References: <20240905061214.3954271-1-davidgow@google.com>
-In-Reply-To: <20240905061214.3954271-1-davidgow@google.com>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Thu, 5 Sep 2024 09:52:27 +0200
-Message-ID: <CAH5fLgjqdchRvVGTMLYPTZ6erakKg3sNhbSA4dLq0kLAXLWxQA@mail.gmail.com>
-Subject: Re: [RFC PATCH] rust: block: Use 32-bit atomics
-To: David Gow <davidgow@google.com>
-Cc: Andreas Hindborg <a.hindborg@samsung.com>, Boqun Feng <boqun.feng@gmail.com>, 
-	Miguel Ojeda <ojeda@kernel.org>, Jens Axboe <axboe@kernel.dk>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, linux-block@vger.kernel.org, 
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-um@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240905_005246_598669_3F210165 
-X-CRM114-Status: GOOD (  16.92  )
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240905043245.1389509-1-wentaoz5@illinois.edu>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,37 +88,150 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, Sep 5, 2024 at 8:12=E2=80=AFAM David Gow <davidgow@google.com> wrot=
-e:
->
-> Not all architectures have core::sync::atomic::AtomicU64 available. In
-> particular, 32-bit x86 doesn't support it. AtomicU32 is available
-> everywhere, so use that instead.
->
-> Hopefully we can add AtomicU64 to Rust-for-Linux more broadly, so this
-> won't be an issue, but it's not supported in core from upstream Rust:
-> https://doc.rust-lang.org/std/sync/atomic/#portability
->
-> This can be tested on 32-bit x86 UML via:
-> ./tools/testing/kunit/kunit.py run --make_options LLVM=3D1 --kconfig_add =
-CONFIG_RUST=3Dy --kconfig_add CONFIG_64BIT=3Dn --kconfig_add CONFIG_FORTIFY=
-_SOURCE=3Dn
->
-> Fixes: 3253aba3408a ("rust: block: introduce `kernel::block::mq` module")
-> Signed-off-by: David Gow <davidgow@google.com>
-> ---
->
-> Hi all,
->
-> I encountered this build error with Rust/UML since the kernel::block::mq
-> stuff landed. I'm not 100% sure just swapping AtomicU64 with AtomicU32
-> is correct -- please correct me if not -- but this does at least get the
-> Rust/UML/x86-32 builds here compiling and running again.
->
-> (And gives me more encouragement to go to the Rust atomics talk at
-> Plumbers.)
+On Wed, Sep 04, 2024 at 11:32:41PM -0500, Wentao Zhang wrote:
+> From: Wentao Zhang <zhangwt1997@gmail.com>
+> 
+> This series adds support for building x86-64 kernels with Clang's Source-
+> based Code Coverage[1] in order to facilitate Modified Condition/Decision
+> Coverage (MC/DC)[2] that provably correlates to source code for all levels
+> of compiler optimization.
+> 
+> The newly added kernel/llvm-cov/ directory complements the existing gcov
+> implementation. Gcov works at the object code level which may better
+> reflect actual execution. However, Gcov lacks the necessary information to
+> correlate coverage measurement with source code location when compiler
+> optimization level is non-zero (which is the default when building the
+> kernel). In addition, gcov reports are occasionally ambiguous when
+> attempting to compare with source code level developer intent.
+> 
+> In the following gcov example from drivers/firmware/dmi_scan.c, an
+> expression with four conditions is reported to have six branch outcomes,
+> which is not ideally informative in many safety related use cases, such as
+> automotive, medical, and aerospace.
+> 
+>         5: 1068:	if (s == e || *e != '/' || !month || month > 12) {
+> branch  0 taken 5 (fallthrough)
+> branch  1 taken 0
+> branch  2 taken 5 (fallthrough)
+> branch  3 taken 0
+> branch  4 taken 0 (fallthrough)
+> branch  5 taken 5
+> 
+> On the other hand, Clang's Source-based Code Coverage instruments at the
+> compiler frontend which maintains an accurate mapping from coverage
+> measurement to source code location. Coverage reports reflect exactly how
+> the code is written regardless of optimization and can present advanced
+> metrics like branch coverage and MC/DC in a clearer way. Coverage report
+> for the same snippet by llvm-cov would look as follows:
+> 
+>  1068|      5|	if (s == e || *e != '/' || !month || month > 12) {
+>   ------------------
+>   |  Branch (1068:6): [True: 0, False: 5]
+>   |  Branch (1068:16): [True: 0, False: 5]
+>   |  Branch (1068:29): [True: 0, False: 5]
+>   |  Branch (1068:39): [True: 0, False: 5]
+>   ------------------
+> 
+> Clang has added MC/DC support as of its 18.1.0 release. MC/DC is a fine-
+> grained coverage metric required by many automotive and aviation industrial
+> standards for certifying mission-critical software [3].
+> 
+> In the following example from arch/x86/events/probe.c, llvm-cov gives the
+> MC/DC measurement for the compound logic decision at line 43.
+> 
+>    43|     12|			if (msr[bit].test && !msr[bit].test(bit, data))
+>   ------------------
+>   |---> MC/DC Decision Region (43:8) to (43:50)
+>   |
+>   |  Number of Conditions: 2
+>   |     Condition C1 --> (43:8)
+>   |     Condition C2 --> (43:25)
+>   |
+>   |  Executed MC/DC Test Vectors:
+>   |
+>   |     C1, C2    Result
+>   |  1 { T,  F  = F      }
+>   |  2 { T,  T  = T      }
+>   |
+>   |  C1-Pair: not covered
+>   |  C2-Pair: covered: (1,2)
+>   |  MC/DC Coverage for Decision: 50.00%
+>   |
+>   ------------------
+>    44|      5|				continue;
+> 
+> As the results suggest, during the span of measurement, only condition C2
+> (!msr[bit].test(bit, data)) is covered. That means C2 was evaluated to both
+> true and false, and in those test vectors C2 affected the decision outcome
+> independently. Therefore MC/DC for this decision is 1 out of 2 (50.00%).
+> 
+> To do a full kernel measurement, instrument the kernel with
+> LLVM_COV_KERNEL_MCDC enabled, and optionally set a
+> LLVM_COV_KERNEL_MCDC_MAX_CONDITIONS value (the default is six). Run the
+> testsuites, and collect the raw profile data under
+> /sys/kernel/debug/llvm-cov/profraw. Such raw profile data can be merged and
+> indexed, and used for generating coverage reports in various formats.
+> 
+>   $ cp /sys/kernel/debug/llvm-cov/profraw vmlinux.profraw
+>   $ llvm-profdata merge vmlinux.profraw -o vmlinux.profdata
+>   $ llvm-cov show --show-mcdc --show-mcdc-summary                         \
+>              --format=text --use-color=false -output-dir=coverage_reports \
+>              -instr-profile vmlinux.profdata vmlinux
+> 
+> The first two patches enable the llvm-cov infrastructure, where the first
+> enables source based code coverage and the second adds MC/DC support. The
+> next patch disables instrumentation for curve25519-x86_64.c for the same
+> reason as gcov. The final patch enables coverage for x86-64.
+> 
+> The choice to use a new Makefile variable LLVM_COV_PROFILE, instead of
+> reusing GCOV_PROFILE, was deliberate. More work needs to be done to
+> determine if it is appropriate to reuse the same flag. In addition, given
+> the fundamentally different approaches to instrumentation and the resulting
+> variation in coverage reports, there is a strong likelihood that coverage
+> type will need to be managed separately.
+> 
+> This work reuses code from a previous effort by Sami Tolvanen et al. [4].
+> Our aim is for source-based *code coverage* required for high assurance
+> (MC/DC) while [4] focused more on performance optimization.
+> 
+> This initial submission is restricted to x86-64. Support for other
+> architectures would need a bit more Makefile & linker script modification.
+> Informally we've confirmed that arm64 works and more are being tested.
+> 
+> Note that Source-based Code Coverage is Clang-specific and isn't compatible
+> with Clang's gcov support in kernel/gcov/. Currently, kernel/gcov/ is not
+> able to measure MC/DC without modifying CFLAGS_GCOV and it would face the
+> same issues in terms of source correlation as gcov in general does.
+> 
+> Some demo and results can be found in [5]. We will talk about this patch
+> series in the Refereed Track at LPC 2024 [6].
+> 
+> Known Limitations:
+> 
+> Kernel code with logical expressions exceeding
+> LVM_COV_KERNEL_MCDC_MAX_CONDITIONS will produce a compiler warning.
+> Expressions with up to 47 conditions are found in the Linux kernel source
+> tree (as of v6.11), but 46 seems to be the max value before the build fails
+> due to kernel size. As of LLVM 19 the max number of conditions possible is
+> 32767.
+> 
+> As of LLVM 19, certain expressions are still not covered, and will produce
+> build warnings when they are encountered:
+> 
+> "[...] if a boolean expression is embedded in the nest of another boolean
+>  expression but separated by a non-logical operator, this is also not
+>  supported. For example, in x = (a && b && c && func(d && f)), the d && f
+>  case starts a new boolean expression that is separated from the other
+>  conditions by the operator func(). When this is encountered, a warning
+>  will be generated and the boolean expression will not be
+>  instrumented." [7]
+> 
 
-I would probably go with AtomicUsize over AtomicU32 in this case.
+What does this actually look like in the generated code?
 
-Alice
+Where is the modification to noinstr ?
+
+What is the impact on certification of not covering the noinstr code.
+
+
 
