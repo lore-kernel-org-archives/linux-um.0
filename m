@@ -4,139 +4,126 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 31379CD5BC8
-	for <linux-um@archiver.kernel.org>; Thu,  5 Sep 2024 13:33:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D7EACD98EC
+	for <linux-um@archiver.kernel.org>; Thu,  5 Sep 2024 18:08:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
-	:Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=rDJZVFYK8cRPG/ZY0D6is9Wvxf+gYsggMAPKn3+QD4o=; b=hohTFdwNBsIKU+PQ8HwhUL+YEM
-	HjFE6gmmexY3d4Gz4tILFzbESLq5H7ACczQmUxrMgD/4NGyWAIuYsg8s6XwiOVhCEGK6pYXXIlr1z
-	oZ5NuYZq4jiGZDdH4pbGU8C902e0QTInoSC63BChYoVz0IHrIYgXUjlXOGHTyiTyTqoPGUoKOdzeV
-	jYd3/XoVa7uPgxvQgS8b1NgqvMyDwtWl7dDmYjltT3j2qV68unCFm6SENDHRDgmgk6KSDX6D9En84
-	qgywqctR7iq1uVXGJgEJhhJE1q86waEXL8puu1u9KiOtpx25BxuGwEdYFQqb+4VfNE2EaC18BnNE8
-	aPZzfxyg==;
+	bh=iaax2KMv1pfmqcinOyW9AJBjnAW5CoEYUzGnm6PN3kM=; b=0xtjDn0wW/Rsbhas4+VcS5D4zd
+	h51cc+N0iyuBSt8RdEslbNGx3/9tBR1pBEozW0ZCE6SRDabAhrB60uNygCIdn3nm3s4waM5yiNDgL
+	dE2Rv0nZBum8spSosvXPKb6x0ISpSmQ81JRnVPJ5fmsJqFGEvVNu25Tmu1JGFi0zXjk3abgzJ5oym
+	IeFcgVno7EK3YHAn66Fhh61mY7HkcfwIXswaNe3/A5KgnZTBdqWJHGANz8fk1XePbg1bJxOjZN8yV
+	vsMZ5PGPzIAA2GXDdbfgqOnYSBjHFprgFCpPOXXbGnxQFzbgFj/KNA8EgZ6YC5UjHYEgoBQhxZ0Cb
+	bw4/7zgg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1smCcX-00000008YCD-3QLI;
-	Thu, 05 Sep 2024 13:33:57 +0000
-Received: from fout3-smtp.messagingengine.com ([103.168.172.146])
+	id 1smGuD-00000009OKR-2gHo;
+	Thu, 05 Sep 2024 18:08:29 +0000
+Received: from mail-oo1-xc43.google.com ([2607:f8b0:4864:20::c43])
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1smCc3-00000008Y1Z-26yV
+	id 1smGuA-00000009OJc-22qW
 	for linux-um@lists.infradead.org;
-	Thu, 05 Sep 2024 13:33:29 +0000
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfout.phl.internal (Postfix) with ESMTP id DB9FF1380377;
-	Thu,  5 Sep 2024 09:33:26 -0400 (EDT)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-04.internal (MEProxy); Thu, 05 Sep 2024 09:33:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1725543206;
-	 x=1725629606; bh=rDJZVFYK8cRPG/ZY0D6is9Wvxf+gYsggMAPKn3+QD4o=; b=
-	APa+NfSb+NaPKLm/clSjNyyRQ+CvPj7uuwwrPW1ZvdkK+YXVQ38ALEw8V2j2gwvb
-	WUo6+NQeww4TmPli3EpBhYThuH313PSGFAcP66DxKlAWJnH0bdtL4S2VplUnl+Q/
-	DTEdLI5X6VM4LFZfvw5UaPaM+bznr5/cZuKN3+jSp9KBtgpP2DcuoYUjGwNoS/lA
-	mdWEsv9SrtVqpGZ7fBFFKY/oeRgfZBRvUr6jKW9sg79oROLF3rppu3LU105xE9Qb
-	JsFnnf6A4qIVYduWsZpDM6NSQStF/n8ft51q0SHDfZPiJBy5B9ZDcPdEw69I8Fof
-	r3cNf3pf8y6j/dUcXGazWg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1725543206; x=
-	1725629606; bh=rDJZVFYK8cRPG/ZY0D6is9Wvxf+gYsggMAPKn3+QD4o=; b=e
-	JpDy1DI6b/4LuKdnbm6qIF11FgQAC9BWgQXFmtlK+asFVAv4hBzZ0qxEdDQfEFYk
-	FDNWTAUfKziw5y3BpdZPLNDS9voQOVqJ85dc5Pt1ZsdFscsArZqpPwSPyW/x1TB8
-	KvnRH3vCUQBmaR+BO5YO3Hz4/6aEeBVZNisFbhJu4hwL+vAOHgKXywZT6nTjqdyp
-	2rdWFOrMDkhxOP/Bno7tyN0N3gpvEQiznnGrlKFycyNegUdL8+F3pIJILgU23FgP
-	2H3TM6uDwECYk+nV2oNPJL/2b+pSyfbBmD2SEbhz2xqnEOCUUizN2WjWWPU7RWlI
-	SUPbEcvcwzUV2p46EqMhw==
-X-ME-Sender: <xms:JrPZZge_cJIRtChuzjYjmm3lP7kL3coccN0HoQ6qGaM5WuaFkUY90A>
-    <xme:JrPZZiO8CxpkS_tfHHfQahPBXmINjYRv65KyFTSN3zTo-fcDW2wp1mbPvsaWHxWHq
-    kdNXJGgjcK_N1ivYrs>
-X-ME-Received: <xmr:JrPZZhjlqmMJfBmcpf12pAS2prbdNWE8cvWKoU5YyOY5uPzi8621NCApkJrj-FsAJg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudehledgieehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnecujfgurhephfffufggtgfgkfhfjgfvvefosehtjeertdertdej
-    necuhfhrohhmpeflihgrgihunhcujggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhi
-    hgohgrthdrtghomheqnecuggftrfgrthhtvghrnhepvdekiefhfeevkeeuveetfeelffek
-    gedugefhtdduudeghfeuveegffegudekjeelnecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdr
-    tghomhdpnhgspghrtghpthhtohepgedtpdhmohguvgepshhmthhpohhuthdprhgtphhtth
-    hopehnuggvshgruhhlnhhivghrshesghhoohhglhgvrdgtohhmpdhrtghpthhtohepmhhi
-    nhhgohesrhgvughhrghtrdgtohhmpdhrtghpthhtoheprhhoshhtvgguthesghhoohgumh
-    hishdrohhrghdprhgtphhtthhopehmhhhirhgrmhgrtheskhgvrhhnvghlrdhorhhgpdhr
-    tghpthhtoheprgdrhhhinhgusghorhhgsehsrghmshhunhhgrdgtohhmpdhrtghpthhtoh
-    epsghjohhrnhefpghghhesphhrohhtohhnmhgrihhlrdgtohhmpdhrtghpthhtohepgiek
-    ieeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepfigvughsohhnrghfsehgmhgrihhlrd
-    gtohhmpdhrtghpthhtoheplhhinhhugidqmhhiphhssehvghgvrhdrkhgvrhhnvghlrdho
-    rhhg
-X-ME-Proxy: <xmx:JrPZZl-HmkAm0ZhLtZr5zO_zvNu-D1qXM-qE1iTbgofI16O9mm-GTg>
-    <xmx:JrPZZsvBQsE7jPzRd7swHRE9DylQmVWd_niEgzWl6ePLXl6vzbDJgg>
-    <xmx:JrPZZsGBk3WayEk_UYxIcYV_ADrDoMrDVCAAEethneW6o_oVbG8d2g>
-    <xmx:JrPZZrM26wSwydoF0b7vVMOXJfqn1m8zEJ0YiT6QxpBhE-BlbfBYaA>
-    <xmx:JrPZZih51qc9ih9a4nU_YQPE0fyd3CfHx4-hGPNQ3LWVF2p1K4lm8PWb>
-Feedback-ID: ifd894703:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 5 Sep 2024 09:33:22 -0400 (EDT)
-From: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Date: Thu, 05 Sep 2024 14:33:06 +0100
-Subject: [PATCH v2 2/3] MIPS: Rename mips_instruction type to workaround
- bindgen issue
+	Thu, 05 Sep 2024 18:08:28 +0000
+Received: by mail-oo1-xc43.google.com with SMTP id 006d021491bc7-5d5eec95a74so696184eaf.1
+        for <linux-um@lists.infradead.org>; Thu, 05 Sep 2024 11:08:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=illinois-edu.20230601.gappssmtp.com; s=20230601; t=1725559705; x=1726164505; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iaax2KMv1pfmqcinOyW9AJBjnAW5CoEYUzGnm6PN3kM=;
+        b=q1Vz88hZGKpp8aAc/heo6pJU4slCLs+mBvCzHIBwc7t8cxG62/J6ibb6HJR5c3dx/I
+         oPBs9mca4leCS2pmbFqqGKb568x2Tbf36O9CPAVVUy9rwOTWR26xbAZ2KFf6I1QCjMLy
+         ujMGcANyhSViI8Ffq6R6ihR+3FpqpWWogs4OZp/H2CjPIysYJZp9Iwf+PGwQJsTEvUyZ
+         mBsju2W0dqmgzbRDDGo2iYbS9FGtRB741MF7MH1xEaIASNnFEQPmDhV8RR0Yt9zD0n59
+         K2lOWEI9SdX8+E9mawwKeJM7JFz8rUaCr/Eus5dhmh89dQJj0j2OvG4eGGIj5kcu1feE
+         1aWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725559705; x=1726164505;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iaax2KMv1pfmqcinOyW9AJBjnAW5CoEYUzGnm6PN3kM=;
+        b=i1YttQBA1NoVDcx7ZSfkO96uHPEgcjNRTPlpH9pbry5wVACdBXlJ8Qj6Fn7xTVau4W
+         27YGO549xO96O6pg0zQYBkvP6/9nhxbn61LQxTgh7svawjk0zPKxOlw1KCgGW5YRn2jV
+         /h+n73s1yWq567gac0BoB25rPRFDM2rL5+ycRfndcQM7dvuN4ZyrCUV6vmciU7bkwXr5
+         2Jz7MhZEyMNC0oVP9bsogONUEBqYjLxkNQpj+UdhI/SefDmcGkXCZJxVrY5rDK9VgclO
+         Rm2ULSTPXVv2MV2fgb12r45t1FNB2GfPdgCysk8MWTuupoUcAJEHrtLK4GxoNS9YY48A
+         rHLg==
+X-Forwarded-Encrypted: i=1; AJvYcCV+PGbOEbOGVjj4zUyw2hgAHOAIF8yED5EwCMQ0HGsrdKqSB3USgsyZuRgb043euXi1SYF+4MBz0w==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yye8HIAfqUQRPNVE4+GDeMufjWtum1i3lt5Lt21DOBZh6KWG3p3
+	KvLjscczSj7rdfBEmDAwjksTIXHTR4axC42RxTDqd1kCksEwRv8Dou28VdJUNQ==
+X-Google-Smtp-Source: AGHT+IElODMM0rQh4mddrzv/F5ovRuzJwZcdSq8FKd1lAPOBIO5XJpe1dPGMgoqhRfT//mb9dwT12Q==
+X-Received: by 2002:a05:6358:3123:b0:1b5:fc87:f033 with SMTP id e5c5f4694b2df-1b8385d965amr10429755d.11.1725559704945;
+        Thu, 05 Sep 2024 11:08:24 -0700 (PDT)
+Received: from node0.kernel3.linux-mcdc-pg0.utah.cloudlab.us ([128.110.218.246])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6c5201e43dasm9566796d6.46.2024.09.05.11.08.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Sep 2024 11:08:24 -0700 (PDT)
+From: Wentao Zhang <wentaoz5@illinois.edu>
+To: peterz@infradead.org
+Cc: Matt.Kelly2@boeing.com,
+	akpm@linux-foundation.org,
+	andrew.j.oppelt@boeing.com,
+	anton.ivanov@cambridgegreys.com,
+	ardb@kernel.org,
+	arnd@arndb.de,
+	bhelgaas@google.com,
+	bp@alien8.de,
+	chuck.wolber@boeing.com,
+	dave.hansen@linux.intel.com,
+	dvyukov@google.com,
+	hpa@zytor.com,
+	jinghao7@illinois.edu,
+	johannes@sipsolutions.net,
+	jpoimboe@kernel.org,
+	justinstitt@google.com,
+	kees@kernel.org,
+	kent.overstreet@linux.dev,
+	linux-arch@vger.kernel.org,
+	linux-efi@vger.kernel.org,
+	linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	llvm@lists.linux.dev,
+	luto@kernel.org,
+	marinov@illinois.edu,
+	masahiroy@kernel.org,
+	maskray@google.com,
+	mathieu.desnoyers@efficios.com,
+	matthew.l.weber3@boeing.com,
+	mhiramat@kernel.org,
+	mingo@redhat.com,
+	morbo@google.com,
+	nathan@kernel.org,
+	ndesaulniers@google.com,
+	oberpar@linux.ibm.com,
+	paulmck@kernel.org,
+	richard@nod.at,
+	rostedt@goodmis.org,
+	samitolvanen@google.com,
+	samuel.sarkisian@boeing.com,
+	steven.h.vanderleest@boeing.com,
+	tglx@linutronix.de,
+	tingxur@illinois.edu,
+	tyxu@illinois.edu,
+	wentaoz5@illinois.edu,
+	x86@kernel.org
+Subject: Re: [PATCH v2 0/4] Enable measuring the kernel's Source-based Code Coverage and MC/DC with Clang
+Date: Thu,  5 Sep 2024 13:07:58 -0500
+Message-ID: <20240905180758.1396234-1-wentaoz5@illinois.edu>
+X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20240905114140.GN4723@noisy.programming.kicks-ass.net>
+References: <20240905114140.GN4723@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240905-mips-rust-v2-2-409d66819418@flygoat.com>
-References: <20240905-mips-rust-v2-0-409d66819418@flygoat.com>
-In-Reply-To: <20240905-mips-rust-v2-0-409d66819418@flygoat.com>
-To: Masahiro Yamada <masahiroy@kernel.org>,
-  Nathan Chancellor <nathan@kernel.org>,
- Nicolas Schier <nicolas@fjasle.eu>,  Richard Weinberger <richard@nod.at>,
-  Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-  Johannes Berg <johannes@sipsolutions.net>,
-  Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-  Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>,  x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>,  Miguel Ojeda <ojeda@kernel.org>,
- Alex Gaynor <alex.gaynor@gmail.com>,
-  Wedson Almeida Filho <wedsonaf@gmail.com>,
-  Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-  =?utf-8?q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-  Benno Lossin <benno.lossin@proton.me>,
-  Andreas Hindborg <a.hindborg@samsung.com>,
-  Alice Ryhl <aliceryhl@google.com>,
-  Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-  Steven Rostedt <rostedt@goodmis.org>,
-  Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,  Jonathan Corbet <corbet@lwn.net>,
- Alex Shi <alexs@kernel.org>,  Yanteng Si <siyanteng@loongson.cn>,
-  Nick Desaulniers <ndesaulniers@google.com>,
-  Bill Wendling <morbo@google.com>,
- Justin Stitt <justinstitt@google.com>
-Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-um@lists.infradead.org, rust-for-linux@vger.kernel.org, 
- linux-mips@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
- linux-doc@vger.kernel.org, llvm@lists.linux.dev, 
- Jiaxun Yang <jiaxun.yang@flygoat.com>
-X-Mailer: b4 0.14.1
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6623;
- i=jiaxun.yang@flygoat.com; h=from:subject:message-id;
- bh=3K6o6Y8Ib1fJ7SBPgZmUC+L5hQTpFLi2ds4RhATIGXI=;
- b=owGbwMvMwCXmXMhTe71c8zDjabUkhrSbm8WdVK9V5xz5aygReSNuw6mU0DcnMi6Eru0zOrTLe
- 0pilWJ8RykLgxgXg6yYIkuIgFLfhsaLC64/yPoDM4eVCWQIAxenAEyk2ZGR4W/ywviWDQnXtuRG
- zMt6/J556pQLkY6c12unHT/tsziB8yojw+fu/Z1+G7Zm9+h+6A4RON69jd/l/cdWs0PzWUN1+iP
- +cgAA
-X-Developer-Key: i=jiaxun.yang@flygoat.com; a=openpgp;
- fpr=980379BEFEBFBF477EA04EF9C111949073FC0F67
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240905_063327_709669_233A344A 
-X-CRM114-Status: GOOD (  17.33  )
+X-CRM114-CacheID: sfid-20240905_110826_648171_14440B4C 
+X-CRM114-Status: GOOD (  33.70  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -151,192 +138,192 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-We have a union and a type both named after mips_instruction,
-rust bindgen is not happy with this kind of naming alias.
+On 2024-09-05 06:41, Peter Zijlstra wrote:
+> On Wed, Sep 04, 2024 at 11:32:41PM -0500, Wentao Zhang wrote:
+>> From: Wentao Zhang <zhangwt1997@gmail.com>
+>>
+>> This series adds support for building x86-64 kernels with Clang's Source-
+>> based Code Coverage[1] in order to facilitate Modified Condition/Decision
+>> Coverage (MC/DC)[2] that provably correlates to source code for all levels
+>> of compiler optimization.
+>>
+>> The newly added kernel/llvm-cov/ directory complements the existing gcov
+>> implementation. Gcov works at the object code level which may better
+>> reflect actual execution. However, Gcov lacks the necessary information to
+>> correlate coverage measurement with source code location when compiler
+>> optimization level is non-zero (which is the default when building the
+>> kernel). In addition, gcov reports are occasionally ambiguous when
+>> attempting to compare with source code level developer intent.
+>>
+>> In the following gcov example from drivers/firmware/dmi_scan.c, an
+>> expression with four conditions is reported to have six branch outcomes,
+>> which is not ideally informative in many safety related use cases, such as
+>> automotive, medical, and aerospace.
+>>
+>>          5: 1068:	if (s == e || *e != '/' || !month || month > 12) {
+>> branch  0 taken 5 (fallthrough)
+>> branch  1 taken 0
+>> branch  2 taken 5 (fallthrough)
+>> branch  3 taken 0
+>> branch  4 taken 0 (fallthrough)
+>> branch  5 taken 5
+>>
+>> On the other hand, Clang's Source-based Code Coverage instruments at the
+>> compiler frontend which maintains an accurate mapping from coverage
+>> measurement to source code location. Coverage reports reflect exactly how
+>> the code is written regardless of optimization and can present advanced
+>> metrics like branch coverage and MC/DC in a clearer way. Coverage report
+>> for the same snippet by llvm-cov would look as follows:
+>>
+>>   1068|      5|	if (s == e || *e != '/' || !month || month > 12) {
+>>    ------------------
+>>    |  Branch (1068:6): [True: 0, False: 5]
+>>    |  Branch (1068:16): [True: 0, False: 5]
+>>    |  Branch (1068:29): [True: 0, False: 5]
+>>    |  Branch (1068:39): [True: 0, False: 5]
+>>    ------------------
+>>
+>> Clang has added MC/DC support as of its 18.1.0 release. MC/DC is a fine-
+>> grained coverage metric required by many automotive and aviation industrial
+>> standards for certifying mission-critical software [3].
+>>
+>> In the following example from arch/x86/events/probe.c, llvm-cov gives the
+>> MC/DC measurement for the compound logic decision at line 43.
+>>
+>>     43|     12|			if (msr[bit].test && !msr[bit].test(bit, data))
+>>    ------------------
+>>    |---> MC/DC Decision Region (43:8) to (43:50)
+>>    |
+>>    |  Number of Conditions: 2
+>>    |     Condition C1 --> (43:8)
+>>    |     Condition C2 --> (43:25)
+>>    |
+>>    |  Executed MC/DC Test Vectors:
+>>    |
+>>    |     C1, C2    Result
+>>    |  1 { T,  F  = F      }
+>>    |  2 { T,  T  = T      }
+>>    |
+>>    |  C1-Pair: not covered
+>>    |  C2-Pair: covered: (1,2)
+>>    |  MC/DC Coverage for Decision: 50.00%
+>>    |
+>>    ------------------
+>>     44|      5|				continue;
+>>
+>> As the results suggest, during the span of measurement, only condition C2
+>> (!msr[bit].test(bit, data)) is covered. That means C2 was evaluated to both
+>> true and false, and in those test vectors C2 affected the decision outcome
+>> independently. Therefore MC/DC for this decision is 1 out of 2 (50.00%).
+>>
+>> To do a full kernel measurement, instrument the kernel with
+>> LLVM_COV_KERNEL_MCDC enabled, and optionally set a
+>> LLVM_COV_KERNEL_MCDC_MAX_CONDITIONS value (the default is six). Run the
+>> testsuites, and collect the raw profile data under
+>> /sys/kernel/debug/llvm-cov/profraw. Such raw profile data can be merged and
+>> indexed, and used for generating coverage reports in various formats.
+>>
+>>    $ cp /sys/kernel/debug/llvm-cov/profraw vmlinux.profraw
+>>    $ llvm-profdata merge vmlinux.profraw -o vmlinux.profdata
+>>    $ llvm-cov show --show-mcdc --show-mcdc-summary                         \
+>>               --format=text --use-color=false -output-dir=coverage_reports \
+>>               -instr-profile vmlinux.profdata vmlinux
+>>
+>> The first two patches enable the llvm-cov infrastructure, where the first
+>> enables source based code coverage and the second adds MC/DC support. The
+>> next patch disables instrumentation for curve25519-x86_64.c for the same
+>> reason as gcov. The final patch enables coverage for x86-64.
+>>
+>> The choice to use a new Makefile variable LLVM_COV_PROFILE, instead of
+>> reusing GCOV_PROFILE, was deliberate. More work needs to be done to
+>> determine if it is appropriate to reuse the same flag. In addition, given
+>> the fundamentally different approaches to instrumentation and the resulting
+>> variation in coverage reports, there is a strong likelihood that coverage
+>> type will need to be managed separately.
+>>
+>> This work reuses code from a previous effort by Sami Tolvanen et al. [4].
+>> Our aim is for source-based *code coverage* required for high assurance
+>> (MC/DC) while [4] focused more on performance optimization.
+>>
+>> This initial submission is restricted to x86-64. Support for other
+>> architectures would need a bit more Makefile & linker script modification.
+>> Informally we've confirmed that arm64 works and more are being tested.
+>>
+>> Note that Source-based Code Coverage is Clang-specific and isn't compatible
+>> with Clang's gcov support in kernel/gcov/. Currently, kernel/gcov/ is not
+>> able to measure MC/DC without modifying CFLAGS_GCOV and it would face the
+>> same issues in terms of source correlation as gcov in general does.
+>>
+>> Some demo and results can be found in [5]. We will talk about this patch
+>> series in the Refereed Track at LPC 2024 [6].
+>>
+>> Known Limitations:
+>>
+>> Kernel code with logical expressions exceeding
+>> LVM_COV_KERNEL_MCDC_MAX_CONDITIONS will produce a compiler warning.
+>> Expressions with up to 47 conditions are found in the Linux kernel source
+>> tree (as of v6.11), but 46 seems to be the max value before the build fails
+>> due to kernel size. As of LLVM 19 the max number of conditions possible is
+>> 32767.
+>>
+>> As of LLVM 19, certain expressions are still not covered, and will produce
+>> build warnings when they are encountered:
+>>
+>> "[...] if a boolean expression is embedded in the nest of another boolean
+>>   expression but separated by a non-logical operator, this is also not
+>>   supported. For example, in x = (a && b && c && func(d && f)), the d && f
+>>   case starts a new boolean expression that is separated from the other
+>>   conditions by the operator func(). When this is encountered, a warning
+>>   will be generated and the boolean expression will not be
+>>   instrumented." [7]
+>>
+> 
+> What does this actually look like in the generated code?
+> 
 
-Given that union mips_instruction is a part of UAPI, the best
-thing we can do is to rename mips_instruction type.
+Example 1: https://godbolt.org/z/PT6ssxdv1 (Taken from Message-ID:
+<20210614153545.GA68749@worktop.programming.kicks-ass.net>) where counter
+updates look like "inc qword ptr [rip + .L__profc_instr(int)]".
 
-Rename it as mips_insn, which is not conflicting with anything
-and aligned with struct name here.
+Example 2 with MC/DC: https://godbolt.org/z/ronMc578z where bitmap updates
+look like "or byte ptr [rip + .L__profbm_instr(int)], 8".
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
----
-v2:
-	Reword commit messsage
----
- arch/mips/include/asm/dsemul.h |  2 +-
- arch/mips/include/asm/inst.h   |  6 +++---
- arch/mips/kernel/ftrace.c      |  2 +-
- arch/mips/kernel/kprobes.c     |  2 +-
- arch/mips/math-emu/cp1emu.c    | 18 +++++++++---------
- arch/mips/math-emu/dsemul.c    |  8 ++++----
- 6 files changed, 19 insertions(+), 19 deletions(-)
+> Where is the modification to noinstr ?
+>
 
-diff --git a/arch/mips/include/asm/dsemul.h b/arch/mips/include/asm/dsemul.h
-index 08bfe8fa3b40..870597d6d1ad 100644
---- a/arch/mips/include/asm/dsemul.h
-+++ b/arch/mips/include/asm/dsemul.h
-@@ -34,7 +34,7 @@ struct task_struct;
-  *
-  * Return: Zero on success, negative if ir is a NOP, signal number on failure.
-  */
--extern int mips_dsemul(struct pt_regs *regs, mips_instruction ir,
-+extern int mips_dsemul(struct pt_regs *regs, mips_insn ir,
- 		       unsigned long branch_pc, unsigned long cont_pc);
- 
- /**
-diff --git a/arch/mips/include/asm/inst.h b/arch/mips/include/asm/inst.h
-index 2f98ced30263..0616b8eb7401 100644
---- a/arch/mips/include/asm/inst.h
-+++ b/arch/mips/include/asm/inst.h
-@@ -71,12 +71,12 @@
- #define I_FMA_FFMT_SFT	0
- #define MIPSInst_FMA_FFMT(x) (MIPSInst(x) & 0x00000007)
- 
--typedef unsigned int mips_instruction;
-+typedef unsigned int mips_insn;
- 
- /* microMIPS instruction decode structure. Do NOT export!!! */
- struct mm_decoded_insn {
--	mips_instruction insn;
--	mips_instruction next_insn;
-+	mips_insn insn;
-+	mips_insn next_insn;
- 	int pc_inc;
- 	int next_pc_inc;
- 	int micro_mips_mode;
-diff --git a/arch/mips/kernel/ftrace.c b/arch/mips/kernel/ftrace.c
-index 8c401e42301c..153c9666a77c 100644
---- a/arch/mips/kernel/ftrace.c
-+++ b/arch/mips/kernel/ftrace.c
-@@ -248,7 +248,7 @@ int ftrace_disable_ftrace_graph_caller(void)
- #define S_R_SP	(0xafb0 << 16)	/* s{d,w} R, offset(sp) */
- #define OFFSET_MASK	0xffff	/* stack offset range: 0 ~ PT_SIZE */
- 
--unsigned long ftrace_get_parent_ra_addr(unsigned long self_ra, unsigned long
-+static long ftrace_get_parent_ra_addr(unsigned long self_ra, unsigned long
- 		old_parent_ra, unsigned long parent_ra_addr, unsigned long fp)
- {
- 	unsigned long sp, ip, tmp;
-diff --git a/arch/mips/kernel/kprobes.c b/arch/mips/kernel/kprobes.c
-index dc39f5b3fb83..7a1b1c3674da 100644
---- a/arch/mips/kernel/kprobes.c
-+++ b/arch/mips/kernel/kprobes.c
-@@ -90,7 +90,7 @@ int arch_prepare_kprobe(struct kprobe *p)
- 	}
- 
- 	if (copy_from_kernel_nofault(&prev_insn, p->addr - 1,
--			sizeof(mips_instruction)) == 0 &&
-+			sizeof(kprobe_opcode_t)) == 0 &&
- 	    insn_has_delayslot(prev_insn)) {
- 		pr_notice("Kprobes for branch delayslot are not supported\n");
- 		ret = -EINVAL;
-diff --git a/arch/mips/math-emu/cp1emu.c b/arch/mips/math-emu/cp1emu.c
-index 265bc57819df..bcd6a6f0034c 100644
---- a/arch/mips/math-emu/cp1emu.c
-+++ b/arch/mips/math-emu/cp1emu.c
-@@ -43,10 +43,10 @@
- /* Function which emulates a floating point instruction. */
- 
- static int fpu_emu(struct pt_regs *, struct mips_fpu_struct *,
--	mips_instruction);
-+	mips_insn);
- 
- static int fpux_emu(struct pt_regs *,
--	struct mips_fpu_struct *, mips_instruction, void __user **);
-+	struct mips_fpu_struct *, mips_insn, void __user **);
- 
- /* Control registers */
- 
-@@ -846,7 +846,7 @@ do {									\
-  * Emulate a CFC1 instruction.
-  */
- static inline void cop1_cfc(struct pt_regs *xcp, struct mips_fpu_struct *ctx,
--			    mips_instruction ir)
-+			    mips_insn ir)
- {
- 	u32 fcr31 = ctx->fcr31;
- 	u32 value = 0;
-@@ -903,7 +903,7 @@ static inline void cop1_cfc(struct pt_regs *xcp, struct mips_fpu_struct *ctx,
-  * Emulate a CTC1 instruction.
-  */
- static inline void cop1_ctc(struct pt_regs *xcp, struct mips_fpu_struct *ctx,
--			    mips_instruction ir)
-+			    mips_insn ir)
- {
- 	u32 fcr31 = ctx->fcr31;
- 	u32 value;
-@@ -973,7 +973,7 @@ static int cop1Emulate(struct pt_regs *xcp, struct mips_fpu_struct *ctx,
- {
- 	unsigned long contpc = xcp->cp0_epc + dec_insn.pc_inc;
- 	unsigned int cond, cbit, bit0;
--	mips_instruction ir;
-+	mips_insn ir;
- 	int likely, pc_inc;
- 	union fpureg *fpr;
- 	u32 __user *wva;
-@@ -1461,7 +1461,7 @@ DEF3OP(nmadd, dp, ieee754dp_mul, ieee754dp_add, ieee754dp_neg);
- DEF3OP(nmsub, dp, ieee754dp_mul, ieee754dp_sub, ieee754dp_neg);
- 
- static int fpux_emu(struct pt_regs *xcp, struct mips_fpu_struct *ctx,
--	mips_instruction ir, void __user **fault_addr)
-+	mips_insn ir, void __user **fault_addr)
- {
- 	unsigned int rcsr = 0;	/* resulting csr */
- 
-@@ -1680,7 +1680,7 @@ static int fpux_emu(struct pt_regs *xcp, struct mips_fpu_struct *ctx,
-  * Emulate a single COP1 arithmetic instruction.
-  */
- static int fpu_emu(struct pt_regs *xcp, struct mips_fpu_struct *ctx,
--	mips_instruction ir)
-+	mips_insn ir)
- {
- 	int rfmt;		/* resulting format */
- 	unsigned int rcsr = 0;	/* resulting csr */
-@@ -2899,9 +2899,9 @@ int fpu_emulator_cop1Handler(struct pt_regs *xcp, struct mips_fpu_struct *ctx,
- 			dec_insn.micro_mips_mode = 1;
- 		} else {
- 			if ((get_user(dec_insn.insn,
--			    (mips_instruction __user *) xcp->cp0_epc)) ||
-+			    (mips_insn __user *) xcp->cp0_epc)) ||
- 			    (get_user(dec_insn.next_insn,
--			    (mips_instruction __user *)(xcp->cp0_epc+4)))) {
-+			    (mips_insn __user *)(xcp->cp0_epc+4)))) {
- 				MIPS_FPU_EMU_INC_STATS(errors);
- 				return SIGBUS;
- 			}
-diff --git a/arch/mips/math-emu/dsemul.c b/arch/mips/math-emu/dsemul.c
-index e02bd20b60a6..d4ea2cf89006 100644
---- a/arch/mips/math-emu/dsemul.c
-+++ b/arch/mips/math-emu/dsemul.c
-@@ -61,8 +61,8 @@
-  *   couldn't already.
-  */
- struct emuframe {
--	mips_instruction	emul;
--	mips_instruction	badinst;
-+	mips_insn	emul;
-+	mips_insn	badinst;
- };
- 
- static const int emupage_frame_count = PAGE_SIZE / sizeof(struct emuframe);
-@@ -206,11 +206,11 @@ void dsemul_mm_cleanup(struct mm_struct *mm)
- 	bitmap_free(mm_ctx->bd_emupage_allocmap);
- }
- 
--int mips_dsemul(struct pt_regs *regs, mips_instruction ir,
-+int mips_dsemul(struct pt_regs *regs, mips_insn ir,
- 		unsigned long branch_pc, unsigned long cont_pc)
- {
- 	int isa16 = get_isa16_mode(regs->cp0_epc);
--	mips_instruction break_math;
-+	mips_insn break_math;
- 	unsigned long fr_uaddr;
- 	struct emuframe fr;
- 	int fr_idx, ret;
+In both two examples the compiler is respecting
+"__no_profile_instrument_function__" attribute, which is part of
+"__no_profile" macro, which is in turn part of "noinstr" macro.
 
--- 
-2.46.0
+> What is the impact on certification of not covering the noinstr code.
+> 
+> 
+
+Allow me to reformat Steve's <steven.h.vanderleest@boeing.com> reply below:
+
+  -------------------------------------------------------------------------
+  I'll answer Peter's last question: "What is the impact on certification
+  of not covering the noinstr code."
+ 
+  Any code in the target image that is not executed by a test (and thus not
+  covered) must be analyzed and justified as an exception. For example,
+  defensive code is often impossible to exercise by test, but can be
+  included in the image with a justification to the regulatory authority
+  such as the Federal Aviation Administration (FAA). In practice, this
+  means the number of unique instances of non-instrumented code needs to be
+  manageable.  I say "unique instances" because there may be many instances
+  of a particular category, but justified by the same analysis/rationale.
+  Where we specifically mark a section of code with noinstr, it is
+  typically because the instrumentation would change the behavior of the
+  code, perturbing the test results. With some analysis for each distinct
+  category of this issue, we could then write justification(s) to show
+  the overall coverage is sufficient.
+ 
+  Regards,
+  Steve
+  -------------------------------------------------------------------------
+
+Thanks,
+Wentao
 
 
