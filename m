@@ -4,146 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D4DFCD4F4C
-	for <linux-um@archiver.kernel.org>; Sun,  8 Sep 2024 07:19:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0D098CD4F4C
+	for <linux-um@archiver.kernel.org>; Sun,  8 Sep 2024 20:43:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	References:Message-ID:In-Reply-To:Subject:cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=3ZQ/ac/ibstO2sQ9grAwXiAhc8xv0iaNZIFa0E3ygvc=; b=xYiWYGeT+/jF7xSixkiN9f1Xky
-	wBMcqovgfKBeuM6iQ5/mowo+bW8UA6bPHQVI1dQ86DxbERV/VoYxnjtY0fqxFm/XRSBszqm8CUzm0
-	dUlJt1TSyLDrAl5XF9paugKJFkwH+h8Sc6jtpCzib+JZzlrbzURfHNG+rOkgwHOciAFVin4zNerG0
-	xCDc+HWh3X5agxpXYk5wls5ushtRGNaMfLpXuyRZVX0IQoJxSKjlkl35bsu82iB1v2tGYWQi9K9kj
-	V7SvxfojKQl6OY3rC3cDfAHooQLg9P8TU/9VzlAxbO1Ku9AOs+Hd9FGh1OdXDk7saVAKdyXhQ0VZ6
-	KoxtzuOQ==;
+	bh=RA1WgsXVs98kvANbNBw0DxqB56WmMBHLwG5kItu64f8=; b=4UNeOI37YJjQhXtPif4lLY1nKo
+	aMC5mpBsUsfn65gktapkanKdbS2l46uYuGrKYU0U0cODabd2W9ur+s1o/W9GRUnajxmYURd0CYa8z
+	ojBiN3y/5kdDUb5JsWSxXzTaM01Ut1GNVt/uXXubW8QnVjRehE7yXl77k9XYB6u4iSVLCVuj2nVgs
+	VeXXNyOdCqjOs4e5lex9KtIHYFvmGz9fu+74VTkbkWlFNzceqLTNi94aojfbsBSmHdKpwDDlJo6dx
+	UlNzuL3t2uzJCf5Liet7GNl7cymLp4C4OOnNFA4NXdp9GICegkNQs5aHPV/Dl5n/Au79/XlOcFtIO
+	95IstIFg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1snCCi-0000000GIHj-3DrU;
-	Sun, 08 Sep 2024 07:19:24 +0000
-Received: from mail-lo4gbr01on20705.outbound.protection.outlook.com ([2a01:111:f403:261a::705] helo=GBR01-LO4-obe.outbound.protection.outlook.com)
-	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1snCCe-0000000GIGO-0rdW
+	id 1snOkb-0000000HRHQ-0JBJ;
+	Sun, 08 Sep 2024 20:43:13 +0000
+Received: from angie.orcam.me.uk ([2001:4190:8020::34])
+	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1snOkX-0000000HRGt-1E4G
 	for linux-um@lists.infradead.org;
-	Sun, 08 Sep 2024 07:19:23 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=pzH7/gjhLzBh4twcDcNn1cHfpLkIEjCuKaKwZNIvYvLeea1llTjBJm+TUxPpGWh9a4kIGq7I0XQMZp34/otMIgw2RJpH7QJLWq+Ao6TkPNdccHtOS+r1wB2qyYF5VLSBesgL++hlG574iHRwX5Cn1IhrUn/cfu6/uFDIzH0GJqk7oICdJuXQCtfDtnfgVM0zZVhbu/CxFtTtsYoBx08if50gqi9NQHfseYf4InQvrKCXac7yHLITxcnVSNP1XTXzCIlslTRtSCHkJFiO2xMcFELxMMx77Yja7fBee5nacPAESxYWCttPrPobMHI2bYrsgkgPz3iooDj6urOlI3WiJg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3ZQ/ac/ibstO2sQ9grAwXiAhc8xv0iaNZIFa0E3ygvc=;
- b=eCtiMkNqWLNQV3RLmfHzL6wsfH5iOV4PcjsWO5cQG+dMbvpgk53G9EPUSCHXXrw9dn/xQNhrmnJRs2wH3WxObZWufbIwW+8Fg27IeS/HDf6OGSNHZgr9jsNhvubAerScjnihKV9f2UWq/C1Bx7RczT85UeALBJY5ZqSWpYlRP1s3JMGgNp+aqd+P0E2CFJZ2G7/1lyXWBOsNpLxl7b2s5OS1GMQo8xh1jzK3hQlCyv9/aS6BONk+woRarDLd532/1pxGf1NSwF5AtpYIT5nwN2qUJ53d+2NAVbTrSWNkOBHucgBUtdPcdX/x57NMpMetpPuervmhJDlmcdl5yDR61Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=garyguo.net; dmarc=pass action=none header.from=garyguo.net;
- dkim=pass header.d=garyguo.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garyguo.net;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3ZQ/ac/ibstO2sQ9grAwXiAhc8xv0iaNZIFa0E3ygvc=;
- b=LpXAmQXEvsLNn5P1FnhdlC8d1pU1C4iJXzrs5KSStQ0EBgpWQ7cA68SKC3Czokp1K1Dy73vr7LBLg85ejXuGs0PsbBUKBaN3HHBXabNFB3oSQjVRtTntMk43ELf39Ytwb38L4VuzXNxX5n2hijZaJtgQ5kKcb43PNxDAE44sgUQ=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=garyguo.net;
-Received: from LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:253::10)
- by LO4P265MB6137.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:27d::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7875.20; Sun, 8 Sep
- 2024 07:19:08 +0000
-Received: from LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
- ([fe80::1818:a2bf:38a7:a1e7]) by LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
- ([fe80::1818:a2bf:38a7:a1e7%7]) with mapi id 15.20.7939.017; Sun, 8 Sep 2024
- 07:19:08 +0000
-Date: Sun, 8 Sep 2024 09:19:05 +0200
-From: Gary Guo <gary@garyguo.net>
-To: David Gow <davidgow@google.com>
-Cc: Andreas Hindborg <a.hindborg@samsung.com>, Boqun Feng
- <boqun.feng@gmail.com>, Miguel Ojeda <ojeda@kernel.org>, Jens Axboe
- <axboe@kernel.dk>, Wedson Almeida Filho <wedsonaf@gmail.com>,
- linux-block@vger.kernel.org, rust-for-linux@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
-Subject: Re: [RFC PATCH] rust: block: Use 32-bit atomics
-Message-ID: <20240908091905.1592e819@eugeo>
-In-Reply-To: <20240905061214.3954271-1-davidgow@google.com>
-References: <20240905061214.3954271-1-davidgow@google.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.43; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BE1P281CA0244.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:b10:8b::14) To LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:253::10)
+	Sun, 08 Sep 2024 20:43:11 +0000
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+	id 96E4792009C; Sun,  8 Sep 2024 22:43:02 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by angie.orcam.me.uk (Postfix) with ESMTP id 8806B92009B;
+	Sun,  8 Sep 2024 21:43:02 +0100 (BST)
+Date: Sun, 8 Sep 2024 21:43:02 +0100 (BST)
+From: "Maciej W. Rozycki" <macro@orcam.me.uk>
+To: Jiaxun Yang <jiaxun.yang@flygoat.com>
+cc: Masahiro Yamada <masahiroy@kernel.org>, 
+    Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, 
+    Richard Weinberger <richard@nod.at>, 
+    Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+    Johannes Berg <johannes@sipsolutions.net>, 
+    Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+    Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
+    x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+    Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+    Wedson Almeida Filho <wedsonaf@gmail.com>, 
+    Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+    =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+    Benno Lossin <benno.lossin@proton.me>, 
+    Andreas Hindborg <a.hindborg@samsung.com>, 
+    Alice Ryhl <aliceryhl@google.com>, 
+    Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+    Steven Rostedt <rostedt@goodmis.org>, 
+    Masami Hiramatsu <mhiramat@kernel.org>, 
+    Mark Rutland <mark.rutland@arm.com>, Jonathan Corbet <corbet@lwn.net>, 
+    Alex Shi <alexs@kernel.org>, Yanteng Si <siyanteng@loongson.cn>, 
+    Nick Desaulniers <ndesaulniers@google.com>, 
+    Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
+    linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
+    linux-um@lists.infradead.org, rust-for-linux@vger.kernel.org, 
+    linux-mips@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+    linux-doc@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH v2 3/3] rust: Enable for MIPS
+In-Reply-To: <20240905-mips-rust-v2-3-409d66819418@flygoat.com>
+Message-ID: <alpine.DEB.2.21.2409082138160.60835@angie.orcam.me.uk>
+References: <20240905-mips-rust-v2-0-409d66819418@flygoat.com> <20240905-mips-rust-v2-3-409d66819418@flygoat.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LO2P265MB5183:EE_|LO4P265MB6137:EE_
-X-MS-Office365-Filtering-Correlation-Id: 731e6fcf-dc43-4be5-c149-08dccfd6877f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|7416014|376014;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?MuxRH90+V4hWVmXui/wO12plek3wgs6YgLC8zDmY35baFct4EBy3H7S+qqII?=
- =?us-ascii?Q?s+kTQlZm1v+DOGPzvncHWFY3B45Vh4uYiV762s6MHDUFLxLn6oIW0xSOwN9O?=
- =?us-ascii?Q?DyKJxzxXex1lBmcbbYEggDGlZDml7Qkg41529ukp5bPs3cNZLjCnrwYdc7Ki?=
- =?us-ascii?Q?YGpf3jw+P5nvrxg9GsBGiLvuMyLUMtR6N98NEXTu5pnE0pKep1JaK6hXbWLV?=
- =?us-ascii?Q?fEtKCLBs0KLydVdQeJMWaBsatMO1OY2GWv8oyoFdj8WB3ED0WwtSv8VEwmT0?=
- =?us-ascii?Q?MDZFKTLkbJOZ8+L6zh55mLMvJGO5e8hB1boHUT5FxQAwuj6+UhS30AE+d/Qs?=
- =?us-ascii?Q?dD4hBGFQowMv8U5ZJ1p7L3eQT/Tm0qFXS3Hr6YeSbjKjJJ7j54AG7mNHhxik?=
- =?us-ascii?Q?4tqXUoUJcCovtd8knTD9xuVxhnhhpbrpfB26txuERyraniltVnhih3gbPsFw?=
- =?us-ascii?Q?ixDnbwSrKARKz2xmPJGCKlAMtcaapgJvj3S29Hy0KTBiN7sppTv0GdpYQH+O?=
- =?us-ascii?Q?TOSyvnvBueoaC9mEb3V0fH33GKGjrGj1DOuNKE7Yy0k6j8nZ4eHETC3C41D/?=
- =?us-ascii?Q?J3sjMpZGLZU5nGhuQ+RudtxmbisEu5nEyPXRmRCUMhDphIMIL0keZ0TRaL2K?=
- =?us-ascii?Q?Y3aEUD45xAf36lRUyY3NemEGJRxgh9nNygixYUE79BzFhPv7egw5Oe2j+zzb?=
- =?us-ascii?Q?rm4EB2GyVmMA34d0JPeTRVKSdkaFpeCrFyXtrg+V2lp2/PhcNViNHxfAJyuN?=
- =?us-ascii?Q?+/nbosiP2Ee/ugWgR1lxwyqSxdbFHKKaklRg0XaJiK9tCvd+kMR7Sh5Nn55P?=
- =?us-ascii?Q?IsVM1TRpHAQReBwpzNZykTHf6PtEaJ5gkJ8+kkEZ5YqiEM9vxpUqheTuSLRW?=
- =?us-ascii?Q?Czc8U7jyKXIzJ/OTApscyURHsGQIDyHxfo82t//7nwkzVskmSZAZx2rVIfcu?=
- =?us-ascii?Q?HpgZ4ZaW/k8z+WyxRBQdJVe8j/WVF/UNUlt3Wu7AdoyKxCtTQte1ChLG3j9N?=
- =?us-ascii?Q?CvYwiZJbe99OcEjh1Vp7Zl7Mrp/qhfi9+D95kNfo3yG/4hiOuDLJtTs7oR9K?=
- =?us-ascii?Q?+ki/gRirUnq7OXitoDiV8AkLt874uTH+F4cBYUzeOK/UHz+2TTaptqoe1Uij?=
- =?us-ascii?Q?94cDVGxUiKwfwQWUwMn5H9sfSM98RiIzFbOpqIuextNC06xCElEuNPbu/s53?=
- =?us-ascii?Q?y175q1IziWv93za4U08qXAUf6bF5usMiiMQEXveHK5x6BrZTFTXxy8Ud6zJH?=
- =?us-ascii?Q?B7oc75qdBY1X2iR+6CN9CG71BEh7caDEnY+8PvfMPLeACk8nupNVahAwumWT?=
- =?us-ascii?Q?q3E=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mQn9au2M4IGMvlPP+1qyPXmBsuVuUmgbAM9JrKP2/sEDORwo4b/jLoS0ysoa?=
- =?us-ascii?Q?cM9xp/KiB3C8VUSG8UcCL9DiK1MEEjNm9zeBwdp36bgYULKPavCPDHKw1vrN?=
- =?us-ascii?Q?aBYTIeNAf8HCkWULFTLzkU9/E5hTu1lmpfVJ/VdoJRoU7+rK1LJ4AtD6jgVR?=
- =?us-ascii?Q?8zQbywYXHEXSKAewjzu7Jmfb6eBE+u1k6zCDfUyqoF0ofFDCtVtDx4We7NzR?=
- =?us-ascii?Q?Wi7FahAW9otTakf9gu2H0AmAFea56TQ3Y6Vorkr1gIExG5MOdaGU73SRgeK6?=
- =?us-ascii?Q?Id10WG85UbueHrBVi6bPF76buPhltG9/dyaw0nzaCczcPYEExaSW5QNs4rL2?=
- =?us-ascii?Q?vkoqGo0/e3W3OQpJCmUDRAjbAnRtf12kThZzAdRcCGC6rWIM20kRdSTpDFh8?=
- =?us-ascii?Q?0nyJU1Y6fhvo984n0W5iLE8btLJZjWHJjOZrI+3Zr2LOVUk94Th2MSbn++GQ?=
- =?us-ascii?Q?eBy8YBd8+dxFHIoZFxwB9BU4qPOCQCgmpGsR6WTL0+iBDWRN82JMunDnXvLT?=
- =?us-ascii?Q?BJ9AoKz3wN9NN25cN9ER0hwnr88RJ82Cip+2b/qmVPNLKx5IcTvKOsJYHc3B?=
- =?us-ascii?Q?Idxm/3KDbjUKGYgd0+1S11xK0TF1ymTk1+Oi3MEpA/XqGktLqeRUEd6tUvMX?=
- =?us-ascii?Q?pwCyVH6ySg6/GOgmQ5srp2FLDqdwkdhX8L6zBDH+Eo6rI8TWymUbFFVkKI57?=
- =?us-ascii?Q?3RvoLgFtyvQK3OoHdgZv45Oc0LsnGrg21u+43BBous4z1exVzV3cq1FXnwv1?=
- =?us-ascii?Q?gJyfVbX7RxccH3eSpWK17D19YShATWScWHsFadwQEVKGkOYQSCHxknJIjxO0?=
- =?us-ascii?Q?ZhAwOAAKH+/AOJ4NZnV2zteWxDt9+ANEubhVoo5yXbb+sKB61c5VLyEPSgJO?=
- =?us-ascii?Q?S73Jc5G+HYnDuV0ifO/SiHcj2ptZw1nuOmN5sfDISXdWsSsxDWU52MC0IBsq?=
- =?us-ascii?Q?WDTfX60IMLYvINcSH/4mvgbQVCyG6uqjVUm898if1Lch2EWXnt27Moaa+PM1?=
- =?us-ascii?Q?aR7aCq+Gx5jPs003xAaaaDaZ0BbaAB0o3BTHXZdhzFFIfom9vtvogQ+WnSXS?=
- =?us-ascii?Q?+HjGRK7ukPTugTfs9Cxu87JskHV9zooSiUl/inPbspzga1oTAT6dDJVa5MYW?=
- =?us-ascii?Q?y6VC8wUtcq1I0QQcw+RYjvAlIyazhtGkNVBWQJXspVu+KimmtNkN4Mq0joYZ?=
- =?us-ascii?Q?5KfLLFt1KbxK1RncrDSRUb0P6GHZh+HtYIU9WdDBD5zame1X7ftn3j05pdgp?=
- =?us-ascii?Q?tgdLDBjuvV1b0149m9RcoEKEXGp7LqB6fPeTCRAZfL9iFNYjj1dISNcuhN5V?=
- =?us-ascii?Q?jq96IkCSr7ZRr93fnkv/1QenozBAcuWEjZamKt8lWAO6btW+oeIyAyewoH/L?=
- =?us-ascii?Q?hVH2dPBh0xV2H8OBtScQGwudgOunHlJIEVDjQxBkFOEyHoZIfxNvSsk4enwc?=
- =?us-ascii?Q?MDc03BdkRQxSsRz9Lb6pniif0Md6Xf4yBs1jdqBPTapnV3qzMcnYbbDAQbkM?=
- =?us-ascii?Q?cdaES7al7Czw2XDjea3Ct6GfMrcfO9ePJ8tngu//iER5uddkfDIZn1B7Vpqt?=
- =?us-ascii?Q?V2Y714h6ktbT3yzjizupwHYw5oiRrr1n0jp8MwpY?=
-X-OriginatorOrg: garyguo.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: 731e6fcf-dc43-4be5-c149-08dccfd6877f
-X-MS-Exchange-CrossTenant-AuthSource: LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2024 07:19:08.4407
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: bbc898ad-b10f-4e10-8552-d9377b823d45
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +aPtWoybXSuFTvHRZr9anowrcI0MaovdhpQIgOrxpvTI2sx7xw+LdYah/c2uxtd28KHwwWPfT/C8yCWLFk0YKA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO4P265MB6137
+Content-Type: text/plain; charset=US-ASCII
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240908_001920_287344_83534130 
-X-CRM114-Status: GOOD (  27.30  )
+X-CRM114-CacheID: sfid-20240908_134309_519292_5C42F6F5 
+X-CRM114-Status: GOOD (  11.21  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -158,89 +85,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu,  5 Sep 2024 14:12:14 +0800
-David Gow <davidgow@google.com> wrote:
+On Thu, 5 Sep 2024, Jiaxun Yang wrote:
 
-> Not all architectures have core::sync::atomic::AtomicU64 available. In
-> particular, 32-bit x86 doesn't support it. AtomicU32 is available
-> everywhere, so use that instead.
+> diff --git a/scripts/generate_rust_target.rs b/scripts/generate_rust_target.rs
+> index 863720777313..bbdf8a4dd169 100644
+> --- a/scripts/generate_rust_target.rs
+> +++ b/scripts/generate_rust_target.rs
+[...]
+> +        } else {
+> +            ts.push("arch", "mips");
+> +            cfg.get("TARGET_ISA_REV").map(|isa_rev| {
+> +                let feature = match isa_rev.as_str() {
+> +                    "1" => ",+mips32",
+> +                    "2" => ",+mips32r2",
+> +                    "5" => ",+mips32r5",
+> +                    "6" => ",+mips32r6",
+> +                    _ => ",+mips2",
 
-Switching to 32-bit directly makes it vulnerable to counter overflow
-issue. If 32-bit atomics are to be used for this, saturation logic must
-be implemented to deal with it.
+ What's the consequence of using `mips2' rather than `mips1' here?  How 
+about other ISA revisions, e.g. `mips4' (that also applies to the 64BIT 
+leg)?
 
-Ideally we should just use `refcount_t` instead of custom atomic ops.
-Although it appears that the rust block driver needs a cmpxchg which
-refcount_t doesn't provide.
-
-> 
-> Hopefully we can add AtomicU64 to Rust-for-Linux more broadly, so this
-> won't be an issue, but it's not supported in core from upstream Rust:
-> https://doc.rust-lang.org/std/sync/atomic/#portability
-
-Kernel has a 64-bit atomic implementation which is backed by spinlocks
-if the architecture doesn't support it. Although, I think for the
-purpose in rust block, it's unlikely to be necessary.
-
-Best,
-Gary
-
-> 
-> This can be tested on 32-bit x86 UML via:
-> ./tools/testing/kunit/kunit.py run --make_options LLVM=1 --kconfig_add CONFIG_RUST=y --kconfig_add CONFIG_64BIT=n --kconfig_add CONFIG_FORTIFY_SOURCE=n
-> 
-> Fixes: 3253aba3408a ("rust: block: introduce `kernel::block::mq` module")
-> Signed-off-by: David Gow <davidgow@google.com>
-> ---
-> 
-> Hi all,
-> 
-> I encountered this build error with Rust/UML since the kernel::block::mq
-> stuff landed. I'm not 100% sure just swapping AtomicU64 with AtomicU32
-> is correct -- please correct me if not -- but this does at least get the
-> Rust/UML/x86-32 builds here compiling and running again.
-> 
-> (And gives me more encouragement to go to the Rust atomics talk at
-> Plumbers.)
-> 
-> Cheers,
-> -- David
-> 
-> ---
->  rust/kernel/block/mq/operations.rs |  4 ++--
->  rust/kernel/block/mq/request.rs    | 12 ++++++------
->  2 files changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/rust/kernel/block/mq/operations.rs b/rust/kernel/block/mq/operations.rs
-> index 9ba7fdfeb4b2..c31c36af6bc4 100644
-> --- a/rust/kernel/block/mq/operations.rs
-> +++ b/rust/kernel/block/mq/operations.rs
-> @@ -11,7 +11,7 @@
->      error::{from_result, Result},
->      types::ARef,
->  };
-> -use core::{marker::PhantomData, sync::atomic::AtomicU64, sync::atomic::Ordering};
-> +use core::{marker::PhantomData, sync::atomic::AtomicU32, sync::atomic::Ordering};
->  
->  /// Implement this trait to interface blk-mq as block devices.
->  ///
-> @@ -186,7 +186,7 @@ impl<T: Operations> OperationsVTable<T> {
->  
->              // SAFETY: The refcount field is allocated but not initialized, so
->              // it is valid for writes.
-> -            unsafe { RequestDataWrapper::refcount_ptr(pdu.as_ptr()).write(AtomicU64::new(0)) };
-> +            unsafe { RequestDataWrapper::refcount_ptr(pdu.as_ptr()).write(AtomicU32::new(0)) };
->  
->              Ok(0)
->          })
-> diff --git a/rust/kernel/block/mq/request.rs b/rust/kernel/block/mq/request.rs
-> index a0e22827f3f4..418256dcd45b 100644
-> --- a/rust/kernel/block/mq/request.rs
-> +++ b/rust/kernel/block/mq/request.rs
-> @@ -13,7 +13,7 @@
->  use core::{
->      marker::PhantomData,
->      ptr::{addr_of_mut, NonNull},
-> -    sync::atomic::{AtomicU64, Ordering},
-> +    sync::atomic::{AtomicU32, Ordering},
+  Maciej
 
