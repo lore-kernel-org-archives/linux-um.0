@@ -4,98 +4,146 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BBFEDCE7AFB
-	for <linux-um@archiver.kernel.org>; Fri,  6 Sep 2024 09:44:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D4DFCD4F4C
+	for <linux-um@archiver.kernel.org>; Sun,  8 Sep 2024 07:19:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=07zl3rDKNL42OquwovqeTaJr18sf2ej01sdg0t++LZ8=; b=qqq5fOjGRPy/xn+8L0fRTx9S+J
-	VO6iSt4ExH9aqoOFm8mKaZCfbMZVIrpKBVGePxif/u9J/Vpmo5SYvO0Pt75zx6Bottpwp7GMVF+bb
-	YdO/b6qRfff2YQHDMKuyCtp9LXN9CWbWvowHpKOH99j7vDI2ZyjKC00j4DR2lwvwMMlr8Ry5yD2/f
-	elQ5pEWK1+ZbdUYTN2OEuvx96J/aSBDYb4M0fg3JXS7NW/3eXZdFZ2F5gK2xNUGXjr2nRvQVd8Nn2
-	IhaFam+rZ6FIDxSpJZUVWdkKz0TR6ofiA2faNsG+JOhegWVLLMYM9TRCjbcCivZ1IshXfqcu8huA7
-	5bql0XPA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=3ZQ/ac/ibstO2sQ9grAwXiAhc8xv0iaNZIFa0E3ygvc=; b=xYiWYGeT+/jF7xSixkiN9f1Xky
+	wBMcqovgfKBeuM6iQ5/mowo+bW8UA6bPHQVI1dQ86DxbERV/VoYxnjtY0fqxFm/XRSBszqm8CUzm0
+	dUlJt1TSyLDrAl5XF9paugKJFkwH+h8Sc6jtpCzib+JZzlrbzURfHNG+rOkgwHOciAFVin4zNerG0
+	xCDc+HWh3X5agxpXYk5wls5ushtRGNaMfLpXuyRZVX0IQoJxSKjlkl35bsu82iB1v2tGYWQi9K9kj
+	V7SvxfojKQl6OY3rC3cDfAHooQLg9P8TU/9VzlAxbO1Ku9AOs+Hd9FGh1OdXDk7saVAKdyXhQ0VZ6
+	KoxtzuOQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1smVWP-0000000BaCs-0SzU;
-	Fri, 06 Sep 2024 09:44:53 +0000
-Received: from pegase2.c-s.fr ([93.17.235.10])
+	id 1snCCi-0000000GIHj-3DrU;
+	Sun, 08 Sep 2024 07:19:24 +0000
+Received: from mail-lo4gbr01on20705.outbound.protection.outlook.com ([2a01:111:f403:261a::705] helo=GBR01-LO4-obe.outbound.protection.outlook.com)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1smVPW-0000000BXZ4-0pRA;
-	Fri, 06 Sep 2024 09:37:47 +0000
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-	by localhost (Postfix) with ESMTP id 4X0WNf1FhNz9sRs;
-	Fri,  6 Sep 2024 11:37:38 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-	by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id fKy3LdL3k-CP; Fri,  6 Sep 2024 11:37:38 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-	by pegase2.c-s.fr (Postfix) with ESMTP id 4X0WNc6RQfz9sRy;
-	Fri,  6 Sep 2024 11:37:36 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id C3BE58B77C;
-	Fri,  6 Sep 2024 11:37:36 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-	with ESMTP id of0oryN1Xdlh; Fri,  6 Sep 2024 11:37:36 +0200 (CEST)
-Received: from [192.168.235.70] (unknown [192.168.235.70])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 65D348B764;
-	Fri,  6 Sep 2024 11:37:34 +0200 (CEST)
-Message-ID: <7c3720ff-b763-44b0-9b57-a2fbff3c7f56@csgroup.eu>
-Date: Fri, 6 Sep 2024 11:37:34 +0200
+	id 1snCCe-0000000GIGO-0rdW
+	for linux-um@lists.infradead.org;
+	Sun, 08 Sep 2024 07:19:23 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=pzH7/gjhLzBh4twcDcNn1cHfpLkIEjCuKaKwZNIvYvLeea1llTjBJm+TUxPpGWh9a4kIGq7I0XQMZp34/otMIgw2RJpH7QJLWq+Ao6TkPNdccHtOS+r1wB2qyYF5VLSBesgL++hlG574iHRwX5Cn1IhrUn/cfu6/uFDIzH0GJqk7oICdJuXQCtfDtnfgVM0zZVhbu/CxFtTtsYoBx08if50gqi9NQHfseYf4InQvrKCXac7yHLITxcnVSNP1XTXzCIlslTRtSCHkJFiO2xMcFELxMMx77Yja7fBee5nacPAESxYWCttPrPobMHI2bYrsgkgPz3iooDj6urOlI3WiJg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3ZQ/ac/ibstO2sQ9grAwXiAhc8xv0iaNZIFa0E3ygvc=;
+ b=eCtiMkNqWLNQV3RLmfHzL6wsfH5iOV4PcjsWO5cQG+dMbvpgk53G9EPUSCHXXrw9dn/xQNhrmnJRs2wH3WxObZWufbIwW+8Fg27IeS/HDf6OGSNHZgr9jsNhvubAerScjnihKV9f2UWq/C1Bx7RczT85UeALBJY5ZqSWpYlRP1s3JMGgNp+aqd+P0E2CFJZ2G7/1lyXWBOsNpLxl7b2s5OS1GMQo8xh1jzK3hQlCyv9/aS6BONk+woRarDLd532/1pxGf1NSwF5AtpYIT5nwN2qUJ53d+2NAVbTrSWNkOBHucgBUtdPcdX/x57NMpMetpPuervmhJDlmcdl5yDR61Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=garyguo.net; dmarc=pass action=none header.from=garyguo.net;
+ dkim=pass header.d=garyguo.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garyguo.net;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3ZQ/ac/ibstO2sQ9grAwXiAhc8xv0iaNZIFa0E3ygvc=;
+ b=LpXAmQXEvsLNn5P1FnhdlC8d1pU1C4iJXzrs5KSStQ0EBgpWQ7cA68SKC3Czokp1K1Dy73vr7LBLg85ejXuGs0PsbBUKBaN3HHBXabNFB3oSQjVRtTntMk43ELf39Ytwb38L4VuzXNxX5n2hijZaJtgQ5kKcb43PNxDAE44sgUQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=garyguo.net;
+Received: from LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:253::10)
+ by LO4P265MB6137.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:27d::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7875.20; Sun, 8 Sep
+ 2024 07:19:08 +0000
+Received: from LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::1818:a2bf:38a7:a1e7]) by LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::1818:a2bf:38a7:a1e7%7]) with mapi id 15.20.7939.017; Sun, 8 Sep 2024
+ 07:19:08 +0000
+Date: Sun, 8 Sep 2024 09:19:05 +0200
+From: Gary Guo <gary@garyguo.net>
+To: David Gow <davidgow@google.com>
+Cc: Andreas Hindborg <a.hindborg@samsung.com>, Boqun Feng
+ <boqun.feng@gmail.com>, Miguel Ojeda <ojeda@kernel.org>, Jens Axboe
+ <axboe@kernel.dk>, Wedson Almeida Filho <wedsonaf@gmail.com>,
+ linux-block@vger.kernel.org, rust-for-linux@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-um@lists.infradead.org
+Subject: Re: [RFC PATCH] rust: block: Use 32-bit atomics
+Message-ID: <20240908091905.1592e819@eugeo>
+In-Reply-To: <20240905061214.3954271-1-davidgow@google.com>
+References: <20240905061214.3954271-1-davidgow@google.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.43; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BE1P281CA0244.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:b10:8b::14) To LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:253::10)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 7/8] execmem: add support for cache of large ROX pages
-To: Mike Rapoport <rppt@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: Andreas Larsson <andreas@gaisler.com>, Andy Lutomirski <luto@kernel.org>,
- Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
- Brian Cain <bcain@quicinc.com>, Catalin Marinas <catalin.marinas@arm.com>,
- Christoph Hellwig <hch@infradead.org>,
- Dave Hansen <dave.hansen@linux.intel.com>, Dinh Nguyen
- <dinguyen@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>,
- Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
- Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Kent Overstreet <kent.overstreet@linux.dev>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>,
- Luis Chamberlain <mcgrof@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Masami Hiramatsu <mhiramat@kernel.org>, Matt Turner <mattst88@gmail.com>,
- Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>,
- Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Peter Zijlstra <peterz@infradead.org>,
- Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
- Song Liu <song@kernel.org>, Stafford Horne <shorne@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Thomas Gleixner <tglx@linutronix.de>, Uladzislau Rezki <urezki@gmail.com>,
- Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
- bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
- linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
- sparclinux@vger.kernel.org, x86@kernel.org
-References: <20240826065532.2618273-1-rppt@kernel.org>
- <20240826065532.2618273-8-rppt@kernel.org>
-Content-Language: fr-FR
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-In-Reply-To: <20240826065532.2618273-8-rppt@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LO2P265MB5183:EE_|LO4P265MB6137:EE_
+X-MS-Office365-Filtering-Correlation-Id: 731e6fcf-dc43-4be5-c149-08dccfd6877f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|7416014|376014;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?MuxRH90+V4hWVmXui/wO12plek3wgs6YgLC8zDmY35baFct4EBy3H7S+qqII?=
+ =?us-ascii?Q?s+kTQlZm1v+DOGPzvncHWFY3B45Vh4uYiV762s6MHDUFLxLn6oIW0xSOwN9O?=
+ =?us-ascii?Q?DyKJxzxXex1lBmcbbYEggDGlZDml7Qkg41529ukp5bPs3cNZLjCnrwYdc7Ki?=
+ =?us-ascii?Q?YGpf3jw+P5nvrxg9GsBGiLvuMyLUMtR6N98NEXTu5pnE0pKep1JaK6hXbWLV?=
+ =?us-ascii?Q?fEtKCLBs0KLydVdQeJMWaBsatMO1OY2GWv8oyoFdj8WB3ED0WwtSv8VEwmT0?=
+ =?us-ascii?Q?MDZFKTLkbJOZ8+L6zh55mLMvJGO5e8hB1boHUT5FxQAwuj6+UhS30AE+d/Qs?=
+ =?us-ascii?Q?dD4hBGFQowMv8U5ZJ1p7L3eQT/Tm0qFXS3Hr6YeSbjKjJJ7j54AG7mNHhxik?=
+ =?us-ascii?Q?4tqXUoUJcCovtd8knTD9xuVxhnhhpbrpfB26txuERyraniltVnhih3gbPsFw?=
+ =?us-ascii?Q?ixDnbwSrKARKz2xmPJGCKlAMtcaapgJvj3S29Hy0KTBiN7sppTv0GdpYQH+O?=
+ =?us-ascii?Q?TOSyvnvBueoaC9mEb3V0fH33GKGjrGj1DOuNKE7Yy0k6j8nZ4eHETC3C41D/?=
+ =?us-ascii?Q?J3sjMpZGLZU5nGhuQ+RudtxmbisEu5nEyPXRmRCUMhDphIMIL0keZ0TRaL2K?=
+ =?us-ascii?Q?Y3aEUD45xAf36lRUyY3NemEGJRxgh9nNygixYUE79BzFhPv7egw5Oe2j+zzb?=
+ =?us-ascii?Q?rm4EB2GyVmMA34d0JPeTRVKSdkaFpeCrFyXtrg+V2lp2/PhcNViNHxfAJyuN?=
+ =?us-ascii?Q?+/nbosiP2Ee/ugWgR1lxwyqSxdbFHKKaklRg0XaJiK9tCvd+kMR7Sh5Nn55P?=
+ =?us-ascii?Q?IsVM1TRpHAQReBwpzNZykTHf6PtEaJ5gkJ8+kkEZ5YqiEM9vxpUqheTuSLRW?=
+ =?us-ascii?Q?Czc8U7jyKXIzJ/OTApscyURHsGQIDyHxfo82t//7nwkzVskmSZAZx2rVIfcu?=
+ =?us-ascii?Q?HpgZ4ZaW/k8z+WyxRBQdJVe8j/WVF/UNUlt3Wu7AdoyKxCtTQte1ChLG3j9N?=
+ =?us-ascii?Q?CvYwiZJbe99OcEjh1Vp7Zl7Mrp/qhfi9+D95kNfo3yG/4hiOuDLJtTs7oR9K?=
+ =?us-ascii?Q?+ki/gRirUnq7OXitoDiV8AkLt874uTH+F4cBYUzeOK/UHz+2TTaptqoe1Uij?=
+ =?us-ascii?Q?94cDVGxUiKwfwQWUwMn5H9sfSM98RiIzFbOpqIuextNC06xCElEuNPbu/s53?=
+ =?us-ascii?Q?y175q1IziWv93za4U08qXAUf6bF5usMiiMQEXveHK5x6BrZTFTXxy8Ud6zJH?=
+ =?us-ascii?Q?B7oc75qdBY1X2iR+6CN9CG71BEh7caDEnY+8PvfMPLeACk8nupNVahAwumWT?=
+ =?us-ascii?Q?q3E=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mQn9au2M4IGMvlPP+1qyPXmBsuVuUmgbAM9JrKP2/sEDORwo4b/jLoS0ysoa?=
+ =?us-ascii?Q?cM9xp/KiB3C8VUSG8UcCL9DiK1MEEjNm9zeBwdp36bgYULKPavCPDHKw1vrN?=
+ =?us-ascii?Q?aBYTIeNAf8HCkWULFTLzkU9/E5hTu1lmpfVJ/VdoJRoU7+rK1LJ4AtD6jgVR?=
+ =?us-ascii?Q?8zQbywYXHEXSKAewjzu7Jmfb6eBE+u1k6zCDfUyqoF0ofFDCtVtDx4We7NzR?=
+ =?us-ascii?Q?Wi7FahAW9otTakf9gu2H0AmAFea56TQ3Y6Vorkr1gIExG5MOdaGU73SRgeK6?=
+ =?us-ascii?Q?Id10WG85UbueHrBVi6bPF76buPhltG9/dyaw0nzaCczcPYEExaSW5QNs4rL2?=
+ =?us-ascii?Q?vkoqGo0/e3W3OQpJCmUDRAjbAnRtf12kThZzAdRcCGC6rWIM20kRdSTpDFh8?=
+ =?us-ascii?Q?0nyJU1Y6fhvo984n0W5iLE8btLJZjWHJjOZrI+3Zr2LOVUk94Th2MSbn++GQ?=
+ =?us-ascii?Q?eBy8YBd8+dxFHIoZFxwB9BU4qPOCQCgmpGsR6WTL0+iBDWRN82JMunDnXvLT?=
+ =?us-ascii?Q?BJ9AoKz3wN9NN25cN9ER0hwnr88RJ82Cip+2b/qmVPNLKx5IcTvKOsJYHc3B?=
+ =?us-ascii?Q?Idxm/3KDbjUKGYgd0+1S11xK0TF1ymTk1+Oi3MEpA/XqGktLqeRUEd6tUvMX?=
+ =?us-ascii?Q?pwCyVH6ySg6/GOgmQ5srp2FLDqdwkdhX8L6zBDH+Eo6rI8TWymUbFFVkKI57?=
+ =?us-ascii?Q?3RvoLgFtyvQK3OoHdgZv45Oc0LsnGrg21u+43BBous4z1exVzV3cq1FXnwv1?=
+ =?us-ascii?Q?gJyfVbX7RxccH3eSpWK17D19YShATWScWHsFadwQEVKGkOYQSCHxknJIjxO0?=
+ =?us-ascii?Q?ZhAwOAAKH+/AOJ4NZnV2zteWxDt9+ANEubhVoo5yXbb+sKB61c5VLyEPSgJO?=
+ =?us-ascii?Q?S73Jc5G+HYnDuV0ifO/SiHcj2ptZw1nuOmN5sfDISXdWsSsxDWU52MC0IBsq?=
+ =?us-ascii?Q?WDTfX60IMLYvINcSH/4mvgbQVCyG6uqjVUm898if1Lch2EWXnt27Moaa+PM1?=
+ =?us-ascii?Q?aR7aCq+Gx5jPs003xAaaaDaZ0BbaAB0o3BTHXZdhzFFIfom9vtvogQ+WnSXS?=
+ =?us-ascii?Q?+HjGRK7ukPTugTfs9Cxu87JskHV9zooSiUl/inPbspzga1oTAT6dDJVa5MYW?=
+ =?us-ascii?Q?y6VC8wUtcq1I0QQcw+RYjvAlIyazhtGkNVBWQJXspVu+KimmtNkN4Mq0joYZ?=
+ =?us-ascii?Q?5KfLLFt1KbxK1RncrDSRUb0P6GHZh+HtYIU9WdDBD5zame1X7ftn3j05pdgp?=
+ =?us-ascii?Q?tgdLDBjuvV1b0149m9RcoEKEXGp7LqB6fPeTCRAZfL9iFNYjj1dISNcuhN5V?=
+ =?us-ascii?Q?jq96IkCSr7ZRr93fnkv/1QenozBAcuWEjZamKt8lWAO6btW+oeIyAyewoH/L?=
+ =?us-ascii?Q?hVH2dPBh0xV2H8OBtScQGwudgOunHlJIEVDjQxBkFOEyHoZIfxNvSsk4enwc?=
+ =?us-ascii?Q?MDc03BdkRQxSsRz9Lb6pniif0Md6Xf4yBs1jdqBPTapnV3qzMcnYbbDAQbkM?=
+ =?us-ascii?Q?cdaES7al7Czw2XDjea3Ct6GfMrcfO9ePJ8tngu//iER5uddkfDIZn1B7Vpqt?=
+ =?us-ascii?Q?V2Y714h6ktbT3yzjizupwHYw5oiRrr1n0jp8MwpY?=
+X-OriginatorOrg: garyguo.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: 731e6fcf-dc43-4be5-c149-08dccfd6877f
+X-MS-Exchange-CrossTenant-AuthSource: LO2P265MB5183.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2024 07:19:08.4407
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: bbc898ad-b10f-4e10-8552-d9377b823d45
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +aPtWoybXSuFTvHRZr9anowrcI0MaovdhpQIgOrxpvTI2sx7xw+LdYah/c2uxtd28KHwwWPfT/C8yCWLFk0YKA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO4P265MB6137
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240906_023746_411263_FC315BDA 
-X-CRM114-Status: GOOD (  12.91  )
+X-CRM114-CacheID: sfid-20240908_001920_287344_83534130 
+X-CRM114-Status: GOOD (  27.30  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,38 +158,89 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+On Thu,  5 Sep 2024 14:12:14 +0800
+David Gow <davidgow@google.com> wrote:
 
+> Not all architectures have core::sync::atomic::AtomicU64 available. In
+> particular, 32-bit x86 doesn't support it. AtomicU32 is available
+> everywhere, so use that instead.
 
-Le 26/08/2024 à 08:55, Mike Rapoport a écrit :
-> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
-> 
-> Using large pages to map text areas reduces iTLB pressure and improves
-> performance.
-> 
-> Extend execmem_alloc() with an ability to use PMD_SIZE'ed pages with ROX
-> permissions as a cache for smaller allocations.
+Switching to 32-bit directly makes it vulnerable to counter overflow
+issue. If 32-bit atomics are to be used for this, saturation logic must
+be implemented to deal with it.
 
-Why only PMD_SIZE ?
-
-On power 8xx, PMD_SIZE is 4M and the 8xx doesn't have such a page size. 
-When you call vmalloc() with VM_ALLOW_HUGE_VMAP you get 16k pages or 
-512k pages depending on the size you ask for, see function 
-arch_vmap_pte_supported_shift()
+Ideally we should just use `refcount_t` instead of custom atomic ops.
+Although it appears that the rust block driver needs a cmpxchg which
+refcount_t doesn't provide.
 
 > 
-> To populate the cache, a writable large page is allocated from vmalloc with
-> VM_ALLOW_HUGE_VMAP, filled with invalid instructions and then remapped as
-> ROX.
-> 
-> Portions of that large page are handed out to execmem_alloc() callers
-> without any changes to the permissions.
-> 
-> When the memory is freed with execmem_free() it is invalidated again so
-> that it won't contain stale instructions.
-> 
-> The cache is enabled when an architecture sets EXECMEM_ROX_CACHE flag in
-> definition of an execmem_range.
-> 
+> Hopefully we can add AtomicU64 to Rust-for-Linux more broadly, so this
+> won't be an issue, but it's not supported in core from upstream Rust:
+> https://doc.rust-lang.org/std/sync/atomic/#portability
 
-Christophe
+Kernel has a 64-bit atomic implementation which is backed by spinlocks
+if the architecture doesn't support it. Although, I think for the
+purpose in rust block, it's unlikely to be necessary.
+
+Best,
+Gary
+
+> 
+> This can be tested on 32-bit x86 UML via:
+> ./tools/testing/kunit/kunit.py run --make_options LLVM=1 --kconfig_add CONFIG_RUST=y --kconfig_add CONFIG_64BIT=n --kconfig_add CONFIG_FORTIFY_SOURCE=n
+> 
+> Fixes: 3253aba3408a ("rust: block: introduce `kernel::block::mq` module")
+> Signed-off-by: David Gow <davidgow@google.com>
+> ---
+> 
+> Hi all,
+> 
+> I encountered this build error with Rust/UML since the kernel::block::mq
+> stuff landed. I'm not 100% sure just swapping AtomicU64 with AtomicU32
+> is correct -- please correct me if not -- but this does at least get the
+> Rust/UML/x86-32 builds here compiling and running again.
+> 
+> (And gives me more encouragement to go to the Rust atomics talk at
+> Plumbers.)
+> 
+> Cheers,
+> -- David
+> 
+> ---
+>  rust/kernel/block/mq/operations.rs |  4 ++--
+>  rust/kernel/block/mq/request.rs    | 12 ++++++------
+>  2 files changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/rust/kernel/block/mq/operations.rs b/rust/kernel/block/mq/operations.rs
+> index 9ba7fdfeb4b2..c31c36af6bc4 100644
+> --- a/rust/kernel/block/mq/operations.rs
+> +++ b/rust/kernel/block/mq/operations.rs
+> @@ -11,7 +11,7 @@
+>      error::{from_result, Result},
+>      types::ARef,
+>  };
+> -use core::{marker::PhantomData, sync::atomic::AtomicU64, sync::atomic::Ordering};
+> +use core::{marker::PhantomData, sync::atomic::AtomicU32, sync::atomic::Ordering};
+>  
+>  /// Implement this trait to interface blk-mq as block devices.
+>  ///
+> @@ -186,7 +186,7 @@ impl<T: Operations> OperationsVTable<T> {
+>  
+>              // SAFETY: The refcount field is allocated but not initialized, so
+>              // it is valid for writes.
+> -            unsafe { RequestDataWrapper::refcount_ptr(pdu.as_ptr()).write(AtomicU64::new(0)) };
+> +            unsafe { RequestDataWrapper::refcount_ptr(pdu.as_ptr()).write(AtomicU32::new(0)) };
+>  
+>              Ok(0)
+>          })
+> diff --git a/rust/kernel/block/mq/request.rs b/rust/kernel/block/mq/request.rs
+> index a0e22827f3f4..418256dcd45b 100644
+> --- a/rust/kernel/block/mq/request.rs
+> +++ b/rust/kernel/block/mq/request.rs
+> @@ -13,7 +13,7 @@
+>  use core::{
+>      marker::PhantomData,
+>      ptr::{addr_of_mut, NonNull},
+> -    sync::atomic::{AtomicU64, Ordering},
+> +    sync::atomic::{AtomicU32, Ordering},
 
