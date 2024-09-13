@@ -4,57 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5F9D9FA3757
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45D3DFA3755
 	for <linux-um@archiver.kernel.org>; Fri, 13 Sep 2024 13:36:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=QgZYeiaoeis6yeSuPfQWqkHVf9veTG+LxONX7qCYazo=; b=tWg5RYu0Kr7JhFnUAE0AmzQe7d
-	Ng5PcDjtu/D1nCC5VYfl5/NR8S0ZnRZMkp+f5dKib416SPSRgyDYnuZQQW4j0FP5Gtn86l8xMVd7/
-	xO77Lb9uvqqFZl3CrxMjoFB+sqg4KH3kHfFHlT1NKZdzWt0m/hQ9hlZ8FXBYqtn6j0Yi0i55pQVF8
-	Ucev0uIUKVa6h1JKUB2qdrvB1GQfdjfRAjUenIVcpSaCvxOBFKZB4Y9AH++yfbEAOeB3QWJM0Cqcz
-	brUHvvA16IVhyobfwUulV7MMf5Bjb/AXtddOzHJ+SBlipfMMb6ns0qPG8/+cuGA7M647962gNJMEt
-	SlHe0gxw==;
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=shGvXrNXhXQHJc0vnILvzX3YOtoEo/CWWLDuo9UHZFk=; b=4pVUuxJ6PjVnTvQArr/ggGpCgB
+	acfVoHAU7Rk/Nti7qEfeQISfLcl43ziDOANZ3kDMCAhnvw6jbr84I9EzY2Tlg9+QTXiTl9vG/l0S0
+	CS4P0NFYU8yGSzcQbUK3fyGm/S+SvcmlFFwRQpSJPWww/rhZ2tmE58Gngth5kfpjxv6opBxjgPeUS
+	xapwqYYD9pt8KxfWZ69mqks0X7GF7DkDOM7073ENew+hpq0dvjxYQ42+pb59kYD8jmfrUmx0ufkmo
+	1z9B9iMWHIZiUXvhUmUCYlY7JWirorwA45WSveNonOUb50WLM6Cc5+ypNja99WDjfgKADp4MS7oQX
+	k9gozzYQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sp6Tc-0000000G3BB-2MIP;
+	id 1sp6Tc-0000000G3BH-3gz3;
 	Fri, 13 Sep 2024 13:36:44 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sp6T9-0000000G37A-1VlZ
+	id 1sp6TB-0000000G37P-0GZi
 	for linux-um@lists.infradead.org;
-	Fri, 13 Sep 2024 13:36:16 +0000
+	Fri, 13 Sep 2024 13:36:18 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
-	Resent-Message-ID:In-Reply-To:References;
-	bh=QgZYeiaoeis6yeSuPfQWqkHVf9veTG+LxONX7qCYazo=; t=1726234575; x=1727444175; 
-	b=C5DszLuE1wRjsC/Vk3cwrE5miS/dS7q9focbISimTmRG0LHCS2VQZfbxOCL4IuVohtfqZ6H6vrX
-	RGQQgtIDgwa3ggvnMvLOVmQMmrwvhRhdR5UxbgS/Dhe4XP8oQd85S7gecZwx7KQ/iSlNILMqRLOL0
-	n4xEE51QJO13b/zes7yKTRqgDIDH9kpxN69JfLrVeP7CjN7Nw7LKglfQX9JJy5ad0RqKEJx3V77E8
-	VOfFnZdupr8oMJt7R6VXsY6QXXb4uWzI2tw2AlYJbBMmPV5iTfCXP7fyJ+AfKg9i3Gf/4LPbtivuf
-	Sitrwj8gBo1SJZTBloboTxy4M3ko6WGzrp9Q==;
+	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=shGvXrNXhXQHJc0vnILvzX3YOtoEo/CWWLDuo9UHZFk=;
+	t=1726234576; x=1727444176; b=xZ1HmJkXK/pKvbKzXSnltY7NvjAgXDIiKxcTq6bh/Kr2aCg
+	+86zEel84qeGrVPDJ+DU+Y28Kfs+aSMkXlpsCXa9VhbMEnpvzvZpZabSDaYvPggRjkNULxOC5w/b8
+	wKI4tI7r48rt8VZHIW9mKyjJ6znKVRP/2RtQ4meAtubM+DmqKfyvS2arWt5blnk57hzvqNo5q2uhH
+	43ATzy6sd+pb3o0yqDANwkZB/luR/68gfNSKK1OK+FqRCLbDTf+K3Tc8OnxNec3ZU1CndJqoIxmtd
+	HbRK0q3EF+4EebSYpZ98AfI8NM/CvKox0UkOEOLAzQ4WiB9033mWjdGv5zFtKQaQ==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.97)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1sp6T6-0000000GXf6-1VXT;
-	Fri, 13 Sep 2024 15:36:12 +0200
+	id 1sp6T8-0000000GXf6-0lGX;
+	Fri, 13 Sep 2024 15:36:14 +0200
 From: Benjamin Berg <benjamin@sipsolutions.net>
 To: linux-um@lists.infradead.org
 Cc: Benjamin Berg <benjamin.berg@intel.com>
-Subject: [PATCH 0/5] Minor cleanups for UML
-Date: Fri, 13 Sep 2024 15:35:57 +0200
-Message-ID: <20240913133602.963167-1-benjamin@sipsolutions.net>
+Subject: [PATCH 1/5] um: Remove unused os_process_pc
+Date: Fri, 13 Sep 2024 15:35:58 +0200
+Message-ID: <20240913133602.963167-2-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.46.0
+In-Reply-To: <20240913133602.963167-1-benjamin@sipsolutions.net>
+References: <20240913133602.963167-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240913_063615_424699_8E24D172 
-X-CRM114-Status: UNSURE (   5.40  )
+X-CRM114-CacheID: sfid-20240913_063617_128086_A3C6071C 
+X-CRM114-Status: UNSURE (   8.79  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -72,22 +73,73 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Benjamin Berg <benjamin.berg@intel.com>
 
-This removes a set of unused functions and also select
-HAVE_EFFICIENT_UNALIGNED_ACCESS on x86 to avoid UBSAN spewing warnings
-by default.
+The function is not used anywhere in the codebase.
+---
+ arch/um/include/shared/os.h |  1 -
+ arch/um/os-Linux/process.c  | 33 ---------------------------------
+ 2 files changed, 34 deletions(-)
 
-Benjamin Berg (5):
-  um: Remove unused os_process_pc
-  um: Remove unused os_process_parent
-  um: Remove unused os_stop_process
-  um: Remove unused os_getpgrp function
-  um: Set HAVE_EFFICIENT_UNALIGNED_ACCESS for x86
-
- arch/um/include/shared/os.h |  4 --
- arch/um/os-Linux/process.c  | 82 -------------------------------------
- arch/x86/um/Kconfig         |  1 +
- 3 files changed, 1 insertion(+), 86 deletions(-)
-
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index 9a039d6f1f74..c8c1a93c8d2c 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -199,7 +199,6 @@ extern int create_mem_file(unsigned long long len);
+ extern void report_enomem(void);
+ 
+ /* process.c */
+-extern unsigned long os_process_pc(int pid);
+ extern int os_process_parent(int pid);
+ extern void os_alarm_process(int pid);
+ extern void os_stop_process(int pid);
+diff --git a/arch/um/os-Linux/process.c b/arch/um/os-Linux/process.c
+index e52dd37ddadc..6b74a8d91e06 100644
+--- a/arch/um/os-Linux/process.c
++++ b/arch/um/os-Linux/process.c
+@@ -18,44 +18,11 @@
+ #include <longjmp.h>
+ #include <os.h>
+ 
+-#define ARBITRARY_ADDR -1
+ #define FAILURE_PID    -1
+ 
+ #define STAT_PATH_LEN sizeof("/proc/#######/stat\0")
+ #define COMM_SCANF "%*[^)])"
+ 
+-unsigned long os_process_pc(int pid)
+-{
+-	char proc_stat[STAT_PATH_LEN], buf[256];
+-	unsigned long pc = ARBITRARY_ADDR;
+-	int fd, err;
+-
+-	sprintf(proc_stat, "/proc/%d/stat", pid);
+-	fd = open(proc_stat, O_RDONLY, 0);
+-	if (fd < 0) {
+-		printk(UM_KERN_ERR "os_process_pc - couldn't open '%s', "
+-		       "errno = %d\n", proc_stat, errno);
+-		goto out;
+-	}
+-	CATCH_EINTR(err = read(fd, buf, sizeof(buf)));
+-	if (err < 0) {
+-		printk(UM_KERN_ERR "os_process_pc - couldn't read '%s', "
+-		       "err = %d\n", proc_stat, errno);
+-		goto out_close;
+-	}
+-	os_close_file(fd);
+-	pc = ARBITRARY_ADDR;
+-	if (sscanf(buf, "%*d " COMM_SCANF " %*c %*d %*d %*d %*d %*d %*d %*d "
+-		   "%*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d %*d "
+-		   "%*d %*d %*d %*d %*d %lu", &pc) != 1)
+-		printk(UM_KERN_ERR "os_process_pc - couldn't find pc in '%s'\n",
+-		       buf);
+- out_close:
+-	close(fd);
+- out:
+-	return pc;
+-}
+-
+ int os_process_parent(int pid)
+ {
+ 	char stat[STAT_PATH_LEN];
 -- 
 2.46.0
 
