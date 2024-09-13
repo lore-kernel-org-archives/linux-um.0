@@ -4,94 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C8606FA3755
-	for <linux-um@archiver.kernel.org>; Fri, 13 Sep 2024 15:01:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0123BFC6175
+	for <linux-um@archiver.kernel.org>; Fri, 13 Sep 2024 20:19:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
-	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=P6vlq4KZuWy+cpagWnMP/i1WxsOpBsApAGszCvaZ6aE=; b=PgKNyuTnk895v1lrLLnFXgO342
-	xyEhSBarquVcanDgacJD9i+3QMl4buGdM/DJfPSFwcqWVhB8t0XRYpnJ582shub0UV7ZksC2l+a0E
-	YzAlBUB7mgFnbJhAluJEnS6owjR4meJst4KwWCDXkCygvL/GD+lZbOCtelox3so1DwY7jQE/PEqbV
-	QGFCyqf3/piMWSKmUO3R2Cyzifm8a4jAPFWC4Fxq5jZDNUdT9BEfVNzH7DejFrMonxJofR3rYU2N4
-	RmzY/l95iFCPcQbSrzy90XjbYdgRBsc572Mmj7DkcjajTVdAPAVTIcfF59URdVXkRUkzQMP6WW4Zj
-	WYxXKVsw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=XUqiFFfQjZmNU5v/lHC3KhzgJNDg25CuFMNulDtI9FM=; b=gyL9t0Pe+uRRdcmT4mqe9mFl5/
+	X4wWvU0uIxiaHZGqqepaesYQR0MqkZ/BqHRnpNwaUxO5gmQl+GW6t5Pz34qYqsjYCx3mrJ5kYindD
+	LREeDSPoQBDfUfYBSOXLtmryarLEJV2Hn0dj0W209mazTcqSa4ihoPYhbRDJ+puSPS20pjfaEY4Fv
+	cRZ0nbn/iUl7+8FXjfqmxRv+Ol+xxAq4W9IKy922hYXdVG+nvsYtLN72KndPm3Rksi+zevXIwAh1o
+	KW9hD1MNLvCjZ+nLMQJEY8XSSuKTSCD5tcs1Bow4y6uvc7Vm273CCS1DVdaBXFTbaKbb7FkZL+SeC
+	r4wjrV5Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sp7nQ-0000000GHIU-1MHm;
-	Fri, 13 Sep 2024 15:01:16 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
-	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sp7n7-0000000GH5Q-1wbs;
-	Fri, 13 Sep 2024 15:00:59 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id F10B35C549C;
-	Fri, 13 Sep 2024 15:00:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 536A1C4CECE;
-	Fri, 13 Sep 2024 15:00:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726239656;
-	bh=BA0ANnltDBBfuoBltj9aaFdaXEL//Iks38XJnB02U/g=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=YAJMkQFcS9yQrD3CD9uf2YDAnPedZRu2sdG3Uq7zy8+8g4fHsdnaV9YMu/zLJ/1tj
-	 EDiCdYnV0pGG/cGSGCoqzc1yz3NAQwdRBBLRfL0AaT5mhRSd5SqOtQjToavlsk96bb
-	 oKdYkALvWRv8THfAoHVYOAKmMboDnCW5qhSOfsTXSAkiRSZcMGaGh7XxCBtwPbd5yo
-	 iYcY5nqsZThg8+lFTkl4wHHIxP84VsBur9fkHWLMiLx+uY355fMP3Bd0gFRq3KpUT4
-	 TIJSScKe0wBqYY1i+xFQfTmvYKL4lkyD4Paj6wDyvXKCliGwP8nsVtdZV47PWrdook
-	 qWRlseRXwzJPA==
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2f75de9a503so25797881fa.0;
-        Fri, 13 Sep 2024 08:00:56 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUzUL8+Zebn9B+XgCm7ciGeTatsPr9/FzFqplzqatCztOb3yKbvQ0/SPARVmJGT6GaYKhQWb5z+5II=@lists.infradead.org, AJvYcCWQZF/hoeE7xlGyyAOO0wZs8LfszfzeyyT62mL9hq4OBK3MkUnen0vsgYLhPODQ3t+Yi7GodV7MVaTP5TwKc58=@lists.infradead.org, AJvYcCWaYolRzmMxcq3jSCKMh9TNrh9vcnqTIFTW59ffz5V7mqoOy4wOELWOmNIBsaEtz/nS8Vj5qNSLvPIa6WY=@lists.infradead.org, AJvYcCX2/39JK8T5RAztR2wZKdJPHRPNSzocrPexsgmx5tOIKOTPwZp/32APRHv7sHnytX2Yql6krtHgZqfWvgJHC/vP@lists.infradead.org
-X-Gm-Message-State: AOJu0YzEoYUn/DIslLWcBjaRbQ7snw7HMNfbBk6HEe0ehA6EEhkLlFPI
-	i+4a9sjI2pJjfsd7oUH2mCgeHOwiMHythagkxPfBgFVErBHe+NWKVo01qnYyxTC4VBMgYctvB6l
-	sQyN9P45Y3zFZ1d13K88kfKl2/ms=
-X-Google-Smtp-Source: AGHT+IEIp2MygUsW5Tc1gnqrEXhSi4Y5LfaJ7pDs2t1FcVSY61BEs2pVKMYAU/+O+nJIsawLe6NqpBRTPpsi7cWLSzQ=
-X-Received: by 2002:a05:651c:1a0c:b0:2f0:1e0a:4696 with SMTP id
- 38308e7fff4ca-2f787dabe7emr39035411fa.7.1726239653924; Fri, 13 Sep 2024
- 08:00:53 -0700 (PDT)
+	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
+	id 1spCln-0000000H3YY-0dvb;
+	Fri, 13 Sep 2024 20:19:55 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1spClk-0000000H3Xk-2DDs
+	for linux-um@lists.infradead.org;
+	Fri, 13 Sep 2024 20:19:53 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
+	Resent-Message-ID:In-Reply-To:References;
+	bh=XUqiFFfQjZmNU5v/lHC3KhzgJNDg25CuFMNulDtI9FM=; t=1726258791; x=1727468391; 
+	b=C2y2SJ69drApmcFfcd+aKIF/OhW13Jxe+HtibM3D7X6ymQvInZYecWuv0Jh4E/v9ubOUefKzlR0
+	mh+1ukZvFybXL0aQnfLsy0iWnZWYXLp7wExXD+7KkxvS+zJ6NYxNJUM6qWlkSb7y19SDRuWGZFgyV
+	DfC120VQs4Y7fJpAPxo6Vk8URIU5+fdB9iAFD9hrHbV0Gjwl+m0slvIvjVi4vLXRsVfuv0o0n7QDw
+	EQc68hiGa/dTWRXskIxANqUJP/v/HTsWWyc+oEOgWt5iMb6LeRBzOKvCn06dtXmS28zV2rxTUNcfU
+	AB2fTrVbzHvm/VF2MokpHHR1PulqC+2X0s0A==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <benjamin@sipsolutions.net>)
+	id 1spClg-0000000HUm3-0VVy;
+	Fri, 13 Sep 2024 22:19:48 +0200
+From: Benjamin Berg <benjamin@sipsolutions.net>
+To: linux-um@lists.infradead.org
+Cc: Benjamin Berg <benjamin.berg@intel.com>
+Subject: [PATCH] um: insert scheduler ticks when userspace does not yield
+Date: Fri, 13 Sep 2024 22:17:56 +0200
+Message-ID: <20240913201756.1223327-1-benjamin@sipsolutions.net>
+X-Mailer: git-send-email 2.46.0
 MIME-Version: 1.0
-References: <20240909064730.3290724-1-rppt@kernel.org> <20240909064730.3290724-8-rppt@kernel.org>
-In-Reply-To: <20240909064730.3290724-8-rppt@kernel.org>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Fri, 13 Sep 2024 17:00:42 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXG_Z=7B_eDAk3vhtDjfcnka3AoSKNzvFQDzpvYY2EyVfg@mail.gmail.com>
-Message-ID: <CAMj1kXG_Z=7B_eDAk3vhtDjfcnka3AoSKNzvFQDzpvYY2EyVfg@mail.gmail.com>
-Subject: Re: [PATCH v3 7/8] execmem: add support for cache of large ROX pages
-To: Mike Rapoport <rppt@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Andreas Larsson <andreas@gaisler.com>, 
-	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>, 
-	Brian Cain <bcain@quicinc.com>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Christoph Hellwig <hch@infradead.org>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, Dinh Nguyen <dinguyen@kernel.org>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>, 
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
-	Johannes Berg <johannes@sipsolutions.net>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Kent Overstreet <kent.overstreet@linux.dev>, 
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Luis Chamberlain <mcgrof@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>, 
-	Stafford Horne <shorne@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner <tglx@linutronix.de>, 
-	Uladzislau Rezki <urezki@gmail.com>, Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>, 
-	bpf@vger.kernel.org, linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, 
-	linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
-	linux-mm@kvack.org, linux-modules@vger.kernel.org, 
-	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org, 
-	linux-snps-arc@lists.infradead.org, linux-trace-kernel@vger.kernel.org, 
-	linux-um@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, 
-	loongarch@lists.linux.dev, sparclinux@vger.kernel.org, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240913_080057_790099_B3650A48 
-X-CRM114-Status: GOOD (  28.83  )
+X-CRM114-CacheID: sfid-20240913_131952_608594_64D9599B 
+X-CRM114-Status: GOOD (  16.46  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,132 +69,130 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Mike,
+From: Benjamin Berg <benjamin.berg@intel.com>
 
-On Mon, 9 Sept 2024 at 08:51, Mike Rapoport <rppt@kernel.org> wrote:
->
-> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
->
-> Using large pages to map text areas reduces iTLB pressure and improves
-> performance.
->
-> Extend execmem_alloc() with an ability to use huge pages with ROX
-> permissions as a cache for smaller allocations.
->
-> To populate the cache, a writable large page is allocated from vmalloc with
-> VM_ALLOW_HUGE_VMAP, filled with invalid instructions and then remapped as
-> ROX.
->
-> Portions of that large page are handed out to execmem_alloc() callers
-> without any changes to the permissions.
->
-> When the memory is freed with execmem_free() it is invalidated again so
-> that it won't contain stale instructions.
->
-> The cache is enabled when an architecture sets EXECMEM_ROX_CACHE flag in
-> definition of an execmem_range.
->
-> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
-> ---
->  include/linux/execmem.h |   2 +
->  mm/execmem.c            | 289 +++++++++++++++++++++++++++++++++++++++-
->  2 files changed, 286 insertions(+), 5 deletions(-)
->
-> diff --git a/include/linux/execmem.h b/include/linux/execmem.h
-> index dfdf19f8a5e8..7436aa547818 100644
-> --- a/include/linux/execmem.h
-> +++ b/include/linux/execmem.h
-> @@ -77,12 +77,14 @@ struct execmem_range {
->
->  /**
->   * struct execmem_info - architecture parameters for code allocations
-> + * @fill_trapping_insns: set memory to contain instructions that will trap
->   * @ranges: array of parameter sets defining architecture specific
->   * parameters for executable memory allocations. The ranges that are not
->   * explicitly initialized by an architecture use parameters defined for
->   * @EXECMEM_DEFAULT.
->   */
->  struct execmem_info {
-> +       void (*fill_trapping_insns)(void *ptr, size_t size, bool writable);
->         struct execmem_range    ranges[EXECMEM_TYPE_MAX];
->  };
->
-> diff --git a/mm/execmem.c b/mm/execmem.c
-> index 0f6691e9ffe6..f547c1f3c93d 100644
-> --- a/mm/execmem.c
-> +++ b/mm/execmem.c
-> @@ -7,28 +7,88 @@
->   */
->
->  #include <linux/mm.h>
-> +#include <linux/mutex.h>
->  #include <linux/vmalloc.h>
->  #include <linux/execmem.h>
-> +#include <linux/maple_tree.h>
->  #include <linux/moduleloader.h>
->  #include <linux/text-patching.h>
->
-> +#include <asm/tlbflush.h>
-> +
-> +#include "internal.h"
-> +
->  static struct execmem_info *execmem_info __ro_after_init;
->  static struct execmem_info default_execmem_info __ro_after_init;
->
-> -static void *__execmem_alloc(struct execmem_range *range, size_t size)
-> +#ifdef CONFIG_MMU
-> +struct execmem_cache {
-> +       struct mutex mutex;
-> +       struct maple_tree busy_areas;
-> +       struct maple_tree free_areas;
-> +};
-> +
-> +static struct execmem_cache execmem_cache = {
-> +       .mutex = __MUTEX_INITIALIZER(execmem_cache.mutex),
-> +       .busy_areas = MTREE_INIT_EXT(busy_areas, MT_FLAGS_LOCK_EXTERN,
-> +                                    execmem_cache.mutex),
-> +       .free_areas = MTREE_INIT_EXT(free_areas, MT_FLAGS_LOCK_EXTERN,
-> +                                    execmem_cache.mutex),
-> +};
-> +
-> +static void execmem_cache_clean(struct work_struct *work)
-> +{
-> +       struct maple_tree *free_areas = &execmem_cache.free_areas;
-> +       struct mutex *mutex = &execmem_cache.mutex;
-> +       MA_STATE(mas, free_areas, 0, ULONG_MAX);
-> +       void *area;
-> +
-> +       mutex_lock(mutex);
-> +       mas_for_each(&mas, area, ULONG_MAX) {
-> +               size_t size;
-> +
-> +               if (!xa_is_value(area))
-> +                       continue;
-> +
-> +               size = xa_to_value(area);
-> +
-> +               if (IS_ALIGNED(size, PMD_SIZE) &&
-> +                   IS_ALIGNED(mas.index, PMD_SIZE)) {
-> +                       void *ptr = (void *)mas.index;
-> +
-> +                       mas_erase(&mas);
-> +                       vfree(ptr);
-> +               }
-> +       }
-> +       mutex_unlock(mutex);
-> +}
-> +
-> +static DECLARE_WORK(execmem_cache_clean_work, execmem_cache_clean);
-> +
-> +static void execmem_fill_trapping_insns(void *ptr, size_t size, bool writable)
-> +{
-> +       if (execmem_info->fill_trapping_insns)
-> +               execmem_info->fill_trapping_insns(ptr, size, writable);
-> +       else
-> +               memset(ptr, 0, size);
+In time-travel mode userspace can do a lot of work without any time
+passing. Unfortunately, this can result in OOM situations as the RCU
+core code will never be run.
 
-Does this really have to be a function pointer with a runtime check?
+Work around this by keeping track of userspace processes that do not
+yield for a lot of operations. When this happens, insert a jiffie into
+the sched_clock clock to account time against the process and cause the
+bookkeeping to run.
 
-This could just be a __weak definition, with the arch providing an
-override if the memset() is not appropriate.
+As sched_clock is used for tracing, it is useful to keep it in sync
+between the different VMs. As such, try to remove added ticks again when
+the actual clock ticks.
+
+Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
+---
+ arch/um/kernel/time.c           | 20 ++++++++++++++++++++
+ arch/um/os-Linux/skas/process.c | 25 +++++++++++++++++++++++++
+ 2 files changed, 45 insertions(+)
+
+diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
+index 29b27b90581f..e7da5e6cd4ce 100644
+--- a/arch/um/kernel/time.c
++++ b/arch/um/kernel/time.c
+@@ -25,6 +25,8 @@
+ #include <shared/init.h>
+ 
+ #ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
++#include <linux/sched/clock.h>
++
+ enum time_travel_mode time_travel_mode;
+ EXPORT_SYMBOL_GPL(time_travel_mode);
+ 
+@@ -47,6 +49,15 @@ static u16 time_travel_shm_id;
+ static struct um_timetravel_schedshm *time_travel_shm;
+ static union um_timetravel_schedshm_client *time_travel_shm_client;
+ 
++unsigned long tt_extra_sched_jiffies;
++
++notrace unsigned long long sched_clock(void)
++{
++	return (unsigned long long)(jiffies - INITIAL_JIFFIES +
++				    tt_extra_sched_jiffies)
++					* (NSEC_PER_SEC / HZ);
++}
++
+ static void time_travel_set_time(unsigned long long ns)
+ {
+ 	if (unlikely(ns < time_travel_time))
+@@ -443,6 +454,11 @@ static void time_travel_periodic_timer(struct time_travel_event *e)
+ {
+ 	time_travel_add_event(&time_travel_timer_event,
+ 			      time_travel_time + time_travel_timer_interval);
++
++	/* Remove inserted sched_clock ticks again to avoid timestamp drift */
++	if (tt_extra_sched_jiffies > 0)
++		tt_extra_sched_jiffies -= 1;
++
+ 	deliver_alarm();
+ }
+ 
+@@ -594,6 +610,10 @@ EXPORT_SYMBOL_GPL(time_travel_add_irq_event);
+ 
+ static void time_travel_oneshot_timer(struct time_travel_event *e)
+ {
++	/* Remove inserted sched_clock ticks again to avoid timestamp drift */
++	if (tt_extra_sched_jiffies > 0)
++		tt_extra_sched_jiffies -= 1;
++
+ 	deliver_alarm();
+ }
+ 
+diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+index b6f656bcffb1..e1a6f97a000b 100644
+--- a/arch/um/os-Linux/skas/process.c
++++ b/arch/um/os-Linux/skas/process.c
+@@ -336,6 +336,9 @@ int start_userspace(unsigned long stub_stack)
+ 	return err;
+ }
+ 
++int unscheduled_userspace_iterations;
++extern unsigned long tt_extra_sched_jiffies;
++
+ void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
+ {
+ 	int err, status, op, pid = userspace_pid[0];
+@@ -345,6 +348,26 @@ void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
+ 	interrupt_end();
+ 
+ 	while (1) {
++		/*
++		 * When we are in time-travel mode, userspace can theoretically
++		 * do a *lot* of work without being scheduled. The problem with
++		 * this is that it will prevent kernel bookkeeping (primarily
++		 * the RCU) from running and this can for example cause OOM
++		 * situations.
++		 *
++		 * This code accounts a jiffie against the scheduling clock
++		 * after 10000 userspace iterations (syscall or pagefault) in
++		 * the same thread. By doing so the situation is effectively
++		 * prevented.
++		 */
++		if (time_travel_mode == TT_MODE_INFCPU ||
++		    time_travel_mode == TT_MODE_EXTERNAL) {
++			if (unscheduled_userspace_iterations++ > 10000) {
++				tt_extra_sched_jiffies += 1;
++				unscheduled_userspace_iterations = 0;
++			}
++		}
++
+ 		time_travel_print_bc_msg();
+ 
+ 		current_mm_sync();
+@@ -487,6 +510,8 @@ void new_thread(void *stack, jmp_buf *buf, void (*handler)(void))
+ 
+ void switch_threads(jmp_buf *me, jmp_buf *you)
+ {
++	unscheduled_userspace_iterations = 0;
++
+ 	if (UML_SETJMP(me) == 0)
+ 		UML_LONGJMP(you, 1);
+ }
+-- 
+2.46.0
+
 
