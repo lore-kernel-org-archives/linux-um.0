@@ -4,58 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0B603FA3758
-	for <linux-um@archiver.kernel.org>; Fri, 13 Sep 2024 13:36:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9D1B3FA3756
+	for <linux-um@archiver.kernel.org>; Fri, 13 Sep 2024 13:36:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=QG5hErAujsu+pg/xUUQALAwExiMQEHr8pgtAkpY0F3M=; b=M+ians6PX0OUtietHLOXkEp+W0
-	PSeBWjaUi7ZPdwqYjQIcFRthmh+Ez8fOzYC9B7bpuI6tPyjNFRwF/4S5+BI6gHO09vCfT1S6wo2g3
-	iKIHwvnACBFBBuhAFkyp39oUR8Ev8K0EdJRiohaNjGcZnJ7cuy1qPpKCTd9H15Ck+heID87kJl7kF
-	DKqUmT2e9/i6ysIyQL++QLh+MTeRxvdbhANHz00mTiBVcoL4oDw+6FcaL9sIjC7a/68pGmCwK7Ups
-	j73JF/sxa6zrj5yzxLnq0YewM1q4wVZJY5DQgZeLjFhtPnUCKWF1X5+l2zx/vtCW0DqoHzIs+1yQN
-	tTz8c1Nw==;
+	bh=y70Yni1fwwVIWsx+ueQpN8lK6mJqanJelHzX7HJ9wrQ=; b=EKlKACo7Fx6nRlTlap58uHN5KJ
+	IEj8aM0vXOQiMx6jBBdwmFF70YuEYsRm6g4NByevEXF4Wzq5vgsm1F5eiLqcao2nvv0Gu5tmBXU4j
+	CApOStu1Wm604st9oPb1zS9WEt59cQLHAfr/cDK1EhonsOuur9rNCQ3vNVz4552p8g4T3/1/o//aO
+	6AOSYPOSKrr2ECKRtljvvWWlcNYdM9u2YN3e1QTUnPsdzZDJpJggSrxgeSpRJmRr6Qajad4C+o5Ky
+	ZsEnttiOZrS64c+FWL62WNzso1G+cvzzRN50mHvJu5BaaQ1in48D8rADJ/Bm0E9EJo9xQ4trqzKYO
+	ab3u0MIQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sp6Td-0000000G3By-2PCR;
+	id 1sp6Td-0000000G3BW-0t8S;
 	Fri, 13 Sep 2024 13:36:45 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sp6TD-0000000G389-3qmL
+	id 1sp6TB-0000000G37i-48Ek
 	for linux-um@lists.infradead.org;
-	Fri, 13 Sep 2024 13:36:21 +0000
+	Fri, 13 Sep 2024 13:36:19 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=QG5hErAujsu+pg/xUUQALAwExiMQEHr8pgtAkpY0F3M=;
-	t=1726234579; x=1727444179; b=bV32Be/wBVWQ8KUe0fkKQsP1kEDhTr4RXgh8pRO4Aip6zS5
-	wr1hOp1Hns5e52ap2UiRlSeSjn5I72+/VH+byQdJ64871sR8nqhsJqjccXYqzX/CEPSSXfKIpG0mL
-	hvpMpQtb9mTyHp22GDgZtxSTkNaxeiO7bOR62HPFt2cZLTo5CUnhAOQ/0yqDU1QIlW2LLuGR8Vswk
-	nPypbhfcf9OtG/YtBruipTOOPL7aOlz+GUNj3edKN9Dp9JEPii0QZgFKuaXvTlrraYLp+GR57CLwK
-	vDiDPzv3AVm62yeOynkW1WypurluL6Nh39FE3WYSIEEHArdvi7Z4iuT4P+8qOAQQ==;
+	Resent-Cc:Resent-Message-ID; bh=y70Yni1fwwVIWsx+ueQpN8lK6mJqanJelHzX7HJ9wrQ=;
+	t=1726234577; x=1727444177; b=rTSVidL8oRTT72PXEFkLzr65brPkasgu7sRwybqZA4gdKz9
+	3DlgkKvJhWivjx8Uy11eaS4ExZRREKNwQa9Ne2KckDTVOgRkXeHIAiyiZhClhdutXxhCVGefBvN3h
+	7moJMdO7wDtG+BYHnQ1q3FSU7IY6ezqG297DSxQaMquSHJXjrexdts2Hc89UDitQr/dwL3I+NkluN
+	8+FweDLwLNHxKqKgcpdP/87tqfZMfSI5puo8ATvotfpie8UUaGS64vgxhGf+IquT0+zJwIIdNs8/p
+	YjrRMTTEHY4eJjf9t++bPAsWv3sxBVz/HvLkZaIx6d/ayPK/kE8nqxHOmNUBPKqQ==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.97)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1sp6TB-0000000GXf6-1w4w;
-	Fri, 13 Sep 2024 15:36:17 +0200
+	id 1sp6T9-0000000GXf6-3mXu;
+	Fri, 13 Sep 2024 15:36:16 +0200
 From: Benjamin Berg <benjamin@sipsolutions.net>
 To: linux-um@lists.infradead.org
 Cc: Benjamin Berg <benjamin.berg@intel.com>
-Subject: [PATCH 3/5] um: Remove unused os_stop_process
-Date: Fri, 13 Sep 2024 15:36:00 +0200
-Message-ID: <20240913133602.963167-4-benjamin@sipsolutions.net>
+Subject: [PATCH 2/5] um: Remove unused os_process_parent
+Date: Fri, 13 Sep 2024 15:35:59 +0200
+Message-ID: <20240913133602.963167-3-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.46.0
 In-Reply-To: <20240913133602.963167-1-benjamin@sipsolutions.net>
 References: <20240913133602.963167-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240913_063619_976187_A45A4ED0 
-X-CRM114-Status: UNSURE (   7.41  )
+X-CRM114-CacheID: sfid-20240913_063618_045891_87660220 
+X-CRM114-Status: UNSURE (   8.74  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -75,38 +75,72 @@ From: Benjamin Berg <benjamin.berg@intel.com>
 
 The function is not used anywhere.
 ---
- arch/um/include/shared/os.h | 1 -
- arch/um/os-Linux/process.c  | 5 -----
- 2 files changed, 6 deletions(-)
+ arch/um/include/shared/os.h |  1 -
+ arch/um/os-Linux/process.c  | 39 -------------------------------------
+ 2 files changed, 40 deletions(-)
 
 diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index 4bdd4fb5dd80..a94093bfa5e4 100644
+index c8c1a93c8d2c..4bdd4fb5dd80 100644
 --- a/arch/um/include/shared/os.h
 +++ b/arch/um/include/shared/os.h
-@@ -200,7 +200,6 @@ extern void report_enomem(void);
+@@ -199,7 +199,6 @@ extern int create_mem_file(unsigned long long len);
+ extern void report_enomem(void);
  
  /* process.c */
+-extern int os_process_parent(int pid);
  extern void os_alarm_process(int pid);
--extern void os_stop_process(int pid);
+ extern void os_stop_process(int pid);
  extern void os_kill_process(int pid, int reap_child);
- extern void os_kill_ptraced_process(int pid, int reap_child);
- 
 diff --git a/arch/um/os-Linux/process.c b/arch/um/os-Linux/process.c
-index b25c226c5491..d1f5e6002805 100644
+index 6b74a8d91e06..b25c226c5491 100644
 --- a/arch/um/os-Linux/process.c
 +++ b/arch/um/os-Linux/process.c
-@@ -23,11 +23,6 @@ void os_alarm_process(int pid)
- 	kill(pid, SIGALRM);
- }
+@@ -18,45 +18,6 @@
+ #include <longjmp.h>
+ #include <os.h>
  
--void os_stop_process(int pid)
+-#define FAILURE_PID    -1
+-
+-#define STAT_PATH_LEN sizeof("/proc/#######/stat\0")
+-#define COMM_SCANF "%*[^)])"
+-
+-int os_process_parent(int pid)
 -{
--	kill(pid, SIGSTOP);
+-	char stat[STAT_PATH_LEN];
+-	char data[256];
+-	int parent = FAILURE_PID, n, fd;
+-
+-	if (pid == -1)
+-		return parent;
+-
+-	snprintf(stat, sizeof(stat), "/proc/%d/stat", pid);
+-	fd = open(stat, O_RDONLY, 0);
+-	if (fd < 0) {
+-		printk(UM_KERN_ERR "Couldn't open '%s', errno = %d\n", stat,
+-		       errno);
+-		return parent;
+-	}
+-
+-	CATCH_EINTR(n = read(fd, data, sizeof(data)));
+-	close(fd);
+-
+-	if (n < 0) {
+-		printk(UM_KERN_ERR "Couldn't read '%s', errno = %d\n", stat,
+-		       errno);
+-		return parent;
+-	}
+-
+-	parent = FAILURE_PID;
+-	n = sscanf(data, "%*d " COMM_SCANF " %*c %d", &parent);
+-	if (n != 1)
+-		printk(UM_KERN_ERR "Failed to scan '%s'\n", data);
+-
+-	return parent;
 -}
 -
- void os_kill_process(int pid, int reap_child)
+ void os_alarm_process(int pid)
  {
- 	kill(pid, SIGKILL);
+ 	kill(pid, SIGALRM);
 -- 
 2.46.0
 
