@@ -4,101 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94E02C35FE9
-	for <linux-um@archiver.kernel.org>; Sun, 15 Sep 2024 13:51:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6F3C2C3ABA1
+	for <linux-um@archiver.kernel.org>; Sun, 15 Sep 2024 16:56:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=PRdpsXqKOB66nzid05vkfMQY+h3dZqrBw/EG9fBVIP0=; b=q6hTHod1UeAIWTlFiJvPcIfSBl
-	afEnYZVnUIruePSm3JfyP2vUDqQ0T3ZjPV7hhxF5aMR0vV3QgxK+uax/yOV5+EFgWGs+52I85PuVe
-	jODBoxmXir6BUCFQsBzCzyTfMrsZWPt0abcaAhH0vU43slH8Qq/gGqzQsK8z24oqRViksyRWaZMm0
-	+i7s1sW3wWstWPqxOKmQg3ye7NXZIcHKiuif4zop9WZzmUBgvVZtO3+cdvy/PXfa2jE9DM7KeMLMG
-	zjdJsNQwnnjMKweGMDBwPPsGbrPjRdk2+f/8gAYPk1hBnXrGSE/V6+QY8+Nc/l0ew+R121S0XoWRU
-	ykJveMsg==;
+	bh=zYjFOxhIc6gg0NkYVM/96e0omPWTOB1ufw2hZ+jyrUc=; b=MMsZMj/uoLhVOo8PTdMDTcwKSP
+	wKMX6aoB09i3+5dTQ1wrcdHyzsyyCsM+CPteRjdQtzo+aPmzGur1zy5GjJefCRAEa5KtbxrsmODLR
+	JSq5u/Gb+m/jLRb6lLCRDkHN8Vq7cqYiq++VIV19s3fbD5kk6/pGnl88hDMC245tPAHFnzFkM/Qu7
+	bgXhDY+URH8LmXy3Rm2yW3MInHDJM8Sn2Sd1QZBy1KDE6Ce+CSjbRyMdSHJ4/SK6Uv7k0zLNXeY3s
+	Qs/swAA0fw4UBEdprAglivg9BBDSCC09UKIeA3C4dlkwYliwx8T+iHE4uvHeiI/p9Gqr81/ImD3LY
+	bop/Z1XA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1sppfP-00000002AD6-1c0w;
-	Sun, 15 Sep 2024 13:51:55 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1spsXj-00000002NdJ-0LPe;
+	Sun, 15 Sep 2024 16:56:11 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1sppfJ-00000002AA9-2zUg;
-	Sun, 15 Sep 2024 13:51:52 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 45A6A5C54F3;
-	Sun, 15 Sep 2024 13:51:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 666C4C4CEC3;
-	Sun, 15 Sep 2024 13:51:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726408306;
-	bh=q7WJquAI08+CAD5lP6bdNehob9Dq1wPKxQPjeFRtiiI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DRkIar9RFkBNG39Lg4VF36+C0l1NwYSaEE09Z1SxGxc6M4S+jx9O3QiS3XE0iEOXa
-	 dugg4+gux8cHvhMy415EwhG2oqeI29OZXErerIPWPPLxGdjDxioHvmSB5SFgMR8cmZ
-	 GF890/YHKLL0YWKx3z2y3nIavnufDvUSXph8DwoVC1aciO37Nuj9Dl/4U3xgMBW1Vr
-	 QqbWqbJwbZ+B8JLq+POjgebhgVzaYSVrG+oX+aypioA+ScnFYEAUCNxQIIMCRKMIR8
-	 1d75vfMvgyrvMLYGrv0O59GREHzSdXP1f5IYJf2XBPq1KtNNCfQ4hdGzn/h6TRc0iB
-	 7g69hrbWPmj5g==
-Date: Sun, 15 Sep 2024 16:48:27 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Ard Biesheuvel <ardb@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@quicinc.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Stafford Horne <shorne@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v3 7/8] execmem: add support for cache of large ROX pages
-Message-ID: <Zublq4tR0q7lvicK@kernel.org>
-References: <20240909064730.3290724-1-rppt@kernel.org>
- <20240909064730.3290724-8-rppt@kernel.org>
- <CAMj1kXG_Z=7B_eDAk3vhtDjfcnka3AoSKNzvFQDzpvYY2EyVfg@mail.gmail.com>
+	id 1spsXg-00000002Ncr-1VO0
+	for linux-um@lists.infradead.org;
+	Sun, 15 Sep 2024 16:56:10 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=zYjFOxhIc6gg0NkYVM/96e0omPWTOB1ufw2hZ+jyrUc=;
+	t=1726419365; x=1727628965; b=iA8QeKnFpKa1SMsmuxQPrWbMZrq3Ikd4IQoYr5DEwXyHRB5
+	6cdzNAJhh9mO7BKsoNkouqUJKjWU92GpHAnNJgvqHoUOAd4418PXrVDcXuDtSkI6jzYj56Nxd7Ofh
+	FQmyWfL8kebgKvavYp2TLB4djVEeJ6DDSenOJXwM6GDBx0/4J4DFTitbGnzrZjzBG8UWraPD/cm13
+	fB5KHn8uLB6gzWk/TWw3NDR6zdlCCiD+bN9kXd8BI3MRMaSHCZskiOLFuN3FIQOd8vg1f0DI8ussN
+	aVXZBFX3+f/InphuyqAhTKiGUyfUih5xI9udFQMsSYrVbQzAj82Zz5NvNCGeDJRw==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <benjamin@sipsolutions.net>)
+	id 1spsXX-00000007VaX-0alN;
+	Sun, 15 Sep 2024 18:55:59 +0200
+Message-ID: <56a679e9ea6a6e6c7d9316608f25fd691001e8dc.camel@sipsolutions.net>
+Subject: Re: [PATCH 2/3] um: Remove highmem leftovers
+From: Benjamin Berg <benjamin@sipsolutions.net>
+To: Tiwei Bie <tiwei.btw@antgroup.com>, richard@nod.at, 
+	anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net
+Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+Date: Sun, 15 Sep 2024 18:55:49 +0200
+In-Reply-To: <20240913142137.248245-3-tiwei.btw@antgroup.com>
+References: <20240913142137.248245-1-tiwei.btw@antgroup.com>
+	 <20240913142137.248245-3-tiwei.btw@antgroup.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXG_Z=7B_eDAk3vhtDjfcnka3AoSKNzvFQDzpvYY2EyVfg@mail.gmail.com>
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240915_065149_882615_A71D1545 
-X-CRM114-Status: GOOD (  16.54  )
+X-CRM114-CacheID: sfid-20240915_095608_593288_A42EEC79 
+X-CRM114-Status: GOOD (  28.61  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -113,34 +74,275 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Ard,
+Hi,
 
-On Fri, Sep 13, 2024 at 05:00:42PM +0200, Ard Biesheuvel wrote:
-> Hi Mike,
-> 
-> On Mon, 9 Sept 2024 at 08:51, Mike Rapoport <rppt@kernel.org> wrote:
+does that mean we can also drop the 3-level page table support on i386?
+It seems like the two level page table is entirely sufficient on a
+system without high memory (i.e. only 32bit physical addresses).
 
-...
+When I took a look at it for the 4-level page table support on 64 bit I
+got a bit confused. But I had not realized that highmem support had
+been removed.
 
-> > +static void execmem_fill_trapping_insns(void *ptr, size_t size, bool writable)
-> > +{
-> > +       if (execmem_info->fill_trapping_insns)
-> > +               execmem_info->fill_trapping_insns(ptr, size, writable);
-> > +       else
-> > +               memset(ptr, 0, size);
-> 
-> Does this really have to be a function pointer with a runtime check?
-> 
-> This could just be a __weak definition, with the arch providing an
-> override if the memset() is not appropriate.
+Benjamin
 
-I prefer to keep this a method in execmem_info rather that have a __weak
-definition that architectures can override.
+On Fri, 2024-09-13 at 22:21 +0800, Tiwei Bie wrote:
+> Highmem was only supported on UML/i386. And the support has been
+> removed by commit a98a6d864d3b ("um: Remove broken highmem support").
+> Remove the leftovers and stop UML from trying to setup highmem when
+> the sum of physmem_size and iomem_size exceeds max_physmem.
+>=20
+> Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
+> ---
+> =C2=A0arch/um/drivers/virtio_uml.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=
+=C2=A0 9 +--------
+> =C2=A0arch/um/include/shared/as-layout.h |=C2=A0 1 -
+> =C2=A0arch/um/include/shared/mem_user.h=C2=A0 |=C2=A0 5 ++---
+> =C2=A0arch/um/kernel/mem.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 3 ---
+> =C2=A0arch/um/kernel/physmem.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 | 30 +++++++++++-----------------
+> --
+> =C2=A0arch/um/kernel/um_arch.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 | 17 +++++++----------
+> =C2=A06 files changed, 21 insertions(+), 44 deletions(-)
+>=20
+> diff --git a/arch/um/drivers/virtio_uml.c
+> b/arch/um/drivers/virtio_uml.c
+> index 2b6e701776b6..e7f5556e3c96 100644
+> --- a/arch/um/drivers/virtio_uml.c
+> +++ b/arch/um/drivers/virtio_uml.c
+> @@ -72,7 +72,7 @@ struct virtio_uml_vq_info {
+> =C2=A0	bool suspended;
+> =C2=A0};
+> =C2=A0
+> -extern unsigned long long physmem_size, highmem;
+> +extern unsigned long long physmem_size;
+> =C2=A0
+> =C2=A0#define vu_err(vu_dev, ...)	dev_err(&(vu_dev)->pdev->dev,
+> ##__VA_ARGS__)
+> =C2=A0
+> @@ -673,13 +673,6 @@ static int vhost_user_set_mem_table(struct
+> virtio_uml_device *vu_dev)
+> =C2=A0
+> =C2=A0	if (rc < 0)
+> =C2=A0		return rc;
+> -	if (highmem) {
+> -		msg.payload.mem_regions.num++;
+> -		rc =3D vhost_user_init_mem_region(__pa(end_iomem),
+> highmem,
+> -				&fds[1],
+> &msg.payload.mem_regions.regions[1]);
+> -		if (rc < 0)
+> -			return rc;
+> -	}
+> =C2=A0
+> =C2=A0	return vhost_user_send(vu_dev, false, &msg, fds,
+> =C2=A0			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 msg.payload.mem_regions.num=
+);
+> diff --git a/arch/um/include/shared/as-layout.h
+> b/arch/um/include/shared/as-layout.h
+> index 06292fca5a4d..61965a06c18a 100644
+> --- a/arch/um/include/shared/as-layout.h
+> +++ b/arch/um/include/shared/as-layout.h
+> @@ -41,7 +41,6 @@ extern unsigned long uml_physmem;
+> =C2=A0extern unsigned long uml_reserved;
+> =C2=A0extern unsigned long end_vm;
+> =C2=A0extern unsigned long start_vm;
+> -extern unsigned long long highmem;
+> =C2=A0
+> =C2=A0extern unsigned long brk_start;
+> =C2=A0
+> diff --git a/arch/um/include/shared/mem_user.h
+> b/arch/um/include/shared/mem_user.h
+> index 11a723a58545..adfa08062f88 100644
+> --- a/arch/um/include/shared/mem_user.h
+> +++ b/arch/um/include/shared/mem_user.h
+> @@ -47,10 +47,9 @@ extern int iomem_size;
+> =C2=A0#define ROUND_4M(n) ((((unsigned long) (n)) + (1 << 22)) & ~((1 <<
+> 22) - 1))
+> =C2=A0
+> =C2=A0extern unsigned long find_iomem(char *driver, unsigned long
+> *len_out);
+> -extern void mem_total_pages(unsigned long physmem, unsigned long
+> iomem,
+> -		=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long highmem);
+> +extern void mem_total_pages(unsigned long physmem, unsigned long
+> iomem);
+> =C2=A0extern void setup_physmem(unsigned long start, unsigned long usable=
+,
+> -			=C2=A0 unsigned long len, unsigned long long
+> highmem);
+> +			=C2=A0 unsigned long len);
+> =C2=A0extern void map_memory(unsigned long virt, unsigned long phys,
+> =C2=A0		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long len, int r, in=
+t w, int x);
+> =C2=A0
+> diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
+> index a5b4fe2ad931..5026668dc054 100644
+> --- a/arch/um/kernel/mem.c
+> +++ b/arch/um/kernel/mem.c
+> @@ -6,7 +6,6 @@
+> =C2=A0#include <linux/stddef.h>
+> =C2=A0#include <linux/module.h>
+> =C2=A0#include <linux/memblock.h>
+> -#include <linux/highmem.h>
+> =C2=A0#include <linux/mm.h>
+> =C2=A0#include <linux/swap.h>
+> =C2=A0#include <linux/slab.h>
+> @@ -51,8 +50,6 @@ EXPORT_SYMBOL(empty_zero_page);
+> =C2=A0pgd_t swapper_pg_dir[PTRS_PER_PGD];
+> =C2=A0
+> =C2=A0/* Initialized at boot time, and readonly after that */
+> -unsigned long long highmem;
+> -EXPORT_SYMBOL(highmem);
+> =C2=A0int kmalloc_ok =3D 0;
+> =C2=A0
+> =C2=A0/* Used during early boot */
+> diff --git a/arch/um/kernel/physmem.c b/arch/um/kernel/physmem.c
+> index fb2adfb49945..cc5238c1bf1e 100644
+> --- a/arch/um/kernel/physmem.c
+> +++ b/arch/um/kernel/physmem.c
+> @@ -24,17 +24,14 @@ EXPORT_SYMBOL(high_physmem);
+> =C2=A0
+> =C2=A0extern unsigned long long physmem_size;
+> =C2=A0
+> -void __init mem_total_pages(unsigned long physmem, unsigned long
+> iomem,
+> -		=C2=A0=C2=A0=C2=A0=C2=A0 unsigned long highmem)
+> +void __init mem_total_pages(unsigned long physmem, unsigned long
+> iomem)
+> =C2=A0{
+> -	unsigned long phys_pages, highmem_pages;
+> -	unsigned long iomem_pages, total_pages;
+> +	unsigned long phys_pages, iomem_pages, total_pages;
+> =C2=A0
+> -	phys_pages=C2=A0=C2=A0=C2=A0 =3D physmem >> PAGE_SHIFT;
+> -	iomem_pages=C2=A0=C2=A0 =3D iomem=C2=A0=C2=A0 >> PAGE_SHIFT;
+> -	highmem_pages =3D highmem >> PAGE_SHIFT;
+> +	phys_pages=C2=A0 =3D physmem >> PAGE_SHIFT;
+> +	iomem_pages =3D iomem=C2=A0=C2=A0 >> PAGE_SHIFT;
+> =C2=A0
+> -	total_pages=C2=A0=C2=A0 =3D phys_pages + iomem_pages + highmem_pages;
+> +	total_pages =3D phys_pages + iomem_pages;
+> =C2=A0
+> =C2=A0	max_mapnr =3D total_pages;
+> =C2=A0}
+> @@ -64,13 +61,12 @@ void map_memory(unsigned long virt, unsigned long
+> phys, unsigned long len,
+> =C2=A0 * @reserve_end:	end address of the physical kernel memory.
+> =C2=A0 * @len:	Length of total physical memory that should be
+> mapped/made
+> =C2=A0 *		available, in bytes.
+> - * @highmem:	Number of highmem bytes that should be mapped/made
+> available.
+> =C2=A0 *
+> - * Creates an unlinked temporary file of size (len + highmem) and
+> memory maps
+> + * Creates an unlinked temporary file of size (len) and memory maps
+> =C2=A0 * it on the last executable image address (uml_reserved).
+> =C2=A0 *
+> =C2=A0 * The offset is needed as the length of the total physical memory
+> - * (len + highmem) includes the size of the memory used be the
+> executable image,
+> + * (len) includes the size of the memory used be the executable
+> image,
+> =C2=A0 * but the mapped-to address is the last address of the executable
+> image
+> =C2=A0 * (uml_reserved =3D=3D end address of executable image).
+> =C2=A0 *
+> @@ -78,19 +74,19 @@ void map_memory(unsigned long virt, unsigned long
+> phys, unsigned long len,
+> =C2=A0 * of all user space processes/kernel tasks.
+> =C2=A0 */
+> =C2=A0void __init setup_physmem(unsigned long start, unsigned long
+> reserve_end,
+> -			=C2=A0 unsigned long len, unsigned long long
+> highmem)
+> +			=C2=A0 unsigned long len)
+> =C2=A0{
+> =C2=A0	unsigned long reserve =3D reserve_end - start;
+> =C2=A0	long map_size =3D len - reserve;
+> =C2=A0	int err;
+> =C2=A0
+> -	if(map_size <=3D 0) {
+> +	if (map_size <=3D 0) {
+> =C2=A0		os_warn("Too few physical memory! Needed=3D%lu,
+> given=3D%lu\n",
+> =C2=A0			reserve, len);
+> =C2=A0		exit(1);
+> =C2=A0	}
+> =C2=A0
+> -	physmem_fd =3D create_mem_file(len + highmem);
+> +	physmem_fd =3D create_mem_file(len);
+> =C2=A0
+> =C2=A0	err =3D os_map_memory((void *) reserve_end, physmem_fd,
+> reserve,
+> =C2=A0			=C2=A0=C2=A0=C2=A0 map_size, 1, 1, 1);
+> @@ -109,7 +105,7 @@ void __init setup_physmem(unsigned long start,
+> unsigned long reserve_end,
+> =C2=A0	os_write_file(physmem_fd, __syscall_stub_start, PAGE_SIZE);
+> =C2=A0	os_fsync_file(physmem_fd);
+> =C2=A0
+> -	memblock_add(__pa(start), len + highmem);
+> +	memblock_add(__pa(start), len);
+> =C2=A0	memblock_reserve(__pa(start), reserve);
+> =C2=A0
+> =C2=A0	min_low_pfn =3D PFN_UP(__pa(reserve_end));
+> @@ -137,10 +133,6 @@ int phys_mapping(unsigned long phys, unsigned
+> long long *offset_out)
+> =C2=A0			region =3D region->next;
+> =C2=A0		}
+> =C2=A0	}
+> -	else if (phys < __pa(end_iomem) + highmem) {
+> -		fd =3D physmem_fd;
+> -		*offset_out =3D phys - iomem_size;
+> -	}
+> =C2=A0
+> =C2=A0	return fd;
+> =C2=A0}
+> diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
+> index 8e594cda6d77..8f86aa468b50 100644
+> --- a/arch/um/kernel/um_arch.c
+> +++ b/arch/um/kernel/um_arch.c
+> @@ -366,18 +366,15 @@ int __init linux_main(int argc, char **argv)
+> =C2=A0
+> =C2=A0	setup_machinename(init_utsname()->machine);
+> =C2=A0
+> -	highmem =3D 0;
+> +	physmem_size =3D (physmem_size + PAGE_SIZE - 1) & PAGE_MASK;
+> =C2=A0	iomem_size =3D (iomem_size + PAGE_SIZE - 1) & PAGE_MASK;
+> +
+> =C2=A0	max_physmem =3D TASK_SIZE - uml_physmem - iomem_size -
+> MIN_VMALLOC;
+> =C2=A0
+> -	/*
+> -	 * Zones have to begin on a 1 << MAX_PAGE_ORDER page
+> boundary,
+> -	 * so this makes sure that's true for highmem
+> -	 */
+> -	max_physmem &=3D ~((1 << (PAGE_SHIFT + MAX_PAGE_ORDER)) - 1);
+> =C2=A0	if (physmem_size + iomem_size > max_physmem) {
+> -		highmem =3D physmem_size + iomem_size - max_physmem;
+> -		physmem_size -=3D highmem;
+> +		physmem_size =3D max_physmem - iomem_size;
+> +		os_info("Physical memory size shrunk to %llu
+> bytes\n",
+> +			physmem_size);
+> =C2=A0	}
+> =C2=A0
+> =C2=A0	high_physmem =3D uml_physmem + physmem_size;
+> @@ -413,8 +410,8 @@ void __init setup_arch(char **cmdline_p)
+> =C2=A0	u8 rng_seed[32];
+> =C2=A0
+> =C2=A0	stack_protections((unsigned long) &init_thread_info);
+> -	setup_physmem(uml_physmem, uml_reserved, physmem_size,
+> highmem);
+> -	mem_total_pages(physmem_size, iomem_size, highmem);
+> +	setup_physmem(uml_physmem, uml_reserved, physmem_size);
+> +	mem_total_pages(physmem_size, iomem_size);
+> =C2=A0	uml_dtb_init();
+> =C2=A0	read_initrd();
+> =C2=A0
 
-This is not on the hot path, so I don't think a runtime check here would
-matter. Still, I can fill in a default with memset at init time.
-
--- 
-Sincerely yours,
-Mike.
 
