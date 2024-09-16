@@ -4,56 +4,48 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93EACC3ABD4
-	for <linux-um@archiver.kernel.org>; Mon, 16 Sep 2024 05:00:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id ED597C3ABA2
+	for <linux-um@archiver.kernel.org>; Mon, 16 Sep 2024 13:10:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=swaXqYJCm6gZY+XwsCGLcgH5EmR9VBQSRzPpl3Qd3GQ=; b=iLblJMt/C7diTNdtGtjsIszbG9
-	h7MqmKrHKHS7uMeBIQLXUkkei8CppA4QRaNgyP4o7Ci3G3L11caeNBKmZ4RrTnWC1yuZgul3Zfag6
-	Ngjx5Ai0rpldc3uwzidvtQRQDeToEOASnrSck5ly81BStSMG5pU2GV7XCuZPaYmdbaCXbD+PtAxLO
-	c0AnQM1+EMDpcJZQPeTeoAOODYghNmEEc+GyNsQ7BEDOAFLrAXGs8zBGZgWCWtNQ3caEzMOncqSko
-	VhCdE7fycS5T5Sv3V2rHzrHnT6LuZ1ygVeP3rfD5Vv7chse6/BmRZrMOoY84e9L4WK9lAvMgqkTe3
-	soya9bHA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:Content-Type:
+	Message-ID:Date:Subject:To:From:Reply-To:Cc:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=SDF4BWcEdPzDEsRP3DApLpjxmMh0VVU+NEBxgEKT/sM=; b=eVxj0DX9gASvzIrts3ysMpqrus
+	UJLdL6iAE1p4IkVkgdidNkZhtuD3SNRCGakaE3RbTXHnPYe9J+vmJsL+M3NMk7LntnAa1KSYj23rw
+	fbrM8I1gsAwcrvPpphg8yXlwP1eYnNMl3lMm9ziH8Wa3XfZ82ABNiud0U8O/o/ZCq6OZDogWdG/A4
+	YyksGch8XBOUzXc7BThymy2i1ZOQDyc8hXz/rYETzDcDBwG5Q8zG5tF7Riwu/b/ktSkxYbPRx71N6
+	UtnpVYSP62SiaM9DNO5nz6IrB6Z5wvsuAp4q/z8R0vOVJtc9VMy5g5i38tDA+c1di8CNumXIh12kG
+	TMnKbOHw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1sq3qR-000000035Tl-0jWK;
-	Mon, 16 Sep 2024 05:00:15 +0000
-Received: from out0-209.mail.aliyun.com ([140.205.0.209])
+	id 1sqBUS-000000043Fl-0rYv;
+	Mon, 16 Sep 2024 13:10:04 +0000
+Received: from tejmail.india.tejasnetworks.com ([14.143.64.34] helo=barracuda.india.tejasnetworks.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1sq3qL-000000035QC-1b3v
+	id 1sqBUO-000000043Ex-2beY
 	for linux-um@lists.infradead.org;
-	Mon, 16 Sep 2024 05:00:13 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=antgroup.com; s=default;
-	t=1726462807; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=swaXqYJCm6gZY+XwsCGLcgH5EmR9VBQSRzPpl3Qd3GQ=;
-	b=N2XPRNGSl62I9/d3HoXaYL6g89xTWr8RXrgPIqIqUz2hwhbTOmRIf+Qj26i5QGlnQHTOcsut9p45gq3C6pqETUnhAwknitk9z/3GlFDZ0WyyH31AbgP5Qnu7XFbUErAoS/8Y6gu7dgssO+feF9kZlNbd6XTO0SGvtylJ7+6OUKM=
-Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.ZKOkLX7_1726462805)
-          by smtp.aliyun-inc.com;
-          Mon, 16 Sep 2024 13:00:05 +0800
-From: "Tiwei Bie" <tiwei.btw@antgroup.com>
-To: richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net
-Cc: <linux-um@lists.infradead.org>,
-   <linux-kernel@vger.kernel.org>,
-   <benjamin@sipsolutions.net>,
-  "Tiwei Bie" <tiwei.btw@antgroup.com>
-Subject: [PATCH v2 3/4] um: Remove highmem leftovers
-Date: Mon, 16 Sep 2024 12:59:49 +0800
-Message-Id: <20240916045950.508910-4-tiwei.btw@antgroup.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240916045950.508910-1-tiwei.btw@antgroup.com>
-References: <20240916045950.508910-1-tiwei.btw@antgroup.com>
+	Mon, 16 Sep 2024 13:10:02 +0000
+Received: from smtp.india.tejasnetworks.com (EXCHMB-S2.india.tejasnetworks.com [192.168.0.239]) by barracuda.india.tejasnetworks.com with ESMTP id 4ln2zbKDV9HkOHYr (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO) for <linux-um@lists.infradead.org>; Mon, 16 Sep 2024 18:39:46 +0530 (IST)
+From: Vijay Tandeker <vijayt@tejasnetworks.com>
+To: "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>
+Subject: UML not coming up on "INTEL(R) XEON(R) GOLD 6542Y" 
+Thread-Topic: UML not coming up on "INTEL(R) XEON(R) GOLD 6542Y" 
+Thread-Index: AQHbCDl5s1TX8paxkUG0Dwe0MKK6/Q==
+Date: Mon, 16 Sep 2024 13:09:46 +0000
+Message-ID: <0fbafcb07dff42eb8dfc9a98c8211f85@tejasnetworks.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator: 
+Content-Type: multipart/mixed;
+	boundary="_003_0fbafcb07dff42eb8dfc9a98c8211f85tejasnetworkscom_"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: by bsmtpd at india.tejasnetworks.com
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240915_220009_786648_F9E3B771 
-X-CRM114-Status: GOOD (  19.74  )
+X-CRM114-CacheID: sfid-20240916_061001_327460_736911DA 
+X-CRM114-Status: GOOD (  10.83  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,219 +60,212 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Highmem was only supported on UML/i386. And the support has been
-removed by commit a98a6d864d3b ("um: Remove broken highmem support").
-Remove the leftovers and stop UML from trying to setup highmem when
-the sum of physmem_size and iomem_size exceeds max_physmem.
+--_003_0fbafcb07dff42eb8dfc9a98c8211f85tejasnetworkscom_
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
----
- arch/um/drivers/virtio_uml.c       |  9 +--------
- arch/um/include/shared/as-layout.h |  1 -
- arch/um/include/shared/mem_user.h  |  5 ++---
- arch/um/kernel/mem.c               |  3 ---
- arch/um/kernel/physmem.c           | 28 ++++++++++------------------
- arch/um/kernel/um_arch.c           | 17 +++++++----------
- 6 files changed, 20 insertions(+), 43 deletions(-)
 
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index 2b6e701776b6..e7f5556e3c96 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -72,7 +72,7 @@ struct virtio_uml_vq_info {
- 	bool suspended;
- };
- 
--extern unsigned long long physmem_size, highmem;
-+extern unsigned long long physmem_size;
- 
- #define vu_err(vu_dev, ...)	dev_err(&(vu_dev)->pdev->dev, ##__VA_ARGS__)
- 
-@@ -673,13 +673,6 @@ static int vhost_user_set_mem_table(struct virtio_uml_device *vu_dev)
- 
- 	if (rc < 0)
- 		return rc;
--	if (highmem) {
--		msg.payload.mem_regions.num++;
--		rc = vhost_user_init_mem_region(__pa(end_iomem), highmem,
--				&fds[1], &msg.payload.mem_regions.regions[1]);
--		if (rc < 0)
--			return rc;
--	}
- 
- 	return vhost_user_send(vu_dev, false, &msg, fds,
- 			       msg.payload.mem_regions.num);
-diff --git a/arch/um/include/shared/as-layout.h b/arch/um/include/shared/as-layout.h
-index 06292fca5a4d..61965a06c18a 100644
---- a/arch/um/include/shared/as-layout.h
-+++ b/arch/um/include/shared/as-layout.h
-@@ -41,7 +41,6 @@ extern unsigned long uml_physmem;
- extern unsigned long uml_reserved;
- extern unsigned long end_vm;
- extern unsigned long start_vm;
--extern unsigned long long highmem;
- 
- extern unsigned long brk_start;
- 
-diff --git a/arch/um/include/shared/mem_user.h b/arch/um/include/shared/mem_user.h
-index 11a723a58545..adfa08062f88 100644
---- a/arch/um/include/shared/mem_user.h
-+++ b/arch/um/include/shared/mem_user.h
-@@ -47,10 +47,9 @@ extern int iomem_size;
- #define ROUND_4M(n) ((((unsigned long) (n)) + (1 << 22)) & ~((1 << 22) - 1))
- 
- extern unsigned long find_iomem(char *driver, unsigned long *len_out);
--extern void mem_total_pages(unsigned long physmem, unsigned long iomem,
--		     unsigned long highmem);
-+extern void mem_total_pages(unsigned long physmem, unsigned long iomem);
- extern void setup_physmem(unsigned long start, unsigned long usable,
--			  unsigned long len, unsigned long long highmem);
-+			  unsigned long len);
- extern void map_memory(unsigned long virt, unsigned long phys,
- 		       unsigned long len, int r, int w, int x);
- 
-diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
-index a5b4fe2ad931..5026668dc054 100644
---- a/arch/um/kernel/mem.c
-+++ b/arch/um/kernel/mem.c
-@@ -6,7 +6,6 @@
- #include <linux/stddef.h>
- #include <linux/module.h>
- #include <linux/memblock.h>
--#include <linux/highmem.h>
- #include <linux/mm.h>
- #include <linux/swap.h>
- #include <linux/slab.h>
-@@ -51,8 +50,6 @@ EXPORT_SYMBOL(empty_zero_page);
- pgd_t swapper_pg_dir[PTRS_PER_PGD];
- 
- /* Initialized at boot time, and readonly after that */
--unsigned long long highmem;
--EXPORT_SYMBOL(highmem);
- int kmalloc_ok = 0;
- 
- /* Used during early boot */
-diff --git a/arch/um/kernel/physmem.c b/arch/um/kernel/physmem.c
-index ee693e0b2b58..94aca17993fd 100644
---- a/arch/um/kernel/physmem.c
-+++ b/arch/um/kernel/physmem.c
-@@ -24,17 +24,14 @@ EXPORT_SYMBOL(high_physmem);
- 
- extern unsigned long long physmem_size;
- 
--void __init mem_total_pages(unsigned long physmem, unsigned long iomem,
--		     unsigned long highmem)
-+void __init mem_total_pages(unsigned long physmem, unsigned long iomem)
- {
--	unsigned long phys_pages, highmem_pages;
--	unsigned long iomem_pages, total_pages;
-+	unsigned long phys_pages, iomem_pages, total_pages;
- 
--	phys_pages    = physmem >> PAGE_SHIFT;
--	iomem_pages   = iomem   >> PAGE_SHIFT;
--	highmem_pages = highmem >> PAGE_SHIFT;
-+	phys_pages  = physmem >> PAGE_SHIFT;
-+	iomem_pages = iomem   >> PAGE_SHIFT;
- 
--	total_pages   = phys_pages + iomem_pages + highmem_pages;
-+	total_pages = phys_pages + iomem_pages;
- 
- 	max_mapnr = total_pages;
- }
-@@ -64,13 +61,12 @@ void map_memory(unsigned long virt, unsigned long phys, unsigned long len,
-  * @reserve_end:	end address of the physical kernel memory.
-  * @len:	Length of total physical memory that should be mapped/made
-  *		available, in bytes.
-- * @highmem:	Number of highmem bytes that should be mapped/made available.
-  *
-- * Creates an unlinked temporary file of size (len + highmem) and memory maps
-+ * Creates an unlinked temporary file of size (len) and memory maps
-  * it on the last executable image address (uml_reserved).
-  *
-  * The offset is needed as the length of the total physical memory
-- * (len + highmem) includes the size of the memory used be the executable image,
-+ * (len) includes the size of the memory used be the executable image,
-  * but the mapped-to address is the last address of the executable image
-  * (uml_reserved == end address of executable image).
-  *
-@@ -78,7 +74,7 @@ void map_memory(unsigned long virt, unsigned long phys, unsigned long len,
-  * of all user space processes/kernel tasks.
-  */
- void __init setup_physmem(unsigned long start, unsigned long reserve_end,
--			  unsigned long len, unsigned long long highmem)
-+			  unsigned long len)
- {
- 	unsigned long reserve = reserve_end - start;
- 	unsigned long map_size = len - reserve;
-@@ -90,7 +86,7 @@ void __init setup_physmem(unsigned long start, unsigned long reserve_end,
- 		exit(1);
- 	}
- 
--	physmem_fd = create_mem_file(len + highmem);
-+	physmem_fd = create_mem_file(len);
- 
- 	err = os_map_memory((void *) reserve_end, physmem_fd, reserve,
- 			    map_size, 1, 1, 1);
-@@ -109,7 +105,7 @@ void __init setup_physmem(unsigned long start, unsigned long reserve_end,
- 	os_write_file(physmem_fd, __syscall_stub_start, PAGE_SIZE);
- 	os_fsync_file(physmem_fd);
- 
--	memblock_add(__pa(start), len + highmem);
-+	memblock_add(__pa(start), len);
- 	memblock_reserve(__pa(start), reserve);
- 
- 	min_low_pfn = PFN_UP(__pa(reserve_end));
-@@ -137,10 +133,6 @@ int phys_mapping(unsigned long phys, unsigned long long *offset_out)
- 			region = region->next;
- 		}
- 	}
--	else if (phys < __pa(end_iomem) + highmem) {
--		fd = physmem_fd;
--		*offset_out = phys - iomem_size;
--	}
- 
- 	return fd;
- }
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 8e594cda6d77..8f86aa468b50 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -366,18 +366,15 @@ int __init linux_main(int argc, char **argv)
- 
- 	setup_machinename(init_utsname()->machine);
- 
--	highmem = 0;
-+	physmem_size = (physmem_size + PAGE_SIZE - 1) & PAGE_MASK;
- 	iomem_size = (iomem_size + PAGE_SIZE - 1) & PAGE_MASK;
-+
- 	max_physmem = TASK_SIZE - uml_physmem - iomem_size - MIN_VMALLOC;
- 
--	/*
--	 * Zones have to begin on a 1 << MAX_PAGE_ORDER page boundary,
--	 * so this makes sure that's true for highmem
--	 */
--	max_physmem &= ~((1 << (PAGE_SHIFT + MAX_PAGE_ORDER)) - 1);
- 	if (physmem_size + iomem_size > max_physmem) {
--		highmem = physmem_size + iomem_size - max_physmem;
--		physmem_size -= highmem;
-+		physmem_size = max_physmem - iomem_size;
-+		os_info("Physical memory size shrunk to %llu bytes\n",
-+			physmem_size);
- 	}
- 
- 	high_physmem = uml_physmem + physmem_size;
-@@ -413,8 +410,8 @@ void __init setup_arch(char **cmdline_p)
- 	u8 rng_seed[32];
- 
- 	stack_protections((unsigned long) &init_thread_info);
--	setup_physmem(uml_physmem, uml_reserved, physmem_size, highmem);
--	mem_total_pages(physmem_size, iomem_size, highmem);
-+	setup_physmem(uml_physmem, uml_reserved, physmem_size);
-+	mem_total_pages(physmem_size, iomem_size);
- 	uml_dtb_init();
- 	read_initrd();
- 
--- 
-2.34.1
 
+Hi, thanks to all for helping me in the past. I need one more help. Getting=
+ the below error on running UML:
+---------------------------------------------------------------------------=
+-------------------
+Run /sbin/init as init process
+userspace - ptrace set fp regs failed, errno =3D 14
+Kernel panic - not syncing: Attempted to kill init! exitcode=3D0x0000000b
+CPU: 0 PID: 1 Comm: init Not tainted 6.8.9-1 #1
+---------------------------------------------------------------------------=
+-------------------
+
+Searched on the internet but didn't find any solution. Any idea, what could=
+ be the reason for the above error? Below are my UML details:
+1) root-fs: created by running the command: =93debootstrap --arch=3Damd64 n=
+oble /tmp http://archive.ubuntu.com/ubuntu/=94
+2) Linux: created by running the command: "ARCH=3Dum make -j$(nproc)" on li=
+nux-6.8.9 using defconfig.
+3) Attached file <uml_crash>: logs on running the UML
+4) Attached file <system_info>: my host system details
+5) INTEL(R) XEON(R) GOLD 6542Y
+6) RAM: 256 GB
+7) Ubuntu 24.04.1 LTS
+
+Please let me know if you need more information.
+
+--=20
+
+Thanks,
+Vijay
+
+
+
+--_003_0fbafcb07dff42eb8dfc9a98c8211f85tejasnetworkscom_
+Content-Type: application/octet-stream; name="uml_crash"
+Content-Description: uml_crash
+Content-Disposition: attachment; filename="uml_crash"; size=6187;
+	creation-date="Mon, 16 Sep 2024 13:08:58 GMT";
+	modification-date="Mon, 16 Sep 2024 13:08:58 GMT"
+Content-Transfer-Encoding: base64
+
+Q29yZSBkdW1wIGxpbWl0cyA6CiAgICAgICAgc29mdCAtIDAKICAgICAgICBoYXJkIC0gTk9ORQpD
+aGVja2luZyB0aGF0IHB0cmFjZSBjYW4gY2hhbmdlIHN5c3RlbSBjYWxsIG51bWJlcnMuLi5PSwpD
+aGVja2luZyBzeXNjYWxsIGVtdWxhdGlvbiBmb3IgcHRyYWNlLi4uT0sKQ2hlY2tpbmcgZW52aXJv
+bm1lbnQgdmFyaWFibGVzIGZvciBhIHRlbXBkaXIuLi4vaG9tZS92aWpheXQvLmRpc3RjYy90bXAK
+Q2hlY2tpbmcgaWYgL2hvbWUvdmlqYXl0Ly5kaXN0Y2MvdG1wIGlzIG9uIHRtcGZzLi4ubm8KV2Fy
+bmluZzogdGVtcGRpciAvaG9tZS92aWpheXQvLmRpc3RjYy90bXAgaXMgbm90IG9uIHRtcGZzCkNo
+ZWNraW5nIFBST1RfRVhFQyBtbWFwIGluIC9ob21lL3ZpamF5dC8uZGlzdGNjL3RtcC4uLk9LCkFk
+ZGluZyAyMjc0NTA4OCBieXRlcyB0byBwaHlzaWNhbCBtZW1vcnkgdG8gYWNjb3VudCBmb3IgZXhl
+Yy1zaGllbGQgZ2FwCkxpbnV4IHZlcnNpb24gNi44LjktMSAodmlqYXl0QHRlY2hpZS1Qb3dlckVk
+Z2UtUjY2MCkgKGdjYyAoVWJ1bnR1IDEzLjIuMC0yM3VidW50dTQpIDEzLjIuMCwgR05VIGxkIChH
+TlUgQmludXRpbHMgZm9yIFVidW50dSkgMi40MikgIzIgVGh1IFNlcCAxMiAxNzo0OToyMiBJU1Qg
+MjAyNApab25lIHJhbmdlczoKICBOb3JtYWwgICBbbWVtIDB4MDAwMDAwMDAwMDAwMDAwMC0weDAw
+MDAwMDAwYTE1YjBmZmZdCk1vdmFibGUgem9uZSBzdGFydCBmb3IgZWFjaCBub2RlCkVhcmx5IG1l
+bW9yeSBub2RlIHJhbmdlcwogIG5vZGUgICAwOiBbbWVtIDB4MDAwMDAwMDAwMDAwMDAwMC0weDAw
+MDAwMDAwNDE1YjBmZmZdCkluaXRtZW0gc2V0dXAgbm9kZSAwIFttZW0gMHgwMDAwMDAwMDAwMDAw
+MDAwLTB4MDAwMDAwMDA0MTViMGZmZl0KcmFuZG9tOiBjcm5nIGluaXQgZG9uZQpLZXJuZWwgY29t
+bWFuZCBsaW5lOiBtZW09MTAyNE0gdWJkYT1wbGF0Zm9ybXMvY29tbW9uL2Nvd2ltYWdlcy9jb3df
+cm9vdGZzXzI0MCxwbGF0Zm9ybXMvY29tbW9uL2ZzaW1hZ2VzL0ZlZG9yYTgteDg2LXJvb3RfZnMg
+cncgcm9vdD0vZGV2L3ViZGEgdWJkYz1wbGF0Zm9ybXMvY29tbW9uL2Nvd2ltYWdlcy9jb3dfZXRj
+X3RlamFzXzI0MCxwbGF0Zm9ybXMvY29tbW9uL2ZzaW1hZ2VzL2V0Y190ZWphc19mcyB1YmRkPXBs
+YXRmb3Jtcy9vc21jMDQvY293aW1hZ2VzL2Nvd19ldGNfYmluXzI0MCxwbGF0Zm9ybXMvb3NtYzA0
+L2ZzaW1hZ2VzL2V0Y19iaW5fZnMgZXRoMD12ZGUsL3RtcC9zd2l0Y2gxLDAwOjAzOjkzOjAwOjI6
+NDAgY29uc29sZT10dHkwClVua25vd24ga2VybmVsIGNvbW1hbmQgbGluZSBwYXJhbWV0ZXJzICJt
+ZW09MTAyNE0iLCB3aWxsIGJlIHBhc3NlZCB0byB1c2VyIHNwYWNlLgpEZW50cnkgY2FjaGUgaGFz
+aCB0YWJsZSBlbnRyaWVzOiAyNjIxNDQgKG9yZGVyOiA5LCAyMDk3MTUyIGJ5dGVzLCBsaW5lYXIp
+Cklub2RlLWNhY2hlIGhhc2ggdGFibGUgZW50cmllczogMTMxMDcyIChvcmRlcjogOCwgMTA0ODU3
+NiBieXRlcywgbGluZWFyKQpTb3J0aW5nIF9fZXhfdGFibGUuLi4KQnVpbHQgMSB6b25lbGlzdHMs
+IG1vYmlsaXR5IGdyb3VwaW5nIG9uLiAgVG90YWwgcGFnZXM6IDI2NDAzNwptZW0gYXV0by1pbml0
+OiBzdGFjazphbGwoemVybyksIGhlYXAgYWxsb2M6b2ZmLCBoZWFwIGZyZWU6b2ZmCk1lbW9yeTog
+MTAyNDU1NksvMTA3MDc4OEsgYXZhaWxhYmxlICgzNjA4SyBrZXJuZWwgY29kZSwgOTcwSyByd2Rh
+dGEsIDEyNDRLIHJvZGF0YSwgMTU0SyBpbml0LCAyMjdLIGJzcywgNDYyMzJLIHJlc2VydmVkLCAw
+SyBjbWEtcmVzZXJ2ZWQpClNMVUI6IEhXYWxpZ249NjQsIE9yZGVyPTAtMywgTWluT2JqZWN0cz0w
+LCBDUFVzPTEsIE5vZGVzPTEKTlJfSVJRUzogNjQKY2xvY2tzb3VyY2U6IHRpbWVyOiBtYXNrOiAw
+eGZmZmZmZmZmZmZmZmZmZmYgbWF4X2N5Y2xlczogMHgxY2Q0MmUyMDUsIG1heF9pZGxlX25zOiA4
+ODE1OTA0MDQ0MjYgbnMKQ2FsaWJyYXRpbmcgZGVsYXkgbG9vcC4uLiA4MDM5LjYyIEJvZ29NSVBT
+IChscGo9NDAxOTgxNDQpCkNoZWNraW5nIHRoYXQgaG9zdCBwdHlzIHN1cHBvcnQgb3V0cHV0IFNJ
+R0lPLi4uWWVzCnBpZF9tYXg6IGRlZmF1bHQ6IDMyNzY4IG1pbmltdW06IDMwMQpNb3VudC1jYWNo
+ZSBoYXNoIHRhYmxlIGVudHJpZXM6IDQwOTYgKG9yZGVyOiAzLCAzMjc2OCBieXRlcywgbGluZWFy
+KQpNb3VudHBvaW50LWNhY2hlIGhhc2ggdGFibGUgZW50cmllczogNDA5NiAob3JkZXI6IDMsIDMy
+NzY4IGJ5dGVzLCBsaW5lYXIpCmRldnRtcGZzOiBpbml0aWFsaXplZApjbG9ja3NvdXJjZTogamlm
+ZmllczogbWFzazogMHhmZmZmZmZmZiBtYXhfY3ljbGVzOiAweGZmZmZmZmZmLCBtYXhfaWRsZV9u
+czogMTkxMTI2MDQ0NjI3NTAwMDAgbnMKZnV0ZXggaGFzaCB0YWJsZSBlbnRyaWVzOiAyNTYgKG9y
+ZGVyOiAwLCA2MTQ0IGJ5dGVzLCBsaW5lYXIpCk5FVDogUmVnaXN0ZXJlZCBQRl9ORVRMSU5LL1BG
+X1JPVVRFIHByb3RvY29sIGZhbWlseQpwcHNfY29yZTogTGludXhQUFMgQVBJIHZlci4gMSByZWdp
+c3RlcmVkCnBwc19jb3JlOiBTb2Z0d2FyZSB2ZXIuIDUuMy42IC0gQ29weXJpZ2h0IDIwMDUtMjAw
+NyBSb2RvbGZvIEdpb21ldHRpIDxnaW9tZXR0aUBsaW51eC5pdD4KUFRQIGNsb2NrIHN1cHBvcnQg
+cmVnaXN0ZXJlZApjbG9ja3NvdXJjZTogU3dpdGNoZWQgdG8gY2xvY2tzb3VyY2UgdGltZXIKVkZT
+OiBEaXNrIHF1b3RhcyBkcXVvdF82LjYuMApWRlM6IERxdW90LWNhY2hlIGhhc2ggdGFibGUgZW50
+cmllczogNTEyIChvcmRlciAwLCA0MDk2IGJ5dGVzKQpORVQ6IFJlZ2lzdGVyZWQgUEZfSU5FVCBw
+cm90b2NvbCBmYW1pbHkKSVAgaWRlbnRzIGhhc2ggdGFibGUgZW50cmllczogMzI3NjggKG9yZGVy
+OiA2LCAyNjIxNDQgYnl0ZXMsIGxpbmVhcikKdGNwX2xpc3Rlbl9wb3J0YWRkcl9oYXNoIGhhc2gg
+dGFibGUgZW50cmllczogMTAyNCAob3JkZXI6IDEsIDgxOTIgYnl0ZXMsIGxpbmVhcikKVGFibGUt
+cGVydHVyYiBoYXNoIHRhYmxlIGVudHJpZXM6IDY1NTM2IChvcmRlcjogNiwgMjYyMTQ0IGJ5dGVz
+LCBsaW5lYXIpClRDUCBlc3RhYmxpc2hlZCBoYXNoIHRhYmxlIGVudHJpZXM6IDE2Mzg0IChvcmRl
+cjogNSwgMTMxMDcyIGJ5dGVzLCBsaW5lYXIpClRDUCBiaW5kIGhhc2ggdGFibGUgZW50cmllczog
+MTYzODQgKG9yZGVyOiA2LCAyNjIxNDQgYnl0ZXMsIGxpbmVhcikKVENQOiBIYXNoIHRhYmxlcyBj
+b25maWd1cmVkIChlc3RhYmxpc2hlZCAxNjM4NCBiaW5kIDE2Mzg0KQpVRFAgaGFzaCB0YWJsZSBl
+bnRyaWVzOiAxMDI0IChvcmRlcjogMywgMzI3NjggYnl0ZXMsIGxpbmVhcikKVURQLUxpdGUgaGFz
+aCB0YWJsZSBlbnRyaWVzOiAxMDI0IChvcmRlcjogMywgMzI3NjggYnl0ZXMsIGxpbmVhcikKTkVU
+OiBSZWdpc3RlcmVkIFBGX1VOSVgvUEZfTE9DQUwgcHJvdG9jb2wgZmFtaWx5CnByaW50azogbGVn
+YWN5IGNvbnNvbGUgW3N0ZGVycjBdIGRpc2FibGVkCm1jb25zb2xlICh2ZXJzaW9uIDIpIGluaXRp
+YWxpemVkIG9uIC9ob21lL3ZpamF5dC8udW1sL3VtMjQwL21jb25zb2xlCkNoZWNraW5nIGhvc3Qg
+TUFEVl9SRU1PVkUgc3VwcG9ydC4uLk9LCndvcmtpbmdzZXQ6IHRpbWVzdGFtcF9iaXRzPTYyIG1h
+eF9vcmRlcj0xOCBidWNrZXRfb3JkZXI9MAppbyBzY2hlZHVsZXIgbXEtZGVhZGxpbmUgcmVnaXN0
+ZXJlZAppbyBzY2hlZHVsZXIga3liZXIgcmVnaXN0ZXJlZApORVQ6IFJlZ2lzdGVyZWQgUEZfUEFD
+S0VUIHByb3RvY29sIGZhbWlseQpJbml0aWFsaXplZCBzdGRpbyBjb25zb2xlIGRyaXZlcgpDb25z
+b2xlIGluaXRpYWxpemVkIG9uIC9kZXYvdHR5MApwcmludGs6IGxlZ2FjeSBjb25zb2xlIFt0dHkw
+XSBlbmFibGVkCkluaXRpYWxpemluZyBzb2Z0d2FyZSBzZXJpYWwgcG9ydCB2ZXJzaW9uIDEKcHJp
+bnRrOiBsZWdhY3kgY29uc29sZSBbbWMtMV0gZW5hYmxlZAp3aW5jaF90aHJlYWQgOiBUSU9DU0NU
+VFkgZmFpbGVkIG9uIGZkIDEgZXJyID0gMQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIEVYVDQtZnMgKHViZGEpOiByZWNvdmVyeSBjb21wbGV0ZQpFWFQ0LWZz
+ICh1YmRhKTogbW91bnRlZCBmaWxlc3lzdGVtIDcxYTcwMzZkLWViMWQtNDkxZS1iZDRkLWRmMzFi
+ZTUzZTBhMSByL3cgd2l0aCBvcmRlcmVkIGRhdGEgbW9kZS4gUXVvdGEgbW9kZTogbm9uZS4KVkZT
+OiBNb3VudGVkIHJvb3QgKGV4dDQgZmlsZXN5c3RlbSkgb24gZGV2aWNlIDk4OjAuCmRldnRtcGZz
+OiBtb3VudGVkClRoaXMgYXJjaGl0ZWN0dXJlIGRvZXMgbm90IGhhdmUga2VybmVsIG1lbW9yeSBw
+cm90ZWN0aW9uLgpSdW4gL3NiaW4vaW5pdCBhcyBpbml0IHByb2Nlc3MKdXNlcnNwYWNlIC0gcHRy
+YWNlIHNldCBmcCByZWdzIGZhaWxlZCwgZXJybm8gPSAxNApLZXJuZWwgcGFuaWMgLSBub3Qgc3lu
+Y2luZzogQXR0ZW1wdGVkIHRvIGtpbGwgaW5pdCEgZXhpdGNvZGU9MHgwMDAwMDAwYgpDUFU6IDAg
+UElEOiAxIENvbW06IGluaXQgTm90IHRhaW50ZWQgNi44LjktMSAjMgpTdGFjazoKIGExODAzYmIw
+IDYwMzgwODNlIDAwMDAwMDAxIDAwMDAwMDAwCiAwMDAwMDAwMSA2MDQ2M2MxOCA2MDM5OTNkMiAw
+MDAwMDAwMQogYTE4MDNiZTAgNjAzYTBkMzEgNjA1MTQ4MTAgNjA0NTk1N2EKQ2FsbCBUcmFjZToK
+IFs8NjAzOTkzZDI+XSA/IF9wcmludGsrMHgwLzB4OTgKIFs8NjAwMjI4YTQ+XSBzaG93X3N0YWNr
+KzB4MTAyLzB4MTVkCiBbPDYwMzgwODNlPl0gPyBkdW1wX3N0YWNrX3ByaW50X2luZm8rMHhlNS8w
+eGY0CiBbPDYwMzk5M2QyPl0gPyBfcHJpbnRrKzB4MC8weDk4CiBbPDYwM2EwZDMxPl0gZHVtcF9z
+dGFja19sdmwrMHg2Mi8weDdkCiBbPDYwM2EwZDZhPl0gZHVtcF9zdGFjaysweDFlLzB4MjAKIFs8
+NjAzOTg0YTc+XSBwYW5pYysweDFhZS8weDM4ZAogWzw2MDAzNGFkYT5dID8gdW1fc2V0X3NpZ25h
+bHMrMHgyYS8weDNlCiBbPDYwMzk4MmY5Pl0gPyBwYW5pYysweDAvMHgzOGQKIFs8NjAxNDQ2Y2Q+
+XSA/IGRvX2NvcmVkdW1wKzB4MTNiYS8weDEzZDkKIFs8NjAwMzRhZTg+XSA/IHVtX3NldF9zaWdu
+YWxzKzB4MzgvMHgzZQogWzw2MDAzNGFkYT5dID8gdW1fc2V0X3NpZ25hbHMrMHgyYS8weDNlCiBb
+PDYwMDM0YWIwPl0gPyB1bV9zZXRfc2lnbmFscysweDAvMHgzZQogWzw2MDA0NzE3MD5dID8gcGVy
+Y3B1X3VwX3JlYWQuY29uc3Rwcm9wLjArMHgzZS8weDZkCiBbPDYwMDM0OWVmPl0gPyB1bmJsb2Nr
+X3NpZ25hbHMrMHgwLzB4YzEKIFs8NjAwMzQ5ZGM+XSA/IGJsb2NrX3NpZ25hbHMrMHgwLzB4MTMK
+IFs8NjAwM2ZkODc+XSBkb19leGl0KzB4MjM2LzB4OWJkCiBbPDYwMGUxZjU1Pl0gPyBfX3VwZGF0
+ZV9jcHVfZnJlZWxpc3RfZmFzdCsweDU5LzB4NjcKIFs8NjAwMzQ5ZGM+XSA/IGJsb2NrX3NpZ25h
+bHMrMHgwLzB4MTMKIFs8NjAwNDA3YTE+XSBzeXNfZXhpdF9ncm91cCsweDAvMHgxYQogWzw2MDA0
+YjFkNj5dIGdldF9zaWduYWwrMHg4YzkvMHg4ZWUKIFs8NjAwNGE5MGQ+XSA/IGdldF9zaWduYWwr
+MHgwLzB4OGVlCiBbPDYwMDIyNzA2Pl0gZG9fc2lnbmFsKzB4MzkvMHhkNQogWzw2MDAyM2JjZT5d
+IGZhdGFsX3NpZ3NlZ3YrMHgzZC8weDQ5CiBbPDYwMDM5ZDkzPl0gPyBwdXRfZnBfcmVnaXN0ZXJz
+KzB4MTQvMHgxNgogWzw2MDAzNzYyMD5dIHVzZXJzcGFjZSsweGM5LzB4NGFkCiBbPDYwMDU4NTRj
+Pl0gPyBwYXJhbWVxKzB4MC8weDNhCiBbPDYwMzk3YzAwPl0gPyB0cnlfdG9fcnVuX2luaXRfcHJv
+Y2VzcysweDAvMHg0OAogWzw2MDAyMTZkMz5dIG5ld190aHJlYWRfaGFuZGxlcisweGIyLzB4YjQK
+cGxhdGZvcm1zL2NvbW1vbi9ydW51bWwuc2g6IGxpbmUgMzc6IDM1NzExODggQWJvcnRlZCAgICAg
+ICAgICAgICAgICAgKGNvcmUgZHVtcGVkKSAkVU1MSU5VWCB1bWlkPXVtJFVNTElEIG1lbT0kUkFN
+IHViZGE9JHtDT01OX0NPV19ESVJ9L2Nvd19yb290ZnNfJFVNTElELCR7Q09NTl9GU19ESVJ9L0Zl
+ZG9yYTgteDg2LXJvb3RfZnMgcncgcm9vdD0vZGV2L3ViZGEgdWJkYz0ke0NPTU5fQ09XX0RJUn0v
+Y293X2V0Y190ZWphc18kVU1MSUQsJHtDT01OX0ZTX0RJUn0vZXRjX3RlamFzX2ZzIHViZGQ9JENP
+V19ESVIvY293X2V0Y19iaW5fJFVNTElELCRGU19ESVIvZXRjX2Jpbl9mcyBldGgwPXZkZSwvdG1w
+L3N3aXRjaDEsJFVNTF9NQUMKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgW3ZpamF5
+dEB0ZWNoaWUtUG93ZXJFZGdlLVI2NjA6aHVtbF0kCg==
+
+--_003_0fbafcb07dff42eb8dfc9a98c8211f85tejasnetworkscom_
+Content-Type: application/octet-stream; name="system_info"
+Content-Description: system_info
+Content-Disposition: attachment; filename="system_info"; size=2394;
+	creation-date="Mon, 16 Sep 2024 13:09:05 GMT";
+	modification-date="Mon, 16 Sep 2024 13:09:05 GMT"
+Content-Transfer-Encoding: base64
+
+Y2F0IC9wcm9jL2NwdWluZm8KcHJvY2Vzc29yICAgOiAwCnZlbmRvcl9pZCAgIDogR2VudWluZUlu
+dGVsCmNwdSBmYW1pbHkgIDogNgptb2RlbCAgICAgICA6IDIwNwptb2RlbCBuYW1lICA6IElOVEVM
+KFIpIFhFT04oUikgR09MRCA2NTQyWQpzdGVwcGluZyAgICA6IDIKbWljcm9jb2RlICAgOiAweDIx
+MDAwMjQwCmNwdSBNSHogICAgIDogODAwLjAwMApjYWNoZSBzaXplICA6IDYxNDQwIEtCCnBoeXNp
+Y2FsIGlkIDogMApzaWJsaW5ncyAgICA6IDQ4CmNvcmUgaWQgICAgIDogMApjcHUgY29yZXMgICA6
+IDI0CmFwaWNpZCAgICAgIDogMAppbml0aWFsIGFwaWNpZCAgOiAwCmZwdSAgICAgOiB5ZXMKZnB1
+X2V4Y2VwdGlvbiAgIDogeWVzCmNwdWlkIGxldmVsIDogMzIKd3AgICAgICA6IHllcwpmbGFncyAg
+ICAgICA6IGZwdSB2bWUgZGUgcHNlIHRzYyBtc3IgcGFlIG1jZSBjeDggYXBpYyBzZXAgbXRyciBw
+Z2UgbWNhIGNtb3YgcGF0IHBzZTM2IGNsZmx1c2ggZHRzIGFjcGkgbW14IGZ4c3Igc3NlIHNzZTIg
+c3MgaHQgdG0gcGJlIHN5c2NhbGwgbnggcGRwZTFnYiByZHRzY3AgbG0gY29uc3RhbnRfdHNjIGFy
+dCBhcmNoX3BlcmZtb24gcGVicyBidHMgcmVwX2dvb2Qgbm9wbCB4dG9wb2xvZ3kgbm9uc3RvcF90
+c2MgY3B1aWQgYXBlcmZtcGVyZiB0c2Nfa25vd25fZnJlcSBwbmkgcGNsbXVscWRxIGR0ZXM2NCBt
+b25pdG9yIGRzX2NwbCB2bXggc214IGVzdCB0bTIgc3NzZTMgc2RiZyBmbWEgY3gxNiB4dHByIHBk
+Y20gcGNpZCBkY2Egc3NlNF8xIHNzZTRfMiB4MmFwaWMgbW92YmUgcG9wY250IHRzY19kZWFkbGlu
+ZV90aW1lciBhZXMgeHNhdmUgYXZ4IGYxNmMgcmRyYW5kIGxhaGZfbG0gYWJtIDNkbm93cHJlZmV0
+Y2ggY3B1aWRfZmF1bHQgZXBiIGNhdF9sMyBjYXRfbDIgY2RwX2wzIGNkcF9sMiBzc2JkIG1iYSBp
+YnJzIGlicGIgc3RpYnAgaWJyc19lbmhhbmNlZCB0cHJfc2hhZG93IGZsZXhwcmlvcml0eSBlcHQg
+dnBpZCBlcHRfYWQgZnNnc2Jhc2UgdHNjX2FkanVzdCBibWkxIGF2eDIgc21lcCBibWkyIGVybXMg
+aW52cGNpZCBjcW0gcmR0X2EgYXZ4NTEyZiBhdng1MTJkcSByZHNlZWQgYWR4IHNtYXAgYXZ4NTEy
+aWZtYSBjbGZsdXNob3B0IGNsd2IgaW50ZWxfcHQgYXZ4NTEyY2Qgc2hhX25pIGF2eDUxMmJ3IGF2
+eDUxMnZsIHhzYXZlb3B0IHhzYXZlYyB4Z2V0YnYxIHhzYXZlcyBjcW1fbGxjIGNxbV9vY2N1cF9s
+bGMgY3FtX21ibV90b3RhbCBjcW1fbWJtX2xvY2FsIHNwbGl0X2xvY2tfZGV0ZWN0IHVzZXJfc2hz
+dGsgYXZ4X3ZubmkgYXZ4NTEyX2JmMTYgd2Jub2ludmQgZHRoZXJtIGlkYSBhcmF0IHBsbiBwdHMg
+aHdwIGh3cF9hY3Rfd2luZG93IGh3cF9lcHAgaHdwX3BrZ19yZXEgaGZpIHZubWkgYXZ4NTEydmJt
+aSB1bWlwIHBrdSBvc3BrZSB3YWl0cGtnIGF2eDUxMl92Ym1pMiBnZm5pIHZhZXMgdnBjbG11bHFk
+cSBhdng1MTJfdm5uaSBhdng1MTJfYml0YWxnIHRtZSBhdng1MTJfdnBvcGNudGRxIGxhNTcgcmRw
+aWQgYnVzX2xvY2tfZGV0ZWN0IGNsZGVtb3RlIG1vdmRpcmkgbW92ZGlyNjRiIGVucWNtZCBmc3Jt
+IG1kX2NsZWFyIHNlcmlhbGl6ZSB0c3hsZHRyayBwY29uZmlnIGFyY2hfbGJyIGlidCBhbXhfYmYx
+NiBhdng1MTJfZnAxNiBhbXhfdGlsZSBhbXhfaW50OCBmbHVzaF9sMWQgYXJjaF9jYXBhYmlsaXRp
+ZXMKdm14IGZsYWdzICAgOiB2bm1pIHByZWVtcHRpb25fdGltZXIgcG9zdGVkX2ludHIgaW52dnBp
+ZCBlcHRfeF9vbmx5IGVwdF9hZCBlcHRfMWdiIGZsZXhwcmlvcml0eSBhcGljdiB0c2Nfb2Zmc2V0
+IHZ0cHIgbXRmIHZhcGljIGVwdCB2cGlkIHVucmVzdHJpY3RlZF9ndWVzdCB2YXBpY19yZWcgdmlk
+IHBsZSBzaGFkb3dfdm1jcyBwbWwgZXB0X21vZGVfYmFzZWRfZXhlYyB0c2Nfc2NhbGluZyB1c3Jf
+d2FpdF9wYXVzZSBub3RpZnlfdm1fZXhpdGluZyBpcGlfdmlydApidWdzICAgICAgICA6IHNwZWN0
+cmVfdjEgc3BlY3RyZV92MiBzcGVjX3N0b3JlX2J5cGFzcyBzd2FwZ3MgZWlicnNfcGJyc2IgYmhp
+CmJvZ29taXBzICAgIDogNTgwMC4wMApjbGZsdXNoIHNpemUgICAgOiA2NApjYWNoZV9hbGlnbm1l
+bnQgOiA2NAphZGRyZXNzIHNpemVzICAgOiA0NiBiaXRzIHBoeXNpY2FsLCA1NyBiaXRzIHZpcnR1
+YWwKcG93ZXIgbWFuYWdlbWVudDoKClt2aWpheXRAdGVjaGllLVBvd2VyRWRnZS1SNjYwOkw2OF9E
+RUZfVEFSR0VUXSQgZnJlZSAtaAogICAgICAgICAgICAgICB0b3RhbCAgICAgICAgdXNlZCAgICAg
+ICAgZnJlZSAgICAgIHNoYXJlZCAgYnVmZi9jYWNoZSAgIGF2YWlsYWJsZQpNZW06ICAgICAgICAg
+ICAyNTFHaSAgICAgICA4LjBHaSAgICAgICAyMzlHaSAgICAgICAgMjNNaSAgICAgICA1LjhHaSAg
+ICAgICAyNDNHaQpTd2FwOiAgICAgICAgICAgNDdHaSAgICAgICAgICAwQiAgICAgICAgNDdHaQoK
+
+--_003_0fbafcb07dff42eb8dfc9a98c8211f85tejasnetworkscom_--
 
