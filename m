@@ -4,58 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C542DCE8D7D
-	for <linux-um@archiver.kernel.org>; Thu, 19 Sep 2024 12:45:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 76E49CDD54F
+	for <linux-um@archiver.kernel.org>; Thu, 19 Sep 2024 12:45:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=WUAkBV6KXK1KZHfM+hjNmf8pG0ktRO581fqHKFz/fLs=; b=aSf9dx14FmMzVecFmA/G/ZitJr
-	ke8aS3n7YjGGBbcBeQEQ6QdUeFVmOCGIVS9d8oE3J3ZvNKtqCHhBN6JzPjVP2Y5cyhgBlqzHr6GCH
-	fy8E5xntliGQuHRwGC71WmRTqHOYQqDQgEMzT0WPfQZo39qn94txRCRxNfLPqYzWHVquCy05OpMja
-	KSsc0VYW7iBZyPBgL9nec3tCrNM5XeTYQQt9LQ4W0l4QFeF8nQrUKFYBC+BhyRcJXmpThVTwrVDe/
-	LUCIpPI8zzd8RB0QnUq7Pg026smHi92UjP67Gd9iqEjd2jdx95HJTHandX55E1ZiVM5EcXcg26Xz0
-	qB3OZ3/w==;
+	bh=jsRBPlb7y5hjrsMnp1UcoaS7iAwH025ryvDmnQFiNG8=; b=J+0byj7YyGb3I6snb29/ol0cvC
+	apPhy/H4znICwdzxs8wSH56qI1MLUmpZn26z9xNXj6HSOLf2nUWx/uiv7ABXrHQY66Gc7kPXCUPYl
+	6JA7ml6QTXbfuLZqhlvnpof/3I3wXlr+ACSDG82oG8QbI+XZQZxOgE53c9pFIZ+KCXD+fzIpISwaN
+	hT7s+54efSBCJeJjKACVehe4zKeChxjEb++ztsqn9ITs/5/0W4ioFZYBM8h/6iYJIV3gBqzgSRX7M
+	Z2AKmAK5VSL/E8ZRsWaTJYUEFWBNUFKjtRNonvFR3nlQhUIlk7dQZoDQx7Apt76ZdQBkLm0ZMl1x/
+	myhmNODQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1srGXU-0000000AGo1-1wEH;
-	Thu, 19 Sep 2024 12:45:40 +0000
+	id 1srGXW-0000000AGow-0f66;
+	Thu, 19 Sep 2024 12:45:42 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1srGXR-0000000AGmi-3NMD
+	id 1srGXT-0000000AGnZ-3eE3
 	for linux-um@lists.infradead.org;
-	Thu, 19 Sep 2024 12:45:39 +0000
+	Thu, 19 Sep 2024 12:45:41 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=WUAkBV6KXK1KZHfM+hjNmf8pG0ktRO581fqHKFz/fLs=;
-	t=1726749936; x=1727959536; b=gDnGFKpmOvlnq6pChG4SclHDyNtxaODSKOxVzAix6M+QM+L
-	5tu3fu4UT8CFPIq3XRRGYQUGBaN0zSfEp5GYul7l7jsz4FF5vVMlScH+3TGp1X3VkUvX3LtIHaZz3
-	kkFr/1eapadMpv/eFISduYVWURx35N39xpkau960GRnEUhpcj3umoxNiReGUpnqYpfBIFLivbD53j
-	Op8tH3I3tEXHqGw30n83jelbY6eRVaew+RtK5gOKSlJ5sYcrwK61sW8wA4/g1mbWPwX8QuOm4cfYN
-	ebrrdLU4+Y48alLkK6w/bT+crGJl+UCFRNj8dllZS3KqF/h1EYUJC1VKEVAzL3sw==;
+	Resent-Cc:Resent-Message-ID; bh=jsRBPlb7y5hjrsMnp1UcoaS7iAwH025ryvDmnQFiNG8=;
+	t=1726749939; x=1727959539; b=CFUJCYxdYi24lPOXgHylgfxTo4cm8qeVp1Dwb7+f8ubmjoT
+	rBlc94OJDT/lmGdBGpeXvf3puaBmmPl1NbepR3wVpdvGgSuvGh6WTjel7Rw29yxxtBLZeWC5+bxQp
+	IIbkTke8CUJj6b+0doTsI8ULqWbt479c2XZ/2Km/4QQKe2Mx7VtL/Nu9PscAjlcINH+PRAeMpGh72
+	uU61VD5qKzyYad9MUJb63h2jwxfC4PfHvI485AUHOmlx62YwTSeYvpYTeMW7ePc1frzNierRy1qsg
+	Ks0ZV6aONhiW7pd+TaB0sY2OSduky6LtWE3UvI8vOkt4msgq/+9gFapyC0TFnubw==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.97)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1srGXN-000000047AZ-23mZ;
-	Thu, 19 Sep 2024 14:45:33 +0200
+	id 1srGXQ-000000047AZ-42gE;
+	Thu, 19 Sep 2024 14:45:37 +0200
 From: Benjamin Berg <benjamin@sipsolutions.net>
 To: linux-um@lists.infradead.org
 Cc: Benjamin Berg <benjamin.berg@intel.com>
-Subject: [PATCH v9 01/10] um: Add generic stub_syscall1 function
-Date: Thu, 19 Sep 2024 14:45:02 +0200
-Message-ID: <20240919124511.282088-2-benjamin@sipsolutions.net>
+Subject: [PATCH v9 03/10] um: Set parent death signal for userspace process
+Date: Thu, 19 Sep 2024 14:45:04 +0200
+Message-ID: <20240919124511.282088-4-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.46.0
 In-Reply-To: <20240919124511.282088-1-benjamin@sipsolutions.net>
 References: <20240919124511.282088-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240919_054537_955682_532CECE6 
-X-CRM114-Status: UNSURE (   7.74  )
+X-CRM114-CacheID: sfid-20240919_054539_937584_481F26DF 
+X-CRM114-Status: UNSURE (   8.93  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -73,36 +73,28 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Benjamin Berg <benjamin.berg@intel.com>
 
-The 64bit version did not have a stub_syscall1 function yet. Add it as
-it will be useful to implement a static binary for stub loading.
+Enable PR_SET_PDEATHSIG so that the UML userspace process will be killed
+when the kernel exits unexpectedly.
 
 Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
 ---
- arch/x86/um/shared/sysdep/stub_64.h | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ arch/um/kernel/skas/stub_exe.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/x86/um/shared/sysdep/stub_64.h b/arch/x86/um/shared/sysdep/stub_64.h
-index 67f44284f1aa..8e4ff39dcade 100644
---- a/arch/x86/um/shared/sysdep/stub_64.h
-+++ b/arch/x86/um/shared/sysdep/stub_64.h
-@@ -28,6 +28,17 @@ static __always_inline long stub_syscall0(long syscall)
- 	return ret;
- }
+diff --git a/arch/um/kernel/skas/stub_exe.c b/arch/um/kernel/skas/stub_exe.c
+index bc6ba2e4d805..04f75c577f1a 100644
+--- a/arch/um/kernel/skas/stub_exe.c
++++ b/arch/um/kernel/skas/stub_exe.c
+@@ -32,6 +32,9 @@ noinline static void real_init(void)
+ 	/* set a nice name */
+ 	stub_syscall2(__NR_prctl, PR_SET_NAME, (unsigned long)"uml-userspace");
  
-+static __always_inline long stub_syscall1(long syscall, long arg1)
-+{
-+	long ret;
++	/* Make sure this process dies if the kernel dies */
++	stub_syscall2(__NR_prctl, PR_SET_PDEATHSIG, SIGKILL);
 +
-+	__asm__ volatile (__syscall
-+		: "=a" (ret)
-+		: "0" (syscall), "D" (arg1) : __syscall_clobber );
-+
-+	return ret;
-+}
-+
- static __always_inline long stub_syscall2(long syscall, long arg1, long arg2)
- {
- 	long ret;
+ 	/* read information from STDIN and close it */
+ 	res = stub_syscall3(__NR_read, 0,
+ 			    (unsigned long)&init_data, sizeof(init_data));
 -- 
 2.46.0
 
