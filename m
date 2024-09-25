@@ -4,59 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 06981CCF9F0
-	for <linux-um@archiver.kernel.org>; Wed, 25 Sep 2024 20:32:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5DADCCCF9EE
+	for <linux-um@archiver.kernel.org>; Wed, 25 Sep 2024 20:32:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=KysYQJEYX6mkJORaKH4woAy4aN0wX3ajbyMpeUIWgpk=; b=E69fHP6IgfdUA+nXesroCvxuEv
-	89VaZAByPORwsk4IAPZNHoAq8Q0Mc7n2TIlhbuIuci9PNvA3trWuRA1jJy53YGK2cCOcsQfRfKvRp
-	w8axXl13c0vHbaFQYSLFs/ODItfgXCYHetqEpUo91+nRbp6e2qa0K5Gsu89Z2fN67ZtbAYKtAziiH
-	Qsv/nMhDFtgeadytlVrZeFHCY85btMAkDw1x9Up5UwdvqXkXczTB9c4Fj5ShT20ZYqVw9PR5S6JRV
-	SXYn9Z42YfNtuPORSzGonFjyXa/I2PNI8mYUsjqnqwAwVQrtY5uscSRaBKLeUM5wsmU5pFwaHqh14
-	vf5GZXiA==;
+	bh=798Pe4y9UugDN+QU72wAGbH3wNvKyUq///x3VuY4CI4=; b=bJnRBLTKYRl98i/m+vMLjYVnwa
+	/hEX90uwVaXrIj3P+BvlmElni0pve/oJhWHy1TzsCF9Vyd3fy5D16stVI5VDJwdJXJBOE9xmLgzot
+	rm876vlIID7nru0CmRDA0OZn1F02RK4HqECh5C9j/sSpN5JIhRdRN9FwkPkZzbd6uts5rhu99mWJE
+	611HTLBOF2nfoMKO31EZP9Ce5BqN2r1XXgvnGoX/EFi3F0QIyt6Npi0Ju/4gfjt+7K5DxDRbgaoQu
+	54bMydc1RjedCU4ynpmhBBtbkLHrdAupPLrdBw+Na0lqZZZ6L7G4lz/AmT2e6/vd4uzKZMQVyKvD6
+	NN7zhFtQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1stYgw-00000006V0U-34pX;
-	Wed, 25 Sep 2024 20:32:54 +0000
+	id 1stYgy-00000006V0o-0QN7;
+	Wed, 25 Sep 2024 20:32:56 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1stYgt-00000006Uyt-0wbE
+	id 1stYgw-00000006Uzv-0V6d
 	for linux-um@lists.infradead.org;
-	Wed, 25 Sep 2024 20:32:52 +0000
+	Wed, 25 Sep 2024 20:32:55 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=KysYQJEYX6mkJORaKH4woAy4aN0wX3ajbyMpeUIWgpk=;
-	t=1727296371; x=1728505971; b=B70J2Smm7r40TW/njx7zA0vvl/hGw0H5k9nJ4Hd4VvRwkdc
-	RUqvhJowDO/2gVvVXdAR3K9/cRsoZZSvYD0pLiG4RH1anjNjyxnjjCnrGqwAA7Ja/JAxsuV+HvHvs
-	pbJmpi819GGBcEBryC6WPb5EMOVLilIu4JddMw41Bh3EkhIh5pdnHM89ubnFPaGPa59aZJ0DwDkCw
-	P0yo0Fv2tALjdfbjw8Zpta09eB6nunzJWUti/3HrSiA/2ZfkFIHGUmesik2FdvREDz4fvGh0WdOZk
-	5TQeDrUf5KmjoqF6DqoCCoqAss884AjXF7SV4PDmPA4ed1fVgO5GOQydUvmQrjMA==;
+	Resent-Cc:Resent-Message-ID; bh=798Pe4y9UugDN+QU72wAGbH3wNvKyUq///x3VuY4CI4=;
+	t=1727296373; x=1728505973; b=Q4eNAjnpMxsjWwdijqo3waXWGsNjGvGv2iYkIa6RvKV7VVU
+	o+bkLn1BV1UhVTJfCvpoOaS6S07OEyiEZo6Lu6fHhCTW5jbpLuSS+JpHZ11AjNpmbZTJ1DRcmPo4Y
+	f6HRojsP1wm8wXYScXG/3U5tUlbGW559OqEiXp7BlYzOHOFWo05RNx+LRx+p2KgQnY84vTLYq5EW2
+	XnWp/t+3rdRpRTDho9d9MkRcXKnhRYd6w6Jc2K0AC99NIG5TnW3BDwMQh/eIWNyv/jmce8VVnad1I
+	lVk2fUFNRDt6C/boO+yTOAyI65yItJzKgKNDnCkL+uqTAsVdEpCKaRMp7S8J+lyg==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.97)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1stYgp-00000001A19-3BHX;
-	Wed, 25 Sep 2024 22:32:48 +0200
+	id 1stYgr-00000001A19-1gtv;
+	Wed, 25 Sep 2024 22:32:49 +0200
 From: Benjamin Berg <benjamin@sipsolutions.net>
 To: linux-um@lists.infradead.org
 Cc: Benjamin Berg <benjamin@sipsolutions.net>,
 	Benjamin Berg <benjamin.berg@intel.com>
-Subject: [RFC PATCH 2/9] um: Move faultinfo extraction into userspace routine
-Date: Wed, 25 Sep 2024 22:32:25 +0200
-Message-ID: <20240925203232.565086-3-benjamin@sipsolutions.net>
+Subject: [RFC PATCH 3/9] um: Add UML_SECCOMP configuration option
+Date: Wed, 25 Sep 2024 22:32:26 +0200
+Message-ID: <20240925203232.565086-4-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.46.1
 In-Reply-To: <20240925203232.565086-1-benjamin@sipsolutions.net>
 References: <20240925203232.565086-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240925_133251_290211_A66B1F94 
-X-CRM114-Status: GOOD (  11.81  )
+X-CRM114-CacheID: sfid-20240925_133254_180704_6CA2827E 
+X-CRM114-Status: GOOD (  10.56  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,58 +71,48 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-The segv handler is called slightly differently depending on whether
-PTRACE_FULL_FAULTINFO is set or not (32bit vs. 64bit). The only
-difference is that we don't try to pass the registers and instruction
-pointer to the segv handler.
+Add the UML_SECCOMP configuration options. The next commits will add the
+support itself in smaller chunks.
 
-It would be good to either document or remove the difference, but I do
-not know why this difference exists.
+Only x86_64 will be supported for now.
 
 Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
 Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
 ---
- arch/um/os-Linux/skas/process.c | 18 +++++++-----------
- 1 file changed, 7 insertions(+), 11 deletions(-)
+ arch/um/Kconfig | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 95376357fb17..24a09dc3c83e 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -176,12 +176,6 @@ static void get_skas_faultinfo(int pid, struct faultinfo *fi, unsigned long *aux
- 	}
- }
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index 48db1c99bd46..4698e4c8ef29 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -240,6 +240,26 @@ config KASAN_SHADOW_OFFSET
+ 	  set to a large value. On low-memory systems, try 0x7fff8000, as it fits
+ 	  into the immediate of most instructions, improving performance.
  
--static void handle_segv(int pid, struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
--{
--	get_skas_faultinfo(pid, &regs->faultinfo, aux_fp_regs);
--	segv(regs->faultinfo, 0, 1, NULL);
--}
--
- static void handle_trap(int pid, struct uml_pt_regs *regs)
- {
- 	if ((UPT_IP(regs) >= STUB_START) && (UPT_IP(regs) < STUB_END))
-@@ -525,13 +519,15 @@ void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
++config UML_SECCOMP
++	bool "SECCOMP based userspace"
++	default n
++	help
++	  With SECCOMP userspace processes work collaboratively with the kernel
++	  instead of being traced using ptrace. All syscalls from the application
++	  are caught and redirected using a signal. This signal handler in turn
++	  is permitted to do the selected set of syscalls to communicate with
++	  the UML kernel and do the required memory management.
++
++	  This method is overall faster than the ptrace based userspace,
++	  primarily because it reduces the number of context switches for
++	  (minor) page faults.
++	  However, the SECCOMP filter is not (yet) restrictive enough to prevent
++	  userspace from reading and writing all physical memory. Userspace
++	  processes could also trick the stub into disabling SIGALRM which
++	  prevents it from being interrupted for scheduling purposes.
++
++	  If in doubt say N, as the feature has security implications.
++
+ endmenu
  
- 			switch (sig) {
- 			case SIGSEGV:
--				if (PTRACE_FULL_FAULTINFO) {
--					get_skas_faultinfo(pid,
--							   &regs->faultinfo, aux_fp_regs);
-+				get_skas_faultinfo(pid,
-+						   &regs->faultinfo, aux_fp_regs);
-+
-+				if (PTRACE_FULL_FAULTINFO)
- 					(*sig_info[SIGSEGV])(SIGSEGV, (struct siginfo *)&si,
- 							     regs);
--				}
--				else handle_segv(pid, regs, aux_fp_regs);
-+				else
-+					segv(regs->faultinfo, 0, 1, NULL);
-+
- 				break;
- 			case SIGTRAP + 0x80:
- 				handle_trap(pid, regs);
+ source "arch/um/drivers/Kconfig"
 -- 
 2.46.1
 
