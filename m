@@ -4,62 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AD039CF9C6B
-	for <linux-um@archiver.kernel.org>; Tue, 24 Sep 2024 11:35:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4FE1CCF9EE
+	for <linux-um@archiver.kernel.org>; Wed, 25 Sep 2024 20:32:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=uesUgXKcuD6/H4Y+YFlZ813Zr2o+1Hc2ZY8mqB7xfQs=; b=tv+lardXYF+Lso+skzxf3RgJXR
-	F///vqAIyXRpwmueFtx2ClnBdRXIhkab64JfPMWHdcSW1ofFPBaYLVGz8CTKuc99Ex1VcZIIjY5nb
-	5KPSqyJzp4u4yvIsSwVOp5F2I13iBdYfgSiqZuMo7L41Z/8tblKlRKvpsfITd8PTWvcYd8g1HEGnP
-	befnFmVE9Lg4/3HqSSXxhgXV+GN0lao2cgz1ggvr+yn7jdTvnINel/ue/PeSroIggWnsBWlM8InKD
-	xsYeTVe2P9DH2nIVFRQ5uJdVqp1gtI78oCFp+uV/vVObugOxj02NsnADcJBXvjbkXy3ErxfEQrcEa
-	zGaxZ7bQ==;
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=u49n3vt1xmXpdN+H3Ve037tCjCuO47RCORmnokub20Q=; b=Dl0jEjdzbH/nQVdfh3uTgRupyZ
+	KeZndJYJYrQ2waYN+Kw/iq4mFST3oHWTz3b1gNNQb/XEyyXpGhdG2rA3l8XkSc8Suxc+H/WeJz/FJ
+	wAenGmo9hcXMceAWWrLvMHtu3hAoNqAmrxX7uO5d+AZV4EvOimEQr6Cpd0DWyhVu6zkmXJrFQAD9z
+	FffZEVKoojqAU/+8FP8rkuY4DHo09CO6tyojqq4ZdAYAuKophqQjkfwhReRNpbwguOESqYZd7xpm1
+	A+BM9ycE6KoovgbHKqXXBG1FI1FA2cBTPUq+ZuPulYiZH9JNUpAVi6swMSVXfF0D5IZIFU2H2QIfw
+	FXx8BAzQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1st3pg-00000002BEQ-05kx;
-	Tue, 24 Sep 2024 11:35:52 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1stYgv-00000006Uzx-1c5t;
+	Wed, 25 Sep 2024 20:32:53 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1st3nl-00000002AjK-0hwx
+	id 1stYgt-00000006Uyi-0BGM
 	for linux-um@lists.infradead.org;
-	Tue, 24 Sep 2024 11:33:54 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 919755C5B3F;
-	Tue, 24 Sep 2024 11:33:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89667C4CEC4;
-	Tue, 24 Sep 2024 11:33:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727177632;
-	bh=8G/AwMuPFWeIfpDvKPSLumJJ4v+oa4GpZ94o+TWeUa4=;
-	h=From:To:Cc:Subject:Date:From;
-	b=jnLoO4kMy2kpBEq5dzngf4PuSKwwF/MATTPFjp3zATglpp3GTf4B9Eo/u7tereUIH
-	 7NrK9byrODwHzldZKzp+0n/GWqFoRgg2+Nm3SYYKupLclCWACKQTOPaMdgPEfr1X9V
-	 2FI6ZEMuMZXTust9I8ZSeO3l8KgUHdGf9wf6nroGVlORN8pwnrzsfN9yUWM8EB2p8Q
-	 GR5Dv9a3GlJjmI7PwW3N9O4TRM1cy2b+WvaaVn62gdtxRfGGNh90LLk/qZaor+uK1Y
-	 m+XgfzbTjZx+DvPvpbmaaTfshhnxEyGSqe8pe2x5alOFK/V16tK7BP106/6ufvDt5L
-	 mf9fqzvs5AQ4Q==
-From: Masahiro Yamada <masahiroy@kernel.org>
-To: Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	linux-um@lists.infradead.org,
-	Ignat Korchagin <ignat@cloudflare.com>
-Cc: Masahiro Yamada <masahiroy@kernel.org>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] um: remove dependency on undefined CC_CAN_LINK_STATIC_NO_RUNTIME_DEPS
-Date: Tue, 24 Sep 2024 20:33:40 +0900
-Message-ID: <20240924113342.32530-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	Wed, 25 Sep 2024 20:32:52 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=u49n3vt1xmXpdN+H3Ve037tCjCuO47RCORmnokub20Q=;
+	t=1727296369; x=1728505969; b=vLA/j9WLKqfBguDXaJUCP0Qf/xGkmpRkZqZ8QJL8zPSvHe7
+	x1vpnZTjp5+6+NBPabGodDR65jDfBlPzEpFMK5Vpo9cb/c0NJMLb6UMAw/7Ycl7cOO1edT3SElllQ
+	p2/fibEqQXu859kzgi0DW0NY8iSTNbWlOkwN4gPQoCkJS03sQQS3nQIMIkmBwjwy3RipZLO4r1uHT
+	zXVX/vMd3uOpz8xONR533wcQsbYPPNQQUtccpNcC0/qUxTe+t67J+H9Pv/cIT71OL0trst9UAhu0x
+	TAYHc81f4bWARtMdhZkAJreoANJ9nxtPvdToZ8jPiZ/RJ6oazHBy23STUl+erBjQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <benjamin@sipsolutions.net>)
+	id 1stYgo-00000001A19-1FAd;
+	Wed, 25 Sep 2024 22:32:46 +0200
+From: Benjamin Berg <benjamin@sipsolutions.net>
+To: linux-um@lists.infradead.org
+Cc: Benjamin Berg <benjamin@sipsolutions.net>,
+	Benjamin Berg <benjamin.berg@intel.com>
+Subject: [RFC PATCH 1/9] um: Store full CSGSFS and SS register from mcontext
+Date: Wed, 25 Sep 2024 22:32:24 +0200
+Message-ID: <20240925203232.565086-2-benjamin@sipsolutions.net>
+X-Mailer: git-send-email 2.46.1
+In-Reply-To: <20240925203232.565086-1-benjamin@sipsolutions.net>
+References: <20240925203232.565086-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240924_043353_318786_D5BB984E 
-X-CRM114-Status: UNSURE (   9.97  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20240925_133251_102543_6186B98F 
+X-CRM114-Status: GOOD (  10.19  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,41 +71,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-CC_CAN_LINK_STATIC_NO_RUNTIME_DEPS is not defined anywhere.
+Doing this allows using registers as retrieved from an mcontext to be
+pushed to a process using PTRACE_SETREGS.
 
-In the submitted patch set [1], the first patch "um/kconfig: introduce
-CC_CAN_LINK_STATIC_NO_RUNTIME_DEPS" was not applied.
+It is not entirely clear to me why CSGSFS was masked. Doing so creates
+issues when using the mcontext as process state in seccomp and simply
+copying the register appears to work perfectly fine for ptrace.
 
-Only 2/3 and 3/3 were applied, which are now:
-
- - 730586ff7fad ("um: Allow static linking for non-glibc implementations")
- - 5e1121cd43d4 ("um: Some fixes to build UML with musl")
-
-Given that nobody has noticed the missing first patch for many years,
-it seems it was unnecessary.
-
-[1]: https://lore.kernel.org/lkml/20200719210222.2811-1-ignat@cloudflare.com/
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
+Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
 ---
+ arch/x86/um/os-Linux/mcontext.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
- arch/um/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index dca84fd6d00a..71b592b49240 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -95,7 +95,7 @@ config MAY_HAVE_RUNTIME_DEPS
- 
- config STATIC_LINK
- 	bool "Force a static link"
--	depends on CC_CAN_LINK_STATIC_NO_RUNTIME_DEPS || !MAY_HAVE_RUNTIME_DEPS
-+	depends on !MAY_HAVE_RUNTIME_DEPS
- 	help
- 	  This option gives you the ability to force a static link of UML.
- 	  Normally, UML is linked as a shared binary.  This is inconvenient for
+diff --git a/arch/x86/um/os-Linux/mcontext.c b/arch/x86/um/os-Linux/mcontext.c
+index e80ab7d28117..1b0d95328b2c 100644
+--- a/arch/x86/um/os-Linux/mcontext.c
++++ b/arch/x86/um/os-Linux/mcontext.c
+@@ -27,7 +27,6 @@ void get_regs_from_mc(struct uml_pt_regs *regs, mcontext_t *mc)
+ 	COPY(RIP);
+ 	COPY2(EFLAGS, EFL);
+ 	COPY2(CS, CSGSFS);
+-	regs->gp[CS / sizeof(unsigned long)] &= 0xffff;
+-	regs->gp[CS / sizeof(unsigned long)] |= 3;
++	regs->gp[SS / sizeof(unsigned long)] = mc->gregs[REG_CSGSFS] >> 48;
+ #endif
+ }
 -- 
-2.43.0
+2.46.1
 
 
