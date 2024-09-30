@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB92DCE8379
-	for <linux-um@archiver.kernel.org>; Mon, 30 Sep 2024 17:54:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1F2DFCE835D
+	for <linux-um@archiver.kernel.org>; Mon, 30 Sep 2024 17:59:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
 	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ZoyzlnnLRNj4i2u5Dgn44nDbhn4MB5fS72eP0TVQdtc=; b=czqYmfpQyzmZL/TbSLr/dgAV7n
-	kdtZsxPOUWZxWc6Ne8FrKNlCi/xH4cP3ox5HhL7V/xCcLnhanupaJH3ndqGyIqz695r6J6e7h38w4
-	UnO43E1jsDtuBgnN0XWpCHVQt6tQf+EWcTKHRMG0M10MOoWlNTsjfxJmWiEZoXXU23FvvD0SKTnD6
-	9aZ9VEJJzs4uSR7MEabmDfYS4oG2m4w5+Jype78MctgFJ85O4MgVGzYWnnrzE3bBHqazIb7/vzrJj
-	YYFdrleAxfRl1MqJZAZl+oV3AeVp8CGxdsTe3v319saga7bq1F/TO0/BWl/m0nnar5eECwxAOd5lQ
-	cL8PUefA==;
+	bh=1uPwxLcg5Bq74tqCqqhr1kbUuC1X8WKeLcVZP/gaR94=; b=3toYz8vH1i5qcdrTwROrEWYguc
+	5SjZpPYennxTU/ChPTaEWyC8NasntnZxOqJVvt9GvgBhei5689UvwXUkjlcPYKjo8BBSOrU2KFWPY
+	3ukyBfoQsYKn6H44NKmbhemDLMzrakiT09P9ugSAoQgud0w1TelrNNpF5oZUNdYKOfw+kP3B4awrw
+	OYwpoG79eP3Y4GktxvhgbdWghvzmWcDJBWJFO865JxQ+av7E/iS6Wv8HvGUoVZan7+SoDwB8+BHlc
+	znzgKWM+pGvaqqtj3lF+2NAmV1aZr1dRXXcSVNqVsdc3EcsTBgBwm9HeTAtlbzC1yDhKrN/Tew4ah
+	E9FFTmzg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1svKb5-00000000QpB-2Gz5;
-	Mon, 30 Sep 2024 17:54:11 +0000
-Received: from mail-qk1-f175.google.com ([209.85.222.175])
+	id 1svKgL-00000000RM2-0S0G;
+	Mon, 30 Sep 2024 17:59:37 +0000
+Received: from mail-oi1-f179.google.com ([209.85.167.179])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1svKZs-00000000QhY-1wpG;
-	Mon, 30 Sep 2024 17:52:57 +0000
-Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-7a9ab8e5f96so391956685a.1;
-        Mon, 30 Sep 2024 10:52:56 -0700 (PDT)
+	id 1svKf8-00000000RFs-1Xpd;
+	Mon, 30 Sep 2024 17:58:23 +0000
+Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3e03c736466so2996347b6e.1;
+        Mon, 30 Sep 2024 10:58:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727718775; x=1728323575;
+        d=1e100.net; s=20230601; t=1727719101; x=1728323901;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZoyzlnnLRNj4i2u5Dgn44nDbhn4MB5fS72eP0TVQdtc=;
-        b=XY2zUO0QsC3fZiOrzGDAbc7Y3yl/iGxnI3UNi+l6/SDbOsEDu0iEipK5CHuAFWZm4K
-         yRyt+HxIado86FZ0/C+FabpsD1kkDAlpVW0RLvlRlD1HgC+0BdOJHZ68CKL4EeOF0Z8i
-         k8T3GMspq9PkvoB7ICwmr9XMVRrtHtejT+tfXGWumzSPTpwjVVOVO7Z1tJsDagBoR8+F
-         qtzDLA3vu6zMj6J702/s3Pc7WitZfmqdHNxdrTzRwXnvyZ1CNLVaqrKQptK+u2AVCFy8
-         4gqIbOmxtm63ajrwLDjq/VN67fmUTPi77gzNDqNT8/EYu3N6UN43nb3LklxDAy67wUz1
-         nU1g==
-X-Forwarded-Encrypted: i=1; AJvYcCVfTNUdXxswjSaiMSZhMBwRcFYXHSRCA8Y+EaPIIOSde+umqfrj5aWcK3z0v+uTDxvWPB867sMplpY=@lists.infradead.org, AJvYcCXcn9kH+hNY+JpgXwVkilIYim8ucQuE/QZcKgWeagL4EHAYm8t1npLRxLlTUgqwuZIVxQCMjBqccCNwxderMF8V@lists.infradead.org
-X-Gm-Message-State: AOJu0YzaVGQLTkfC4+C3xQUnwwERVlqtvVI/gpY0glsYhHyrASb20vHB
-	Q50PtZdp8XaOfIhMWwohE78sqeFOZwi+hrE4nCAhiBY6pgLjAZJr5IQ5ZrWe
-X-Google-Smtp-Source: AGHT+IFn5CMFbY6hKdk35IR/uaAiOiyGYrMU8aoSmcizg1frk4FVJ5YzH/BxfnLaK/xdRU2wmxSlFw==
-X-Received: by 2002:a05:620a:2617:b0:7ac:a937:9364 with SMTP id af79cd13be357-7ae5427e7f6mr451748085a.32.1727718774909;
-        Mon, 30 Sep 2024 10:52:54 -0700 (PDT)
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com. [209.85.160.173])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7ae377d8a68sm434124185a.37.2024.09.30.10.52.54
+        bh=1uPwxLcg5Bq74tqCqqhr1kbUuC1X8WKeLcVZP/gaR94=;
+        b=TkRLq4DM8Bm09pkRwoN2Vt4jvkUBRYWy2DwLhixsbtaXlo4DTK0KCb7FvU4H4Ja5YG
+         lYge3Yimlt5DCUA5CjO6AKkxmzipfzKCIwNSXQMNudPkonZ9fJIelLoDH22M2a5qre9x
+         mYOUn9XCjYkSNaNTcvoyFIhxv1Fpmx3Bv1ZLJyg2Zy4afhT8ddMVJ21c8uwJP1ZDco9Q
+         lPUy8L0UThYTk6poLX5wPdiwh9L6JtXnSSBo3B2eTOXB91/S2z46IAIAUBoKmlZFI6il
+         /Y9suc0RP2DSIH3QPHrSfflm8zrECxm3hd+pmKYPQFCC/zuIuFX+uEdGEOPSvXMFMLVA
+         ED0w==
+X-Forwarded-Encrypted: i=1; AJvYcCUY5a4uQ59gchCm17D5hy2ntIiCMmAyLcuo1o7Q8RgH+2G0J6LcDcZaDykNRv8zZCG6c8z38Nb63/8=@lists.infradead.org, AJvYcCUvnpqnqcD3LH5nM1TpbaB04TRcdd+GbJdDkEC+pqjPD/VN/LpdLznFkw8utvUlSknBES4RJcHYPvalehCsImtg@lists.infradead.org
+X-Gm-Message-State: AOJu0YzpP9DReT0a/iZ6d6QmaBpYtH2GHGjhKjrBRNuPO8blSH7KC3Bx
+	+Dzd+mK0xdYqfFwqMozSBOOQkZj2ZYHP6TML190B/T5nsw6RDjM9StsORfvr
+X-Google-Smtp-Source: AGHT+IEARP20PB/7EnBHYBhvSj6u6xD+gfTMsN9mrsO3yOHYed5Bewb4yrfb/4CoSoPd7Z3ebnM5nw==
+X-Received: by 2002:a05:6808:3a17:b0:3e3:a317:8e2e with SMTP id 5614622812f47-3e3a3178f78mr4055431b6e.20.1727719100977;
+        Mon, 30 Sep 2024 10:58:20 -0700 (PDT)
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com. [209.85.210.48])
+        by smtp.gmail.com with ESMTPSA id 5614622812f47-3e3935c6809sm2563130b6e.48.2024.09.30.10.58.20
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 30 Sep 2024 10:52:54 -0700 (PDT)
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-4585e250f9dso30637341cf.1;
-        Mon, 30 Sep 2024 10:52:54 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU1vob1ZWDc9ln6Txnlv29FEnNZM6LJcUdpVzyKQerY8BGwuyAaWD05pj+5/ksG3WyqJfNpteTsyvY=@lists.infradead.org, AJvYcCV2ENhDlHgXZMjsbV9zp9lO66mwkwqTL0E9pmiRl+y/5QeLBa5FuSTzM2k2VnEo5Fy4CpBIWakw15IcXLhyy0F4@lists.infradead.org
-X-Received: by 2002:a05:690c:60c3:b0:6dd:bbb4:bcc7 with SMTP id
- 00721157ae682-6e2476334f2mr105898897b3.44.1727718393293; Mon, 30 Sep 2024
- 10:46:33 -0700 (PDT)
+        Mon, 30 Sep 2024 10:58:20 -0700 (PDT)
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-711009878ccso2965266a34.2;
+        Mon, 30 Sep 2024 10:58:20 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVXMFLEyGr/wMcCWJcItxNZF5wJXxhLKOSS3GRr0s0efqQqf7dMKUpAYgcPBhLmaD0yJ+XdiusQ3UrDr375Uf+/@lists.infradead.org, AJvYcCVa5h7hBplX7XTIh1PA7BvIBjGr75bfTNbjArlxcbIoSrNWgGLk0/Onz6iTgI02svkfByBbZJ5SzvQ=@lists.infradead.org
+X-Received: by 2002:a05:690c:d1b:b0:6dd:ba22:d946 with SMTP id
+ 00721157ae682-6e247561690mr104291347b3.13.1727718756479; Mon, 30 Sep 2024
+ 10:52:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20240930132321.2785718-1-jvetter@kalrayinc.com> <20240930132321.2785718-6-jvetter@kalrayinc.com>
-In-Reply-To: <20240930132321.2785718-6-jvetter@kalrayinc.com>
+References: <20240930132321.2785718-1-jvetter@kalrayinc.com> <20240930132321.2785718-9-jvetter@kalrayinc.com>
+In-Reply-To: <20240930132321.2785718-9-jvetter@kalrayinc.com>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 30 Sep 2024 19:46:21 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVnb-fo2MP7ERwSj-sPNU3-QyikNinfhvgVa2DnR9jJrQ@mail.gmail.com>
-Message-ID: <CAMuHMdVnb-fo2MP7ERwSj-sPNU3-QyikNinfhvgVa2DnR9jJrQ@mail.gmail.com>
-Subject: Re: [PATCH v7 05/10] m68k: Align prototypes of IO memcpy/memset
+Date: Mon, 30 Sep 2024 19:52:23 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWpiS-MgQZ8YyX=PDvQ+ZvS5TdMV5wn11MKFZVT7CHDhg@mail.gmail.com>
+Message-ID: <CAMuHMdWpiS-MgQZ8YyX=PDvQ+ZvS5TdMV5wn11MKFZVT7CHDhg@mail.gmail.com>
+Subject: Re: [PATCH v7 08/10] sh: Align prototypes of IO memcpy/memset
 To: Julian Vetter <jvetter@kalrayinc.com>
 Cc: Arnd Bergmann <arnd@arndb.de>, Russell King <linux@armlinux.org.uk>, 
 	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>, 
@@ -84,8 +84,8 @@ Cc: Arnd Bergmann <arnd@arndb.de>, Russell King <linux@armlinux.org.uk>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240930_105256_521683_15619912 
-X-CRM114-Status: GOOD (  16.10  )
+X-CRM114-CacheID: sfid-20240930_105822_426781_D8685BB1 
+X-CRM114-Status: GOOD (  16.82  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -103,7 +103,8 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 On Mon, Sep 30, 2024 at 3:25=E2=80=AFPM Julian Vetter <jvetter@kalrayinc.co=
 m> wrote:
 > Align the prototypes of the memcpy_{from,to}io and memset_io functions
-> with the new ones from iomap_copy.c.
+> with the new ones from iomap_copy.c and remove function declarations,
+> because they are now declared in asm-generic/io.h.
 >
 > Reviewed-by: Yann Sionneau <ysionneau@kalrayinc.com>
 > Signed-off-by: Julian Vetter <jvetter@kalrayinc.com>
@@ -111,8 +112,7 @@ m> wrote:
 > Changes for v7:
 > - New patch
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
 Gr{oetje,eeting}s,
 
