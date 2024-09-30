@@ -4,131 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 70FD6CE835C
-	for <linux-um@archiver.kernel.org>; Mon, 30 Sep 2024 15:15:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D3542CE837B
+	for <linux-um@archiver.kernel.org>; Mon, 30 Sep 2024 17:52:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	Content-Transfer-Encoding:References:In-Reply-To:Message-ID:Date:Subject:Cc:
-	To:From:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=7f3WmYjXpaO6AIkIfl3JK5mS1Des+a2xdPN2jq9sLaw=; b=t1fdZ2XxHWDkm0puzqiXFC0mMc
-	5ur7hFX8sBaM7Y9Zgdhw3ImC5WSZOAY81D7aJ/huQ7eJdMFAfQkRqTunjf5qj41U/fr1MhXzfYUEh
-	YmqldNUwbTCbZof/COCZIJTXCYf0lCWg3cZollLeTv/MfI68bmi29iKHWcDy2Y9A+YMT6ZP3lBV6D
-	nwIFTRdPJKUfEclVazlUZruXoVucHe9yJB2t7tv+gYaU553bRdZDexaJv3Uf3nqfOpMWgN7WLHF/4
-	VrsfKxA8dcr/t4EqyCS3gRLYexOiMN4KPUuvWZTZqen09wm46qTKdhruDV7VwEbLC2OjXtWvpU1l1
-	W0QxfSFA==;
+	bh=ERWUip0Hd+3xSPGc5KF+LIvmSrz8p98q0i+WVSFZa2o=; b=wZnGgmfZHpvHOaPFILlCIbB3lg
+	ZzOcEVF6cboyUbhW5xQm2iGNGL5nugL/xovizVNKvdBnCh0TVrhfCx9CSKw15rCqpUTM+1kdbfhsa
+	MpfCUPTTSvg1UtW0e8GXRuDv0eZsmq3E6fkGGUEPOCJmy2kQKQTZmlJEico1tJj7rM+LAHCXoTlxK
+	siatotmz33T4FulFJty13XAuBrrvJiD2ayP3ULgXsaAopiIK14JBV0+bog3WRbGYdag0mzSNyGWfY
+	Bcgpbbb9j/18/JcNNVI4cgnvAjYjpLwb9aIJxCzf4SWrzTPxCS9Id83RFeeGlMbAmIzlB+ET1LoSV
+	skTVdKpg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1svI7T-000000001jF-24E9;
-	Mon, 30 Sep 2024 15:15:27 +0000
-Received: from smtpout148.security-mail.net ([85.31.212.148])
+	id 1svKZP-00000000Qdg-02Fc;
+	Mon, 30 Sep 2024 17:52:27 +0000
+Received: from mail-yb1-f182.google.com ([209.85.219.182])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1svGPN-0000000HHt4-2Nbb
-	for linux-um@lists.infradead.org;
-	Mon, 30 Sep 2024 13:25:55 +0000
-Received: from localhost (fx408.security-mail.net [127.0.0.1])
-	by fx408.security-mail.net (Postfix) with ESMTP id D26D1322DCB
-	for <linux-um@lists.infradead.org>; Mon, 30 Sep 2024 15:25:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kalrayinc.com;
-	s=sec-sig-email; t=1727702745;
-	bh=nWqO0QL+65fm+WurM0NlniQ15NKAr4KJ+9V15ogPZbw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=S+KjNEZB2LZPiDF2DlQ+Qveso4mlnfSvAb8kM/8ASwPlobN9Mrtx85OAayEpIkA3s
-	 S1C/V2buIjTqk8RdFQgDeDZnL3673iAP73GzGVuFj+mLxIEpOtn/Ca60wK3XpSePwn
-	 viWymMh5iCOAGWuTI92CjOOORubyVtrOk5f/0pjQ=
-Received: from fx408 (fx408.security-mail.net [127.0.0.1]) by
- fx408.security-mail.net (Postfix) with ESMTP id DD02D322C4D; Mon, 30 Sep
- 2024 15:25:44 +0200 (CEST)
-Received: from PAUP264CU001.outbound.protection.outlook.com
- (mail-francecentralazlp17011030.outbound.protection.outlook.com
- [40.93.76.30]) by fx408.security-mail.net (Postfix) with ESMTPS id
- 2489D3229BF; Mon, 30 Sep 2024 15:25:43 +0200 (CEST)
-Received: from PAYP264MB3766.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:118::6)
- by MR1P264MB2707.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:38::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8005.26; Mon, 30 Sep
- 2024 13:25:41 +0000
-Received: from PAYP264MB3766.FRAP264.PROD.OUTLOOK.COM
- ([fe80::6fc2:2c8c:edc1:f626]) by PAYP264MB3766.FRAP264.PROD.OUTLOOK.COM
- ([fe80::6fc2:2c8c:edc1:f626%4]) with mapi id 15.20.8005.024; Mon, 30 Sep
- 2024 13:25:41 +0000
-X-Secumail-id: <7729.66faa6d7.22950.0>
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=xO4Qv1qFhBDS2Fz0gn/Yh7qXmluyvMRUxNisuFWi4utrmGYtkIjGlvUa8IRbRbpTS6tPPBKrD8PJkuCBblrFEgu9boS7/dXrvtJrdMx6AS7p16XLrQQ3kOKAhbUGN2YI0VQ3rbhjMihIhf+BYf01DuhRepEDxTQ4rHect9xcK8IeQtFoi/edxyYqzA0yFXVNPOXqIXGEleUeWly7WwUazpB5d+eREWmXemJxY3ikhMBFT/rmoc72p55QDqXUVkpn4bcD2zixUobFToboiyDnz5380m61oLb7TMjjcP4L/ECSQkvTEmL9tl0a+fkBR6zZglIQpyKIAE1xFqgVp5imJA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microsoft.com; s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7f3WmYjXpaO6AIkIfl3JK5mS1Des+a2xdPN2jq9sLaw=;
- b=jwGcOhW34bSreeIKlsM0HDgDW9oFpm2BDanENrNfJIEm2AhcTy4ZDstPcObK2jwxFEJdtSr4jJLwu8m77mh43pi3gI+iYBe21EbsAlIH34PxR6KcUYwLkjXjd4jpkziizRUdnoso0Wno1EWL3cNbCgRPEt8qeqCnOQl3T4ml75Usw+Bt+JOZKGOo84zmYCbGRUNbu5yyWmlsLNFQ1iyr0INK3NtUcLRxs2XkmOF5FsR7qTb+PDQbL8ybuYgNe6QfHGeH4elvEmMXsGJlPnKp8/nmsgkdNUAoHz0KQ1ERSovS77dmIJZjzEScICPa33t66uJ4JgTKdSckUVzowWYxKA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kalrayinc.com; dmarc=pass action=none
- header.from=kalrayinc.com; dkim=pass header.d=kalrayinc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kalrayinc.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7f3WmYjXpaO6AIkIfl3JK5mS1Des+a2xdPN2jq9sLaw=;
- b=OGtRbjUlJ43aP2I+pw3gzdi7GdTp1Ygdfm7Ui//5vreJoFjCmCJja6RegRbtMTKlAgPnZDbjWT/3clBCUrn/013/6EjctA9U3waYea0RU9BUWqhMexUqe2p6oP1pFPSJj7aXSCVRl7nsLv6xjs11JybEvhfXLAQCazSbFSSnMJWI3MnVW2YyMd0b/MXGtsEoyK52lEUZFtBfLai+Lwtw9jALSw1Yhls0z/szoWHOHT20XHNK79QmpXkEerKSf0ritl5P6poRtKHVpb0uBCC8G+H+5Humo4RjcZe7u6b7QjmGOSmslK2QmNuCpX+o+47f+qGdLAPk/V6zkyAPhxHRzQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=kalrayinc.com;
-From: Julian Vetter <jvetter@kalrayinc.com>
-To: Arnd Bergmann <arnd@arndb.de>, Russell King <linux@armlinux.org.uk>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Guo Ren <guoren@kernel.org>, Huacai Chen <chenhuacai@kernel.org>, WANG
- Xuerui <kernel@xen0n.name>, Andrew Morton <akpm@linux-foundation.org>, Geert
- Uytterhoeven <geert@linux-m68k.org>, Richard Henderson
- <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
- Matt Turner <mattst88@gmail.com>, "James E . J . Bottomley"
- <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Richard Weinberger
- <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes
- Berg <johannes@sipsolutions.net>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-csky@vger.kernel.org, loongarch@lists.linux.dev,
- linux-m68k@lists.linux-m68k.org, linux-alpha@vger.kernel.org,
- linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org,
- linux-um@lists.infradead.org, linux-arch@vger.kernel.org, Yann Sionneau
- <ysionneau@kalrayinc.com>, Julian Vetter <jvetter@kalrayinc.com>
-Subject: [PATCH v7 01/10] Consolidate IO memcpy/memset into iomap_copy.c
-Date: Mon, 30 Sep 2024 15:23:12 +0200
-Message-ID: <20240930132321.2785718-2-jvetter@kalrayinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240930132321.2785718-1-jvetter@kalrayinc.com>
-References: <20240930132321.2785718-1-jvetter@kalrayinc.com>
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: AS4P192CA0048.EURP192.PROD.OUTLOOK.COM
- (2603:10a6:20b:658::23) To PAYP264MB3766.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:102:118::6)
+	id 1svKY9-00000000QUN-3su5;
+	Mon, 30 Sep 2024 17:51:11 +0000
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-e25c5ed057dso4480770276.3;
+        Mon, 30 Sep 2024 10:51:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727718667; x=1728323467;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ERWUip0Hd+3xSPGc5KF+LIvmSrz8p98q0i+WVSFZa2o=;
+        b=llhOTpbLjaYlJ91Zf/Vg1+NwjDdd/NVEOGbkrOaBGc/EhtqksvwLKkhDIJD+7m9p7Y
+         +GxnLA1WTA8SgWXmwcydjhI7ojA26Z6SWySwAT2RbXUo9DuL14tpps7R3KDjfbPKo301
+         tTYCpvsutH9j3ZfakH6huWiw8eWbwgqMUZ/a7VlonH8FUfdkXXZiEySKnfVRBSAmLKHc
+         y4XRZBIMm2NwCGLx/GPV8ItE5l8WYtcxiOxuR5Pctjzh4e9mC3A5uAyyCzVhOO+IN7OV
+         Ceo2EYDp/cV96lnC6uyfGNNBtgHbEP2xvk19VtxQiFuMqgYzGJY2dgx/2PbbBRl0COzk
+         ImQQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUBIee81FYTwRrXSFl/6Oo9Zl448HTkfVkqXSmdyx88PfukCyAqYRfNlCJX5KJRxAM8RadsJfsc3CB0Wo1PcrL9@lists.infradead.org, AJvYcCVDEw6DuvWNMwhJ5kcbHCr2deK4S4Vit9sDAp3RpvjsDX+VYgM+gn/f00HLe33Hiysp5aMmw7LwWaQ=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwTZEubTVwsDt/Ri8XRQ4o8+CVuD06iAWoKzU172quXh8kjQZ/7
+	/DNcvDwztOCLF7UaHj+U+dSYPUc7GtEBneJP1cBOYf+ucLAFz+Fs0qsp3fqO
+X-Google-Smtp-Source: AGHT+IG2PPFt4CoR/LDB3gNfN/inlhlEwH32Cv1RUUg31xMXZ0hyqZscJ+PFxqjJat8rCaic0SDzlA==
+X-Received: by 2002:a05:6902:158a:b0:e25:cf3a:a2c8 with SMTP id 3f1490d57ef6-e2604b33985mr10088346276.23.1727718667544;
+        Mon, 30 Sep 2024 10:51:07 -0700 (PDT)
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com. [209.85.128.174])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e25e400f721sm2407818276.14.2024.09.30.10.51.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 30 Sep 2024 10:51:07 -0700 (PDT)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-6db4b602e38so37014987b3.1;
+        Mon, 30 Sep 2024 10:51:06 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUBX8kSMsQ8OgBVBb/XTWPPdDnBFa4HD6yc5cRBl8O80u5kZHZwVxAfK7Z1Fg4x+H/2Q84lNTTIf007SKZhC6gl@lists.infradead.org, AJvYcCWFWwlw5zhjhTi5qDWhKGEVxKhkljxEddXMmK/X6ou+L7aH20NbySdBJPUypqd3NRB78BAE87XDTnI=@lists.infradead.org
+X-Received: by 2002:a05:690c:c0f:b0:6d3:d842:5733 with SMTP id
+ 00721157ae682-6e2475e3050mr104508727b3.35.1727718666765; Mon, 30 Sep 2024
+ 10:51:06 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAYP264MB3766:EE_|MR1P264MB2707:EE_
-X-MS-Office365-Filtering-Correlation-Id: c587103e-6762-412c-95fa-08dce153618b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|52116014|376014|7416014|366016|38350700014|921020;
-X-Microsoft-Antispam-Message-Info: sUNv8+mg9YLPy/ODfDMP8eSEj7GsC/envdXj0km9XhIkhlbRcZ0Mj/Pkdjp1R5GAN9CsRqSSRJXaV61FYMSFQ4cWQB5kMAwJKLkzGj2eF6Q9yOU9LZyc9r4o99TyBLtbcP12t1rFey9dFHjhnQwLALb0pwY5Oc2YVy4nUvLyNIjjpErRMJWX98zSqi+fVoi5ySa88Yvq0IyZFWdusUASfCq4j3DeJBq8aXksWmjBQyLvjebmof2RPhPp5VvR8lw3ts96Lxd7e3goZTQawNHzNlQ8s+KAaU/TDBhgFDNl+Fdl6IKEQGNhMLV+9kaZWEb+h8VrWVypWbB6zhMtENbHR3bvUsBTy+MLJbpm4SufZCfTHiyNd1cyZ/E9P3Hc0VskPL9OUqvMFtfBwDRM6VCRHATRiUcnmg/QyNGStlx4ghIRClPzmRqRDUN9SHYz233oPwNEUtWDynEj0q2dAZpK+aMJo7HJghHnW8xM5HPqAUOpMPtPh/DK241jU8w0nyCqWS0K1+Dw05HLv5y/t0vaW0o+nKBbRMTFrsYz0G9JbwBRGYiJSqB4cf3MhAVu2Fc8fafoz/lAXIljER/eaYmAW2XwXD6ujFyGFAdk3xz/2U0YjupduUVWHslb4z6uszUS1h6J20h8jqXK70PE8axpaEf5pmZW7wgHFutCVfZ3OLdHGk/rLYTJqsVdl95tVzQSAX4mZ5OitURn/BxVPN7GTxulvk6V1ZSiEunrQ4n84zWmwHQdBsEVn8WphX9FT6Zc4jmMjTCGAM0ruRxwlMLBaWul0YxUtsgtQzx02wTwjzr/tYtI+B7rXoCdyfwMrdBNt7zcFj9LCLGS6Ttp1YXJtg78bvuMEMsyTvSuLhnVawPO5IqFEXDB2I1Y72u07hq20xkeX4SQGTmw5sVa79ZqvN/wFisfpSaKuOXBy7dlfA5N8WWvhWpaTUkltIgVywfYiy+
- piw8yKRFHRdebc289KxPxSJaRMAFgN6K/0F/9Zc2Ymj/tEvOnjLQs8lUFfDPJK1yZ34u5br6X4t9hMvH/akceodizJixqnPNHzXRCtMmSFhzrGM9HRhra+XHVCdBPGK9r6Gpas186gEsQhHC/U1oTxQ51pfO0kV7kOSZCh9HLgcH4K2yoQcv0SDWJVKcIGx8fuMb4V6veuXpxgJTCC0+WqAu4o9AGtEOPaboabrjkp+QYTUf0AazVQOPgmm4noxcBADdqpG5L+wnyxws93RlBA+FmSbU5tVN5U/2+LuP+8vRNQ1qwEqlZ3WBg8QwHY8hDgAUoiG4m9Vpky0ZCFbwWsLQo/MECoEQ56KXgqnLDVoYpYMYnvVEIqWcyZWukxWA3w+/Zv5oxsJtBgrOywdY6YQYrrpm9U2UycTNo3LGRVLX15+CkdieJemzjD76KAQDfvjAN/X8GLBwKyLV4L7f1n+lTWKcQR4zxBQqJrbw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAYP264MB3766.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(52116014)(376014)(7416014)(366016)(38350700014)(921020);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: FeZHzqOhHpCPEgdvRPF3Yh85cvqpSqAAjIPPxkXtjETtrISedYOX7b15nfrG5AhUGnNnyMg7TfCxqHVbODRRm461nicdTvkh2Lb2tOQqoOI8anra+KSLdDvrHx692j9p2RTmU0fgttibc2lpL/1WBp/fRADHnKDAZnhIQT21msdXUs3it6++2u7NVp11a+NBKJ+Q/BQY3gOeUHG8uYWx4xUDLQ1mqLCOG2GtC2yxnjgKKawAd6257bf/Ul1bdJeApkAU6poQQ+tueyKGknS1HQvuffCDTQ/T0nX0Z9cU0kuK+4VsiLiLl9PHfVjDKjX0OR9TkHv7KdXWZbaulTxwsWxBclwGB2KUkq0risa+VhkN4wFL+knw0QSTMONj6n8RANlFjSLW1TxFGS5Qm+DOI/+aq563LPjzQpmovh0fRUueK268wXpqnAwOKK7zVVPzNVTI/sa6SPptFLCMQWUEkI+PUcTUWrHPW0qUZ51XWKvK0CKORjoxAc1DuLtN5nPu1TClcch2fMQM/fktteBL6jOsDv3Y9oZwDReR8lyhsgqlWqInBhtOZwq38HPLIirB0kx+rNZINEGAWXC21Q+k9QuNquPB2w6puo1yBKpegZW83ssKPYhmp0Jv8G/n+A/59TxRjA3q2xBkERaJux+Wdx1qYgLbYD/p/lEPdMYG/eQ/i95EeWx1hPNr2akgeCH9pYLVEXthayMB0fAtXiF5nesIPCwXKjmXdeDm5LbIoQwd+d0A9QFJaLMuF6dwtDWs0kYqHO8bEJrhaS9McXGu6Gsj14QrvC36+K8NZnyo0V+CCVmTW1S636GhpTEMuPGuWo1JXq60r96bYoyfpnnXilAmLZeg/Fi4a3XtKn5zHLH/fJbho3IuK6BzK4P/8x+C4N/cvnWSTRGCp1wA8TCXlsP/EFobeIQzZ0SgBJ9QwYg8cSzFi2Yz+Qye/RUdzs1d
- veZUCJUqtGk6ZhZw1FyZ5GheAQgSIbg3aKH6Q+hbyrkt1JtVFmbTsMJqgSs2uO9d4vKNql+YZaC5uAXA/gUf9StO69urhtbTFeaVAD7PdcLJx4kqDv0m8OhFCUqlPmlxqXTPj2Cxrel9zVh93Xu/XeRmSxBeBFqJnsKX9yJBCosDQqf3bdP2QZoDm0agybsC5NlbxYw4sJbmD7CwxYd9+X4rFjs/BqA5doxolOdwE+ulpdE4LtEajnBylMbgtf8bmETpfa8YgXjaJIXknUSiCmUhWC8zCKr1atHVWEPbSo2wjpr5EO3rQZ3rSN8kSWnJBwvBaJvXGftEHie24Xds30Mxt/5gDaRw3sJLE3A7rfWJPvc/AxrLBtjEDFAmsXXaZzGerJNDAMlh32gVNg87BApkbJILHO1xRZ2QQSQ+KW5PkiirT3a1pnUsw4u/ysioCOvMVntOMk2LlNkC/4Mzy9i4ALMvWvWTKKbNusVfe9Xlq1cyn8kRqL5rq5jIPqbmh+peU/GmphW5AVRhij7jVHJiS7XzPamyJ2RDuwSPJTVYoDqBExzwMQI3I8yZ0xfW9nep3y6OxHw4bk9/N49ICiJri3RWCJmxgKwqSywPRFPAGMg8i5ymGNCZkYOIDkLStnhCUcAv3GCIZStF+3ae+Q==
-X-OriginatorOrg: kalrayinc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c587103e-6762-412c-95fa-08dce153618b
-X-MS-Exchange-CrossTenant-AuthSource: PAYP264MB3766.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2024 13:25:41.6500
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8931925d-7620-4a64-b7fe-20afd86363d3
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sDewbMFfEj0e8o14LVwdAKJw0MTmOF97EXD8chBcf+x6hJryfqbL6nXvh5qfwvTjFIdldvBCHz6w3ZZRFAKrfQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MR1P264MB2707
-Content-Type: text/plain; charset=utf-8
-X-ALTERMIMEV2_out: done
+References: <20240930132321.2785718-1-jvetter@kalrayinc.com> <20240930132321.2785718-11-jvetter@kalrayinc.com>
+In-Reply-To: <20240930132321.2785718-11-jvetter@kalrayinc.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 30 Sep 2024 19:50:55 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdX03ornwefrTfSYfH-XoEE4CHN+u5m7ay5_LrTq8XHOJA@mail.gmail.com>
+Message-ID: <CAMuHMdX03ornwefrTfSYfH-XoEE4CHN+u5m7ay5_LrTq8XHOJA@mail.gmail.com>
+Subject: Re: [PATCH v7 10/10] arm: Align prototype of IO memset
+To: Julian Vetter <jvetter@kalrayinc.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Russell King <linux@armlinux.org.uk>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>, 
+	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
+	Andrew Morton <akpm@linux-foundation.org>, 
+	Richard Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, 
+	Matt Turner <mattst88@gmail.com>, 
+	"James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Richard Weinberger <richard@nod.at>, 
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	linux-csky@vger.kernel.org, loongarch@lists.linux.dev, 
+	linux-m68k@lists.linux-m68k.org, linux-alpha@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org, 
+	linux-um@lists.infradead.org, linux-arch@vger.kernel.org, 
+	Yann Sionneau <ysionneau@kalrayinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20240930_062549_993130_3BDC3660 
-X-CRM114-Status: GOOD (  17.11  )
+X-CRM114-CacheID: sfid-20240930_105109_983935_6C0FBA4F 
+X-CRM114-Status: GOOD (  16.33  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -143,258 +100,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Various architectures have almost the same implementations for
-memcpy_{to,from}io and memset_io functions. So, consolidate them
-into the existing lib/iomap_copy.c.
+On Mon, Sep 30, 2024 at 3:25=E2=80=AFPM Julian Vetter <jvetter@kalrayinc.co=
+m> wrote:
+> Align prototype of the memset_io function with the new one from
+> iomap_copy.c
+>
+> Reviewed-by: Yann Sionneau <ysionneau@kalrayinc.com>
+> Signed-off-by: Julian Vetter <jvetter@kalrayinc.com>
+> ---
+> Changes for v7:
+> - New patch
 
-Reviewed-by: Yann Sionneau <ysionneau@kalrayinc.com>
-Signed-off-by: Julian Vetter <jvetter@kalrayinc.com>
----
-Changes for v7:
-- Addressed reviewer comments from David:
-  - Replaced NATIVE_STORE_TYPE and uintptr_t by long
-  - Split the read/write and the {get,put}_unaligned into two different
-    lines for readability
-- Addressed reviewer comments from Arnd:
-  - Placed "extern" definitions in asm-generic/io.h
-  - Renamed functions from __memcpy_{to,from}io and __memset_io
-    to memcpy_{to,from}io and memset_io
-  - Removed the guarding '#ifndef __memcpy_fromio', etc.
----
- include/asm-generic/io.h |  58 ++---------------
- lib/iomap_copy.c         | 133 +++++++++++++++++++++++++++++++++++++++
- 2 files changed, 139 insertions(+), 52 deletions(-)
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
-index 80de699bf6af..f14655ed4d9d 100644
---- a/include/asm-generic/io.h
-+++ b/include/asm-generic/io.h
-@@ -102,6 +102,12 @@ static inline void log_post_read_mmio(u64 val, u8 width, const volatile void __i
- 
- #endif /* CONFIG_TRACE_MMIO_ACCESS */
- 
-+extern void memcpy_fromio(void *to, const volatile void __iomem *from,
-+			  size_t count);
-+extern void memcpy_toio(volatile void __iomem *to, const void *from,
-+			size_t count);
-+extern void memset_io(volatile void __iomem *dst, int c, size_t count);
-+
- /*
-  * __raw_{read,write}{b,w,l,q}() access memory in native endianness.
-  *
-@@ -1150,58 +1156,6 @@ static inline void unxlate_dev_mem_ptr(phys_addr_t phys, void *addr)
- }
- #endif
- 
--#ifndef memset_io
--#define memset_io memset_io
--/**
-- * memset_io	Set a range of I/O memory to a constant value
-- * @addr:	The beginning of the I/O-memory range to set
-- * @val:	The value to set the memory to
-- * @count:	The number of bytes to set
-- *
-- * Set a range of I/O memory to a given value.
-- */
--static inline void memset_io(volatile void __iomem *addr, int value,
--			     size_t size)
--{
--	memset(__io_virt(addr), value, size);
--}
--#endif
--
--#ifndef memcpy_fromio
--#define memcpy_fromio memcpy_fromio
--/**
-- * memcpy_fromio	Copy a block of data from I/O memory
-- * @dst:		The (RAM) destination for the copy
-- * @src:		The (I/O memory) source for the data
-- * @count:		The number of bytes to copy
-- *
-- * Copy a block of data from I/O memory.
-- */
--static inline void memcpy_fromio(void *buffer,
--				 const volatile void __iomem *addr,
--				 size_t size)
--{
--	memcpy(buffer, __io_virt(addr), size);
--}
--#endif
--
--#ifndef memcpy_toio
--#define memcpy_toio memcpy_toio
--/**
-- * memcpy_toio		Copy a block of data into I/O memory
-- * @dst:		The (I/O memory) destination for the copy
-- * @src:		The (RAM) source for the data
-- * @count:		The number of bytes to copy
-- *
-- * Copy a block of data to I/O memory.
-- */
--static inline void memcpy_toio(volatile void __iomem *addr, const void *buffer,
--			       size_t size)
--{
--	memcpy(__io_virt(addr), buffer, size);
--}
--#endif
--
- extern int devmem_is_allowed(unsigned long pfn);
- 
- #endif /* __KERNEL__ */
-diff --git a/lib/iomap_copy.c b/lib/iomap_copy.c
-index 2fd5712fb7c0..5567bf8db8bc 100644
---- a/lib/iomap_copy.c
-+++ b/lib/iomap_copy.c
-@@ -3,7 +3,11 @@
-  * Copyright 2006 PathScale, Inc.  All Rights Reserved.
-  */
- 
-+#include <asm/unaligned.h>
-+
-+#include <linux/align.h>
- #include <linux/export.h>
-+#include <linux/types.h>
- #include <linux/io.h>
- 
- /**
-@@ -76,3 +80,132 @@ void __iowrite64_copy(void __iomem *to, const void *from, size_t count)
- }
- EXPORT_SYMBOL_GPL(__iowrite64_copy);
- #endif
-+
-+#ifndef memcpy_fromio
-+/**
-+ * memcpy_fromio	Copy a block of data from I/O memory
-+ * @to:			The (RAM) destination for the copy
-+ * @from:		The (I/O memory) source for the data
-+ * @count:		The number of bytes to copy
-+ *
-+ * Copy a block of data from I/O memory.
-+ */
-+void memcpy_fromio(void *to, const volatile void __iomem *from, size_t count)
-+{
-+	while (count && !IS_ALIGNED((long)from, sizeof(long))) {
-+		*(u8 *)to = __raw_readb(from);
-+		from++;
-+		to++;
-+		count--;
-+	}
-+
-+	while (count >= sizeof(long)) {
-+#ifdef CONFIG_64BIT
-+		long val = __raw_readq(from);
-+#else
-+		long val = __raw_readl(from);
-+#endif
-+		put_unaligned(val, (long *)to);
-+
-+
-+		from += sizeof(long);
-+		to += sizeof(long);
-+		count -= sizeof(long);
-+	}
-+
-+	while (count) {
-+		*(u8 *)to = __raw_readb(from);
-+		from++;
-+		to++;
-+		count--;
-+	}
-+}
-+EXPORT_SYMBOL(memcpy_fromio);
-+#endif
-+
-+#ifndef memcpy_toio
-+/**
-+ * memcpy_toio		Copy a block of data into I/O memory
-+ * @to:			The (I/O memory) destination for the copy
-+ * @from:		The (RAM) source for the data
-+ * @count:		The number of bytes to copy
-+ *
-+ * Copy a block of data to I/O memory.
-+ */
-+void memcpy_toio(volatile void __iomem *to, const void *from, size_t count)
-+{
-+	while (count && !IS_ALIGNED((long)to, sizeof(long))) {
-+		__raw_writeb(*(u8 *)from, to);
-+		from++;
-+		to++;
-+		count--;
-+	}
-+
-+	while (count >= sizeof(long)) {
-+		long val = get_unaligned((long *)from);
-+#ifdef CONFIG_64BIT
-+		__raw_writeq(val, to);
-+#else
-+		__raw_writel(val, to);
-+#endif
-+
-+		from += sizeof(long);
-+		to += sizeof(long);
-+		count -= sizeof(long);
-+	}
-+
-+	while (count) {
-+		__raw_writeb(*(u8 *)from, to);
-+		from++;
-+		to++;
-+		count--;
-+	}
-+}
-+EXPORT_SYMBOL(memcpy_toio);
-+#endif
-+
-+#ifndef memset_io
-+/**
-+ * memset_io		Set a range of I/O memory to a constant value
-+ * @dst:		The beginning of the I/O-memory range to set
-+ * @c:			The value to set the memory to
-+ * @count:		The number of bytes to set
-+ *
-+ * Set a range of I/O memory to a given value.
-+ */
-+void memset_io(volatile void __iomem *dst, int c, size_t count)
-+{
-+	uintptr_t qc = (u8)c;
-+
-+	qc |= qc << 8;
-+	qc |= qc << 16;
-+
-+#ifdef CONFIG_64BIT
-+	qc |= qc << 32;
-+#endif
-+
-+	while (count && !IS_ALIGNED((long)dst, sizeof(long))) {
-+		__raw_writeb(c, dst);
-+		dst++;
-+		count--;
-+	}
-+
-+	while (count >= sizeof(long)) {
-+#ifdef CONFIG_64BIT
-+		__raw_writeq(qc, dst);
-+#else
-+		__raw_writel(qc, dst);
-+#endif
-+
-+		dst += sizeof(long);
-+		count -= sizeof(long);
-+	}
-+
-+	while (count) {
-+		__raw_writeb(c, dst);
-+		dst++;
-+		count--;
-+	}
-+}
-+EXPORT_SYMBOL(memset_io);
-+#endif
--- 
-2.34.1
+Gr{oetje,eeting}s,
 
+                        Geert
 
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
 
-
-
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
