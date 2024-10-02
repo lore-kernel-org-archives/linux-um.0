@@ -4,45 +4,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 33655CF318A
-	for <linux-um@archiver.kernel.org>; Wed,  2 Oct 2024 01:17:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 37F59CF3189
+	for <linux-um@archiver.kernel.org>; Wed,  2 Oct 2024 01:19:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=p8H2NLD073LnEtOKntiXdn22CETWYXKyhoCioHNFhO8=; b=ofmLqP4wfLLjw6Uk/s1dwNEGL5
-	BTWlRtduWyHPLVY2FJpaPX21At0UcFbWBVLexDQBQsW7FLy2RK17+rI5XPNQ3sgKwFoIdNjrscQFq
-	0EW/+JSeP36rC2S+OyQMad7yyz3BZCb4eAkenmTlo5Gx1lnDcBnzZIUCNKynD0JZMY8nT0fez8xuE
-	VfeA8LXTIdl/G6Q1jP7tGNCGKxSWZ4Y8kXg2fDe3HIyX/c/bHuIdyDnpTf2v0axgd7ezNAOp7pJgJ
-	S/Hs2pqTxkv2bNgc2pGlj/SHehp7wZSsPOmSXi+MGbzH8wCFbOU1eyQadWBnhlDl1PduMakqTuUXJ
-	6ROcrOeQ==;
+	bh=KA+stoDZv6kBVnkV+Xzf4MLHAZfHVYVl/y++2UEaVoc=; b=mudY1esPAz/o4rFdB7L6/7d9x1
+	TF7jKLDhqewl7vP4JizXqkTMmdH9vjV0hp2Ov5bm3hJ3cW4LJ4wJAydwLWzFWoPgndTg6yislfuXv
+	s1H0/mbyaJRx61XAisFw3bHhOdyB4UwX3bqKxBHE0tFI/XjpzZSgcr2v79iA9gAynUTu2rp3gDx3D
+	+x7HswAJaW+T8A9z+k+I4zgvvuAGcIx2OuBhQDb+5e0gZs3bqC9jmn5fVsguB61PFZB5NF7zasYfh
+	F1RlwTWMQD68/eC5NFoB3F+0lGUbeklGSOjZkeNnHkAfCRdOgrQqByfxHsKEEm1jNBA9GZobAHfj3
+	mAuzj0iQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1svnzv-00000004WyN-2iNB;
-	Wed, 02 Oct 2024 01:17:47 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1svo1B-00000004X5b-46Rq;
+	Wed, 02 Oct 2024 01:19:05 +0000
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1svnzt-00000004WxJ-1RCL
+	id 1svo19-00000004X4i-1N7m
 	for linux-um@lists.infradead.org;
-	Wed, 02 Oct 2024 01:17:46 +0000
+	Wed, 02 Oct 2024 01:19:05 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 626A95C5475;
-	Wed,  2 Oct 2024 01:17:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FDCCC4CEC6;
-	Wed,  2 Oct 2024 01:17:41 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id 48B10A41560;
+	Wed,  2 Oct 2024 01:18:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9690BC4CEC6;
+	Wed,  2 Oct 2024 01:18:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727831864;
-	bh=18sIvN/b40KUR8Z6IAlfjZJPkiV7wOxyLv5Q7q6Bu04=;
+	s=k20201202; t=1727831942;
+	bh=z31U8u7Saetd9Yh86iw2djS1AiJmkXhk8gUFFgbOklo=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mtnS6zyoFjLo0cC9ECwBxydPekHreMYtE0eg9Lo+D5KH5g6Q4DoCzzOgYnaQjv/jC
-	 ObI1KHaJ7eIek7vhT5MV8wW3Wlpfxc3xHaF4cVXIisrUDJYAwbwt+19TBicGMY62z3
-	 gavMEUSI+xZuLPKPzl7m4Lc91dkWZtT5cerz3DsyO9GCvh1CNtYwtgFdzdhH4c1AHy
-	 mN+uEip3HTKgRlPHybFSXiLY6oaek6tSQQ7905hBVoxESfzLtm8EEBMUE+SE2Xt05n
-	 tKBiU9uiw8DP9z/YFjwewvhl7KvZfeQ0U+WZVKN4OsLL0xHXdjFORm1Mq9/g4lQtPl
-	 RplIJZ5yhUwpw==
-Date: Tue, 1 Oct 2024 18:17:39 -0700
+	b=qZrB0rAteuEIVVZH0mMb3PsniT3C5p5hMCdpGmD1l63d1VJnq+tHzzVGhZt+LE48c
+	 tgkULQ4U/nNcebkdhObCHGtO2MnETeQzx1mfkN66t+tFejs9SN0NaQXejFMSLZc5XR
+	 hFMq07gRUIIN1ZUveDzNKEf8w6849Bse3NZngil87XKkl02Izr5BWVkXnJHXlaLuyP
+	 tdWFgqLtz5h5R94CQfiNVfT3cbHtpDi3trI9QkfOTJrGItQ5ocTmOoU1/8JQf6ynRn
+	 gJC01fd6253tQcb0lF2Ge+R5u1VCC24QeB+8S99cpPoR6OopmwS6zE8IoLKVU7LS7k
+	 vDcfFB7h2gD3A==
+Date: Tue, 1 Oct 2024 18:18:58 -0700
 From: Nathan Chancellor <nathan@kernel.org>
 To: Wentao Zhang <wentaoz5@illinois.edu>
 Cc: Matt.Kelly2@boeing.com, akpm@linux-foundation.org,
@@ -64,18 +64,18 @@ Cc: Matt.Kelly2@boeing.com, akpm@linux-foundation.org,
 	samitolvanen@google.com, samuel.sarkisian@boeing.com,
 	steven.h.vanderleest@boeing.com, tglx@linutronix.de,
 	tingxur@illinois.edu, tyxu@illinois.edu, x86@kernel.org
-Subject: Re: [PATCH v2 3/4] x86: disable llvm-cov instrumentation
-Message-ID: <20241002011739.GC555609@thelio-3990X>
+Subject: Re: [PATCH v2 4/4] x86: enable llvm-cov support
+Message-ID: <20241002011858.GD555609@thelio-3990X>
 References: <20240824230641.385839-1-wentaoz5@illinois.edu>
  <20240905043245.1389509-1-wentaoz5@illinois.edu>
- <20240905043245.1389509-4-wentaoz5@illinois.edu>
+ <20240905043245.1389509-5-wentaoz5@illinois.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240905043245.1389509-4-wentaoz5@illinois.edu>
+In-Reply-To: <20240905043245.1389509-5-wentaoz5@illinois.edu>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241001_181745_455842_558B097B 
-X-CRM114-Status: GOOD (  13.62  )
+X-CRM114-CacheID: sfid-20241001_181903_451068_A40750DD 
+X-CRM114-Status: GOOD (  12.80  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,13 +90,13 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Sep 04, 2024 at 11:32:44PM -0500, Wentao Zhang wrote:
-> Disable instrumentation for arch/x86/crypto/curve25519-x86_64.c. Otherwise
-> compilation would fail with "error: inline assembly requires more registers
-> than available".
-> 
-> Similar behavior was reported with gcov as well. See c390c452ebeb ("crypto:
-> x86/curve25519 - disable gcov").
+On Wed, Sep 04, 2024 at 11:32:45PM -0500, Wentao Zhang wrote:
+> Set ARCH_HAS_* options to "y" in kconfig and include section description in
+
+Is description the right word here? Maybe "include the compiler generated
+sections"? Open to other suggestions.
+
+> linker script.
 > 
 > Signed-off-by: Wentao Zhang <wentaoz5@illinois.edu>
 > Reviewed-by: Chuck Wolber <chuck.wolber@boeing.com>
@@ -105,21 +105,36 @@ On Wed, Sep 04, 2024 at 11:32:44PM -0500, Wentao Zhang wrote:
 Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
 > ---
->  arch/x86/crypto/Makefile | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  arch/x86/Kconfig              | 2 ++
+>  arch/x86/kernel/vmlinux.lds.S | 2 ++
+>  2 files changed, 4 insertions(+)
 > 
-> diff --git a/arch/x86/crypto/Makefile b/arch/x86/crypto/Makefile
-> index 53b4a2778..57f3d4921 100644
-> --- a/arch/x86/crypto/Makefile
-> +++ b/arch/x86/crypto/Makefile
-> @@ -119,5 +119,6 @@ quiet_cmd_perlasm = PERLASM $@
->  $(obj)/%.S: $(src)/%.pl FORCE
->  	$(call if_changed,perlasm)
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 007bab9f2..e0a8f7b42 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -85,6 +85,8 @@ config X86
+>  	select ARCH_HAS_FORTIFY_SOURCE
+>  	select ARCH_HAS_GCOV_PROFILE_ALL
+>  	select ARCH_HAS_KCOV			if X86_64
+> +	select ARCH_HAS_LLVM_COV		if X86_64
+> +	select ARCH_HAS_LLVM_COV_PROFILE_ALL	if X86_64
+>  	select ARCH_HAS_KERNEL_FPU_SUPPORT
+>  	select ARCH_HAS_MEM_ENCRYPT
+>  	select ARCH_HAS_MEMBARRIER_SYNC_CORE
+> diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
+> index 6e73403e8..904337722 100644
+> --- a/arch/x86/kernel/vmlinux.lds.S
+> +++ b/arch/x86/kernel/vmlinux.lds.S
+> @@ -191,6 +191,8 @@ SECTIONS
 >  
-> -# Disable GCOV in odd or sensitive code
-> +# Disable GCOV and llvm-cov in odd or sensitive code
->  GCOV_PROFILE_curve25519-x86_64.o := n
-> +LLVM_COV_PROFILE_curve25519-x86_64.o := n
+>  	BUG_TABLE
+>  
+> +	LLVM_COV_DATA
+> +
+>  	ORC_UNWIND_TABLE
+>  
+>  	. = ALIGN(PAGE_SIZE);
 > -- 
 > 2.45.2
 > 
