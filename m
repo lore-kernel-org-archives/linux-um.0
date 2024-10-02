@@ -4,131 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5495CEACC4
-	for <linux-um@archiver.kernel.org>; Tue,  1 Oct 2024 14:01:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 48A74CF318A
+	for <linux-um@archiver.kernel.org>; Wed,  2 Oct 2024 00:31:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=yKBcXMlbIiiNt6hOvqGLtjTPwgQJG4W74YiWW4m8LMY=; b=uUM9wAM8YvTaJQG/QubOqD+52D
-	ROCm/P+9HEL4GCBqdxKP+/tiU1xi/Uzhon2o+OGvTB4lJvw94lvV/N+9q3jFnYLjwfV9KvS2spw+e
-	dwl2WK9FbBM1TPm0pbqpSZAH2Cj+o7uPkmStm59RDVdvIwlPAjEXCeV8ekLrJmz+CROtPFmdyHCjH
-	FaLCyDQZExNLdydsyT8c6JgldgVaGo/6nVByM7paPBSKZ65yPQm7Cyf6EpO7FXQ1EvIwxwy0qiEml
-	uLeSXJSGS4IM//tEIpgIRO9G/orFZmrt4CiwNREAT1NytRpTx/b8vxbJs+RHPTPHXPvxabo7+yDJ2
-	o1mn+jhA==;
+	bh=2OfnzH96tIKPjiXzvLDm2+iYG2xdtJamFtM33HgnTRc=; b=RU9AQbBWMOokS8zCCpTnGqb11H
+	l/MNQzqdbdef2MDWiQ6wJOjlNurVrqpKYVI36C6vP9VTDXosIXJTvPMnshHmBkqbDAqjIH8QDuFst
+	DU9cIxKaV5xhQHduuHTOz3GQonPq/ibzz56GrFvgccPoYjv9nAsEdQt0+GKj96oHfmb/pEd7+uj8T
+	0x0qVAcSgJsYTLVMRoPD/IbxT/2IyrvlXCoV3YEpNAjGhSqlLVGtt80fKnqBINGvSd7UifjtdDjK0
+	NDTrQSOKONmog1uVoc4W4CWUQlh6LLYAf7k8u1iPckN88fIkhLRIqdWxa33BRR2u+2mCmpeh7AlXl
+	IHQ9KZdg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1svdRK-0000000330V-2mc8;
-	Tue, 01 Oct 2024 14:01:22 +0000
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
+	id 1svnGw-00000004Saj-3FlJ;
+	Wed, 02 Oct 2024 00:31:18 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1svcH9-00000002owM-3EQL;
-	Tue, 01 Oct 2024 12:46:59 +0000
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4916o7IZ005333;
-	Tue, 1 Oct 2024 12:46:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=
-	message-id:subject:from:to:cc:date:in-reply-to:references
-	:content-type:content-transfer-encoding:mime-version; s=pp1; bh=
-	yKBcXMlbIiiNt6hOvqGLtjTPwgQJG4W74YiWW4m8LMY=; b=dax9DCPLTsC87W5z
-	nVxPRNc2UCEPj2EmGgS+N2VJ1GO9FbLBFDxTyZ0dE0YZAIlssfcYJwbdNFxSojxy
-	eU3brQFlq3ROKLZZB4rV5L+d4RAkBYe+FkxrqkgOClVwfl7u+dMP0Xl6vpf2esLp
-	3yGYVNn2URmxGcz/iPKQiKPZe13mvuPkO7lwmNwNM2VOJ5ZAIMw/C3wXhKG3mFKn
-	DVbCysxsqg2crh51aKeIrdyqhNAXY0akO2Vo+7UOsLQEPnjx+NmcrEvX77cDwBqi
-	pd06YaZAcBM5apU5p6fF1gfiK3wqrzwcUQhCQEVg1qLnla6OGkxLKeQkzYZkNESY
-	wQiu5A==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 420c5b9s5y-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 01 Oct 2024 12:46:13 +0000 (GMT)
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 491CdqG4006478;
-	Tue, 1 Oct 2024 12:46:12 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 420c5b9s5u-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 01 Oct 2024 12:46:12 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4919gdSm014145;
-	Tue, 1 Oct 2024 12:46:10 GMT
-Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 41xwmk49ar-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 01 Oct 2024 12:46:10 +0000
-Received: from smtpav03.wdc07v.mail.ibm.com (smtpav03.wdc07v.mail.ibm.com [10.39.53.230])
-	by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 491CkA5Y17629778
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 1 Oct 2024 12:46:10 GMT
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 529CC5805A;
-	Tue,  1 Oct 2024 12:46:10 +0000 (GMT)
-Received: from smtpav03.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A002958054;
-	Tue,  1 Oct 2024 12:46:04 +0000 (GMT)
-Received: from [9.171.18.252] (unknown [9.171.18.252])
-	by smtpav03.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Tue,  1 Oct 2024 12:46:04 +0000 (GMT)
-Message-ID: <4c26934960a2e4240251b064287f90b378b3eee7.camel@linux.ibm.com>
-Subject: Re: [PATCH v7 00/10] Consolidate IO memcpy functions
-From: Niklas Schnelle <schnelle@linux.ibm.com>
-To: Julian Vetter <jvetter@kalrayinc.com>, Arnd Bergmann <arnd@arndb.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas
- <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren
- <guoren@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui
- <kernel@xen0n.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Geert
- Uytterhoeven <geert@linux-m68k.org>,
-        Richard Henderson
- <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        "James E . J . Bottomley"
- <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Richard
- Weinberger <richard@nod.at>,
-        Anton Ivanov
- <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-m68k@lists.linux-m68k.org, linux-alpha@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-arch@vger.kernel.org,
-        Yann Sionneau
-	 <ysionneau@kalrayinc.com>
-Date: Tue, 01 Oct 2024 14:46:03 +0200
-In-Reply-To: <20240930132321.2785718-1-jvetter@kalrayinc.com>
-References: <20240930132321.2785718-1-jvetter@kalrayinc.com>
-Autocrypt: addr=schnelle@linux.ibm.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+	id 1svnGu-00000004SZz-1EjL
+	for linux-um@bombadil.infradead.org;
+	Wed, 02 Oct 2024 00:31:16 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=2OfnzH96tIKPjiXzvLDm2+iYG2xdtJamFtM33HgnTRc=; b=fNspvZrlWPj1CmHG7szBqU0RRw
+	izZ9ZF8zUvlbZpBb6dVSVCCxYQd5ODAPXZsFR8OsxcLrtKuWznSotuqi2rG/voiD2DL7wOBE6S5GN
+	xC+J81HE5FCNcUhEIY26bqzGE4g7FOC9952FP8StWcriP0o8O/SqkgIcdvsrBp7wYSHT4s1C5UW4c
+	uV2cd/lPSMDf6WgSREb++RshIUzgBVyBoG+PioU68CUTsTonwN5ZdEJ0GAzv15k1Cx9ALAc1dS3Yt
+	ubhkczRHIR9qOd+qz90Rynx5G6jAZatVSZj0/CwT0wzRJW7RKkL+ta4Z8rnSy5DnSS4WfAF2K5nhW
+	xuus4gug==;
+Received: from dfw.source.kernel.org ([139.178.84.217])
+	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1svnGj-00000003NeA-1tCM
+	for linux-um@lists.infradead.org;
+	Wed, 02 Oct 2024 00:31:10 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id A53225C4DA0;
+	Wed,  2 Oct 2024 00:30:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3AB9C4CEC6;
+	Wed,  2 Oct 2024 00:30:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727829060;
+	bh=BxPeAVwstxQ1ZJ84CwLHPEPKo/cBlSdPvkP8DRN5uK4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PE6jT2YQaZdkUbaGKw4pSJAdOvVjTXy11QHLRyTlXG4ovw5/38hAr9SuULf/Azdjs
+	 ZEZMC3d+UiHzdxC2HmPtaIrnp/QmtwnnkNe4vUlGZX173WkU2AJk7EapZo7InyliDQ
+	 /5JPC66Ocx4TgM4XcCPqSgwb1+Z2qoIdeymJW06Asr+tIjrYdu7tkJptccj/enfRfm
+	 adirRpJlVWytzCyl7F8egM9yzEJtv48Wjb0GJgHXPcsnn+adbjjRy6yOG4xHnuYlAG
+	 WCz2Y3nS6k6LeucH3EFARyU/b42JUEazEIqo0852TpuoZ/xPLmzrFD/E2smR7rprbK
+	 sYYXQrqnS86jA==
+Date: Tue, 1 Oct 2024 17:30:56 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Wentao Zhang <wentaoz5@illinois.edu>
+Cc: Matt.Kelly2@boeing.com, akpm@linux-foundation.org,
+	andrew.j.oppelt@boeing.com, anton.ivanov@cambridgegreys.com,
+	ardb@kernel.org, arnd@arndb.de, bhelgaas@google.com, bp@alien8.de,
+	chuck.wolber@boeing.com, dave.hansen@linux.intel.com,
+	dvyukov@google.com, hpa@zytor.com, jinghao7@illinois.edu,
+	johannes@sipsolutions.net, jpoimboe@kernel.org,
+	justinstitt@google.com, kees@kernel.org, kent.overstreet@linux.dev,
+	linux-arch@vger.kernel.org, linux-efi@vger.kernel.org,
+	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+	llvm@lists.linux.dev, luto@kernel.org, marinov@illinois.edu,
+	masahiroy@kernel.org, maskray@google.com,
+	mathieu.desnoyers@efficios.com, matthew.l.weber3@boeing.com,
+	mhiramat@kernel.org, mingo@redhat.com, morbo@google.com,
+	ndesaulniers@google.com, oberpar@linux.ibm.com, paulmck@kernel.org,
+	peterz@infradead.org, richard@nod.at, rostedt@goodmis.org,
+	samitolvanen@google.com, samuel.sarkisian@boeing.com,
+	steven.h.vanderleest@boeing.com, tglx@linutronix.de,
+	tingxur@illinois.edu, tyxu@illinois.edu, x86@kernel.org
+Subject: Re: [PATCH v2 1/4] llvm-cov: add Clang's Source-based Code Coverage
+ support
+Message-ID: <20241002003056.GA555609@thelio-3990X>
+References: <20240824230641.385839-1-wentaoz5@illinois.edu>
+ <20240905043245.1389509-1-wentaoz5@illinois.edu>
+ <20240905043245.1389509-2-wentaoz5@illinois.edu>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: yfvNjCI_MMQ4ItlvlrKncPSvyIwqFe56
-X-Proofpoint-ORIG-GUID: u301Vc-dRWWJQZGPXQgLd9Eo_IcODVzW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-01_09,2024-09-30_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 priorityscore=1501 clxscore=1011 adultscore=0 mlxscore=0
- mlxlogscore=999 impostorscore=0 malwarescore=0 spamscore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2408220000 definitions=main-2410010081
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240905043245.1389509-2-wentaoz5@illinois.edu>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241001_054647_843607_9715FAC3 
-X-CRM114-Status: GOOD (  19.19  )
+X-CRM114-CacheID: sfid-20241002_013108_308020_EBDD812B 
+X-CRM114-Status: GOOD (  33.25  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -143,64 +106,172 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2024-09-30 at 15:23 +0200, Julian Vetter wrote:
-> Thank you all for your remarks. I have addressed your feedback. I have
-> also added the full history of the patchset, because it now targets
-> additional architectures.
->=20
-> Arnd: Unfortunately when adding the prototypes as 'extern ..' into
-> asm-generic/io.h they conflict with some individual implementations
-> (namely m68k, alpha, parisc, and sh). So, I have aligned these functions
-> to match the prototypes in asm-generic/io.h.
-> For the um problem, unfortunately there are A LOT of drivers that use
-> these IO memcpy functions, so I went a bit the lazy route and added
-> dummy functions to um's io.h.
->=20
-> David: Thank you for your remarks. I have replaced the mix of long,
-> uintptr_t, etc. all by long + sizeof(long). I have also split the
-> read/write operation from the put/get_unaligned into two lines for
-> better readability.
->=20
-> Signed-off-by: Julian Vetter <jvetter@kalrayinc.com>
-> ---
->=20
+Hi Wentao,
 
-Hi Julian,
+On Wed, Sep 04, 2024 at 11:32:42PM -0500, Wentao Zhang wrote:
+> Add infrastructure to support Clang's source-based code coverage [1]. This
+> includes debugfs entries for serializing profiles and resetting
+> counters/bitmaps.  Also adds coverage flags and kconfig options.
 
-It seems you missed the memcpy_toio()/memcpy_fromio() in
-arch/s390/include/asm/io.h, probably because these are macros
-and minimal configs might not build s390x with PCI enabled.
+Some superficial comments below. My general understanding of
+implementing a standalone compiler-rt interface is not super deep, so I
+won't really comment on that code, but it seems generally fine to me.
+From a coding style perspective, everything seems reasonable, assuming
+it passes checkpatch.pl (I didn't check). The Kbuild bits look good as
+well, they match the gcov implementation.
 
-One snippet from the error output is:
+As most of my comments are more nits than anything else, feel free to
+carry this over:
 
-In file included from arch/s390/kernel/asm-offsets.c:11:
-In file included from ./include/linux/kvm_host.h:19:
-In file included from ./include/linux/msi.h:24:
-In file included from ./include/linux/irq.h:20:
-In file included from ./include/linux/io.h:14:
-In file included from ./arch/s390/include/asm/io.h:93:
-./include/asm-generic/io.h:105:13: error: conflicting types for 'zpci_memcp=
-y_fromio'
-  105 | extern void memcpy_fromio(void *to, const volatile void __iomem *fr=
-om,
-      |             ^
-./arch/s390/include/asm/io.h:61:40: note: expanded from macro 'memcpy_fromi=
-o'
-   61 | #define memcpy_fromio(dst, src, count)  zpci_memcpy_fromio(dst, src=
-, count)
-      |                                         ^
-./arch/s390/include/asm/pci_io.h:144:19: note: previous definition is here
-  144 | static inline int zpci_memcpy_fromio(void *dst,
-      |                   ^
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-I think the best course of action might be to change the
-zpci_memcpy_=E2=80=A6() functions to match the generic signatures. While th=
-e
-generic implementation might work it would be very inefficient for us
-as we really need to use the PCI Store Block instructions.
+> diff --git a/kernel/llvm-cov/Kconfig b/kernel/llvm-cov/Kconfig
+> new file mode 100644
+> index 000000000..9241fdfb0
+> --- /dev/null
+> +++ b/kernel/llvm-cov/Kconfig
+> @@ -0,0 +1,64 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +menu "Clang's source-based kernel coverage measurement (EXPERIMENTAL)"
+> +
+> +config ARCH_HAS_LLVM_COV
+> +	bool
+> +
+> +config ARCH_HAS_LLVM_COV_PROFILE_ALL
+> +	bool
 
-Thanks,
-Niklas
+It might be worth mentioning somewhere in here what architectures need
+to do to implement this in their architectures. I can surmise from the
+x86 patches that it appears to just be excluding files from
+instrumentation that need to be free from it and adding the sections to
+their linker file but if there are any gotchas, documentation would help
+other architectures impelement this, since it seems pretty useful for
+development.
 
+> +config LLVM_COV_KERNEL
+> +	bool "Enable Clang's source-based kernel coverage measurement"
+> +	depends on DEBUG_FS
+> +	depends on ARCH_HAS_LLVM_COV
+> +	depends on CC_IS_CLANG && CLANG_VERSION >= 180000
+> +	default n
 
+Drop this, it is the default.
+
+> +	help
+> +	  This option enables Clang's Source-based Code Coverage.
+> +
+> +	  If unsure, say N.
+> +
+> +	  On a kernel compiled with this option, run your test suites, and
+> +	  download the raw profile from /sys/kernel/debug/llvm-cov/profraw.
+> +	  This file can then be converted into the indexed format with
+> +	  llvm-profdata and used to generate coverage reports with llvm-cov.
+> +
+> +	  Additionally specify CONFIG_LLVM_COV_PROFILE_ALL=y to get profiling
+> +	  data for the entire kernel. To enable profiling for specific files or
+> +	  directories, add a line similar to the following to the respective
+> +	  Makefile:
+> +
+> +	  For a single file (e.g. main.o):
+> +	          LLVM_COV_PROFILE_main.o := y
+> +
+> +	  For all files in one directory:
+> +	          LLVM_COV_PROFILE := y
+> +
+> +	  To exclude files from being profiled even when
+> +	  CONFIG_LLVM_COV_PROFILE_ALL is specified, use:
+> +
+> +	          LLVM_COV_PROFILE_main.o := n
+> +	  and:
+> +	          LLVM_COV_PROFILE := n
+> +
+> +	  Note that a kernel compiled with coverage flags will be significantly
+> +	  larger and run slower.
+> +
+> +	  Note that the debugfs filesystem has to be mounted to access the raw
+> +	  profile.
+> +
+> +config LLVM_COV_PROFILE_ALL
+> +	bool "Profile entire Kernel"
+> +	depends on !COMPILE_TEST
+> +	depends on LLVM_COV_KERNEL
+> +	depends on ARCH_HAS_LLVM_COV_PROFILE_ALL
+> +	default n
+
+Ditto as above.
+
+> +	help
+> +	  This options activates profiling for the entire kernel.
+> +
+> +	  If unsure, say N.
+> +
+> +	  Note that a kernel compiled with profiling flags will be significantly
+> +	  larger and run slower.
+> +
+> +endmenu
+> diff --git a/kernel/llvm-cov/Makefile b/kernel/llvm-cov/Makefile
+> new file mode 100644
+> index 000000000..f6a236562
+> --- /dev/null
+> +++ b/kernel/llvm-cov/Makefile
+> @@ -0,0 +1,5 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +GCOV_PROFILE		:= n
+
+Adding this seems to imply that GCOV and llvm-cov can be active at the
+same time and work together? Does that make sense? Are there things that
+GCOV can track that llvm-cov cannot? If any of the answers to those
+questions are no, would it make sense to make these mutually exclusive
+via Kconfig?
+
+> +LLVM_COV_PROFILE	:= n
+> +
+> +obj-y	+= fs.o
+...
+> diff --git a/kernel/llvm-cov/llvm-cov.h b/kernel/llvm-cov/llvm-cov.h
+> new file mode 100644
+> index 000000000..d9551a685
+> --- /dev/null
+> +++ b/kernel/llvm-cov/llvm-cov.h
+> @@ -0,0 +1,156 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2019	Sami Tolvanen <samitolvanen@google.com>, Google, Inc.
+> + * Copyright (C) 2024	Jinghao Jia   <jinghao7@illinois.edu>,   UIUC
+> + * Copyright (C) 2024	Wentao Zhang  <wentaoz5@illinois.edu>,   UIUC
+> + *
+> + * This software is licensed under the terms of the GNU General Public
+> + * License version 2, as published by the Free Software Foundation, and
+> + * may be copied, distributed, and modified under those terms.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+
+FWIW, I think you can drop this boilerplate text when you include the
+SPDX indentifier:
+
+"An alternative to boilerplate text is the use of Software Package Data
+Exchange (SPDX) license identifiers in each source file."
+
+https://www.kernel.org/doc/html/latest/process/license-rules.html
+
+> +#if defined(CONFIG_CC_IS_CLANG) && CONFIG_CLANG_VERSION >= 190000
+> +#define INSTR_PROF_RAW_VERSION		10
+> +#define INSTR_PROF_DATA_ALIGNMENT	8
+> +#define IPVK_LAST			2
+> +#elif defined(CONFIG_CC_IS_CLANG) && CONFIG_CLANG_VERSION >= 180000
+> +#define INSTR_PROF_RAW_VERSION		9
+> +#define INSTR_PROF_DATA_ALIGNMENT	8
+> +#define IPVK_LAST			1
+> +#endif
+
+It might be interesting to note the commit from LLVM 19 that introduced
+the need for this change and what happens when it is not updated so that
+any future breakage can be quickly addressed by people other than
+yourself.
+
+Cheers,
+Nathan
 
