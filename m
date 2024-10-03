@@ -4,65 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EEBCCCF3195
-	for <linux-um@archiver.kernel.org>; Wed,  2 Oct 2024 06:43:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 12477CF8552
+	for <linux-um@archiver.kernel.org>; Thu,  3 Oct 2024 03:14:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=/u7ndM9PjegOZvGmdKHJOiXuqepu5JOIg5M63tk3noI=; b=jbR4fMxazN8ddHOlARJhWoEDvK
-	rXJDb5XGMZNWKm1zSYq+al2OtT6pwiteoSGO4b1++H4048DUmEo259/SWS892FmHE+3m2C2ZIeyOs
-	NPQl/TcjQlkQkiMsjlmQtPqQtgVxwcOiPHtDC11NZgSBQOh1W5vCHmADvG27qU35cW3xOyfRecZ4O
-	XuuQ9ODYECuAO0985gqnlApc8UkFWeEzndhOoL0sriQgpikfTEbUec7R4hYejOcnyb+tovnINhvhw
-	m8zyAuobP2ijeGLapTuhzlK6jRCm40V3KnLI3d6mGpJkQFlAkyMd5ct19mZyEst8Do5hfj9Yb83AR
-	LLb+8VXQ==;
+	bh=bVmdUELTDUmyOs2T634ZSBxOSroRBta42gzygmF21tA=; b=RB2MdZ8MU8yEqCyj3rePK2kLVi
+	tgSOHFPsrXKU4tFIm8wHf02ys+pX7BDsrZOGIYYC0emEbhjudPc95b3wyjEP/XyUb1bCMom92aL7A
+	9UuUUdJONAyTv3PwmZwl/j18NSYmzff/jioSK4vQkcCzoU45Yze9PX9Ws0omOPInmk6ZK5BW0Xxea
+	SdL/CjYdFayoPNlharRmB66n3p2K5vRz5xjNVwMkBtEzwOtHESiX3kuAGNMGnbv8cwnpUOyZ0w/EA
+	DHzrOTW0a9S++847UceBo1kPUOHDKOcmcBG39/bPxyxWZzJbE/hKW/Bjm0+BzE9K+yblBh0hCuFts
+	x5h/gzBQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1svt4v-00000004xNr-1OvR;
-	Wed, 02 Oct 2024 06:43:17 +0000
-Received: from mail-qv1-xf44.google.com ([2607:f8b0:4864:20::f44])
+	id 1swCIa-000000083rl-3ooi;
+	Thu, 03 Oct 2024 03:14:40 +0000
+Received: from mail-qk1-x741.google.com ([2607:f8b0:4864:20::741])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1svt4n-00000004xMd-1JS3
+	id 1swCIU-000000083qN-3haa
 	for linux-um@lists.infradead.org;
-	Wed, 02 Oct 2024 06:43:15 +0000
-Received: by mail-qv1-xf44.google.com with SMTP id 6a1803df08f44-6cb7f5f9fb7so8945466d6.1
-        for <linux-um@lists.infradead.org>; Tue, 01 Oct 2024 23:43:07 -0700 (PDT)
+	Thu, 03 Oct 2024 03:14:36 +0000
+Received: by mail-qk1-x741.google.com with SMTP id af79cd13be357-7a9ae8fc076so52473585a.2
+        for <linux-um@lists.infradead.org>; Wed, 02 Oct 2024 20:14:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=illinois-edu.20230601.gappssmtp.com; s=20230601; t=1727851387; x=1728456187; darn=lists.infradead.org;
+        d=illinois-edu.20230601.gappssmtp.com; s=20230601; t=1727925273; x=1728530073; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/u7ndM9PjegOZvGmdKHJOiXuqepu5JOIg5M63tk3noI=;
-        b=uxJxeP/pK7uvcxMkq1EbsXrJBe1TML+v4HYgkAG7xEfKSl6w9oP0S6yD2Wa8fRK9E2
-         hDxhl2mHTSaHLl1OJCDPU7tMjsfjI260QQXqndTLIWCAs8+vZEjOSt5sGHnXtueYCOkX
-         Gxq7XORBRZgpzqN3Nht0X/MU0acwdZ2GRJJC9JuyjhubUeBZWwb+pSPWlGupaG5urz+A
-         rTgZCU5wIq1r5M/bF9CtnaBDqoHWk99N3XeMYp5bjRSLg+S+j4kghghFjf1SZasc5n5s
-         woKf9win7IyxtwwLmbl2t6E4EBWlXKMqPneuHPqzRTmG8XJj7nl4/nHpT+LgW4/mXHo8
-         CXow==
+        bh=bVmdUELTDUmyOs2T634ZSBxOSroRBta42gzygmF21tA=;
+        b=Vh2M1/IQeTArfPjHssn/Z+PVw4IPvE8S4PknoJ5k16TLgJvTfvU1wU45NwihfWtaDP
+         5M9lspFMCJIWXeljdSu7zSCro99uUJVZZwYU9r0kXyxFEwZUMAK3bA70D/iayT4C8JoW
+         xsG5HSlWHS+hP1R91FAO/nlfqSpX9mrWFx128xCmDc4g3EhH/ftUZvKwGe3OhLLJhkEq
+         2sjqS+VnL531fBXY985+fuemd3gbSakPqqMzrbInWq/QFv5theCRulT0gW6uYZ5g7zhR
+         bOZAgx7D4DjM9AQx6KPW+64WTXYJtnw3SMmMKERudHvVu9YBNMqD8LyeJWQjzuLZ0WLn
+         rCfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727851387; x=1728456187;
+        d=1e100.net; s=20230601; t=1727925273; x=1728530073;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/u7ndM9PjegOZvGmdKHJOiXuqepu5JOIg5M63tk3noI=;
-        b=E8+5QQLPxBnAEfkDTYba9MAhEShQ6C94iWDPUsD18RPaRsPclzTQUNQDOXJzr58Kya
-         dYaugM+83866QTrLTKB215RQhUjSzLr5dM3bXIt2HJQouMq6h00x//CbNNWQmjuIPFp5
-         6Y/S3EU4KWXmfnTAOAZbsmNmo6hGZWF8lMfCNIhMF5Ajo6Z20O8K5R+w4Q82V6CpOg3t
-         IK0rWu+Lb57YVnj60j1/nIYKl3nnrGq9/5Sr14Pif52/FcXfnezOsUdsiqce7AyQ0FBH
-         hAssOIombd0LiWqi9OYzk2wr5AG/KmPV0jYXe9thkJDACxxV94cUydb29FJlI4v/c/Tx
-         mLXw==
-X-Forwarded-Encrypted: i=1; AJvYcCXYC0WskC+LO0HBAqRc10yhDBnES5/rJfcbXQxxLN7c5DEl8MtR24E3FiurkNZudhFg7xpT34OAbA==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yz4cS6ka7/9ef/Ytq7sLAOBTVSVW8VqcRN3nb9f3UXO2FAg9MVI
-	Gy735UE2RR6hSAsaWD4V0Li6mb3EXcHSH4JjtwQN9WaucDCjfbKtTKWxRT/OrQ==
-X-Google-Smtp-Source: AGHT+IHrkRLceuVqxuW80Ei9nOewPBzqZcw30/kwrIYrc0giV5pzOirc+orj5fvwWApNas7yutkn3w==
-X-Received: by 2002:a05:6214:3f86:b0:6cb:7fb1:2038 with SMTP id 6a1803df08f44-6cb81cc447emr31672946d6.53.1727851386930;
-        Tue, 01 Oct 2024 23:43:06 -0700 (PDT)
-Received: from shizuku.. ([2620:0:e00:550a:41e8:eb4:11eb:d3ce])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6cb3b6008efsm57077246d6.15.2024.10.01.23.43.05
+        bh=bVmdUELTDUmyOs2T634ZSBxOSroRBta42gzygmF21tA=;
+        b=M4zzJm4/rBZ5zAaABZiYYzrLla40pz1ipvXTVUhAeXfFiE20ggMwqF+gWcREuQqCvW
+         kyOL5DWnHcjR8Fr2kJXtKYP505nkEPfUZilmvDCq5Tfrbc7RrCQY0mWuo4VucX1o8CQS
+         mls6UIRGQFJob31AfqfMjCIR4ebzECONKUwoWmurdaV37yT3WK/wJ127uuytHTUl1hdr
+         HrCBQs5AxZ7O5BzdsN6/iRquNlL5Z5SpJs61RRsNgZcTBE6z/Y+YsyrkXzrUCCibITeG
+         3ilddUhLhd0rGJWteYfDyX3bn+MEBA6KTI4p2YpwACuyak93VIEv3X1MKgYC/PbdzlKc
+         PasQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVfc1uX0EmVmVYm4G5OwcYIutVkswONiar9R8n0HFs4tyIQ0K24PtaSyfewumB2aZpLfH6OU06zpA==@lists.infradead.org
+X-Gm-Message-State: AOJu0YwZVO460a2kqFj5M4QfP8xR/VGc8j/dLzob3Yxq5hSfn3SC0zHA
+	njjbCj2GJ+lg7BPrVLZQ2H2yaFbshLl9qqQErXvtXRXNs3O4q879jey2X+loUw==
+X-Google-Smtp-Source: AGHT+IHyjSRkhjgcIpyEOBBu1F4Ot9eDMUivzJG0kRwm+KN8Ac30ciJk502QH5kn26uBubpxXFT/Wg==
+X-Received: by 2002:a05:620a:1923:b0:7a9:a63a:9f48 with SMTP id af79cd13be357-7ae626ac34dmr793486485a.11.1727925273322;
+        Wed, 02 Oct 2024 20:14:33 -0700 (PDT)
+Received: from shizuku.. ([2620:0:e00:550a:6782:866c:334a:d5e9])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7ae6b29e2c9sm6901385a.15.2024.10.02.20.14.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Oct 2024 23:43:06 -0700 (PDT)
+        Wed, 02 Oct 2024 20:14:33 -0700 (PDT)
 From: Wentao Zhang <wentaoz5@illinois.edu>
 To: nathan@kernel.org
 Cc: Matt.Kelly2@boeing.com,
@@ -113,17 +113,17 @@ Cc: Matt.Kelly2@boeing.com,
 	tyxu@illinois.edu,
 	wentaoz5@illinois.edu,
 	x86@kernel.org
-Subject: Re: [PATCH v2 0/4] Enable measuring the kernel's Source-based Code Coverage and MC/DC with Clang
-Date: Wed,  2 Oct 2024 01:42:52 -0500
-Message-Id: <20241002064252.41999-1-wentaoz5@illinois.edu>
+Subject: Re: [PATCH v2 2/4] llvm-cov: add Clang's MC/DC support
+Date: Wed,  2 Oct 2024 22:14:29 -0500
+Message-Id: <20241003031429.46276-1-wentaoz5@illinois.edu>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20241002045347.GE555609@thelio-3990X>
-References: <20241002045347.GE555609@thelio-3990X>
+In-Reply-To: <20241002011030.GB555609@thelio-3990X>
+References: <20241002011030.GB555609@thelio-3990X>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241001_234309_644929_DFB7C5CF 
-X-CRM114-Status: GOOD (  32.37  )
+X-CRM114-CacheID: sfid-20241002_201435_214577_16A730E8 
+X-CRM114-Status: GOOD (  34.86  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -140,79 +140,91 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 Hi Nathan,
 
-Thanks for all the comments!
+Thanks for your review! See some of my responses below inline. Other
+comments, including those to [1/4] and [4/4], are acknowledged and will be
+updated in v3.
 
-On 2024-10-01 23:53, Nathan Chancellor wrote:
-> Hi Wentao,
->
-> I took this series for a spin on next-20241001 with LLVM 19.1.0 using a
-> distribution configuration tailored for a local development VM using
-> QEMU. You'll notice on the rebase for 6.12-rc1 but there is a small
-> conflict in kernel/Makefile due to commit 0e8b67982b48 ("mm: move
-> kernel/numa.c to mm/").
->
-> I initially did the build on one of my test machines which has 16
-> threads with 32GB of RAM and ld.lld got killed while linking vmlinux.o.
-> Is your comment in the MC/DC patch "more memory is consumed if larger
-> decisions are getting counted" relevant here or is that talking about
-> runtime memory on the target device? I assume the latter but I figured I
+On 2024-10-01 20:10, Nathan Chancellor wrote:
+> ...
+> > maximum value supported by Clang is 32767. According to local experiments,
+> > the working maximum for Linux kernel is 46, with the largest decisions in
+> > kernel codebase (with 47 conditions, as of v6.11) excluded, otherwise the
+> > kernel image size limit will be exceeded. The largest decisions in kernel
+> > are contributed for example by macros checking CPUID.
+> > 
+> > Code exceeding LLVM_COV_KERNEL_MCDC_MAX_CONDITIONS will produce compiler
+> > warnings.
+> > 
+> > As of LLVM 19, certain expressions are still not covered, and will produce
+> > build warnings when they are encountered:
+> > 
+> > "[...] if a boolean expression is embedded in the nest of another boolean
+> >  expression but separated by a non-logical operator, this is also not
+> >  supported. For example, in x = (a && b && c && func(d && f)), the d && f
+> >  case starts a new boolean expression that is separated from the other
+> >  conditions by the operator func(). When this is encountered, a warning
+> >  will be generated and the boolean expression will not be
+> >  instrumented." [4]
+> 
+> These two sets of warnings appear to be pretty noisy in my build
+> testing... Is there any way to shut them up? Perhaps it is good for
 
-Yes the build process (linking particularly) is quite memory-intensive if
-the whole kernel is instrumented with source-based code coverage, no matter
-it's with or without MC/DC. What you've observed is expected. (Although the
-quoted message was referring to runtime overhead)
+These two warnings are currently implemented as custom diagnostic in
+clang/lib/CodeGen/CodeGenPGO.cpp:dataTraverseStmtPost. So I'm afraid there
+is no corresponding "-W[no-]xxx" flag at this moment. I agree such switches
+would be desirable but we might have to nudge this in LLVM community.
 
-On the last slide of [8] I had some earlier data regarding full-kernel
-build- and run-time overhead. In our GitHub Actions builds [9], I have
-been keeping track of "/usr/bin/time -v make ..." output and the results
-can be found in step => "4. Build the kernel" => "Print kernel build
-resource usage". You may want to check them.
+> users to see these limitations but it basically makes the build output
+> useless. If there were switches, then they could be disabled in the
+> default case with a Kconfig option to turn them on if the user is
+> concerned with seeing which parts of their code are not instrumented. I
+> could see developers wanting to run this for writing tests and they
+> might not care about this as much as someone else might.
+> 
+> I did leave LLVM_COV_KERNEL_MCDC_MAX_CONDITIONS at its default value.
+> Perhaps there is a more reasonable default that would result in less
+> noisy build output but not run afoul of potential memory usage concerns?
+> I assume that mention means that memory usage may be a concern for the
+> type of deployments this technology would commonly be used with?
 
-I am not aware of neat ways of alleviating this overhead fundamentally so I
-would love any advice on it. And perhaps now the more recommended way of
-using the proposed feature is to instrument and measure the kernel on a
-per-component basis.
+To my own experiences, enlarging this threshold won't really help with the
+issue, because the other type of warning ("nested boolean") is even more
+prevalent in kernel codebase. I once built the kernel serially and counted
+the number of instances from the gigantic log:
 
-[8] https://lpc.events/event/18/contributions/1895/attachments/1643/3462/LPC'24%20Source%20based%20(short).pdf
-[9] https://github.com/xlab-uiuc/linux-mcdc/actions
+  unsupported number of conditions (>6): 837
+  unsupported nested boolean:            8029
 
-> would make sure. If not, it might be worth a comment somewhere that this
-> can also require some heftier build resources possibly? If that is not
+So again we should probably improve this on the tool side. I can talk to
+developers there separately.
 
-Sure.
+> ...
+> > diff --git a/Makefile b/Makefile
+> > index 51498134c..1185b38d6 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -740,6 +740,12 @@ all: vmlinux
+> >  CFLAGS_LLVM_COV := -fprofile-instr-generate -fcoverage-mapping
+> >  export CFLAGS_LLVM_COV
+> >  
+> > +CFLAGS_LLVM_COV_MCDC := -fcoverage-mcdc
+> > +ifdef CONFIG_LLVM_COV_KERNEL_MCDC_MAX_CONDITIONS
+> > +CFLAGS_LLVM_COV_MCDC += -Xclang -fmcdc-max-conditions=$(CONFIG_LLVM_COV_KERNEL_MCDC_MAX_CONDITIONS)
+> 
+> Why is -Xclang needed here? Is this not a full frontend flag?
 
-> expected, I am happy to help look into why it is happening.
->
-> I was able to successfully build that same configuration and setup with
-> my primary workstation, which is much beefier. Unfortunately, the
-> resulting kernel did not boot with my usual VM testing setup. I will see
-> if I can narrow down a particular configuration option that causes this
-> tomorrow because I did a test with defconfig +
-> CONFIG_LLVM_COV_PROFILE_ALL and it booted fine. Perhaps some other
-> option that is not compatible with this? I'll follow up with more
-> information as I have it.
-
-Good to hear that you've run it and thanks for reporting the booting issue.
-You may send me the config if appropriate and I'll also take a look.
-
->
-> On the integration front, I think the -mm tree, run by Andrew Morton,
-> would probably be the best place to land this with Acks from the -tip
-> folks for the x86 bits? Once the issue above has been understood, I
-> think you can send v3 with any of the comments I made addressed and a
-> potential fix for the above issue if necessary directly to him, instead
-> of just on cc, so that it gets his attention. Other maintainers are free
-> to argue that it should go through their trees instead but I think it
-> would be good to decide on that sooner rather than later so this
-> patchset is not stuck in limbo.
-
-Yeah -mm tree sounds good to me. Let me work on v3 while we address the
-booting issue and wait for others' opinions if any.
+"-fmcdc-max-conditions" is a cc1 option only, while "-fcoverage-mcdc" is
+both a cc1 option and a clang option. See llvm/llvm-project#82448 and their
+changes to clang/include/clang/Driver/Options.td.
 
 Thanks,
 Wentao
 
->
-> Cheers,
-> Nathan
+> 
+> > +endif
+> > +export CFLAGS_LLVM_COV_MCDC
+> > +
+> >  CFLAGS_GCOV	:= -fprofile-arcs -ftest-coverage
+> >  ifdef CONFIG_CC_IS_GCC
+> >  CFLAGS_GCOV	+= -fno-tree-loop-im
 
