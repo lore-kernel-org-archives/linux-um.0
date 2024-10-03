@@ -4,97 +4,101 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 989B4CF855A
-	for <linux-um@archiver.kernel.org>; Thu,  3 Oct 2024 04:24:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 518D0CF34B0
+	for <linux-um@archiver.kernel.org>; Thu,  3 Oct 2024 14:46:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=U/60/8wx6TbhlqvUyeLWQvUQcyo91KnWb9aUOijCaGI=; b=hEZ+eDKDTpmcyu4sj0vwApeJUz
-	GGfEDu4CK5vmf6r7VdN34Yp6gCFjldH3f0ZULpQ//F7JBcppGXBKYguH4TMROCQDJVUc0gnAZfu3c
-	LYoOtUYMIRhh8UJRLQlmuF+6BwzOF1oYoOJ+Jclgl73VzTvCTeGVY9IIFmDin5piCW6dx+MT99cR3
-	dPiOyk+PeUSyTrabJaqmfNWoq7C+/crvsEDd8G0JB6oDznDcTxdzzdMJBbqcn6c/1M1YH4HVCXdqF
-	5SrUUZbzXgCPm3ChFVwIVzBwnbUkClMawhticWLOG1n5IN3Z+dWywXD16+t4W+IyciF5Vq1Ia5Ubp
-	H6Fp5Jmg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=/wSFs2AZuVyV0WjazJSfQ5VVOaJNnI6A+XKfJwz8XRo=; b=h2vz1FFFPV7P4L68+QWdwYFhcv
+	qTexOufuD5T2lumm5saJ86lWA/IMqqqcRKUKNcRzApPuFc1GfOT7MNwziDfX93MT9Z9RG0TZUTvVT
+	xIWZT7d3EuhL1oXR1onSC5ne3+88FLK5Tel382g93NY7qsIgiabAvt4Z1m03kDDanKIQbf5NrkWNE
+	SnZxcmOSQmJh+aPLbZNl6P1erWBJBOg/WzE8nM7uSGWSljpBmmpJB2tnec0v+MvGlKqclOggiOt0Z
+	jMvSTeMrF4MdLm8IxxwWjUa3BpuzO4IeWcQZ0/3qGnLB031bGIZAz9yX8z4sIC8L0oGrGpV13yK1V
+	IS/CC1cw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1swDOO-000000088gV-2An1;
-	Thu, 03 Oct 2024 04:24:44 +0000
-Received: from mgamail.intel.com ([192.198.163.14])
+	id 1swN64-00000009RfO-2Arn;
+	Thu, 03 Oct 2024 14:46:28 +0000
+Received: from mail-pf1-x42d.google.com ([2607:f8b0:4864:20::42d])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1swDN7-000000088XF-0DrI;
-	Thu, 03 Oct 2024 04:23:26 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1727929405; x=1759465405;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=EtmmmjmtCv7y2r6N/47etXvFSsaT+TfFyuK+t624T28=;
-  b=NnrSRKHv0SBx3Hswneo/rieW7MNgPDLaakZwcuVe20fYKlLV7KE3/7mx
-   TmbQXAYoDv2QhOIKuzzQkhazi+/JHd+pUkEaT/R+2wFRQ/x5I6MVcI7+e
-   jzeyQF8qHVqcKGrJeN4a2757aBbp+xi8vz0jiDVvWUOv/zVwJDeHFy6hN
-   RgiK0mvGg93yjEVU+zn4jZEJJzv+VXiimiBHa9cIBRZnDDu20M+UVsZ9+
-   i/s3kUVVUMvkQ2ehL/KucD5utJbFwOJqz/p15DEJPmzjNqGZFiDV1eUWI
-   IFt43WdessQo2JQuqKbJmDWSkNqGonxXRCdLGpX3jRAad5pZQHf2xNgiU
-   g==;
-X-CSE-ConnectionGUID: Ln9hfmoITIqz5SbATUJ10Q==
-X-CSE-MsgGUID: BL+GrJ3ARv2Y30INAnjzeA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11213"; a="27291016"
-X-IronPort-AV: E=Sophos;i="6.11,173,1725346800"; 
-   d="scan'208";a="27291016"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2024 21:23:21 -0700
-X-CSE-ConnectionGUID: WkoeICGXRPSQ1BhbC3+oiA==
-X-CSE-MsgGUID: r5WHHwS8RfqeYPAtPz/yNA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,173,1725346800"; 
-   d="scan'208";a="79072842"
-Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
-  by orviesa003.jf.intel.com with ESMTP; 02 Oct 2024 21:23:13 -0700
-Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1swDMt-000024-1U;
-	Thu, 03 Oct 2024 04:23:11 +0000
-Date: Thu, 3 Oct 2024 12:23:06 +0800
-From: kernel test robot <lkp@intel.com>
-To: Julian Vetter <jvetter@kalrayinc.com>, Arnd Bergmann <arnd@arndb.de>,
-	Russell King <linux@armlinux.org.uk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-	Matt Turner <mattst88@gmail.com>,
-	"James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>
-Cc: oe-kbuild-all@lists.linux.dev,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-csky@vger.kernel.org, loongarch@lists.linux.dev,
-	linux-m68k@lists.linux-m68k.org, linux-alpha@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org,
-	linux-um@lists.infradead.org
-Subject: Re: [PATCH v7 01/10] Consolidate IO memcpy/memset into iomap_copy.c
-Message-ID: <202410031104.2bzZJyNF-lkp@intel.com>
-References: <20240930132321.2785718-2-jvetter@kalrayinc.com>
+	id 1swN61-00000009ReK-2XqB
+	for linux-um@lists.infradead.org;
+	Thu, 03 Oct 2024 14:46:26 +0000
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-7178df70f28so943661b3a.2
+        for <linux-um@lists.infradead.org>; Thu, 03 Oct 2024 07:46:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1727966783; x=1728571583; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/wSFs2AZuVyV0WjazJSfQ5VVOaJNnI6A+XKfJwz8XRo=;
+        b=PSNVeeB7oeioEn2TFoOAlERd2qMA0upY7J80+WfA6RGR3/ZPenGIvahu4sJQ/V/nkm
+         VbMmzXJ/11TLFu84jsFNjZ7GaM0Z2/O1zUm0ZtQrLZdkCp1249ddRvveFygMG8S1Rnnt
+         RgCnZTj9KQO6scn7ej13kKMpFH6Lew/La/IMLRRCLqGL5jxXZABucqELgoZLXuEuewsp
+         ylBDhy2uUuDp9ybY3wYSu6gU9Bjn10UzN9+byDaZzcBOzOkHoVwnM4dQypC/dE91HJNW
+         GsB1gmzegrW8dzEiVmgu/0m+EtBxRCDeR3OuwIgxOrucJ2B/hGDQeLrJuPtMiE/ALviu
+         yBKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727966783; x=1728571583;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/wSFs2AZuVyV0WjazJSfQ5VVOaJNnI6A+XKfJwz8XRo=;
+        b=Q1EDlsUpR6YquFIOq889Jyl9c7ohq5K+tD2sW298UglcMAS5i9SON0BB7FzUiGMMW9
+         wp+pkdPrumjZkDQO4FVplQv4/JmOZFD3IAkGJxeoMRkdKKmovLn28gvRLdcKqw2c/61e
+         EuoL63KPAhj2RsNw6Y89gYGHNC2tlPaN2xhsiJJlWxtTuGtiJ8JCVI3CEfJlJw9Ofy55
+         EQlv+ezc3nIpes2mvW40BJgJmCjYQf0albXUIErqLhwQ45nvpT2jsVG8U+5yno9LVcAL
+         Esncw5vZ6EfLjAX3B5Dmdb+LVTB19bFJj3UjmnStBgklWVdgzbNGQEAGyzpmiohBErMl
+         qCGg==
+X-Forwarded-Encrypted: i=1; AJvYcCV1StVLixdtAFYzHAyWntwjx1TwllzxNCL9+NMQSpm39xnwzSBgpyiUd+dyrwzs5QUx3PuZf0s6ag==@lists.infradead.org
+X-Gm-Message-State: AOJu0YwkJWwYlMkekUlir0m6pMWoWCwJ7Daxi+Yp1oUdzoqNs9Dw3wBA
+	JsceuOQSTn6gvsC7iWmAteuDU7a6s7j2OeE/ydlqb4kR2MtPSuDnazxk+7p5SxY=
+X-Google-Smtp-Source: AGHT+IFqtXWr7EWblGmxV8DoVUC/E8p3CDxEuCfrxe9bestz3shboebLieEWgxOyUrrtzt2XFRL+bA==
+X-Received: by 2002:a05:6a00:a83:b0:710:7fd2:c91 with SMTP id d2e1a72fcca58-71dc5d6df3fmr9812888b3a.26.1727966783505;
+        Thu, 03 Oct 2024 07:46:23 -0700 (PDT)
+Received: from [192.168.0.4] (174-21-81-121.tukw.qwest.net. [174.21.81.121])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71dd9defa5bsm1405345b3a.153.2024.10.03.07.46.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Oct 2024 07:46:23 -0700 (PDT)
+Message-ID: <beb7c984-0a10-4fe5-856f-58000edb68e8@linaro.org>
+Date: Thu, 3 Oct 2024 07:46:20 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240930132321.2785718-2-jvetter@kalrayinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 06/10] alpha: Align prototypes of IO memcpy/memset
+To: Julian Vetter <jvetter@kalrayinc.com>, Arnd Bergmann <arnd@arndb.de>,
+ Russell King <linux@armlinux.org.uk>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Guo Ren <guoren@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+ WANG Xuerui <kernel@xen0n.name>, Andrew Morton <akpm@linux-foundation.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
+ <mattst88@gmail.com>,
+ "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+ Helge Deller <deller@gmx.de>, Yoshinori Sato <ysato@users.sourceforge.jp>,
+ Rich Felker <dalias@libc.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Richard Weinberger <richard@nod.at>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-csky@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-m68k@lists.linux-m68k.org, linux-alpha@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org,
+ linux-um@lists.infradead.org, linux-arch@vger.kernel.org,
+ Yann Sionneau <ysionneau@kalrayinc.com>
+References: <20240930132321.2785718-1-jvetter@kalrayinc.com>
+ <20240930132321.2785718-7-jvetter@kalrayinc.com>
+Content-Language: en-US
+From: Richard Henderson <richard.henderson@linaro.org>
+In-Reply-To: <20240930132321.2785718-7-jvetter@kalrayinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241002_212325_175137_0B202311 
-X-CRM114-Status: GOOD (  13.71  )
+X-CRM114-CacheID: sfid-20241003_074625_694934_6C8B09BF 
+X-CRM114-Status: GOOD (  16.25  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,128 +113,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Julian,
+On 9/30/24 06:23, Julian Vetter wrote:
+> Align the prototypes of the memcpy_{from,to}io and memset_io functions
+> with the new ones from iomap_copy.c and remove function declarations,
+> because they are now declared in asm-generic/io.h.
+> 
+> Reviewed-by: Yann Sionneau <ysionneau@kalrayinc.com>
+> Signed-off-by: Julian Vetter <jvetter@kalrayinc.com>
+> ---
+> Changes for v7:
+> - New patch
+> ---
+>   arch/alpha/include/asm/io.h | 6 ++----
+>   arch/alpha/kernel/io.c      | 4 ++--
+>   2 files changed, 4 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/alpha/include/asm/io.h b/arch/alpha/include/asm/io.h
+> index b191d87f89c4..db3a9f41447e 100644
+> --- a/arch/alpha/include/asm/io.h
+> +++ b/arch/alpha/include/asm/io.h
+> @@ -591,13 +591,11 @@ extern inline u64 readq_relaxed(const volatile void __iomem *addr)
+>   /*
+>    * String version of IO memory access ops:
+>    */
+> -extern void memcpy_fromio(void *, const volatile void __iomem *, long);
+> -extern void memcpy_toio(volatile void __iomem *, const void *, long);
+>   extern void _memset_c_io(volatile void __iomem *, unsigned long, long);
+>   
+> -static inline void memset_io(volatile void __iomem *addr, u8 c, long len)
+> +static inline void memset_io(volatile void __iomem *dst, int c, size_t count)
+>   {
+> -	_memset_c_io(addr, 0x0101010101010101UL * c, len);
+> +	_memset_c_io(dst, 0x0101010101010101UL * c, count);
 
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on arm64/for-next/core]
-[also build test ERROR on deller-parisc/for-next linus/master arm/for-next arm/fixes v6.12-rc1 next-20241002]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Julian-Vetter/Consolidate-IO-memcpy-memset-into-iomap_copy-c/20240930-213742
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
-patch link:    https://lore.kernel.org/r/20240930132321.2785718-2-jvetter%40kalrayinc.com
-patch subject: [PATCH v7 01/10] Consolidate IO memcpy/memset into iomap_copy.c
-config: powerpc-allnoconfig (https://download.01.org/0day-ci/archive/20241003/202410031104.2bzZJyNF-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 14.1.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241003/202410031104.2bzZJyNF-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202410031104.2bzZJyNF-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from include/linux/io.h:14,
-                    from include/linux/irq.h:20,
-                    from arch/powerpc/include/asm/hardirq.h:6,
-                    from include/linux/hardirq.h:11,
-                    from include/linux/interrupt.h:11,
-                    from include/linux/kernel_stat.h:8,
-                    from include/linux/cgroup.h:25,
-                    from include/linux/memcontrol.h:13,
-                    from include/linux/swap.h:9,
-                    from include/linux/suspend.h:5,
-                    from arch/powerpc/kernel/asm-offsets.c:21:
->> arch/powerpc/include/asm/io.h:709:23: error: conflicting types for 'memcpy_fromio'; have 'void(void *, const volatile void *, size_t)' {aka 'void(void *, const volatile void *, unsigned int)'}
-     709 | #define memcpy_fromio memcpy_fromio
-         |                       ^~~~~~~~~~~~~
-   include/asm-generic/io.h:105:13: note: in expansion of macro 'memcpy_fromio'
-     105 | extern void memcpy_fromio(void *to, const volatile void __iomem *from,
-         |             ^~~~~~~~~~~~~
-   arch/powerpc/include/asm/io-defs.h:58:18: note: previous definition of 'memcpy_fromio' with type 'void(void *, const volatile void *, long unsigned int)'
-      58 | DEF_PCI_AC_NORET(memcpy_fromio, (void *d, const PCI_IO_ADDR s, unsigned long n),
-         |                  ^~~~~~~~~~~~~
-   arch/powerpc/include/asm/io.h:664:20: note: in definition of macro 'DEF_PCI_AC_NORET'
-     664 | static inline void name at                                      \
-         |                    ^~~~
->> arch/powerpc/include/asm/io.h:710:21: error: conflicting types for 'memcpy_toio'; have 'void(volatile void *, const void *, size_t)' {aka 'void(volatile void *, const void *, unsigned int)'}
-     710 | #define memcpy_toio memcpy_toio
-         |                     ^~~~~~~~~~~
-   include/asm-generic/io.h:107:13: note: in expansion of macro 'memcpy_toio'
-     107 | extern void memcpy_toio(volatile void __iomem *to, const void *from,
-         |             ^~~~~~~~~~~
-   arch/powerpc/include/asm/io-defs.h:60:18: note: previous definition of 'memcpy_toio' with type 'void(volatile void *, const void *, long unsigned int)'
-      60 | DEF_PCI_AC_NORET(memcpy_toio, (PCI_IO_ADDR d, const void *s, unsigned long n),
-         |                  ^~~~~~~~~~~
-   arch/powerpc/include/asm/io.h:664:20: note: in definition of macro 'DEF_PCI_AC_NORET'
-     664 | static inline void name at                                      \
-         |                    ^~~~
->> arch/powerpc/include/asm/io.h:708:19: error: conflicting types for 'memset_io'; have 'void(volatile void *, int,  size_t)' {aka 'void(volatile void *, int,  unsigned int)'}
-     708 | #define memset_io memset_io
-         |                   ^~~~~~~~~
-   include/asm-generic/io.h:109:13: note: in expansion of macro 'memset_io'
-     109 | extern void memset_io(volatile void __iomem *dst, int c, size_t count);
-         |             ^~~~~~~~~
-   arch/powerpc/include/asm/io-defs.h:56:18: note: previous definition of 'memset_io' with type 'void(volatile void *, int,  long unsigned int)'
-      56 | DEF_PCI_AC_NORET(memset_io, (PCI_IO_ADDR a, int c, unsigned long n),
-         |                  ^~~~~~~~~
-   arch/powerpc/include/asm/io.h:664:20: note: in definition of macro 'DEF_PCI_AC_NORET'
-     664 | static inline void name at                                      \
-         |                    ^~~~
-   make[3]: *** [scripts/Makefile.build:117: arch/powerpc/kernel/asm-offsets.s] Error 1
-   make[3]: Target 'prepare' not remade because of errors.
-   make[2]: *** [Makefile:1193: prepare0] Error 2
-   make[2]: Target 'prepare' not remade because of errors.
-   make[1]: *** [Makefile:224: __sub-make] Error 2
-   make[1]: Target 'prepare' not remade because of errors.
-   make: *** [Makefile:224: __sub-make] Error 2
-   make: Target 'prepare' not remade because of errors.
+By changing c from 'u8' to 'int', you need to mask before the multiplication.
 
 
-vim +709 arch/powerpc/include/asm/io.h
-
-4cb3cee03d558f include/asm-powerpc/io.h      Benjamin Herrenschmidt 2006-11-11  676  
-4cb3cee03d558f include/asm-powerpc/io.h      Benjamin Herrenschmidt 2006-11-11  677  /* Some drivers check for the presence of readq & writeq with
-4cb3cee03d558f include/asm-powerpc/io.h      Benjamin Herrenschmidt 2006-11-11  678   * a #ifdef, so we make them happy here.
-4cb3cee03d558f include/asm-powerpc/io.h      Benjamin Herrenschmidt 2006-11-11  679   */
-894fa235eb4ca0 arch/powerpc/include/asm/io.h Christophe Leroy       2020-11-21  680  #define readb readb
-894fa235eb4ca0 arch/powerpc/include/asm/io.h Christophe Leroy       2020-11-21  681  #define readw readw
-894fa235eb4ca0 arch/powerpc/include/asm/io.h Christophe Leroy       2020-11-21  682  #define readl readl
-894fa235eb4ca0 arch/powerpc/include/asm/io.h Christophe Leroy       2020-11-21  683  #define writeb writeb
-894fa235eb4ca0 arch/powerpc/include/asm/io.h Christophe Leroy       2020-11-21  684  #define writew writew
-894fa235eb4ca0 arch/powerpc/include/asm/io.h Christophe Leroy       2020-11-21  685  #define writel writel
-894fa235eb4ca0 arch/powerpc/include/asm/io.h Christophe Leroy       2020-11-21  686  #define readsb readsb
-894fa235eb4ca0 arch/powerpc/include/asm/io.h Christophe Leroy       2020-11-21  687  #define readsw readsw
-894fa235eb4ca0 arch/powerpc/include/asm/io.h Christophe Leroy       2020-11-21  688  #define readsl readsl
-894fa235eb4ca0 arch/powerpc/include/asm/io.h Christophe Leroy       2020-11-21  689  #define writesb writesb
-894fa235eb4ca0 arch/powerpc/include/asm/io.h Christophe Leroy       2020-11-21  690  #define writesw writesw
-894fa235eb4ca0 arch/powerpc/include/asm/io.h Christophe Leroy       2020-11-21  691  #define writesl writesl
-894fa235eb4ca0 arch/powerpc/include/asm/io.h Christophe Leroy       2020-11-21  692  #define inb inb
-894fa235eb4ca0 arch/powerpc/include/asm/io.h Christophe Leroy       2020-11-21  693  #define inw inw
-894fa235eb4ca0 arch/powerpc/include/asm/io.h Christophe Leroy       2020-11-21  694  #define inl inl
-894fa235eb4ca0 arch/powerpc/include/asm/io.h Christophe Leroy       2020-11-21  695  #define outb outb
-894fa235eb4ca0 arch/powerpc/include/asm/io.h Christophe Leroy       2020-11-21  696  #define outw outw
-894fa235eb4ca0 arch/powerpc/include/asm/io.h Christophe Leroy       2020-11-21  697  #define outl outl
-894fa235eb4ca0 arch/powerpc/include/asm/io.h Christophe Leroy       2020-11-21  698  #define insb insb
-894fa235eb4ca0 arch/powerpc/include/asm/io.h Christophe Leroy       2020-11-21  699  #define insw insw
-894fa235eb4ca0 arch/powerpc/include/asm/io.h Christophe Leroy       2020-11-21  700  #define insl insl
-894fa235eb4ca0 arch/powerpc/include/asm/io.h Christophe Leroy       2020-11-21  701  #define outsb outsb
-894fa235eb4ca0 arch/powerpc/include/asm/io.h Christophe Leroy       2020-11-21  702  #define outsw outsw
-894fa235eb4ca0 arch/powerpc/include/asm/io.h Christophe Leroy       2020-11-21  703  #define outsl outsl
-68a64357d15ae4 include/asm-powerpc/io.h      Benjamin Herrenschmidt 2006-11-13  704  #ifdef __powerpc64__
-4cb3cee03d558f include/asm-powerpc/io.h      Benjamin Herrenschmidt 2006-11-11  705  #define readq	readq
-4cb3cee03d558f include/asm-powerpc/io.h      Benjamin Herrenschmidt 2006-11-11  706  #define writeq	writeq
-68a64357d15ae4 include/asm-powerpc/io.h      Benjamin Herrenschmidt 2006-11-13  707  #endif
-894fa235eb4ca0 arch/powerpc/include/asm/io.h Christophe Leroy       2020-11-21 @708  #define memset_io memset_io
-894fa235eb4ca0 arch/powerpc/include/asm/io.h Christophe Leroy       2020-11-21 @709  #define memcpy_fromio memcpy_fromio
-894fa235eb4ca0 arch/powerpc/include/asm/io.h Christophe Leroy       2020-11-21 @710  #define memcpy_toio memcpy_toio
-68a64357d15ae4 include/asm-powerpc/io.h      Benjamin Herrenschmidt 2006-11-13  711  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+r~
 
