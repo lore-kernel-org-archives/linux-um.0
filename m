@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98FAFCF8852
-	for <linux-um@archiver.kernel.org>; Fri,  4 Oct 2024 23:38:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CAE45CF8852
+	for <linux-um@archiver.kernel.org>; Fri,  4 Oct 2024 23:43:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=5jRlSgp23qR0Cyzu9QHIiDtMBpvyeilzzyEhkpp7IwM=; b=TliZS0Ugd40SaZfznEQeC4aCmG
-	Eg+ThJDgl/StZCb5MOKSokTGUJq2mUg+Qplty3UMvy62JlPHXnz24FxHVBqrTt5aP5wxjgdvzC+re
-	OPLovtZahIQ6TWLxl7kZgmao4S/vpe/ZmA6es7VkmgcUr58LGI0y4hzpNtlUvWxTeK7MOj4NqYt0I
-	cThBZr5qoZNV0tv87SkdXcIlI4aJRXFLA3COPTphzz0KF2Eet4AeVkp4gpKM+Bv/g/Pq7h0miIHz9
-	5e0oyCjHkgqz8FM2lv+WxgZbVi+60qb1k992mMLZvOR96FIuHHj+xAAKwY+MImvQwdS1UjapvUAfj
-	XyISpa8w==;
+	bh=IRfkoFVhXFJ4qUdIEesMuctZxUKp2IobM/EnXAaLxP4=; b=KdMYirGnSW9rBh3RseN2o8z6Ld
+	dDQnR/N1pwwnRTQ0ZWSpf5/3hhWUcFwqsJ06z1vHPb0x4rrtyD9t5bMPuo5Dxh5/J1TO+ZQRd8aR/
+	li+N3j/EKICp3LI56VI0o/C/dnou5LycBU2idML2vrIi8JwQ+HRNvRShUsk9gJMgVCw+NUFMMbjsr
+	ECtZE70WCeMSm5i5hdjEqLRWp6bJ/iuaqsgcFn29rHptBvjGAZr4s+15vYmBlJqT5qBtU/QZBesu4
+	XfnnUjPU7uqpILc2GnlwWqZ+yHS3Am3b/ZhbOXgJ83U+L9rcXYOIXbQuUG1BjSyOdSC7iUpcIcUMv
+	ugq8eMCA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1swrso-0000000ESqk-2jDB;
-	Fri, 04 Oct 2024 23:38:50 +0000
+	id 1swrx2-0000000ETWS-0pKz;
+	Fri, 04 Oct 2024 23:43:12 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1swrsf-0000000ESpP-1MOv
+	id 1swrww-0000000ETV0-2h4m
 	for linux-um@lists.infradead.org;
-	Fri, 04 Oct 2024 23:38:42 +0000
+	Fri, 04 Oct 2024 23:43:10 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
 	Resent-Message-ID:In-Reply-To:References;
-	bh=5jRlSgp23qR0Cyzu9QHIiDtMBpvyeilzzyEhkpp7IwM=; t=1728085120; x=1729294720; 
-	b=h3IdbFARcmiZzAmvb/iQ3koWolfjNFjdrNS5Ay6CnQf8pfsF5SHyl3UpOhqZLD+Z//OF2UV3DvJ
-	Ux7NHcphj6rNVieUdDUdYIky77g1P/QE39ymo/eYsTmFBadPn78qDcHUT/26aRuDOSNbO+VyDuZsh
-	yPwGuWsvhbMaV1T3VOS6VKbU4sLci2BFvst14Gqy9vDBUU3mbVYYZ2lUwdO5wx6/V6vQ3NxrVNBCa
-	GI+gknRqBTwNRdp9Ge3iKzuLV4CO3JNjd2ig/D3Zl/ZcdhUDk9xekHZVZaEN6EiJ1txxRDuvj33GE
-	vBI97WA8lOxtdcjGxzVdnhpZY/NLdLL4sX2g==;
+	bh=IRfkoFVhXFJ4qUdIEesMuctZxUKp2IobM/EnXAaLxP4=; t=1728085386; x=1729294986; 
+	b=Sv0xqrksYhwgOSBvsuzNlujv/utpW+AB2fbdbWjLTqLdsdZI9/WXrBkTOtZNuLs9ykEzDTKUCib
+	gQgdbHE2P4T1YJG06OVqWcT5DXNEeLbQRt3JrT8qONLp1p/rlokSCu2cNWe5Z1kPQqe1hkFE6CVwf
+	/1MDlwWX3tcCzLAtZ3HYiup+Ndzv5fC34+eR603Ni7T7PYVP4JDEeHHThNAsi8hf2pEMyZxpTrBIU
+	JU+1UPtnOHO33iN/kzRDJrTDbPcqXtepLBSa9ZFmL62u9gJdqp7VxYYD7WKLujBMrWAuLSQVMczgM
+	HAHep7YOKy37yV3o3Qs2cLLObtwYYPFfLWLA==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.98)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1swrsb-00000000AkR-3Jcn;
-	Sat, 05 Oct 2024 01:38:38 +0200
+	id 1swrwt-00000000Au4-3KeV;
+	Sat, 05 Oct 2024 01:43:04 +0200
 From: Benjamin Berg <benjamin@sipsolutions.net>
 To: linux-um@lists.infradead.org
 Cc: Benjamin Berg <benjamin.berg@intel.com>
-Subject: [PATCH] um: remove auxiliary FP registers
-Date: Sat,  5 Oct 2024 01:38:21 +0200
-Message-ID: <20241004233821.2130874-1-benjamin@sipsolutions.net>
+Subject: [RFC PATCH] um: switch to regset API and depend on XSTATE
+Date: Sat,  5 Oct 2024 01:42:03 +0200
+Message-ID: <20241004234203.2132482-1-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.46.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241004_163841_410201_D3BE9629 
-X-CRM114-Status: GOOD (  14.95  )
+X-CRM114-CacheID: sfid-20241004_164307_090654_C576E05A 
+X-CRM114-Status: GOOD (  32.61  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,135 +71,1342 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Benjamin Berg <benjamin.berg@intel.com>
 
-We do not need the extra save/restore of the FP registers when getting
-the fault information. This was originally added in commit 2f56debd77a8
-("uml: fix FP register corruption") but at that time the code was not
-saving/restoring the FP registers when switching to userspace. This was
-fixed in commit fbfe9c847edf ("um: Save FPU registers between task
-switches") and since then the auxiliary registers have not been useful.
+The PTRACE_GETREGSET API has now existed since Linux 2.6.33. The XSAVE
+CPU feature should also be sufficiently common to be able to rely on it.
+
+With this, define our internal FP state to be the hosts XSAVE data. Add
+discovery for the hosts XSAVE register size and place the FP registers
+at the end of task_struct so that we can adjust the size at runtime.
+
+Next we can implement the regset API on top and update the signal
+handling as well as ptrace APIs to use them. Also switched coredump
+creation to use the regset API and finally set HAVE_ARCH_TRACEHOOK.
+
+As a side effect, this will permit UML to run on hosts with newer CPU
+extensions that need even more register state.
 
 Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
----
- arch/um/include/asm/thread_info.h |  2 --
- arch/um/include/shared/os.h       |  2 +-
- arch/um/kernel/process.c          |  4 ++--
- arch/um/os-Linux/skas/process.c   | 25 ++++++-------------------
- 4 files changed, 9 insertions(+), 24 deletions(-)
 
-diff --git a/arch/um/include/asm/thread_info.h b/arch/um/include/asm/thread_info.h
-index c7b4b49826a2..4d2a768246bc 100644
---- a/arch/um/include/asm/thread_info.h
-+++ b/arch/um/include/asm/thread_info.h
-@@ -23,8 +23,6 @@ struct thread_info {
- 	int			preempt_count;  /* 0 => preemptable,
- 						   <0 => BUG */
- 	struct thread_info	*real_thread;    /* Points to non-IRQ stack */
--	unsigned long aux_fp_regs[FP_SIZE];	/* auxiliary fp_regs to save/restore
--						   them out-of-band */
+---
+
+I have tested both i386 and x86_64 on a x86_64 host. I am posting it as
+an RFC only as I have not yet properly checked the patch.
+---
+ arch/um/Kconfig                         |   2 +
+ arch/um/include/asm/processor-generic.h |   3 +-
+ arch/um/kernel/process.c                |  15 --
+ arch/um/kernel/um_arch.c                |   2 +
+ arch/um/os-Linux/registers.c            |   9 +-
+ arch/x86/um/Makefile                    |   2 +-
+ arch/x86/um/asm/elf.h                   |   2 +
+ arch/x86/um/os-Linux/registers.c        | 137 +++--------
+ arch/x86/um/ptrace.c                    | 260 ++++++++++++++++++++
+ arch/x86/um/ptrace_32.c                 |  88 ++-----
+ arch/x86/um/ptrace_64.c                 |  37 +--
+ arch/x86/um/shared/sysdep/ptrace.h      |   6 +-
+ arch/x86/um/shared/sysdep/ptrace_32.h   |   4 -
+ arch/x86/um/shared/sysdep/ptrace_64.h   |   4 -
+ arch/x86/um/shared/sysdep/ptrace_user.h |   6 -
+ arch/x86/um/signal.c                    | 313 +++++++-----------------
+ arch/x86/um/user-offsets.c              |   9 +-
+ 17 files changed, 434 insertions(+), 465 deletions(-)
+ create mode 100644 arch/x86/um/ptrace.c
+
+diff --git a/arch/um/Kconfig b/arch/um/Kconfig
+index 48db1c99bd46..88c695db1ecf 100644
+--- a/arch/um/Kconfig
++++ b/arch/um/Kconfig
+@@ -5,6 +5,7 @@ menu "UML-specific options"
+ config UML
+ 	bool
+ 	default y
++	select ARCH_WANTS_DYNAMIC_TASK_STRUCT
+ 	select ARCH_HAS_CPU_FINALIZE_INIT
+ 	select ARCH_HAS_FORTIFY_SOURCE
+ 	select ARCH_HAS_GCOV_PROFILE_ALL
+@@ -32,6 +33,7 @@ config UML
+ 	select HAVE_ARCH_VMAP_STACK
+ 	select HAVE_RUST
+ 	select ARCH_HAS_UBSAN
++	select HAVE_ARCH_TRACEHOOK
+ 
+ config MMU
+ 	bool
+diff --git a/arch/um/include/asm/processor-generic.h b/arch/um/include/asm/processor-generic.h
+index bce4595798da..f621b79910db 100644
+--- a/arch/um/include/asm/processor-generic.h
++++ b/arch/um/include/asm/processor-generic.h
+@@ -20,7 +20,6 @@ struct task_struct;
+ struct mm_struct;
+ 
+ struct thread_struct {
+-	struct pt_regs regs;
+ 	struct pt_regs *segv_regs;
+ 	void *fault_addr;
+ 	jmp_buf *fault_catcher;
+@@ -33,6 +32,8 @@ struct thread_struct {
+ 			void *arg;
+ 		} thread;
+ 	} request;
++	/* Contains variable sized FP registers */
++	struct pt_regs regs;
  };
  
- #define INIT_THREAD_INFO(tsk)			\
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index 33c4d2677591..bf539fee7831 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -285,7 +285,7 @@ int protect(struct mm_id *mm_idp, unsigned long addr,
- /* skas/process.c */
- extern int is_skas_winch(int pid, int fd, void *data);
- extern int start_userspace(unsigned long stub_stack);
--extern void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs);
-+extern void userspace(struct uml_pt_regs *regs);
- extern void new_thread(void *stack, jmp_buf *buf, void (*handler)(void));
- extern void switch_threads(jmp_buf *me, jmp_buf *you);
- extern int start_idle_thread(void *stack, jmp_buf *switch_buf);
+ #define INIT_THREAD \
 diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index 701b7bb2525e..d45c79f82d7c 100644
+index d45c79f82d7c..f6ed31223ba9 100644
 --- a/arch/um/kernel/process.c
 +++ b/arch/um/kernel/process.c
-@@ -116,7 +116,7 @@ void new_thread_handler(void)
- 	 * callback returns only if the kernel thread execs a process
- 	 */
- 	fn(arg);
--	userspace(&current->thread.regs.regs, current_thread_info()->aux_fp_regs);
-+	userspace(&current->thread.regs.regs);
+@@ -287,18 +287,3 @@ unsigned long __get_wchan(struct task_struct *p)
+ 
+ 	return 0;
  }
+-
+-int elf_core_copy_task_fpregs(struct task_struct *t, elf_fpregset_t *fpu)
+-{
+-#ifdef CONFIG_X86_32
+-	extern int have_fpx_regs;
+-
+-	/* FIXME: A plain copy does not work on i386 with have_fpx_regs */
+-	if (have_fpx_regs)
+-		return 0;
+-#endif
+-	memcpy(fpu, &t->thread.regs.regs.fp, sizeof(*fpu));
+-
+-	return 1;
+-}
+-
+diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
+index 285aa6fed188..91c22e7c0564 100644
+--- a/arch/um/kernel/um_arch.c
++++ b/arch/um/kernel/um_arch.c
+@@ -418,6 +418,8 @@ int __init linux_main(int argc, char **argv, char **envp)
+ 		os_info("Kernel virtual memory size shrunk to %lu bytes\n",
+ 			virtmem_size);
  
- /* Called magically, see new_thread_handler above */
-@@ -133,7 +133,7 @@ static void fork_handler(void)
++	arch_task_struct_size = sizeof(struct task_struct) + host_fp_size;
++
+ 	os_flush_stdout();
  
- 	current->thread.prev_sched = NULL;
+ 	return start_uml();
+diff --git a/arch/um/os-Linux/registers.c b/arch/um/os-Linux/registers.c
+index bd80b921add0..eb052fc394ee 100644
+--- a/arch/um/os-Linux/registers.c
++++ b/arch/um/os-Linux/registers.c
+@@ -10,11 +10,12 @@
+ #include <sysdep/ptrace.h>
+ #include <sysdep/ptrace_user.h>
+ #include <registers.h>
++#include <stdlib.h>
  
--	userspace(&current->thread.regs.regs, current_thread_info()->aux_fp_regs);
-+	userspace(&current->thread.regs.regs);
- }
+ /* This is set once at boot time and not changed thereafter */
  
- int copy_thread(struct task_struct * p, const struct kernel_clone_args *args)
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 95376357fb17..ad2e45d80c98 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -144,16 +144,10 @@ void wait_stub_done(int pid)
+ static unsigned long exec_regs[MAX_REG_NR];
+-static unsigned long exec_fp_regs[FP_SIZE];
++static unsigned long *exec_fp_regs;
  
- extern unsigned long current_stub_stack(void);
- 
--static void get_skas_faultinfo(int pid, struct faultinfo *fi, unsigned long *aux_fp_regs)
-+static void get_skas_faultinfo(int pid, struct faultinfo *fi)
+ int init_pid_registers(int pid)
  {
+@@ -24,7 +25,11 @@ int init_pid_registers(int pid)
+ 	if (err < 0)
+ 		return -errno;
+ 
+-	arch_init_registers(pid);
++	err = arch_init_registers(pid);
++	if (err < 0)
++		return err;
++
++	exec_fp_regs = malloc(host_fp_size);
+ 	get_fp_registers(pid, exec_fp_regs);
+ 	return 0;
+ }
+diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
+index 36e67fc97c22..b42c31cd2390 100644
+--- a/arch/x86/um/Makefile
++++ b/arch/x86/um/Makefile
+@@ -10,7 +10,7 @@ else
+ endif
+ 
+ obj-y = bugs_$(BITS).o delay.o fault.o \
+-	ptrace_$(BITS).o ptrace_user.o setjmp_$(BITS).o signal.o \
++	ptrace.o ptrace_$(BITS).o ptrace_user.o setjmp_$(BITS).o signal.o \
+ 	stub_segv.o \
+ 	sys_call_table_$(BITS).o sysrq_$(BITS).o tls_$(BITS).o \
+ 	mem_$(BITS).o subarch.o os-Linux/
+diff --git a/arch/x86/um/asm/elf.h b/arch/x86/um/asm/elf.h
+index 6052200fe925..62ed5d68a978 100644
+--- a/arch/x86/um/asm/elf.h
++++ b/arch/x86/um/asm/elf.h
+@@ -8,6 +8,8 @@
+ #include <asm/user.h>
+ #include <skas.h>
+ 
++#define CORE_DUMP_USE_REGSET
++
+ #ifdef CONFIG_X86_32
+ 
+ #define R_386_NONE	0
+diff --git a/arch/x86/um/os-Linux/registers.c b/arch/x86/um/os-Linux/registers.c
+index f8e5516d9708..accb651beb5c 100644
+--- a/arch/x86/um/os-Linux/registers.c
++++ b/arch/x86/um/os-Linux/registers.c
+@@ -17,131 +17,62 @@
+ #include <linux/elf.h>
+ #include <registers.h>
+ 
+-static int have_xstate_support;
++unsigned long host_fp_size;
+ 
+-static int save_i387_registers(int pid, unsigned long *fp_regs)
+-{
+-	if (ptrace(PTRACE_GETFPREGS, pid, 0, fp_regs) < 0)
+-		return -errno;
+-	return 0;
+-}
+-
+-static int save_fp_registers(int pid, unsigned long *fp_regs)
++int get_fp_registers(int pid, unsigned long *regs)
+ {
+-#ifdef PTRACE_GETREGSET
+-	struct iovec iov;
++	struct iovec iov = {
++		.iov_base = regs,
++		.iov_len = host_fp_size,
++	};
+ 
+-	if (have_xstate_support) {
+-		iov.iov_base = fp_regs;
+-		iov.iov_len = FP_SIZE * sizeof(unsigned long);
+-		if (ptrace(PTRACE_GETREGSET, pid, NT_X86_XSTATE, &iov) < 0)
+-			return -errno;
+-		return 0;
+-	} else
+-#endif
+-		return save_i387_registers(pid, fp_regs);
+-}
+-
+-static int restore_i387_registers(int pid, unsigned long *fp_regs)
+-{
+-	if (ptrace(PTRACE_SETFPREGS, pid, 0, fp_regs) < 0)
++	if (ptrace(PTRACE_GETREGSET, pid, NT_X86_XSTATE, &iov) < 0)
+ 		return -errno;
+ 	return 0;
+ }
+ 
+-static int restore_fp_registers(int pid, unsigned long *fp_regs)
+-{
+-#ifdef PTRACE_SETREGSET
+-	struct iovec iov;
+-	if (have_xstate_support) {
+-		iov.iov_base = fp_regs;
+-		iov.iov_len = FP_SIZE * sizeof(unsigned long);
+-		if (ptrace(PTRACE_SETREGSET, pid, NT_X86_XSTATE, &iov) < 0)
+-			return -errno;
+-		return 0;
+-	} else
+-#endif
+-		return restore_i387_registers(pid, fp_regs);
+-}
+-
+-#ifdef __i386__
+-int have_fpx_regs = 1;
+-static int save_fpx_registers(int pid, unsigned long *fp_regs)
++int put_fp_registers(int pid, unsigned long *regs)
+ {
+-	if (ptrace(PTRACE_GETFPXREGS, pid, 0, fp_regs) < 0)
+-		return -errno;
+-	return 0;
+-}
++	struct iovec iov = {
++		.iov_base = regs,
++		.iov_len = host_fp_size,
++	};
+ 
+-static int restore_fpx_registers(int pid, unsigned long *fp_regs)
+-{
+-	if (ptrace(PTRACE_SETFPXREGS, pid, 0, fp_regs) < 0)
++	if (ptrace(PTRACE_SETREGSET, pid, NT_X86_XSTATE, &iov) < 0)
+ 		return -errno;
+ 	return 0;
+ }
+ 
+-int get_fp_registers(int pid, unsigned long *regs)
+-{
+-	if (have_fpx_regs)
+-		return save_fpx_registers(pid, regs);
+-	else
+-		return save_fp_registers(pid, regs);
+-}
+-
+-int put_fp_registers(int pid, unsigned long *regs)
++int arch_init_registers(int pid)
+ {
+-	if (have_fpx_regs)
+-		return restore_fpx_registers(pid, regs);
+-	else
+-		return restore_fp_registers(pid, regs);
+-}
++	int size = 0;
+ 
+-void arch_init_registers(int pid)
+-{
+-	struct user_fpxregs_struct fpx_regs;
+-	int err;
++	do {
++		struct iovec iov;
+ 
+-	err = ptrace(PTRACE_GETFPXREGS, pid, 0, &fpx_regs);
+-	if (!err)
+-		return;
++		size += 4096;
+ 
+-	if (errno != EIO)
+-		panic("check_ptrace : PTRACE_GETFPXREGS failed, errno = %d",
+-		      errno);
++		iov.iov_len = size,
+ 
+-	have_fpx_regs = 0;
+-}
+-#else
++		iov.iov_base = malloc(size);
++		if (!iov.iov_base)
++			return -ENOMEM;
+ 
+-int get_fp_registers(int pid, unsigned long *regs)
+-{
+-	return save_fp_registers(pid, regs);
+-}
+-
+-int put_fp_registers(int pid, unsigned long *regs)
+-{
+-	return restore_fp_registers(pid, regs);
+-}
+-
+-void arch_init_registers(int pid)
+-{
+-#ifdef PTRACE_GETREGSET
+-	void * fp_regs;
+-	struct iovec iov;
+-
+-	fp_regs = malloc(FP_SIZE * sizeof(unsigned long));
+-	if(fp_regs == NULL)
+-		return;
++		if (ptrace(PTRACE_GETREGSET, pid, NT_X86_XSTATE, &iov) < 0) {
++			free(iov.iov_base);
++			return -errno;
++		}
+ 
+-	iov.iov_base = fp_regs;
+-	iov.iov_len = FP_SIZE * sizeof(unsigned long);
+-	if (ptrace(PTRACE_GETREGSET, pid, NT_X86_XSTATE, &iov) == 0)
+-		have_xstate_support = 1;
++		if (iov.iov_len != size) {
++			host_fp_size = iov.iov_len;
++			return 0;
++		} else if (size > 16 * 4096) {
++			return -EINVAL;
++		}
+ 
+-	free(fp_regs);
+-#endif
++		free(iov.iov_base);
++	} while (1);
+ }
+-#endif
+ 
+ unsigned long get_thread_reg(int reg, jmp_buf *buf)
+ {
+diff --git a/arch/x86/um/ptrace.c b/arch/x86/um/ptrace.c
+new file mode 100644
+index 000000000000..572c37d641b5
+--- /dev/null
++++ b/arch/x86/um/ptrace.c
+@@ -0,0 +1,260 @@
++#include <linux/sched.h>
++#include <linux/elf.h>
++#include <linux/regset.h>
++#include <asm/user32.h>
++#include <asm/sigcontext.h>
++
++#ifdef CONFIG_X86_32
++/*
++ * FPU tag word conversions.
++ */
++
++static inline unsigned short twd_i387_to_fxsr(unsigned short twd)
++{
++	unsigned int tmp; /* to avoid 16 bit prefixes in the code */
++
++	/* Transform each pair of bits into 01 (valid) or 00 (empty) */
++	tmp = ~twd;
++	tmp = (tmp | (tmp>>1)) & 0x5555; /* 0V0V0V0V0V0V0V0V */
++	/* and move the valid bits to the lower byte. */
++	tmp = (tmp | (tmp >> 1)) & 0x3333; /* 00VV00VV00VV00VV */
++	tmp = (tmp | (tmp >> 2)) & 0x0f0f; /* 0000VVVV0000VVVV */
++	tmp = (tmp | (tmp >> 4)) & 0x00ff; /* 00000000VVVVVVVV */
++	return tmp;
++}
++
++static inline unsigned long twd_fxsr_to_i387(struct user_fxsr_struct *fxsave)
++{
++	struct _fpxreg *st = NULL;
++	unsigned long twd = (unsigned long) fxsave->twd;
++	unsigned long tag;
++	unsigned long ret = 0xffff0000;
++	int i;
++
++#define FPREG_ADDR(f, n)	((char *)&(f)->st_space + (n) * 16)
++
++	for (i = 0; i < 8; i++) {
++		if (twd & 0x1) {
++			st = (struct _fpxreg *) FPREG_ADDR(fxsave, i);
++
++			switch (st->exponent & 0x7fff) {
++			case 0x7fff:
++				tag = 2;		/* Special */
++				break;
++			case 0x0000:
++				if ( !st->significand[0] &&
++				     !st->significand[1] &&
++				     !st->significand[2] &&
++				     !st->significand[3] ) {
++					tag = 1;	/* Zero */
++				} else {
++					tag = 2;	/* Special */
++				}
++				break;
++			default:
++				if (st->significand[3] & 0x8000) {
++					tag = 0;	/* Valid */
++				} else {
++					tag = 2;	/* Special */
++				}
++				break;
++			}
++		} else {
++			tag = 3;			/* Empty */
++		}
++		ret |= (tag << (2 * i));
++		twd = twd >> 1;
++	}
++	return ret;
++}
++
++/* Get/set the old 32bit i387 registers (pre-FPX) */
++static int fpregs_legacy_get(struct task_struct *target,
++			     const struct user_regset *regset,
++			     struct membuf to)
++{
++	struct user_fxsr_struct *fxsave = (void *)target->thread.regs.regs.fp;
++	int i;
++
++	membuf_store(&to, (unsigned long)fxsave->cwd | 0xffff0000ul);
++	membuf_store(&to, (unsigned long)fxsave->swd | 0xffff0000ul);
++	membuf_store(&to, twd_fxsr_to_i387(fxsave));
++	membuf_store(&to, fxsave->fip);
++	membuf_store(&to, fxsave->fcs | ((unsigned long)fxsave->fop << 16));
++	membuf_store(&to, fxsave->foo);
++	membuf_store(&to, fxsave->fos);
++
++	for (i = 0; i < 8; i++)
++		membuf_write(&to, (void *)fxsave->st_space + i * 16, 10);
++
++	return 0;
++}
++
++static int fpregs_legacy_set(struct task_struct *target,
++			     const struct user_regset *regset,
++			     unsigned int pos, unsigned int count,
++			     const void *kbuf, const void __user *ubuf)
++{
++	struct user_fxsr_struct *fxsave = (void *)target->thread.regs.regs.fp;
++	const struct user_i387_struct *from;
++	struct user_i387_struct buf;
++	int i;
++
++	if (ubuf) {
++		if (copy_from_user(&buf, ubuf, sizeof(buf)))
++			return -EFAULT;
++		from = &buf;
++	} else {
++		from = kbuf;
++	}
++
++	fxsave->cwd = (unsigned short)(from->cwd & 0xffff);
++	fxsave->swd = (unsigned short)(from->swd & 0xffff);
++	fxsave->twd = twd_i387_to_fxsr((unsigned short)(from->twd & 0xffff));
++	fxsave->fip = from->fip;
++	fxsave->fop = (unsigned short)((from->fcs & 0xffff0000ul) >> 16);
++	fxsave->fcs = (from->fcs & 0xffff);
++	fxsave->foo = from->foo;
++	fxsave->fos = from->fos;
++
++	for (i = 0; i < 8; i++) {
++		memcpy((void *)fxsave->st_space + i * 16,
++		       (void *)from->st_space + i * 10, 10);
++	}
++
++	return 0;
++}
++#endif
++
++static int genregs_get(struct task_struct *target,
++		       const struct user_regset *regset,
++		       struct membuf to)
++{
++	int reg;
++
++	for (reg = 0; to.left; reg++)
++		membuf_store(&to, getreg(target, reg * sizeof(unsigned long)));
++	return 0;
++}
++
++static int genregs_set(struct task_struct *target,
++		       const struct user_regset *regset,
++		       unsigned int pos, unsigned int count,
++		       const void *kbuf, const void __user *ubuf)
++{
++	int ret = 0;
++	if (kbuf) {
++		const unsigned long *k = kbuf;
++		while (count >= sizeof(*k) && !ret) {
++			ret = putreg(target, pos, *k++);
++			count -= sizeof(*k);
++			pos += sizeof(*k);
++		}
++	} else {
++		const unsigned long  __user *u = ubuf;
++		while (count >= sizeof(*u) && !ret) {
++			unsigned long word;
++			ret = __get_user(word, u++);
++			if (ret)
++				break;
++			ret = putreg(target, pos, word);
++			count -= sizeof(*u);
++			pos += sizeof(*u);
++		}
++	}
++	return ret;
++}
++
++static int generic_fpregs_active(struct task_struct *target, const struct user_regset *regset)
++{
++	return regset->n;
++}
++
++static int generic_fpregs_get(struct task_struct *target,
++			      const struct user_regset *regset,
++			      struct membuf to)
++{
++	void *fpregs = task_pt_regs(target)->regs.fp;
++
++	membuf_write(&to, fpregs, regset->size * regset->n);
++	return 0;
++}
++
++static int generic_fpregs_set(struct task_struct *target,
++			      const struct user_regset *regset,
++			      unsigned int pos, unsigned int count,
++			      const void *kbuf, const void __user *ubuf)
++{
++	void *fpregs = task_pt_regs(target)->regs.fp;
++
++	return user_regset_copyin(&pos, &count, &kbuf, &ubuf,
++				  fpregs, 0, regset->size * regset->n);
++}
++
++static struct user_regset uml_regsets[] __ro_after_init = {
++	[REGSET_GENERAL] = {
++		.core_note_type	= NT_PRSTATUS,
++		.n		= sizeof(struct user_regs_struct) / sizeof(long),
++		.size		= sizeof(long),
++		.align		= sizeof(long),
++		.regset_get	= genregs_get,
++		.set		= genregs_set
++	},
++#ifdef CONFIG_X86_32
++	/* Old FP registers, they are needed in signal frames */
++	[REGSET_FP_LEGACY] = {
++		.core_note_type	= NT_PRFPREG,
++		.n		= sizeof(struct user_i387_ia32_struct) / sizeof(long),
++		.size		= sizeof(long),
++		.align		= sizeof(long),
++		.active		= generic_fpregs_active,
++		.regset_get	= fpregs_legacy_get,
++		.set		= fpregs_legacy_set,
++	},
++#endif
++	[REGSET_FP] = {
++#ifdef CONFIG_X86_32
++		.core_note_type	= NT_PRXFPREG,
++#else
++		.core_note_type	= NT_PRFPREG,
++#endif
++		.n		= UM_FP_REGS_SIZE / sizeof(long),
++		.size		= sizeof(long),
++		.align		= sizeof(long),
++		.active		= generic_fpregs_active,
++		.regset_get	= generic_fpregs_get,
++		.set		= generic_fpregs_set,
++	},
++	[REGSET_XSTATE] = {
++		.core_note_type	= NT_X86_XSTATE,
++		.size		= sizeof(long),
++		.align		= sizeof(long),
++		.active		= generic_fpregs_active,
++		.regset_get	= generic_fpregs_get,
++		.set		= generic_fpregs_set,
++	},
++};
++
++const struct user_regset_view user_uml_view = {
++#ifdef CONFIG_X86_32
++	.name = "i386", .e_machine = EM_386,
++#else
++	.name = "x86_64", .e_machine = EM_X86_64,
++#endif
++	.regsets = uml_regsets, .n = ARRAY_SIZE(uml_regsets)
++};
++
++const struct user_regset_view *
++task_user_regset_view(struct task_struct *tsk)
++{
++	return &user_uml_view;
++}
++
++static int __init init_regset_xstate_info(void)
++{
++	uml_regsets[REGSET_XSTATE].n =
++		host_fp_size / uml_regsets[REGSET_XSTATE].size;
++
++	return 0;
++}
++__initcall(init_regset_xstate_info);
+diff --git a/arch/x86/um/ptrace_32.c b/arch/x86/um/ptrace_32.c
+index b8b85a52eb6f..3af3cb821524 100644
+--- a/arch/x86/um/ptrace_32.c
++++ b/arch/x86/um/ptrace_32.c
+@@ -6,6 +6,7 @@
+ #include <linux/mm.h>
+ #include <linux/sched.h>
+ #include <linux/uaccess.h>
++#include <linux/regset.h>
+ #include <asm/ptrace-abi.h>
+ #include <registers.h>
+ #include <skas.h>
+@@ -168,69 +169,6 @@ int peek_user(struct task_struct *child, long addr, long data)
+ 	return put_user(tmp, (unsigned long __user *) data);
+ }
+ 
+-/* FIXME: Do the required conversions instead of erroring out */
+-extern int have_fpx_regs;
+-
+-static int get_fpregs(struct user_i387_struct __user *buf, struct task_struct *child)
+-{
+-	int n;
+-
+-	if (have_fpx_regs)
+-		return -EINVAL;
+-
+-	n = copy_to_user(buf, &child->thread.regs.regs.fp,
+-			 sizeof(struct user_i387_struct));
+-	if(n > 0)
+-		return -EFAULT;
+-
+-	return n;
+-}
+-
+-static int set_fpregs(struct user_i387_struct __user *buf, struct task_struct *child)
+-{
+-	int n;
+-
+-	if (have_fpx_regs)
+-		return -EINVAL;
+-
+-	n = copy_from_user(&child->thread.regs.regs.fp, buf,
+-			   sizeof(struct user_i387_struct));
+-	if (n > 0)
+-		return -EFAULT;
+-
+-	return 0;
+-}
+-
+-static int get_fpxregs(struct user_fxsr_struct __user *buf, struct task_struct *child)
+-{
+-	int n;
+-
+-	if (!have_fpx_regs)
+-		return -EINVAL;
+-
+-	n = copy_to_user(buf, &child->thread.regs.regs.fp,
+-			 sizeof(struct user_fxsr_struct));
+-	if(n > 0)
+-		return -EFAULT;
+-
+-	return n;
+-}
+-
+-static int set_fpxregs(struct user_fxsr_struct __user *buf, struct task_struct *child)
+-{
+-	int n;
+-
+-	if (!have_fpx_regs)
+-		return -EINVAL;
+-
+-	n = copy_from_user(&child->thread.regs.regs.fp, buf,
+-			   sizeof(struct user_fxsr_struct));
+-	if (n > 0)
+-		return -EFAULT;
+-
+-	return 0;
+-}
+-
+ long subarch_ptrace(struct task_struct *child, long request,
+ 		    unsigned long addr, unsigned long data)
+ {
+@@ -238,17 +176,25 @@ long subarch_ptrace(struct task_struct *child, long request,
+ 	void __user *datap = (void __user *) data;
+ 	switch (request) {
+ 	case PTRACE_GETFPREGS: /* Get the child FPU state. */
+-		ret = get_fpregs(datap, child);
+-		break;
++		return copy_regset_to_user(child, task_user_regset_view(child),
++					   REGSET_FP_LEGACY,
++					   0, sizeof(struct user_i387_struct),
++					   datap);
+ 	case PTRACE_SETFPREGS: /* Set the child FPU state. */
+-		ret = set_fpregs(datap, child);
+-		break;
++		return copy_regset_from_user(child, task_user_regset_view(child),
++					     REGSET_FP_LEGACY,
++					     0, sizeof(struct user_i387_struct),
++					     datap);
+ 	case PTRACE_GETFPXREGS: /* Get the child FPU state. */
+-		ret = get_fpxregs(datap, child);
+-		break;
++		return copy_regset_to_user(child, task_user_regset_view(child),
++					   REGSET_FP,
++					   0, sizeof(struct user_fxsr_struct),
++					   datap);
+ 	case PTRACE_SETFPXREGS: /* Set the child FPU state. */
+-		ret = set_fpxregs(datap, child);
+-		break;
++		return copy_regset_from_user(child, task_user_regset_view(child),
++					     REGSET_FP,
++					     0, sizeof(struct user_fxsr_struct),
++					     datap);
+ 	default:
+ 		ret = -EIO;
+ 	}
+diff --git a/arch/x86/um/ptrace_64.c b/arch/x86/um/ptrace_64.c
+index f8bbad29cd0b..e0d4120a45c8 100644
+--- a/arch/x86/um/ptrace_64.c
++++ b/arch/x86/um/ptrace_64.c
+@@ -8,6 +8,7 @@
+ #include <linux/mm.h>
+ #include <linux/sched.h>
+ #include <linux/errno.h>
++#include <linux/regset.h>
+ #define __FRAME_OFFSETS
+ #include <asm/ptrace.h>
+ #include <linux/uaccess.h>
+@@ -188,30 +189,6 @@ int peek_user(struct task_struct *child, long addr, long data)
+ 	return put_user(tmp, (unsigned long *) data);
+ }
+ 
+-static int get_fpregs(struct user_i387_struct __user *buf, struct task_struct *child)
+-{
+-	int n;
+-
+-	n = copy_to_user(buf, &child->thread.regs.regs.fp,
+-			 sizeof(struct user_i387_struct));
+-	if (n > 0)
+-		return -EFAULT;
+-
+-	return n;
+-}
+-
+-static int set_fpregs(struct user_i387_struct __user *buf, struct task_struct *child)
+-{
+-	int n;
+-
+-	n = copy_from_user(&child->thread.regs.regs.fp, buf,
+-			   sizeof(struct user_i387_struct));
+-	if (n > 0)
+-		return -EFAULT;
+-
+-	return 0;
+-}
+-
+ long subarch_ptrace(struct task_struct *child, long request,
+ 		    unsigned long addr, unsigned long data)
+ {
+@@ -220,11 +197,15 @@ long subarch_ptrace(struct task_struct *child, long request,
+ 
+ 	switch (request) {
+ 	case PTRACE_GETFPREGS: /* Get the child FPU state. */
+-		ret = get_fpregs(datap, child);
+-		break;
++		return copy_regset_to_user(child, task_user_regset_view(child),
++					   REGSET_FP,
++					   0, sizeof(struct user_i387_struct),
++					   datap);
+ 	case PTRACE_SETFPREGS: /* Set the child FPU state. */
+-		ret = set_fpregs(datap, child);
+-		break;
++		return copy_regset_from_user(child, task_user_regset_view(child),
++					     REGSET_FP,
++					     0, sizeof(struct user_i387_struct),
++					     datap);
+ 	case PTRACE_ARCH_PRCTL:
+ 		/* XXX Calls ptrace on the host - needs some SMP thinking */
+ 		ret = arch_prctl(child, data, (void __user *) addr);
+diff --git a/arch/x86/um/shared/sysdep/ptrace.h b/arch/x86/um/shared/sysdep/ptrace.h
+index 6ca4ecabc55b..41f3202092ff 100644
+--- a/arch/x86/um/shared/sysdep/ptrace.h
++++ b/arch/x86/um/shared/sysdep/ptrace.h
+@@ -56,12 +56,14 @@ struct syscall_args {
+ 				     UPT_SYSCALL_ARG5(r),	 \
+ 				     UPT_SYSCALL_ARG6(r) } } )
+ 
++extern unsigned long host_fp_size;
++
+ struct uml_pt_regs {
+ 	unsigned long gp[MAX_REG_NR];
+-	unsigned long fp[MAX_FP_NR];
+ 	struct faultinfo faultinfo;
+ 	long syscall;
+ 	int is_user;
++	unsigned long fp[];
+ };
+ 
+ #define EMPTY_UML_PT_REGS { }
+@@ -72,4 +74,6 @@ struct uml_pt_regs {
+ 
+ extern int user_context(unsigned long sp);
+ 
++extern int arch_init_registers(int pid);
++
+ #endif /* __SYSDEP_X86_PTRACE_H */
+diff --git a/arch/x86/um/shared/sysdep/ptrace_32.h b/arch/x86/um/shared/sysdep/ptrace_32.h
+index 0c4989842fbe..2392470cac4d 100644
+--- a/arch/x86/um/shared/sysdep/ptrace_32.h
++++ b/arch/x86/um/shared/sysdep/ptrace_32.h
+@@ -6,8 +6,6 @@
+ #ifndef __SYSDEP_I386_PTRACE_H
+ #define __SYSDEP_I386_PTRACE_H
+ 
+-#define MAX_FP_NR HOST_FPX_SIZE
+-
+ #define UPT_SYSCALL_ARG1(r) UPT_BX(r)
+ #define UPT_SYSCALL_ARG2(r) UPT_CX(r)
+ #define UPT_SYSCALL_ARG3(r) UPT_DX(r)
+@@ -15,6 +13,4 @@
+ #define UPT_SYSCALL_ARG5(r) UPT_DI(r)
+ #define UPT_SYSCALL_ARG6(r) UPT_BP(r)
+ 
+-extern void arch_init_registers(int pid);
+-
+ #endif
+diff --git a/arch/x86/um/shared/sysdep/ptrace_64.h b/arch/x86/um/shared/sysdep/ptrace_64.h
+index 0dc223aa1c2d..e73573ac871f 100644
+--- a/arch/x86/um/shared/sysdep/ptrace_64.h
++++ b/arch/x86/um/shared/sysdep/ptrace_64.h
+@@ -8,8 +8,6 @@
+ #ifndef __SYSDEP_X86_64_PTRACE_H
+ #define __SYSDEP_X86_64_PTRACE_H
+ 
+-#define MAX_FP_NR HOST_FP_SIZE
+-
+ #define REGS_R8(r) ((r)[HOST_R8])
+ #define REGS_R9(r) ((r)[HOST_R9])
+ #define REGS_R10(r) ((r)[HOST_R10])
+@@ -57,6 +55,4 @@
+ #define UPT_SYSCALL_ARG5(r) UPT_R8(r)
+ #define UPT_SYSCALL_ARG6(r) UPT_R9(r)
+ 
+-extern void arch_init_registers(int pid);
+-
+ #endif
+diff --git a/arch/x86/um/shared/sysdep/ptrace_user.h b/arch/x86/um/shared/sysdep/ptrace_user.h
+index 1d1a824fa652..98da23120538 100644
+--- a/arch/x86/um/shared/sysdep/ptrace_user.h
++++ b/arch/x86/um/shared/sysdep/ptrace_user.h
+@@ -11,12 +11,6 @@
+ #define REGS_IP_INDEX HOST_IP
+ #define REGS_SP_INDEX HOST_SP
+ 
+-#ifdef __i386__
+-#define FP_SIZE ((HOST_FPX_SIZE > HOST_FP_SIZE) ? HOST_FPX_SIZE : HOST_FP_SIZE)
+-#else
+-#define FP_SIZE HOST_FP_SIZE
+-#endif
+-
+ /*
+  * glibc before 2.27 does not include PTRACE_SYSEMU_SINGLESTEP in its enum,
+  * ensure we have a definition by (re-)defining it here.
+diff --git a/arch/x86/um/signal.c b/arch/x86/um/signal.c
+index fa78c74e00cb..de53bb25a981 100644
+--- a/arch/x86/um/signal.c
++++ b/arch/x86/um/signal.c
+@@ -16,145 +16,24 @@
+ #include <registers.h>
+ #include <skas.h>
+ 
+-#ifdef CONFIG_X86_32
+-
+-/*
+- * FPU tag word conversions.
+- */
+-
+-static inline unsigned short twd_i387_to_fxsr(unsigned short twd)
+-{
+-	unsigned int tmp; /* to avoid 16 bit prefixes in the code */
+-
+-	/* Transform each pair of bits into 01 (valid) or 00 (empty) */
+-	tmp = ~twd;
+-	tmp = (tmp | (tmp>>1)) & 0x5555; /* 0V0V0V0V0V0V0V0V */
+-	/* and move the valid bits to the lower byte. */
+-	tmp = (tmp | (tmp >> 1)) & 0x3333; /* 00VV00VV00VV00VV */
+-	tmp = (tmp | (tmp >> 2)) & 0x0f0f; /* 0000VVVV0000VVVV */
+-	tmp = (tmp | (tmp >> 4)) & 0x00ff; /* 00000000VVVVVVVV */
+-	return tmp;
+-}
+-
+-static inline unsigned long twd_fxsr_to_i387(struct user_fxsr_struct *fxsave)
+-{
+-	struct _fpxreg *st = NULL;
+-	unsigned long twd = (unsigned long) fxsave->twd;
+-	unsigned long tag;
+-	unsigned long ret = 0xffff0000;
+-	int i;
+-
+-#define FPREG_ADDR(f, n)	((char *)&(f)->st_space + (n) * 16)
+-
+-	for (i = 0; i < 8; i++) {
+-		if (twd & 0x1) {
+-			st = (struct _fpxreg *) FPREG_ADDR(fxsave, i);
+-
+-			switch (st->exponent & 0x7fff) {
+-			case 0x7fff:
+-				tag = 2;		/* Special */
+-				break;
+-			case 0x0000:
+-				if ( !st->significand[0] &&
+-				     !st->significand[1] &&
+-				     !st->significand[2] &&
+-				     !st->significand[3] ) {
+-					tag = 1;	/* Zero */
+-				} else {
+-					tag = 2;	/* Special */
+-				}
+-				break;
+-			default:
+-				if (st->significand[3] & 0x8000) {
+-					tag = 0;	/* Valid */
+-				} else {
+-					tag = 2;	/* Special */
+-				}
+-				break;
+-			}
+-		} else {
+-			tag = 3;			/* Empty */
+-		}
+-		ret |= (tag << (2 * i));
+-		twd = twd >> 1;
+-	}
+-	return ret;
+-}
+-
+-static int convert_fxsr_to_user(struct _fpstate __user *buf,
+-				struct user_fxsr_struct *fxsave)
+-{
+-	unsigned long env[7];
+-	struct _fpreg __user *to;
+-	struct _fpxreg *from;
+-	int i;
+-
+-	env[0] = (unsigned long)fxsave->cwd | 0xffff0000ul;
+-	env[1] = (unsigned long)fxsave->swd | 0xffff0000ul;
+-	env[2] = twd_fxsr_to_i387(fxsave);
+-	env[3] = fxsave->fip;
+-	env[4] = fxsave->fcs | ((unsigned long)fxsave->fop << 16);
+-	env[5] = fxsave->foo;
+-	env[6] = fxsave->fos;
+-
+-	if (__copy_to_user(buf, env, 7 * sizeof(unsigned long)))
+-		return 1;
+-
+-	to = &buf->_st[0];
+-	from = (struct _fpxreg *) &fxsave->st_space[0];
+-	for (i = 0; i < 8; i++, to++, from++) {
+-		unsigned long __user *t = (unsigned long __user *)to;
+-		unsigned long *f = (unsigned long *)from;
+-
+-		if (__put_user(*f, t) ||
+-				__put_user(*(f + 1), t + 1) ||
+-				__put_user(from->exponent, &to->exponent))
+-			return 1;
+-	}
+-	return 0;
+-}
+-
+-static int convert_fxsr_from_user(struct user_fxsr_struct *fxsave,
+-				  struct _fpstate __user *buf)
+-{
+-	unsigned long env[7];
+-	struct _fpxreg *to;
+-	struct _fpreg __user *from;
+-	int i;
+-
+-	if (copy_from_user( env, buf, 7 * sizeof(long)))
+-		return 1;
+-
+-	fxsave->cwd = (unsigned short)(env[0] & 0xffff);
+-	fxsave->swd = (unsigned short)(env[1] & 0xffff);
+-	fxsave->twd = twd_i387_to_fxsr((unsigned short)(env[2] & 0xffff));
+-	fxsave->fip = env[3];
+-	fxsave->fop = (unsigned short)((env[4] & 0xffff0000ul) >> 16);
+-	fxsave->fcs = (env[4] & 0xffff);
+-	fxsave->foo = env[5];
+-	fxsave->fos = env[6];
+-
+-	to = (struct _fpxreg *) &fxsave->st_space[0];
+-	from = &buf->_st[0];
+-	for (i = 0; i < 8; i++, to++, from++) {
+-		unsigned long *t = (unsigned long *)to;
+-		unsigned long __user *f = (unsigned long __user *)from;
+-
+-		if (__get_user(*t, f) ||
+-		    __get_user(*(t + 1), f + 1) ||
+-		    __get_user(to->exponent, &from->exponent))
+-			return 1;
+-	}
+-	return 0;
+-}
+-
+-extern int have_fpx_regs;
++#include <linux/regset.h>
++#include <asm/sigframe.h>
+ 
++#ifdef CONFIG_X86_32
++struct _xstate_64 {
++	struct _fpstate_64		fpstate;
++	struct _header			xstate_hdr;
++	struct _ymmh_state		ymmh;
++	/* New processor state extensions go here: */
++};
++#else
++#define _xstate_64 _xstate
+ #endif
+ 
+ static int copy_sc_from_user(struct pt_regs *regs,
+ 			     struct sigcontext __user *from)
+ {
++	struct _xstate_64 __user *from_fp64;
+ 	struct sigcontext sc;
  	int err;
  
--	err = get_fp_registers(pid, aux_fp_regs);
--	if (err < 0) {
--		printk(UM_KERN_ERR "save_fp_registers returned %d\n",
--		       err);
--		fatal_sigsegv();
--	}
- 	err = ptrace(PTRACE_CONT, pid, 0, SIGSEGV);
- 	if (err) {
- 		printk(UM_KERN_ERR "Failed to continue stub, pid = %d, "
-@@ -167,18 +161,11 @@ static void get_skas_faultinfo(int pid, struct faultinfo *fi, unsigned long *aux
- 	 * the stub stack page. We just have to copy it.
- 	 */
- 	memcpy(fi, (void *)current_stub_stack(), sizeof(*fi));
+@@ -203,31 +82,27 @@ static int copy_sc_from_user(struct pt_regs *regs,
+ #undef GETREG
+ 
+ #ifdef CONFIG_X86_32
+-	if (have_fpx_regs) {
+-		struct user_fxsr_struct *fpx;
+-		fpx = (void *)&regs->regs.fp;
 -
--	err = put_fp_registers(pid, aux_fp_regs);
--	if (err < 0) {
--		printk(UM_KERN_ERR "put_fp_registers returned %d\n",
--		       err);
--		fatal_sigsegv();
+-		err = convert_fxsr_from_user(fpx, (void *)sc.fpstate);
+-		if (err)
+-			return 1;
+-	} else {
+-		BUILD_BUG_ON(sizeof(regs->regs.fp) > sizeof(struct _fpstate));
+-		err = copy_from_user(regs->regs.fp, (void *)sc.fpstate,
+-				     sizeof(regs->regs.fp));
+-		if (err)
+-			return 1;
 -	}
++	from_fp64 = ((void *)sc.fpstate) + offsetof(struct _fpstate_32, _fxsr_env);
+ #else
+-	{
+-		/* FIXME: Save/restore extended state (past the 16 YMM regs) */
+-		BUILD_BUG_ON(sizeof(regs->regs.fp) < sizeof(struct _xstate));
++	from_fp64 = (void *)sc.fpstate;
++#endif
+ 
+-		err = copy_from_user(regs->regs.fp, (void *)sc.fpstate,
+-				     sizeof(struct _xstate));
+-		if (err)
+-			return 1;
+-	}
++	err = copy_from_user(regs->regs.fp, from_fp64, host_fp_size);
++	if (err)
++		return 1;
++
++
++#ifdef CONFIG_X86_32
++	/* Data is duplicated and this copy is the important one */
++	err = copy_regset_from_user(current,
++				    task_user_regset_view(current),
++				    REGSET_FP_LEGACY, 0,
++				    sizeof(struct user_i387_struct),
++				    (void *)sc.fpstate);
++	if (err < 0)
++		return err;
+ #endif
++
+ 	return 0;
  }
  
--static void handle_segv(int pid, struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
-+static void handle_segv(int pid, struct uml_pt_regs *regs)
+@@ -235,6 +110,7 @@ static int copy_sc_to_user(struct sigcontext __user *to,
+ 			   struct _xstate __user *to_fp, struct pt_regs *regs,
+ 			   unsigned long mask)
  {
--	get_skas_faultinfo(pid, &regs->faultinfo, aux_fp_regs);
-+	get_skas_faultinfo(pid, &regs->faultinfo);
- 	segv(regs->faultinfo, 0, 1, NULL);
++	struct _xstate_64 __user *to_fp64;
+ 	struct sigcontext sc;
+ 	struct faultinfo * fi = &current->thread.arch.faultinfo;
+ 	int err;
+@@ -286,37 +162,37 @@ static int copy_sc_to_user(struct sigcontext __user *to,
+ 		return 1;
+ 
+ #ifdef CONFIG_X86_32
+-	if (have_fpx_regs) {
+-		struct user_fxsr_struct *fpx;
++	err = copy_regset_to_user(current,
++				  task_user_regset_view(current),
++				  REGSET_FP_LEGACY, 0,
++				  sizeof(struct _fpstate_32), to_fp);
++	if (err < 0)
++		return err;
+ 
+-		fpx = (void *)&regs->regs.fp;
++	__put_user(X86_FXSR_MAGIC, &to_fp->fpstate.magic);
+ 
+-		err = convert_fxsr_to_user(&to_fp->fpstate, fpx);
+-		if (err)
+-			return 1;
+-
+-		err |= __put_user(fpx->swd, &to_fp->fpstate.status);
+-		err |= __put_user(X86_FXSR_MAGIC, &to_fp->fpstate.magic);
+-		if (err)
+-			return 1;
+-
+-	} else {
+-		if (copy_to_user(to_fp, regs->regs.fp, sizeof(regs->regs.fp)))
+-			return 1;
+-
+-		/* Need to fill in the sw_reserved bits ... */
+-		BUILD_BUG_ON(offsetof(typeof(*to_fp),
+-				      fpstate.sw_reserved.magic1) >=
+-			     sizeof(struct _fpstate));
+-		__put_user(0, &to_fp->fpstate.sw_reserved.magic1);
+-		__put_user(sizeof(struct _fpstate),
+-			   &to_fp->fpstate.sw_reserved.extended_size);
+-	}
++	BUILD_BUG_ON(offsetof(struct _xstate, xstate_hdr) !=
++		     offsetof(struct _xstate_64, xstate_hdr) +
++			offsetof(struct _fpstate_32, _fxsr_env));
++	to_fp64 = (void *)to_fp + offsetof(struct _fpstate_32, _fxsr_env);
+ #else
+-	if (copy_to_user(to_fp, regs->regs.fp, sizeof(struct _xstate)))
++	to_fp64 = to_fp;
++#endif /* CONFIG_X86_32 */
++
++	if (copy_to_user(to_fp64, regs->regs.fp, host_fp_size))
+ 		return 1;
++
++#ifdef CONFIG_X86_32
++	__put_user(offsetof(struct _fpstate_32, _fxsr_env) + host_fp_size + FP_XSTATE_MAGIC2_SIZE,
++		   &to_fp64->fpstate.sw_reserved.extended_size);
++#else
++	__put_user(host_fp_size + FP_XSTATE_MAGIC2_SIZE,
++		   &to_fp64->fpstate.sw_reserved.extended_size);
+ #endif
+ 
++	BUILD_BUG_ON(sizeof(int) != FP_XSTATE_MAGIC2_SIZE);
++	__put_user(FP_XSTATE_MAGIC2, (int*)((void *)to_fp64 + host_fp_size));
++
+ 	return 0;
  }
  
-@@ -408,7 +395,7 @@ int start_userspace(unsigned long stub_stack)
- int unscheduled_userspace_iterations;
- extern unsigned long tt_extra_sched_jiffies;
+@@ -333,34 +209,14 @@ static int copy_ucontext_to_user(struct ucontext __user *uc,
+ 	return err;
+ }
  
--void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
-+void userspace(struct uml_pt_regs *regs)
+-struct sigframe
+-{
+-	char __user *pretcode;
+-	int sig;
+-	struct sigcontext sc;
+-	struct _xstate fpstate;
+-	unsigned long extramask[_NSIG_WORDS-1];
+-	char retcode[8];
+-};
+-
+-struct rt_sigframe
+-{
+-	char __user *pretcode;
+-	int sig;
+-	struct siginfo __user *pinfo;
+-	void __user *puc;
+-	struct siginfo info;
+-	struct ucontext uc;
+-	struct _xstate fpstate;
+-	char retcode[8];
+-};
+-
+ int setup_signal_stack_sc(unsigned long stack_top, struct ksignal *ksig,
+ 			  struct pt_regs *regs, sigset_t *mask)
  {
- 	int err, status, op, pid = userspace_pid[0];
- 	siginfo_t si;
-@@ -527,11 +514,11 @@ void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
- 			case SIGSEGV:
- 				if (PTRACE_FULL_FAULTINFO) {
- 					get_skas_faultinfo(pid,
--							   &regs->faultinfo, aux_fp_regs);
-+							   &regs->faultinfo);
- 					(*sig_info[SIGSEGV])(SIGSEGV, (struct siginfo *)&si,
- 							     regs);
- 				}
--				else handle_segv(pid, regs, aux_fp_regs);
-+				else handle_segv(pid, regs);
- 				break;
- 			case SIGTRAP + 0x80:
- 				handle_trap(pid, regs);
++	size_t math_size = offsetof(struct _fpstate_32, _fxsr_env) + host_fp_size + FP_XSTATE_MAGIC2_SIZE;
+ 	struct sigframe __user *frame;
+ 	void __user *restorer;
+ 	int err = 0, sig = ksig->sig;
++	unsigned long fp_to;
+ 
+ 	/* This is the same calculation as i386 - ((sp + 4) & 15) == 0 */
+ 	stack_top = ((stack_top + 4) & -16UL) - 4;
+@@ -368,13 +224,21 @@ int setup_signal_stack_sc(unsigned long stack_top, struct ksignal *ksig,
+ 	if (!access_ok(frame, sizeof(*frame)))
+ 		return 1;
+ 
++	/* Add required space for math frame */
++	frame = (struct sigframe __user *) ((unsigned long) frame - math_size);
++
+ 	restorer = frame->retcode;
+ 	if (ksig->ka.sa.sa_flags & SA_RESTORER)
+ 		restorer = ksig->ka.sa.sa_restorer;
+ 
+-	err |= __put_user(restorer, &frame->pretcode);
++	err |= __put_user(restorer, (void **)&frame->pretcode);
+ 	err |= __put_user(sig, &frame->sig);
+-	err |= copy_sc_to_user(&frame->sc, &frame->fpstate, regs, mask->sig[0]);
++
++	fp_to = (unsigned long)frame + sizeof(*frame);
++
++	err |= copy_sc_to_user(&frame->sc,
++			       (struct _xstate __user *)fp_to,
++			       regs, mask->sig[0]);
+ 	if (_NSIG_WORDS > 1)
+ 		err |= __copy_to_user(&frame->extramask, &mask->sig[1],
+ 				      sizeof(frame->extramask));
+@@ -404,26 +268,34 @@ int setup_signal_stack_sc(unsigned long stack_top, struct ksignal *ksig,
+ int setup_signal_stack_si(unsigned long stack_top, struct ksignal *ksig,
+ 			  struct pt_regs *regs, sigset_t *mask)
+ {
++	size_t math_size = offsetof(struct _fpstate_32, _fxsr_env) + host_fp_size + FP_XSTATE_MAGIC2_SIZE;
+ 	struct rt_sigframe __user *frame;
+ 	void __user *restorer;
+ 	int err = 0, sig = ksig->sig;
++	unsigned long fp_to;
+ 
+ 	stack_top &= -8UL;
+ 	frame = (struct rt_sigframe __user *) stack_top - 1;
+ 	if (!access_ok(frame, sizeof(*frame)))
+ 		return 1;
+ 
++	/* Add required space for math frame */
++	frame = (struct rt_sigframe __user *) ((unsigned long) frame - math_size);
++
+ 	restorer = frame->retcode;
+ 	if (ksig->ka.sa.sa_flags & SA_RESTORER)
+ 		restorer = ksig->ka.sa.sa_restorer;
+ 
+-	err |= __put_user(restorer, &frame->pretcode);
++	err |= __put_user(restorer, (void **)&frame->pretcode);
+ 	err |= __put_user(sig, &frame->sig);
+-	err |= __put_user(&frame->info, &frame->pinfo);
+-	err |= __put_user(&frame->uc, &frame->puc);
++	err |= __put_user(&frame->info, (void **)&frame->pinfo);
++	err |= __put_user(&frame->uc, (void **)&frame->puc);
+ 	err |= copy_siginfo_to_user(&frame->info, &ksig->info);
+-	err |= copy_ucontext_to_user(&frame->uc, &frame->fpstate, mask,
+-					PT_REGS_SP(regs));
++
++	fp_to = (unsigned long)frame + sizeof(*frame);
++
++	err |= copy_ucontext_to_user(&frame->uc, (struct _xstate __user *)fp_to,
++				     mask, PT_REGS_SP(regs));
+ 
+ 	/*
+ 	 * This is movl $,%eax ; int $0x80
+@@ -475,27 +347,24 @@ SYSCALL_DEFINE0(sigreturn)
+ 
+ #else
+ 
+-struct rt_sigframe
+-{
+-	char __user *pretcode;
+-	struct ucontext uc;
+-	struct siginfo info;
+-	struct _xstate fpstate;
+-};
+-
+ int setup_signal_stack_si(unsigned long stack_top, struct ksignal *ksig,
+ 			  struct pt_regs *regs, sigset_t *set)
+ {
+ 	struct rt_sigframe __user *frame;
+ 	int err = 0, sig = ksig->sig;
+ 	unsigned long fp_to;
++	unsigned long math_size = host_fp_size + FP_XSTATE_MAGIC2_SIZE;
+ 
+ 	frame = (struct rt_sigframe __user *)
+ 		round_down(stack_top - sizeof(struct rt_sigframe), 16);
++
++	/* Add required space for math frame */
++	frame = (struct rt_sigframe __user *) ((unsigned long) frame - math_size);
++
+ 	/* Subtract 128 for a red zone and 8 for proper alignment */
+ 	frame = (struct rt_sigframe __user *) ((unsigned long) frame - 128 - 8);
+ 
+-	if (!access_ok(frame, sizeof(*frame)))
++	if (!access_ok(frame, sizeof(*frame) + math_size))
+ 		goto out;
+ 
+ 	if (ksig->ka.sa.sa_flags & SA_SIGINFO) {
+@@ -508,10 +377,12 @@ int setup_signal_stack_si(unsigned long stack_top, struct ksignal *ksig,
+ 	err |= __put_user(0, &frame->uc.uc_flags);
+ 	err |= __put_user(0, &frame->uc.uc_link);
+ 	err |= __save_altstack(&frame->uc.uc_stack, PT_REGS_SP(regs));
+-	err |= copy_sc_to_user(&frame->uc.uc_mcontext, &frame->fpstate, regs,
+-			       set->sig[0]);
+ 
+-	fp_to = (unsigned long)&frame->fpstate;
++	fp_to = (unsigned long)frame + sizeof(*frame);
++
++	err |= copy_sc_to_user(&frame->uc.uc_mcontext,
++			       (struct _xstate __user *)fp_to,
++			       regs, set->sig[0]);
+ 
+ 	err |= __put_user(fp_to, &frame->uc.uc_mcontext.fpstate);
+ 	if (sizeof(*set) == 16) {
+diff --git a/arch/x86/um/user-offsets.c b/arch/x86/um/user-offsets.c
+index 1c77d9946199..ffa653257c6b 100644
+--- a/arch/x86/um/user-offsets.c
++++ b/arch/x86/um/user-offsets.c
+@@ -19,10 +19,8 @@ void foo(void);
+ 
+ void foo(void)
+ {
+-#ifdef __i386__
+-	DEFINE_LONGS(HOST_FP_SIZE, sizeof(struct user_fpregs_struct));
+-	DEFINE_LONGS(HOST_FPX_SIZE, sizeof(struct user_fpxregs_struct));
+ 
++#ifdef __i386__
+ 	DEFINE(HOST_IP, EIP);
+ 	DEFINE(HOST_SP, UESP);
+ 	DEFINE(HOST_EFLAGS, EFL);
+@@ -41,11 +39,6 @@ void foo(void)
+ 	DEFINE(HOST_GS, GS);
+ 	DEFINE(HOST_ORIG_AX, ORIG_EAX);
+ #else
+-#ifdef FP_XSTATE_MAGIC1
+-	DEFINE_LONGS(HOST_FP_SIZE, 2696);
+-#else
+-	DEFINE(HOST_FP_SIZE, sizeof(struct _fpstate) / sizeof(unsigned long));
+-#endif
+ 	DEFINE_LONGS(HOST_BX, RBX);
+ 	DEFINE_LONGS(HOST_CX, RCX);
+ 	DEFINE_LONGS(HOST_DI, RDI);
 -- 
 2.46.2
 
