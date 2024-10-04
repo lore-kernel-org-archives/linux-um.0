@@ -4,61 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00B15CF8840
-	for <linux-um@archiver.kernel.org>; Fri,  4 Oct 2024 17:13:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 98FAFCF8852
+	for <linux-um@archiver.kernel.org>; Fri,  4 Oct 2024 23:38:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:To:From:
-	Subject:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=OzIuS+hqMR4Y+Ao7/LfzYi8jgJf2KYFXR8G7/TIUoC4=; b=HixJZ6AtEVGJvyzb4jWWYyI6ax
-	9KPiStb27J+UPoBfv79TcEBREi3d6vJqCJJf6wGLQWOmh7bsxRFQCnSGAcwJCZbQwyi9d8ZGnyReX
-	0w3J2NXi7SjcpMqKeu2ql/GqemXaZXxBpAopi9A3cp7SvHDSqvSmqMB2ykRZYZTVJ6QWEa65xeopD
-	zNEhF33tyPVnMNbxVSZNMjFna1mc1DT6y98SulnEdVrXHl+JS5JpFjwWgn429QU+BJ908amXvpid2
-	X81SDa4qQDJqwF5VxTCz4VWw94ropKNobQB8a+YSA1mZBXez/vEE8/OpFJKViaZeCyEW19hPyKc9V
-	a9RSthkQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=5jRlSgp23qR0Cyzu9QHIiDtMBpvyeilzzyEhkpp7IwM=; b=TliZS0Ugd40SaZfznEQeC4aCmG
+	Eg+ThJDgl/StZCb5MOKSokTGUJq2mUg+Qplty3UMvy62JlPHXnz24FxHVBqrTt5aP5wxjgdvzC+re
+	OPLovtZahIQ6TWLxl7kZgmao4S/vpe/ZmA6es7VkmgcUr58LGI0y4hzpNtlUvWxTeK7MOj4NqYt0I
+	cThBZr5qoZNV0tv87SkdXcIlI4aJRXFLA3COPTphzz0KF2Eet4AeVkp4gpKM+Bv/g/Pq7h0miIHz9
+	5e0oyCjHkgqz8FM2lv+WxgZbVi+60qb1k992mMLZvOR96FIuHHj+xAAKwY+MImvQwdS1UjapvUAfj
+	XyISpa8w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1swls3-0000000DTJo-1hVz;
-	Fri, 04 Oct 2024 17:13:39 +0000
+	id 1swrso-0000000ESqk-2jDB;
+	Fri, 04 Oct 2024 23:38:50 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1swlOZ-0000000DJMk-46ZE
+	id 1swrsf-0000000ESpP-1MOv
 	for linux-um@lists.infradead.org;
-	Fri, 04 Oct 2024 16:43:13 +0000
+	Fri, 04 Oct 2024 23:38:42 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:To:From:Subject:Message-ID:Sender:
-	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=OzIuS+hqMR4Y+Ao7/LfzYi8jgJf2KYFXR8G7/TIUoC4=;
-	t=1728060189; x=1729269789; b=BfpHvM6pAGlHifWQg7/wTCqcdMXeavE+Lqwza5cZpD2FZ8u
-	v4+jW1vZzxrMMnlvQihbiYxqj4Fx+b/HVh2X+AwDxoZJ8UXh6RiVcR9I9wid1vKc9OvChzFkGw3Hj
-	gikLrJRFtXpRWMuK/cxzkN9QWn5+uB5vFsOd/2TMUQplGEJD4TsPzEbuLIi0YXChtyWD2vTy9lC+F
-	tGGxFuvNsdM7rLEDRUtmzPzZvG8OXoCXkrAjkoIejZ7tMfzUSxtE0LS177p7atXALvNEvGtMHQ+7E
-	P628fsGXb13OH0Q0RUOCqnggfbg6VS5gEEGBh2/MBSnY9jL8amsyCy7aSW5IGAUw==;
+	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
+	Resent-Message-ID:In-Reply-To:References;
+	bh=5jRlSgp23qR0Cyzu9QHIiDtMBpvyeilzzyEhkpp7IwM=; t=1728085120; x=1729294720; 
+	b=h3IdbFARcmiZzAmvb/iQ3koWolfjNFjdrNS5Ay6CnQf8pfsF5SHyl3UpOhqZLD+Z//OF2UV3DvJ
+	Ux7NHcphj6rNVieUdDUdYIky77g1P/QE39ymo/eYsTmFBadPn78qDcHUT/26aRuDOSNbO+VyDuZsh
+	yPwGuWsvhbMaV1T3VOS6VKbU4sLci2BFvst14Gqy9vDBUU3mbVYYZ2lUwdO5wx6/V6vQ3NxrVNBCa
+	GI+gknRqBTwNRdp9Ge3iKzuLV4CO3JNjd2ig/D3Zl/ZcdhUDk9xekHZVZaEN6EiJ1txxRDuvj33GE
+	vBI97WA8lOxtdcjGxzVdnhpZY/NLdLL4sX2g==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.98)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1swlOU-0000000HYjD-09YQ;
-	Fri, 04 Oct 2024 18:43:06 +0200
-Message-ID: <d75d12337dc0dd2ccc83c673ec1c40591bd0d581.camel@sipsolutions.net>
-Subject: Re: UML not coming up on "INTEL(R) XEON(R) GOLD 6542Y"
+	id 1swrsb-00000000AkR-3Jcn;
+	Sat, 05 Oct 2024 01:38:38 +0200
 From: Benjamin Berg <benjamin@sipsolutions.net>
-To: Vijay Tandeker <vijayt@tejasnetworks.com>,
- "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>
-Date: Fri, 04 Oct 2024 18:43:04 +0200
-In-Reply-To: <dd55019aced367702379b5ac7e436911d32e06a5.camel@sipsolutions.net>
-References: <0fbafcb07dff42eb8dfc9a98c8211f85@tejasnetworks.com>
-	 <dd55019aced367702379b5ac7e436911d32e06a5.camel@sipsolutions.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+To: linux-um@lists.infradead.org
+Cc: Benjamin Berg <benjamin.berg@intel.com>
+Subject: [PATCH] um: remove auxiliary FP registers
+Date: Sat,  5 Oct 2024 01:38:21 +0200
+Message-ID: <20241004233821.2130874-1-benjamin@sipsolutions.net>
+X-Mailer: git-send-email 2.46.2
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241004_094312_049558_EEDF31AF 
-X-CRM114-Status: GOOD (  20.27  )
+X-CRM114-CacheID: sfid-20241004_163841_410201_D3BE9629 
+X-CRM114-Status: GOOD (  14.95  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,64 +69,138 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi,
+From: Benjamin Berg <benjamin.berg@intel.com>
 
-On Tue, 2024-09-17 at 10:08 +0200, Benjamin Berg wrote:
-> if it is really only on that CPU, then maybe it is related to AMX
-> support? Though, not sure how exactly that might be affecting
-> PTRACE_{S,G}ETFPREGS on x86_64.
+We do not need the extra save/restore of the FP registers when getting
+the fault information. This was originally added in commit 2f56debd77a8
+("uml: fix FP register corruption") but at that time the code was not
+saving/restoring the FP registers when switching to userspace. This was
+fixed in commit fbfe9c847edf ("um: Save FPU registers between task
+switches") and since then the auxiliary registers have not been useful.
 
-Just, FYI, it really cannot work if the host kernel has AMX enabled.
-The reason is that PTRACE_SETREGSET on NT_X86_XSAVE expects that the
-passed buffer has the maximum theoretical size (I suppose even if the
-feature isn't even enabled for the process).
+Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
+---
+ arch/um/include/asm/thread_info.h |  2 --
+ arch/um/include/shared/os.h       |  2 +-
+ arch/um/kernel/process.c          |  4 ++--
+ arch/um/os-Linux/skas/process.c   | 25 ++++++-------------------
+ 4 files changed, 9 insertions(+), 24 deletions(-)
 
-Seems like the only way to make this work is to discover the xstate
-size from the host kernel. I guess by passing a very large buffer to
-PTRACE_GETREGSET and checking the iovec for the filled in length.
-
-I think you can work around it by setting
-  clearcpuid=3Damx_tile
-on the host kernel command line.
-
-Benjamin
-
-
-> On Mon, 2024-09-16 at 13:09 +0000, Vijay Tandeker wrote:
-> >=20
-> >=20
-> > Hi, thanks to all for helping me in the past. I need one more help.
-> > Getting the below error on running UML:
-> > -------------------------------------------------------------------
-> > --
-> > -------------------------
-> > Run /sbin/init as init process
-> > userspace - ptrace set fp regs failed, errno =3D 14
-> > Kernel panic - not syncing: Attempted to kill init!
-> > exitcode=3D0x0000000b
-> > CPU: 0 PID: 1 Comm: init Not tainted 6.8.9-1 #1
-> > -------------------------------------------------------------------
-> > --
-> > -------------------------
-> >=20
-> > Searched on the internet but didn't find any solution. Any idea,
-> > what
-> > could be the reason for the above error? Below are my UML details:
-> > 1) root-fs: created by running the command: =E2=80=9Cdebootstrap --
-> > arch=3Damd64
-> > noble /tmp http://archive.ubuntu.com/ubuntu/=E2=80=9D
-> > 2) Linux: created by running the command: "ARCH=3Dum make -j$(nproc)"
-> > on linux-6.8.9 using defconfig.
-> > 3) Attached file <uml_crash>: logs on running the UML
-> > 4) Attached file <system_info>: my host system details
-> > 5) INTEL(R) XEON(R) GOLD 6542Y
-> > 6) RAM: 256 GB
-> > 7) Ubuntu 24.04.1 LTS
-> >=20
-> > Please let me know if you need more information.
-> >=20
->=20
->=20
->=20
+diff --git a/arch/um/include/asm/thread_info.h b/arch/um/include/asm/thread_info.h
+index c7b4b49826a2..4d2a768246bc 100644
+--- a/arch/um/include/asm/thread_info.h
++++ b/arch/um/include/asm/thread_info.h
+@@ -23,8 +23,6 @@ struct thread_info {
+ 	int			preempt_count;  /* 0 => preemptable,
+ 						   <0 => BUG */
+ 	struct thread_info	*real_thread;    /* Points to non-IRQ stack */
+-	unsigned long aux_fp_regs[FP_SIZE];	/* auxiliary fp_regs to save/restore
+-						   them out-of-band */
+ };
+ 
+ #define INIT_THREAD_INFO(tsk)			\
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index 33c4d2677591..bf539fee7831 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -285,7 +285,7 @@ int protect(struct mm_id *mm_idp, unsigned long addr,
+ /* skas/process.c */
+ extern int is_skas_winch(int pid, int fd, void *data);
+ extern int start_userspace(unsigned long stub_stack);
+-extern void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs);
++extern void userspace(struct uml_pt_regs *regs);
+ extern void new_thread(void *stack, jmp_buf *buf, void (*handler)(void));
+ extern void switch_threads(jmp_buf *me, jmp_buf *you);
+ extern int start_idle_thread(void *stack, jmp_buf *switch_buf);
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index 701b7bb2525e..d45c79f82d7c 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -116,7 +116,7 @@ void new_thread_handler(void)
+ 	 * callback returns only if the kernel thread execs a process
+ 	 */
+ 	fn(arg);
+-	userspace(&current->thread.regs.regs, current_thread_info()->aux_fp_regs);
++	userspace(&current->thread.regs.regs);
+ }
+ 
+ /* Called magically, see new_thread_handler above */
+@@ -133,7 +133,7 @@ static void fork_handler(void)
+ 
+ 	current->thread.prev_sched = NULL;
+ 
+-	userspace(&current->thread.regs.regs, current_thread_info()->aux_fp_regs);
++	userspace(&current->thread.regs.regs);
+ }
+ 
+ int copy_thread(struct task_struct * p, const struct kernel_clone_args *args)
+diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+index 95376357fb17..ad2e45d80c98 100644
+--- a/arch/um/os-Linux/skas/process.c
++++ b/arch/um/os-Linux/skas/process.c
+@@ -144,16 +144,10 @@ void wait_stub_done(int pid)
+ 
+ extern unsigned long current_stub_stack(void);
+ 
+-static void get_skas_faultinfo(int pid, struct faultinfo *fi, unsigned long *aux_fp_regs)
++static void get_skas_faultinfo(int pid, struct faultinfo *fi)
+ {
+ 	int err;
+ 
+-	err = get_fp_registers(pid, aux_fp_regs);
+-	if (err < 0) {
+-		printk(UM_KERN_ERR "save_fp_registers returned %d\n",
+-		       err);
+-		fatal_sigsegv();
+-	}
+ 	err = ptrace(PTRACE_CONT, pid, 0, SIGSEGV);
+ 	if (err) {
+ 		printk(UM_KERN_ERR "Failed to continue stub, pid = %d, "
+@@ -167,18 +161,11 @@ static void get_skas_faultinfo(int pid, struct faultinfo *fi, unsigned long *aux
+ 	 * the stub stack page. We just have to copy it.
+ 	 */
+ 	memcpy(fi, (void *)current_stub_stack(), sizeof(*fi));
+-
+-	err = put_fp_registers(pid, aux_fp_regs);
+-	if (err < 0) {
+-		printk(UM_KERN_ERR "put_fp_registers returned %d\n",
+-		       err);
+-		fatal_sigsegv();
+-	}
+ }
+ 
+-static void handle_segv(int pid, struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
++static void handle_segv(int pid, struct uml_pt_regs *regs)
+ {
+-	get_skas_faultinfo(pid, &regs->faultinfo, aux_fp_regs);
++	get_skas_faultinfo(pid, &regs->faultinfo);
+ 	segv(regs->faultinfo, 0, 1, NULL);
+ }
+ 
+@@ -408,7 +395,7 @@ int start_userspace(unsigned long stub_stack)
+ int unscheduled_userspace_iterations;
+ extern unsigned long tt_extra_sched_jiffies;
+ 
+-void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
++void userspace(struct uml_pt_regs *regs)
+ {
+ 	int err, status, op, pid = userspace_pid[0];
+ 	siginfo_t si;
+@@ -527,11 +514,11 @@ void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
+ 			case SIGSEGV:
+ 				if (PTRACE_FULL_FAULTINFO) {
+ 					get_skas_faultinfo(pid,
+-							   &regs->faultinfo, aux_fp_regs);
++							   &regs->faultinfo);
+ 					(*sig_info[SIGSEGV])(SIGSEGV, (struct siginfo *)&si,
+ 							     regs);
+ 				}
+-				else handle_segv(pid, regs, aux_fp_regs);
++				else handle_segv(pid, regs);
+ 				break;
+ 			case SIGTRAP + 0x80:
+ 				handle_trap(pid, regs);
+-- 
+2.46.2
 
 
