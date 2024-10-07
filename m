@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B9A23CFB442
-	for <linux-um@archiver.kernel.org>; Mon,  7 Oct 2024 06:34:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CEB40CFB443
+	for <linux-um@archiver.kernel.org>; Mon,  7 Oct 2024 06:34:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=9RBK7hzpFiwpS3WuLNGRSra8wn5hmFuuSqvvSgDdvkw=; b=c5CKw2GSv+jyk1S0+VWYkyMuqO
-	+LzJT5zTOAM1OX8AhOwT3qvfHnbhhYsBYTyDaX0HgcbqXOY1kvYsuOhn3h3SQjwTy2LuTk4QVjNh3
-	6852xgVnCOFVhPmdc4Li2aVWErkbM4DXG/nOX+HGfvHXsCycOQgfrv6CWjRxw84K1Q+Ojs5c9wX28
-	bPYvdMuMxW+i5MQR1xFZQ5RAPnQ1sKVMBvVH65aY01omx4moqrvhfjbs2Ro5ZEvM/afsNnHf0K7lt
-	E53j5AxmQ9PxeT0Ni+A3bFpYUSpg1b21DGpViC0GjshiqWmKaNFUrW0wrbZgsHfLAJ54pobrXnD4t
-	cnYqfvLw==;
+	bh=VoDjrKHpUT224dnSitnnGFqJ2by/iZ5cZnUq7cIEdF4=; b=oDIoR3rEFphB2ZmDLURaX2ISxb
+	1ZaVFktbj34ZFUGe+kxFffFOlqVpx5myJuopcfHD9D0QRJbc/y+WEMcIQfK+GSn2x9jBGCvk96z7Y
+	qxCGGViyraPT///y8meA4VGwoVBILy9gt0anGgKEmc6mMNk7AOF20y8vb/h53aBAxLZEY/fdmx9rk
+	kz6ynciWN3KIRqPhBxh8pw04EZT/gJmS1XBr9jLHZQkiUFcB9nz70Hn0TPgsUZrtBsRor53hZhc0B
+	F5Tz/nVJcZt5WlIyOtYf3iPCRJAVvjYvcNDbUPPITegRjnlYbt8VYASbIVnz3Zx0YbJHP1ZxJi7q+
+	gRU4QWVw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1sxhJj-00000001Rs4-0jJr;
-	Mon, 07 Oct 2024 06:34:03 +0000
+	id 1sxhJp-00000001Rwe-0G47;
+	Mon, 07 Oct 2024 06:34:09 +0000
 Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1sxhFT-00000001QDz-2LWg;
-	Mon, 07 Oct 2024 06:29:41 +0000
+	id 1sxhFi-00000001QMb-3bxq;
+	Mon, 07 Oct 2024 06:29:56 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 806655C54FC;
-	Mon,  7 Oct 2024 06:29:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D4C6C4CEC7;
-	Mon,  7 Oct 2024 06:29:23 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 06EF05C59DC;
+	Mon,  7 Oct 2024 06:29:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF2BFC4CEC6;
+	Mon,  7 Oct 2024 06:29:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728282578;
-	bh=YllkjQvsWrr6dQbJlUjRUABqghggyZA8loEEeE76mk8=;
+	s=k20201202; t=1728282594;
+	bh=FFXSlSIenlvc/JFQhdQdJ8pK7321CYQcMdI24yMcjAo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=i6kzY4uJzQ7Qdyz1ZhcA8oSDPkmiOiPfu2ql1HNAVuX7bF+4mNsVR3AmLOTFDBCug
-	 4yJ/CORrw9a+tR+vOAyHFEYuq/4QPBsaYeld57i5u5jtVr7t1ZhKFhpJZ1tt4r6ZIr
-	 jTSYc2t3fw6cCpkaBwOA0+cqUyDuQvgetWtjmgomTMNyKeFwGMnmwj0IM4dvsJGDcC
-	 E5dkIVjHNUIpFC8/xH3hHgiTzYgAgsjH76us1FHtZgdk6jkNtes9fExTMN+UrWoFx7
-	 L085EY3TXlqxr3FMznPdR+WCKnPPndhV5ia1vNRM8QcOyUe/BeiXjZt/w6iT2kPuL4
-	 i9TugR2R+4SnA==
+	b=OQrnWRR3/g7hkdwqKSPCCpC6iFIYY/d292H/OkXvsUSIeBCbNT8KZSGMgs98muJ6O
+	 hStgp6uWL5I4mPNO24G+F+cFs8u7131j/Ey2uNjues5m4rGfIl+ezO5d7V6cyfXRrB
+	 ff1uz0i8ryxaYlWwqB3Tbk2Qfaen2IbD0G0cn3eSzNqjZHyYnCmEOJkRb1lVxqWFoq
+	 uXQrayzrXN+XpU2Oiz+opHfaOrJilIbQoWVWPrD++Zkr2uZPOk/qb3+N03ykByAfhN
+	 p1iJ7Mmzt/MjewEvg+nhLagLlQ4uD909oU6Ls/cTOKl5Oc1CSXLgqfomaexJDZ7MVY
+	 yRZGKqDqoDdLw==
 From: Mike Rapoport <rppt@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Andreas Larsson <andreas@gaisler.com>,
@@ -106,17 +106,17 @@ Cc: Andreas Larsson <andreas@gaisler.com>,
 	loongarch@lists.linux.dev,
 	sparclinux@vger.kernel.org,
 	x86@kernel.org
-Subject: [PATCH v4 1/8] mm: vmalloc: group declarations depending on CONFIG_MMU together
-Date: Mon,  7 Oct 2024 09:28:51 +0300
-Message-ID: <20241007062858.44248-2-rppt@kernel.org>
+Subject: [PATCH v4 2/8] mm: vmalloc: don't account for number of nodes for HUGE_VMAP allocations
+Date: Mon,  7 Oct 2024 09:28:52 +0300
+Message-ID: <20241007062858.44248-3-rppt@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20241007062858.44248-1-rppt@kernel.org>
 References: <20241007062858.44248-1-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241006_232939_773587_857DC332 
-X-CRM114-Status: GOOD (  13.36  )
+X-CRM114-CacheID: sfid-20241006_232955_027439_37BF9579 
+X-CRM114-Status: GOOD (  12.73  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -133,120 +133,52 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 
-There are a couple of declarations that depend on CONFIG_MMU in
-include/linux/vmalloc.h spread all over the file.
+vmalloc allocations with VM_ALLOW_HUGE_VMAP that do not explicitly
+specify node ID will use huge pages only if size_per_node is larger than
+a huge page.
+Still the actual allocated memory is not distributed between nodes and
+there is no advantage in such approach.
+On the contrary, BPF allocates SZ_2M * num_possible_nodes() for each
+new bpf_prog_pack, while it could do with a single huge page per pack.
 
-Group them all together to improve code readability.
-
-No functional changes.
+Don't account for number of nodes for VM_ALLOW_HUGE_VMAP with
+NUMA_NO_NODE and use huge pages whenever the requested allocation size
+is larger than a huge page.
 
 Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 ---
- include/linux/vmalloc.h | 60 +++++++++++++++++------------------------
- 1 file changed, 24 insertions(+), 36 deletions(-)
+ mm/vmalloc.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-index ad2ce7a6ab7a..9a012cd4fad2 100644
---- a/include/linux/vmalloc.h
-+++ b/include/linux/vmalloc.h
-@@ -134,12 +134,6 @@ extern void vm_unmap_ram(const void *mem, unsigned int count);
- extern void *vm_map_ram(struct page **pages, unsigned int count, int node);
- extern void vm_unmap_aliases(void);
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index 634162271c00..86b2344d7461 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -3763,8 +3763,6 @@ void *__vmalloc_node_range_noprof(unsigned long size, unsigned long align,
+ 	}
  
--#ifdef CONFIG_MMU
--extern unsigned long vmalloc_nr_pages(void);
--#else
--static inline unsigned long vmalloc_nr_pages(void) { return 0; }
--#endif
+ 	if (vmap_allow_huge && (vm_flags & VM_ALLOW_HUGE_VMAP)) {
+-		unsigned long size_per_node;
 -
- extern void *vmalloc_noprof(unsigned long size) __alloc_size(1);
- #define vmalloc(...)		alloc_hooks(vmalloc_noprof(__VA_ARGS__))
+ 		/*
+ 		 * Try huge pages. Only try for PAGE_KERNEL allocations,
+ 		 * others like modules don't yet expect huge pages in
+@@ -3772,13 +3770,10 @@ void *__vmalloc_node_range_noprof(unsigned long size, unsigned long align,
+ 		 * supporting them.
+ 		 */
  
-@@ -266,12 +260,29 @@ static inline bool is_vm_area_hugepages(const void *addr)
- #endif
- }
+-		size_per_node = size;
+-		if (node == NUMA_NO_NODE)
+-			size_per_node /= num_online_nodes();
+-		if (arch_vmap_pmd_supported(prot) && size_per_node >= PMD_SIZE)
++		if (arch_vmap_pmd_supported(prot) && size >= PMD_SIZE)
+ 			shift = PMD_SHIFT;
+ 		else
+-			shift = arch_vmap_pte_supported_shift(size_per_node);
++			shift = arch_vmap_pte_supported_shift(size);
  
-+/* for /proc/kcore */
-+extern long vread_iter(struct iov_iter *iter, const char *addr, size_t count);
-+
-+/*
-+ *	Internals.  Don't use..
-+ */
-+extern __init void vm_area_add_early(struct vm_struct *vm);
-+extern __init void vm_area_register_early(struct vm_struct *vm, size_t align);
-+
-+int register_vmap_purge_notifier(struct notifier_block *nb);
-+int unregister_vmap_purge_notifier(struct notifier_block *nb);
-+
- #ifdef CONFIG_MMU
-+#define VMALLOC_TOTAL (VMALLOC_END - VMALLOC_START)
-+
-+extern unsigned long vmalloc_nr_pages(void);
-+
- int vm_area_map_pages(struct vm_struct *area, unsigned long start,
- 		      unsigned long end, struct page **pages);
- void vm_area_unmap_pages(struct vm_struct *area, unsigned long start,
- 			 unsigned long end);
- void vunmap_range(unsigned long addr, unsigned long end);
-+
- static inline void set_vm_flush_reset_perms(void *addr)
- {
- 	struct vm_struct *vm = find_vm_area(addr);
-@@ -279,24 +290,14 @@ static inline void set_vm_flush_reset_perms(void *addr)
- 	if (vm)
- 		vm->flags |= VM_FLUSH_RESET_PERMS;
- }
-+#else  /* !CONFIG_MMU */
-+#define VMALLOC_TOTAL 0UL
- 
--#else
--static inline void set_vm_flush_reset_perms(void *addr)
--{
--}
--#endif
--
--/* for /proc/kcore */
--extern long vread_iter(struct iov_iter *iter, const char *addr, size_t count);
--
--/*
-- *	Internals.  Don't use..
-- */
--extern __init void vm_area_add_early(struct vm_struct *vm);
--extern __init void vm_area_register_early(struct vm_struct *vm, size_t align);
-+static inline unsigned long vmalloc_nr_pages(void) { return 0; }
-+static inline void set_vm_flush_reset_perms(void *addr) {}
-+#endif /* CONFIG_MMU */
- 
--#ifdef CONFIG_SMP
--# ifdef CONFIG_MMU
-+#if defined(CONFIG_MMU) && defined(CONFIG_SMP)
- struct vm_struct **pcpu_get_vm_areas(const unsigned long *offsets,
- 				     const size_t *sizes, int nr_vms,
- 				     size_t align);
-@@ -311,22 +312,9 @@ pcpu_get_vm_areas(const unsigned long *offsets,
- 	return NULL;
- }
- 
--static inline void
--pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
--{
--}
--# endif
--#endif
--
--#ifdef CONFIG_MMU
--#define VMALLOC_TOTAL (VMALLOC_END - VMALLOC_START)
--#else
--#define VMALLOC_TOTAL 0UL
-+static inline void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms) {}
- #endif
- 
--int register_vmap_purge_notifier(struct notifier_block *nb);
--int unregister_vmap_purge_notifier(struct notifier_block *nb);
--
- #if defined(CONFIG_MMU) && defined(CONFIG_PRINTK)
- bool vmalloc_dump_obj(void *object);
- #else
+ 		align = max(real_align, 1UL << shift);
+ 		size = ALIGN(real_size, 1UL << shift);
 -- 
 2.43.0
 
