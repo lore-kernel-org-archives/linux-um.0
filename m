@@ -4,57 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 93D74CF11F8
-	for <linux-um@archiver.kernel.org>; Thu, 10 Oct 2024 14:26:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 998C2CFC5E7
+	for <linux-um@archiver.kernel.org>; Thu, 10 Oct 2024 16:46:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=JGuX6Ac2FgXFwpzk6R3/KgzDMXdxVRIIRc/Pq4rsBBI=; b=xgx6FJkq9SM/wVionStJ0f6ilw
-	pWaKZFzNuhV1IG1PCe6nNdBcmgKng+suBD4f1tC4nH+utAeviFU4C1Zg0tJScl7eO8RMnfTs8iGuO
-	W1wi8MqqPW1vRxy52AGAKHaoNDhHhcxPaU2mZ+svHYkEYuJGTQDi/2WTIfx7qv7ZF0QhOZLaBvfvK
-	e3/5viihJ4B2BzyJ4LixowhLDdpywY1WYHgVDWuvawlKHoTI5J/Ibh/o0YR0xm84KtGeJ8fXAIge0
-	CIOOKUG12wyIkwgLtFSs3BuKcnWylJ5r8cEm6kLHhtA8oMUhL1xjvY7WPxCb0rVp4V9Yi88e/yFVM
-	34zLsyNg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=c62i3F029wIUU6xtQe3DQyljasrsetXeDj04xF8k0V4=; b=uQp4ecOKStDcjdOSe7B37xHTnM
+	cdhdAp5RS9K9tBpqKvvHsmy+9YakX0/z1eAGQCxjuEKx6+cXynUQkZz+7oDkppQ8Mp69wi2whJAjD
+	FEPVscYoXwMaDW2EqlMu1pc2ehXjRG6Aj4thF71EDr+39t8G0CrQ1TuGDQLR4hkh13n52VCqBHxJt
+	2RDWyWEtu6V1sSa7KHWBnMRpVx6cL6kzvDpZE+OFrSDpgwuBOro67jaXT7TV5sV06EA9gv4+LfOMN
+	LF1i0dBUlgnk6lse8jqU7ujIpEezHxLuxgS+3U+xnSr9lqKOebxevScd2TejCMQjkZnq3BRrZMZGm
+	Um/vOxQw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1syu7l-0000000D5sx-3rxv;
-	Thu, 10 Oct 2024 14:26:41 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1sywIq-0000000DaLM-310k;
+	Thu, 10 Oct 2024 16:46:16 +0000
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1syu7j-0000000D5re-139e
-	for linux-um@lists.infradead.org;
-	Thu, 10 Oct 2024 14:26:41 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
-	Resent-Message-ID:In-Reply-To:References;
-	bh=JGuX6Ac2FgXFwpzk6R3/KgzDMXdxVRIIRc/Pq4rsBBI=; t=1728570398; x=1729779998; 
-	b=oTU+AEPvDltAAk9XNGpKJtM8UCt0npvTy5R/KemM/5F/GVS0SVa+GMHefVU+0v+WHp95bEb7yKN
-	1PkKimtePrh1yI1lx2finIgWb1C8oUtUbNO2j3P8d4/LWmckdv5Jd2lAWqpmEdHEZ4ETWlVspyME8
-	YCWsbE8gBdR32Gc/m5G/zrDHTx75uGnqFbstnRNgg1CoTZ71YWGmiJXJuDNhvnT3wLaUAy+ixjLDI
-	2QNU6dR99GoGYtwTa3OtzPZOT5OKE5+oCrazLYcQVfv9fmDCMx/Ymp1c6yHlzSa17htSeJS/0M+5a
-	gq5OZY4Z1trokK4+q1wkSOx4BPzqlDUX8rew==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98)
-	(envelope-from <benjamin@sipsolutions.net>)
-	id 1syu7g-000000068Vt-3gMB;
-	Thu, 10 Oct 2024 16:26:37 +0200
-From: Benjamin Berg <benjamin@sipsolutions.net>
-To: linux-um@lists.infradead.org
-Cc: Benjamin Berg <benjamin.berg@intel.com>
-Subject: [PATCH v2] um: insert scheduler ticks when userspace does not yield
-Date: Thu, 10 Oct 2024 16:25:37 +0200
-Message-ID: <20241010142537.1134685-1-benjamin@sipsolutions.net>
-X-Mailer: git-send-email 2.46.2
+	id 1syv2R-0000000DJpT-0a2z;
+	Thu, 10 Oct 2024 15:25:16 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id CE93BA4347C;
+	Thu, 10 Oct 2024 15:24:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94D86C4CEC5;
+	Thu, 10 Oct 2024 15:24:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728573883;
+	bh=gnTehr7qrLMKw/pUpKhTMaCY3tpDIt6F6aFobT96HoY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ekagPdIZxqT4SWWRuS6VjAHAzc6oWKEW/4hsSTRm4pLygcR/K/5nYo1MRhIB1W8Bi
+	 WhUInbNKfRaSZHzNuMbNo/gh/Dm11IzVkhHlBcuZvhkOJMQBELbJP+QR/GYDeVHSby
+	 +1ODj4I12HqiH5y8g34fzvrSEzf2u/HDRwYAX/nNnTn9iTEhJxcxooLVqAwIKD6FZv
+	 b3fbK7YHQj8tX05PEVkLu2GJn3pxXz8GTYW1p2sF1xOis1mXNPjG1oTG9dYByuOZVe
+	 q0nYNSfpcIxt1MrmJaX80Vmf5bsmJaexf7/nT75nIm1VGT6H7a1RxSwQLd/ELhYVan
+	 63H6TXss7XvhQ==
+Date: Thu, 10 Oct 2024 18:20:53 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+	Brian Cain <bcain@quicinc.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Stafford Horne <shorne@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: Bisected: [PATCH v5 8/8] x86/module: enable ROX caches for
+ module text
+Message-ID: <Zwfw1bC-muLe6I9-@kernel.org>
+References: <20241009180816.83591-1-rppt@kernel.org>
+ <20241009180816.83591-9-rppt@kernel.org>
+ <20241010083033.GA1279924@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241010083033.GA1279924@google.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241010_072639_321205_90AD3928 
-X-CRM114-Status: GOOD (  20.24  )
+X-CRM114-CacheID: sfid-20241010_082515_327058_2FBCA35B 
+X-CRM114-Status: GOOD (  13.96  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -69,178 +115,59 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Benjamin Berg <benjamin.berg@intel.com>
+On Thu, Oct 10, 2024 at 05:30:33PM +0900, Sergey Senozhatsky wrote:
+> On (24/10/09 21:08), Mike Rapoport wrote:
+> > From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+> > 
+> > Enable execmem's cache of PMD_SIZE'ed pages mapped as ROX for module
+> > text allocations.
+> > 
+> 
+> With this modprobe disappoints kmemleak
+> 
+> [   12.700128] kmemleak: Found object by alias at 0xffffffffa000a000
+> [   12.702179] CPU: 5 UID: 0 PID: 410 Comm: modprobe Tainted: G                 N 6.12.0-rc2+ #760
+> [   12.704656] Tainted: [N]=TEST
+> [   12.705526] Call Trace:
+> [   12.706250]  <TASK>
+> [   12.706888]  dump_stack_lvl+0x3e/0xdb
+> [   12.707961]  __find_and_get_object+0x100/0x110
+> [   12.709256]  kmemleak_no_scan+0x2e/0xb0
+> [   12.710354]  kmemleak_load_module+0xad/0xe0
+> [   12.711557]  load_module+0x2391/0x45a0
+> [   12.712507]  __se_sys_finit_module+0x4e0/0x7a0
+> [   12.713599]  do_syscall_64+0x54/0xf0
+> [   12.714477]  ? irqentry_exit_to_user_mode+0x33/0x100
+> [   12.715696]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
+> [   12.716931] RIP: 0033:0x7fc7af51f059
+> [   12.717816] Code: 08 89 e8 5b 5d c3 66 2e 0f 1f 84 00 00 00 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 8f 1d 0d 00 f7 d8 64 89 01 48
+> [   12.722324] RSP: 002b:00007ffc1d0b0c18 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+> [   12.724173] RAX: ffffffffffffffda RBX: 00005618a9439b20 RCX: 00007fc7af51f059
+> [   12.725884] RDX: 0000000000000000 RSI: 000056187aea098b RDI: 0000000000000003
+> [   12.727617] RBP: 0000000000000000 R08: 0000000000000060 R09: 00005618a943af60
+> [   12.729361] R10: 0000000000000038 R11: 0000000000000246 R12: 000056187aea098b
+> [   12.731101] R13: 0000000000040000 R14: 00005618a9439ac0 R15: 0000000000000000
+> [   12.732814]  </TASK>
 
-In time-travel mode userspace can do a lot of work without any time
-passing. Unfortunately, this can result in OOM situations as the RCU
-core code will never be run.
+Below is a quick fix, I'll revisit module - kmemleak interaction in v6
 
-Work around this by keeping track of userspace processes that do not
-yield for a lot of operations. When this happens, insert a jiffie into
-the sched_clock clock to account time against the process and cause the
-bookkeeping to run.
 
-As sched_clock is used for tracing, it is useful to keep it in sync
-between the different VMs. As such, try to remove added ticks again when
-the actual clock ticks.
-
-Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
-
----
-v2:
-* Add a kernel configuration option and permit disabling the feature
-* Improve comment for tt_extra_sched_jiffies decrement
----
- arch/um/Kconfig                         | 15 ++++++++++++++
- arch/um/include/shared/common-offsets.h |  6 +++++-
- arch/um/kernel/time.c                   | 20 +++++++++++++++++++
- arch/um/os-Linux/skas/process.c         | 26 +++++++++++++++++++++++++
- 4 files changed, 66 insertions(+), 1 deletion(-)
-
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 448454a3d8b5..5dc702ad9e7a 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -227,6 +227,21 @@ config UML_TIME_TRAVEL_SUPPORT
- 
- 	  It is safe to say Y, but you probably don't need this.
- 
-+config UML_MAX_USERSPACE_ITERATIONS
-+	int
-+	prompt "Maximum number of unscheduled userspace iterations"
-+	default 10000
-+	depends on UML_TIME_TRAVEL_SUPPORT
-+	help
-+	  In UML inf-cpu and ext time-travel mode userspace can run without being
-+	  interrupted. This will eventually overwhelm the kernel and create OOM
-+	  situations (mainly RCU not running). This setting specifies the number
-+	  of kernel/userspace switches (minor/major page fault, signal or syscall)
-+	  for the same userspace thread before the sched_clock is advanced by a
-+	  jiffie to trigger scheduling.
-+
-+	  Setting it to zero disables the feature.
-+
- config KASAN_SHADOW_OFFSET
- 	hex
- 	depends on KASAN
-diff --git a/arch/um/include/shared/common-offsets.h b/arch/um/include/shared/common-offsets.h
-index 579ed946a3a9..86537e20942a 100644
---- a/arch/um/include/shared/common-offsets.h
-+++ b/arch/um/include/shared/common-offsets.h
-@@ -28,4 +28,8 @@ DEFINE(UML_CONFIG_64BIT, CONFIG_64BIT);
- #ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
- DEFINE(UML_CONFIG_UML_TIME_TRAVEL_SUPPORT, CONFIG_UML_TIME_TRAVEL_SUPPORT);
- #endif
--
-+#ifdef CONFIG_UML_MAX_USERSPACE_ITERATIONS
-+DEFINE(UML_CONFIG_UML_MAX_USERSPACE_ITERATIONS, CONFIG_UML_MAX_USERSPACE_ITERATIONS);
-+#else
-+DEFINE(UML_CONFIG_UML_MAX_USERSPACE_ITERATIONS, 0);
-+#endif
-diff --git a/arch/um/kernel/time.c b/arch/um/kernel/time.c
-index 29b27b90581f..1394568c0210 100644
---- a/arch/um/kernel/time.c
-+++ b/arch/um/kernel/time.c
-@@ -25,6 +25,8 @@
- #include <shared/init.h>
- 
- #ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
-+#include <linux/sched/clock.h>
-+
- enum time_travel_mode time_travel_mode;
- EXPORT_SYMBOL_GPL(time_travel_mode);
- 
-@@ -47,6 +49,15 @@ static u16 time_travel_shm_id;
- static struct um_timetravel_schedshm *time_travel_shm;
- static union um_timetravel_schedshm_client *time_travel_shm_client;
- 
-+unsigned long tt_extra_sched_jiffies;
-+
-+notrace unsigned long long sched_clock(void)
-+{
-+	return (unsigned long long)(jiffies - INITIAL_JIFFIES +
-+				    tt_extra_sched_jiffies)
-+					* (NSEC_PER_SEC / HZ);
-+}
-+
- static void time_travel_set_time(unsigned long long ns)
+diff --git a/kernel/module/debug_kmemleak.c b/kernel/module/debug_kmemleak.c
+index b4cc03842d70..df873dad049d 100644
+--- a/kernel/module/debug_kmemleak.c
++++ b/kernel/module/debug_kmemleak.c
+@@ -14,7 +14,8 @@ void kmemleak_load_module(const struct module *mod,
  {
- 	if (unlikely(ns < time_travel_time))
-@@ -443,6 +454,11 @@ static void time_travel_periodic_timer(struct time_travel_event *e)
- {
- 	time_travel_add_event(&time_travel_timer_event,
- 			      time_travel_time + time_travel_timer_interval);
-+
-+	/* clock tick; decrease extra jiffies by keeping sched_clock constant */
-+	if (tt_extra_sched_jiffies > 0)
-+		tt_extra_sched_jiffies -= 1;
-+
- 	deliver_alarm();
+ 	/* only scan writable, non-executable sections */
+ 	for_each_mod_mem_type(type) {
+-		if (type != MOD_DATA && type != MOD_INIT_DATA)
++		if (type != MOD_DATA && type != MOD_INIT_DATA &&
++		    !mod->mem[type].is_rox)
+ 			kmemleak_no_scan(mod->mem[type].base);
+ 	}
  }
- 
-@@ -594,6 +610,10 @@ EXPORT_SYMBOL_GPL(time_travel_add_irq_event);
- 
- static void time_travel_oneshot_timer(struct time_travel_event *e)
- {
-+	/* clock tick; decrease extra jiffies by keeping sched_clock constant */
-+	if (tt_extra_sched_jiffies > 0)
-+		tt_extra_sched_jiffies -= 1;
-+
- 	deliver_alarm();
- }
- 
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 2286486bb0f3..31d87a4f3e98 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -388,6 +388,9 @@ int start_userspace(unsigned long stub_stack)
- 	return err;
- }
- 
-+int unscheduled_userspace_iterations;
-+extern unsigned long tt_extra_sched_jiffies;
-+
- void userspace(struct uml_pt_regs *regs)
- {
- 	int err, status, op, pid = userspace_pid[0];
-@@ -397,6 +400,27 @@ void userspace(struct uml_pt_regs *regs)
- 	interrupt_end();
- 
- 	while (1) {
-+		/*
-+		 * When we are in time-travel mode, userspace can theoretically
-+		 * do a *lot* of work without being scheduled. The problem with
-+		 * this is that it will prevent kernel bookkeeping (primarily
-+		 * the RCU) from running and this can for example cause OOM
-+		 * situations.
-+		 *
-+		 * This code accounts a jiffie against the scheduling clock
-+		 * after the defined userspace iterations in the same thread.
-+		 * By doing so the situation is effectively prevented.
-+		 */
-+		if (time_travel_mode == TT_MODE_INFCPU ||
-+		    time_travel_mode == TT_MODE_EXTERNAL) {
-+			if (UML_CONFIG_UML_MAX_USERSPACE_ITERATIONS &&
-+			    unscheduled_userspace_iterations++ >
-+			    UML_CONFIG_UML_MAX_USERSPACE_ITERATIONS) {
-+				tt_extra_sched_jiffies += 1;
-+				unscheduled_userspace_iterations = 0;
-+			}
-+		}
-+
- 		time_travel_print_bc_msg();
- 
- 		current_mm_sync();
-@@ -539,6 +563,8 @@ void new_thread(void *stack, jmp_buf *buf, void (*handler)(void))
- 
- void switch_threads(jmp_buf *me, jmp_buf *you)
- {
-+	unscheduled_userspace_iterations = 0;
-+
- 	if (UML_SETJMP(me) == 0)
- 		UML_LONGJMP(you, 1);
- }
+
 -- 
-2.46.2
-
+Sincerely yours,
+Mike.
 
