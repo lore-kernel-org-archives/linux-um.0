@@ -4,101 +4,63 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BD713CF11F4
-	for <linux-um@archiver.kernel.org>; Thu, 10 Oct 2024 13:14:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A4660CF11F4
+	for <linux-um@archiver.kernel.org>; Thu, 10 Oct 2024 13:31:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=cPMXZCtGVsXXTQe/GGlDBbrLC+/ZwOWPH4PT2f+WeoU=; b=Q+rkik2RVYSHh++euRZbznTNql
-	M1PdEubVXMpPTn/hHNouq6Th47T8uvyQS7nqvEcCo2pjew6oZvmyRc+E4DP2Nj0XhyTxo5NNdCqlr
-	6yu162lItG9sXIvt2A5TUxCnNnPetVu3oRY3Hyc9sNTBvxlszsGDwRnvR9JmAKOPAYl1cU3N69jEp
-	EPbIKvCUXRZgEvQcVG8QbpXNAWPT8qLgkGpHieRJsSYoqUu769Xil04b2YP6FtkhaJjKqfpedo4Uj
-	HQyL83aBEk7Nb0zziM/9z/thbmpR8gsiFUVnc/oHCsww4ZokYRSQwLqVSMoVjn3lMMnLViIFN0hQH
-	f894+8dQ==;
+	bh=fJX5aKd67axg/fQbGEhCLChQ9bm0yy9Pvw1YStXuntA=; b=yewgjgvF+b92XF1e0W3GMAy/Ft
+	WfCRqYIksNUrAdk6dGM5oOjV3wqo1G76jJH9ehq+2rtDm87YLNwz4bpJCaYDKYL2wRpmUVmE6KOPJ
+	TAWaZUrWCt/xoVOjdpx0du9vs4IwvK+5xhHru1hHAGwUJ9d3R39bnX0kkn/H7aN/vX+lzLf4ZT5ED
+	+hmWqmLH5kjH0KZFNMhWtPOqPEQVUVZ/jqvn1JtLeAELt/M3EURY16evFMaspdn/nV9uM0OL1bUvv
+	/4EMgE8VqB6XvqGwHTtgBVORk1amZU/gM4508VO7H0pL9iLmlgxkpML9T7DH5EKm2PjyzXZtqyBjb
+	D4bTL/cw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1syszY-0000000CsFV-0cXO;
-	Thu, 10 Oct 2024 13:14:08 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1sytG4-0000000Cv7E-0IvN;
+	Thu, 10 Oct 2024 13:31:12 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1sysnF-0000000CpdO-0bZv;
-	Thu, 10 Oct 2024 13:01:26 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 645C55C57C3;
-	Thu, 10 Oct 2024 13:01:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3F0EC4CEC5;
-	Thu, 10 Oct 2024 13:01:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728565283;
-	bh=0gFND+MAHX6q3fPU9Dm7aa3AX+VkNdk2ZdK9663ePGM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=i15xpEq/kuFAv6DlXG15A1e80Zkeyfpm7KcH2z/4b7LHy0huNtJIfhTPl8l4m2Thz
-	 DrC+EerzAtj77QkSwvdLuoM9HsdVcSXAYblfY52ni7z3rWCwNvYecLnzzamyv05TxQ
-	 MvyRQw4iBhqZGVncP0l5I4u44ZK9GkUbVv2NjZJ1KmbX6KkRkPzCVKd/P5aEdD5W04
-	 r/juMpxct8TYbYtPQygo8mwFvlF95PkeOYNJV8aiyjpOL0HlbI0t0P6KYVnwxFYXRs
-	 bP4FdthxlHe3zfpEHTln3UXCWui5XHPdWaBkcJjwrkqkqBVwNb4EXbX5FI3Wx8W6oT
-	 ueyyZehAwF8+A==
-Date: Thu, 10 Oct 2024 15:57:33 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-	Brian Cain <bcain@quicinc.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Stafford Horne <shorne@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v5 7/8] execmem: add support for cache of large ROX pages
-Message-ID: <ZwfPPZrxHzQgYfx7@kernel.org>
-References: <20241009180816.83591-1-rppt@kernel.org>
- <20241009180816.83591-8-rppt@kernel.org>
- <Zwd7GRyBtCwiAv1v@infradead.org>
+	id 1syri2-0000000Cc5k-1v0l
+	for linux-um@lists.infradead.org;
+	Thu, 10 Oct 2024 11:52:00 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=fJX5aKd67axg/fQbGEhCLChQ9bm0yy9Pvw1YStXuntA=;
+	t=1728561118; x=1729770718; b=HUoPCwGqjxij1hU3xYBI8s5jJxxGxq4JN7GOiIMnXN/q5sA
+	dULljTfDoyxb5AhuzidQ9C+o4nVLM156rMc6RLvRqyum1OvS2jTijgRN5yuXvkzcVPMtvdXXAiwdn
+	RTST1JLp3ZIAsgy1HzRFpDpw8E6gYECLx/4Kv24R8u1fUKGdC+UpbI1gyapYDUy4rWlTAvtaCSOIB
+	TMoNX7ChKJ9V04rXX1PTK4kghl7U/csbuEt3xYIECclElOu61xiBVPilAvQ5X5gcJTO2sIdWdH0em
+	bsKleHXXVR/5Zat6g7HcK2wbQ/Rq3OFTAho7RqjNwaFy7FV5lvBGix48s5sdHnVA==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1syrhz-0000000641M-00IG;
+	Thu, 10 Oct 2024 13:51:55 +0200
+Message-ID: <c2cf9536c7dc5f0d805d6f79961c05bc0b8936bb.camel@sipsolutions.net>
+Subject: Re: [RFC PATCH 4/9] um: Add stub side of SECCOMP/futex based
+ process handling
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Benjamin Berg <benjamin@sipsolutions.net>, linux-um@lists.infradead.org
+Cc: Benjamin Berg <benjamin.berg@intel.com>
+Date: Thu, 10 Oct 2024 13:51:54 +0200
+In-Reply-To: <20240925203232.565086-5-benjamin@sipsolutions.net>
+References: <20240925203232.565086-1-benjamin@sipsolutions.net>
+	 <20240925203232.565086-5-benjamin@sipsolutions.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zwd7GRyBtCwiAv1v@infradead.org>
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241010_060125_282552_764E61A0 
-X-CRM114-Status: GOOD (  14.79  )
+X-CRM114-CacheID: sfid-20241010_045158_520277_AA6AA487 
+X-CRM114-Status: UNSURE (   7.21  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -113,27 +75,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Oct 09, 2024 at 11:58:33PM -0700, Christoph Hellwig wrote:
-> On Wed, Oct 09, 2024 at 09:08:15PM +0300, Mike Rapoport wrote:
-> >  /**
-> >   * struct execmem_info - architecture parameters for code allocations
-> > + * @fill_trapping_insns: set memory to contain instructions that will trap
-> >   * @ranges: array of parameter sets defining architecture specific
-> >   * parameters for executable memory allocations. The ranges that are not
-> >   * explicitly initialized by an architecture use parameters defined for
-> >   * @EXECMEM_DEFAULT.
-> >   */
-> >  struct execmem_info {
-> > +	void (*fill_trapping_insns)(void *ptr, size_t size, bool writable);
-> >  	struct execmem_range	ranges[EXECMEM_TYPE_MAX];
-> 
-> Why is the filler an indirect function call and not an architecture
-> hook?
+On Wed, 2024-09-25 at 22:32 +0200, Benjamin Berg wrote:
+>=20
+> --- /dev/null
+> +++ b/arch/x86/um/shared/sysdep/stub-data.h
+> @@ -0,0 +1,18 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
 
-The idea is to keep everything together and have execmem_info describe all
-that architecture needs. 
+That new file should possibly have double-include guards as common.
 
--- 
-Sincerely yours,
-Mike.
+Can we use #pragma once yet? ;)
+
+> +static __always_inline void
+> +stub_seccomp_restore_state(struct stub_data_arch *arch)
+> +{
+> +	/* TODO: Use _writefsbase_u64/_writegsbase_u64 when possible */
+
+Don't remember that, what was that about?
+
+johannes
 
