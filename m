@@ -4,97 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 810F5D24450
-	for <linux-um@archiver.kernel.org>; Thu, 10 Oct 2024 20:35:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 962B8D2444F
+	for <linux-um@archiver.kernel.org>; Thu, 10 Oct 2024 20:55:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=I0EZ6HkQ9I7eF0DetXqDrQTnXavDC1PLwU47uVpLkD4=; b=A28YWdydrz7UvLI92/VAdgZA6A
-	IO9zmbGgcQh4z6qbuGzpH0E/EvSJzr/DGTezsj2QzDhJvsF/qEkKqXTwKMrpXuXySUpI/YcyMJfvG
-	WvE2ntehEUxp88rIpXJ75zrrbvfVHrZUUtlm3NDoViNu22cmuo1JCGu5BdGY5+SqbXW2zFQRuJCdq
-	UyV/ZK2WmODgUQb0EC+UcKfps2K4TIGlJpm/R/vCQRuV6ksjQlvlqiBVHF6rW9kpCTpFZBkDaEt7U
-	1rbSCc/w0KBG3BT7uE0Z9Alj3l/cEEoeDWUM17GY0NGsA6XPAIbxhGZK550tLcWDjqkGaz45EgXU8
-	2cHxwqbw==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=nszzlxw9yTJhBjjpB73SNX4YlkuHo1yoYFr6BzRGbpc=; b=FADeTCySdnw+DnKqr5KllD+XyQ
+	SUvWe9wLX8awCndPtAlp5Ewp9pQEk7lqrTDd5WPOXYau7X3IjA5PIpzgzJ7401iBDshtVlqLNwxnJ
+	GgnWhZO3K4OSfaQVV2SYHYkik5g+a1U1I+2auTdHawbhRMtnd5vkP+cGaaxB5jWl6/WpM0B6Yll4o
+	+RLuaKxvdWjIfPMI4wF9qmyhQw1ahjFgyvbgKvnqN/wcaeE6fIacDfJJ0PQ8S9mAM44Wrc7iMIIyX
+	oeYnRmwBdAHPN7mYdV2noFOsKgJiKTYvuo3j2SxbxM9INgYS5DTiCnl5isnBTuQ/Q4MviW0pDHVip
+	fTBljpLQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1syzsM-0000000EHpr-2Yhn;
-	Thu, 10 Oct 2024 20:35:10 +0000
-Received: from bout3.ijzerbout.nl ([2a01:7c8:fff8:2b8:5054:ff:fe86:f72d])
-	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1syy14-0000000DvXa-0O8D;
-	Thu, 10 Oct 2024 18:36:05 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ijzerbout.nl; s=key;
-	t=1728585350; bh=eO8i66PrBt/aJfIHr67M2yWYkbNNStHt47cJJCQ8lLg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=TnwSfC3B0BzzbrbBXfYCTvLzIQE1VFcC2vDoODjZOiRbhCpvxs+nfBrgLRAmHbBcp
-	 5nDkTl4JQCQ0Wy/pLIF9/vFfww5UJ7PllGdlDfCRY4FgF60cuMAONiSY28SXpZ/fah
-	 ofsTg0sJAj3lUJpCxa6onaZfbwwGyEE3F+sIl/MzmrdHNasu+qZYD2CQrQKKnIrTre
-	 jEGUntoI51WphR4XjRXlRX68PsX4ZEqW4Lig8ApC7stf8X5g23ZhKSrvK2T2Yg2D5A
-	 bDv/1YoYnX+4WK7gSe7xgNsbMfMhOH2hPirF455+QlQzq1JgcpZmps0ommzymfrvIp
-	 q2yGRxotng1Sc5OlnXZIYfIyoPLe78QPg5yomWhS/7EpKy8gm5XCv2fZL2X1/G4BTR
-	 HL2kBhQM874WRNw9Pe4sCOauh/y6zMseb5uFaaTGvb5Bwf1+uMfTKAYUXYiqB6xWHZ
-	 FMRiB8gbs1uwwHzedLTctQNTtkBO6P4IZltp+SoRTwdUBuk2Am+I+Y/c5xNGGQwcTo
-	 dfQXGkuiHFMt18pGbziRX9AoIhYRkcXuQB6IdBahXiHe06KoZakmU5fKhn5ggdgeZF
-	 sIwBjRHZR9oCPZjKzUyfzG6lTzteD6iFNQ1wWMF1seN66YAyRB45H5n//oQ2UNHpBx
-	 anTYx1ofeL2gjEtOuPaxF2ZM=
-Received: from [IPV6:2a10:3781:99:1:1ac0:4dff:fea7:ec3a] (racer.ijzerbout.nl [IPv6:2a10:3781:99:1:1ac0:4dff:fea7:ec3a])
-	by bout3.ijzerbout.nl (Postfix) with ESMTPSA id DF155167DD7;
-	Thu, 10 Oct 2024 20:35:47 +0200 (CEST)
-Message-ID: <936057f4-e461-4977-85e7-6100127c9574@ijzerbout.nl>
-Date: Thu, 10 Oct 2024 20:35:44 +0200
+	id 1sz0By-0000000EL1D-3NWI;
+	Thu, 10 Oct 2024 20:55:26 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1sz02B-0000000EK7c-2oyF
+	for linux-um@lists.infradead.org;
+	Thu, 10 Oct 2024 20:45:20 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
+	Resent-Message-ID:In-Reply-To:References;
+	bh=nszzlxw9yTJhBjjpB73SNX4YlkuHo1yoYFr6BzRGbpc=; t=1728593119; x=1729802719; 
+	b=l2/vPS69+LYBgqQDf0gxn9Y3Qc2yy3DYAc/kBHuDYIQzz2SGizaY0rKlyEMvXnm+q6b0zqqO3jj
+	Z14MpxIYOvxp76gNVygZFofGR0q3o4QOUZYsTRSgdNxRiUpCj/hMnjolU9qL4tci50rozvltXAx0z
+	fUlRE22JyKPhZZ8DXQKq//TdKumFHlP5lf9bBIAPnXNmPqS6q1l4+pTdRBbWrQd9zqdNp5txK3qdX
+	rMaGld4XWigJA6a6zo75PSCjNmB7SYKeghMXzov23cyuWb3jTrBx1LwdhHNwOF4ldYAcikrZui8nj
+	XgDMKSECEYZoZkSqRV1nwl0nLB6nz2T3Oxdw==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1sz028-00000006JfK-0aRa;
+	Thu, 10 Oct 2024 22:45:16 +0200
+From: Johannes Berg <johannes@sipsolutions.net>
+To: linux-um@lists.infradead.org
+Cc: Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH] um: remove fault_catcher infrastructure
+Date: Thu, 10 Oct 2024 22:45:14 +0200
+Message-ID: <20241010224513.901c4d390b3e.Ia74742668b44603c1ca23dd36f90e964e6e7ee55@changeid>
+X-Mailer: git-send-email 2.47.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 7/8] execmem: add support for cache of large ROX pages
-To: Mike Rapoport <rppt@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
-Cc: Andreas Larsson <andreas@gaisler.com>, Andy Lutomirski <luto@kernel.org>,
- Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@quicinc.com>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Christoph Hellwig <hch@infradead.org>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- Dave Hansen <dave.hansen@linux.intel.com>, Dinh Nguyen
- <dinguyen@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>,
- Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
- Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
- Johannes Berg <johannes@sipsolutions.net>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Kent Overstreet <kent.overstreet@linux.dev>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>,
- Luis Chamberlain <mcgrof@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Masami Hiramatsu <mhiramat@kernel.org>, Matt Turner <mattst88@gmail.com>,
- Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>,
- Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Peter Zijlstra <peterz@infradead.org>,
- Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
- Song Liu <song@kernel.org>, Stafford Horne <shorne@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Thomas Gleixner <tglx@linutronix.de>, Uladzislau Rezki <urezki@gmail.com>,
- Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
- bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
- linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
- linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
- sparclinux@vger.kernel.org, x86@kernel.org
-References: <20241009180816.83591-1-rppt@kernel.org>
- <20241009180816.83591-8-rppt@kernel.org>
-Content-Language: en-US
-From: Kees Bakker <kees@ijzerbout.nl>
-In-Reply-To: <20241009180816.83591-8-rppt@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241010_113602_625043_A49316A0 
-X-CRM114-Status: GOOD (  19.01  )
+X-CRM114-CacheID: sfid-20241010_134519_750527_28893F57 
+X-CRM114-Status: GOOD (  14.20  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,64 +69,112 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Op 09-10-2024 om 20:08 schreef Mike Rapoport:
-> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
->
-> Using large pages to map text areas reduces iTLB pressure and improves
-> performance.
->
-> Extend execmem_alloc() with an ability to use huge pages with ROX
-> permissions as a cache for smaller allocations.
->
-> To populate the cache, a writable large page is allocated from vmalloc with
-> VM_ALLOW_HUGE_VMAP, filled with invalid instructions and then remapped as
-> ROX.
->
-> Portions of that large page are handed out to execmem_alloc() callers
-> without any changes to the permissions.
->
-> When the memory is freed with execmem_free() it is invalidated again so
-> that it won't contain stale instructions.
->
-> The cache is enabled when an architecture sets EXECMEM_ROX_CACHE flag in
-> definition of an execmem_range.
->
-> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
-> ---
->   include/linux/execmem.h |   2 +
->   mm/execmem.c            | 317 +++++++++++++++++++++++++++++++++++++++-
->   mm/internal.h           |   1 +
->   mm/vmalloc.c            |   5 +
->   4 files changed, 320 insertions(+), 5 deletions(-)
-> [...]
-> +static void execmem_cache_clean(struct work_struct *work)
-> +{
-> +	struct maple_tree *free_areas = &execmem_cache.free_areas;
-> +	struct mutex *mutex = &execmem_cache.mutex;
-> +	MA_STATE(mas, free_areas, 0, ULONG_MAX);
-> +	void *area;
-> +
-> +	mutex_lock(mutex);
-> +	mas_for_each(&mas, area, ULONG_MAX) {
-> +		size_t size;
-> +
-No need to check for !area, because it is already guaranteed by the 
-while loop condition (mas_for_each)
-> +		if (!area)
-> +			continue;
-> +
-> +		size = mas_range_len(&mas);
-> +
-> +		if (IS_ALIGNED(size, PMD_SIZE) &&
-> +		    IS_ALIGNED(mas.index, PMD_SIZE)) {
-> +			struct vm_struct *vm = find_vm_area(area);
-> +
-> +			execmem_set_direct_map_valid(vm, true);
-> +			mas_store_gfp(&mas, NULL, GFP_KERNEL);
-> +			vfree(area);
-> +		}
-> +	}
-> +	mutex_unlock(mutex);
-> +}
->
+From: Johannes Berg <johannes.berg@intel.com>
+
+This was perhaps intended to do _nofault copies, but the
+real reason is lost to history. Remove this, it's not
+needed, and using longjmp() out of the middle of the
+signal handler with all the state it has modified is
+not going to be a good idea anyway.
+
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+---
+ arch/um/include/asm/processor-generic.h |  3 ---
+ arch/um/include/shared/kern_util.h      |  1 -
+ arch/um/kernel/trap.c                   | 16 ----------------
+ arch/um/os-Linux/signal.c               |  2 +-
+ 4 files changed, 1 insertion(+), 21 deletions(-)
+
+diff --git a/arch/um/include/asm/processor-generic.h b/arch/um/include/asm/processor-generic.h
+index bce4595798da..02e759a4a435 100644
+--- a/arch/um/include/asm/processor-generic.h
++++ b/arch/um/include/asm/processor-generic.h
+@@ -22,8 +22,6 @@ struct mm_struct;
+ struct thread_struct {
+ 	struct pt_regs regs;
+ 	struct pt_regs *segv_regs;
+-	void *fault_addr;
+-	jmp_buf *fault_catcher;
+ 	struct task_struct *prev_sched;
+ 	struct arch_thread arch;
+ 	jmp_buf switch_buf;
+@@ -38,7 +36,6 @@ struct thread_struct {
+ #define INIT_THREAD \
+ { \
+ 	.regs		   	= EMPTY_REGS,	\
+-	.fault_addr		= NULL, \
+ 	.prev_sched		= NULL, \
+ 	.arch			= INIT_ARCH_THREAD, \
+ 	.request		= { } \
+diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
+index d8ffd2db168e..f21dc8517538 100644
+--- a/arch/um/include/shared/kern_util.h
++++ b/arch/um/include/shared/kern_util.h
+@@ -60,7 +60,6 @@ extern unsigned long from_irq_stack(int nested);
+ extern int singlestepping(void);
+ 
+ extern void segv_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
+-extern void bus_handler(int sig, struct siginfo *si, struct uml_pt_regs *regs);
+ extern void winch(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
+ extern void fatal_sigsegv(void) __attribute__ ((noreturn));
+ 
+diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
+index 97c8df9c4401..cdaee3e94273 100644
+--- a/arch/um/kernel/trap.c
++++ b/arch/um/kernel/trap.c
+@@ -201,7 +201,6 @@ void segv_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
+ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
+ 		   struct uml_pt_regs *regs)
+ {
+-	jmp_buf *catcher;
+ 	int si_code;
+ 	int err;
+ 	int is_write = FAULT_WRITE(fi);
+@@ -246,15 +245,8 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
+ 		address = 0;
+ 	}
+ 
+-	catcher = current->thread.fault_catcher;
+ 	if (!err)
+ 		goto out;
+-	else if (catcher != NULL) {
+-		current->thread.fault_addr = (void *) address;
+-		UML_LONGJMP(catcher, 1);
+-	}
+-	else if (current->thread.fault_addr != NULL)
+-		panic("fault_addr set but no fault catcher");
+ 	else if (!is_user && arch_fixup(ip, regs))
+ 		goto out;
+ 
+@@ -310,14 +302,6 @@ void relay_signal(int sig, struct siginfo *si, struct uml_pt_regs *regs)
+ 	}
+ }
+ 
+-void bus_handler(int sig, struct siginfo *si, struct uml_pt_regs *regs)
+-{
+-	if (current->thread.fault_catcher != NULL)
+-		UML_LONGJMP(current->thread.fault_catcher, 1);
+-	else
+-		relay_signal(sig, si, regs);
+-}
+-
+ void winch(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
+ {
+ 	do_IRQ(WINCH_IRQ, regs);
+diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
+index b11ed66c8bb0..1978eaa557e9 100644
+--- a/arch/um/os-Linux/signal.c
++++ b/arch/um/os-Linux/signal.c
+@@ -26,7 +26,7 @@ void (*sig_info[NSIG])(int, struct siginfo *, struct uml_pt_regs *) = {
+ 	[SIGFPE]	= relay_signal,
+ 	[SIGILL]	= relay_signal,
+ 	[SIGWINCH]	= winch,
+-	[SIGBUS]	= bus_handler,
++	[SIGBUS]	= relay_signal,
+ 	[SIGSEGV]	= segv_handler,
+ 	[SIGIO]		= sigio_handler,
+ };
+-- 
+2.47.0
+
 
