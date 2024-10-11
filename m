@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1ED25D2446F
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 20416D24468
 	for <linux-um@archiver.kernel.org>; Fri, 11 Oct 2024 04:05:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,29 +12,29 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=5FGxvE++JZaYDMBJ9FqjCNXnX4zxFosLHXSH+gJCOYg=; b=Ca99PMIxVXsiPauBZvJ8Q+mggL
-	n4XFaJIUC4MMHKCcqF6zMQoWsLTgHS6DR0ZeRiQqHinWhZOhNWVAPhDUFVg8BS1p55a5lV7BEFK7k
-	r7CU0Hadbqf8hXZp19yH9Rsxx6GcDUkerz6FqbyyX+OMLrRMaMJYMpCchG54McrBjUPF1PEHeWs7k
-	5RW3Ttlq6CIF7dFwuSB5izw1gUuziidIc0zT+IRJXrZwStTLgLp1kvBAlzdv+W7jhmRw10WKKd8JJ
-	camwY3by6QoopYr8kMl4OaVVl68mQnwcW0WS4bPw8SVV8MV6+lzeWh0SV/Vj6iQdRXR5xOD2iAIA9
-	HdwISKQw==;
+	bh=JxRiuypZIeLXCZKlxLO86zep9YFX8spIesFp4LrNwoE=; b=sBripSDpvV+k8I+4u+x6G3wiDL
+	fTzGTYOBTrDQoYJEtz6lfy3CqhyMi36V8lEmnhgQqqAq19SWaSUNeQvS0oxMcXvJR+lo+8VR9S8HS
+	7V7I5ZjRLz8qeUFmSl4gyc2cDpkoFMkdjN+RWdy6hR98eNKQIgQJDFOxtiFqTskxa3ll8vuuERcfO
+	stBjfJtQtMgakdAYXnkMznBTvRAdUt6yaSaqhBzfwip9uGkaeGPrJjD52pFTqjLCK66mBDuwcY5Ts
+	RwXyYeoJ2TMIxeBOLB96eHlsq9ZD0t+JgUTkzxIf4HN5gq1t9xt4TYvgauoNy8o68KQ/SgWlYfKR3
+	OjMTE91w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1sz6tk-0000000FCGJ-0vzi;
+	id 1sz6tk-0000000FCGT-2Hiz;
 	Fri, 11 Oct 2024 04:05:04 +0000
-Received: from out0-195.mail.aliyun.com ([140.205.0.195])
+Received: from out0-220.mail.aliyun.com ([140.205.0.220])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1sz6te-0000000FCBx-3snO
+	id 1sz6tf-0000000FCBy-1ZFv
 	for linux-um@lists.infradead.org;
 	Fri, 11 Oct 2024 04:05:02 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=antgroup.com; s=default;
 	t=1728619497; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=5FGxvE++JZaYDMBJ9FqjCNXnX4zxFosLHXSH+gJCOYg=;
-	b=RccJMdrSA0xBpDROZg0wrWEsXKfhxf1EV8yo5GhyJM6RwNlNPzRJCzytmPAmXsVAPg2wleQH9oO7vsfpTCqwvkG4Kf3JIFOFz+BYjPKvjdB2vcIyGlonUnR5PWQoTXZpchtMrKqDvNiEwaU23tW9QeRWsfzNVRbxZhhsc0LDVgU=
-Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.Ze33tyg_1728619495)
+	bh=JxRiuypZIeLXCZKlxLO86zep9YFX8spIesFp4LrNwoE=;
+	b=APFmnNLTOhEjCNT47eSdVcsVKiDs918D0njx/TPcN5lLypCv831nq/vUbzRvj/4xMNZAjwtY2SQrW/ozNH20+SCS32YRZILxce7fHuhGPMXndB38ESrKXMSoahHSi/uxyrHcSKWBg3tWZ+0KZOjp5zRtCV9bwhPzwToHqDcMD5g=
+Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.Ze33tzT_1728619496)
           by smtp.aliyun-inc.com;
-          Fri, 11 Oct 2024 12:04:55 +0800
+          Fri, 11 Oct 2024 12:04:56 +0800
 From: "Tiwei Bie" <tiwei.btw@antgroup.com>
 To: richard@nod.at,
 	anton.ivanov@cambridgegreys.com,
@@ -42,17 +42,17 @@ To: richard@nod.at,
 Cc: <linux-um@lists.infradead.org>,
    <linux-kernel@vger.kernel.org>,
   "Tiwei Bie" <tiwei.btw@antgroup.com>
-Subject: [PATCH 4/9] um: Do not propagate dtb parameter to kernel
-Date: Fri, 11 Oct 2024 12:04:36 +0800
-Message-Id: <20241011040441.1586345-5-tiwei.btw@antgroup.com>
+Subject: [PATCH 7/9] um: hostaudio: Do not propagate dsp parameter to kernel
+Date: Fri, 11 Oct 2024 12:04:39 +0800
+Message-Id: <20241011040441.1586345-8-tiwei.btw@antgroup.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20241011040441.1586345-1-tiwei.btw@antgroup.com>
 References: <20241011040441.1586345-1-tiwei.btw@antgroup.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241010_210459_402542_D19022D3 
-X-CRM114-Status: UNSURE (   7.41  )
+X-CRM114-CacheID: sfid-20241010_210459_664486_F6A3D53C 
+X-CRM114-Status: UNSURE (   6.35  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -68,27 +68,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-This parameter is UML specific and is unknown to kernel. It should not
-be propagated to kernel, otherwise it will be passed to user space as
-an environment option by kernel with a warning like:
-
-Unknown kernel command line parameters "dtb=/foo", will be passed to user space.
+This parameter is UML specific and is unknown to kernel. It should
+not be propagated to kernel, otherwise it will trigger a warning and
+be passed to user space as an environment option.
 
 Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
 ---
- arch/um/kernel/dtb.c | 1 +
+ arch/um/drivers/hostaudio_kern.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/um/kernel/dtb.c b/arch/um/kernel/dtb.c
-index 4954188a6a09..73369446ed1e 100644
---- a/arch/um/kernel/dtb.c
-+++ b/arch/um/kernel/dtb.c
-@@ -31,6 +31,7 @@ void uml_dtb_init(void)
- 
- static int __init uml_dtb_setup(char *line, int *add)
+diff --git a/arch/um/drivers/hostaudio_kern.c b/arch/um/drivers/hostaudio_kern.c
+index 9d228878cea2..09af903b75ae 100644
+--- a/arch/um/drivers/hostaudio_kern.c
++++ b/arch/um/drivers/hostaudio_kern.c
+@@ -48,6 +48,7 @@ MODULE_PARM_DESC(mixer, MIXER_HELP);
+ #ifndef MODULE
+ static int set_dsp(char *name, int *add)
  {
 +	*add = 0;
- 	dtb = line;
+ 	dsp = name;
  	return 0;
  }
 -- 
