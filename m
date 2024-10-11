@@ -4,56 +4,55 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3753DCFD2E0
-	for <linux-um@archiver.kernel.org>; Fri, 11 Oct 2024 08:51:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 43CEDCFD2EC
+	for <linux-um@archiver.kernel.org>; Fri, 11 Oct 2024 08:54:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=MtOXo2p9/XIZHu8Zkzqckg+RKXCzEUbnXFSl6QpaOnc=; b=HEfeOuZ8BChoNxI+r6nHCiJKB5
-	oVP3PlhFX1o2el1MH7ag9WKXMObOg6PyEAqVXIBrFqnVxK1DQR88aO4ksIvWtcKdsJ5C00KeEws5W
-	RlxqkniDfSTYm0djTqWh0afQJNBvM+mRe3lwDZmOiNA9rp0tJVpilzpvCxtmW0Yvz4zFWhs3mzoG9
-	MpIOusFESO1KFBpKIOSUmxxmFJxyzFgcer0lThK2ld7JUXEyADfmzd0+YSqqRQwO65jcaIA2o7Y6Q
-	xlBF0XXgGGGrpd7ABXpB8k+AYO/Byasr9e8YOjXZ0Ys4UUVdmwnf5hzE5A1Nk/eVw8C7NpurJdexA
-	/N7YV29w==;
+	bh=jbUKc6F/J3c7TwVoue/wpb5nObs9+8cJPZcz26Dn+Sw=; b=o/puUxlPkPogfZgdknp4xHW7X5
+	xi3niM3L1NjMRqKrqBBcg4Dobe9VtXPrvk6FnV1eC0S+IXvN1Kp9zhosvDYmOQc3g+MqQakwG1Nm5
+	TDgy71jgeP0f+y9boiPyl8f3KJ/fOrCy5yeTRw46DteoyFNXxivp18jAfvl5CUZcfk5+LBkXehp+f
+	7l+8ZZELu0h8FByZ3z3PHGGa3fTHn4wpMsIEym4WeH9V/BFQnC0wfMrxSiyYd1wzRIHVcBeQ38/rP
+	Vv4N7Pg4dRslI4w2X3yCzr8Fs1IEQa/uizij2dEy4C+sqj3f9vCqWeMJVVwVJeMxq50fd8v0l1oBi
+	8vyBTFJA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1szBNA-0000000FjjK-3m2a;
-	Fri, 11 Oct 2024 08:51:44 +0000
-Received: from out0-204.mail.aliyun.com ([140.205.0.204])
+	id 1szBPP-0000000Fk8X-3XZ3;
+	Fri, 11 Oct 2024 08:54:03 +0000
+Received: from out0-207.mail.aliyun.com ([140.205.0.207])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1szBN7-0000000Fjj1-0oIY
+	id 1szBP6-0000000Fk4A-42qP
 	for linux-um@lists.infradead.org;
-	Fri, 11 Oct 2024 08:51:43 +0000
+	Fri, 11 Oct 2024 08:53:46 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=antgroup.com; s=default;
-	t=1728636697; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=MtOXo2p9/XIZHu8Zkzqckg+RKXCzEUbnXFSl6QpaOnc=;
-	b=kBScQIdFrkoX0KjBV0AnpdfJPrFvxu9YiUDNbL2BwePeMDGTvQFUW9Rj9sIBJ8PykZuRiZ6c06KanH2uAxabITHEANDZv39AyLnDGZ1u6Q97hEwOb17t6MrcCycdhbzhza2Afu4UeLWWh1PPZncnOM4llwKEad1yy/BXmDyqwBk=
-Received: from 30.121.32.252(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.ZeRJfab_1728636688 cluster:ay29)
+	t=1728636822; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=jbUKc6F/J3c7TwVoue/wpb5nObs9+8cJPZcz26Dn+Sw=;
+	b=M/iauj6+H2D0S1HWe2uq8GqsDabNL7UzpbV6waqxXW0E7i576cnwVEYsBe0qGh7Mt4tj1UUYxhhqjKw2BygFqEihznQIB305/0t35RgwSDnYPUpwHQ/uycmzxAhteUIZXJKb768sV6oJH7tgvcMhoaWqNLWzp6jVrlrUF+t+d5M=
+Received: from 30.121.32.252(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.ZeQkkfa_1728636820 cluster:ay29)
           by smtp.aliyun-inc.com;
-          Fri, 11 Oct 2024 16:51:35 +0800
-Message-ID: <5f129f05-1d50-4076-aae6-99638dce35b9@antgroup.com>
-Date: Fri, 11 Oct 2024 16:51:26 +0800
+          Fri, 11 Oct 2024 16:53:41 +0800
+Message-ID: <fcaa6038-33dc-44a9-ab23-ac2309eeef4d@antgroup.com>
+Date: Fri, 11 Oct 2024 16:53:38 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] um: Abandon the _PAGE_NEWPROT bit
-To: Johannes Berg <johannes@sipsolutions.net>, richard@nod.at,
- anton.ivanov@cambridgegreys.com
+To: Benjamin Berg <benjamin@sipsolutions.net>, richard@nod.at,
+ anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net
 Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
 References: <20241011053843.1623089-1-tiwei.btw@antgroup.com>
- <99d9e95fcb27160da5ff931fcfe16a07b3256574.camel@sipsolutions.net>
+ <6abc79186ace90cd2abe202a4abe0eaf17eebb5f.camel@sipsolutions.net>
 Content-Language: en-US
 From: "Tiwei Bie" <tiwei.btw@antgroup.com>
-In-Reply-To: <99d9e95fcb27160da5ff931fcfe16a07b3256574.camel@sipsolutions.net>
+In-Reply-To: <6abc79186ace90cd2abe202a4abe0eaf17eebb5f.camel@sipsolutions.net>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241011_015141_731822_F88774FF 
-X-CRM114-Status: UNSURE (   7.13  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20241011_015345_195405_8B29CAD1 
+X-CRM114-Status: GOOD (  11.45  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,30 +67,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Johannes,
+Hi,
 
-On 2024/10/11 15:38, Johannes Berg wrote:
-> Hi Tiwei,
+On 2024/10/11 15:39, Benjamin Berg wrote:
+> Hi,
 > 
-> So kind of a nit, but if the resulting code looks like this:
+> On Fri, 2024-10-11 at 13:38 +0800, Tiwei Bie wrote:
+>> When a PTE is updated in the page table, the _PAGE_NEWPAGE bit will
+>> always be set. And the corresponding page will always be mapped or
+>> unmapped depending on whether the PTE is present or not. The check
+>> on the _PAGE_NEWPROT bit is not really reachable. Abandoning it will
+>> allow us to simplify the code and remove the unreachable code.
 > 
->> @@ -184,17 +172,14 @@ static inline pte_t pte_wrprotect(pte_t pte)
->>  {
->>  	if (likely(pte_get_bits(pte, _PAGE_RW)))
->>  		pte_clear_bits(pte, _PAGE_RW);
->> 	return pte;
->>  }
+> Oh, nice cleanup!
 > 
-> then the if really isn't needed?
+> And I like that mprotect is gone as I don't want it in SECCOMP mode :-)
 > 
-> Same for all the others, I guess.
+> Maybe we should rename _PAGE_NEWPAGE to something like _PAGE_NEEDSYNC?
+> I think that might make it more clear how everything ties together.
 
-Makes sense. It looks a bit odd. Will drop the if. Thanks for the review!
+Good idea! Will do.
+
+> 
+> Anyway, the change looks good to me.
+> 
+> Benjamin
+> 
+> Reviewed-by: Benjamin Berg <benjamin.berg@intel.com>
+
+Thanks! :)
 
 Regards,
 Tiwei
-
-> 
-> johannes
-
 
