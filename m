@@ -4,56 +4,106 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D64BDD18129
-	for <linux-um@archiver.kernel.org>; Mon, 14 Oct 2024 15:36:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7F0C4D18144
+	for <linux-um@archiver.kernel.org>; Mon, 14 Oct 2024 20:30:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=CBx8oOZP7muTRFWdnTWIX1ck/8Je7EEbolhZOJL2Cgo=; b=AOBOERu0b/ChT/NSmYgay0v8wh
-	5qHNcrZVRHCYUYZgqDGS0fCdfJw9YtWTN7E7XiL+Kmp6pIy7BpDPoc7WZT+uYiDdVgbLVXmF7jp9U
-	6AHc6ZHtNw/qVgdasSdS1GO0ip9xCkJQIm0gLJC+FJh5AhvFiwtCbHoVC7ZEp8UVbNFeioo3U3ypM
-	BQRV7DW60jZo+b95uFXIWCXCKfTnDfWy94PaqU74doiwbtd9rJKVpXFecU4ylFkCbUqrJThkgw7Bx
-	heNu/RfcLjiH7YYO+JRavuUzwbcyzh6WkO3RJr5xhOYviBRl6DZTFJR2JgD485p+5WTgEP/D0rnHG
-	HQpxcLYQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Qj93O1JIO0dJGWm+S+jc//U0Xrz7rDNTjeJUxiHmdlM=; b=y6otE1ttbfPRP98zxYnlNDQpCy
+	anLNt/G3DNOWBpOLiQfSrvc4FVH7tl0AZATjkquzZIfGIJTI5o4+yF9EtHuWcUzUVcFtjZ3wMCvyk
+	rHrXr4n4KlbX9UDAUw8ODUd57YLiE7BtbY3k8bE6Pf5jL95dU90HzegXB3L6Djq2gDSaUhJMRBCWq
+	o4kewv7x0k5xqasDUleZOQu+4zI/2LcUW+9+qIE2VShT1AdEQqEik+cBUvlZOAfalLvBFJ6HHfzL7
+	+kCQH0GIzDDJhZIcKxk56ZmYDf19gR/CafCMcPuZrOoUCJWERmHRoWNQ4Fm5HGJetx/AI81PF5I+C
+	E76SH2yg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t0N7d-00000005hDv-3haR;
-	Mon, 14 Oct 2024 15:36:37 +0000
-Received: from 2a02-8389-2341-5b80-350d-7b06-b28a-173d.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:350d:7b06:b28a:173d] helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1t0MJz-00000005Wzd-3wyi;
-	Mon, 14 Oct 2024 14:45:20 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-alpha@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-snps-arc@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org,
-	linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	sparclinux@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	linux-arch@vger.kernel.org
-Subject: [PATCH 2/2] asm-generic: add an optional pfn_valid check to pfn_valid
-Date: Mon, 14 Oct 2024 16:44:59 +0200
-Message-ID: <20241014144506.51754-3-hch@lst.de>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20241014144506.51754-1-hch@lst.de>
-References: <20241014144506.51754-1-hch@lst.de>
+	id 1t0Ri0-00000006OP1-1YoY;
+	Mon, 14 Oct 2024 20:30:28 +0000
+Received: from nyc.source.kernel.org ([147.75.193.91])
+	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1t0QYL-00000006Gsx-3bMD;
+	Mon, 14 Oct 2024 19:16:27 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id 3E184A4271A;
+	Mon, 14 Oct 2024 19:16:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DC60C4CEC3;
+	Mon, 14 Oct 2024 19:16:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728933383;
+	bh=UuppSLaM0kOzMrDSh2RloHR9IgCcKKb57FBSLEkEUWY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EjG/5WZADaXhvwARHnqKg67eiuXX7gTWxPoitBNELLTxxDNviuMSsmlu/en6P6ED8
+	 zpJ52uHjqiz/g2IcIGwuziTngHnAXDzicRERzVAAIDP4l2L6y33KAuyIagMcpMXzl4
+	 9dBRK2tjgLlrX3Ons9R5vBST3i3yiewblKFLfAI64WB5+23Fn5KkJljDLeTWRKDZ84
+	 jnexNcW9vYFK3px9crwCiVYgH/8ctiyb/DdHjxU96pqWdOL1lwHrwqpz6qzLtvvsU8
+	 7pmIeyrMmskmV1mcXKss65BVVX6VBxafQdYx2gdNsA2KwzhcBEiTj2VcG0YSmjPMmN
+	 oCmkdGtrERExg==
+Date: Mon, 14 Oct 2024 12:16:20 -0700
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Petr Pavlu <petr.pavlu@suse.com>,
+	Sami Tolvanen <samitolvanen@google.com>
+Cc: Mike Rapoport <rppt@kernel.org>, Christoph Hellwig <hch@infradead.org>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+	Brian Cain <bcain@quicinc.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Stafford Horne <shorne@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v5 7/8] execmem: add support for cache of large ROX pages
+Message-ID: <Zw1uBBcG-jAgxF_t@bombadil.infradead.org>
+References: <20241009180816.83591-1-rppt@kernel.org>
+ <20241009180816.83591-8-rppt@kernel.org>
+ <Zwd7GRyBtCwiAv1v@infradead.org>
+ <ZwfPPZrxHzQgYfx7@kernel.org>
+ <ZwjXz0dz-RldVNx0@infradead.org>
+ <ZwuIPZkjX0CfzhjS@kernel.org>
+ <20241013202626.81f430a16750af0d2f40d683@linux-foundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241013202626.81f430a16750af0d2f40d683@linux-foundation.org>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20241014_121626_053486_1D01AF4B 
+X-CRM114-Status: GOOD (  13.79  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -68,41 +118,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-page_to_pfn is usually implemented by pointer arithmetics on the memory
-map, which means that bogus input can lead to even more bogus output.
+On Sun, Oct 13, 2024 at 08:26:26PM -0700, Andrew Morton wrote:
+> On Sun, 13 Oct 2024 11:43:41 +0300 Mike Rapoport <rppt@kernel.org> wrote:
+> 
+> > > > The idea is to keep everything together and have execmem_info describe all
+> > > > that architecture needs. 
+> > > 
+> > > But why?  That's pretty different from our normal style of arch hooks,
+> > > and introduces an indirect call in a security sensitive area.
+> > 
+> > Will change to __weak hook. 
+> > 
+> 
+> Thanks, I'll drop the v1 series;
+> 
+> The todos which I collected are:
+> 
+> https://lkml.kernel.org/r/CAPhsuW66etfdU3Fvk0KsELXcgWD6_TkBFjJ-BTHQu5OejDsP2w@mail.gmail.com
+> https://lkml.kernel.org/r/Zwd6vH0rz0PVedLI@infradead.org
+> https://lkml.kernel.org/r/ZwjXz0dz-RldVNx0@infradead.org
+> https://lkml.kernel.org/r/202410111408.8fe6f604-lkp@intel.com
 
-Powerpc had a pfn_valid check on the regult to it's page_to_phys
-implementation when CONFIG_DEBUG_VIRTUAL is defined, which seems
-generally useful, so add that to the generic version.
+BTW Andrew I'd like to pick this up through the modules tree, and while
+at it, also beat it up with some more testing as we're expanding also
+with the modversions stuff for Rust modules.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- include/asm-generic/memory_model.h | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/include/asm-generic/memory_model.h b/include/asm-generic/memory_model.h
-index a73a140cbecdd7..6d1fb6162ac1a6 100644
---- a/include/asm-generic/memory_model.h
-+++ b/include/asm-generic/memory_model.h
-@@ -64,7 +64,17 @@ static inline int pfn_valid(unsigned long pfn)
- #define page_to_pfn __page_to_pfn
- #define pfn_to_page __pfn_to_page
- 
-+#ifdef CONFIG_DEBUG_VIRTUAL
-+#define page_to_phys(page)						\
-+({									\
-+	unsigned long __pfn = page_to_pfn(page);			\
-+									\
-+	WARN_ON_ONCE(!pfn_valid(__pfn));				\
-+	PFN_PHYS(__pfn);						\
-+})
-+#else
- #define page_to_phys(page)	PFN_PHYS(page_to_pfn(page))
-+#endif /* CONFIG_DEBUG_VIRTUAL */
- #define phys_to_page(phys)	pfn_to_page(PHYS_PFN(phys))
- 
- #endif /* __ASSEMBLY__ */
--- 
-2.45.2
-
+  Luis
 
