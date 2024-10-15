@@ -4,54 +4,53 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1A97ACFC269
-	for <linux-um@archiver.kernel.org>; Tue, 15 Oct 2024 05:58:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8642CCFC279
+	for <linux-um@archiver.kernel.org>; Tue, 15 Oct 2024 08:29:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=BctUNWp7ZYrsgEokkhEAM5WYFmtRQvefwFYiegMHrHM=; b=DKeCZiLT2vf1mQRmunbOkGhCGl
-	O1x0vUKj7Dy9vnsBiZYLxk9vhLkB9zAUTFG6PJ+mmMgJgzMZx4qtZjQvC+hnoccSLcOb1xawRRXv9
-	9r8Wzlh/glF2MpzFHs7ql7gNmIykCqFNj8BORBfO7Fgo7lCXFX2f0CF+n5ICTcWmYMqHqg6Gu3dWr
-	d7skU8tleXewa7UJuKFuDZALLoQ6RgAStmeDmEIu0Jgy+XdgEnN8/ht44h5SeWkLOiAZcHYla3HLS
-	xwCYzQ2kTlQ0+t8U4yfxb4kwJU42kGTWQxMJymxHx04MEtMGT1gqR3Ob+H0HNApR4rsO8SEX1VIhm
-	XjIlvMtA==;
+	bh=7f34hNZ8N5QMtc9kv7/p1tvlxDcQfSdeHysdRXgwdRk=; b=dZ9sqj1gDRtq5RX1JWngX6TXCm
+	ceVc4dxBtw1MaPZh2XxtyfB9b/r5FZ0b0R8bHX+4YZNV4DbAVZtP93+fQ25MGXI1QDL2sGwWGgkVg
+	hsTESbaZL32YwM239xY/L5khCzy8KuRf+HY4iIzZTuhPX55L2GIAdlBxmOH22E4ZRLsMfnxByVYLT
+	g5dUpXwHnWqDC8RipljFX3nZnVVsVGSb4TSRBuFY24v/7ER9r/ig10eaYNjjpdfV6dwYS1ieY7hZr
+	i67rXfseWIBKpfEC3TcXOQ65/UTh1nFLZLj1znxXuFfV+2FOZlkPdzlbXMHd9D1rbqSxtcUUT0TY8
+	vbWxhL1A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t0aZh-000000079QN-2f33;
-	Tue, 15 Oct 2024 05:58:29 +0000
+	id 1t0cvc-00000007Vyg-3e1A;
+	Tue, 15 Oct 2024 08:29:16 +0000
 Received: from nyc.source.kernel.org ([147.75.193.91])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t0aZd-000000079Ny-1QHo;
-	Tue, 15 Oct 2024 05:58:26 +0000
+	id 1t0cvY-00000007Vve-18tg;
+	Tue, 15 Oct 2024 08:29:13 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 24023A401EC;
-	Tue, 15 Oct 2024 05:58:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 325E1C4CEC7;
-	Tue, 15 Oct 2024 05:58:04 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id 8E090A412DE;
+	Tue, 15 Oct 2024 08:29:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFFDFC4CEC7;
+	Tue, 15 Oct 2024 08:29:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728971903;
-	bh=Bo5YA9yZSBe+D0lpdePuveWlpCV5YIVCk7/YdaIdQ1I=;
+	s=k20201202; t=1728980950;
+	bh=DsgcZIwzu+lcz+sCcqq5yd6bbrmg5UWNN75kmiN7u1o=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jG5sGGJ/uyj72sfIjEOgM3YbtVaq12kKOCpq+pn5nPbrPsQT2kC9ydtk/YzTUly5r
-	 4eVw7lpNOy5kN1mWcmFmO7tb0cYSymlnAwpq2Wio7c3ZyfvyaEwu9JPC9amMYfUYbj
-	 MtCJD0izwYdWw2k3enQm6TEHcbCSImNPeik7wVIFjejDi/qTBQORJWwxVSIAEvqN5Q
-	 l9yRtb72GuYxy6JDeT8CrEewKpTCwuiujl9ZpZL5V+ZbK8ZPy8dUW/6qHkWufpsPdi
-	 7qTmnW97lTs/3celEWZrNKMwS30XeMtKFXPBKIkve6XIFrcQu+bxXeiRq9P0LbGJXD
-	 wA3RYW8I7S+NQ==
-Date: Tue, 15 Oct 2024 08:54:29 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Luis Chamberlain <mcgrof@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>, Petr Pavlu <petr.pavlu@suse.com>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
+	b=egqvVNG6q9wlgpkO2ihI5nbC6bmr+MKMXS2UkyLdtZUnRa2mJjPhb/GoHeE8B3JIV
+	 VDOtfy1iCH02B47+vC2mLdYrhXPmRCcdJ1+Qf6WXe8/wfp0qMu9/oa8S2JtMyqJO/O
+	 ZmBQkqH3b1vcstwGj/aIQZ/QJ/x/VWHD7oxFh+9oQa2EPZRfC0PAr1bUMSRbgTw0WX
+	 C7Lug7jeKA6ulz3nyHPgkg0UGzQL6Atd/tuR2Y2ST5aOa7GcMnBjH9MVS3YMhP6L1x
+	 3BVwGozDPiF2n6afO7840UO9nN2SDmvcqv5gq/FNe0QhCmwM6wOayqIt/j1N459swo
+	 /mUI7oPo31iJQ==
+Date: Tue, 15 Oct 2024 01:29:05 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Andreas Larsson <andreas@gaisler.com>,
 	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
 	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
 	Brian Cain <bcain@quicinc.com>,
 	Catalin Marinas <catalin.marinas@arm.com>,
+	Christoph Hellwig <hch@infradead.org>,
 	Christophe Leroy <christophe.leroy@csgroup.eu>,
 	Dave Hansen <dave.hansen@linux.intel.com>,
 	Dinh Nguyen <dinguyen@kernel.org>,
@@ -62,6 +61,7 @@ Cc: Christoph Hellwig <hch@infradead.org>, Petr Pavlu <petr.pavlu@suse.com>,
 	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
 	Kent Overstreet <kent.overstreet@linux.dev>,
 	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
 	Mark Rutland <mark.rutland@arm.com>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
@@ -88,24 +88,20 @@ Cc: Christoph Hellwig <hch@infradead.org>, Petr Pavlu <petr.pavlu@suse.com>,
 	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
 	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
 	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v5 7/8] execmem: add support for cache of large ROX pages
-Message-ID: <Zw4DlTTbz4QwhOvU@kernel.org>
+Subject: Re: [PATCH v5 6/8] x86/module: perpare module loading for ROX
+ allocations of text
+Message-ID: <20241015082905.GA1235948@thelio-3990X>
 References: <20241009180816.83591-1-rppt@kernel.org>
- <20241009180816.83591-8-rppt@kernel.org>
- <Zwd7GRyBtCwiAv1v@infradead.org>
- <ZwfPPZrxHzQgYfx7@kernel.org>
- <ZwjXz0dz-RldVNx0@infradead.org>
- <ZwuIPZkjX0CfzhjS@kernel.org>
- <20241013202626.81f430a16750af0d2f40d683@linux-foundation.org>
- <Zw1uBBcG-jAgxF_t@bombadil.infradead.org>
- <Zw3rDS3GRWZe4CBu@bombadil.infradead.org>
+ <20241009180816.83591-7-rppt@kernel.org>
+ <20241010225411.GA922684@thelio-3990X>
+ <Zwkg3LwlNJOwNWZh@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zw3rDS3GRWZe4CBu@bombadil.infradead.org>
+In-Reply-To: <Zwkg3LwlNJOwNWZh@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241014_225825_601449_673DA011 
-X-CRM114-Status: GOOD (  10.96  )
+X-CRM114-CacheID: sfid-20241015_012912_448451_539FA9C1 
+X-CRM114-Status: GOOD (  16.08  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -120,21 +116,87 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, Oct 14, 2024 at 09:09:49PM -0700, Luis Chamberlain wrote:
-> Mike, please run this with kmemleak enabled and running, and also try to get
-> tools/testing/selftests/kmod/kmod.sh to pass.
+On Fri, Oct 11, 2024 at 03:58:04PM +0300, Mike Rapoport wrote:
+> I overlooked how cfi_*_callers routines update addr.
+> This patch should fix it:
 
-There was an issue with kmemleak, I fixed it here:
+Thanks, can confirm. My boot is working again and LKDTM's
+CFI_FORWARD_PROTO test properly fails.
 
-https://lore.kernel.org/linux-mm/20241009180816.83591-1-rppt@kernel.org/T/#m020884c1795218cc2be245e8091fead1cda3f3e4
-
-> I run into silly boot issues with just a guest.
-
-Was it kmemleak or something else?
- 
->   Luis
-
--- 
-Sincerely yours,
-Mike.
+> diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+> index 3b3fa93af3b1..cf782f431110 100644
+> --- a/arch/x86/kernel/alternative.c
+> +++ b/arch/x86/kernel/alternative.c
+> @@ -1148,11 +1148,13 @@ static int cfi_disable_callers(s32 *start, s32 *end, struct module *mod)
+>  
+>  	for (s = start; s < end; s++) {
+>  		void *addr = (void *)s + *s;
+> -		void *wr_addr = module_writable_address(mod, addr);
+> +		void *wr_addr;
+>  		u32 hash;
+>  
+>  		addr -= fineibt_caller_size;
+> -		hash = decode_caller_hash(addr);
+> +		wr_addr = module_writable_address(mod, addr);
+> +		hash = decode_caller_hash(wr_addr);
+> +
+>  		if (!hash) /* nocfi callers */
+>  			continue;
+>  
+> @@ -1172,11 +1174,12 @@ static int cfi_enable_callers(s32 *start, s32 *end, struct module *mod)
+>  
+>  	for (s = start; s < end; s++) {
+>  		void *addr = (void *)s + *s;
+> -		void *wr_addr = module_writable_address(mod, addr);
+> +		void *wr_addr;
+>  		u32 hash;
+>  
+>  		addr -= fineibt_caller_size;
+> -		hash = decode_caller_hash(addr);
+> +		wr_addr = module_writable_address(mod, addr);
+> +		hash = decode_caller_hash(wr_addr);
+>  		if (!hash) /* nocfi callers */
+>  			continue;
+>  
+> @@ -1249,11 +1252,12 @@ static int cfi_rand_callers(s32 *start, s32 *end, struct module *mod)
+>  
+>  	for (s = start; s < end; s++) {
+>  		void *addr = (void *)s + *s;
+> -		void *wr_addr = module_writable_address(mod, addr);
+> +		void *wr_addr;
+>  		u32 hash;
+>  
+>  		addr -= fineibt_caller_size;
+> -		hash = decode_caller_hash(addr);
+> +		wr_addr = module_writable_address(mod, addr);
+> +		hash = decode_caller_hash(wr_addr);
+>  		if (hash) {
+>  			hash = -cfi_rehash(hash);
+>  			text_poke_early(wr_addr + 2, &hash, 4);
+> @@ -1269,14 +1273,15 @@ static int cfi_rewrite_callers(s32 *start, s32 *end, struct module *mod)
+>  
+>  	for (s = start; s < end; s++) {
+>  		void *addr = (void *)s + *s;
+> -		void *wr_addr = module_writable_address(mod, addr);
+> +		void *wr_addr;
+>  		u32 hash;
+>  
+>  		addr -= fineibt_caller_size;
+> -		hash = decode_caller_hash(addr);
+> +		wr_addr = module_writable_address(mod, addr);
+> +		hash = decode_caller_hash(wr_addr);
+>  		if (hash) {
+>  			text_poke_early(wr_addr, fineibt_caller_start, fineibt_caller_size);
+> -			WARN_ON(*(u32 *)(addr + fineibt_caller_hash) != 0x12345678);
+> +			WARN_ON(*(u32 *)(wr_addr + fineibt_caller_hash) != 0x12345678);
+>  			text_poke_early(wr_addr + fineibt_caller_hash, &hash, 4);
+>  		}
+>  		/* rely on apply_retpolines() */
+>  
+> > Cheers,
+> > Nathan
+> 
+> -- 
+> Sincerely yours,
+> Mike.
 
