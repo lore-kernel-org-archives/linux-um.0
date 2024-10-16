@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 24BD4D1AD50
-	for <linux-um@archiver.kernel.org>; Wed, 16 Oct 2024 12:28:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 90FDCD1AD59
+	for <linux-um@archiver.kernel.org>; Wed, 16 Oct 2024 13:30:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=yHnNtzpe4A7HBhM1JHCXKLDO71zzjAKRfmgOfZQgIGY=; b=I6O2DxvDXGLUQRwBLsWs/n7C9s
-	BdWjDhrEUAIY0Xsias7RBY8PN6pHE7wsyux33G0TyYdx1PdEqpk2jdseKHS0XYfjoSZjw7BvshqIV
-	VYJBCm0AWobr5bY0JVcSwhimrnNy7FpXeYlfGVc/DJrpLOni/iRb6gQcdiyucZKQShiTdxCtAHNUM
-	Z6Vn1qN86dTWFbtF3fFC4JsIXvDkskBW68TUzsHFyKsL177q9wb0t3fEkwpPmhzoYHD/tG9QgDtzm
-	OYLUl8SRJetD8Djdhm9/HhL6Y+FZMI7YLQcmYhvKifC3uVS9TghQua0U5AlkdAUSNZLs0JjQjVdkg
-	qZUkpuSg==;
+	bh=z91ntDsVwdZpjEjKfVCxnJdh7uWomOInGMEWm4OJYtc=; b=fTlYys9oMHAfLgSstJPOikpaIb
+	Bkj219sClMReR7Q63efF6hTLKMQUdsaQQGQPcUXqU+n7kSvt/QdiOU0EF9n84oZFxSRLCu69lbjBr
+	78EcB8P0dWQCG5ieHHEOhuwXM83ujEsBQGKBLBtSpyVXUlxzBNHBScAQHUyX5eHGJjx9vu0j/Fw8k
+	lzXSNU0R+ahbXazZmIi5EMU0/QkjsDy/AhuKLOLiYYf7W3Ygv9VzdHKA0Axs8OeaWUmuXqKiw0OW7
+	A42zjSlyIF1vSodTyZi9CXABHSSTSxVgalEjhQdRuTJS5XycJOgA8hFTrpxre+6t0SNGdcEngUZV0
+	myqQNd8w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t138j-0000000BkA8-37Fj;
-	Wed, 16 Oct 2024 12:28:33 +0000
+	id 1t146v-0000000Bvma-3288;
+	Wed, 16 Oct 2024 13:30:45 +0000
 Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t137J-0000000BjhU-3EvH;
-	Wed, 16 Oct 2024 12:27:07 +0000
+	id 1t135f-0000000Biz3-1T6N;
+	Wed, 16 Oct 2024 12:25:25 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id B8A1F5C4ADF;
-	Wed, 16 Oct 2024 12:27:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4677BC4CECF;
-	Wed, 16 Oct 2024 12:26:49 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 4B4E05C076C;
+	Wed, 16 Oct 2024 12:25:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8ED4DC4CECF;
+	Wed, 16 Oct 2024 12:25:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729081624;
-	bh=eY6kLN8OlN+AhPSjfqE9l5XEI+8YBmb961qfGDylvwo=;
+	s=k20201202; t=1729081522;
+	bh=qY1WKPuZvKCisJh16UHTZvWAJ6UH0NTYbU6n2itLRWc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ewgSS7JQnctq7Hgrv3uuVnVef5NJ6/W1nB36pkS9n4SMtyIyVrElKtKyFF1q0jkpP
-	 EsFcTPX0SKB8iugJZ8fG/3GbaKQ9JTTxiSf0x8Je0VGHSki/f8KCPFSVhlw3IAbCgq
-	 dHZxxLb3XDQt5YWY63oWKwfSJfIRrZ4ETnxR7W4suuZEwzrS9kg5Y5qEjXIsmjEAIc
-	 d+qNLfS/dkDTekE3774d/xn4huY0MjrfXRLRM5fT0pICnGA4BMmSBqBpOwDvhxDH7h
-	 lEAtUAvDJvuqN4dGETbbq15U4XHTm20JcFbizm6eRWYoC4wDxNk9mafVHZRkNrpKww
-	 GhffryNbJ3RBQ==
+	b=g6T+kZiFSqZ4TagPYf5fsDWvIwMyVmc/rIpDws8S1OTo0y6QOWVDc5qC6gaV/ISqU
+	 UWlanIBJ5xIZe2Hfv4/v0MqxDUNOgWAOXwgGWmBdRJpC/JalXiouJtn/fWY3w9FMAu
+	 YAl7mmk+yrsbAAifUZMtOv0J1PkjMyPcGQpYYkgmYpzxRH1LefTbW+/1SlTNXu+vDF
+	 oPK7kX3o+IaknOAiReieijE3AL3ZCi1UWISEgHd3zgq0Lp6iWu3VZEAd0URT/qaF3I
+	 p+yJd1kdNmQPktmGeRMXsX6zNcmMgDX9IOZWUoJjxQ2GpJsz+2qtsgktFeijZ740Ln
+	 BTeUsUsoJGaXg==
 From: Mike Rapoport <rppt@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	Luis Chamberlain <mcgrof@kernel.org>
@@ -106,18 +106,19 @@ Cc: Andreas Larsson <andreas@gaisler.com>,
 	linuxppc-dev@lists.ozlabs.org,
 	loongarch@lists.linux.dev,
 	sparclinux@vger.kernel.org,
-	x86@kernel.org
-Subject: [PATCH v6 8/8] x86/module: enable ROX caches for module text on 64 bit
-Date: Wed, 16 Oct 2024 15:24:24 +0300
-Message-ID: <20241016122424.1655560-9-rppt@kernel.org>
+	x86@kernel.org,
+	Christoph Hellwig <hch@lst.de>
+Subject: [PATCH v6 2/8] mm: vmalloc: don't account for number of nodes for HUGE_VMAP allocations
+Date: Wed, 16 Oct 2024 15:24:18 +0300
+Message-ID: <20241016122424.1655560-3-rppt@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20241016122424.1655560-1-rppt@kernel.org>
 References: <20241016122424.1655560-1-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241016_052705_931619_16CC8CB4 
-X-CRM114-Status: GOOD (  14.81  )
+X-CRM114-CacheID: sfid-20241016_052523_516949_85DAC47B 
+X-CRM114-Status: GOOD (  13.49  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -134,86 +135,53 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 
-Enable execmem's cache of PMD_SIZE'ed pages mapped as ROX for module
-text allocations on 64 bit.
+vmalloc allocations with VM_ALLOW_HUGE_VMAP that do not explicitly
+specify node ID will use huge pages only if size_per_node is larger than
+a huge page.
+Still the actual allocated memory is not distributed between nodes and
+there is no advantage in such approach.
+On the contrary, BPF allocates SZ_2M * num_possible_nodes() for each
+new bpf_prog_pack, while it could do with a single huge page per pack.
+
+Don't account for number of nodes for VM_ALLOW_HUGE_VMAP with
+NUMA_NO_NODE and use huge pages whenever the requested allocation size
+is larger than a huge page.
 
 Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/x86/Kconfig   |  1 +
- arch/x86/mm/init.c | 37 ++++++++++++++++++++++++++++++++++++-
- 2 files changed, 37 insertions(+), 1 deletion(-)
+ mm/vmalloc.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 2852fcd82cbd..ff71d18253ba 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -83,6 +83,7 @@ config X86
- 	select ARCH_HAS_DMA_OPS			if GART_IOMMU || XEN
- 	select ARCH_HAS_EARLY_DEBUG		if KGDB
- 	select ARCH_HAS_ELF_RANDOMIZE
-+	select ARCH_HAS_EXECMEM_ROX		if X86_64
- 	select ARCH_HAS_FAST_MULTIPLIER
- 	select ARCH_HAS_FORTIFY_SOURCE
- 	select ARCH_HAS_GCOV_PROFILE_ALL
-diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
-index eb503f53c319..c2e4f389f47f 100644
---- a/arch/x86/mm/init.c
-+++ b/arch/x86/mm/init.c
-@@ -1053,18 +1053,53 @@ unsigned long arch_max_swapfile_size(void)
- #ifdef CONFIG_EXECMEM
- static struct execmem_info execmem_info __ro_after_init;
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index 634162271c00..86b2344d7461 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -3763,8 +3763,6 @@ void *__vmalloc_node_range_noprof(unsigned long size, unsigned long align,
+ 	}
  
-+#ifdef CONFIG_ARCH_HAS_EXECMEM_ROX
-+void execmem_fill_trapping_insns(void *ptr, size_t size, bool writeable)
-+{
-+	/* fill memory with INT3 instructions */
-+	if (writeable)
-+		memset(ptr, INT3_INSN_OPCODE, size);
-+	else
-+		text_poke_set(ptr, INT3_INSN_OPCODE, size);
-+}
-+#endif
-+
- struct execmem_info __init *execmem_arch_setup(void)
- {
- 	unsigned long start, offset = 0;
-+	enum execmem_range_flags flags;
-+	pgprot_t pgprot;
+ 	if (vmap_allow_huge && (vm_flags & VM_ALLOW_HUGE_VMAP)) {
+-		unsigned long size_per_node;
+-
+ 		/*
+ 		 * Try huge pages. Only try for PAGE_KERNEL allocations,
+ 		 * others like modules don't yet expect huge pages in
+@@ -3772,13 +3770,10 @@ void *__vmalloc_node_range_noprof(unsigned long size, unsigned long align,
+ 		 * supporting them.
+ 		 */
  
- 	if (kaslr_enabled())
- 		offset = get_random_u32_inclusive(1, 1024) * PAGE_SIZE;
+-		size_per_node = size;
+-		if (node == NUMA_NO_NODE)
+-			size_per_node /= num_online_nodes();
+-		if (arch_vmap_pmd_supported(prot) && size_per_node >= PMD_SIZE)
++		if (arch_vmap_pmd_supported(prot) && size >= PMD_SIZE)
+ 			shift = PMD_SHIFT;
+ 		else
+-			shift = arch_vmap_pte_supported_shift(size_per_node);
++			shift = arch_vmap_pte_supported_shift(size);
  
- 	start = MODULES_VADDR + offset;
- 
-+	if (IS_ENABLED(CONFIG_ARCH_HAS_EXECMEM_ROX)) {
-+		pgprot = PAGE_KERNEL_ROX;
-+		flags = EXECMEM_KASAN_SHADOW | EXECMEM_ROX_CACHE;
-+	} else {
-+		pgprot = PAGE_KERNEL;
-+		flags = EXECMEM_KASAN_SHADOW;
-+	}
-+
- 	execmem_info = (struct execmem_info){
- 		.ranges = {
--			[EXECMEM_DEFAULT] = {
-+			[EXECMEM_MODULE_TEXT] = {
-+				.flags	= flags,
-+				.start	= start,
-+				.end	= MODULES_END,
-+				.pgprot	= pgprot,
-+				.alignment = MODULE_ALIGN,
-+			},
-+			[EXECMEM_KPROBES ... EXECMEM_BPF] = {
-+				.flags	= EXECMEM_KASAN_SHADOW,
-+				.start	= start,
-+				.end	= MODULES_END,
-+				.pgprot	= PAGE_KERNEL,
-+				.alignment = MODULE_ALIGN,
-+			},
-+			[EXECMEM_MODULE_DATA] = {
- 				.flags	= EXECMEM_KASAN_SHADOW,
- 				.start	= start,
- 				.end	= MODULES_END,
+ 		align = max(real_align, 1UL << shift);
+ 		size = ALIGN(real_size, 1UL << shift);
 -- 
 2.43.0
 
