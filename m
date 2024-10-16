@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DF0A8D2A523
-	for <linux-um@archiver.kernel.org>; Wed, 16 Oct 2024 14:44:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2A7BD2A538
+	for <linux-um@archiver.kernel.org>; Wed, 16 Oct 2024 17:21:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:Date:From:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=xNOEBHIW89c1j/jhsHn9BJm63iz+XQaKnsI8oRx93vU=; b=2CX/tEaOvfaltwvOAw5hV7bsNX
-	TOgYrk8FFHRWBkBY31umbuUHTsXqNd5yRm1udyFsex32LFTEG+Y/mObN8ARzQ5B5mZ4rABgK57nUQ
-	tpv2xz5VFtJu/OIasU2K0a+8FUqIyE8Sh/Xi/RnZgjKQGWg7vbtE99dWQIRupChK/edC8POq9VLRK
-	4XrPu9B7L7w4a7bcbDmMvJ7yHt1xqD5CD2zzmdD8Jr6pXCrExNxF+f+vB//46YHzQ28MlIjh62NtL
-	8T15KdSLbWGmtVBSz2QsChtoNmq6fgLm1REzJwD7SmLVgDiH2pYnvbu5jt9oNiNfsNrok/tiD8ENw
-	crm8dqsA==;
+	bh=1GP0B75uZXvlMdPMs8sxWFWqOcAn6bbZYSntM7zvNeg=; b=JgTx0Fq54TUw9xdPNNuV+dnd16
+	3Uh3kdwZEywN0XhH+7yzt+BUdQsCVbtF/knzcwx5FW3teLIhsuznI1/6w2VaditlnxM1UuOhjDRTO
+	IkNBBDutsocDt2OKZckkvnw6cc4Ea8qvh1EtVHMDClWj/zOaLW3wV4abj0mTLrgFsgraBDbGSBKIN
+	cY7mWHarVsLx7md2EFFzjh26yYmde7Ilu0b54BSJBBPMi9O1zvKYQ1XA0eXzYG69y7iX/IgJlD2Fk
+	RZ1W6H+gUQpylyerRVVarvRR+P1kH16XI3ldEH91iXXQABPugBTCo47C+c8SdMUczxO96YV3l0y4M
+	Dru9R1rA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t15G1-0000000C7a0-2QZu;
-	Wed, 16 Oct 2024 14:44:13 +0000
-Received: from mail-lj1-x22b.google.com ([2a00:1450:4864:20::22b])
+	id 1t17i0-0000000CXBb-2YyV;
+	Wed, 16 Oct 2024 17:21:16 +0000
+Received: from mail-lj1-x235.google.com ([2a00:1450:4864:20::235])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t15D6-0000000C6bY-2T2q;
-	Wed, 16 Oct 2024 14:41:14 +0000
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2fb5be4381dso23916931fa.2;
-        Wed, 16 Oct 2024 07:41:11 -0700 (PDT)
+	id 1t17hv-0000000CX9N-1z5w;
+	Wed, 16 Oct 2024 17:21:13 +0000
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2f75c56f16aso1106961fa.0;
+        Wed, 16 Oct 2024 10:21:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729089669; x=1729694469; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1729099269; x=1729704069; darn=lists.infradead.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xNOEBHIW89c1j/jhsHn9BJm63iz+XQaKnsI8oRx93vU=;
-        b=VtAOGDdqpC7YkHc6ScUARAIEg5EN5HLTsyphhkAHKb+yCBm8YLY6kqjbkYKrmI2u0W
-         4g+cywvwpYkKuuMwlaEoDKBTFqKbpWQbg2FjCCPCIpcRGb9PiZ5msWBxw8CvaO2sty9i
-         2Gy/hoAwF3ecVT3fixNclEL9ob08YqZ/2OrTLI/Aj/zCy9MTk6kZJZqO4SWNdyl1ndE/
-         /Mq065zf95GZ6iT02N/GwbCuCvlcud5HQkPm4W8zyUbEggqtjn/MWrBo8+7Vfo0fUnrr
-         oZYMyRwxyk2lRNwzNz5FKogsMgujCW12FBexGSlpMUpdb1H3S2Re+f9e/y770FOz0+rz
-         9W6Q==
+        bh=1GP0B75uZXvlMdPMs8sxWFWqOcAn6bbZYSntM7zvNeg=;
+        b=kKmw2tLBbAbdatXGaV1NbhP8MKa7EW4NQavJSP8wMCKkXQRLFvwexSlH1mIs8Kisud
+         paYzelHPZrJLSclyLCk9zebAkQdn1HEXTWvyLsDfqzkHprcRrWFrEpCy2XP98rU8PZz9
+         Zo3WnZ+05PGUI0icG/Zc58/ompCnCVBEi9vmJMNfTpkmEfZYts0RYFN0ZHFtaOaQYPeH
+         O7heiGbWz5nO+Zsj64brQfwnsmqdBaQCkC0Rxgpfc3+D6cmMRrBzhfhMuT5GkBE3/zbD
+         E7nuoKnDqH6JEq97w3OhKFIqevRt1oGKSdMQEdraPrTNzXsOng7yH+hCpwy6u7bQpQHk
+         kKJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729089669; x=1729694469;
+        d=1e100.net; s=20230601; t=1729099269; x=1729704069;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xNOEBHIW89c1j/jhsHn9BJm63iz+XQaKnsI8oRx93vU=;
-        b=fSsSVyGr1z3ELVRr6muHPBynxLPsG3GpRH1Sl22zuNb3Ws4p3spZnArKyQOt4nK9OX
-         Hsj6gxQqO1bsZQoVg5n4HPuP8+KHVYfX78ZG9hpED2tfIRI3+pApu7I+Oi7v1bwTP49B
-         KKdoZ6LPzVew11lAxGd1sros0HtRwC52nyoe3RkaKZ9p9FyoLLp+lZw+zMmuvyqyFftd
-         +KQf0eZ8cspgJX+Q3kCLFQGLuabncDbU4+73oq+Qli30nWRepJOthv5ay7R7jPDE5czY
-         dv8eOJ7v0ZHdvzE7H/cPQdCaWN18TwNkJkVMlIQj+RXWmG/s3gkMW6oWvKrSy0HGY1Kn
-         bpZw==
-X-Forwarded-Encrypted: i=1; AJvYcCVYY4YQkmPnFi7tUWG+FkTZ8ASn14QqF29QuWivBna7vzyeE6nYbqFI/OgH8gOi5K5xRQdMulAN/+48Yyw=@lists.infradead.org, AJvYcCVlNApeKsMJ1WlMBhfhpkduERnbWtQMMcJKV6VjedOHtSDc5oKs3nxPHDMrCylg9NL7t7a9NyfIpfj9Ndfp+muh@lists.infradead.org, AJvYcCX0o0Fo8tNo2xyQ6L03zYCaNyTYTElPIILMj8BRPm1FuMyXEIThTyRmDF0SG2E0AtQwp8M32kR7cJA=@lists.infradead.org, AJvYcCXtWHhrMWT7Y0WmVyqv7b7NXjaHYKmJWXWoRPUT6HmtetSH6zLzta1gbL5e8zmnRIWwR/71SiKUrd3sWrYSuj8=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yyj/uHTriKkpMWuR/Mnb8Unmkk/jQ9iGrUzUZ+p2Tk0jMXU6gFl
-	XGxjZebqbRbM4xA8Li0XWSnqUNE5zE8+D4MyPKb4saXXCSzQv627
-X-Google-Smtp-Source: AGHT+IEQ2b77do+Ei5H+uRLYrEtNQq0NK3oK0wCc+2cFtuWRuK/aQBOOdJJvL1LeKTNOBzUMcJr/yQ==
-X-Received: by 2002:a05:651c:1989:b0:2fb:6181:8ca1 with SMTP id 38308e7fff4ca-2fb61b37a76mr33036831fa.6.1729089669341;
-        Wed, 16 Oct 2024 07:41:09 -0700 (PDT)
+        bh=1GP0B75uZXvlMdPMs8sxWFWqOcAn6bbZYSntM7zvNeg=;
+        b=ZV/IcU+DCPDLH8Bbpr8I6IHs1S1/csv3fefjTjguB5dIJ2vJ3J6RFnD64h7fN4h/46
+         AvxfyJe4CObQ/uLLlSQAUlgL2ZU8I8jWPRCNNCmIF2tI6RxZRyycOuKFd4g0p0voWaLi
+         nGcBM7CU5LhTH4G0I0FZhqOwTTM2N3Yzdw2btYKPv8BMCU3j0lXn1OBLOr1nVQONIj7e
+         cIWIs8GhU0fQp7IAtPl7DiWYQurvgR5605zSSjuq5d2NIXNepAw5yjHTiWw1v5uNGptW
+         M85sL6UnJCtaSr1ISZfVksQhP99R7SdUwS8i4KPuf1l/Blm/UwiGX4fAWMcHyEQE3hwA
+         9cZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVsElmbR9mBaT1n4SBYOW4QKfyHUjSw/CckFfj6GtUohmpioB/M63gZcHMdqo12VK94h7N0l9AxFyS7DAjIhsIT@lists.infradead.org, AJvYcCVxJitQxyGE1HNidjy5l57cMJvyd9sTb1UZifWJLPWMI2722s3GPUs6u34jEq+oQkwuOpIkaTT8p101Am8=@lists.infradead.org, AJvYcCWsxGFg2siio2znO8CA/rKkeEUOEWFADte7JzZawPt08zC8+8qFNFIW/HyMzfJRGi2sH/f9xOVOkkdbOCqDCuU=@lists.infradead.org, AJvYcCXIInIVNwgtDBE1/UqaCJ6OhGDvEC5qVhCEFUUzD4ql3maeG0eGbFOhLaeShMbJX2FqyosbiaffAZc=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwCNfa64i/moQatoBs9N7r5OftjL+8T7BqZxYeGNCS+Bmf1/wRC
+	ucr2Q++hr7zwRJU0Xc1YDBn0DCk1t01QerXXGaj48AOEgWNdagKC
+X-Google-Smtp-Source: AGHT+IE3BOIzolDg/ircoXlrXALD+U8X6mjirKNd/VoSdJ8ZQKv3Aj0k5T5yFcByNzOByKxATFiOdw==
+X-Received: by 2002:a05:6512:402a:b0:539:f619:b458 with SMTP id 2adb3069b0e04-539f619b4cbmr6540423e87.22.1729099268652;
+        Wed, 16 Oct 2024 10:21:08 -0700 (PDT)
 Received: from pc636 (host-95-203-1-67.mobileonline.telia.com. [95.203.1.67])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-2fb5d1d0244sm4327361fa.139.2024.10.16.07.41.04
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-539fffa8a5fsm512819e87.26.2024.10.16.10.21.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Oct 2024 07:41:08 -0700 (PDT)
+        Wed, 16 Oct 2024 10:21:08 -0700 (PDT)
 From: Uladzislau Rezki <urezki@gmail.com>
 X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Wed, 16 Oct 2024 16:41:03 +0200
+Date: Wed, 16 Oct 2024 19:21:02 +0200
 To: Mike Rapoport <rppt@kernel.org>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Luis Chamberlain <mcgrof@kernel.org>,
@@ -111,18 +111,18 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
 	sparclinux@vger.kernel.org, x86@kernel.org,
 	Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v6 1/8] mm: vmalloc: group declarations depending on
- CONFIG_MMU together
-Message-ID: <Zw_QfzopOv7pCZc_@pc636>
+Subject: Re: [PATCH v6 2/8] mm: vmalloc: don't account for number of nodes
+ for HUGE_VMAP allocations
+Message-ID: <Zw_1_ln440eHTjGt@pc636>
 References: <20241016122424.1655560-1-rppt@kernel.org>
- <20241016122424.1655560-2-rppt@kernel.org>
+ <20241016122424.1655560-3-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241016122424.1655560-2-rppt@kernel.org>
+In-Reply-To: <20241016122424.1655560-3-rppt@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241016_074112_791007_B55CCD46 
-X-CRM114-Status: GOOD (  23.65  )
+X-CRM114-CacheID: sfid-20241016_102111_539669_258243F7 
+X-CRM114-Status: GOOD (  26.47  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -137,127 +137,84 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Oct 16, 2024 at 03:24:17PM +0300, Mike Rapoport wrote:
+On Wed, Oct 16, 2024 at 03:24:18PM +0300, Mike Rapoport wrote:
 > From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 > 
-> There are a couple of declarations that depend on CONFIG_MMU in
-> include/linux/vmalloc.h spread all over the file.
+> vmalloc allocations with VM_ALLOW_HUGE_VMAP that do not explicitly
+> specify node ID will use huge pages only if size_per_node is larger than
+> a huge page.
+> Still the actual allocated memory is not distributed between nodes and
+> there is no advantage in such approach.
+> On the contrary, BPF allocates SZ_2M * num_possible_nodes() for each
+> new bpf_prog_pack, while it could do with a single huge page per pack.
 > 
-> Group them all together to improve code readability.
-> 
-> No functional changes.
+> Don't account for number of nodes for VM_ALLOW_HUGE_VMAP with
+> NUMA_NO_NODE and use huge pages whenever the requested allocation size
+> is larger than a huge page.
 > 
 > Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 > Reviewed-by: Christoph Hellwig <hch@lst.de>
 > ---
->  include/linux/vmalloc.h | 60 +++++++++++++++++------------------------
->  1 file changed, 24 insertions(+), 36 deletions(-)
+>  mm/vmalloc.c | 9 ++-------
+>  1 file changed, 2 insertions(+), 7 deletions(-)
 > 
-> diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-> index ad2ce7a6ab7a..27408f21e501 100644
-> --- a/include/linux/vmalloc.h
-> +++ b/include/linux/vmalloc.h
-> @@ -134,12 +134,6 @@ extern void vm_unmap_ram(const void *mem, unsigned int count);
->  extern void *vm_map_ram(struct page **pages, unsigned int count, int node);
->  extern void vm_unmap_aliases(void);
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index 634162271c00..86b2344d7461 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -3763,8 +3763,6 @@ void *__vmalloc_node_range_noprof(unsigned long size, unsigned long align,
+>  	}
 >  
-> -#ifdef CONFIG_MMU
-> -extern unsigned long vmalloc_nr_pages(void);
-> -#else
-> -static inline unsigned long vmalloc_nr_pages(void) { return 0; }
-> -#endif
+>  	if (vmap_allow_huge && (vm_flags & VM_ALLOW_HUGE_VMAP)) {
+> -		unsigned long size_per_node;
 > -
->  extern void *vmalloc_noprof(unsigned long size) __alloc_size(1);
->  #define vmalloc(...)		alloc_hooks(vmalloc_noprof(__VA_ARGS__))
+>  		/*
+>  		 * Try huge pages. Only try for PAGE_KERNEL allocations,
+>  		 * others like modules don't yet expect huge pages in
+> @@ -3772,13 +3770,10 @@ void *__vmalloc_node_range_noprof(unsigned long size, unsigned long align,
+>  		 * supporting them.
+>  		 */
 >  
-> @@ -266,12 +260,29 @@ static inline bool is_vm_area_hugepages(const void *addr)
->  #endif
->  }
+> -		size_per_node = size;
+> -		if (node == NUMA_NO_NODE)
+> -			size_per_node /= num_online_nodes();
+> -		if (arch_vmap_pmd_supported(prot) && size_per_node >= PMD_SIZE)
+> +		if (arch_vmap_pmd_supported(prot) && size >= PMD_SIZE)
+>  			shift = PMD_SHIFT;
+>  		else
+> -			shift = arch_vmap_pte_supported_shift(size_per_node);
+> +			shift = arch_vmap_pte_supported_shift(size);
 >  
-> +/* for /proc/kcore */
-> +long vread_iter(struct iov_iter *iter, const char *addr, size_t count);
-> +
-> +/*
-> + *	Internals.  Don't use..
-> + */
-> +__init void vm_area_add_early(struct vm_struct *vm);
-> +__init void vm_area_register_early(struct vm_struct *vm, size_t align);
-> +
-> +int register_vmap_purge_notifier(struct notifier_block *nb);
-> +int unregister_vmap_purge_notifier(struct notifier_block *nb);
-> +
->  #ifdef CONFIG_MMU
-> +#define VMALLOC_TOTAL (VMALLOC_END - VMALLOC_START)
-> +
-> +unsigned long vmalloc_nr_pages(void);
-> +
->  int vm_area_map_pages(struct vm_struct *area, unsigned long start,
->  		      unsigned long end, struct page **pages);
->  void vm_area_unmap_pages(struct vm_struct *area, unsigned long start,
->  			 unsigned long end);
->  void vunmap_range(unsigned long addr, unsigned long end);
-> +
->  static inline void set_vm_flush_reset_perms(void *addr)
->  {
->  	struct vm_struct *vm = find_vm_area(addr);
-> @@ -279,24 +290,14 @@ static inline void set_vm_flush_reset_perms(void *addr)
->  	if (vm)
->  		vm->flags |= VM_FLUSH_RESET_PERMS;
->  }
-> +#else  /* !CONFIG_MMU */
-> +#define VMALLOC_TOTAL 0UL
->  
-> -#else
-> -static inline void set_vm_flush_reset_perms(void *addr)
-> -{
-> -}
-> -#endif
-> -
-> -/* for /proc/kcore */
-> -extern long vread_iter(struct iov_iter *iter, const char *addr, size_t count);
-> -
-> -/*
-> - *	Internals.  Don't use..
-> - */
-> -extern __init void vm_area_add_early(struct vm_struct *vm);
-> -extern __init void vm_area_register_early(struct vm_struct *vm, size_t align);
-> +static inline unsigned long vmalloc_nr_pages(void) { return 0; }
-> +static inline void set_vm_flush_reset_perms(void *addr) {}
-> +#endif /* CONFIG_MMU */
->  
-> -#ifdef CONFIG_SMP
-> -# ifdef CONFIG_MMU
-> +#if defined(CONFIG_MMU) && defined(CONFIG_SMP)
->  struct vm_struct **pcpu_get_vm_areas(const unsigned long *offsets,
->  				     const size_t *sizes, int nr_vms,
->  				     size_t align);
-> @@ -311,22 +312,9 @@ pcpu_get_vm_areas(const unsigned long *offsets,
->  	return NULL;
->  }
->  
-> -static inline void
-> -pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
-> -{
-> -}
-> -# endif
-> -#endif
-> -
-> -#ifdef CONFIG_MMU
-> -#define VMALLOC_TOTAL (VMALLOC_END - VMALLOC_START)
-> -#else
-> -#define VMALLOC_TOTAL 0UL
-> +static inline void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms) {}
->  #endif
->  
-> -int register_vmap_purge_notifier(struct notifier_block *nb);
-> -int unregister_vmap_purge_notifier(struct notifier_block *nb);
-> -
->  #if defined(CONFIG_MMU) && defined(CONFIG_PRINTK)
->  bool vmalloc_dump_obj(void *object);
->  #else
-> -- 
-> 2.43.0
-> 
+>  		align = max(real_align, 1UL << shift);
+>  		size = ALIGN(real_size, 1UL << shift);
+>
+Looking at this place, i see that an overwriting a "size" approach seems as
+something that is a bit hard to follow. Below we have following code:
+
+<snip>
+...
+again:
+	area = __get_vm_area_node(real_size, align, shift, VM_ALLOC |
+	  VM_UNINITIALIZED | vm_flags, start, end, node,
+	  gfp_mask, caller);
+...
+<snip>
+
+where we pass a "real_size", whereas there is only one place in the
+__vmalloc_node_range_noprof() function where a "size" is used. It is
+in the end of function:
+
+<snip>
+...
+	size = PAGE_ALIGN(size);
+	if (!(vm_flags & VM_DEFER_KMEMLEAK))
+		kmemleak_vmalloc(area, size, gfp_mask);
+
+	return area->addr;
+<snip>
+
+As fro this patch:
+
 Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
 --
