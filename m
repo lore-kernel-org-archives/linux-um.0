@@ -4,48 +4,47 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94A9BD21272
-	for <linux-um@archiver.kernel.org>; Thu, 17 Oct 2024 09:55:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 917A6D2127F
+	for <linux-um@archiver.kernel.org>; Thu, 17 Oct 2024 11:29:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=VVu7cX1SI2+XfnYlKmwbrDG3+CJWOAmt2jAl9wbUo9k=; b=R7zccY2oKDvkjEH7ydmswT6p+M
-	8R0xMm/0JlebO1h9ZcOAe/ClqW/Z5B7g3FKe9OllhCHdnazU2QrOFoPGoRRiH6RJEtZuQqPvcHFwA
-	wHpw+6wgsk6IAnPZEMImTsWlKbvOLiTUv8BZZtp2PlrH//hrCPJrUusRbZLVPZRISeARjhLWeO+9I
-	H0tP0thYyAy4TiH7rdhkLubOApNtgfdrt3WI/5jiwm1blbMwnXoFTWd6Kj1eRjvJZK7meGCX/na94
-	FNIoEYgcwaL+3l8GUCsRHYlRH1AQwmCcushXiXIMKdXDp5uMZvLiMhUsBSPus8FQ264iVly58sjlN
-	4K+bBtsg==;
+	bh=5TEnRdFDrGp3g8cb84z8escMU96OZKkwtQ0FRZiWHBE=; b=etVMcfXiASp4bsG+KgOQVgvwG+
+	NmwL3+ajznxkvVX6tEehQbF5Z6q7pn836X6IMJ16d2/9W7VI9HRryg5Icvr3k96XT3Wj9Vmeq6M3G
+	Bq08e+YSzfRPXUDv4XO4Svn2uZpRuTooD1zQvABGI7Bz9u6R+vPqlJmi4s9JPSFpmkaesApBjoftg
+	RvZPhvSPyax6eJtrsQqEgxTljZsGh6uJVDthGciR/8jBK+ylGJtNW1ydiCacT2Yp++hSYnjpYwWXa
+	AdmtOQ0fr/tsJPQKyWp4sf2Ri4BGlvXVND40lKs5bG7WeezcpdgktCzaI1X4nFky5DZoACQ8M7UFh
+	27jP5FbA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t1NDx-0000000EQv4-19LI;
-	Thu, 17 Oct 2024 09:55:17 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1t1Ogp-0000000Edtg-3FYl;
+	Thu, 17 Oct 2024 11:29:11 +0000
+Received: from nyc.source.kernel.org ([147.75.193.91])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t1Mun-0000000EMWI-2ere;
-	Thu, 17 Oct 2024 09:35:29 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=VVu7cX1SI2+XfnYlKmwbrDG3+CJWOAmt2jAl9wbUo9k=; b=XiFI8B0ovduSIe40JjuY242meO
-	1tWdoXPB8Y4u6FvdJlkOh0pr/b+ptTLEARYM4Fz0YcPpgeZ6S8vIFL3pv7C67je495kkW38x9jgPx
-	kZcvMosNEICP21MaeTfL4OcNrqj3D/g6hBzGdP9sE2b36zBWvYJp4QWDybwMxKdlcL3ZpeYi7ki7+
-	suQtk2YIywEtSE8+GUQPkWxddDo9J2uY+LZoII7Oa4V1WDt8U55u9QC4d2zaOtcNPZVh6JsT6n2VV
-	yz3mabQVBKOF3bVpb3D/1s3d5tFfjBLa1mZAU7RdfOnmovvB/POi51RCfYsgOa7ik7FCs2q+EK5D6
-	fjlJqizw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1t1Mua-000000075pE-1Ofh;
-	Thu, 17 Oct 2024 09:35:17 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id EF73A3005AF; Thu, 17 Oct 2024 11:35:15 +0200 (CEST)
-Date: Thu, 17 Oct 2024 11:35:15 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Mike Rapoport <rppt@kernel.org>,
+	id 1t1Ogh-0000000EdpP-3inN;
+	Thu, 17 Oct 2024 11:29:07 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id E816CA43D50;
+	Thu, 17 Oct 2024 11:28:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A51E6C4CEC3;
+	Thu, 17 Oct 2024 11:28:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729164541;
+	bh=rt80HNwYvry4F4GclVQlY1veJ+krWpXQVKReUpcl890=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ot+aEOLgX5JjytFWTSP6bvwXMFkowa3+f8eQ2nWquiQ2RAv0bCvly8HaX5AltuwSG
+	 MSL87zIBHWGLQnCmCdiEfFC7X5ejkFjDqsJRxmUPBDOphZUPBuoh9vgoceix8Psav5
+	 Yvn0UgFKrQvx/wSoy69QgTtp5NCCSdTL6QB1vx3PWWPTlokB4+yqFBJYWypC9U2bHQ
+	 nQtmXd5x7H21VQL4AHHLnM8nJNg1uOm2mWoaE2bjtRwnQ1e9g0HZLSZljRpX0WRG/I
+	 j7Jg7Czseip6435Tp950cr2IcSkIthwfZaEljLp7+y1XWJYi+AU0xcha6M5b6FnQGJ
+	 4UYbNkR0gIbzA==
+Date: Thu, 17 Oct 2024 14:25:05 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Luis Chamberlain <mcgrof@kernel.org>,
 	Andreas Larsson <andreas@gaisler.com>,
@@ -91,14 +90,18 @@ Cc: Mike Rapoport <rppt@kernel.org>,
 	sparclinux@vger.kernel.org, x86@kernel.org
 Subject: Re: [PATCH v6 6/8] x86/module: prepare module loading for ROX
  allocations of text
-Message-ID: <20241017093515.GU16066@noisy.programming.kicks-ass.net>
+Message-ID: <ZxD0EVBoO-jcxEGE@kernel.org>
 References: <20241016122424.1655560-1-rppt@kernel.org>
  <20241016122424.1655560-7-rppt@kernel.org>
  <20241016170128.7afeb8b0@gandalf.local.home>
+ <20241017093515.GU16066@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241016170128.7afeb8b0@gandalf.local.home>
+In-Reply-To: <20241017093515.GU16066@noisy.programming.kicks-ass.net>
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20241017_042904_229178_97028133 
+X-CRM114-Status: GOOD (  29.16  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -113,47 +116,63 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Oct 16, 2024 at 05:01:28PM -0400, Steven Rostedt wrote:
-> On Wed, 16 Oct 2024 15:24:22 +0300
-> Mike Rapoport <rppt@kernel.org> wrote:
+On Thu, Oct 17, 2024 at 11:35:15AM +0200, Peter Zijlstra wrote:
+> On Wed, Oct 16, 2024 at 05:01:28PM -0400, Steven Rostedt wrote:
+> > On Wed, 16 Oct 2024 15:24:22 +0300
+> > Mike Rapoport <rppt@kernel.org> wrote:
+> > 
+> > > diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
+> > > index 8da0e66ca22d..b498897b213c 100644
+> > > --- a/arch/x86/kernel/ftrace.c
+> > > +++ b/arch/x86/kernel/ftrace.c
+> > > @@ -118,10 +118,13 @@ ftrace_modify_code_direct(unsigned long ip, const char *old_code,
+> > >  		return ret;
+> > >  
+> > >  	/* replace the text with the new text */
+> > > -	if (ftrace_poke_late)
+> > > +	if (ftrace_poke_late) {
+> > >  		text_poke_queue((void *)ip, new_code, MCOUNT_INSN_SIZE, NULL);
+> > > -	else
+> > > -		text_poke_early((void *)ip, new_code, MCOUNT_INSN_SIZE);
+> > > +	} else {
+> > > +		mutex_lock(&text_mutex);
+> > > +		text_poke((void *)ip, new_code, MCOUNT_INSN_SIZE);
+> > > +		mutex_unlock(&text_mutex);
+> > > +	}
+> > >  	return 0;
+> > >  }
+> > 
+> > So this slows down the boot by over 30ms. That may not sound like much, but
+> > we care very much about boot times. This code is serialized with boot and
+> > runs whenever ftrace is configured in the kernel. The way I measured this,
+> > was that I added:
+> > 
 > 
-> > diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
-> > index 8da0e66ca22d..b498897b213c 100644
-> > --- a/arch/x86/kernel/ftrace.c
-> > +++ b/arch/x86/kernel/ftrace.c
-> > @@ -118,10 +118,13 @@ ftrace_modify_code_direct(unsigned long ip, const char *old_code,
-> >  		return ret;
-> >  
-> >  	/* replace the text with the new text */
-> > -	if (ftrace_poke_late)
-> > +	if (ftrace_poke_late) {
-> >  		text_poke_queue((void *)ip, new_code, MCOUNT_INSN_SIZE, NULL);
-> > -	else
-> > -		text_poke_early((void *)ip, new_code, MCOUNT_INSN_SIZE);
-> > +	} else {
-> > +		mutex_lock(&text_mutex);
-> > +		text_poke((void *)ip, new_code, MCOUNT_INSN_SIZE);
-> > +		mutex_unlock(&text_mutex);
-> > +	}
-> >  	return 0;
-> >  }
+> > If this is only needed for module load, can we at least still use the
+> > text_poke_early() at boot up?
 > 
-> So this slows down the boot by over 30ms. That may not sound like much, but
-> we care very much about boot times. This code is serialized with boot and
-> runs whenever ftrace is configured in the kernel. The way I measured this,
-> was that I added:
+> Right, so I don't understand why this is needed at all.
+> ftrace_module_init() runs before complete_formation() which normally
+> switches to ROX, as such ftrace should be able to continue to do direct
+> modifications here.
+
+With this series the module text is allocated as ROX at the first place, so
+the modifications ftrace does to module text have to either use text poking
+even before complete_formation() or deal with a writable copy like I did
+for relocations and alternatives.
+
+I've been carrying the ftrace changes from a very old prototype and
+didn't pay enough attention to them them until Steve's complaint.
+
+I'll look into it.
+ 
+> Which reminds me, at some point I did patches adding a
+> MODULE_STATE_UNFORMED callback in order for static_call / jump_label to
+> be able to avoid the expensive patching on module load as well (arguably
+> ftrace should be using that too, instead of a custom callback).
 > 
 
-> If this is only needed for module load, can we at least still use the
-> text_poke_early() at boot up?
-
-Right, so I don't understand why this is needed at all.
-ftrace_module_init() runs before complete_formation() which normally
-switches to ROX, as such ftrace should be able to continue to do direct
-modifications here.
-
-Which reminds me, at some point I did patches adding a
-MODULE_STATE_UNFORMED callback in order for static_call / jump_label to
-be able to avoid the expensive patching on module load as well (arguably
-ftrace should be using that too, instead of a custom callback).
+-- 
+Sincerely yours,
+Mike.
 
