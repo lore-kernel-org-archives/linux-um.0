@@ -4,58 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDF42D3C92D
-	for <linux-um@archiver.kernel.org>; Sat, 19 Oct 2024 22:51:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 35AECD3C92E
+	for <linux-um@archiver.kernel.org>; Sat, 19 Oct 2024 23:31:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=7zUTFOALmvJecWb9wB6YiXPzPNuTlzsgzqq4AD+I6Bk=; b=YO8W3D5DcxtRpiNGwG4dxPmYEk
-	PRGaByAsbmcN540Tokvl6bUYH2MJmnoLpBbYbTqqMES303o6llvoBnbY3kKJ2lWObHv7II2uIEUj/
-	gtoeOiuTxp3a0EePXw/fmPZoIszNsRvjxUt45aFFHBnzH5m9tocie5XnwZR8ERUDIPdY6o82LwDJX
-	Isq3613nb9UNIT6DsMdZBwPEqIAS1oh+gjlZvzEWFJvK/rPEHKxFN5n+C0clM8/Pw38Ca9sj0FA7V
-	QS7xPm6svgjGeMBF5k16042X+xiX8SLsV2BY/VZ6QzbRzV7LS+bB1RS54DrANINYp95Ph3QhvyhnV
-	XHCYHDqQ==;
+	bh=VuHy1HrHdhUjSm/D9WaG63hW9NcA1Axd/7XrPQvY+Bo=; b=ckVa54k+giZi1obOC1LFGvC6gH
+	BZRRi0a/3Wfg4Q7d2mPnxdYabLHKcAUTXm01AQcwY0VaIeItgLNZ9vlZuUdnCbK0jUzWiM8QPhTi0
+	OjEIhvMT5OybwiI2x4tBBdGoLxCCzfkj0wdFyTgADVZgpTlNACoqkvh/aP3mfpKDqKu8Ni+0rnFWZ
+	L2ZWos2l1GkDDleRPdr2rxmHNIeDYJ37J5K/mKZnHxT8gWu9TJ3U8gvxoYmVrfIp7fg8FSf8JzRaE
+	DllSTevTHKeIjzoC4Ie9epCel8Fp+WTEkiXDsLmpUxV2aE+Z+q9h+LX2Onb5LgaK9xfzT5yHZwcgF
+	DpGBc5tg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t2IIh-000000043IV-0fQG;
-	Sat, 19 Oct 2024 22:51:59 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1t2Iuu-000000046Ba-0WRM;
+	Sat, 19 Oct 2024 23:31:28 +0000
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t2IIe-000000043HA-3Nr1;
-	Sat, 19 Oct 2024 22:51:56 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=7zUTFOALmvJecWb9wB6YiXPzPNuTlzsgzqq4AD+I6Bk=; b=Zs7HVgr75quueuGjRc4nNKtmO2
-	PMvYeEylscL8oHTKxFrHLXoFgTXro9jh4CFsWa2tYPf4Pb1DWlGt/8n3EEoJC8NJDt4vssaj4NG4E
-	5uA4EZrVYTndKnsdA+LPmUVYEBKBT893zZxojkcQy0kdfwmAh1WC47hsx3xjXpBx5ed1LlRVsZeUI
-	SzYXcFmbdfGV0TDiF9J8KS/F757N0aHrzZnJIrFIKvs16p8xM5D4ET2be+GhJaRon0tGcaJcRpm2C
-	2GClzYkbAMth7jIx0wyrQqiXGgUQa7Dofc/LlIp7yonhkr83QkraPsgjrafEJTR8lqafweGPchG2G
-	qFbJkOKA==;
-Received: from dfw.source.kernel.org ([139.178.84.217])
-	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t2IIa-00000007bbK-3NkU;
-	Sat, 19 Oct 2024 22:51:55 +0000
+	id 1t2HyA-000000040uO-1hId;
+	Sat, 19 Oct 2024 22:30:48 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id D5BAF5C1627;
-	Sat, 19 Oct 2024 22:51:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A509C4CEC5;
-	Sat, 19 Oct 2024 22:51:45 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id 0111FA40448;
+	Sat, 19 Oct 2024 22:30:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF36EC4CEC5;
+	Sat, 19 Oct 2024 22:30:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729378307;
-	bh=iaKyJYsgDj5oq6LrolQ8TT/cIGmsXYFI9lXbWUpr55Y=;
+	s=k20201202; t=1729377044;
+	bh=QyfIXk+096xDFBJfNhGtA+h7+x144NJyXqGZEWCxEbA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PWWcwFHRKAv10UFeMWidR+oArwiG2+r721GO7uSmTpQx0pOBJf1X5cPUKD4gQg0+v
-	 evgCS5YusRtKfCXFwytoJRX7ZRENJRAMHCt8HvG03nMPWzjaJDvjdrgLKvwNx81i5w
-	 NIzDOiB7M0V+Ul7Gwqxo7hFP4wjCIx8CdeY/s0mZyLShSAGZB3TOEh3ca9PA+vMo3W
-	 q8+DRfeiSbEMT2pfBoZx2+ts1c/ZoMbSDOpbvF1L4SRM4K2S0rC8EknH09OaDU5jzH
-	 5NBzulTpDRDsAwrp/w7GYCrOs4CtagANrNUd5w9SX4IoQrxyUxMdI/Mnop054oa6hH
-	 EFlkfWan9WOpw==
-Date: Sat, 19 Oct 2024 15:51:43 -0700
+	b=CErL8/nta/6r/1WJkkwG/t5evnd+rztuMKPvEAcvD2SnHlbG8tiM8oebQum4YnbtM
+	 jKRTZBaC+ATcd4VCxL5682bSGxbHvqjRzPrn6cR/xecdWEBWr3gweQycvt1RfyCGs7
+	 MiXNOy+V4Fewi4RfizJAsZmsup5CQWNXqWmaamyVMyXGW/hUqx3sW49nhqNlGd3ZzY
+	 ETj4BkT4BYSwhfn/AQ96YSvs+Sq6IlTIlZXVNMpeHMX+0ZQjv+FZRA/RKrz+t3dZ4u
+	 1qH1N38SWuCE3fte75V0TIkKwCKF9lts668sBgQlwW5eAV1dEKJXhxg+1WEdnmmBQI
+	 jKYmcc+lcknEw==
+Date: Sat, 19 Oct 2024 15:30:41 -0700
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: Mike Rapoport <rppt@kernel.org>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -102,17 +88,17 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
 	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
 	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v6 0/8] x86/module: use large ROX pages for text
- allocations
-Message-ID: <ZxQ3_8xNPYsQA5GH@bombadil.infradead.org>
+Subject: Re: [PATCH v6 4/8] module: prepare to handle ROX allocations for text
+Message-ID: <ZxQzEdJqU6TCEH5f@bombadil.infradead.org>
 References: <20241016122424.1655560-1-rppt@kernel.org>
+ <20241016122424.1655560-5-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241016122424.1655560-1-rppt@kernel.org>
+In-Reply-To: <20241016122424.1655560-5-rppt@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241019_235153_268877_C99B02A0 
-X-CRM114-Status: GOOD (  12.02  )
+X-CRM114-CacheID: sfid-20241019_153046_600636_D7E90C0A 
+X-CRM114-Status: GOOD (  17.53  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -127,28 +113,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Oct 16, 2024 at 03:24:16PM +0300, Mike Rapoport wrote:
+On Wed, Oct 16, 2024 at 03:24:20PM +0300, Mike Rapoport wrote:
 > From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 > 
-> Hi,
+> In order to support ROX allocations for module text, it is necessary to
+> handle modifications to the code, such as relocations and alternatives
+> patching, without write access to that memory.
 > 
-> This is an updated version of execmem ROX caches.
+> One option is to use text patching, but this would make module loading
+> extremely slow and will expose executable code that is not finally formed.
 > 
-> Andrew, Luis, there is a conflict with Suren's "page allocation tag
-> compression" patches:
+> A better way is to have memory allocated with ROX permissions contain
+> invalid instructions and keep a writable, but not executable copy of the
+> module text. The relocations and alternative patches would be done on the
+> writable copy using the addresses of the ROX memory.
+> Once the module is completely ready, the updated text will be copied to ROX
+> memory using text patching in one go and the writable copy will be freed.
 > 
-> https://lore.kernel.org/all/20241014203646.1952505-1-surenb@google.com
+> Add support for that to module initialization code and provide necessary
+> interfaces in execmem.
 > 
-> Probably taking this via mmotm would be more convenient.
+> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 
-Yeah, it's already there on Andrew's tree, fine with me to go through there.
-
-The linux modules KPD [0] has picked this up from the mailing list and
-tested with kdevops, and this series passes our modules test now [1], and so:
-
-Tested-by: kdevops <kdevops@lists.linux.dev> [1]
-
-Link https://github.com/linux-kdevops/linux-modules-kpd/actions/runs/11420097546 # [0]
+Reviewd-by: Luis Chamberlain <mcgrof@kernel.org>
 
   Luis
 
