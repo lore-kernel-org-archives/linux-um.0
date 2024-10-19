@@ -4,79 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C64B8D3C539
-	for <linux-um@archiver.kernel.org>; Thu, 17 Oct 2024 23:17:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id DD939D3C547
+	for <linux-um@archiver.kernel.org>; Sat, 19 Oct 2024 05:54:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
 	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=casHpXXi28jzM/c84VhP6ydPSazdx5l8D0LR+NrLTfg=; b=xwrcPQjxySnDTNKJ4ND8NHJb2Q
-	RQqLpIYCOCjcytUaOdMUAFCZOdIAjMHXSDnzEvXPCXWuK7fQ9E8/yn/d7rpRDOsq0TlrH9ieaPupU
-	AZQRs3S+edJo0qeXcipwtzCQ6brcrc1DtX7aFawCaIe+RQvS+QpgveMMWEC7l0J3yv9obn8lzj/ho
-	3nOW6yFw6kWZ6H7yp2S/JfsuIfCQUti0bH2XwHPb2jlkBq5hxnfquTeUI/xTAuMzmuJ7V/s3CmVeV
-	c/L7a8cQCpQEPNDZaPvOQ8bV1AarMuub22k8s4UnPSu6tayD/bbZe/mbvyy820Jdrvh1F/t4rsQBs
-	iSxJ4YKA==;
+	bh=Hdgv1+hDzc/8i+cOBipO++NpZ5AiXOKci4JbOPWMlTA=; b=Sa7lxjmwEPmjWtYJv/x0wcafXg
+	+M50UYOCWfFBlCwVO3ArxZrF/RLggwIE/SFIgoCah0sdxqauBtNgH30ooGGQ5gUMRqdGOdlWlkNq3
+	mxj972ZWqXS76OzVhOM8NspkKPoMCoUKiEnNCTGuCf/8ju+OpMLfuRFkzH7FMk/K4xDh7Pwfj338p
+	3pLvb5h4cNK0PZ+Lxh9DFAVF4Eq0oeL1pE3bHWsuSkKmtQ6jT+vwhNouy51Dn4cS10uEhala/M5a/
+	7LXtI2Y0GgoFwvgHMGjtDJm9DiYbLOERPeDhXdh/JjYGbV3PWeyom8LwlXnHjtyehfFXz0t5gcA9F
+	0mbEYKhw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t1ZkH-0000000GPiN-06GJ;
-	Thu, 17 Oct 2024 23:17:29 +0000
-Received: from mail-qv1-xf2e.google.com ([2607:f8b0:4864:20::f2e])
+	id 1t22QC-00000002ceL-37qr;
+	Sat, 19 Oct 2024 05:54:40 +0000
+Received: from mail-qv1-xf2c.google.com ([2607:f8b0:4864:20::f2c])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t1ZkD-0000000GPhv-3irK
+	id 1t22Q9-00000002cdl-3F6L
 	for linux-um@lists.infradead.org;
-	Thu, 17 Oct 2024 23:17:27 +0000
-Received: by mail-qv1-xf2e.google.com with SMTP id 6a1803df08f44-6cbe700dcc3so9362696d6.3
-        for <linux-um@lists.infradead.org>; Thu, 17 Oct 2024 16:17:25 -0700 (PDT)
+	Sat, 19 Oct 2024 05:54:39 +0000
+Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-6cb82317809so18367026d6.0
+        for <linux-um@lists.infradead.org>; Fri, 18 Oct 2024 22:54:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1729207045; x=1729811845; darn=lists.infradead.org;
+        d=google.com; s=20230601; t=1729317273; x=1729922073; darn=lists.infradead.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=casHpXXi28jzM/c84VhP6ydPSazdx5l8D0LR+NrLTfg=;
-        b=1Hr/+htY3Eej9QRfIUITgHgtOl1ams2awpBqU0URrbX6Qick7m8MKF8OcUSnMXGCrA
-         HbTP9uAZQllYWbdrz4nUzCy2qxi7JmXtXq+QIx0JfoCdYeRZh1BJAH++MxGwHhvlm4Id
-         dCoSoPUw4BYXCraCFrEiL1DIcvwDxkX8Vige3jifICS+y4a8bjP9ELYQEJl9tBfWh4aY
-         crvH+iZsYHEt5bnUMTioRaF6BUN2BGb6Nhf+S8AENyLLJmkLSmqSJ1G7VZGlazDSYydC
-         gnoGn56lqQrNhigt2bapbs/ZaBw9LUxTBbxn91wfnO2pYL8MS8pu+qqt82T3P3layY8q
-         XF9w==
+        bh=Hdgv1+hDzc/8i+cOBipO++NpZ5AiXOKci4JbOPWMlTA=;
+        b=eUtAdHkFRMe04F8wJgjc1MRVcvJzmMnz+rhQrl2h4AalbOqnqpURlmktLEPMtDArTd
+         aXJCO1Swr2IEdBc9whKeXG+H/nHRsrhlDx+KzV0ZmaG1NcPYFVKtcGrc11GveXeJ9Qdm
+         SE0j2NVNEgNvRNPDonc18eHCfs77FI6Dwu4PgX64XPq+BYe5UhZpP6bV/GeN9lxtrEvg
+         ij6MLHg5cE5sh3tKRmoWo+Jcyd5Xy+X0FJebokQLPcPZtGV/d6qXYNUJvBVnY4SWhpAN
+         D5aKC3cmCYvu7C1zSY+thSi7Hs8LGOKMmwPbfJoLD3x9eo7vhNArTNDZyZqUJFrfgkgE
+         t9xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729207045; x=1729811845;
+        d=1e100.net; s=20230601; t=1729317273; x=1729922073;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=casHpXXi28jzM/c84VhP6ydPSazdx5l8D0LR+NrLTfg=;
-        b=bp/Icafg14+ncV8BbIN8/qYCIUNMzA96vVkQN2a+6RqjauEIK4O5+02oUl92m4nxrz
-         M9CYgCNmf/KXxmbQQQI9d1ZlH9Evo3KbjpXqwrsXQDJ4fWdBvpJcJV962UkTriJg+Uo2
-         3G/RYKtWrFnNzM2OpL2bgJW3BhW2+R8R7m2z9aPIFjOW3fCGOw0Xt71lI3a8De5VyK47
-         4Paw50yKCz3eRBP980cI0AdoWzVxme9zx4hHZIzaf+B0h80t9Qq1o6RGcoJpBJyucxIJ
-         5fNSgZyaD007yF94N+zzPMnyx0BVJ5tOzRTffSeA5xe37T9JaPp2zwcwikEhm1i9XDNr
-         sJSg==
-X-Forwarded-Encrypted: i=1; AJvYcCUOq6U1fBv9Khm85M8Ho2/0uLhpJbY2I8xAb6uf7EvO3hitsBCAyD1tvL4pFPHFD/FMsF2qDgTkqw==@lists.infradead.org
-X-Gm-Message-State: AOJu0YxbKM4R7M6lMnQV4pPELVvgQxKW7bzwtnv1hQgssNNt64zkNGBz
-	AAF1FCl7C8eVtCWNyFL9Fuvgo1DoD3E1vy1fyion9yhZURvobzOFd6E3b0bORkGUN4obS+kFpAj
-	aUsYYLyTaO2Rpf0iouzfTBprpxhh4JTyYffO+
-X-Google-Smtp-Source: AGHT+IEbjkUJ4FS9SG9qiAp6w0LSSqjtmABEeuRh2MMvTFs5gDIWAWkdFH0/3tL2X5lPsuyPr2j6ueXp+cHJQ6NZdsE=
-X-Received: by 2002:a05:6214:4498:b0:6cb:e997:6717 with SMTP id
- 6a1803df08f44-6cde15db124mr8929506d6.38.1729207044519; Thu, 17 Oct 2024
- 16:17:24 -0700 (PDT)
+        bh=Hdgv1+hDzc/8i+cOBipO++NpZ5AiXOKci4JbOPWMlTA=;
+        b=nsR5cjd8TJRV5W2sdeyCGbqhu2xpL5bqEquNBbGmCrdFMwM4umsgjxj6HyjRgVk4vF
+         qhhnjLlYWtBR3CEsYNkKJpJB6guwYi9Gg4R/u9iD/b3/SuQ5oHytiQ532rGhrGlB4Qiu
+         riGfxCRRY45PRaL2HQqjW+gTkYXhi6XM37cIcg+4t2D0MpyypayhivhCRnbJESCo6rT+
+         DEp7t3lrXeTZQLG/EktLA+YqvocUqfGIL41JRaJzsn0kna8Z9yxWUJm+8tOrtNGO/W/d
+         7DSX0iyO3Goo7Sm7Cf/6zjyOo1Wm+4sMDLbsSB6mPeCTXYmLxYzR/xGbAg8bTkc+4R6d
+         kD7w==
+X-Gm-Message-State: AOJu0Yx5+lURsVlrXQ604rsVtCftw1l1RmW5sNMKPwMxMZmcS3msehNH
+	fArO08uF9j357QVq0EuEIIaQGxcA6Fy6HAZt5VEigrzrq5TKj7jR0gVNF3zyEjqmKceRMCGxSH5
+	XR9P0i1+16gHZBOguwrjTDLG0MXIdA9f8HnQ0
+X-Google-Smtp-Source: AGHT+IGmO8jNZKQmZviqF9ZrtvR4vUsw3MnJDxt1DvMGWUWGlkgItaPlO3tGbpKayXM2Mn6TUJhKJlyqyiOmUhigSdE=
+X-Received: by 2002:a05:6214:4290:b0:6cb:f7d0:f627 with SMTP id
+ 6a1803df08f44-6cde16650ddmr68072616d6.46.1729317272512; Fri, 18 Oct 2024
+ 22:54:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20240919124511.282088-1-benjamin@sipsolutions.net>
- <20240919124511.282088-3-benjamin@sipsolutions.net> <CABVgOS=boUoG6=LHFFhxEd8H8jDP1zOaPKFEjH+iy2n2Q5S2aQ@mail.gmail.com>
- <49ef8267b4c2cbce11698a377330d92327b332d3.camel@sipsolutions.net> <9b9b26965e8ca5cdf9b05b5d56a418a2941fff42.camel@sipsolutions.net>
-In-Reply-To: <9b9b26965e8ca5cdf9b05b5d56a418a2941fff42.camel@sipsolutions.net>
+References: <20241017231007.1500497-2-davidgow@google.com>
+In-Reply-To: <20241017231007.1500497-2-davidgow@google.com>
 From: David Gow <davidgow@google.com>
-Date: Fri, 18 Oct 2024 07:17:10 +0800
-Message-ID: <CABVgOSkrxWcmjL5uLtx4=aMDUteo1vg4CnXwEC3y5jbrx=qAdg@mail.gmail.com>
-Subject: Re: [PATCH v9 02/10] um: use execveat to create userspace MMs
-To: Benjamin Berg <benjamin@sipsolutions.net>
-Cc: Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, 
-	KUnit Development <kunit-dev@googlegroups.com>, Kees Cook <kees@kernel.org>
+Date: Sat, 19 Oct 2024 13:54:18 +0800
+Message-ID: <CABVgOSntH-uoOFMP5HwMXjx_f1osMnVdhgKRKm4uz6DFm2Lb8Q@mail.gmail.com>
+Subject: Re: [PATCH] um: Fix misaligned stack in stub_exe
+To: Benjamin Berg <benjamin.berg@intel.com>, Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-um@lists.infradead.org, kunit-dev@googlegroups.com, 
+	linux-kernel@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000a97c4f0624b463c5"
+	boundary="000000000000c406140624ce0dc6"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241017_161725_951720_4245C886 
-X-CRM114-Status: GOOD (  17.75  )
+X-CRM114-CacheID: sfid-20241018_225437_843711_B5B70EAF 
+X-CRM114-Status: GOOD (  26.92  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,44 +88,101 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
---000000000000a97c4f0624b463c5
+--000000000000c406140624ce0dc6
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 17 Oct 2024 at 20:05, Benjamin Berg <benjamin@sipsolutions.net> wrote:
+On Fri, 18 Oct 2024 at 07:10, David Gow <davidgow@google.com> wrote:
 >
-> Hi,
+> The stub_exe could segfault when built with some compilers (e.g. gcc
+> 13.2.0), as SSE instructions which relied on stack alignment could be
+> generated, but the stack was misaligned.
 >
-> On Thu, 2024-10-17 at 10:18 +0200, Johannes Berg wrote:
-> > [SNIP]
-> >
-> > I wonder now if the SSE instructions generated are memset() and that
-> > goes away with the patches that Nathan just sent to not have the memset
-> > (which was due to -ftrivial-auto-var-init) in the first place?
+> This seems to be due to the __start entry point being run with a 16-byte
+> aligned stack, but the x86_64 SYSV ABI wanting the stack to be so
+> aligned _before_ a function call (so it is misaligned when the function
+> is entered due to the return address being pushed). The function
+> prologue then realigns it. Because the entry point is never _called_,
+> and hence there is no return address, the prologue is therefore actually
+> misaligning it, and causing the generated movaps instructions to
+> SIGSEGV. This results in the following error:
+> start_userspace : expected SIGSTOP, got status =3D 139
 >
-> I am guessing it would not fix it. I can reproduce the problem if I add
->   __attribute__((aligned(16)))
-> to the "stack" variable. That is sufficient for GCC to emit an
-> offending movaps instruction for me. The -ftrivial-auto-var-init=
-> option will not affect that initialization.
+> Don't generate this prologue for __start by using
+> __attribute__((naked)), which resolves the issue.
 >
+> Fixes: 32e8eaf263d9 ("um: use execveat to create userspace MMs")
+> Signed-off-by: David Gow <davidgow@google.com>
+> ---
 
-Yeah, that seems to be what's happening here: the SSE use is all in
-the 'stack' and 'sa' variable initialisation. Nathan's patch doesn't
-fix it for me, but then again, I can't reproduce it with clang, just
-gcc 13.2.0.
 
-> > But anyway all of these pretty much sound reasonable. We don't need much
-> > to happen in the stub here, simpler is better.
->
-> Yeah, and I guess c) really is sufficient by itself.
+Okay, it turns out this breaks clang:
+arch/um/kernel/skas/stub_exe.c:84:2: error: non-ASM statement in naked
+function is not supported
 
-I've sent (c) out here:
-https://lore.kernel.org/linux-um/20241017231007.1500497-2-davidgow@google.com/T/#u
+And, looking into it, gcc's docs are not encouraging here either:
+https://gcc.gnu.org/onlinedocs/gcc/x86-Function-Attributes.html
 
-Thanks,
+This attribute allows the compiler to construct the requisite function
+declaration, while allowing the body of the function to be assembly
+code. The specified function will not have prologue/epilogue sequences
+generated by the compiler. Only basic asm statements can safely be
+included in naked functions (see Basic Asm =E2=80=94 Assembler Instructions
+Without Operands). While using extended asm or a mixture of basic asm
+and C code may appear to work, they cannot be depended upon to work
+reliably and are not supported.
+
+My gut feeling is that the "correct" way of doing this is to use an
+actual crt implementation for __start. I managed to get it working
+with nolibc on x86_54, but the sheer amount of hackery involved was
+not exactly encouraging. There are a lot of conflicts between the
+different headers for a start.
+
+The other "correct" way would be to rewrite __start in assembly, which
+is annoying as it'd be architecture specific, so need a separate
+32-bit version.
+
+The less-correct-but-working-here way, which I'm tempted by for now,
+is to get rid of __attribute__((naked)) and just use
+__attribute__((force_arg_align_pointer)). That's probably the best way
+of fixing the stack issue, but obviously won't fix any other issues
+which could arise from __start playing loose with the rules.
+
+My current plan is to send out a v2 with force_arg_align_pointer next
+week, unless someone has a more brilliant idea.
+
+Cheers,
 -- David
 
---000000000000a97c4f0624b463c5
+
+>
+> See the discussion here:
+> https://lore.kernel.org/linux-um/c7c5228e9de1e79dc88b304e28d25f5ffd7e36dd=
+.camel@sipsolutions.net/T/#m90c1c5b6c34ebaaa043b402e97009c5825fd158a
+>
+> ---
+>  arch/um/kernel/skas/stub_exe.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/um/kernel/skas/stub_exe.c b/arch/um/kernel/skas/stub_ex=
+e.c
+> index 04f75c577f1a..722ce6267476 100644
+> --- a/arch/um/kernel/skas/stub_exe.c
+> +++ b/arch/um/kernel/skas/stub_exe.c
+> @@ -79,7 +79,7 @@ noinline static void real_init(void)
+>         __builtin_unreachable();
+>  }
+>
+> -void _start(void)
+> +__attribute__((naked)) void _start(void)
+>  {
+>         char *alloc;
+>
+> --
+> 2.47.0.rc1.288.g06298d1525-goog
+>
+
+--000000000000c406140624ce0dc6
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -218,14 +272,14 @@ BavXUVE38e4c90il44T1bphqtLfmHZ1T5ZwxjtjzNMKy0Mb9j/jcFxfibCISYbnk661FBe38bhYj
 hWV2vSAXq35i+JS06BCkbGfE5ci6zFy4pt8fmqMGKFH/t3ELCTYo116lqUTDcVC8DAWN8E55aDGC
 AmowggJmAgEBMGgwVDELMAkGA1UEBhMCQkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYtc2ExKjAo
 BgNVBAMTIUdsb2JhbFNpZ24gQXRsYXMgUjYgU01JTUUgQ0EgMjAyMwIQAZ6Vqszmp/3gGFW0sCFu
-eDANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgqcxG6/d2yMHjLzwSq+bP8CbSWSOQ
-ZpGRF01HpWbqNVMwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQx
-MDE3MjMxNzI1WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJ
+eDANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQg4FwZdB4bJ6qLaO9dZ5tG4s3U4aeb
+2pMvhPcgu4H6EzIwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQx
+MDE5MDU1NDMzWjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJ
 YIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJYIZIAWUD
-BAIBMA0GCSqGSIb3DQEBAQUABIIBAFe2UtA+rxABTtqfoKq30Q8wPr5cMva3YF4mV/OTmqKDKj7a
-j7hJbMeGLUZXPafxwrT5IdUS2RQdMRrsFLtE85atR1QnHp9POyytGSwDMFlUNErIuvhGuTh+Lb/T
-733tSjp6sZIyqd8zBTyXsHl4YBs6O5yeyAQA6/6lJIFp6Y1P8EGqm8vmrN/oVngPiERDel0sIXnR
-53vNSmEzclEAhfcnaqaaCD8u2cFGzOCfWJFhwEAnhjQ0rN0jOakUnSgHdH6lhZXQoTRTn9IxCO7H
-hYqWSv+dAv1ZAGtwW8I6ycJghbRCH1o7xPp39mBFTelwLtO3llCrYPUzdCBnWcEEu44=
---000000000000a97c4f0624b463c5--
+BAIBMA0GCSqGSIb3DQEBAQUABIIBALYfYLgnV9GYwaUlBsaT4gCq0pB1sH8qv4O37XOq7GqbXGbU
+eRePNwfrnl97OKYsPphJIWv6aM+cOaBcEbU+GnRrN3v4uwJKHF8CNYgnFWfErPW+RxmOFj+l/c7f
+wP7xpsYpt/q9vGWPwa3eB3YvzppSOGkby9ArFN69fhxR5K5+Djce7oirEdY2ZCm5zDUgY6VC9em7
+/uYh58HiGAjQFxfRfDUyXV/Rz9+sxSk2Lxx9AtFdAyVHIvOtuZbWfaKk5Rih8O5Ca5FbMuwxQWqS
+R7aLLk4dJC4R5zhmWlFJ93Gvt6mEtbpYrocE8s7UMo5dGBUX828iG26/E0/px4teXBM=
+--000000000000c406140624ce0dc6--
 
