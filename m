@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00668D3C92E
-	for <linux-um@archiver.kernel.org>; Sat, 19 Oct 2024 22:17:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B3094D3C92F
+	for <linux-um@archiver.kernel.org>; Sat, 19 Oct 2024 22:19:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=J8neFLH65vUyWmWIgY7wipZgUu3sVyGFmmQDvuZjGWo=; b=3aZAvvodFarmGsNxR0ntb2OcG1
-	WVHJBTcBGcHNX61csEVnw/a4hY/l5pw/oE52fOF8anhJklQAOuhsB8o7WCIPqnakaJJuK5augP97A
-	H4eVa4Pp8HfDRZjWO7jufMYGT/TKXNcoPpXSIo/VDxTVY0SJmUpb8xGryXNDF8gdIULkLHKejmstZ
-	vgIPIEU9udJNdxN4B1kxkJLVsX/Dcmotuf3mHLUZqsBDRnr4L+TWzMWG6pkfUAfkWr4JA7r/r5mRJ
-	wPAvwrl7h843E1C/25OOcw2IIbU1B0kPNooP+DlEH0kZrr/bslQeC2kq+IDGYb2pr7TT1suM3wtP0
-	ahChJqUw==;
+	bh=RJpTD/Xv5f2pqBFSuqkTCCHmm0Mp3BKcMjnZ1BWJcfQ=; b=a8ybc/UzO8NKxoeYbI+Lz5/Vbp
+	Amz9rGfvK7Avl3JBei5Jkd304+5sPQJgmH4V9AR3XrHKhp8ZbL7rHhYBUgIgqpUGwNxbRPh9pWty4
+	h5DO3SOLoeI7VATq7Aak4Gvon2DQ48gLAyEma9p+NCOzPHMrkz5uDMCqrJM+E8nrNopsJHeE7jVAJ
+	UTMI0lsYIYUhTxUypdNL41+WLaBLM+12QBiHfIjpcHbnZ6vGbUNC/P0bkSQxcHAtqhfpOHfw2mhgl
+	oZkha+IvJ0XF1IcGZPerK50W5gid/uIwUYZCP7V03qOf/EDVTSnmLkTB3OejpoLpnS7bh76EFXPse
+	ItT44HdA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t2HlA-00000003zWg-2s1g;
-	Sat, 19 Oct 2024 22:17:20 +0000
-Received: from nyc.source.kernel.org ([147.75.193.91])
+	id 1t2HnK-00000003zvo-1bUH;
+	Sat, 19 Oct 2024 22:19:34 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t2Hl6-00000003zUX-0Pz4;
-	Sat, 19 Oct 2024 22:17:17 +0000
+	id 1t2HnG-00000003ztE-1kip;
+	Sat, 19 Oct 2024 22:19:31 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 01DECA40448;
-	Sat, 19 Oct 2024 22:17:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2BF9C4CEC5;
-	Sat, 19 Oct 2024 22:17:11 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id B22E35C5419;
+	Sat, 19 Oct 2024 22:19:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B925C4CEC5;
+	Sat, 19 Oct 2024 22:19:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729376233;
-	bh=Z2c0wsfmuX1zi8SflpbS251BcU2hxlDOujSruYyu/d0=;
+	s=k20201202; t=1729376368;
+	bh=daUc5xecu7xI5c+UkC320lN7WO6Pv9zdDCfjUjy8L1U=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Y3/Gl4ufOW+DMjq3rv6lYuhhIdTKFTpnYyq9HW3K85Fpw/HAzL0vMrW4IM6WgA6ot
-	 bjEzE8mPv3G48TEzrc49STj8tErEueRnWJWErlpFGCRDNYXxf9im+wvXTmSV4zaKV0
-	 ldRIuiJMSPHK7+jcRgJoan6AukGaTfuRN0fLb0k4bEoOLO4bzzu30c0zr4xQe5rqsB
-	 ele2dWq5/Lat3gCmSxFXcXRfJdqOONJR5Y9PAtRblqYiPb3tzG5o6SkuYpbslQB3Wg
-	 ZrBARuLjQoY8sKdBblenF5FJQAR6rsrhvv/Ra8Vcs8mcf/tC+y4RqwTBTJVaeAg57/
-	 Qr4B5j9wt3E/A==
-Date: Sat, 19 Oct 2024 15:17:10 -0700
+	b=vNM1wyZQW4Fo3UYmtYtZPgjiHgu/H4XI/+27SeHDRGuyHhrsjIEj389botXDz7xzU
+	 oRoliDromsIEdrwgMdf3d6+NrBy7bXYMTE2T/8I1/d4kB9gjHsLS/MIoIKs8EASeaT
+	 aBxIiobIWyjFiwv9/poZDmy2HqvjFhixH+91U8zwdcdRhqXgTkEFbn2iL08Ol1J7ou
+	 HP420DfIrrmCeqEBftQC/r/u9iEdCqnooHwASpRmuOZ6oVBWARW5PE0Gis4BiiIMsJ
+	 95hjSW/bv4/gU/7p/7MsytMe7tkh0nWplVzjhpV678uD6QoJdFyqaGyiUG8CRghoje
+	 30qArBjHZQnlg==
+Date: Sat, 19 Oct 2024 15:19:25 -0700
 From: Luis Chamberlain <mcgrof@kernel.org>
 To: Mike Rapoport <rppt@kernel.org>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -89,18 +89,18 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
 	sparclinux@vger.kernel.org, x86@kernel.org,
 	Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v6 1/8] mm: vmalloc: group declarations depending on
- CONFIG_MMU together
-Message-ID: <ZxQv5vUuaFBT6Kxd@bombadil.infradead.org>
+Subject: Re: [PATCH v6 2/8] mm: vmalloc: don't account for number of nodes
+ for HUGE_VMAP allocations
+Message-ID: <ZxQwbXh5v7eJmuyh@bombadil.infradead.org>
 References: <20241016122424.1655560-1-rppt@kernel.org>
- <20241016122424.1655560-2-rppt@kernel.org>
+ <20241016122424.1655560-3-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241016122424.1655560-2-rppt@kernel.org>
+In-Reply-To: <20241016122424.1655560-3-rppt@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241019_151716_296630_916DB85A 
-X-CRM114-Status: GOOD (  11.43  )
+X-CRM114-CacheID: sfid-20241019_151930_582123_E31B640E 
+X-CRM114-Status: GOOD (  14.41  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -115,15 +115,20 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Oct 16, 2024 at 03:24:17PM +0300, Mike Rapoport wrote:
+On Wed, Oct 16, 2024 at 03:24:18PM +0300, Mike Rapoport wrote:
 > From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 > 
-> There are a couple of declarations that depend on CONFIG_MMU in
-> include/linux/vmalloc.h spread all over the file.
+> vmalloc allocations with VM_ALLOW_HUGE_VMAP that do not explicitly
+> specify node ID will use huge pages only if size_per_node is larger than
+> a huge page.
+> Still the actual allocated memory is not distributed between nodes and
+> there is no advantage in such approach.
+> On the contrary, BPF allocates SZ_2M * num_possible_nodes() for each
+> new bpf_prog_pack, while it could do with a single huge page per pack.
 > 
-> Group them all together to improve code readability.
-> 
-> No functional changes.
+> Don't account for number of nodes for VM_ALLOW_HUGE_VMAP with
+> NUMA_NO_NODE and use huge pages whenever the requested allocation size
+> is larger than a huge page.
 > 
 > Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 > Reviewed-by: Christoph Hellwig <hch@lst.de>
