@@ -4,60 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4383CCF538E
-	for <linux-um@archiver.kernel.org>; Wed, 23 Oct 2024 14:09:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2307ECF538E
+	for <linux-um@archiver.kernel.org>; Wed, 23 Oct 2024 14:09:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=r7c9Q2q18Yojzc3snFJd3ZmrsR6tdZgmZFmo2Zj+U+g=; b=bQFPI/R5/a+Psbt5Eg3CIIK1Q0
-	GnTe4K4pzIxKbFkHTOzQaPRum00ckJN6N574zaWp3dhecQTWKpR0vhJksfZp6VNigmZlAn5ooN0V1
-	cAjtHwUEtfJKuVg2LzENNf1DEgfKmwMgcWqCSpzvWs8QZuA1WnTOowQf7c1o7GrBnU1WXFeuIE1BI
-	OfPFwTuvVKksw/8Fx1fpaK8N55iBD+i1+2Y3cM3AEP0qlRhL8eakHMpUQ6PZBW366NNU/11Yfw0fO
-	xDVpph1u8coT1lh1LGwS/jQArzphV3SlKSSTft/VK/OiK+4Kabg1DHo/ef/eCWs37W4/c7y/Uomwe
-	QHpZz2sg==;
+	bh=5E7746Tevcil5ByPCRcBqsjU8+kjCJ3ytx2mIbP+INw=; b=Iajjkx7uebau6JuVxaLalDJLkq
+	XxkqBNB+RjqWvEh6DI5q+2d0XxVcfX141CFw79gSwZkhsyn60+VvSoDCkOGYCo0bdAy1JVvzXxb4m
+	LL3I6JjVIOeX18y1hhtZAhHL2RzXBEIc29OkU10ZLK/pST7UAtWrpqINxPQ4E55Dorylh+CZcALTA
+	p+SXdL0ATZmjzFxJGe+FnGAKHJEn3wvN6wHY3MTAeCepj7Or7ew5g7IIzie3qA6pJYcH7gcH10Iue
+	QTi3v87bgXetkrNu7ccl5dezTSKUMEiNr9zGT+O3lGP9erH+a8A/HVVdxTnc8AEWPR400of4FeW+7
+	10IR/3Yw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t3c3E-0000000EeMB-47cg;
-	Wed, 23 Oct 2024 14:09:28 +0000
+	id 1t3c3I-0000000EeOP-3Sul;
+	Wed, 23 Oct 2024 14:09:32 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t3c3B-0000000EeJj-0Bbn
+	id 1t3c3F-0000000EeM9-2hdX
 	for linux-um@lists.infradead.org;
-	Wed, 23 Oct 2024 14:09:27 +0000
+	Wed, 23 Oct 2024 14:09:31 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=r7c9Q2q18Yojzc3snFJd3ZmrsR6tdZgmZFmo2Zj+U+g=;
-	t=1729692564; x=1730902164; b=rvL74wEJQZ9e85pZgAkhPwiyybI0aJaxItFm6roUn5Ikasx
-	0RJ12Fk/StZPDMSJhLfaEXGn4qBDcpwGrkZEFPJS9Qcs7QhgSovUFZMjw7Nq3kjuWRvmgGPtvbVRX
-	Q3Aq6EzvPUnRvFHpXodF7Ibj9yEujF8GRJa/YPXlEBmKNMgvklTwFRBhbAhpLuIM0a7Malvo9Vmt+
-	6pkK6CDW4vuQRBG5R5CCs/TMSNG8oBArDpNj6qhJtyMCgXmOo6ijRAAAYBnGY6NGinteR09RhxcGN
-	7XJv61ektYuzCeafPgl6y8+Xp159yiqP0nUgxNcJrZgCrwnjGQ7doBAGJXsrhgSA==;
+	Resent-Cc:Resent-Message-ID; bh=5E7746Tevcil5ByPCRcBqsjU8+kjCJ3ytx2mIbP+INw=;
+	t=1729692569; x=1730902169; b=oeMHBinO0aPjyj9DxYRAVZtXb80GgIi15vH94VlgXntWVQR
+	v2v4/F/v07hEFkC/5VGN2EyK08//oA5W7vpumBb0ndLHu+98YyFP6ASK6sWmORvKSKV/6VyRtuTTw
+	yT15Qx6z3hdSv1gyCUqJzL0w8acuvgFtqfz1CYOIX8SFL45J9E5T7apjTHWT/YDz0MQ3wtB5nJfcP
+	+wS+Q2kj3wyVCnYqGmN6fmyqa7RCEbgB6izMksDAnuPm8WCu/glH2PCg3ogmhI+dfVNFR35oZm4F2
+	14DkMStLhhif4ETn50GoaXF3p3p0diZCAGxSFdQ94TaEZXzSmumG4mtop5NIkfBA==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.98)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1t3c34-00000002hDF-09eq;
-	Wed, 23 Oct 2024 16:09:18 +0200
+	id 1t3c38-00000002hDF-44aE;
+	Wed, 23 Oct 2024 16:09:23 +0200
 From: Benjamin Berg <benjamin@sipsolutions.net>
 To: linux-um@lists.infradead.org
 Cc: Benjamin Berg <benjamin@sipsolutions.net>,
-	Johannes Berg <johannes@sipsolutions.net>,
 	Benjamin Berg <benjamin.berg@intel.com>
-Subject: [RFC PATCH v2 4/9] um: Add stub side of SECCOMP/futex based process handling
-Date: Wed, 23 Oct 2024 16:08:22 +0200
-Message-ID: <20241023140827.136550-5-benjamin@sipsolutions.net>
+Subject: [RFC PATCH v2 7/9] um: Track userspace children dying in SECCOMP mode
+Date: Wed, 23 Oct 2024 16:08:25 +0200
+Message-ID: <20241023140827.136550-8-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20241023140827.136550-1-benjamin@sipsolutions.net>
 References: <20241023140827.136550-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241023_070925_308967_B1FE4C9F 
-X-CRM114-Status: GOOD (  21.29  )
+X-CRM114-CacheID: sfid-20241023_070929_862796_B071A967 
+X-CRM114-Status: GOOD (  29.00  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,234 +71,384 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-This adds the stub side for the new seccomp process management code. In
-this case we do register save/restore through the signal handler
-mcontext. For the FS_BASE/GS_BASE register we need special handling.
+When in seccomp mode, we would hang forever on the futex if a child has
+died unexpectedly. In contrast, ptrace mode will notice it and kill the
+corresponding thread when it fails to run it.
 
-Co-authored-by: Johannes Berg <johannes@sipsolutions.net>
+Fix this issue using a new IRQ that is fired after a SIGCHLD and keeping
+an (internal) list of all MMs. In the IRQ handler, find the affected MM
+and set its PID to -1 as well as the futex variable to FUTEX_IN_KERN.
+
+This, together with futex returning -EINTR after the signal is
+sufficient to implement a race-free detection of a child dying.
+
 Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
 Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
 
 ---
 
 RFCv2:
-- Add include guards into new architecture specific header file
+- Use "struct list_head" for the list by placing it into the mm_context
 ---
- arch/um/include/shared/common-offsets.h |  2 +
- arch/um/include/shared/skas/stub-data.h | 15 +++++++
- arch/um/kernel/skas/stub.c              | 53 +++++++++++++++++++++++++
- arch/x86/um/shared/sysdep/stub-data.h   | 23 +++++++++++
- arch/x86/um/shared/sysdep/stub.h        |  2 +
- arch/x86/um/shared/sysdep/stub_32.h     | 13 ++++++
- arch/x86/um/shared/sysdep/stub_64.h     | 14 +++++++
- 7 files changed, 122 insertions(+)
- create mode 100644 arch/x86/um/shared/sysdep/stub-data.h
+ arch/um/include/asm/irq.h           |  5 +-
+ arch/um/include/asm/mmu.h           |  3 ++
+ arch/um/include/shared/irq_user.h   |  1 +
+ arch/um/include/shared/os.h         |  1 +
+ arch/um/include/shared/skas/mm_id.h |  2 +
+ arch/um/kernel/irq.c                |  5 ++
+ arch/um/kernel/skas/mmu.c           | 83 +++++++++++++++++++++++++++--
+ arch/um/os-Linux/process.c          | 31 +++++++++++
+ arch/um/os-Linux/signal.c           | 19 ++++++-
+ 9 files changed, 142 insertions(+), 8 deletions(-)
 
-diff --git a/arch/um/include/shared/common-offsets.h b/arch/um/include/shared/common-offsets.h
-index 86537e20942a..44cb72413db4 100644
---- a/arch/um/include/shared/common-offsets.h
-+++ b/arch/um/include/shared/common-offsets.h
-@@ -33,3 +33,5 @@ DEFINE(UML_CONFIG_UML_MAX_USERSPACE_ITERATIONS, CONFIG_UML_MAX_USERSPACE_ITERATI
+diff --git a/arch/um/include/asm/irq.h b/arch/um/include/asm/irq.h
+index 749dfe8512e8..36dbedd1af48 100644
+--- a/arch/um/include/asm/irq.h
++++ b/arch/um/include/asm/irq.h
+@@ -13,17 +13,18 @@
+ #define TELNETD_IRQ 		8
+ #define XTERM_IRQ 		9
+ #define RANDOM_IRQ 		10
++#define SIGCHLD_IRQ		11
+ 
+ #ifdef CONFIG_UML_NET_VECTOR
+ 
+-#define VECTOR_BASE_IRQ		(RANDOM_IRQ + 1)
++#define VECTOR_BASE_IRQ		(SIGCHLD_IRQ + 1)
+ #define VECTOR_IRQ_SPACE	8
+ 
+ #define UM_FIRST_DYN_IRQ (VECTOR_IRQ_SPACE + VECTOR_BASE_IRQ)
+ 
  #else
- DEFINE(UML_CONFIG_UML_MAX_USERSPACE_ITERATIONS, 0);
+ 
+-#define UM_FIRST_DYN_IRQ (RANDOM_IRQ + 1)
++#define UM_FIRST_DYN_IRQ (SIGCHLD_IRQ + 1)
+ 
  #endif
+ 
+diff --git a/arch/um/include/asm/mmu.h b/arch/um/include/asm/mmu.h
+index a3eaca41ff61..4d0e4239f3cc 100644
+--- a/arch/um/include/asm/mmu.h
++++ b/arch/um/include/asm/mmu.h
+@@ -6,11 +6,14 @@
+ #ifndef __ARCH_UM_MMU_H
+ #define __ARCH_UM_MMU_H
+ 
++#include "linux/types.h"
+ #include <mm_id.h>
+ 
+ typedef struct mm_context {
+ 	struct mm_id id;
+ 
++	struct list_head list;
 +
-+DEFINE(UM_KERN_GDT_ENTRY_TLS_ENTRIES, GDT_ENTRY_TLS_ENTRIES);
-diff --git a/arch/um/include/shared/skas/stub-data.h b/arch/um/include/shared/skas/stub-data.h
-index 81a4cace032c..4a2a00556a8e 100644
---- a/arch/um/include/shared/skas/stub-data.h
-+++ b/arch/um/include/shared/skas/stub-data.h
-@@ -8,9 +8,14 @@
- #ifndef __STUB_DATA_H
- #define __STUB_DATA_H
+ 	/* Address range in need of a TLB sync */
+ 	unsigned long sync_tlb_range_from;
+ 	unsigned long sync_tlb_range_to;
+diff --git a/arch/um/include/shared/irq_user.h b/arch/um/include/shared/irq_user.h
+index da0f6eea30d0..53a1f0651b96 100644
+--- a/arch/um/include/shared/irq_user.h
++++ b/arch/um/include/shared/irq_user.h
+@@ -16,6 +16,7 @@ enum um_irq_type {
  
-+#include <linux/kconfig.h>
- #include <linux/compiler_types.h>
- #include <as-layout.h>
- #include <sysdep/tls.h>
-+#include <sysdep/stub-data.h>
+ struct siginfo;
+ extern void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
++extern void sigchld_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
+ void sigio_run_timetravel_handlers(void);
+ extern void free_irq_by_fd(int fd);
+ extern void deactivate_fd(int fd, int irqnum);
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index 09f8201de5db..e25e81742bdd 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -199,6 +199,7 @@ extern int create_mem_file(unsigned long long len);
+ extern void report_enomem(void);
+ 
+ /* process.c */
++pid_t os_reap_child(void);
+ extern void os_alarm_process(int pid);
+ extern void os_kill_process(int pid, int reap_child);
+ extern void os_kill_ptraced_process(int pid, int reap_child);
+diff --git a/arch/um/include/shared/skas/mm_id.h b/arch/um/include/shared/skas/mm_id.h
+index 140388c282f6..0654c57bb28e 100644
+--- a/arch/um/include/shared/skas/mm_id.h
++++ b/arch/um/include/shared/skas/mm_id.h
+@@ -14,4 +14,6 @@ struct mm_id {
+ 
+ void __switch_mm(struct mm_id *mm_idp);
+ 
++void notify_mm_kill(int pid);
 +
-+#define FUTEX_IN_CHILD 0
-+#define FUTEX_IN_KERN 1
- 
- struct stub_init_data {
- 	unsigned long stub_start;
-@@ -52,6 +57,16 @@ struct stub_data {
- 	/* 128 leaves enough room for additional fields in the struct */
- 	struct stub_syscall syscall_data[(UM_KERN_PAGE_SIZE - 128) / sizeof(struct stub_syscall)] __aligned(16);
- 
-+	/* data shared with signal handler (only used in seccomp mode) */
-+	short restart_wait;
-+	unsigned int futex;
-+	int signal;
-+	unsigned short si_offset;
-+	unsigned short mctx_offset;
-+
-+	/* seccomp architecture specific state restore */
-+	struct stub_data_arch arch_data;
-+
- 	/* Stack for our signal handlers and for calling into . */
- 	unsigned char sigstack[UM_KERN_PAGE_SIZE] __aligned(UM_KERN_PAGE_SIZE);
- };
-diff --git a/arch/um/kernel/skas/stub.c b/arch/um/kernel/skas/stub.c
-index 796fc266d3bb..628d58428104 100644
---- a/arch/um/kernel/skas/stub.c
-+++ b/arch/um/kernel/skas/stub.c
-@@ -5,6 +5,11 @@
- 
- #include <sysdep/stub.h>
- 
-+#ifdef CONFIG_UML_SECCOMP
-+#include <linux/futex.h>
-+#include <errno.h>
-+#endif
-+
- static __always_inline int syscall_handler(struct stub_data *d)
- {
- 	int i;
-@@ -57,3 +62,51 @@ stub_syscall_handler(void)
- 
- 	trap_myself();
+ #endif
+diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
+index 534e91797f89..4fed231a0deb 100644
+--- a/arch/um/kernel/irq.c
++++ b/arch/um/kernel/irq.c
+@@ -786,3 +786,8 @@ unsigned long from_irq_stack(int nested)
+ 	return mask & ~1;
  }
-+
-+#ifdef CONFIG_UML_SECCOMP
-+void __attribute__ ((__section__ (".__syscall_stub")))
-+stub_signal_interrupt(int sig, siginfo_t *info, void *p)
+ 
++extern void sigchld_handler(int sig, struct siginfo *unused_si,
++			    struct uml_pt_regs *regs)
 +{
-+	struct stub_data *d = get_stub_data();
-+	ucontext_t *uc = p;
-+	long res;
++	do_IRQ(SIGCHLD_IRQ, regs);
++}
+diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
+index d3fb506d5bd6..62f27daf3d37 100644
+--- a/arch/um/kernel/skas/mmu.c
++++ b/arch/um/kernel/skas/mmu.c
+@@ -8,6 +8,7 @@
+ #include <linux/sched/signal.h>
+ #include <linux/slab.h>
+ 
++#include <shared/irq_kern.h>
+ #include <asm/pgalloc.h>
+ #include <asm/sections.h>
+ #include <asm/mmu_context.h>
+@@ -19,6 +20,9 @@
+ /* Ensure the stub_data struct covers the allocated area */
+ static_assert(sizeof(struct stub_data) == STUB_DATA_PAGES * UM_KERN_PAGE_SIZE);
+ 
++spinlock_t mm_list_lock;
++struct list_head mm_list;
 +
-+	d->signal = sig;
-+	d->si_offset = (unsigned long)info - (unsigned long)&d->sigstack[0];
-+	d->mctx_offset = (unsigned long)&uc->uc_mcontext - (unsigned long)&d->sigstack[0];
+ int init_new_context(struct task_struct *task, struct mm_struct *mm)
+ {
+ 	struct mm_id *new_id = &mm->context.id;
+@@ -31,9 +35,12 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
+ 
+ 	new_id->stack = stack;
+ 
+-	block_signals_trace();
+-	new_id->pid = start_userspace(stack);
+-	unblock_signals_trace();
++	scoped_guard(spinlock_irqsave, &mm_list_lock) {
++		/* Insert into list, used for lookups when the child dies */
++		list_add(&mm->context.list, &mm_list);
 +
-+restart_wait:
-+	d->futex = FUTEX_IN_KERN;
-+	do {
-+		res = stub_syscall3(__NR_futex, (unsigned long)&d->futex,
-+				    FUTEX_WAKE, 1);
-+	} while (res == -EINTR);
-+	do {
-+		res = stub_syscall4(__NR_futex, (unsigned long)&d->futex,
-+				    FUTEX_WAIT, FUTEX_IN_KERN, 0);
-+	} while (res == -EINTR || d->futex == FUTEX_IN_KERN);
++		new_id->pid = start_userspace(stack);
++	}
+ 
+ 	if (new_id->pid < 0) {
+ 		ret = new_id->pid;
+@@ -61,13 +68,79 @@ void destroy_context(struct mm_struct *mm)
+ 	 * zero, resulting in a kill(0), which will result in the
+ 	 * whole UML suddenly dying.  Also, cover negative and
+ 	 * 1 cases, since they shouldn't happen either.
++	 *
++	 * Negative cases happen if the child died unexpectedly.
+ 	 */
+-	if (mmu->id.pid < 2) {
++	if (mmu->id.pid >= 0 && mmu->id.pid < 2) {
+ 		printk(KERN_ERR "corrupt mm_context - pid = %d\n",
+ 		       mmu->id.pid);
+ 		return;
+ 	}
+-	os_kill_ptraced_process(mmu->id.pid, 1);
 +
-+	if (res < 0 && res != -EAGAIN)
-+		stub_syscall2(__NR_kill, 0, SIGKILL);
++	if (mmu->id.pid > 0) {
++		os_kill_ptraced_process(mmu->id.pid, 1);
++		mmu->id.pid = -1;
++	}
+ 
+ 	free_pages(mmu->id.stack, ilog2(STUB_DATA_PAGES));
 +
-+	/* Try running queued syscalls. */
-+	if (syscall_handler(d) < 0 || d->restart_wait) {
-+		/* Report SIGSYS if we restart. */
-+		d->signal = SIGSYS;
-+		d->restart_wait = 0;
-+		goto restart_wait;
++	guard(spinlock_irqsave)(&mm_list_lock);
++
++	list_del(&mm->context.list);
++}
++
++static irqreturn_t mm_sigchld_irq(int irq, void* dev)
++{
++	struct mm_context *mm_context;
++	pid_t pid;
++
++	guard(spinlock)(&mm_list_lock);
++
++	while ((pid = os_reap_child()) > 0) {
++		/*
++		* A child died, check if we have an MM with the PID. This is
++		* only relevant in SECCOMP mode (as ptrace will fail anyway).
++		*
++		* See wait_stub_done_seccomp for more details.
++		*/
++		list_for_each_entry(mm_context, &mm_list, list) {
++			if (mm_context->id.pid == pid) {
++				struct stub_data *stub_data;
++				printk("Unexpectedly lost MM child! Affected tasks will segfault.");
++
++				/* Marks the MM as dead */
++				mm_context->id.pid = -1;
++
++				/*
++				 * NOTE: If SMP is implemented, a futex_wake
++				 * needs to be added here.
++				 */
++				stub_data = (void *)mm_context->id.stack;
++				stub_data->futex = FUTEX_IN_KERN;
++
++				/*
++				 * NOTE: Currently executing syscalls by
++				 * affected tasks may finish normally.
++				 */
++				break;
++			}
++		}
 +	}
 +
-+	/* Restore arch dependent state that is not part of the mcontext */
-+	stub_seccomp_restore_state(&d->arch_data);
-+
-+	/* Return so that the host modified mcontext is restored. */
++	return IRQ_HANDLED;
 +}
 +
-+void __attribute__ ((__section__ (".__syscall_stub")))
-+stub_signal_restorer(void)
++static int __init init_child_tracking(void)
 +{
-+	/* We must not have anything on the stack when doing rt_sigreturn */
-+	stub_syscall0(__NR_rt_sigreturn);
-+}
-+#endif
-diff --git a/arch/x86/um/shared/sysdep/stub-data.h b/arch/x86/um/shared/sysdep/stub-data.h
-new file mode 100644
-index 000000000000..82b1b7f8ac3d
---- /dev/null
-+++ b/arch/x86/um/shared/sysdep/stub-data.h
-@@ -0,0 +1,23 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __ARCH_STUB_DATA_H
-+#define __ARCH_STUB_DATA_H
++	int err;
 +
-+#ifdef __i386__
-+#include <generated/asm-offsets.h>
-+#include <asm/ldt.h>
++	spin_lock_init(&mm_list_lock);
++	INIT_LIST_HEAD(&mm_list);
 +
-+struct stub_data_arch {
-+	int sync;
-+	struct user_desc tls[UM_KERN_GDT_ENTRY_TLS_ENTRIES];
-+};
-+#else
-+#define STUB_SYNC_FS_BASE (1 << 0)
-+#define STUB_SYNC_GS_BASE (1 << 1)
-+struct stub_data_arch {
-+	int sync;
-+	unsigned long fs_base;
-+	unsigned long gs_base;
-+};
-+#endif
++	err = request_irq(SIGCHLD_IRQ, mm_sigchld_irq, 0, "SIGCHLD", NULL);
++	if (err < 0)
++		panic("Failed to register SIGCHLD IRQ: %d", err);
 +
-+#endif /* __ARCH_STUB_DATA_H */
-diff --git a/arch/x86/um/shared/sysdep/stub.h b/arch/x86/um/shared/sysdep/stub.h
-index dc89f4423454..4fa58f5b4fca 100644
---- a/arch/x86/um/shared/sysdep/stub.h
-+++ b/arch/x86/um/shared/sysdep/stub.h
-@@ -13,3 +13,5 @@
++	return 0;
+ }
++__initcall(init_child_tracking)
+diff --git a/arch/um/os-Linux/process.c b/arch/um/os-Linux/process.c
+index f20602e793d9..01ddaaadfa04 100644
+--- a/arch/um/os-Linux/process.c
++++ b/arch/um/os-Linux/process.c
+@@ -17,17 +17,29 @@
+ #include <init.h>
+ #include <longjmp.h>
+ #include <os.h>
++#include <skas/skas.h>
  
- extern void stub_segv_handler(int, siginfo_t *, void *);
- extern void stub_syscall_handler(void);
-+extern void stub_signal_interrupt(int, siginfo_t *, void *);
-+extern void stub_signal_restorer(void);
-diff --git a/arch/x86/um/shared/sysdep/stub_32.h b/arch/x86/um/shared/sysdep/stub_32.h
-index 390988132c0a..df568fc3ceb4 100644
---- a/arch/x86/um/shared/sysdep/stub_32.h
-+++ b/arch/x86/um/shared/sysdep/stub_32.h
-@@ -131,4 +131,17 @@ static __always_inline void *get_stub_data(void)
- 		"call *%%eax ;"						\
- 		:: "i" ((1 + STUB_DATA_PAGES) * UM_KERN_PAGE_SIZE),	\
- 		   "i" (&fn))
+ void os_alarm_process(int pid)
+ {
++	if (pid <= 0)
++		return;
 +
-+static __always_inline void
-+stub_seccomp_restore_state(struct stub_data_arch *arch)
+ 	kill(pid, SIGALRM);
+ }
+ 
+ void os_kill_process(int pid, int reap_child)
+ {
++	if (pid <= 0)
++		return;
++
++	/* Block signals until child is reaped */
++	block_signals();
++
+ 	kill(pid, SIGKILL);
+ 	if (reap_child)
+ 		CATCH_EINTR(waitpid(pid, NULL, __WALL));
++
++	unblock_signals();
+ }
+ 
+ /* Kill off a ptraced child by all means available.  kill it normally first,
+@@ -37,11 +49,27 @@ void os_kill_process(int pid, int reap_child)
+ 
+ void os_kill_ptraced_process(int pid, int reap_child)
+ {
++	if (pid <= 0)
++		return;
++
++	/* Block signals until child is reaped */
++	block_signals();
++
+ 	kill(pid, SIGKILL);
+ 	ptrace(PTRACE_KILL, pid);
+ 	ptrace(PTRACE_CONT, pid);
+ 	if (reap_child)
+ 		CATCH_EINTR(waitpid(pid, NULL, __WALL));
++
++	unblock_signals();
++}
++
++pid_t os_reap_child(void)
 +{
-+	for (int i = 0; i < sizeof(arch->tls) / sizeof(arch->tls[0]); i++) {
-+		if (arch->sync & (1 << i))
-+			stub_syscall1(__NR_set_thread_area,
-+				      (unsigned long) &arch->tls[i]);
++	int status;
++
++	/* Try to reap a child */
++	return waitpid(-1, &status, WNOHANG);
+ }
+ 
+ /* Don't use the glibc version, which caches the result in TLS. It misses some
+@@ -201,5 +229,8 @@ void init_new_thread_signals(void)
+ 	set_handler(SIGBUS);
+ 	signal(SIGHUP, SIG_IGN);
+ 	set_handler(SIGIO);
++	/* We (currently) only use the child reaper IRQ in seccomp mode */
++	if (using_seccomp)
++		set_handler(SIGCHLD);
+ 	signal(SIGWINCH, SIG_IGN);
+ }
+diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
+index 1978eaa557e9..409ca9bbd09f 100644
+--- a/arch/um/os-Linux/signal.c
++++ b/arch/um/os-Linux/signal.c
+@@ -29,6 +29,7 @@ void (*sig_info[NSIG])(int, struct siginfo *, struct uml_pt_regs *) = {
+ 	[SIGBUS]	= relay_signal,
+ 	[SIGSEGV]	= segv_handler,
+ 	[SIGIO]		= sigio_handler,
++	[SIGCHLD]	= sigchld_handler,
+ };
+ 
+ static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
+@@ -44,7 +45,7 @@ static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
+ 	}
+ 
+ 	/* enable signals if sig isn't IRQ signal */
+-	if ((sig != SIGIO) && (sig != SIGWINCH))
++	if ((sig != SIGIO) && (sig != SIGWINCH) && (sig != SIGCHLD))
+ 		unblock_signals_trace();
+ 
+ 	(*sig_info[sig])(sig, si, &r);
+@@ -64,6 +65,9 @@ static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
+ #define SIGALRM_BIT 1
+ #define SIGALRM_MASK (1 << SIGALRM_BIT)
+ 
++#define SIGCHLD_BIT 2
++#define SIGCHLD_MASK (1 << SIGCHLD_BIT)
++
+ int signals_enabled;
+ #ifdef UML_CONFIG_UML_TIME_TRAVEL_SUPPORT
+ static int signals_blocked, signals_blocked_pending;
+@@ -102,6 +106,11 @@ static void sig_handler(int sig, struct siginfo *si, mcontext_t *mc)
+ 		return;
+ 	}
+ 
++	if (!enabled && (sig == SIGCHLD)) {
++		signals_pending |= SIGCHLD_MASK;
++		return;
 +	}
 +
-+	arch->sync = 0;
-+}
-+
- #endif
-diff --git a/arch/x86/um/shared/sysdep/stub_64.h b/arch/x86/um/shared/sysdep/stub_64.h
-index 294affbec742..5a9546ff0493 100644
---- a/arch/x86/um/shared/sysdep/stub_64.h
-+++ b/arch/x86/um/shared/sysdep/stub_64.h
-@@ -10,6 +10,7 @@
- #include <sysdep/ptrace_user.h>
- #include <generated/asm-offsets.h>
- #include <linux/stddef.h>
-+#include <asm/prctl.h>
+ 	block_signals_trace();
  
- #define STUB_MMAP_NR __NR_mmap
- #define MMAP_OFFSET(o) (o)
-@@ -134,4 +135,17 @@ static __always_inline void *get_stub_data(void)
- 		"call *%%rax ;"						\
- 		:: "i" ((1 + STUB_DATA_PAGES) * UM_KERN_PAGE_SIZE),	\
- 		   "i" (&fn))
+ 	sig_handler_common(sig, si, mc);
+@@ -181,6 +190,8 @@ static void (*handlers[_NSIG])(int sig, struct siginfo *si, mcontext_t *mc) = {
+ 
+ 	[SIGIO] = sig_handler,
+ 	[SIGWINCH] = sig_handler,
++	/* SIGCHLD is only actually registered in seccomp mode. */
++	[SIGCHLD] = sig_handler,
+ 	[SIGALRM] = timer_alarm_handler,
+ 
+ 	[SIGUSR1] = sigusr1_handler,
+@@ -344,6 +355,12 @@ void unblock_signals(void)
+ 		if (save_pending & SIGIO_MASK)
+ 			sig_handler_common(SIGIO, NULL, NULL);
+ 
++		if (save_pending & SIGCHLD_MASK) {
++			struct uml_pt_regs regs = {};
 +
-+static __always_inline void
-+stub_seccomp_restore_state(struct stub_data_arch *arch)
-+{
-+	/* TODO: Use _writefsbase_u64/_writegsbase_u64 when possible */
-+	if (arch->sync & STUB_SYNC_FS_BASE)
-+		stub_syscall2(__NR_arch_prctl, ARCH_SET_FS, arch->fs_base);
-+	if (arch->sync & STUB_SYNC_GS_BASE)
-+		stub_syscall2(__NR_arch_prctl, ARCH_SET_GS, arch->gs_base);
++			sigchld_handler(SIGCHLD, NULL, &regs);
++		}
 +
-+	arch->sync = 0;
-+}
-+
- #endif
+ 		/* Do not reenter the handler */
+ 
+ 		if ((save_pending & SIGALRM_MASK) && (!(signals_active & SIGALRM_MASK)))
 -- 
 2.47.0
 
