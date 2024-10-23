@@ -4,59 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2307ECF538E
-	for <linux-um@archiver.kernel.org>; Wed, 23 Oct 2024 14:09:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D78AACF538F
+	for <linux-um@archiver.kernel.org>; Wed, 23 Oct 2024 14:09:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=5E7746Tevcil5ByPCRcBqsjU8+kjCJ3ytx2mIbP+INw=; b=Iajjkx7uebau6JuVxaLalDJLkq
-	XxkqBNB+RjqWvEh6DI5q+2d0XxVcfX141CFw79gSwZkhsyn60+VvSoDCkOGYCo0bdAy1JVvzXxb4m
-	LL3I6JjVIOeX18y1hhtZAhHL2RzXBEIc29OkU10ZLK/pST7UAtWrpqINxPQ4E55Dorylh+CZcALTA
-	p+SXdL0ATZmjzFxJGe+FnGAKHJEn3wvN6wHY3MTAeCepj7Or7ew5g7IIzie3qA6pJYcH7gcH10Iue
-	QTi3v87bgXetkrNu7ccl5dezTSKUMEiNr9zGT+O3lGP9erH+a8A/HVVdxTnc8AEWPR400of4FeW+7
-	10IR/3Yw==;
+	bh=XTxyEI9368qPltpqSVC6CHHUV3EAz1XimvOPDHWM0+E=; b=0lvPIacPlAipHWf3FWnUT8UGU9
+	G85JRu25poUX9is4tUORAlE8gQRERLnCAdz0ZkBEWZTMtqMnXFIt504rTEANf76i0z9KvC2AgDzsk
+	W5hyROlTR82EzxZYkDyENxlaDPGmQnkgEK9LWLdyEdsr9zjmOjtDRhMjIjWBISLmdBSxnR2UjKm8j
+	KiTGzG4Ui12DZotDzbNMm5NqKua9FONR9VPDnAOSNUm0+FqfW4NYXRhljg06z1wuIandfE40OQYlU
+	jaB/7pdI1HdVxf310KfmzVWVlC/5TOzR+nQrwTW5Fb4u/NI/0J1jJs6pihgY2jRN9qoQ6Idrib1Rw
+	NUlSj+HQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t3c3I-0000000EeOP-3Sul;
-	Wed, 23 Oct 2024 14:09:32 +0000
+	id 1t3c3K-0000000EePh-2Fm1;
+	Wed, 23 Oct 2024 14:09:34 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t3c3F-0000000EeM9-2hdX
+	id 1t3c3G-0000000EeN3-3AM3
 	for linux-um@lists.infradead.org;
-	Wed, 23 Oct 2024 14:09:31 +0000
+	Wed, 23 Oct 2024 14:09:33 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=5E7746Tevcil5ByPCRcBqsjU8+kjCJ3ytx2mIbP+INw=;
-	t=1729692569; x=1730902169; b=oeMHBinO0aPjyj9DxYRAVZtXb80GgIi15vH94VlgXntWVQR
-	v2v4/F/v07hEFkC/5VGN2EyK08//oA5W7vpumBb0ndLHu+98YyFP6ASK6sWmORvKSKV/6VyRtuTTw
-	yT15Qx6z3hdSv1gyCUqJzL0w8acuvgFtqfz1CYOIX8SFL45J9E5T7apjTHWT/YDz0MQ3wtB5nJfcP
-	+wS+Q2kj3wyVCnYqGmN6fmyqa7RCEbgB6izMksDAnuPm8WCu/glH2PCg3ogmhI+dfVNFR35oZm4F2
-	14DkMStLhhif4ETn50GoaXF3p3p0diZCAGxSFdQ94TaEZXzSmumG4mtop5NIkfBA==;
+	Resent-Cc:Resent-Message-ID; bh=XTxyEI9368qPltpqSVC6CHHUV3EAz1XimvOPDHWM0+E=;
+	t=1729692570; x=1730902170; b=EmxlBodP6ITKUtKo3PYiBp7I7EVdu/z8om5UaVHirqODQgr
+	TvDjgAvwYbY+h0JMwpmERpYAf046QVm3t2wmMHMW81quyz0w8OQwDclQ9R06q5yTVA1I/W9PSKuWD
+	XZx7sO9EjC12jgHRKCsA/h/UzkHxlmn8nmur2jrYiqY6hp7i6yUNBLwfpEf23sF0WYrqjj33u+v+h
+	U5b1bGICs4ArALZpDPR6Q2i/z+U52mJrMmUtZcZ3Wl9qMcOW+3CDhBHoHj+OK6KVBk/3nJYrfoKvK
+	bOVBOdCB/7hTPq+HiA7/jXR1eOEwxHc3tHli6OXPNkRUkC9F/dHnJjlJuQKcdF/A==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.98)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1t3c38-00000002hDF-44aE;
-	Wed, 23 Oct 2024 16:09:23 +0200
+	id 1t3c3E-00000002hDF-11yI;
+	Wed, 23 Oct 2024 16:09:28 +0200
 From: Benjamin Berg <benjamin@sipsolutions.net>
 To: linux-um@lists.infradead.org
-Cc: Benjamin Berg <benjamin@sipsolutions.net>,
-	Benjamin Berg <benjamin.berg@intel.com>
-Subject: [RFC PATCH v2 7/9] um: Track userspace children dying in SECCOMP mode
-Date: Wed, 23 Oct 2024 16:08:25 +0200
-Message-ID: <20241023140827.136550-8-benjamin@sipsolutions.net>
+Cc: Benjamin Berg <benjamin.berg@intel.com>
+Subject: [RFC PATCH v2 9/9] um: pass FD for memory operations when needed
+Date: Wed, 23 Oct 2024 16:08:27 +0200
+Message-ID: <20241023140827.136550-10-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20241023140827.136550-1-benjamin@sipsolutions.net>
 References: <20241023140827.136550-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241023_070929_862796_B071A967 
-X-CRM114-Status: GOOD (  29.00  )
+X-CRM114-CacheID: sfid-20241023_070931_190426_61CA8111 
+X-CRM114-Status: GOOD (  37.64  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,384 +70,659 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-When in seccomp mode, we would hang forever on the futex if a child has
-died unexpectedly. In contrast, ptrace mode will notice it and kill the
-corresponding thread when it fails to run it.
+From: Benjamin Berg <benjamin.berg@intel.com>
 
-Fix this issue using a new IRQ that is fired after a SIGCHLD and keeping
-an (internal) list of all MMs. In the IRQ handler, find the affected MM
-and set its PID to -1 as well as the futex variable to FUTEX_IN_KERN.
+Instead of always sharing the FDs with the userspace process, only hand
+over the FDs needed for mmap when required. The idea is that userspace
+might be able to force the stub into executing an mmap syscall, however,
+it will not be able to manipulate the control flow sufficiently to have
+access to an FD that would allow mapping arbitrary memory.
 
-This, together with futex returning -EINTR after the signal is
-sufficient to implement a race-free detection of a child dying.
+Security wise, we need to be sure that only the expected syscalls are
+executed after the kernel sends FDs through the socket. This is
+currently not the case, as userspace can trivially jump the rt_sigreturn
+syscall instruction to execute any syscall that the stub is permitted to
+do. With this, it can trick the kernel to send the FD, which in turn
+allows userspace to freely map any physical memory.
 
-Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
+As such, this is currently *not* secure. However, in principle the
+approach should be fine with a more strict SECCOMP filter and a careful
+review of the stub control flow (as userspace can prepare a stack). With
+some care, it is likely possible to extend the security model to SMP if
+desired.
+
 Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
-
 ---
+ arch/um/include/shared/skas/mm_id.h     |  11 ++
+ arch/um/include/shared/skas/stub-data.h |   1 +
+ arch/um/kernel/skas/mmu.c               |   3 +
+ arch/um/kernel/skas/stub.c              |  90 ++++++++++++++--
+ arch/um/kernel/skas/stub_exe.c          |  21 +++-
+ arch/um/os-Linux/skas/mem.c             |  66 +++++++++++-
+ arch/um/os-Linux/skas/process.c         | 137 +++++++++++++++++-------
+ 7 files changed, 273 insertions(+), 56 deletions(-)
 
-RFCv2:
-- Use "struct list_head" for the list by placing it into the mm_context
----
- arch/um/include/asm/irq.h           |  5 +-
- arch/um/include/asm/mmu.h           |  3 ++
- arch/um/include/shared/irq_user.h   |  1 +
- arch/um/include/shared/os.h         |  1 +
- arch/um/include/shared/skas/mm_id.h |  2 +
- arch/um/kernel/irq.c                |  5 ++
- arch/um/kernel/skas/mmu.c           | 83 +++++++++++++++++++++++++++--
- arch/um/os-Linux/process.c          | 31 +++++++++++
- arch/um/os-Linux/signal.c           | 19 ++++++-
- 9 files changed, 142 insertions(+), 8 deletions(-)
-
-diff --git a/arch/um/include/asm/irq.h b/arch/um/include/asm/irq.h
-index 749dfe8512e8..36dbedd1af48 100644
---- a/arch/um/include/asm/irq.h
-+++ b/arch/um/include/asm/irq.h
-@@ -13,17 +13,18 @@
- #define TELNETD_IRQ 		8
- #define XTERM_IRQ 		9
- #define RANDOM_IRQ 		10
-+#define SIGCHLD_IRQ		11
- 
- #ifdef CONFIG_UML_NET_VECTOR
- 
--#define VECTOR_BASE_IRQ		(RANDOM_IRQ + 1)
-+#define VECTOR_BASE_IRQ		(SIGCHLD_IRQ + 1)
- #define VECTOR_IRQ_SPACE	8
- 
- #define UM_FIRST_DYN_IRQ (VECTOR_IRQ_SPACE + VECTOR_BASE_IRQ)
- 
- #else
- 
--#define UM_FIRST_DYN_IRQ (RANDOM_IRQ + 1)
-+#define UM_FIRST_DYN_IRQ (SIGCHLD_IRQ + 1)
- 
- #endif
- 
-diff --git a/arch/um/include/asm/mmu.h b/arch/um/include/asm/mmu.h
-index a3eaca41ff61..4d0e4239f3cc 100644
---- a/arch/um/include/asm/mmu.h
-+++ b/arch/um/include/asm/mmu.h
-@@ -6,11 +6,14 @@
- #ifndef __ARCH_UM_MMU_H
- #define __ARCH_UM_MMU_H
- 
-+#include "linux/types.h"
- #include <mm_id.h>
- 
- typedef struct mm_context {
- 	struct mm_id id;
- 
-+	struct list_head list;
-+
- 	/* Address range in need of a TLB sync */
- 	unsigned long sync_tlb_range_from;
- 	unsigned long sync_tlb_range_to;
-diff --git a/arch/um/include/shared/irq_user.h b/arch/um/include/shared/irq_user.h
-index da0f6eea30d0..53a1f0651b96 100644
---- a/arch/um/include/shared/irq_user.h
-+++ b/arch/um/include/shared/irq_user.h
-@@ -16,6 +16,7 @@ enum um_irq_type {
- 
- struct siginfo;
- extern void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
-+extern void sigchld_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
- void sigio_run_timetravel_handlers(void);
- extern void free_irq_by_fd(int fd);
- extern void deactivate_fd(int fd, int irqnum);
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index 09f8201de5db..e25e81742bdd 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -199,6 +199,7 @@ extern int create_mem_file(unsigned long long len);
- extern void report_enomem(void);
- 
- /* process.c */
-+pid_t os_reap_child(void);
- extern void os_alarm_process(int pid);
- extern void os_kill_process(int pid, int reap_child);
- extern void os_kill_ptraced_process(int pid, int reap_child);
 diff --git a/arch/um/include/shared/skas/mm_id.h b/arch/um/include/shared/skas/mm_id.h
-index 140388c282f6..0654c57bb28e 100644
+index 0654c57bb28e..f2d4c383c958 100644
 --- a/arch/um/include/shared/skas/mm_id.h
 +++ b/arch/um/include/shared/skas/mm_id.h
-@@ -14,4 +14,6 @@ struct mm_id {
+@@ -6,10 +6,21 @@
+ #ifndef __MM_ID_H
+ #define __MM_ID_H
  
- void __switch_mm(struct mm_id *mm_idp);
- 
-+void notify_mm_kill(int pid);
++#ifdef CONFIG_UML_SECCOMP
++#define STUB_MAX_FDS 4
++#else
++#define STUB_MAX_FDS 0
++#endif
 +
- #endif
-diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index 534e91797f89..4fed231a0deb 100644
---- a/arch/um/kernel/irq.c
-+++ b/arch/um/kernel/irq.c
-@@ -786,3 +786,8 @@ unsigned long from_irq_stack(int nested)
- 	return mask & ~1;
- }
- 
-+extern void sigchld_handler(int sig, struct siginfo *unused_si,
-+			    struct uml_pt_regs *regs)
-+{
-+	do_IRQ(SIGCHLD_IRQ, regs);
-+}
-diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
-index d3fb506d5bd6..62f27daf3d37 100644
---- a/arch/um/kernel/skas/mmu.c
-+++ b/arch/um/kernel/skas/mmu.c
-@@ -8,6 +8,7 @@
- #include <linux/sched/signal.h>
- #include <linux/slab.h>
- 
-+#include <shared/irq_kern.h>
- #include <asm/pgalloc.h>
- #include <asm/sections.h>
- #include <asm/mmu_context.h>
-@@ -19,6 +20,9 @@
- /* Ensure the stub_data struct covers the allocated area */
- static_assert(sizeof(struct stub_data) == STUB_DATA_PAGES * UM_KERN_PAGE_SIZE);
- 
-+spinlock_t mm_list_lock;
-+struct list_head mm_list;
+ struct mm_id {
+ 	int pid;
+ 	unsigned long stack;
+ 	int syscall_data_len;
 +
- int init_new_context(struct task_struct *task, struct mm_struct *mm)
- {
- 	struct mm_id *new_id = &mm->context.id;
-@@ -31,9 +35,12 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
- 
- 	new_id->stack = stack;
- 
--	block_signals_trace();
--	new_id->pid = start_userspace(stack);
--	unblock_signals_trace();
-+	scoped_guard(spinlock_irqsave, &mm_list_lock) {
-+		/* Insert into list, used for lookups when the child dies */
-+		list_add(&mm->context.list, &mm_list);
-+
-+		new_id->pid = start_userspace(stack);
-+	}
- 
- 	if (new_id->pid < 0) {
- 		ret = new_id->pid;
-@@ -61,13 +68,79 @@ void destroy_context(struct mm_struct *mm)
- 	 * zero, resulting in a kill(0), which will result in the
- 	 * whole UML suddenly dying.  Also, cover negative and
- 	 * 1 cases, since they shouldn't happen either.
-+	 *
-+	 * Negative cases happen if the child died unexpectedly.
- 	 */
--	if (mmu->id.pid < 2) {
-+	if (mmu->id.pid >= 0 && mmu->id.pid < 2) {
- 		printk(KERN_ERR "corrupt mm_context - pid = %d\n",
- 		       mmu->id.pid);
- 		return;
- 	}
--	os_kill_ptraced_process(mmu->id.pid, 1);
-+
-+	if (mmu->id.pid > 0) {
-+		os_kill_ptraced_process(mmu->id.pid, 1);
-+		mmu->id.pid = -1;
-+	}
- 
- 	free_pages(mmu->id.stack, ilog2(STUB_DATA_PAGES));
-+
-+	guard(spinlock_irqsave)(&mm_list_lock);
-+
-+	list_del(&mm->context.list);
-+}
-+
-+static irqreturn_t mm_sigchld_irq(int irq, void* dev)
-+{
-+	struct mm_context *mm_context;
-+	pid_t pid;
-+
-+	guard(spinlock)(&mm_list_lock);
-+
-+	while ((pid = os_reap_child()) > 0) {
-+		/*
-+		* A child died, check if we have an MM with the PID. This is
-+		* only relevant in SECCOMP mode (as ptrace will fail anyway).
-+		*
-+		* See wait_stub_done_seccomp for more details.
-+		*/
-+		list_for_each_entry(mm_context, &mm_list, list) {
-+			if (mm_context->id.pid == pid) {
-+				struct stub_data *stub_data;
-+				printk("Unexpectedly lost MM child! Affected tasks will segfault.");
-+
-+				/* Marks the MM as dead */
-+				mm_context->id.pid = -1;
-+
-+				/*
-+				 * NOTE: If SMP is implemented, a futex_wake
-+				 * needs to be added here.
-+				 */
-+				stub_data = (void *)mm_context->id.stack;
-+				stub_data->futex = FUTEX_IN_KERN;
-+
-+				/*
-+				 * NOTE: Currently executing syscalls by
-+				 * affected tasks may finish normally.
-+				 */
-+				break;
-+			}
-+		}
-+	}
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int __init init_child_tracking(void)
-+{
-+	int err;
-+
-+	spin_lock_init(&mm_list_lock);
-+	INIT_LIST_HEAD(&mm_list);
-+
-+	err = request_irq(SIGCHLD_IRQ, mm_sigchld_irq, 0, "SIGCHLD", NULL);
-+	if (err < 0)
-+		panic("Failed to register SIGCHLD IRQ: %d", err);
-+
-+	return 0;
- }
-+__initcall(init_child_tracking)
-diff --git a/arch/um/os-Linux/process.c b/arch/um/os-Linux/process.c
-index f20602e793d9..01ddaaadfa04 100644
---- a/arch/um/os-Linux/process.c
-+++ b/arch/um/os-Linux/process.c
-@@ -17,17 +17,29 @@
- #include <init.h>
- #include <longjmp.h>
- #include <os.h>
-+#include <skas/skas.h>
- 
- void os_alarm_process(int pid)
- {
-+	if (pid <= 0)
-+		return;
-+
- 	kill(pid, SIGALRM);
- }
- 
- void os_kill_process(int pid, int reap_child)
- {
-+	if (pid <= 0)
-+		return;
-+
-+	/* Block signals until child is reaped */
-+	block_signals();
-+
- 	kill(pid, SIGKILL);
- 	if (reap_child)
- 		CATCH_EINTR(waitpid(pid, NULL, __WALL));
-+
-+	unblock_signals();
- }
- 
- /* Kill off a ptraced child by all means available.  kill it normally first,
-@@ -37,11 +49,27 @@ void os_kill_process(int pid, int reap_child)
- 
- void os_kill_ptraced_process(int pid, int reap_child)
- {
-+	if (pid <= 0)
-+		return;
-+
-+	/* Block signals until child is reaped */
-+	block_signals();
-+
- 	kill(pid, SIGKILL);
- 	ptrace(PTRACE_KILL, pid);
- 	ptrace(PTRACE_CONT, pid);
- 	if (reap_child)
- 		CATCH_EINTR(waitpid(pid, NULL, __WALL));
-+
-+	unblock_signals();
-+}
-+
-+pid_t os_reap_child(void)
-+{
-+	int status;
-+
-+	/* Try to reap a child */
-+	return waitpid(-1, &status, WNOHANG);
- }
- 
- /* Don't use the glibc version, which caches the result in TLS. It misses some
-@@ -201,5 +229,8 @@ void init_new_thread_signals(void)
- 	set_handler(SIGBUS);
- 	signal(SIGHUP, SIG_IGN);
- 	set_handler(SIGIO);
-+	/* We (currently) only use the child reaper IRQ in seccomp mode */
-+	if (using_seccomp)
-+		set_handler(SIGCHLD);
- 	signal(SIGWINCH, SIG_IGN);
- }
-diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
-index 1978eaa557e9..409ca9bbd09f 100644
---- a/arch/um/os-Linux/signal.c
-+++ b/arch/um/os-Linux/signal.c
-@@ -29,6 +29,7 @@ void (*sig_info[NSIG])(int, struct siginfo *, struct uml_pt_regs *) = {
- 	[SIGBUS]	= relay_signal,
- 	[SIGSEGV]	= segv_handler,
- 	[SIGIO]		= sigio_handler,
-+	[SIGCHLD]	= sigchld_handler,
++	/* Only used with SECCOMP mode */
++	int sock;
++	int syscall_fd_num;
++	int syscall_fd_map[STUB_MAX_FDS];
  };
  
- static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
-@@ -44,7 +45,7 @@ static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
+ void __switch_mm(struct mm_id *mm_idp);
+diff --git a/arch/um/include/shared/skas/stub-data.h b/arch/um/include/shared/skas/stub-data.h
+index 615c3054ad2a..c8c84cc098a6 100644
+--- a/arch/um/include/shared/skas/stub-data.h
++++ b/arch/um/include/shared/skas/stub-data.h
+@@ -13,6 +13,7 @@
+ #include <as-layout.h>
+ #include <sysdep/tls.h>
+ #include <sysdep/stub-data.h>
++#include <mm_id.h>
+ 
+ #define FUTEX_IN_CHILD 0
+ #define FUTEX_IN_KERN 1
+diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
+index 438b7a3082e6..84470fd99de9 100644
+--- a/arch/um/kernel/skas/mmu.c
++++ b/arch/um/kernel/skas/mmu.c
+@@ -80,6 +80,9 @@ void destroy_context(struct mm_struct *mm)
+ 		mmu->id.pid = -1;
  	}
  
- 	/* enable signals if sig isn't IRQ signal */
--	if ((sig != SIGIO) && (sig != SIGWINCH))
-+	if ((sig != SIGIO) && (sig != SIGWINCH) && (sig != SIGCHLD))
- 		unblock_signals_trace();
- 
- 	(*sig_info[sig])(sig, si, &r);
-@@ -64,6 +65,9 @@ static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
- #define SIGALRM_BIT 1
- #define SIGALRM_MASK (1 << SIGALRM_BIT)
- 
-+#define SIGCHLD_BIT 2
-+#define SIGCHLD_MASK (1 << SIGCHLD_BIT)
++	if (using_seccomp && mmu->id.sock)
++		os_close_file(mmu->id.sock);
 +
- int signals_enabled;
- #ifdef UML_CONFIG_UML_TIME_TRAVEL_SUPPORT
- static int signals_blocked, signals_blocked_pending;
-@@ -102,6 +106,11 @@ static void sig_handler(int sig, struct siginfo *si, mcontext_t *mc)
- 		return;
- 	}
+ 	free_pages(mmu->id.stack, ilog2(STUB_DATA_PAGES));
  
-+	if (!enabled && (sig == SIGCHLD)) {
-+		signals_pending |= SIGCHLD_MASK;
-+		return;
+ 	guard(spinlock_irqsave)(&mm_list_lock);
+diff --git a/arch/um/kernel/skas/stub.c b/arch/um/kernel/skas/stub.c
+index 628d58428104..f64a59e8d8f8 100644
+--- a/arch/um/kernel/skas/stub.c
++++ b/arch/um/kernel/skas/stub.c
+@@ -7,24 +7,54 @@
+ 
+ #ifdef CONFIG_UML_SECCOMP
+ #include <linux/futex.h>
++#include <sys/socket.h>
+ #include <errno.h>
+ #endif
+ 
+-static __always_inline int syscall_handler(struct stub_data *d)
++/*
++ * Known security issues
++ *
++ * Userspace can jump to this address to execute *any* syscall that is
++ * permitted by the stub. As we will return afterwards, it can do
++ * whatever it likes, including:
++ * - Tricking the kernel into handing out the memory FD
++ * - Using this memory FD to read/write all physical memory
++ * - Running in parallel to the kernel processing a syscall
++ *   (possibly creating data races?)
++ * - Blocking e.g. SIGALRM to avoid time based scheduling
++ *
++ * To avoid this, the permitted location for each syscall needs to be
++ * checked for in the SECCOMP filter (which is reasonably simple). Also,
++ * more care will need to go into considerations how the code might be
++ * tricked by using a prepared stack (or even modifying the stack from
++ * another thread in case SMP support is added).
++ *
++ * As for the SIGALRM, the best counter measure will be to check in the
++ * kernel that the process is reporting back the SIGALRM in a timely
++ * fashion.
++ */
++static __always_inline int syscall_handler(int fd_map[STUB_MAX_FDS])
+ {
++	struct stub_data *d = get_stub_data();
+ 	int i;
+ 	unsigned long res;
++	int fd;
+ 
+ 	for (i = 0; i < d->syscall_data_len; i++) {
+ 		struct stub_syscall *sc = &d->syscall_data[i];
+ 
+ 		switch (sc->syscall) {
+ 		case STUB_SYSCALL_MMAP:
++			if (fd_map)
++				fd = fd_map[sc->mem.fd];
++			else
++				fd = sc->mem.fd;
++
+ 			res = stub_syscall6(STUB_MMAP_NR,
+ 					    sc->mem.addr, sc->mem.length,
+ 					    sc->mem.prot,
+ 					    MAP_SHARED | MAP_FIXED,
+-					    sc->mem.fd, sc->mem.offset);
++					    fd, sc->mem.offset);
+ 			if (res != sc->mem.addr) {
+ 				d->err = res;
+ 				d->syscall_data_len = i;
+@@ -56,19 +86,35 @@ static __always_inline int syscall_handler(struct stub_data *d)
+ void __section(".__syscall_stub")
+ stub_syscall_handler(void)
+ {
+-	struct stub_data *d = get_stub_data();
+-
+-	syscall_handler(d);
++	syscall_handler(NULL);
+ 
+ 	trap_myself();
+ }
+ 
+ #ifdef CONFIG_UML_SECCOMP
+-void __attribute__ ((__section__ (".__syscall_stub")))
++void __section(".__syscall_stub")
+ stub_signal_interrupt(int sig, siginfo_t *info, void *p)
+ {
+ 	struct stub_data *d = get_stub_data();
++	char rcv_data;
++	union {
++		char data[CMSG_SPACE(sizeof(int) * STUB_MAX_FDS)];
++		struct cmsghdr align;
++	} ctrl = {};
++	struct iovec iov = {
++		.iov_base = &rcv_data,
++		.iov_len = 1,
++	};
++	struct msghdr msghdr = {
++		.msg_iov = &iov,
++		.msg_iovlen = 1,
++		.msg_control = &ctrl,
++		.msg_controllen = sizeof(ctrl),
++	};
+ 	ucontext_t *uc = p;
++	struct cmsghdr *fd_msg;
++	int *fd_map;
++	int num_fds;
+ 	long res;
+ 
+ 	d->signal = sig;
+@@ -81,19 +127,43 @@ stub_signal_interrupt(int sig, siginfo_t *info, void *p)
+ 		res = stub_syscall3(__NR_futex, (unsigned long)&d->futex,
+ 				    FUTEX_WAKE, 1);
+ 	} while (res == -EINTR);
++
+ 	do {
+ 		res = stub_syscall4(__NR_futex, (unsigned long)&d->futex,
+ 				    FUTEX_WAIT, FUTEX_IN_KERN, 0);
+ 	} while (res == -EINTR || d->futex == FUTEX_IN_KERN);
+ 
+-	if (res < 0 && res != -EAGAIN)
+-		stub_syscall2(__NR_kill, 0, SIGKILL);
++	if (d->syscall_data_len) {
++		/* Read passed FDs (if any) */
++		do {
++			res = stub_syscall3(__NR_recvmsg, 0, (unsigned long)&msghdr, 0);
++		} while (res == -EINTR);
++
++		/* We should never have a receive error (other than -EAGAIN) */
++		if (res < 0 && res != -EAGAIN)
++			stub_syscall1(__NR_exit_group, 1);
++
++		/* Receive the FDs */
++		num_fds = 0;
++		fd_msg = msghdr.msg_control;
++		fd_map = (void *)&CMSG_DATA(fd_msg);
++		if (res == iov.iov_len && msghdr.msg_controllen > sizeof(struct cmsghdr))
++			num_fds = (fd_msg->cmsg_len - CMSG_LEN(0)) / sizeof(int);
++
++		/* Try running queued syscalls. */
++		res = syscall_handler(fd_map);
++
++		while (num_fds)
++			stub_syscall2(__NR_close, fd_map[--num_fds], 0);
++	} else {
++		res = 0;
 +	}
+ 
+-	/* Try running queued syscalls. */
+-	if (syscall_handler(d) < 0 || d->restart_wait) {
++	if (res < 0 || d->restart_wait) {
+ 		/* Report SIGSYS if we restart. */
+ 		d->signal = SIGSYS;
+ 		d->restart_wait = 0;
 +
- 	block_signals_trace();
+ 		goto restart_wait;
+ 	}
  
- 	sig_handler_common(sig, si, mc);
-@@ -181,6 +190,8 @@ static void (*handlers[_NSIG])(int sig, struct siginfo *si, mcontext_t *mc) = {
+diff --git a/arch/um/kernel/skas/stub_exe.c b/arch/um/kernel/skas/stub_exe.c
+index f40f2332b676..8a8402444f12 100644
+--- a/arch/um/kernel/skas/stub_exe.c
++++ b/arch/um/kernel/skas/stub_exe.c
+@@ -1,5 +1,6 @@
+ #include <sys/ptrace.h>
+ #include <sys/prctl.h>
++#include <sys/fcntl.h>
+ #include <asm/unistd.h>
+ #include <sysdep/stub.h>
+ #include <stub-data.h>
+@@ -45,7 +46,11 @@ noinline static void real_init(void)
+ 	if (res != sizeof(init_data))
+ 		stub_syscall1(__NR_exit, 10);
  
- 	[SIGIO] = sig_handler,
- 	[SIGWINCH] = sig_handler,
-+	/* SIGCHLD is only actually registered in seccomp mode. */
-+	[SIGCHLD] = sig_handler,
- 	[SIGALRM] = timer_alarm_handler,
+-	stub_syscall1(__NR_close, 0);
++	/* In SECCOMP mode, FD 0 is a socket and is later used for FD passing */
++	if (!init_data.seccomp)
++		stub_syscall1(__NR_close, 0);
++	else
++		stub_syscall3(__NR_fcntl, 0, F_SETFL, O_NONBLOCK);
  
- 	[SIGUSR1] = sigusr1_handler,
-@@ -344,6 +355,12 @@ void unblock_signals(void)
- 		if (save_pending & SIGIO_MASK)
- 			sig_handler_common(SIGIO, NULL, NULL);
+ 	/* map stub code + data */
+ 	res = stub_syscall6(STUB_MMAP_NR,
+@@ -63,6 +68,10 @@ noinline static void real_init(void)
+ 	if (res != init_data.stub_start + UM_KERN_PAGE_SIZE)
+ 		stub_syscall1(__NR_exit, 12);
  
-+		if (save_pending & SIGCHLD_MASK) {
-+			struct uml_pt_regs regs = {};
++	/* In SECCOMP mode, we only need the signalling FD from now on */
++	if (init_data.seccomp)
++		stub_syscall3(__NR_close_range, 1, ~0U, 0);
 +
-+			sigchld_handler(SIGCHLD, NULL, &regs);
+ 	/* setup signal stack inside stub data */
+ 	stack.ss_sp = (void *)init_data.stub_start + UM_KERN_PAGE_SIZE;
+ 	stub_syscall2(__NR_sigaltstack, (unsigned long)&stack, 0);
+@@ -153,8 +162,12 @@ noinline static void real_init(void)
+ 			BPF_STMT(BPF_LD | BPF_W | BPF_ABS,
+ 				 offsetof(struct seccomp_data, nr)),
+ 
+-			/* [10-14] Check against permitted syscalls */
++			/* [10-16] Check against permitted syscalls */
+ 			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, __NR_futex,
++				 7, 0),
++			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K,__NR_recvmsg,
++				 6, 0),
++			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K,__NR_close,
+ 				 5, 0),
+ 			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, STUB_MMAP_NR,
+ 				 4, 0),
+@@ -170,10 +183,10 @@ noinline static void real_init(void)
+ 			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, __NR_rt_sigreturn,
+ 				 1, 0),
+ 
+-			/* [15] Not one of the permitted syscalls */
++			/* [17] Not one of the permitted syscalls */
+ 			BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_KILL_PROCESS),
+ 
+-			/* [16] Permitted call for the stub */
++			/* [18] Permitted call for the stub */
+ 			BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_ALLOW),
+ 		};
+ 		struct sock_fprog prog = {
+diff --git a/arch/um/os-Linux/skas/mem.c b/arch/um/os-Linux/skas/mem.c
+index f6bce0d83a0f..a45ed290e971 100644
+--- a/arch/um/os-Linux/skas/mem.c
++++ b/arch/um/os-Linux/skas/mem.c
+@@ -44,6 +44,16 @@ void syscall_stub_dump_error(struct mm_id *mm_idp)
+ 
+ 	print_hex_dump(UM_KERN_ERR, "    syscall data: ", 0,
+ 		       16, 4, sc, sizeof(*sc), 0);
++
++	if (using_seccomp) {
++		printk(UM_KERN_ERR "%s: FD map num: %d", __func__,
++		       mm_idp->syscall_fd_num);
++		print_hex_dump(UM_KERN_ERR,
++				"    FD map: ", 0, 16,
++				sizeof(mm_idp->syscall_fd_map[0]),
++				mm_idp->syscall_fd_map,
++				sizeof(mm_idp->syscall_fd_map), 0);
++	}
+ }
+ 
+ static inline unsigned long *check_init_stack(struct mm_id * mm_idp,
+@@ -119,6 +129,9 @@ static inline long do_syscall_stub(struct mm_id *mm_idp)
+ 		mm_idp->syscall_data_len = 0;
+ 	}
+ 
++	if (using_seccomp)
++		mm_idp->syscall_fd_num = 0;
++
+ 	return mm_idp->syscall_data_len;
+ }
+ 
+@@ -181,6 +194,44 @@ static struct stub_syscall *syscall_stub_get_previous(struct mm_id *mm_idp,
+ 	return NULL;
+ }
+ 
++static int get_stub_fd(struct mm_id *mm_idp, int fd)
++{
++	int i;
++
++	/* Find an FD slot (or flush and use first) */
++	if (!using_seccomp)
++		return fd;
++
++	/* Already crashed, value does not matter */
++	if (mm_idp->syscall_data_len < 0)
++		return 0;
++
++	/* Find existing FD in map if we can allocate another syscall */
++	if (mm_idp->syscall_data_len <
++	    ARRAY_SIZE(((struct stub_data *)NULL)->syscall_data)) {
++		for (i = 0; i < mm_idp->syscall_fd_num; i++) {
++			if (mm_idp->syscall_fd_map[i] == fd)
++				return i;
 +		}
 +
- 		/* Do not reenter the handler */
++		if (mm_idp->syscall_fd_num < STUB_MAX_FDS) {
++			i = mm_idp->syscall_fd_num;
++			mm_idp->syscall_fd_map[i] = fd;
++
++			mm_idp->syscall_fd_num++;
++
++			return i;
++		}
++	}
++
++	/* FD map full or no syscall space available, continue after flush */
++	do_syscall_stub(mm_idp);
++	mm_idp->syscall_fd_map[0] = fd;
++	mm_idp->syscall_fd_num = 1;
++
++	return 0;
++}
++
+ int map(struct mm_id *mm_idp, unsigned long virt, unsigned long len, int prot,
+ 	int phys_fd, unsigned long long offset)
+ {
+@@ -188,12 +239,21 @@ int map(struct mm_id *mm_idp, unsigned long virt, unsigned long len, int prot,
  
- 		if ((save_pending & SIGALRM_MASK) && (!(signals_active & SIGALRM_MASK)))
+ 	/* Compress with previous syscall if that is possible */
+ 	sc = syscall_stub_get_previous(mm_idp, STUB_SYSCALL_MMAP, virt);
+-	if (sc && sc->mem.prot == prot && sc->mem.fd == phys_fd &&
++	if (sc && sc->mem.prot == prot &&
+ 	    sc->mem.offset == MMAP_OFFSET(offset - sc->mem.length)) {
+-		sc->mem.length += len;
+-		return 0;
++		int prev_fd = sc->mem.fd;
++
++		if (using_seccomp)
++			prev_fd = mm_idp->syscall_fd_map[sc->mem.fd];
++
++		if (phys_fd == prev_fd) {
++			sc->mem.length += len;
++			return 0;
++		}
+ 	}
+ 
++	phys_fd = get_stub_fd(mm_idp, phys_fd);
++
+ 	sc = syscall_stub_alloc(mm_idp);
+ 	sc->syscall = STUB_SYSCALL_MMAP;
+ 	sc->mem.addr = virt;
+diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+index c663b67c3fd3..a29957e021f3 100644
+--- a/arch/um/os-Linux/skas/process.c
++++ b/arch/um/os-Linux/skas/process.c
+@@ -16,6 +16,7 @@
+ #include <sys/mman.h>
+ #include <sys/wait.h>
+ #include <sys/stat.h>
++#include <sys/socket.h>
+ #include <asm/unistd.h>
+ #include <as-layout.h>
+ #include <init.h>
+@@ -153,7 +154,39 @@ void wait_stub_done_seccomp(struct mm_id *mm_idp, int running, int wait_sigsys)
+ 	int ret;
+ 
+ 	do {
++		const char byte = 0;
++		struct iovec iov = {
++			.iov_base = (void *)&byte,
++			.iov_len = sizeof(byte),
++		};
++		union {
++			char data[CMSG_SPACE(sizeof(mm_idp->syscall_fd_map))];
++			struct cmsghdr align;
++		} ctrl;
++		struct msghdr msgh = {
++			.msg_iov = &iov,
++			.msg_iovlen = 1,
++		};
++
+ 		if (!running) {
++			if (mm_idp->syscall_fd_num) {
++				unsigned int fds_size =
++					sizeof(int) * mm_idp->syscall_fd_num;
++				struct cmsghdr *cmsg;
++
++				msgh.msg_control = ctrl.data;
++				msgh.msg_controllen = CMSG_SPACE(fds_size);
++				cmsg = CMSG_FIRSTHDR(&msgh);
++				cmsg->cmsg_level = SOL_SOCKET;
++				cmsg->cmsg_type = SCM_RIGHTS;
++				cmsg->cmsg_len = CMSG_LEN(fds_size);
++				memcpy(CMSG_DATA(cmsg), mm_idp->syscall_fd_map,
++				       fds_size);
++
++				CATCH_EINTR(syscall(__NR_sendmsg, mm_idp->sock,
++						&msgh, 0));
++			}
++
+ 			data->signal = 0;
+ 			data->futex = FUTEX_IN_CHILD;
+ 			CATCH_EINTR(syscall(__NR_futex, &data->futex,
+@@ -189,7 +222,7 @@ void wait_stub_done_seccomp(struct mm_id *mm_idp, int running, int wait_sigsys)
+ 	} while (wait_sigsys && data->signal == SIGALRM);
+ 
+ 	if (ret < 0 && errno != EAGAIN) {
+-		printk(UM_KERN_ERR "%s : waiting for child futex failed, errno = %d\n",
++		printk(UM_KERN_ERR "%s : waiting for child failed, errno = %d\n",
+ 		       __func__, errno);
+ 		goto out_kill;
+ 	}
+@@ -247,10 +280,16 @@ extern char __syscall_stub_start[];
+ 
+ static int stub_exe_fd;
+ 
+-static int userspace_tramp(void *stack)
++struct tramp_data {
++	struct stub_data *stub_data;
++	/* 0 is inherited, 1 is the kernel side */
++	int sockpair[2];
++};
++
++static int userspace_tramp(void *data)
+ {
++	struct tramp_data *tramp_data = data;
+ 	char *const argv[] = { "uml-userspace", NULL };
+-	int pipe_fds[2];
+ 	unsigned long long offset;
+ 	struct stub_init_data init_data = {
+ 		.seccomp = using_seccomp,
+@@ -277,27 +316,32 @@ static int userspace_tramp(void *stack)
+ 					      &offset);
+ 	init_data.stub_code_offset = MMAP_OFFSET(offset);
+ 
+-	init_data.stub_data_fd = phys_mapping(uml_to_phys(stack), &offset);
++	init_data.stub_data_fd = phys_mapping(uml_to_phys(tramp_data->stub_data),
++					      &offset);
+ 	init_data.stub_data_offset = MMAP_OFFSET(offset);
+ 
+-	/* Set CLOEXEC on all FDs and then unset on all memory related FDs */
+-	close_range(0, ~0U, CLOSE_RANGE_CLOEXEC);
++	/* dup2 signaling FD/socket to STDIN */
++	if (dup2(tramp_data->sockpair[0], 0) < 0)
++		exit(3);
++
++	/*
++	 * Set CLOEXEC on all FDs except the signaling one and then unset for
++	 * the main memory FD as well as IOMEM regions (if not in SECCOMP).
++	 */
++	close_range(1, ~0U, CLOSE_RANGE_CLOEXEC);
+ 
+ 	fcntl(init_data.stub_data_fd, F_SETFD, 0);
+-	for (iomem = iomem_regions; iomem; iomem = iomem->next)
+-		fcntl(iomem->fd, F_SETFD, 0);
+ 
+-	/* Create a pipe for init_data (no CLOEXEC) and dup2 to STDIN */
+-	if (pipe(pipe_fds))
+-		exit(2);
++	if (!using_seccomp) {
++		for (iomem = iomem_regions; iomem; iomem = iomem->next)
++			fcntl(iomem->fd, F_SETFD, 0);
++	}
+ 
+-	if (dup2(pipe_fds[0], 0) < 0)
+-		exit(3);
+-	close(pipe_fds[0]);
++	close(tramp_data->sockpair[0]);
+ 
+ 	/* Write init_data and close write side */
+-	ret = write(pipe_fds[1], &init_data, sizeof(init_data));
+-	close(pipe_fds[1]);
++	ret = write(tramp_data->sockpair[1], &init_data, sizeof(init_data));
++	close(tramp_data->sockpair[1]);
+ 
+ 	if (ret != sizeof(init_data))
+ 		exit(4);
+@@ -390,7 +434,7 @@ int userspace_pid[NR_CPUS];
+ 
+ /**
+  * start_userspace() - prepare a new userspace process
+- * @stub_stack:	pointer to the stub stack.
++ * @mm_id: The corresponding struct mm_id
+  *
+  * Setups a new temporary stack page that is used while userspace_tramp() runs
+  * Clones the kernel process into a new userspace process, with FDs only.
+@@ -402,9 +446,12 @@ int userspace_pid[NR_CPUS];
+ int start_userspace(struct mm_id *mm_id)
+ {
+ 	struct stub_data *proc_data = (void *)mm_id->stack;
++	struct tramp_data tramp_data = {
++		.stub_data = proc_data,
++	};
+ 	void *stack;
+ 	unsigned long sp;
+-	int pid, status, n, err;
++	int status, n, err;
+ 
+ 	/* setup a temporary stack page */
+ 	stack = mmap(NULL, UM_KERN_PAGE_SIZE,
+@@ -420,25 +467,32 @@ int start_userspace(struct mm_id *mm_id)
+ 	/* set stack pointer to the end of the stack page, so it can grow downwards */
+ 	sp = (unsigned long)stack + UM_KERN_PAGE_SIZE;
+ 
++	/* socket pair for init data and SECCOMP FD passing (no CLOEXEC here) */
++	if (socketpair(AF_UNIX, SOCK_STREAM, 0, tramp_data.sockpair)) {
++		err = -errno;
++		printk(UM_KERN_ERR "%s : socketpair failed, errno = %d\n",
++		       __func__, errno);
++		return err;
++	}
++
+ 	if (using_seccomp)
+ 		proc_data->futex = FUTEX_IN_CHILD;
+ 
+-	/* clone into new userspace process */
+-	pid = clone(userspace_tramp, (void *) sp,
++	mm_id->pid = clone(userspace_tramp, (void *) sp,
+ 		    CLONE_VFORK | CLONE_VM | SIGCHLD,
+-		    (void *)mm_id->stack);
+-	if (pid < 0) {
++		    (void *)&tramp_data);
++	if (mm_id->pid < 0) {
+ 		err = -errno;
+ 		printk(UM_KERN_ERR "%s : clone failed, errno = %d\n",
+ 		       __func__, errno);
+-		return err;
++		goto out_close;
+ 	}
+ 
+ 	if (using_seccomp) {
+ 		wait_stub_done_seccomp(mm_id, 1, 1);
+ 	} else {
+ 		do {
+-			CATCH_EINTR(n = waitpid(pid, &status,
++			CATCH_EINTR(n = waitpid(mm_id->pid, &status,
+ 						WUNTRACED | __WALL));
+ 			if (n < 0) {
+ 				err = -errno;
+@@ -455,7 +509,7 @@ int start_userspace(struct mm_id *mm_id)
+ 			goto out_kill;
+ 		}
+ 
+-		if (ptrace(PTRACE_SETOPTIONS, pid, NULL,
++		if (ptrace(PTRACE_SETOPTIONS, mm_id->pid, NULL,
+ 			   (void *) PTRACE_O_TRACESYSGOOD) < 0) {
+ 			err = -errno;
+ 			printk(UM_KERN_ERR "%s : PTRACE_SETOPTIONS failed, errno = %d\n",
+@@ -471,12 +525,22 @@ int start_userspace(struct mm_id *mm_id)
+ 		goto out_kill;
+ 	}
+ 
+-	mm_id->pid = pid;
++	close(tramp_data.sockpair[0]);
++	if (using_seccomp)
++		mm_id->sock = tramp_data.sockpair[1];
++	else
++		close(tramp_data.sockpair[1]);
+ 
+-	return pid;
++	return 0;
++
++out_kill:
++	os_kill_ptraced_process(mm_id->pid, 1);
++out_close:
++	close(tramp_data.sockpair[0]);
++	close(tramp_data.sockpair[1]);
++
++	mm_id->pid = -1;
+ 
+- out_kill:
+-	os_kill_ptraced_process(pid, 1);
+ 	return err;
+ }
+ 
+@@ -537,17 +601,8 @@ void userspace(struct uml_pt_regs *regs)
+ 
+ 			/* Mark pending syscalls for flushing */
+ 			proc_data->syscall_data_len = mm_id->syscall_data_len;
+-			mm_id->syscall_data_len = 0;
+ 
+-			proc_data->signal = 0;
+-			proc_data->futex = FUTEX_IN_CHILD;
+-			CATCH_EINTR(syscall(__NR_futex, &proc_data->futex,
+-					    FUTEX_WAKE, 1, NULL, NULL, 0));
+-			do {
+-				ret = syscall(__NR_futex, &proc_data->futex,
+-					      FUTEX_WAIT, FUTEX_IN_CHILD, NULL, NULL, 0);
+-			} while ((ret == -1 && errno == EINTR) ||
+-				 proc_data->futex == FUTEX_IN_CHILD);
++			wait_stub_done_seccomp(mm_id, 0, 0);
+ 
+ 			sig = proc_data->signal;
+ 
+@@ -555,9 +610,13 @@ void userspace(struct uml_pt_regs *regs)
+ 				printk(UM_KERN_ERR "%s - Error flushing stub syscalls",
+ 				       __func__);
+ 				syscall_stub_dump_error(mm_id);
++				mm_id->syscall_data_len = proc_data->err;
+ 				fatal_sigsegv();
+ 			}
+ 
++			mm_id->syscall_data_len = 0;
++			mm_id->syscall_fd_num = 0;
++
+ 			ret = get_stub_state(regs, proc_data, NULL);
+ 			if (ret) {
+ 				printk(UM_KERN_ERR "%s - failed to get regs: %d",
 -- 
 2.47.0
 
