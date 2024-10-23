@@ -4,60 +4,118 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CDB84CF538D
-	for <linux-um@archiver.kernel.org>; Wed, 23 Oct 2024 14:09:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 05003CFA454
+	for <linux-um@archiver.kernel.org>; Wed, 23 Oct 2024 17:07:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=C/3oPXkl1NO32RHKq498n8NtYwl9+3rfnqzgirvBEks=; b=bbrrSj+Un7absvSAnEJWJhRJR2
-	MfmebH4pyPbKrdK5aPp3yLiXPdGIK25nqyxwoy+3+lPNLt8cpRHv3+ymLCxxJaR11qSA52uWpcbLo
-	0Wd6bA9SaC7hxwaQ6O8MMZaQkkB6Wbl9jvU5K97wugq33ALTzTNovsITZpk418px4zBcqqPgpXdHH
-	MO6HQ+7EU4Dih2DsQn93GXSkPRne5VDLsCovCMlPpBrbIkcaQP+9r6akwETK/tvwxLylk7K6SmOzK
-	hbJmEKGj+QbaqPMYJTn4xgdSMWAFkQmFaxmchp/AekWrCro7uEYkuTxNTQJhGT7jeoX1SpFQOhaaD
-	6M3ezqCQ==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=k65izUluGfBnrwqMi2XeUyI63/0nxBgXTdzx+ONrFmw=; b=FnojsBhmhN25DRjQVYn/gWWzss
+	Haf4mY6s2z3p9n2QIqJWtlPxykaa84LiI6MFvFxJGE7ztkzXv19I/i63mB0Z1DiQpdJiYLboNiHMI
+	TOhJTtDyCrUth43DQMATpl8IkUm8X48rRae/fNG41vV5tU9ge5yIQoWbrZR3lCoGCrXueimUZ/0r2
+	Jjz16AU9qvWahtNa78mYSdjvEUIDye7RgzKxGC9R4Fd+60hyHOv39SONLIk17xydUiCF3mmwDFuT4
+	URCHBR3XnWG0Eo1P39CQ1tvZ3LNc6kkH1asRf8KUDMDKDhYba3VSI9/j5LGAOUC/wDMF5OOaVCf+Q
+	47mYKiYQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t3c3P-0000000EeSO-1lTm;
-	Wed, 23 Oct 2024 14:09:39 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1t3epW-0000000FIHw-0aSG;
+	Wed, 23 Oct 2024 17:07:30 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t3c3K-0000000EeOv-03Jy
-	for linux-um@lists.infradead.org;
-	Wed, 23 Oct 2024 14:09:37 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=C/3oPXkl1NO32RHKq498n8NtYwl9+3rfnqzgirvBEks=;
-	t=1729692573; x=1730902173; b=oFHSo02mojjFPhe/O6sf0fUzSW4WSWceXD+ZFqTX83mZENj
-	DdtPAvLgTWwE5ez1eKBIFAWKp4UVgBgqMA+g525bd8hN4G6nqC0rn6D5RXqA2YtEp/YOVBBUODoz5
-	JRVWsFmYvdJM6gvlmARDI2ewzqRT/Zw7JLRmgtlrJlXAoIsTxdU8fECibpGiGSiLrN75NwfVOHV00
-	cLD8wosOguE5sFn4imnDGL0GMxbKCN6LnXldbZmTql9TjtAgwfe8arKNSiYAa+2rG1IWtGcajk48M
-	QYs8X6bIxyE0LLVD+PcBvfsVW5WUiGtRHebqG6FJzOGROV6V3hLYVuj2YTRoDVbA==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98)
-	(envelope-from <benjamin@sipsolutions.net>)
-	id 1t3c3B-00000002hDF-03Cr;
-	Wed, 23 Oct 2024 16:09:27 +0200
-From: Benjamin Berg <benjamin@sipsolutions.net>
-To: linux-um@lists.infradead.org
-Cc: Benjamin Berg <benjamin@sipsolutions.net>,
+	id 1t3eCw-0000000F9xK-13YN;
+	Wed, 23 Oct 2024 16:27:39 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 528A55C5B42;
+	Wed, 23 Oct 2024 16:27:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F44EC4CEC6;
+	Wed, 23 Oct 2024 16:27:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729700856;
+	bh=CAUHbpciOyKyDsHwZh+qoyCOqycSY3L+pQS4jF5xUzU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=GyRbmLCUG9JQB3z6KOucL0zaqdZJ/z+C+hR9jVOBdBVOVN/cw4qzM9u3MGS35Y8YD
+	 dnM3cuw69OA44h4UALWLfrAtvfPlmhK05b940iXW5N7BM1bWTs+pwp1SUfgaq9q44a
+	 2cm/u+eFE//qMgYmTjg8EyRhmgFa/JqhE6H1exzvXMS7vaPYCnHTI2amWa4VfUpKst
+	 IbDgtUU+y/WOcER10iuY4ta05P2VPLnzJhhKcicOcNlAueU033Ls3BTyu8sqvTM9pa
+	 nvsX9jSxLzIxdsSSviOh0QFGpx0rw93qMfgT2GTbnxqoAs6gxUiU5I23CuQ540ki4r
+	 tF94t/qKGqNcg==
+From: Mike Rapoport <rppt@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Luis Chamberlain <mcgrof@kernel.org>
+Cc: Andreas Larsson <andreas@gaisler.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Borislav Petkov <bp@alien8.de>,
+	Brian Cain <bcain@quicinc.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Guo Ren <guoren@kernel.org>,
+	Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
 	Johannes Berg <johannes@sipsolutions.net>,
-	Benjamin Berg <benjamin.berg@intel.com>
-Subject: [RFC PATCH v2 8/9] um: Implement kernel side of SECCOMP based process handling
-Date: Wed, 23 Oct 2024 16:08:26 +0200
-Message-ID: <20241023140827.136550-9-benjamin@sipsolutions.net>
-X-Mailer: git-send-email 2.47.0
-In-Reply-To: <20241023140827.136550-1-benjamin@sipsolutions.net>
-References: <20241023140827.136550-1-benjamin@sipsolutions.net>
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Matt Turner <mattst88@gmail.com>,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>,
+	Mike Rapoport <rppt@kernel.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>,
+	Song Liu <song@kernel.org>,
+	Stafford Horne <shorne@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Vineet Gupta <vgupta@kernel.org>,
+	Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-alpha@vger.kernel.org,
+	linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-modules@vger.kernel.org,
+	linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-sh@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org,
+	loongarch@lists.linux.dev,
+	sparclinux@vger.kernel.org,
+	x86@kernel.org
+Subject: [PATCH v7 0/8] x86/module: use large ROX pages for text allocations
+Date: Wed, 23 Oct 2024 19:27:03 +0300
+Message-ID: <20241023162711.2579610-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241023_070934_449338_8604B7C2 
-X-CRM114-Status: GOOD (  33.52  )
+X-CRM114-CacheID: sfid-20241023_092738_423643_46975A0B 
+X-CRM114-Status: GOOD (  18.36  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,934 +130,225 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-This adds the kernel side of the seccomp based process handling.
+From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 
-Co-authored-by: Johannes Berg <johannes@sipsolutions.net>
-Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
-Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
----
- arch/um/include/shared/common-offsets.h    |   2 +
- arch/um/include/shared/os.h                |   2 +-
- arch/um/include/shared/skas/stub-data.h    |   5 +-
- arch/um/kernel/skas/mmu.c                  |   6 +-
- arch/um/kernel/skas/stub_exe.c             | 141 +++++++-
- arch/um/os-Linux/internal.h                |   4 +
- arch/um/os-Linux/skas/mem.c                |  38 ++-
- arch/um/os-Linux/skas/process.c            | 374 +++++++++++++++------
- arch/um/os-Linux/start_up.c                |   3 -
- arch/x86/um/shared/sysdep/kernel-offsets.h |   2 +
- arch/x86/um/tls_32.c                       |  23 +-
- 11 files changed, 460 insertions(+), 140 deletions(-)
+Hi,
 
-diff --git a/arch/um/include/shared/common-offsets.h b/arch/um/include/shared/common-offsets.h
-index 44cb72413db4..6460a1b5b1cc 100644
---- a/arch/um/include/shared/common-offsets.h
-+++ b/arch/um/include/shared/common-offsets.h
-@@ -35,3 +35,5 @@ DEFINE(UML_CONFIG_UML_MAX_USERSPACE_ITERATIONS, 0);
- #endif
- 
- DEFINE(UM_KERN_GDT_ENTRY_TLS_ENTRIES, GDT_ENTRY_TLS_ENTRIES);
-+
-+DEFINE(UM_SECCOMP_ARCH_NATIVE, SECCOMP_ARCH_NATIVE);
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index e25e81742bdd..54f712236843 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -283,7 +283,7 @@ int unmap(struct mm_id *mm_idp, unsigned long addr, unsigned long len);
- 
- /* skas/process.c */
- extern int is_skas_winch(int pid, int fd, void *data);
--extern int start_userspace(unsigned long stub_stack);
-+extern int start_userspace(struct mm_id *mm_id);
- extern void userspace(struct uml_pt_regs *regs);
- extern void new_thread(void *stack, jmp_buf *buf, void (*handler)(void));
- extern void switch_threads(jmp_buf *me, jmp_buf *you);
-diff --git a/arch/um/include/shared/skas/stub-data.h b/arch/um/include/shared/skas/stub-data.h
-index 4a2a00556a8e..615c3054ad2a 100644
---- a/arch/um/include/shared/skas/stub-data.h
-+++ b/arch/um/include/shared/skas/stub-data.h
-@@ -18,6 +18,8 @@
- #define FUTEX_IN_KERN 1
- 
- struct stub_init_data {
-+	int seccomp;
-+
- 	unsigned long stub_start;
- 
- 	int stub_code_fd;
-@@ -25,7 +27,8 @@ struct stub_init_data {
- 	int stub_data_fd;
- 	unsigned long stub_data_offset;
- 
--	unsigned long segv_handler;
-+	unsigned long signal_handler;
-+	unsigned long signal_restorer;
- };
- 
- #define STUB_NEXT_SYSCALL(s) \
-diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
-index 62f27daf3d37..438b7a3082e6 100644
---- a/arch/um/kernel/skas/mmu.c
-+++ b/arch/um/kernel/skas/mmu.c
-@@ -39,13 +39,11 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
- 		/* Insert into list, used for lookups when the child dies */
- 		list_add(&mm->context.list, &mm_list);
- 
--		new_id->pid = start_userspace(stack);
-+		ret = start_userspace(new_id);
- 	}
- 
--	if (new_id->pid < 0) {
--		ret = new_id->pid;
-+	if (ret < 0)
- 		goto out_free;
--	}
- 
- 	/* Ensure the new MM is clean and nothing unwanted is mapped */
- 	unmap(new_id, 0, STUB_START);
-diff --git a/arch/um/kernel/skas/stub_exe.c b/arch/um/kernel/skas/stub_exe.c
-index 23c99b285e82..f40f2332b676 100644
---- a/arch/um/kernel/skas/stub_exe.c
-+++ b/arch/um/kernel/skas/stub_exe.c
-@@ -3,6 +3,9 @@
- #include <asm/unistd.h>
- #include <sysdep/stub.h>
- #include <stub-data.h>
-+#include <linux/filter.h>
-+#include <linux/seccomp.h>
-+#include <generated/asm-offsets.h>
- 
- void _start(void);
- 
-@@ -25,8 +28,6 @@ noinline static void real_init(void)
- 	} sa = {
- 		/* Need to set SA_RESTORER (but the handler never returns) */
- 		.sa_flags = SA_ONSTACK | SA_NODEFER | SA_SIGINFO | 0x04000000,
--		/* no need to mask any signals */
--		.sa_mask = 0,
- 	};
- 
- 	/* set a nice name */
-@@ -35,6 +36,9 @@ noinline static void real_init(void)
- 	/* Make sure this process dies if the kernel dies */
- 	stub_syscall2(__NR_prctl, PR_SET_PDEATHSIG, SIGKILL);
- 
-+	/* Needed in SECCOMP mode (and safe to do anyway) */
-+	stub_syscall5(__NR_prctl, PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
-+
- 	/* read information from STDIN and close it */
- 	res = stub_syscall3(__NR_read, 0,
- 			    (unsigned long)&init_data, sizeof(init_data));
-@@ -63,18 +67,133 @@ noinline static void real_init(void)
- 	stack.ss_sp = (void *)init_data.stub_start + UM_KERN_PAGE_SIZE;
- 	stub_syscall2(__NR_sigaltstack, (unsigned long)&stack, 0);
- 
--	/* register SIGSEGV handler */
--	sa.sa_handler_ = (void *) init_data.segv_handler;
--	res = stub_syscall4(__NR_rt_sigaction, SIGSEGV, (unsigned long)&sa, 0,
--			    sizeof(sa.sa_mask));
--	if (res != 0)
--		stub_syscall1(__NR_exit, 13);
-+	/* register signal handlers */
-+	sa.sa_handler_ = (void *) init_data.signal_handler;
-+	sa.sa_restorer = (void *) init_data.signal_restorer;
-+	if (!init_data.seccomp) {
-+		/* In ptrace mode, the SIGSEGV handler never returns */
-+		sa.sa_mask = 0;
-+
-+		res = stub_syscall4(__NR_rt_sigaction, SIGSEGV,
-+				    (unsigned long)&sa, 0, sizeof(sa.sa_mask));
-+		if (res != 0)
-+			stub_syscall1(__NR_exit, 13);
-+	} else {
-+		/* SECCOMP mode uses rt_sigreturn, need to mask all signals */
-+		sa.sa_mask = ~0ULL;
-+
-+		res = stub_syscall4(__NR_rt_sigaction, SIGSEGV,
-+				    (unsigned long)&sa, 0, sizeof(sa.sa_mask));
-+		if (res != 0)
-+			stub_syscall1(__NR_exit, 14);
-+
-+		res = stub_syscall4(__NR_rt_sigaction, SIGSYS,
-+				    (unsigned long)&sa, 0, sizeof(sa.sa_mask));
-+		if (res != 0)
-+			stub_syscall1(__NR_exit, 15);
-+
-+		res = stub_syscall4(__NR_rt_sigaction, SIGALRM,
-+				    (unsigned long)&sa, 0, sizeof(sa.sa_mask));
-+		if (res != 0)
-+			stub_syscall1(__NR_exit, 16);
-+
-+		res = stub_syscall4(__NR_rt_sigaction, SIGTRAP,
-+				    (unsigned long)&sa, 0, sizeof(sa.sa_mask));
-+		if (res != 0)
-+			stub_syscall1(__NR_exit, 17);
-+
-+		res = stub_syscall4(__NR_rt_sigaction, SIGILL,
-+				    (unsigned long)&sa, 0, sizeof(sa.sa_mask));
-+		if (res != 0)
-+			stub_syscall1(__NR_exit, 18);
-+
-+		res = stub_syscall4(__NR_rt_sigaction, SIGFPE,
-+				    (unsigned long)&sa, 0, sizeof(sa.sa_mask));
-+		if (res != 0)
-+			stub_syscall1(__NR_exit, 19);
-+	}
-+
-+	/*
-+	 * If in seccomp mode, install the SECCOMP filter and trigger a syscall.
-+	 * Otherwise set PTRACE_TRACEME and do a SIGSTOP.
-+	 */
-+	if (init_data.seccomp) {
-+		struct sock_filter filter[] = {
-+#if __BITS_PER_LONG > 32
-+			/* [0] Load upper 32bit of instruction pointer from seccomp_data */
-+			BPF_STMT(BPF_LD | BPF_W | BPF_ABS,
-+				 (offsetof(struct seccomp_data, instruction_pointer) + 4)),
-+
-+			/* [1] Jump forward 3 instructions if the upper address is not identical */
-+			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, (init_data.stub_start) >> 32, 0, 3),
-+#endif
-+			/* [2] Load lower 32bit of instruction pointer from seccomp_data */
-+			BPF_STMT(BPF_LD | BPF_W | BPF_ABS,
-+				 (offsetof(struct seccomp_data, instruction_pointer))),
-+
-+			/* [3] Mask out lower bits */
-+			BPF_STMT(BPF_ALU | BPF_AND | BPF_K, 0xfffff000),
-+
-+			/* [4] Jump to [6] if the lower bits are not on the expected page */
-+			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, (init_data.stub_start) & 0xfffff000, 1, 0),
-+
-+			/* [5] Trap call, allow */
-+			BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_TRAP),
-+
-+			/* [6,7] Check architecture */
-+			BPF_STMT(BPF_LD | BPF_W | BPF_ABS,
-+				 offsetof(struct seccomp_data, arch)),
-+			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K,
-+				 UM_SECCOMP_ARCH_NATIVE, 1, 0),
-+
-+			/* [8] Kill (for architecture check) */
-+			BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_KILL_PROCESS),
-+
-+			/* [9] Load syscall number */
-+			BPF_STMT(BPF_LD | BPF_W | BPF_ABS,
-+				 offsetof(struct seccomp_data, nr)),
-+
-+			/* [10-14] Check against permitted syscalls */
-+			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, __NR_futex,
-+				 5, 0),
-+			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, STUB_MMAP_NR,
-+				 4, 0),
-+			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, __NR_munmap,
-+				 3, 0),
-+#ifdef __i386__
-+			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, __NR_set_thread_area,
-+				 2, 0),
-+#else
-+			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, __NR_arch_prctl,
-+				 2, 0),
-+#endif
-+			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, __NR_rt_sigreturn,
-+				 1, 0),
-+
-+			/* [15] Not one of the permitted syscalls */
-+			BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_KILL_PROCESS),
-+
-+			/* [16] Permitted call for the stub */
-+			BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_ALLOW),
-+		};
-+		struct sock_fprog prog = {
-+			.len = sizeof(filter) / sizeof(filter[0]),
-+			.filter = filter,
-+		};
-+
-+		if (stub_syscall3(__NR_seccomp, SECCOMP_SET_MODE_FILTER,
-+				  SECCOMP_FILTER_FLAG_TSYNC,
-+				  (unsigned long)&prog) != 0)
-+			stub_syscall1(__NR_exit, 20);
- 
--	stub_syscall4(__NR_ptrace, PTRACE_TRACEME, 0, 0, 0);
-+		/* Fall through, the exit syscall will cause SIGSYS */
-+	} else {
-+		stub_syscall4(__NR_ptrace, PTRACE_TRACEME, 0, 0, 0);
- 
--	stub_syscall2(__NR_kill, stub_syscall0(__NR_getpid), SIGSTOP);
-+		stub_syscall2(__NR_kill, stub_syscall0(__NR_getpid), SIGSTOP);
-+	}
- 
--	stub_syscall1(__NR_exit, 14);
-+	stub_syscall1(__NR_exit, 30);
- 
- 	__builtin_unreachable();
- }
-diff --git a/arch/um/os-Linux/internal.h b/arch/um/os-Linux/internal.h
-index 317fca190c2b..09fa232f5695 100644
---- a/arch/um/os-Linux/internal.h
-+++ b/arch/um/os-Linux/internal.h
-@@ -2,6 +2,9 @@
- #ifndef __UM_OS_LINUX_INTERNAL_H
- #define __UM_OS_LINUX_INTERNAL_H
- 
-+#include <mm_id.h>
-+#include <stub-data.h>
-+
- /*
-  * elf_aux.c
-  */
-@@ -16,5 +19,6 @@ void check_tmpexec(void);
-  * skas/process.c
-  */
- void wait_stub_done(int pid);
-+void wait_stub_done_seccomp(struct mm_id *mm_idp, int running, int wait_sigsys);
- 
- #endif /* __UM_OS_LINUX_INTERNAL_H */
-diff --git a/arch/um/os-Linux/skas/mem.c b/arch/um/os-Linux/skas/mem.c
-index d7f1814b0e5a..f6bce0d83a0f 100644
---- a/arch/um/os-Linux/skas/mem.c
-+++ b/arch/um/os-Linux/skas/mem.c
-@@ -4,6 +4,7 @@
-  * Copyright (C) 2002 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-  */
- 
-+#include <linux/kconfig.h>
- #include <stddef.h>
- #include <unistd.h>
- #include <errno.h>
-@@ -80,27 +81,32 @@ static inline long do_syscall_stub(struct mm_id *mm_idp)
- 	int n, i;
- 	int err, pid = mm_idp->pid;
- 
--	n = ptrace_setregs(pid, syscall_regs);
--	if (n < 0) {
--		printk(UM_KERN_ERR "Registers - \n");
--		for (i = 0; i < MAX_REG_NR; i++)
--			printk(UM_KERN_ERR "\t%d\t0x%lx\n", i, syscall_regs[i]);
--		panic("%s : PTRACE_SETREGS failed, errno = %d\n",
--		      __func__, -n);
--	}
--
- 	/* Inform process how much we have filled in. */
- 	proc_data->syscall_data_len = mm_idp->syscall_data_len;
- 
--	err = ptrace(PTRACE_CONT, pid, 0, 0);
--	if (err)
--		panic("Failed to continue stub, pid = %d, errno = %d\n", pid,
--		      errno);
--
--	wait_stub_done(pid);
-+	if (using_seccomp) {
-+		proc_data->restart_wait = 1;
-+		wait_stub_done_seccomp(mm_idp, 0, 1);
-+	} else {
-+		n = ptrace_setregs(pid, syscall_regs);
-+		if (n < 0) {
-+			printk(UM_KERN_ERR "Registers -\n");
-+			for (i = 0; i < MAX_REG_NR; i++)
-+				printk(UM_KERN_ERR "\t%d\t0x%lx\n", i, syscall_regs[i]);
-+			panic("%s : PTRACE_SETREGS failed, errno = %d\n",
-+			      __func__, -n);
-+		}
-+
-+		err = ptrace(PTRACE_CONT, pid, 0, 0);
-+		if (err)
-+			panic("Failed to continue stub, pid = %d, errno = %d\n",
-+			      pid, errno);
-+
-+		wait_stub_done(pid);
-+	}
- 
- 	/*
--	 * proc_data->err will be non-zero if there was an (unexpected) error.
-+	 * proc_data->err will be negative if there was an (unexpected) error.
- 	 * In that case, syscall_data_len points to the last executed syscall,
- 	 * otherwise it will be zero (but we do not need to rely on that).
- 	 */
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index 5eb0155ff7a7..c663b67c3fd3 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-+ * Copyright (C) 2021 Benjamin Berg <benjamin@sipsolutions.net>
-  * Copyright (C) 2015 Thomas Meyer (thomas@m3y3r.de)
-  * Copyright (C) 2002- 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-  */
-@@ -25,8 +26,11 @@
- #include <registers.h>
- #include <skas.h>
- #include <sysdep/stub.h>
-+#include <sysdep/mcontext.h>
-+#include <linux/futex.h>
- #include <linux/threads.h>
- #include <timetravel.h>
-+#include <asm-generic/rwonce.h>
- #include "../internal.h"
- 
- int is_skas_winch(int pid, int fd, void *data)
-@@ -142,6 +146,74 @@ void wait_stub_done(int pid)
- 	fatal_sigsegv();
- }
- 
-+#ifdef CONFIG_UML_SECCOMP
-+void wait_stub_done_seccomp(struct mm_id *mm_idp, int running, int wait_sigsys)
-+{
-+	struct stub_data *data = (void *)mm_idp->stack;
-+	int ret;
-+
-+	do {
-+		if (!running) {
-+			data->signal = 0;
-+			data->futex = FUTEX_IN_CHILD;
-+			CATCH_EINTR(syscall(__NR_futex, &data->futex,
-+					    FUTEX_WAKE, 1, NULL, NULL, 0));
-+		}
-+
-+		do {
-+			/*
-+			 * We need to check whether the child is still alive
-+			 * before and after the FUTEX_WAIT call. Before, in
-+			 * case it just died but we still updated data->futex
-+			 * to FUTEX_IN_CHILD. And after, in case it died while
-+			 * we were waiting (and SIGCHLD woke us up, see the
-+			 * IRQ handler in mmu.c).
-+			 *
-+			 * Either way, if PID is negative, then we have no
-+			 * choice but to kill the task.
-+			 */
-+			if (__READ_ONCE(mm_idp->pid) < 0)
-+				goto out_kill;
-+
-+			ret = syscall(__NR_futex, &data->futex,
-+				      FUTEX_WAIT, FUTEX_IN_CHILD,
-+				      NULL, NULL, 0);
-+		} while ((ret == -1 && errno == EINTR) && data->futex == FUTEX_IN_CHILD);
-+
-+		if (__READ_ONCE(mm_idp->pid) < 0)
-+			goto out_kill;
-+
-+		running = 0;
-+
-+		/* We may receive a SIGALRM before SIGSYS, iterate again. */
-+	} while (wait_sigsys && data->signal == SIGALRM);
-+
-+	if (ret < 0 && errno != EAGAIN) {
-+		printk(UM_KERN_ERR "%s : waiting for child futex failed, errno = %d\n",
-+		       __func__, errno);
-+		goto out_kill;
-+	}
-+
-+	if (data->mctx_offset > sizeof(data->sigstack) - sizeof(mcontext_t)) {
-+		printk(UM_KERN_ERR "%s : invalid mcontext offset", __func__);
-+		goto out_kill;
-+	}
-+
-+	if (wait_sigsys && data->signal != SIGSYS) {
-+		printk(UM_KERN_ERR "%s : expected SIGSYS but got %d",
-+		       __func__, data->signal);
-+		goto out_kill;
-+	}
-+
-+	return;
-+
-+out_kill:
-+	printk(UM_KERN_ERR "%s : failed to wait for stub, pid = %d, errno = %d\n",
-+	       __func__, mm_idp->pid, errno);
-+	fatal_sigsegv();
-+}
-+#endif
-+
- extern unsigned long current_stub_stack(void);
- 
- static void get_skas_faultinfo(int pid, struct faultinfo *fi)
-@@ -181,14 +253,26 @@ static int userspace_tramp(void *stack)
- 	int pipe_fds[2];
- 	unsigned long long offset;
- 	struct stub_init_data init_data = {
-+		.seccomp = using_seccomp,
- 		.stub_start = STUB_START,
--		.segv_handler = STUB_CODE +
--				(unsigned long) stub_segv_handler -
--				(unsigned long) __syscall_stub_start,
- 	};
- 	struct iomem_region *iomem;
- 	int ret;
- 
-+	if (using_seccomp) {
-+		init_data.signal_handler = STUB_CODE +
-+					   (unsigned long) stub_signal_interrupt -
-+					   (unsigned long) __syscall_stub_start;
-+		init_data.signal_restorer = STUB_CODE +
-+					   (unsigned long) stub_signal_restorer -
-+					   (unsigned long) __syscall_stub_start;
-+	} else {
-+		init_data.signal_handler = STUB_CODE +
-+					   (unsigned long) stub_segv_handler -
-+					   (unsigned long) __syscall_stub_start;
-+		init_data.signal_restorer = 0;
-+	}
-+
- 	init_data.stub_code_fd = phys_mapping(uml_to_phys(__syscall_stub_start),
- 					      &offset);
- 	init_data.stub_code_offset = MMAP_OFFSET(offset);
-@@ -315,8 +399,9 @@ int userspace_pid[NR_CPUS];
-  *         when negative: an error number.
-  * FIXME: can PIDs become negative?!
-  */
--int start_userspace(unsigned long stub_stack)
-+int start_userspace(struct mm_id *mm_id)
- {
-+	struct stub_data *proc_data = (void *)mm_id->stack;
- 	void *stack;
- 	unsigned long sp;
- 	int pid, status, n, err;
-@@ -335,10 +420,13 @@ int start_userspace(unsigned long stub_stack)
- 	/* set stack pointer to the end of the stack page, so it can grow downwards */
- 	sp = (unsigned long)stack + UM_KERN_PAGE_SIZE;
- 
-+	if (using_seccomp)
-+		proc_data->futex = FUTEX_IN_CHILD;
-+
- 	/* clone into new userspace process */
- 	pid = clone(userspace_tramp, (void *) sp,
- 		    CLONE_VFORK | CLONE_VM | SIGCHLD,
--		    (void *)stub_stack);
-+		    (void *)mm_id->stack);
- 	if (pid < 0) {
- 		err = -errno;
- 		printk(UM_KERN_ERR "%s : clone failed, errno = %d\n",
-@@ -346,29 +434,34 @@ int start_userspace(unsigned long stub_stack)
- 		return err;
- 	}
- 
--	do {
--		CATCH_EINTR(n = waitpid(pid, &status, WUNTRACED | __WALL));
--		if (n < 0) {
-+	if (using_seccomp) {
-+		wait_stub_done_seccomp(mm_id, 1, 1);
-+	} else {
-+		do {
-+			CATCH_EINTR(n = waitpid(pid, &status,
-+						WUNTRACED | __WALL));
-+			if (n < 0) {
-+				err = -errno;
-+				printk(UM_KERN_ERR "%s : wait failed, errno = %d\n",
-+				       __func__, errno);
-+				goto out_kill;
-+			}
-+		} while (WIFSTOPPED(status) && (WSTOPSIG(status) == SIGALRM));
-+
-+		if (!WIFSTOPPED(status) || (WSTOPSIG(status) != SIGSTOP)) {
-+			err = -EINVAL;
-+			printk(UM_KERN_ERR "%s : expected SIGSTOP, got status = %d\n",
-+			       __func__, status);
-+			goto out_kill;
-+		}
-+
-+		if (ptrace(PTRACE_SETOPTIONS, pid, NULL,
-+			   (void *) PTRACE_O_TRACESYSGOOD) < 0) {
- 			err = -errno;
--			printk(UM_KERN_ERR "%s : wait failed, errno = %d\n",
-+			printk(UM_KERN_ERR "%s : PTRACE_SETOPTIONS failed, errno = %d\n",
- 			       __func__, errno);
- 			goto out_kill;
- 		}
--	} while (WIFSTOPPED(status) && (WSTOPSIG(status) == SIGALRM));
--
--	if (!WIFSTOPPED(status) || (WSTOPSIG(status) != SIGSTOP)) {
--		err = -EINVAL;
--		printk(UM_KERN_ERR "%s : expected SIGSTOP, got status = %d\n",
--		       __func__, status);
--		goto out_kill;
--	}
--
--	if (ptrace(PTRACE_SETOPTIONS, pid, NULL,
--		   (void *) PTRACE_O_TRACESYSGOOD) < 0) {
--		err = -errno;
--		printk(UM_KERN_ERR "%s : PTRACE_SETOPTIONS failed, errno = %d\n",
--		       __func__, errno);
--		goto out_kill;
- 	}
- 
- 	if (munmap(stack, UM_KERN_PAGE_SIZE) < 0) {
-@@ -378,6 +471,8 @@ int start_userspace(unsigned long stub_stack)
- 		goto out_kill;
- 	}
- 
-+	mm_id->pid = pid;
-+
- 	return pid;
- 
-  out_kill:
-@@ -391,7 +486,9 @@ extern unsigned long tt_extra_sched_jiffies;
- void userspace(struct uml_pt_regs *regs)
- {
- 	int err, status, op, pid = userspace_pid[0];
--	siginfo_t si;
-+	siginfo_t si_ptrace;
-+	siginfo_t *si;
-+	int sig;
- 
- 	/* Handle any immediate reschedules or signals */
- 	interrupt_end();
-@@ -422,104 +519,181 @@ void userspace(struct uml_pt_regs *regs)
- 
- 		current_mm_sync();
- 
--		/* Flush out any pending syscalls */
--		err = syscall_stub_flush(current_mm_id());
--		if (err) {
--			if (err == -ENOMEM)
--				report_enomem();
-+		if (using_seccomp) {
-+			struct mm_id *mm_id = current_mm_id();
-+			struct stub_data *proc_data = (void *) mm_id->stack;
-+			int ret;
- 
--			printk(UM_KERN_ERR "%s - Error flushing stub syscalls: %d",
--				__func__, -err);
--			fatal_sigsegv();
--		}
-+			ret = set_stub_state(regs, proc_data, singlestepping());
-+			if (ret) {
-+				printk(UM_KERN_ERR "%s - failed to set regs: %d",
-+				       __func__, ret);
-+				fatal_sigsegv();
-+			}
- 
--		/*
--		 * This can legitimately fail if the process loads a
--		 * bogus value into a segment register.  It will
--		 * segfault and PTRACE_GETREGS will read that value
--		 * out of the process.  However, PTRACE_SETREGS will
--		 * fail.  In this case, there is nothing to do but
--		 * just kill the process.
--		 */
--		if (ptrace(PTRACE_SETREGS, pid, 0, regs->gp)) {
--			printk(UM_KERN_ERR "%s - ptrace set regs failed, errno = %d\n",
--			       __func__, errno);
--			fatal_sigsegv();
--		}
-+			/* Must have been reset by the syscall caller */
-+			if (proc_data->restart_wait != 0)
-+				panic("Programming error: Flag to only run syscalls in child was not cleared!");
-+
-+			/* Mark pending syscalls for flushing */
-+			proc_data->syscall_data_len = mm_id->syscall_data_len;
-+			mm_id->syscall_data_len = 0;
-+
-+			proc_data->signal = 0;
-+			proc_data->futex = FUTEX_IN_CHILD;
-+			CATCH_EINTR(syscall(__NR_futex, &proc_data->futex,
-+					    FUTEX_WAKE, 1, NULL, NULL, 0));
-+			do {
-+				ret = syscall(__NR_futex, &proc_data->futex,
-+					      FUTEX_WAIT, FUTEX_IN_CHILD, NULL, NULL, 0);
-+			} while ((ret == -1 && errno == EINTR) ||
-+				 proc_data->futex == FUTEX_IN_CHILD);
-+
-+			sig = proc_data->signal;
-+
-+			if (sig == SIGTRAP && proc_data->err != 0) {
-+				printk(UM_KERN_ERR "%s - Error flushing stub syscalls",
-+				       __func__);
-+				syscall_stub_dump_error(mm_id);
-+				fatal_sigsegv();
-+			}
- 
--		if (put_fp_registers(pid, regs->fp)) {
--			printk(UM_KERN_ERR "%s - ptrace set fp regs failed, errno = %d\n",
--			       __func__, errno);
--			fatal_sigsegv();
--		}
-+			ret = get_stub_state(regs, proc_data, NULL);
-+			if (ret) {
-+				printk(UM_KERN_ERR "%s - failed to get regs: %d",
-+				       __func__, ret);
-+				fatal_sigsegv();
-+			}
- 
--		if (singlestepping())
--			op = PTRACE_SYSEMU_SINGLESTEP;
--		else
--			op = PTRACE_SYSEMU;
-+			if (proc_data->si_offset > sizeof(proc_data->sigstack) - sizeof(*si))
-+				panic("%s - Invalid siginfo offset from child",
-+				      __func__);
-+			si = (void *)&proc_data->sigstack[proc_data->si_offset];
- 
--		if (ptrace(op, pid, 0, 0)) {
--			printk(UM_KERN_ERR "%s - ptrace continue failed, op = %d, errno = %d\n",
--			       __func__, op, errno);
--			fatal_sigsegv();
--		}
-+			regs->is_user = 1;
- 
--		CATCH_EINTR(err = waitpid(pid, &status, WUNTRACED | __WALL));
--		if (err < 0) {
--			printk(UM_KERN_ERR "%s - wait failed, errno = %d\n",
--			       __func__, errno);
--			fatal_sigsegv();
--		}
-+			/* Fill in ORIG_RAX and extract fault information */
-+			PT_SYSCALL_NR(regs->gp) = si->si_syscall;
-+			if (sig == SIGSEGV) {
-+				mcontext_t *mcontext = (void *)&proc_data->sigstack[proc_data->mctx_offset];
- 
--		regs->is_user = 1;
--		if (ptrace(PTRACE_GETREGS, pid, 0, regs->gp)) {
--			printk(UM_KERN_ERR "%s - PTRACE_GETREGS failed, errno = %d\n",
--			       __func__, errno);
--			fatal_sigsegv();
--		}
-+				GET_FAULTINFO_FROM_MC(regs->faultinfo, mcontext);
-+			}
-+		} else {
-+			/* Flush out any pending syscalls */
-+			err = syscall_stub_flush(current_mm_id());
-+			if (err) {
-+				if (err == -ENOMEM)
-+					report_enomem();
-+
-+				printk(UM_KERN_ERR "%s - Error flushing stub syscalls: %d",
-+					__func__, -err);
-+				fatal_sigsegv();
-+			}
- 
--		if (get_fp_registers(pid, regs->fp)) {
--			printk(UM_KERN_ERR "%s -  get_fp_registers failed, errno = %d\n",
--			       __func__, errno);
--			fatal_sigsegv();
--		}
-+			/*
-+			 * This can legitimately fail if the process loads a
-+			 * bogus value into a segment register.  It will
-+			 * segfault and PTRACE_GETREGS will read that value
-+			 * out of the process.  However, PTRACE_SETREGS will
-+			 * fail.  In this case, there is nothing to do but
-+			 * just kill the process.
-+			 */
-+			if (ptrace(PTRACE_SETREGS, pid, 0, regs->gp)) {
-+				printk(UM_KERN_ERR "%s - ptrace set regs failed, errno = %d\n",
-+				       __func__, errno);
-+				fatal_sigsegv();
-+			}
- 
--		UPT_SYSCALL_NR(regs) = -1; /* Assume: It's not a syscall */
-+			if (put_fp_registers(pid, regs->fp)) {
-+				printk(UM_KERN_ERR "%s - ptrace set fp regs failed, errno = %d\n",
-+				       __func__, errno);
-+				fatal_sigsegv();
-+			}
- 
--		if (WIFSTOPPED(status)) {
--			int sig = WSTOPSIG(status);
-+			if (singlestepping())
-+				op = PTRACE_SYSEMU_SINGLESTEP;
-+			else
-+				op = PTRACE_SYSEMU;
- 
--			/* These signal handlers need the si argument.
--			 * The SIGIO and SIGALARM handlers which constitute the
--			 * majority of invocations, do not use it.
--			 */
--			switch (sig) {
--			case SIGSEGV:
--			case SIGTRAP:
--			case SIGILL:
--			case SIGBUS:
--			case SIGFPE:
--			case SIGWINCH:
--				ptrace(PTRACE_GETSIGINFO, pid, 0, (struct siginfo *)&si);
--				break;
-+			if (ptrace(op, pid, 0, 0)) {
-+				printk(UM_KERN_ERR "%s - ptrace continue failed, op = %d, errno = %d\n",
-+				       __func__, op, errno);
-+				fatal_sigsegv();
-+			}
-+
-+			CATCH_EINTR(err = waitpid(pid, &status, WUNTRACED | __WALL));
-+			if (err < 0) {
-+				printk(UM_KERN_ERR "%s - wait failed, errno = %d\n",
-+				       __func__, errno);
-+				fatal_sigsegv();
-+			}
-+
-+			regs->is_user = 1;
-+			if (ptrace(PTRACE_GETREGS, pid, 0, regs->gp)) {
-+				printk(UM_KERN_ERR "%s - PTRACE_GETREGS failed, errno = %d\n",
-+				       __func__, errno);
-+				fatal_sigsegv();
-+			}
-+
-+			if (get_fp_registers(pid, regs->fp)) {
-+				printk(UM_KERN_ERR "%s -  get_fp_registers failed, errno = %d\n",
-+				       __func__, errno);
-+				fatal_sigsegv();
- 			}
- 
-+			if (WIFSTOPPED(status)) {
-+				sig = WSTOPSIG(status);
-+
-+				/* These signal handlers need the si argument
-+				 * and SIGSEGV needs the faultinfo.
-+				 * The SIGIO and SIGALARM handlers which constitute the
-+				 * majority of invocations, do not use it.
-+				 */
-+				switch (sig) {
-+				case SIGSEGV:
-+					get_skas_faultinfo(pid,
-+							   &regs->faultinfo);
-+					fallthrough;
-+				case SIGTRAP:
-+				case SIGILL:
-+				case SIGBUS:
-+				case SIGFPE:
-+				case SIGWINCH:
-+					ptrace(PTRACE_GETSIGINFO, pid, 0,
-+					       (struct siginfo *)&si_ptrace);
-+					si = &si_ptrace;
-+					break;
-+				default:
-+					si = NULL;
-+					break;
-+				}
-+			} else {
-+				sig = 0;
-+			}
-+		}
-+
-+		UPT_SYSCALL_NR(regs) = -1; /* Assume: It's not a syscall */
-+
-+		if (sig) {
- 			switch (sig) {
- 			case SIGSEGV:
--				get_skas_faultinfo(pid, &regs->faultinfo);
--
--				if (PTRACE_FULL_FAULTINFO)
--					(*sig_info[SIGSEGV])(SIGSEGV, (struct siginfo *)&si,
-+				if (using_seccomp || PTRACE_FULL_FAULTINFO)
-+					(*sig_info[SIGSEGV])(SIGSEGV,
-+							     (struct siginfo *)si,
- 							     regs);
- 				else
- 					segv(regs->faultinfo, 0, 1, NULL);
- 
-+				break;
-+			case SIGSYS:
-+				handle_syscall(regs);
- 				break;
- 			case SIGTRAP + 0x80:
- 				handle_trap(pid, regs);
- 				break;
- 			case SIGTRAP:
--				relay_signal(SIGTRAP, (struct siginfo *)&si, regs);
-+				relay_signal(SIGTRAP, (struct siginfo *)si, regs);
- 				break;
- 			case SIGALRM:
- 				break;
-@@ -529,7 +703,7 @@ void userspace(struct uml_pt_regs *regs)
- 			case SIGFPE:
- 			case SIGWINCH:
- 				block_signals_trace();
--				(*sig_info[sig])(sig, (struct siginfo *)&si, regs);
-+				(*sig_info[sig])(sig, (struct siginfo *)si, regs);
- 				unblock_signals_trace();
- 				break;
- 			default:
-diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
-index f1064817e719..09196f1ee8c9 100644
---- a/arch/um/os-Linux/start_up.c
-+++ b/arch/um/os-Linux/start_up.c
-@@ -429,12 +429,9 @@ void __init os_early_checks(void)
- 	using_seccomp = 0;
- 
- 	if (init_seccomp()) {
--		/* Not yet fully implemented */
--#if 0
- 		using_seccomp = 1;
- 
- 		return;
--#endif
- 	}
- #endif
- 
-diff --git a/arch/x86/um/shared/sysdep/kernel-offsets.h b/arch/x86/um/shared/sysdep/kernel-offsets.h
-index 48de3a71f845..6fd1ed400399 100644
---- a/arch/x86/um/shared/sysdep/kernel-offsets.h
-+++ b/arch/x86/um/shared/sysdep/kernel-offsets.h
-@@ -4,7 +4,9 @@
- #include <linux/elf.h>
- #include <linux/crypto.h>
- #include <linux/kbuild.h>
-+#include <linux/audit.h>
- #include <asm/mman.h>
-+#include <asm/seccomp.h>
- 
- /* workaround for a warning with -Wmissing-prototypes */
- void foo(void);
-diff --git a/arch/x86/um/tls_32.c b/arch/x86/um/tls_32.c
-index fbb129023080..21cbb70cf771 100644
---- a/arch/x86/um/tls_32.c
-+++ b/arch/x86/um/tls_32.c
-@@ -12,6 +12,7 @@
- #include <skas.h>
- #include <sysdep/tls.h>
- #include <asm/desc.h>
-+#include <stub-data.h>
- 
- /*
-  * If needed we can detect when it's uninitialized.
-@@ -21,13 +22,27 @@
- static int host_supports_tls = -1;
- int host_gdt_entry_tls_min;
- 
--static int do_set_thread_area(struct user_desc *info)
-+static int do_set_thread_area(struct task_struct* task, struct user_desc *info)
- {
- 	int ret;
- 	u32 cpu;
- 
-+	if (info->entry_number < host_gdt_entry_tls_min ||
-+	    info->entry_number >= host_gdt_entry_tls_min + GDT_ENTRY_TLS_ENTRIES)
-+		return -EINVAL;
-+
-+	if (using_seccomp) {
-+		int idx = info->entry_number - host_gdt_entry_tls_min;
-+		struct stub_data *data = (void *)task->mm->context.id.stack;
-+
-+		data->arch_data.tls[idx] = *info;
-+		data->arch_data.sync |= BIT(idx);
-+
-+		return 0;
-+	}
-+
- 	cpu = get_cpu();
--	ret = os_set_thread_area(info, userspace_pid[cpu]);
-+	ret = os_set_thread_area(info, task->mm->context.id.pid);
- 	put_cpu();
- 
- 	if (ret)
-@@ -97,7 +112,7 @@ static int load_TLS(int flags, struct task_struct *to)
- 		if (!(flags & O_FORCE) && curr->flushed)
- 			continue;
- 
--		ret = do_set_thread_area(&curr->tls);
-+		ret = do_set_thread_area(current, &curr->tls);
- 		if (ret)
- 			goto out;
- 
-@@ -275,7 +290,7 @@ SYSCALL_DEFINE1(set_thread_area, struct user_desc __user *, user_desc)
- 			return -EFAULT;
- 	}
- 
--	ret = do_set_thread_area(&info);
-+	ret = do_set_thread_area(current, &info);
- 	if (ret)
- 		return ret;
- 	return set_tls_entry(current, &info, idx, 1);
+This is an updated version of execmem ROX caches.
+
+v6: https://lore.kernel.org/all/20241016122424.1655560-1-rppt@kernel.org
+* Fixed handling of alternatives for fineibt (kbuild bot)
+* Restored usage of text_poke_early for ftrace boot time initialization (Steve)
+* Made !module path in module_writable_address inline
+
+v5: https://lore.kernel.org/all/20241009180816.83591-1-rppt@kernel.org 
+* Droped check for !area in mas_for_each() loop (Kees Bakker)
+* Droped externs in include/linux/vmalloc.h (Christoph)
+* Fixed handling of alternatives for CFI-enabled configs (Nathan)
+* Fixed interaction with kmemleak (Sergey).
+  It looks like execmem and kmemleak interaction should be improved
+  further, but it's out of scope of this series.
+* Added ARCH_HAS_EXECMEM_ROX configuration option to arch/Kconfig. The
+  option serves two purposes:
+  - make sure architecture that uses ROX caches implements
+    execmem_fill_trapping_insns() callback (Christoph)
+  - make sure entire physical memory is mapped in the direct map (Dave) 
+
+v4: https://lore.kernel.org/all/20241007062858.44248-1-rppt@kernel.org
+* Fix copy/paste error in looongarch (Huacai)
+
+v3: https://lore.kernel.org/all/20240909064730.3290724-1-rppt@kernel.org
+* Drop ftrace_swap_func(). It is not needed because mcount array lives
+  in a data section (Peter)
+* Update maple_tree usage (Liam)
+* Set ->fill_trapping_insns pointer on init (Ard)
+* Instead of using VM_FLUSH_RESET_PERMS for execmem cache, completely
+  remove it from the direct map
+
+v2: https://lore.kernel.org/all/20240826065532.2618273-1-rppt@kernel.org
+* add comment why ftrace_swap_func() is needed (Steve)
+
+Since RFC: https://lore.kernel.org/all/20240411160526.2093408-1-rppt@kernel.org
+* update changelog about HUGE_VMAP allocations (Christophe) 
+* move module_writable_address() from x86 to modules core (Ingo)
+* rename execmem_invalidate() to execmem_fill_trapping_insns() (Peter)
+* call alternatives_smp_unlock() after module text in-place is up to
+  date (Nadav)
+
+= Original cover letter =
+
+These patches add support for using large ROX pages for allocations of
+executable memory on x86.
+
+They address Andy's comments [1] about having executable mappings for code
+that was not completely formed.
+
+The approach taken is to allocate ROX memory along with writable but not
+executable memory and use the writable copy to perform relocations and
+alternatives patching. After the module text gets into its final shape, the
+contents of the writable memory is copied into the actual ROX location
+using text poking.
+
+The allocations of the ROX memory use vmalloc(VMAP_ALLOW_HUGE_MAP) to
+allocate PMD aligned memory, fill that memory with invalid instructions and
+in the end remap it as ROX. Portions of these large pages are handed out to
+execmem_alloc() callers without any changes to the permissions. When the
+memory is freed with execmem_free() it is invalidated again so that it
+won't contain stale instructions.
+
+The module memory allocation, x86 code dealing with relocations and
+alternatives patching take into account the existence of the two copies,
+the writable memory and the ROX memory at the actual allocated virtual
+address.
+
+The patches are available at git:
+https://git.kernel.org/pub/scm/linux/kernel/git/rppt/linux.git/log/?h=execmem/x86-rox/v6
+
+[1] https://lore.kernel.org/all/a17c65c6-863f-4026-9c6f-a04b659e9ab4@app.fastmail.com
+
+Mike Rapoport (Microsoft) (8):
+  mm: vmalloc: group declarations depending on CONFIG_MMU together
+  mm: vmalloc: don't account for number of nodes for HUGE_VMAP allocations
+  asm-generic: introduce text-patching.h
+  module: prepare to handle ROX allocations for text
+  arch: introduce set_direct_map_valid_noflush()
+  x86/module: prepare module loading for ROX allocations of text
+  execmem: add support for cache of large ROX pages
+  x86/module: enable ROX caches for module text on 64 bit
+
+ arch/Kconfig                                  |   8 +
+ arch/alpha/include/asm/Kbuild                 |   1 +
+ arch/arc/include/asm/Kbuild                   |   1 +
+ .../include/asm/{patch.h => text-patching.h}  |   0
+ arch/arm/kernel/ftrace.c                      |   2 +-
+ arch/arm/kernel/jump_label.c                  |   2 +-
+ arch/arm/kernel/kgdb.c                        |   2 +-
+ arch/arm/kernel/patch.c                       |   2 +-
+ arch/arm/probes/kprobes/core.c                |   2 +-
+ arch/arm/probes/kprobes/opt-arm.c             |   2 +-
+ arch/arm64/include/asm/set_memory.h           |   1 +
+ .../asm/{patching.h => text-patching.h}       |   0
+ arch/arm64/kernel/ftrace.c                    |   2 +-
+ arch/arm64/kernel/jump_label.c                |   2 +-
+ arch/arm64/kernel/kgdb.c                      |   2 +-
+ arch/arm64/kernel/patching.c                  |   2 +-
+ arch/arm64/kernel/probes/kprobes.c            |   2 +-
+ arch/arm64/kernel/traps.c                     |   2 +-
+ arch/arm64/mm/pageattr.c                      |  10 +
+ arch/arm64/net/bpf_jit_comp.c                 |   2 +-
+ arch/csky/include/asm/Kbuild                  |   1 +
+ arch/hexagon/include/asm/Kbuild               |   1 +
+ arch/loongarch/include/asm/Kbuild             |   1 +
+ arch/loongarch/include/asm/set_memory.h       |   1 +
+ arch/loongarch/mm/pageattr.c                  |  19 +
+ arch/m68k/include/asm/Kbuild                  |   1 +
+ arch/microblaze/include/asm/Kbuild            |   1 +
+ arch/mips/include/asm/Kbuild                  |   1 +
+ arch/nios2/include/asm/Kbuild                 |   1 +
+ arch/openrisc/include/asm/Kbuild              |   1 +
+ .../include/asm/{patch.h => text-patching.h}  |   0
+ arch/parisc/kernel/ftrace.c                   |   2 +-
+ arch/parisc/kernel/jump_label.c               |   2 +-
+ arch/parisc/kernel/kgdb.c                     |   2 +-
+ arch/parisc/kernel/kprobes.c                  |   2 +-
+ arch/parisc/kernel/patch.c                    |   2 +-
+ arch/powerpc/include/asm/kprobes.h            |   2 +-
+ .../asm/{code-patching.h => text-patching.h}  |   0
+ arch/powerpc/kernel/crash_dump.c              |   2 +-
+ arch/powerpc/kernel/epapr_paravirt.c          |   2 +-
+ arch/powerpc/kernel/jump_label.c              |   2 +-
+ arch/powerpc/kernel/kgdb.c                    |   2 +-
+ arch/powerpc/kernel/kprobes.c                 |   2 +-
+ arch/powerpc/kernel/module_32.c               |   2 +-
+ arch/powerpc/kernel/module_64.c               |   2 +-
+ arch/powerpc/kernel/optprobes.c               |   2 +-
+ arch/powerpc/kernel/process.c                 |   2 +-
+ arch/powerpc/kernel/security.c                |   2 +-
+ arch/powerpc/kernel/setup_32.c                |   2 +-
+ arch/powerpc/kernel/setup_64.c                |   2 +-
+ arch/powerpc/kernel/static_call.c             |   2 +-
+ arch/powerpc/kernel/trace/ftrace.c            |   2 +-
+ arch/powerpc/kernel/trace/ftrace_64_pg.c      |   2 +-
+ arch/powerpc/lib/code-patching.c              |   2 +-
+ arch/powerpc/lib/feature-fixups.c             |   2 +-
+ arch/powerpc/lib/test-code-patching.c         |   2 +-
+ arch/powerpc/lib/test_emulate_step.c          |   2 +-
+ arch/powerpc/mm/book3s32/mmu.c                |   2 +-
+ arch/powerpc/mm/book3s64/hash_utils.c         |   2 +-
+ arch/powerpc/mm/book3s64/slb.c                |   2 +-
+ arch/powerpc/mm/kasan/init_32.c               |   2 +-
+ arch/powerpc/mm/mem.c                         |   2 +-
+ arch/powerpc/mm/nohash/44x.c                  |   2 +-
+ arch/powerpc/mm/nohash/book3e_pgtable.c       |   2 +-
+ arch/powerpc/mm/nohash/tlb.c                  |   2 +-
+ arch/powerpc/mm/nohash/tlb_64e.c              |   2 +-
+ arch/powerpc/net/bpf_jit_comp.c               |   2 +-
+ arch/powerpc/perf/8xx-pmu.c                   |   2 +-
+ arch/powerpc/perf/core-book3s.c               |   2 +-
+ arch/powerpc/platforms/85xx/smp.c             |   2 +-
+ arch/powerpc/platforms/86xx/mpc86xx_smp.c     |   2 +-
+ arch/powerpc/platforms/cell/smp.c             |   2 +-
+ arch/powerpc/platforms/powermac/smp.c         |   2 +-
+ arch/powerpc/platforms/powernv/idle.c         |   2 +-
+ arch/powerpc/platforms/powernv/smp.c          |   2 +-
+ arch/powerpc/platforms/pseries/smp.c          |   2 +-
+ arch/powerpc/xmon/xmon.c                      |   2 +-
+ arch/riscv/errata/andes/errata.c              |   2 +-
+ arch/riscv/errata/sifive/errata.c             |   2 +-
+ arch/riscv/errata/thead/errata.c              |   2 +-
+ arch/riscv/include/asm/set_memory.h           |   1 +
+ .../include/asm/{patch.h => text-patching.h}  |   0
+ arch/riscv/include/asm/uprobes.h              |   2 +-
+ arch/riscv/kernel/alternative.c               |   2 +-
+ arch/riscv/kernel/cpufeature.c                |   3 +-
+ arch/riscv/kernel/ftrace.c                    |   2 +-
+ arch/riscv/kernel/jump_label.c                |   2 +-
+ arch/riscv/kernel/patch.c                     |   2 +-
+ arch/riscv/kernel/probes/kprobes.c            |   2 +-
+ arch/riscv/mm/pageattr.c                      |  15 +
+ arch/riscv/net/bpf_jit_comp64.c               |   2 +-
+ arch/riscv/net/bpf_jit_core.c                 |   2 +-
+ arch/s390/include/asm/set_memory.h            |   1 +
+ arch/s390/mm/pageattr.c                       |  11 +
+ arch/sh/include/asm/Kbuild                    |   1 +
+ arch/sparc/include/asm/Kbuild                 |   1 +
+ arch/um/kernel/um_arch.c                      |  16 +-
+ arch/x86/Kconfig                              |   1 +
+ arch/x86/entry/vdso/vma.c                     |   3 +-
+ arch/x86/include/asm/alternative.h            |  14 +-
+ arch/x86/include/asm/set_memory.h             |   1 +
+ arch/x86/include/asm/text-patching.h          |   1 +
+ arch/x86/kernel/alternative.c                 | 181 ++++++----
+ arch/x86/kernel/ftrace.c                      |  30 +-
+ arch/x86/kernel/module.c                      |  45 ++-
+ arch/x86/mm/init.c                            |  37 +-
+ arch/x86/mm/pat/set_memory.c                  |   8 +
+ arch/xtensa/include/asm/Kbuild                |   1 +
+ include/asm-generic/text-patching.h           |   5 +
+ include/linux/execmem.h                       |  37 ++
+ include/linux/module.h                        |  16 +
+ include/linux/moduleloader.h                  |   4 +
+ include/linux/set_memory.h                    |   6 +
+ include/linux/text-patching.h                 |  15 +
+ include/linux/vmalloc.h                       |  60 ++--
+ kernel/module/debug_kmemleak.c                |   3 +-
+ kernel/module/main.c                          |  74 +++-
+ kernel/module/strict_rwx.c                    |   3 +
+ mm/execmem.c                                  | 336 +++++++++++++++++-
+ mm/internal.h                                 |   1 +
+ mm/vmalloc.c                                  |  14 +-
+ 121 files changed, 885 insertions(+), 247 deletions(-)
+ rename arch/arm/include/asm/{patch.h => text-patching.h} (100%)
+ rename arch/arm64/include/asm/{patching.h => text-patching.h} (100%)
+ rename arch/parisc/include/asm/{patch.h => text-patching.h} (100%)
+ rename arch/powerpc/include/asm/{code-patching.h => text-patching.h} (100%)
+ rename arch/riscv/include/asm/{patch.h => text-patching.h} (100%)
+ create mode 100644 include/asm-generic/text-patching.h
+ create mode 100644 include/linux/text-patching.h
+
+
+base-commit: 9852d85ec9d492ebef56dc5f229416c925758edc
 -- 
-2.47.0
+2.43.0
 
 
