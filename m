@@ -4,57 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D1CF8D2E03C
-	for <linux-um@archiver.kernel.org>; Wed, 23 Oct 2024 09:59:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2A7BCDDE49
+	for <linux-um@archiver.kernel.org>; Wed, 23 Oct 2024 10:00:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=c751E8ZLE5uvwTmcxLe/rRrYKSTRyFf+15vLKKMiUNA=; b=oa7qEnQqLP4xoDq2cviTX2PPYk
-	tmsyf1UoehADd/VebJO+IQa8Xrs5raDjF77dxapAVKGnOAqd3yAxMLLv8bG/YbJnR5rJOTNa+6PQO
-	IQ2945LT4XfC23eLS96R2H0H0rky6WeijFofnfI6qo1thQeNrS6XxO42Q0/ljW4vVl5dPByZWLA0l
-	0KeW71NeVhnOAs82H5sZqEfqTF2SCw6QxCOdnP4irQbkC9wRuzMhLL3z/szH+5Um28rjzaO0o5Fq9
-	6+YpIDpAnKwb3EdvOJwVRL2op21osPm4MhsurDLDwZ+NkcyzxM2n/GUqansch07nDGYeRVofpRFGa
-	PEXW1bZg==;
+	bh=Bi8Y2Soxbj75tzxNuYvzYXNXZjytzjwatYlyIlIYhZA=; b=FVWyZwEKvwgkR8vBin0u1/IyFK
+	wvc0GPFyipue3I2IKTRA7MjeLKw3HTOFfcoMhuPU1ffHJo6rwHYm1j5ytzVL+vqxX9i7WJkcGVq/x
+	dBfjC9VvTGfP524f25jrHm8kNyj5Ja1YpsXZmjOr+nJOnbFkN1koOWUEFlbtX02FRQb7VzHWTwiIh
+	WWYy+e34OE5G6iuMLDGbGjI50MuAq4HQrsP48J6RpAUS0q0MUJygckpCTNS9aDLPheiX8tEHWLCFp
+	ppO0FtLV5VFFh3PHa4aT0Ptlta3GdMAu5GVz2m6vN4LXVFnkuPBqiztPNfKghnoCyDD9OzmNY2IH3
+	+u47i4TQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t3Y9a-0000000DtqN-1a0g;
-	Wed, 23 Oct 2024 09:59:46 +0000
+	id 1t3YAH-0000000Du1U-1nof;
+	Wed, 23 Oct 2024 10:00:29 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t3Xkx-0000000DoqF-3IQ4
+	id 1t3Xrx-0000000DpxN-0vie
 	for linux-um@lists.infradead.org;
-	Wed, 23 Oct 2024 09:34:51 +0000
+	Wed, 23 Oct 2024 09:42:58 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
 	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
 	Resent-Message-ID:In-Reply-To:References;
-	bh=c751E8ZLE5uvwTmcxLe/rRrYKSTRyFf+15vLKKMiUNA=; t=1729676059; x=1730885659; 
-	b=wo6EjKBbOmWuQDOm5NLLlYulHcoc16L2D4YG4w9newm3J5grw4SI5EJEHdRMzRQfN/2EMk5Jpbz
-	Z9It90mgASd7op0qf4yodXMOrqdkdJtE1TFkO90ORhS7rHl8LE+WPwOowKEZ+Hw2OttI/JYIHlfeh
-	jp9tYDEeDOpswX4+Z8FTEP5mISH1oYpki512L3gvelEq5Ko9aq6gVHDPcFpCVEzI5PqvvlJsKNZQz
-	JqdhC7JDsoztJn/mlHq8ANS8pMs8AsTTc/OwtgzpZmvScQ+GsI8+WEROPqXKIJwv2LK08NDJpVz25
-	1ZU+nv2cH+xLI+/v0CzxfwsrPtuaGrp8PF0w==;
+	bh=Bi8Y2Soxbj75tzxNuYvzYXNXZjytzjwatYlyIlIYhZA=; t=1729676492; x=1730886092; 
+	b=JxfLqJ2QEPrAnZpMNkHWPbH1lFOajvIX/IMbetO0AobPZjLcakMglL/FMC/W1xVh9PuuyD44Hzo
+	k1mP4mfMwCNME/5MWZimTbFPjEj1fNEO9UpFBSlzeHl3GaxS3QRmtDhOLTFp6/gd9DjiR3c9cZdCN
+	aDOQAMW+sZCBjtr/DlKxZhncm+Y9eePkoMcZtDrKRs1/iVN3n69g5/B4yH316s3TdlyzPkaOvr3Ib
+	gmrdywuEuLFm/VHWYf2Uj8pGC/YWB9X1AeQpNS9vc3vw59rG7WButLB5uMQqDM3utrvdke+7q62ft
+	SkkhMTP7jbCUpnHph0Lkl81/0k3CL0Or1lDA==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.98)
 	(envelope-from <benjamin@sipsolutions.net>)
-	id 1t3Xku-00000002ahN-193S;
-	Wed, 23 Oct 2024 11:34:16 +0200
+	id 1t3Xrr-00000002axT-0r4N;
+	Wed, 23 Oct 2024 11:41:28 +0200
 From: Benjamin Berg <benjamin@sipsolutions.net>
 To: linux-um@lists.infradead.org
-Cc: Benjamin Berg <benjamin.berg@intel.com>
-Subject: [PATCH v4] um: switch to regset API and depend on XSTATE
-Date: Wed, 23 Oct 2024 11:34:09 +0200
-Message-ID: <20241023093409.4081296-1-benjamin@sipsolutions.net>
+Cc: johannes@sipsolutions.net,
+	Benjamin Berg <benjamin.berg@intel.com>
+Subject: [PATCH v5] um: switch to regset API and depend on XSTATE
+Date: Wed, 23 Oct 2024 11:41:20 +0200
+Message-ID: <20241023094120.4083426-1-benjamin@sipsolutions.net>
 X-Mailer: git-send-email 2.47.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241023_023420_196277_D3112D9E 
-X-CRM114-Status: GOOD (  33.08  )
+X-CRM114-CacheID: sfid-20241023_024133_678623_4EFC8150 
+X-CRM114-Status: GOOD (  33.68  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,6 +95,9 @@ Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
 
 ---
 
+v5:
+* actually add the v4 fix
+
 v4:
 * fix FP register initialization when duplicating tasks
 
@@ -112,7 +116,7 @@ v1:
 ---
  arch/um/Kconfig                         |   2 +
  arch/um/include/asm/processor-generic.h |   4 +-
- arch/um/kernel/process.c                |  15 --
+ arch/um/kernel/process.c                |  22 +-
  arch/um/kernel/um_arch.c                |   2 +
  arch/um/os-Linux/registers.c            |  11 +-
  arch/x86/um/Makefile                    |   2 +-
@@ -128,7 +132,7 @@ v1:
  arch/x86/um/shared/sysdep/ptrace_user.h |   6 -
  arch/x86/um/signal.c                    | 322 ++++++++----------------
  arch/x86/um/user-offsets.c              |   8 -
- 18 files changed, 464 insertions(+), 473 deletions(-)
+ 18 files changed, 471 insertions(+), 473 deletions(-)
  create mode 100644 arch/x86/um/ptrace.c
 
 diff --git a/arch/um/Kconfig b/arch/um/Kconfig
@@ -174,10 +178,24 @@ index 02e759a4a435..5d6356eafffe 100644
  
  #define INIT_THREAD \
 diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index d45c79f82d7c..f6ed31223ba9 100644
+index d45c79f82d7c..56e7e525fc91 100644
 --- a/arch/um/kernel/process.c
 +++ b/arch/um/kernel/process.c
-@@ -287,18 +287,3 @@ unsigned long __get_wchan(struct task_struct *p)
+@@ -187,6 +187,13 @@ void initial_thread_cb(void (*proc)(void *), void *arg)
+ 	kmalloc_ok = save_kmalloc_ok;
+ }
+ 
++int arch_dup_task_struct(struct task_struct *dst,
++			 struct task_struct *src)
++{
++	memcpy(dst, src, arch_task_struct_size);
++	return 0;
++}
++
+ void um_idle_sleep(void)
+ {
+ 	if (time_travel_mode != TT_MODE_OFF)
+@@ -287,18 +294,3 @@ unsigned long __get_wchan(struct task_struct *p)
  
  	return 0;
  }
