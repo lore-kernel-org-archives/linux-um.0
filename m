@@ -4,66 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C818BCE8E6F
-	for <linux-um@archiver.kernel.org>; Thu, 24 Oct 2024 12:11:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAE68CE8E6D
+	for <linux-um@archiver.kernel.org>; Thu, 24 Oct 2024 12:11:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=OpT83Y9t1QnvPqILOaYReQujm77/DkJoRta+WWn6wAk=; b=lbifq3LlDcN5AufhljtNK2abdu
-	Z0bbTbxf2bxuCJ1/omFulPHw2dBS9NDBWXSclhaeXWAHIq7OVrVPj+7aPH6GpKh1rVkyZlo9YCU43
-	kKSW9BovXmPqEjRpLHuJgJKZOXqT/QIjr00ftwDlimoQCtdWXG96yZR/OE6kDAbGCp2NlZimxKP0b
-	2PHGBqrwCWgMIG9HlxaYa4ULcvjd1iHD7dVj2mjUr0RpDjBGDKM+sPERPM13TSDd7FAFB5yeALuHo
-	2RjLrW8IK5b/fy2mvi7o3lG6q4zNe0+DNolJgUOk7phonLirBc8sLgc1v0XNNn+jUi4AJCi5myrQD
-	OFaXgrsA==;
+	bh=7HVu/xpbgTfEr4XXH3VyBLzi6M13RQjH86LLo3hFd0M=; b=OLD91R0gJb4jgriZMy3U6140Lu
+	Wu6tPMzDU9tbbg3IStyA/4OsZczt3Lcl0JEBWNS0MAka1w48uREo/9Ls3pEAogWxQrpD4NDehTmxA
+	kVJsZCyNBlMpLwA/AeOT3SBVRnt0YPTO9y7uD03b0G1axi26PoYurrdv15MTR1+Rf5bZMsiApfDgV
+	28PKXXLfNkZjQO+IEjAW0gBtX0+e8ayHhFYfTUNkZuQBTSo699vAX77EG8Kmg9JK+wMUrFLblqqx6
+	5TBhMfTk8/qNaD7Qrh0RO1LUMXAxMjsQzzzlZO9ZURpsG5EtaMLyxoKF+8FRk5mUb1gqOqd7uYXh/
+	2I5ct4Rg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t3wgU-00000000IqN-2CCe;
-	Thu, 24 Oct 2024 12:11:22 +0000
-Received: from mail-pf1-x430.google.com ([2607:f8b0:4864:20::430])
+	id 1t3wgT-00000000IpO-1fmW;
+	Thu, 24 Oct 2024 12:11:21 +0000
+Received: from mail-pj1-x1035.google.com ([2607:f8b0:4864:20::1035])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t3wfN-00000000IcI-0osz
+	id 1t3wfD-00000000IYM-0OTW
 	for linux-um@lists.infradead.org;
-	Thu, 24 Oct 2024 12:10:14 +0000
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-71f5208217dso518004b3a.2
-        for <linux-um@lists.infradead.org>; Thu, 24 Oct 2024 05:10:12 -0700 (PDT)
+	Thu, 24 Oct 2024 12:10:04 +0000
+Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-2e34a089cd3so669377a91.3
+        for <linux-um@lists.infradead.org>; Thu, 24 Oct 2024 05:10:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729771812; x=1730376612; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1729771802; x=1730376602; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OpT83Y9t1QnvPqILOaYReQujm77/DkJoRta+WWn6wAk=;
-        b=I6RVwEys5iZGIEY6dipKC1RH3p5sLbN3R5i0LHMsl4yvY5gjqEFacNH0Ay6PImGwgB
-         +LXQdO/Al1fHoCJhokdAVU/H/RBy2426IafMb6q412ZJn23rbNpkI/cuDzHfRJNX3aTG
-         /bTxgQKFV6iHLgLdg85+DdqPglBwcOQXo6vXDlXedGnJPp84qdARcH40H5WA16Qskh/Z
-         DNRuDaM/q+I81iy8nEzFsHkcb6A1faOk/nVdTDSqGx0/75IoTpTSQF/s7YtZJX/1onGE
-         2RojeSb4BKef9HxQYINsH6akwcoXFXAEnp/YdfLqpvOvgc9rLVeNBv/4oU99g8r4DO9F
-         xmNQ==
+        bh=7HVu/xpbgTfEr4XXH3VyBLzi6M13RQjH86LLo3hFd0M=;
+        b=EQ0uExQO2GFmcx3LFtPzyy0v63/rbCUhODpuyXnANFmvFTRXSYIHmrJCbJtiJQ2FJP
+         a1v89UsZt2hHNKtc5tnhOtg6NKKu0mRPKVlcwTOTEL4zoaVFHhdqsiq4VkdHUBbDLEj0
+         dfQDOE/VPOpagnpGbyCy/vRdnWWb+AuNyQZhYq6SOH5RBgz8+wmmcX3Lb1CGFKoPWWEH
+         /slO/19rn+EG/NXq9GmhIb1ySFXe/O8gqcqTMMXWQPgT40yfqhJTchE1g/2ti3/kX7DM
+         gddHqeFWAv9KACtXWAcHEmQpseuD/BWDsfM2ypKKWHfUaSyH7rahcNEKHwcIhu/Wa8mv
+         l6Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729771812; x=1730376612;
+        d=1e100.net; s=20230601; t=1729771802; x=1730376602;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OpT83Y9t1QnvPqILOaYReQujm77/DkJoRta+WWn6wAk=;
-        b=lLFz1ZiQ5XEbUFxH1AkNY4CZ1LVuvGxAX/u0TShJsBiOPXeOfyl844Deav1tQR0oeY
-         5K01OOOax/qDXCuPTOrMbw5B5pAHOKSJdnSnNBgm3I3Ln8fYUd4qw/p6BeOJ2p/h75C2
-         A9GkgkBrEGMbHOaKMIXFZmg7zBDxJBqUQQP0E/K6faBRTMZo5e1bjo6G589I9vP6wJam
-         qAh0s5+0zr5DLAuykNdBB7MvIVWHxN/wwARrtiHhNxOsnSXpM8+ip0A3Dafw+x/dtuCS
-         ADhrThSn20GeFuL/TlbLkhbdTqHsQFTJmFsU1zm7LEcRXldUkSezZELL6W/JxD4UbtIf
-         F33Q==
-X-Gm-Message-State: AOJu0YxSC7c78G8rAAiQDXOdU0h1DchIpkqoeYo5fH5mrGdAjahtUXYu
-	K2pqIDwHGy1Hxc4rHvma01oSCvSB6wvapZ3Dd8zxUNam5GB1lunoekLoPHYH
-X-Google-Smtp-Source: AGHT+IG/QjEhps/8VYImYrcIArMZ54fTCi02v+n+DUmJjAsw1jvmTFT+ZU1+lLG3Dc9D3+sJv3r1qg==
-X-Received: by 2002:a05:6a00:13a3:b0:71e:6e4a:507a with SMTP id d2e1a72fcca58-72045e239edmr1754097b3a.3.1729771811803;
-        Thu, 24 Oct 2024 05:10:11 -0700 (PDT)
+        bh=7HVu/xpbgTfEr4XXH3VyBLzi6M13RQjH86LLo3hFd0M=;
+        b=u3AHfoDAj3FqcITavBrm8x1FJshf/3cA3aOXxLyUJrlbHYCRRfBVXQN7MwH5hLf54w
+         7BYHjMUR0VHtYzA4YZP7EOCD+HID3agjKkO1SQMERBH8gZYB6uosgeyVhM3GEKrzJV49
+         +g5gr1sPbbXYQI6tR+BUxa9f3CdtBbuGg/PmrUwKSxnZS0cloVf2UujvzvA+TwgM945f
+         gVTCyShj9NA+1EFjhM+sIyOe3t9KAi36z4VMSKLVNk5+WkE+y7M0Bmi1SIZG5OIanOu7
+         cKcFLz2pRdNRzbcY5Y+2fVEsjetrwxniqsnN2dc+5KQ/S6ITx0sKxBEqJaB+w639tuzT
+         k0Aw==
+X-Gm-Message-State: AOJu0YyVKS/iIpKM9IM5dgHCt/2SMnDK6k/D7HIWrxxepKmVm5N6O5AI
+	MfnbAfjAkxW9GWmWFLbeZSR5kWPxHEtFjJOJ0MloluF9BdH7gY8O
+X-Google-Smtp-Source: AGHT+IFc+tEkvpOlN5Z7sD3WZTdK+P73UggVxu2QfHuFxSxz6errsDqovoGUmzSwAwsIE4QzLr4fKQ==
+X-Received: by 2002:a17:90b:1b03:b0:2e1:89aa:65b7 with SMTP id 98e67ed59e1d1-2e77f4355b1mr1972644a91.9.1729771801672;
+        Thu, 24 Oct 2024 05:10:01 -0700 (PDT)
 Received: from ikb-h07-29-noble.in.iijlab.net ([202.214.97.5])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71ec132ff11sm7839404b3a.47.2024.10.24.05.10.10
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e7867fd63csm597734a91.1.2024.10.24.05.10.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Oct 2024 05:10:11 -0700 (PDT)
+        Thu, 24 Oct 2024 05:10:01 -0700 (PDT)
 Received: by ikb-h07-29-noble.in.iijlab.net (Postfix, from userid 1010)
-	id 4B950D51253; Thu, 24 Oct 2024 21:10:09 +0900 (JST)
+	id 1D99DD5124D; Thu, 24 Oct 2024 21:09:59 +0900 (JST)
 From: Hajime Tazaki <thehajime@gmail.com>
 To: linux-um@lists.infradead.org,
 	jdike@addtoit.com,
@@ -72,17 +72,17 @@ To: linux-um@lists.infradead.org,
 	johannes@sipsolutions.net
 Cc: thehajime@gmail.com,
 	ricarkol@google.com
-Subject: [RFC PATCH 06/13] x86/um: nommu: process/thread handling
-Date: Thu, 24 Oct 2024 21:09:14 +0900
-Message-ID: <88b3cdd8cd1437e45184fd26c6df5d7ceb93de55.1729770373.git.thehajime@gmail.com>
+Subject: [RFC PATCH 03/13] um: nommu: memory handling
+Date: Thu, 24 Oct 2024 21:09:11 +0900
+Message-ID: <304383e5c9b2bba18678598bbdacadc9126d8f74.1729770373.git.thehajime@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1729770373.git.thehajime@gmail.com>
 References: <cover.1729770373.git.thehajime@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241024_051013_260779_03E31A4A 
-X-CRM114-Status: GOOD (  19.29  )
+X-CRM114-CacheID: sfid-20241024_051003_167552_D582E625 
+X-CRM114-Status: GOOD (  22.19  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,242 +97,346 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Since ptrace facility isn't used under !MMU of UML, there is different
-code path to invoke proceeses/threads; on an entry to the syscall
-interface, the stack pointer should be manipulated to handle vfork(2)
-return address, no external process is used, and need to properlly
-configure some of registers (fs segment register for TLS, etc) on every
-contex switch, etc.
+This commit adds memory operations on UML under !MMU environment.
 
-Signals aren't delivered in non-ptrace syscall entry/leave so, we also
-need to handle pending signal by ourselves.
+Some part of the original UML code relying on CONFIG_MMU are excluded
+from compilation when !CONFIG_MMU.  Additionally, generic functions such as
+uaccess, futex, memcpy/strnlen/strncpy can be used as user- and
+kernel-space share the address space in !CONFIG_MMU mode.
 
 Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
 Signed-off-by: Ricardo Koller <ricarkol@google.com>
 ---
- arch/um/kernel/exec.c           |  8 ++++++++
- arch/um/kernel/process.c        | 21 ++++++++++++++++++++-
- arch/um/os-Linux/process.c      |  6 ++++++
- arch/um/os-Linux/skas/process.c |  4 ++++
- arch/x86/um/asm/processor.h     | 12 ++++++++++++
- arch/x86/um/entry_64.S          | 22 ++++++++++++++++++++++
- arch/x86/um/syscalls_64.c       | 12 ++++++++++++
- 7 files changed, 84 insertions(+), 1 deletion(-)
+ arch/um/include/asm/futex.h       |  4 ++++
+ arch/um/include/asm/mmu.h         |  3 +++
+ arch/um/include/asm/mmu_context.h | 14 ++++++++++++--
+ arch/um/include/asm/tlbflush.h    | 23 ++++++++++++++++++++++-
+ arch/um/include/asm/uaccess.h     |  7 ++++---
+ arch/um/include/shared/os.h       |  6 ++++++
+ arch/um/kernel/Makefile           |  3 ++-
+ arch/um/kernel/mem.c              | 13 +++++++++++++
+ arch/um/kernel/physmem.c          |  6 ++++++
+ arch/um/kernel/process.c          |  1 +
+ arch/um/kernel/skas/Makefile      |  3 ++-
+ arch/um/kernel/trap.c             |  4 ++++
+ arch/um/os-Linux/process.c        |  5 +++++
+ 13 files changed, 84 insertions(+), 8 deletions(-)
 
-diff --git a/arch/um/kernel/exec.c b/arch/um/kernel/exec.c
-index cb8b5cd9285c..fe7d776a5962 100644
---- a/arch/um/kernel/exec.c
-+++ b/arch/um/kernel/exec.c
-@@ -24,8 +24,10 @@ void flush_thread(void)
- {
- 	arch_flush_thread(&current->thread.arch);
+diff --git a/arch/um/include/asm/futex.h b/arch/um/include/asm/futex.h
+index 780aa6bfc050..89a8ac0b6963 100644
+--- a/arch/um/include/asm/futex.h
++++ b/arch/um/include/asm/futex.h
+@@ -8,7 +8,11 @@
  
+ 
+ int arch_futex_atomic_op_inuser(int op, u32 oparg, int *oval, u32 __user *uaddr);
 +#ifdef CONFIG_MMU
- 	get_safe_registers(current_pt_regs()->regs.gp,
- 			   current_pt_regs()->regs.fp);
+ int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
+ 			      u32 oldval, u32 newval);
++#else
++#include <asm-generic/futex.h>
 +#endif
- 
- 	__switch_mm(&current->mm->context.id);
- }
-@@ -35,5 +37,11 @@ void start_thread(struct pt_regs *regs, unsigned long eip, unsigned long esp)
- 	PT_REGS_IP(regs) = eip;
- 	PT_REGS_SP(regs) = esp;
- 	clear_thread_flag(TIF_SINGLESTEP);
-+#ifndef CONFIG_MMU
-+	current->thread.regs.regs.gp[REGS_IP_INDEX] = eip;
-+	current->thread.regs.regs.gp[REGS_SP_INDEX] = esp;
-+	new_thread(task_stack_page(current), &current->thread.switch_buf,
-+		   (void *)eip);
-+#endif
- }
- EXPORT_SYMBOL(start_thread);
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index b1b608afa036..270b5bd476be 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -117,13 +117,17 @@ void new_thread_handler(void)
- 	 * callback returns only if the kernel thread execs a process
- 	 */
- 	fn(arg);
-+#ifndef CONFIG_MMU
-+	arch_switch_to(current);
-+#endif
- 	userspace(&current->thread.regs.regs, current_thread_info()->aux_fp_regs);
- }
- 
- /* Called magically, see new_thread_handler above */
- static void fork_handler(void)
- {
--	schedule_tail(current->thread.prev_sched);
-+	if (current->thread.prev_sched != NULL)
-+		schedule_tail(current->thread.prev_sched);
- 
- 	/*
- 	 * XXX: if interrupt_end() calls schedule, this call to
-@@ -134,6 +138,21 @@ static void fork_handler(void)
- 
- 	current->thread.prev_sched = NULL;
- 
-+#ifndef CONFIG_MMU
-+	/*
-+	 * This fork can only come from libc's vfork, which
-+	 * does this:
-+	 *	popq %%rdx;
-+	 *	call *%0; // vsyscall
-+	 *	pushq %%rdx;
-+	 * %rdx stores the return address which is stored
-+	 * at pt_regs[HOST_IP] at the moment. We still
-+	 * need to pop the pushed address by "call" though,
-+	 * so this is what this next line does.
-+	 */
-+	if (current->thread.regs.regs.gp[HOST_ORIG_AX] == __NR_vfork)
-+		current->thread.regs.regs.gp[REGS_SP_INDEX] += 8;
-+#endif
- 	userspace(&current->thread.regs.regs, current_thread_info()->aux_fp_regs);
- }
- 
-diff --git a/arch/um/os-Linux/process.c b/arch/um/os-Linux/process.c
-index b164873da2db..f08bb20d95ec 100644
---- a/arch/um/os-Linux/process.c
-+++ b/arch/um/os-Linux/process.c
-@@ -92,7 +92,10 @@ int os_process_parent(int pid)
- 
- void os_alarm_process(int pid)
- {
-+/* !CONFIG_MMU doesn't send alarm signal to other processes */
-+#ifdef UML_CONFIG_MMU
- 	kill(pid, SIGALRM);
-+#endif
- }
- 
- void os_stop_process(int pid)
-@@ -114,11 +117,14 @@ void os_kill_process(int pid, int reap_child)
- 
- void os_kill_ptraced_process(int pid, int reap_child)
- {
-+/* !CONFIG_MMU doesn't have ptraced process */
-+#ifdef UML_CONFIG_MMU
- 	kill(pid, SIGKILL);
- 	ptrace(PTRACE_KILL, pid);
- 	ptrace(PTRACE_CONT, pid);
- 	if (reap_child)
- 		CATCH_EINTR(waitpid(pid, NULL, __WALL));
-+#endif
- }
- 
- /* Don't use the glibc version, which caches the result in TLS. It misses some
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index b6f656bcffb1..2a0a20aa59b9 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -141,6 +141,7 @@ void wait_stub_done(int pid)
- 
- extern unsigned long current_stub_stack(void);
- 
-+#ifdef UML_CONFIG_MMU
- static void get_skas_faultinfo(int pid, struct faultinfo *fi, unsigned long *aux_fp_regs)
- {
- 	int err;
-@@ -186,6 +187,7 @@ static void handle_trap(int pid, struct uml_pt_regs *regs)
- 
- 	handle_syscall(regs);
- }
-+#endif
- 
- extern char __syscall_stub_start[];
- 
-@@ -336,6 +338,7 @@ int start_userspace(unsigned long stub_stack)
- 	return err;
- }
- 
-+#ifdef UML_CONFIG_MMU
- void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
- {
- 	int err, status, op, pid = userspace_pid[0];
-@@ -472,6 +475,7 @@ void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
- 		}
- 	}
- }
-+#endif /* UML_CONFIG_MMU */
- 
- void new_thread(void *stack, jmp_buf *buf, void (*handler)(void))
- {
-diff --git a/arch/x86/um/asm/processor.h b/arch/x86/um/asm/processor.h
-index 478710384b34..d88d7d9d5c18 100644
---- a/arch/x86/um/asm/processor.h
-+++ b/arch/x86/um/asm/processor.h
-@@ -38,6 +38,18 @@ static __always_inline void cpu_relax(void)
- 
- #define task_pt_regs(t) (&(t)->thread.regs)
- 
-+#ifndef CONFIG_MMU
-+#define task_top_of_stack(task) \
-+({									\
-+	unsigned long __ptr = (unsigned long)task->stack;	\
-+	__ptr += THREAD_SIZE;			\
-+	__ptr;					\
-+})
-+
-+extern long current_top_of_stack;
-+extern long current_ptregs;
-+#endif
-+
- #include <asm/processor-generic.h>
  
  #endif
-diff --git a/arch/x86/um/entry_64.S b/arch/x86/um/entry_64.S
-index 12e11ac03543..1fd5b3665efa 100644
---- a/arch/x86/um/entry_64.S
-+++ b/arch/x86/um/entry_64.S
-@@ -86,3 +86,25 @@ ENTRY(__kernel_vsyscall)
- 	ret
+diff --git a/arch/um/include/asm/mmu.h b/arch/um/include/asm/mmu.h
+index 01422b761aa0..d4087f9499e2 100644
+--- a/arch/um/include/asm/mmu.h
++++ b/arch/um/include/asm/mmu.h
+@@ -15,10 +15,13 @@ typedef struct mm_context {
+ 	unsigned long sync_tlb_range_from;
+ 	unsigned long sync_tlb_range_to;
  
- END(__kernel_vsyscall)
-+
-+// void userspace(struct uml_pt_regs *regs, unsigned long *aux_fp_regs)
-+ENTRY(userspace)
-+	/* align the stack for x86_64 ABI */
-+	and     $-0x10, %rsp
-+	/* Handle any immediate reschedules or signals */
-+	call	interrupt_end
-+
-+	movq	current_ptregs, %rsp
-+
-+	POP_REGS
-+
-+	addq	$8, %rsp	/* skip orig_ax */
-+	popq	%r11		/* pt_regs->ip */
-+	addq	$8, %rsp	/* skip cs */
-+	addq	$8, %rsp	/* skip flags */
-+	popq	%rsp
-+
-+	jmp	*%r11
-+
-+END(userspace)
-+#endif // !CONFIG_MMU
-diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
-index 6a00a28c9cca..8abf2a679578 100644
---- a/arch/x86/um/syscalls_64.c
-+++ b/arch/x86/um/syscalls_64.c
-@@ -51,6 +51,18 @@ void arch_switch_to(struct task_struct *to)
- 	 * Nothing needs to be done on x86_64.
- 	 * The FS_BASE/GS_BASE registers are saved in the ptrace register set.
- 	 */
 +#ifndef CONFIG_MMU
-+	current_top_of_stack = task_top_of_stack(to);
-+	current_ptregs = (long)task_pt_regs(to);
++	unsigned long   end_brk;
+ #ifdef CONFIG_BINFMT_ELF_FDPIC
+ 	unsigned long   exec_fdpic_loadmap;
+ 	unsigned long   interp_fdpic_loadmap;
+ #endif
++#endif /* !CONFIG_MMU */
+ } mm_context_t;
+ 
+ #endif
+diff --git a/arch/um/include/asm/mmu_context.h b/arch/um/include/asm/mmu_context.h
+index 23dcc914d44e..279351beede5 100644
+--- a/arch/um/include/asm/mmu_context.h
++++ b/arch/um/include/asm/mmu_context.h
+@@ -37,10 +37,20 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
+ }
+ 
+ #define init_new_context init_new_context
+-extern int init_new_context(struct task_struct *task, struct mm_struct *mm);
+-
+ #define destroy_context destroy_context
++#ifdef CONFIG_MMU
++extern int init_new_context(struct task_struct *task, struct mm_struct *mm);
+ extern void destroy_context(struct mm_struct *mm);
++#else
++static inline int init_new_context(struct task_struct *task, struct mm_struct *mm)
++{
++	return 0;
++}
++static inline void destroy_context(struct mm_struct *mm)
++{
++}
++#endif
 +
-+	if ((to->thread.regs.regs.gp[FS_BASE / sizeof(unsigned long)] == 0)
-+	    || (to->mm == NULL))
-+		return;
+ 
+ #include <asm-generic/mmu_context.h>
+ 
+diff --git a/arch/um/include/asm/tlbflush.h b/arch/um/include/asm/tlbflush.h
+index db997976b6ea..620debb84956 100644
+--- a/arch/um/include/asm/tlbflush.h
++++ b/arch/um/include/asm/tlbflush.h
+@@ -29,7 +29,7 @@
+  *  - flush_tlb_range(vma, start, end) flushes a range of pages
+  *  - flush_tlb_kernel_range(start, end) flushes a range of kernel pages
+  */
+-
++#ifdef CONFIG_MMU
+ extern int um_tlb_sync(struct mm_struct *mm);
+ 
+ extern void flush_tlb_all(void);
+@@ -55,5 +55,26 @@ static inline void flush_tlb_kernel_range(unsigned long start,
+ 	/* Kernel needs to be synced immediately */
+ 	um_tlb_sync(&init_mm);
+ }
++#else
++static inline int um_tlb_sync(struct mm_struct *mm)
++{
++	return 0;
++}
 +
-+	// rkj: this changes the FS on every context switch
-+	arch_prctl(to, ARCH_SET_FS,
-+		   (void __user *) to->thread.regs.regs.gp[FS_BASE / sizeof(unsigned long)]);
++static inline void flush_tlb_page(struct vm_area_struct *vma,
++				  unsigned long address)
++{
++}
++
++static inline void flush_tlb_range(struct vm_area_struct *vma,
++				   unsigned long start, unsigned long end)
++{
++}
++
++static inline void flush_tlb_kernel_range(unsigned long start,
++					  unsigned long end)
++{
++}
++#endif
+ 
+ #endif
+diff --git a/arch/um/include/asm/uaccess.h b/arch/um/include/asm/uaccess.h
+index 1d4b6bbc1b65..9bfee12cb6b7 100644
+--- a/arch/um/include/asm/uaccess.h
++++ b/arch/um/include/asm/uaccess.h
+@@ -22,6 +22,7 @@
+ #define __addr_range_nowrap(addr, size) \
+ 	((unsigned long) (addr) <= ((unsigned long) (addr) + (size)))
+ 
++#ifdef CONFIG_MMU
+ extern unsigned long raw_copy_from_user(void *to, const void __user *from, unsigned long n);
+ extern unsigned long raw_copy_to_user(void __user *to, const void *from, unsigned long n);
+ extern unsigned long __clear_user(void __user *mem, unsigned long len);
+@@ -33,9 +34,6 @@ static inline int __access_ok(const void __user *ptr, unsigned long size);
+ 
+ #define INLINE_COPY_FROM_USER
+ #define INLINE_COPY_TO_USER
+-
+-#include <asm-generic/uaccess.h>
+-
+ static inline int __access_ok(const void __user *ptr, unsigned long size)
+ {
+ 	unsigned long addr = (unsigned long)ptr;
+@@ -43,6 +41,9 @@ static inline int __access_ok(const void __user *ptr, unsigned long size)
+ 		(__under_task_size(addr, size) ||
+ 		 __access_ok_vsyscall(addr, size));
+ }
++#endif
++
++#include <asm-generic/uaccess.h>
+ 
+ /* no pagefaults for kernel addresses in um */
+ #define __get_kernel_nofault(dst, src, type, err_label)			\
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index 9a039d6f1f74..f6d3f3d7eade 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -196,7 +196,13 @@ extern void get_host_cpu_features(
+ extern int create_mem_file(unsigned long long len);
+ 
+ /* tlb.c */
++#ifdef CONFIG_MMU
+ extern void report_enomem(void);
++#else
++static inline void report_enomem(void)
++{
++}
++#endif
+ 
+ /* process.c */
+ extern unsigned long os_process_pc(int pid);
+diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
+index f8567b933ffa..b41e9bcabbe3 100644
+--- a/arch/um/kernel/Makefile
++++ b/arch/um/kernel/Makefile
+@@ -16,9 +16,10 @@ extra-y := vmlinux.lds
+ 
+ obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
+ 	physmem.o process.o ptrace.o reboot.o sigio.o \
+-	signal.o sysrq.o time.o tlb.o trap.o \
++	signal.o sysrq.o time.o trap.o \
+ 	um_arch.o umid.o maccess.o kmsg_dump.o capflags.o skas/
+ obj-y += load_file.o
++obj-$(CONFIG_MMU) += tlb.o
+ 
+ obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
+ obj-$(CONFIG_GPROF)	+= gprof_syms.o
+diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
+index a5b4fe2ad931..c7498d609f0f 100644
+--- a/arch/um/kernel/mem.c
++++ b/arch/um/kernel/mem.c
+@@ -67,7 +67,11 @@ void __init mem_init(void)
+ 	 * to be turned on.
+ 	 */
+ 	brk_end = (unsigned long) UML_ROUND_UP(sbrk(0));
++#ifdef CONFIG_MMU
+ 	map_memory(brk_end, __pa(brk_end), uml_reserved - brk_end, 1, 1, 0);
++#else
++	map_memory(brk_end, __pa(brk_end), uml_reserved - brk_end, 1, 1, 1);
++#endif
+ 	memblock_free((void *)brk_end, uml_reserved - brk_end);
+ 	uml_reserved = brk_end;
+ 
+@@ -81,6 +85,7 @@ void __init mem_init(void)
+  * Create a page table and place a pointer to it in a middle page
+  * directory entry.
+  */
++#ifdef CONFIG_MMU
+ static void __init one_page_table_init(pmd_t *pmd)
+ {
+ 	if (pmd_none(*pmd)) {
+@@ -137,6 +142,12 @@ static void __init fixrange_init(unsigned long start, unsigned long end,
+ 		j = 0;
+ 	}
+ }
++#else
++static void __init fixrange_init(unsigned long start, unsigned long end,
++				 pgd_t *pgd_base)
++{
++}
++#endif
+ 
+ static void __init fixaddr_user_init( void)
+ {
+@@ -218,6 +229,7 @@ void *uml_kmalloc(int size, int flags)
+ 	return kmalloc(size, flags);
+ }
+ 
++#ifdef CONFIG_MMU
+ static const pgprot_t protection_map[16] = {
+ 	[VM_NONE]					= PAGE_NONE,
+ 	[VM_READ]					= PAGE_READONLY,
+@@ -237,3 +249,4 @@ static const pgprot_t protection_map[16] = {
+ 	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED
+ };
+ DECLARE_VM_GET_PAGE_PROT
++#endif
+diff --git a/arch/um/kernel/physmem.c b/arch/um/kernel/physmem.c
+index fb2adfb49945..00ed840301ca 100644
+--- a/arch/um/kernel/physmem.c
++++ b/arch/um/kernel/physmem.c
+@@ -90,7 +90,11 @@ void __init setup_physmem(unsigned long start, unsigned long reserve_end,
+ 		exit(1);
+ 	}
+ 
++#ifdef CONFIG_MMU
+ 	physmem_fd = create_mem_file(len + highmem);
++#else
++	physmem_fd = -1;
++#endif
+ 
+ 	err = os_map_memory((void *) reserve_end, physmem_fd, reserve,
+ 			    map_size, 1, 1, 1);
+@@ -101,6 +105,7 @@ void __init setup_physmem(unsigned long start, unsigned long reserve_end,
+ 		exit(1);
+ 	}
+ 
++#ifdef CONFIG_MMU
+ 	/*
+ 	 * Special kludge - This page will be mapped in to userspace processes
+ 	 * from physmem_fd, so it needs to be written out there.
+@@ -108,6 +113,7 @@ void __init setup_physmem(unsigned long start, unsigned long reserve_end,
+ 	os_seek_file(physmem_fd, __pa(__syscall_stub_start));
+ 	os_write_file(physmem_fd, __syscall_stub_start, PAGE_SIZE);
+ 	os_fsync_file(physmem_fd);
++#endif
+ 
+ 	memblock_add(__pa(start), len + highmem);
+ 	memblock_reserve(__pa(start), reserve);
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index be2856af6d4c..b1b608afa036 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -29,6 +29,7 @@
+ #include <asm/mmu_context.h>
+ #include <asm/switch_to.h>
+ #include <asm/exec.h>
++#include <asm/tlbflush.h>
+ #include <linux/uaccess.h>
+ #include <as-layout.h>
+ #include <kern_util.h>
+diff --git a/arch/um/kernel/skas/Makefile b/arch/um/kernel/skas/Makefile
+index 6f86d53e3d69..97ea2d393e92 100644
+--- a/arch/um/kernel/skas/Makefile
++++ b/arch/um/kernel/skas/Makefile
+@@ -3,7 +3,8 @@
+ # Copyright (C) 2002 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
+ #
+ 
+-obj-y := stub.o mmu.o process.o syscall.o uaccess.o
++obj-y := stub.o process.o
++obj-$(CONFIG_MMU) += mmu.o syscall.o uaccess.o
+ 
+ # stub.o is in the stub, so it can't be built with profiling
+ # GCC hardened also auto-enables -fpic, but we need %ebx so it can't work ->
+diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
+index 97c8df9c4401..079f33d7d20c 100644
+--- a/arch/um/kernel/trap.c
++++ b/arch/um/kernel/trap.c
+@@ -24,6 +24,7 @@
+ int handle_page_fault(unsigned long address, unsigned long ip,
+ 		      int is_write, int is_user, int *code_out)
+ {
++#ifdef CONFIG_MMU
+ 	struct mm_struct *mm = current->mm;
+ 	struct vm_area_struct *vma;
+ 	pmd_t *pmd;
+@@ -129,6 +130,9 @@ int handle_page_fault(unsigned long address, unsigned long ip,
+ 		goto out_nosemaphore;
+ 	pagefault_out_of_memory();
+ 	return 0;
++#else
++	return -EFAULT;
 +#endif
  }
  
- SYSCALL_DEFINE6(mmap, unsigned long, addr, unsigned long, len,
+ static void show_segv_info(struct uml_pt_regs *regs)
+diff --git a/arch/um/os-Linux/process.c b/arch/um/os-Linux/process.c
+index e52dd37ddadc..b164873da2db 100644
+--- a/arch/um/os-Linux/process.c
++++ b/arch/um/os-Linux/process.c
+@@ -144,8 +144,13 @@ int os_map_memory(void *virt, int fd, unsigned long long off, unsigned long len,
+ 	prot = (r ? PROT_READ : 0) | (w ? PROT_WRITE : 0) |
+ 		(x ? PROT_EXEC : 0);
+ 
++#ifdef UML_CONFIG_MMU
+ 	loc = mmap64((void *) virt, len, prot, MAP_SHARED | MAP_FIXED,
+ 		     fd, off);
++#else
++	loc = mmap64((void *) virt, len, prot, MAP_SHARED | MAP_FIXED | MAP_ANONYMOUS,
++		     fd, off);
++#endif
+ 	if (loc == MAP_FAILED)
+ 		return -errno;
+ 	return 0;
 -- 
 2.43.0
 
