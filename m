@@ -4,97 +4,81 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FF86D116F7
-	for <linux-um@archiver.kernel.org>; Fri, 25 Oct 2024 06:04:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A74F8D116FC
+	for <linux-um@archiver.kernel.org>; Fri, 25 Oct 2024 06:18:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:CC:To:Message-ID:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=JagbP0hzDjaKwiHKO4fecRmGpmxLAC3Y7SA7f/4dOhM=; b=P3mM6WhXfnaaPL5FYDUMCGiqNg
-	AOsjicHZ5wOkY3Ln/MSADMPL/dVuzsi530A3W9wEeEKaxSlGdcGfVsZU16pZbfqQDVjEc4vPOtXMh
-	qPEfpHBdfK3jGXycuY5Ks1K2GQvl7zpauADDT+LQEQl3jCPufAdTFeu2hsbg1zomHkqTPv+0JdMss
-	YuAlK1z9mj9TVqX9+i05Y32hb1fjv2/wLEpQUqMBS3hor/qTLUcm77G7bAmYD3iSRP1HHcS5c6thO
-	USI1VmPTzql+S9McLl0Hgkctsw34sYQKrnmnDLKhNSqFmge5iYF2Tm41WeSONYfyiPWhrMGqHlfdf
-	oxXi7T9Q==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=fW4m5+Alc5+U/bpiXfBbEwyDvB1oVdKKXqHaL1Wh1jQ=; b=tz6Yk9MFonr19gHcpBlQPZAYTv
+	KdGHdVdkOH0M+K0mo3tiTzSK2hPZYSwZphZ0xukyDkPDiHnGmQKKCrQQK+e/451mE4rXD5j8OTBF5
+	4mmBQqHefD8sXAKs6J+PsV3A8l1l3GOlhGhtw52MQMbXXKZLPuO9fT7E7D7gjRXjZVPrvu4pY7vTN
+	wxlp0Xl+3dK7oeKOV4Ie+g2vX8oCHpgw5fB5hLBho7Y9E36HyR81n/eSX1bSjK/oloVLsKjG9Pf3n
+	13BPwOT44RlH9drHsMexhhn3wtQaAeA9KpNavaeht9JCIypRbYVvLsGJTDGtxso1G5PEQR+9FIeDO
+	YsKMCvoA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4DQm-00000002dRH-09Wr;
-	Fri, 25 Oct 2024 06:04:16 +0000
-Received: from mx0b-0031df01.pphosted.com ([205.220.180.131])
+	id 1t4De8-00000002f7n-0vHj;
+	Fri, 25 Oct 2024 06:18:04 +0000
+Received: from mail-lj1-x234.google.com ([2a00:1450:4864:20::234])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4DQi-00000002dQd-2vQC
+	id 1t4DcB-00000002eoF-3rAQ
 	for linux-um@lists.infradead.org;
-	Fri, 25 Oct 2024 06:04:14 +0000
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49OMn8Cq021958;
-	Fri, 25 Oct 2024 06:04:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=qcppdkim1; bh=JagbP0hzDjaKwiHKO4fecR
-	mGpmxLAC3Y7SA7f/4dOhM=; b=Yhmfjkv+Zye7ieKE3FS1DgdMJCi9UkMOG1z8DX
-	ulvvBEMixlIcvasFEVUXOrTTA2PaOeq2EyTply23gLNcwO9Tn7oVQVWobQy2XgJy
-	dq2ukxk10Dg44voXFjz6ty2cWkKxfYIAh3k3xVC/pcHIQm/UJ/RICfcVm5Qj10Sg
-	nraCrP7jnhk2PrmwefSUciYH7pSLJvLW9beHo0+2vlQhPhdm7PBh3JjTk0wqzghn
-	syNyj3CLaDhf9kdbZ2SNqnZjEdo4VyHh9xqTgP0d15X1t8Wdw2NBGjK4X2/kPCwd
-	KEC4/X6saxCgIgaxjGQurb++IVruMm/1qEni2D3iIPwBNuag==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 42fk52ju2v-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 25 Oct 2024 06:04:03 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA04.qualcomm.com (8.18.1.2/8.18.1.2) with ESMTPS id 49P641fe025391
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 25 Oct 2024 06:04:01 GMT
-Received: from shaojied-gv.ap.qualcomm.com (10.80.80.8) by
- nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Thu, 24 Oct 2024 23:03:59 -0700
-From: shaojiedong <quic_shaojied@quicinc.com>
-Date: Fri, 25 Oct 2024 14:03:32 +0800
-Subject: [PATCH v2] um: Remove double zero check
+	Fri, 25 Oct 2024 06:16:05 +0000
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2fb498a92f6so16687471fa.1
+        for <linux-um@lists.infradead.org>; Thu, 24 Oct 2024 23:16:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1729836962; x=1730441762; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fW4m5+Alc5+U/bpiXfBbEwyDvB1oVdKKXqHaL1Wh1jQ=;
+        b=Y5l7ciS781NoyflbE5v9qTp9eyvFS2wrC8UL4gQ4l4wOIF1Ym96tO7WhxXsdA3Z/Fz
+         u1m/FvgSvfJnbrLs7f/kGIer3mJqxIyMsKXTdGNJM9ZlB4AlM9cOui4hQ1/QNqw0FAZq
+         MkqVsg9duy6IuS3z9uIYk8BAMm23YWP/mhxcgO/9Wa9MViX11PTmsEpjljeAmJuwDG/e
+         VRmr5GUerH4K8r/j5zJnGE7waJFGrNZoheTiI0t7M8dPamPqqluo3TDwWJVifcYTDV95
+         g9ddsPD86dpijtTLa9drDjEWShv2lE/i6xUcTJeK6vYDlBim05Rm0t50CmEI8WcpJrs3
+         +pSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729836962; x=1730441762;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fW4m5+Alc5+U/bpiXfBbEwyDvB1oVdKKXqHaL1Wh1jQ=;
+        b=TsmRu8F9hT6tyixk0brQKYZ7l3QMQphaHUPxrTUNFntdkW3SNdK9nV/sK3n+gMYY7X
+         85A6n42BaPrGUwi+plTtIcANrFuqo3wZo4sV+ebqcr9KGhI7V6qfCcTBIMsnCd5SjnR2
+         GLW9kC5YZ+fu2R2w7GbIrqPTVxnRS8Ah94EJihUFHBnUXona2onEY0t4w612M0Dynnce
+         cLpwrSM3uzRPa9EbHf9tsaeE9XR6SHa/LO/LadbDabU8UN5kECSxQXSuuOlPJud5hlpC
+         CuqhqySxBZdf9oLCVDuTbtH0kjEtqu6YQUND9Z/qhSnx8OWzZ75kEATVcxSsT5wTZ+Jv
+         ja6w==
+X-Forwarded-Encrypted: i=1; AJvYcCWsRhEcnKfsQ1L5lmGKz0ZUwo+Jk0eifN38Eymm4rhSmDBReyKBcNUyCjlM815GsoDfT0vA8bFa/A==@lists.infradead.org
+X-Gm-Message-State: AOJu0YyLnCLh90O1/kmZXmOlVUFrwGmAl4qcNIF9eUAPYm1K+lG+EZl3
+	ZCwHlQoXWDGdc9NWIN/JrAWYho4PBAyO2Jsh2aUuW3mT88e5LPx19GIiGU6azEtzjDkoUAQJGCi
+	g
+X-Google-Smtp-Source: AGHT+IH1R1a5paHiMJuZWc2VC76niPOAzN1UkvOY+GuCu2Vas+9MsuU8FAL2cFI+5QVsPyLimIOW9g==
+X-Received: by 2002:a2e:b816:0:b0:2fb:5060:7037 with SMTP id 38308e7fff4ca-2fca828bd24mr21472121fa.41.1729836961690;
+        Thu, 24 Oct 2024 23:16:01 -0700 (PDT)
+Received: from eriador.lumag.spb.ru (2001-14ba-a0c3-3a00--7a1.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::7a1])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-2fcb453ea75sm662871fa.67.2024.10.24.23.16.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Oct 2024 23:16:00 -0700 (PDT)
+Date: Fri, 25 Oct 2024 09:15:58 +0300
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To: shaojiedong <quic_shaojied@quicinc.com>
+Cc: Richard Weinberger <richard@nod.at>, 
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
+	linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2] um: Remove double zero check
+Message-ID: <qstfwrz6kvjfldw2lisgcrtvlhi7ltuyc32ygsqtoqfykwxmae@irofaqfjjg3a>
+References: <20241025-upstream_branch-v2-1-072009bfa7d0@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20241025-upstream_branch-v2-1-072009bfa7d0@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIALM0G2cC/3WNQQ6CMBBFr0JmbU3bAFJX3sMQU6ajzIICLTQaw
- t2t7F2+l/z3N4gUmCJciw0CJY48+gz6VAD21r9IsMsMWupSSV2JdYpLIDs8umA99kLW1pA12pS
- Ng7yaAj35fRTvbeae4zKGz3GQ1M/+byUllCgbbSpZ4wVdd5tXRvZ4xnGAdt/3L6VhKIWwAAAA
-X-Change-ID: 20241025-upstream_branch-06a9ea92948d
-To: Richard Weinberger <richard@nod.at>,
-        Anton Ivanov
-	<anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>
-CC: <linux-um@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        shaojiedong <quic_shaojied@quicinc.com>
-X-Mailer: b4 0.14.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1729836239; l=1280;
- i=quic_shaojied@quicinc.com; s=20241025; h=from:subject:message-id;
- bh=8o9W8zhApjPR6I1YoCkF8eddbfkiaDsXaRFyIgHuQ5k=;
- b=ADX67u1LQn9dycjyPbyzdDKPmQZySgOseU8sJw+puI/rH2ziXdJTbe686cUA1QWIZGaUXt+pK
- 625iABGGRNKAZzGti+5EBKMgAblH7aZLNSf4v8E0JBHlP3qcLblkcbO
-X-Developer-Key: i=quic_shaojied@quicinc.com; a=ed25519;
- pk=33bgN72hchuZbXKwEWehpvql40CPvTfN8DSdi8JrU6E=
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: FQ1xxVqBiOPJY6chUcQlL2PqojzizjMo
-X-Proofpoint-ORIG-GUID: FQ1xxVqBiOPJY6chUcQlL2PqojzizjMo
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-06_09,2024-09-06_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
- lowpriorityscore=0 malwarescore=0 impostorscore=0 phishscore=0
- adultscore=0 mlxlogscore=928 priorityscore=1501 spamscore=0 bulkscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2409260000 definitions=main-2410250045
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241025-upstream_branch-v2-1-072009bfa7d0@quicinc.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241024_230412_896684_004D3FCA 
-X-CRM114-Status: GOOD (  10.53  )
+X-CRM114-CacheID: sfid-20241024_231603_995956_5084E3CC 
+X-CRM114-Status: GOOD (  16.83  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -109,46 +93,54 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-free_pages() performs a parameter null check inside
-previous code also does zero check as following
-    if (stack == 0)
-        goto out;
+On Fri, Oct 25, 2024 at 02:03:32PM +0800, shaojiedong wrote:
+> free_pages() performs a parameter null check inside
+> previous code also does zero check as following
+>     if (stack == 0)
+>         goto out;
+> 
+>     to_mm->id.stack = stack;
+> 
+> therefore remove double zero check here.
+> 
+> Signed-off-by: shaojiedong <quic_shaojied@quicinc.com>
+> ---
+> Changes in v2:
+> - EDITME: describe what is new in this series revision.
+> - EDITME: use bulletpoints and terse descriptions.
 
-    to_mm->id.stack = stack;
+Clearly NAK
 
-therefore remove double zero check here.
+> - Link to v1: https://lore.kernel.org/r/20241025-upstream_branch-v1-1-4829506c7cdb@quicinc.com
+> ---
+>  arch/um/kernel/skas/mmu.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
+> index d3fb506d5bd6084046cf5903c629432cd42b5ab3..0eb5a1d3ba70134f75d9b2af18544fca7248c6d6 100644
+> --- a/arch/um/kernel/skas/mmu.c
+> +++ b/arch/um/kernel/skas/mmu.c
+> @@ -46,8 +46,7 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
+>  	return 0;
+>  
+>   out_free:
+> -	if (new_id->stack != 0)
+> -		free_pages(new_id->stack, ilog2(STUB_DATA_PAGES));
+> +	free_pages(new_id->stack, ilog2(STUB_DATA_PAGES));
+>   out:
+>  	return ret;
+>  }
+> 
+> ---
+> base-commit: fd21fa4a912ebbf8a6a341c31d8456f61e7d4170
+> change-id: 20241025-upstream_branch-06a9ea92948d
+> 
+> Best regards,
+> -- 
+> shaojiedong <quic_shaojied@quicinc.com>
+> 
 
-Signed-off-by: shaojiedong <quic_shaojied@quicinc.com>
----
-Changes in v2:
-- EDITME: describe what is new in this series revision.
-- EDITME: use bulletpoints and terse descriptions.
-- Link to v1: https://lore.kernel.org/r/20241025-upstream_branch-v1-1-4829506c7cdb@quicinc.com
----
- arch/um/kernel/skas/mmu.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
-index d3fb506d5bd6084046cf5903c629432cd42b5ab3..0eb5a1d3ba70134f75d9b2af18544fca7248c6d6 100644
---- a/arch/um/kernel/skas/mmu.c
-+++ b/arch/um/kernel/skas/mmu.c
-@@ -46,8 +46,7 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
- 	return 0;
- 
-  out_free:
--	if (new_id->stack != 0)
--		free_pages(new_id->stack, ilog2(STUB_DATA_PAGES));
-+	free_pages(new_id->stack, ilog2(STUB_DATA_PAGES));
-  out:
- 	return ret;
- }
-
----
-base-commit: fd21fa4a912ebbf8a6a341c31d8456f61e7d4170
-change-id: 20241025-upstream_branch-06a9ea92948d
-
-Best regards,
 -- 
-shaojiedong <quic_shaojied@quicinc.com>
-
+With best wishes
+Dmitry
 
