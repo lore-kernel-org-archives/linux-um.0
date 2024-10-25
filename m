@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50778D0C611
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 959F8D0C612
 	for <linux-um@archiver.kernel.org>; Fri, 25 Oct 2024 13:51:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,57 +12,57 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	References:In-Reply-To:Subject:Cc:To:From:Message-ID:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=KHwTAkVp1dbNLGsj5TLXVLi7/b4hrRCzeKgDam19y9M=; b=B+iEFxTJuAudyB/7NMEm9VCX+v
-	ZpIso4Nrm3IIjfei/qJWvaaDt2DX5K16ubsbCxKGT8im3tlwBhgECxv8TSNjUGIoeak75UavFyM2i
-	JI/YXBH3/y/ZAlU1torchPdpY1MxTx5HFTMyQ4+TMg+ozHtAin2oOudf/ikOgRpUE+GvzBQurcXXS
-	X2fXt3YG3konG9VUQYtbqEdIg9MtGV68NmPufj7QkTGzCIERBk+RGVJyqKn2AA8VjRmQ6A6fMz89p
-	U0Obd1g7LX3oOTmXVREUcnqbrlU1OYVf+oRqBakwZLUB5zhQxFsHgN0qp+fMSQzgE10rTykoDeKuD
-	iES13sjQ==;
+	bh=rcm81NdIVbVKb6jLwd02UVSQA0IjYUjonzV7Qs64GJM=; b=x9yoFznslQ+tCQfcKSxRe6zd42
+	iMsBcILncluMVEZESxMZrZ2TGEHLDTwo8aAi+6F/l2o4yfP6bRZG2Z4uemmbIbkE0XeRm7UF3yiRZ
+	u3uFdIneZizODRnlHmQgYIfiQJg4YY5gqEd6t/7crBJ0NUw5JYMBI2y9gkhft1TYx9hl1RtidsuLe
+	uvNnPFjik0mg/uPrqn04eHwit5unTlTN25ypC7HC3fXtzJk4hPRJ00M8ZzDrD8/JiDyMFtxw/LWbj
+	U+9VSHhe2Eu2AMrQMagw6HYfhOqREKD8NBZ8lG8qcI+pwwS7VulvdUQPS5f+8GjuKlLsD8yuLbHHh
+	Tt6R9Qfw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4Kig-00000003sYI-3oWl;
-	Fri, 25 Oct 2024 13:51:14 +0000
-Received: from mail-pf1-x431.google.com ([2607:f8b0:4864:20::431])
+	id 1t4Kih-00000003sYV-0yCl;
+	Fri, 25 Oct 2024 13:51:15 +0000
+Received: from mail-pg1-x536.google.com ([2607:f8b0:4864:20::536])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4KLi-00000003omW-2poH
+	id 1t4KMN-00000003ov8-3itp
 	for linux-um@lists.infradead.org;
-	Fri, 25 Oct 2024 13:27:32 +0000
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-71e8235f0b6so1482875b3a.3
-        for <linux-um@lists.infradead.org>; Fri, 25 Oct 2024 06:27:30 -0700 (PDT)
+	Fri, 25 Oct 2024 13:28:13 +0000
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-7ea6a4f287bso1246623a12.3
+        for <linux-um@lists.infradead.org>; Fri, 25 Oct 2024 06:28:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729862849; x=1730467649; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1729862891; x=1730467691; darn=lists.infradead.org;
         h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
          :message-id:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KHwTAkVp1dbNLGsj5TLXVLi7/b4hrRCzeKgDam19y9M=;
-        b=RiqG9r6LYwOij/RrjI/UBPZdkZnGjVcHMWqNRUfrkNhYG88y1RrQiURBPeevehdjWo
-         uyKga/NfgycTM7VO5nAbEtLKWtwYv2AyaDL8H5IHYDaXzkGBm8gHff2s5ywyBeVZSFjh
-         Qd8OvLts5SonLBgDasdT4ZPwpyvqEWDHxLzFtDZX2aGtKWbWvjnGsT2KhCE+TqaJBC/P
-         SvJtgNqO0z6AXdmBQFAUdNtlySoDcKAZm0m9gpwBmmxSIKLueR9tNxkvF4sKpIEPWysE
-         AMNHzgysfukzy0vNh7edfAaFxZSLsH67CeEATpA0iJmk9zUtpC6GU3JkbHrFTj41b7es
-         ZF8Q==
+        bh=rcm81NdIVbVKb6jLwd02UVSQA0IjYUjonzV7Qs64GJM=;
+        b=mDQyWC/bv2raaYy92g1kHobIHTWH0z7KG23UUGFoHyGuya0eyWCfS0LqhnVfI0BD1b
+         a5DryixgoX1EC4IPVJTIkV1x7dGrWybjO4rWhKf87P28qmkEfVNkz7+nhZlUKQS1IKeL
+         TZqN8Knf/LLm9y4a2e4BXxbkxFDJ+SLV0ZubFnX2trFmDSjon6+95+9t4j90ojsIuNgX
+         1WPt0lg53TnwzI12qtvDlnY93dHDDaZ9gPkJjBeUF/VqCQgVtSEiyjY483rHqIfdxpXS
+         hxot5DLnUqJqZq0Bmz1RxunbarM/r9i09ZFkEMIQ/Z9r+ohgrl//RBoSLrg3v6/9D0wq
+         LvtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729862849; x=1730467649;
+        d=1e100.net; s=20230601; t=1729862891; x=1730467691;
         h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
          :message-id:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KHwTAkVp1dbNLGsj5TLXVLi7/b4hrRCzeKgDam19y9M=;
-        b=Js8t69NJVhhInZOQV9hJ5dbkKhtnM+6PYqP2rJxaosp5dq4qVqONgHIxZDM8NjNt/S
-         nXBNBx7UY9NSDVkDuBESpB6/qAdodts0EyKzVBmgCNa4O4iJjwKJpfk7Yd9t6/NOgLLl
-         uU1Icrr+SBMFB+BRdOOwYMAr2jmwxddJLlwMYmGjSDqW2y23z49AEOqwnztVD3lP8/03
-         en56zU2ARh395TBCpNyVb19y8TAQwrXKOWwoGdcQAZcIgpHi9FmgSOhdygX1v8eWee9Q
-         1MJmRhrKA+kvx1BUDu9tDiRPwRUbe9CtEluiyDCFjawZJ431y2dIAATJT6YpypPPJkOZ
-         1wFw==
-X-Gm-Message-State: AOJu0YyI3Rn//WBD1lJYn+g5zztg9jt0KQ+tAusuyJx3JEQBUkkFCu35
-	u+4MmR3IVd4BdmZq4gszhCzMix4BR7ilfzN1gaVTzhhSjWWgIu1W
-X-Google-Smtp-Source: AGHT+IFPzNik7dueAO/xJ8PWSLZatnlrKPnMLUA7NmRX1Lmp10rR+D7ccOJ0OCQjOdflMSofLVUrtg==
-X-Received: by 2002:a05:6a00:1913:b0:71e:75c0:2552 with SMTP id d2e1a72fcca58-720308b8b92mr14435048b3a.0.1729862849008;
-        Fri, 25 Oct 2024 06:27:29 -0700 (PDT)
+        bh=rcm81NdIVbVKb6jLwd02UVSQA0IjYUjonzV7Qs64GJM=;
+        b=rVdRYpm7Kqyt7Ea/qwqG4skCk0Cdpi9HKS4EQnmRNa4FIh3a+6oKV9kTKs95GPACwe
+         L+WID2tJ1o7tMZ9A7ftdhoqqsEmyM1sLvDAsUZ52Vh6/9pywHBhTXo1is6CT4ihcJyXB
+         8kzYGVy2aN74fyCPss+L6n23+zxKOlonYB8zoUysm3ncKf7/Z+/aZzx7vBORig4szK6p
+         fCt7BVumlR+qPs5Np4gyiBp8fLFnlHh9jPFSyOKRXGYDrPw4w7wv0E4d71YPo7qpT/fT
+         28ybJ6vPF1VVnec6YrdR+0XuJP6jW2Y1e60ubqDrp+QT9PUD8j7zO1o3KzeyPO5tt477
+         z/zA==
+X-Gm-Message-State: AOJu0YxCnTtSfA4TCd4YgOXDJSCsfWPx8BAXBxMzGHdJmYovftl91jAJ
+	6uqznfNDxADEHxoyCoFoPligvVf2cBvFSjF88gCgp+iGCo9Kfairwg5YNxkv9sU=
+X-Google-Smtp-Source: AGHT+IFT/01QpHBhyOAIyyI0P5BCnufF8nEtnpaYRCokfPKzPuMI48TlosC0xesPgcPuXaSwoJvcMA==
+X-Received: by 2002:a05:6a20:662a:b0:1d9:a5c8:54d3 with SMTP id adf61e73a8af0-1d9a5c8556amr18958637.24.1729862890759;
+        Fri, 25 Oct 2024 06:28:10 -0700 (PDT)
 Received: from mars.local.gmail.com (221x241x217x81.ap221.ftth.ucom.ne.jp. [221.241.217.81])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7edc867d4bdsm1051653a12.31.2024.10.25.06.27.26
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72057a1f199sm1071561b3a.141.2024.10.25.06.28.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Oct 2024 06:27:28 -0700 (PDT)
-Date: Fri, 25 Oct 2024 22:27:24 +0900
-Message-ID: <m2ldycnwhv.wl-thehajime@gmail.com>
+        Fri, 25 Oct 2024 06:28:09 -0700 (PDT)
+Date: Fri, 25 Oct 2024 22:28:05 +0900
+Message-ID: <m2jzdwnwgq.wl-thehajime@gmail.com>
 From: Hajime Tazaki<thehajime@gmail.com>
 To: johannes@sipsolutions.net
 Cc: linux-um@lists.infradead.org,
@@ -70,17 +70,18 @@ Cc: linux-um@lists.infradead.org,
 	richard@nod.at,
 	anton.ivanov@cambridgegreys.com,
 	ricarkol@google.com
-Subject: Re: [RFC PATCH 07/13] um: nommu: configure fs register on host syscall invocation
-In-Reply-To: <ae681534ae7c9484303c41522ec4b6a765a3d3ec.camel@sipsolutions.net>
+Subject: Re: [RFC PATCH 08/13] x86/um/vdso: nommu: vdso memory update
+In-Reply-To: <94caed762cad1f49c9ad31957ca2990179567e7f.camel@sipsolutions.net>
 References: <cover.1729770373.git.thehajime@gmail.com>
-	<de4b12980873dac3074d591ab4ee0241d81c691b.1729770373.git.thehajime@gmail.com>
-	<ae681534ae7c9484303c41522ec4b6a765a3d3ec.camel@sipsolutions.net>
+	<18e83579370620b2b35d35b4ca1b7609d20fb8d3.1729770373.git.thehajime@gmail.com>
+	<94caed762cad1f49c9ad31957ca2990179567e7f.camel@sipsolutions.net>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241025_062730_750514_26999ADE 
-X-CRM114-Status: GOOD (  20.54  )
+X-CRM114-CacheID: sfid-20241025_062811_946360_F1B9A043 
+X-CRM114-Status: UNSURE (   7.41  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,88 +97,18 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 
-
-On Fri, 25 Oct 2024 18:28:01 +0900,
+On Fri, 25 Oct 2024 18:29:07 +0900,
 Johannes Berg wrote:
 > 
-> On Thu, 2024-10-24 at 21:09 +0900, Hajime Tazaki wrote:
-> > 
-> > +static void sigill(int sig, siginfo_t *si, void *ctx_void)
-> > +{
-> > +	longjmp(jmpbuf, 1);
-> > +}
 > 
-> Should this code use sigsetjmp/siglongjmp?
-
-the code is referred from tools/testing/selftests/x86/fsgsbase.c and
-the original code uses sigsetjmp/siglongjmp indeed.
-
-I was struggling to pull the definition of sigsetjmp & co from host
-headers as it conflicts with UML definitions of jmp_buf, etc.
-
-Will look into detail again but would be nice if you have an
-experience on this.
-
-> > +int os_has_fsgsbase(void)
-> > +{
-> > +	return has_fsgsbase;
-> > +}
+> >  oom:
+> > -	printk(KERN_ERR "Cannot allocate vdso\n");
+> > +	pr_err("Cannot allocate vdso");
 > 
-> Why should this be a function rather than just exposing the variable?
-
-as it is referred in arch/x86/um code.
-
-> > +++ b/arch/um/os-Linux/time.c
-> > @@ -89,7 +89,8 @@ long long os_nsecs(void)
-> >  {
-> >  	struct timespec ts;
-> >  
-> > -	clock_gettime(CLOCK_MONOTONIC,&ts);
-> > +	clock_gettime(CLOCK_MONOTONIC, &ts);
-> > +
-> >  	return timespec_to_ns(&ts);
-> 
-> unrelated changes
-
-will revert it.
-
-> >  #ifndef CONFIG_MMU
-> >  
-> > +static int os_x86_arch_prctl(int pid, int option, unsigned long *arg2)
-> > +{
-> > +	if (os_has_fsgsbase()) {
-> > +		switch (option) {
-> > +		case ARCH_SET_FS:
-> > +			wrfsbase(*arg2);
-> > +			break;
-> > +		case ARCH_SET_GS:
-> > +			wrgsbase(*arg2);
-> > +			break;
-> > +		case ARCH_GET_FS:
-> > +			*arg2 = rdfsbase();
-> > +			break;
-> > +		case ARCH_GET_GS:
-> > +			*arg2 = rdgsbase();
-> > +			break;
-> > +		}
-> > +		return 0;
-> > +	} else
-> > +		return os_arch_prctl(pid, option, arg2);
-> 
-> please use (or don't) {} on all branches
+> kind of unrelated change
 
 thanks, will fix it.
 
-> > @@ -39,4 +73,5 @@ __visible void do_syscall_64(struct pt_regs *regs)
-> >  			current_thread_info()->aux_fp_regs);
-> >  	}
-> >  }
-> > +
-> >  #endif
-> 
-> unrelated
-
-will revert it too.
-
 -- Hajime
+
 
