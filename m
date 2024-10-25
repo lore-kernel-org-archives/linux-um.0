@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A73F8D0C608
-	for <linux-um@archiver.kernel.org>; Fri, 25 Oct 2024 13:11:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EB99D0C609
+	for <linux-um@archiver.kernel.org>; Fri, 25 Oct 2024 13:11:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Subject:Cc:To:From:
-	Message-ID:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	References:In-Reply-To:Subject:Cc:To:From:Message-ID:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=zGfX5wBS8pFfDKQLwtMCJV8p/XhvW9eMHAAn67hgsnc=; b=RZsyO7YJMOzkspDQY9RqgkXHlv
-	LEuoHYS7lhpuKvevP02Z0IFasHblB79RIIT9gKa6ydo7sCUHOngKuFflc7BfWpJZCbIuAmlVUXcmS
-	kz3CZ+0UbIC5rntzjG0I2G8kRLkI6yMxbqmnCbfZ9/wEbXicm1Zrz0mucneTrvo8bb5+874v1zU2M
-	djdLSMZS06lLLbZmKhzYwC9sx9HX60XnZ/1A7hF9pInYv+aMu+FrUL8oE92Ie2IVEcmVZgoF4flSB
-	nD4Zn6O6IHlD/cAvcBNb7NQqCfawBv7Xo8l8TrPQM/thaRJWtBkAcDBSg9PbxV7BW9oRNrRXew4Kg
-	vF+iDCyA==;
+	bh=PcrYvX2WHR5SfH051QxaKEKDBbea4eh0ZuVSVzt4rVg=; b=OkmBfrfrrUfbs4WgWYSjN9Bsin
+	1oDhbaRI+V7DOqBbsXuLAbPb0Ch1M9McDtZoFaa0QeTX6K+0A7Wf1nP7aMZxxhb+b/6e6Vbnq2EKJ
+	jHUqENYAGrYrIwiF5h93QocTxMhEpv8rQCKVGGGw0XqWDow3urevuakZSQaL76UtMC6QpnMoIygXE
+	RF2cjZTZiB0rGicUBoAJwvcU8ASmI5AqWsnqpS6MLHqsmiaZQy32HaR8Auv8MqLlnS8pmg2BP2lDG
+	k4SLhufi9e5CpvEgHEO0WoXvU6mWKdguS4yBVB97AZl4WFe2bHElZaL8QsDekDf2chzmU9EIOVXTE
+	deuCUOaw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4K5t-00000003lyn-1fgZ;
+	id 1t4K5t-00000003lz6-3BEo;
 	Fri, 25 Oct 2024 13:11:09 +0000
-Received: from mail-pl1-x62d.google.com ([2607:f8b0:4864:20::62d])
+Received: from mail-pj1-x102d.google.com ([2607:f8b0:4864:20::102d])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4K01-00000003ky0-0gE5
+	id 1t4K0C-00000003kzX-1DS7
 	for linux-um@lists.infradead.org;
-	Fri, 25 Oct 2024 13:05:06 +0000
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-20cf3e36a76so19744345ad.0
-        for <linux-um@lists.infradead.org>; Fri, 25 Oct 2024 06:05:04 -0700 (PDT)
+	Fri, 25 Oct 2024 13:05:17 +0000
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-2e2cc47f1d7so1350466a91.0
+        for <linux-um@lists.infradead.org>; Fri, 25 Oct 2024 06:05:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729861504; x=1730466304; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=zGfX5wBS8pFfDKQLwtMCJV8p/XhvW9eMHAAn67hgsnc=;
-        b=B4Kyioc+ZOVjMGjsRY+yIlyxX+Cm+bSLb0jzwfeHFuEf4NXW+wzDtDS/i0VFYsuGmo
-         mK0eaeyexbFP0WEYV3+5H3SC/NCwUTlE2vF+7ch/ZU8+XKYK+0NDV+URqzJBfRV7cs8h
-         dyFssk/J7tAbegXaxVhnqfRU72C15V0xNhPg0OVlQlMSqchjUoguFytEM+54617V5ahQ
-         SZKFai9KilsDsicm6UhIkPJ/87X7QplMEc+q1h7Yu5MJLQasGhnRciRkGHLxpN5jBusy
-         +y+PW1ugCZ559fOx6I6iijAvQxHeKhbwtUrS5/+UqzxHViHr33UeQCuRmH76W0FxgGxb
-         rBvQ==
+        d=gmail.com; s=20230601; t=1729861515; x=1730466315; darn=lists.infradead.org;
+        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
+         :message-id:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PcrYvX2WHR5SfH051QxaKEKDBbea4eh0ZuVSVzt4rVg=;
+        b=YuZulrk/2iTqiPQ3HHlGaTxwqSinwC/Z2v5+bhN7LZvTPSLeGRJbTxOtR/zSva1cQ9
+         f3GjiCps6IjCx7wJ/19629Ys/r/HwVR2izhhk5jr5nQd+tNQYXn4ShVYlkZ5KdhlkXAE
+         2LK6NU43f4NL/DtW0d6d62ispV4q2e/SexI6+3zkkxtXmBga6WEaUWVagOojfH1dEeTK
+         oCVCLT+m8Q0FR1s1O5SjX4Za6Kg7+OyW/Iwayn08ViqygUXdD/d+7lySEy+UGtKDA1MM
+         htO1RPxvQE/rJrHZjdgpk29y8y7Nd6p+EU+r9DBZtXrUC+DhJBpetFxlvVUfYr0gSbqV
+         vUyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729861504; x=1730466304;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zGfX5wBS8pFfDKQLwtMCJV8p/XhvW9eMHAAn67hgsnc=;
-        b=Jb5YqqOxMPNPJe7GjdJ2wAsKjc5muldDpdU5/o6E/CZFaXHBP6KL7elg6P8U6+6+zr
-         0GpuMrex+zN2C+apzGFYq0vTAMkzFPtR9foh5pF9FimkwUGwqlxd2n9KRRyhuxiC/w6e
-         w15cNtfJa4C/YPDOSWIJcYQ+dNULspc+lz3P0PjzD92lAGYfCSQwoZe7maGrpiYlmBBF
-         jIF/rYPXxk+8MNaSen+6yMWpvDHKZyp3iza6sWqzfqo+syn4KZWnUDU72mqjib3Vbxva
-         lAL4e+0eTyxLTyK65RMiTUvak0YrwM33h/WR/Mpe7c7wgKjOzsPI5q4n70TIWQqQQ4zF
-         BrFQ==
-X-Gm-Message-State: AOJu0YyXD9mAsSV1slxYpF1R88wZJutXl8E+jgS8yDHMCQuWaguPr6jb
-	RDA+Y79iToEi3rmBMYTd2Qq7VP5TqK6nbJoxlF6OwIAKm3RLRn47
-X-Google-Smtp-Source: AGHT+IGkXk/mSSBWmb74g9ztFkHLXsHVasR2zn6lvjfmFyKtUUQAvCEZF8E7lmYlCVYPuDg1EtjCDQ==
-X-Received: by 2002:a17:902:e80a:b0:20c:693b:6578 with SMTP id d9443c01a7336-20fa9e5ecfbmr138046645ad.25.1729861504177;
-        Fri, 25 Oct 2024 06:05:04 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1729861515; x=1730466315;
+        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
+         :message-id:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PcrYvX2WHR5SfH051QxaKEKDBbea4eh0ZuVSVzt4rVg=;
+        b=Sq81CbI9h9yy7MHc3JdgXDHU+HebVYzm/qi+vV5ReJir08NOfTOI9L1mUEdGOdGkJw
+         Z2Do9FzZetdtMi6sWdBG0TLj4YJsuM8RcgIKXYbod3Ei2iHV7OEc/90G6YxbwpS0Z1Tm
+         1AMRnvlAGVKbv4tDJwNpP66yccY1Tp1LBmCvjKTVL9Tj/9uJyVmqDkOo/73D4gAwiNfg
+         DvMeRe1jddFj47MVjpYwslC3EfJ99/33NF+izfs4dnRx3ya8O8vPFMq5Kl2vEO5E4nFv
+         q9gdiaSoUm0/761OvdQ2SlJLp5/ZZ43M+fBN34+LYNSCAViiFPf73aeZGe81jRdXpls5
+         Id2A==
+X-Gm-Message-State: AOJu0YzR1XVGmOUxPAgEdg1h+QPCCGLbaij1CgYy6ASUsbzFWKqd7WsO
+	K6yM7LSz0bVCirKyfiHnH8RQdrQLDT/yyDstwwohlsDS2hlo2RjQ
+X-Google-Smtp-Source: AGHT+IERpHTQ8yWEP2wdmCpQxvI6cQhBFnU8uO7NasaF3NIX7HEl2kihI7/kHX6Z4N/zlLmU2/YDIA==
+X-Received: by 2002:a17:90a:c258:b0:2e2:c2b0:d03e with SMTP id 98e67ed59e1d1-2e77e5db2b2mr9032303a91.5.1729861515289;
+        Fri, 25 Oct 2024 06:05:15 -0700 (PDT)
 Received: from mars.local.gmail.com (221x241x217x81.ap221.ftth.ucom.ne.jp. [221.241.217.81])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-210bc08676csm9018635ad.304.2024.10.25.06.05.01
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e77e55e030sm3382488a91.37.2024.10.25.06.05.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Oct 2024 06:05:03 -0700 (PDT)
-Date: Fri, 25 Oct 2024 22:04:59 +0900
-Message-ID: <m2o738nxj8.wl-thehajime@gmail.com>
+        Fri, 25 Oct 2024 06:05:14 -0700 (PDT)
+Date: Fri, 25 Oct 2024 22:05:11 +0900
+Message-ID: <m2msisnxiw.wl-thehajime@gmail.com>
 From: Hajime Tazaki<thehajime@gmail.com>
 To: johannes@sipsolutions.net
 Cc: linux-um@lists.infradead.org,
@@ -71,18 +70,17 @@ Cc: linux-um@lists.infradead.org,
 	richard@nod.at,
 	anton.ivanov@cambridgegreys.com,
 	ricarkol@google.com
-Subject: Re: [RFC PATCH 09/13] x86/um: nommu: signal handling
-In-Reply-To: <1bc0681692a102674c73d10132f3228301cc784b.camel@sipsolutions.net>
+Subject: Re: [RFC PATCH 13/13] um: nommu: plug nommu code into build system
+In-Reply-To: <ce4a00dadcaf888ff1bf7887b3af722a385e694e.camel@sipsolutions.net>
 References: <cover.1729770373.git.thehajime@gmail.com>
-	<f3c873365cccce18b2f1889984bf521d3cfb68f2.1729770373.git.thehajime@gmail.com>
-	<1bc0681692a102674c73d10132f3228301cc784b.camel@sipsolutions.net>
+	<82a7ee8b31c51edb47e144922581824a3b5e371d.1729770373.git.thehajime@gmail.com>
+	<ce4a00dadcaf888ff1bf7887b3af722a385e694e.camel@sipsolutions.net>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241025_060505_229696_3DC3B6E0 
-X-CRM114-Status: GOOD (  14.74  )
+X-CRM114-CacheID: sfid-20241025_060516_350291_20D9BD10 
+X-CRM114-Status: GOOD (  14.57  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -98,44 +96,47 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 
-On Fri, 25 Oct 2024 18:30:41 +0900,
+On Fri, 25 Oct 2024 18:33:06 +0900,
 Johannes Berg wrote:
->=20
+> 
 > On Thu, 2024-10-24 at 21:09 +0900, Hajime Tazaki wrote:
-> > This commit updates the behavior of signal handling under !MMU
-> > environment. 1) the stack preparation for the signal handlers and
-> > 2) retoration of stack after rt_sigreturn(2) syscall.  Those are=A0
->=20
-> typo: restoration
+> > 
+> >  config MMU
+> > -	bool
+> > +	bool "MMU-based Paged Memory Management Support"
+> >  	default y
+> 
+> "if !64bit" or something
+
+not sure if I understand correctly but where do you suggest to add "if
+!64bit" in this block ?
+
+> >  config UML_DMA_EMULATION
+> > @@ -187,8 +190,14 @@ config MAGIC_SYSRQ
+> >  	  The keys are documented in <file:Documentation/admin-guide/sysrq.rst>. Don't say Y
+> >  	  unless you really know what this hack does.
+> >  
+> > +config ARCH_FORCE_MAX_ORDER
+> > +	int "Order of maximal physically contiguous allocations"
+> > +	default "10" if MMU
+> > +	default "16" if !
+> 
+> Should there even a be user prompt for it?
+> Perhaps "if EXPERT" or something?
+
+I think it's already user-editable but your suggestion is to limit
+with 'if EXPERT' ?
+
+> >  config KERNEL_STACK_ORDER
+> >  	int "Kernel stack size order"
+> > +	default 3 if !MMU
+> >  	default 2 if 64BIT
+> >  	range 2 10 if 64BIT
+> >  	default 1 if !64BIT
+> 
+> give a different range for !MMU?
 
 will fix it.
-
-> > @@ -562,6 +574,20 @@ SYSCALL_DEFINE0(rt_sigreturn)
-> >  	unsigned long sp =3D PT_REGS_SP(&current->thread.regs);
-> >  	struct rt_sigframe __user *frame =3D
-> >  		(struct rt_sigframe __user *)(sp - sizeof(long));
-> > +#ifndef CONFIG_MMU
-> > +	/**
-> > +	 * we enter here with:
-> > +	 *
-> > +	 * __restore_rt:
-> > +	 *     mov $15, %rax
-> > +	 *     call *%rax (translated from syscall)
-> > +	 *
-> > +	 * (code is from musl libc)
-> > +	 * so, stack needs to be popped of "call"ed address before
-> > +	 * looking at rt_sigframe.
-> > +	 */
-> > +	frame =3D (struct rt_sigframe __user *)((unsigned long)frame + sizeof=
-(long));
-> > +#endif
-> >  	struct ucontext __user *uc =3D &frame->uc;
->=20
-> you shouldn't put code in the middle of variable declarations ...
->=20
-> I see why, but probably just split #if/#else/#endif?
-
-thanks, will reformat it to make it clear.
 
 -- Hajime
 
