@@ -4,65 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BFCAD0C608
-	for <linux-um@archiver.kernel.org>; Fri, 25 Oct 2024 13:10:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A73F8D0C608
+	for <linux-um@archiver.kernel.org>; Fri, 25 Oct 2024 13:11:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	References:In-Reply-To:Subject:Cc:To:From:Message-ID:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:In-Reply-To:Subject:Cc:To:From:
+	Message-ID:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=8g7ZmW5QnAbr859P/zGqxw+negR4VDy9UNHoDBgqUNw=; b=PD9hiUzMccHpmJalf1klIOSn8I
-	rQIN9CxD6iDGvtCMWbnaQnKM3K2FaM6EYZcJjYBLGsokvDjN4NJ18dfc+Qwi2kzYltJjjsh629vF4
-	njvKC4Ur7YlD4y+r99d+uhdZ24qngmhtFUsrEFbjdRHvxwKgc71zki3FV052Qtvf4GIpS0f/qhJzX
-	ZvbaiadM1T3t/onPeMABOKdfoz0PqYR6jFHxpj3LXGGVUk35fay0Ez5AnOZlPdbMkPH8ZssrV3X4h
-	NyOHT/ba+ZGlUm6Ju6MZppDJafs9B/vfcGLZwCt/PhMkk8r20+KgWKGvVo9S45eoi/se7dvCWeAiI
-	/hinUv5g==;
+	bh=zGfX5wBS8pFfDKQLwtMCJV8p/XhvW9eMHAAn67hgsnc=; b=RZsyO7YJMOzkspDQY9RqgkXHlv
+	LEuoHYS7lhpuKvevP02Z0IFasHblB79RIIT9gKa6ydo7sCUHOngKuFflc7BfWpJZCbIuAmlVUXcmS
+	kz3CZ+0UbIC5rntzjG0I2G8kRLkI6yMxbqmnCbfZ9/wEbXicm1Zrz0mucneTrvo8bb5+874v1zU2M
+	djdLSMZS06lLLbZmKhzYwC9sx9HX60XnZ/1A7hF9pInYv+aMu+FrUL8oE92Ie2IVEcmVZgoF4flSB
+	nD4Zn6O6IHlD/cAvcBNb7NQqCfawBv7Xo8l8TrPQM/thaRJWtBkAcDBSg9PbxV7BW9oRNrRXew4Kg
+	vF+iDCyA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4K5P-00000003lsd-0lOl;
-	Fri, 25 Oct 2024 13:10:39 +0000
-Received: from mail-pf1-x435.google.com ([2607:f8b0:4864:20::435])
+	id 1t4K5t-00000003lyn-1fgZ;
+	Fri, 25 Oct 2024 13:11:09 +0000
+Received: from mail-pl1-x62d.google.com ([2607:f8b0:4864:20::62d])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4Jtr-00000003k6K-19YN
+	id 1t4K01-00000003ky0-0gE5
 	for linux-um@lists.infradead.org;
-	Fri, 25 Oct 2024 12:58:44 +0000
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-71e52582cf8so1445737b3a.2
-        for <linux-um@lists.infradead.org>; Fri, 25 Oct 2024 05:58:42 -0700 (PDT)
+	Fri, 25 Oct 2024 13:05:06 +0000
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-20cf3e36a76so19744345ad.0
+        for <linux-um@lists.infradead.org>; Fri, 25 Oct 2024 06:05:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729861122; x=1730465922; darn=lists.infradead.org;
-        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
-         :message-id:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8g7ZmW5QnAbr859P/zGqxw+negR4VDy9UNHoDBgqUNw=;
-        b=ej8nBBs2VOgduFM7062o6c/LwvXyCCxsGEe+AW3OJzOYjB8btkRpjDB0T45k8wPCqT
-         7SJ1WrZQkT0MMgYVOCFyVmW1Q+LRx9cSQIJ4liEAziX7EOwy/GG6dDSz272A0IYP12Z0
-         Oj9sze3JhpyDY/FLevrVEuT5nXRqa84oHtJAXClxWGgAfLkaccv4piccMJZeXu/w+MYq
-         c2eEcqPuiCb9a/ferrDhdVAk7rYp3UjvoGIzQrEJ/cgRGchz/ecFe1wkY8u/79kKPC+c
-         njPhOjzYhZbRtYR47+Mi7aPNzGA/UCklWWX3rX0ri/l3NacIW6hewqN6DMSUz4K+KnEl
-         OcnA==
+        d=gmail.com; s=20230601; t=1729861504; x=1730466304; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=zGfX5wBS8pFfDKQLwtMCJV8p/XhvW9eMHAAn67hgsnc=;
+        b=B4Kyioc+ZOVjMGjsRY+yIlyxX+Cm+bSLb0jzwfeHFuEf4NXW+wzDtDS/i0VFYsuGmo
+         mK0eaeyexbFP0WEYV3+5H3SC/NCwUTlE2vF+7ch/ZU8+XKYK+0NDV+URqzJBfRV7cs8h
+         dyFssk/J7tAbegXaxVhnqfRU72C15V0xNhPg0OVlQlMSqchjUoguFytEM+54617V5ahQ
+         SZKFai9KilsDsicm6UhIkPJ/87X7QplMEc+q1h7Yu5MJLQasGhnRciRkGHLxpN5jBusy
+         +y+PW1ugCZ559fOx6I6iijAvQxHeKhbwtUrS5/+UqzxHViHr33UeQCuRmH76W0FxgGxb
+         rBvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729861122; x=1730465922;
-        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
-         :message-id:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8g7ZmW5QnAbr859P/zGqxw+negR4VDy9UNHoDBgqUNw=;
-        b=kfDrEjCoxYZZfVlBBVFeh79O6HdpLVMbFlxQM0sty46Wf3wUuFeFb7tfCYrU/jHV10
-         9CqUNINSs7Cp4CdZwKT3jepmihaOZqitUyZyO7GIN5eQBzFMoDDxM4Srum+aZV0apTds
-         w+Kzr9Zj4ippPqL596yZlJZt8mLBcIfnSplC+AtqvUv13l5VgzgOx7anw7P5q0EDCynW
-         g91DwwebDHIMxaMaCz4HM8UDfSYV0ifwRyAKe3j7DszfmSYzTrK1s65fgY6McPzb3sVz
-         W0DHTS2ZJNBZWzAWQFI4MNnonPifeCVGMLW/xYbfmhbfKSTWR+OSKYon4XmUHafkZMKg
-         VwsQ==
-X-Gm-Message-State: AOJu0YzoF1y7isJLI5zdUyyUZpgwIk3qaxng08KEghW3S7l+Qde0Q2/S
-	QZzJ4e4/T5Bv7fM6vTBFWx0iqTyFqRk0W+/htt2UNnik/ZSs9Wjc
-X-Google-Smtp-Source: AGHT+IFrPnuNtx78Q0G777aG+TBblTsKuSpSvLQCljyh0lpnPRsqVg2Il6H4yhTfPcKYT3vgBO9SXg==
-X-Received: by 2002:a05:6a00:22d3:b0:71e:3b51:e850 with SMTP id d2e1a72fcca58-72030b62bffmr13352943b3a.2.1729861121862;
-        Fri, 25 Oct 2024 05:58:41 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1729861504; x=1730466304;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zGfX5wBS8pFfDKQLwtMCJV8p/XhvW9eMHAAn67hgsnc=;
+        b=Jb5YqqOxMPNPJe7GjdJ2wAsKjc5muldDpdU5/o6E/CZFaXHBP6KL7elg6P8U6+6+zr
+         0GpuMrex+zN2C+apzGFYq0vTAMkzFPtR9foh5pF9FimkwUGwqlxd2n9KRRyhuxiC/w6e
+         w15cNtfJa4C/YPDOSWIJcYQ+dNULspc+lz3P0PjzD92lAGYfCSQwoZe7maGrpiYlmBBF
+         jIF/rYPXxk+8MNaSen+6yMWpvDHKZyp3iza6sWqzfqo+syn4KZWnUDU72mqjib3Vbxva
+         lAL4e+0eTyxLTyK65RMiTUvak0YrwM33h/WR/Mpe7c7wgKjOzsPI5q4n70TIWQqQQ4zF
+         BrFQ==
+X-Gm-Message-State: AOJu0YyXD9mAsSV1slxYpF1R88wZJutXl8E+jgS8yDHMCQuWaguPr6jb
+	RDA+Y79iToEi3rmBMYTd2Qq7VP5TqK6nbJoxlF6OwIAKm3RLRn47
+X-Google-Smtp-Source: AGHT+IGkXk/mSSBWmb74g9ztFkHLXsHVasR2zn6lvjfmFyKtUUQAvCEZF8E7lmYlCVYPuDg1EtjCDQ==
+X-Received: by 2002:a17:902:e80a:b0:20c:693b:6578 with SMTP id d9443c01a7336-20fa9e5ecfbmr138046645ad.25.1729861504177;
+        Fri, 25 Oct 2024 06:05:04 -0700 (PDT)
 Received: from mars.local.gmail.com (221x241x217x81.ap221.ftth.ucom.ne.jp. [221.241.217.81])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72057920340sm1005722b3a.6.2024.10.25.05.58.39
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-210bc08676csm9018635ad.304.2024.10.25.06.05.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Oct 2024 05:58:41 -0700 (PDT)
-Date: Fri, 25 Oct 2024 21:58:37 +0900
-Message-ID: <m2plnonxtu.wl-thehajime@gmail.com>
+        Fri, 25 Oct 2024 06:05:03 -0700 (PDT)
+Date: Fri, 25 Oct 2024 22:04:59 +0900
+Message-ID: <m2o738nxj8.wl-thehajime@gmail.com>
 From: Hajime Tazaki<thehajime@gmail.com>
 To: johannes@sipsolutions.net
 Cc: linux-um@lists.infradead.org,
@@ -70,17 +71,18 @@ Cc: linux-um@lists.infradead.org,
 	richard@nod.at,
 	anton.ivanov@cambridgegreys.com,
 	ricarkol@google.com
-Subject: Re: [RFC PATCH 06/13] x86/um: nommu: process/thread handling
-In-Reply-To: <002f4841451479c154acae08353b8091ffd91472.camel@sipsolutions.net>
+Subject: Re: [RFC PATCH 09/13] x86/um: nommu: signal handling
+In-Reply-To: <1bc0681692a102674c73d10132f3228301cc784b.camel@sipsolutions.net>
 References: <cover.1729770373.git.thehajime@gmail.com>
-	<88b3cdd8cd1437e45184fd26c6df5d7ceb93de55.1729770373.git.thehajime@gmail.com>
-	<002f4841451479c154acae08353b8091ffd91472.camel@sipsolutions.net>
+	<f3c873365cccce18b2f1889984bf521d3cfb68f2.1729770373.git.thehajime@gmail.com>
+	<1bc0681692a102674c73d10132f3228301cc784b.camel@sipsolutions.net>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241025_055843_343851_993CC83F 
-X-CRM114-Status: GOOD (  20.02  )
+X-CRM114-CacheID: sfid-20241025_060505_229696_3DC3B6E0 
+X-CRM114-Status: GOOD (  14.74  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,71 +98,44 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 
-On Fri, 25 Oct 2024 18:22:29 +0900,
+On Fri, 25 Oct 2024 18:30:41 +0900,
 Johannes Berg wrote:
-> 
+>=20
 > On Thu, 2024-10-24 at 21:09 +0900, Hajime Tazaki wrote:
-> > Since ptrace facility isn't used under !MMU of UML, there is different
-> > code path to invoke proceeses/threads; on an entry to the syscall
-> 
-> typo: processes
-
-thanks. (I thought checkpatch.pl detects them..)
-
-> >  /* Called magically, see new_thread_handler above */
-> >  static void fork_handler(void)
-> >  {
-> > -	schedule_tail(current->thread.prev_sched);
-> > +	if (current->thread.prev_sched != NULL)
-> 
-> nit: no need for "!= NULL"
+> > This commit updates the behavior of signal handling under !MMU
+> > environment. 1) the stack preparation for the signal handlers and
+> > 2) retoration of stack after rt_sigreturn(2) syscall.  Those are=A0
+>=20
+> typo: restoration
 
 will fix it.
 
-> > @@ -134,6 +138,21 @@ static void fork_handler(void)
-> >  
-> >  	current->thread.prev_sched = NULL;
-> >  
+> > @@ -562,6 +574,20 @@ SYSCALL_DEFINE0(rt_sigreturn)
+> >  	unsigned long sp =3D PT_REGS_SP(&current->thread.regs);
+> >  	struct rt_sigframe __user *frame =3D
+> >  		(struct rt_sigframe __user *)(sp - sizeof(long));
 > > +#ifndef CONFIG_MMU
-> > +	/*
-> > +	 * This fork can only come from libc's vfork, which
-> > +	 * does this:
-> > +	 *	popq %%rdx;
-> > +	 *	call *%0; // vsyscall
-> > +	 *	pushq %%rdx;
-> > +	 * %rdx stores the return address which is stored
-> > +	 * at pt_regs[HOST_IP] at the moment. We still
-> > +	 * need to pop the pushed address by "call" though,
-> > +	 * so this is what this next line does.
+> > +	/**
+> > +	 * we enter here with:
+> > +	 *
+> > +	 * __restore_rt:
+> > +	 *     mov $15, %rax
+> > +	 *     call *%rax (translated from syscall)
+> > +	 *
+> > +	 * (code is from musl libc)
+> > +	 * so, stack needs to be popped of "call"ed address before
+> > +	 * looking at rt_sigframe.
 > > +	 */
-> > +	if (current->thread.regs.regs.gp[HOST_ORIG_AX] == __NR_vfork)
-> > +		current->thread.regs.regs.gp[REGS_SP_INDEX] += 8;
+> > +	frame =3D (struct rt_sigframe __user *)((unsigned long)frame + sizeof=
+(long));
 > > +#endif
-> 
-> Kind of ugly ... but I guess not much choice.
+> >  	struct ucontext __user *uc =3D &frame->uc;
+>=20
+> you shouldn't put code in the middle of variable declarations ...
+>=20
+> I see why, but probably just split #if/#else/#endif?
 
-(indeed)
-
-> > +#ifndef CONFIG_MMU
-> > +	current_top_of_stack = task_top_of_stack(to);
-> > +	current_ptregs = (long)task_pt_regs(to);
-> > +
-> > +	if ((to->thread.regs.regs.gp[FS_BASE / sizeof(unsigned long)] == 0)
-> > +	    || (to->mm == NULL))
-> 
-> Put || on the previous line, "!to->mm"
-
-will fix it.
-
-> > +		return;
-> > +
-> > +	// rkj: this changes the FS on every context switch
-> 
-> Not sure we're allowing C99 comments yet, and there shouldn't be a "rkj"
-> tag either :)
-
-this is my mistake; forgot to remove those private tags.
-will fix it.
+thanks, will reformat it to make it clear.
 
 -- Hajime
 
