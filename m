@@ -4,62 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 30F03D0C5FB
-	for <linux-um@archiver.kernel.org>; Fri, 25 Oct 2024 10:31:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2B05D0C60B
+	for <linux-um@archiver.kernel.org>; Fri, 25 Oct 2024 13:10:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	References:In-Reply-To:Subject:Cc:To:From:Message-ID:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Z+I+eCDo4az0ex5eGjtpfYbV5PSXIcGBVngj6MP5K9Q=; b=EdER/erLlO/7gya3Mx6XKDmUep
-	mz95Zyq33GW/LLm/oDNGf1AbLFosCOPd3d59N7LDdsh3H3Z4AvOHgzPGxYpJuvXacbxe5NVMALaW+
-	/IxhJFdY55WYw4ZWvv6/9+ds4n5CzWWM36aZRnQwW4tu6feW5BAJznUiTXIozXlRQQUSO5i+iZf4W
-	1L53/ClFHhqpZKgKK+nICw+twyiC5m4Q0xVKG0PudXmI2Lcd2baeWl/U33hlH0WJzAqPc7Ey98Avo
-	FuK4HNjYWcvFQDaroS4gCoQhPCqItFSD4TXVIUuWYZ5Esj4waua56HoAyjEXz06OjnkXLHHneevqk
-	sw4ST/UA==;
+	bh=5E+5IGmjD5RYhRDoYf+p51x7iks9smyytpRiSxJ79eU=; b=uvpg6LYE4hTqExtsvMBb/noq65
+	Q395Kvsg1RNPg0N72shhob8quyOXEyvBaYIWSxxPZXdQ5rSFiiSGQ8kAPtDF33Y6pQXxldWQwl25z
+	oOjFatD5B7UKB7Q0NJiAXxvgrm51rjIBBHcJm1wZyFgZjwGpcMHQ5XkpsLVn0VzJF8D8jTM5eVzts
+	kE82s7BG/DNwwHcgFI91dmM8uE5isf9MH+jftrZjl5f6XvjgdE757AIwt7+V681qf4Omruy4u9lyZ
+	Y8eMOgbQfhhcrEG9Ixpr8+bADIvX261qs0B83dTWVN4vidyxx6tJwM2hqqpyrLiPpW+5ToJtHblR4
+	jU9qNGZQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4HbB-00000003Muc-1E6V;
-	Fri, 25 Oct 2024 10:31:17 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1t4K5D-00000003lnc-47rX;
+	Fri, 25 Oct 2024 13:10:27 +0000
+Received: from mail-pf1-x42f.google.com ([2607:f8b0:4864:20::42f])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4GTg-000000039F1-2b0M
+	id 1t4JpY-00000003jae-1oHg
 	for linux-um@lists.infradead.org;
-	Fri, 25 Oct 2024 09:19:29 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=Z+I+eCDo4az0ex5eGjtpfYbV5PSXIcGBVngj6MP5K9Q=;
-	t=1729847968; x=1731057568; b=qVdNavlTrCt5pJY4rMm5iVCC1X7fKhRzViRF0yLSjRalwfQ
-	+tRO4D7NH/bVk7EIhAL5ZlucXEuPTgf31zDuSxn4UCt9lVOSu76MIHAPZHYLAKVpfYrZdFLPjKAOY
-	TdwtQ8s/ce5HbJ3pz3/sNd1A73L9xZpttLcQ9Bt30i5vnRgt+VO2ZlnpXkqzA5372dRtpipilN6AB
-	+uuhBaT8xXImjkWppnozm9bf6THcaGSvOSda/ezMikZGWDxygRoEViz8fLAn6VYtx9cTiw0ONMja5
-	ttJ5D/Jd85ej4nYLswATXw7MSXVYbnzOHv+T7yqxsOcxFK5f2YsADVwuKk5xpYhg==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1t4GTe-00000004SUW-2931;
-	Fri, 25 Oct 2024 11:19:26 +0200
-Message-ID: <75c9b237111431362458ced4c5213b74ca8fcb13.camel@sipsolutions.net>
-Subject: Re: [RFC PATCH 05/13] x86/um: nommu: syscall translation by zpoline
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Hajime Tazaki <thehajime@gmail.com>, linux-um@lists.infradead.org, 
-	jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com
-Cc: ricarkol@google.com
-Date: Fri, 25 Oct 2024 11:19:25 +0200
-In-Reply-To: <2f3537884533232ab2ef2937e392d32736527bdc.1729770373.git.thehajime@gmail.com>
+	Fri, 25 Oct 2024 12:54:45 +0000
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-7205b6f51f3so258584b3a.1
+        for <linux-um@lists.infradead.org>; Fri, 25 Oct 2024 05:54:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729860855; x=1730465655; darn=lists.infradead.org;
+        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
+         :message-id:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5E+5IGmjD5RYhRDoYf+p51x7iks9smyytpRiSxJ79eU=;
+        b=QfeTgdlGXIES7Ss2JVv7MdTlNUE9RSxVrWX+aXC72mNF5k//SoqLUTRXBC3DOLKKgs
+         +sND9AYQ/EKyOjHV0gPj8jVR1qx7nVQiR/MYV/cFJcF3Q5u2uSCOQwSSvEoEHfiP4b/U
+         ywNL/u0EbxOba0jfq335Q6S/HtFmLbTdHwuKjSYhiboUJouj6xUMdxObAkREA5Au06g7
+         tL0rqg67BEHLvobrW+Endi9EbRt5BJU5XvdGYY1BrOpKOoqZyFmeu4EmzsI+YyFLd2rh
+         70Frdf6kKhy1Wk8NQzg8r0wkJL1hHr/paG4O7y4P/hQb9FiiYQ/UayFNNGnhnl1kK5/C
+         LMWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729860855; x=1730465655;
+        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
+         :message-id:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5E+5IGmjD5RYhRDoYf+p51x7iks9smyytpRiSxJ79eU=;
+        b=FPToput2NIuH3mHDjHvTkb4XcJ1WlKGg3W/9d6kzVxwBOn6ob++Q7mPaXEF9+HAfrO
+         lf1EntTnq/LPlY9uN22HowjUwp+u5dlgTkfGfY3mZKVyOBkkAuW4myeMAha9DRMW7vFW
+         /gGKVhZ6fGBGfLWzCdROY7A4L+a9tRXgkmpYzSf9C9dLtmQX8jd/CcAQjShLRAKPTi1A
+         y7SFVpDoc+OhyYYZQWAH/5gDEKmnW/ZiKENY/7VCnFeDzaduEASS/j/GJSiWASimZmHh
+         9lG/cGwz6lqo+8x+sL4U9SO3+VlIMmLzRWhS1SOG9tTYEx1vAaiqDepx0TAaenPOypUj
+         0Xiw==
+X-Gm-Message-State: AOJu0Yw/XuIq4ewO7j8LpoIoKDYsr8ICExkIvKQZh3/PV49eq7YKhK7P
+	U14IKPIk3b+eTnMS48QwQ6LMWbvaYT3PZMrl/IRPHIwybPaxVJx5
+X-Google-Smtp-Source: AGHT+IEJsV32RYzl+idFh+LcUZ24o+g7OnwiMcuwcZxoiEpCuqxm4D5Rp6MG7Ye+xrL21cJwGYJ3oQ==
+X-Received: by 2002:a05:6a20:d808:b0:1d4:fc66:30e8 with SMTP id adf61e73a8af0-1d978aeaee5mr11694975637.10.1729860854632;
+        Fri, 25 Oct 2024 05:54:14 -0700 (PDT)
+Received: from mars.local.gmail.com (221x241x217x81.ap221.ftth.ucom.ne.jp. [221.241.217.81])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72057a0d025sm991964b3a.101.2024.10.25.05.54.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Oct 2024 05:54:13 -0700 (PDT)
+Date: Fri, 25 Oct 2024 21:54:09 +0900
+Message-ID: <m2v7xgny1a.wl-thehajime@gmail.com>
+From: Hajime Tazaki<thehajime@gmail.com>
+To: johannes@sipsolutions.net
+Cc: linux-um@lists.infradead.org,
+	jdike@addtoit.com,
+	richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	ricarkol@google.com,
+	ebiederm@xmission.com,
+	kees@kernel.org,
+	viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	jack@suse.cz,
+	linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC PATCH 02/13] x86/um: nommu: elf loader for fdpic
+In-Reply-To: <d24d5197bff15d64e6ac14f538f9718403e478f6.camel@sipsolutions.net>
 References: <cover.1729770373.git.thehajime@gmail.com>
-	 <2f3537884533232ab2ef2937e392d32736527bdc.1729770373.git.thehajime@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-2.fc40) 
-MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+	<db0cc5bc7e55431f1ac6580aa1d983f8cfc661fb.1729770373.git.thehajime@gmail.com>
+	<d24d5197bff15d64e6ac14f538f9718403e478f6.camel@sipsolutions.net>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241025_021928_680366_F0E3B11E 
-X-CRM114-Status: GOOD (  17.85  )
+X-CRM114-CacheID: sfid-20241025_055416_492720_0EF3C01F 
+X-CRM114-Status: GOOD (  16.37  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,84 +102,65 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, 2024-10-24 at 21:09 +0900, Hajime Tazaki wrote:
-> This commit adds a mechanism to hook syscalls for unmodified userspace
-> programs used under UML in !MMU mode. The mechanism, called zpoline,
-> translates syscall/sysenter instructions with `call *%rax`, which can be
-> processed by a trampoline code also installed upon an initcall during
-> boot. The translation is triggered by elf_arch_finalize_exec(), an arch
-> hook introduced by another commit.
->=20
-> All syscalls issued by userspace thus redirected to a speicific function,
 
-typo: "specific"
+Hello Johannes,
 
-> +	if (down_write_killable(&mm->mmap_lock)) {
-> +		err =3D -EINTR;
-> +		return err;
+On Fri, 25 Oct 2024 17:56:51 +0900,
+Johannes Berg wrote:
+> 
+> On Thu, 2024-10-24 at 21:09 +0900, Hajime Tazaki wrote:
+> > 
+> > +#ifndef CONFIG_MMU
+> > +#include <asm-generic/bug.h>
+> 
+> Not sure that makes so much sense in the middle of the file, no harm
+> always having it?
 
-?
+agree.
 
+> > +static inline const struct user_regset_view *task_user_regset_view(
+> > +	struct task_struct *task)
+> 
+> What happened to indentation here ;-)
+> 
+> static inline const ..... *
+> task_user_regset_view(....)
+> 
+> would be far easier to read.
 
-What happens if the binary JITs some code and you don't find it? I don't
-remember from your talk - there you seemed to say this was fine just
-slow, but that was zpoline in a different context (container)?
+fine, will fix it in the next revision.
 
-Perhaps UML could additionally install a seccomp filter or something on
-itself while running a userspace program? Hmm.
+> > +++ b/arch/x86/um/asm/module.h
+> > @@ -2,23 +2,6 @@
+> >  #ifndef __UM_MODULE_H
+> >  #define __UM_MODULE_H
+> >  
+> > -/* UML is simple */
+> > -struct mod_arch_specific
+> > -{
+> > -};
+> > -
+> > -#ifdef CONFIG_X86_32
+> > -
+> > -#define Elf_Shdr Elf32_Shdr
+> > -#define Elf_Sym Elf32_Sym
+> > -#define Elf_Ehdr Elf32_Ehdr
+> > -
+> > -#else
+> > -
+> > -#define Elf_Shdr Elf64_Shdr
+> > -#define Elf_Sym Elf64_Sym
+> > -#define Elf_Ehdr Elf64_Ehdr
+> > -
+> > -#endif
+> > +#include <asm-generic/module.h>
+> >  
+> >  #endif
+> 
+> That seems like a worthwhile cleanup on its own, but you should be able
+> to just remove the file entirely?
 
+agree. will add module.h to arch/um/include/asm/Kbuild.
 
-> +/**
-> + * setup trampoline code for syscall hooks
-> + *
-> + * the trampoline code guides to call hooked function, __kernel_vsyscall
-> + * in this case, via nop slides at the memory address zero (thus, zpolin=
-e).
-> + *
-> + * loaded binary by exec(2) is translated to call the function.
-> + */
-> +static int __init setup_zpoline_trampoline(void)
-> +{
-> +	int i, ret;
-> +	int ptr;
-> +
-> +	/* zpoline: map area of trampoline code started from addr 0x0 */
-> +	__zpoline_start =3D 0x0;
-> +
-> +	ret =3D os_map_memory((void *) 0, -1, 0, 0x1000, 1, 1, 1);
-
-(UM_)PAGE_SIZE?
-
-> +	/**
-> +	 * FIXME: shit red zone area to properly handle the case
-
-"shift"? :)
-
-> +	 */
-> +
-> +	/**
-> +	 * put code for jumping to __kernel_vsyscall.
-> +	 *
-> +	 * here we embed the following code.
-> +	 *
-> +	 * movabs [$addr],%r11
-> +	 * jmpq   *%r11
-> +	 *
-> +	 */
-> +	ptr =3D NR_syscalls;
-> +	/* 49 bb [64-bit addr (8-byte)]    movabs [64-bit addr (8-byte)],%r11 *=
-/
-> +	__zpoline_start[ptr++] =3D 0x49;
-> +	__zpoline_start[ptr++] =3D 0xbb;
-> +	__zpoline_start[ptr++] =3D ((uint64_t)
-> +				  __kernel_vsyscall >> (8 * 0)) & 0xff;
-
-&0xff seems pointless with a u8 array?
-
-> +	/* permission: XOM (PROT_EXEC only) */
-> +	ret =3D os_protect_memory(0, 0x1000, 0, 0, 1);
-
-(UM_)PAGE_SIZE?
-
-johannes
+-- Hajime
 
