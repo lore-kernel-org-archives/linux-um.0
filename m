@@ -4,66 +4,65 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 159B1D0C60C
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8BFCAD0C608
 	for <linux-um@archiver.kernel.org>; Fri, 25 Oct 2024 13:10:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Subject:Cc:To:From:
-	Message-ID:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	References:In-Reply-To:Subject:Cc:To:From:Message-ID:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=SmyQGkdw6K0z6q8q3yMAjXpEpOcZevtiuqet6/2pXH4=; b=HgaVWV8XOL4bsh/mHviXs/bIaM
-	vYB+3sNQUE/tMnjcZoxZplgPI5N8dlCSya90/p9a7ti2Ai1VyFeZhqeO1oPXgN+KGdNOOZesY0Vxm
-	+WcIMr2F7QtD/ijaH/4qNkkkZPYsysaIESYduZs4LSyP4MIkA+J9+C2KBz/N9h3suc9KPr/zkQG/l
-	5HKhHXlEfnAKE4puBdgqMkU3EV9me3LhddEcPmB7JZNacvv33ahMFKkitKV1pHG8u2eYnPIIxns2g
-	v58Py4jmLL3jiEYHdsOeyvW6mZxobhL8u2CQ1VKBbzU0pitOfKMPoZRs+Dk0QPIlBTwmyf+d/JKXF
-	wnFOB/kg==;
+	bh=8g7ZmW5QnAbr859P/zGqxw+negR4VDy9UNHoDBgqUNw=; b=PD9hiUzMccHpmJalf1klIOSn8I
+	rQIN9CxD6iDGvtCMWbnaQnKM3K2FaM6EYZcJjYBLGsokvDjN4NJ18dfc+Qwi2kzYltJjjsh629vF4
+	njvKC4Ur7YlD4y+r99d+uhdZ24qngmhtFUsrEFbjdRHvxwKgc71zki3FV052Qtvf4GIpS0f/qhJzX
+	ZvbaiadM1T3t/onPeMABOKdfoz0PqYR6jFHxpj3LXGGVUk35fay0Ez5AnOZlPdbMkPH8ZssrV3X4h
+	NyOHT/ba+ZGlUm6Ju6MZppDJafs9B/vfcGLZwCt/PhMkk8r20+KgWKGvVo9S45eoi/se7dvCWeAiI
+	/hinUv5g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4K5O-00000003ls8-2jmY;
-	Fri, 25 Oct 2024 13:10:38 +0000
-Received: from mail-pl1-x633.google.com ([2607:f8b0:4864:20::633])
+	id 1t4K5P-00000003lsd-0lOl;
+	Fri, 25 Oct 2024 13:10:39 +0000
+Received: from mail-pf1-x435.google.com ([2607:f8b0:4864:20::435])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4Jte-00000003k3H-1h1Y
+	id 1t4Jtr-00000003k6K-19YN
 	for linux-um@lists.infradead.org;
-	Fri, 25 Oct 2024 12:58:31 +0000
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-20cb89a4e4cso14646065ad.3
-        for <linux-um@lists.infradead.org>; Fri, 25 Oct 2024 05:58:29 -0700 (PDT)
+	Fri, 25 Oct 2024 12:58:44 +0000
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-71e52582cf8so1445737b3a.2
+        for <linux-um@lists.infradead.org>; Fri, 25 Oct 2024 05:58:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729861109; x=1730465909; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=SmyQGkdw6K0z6q8q3yMAjXpEpOcZevtiuqet6/2pXH4=;
-        b=ZUVkr8uKJpAmxnmLuXMpLH0yikt6Gjxt3NDiC8lY35kvMUBbTaIiFXFejRZegcPRqm
-         Qu+lFiR0IOhCMfhd/DjyfCxckXVCHDRyvz+zMEtrCuCvFGuNUfdfeRBHkHbfbb04qLqX
-         Dw86LDDLdXLADNK7eAy0/n8YNoz1EnmGrZNbRMRHgrAhOpmI5ST1F29g63+HnlKd3I6X
-         AgHMmG8dpTJorxOBtDuvNIMTI9v1iqc+jZ3YdlA/OPN2umhAEdAqUvNyXPY157ildEJ+
-         5lrfxUdkf1sgxXxsvAAN7lwoFHbhlbyvtbcmHwBuJnVIQu75cTJb2x80IhpF7fcct5f+
-         zM/Q==
+        d=gmail.com; s=20230601; t=1729861122; x=1730465922; darn=lists.infradead.org;
+        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
+         :message-id:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8g7ZmW5QnAbr859P/zGqxw+negR4VDy9UNHoDBgqUNw=;
+        b=ej8nBBs2VOgduFM7062o6c/LwvXyCCxsGEe+AW3OJzOYjB8btkRpjDB0T45k8wPCqT
+         7SJ1WrZQkT0MMgYVOCFyVmW1Q+LRx9cSQIJ4liEAziX7EOwy/GG6dDSz272A0IYP12Z0
+         Oj9sze3JhpyDY/FLevrVEuT5nXRqa84oHtJAXClxWGgAfLkaccv4piccMJZeXu/w+MYq
+         c2eEcqPuiCb9a/ferrDhdVAk7rYp3UjvoGIzQrEJ/cgRGchz/ecFe1wkY8u/79kKPC+c
+         njPhOjzYhZbRtYR47+Mi7aPNzGA/UCklWWX3rX0ri/l3NacIW6hewqN6DMSUz4K+KnEl
+         OcnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729861109; x=1730465909;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SmyQGkdw6K0z6q8q3yMAjXpEpOcZevtiuqet6/2pXH4=;
-        b=X5/QMJdCsVzsPi3dbAeNi0xg/4wbUP3MKvJ90WJvdAmSZJS2YPByniNoz01ae5Knuq
-         dTUV53xeE39UjvH2U0ta9Pr7kVY2W61Ao4f+6lkObc5eEHRNQtxM/smRJdvtleWxfO8L
-         2a3QusL1KK5mDGzxNf9khPfL1wmPTEq7rCzYdIotndMPPADB0A/0ZE1r1lQT356QxKEk
-         l1Vxrdo4GyxkAa9TFK7zDljWXD0/Z2jWNt/bDhaVKwElalfqaK63airz39f4eCjwDweJ
-         KufPzGtusV2dC4UsAMAtsN7NzWUx9CB61qfAEkPvbMKaELO7BERjYWFQFxczP6j5g+YP
-         wRVw==
-X-Gm-Message-State: AOJu0YzA3dnoNVEndM5FpWGZV8umz+ICOYZiE+k2PNjqfBv3cvYg9td+
-	N+Rk1eEskL/BA6RWqqYC/QaFJSM/0Ufu1LyD4RvmXQhems6Ez/Yv
-X-Google-Smtp-Source: AGHT+IHq7PC0UlfFKvIDe5YqTErNXjajKX3OcZYNWR5B7qjaJT82hwQ7Xqzd/LEuuZDQ7uIAz4KTag==
-X-Received: by 2002:a17:902:d503:b0:20e:57c8:6aae with SMTP id d9443c01a7336-20fb98f2bcemr68159065ad.3.1729861109068;
-        Fri, 25 Oct 2024 05:58:29 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1729861122; x=1730465922;
+        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
+         :message-id:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8g7ZmW5QnAbr859P/zGqxw+negR4VDy9UNHoDBgqUNw=;
+        b=kfDrEjCoxYZZfVlBBVFeh79O6HdpLVMbFlxQM0sty46Wf3wUuFeFb7tfCYrU/jHV10
+         9CqUNINSs7Cp4CdZwKT3jepmihaOZqitUyZyO7GIN5eQBzFMoDDxM4Srum+aZV0apTds
+         w+Kzr9Zj4ippPqL596yZlJZt8mLBcIfnSplC+AtqvUv13l5VgzgOx7anw7P5q0EDCynW
+         g91DwwebDHIMxaMaCz4HM8UDfSYV0ifwRyAKe3j7DszfmSYzTrK1s65fgY6McPzb3sVz
+         W0DHTS2ZJNBZWzAWQFI4MNnonPifeCVGMLW/xYbfmhbfKSTWR+OSKYon4XmUHafkZMKg
+         VwsQ==
+X-Gm-Message-State: AOJu0YzoF1y7isJLI5zdUyyUZpgwIk3qaxng08KEghW3S7l+Qde0Q2/S
+	QZzJ4e4/T5Bv7fM6vTBFWx0iqTyFqRk0W+/htt2UNnik/ZSs9Wjc
+X-Google-Smtp-Source: AGHT+IFrPnuNtx78Q0G777aG+TBblTsKuSpSvLQCljyh0lpnPRsqVg2Il6H4yhTfPcKYT3vgBO9SXg==
+X-Received: by 2002:a05:6a00:22d3:b0:71e:3b51:e850 with SMTP id d2e1a72fcca58-72030b62bffmr13352943b3a.2.1729861121862;
+        Fri, 25 Oct 2024 05:58:41 -0700 (PDT)
 Received: from mars.local.gmail.com (221x241x217x81.ap221.ftth.ucom.ne.jp. [221.241.217.81])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-210bc045debsm8902755ad.234.2024.10.25.05.58.26
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72057920340sm1005722b3a.6.2024.10.25.05.58.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Oct 2024 05:58:28 -0700 (PDT)
-Date: Fri, 25 Oct 2024 21:58:25 +0900
-Message-ID: <m2r084nxu6.wl-thehajime@gmail.com>
+        Fri, 25 Oct 2024 05:58:41 -0700 (PDT)
+Date: Fri, 25 Oct 2024 21:58:37 +0900
+Message-ID: <m2plnonxtu.wl-thehajime@gmail.com>
 From: Hajime Tazaki<thehajime@gmail.com>
 To: johannes@sipsolutions.net
 Cc: linux-um@lists.infradead.org,
@@ -71,18 +70,17 @@ Cc: linux-um@lists.infradead.org,
 	richard@nod.at,
 	anton.ivanov@cambridgegreys.com,
 	ricarkol@google.com
-Subject: Re: [RFC PATCH 05/13] x86/um: nommu: syscall translation by zpoline
-In-Reply-To: <75c9b237111431362458ced4c5213b74ca8fcb13.camel@sipsolutions.net>
+Subject: Re: [RFC PATCH 06/13] x86/um: nommu: process/thread handling
+In-Reply-To: <002f4841451479c154acae08353b8091ffd91472.camel@sipsolutions.net>
 References: <cover.1729770373.git.thehajime@gmail.com>
-	<2f3537884533232ab2ef2937e392d32736527bdc.1729770373.git.thehajime@gmail.com>
-	<75c9b237111431362458ced4c5213b74ca8fcb13.camel@sipsolutions.net>
+	<88b3cdd8cd1437e45184fd26c6df5d7ceb93de55.1729770373.git.thehajime@gmail.com>
+	<002f4841451479c154acae08353b8091ffd91472.camel@sipsolutions.net>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=BIG5
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=US-ASCII
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241025_055830_474143_6F9A4B14 
-X-CRM114-Status: GOOD (  26.64  )
+X-CRM114-CacheID: sfid-20241025_055843_343851_993CC83F 
+X-CRM114-Status: GOOD (  20.02  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,59 +95,72 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-DQoNCk9uIEZyaSwgMjUgT2N0IDIwMjQgMTg6MTk6MjUgKzA5MDAsDQpKb2hhbm5lcyBCZXJnIHdy
-b3RlOg0KPiANCj4gT24gVGh1LCAyMDI0LTEwLTI0IGF0IDIxOjA5ICswOTAwLCBIYWppbWUgVGF6
-YWtpIHdyb3RlOg0KPiA+IFRoaXMgY29tbWl0IGFkZHMgYSBtZWNoYW5pc20gdG8gaG9vayBzeXNj
-YWxscyBmb3IgdW5tb2RpZmllZCB1c2Vyc3BhY2UNCj4gPiBwcm9ncmFtcyB1c2VkIHVuZGVyIFVN
-TCBpbiAhTU1VIG1vZGUuIFRoZSBtZWNoYW5pc20sIGNhbGxlZCB6cG9saW5lLA0KPiA+IHRyYW5z
-bGF0ZXMgc3lzY2FsbC9zeXNlbnRlciBpbnN0cnVjdGlvbnMgd2l0aCBgY2FsbCAqJXJheGAsIHdo
-aWNoIGNhbiBiZQ0KPiA+IHByb2Nlc3NlZCBieSBhIHRyYW1wb2xpbmUgY29kZSBhbHNvIGluc3Rh
-bGxlZCB1cG9uIGFuIGluaXRjYWxsIGR1cmluZw0KPiA+IGJvb3QuIFRoZSB0cmFuc2xhdGlvbiBp
-cyB0cmlnZ2VyZWQgYnkgZWxmX2FyY2hfZmluYWxpemVfZXhlYygpLCBhbiBhcmNoDQo+ID4gaG9v
-ayBpbnRyb2R1Y2VkIGJ5IGFub3RoZXIgY29tbWl0Lg0KPiA+IA0KPiA+IEFsbCBzeXNjYWxscyBp
-c3N1ZWQgYnkgdXNlcnNwYWNlIHRodXMgcmVkaXJlY3RlZCB0byBhIHNwZWljaWZpYyBmdW5jdGlv
-biwNCj4gDQo+IHR5cG86ICJzcGVjaWZpYyINCg0KdGhhbmtzLg0KDQo+ID4gKwlpZiAoZG93bl93
-cml0ZV9raWxsYWJsZSgmbW0tPm1tYXBfbG9jaykpIHsNCj4gPiArCQllcnIgPSAtRUlOVFI7DQo+
-ID4gKwkJcmV0dXJuIGVycjsNCj4gDQo+ID8NCg0KdGhlIGxvY2sgaXNuJ3QgbmVlZGVkIGFjdHVh
-bGx5IHNvLCB3aWxsIHJlbW92ZSBpdC4NCg0KPiBXaGF0IGhhcHBlbnMgaWYgdGhlIGJpbmFyeSBK
-SVRzIHNvbWUgY29kZSBhbmQgeW91IGRvbid0IGZpbmQgaXQ/IEkgZG9uJ3QNCj4gcmVtZW1iZXIg
-ZnJvbSB5b3VyIHRhbGsgLSB0aGVyZSB5b3Ugc2VlbWVkIHRvIHNheSB0aGlzIHdhcyBmaW5lIGp1
-c3QNCj4gc2xvdywgYnV0IHRoYXQgd2FzIHpwb2xpbmUgaW4gYSBkaWZmZXJlbnQgY29udGV4dCAo
-Y29udGFpbmVyKT8NCg0KaW5zdHJ1Y3Rpb25zIGxvYWRlZCBhZnRlciBleGVjdmUgZmFtaWx5IChs
-aWtlIEpJVCBnZW5lcmF0ZWQgY29kZSwNCmxvYWRlZCB3aXRoIGRsb3BlbiwgZXRjKSBpc24ndCBn
-b2luZyB0byBiZSB0cmFuc2xhdGVkLiAgd2UgY2FuDQp0cmFuc2xhdGVkIGl0IGJ5IHR3ZWFraW5n
-IHRoZSB1c2Vyc3BhY2UgbG9hZGVyIChsZC5zbyB3LyBMRF9QUkVMT0FEKQ0Kb3IgaG9vayBtcHJv
-dGVjdCgyKSBzeXNjYWxsIGJlZm9yZSBleGVjdXRpbmcgSklUIGdlbmVyYXRlZCBjb2RlLg0KZ2Vu
-ZXJpYyBkZXNjcmlwdGlvbiBpcyB3cml0dGVuIGluIHRoZSBkb2N1bWVudCAoWzEyLzEzXSkuDQoN
-Cj4gUGVyaGFwcyBVTUwgY291bGQgYWRkaXRpb25hbGx5IGluc3RhbGwgYSBzZWNjb21wIGZpbHRl
-ciBvciBzb21ldGhpbmcgb24NCj4gaXRzZWxmIHdoaWxlIHJ1bm5pbmcgYSB1c2Vyc3BhY2UgcHJv
-Z3JhbT8gSG1tLg0KDQpJJ20gdHJ5aW5nIHRvIHVuZGVyc3RhbmQgdGhlIHB1cnBvc2Ugb2Ygc2Vj
-Y29tcCBmaWx0ZXIgeW91IHN1Z2dlc3RlZA0KaGVyZTsgaXMgaXQgZm9yIHByZXZlbnRpbmcgZXhl
-Y3V0ZWQgYnkgdW50cmFuc2xhdGVkIGNvZGUgPw0KDQo+ID4gKy8qKg0KPiA+ICsgKiBzZXR1cCB0
-cmFtcG9saW5lIGNvZGUgZm9yIHN5c2NhbGwgaG9va3MNCj4gPiArICoNCj4gPiArICogdGhlIHRy
-YW1wb2xpbmUgY29kZSBndWlkZXMgdG8gY2FsbCBob29rZWQgZnVuY3Rpb24sIF9fa2VybmVsX3Zz
-eXNjYWxsDQo+ID4gKyAqIGluIHRoaXMgY2FzZSwgdmlhIG5vcCBzbGlkZXMgYXQgdGhlIG1lbW9y
-eSBhZGRyZXNzIHplcm8gKHRodXMsIHpwb2xpbmUpLg0KPiA+ICsgKg0KPiA+ICsgKiBsb2FkZWQg
-YmluYXJ5IGJ5IGV4ZWMoMikgaXMgdHJhbnNsYXRlZCB0byBjYWxsIHRoZSBmdW5jdGlvbi4NCj4g
-PiArICovDQo+ID4gK3N0YXRpYyBpbnQgX19pbml0IHNldHVwX3pwb2xpbmVfdHJhbXBvbGluZSh2
-b2lkKQ0KPiA+ICt7DQo+ID4gKwlpbnQgaSwgcmV0Ow0KPiA+ICsJaW50IHB0cjsNCj4gPiArDQo+
-ID4gKwkvKiB6cG9saW5lOiBtYXAgYXJlYSBvZiB0cmFtcG9saW5lIGNvZGUgc3RhcnRlZCBmcm9t
-IGFkZHIgMHgwICovDQo+ID4gKwlfX3pwb2xpbmVfc3RhcnQgPSAweDA7DQo+ID4gKw0KPiA+ICsJ
-cmV0ID0gb3NfbWFwX21lbW9yeSgodm9pZCAqKSAwLCAtMSwgMCwgMHgxMDAwLCAxLCAxLCAxKTsN
-Cj4gDQo+IChVTV8pUEFHRV9TSVpFPw0KDQp0aGFua3MsIGl0J3MgbXVjaCBiZXR0ZXI7IHdpbGwg
-Zml4IGl0Lg0KDQo+ID4gKwkvKioNCj4gPiArCSAqIEZJWE1FOiBzaGl0IHJlZCB6b25lIGFyZWEg
-dG8gcHJvcGVybHkgaGFuZGxlIHRoZSBjYXNlDQo+IA0KPiAic2hpZnQiPyA6KQ0KDQp0aGFua3Mg
-KPnwoVz58CkNCg0KPiA+ICsJICovDQo+ID4gKw0KPiA+ICsJLyoqDQo+ID4gKwkgKiBwdXQgY29k
-ZSBmb3IganVtcGluZyB0byBfX2tlcm5lbF92c3lzY2FsbC4NCj4gPiArCSAqDQo+ID4gKwkgKiBo
-ZXJlIHdlIGVtYmVkIHRoZSBmb2xsb3dpbmcgY29kZS4NCj4gPiArCSAqDQo+ID4gKwkgKiBtb3Zh
-YnMgWyRhZGRyXSwlcjExDQo+ID4gKwkgKiBqbXBxICAgKiVyMTENCj4gPiArCSAqDQo+ID4gKwkg
-Ki8NCj4gPiArCXB0ciA9IE5SX3N5c2NhbGxzOw0KPiA+ICsJLyogNDkgYmIgWzY0LWJpdCBhZGRy
-ICg4LWJ5dGUpXSAgICBtb3ZhYnMgWzY0LWJpdCBhZGRyICg4LWJ5dGUpXSwlcjExICovDQo+ID4g
-KwlfX3pwb2xpbmVfc3RhcnRbcHRyKytdID0gMHg0OTsNCj4gPiArCV9fenBvbGluZV9zdGFydFtw
-dHIrK10gPSAweGJiOw0KPiA+ICsJX196cG9saW5lX3N0YXJ0W3B0cisrXSA9ICgodWludDY0X3Qp
-DQo+ID4gKwkJCQkgIF9fa2VybmVsX3ZzeXNjYWxsID4+ICg4ICogMCkpICYgMHhmZjsNCj4gDQo+
-ICYweGZmIHNlZW1zIHBvaW50bGVzcyB3aXRoIGEgdTggYXJyYXk/DQoNCmFncmVlLCB3aWxsIGZp
-eCBpdC4NCg0KPiA+ICsJLyogcGVybWlzc2lvbjogWE9NIChQUk9UX0VYRUMgb25seSkgKi8NCj4g
-PiArCXJldCA9IG9zX3Byb3RlY3RfbWVtb3J5KDAsIDB4MTAwMCwgMCwgMCwgMSk7DQo+IA0KPiAo
-VU1fKVBBR0VfU0laRT8NCg0Kd2lsbCBmaXggaXQgdG9vLg0KDQotLSBIYWppbWU=
+
+On Fri, 25 Oct 2024 18:22:29 +0900,
+Johannes Berg wrote:
+> 
+> On Thu, 2024-10-24 at 21:09 +0900, Hajime Tazaki wrote:
+> > Since ptrace facility isn't used under !MMU of UML, there is different
+> > code path to invoke proceeses/threads; on an entry to the syscall
+> 
+> typo: processes
+
+thanks. (I thought checkpatch.pl detects them..)
+
+> >  /* Called magically, see new_thread_handler above */
+> >  static void fork_handler(void)
+> >  {
+> > -	schedule_tail(current->thread.prev_sched);
+> > +	if (current->thread.prev_sched != NULL)
+> 
+> nit: no need for "!= NULL"
+
+will fix it.
+
+> > @@ -134,6 +138,21 @@ static void fork_handler(void)
+> >  
+> >  	current->thread.prev_sched = NULL;
+> >  
+> > +#ifndef CONFIG_MMU
+> > +	/*
+> > +	 * This fork can only come from libc's vfork, which
+> > +	 * does this:
+> > +	 *	popq %%rdx;
+> > +	 *	call *%0; // vsyscall
+> > +	 *	pushq %%rdx;
+> > +	 * %rdx stores the return address which is stored
+> > +	 * at pt_regs[HOST_IP] at the moment. We still
+> > +	 * need to pop the pushed address by "call" though,
+> > +	 * so this is what this next line does.
+> > +	 */
+> > +	if (current->thread.regs.regs.gp[HOST_ORIG_AX] == __NR_vfork)
+> > +		current->thread.regs.regs.gp[REGS_SP_INDEX] += 8;
+> > +#endif
+> 
+> Kind of ugly ... but I guess not much choice.
+
+(indeed)
+
+> > +#ifndef CONFIG_MMU
+> > +	current_top_of_stack = task_top_of_stack(to);
+> > +	current_ptregs = (long)task_pt_regs(to);
+> > +
+> > +	if ((to->thread.regs.regs.gp[FS_BASE / sizeof(unsigned long)] == 0)
+> > +	    || (to->mm == NULL))
+> 
+> Put || on the previous line, "!to->mm"
+
+will fix it.
+
+> > +		return;
+> > +
+> > +	// rkj: this changes the FS on every context switch
+> 
+> Not sure we're allowing C99 comments yet, and there shouldn't be a "rkj"
+> tag either :)
+
+this is my mistake; forgot to remove those private tags.
+will fix it.
+
+-- Hajime
 
