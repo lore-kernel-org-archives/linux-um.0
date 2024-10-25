@@ -4,81 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A74F8D116FC
-	for <linux-um@archiver.kernel.org>; Fri, 25 Oct 2024 06:18:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67ACDD0C5E8
+	for <linux-um@archiver.kernel.org>; Fri, 25 Oct 2024 08:27:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=fW4m5+Alc5+U/bpiXfBbEwyDvB1oVdKKXqHaL1Wh1jQ=; b=tz6Yk9MFonr19gHcpBlQPZAYTv
-	KdGHdVdkOH0M+K0mo3tiTzSK2hPZYSwZphZ0xukyDkPDiHnGmQKKCrQQK+e/451mE4rXD5j8OTBF5
-	4mmBQqHefD8sXAKs6J+PsV3A8l1l3GOlhGhtw52MQMbXXKZLPuO9fT7E7D7gjRXjZVPrvu4pY7vTN
-	wxlp0Xl+3dK7oeKOV4Ie+g2vX8oCHpgw5fB5hLBho7Y9E36HyR81n/eSX1bSjK/oloVLsKjG9Pf3n
-	13BPwOT44RlH9drHsMexhhn3wtQaAeA9KpNavaeht9JCIypRbYVvLsGJTDGtxso1G5PEQR+9FIeDO
-	YsKMCvoA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=9w+Dyx67WIMHM+cYps1OS6tmVvlUvQZLrcmxUWiLtLA=; b=AAWbPzk4mHtibT4cesPUCcEoLh
+	TN0ha6UsxVJuP0jhgNp0xFv/wF4/znvLnn8UY7JnpYYPUroR1UA9olVwMMsbcwZtz8bUEC27Cy1op
+	50DQRv3Fr7whTqW4VS/T5jV7AN0DkNbQId0uk9SPMfql9nO4BsLb+deVEMxu5/+NV2hr/gqH+qnLV
+	UOqS3RjWm9XXPFN32tMWh9iFeMschGgCVF9zs/BSNaz44trz1ZYo6WLegKbK/WoCoyzINkS0YjsF9
+	P83eM6d3HbKZYIhZdEn73SaQzgzU3xl/emCTHxnu7YQKaLRw9R76y/6v2PeagUD3BkGVL8t8D2LAG
+	rVTUlVkA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4De8-00000002f7n-0vHj;
-	Fri, 25 Oct 2024 06:18:04 +0000
-Received: from mail-lj1-x234.google.com ([2a00:1450:4864:20::234])
+	id 1t4Ffm-00000002ye4-3dbR;
+	Fri, 25 Oct 2024 08:27:54 +0000
+Received: from s3.sipsolutions.net ([168.119.38.16] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4DcB-00000002eoF-3rAQ
+	id 1t4Ff7-00000002yYh-2UD6
 	for linux-um@lists.infradead.org;
-	Fri, 25 Oct 2024 06:16:05 +0000
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2fb498a92f6so16687471fa.1
-        for <linux-um@lists.infradead.org>; Thu, 24 Oct 2024 23:16:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1729836962; x=1730441762; darn=lists.infradead.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fW4m5+Alc5+U/bpiXfBbEwyDvB1oVdKKXqHaL1Wh1jQ=;
-        b=Y5l7ciS781NoyflbE5v9qTp9eyvFS2wrC8UL4gQ4l4wOIF1Ym96tO7WhxXsdA3Z/Fz
-         u1m/FvgSvfJnbrLs7f/kGIer3mJqxIyMsKXTdGNJM9ZlB4AlM9cOui4hQ1/QNqw0FAZq
-         MkqVsg9duy6IuS3z9uIYk8BAMm23YWP/mhxcgO/9Wa9MViX11PTmsEpjljeAmJuwDG/e
-         VRmr5GUerH4K8r/j5zJnGE7waJFGrNZoheTiI0t7M8dPamPqqluo3TDwWJVifcYTDV95
-         g9ddsPD86dpijtTLa9drDjEWShv2lE/i6xUcTJeK6vYDlBim05Rm0t50CmEI8WcpJrs3
-         +pSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729836962; x=1730441762;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fW4m5+Alc5+U/bpiXfBbEwyDvB1oVdKKXqHaL1Wh1jQ=;
-        b=TsmRu8F9hT6tyixk0brQKYZ7l3QMQphaHUPxrTUNFntdkW3SNdK9nV/sK3n+gMYY7X
-         85A6n42BaPrGUwi+plTtIcANrFuqo3wZo4sV+ebqcr9KGhI7V6qfCcTBIMsnCd5SjnR2
-         GLW9kC5YZ+fu2R2w7GbIrqPTVxnRS8Ah94EJihUFHBnUXona2onEY0t4w612M0Dynnce
-         cLpwrSM3uzRPa9EbHf9tsaeE9XR6SHa/LO/LadbDabU8UN5kECSxQXSuuOlPJud5hlpC
-         CuqhqySxBZdf9oLCVDuTbtH0kjEtqu6YQUND9Z/qhSnx8OWzZ75kEATVcxSsT5wTZ+Jv
-         ja6w==
-X-Forwarded-Encrypted: i=1; AJvYcCWsRhEcnKfsQ1L5lmGKz0ZUwo+Jk0eifN38Eymm4rhSmDBReyKBcNUyCjlM815GsoDfT0vA8bFa/A==@lists.infradead.org
-X-Gm-Message-State: AOJu0YyLnCLh90O1/kmZXmOlVUFrwGmAl4qcNIF9eUAPYm1K+lG+EZl3
-	ZCwHlQoXWDGdc9NWIN/JrAWYho4PBAyO2Jsh2aUuW3mT88e5LPx19GIiGU6azEtzjDkoUAQJGCi
-	g
-X-Google-Smtp-Source: AGHT+IH1R1a5paHiMJuZWc2VC76niPOAzN1UkvOY+GuCu2Vas+9MsuU8FAL2cFI+5QVsPyLimIOW9g==
-X-Received: by 2002:a2e:b816:0:b0:2fb:5060:7037 with SMTP id 38308e7fff4ca-2fca828bd24mr21472121fa.41.1729836961690;
-        Thu, 24 Oct 2024 23:16:01 -0700 (PDT)
-Received: from eriador.lumag.spb.ru (2001-14ba-a0c3-3a00--7a1.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::7a1])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-2fcb453ea75sm662871fa.67.2024.10.24.23.16.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Oct 2024 23:16:00 -0700 (PDT)
-Date: Fri, 25 Oct 2024 09:15:58 +0300
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To: shaojiedong <quic_shaojied@quicinc.com>
-Cc: Richard Weinberger <richard@nod.at>, 
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>, Johannes Berg <johannes@sipsolutions.net>, 
-	linux-um@lists.infradead.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2] um: Remove double zero check
-Message-ID: <qstfwrz6kvjfldw2lisgcrtvlhi7ltuyc32ygsqtoqfykwxmae@irofaqfjjg3a>
-References: <20241025-upstream_branch-v2-1-072009bfa7d0@quicinc.com>
+	Fri, 25 Oct 2024 08:27:15 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
+	Resent-Message-ID:In-Reply-To:References;
+	bh=9w+Dyx67WIMHM+cYps1OS6tmVvlUvQZLrcmxUWiLtLA=; t=1729844831; x=1731054431; 
+	b=ImzI6Ig+ET2BgPZbDCapQzWTAF62TypUl+BTsM5kCH9H4OLJzZodFln0nGgOi5utEX/iQLEv5oI
+	IEDlsv+GjzM1gwTuwJRmqu49cgTLpIwNrM+u1zLtYfnHqrgfDaNyi9hF37Zrob+76Ag5qrNpnUSSr
+	NLsr5DQfjNfBbFFvzZvKUGOOxFrRGsraAjNi3sLZkJF2hXTfQl/nF5c8564aOtzBxfUaTqi02fLYS
+	Dv+i9nSV+fybtr9o0i9hnXRpM8Tu27cZGgmV9ZzoOSs/Sl+70SAYhAHQ31EwP4zU8zotTm8+Dw2Vb
+	ejhwl4v2S51RlKTYPvRdrlxQKW5Eu63XtKlw==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1t4Fez-00000004R3e-3v0w;
+	Fri, 25 Oct 2024 10:27:06 +0200
+From: Johannes Berg <johannes@sipsolutions.net>
+To: linux-um@lists.infradead.org
+Cc: Nathan Chancellor <nathan@kernel.org>,
+	benjamin@sipsolutions.net,
+	Johannes Berg <johannes.berg@intel.com>,
+	kernel test robot <lkp@intel.com>
+Subject: [PATCH] um: fix stub exe build with CONFIG_GCOV
+Date: Fri, 25 Oct 2024 10:27:01 +0200
+Message-ID: <20241025102700.9fbb9c34473f.I7f1537fe075638f8da64beb52ef6c9e5adc51bc3@changeid>
+X-Mailer: git-send-email 2.47.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241025-upstream_branch-v2-1-072009bfa7d0@quicinc.com>
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241024_231603_995956_5084E3CC 
-X-CRM114-Status: GOOD (  16.83  )
+X-CRM114-CacheID: sfid-20241025_012713_667903_42C737BA 
+X-CRM114-Status: GOOD (  12.09  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -93,54 +72,70 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, Oct 25, 2024 at 02:03:32PM +0800, shaojiedong wrote:
-> free_pages() performs a parameter null check inside
-> previous code also does zero check as following
->     if (stack == 0)
->         goto out;
-> 
->     to_mm->id.stack = stack;
-> 
-> therefore remove double zero check here.
-> 
-> Signed-off-by: shaojiedong <quic_shaojied@quicinc.com>
-> ---
-> Changes in v2:
-> - EDITME: describe what is new in this series revision.
-> - EDITME: use bulletpoints and terse descriptions.
+From: Johannes Berg <johannes.berg@intel.com>
 
-Clearly NAK
+CONFIG_GCOV is special and only in UML since it builds the
+kernel with a "userspace" option. This is fine, but the stub
+is even more special and not really a full userspace process,
+so it then fails to link as reported.
 
-> - Link to v1: https://lore.kernel.org/r/20241025-upstream_branch-v1-1-4829506c7cdb@quicinc.com
-> ---
->  arch/um/kernel/skas/mmu.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
-> index d3fb506d5bd6084046cf5903c629432cd42b5ab3..0eb5a1d3ba70134f75d9b2af18544fca7248c6d6 100644
-> --- a/arch/um/kernel/skas/mmu.c
-> +++ b/arch/um/kernel/skas/mmu.c
-> @@ -46,8 +46,7 @@ int init_new_context(struct task_struct *task, struct mm_struct *mm)
->  	return 0;
->  
->   out_free:
-> -	if (new_id->stack != 0)
-> -		free_pages(new_id->stack, ilog2(STUB_DATA_PAGES));
-> +	free_pages(new_id->stack, ilog2(STUB_DATA_PAGES));
->   out:
->  	return ret;
->  }
-> 
-> ---
-> base-commit: fd21fa4a912ebbf8a6a341c31d8456f61e7d4170
-> change-id: 20241025-upstream_branch-06a9ea92948d
-> 
-> Best regards,
-> -- 
-> shaojiedong <quic_shaojied@quicinc.com>
-> 
+For good measure, also remove the GPROF options, even though
+they don't seem to cause build failures now.
 
+To be able to do this, export the specific options (GCOV_OPT
+and GPROF_OPT) but rename them so there's less chance of any
+conflicts.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202410242238.SXhs2kQ4-lkp@intel.com/
+Fixes: 32e8eaf263d9 ("um: use execveat to create userspace MMs")
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+---
+ arch/um/Makefile-skas        | 14 +++++++-------
+ arch/um/kernel/skas/Makefile |  2 +-
+ 2 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/arch/um/Makefile-skas b/arch/um/Makefile-skas
+index 67323b028999..1a27e65bcb9c 100644
+--- a/arch/um/Makefile-skas
++++ b/arch/um/Makefile-skas
+@@ -3,15 +3,15 @@
+ # Licensed under the GPL
+ #
+ 
+-GPROF_OPT += -pg
++export UM_GPROF_OPT += -pg
+ 
+ ifdef CONFIG_CC_IS_CLANG
+-GCOV_OPT += -fprofile-instr-generate -fcoverage-mapping
++export UM_GCOV_OPT += -fprofile-instr-generate -fcoverage-mapping
+ else
+-GCOV_OPT += -fprofile-arcs -ftest-coverage
++export UM_GCOV_OPT += -fprofile-arcs -ftest-coverage
+ endif
+ 
+-CFLAGS-$(CONFIG_GCOV) += $(GCOV_OPT)
+-CFLAGS-$(CONFIG_GPROF) += $(GPROF_OPT)
+-LINK-$(CONFIG_GCOV) += $(GCOV_OPT)
+-LINK-$(CONFIG_GPROF) += $(GPROF_OPT)
++CFLAGS-$(CONFIG_GCOV) += $(UM_GCOV_OPT)
++CFLAGS-$(CONFIG_GPROF) += $(UM_GPROF_OPT)
++LINK-$(CONFIG_GCOV) += $(UM_GCOV_OPT)
++LINK-$(CONFIG_GPROF) += $(UM_GPROF_OPT)
+diff --git a/arch/um/kernel/skas/Makefile b/arch/um/kernel/skas/Makefile
+index f6a219074772..3384be42691f 100644
+--- a/arch/um/kernel/skas/Makefile
++++ b/arch/um/kernel/skas/Makefile
+@@ -24,7 +24,7 @@ $(obj)/stub_exe: $(obj)/stub_exe.dbg FORCE
+ 
+ quiet_cmd_stub_exe = STUB_EXE $@
+       cmd_stub_exe = $(CC) -nostdlib -o $@ \
+-			   $(KBUILD_CFLAGS) $(STUB_EXE_LDFLAGS) \
++			   $(filter-out $(UM_GPROF_OPT) $(UM_GCOV_OPT),$(KBUILD_CFLAGS)) $(STUB_EXE_LDFLAGS) \
+ 			   $(filter %.o,$^)
+ 
+ STUB_EXE_LDFLAGS = -Wl,-n -static
 -- 
-With best wishes
-Dmitry
+2.47.0
+
 
