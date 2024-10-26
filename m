@@ -4,78 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 60B5CD10BE8
-	for <linux-um@archiver.kernel.org>; Sat, 26 Oct 2024 07:25:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EDA40D10BE5
+	for <linux-um@archiver.kernel.org>; Sat, 26 Oct 2024 07:39:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
 	References:In-Reply-To:Subject:Cc:To:From:Message-ID:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Efy0L9ZWZwRgQ7DMlEavB+lUlyvIjoH8X52WsaqrcWM=; b=kws3s7Q4retw0+P2bFTfUa11/X
-	EDM8IInrka/rCLFTUWDAlx7Zshcorn64GkHXlh/C2s5VvUUNg3MfUjjFwApz0uXGjb9Qw/Fw9m1SG
-	NKvvIA5Eod60I8GuihIlQ8YfGjutySF36QX6W8DN+QEvQiIwInmFcoYRbC7IYIgwpe8Yt51lhw8nI
-	dgqTTD1/yB+/DVnXDasZoanNjqL2wkIxvWJDy3L/7vQ44DNaS7VBeRO2pwopJ2G6dTiTVvOWubaQl
-	UCodvbEovtwflezE+4EpJncy0Vctm+Nh9HAYYztU9MfB3rn0iIuWbxsVNipJ83mjGkMxMIPVqLkzp
-	cVUL5Z8w==;
+	bh=QR4nkNQ6s0QG+i3Xc1et/grafV1vCXJl6gkJYf6b1/0=; b=xaPmFV9amnrEvDtU47ewOF4alb
+	G/JfBwvz4L00wedeY+/fTFW+S+FXVHIRFZV3P91xymsL6vbhGfjRsNaVQGJPAc5J71dwOM7fyXaCZ
+	vARzjePVmkG4kk2zyHsrMuItKJ07Kk95H1ePYLFK27AoONnYnCYR7ehRuhJ0Io3dC3XK0++nz+0q3
+	0YheGSR8LgB1bn3mrAjGb9J+beY1rEBPI6qthGd9VALRU99gnn5vXSJl7wFEAacI53lEaVqY2DC+M
+	V24sP/OBoTB1s1HhhzhS4dYoy2pqinLcPuIXjhBOxINOu/d2t9IkOZCMM1jBCTwPXc1TizMGNBEiH
+	TNBqF0HQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4bAR-000000066tF-3IE7;
-	Sat, 26 Oct 2024 07:24:59 +0000
-Received: from mail-pf1-x436.google.com ([2607:f8b0:4864:20::436])
+	id 1t4bOe-0000000692z-27mZ;
+	Sat, 26 Oct 2024 07:39:40 +0000
+Received: from mail-pg1-x535.google.com ([2607:f8b0:4864:20::535])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4bAP-000000066so-1POw
+	id 1t4bJp-000000068Cx-412O
 	for linux-um@lists.infradead.org;
-	Sat, 26 Oct 2024 07:24:58 +0000
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-7204dff188eso1599863b3a.1
-        for <linux-um@lists.infradead.org>; Sat, 26 Oct 2024 00:24:56 -0700 (PDT)
+	Sat, 26 Oct 2024 07:34:43 +0000
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-7ed67cfc1fcso1772641a12.1
+        for <linux-um@lists.infradead.org>; Sat, 26 Oct 2024 00:34:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729927496; x=1730532296; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1729928081; x=1730532881; darn=lists.infradead.org;
         h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
          :message-id:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Efy0L9ZWZwRgQ7DMlEavB+lUlyvIjoH8X52WsaqrcWM=;
-        b=RwGM952iM6T5V0wKKRl6c+U9fyLLTCkuw6fGuaHkATdcap2pXYRTsvB4PuKyGAwnDf
-         cZg4F2T5gFggonx7AswIuC/75ZFMifj4n2a+WXkI2yu4i2NLIWArzGppnoo4ZK7tQ1rs
-         4lkS2BJuRO/x9Y6IyBFZYU5hf3xuunPRSN1KksAqdcm1IdDe1pVIKyoA8XqeQNrGL+i5
-         rP3YFP2IqCHydzVvLsDi4KgKtxgAYuFdhcLDQPCx6P+oT2qUEqeUPEFiowjuv7nzheNE
-         tq2y/F377BuUXcZZRh+yipkn9ezT9fA7C663EGC183/LpeF9lduntuPIzsWjbVpgEypL
-         Kv1A==
+        bh=QR4nkNQ6s0QG+i3Xc1et/grafV1vCXJl6gkJYf6b1/0=;
+        b=JoHSQrnts1HpGtPRche7i/lYua0iPvhMvWx7D6ozyiXHO19T2KawkgAx0prhAj2FBY
+         qWmwm1RbzPnLVDafWLGkVOf5xY9SgYkzLI9ydNgc3ul/t0rH1uc1NGmr4LbbgTe1CRrG
+         O0tVXKFXVubolNlrq/ppYtguifMRB9GadPcDRkV2aE/SDj2+7DHkLZJMu/IA5j7RihZR
+         BmxK3Aiu/LZ31FaYIHObHSGy2KBEaeC8fumYKFleH484f6VgSrv6kU4ihgKDVFZgM8bD
+         smwsEYe+0u/g1uUhtrIYfwpjCFGHlDmSNAwPkWSb8c9GLj26D3m4xl3om3Xl7l6ZuqLH
+         +Zrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729927496; x=1730532296;
+        d=1e100.net; s=20230601; t=1729928081; x=1730532881;
         h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
          :message-id:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Efy0L9ZWZwRgQ7DMlEavB+lUlyvIjoH8X52WsaqrcWM=;
-        b=fBrtJxqrB4j35xk6/payNi7qIi0jfEzjIE9tqLMc0HcQ9GXP+sDIM8oF3ml1fKr8dL
-         74DOwpwCZDvVaOAZhkp9spza6FgOexR/biUUdNkCOhEKm0MIfs5PNw99Ovf06tn7uOeI
-         nBoNQaXyEGeb17iULrMzb4JBGpQ0SAxhmHAuzGW6Y8PvuS3Fb0gvo1V/3EOxE/obyMi5
-         TBnL2SFhBV28G1jn/iqO6u27bi4PpbCXxlMnFKnAb0mAdDWN+0bFtO1p2pYexkdRHT3o
-         vcUDX01niL9JBSMhkspg9JNCte66ljakSYfogGusq0SbR6WkdiTYcC/tLW4F8IbNK1Wf
-         bNvw==
-X-Gm-Message-State: AOJu0YxXxJ0B7mKA1kumSQYUkCxbM5VVSAIzAeMyTPweM3Ytoh4TiJcg
-	xD6TNDCaQAm6HifwkbTlUZ704v13sHU6yiWP/10tnSAi8cX5x0oj
-X-Google-Smtp-Source: AGHT+IFqoKZk4aiNH+AYbb+qrdq43wvwxL6deuRgcgsbrxqJ2RnXIx7kLBcjqNR6ywrEiHjqGoNkPA==
-X-Received: by 2002:a05:6a00:1303:b0:71e:7636:3323 with SMTP id d2e1a72fcca58-72062f81c4dmr3553800b3a.7.1729927495992;
-        Sat, 26 Oct 2024 00:24:55 -0700 (PDT)
+        bh=QR4nkNQ6s0QG+i3Xc1et/grafV1vCXJl6gkJYf6b1/0=;
+        b=UBXdf2AtuBjWP4slaDkaOoFNC/Ku8hFbce3y+9U73dUF2lExBtnL3NyNIjKNR8UsRd
+         iZXdULpRE2X3Lh52lt6nLeO635SO2fpKaHpbAzIg+42/0izDFYnbKuLSDOMsHSy4IONY
+         YAGElaMjR9y8K3te1fo2g3RNCPOMCML5eDhvNmZXxsNYDta1S/81E8L3BhsAExHwFYWq
+         elu35U0I/8o8RnnKzXPOQvwp7dKKeTYzWU4UJvP7C01qcjT+aSRvyh6J0xZdosmuYy7p
+         obEEV0XOKZn5jW5CQTVztNpvBE6CWMk/nW0d+pOu17wpCxjEDqH+bMJDBRaCBy+92D9B
+         It1w==
+X-Gm-Message-State: AOJu0YxnBsyCfMCJgNayC/HTfIp0GsIEFxD41o6uVt9Uft2JWJNz48bz
+	R0ckX2wEH+afMAeDjDt7KMH/qpDNbIO9mncjVAa0zZ1hQ9C/iM85
+X-Google-Smtp-Source: AGHT+IEi9sWjFVUIgCc+xnv0tZ0CUmspRfg5yxdk1XeC0Xp4D9apKlyn8t9hGC6kap65w1++0TTByw==
+X-Received: by 2002:a17:90a:68c9:b0:2d8:a672:1869 with SMTP id 98e67ed59e1d1-2e8f11a82bcmr2391230a91.32.1729928079900;
+        Sat, 26 Oct 2024 00:34:39 -0700 (PDT)
 Received: from mars.local.gmail.com (221x241x217x81.ap221.ftth.ucom.ne.jp. [221.241.217.81])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7205794f0ddsm2285073b3a.94.2024.10.26.00.24.53
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e77e578001sm4817639a91.43.2024.10.26.00.34.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Oct 2024 00:24:55 -0700 (PDT)
-Date: Sat, 26 Oct 2024 16:24:51 +0900
-Message-ID: <m25xpfiaws.wl-thehajime@gmail.com>
+        Sat, 26 Oct 2024 00:34:39 -0700 (PDT)
+Date: Sat, 26 Oct 2024 16:34:34 +0900
+Message-ID: <m234kjiagl.wl-thehajime@gmail.com>
 From: Hajime Tazaki<thehajime@gmail.com>
 To: johannes@sipsolutions.net
-Cc: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at,
- anton.ivanov@cambridgegreys.com, ricarkol@google.com
-Subject: Re: [RFC PATCH 03/13] um: nommu: memory handling
-In-Reply-To: <f99740357776ef3b44d0df61e2ad5a22149431e6.camel@sipsolutions.net>
-References: <cover.1729770373.git.thehajime@gmail.com>	<304383e5c9b2bba18678598bbdacadc9126d8f74.1729770373.git.thehajime@gmail.com>	<d84f04d9a60d4dffa81fe5d0f73646032f1294f1.camel@sipsolutions.net>	<m2ttd0nxzp.wl-thehajime@gmail.com>	<f99740357776ef3b44d0df61e2ad5a22149431e6.camel@sipsolutions.net>
+Cc: linux-um@lists.infradead.org,
+	jdike@addtoit.com,
+	richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	ricarkol@google.com
+Subject: Re: [RFC PATCH 07/13] um: nommu: configure fs register on host syscall invocation
+In-Reply-To: <ed09a50887e876e7799626e03b47a603b43c0c8a.camel@sipsolutions.net>
+References: <cover.1729770373.git.thehajime@gmail.com>
+	<de4b12980873dac3074d591ab4ee0241d81c691b.1729770373.git.thehajime@gmail.com>
+	<ae681534ae7c9484303c41522ec4b6a765a3d3ec.camel@sipsolutions.net>
+	<m2ldycnwhv.wl-thehajime@gmail.com>
+	<ed09a50887e876e7799626e03b47a603b43c0c8a.camel@sipsolutions.net>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241026_002457_395729_445EB852 
-X-CRM114-Status: GOOD (  22.50  )
+X-CRM114-CacheID: sfid-20241026_003442_053876_7D65E02C 
+X-CRM114-Status: GOOD (  23.62  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,50 +98,53 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 
-On Sat, 26 Oct 2024 00:15:06 +0900,
+On Sat, 26 Oct 2024 00:22:48 +0900,
 Johannes Berg wrote:
 > 
-> On Fri, 2024-10-25 at 21:55 +0900, Hajime Tazaki wrote:
+> On Fri, 2024-10-25 at 22:27 +0900, Hajime Tazaki wrote:
+> > 
+> > On Fri, 25 Oct 2024 18:28:01 +0900,
+> > Johannes Berg wrote:
 > > > 
-> > > Should that really do _nothing_? Perhaps it's not called at all in no-
-> > > MMU, but then you don't need it, but otherwise it seems it should do
-> > > something even if it's just panic()?
+> > > On Thu, 2024-10-24 at 21:09 +0900, Hajime Tazaki wrote:
+> > > > 
+> > > > +static void sigill(int sig, siginfo_t *si, void *ctx_void)
+> > > > +{
+> > > > +	longjmp(jmpbuf, 1);
+> > > > +}
+> > > 
+> > > Should this code use sigsetjmp/siglongjmp?
 > > 
-> > it is called also in !MMU.  I'll think to figure out how the function
-> > is shared.
+> > the code is referred from tools/testing/selftests/x86/fsgsbase.c and
+> > the original code uses sigsetjmp/siglongjmp indeed.
 > 
-> Feels like it should do something then? Why not print like before? If it
-> happens in userspace we kill it, otherwise not sure what even happens...
-
-the function report_enomem() is defined in tlb.c, used in several
-places (trap.c, os-Linux/skas/process.c) but in !MMU the tlb.c
-is filtered-out from compilation but uses trap.c so, it causes missing
-symbols.
-
-I can move the report_enomem() function to somewhere else, like mem.c,
-but all the current usage of report_enomem() is MMU dependent
-procedure so, I thought it is fine without doing anything.
-
-> > > 	mmap64(....
-> > > 	       MAP_SHARED | MAP_FIXED |
-> > > 		IS_ENABLED(CONFIG_MMU) ? MAP_ANONYMOUS : 0,
-> > > 	       ...);
+> :)
+> 
+> > I was struggling to pull the definition of sigsetjmp & co from host
+> > headers as it conflicts with UML definitions of jmp_buf, etc.
 > > 
-> > since this is part under os-Linux and we cannot use kconfig.h (IIUC)
-> > feature (e.g., IS_ENABLED). but I'll reformat it to simplify instead
-> > of duplicating same lines.
+> > Will look into detail again but would be nice if you have an
+> > experience on this.
 > 
-> Oh, missed that, sorry
-> 
-> still I guess putting
-> 
-> #ifndef CONFIG_MMU
-> 	| MAP_ANONYMOUS
-> #endif
-> 
-> might be nicer.
+> Hm. This is a userspace side so there shouldn't be much trouble with
+> that? Worst case put it into its own file in os-Linux/ and don't include
+> so many shared headers, I guess?
 
-I thought the same thing.  Will fix it.
+thanks, I'll try with this approach.
+
+> > > > +int os_has_fsgsbase(void)
+> > > > +{
+> > > > +	return has_fsgsbase;
+> > > > +}
+> > > 
+> > > Why should this be a function rather than just exposing the variable?
+> > 
+> > as it is referred in arch/x86/um code.
+> 
+> Yeah but you have to also declare the function somewhere in a header
+> file - could as well declare "extern int host_has_fsgsbase;" or so?
+
+agreed.  I'll update that part.
 
 -- Hajime
 
