@@ -4,79 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 240D7D10399
-	for <linux-um@archiver.kernel.org>; Fri, 25 Oct 2024 15:42:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A7AEBD10BE4
+	for <linux-um@archiver.kernel.org>; Sat, 26 Oct 2024 03:47:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=FG34UmyXAT04DoNkH82y96vBUnCYUqsqFnRbXL+A/jE=; b=edEVRswTip0kdqv7ZczdUqKxbn
-	2f3oikVHfkaP+tenr02emkb//EAiZcTcBBc/LxfKEQf6mJZ0Xnmp5TvJcnulo5ft5NUNBAuCHikUV
-	AbAsC8Xs6O/7F38AZT7F0XA42AGQWFh59up2swle6dmVk2loyVv1NO8qkR/8+PtDDsYZYnPs0ONEZ
-	3jv7NnHGUx6NSlaLF55rc9w1YxHXQFCN4kRBOpZ2/ztZg31+G/MVwD5eSzPoxNDicwhZAtvBekCg+
-	zDh6Z4U9U5P8Lw7/JRplZOaxb+Eg56IccqK33TDaDxraU21xrIgf05Qjc7POEhLP9pJYhHF1MfCni
-	p98csrig==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=o2sEsK68CwMXxf8toSl3kI0xQbvN8/oETGeq4Wqiy/0=; b=2dx3m/+57clVrDEpfF5IaR8Ex7
+	icS5MMitcgKDU1CexqHF494+rXgi+Mu05OCdxQiizOxg/yC5LRyAd/0p3zUFs9spSD/0ocwU2qAhK
+	lYBjwq6lMUpJ8fT+QTPgCAXWEvRjKQZrm8YG1xl+O0famzQcJnmtc/4YkY4oybb5ihLxqfm+AVwJZ
+	EDtvdOrUD5GjNjLw8baddUnq0J3Caz0lANSRo6JdCEuD3pwBOGZrruDbFa8JIG+rxS//DHqKrpI2/
+	EhxhWKSjmZWCL5rxFPvd2rba1cnNEkjOuh53lH5OK94gBPE0Q/h1Eyhq+fvQSwZ8TM3onQQqol7xm
+	gdbs7ufg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4MS6-00000004I3z-31GE;
-	Fri, 25 Oct 2024 15:42:14 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1t4XlZ-00000005qw6-419o;
+	Sat, 26 Oct 2024 03:47:05 +0000
+Received: from mail-pl1-x62f.google.com ([2607:f8b0:4864:20::62f])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4MDZ-00000004F5r-3yIa
-	for linux-um@bombadil.infradead.org;
-	Fri, 25 Oct 2024 15:27:13 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=MIME-Version:Content-Transfer-Encoding
-	:Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=FG34UmyXAT04DoNkH82y96vBUnCYUqsqFnRbXL+A/jE=; b=eoGUo/SAP2mmavVabei0lZ9Gun
-	lhImTrmN4m435S4IIhmb1pozsDw8V+MWp7jWErxb71PzZGOXb1EGuhtAQcwjYVuCoeMJ1EsBUdGnQ
-	vnSNtXeRVBuWI8nLgFbeLAeSSGwtftRYIhGMTQXY2eHaial52Znxd9SOfcjX+NIINunfH4TKvXTK2
-	sUPksfsq1HytrH78FSqhqyTEdO3BS/nXhz+K2ZaLPQyf2oZa6PPj9RP3ktntVNFYlfWuurQ5HGb8q
-	22JaxT/bCMBQ4wzE0kDz77lSThFLbHtkuA02Gn+vBPXd/dJr+/IzC0prDrK74E4QAPjUiZqw7LrNA
-	bC3XwhjQ==;
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
-	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4MDW-00000008y2f-2uIv
+	id 1t4XlX-00000005qvc-1T3E
 	for linux-um@lists.infradead.org;
-	Fri, 25 Oct 2024 15:27:12 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=FG34UmyXAT04DoNkH82y96vBUnCYUqsqFnRbXL+A/jE=;
-	t=1729870030; x=1731079630; b=O/nfzbSGFuQaWHAwUbAjnkNMRZFbCm2MWNZviih4ellVCQP
-	jRp6T7Y6qAdvgAFOWqdZeyfQej9Ggb1yQUOcP7tR342e2wnNGAeKAfK6wD8kSs54Zy8UQq0F5w0oR
-	Ewp2ZWcO6ZmEnudsauLXkyk8DBX7C7tjxmP8EG76eLri3+x61AP3habtu3F8I9aMwBxyzG3kpAOXo
-	yl6o9XRLHssDS0FpBJAqbOt2MiKd4IJSyusEcDVvltlvPg+BCTHXBd9frTG9QkyeO9z65W70p57Jy
-	x8si2HEonLoS9xJ/rcomdX62i7zz9L1AE6vwRePZE0WfrVfeprmAn8FenqenoHRA==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1t4MDV-00000004apq-0m9G;
-	Fri, 25 Oct 2024 17:27:09 +0200
-Message-ID: <e711d2ed2ecc455e6de5b9fd7e904ad34c978b1e.camel@sipsolutions.net>
-Subject: Re: [RFC PATCH 13/13] um: nommu: plug nommu code into build system
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Hajime Tazaki <thehajime@gmail.com>
-Cc: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, 
-	anton.ivanov@cambridgegreys.com, ricarkol@google.com
-Date: Fri, 25 Oct 2024 17:27:08 +0200
-In-Reply-To: <m2msisnxiw.wl-thehajime@gmail.com>
-References: <cover.1729770373.git.thehajime@gmail.com>
-	 <82a7ee8b31c51edb47e144922581824a3b5e371d.1729770373.git.thehajime@gmail.com>
-	 <ce4a00dadcaf888ff1bf7887b3af722a385e694e.camel@sipsolutions.net>
-	 <m2msisnxiw.wl-thehajime@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-2.fc40) 
+	Sat, 26 Oct 2024 03:47:04 +0000
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-20c693b68f5so27282965ad.1
+        for <linux-um@lists.infradead.org>; Fri, 25 Oct 2024 20:47:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729914422; x=1730519222; darn=lists.infradead.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=o2sEsK68CwMXxf8toSl3kI0xQbvN8/oETGeq4Wqiy/0=;
+        b=Qeaf4sUyqaw03tqD4DRVA3mJniJVKeZYhXl3oLhSqpxoGYu+7HUFaC7269aNmgdKIl
+         Ln7XpSohWFXGtvzlJJqv9oBerUuMoNldNyIhr3CCk6/Z+lWF/AKv86v8rPF2tHJ4sO38
+         v6n44k6bLM2VUaz0jj3hdcoJmHyHpqNAC6h6YhxWbrwi1WW7nrXva/xsGlpzgfrWryEj
+         KBGZ3yLbgNPG/psZOt++CL7w6KAfMpGFSwNCn3wkdpNsvryLJNvXTNzqcY28DLqs1xyJ
+         nopiN0JwDX5uFDbnA7/52SJ9Dm3l2M2DSYn6YmfTyGLytYD8nchFZe501c+LckW9MYj0
+         DxQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729914422; x=1730519222;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=o2sEsK68CwMXxf8toSl3kI0xQbvN8/oETGeq4Wqiy/0=;
+        b=dFgprBP0dTbaK9ej/DUc42eaZ6VhqF3SXOUN8J8ij6PpVGm/ImZEv6xT+lOsrIw1Cq
+         0Qcuk1j/QjLiFqkd49wnaazKUnNrbjZ1cYgWd/aeP+tpikqISXwIYCM6b25fgEwGpsHR
+         HjM0nHd1dQ7ua8pbuu+expjkkZi/JAA/9gd3EM458sWZhU9dYhPJIhW5QFJWFKnbNnar
+         14HpmjqcSbp+roSiEYV/dm4HI0CgH4W9Aul6gcQJdz7n1KPzoZAjecYz6RrEQqHurh8s
+         0KxLw5c0QBwc5wMwv6k/IV+z+hJhJF0vLohPLWSIgWCznQtbLBj7ZxwZulAKwgZVggla
+         cV3w==
+X-Forwarded-Encrypted: i=1; AJvYcCXSI2KOhIFRN0MOn4Hq6uJzIyINzWtiiVA0iKQM9cH2csIjy/og0DxSI3gZ8fAgoSbQRIMk5gQs+w==@lists.infradead.org
+X-Gm-Message-State: AOJu0Ywo1244+b2uheDVLCwBd+zkBZkVmxzlnDGnJsOGP4GOmSjCkzaF
+	dM+dI2Ddb/UNx68peagIn5ae8WQnQvKx2qhksvhvV1ey7gWCpDsE
+X-Google-Smtp-Source: AGHT+IE6vFRIGposdfIGkKNHgDwb4FYyCPbH3HhoBg041NpIXzhhDVZxW88o+VKXZVUXEUFPDPjUlA==
+X-Received: by 2002:a17:902:d54c:b0:205:3e6d:9949 with SMTP id d9443c01a7336-210c6ca8b6cmr16558935ad.52.1729914421977;
+        Fri, 25 Oct 2024 20:47:01 -0700 (PDT)
+Received: from mail.google.com (125-239-144-11-fibre.sparkbb.co.nz. [125.239.144.11])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-210bbf46ceesm16939235ad.44.2024.10.25.20.46.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Oct 2024 20:47:01 -0700 (PDT)
+Date: Sat, 26 Oct 2024 16:46:54 +1300
+From: Paulo Miguel Almeida <paulo.miguel.almeida.rodenas@gmail.com>
+To: richard@nod.at, anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net, kees@kernel.org, tiwei.btw@antgroup.com,
+	linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: paulo.miguel.almeida.rodenas@gmail.com
+Subject: [PATCH][next] um: Malloc just enough space for fitting pid file
+Message-ID: <ZxxmLngMg3iNjOfK@mail.google.com>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241025_162710_954555_3C8E9EAD 
-X-CRM114-Status: GOOD (  15.86  )
+X-CRM114-CacheID: sfid-20241025_204703_429624_08A8BA9E 
+X-CRM114-Status: GOOD (  10.67  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -91,48 +89,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, 2024-10-25 at 22:05 +0900, Hajime Tazaki wrote:
-> On Fri, 25 Oct 2024 18:33:06 +0900,
-> Johannes Berg wrote:
-> >=20
-> > On Thu, 2024-10-24 at 21:09 +0900, Hajime Tazaki wrote:
-> > >=20
-> > >  config MMU
-> > > -	bool
-> > > +	bool "MMU-based Paged Memory Management Support"
-> > >  	default y
-> >=20
-> > "if !64bit" or something
->=20
-> not sure if I understand correctly but where do you suggest to add "if
-> !64bit" in this block ?
+umid is already generated during make_umid_init __initcall so there is
+no need to allocate UMID_LEN bytes to accommodate the max possible name
+for the umid segment of the filepath
 
-config MMU
-	bool "..." if 64BIT
+This patch replaces UMID_LEN occurences in which it's redundant
 
-was what I was thinking, since you cannot allow !MMU on 32-bit.
+Signed-off-by: Paulo Miguel Almeida <paulo.miguel.almeida.rodenas@gmail.com>
+---
+ arch/um/os-Linux/umid.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-As you wrote it, the user would get prompted on both 32 and 64 bit, and
-get an invalid configuration on 32-bit if they turn off MMU.
+diff --git a/arch/um/os-Linux/umid.c b/arch/um/os-Linux/umid.c
+index eb523ab1e218..513a2cce38db 100644
+--- a/arch/um/os-Linux/umid.c
++++ b/arch/um/os-Linux/umid.c
+@@ -212,7 +212,7 @@ static void __init create_pid_file(void)
+ 	char pid[sizeof("nnnnnnnnn")], *file;
+ 	int fd, n;
+ 
+-	n = strlen(uml_dir) + UMID_LEN + sizeof("/pid");
++	n = strlen(uml_dir) + strlen(umid) + sizeof("/pid");
+ 	file = malloc(n);
+ 	if (!file)
+ 		return;
+@@ -394,7 +394,7 @@ static void remove_umid_dir(void)
+ {
+ 	char *dir, err;
+ 
+-	dir = malloc(strlen(uml_dir) + UMID_LEN + 1);
++	dir = malloc(strlen(uml_dir) + strlen(umid) + 1);
+ 	if (!dir)
+ 		return;
+ 
+-- 
+2.47.0
 
-> > > +config ARCH_FORCE_MAX_ORDER
-> > > +	int "Order of maximal physically contiguous allocations"
-> > > +	default "10" if MMU
-> > > +	default "16" if !
-> >=20
-> > Should there even a be user prompt for it?
-> > Perhaps "if EXPERT" or something?
->=20
-> I think it's already user-editable=C2=A0
-
-It is now, but it didn't even exist before, so nobody would've been
-asked. I'm not sure it's _too_ useful to ask the users though? When
-would they know how to set it? (Perhaps also add some help text? I'm
-guessing it's related to the size of binaries or so?)
-
-> but your suggestion is to limit with 'if EXPERT' ?
-
-Or maybe it should just not be user editable at all?
-
-johannes
 
