@@ -4,59 +4,85 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5672BD10BF7
-	for <linux-um@archiver.kernel.org>; Sat, 26 Oct 2024 13:42:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 148E0D10C09
+	for <linux-um@archiver.kernel.org>; Sun, 27 Oct 2024 09:10:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From
-	:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=QX0PbyaMBP4Jnj+1OSpBsDXXO5/csjDDNDRc9dkr6/8=; b=HfSf4O9TglZS/2EuHtoGKUAEwT
-	G4L9jWeh8axa2i7OEPY8l5MvgucDyMkYt1CFqgGwEoUGNmVAiHy/587Ne8PSdqBfhfO2uVbX4acdI
-	mRkwXbhp4QfqKHdzZtPIV4DWVWbdbY9jbCSg+A6Y+XdeI72BgLd/QFnmV5kHrUn7bRVCdzzITjogC
-	/hFM0/dnQg1QKoCU7+9M0Q/AfkhAkw9ng4q+Jat84rdkWkO+roNxEOmzWJNliRm7BkEVeKx+bsE6w
-	iJZUN2hwptyvsZ2EOmPEjEBGzVPumMpnmhQWWQ+5dloUJzQmqRjdhaK430t7sCAJ7GgJiKBz5GZS5
-	rnkpeRwg==;
+	Content-Type:MIME-Version:References:In-Reply-To:Subject:Cc:To:From:
+	Message-ID:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=yWz0f5qcKVFFFr84xNVY0U/XjzKHuoRgXitGxoLJYM4=; b=diGh5T6qsly0XB/Tx46lQUfLnD
+	W7N1h2xDxn34uw1Hwby+/rzi/IjQ+m1/al4m4dCrDRDlxChYbvcndNXsrcPUI06j39gWyFqoz3Jbv
+	07p9UKXxj75xE2bMsggeVSAtXq5h7mTxX8BzwO84ewVTqwZvH4Dk88ckqhF7w9vlR+Fe3A1DhdBxs
+	wx1QGawIl2Ji8s7Noi3T7t6PTeKDRUpRKwy4IrR4LGd6OkypfWJGu15VQhe7R3Q2RbrnvQys2hp1O
+	PYxgm5d5EuHi6B7w5S8WxP0IoZnni0hWLNFo5VRPi5AU7gXTkSTsDB8B1lWLRgiTkWH5MDxJ5gy7J
+	RdRd0Z+A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4h3V-00000006hc6-084e;
-	Sat, 26 Oct 2024 13:42:13 +0000
-Received: from out0-198.mail.aliyun.com ([140.205.0.198])
+	id 1t4zIF-00000007rxW-0BUI;
+	Sun, 27 Oct 2024 09:10:39 +0000
+Received: from mail-pg1-x52e.google.com ([2607:f8b0:4864:20::52e])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4h3R-00000006hbY-1lZ6
+	id 1t4zIB-00000007rx6-43W9
 	for linux-um@lists.infradead.org;
-	Sat, 26 Oct 2024 13:42:11 +0000
+	Sun, 27 Oct 2024 09:10:37 +0000
+Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-7cd8803fe0aso2307883a12.0
+        for <linux-um@lists.infradead.org>; Sun, 27 Oct 2024 02:10:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=antgroup.com; s=default;
-	t=1729950122; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=QX0PbyaMBP4Jnj+1OSpBsDXXO5/csjDDNDRc9dkr6/8=;
-	b=AuIhOEWQWTFG3Sw4BCt7F+c859iltSAiPLZs8sjn/uuvQpm5CMA938pRfIs/nxJERs6009HcZ5bZL5IiirldaAK7ofT4v3TBolkNCXjJOlDqzolKyUMKkA9Llc7iC9161wiidltA3zTcbYSAt5dyWfmsx1gWHlDg2GjulOHRkrs=
-Received: from 30.32.106.210(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.ZtJ6TkF_1729950111 cluster:ay29)
-          by smtp.aliyun-inc.com;
-          Sat, 26 Oct 2024 21:42:00 +0800
-Message-ID: <c721c0b3-a3f5-41ec-bbdf-c14ac55704a1@antgroup.com>
-Date: Sat, 26 Oct 2024 21:41:49 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 8/9] um: Implement kernel side of SECCOMP based
- process handling
-To: Johannes Berg <johannes@sipsolutions.net>,
- Benjamin Berg <benjamin@sipsolutions.net>, linux-um@lists.infradead.org
-References: <20240925203232.565086-1-benjamin@sipsolutions.net>
- <20240925203232.565086-9-benjamin@sipsolutions.net>
- <590b1ea94cd8166dde2230e8aa8c80045f30cfe4.camel@sipsolutions.net>
- <1aeadd38be5b073cb1f2fd1e1caa55f3997be14e.camel@sipsolutions.net>
- <6182ae812f461ae75d11ba1fc78905cf27114d12.camel@sipsolutions.net>
-Content-Language: en-US
-From: "Tiwei Bie" <tiwei.btw@antgroup.com>
-In-Reply-To: <6182ae812f461ae75d11ba1fc78905cf27114d12.camel@sipsolutions.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        d=gmail.com; s=20230601; t=1730020234; x=1730625034; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=yWz0f5qcKVFFFr84xNVY0U/XjzKHuoRgXitGxoLJYM4=;
+        b=O1CrpBL+skpLjVNFfhcSciQGRz0OLrOVkYLBQ145sJkEamXeteFtvTdt1AzWPNgofk
+         5CY6Pbx2DY8xxdyLhLuspVvx597IuNj9FTgAIe3pjpoVAjDk6inj1m0YBpBGJTxOnXSu
+         zbACVyIduksdoENQk70MR1wLWbGD+IXuRvRSAA4U8v8/SwVC0MUORSgok/4NqP6HOwd+
+         ylRHL6HgTVBdIzeIIdkiBpB1hGDKzuBpqWgtjm/K92zfCQCdYr4h9OnLfv3AfyfZczqA
+         hS4LK1yk415koOlUe0TUXgLq4yFC0imIwmu9Wiu6xutRVjcd13WKiA5rkHHky00i1nQ0
+         mYUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730020234; x=1730625034;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yWz0f5qcKVFFFr84xNVY0U/XjzKHuoRgXitGxoLJYM4=;
+        b=KSwgR34Ym1PaFOqJKzSYnmiKcZzeh8IzT+/kpYUhFC4bCj8nUyze2O30ILg4dfNfBc
+         WCFVKtAw7AH4QL0HMOFpjQ3JKtY5mjKRId/Enxz6HgQy/zMtnVVgJnFXi7S7NCsOKccJ
+         kyI2LgS1L5sawETtTrYNhtKNqLBcOw2JCNAR652BZUdiQWJxslLjkvR4/XrrnsgX93yj
+         1AZYWLCR26j9W4UNS7kWfSdabgjxMMysoVVsKJMPKwTcdWz0mY6G03k6V2ZfQ0P/34kG
+         5zCpcHciP6NMwIDHk+mmeGpDtAZ58/WMlCE9WmQPnSQqgFKTV6GqucaBHqt95WA80Mbp
+         2RDg==
+X-Gm-Message-State: AOJu0YwHmtAbImNJv/4GZKrvwvqV2h6c9MebWFD8Goo4qAAWnavFY5/x
+	9O8qq0Eq7mXPaHqG+j9ImFGqW6oF1HT6vF1ZvoLYrpyMAd8fzWOI
+X-Google-Smtp-Source: AGHT+IGtuoGjBNKNawYsMv/yUwqnuX1Pp5cPeC8JPjfCmAIo0e7E7loU4b5B6psCeNKnLxlcxUGPeQ==
+X-Received: by 2002:a05:6a20:c793:b0:1d9:1af2:9697 with SMTP id adf61e73a8af0-1d9a855f85fmr5474861637.47.1730020234317;
+        Sun, 27 Oct 2024 02:10:34 -0700 (PDT)
+Received: from mars.local.gmail.com (221x241x217x81.ap221.ftth.ucom.ne.jp. [221.241.217.81])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72057a251e7sm3735620b3a.180.2024.10.27.02.10.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Oct 2024 02:10:33 -0700 (PDT)
+Date: Sun, 27 Oct 2024 18:10:30 +0900
+Message-ID: <m2y129hpx5.wl-thehajime@gmail.com>
+From: Hajime Tazaki<thehajime@gmail.com>
+To: benjamin@sipsolutions.net
+Cc: linux-um@lists.infradead.org,
+	jdike@addtoit.com,
+	richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net,
+	ricarkol@google.com
+Subject: Re: [RFC PATCH 00/13] nommu UML
+In-Reply-To: <f482739aa05abd80479804054e4affe23f0dc6c5.camel@sipsolutions.net>
+References: <cover.1729770373.git.thehajime@gmail.com>
+	<f482739aa05abd80479804054e4affe23f0dc6c5.camel@sipsolutions.net>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241026_064209_978554_001D1511 
-X-CRM114-Status: UNSURE (   8.90  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20241027_021036_037359_64784DB7 
+X-CRM114-Status: GOOD (  32.93  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,31 +97,99 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 2024/10/26 20:56, Johannes Berg wrote:
-> On Sat, 2024-10-26 at 13:04 +0200, Benjamin Berg wrote:
->>>>  
->>>> +#include <linux/kconfig.h>
->>>
->>> Hmm. If this works, why do we have UML_CONFIG_64BIT? For ASM stuff?
->>
->> So, I just had a quick look. It seems that before commit a95b37e20db9
->> ("kbuild: get <linux/compiler_types.h> out of <linux/kconfig.h>") doing
->> this would have caused compilation errors.
-> 
-> And that commit was pretty much done for the exact same reason!
-> 
->> With that change, there shouldn't be a reason for the various
->> UML_CONFIG_* macros anymore. It should be safe to include
->> linux/kconfig.h (and if we are not allowed to do that, we could still
->> use generated/autoconf.h).
->>
->> Maybe we should see this as a cleanup opportunity?
-> 
-> Sounds good to me! That also gives us IS_ENABLED() which can be a nice
-> cleanup opportunity too :-)
 
-+1, I also like this idea! :)
+Hello Benjamin,
 
-Regards,
-Tiwei
+thank you for your time looking at this.
+
+On Sat, 26 Oct 2024 19:19:08 +0900,
+Benjamin Berg wrote:
+
+> > - a crash on userspace programs crashes a UML kernel, not signaling
+> > =A0 with SIGSEGV to the program.
+> > - commit c27e618 (during v6.12-rc1 merge) introduces invalid access to
+> > =A0 a vma structure for our case, which updates the internal procedure
+> > =A0 of maple_tree subsystem.=A0 We're trying to fix issue but still a
+> > =A0 random process on exit(2) crashes.
+>=20
+> Btw. are you handling FP register save/restore? If it is not there, it
+> probably would not be too hard to add (XSAVE, etc.), though it might
+> add a bit of additional overhead. Especially as UML always saves the FP
+> state rather than optimizing it like the x86 architectures.
+
+The patch handles fp register on entry/leave at syscall; [07/13] patch
+contains this part.
+
+I'm not familiar with that but what kind of optimizations does x86
+architecture do for fp register handling ?
+
+> I am a bit confused overall. I mean, zpoline seems kind of neat, but a
+> requirement on patching userspace code also seems like a lot.
+>=20
+> To me, it seems much more natural to catch the userspace syscalls using
+> a SECCOMP filter[1]. While quite a lot slower, that should be much more
+> portable across architectures. For improved speed one could still do
+> architecture specific things inside the vDSO or by using zpoline. But
+> those would then "just" be optimizations and unpatched code would still
+> work correctly (e.g. JIT).
+
+I'm not proposing this patch to replace existing UML implementations;
+for instance, the patchset cannot run CONFIG_MMU code in the whole
+kernel tree so, existing ptrace-based implementation still has real
+usecase.  and ptrace based syscall hook is not indeed fast and the
+improvements with seccomp filter instead clearly has benefits.  I
+think it's independent to this patchset.
+
+So I think while your seccomp patches are also in review, this
+patchset can exist in parallel.
+
+btw, though I mentioned that JIT generated code is not currently
+handled in a different reply, it can be implemented as an extension to
+this patchset; the original implementation of zpoline now is able to
+patch JIT generated code as well.
+
+https://github.com/yasukata/zpoline/pull/20/commits/c42af16757ad3fcdf7084c9=
+f2139bb9105796873
+
+it is not implemented for the moment.
+
+in terms of the portability, the basic idea of syscall hook with
+zpoline is applicable to other platform, like aarch64
+(https://github.com/retrage/svc-hook).  so I believe it has a chance
+to expand this idea to other architectures than x86_64.
+
+> For me, a big argument in favour of such an approach is its simplicity.
+> I am mostly basing that on the fact that this patchset should properly
+> handle other signals like SIGFPE and SIGSEGV. And, once it does that,
+> you will already have all the infrastructure to do the correct register
+> save/restore using the host mcontex, which is what is needed in the
+> SIGSYS handler when using SECCOMP. The filter itself should be simple
+> as it just needs to catch all syscalls within valid userspace
+> executable memory[2] ranges.
+
+I agree with your observation that the approach is simple.
+I don't have a good idea on how to handle SIGSEGV, but will try to see
+with your inputs.
+
+> Benjamin
+>=20
+> [1] Maybe not surprising, as I have been working on a SECCOMP based UML
+> that does not require ptrace.
+
+yes, I'm aware of it since before.  I have also conducted a benchmark
+with several hook mechanisms, including seccomp with simple getpid
+measurement.
+
+https://speakerdeck.com/thehajime/netdev0x18-zpoline?slide=3D16
+
+> [2] I am assuming that userspace executable code is already confined to
+> a certain address space within the UML process. Obviously, the kernel
+> itself and loaded modules need to be free to do host syscalls and
+> should not be affected by the SECCOMP filter.
+
+I think our !MMU UML doesn't break this assumption.  But did you see
+something to our patchset ?
+
+Thanks again,
+-- Hajime
 
