@@ -4,85 +4,66 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 148E0D10C09
-	for <linux-um@archiver.kernel.org>; Sun, 27 Oct 2024 09:10:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D8DF0D10C16
+	for <linux-um@archiver.kernel.org>; Sun, 27 Oct 2024 09:45:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Subject:Cc:To:From:
-	Message-ID:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=yWz0f5qcKVFFFr84xNVY0U/XjzKHuoRgXitGxoLJYM4=; b=diGh5T6qsly0XB/Tx46lQUfLnD
-	W7N1h2xDxn34uw1Hwby+/rzi/IjQ+m1/al4m4dCrDRDlxChYbvcndNXsrcPUI06j39gWyFqoz3Jbv
-	07p9UKXxj75xE2bMsggeVSAtXq5h7mTxX8BzwO84ewVTqwZvH4Dk88ckqhF7w9vlR+Fe3A1DhdBxs
-	wx1QGawIl2Ji8s7Noi3T7t6PTeKDRUpRKwy4IrR4LGd6OkypfWJGu15VQhe7R3Q2RbrnvQys2hp1O
-	PYxgm5d5EuHi6B7w5S8WxP0IoZnni0hWLNFo5VRPi5AU7gXTkSTsDB8B1lWLRgiTkWH5MDxJ5gy7J
-	RdRd0Z+A==;
+	bh=Nkfi5PyJgxSfTGF7gaF03XDp0KqDrm+uiMXmjz4aPPU=; b=bCj4YrRK895APndfoBLUJXxap8
+	p1takdebf0lx9pfkKUV9LmGns6uqRxpILT861xmYHXz+3zOeUXdMoXa5PrHUSVMv/0Tc4Shp/W+c4
+	BuSjCeOjJ5fZJ8df8hkwbRM6HODEZ+7wbldap2LxXKBcmLksPj9wjr653UlqdNuyhNLK3MNRHjTe3
+	Z6/cmnwVdYXbwOwfGj6Y53sVJJpv13GqGSloAxVIeVyCHe9kgiShF8/GJaZRDsMkSz1FiWSGOr9d6
+	cQAvVmBdV1DWuKPSWgBHUdF0HuqaMqZ4mc4kvmX7JRRX2Lpd9RUKTYu8iBggVRdNJtSd9Qt/RcucI
+	LluC46iw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4zIF-00000007rxW-0BUI;
-	Sun, 27 Oct 2024 09:10:39 +0000
-Received: from mail-pg1-x52e.google.com ([2607:f8b0:4864:20::52e])
+	id 1t4zqG-00000007vg7-06iN;
+	Sun, 27 Oct 2024 09:45:48 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t4zIB-00000007rx6-43W9
+	id 1t4zqE-00000007vfP-1Tvo
 	for linux-um@lists.infradead.org;
-	Sun, 27 Oct 2024 09:10:37 +0000
-Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-7cd8803fe0aso2307883a12.0
-        for <linux-um@lists.infradead.org>; Sun, 27 Oct 2024 02:10:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730020234; x=1730625034; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=yWz0f5qcKVFFFr84xNVY0U/XjzKHuoRgXitGxoLJYM4=;
-        b=O1CrpBL+skpLjVNFfhcSciQGRz0OLrOVkYLBQ145sJkEamXeteFtvTdt1AzWPNgofk
-         5CY6Pbx2DY8xxdyLhLuspVvx597IuNj9FTgAIe3pjpoVAjDk6inj1m0YBpBGJTxOnXSu
-         zbACVyIduksdoENQk70MR1wLWbGD+IXuRvRSAA4U8v8/SwVC0MUORSgok/4NqP6HOwd+
-         ylRHL6HgTVBdIzeIIdkiBpB1hGDKzuBpqWgtjm/K92zfCQCdYr4h9OnLfv3AfyfZczqA
-         hS4LK1yk415koOlUe0TUXgLq4yFC0imIwmu9Wiu6xutRVjcd13WKiA5rkHHky00i1nQ0
-         mYUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730020234; x=1730625034;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yWz0f5qcKVFFFr84xNVY0U/XjzKHuoRgXitGxoLJYM4=;
-        b=KSwgR34Ym1PaFOqJKzSYnmiKcZzeh8IzT+/kpYUhFC4bCj8nUyze2O30ILg4dfNfBc
-         WCFVKtAw7AH4QL0HMOFpjQ3JKtY5mjKRId/Enxz6HgQy/zMtnVVgJnFXi7S7NCsOKccJ
-         kyI2LgS1L5sawETtTrYNhtKNqLBcOw2JCNAR652BZUdiQWJxslLjkvR4/XrrnsgX93yj
-         1AZYWLCR26j9W4UNS7kWfSdabgjxMMysoVVsKJMPKwTcdWz0mY6G03k6V2ZfQ0P/34kG
-         5zCpcHciP6NMwIDHk+mmeGpDtAZ58/WMlCE9WmQPnSQqgFKTV6GqucaBHqt95WA80Mbp
-         2RDg==
-X-Gm-Message-State: AOJu0YwHmtAbImNJv/4GZKrvwvqV2h6c9MebWFD8Goo4qAAWnavFY5/x
-	9O8qq0Eq7mXPaHqG+j9ImFGqW6oF1HT6vF1ZvoLYrpyMAd8fzWOI
-X-Google-Smtp-Source: AGHT+IGtuoGjBNKNawYsMv/yUwqnuX1Pp5cPeC8JPjfCmAIo0e7E7loU4b5B6psCeNKnLxlcxUGPeQ==
-X-Received: by 2002:a05:6a20:c793:b0:1d9:1af2:9697 with SMTP id adf61e73a8af0-1d9a855f85fmr5474861637.47.1730020234317;
-        Sun, 27 Oct 2024 02:10:34 -0700 (PDT)
-Received: from mars.local.gmail.com (221x241x217x81.ap221.ftth.ucom.ne.jp. [221.241.217.81])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72057a251e7sm3735620b3a.180.2024.10.27.02.10.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Oct 2024 02:10:33 -0700 (PDT)
-Date: Sun, 27 Oct 2024 18:10:30 +0900
-Message-ID: <m2y129hpx5.wl-thehajime@gmail.com>
-From: Hajime Tazaki<thehajime@gmail.com>
-To: benjamin@sipsolutions.net
-Cc: linux-um@lists.infradead.org,
-	jdike@addtoit.com,
-	richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net,
-	ricarkol@google.com
-Subject: Re: [RFC PATCH 00/13] nommu UML
-In-Reply-To: <f482739aa05abd80479804054e4affe23f0dc6c5.camel@sipsolutions.net>
+	Sun, 27 Oct 2024 09:45:47 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=Nkfi5PyJgxSfTGF7gaF03XDp0KqDrm+uiMXmjz4aPPU=;
+	t=1730022344; x=1731231944; b=RxoGHw0iRQ5Gh4Nlyaj6hD9+pS+j6XXNLcF8viPmgWBr+b/
+	3JMIM4qVSLdItjQGcftJEfgwVwFDUCNsc/uxfoRlPC9ltAx90rIuZ7XqmmlU7xHJBrtzxXzzHRFt5
+	/wpq7oQDDaKyWE2W45y+KXO9EErW3vocQimbhaHyV6d20ps5BISEOPX7ZUvYQ15oFbGPW2S/+Rq1V
+	ahdH+LBsWfHkTb5eHp+l/GY2fgcjpGTlzAUX6cs4w5FH2MH+awgzFuL74r9uftLx6BAoc6kmy0PwW
+	ivPwjkA1S24gR26aZH5j0dUompkDLGROiWaqHk9SbTluoeo9iu+dQ5V6JmYQ07ZA==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1t4zq8-00000006D7n-3qOW;
+	Sun, 27 Oct 2024 10:45:41 +0100
+Message-ID: <44b4a8f1eec8fad1a9c7cb293bff9fcf7985cdb6.camel@sipsolutions.net>
+Subject: Re: [RFC PATCH 05/13] x86/um: nommu: syscall translation by zpoline
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Hajime Tazaki <thehajime@gmail.com>
+Cc: linux-um@lists.infradead.org, jdike@addtoit.com, richard@nod.at, 
+	anton.ivanov@cambridgegreys.com, ricarkol@google.com
+Date: Sun, 27 Oct 2024 10:45:39 +0100
+In-Reply-To: <m21q03iae4.wl-thehajime@gmail.com>
 References: <cover.1729770373.git.thehajime@gmail.com>
-	<f482739aa05abd80479804054e4affe23f0dc6c5.camel@sipsolutions.net>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/26.3 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-1
+		<2f3537884533232ab2ef2937e392d32736527bdc.1729770373.git.thehajime@gmail.com>
+		<75c9b237111431362458ced4c5213b74ca8fcb13.camel@sipsolutions.net>
+		<m2r084nxu6.wl-thehajime@gmail.com>
+		<6769bac56b1d20233dae036aba2067da3eaf7779.camel@sipsolutions.net>
+	 <m21q03iae4.wl-thehajime@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-2.fc40) 
+MIME-Version: 1.0
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241027_021036_037359_64784DB7 
-X-CRM114-Status: GOOD (  32.93  )
+X-CRM114-CacheID: sfid-20241027_024546_433524_ABDD5B15 
+X-CRM114-Status: GOOD (  11.10  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -97,99 +78,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-
-Hello Benjamin,
-
-thank you for your time looking at this.
-
-On Sat, 26 Oct 2024 19:19:08 +0900,
-Benjamin Berg wrote:
-
-> > - a crash on userspace programs crashes a UML kernel, not signaling
-> > =A0 with SIGSEGV to the program.
-> > - commit c27e618 (during v6.12-rc1 merge) introduces invalid access to
-> > =A0 a vma structure for our case, which updates the internal procedure
-> > =A0 of maple_tree subsystem.=A0 We're trying to fix issue but still a
-> > =A0 random process on exit(2) crashes.
+On Sat, 2024-10-26 at 16:36 +0900, Hajime Tazaki wrote:
 >=20
-> Btw. are you handling FP register save/restore? If it is not there, it
-> probably would not be too hard to add (XSAVE, etc.), though it might
-> add a bit of additional overhead. Especially as UML always saves the FP
-> state rather than optimizing it like the x86 architectures.
-
-The patch handles fp register on entry/leave at syscall; [07/13] patch
-contains this part.
-
-I'm not familiar with that but what kind of optimizations does x86
-architecture do for fp register handling ?
-
-> I am a bit confused overall. I mean, zpoline seems kind of neat, but a
-> requirement on patching userspace code also seems like a lot.
+> Originally our patchset had a whitelist-based seccomp filter (w/
+> SCMP_ACT_ALLOW), but dropped from this RFC as I found that 1) this is
+> not the !MMU specific feature (it can be generally applied to all UML
+> use cases), and 2) we cannot prevent a syscall (e.g., ioctl(2)) from
+> userspace which is white-listed in our seccomp filter, thus the newly
+> introduced filter may not be perfect.
 >=20
-> To me, it seems much more natural to catch the userspace syscalls using
-> a SECCOMP filter[1]. While quite a lot slower, that should be much more
-> portable across architectures. For improved speed one could still do
-> architecture specific things inside the vDSO or by using zpoline. But
-> those would then "just" be optimizations and unpatched code would still
-> work correctly (e.g. JIT).
+> the maintenance of the whitelist is also not easy; the syscall used in
+> one version is renamed at some point in future (what I faced is
+> SCMP_SYS(open) should be renamed with SCMP_SYS(openat)).
 
-I'm not proposing this patch to replace existing UML implementations;
-for instance, the patchset cannot run CONFIG_MMU code in the whole
-kernel tree so, existing ptrace-based implementation still has real
-usecase.  and ptrace based syscall hook is not indeed fast and the
-improvements with seccomp filter instead clearly has benefits.  I
-think it's independent to this patchset.
+Sure, agree that would be awful. However, only kernel code should be
+making real host syscalls, never userspace code, so you should be able
+to filter simply based on address? Since it's NOMMU there's a single
+process and a single address space, and userspace binaries always have
+to be in certain places, I'd think?
 
-So I think while your seccomp patches are also in review, this
-patchset can exist in parallel.
+This should be cheap since
+ (a) it's not doing anything with (guest) syscalls that were already
+     rewritten by zpoline (they don't exist as host syscalls)
+ (b) while the real host syscalls made by the kernel would still be
+     checked by the filter program, it'd just return "sure that's OK"
+     and not redirect anything
 
-btw, though I mentioned that JIT generated code is not currently
-handled in a different reply, it can be implemented as an extension to
-this patchset; the original implementation of zpoline now is able to
-patch JIT generated code as well.
-
-https://github.com/yasukata/zpoline/pull/20/commits/c42af16757ad3fcdf7084c9=
-f2139bb9105796873
-
-it is not implemented for the moment.
-
-in terms of the portability, the basic idea of syscall hook with
-zpoline is applicable to other platform, like aarch64
-(https://github.com/retrage/svc-hook).  so I believe it has a chance
-to expand this idea to other architectures than x86_64.
-
-> For me, a big argument in favour of such an approach is its simplicity.
-> I am mostly basing that on the fact that this patchset should properly
-> handle other signals like SIGFPE and SIGSEGV. And, once it does that,
-> you will already have all the infrastructure to do the correct register
-> save/restore using the host mcontex, which is what is needed in the
-> SIGSYS handler when using SECCOMP. The filter itself should be simple
-> as it just needs to catch all syscalls within valid userspace
-> executable memory[2] ranges.
-
-I agree with your observation that the approach is simple.
-I don't have a good idea on how to handle SIGSEGV, but will try to see
-with your inputs.
-
-> Benjamin
->=20
-> [1] Maybe not surprising, as I have been working on a SECCOMP based UML
-> that does not require ptrace.
-
-yes, I'm aware of it since before.  I have also conducted a benchmark
-with several hook mechanisms, including seccomp with simple getpid
-measurement.
-
-https://speakerdeck.com/thehajime/netdev0x18-zpoline?slide=3D16
-
-> [2] I am assuming that userspace executable code is already confined to
-> a certain address space within the UML process. Obviously, the kernel
-> itself and loaded modules need to be free to do host syscalls and
-> should not be affected by the SECCOMP filter.
-
-I think our !MMU UML doesn't break this assumption.  But did you see
-something to our patchset ?
-
-Thanks again,
--- Hajime
+johannes
 
