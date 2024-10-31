@@ -4,87 +4,59 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0D66D3A67D
-	for <linux-um@archiver.kernel.org>; Wed, 30 Oct 2024 09:28:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 314BEE6896D
+	for <linux-um@archiver.kernel.org>; Thu, 31 Oct 2024 10:08:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Subject:Cc:To:From:
-	Message-ID:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:To:From:
+	Subject:Message-ID:Reply-To:Cc:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ntQNFrAwRXAO2jW6xxxMTlYh+yGVrXaKaxa2kDvz2uU=; b=f/PS+jzCYh04bxiMr3gJVGp+Xa
-	sSJBsBQc7b1VJD0qoe49sHMic6E7jLbegUtIeT4tQuOZD5SE1GApNzrd4WQFHX1FBdCEyiE0LjVH3
-	qC7nfChk04dDXFEMUzh6FGkSnuzOQMkokUwp5d1FR1BndaRUT/dvnXwpTYohz8kI3l9Nji6769t9d
-	r/V33mQLOzM3JyIs9Ih9FAF5ku15a509D9sVavseqCQjDTpOnVM+6AqyA/yNb3M2j7RdXTsd6QdmU
-	uXAc6vAlFRGffoG5y8bY6bOim+5IOOA5fxgOi+fUsYFposcgILHVp0dY02+vZkrdCIJ9MJ1g8NIRf
-	6asDHxjA==;
+	bh=IfgIq+Icsm2SWoAvxs4amvLlgkYlYtcjhSVj1YhtFms=; b=bvne3s8ThvvEmEGx7wVKJWeLnP
+	kmU6wYgvDvGi7sZYKeUmOqArpKPO1u/f1Fuj/cVaamKppCXNnt36QH0V6xsZao2rVPi21+fTD5SIR
+	DV6PLHpU4pbyE5GrjKHHa5TBTASM+PxFz9Hoj6cyRpLm+8/CvL9mArM7sz3egtRsHm26Ou+TOFjW9
+	lnb/krfXi+QUw8opVjQ/cEUKPjlMhTM7RbcUVm93lIxCgEg0semA2U7waRTIEibR8Z+oiVm07Ltxk
+	QXnnKUDf+6q7EeanWUtj6Dw8hWJbkHtdjKsdTq5EE3UVvSm9QrrCR2p5hhsCiTz9v4h4CXAD2LBIW
+	UUTob6Rg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t6505-0000000HORX-27Vv;
-	Wed, 30 Oct 2024 09:28:25 +0000
-Received: from mail-pl1-x636.google.com ([2607:f8b0:4864:20::636])
+	id 1t6S6J-00000003BNX-0eaH;
+	Thu, 31 Oct 2024 10:08:23 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t64xA-0000000HO8h-3DoP
+	id 1t6S60-00000003BHr-3knD
 	for linux-um@lists.infradead.org;
-	Wed, 30 Oct 2024 09:25:26 +0000
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-20cdb889222so61930305ad.3
-        for <linux-um@lists.infradead.org>; Wed, 30 Oct 2024 02:25:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730280323; x=1730885123; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ntQNFrAwRXAO2jW6xxxMTlYh+yGVrXaKaxa2kDvz2uU=;
-        b=ee+ojaYYNnyOORLsN0mRlxg/ZoLc1E7eGYmJLBEX63u0jSbgvlHjFmWX5Hhx2L8Ha7
-         wfVQoe78WcYSjRgcswO0M8IZ69CXfC3ElbhPOZN0yw+mRkwRZpbIxjAC/p4Jh7LD5VHC
-         AUXQ0wkQgeyAF2b2BokTj8LgAZeduZndX6ZJzPCAx0F8TuA4QuetJgyAtkS678BaGHlA
-         OV7x3uHvr1DVMSynNn2XWehIao1PqAGDpBeV10HLF3ZzTDCQdKS8GzM94K8lHu2f5vrW
-         xVIjlKLghU6QocPKvnVDMXJyOU1iOtuWmNCZbnxEX1f1QiLl88Fqh1pc5rxg9BkeX6Io
-         uoeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730280323; x=1730885123;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ntQNFrAwRXAO2jW6xxxMTlYh+yGVrXaKaxa2kDvz2uU=;
-        b=UhnCr44Hin6S7QcCTk6VF3sD87juRMOrPpy4U+wWSIPpbtiUnXZLBDGnVNmIn4fJAy
-         m9uAAm2Iy6z5vfvIwnSk3Jq5ukaC13zk09c8eqPgpX+Opf4yfrGQM7BFZc4uKQ5AwBWh
-         ryedGt2IuVC6XDBY4+JU5wHZNzafNwC+RV1VjxzeuN1/r2FiWX/XE7oLBJV7rSKZx95u
-         Sd5voaC7JN/rqe37AjcQ3kpSJQMR4hxLScNgzkfUkFOo4YX3lQMM0tdHxnc07xWmqUQY
-         itMJd3nCKLx0M42Vo6hBOID0IElMn2Vu/b6K1qDFWDRaZwhA4c4nxQUlA6WXI0j0WR8P
-         tEww==
-X-Gm-Message-State: AOJu0YwIoxHoK9uxI5osIB6D2SNFvqnVyV7DTrCZ4fglnIyZRZrSFAxr
-	f+lhZODrWOSZ3Dme+448qAzN7CqYskXajC8l/PyE2EyqGqMVQcLq
-X-Google-Smtp-Source: AGHT+IGFwHNUxtOlLMddyeGmeZTn6QB0ZWXEUYWHBFDehpmAwMGluLIJuuP3gbiE7r6lasTnXOzVAg==
-X-Received: by 2002:a17:90a:468c:b0:2e2:d15c:1a24 with SMTP id 98e67ed59e1d1-2e8f1073406mr17424051a91.23.1730280323195;
-        Wed, 30 Oct 2024 02:25:23 -0700 (PDT)
-Received: from mars.local.gmail.com (221x241x217x81.ap221.ftth.ucom.ne.jp. [221.241.217.81])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e92fa1db79sm1205153a91.8.2024.10.30.02.25.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Oct 2024 02:25:22 -0700 (PDT)
-Date: Wed, 30 Oct 2024 18:25:18 +0900
-Message-ID: <m2plnigcxt.wl-thehajime@gmail.com>
-From: Hajime Tazaki<thehajime@gmail.com>
-To: benjamin@sipsolutions.net
-Cc: linux-um@lists.infradead.org,
-	jdike@addtoit.com,
-	richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net,
-	ricarkol@google.com
-Subject: Re: [RFC PATCH 00/13] nommu UML
-In-Reply-To: <1246523a29aeca3d727a359ebf8ccd931631e1ef.camel@sipsolutions.net>
-References: <cover.1729770373.git.thehajime@gmail.com>
-	<f482739aa05abd80479804054e4affe23f0dc6c5.camel@sipsolutions.net>
-	<m2y129hpx5.wl-thehajime@gmail.com>
-	<1246523a29aeca3d727a359ebf8ccd931631e1ef.camel@sipsolutions.net>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/26.3 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-1
+	Thu, 31 Oct 2024 10:08:06 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:To:From:Subject:Message-ID:Sender:
+	Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=IfgIq+Icsm2SWoAvxs4amvLlgkYlYtcjhSVj1YhtFms=;
+	t=1730369284; x=1731578884; b=YJJxWKKY1No/WwFJ1qXWvY/QTvzIABn8SAgdyahASf9nHHq
+	S290pTZD63HTRnI+zBBt7BE4VcK/Hotu5TQ4d9qaizJFgM5goZF4LsLWPPHtAtKiU6fhdLPAM4u/h
+	6JHZb6TVr8l3YZpNcP+2kbyd2XVWrzq3bCAfrFNdtEUGSySSsSLIKcaFMOmbIxe3liP73OUuVz3Pm
+	n0EXYiH1txCG1PYKCnsZnoYs8Ob5z2rj/IdA3k2SyWoduuCUhMZ7JV7BlMlWVUljb65MS2AOw9S+C
+	RCLcTCAEdlGfshAEX8g52UL4ZMIKCIbUGXjFFx7X3y3rzakRKNQDzx1HxQ6wiPfg==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98)
+	(envelope-from <benjamin@sipsolutions.net>)
+	id 1t6S5y-0000000AOJr-19T4;
+	Thu, 31 Oct 2024 11:08:02 +0100
+Message-ID: <2ea3c5c4a1ecaa60414e3ed6485057ea65ca1a6e.camel@sipsolutions.net>
+Subject: Re: UML mount failure with Linux 6.11
+From: Benjamin Berg <benjamin@sipsolutions.net>
+To: rrs@debian.org, linux-um@lists.infradead.org
+Date: Thu, 31 Oct 2024 11:07:58 +0100
+In-Reply-To: <857ff79f52ed50b4de8bbeec59c9820be4968183.camel@debian.org>
+References: <857ff79f52ed50b4de8bbeec59c9820be4968183.camel@debian.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+MIME-Version: 1.0
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241030_022524_836550_68B67046 
-X-CRM114-Status: GOOD (  52.23  )
+X-CRM114-CacheID: sfid-20241031_030804_952862_42C23DD5 
+X-CRM114-Status: GOOD (  16.38  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,137 +71,67 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+Hi,
 
-Hello,
+Newer kernels have become more picky about that with the new mount API.
+This is relevant, see the discussion about "Unknown options":
+  https://lwn.net/Articles/979166/
 
-On Mon, 28 Oct 2024 22:32:43 +0900,
-Benjamin Berg wrote:
+We only use hostfs for the root file system and in that case it works
+well if you pass the path using "hostfs=3D/path" on the kernel command
+line. Doing that avoids issues when remounting the file system later
+on.
 
-> > > > - a crash on userspace programs crashes a UML kernel, not signaling
-> > > > =A0 with SIGSEGV to the program.
-> > > > - commit c27e618 (during v6.12-rc1 merge) introduces invalid access=
- to
-> > > > =A0 a vma structure for our case, which updates the internal proced=
-ure
-> > > > =A0 of maple_tree subsystem.=A0 We're trying to fix issue but still=
- a
-> > > > =A0 random process on exit(2) crashes.
-> > >=20
-> > > Btw. are you handling FP register save/restore? If it is not there, it
-> > > probably would not be too hard to add (XSAVE, etc.), though it might
-> > > add a bit of additional overhead. Especially as UML always saves the =
-FP
-> > > state rather than optimizing it like the x86 architectures.
-> >=20
-> > The patch handles fp register on entry/leave at syscall; [07/13] patch
-> > contains this part.
+I suppose that currently it does not work to mount hostfs later on. No
+idea what the right fix is. Maybe the host directory should be an
+explicit option like "hostpath=3D..." or so to make it compatible with
+the new mount APIs.
+
+Benjamin
+
+On Wed, 2024-10-30 at 13:43 +0530, Ritesh Raj Sarraf wrote:
+> Hello,
 >=20
-> That looks like FS/GS registers which are for thread-local storage. I
-> was talking about floating point registers. Maybe you meant another
-> patch?
-
-oh, this is my terrible mistake...
-no, the patch doesn't handle fp resister at all.
-
-> > I'm not familiar with that but what kind of optimizations does x86
-> > architecture do for fp register handling ?
 >=20
-> The kernel does not usually need the FP registers. So it optimizes the
-> pretty common case of a userspace -> kernel -> userspace switch that
-> happens for a syscall by simply not saving/restoring these registers at
-> all.
+> Recently I updated the UML package to Linux 6.11 in Debian. Upon it,
+> it
+> reports the below regression wherein UML cannot mount file systems of
+> type hostfs
 >=20
-> Obviously, it then still needs to do the work when the task is switched
-> or in the rare case that the kernel wants to use floating point itself.
-
-thanks for the information.
-
-> > > I am a bit confused overall. I mean, zpoline seems kind of neat, but a
-> > > requirement on patching userspace code also seems like a lot.
-> > >=20
-> > > To me, it seems much more natural to catch the userspace syscalls usi=
-ng
-> > > a SECCOMP filter[1]. While quite a lot slower, that should be much mo=
-re
-> > > portable across architectures. For improved speed one could still do
-> > > architecture specific things inside the vDSO or by using zpoline. But
-> > > those would then "just" be optimizations and unpatched code would sti=
-ll
-> > > work correctly (e.g. JIT).
-> >=20
-> > I'm not proposing this patch to replace existing UML implementations;
-> > for instance, the patchset cannot run CONFIG_MMU code in the whole
-> > kernel tree so, existing ptrace-based implementation still has real
-> > usecase.=A0 and ptrace based syscall hook is not indeed fast and the
-> > improvements with seccomp filter instead clearly has benefits.=A0 I
-> > think it's independent to this patchset.
+> We have it reported on the Debian bug tracker as well.
 >=20
-> Of course. nommu mode is a completely independent feature.
+> * https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=3D1086194
 >=20
-> I am still wondering a bit about the users for such a mode. It is not
-> interesting for us as we use it for testing. Of course, speed is nice
-> but it is not the primary objective.
 >=20
-> I understand that it can be an approach for a small "container", but
-> then you would need a very strict SECCOMP filter for the kernel itself.
-
-I didn't specifically describe the usecase for this at the v1 patch;
-but at least here is the list in my mind.
-
-1) container-like usecase can be one of them (the original work proposed
-toward this),
-2) testing nommu code in kernel might be another use,
-3) faster I/O workload which involves bunch of syscalls over UML can
-be also interesting.
-
-I think this list covers pretty much to have !MMU mode in current
-MMU-full UML.
-
-speed might not be indeed the primary objective but if you'll see the
-dozen of test cases which issues bunch of syscalls (which I think
-possible case), this might be helpful.
-
-(snip)
-
-> > > For me, a big argument in favour of such an approach is its simplicit=
-y.
-> > > I am mostly basing that on the fact that this patchset should properly
-> > > handle other signals like SIGFPE and SIGSEGV. And, once it does that,
-> > > you will already have all the infrastructure to do the correct regist=
-er
-> > > save/restore using the host mcontex, which is what is needed in the
-> > > SIGSYS handler when using SECCOMP. The filter itself should be simple
-> > > as it just needs to catch all syscalls within valid userspace
-> > > executable memory[2] ranges.
-> >=20
-> > I agree with your observation that the approach is simple.
-> > I don't have a good idea on how to handle SIGSEGV, but will try to see
-> > with your inputs.
+> The mount failures report as:
 >=20
-> You can probably use "[RFC PATCH v2 5/9] um: Add helper functions to
-> get/set state for SECCOMP" for getting the registers and also writing
-> them back if you want to restore using rt_sigreturn.
-
-thanks,
-
-I'm still testing with various attempts to deliver SEGV to userspace,
-but yet no luck so far...  I will get you back once I come up with a
-nice form.
-
-(snip)
-> > > [2] I am assuming that userspace executable code is already confined =
-to
-> > > a certain address space within the UML process. Obviously, the kernel
-> > > itself and loaded modules need to be free to do host syscalls and
-> > > should not be affected by the SECCOMP filter.
-> >=20
-> > I think our !MMU UML doesn't break this assumption.=A0 But did you see
-> > something to our patchset ?
+> ```
+> Oct 30 05:57:41 uml systemd[1]: Mounting usr-lib-modules.mount -
+> /usr/lib/modules...
+> Oct 30 05:57:42 uml systemd[1]: usr-lib-modules.mount: Mount process
+> exited, code=3Dexited, status=3D32/n/a
+> Oct 30 05:57:42 uml mount[814]: mount: /usr/lib/modules: fsconfig
+> system call failed: hostfs: Unknown parameter '/usr/lib/uml/modules'.
+> Oct 30 05:57:42 uml mount[814]:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ dmesg(1) may have more
+> information after failed mount system call.
+> Oct 30 05:57:42 uml systemd[1]: usr-lib-modules.mount: Failed with
+> result 'exit-code'.
+> Oct 30 05:57:42 uml systemd[1]: Failed to mount usr-lib-modules.mount
+> - /usr/lib/modules.
 >=20
-> I also assume that is fine. One just needs to understand this when
-> writing a SECCOMP filter for syscall emulation in nommu mode.
+> ```
+>=20
+> As I understand it, the issue was first seen in July, around 6.11
+> rc1.
+>=20
+> *
+> https://lore.kernel.org/all/CAHk-=3DwjH5uKPB6xrWoB8WkBMuLEJO2UsidKE1wV8XS=
+XjAUFO8Q@mail.gmail.com/
+>=20
+>=20
+> Thanks,
+> Ritesh
+>=20
 
-okay, thanks for the clarification.
-
--- Hajime
 
