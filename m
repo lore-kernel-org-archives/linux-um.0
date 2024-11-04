@@ -4,58 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id AAD71D1BDDA
-	for <linux-um@archiver.kernel.org>; Mon,  4 Nov 2024 18:00:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 40D99D1CA0C
+	for <linux-um@archiver.kernel.org>; Mon,  4 Nov 2024 23:27:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=CTLFYHN8t979OFYR2S87Eawk+1knpNYQfq+zser50B0=; b=1+uFZxo0pg00arr0GvtJzjCbOy
-	ZykcTlDCnpvuQbPW4KpU0ttxiTcs7KgY74PBcDYxChomm8Q4oNUt/e+MSgw9EpQZYh7zf7BHl8URZ
-	FyUr3RBeFOfv5DlXCg3WRAPk3e3onrE6x0bdm0jFMya8LAUztiuG068FaeqRH44z4QYWZBZSyO9Jd
-	iSg12oXYg0oSDlJ9n9z4zWcayPMyK3X47YWKARq8qmLDuUEV+TunfMsE/gZFWNOmxdJEfff6iFSUV
-	CTIluVCCPs6pC5mjmNcRw3iWhqlc0o3iCIv90ksOlxUSXjDaJO1TXMBCTfLxjNf9PZD4FdiFaLBsE
-	w5pfdsJw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Q2NDL0EIuphmCCwbl0Vy6MrgKt/ZIc9Yf0NK3jfYrbk=; b=V4HbJFCQY8d+2VWAsTG8LJv8cO
+	GvWe0jNLiNIGPzA5rvdercEATrm/ELMACjsnNaaVyY/7Rl8LhbjITWTj2kn1xRubfTwyvPpndmo0b
+	UUCbr7eEaUzGbrFZ2ZqAob9VHv8z60EJq+8j04ZGdVBF+tEfg4NqBOdRBIIm3BTDmfyn/bQju/Pcv
+	YJI1d70M/coiZ/p055dwwD2EBq8/+wFrGS0g9CZvH7NQCwFAqpVHOSrR/6P0tVA2WpRDWGPIhDYcP
+	d2EmG39SL10Cr6rN4lCQ6IzO4KswaajmZWa68eL0o58i+disGiNEKJ2qSlQDLpfva0Ya6w6y6IZ4p
+	F36SbscA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t81NR-0000000EdNi-0aYa;
-	Mon, 04 Nov 2024 18:00:33 +0000
-Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
+	id 1t86UC-0000000FNzp-0GJO;
+	Mon, 04 Nov 2024 23:27:52 +0000
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t80vT-0000000EXem-1YZu
-	for linux-um@lists.infradead.org;
-	Mon, 04 Nov 2024 17:31:41 +0000
-Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
-	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1t80MF-00Dwhu-Vt; Mon, 04 Nov 2024 16:55:16 +0000
-Received: from jain.kot-begemot.co.uk ([192.168.3.3])
-	by jain.kot-begemot.co.uk with esmtp (Exim 4.96)
-	(envelope-from <anton.ivanov@cambridgegreys.com>)
-	id 1t80MD-00C1ZX-0k;
-	Mon, 04 Nov 2024 16:55:15 +0000
-Message-ID: <8b4f592c-bdc9-4a2b-bf97-afe11b840d4b@cambridgegreys.com>
-Date: Mon, 4 Nov 2024 16:55:13 +0000
+	id 1t86U8-0000000FNxg-1763;
+	Mon, 04 Nov 2024 23:27:49 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id 8521EA41B3D;
+	Mon,  4 Nov 2024 23:25:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB3A7C4CECE;
+	Mon,  4 Nov 2024 23:27:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730762866;
+	bh=G7tF/ZaqXBtDJLMTb97Oc+SktZk//Kx3oRVjwm2Gkec=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uD6aQVKZ8xYi+PTTwYupZ6PGdQoZjGxor3CJ6T/KZlWjFxurKitUGg4OsLqeVl22R
+	 oTMAQXmWqXP0EO6JaBIYZ9VEqoL35XGUitRTwgi+bJtDhjSL6UuAIcLW7XMfz2tbvE
+	 x3MFVpG1yHfJRXfsS6NaRprs6A1rIqEf/OZ8jX2sy+DwUFdsMetTULRZ3iOQoxlOsn
+	 5JoGBx6K0BrtfF9Z0+hxFGtNMWymLR+Dppngi0NxeJnTpYgOWeDN7FHowhaRXk3khA
+	 u6nha7LupF4lzkb6ryYEoHDIxLmpv0DY+XiF9diWn7xWUzJjMMZ/7hbbF3UF0ISQXS
+	 B++nhrf0RE3MQ==
+Date: Mon, 4 Nov 2024 16:27:41 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+	Brian Cain <bcain@quicinc.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Stafford Horne <shorne@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v7 6/8] x86/module: prepare module loading for ROX
+ allocations of text
+Message-ID: <20241104232741.GA3843610@thelio-3990X>
+References: <20241023162711.2579610-1-rppt@kernel.org>
+ <20241023162711.2579610-7-rppt@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] um: ubd: Initialize ubd's disk pointer in ubd_add
-To: Tiwei Bie <tiwei.btw@antgroup.com>, richard@nod.at,
- johannes@sipsolutions.net
-Cc: linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20241104163203.435515-1-tiwei.btw@antgroup.com>
- <20241104163203.435515-2-tiwei.btw@antgroup.com>
-Content-Language: en-US
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-In-Reply-To: <20241104163203.435515-2-tiwei.btw@antgroup.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Clacks-Overhead: GNU Terry Pratchett
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241023162711.2579610-7-rppt@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241104_093139_430926_A1ED58E0 
-X-CRM114-Status: GOOD (  12.51  )
+X-CRM114-CacheID: sfid-20241104_152748_440233_6613DAE2 
+X-CRM114-Status: GOOD (  22.72  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,37 +115,64 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+Hi Mike,
 
-
-On 04/11/2024 16:32, Tiwei Bie wrote:
-> Currently, the initialization of the disk pointer in the ubd structure
-> is missing. It should be initialized with the allocated gendisk pointer
-> in ubd_add().
+On Wed, Oct 23, 2024 at 07:27:09PM +0300, Mike Rapoport wrote:
+> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 > 
-> Fixes: 32621ad7a7ea ("ubd: remove the ubd_gendisk array")
-> Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
-> ---
->   arch/um/drivers/ubd_kern.c | 2 ++
->   1 file changed, 2 insertions(+)
+> When module text memory will be allocated with ROX permissions, the
+> memory at the actual address where the module will live will contain
+> invalid instructions and there will be a writable copy that contains the
+> actual module code.
 > 
-> diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-> index 2b8d04e67600..f19173da64d8 100644
-> --- a/arch/um/drivers/ubd_kern.c
-> +++ b/arch/um/drivers/ubd_kern.c
-> @@ -898,6 +898,8 @@ static int ubd_add(int n, char **error_out)
->   	if (err)
->   		goto out_cleanup_disk;
->   
-> +	ubd_dev->disk = disk;
-> +
->   	return 0;
->   
->   out_cleanup_disk:
+> Update relocations and alternatives patching to deal with it.
+> 
+> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+> Tested-by: kdevops <kdevops@lists.linux.dev>
 
-Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Hopefully the last time you have to hear from me, as I am only
+experiencing issues with only one of my test machines at this point and
+it is my only machine that supports IBT, so it seems to point to
+something specific with the IBT part of the FineIBT support. I notice
+either a boot hang or an almost immediate reboot (triple fault?). I
+guess this is how I missed reporting this earlier, as my machine was
+falling back to the default distribution kernel after the restart and I
+did not notice I was not actually testing a -next kernel.
 
--- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
+Checking out the version of this change that is in next-20241104, commit
+7ca6ed09db62 ("x86/module: prepare module loading for ROX allocations of
+text"), it boots with either 'cfi=off' or 'cfi=kcfi' but it exhibits the
+issues noted above with 'cfi=fineibt'. At the immediate parent, commit
+b575d981092f ("arch: introduce set_direct_map_valid_noflush()"), all
+three combinations boot fine.
+
+  $ uname -r; tr ' ' '\n' </proc/cmdline | grep cfi=
+
+  6.12.0-rc5-debug-00214-g7ca6ed09db62
+  cfi=kcfi
+
+  6.12.0-rc5-debug-00214-g7ca6ed09db62
+  cfi=off
+
+  6.12.0-rc5-debug-00213-gb575d981092f
+  cfi=fineibt
+
+  6.12.0-rc5-debug-00213-gb575d981092f
+  cfi=kcfi
+
+  6.12.0-rc5-debug-00213-gb575d981092f
+  cfi=off
+
+I do not think this machine has an accessible serial port and I do not
+think IBT virtualization is supported via either KVM or TCG in QEMU, so
+I am not sure how to get more information about what is going on here. I
+wanted to try reverting these changes on top of next-20241104 but there
+was a non-trivial conflict in mm/execmem.c due to some changes on top,
+so I just tested in the mm history.
+
+If there is any other information I can provide or patches I can test, I
+am more than happy to do so.
+
+Cheers,
+Nathan
 
