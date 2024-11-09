@@ -4,88 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A8B9DD64076
-	for <linux-um@archiver.kernel.org>; Sat,  9 Nov 2024 00:52:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7CBD6D64099
+	for <linux-um@archiver.kernel.org>; Sat,  9 Nov 2024 01:03:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:In-Reply-To:Subject:Cc:To:From:
-	Message-ID:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	References:In-Reply-To:Subject:Cc:To:From:Message-ID:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=8s1naaMTCLKcqneooY9UpL2oLq908kArX2vP95JWJ5k=; b=k3hCi1cY3d/T+dEbOTGvVMzTnB
-	vRez+9lIupkfAb8Lyowi95r4MaFpUY9iDhGWNUtX2xxVZOtLURKH96ewEm4fydopSw6rfvfDuYNB9
-	biHYEWtl5ZfhX0BiuJVnviVkJgYkOnq7yCT72fjDP6HXE2cibOZ6HrkT+KJMgq5WJAp1ZdtGPqncj
-	H3nsHOKEFO3T5RFSp+AbWHX7L9oPH4RMoGvfoEdQP/8fekO0hfXzFhBL5nZy7oL5db2CxBLpLMD9F
-	gIJz0Z25nzRjx5hCcmkW+81RP0MbLf63OqpqPZRtu0AOWSypvfMIloR5bGkEcFts41+pa9IsXNp9q
-	EvhKQMww==;
+	bh=1Q4mBwHzI1Zmiy6+Ogfr8sqNUW8HJIFzhPVAIj0jp2c=; b=C4fGRTd5tmAZEUUEAZTOg3UTsV
+	LUyPztHyWRA+V5Am+PkoPRuOgWCHST8mYk1SWw+Gw/peCq+l45NIndI+Rzi+lEaZXMylW6Km7PxBB
+	iLjAjYma3+oKrsN7MBXzjw9x42+nasuD9VC2Rbwn/fhSVDSuj2tJ9Jci4o/9QAGwdTsoiOQTeiJ3Q
+	u0pILgp8a1IF2XWA7EZhYJkwiIJpEMuc7whOl8qf7rDn/Yk+XePBWSwzJ9zXbNrJUpUEfeJv3P7A+
+	ukq13OvndabrAGzgfhJ5v0Hb0SVe5fgXD21wex6YLxpZ+ihGCLwzMjNZINWM+nBK7Ip5fIMs33GO4
+	i34SqBBw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t9ZiA-0000000CNvE-31Xc;
-	Sat, 09 Nov 2024 00:52:22 +0000
-Received: from mail-pf1-x432.google.com ([2607:f8b0:4864:20::432])
+	id 1t9ZtK-0000000CP2t-3fDu;
+	Sat, 09 Nov 2024 01:03:54 +0000
+Received: from mail-pf1-x435.google.com ([2607:f8b0:4864:20::435])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t9Zi8-0000000CNup-0xwd
+	id 1t9ZtI-0000000CP2W-0x8X
 	for linux-um@lists.infradead.org;
-	Sat, 09 Nov 2024 00:52:21 +0000
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-7205b6f51f3so2265518b3a.1
-        for <linux-um@lists.infradead.org>; Fri, 08 Nov 2024 16:52:19 -0800 (PST)
+	Sat, 09 Nov 2024 01:03:53 +0000
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-7240d93fffdso1930148b3a.2
+        for <linux-um@lists.infradead.org>; Fri, 08 Nov 2024 17:03:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731113539; x=1731718339; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=8s1naaMTCLKcqneooY9UpL2oLq908kArX2vP95JWJ5k=;
-        b=RGTZqbY4UIk+KXkcqEb3sxH/Ewlv/LYWfYOTcHLA8ba6xZmBiRG8jGTQosl/DaB3UI
-         UkL2DOaKKFvoR4iJqmT8TgsTAPAw+jv5YUommfyFZ/nW+eDYZMA0YNF6NVfVabmg47Os
-         TRUe2F9r1VPIA5LNlJc2u+c4U+olUSHvGEItG4GWZEm7fm0zzsDncbyx5RObGrl+VtCW
-         KXpOOXqunE14+zE4cRp+SBAW8o6QO94KKk2fXMDqGkpaeFjOu1q6Eqx4soZ1p2Nr9Ff8
-         vYCPD3C75USzlI6HP1tzZhTKJQh+uJUjc9hk0VChxP8DR1H6SStBOdclS4lRn6KoRqbU
-         pq2w==
+        d=gmail.com; s=20230601; t=1731114231; x=1731719031; darn=lists.infradead.org;
+        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
+         :message-id:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1Q4mBwHzI1Zmiy6+Ogfr8sqNUW8HJIFzhPVAIj0jp2c=;
+        b=PcrRUJEYg6CjJKsQmRProKZUbvypKcac4iU89T8zLNKOmPVc1cSB3usx8EEpw2mhYu
+         Qhb78lihWLLc3d+BUG7+xKkxf+pCR8u7m45fxJBbZLhToHyv7fk4oltMq+YpDoduWgAS
+         Uy3xOEgcX96SPkCVLSgPamCggAPkntvF4AdkN0GML7EVhzJfZynLTaZeNtsmT20c9gWv
+         1Mcw79Q001aApSvstIEbnoreDVuF/HcLKvfaDwPsLPCsPGEoFGt2+DYT5qp9FVMxA5YU
+         isyN+FbD/MEOXV1//PN2wKkRj0rWT2OrUxknLKbyThPSOEi2GGjX2M8abfDgOVKZVfCB
+         avNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731113539; x=1731718339;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8s1naaMTCLKcqneooY9UpL2oLq908kArX2vP95JWJ5k=;
-        b=NQdk+U1wK+0Td5nB30DMMzdmvoBb8XyXOde2miB4TGSFg7LK2wzanWhV3Lm3pFBbrp
-         5Bwt9hHRBufTOLWZiI9R6mYM88Z5wSY0ygA+CK0n+NuVjSQtELS2x+1q0sx1qn8YbwZr
-         j30UaOLy3hyQ88m2dxHan5FWsozxf9XKx/d5sBLlxVQ7kkMcQza/6zf4U/XQWHttw26X
-         Pn4vnq6mLUSBW0NlzSwF54+y9iqonx+ByHI/om6l2UFvYM0QwVdvxP9eYL1evRj8bVxV
-         IMtoEvwCUUaQs74ccEV6mEK4m+dPHvENIAIbIqsJYkfXaKMXee4YLTiSDLd1GTibPwuC
-         sQrg==
-X-Gm-Message-State: AOJu0YyNMXQo67m2pSTqa1A2ZEIv1tMI87U6GIxhGJWZl3ITuazAnfyF
-	UL4HTRU4+UcxcBR4bauDbb2KiC3wPT9LrknHchT3vOa9SrZ4xV+P
-X-Google-Smtp-Source: AGHT+IH1Dvs2+9grev6vA5oXps7G8Ko71XvjZ97J98tBFE/EBysMxm85cYZ4JTe+kdZisjqykkWXAA==
-X-Received: by 2002:a05:6a21:9994:b0:1db:e917:5755 with SMTP id adf61e73a8af0-1dc22b1aff7mr6917140637.30.1731113539124;
-        Fri, 08 Nov 2024 16:52:19 -0800 (PST)
+        d=1e100.net; s=20230601; t=1731114231; x=1731719031;
+        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
+         :message-id:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1Q4mBwHzI1Zmiy6+Ogfr8sqNUW8HJIFzhPVAIj0jp2c=;
+        b=WU2EPipJ+DWJiQYKF7npy3ae4y1eaZ8fO6rOCYRuvuABZV1P8waSMpHP8goD0iCVtF
+         HEzW/oS1zpabHRmgykeXObENIe3V9cC/HCEJXDjhAgw3gqkpECQEumpJj1lSbsR7QGEy
+         +4faRGHCflPqvoN0MJX6oeH1cUjBQYaJMBIM9hL59E2A4Ec5RM6ZAYYanGzj5iCrzIzp
+         LSk1RMqmtfSpRtNOlqW6jpm4Fqh9exdQrDBiqaKj6J7NBmecwwrLm7soLj9QMD723ujv
+         KbulfwQUKekv21FrBcIbt28YRUozqKZvvbVCLYPiFzh5ItuWkltTNxGgTNuDl34CkO/G
+         qPTQ==
+X-Gm-Message-State: AOJu0YyB6BpdWF/jldRVz+xvjimgIUsKTBFCUTyrRAGwegKV33JEJnwa
+	lFu6WOiPAHm2MpEll/6D4wOkl1EtkSRa5/TKKpOxc0evC1Xycoet
+X-Google-Smtp-Source: AGHT+IH/aDsAVPqBY+0JPzwPvf+2Tbjj4Xmb1TyUL3LYkjbNXzC7/uUvOn+K+QiiaD6EjoubzpEoUg==
+X-Received: by 2002:a05:6a00:4616:b0:71e:4c34:e294 with SMTP id d2e1a72fcca58-7241328ec18mr6081276b3a.7.1731114231067;
+        Fri, 08 Nov 2024 17:03:51 -0800 (PST)
 Received: from mars.local.gmail.com (221x241x217x81.ap221.ftth.ucom.ne.jp. [221.241.217.81])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724078a7c76sm4506338b3a.48.2024.11.08.16.52.16
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72407860aa5sm4399681b3a.32.2024.11.08.17.03.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Nov 2024 16:52:18 -0800 (PST)
-Date: Sat, 09 Nov 2024 09:52:14 +0900
-Message-ID: <m2v7wxfcu9.wl-thehajime@gmail.com>
-From: Hajime Tazaki<thehajime@gmail.com>
+        Fri, 08 Nov 2024 17:03:50 -0800 (PST)
+Date: Sat, 09 Nov 2024 10:03:46 +0900
+Message-ID: <m2ses1fcb1.wl-thehajime@gmail.com>
+From: Hajime Tazaki <thehajime@gmail.com>
 To: benjamin@sipsolutions.net
 Cc: linux-um@lists.infradead.org,
-	jdike@addtoit.com,
-	richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net,
-	ricarkol@google.com
-Subject: Re: [RFC PATCH 00/13] nommu UML
-In-Reply-To: <m2plnigcxt.wl-thehajime@gmail.com>
-References: <cover.1729770373.git.thehajime@gmail.com>
-	<f482739aa05abd80479804054e4affe23f0dc6c5.camel@sipsolutions.net>
-	<m2y129hpx5.wl-thehajime@gmail.com>
-	<1246523a29aeca3d727a359ebf8ccd931631e1ef.camel@sipsolutions.net>
-	<m2plnigcxt.wl-thehajime@gmail.com>
+	benjamin.berg@intel.com
+Subject: Re: [PATCH] um: move thread info into task
+In-Reply-To: <20241108090826.1898802-1-benjamin@sipsolutions.net>
+References: <20241108090826.1898802-1-benjamin@sipsolutions.net>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241108_165220_326731_EF5A3342 
-X-CRM114-Status: GOOD (  12.36  )
+X-CRM114-CacheID: sfid-20241108_170352_288713_F18D1B21 
+X-CRM114-Status: GOOD (  15.31  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,30 +91,77 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 
-On Wed, 30 Oct 2024 18:25:18 +0900,
-Hajime Tazaki wrote:
->=20
-> > > > > - a crash on userspace programs crashes a UML kernel, not signali=
-ng
-> > > > > =A0 with SIGSEGV to the program.
+On Fri, 08 Nov 2024 18:08:26 +0900,
+Benjamin Berg wrote:
 
-after investigation with trying to save/restore FP registers, I found
-the register is not the reason that userspace programs cannot
-handle/recover with SIGSEGV.
+> diff --git a/arch/um/include/asm/current.h b/arch/um/include/asm/current.h
+> new file mode 100644
+> index 000000000000..51b9c4d097e7
+> --- /dev/null
+> +++ b/arch/um/include/asm/current.h
+> @@ -0,0 +1,24 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef __ASM_CURRENT_H
+> +#define __ASM_CURRENT_H
+> +
+> +#include <linux/compiler.h>
+> +#include <linux/threads.h>
+> +
+> +#ifndef __ASSEMBLY__
+> +
+> +struct task_struct;
+> +extern struct task_struct * cpu_tasks[NR_CPUS];
 
-the cause is; I tried to call (!MMU version of) userspace() in segv()
-function if is_user =3D=3D 1 (I configured the variable based on the
-address of $rip), but without returning hard_handler(), which is
-caller of segv(), SIGIO has been blocked even after switching the
-userspace process.  Thus no console input is processed.
+might be
 
-With that issue, I didn't include the patch to mark is_user =3D 1,
-resulting kernel exit with panic().
+  extern struct task_struct *cpu_tasks[NR_CPUS];
 
-I unblock signals (IO/WINCH/ALRM) after segv() && is_user=3D=3D1, then the
-userspace can recover/handle the SEGV signal.
+# no space before the variable.
 
-I will try to implement this in a cleaner way.
-Thanks for your comment,
+> +static __always_inline struct task_struct *get_current(void)
+> +{
+> +	return cpu_tasks[0];
+> +}
+> +
+(snip)
+> diff --git a/arch/um/include/shared/as-layout.h b/arch/um/include/shared/as-layout.h
+> index d9679c911e54..0d3f5d022d24 100644
+> --- a/arch/um/include/shared/as-layout.h
+> +++ b/arch/um/include/shared/as-layout.h
+> @@ -30,11 +30,8 @@
+>  
+>  #include <sysdep/ptrace.h>
+>  
+> -struct cpu_task {
+> -	void *task;
+> -};
+> -
+> -extern struct cpu_task cpu_tasks[];
+> +struct task_struct;
+> +extern struct task_struct * cpu_tasks[];
+
+ditto.
+
+>  extern unsigned long long physmem_size;
+>  
+> diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
+(snip)
+> diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+> index 56e7e525fc91..5283035fb655 100644
+> --- a/arch/um/kernel/process.c
+> +++ b/arch/um/kernel/process.c
+> @@ -43,7 +43,8 @@
+>   * cares about its entry, so it's OK if another processor is modifying its
+>   * entry.
+>   */
+> -struct cpu_task cpu_tasks[NR_CPUS] = { [0 ... NR_CPUS - 1] = { NULL } };
+> +struct task_struct * cpu_tasks[NR_CPUS];
+
+ditto.
+
+The other part is looking good to me.
+
+Reviewed-by: Hajime Tazaki <thehajime@gmail.com>
+
 -- Hajime
 
