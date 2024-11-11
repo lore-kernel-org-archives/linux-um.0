@@ -4,78 +4,67 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7CBD6D64099
-	for <linux-um@archiver.kernel.org>; Sat,  9 Nov 2024 01:03:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D75ED12D5D
+	for <linux-um@archiver.kernel.org>; Mon, 11 Nov 2024 01:19:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	References:In-Reply-To:Subject:Cc:To:From:Message-ID:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=1Q4mBwHzI1Zmiy6+Ogfr8sqNUW8HJIFzhPVAIj0jp2c=; b=C4fGRTd5tmAZEUUEAZTOg3UTsV
-	LUyPztHyWRA+V5Am+PkoPRuOgWCHST8mYk1SWw+Gw/peCq+l45NIndI+Rzi+lEaZXMylW6Km7PxBB
-	iLjAjYma3+oKrsN7MBXzjw9x42+nasuD9VC2Rbwn/fhSVDSuj2tJ9Jci4o/9QAGwdTsoiOQTeiJ3Q
-	u0pILgp8a1IF2XWA7EZhYJkwiIJpEMuc7whOl8qf7rDn/Yk+XePBWSwzJ9zXbNrJUpUEfeJv3P7A+
-	ukq13OvndabrAGzgfhJ5v0Hb0SVe5fgXD21wex6YLxpZ+ihGCLwzMjNZINWM+nBK7Ip5fIMs33GO4
-	i34SqBBw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=LpoiwvHqaXjg7ehCfiqAV8HzuRWj+tKWaDH7XLz28BY=; b=Jz8Usryz0UrAT+XyqN7gFud+uT
+	q1V2TDdkvY14OwtD6U8+gN+nerJXfeXxnaTqu5ZuhIv647UMROnrPGMpzC26W8ZR8jWSi/PgLDQH/
+	34ZDbMKtu1eI8HM1qvvGRHNwE7fSXKH/oxUQv0aug9roKxccVSmWZ5sgwUdkl/Pcm4KzgVXVdC3wd
+	6GjIB8YF8KWfOwFFRjfh3FmnWOSDhbsB4aqlNT8y+gDXOYfWNNDBY+S5HZD1FvTDdkU6NyGaAIvv3
+	rMCDKsEhCY8w85aMUG3X6amPp9LAWoK1mj3c8O5O7srYzXCbEYza/1z4y0aKaVUK7J1GLJilhjRla
+	FxG615tA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1t9ZtK-0000000CP2t-3fDu;
-	Sat, 09 Nov 2024 01:03:54 +0000
-Received: from mail-pf1-x435.google.com ([2607:f8b0:4864:20::435])
+	id 1tAJ50-0000000G0vw-3fv1;
+	Mon, 11 Nov 2024 01:18:58 +0000
+Received: from szxga07-in.huawei.com ([45.249.212.35])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1t9ZtI-0000000CP2W-0x8X
+	id 1tAJ2d-0000000G0ed-3rwb
 	for linux-um@lists.infradead.org;
-	Sat, 09 Nov 2024 01:03:53 +0000
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-7240d93fffdso1930148b3a.2
-        for <linux-um@lists.infradead.org>; Fri, 08 Nov 2024 17:03:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731114231; x=1731719031; darn=lists.infradead.org;
-        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
-         :message-id:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1Q4mBwHzI1Zmiy6+Ogfr8sqNUW8HJIFzhPVAIj0jp2c=;
-        b=PcrRUJEYg6CjJKsQmRProKZUbvypKcac4iU89T8zLNKOmPVc1cSB3usx8EEpw2mhYu
-         Qhb78lihWLLc3d+BUG7+xKkxf+pCR8u7m45fxJBbZLhToHyv7fk4oltMq+YpDoduWgAS
-         Uy3xOEgcX96SPkCVLSgPamCggAPkntvF4AdkN0GML7EVhzJfZynLTaZeNtsmT20c9gWv
-         1Mcw79Q001aApSvstIEbnoreDVuF/HcLKvfaDwPsLPCsPGEoFGt2+DYT5qp9FVMxA5YU
-         isyN+FbD/MEOXV1//PN2wKkRj0rWT2OrUxknLKbyThPSOEi2GGjX2M8abfDgOVKZVfCB
-         avNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731114231; x=1731719031;
-        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
-         :message-id:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1Q4mBwHzI1Zmiy6+Ogfr8sqNUW8HJIFzhPVAIj0jp2c=;
-        b=WU2EPipJ+DWJiQYKF7npy3ae4y1eaZ8fO6rOCYRuvuABZV1P8waSMpHP8goD0iCVtF
-         HEzW/oS1zpabHRmgykeXObENIe3V9cC/HCEJXDjhAgw3gqkpECQEumpJj1lSbsR7QGEy
-         +4faRGHCflPqvoN0MJX6oeH1cUjBQYaJMBIM9hL59E2A4Ec5RM6ZAYYanGzj5iCrzIzp
-         LSk1RMqmtfSpRtNOlqW6jpm4Fqh9exdQrDBiqaKj6J7NBmecwwrLm7soLj9QMD723ujv
-         KbulfwQUKekv21FrBcIbt28YRUozqKZvvbVCLYPiFzh5ItuWkltTNxGgTNuDl34CkO/G
-         qPTQ==
-X-Gm-Message-State: AOJu0YyB6BpdWF/jldRVz+xvjimgIUsKTBFCUTyrRAGwegKV33JEJnwa
-	lFu6WOiPAHm2MpEll/6D4wOkl1EtkSRa5/TKKpOxc0evC1Xycoet
-X-Google-Smtp-Source: AGHT+IH/aDsAVPqBY+0JPzwPvf+2Tbjj4Xmb1TyUL3LYkjbNXzC7/uUvOn+K+QiiaD6EjoubzpEoUg==
-X-Received: by 2002:a05:6a00:4616:b0:71e:4c34:e294 with SMTP id d2e1a72fcca58-7241328ec18mr6081276b3a.7.1731114231067;
-        Fri, 08 Nov 2024 17:03:51 -0800 (PST)
-Received: from mars.local.gmail.com (221x241x217x81.ap221.ftth.ucom.ne.jp. [221.241.217.81])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72407860aa5sm4399681b3a.32.2024.11.08.17.03.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Nov 2024 17:03:50 -0800 (PST)
-Date: Sat, 09 Nov 2024 10:03:46 +0900
-Message-ID: <m2ses1fcb1.wl-thehajime@gmail.com>
-From: Hajime Tazaki <thehajime@gmail.com>
-To: benjamin@sipsolutions.net
-Cc: linux-um@lists.infradead.org,
-	benjamin.berg@intel.com
-Subject: Re: [PATCH] um: move thread info into task
-In-Reply-To: <20241108090826.1898802-1-benjamin@sipsolutions.net>
-References: <20241108090826.1898802-1-benjamin@sipsolutions.net>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/26.3 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+	Mon, 11 Nov 2024 01:16:34 +0000
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Xms5j1Ymwz1hwRL;
+	Mon, 11 Nov 2024 09:14:33 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id BACE91402D0;
+	Mon, 11 Nov 2024 09:16:20 +0800 (CST)
+Received: from [10.67.111.104] (10.67.111.104) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Mon, 11 Nov 2024 09:16:20 +0800
+Message-ID: <b0acfbdf-339b-4f7b-9fbd-8d864217366b@huawei.com>
+Date: Mon, 11 Nov 2024 09:16:18 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: UML mount failure with Linux 6.11
+To: <kzak@redhat.com>
+CC: <linux-um@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>, Christian
+ Brauner <brauner@kernel.org>, Benjamin Berg <benjamin@sipsolutions.net>,
+	Johannes Berg <johannes@sipsolutions.net>, <rrs@debian.org>
+References: <857ff79f52ed50b4de8bbeec59c9820be4968183.camel@debian.org>
+ <2ea3c5c4a1ecaa60414e3ed6485057ea65ca1a6e.camel@sipsolutions.net>
+ <093e261c859cf20eecb04597dc3fd8f168402b5a.camel@debian.org>
+ <3acd79d1111a845aed34ed283f278423d0015be3.camel@sipsolutions.net>
+ <0ce95bbf-5e83-44a3-8d1a-b8c61141c0a7@huawei.com>
+ <420d651a262e62a15d28d9b28a8dbc503fec5677.camel@sipsolutions.net>
+ <f562158e-a113-4272-8be7-69b66a3ac343@huawei.com>
+ <ac1b8ddd62ab22e6311ddba0c07c65b389a1c5df.camel@sipsolutions.net>
+Content-Language: en-US
+From: Hongbo Li <lihongbo22@huawei.com>
+In-Reply-To: <ac1b8ddd62ab22e6311ddba0c07c65b389a1c5df.camel@sipsolutions.net>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.111.104]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241108_170352_288713_F18D1B21 
-X-CRM114-Status: GOOD (  15.31  )
+X-CRM114-CacheID: sfid-20241110_171632_327573_2AC1B1CA 
+X-CRM114-Status: GOOD (  17.34  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -90,78 +79,54 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+Hi Karel,
 
-On Fri, 08 Nov 2024 18:08:26 +0900,
-Benjamin Berg wrote:
+We are discussing about the hostfs mount with new mount API in [1]. And 
+may need your help.
 
-> diff --git a/arch/um/include/asm/current.h b/arch/um/include/asm/current.h
-> new file mode 100644
-> index 000000000000..51b9c4d097e7
-> --- /dev/null
-> +++ b/arch/um/include/asm/current.h
-> @@ -0,0 +1,24 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef __ASM_CURRENT_H
-> +#define __ASM_CURRENT_H
-> +
-> +#include <linux/compiler.h>
-> +#include <linux/threads.h>
-> +
-> +#ifndef __ASSEMBLY__
-> +
-> +struct task_struct;
-> +extern struct task_struct * cpu_tasks[NR_CPUS];
+After finishing the conversion to the new mount API for hostfs, it 
+encountered a situation where the old version supported only one mount 
+option, and the whole mount option was used as the root path (it is also 
+valid for the path to contain commas). But when switching to the new 
+mount API, the option part will be split using commas (if I'm not 
+mistaken, this step would be done in libmount), which could potentially 
+split a complete path into multiple parts, and the call fsconfig syscall 
+to set the mount options for underline filesystems. This is different 
+from the original intention of hostfs. And this kind of situation is not 
+common in other filesystems.
 
-might be
+Is it necessary to handle the hostfs situation specially within libmount.
 
-  extern struct task_struct *cpu_tasks[NR_CPUS];
+[1] 
+https://lore.kernel.org/all/ac1b8ddd62ab22e6311ddba0c07c65b389a1c5df.camel@sipsolutions.net/T/
 
-# no space before the variable.
+Thanks,
+Hongbo
 
-> +static __always_inline struct task_struct *get_current(void)
-> +{
-> +	return cpu_tasks[0];
-> +}
-> +
-(snip)
-> diff --git a/arch/um/include/shared/as-layout.h b/arch/um/include/shared/as-layout.h
-> index d9679c911e54..0d3f5d022d24 100644
-> --- a/arch/um/include/shared/as-layout.h
-> +++ b/arch/um/include/shared/as-layout.h
-> @@ -30,11 +30,8 @@
->  
->  #include <sysdep/ptrace.h>
->  
-> -struct cpu_task {
-> -	void *task;
-> -};
-> -
-> -extern struct cpu_task cpu_tasks[];
-> +struct task_struct;
-> +extern struct task_struct * cpu_tasks[];
 
-ditto.
-
->  extern unsigned long long physmem_size;
->  
-> diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
-(snip)
-> diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-> index 56e7e525fc91..5283035fb655 100644
-> --- a/arch/um/kernel/process.c
-> +++ b/arch/um/kernel/process.c
-> @@ -43,7 +43,8 @@
->   * cares about its entry, so it's OK if another processor is modifying its
->   * entry.
->   */
-> -struct cpu_task cpu_tasks[NR_CPUS] = { [0 ... NR_CPUS - 1] = { NULL } };
-> +struct task_struct * cpu_tasks[NR_CPUS];
-
-ditto.
-
-The other part is looking good to me.
-
-Reviewed-by: Hajime Tazaki <thehajime@gmail.com>
-
--- Hajime
+On 2024/11/7 22:35, Johannes Berg wrote:
+> On Thu, 2024-11-07 at 22:17 +0800, Hongbo Li wrote:
+>>> There's only one option anyway, so I'd think we just need to fix this
+>>> and not require the hostfs= key. Perhaps if and only if it starts with
+>>> hostfs= we can treat it as a key, otherwise treat it all as a dir? But I
+>>
+>> May be we can do that (just record the unknown option in host_root_path
+>> when fs_parse failed). But this lead us to consider the case in which we
+>> should handle a long option -o unknown1,hostfs=xxx,unknow2, which one
+>> should be treated as the root directory? For new mount api, it will call
+>> fsconfig three times to set the root directory. For older one, if one
+>> path with that name exactly, may be it can mount successfully.
+> 
+> Technically, comma _is_ valid in a dir name, as you say ... so perhaps
+> the new mount API handling would need to be modified to have an escape
+> for this and not split it automatically, if the underlying FS doesn't
+> want that? Or we just revert cd140ce9f611 too?
+> 
+> I feel like perhaps we just found a corner case - clearly the new mount
+> API assumes that mount options are always comma-separated, but, well,
+> turns out that's simply not true since hostfs has only a single option
+> and treats the whole thing as a single string.
+> 
+> johannes
+> 
 
