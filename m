@@ -4,79 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 69066D42BBF
-	for <linux-um@archiver.kernel.org>; Tue, 12 Nov 2024 20:12:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A715D597B1
+	for <linux-um@archiver.kernel.org>; Tue, 12 Nov 2024 22:07:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:In-Reply-To:Subject:Cc:To:From:
+	Message-ID:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=lQvCSgq64T+wf/TPNFDiNWUiao198TlsvJUEDfd6IKY=; b=29Ds9iBzkHGUORw+CFoMhMCd40
-	FcJ2dh4K0PzcOrMRDxymMX+SjQv1s3OSWN9QjzSUtnjmXz/GKmR6R52CcOTYxpjo2BCX09VqEX0hJ
-	jRbCkNFFsvmNgvw40qoixY0DRbDolRwMeCeQI/Yzdo0gesYgc4bS1hzzTNH0hinR0FhqOejKhpZKL
-	ZTdL5SRA5mlI3OfHhqzLP6K4JRakoTpoQmjHqAYMWhhj23Q/PeKEwQ/kWiPRYQHMaWdK5JLvGPL+v
-	WBHRrXNhYMFtwfAMl0453hIiigIGN/prqY/DZl3TuDR07Vy+H0gKlfxi15arEMpeuEyinKKUTU41K
-	yjT37Zmg==;
+	bh=d+UW2Op7GE7GQXptwht/lcrjAza1pTojZMwL+TK4pmQ=; b=iSzDvAfzck9fxRFZAB/F3ng8Z1
+	22jH0v3lzb7GigdXl47/rkRfCT/7BmlzjGmsxAdEyRbDeq4Vv54NIZJPHYBP8PsDfabhDj+qoRMUW
+	MYAvvGoA7mzryOdPY3tFvJV4xDP6VeeOedOzh0QIoZEwHZ9jownUfap7ZX69HNqSd18fh5THmNROc
+	hS9Wn0/gwBjgYPS+mg4r1+IaxCTCW/T9rkeQMC7KgO3vsxudUfUiwydOtFuh1pKNvfy0n7DNsS+Pr
+	7YrlQArgZPoHK+i1IEvSMPWJkv5pH7cql9P37btZ8iE4gY3mggICe/i3HS6hBOxIHjhHKwmIV4rIF
+	edOp1yFg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAxFN-00000004puy-3M9A;
-	Tue, 12 Nov 2024 20:12:21 +0000
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
+	id 1tAz3D-000000056I9-0N0e;
+	Tue, 12 Nov 2024 22:07:55 +0000
+Received: from mail-pf1-x431.google.com ([2607:f8b0:4864:20::431])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tAxFJ-00000004pt1-09SC
+	id 1tAz3B-000000056HO-01rp
 	for linux-um@lists.infradead.org;
-	Tue, 12 Nov 2024 20:12:20 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1731442335;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lQvCSgq64T+wf/TPNFDiNWUiao198TlsvJUEDfd6IKY=;
-	b=e0Zm5rOTlzc0Lla8gwCTXfk38cJi71db4Dfv963X9Q9LtrwDdM4Ku1zQa5BOT+ZQCEWIyC
-	yAQT6civ7SZc+22ffqRJnqt9xaLVC9fZeYd39iK4hLKuEos0xBWHTnYUIF0jn4Pf2/HX+9
-	V5DWNCw52Z+21njzyOWOObn6U4FtKLQ=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-644-9wYFJSKuOy2Ip-OBMrooKw-1; Tue,
- 12 Nov 2024 15:10:23 -0500
-X-MC-Unique: 9wYFJSKuOy2Ip-OBMrooKw-1
-X-Mimecast-MFC-AGG-ID: 9wYFJSKuOy2Ip-OBMrooKw
-Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id AA06119560AF;
-	Tue, 12 Nov 2024 20:10:21 +0000 (UTC)
-Received: from ws.net.home (unknown [10.45.225.223])
-	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 5554F1956086;
-	Tue, 12 Nov 2024 20:10:18 +0000 (UTC)
-Date: Tue, 12 Nov 2024 21:10:15 +0100
-From: Karel Zak <kzak@redhat.com>
-To: Hongbo Li <lihongbo22@huawei.com>
-Cc: linux-um@lists.infradead.org, linux-fsdevel@vger.kernel.org, 
-	Christian Brauner <brauner@kernel.org>, Benjamin Berg <benjamin@sipsolutions.net>, 
-	Johannes Berg <johannes@sipsolutions.net>, rrs@debian.org
-Subject: Re: UML mount failure with Linux 6.11
-Message-ID: <buizu3navazyzdg23dsphmdi26iuf5mothe3l4ods4rbqwqfnh@rgnqbq7n4j4g>
-References: <857ff79f52ed50b4de8bbeec59c9820be4968183.camel@debian.org>
- <2ea3c5c4a1ecaa60414e3ed6485057ea65ca1a6e.camel@sipsolutions.net>
- <093e261c859cf20eecb04597dc3fd8f168402b5a.camel@debian.org>
- <3acd79d1111a845aed34ed283f278423d0015be3.camel@sipsolutions.net>
- <0ce95bbf-5e83-44a3-8d1a-b8c61141c0a7@huawei.com>
- <420d651a262e62a15d28d9b28a8dbc503fec5677.camel@sipsolutions.net>
- <f562158e-a113-4272-8be7-69b66a3ac343@huawei.com>
- <ac1b8ddd62ab22e6311ddba0c07c65b389a1c5df.camel@sipsolutions.net>
- <b0acfbdf-339b-4f7b-9fbd-8d864217366b@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b0acfbdf-339b-4f7b-9fbd-8d864217366b@huawei.com>
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
+	Tue, 12 Nov 2024 22:07:54 +0000
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-720d14c8dbfso5925322b3a.0
+        for <linux-um@lists.infradead.org>; Tue, 12 Nov 2024 14:07:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1731449271; x=1732054071; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=d+UW2Op7GE7GQXptwht/lcrjAza1pTojZMwL+TK4pmQ=;
+        b=Oiyxlx1xkarnpAyRWg9+1h1in+4TG67Ry4wJoon0rlxzNh1NESpmfhHEO80m5opAeM
+         AkXI3cUSa7jOJrtkyh8kcv+y/ukvHiArHeJcLfeGUwplow61u9jmnij4JZJCAgke1xeR
+         CCzJcD/jfQJElOWssogo2hlTzhfsRCrqULAQBzfMKRelSs9l7+JUBbIducWSEBQn3U2r
+         N/iOX4ACOPc7hcKp3fd5GkcN+8osRN4mtneUwigrUVSux3uTS/0vP3rWKkJ6pAxaaNEj
+         YEVZB0vaj4QUji74hU4efZbHCH1lrTHpsme9YlH6G09rIyPtHfDSr0K2F9MXPB3rHPHf
+         unsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731449271; x=1732054071;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=d+UW2Op7GE7GQXptwht/lcrjAza1pTojZMwL+TK4pmQ=;
+        b=X2Q/HebSy1dsDY0ExZ4VdaLCTb8Y4PT+35wrCiiPWdy5SLo72CwWtXN4rVT+tV3j3N
+         0qTC/rGNxr7gX41xCO6dWt1MrecqSeorfbixuBKw9GbUjYtvqQ/vAq0YUk5HI78GA51y
+         T8evsfjmxgU3Ov2d8MBvI+ZanHyT/hpuerG6eX6c5HQC6kRqvmu7pJ4fQv/COdtT/VHg
+         Z6XEjrmgRnoW3WxV6Egw1SqN7bbxHlgR4mxuspsFF9ZYXHHqTtfsWZmMbgyW8P79cVeE
+         zm7chLIdcIxTWzPyL/mR/KnTLe0/TjfBl2LOvGO3l0MpIO6GeGIou/CPzA3ykFYicKYD
+         xIiQ==
+X-Gm-Message-State: AOJu0Yxgv8vaQ1X3MOaIJ5JwM0AGBjPwGLwhHQgKrQxJCB8ZjrZVDzCy
+	yhUW5LQ2dj0hcaejpDfoF47S642JJJpi5REoYcLhFT8MGQmmaax3
+X-Google-Smtp-Source: AGHT+IGiSna4phvEa18H2dmaztl3E7zrI8XNXhPBJZoWXHLfFfW7LEz/pSyGk/kBpuZb2oG9B5sMpg==
+X-Received: by 2002:a17:90b:1c8f:b0:2e2:cfef:86 with SMTP id 98e67ed59e1d1-2e9f2c4ef4cmr641002a91.4.1731449271222;
+        Tue, 12 Nov 2024 14:07:51 -0800 (PST)
+Received: from mars.local.gmail.com (221x241x217x81.ap221.ftth.ucom.ne.jp. [221.241.217.81])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21177dc9073sm98363485ad.1.2024.11.12.14.07.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Nov 2024 14:07:50 -0800 (PST)
+Date: Wed, 13 Nov 2024 07:07:45 +0900
+Message-ID: <m2pln0f6mm.wl-thehajime@gmail.com>
+From: Hajime Tazaki <thehajime@gmail.com>
+To: geert@linux-m68k.org
+Cc: linux-um@lists.infradead.org,
+	ricarkol@google.com,
+	Liam.Howlett@oracle.com,
+	ebiederm@xmission.com,
+	kees@kernel.org,
+	viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	jack@suse.cz,
+	linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 02/13] x86/um: nommu: elf loader for fdpic
+In-Reply-To: <CAMuHMdU+Lyj3C-P3kQMd6WfyjBY+YXZSx3Vv6C2y9k__pK45vg@mail.gmail.com>
+References: <cover.1731290567.git.thehajime@gmail.com>
+	<ea2a3fb86915664d54ba174e043046f684e7cf8c.1731290567.git.thehajime@gmail.com>
+	<CAMuHMdU+Lyj3C-P3kQMd6WfyjBY+YXZSx3Vv6C2y9k__pK45vg@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241112_121217_220080_2DD90040 
-X-CRM114-Status: GOOD (  15.14  )
+X-CRM114-CacheID: sfid-20241112_140753_066253_A8730B26 
+X-CRM114-Status: GOOD (  18.73  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -92,50 +103,47 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 
- Hi,
+Hello Geert,
 
-On Mon, Nov 11, 2024 at 09:16:18AM GMT, Hongbo Li wrote:
-> We are discussing about the hostfs mount with new mount API in [1]. And may
-> need your help.
-> 
-> After finishing the conversion to the new mount API for hostfs, it
-> encountered a situation where the old version supported only one mount
-> option, and the whole mount option was used as the root path (it is also
-> valid for the path to contain commas). But when switching to the new mount
-> API, the option part will be split using commas (if I'm not mistaken, this
-> step would be done in libmount), which could potentially split a complete
-> path into multiple parts, and the call fsconfig syscall to set the mount
-> options for underline filesystems. This is different from the original
-> intention of hostfs. And this kind of situation is not common in other
-> filesystems.
+thank you for the message.
 
-The options has been always parsed by mount(8) and it's very fragile
-to assume that kernel get as in the original order (etc.). 
+On Tue, 12 Nov 2024 21:48:28 +0900,
+Geert Uytterhoeven wrote:
+>
+> On Mon, Nov 11, 2024 at 7:28=E2=80=AFAM Hajime Tazaki <thehajime@gmail.co=
+m> wrote:
+> > As UML supports CONFIG_MMU=3Dn case, it has to use an alternate ELF
+> > loader, FDPIC ELF loader.  In this commit, we added necessary
+> > definitions in the arch, as UML has not been used so far.  It also
+> > updates Kconfig file to use BINFMT_ELF_FDPIC under !MMU environment.
+> >
+> > Cc: Eric Biederman <ebiederm@xmission.com>
+> > Cc: Kees Cook <kees@kernel.org>
+> > Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> > Cc: Christian Brauner <brauner@kernel.org>
+> > Cc: Jan Kara <jack@suse.cz>
+> > Cc: linux-mm@kvack.org
+> > Cc: linux-fsdevel@vger.kernel.org
+> > Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+> > Signed-off-by: Ricardo Koller <ricarkol@google.com>
+>=20
+> Thanks for your patch!
+>=20
+> > --- a/fs/Kconfig.binfmt
+> > +++ b/fs/Kconfig.binfmt
+> > @@ -58,7 +58,7 @@ config ARCH_USE_GNU_PROPERTY
+> >  config BINFMT_ELF_FDPIC
+> >         bool "Kernel support for FDPIC ELF binaries"
+> >         default y if !BINFMT_ELF
+> > -       depends on ARM || ((M68K || RISCV || SUPERH || XTENSA) && !MMU)
+> > +       depends on ARM || ((M68K || RISCV || SUPERH || UML || XTENSA) &=
+& !MMU)
+>=20
+> s/UML/X86/?
 
-For decades, commas have been supported in mount options. For example,
-SeLinux uses them frequently in context settings. All you need to do
-is use quotes, but be careful because the shell will strip them off.
-Therefore, double quoting is required.
+I guess the fdpic loader can be used to X86, but this patchset only
+adds UML to be able to select it.  I intended to add UML into nommu
+family.
 
-   mount -o 'rw,bbb="this,is,value",ccc'
-
-It's also supported in fstab, just use name="v,a,l,u,e"
-
-You can try it:
-
- # strace -e fsconfig mount -t tmpfs -o 'rw,bbb="this,is,value",ccc' tmpfs /dontexist
-
- fsconfig(3, FSCONFIG_SET_STRING, "source", "tmpfs", 0) = 0
- fsconfig(3, FSCONFIG_SET_FLAG, "rw", NULL, 0) = 0
- fsconfig(3, FSCONFIG_SET_STRING, "bbb", "this,is,value", 0) = -1 EINVAL 
-
-You can see the expected result when using fsconfig().
-
- Karel
-
-
--- 
- Karel Zak  <kzak@redhat.com>
- http://karelzak.blogspot.com
-
+-- Hajime
 
