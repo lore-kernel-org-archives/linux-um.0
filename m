@@ -4,59 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4619D6DDED
-	for <linux-um@archiver.kernel.org>; Fri, 15 Nov 2024 11:01:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 666ABD68BC3
+	for <linux-um@archiver.kernel.org>; Fri, 15 Nov 2024 14:49:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=VXUOaxIWsKMLruHMh1wdTy8Au/sph9ltKzNxBJD4dHE=; b=mEs27uvbqsXZFmo0ecKeh9dc4W
-	LQdqdD5nrdV3U9EHwtIhtSRidlCQv2yE9Pk87vIcyp7y9Ya1Epu/Yxnh/JMqKEl5a/2/mCrDpY1wM
-	9vN6rZU9VBAPchwrQmFxcn9iKL+FQcZT+JKpEY5sMg6m3ntchMlXGwVFtW4ZIQ2cv6v/tLntFsyod
-	GT90qo3AQrMELE48GZNp/MKam/N+iu907GBUH8tiqi2fhEQjR5MtSC6rOTFisdpclVXOcjJfyj1SF
-	O9S5nXaOPd8dL9Kia2CoRYgx7+sPA+wev8jBCP/5Fkrc5+nfuYq63q6/AVjwiPvhKaRUB+u/80WGc
-	+oAbWWBA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	References:In-Reply-To:Subject:Cc:To:From:Message-ID:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Hai50TPxMF0SJpZnKlUMa+jAd9aMa4N2MsqpCkGJlgA=; b=1te4m9WEgt/B2F0TicnKCCJJk2
+	R2k9JljRPFniEmFvM3bWNjCZYCi6YEnQrUeikuwCCO/gGvPJveFXnslra5kAYVppn5D1F0NgGoBCp
+	Ao95RgRKVtL2GtpQMJ7yIzLMAe4Ja7ruqjVrkAz0xPGKODXCKpMbYTZ4XwzuffSa9c6Sknny3Hw/3
+	00S+TtVndIQoKk3hyRiT00K9M+ksVhcLYX0DU/qnCpuJNF1ZhhSNTmApyNydPIG0Pxaz6o22n+DAG
+	eeINagIP4P7yvskDhHdCl/exZapnSxrXFCYnBZWqXnLZOggWDBsiMetYgoM/4H5/YB8PbMdascYaI
+	yrSEdXrw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tBu54-00000002ST9-3iWa;
-	Fri, 15 Nov 2024 11:01:38 +0000
-Received: from ns1.kot-begemot.co.uk ([217.160.28.25] helo=www.kot-begemot.co.uk)
+	id 1tBxdS-000000032W2-1QKS;
+	Fri, 15 Nov 2024 14:49:22 +0000
+Received: from mail-pg1-x532.google.com ([2607:f8b0:4864:20::532])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tBu52-00000002SSY-209v
+	id 1tBxcK-000000032LM-0dgl
 	for linux-um@lists.infradead.org;
-	Fri, 15 Nov 2024 11:01:37 +0000
-Received: from [192.168.17.6] (helo=jain.kot-begemot.co.uk)
-	by www.kot-begemot.co.uk with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>)
-	id 1tBtWl-00Ez1T-R7; Fri, 15 Nov 2024 10:26:12 +0000
-Received: from jain.kot-begemot.co.uk ([192.168.3.3])
-	by jain.kot-begemot.co.uk with esmtp (Exim 4.96)
-	(envelope-from <anton.ivanov@kot-begemot.co.uk>)
-	id 1tBtWh-00HBFz-1T;
-	Fri, 15 Nov 2024 10:26:11 +0000
-Message-ID: <e60d2240-4205-472f-9fdd-60b90287c97a@kot-begemot.co.uk>
-Date: Fri, 15 Nov 2024 10:26:07 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+	Fri, 15 Nov 2024 14:48:13 +0000
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-7f46d5d1ad5so1379819a12.3
+        for <linux-um@lists.infradead.org>; Fri, 15 Nov 2024 06:48:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1731682091; x=1732286891; darn=lists.infradead.org;
+        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
+         :message-id:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hai50TPxMF0SJpZnKlUMa+jAd9aMa4N2MsqpCkGJlgA=;
+        b=F0J7GfFKeP14lL9FF1SFQIH2plq1n3qQFOh9tljqkw+F9MJcam7BFGS4NTDwE5E8D3
+         pSTm/K2SAOA8x1iqKG3BkCnGH1agSbk0+cQgsJr1OaYHS2HjyI23++WyAYKkuDFxNiXP
+         63vlPSXqs3/l/BDYzUiA6QwDx5AeyWED8NOiObcGKwiz679tng1GRAJEC6hw1C28yw8E
+         j76LcneN3ZybSjfiUUtL2XO2AhYolsQIO2ZbBXfnuYUS+NNbw0rYB345qMKaIWppIm+D
+         bbnAqaNIiPAW8Okgay9b7xnoy8BdMbZOdh3QBPAAfTYTTM2uwPIOyz5JbGCV+jh08/oa
+         KAHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731682091; x=1732286891;
+        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
+         :message-id:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Hai50TPxMF0SJpZnKlUMa+jAd9aMa4N2MsqpCkGJlgA=;
+        b=thbOOkZbz6Nm/xOU6t0cadYfZAvNqSJQxeMSgKeDJ5ma958Bl2pKoZs7C7j5D4KVol
+         UrairhI+YlB7FkpAdILzqwceqJaIA9upGMyt9llODyUEc5ziJjXA75I5X4OBYlU/Mz6Z
+         sq9E5Btkn3L0YlzQUh48DoDgPNdVGhNxZJ2/We44SOY5Vxu2RwU+t34ba0Tmvfs4g/Zr
+         qToNxODnR8jhDXtJVPqZNV66cy8/2cs4GjdAbWRmZ3zbWLK2v+VMMMD8iPHeiahpE0IV
+         FZirQo1t2sdc3mHbrnLzkL4WjGlLzX6JIqhYyBADQy2nyMdReNRF3HPCP+A7sizhFggD
+         ObnA==
+X-Gm-Message-State: AOJu0Yw9fjyl3/ah2mVyXykXUy3doyqnV9CLCJPTfa5CUAukATM+maUU
+	s8V7dqdPq2Xr5piEmvPGhBWwWTaIuM7kFeWZ5VmUvX5U7RBx3z73
+X-Google-Smtp-Source: AGHT+IGRPhtwAQSySX0Dek81lgSv880pynxsvcLrUG+uuI6UYgMtwl3/a4fh7XFr05x6Z0ILtEVlEg==
+X-Received: by 2002:a05:6a20:2595:b0:1db:ebe4:326c with SMTP id adf61e73a8af0-1dc90afca37mr3851037637.8.1731682090358;
+        Fri, 15 Nov 2024 06:48:10 -0800 (PST)
+Received: from mars.local.gmail.com (221x241x217x81.ap221.ftth.ucom.ne.jp. [221.241.217.81])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-211d0f348e4sm12695035ad.125.2024.11.15.06.48.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Nov 2024 06:48:09 -0800 (PST)
+Date: Fri, 15 Nov 2024 23:48:03 +0900
+Message-ID: <m27c94ft98.wl-thehajime@gmail.com>
+From: Hajime Tazaki <thehajime@gmail.com>
+To: johannes@sipsolutions.net
+Cc: linux-um@lists.infradead.org,
+	ricarkol@google.com,
+	Liam.Howlett@oracle.com, gerg@linux-m68k.org,
+   	geert@linux-m68k.org, dalias@libc.org
 Subject: Re: [RFC PATCH v2 00/13] nommu UML
-To: Johannes Berg <johannes@sipsolutions.net>,
- Hajime Tazaki <thehajime@gmail.com>, linux-um@lists.infradead.org
-Cc: ricarkol@google.com, Liam.Howlett@oracle.com
-References: <cover.1729770373.git.thehajime@gmail.com>
- <cover.1731290567.git.thehajime@gmail.com>
- <c85bd71e0f4797edf2635cf4059699d1a3862218.camel@sipsolutions.net>
-Content-Language: en-US
-From: Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
 In-Reply-To: <c85bd71e0f4797edf2635cf4059699d1a3862218.camel@sipsolutions.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Clacks-Overhead: GNU Terry Pratchett
+References: <cover.1729770373.git.thehajime@gmail.com>
+	<cover.1731290567.git.thehajime@gmail.com>
+	<c85bd71e0f4797edf2635cf4059699d1a3862218.camel@sipsolutions.net>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241115_030136_521418_1DA84AFA 
-X-CRM114-Status: GOOD (  37.86  )
+X-CRM114-CacheID: sfid-20241115_064812_194168_1C197579 
+X-CRM114-Status: GOOD (  53.15  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,80 +95,204 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 
+Hello Johannes,
 
-On 15/11/2024 10:12, Johannes Berg wrote:
+# added Geert, Greg, Rich to Cc (sorry if you feel noisy)
+# here is the original email of this thread: just in case.
+# https://lore.kernel.org/linux-um/cover.1731290567.git.thehajime@gmail.com/
+
+On Fri, 15 Nov 2024 19:12:39 +0900,
+Johannes Berg wrote:
+> 
 > On Mon, 2024-11-11 at 15:27 +0900, Hajime Tazaki wrote:
->> This is a series of patches of nommu arch addition to UML.  It would
->> be nice to ask comments/opinions on this.
+> > This is a series of patches of nommu arch addition to UML.  It would
+> > be nice to ask comments/opinions on this.
 > 
 > So I've been thinking about this for a while now...
-> 
+
+thank you for your time !
+
 > To be clear, I'm not really _against_ it. With around 1200 lines of
 > code, it really isn't even big. But I also don't know how brittle it is?
 > Testing it is made somewhat difficult with the map-at-zero requirement
 > too.
-> 
-> 
+
+Given the recent situation that CI/testing facilities running are on
+VMs, configuring /proc/sys/vm/mmap_min_addr=0 is not so difficult
+in order to test this feature.
+
 > And really I keep coming back to asking myself what the use case is?
 > 
 > Is it to test something for no-MMU platforms more easily? But I'm not
 > sure what that would be? Have any no-MMU platform maintainers weighed in
 > on this, have they even _seen_ it? Is that interesting? Is it more
 > interesting than testing an emulated system with the right architecture?
+
+Let me explain one recent experience for the use case.
+
+I spotted (and fixed, now in linus tree) an issue of vma subsystem
+using the maple-tree library, during this development of patch series.
+
+There is a (slightly) long thread here to discuss with the maple-tree
+maintainer, Liam (below).
+
+- traversing vma on nommu
+https://lists.infradead.org/pipermail/maple-tree/2024-November/003740.html
+
+The issue was bisected that I can reproduce it after v6.12-rc1, but
+never happened with the other nommu arch (we tested with m68k and
+riscv, both on buildroot qemu).  maybe because I'm familiar with nommu
+UML than m68k/riscv qemu, I could comfortably reproduce/debug/test
+what's going on with gdb, and finally proposed a fix (one-liner
+patch).
+
+- the patch (hope it'll be landed on 6.12 release)
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=247d720b2c5d22f7281437fd6054a138256986ba
+
+This is only a case of usefulness.  I believe you can also imagine
+that this also can happen with regular (MMU) UML.
+
+I also privately run a CI test which verifies that my patch doesn't
+break MMU UML, with a simple boot test (static/dynamic), 12 kunit
+tests in kernel tree, basic benchmarks with lmbench, etc.  This is not
+specific characteristics of nommu UML though.
+
+https://github.com/thehajime/linux/actions/runs/11811327291
+# The above URL may expire in future.
+
+
 > With it this way you'd probably have to build the right libraries and
 > binaries for x86-64 no-MMU, does such a thing already exist somewhere?
-> 
+
+I'm preparing the patches to upstream Alpine Linux for such binaries
+to be available in an appropriate way.  Note that I didn't modify the
+code of programs itself (except a clear bug), just build with NOMMU
+option which is already implemented in busybox/musl-libc.
+
+https://gitlab.alpinelinux.org/thehajime/aports/-/merge_requests/2/diffs
+
+I have not contacted to the upstream developer so, this diff might be changed.
+
 > It also doesn't look like it's meant to replace LKL? But even LKL I
 > don't really know - are people using it, and if so what for? Seems
 > lklfuse is a thing for some BSD folks?
 > 
 > Is there something else to use it for?
-> 
+
+This patchset is independent and nothing related to LKL.
+# you may confuse that I've still been working on LKL.
+
+(off topic)
+lklsue is indeed used by FreeBSD but not well maintained (afaik).
+NixOS (a linux pkg manager) also use lklfuse iirc.
+
+
 > If it's the first (test no-MMU) then it probably should be smarter about
-> not really relying on retpoline. Why is the focus so much on that
+> not really relying on retpoline.
+
+# I assume s/retpoline/zpoline/ in the rest of your message.
+
+> Why is the focus so much on that
 > anyway? If testing no-MMU was the most important thing then probably
 > you'd have started with seccomp, and actually execute the syscalls from
 > that, to not have all those restrictions that come from rewriting
-> binaries, rather than ignoring the whole thing. Though of course you did
+> binaries, rather than ignoring the whole thing.
+
+For the JIT part (and also syscalls from dlopen-ed binaries), as I
+mentioned in the other reply, it can be implemented but not yet for
+now.
+
+The choice of zpoline is based on the speed of syscall invocations.
+We have investigated that seccomp (and similar mechanism like SUD:
+syscall user dispatch, ptrace, int3 signaling) are still slower than
+binary rewrites, as the nature of signal delivery in its mechanism.
+LD_PRELOAD with symbol rewrites is faster (even than binary rewrites)
+but fundamentally cannot hook all syscalls.
+
+zpoline tries to fill this gap, and we thought this fits the UML
+usage.
+
+> Though of course you did
 > add a filter now, but I think it'll just crash?
+
+this part (just crash w/ SIGSYS) can be improved.
+
 > So I could perhaps see this use case, but then I'd probably think it
 > should be more generic (i.e. able to execute all no-MMU binaries
 > including ones that may be using JIT compilation etc.) and not _require_
 > retpoline, but rather use it as an optimisation where that's possible
 > (i.e. if you can map at zero)?
-> 
+
+I understand your point.
+
 > If the use case instead of more LKL-type usage, I guess I don't really
 > understand it, though to be honest I also don't really fully understand
 > LKL itself, but it always _seemed_ very different.
-> 
+
+I didn't explain the comparison between LKL v.s. nommu UML, as I
+thought those are independent from each other.
+
 > Somewhat hyperbolically, I'm wondering if it's just a tech demo for
 > retpoline?
-> 
+
+Additional reason we used zpoline to replace syscall instruction is:
+
+our first implementation of this nommu UML used modified version of
+(userspace) standard library (musl-libc), without zpoline.  We
+reimplemented syscall wrappers to call a syscall entry point
+(__kernel_vsyscall) exposed by ELF aux vector.
+
+Like this:
+
+static __inline long __syscall0(long n)
+{
+	unsigned long ret = -1;
+        __asm__ __volatile__ ("call *%1" : "=a"(ret)
+			: "r"(__sysinfo), "a"(n)
+			: "rcx", "r11", "memory");
+	return ret;
+}
+# __sysinfo is exposed address from the aux vector.
+# this was actually done not by myself, but Ricardo (in Cc)'s work.
+
+https://github.com/nabla-containers/musl-libc/blob/e11be13e6abc06f7034d6b98552b5928d0ed0dfe/arch/x86_64/syscall_arch.h#L13-L20
+
+with that, we can use unmodified binaries, but need to modify libc.so
+and ld.so, which isn't trivial I thought.
+
+My motivation to apply zpoline here is to eliminate this dependency;
+with zpoline, we don't have to modify the standard library (musl).
+
+In addition to that, since NOMMU kernel shares address space among
+multiple userspace processes, we only have to prepare a trampoline
+code a single time, while processes in multiple address space model
+(in MMU case) needs to install those zpoline related code per each
+process invocation.  This is not direct motivation to use zpoline
+here, but side-benefit under the given environment.
+
 > So I dunno. Reading through it again there are a few minor things wrt.
-> code style and debug things left over, but it's not awful ;-) I'd also
+> code style and debug things left over, but it's not awful ;-)
+
+oh really.  I'll double check them but would be nice to know any flaws
+you found.
+
+> I'd also
 > prefer the code to be more clearly "marked" (as nommu), perhaps putting
 > new files into a nommu/ directory, or something like that. But that's
 > pretty minor.
-> 
+
+I understand.  I'm afraid that it will be still multiple of ifdefs since
+nommu UML relies on various part of existing UML infrastructure.
+
 > Still it's in a lot of places and chances are it'll make bigger
 > refactoring (like seccomp mode) harder. Perhaps if at all it should come
 > after seccomp mode and use that to execute syscalls if zpoline can't be
 > done, and to catch all the cases where zpoline doesn't work (you have
 > that in the docs)?
-> 
+
+fallback mechanism after zpoline failure might be interesting.
+
 > What do others think? Would you use it? What for?
 
-I always thought of it as "another LKL". In that case, it can be compared
-to LKL on merit and if it is equivalent or better - go into kernel.
-
-If there is another use case, I will be glad to hear it.
-
-> 
-> johannes
-> 
-> 
-
--- 
-Anton R. Ivanov
-https://www.kot-begemot.co.uk/
+-- Hajime
 
