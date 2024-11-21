@@ -4,102 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5C92DD591AD
-	for <linux-um@archiver.kernel.org>; Mon, 18 Nov 2024 18:40:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CB44D6ED34
+	for <linux-um@archiver.kernel.org>; Thu, 21 Nov 2024 13:53:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Zos79WCy1/02QSKpmxeP5Q08W8qZYSRZ3WbDy7F5oAk=; b=FtRsPHGiGn0JRxmrCw7/5iJhJe
-	XZlt8WIk4pitExqHyYueXwQGvsQQqBPP/HCochml1B8Asqxetib4V6M0BBSaMuGUmK2Aml8QmTMU2
-	v5re/z/stRTO7t5pcFGK9+GlyYbeMbJUquEOvpdJHw+EiYymBmF27ZtUQPcoWKu2mU28gP+vAZwXp
-	EjX2+plzdnhTvCrhi+fKYgE2NYVHkL1fg0db7d8oUlCvhRvRwcnDmaaIh4piJdKiW7qyk7z/EwOaQ
-	jO4eOxWDm5JaIxHsoUc89or83GpsMd+/QHZfBdoYviX625z3BSnPkHtJQcM5iMprXJsov10mLvRZB
-	rIDl8KUw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:References:CC:To:From:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=xAUdviULB44hGI4dynB01M2Up5TvsxG0k/X2pF0OKqg=; b=HvRPGJY9rpE8PiaQR9HRcXTCUh
+	9lJARUqn3jfMbrQkE9UdcXbE1wzF2wx2GQCVt/OCUrvJo0dQf6ho6WPQsA7GxMXhdx+FffjLReR9f
+	pQ10EBIVA9lV3jzaslSwDWJ/oL0sAnyz6bQCg6BZKYUNG2C6ofqBb+41vafz3hnWoPCEsaqnI/0Pb
+	OeFyd4QlcwftvLyaDRclYCAyfO04WWMz5xmtlunpA7tuFrlPPzV3bV9T3BCDm53dJoCDgxtGX+8VG
+	v2l2OyKMYYIx4mem3dq4uK31wX4oqqBLWXBdXKGQZAsnNnei5g9ycmMum3qQkGxqcxxdtskRSnUOS
+	ewrszeoQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tD6fr-0000000AMi8-2iL4;
-	Mon, 18 Nov 2024 18:40:35 +0000
-Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+	id 1tE7cY-000000009Zu-3dCw;
+	Thu, 21 Nov 2024 13:53:22 +0000
+Received: from szxga05-in.huawei.com ([45.249.212.191])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tD6fn-0000000AMfh-251t;
-	Mon, 18 Nov 2024 18:40:32 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 11F02A419F2;
-	Mon, 18 Nov 2024 18:38:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A5AEC4CECC;
-	Mon, 18 Nov 2024 18:40:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731955229;
-	bh=PgWfk6zhBX25rXxPAwmwUJeghk+GajLkQHlk+OfGUQc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GeOY29szPjdxa0xm+vV9DTg2e5TPlxk7huuBMuJbtT+hTn5kPCdRWZ2oKgkC8UpSt
-	 VKEpF1/SK1ceIDW9rYbK4e2lrKnmmaewrajrem/5hOE+eL2aJiJwe2Mq1uUh3lhZ50
-	 bF8KJonZOhyM89MpbuLHVivYouTUSuZbDmGNuIIUU6Sz4PBRF7AffgUgRIMQ22WWof
-	 8/hSFdkboAANibLeqfLmV82IhRXIdNitXrU+lzbag6jN3GbbRMHw4voatyzJmOaEVn
-	 LYCc2cjDCBvkB/fCKjeR1Y3G/eBzyCxZ8foJEVKOfJ+JG689X8AaWtSJSKfiAkucWY
-	 LfgB8UgFNVmrQ==
-Date: Mon, 18 Nov 2024 10:40:26 -0800
-From: Mike Rapoport <rppt@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-	Brian Cain <bcain@quicinc.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Stafford Horne <shorne@gmail.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v7 0/8] x86/module: use large ROX pages for text
- allocations
-Message-ID: <ZzuKGoj99rIuMaBE@kernel.org>
-References: <20241023162711.2579610-1-rppt@kernel.org>
- <20241118132501.4eddb46c@gandalf.local.home>
+	id 1tE7cV-000000009Yh-2YjX
+	for linux-um@lists.infradead.org;
+	Thu, 21 Nov 2024 13:53:21 +0000
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4XvKLl0Yz9z1JCJL;
+	Thu, 21 Nov 2024 21:48:15 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id 9FD6E180019;
+	Thu, 21 Nov 2024 21:53:07 +0800 (CST)
+Received: from [10.67.111.104] (10.67.111.104) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Thu, 21 Nov 2024 21:53:07 +0800
+Message-ID: <3d5e772c-7f13-4557-82ff-73e29a501466@huawei.com>
+Date: Thu, 21 Nov 2024 21:53:06 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241118132501.4eddb46c@gandalf.local.home>
+User-Agent: Mozilla Thunderbird
+Subject: Re: UML mount failure with Linux 6.11
+From: Hongbo Li <lihongbo22@huawei.com>
+To: Karel Zak <kzak@redhat.com>
+CC: <linux-um@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>, Christian
+ Brauner <brauner@kernel.org>, Benjamin Berg <benjamin@sipsolutions.net>,
+	Johannes Berg <johannes@sipsolutions.net>, <rrs@debian.org>
+References: <857ff79f52ed50b4de8bbeec59c9820be4968183.camel@debian.org>
+ <2ea3c5c4a1ecaa60414e3ed6485057ea65ca1a6e.camel@sipsolutions.net>
+ <093e261c859cf20eecb04597dc3fd8f168402b5a.camel@debian.org>
+ <3acd79d1111a845aed34ed283f278423d0015be3.camel@sipsolutions.net>
+ <0ce95bbf-5e83-44a3-8d1a-b8c61141c0a7@huawei.com>
+ <420d651a262e62a15d28d9b28a8dbc503fec5677.camel@sipsolutions.net>
+ <f562158e-a113-4272-8be7-69b66a3ac343@huawei.com>
+ <ac1b8ddd62ab22e6311ddba0c07c65b389a1c5df.camel@sipsolutions.net>
+ <b0acfbdf-339b-4f7b-9fbd-8d864217366b@huawei.com>
+ <buizu3navazyzdg23dsphmdi26iuf5mothe3l4ods4rbqwqfnh@rgnqbq7n4j4g>
+ <9f56df34-68d4-4cb1-9b47-b8669b16ed28@huawei.com>
+Content-Language: en-US
+In-Reply-To: <9f56df34-68d4-4cb1-9b47-b8669b16ed28@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.111.104]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241118_104031_660471_ECACB938 
-X-CRM114-Status: GOOD (  24.69  )
+X-CRM114-CacheID: sfid-20241121_055320_035087_012E9E3D 
+X-CRM114-Status: GOOD (  18.40  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -114,97 +82,80 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, Nov 18, 2024 at 01:25:01PM -0500, Steven Rostedt wrote:
-> On Wed, 23 Oct 2024 19:27:03 +0300
-> Mike Rapoport <rppt@kernel.org> wrote:
-> 
-> > From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
-> > 
-> > Hi,
-> > 
-> > This is an updated version of execmem ROX caches.
-> > 
-> 
-> FYI, I booted a kernel before and after applying these patches with my
-> change:
-> 
->   https://lore.kernel.org/20241017113105.1edfa943@gandalf.local.home
-> 
-> Before these patches:
-> 
->  # cat /sys/kernel/tracing/dyn_ftrace_total_info
-> 57695 pages:231 groups: 9
-> ftrace boot update time = 14733459 (ns)
-> ftrace module total update time = 449016 (ns)
-> 
-> After:
-> 
->  # cat /sys/kernel/tracing/dyn_ftrace_total_info
-> 57708 pages:231 groups: 9
-> ftrace boot update time = 47195374 (ns)
-> ftrace module total update time = 592080 (ns)
-> 
-> Which caused boot time to slowdown by over 30ms. That may not seem like
-> much, but we are very concerned about boot time and are fighting every ms
-> we can get.
-
-Hmm, looks like this change was lost in rebase :/
-
-@Andrew, should I send it as a patch on top of mm-stable?
-
-diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
-index 8da0e66ca22d..859902dd06fc 100644
---- a/arch/x86/kernel/ftrace.c
-+++ b/arch/x86/kernel/ftrace.c
-@@ -111,17 +111,22 @@ static int ftrace_verify_code(unsigned long ip, const char *old_code)
-  */
- static int __ref
- ftrace_modify_code_direct(unsigned long ip, const char *old_code,
--			  const char *new_code)
-+			  const char *new_code, struct module *mod)
- {
- 	int ret = ftrace_verify_code(ip, old_code);
- 	if (ret)
- 		return ret;
- 
- 	/* replace the text with the new text */
--	if (ftrace_poke_late)
-+	if (ftrace_poke_late) {
- 		text_poke_queue((void *)ip, new_code, MCOUNT_INSN_SIZE, NULL);
--	else
-+	} else if (!mod) {
- 		text_poke_early((void *)ip, new_code, MCOUNT_INSN_SIZE);
-+	} else {
-+		mutex_lock(&text_mutex);
-+		text_poke((void *)ip, new_code, MCOUNT_INSN_SIZE);
-+		mutex_unlock(&text_mutex);
-+	}
- 	return 0;
- }
- 
-@@ -142,7 +147,7 @@ int ftrace_make_nop(struct module *mod, struct dyn_ftrace *rec, unsigned long ad
- 	 * just modify the code directly.
- 	 */
- 	if (addr == MCOUNT_ADDR)
--		return ftrace_modify_code_direct(ip, old, new);
-+		return ftrace_modify_code_direct(ip, old, new, mod);
- 
- 	/*
- 	 * x86 overrides ftrace_replace_code -- this function will never be used
-@@ -161,7 +166,7 @@ int ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
- 	new = ftrace_call_replace(ip, addr);
- 
- 	/* Should only be called when module is loaded */
--	return ftrace_modify_code_direct(rec->ip, old, new);
-+	return ftrace_modify_code_direct(rec->ip, old, new, NULL);
- }
- 
- /*
 
 
-> -- Steve
+On 2024/11/13 9:23, Hongbo Li wrote:
+> 
+> 
+> On 2024/11/13 4:10, Karel Zak wrote:
+>>
+>>   Hi,
+>>
+>> On Mon, Nov 11, 2024 at 09:16:18AM GMT, Hongbo Li wrote:
+>>> We are discussing about the hostfs mount with new mount API in [1]. 
+>>> And may
+>>> need your help.
+>>>
+>>> After finishing the conversion to the new mount API for hostfs, it
+>>> encountered a situation where the old version supported only one mount
+>>> option, and the whole mount option was used as the root path (it is also
+>>> valid for the path to contain commas). But when switching to the new 
+>>> mount
+>>> API, the option part will be split using commas (if I'm not mistaken, 
+>>> this
+>>> step would be done in libmount), which could potentially split a 
+>>> complete
+>>> path into multiple parts, and the call fsconfig syscall to set the mount
+>>> options for underline filesystems. This is different from the original
+>>> intention of hostfs. And this kind of situation is not common in other
+>>> filesystems.
+>>
+>> The options has been always parsed by mount(8) and it's very fragile
+>> to assume that kernel get as in the original order (etc.).
+>>
+>> For decades, commas have been supported in mount options. For example,
+>> SeLinux uses them frequently in context settings. All you need to do
+>> is use quotes, but be careful because the shell will strip them off.
+>> Therefore, double quoting is required.
+>>
+> 
+> Thanks for your reply!
+> 
+> If I'm not mistaken, we should add double quoting explicitly if we need 
+> commas in mount options. However, it seems different for hostfs. For 
+> example, with hostfs, if we use "mount -t hostfs none -o 
+> /home/hostfs,dir /mnt" in the older interface, which can successfully 
+> mount the host directory `/home/hostfs,dir`, then we should use "mount 
+> -t hostfs none -o '"/home/hostfs,dir"' /mnt" in the new interface. If 
+> that is the case, we should change the mount command which is hardcoded 
+> in the original project.
+Sorry for the disturbance. So am I right?
 
--- 
-Sincerely yours,
-Mike.
+Thanks,
+Hongbo
+
+> 
+> Thanks,
+> Hongbo
+> 
+>>     mount -o 'rw,bbb="this,is,value",ccc'
+>>
+>> It's also supported in fstab, just use name="v,a,l,u,e"
+>>
+>> You can try it:
+>>
+>>   # strace -e fsconfig mount -t tmpfs -o 'rw,bbb="this,is,value",ccc' 
+>> tmpfs /dontexist
+>>
+>>   fsconfig(3, FSCONFIG_SET_STRING, "source", "tmpfs", 0) = 0
+>>   fsconfig(3, FSCONFIG_SET_FLAG, "rw", NULL, 0) = 0
+>>   fsconfig(3, FSCONFIG_SET_STRING, "bbb", "this,is,value", 0) = -1 EINVAL
+>>
+>> You can see the expected result when using fsconfig().
+>>
+>>   Karel
+>>
+>>
+> 
+> 
 
