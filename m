@@ -4,196 +4,175 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03EBCE65D26
-	for <linux-um@archiver.kernel.org>; Fri, 22 Nov 2024 05:06:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 09C9FE65D3D
+	for <linux-um@archiver.kernel.org>; Fri, 22 Nov 2024 09:34:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:Cc:To:
-	Subject:Date:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:In-Reply-To:
+	Content-Type:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=RXvrHdd3VfKVnXzzZPOQaOfjxOP9nhAj15k1kWvfEEo=; b=wG0SjHVxXpLKa/nfZz9VFmbVDE
-	rtDY3IJtTc16Ydqgn9X0V/eX1Rg9qPNGVG6QkQ6YosBJBGDdJe0+LnNY88Px6aTovucZmCCG+AELC
-	k5fvjhxlA6EcgPhbjIJ/DtkANJ8JuQNqNtnuKJKe+NCyjvvPRUB4INyl+W//2tWXezjLhAIS9l1ox
-	cgI7pEnfH9DSwZ3bMRdxcCR3vX7N9w2O9uc6iZp/O3i0tn+LFj0TiVDK0rCfy0Lu9TLdBTPDA7oq1
-	VzdAtduXahWOFdsAp6wc8PI//Rt3zZ3ApYyi/lh3GyYVWk3NdJoUC2BGDjYg7AD0VHFmincR/LXGK
-	6ma45BAQ==;
+	bh=U/Q049Qe7xRDXT3gPuD9/2wknma7HqG1HGUSPki+HMk=; b=PQEcA1UnlvZV42JhLjRnw38RQ9
+	x/p94oX5S+j+7j+jjrzrL4M5p6+PN8u47aafAFw0v8jwxu6gfPxsPm/5kmKfD823WiXt29bpKxV7y
+	XzrEf01+wYcle+GhEOppju0Stn7HXX0/Wlg0GmWU2xyXZdPfO2bNuEShPtMQKIVKVRXFLfBgayfe8
+	192U47d9pNucRg6gB/i9NOv9LcfF28z2sKJIFGR6Gl085tyPASeuJfJyktvtkrsUdvQ4C4aQ15W7e
+	nbKs6XuGUK3WQhCHq6RSTCbuFVhK5GNNNrWsY74EdvwAKvnARTT0I9I3xXVh8VX2II3EOHDUuS96b
+	ecvRJzzg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tELsF-00000001eTD-0ezV;
-	Fri, 22 Nov 2024 05:06:31 +0000
-Received: from mx0b-00007101.pphosted.com ([148.163.139.28])
+	id 1tEQ3R-000000026xs-0yQR;
+	Fri, 22 Nov 2024 09:34:21 +0000
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tELsB-00000001eSm-2y0Y
+	id 1tEQ3G-000000026uv-1c8V
 	for linux-um@lists.infradead.org;
-	Fri, 22 Nov 2024 05:06:29 +0000
-Received: from pps.filterd (m0272703.ppops.net [127.0.0.1])
-	by mx0b-00007101.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AM1KX8S023315;
-	Fri, 22 Nov 2024 05:05:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=illinois.edu; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=campusrelays;
-	 bh=RXvrHdd3VfKVnXzzZPOQaOfjxOP9nhAj15k1kWvfEEo=; b=Gi0OI0Cg859r
-	vLOJvhuqCDBgFsxGLq44lOiTLcIkzS0uFijoz/Tu437/wtEBPD1Ja49lijjaXyDu
-	r7EVghU6uRdqbBSnxK3DqXiDtXgyyOKHmJO6j108FzWaDPduMARz8L+5t6wo1/+c
-	belNFKnU0zNI5A5RtlKSl1f1gPCLZ0LRrextzmAE3KN7dVeoF+cFjBj8A8xagg/w
-	PhDekX+SmfjfPNvKFFPzVx852LLBAKm+h/xiNC3+smIxrecXDzZDws0n29sghE8Z
-	nCyqwiUejwrEP+DRq0Lren3U/IerlceSryDeLZBIB6CZW7YyXQ5sqzmzaQJj/RFD
-	8Vqqtp2R/w==
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2173.outbound.protection.outlook.com [104.47.56.173])
-	by mx0b-00007101.pphosted.com (PPS) with ESMTPS id 431m10w9cu-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 22 Nov 2024 05:05:29 +0000 (GMT)
+	Fri, 22 Nov 2024 09:34:11 +0000
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AM1wRUY003966;
+	Fri, 22 Nov 2024 09:34:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=corp-2023-11-20; bh=U/Q049Qe7xRDXT3gPu
+	D9/2wknma7HqG1HGUSPki+HMk=; b=bE2k6+ip652Ep4jlaQdy3uM0/ATFL9rJtX
+	PkMqKNZTBiFkxM+ziwcrOCucwvjE+VjLGwHxQKyNsEUD4ZyIZ+WTObxGjyB0xMUd
+	rGCjcXvkJeES/UHKFClFGuoqzF97N/tGWoFxteRdyiBAyT7loUhwu7PuDzxSVZZa
+	Zp+/AtFdQiBPg0uTUFc9MAN2dPOOhq5LREnmXMOJbDCMZhUjIfkt5eyE1uajCxBS
+	q/WaMs61KVE9dWQN3hOERw3dJ2B8747zew5Rp5TVdm8YwH+T5g/FPDcJrrQ9fJAZ
+	/5xK6ZSo/Ngufh7Wx5J2gFZNfOxYdMXCA3FTHn7TKN7UGgnL08bQ==
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 42xhtcbhs6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 22 Nov 2024 09:34:02 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 4AM81P3M036993;
+	Fri, 22 Nov 2024 09:34:01 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2049.outbound.protection.outlook.com [104.47.70.49])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 42xhud29qf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 22 Nov 2024 09:34:01 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=m4b1rjhKjjhdsggiaGFDwMVIAfa88dMmdIRe5wsdCRe4dY1ud5F4MCyQsrqxZok5T0jMRqDcmSwHgLBhwTk8OFSZUGr2YsDIa12cy2n9wBkYDSAvhgS2KRHAMFXurUmumlznFFxKO9uf5mHLRdvb97kPJoAovW9a0KnvJXO0lcZAzX6UdbOlPNDyz4AZAnD7rcneJ3FLU6qzamDVbgTX6HzNKHdL097qtzGqoABSmstKC3gyxK+UfrABizGKFThx1yNEB65ASdYb6EZDWMVqB9I2V+WtXG0R5hSS8b/ZVc1wVFPTN6hPLsZtn/P4xuKFiC8zXxdS/2f+3cjcbhFd2A==
+ b=UM6wM2IHcdbLFvVeP8aQXlH9RbsDPSzR/WbrYOhQY6726jxehp38g9VVDC7FmTGFBjqI222KXT1KZ+9Pha4tCvn3fiZDEO6FlqfESDPWNB5HmrPhhuaNvqZMBp18atdxlQpJ3zOaqDEvW/K9vYjNCamYzsMjVKbBcFcqLk2rokg7OO3bc/ijNfwu5xAtPr/KFzgqAB5SuGHDFkEYCrly3Wgosk2suKOOfcY2n4eH/CiePC2QIbZYlHzmB2I50IrlUXahjOzMuxjLrtH/5mmat2GDEImPSVu5y5aJEEvg3eiLy6aTVHyjxJf9VnVS76YNduldwjqrlsDBcurJ0urmPQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RXvrHdd3VfKVnXzzZPOQaOfjxOP9nhAj15k1kWvfEEo=;
- b=iudjgkbiZL0GeQIlt8XlXWILrQEn3tFE3p+/XZqwyVooKSqkSUiTHhO8hMqzfuJHLaD13ld4wbgK5RhprHx2xfwD58Hd1j6mTOV5PPbMC7f8/tffiadWi+nbLFftBmq74Q8LtDqRy2sLi5FAhKltpqqBNMf1+w+W5o1cD1fY53ZNBzzK5vZePSy8WTc9fXuCx8h3Eq2ow12zwX8CpCPYPwx1/q/7yX0lcYtyCJS4Z/dv+QxyhsZJrqx6sV9tkFlXa+urwr23SnnOB0V8szZAtwk819iFbyfNg1KVWZ9XFYYi8S1LHBYDpw26JSIdP31bTy1Rt99xtecUrvGZXvFgIw==
+ bh=U/Q049Qe7xRDXT3gPuD9/2wknma7HqG1HGUSPki+HMk=;
+ b=OAi++4reyHzv62BE6jIO6CmSnkQRM0ThR3ygYQnrOIznU7yNJYnsdWpT54aAFwPIqJ8FlewkoTYef4Jp/t1LjRRd3ow1D0Og6vLVogHlP3s9xs/8MSX+KBedXlRzX6fJ1o/lk3kearlRT78iToVWtCpinXuKbA2lrbaRZE0hamqwuFKSEpXkHc2oB7janRmmE+yqgkAtlPt1hUaO4p74HXNtGvJ/jIBirit3hHGK1YfKNUA+0b2++CqLEi9u1FjQJAtzXOWeb+uH0I/janoI1dM96i1nR7HN+JZzvOJKkxhliVN1UGkpxNW7WxdJqCoDkNv9+sNEzSGp9SJI73mBZQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=illinois.edu; dmarc=pass action=none header.from=illinois.edu;
- dkim=pass header.d=illinois.edu; arc=none
-Received: from DS0PR11MB7286.namprd11.prod.outlook.com (2603:10b6:8:13c::15)
- by CH0PR11MB8233.namprd11.prod.outlook.com (2603:10b6:610:183::19) with
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=U/Q049Qe7xRDXT3gPuD9/2wknma7HqG1HGUSPki+HMk=;
+ b=HPg6C3lqHGBGCBqeTC7dIxYBtObqiMjuMr7HYwCqVfLYddQ3lraq7AhkNt/EjTuVy4C93o8aY34Rv5hWmcjP2wBn0XAZ5PQk4zfBU/XSund70LuqGyqKbxC+xFbY/rHM2RlzRrILTJprvNigDFe5QFO3Pv8ft14etUfyt6J0Yuo=
+Received: from BYAPR10MB3366.namprd10.prod.outlook.com (2603:10b6:a03:14f::25)
+ by IA0PR10MB7325.namprd10.prod.outlook.com (2603:10b6:208:407::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8158.24; Fri, 22 Nov
- 2024 05:05:24 +0000
-Received: from DS0PR11MB7286.namprd11.prod.outlook.com
- ([fe80::d52:d2da:59c7:808]) by DS0PR11MB7286.namprd11.prod.outlook.com
- ([fe80::d52:d2da:59c7:808%4]) with mapi id 15.20.8182.016; Fri, 22 Nov 2024
- 05:05:16 +0000
-Message-ID: <284fe8fa-c094-49b7-8e16-3318676d38e3@illinois.edu>
-Date: Thu, 21 Nov 2024 23:05:14 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/4] Enable measuring the kernel's Source-based Code
- Coverage and MC/DC with Clang
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: Matt.Kelly2@boeing.com, akpm@linux-foundation.org,
-        andrew.j.oppelt@boeing.com, anton.ivanov@cambridgegreys.com,
-        ardb@kernel.org, arnd@arndb.de, bhelgaas@google.com, bp@alien8.de,
-        chuck.wolber@boeing.com, dave.hansen@linux.intel.com,
-        dvyukov@google.com, hpa@zytor.com, johannes@sipsolutions.net,
-        jpoimboe@kernel.org, justinstitt@google.com, kees@kernel.org,
-        kent.overstreet@linux.dev, linux-arch@vger.kernel.org,
-        linux-efi@vger.kernel.org, Wentao Zhang <wentaoz5@illinois.edu>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-        llvm@lists.linux.dev, luto@kernel.org, marinov@illinois.edu,
-        masahiroy@kernel.org, maskray@google.com,
-        mathieu.desnoyers@efficios.com, matthew.l.weber3@boeing.com,
-        mhiramat@kernel.org, mingo@redhat.com, morbo@google.com,
-        ndesaulniers@google.com, oberpar@linux.ibm.com, paulmck@kernel.org,
-        peterz@infradead.org, richard@nod.at, rostedt@goodmis.org,
-        samitolvanen@google.com, samuel.sarkisian@boeing.com,
-        steven.h.vanderleest@boeing.com, tglx@linutronix.de,
-        tingxur@illinois.edu, tyxu@illinois.edu, x86@kernel.org
-References: <20241002045347.GE555609@thelio-3990X>
- <20241002064252.41999-1-wentaoz5@illinois.edu>
- <20241003232938.GA1663252@thelio-3990X>
-Content-Language: en-US
-From: Jinghao Jia <jinghao7@illinois.edu>
-In-Reply-To: <20241003232938.GA1663252@thelio-3990X>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: CH0P221CA0018.NAMP221.PROD.OUTLOOK.COM
- (2603:10b6:610:11c::19) To DS0PR11MB7286.namprd11.prod.outlook.com
- (2603:10b6:8:13c::15)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8158.21; Fri, 22 Nov
+ 2024 09:33:59 +0000
+Received: from BYAPR10MB3366.namprd10.prod.outlook.com
+ ([fe80::baf2:dff1:d471:1c9]) by BYAPR10MB3366.namprd10.prod.outlook.com
+ ([fe80::baf2:dff1:d471:1c9%7]) with mapi id 15.20.8158.023; Fri, 22 Nov 2024
+ 09:33:59 +0000
+Date: Fri, 22 Nov 2024 09:33:51 +0000
+From: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
+To: Hajime Tazaki <thehajime@gmail.com>
+Cc: linux-um@lists.infradead.org, ricarkol@google.com, Liam.Howlett@oracle.com,
+        vbabka@suse.cz, linux-mm@kvack.org, Jann Horn <jannh@google.com>
+Subject: Re: [RFC PATCH v2 00/13] nommu UML
+Message-ID: <77ab71c7-3608-4636-a618-3044c2316a92@lucifer.local>
+References: <cover.1729770373.git.thehajime@gmail.com>
+ <cover.1731290567.git.thehajime@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1731290567.git.thehajime@gmail.com>
+X-ClientProxiedBy: LO2P265CA0282.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:a1::30) To BYAPR10MB3366.namprd10.prod.outlook.com
+ (2603:10b6:a03:14f::25)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR11MB7286:EE_|CH0PR11MB8233:EE_
-X-MS-Office365-Filtering-Correlation-Id: 66193b42-07eb-46ec-87d6-08dd0ab34120
-X-LD-Processed: 44467e6f-462c-4ea2-823f-7800de5434e3,ExtAddr
+X-MS-TrafficTypeDiagnostic: BYAPR10MB3366:EE_|IA0PR10MB7325:EE_
+X-MS-Office365-Filtering-Correlation-Id: ac720276-275e-4ef0-5507-08dd0ad8cac8
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|7416014|376014;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?M0ZoNzY4cmViRDkzSTZ3YTAxWjNHUTJYUGxuYVZVejlFOElVd04vVzZ4NjdR?=
- =?utf-8?B?VzdHMFBZNkpPdmZ4eEVrR1pzWjN0cTJZZmh6ZVNwRGU2WXdsQXZ6L0ZYWEhE?=
- =?utf-8?B?ODJacVY1a0NqZVZhOWVLRTEwSHRwUW4xUVlNM2MyWG5LVzdDTVFGSHNPQ2lH?=
- =?utf-8?B?a01zWHlzTnc0K3doV2dvdy9PcExhRU5JNlpoTWw2cVlCSk1qb05SeEo5eVF3?=
- =?utf-8?B?VlRjNDdMQSs0d1BXaWJpdU5lcXNVdEsyb3hra2E0b0JkQ2RPQUJFeHJaQ3hz?=
- =?utf-8?B?U2F0MTB4L2UyKzlHZyszUkVYeEpYWlhPMkRveWhncW1rMzc3bi9LZHoxYktV?=
- =?utf-8?B?aEdOa1dPQ1RjcC9TYkt3OCtPcm1zOXl2WmNnN29kajdrSlBjeGM4RGpvbUFL?=
- =?utf-8?B?RlZtSGZqc2R3RDNWWGZCdHVPSGtWS3pERFgrQ3N4Z3RreGtIVGZlVGR3UjhK?=
- =?utf-8?B?Z1Y3RnBuTGhsV1hjcHY3SkhNTTN4aEdydUo2KzNMUzROdkJBWDl6Yllmb1ZQ?=
- =?utf-8?B?TGRTZHJ1UWxKa1lMQ3BBOVczS2IxOGJuSnBqWVlCTnpKaTNHNTdqL3ZzaDJL?=
- =?utf-8?B?VWg3SVhzV3lmeVZNd05VREprYTBvN2tueU11SThPVXdJdWtLdlBXRlYrRHhE?=
- =?utf-8?B?WFViUDlFRzdOdGE1N1V6eFVqOHZadFBncFV1MEZBV0lYcElxRW5EUHEvQTBq?=
- =?utf-8?B?cWZZb3RQSjEwTG13U2NFdHZLbDYwNXVPd2hrdjhTZXdyYnhNeWpuRTY4OFBK?=
- =?utf-8?B?bWR2VWtUaVo3MC9nUFY4WkJlQndrQjBMbk1wRmY5Nnhxb2ZZREQvWVF6ZWZD?=
- =?utf-8?B?QnRYZmZUbmoyZEJtTERHSjVxMU1oUFNqZWo0Qmp4N2pDSFhPaUlZUXVBUk5R?=
- =?utf-8?B?eElHRnFjUGlpM1g1bm9QTHVQMUdtZG5iS2NpdHJ3WHc5QjZ3TFgrbkV2VFR2?=
- =?utf-8?B?c1FTV0ZoWURHUHFqa3o2SHEvdnY5Zll3TkROQXI2a1NQdXdJaXdQdCtmR3NC?=
- =?utf-8?B?OW5iSzBINXVmL0VXY1VOU1BWT010TXFZMk5VNUIreVJJc05OeUtySDBCZkJP?=
- =?utf-8?B?cE8vU3lNdWc3OC8ySldMeFRpTTJFUDRnTkNQVEJWRE1IMm1OdnR3d1R5Tysy?=
- =?utf-8?B?bmMrem54VkpuNXB4cDFyb0E0UXVLSU45bEIxbDZXSEVkd2xQOWIwUTNzZk5V?=
- =?utf-8?B?YVIxTjNLc1dEOVkzZFBJS3JBQU5LUWxxWXlseWpFQmN3Y1AzN0lreGFwYmhJ?=
- =?utf-8?B?MU9FRFRjOThQdzVCL3BVRkxRT1p0Uk9CRkFFbEx6TmhsS1p4YnY2ZDgwK1Z2?=
- =?utf-8?B?aWdZdnFVUU41a1NxTSsxcHhWdFh2MXZHYUZJWjJ3VGpGaVh6VXV0aXdXaTR0?=
- =?utf-8?B?VXcyY2VId2QydkpIWTgvcTVXaU5DVVNHRjlYQlZrYWhQMitHNkpUZkE5MjVX?=
- =?utf-8?B?UzZydWdKQ1lyUXZSSmlDUHN6UEVUR09acU1mQ0lJU1hkbUl5UTZRUVExdElP?=
- =?utf-8?B?UHZVc083STV6N3ZqN0pRNU1GQURSR0JTTmdpWnhFZm1oZVlodXB4S3BPbXlU?=
- =?utf-8?B?bjNhdnZQUUlCQTBIT3JRVjRjKzdCYkNnOGZUUnZBMVRwUG5GR3hMdmtWMzJE?=
- =?utf-8?B?S3I2bDl1cE84SkFvOUhVRmE1MmY3Y2VBMHRZbzVocjFaYkZrdXJlZEM3NzEz?=
- =?utf-8?B?cncwcEtDbThUQ0k0c0NTYkFsWkRtUVpWZGZsbEVsUHlsSUtPUHdvZ3ludnNR?=
- =?utf-8?Q?gGUACxCEsG9co+GPE69CigfHluV6ym1JdLEdZn1?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7286.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|366016|7053199007;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?3I1rwb7FUzrOJrqwIFohAu99HOxa0ONtsieFmBscwTGLdUuyet5G7Als2via?=
+ =?us-ascii?Q?cBjw5HON+rWaM9ILbG5pEMQNPCLQj8GitB8ywEh+uWIsTU6MFrOC9e916OD9?=
+ =?us-ascii?Q?wLafP+r7SwZqlFBShc3gmY3hHix6laDEzo+y0LtTKe40dni9pBdHAxgPMlrw?=
+ =?us-ascii?Q?DvCgFaXiEJ15uOlli9M80STx5Zqj6lFYMz80N7yi6K6bZAj9XUmkm2/YScsE?=
+ =?us-ascii?Q?6IgrYKdekW96XGCU8JlQWBoBnhP17cWe0nnYjTV58phLrf3ZT64Isa9mFEnF?=
+ =?us-ascii?Q?+fv9wkVpOYmNMqIC3PASnJQ8wO8Rouzy1qeKZ0HVuLWptNihiRLHlTzIhCyN?=
+ =?us-ascii?Q?OpQVdzTCojnoc8FNfpciFWWyVy9S1Sq9xo6d7HVI61LrU+bbVyOofVuVjCgd?=
+ =?us-ascii?Q?G3PFjbdpJuCANDfFQOOnPKaOt2JqJPXvuDWNqKI9bA1b+nYo+IvNVQ6UVJAF?=
+ =?us-ascii?Q?ZXPqVl6oOukPT31c8J8a+zQ+y11TiXDMc1k7LyRzyTVGzDpsPTHOD1XVmBV+?=
+ =?us-ascii?Q?LgXE9v5/TpuVBXHSOHACWkS5ltneF+cgrl4TWfQ1SESLVQBrKNcaAH7/LJhb?=
+ =?us-ascii?Q?qAZPCWWzpXdofVWEZINIU8tvNKDozqGhUbP5TtNk4QhdzJ803Nv4IrFrUdML?=
+ =?us-ascii?Q?JrX0/+HNbBhrP4avF3swr+k5Zszf7OLocZNovgVaGbXGdVZML1XxxoWSkWMr?=
+ =?us-ascii?Q?2L1cKBClOcPfZYtbbwRTpNjfsT9cMz55QxPT8YjwughYYlPvcE17Id1yoB+1?=
+ =?us-ascii?Q?sOJjbsiUsBH0BwZ+nSxKq8mwS1+MxC1/oyj5NzQOO620Rr0bNBG0Uc4KTuaa?=
+ =?us-ascii?Q?nCEhlTBML2gVTvACEuL3vV+9s8m2DYdRTOPweROjljq2FwCAT1oz/fVkmB08?=
+ =?us-ascii?Q?aislY6+ZLXgGoi5HJepuM67Z1Nczpn1xIaL0ULqgp6bAM5hrj2MxQ/34aZZ1?=
+ =?us-ascii?Q?9b/G48M9P/Z1jDK3knIdsQ6O6l/SCaGOYf+vhEd2hxNIL3gtltml4hu34/wf?=
+ =?us-ascii?Q?HRqwDB0WEGIsZ3AH+7Xve7RuTRRLwAunQPQTQUPecgQdsk2SllibGYtnF5Xa?=
+ =?us-ascii?Q?5D7Aj1fpfBwKKrRWyGYfQpIdq28kgLh5wUj7IdByHJOClB2Lh9hTQseZ6E/p?=
+ =?us-ascii?Q?qSKRXg31nY7+T5rlxxe8mb1ckX/y/UMdTpQg1FNIPlnJ1rJsaFSNIsf20d1l?=
+ =?us-ascii?Q?EuTvrteWQUun5Hoq7ASgvT92AYksYerV3TbLxemARDfrLt2XtDLfrpJsNv76?=
+ =?us-ascii?Q?J7Zg3luSlda/87iRfChi1E+4kBEPfnWxoBdynvSpvw=3D=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3366.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016)(7053199007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d0RveUVUTGlYdHRaQ0pvNDg5TE1kaVlYSysrL1kyVlhveDhFdDRNamp0b2VQ?=
- =?utf-8?B?TFp1ZDVPSjVXMGdCQm1Oemc2M2RVRlB0Kzd0VE9sbGpoZGtGOUVicCtoRFpr?=
- =?utf-8?B?T0wwbnVUWWtQOWRjbGMyT05QenordWZOTmwyUGpSSTY0VHRKOFVSZXZva0FN?=
- =?utf-8?B?eDY4VHZUc2JnMzl1cFZNZXM1SGU1UEZXamVzZ2VEZVIxUXZtR1A5aXk1NWtl?=
- =?utf-8?B?bVRNbTBMZ3lXYUZIaVhRQlNJNGZtSm5YSnRCZEJTT3Fmdzczem5reDR3eFBM?=
- =?utf-8?B?ZFd6bER0aDNVY3VDK2ROdUcwQVlaTWFKL3lUNTVjRlhlMFc5QkNCSnpCUjY4?=
- =?utf-8?B?Q09WWTJxdnhyMHY5aFdNNGJEUE41RkJOK2JTenlTczlqOUF5K0FLd3dSdXFn?=
- =?utf-8?B?VlFKY3JSMW1DRGdMYzBBbUt5Yk5IMGRsdFBJaDI3OFdpdHhDOUl0Q2dLYStz?=
- =?utf-8?B?YTJoSWNHWDhlVUpjSUxBMDZiOC92NDhuTkRJMzZHdnBxQjR0aTlMbmdKZlgz?=
- =?utf-8?B?ZHpWQWpNcWg2WVVSQ3BjSm9kbUFMeVkwQVRrbEMyVkZpckpGZ2tWQURvRTkw?=
- =?utf-8?B?RFBtSlc0VlRrdisyd1lMTkZaNFVyWlFNSU9aWlVlUWtwb3V0TitNZ2RqLzJ0?=
- =?utf-8?B?aVV1L3V3TXE4bEo1SnRXS1BUcXBWMUJJVnNzd1B5eXR5OVhvMWNkbW9sMHZC?=
- =?utf-8?B?Q2l4Vnh3QnZFMHZSM3NabW80YitEOTRUMlNtQVJjNjJueHM1bitPUllucVJV?=
- =?utf-8?B?Uktqb2IrUEt6NzdiMWVEOU41NUhsaVQxaXNJbXJyc0VEbUx4NFJ3QVlZbTRK?=
- =?utf-8?B?NnZPeDlEUHZPUTA5a3ljZDFvUEw4eDBWR1RjVTRhN2RlSkNhNGtRS0ZuRElG?=
- =?utf-8?B?cDFXUlBqcVVBTG9KKzFMTGFCRWsyN0k2LzFKRkhvUGdIdklaV294MmNGbHFU?=
- =?utf-8?B?YllKcktLSUgxZzgvMmthOU5tTG1jakVMQWk3ZjFVWnhaOFpPWWtSL1hiVVJD?=
- =?utf-8?B?azE4ekVCNUQxRWFZbjBPdUtBL2k0eXlFWnZUd3cxR3UyMjM5aXYranF2VFJ6?=
- =?utf-8?B?OWR5NXdBMXRVOSs0cnM0TTg5b3R6VDAxbEp4ZG51ZEdZMEF1dnMrV05hbFlV?=
- =?utf-8?B?bXpzanNyMUdGYzhGV3lrMDJPRUROWTNSeWMxMUhpaCtySDFETVVGbjhoMUFH?=
- =?utf-8?B?RVJqa2hoTkdvRDhxSys4MVVXTHpaUzNpT0pEL3FyZmxsRFpZZWdHeVVBbE5w?=
- =?utf-8?B?TDlwY1hFYklpYTUweVhRd01EeUNtOXRSS2dTVWkveWdjRDBoRHFYSmdkTXFD?=
- =?utf-8?B?SkdyOHlCaENlUDNnMkFtMSttUGFJalo3eE1HUTFzZ0hENXo4S2VwcGpzYmFI?=
- =?utf-8?B?c1AzREMwL2VFSjNRWE1RbFRVL2djTktKY0xmMExBVmdVNjViZCtGTW54WWIz?=
- =?utf-8?B?K1I2L24rbEJSTUU1UnJjR0QzQklvTTduSGVlUktmcEoyUDVqZnRuOHEwM1Yz?=
- =?utf-8?B?bzgrbHlGYVJTTDRPN1V1emxiK0FuektzaXVLMnB3WEt2NVIzSnNuYnJYN3BR?=
- =?utf-8?B?Z2FOZmdjbVdCWGMzR25wTGNlanNjc3hNRkY2MHJQTXZsSjhTMDJIaXhPU2FR?=
- =?utf-8?B?NXl5Y1RBdGhVSWlDZEtrWTBUL1VidmRWd1JDV1d5R3pDeXRjWmc3KzhoQ1NH?=
- =?utf-8?B?NUFiZ3pMTTFOT0dhejR1NW5sV1FQMFE2RGFmaDNSbVVpb0ttMEVyMVlRYlN1?=
- =?utf-8?B?ckR5WHhkamV1eEszRy9lVHYxNWY4Sk5PajNoRnpoanJhd3JBY0dTS0pJYlJP?=
- =?utf-8?B?V25na2Rxc0lXY0htOFA1UEhJOGxOMHAvaVIxamJYeVBIcW9rdzVySldidWc0?=
- =?utf-8?B?b0VsTm55MUR5c3dPT1RheDFhemFuT2RYZjdIVnVUTEl4QklFZlZHdnloRVVT?=
- =?utf-8?B?UUtLdDNjU0F1c0lIeEJxdHI3NmkwR0dUOWY1elNZbHM5bEZmakNUeVRIN1lC?=
- =?utf-8?B?bmNkZWRNYnFmNXRZTVljbk1RaFVWcWxkMTlhZm5rbTQ4L1lFTm1iL0U3VFZ3?=
- =?utf-8?B?ek9ENHBNUVFZczl6T0g5cUc1N2JlejZFVThJRzk5ZktkVEFLN3NCL3dFOHFj?=
- =?utf-8?Q?+yh4qN9dLYel2dhVDlOJjTJxp?=
-X-OriginatorOrg: illinois.edu
-X-MS-Exchange-CrossTenant-Network-Message-Id: 66193b42-07eb-46ec-87d6-08dd0ab34120
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7286.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?DP2lziMNYQ95Qiqdl2dq04MWULGzKCZX05plzEj/rY6uFU+JWUcx++G3dr8Y?=
+ =?us-ascii?Q?5oqRgUrysuc2FnCM/6IT9lPMyBQ4xlnEicnWShYn85JoDL+ljEMuIIJYsXqE?=
+ =?us-ascii?Q?c4FeASHvb4zXUv2wQ47TyKt/8PgGUc4DY6lnkZcasDn+s/IFFx8ZCMvG1h0m?=
+ =?us-ascii?Q?Tm0g47GJvjcsxU3gsc7noz0Bnwwwbvt/5zGAME9PjSnHbJS5m4JEWxIn+xMo?=
+ =?us-ascii?Q?JQASsEWemLZlIDA04wMgbPlgeV8fabwNyYgEHpRwvIAGMD+RXi2zb3pif7cy?=
+ =?us-ascii?Q?xLOxvkaRPrEdBhXkxxIrU4uAUCPBN9zb5IN4B76GC7h34OOmv84BLTXEhpjx?=
+ =?us-ascii?Q?qWzWW1BHr5mLHz+HkjQBZDGCq5jQY17Ck9hyZuzKOqAgWw7idARYqKXkcGOs?=
+ =?us-ascii?Q?3ZEDq2eE7sSW0h1NEZz0ithnF00u+TISLYGCxw7GEX1AQ9falp3xrIFweRLq?=
+ =?us-ascii?Q?J7yWA8dP9Jtl398Btqe246mKxNZFYRaB1R5cyDddzyplpHmcYgAkROzWM4iF?=
+ =?us-ascii?Q?29I3KU58AJX3pJkDviVKcUPuRiJ2GdreMIwv/TbmF66UqdVU2apMiewKywct?=
+ =?us-ascii?Q?Wip639fAyW51bXVpkljNJwuzO8UrQcYZlklzlmvxhenMr232cqWxZWiEDmD5?=
+ =?us-ascii?Q?z2Ho7QchNPUSBqGok3/nOldKy0fEsXEYzb53RAhSxr2Q9YbvmZ4faOqJ0lXe?=
+ =?us-ascii?Q?r1tBj9MarmzVdASxlsrE1JDgR7VSF/aSeWFZ4v4xCvw3RgpKA4+VgFftg1wu?=
+ =?us-ascii?Q?IwjbyV0E1vrtHyXXbF2dGy1EvBbXYqjsAUJatNy28V1m3AmFZSH850Pz+kCT?=
+ =?us-ascii?Q?nJbvJOo7PS9fOMSvW8oGRPtN3dk74/SqgtJuk8hBV0nQR1r/jZWbxPW18Sbk?=
+ =?us-ascii?Q?9QYPFt5Ug36fQoiVK3lBt0g2cGkQuO3a7QRIKN8bPDS5rnG8UmoBa9TW1GAA?=
+ =?us-ascii?Q?FVIzYts8mYK8gx3o0l8pRKMmNJ6yKFgJqvg1VoMegWH8l2qi6Rt29rDM+4KQ?=
+ =?us-ascii?Q?+cwoQyMs9cTg7fLq0ABehFRrWMGOgP8JFSdcMmWZDbBP7szvoXUsVqDv/Wk/?=
+ =?us-ascii?Q?Z0SMYJR5w8iNERCE/VLddzb4vVHjP/HU0YY4vDaxWlnxDv6qcLJIa49l1Tge?=
+ =?us-ascii?Q?n1h7u5CI0wlFci2H5W6n4SGeseJLFDHWuQYvx4UOpsS2IJXotJD49xJ1EfXT?=
+ =?us-ascii?Q?g6pCTbiBY/ValsReL4joc1VHQjLPYwWZLNR/HDuXzCS0YBn+2kH4hO67Otdr?=
+ =?us-ascii?Q?E/af8G+Wf4GFfFJQpiAmhKPmbnMvzfzkIWLqyF8hrW06XEaikELH1Cv11czu?=
+ =?us-ascii?Q?E05CczPNQQMgM6w3rWNf42um0+lEIbaRMcqugsjC8SO9qlZ6QNIRl24KQVEk?=
+ =?us-ascii?Q?C5YZnnEfs6HfqFoamJOxol7soaYvW0hI4Eg1NfFJi1edb1/DAedFHf7kdXEt?=
+ =?us-ascii?Q?rcfna7tBulAoxZSAPVkt761U0XIQKiao/577UwGeuzL/U1qJzuYJGlzdiiIF?=
+ =?us-ascii?Q?qAGHkGYvYJSA6B0HHzf6sNewM98o0MdAh+92tIXz1AJHbOQI6h4OLf675Qqm?=
+ =?us-ascii?Q?/eSa2USa7RbM1h+zokkGJj8pjIXPUe99fH/YozjQ+zuyRPW77Eki20y9z279?=
+ =?us-ascii?Q?LQ=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 2vNl99eimYhCc3rKltgENtUXHnKR5DQxX31iuzTBpaOOSBwiBamafihqx2H63kBJ5wjXuRvwmjvRcQ9oAzUZ1Mp3YM5pxb3pzxGsWHttoykIw+ne1RkGV3ll+mYUjr06buPOjxZZLPLe7ur9mt2MWSKqCZd1TFmfzQl+4i0tuK9Ovmul/MlbUkp6o2hDRQZmCh8CD6gxcnfhwUuv6ryf3+TbSWMsw7rC0iJXA7OzKrbkxx76uzVzbBgB2Bcy5hkaRUiju2sAE7CFpzAkqPlb0Tz13bY0jYoWSLGHYda+S52L4N1WESCO8FXejeWM2mXglGfR5rLQNAFbT6QVVjco8IBj14WqZONzapzqua5Ze+KOqSsesRms8AhBtoVGmmDxPcTAWDLOTNvPLU80Ing8gbghOl7YbY38yoOs0xAu/+ZxoixWqEMmOoSaR+ubb/xSLXH73mhx+K9P1Aza3HPgzBcZz3nEGDrD7LE57S4OXbdqvv9MDlSiWc+VtSTVJKy8HXzW5Nhmkj9CWkifgzZhao9Gmrul2HDycW4zJKMtpHG9pAomtXLJxIjhmzini86S+r/E60xrB+nmpTwSh013hll7z14pvkPjTk4FCXaIN8g=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ac720276-275e-4ef0-5507-08dd0ad8cac8
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3366.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2024 05:05:16.7314
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2024 09:33:59.1026
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 44467e6f-462c-4ea2-823f-7800de5434e3
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FMSQaX3ZwallINNhf1thINWTMFF7EyBlELFRmxwFyxB8YPdSuZ0PVBEZiKu9hhTQrfrD39DIJShdMYnJDh0fmw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB8233
-X-Proofpoint-ORIG-GUID: WSpmIfItbiAwMm0PG3UBlCHkj0uMzp5_
-X-Proofpoint-GUID: WSpmIfItbiAwMm0PG3UBlCHkj0uMzp5_
+X-MS-Exchange-CrossTenant-UserPrincipalName: Xrr5G/zX70C9vCRUiorJSIsoqvsqoLSlc4pB41Rs+PZTVT4KF636UZ8JN4F7Qjw0nDdejXfva/Hr8ShH7GkD/UzJ8cEPdBFhZb9oBKEQhOw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR10MB7325
 X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-05_03,2024-10-04_01,2024-09-30_01
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-11-22_04,2024-11-21_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 adultscore=0 mlxlogscore=999
+ phishscore=0 spamscore=0 suspectscore=0 malwarescore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2409260000
+ definitions=main-2411220080
+X-Proofpoint-GUID: Y37Fujj5SqOw8dk571kt1jSNsosIRHMU
+X-Proofpoint-ORIG-GUID: Y37Fujj5SqOw8dk571kt1jSNsosIRHMU
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241121_210627_979607_F62287BD 
-X-CRM114-Status: GOOD (  12.66  )
+X-CRM114-CacheID: sfid-20241122_013410_559744_DF162CA3 
+X-CRM114-Status: GOOD (  23.57  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -208,125 +187,126 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Nathan,
++ VMA people, mm list
 
-Wentao and I were looking into this issue in the past weeks. The high level
-conclusion is that it seems to be some problem with lld and I will go over the
-detail here.
+On Mon, Nov 11, 2024 at 03:27:00PM +0900, Hajime Tazaki wrote:
+> This is a series of patches of nommu arch addition to UML.  It would
+> be nice to ask comments/opinions on this.
 
-On 10/3/24 6:29 PM, Nathan Chancellor wrote:
-> I seem to have narrowed down it to a few different configurations on top
-> of x86_64_defconfig but I will include the full bad configuration as an
-> attachment just in case anything else is relevant.
-> 
-> $ echo 'CONFIG_LLVM_COV_KERNEL=y
-> CONFIG_LLVM_COV_PROFILE_ALL=y' >kernel/configs/llvm_cov.config
-> 
-> $ echo CONFIG_FORTIFY_SOURCE=y >kernel/configs/fortify_source.config
-> 
-> $ echo CONFIG_AMD_MEM_ENCRYPT=y >arch/x86/configs/amd_mem_encrypt.config
-> 
-> $ /usr/bin/time -v make -skj"$(nproc)" ARCH=x86_64 LLVM=1 mrproper {def,amd_mem_encrypt.,fortify_source.,llvm_cov.}config bzImage
-> ...
-> vmlinux.o: warning: objtool: __sev_es_nmi_complete+0x6e: call to kasan_check_write() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: do_syscall_64+0x141: call to lockdep_hardirqs_off() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: do_int80_emulation+0x138: call to lockdep_hardirqs_off() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: handle_bug+0x5: call to kmsan_unpoison_entry_regs() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: syscall_enter_from_user_mode_prepare+0x105: call to lockdep_hardirqs_off() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: syscall_exit_to_user_mode+0x73: call to user_enter_irqoff() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: irqentry_enter_from_user_mode+0x105: call to lockdep_hardirqs_off() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: irqentry_exit_to_user_mode+0x62: call to user_enter_irqoff() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: irqentry_enter+0x45: call to lockdep_hardirqs_off() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: irqentry_exit+0x4a: call to lockdep_hardirqs_on() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: irqentry_nmi_enter+0x4: call to lockdep_off() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: irqentry_nmi_exit+0x67: call to lockdep_on() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: enter_s2idle_proper+0xb5: call to lockdep_hardirqs_off() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: cpuidle_enter_state+0x113: call to lockdep_hardirqs_off() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: default_idle_call+0xad: call to lockdep_hardirqs_on() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: cpu_idle_poll+0x29: call to lockdep_hardirqs_on() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: acpi_idle_enter_bm+0x118: call to lockdep_hardirqs_on() leaves .noinstr.text section
-> vmlinux.o: warning: objtool: acpi_idle_do_entry+0x4: call to perf_lopwr_cb() leaves .noinstr.text section
-> ...
->         User time (seconds): 670.86
->         System time (seconds): 459.05
->         Percent of CPU this job got: 169%
->         Elapsed (wall clock) time (h:mm:ss or m:ss): 11:06.15
->         Average shared text size (kbytes): 0
->         Average unshared data size (kbytes): 0
->         Average stack size (kbytes): 0
->         Average total size (kbytes): 0
->         Maximum resident set size (kbytes): 38644844
->         Average resident set size (kbytes): 0
->         Major (requiring I/O) page faults: 18694
->         Minor (reclaiming a frame) page faults: 23068856
->         Voluntary context switches: 32215431
->         Involuntary context switches: 46422
->         Swaps: 0
->         File system inputs: 0
->         File system outputs: 40127696
->         Socket messages sent: 0
->         Socket messages received: 0
->         Signals delivered: 0
->         Page size (bytes): 4096
->         Exit status: 0
-> 
-> $ curl -LSs https://urldefense.com/v3/__https://github.com/ClangBuiltLinux/boot-utils/releases/download/20230707-182910/x86_64-rootfs.cpio.zst__;!!DZ3fjg!7BrjObiTQ7yWOq1feQGQPxe3uzUM5t4pPHkLUuijWyjOwoaX2rdCwZoD4P52pNU_t1tCT2OCWV3GPtNnAw8$  | zstd -d >rootfs.cpio
-> 
-> $ qemu-system-x86_64 \
->     -display none \
->     -nodefaults \
->     -M q35 \
->     -d unimp,guest_errors \
->     -append 'console=ttyS0 earlycon=uart8250,io,0x3f8' \
->     -kernel arch/x86/boot/bzImage
->     -initrd rootfs.cpio \
->     -cpu host \
->     -enable-kvm \
->     -m 8G \
->     -smp 8 \
->     -serial mon:stdio
-> <hangs with no output>
+In general, while I appreciate your work and don't mean to be negative, we
+in mm consistently have problems with nommu as it is a rarely-tested
+more-or-less hack used for very few very old architectures and a constant
+source of problems and maintenance overhead for us.
 
-This hang is caused by an early boot exception -- gdb shows the execution
-reaches the halt loop in early_fixup_exception().  Dumping regs->ip associated
-with this exception points us to the following instruction:
+It also complicates mm code and time taken to develop new features.
 
-ffffffff89b58074:       48 ff 05 85 7f 4a 76    incq   0x764a7f85(%rip)        # 0 <fixed_percpu_data>
+So ideally we'd avoid doing anything that requires us maintain it going
+forward unless the benefits really overwhelmingly outweigh the drawbacks.
 
-This is apparently an incorrect access to the per-cpu variable (the cpu offset
-in %gs is needed) and triggers a null-ptr-deref. Without CONFIG_AMD_MEM_ENCRYPT
-(one of the bad configs), it turns out the instruction is actually accessing
-the llvm prof-counter of strscpy():
+There have been various murmourings about moving towards elimination of
+nommu, obviously this would entirely prevent that.
 
-ffffffff89b85a04:       48 ff 05 6d 94 7d fa    incq   -0x5826b93(%rip)        # ffffffff8435ee78 <__profc__Z13sized_strscpyPcU25pass_dynamic_object_size1PKcU25pass_dynamic_object_size1m>
+Thanks, Lorenzo
 
-This symbol is left undefined in the bad vmlinux, which explains why the
-faulting instruction is accessing address 0.  Tracing through the kernel
-linking process shows that the symbol is still defined (as a weak symbol) in
-vmlinux.a and vmlinux.o, but becomes undefined after the first round of linking
-of the kernel image (.tmp_vmlinux1).
-
-After playing with it a little bit, we found the creation of vmlinux.o to be
-the problem. Specifically, if we use mold[1] instead of lld to create the
-object and pass it to the later stages of kernel linking, the symbol will be
-properly defined as a data symbol (and the kernel can boot).
-
-It seems that the issue does not reproduce with LLVM-20. Nevertheless we have
-reported[2] this to upstream llvm.
-
-[1]: https://github.com/rui314/mold
-[2]: https://github.com/llvm/llvm-project/issues/116575
-
-P.S.: We used mold because gnu ld is simply too slow with all these llvm-cov
-sections -- the vmlinux.o step ran for 10+ hours and still didn't stop. At the
-same time, the fact that the creation of vmlinux.o does not use a linker script
-allows us to directly plug mold in.
-
-> 
-> Cheers,
-> Nathan
-
-Best,
-Jinghao
-
+>
+> There are still several limitations/issues which we already found;
+> here is the list of those issues.
+>
+> - prompt configured with /etc/profile is broken (variables are not
+>   expanded, ${HOSTNAME%%.*}:$PWD#)
+> - there are no mechanism implemented to cache for mapped memory of
+>   exec(2) thus, always read files from filesystem upon every exec,
+>   which makes slow on some benchmark (lmbench).
+>
+> -- Hajime
+>
+>
+> RFC v2:
+> - base branch is now uml/linux.git instead of torvalds/linux.git.
+> - reorganize the patch series to clean up
+> - fixed various coding styles issues
+> - clean up exec code path [07/13]
+> - fixed the crash/SIGSEGV case on userspace programs [10/13]
+> - add seccomp filter to limit syscall caller address [06/13]
+> - detect fsgsbase availability with sigsetjmp/siglongjmp [08/13]
+> - removes unrelated changes
+> - removes unneeded ifndef CONFIG_MMU
+> - convert UML_CONFIG_MMU to CONFIG_MMU as using uml/linux.git
+> - proposed a patch of maple-tree issue (resolving a limitation in RFC v1)
+>   https://lore.kernel.org/linux-mm/20241108222834.3625217-1-thehajime@gmail.com/
+>
+> RFC:
+> - https://lore.kernel.org/linux-um/cover.1729770373.git.thehajime@gmail.com/
+>
+> Hajime Tazaki (13):
+>   fs: binfmt_elf_efpic: add architecture hook elf_arch_finalize_exec
+>   x86/um: nommu: elf loader for fdpic
+>   um: nommu: memory handling
+>   x86/um: nommu: syscall handling
+>   x86/um: nommu: syscall translation by zpoline
+>   um: nommu: prevent host syscalls from userspace by seccomp filter
+>   x86/um: nommu: process/thread handling
+>   um: nommu: configure fs register on host syscall invocation
+>   x86/um/vdso: nommu: vdso memory update
+>   x86/um: nommu: signal handling
+>   um: change machine name for uname output
+>   um: nommu: add documentation of nommu UML
+>   um: nommu: plug nommu code into build system
+>
+>  Documentation/virt/uml/nommu-uml.rst    | 221 +++++++++++++++++++++++
+>  arch/um/Kconfig                         |  14 +-
+>  arch/um/Makefile                        |   6 +
+>  arch/um/configs/x86_64_nommu_defconfig  |  64 +++++++
+>  arch/um/include/asm/Kbuild              |   1 +
+>  arch/um/include/asm/futex.h             |   4 +
+>  arch/um/include/asm/mmu.h               |   8 +
+>  arch/um/include/asm/mmu_context.h       |  13 +-
+>  arch/um/include/asm/ptrace-generic.h    |   6 +
+>  arch/um/include/asm/tlbflush.h          |  22 +++
+>  arch/um/include/asm/uaccess.h           |   7 +-
+>  arch/um/include/shared/kern_util.h      |   3 +
+>  arch/um/include/shared/os.h             |  14 ++
+>  arch/um/kernel/Makefile                 |   3 +-
+>  arch/um/kernel/mem.c                    |  12 +-
+>  arch/um/kernel/physmem.c                |   6 +
+>  arch/um/kernel/process.c                |  33 +++-
+>  arch/um/kernel/skas/Makefile            |   4 +-
+>  arch/um/kernel/trap.c                   |  14 ++
+>  arch/um/kernel/um_arch.c                |   4 +
+>  arch/um/os-Linux/Makefile               |   5 +-
+>  arch/um/os-Linux/cpu.c                  |  50 ++++++
+>  arch/um/os-Linux/internal.h             |   5 +
+>  arch/um/os-Linux/main.c                 |   5 +
+>  arch/um/os-Linux/process.c              |  94 +++++++++-
+>  arch/um/os-Linux/signal.c               |  18 +-
+>  arch/um/os-Linux/skas/process.c         |   4 +
+>  arch/um/os-Linux/start_up.c             |   3 +
+>  arch/um/os-Linux/util.c                 |   3 +-
+>  arch/x86/um/Makefile                    |  18 ++
+>  arch/x86/um/asm/elf.h                   |  11 +-
+>  arch/x86/um/asm/module.h                |  24 ---
+>  arch/x86/um/asm/processor.h             |  12 ++
+>  arch/x86/um/do_syscall_64.c             | 108 ++++++++++++
+>  arch/x86/um/entry_64.S                  | 108 ++++++++++++
+>  arch/x86/um/shared/sysdep/syscalls_64.h |   6 +
+>  arch/x86/um/signal.c                    |  37 +++-
+>  arch/x86/um/syscalls_64.c               |  69 ++++++++
+>  arch/x86/um/vdso/um_vdso.c              |  20 +++
+>  arch/x86/um/vdso/vma.c                  |  14 ++
+>  arch/x86/um/zpoline.c                   | 223 ++++++++++++++++++++++++
+>  fs/Kconfig.binfmt                       |   2 +-
+>  fs/binfmt_elf_fdpic.c                   |  10 ++
+>  43 files changed, 1262 insertions(+), 46 deletions(-)
+>  create mode 100644 Documentation/virt/uml/nommu-uml.rst
+>  create mode 100644 arch/um/configs/x86_64_nommu_defconfig
+>  create mode 100644 arch/um/os-Linux/cpu.c
+>  delete mode 100644 arch/x86/um/asm/module.h
+>  create mode 100644 arch/x86/um/do_syscall_64.c
+>  create mode 100644 arch/x86/um/entry_64.S
+>  create mode 100644 arch/x86/um/zpoline.c
+>
+> --
+> 2.43.0
+>
+>
 
