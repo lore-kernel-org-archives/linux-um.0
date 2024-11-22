@@ -4,70 +4,196 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CB44D6ED34
-	for <linux-um@archiver.kernel.org>; Thu, 21 Nov 2024 13:53:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03EBCE65D26
+	for <linux-um@archiver.kernel.org>; Fri, 22 Nov 2024 05:06:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:References:CC:To:From:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=xAUdviULB44hGI4dynB01M2Up5TvsxG0k/X2pF0OKqg=; b=HvRPGJY9rpE8PiaQR9HRcXTCUh
-	9lJARUqn3jfMbrQkE9UdcXbE1wzF2wx2GQCVt/OCUrvJo0dQf6ho6WPQsA7GxMXhdx+FffjLReR9f
-	pQ10EBIVA9lV3jzaslSwDWJ/oL0sAnyz6bQCg6BZKYUNG2C6ofqBb+41vafz3hnWoPCEsaqnI/0Pb
-	OeFyd4QlcwftvLyaDRclYCAyfO04WWMz5xmtlunpA7tuFrlPPzV3bV9T3BCDm53dJoCDgxtGX+8VG
-	v2l2OyKMYYIx4mem3dq4uK31wX4oqqBLWXBdXKGQZAsnNnei5g9ycmMum3qQkGxqcxxdtskRSnUOS
-	ewrszeoQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:Cc:To:
+	Subject:Date:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=RXvrHdd3VfKVnXzzZPOQaOfjxOP9nhAj15k1kWvfEEo=; b=wG0SjHVxXpLKa/nfZz9VFmbVDE
+	rtDY3IJtTc16Ydqgn9X0V/eX1Rg9qPNGVG6QkQ6YosBJBGDdJe0+LnNY88Px6aTovucZmCCG+AELC
+	k5fvjhxlA6EcgPhbjIJ/DtkANJ8JuQNqNtnuKJKe+NCyjvvPRUB4INyl+W//2tWXezjLhAIS9l1ox
+	cgI7pEnfH9DSwZ3bMRdxcCR3vX7N9w2O9uc6iZp/O3i0tn+LFj0TiVDK0rCfy0Lu9TLdBTPDA7oq1
+	VzdAtduXahWOFdsAp6wc8PI//Rt3zZ3ApYyi/lh3GyYVWk3NdJoUC2BGDjYg7AD0VHFmincR/LXGK
+	6ma45BAQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tE7cY-000000009Zu-3dCw;
-	Thu, 21 Nov 2024 13:53:22 +0000
-Received: from szxga05-in.huawei.com ([45.249.212.191])
+	id 1tELsF-00000001eTD-0ezV;
+	Fri, 22 Nov 2024 05:06:31 +0000
+Received: from mx0b-00007101.pphosted.com ([148.163.139.28])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tE7cV-000000009Yh-2YjX
+	id 1tELsB-00000001eSm-2y0Y
 	for linux-um@lists.infradead.org;
-	Thu, 21 Nov 2024 13:53:21 +0000
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4XvKLl0Yz9z1JCJL;
-	Thu, 21 Nov 2024 21:48:15 +0800 (CST)
-Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9FD6E180019;
-	Thu, 21 Nov 2024 21:53:07 +0800 (CST)
-Received: from [10.67.111.104] (10.67.111.104) by
- dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Thu, 21 Nov 2024 21:53:07 +0800
-Message-ID: <3d5e772c-7f13-4557-82ff-73e29a501466@huawei.com>
-Date: Thu, 21 Nov 2024 21:53:06 +0800
-MIME-Version: 1.0
+	Fri, 22 Nov 2024 05:06:29 +0000
+Received: from pps.filterd (m0272703.ppops.net [127.0.0.1])
+	by mx0b-00007101.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AM1KX8S023315;
+	Fri, 22 Nov 2024 05:05:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=illinois.edu; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=campusrelays;
+	 bh=RXvrHdd3VfKVnXzzZPOQaOfjxOP9nhAj15k1kWvfEEo=; b=Gi0OI0Cg859r
+	vLOJvhuqCDBgFsxGLq44lOiTLcIkzS0uFijoz/Tu437/wtEBPD1Ja49lijjaXyDu
+	r7EVghU6uRdqbBSnxK3DqXiDtXgyyOKHmJO6j108FzWaDPduMARz8L+5t6wo1/+c
+	belNFKnU0zNI5A5RtlKSl1f1gPCLZ0LRrextzmAE3KN7dVeoF+cFjBj8A8xagg/w
+	PhDekX+SmfjfPNvKFFPzVx852LLBAKm+h/xiNC3+smIxrecXDzZDws0n29sghE8Z
+	nCyqwiUejwrEP+DRq0Lren3U/IerlceSryDeLZBIB6CZW7YyXQ5sqzmzaQJj/RFD
+	8Vqqtp2R/w==
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2173.outbound.protection.outlook.com [104.47.56.173])
+	by mx0b-00007101.pphosted.com (PPS) with ESMTPS id 431m10w9cu-2
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 22 Nov 2024 05:05:29 +0000 (GMT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=m4b1rjhKjjhdsggiaGFDwMVIAfa88dMmdIRe5wsdCRe4dY1ud5F4MCyQsrqxZok5T0jMRqDcmSwHgLBhwTk8OFSZUGr2YsDIa12cy2n9wBkYDSAvhgS2KRHAMFXurUmumlznFFxKO9uf5mHLRdvb97kPJoAovW9a0KnvJXO0lcZAzX6UdbOlPNDyz4AZAnD7rcneJ3FLU6qzamDVbgTX6HzNKHdL097qtzGqoABSmstKC3gyxK+UfrABizGKFThx1yNEB65ASdYb6EZDWMVqB9I2V+WtXG0R5hSS8b/ZVc1wVFPTN6hPLsZtn/P4xuKFiC8zXxdS/2f+3cjcbhFd2A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RXvrHdd3VfKVnXzzZPOQaOfjxOP9nhAj15k1kWvfEEo=;
+ b=iudjgkbiZL0GeQIlt8XlXWILrQEn3tFE3p+/XZqwyVooKSqkSUiTHhO8hMqzfuJHLaD13ld4wbgK5RhprHx2xfwD58Hd1j6mTOV5PPbMC7f8/tffiadWi+nbLFftBmq74Q8LtDqRy2sLi5FAhKltpqqBNMf1+w+W5o1cD1fY53ZNBzzK5vZePSy8WTc9fXuCx8h3Eq2ow12zwX8CpCPYPwx1/q/7yX0lcYtyCJS4Z/dv+QxyhsZJrqx6sV9tkFlXa+urwr23SnnOB0V8szZAtwk819iFbyfNg1KVWZ9XFYYi8S1LHBYDpw26JSIdP31bTy1Rt99xtecUrvGZXvFgIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=illinois.edu; dmarc=pass action=none header.from=illinois.edu;
+ dkim=pass header.d=illinois.edu; arc=none
+Received: from DS0PR11MB7286.namprd11.prod.outlook.com (2603:10b6:8:13c::15)
+ by CH0PR11MB8233.namprd11.prod.outlook.com (2603:10b6:610:183::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8158.24; Fri, 22 Nov
+ 2024 05:05:24 +0000
+Received: from DS0PR11MB7286.namprd11.prod.outlook.com
+ ([fe80::d52:d2da:59c7:808]) by DS0PR11MB7286.namprd11.prod.outlook.com
+ ([fe80::d52:d2da:59c7:808%4]) with mapi id 15.20.8182.016; Fri, 22 Nov 2024
+ 05:05:16 +0000
+Message-ID: <284fe8fa-c094-49b7-8e16-3318676d38e3@illinois.edu>
+Date: Thu, 21 Nov 2024 23:05:14 -0600
 User-Agent: Mozilla Thunderbird
-Subject: Re: UML mount failure with Linux 6.11
-From: Hongbo Li <lihongbo22@huawei.com>
-To: Karel Zak <kzak@redhat.com>
-CC: <linux-um@lists.infradead.org>, <linux-fsdevel@vger.kernel.org>, Christian
- Brauner <brauner@kernel.org>, Benjamin Berg <benjamin@sipsolutions.net>,
-	Johannes Berg <johannes@sipsolutions.net>, <rrs@debian.org>
-References: <857ff79f52ed50b4de8bbeec59c9820be4968183.camel@debian.org>
- <2ea3c5c4a1ecaa60414e3ed6485057ea65ca1a6e.camel@sipsolutions.net>
- <093e261c859cf20eecb04597dc3fd8f168402b5a.camel@debian.org>
- <3acd79d1111a845aed34ed283f278423d0015be3.camel@sipsolutions.net>
- <0ce95bbf-5e83-44a3-8d1a-b8c61141c0a7@huawei.com>
- <420d651a262e62a15d28d9b28a8dbc503fec5677.camel@sipsolutions.net>
- <f562158e-a113-4272-8be7-69b66a3ac343@huawei.com>
- <ac1b8ddd62ab22e6311ddba0c07c65b389a1c5df.camel@sipsolutions.net>
- <b0acfbdf-339b-4f7b-9fbd-8d864217366b@huawei.com>
- <buizu3navazyzdg23dsphmdi26iuf5mothe3l4ods4rbqwqfnh@rgnqbq7n4j4g>
- <9f56df34-68d4-4cb1-9b47-b8669b16ed28@huawei.com>
+Subject: Re: [PATCH v2 0/4] Enable measuring the kernel's Source-based Code
+ Coverage and MC/DC with Clang
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Matt.Kelly2@boeing.com, akpm@linux-foundation.org,
+        andrew.j.oppelt@boeing.com, anton.ivanov@cambridgegreys.com,
+        ardb@kernel.org, arnd@arndb.de, bhelgaas@google.com, bp@alien8.de,
+        chuck.wolber@boeing.com, dave.hansen@linux.intel.com,
+        dvyukov@google.com, hpa@zytor.com, johannes@sipsolutions.net,
+        jpoimboe@kernel.org, justinstitt@google.com, kees@kernel.org,
+        kent.overstreet@linux.dev, linux-arch@vger.kernel.org,
+        linux-efi@vger.kernel.org, Wentao Zhang <wentaoz5@illinois.edu>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+        llvm@lists.linux.dev, luto@kernel.org, marinov@illinois.edu,
+        masahiroy@kernel.org, maskray@google.com,
+        mathieu.desnoyers@efficios.com, matthew.l.weber3@boeing.com,
+        mhiramat@kernel.org, mingo@redhat.com, morbo@google.com,
+        ndesaulniers@google.com, oberpar@linux.ibm.com, paulmck@kernel.org,
+        peterz@infradead.org, richard@nod.at, rostedt@goodmis.org,
+        samitolvanen@google.com, samuel.sarkisian@boeing.com,
+        steven.h.vanderleest@boeing.com, tglx@linutronix.de,
+        tingxur@illinois.edu, tyxu@illinois.edu, x86@kernel.org
+References: <20241002045347.GE555609@thelio-3990X>
+ <20241002064252.41999-1-wentaoz5@illinois.edu>
+ <20241003232938.GA1663252@thelio-3990X>
 Content-Language: en-US
-In-Reply-To: <9f56df34-68d4-4cb1-9b47-b8669b16ed28@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.111.104]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500022.china.huawei.com (7.185.36.66)
+From: Jinghao Jia <jinghao7@illinois.edu>
+In-Reply-To: <20241003232938.GA1663252@thelio-3990X>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: CH0P221CA0018.NAMP221.PROD.OUTLOOK.COM
+ (2603:10b6:610:11c::19) To DS0PR11MB7286.namprd11.prod.outlook.com
+ (2603:10b6:8:13c::15)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR11MB7286:EE_|CH0PR11MB8233:EE_
+X-MS-Office365-Filtering-Correlation-Id: 66193b42-07eb-46ec-87d6-08dd0ab34120
+X-LD-Processed: 44467e6f-462c-4ea2-823f-7800de5434e3,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|7416014|376014;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?M0ZoNzY4cmViRDkzSTZ3YTAxWjNHUTJYUGxuYVZVejlFOElVd04vVzZ4NjdR?=
+ =?utf-8?B?VzdHMFBZNkpPdmZ4eEVrR1pzWjN0cTJZZmh6ZVNwRGU2WXdsQXZ6L0ZYWEhE?=
+ =?utf-8?B?ODJacVY1a0NqZVZhOWVLRTEwSHRwUW4xUVlNM2MyWG5LVzdDTVFGSHNPQ2lH?=
+ =?utf-8?B?a01zWHlzTnc0K3doV2dvdy9PcExhRU5JNlpoTWw2cVlCSk1qb05SeEo5eVF3?=
+ =?utf-8?B?VlRjNDdMQSs0d1BXaWJpdU5lcXNVdEsyb3hra2E0b0JkQ2RPQUJFeHJaQ3hz?=
+ =?utf-8?B?U2F0MTB4L2UyKzlHZyszUkVYeEpYWlhPMkRveWhncW1rMzc3bi9LZHoxYktV?=
+ =?utf-8?B?aEdOa1dPQ1RjcC9TYkt3OCtPcm1zOXl2WmNnN29kajdrSlBjeGM4RGpvbUFL?=
+ =?utf-8?B?RlZtSGZqc2R3RDNWWGZCdHVPSGtWS3pERFgrQ3N4Z3RreGtIVGZlVGR3UjhK?=
+ =?utf-8?B?Z1Y3RnBuTGhsV1hjcHY3SkhNTTN4aEdydUo2KzNMUzROdkJBWDl6Yllmb1ZQ?=
+ =?utf-8?B?TGRTZHJ1UWxKa1lMQ3BBOVczS2IxOGJuSnBqWVlCTnpKaTNHNTdqL3ZzaDJL?=
+ =?utf-8?B?VWg3SVhzV3lmeVZNd05VREprYTBvN2tueU11SThPVXdJdWtLdlBXRlYrRHhE?=
+ =?utf-8?B?WFViUDlFRzdOdGE1N1V6eFVqOHZadFBncFV1MEZBV0lYcElxRW5EUHEvQTBq?=
+ =?utf-8?B?cWZZb3RQSjEwTG13U2NFdHZLbDYwNXVPd2hrdjhTZXdyYnhNeWpuRTY4OFBK?=
+ =?utf-8?B?bWR2VWtUaVo3MC9nUFY4WkJlQndrQjBMbk1wRmY5Nnhxb2ZZREQvWVF6ZWZD?=
+ =?utf-8?B?QnRYZmZUbmoyZEJtTERHSjVxMU1oUFNqZWo0Qmp4N2pDSFhPaUlZUXVBUk5R?=
+ =?utf-8?B?eElHRnFjUGlpM1g1bm9QTHVQMUdtZG5iS2NpdHJ3WHc5QjZ3TFgrbkV2VFR2?=
+ =?utf-8?B?c1FTV0ZoWURHUHFqa3o2SHEvdnY5Zll3TkROQXI2a1NQdXdJaXdQdCtmR3NC?=
+ =?utf-8?B?OW5iSzBINXVmL0VXY1VOU1BWT010TXFZMk5VNUIreVJJc05OeUtySDBCZkJP?=
+ =?utf-8?B?cE8vU3lNdWc3OC8ySldMeFRpTTJFUDRnTkNQVEJWRE1IMm1OdnR3d1R5Tysy?=
+ =?utf-8?B?bmMrem54VkpuNXB4cDFyb0E0UXVLSU45bEIxbDZXSEVkd2xQOWIwUTNzZk5V?=
+ =?utf-8?B?YVIxTjNLc1dEOVkzZFBJS3JBQU5LUWxxWXlseWpFQmN3Y1AzN0lreGFwYmhJ?=
+ =?utf-8?B?MU9FRFRjOThQdzVCL3BVRkxRT1p0Uk9CRkFFbEx6TmhsS1p4YnY2ZDgwK1Z2?=
+ =?utf-8?B?aWdZdnFVUU41a1NxTSsxcHhWdFh2MXZHYUZJWjJ3VGpGaVh6VXV0aXdXaTR0?=
+ =?utf-8?B?VXcyY2VId2QydkpIWTgvcTVXaU5DVVNHRjlYQlZrYWhQMitHNkpUZkE5MjVX?=
+ =?utf-8?B?UzZydWdKQ1lyUXZSSmlDUHN6UEVUR09acU1mQ0lJU1hkbUl5UTZRUVExdElP?=
+ =?utf-8?B?UHZVc083STV6N3ZqN0pRNU1GQURSR0JTTmdpWnhFZm1oZVlodXB4S3BPbXlU?=
+ =?utf-8?B?bjNhdnZQUUlCQTBIT3JRVjRjKzdCYkNnOGZUUnZBMVRwUG5GR3hMdmtWMzJE?=
+ =?utf-8?B?S3I2bDl1cE84SkFvOUhVRmE1MmY3Y2VBMHRZbzVocjFaYkZrdXJlZEM3NzEz?=
+ =?utf-8?B?cncwcEtDbThUQ0k0c0NTYkFsWkRtUVpWZGZsbEVsUHlsSUtPUHdvZ3ludnNR?=
+ =?utf-8?Q?gGUACxCEsG9co+GPE69CigfHluV6ym1JdLEdZn1?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7286.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d0RveUVUTGlYdHRaQ0pvNDg5TE1kaVlYSysrL1kyVlhveDhFdDRNamp0b2VQ?=
+ =?utf-8?B?TFp1ZDVPSjVXMGdCQm1Oemc2M2RVRlB0Kzd0VE9sbGpoZGtGOUVicCtoRFpr?=
+ =?utf-8?B?T0wwbnVUWWtQOWRjbGMyT05QenordWZOTmwyUGpSSTY0VHRKOFVSZXZva0FN?=
+ =?utf-8?B?eDY4VHZUc2JnMzl1cFZNZXM1SGU1UEZXamVzZ2VEZVIxUXZtR1A5aXk1NWtl?=
+ =?utf-8?B?bVRNbTBMZ3lXYUZIaVhRQlNJNGZtSm5YSnRCZEJTT3Fmdzczem5reDR3eFBM?=
+ =?utf-8?B?ZFd6bER0aDNVY3VDK2ROdUcwQVlaTWFKL3lUNTVjRlhlMFc5QkNCSnpCUjY4?=
+ =?utf-8?B?Q09WWTJxdnhyMHY5aFdNNGJEUE41RkJOK2JTenlTczlqOUF5K0FLd3dSdXFn?=
+ =?utf-8?B?VlFKY3JSMW1DRGdMYzBBbUt5Yk5IMGRsdFBJaDI3OFdpdHhDOUl0Q2dLYStz?=
+ =?utf-8?B?YTJoSWNHWDhlVUpjSUxBMDZiOC92NDhuTkRJMzZHdnBxQjR0aTlMbmdKZlgz?=
+ =?utf-8?B?ZHpWQWpNcWg2WVVSQ3BjSm9kbUFMeVkwQVRrbEMyVkZpckpGZ2tWQURvRTkw?=
+ =?utf-8?B?RFBtSlc0VlRrdisyd1lMTkZaNFVyWlFNSU9aWlVlUWtwb3V0TitNZ2RqLzJ0?=
+ =?utf-8?B?aVV1L3V3TXE4bEo1SnRXS1BUcXBWMUJJVnNzd1B5eXR5OVhvMWNkbW9sMHZC?=
+ =?utf-8?B?Q2l4Vnh3QnZFMHZSM3NabW80YitEOTRUMlNtQVJjNjJueHM1bitPUllucVJV?=
+ =?utf-8?B?Uktqb2IrUEt6NzdiMWVEOU41NUhsaVQxaXNJbXJyc0VEbUx4NFJ3QVlZbTRK?=
+ =?utf-8?B?NnZPeDlEUHZPUTA5a3ljZDFvUEw4eDBWR1RjVTRhN2RlSkNhNGtRS0ZuRElG?=
+ =?utf-8?B?cDFXUlBqcVVBTG9KKzFMTGFCRWsyN0k2LzFKRkhvUGdIdklaV294MmNGbHFU?=
+ =?utf-8?B?YllKcktLSUgxZzgvMmthOU5tTG1jakVMQWk3ZjFVWnhaOFpPWWtSL1hiVVJD?=
+ =?utf-8?B?azE4ekVCNUQxRWFZbjBPdUtBL2k0eXlFWnZUd3cxR3UyMjM5aXYranF2VFJ6?=
+ =?utf-8?B?OWR5NXdBMXRVOSs0cnM0TTg5b3R6VDAxbEp4ZG51ZEdZMEF1dnMrV05hbFlV?=
+ =?utf-8?B?bXpzanNyMUdGYzhGV3lrMDJPRUROWTNSeWMxMUhpaCtySDFETVVGbjhoMUFH?=
+ =?utf-8?B?RVJqa2hoTkdvRDhxSys4MVVXTHpaUzNpT0pEL3FyZmxsRFpZZWdHeVVBbE5w?=
+ =?utf-8?B?TDlwY1hFYklpYTUweVhRd01EeUNtOXRSS2dTVWkveWdjRDBoRHFYSmdkTXFD?=
+ =?utf-8?B?SkdyOHlCaENlUDNnMkFtMSttUGFJalo3eE1HUTFzZ0hENXo4S2VwcGpzYmFI?=
+ =?utf-8?B?c1AzREMwL2VFSjNRWE1RbFRVL2djTktKY0xmMExBVmdVNjViZCtGTW54WWIz?=
+ =?utf-8?B?K1I2L24rbEJSTUU1UnJjR0QzQklvTTduSGVlUktmcEoyUDVqZnRuOHEwM1Yz?=
+ =?utf-8?B?bzgrbHlGYVJTTDRPN1V1emxiK0FuektzaXVLMnB3WEt2NVIzSnNuYnJYN3BR?=
+ =?utf-8?B?Z2FOZmdjbVdCWGMzR25wTGNlanNjc3hNRkY2MHJQTXZsSjhTMDJIaXhPU2FR?=
+ =?utf-8?B?NXl5Y1RBdGhVSWlDZEtrWTBUL1VidmRWd1JDV1d5R3pDeXRjWmc3KzhoQ1NH?=
+ =?utf-8?B?NUFiZ3pMTTFOT0dhejR1NW5sV1FQMFE2RGFmaDNSbVVpb0ttMEVyMVlRYlN1?=
+ =?utf-8?B?ckR5WHhkamV1eEszRy9lVHYxNWY4Sk5PajNoRnpoanJhd3JBY0dTS0pJYlJP?=
+ =?utf-8?B?V25na2Rxc0lXY0htOFA1UEhJOGxOMHAvaVIxamJYeVBIcW9rdzVySldidWc0?=
+ =?utf-8?B?b0VsTm55MUR5c3dPT1RheDFhemFuT2RYZjdIVnVUTEl4QklFZlZHdnloRVVT?=
+ =?utf-8?B?UUtLdDNjU0F1c0lIeEJxdHI3NmkwR0dUOWY1elNZbHM5bEZmakNUeVRIN1lC?=
+ =?utf-8?B?bmNkZWRNYnFmNXRZTVljbk1RaFVWcWxkMTlhZm5rbTQ4L1lFTm1iL0U3VFZ3?=
+ =?utf-8?B?ek9ENHBNUVFZczl6T0g5cUc1N2JlejZFVThJRzk5ZktkVEFLN3NCL3dFOHFj?=
+ =?utf-8?Q?+yh4qN9dLYel2dhVDlOJjTJxp?=
+X-OriginatorOrg: illinois.edu
+X-MS-Exchange-CrossTenant-Network-Message-Id: 66193b42-07eb-46ec-87d6-08dd0ab34120
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7286.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2024 05:05:16.7314
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 44467e6f-462c-4ea2-823f-7800de5434e3
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FMSQaX3ZwallINNhf1thINWTMFF7EyBlELFRmxwFyxB8YPdSuZ0PVBEZiKu9hhTQrfrD39DIJShdMYnJDh0fmw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB8233
+X-Proofpoint-ORIG-GUID: WSpmIfItbiAwMm0PG3UBlCHkj0uMzp5_
+X-Proofpoint-GUID: WSpmIfItbiAwMm0PG3UBlCHkj0uMzp5_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-05_03,2024-10-04_01,2024-09-30_01
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241121_055320_035087_012E9E3D 
-X-CRM114-Status: GOOD (  18.40  )
+X-CRM114-CacheID: sfid-20241121_210627_979607_F62287BD 
+X-CRM114-Status: GOOD (  12.66  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -82,80 +208,125 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+Hi Nathan,
 
+Wentao and I were looking into this issue in the past weeks. The high level
+conclusion is that it seems to be some problem with lld and I will go over the
+detail here.
 
-On 2024/11/13 9:23, Hongbo Li wrote:
+On 10/3/24 6:29 PM, Nathan Chancellor wrote:
+> I seem to have narrowed down it to a few different configurations on top
+> of x86_64_defconfig but I will include the full bad configuration as an
+> attachment just in case anything else is relevant.
 > 
+> $ echo 'CONFIG_LLVM_COV_KERNEL=y
+> CONFIG_LLVM_COV_PROFILE_ALL=y' >kernel/configs/llvm_cov.config
 > 
-> On 2024/11/13 4:10, Karel Zak wrote:
->>
->>   Hi,
->>
->> On Mon, Nov 11, 2024 at 09:16:18AM GMT, Hongbo Li wrote:
->>> We are discussing about the hostfs mount with new mount API in [1]. 
->>> And may
->>> need your help.
->>>
->>> After finishing the conversion to the new mount API for hostfs, it
->>> encountered a situation where the old version supported only one mount
->>> option, and the whole mount option was used as the root path (it is also
->>> valid for the path to contain commas). But when switching to the new 
->>> mount
->>> API, the option part will be split using commas (if I'm not mistaken, 
->>> this
->>> step would be done in libmount), which could potentially split a 
->>> complete
->>> path into multiple parts, and the call fsconfig syscall to set the mount
->>> options for underline filesystems. This is different from the original
->>> intention of hostfs. And this kind of situation is not common in other
->>> filesystems.
->>
->> The options has been always parsed by mount(8) and it's very fragile
->> to assume that kernel get as in the original order (etc.).
->>
->> For decades, commas have been supported in mount options. For example,
->> SeLinux uses them frequently in context settings. All you need to do
->> is use quotes, but be careful because the shell will strip them off.
->> Therefore, double quoting is required.
->>
+> $ echo CONFIG_FORTIFY_SOURCE=y >kernel/configs/fortify_source.config
 > 
-> Thanks for your reply!
+> $ echo CONFIG_AMD_MEM_ENCRYPT=y >arch/x86/configs/amd_mem_encrypt.config
 > 
-> If I'm not mistaken, we should add double quoting explicitly if we need 
-> commas in mount options. However, it seems different for hostfs. For 
-> example, with hostfs, if we use "mount -t hostfs none -o 
-> /home/hostfs,dir /mnt" in the older interface, which can successfully 
-> mount the host directory `/home/hostfs,dir`, then we should use "mount 
-> -t hostfs none -o '"/home/hostfs,dir"' /mnt" in the new interface. If 
-> that is the case, we should change the mount command which is hardcoded 
-> in the original project.
-Sorry for the disturbance. So am I right?
+> $ /usr/bin/time -v make -skj"$(nproc)" ARCH=x86_64 LLVM=1 mrproper {def,amd_mem_encrypt.,fortify_source.,llvm_cov.}config bzImage
+> ...
+> vmlinux.o: warning: objtool: __sev_es_nmi_complete+0x6e: call to kasan_check_write() leaves .noinstr.text section
+> vmlinux.o: warning: objtool: do_syscall_64+0x141: call to lockdep_hardirqs_off() leaves .noinstr.text section
+> vmlinux.o: warning: objtool: do_int80_emulation+0x138: call to lockdep_hardirqs_off() leaves .noinstr.text section
+> vmlinux.o: warning: objtool: handle_bug+0x5: call to kmsan_unpoison_entry_regs() leaves .noinstr.text section
+> vmlinux.o: warning: objtool: syscall_enter_from_user_mode_prepare+0x105: call to lockdep_hardirqs_off() leaves .noinstr.text section
+> vmlinux.o: warning: objtool: syscall_exit_to_user_mode+0x73: call to user_enter_irqoff() leaves .noinstr.text section
+> vmlinux.o: warning: objtool: irqentry_enter_from_user_mode+0x105: call to lockdep_hardirqs_off() leaves .noinstr.text section
+> vmlinux.o: warning: objtool: irqentry_exit_to_user_mode+0x62: call to user_enter_irqoff() leaves .noinstr.text section
+> vmlinux.o: warning: objtool: irqentry_enter+0x45: call to lockdep_hardirqs_off() leaves .noinstr.text section
+> vmlinux.o: warning: objtool: irqentry_exit+0x4a: call to lockdep_hardirqs_on() leaves .noinstr.text section
+> vmlinux.o: warning: objtool: irqentry_nmi_enter+0x4: call to lockdep_off() leaves .noinstr.text section
+> vmlinux.o: warning: objtool: irqentry_nmi_exit+0x67: call to lockdep_on() leaves .noinstr.text section
+> vmlinux.o: warning: objtool: enter_s2idle_proper+0xb5: call to lockdep_hardirqs_off() leaves .noinstr.text section
+> vmlinux.o: warning: objtool: cpuidle_enter_state+0x113: call to lockdep_hardirqs_off() leaves .noinstr.text section
+> vmlinux.o: warning: objtool: default_idle_call+0xad: call to lockdep_hardirqs_on() leaves .noinstr.text section
+> vmlinux.o: warning: objtool: cpu_idle_poll+0x29: call to lockdep_hardirqs_on() leaves .noinstr.text section
+> vmlinux.o: warning: objtool: acpi_idle_enter_bm+0x118: call to lockdep_hardirqs_on() leaves .noinstr.text section
+> vmlinux.o: warning: objtool: acpi_idle_do_entry+0x4: call to perf_lopwr_cb() leaves .noinstr.text section
+> ...
+>         User time (seconds): 670.86
+>         System time (seconds): 459.05
+>         Percent of CPU this job got: 169%
+>         Elapsed (wall clock) time (h:mm:ss or m:ss): 11:06.15
+>         Average shared text size (kbytes): 0
+>         Average unshared data size (kbytes): 0
+>         Average stack size (kbytes): 0
+>         Average total size (kbytes): 0
+>         Maximum resident set size (kbytes): 38644844
+>         Average resident set size (kbytes): 0
+>         Major (requiring I/O) page faults: 18694
+>         Minor (reclaiming a frame) page faults: 23068856
+>         Voluntary context switches: 32215431
+>         Involuntary context switches: 46422
+>         Swaps: 0
+>         File system inputs: 0
+>         File system outputs: 40127696
+>         Socket messages sent: 0
+>         Socket messages received: 0
+>         Signals delivered: 0
+>         Page size (bytes): 4096
+>         Exit status: 0
+> 
+> $ curl -LSs https://urldefense.com/v3/__https://github.com/ClangBuiltLinux/boot-utils/releases/download/20230707-182910/x86_64-rootfs.cpio.zst__;!!DZ3fjg!7BrjObiTQ7yWOq1feQGQPxe3uzUM5t4pPHkLUuijWyjOwoaX2rdCwZoD4P52pNU_t1tCT2OCWV3GPtNnAw8$  | zstd -d >rootfs.cpio
+> 
+> $ qemu-system-x86_64 \
+>     -display none \
+>     -nodefaults \
+>     -M q35 \
+>     -d unimp,guest_errors \
+>     -append 'console=ttyS0 earlycon=uart8250,io,0x3f8' \
+>     -kernel arch/x86/boot/bzImage
+>     -initrd rootfs.cpio \
+>     -cpu host \
+>     -enable-kvm \
+>     -m 8G \
+>     -smp 8 \
+>     -serial mon:stdio
+> <hangs with no output>
 
-Thanks,
-Hongbo
+This hang is caused by an early boot exception -- gdb shows the execution
+reaches the halt loop in early_fixup_exception().  Dumping regs->ip associated
+with this exception points us to the following instruction:
+
+ffffffff89b58074:       48 ff 05 85 7f 4a 76    incq   0x764a7f85(%rip)        # 0 <fixed_percpu_data>
+
+This is apparently an incorrect access to the per-cpu variable (the cpu offset
+in %gs is needed) and triggers a null-ptr-deref. Without CONFIG_AMD_MEM_ENCRYPT
+(one of the bad configs), it turns out the instruction is actually accessing
+the llvm prof-counter of strscpy():
+
+ffffffff89b85a04:       48 ff 05 6d 94 7d fa    incq   -0x5826b93(%rip)        # ffffffff8435ee78 <__profc__Z13sized_strscpyPcU25pass_dynamic_object_size1PKcU25pass_dynamic_object_size1m>
+
+This symbol is left undefined in the bad vmlinux, which explains why the
+faulting instruction is accessing address 0.  Tracing through the kernel
+linking process shows that the symbol is still defined (as a weak symbol) in
+vmlinux.a and vmlinux.o, but becomes undefined after the first round of linking
+of the kernel image (.tmp_vmlinux1).
+
+After playing with it a little bit, we found the creation of vmlinux.o to be
+the problem. Specifically, if we use mold[1] instead of lld to create the
+object and pass it to the later stages of kernel linking, the symbol will be
+properly defined as a data symbol (and the kernel can boot).
+
+It seems that the issue does not reproduce with LLVM-20. Nevertheless we have
+reported[2] this to upstream llvm.
+
+[1]: https://github.com/rui314/mold
+[2]: https://github.com/llvm/llvm-project/issues/116575
+
+P.S.: We used mold because gnu ld is simply too slow with all these llvm-cov
+sections -- the vmlinux.o step ran for 10+ hours and still didn't stop. At the
+same time, the fact that the creation of vmlinux.o does not use a linker script
+allows us to directly plug mold in.
 
 > 
-> Thanks,
-> Hongbo
-> 
->>     mount -o 'rw,bbb="this,is,value",ccc'
->>
->> It's also supported in fstab, just use name="v,a,l,u,e"
->>
->> You can try it:
->>
->>   # strace -e fsconfig mount -t tmpfs -o 'rw,bbb="this,is,value",ccc' 
->> tmpfs /dontexist
->>
->>   fsconfig(3, FSCONFIG_SET_STRING, "source", "tmpfs", 0) = 0
->>   fsconfig(3, FSCONFIG_SET_FLAG, "rw", NULL, 0) = 0
->>   fsconfig(3, FSCONFIG_SET_STRING, "bbb", "this,is,value", 0) = -1 EINVAL
->>
->> You can see the expected result when using fsconfig().
->>
->>   Karel
->>
->>
-> 
-> 
+> Cheers,
+> Nathan
+
+Best,
+Jinghao
+
 
