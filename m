@@ -4,62 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C132D609C1
-	for <linux-um@archiver.kernel.org>; Wed, 27 Nov 2024 10:00:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5FFA7D609CF
+	for <linux-um@archiver.kernel.org>; Wed, 27 Nov 2024 10:27:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:In-Reply-To:Subject:Cc:To:From:
+	Message-ID:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=IEvNyAYks0AMQbCVMoEqNUfUt4d+cek6xNEkPiUJc4I=; b=GN/qb3h8wizO8EYBj0WMWQNzTu
-	bannbL8DdDupkPOQzzsLdE0iJrxE9n4z74dRHuAdYjOu/yWmncKLCYRG7eGIngT/dzMMwK4NCfPTb
-	rgvQLCMcRMm4h/ZaAEZp0H8l5vjIChzXFRtkgyqIWZ2W2Nifwv5qpeeJs8y9s8eLVD2o5D8A+kc6G
-	bOGvdowoPCy7kuM9xxHyrZDooDGEXUFghuOk0g7ZBEjfMxxf9GhPSvzooGQvZlALSbHboBD3IeUrV
-	Taoyd2ZYPhiSpbfNhK3IxaOPQeoAdQsH42EARDL2eDkJVdv6QC2hVSIaneQEu1FMSzwQ2U8KIID+t
-	6TqWXZGA==;
+	bh=7GvlRQIosSyFCCzlEXbkN5CZTYPb7RwPbgF2z0yVs2g=; b=rB+AtFviG3yIUStrS4D6aL0Nk2
+	eoUaqSeiZZKFV7uW7vh/WZzMgaRwxS+zFa6fFmd8Pfax67ElWBGXVGpofpenQz/d1LIxlR3nwl7s/
+	bVdxERAXkUcnanFdyQVbviaNrR8GzPzx2ylzba/F3xFIaT8y/MzZeX017GwD9qpKQvp7sP8BIrsZ6
+	tV9FYPpK78tpFVrIiW5DqWLXklwbkuEFknmornkd4fXyLg+QZw4XCI8XNn4o/pQslRASPuB0iUCTt
+	NRKyJiPP/g19GXYTCsu60XPRMnTnDukshsG8iGjV2ugkY9bPynuBhRWCv4cP9Ynsrmf8bgeWPx4en
+	/z1VZY3A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tGEqN-0000000ClLc-38jo;
-	Wed, 27 Nov 2024 10:00:23 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1tGFH0-0000000CqO6-48o4;
+	Wed, 27 Nov 2024 10:27:54 +0000
+Received: from mail-pg1-x532.google.com ([2607:f8b0:4864:20::532])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tGEqL-0000000ClKN-0svB
+	id 1tGFG1-0000000CqAH-28rj
 	for linux-um@lists.infradead.org;
-	Wed, 27 Nov 2024 10:00:22 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=IEvNyAYks0AMQbCVMoEqNUfUt4d+cek6xNEkPiUJc4I=;
-	t=1732701618; x=1733911218; b=qdyAqmp4RCGhWU0XW7rPxwpxzyNNqiWUzQP68G361X53yhp
-	KgHpd3FlzBFEfaoemfnAccLPBnxJ8lJI7TsVZZvs37lFFy6JZIiRNlDfAu6lDbEaPJbjfkxlFMpsz
-	NjnaUejYxmVZbcxkvtL+Ba3L3pREXZ+eFAg5flqj2z1VoSLr7h2wTGtlIOVMW6nqC7FLlHCoAMt0N
-	jQVVfqkHox8tkdNjPqS534LPturfAbjhfWaCzk3/Iqba2PANjyyMRRhSKyaGSzVYJnGswUgcxkWQx
-	79J1EFJIFtfxTbylu+32cJ9Fzn8drfO/UgwBDSHrnhJ+iPyyuVvbUGAxVddGYgPA==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98)
-	(envelope-from <benjamin@sipsolutions.net>)
-	id 1tGEqF-0000000GXmD-0Ank;
-	Wed, 27 Nov 2024 11:00:15 +0100
-Message-ID: <10522b8bd09c5900164692281cce47fef5bd6be8.camel@sipsolutions.net>
-Subject: Re: [RFC PATCH v2 08/13] um: nommu: configure fs register on host
- syscall invocation
-From: Benjamin Berg <benjamin@sipsolutions.net>
-To: Hajime Tazaki <thehajime@gmail.com>, linux-um@lists.infradead.org
-Cc: ricarkol@google.com, Liam.Howlett@oracle.com
-Date: Wed, 27 Nov 2024 11:00:11 +0100
-In-Reply-To: <894d17f7924e7d31bfd5d6595ee84158f7411e47.1731290567.git.thehajime@gmail.com>
+	Wed, 27 Nov 2024 10:26:54 +0000
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-7fc8f0598cdso289795a12.1
+        for <linux-um@lists.infradead.org>; Wed, 27 Nov 2024 02:26:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732703212; x=1733308012; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=7GvlRQIosSyFCCzlEXbkN5CZTYPb7RwPbgF2z0yVs2g=;
+        b=WSApGzTawNuqrAtmxje0n7dPgHOFBMyuOrsqog1YiLjsjm+eez4aFdHZaz2qs5SeuX
+         ckVbGysPrF6mps9pQ9qdnVozBSEQQls4GYnze3QWEEPF5iT0Y7zDApzW086yoTv17pyX
+         8xdRAVKZifCMEwGYpIsqsw+ruEhKCQsvDHbYecVFNoGopgjKA+W2fllphyGEoPHweHav
+         RmBsac8lxhqvyBYAQ7l0xqWfzcP8I59dlP0nCXVf3Wa3dooRXKf/GqBni/Jm9SKj+ks4
+         qAYSHj8S38KebEA/ApaCPkxPD0jbFdRWDcdmR7C6gDuje+sp/KVvEBoRjTDPCFmE+NxZ
+         4Pvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732703212; x=1733308012;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7GvlRQIosSyFCCzlEXbkN5CZTYPb7RwPbgF2z0yVs2g=;
+        b=EDGMgFYRVNJSP7jNhGzayyzQ/ym5hnsHB4G02bEKsZeVwTHlddM7RUWqOUQt9zQdFc
+         Y6Uf3NaX3RMJINboyz7+9cYgVUK2KrdhvuVKA1TGHozThnbIDzfqx0pAVmlcs0YFwD41
+         9w/buwTGtVBrZReaiiXd1X9xeTAU3Osm1qKMBW+qL7RI4zw8qru8r+XT1DYcr/pJV/cX
+         786skfE+jNnHv3CfY3NBvvwZ0y9HpEXCGFosd1ASs8zKURNCRbzYWhbhtN0QcKqqs2d0
+         QOTQBHwT3VkVdyLUNAONpJkU9HQAWM8DAi1TlDguUXguBbLJKsDQGrNS1vzRZG4TwJsW
+         /WWQ==
+X-Gm-Message-State: AOJu0YwfjFNhSK/6+AqhA2gH5+oFLoLXu/woMCFWYwcCSP+v1EivLFNm
+	nOJb94vlACwJ0/g0TfZWwhdU7v+3YZoizTNo4Ne/jWDMUtICM+UY
+X-Gm-Gg: ASbGnctnIO0JWSueUG0b8Qk7yL6NXvO6QoBKizZzP+oZ4gf2WR9V5TM1fEdqSeQ3w/H
+	45jfwTCvjhZDnsnM5huFdlp4AWgyRivfkMhNSHSnS3gN+sRfKn935dpp2TuZj2K3PPNvmn/Sioi
+	d79MvhLEqFJJxA9pxgLqiMdbksDTEU/e/SS7VWNzDWTd5FtMkvt43D86m+Gq9vxiFO+ixd7aLZX
+	j5qGZw/hr36TFnrD6MSZP0vJekZV7cn+3tRQtN1gqVe3oWhF6GFeErXXpfkLi9gCjGGUVzbe9U6
+	TfGZnmmmVL+QF2KGz8VuKTMD3+nGPbuaj3kN
+X-Google-Smtp-Source: AGHT+IGowT3ZQ5qbHhh85uHgJn0gQFHZyZ3SfvaCRpEHdCdG0mg8YSw2JmnBmcHJEP2FHIVekhPOCA==
+X-Received: by 2002:a17:90a:fb90:b0:2ea:7ba7:33b9 with SMTP id 98e67ed59e1d1-2edebf22a2dmr10408257a91.14.1732703211993;
+        Wed, 27 Nov 2024 02:26:51 -0800 (PST)
+Received: from mars.local.gmail.com (221x241x217x81.ap221.ftth.ucom.ne.jp. [221.241.217.81])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724de5767ddsm10177916b3a.185.2024.11.27.02.26.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Nov 2024 02:26:51 -0800 (PST)
+Date: Wed, 27 Nov 2024 19:26:48 +0900
+Message-ID: <m2plmhvuon.wl-thehajime@gmail.com>
+From: Hajime Tazaki <thehajime@gmail.com>
+To: benjamin@sipsolutions.net
+Cc: linux-um@lists.infradead.org,
+	ricarkol@google.com,
+	Liam.Howlett@oracle.com
+Subject: Re: [RFC PATCH v2 08/13] um: nommu: configure fs register on host syscall invocation
+In-Reply-To: <10522b8bd09c5900164692281cce47fef5bd6be8.camel@sipsolutions.net>
 References: <cover.1731290567.git.thehajime@gmail.com>
-	 <894d17f7924e7d31bfd5d6595ee84158f7411e47.1731290567.git.thehajime@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+	<894d17f7924e7d31bfd5d6595ee84158f7411e47.1731290567.git.thehajime@gmail.com>
+	<10522b8bd09c5900164692281cce47fef5bd6be8.camel@sipsolutions.net>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
-MIME-Version: 1.0
-X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241127_020021_255155_ED73B9DF 
-X-CRM114-Status: GOOD (  25.26  )
+X-CRM114-CacheID: sfid-20241127_022653_567672_195E16CA 
+X-CRM114-Status: GOOD (  28.95  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,176 +100,106 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi,
 
-On Mon, 2024-11-11 at 15:27 +0900, Hajime Tazaki wrote:
-> As userspace on UML/!MMU also need to configure %fs register when it is
-> running to correctly access thread structure, host syscalls implemented
-> in os-Linux drivers may be puzzled when they are called.=C2=A0 Thus it ha=
-s to
-> configure %fs register via arch_prctl(SET_FS) on every host syscalls.
+On Wed, 27 Nov 2024 19:00:11 +0900,
+Benjamin Berg wrote:
+
+> > +
+> > +	os_info("Checking FSGSBASE instructions...");
+> > +	if (sigsetjmp(jmpbuf, 0) =3D=3D 0) {
+> > +		asm volatile("rdfsbase %0" : "=3Dr" (fsbase) :: "memory");
+> > +		host_has_fsgsbase =3D 1;
+> > +		os_info("OK\n");
+> > +	} else {
+> > +		host_has_fsgsbase =3D 0;
+> > +		os_info("disabled\n");
+> > +	}
+> > +}
 >=20
-> [SNIP]
-> +
-> +/**
-> + * get_host_cpu_features() return true with X86_FEATURE_FSGSBASE even
-> + * if the kernel is older and disabled using fsgsbase instruction.
-> + * thus detection is based on whether SIGILL is raised or not.
-> + */
-> +static jmp_buf jmpbuf;
-> +static void sigill(int sig, siginfo_t *si, void *ctx_void)
-> +{
-> +	siglongjmp(jmpbuf, 1);
-> +}
-> +
-> +void __init check_fsgsbase(void)
-> +{
-> +	unsigned long fsbase;
-> +	struct sigaction sa;
-> +
-> +	/* Probe FSGSBASE */
-> +	memset(&sa, 0, sizeof(sa));
-> +	sa.sa_sigaction =3D sigill;
-> +	sa.sa_flags =3D SA_SIGINFO | SA_RESETHAND;
-> +	sigemptyset(&sa.sa_mask);
-> +	if (sigaction(SIGILL, &sa, 0))
-> +		os_warn("sigaction");
-> +
-> +	os_info("Checking FSGSBASE instructions...");
-> +	if (sigsetjmp(jmpbuf, 0) =3D=3D 0) {
-> +		asm volatile("rdfsbase %0" : "=3Dr" (fsbase) :: "memory");
-> +		host_has_fsgsbase =3D 1;
-> +		os_info("OK\n");
-> +	} else {
-> +		host_has_fsgsbase =3D 0;
-> +		os_info("disabled\n");
-> +	}
-> +}
-
-According to Documentation/arch/x86/x86_64/fsgs.rst it looks like this
-can also be checked using the HWCAP2_FSGSBASE bit in AT_HWCAP2.
-
-Maybe that is a bit simpler?
-
-> [SNIP]
+> According to Documentation/arch/x86/x86_64/fsgs.rst it looks like this
+> can also be checked using the HWCAP2_FSGSBASE bit in AT_HWCAP2.
 >=20
-> =C2=A0__visible void do_syscall_64(struct pt_regs *regs)
-> =C2=A0{
-> =C2=A0	int syscall;
-> @@ -49,6 +76,9 @@ __visible void do_syscall_64(struct pt_regs *regs)
-> =C2=A0	if (syscall =3D=3D __NR_vfork)
-> =C2=A0		stack_copy =3D vfork_save_stack();
-> =C2=A0
-> +	/* set fs register to the original host one */
-> +	os_x86_arch_prctl(0, ARCH_SET_FS, (void *)host_fs);
-> +
-> =C2=A0	if (likely(syscall < NR_syscalls)) {
-> =C2=A0		PT_REGS_SET_SYSCALL_RETURN(regs,
-> =C2=A0				EXECUTE_SYSCALL(syscall, regs));
-> @@ -63,6 +93,11 @@ __visible void do_syscall_64(struct pt_regs *regs)
-> =C2=A0	set_thread_flag(TIF_SIGPENDING);
-> =C2=A0	interrupt_end();
-> =C2=A0
-> +	/* restore back fs register to userspace configured one */
-> +	os_x86_arch_prctl(0, ARCH_SET_FS,
-> +		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (void *)(current->thread.regs.regs.gp[F=
-S_BASE
-> +						=C2=A0=C2=A0=C2=A0=C2=A0 / sizeof(unsigned long)]));
-> +
-> =C2=A0	/* execve succeeded */
-> =C2=A0	if (syscall =3D=3D __NR_execve && regs->regs.gp[HOST_AX] =3D=3D 0)
-> =C2=A0		userspace(&current->thread.regs.regs);
-> diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
-> index edb17fc73e07..d56df936a2d7 100644
-> --- a/arch/x86/um/syscalls_64.c
-> +++ b/arch/x86/um/syscalls_64.c
-> @@ -12,11 +12,26 @@
-> =C2=A0#include <asm/prctl.h> /* XXX This should get the constants from li=
-bc */
-> =C2=A0#include <registers.h>
-> =C2=A0#include <os.h>
-> +#include <asm/thread_info.h>
-> +#include <asm/mman.h>
-> +
-> +#ifndef CONFIG_MMU
-> +/*
-> + * The guest libc can change FS, which confuses the host libc.
-> + * In fact, changing FS directly is not supported (check
-> + * man arch_prctl). So, whenever we make a host syscall,
-> + * we should be changing FS to the original FS (not the
-> + * one set by the guest libc). This original FS is stored
-> + * in host_fs.
-> + */
-> +long long host_fs =3D -1;
+> Maybe that is a bit simpler?
 
-Right, the libc already uses it for its own thread-local storage. That
-is a bit annoying, as UML doesn't need threading in that sense.
+Ah, thanks.  This should be much simpler:
 
-Note that similar handling needs to happen for every userspace to
-kernel switch. I guess the only other location is the signal handler.
++#include <sys/auxv.h>
++#include <asm/hwcap2.h>
++void __init check_fsgsbase(void)
++{
++       unsigned long auxv =3D getauxval(AT_HWCAP2);
++
++       os_info("Checking FSGSBASE instructions...");
++       if (auxv & HWCAP2_FSGSBASE) {
++               host_has_fsgsbase =3D 1;
++               os_info("OK\n");
++       } else {
++               host_has_fsgsbase =3D 0;
++               os_info("disabled\n");
++       }
++}
 
-Benjamin
 
-> +#endif
-> =C2=A0
-> =C2=A0long arch_prctl(struct task_struct *task, int option,
-> =C2=A0		unsigned long __user *arg2)
-> =C2=A0{
-> =C2=A0	long ret =3D -EINVAL;
-> +#ifdef CONFIG_MMU
-> =C2=A0
-> =C2=A0	switch (option) {
-> =C2=A0	case ARCH_SET_FS:
-> @@ -38,6 +53,48 @@ long arch_prctl(struct task_struct *task, int option,
-> =C2=A0	}
-> =C2=A0
-> =C2=A0	return ret;
-> +#else
-> +
-> +	unsigned long *ptr =3D arg2, tmp;
-> +
-> +	switch (option) {
-> +	case ARCH_SET_FS:
-> +		if (host_fs =3D=3D -1)
-> +			os_arch_prctl(0, ARCH_GET_FS, (void *)&host_fs);
-> +		ret =3D 0;
-> +		break;
-> +	case ARCH_SET_GS:
-> +		ret =3D 0;
-> +		break;
-> +	case ARCH_GET_FS:
-> +	case ARCH_GET_GS:
-> +		ptr =3D &tmp;
-> +		break;
-> +	}
-> +
-> +	ret =3D os_arch_prctl(0, option, ptr);
-> +	if (ret)
-> +		return ret;
-> +
-> +	switch (option) {
-> +	case ARCH_SET_FS:
-> +		current->thread.regs.regs.gp[FS_BASE / sizeof(unsigned long)] =3D
-> +			(unsigned long) arg2;
-> +		break;
-> +	case ARCH_SET_GS:
-> +		current->thread.regs.regs.gp[GS_BASE / sizeof(unsigned long)] =3D
-> +			(unsigned long) arg2;
-> +		break;
-> +	case ARCH_GET_FS:
-> +		ret =3D put_user(current->thread.regs.regs.gp[FS_BASE / sizeof(unsigne=
-d long)], arg2);
-> +		break;
-> +	case ARCH_GET_GS:
-> +		ret =3D put_user(current->thread.regs.regs.gp[GS_BASE / sizeof(unsigne=
-d long)], arg2);
-> +		break;
-> +	}
-> +
-> +	return ret;
-> +#endif
-> =C2=A0}
-> =C2=A0
-> =C2=A0SYSCALL_DEFINE2(arch_prctl, int, option, unsigned long, arg2)
+>=20
+> > [SNIP]
+> >=20
+> > =A0__visible void do_syscall_64(struct pt_regs *regs)
+> > =A0{
+> > =A0	int syscall;
+> > @@ -49,6 +76,9 @@ __visible void do_syscall_64(struct pt_regs *regs)
+> > =A0	if (syscall =3D=3D __NR_vfork)
+> > =A0		stack_copy =3D vfork_save_stack();
+> > =A0
+> > +	/* set fs register to the original host one */
+> > +	os_x86_arch_prctl(0, ARCH_SET_FS, (void *)host_fs);
+> > +
+> > =A0	if (likely(syscall < NR_syscalls)) {
+> > =A0		PT_REGS_SET_SYSCALL_RETURN(regs,
+> > =A0				EXECUTE_SYSCALL(syscall, regs));
+> > @@ -63,6 +93,11 @@ __visible void do_syscall_64(struct pt_regs *regs)
+> > =A0	set_thread_flag(TIF_SIGPENDING);
+> > =A0	interrupt_end();
+> > =A0
+> > +	/* restore back fs register to userspace configured one */
+> > +	os_x86_arch_prctl(0, ARCH_SET_FS,
+> > +		=A0=A0=A0=A0=A0 (void *)(current->thread.regs.regs.gp[FS_BASE
+> > +						=A0=A0=A0=A0 / sizeof(unsigned long)]));
+> > +
+> > =A0	/* execve succeeded */
+> > =A0	if (syscall =3D=3D __NR_execve && regs->regs.gp[HOST_AX] =3D=3D 0)
+> > =A0		userspace(&current->thread.regs.regs);
+> > diff --git a/arch/x86/um/syscalls_64.c b/arch/x86/um/syscalls_64.c
+> > index edb17fc73e07..d56df936a2d7 100644
+> > --- a/arch/x86/um/syscalls_64.c
+> > +++ b/arch/x86/um/syscalls_64.c
+> > @@ -12,11 +12,26 @@
+> > =A0#include <asm/prctl.h> /* XXX This should get the constants from lib=
+c */
+> > =A0#include <registers.h>
+> > =A0#include <os.h>
+> > +#include <asm/thread_info.h>
+> > +#include <asm/mman.h>
+> > +
+> > +#ifndef CONFIG_MMU
+> > +/*
+> > + * The guest libc can change FS, which confuses the host libc.
+> > + * In fact, changing FS directly is not supported (check
+> > + * man arch_prctl). So, whenever we make a host syscall,
+> > + * we should be changing FS to the original FS (not the
+> > + * one set by the guest libc). This original FS is stored
+> > + * in host_fs.
+> > + */
+> > +long long host_fs =3D -1;
+>=20
+> Right, the libc already uses it for its own thread-local storage. That
+> is a bit annoying, as UML doesn't need threading in that sense.
+>=20
+> Note that similar handling needs to happen for every userspace to
+> kernel switch. I guess the only other location is the signal handler.
 
+Thanks too.
+I guess the former (arch_switch_to) handles in my patch but the latter
+(signal handler) doesn't.  Let me try to check.
+
+-- Hajime
 
