@@ -4,87 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 83F7BE6C5FB
-	for <linux-um@archiver.kernel.org>; Tue,  3 Dec 2024 04:23:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A84D3E6C5FB
+	for <linux-um@archiver.kernel.org>; Tue,  3 Dec 2024 04:23:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Mm/iEzNPKD2i0Wok8MO1FkYQe90Cb/1iUAueuSBfNNM=; b=Q8cbncV1YVm6K3uN4qDTFt8s0b
-	4Zim3X/hK96/8096uoD/oiMZ4wl7qotz88frCbns2B0NjVcBUoJX+C40iqeKuI1ktUXFKqJ2Jdwpn
-	iJ761fR23lZkCuuFFr8gplkbte1r12ZlX3lvsrW+AX4xQ4w6XEISIz51H9CQhXdpDy0eupr+dWEud
-	drjzaI50JtgbtVulc2jIU6oD3FgBObW4iF4CJ73hsh+viXqmObObFwK4mPty5tBz3ClCEnXgZ3Wkw
-	z7ojD9QjojWCysR8VtlCAQ0EmjEGvefKh2h5hF/cRJ4ApAeqoxit49JFSPplEZ8Hyf7nDn1zjnmQH
-	9QAJYDPg==;
+	bh=JZLXAGKXJsQaUwHOfGxb1XieHVDcZBF9xpfXO7H06r4=; b=NLDqrbQbc91/kx6nz6nLyEXHiE
+	MG9EUeTkD0MjSI1KBltiCwjQOe/PJ5XtQJ69tEL7WtDCkwQWfz3/M+6Mczg8X8Wi8RdyIWA9CbBh2
+	yQbxjGZCLQdDHcVPfIRlqukET7LfI/JwKT6719QPo7pmf9jkvM1U/lR3zwSURqPFDP4ETAg5PsLlN
+	OryH2lGiAS1U4xZIvPIZfj2XTfNz5/IoZE3fC3FC6gdt9dwb7ETLkUlzgL8m4KFQn521QBFG5fYtX
+	O4vRhKy3mp2sM5VKRRhe2sQfTCPtg9OFjFZ714C6R4yGmxKd2dHSR2fcBqgydzkEL/jzXrAQajAjs
+	oCym9pNA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tIKRY-00000008DDK-0ZMK;
-	Tue, 03 Dec 2024 04:23:24 +0000
-Received: from mail-pf1-x42e.google.com ([2607:f8b0:4864:20::42e])
+	id 1tIKRd-00000008DEj-1qDu;
+	Tue, 03 Dec 2024 04:23:29 +0000
+Received: from mail-pf1-x435.google.com ([2607:f8b0:4864:20::435])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tIKRV-00000008DCs-3Pp9
+	id 1tIKRa-00000008DDc-1ZPL
 	for linux-um@lists.infradead.org;
-	Tue, 03 Dec 2024 04:23:23 +0000
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-724e6c53fe2so3759995b3a.3
-        for <linux-um@lists.infradead.org>; Mon, 02 Dec 2024 20:23:20 -0800 (PST)
+	Tue, 03 Dec 2024 04:23:27 +0000
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-7252f48acf2so3582610b3a.2
+        for <linux-um@lists.infradead.org>; Mon, 02 Dec 2024 20:23:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733199800; x=1733804600; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1733199805; x=1733804605; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Mm/iEzNPKD2i0Wok8MO1FkYQe90Cb/1iUAueuSBfNNM=;
-        b=FZNm8NcnjSRT9K3VUUy0A9dvgPp6/46uQXINRux4QEJmEdkrbXCtN72OtN5GIK5ToF
-         ez6quACp/iazpD+jF/2lUvrv/sihbVGLpkPRlZXLfntOEBhuQZy81fxs4NdiBZm/9hE3
-         41w30jmH/Mf9o/49REBgy2p5kB15uDypphyBjJnPsCkBUUa06YB/L9Yf43iAuD9ucHaQ
-         6nDvJlPjiirXniQXC9UkdmIwrHprPeLi0TPnTT5ZplRvmpskcuJW7XT6y21kr4xh76Xg
-         iwX0g2+HzbRXJ0AgrOQXgnyuBub966qDXzCewPoUemqbO/0MW0ZbsWanZlz3y5cwUCeS
-         3lPA==
+        bh=JZLXAGKXJsQaUwHOfGxb1XieHVDcZBF9xpfXO7H06r4=;
+        b=ZULt0Dt8P6s9HSczZ+iTJT96gE92ehtzd3poROaFmHlbQuu2tsxa73rxsx3y68hmgQ
+         3FYhfxxTkubK8jsjqFZRnw+WtcyLSMEtUkNFpF1yUsivRi/Yw6Cr1rqIh1kxqJklLm7S
+         YWpKEgakrNO3zvnL3I5BnpetyJgDDzdqhaxL03V7hKx4TYe8CW61ykJXlS3ci+gDfAca
+         HTpPVvhaJsgXi5RDajDuj7Yt7h7GWwjP5tcGZI9c+j54j3GEyA7/9YTG14eCOq9lT/dd
+         VD/0XOzGI8rISkhU1dyFHh+YwnnBHhupCIw/Kx1aW15HuT4yTGV6X9tcg5fiMkv4Q6+6
+         g4dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733199800; x=1733804600;
+        d=1e100.net; s=20230601; t=1733199805; x=1733804605;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Mm/iEzNPKD2i0Wok8MO1FkYQe90Cb/1iUAueuSBfNNM=;
-        b=g+juWFZWdHurkVTOz6/mWwUlrRkaQLaaCE9/9amyNyy9wDEzwgG9J9Hf8VwWv/Udo0
-         zI331K8CbeeBwSxFaDPB6FLjie1+QelErIMfWQQg3AJeF5DFixsqcgs1RBAXLo6klQPp
-         krn9ao0X+aGVqipiMbYFob7iY4PqEgnz8T6zVwig0+ZzLl/J7oIKuIFXEGMe3bYiXq5e
-         ovzZkUH1MEGGXpeCxidoBMbo083tMrAVqWdCMmyZcvkVIccqW3O1PSqhBhEVLU/XoZ5j
-         aezht/ZBZfzrBqDV6bf7aFjJ3niCzs5t48+PvmKhu3OYC/0xcTFWRooaEKTxPamD0g4l
-         ew2g==
-X-Gm-Message-State: AOJu0Yyw6/s6T1xQRywwdUs559qF+Yh5OkG8l/uk4D98ikpHFjQ7BTFm
-	6p/7mMmZWhWlLpCjnDpINBBYT125xqmPSJviuSa6d/Q1OsMTy5gIK4jSDw==
-X-Gm-Gg: ASbGncue0uDDn6xfsVkgMgIaEWyuGQj8OqE1N95n/cIAH1psYV92kXpHjEqHHV9ibk2
-	x6slf/oQmtPRHkWzJecLOC6fRnlRaIMjsZ+g6wInDUHDwITbmSOXh/0diNkfNQ9YVppPELwf26N
-	cmBBSPTmSwU388Z2lyUa+OYJRWuQuTHEDaJh2al6vNIHh2juoNdRmlHfK63wGUASkUR75UwMJat
-	Tr7+1594svJ4LgAAfzsenbdj4KN21+Ls1geR7K45Th9KcH2ncIwfP5mmJ1ukLiuam5OmGrq7AxJ
-	mx3dbkkJ8Gw71MdaLMqz
-X-Google-Smtp-Source: AGHT+IG9TPeB8MZvKtGFY9pR07KFj6e9gUfWqVCZ+AhrGv5aRoylSsZfOpXz6+SV2uCiGl4K/ZkBVw==
-X-Received: by 2002:a05:6a00:2e97:b0:71e:6489:d06 with SMTP id d2e1a72fcca58-7257f963923mr1833951b3a.0.1733199800221;
-        Mon, 02 Dec 2024 20:23:20 -0800 (PST)
+        bh=JZLXAGKXJsQaUwHOfGxb1XieHVDcZBF9xpfXO7H06r4=;
+        b=G618KX93YBDx9Lya4PR6Ws93C4KCSfR1AMlaO0CNZnZ3OzDbBndjA55Igo9qTFrfEg
+         qE5qPc9SuQXF3Lr2XkpZ6cIiRemFk8DSYmMt3dgQPwPW8p9dtk7mDOvDkfL3TLp4vQuy
+         sPjVPk5QsMa7HUAC5PZG5WyW0xcDPZH6gm6n5EqywSZheZPEBI9cooO2OqM2h8ZzRWwf
+         VSRW9ibE+femSY83tb5HIXHUbcf6FeRqw4RuiTpcqbDWALNl5GCv4osIQF3heqaOGdvZ
+         VOXMgi80ET7W/i4QarnCjqIbsEuzZEeGHi6GKme+62sZa8dhBfFVVnERYNkeZlqplw0v
+         PSvA==
+X-Gm-Message-State: AOJu0Yy0/jzqpHDBzQ2jppN8QuVR4TFS2Pw1nyCF970Nal4Zoc3EtFNA
+	bshuzTz6Kwv0ZuVRPORpC9kxjGwvvwDNesHvEwPeY6PRDJ+cmcII
+X-Gm-Gg: ASbGncukQMtrYf7q/5qpaRYOa+YQLXcM0z/aSV8mTTfKXL8noNOdKyIVnlKPtbywSUh
+	YUwD29L1KjEkpVDAcKz3Z5JuldtlA2ESSD1toISTpdOhB0dL3g/+2bzSwLDQiVx0N/xKvcCHwiH
+	KtCYTsLF1l2PVLo1k7ZU9g61iGL0VHROLwLVfrkSM1mirM022XdvchHDH56pUukoBcoU+/AleCA
+	4csNzRW7ob3/gLCiuSsL/SpaGGgJtAMS3ROQVesaI6ln606kTYMPjT3e2J0POnltdSovFWK11E4
+	PVS/8bXwdoWaWJUZA4At
+X-Google-Smtp-Source: AGHT+IEnZhvotlCjjz+IuKEwK7J+M5+ZOMsyE8W8PZJgKuTfhkpQKEsccmo0ddOI+80XWjCWIaLEfg==
+X-Received: by 2002:a05:6a00:a02:b0:71e:7174:3ae with SMTP id d2e1a72fcca58-7257fa7272dmr1565478b3a.11.1733199805137;
+        Mon, 02 Dec 2024 20:23:25 -0800 (PST)
 Received: from ikb-h07-29-noble.in.iijlab.net ([202.214.97.5])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7254176f4e9sm9427357b3a.45.2024.12.02.20.23.19
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7254176121asm9369077b3a.39.2024.12.02.20.23.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Dec 2024 20:23:19 -0800 (PST)
+        Mon, 02 Dec 2024 20:23:24 -0800 (PST)
 Received: by ikb-h07-29-noble.in.iijlab.net (Postfix, from userid 1010)
-	id 14C53DD39F7; Tue,  3 Dec 2024 13:23:16 +0900 (JST)
+	id CFF0EDD39F9; Tue,  3 Dec 2024 13:23:22 +0900 (JST)
 From: Hajime Tazaki <thehajime@gmail.com>
 To: linux-um@lists.infradead.org
 Cc: thehajime@gmail.com,
 	ricarkol@google.com,
-	Liam.Howlett@oracle.com
-Subject: [PATCH v3 00/13] nommu UML
-Date: Tue,  3 Dec 2024 13:22:59 +0900
-Message-ID: <cover.1733199769.git.thehajime@gmail.com>
+	Liam.Howlett@oracle.com,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Jan Kara <jack@suse.cz>,
+	Eric Biederman <ebiederm@xmission.com>,
+	Kees Cook <kees@kernel.org>,
+	linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: [PATCH v3 01/13] fs: binfmt_elf_efpic: add architecture hook elf_arch_finalize_exec
+Date: Tue,  3 Dec 2024 13:23:00 +0900
+Message-ID: <564f58c6c893f8817b07cb192b254f760c256580.1733199769.git.thehajime@gmail.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1731290567.git.thehajime@gmail.com>
-References: <cover.1731290567.git.thehajime@gmail.com>
+In-Reply-To: <cover.1733199769.git.thehajime@gmail.com>
+References: <cover.1733199769.git.thehajime@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241202_202321_853328_A864D366 
-X-CRM114-Status: GOOD (  17.72  )
+X-CRM114-CacheID: sfid-20241202_202326_414247_14B30F06 
+X-CRM114-Status: GOOD (  13.61  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,117 +106,64 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-This is a series of patches of nommu arch addition to UML.  It would
-be nice to ask comments/opinions on this.
+FDPIC ELF loader adds an architecture hook at the end of loading
+binaries to finalize the mapped memory before moving toward exec
+function.  The hook is used by UML under !MMU when translating
+syscall/sysenter instructions before calling execve.
 
-There are still several limitations/issues which we already found;
-here is the list of those issues.
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: Jan Kara <jack@suse.cz>
+Cc: Eric Biederman <ebiederm@xmission.com>
+Cc: Kees Cook <kees@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-mm@kvack.org
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+---
+ fs/binfmt_elf_fdpic.c     | 10 ++++++++++
+ include/linux/elf-fdpic.h |  3 +++
+ 2 files changed, 13 insertions(+)
 
-- there are no mechanism implemented to cache for mapped memory of
-  exec(2) thus, always read files from filesystem upon every exec,
-  which makes slow on some benchmark (lmbench).
-- memory mapped by loadable modules are not distinguished from
-  userspace memory.
-
--- Hajime
-
-v3:
-- add seccomp-based syscall hook in addition to zpoline [06/13]
-- remove RFC, add a line to MAINTAINERS file
-- fix kernel test robot warnings [02/13,08/13,10/13]
-- add base-commit tag to cover letter
-- pull the latest uml/next
-- clean up SIGSEGV handling [10/13]
-- detect fsgsbase availability with elf aux vector [08/13]
-- simplify vdso code with macros [09/13]
-
-RFC v2:
-- https://lore.kernel.org/linux-um/cover.1731290567.git.thehajime@gmail.com/
-- base branch is now uml/linux.git instead of torvalds/linux.git.
-- reorganize the patch series to clean up
-- fixed various coding styles issues
-- clean up exec code path [07/13]
-- fixed the crash/SIGSEGV case on userspace programs [10/13]
-- add seccomp filter to limit syscall caller address [06/13]
-- detect fsgsbase availability with sigsetjmp/siglongjmp [08/13]
-- removes unrelated changes
-- removes unneeded ifndef CONFIG_MMU
-- convert UML_CONFIG_MMU to CONFIG_MMU as using uml/linux.git
-- proposed a patch of maple-tree issue (resolving a limitation in RFC v1)
-  https://lore.kernel.org/linux-mm/20241108222834.3625217-1-thehajime@gmail.com/
-
-RFC:
-- https://lore.kernel.org/linux-um/cover.1729770373.git.thehajime@gmail.com/
-
-Hajime Tazaki (13):
-  fs: binfmt_elf_efpic: add architecture hook elf_arch_finalize_exec
-  x86/um: nommu: elf loader for fdpic
-  um: nommu: memory handling
-  x86/um: nommu: syscall handling
-  x86/um: nommu: syscall translation by zpoline
-  um: nommu: syscalls handler from userspace by seccomp filter
-  x86/um: nommu: process/thread handling
-  um: nommu: configure fs register on host syscall invocation
-  x86/um/vdso: nommu: vdso memory update
-  x86/um: nommu: signal handling
-  um: change machine name for uname output
-  um: nommu: add documentation of nommu UML
-  um: nommu: plug nommu code into build system
-
- Documentation/virt/uml/nommu-uml.rst    | 230 +++++++++++++++++++++++
- MAINTAINERS                             |   1 +
- arch/um/Kconfig                         |  14 +-
- arch/um/Makefile                        |   6 +
- arch/um/configs/x86_64_nommu_defconfig  |  64 +++++++
- arch/um/include/asm/Kbuild              |   1 +
- arch/um/include/asm/futex.h             |   4 +
- arch/um/include/asm/mmu.h               |   8 +
- arch/um/include/asm/mmu_context.h       |  13 +-
- arch/um/include/asm/ptrace-generic.h    |   6 +
- arch/um/include/asm/tlbflush.h          |  22 +++
- arch/um/include/asm/uaccess.h           |   7 +-
- arch/um/include/shared/kern_util.h      |   2 +
- arch/um/include/shared/os.h             |  15 ++
- arch/um/kernel/Makefile                 |   3 +-
- arch/um/kernel/mem.c                    |  12 +-
- arch/um/kernel/physmem.c                |   6 +
- arch/um/kernel/process.c                |  33 +++-
- arch/um/kernel/skas/Makefile            |   4 +-
- arch/um/kernel/trap.c                   |  16 ++
- arch/um/kernel/um_arch.c                |   4 +
- arch/um/os-Linux/main.c                 |   5 +
- arch/um/os-Linux/process.c              |  96 +++++++++-
- arch/um/os-Linux/signal.c               |  38 +++-
- arch/um/os-Linux/skas/process.c         |   4 +
- arch/um/os-Linux/start_up.c             |  20 ++
- arch/um/os-Linux/util.c                 |   3 +-
- arch/x86/um/Makefile                    |  18 ++
- arch/x86/um/asm/elf.h                   |  11 +-
- arch/x86/um/asm/module.h                |  24 ---
- arch/x86/um/asm/processor.h             |  12 ++
- arch/x86/um/do_syscall_64.c             | 109 +++++++++++
- arch/x86/um/entry_64.S                  | 108 +++++++++++
- arch/x86/um/os-Linux/mcontext.c         |  22 +++
- arch/x86/um/shared/sysdep/mcontext.h    |   4 +
- arch/x86/um/shared/sysdep/syscalls_64.h |   6 +
- arch/x86/um/signal.c                    |  37 +++-
- arch/x86/um/syscalls_64.c               |  69 +++++++
- arch/x86/um/vdso/um_vdso.c              |  41 ++--
- arch/x86/um/vdso/vma.c                  |  14 ++
- arch/x86/um/zpoline.c                   | 238 ++++++++++++++++++++++++
- fs/Kconfig.binfmt                       |   2 +-
- fs/binfmt_elf_fdpic.c                   |  10 +
- include/linux/elf-fdpic.h               |   3 +
- 44 files changed, 1307 insertions(+), 58 deletions(-)
- create mode 100644 Documentation/virt/uml/nommu-uml.rst
- create mode 100644 arch/um/configs/x86_64_nommu_defconfig
- delete mode 100644 arch/x86/um/asm/module.h
- create mode 100644 arch/x86/um/do_syscall_64.c
- create mode 100644 arch/x86/um/entry_64.S
- create mode 100644 arch/x86/um/zpoline.c
-
-
-base-commit: bed2cc482600296fe04edbc38005ba2851449c10
+diff --git a/fs/binfmt_elf_fdpic.c b/fs/binfmt_elf_fdpic.c
+index 4fe5bb9f1b1f..ab16fdf475b0 100644
+--- a/fs/binfmt_elf_fdpic.c
++++ b/fs/binfmt_elf_fdpic.c
+@@ -175,6 +175,12 @@ static int elf_fdpic_fetch_phdrs(struct elf_fdpic_params *params,
+ 	return 0;
+ }
+ 
++int __weak elf_arch_finalize_exec(struct elf_fdpic_params *exec_params,
++				  struct elf_fdpic_params *interp_params)
++{
++	return 0;
++}
++
+ /*****************************************************************************/
+ /*
+  * load an fdpic binary into various bits of memory
+@@ -457,6 +463,10 @@ static int load_elf_fdpic_binary(struct linux_binprm *bprm)
+ 			    dynaddr);
+ #endif
+ 
++	retval = elf_arch_finalize_exec(&exec_params, &interp_params);
++	if (retval)
++		goto error;
++
+ 	finalize_exec(bprm);
+ 	/* everything is now ready... get the userspace context ready to roll */
+ 	entryaddr = interp_params.entry_addr ?: exec_params.entry_addr;
+diff --git a/include/linux/elf-fdpic.h b/include/linux/elf-fdpic.h
+index e533f4513194..e7fd85a1d10f 100644
+--- a/include/linux/elf-fdpic.h
++++ b/include/linux/elf-fdpic.h
+@@ -56,4 +56,7 @@ extern void elf_fdpic_arch_lay_out_mm(struct elf_fdpic_params *exec_params,
+ 				      unsigned long *start_brk);
+ #endif
+ 
++extern int elf_arch_finalize_exec(struct elf_fdpic_params *exec_params,
++				  struct elf_fdpic_params *interp_params);
++
+ #endif /* _LINUX_ELF_FDPIC_H */
 -- 
 2.43.0
 
