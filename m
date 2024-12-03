@@ -4,61 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B2EADE6C60D
-	for <linux-um@archiver.kernel.org>; Tue,  3 Dec 2024 07:02:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 814D1E6C619
+	for <linux-um@archiver.kernel.org>; Tue,  3 Dec 2024 08:40:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=AS5+NXMzQjPO4NLT5tcS/+xjkcTjArZdd+McsaG11RI=; b=KHC7E1qjRwloxyUhbnPPoVj03t
-	KVt6EgOoE9a4mGhSQy0EOBYza7KMSR3pbZ4NAp/pSCmJ/jTBR5HS1Sna1WHDOc9dH7zlbIhxdJwmM
-	z3SMC3QjCejKt8maF9Zq5WSkWBBis2qHY+cwGXqQxbo6hg0syua3thW4/RJ2sEX4vFMtNyseBOwrF
-	mXCtbXndgIiCtIonB2N06peuTE6GTC981Wqgt9s781qwxsx7RIoQDhHhe1rPxoanIT9Vk400dXZXp
-	yHmP9Qnv1eCoQaxZ03b+OIrPbO+IlEEUiw2OgqX/GZvPG5U7fAXpMIW8JKNt+yiZE/F98+Zmp/Iv0
-	9I5hBTBA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=avA5oVf3JIscD1eNMbzcUFCZl8Jw8/vvSBHecLeXRqw=; b=o1ZJsi1ZSM8sKF6dK6Jzh6y/DB
+	ZOqYAqz558PuuujR8v+JL9ln/fZFD01eu25/hzdSw6W8BnzZlJxL96zCmMEt/VtCLDZAmXvrAT0HT
+	EvV1xqQjgzxMyagNSAbC/uJSpC4b7NIcqG75dEP1KJOv/7oXWM2s0gtlKkVnc/j5a3fbCRt7VRamD
+	j6DBVrGk5lYRRpMK94iVu9imH1392LaCoU4c6IYHL3sqDDbyN41tr+t9oeo96kXEF36AHWhlkHyP7
+	H5p9LVNaG1Y5fEG0AVcesvYFX3SxW32mduUzcHqWXMyqfREkRC2vXo0VlfHXJcxb0CK7p1GUzoEtM
+	mDOnZiWg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tIMvT-00000008THy-3uk8;
-	Tue, 03 Dec 2024 07:02:27 +0000
-Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+	id 1tIOSo-00000008jCf-00Dy;
+	Tue, 03 Dec 2024 08:40:58 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tIMvR-00000008THX-110A
+	id 1tIOSl-00000008jBU-28Rw
 	for linux-um@lists.infradead.org;
-	Tue, 03 Dec 2024 07:02:26 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 9093FA4068D;
-	Tue,  3 Dec 2024 07:00:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 645DFC4CECF;
-	Tue,  3 Dec 2024 07:02:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733209343;
-	bh=/qV9pYMCGqm3kV7JpHK5/L0p6ge9PvHzzGMUq4BKXB4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ETmCAkc3/tM3j5RyEOq8eHv899klewP9QlQgfqaFCtNFsKqoGIowy/w5Ki/ZdJ9oP
-	 9w5GRDSoMfBdx9kX5Xq1OsGi7GFPLvTmvhC9l+QQwsw7suQvRaw2CJtPRghCzUFoFi
-	 SkDxXu3z+dFyOKg2QHLiz6nWNJVDjdAROpynEmLnw8+VOWKiBo+TsA84MkOkBqQsL6
-	 vVFobLUeLbxxaPgtl/nz7O3gzI+bzlhhYu9oW5CaTGrXbotuqKc/G/tgEIJMhUvTgo
-	 r6+7T505SXAbALgJxv3OnEsb/7F9zVlac+gY9aJFfoVxIWpPK1kLuI7KKeYRSGlbm2
-	 OeQI6fF4WLm8A==
-From: SeongJae Park <sj@kernel.org>
-To: Benjamin Berg <benjamin@sipsolutions.net>
-Cc: SeongJae Park <sj@kernel.org>,
-	linux-um@lists.infradead.org,
-	johannes@sipsolutions.net,
-	Benjamin Berg <benjamin.berg@intel.com>
+	Tue, 03 Dec 2024 08:40:56 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=avA5oVf3JIscD1eNMbzcUFCZl8Jw8/vvSBHecLeXRqw=;
+	t=1733215253; x=1734424853; b=mlEoyIX4SX2kKN6J4jUimXOnLxySUh5zaU1THiBPBHk53CU
+	0s/K59WmMT1Yz9+aLD99stu2eO7CSknnx3BxvYxfbOXuyjv+hEtujv4TQo3P7Q/ESTSTPrmjQTYtJ
+	aBGEl6wN3MqjtkRW83Ea/3OONzyVi6pjR8dwtEYEAyMDTRHE5ZyRlIw0i3Y8aILNawiCViql+z7WR
+	W8y9GSEXJNMEby/wv2DhSeWVuwcRkTttK83G+irw4KdICs2xJAjbPJyNSM6w/xZvxCr4QNMaFwsm8
+	Mr7Mj9q8tdT9xxhXadNGtkjJ2bXYkPdfI/WQN3f5SyZnbWZcw0Hf87w2A12vAYpg==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98)
+	(envelope-from <benjamin@sipsolutions.net>)
+	id 1tIOST-0000000268p-3CoW;
+	Tue, 03 Dec 2024 09:40:38 +0100
+Message-ID: <029ad08a1aa2dc512b442c988d0edebdd7aef4b0.camel@sipsolutions.net>
 Subject: Re: [PATCH v5] um: switch to regset API and depend on XSTATE
-Date: Mon,  2 Dec 2024 23:02:18 -0800
-Message-Id: <20241203070218.240797-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20241023094120.4083426-1-benjamin@sipsolutions.net>
-References: 
+From: Benjamin Berg <benjamin@sipsolutions.net>
+To: SeongJae Park <sj@kernel.org>
+Cc: linux-um@lists.infradead.org, johannes@sipsolutions.net
+Date: Tue, 03 Dec 2024 09:40:34 +0100
+In-Reply-To: <20241203070218.240797-1-sj@kernel.org>
+References: <20241203070218.240797-1-sj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241202_230225_405202_B05B1687 
-X-CRM114-Status: GOOD (  21.66  )
+X-CRM114-CacheID: sfid-20241203_004055_561289_DEAD92D3 
+X-CRM114-Status: GOOD (  28.03  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,121 +72,154 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hello,
+Hi,
 
+that probably means the size detection for the FPU state (i.e.
+PTRACE_GETREGSET for NT_X86_XSTATE is incorrect on a 32bit host in some
+way.
 
-On Wed, 23 Oct 2024 11:41:20 +0200 Benjamin Berg <benjamin@sipsolutions.net> wrote:
+Is there anything special about the qemu setup or it is just a default
+qemu-x86?
 
-> From: Benjamin Berg <benjamin.berg@intel.com>
-> 
-> The PTRACE_GETREGSET API has now existed since Linux 2.6.33. The XSAVE
-> CPU feature should also be sufficiently common to be able to rely on it.
-> 
-> With this, define our internal FP state to be the hosts XSAVE data. Add
-> discovery for the hosts XSAVE size and place the FP registers at the end
-> of task_struct so that we can adjust the size at runtime.
-> 
-> Next we can implement the regset API on top and update the signal
-> handling as well as ptrace APIs to use them. Also switch coredump
-> creation to use the regset API and finally set HAVE_ARCH_TRACEHOOK.
-> 
-> This considerably improves the signal frames. Previously they might not
-> have contained all the registers (i386) and also did not have the
-> sizes and magic values set to the correct values to permit userspace to
-> decode the frame.
-> 
-> As a side effect, this will permit UML to run on hosts with newer CPU
-> extensions (such as AMX) that need even more register state.
+Benjamin
 
-I just found kunit starts failing from the mainline commit of this patch on my
-qemu-x86 Debian system, as below.
+On Mon, 2024-12-02 at 23:02 -0800, SeongJae Park wrote:
+> Hello,
+>=20
+>=20
+> On Wed, 23 Oct 2024 11:41:20 +0200 Benjamin Berg <benjamin@sipsolutions.n=
+et> wrote:
+>=20
+> > From: Benjamin Berg <benjamin.berg@intel.com>
+> >=20
+> > The PTRACE_GETREGSET API has now existed since Linux 2.6.33. The XSAVE
+> > CPU feature should also be sufficiently common to be able to rely on it=
+.
+> >=20
+> > With this, define our internal FP state to be the hosts XSAVE data. Add
+> > discovery for the hosts XSAVE size and place the FP registers at the en=
+d
+> > of task_struct so that we can adjust the size at runtime.
+> >=20
+> > Next we can implement the regset API on top and update the signal
+> > handling as well as ptrace APIs to use them. Also switch coredump
+> > creation to use the regset API and finally set HAVE_ARCH_TRACEHOOK.
+> >=20
+> > This considerably improves the signal frames. Previously they might not
+> > have contained all the registers (i386) and also did not have the
+> > sizes and magic values set to the correct values to permit userspace to
+> > decode the frame.
+> >=20
+> > As a side effect, this will permit UML to run on hosts with newer CPU
+> > extensions (such as AMX) that need even more register state.
+>=20
+> I just found kunit starts failing from the mainline commit of this patch =
+on my
+> qemu-x86 Debian system, as below.
+>=20
+> =C2=A0=C2=A0=C2=A0 $ git checkout 3f17fed2149192c7d3b76a45a6a87b4ff22cd58=
+6
+> =C2=A0=C2=A0=C2=A0 $ ./tools/testing/kunit/kunit.py run --kunitconfig mm/=
+damon/tests/ --build_dir ../kunit.out/
+> =C2=A0=C2=A0=C2=A0 [...]
+> =C2=A0=C2=A0=C2=A0 [22:48:27] Configuring KUnit Kernel ...
+> =C2=A0=C2=A0=C2=A0 Regenerating .config ...
+> =C2=A0=C2=A0=C2=A0 Populating config with:
+> =C2=A0=C2=A0=C2=A0 $ make ARCH=3Dum O=3D../kunit.out/ olddefconfig
+> =C2=A0=C2=A0=C2=A0 [22:48:30] Building KUnit Kernel ...
+> =C2=A0=C2=A0=C2=A0 Populating config with:
+> =C2=A0=C2=A0=C2=A0 $ make ARCH=3Dum O=3D../kunit.out/ olddefconfig
+> =C2=A0=C2=A0=C2=A0 Building with:
+> =C2=A0=C2=A0=C2=A0 $ make all compile_commands.json ARCH=3Dum O=3D../kuni=
+t.out/ --jobs=3D40
+> =C2=A0=C2=A0=C2=A0 [...]
+> =C2=A0=C2=A0=C2=A0 [22:48:46] Starting KUnit Kernel (1/1)...
+> =C2=A0=C2=A0=C2=A0 [22:48:46] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =C2=A0=C2=A0=C2=A0 Running tests with:
+> =C2=A0=C2=A0=C2=A0 $ ../kunit.out/linux kunit.enable=3D1 mem=3D1G console=
+=3Dtty kunit_shutdown=3Dhalt
+> =C2=A0=C2=A0=C2=A0 [22:48:46] [ERROR] Test: <missing>: Could not find any=
+ KTAP output. Did any KUnit tests run?
+> =C2=A0=C2=A0=C2=A0 [22:48:46] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =C2=A0=C2=A0=C2=A0 [22:48:46] Testing complete. Ran 0 tests: errors: 1
+> =C2=A0=C2=A0=C2=A0 [22:48:46] Elapsed time: 19.285s total, 3.805s configu=
+ring, 15.475s building, 0.006s running
+>=20
+> >=20
+> > Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
+> [...]
+> > -void arch_init_registers(int pid)
+> > -{
+> > -	struct user_fpxregs_struct fpx_regs;
+> > -	int err;
+> > -
+> > -	err =3D ptrace(PTRACE_GETFPXREGS, pid, 0, &fpx_regs);
+> > -	if (!err)
+> > -		return;
+> > -
+> > -	if (errno !=3D EIO)
+> > -		panic("check_ptrace : PTRACE_GETFPXREGS failed, errno =3D %d",
+> > -		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 errno);
+> > -
+> > -	have_fpx_regs =3D 0;
+> > -}
+> > -#else
+> > -
+> > -int get_fp_registers(int pid, unsigned long *regs)
+> > +int arch_init_registers(int pid)
+> > =C2=A0{
+> > -	return save_fp_registers(pid, regs);
+> > +	struct iovec iov =3D {
+> > +		/* Just use plenty of space, it does not cost us anything */
+> > +		.iov_len =3D 2 * 1024 * 1024,
+> > +	};
+> > +	int ret;
+> > +
+> > +	iov.iov_base =3D mmap(NULL, iov.iov_len, PROT_WRITE | PROT_READ,
+> > +			=C2=A0=C2=A0=C2=A0 MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+> > +	if (iov.iov_base =3D=3D MAP_FAILED)
+> > +		return -ENOMEM;
+> > +
+> > +	/* GDB has x86_xsave_length, which uses x86_cpuid_count */
+> > +	ret =3D ptrace(PTRACE_GETREGSET, pid, NT_X86_XSTATE, &iov);
+> > +	if (ret)
+> > +		ret =3D -errno;
+> > +	munmap(iov.iov_base, 2 * 1024 * 1024);
+> > +
+> > +	host_fp_size =3D iov.iov_len;
+> > +
+> > +	return ret;
+> > =C2=A0}
+>=20
+> And seems it fails from the registers initialization step:
+>=20
+> =C2=A0=C2=A0=C2=A0 $ ../kunit.out/linux
+> =C2=A0=C2=A0=C2=A0 Core dump limits :
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 soft -=
+ 0
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 hard -=
+ NONE
+> =C2=A0=C2=A0=C2=A0 Checking that ptrace can change system call numbers...=
+OK
+> =C2=A0=C2=A0=C2=A0 Checking syscall emulation for ptrace...OK
+> =C2=A0=C2=A0=C2=A0 Checking environment variables for a tempdir...none fo=
+und
+> =C2=A0=C2=A0=C2=A0 Checking if /dev/shm is on tmpfs...OK
+> =C2=A0=C2=A0=C2=A0 Checking PROT_EXEC mmap in /dev/shm...OK
+> =C2=A0=C2=A0=C2=A0 Failed to initialize default registers
+>=20
+> I'm not familiar with uml code, so reporting this issue first.=C2=A0 Any =
+thought, please?
+>=20
+>=20
+> Thanks,
+> SJ
+>=20
+> [...]
+>=20
 
-    $ git checkout 3f17fed2149192c7d3b76a45a6a87b4ff22cd586
-    $ ./tools/testing/kunit/kunit.py run --kunitconfig mm/damon/tests/ --build_dir ../kunit.out/
-    [...]
-    [22:48:27] Configuring KUnit Kernel ...
-    Regenerating .config ...
-    Populating config with:
-    $ make ARCH=um O=../kunit.out/ olddefconfig
-    [22:48:30] Building KUnit Kernel ...
-    Populating config with:
-    $ make ARCH=um O=../kunit.out/ olddefconfig
-    Building with:
-    $ make all compile_commands.json ARCH=um O=../kunit.out/ --jobs=40
-    [...]
-    [22:48:46] Starting KUnit Kernel (1/1)...
-    [22:48:46] ============================================================
-    Running tests with:
-    $ ../kunit.out/linux kunit.enable=1 mem=1G console=tty kunit_shutdown=halt
-    [22:48:46] [ERROR] Test: <missing>: Could not find any KTAP output. Did any KUnit tests run?
-    [22:48:46] ============================================================
-    [22:48:46] Testing complete. Ran 0 tests: errors: 1
-    [22:48:46] Elapsed time: 19.285s total, 3.805s configuring, 15.475s building, 0.006s running
-
-> 
-> Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
-[...]
-> -void arch_init_registers(int pid)
-> -{
-> -	struct user_fpxregs_struct fpx_regs;
-> -	int err;
-> -
-> -	err = ptrace(PTRACE_GETFPXREGS, pid, 0, &fpx_regs);
-> -	if (!err)
-> -		return;
-> -
-> -	if (errno != EIO)
-> -		panic("check_ptrace : PTRACE_GETFPXREGS failed, errno = %d",
-> -		      errno);
-> -
-> -	have_fpx_regs = 0;
-> -}
-> -#else
-> -
-> -int get_fp_registers(int pid, unsigned long *regs)
-> +int arch_init_registers(int pid)
->  {
-> -	return save_fp_registers(pid, regs);
-> +	struct iovec iov = {
-> +		/* Just use plenty of space, it does not cost us anything */
-> +		.iov_len = 2 * 1024 * 1024,
-> +	};
-> +	int ret;
-> +
-> +	iov.iov_base = mmap(NULL, iov.iov_len, PROT_WRITE | PROT_READ,
-> +			    MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-> +	if (iov.iov_base == MAP_FAILED)
-> +		return -ENOMEM;
-> +
-> +	/* GDB has x86_xsave_length, which uses x86_cpuid_count */
-> +	ret = ptrace(PTRACE_GETREGSET, pid, NT_X86_XSTATE, &iov);
-> +	if (ret)
-> +		ret = -errno;
-> +	munmap(iov.iov_base, 2 * 1024 * 1024);
-> +
-> +	host_fp_size = iov.iov_len;
-> +
-> +	return ret;
->  }
-
-And seems it fails from the registers initialization step:
-
-    $ ../kunit.out/linux
-    Core dump limits :
-            soft - 0
-            hard - NONE
-    Checking that ptrace can change system call numbers...OK
-    Checking syscall emulation for ptrace...OK
-    Checking environment variables for a tempdir...none found
-    Checking if /dev/shm is on tmpfs...OK
-    Checking PROT_EXEC mmap in /dev/shm...OK
-    Failed to initialize default registers
-
-I'm not familiar with uml code, so reporting this issue first.  Any thought, please?
-
-
-Thanks,
-SJ
-
-[...]
 
