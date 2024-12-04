@@ -4,61 +4,61 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9FD8DE77170
-	for <linux-um@archiver.kernel.org>; Wed,  4 Dec 2024 16:34:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 49042E77170
+	for <linux-um@archiver.kernel.org>; Wed,  4 Dec 2024 16:37:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
 	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
 	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=cAc2mHghz6bytXScf879htgXZRAiHw3UuX8OHpvD+RI=; b=wJBsqQnv/LlXEsBnlgI5iVewYq
-	JVJrDp+Bm9e1062WjXdDwHmkCgKPWOLVfudmLzN7bQMYblayu2H5eXfDT+9sMj/1tzDbja0dXWoOl
-	/pCxEdXkFSogU+95RnoDEZBxOz8hWQ7ido53FtofxOLC0RZcyQglmMaE+vey1l43actkZhtYB78WT
-	TCKOcgWsUhcwuf8vDrU9Ics6yGu8UC1D40X9OueSpbybNEmxqrN17cEAEzbxdDQbZa5VniPXym98q
-	eOVKD6dixPcqt8H2Q5s6+ZmD4LscRWxqw497wcVLRwh/m2gSqQMUvNBJyHnlEs/9J1JvU0UF6qo+k
-	4WTBlQqA==;
+	bh=H0X0sNPCrJqwTvoBGYtmJtPy6vxfccD6F8TWaB/1oAQ=; b=McIW08DKOAIKNhdtkdd0yGcVtj
+	rykf+cf5bBabSUbtMOOeG1xZm+0EMhpHP4dAIq6AE2g0NeKAnxqTKkqqeKS49dgiUK79VRQhcQFNl
+	du2g2D4m326GmeXsnjSx3jq1ivmxAtgiL33oatZaRyAoW3adoFkm1XDm7Wgll54E+xXEpLA+pj17+
+	n0wAHvFqCy4RB2naImZqGhJe2xYqOs8gAB7UG2HCuG7ah6ETzK99/nP5WUsNoUp074mJaRQXYmcYv
+	R/I9AUgB22mRBwQAtu8rv8D87gTg4jXYy6NEj/ovCnpPvbLRMQHRNxLk0iKCMfOJ5jUX54mlqU37c
+	pmk3rWMQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tIsL1-0000000DCsv-0Lro;
-	Wed, 04 Dec 2024 16:34:55 +0000
+	id 1tIsNM-0000000DDCk-0Cih;
+	Wed, 04 Dec 2024 16:37:20 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tIsKy-0000000DCsK-3vJq
+	id 1tIsNK-0000000DDC1-1dNy
 	for linux-um@lists.infradead.org;
-	Wed, 04 Dec 2024 16:34:53 +0000
+	Wed, 04 Dec 2024 16:37:19 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
 	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=cAc2mHghz6bytXScf879htgXZRAiHw3UuX8OHpvD+RI=;
-	t=1733330092; x=1734539692; b=F1Iuhxd1q34LYp+FUo6ZFAWqLQrr3DkOPEyiIrD/2+jbTuJ
-	3kvWsPuUPk/TbHrGe96Jq256QThheGiCy5W9n6CORQA4SXUEzG0xbIPQUA3SheBF0flpebhmJRwXP
-	gf0zZ4Domp825M/35JpE3LH+s4RkJttWIsMZBut/Ic56uCR4oCG06nQc2RY4/wHtSEtUb7DuU2c3B
-	W+Q93m5vp6FYYDOI3P2HnKe2qfPBzBRUKtlQ808ZdPEJETxPG4IJCBcvB20FQFDUup40spjof6vHA
-	VGhh3/tWTPDEiOEcOVZgBq38hm3htWCUkK7DNubQoowCSAzhrwr96sMNyld9YeVQ==;
+	Resent-Cc:Resent-Message-ID; bh=H0X0sNPCrJqwTvoBGYtmJtPy6vxfccD6F8TWaB/1oAQ=;
+	t=1733330238; x=1734539838; b=c3yzcWpQpd8qUkwQHJa1dISQeX8lDdQeHszgiWDHOdmsh6X
+	115XsoOOJzksHeZG4iCbJFs9W10cMBm2RzQTeJyFmIaMunizjzJ4iG79N4c47FA3aQLZ/iLKISQRR
+	6Oosyn2tbfKOoY/80rCPlrAuob83Umuf22pCqmMH312D35J5eie1ZEHR7gC8vCrXT0bmGPvsK+DG0
+	PSGSch+ywcKW/+8QMBoNP22y5ujMkn9gJKZpfudt5OoZyCKD11UxNdSu/yeG3SaPVl302Si5BU+cu
+	6p5eAoS6TZGo1XU2p6x1U83twq693PfQ+5bN52vcEam638y5Fy8ANc7Emo8TWp6w==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.98)
 	(envelope-from <johannes@sipsolutions.net>)
-	id 1tIsKw-000000076UU-03YS;
-	Wed, 04 Dec 2024 17:34:50 +0100
-Message-ID: <d6c80b918b3febd0eb572b4a945dfc200f6890ee.camel@sipsolutions.net>
-Subject: Re: [PATCH v3 03/13] um: nommu: memory handling
+	id 1tIsNH-000000076sS-1rxw;
+	Wed, 04 Dec 2024 17:37:15 +0100
+Message-ID: <4628fa35659910f21e38087a96953975a7dbe0fc.camel@sipsolutions.net>
+Subject: Re: [PATCH v3 04/13] x86/um: nommu: syscall handling
 From: Johannes Berg <johannes@sipsolutions.net>
 To: Hajime Tazaki <thehajime@gmail.com>, linux-um@lists.infradead.org
 Cc: ricarkol@google.com, Liam.Howlett@oracle.com
-Date: Wed, 04 Dec 2024 17:34:49 +0100
-In-Reply-To: <1400de8bca3dc72df563156fcbc6eaaf54e2e58a.1733199769.git.thehajime@gmail.com>
+Date: Wed, 04 Dec 2024 17:37:14 +0100
+In-Reply-To: <682460c3db1967aaa041b7e14342d48be3604c04.1733199769.git.thehajime@gmail.com>
 References: <cover.1733199769.git.thehajime@gmail.com>
-	 <1400de8bca3dc72df563156fcbc6eaaf54e2e58a.1733199769.git.thehajime@gmail.com>
+	 <682460c3db1967aaa041b7e14342d48be3604c04.1733199769.git.thehajime@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.52.4 (3.52.4-2.fc40) 
 MIME-Version: 1.0
 X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241204_083452_971710_92026F2A 
-X-CRM114-Status: GOOD (  22.31  )
+X-CRM114-CacheID: sfid-20241204_083718_425424_2FB540F1 
+X-CRM114-Status: GOOD (  12.37  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -74,130 +74,32 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On Tue, 2024-12-03 at 13:23 +0900, Hajime Tazaki wrote:
+> This commit introduces an entry point of syscall interface for !MMU
+> mode. It uses an entry function, __kernel_vsyscall, a kernel-wide global
+> symbol accessible from any locations.
 >=20
-> +++ b/arch/um/include/asm/futex.h
-> @@ -8,7 +8,11 @@
-> =20
-> =20
->  int arch_futex_atomic_op_inuser(int op, u32 oparg, int *oval, u32 __user=
- *uaddr);
-> +#ifdef CONFIG_MMU
->  int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
->  			      u32 oldval, u32 newval);
-> +#else
-> +#include <asm-generic/futex.h>
-> +#endif
+> Although it isn't in the scope of this commit, it can be also exposed
+> via vdso image which is directly accessible from userspace. A standard
+> library (i.e., libc) can utilize this entry point to implement syscall
+> wrapper; we can also use this by hooking syscall for unmodified userspace
+> applications/libraries, which will be implemented in the subsequent
+> commit.
+>=20
+> This only supports 64-bit mode of x86 architecture.
+>=20
+> Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+> Signed-off-by: Ricardo Koller <ricarkol@google.com>
+> ---
+>  arch/x86/um/do_syscall_64.c             | 37 +++++++++++
+>  arch/x86/um/entry_64.S                  | 87 +++++++++++++++++++++++++
+>=20
 
-That seems somewhat problematic since it also defines
-arch_futex_atomic_op_inuser ...
+As I said before, I think it needs to be something obviously nommu.
+Maybe in a new directory, or maybe nommu_syscall_64.c or something like
+that.
 
-> +++ b/arch/um/include/shared/os.h
-> @@ -195,7 +195,13 @@ extern void get_host_cpu_features(
->  extern int create_mem_file(unsigned long long len);
-> =20
->  /* tlb.c */
-> +#ifdef CONFIG_MMU
->  extern void report_enomem(void);
-> +#else
-> +static inline void report_enomem(void)
-> +{
-> +}
-> +#endif
-
-That still seems simply wrong? Why is that even called, and why should
-it do *nothing*?
-
-I'm thinking you might just have patch sequence issues here - I can't
-really see why this would be called at all, eventually.
-
-> @@ -78,6 +79,7 @@ void __init mem_init(void)
->   * Create a page table and place a pointer to it in a middle page
->   * directory entry.
->   */
-> +#ifdef CONFIG_MMU
->  static void __init one_page_table_init(pmd_t *pmd)
->  {
->  	if (pmd_none(*pmd)) {
-> @@ -149,6 +151,12 @@ static void __init fixrange_init(unsigned long start=
-, unsigned long end,
->  		j =3D 0;
->  	}
->  }
-> +#else
-> +static void __init fixrange_init(unsigned long start, unsigned long end,
-> +				 pgd_t *pgd_base)
-> +{
-> +}
-> +#endif
-
-Really not a fan of all these randomly placed ifdefs ...
-
-> +#ifdef CONFIG_MMU
->  static const pgprot_t protection_map[16] =3D {
->  	[VM_NONE]					=3D PAGE_NONE,
->  	[VM_READ]					=3D PAGE_READONLY,
-> @@ -249,3 +258,4 @@ static const pgprot_t protection_map[16] =3D {
->  	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	=3D PAGE_SHARED
->  };
->  DECLARE_VM_GET_PAGE_PROT
-> +#endif
-
-Same here.
-
-I think we can do better - perhaps move some code to mmu.c and nommu.c
-or something like that.
-
-> diff --git a/arch/um/kernel/physmem.c b/arch/um/kernel/physmem.c
-> index a74f17b033c4..f55d46dbe173 100644
-> --- a/arch/um/kernel/physmem.c
-> +++ b/arch/um/kernel/physmem.c
-> @@ -84,7 +84,11 @@ void __init setup_physmem(unsigned long start, unsigne=
-d long reserve_end,
->  		exit(1);
->  	}
-> =20
-> +#ifdef CONFIG_MMU
->  	physmem_fd =3D create_mem_file(len);
-> +#else
-> +	physmem_fd =3D -1;
-> +#endif
-
-same here, create_mem_file() can just be in a file only built for mmu,
-and otherwise be an inline that returns -1?
-
-> +#ifdef CONFIG_MMU
->  	/*
->  	 * Special kludge - This page will be mapped in to userspace processes
->  	 * from physmem_fd, so it needs to be written out there.
->  	 */
->  	os_seek_file(physmem_fd, __pa(__syscall_stub_start));
->  	os_write_file(physmem_fd, __syscall_stub_start, PAGE_SIZE);
-> +#endif
-
-That doesn't even do anything if the fd is -1, do we need the ifdef? ;-)
-
-Still better as "if (IS_ENABLED())" or something anyway though.
-
-> +++ b/arch/um/kernel/trap.c
-> @@ -24,6 +24,7 @@
->  int handle_page_fault(unsigned long address, unsigned long ip,
->  		      int is_write, int is_user, int *code_out)
->  {
-> +#ifdef CONFIG_MMU
->  	struct mm_struct *mm =3D current->mm;
->  	struct vm_area_struct *vma;
->  	pmd_t *pmd;
-> @@ -129,6 +130,9 @@ int handle_page_fault(unsigned long address, unsigned=
- long ip,
->  		goto out_nosemaphore;
->  	pagefault_out_of_memory();
->  	return 0;
-> +#else
-> +	return -EFAULT;
-> +#endif
->  }
-
-same comments here ... try not to sprinkle ifdefs everywhere.
+Also needs comment style fixes and I'm not sure about all the
+pr_debug(), but I guess they don't matter unless someone defines it?=20
 
 johannes
 
