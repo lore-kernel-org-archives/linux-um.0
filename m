@@ -4,94 +4,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CA364E7716D
-	for <linux-um@archiver.kernel.org>; Thu,  5 Dec 2024 13:45:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4BF7FE77170
+	for <linux-um@archiver.kernel.org>; Thu,  5 Dec 2024 13:47:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
 	References:In-Reply-To:Subject:Cc:To:From:Message-ID:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=stPP7YaX8NczBe94EUNJGGQYrsTGF2tS1ZZnY2i0wbc=; b=lIkF0m37k4jvCIVhIz/sWhIjm0
-	lsnF1IAPeoDaJCCyG3g6N8pzfhNAb/yCMp1EB0dsZEVPVVst4EtpUNIUcUinkfq8DUalNKX3Lntgi
-	ru9b1yx2eawuNaRP7swl9HYk9e86ifIbXjlChKBEWkU/3mQ3W5aFEw0DKBQ/liNbivDn6rQ0TZsRK
-	CyP+dIjErtvMgm/GQ5aX09II5OV0km5yerSapMAMP8ODUzcc8wAuKy4U7P8t8/czAAULZssefjXDi
-	+rKISmv77TfizJKk/w+44Euzib+rRRd5MwQdTc7U31BQgtvNU20YkjiDAmfDj5upq6ZWfAtN3uozD
-	cEm0w3aw==;
+	bh=Ubq/hu+G8nIeTPOnP/0HoBADQynW4UrQMSyrrxs/8V0=; b=bY2F2UpLeDvx7hMJvgTwpZL1uY
+	zNnnIiRvaxLgWst9X/8wIKtUpJnTSk33pTEZnNAV4jbhXFRZoR84vpUr4iFmTmh9E1qU+9Jg+/99F
+	vgvgbvdrOHdr/tvVCQ3csSRUePYtl6SJlI6GUd19mkzxdVUYFX3KULh0xxUK8tzXpS/Ggdhlg0C48
+	i3WC5ZQWOpxFKXadAO7BSaUJ47eWV9jxBWWSVqITUBZue1RjtYw8gfbBc+6FyCo8taA/QAcjNCmDe
+	c3pL5zTzxhXSWFkAKAQT5Q7lIL/nEppJjqRITXoJQDdtRwg0K6N0t2ZniUcNr0gqWE31N9YCLovSy
+	C58zzxnQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tJCAL-0000000GCy1-2IYp;
-	Thu, 05 Dec 2024 13:45:13 +0000
-Received: from mail-pf1-x435.google.com ([2607:f8b0:4864:20::435])
+	id 1tJCCp-0000000GDiu-0Iel;
+	Thu, 05 Dec 2024 13:47:47 +0000
+Received: from mail-pf1-x430.google.com ([2607:f8b0:4864:20::430])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tJC6e-0000000GCG7-1WVA
+	id 1tJCCk-0000000GDgo-23Aa
 	for linux-um@lists.infradead.org;
-	Thu, 05 Dec 2024 13:41:25 +0000
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-724e1742d0dso856299b3a.0
-        for <linux-um@lists.infradead.org>; Thu, 05 Dec 2024 05:41:24 -0800 (PST)
+	Thu, 05 Dec 2024 13:47:43 +0000
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-7259d6ae0c8so918342b3a.0
+        for <linux-um@lists.infradead.org>; Thu, 05 Dec 2024 05:47:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733406083; x=1734010883; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1733406461; x=1734011261; darn=lists.infradead.org;
         h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
          :message-id:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=stPP7YaX8NczBe94EUNJGGQYrsTGF2tS1ZZnY2i0wbc=;
-        b=XWdM/Mm7yIU6/5sE3JHwFmUR82RoMqgkmupwxIz6gabLL2lFTR/0kX8rfI/4ezq1Mv
-         /1S8tYbLm5RcRj9EhfNnVNCYPdCxzZ7lNbqsoIIpwow6ZxAYooTEktktMZdNmlCWQsTZ
-         oTzuocLd2HpZX/i7aHZbtjA4phIC8kB1W3y0QRT6z24tBug/XufIYG2NyQkcv3guF2Cb
-         jy66hs1LtumOusalrt7UEunNP3Tg+NirCjNhgJwdDHtxoOGPvVPd8bHc85WoqO1IepJ6
-         gzBYX+Ya5JTa7RkE3M2fUodQaTyqMFOYZHgdo/W2wrGYvSiMrkVHQImkBsWGGXWWnhWw
-         /5Tg==
+        bh=Ubq/hu+G8nIeTPOnP/0HoBADQynW4UrQMSyrrxs/8V0=;
+        b=gxB7kGEBakUIttiVy3UO06KUUrA6OamrN1qAFFXaOJFUdezc9rY/9q+6XmhxsSI9RE
+         C6FjzJT5d/PEPCslYuaE8cEqAUmdW6h64Uv258wo2zb1WOux4K9K9ZOJApqu5JF8avmk
+         CI0zWBDIN2nWvOk4kb0KZAcqyhxYs4PR2Q5o4F8qrAecWSPVhhPcqblkCb1QbOJYb2p2
+         dBN73RvK8LmcvGh7N9inVwB+0utu301o50Gsz+c0bb8cqmM1auwX37LwUL0ikKoVHPJt
+         UJRVZa2+EY50z8lLPWNDofpmxN62ZK2SfuuEaEHJnLvBaldBdGP51Ti3gSrPsFx33sCf
+         lClA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733406083; x=1734010883;
+        d=1e100.net; s=20230601; t=1733406461; x=1734011261;
         h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
          :message-id:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=stPP7YaX8NczBe94EUNJGGQYrsTGF2tS1ZZnY2i0wbc=;
-        b=ahjHmNVQ+NxSIi9w+j9xq4r2zHzI84knPdk11YvcBr3JnGsDgJMBP1nMXoRX5O0vax
-         ERbbm5aBoFXJXoHYSiIByimlFYL0UuLk0AovClt50ofqugdJZdwHtyh0xjohjoW9Z2/H
-         PG9BEiTtRbxvqPGwxQRULzmqNSo3J8ltr3iAVYm77pholTRuOoSp8yzWS5e/7t25pp7q
-         phtfRPAGjBs18exj7Dy7BnPAoscgSL3Ub1J7trvo9XCemT+fumbNe/s0MNqWV66bsgcS
-         A0JpJ6zzQQQEDU2VCV3RjrUUrWUq1m92FSBnCxcWoqHsIM2msy+6EQU/xrlFtHy7Tncu
-         N3Og==
-X-Gm-Message-State: AOJu0Yz/iw6VPuG8U6w+VP39se35iDUGAQEsuZRg9kjvb/Zkhd+h1zCy
-	jS/si2USWK9XUhCKFTaEjlUaJZ7/cKYA/KuqyQBhs40aDCF34+Sp
-X-Gm-Gg: ASbGncv/7yXDAyA2cxHNV0+gaJlfK4XOQGPKOqxs/R3SnA5A/zoUBPZXIHR2EzhkJUD
-	WQpDNWXzDEEpFuRDgygxJ8tMI0XWonPbQA842YhbzpkWVZzZOI2kCZJq/rWjCXea5GHIPj/FFjj
-	0eD91utdsGW9VWv0U2zDqwj3cgaDSIP5EDjrzLXFMtXAdsfVEQIJtdpCfjuKUJnaelr5cOw7X/0
-	fHOVwOykjjCKhX0FoSLPBNZ1zVNBDQYnq7RLAZ9kmw6lnk/5rro7PTH4rLA8rxmBhw98ZCdxY2u
-	3N2hQSxA0XIX7bKNTs7QIkNU9jVMlXATNQj6
-X-Google-Smtp-Source: AGHT+IHqy2fB0PSEtlgLnY5uV9xawlm78HfsnB+wjTo6kKRSaGcYU2YxGWLqYyJoarSz/w0en8Z3NQ==
-X-Received: by 2002:a05:6a00:218b:b0:720:75c2:7a92 with SMTP id d2e1a72fcca58-7257fb740b0mr12587584b3a.15.1733406083228;
-        Thu, 05 Dec 2024 05:41:23 -0800 (PST)
+        bh=Ubq/hu+G8nIeTPOnP/0HoBADQynW4UrQMSyrrxs/8V0=;
+        b=lAUns2kCvWKqtxHlSY4bVqRNqahJlYTab3yViBGuGRmvepnJ/16n2e+S9aA1cnlHy4
+         dt7KHWt29BoFCCrOBFiMlDYNrfQvUaA/RQADTu8lrjG6MqhNlEJZyb6cvpg/Tc4LP9nI
+         jEP+LcOQr4/O7Vzx2knoCDr4UpBJehezLyUW9zbYEMEXGXFyANXGDby+gDZeE60mbeLa
+         mh2ttmzLTo29egKqZdvUji63Lhy5ZoTCcDz7pBK5Ip1g5goHziP/O1GlngVhUO1Hcybw
+         q/AVauNJMJSE+b1w/y+hi26EVpzNa0+3rHUCsmtQf1FpTG0oJy6VA/Ei/BS58+IhIW0l
+         WGJg==
+X-Gm-Message-State: AOJu0Yzu6Vl82n67i6eJkpLS9FwXYV40RVHjDM+cKzQ6+uIQdn3qSZCI
+	DIbBnKTm/bPTtS8zDBsGjaTih9isKyco5KwHk/3oW+IjDCh0nOgf
+X-Gm-Gg: ASbGncvHENLLXFnN5qDKcM+ATI6Mt46C8NsqXUI044RqgnkjGlVIKtzxNvaj4nCuJeU
+	Bal3wavRFWrx5JI6jRv4vKVzvLb99d7FT1mgDpIfyn3cKJr00E3WzPg54RtlUY6vERlOt2dl74y
+	kt/zW8hgPNekh0zb5IgqvZJVnGrannT7VdgUe2jbRUvuKGV6buJSkiMrmA1JBduel5otsp6Gedw
+	9EHPgI1A7qqUBvnQ1qbks0ez9pgHQ45RExC1vcIDYHjvSIn51Qaka0H6b3liss5tmIufkSfUjCO
+	HwUYWBhXQvO+iw67uZDO0pBPsZFjxnjWos9I
+X-Google-Smtp-Source: AGHT+IFmE6TFJa5a/6oJnG2MRL1RxmB+SkIDMAegrWEtQ4ekoHNV2yAy9f2KI5Dh4XYErruUdxxVSA==
+X-Received: by 2002:a17:902:dacf:b0:212:615f:c6 with SMTP id d9443c01a7336-215bd250c13mr124468745ad.50.1733406461365;
+        Thu, 05 Dec 2024 05:47:41 -0800 (PST)
 Received: from mars.local.gmail.com (221x241x217x81.ap221.ftth.ucom.ne.jp. [221.241.217.81])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-725a2a17e8bsm1229477b3a.88.2024.12.05.05.41.19
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-215f8e3e875sm12678305ad.19.2024.12.05.05.47.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Dec 2024 05:41:22 -0800 (PST)
-Date: Thu, 05 Dec 2024 22:41:18 +0900
-Message-ID: <m28qsuw8ld.wl-thehajime@gmail.com>
+        Thu, 05 Dec 2024 05:47:40 -0800 (PST)
+Date: Thu, 05 Dec 2024 22:47:37 +0900
+Message-ID: <m25xnyw8au.wl-thehajime@gmail.com>
 From: Hajime Tazaki <thehajime@gmail.com>
 To: johannes@sipsolutions.net
 Cc: linux-um@lists.infradead.org,
 	ricarkol@google.com,
-	Liam.Howlett@oracle.com,
-	ebiederm@xmission.com,
-	kees@kernel.org,
-	viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	jack@suse.cz,
-	linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v3 02/13] x86/um: nommu: elf loader for fdpic
-In-Reply-To: <5b5b50909f7c23f09500d7ecc8b57b46c33ab7b0.camel@sipsolutions.net>
+	Liam.Howlett@oracle.com
+Subject: Re: [PATCH v3 04/13] x86/um: nommu: syscall handling
+In-Reply-To: <4628fa35659910f21e38087a96953975a7dbe0fc.camel@sipsolutions.net>
 References: <cover.1733199769.git.thehajime@gmail.com>
-	<215895272109f7b0a4a00625e86b57f39fa13af8.1733199769.git.thehajime@gmail.com>
-	<5b5b50909f7c23f09500d7ecc8b57b46c33ab7b0.camel@sipsolutions.net>
+	<682460c3db1967aaa041b7e14342d48be3604c04.1733199769.git.thehajime@gmail.com>
+	<4628fa35659910f21e38087a96953975a7dbe0fc.camel@sipsolutions.net>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/26.3 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241205_054124_397240_AD42500B 
-X-CRM114-Status: UNSURE (   9.08  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20241205_054742_528592_31539373 
+X-CRM114-Status: GOOD (  11.18  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -107,20 +99,24 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 
-On Thu, 05 Dec 2024 01:20:51 +0900,
+On Thu, 05 Dec 2024 01:37:14 +0900,
 Johannes Berg wrote:
-> 
-> On Tue, 2024-12-03 at 13:23 +0900, Hajime Tazaki wrote:
-> > 
-> >  arch/um/include/asm/Kbuild           |  1 +
-> > 
-> >  arch/x86/um/asm/module.h             | 24 ------------------------
-> > 
-> 
-> These changes could be a separate cleanup?
 
-agree.  will do it.
+> >  arch/x86/um/do_syscall_64.c             | 37 +++++++++++
+> >  arch/x86/um/entry_64.S                  | 87 +++++++++++++++++++++++++
+> > 
+> 
+> As I said before, I think it needs to be something obviously nommu.
+> Maybe in a new directory, or maybe nommu_syscall_64.c or something like
+> that.
+
+agree.  I will make a directory for that.
+
+> Also needs comment style fixes and I'm not sure about all the
+> pr_debug(), but I guess they don't matter unless someone defines it? 
+
+if you meant to the commented `//#define DEBUG` line, I will remove
+it.
 
 -- Hajime
-
 
