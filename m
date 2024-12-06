@@ -4,89 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 54D1BE7716E
-	for <linux-um@archiver.kernel.org>; Fri,  6 Dec 2024 02:51:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E86E0E77173
+	for <linux-um@archiver.kernel.org>; Fri,  6 Dec 2024 14:56:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	References:In-Reply-To:Subject:Cc:To:From:Message-ID:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=sRjrelvuTYuWFRbxQ9wk7RNISln30ZKSFPuEUMSXiwo=; b=WWdx1WSCR/TUgouLOWjOi0F5UV
-	KOwOTkpDug+rb9HPocw17s/qRnVw5sCmSjFin1/RGL+JPmWwzXPn0q4QG/XdJ11tz6X6aJNzgTy4i
-	Fi9le1HUJGun+Ak3IZ1qSNyn9/3+Yl//K+ArbCncgJbyQB03K/WTaoi3sKAjGiUMJSRCgCJ7UUt8C
-	tWPN4xy0lxSyvc/aGbi/b1peg6yqCoYfzV3eMmIekFQ6Uv04C6RHmVXWG4z8Da1h474oGUQ6VT6R9
-	JxkGBE8L3ViuIsgQhB77WtOr7KpwioeDUbhkFYAlKzoS0q1V8gQOP0kf+MprrtjZ5j6SsdiDWvZXH
-	nqkq4lfw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=Al8+6dPz77xxMYRF3kXBd6wlzaissGIpQTmsi0+0vsw=; b=t2ck35NrW2Kc6SCtPcHz5jaWGI
+	XeptCyuFQ2Ll8D6bySFXn2MJ0NKjgaZqQtdQniphDdsMxJu9HCsVpG0VL6/nXvOyWmE/z8ugsinkz
+	Co60y6MwgcpThC83cyQsZ/605dDt+LauWuv6PuY4+HzO4cYY2H6gNInEnyEdBYKLJq5RXxxwfCgDe
+	Ukf3vsd4JwlpVy7/KKToPKqS+wS/wpc2r2OV65qKAa+Ahnkk4CEPaypkxf/U1ree0iPSPDHY/8LZd
+	2pzbX6C57w9nnj090PaT6umGOw6VA6Oyc7NXgdjDoQcvT3IRRxbCN37zFSVBsR+yj8CHihOl6I59t
+	IL4vk+UQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tJORD-00000000Mze-3J5w;
-	Fri, 06 Dec 2024 02:51:27 +0000
-Received: from mail-pg1-x530.google.com ([2607:f8b0:4864:20::530])
+	id 1tJZkg-00000001ubZ-1mKo;
+	Fri, 06 Dec 2024 14:56:18 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tJORA-00000000MzA-3Ih0
+	id 1tJZke-00000001ubB-0cuu
 	for linux-um@lists.infradead.org;
-	Fri, 06 Dec 2024 02:51:25 +0000
-Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-7fd17f231a7so978861a12.0
-        for <linux-um@lists.infradead.org>; Thu, 05 Dec 2024 18:51:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733453484; x=1734058284; darn=lists.infradead.org;
-        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
-         :message-id:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sRjrelvuTYuWFRbxQ9wk7RNISln30ZKSFPuEUMSXiwo=;
-        b=GpwhBpeGWr+sNVmtP1+2FLmbwEn9wZouWundmhgphbh7Pgo1n9RvDHdyz0WwXhqugL
-         9aCkyn7iFNsnGlh52UhSjbQuJV7QxcE+izDQ+lXYDoLHFzNr2CURpxvDs7g+l+J88fV1
-         DjvlvoZxZPASrZBfCMIBwYASz7th3lJPh+1EeUbA11IKR6+ga9s164Vo5vuAXc0y7uWK
-         px6MtoQddvMuvYf0fL9YMlqsiwPBSBPbdVeF/a4ximGyZ+XHOPEK2B6ghSUOMTpNQ+Gr
-         Rs2+4EDEZTGSqkzwzOuYvWEBkz2mFItC01YBqRbH6NNgxbyN72LGGgJj8PC4ZpTcnTD+
-         QMaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733453484; x=1734058284;
-        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
-         :message-id:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sRjrelvuTYuWFRbxQ9wk7RNISln30ZKSFPuEUMSXiwo=;
-        b=GKT5ZWek6yUv89Vtq7WQ/t5FSUhaIN9i2ZZAmSP3AsZQ88efjXTa9mhyzn7VK0QcxS
-         tF3q8VYZpwl0FK64PktlCJmM+CKNjh25GZ3ocywj33a+vpWeYg25YexjBHUU8gy5omrR
-         URAbKcAfRvC03GRzKC4NAWwu6/cuSmWjQ1/z0Wys5KdT3HmhV3vUhlCAGi5PKxKAKSiB
-         IFkFT7Z05J+BaDBjpLGg0FaSYmkoq2DWZ8EwgRSk7fLWSzm27R9eivQwoTVc+o5fNdlb
-         VflFC86rfbug3/di/WiL5jZfmQUOrZYIwpGKsR+awrYSUtEVXE+5IjDg/R66YZjgI6ls
-         443Q==
-X-Gm-Message-State: AOJu0Yx0kuw0u3ovUpeqE9gnFCXA0yn4QX0BZKG8IHCqm/Yf7+gQnoTe
-	XLP5wSnmhbcbjOSDMoatXWSfcC8gFxp4bThplvHIZbwnETfUcMp6
-X-Gm-Gg: ASbGncspnb++PYNUq2zxBcKvzY+/UIdxVWc8EWFPLUuR01m2u8WlTer6IvsmokyCqL0
-	dfnPvmWqweXMQaPjvN058g0tC1J7BIdz0Zt/xJHa3dRq+kB/yyKV98VT7ATSxTjD4gM7BUgne02
-	ueYty8pG5rcrPsalZuNvvs/l8rfy70SIFd1r7a9Teyap745GcEzjhVmMS+OAwy1Jczhg3QSmAgx
-	gIjxRh5boS1NginhYee8eee3mnzUT56b6agJQ10qPgVbkxcUvN9Vitkz8VMHi5mDFnLIz+YThL+
-	/HOT814tlADe49xSIunLbX4v0iQvRMGyC+9W
-X-Google-Smtp-Source: AGHT+IHNwfWbWegL3BAOZkrtXfjiRZwpucttytQ9PYCjGjuSi4glr3CnbbPXuM47qJHxQF0shMNZew==
-X-Received: by 2002:a05:6a21:9985:b0:1e0:c247:21d2 with SMTP id adf61e73a8af0-1e1870c43bdmr2025833637.23.1733453483558;
-        Thu, 05 Dec 2024 18:51:23 -0800 (PST)
-Received: from mars.local.gmail.com (221x241x217x81.ap221.ftth.ucom.ne.jp. [221.241.217.81])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7fd157acd35sm2017754a12.61.2024.12.05.18.51.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Dec 2024 18:51:22 -0800 (PST)
-Date: Fri, 06 Dec 2024 11:51:20 +0900
-Message-ID: <m2wmgdv80n.wl-thehajime@gmail.com>
-From: Hajime Tazaki <thehajime@gmail.com>
-To: johannes@sipsolutions.net
-Cc: linux-um@lists.infradead.org,
-	ricarkol@google.com,
-	Liam.Howlett@oracle.com,
-	kenichi.yasukata@gmail.com
-Subject: Re: [PATCH v3 06/13] um: nommu: syscalls handler from userspace by seccomp filter
-In-Reply-To: <09c2f373dadbdc7f369742662ab43d6b5af66698.camel@sipsolutions.net>
-References: <cover.1733199769.git.thehajime@gmail.com>
-	<f1aed0f9233f49880510e9506deddd52b33c2fc6.1733199769.git.thehajime@gmail.com>
-	<c5c8a72aa008fd23fd1c7f64def54e94253b3016.camel@sipsolutions.net>
-	<m234j2w83v.wl-thehajime@gmail.com>
-	<09c2f373dadbdc7f369742662ab43d6b5af66698.camel@sipsolutions.net>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/26.3 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+	Fri, 06 Dec 2024 14:56:17 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id DEABB5C6E64;
+	Fri,  6 Dec 2024 14:55:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF077C4CED1;
+	Fri,  6 Dec 2024 14:56:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1733496975;
+	bh=m4I9FJrIIkmawz4VhrU1meu9Bm4w+g4f+Jhz55x0ZJg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=2W9lT9MU8WMVoStj7iSvEoITaSaYG4apuzy+myePcIx7yBzluL8xKIrxrfcuMpOUN
+	 MEHk4Gc3JRAnphdKuJVU3DHb3cWsGK2IPSnSIdtgvTDmHMFgiueNWqmcDaMYfpxxBW
+	 2d4oWrUZLKgRDTW5wN4cdAwAHsCzJ/8ukLBgB3cI=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: stable@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	patches@lists.linux.dev,
+	Rob Herring <robh+dt@kernel.org>,
+	Frank Rowand <frowand.list@gmail.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	linux-um@lists.infradead.org,
+	Stephen Boyd <sboyd@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 6.6 143/676] um: Unconditionally call unflatten_device_tree()
+Date: Fri,  6 Dec 2024 15:29:22 +0100
+Message-ID: <20241206143658.938336026@linuxfoundation.org>
+X-Mailer: git-send-email 2.47.1
+In-Reply-To: <20241206143653.344873888@linuxfoundation.org>
+References: <20241206143653.344873888@linuxfoundation.org>
+User-Agent: quilt/0.67
+X-stable: review
+X-Patchwork-Hint: ignore
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241205_185124_822779_3070D335 
-X-CRM114-Status: GOOD (  14.79  )
+X-CRM114-CacheID: sfid-20241206_065616_228854_6EF91E5E 
+X-CRM114-Status: GOOD (  14.43  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -101,30 +80,83 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+6.6-stable review patch.  If anyone has any objections, please let me know.
 
-On Thu, 05 Dec 2024 22:54:21 +0900,
-Johannes Berg wrote:
-> 
-> On Thu, 2024-12-05 at 22:51 +0900, Hajime Tazaki wrote:
-> > > 
-> > > I don't understand why this behaves differently with and without
-> > > zpoline, it seems it shouldn't need to. Anyway, still think zpoline is
-> > > future work.
-> > 
-> > I will remove the zpoline part.
-> > When zpoline is used, SIGSYS signal is a sign of unexpected syscall
-> > invocation, and raise this signal to userspace (with printing
-> > message).
-> > 
-> 
-> But why? We already established that zpoline cannot translate
-> everything, e.g. JIT code and similar. So even if you have zpoline you
-> can just have seccomp handle the syscall as a fallback, to catch cases
-> like that rather than failing, no?
+------------------
 
-You have better understandings on this part than me; yes the fallback
-option should be the way to go.
+From: Stephen Boyd <sboyd@kernel.org>
 
-thanks,
--- Hajime
+[ Upstream commit 221a819aa3ca5bbbc91ce425b3e8d9463b121d09 ]
+
+Call this function unconditionally so that we can populate an empty DTB
+on platforms that don't boot with a command line provided DTB.  There's
+no harm in calling unflatten_device_tree() unconditionally. If there
+isn't a valid initial_boot_params dtb then unflatten_device_tree()
+returns early.
+
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Frank Rowand <frowand.list@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-um@lists.infradead.org
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Link: https://lore.kernel.org/r/20240217010557.2381548-4-sboyd@kernel.org
+Signed-off-by: Rob Herring <robh@kernel.org>
+Stable-dep-of: b2473a359763 ("of/fdt: add dt_phys arg to early_init_dt_scan and early_init_dt_verify")
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/um/kernel/dtb.c  | 16 ++++++++--------
+ drivers/of/unittest.c |  4 ----
+ 2 files changed, 8 insertions(+), 12 deletions(-)
+
+diff --git a/arch/um/kernel/dtb.c b/arch/um/kernel/dtb.c
+index 484141b06938f..4954188a6a090 100644
+--- a/arch/um/kernel/dtb.c
++++ b/arch/um/kernel/dtb.c
+@@ -16,16 +16,16 @@ void uml_dtb_init(void)
+ 	void *area;
+ 
+ 	area = uml_load_file(dtb, &size);
+-	if (!area)
+-		return;
+-
+-	if (!early_init_dt_scan(area)) {
+-		pr_err("invalid DTB %s\n", dtb);
+-		memblock_free(area, size);
+-		return;
++	if (area) {
++		if (!early_init_dt_scan(area)) {
++			pr_err("invalid DTB %s\n", dtb);
++			memblock_free(area, size);
++			return;
++		}
++
++		early_init_fdt_scan_reserved_mem();
+ 	}
+ 
+-	early_init_fdt_scan_reserved_mem();
+ 	unflatten_device_tree();
+ }
+ 
+diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
+index 4f58345b5c683..7986113adc7d3 100644
+--- a/drivers/of/unittest.c
++++ b/drivers/of/unittest.c
+@@ -4017,10 +4017,6 @@ static int __init of_unittest(void)
+ 	add_taint(TAINT_TEST, LOCKDEP_STILL_OK);
+ 
+ 	/* adding data for unittest */
+-
+-	if (IS_ENABLED(CONFIG_UML))
+-		unittest_unflatten_overlay_base();
+-
+ 	res = unittest_data_add();
+ 	if (res)
+ 		return res;
+-- 
+2.43.0
+
+
+
 
