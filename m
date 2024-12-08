@@ -4,87 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88D4BE77173
-	for <linux-um@archiver.kernel.org>; Sun,  8 Dec 2024 10:16:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13DB4E7717F
+	for <linux-um@archiver.kernel.org>; Sun,  8 Dec 2024 10:16:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=ANzLHPhvUvb9yEKgigzM5mkIBLQoa1J68xVJ3wb2agw=; b=1dIa5GbxiH9Z+uyoNEaoNwhVKj
-	vP3gjj3eGKu8VEnHuq6z0Utsy17L456EgXYQpzCt1XTsckIDN54ZGvE8mZcrIW1umL0Zu2hyiBNSl
-	aHqOL4Imc+DI/tV/+KNpIcq/7CJMIrsvGtK3iDBEnFDuFRxCxiwv7ehgwdMq8egMAAdjUHtaH83pt
-	Or1saaggehSI9Y7+P+GuzNaY6c5ibpZG/GkqYmR8MhNcBz22UbGeMvrXQDdhIl5dPrYNvf0zQj5uL
-	gaKmiZG7HyMyYQ6QRBKhE1VRYB49bjtK1WX1Z0IQA+vu681YGnbEmATfqGli/8L3kiAS4tcUV39FE
-	nbAXQMdg==;
+	bh=Nn+yJSenFj0SKP8O4ppXlE15pvIp1tBHaMFf+b43bSc=; b=eSD9g35zvO9EmzJzdBE3tWxh1F
+	MGsB6cmWDOtv9Zcz0jhhk8aN6krBnQcvUNbaGi7+UrFfqwfx+63AIdfny16rsn+gHetYVe/tHW+I4
+	R/guSE+r17+NBBpJaGpq/0U1Bel00EANh2THd/VR7TlumDoyzHREvChZEGGSUzlcH6t1Zfu06SQCX
+	2MSszTMCEuboZSNeXdJwaRKU0bHeSXqDf/h5evFaCHW75lGd2N5dZae9Etx+tLuW0saMZKpfN0Jp7
+	BPZjdSs/hVXTcBNwXnt9TDV9eHGHyzCBSu8uPgfZhOQuimZRD3W+uFQ+oolbgJ6VB5g/PA9/7oe+9
+	hYzqdvzQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tKEKo-000000057bt-106U;
-	Sun, 08 Dec 2024 10:16:18 +0000
-Received: from mail-pf1-x431.google.com ([2607:f8b0:4864:20::431])
+	id 1tKEKq-000000057dD-36uP;
+	Sun, 08 Dec 2024 10:16:20 +0000
+Received: from mail-pf1-x42a.google.com ([2607:f8b0:4864:20::42a])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tKEKk-000000057aV-3AH4
+	id 1tKEKo-000000057bq-0rU8
 	for linux-um@lists.infradead.org;
-	Sun, 08 Dec 2024 10:16:16 +0000
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-725b3b9fa6cso2208879b3a.3
-        for <linux-um@lists.infradead.org>; Sun, 08 Dec 2024 02:16:14 -0800 (PST)
+	Sun, 08 Dec 2024 10:16:19 +0000
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-7258cf297d4so3255935b3a.2
+        for <linux-um@lists.infradead.org>; Sun, 08 Dec 2024 02:16:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733652974; x=1734257774; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1733652977; x=1734257777; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ANzLHPhvUvb9yEKgigzM5mkIBLQoa1J68xVJ3wb2agw=;
-        b=mga8/oG/IwMGogRt6SXFriGG3OqWn1fhBemQWXvV9DpUUBA4ZRwh3zkDQ6Qwgu9RrW
-         6hfIPsGVdfv6iBs1Y4r3xwBbu9ggLJD2lbRUHTA4+k47G7xWyy2fQVTAcsfHVjJ/epbS
-         jloxH0yqaG1j94eKhQyfds07156hIzDmiFRjpFiP47ONOXjEK5RYUI2KFh031UJS4Rmz
-         lrkcU2Pbzc4e34x4oD3uwS5Y13mlKmPViSH5cQwQ5xHnZma1xhmgeDSHNz5D2y1vDFdp
-         7vG66yvKT1jwItIjU9L7zzEiSblxtNNsfDO9cI6RmMlcWFcISy71eKFxnlk1+VAyDuf7
-         2Xzg==
+        bh=Nn+yJSenFj0SKP8O4ppXlE15pvIp1tBHaMFf+b43bSc=;
+        b=XR+u3Q6iEfE5kqDuAlRk9KOPWJT7Jzx7kyTXb9B4ZdonRkbblBRixJTbgFE7zIoxhB
+         sRs8JVizfZ1HNTQMNeqvENer6BfVKVq4YoALy0QwYwBDlK6to1Aa3JUKuKnctukRqbm5
+         u/nku1/hOv/E4D1VqoO+wNNiI8F/apqCtRYyTZoVU7INHPX1395fUBH0cMR9WDq0oj2L
+         0JRox/je2d14nE1px90HaGBPuXX4Ivv7Bx8wkn1MTHgWzlwavM5pBzSxhyXulVE+EiKC
+         vKvtKQFR0DlXyrsFR+59IN2da55R6uSSBo7H6A6TeKtup5BItQBeZN2iOlLbn4n9sKrP
+         rmZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733652974; x=1734257774;
+        d=1e100.net; s=20230601; t=1733652977; x=1734257777;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ANzLHPhvUvb9yEKgigzM5mkIBLQoa1J68xVJ3wb2agw=;
-        b=OMpa/BKnI/bvY/pdE0JXS8wP7HC0Ub4h2E16ejFZiYrAvqP9RdxdMJMB5exuhFLk6j
-         uK/nstlA/fvI/dgNUbQ/rtkb3trcm4aoL2zpqKNbZjM52f3ArmVD1nkieXtGkesnsDV3
-         mRbPebQI8S+AzYyE9v6U0dc6HpW6QXaObeSHtsfVCyiXKnJnlnlv/NBBPU4abcdfZRG8
-         6bpsOT/NMqy7g7B470+Qn9mrVLaWvW+23Mvb0GKviWEFq91qCW2R4Jxl9CPLGNF/rH5O
-         LUf4B+3u7J0EkAivNbvbodF16IVh41uirFELTvwgHLJbyPIWCp12otUq6r18C6YBxVFi
-         HhXQ==
-X-Gm-Message-State: AOJu0Yzt49CFQc8LQeTP/UgQcBxTmNyxTopdXBuqjI9GEVEeC3u6LPq0
-	nJBU7hbRjbr8ooFhrcfOHVhb/Zl+tsbq056KevH7ScKd12YraQdH
-X-Gm-Gg: ASbGnctbZumS1csRhN7BQelYmKNyniabG3a0VPeo3bqh+CeMUch4w4oVDlcnJUs7rxj
-	0u7vPRiBy5Xc5fydyGcfyGPgA1f7VGDTC3PABc2DjXfRaD3Ujz+eApZJF8fGVskvk1TXkXmWcu+
-	ULU2VOWNr0sSt2bYn4C4Lh7xhDB4Jt1lAjI+32DdWsAMTJRMLILMwIJ+wzeBaur27Olj4S8IPpe
-	7j6Uaw1hkd3Xah3Em1Cg7H9nyeX3fK/enQF2FrXtJ5P+jlz28S+NjzTKQVaUHHPBc/JAkF5zCxG
-	xILEd+KH/x9DWbLta+AT
-X-Google-Smtp-Source: AGHT+IF0p+Sq5/ZOrkm6KZo+Vn0ZwNLeiyMwwqRBFWEEFq28eBX2KNOwtKPxcghV5YtO3gmsq+TzVQ==
-X-Received: by 2002:a05:6a00:4b03:b0:725:456e:76e with SMTP id d2e1a72fcca58-725b80feb59mr14456755b3a.6.1733652973702;
-        Sun, 08 Dec 2024 02:16:13 -0800 (PST)
+        bh=Nn+yJSenFj0SKP8O4ppXlE15pvIp1tBHaMFf+b43bSc=;
+        b=BUA8jGsd525SGBL+8619N9orbOYH10cqTjuo0v6Mb7g2nhBk7ToJ9//IinJhq85SLr
+         DjDjYqrlH3IyJnOxklknWB09qSftybPu7MNpBc5jWeBLv3ghk0M5ZMxc4Z9ktQwJHnl8
+         WWzZ9OxPmoXyT3JwByEIRFl95tKLV3cAO4kmhtMAYg0GOYSFxk2euYikj4i4CN/PfDUM
+         MAj2MSmkGfcJyZmwtCUeEAEfisaQQOfUds0UBLHqwrTUzyOyfxg2XrjhWzzzTgAW0cR3
+         HkNkCqvyo9oc+dOZu6F/CyhP0ncVcdPl3iJlRlTb0oTfCjkf1GUVO9HtFV/8i2S/KVUk
+         RDWw==
+X-Gm-Message-State: AOJu0YwU4iazcCfEnFD1tm08P2yugjRTMyFtHbCMPYJ+BJUdqwhL7wYp
+	NxTq4IYVOc9kH4dl96MKfcH/6c/UonzztMaeCu8AYkDWzJ49m1Fl
+X-Gm-Gg: ASbGncttI6zyzHuNVMv/FvmQDiVDX+n6JItn8lkForpOuErdOdyHcaygAwmu/hlZxOK
+	Wn8Sf48HgA/Ve771PqFtx/hxkObBZ1H/iF2U6ut1xRSLZuXbBMe0qXaO5Ucj1F0Oa92f0aVUWnC
+	4svHl+Skvi17etcCqLe+MfWcP76/HlLoeMlR3aScus6WlI+brbBJKzkorIVDXQueYBKJeLAYKAO
+	rxB2vTLW2DXmuPZPQcCloQoTr3+eFAuCckDma2AcNV0TTRPjxyG7ci9uuc+3hDRmKYpbwWZxrq+
+	TQ+/9nqdR2YP7jZ11EiZ
+X-Google-Smtp-Source: AGHT+IH2eGCVO2XsL1RgXpUekzgrR4Zvw9XcCGftZLZSv+ltOu+YAXoyJ4uAj57r2dhQ8W9d6rpK7g==
+X-Received: by 2002:a05:6a21:3282:b0:1e0:f059:cd6 with SMTP id adf61e73a8af0-1e187125c7emr12730198637.29.1733652977241;
+        Sun, 08 Dec 2024 02:16:17 -0800 (PST)
 Received: from ikb-h07-29-noble.in.iijlab.net ([202.214.97.5])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7fd41ff3e42sm1081908a12.66.2024.12.08.02.16.12
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-725d2f4b31fsm2147727b3a.90.2024.12.08.02.16.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Dec 2024 02:16:13 -0800 (PST)
+        Sun, 08 Dec 2024 02:16:16 -0800 (PST)
 Received: by ikb-h07-29-noble.in.iijlab.net (Postfix, from userid 1010)
-	id 174EBDDB02C; Sun,  8 Dec 2024 19:16:11 +0900 (JST)
+	id 778E7DDB02E; Sun,  8 Dec 2024 19:16:14 +0900 (JST)
 From: Hajime Tazaki <thehajime@gmail.com>
 To: linux-um@lists.infradead.org
 Cc: thehajime@gmail.com,
 	ricarkol@google.com,
 	Liam.Howlett@oracle.com
-Subject: [PATCH v4 07/13] x86/um: nommu: process/thread handling
-Date: Sun,  8 Dec 2024 19:15:34 +0900
-Message-ID: <b8520d88457ecbd8ad2b1d0c59906da6f846e9e0.1733652929.git.thehajime@gmail.com>
+Subject: [PATCH v4 08/13] um: nommu: configure fs register on host syscall invocation
+Date: Sun,  8 Dec 2024 19:15:35 +0900
+Message-ID: <c79141acf4739d2e842629979736fbe46415dc95.1733652929.git.thehajime@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1733652929.git.thehajime@gmail.com>
 References: <cover.1733652929.git.thehajime@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241208_021614_798762_B51869D8 
-X-CRM114-Status: GOOD (  24.42  )
+X-CRM114-CacheID: sfid-20241208_021618_244051_8CFD3EA9 
+X-CRM114-Status: GOOD (  20.28  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,268 +99,276 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Since ptrace facility isn't used under !MMU of UML, there is different
-code path to invoke processes/threads; on an entry to the syscall
-interface, the stack pointer should be manipulated to handle vfork(2)
-return address, no external process is used, and need to properly
-configure some of registers (fs segment register for TLS, etc) on every
-context switch, etc.
-
-Signals aren't delivered in non-ptrace syscall entry/leave so, we also
-need to handle pending signal by ourselves.
+As userspace on UML/!MMU also need to configure %fs register when it is
+running to correctly access thread structure, host syscalls implemented
+in os-Linux drivers may be puzzled when they are called.  Thus it has to
+configure %fs register via arch_prctl(SET_FS) on every host syscalls.
 
 Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
 Signed-off-by: Ricardo Koller <ricarkol@google.com>
 ---
- arch/um/os-Linux/process.c              |  6 ++++
- arch/x86/um/Makefile                    |  3 +-
- arch/x86/um/nommu/Makefile              |  2 +-
- arch/x86/um/nommu/do_syscall_64.c       | 26 +++++++++++++++
- arch/x86/um/nommu/entry_64.S            | 24 ++++++++++++++
- arch/x86/um/nommu/process.c             | 35 ++++++++++++++++++++
- arch/x86/um/nommu/syscalls_64.c         | 44 +++++++++++++++++++++++++
- arch/x86/um/shared/sysdep/syscalls_64.h |  1 +
- 8 files changed, 139 insertions(+), 2 deletions(-)
- create mode 100644 arch/x86/um/nommu/process.c
- create mode 100644 arch/x86/um/nommu/syscalls_64.c
+ arch/um/include/shared/os.h       |  6 +++
+ arch/um/os-Linux/process.c        |  6 +++
+ arch/um/os-Linux/start_up.c       | 20 +++++++++
+ arch/x86/um/nommu/do_syscall_64.c | 37 ++++++++++++++++
+ arch/x86/um/nommu/syscalls_64.c   | 71 +++++++++++++++++++++++++++++++
+ 5 files changed, 140 insertions(+)
 
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index d29b967a009e..abb6f03414c5 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -190,6 +190,7 @@ extern void check_host_supports_tls(int *supports_tls, int *tls_min);
+ extern void get_host_cpu_features(
+ 	void (*flags_helper_func)(char *line),
+ 	void (*cache_helper_func)(char *line));
++extern int host_has_fsgsbase;
+ 
+ /* mem.c */
+ extern int create_mem_file(unsigned long long len);
+@@ -214,6 +215,11 @@ extern int os_unmap_memory(void *addr, int len);
+ extern int os_drop_memory(void *addr, int length);
+ extern int can_drop_memory(void);
+ extern int os_mincore(void *addr, unsigned long len);
++extern int os_arch_prctl(int pid, int option, unsigned long *arg);
++#ifndef CONFIG_MMU
++extern long long host_fs;
++#endif
++
+ 
+ void os_set_pdeathsig(void);
+ 
 diff --git a/arch/um/os-Linux/process.c b/arch/um/os-Linux/process.c
-index e2dc00fc84c0..49aa8e92205e 100644
+index 49aa8e92205e..9acb865e2399 100644
 --- a/arch/um/os-Linux/process.c
 +++ b/arch/um/os-Linux/process.c
-@@ -28,6 +28,9 @@ int unscheduled_userspace_iterations;
- 
- void os_alarm_process(int pid)
- {
-+	if (pid <= 0)
-+		return;
-+
- 	kill(pid, SIGALRM);
+@@ -16,6 +16,7 @@
+ #include <sys/prctl.h>
+ #include <sys/wait.h>
+ #include <asm/unistd.h>
++#include <sys/syscall.h>   /* For SYS_xxx definitions */
+ #include <linux/threads.h>
+ #include <init.h>
+ #include <longjmp.h>
+@@ -206,6 +207,11 @@ int os_mincore(void *addr, unsigned long len)
+ 	return ret;
  }
  
-@@ -45,6 +48,9 @@ void os_kill_process(int pid, int reap_child)
- 
- void os_kill_ptraced_process(int pid, int reap_child)
- {
-+	if (pid <= 0)
-+		return;
-+
- 	kill(pid, SIGKILL);
- 	ptrace(PTRACE_KILL, pid);
- 	ptrace(PTRACE_CONT, pid);
-diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
-index 227af2a987e2..53c9ebb3c41c 100644
---- a/arch/x86/um/Makefile
-+++ b/arch/x86/um/Makefile
-@@ -27,7 +27,8 @@ subarch-y += ../kernel/sys_ia32.o
- 
- else
- 
--obj-y += syscalls_64.o vdso/
-+obj-y += vdso/
-+obj-$(CONFIG_MMU) += syscalls_64.o
- 
- subarch-y = ../lib/csum-partial_64.o ../lib/memcpy_64.o \
- 	../lib/memmove_64.o ../lib/memset_64.o
-diff --git a/arch/x86/um/nommu/Makefile b/arch/x86/um/nommu/Makefile
-index ebe47d4836f4..03865bf1428e 100644
---- a/arch/x86/um/nommu/Makefile
-+++ b/arch/x86/um/nommu/Makefile
-@@ -5,4 +5,4 @@ else
- 	BITS := 64
- endif
- 
--obj-y = do_syscall_$(BITS).o entry_$(BITS).o os-Linux/
-+obj-y = do_syscall_$(BITS).o entry_$(BITS).o process.o syscalls_$(BITS).o os-Linux/
-diff --git a/arch/x86/um/nommu/do_syscall_64.c b/arch/x86/um/nommu/do_syscall_64.c
-index 5d0fa83e7fdc..d5fb849bb34b 100644
---- a/arch/x86/um/nommu/do_syscall_64.c
-+++ b/arch/x86/um/nommu/do_syscall_64.c
-@@ -6,9 +6,28 @@
- #include <sysdep/syscalls.h>
- #include <os.h>
- 
-+/*
-+ * save/restore the return address stored in the stack, as the child overwrites
-+ * the contents after returning to userspace (i.e., by push %rdx).
-+ *
-+ * see the detail in fork_handler().
-+ */
-+static void vfork_save_stack(void *stack)
++int os_arch_prctl(int pid, int option, unsigned long *arg2)
 +{
-+	memcpy(stack,
-+	       (void *)current->thread.regs.regs.gp[HOST_SP], 8);
++	return syscall(SYS_arch_prctl, option, arg2);
 +}
 +
-+static void vfork_restore_stack(void *stack_copy)
+ void init_new_thread_signals(void)
+ {
+ 	set_handler(SIGSEGV);
+diff --git a/arch/um/os-Linux/start_up.c b/arch/um/os-Linux/start_up.c
+index 93fc82c01aba..dbab091892b3 100644
+--- a/arch/um/os-Linux/start_up.c
++++ b/arch/um/os-Linux/start_up.c
+@@ -19,6 +19,8 @@
+ #include <sys/resource.h>
+ #include <asm/ldt.h>
+ #include <asm/unistd.h>
++#include <sys/auxv.h>
++#include <asm/hwcap2.h>
+ #include <init.h>
+ #include <os.h>
+ #include <kern_util.h>
+@@ -28,6 +30,8 @@
+ #include <skas.h>
+ #include "internal.h"
+ 
++int host_has_fsgsbase;
++
+ static void ptrace_child(void)
+ {
+ 	int ret;
+@@ -278,6 +282,19 @@ void  __init get_host_cpu_features(
+ 	}
+ }
+ 
++static void __init check_fsgsbase(void)
 +{
-+	memcpy((void *)current->thread.regs.regs.gp[HOST_SP],
-+	       stack_copy, 8);
++	unsigned long auxv = getauxval(AT_HWCAP2);
++
++	os_info("Checking FSGSBASE instructions...");
++	if (auxv & HWCAP2_FSGSBASE) {
++		host_has_fsgsbase = 1;
++		os_info("OK\n");
++	} else {
++		host_has_fsgsbase = 0;
++		os_info("disabled\n");
++	}
++}
+ 
+ void __init os_early_checks(void)
+ {
+@@ -293,6 +310,9 @@ void __init os_early_checks(void)
+ 	 */
+ 	check_tmpexec();
+ 
++	/* probe fsgsbase instruction */
++	check_fsgsbase();
++
+ 	pid = start_ptraced_child();
+ 	if (init_pid_registers(pid))
+ 		fatal("Failed to initialize default registers");
+diff --git a/arch/x86/um/nommu/do_syscall_64.c b/arch/x86/um/nommu/do_syscall_64.c
+index d5fb849bb34b..a7d23ad82294 100644
+--- a/arch/x86/um/nommu/do_syscall_64.c
++++ b/arch/x86/um/nommu/do_syscall_64.c
+@@ -2,6 +2,8 @@
+ 
+ #include <linux/kernel.h>
+ #include <linux/ptrace.h>
++#include <asm/fsgsbase.h>
++#include <asm/prctl.h>
+ #include <kern_util.h>
+ #include <sysdep/syscalls.h>
+ #include <os.h>
+@@ -24,6 +26,32 @@ static void vfork_restore_stack(void *stack_copy)
+ 	       stack_copy, 8);
+ }
+ 
++static int os_x86_arch_prctl(int pid, int option, unsigned long *arg2)
++{
++	if (!host_has_fsgsbase)
++		return os_arch_prctl(pid, option, arg2);
++
++	switch (option) {
++	case ARCH_SET_FS:
++		wrfsbase(*arg2);
++		break;
++	case ARCH_SET_GS:
++		wrgsbase(*arg2);
++		break;
++	case ARCH_GET_FS:
++		*arg2 = rdfsbase();
++		break;
++	case ARCH_GET_GS:
++		*arg2 = rdgsbase();
++		break;
++	default:
++		pr_warn("%s: unsupported option: 0x%x", __func__, option);
++		break;
++	}
++
++	return 0;
 +}
 +
  __visible void do_syscall_64(struct pt_regs *regs)
  {
  	int syscall;
-+	unsigned long stack_copy;
+@@ -39,6 +67,9 @@ __visible void do_syscall_64(struct pt_regs *regs)
+ 	if (syscall == __NR_vfork)
+ 		vfork_save_stack(&stack_copy);
  
- 	syscall = PT_SYSCALL_NR(regs->regs.gp);
- 	UPT_SYSCALL_NR(&regs->regs) = syscall;
-@@ -17,6 +36,9 @@ __visible void do_syscall_64(struct pt_regs *regs)
- 		 syscall, (unsigned long)current,
- 		 (unsigned long)sys_call_table[syscall]);
- 
-+	if (syscall == __NR_vfork)
-+		vfork_save_stack(&stack_copy);
++	/* set fs register to the original host one */
++	os_x86_arch_prctl(0, ARCH_SET_FS, (void *)host_fs);
 +
  	if (likely(syscall < NR_syscalls)) {
  		PT_REGS_SET_SYSCALL_RETURN(regs,
  				EXECUTE_SYSCALL(syscall, regs));
-@@ -31,6 +53,10 @@ __visible void do_syscall_64(struct pt_regs *regs)
- 	if (syscall == __NR_execve && regs->regs.gp[HOST_AX] == 0)
- 		userspace(&current->thread.regs.regs);
- 
-+	/* only parents of vfork restores the contents of stack */
-+	if (syscall == __NR_vfork && regs->regs.gp[HOST_AX] > 0)
-+		vfork_restore_stack(&stack_copy);
-+
+@@ -60,4 +91,10 @@ __visible void do_syscall_64(struct pt_regs *regs)
  	/* force do_signal() --> is_syscall() */
  	set_thread_flag(TIF_SIGPENDING);
  	interrupt_end();
-diff --git a/arch/x86/um/nommu/entry_64.S b/arch/x86/um/nommu/entry_64.S
-index c612a4c53c6f..cb0642172e00 100644
---- a/arch/x86/um/nommu/entry_64.S
-+++ b/arch/x86/um/nommu/entry_64.S
-@@ -85,3 +85,27 @@ ENTRY(__kernel_vsyscall)
- 	ret
- 
- END(__kernel_vsyscall)
 +
-+// void userspace(struct uml_pt_regs *regs)
-+ENTRY(userspace)
-+	/* fixup stack for vfork syscall*/
-+	call	arch_fixup_stack
++	/* restore back fs register to userspace configured one */
++	os_x86_arch_prctl(0, ARCH_SET_FS,
++		      (void *)(current->thread.regs.regs.gp[FS_BASE
++						     / sizeof(unsigned long)]));
 +
-+	/* align the stack for x86_64 ABI */
-+	and     $-0x10, %rsp
-+	/* Handle any immediate reschedules or signals */
-+	call	interrupt_end
-+
-+	movq	current_ptregs, %rsp
-+
-+	POP_REGS
-+
-+	addq	$8, %rsp	/* skip orig_ax */
-+	popq	%r11		/* pt_regs->ip */
-+	addq	$8, %rsp	/* skip cs */
-+	addq	$8, %rsp	/* skip flags */
-+	popq	%rsp
-+
-+	jmp	*%r11
-+
-+END(userspace)
-diff --git a/arch/x86/um/nommu/process.c b/arch/x86/um/nommu/process.c
-new file mode 100644
-index 000000000000..ad5487796329
---- /dev/null
-+++ b/arch/x86/um/nommu/process.c
-@@ -0,0 +1,35 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <asm/unistd.h>
-+#include <sysdep/syscalls.h>
-+#include <os.h>
-+
-+void arch_fixup_stack(struct uml_pt_regs *regs)
-+{
-+	/*
-+	 * child of vfork(2) comes here.
-+	 * clone(2) also enters here but doesn't need to advance the %rsp.
-+	 *
-+	 * This fork can only come from libc's vfork, which
-+	 * does this:
-+	 *	pop %%rdx;
-+	 *	mov $58,%eax
-+	 *	syscall   ; // hook => __kernel_vsyscall
-+	 *	push %%rdx;
-+	 * %rcx stores the return address which is stored
-+	 * at pt_regs[HOST_IP] at the moment.  As child returns
-+	 * via userspace() with a jmp instruction (while parent
-+	 * does via ret instruction in __kernel_vsyscall), we
-+	 * need to pop (advance) the pushed address by "call"
-+	 * though, so this is what this next line does.
-+	 *
-+	 * As a result of vfork return in child, stack contents
-+	 * is overwritten by child (by pushq in vfork), which
-+	 * makes the parent puzzled after child returns.
-+	 *
-+	 * thus the contents should be restored before vfork/parent
-+	 * returns.  this is done in do_syscall_64().
-+	 */
-+	if (regs->gp[HOST_ORIG_AX] == __NR_vfork)
-+		regs->gp[REGS_SP_INDEX] += 8;
-+}
+ }
 diff --git a/arch/x86/um/nommu/syscalls_64.c b/arch/x86/um/nommu/syscalls_64.c
-new file mode 100644
-index 000000000000..c78c442aed1d
---- /dev/null
+index c78c442aed1d..5bb6d55b4bb5 100644
+--- a/arch/x86/um/nommu/syscalls_64.c
 +++ b/arch/x86/um/nommu/syscalls_64.c
-@@ -0,0 +1,44 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2003 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-+ * Copyright 2003 PathScale, Inc.
-+ *
-+ * Licensed under the GPL
-+ */
-+
-+#include <linux/sched.h>
-+#include <linux/sched/mm.h>
-+#include <linux/syscalls.h>
-+#include <linux/uaccess.h>
-+#include <asm/prctl.h> /* XXX This should get the constants from libc */
-+#include <registers.h>
-+#include <os.h>
-+#include "syscalls.h"
-+
-+void arch_switch_to(struct task_struct *to)
-+{
-+	/*
-+	 * In !CONFIG_MMU, it doesn't ptrace thus,
-+	 * The FS_BASE/GS_BASE registers are saved here.
-+	 */
-+	current_top_of_stack = task_top_of_stack(to);
-+	current_ptregs = (long)task_pt_regs(to);
-+
-+	if ((to->thread.regs.regs.gp[FS_BASE / sizeof(unsigned long)] == 0) ||
-+	    (to->mm == NULL))
-+		return;
-+
-+	/* this changes the FS on every context switch */
-+	arch_prctl(to, ARCH_SET_FS,
-+		   (void __user *) to->thread.regs.regs.gp[FS_BASE / sizeof(unsigned long)]);
-+}
-+
-+SYSCALL_DEFINE6(mmap, unsigned long, addr, unsigned long, len,
-+		unsigned long, prot, unsigned long, flags,
-+		unsigned long, fd, unsigned long, off)
-+{
-+	if (off & ~PAGE_MASK)
-+		return -EINVAL;
-+
-+	return ksys_mmap_pgoff(addr, len, prot, flags, fd, off >> PAGE_SHIFT);
-+}
-diff --git a/arch/x86/um/shared/sysdep/syscalls_64.h b/arch/x86/um/shared/sysdep/syscalls_64.h
-index ffd80ee3b9dc..9831ba8f5bcd 100644
---- a/arch/x86/um/shared/sysdep/syscalls_64.h
-+++ b/arch/x86/um/shared/sysdep/syscalls_64.h
-@@ -29,6 +29,7 @@ extern syscall_handler_t sys_arch_prctl;
- extern void do_syscall_64(struct pt_regs *regs);
- extern long __kernel_vsyscall(int64_t a0, int64_t a1, int64_t a2, int64_t a3,
- 			      int64_t a4, int64_t a5, int64_t a6);
-+extern void arch_fixup_stack(struct uml_pt_regs *regs);
- #endif
+@@ -13,8 +13,70 @@
+ #include <asm/prctl.h> /* XXX This should get the constants from libc */
+ #include <registers.h>
+ #include <os.h>
++#include <asm/thread_info.h>
++#include <asm/mman.h>
+ #include "syscalls.h"
  
- #endif
++/*
++ * The guest libc can change FS, which confuses the host libc.
++ * In fact, changing FS directly is not supported (check
++ * man arch_prctl). So, whenever we make a host syscall,
++ * we should be changing FS to the original FS (not the
++ * one set by the guest libc). This original FS is stored
++ * in host_fs.
++ */
++long long host_fs = -1;
++
++long arch_prctl(struct task_struct *task, int option,
++		unsigned long __user *arg2)
++{
++	long ret = -EINVAL;
++	unsigned long *ptr = arg2, tmp;
++
++	switch (option) {
++	case ARCH_SET_FS:
++		if (host_fs == -1)
++			os_arch_prctl(0, ARCH_GET_FS, (void *)&host_fs);
++		ret = 0;
++		break;
++	case ARCH_SET_GS:
++		ret = 0;
++		break;
++	case ARCH_GET_FS:
++	case ARCH_GET_GS:
++		ptr = &tmp;
++		break;
++	}
++
++	ret = os_arch_prctl(0, option, ptr);
++	if (ret)
++		return ret;
++
++	switch (option) {
++	case ARCH_SET_FS:
++		current->thread.regs.regs.gp[FS_BASE / sizeof(unsigned long)] =
++			(unsigned long) arg2;
++		break;
++	case ARCH_SET_GS:
++		current->thread.regs.regs.gp[GS_BASE / sizeof(unsigned long)] =
++			(unsigned long) arg2;
++		break;
++	case ARCH_GET_FS:
++		ret = put_user(current->thread.regs.regs.gp[FS_BASE / sizeof(unsigned long)], arg2);
++		break;
++	case ARCH_GET_GS:
++		ret = put_user(current->thread.regs.regs.gp[GS_BASE / sizeof(unsigned long)], arg2);
++		break;
++	}
++
++	return ret;
++}
++
++SYSCALL_DEFINE2(arch_prctl, int, option, unsigned long, arg2)
++{
++	return arch_prctl(current, option, (unsigned long __user *) arg2);
++}
++
+ void arch_switch_to(struct task_struct *to)
+ {
+ 	/*
+@@ -42,3 +104,12 @@ SYSCALL_DEFINE6(mmap, unsigned long, addr, unsigned long, len,
+ 
+ 	return ksys_mmap_pgoff(addr, len, prot, flags, fd, off >> PAGE_SHIFT);
+ }
++
++static int __init um_nommu_setup_hostfs(void)
++{
++	/* initialize the host_fs value at boottime */
++	os_arch_prctl(0, ARCH_GET_FS, (void *)&host_fs);
++
++	return 0;
++}
++arch_initcall(um_nommu_setup_hostfs);
 -- 
 2.43.0
 
