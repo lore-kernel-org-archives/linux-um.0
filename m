@@ -4,87 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E634E7717F
-	for <linux-um@archiver.kernel.org>; Sun,  8 Dec 2024 10:16:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58D29E7717D
+	for <linux-um@archiver.kernel.org>; Wed, 11 Dec 2024 23:45:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
+	:Date:Message-Id:From:Subject:Content-Transfer-Encoding:MIME-Version:
+	Content-Type:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=CuYeFaa6XJVhVFEeEDlLSKoQQuloVwYK3vseBrnmsAM=; b=Akg9pgvsQJ+qqKI7FjyiySfYVj
-	tdk1zMHv6K9IGqam30aeSKobP8+C+G1/kzm+Afuh2LExeruos5kajmWhM4Gy+pMW7RGg5p82wGAEJ
-	gfvg7Ee+eUELlafrs+enW1xwqBnuQj/mzA2ko+hgtt/4XFg4OdnmYkdJ0kbtGcjWySsbBJaaUz8w6
-	kKdyHmGob/L1U9jS1CrzN7TCl1Pc5vSaGmAxWqAGRQwd39CAN2yM/GrRIheFGE709WpSiTSSDgBD/
-	u+xauJhtQz2pT74hLQLNiRrsTNxE0bHqW7CwvqUClHYQZrurJFngVaDEO/NpBMvD7qiPvrC/sB28B
-	F96JmO7A==;
+	bh=hUEjsdsK5sfW+WU0cV/OJN+y9IF7umfVVUFeM2GVr84=; b=ljppUMoBYVMfl8JdLtwod25lKI
+	5Z0+wF/iD6lYCO31dT+Xl+UnmiwoDEJn01x4je43vCdhOV3VlI3ikh6pJMPK+jPAzdOBdWlkN6+wD
+	MviTg5HccyImyzfLay9Waq3f42jEJt6553sPGLyRoCONVhTF1LTzGQUKaeBlMLhPAZx5NRZyRyaV8
+	pU0JcvfSqE3KONQ7wUH65hprY4IK+GUJQBoUAWvBvdYwNpWynZmXPlKlBzauKmMHE0dIuAr+PTOlv
+	imdHaV8/Gi3zHNUbuHaSXXZ3IvOXyGFkXfDh6h1zPkKpG0owtYC16AuxLOx0TQfOFXIHnkFeFOoeG
+	IEbW6YMw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tKEL5-000000057jH-1I9s;
-	Sun, 08 Dec 2024 10:16:35 +0000
-Received: from mail-pl1-x630.google.com ([2607:f8b0:4864:20::630])
+	id 1tLWOT-0000000GWWv-1Zv6;
+	Wed, 11 Dec 2024 23:45:25 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tKEL2-000000057iF-3fn6
-	for linux-um@lists.infradead.org;
-	Sun, 08 Dec 2024 10:16:34 +0000
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-21644aca3a0so2146305ad.3
-        for <linux-um@lists.infradead.org>; Sun, 08 Dec 2024 02:16:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733652992; x=1734257792; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CuYeFaa6XJVhVFEeEDlLSKoQQuloVwYK3vseBrnmsAM=;
-        b=B4TsWUSSJQjCz5GVarpKLG9g8FXIcq+9rZQLwzdWQvF43ZNfjcbNt9fdvETbzT/59Z
-         HXHFp6zk0dtuTxUPksfisRMSExVQYnvCFeUb5Q45LUr+xL3QxNBGsvOMle91Q0R6sU5X
-         YT/MK2pvJ20f3cClz7OhcU9yLRYfLdZiC9lfFqc8iU+s/ywf2zVMPTKgTSd/AEpvWURL
-         rwjmR13x2t8DJqzgHxiO3PMnoeiv2Ss93bqNIrrNMAZvJ+RFEKVIoRoWnkkja/uVSNTP
-         VisaVlzDNeu7u/KpPvpY6bkTCe8FoAhbFxsgKxtD0HxMRrME26kgY2br6vYePCemCk2q
-         ilew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733652992; x=1734257792;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CuYeFaa6XJVhVFEeEDlLSKoQQuloVwYK3vseBrnmsAM=;
-        b=vMt7GAfyNwJ32ITGUrBGUsThs0TziGxG75I26PEUHTs32aJLekSxHKH0W0BjPi4rXS
-         +bbosg1XIpBpVQ1VaSMevmKgEhfsUnpto/1BqRxylpB9q801h/VY+HKSta22qZHsUWEw
-         0qx7Hm4EjZs1NfC68irRv3yPtLOOGsIOYDKIS7ucvodht8RNYQDkhl9rpAvURi0y8k2Y
-         CmDyw92RpEP2w+NO+0tkMuiH00C8OSnLy59m5xPXu+ry2cYengyPd+EMOP9O99e2MXi1
-         Dtq2bD2Yrdzv+GNSzZiCsIFbRW97hlwsigSf336jDCs+9he+WIF2vh9MidQ/I8RF8Epl
-         5oxA==
-X-Gm-Message-State: AOJu0YyakC2mY3BGGNM6VQAQsqWmAx+B4K2+z4yRIbGI1VZ3DuF/mgr0
-	SlnhNP97BthFSR7U+iuLE1LAxPQe5yOpthpYa1TtNAx5qVGRzE32GmguhQ==
-X-Gm-Gg: ASbGncs2VxIOemOYSxO5gIWP1tB0DCyEQ79HI0VHVY8esP1PvdPoB+MJsSD+4fUxLsB
-	dgGxnoWfKS8RLmNXK3V2hx03lKcO7AHFXG8IdUhUrShuJBpNa1kcm4emf3ceBeubemGGN4vjmMo
-	1KJ9Pousm9UCIfXp0XWwMfaaSFehhnEqujAU+xoZsM4ChjvPzZjS5PP5LjJ+5BcXDCc3xUAmJ7n
-	k5wwYub0olv3SZblrimvz619ltltbO2JhMP5se7Kd77XreG9XVkZfhLdQHXZIaibvr8s0HpOqh4
-	Xp9j64nx/gSy0Vly7y4C
-X-Google-Smtp-Source: AGHT+IF6JpnwEelFPtkbbq/WM8pZCb8/MRL94qbStFDpKjMcq0Bvyx6YpoZo/flwKhHFNxlbLMMZjA==
-X-Received: by 2002:a17:902:d490:b0:215:b74c:d7b2 with SMTP id d9443c01a7336-21614d5e2afmr141470665ad.31.1733652991915;
-        Sun, 08 Dec 2024 02:16:31 -0800 (PST)
-Received: from ikb-h07-29-noble.in.iijlab.net ([202.214.97.5])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21632aaf054sm18165775ad.252.2024.12.08.02.16.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Dec 2024 02:16:31 -0800 (PST)
-Received: by ikb-h07-29-noble.in.iijlab.net (Postfix, from userid 1010)
-	id 46FF3DDB038; Sun,  8 Dec 2024 19:16:29 +0900 (JST)
-From: Hajime Tazaki <thehajime@gmail.com>
-To: linux-um@lists.infradead.org
-Cc: thehajime@gmail.com,
-	ricarkol@google.com,
-	Liam.Howlett@oracle.com
-Subject: [PATCH v4 13/13] um: nommu: plug nommu code into build system
-Date: Sun,  8 Dec 2024 19:15:40 +0900
-Message-ID: <19e6e8f6682857595aba01a2393f66cbe0554fcc.1733652929.git.thehajime@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1733652929.git.thehajime@gmail.com>
-References: <cover.1733652929.git.thehajime@gmail.com>
+	id 1tLVFt-0000000GKUf-27c7;
+	Wed, 11 Dec 2024 22:32:30 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 7FB125C67E6;
+	Wed, 11 Dec 2024 22:31:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2AB6C4CED2;
+	Wed, 11 Dec 2024 22:32:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1733956348;
+	bh=BsLL13WVfc3NzEKIjd52mjnoMrC/Et1GCt0kRWiLCQo=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=qv6gvZPdDzbdVPybtFSPx8+F0xql/LHjAUoa61PxHbq7BiNILQmSVN3xV/Fk+jm3l
+	 eRj2euKpGQwhzha10D0yvWpJ5jdjr8+V1iYsps4/RL/90xpWyAoPlqxLTgT8H2p1Qr
+	 znxHE8HzGGVb3bxCyQgvVT/2hoGKZW56OU+GylgAoSP4eq7TpXB3MZRt3VoyD522af
+	 qGwcNNMDDsGqYKHkYodSX7oguHOLk4TTwi/8Q8fATZ6k5VUR9Dw7CkfxIhk8aSQAz0
+	 q46lv24Cq5nGqzFQZkxa8IXK7+L/Hgf8e5dM0N1jW5ubxUNiav+to559ZbObo4j7v8
+	 24oLtA9z8Jf7w==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAFBE380A965;
+	Wed, 11 Dec 2024 22:32:45 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 1/2] asm-generic: provide generic page_to_phys and
+ phys_to_page implementations
+From: patchwork-bot+linux-riscv@kernel.org
+Message-Id: <173395636448.1729195.13128530873311699126.git-patchwork-notify@kernel.org>
+Date: Wed, 11 Dec 2024 22:32:44 +0000
+References: <20241023053644.311692-2-hch@lst.de>
+In-Reply-To: <20241023053644.311692-2-hch@lst.de>
+To: Christoph Hellwig <hch@lst.de>
+Cc: linux-riscv@lists.infradead.org, arnd@arndb.de,
+ linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+ linux-arch@vger.kernel.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241208_021633_059843_CE4A1045 
-X-CRM114-Status: GOOD (  12.19  )
+X-CRM114-CacheID: sfid-20241211_143229_581455_0A385D32 
+X-CRM114-Status: UNSURE (   9.64  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,127 +83,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Add nommu kernel for um build.  defconfig is also provided.
+Hello:
 
-Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
-Signed-off-by: Ricardo Koller <ricarkol@google.com>
----
- arch/um/Kconfig                        | 14 +++++-
- arch/um/configs/x86_64_nommu_defconfig | 64 ++++++++++++++++++++++++++
- 2 files changed, 76 insertions(+), 2 deletions(-)
- create mode 100644 arch/um/configs/x86_64_nommu_defconfig
+This series was applied to riscv/linux.git (fixes)
+by Arnd Bergmann <arnd@arndb.de>:
 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 18051b1cfce0..2fc5a91c90a7 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -30,14 +30,17 @@ config UML
- 	select ARCH_SUPPORTS_LTO_CLANG_THIN
- 	select TRACE_IRQFLAGS_SUPPORT
- 	select TTY # Needed for line.c
--	select HAVE_ARCH_VMAP_STACK
-+	select HAVE_ARCH_VMAP_STACK if MMU
- 	select HAVE_RUST
- 	select ARCH_HAS_UBSAN
- 	select HAVE_ARCH_TRACEHOOK
- 	select THREAD_INFO_IN_TASK
-+	select UACCESS_MEMCPY if !MMU
-+	select GENERIC_STRNLEN_USER if !MMU
-+	select GENERIC_STRNCPY_FROM_USER if !MMU
- 
- config MMU
--	bool
-+	bool "MMU-based Paged Memory Management Support" if 64BIT
- 	default y
- 
- config UML_DMA_EMULATION
-@@ -190,8 +193,15 @@ config MAGIC_SYSRQ
- 	  The keys are documented in <file:Documentation/admin-guide/sysrq.rst>. Don't say Y
- 	  unless you really know what this hack does.
- 
-+config ARCH_FORCE_MAX_ORDER
-+	int "Order of maximal physically contiguous allocations" if EXPERT
-+	default "10" if MMU
-+	default "16" if !MMU
-+
- config KERNEL_STACK_ORDER
- 	int "Kernel stack size order"
-+	default 3 if !MMU
-+	range 3 10 if !MMU
- 	default 2 if 64BIT
- 	range 2 10 if 64BIT
- 	default 1 if !64BIT
-diff --git a/arch/um/configs/x86_64_nommu_defconfig b/arch/um/configs/x86_64_nommu_defconfig
-new file mode 100644
-index 000000000000..c2e0fb546987
---- /dev/null
-+++ b/arch/um/configs/x86_64_nommu_defconfig
-@@ -0,0 +1,64 @@
-+CONFIG_SYSVIPC=y
-+CONFIG_POSIX_MQUEUE=y
-+CONFIG_NO_HZ=y
-+CONFIG_HIGH_RES_TIMERS=y
-+CONFIG_BSD_PROCESS_ACCT=y
-+CONFIG_IKCONFIG=y
-+CONFIG_IKCONFIG_PROC=y
-+CONFIG_LOG_BUF_SHIFT=14
-+CONFIG_CGROUPS=y
-+CONFIG_BLK_CGROUP=y
-+CONFIG_CGROUP_SCHED=y
-+CONFIG_CGROUP_DEVICE=y
-+CONFIG_CGROUP_CPUACCT=y
-+# CONFIG_PID_NS is not set
-+CONFIG_CC_OPTIMIZE_FOR_SIZE=y
-+# CONFIG_MMU is not set
-+CONFIG_HOSTFS=y
-+CONFIG_MAGIC_SYSRQ=y
-+CONFIG_SSL=y
-+CONFIG_NULL_CHAN=y
-+CONFIG_PORT_CHAN=y
-+CONFIG_PTY_CHAN=y
-+CONFIG_TTY_CHAN=y
-+CONFIG_CON_CHAN="pts"
-+CONFIG_SSL_CHAN="pts"
-+CONFIG_UML_SOUND=m
-+CONFIG_UML_NET=y
-+CONFIG_UML_NET_ETHERTAP=y
-+CONFIG_UML_NET_TUNTAP=y
-+CONFIG_UML_NET_SLIP=y
-+CONFIG_UML_NET_DAEMON=y
-+CONFIG_UML_NET_MCAST=y
-+CONFIG_UML_NET_SLIRP=y
-+CONFIG_MODULES=y
-+CONFIG_MODULE_UNLOAD=y
-+CONFIG_IOSCHED_BFQ=m
-+CONFIG_BINFMT_MISC=m
-+CONFIG_NET=y
-+CONFIG_PACKET=y
-+CONFIG_UNIX=y
-+CONFIG_INET=y
-+CONFIG_DEVTMPFS=y
-+CONFIG_DEVTMPFS_MOUNT=y
-+CONFIG_BLK_DEV_UBD=y
-+CONFIG_BLK_DEV_LOOP=m
-+CONFIG_BLK_DEV_NBD=m
-+CONFIG_DUMMY=m
-+CONFIG_TUN=m
-+CONFIG_PPP=m
-+CONFIG_SLIP=m
-+CONFIG_LEGACY_PTY_COUNT=32
-+CONFIG_UML_RANDOM=y
-+CONFIG_SOUND=m
-+CONFIG_EXT4_FS=y
-+CONFIG_REISERFS_FS=y
-+CONFIG_QUOTA=y
-+CONFIG_AUTOFS_FS=m
-+CONFIG_ISO9660_FS=m
-+CONFIG_JOLIET=y
-+CONFIG_NLS=y
-+CONFIG_DEBUG_KERNEL=y
-+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
-+CONFIG_FRAME_WARN=1024
-+CONFIG_IPV6=y
+On Wed, 23 Oct 2024 07:36:36 +0200 you wrote:
+> page_to_phys is duplicated by all architectures, and from some strange
+> reason placed in <asm/io.h> where it doesn't fit at all.
+> 
+> phys_to_page is only provided by a few architectures despite having a lot
+> of open coded users.
+> 
+> Provide generic versions in <asm-generic/memory_model.h> to make these
+> helpers more easily usable.
+> 
+> [...]
+
+Here is the summary with links:
+  - [1/2] asm-generic: provide generic page_to_phys and phys_to_page implementations
+    https://git.kernel.org/riscv/c/c5c3238d9b8c
+  - [2/2] asm-generic: add an optional pfn_valid check to page_to_phys
+    https://git.kernel.org/riscv/c/3e25d5a49f99
+
+You are awesome, thank you!
 -- 
-2.43.0
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
