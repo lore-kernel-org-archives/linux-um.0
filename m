@@ -4,71 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 58D29E7717D
-	for <linux-um@archiver.kernel.org>; Wed, 11 Dec 2024 23:45:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 50641E7717D
+	for <linux-um@archiver.kernel.org>; Thu, 12 Dec 2024 02:00:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:In-Reply-To:References
-	:Date:Message-Id:From:Subject:Content-Transfer-Encoding:MIME-Version:
-	Content-Type:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=hUEjsdsK5sfW+WU0cV/OJN+y9IF7umfVVUFeM2GVr84=; b=ljppUMoBYVMfl8JdLtwod25lKI
-	5Z0+wF/iD6lYCO31dT+Xl+UnmiwoDEJn01x4je43vCdhOV3VlI3ikh6pJMPK+jPAzdOBdWlkN6+wD
-	MviTg5HccyImyzfLay9Waq3f42jEJt6553sPGLyRoCONVhTF1LTzGQUKaeBlMLhPAZx5NRZyRyaV8
-	pU0JcvfSqE3KONQ7wUH65hprY4IK+GUJQBoUAWvBvdYwNpWynZmXPlKlBzauKmMHE0dIuAr+PTOlv
-	imdHaV8/Gi3zHNUbuHaSXXZ3IvOXyGFkXfDh6h1zPkKpG0owtYC16AuxLOx0TQfOFXIHnkFeFOoeG
-	IEbW6YMw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	References:In-Reply-To:Subject:Cc:To:From:Message-ID:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=ZzqE70oaRyZVfTqi8gYX6wfW144edpTlsUuDsSmKiH8=; b=2otKUR05/vlTfz3aPZPFGxSryh
+	jgraKZUR13uZVwEvwKj/qQF2Hwr7uFi1kVkwwsBic93wjlpX5WQmeNgMHG1JRso+UZxNMbmo4W3z9
+	ts50xFWYsz/jw5O/b499t6xGv00AIxfcmSMq97DJOXWljrOJiUoHldrrH1q5+39vDEcEKJgHcmgHN
+	T/ocY+xvirziT36B792lb+k0qK6WldkJJznL5MzGSaIRlylfrey9blzEB+6DdwH5jnknIztRU6mgs
+	A8YcnX6m0kvx076WdcwRGX0II1we1CYc1YWA5aOB4H4SK2NUEaAUKqijlUZ9KE/QP9BX0aLv7LcAU
+	d/GE2+lw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tLWOT-0000000GWWv-1Zv6;
-	Wed, 11 Dec 2024 23:45:25 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1tLYVY-0000000GhnJ-0c7g;
+	Thu, 12 Dec 2024 02:00:52 +0000
+Received: from mail-pl1-x62e.google.com ([2607:f8b0:4864:20::62e])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tLVFt-0000000GKUf-27c7;
-	Wed, 11 Dec 2024 22:32:30 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 7FB125C67E6;
-	Wed, 11 Dec 2024 22:31:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2AB6C4CED2;
-	Wed, 11 Dec 2024 22:32:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733956348;
-	bh=BsLL13WVfc3NzEKIjd52mjnoMrC/Et1GCt0kRWiLCQo=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=qv6gvZPdDzbdVPybtFSPx8+F0xql/LHjAUoa61PxHbq7BiNILQmSVN3xV/Fk+jm3l
-	 eRj2euKpGQwhzha10D0yvWpJ5jdjr8+V1iYsps4/RL/90xpWyAoPlqxLTgT8H2p1Qr
-	 znxHE8HzGGVb3bxCyQgvVT/2hoGKZW56OU+GylgAoSP4eq7TpXB3MZRt3VoyD522af
-	 qGwcNNMDDsGqYKHkYodSX7oguHOLk4TTwi/8Q8fATZ6k5VUR9Dw7CkfxIhk8aSQAz0
-	 q46lv24Cq5nGqzFQZkxa8IXK7+L/Hgf8e5dM0N1jW5ubxUNiav+to559ZbObo4j7v8
-	 24oLtA9z8Jf7w==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id EAFBE380A965;
-	Wed, 11 Dec 2024 22:32:45 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 1/2] asm-generic: provide generic page_to_phys and
- phys_to_page implementations
-From: patchwork-bot+linux-riscv@kernel.org
-Message-Id: <173395636448.1729195.13128530873311699126.git-patchwork-notify@kernel.org>
-Date: Wed, 11 Dec 2024 22:32:44 +0000
-References: <20241023053644.311692-2-hch@lst.de>
-In-Reply-To: <20241023053644.311692-2-hch@lst.de>
-To: Christoph Hellwig <hch@lst.de>
-Cc: linux-riscv@lists.infradead.org, arnd@arndb.de,
- linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
- loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
- linux-arch@vger.kernel.org
+	id 1tLYVV-0000000Ghmq-0fjb
+	for linux-um@lists.infradead.org;
+	Thu, 12 Dec 2024 02:00:50 +0000
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-216401de828so720525ad.3
+        for <linux-um@lists.infradead.org>; Wed, 11 Dec 2024 18:00:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733968847; x=1734573647; darn=lists.infradead.org;
+        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
+         :message-id:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZzqE70oaRyZVfTqi8gYX6wfW144edpTlsUuDsSmKiH8=;
+        b=m0zpIwfk/WJMNZCraenm2JNcrsGcdeCzHdPQ6/kynvmKmTpGdX7fCpj0otdfa06tww
+         Ef1m82cNa55ItJQrowi3KzoTQjH7Xfg3rHk4x5oouF6MPHY/pPmpsSRDFUpNfdoHH755
+         zz0UwMAgQgsImPX4mk9MdlDmyFkt9R//MJ/Buej7Rk5NckpBqMwQMfv4jW5MTNuPpd39
+         qBxAFIxEnBdd5YMK3qG/aWIk9YfkmWl8mj2vBXJEmpz1UK8XdFfIOxcrdu96BEh4hKzf
+         MdtDEVwzdahsq7+GZAYE+/I+2SJjwTEvEk6Tdq48Ik1JneFhdbaujKpVgZhpMwGD+AIg
+         AaRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733968847; x=1734573647;
+        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
+         :message-id:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZzqE70oaRyZVfTqi8gYX6wfW144edpTlsUuDsSmKiH8=;
+        b=I+p4hBTIntrWUjn4mWykHDf9Q07Xdfo058SWBD0IltIgM+dLi42CT3ZT41wSOS7yFp
+         qDMJvSGSFnwj9il+y/4axjIT8IJqdcuKFzBFt/HYOAK0s3uf0O9fariHUy62nWl5JTZk
+         GVKccWj1hCwbhJYNpCfCCcH2b4y4WKOkJ4ni6fd5BT+ZACMrZLN16l5sTUKovZk9a35z
+         yHCEXH2Y7h/klGUAQcK2d6/e6KwXTPoPi3oN/qZPAOFmgN2OsdhKnoAJasQloj5PDbIw
+         nhQO3u+kyCnHbraMQZrYkXHw4W4hoarLrFceP3WZaWZp2mTFqogRa3afD5cIQnwyrorG
+         ulIQ==
+X-Gm-Message-State: AOJu0YyxH7V9hlyj18W6IZib5k7pTESoREBJWeKdUlJiJRXGwI1SQ94L
+	MK+icPjuujVbm8SWk2lDuKRjt1KdhCRXhZ8tWKiFSfuAxcud0lPMH4tTDQ==
+X-Gm-Gg: ASbGncsJ7/vLRGquO+KpCTDTRAn5B69fWt9yU+vou9iZY4huAGfEqDpMVIg7n57rMMk
+	+zrA/jqC61ftnJbTD+HG/o4xZVcUfpgw60t43Uh8qKdW9mA+MuBaCLnqGiR0dSUffK+TqnbNmk5
+	YRYmWbkYSAdeE1rtc5raQntWtvlOpkOC/r6tWlq4Q20x1Cd1FMDzEwJPgZh30tykpooGeKQo6VP
+	IDF/7aGE3QTVKdpLykRdHUkbvbdkxNqLuhU4ASPeO18cn/ClznaClpR9vE2Wku3ZShg47hd0Xdv
+	LTjm6yx2pb5KvZrjEoC53RdFvxrHMN1Xgbysg9nDusU=
+X-Google-Smtp-Source: AGHT+IFqrmvMOpi8IruBoO4CGDNeNVSWzXVzg154/sehrom0J0RFF6iFpljObl1fEsIR2p7jeTJ7tQ==
+X-Received: by 2002:a17:903:234f:b0:208:d856:dbb7 with SMTP id d9443c01a7336-2177854a053mr82192715ad.39.1733968847262;
+        Wed, 11 Dec 2024 18:00:47 -0800 (PST)
+Received: from mars.local.gmail.com (221x241x217x81.ap221.ftth.ucom.ne.jp. [221.241.217.81])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-215f8f0cf61sm112972845ad.188.2024.12.11.18.00.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Dec 2024 18:00:46 -0800 (PST)
+Date: Thu, 12 Dec 2024 11:00:43 +0900
+Message-ID: <m234it7j90.wl-thehajime@gmail.com>
+From: Hajime Tazaki <thehajime@gmail.com>
+To: linux-um@lists.infradead.org
+Cc: ricarkol@google.com,
+	Liam.Howlett@oracle.com
+Subject: Re: [PATCH v4 10/13] x86/um: nommu: signal handling
+In-Reply-To: <aa935a0f32fec0ff4073fb004eab4b22f80ac750.1733652929.git.thehajime@gmail.com>
+References: <cover.1733652929.git.thehajime@gmail.com>
+	<aa935a0f32fec0ff4073fb004eab4b22f80ac750.1733652929.git.thehajime@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/26.3 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241211_143229_581455_0A385D32 
-X-CRM114-Status: UNSURE (   9.64  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20241211_180049_201728_60778634 
+X-CRM114-Status: GOOD (  18.66  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,33 +96,54 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hello:
 
-This series was applied to riscv/linux.git (fixes)
-by Arnd Bergmann <arnd@arndb.de>:
-
-On Wed, 23 Oct 2024 07:36:36 +0200 you wrote:
-> page_to_phys is duplicated by all architectures, and from some strange
-> reason placed in <asm/io.h> where it doesn't fit at all.
+On Sun, 08 Dec 2024 19:15:37 +0900,
+Hajime Tazaki wrote:
 > 
-> phys_to_page is only provided by a few architectures despite having a lot
-> of open coded users.
+> This commit updates the behavior of signal handling under !MMU
+> environment. 1) the stack preparation for the signal handlers and
+> 2) restoration of stack after rt_sigreturn(2) syscall.  Those are needed
+> as the stack usage on vfork(2) syscall is different.
 > 
-> Provide generic versions in <asm-generic/memory_model.h> to make these
-> helpers more easily usable.
-> 
-> [...]
+> It also adds the follow up routine for SIGSEGV as a signal delivery runs
+> in the same stack frame while we have to avoid endless SIGSEGV.
+(snip)
+> diff --git a/arch/x86/um/nommu/signal.c b/arch/x86/um/nommu/signal.c
+> new file mode 100644
+> index 000000000000..a94e9b86273a
+> --- /dev/null
+> +++ b/arch/x86/um/nommu/signal.c
+> @@ -0,0 +1,43 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/syscalls.h>
+> +#include <linux/kernel.h>
+> +#include <asm/sigframe.h>
+> +
+> +#include <sysdep/signal.h>
+> +
+> +int arch_setup_signal_stack_si(struct rt_sigframe __user **frame,
+> +			       struct ksignal *ksig)
+> +{
+> +	int err = 0;
+> +
+> +	/*
+> +	 * we need to push handler address at top of stack, as
+> +	 * __kernel_vsyscall, called after this returns with ret with
+> +	 * stack contents, thus push the handler here.
+> +	 */
+> +	*frame = (struct rt_sigframe __user *) ((unsigned long) *frame -
+> +					       sizeof(unsigned long));
+> +	err |= __put_user((unsigned long)ksig->ka.sa.sa_handler,
+> +			  (unsigned long *)*frame);
+> +
+> +	return err;
 
-Here is the summary with links:
-  - [1/2] asm-generic: provide generic page_to_phys and phys_to_page implementations
-    https://git.kernel.org/riscv/c/c5c3238d9b8c
-  - [2/2] asm-generic: add an optional pfn_valid check to page_to_phys
-    https://git.kernel.org/riscv/c/3e25d5a49f99
+this has a serious issue to handle signals.
+I also found that manipulation of stack pointer makes the code
+cryptic..
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+I will clean up those parts in the next version.
 
-
+-- Hajime
 
