@@ -4,87 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 423A3E77184
-	for <linux-um@archiver.kernel.org>; Thu, 12 Dec 2024 10:14:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDECBE77186
+	for <linux-um@archiver.kernel.org>; Thu, 12 Dec 2024 10:14:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=5b8IVGRN6hSzKR2GLhryAMYxKrZ0FxMVKwADuX72vsY=; b=G8DYpn2ZaQdNrbSaoBYBPsHd4j
-	1RXFYSTkfxXROIWJj+DaWGAqGzI+hBbL7soyPyUz20DonA9ZFEeSirOagmN0X5StPbo1jqwEATouf
-	xoMYv7q9EznrcFG16AbzTUqoKRDW3qpONZ4HU2U7tdwxz7xsJDmBO6E2wmvSY+MZ2X5wnviszORKA
-	2vcQh2w/Q/Iw1ir4WlGtzroaBcBkrSYDVEdtBxgsnkkKbMGDXoHOje9bf8DMA7rxr4hdtFH5MGSZs
-	zOrIm2GS7VEst3wBgX7Iz24oLh6rubF24RgJ+bR49eS2osEUTQ/obTqfsXiKdap1Z2Bl65VS+s+JP
-	qnF1urBQ==;
+	bh=/S39BYTXgQcSrzSwc29SvRTt61wzYeoNwCcpdEkLhcY=; b=KswZfwBx4oMK/8NYZsQSKxYIpP
+	msQGJz3o9GFbMbazp3Zw41Udan+ZdRoeJFSOCSXNT19lnnH8+aAWv34p5DlUaHiYdUbPuGOjgJn+h
+	TZ/EofFw2x1mdmugMk/sRb6YuPs0nvDX8QjXmrjYsDtn29b2VTWABDKZgT9zdHptDXPMXNKdL5yKs
+	dqIFIaWHvS8Xk5xMhILQyac6CWr2+wdXf22bBFfWiTNFTP3xhUvA9YOkAFBouO+G43YurvVRfG0Ey
+	+OdKf05DDmTODRyvNUJwe1KJw+xMqq/rIbxt4+//9/zRjgGTFYHCxFg52zAh7IP6fYIrsI5Z23sMg
+	l9ARRlgA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tLgDd-000000001Py-42eQ;
-	Thu, 12 Dec 2024 10:14:53 +0000
-Received: from mail-pf1-x432.google.com ([2607:f8b0:4864:20::432])
+	id 1tLgDf-000000001RV-1bxJ;
+	Thu, 12 Dec 2024 10:14:55 +0000
+Received: from mail-pf1-x42e.google.com ([2607:f8b0:4864:20::42e])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tLgD4-000000001EY-2nKh
+	id 1tLgDI-000000001KV-3epz
 	for linux-um@lists.infradead.org;
-	Thu, 12 Dec 2024 10:14:19 +0000
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-725c86bbae7so359339b3a.3
-        for <linux-um@lists.infradead.org>; Thu, 12 Dec 2024 02:14:18 -0800 (PST)
+	Thu, 12 Dec 2024 10:14:34 +0000
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-72739105e02so496789b3a.0
+        for <linux-um@lists.infradead.org>; Thu, 12 Dec 2024 02:14:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733998457; x=1734603257; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1733998472; x=1734603272; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5b8IVGRN6hSzKR2GLhryAMYxKrZ0FxMVKwADuX72vsY=;
-        b=gm4N6NRjuEd2eNSeLf1196QRErAHooSDQPtgFGkov4h6hcySuwvgjZ3d4cn09homBR
-         EoTo4Aoup0D+VvJSBk1pAfD2Tus8M6N0SUWifg1Y6M0OjtfufvbrLV/5OajoA+Q0PNMN
-         ATdku89f0uCeVjCxGdGLoNYoPxThvq6RwEbn8S2OAYNO8yYdk09s/PVUFTRW5mAmb5zU
-         JbQNdzSlcX4Za1snZz/fsdSA2zlLnK58nossKe2jAuDOMzrnKwsHxOcJDYYjusPzuHks
-         vNcxd7GA0YhjRmW7hYcnDol1ALIULm1UerUO7i6AWKggv8UtZ9+tlXei6iSSXiGc949Y
-         +rzA==
+        bh=/S39BYTXgQcSrzSwc29SvRTt61wzYeoNwCcpdEkLhcY=;
+        b=dQTI0acKrC9isn2wuFJlRcehFAMjL3apLoipMZ+7VrL8pdWZ+RQm94M8AiVxd2SoER
+         sAks44iaJEw+oz40tRNxfI4yqQgi7kpJMbZIUF+PZ76AO8hIBHHMKLlm11IXOesF1bTN
+         F9skSIVXwP3pXcmoBn1V25spcyS4Zi2WL4GjMcPpmMBbpqZGjqdZleQXwLt4thMjbMtR
+         jtfSMNWP47ufY0S00L9Sj70H+PrSbBELVgR6WfQ1rx03cUjbHLFZX9XvwVd9uzpc3BP+
+         MUsaTPDwWBhqNVWHyXblSshtEQVDSUABgb0YvKqsgqRdeRTZ2fcV4UbKM5jQwY6F2ULh
+         I2Eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733998457; x=1734603257;
+        d=1e100.net; s=20230601; t=1733998472; x=1734603272;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5b8IVGRN6hSzKR2GLhryAMYxKrZ0FxMVKwADuX72vsY=;
-        b=jEb4T7ikVFt6aPVfYDtwE5kiJPKJwZcShpjWDRjC+RkVvnwkxH0u8TyuTBQKMsuC6C
-         vNkUw9DTv9CiOqERBZwsqWVqqekI3sDxN7MeOhLr9GKuS5sAsEdCeTx8cN2Jb5s2Ul3s
-         V6VErjmdgd68GwLVkQcdbRd/VwmyPsr9/vqd+yrtFFCbNQjEhOHBOG9buRtbDFWKCTcV
-         6nTlmFBXKyVvG8ufYt7jqy5wuVcUVKCaKpfpmUdPbWfj9QWAz6gZ6i7Mt/3xYQmwecG2
-         fr5gTLoBMyjx1HGBY9YHH2Vf7dDLCSI2xD1dFueXu0NmRAFs2FsB4kVikkXv/4KQmmDV
-         M02w==
-X-Gm-Message-State: AOJu0YydWyowQokmhbS4H6mW8AlfAcRcNqt2V9TZsN7ss0jxozREf5YJ
-	1muH0J1q/cOj9oqLAdlLOo+f9RD9MbfpgUId6+5IeOevCHI8agJ0tF1RUQ==
-X-Gm-Gg: ASbGncuoExR6dVHDJmQSm+EPxnmpm3KFRQ4SXONAXLmowLgvJX9LIAMTy3F/4LZM3ny
-	SJ1GzupZgjEhT1CFqf0srUq7yfkq++usYV/lZ3EcL//SG3OkdnHm4DqsJbkgm9GXAOoAFlHhzGE
-	uai2VSchdiNBFiwWc7loWbL9S4yEO9nOyF65WyndRSy6llNZff6KX2l9Geq833zgAwgxBfOLy6m
-	YeP10cemKpfrZXuE6uDsZzHEdl4DZqAeojIu2Aae80H27CCiuAg1AX383iR0ZWsqwh+w5cjGnvO
-	k422vj/nj53ChoK+dI8RqbKAbpk=
-X-Google-Smtp-Source: AGHT+IEJ7cfj7er5xIRXml7Jbp/h7BX1kFG/mUXAI70qrCufxhkZwN+UhmCCVf0AHAd6qbjcTSa/Cg==
-X-Received: by 2002:a05:6a21:7787:b0:1e1:afa9:d38b with SMTP id adf61e73a8af0-1e1cea82d07mr4162832637.8.1733998457448;
-        Thu, 12 Dec 2024 02:14:17 -0800 (PST)
+        bh=/S39BYTXgQcSrzSwc29SvRTt61wzYeoNwCcpdEkLhcY=;
+        b=BofLiIDRKisjVnxVOkoXRXeAm0mn4pLSPfX0AY4+o47lT/a2apume6vf8JKxfWsKAG
+         LgGGM6SAXozt6U9QKxVF3D0/DhQISWaY2pM2avvUDm1loD52+yFuu6ssFVzyhDT8J8lf
+         sKpbEP2oOsHwlJbjSQLa1Vua1TTABInQF6UY2TH3gEKxczRqL3LXqKa+oQRWLwrnnyh7
+         fPrfOYVNGDuBWBQYT9tU/7CxSfNzGHvTASBLlfpp0bekxHHAZaXM7R4zbpnaO6+Y5V+h
+         kPeG4pBMrZVk/a/qG8vUUUvAzkbCAgomGRX99OYobRdwC5WRer5m6w9t4byJ3vPP773K
+         8cIg==
+X-Gm-Message-State: AOJu0YyZosg1/wgaYyt28Y0irqkG55CMdyNLIuEh0T0hlW8lo0QG8vsA
+	biKG4CYavMiMFcWmpvuV8MOThLOjQdGm7P7LhR1ZWZYcr9AWkPGz
+X-Gm-Gg: ASbGncuKxW0GRDCBuovE/YlkCgj/8T7/ZYKRwvW1oqnTW84RSlMV71/B7r0YnD1O/Vl
+	FeItwS+OAhc9zsBy4ILygzDRwHoRDJmpHWwYEx4hGlNYFiuwa0u/FO9WlCJrNaGA1NMJtYB6n7U
+	HkmmZ7xxIPLNBTidRwD3CQmq8J/SPMCTP1/uHrt1Zdwjf4iYqpDcCekZuQh3FZ+r1mfTp4jXQER
+	I2xxX43X6Rnu3oJqFFW9GGxBjHkxuhDs0rp5hXiPGSSEPQ1Npliw8HsW76SD681EEI7g2unMHEZ
+	QmVAXJxn5AL8RPrTl5AIGMq8lmY=
+X-Google-Smtp-Source: AGHT+IG634k/43yRGTmlVZv/xWXyPFX3Rrnoru7H9Ut6VRe/Zah6k3+7q9VfrFulsUOJdEvxWkWm3w==
+X-Received: by 2002:a05:6a00:9289:b0:725:b1df:2daa with SMTP id d2e1a72fcca58-728faaa862emr3470723b3a.20.1733998471921;
+        Thu, 12 Dec 2024 02:14:31 -0800 (PST)
 Received: from ikb-h07-29-noble.in.iijlab.net ([202.214.97.5])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7fd4cd45b18sm6676569a12.73.2024.12.12.02.14.16
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-725cc7fcfb2sm9613306b3a.141.2024.12.12.02.14.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Dec 2024 02:14:16 -0800 (PST)
+        Thu, 12 Dec 2024 02:14:31 -0800 (PST)
 Received: by ikb-h07-29-noble.in.iijlab.net (Postfix, from userid 1010)
-	id BAAE0DDEEC2; Thu, 12 Dec 2024 19:14:14 +0900 (JST)
+	id 3C714DDEECA; Thu, 12 Dec 2024 19:14:29 +0900 (JST)
 From: Hajime Tazaki <thehajime@gmail.com>
 To: linux-um@lists.infradead.org
 Cc: thehajime@gmail.com,
 	ricarkol@google.com,
 	Liam.Howlett@oracle.com
-Subject: [PATCH v5 03/13] um: decouple MMU specific code from the common part
-Date: Thu, 12 Dec 2024 19:12:10 +0900
-Message-ID: <1bd611ff1f796b75a43faefcb81d24b3cedd4a87.1733998168.git.thehajime@gmail.com>
+Subject: [PATCH v5 07/13] x86/um: nommu: process/thread handling
+Date: Thu, 12 Dec 2024 19:12:14 +0900
+Message-ID: <17a14e11567ed325d4255528ff69049072c22b30.1733998168.git.thehajime@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1733998168.git.thehajime@gmail.com>
 References: <cover.1733998168.git.thehajime@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241212_021418_708367_6E267A34 
-X-CRM114-Status: GOOD (  21.37  )
+X-CRM114-CacheID: sfid-20241212_021432_916110_6661F4A0 
+X-CRM114-Status: GOOD (  17.20  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -99,876 +99,153 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-This splits the memory, process related code with common and MMU
-specific parts in order to avoid ifdefs in .c file and duplication
-between MMU and !MMU.
+Since ptrace facility isn't used under !MMU of UML, there is different
+code path to invoke processes/threads; there are no external process
+used, and need to properly configure some of registers (fs segment
+register for TLS, etc) on every context switch, etc.
+
+Signals aren't delivered in non-ptrace syscall entry/leave so, we also
+need to handle pending signal by ourselves.
 
 Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+Signed-off-by: Ricardo Koller <ricarkol@google.com>
 ---
- arch/um/include/shared/mem.h    |   8 ++
- arch/um/kernel/Makefile         |   5 +-
- arch/um/kernel/mem-pgtable.c    | 175 ++++++++++++++++++++++++++++++++
- arch/um/kernel/mem.c            | 149 +--------------------------
- arch/um/kernel/process.c        |  25 +++++
- arch/um/kernel/skas/process.c   |  27 -----
- arch/um/os-Linux/Makefile       |   3 +-
- arch/um/os-Linux/internal.h     |   5 +
- arch/um/os-Linux/process.c      | 133 ++++++++++++++++++++++++
- arch/um/os-Linux/skas/process.c | 132 ------------------------
- 10 files changed, 352 insertions(+), 310 deletions(-)
- create mode 100644 arch/um/kernel/mem-pgtable.c
+ arch/um/os-Linux/process.c      |  6 +++++
+ arch/x86/um/Makefile            |  3 ++-
+ arch/x86/um/nommu/Makefile      |  2 +-
+ arch/x86/um/nommu/entry_64.S    | 22 +++++++++++++++++
+ arch/x86/um/nommu/syscalls_64.c | 44 +++++++++++++++++++++++++++++++++
+ 5 files changed, 75 insertions(+), 2 deletions(-)
+ create mode 100644 arch/x86/um/nommu/syscalls_64.c
 
-diff --git a/arch/um/include/shared/mem.h b/arch/um/include/shared/mem.h
-index 98aacd544108..c5dfca3bf4d5 100644
---- a/arch/um/include/shared/mem.h
-+++ b/arch/um/include/shared/mem.h
-@@ -19,4 +19,12 @@ static inline void *uml_to_virt(unsigned long phys)
- 	return((void *) uml_physmem + phys);
- }
- 
-+#ifdef CONFIG_MMU
-+extern void um_fixrange_init(void);
-+#else
-+static inline void um_fixrange_init(void)
-+{
-+}
-+#endif
-+
- #endif
-diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
-index f8567b933ffa..eec6682812ce 100644
---- a/arch/um/kernel/Makefile
-+++ b/arch/um/kernel/Makefile
-@@ -16,9 +16,10 @@ extra-y := vmlinux.lds
- 
- obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
- 	physmem.o process.o ptrace.o reboot.o sigio.o \
--	signal.o sysrq.o time.o tlb.o trap.o \
--	um_arch.o umid.o maccess.o kmsg_dump.o capflags.o skas/
-+	signal.o sysrq.o time.o \
-+	um_arch.o umid.o maccess.o kmsg_dump.o capflags.o
- obj-y += load_file.o
-+obj-$(CONFIG_MMU) += mem-pgtable.o tlb.o trap.o skas/
- 
- obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
- obj-$(CONFIG_GPROF)	+= gprof_syms.o
-diff --git a/arch/um/kernel/mem-pgtable.c b/arch/um/kernel/mem-pgtable.c
-new file mode 100644
-index 000000000000..8c977bda601d
---- /dev/null
-+++ b/arch/um/kernel/mem-pgtable.c
-@@ -0,0 +1,175 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-+ */
-+
-+#include <linux/stddef.h>
-+#include <linux/module.h>
-+#include <linux/memblock.h>
-+#include <linux/mm.h>
-+#include <linux/swap.h>
-+#include <linux/slab.h>
-+#include <asm/fixmap.h>
-+#include <asm/page.h>
-+#include <asm/pgalloc.h>
-+#include <as-layout.h>
-+#include <init.h>
-+#include <kern.h>
-+#include <kern_util.h>
-+#include <mem_user.h>
-+#include <os.h>
-+#include <um_malloc.h>
-+
-+/*
-+ * Create a page table and place a pointer to it in a middle page
-+ * directory entry.
-+ */
-+static void __init one_page_table_init(pmd_t *pmd)
-+{
-+	if (pmd_none(*pmd)) {
-+		pte_t *pte = (pte_t *) memblock_alloc_low(PAGE_SIZE,
-+							  PAGE_SIZE);
-+		if (!pte)
-+			panic("%s: Failed to allocate %lu bytes align=%lx\n",
-+			      __func__, PAGE_SIZE, PAGE_SIZE);
-+
-+		set_pmd(pmd, __pmd(_KERNPG_TABLE +
-+					   (unsigned long) __pa(pte)));
-+		WARN_ON_ONCE(pte != pte_offset_kernel(pmd, 0));
-+	}
-+}
-+
-+static void __init one_md_table_init(pud_t *pud)
-+{
-+#if CONFIG_PGTABLE_LEVELS > 2
-+	pmd_t *pmd_table = (pmd_t *) memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
-+
-+	if (!pmd_table)
-+		panic("%s: Failed to allocate %lu bytes align=%lx\n",
-+		      __func__, PAGE_SIZE, PAGE_SIZE);
-+
-+	set_pud(pud, __pud(_KERNPG_TABLE + (unsigned long) __pa(pmd_table)));
-+	WARN_ON_ONCE(pmd_table != pmd_offset(pud, 0));
-+#endif
-+}
-+
-+static void __init one_ud_table_init(p4d_t *p4d)
-+{
-+#if CONFIG_PGTABLE_LEVELS > 3
-+	pud_t *pud_table = (pud_t *) memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
-+
-+	if (!pud_table)
-+		panic("%s: Failed to allocate %lu bytes align=%lx\n",
-+		      __func__, PAGE_SIZE, PAGE_SIZE);
-+
-+	set_p4d(p4d, __p4d(_KERNPG_TABLE + (unsigned long) __pa(pud_table)));
-+	WARN_ON_ONCE(pud_table != pud_offset(p4d, 0));
-+#endif
-+}
-+
-+static void __init fixrange_init(unsigned long start, unsigned long end,
-+				 pgd_t *pgd_base)
-+{
-+	pgd_t *pgd;
-+	p4d_t *p4d;
-+	pud_t *pud;
-+	pmd_t *pmd;
-+	int i, j;
-+	unsigned long vaddr;
-+
-+	vaddr = start;
-+	i = pgd_index(vaddr);
-+	j = pmd_index(vaddr);
-+	pgd = pgd_base + i;
-+
-+	for ( ; (i < PTRS_PER_PGD) && (vaddr < end); pgd++, i++) {
-+		p4d = p4d_offset(pgd, vaddr);
-+		if (p4d_none(*p4d))
-+			one_ud_table_init(p4d);
-+		pud = pud_offset(p4d, vaddr);
-+		if (pud_none(*pud))
-+			one_md_table_init(pud);
-+		pmd = pmd_offset(pud, vaddr);
-+		for (; (j < PTRS_PER_PMD) && (vaddr < end); pmd++, j++) {
-+			one_page_table_init(pmd);
-+			vaddr += PMD_SIZE;
-+		}
-+		j = 0;
-+	}
-+}
-+
-+static void __init fixaddr_user_init(void)
-+{
-+#ifdef CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA
-+	long size = FIXADDR_USER_END - FIXADDR_USER_START;
-+	pte_t *pte;
-+	phys_t p;
-+	unsigned long v, vaddr = FIXADDR_USER_START;
-+
-+	if (!size)
-+		return;
-+
-+	fixrange_init(FIXADDR_USER_START, FIXADDR_USER_END, swapper_pg_dir);
-+	v = (unsigned long) memblock_alloc_low(size, PAGE_SIZE);
-+	if (!v)
-+		panic("%s: Failed to allocate %lu bytes align=%lx\n",
-+		      __func__, size, PAGE_SIZE);
-+
-+	memcpy((void *) v, (void *) FIXADDR_USER_START, size);
-+	p = __pa(v);
-+	for ( ; size > 0; size -= PAGE_SIZE, vaddr += PAGE_SIZE,
-+		      p += PAGE_SIZE) {
-+		pte = virt_to_kpte(vaddr);
-+		pte_set_val(*pte, p, PAGE_READONLY);
-+	}
-+#endif
-+}
-+
-+void __init um_fixrange_init(void)
-+{
-+	unsigned long vaddr;
-+
-+	/*
-+	 * Fixed mappings, only the page table structure has to be
-+	 * created - mappings will be set by set_fixmap():
-+	 */
-+	vaddr = __fix_to_virt(__end_of_fixed_addresses - 1) & PMD_MASK;
-+	fixrange_init(vaddr, FIXADDR_TOP, swapper_pg_dir);
-+
-+	fixaddr_user_init();
-+}
-+
-+/* Allocate and free page tables. */
-+
-+pgd_t *pgd_alloc(struct mm_struct *mm)
-+{
-+	pgd_t *pgd = (pgd_t *)__get_free_page(GFP_KERNEL);
-+
-+	if (pgd) {
-+		memset(pgd, 0, USER_PTRS_PER_PGD * sizeof(pgd_t));
-+		memcpy(pgd + USER_PTRS_PER_PGD,
-+		       swapper_pg_dir + USER_PTRS_PER_PGD,
-+		       (PTRS_PER_PGD - USER_PTRS_PER_PGD) * sizeof(pgd_t));
-+	}
-+	return pgd;
-+}
-+
-+static const pgprot_t protection_map[16] = {
-+	[VM_NONE]					= PAGE_NONE,
-+	[VM_READ]					= PAGE_READONLY,
-+	[VM_WRITE]					= PAGE_COPY,
-+	[VM_WRITE | VM_READ]				= PAGE_COPY,
-+	[VM_EXEC]					= PAGE_READONLY,
-+	[VM_EXEC | VM_READ]				= PAGE_READONLY,
-+	[VM_EXEC | VM_WRITE]				= PAGE_COPY,
-+	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY,
-+	[VM_SHARED]					= PAGE_NONE,
-+	[VM_SHARED | VM_READ]				= PAGE_READONLY,
-+	[VM_SHARED | VM_WRITE]				= PAGE_SHARED,
-+	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED,
-+	[VM_SHARED | VM_EXEC]				= PAGE_READONLY,
-+	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY,
-+	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED,
-+	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED
-+};
-+DECLARE_VM_GET_PAGE_PROT
-diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
-index 53248ed04771..e3a7ec32d6c7 100644
---- a/arch/um/kernel/mem.c
-+++ b/arch/um/kernel/mem.c
-@@ -6,7 +6,6 @@
- #include <linux/stddef.h>
- #include <linux/module.h>
- #include <linux/memblock.h>
--#include <linux/mm.h>
- #include <linux/swap.h>
- #include <linux/slab.h>
- #include <asm/fixmap.h>
-@@ -74,113 +73,9 @@ void __init mem_init(void)
- 	kmalloc_ok = 1;
- }
- 
--/*
-- * Create a page table and place a pointer to it in a middle page
-- * directory entry.
-- */
--static void __init one_page_table_init(pmd_t *pmd)
--{
--	if (pmd_none(*pmd)) {
--		pte_t *pte = (pte_t *) memblock_alloc_low(PAGE_SIZE,
--							  PAGE_SIZE);
--		if (!pte)
--			panic("%s: Failed to allocate %lu bytes align=%lx\n",
--			      __func__, PAGE_SIZE, PAGE_SIZE);
--
--		set_pmd(pmd, __pmd(_KERNPG_TABLE +
--					   (unsigned long) __pa(pte)));
--		BUG_ON(pte != pte_offset_kernel(pmd, 0));
--	}
--}
--
--static void __init one_md_table_init(pud_t *pud)
--{
--#if CONFIG_PGTABLE_LEVELS > 2
--	pmd_t *pmd_table = (pmd_t *) memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
--	if (!pmd_table)
--		panic("%s: Failed to allocate %lu bytes align=%lx\n",
--		      __func__, PAGE_SIZE, PAGE_SIZE);
--
--	set_pud(pud, __pud(_KERNPG_TABLE + (unsigned long) __pa(pmd_table)));
--	BUG_ON(pmd_table != pmd_offset(pud, 0));
--#endif
--}
--
--static void __init one_ud_table_init(p4d_t *p4d)
--{
--#if CONFIG_PGTABLE_LEVELS > 3
--	pud_t *pud_table = (pud_t *) memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
--	if (!pud_table)
--		panic("%s: Failed to allocate %lu bytes align=%lx\n",
--		      __func__, PAGE_SIZE, PAGE_SIZE);
--
--	set_p4d(p4d, __p4d(_KERNPG_TABLE + (unsigned long) __pa(pud_table)));
--	BUG_ON(pud_table != pud_offset(p4d, 0));
--#endif
--}
--
--static void __init fixrange_init(unsigned long start, unsigned long end,
--				 pgd_t *pgd_base)
--{
--	pgd_t *pgd;
--	p4d_t *p4d;
--	pud_t *pud;
--	pmd_t *pmd;
--	int i, j;
--	unsigned long vaddr;
--
--	vaddr = start;
--	i = pgd_index(vaddr);
--	j = pmd_index(vaddr);
--	pgd = pgd_base + i;
--
--	for ( ; (i < PTRS_PER_PGD) && (vaddr < end); pgd++, i++) {
--		p4d = p4d_offset(pgd, vaddr);
--		if (p4d_none(*p4d))
--			one_ud_table_init(p4d);
--		pud = pud_offset(p4d, vaddr);
--		if (pud_none(*pud))
--			one_md_table_init(pud);
--		pmd = pmd_offset(pud, vaddr);
--		for (; (j < PTRS_PER_PMD) && (vaddr < end); pmd++, j++) {
--			one_page_table_init(pmd);
--			vaddr += PMD_SIZE;
--		}
--		j = 0;
--	}
--}
--
--static void __init fixaddr_user_init( void)
--{
--#ifdef CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA
--	long size = FIXADDR_USER_END - FIXADDR_USER_START;
--	pte_t *pte;
--	phys_t p;
--	unsigned long v, vaddr = FIXADDR_USER_START;
--
--	if (!size)
--		return;
--
--	fixrange_init( FIXADDR_USER_START, FIXADDR_USER_END, swapper_pg_dir);
--	v = (unsigned long) memblock_alloc_low(size, PAGE_SIZE);
--	if (!v)
--		panic("%s: Failed to allocate %lu bytes align=%lx\n",
--		      __func__, size, PAGE_SIZE);
--
--	memcpy((void *) v , (void *) FIXADDR_USER_START, size);
--	p = __pa(v);
--	for ( ; size > 0; size -= PAGE_SIZE, vaddr += PAGE_SIZE,
--		      p += PAGE_SIZE) {
--		pte = virt_to_kpte(vaddr);
--		pte_set_val(*pte, p, PAGE_READONLY);
--	}
--#endif
--}
--
- void __init paging_init(void)
- {
- 	unsigned long max_zone_pfn[MAX_NR_ZONES] = { 0 };
--	unsigned long vaddr;
- 
- 	empty_zero_page = (unsigned long *) memblock_alloc_low(PAGE_SIZE,
- 							       PAGE_SIZE);
-@@ -191,14 +86,7 @@ void __init paging_init(void)
- 	max_zone_pfn[ZONE_NORMAL] = end_iomem >> PAGE_SHIFT;
- 	free_area_init(max_zone_pfn);
- 
--	/*
--	 * Fixed mappings, only the page table structure has to be
--	 * created - mappings will be set by set_fixmap():
--	 */
--	vaddr = __fix_to_virt(__end_of_fixed_addresses - 1) & PMD_MASK;
--	fixrange_init(vaddr, FIXADDR_TOP, swapper_pg_dir);
--
--	fixaddr_user_init();
-+	um_fixrange_init();
- }
- 
- /*
-@@ -210,42 +98,7 @@ void free_initmem(void)
- {
- }
- 
--/* Allocate and free page tables. */
--
--pgd_t *pgd_alloc(struct mm_struct *mm)
--{
--	pgd_t *pgd = (pgd_t *)__get_free_page(GFP_KERNEL);
--
--	if (pgd) {
--		memset(pgd, 0, USER_PTRS_PER_PGD * sizeof(pgd_t));
--		memcpy(pgd + USER_PTRS_PER_PGD,
--		       swapper_pg_dir + USER_PTRS_PER_PGD,
--		       (PTRS_PER_PGD - USER_PTRS_PER_PGD) * sizeof(pgd_t));
--	}
--	return pgd;
--}
--
- void *uml_kmalloc(int size, int flags)
- {
- 	return kmalloc(size, flags);
- }
--
--static const pgprot_t protection_map[16] = {
--	[VM_NONE]					= PAGE_NONE,
--	[VM_READ]					= PAGE_READONLY,
--	[VM_WRITE]					= PAGE_COPY,
--	[VM_WRITE | VM_READ]				= PAGE_COPY,
--	[VM_EXEC]					= PAGE_READONLY,
--	[VM_EXEC | VM_READ]				= PAGE_READONLY,
--	[VM_EXEC | VM_WRITE]				= PAGE_COPY,
--	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY,
--	[VM_SHARED]					= PAGE_NONE,
--	[VM_SHARED | VM_READ]				= PAGE_READONLY,
--	[VM_SHARED | VM_WRITE]				= PAGE_SHARED,
--	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED,
--	[VM_SHARED | VM_EXEC]				= PAGE_READONLY,
--	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY,
--	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED,
--	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED
--};
--DECLARE_VM_GET_PAGE_PROT
-diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-index 30bdc0a87dc8..aaf7bcff235c 100644
---- a/arch/um/kernel/process.c
-+++ b/arch/um/kernel/process.c
-@@ -25,6 +25,7 @@
- #include <linux/tick.h>
- #include <linux/threads.h>
- #include <linux/resume_user_mode.h>
-+#include <linux/start_kernel.h>
- #include <asm/current.h>
- #include <asm/mmu_context.h>
- #include <asm/switch_to.h>
-@@ -46,6 +47,8 @@
- struct task_struct *cpu_tasks[NR_CPUS];
- EXPORT_SYMBOL(cpu_tasks);
- 
-+static char cpu0_irqstack[THREAD_SIZE] __aligned(THREAD_SIZE);
-+
- void free_stack(unsigned long stack, int order)
- {
- 	free_pages(stack, order);
-@@ -295,3 +298,25 @@ unsigned long __get_wchan(struct task_struct *p)
- 
- 	return 0;
- }
-+
-+
-+static int __init start_kernel_proc(void *unused)
-+{
-+	block_signals_trace();
-+
-+	start_kernel();
-+	return 0;
-+}
-+
-+int __init start_uml(void)
-+{
-+	stack_protections((unsigned long) &cpu0_irqstack);
-+	set_sigstack(cpu0_irqstack, THREAD_SIZE);
-+
-+	init_new_thread_signals();
-+
-+	init_task.thread.request.thread.proc = start_kernel_proc;
-+	init_task.thread.request.thread.arg = NULL;
-+	return start_idle_thread(task_stack_page(&init_task),
-+				 &init_task.thread.switch_buf);
-+}
-diff --git a/arch/um/kernel/skas/process.c b/arch/um/kernel/skas/process.c
-index 05dcdc057af9..5247121d3419 100644
---- a/arch/um/kernel/skas/process.c
-+++ b/arch/um/kernel/skas/process.c
-@@ -16,33 +16,6 @@
- #include <skas.h>
- #include <kern_util.h>
- 
--extern void start_kernel(void);
--
--static int __init start_kernel_proc(void *unused)
--{
--	block_signals_trace();
--
--	start_kernel();
--	return 0;
--}
--
--extern int userspace_pid[];
--
--static char cpu0_irqstack[THREAD_SIZE] __aligned(THREAD_SIZE);
--
--int __init start_uml(void)
--{
--	stack_protections((unsigned long) &cpu0_irqstack);
--	set_sigstack(cpu0_irqstack, THREAD_SIZE);
--
--	init_new_thread_signals();
--
--	init_task.thread.request.thread.proc = start_kernel_proc;
--	init_task.thread.request.thread.arg = NULL;
--	return start_idle_thread(task_stack_page(&init_task),
--				 &init_task.thread.switch_buf);
--}
--
- unsigned long current_stub_stack(void)
- {
- 	if (current->mm == NULL)
-diff --git a/arch/um/os-Linux/Makefile b/arch/um/os-Linux/Makefile
-index 049dfa5bc9c6..331564888400 100644
---- a/arch/um/os-Linux/Makefile
-+++ b/arch/um/os-Linux/Makefile
-@@ -8,7 +8,8 @@ KCOV_INSTRUMENT                := n
- 
- obj-y = execvp.o file.o helper.o irq.o main.o mem.o process.o \
- 	registers.o sigio.o signal.o start_up.o time.o tty.o \
--	umid.o user_syms.o util.o drivers/ skas/
-+	umid.o user_syms.o util.o drivers/
-+obj-$(CONFIG_MMU) += skas/
- 
- CFLAGS_signal.o += -Wframe-larger-than=4096
- 
-diff --git a/arch/um/os-Linux/internal.h b/arch/um/os-Linux/internal.h
-index 317fca190c2b..bcbf64ce8cd1 100644
---- a/arch/um/os-Linux/internal.h
-+++ b/arch/um/os-Linux/internal.h
-@@ -2,6 +2,11 @@
- #ifndef __UM_OS_LINUX_INTERNAL_H
- #define __UM_OS_LINUX_INTERNAL_H
- 
-+/*
-+ * process.c
-+ */
-+extern int userspace_pid[];
-+
- /*
-  * elf_aux.c
-  */
 diff --git a/arch/um/os-Linux/process.c b/arch/um/os-Linux/process.c
-index 9f086f939420..6df378639880 100644
+index e2dc00fc84c0..49aa8e92205e 100644
 --- a/arch/um/os-Linux/process.c
 +++ b/arch/um/os-Linux/process.c
-@@ -6,6 +6,7 @@
- 
- #include <stdio.h>
- #include <stdlib.h>
-+#include <stdbool.h>
- #include <unistd.h>
- #include <errno.h>
- #include <signal.h>
-@@ -15,9 +16,15 @@
- #include <sys/prctl.h>
- #include <sys/wait.h>
- #include <asm/unistd.h>
-+#include <linux/threads.h>
- #include <init.h>
- #include <longjmp.h>
- #include <os.h>
-+#include <as-layout.h>
-+#include <kern_util.h>
-+
-+int userspace_pid[NR_CPUS];
-+int unscheduled_userspace_iterations;
+@@ -28,6 +28,9 @@ int unscheduled_userspace_iterations;
  
  void os_alarm_process(int pid)
  {
-@@ -209,3 +216,129 @@ void os_set_pdeathsig(void)
- {
- 	prctl(PR_SET_PDEATHSIG, SIGKILL);
++	if (pid <= 0)
++		return;
++
+ 	kill(pid, SIGALRM);
  }
+ 
+@@ -45,6 +48,9 @@ void os_kill_process(int pid, int reap_child)
+ 
+ void os_kill_ptraced_process(int pid, int reap_child)
+ {
++	if (pid <= 0)
++		return;
 +
-+int is_skas_winch(int pid, int fd, void *data)
+ 	kill(pid, SIGKILL);
+ 	ptrace(PTRACE_KILL, pid);
+ 	ptrace(PTRACE_CONT, pid);
+diff --git a/arch/x86/um/Makefile b/arch/x86/um/Makefile
+index 227af2a987e2..53c9ebb3c41c 100644
+--- a/arch/x86/um/Makefile
++++ b/arch/x86/um/Makefile
+@@ -27,7 +27,8 @@ subarch-y += ../kernel/sys_ia32.o
+ 
+ else
+ 
+-obj-y += syscalls_64.o vdso/
++obj-y += vdso/
++obj-$(CONFIG_MMU) += syscalls_64.o
+ 
+ subarch-y = ../lib/csum-partial_64.o ../lib/memcpy_64.o \
+ 	../lib/memmove_64.o ../lib/memset_64.o
+diff --git a/arch/x86/um/nommu/Makefile b/arch/x86/um/nommu/Makefile
+index ebe47d4836f4..4018d9e0aba0 100644
+--- a/arch/x86/um/nommu/Makefile
++++ b/arch/x86/um/nommu/Makefile
+@@ -5,4 +5,4 @@ else
+ 	BITS := 64
+ endif
+ 
+-obj-y = do_syscall_$(BITS).o entry_$(BITS).o os-Linux/
++obj-y = do_syscall_$(BITS).o entry_$(BITS).o syscalls_$(BITS).o os-Linux/
+diff --git a/arch/x86/um/nommu/entry_64.S b/arch/x86/um/nommu/entry_64.S
+index e9bfc7b93c84..950447dfa66b 100644
+--- a/arch/x86/um/nommu/entry_64.S
++++ b/arch/x86/um/nommu/entry_64.S
+@@ -89,3 +89,25 @@ ENTRY(__kernel_vsyscall)
+ 	jmp	*%rcx
+ 
+ END(__kernel_vsyscall)
++
++// void userspace(struct uml_pt_regs *regs)
++ENTRY(userspace)
++
++	/* align the stack for x86_64 ABI */
++	and     $-0x10, %rsp
++	/* Handle any immediate reschedules or signals */
++	call	interrupt_end
++
++	movq	current_ptregs, %rsp
++
++	POP_REGS
++
++	addq	$8, %rsp	/* skip orig_ax */
++	popq	%r11		/* pt_regs->ip */
++	addq	$8, %rsp	/* skip cs */
++	addq	$8, %rsp	/* skip flags */
++	popq	%rsp
++
++	jmp	*%r11
++
++END(userspace)
+diff --git a/arch/x86/um/nommu/syscalls_64.c b/arch/x86/um/nommu/syscalls_64.c
+new file mode 100644
+index 000000000000..c78c442aed1d
+--- /dev/null
++++ b/arch/x86/um/nommu/syscalls_64.c
+@@ -0,0 +1,44 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2003 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
++ * Copyright 2003 PathScale, Inc.
++ *
++ * Licensed under the GPL
++ */
++
++#include <linux/sched.h>
++#include <linux/sched/mm.h>
++#include <linux/syscalls.h>
++#include <linux/uaccess.h>
++#include <asm/prctl.h> /* XXX This should get the constants from libc */
++#include <registers.h>
++#include <os.h>
++#include "syscalls.h"
++
++void arch_switch_to(struct task_struct *to)
 +{
-+	return pid == getpgrp();
-+}
-+
-+void new_thread(void *stack, jmp_buf *buf, void (*handler)(void))
-+{
-+	(*buf)[0].JB_IP = (unsigned long) handler;
-+	(*buf)[0].JB_SP = (unsigned long) stack + UM_THREAD_SIZE -
-+		sizeof(void *);
-+}
-+
-+#define INIT_JMP_NEW_THREAD 0
-+#define INIT_JMP_CALLBACK 1
-+#define INIT_JMP_HALT 2
-+#define INIT_JMP_REBOOT 3
-+
-+void switch_threads(jmp_buf *me, jmp_buf *you)
-+{
-+	unscheduled_userspace_iterations = 0;
-+
-+	if (UML_SETJMP(me) == 0)
-+		UML_LONGJMP(you, 1);
-+}
-+
-+static jmp_buf initial_jmpbuf;
-+
-+/* XXX Make these percpu */
-+static void (*cb_proc)(void *arg);
-+static void *cb_arg;
-+static jmp_buf *cb_back;
-+
-+int start_idle_thread(void *stack, jmp_buf *switch_buf)
-+{
-+	int n;
-+
-+	set_handler(SIGWINCH);
-+
 +	/*
-+	 * Can't use UML_SETJMP or UML_LONGJMP here because they save
-+	 * and restore signals, with the possible side-effect of
-+	 * trying to handle any signals which came when they were
-+	 * blocked, which can't be done on this stack.
-+	 * Signals must be blocked when jumping back here and restored
-+	 * after returning to the jumper.
++	 * In !CONFIG_MMU, it doesn't ptrace thus,
++	 * The FS_BASE/GS_BASE registers are saved here.
 +	 */
-+	n = setjmp(initial_jmpbuf);
-+	switch (n) {
-+	case INIT_JMP_NEW_THREAD:
-+		(*switch_buf)[0].JB_IP = (unsigned long) uml_finishsetup;
-+		(*switch_buf)[0].JB_SP = (unsigned long) stack +
-+			UM_THREAD_SIZE - sizeof(void *);
-+		break;
-+	case INIT_JMP_CALLBACK:
-+		(*cb_proc)(cb_arg);
-+		longjmp(*cb_back, 1);
-+		break;
-+	case INIT_JMP_HALT:
-+		kmalloc_ok = 0;
-+		return 0;
-+	case INIT_JMP_REBOOT:
-+		kmalloc_ok = 0;
-+		return 1;
-+	default:
-+		printk(UM_KERN_ERR "Bad sigsetjmp return in %s - %d\n",
-+		       __func__, n);
-+		fatal_sigsegv();
-+	}
-+	longjmp(*switch_buf, 1);
++	current_top_of_stack = task_top_of_stack(to);
++	current_ptregs = (long)task_pt_regs(to);
 +
-+	/* unreachable */
-+	printk(UM_KERN_ERR "impossible long jump!");
-+	fatal_sigsegv();
-+	return 0;
++	if ((to->thread.regs.regs.gp[FS_BASE / sizeof(unsigned long)] == 0) ||
++	    (to->mm == NULL))
++		return;
++
++	/* this changes the FS on every context switch */
++	arch_prctl(to, ARCH_SET_FS,
++		   (void __user *) to->thread.regs.regs.gp[FS_BASE / sizeof(unsigned long)]);
 +}
 +
-+void initial_thread_cb_skas(void (*proc)(void *), void *arg)
++SYSCALL_DEFINE6(mmap, unsigned long, addr, unsigned long, len,
++		unsigned long, prot, unsigned long, flags,
++		unsigned long, fd, unsigned long, off)
 +{
-+	jmp_buf here;
++	if (off & ~PAGE_MASK)
++		return -EINVAL;
 +
-+	cb_proc = proc;
-+	cb_arg = arg;
-+	cb_back = &here;
-+
-+	block_signals_trace();
-+	if (UML_SETJMP(&here) == 0)
-+		UML_LONGJMP(&initial_jmpbuf, INIT_JMP_CALLBACK);
-+	unblock_signals_trace();
-+
-+	cb_proc = NULL;
-+	cb_arg = NULL;
-+	cb_back = NULL;
++	return ksys_mmap_pgoff(addr, len, prot, flags, fd, off >> PAGE_SHIFT);
 +}
-+
-+void halt_skas(void)
-+{
-+	block_signals_trace();
-+	UML_LONGJMP(&initial_jmpbuf, INIT_JMP_HALT);
-+}
-+
-+static bool noreboot;
-+
-+static int __init noreboot_cmd_param(char *str, int *add)
-+{
-+	*add = 0;
-+	noreboot = true;
-+	return 0;
-+}
-+
-+__uml_setup("noreboot", noreboot_cmd_param,
-+"noreboot\n"
-+"    Rather than rebooting, exit always, akin to QEMU's -no-reboot option.\n"
-+"    This is useful if you're using CONFIG_PANIC_TIMEOUT in order to catch\n"
-+"    crashes in CI\n");
-+
-+void reboot_skas(void)
-+{
-+	block_signals_trace();
-+	UML_LONGJMP(&initial_jmpbuf, noreboot ? INIT_JMP_HALT : INIT_JMP_REBOOT);
-+}
-+
-+void __switch_mm(struct mm_id *mm_idp)
-+{
-+	userspace_pid[0] = mm_idp->pid;
-+}
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index f683cfc9e51a..555eb4905f70 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -5,7 +5,6 @@
-  */
- 
- #include <stdlib.h>
--#include <stdbool.h>
- #include <unistd.h>
- #include <sched.h>
- #include <errno.h>
-@@ -16,7 +15,6 @@
- #include <sys/wait.h>
- #include <sys/stat.h>
- #include <asm/unistd.h>
--#include <as-layout.h>
- #include <init.h>
- #include <kern_util.h>
- #include <mem.h>
-@@ -25,15 +23,9 @@
- #include <registers.h>
- #include <skas.h>
- #include <sysdep/stub.h>
--#include <linux/threads.h>
- #include <timetravel.h>
- #include "../internal.h"
- 
--int is_skas_winch(int pid, int fd, void *data)
--{
--	return pid == getpgrp();
--}
--
- static const char *ptrace_reg_name(int idx)
- {
- #define R(n) case HOST_##n: return #n
-@@ -305,8 +297,6 @@ static int __init init_stub_exe_fd(void)
- }
- __initcall(init_stub_exe_fd);
- 
--int userspace_pid[NR_CPUS];
--
- /**
-  * start_userspace() - prepare a new userspace process
-  * @stub_stack:	pointer to the stub stack.
-@@ -388,7 +378,6 @@ int start_userspace(unsigned long stub_stack)
- 	return err;
- }
- 
--int unscheduled_userspace_iterations;
- extern unsigned long tt_extra_sched_jiffies;
- 
- void userspace(struct uml_pt_regs *regs)
-@@ -550,124 +539,3 @@ void userspace(struct uml_pt_regs *regs)
- 		}
- 	}
- }
--
--void new_thread(void *stack, jmp_buf *buf, void (*handler)(void))
--{
--	(*buf)[0].JB_IP = (unsigned long) handler;
--	(*buf)[0].JB_SP = (unsigned long) stack + UM_THREAD_SIZE -
--		sizeof(void *);
--}
--
--#define INIT_JMP_NEW_THREAD 0
--#define INIT_JMP_CALLBACK 1
--#define INIT_JMP_HALT 2
--#define INIT_JMP_REBOOT 3
--
--void switch_threads(jmp_buf *me, jmp_buf *you)
--{
--	unscheduled_userspace_iterations = 0;
--
--	if (UML_SETJMP(me) == 0)
--		UML_LONGJMP(you, 1);
--}
--
--static jmp_buf initial_jmpbuf;
--
--/* XXX Make these percpu */
--static void (*cb_proc)(void *arg);
--static void *cb_arg;
--static jmp_buf *cb_back;
--
--int start_idle_thread(void *stack, jmp_buf *switch_buf)
--{
--	int n;
--
--	set_handler(SIGWINCH);
--
--	/*
--	 * Can't use UML_SETJMP or UML_LONGJMP here because they save
--	 * and restore signals, with the possible side-effect of
--	 * trying to handle any signals which came when they were
--	 * blocked, which can't be done on this stack.
--	 * Signals must be blocked when jumping back here and restored
--	 * after returning to the jumper.
--	 */
--	n = setjmp(initial_jmpbuf);
--	switch (n) {
--	case INIT_JMP_NEW_THREAD:
--		(*switch_buf)[0].JB_IP = (unsigned long) uml_finishsetup;
--		(*switch_buf)[0].JB_SP = (unsigned long) stack +
--			UM_THREAD_SIZE - sizeof(void *);
--		break;
--	case INIT_JMP_CALLBACK:
--		(*cb_proc)(cb_arg);
--		longjmp(*cb_back, 1);
--		break;
--	case INIT_JMP_HALT:
--		kmalloc_ok = 0;
--		return 0;
--	case INIT_JMP_REBOOT:
--		kmalloc_ok = 0;
--		return 1;
--	default:
--		printk(UM_KERN_ERR "Bad sigsetjmp return in %s - %d\n",
--		       __func__, n);
--		fatal_sigsegv();
--	}
--	longjmp(*switch_buf, 1);
--
--	/* unreachable */
--	printk(UM_KERN_ERR "impossible long jump!");
--	fatal_sigsegv();
--	return 0;
--}
--
--void initial_thread_cb_skas(void (*proc)(void *), void *arg)
--{
--	jmp_buf here;
--
--	cb_proc = proc;
--	cb_arg = arg;
--	cb_back = &here;
--
--	block_signals_trace();
--	if (UML_SETJMP(&here) == 0)
--		UML_LONGJMP(&initial_jmpbuf, INIT_JMP_CALLBACK);
--	unblock_signals_trace();
--
--	cb_proc = NULL;
--	cb_arg = NULL;
--	cb_back = NULL;
--}
--
--void halt_skas(void)
--{
--	block_signals_trace();
--	UML_LONGJMP(&initial_jmpbuf, INIT_JMP_HALT);
--}
--
--static bool noreboot;
--
--static int __init noreboot_cmd_param(char *str, int *add)
--{
--	*add = 0;
--	noreboot = true;
--	return 0;
--}
--
--__uml_setup("noreboot", noreboot_cmd_param,
--"noreboot\n"
--"    Rather than rebooting, exit always, akin to QEMU's -no-reboot option.\n"
--"    This is useful if you're using CONFIG_PANIC_TIMEOUT in order to catch\n"
--"    crashes in CI\n");
--
--void reboot_skas(void)
--{
--	block_signals_trace();
--	UML_LONGJMP(&initial_jmpbuf, noreboot ? INIT_JMP_HALT : INIT_JMP_REBOOT);
--}
--
--void __switch_mm(struct mm_id *mm_idp)
--{
--	userspace_pid[0] = mm_idp->pid;
--}
 -- 
 2.43.0
 
