@@ -4,88 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3CF59E77187
-	for <linux-um@archiver.kernel.org>; Thu, 12 Dec 2024 10:14:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 423A3E77184
+	for <linux-um@archiver.kernel.org>; Thu, 12 Dec 2024 10:14:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=bo9Gtzd2WAkYZxq0ZjtLa1K659fmyLVoVdU/3PYJdNI=; b=b7Hne3fEf3YJg1YvMG+cQxuQQa
-	tVIkBF45CWoJBJ188qnbtOscwDx4Aie/qzuvN1RdB0blrFaxmIGI/HZZ+H5zDYOsAAdZ250mb3jhn
-	7x0uTIIgtaFVI2abXVI1s3080IBa5qxj3Lry28LiWp19a15MVqsFkUXNDVmdcoHq2LV6QMX5FOYmR
-	X5djA3uskfukW61UwcYQ+7t3lgrjfUUj+JIoSVBh+fAbh3KjSHV0PYVV8D1EnLVDmE45V3+nD3qez
-	XbdUMXIOw+w8WirMo5HwYUT17q4uI6WhD1w5+kgShcUYtu+JXgneXaVPpv68psLtU//SjylRil/09
-	GLAV4lJQ==;
+	bh=5b8IVGRN6hSzKR2GLhryAMYxKrZ0FxMVKwADuX72vsY=; b=G8DYpn2ZaQdNrbSaoBYBPsHd4j
+	1RXFYSTkfxXROIWJj+DaWGAqGzI+hBbL7soyPyUz20DonA9ZFEeSirOagmN0X5StPbo1jqwEATouf
+	xoMYv7q9EznrcFG16AbzTUqoKRDW3qpONZ4HU2U7tdwxz7xsJDmBO6E2wmvSY+MZ2X5wnviszORKA
+	2vcQh2w/Q/Iw1ir4WlGtzroaBcBkrSYDVEdtBxgsnkkKbMGDXoHOje9bf8DMA7rxr4hdtFH5MGSZs
+	zOrIm2GS7VEst3wBgX7Iz24oLh6rubF24RgJ+bR49eS2osEUTQ/obTqfsXiKdap1Z2Bl65VS+s+JP
+	qnF1urBQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tLgDe-000000001Qz-415Q;
-	Thu, 12 Dec 2024 10:14:54 +0000
-Received: from mail-pl1-x634.google.com ([2607:f8b0:4864:20::634])
+	id 1tLgDd-000000001Py-42eQ;
+	Thu, 12 Dec 2024 10:14:53 +0000
+Received: from mail-pf1-x432.google.com ([2607:f8b0:4864:20::432])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tLgDF-000000001J4-3526
+	id 1tLgD4-000000001EY-2nKh
 	for linux-um@lists.infradead.org;
-	Thu, 12 Dec 2024 10:14:31 +0000
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-21675fd60feso4584015ad.2
-        for <linux-um@lists.infradead.org>; Thu, 12 Dec 2024 02:14:29 -0800 (PST)
+	Thu, 12 Dec 2024 10:14:19 +0000
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-725c86bbae7so359339b3a.3
+        for <linux-um@lists.infradead.org>; Thu, 12 Dec 2024 02:14:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733998469; x=1734603269; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1733998457; x=1734603257; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bo9Gtzd2WAkYZxq0ZjtLa1K659fmyLVoVdU/3PYJdNI=;
-        b=kDD0i0xNICWIe2PIu1lNUdWyW28KYPWgtrcLDewG8YgY+7vjU9UCMOn4nqxa3dXLcx
-         CCdiOuEi0m4hOe5neD3Ed2iy2AICvR3K1yPIz2wrwao6s3kcWr6A3Sy3nrOZRmEOVh5M
-         nEKH6b7AHdS01Qo5FJbnTi2FItkl1/Bb0ntyI6y3G4twNnO6JCap+k7HR+VP8pmodmwg
-         nN8CfGBpc2L5zDIf9vSR3gCTKonEUUXqDqc0lxEoFfxGdJn9IyR+kNuYZG2RBf5syV6k
-         DWjljbcg7L8xnHxf+1/QQs0dA7R/USxYo3/leDQDUHQILnca/MFlZ+sUrKZlhfUg9AGr
-         2GsQ==
+        bh=5b8IVGRN6hSzKR2GLhryAMYxKrZ0FxMVKwADuX72vsY=;
+        b=gm4N6NRjuEd2eNSeLf1196QRErAHooSDQPtgFGkov4h6hcySuwvgjZ3d4cn09homBR
+         EoTo4Aoup0D+VvJSBk1pAfD2Tus8M6N0SUWifg1Y6M0OjtfufvbrLV/5OajoA+Q0PNMN
+         ATdku89f0uCeVjCxGdGLoNYoPxThvq6RwEbn8S2OAYNO8yYdk09s/PVUFTRW5mAmb5zU
+         JbQNdzSlcX4Za1snZz/fsdSA2zlLnK58nossKe2jAuDOMzrnKwsHxOcJDYYjusPzuHks
+         vNcxd7GA0YhjRmW7hYcnDol1ALIULm1UerUO7i6AWKggv8UtZ9+tlXei6iSSXiGc949Y
+         +rzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733998469; x=1734603269;
+        d=1e100.net; s=20230601; t=1733998457; x=1734603257;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bo9Gtzd2WAkYZxq0ZjtLa1K659fmyLVoVdU/3PYJdNI=;
-        b=FlKLAzd8vlZcj207ZXrPPSM6tEI+JDNYL3BKifl4YkVYn3iahPD94WtZASGE778DJs
-         RQ9JmzjQ4EqXWIHnescpQ+RZ3JsT0I6iAtyd7wfcyCZdy+t2SMt+MKPtGPu6EELZHENZ
-         HOvqaUH3GkRtjaKbhluRFfYLJ2iQGWI0+vNr5/FFA1s2PN5ak9C26ALUR9GZ7o3a3YIQ
-         G6Ikuqcu/wTVcsaxOEGsYxKP9SK51d3m34zVY3s7TZrbv5lycq2LYgCoX/YZf7jGcmfh
-         3tSxVyaTbpOTbDRlHt1o+2lEqIYUQ8TRwsShl28pM2lC3dGYjMNiGpWoTgBdyumK/F9v
-         5WSQ==
-X-Gm-Message-State: AOJu0Ywp1eaIz9o/TkgL9v0nIrBZXRCuFZ+KZ0h4qdvh/Yng0peG5zbJ
-	qsTqTPmXwF26Kp8nZOrYPXXeWRvpZdLkBGHqc2shfpjgzU6n8vxNO4dpYA==
-X-Gm-Gg: ASbGncu/Bm8Xf3bw7cofWWoy4pEfXWyDaBliApDurG+xylyN7FyVKnsa0lRj+qfSCOL
-	U8fp9zD4KunZ+ll6hbaLWGCCDIFoNNdfHSaECYKLv8CPhLL4nOdWm0Lc3VJHzKv03ePyEJPAa7v
-	uZ0VBVscgN5wYWuDOR0UNnm1WeYnhLKLtyOIlWvANejQ0I8aA8XiRdECIWGXZSvy9tXNGQZ4oVo
-	blk27jBRLa6fO+u9hAjXP2Cwtf6e3tDDsRheLKX7AvelFRckVgaBCStarG49jM9Ugg9HE2sQ0k7
-	/mM6/LqBbhruQUbCJihTpdK1pdk=
-X-Google-Smtp-Source: AGHT+IFd4e/1zpqLskzS7PKJXa5HD9weMbPD2DtV7mtTkdAf3GdYXKoDoQDlFHqj49Qbr4zxJ7RRyg==
-X-Received: by 2002:a17:90b:394a:b0:2ee:53b3:3f1c with SMTP id 98e67ed59e1d1-2f13925ad16mr5244173a91.5.1733998468718;
-        Thu, 12 Dec 2024 02:14:28 -0800 (PST)
+        bh=5b8IVGRN6hSzKR2GLhryAMYxKrZ0FxMVKwADuX72vsY=;
+        b=jEb4T7ikVFt6aPVfYDtwE5kiJPKJwZcShpjWDRjC+RkVvnwkxH0u8TyuTBQKMsuC6C
+         vNkUw9DTv9CiOqERBZwsqWVqqekI3sDxN7MeOhLr9GKuS5sAsEdCeTx8cN2Jb5s2Ul3s
+         V6VErjmdgd68GwLVkQcdbRd/VwmyPsr9/vqd+yrtFFCbNQjEhOHBOG9buRtbDFWKCTcV
+         6nTlmFBXKyVvG8ufYt7jqy5wuVcUVKCaKpfpmUdPbWfj9QWAz6gZ6i7Mt/3xYQmwecG2
+         fr5gTLoBMyjx1HGBY9YHH2Vf7dDLCSI2xD1dFueXu0NmRAFs2FsB4kVikkXv/4KQmmDV
+         M02w==
+X-Gm-Message-State: AOJu0YydWyowQokmhbS4H6mW8AlfAcRcNqt2V9TZsN7ss0jxozREf5YJ
+	1muH0J1q/cOj9oqLAdlLOo+f9RD9MbfpgUId6+5IeOevCHI8agJ0tF1RUQ==
+X-Gm-Gg: ASbGncuoExR6dVHDJmQSm+EPxnmpm3KFRQ4SXONAXLmowLgvJX9LIAMTy3F/4LZM3ny
+	SJ1GzupZgjEhT1CFqf0srUq7yfkq++usYV/lZ3EcL//SG3OkdnHm4DqsJbkgm9GXAOoAFlHhzGE
+	uai2VSchdiNBFiwWc7loWbL9S4yEO9nOyF65WyndRSy6llNZff6KX2l9Geq833zgAwgxBfOLy6m
+	YeP10cemKpfrZXuE6uDsZzHEdl4DZqAeojIu2Aae80H27CCiuAg1AX383iR0ZWsqwh+w5cjGnvO
+	k422vj/nj53ChoK+dI8RqbKAbpk=
+X-Google-Smtp-Source: AGHT+IEJ7cfj7er5xIRXml7Jbp/h7BX1kFG/mUXAI70qrCufxhkZwN+UhmCCVf0AHAd6qbjcTSa/Cg==
+X-Received: by 2002:a05:6a21:7787:b0:1e1:afa9:d38b with SMTP id adf61e73a8af0-1e1cea82d07mr4162832637.8.1733998457448;
+        Thu, 12 Dec 2024 02:14:17 -0800 (PST)
 Received: from ikb-h07-29-noble.in.iijlab.net ([202.214.97.5])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f142de7ddfsm889993a91.26.2024.12.12.02.14.27
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7fd4cd45b18sm6676569a12.73.2024.12.12.02.14.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Dec 2024 02:14:28 -0800 (PST)
+        Thu, 12 Dec 2024 02:14:16 -0800 (PST)
 Received: by ikb-h07-29-noble.in.iijlab.net (Postfix, from userid 1010)
-	id BA008DDEEC8; Thu, 12 Dec 2024 19:14:26 +0900 (JST)
+	id BAAE0DDEEC2; Thu, 12 Dec 2024 19:14:14 +0900 (JST)
 From: Hajime Tazaki <thehajime@gmail.com>
 To: linux-um@lists.infradead.org
 Cc: thehajime@gmail.com,
 	ricarkol@google.com,
-	Liam.Howlett@oracle.com,
-	Kenichi Yasukata <kenichi.yasukata@gmail.com>
-Subject: [PATCH v5 06/13] um: nommu: seccomp syscalls hook
-Date: Thu, 12 Dec 2024 19:12:13 +0900
-Message-ID: <9d50f8e485077bd00b95937644db55cbe4ba2ace.1733998168.git.thehajime@gmail.com>
+	Liam.Howlett@oracle.com
+Subject: [PATCH v5 03/13] um: decouple MMU specific code from the common part
+Date: Thu, 12 Dec 2024 19:12:10 +0900
+Message-ID: <1bd611ff1f796b75a43faefcb81d24b3cedd4a87.1733998168.git.thehajime@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1733998168.git.thehajime@gmail.com>
 References: <cover.1733998168.git.thehajime@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241212_021429_775932_27595AAE 
-X-CRM114-Status: GOOD (  20.31  )
+X-CRM114-CacheID: sfid-20241212_021418_708367_6E267A34 
+X-CRM114-Status: GOOD (  21.37  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,317 +99,876 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-This commit adds syscall hook with seccomp.
-
-Using seccomp raises SIGSYS to UML process, which is captured in the
-(UML) kernel, then jumps to the syscall entry point, __kernel_vsyscall,
-to hook the original syscall instructions.
-
-The SIGSYS signal is raised upon the execution from uml_reserved and
-high_physmem, which locates userspace memory.
+This splits the memory, process related code with common and MMU
+specific parts in order to avoid ifdefs in .c file and duplication
+between MMU and !MMU.
 
 Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
-Signed-off-by: Kenichi Yasukata <kenichi.yasukata@gmail.com>
 ---
- arch/um/include/shared/kern_util.h    |  8 +++
- arch/um/include/shared/os.h           | 10 +++
- arch/um/kernel/um_arch.c              |  3 +
- arch/um/nommu/Makefile                |  3 +
- arch/um/nommu/os-Linux/Makefile       |  7 +++
- arch/um/nommu/os-Linux/signal.c       | 15 +++++
- arch/um/os-Linux/Makefile             |  5 ++
- arch/um/os-Linux/seccomp.c            | 87 +++++++++++++++++++++++++++
- arch/um/os-Linux/signal.c             |  6 ++
- arch/x86/um/nommu/Makefile            |  2 +-
- arch/x86/um/nommu/os-Linux/Makefile   |  6 ++
- arch/x86/um/nommu/os-Linux/mcontext.c | 13 ++++
- arch/x86/um/shared/sysdep/mcontext.h  |  3 +
- 13 files changed, 167 insertions(+), 1 deletion(-)
- create mode 100644 arch/um/nommu/Makefile
- create mode 100644 arch/um/nommu/os-Linux/Makefile
- create mode 100644 arch/um/nommu/os-Linux/signal.c
- create mode 100644 arch/um/os-Linux/seccomp.c
- create mode 100644 arch/x86/um/nommu/os-Linux/Makefile
- create mode 100644 arch/x86/um/nommu/os-Linux/mcontext.c
+ arch/um/include/shared/mem.h    |   8 ++
+ arch/um/kernel/Makefile         |   5 +-
+ arch/um/kernel/mem-pgtable.c    | 175 ++++++++++++++++++++++++++++++++
+ arch/um/kernel/mem.c            | 149 +--------------------------
+ arch/um/kernel/process.c        |  25 +++++
+ arch/um/kernel/skas/process.c   |  27 -----
+ arch/um/os-Linux/Makefile       |   3 +-
+ arch/um/os-Linux/internal.h     |   5 +
+ arch/um/os-Linux/process.c      | 133 ++++++++++++++++++++++++
+ arch/um/os-Linux/skas/process.c | 132 ------------------------
+ 10 files changed, 352 insertions(+), 310 deletions(-)
+ create mode 100644 arch/um/kernel/mem-pgtable.c
 
-diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
-index f21dc8517538..1dd3d02c4e39 100644
---- a/arch/um/include/shared/kern_util.h
-+++ b/arch/um/include/shared/kern_util.h
-@@ -67,4 +67,12 @@ void um_idle_sleep(void);
- 
- void kasan_map_memory(void *start, size_t len);
- 
-+#ifdef CONFIG_MMU
-+static inline void arch_sigsys_handler(int sig, struct siginfo *si, void *mc)
-+{
-+}
-+#else
-+extern void arch_sigsys_handler(int sig, struct siginfo *si, void *mc);
-+#endif
-+
- #endif
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index 5babad8c5f75..d29b967a009e 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -334,4 +334,14 @@ extern void um_trace_signals_off(void);
- /* time-travel */
- extern void deliver_time_travel_irqs(void);
- 
-+/* seccomp.c */
-+#ifdef CONFIG_MMU
-+static inline int os_setup_seccomp(void)
-+{
-+	return 0;
-+}
-+#else
-+extern int os_setup_seccomp(void);
-+#endif
-+
- #endif
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 62ddb865eb91..f56f14eaefc5 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -432,6 +432,9 @@ void __init setup_arch(char **cmdline_p)
- 		add_bootloader_randomness(rng_seed, sizeof(rng_seed));
- 		memzero_explicit(rng_seed, sizeof(rng_seed));
- 	}
-+
-+	/* install seccomp filter */
-+	os_setup_seccomp();
+diff --git a/arch/um/include/shared/mem.h b/arch/um/include/shared/mem.h
+index 98aacd544108..c5dfca3bf4d5 100644
+--- a/arch/um/include/shared/mem.h
++++ b/arch/um/include/shared/mem.h
+@@ -19,4 +19,12 @@ static inline void *uml_to_virt(unsigned long phys)
+ 	return((void *) uml_physmem + phys);
  }
  
- void __init arch_cpu_finalize_init(void)
-diff --git a/arch/um/nommu/Makefile b/arch/um/nommu/Makefile
-new file mode 100644
-index 000000000000..baab7c2f57c2
---- /dev/null
-+++ b/arch/um/nommu/Makefile
-@@ -0,0 +1,3 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+obj-y := os-Linux/
-diff --git a/arch/um/nommu/os-Linux/Makefile b/arch/um/nommu/os-Linux/Makefile
-new file mode 100644
-index 000000000000..68833c576437
---- /dev/null
-+++ b/arch/um/nommu/os-Linux/Makefile
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+obj-y := signal.o
-+USER_OBJS := $(obj-y)
-+
-+include $(srctree)/arch/um/scripts/Makefile.rules
-+USER_CFLAGS+=-I$(srctree)/arch/um/os-Linux
-diff --git a/arch/um/nommu/os-Linux/signal.c b/arch/um/nommu/os-Linux/signal.c
-new file mode 100644
-index 000000000000..844f6c840902
---- /dev/null
-+++ b/arch/um/nommu/os-Linux/signal.c
-@@ -0,0 +1,15 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <signal.h>
-+#include <kern_util.h>
-+#include <os.h>
-+#include <sysdep/mcontext.h>
-+#include <sys/ucontext.h>
-+
-+void arch_sigsys_handler(int sig, struct siginfo *si, void *ptr)
++#ifdef CONFIG_MMU
++extern void um_fixrange_init(void);
++#else
++static inline void um_fixrange_init(void)
 +{
-+	mcontext_t *mc = (mcontext_t *) ptr;
-+
-+	/* hook syscall via SIGSYS */
-+	mc_set_sigsys_hook(mc);
 +}
++#endif
++
+ #endif
+diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
+index f8567b933ffa..eec6682812ce 100644
+--- a/arch/um/kernel/Makefile
++++ b/arch/um/kernel/Makefile
+@@ -16,9 +16,10 @@ extra-y := vmlinux.lds
+ 
+ obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
+ 	physmem.o process.o ptrace.o reboot.o sigio.o \
+-	signal.o sysrq.o time.o tlb.o trap.o \
+-	um_arch.o umid.o maccess.o kmsg_dump.o capflags.o skas/
++	signal.o sysrq.o time.o \
++	um_arch.o umid.o maccess.o kmsg_dump.o capflags.o
+ obj-y += load_file.o
++obj-$(CONFIG_MMU) += mem-pgtable.o tlb.o trap.o skas/
+ 
+ obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
+ obj-$(CONFIG_GPROF)	+= gprof_syms.o
+diff --git a/arch/um/kernel/mem-pgtable.c b/arch/um/kernel/mem-pgtable.c
+new file mode 100644
+index 000000000000..8c977bda601d
+--- /dev/null
++++ b/arch/um/kernel/mem-pgtable.c
+@@ -0,0 +1,175 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2000 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
++ */
++
++#include <linux/stddef.h>
++#include <linux/module.h>
++#include <linux/memblock.h>
++#include <linux/mm.h>
++#include <linux/swap.h>
++#include <linux/slab.h>
++#include <asm/fixmap.h>
++#include <asm/page.h>
++#include <asm/pgalloc.h>
++#include <as-layout.h>
++#include <init.h>
++#include <kern.h>
++#include <kern_util.h>
++#include <mem_user.h>
++#include <os.h>
++#include <um_malloc.h>
++
++/*
++ * Create a page table and place a pointer to it in a middle page
++ * directory entry.
++ */
++static void __init one_page_table_init(pmd_t *pmd)
++{
++	if (pmd_none(*pmd)) {
++		pte_t *pte = (pte_t *) memblock_alloc_low(PAGE_SIZE,
++							  PAGE_SIZE);
++		if (!pte)
++			panic("%s: Failed to allocate %lu bytes align=%lx\n",
++			      __func__, PAGE_SIZE, PAGE_SIZE);
++
++		set_pmd(pmd, __pmd(_KERNPG_TABLE +
++					   (unsigned long) __pa(pte)));
++		WARN_ON_ONCE(pte != pte_offset_kernel(pmd, 0));
++	}
++}
++
++static void __init one_md_table_init(pud_t *pud)
++{
++#if CONFIG_PGTABLE_LEVELS > 2
++	pmd_t *pmd_table = (pmd_t *) memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
++
++	if (!pmd_table)
++		panic("%s: Failed to allocate %lu bytes align=%lx\n",
++		      __func__, PAGE_SIZE, PAGE_SIZE);
++
++	set_pud(pud, __pud(_KERNPG_TABLE + (unsigned long) __pa(pmd_table)));
++	WARN_ON_ONCE(pmd_table != pmd_offset(pud, 0));
++#endif
++}
++
++static void __init one_ud_table_init(p4d_t *p4d)
++{
++#if CONFIG_PGTABLE_LEVELS > 3
++	pud_t *pud_table = (pud_t *) memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
++
++	if (!pud_table)
++		panic("%s: Failed to allocate %lu bytes align=%lx\n",
++		      __func__, PAGE_SIZE, PAGE_SIZE);
++
++	set_p4d(p4d, __p4d(_KERNPG_TABLE + (unsigned long) __pa(pud_table)));
++	WARN_ON_ONCE(pud_table != pud_offset(p4d, 0));
++#endif
++}
++
++static void __init fixrange_init(unsigned long start, unsigned long end,
++				 pgd_t *pgd_base)
++{
++	pgd_t *pgd;
++	p4d_t *p4d;
++	pud_t *pud;
++	pmd_t *pmd;
++	int i, j;
++	unsigned long vaddr;
++
++	vaddr = start;
++	i = pgd_index(vaddr);
++	j = pmd_index(vaddr);
++	pgd = pgd_base + i;
++
++	for ( ; (i < PTRS_PER_PGD) && (vaddr < end); pgd++, i++) {
++		p4d = p4d_offset(pgd, vaddr);
++		if (p4d_none(*p4d))
++			one_ud_table_init(p4d);
++		pud = pud_offset(p4d, vaddr);
++		if (pud_none(*pud))
++			one_md_table_init(pud);
++		pmd = pmd_offset(pud, vaddr);
++		for (; (j < PTRS_PER_PMD) && (vaddr < end); pmd++, j++) {
++			one_page_table_init(pmd);
++			vaddr += PMD_SIZE;
++		}
++		j = 0;
++	}
++}
++
++static void __init fixaddr_user_init(void)
++{
++#ifdef CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA
++	long size = FIXADDR_USER_END - FIXADDR_USER_START;
++	pte_t *pte;
++	phys_t p;
++	unsigned long v, vaddr = FIXADDR_USER_START;
++
++	if (!size)
++		return;
++
++	fixrange_init(FIXADDR_USER_START, FIXADDR_USER_END, swapper_pg_dir);
++	v = (unsigned long) memblock_alloc_low(size, PAGE_SIZE);
++	if (!v)
++		panic("%s: Failed to allocate %lu bytes align=%lx\n",
++		      __func__, size, PAGE_SIZE);
++
++	memcpy((void *) v, (void *) FIXADDR_USER_START, size);
++	p = __pa(v);
++	for ( ; size > 0; size -= PAGE_SIZE, vaddr += PAGE_SIZE,
++		      p += PAGE_SIZE) {
++		pte = virt_to_kpte(vaddr);
++		pte_set_val(*pte, p, PAGE_READONLY);
++	}
++#endif
++}
++
++void __init um_fixrange_init(void)
++{
++	unsigned long vaddr;
++
++	/*
++	 * Fixed mappings, only the page table structure has to be
++	 * created - mappings will be set by set_fixmap():
++	 */
++	vaddr = __fix_to_virt(__end_of_fixed_addresses - 1) & PMD_MASK;
++	fixrange_init(vaddr, FIXADDR_TOP, swapper_pg_dir);
++
++	fixaddr_user_init();
++}
++
++/* Allocate and free page tables. */
++
++pgd_t *pgd_alloc(struct mm_struct *mm)
++{
++	pgd_t *pgd = (pgd_t *)__get_free_page(GFP_KERNEL);
++
++	if (pgd) {
++		memset(pgd, 0, USER_PTRS_PER_PGD * sizeof(pgd_t));
++		memcpy(pgd + USER_PTRS_PER_PGD,
++		       swapper_pg_dir + USER_PTRS_PER_PGD,
++		       (PTRS_PER_PGD - USER_PTRS_PER_PGD) * sizeof(pgd_t));
++	}
++	return pgd;
++}
++
++static const pgprot_t protection_map[16] = {
++	[VM_NONE]					= PAGE_NONE,
++	[VM_READ]					= PAGE_READONLY,
++	[VM_WRITE]					= PAGE_COPY,
++	[VM_WRITE | VM_READ]				= PAGE_COPY,
++	[VM_EXEC]					= PAGE_READONLY,
++	[VM_EXEC | VM_READ]				= PAGE_READONLY,
++	[VM_EXEC | VM_WRITE]				= PAGE_COPY,
++	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY,
++	[VM_SHARED]					= PAGE_NONE,
++	[VM_SHARED | VM_READ]				= PAGE_READONLY,
++	[VM_SHARED | VM_WRITE]				= PAGE_SHARED,
++	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED,
++	[VM_SHARED | VM_EXEC]				= PAGE_READONLY,
++	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY,
++	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED,
++	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED
++};
++DECLARE_VM_GET_PAGE_PROT
+diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
+index 53248ed04771..e3a7ec32d6c7 100644
+--- a/arch/um/kernel/mem.c
++++ b/arch/um/kernel/mem.c
+@@ -6,7 +6,6 @@
+ #include <linux/stddef.h>
+ #include <linux/module.h>
+ #include <linux/memblock.h>
+-#include <linux/mm.h>
+ #include <linux/swap.h>
+ #include <linux/slab.h>
+ #include <asm/fixmap.h>
+@@ -74,113 +73,9 @@ void __init mem_init(void)
+ 	kmalloc_ok = 1;
+ }
+ 
+-/*
+- * Create a page table and place a pointer to it in a middle page
+- * directory entry.
+- */
+-static void __init one_page_table_init(pmd_t *pmd)
+-{
+-	if (pmd_none(*pmd)) {
+-		pte_t *pte = (pte_t *) memblock_alloc_low(PAGE_SIZE,
+-							  PAGE_SIZE);
+-		if (!pte)
+-			panic("%s: Failed to allocate %lu bytes align=%lx\n",
+-			      __func__, PAGE_SIZE, PAGE_SIZE);
+-
+-		set_pmd(pmd, __pmd(_KERNPG_TABLE +
+-					   (unsigned long) __pa(pte)));
+-		BUG_ON(pte != pte_offset_kernel(pmd, 0));
+-	}
+-}
+-
+-static void __init one_md_table_init(pud_t *pud)
+-{
+-#if CONFIG_PGTABLE_LEVELS > 2
+-	pmd_t *pmd_table = (pmd_t *) memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
+-	if (!pmd_table)
+-		panic("%s: Failed to allocate %lu bytes align=%lx\n",
+-		      __func__, PAGE_SIZE, PAGE_SIZE);
+-
+-	set_pud(pud, __pud(_KERNPG_TABLE + (unsigned long) __pa(pmd_table)));
+-	BUG_ON(pmd_table != pmd_offset(pud, 0));
+-#endif
+-}
+-
+-static void __init one_ud_table_init(p4d_t *p4d)
+-{
+-#if CONFIG_PGTABLE_LEVELS > 3
+-	pud_t *pud_table = (pud_t *) memblock_alloc_low(PAGE_SIZE, PAGE_SIZE);
+-	if (!pud_table)
+-		panic("%s: Failed to allocate %lu bytes align=%lx\n",
+-		      __func__, PAGE_SIZE, PAGE_SIZE);
+-
+-	set_p4d(p4d, __p4d(_KERNPG_TABLE + (unsigned long) __pa(pud_table)));
+-	BUG_ON(pud_table != pud_offset(p4d, 0));
+-#endif
+-}
+-
+-static void __init fixrange_init(unsigned long start, unsigned long end,
+-				 pgd_t *pgd_base)
+-{
+-	pgd_t *pgd;
+-	p4d_t *p4d;
+-	pud_t *pud;
+-	pmd_t *pmd;
+-	int i, j;
+-	unsigned long vaddr;
+-
+-	vaddr = start;
+-	i = pgd_index(vaddr);
+-	j = pmd_index(vaddr);
+-	pgd = pgd_base + i;
+-
+-	for ( ; (i < PTRS_PER_PGD) && (vaddr < end); pgd++, i++) {
+-		p4d = p4d_offset(pgd, vaddr);
+-		if (p4d_none(*p4d))
+-			one_ud_table_init(p4d);
+-		pud = pud_offset(p4d, vaddr);
+-		if (pud_none(*pud))
+-			one_md_table_init(pud);
+-		pmd = pmd_offset(pud, vaddr);
+-		for (; (j < PTRS_PER_PMD) && (vaddr < end); pmd++, j++) {
+-			one_page_table_init(pmd);
+-			vaddr += PMD_SIZE;
+-		}
+-		j = 0;
+-	}
+-}
+-
+-static void __init fixaddr_user_init( void)
+-{
+-#ifdef CONFIG_ARCH_REUSE_HOST_VSYSCALL_AREA
+-	long size = FIXADDR_USER_END - FIXADDR_USER_START;
+-	pte_t *pte;
+-	phys_t p;
+-	unsigned long v, vaddr = FIXADDR_USER_START;
+-
+-	if (!size)
+-		return;
+-
+-	fixrange_init( FIXADDR_USER_START, FIXADDR_USER_END, swapper_pg_dir);
+-	v = (unsigned long) memblock_alloc_low(size, PAGE_SIZE);
+-	if (!v)
+-		panic("%s: Failed to allocate %lu bytes align=%lx\n",
+-		      __func__, size, PAGE_SIZE);
+-
+-	memcpy((void *) v , (void *) FIXADDR_USER_START, size);
+-	p = __pa(v);
+-	for ( ; size > 0; size -= PAGE_SIZE, vaddr += PAGE_SIZE,
+-		      p += PAGE_SIZE) {
+-		pte = virt_to_kpte(vaddr);
+-		pte_set_val(*pte, p, PAGE_READONLY);
+-	}
+-#endif
+-}
+-
+ void __init paging_init(void)
+ {
+ 	unsigned long max_zone_pfn[MAX_NR_ZONES] = { 0 };
+-	unsigned long vaddr;
+ 
+ 	empty_zero_page = (unsigned long *) memblock_alloc_low(PAGE_SIZE,
+ 							       PAGE_SIZE);
+@@ -191,14 +86,7 @@ void __init paging_init(void)
+ 	max_zone_pfn[ZONE_NORMAL] = end_iomem >> PAGE_SHIFT;
+ 	free_area_init(max_zone_pfn);
+ 
+-	/*
+-	 * Fixed mappings, only the page table structure has to be
+-	 * created - mappings will be set by set_fixmap():
+-	 */
+-	vaddr = __fix_to_virt(__end_of_fixed_addresses - 1) & PMD_MASK;
+-	fixrange_init(vaddr, FIXADDR_TOP, swapper_pg_dir);
+-
+-	fixaddr_user_init();
++	um_fixrange_init();
+ }
+ 
+ /*
+@@ -210,42 +98,7 @@ void free_initmem(void)
+ {
+ }
+ 
+-/* Allocate and free page tables. */
+-
+-pgd_t *pgd_alloc(struct mm_struct *mm)
+-{
+-	pgd_t *pgd = (pgd_t *)__get_free_page(GFP_KERNEL);
+-
+-	if (pgd) {
+-		memset(pgd, 0, USER_PTRS_PER_PGD * sizeof(pgd_t));
+-		memcpy(pgd + USER_PTRS_PER_PGD,
+-		       swapper_pg_dir + USER_PTRS_PER_PGD,
+-		       (PTRS_PER_PGD - USER_PTRS_PER_PGD) * sizeof(pgd_t));
+-	}
+-	return pgd;
+-}
+-
+ void *uml_kmalloc(int size, int flags)
+ {
+ 	return kmalloc(size, flags);
+ }
+-
+-static const pgprot_t protection_map[16] = {
+-	[VM_NONE]					= PAGE_NONE,
+-	[VM_READ]					= PAGE_READONLY,
+-	[VM_WRITE]					= PAGE_COPY,
+-	[VM_WRITE | VM_READ]				= PAGE_COPY,
+-	[VM_EXEC]					= PAGE_READONLY,
+-	[VM_EXEC | VM_READ]				= PAGE_READONLY,
+-	[VM_EXEC | VM_WRITE]				= PAGE_COPY,
+-	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY,
+-	[VM_SHARED]					= PAGE_NONE,
+-	[VM_SHARED | VM_READ]				= PAGE_READONLY,
+-	[VM_SHARED | VM_WRITE]				= PAGE_SHARED,
+-	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED,
+-	[VM_SHARED | VM_EXEC]				= PAGE_READONLY,
+-	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_READONLY,
+-	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_SHARED,
+-	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED
+-};
+-DECLARE_VM_GET_PAGE_PROT
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index 30bdc0a87dc8..aaf7bcff235c 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -25,6 +25,7 @@
+ #include <linux/tick.h>
+ #include <linux/threads.h>
+ #include <linux/resume_user_mode.h>
++#include <linux/start_kernel.h>
+ #include <asm/current.h>
+ #include <asm/mmu_context.h>
+ #include <asm/switch_to.h>
+@@ -46,6 +47,8 @@
+ struct task_struct *cpu_tasks[NR_CPUS];
+ EXPORT_SYMBOL(cpu_tasks);
+ 
++static char cpu0_irqstack[THREAD_SIZE] __aligned(THREAD_SIZE);
++
+ void free_stack(unsigned long stack, int order)
+ {
+ 	free_pages(stack, order);
+@@ -295,3 +298,25 @@ unsigned long __get_wchan(struct task_struct *p)
+ 
+ 	return 0;
+ }
++
++
++static int __init start_kernel_proc(void *unused)
++{
++	block_signals_trace();
++
++	start_kernel();
++	return 0;
++}
++
++int __init start_uml(void)
++{
++	stack_protections((unsigned long) &cpu0_irqstack);
++	set_sigstack(cpu0_irqstack, THREAD_SIZE);
++
++	init_new_thread_signals();
++
++	init_task.thread.request.thread.proc = start_kernel_proc;
++	init_task.thread.request.thread.arg = NULL;
++	return start_idle_thread(task_stack_page(&init_task),
++				 &init_task.thread.switch_buf);
++}
+diff --git a/arch/um/kernel/skas/process.c b/arch/um/kernel/skas/process.c
+index 05dcdc057af9..5247121d3419 100644
+--- a/arch/um/kernel/skas/process.c
++++ b/arch/um/kernel/skas/process.c
+@@ -16,33 +16,6 @@
+ #include <skas.h>
+ #include <kern_util.h>
+ 
+-extern void start_kernel(void);
+-
+-static int __init start_kernel_proc(void *unused)
+-{
+-	block_signals_trace();
+-
+-	start_kernel();
+-	return 0;
+-}
+-
+-extern int userspace_pid[];
+-
+-static char cpu0_irqstack[THREAD_SIZE] __aligned(THREAD_SIZE);
+-
+-int __init start_uml(void)
+-{
+-	stack_protections((unsigned long) &cpu0_irqstack);
+-	set_sigstack(cpu0_irqstack, THREAD_SIZE);
+-
+-	init_new_thread_signals();
+-
+-	init_task.thread.request.thread.proc = start_kernel_proc;
+-	init_task.thread.request.thread.arg = NULL;
+-	return start_idle_thread(task_stack_page(&init_task),
+-				 &init_task.thread.switch_buf);
+-}
+-
+ unsigned long current_stub_stack(void)
+ {
+ 	if (current->mm == NULL)
 diff --git a/arch/um/os-Linux/Makefile b/arch/um/os-Linux/Makefile
-index 331564888400..6bfdfec8cbcc 100644
+index 049dfa5bc9c6..331564888400 100644
 --- a/arch/um/os-Linux/Makefile
 +++ b/arch/um/os-Linux/Makefile
-@@ -21,4 +21,9 @@ USER_OBJS := $(user-objs-y) elf_aux.o execvp.o file.o helper.o irq.o \
- 	main.o mem.o process.o registers.o sigio.o signal.o start_up.o time.o \
- 	tty.o umid.o util.o
+@@ -8,7 +8,8 @@ KCOV_INSTRUMENT                := n
  
-+ifneq ($(CONFIG_MMU),y)
-+obj-y += seccomp.o
-+USER_OBJS += seccomp.o
-+endif
+ obj-y = execvp.o file.o helper.o irq.o main.o mem.o process.o \
+ 	registers.o sigio.o signal.o start_up.o time.o tty.o \
+-	umid.o user_syms.o util.o drivers/ skas/
++	umid.o user_syms.o util.o drivers/
++obj-$(CONFIG_MMU) += skas/
+ 
+ CFLAGS_signal.o += -Wframe-larger-than=4096
+ 
+diff --git a/arch/um/os-Linux/internal.h b/arch/um/os-Linux/internal.h
+index 317fca190c2b..bcbf64ce8cd1 100644
+--- a/arch/um/os-Linux/internal.h
++++ b/arch/um/os-Linux/internal.h
+@@ -2,6 +2,11 @@
+ #ifndef __UM_OS_LINUX_INTERNAL_H
+ #define __UM_OS_LINUX_INTERNAL_H
+ 
++/*
++ * process.c
++ */
++extern int userspace_pid[];
 +
- include $(srctree)/arch/um/scripts/Makefile.rules
-diff --git a/arch/um/os-Linux/seccomp.c b/arch/um/os-Linux/seccomp.c
-new file mode 100644
-index 000000000000..d1cfa6e3d632
---- /dev/null
-+++ b/arch/um/os-Linux/seccomp.c
-@@ -0,0 +1,87 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <signal.h>
-+#include <sys/prctl.h>
-+#include <sys/syscall.h>   /* For SYS_xxx definitions */
-+#include <init.h>
+ /*
+  * elf_aux.c
+  */
+diff --git a/arch/um/os-Linux/process.c b/arch/um/os-Linux/process.c
+index 9f086f939420..6df378639880 100644
+--- a/arch/um/os-Linux/process.c
++++ b/arch/um/os-Linux/process.c
+@@ -6,6 +6,7 @@
+ 
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <stdbool.h>
+ #include <unistd.h>
+ #include <errno.h>
+ #include <signal.h>
+@@ -15,9 +16,15 @@
+ #include <sys/prctl.h>
+ #include <sys/wait.h>
+ #include <asm/unistd.h>
++#include <linux/threads.h>
+ #include <init.h>
+ #include <longjmp.h>
+ #include <os.h>
 +#include <as-layout.h>
-+#include <os.h>
-+#include <linux/filter.h>
-+#include <linux/seccomp.h>
++#include <kern_util.h>
 +
-+int __init os_setup_seccomp(void)
++int userspace_pid[NR_CPUS];
++int unscheduled_userspace_iterations;
+ 
+ void os_alarm_process(int pid)
+ {
+@@ -209,3 +216,129 @@ void os_set_pdeathsig(void)
+ {
+ 	prctl(PR_SET_PDEATHSIG, SIGKILL);
+ }
++
++int is_skas_winch(int pid, int fd, void *data)
 +{
-+	int err;
-+	unsigned long __userspace_start = uml_reserved,
-+		__userspace_end = high_physmem;
++	return pid == getpgrp();
++}
 +
-+	struct sock_filter filter[] = {
-+		/* if (IP_high > __userspace_end) allow; */
-+		BPF_STMT(BPF_LD + BPF_W + BPF_ABS,
-+			 offsetof(struct seccomp_data, instruction_pointer) + 4),
-+		BPF_JUMP(BPF_JMP + BPF_JGT + BPF_K, __userspace_end >> 32,
-+			 /*true-skip=*/0, /*false-skip=*/1),
-+		BPF_STMT(BPF_RET + BPF_K, SECCOMP_RET_ALLOW),
++void new_thread(void *stack, jmp_buf *buf, void (*handler)(void))
++{
++	(*buf)[0].JB_IP = (unsigned long) handler;
++	(*buf)[0].JB_SP = (unsigned long) stack + UM_THREAD_SIZE -
++		sizeof(void *);
++}
 +
-+		/* if (IP_high == __userspace_end && IP_low >= __userspace_end) allow; */
-+		BPF_STMT(BPF_LD + BPF_W + BPF_ABS,
-+			 offsetof(struct seccomp_data, instruction_pointer) + 4),
-+		BPF_JUMP(BPF_JMP + BPF_JEQ + BPF_K, __userspace_end >> 32,
-+			 /*true-skip=*/0, /*false-skip=*/3),
-+		BPF_STMT(BPF_LD + BPF_W + BPF_ABS,
-+			 offsetof(struct seccomp_data, instruction_pointer)),
-+		BPF_JUMP(BPF_JMP + BPF_JGE + BPF_K, __userspace_end,
-+			 /*true-skip=*/0, /*false-skip=*/1),
-+		BPF_STMT(BPF_RET + BPF_K, SECCOMP_RET_ALLOW),
++#define INIT_JMP_NEW_THREAD 0
++#define INIT_JMP_CALLBACK 1
++#define INIT_JMP_HALT 2
++#define INIT_JMP_REBOOT 3
 +
-+		/* if (IP_high < __userspace_start) allow; */
-+		BPF_STMT(BPF_LD + BPF_W + BPF_ABS,
-+			 offsetof(struct seccomp_data, instruction_pointer) + 4),
-+		BPF_JUMP(BPF_JMP + BPF_JGE + BPF_K, __userspace_start >> 32,
-+			 /*true-skip=*/1, /*false-skip=*/0),
-+		BPF_STMT(BPF_RET + BPF_K, SECCOMP_RET_ALLOW),
++void switch_threads(jmp_buf *me, jmp_buf *you)
++{
++	unscheduled_userspace_iterations = 0;
 +
-+		/* if (IP_high == __userspace_start && IP_low < __userspace_start) allow; */
-+		BPF_STMT(BPF_LD + BPF_W + BPF_ABS,
-+			 offsetof(struct seccomp_data, instruction_pointer) + 4),
-+		BPF_JUMP(BPF_JMP + BPF_JEQ + BPF_K, __userspace_start >> 32,
-+			 /*true-skip=*/0, /*false-skip=*/3),
-+		BPF_STMT(BPF_LD + BPF_W + BPF_ABS,
-+			 offsetof(struct seccomp_data, instruction_pointer)),
-+		BPF_JUMP(BPF_JMP + BPF_JGE + BPF_K, __userspace_start,
-+			 /*true-skip=*/1, /*false-skip=*/0),
-+		BPF_STMT(BPF_RET + BPF_K, SECCOMP_RET_ALLOW),
++	if (UML_SETJMP(me) == 0)
++		UML_LONGJMP(you, 1);
++}
 +
-+		/* other address; trap  */
-+		BPF_STMT(BPF_RET + BPF_K, SECCOMP_RET_TRAP),
-+	};
-+	struct sock_fprog prog = {
-+		.len = ARRAY_SIZE(filter),
-+		.filter = filter,
-+	};
++static jmp_buf initial_jmpbuf;
 +
-+	err = prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
-+	if (err)
-+		os_warn("PR_SET_NO_NEW_PRIVS (err=%d, ernro=%d)\n",
-+		       err, errno);
++/* XXX Make these percpu */
++static void (*cb_proc)(void *arg);
++static void *cb_arg;
++static jmp_buf *cb_back;
 +
-+	err = syscall(SYS_seccomp, SECCOMP_SET_MODE_FILTER,
-+		      SECCOMP_FILTER_FLAG_TSYNC, &prog);
-+	if (err) {
-+		os_warn("SECCOMP_SET_MODE_FILTER (err=%d, ernro=%d)\n",
-+		       err, errno);
-+		exit(1);
++int start_idle_thread(void *stack, jmp_buf *switch_buf)
++{
++	int n;
++
++	set_handler(SIGWINCH);
++
++	/*
++	 * Can't use UML_SETJMP or UML_LONGJMP here because they save
++	 * and restore signals, with the possible side-effect of
++	 * trying to handle any signals which came when they were
++	 * blocked, which can't be done on this stack.
++	 * Signals must be blocked when jumping back here and restored
++	 * after returning to the jumper.
++	 */
++	n = setjmp(initial_jmpbuf);
++	switch (n) {
++	case INIT_JMP_NEW_THREAD:
++		(*switch_buf)[0].JB_IP = (unsigned long) uml_finishsetup;
++		(*switch_buf)[0].JB_SP = (unsigned long) stack +
++			UM_THREAD_SIZE - sizeof(void *);
++		break;
++	case INIT_JMP_CALLBACK:
++		(*cb_proc)(cb_arg);
++		longjmp(*cb_back, 1);
++		break;
++	case INIT_JMP_HALT:
++		kmalloc_ok = 0;
++		return 0;
++	case INIT_JMP_REBOOT:
++		kmalloc_ok = 0;
++		return 1;
++	default:
++		printk(UM_KERN_ERR "Bad sigsetjmp return in %s - %d\n",
++		       __func__, n);
++		fatal_sigsegv();
 +	}
++	longjmp(*switch_buf, 1);
 +
-+	set_handler(SIGSYS);
-+
-+	os_info("seccomp: setup filter syscalls in the range: 0x%lx-0x%lx\n",
-+		__userspace_start, __userspace_end);
-+
++	/* unreachable */
++	printk(UM_KERN_ERR "impossible long jump!");
++	fatal_sigsegv();
 +	return 0;
 +}
 +
-diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
-index 9ea7269ffb77..97efdabe1e45 100644
---- a/arch/um/os-Linux/signal.c
-+++ b/arch/um/os-Linux/signal.c
-@@ -172,12 +172,18 @@ void register_pm_wake_signal(void)
- 	set_handler(SIGUSR1);
++void initial_thread_cb_skas(void (*proc)(void *), void *arg)
++{
++	jmp_buf here;
++
++	cb_proc = proc;
++	cb_arg = arg;
++	cb_back = &here;
++
++	block_signals_trace();
++	if (UML_SETJMP(&here) == 0)
++		UML_LONGJMP(&initial_jmpbuf, INIT_JMP_CALLBACK);
++	unblock_signals_trace();
++
++	cb_proc = NULL;
++	cb_arg = NULL;
++	cb_back = NULL;
++}
++
++void halt_skas(void)
++{
++	block_signals_trace();
++	UML_LONGJMP(&initial_jmpbuf, INIT_JMP_HALT);
++}
++
++static bool noreboot;
++
++static int __init noreboot_cmd_param(char *str, int *add)
++{
++	*add = 0;
++	noreboot = true;
++	return 0;
++}
++
++__uml_setup("noreboot", noreboot_cmd_param,
++"noreboot\n"
++"    Rather than rebooting, exit always, akin to QEMU's -no-reboot option.\n"
++"    This is useful if you're using CONFIG_PANIC_TIMEOUT in order to catch\n"
++"    crashes in CI\n");
++
++void reboot_skas(void)
++{
++	block_signals_trace();
++	UML_LONGJMP(&initial_jmpbuf, noreboot ? INIT_JMP_HALT : INIT_JMP_REBOOT);
++}
++
++void __switch_mm(struct mm_id *mm_idp)
++{
++	userspace_pid[0] = mm_idp->pid;
++}
+diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
+index f683cfc9e51a..555eb4905f70 100644
+--- a/arch/um/os-Linux/skas/process.c
++++ b/arch/um/os-Linux/skas/process.c
+@@ -5,7 +5,6 @@
+  */
+ 
+ #include <stdlib.h>
+-#include <stdbool.h>
+ #include <unistd.h>
+ #include <sched.h>
+ #include <errno.h>
+@@ -16,7 +15,6 @@
+ #include <sys/wait.h>
+ #include <sys/stat.h>
+ #include <asm/unistd.h>
+-#include <as-layout.h>
+ #include <init.h>
+ #include <kern_util.h>
+ #include <mem.h>
+@@ -25,15 +23,9 @@
+ #include <registers.h>
+ #include <skas.h>
+ #include <sysdep/stub.h>
+-#include <linux/threads.h>
+ #include <timetravel.h>
+ #include "../internal.h"
+ 
+-int is_skas_winch(int pid, int fd, void *data)
+-{
+-	return pid == getpgrp();
+-}
+-
+ static const char *ptrace_reg_name(int idx)
+ {
+ #define R(n) case HOST_##n: return #n
+@@ -305,8 +297,6 @@ static int __init init_stub_exe_fd(void)
+ }
+ __initcall(init_stub_exe_fd);
+ 
+-int userspace_pid[NR_CPUS];
+-
+ /**
+  * start_userspace() - prepare a new userspace process
+  * @stub_stack:	pointer to the stub stack.
+@@ -388,7 +378,6 @@ int start_userspace(unsigned long stub_stack)
+ 	return err;
  }
  
-+static void sigsys_handler(int sig, struct siginfo *unused_si, mcontext_t *mc)
-+{
-+	arch_sigsys_handler(sig, unused_si, mc);
-+}
-+
- static void (*handlers[_NSIG])(int sig, struct siginfo *si, mcontext_t *mc) = {
- 	[SIGSEGV] = sig_handler,
- 	[SIGBUS] = sig_handler,
- 	[SIGILL] = sig_handler,
- 	[SIGFPE] = sig_handler,
- 	[SIGTRAP] = sig_handler,
-+	[SIGSYS] = sigsys_handler,
+-int unscheduled_userspace_iterations;
+ extern unsigned long tt_extra_sched_jiffies;
  
- 	[SIGIO] = sig_handler,
- 	[SIGWINCH] = sig_handler,
-diff --git a/arch/x86/um/nommu/Makefile b/arch/x86/um/nommu/Makefile
-index d72c63afffa5..ebe47d4836f4 100644
---- a/arch/x86/um/nommu/Makefile
-+++ b/arch/x86/um/nommu/Makefile
-@@ -5,4 +5,4 @@ else
- 	BITS := 64
- endif
- 
--obj-y = do_syscall_$(BITS).o entry_$(BITS).o
-+obj-y = do_syscall_$(BITS).o entry_$(BITS).o os-Linux/
-diff --git a/arch/x86/um/nommu/os-Linux/Makefile b/arch/x86/um/nommu/os-Linux/Makefile
-new file mode 100644
-index 000000000000..4571e403a6ff
---- /dev/null
-+++ b/arch/x86/um/nommu/os-Linux/Makefile
-@@ -0,0 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+obj-y = mcontext.o
-+USER_OBJS := mcontext.o
-+
-+include $(srctree)/arch/um/scripts/Makefile.rules
-diff --git a/arch/x86/um/nommu/os-Linux/mcontext.c b/arch/x86/um/nommu/os-Linux/mcontext.c
-new file mode 100644
-index 000000000000..d74bc0726a28
---- /dev/null
-+++ b/arch/x86/um/nommu/os-Linux/mcontext.c
-@@ -0,0 +1,13 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <sys/ucontext.h>
-+#define __FRAME_OFFSETS
-+#include <asm/ptrace.h>
-+#include <sysdep/ptrace.h>
-+#include <sysdep/mcontext.h>
-+#include <sysdep/syscalls.h>
-+
-+void mc_set_sigsys_hook(mcontext_t *mc)
-+{
-+	mc->gregs[REG_RCX] = mc->gregs[REG_RIP];
-+	mc->gregs[REG_RIP] = (unsigned long) __kernel_vsyscall;
-+}
-diff --git a/arch/x86/um/shared/sysdep/mcontext.h b/arch/x86/um/shared/sysdep/mcontext.h
-index b724c54da316..3f2dc3a2995c 100644
---- a/arch/x86/um/shared/sysdep/mcontext.h
-+++ b/arch/x86/um/shared/sysdep/mcontext.h
-@@ -7,6 +7,9 @@
- #define __SYS_SIGCONTEXT_X86_H
- 
- extern void get_regs_from_mc(struct uml_pt_regs *, mcontext_t *);
-+#ifndef CONFIG_MMU
-+extern void mc_set_sigsys_hook(mcontext_t *mc);
-+#endif
- 
- #ifdef __i386__
- 
+ void userspace(struct uml_pt_regs *regs)
+@@ -550,124 +539,3 @@ void userspace(struct uml_pt_regs *regs)
+ 		}
+ 	}
+ }
+-
+-void new_thread(void *stack, jmp_buf *buf, void (*handler)(void))
+-{
+-	(*buf)[0].JB_IP = (unsigned long) handler;
+-	(*buf)[0].JB_SP = (unsigned long) stack + UM_THREAD_SIZE -
+-		sizeof(void *);
+-}
+-
+-#define INIT_JMP_NEW_THREAD 0
+-#define INIT_JMP_CALLBACK 1
+-#define INIT_JMP_HALT 2
+-#define INIT_JMP_REBOOT 3
+-
+-void switch_threads(jmp_buf *me, jmp_buf *you)
+-{
+-	unscheduled_userspace_iterations = 0;
+-
+-	if (UML_SETJMP(me) == 0)
+-		UML_LONGJMP(you, 1);
+-}
+-
+-static jmp_buf initial_jmpbuf;
+-
+-/* XXX Make these percpu */
+-static void (*cb_proc)(void *arg);
+-static void *cb_arg;
+-static jmp_buf *cb_back;
+-
+-int start_idle_thread(void *stack, jmp_buf *switch_buf)
+-{
+-	int n;
+-
+-	set_handler(SIGWINCH);
+-
+-	/*
+-	 * Can't use UML_SETJMP or UML_LONGJMP here because they save
+-	 * and restore signals, with the possible side-effect of
+-	 * trying to handle any signals which came when they were
+-	 * blocked, which can't be done on this stack.
+-	 * Signals must be blocked when jumping back here and restored
+-	 * after returning to the jumper.
+-	 */
+-	n = setjmp(initial_jmpbuf);
+-	switch (n) {
+-	case INIT_JMP_NEW_THREAD:
+-		(*switch_buf)[0].JB_IP = (unsigned long) uml_finishsetup;
+-		(*switch_buf)[0].JB_SP = (unsigned long) stack +
+-			UM_THREAD_SIZE - sizeof(void *);
+-		break;
+-	case INIT_JMP_CALLBACK:
+-		(*cb_proc)(cb_arg);
+-		longjmp(*cb_back, 1);
+-		break;
+-	case INIT_JMP_HALT:
+-		kmalloc_ok = 0;
+-		return 0;
+-	case INIT_JMP_REBOOT:
+-		kmalloc_ok = 0;
+-		return 1;
+-	default:
+-		printk(UM_KERN_ERR "Bad sigsetjmp return in %s - %d\n",
+-		       __func__, n);
+-		fatal_sigsegv();
+-	}
+-	longjmp(*switch_buf, 1);
+-
+-	/* unreachable */
+-	printk(UM_KERN_ERR "impossible long jump!");
+-	fatal_sigsegv();
+-	return 0;
+-}
+-
+-void initial_thread_cb_skas(void (*proc)(void *), void *arg)
+-{
+-	jmp_buf here;
+-
+-	cb_proc = proc;
+-	cb_arg = arg;
+-	cb_back = &here;
+-
+-	block_signals_trace();
+-	if (UML_SETJMP(&here) == 0)
+-		UML_LONGJMP(&initial_jmpbuf, INIT_JMP_CALLBACK);
+-	unblock_signals_trace();
+-
+-	cb_proc = NULL;
+-	cb_arg = NULL;
+-	cb_back = NULL;
+-}
+-
+-void halt_skas(void)
+-{
+-	block_signals_trace();
+-	UML_LONGJMP(&initial_jmpbuf, INIT_JMP_HALT);
+-}
+-
+-static bool noreboot;
+-
+-static int __init noreboot_cmd_param(char *str, int *add)
+-{
+-	*add = 0;
+-	noreboot = true;
+-	return 0;
+-}
+-
+-__uml_setup("noreboot", noreboot_cmd_param,
+-"noreboot\n"
+-"    Rather than rebooting, exit always, akin to QEMU's -no-reboot option.\n"
+-"    This is useful if you're using CONFIG_PANIC_TIMEOUT in order to catch\n"
+-"    crashes in CI\n");
+-
+-void reboot_skas(void)
+-{
+-	block_signals_trace();
+-	UML_LONGJMP(&initial_jmpbuf, noreboot ? INIT_JMP_HALT : INIT_JMP_REBOOT);
+-}
+-
+-void __switch_mm(struct mm_id *mm_idp)
+-{
+-	userspace_pid[0] = mm_idp->pid;
+-}
 -- 
 2.43.0
 
