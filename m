@@ -4,92 +4,80 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3AAD3E77180
-	for <linux-um@archiver.kernel.org>; Fri, 13 Dec 2024 07:19:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2BB7CE7717F
+	for <linux-um@archiver.kernel.org>; Fri, 13 Dec 2024 20:00:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	References:In-Reply-To:Subject:Cc:To:From:Message-ID:Date:Reply-To:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=/vScXgcTqsyhMOd0iR3wquLB4CKZKhnJgSRF2gJO3wY=; b=VumUGSy118PLzr7sKwV63M+Jpu
-	1RidQUC9TzJ0JrmtVurDAOY0Zwyzeo29AAcvj6LjCu4Bd4ZAqd6HV4OiFFd3qAeVTPVPBM6DGR47p
-	RvpS11FRg5p9B3qe0uQHTcMe484L8SUlhtyYtBTvkb3A9t38IPvCUli/9TwMQT74IDJUOhyFU+x1i
-	ySEGa0ninFz/GNZ/JzCD8AQYLoKKiLAsqVnwvMtqxEPA5rvEGxf1WRGK+ox3ynOn+LYFMEnTNW1dq
-	0q8aEsqzNwKpB748GA8V0h28k3NFiHcFtSEyxk1q6VyiRekgk/wgUx3Wiay75/2Av3g1m0KoJvOOV
-	BSAX+5TQ==;
+	bh=TQAcudM6PTcMchJoo8dqSDLe/+ZVCjTpWCb48NQferE=; b=vpXcH3EfYI5pi1ci0XrSdxsD13
+	/9jtPkqQcNq6zR+anv0y15xwAP5BCAiMHHi6eNgQ9IbkCyS3xI/xc1xKaMYZVckCnrir3Ucgnn6s+
+	0cMjkFrBpPIhp+y5ddKfj4xjLaoO5L1gCtcu3wpEwNvVBT9AA9n4BXf7UXLS6vkopDNU9VRJEFU2W
+	Dh3Cb6B5REw4fs9BgSq1H3Tf9YZ+2f9dvR1Kyd8Yjc9K8J90iHn+5HRznJdS+XX3U5i+PVmH7LOWk
+	5VC0sFSS/mXt3EzF4kKWaGNeiIyMxokmhY7sZflRJGnjTLA3JheKsVzAq9V7W/BaS4wo30ezOP93F
+	lRzw23Ng==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tLzxr-00000002wxK-1KTR;
-	Fri, 13 Dec 2024 07:19:55 +0000
-Received: from mail-pf1-x42c.google.com ([2607:f8b0:4864:20::42c])
+	id 1tMBq1-00000004uJ6-18vz;
+	Fri, 13 Dec 2024 20:00:37 +0000
+Received: from mail-pl1-x635.google.com ([2607:f8b0:4864:20::635])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tLzxo-00000002ww9-1VLf
+	id 1tMBpx-00000004uGw-3Elj
 	for linux-um@lists.infradead.org;
-	Fri, 13 Dec 2024 07:19:53 +0000
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-725ef0397aeso1250563b3a.2
-        for <linux-um@lists.infradead.org>; Thu, 12 Dec 2024 23:19:51 -0800 (PST)
+	Fri, 13 Dec 2024 20:00:36 +0000
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-216401de828so18959605ad.3
+        for <linux-um@lists.infradead.org>; Fri, 13 Dec 2024 12:00:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734074391; x=1734679191; darn=lists.infradead.org;
-        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
-         :message-id:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/vScXgcTqsyhMOd0iR3wquLB4CKZKhnJgSRF2gJO3wY=;
-        b=DgnCsVMFwuwhNhrQirLxzwUcPIU6b7KobjNwZGjqyXfbmheqI6jPrsxU3LpQjDUPeV
-         2K8rp5IbEKU+hH4d6pXS306UFAt26AAXeJw3139sdKQxcEhvnEkGDletWCZ4HVaA1GQI
-         +erfJ9CmJ17ToUMY/LJf4SLvjT/DBbLjAblSlXpW8t7NwjTzHOQ6C84m7ovu2RxkuGn4
-         KvmQKKXPk/fCIEQzuf0olMApoKt16AM2IWklswh7WcydwXcZsitLuyWmyisGywgIBjzm
-         CyZBTmGpe9DrpNQXSp/4QD8NDy89kfE57Y+B4hOx+K6AnV+H1MqeTsCMWXumy2xkyGQR
-         Xqdw==
+        d=chromium.org; s=google; t=1734120032; x=1734724832; darn=lists.infradead.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TQAcudM6PTcMchJoo8dqSDLe/+ZVCjTpWCb48NQferE=;
+        b=TGV+/FilSBnFiTbiqPDBZglBxvAXx519YinJSXXds9ST1xZjDyWlRaaBRl7TzhPJuS
+         +FCY7pxDnBy2ego9fVYocZSK9nJdUnWZ6M0LFQ0Km2hLq+ev6W5a46tz7DVRQOqFp1vY
+         ZAw7VQxR2kcA56e7Q+ccdhbOxDVIEorzvjCk8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734074391; x=1734679191;
-        h=mime-version:user-agent:references:in-reply-to:subject:cc:to:from
-         :message-id:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1734120032; x=1734724832;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/vScXgcTqsyhMOd0iR3wquLB4CKZKhnJgSRF2gJO3wY=;
-        b=nkt7i9rT0+MBZ4qdKbuvfAUWgYZNzyK3BpXEQrutn80wLmz6G/3d6lBQyJ+qStI8Ht
-         VMouSvniW8VRi6bMhgLKCuoDH0TllMIVHyzLyJZ6c4gx6IZL4g4XxRNypViVsXuWb8gz
-         bEWHjO1I1mZnhwAsakMcWsCU7TaMvorabjFCgdmx3TfAA/BLxpTTSp3CyPtyZ+rYecaQ
-         y5DNrKeuh8adrO6Myc2/84hvQeqLlxoZ9elMuUKO6JImhdgoMDOPgYUfRQuQzZTV0gRX
-         JOrzRl9KYbqMdkc3cRWr70EhO9MYz33D/c9O4YhgsOsEz9gvoqNb7Re/JcdVq+ND6CY7
-         jeNw==
-X-Gm-Message-State: AOJu0YwesE3BhLA9Mtahjoane+cWsvieek6mDlnUoUAqzQfsmrXYTpT4
-	nPKs9lhD9ZcUG5g2f5OlZGX7SvptTpvgs25mIU+dduIWu739ZWxi
-X-Gm-Gg: ASbGnctfNFa2ib8Hltnij8cFWWPZ2YyOsAMhWzkddHf156gE5mqUmin5xUNt8a5uOMb
-	E/VGVpT1Mdyb9KSfSBuowNpRK0rPN5Ed4To/9xucsemSkfpCuzOBF7Nw5/TDQZgELmgQ83024V9
-	+Kn4jWfXylnYE/Rq+UaGcoSNkzFafVCzCyUbk3q1o5TBGKHAgzWCoatW27J3L5Gt6KM5wCFxtNP
-	QqoctUaS3TA80DTkTwcfceVHnvyRe9ILpTKrLM0BVqStujbUESfW8FTQ3nwhLmpOtYCbTigZr0h
-	iCQ5To+di71eD76g0BS9N2W8Gq+zr9nrU1ni3vYIZgMq2hlq
-X-Google-Smtp-Source: AGHT+IHIc+AAtt3sr4T1GtwqdHMtSVSWX5aosI17cxg3x5s92xDXSiqKxcV+dY6R+QBB/DcfnPzLHA==
-X-Received: by 2002:a05:6a21:3a94:b0:1e1:b014:aec9 with SMTP id adf61e73a8af0-1e1dfe6a0c9mr2940346637.29.1734074391232;
-        Thu, 12 Dec 2024 23:19:51 -0800 (PST)
-Received: from mars.local.gmail.com (221x241x217x81.ap221.ftth.ucom.ne.jp. [221.241.217.81])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-725d899efe4sm10403960b3a.161.2024.12.12.23.19.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Dec 2024 23:19:50 -0800 (PST)
-Date: Fri, 13 Dec 2024 16:19:46 +0900
-Message-ID: <m2r06c59t9.wl-thehajime@gmail.com>
-From: Hajime Tazaki <thehajime@gmail.com>
-To: ebiederm@xmission.com
-Cc: linux-um@lists.infradead.org,
-	ricarkol@google.com,
-	Liam.Howlett@oracle.com,
-	kees@kernel.org,
-	viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	jack@suse.cz,
-	linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v5 02/13] x86/um: nommu: elf loader for fdpic
-In-Reply-To: <87r06d0ymg.fsf@email.froward.int.ebiederm.org>
-References: <cover.1733998168.git.thehajime@gmail.com>
-	<d387e58f08b929357a2651e82d2ee18bcf681e40.1733998168.git.thehajime@gmail.com>
-	<87r06d0ymg.fsf@email.froward.int.ebiederm.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/26.3 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+        bh=TQAcudM6PTcMchJoo8dqSDLe/+ZVCjTpWCb48NQferE=;
+        b=K5HXenvHRMtt/q8FzAT/6aIAASXKrKTvTO4OcZlfp/qbzcxsMXAqgJ04ivA5pk5CJg
+         TIxxEGZZmib7gfaQeaE8MM1WCSyCaA+E3uU4TBSAnYbMc/EZXNp1TZgalMKBYCL+RiZR
+         sFFsmQ47ovlU6zo/+qVpPXC1la/KNsuVBUNyYYS4sssSZeMPa1pPWDUeW/8SXjrgvIsz
+         wVVyy/5LZp7cQD3sBlZgD3uJOZDSMn0sQLSJ1xx5XRbka/1+vWVpPhQSVyhN531++uWl
+         SDcSiFi+kfLxiv9sP+5Nr2IVZfM0jQfWhjR19PoQxKgeypJ1IwuZ1A2x2Pg3ZMG+dcjy
+         UHhg==
+X-Gm-Message-State: AOJu0YwRgcw1JPL0Yc0h0t0CPko62C9D7//J8OjBN9zzGPypXqE4bCBL
+	iN4iWoOgKcvK7ZxsTKPSkLzRLfcee3qh14OoXf5NERHmcefeI1xdPLU/tXrE1A==
+X-Gm-Gg: ASbGnctayKcSrXHN9YtBynqM58R3XMaiv9ckTECHy8FC4cJ9OBEDdxzBluOaHKV0FqC
+	4iUOOjsZVIPCslsiveBKo3HlyNr2IgUoCRrr1RRnO6vPv4f792suOTwQfe2mL2u+D4W//n4jsrt
+	Mtxz/uGENnmopD0AwwwWKtfBx3yA7yGhYoW+P/0HnH5njc7V/WlLPQng721jyUJkYDHnKUpsIAB
+	PvKmtN6zJuNVyHAlbrQA0otwFxwSVvFr69XeU5Kst0NGgCY4fXF5PrLX6cgNse2qHr/5FBUWjed
+	F/ditY8jgQLjZXBdbQ==
+X-Google-Smtp-Source: AGHT+IHKBplxwvlcRRLpZHB3wnt37XK7d1UQJw6n3hDmpqMv1Mcivt6PYdTDHjybzpR992+IHhzVgw==
+X-Received: by 2002:a17:902:e752:b0:216:4943:e575 with SMTP id d9443c01a7336-21892a7bd0emr42717285ad.57.1734120032254;
+        Fri, 13 Dec 2024 12:00:32 -0800 (PST)
+Received: from localhost ([2a00:79e0:2e14:7:356a:489a:83c:f7d9])
+        by smtp.gmail.com with UTF8SMTPSA id d9443c01a7336-218a1e62bf2sm1391365ad.213.2024.12.13.12.00.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Dec 2024 12:00:31 -0800 (PST)
+Date: Fri, 13 Dec 2024 12:00:30 -0800
+From: Brian Norris <briannorris@chromium.org>
+To: Benjamin Berg <benjamin@sipsolutions.net>
+Cc: linux-um@lists.infradead.org, johannes@sipsolutions.net,
+	Benjamin Berg <benjamin.berg@intel.com>
+Subject: Re: [PATCH v5] um: switch to regset API and depend on XSTATE
+Message-ID: <Z1ySXmjZm-xOqk90@google.com>
+References: <20241023094120.4083426-1-benjamin@sipsolutions.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241023094120.4083426-1-benjamin@sipsolutions.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241212_231952_400090_69801077 
-X-CRM114-Status: GOOD (  21.18  )
+X-CRM114-CacheID: sfid-20241213_120033_853553_66188733 
+X-CRM114-Status: GOOD (  21.07  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -104,56 +92,180 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+Hi Benjamin,
 
-Hello Eric,
-
-thanks for the feedback.
-
-On Thu, 12 Dec 2024 23:22:47 +0900,
-Eric W. Biederman wrote:
+On Wed, Oct 23, 2024 at 11:41:20AM +0200, Benjamin Berg wrote:
+> From: Benjamin Berg <benjamin.berg@intel.com>
 > 
-> Hajime Tazaki <thehajime@gmail.com> writes:
+> The PTRACE_GETREGSET API has now existed since Linux 2.6.33. The XSAVE
+> CPU feature should also be sufficiently common to be able to rely on it.
 > 
-> > As UML supports CONFIG_MMU=n case, it has to use an alternate ELF
-> > loader, FDPIC ELF loader.  In this commit, we added necessary
-> > definitions in the arch, as UML has not been used so far.  It also
-> > updates Kconfig file to use BINFMT_ELF_FDPIC under !MMU environment.
+> With this, define our internal FP state to be the hosts XSAVE data. Add
+> discovery for the hosts XSAVE size and place the FP registers at the end
+> of task_struct so that we can adjust the size at runtime.
 > 
-> Why does the no mmu case need an alternative elf loader?
+> Next we can implement the regset API on top and update the signal
+> handling as well as ptrace APIs to use them. Also switch coredump
+> creation to use the regset API and finally set HAVE_ARCH_TRACEHOOK.
+> 
+> This considerably improves the signal frames. Previously they might not
+> have contained all the registers (i386) and also did not have the
+> sizes and magic values set to the correct values to permit userspace to
+> decode the frame.
+> 
+> As a side effect, this will permit UML to run on hosts with newer CPU
+> extensions (such as AMX) that need even more register state.
+> 
+> Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
 
-I was simply following the way how other nommu architectures (riscv,
-etc) did.
+This patch seems to trip up KASAN. Or at least, KUnit tests fail when I
+enable CONFIG_KASAN, and 'git bisect' points me here:
 
-> Last time I looked the regular binfmt_elf works just fine
-> without an mmu.  I looked again and at a quick skim the
-> regular elf loader still looks like it will work without
-> an MMU.
+$ git bisect run ./tools/testing/kunit/kunit.py run stackinit.test_user --kconfig_add CONFIG_KASAN=y
+[...]
+3f17fed2149192c7d3b76a45a6a87b4ff22cd586 is the first bad commit
+commit 3f17fed2149192c7d3b76a45a6a87b4ff22cd586
+Author: Benjamin Berg <benjamin.berg@intel.com>
+Date:   Wed Oct 23 11:41:20 2024 +0200
 
-I'm wondering how you looked at it and how you see that it works
-without MMU.
+    um: switch to regset API and depend on XSTATE
+[...]
 
-> You would need ET_DYN binaries just so they will load and run
-> in a position independent way.  But even that seems a common
-> configuration even with a MMU these days.
+If I run at Linus's latest:
 
-Yes, our perquisite for this nommu port is to use PIE binaries so,
-ET_DYN assumption works fine for the moment.
+  243f750a2df0 Merge tag 'gpio-fixes-for-v6.13-rc3' of git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux
 
-> There are some funny things in elf_fdpic where it departs
-> from the ELF standard and is no fun to support unless it
-> is necessary.  So I am not excited to see more architectures
-> supporting ELF_FDPIC.
+I get a KASAN warning and panic [1]. I tried this fix for fun, but it
+doesn't help:
+Subject: [PATCH] um: add back support for FXSAVE registers
+https://lore.kernel.org/linux-um/20241204074827.1582917-1-benjamin@sipsolutions.net/
 
-I understand.
+I'm not very familiar with this area, but let me know if there's more I
+can help with on tracking the issue down. Hopefully, it's as easy as
+running these same commands for you to reproduce.
 
-I also wish to use the regular binfmt_elf, but it doesn't allow me to
-compile with !CONFIG_MMU right now.
+Brian
 
-I've played a little bit with touching binfmt_elf.c, but not finished
-yet with a trivial attempt.
+[1]
+$ ./tools/testing/kunit/kunit.py run stackinit.test_user --kconfig_add CONFIG_KASAN=y --raw_output=all
+[...]
+<3>==================================================================
+<3>BUG: KASAN: global-out-of-bounds in arch_dup_task_struct+0x4b/0x70
+<3>Read of size 4616 at addr 0000000060b1aec0 by task swapper/0
+<3>
+<3>CPU: 0 UID: 0 PID: 0 Comm: swapper Not tainted 6.13.0-rc2-00194-g6787126c27ef #61
+<3>Stack:
+<4> 00000000 00000000 ffffff00 60acc428
+<4> 60ad2ffc 9f225db0 00000001 6008b7fb
+<4> 60b17aa0 6003fbf5 60b1aec0 6004c654
+<3>Call Trace:
+<3> [<60038c0e>] ? show_stack.cold+0x64/0xf3
+<3> [<6008b7fb>] ? dump_stack_lvl+0x8b/0xa7
+<3> [<6003fbf5>] ? _printk+0x0/0x103
+<3> [<6004c654>] ? print_report+0x145/0x519
+<3> [<60090f2b>] ? arch_dup_task_struct+0x4b/0x70
+<3> [<6031f854>] ? kasan_report+0x114/0x160
+<3> [<60090f2b>] ? arch_dup_task_struct+0x4b/0x70
+<3> [<60320830>] ? kasan_check_range+0x0/0x1e0
+<3> [<603209a0>] ? kasan_check_range+0x170/0x1e0
+<3> [<6032135d>] ? __asan_memcpy+0x2d/0x80
+<3> [<60090f2b>] ? arch_dup_task_struct+0x4b/0x70
+<3> [<600b9381>] ? copy_process+0x3e1/0x7390
+<3> [<600af1a0>] ? block_signals+0x0/0x20
+<3> [<603bb46e>] ? vfs_kern_mount.part.0+0x6e/0x140
+<3> [<601b48d6>] ? stack_trace_save+0x86/0xa0
+<3> [<6063ef2c>] ? stack_depot_save_flags+0x2c/0xa80
+<3> [<601b4850>] ? stack_trace_save+0x0/0xa0
+<3> [<6031e919>] ? kasan_save_stack+0x49/0x60
+<3> [<603bb46e>] ? vfs_kern_mount.part.0+0x6e/0x140
+<3> [<6031e919>] ? kasan_save_stack+0x49/0x60
+<3> [<600b8fa0>] ? copy_process+0x0/0x7390
+<3> [<600c04b3>] ? kernel_clone+0xd3/0x8c0
+<3> [<600c03e0>] ? kernel_clone+0x0/0x8c0
+<3> [<60038743>] ? arch_irqs_disabled_flags+0x0/0x9
+<3> [<60038700>] ? arch_local_save_flags+0x0/0x43
+<3> [<600c107d>] ? user_mode_thread+0x9d/0xc0
+<3> [<600c0fe0>] ? user_mode_thread+0x0/0xc0
+<3> [<60926934>] ? kernel_init+0x0/0x18c
+<3> [<6003875e>] ? arch_local_irq_disable+0x0/0xc
+<3> [<60038743>] ? arch_irqs_disabled_flags+0x0/0x9
+<3> [<60038700>] ? arch_local_save_flags+0x0/0x43
+<3> [<603bb69d>] ? kern_mount+0x3d/0xb0
+<3> [<6003875e>] ? arch_local_irq_disable+0x0/0xc
+<3> [<60926831>] ? rest_init+0x2d/0x130
+<3> [<6003875e>] ? arch_local_irq_disable+0x0/0xc
+<3> [<60038743>] ? arch_irqs_disabled_flags+0x0/0x9
+<3> [<60038700>] ? arch_local_save_flags+0x0/0x43
+<3> [<60002679>] ? do_one_initcall+0x0/0x450
+<3> [<60005c97>] ? start_kernel_proc+0x0/0x1d
+<3> [<60005cb0>] ? start_kernel_proc+0x19/0x1d
+<3> [<600904fa>] ? new_thread_handler+0xca/0x130
+<3>
+<3>The buggy address belongs to the variable:
+<3> 0x60b1aec0
+<3>
+<3>The buggy address belongs to the physical page:
+<4>page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0xb1a
+<4>flags: 0x2000(reserved|zone=0)
+<4>raw: 0000000000002000 000000009f225db8 000000009f225db8 0000000000000000
+<4>raw: 0000000000000000 0000000000000000 00000001ffffffff
+<4>page dumped because: kasan: bad access detected
+<3>
+<3>Memory state around the buggy address:
+<3> 0000000060b1b600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+<3> 0000000060b1b680: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+<3>>0000000060b1b700: 00 00 00 00 00 00 00 00 f9 f9 f9 f9 00 00 00 00
+<3>                                           ^
+<3> 0000000060b1b780: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+<3> 0000000060b1b800: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+<3>==================================================================
+<4>Disabling lock debugging due to kernel taint
+<4>
+<6>Pid: 0, comm: swapper Tainted: G    B              6.13.0-rc2-00194-g6787126c27ef
+<6>RIP: 0033:copy_namespaces+0x104/0x2b0
+<6>RSP: 0000000060b17b70  EFLAGS: 00010246
+<6>RAX: 0000000000000001 RBX: 00000000610a8000 RCX: 0000000060133d7f
+<6>RDX: 0000000000000001 RSI: 0000000000000004 RDI: 0000000000000000
+<6>RBP: 0000000000000000 R08: 0000000000000001 R09: 0000100000000000
+<6>R10: 0000000000000003 R11: ffffffffffffffff R12: 0000000000800300
+<6>R13: 000000006102a000 R14: 00000000610a84d8 R15: 0000000060b31ba0
+<0>Kernel panic - not syncing: Segfault with no mm
+<4>CPU: 0 UID: 0 PID: 0 Comm: swapper Tainted: G    B              6.13.0-rc2-00194-g6787126c27ef #61
+<4>Tainted: [B]=BAD_PAGE
+<4>Stack:
+<4> 00000000 60321286 61070380 0c162f92
+<4> 00000000 60b1aec0 61070110 610a8000
+<4> 610a8498 600bae85 61001400 60b17ed0
+<4>Call Trace:
+<4> [<60321286>] ? __asan_memset+0x26/0x50
+<4> [<600bae85>] ? copy_process+0x1ee5/0x7390
+<4> [<600af1a0>] ? block_signals+0x0/0x20
+<4> [<6063ef2c>] ? stack_depot_save_flags+0x2c/0xa80
+<4> [<601b4850>] ? stack_trace_save+0x0/0xa0
+<4> [<6031e919>] ? kasan_save_stack+0x49/0x60
+<4> [<603bb46e>] ? vfs_kern_mount.part.0+0x6e/0x140
+<4> [<6031e919>] ? kasan_save_stack+0x49/0x60
+<4> [<600b8fa0>] ? copy_process+0x0/0x7390
+<4> [<600c04b3>] ? kernel_clone+0xd3/0x8c0
+<4> [<600c03e0>] ? kernel_clone+0x0/0x8c0
+<4> [<60038743>] ? arch_irqs_disabled_flags+0x0/0x9
+<4> [<60038700>] ? arch_local_save_flags+0x0/0x43
+<4> [<600c107d>] ? user_mode_thread+0x9d/0xc0
+<4> [<600c0fe0>] ? user_mode_thread+0x0/0xc0
+<4> [<60926934>] ? kernel_init+0x0/0x18c
+<4> [<6003875e>] ? arch_local_irq_disable+0x0/0xc
+<4> [<60038743>] ? arch_irqs_disabled_flags+0x0/0x9
+<4> [<60038700>] ? arch_local_save_flags+0x0/0x43
+<4> [<603bb69d>] ? kern_mount+0x3d/0xb0
+<4> [<6003875e>] ? arch_local_irq_disable+0x0/0xc
+<4> [<60926831>] ? rest_init+0x2d/0x130
+<4> [<6003875e>] ? arch_local_irq_disable+0x0/0xc
+<4> [<60038743>] ? arch_irqs_disabled_flags+0x0/0x9
+<4> [<60038700>] ? arch_local_save_flags+0x0/0x43
+<4> [<60002679>] ? do_one_initcall+0x0/0x450
+<4> [<60005c97>] ? start_kernel_proc+0x0/0x1d
+<4> [<60005cb0>] ? start_kernel_proc+0x19/0x1d
+<4> [<600904fa>] ? new_thread_handler+0xca/0x130
+[11:56:56] Elapsed time: 6.794s total, 0.001s configuring, 5.513s building, 1.280s running
 
-sorry, i'm not familiar with this part but wish to fix it for
-nommu+ET_EYN if possible with a right background information.
-
--- Hajime
 
