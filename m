@@ -4,65 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F1D7E77187
-	for <linux-um@archiver.kernel.org>; Wed, 18 Dec 2024 11:52:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id AFA5DE7718B
+	for <linux-um@archiver.kernel.org>; Thu, 19 Dec 2024 16:47:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=LBITfqfai7J37XOUwox6hatMirnCfP5i+juTnBH9htY=; b=CRF2HDBTnsqO6qG8a+bSmDJZyw
-	Gf8U9tH6nPdKdLQtHu2+At8TuCWLUh52PTYsQLVj8p2g2WzTDZVpvGv39C37kHngcImWhVD3yx55k
-	kEcXAUM8I/08TNrCp/8iz9LWFjMx5iSTkxgILP6o1p4B0lDh2nKITzAvXiQs4kP7hfVLSyNH2+A/Z
-	VG1fonimq6BV1k74cV1w9uERfBxsAbPl/t6LpunTM6fgj1G/frk2VU5t7gS52XLTEiB3gAhTi2LCL
-	8OUucllIuZ+0StXmFf5vKQMTYzByJES8Vh+2xYazkMDNYVwwa4guHVZFe7Y8AFEc7vY3iYogK5lW7
-	9DzVbpHA==;
+	bh=aEX8PRpkFrAcxu9PrNYJZGjzYKd+o1ls5Xhqvv0zRi8=; b=C45XsZPKaFs1rujFuZRSILAWTD
+	WHakuKQZJzqF4NiObh6RAE3OPizRa3Y7+B/BLMW0gGuyuy5GC5OhRPI6bC+2yx7Qp4ShkkAQZrHkW
+	xfZCRk9gB3CIapYQTCRILYroHtdfI/N6/ehpDoAHZGOvGPSM0EIEM3vz/lhHQ+NM1ztIFVHDu9GTO
+	3oPeDvDf4ZbwzvWsve9m5ge0Z9PQq1CfOYtpgcOvoFd/YZMje/VZEc6JROOi+s3EcSpk1MysPfYo5
+	mOR5GNa0PdWss3TBbf68Mg16CRuiWkHR6Tm4kEzl2GeUo3AYNreknfAHX7NTQNUdbDYlf9gJ9Dx8c
+	RGZq7EVA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tNsbX-0000000GW2o-2nSr;
-	Wed, 18 Dec 2024 11:52:39 +0000
-Received: from smtp-bc0f.mail.infomaniak.ch ([45.157.188.15])
-	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tNsac-0000000GVqS-2vhm
-	for linux-um@lists.infradead.org;
-	Wed, 18 Dec 2024 11:51:44 +0000
-Received: from smtp-4-0000.mail.infomaniak.ch (smtp-4-0000.mail.infomaniak.ch [10.7.10.107])
-	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4YCsTl5N3Fz5DQ;
-	Wed, 18 Dec 2024 12:51:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digikod.net;
-	s=20191114; t=1734522699;
-	bh=LBITfqfai7J37XOUwox6hatMirnCfP5i+juTnBH9htY=;
-	h=From:To:Cc:Subject:Date:From;
-	b=zRbHESjNAMyorCyUxpToqsVkVTb9pimoRoGs0s3pDSN3/nzFAbd0LCV7OY6Mgsy1j
-	 MVgvoWuJkO/M2vdvInk+sls7zzXfr49hylKMF/DljnGCFh6rraGLCeG8RiuFdF565M
-	 RZfQf7x3Ny5Ex2EhNSuKRVgUNkIqmxAj3LPC7PY8=
-Received: from unknown by smtp-4-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4YCsTk3xmFzCGS;
-	Wed, 18 Dec 2024 12:51:38 +0100 (CET)
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To: linux-kbuild@vger.kernel.org,
-	linux-um@lists.infradead.org
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-	linux-kselftest@vger.kernel.org,
+	id 1tOJgm-00000002PrI-3y5S;
+	Thu, 19 Dec 2024 16:47:52 +0000
+Received: from foss.arm.com ([217.140.110.172])
+	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
+	id 1tOJfB-00000002PF4-3PMO;
+	Thu, 19 Dec 2024 16:46:15 +0000
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3235D1480;
+	Thu, 19 Dec 2024 08:46:39 -0800 (PST)
+Received: from e123572-lin.arm.com (e123572-lin.cambridge.arm.com [10.1.194.54])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2E9D63F58B;
+	Thu, 19 Dec 2024 08:46:07 -0800 (PST)
+From: Kevin Brodsky <kevin.brodsky@arm.com>
+To: linux-mm@kvack.org
+Cc: Kevin Brodsky <kevin.brodsky@arm.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	"Mike Rapoport (IBM)" <rppt@kernel.org>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Will Deacon <will@kernel.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	linux-alpha@vger.kernel.org,
+	linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	=?UTF-8?q?G=C3=BCnther=20Noack?= <gnoack@google.com>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	Richard Weinberger <richard@nod.at>
-Subject: [PATCH v1] kbuild: Allow building of samples with UML
-Date: Wed, 18 Dec 2024 12:51:23 +0100
-Message-ID: <20241218115126.264342-1-mic@digikod.net>
+	linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-um@lists.infradead.org,
+	loongarch@lists.linux.dev,
+	x86@kernel.org
+Subject: [PATCH 00/10] Account page tables at all levels
+Date: Thu, 19 Dec 2024 16:44:15 +0000
+Message-ID: <20241219164425.2277022-1-kevin.brodsky@arm.com>
+X-Mailer: git-send-email 2.47.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Infomaniak-Routing: alpha
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241218_035142_871368_71F4B5A8 
-X-CRM114-Status: UNSURE (   7.83  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20241219_084613_940621_021F15A4 
+X-CRM114-Status: GOOD (  15.47  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,54 +85,187 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-It's useful to build samples/* with UML and the only blocker is the
-artificial incompatibility with CONFIG_HEADERS_INSTALL.
+We currently have a pair of ctor/dtor calls for lower page table levels,
+up to PUD. At PTE and PMD level, these handle split locks,
+if supported. Additionally, the helpers ensure correct accounting of
+page table pages to the corresponding process.
 
-Allow the headers_install target with ARCH=um, which then allow building
-samples (and tests using them) with UML too:
+This series takes that principle to its logical conclusion: account all
+page table pages, at all levels and on all architectures (see caveat
+below), through suitable ctor/dtor calls. This means concretely:
 
-  printf 'CONFIG_SAMPLES=y\nCONFIG_HEADERS_INSTALL=y\nCONFIG_SAMPLE_LANDLOCK=y\n' >.config
-  make ARCH=um olddefconfig headers_install
-  make ARCH=um samples/landlock/
+* Ensuring that the existing pagetable_{pte,pmd,pud}_[cd]tor are called
+  on all architectures.
 
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nicolas Schier <nicolas@fjasle.eu>
-Cc: Richard Weinberger <richard@nod.at>
-Fixes: 1b620d539ccc ("kbuild: disable header exports for UML in a straightforward way")
-Signed-off-by: Mickaël Salaün <mic@digikod.net>
+* Introduce pagetable_{p4d,pgd}_[cd]tor and call them at P4D/PGD level.
+
+The primary motivation for this series is not page accounting, though.
+P4D/PGD-level pages represent a tiny proportion of the memory used by a
+process. Rather, the appeal comes from the introduction of a single,
+generic place where construction/destruction hooks can be called for all
+page table pages at all levels. This will come in handy for protecting
+page tables using kpkeys [1]. Peter Zijlstra suggested this approach [2]
+to avoid handling this in arch code.
+
+With this series, __pagetable_ctor() and __pagetable_dtor() (introduced
+in patch 1) should be called when page tables are allocated/freed at any
+level on any architecture. Note however that only P*D that consist of
+one or more regular pages are handled. This excludes:
+
+* All P*D allocated from a kmem_cache (or kmalloc).
+* P*D that are not allocated via GFP (only an issue on sparc).
+
+The table at the end of this email gives more details for each
+architecture.
+
+Patches in details:
+
+* Patch 1 factors out the common implementation of all
+  pagetable_*_[cd]tor.
+
+* Patch 2-4: PMD/PUD; add missing calls to pagetable_{pmd,pud}_[cd]tor
+  on various architectures.
+
+* Patch 5-7: P4D; move most arch to using generic alloc/free functions
+  at P4D level, and then have them call pagetable_p4d_[cd]tor.
+
+* Patch 8-10: PGD; same principle at PGD level.
+
+The patches were build-tested on all architectures (thanks Linus Walleij
+for triggering the LKP CI for me!), and boot-tested on arm64 and x86_64.
+
+- Kevin
+
+[1] https://lore.kernel.org/linux-hardening/20241206101110.1646108-1-kevin.brodsky@arm.com/
+[2] https://lore.kernel.org/linux-hardening/20241210122355.GN8562@noisy.programming.kicks-ass.net/
 ---
- Makefile          | 1 -
- lib/Kconfig.debug | 1 -
- 2 files changed, 2 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index e5b8a8832c0c..6e2cce16a2a3 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1355,7 +1355,6 @@ hdr-inst := -f $(srctree)/scripts/Makefile.headersinst obj
- 
- PHONY += headers
- headers: $(version_h) scripts_unifdef uapi-asm-generic archheaders archscripts
--	$(if $(filter um, $(SRCARCH)), $(error Headers not exportable for UML))
- 	$(Q)$(MAKE) $(hdr-inst)=include/uapi
- 	$(Q)$(MAKE) $(hdr-inst)=arch/$(SRCARCH)/include/uapi
- 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index f3d723705879..fac1208f48e4 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -473,7 +473,6 @@ config READABLE_ASM
- 
- config HEADERS_INSTALL
- 	bool "Install uapi headers to usr/include"
--	depends on !UML
- 	help
- 	  This option will install uapi headers (headers exported to user-space)
- 	  into the usr/include directory for use during the kernel build.
+Overview of the situation on all arch after this series is applied:
+
+  +---------------+-------------------------+-----------------------+--------------+------------------------------------+
+  | arch          | #include                | Complete ctor/dtor    | ctor/dtor    | Notes                              |
+  |               | <asm-generic/pgalloc.h> | calls up to p4d level | at pgd level |                                    |
+  +===============+=========================+=======================+==============+====================================+
+  | alpha         | Y                       | Y                     | Y            |                                    |
+  +---------------+-------------------------+-----------------------+--------------+------------------------------------+
+  | arc           | Y                       | Y                     | Y            |                                    |
+  +---------------+-------------------------+-----------------------+--------------+------------------------------------+
+  | arm           | Y                       | Y                     | Y/N          | kmalloc at pgd level if LPAE       |
+  +---------------+-------------------------+-----------------------+--------------+------------------------------------+
+  | arm64         | Y                       | Y                     | Y/N          | kmem_cache if pgd not page-sized   |
+  +---------------+-------------------------+-----------------------+--------------+------------------------------------+
+  | csky          | Y                       | Y                     | Y            |                                    |
+  +---------------+-------------------------+-----------------------+--------------+------------------------------------+
+  | hexagon       | Y                       | Y                     | Y            |                                    |
+  +---------------+-------------------------+-----------------------+--------------+------------------------------------+
+  | loongarch     | Y                       | Y                     | Y            |                                    |
+  +---------------+-------------------------+-----------------------+--------------+------------------------------------+
+  | m68k (Sun3)   | Y                       | Y                     | Y            |                                    |
+  +---------------+-------------------------+-----------------------+--------------+------------------------------------+
+  | m68k (others) | N                       | Y                     | Y            |                                    |
+  +---------------+-------------------------+-----------------------+--------------+------------------------------------+
+  | microblaze    | Y                       | Y                     | Y            |                                    |
+  +---------------+-------------------------+-----------------------+--------------+------------------------------------+
+  | mips          | Y                       | Y                     | Y            |                                    |
+  +---------------+-------------------------+-----------------------+--------------+------------------------------------+
+  | nios2         | Y                       | Y                     | Y            |                                    |
+  +---------------+-------------------------+-----------------------+--------------+------------------------------------+
+  | openrisc      | Y                       | Y                     | Y            |                                    |
+  +---------------+-------------------------+-----------------------+--------------+------------------------------------+
+  | parisc        | Y                       | Y                     | Y            |                                    |
+  +---------------+-------------------------+-----------------------+--------------+------------------------------------+
+  | powerpc       | N                       | Y/N                   | N            | kmem_cache at:                     |
+  |               |                         |                       |              | - pgd level                        |
+  |               |                         |                       |              | - pud level in 64-bit              |
+  |               |                         |                       |              | - pmd level in 64-bit on !book3s   |
+  +---------------+-------------------------+-----------------------+--------------+------------------------------------+
+  | riscv         | Y                       | Y                     | Y            |                                    |
+  +---------------+-------------------------+-----------------------+--------------+------------------------------------+
+  | s390          | N                       | Y                     | Y            |                                    |
+  +---------------+-------------------------+-----------------------+--------------+------------------------------------+
+  | sh            | Y                       | N                     | N            | kmem_cache at pmd/pgd level        |
+  +---------------+-------------------------+-----------------------+--------------+------------------------------------+
+  | sparc         | N                       | N                     | N            | 32-bit: special memory             |
+  |               |                         |                       |              | 64-bit: kmem_cache above pte level |
+  +---------------+-------------------------+-----------------------+--------------+------------------------------------+
+  | um            | Y                       | Y                     | Y            |                                    |
+  +---------------+-------------------------+-----------------------+--------------+------------------------------------+
+  | x86           | Y                       | Y                     | Y/N          | kmem_cache at pgd level if PAE     |
+  +---------------+-------------------------+-----------------------+--------------+------------------------------------+
+  | xtensa        | Y                       | Y                     | Y            |                                    |
+  +---------------+-------------------------+-----------------------+--------------+------------------------------------+
+
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: "Mike Rapoport (IBM)" <rppt@kernel.org>
+Cc: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Will Deacon <will@kernel.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: linux-alpha@vger.kernel.org
+Cc: linux-arch@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-csky@vger.kernel.org
+Cc: linux-hexagon@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-mips@vger.kernel.org
+Cc: linux-openrisc@vger.kernel.org
+Cc: linux-parisc@vger.kernel.org
+Cc: linux-riscv@lists.infradead.org
+Cc: linux-s390@vger.kernel.org
+Cc: linux-snps-arc@lists.infradead.org
+Cc: linux-um@lists.infradead.org
+Cc: loongarch@lists.linux.dev
+Cc: x86@kernel.org
+---
+Kevin Brodsky (10):
+  mm: Move common parts of pagetable_*_[cd]tor to helpers
+  parisc: mm: Ensure pagetable_pmd_[cd]tor are called
+  m68k: mm: Add calls to pagetable_pmd_[cd]tor
+  s390/mm: Add calls to pagetable_pud_[cd]tor
+  riscv: mm: Skip pgtable level check in {pud,p4d}_alloc_one
+  asm-generic: pgalloc: Provide generic p4d_{alloc_one,free}
+  mm: Introduce ctor/dtor at P4D level
+  ARM: mm: Rename PGD helpers
+  asm-generic: pgalloc: Provide generic __pgd_{alloc,free}
+  mm: Introduce ctor/dtor at PGD level
+
+ arch/alpha/mm/init.c                     |  2 +-
+ arch/arc/include/asm/pgalloc.h           |  9 +--
+ arch/arm/mm/pgd.c                        | 16 +++--
+ arch/arm64/include/asm/pgalloc.h         | 17 ------
+ arch/arm64/mm/pgd.c                      |  4 +-
+ arch/csky/include/asm/pgalloc.h          |  2 +-
+ arch/hexagon/include/asm/pgalloc.h       |  2 +-
+ arch/loongarch/mm/pgtable.c              |  7 +--
+ arch/m68k/include/asm/mcf_pgalloc.h      |  2 +
+ arch/m68k/include/asm/motorola_pgalloc.h |  6 +-
+ arch/m68k/include/asm/sun3_pgalloc.h     |  2 +-
+ arch/m68k/mm/motorola.c                  | 31 ++++++++--
+ arch/microblaze/include/asm/pgalloc.h    |  7 +--
+ arch/mips/include/asm/pgalloc.h          |  6 --
+ arch/mips/mm/pgtable.c                   |  8 +--
+ arch/nios2/mm/pgtable.c                  |  3 +-
+ arch/openrisc/include/asm/pgalloc.h      |  6 +-
+ arch/parisc/include/asm/pgalloc.h        | 39 ++++--------
+ arch/riscv/include/asm/pgalloc.h         | 46 ++------------
+ arch/s390/include/asm/pgalloc.h          | 33 +++++++---
+ arch/um/kernel/mem.c                     |  7 +--
+ arch/x86/include/asm/pgalloc.h           | 18 ------
+ arch/x86/mm/pgtable.c                    | 27 +++++----
+ arch/xtensa/include/asm/pgalloc.h        |  2 +-
+ include/asm-generic/pgalloc.h            | 76 +++++++++++++++++++++++-
+ include/linux/mm.h                       | 64 +++++++++++++-------
+ 26 files changed, 234 insertions(+), 208 deletions(-)
+
+
+base-commit: 78d4f34e2115b517bcbfe7ec0d018bbbb6f9b0b8
 -- 
-2.47.1
+2.47.0
 
 
