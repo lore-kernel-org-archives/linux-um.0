@@ -4,57 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5039BE7718B
-	for <linux-um@archiver.kernel.org>; Fri, 20 Dec 2024 14:51:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3FE1EE7718C
+	for <linux-um@archiver.kernel.org>; Fri, 20 Dec 2024 19:34:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=l+TvdBfWvVPAcsK8VbC159CKm8RgkJY+V79Gv5r8DN4=; b=Icw7g6WfA8QGSgQcV33MmT/TV2
-	JYD7xDMX0bThigMlR/YNLmNqGMkLr4Wdqwg+BnYDTFVi6NqZh1exk4H9t2aV/ZRnJJ+f+mDejj9aD
-	GyLokds4l0kdiITySHbniaclmz7ZRAy/AwRs8qwH43/vOhEXdw8Q8UZ+wFkNW/QsNyH6NHpvq5DR+
-	zKAXZzKNd2YQwv3RGLq7YWCK5r09k09TEc/2FXQjKWOTP4rWYNmVV+j6UJKN4ixOGJr5cRWmo6MzM
-	bh4Kip8loo1CX3sGbbADTnQVskEh2Cqxq5feKDhxIgWtTYQgr8b/hEiT4FdsZOWa+9I8R/DFnWlSg
-	DM6usL+Q==;
+	bh=cWsdyve87/ahvL1Kdn+WU4yfF9lwFtfjevTBD3q3a5I=; b=JQM5xjxFfor0vsQXaUtt/+bvi3
+	ix7MLFuct7vm29QQVv9oQo2Rhp+vM9ifDK+wR4lqCPV7Uho+g2R9XSt/KHM+YzCTm3kiIfeS/dk6s
+	qAz1MvfYidEKvlp/gDo6+KBmePR7bJWX7vhDdUV5tbfFSPTkG9+9LQwx7BJJFKif+c1CAvNZj2HJD
+	6+7+4D8aw9ggAv1r7k8KhWVuUXBLL5LPjPeb5T3R0ylIy6mDaWZ0TdkI930UJWg6XijrBBb5WukzJ
+	dU62LU2J+L8jAY/Zk38P4PWzDVBwy5Oiust6EXQBdjnldPRqSWLhi3Da3fFHrwLdyrEmp84yJb1VX
+	bTLSlc+Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tOeM2-00000005DVc-2fR3;
-	Fri, 20 Dec 2024 14:51:50 +0000
-Received: from mgamail.intel.com ([198.175.65.14])
+	id 1tOilk-00000005xTB-2FBr;
+	Fri, 20 Dec 2024 19:34:40 +0000
+Received: from mgamail.intel.com ([192.198.163.14])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tOeGO-00000005BhV-11qU;
-	Fri, 20 Dec 2024 14:46:01 +0000
+	id 1tOij4-00000005x6N-28X8;
+	Fri, 20 Dec 2024 19:31:55 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1734705961; x=1766241961;
+  t=1734723114; x=1766259114;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=l+TvdBfWvVPAcsK8VbC159CKm8RgkJY+V79Gv5r8DN4=;
-  b=exy/5OI+yMjH1vFR0l7G55wy6iz0Pg4b/WbN0wlMJ394M75aH4EusQft
-   kv6kPrxcAD96oVKLyZpkMaO3DcqaLsU+Sfj+ZKajHYiYim54WLZilgzby
-   2GZoFZPNrFeseARzkPttZf0Qa0CZedoxQT5b4gejEw2u34cw137UWUKim
-   LMA8YbPuoZ0ZZN66NBMPejH1l0LBVHN/fVO+t1z12LJK0r9jqvKsHaVFG
-   R4McrBbWlamUUcqeELx0Tfv6eLt8fySi4VlsmC8xYwyXhg8dSEgjHlnTe
-   j+U9zHbtbXiyY9sAIyctYT6QNSH+sozu5DRHtS8gAM25f9wBcfyI3roOy
+  bh=cWsdyve87/ahvL1Kdn+WU4yfF9lwFtfjevTBD3q3a5I=;
+  b=e9gK+DBQbzyFGMPNrPj3wscI69IjJgli/MEudo4Xcz+40+EOpWPt2+9Z
+   z7TSmgmecmJGt2J1McQhGgZ7otX5FLTBcNLXhIsQ0RlRdGzOCX5/jqnPr
+   F6KlK1eFG6/Ee9WwL9GUsIW2AqwFAuzyYzV14thuv6hqhZTi99La0RQAz
+   KQVuvkSULdr4pXM4FSk56+uCVbVfkXqUoMen4lz16TYM4dv0TnwvhM8+k
+   OIfFCGZsjFH8/HNsSK9z8H0etS7ap0bz4TnCyZxttywLzWwu6raAeAmKN
+   ynDpuq3DUKWv46Fhnqk5lwA58sXfRoR1FX/YRgp3F6g6S89mxrWCmJqic
    w==;
-X-CSE-ConnectionGUID: Xkot/9HtQo+gOToW470nVA==
-X-CSE-MsgGUID: aZ0jmKsATPWkwrdqIjW/sw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11292"; a="39040671"
+X-CSE-ConnectionGUID: K5zYjgiYQDSlX76qKKe9hA==
+X-CSE-MsgGUID: YV5JXQOESRWErs2B4UU10A==
+X-IronPort-AV: E=McAfee;i="6700,10204,11292"; a="35498891"
 X-IronPort-AV: E=Sophos;i="6.12,251,1728975600"; 
-   d="scan'208";a="39040671"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2024 06:45:59 -0800
-X-CSE-ConnectionGUID: hdInxSi0Qf+/UQqd7LkLGQ==
-X-CSE-MsgGUID: OYmUDywbTrqpRN47tHU7cw==
+   d="scan'208";a="35498891"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2024 11:31:53 -0800
+X-CSE-ConnectionGUID: puhYWLhrTxCkddI44a7G2Q==
+X-CSE-MsgGUID: ZOvVbemkRy6XjG3xptTdtg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.12,251,1728975600"; 
-   d="scan'208";a="98311222"
+   d="scan'208";a="98986706"
 Received: from jairdeje-mobl1.amr.corp.intel.com (HELO [10.124.221.219]) ([10.124.221.219])
-  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2024 06:45:56 -0800
-Message-ID: <719c5aa7-63ad-43f1-a2e8-644ef220db4f@intel.com>
-Date: Fri, 20 Dec 2024 06:45:55 -0800
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2024 11:31:52 -0800
+Message-ID: <989b55cf-1f9e-4b73-b3dd-d8b6a62be3f2@intel.com>
+Date: Fri, 20 Dec 2024 11:31:51 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 00/10] Account page tables at all levels
@@ -73,7 +73,8 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
  linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
  linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
  linux-s390@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- linux-um@lists.infradead.org, loongarch@lists.linux.dev, x86@kernel.org
+ linux-um@lists.infradead.org, loongarch@lists.linux.dev, x86@kernel.org,
+ Joerg Roedel <jroedel@suse.de>
 References: <20241219164425.2277022-1-kevin.brodsky@arm.com>
  <a7398426-56d1-40b4-a1c9-40ae8c8a4b4b@intel.com>
  <765aec36-55a4-4161-bb30-4ff838bc2d98@arm.com>
@@ -126,9 +127,8 @@ In-Reply-To: <765aec36-55a4-4161-bb30-4ff838bc2d98@arm.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241220_064600_339893_11359CB3 
-X-CRM114-Status: UNSURE (   5.48  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20241220_113154_568963_85509504 
+X-CRM114-Status: GOOD (  13.73  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -144,9 +144,30 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On 12/20/24 02:58, Kevin Brodsky wrote:
->> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
-> Just to double-check, are your ack'ing the x86 changes specifically? If
-> so I'll add your Acked-by on patch 6, 7 and 9.
+>> One super tiny nit is that the PAE pgd _can_ be allocated using
+>> __get_free_pages(). It was originally there for Xen, but I think it's
+>> being used for PTI only at this point and the comments are wrong-ish.
+>>
+>> I kinda think we should just get rid of the 32-bit kmem_cache entirely.
+> That would certainly simplify things on the x86 side! I'm not at all
+> familiar with that code though, would you be happy with providing a
+> patch? I could add it to this series if that's convenient.
 
-Feel free to add it to each patch in the series.
+I hacked this together yesterday:
+
+> https://git.kernel.org/pub/scm/linux/kernel/git/daveh/devel.git/log/?h=simplify-pae-20241220
+It definitely needs some more work. I'm particularly still puzzling
+about why SHARED_KERNEL_PMD is used both as a trigger for 32b vs.
+PAGE_SIZE PAE pgd allocations _and_ for the actual PMD sharing.
+
+Xen definitely needed the whole page behavior but I'm not sure why PTI did.
+
+Either way, that series should make the PAE PGDs a _bit_ less weird at
+the cost of an extra ~2 pages per process for folks who are running
+32-bit PAE kernels with PTI disabled.
+
+But I think the diffstat is worth it:
+
+ 5 files changed, 16 insertions(+), 96 deletions(-)
+
 
