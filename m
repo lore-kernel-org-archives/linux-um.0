@@ -4,110 +4,131 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC857E77188
-	for <linux-um@archiver.kernel.org>; Fri, 20 Dec 2024 14:37:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5039BE7718B
+	for <linux-um@archiver.kernel.org>; Fri, 20 Dec 2024 14:51:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=nZtvjese48KZzlytF02YIE1ieOtjMj+XC4JVW8Rkw1o=; b=paT9atFiU4Zy87EK5jXMuO+kQh
-	KFOgDBsSD+cuMknpR4c8L2ShW6cNWFGHfdTEM4ShMso8qGT6s0C/ixOmFQqTRD5lBbyDosj/4kDVb
-	LsCTV8KQN6W8sYfnretRoM0ifwyAHtUUFDP9fTMAhYjhI/RoiPKlfWC7pTB46zF97cyO0vl6jwKiA
-	v5baiS6pFyGK5UC+zDBlasC4vInAoIh8LEqdySb4n6cZijGuurb4BfBB/lRVumEo1KfWYBlhBPsiw
-	wugn4T8MHw4SbxIxSGrKO0CJfEMYbKxLfs3YqiaSwXzNDsKx6RyQqE8u77DaSgXLWFM8r8uzDggcd
-	TFdtbV2A==;
+	bh=l+TvdBfWvVPAcsK8VbC159CKm8RgkJY+V79Gv5r8DN4=; b=Icw7g6WfA8QGSgQcV33MmT/TV2
+	JYD7xDMX0bThigMlR/YNLmNqGMkLr4Wdqwg+BnYDTFVi6NqZh1exk4H9t2aV/ZRnJJ+f+mDejj9aD
+	GyLokds4l0kdiITySHbniaclmz7ZRAy/AwRs8qwH43/vOhEXdw8Q8UZ+wFkNW/QsNyH6NHpvq5DR+
+	zKAXZzKNd2YQwv3RGLq7YWCK5r09k09TEc/2FXQjKWOTP4rWYNmVV+j6UJKN4ixOGJr5cRWmo6MzM
+	bh4Kip8loo1CX3sGbbADTnQVskEh2Cqxq5feKDhxIgWtTYQgr8b/hEiT4FdsZOWa+9I8R/DFnWlSg
+	DM6usL+Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tOe8M-00000005AI8-1Oig;
-	Fri, 20 Dec 2024 14:37:42 +0000
-Received: from mail-pl1-x633.google.com ([2607:f8b0:4864:20::633])
+	id 1tOeM2-00000005DVc-2fR3;
+	Fri, 20 Dec 2024 14:51:50 +0000
+Received: from mgamail.intel.com ([198.175.65.14])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tOe6I-000000059ri-1rai
-	for linux-um@lists.infradead.org;
-	Fri, 20 Dec 2024 14:35:35 +0000
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-21644e6140cso18920335ad.1
-        for <linux-um@lists.infradead.org>; Fri, 20 Dec 2024 06:35:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1734705334; x=1735310134; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nZtvjese48KZzlytF02YIE1ieOtjMj+XC4JVW8Rkw1o=;
-        b=V8DAFTBjHV4qDGroLmxlFiLjEJ7wvsBCNLFEwZ4rY/4B6v8wqNAfDAa7ug/E1qh+Vo
-         S0J0HzkGvxf3VgQLWzXoPC2zWCk3VsoSHlDnU5wXDnNF+Q3KdP7xrsPQlr6dd3ewlQZW
-         qFETNtSV+G5z8IAIfkhx+g2RqjK8BA5FdTmhr71E8lOTZ5+vWb/RtjumpVczTYZxNexo
-         haPQLYWZ5xPqAi0PQpv2T1ZSiPS06ONpr1IlzakoNRt9RekV0mEG3qyoTM/OuCCUZYsv
-         wPj4IVHilWb15vvb+H0dK/LnPXAhuYN3w1lbkWT3GBOBzG39dewIfPsdWGdfJiy19iJ5
-         ywuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734705334; x=1735310134;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nZtvjese48KZzlytF02YIE1ieOtjMj+XC4JVW8Rkw1o=;
-        b=l7GA1S3obtBxikQH1gKYFJVnDDSCtgdWkzCzzKvX2uoFmmqSmsS/pk5L0+1jDZY9nC
-         B1kJ9+ftdORfqK9M6EGOzEV3gxhPi8TdJVyenlk39nmgwz+fMaEm07BoMdNsIU4Z7aok
-         6MvJlKU9m15XVjclCRs6Dxd7ra840RTSZ4H2w4BtGDcOwORdk5Eg53ri2s93gMb8ISS8
-         y7vKG5kfPJLZC/RC2DtQYiBR9yrdO/MC7neEvfyJlkOxsXf4k63uxzwtgF6qOffod71q
-         IldwcGXBPXT8nc156n1YR7oH1exgtQraxtn8uLQvlczcC+9FAZaGmLyHKMfdFm347GLW
-         I9sg==
-X-Forwarded-Encrypted: i=1; AJvYcCW6nM9W24McW16yJk/s0FVXguo6JWEgQpJg+i6DklV6oRvoojLII3pdTsVs3bJrnPXiI9WsGIMOjg==@lists.infradead.org
-X-Gm-Message-State: AOJu0YzuxPshJRLC4ePITXeFRV13ped5+bB8OQ0yyElVuZbLlCMfXb0J
-	JmzzYF9hVdzm0RE3lrNVB8FskjB6cNbIV6ehzHgIdg5tGHkpaCNC5JB29YKt4Uo=
-X-Gm-Gg: ASbGnctB93dinXQgSPKQQtNEtoK4juNWNqwkm3FmRy0vJzj7K3KPv7T8EWSxRrTpEmQ
-	Kqqxu/In7QcISofM+Q8fvyLmtSpAUllaqQ3czNE4Kmxmq35LbPLUIClkh7PsJBc3lMaqR8y9yxe
-	6Mk9FMQpXAnr3Ar06RKdn8/uE1gWQX/ozFtw1hIDFh9isIJr3pLHk6RpRAwz5oKetfeiNuT2rBb
-	BQWLsdK/k+jHkTYdA0KPMrFZOW3gHb7rVXXxt/vUCSSj9dtlG+A+9pP4Ww1ax6ekG8dGKrGZxKe
-	ov7Aw8+9tSaKEPBjplrBlne0i0jHBRDrVt3mgRncyS31qQTNOWxm+FU=
-X-Google-Smtp-Source: AGHT+IEB+BvsoefjQ7Vgsp4o6cvW8xDLBZZay+9fVCOXIUsW3GchN/svfJCRC88uzsyXVDtiu7XXHA==
-X-Received: by 2002:a17:902:d485:b0:215:b5d6:5fa8 with SMTP id d9443c01a7336-219e6ea8948mr44866765ad.22.1734705333728;
-        Fri, 20 Dec 2024 06:35:33 -0800 (PST)
-Received: from ?IPV6:2409:8a28:f44:3764:dc48:fb1b:dd06:cba7? ([2409:8a28:f44:3764:dc48:fb1b:dd06:cba7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dc9704dbsm29773545ad.98.2024.12.20.06.35.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Dec 2024 06:35:32 -0800 (PST)
-Message-ID: <0725252d-1339-4841-bc1d-6cf9e82b2170@bytedance.com>
-Date: Fri, 20 Dec 2024 22:35:23 +0800
+	id 1tOeGO-00000005BhV-11qU;
+	Fri, 20 Dec 2024 14:46:01 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1734705961; x=1766241961;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=l+TvdBfWvVPAcsK8VbC159CKm8RgkJY+V79Gv5r8DN4=;
+  b=exy/5OI+yMjH1vFR0l7G55wy6iz0Pg4b/WbN0wlMJ394M75aH4EusQft
+   kv6kPrxcAD96oVKLyZpkMaO3DcqaLsU+Sfj+ZKajHYiYim54WLZilgzby
+   2GZoFZPNrFeseARzkPttZf0Qa0CZedoxQT5b4gejEw2u34cw137UWUKim
+   LMA8YbPuoZ0ZZN66NBMPejH1l0LBVHN/fVO+t1z12LJK0r9jqvKsHaVFG
+   R4McrBbWlamUUcqeELx0Tfv6eLt8fySi4VlsmC8xYwyXhg8dSEgjHlnTe
+   j+U9zHbtbXiyY9sAIyctYT6QNSH+sozu5DRHtS8gAM25f9wBcfyI3roOy
+   w==;
+X-CSE-ConnectionGUID: Xkot/9HtQo+gOToW470nVA==
+X-CSE-MsgGUID: aZ0jmKsATPWkwrdqIjW/sw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11292"; a="39040671"
+X-IronPort-AV: E=Sophos;i="6.12,251,1728975600"; 
+   d="scan'208";a="39040671"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2024 06:45:59 -0800
+X-CSE-ConnectionGUID: hdInxSi0Qf+/UQqd7LkLGQ==
+X-CSE-MsgGUID: OYmUDywbTrqpRN47tHU7cw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,251,1728975600"; 
+   d="scan'208";a="98311222"
+Received: from jairdeje-mobl1.amr.corp.intel.com (HELO [10.124.221.219]) ([10.124.221.219])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2024 06:45:56 -0800
+Message-ID: <719c5aa7-63ad-43f1-a2e8-644ef220db4f@intel.com>
+Date: Fri, 20 Dec 2024 06:45:55 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/10] mm: Move common parts of pagetable_*_[cd]tor to
- helpers
-Content-Language: en-US
-To: Kevin Brodsky <kevin.brodsky@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, linux-mm@kvack.org,
- Andrew Morton <akpm@linux-foundation.org>,
+Subject: Re: [PATCH 00/10] Account page tables at all levels
+To: Kevin Brodsky <kevin.brodsky@arm.com>, linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>,
  Catalin Marinas <catalin.marinas@arm.com>,
  Dave Hansen <dave.hansen@linux.intel.com>,
  Linus Walleij <linus.walleij@linaro.org>, Andy Lutomirski <luto@kernel.org>,
- "Mike Rapoport (IBM)" <rppt@kernel.org>, Ryan Roberts
- <ryan.roberts@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
- Will Deacon <will@kernel.org>, Matthew Wilcox <willy@infradead.org>,
- linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
- linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
- linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-snps-arc@lists.infradead.org, linux-um@lists.infradead.org,
- loongarch@lists.linux.dev, x86@kernel.org,
- Alexander Gordeev <agordeev@linux.ibm.com>
+ Peter Zijlstra <peterz@infradead.org>, "Mike Rapoport (IBM)"
+ <rppt@kernel.org>, Ryan Roberts <ryan.roberts@arm.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+ Matthew Wilcox <willy@infradead.org>, linux-alpha@vger.kernel.org,
+ linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+ linux-um@lists.infradead.org, loongarch@lists.linux.dev, x86@kernel.org
 References: <20241219164425.2277022-1-kevin.brodsky@arm.com>
- <20241219164425.2277022-2-kevin.brodsky@arm.com>
- <20241219171920.GB26279@noisy.programming.kicks-ass.net>
- <75cb4ff8-eb0c-4519-a30a-f8be717ba278@arm.com>
- <0daabd32-cba4-4345-baa8-e8c66bc899ff@bytedance.com>
- <2f65f93e-9d44-4acc-b63c-8f5a35f59699@arm.com>
- <33ce9b58-4787-49cd-a7f2-34272cb3ecf7@bytedance.com>
- <7f5e6ac7-01ef-46c8-bc85-7f8399dadb19@arm.com>
-From: Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <7f5e6ac7-01ef-46c8-bc85-7f8399dadb19@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+ <a7398426-56d1-40b4-a1c9-40ae8c8a4b4b@intel.com>
+ <765aec36-55a4-4161-bb30-4ff838bc2d98@arm.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Content-Language: en-US
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzUVEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gKEludGVsIFdvcmsgQWRkcmVzcykgPGRhdmUuaGFuc2VuQGludGVs
+ LmNvbT7CwXgEEwECACIFAlQ+9J0CGwMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAAoJEGg1
+ lTBwyZKwLZUP/0dnbhDc229u2u6WtK1s1cSd9WsflGXGagkR6liJ4um3XCfYWDHvIdkHYC1t
+ MNcVHFBwmQkawxsYvgO8kXT3SaFZe4ISfB4K4CL2qp4JO+nJdlFUbZI7cz/Td9z8nHjMcWYF
+ IQuTsWOLs/LBMTs+ANumibtw6UkiGVD3dfHJAOPNApjVr+M0P/lVmTeP8w0uVcd2syiaU5jB
+ aht9CYATn+ytFGWZnBEEQFnqcibIaOrmoBLu2b3fKJEd8Jp7NHDSIdrvrMjYynmc6sZKUqH2
+ I1qOevaa8jUg7wlLJAWGfIqnu85kkqrVOkbNbk4TPub7VOqA6qG5GCNEIv6ZY7HLYd/vAkVY
+ E8Plzq/NwLAuOWxvGrOl7OPuwVeR4hBDfcrNb990MFPpjGgACzAZyjdmYoMu8j3/MAEW4P0z
+ F5+EYJAOZ+z212y1pchNNauehORXgjrNKsZwxwKpPY9qb84E3O9KYpwfATsqOoQ6tTgr+1BR
+ CCwP712H+E9U5HJ0iibN/CDZFVPL1bRerHziuwuQuvE0qWg0+0SChFe9oq0KAwEkVs6ZDMB2
+ P16MieEEQ6StQRlvy2YBv80L1TMl3T90Bo1UUn6ARXEpcbFE0/aORH/jEXcRteb+vuik5UGY
+ 5TsyLYdPur3TXm7XDBdmmyQVJjnJKYK9AQxj95KlXLVO38lczsFNBFRjzmoBEACyAxbvUEhd
+ GDGNg0JhDdezyTdN8C9BFsdxyTLnSH31NRiyp1QtuxvcqGZjb2trDVuCbIzRrgMZLVgo3upr
+ MIOx1CXEgmn23Zhh0EpdVHM8IKx9Z7V0r+rrpRWFE8/wQZngKYVi49PGoZj50ZEifEJ5qn/H
+ Nsp2+Y+bTUjDdgWMATg9DiFMyv8fvoqgNsNyrrZTnSgoLzdxr89FGHZCoSoAK8gfgFHuO54B
+ lI8QOfPDG9WDPJ66HCodjTlBEr/Cwq6GruxS5i2Y33YVqxvFvDa1tUtl+iJ2SWKS9kCai2DR
+ 3BwVONJEYSDQaven/EHMlY1q8Vln3lGPsS11vSUK3QcNJjmrgYxH5KsVsf6PNRj9mp8Z1kIG
+ qjRx08+nnyStWC0gZH6NrYyS9rpqH3j+hA2WcI7De51L4Rv9pFwzp161mvtc6eC/GxaiUGuH
+ BNAVP0PY0fqvIC68p3rLIAW3f97uv4ce2RSQ7LbsPsimOeCo/5vgS6YQsj83E+AipPr09Caj
+ 0hloj+hFoqiticNpmsxdWKoOsV0PftcQvBCCYuhKbZV9s5hjt9qn8CE86A5g5KqDf83Fxqm/
+ vXKgHNFHE5zgXGZnrmaf6resQzbvJHO0Fb0CcIohzrpPaL3YepcLDoCCgElGMGQjdCcSQ+Ci
+ FCRl0Bvyj1YZUql+ZkptgGjikQARAQABwsFfBBgBAgAJBQJUY85qAhsMAAoJEGg1lTBwyZKw
+ l4IQAIKHs/9po4spZDFyfDjunimEhVHqlUt7ggR1Hsl/tkvTSze8pI1P6dGp2XW6AnH1iayn
+ yRcoyT0ZJ+Zmm4xAH1zqKjWplzqdb/dO28qk0bPso8+1oPO8oDhLm1+tY+cOvufXkBTm+whm
+ +AyNTjaCRt6aSMnA/QHVGSJ8grrTJCoACVNhnXg/R0g90g8iV8Q+IBZyDkG0tBThaDdw1B2l
+ asInUTeb9EiVfL/Zjdg5VWiF9LL7iS+9hTeVdR09vThQ/DhVbCNxVk+DtyBHsjOKifrVsYep
+ WpRGBIAu3bK8eXtyvrw1igWTNs2wazJ71+0z2jMzbclKAyRHKU9JdN6Hkkgr2nPb561yjcB8
+ sIq1pFXKyO+nKy6SZYxOvHxCcjk2fkw6UmPU6/j/nQlj2lfOAgNVKuDLothIxzi8pndB8Jju
+ KktE5HJqUUMXePkAYIxEQ0mMc8Po7tuXdejgPMwgP7x65xtfEqI0RuzbUioFltsp1jUaRwQZ
+ MTsCeQDdjpgHsj+P2ZDeEKCbma4m6Ez/YWs4+zDm1X8uZDkZcfQlD9NldbKDJEXLIjYWo1PH
+ hYepSffIWPyvBMBTW2W5FRjJ4vLRrJSUoEfJuPQ3vW9Y73foyo/qFoURHO48AinGPZ7PC7TF
+ vUaNOTjKedrqHkaOcqB185ahG2had0xnFsDPlx5y
+In-Reply-To: <765aec36-55a4-4161-bb30-4ff838bc2d98@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241220_063534_510041_88FCF234 
-X-CRM114-Status: GOOD (  18.53  )
+X-CRM114-CacheID: sfid-20241220_064600_339893_11359CB3 
+X-CRM114-Status: UNSURE (   5.48  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -122,62 +143,10 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+On 12/20/24 02:58, Kevin Brodsky wrote:
+>> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Just to double-check, are your ack'ing the x86 changes specifically? If
+> so I'll add your Acked-by on patch 6, 7 and 9.
 
-
-On 2024/12/20 22:28, Kevin Brodsky wrote:
-> On 20/12/2024 15:16, Qi Zheng wrote:
->>>>
->>>> Did I miss something?
->>>>
->>>> My patch series is not only for cleanup, but also for fixes of
->>>> UAF issue [1], so is it possible to rebase your patch series onto
->>>> mine? I can post v3 ASAP.
->>>
->>> I see, yours should be merged first then. The issue is that yours would
->>> depend on some of the patches in mine, not the other way round.
->>>
->>> My suggestion would then be for you to take patch 5, 6 and 7 from my
->>> series, as they match Alexander's suggestions (and patch 5 is I think a
->>> useful simplification), and replace patch 2 in your series with those. I
->>> would then rebase my series on top and adapt it accordingly. Does that
->>> sound reasonable?
->>
->> Sounds good. But maybe just patch 5 and 6. Because I actually did
->> the work of your patch 7 in my patch 2 and 4.
-> 
-> Yes that's fair! You'd have to do adapt my patch 7 to make it fit in
-> your series so I agree it makes more sense this way.
-
-Thanks!
-
-> 
->>
->> So, is it okay to do something like the following?
->>
->> 1. I separate the ctor()/dtor() part from my patch 2, and then replace
->>     the rest with your patch 6.
->> 2. take your patch 5 form your series
-> 
-> Sounds good to me!
-> 
-> IIUC Dave Hansen gave his Acked-by for the x86 part of patch 6 [1],
-> would make sense to add it when you post your v3.
-
-OK, will add it!
-
-> 
->>
->> If it's ok, I will post the v3 next Monday. ;)
-> 
-> Perfect. I'm going offline tonight, when I come back in the new year
-> I'll review your v3 series and post a new version of this one.
-
-Thank you very much! And Happy New Year!
-
-> 
-> Cheers,
-> - Kevin
-> 
-> [1]
-> https://lore.kernel.org/linux-mm/a7398426-56d1-40b4-a1c9-40ae8c8a4b4b@intel.com/
+Feel free to add it to each patch in the series.
 
