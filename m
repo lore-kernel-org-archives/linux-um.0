@@ -4,41 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id CBB2DE7718C
-	for <linux-um@archiver.kernel.org>; Fri, 20 Dec 2024 14:29:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BC857E77188
+	for <linux-um@archiver.kernel.org>; Fri, 20 Dec 2024 14:37:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=NoZP/C74YL+gAOuTVINVRjr/kSwdZlwelqBG4tRegrQ=; b=DJF7n0ymyYWRqPXMvdjqLJdnwA
-	eQDuT0/w0Jg0BOA/6v5MNNwIGFwcsFdBiyXE40UH6eGjF+CeTdiBAOvFbBzrEKkyCv5JS39C2Yfi2
-	w0opMnw5suK/ZxNJ+u0NpEqBGikqKn+hEa310Sa2GZhc0tGCf47YOnqbiN3g53uDeG+2jUR5Ss/Ej
-	jsBddvSV/8RlWYX4mT1O3g1vTOtvpy1cPpuLSFE6ERHVbVsuSHEI3UFHAYVgqOYVpStC1SHE0OBEJ
-	iBGz08gJBRcvsHntF2WuwttgVNFawm85xEoLmGg7J5joXdz7DKNFWTg5L4BozDnov6Gd7e8eP2M8a
-	D+pDohwQ==;
+	bh=nZtvjese48KZzlytF02YIE1ieOtjMj+XC4JVW8Rkw1o=; b=paT9atFiU4Zy87EK5jXMuO+kQh
+	KFOgDBsSD+cuMknpR4c8L2ShW6cNWFGHfdTEM4ShMso8qGT6s0C/ixOmFQqTRD5lBbyDosj/4kDVb
+	LsCTV8KQN6W8sYfnretRoM0ifwyAHtUUFDP9fTMAhYjhI/RoiPKlfWC7pTB46zF97cyO0vl6jwKiA
+	v5baiS6pFyGK5UC+zDBlasC4vInAoIh8LEqdySb4n6cZijGuurb4BfBB/lRVumEo1KfWYBlhBPsiw
+	wugn4T8MHw4SbxIxSGrKO0CJfEMYbKxLfs3YqiaSwXzNDsKx6RyQqE8u77DaSgXLWFM8r8uzDggcd
+	TFdtbV2A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tOe0s-000000058uC-0dYK;
-	Fri, 20 Dec 2024 14:29:58 +0000
-Received: from foss.arm.com ([217.140.110.172])
-	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tOdzh-000000058nO-0Rio;
-	Fri, 20 Dec 2024 14:28:46 +0000
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 59F5F1480;
-	Fri, 20 Dec 2024 06:29:12 -0800 (PST)
-Received: from [10.57.72.191] (unknown [10.57.72.191])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6FAEB3F720;
-	Fri, 20 Dec 2024 06:28:38 -0800 (PST)
-Message-ID: <7f5e6ac7-01ef-46c8-bc85-7f8399dadb19@arm.com>
-Date: Fri, 20 Dec 2024 15:28:36 +0100
+	id 1tOe8M-00000005AI8-1Oig;
+	Fri, 20 Dec 2024 14:37:42 +0000
+Received: from mail-pl1-x633.google.com ([2607:f8b0:4864:20::633])
+	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tOe6I-000000059ri-1rai
+	for linux-um@lists.infradead.org;
+	Fri, 20 Dec 2024 14:35:35 +0000
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-21644e6140cso18920335ad.1
+        for <linux-um@lists.infradead.org>; Fri, 20 Dec 2024 06:35:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1734705334; x=1735310134; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nZtvjese48KZzlytF02YIE1ieOtjMj+XC4JVW8Rkw1o=;
+        b=V8DAFTBjHV4qDGroLmxlFiLjEJ7wvsBCNLFEwZ4rY/4B6v8wqNAfDAa7ug/E1qh+Vo
+         S0J0HzkGvxf3VgQLWzXoPC2zWCk3VsoSHlDnU5wXDnNF+Q3KdP7xrsPQlr6dd3ewlQZW
+         qFETNtSV+G5z8IAIfkhx+g2RqjK8BA5FdTmhr71E8lOTZ5+vWb/RtjumpVczTYZxNexo
+         haPQLYWZ5xPqAi0PQpv2T1ZSiPS06ONpr1IlzakoNRt9RekV0mEG3qyoTM/OuCCUZYsv
+         wPj4IVHilWb15vvb+H0dK/LnPXAhuYN3w1lbkWT3GBOBzG39dewIfPsdWGdfJiy19iJ5
+         ywuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734705334; x=1735310134;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nZtvjese48KZzlytF02YIE1ieOtjMj+XC4JVW8Rkw1o=;
+        b=l7GA1S3obtBxikQH1gKYFJVnDDSCtgdWkzCzzKvX2uoFmmqSmsS/pk5L0+1jDZY9nC
+         B1kJ9+ftdORfqK9M6EGOzEV3gxhPi8TdJVyenlk39nmgwz+fMaEm07BoMdNsIU4Z7aok
+         6MvJlKU9m15XVjclCRs6Dxd7ra840RTSZ4H2w4BtGDcOwORdk5Eg53ri2s93gMb8ISS8
+         y7vKG5kfPJLZC/RC2DtQYiBR9yrdO/MC7neEvfyJlkOxsXf4k63uxzwtgF6qOffod71q
+         IldwcGXBPXT8nc156n1YR7oH1exgtQraxtn8uLQvlczcC+9FAZaGmLyHKMfdFm347GLW
+         I9sg==
+X-Forwarded-Encrypted: i=1; AJvYcCW6nM9W24McW16yJk/s0FVXguo6JWEgQpJg+i6DklV6oRvoojLII3pdTsVs3bJrnPXiI9WsGIMOjg==@lists.infradead.org
+X-Gm-Message-State: AOJu0YzuxPshJRLC4ePITXeFRV13ped5+bB8OQ0yyElVuZbLlCMfXb0J
+	JmzzYF9hVdzm0RE3lrNVB8FskjB6cNbIV6ehzHgIdg5tGHkpaCNC5JB29YKt4Uo=
+X-Gm-Gg: ASbGnctB93dinXQgSPKQQtNEtoK4juNWNqwkm3FmRy0vJzj7K3KPv7T8EWSxRrTpEmQ
+	Kqqxu/In7QcISofM+Q8fvyLmtSpAUllaqQ3czNE4Kmxmq35LbPLUIClkh7PsJBc3lMaqR8y9yxe
+	6Mk9FMQpXAnr3Ar06RKdn8/uE1gWQX/ozFtw1hIDFh9isIJr3pLHk6RpRAwz5oKetfeiNuT2rBb
+	BQWLsdK/k+jHkTYdA0KPMrFZOW3gHb7rVXXxt/vUCSSj9dtlG+A+9pP4Ww1ax6ekG8dGKrGZxKe
+	ov7Aw8+9tSaKEPBjplrBlne0i0jHBRDrVt3mgRncyS31qQTNOWxm+FU=
+X-Google-Smtp-Source: AGHT+IEB+BvsoefjQ7Vgsp4o6cvW8xDLBZZay+9fVCOXIUsW3GchN/svfJCRC88uzsyXVDtiu7XXHA==
+X-Received: by 2002:a17:902:d485:b0:215:b5d6:5fa8 with SMTP id d9443c01a7336-219e6ea8948mr44866765ad.22.1734705333728;
+        Fri, 20 Dec 2024 06:35:33 -0800 (PST)
+Received: from ?IPV6:2409:8a28:f44:3764:dc48:fb1b:dd06:cba7? ([2409:8a28:f44:3764:dc48:fb1b:dd06:cba7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dc9704dbsm29773545ad.98.2024.12.20.06.35.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Dec 2024 06:35:32 -0800 (PST)
+Message-ID: <0725252d-1339-4841-bc1d-6cf9e82b2170@bytedance.com>
+Date: Fri, 20 Dec 2024 22:35:23 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 01/10] mm: Move common parts of pagetable_*_[cd]tor to
  helpers
-To: Qi Zheng <zhengqi.arch@bytedance.com>
+Content-Language: en-US
+To: Kevin Brodsky <kevin.brodsky@arm.com>
 Cc: Peter Zijlstra <peterz@infradead.org>, linux-mm@kvack.org,
  Andrew Morton <akpm@linux-foundation.org>,
  Catalin Marinas <catalin.marinas@arm.com>,
@@ -63,14 +100,14 @@ References: <20241219164425.2277022-1-kevin.brodsky@arm.com>
  <0daabd32-cba4-4345-baa8-e8c66bc899ff@bytedance.com>
  <2f65f93e-9d44-4acc-b63c-8f5a35f59699@arm.com>
  <33ce9b58-4787-49cd-a7f2-34272cb3ecf7@bytedance.com>
-Content-Language: en-GB
-From: Kevin Brodsky <kevin.brodsky@arm.com>
-In-Reply-To: <33ce9b58-4787-49cd-a7f2-34272cb3ecf7@bytedance.com>
-Content-Type: text/plain; charset=UTF-8
+ <7f5e6ac7-01ef-46c8-bc85-7f8399dadb19@arm.com>
+From: Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <7f5e6ac7-01ef-46c8-bc85-7f8399dadb19@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241220_062845_193521_4E004201 
-X-CRM114-Status: GOOD (  16.76  )
+X-CRM114-CacheID: sfid-20241220_063534_510041_88FCF234 
+X-CRM114-Status: GOOD (  18.53  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,50 +122,62 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 20/12/2024 15:16, Qi Zheng wrote:
+
+
+On 2024/12/20 22:28, Kevin Brodsky wrote:
+> On 20/12/2024 15:16, Qi Zheng wrote:
+>>>>
+>>>> Did I miss something?
+>>>>
+>>>> My patch series is not only for cleanup, but also for fixes of
+>>>> UAF issue [1], so is it possible to rebase your patch series onto
+>>>> mine? I can post v3 ASAP.
 >>>
->>> Did I miss something?
+>>> I see, yours should be merged first then. The issue is that yours would
+>>> depend on some of the patches in mine, not the other way round.
 >>>
->>> My patch series is not only for cleanup, but also for fixes of
->>> UAF issue [1], so is it possible to rebase your patch series onto
->>> mine? I can post v3 ASAP.
+>>> My suggestion would then be for you to take patch 5, 6 and 7 from my
+>>> series, as they match Alexander's suggestions (and patch 5 is I think a
+>>> useful simplification), and replace patch 2 in your series with those. I
+>>> would then rebase my series on top and adapt it accordingly. Does that
+>>> sound reasonable?
 >>
->> I see, yours should be merged first then. The issue is that yours would
->> depend on some of the patches in mine, not the other way round.
+>> Sounds good. But maybe just patch 5 and 6. Because I actually did
+>> the work of your patch 7 in my patch 2 and 4.
+> 
+> Yes that's fair! You'd have to do adapt my patch 7 to make it fit in
+> your series so I agree it makes more sense this way.
+
+Thanks!
+
+> 
 >>
->> My suggestion would then be for you to take patch 5, 6 and 7 from my
->> series, as they match Alexander's suggestions (and patch 5 is I think a
->> useful simplification), and replace patch 2 in your series with those. I
->> would then rebase my series on top and adapt it accordingly. Does that
->> sound reasonable?
->
-> Sounds good. But maybe just patch 5 and 6. Because I actually did
-> the work of your patch 7 in my patch 2 and 4.
+>> So, is it okay to do something like the following?
+>>
+>> 1. I separate the ctor()/dtor() part from my patch 2, and then replace
+>>     the rest with your patch 6.
+>> 2. take your patch 5 form your series
+> 
+> Sounds good to me!
+> 
+> IIUC Dave Hansen gave his Acked-by for the x86 part of patch 6 [1],
+> would make sense to add it when you post your v3.
 
-Yes that's fair! You'd have to do adapt my patch 7 to make it fit in
-your series so I agree it makes more sense this way.
+OK, will add it!
 
->
-> So, is it okay to do something like the following?
->
-> 1. I separate the ctor()/dtor() part from my patch 2, and then replace
->    the rest with your patch 6.
-> 2. take your patch 5 form your series
+> 
+>>
+>> If it's ok, I will post the v3 next Monday. ;)
+> 
+> Perfect. I'm going offline tonight, when I come back in the new year
+> I'll review your v3 series and post a new version of this one.
 
-Sounds good to me!
+Thank you very much! And Happy New Year!
 
-IIUC Dave Hansen gave his Acked-by for the x86 part of patch 6 [1],
-would make sense to add it when you post your v3.
-
->
-> If it's ok, I will post the v3 next Monday. ;)
-
-Perfect. I'm going offline tonight, when I come back in the new year
-I'll review your v3 series and post a new version of this one.
-
-Cheers,
-- Kevin
-
-[1]
-https://lore.kernel.org/linux-mm/a7398426-56d1-40b4-a1c9-40ae8c8a4b4b@intel.com/
+> 
+> Cheers,
+> - Kevin
+> 
+> [1]
+> https://lore.kernel.org/linux-mm/a7398426-56d1-40b4-a1c9-40ae8c8a4b4b@intel.com/
 
