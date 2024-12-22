@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDC0EE77184
-	for <linux-um@archiver.kernel.org>; Sat, 21 Dec 2024 14:09:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E80E8E7718D
+	for <linux-um@archiver.kernel.org>; Sun, 22 Dec 2024 00:52:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
 	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=GpBog1LJdntPo57cyHdGkHydPz04prdcJbkki5MzpWU=; b=3auns1xPL8q4sC84vh0KIC37DA
-	qYcGMFqq7IbDqMYhHHymA3m7pqcOOOKdegy0eT5XYVfWEvq9v4aXiQgYlVVJXABv6Ln11NtJ5e0hc
-	HercTEt25llrwO8QRoA1iYzaWoODG/8Jtg6n8FkONYqp5FsHLqYKVw+ZFuT+gtzZ6BajGLoBKqGYb
-	okAh+NbE03mau4apjW22BbKCDmMO0+23ifDecThreNNOLklF3bgGL1C16gkOxDiPBvDOGc2CIPTYn
-	srgU91lUL2wTmIofbnUKlic31jPbhqm5L+w8/krF6MVhQO17IB/5YXa4phPFOoh9r+5olqOCeEYfe
-	PX8w/1Zg==;
+	bh=G56dFj5BRaIttSoRxhRi+K83W3sP81bwdAaZ6QoaIrc=; b=gjPytW/ii5kwNUrCS49PgxHRQp
+	EHJ2qr1br/5mmH70axAEmpee4X7WEO2bV4Q0nKi0/HHixMyyQEhSaCOkoNoxBkAhVFWrPVGvIOtj3
+	WBoTw5ddovv7q9O+qFfRD1PxqTOGScNZ5v4cWW3OBKjBvDQ/7llH8hUfWiCLzUGtXhBaJ20ksDgvD
+	Dgs1I1NU04nJCTPt0y2apGR6doc5gq3ZZysRUMFB1rLz63dEpEmxnQ+WjHe51Xt1ZtR4Va5KLc6hX
+	5DadKB6Nq8lOn+kLJuJpitGAEpi/cdoiC4VxxAFYN5Vy5sK+ntW2c3lZ+sD2smc+Rht3C1HV7nyKP
+	lsvxcF7w==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tP0AU-000000072d9-1jhf;
-	Sat, 21 Dec 2024 14:09:22 +0000
-Received: from mail-oa1-f48.google.com ([209.85.160.48])
+	id 1tPACr-00000007cAc-0OrL;
+	Sun, 22 Dec 2024 00:52:29 +0000
+Received: from mail-yw1-x112c.google.com ([2607:f8b0:4864:20::112c])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tP0AQ-000000072cK-3qHx;
-	Sat, 21 Dec 2024 14:09:20 +0000
-Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-2a7ccb2c618so1452598fac.2;
-        Sat, 21 Dec 2024 06:09:17 -0800 (PST)
+	id 1tPACn-00000007c9n-3YdL;
+	Sun, 22 Dec 2024 00:52:27 +0000
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-6eff8289d0eso27694917b3.0;
+        Sat, 21 Dec 2024 16:52:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1734828744; x=1735433544; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=G56dFj5BRaIttSoRxhRi+K83W3sP81bwdAaZ6QoaIrc=;
+        b=FGASEvmUrZZyY2avjPCCV8kOxTz6tTHO6xo/zK8EPkJlDiK+4yJ8u2W76I6Nax7USV
+         /2Pe2vww6IhBYSsI/y/SC2+q0NpOsAtnbUO0lPwDmz1DobuCNwFNj2X9rrCiFg2VbdEx
+         n8wIbSYMEFL7AYEAGCnQ9IU1tvxLqPo1JXXnR8qiC36T3HpNNIlx5bcVoJE/x6juxygX
+         moHcmwuRwsl677csl4x5B4uyHczN2Ig7rakQWXFZYvHkpR13P9zIgCd2iIFioHbmONvC
+         XxP8NgMq6/jh7c72y56o1Jys4odHpaR9v/J22lp4klrWMf93fZbHgCM1nOuuhKho3BLK
+         8S1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734790157; x=1735394957;
+        d=1e100.net; s=20230601; t=1734828744; x=1735433544;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GpBog1LJdntPo57cyHdGkHydPz04prdcJbkki5MzpWU=;
-        b=KUwkwe1OXDEcj2PDkf1t+AgGx44QyXKKP6X3y3OsiunAMHLXQWxP9nWk7XqCXv2Bih
-         Mc5RkciSn3Qp+dB6cuKRVhaIJGzX9n8+PGZD00C0nZsoi8Y3ZOCHGkQVChNWfSCBn5+w
-         AeKUnSd1mb6rxpcv+fnJBf5CcqR/qIrRqT0EqJkCCecDhgmiTBVXixDpsVmd6reZ9UfJ
-         Ch+tXELTnRq57uwdksbJ6a/UjDLEbzF/yVsRWEkrF0xIP2MGEKDluEfMc6NTfig9grjH
-         Mw4T7QpHYFlwOw2zNIVXmvP+PpM/vN+fgIqPd+4YjIlfF+i0S7aiwpmxRflScohQ4lL4
-         VwHw==
-X-Forwarded-Encrypted: i=1; AJvYcCVmgbY1JiVUkNHLNIQ5msTh5qBcghOZapgSSpASZ/aQ3SgvDCtQcrnZghDvFkiWVbSYFVNBSXdWQUnqAtQ=@lists.infradead.org, AJvYcCW1wJo/O38HyccTKouFtf3TijXKSGADyCsEsXdeIj+DvaPcXrIl+wQoL+HlddweiN37nSvyw6j4Uah1e8ANL5P3@lists.infradead.org, AJvYcCWwNbfhk36E8dMkDT+oSFvMOJ8xCNaSDOtsT7WPeobrE3iqkVR2uvcTZzKkKxxCVH67YTCQ5845EeU=@lists.infradead.org
-X-Gm-Message-State: AOJu0YzsKvlBlY2LvagnXdc3kLOPBDEpx5qVtqKq9heKAeCaic7qJe73
-	7Y6sqSpXauVdALTwu8vJsyDIg3a7ttr9Z6uoHUYVzYMYmaUiTeQ07L8YVPnU
-X-Gm-Gg: ASbGncvpCOfPUVAYES1Kg8ecQbQEcYCtA+7WntLV04lQALJzt4kSZsn6jB5c4q2gBBr
-	P4I1q2c/Q/Kn+/JR4QLVPruwYnsdz+2NBMxWVjk65lNIk4pMVsc4MdqLiB4v85UPAim5ftxL6aA
-	RSIFz7ZCrfapzM7itq1BszTGLEuaeeqC/FXSrMN21+M9NSK3jfUHi3AemuGYMDogA63PBlR2pBr
-	KtLTCWbDtZQeu5Lkzv8MjgWNt71Xf9UHf4VEg+WGj0wKPOPh9LRORfdWelLXuTA2dfufvUGuUMt
-	gDl/2nSxYXVJiCIP9ho=
-X-Google-Smtp-Source: AGHT+IHzXPd9afD5N6v6cuNVvgBw32yVL7gNMhb2fpCksbBT647FEDE4Zxygzk+/7AEqUxkS4jY7qA==
-X-Received: by 2002:a05:6870:8928:b0:29e:6814:19d with SMTP id 586e51a60fabf-2a7fb18a63emr3989789fac.9.1734790156711;
-        Sat, 21 Dec 2024 06:09:16 -0800 (PST)
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com. [209.85.210.46])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-2a7d751095esm1528015fac.22.2024.12.21.06.09.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 21 Dec 2024 06:09:16 -0800 (PST)
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-71ded02b779so1443360a34.2;
-        Sat, 21 Dec 2024 06:09:16 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVCgBvXesTyQ39YecdBkIN4Uq0VcJPtUfi+1fXd/1YELTbl84GUptznZitCIhGIuwWYJdh0Ykv5zjE=@lists.infradead.org, AJvYcCVHp5bsMmqBroaJBQXPk9rQtjVsAJhPNmBDaJweVBXl5teno5dtgoR2fC5oqi4ON+YeZNQJauC2Sh/N914=@lists.infradead.org, AJvYcCWKVqnVpN6RkJs8TRlse6jFXDZU3sxaqqBX/ForK+1oO+weOL4x9guZjRrU2el51kI498gogMq46I/hzzjyZm23@lists.infradead.org
-X-Received: by 2002:a05:6102:cc8:b0:4af:ef85:dae4 with SMTP id
- ada2fe7eead31-4b2cc313a2cmr7064126137.5.1734789822327; Sat, 21 Dec 2024
- 06:03:42 -0800 (PST)
+        bh=G56dFj5BRaIttSoRxhRi+K83W3sP81bwdAaZ6QoaIrc=;
+        b=TPXY0YFV+D2A2baBvy0cJ3kGXVRPnOa+gTcIKUF234g5KpzM6P8/TNT2I2YTcEbEhA
+         zbBejT1ihoeUBCkgJlAsKwI2Y0/vRhuiKB0GynNh+7abF03p7INTb+bhHQyY7lYyLs3E
+         zPbufMMZvVLwl9Cs6EMArqRAPxN3nWMMG5vC+LGQlDKVjTGgnAiRJ42Hi82E/Q3WD5T2
+         vEx+yZ4x39qduVos+ZLIq8V7pBe1Co0mYhg0OXA6fVgjeKfABOXbk8FgqEo0EXBuZAGW
+         AZ1mSB36QWvqKFmRUITKVrDmcynkfVwy+Et+VYBw3s1Ul13e8zsmfPsFV4l6k8qNgZur
+         J5cQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU+pa/bIdcZPSzAmYzFJ+ActKWr9YDfqVPli06/joKAkA8nAW60PHLIgqajf7HvIffeori2wHrFkbY6y2P9LdAt@lists.infradead.org, AJvYcCX4MLM3GYo4GcJMwI99WoKg+Qz97XWryyJ3uoBpULo4NX1D0fPhXih3cHcz383kUoNH7Pq8GzELuOE=@lists.infradead.org, AJvYcCXnmX2DhpHmgB9OGJunFXu3/klQzodP2Vr3ffBPCvLwiotVkdcpMg0r49aCDq46TIc3EnPCa5rs14XNGek=@lists.infradead.org
+X-Gm-Message-State: AOJu0YwDvjL9ntqkYGik0PcJfbjUFYAbgFOfbRbL9auDHPlsHN35RMZM
+	p8UlbkpIv5N+YXgrOZfcc5HtZjdn9MdSyzR1H0+e2vocvcYp5rmoq/aqZObFxjqPFvvTaVS2qFF
+	o0YcakS/VMYW3l8C3C7g3uVKErAk=
+X-Gm-Gg: ASbGncst9bKDrcNXEn6pDytJAnm7EREZYl1f0mmicD4y8Qk6MG9Qxv7UsV/Lj25PHbs
+	pTk/xMqCgh6qoxAEhLD0ihLeEBq38JUBrjQ9+ZX0=
+X-Google-Smtp-Source: AGHT+IHH5gTAOmFubOYjlrK+2+jdIvePBlyZPYVyBZBy90RljxEGCQgcvHQMo3bTypvAoytVk58QJl8i95oeqQUdh1w=
+X-Received: by 2002:a05:690c:4e82:b0:6f0:21d6:4497 with SMTP id
+ 00721157ae682-6f3f80d911amr42730727b3.9.1734828744363; Sat, 21 Dec 2024
+ 16:52:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20241221104304.2655909-1-guoweikang.kernel@gmail.com>
-In-Reply-To: <20241221104304.2655909-1-guoweikang.kernel@gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Sat, 21 Dec 2024 15:03:30 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXbB-ksxZ9+YRz86wazPGSM09ZFX7JZoyH--=UDndS=TQ@mail.gmail.com>
-Message-ID: <CAMuHMdXbB-ksxZ9+YRz86wazPGSM09ZFX7JZoyH--=UDndS=TQ@mail.gmail.com>
+References: <20241221104304.2655909-1-guoweikang.kernel@gmail.com> <CAMuHMdXbB-ksxZ9+YRz86wazPGSM09ZFX7JZoyH--=UDndS=TQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdXbB-ksxZ9+YRz86wazPGSM09ZFX7JZoyH--=UDndS=TQ@mail.gmail.com>
+From: Weikang Guo <guoweikang.kernel@gmail.com>
+Date: Sun, 22 Dec 2024 08:52:14 +0800
+Message-ID: <CAOm6qn=aN_n3jRc79wr-AGVaQXCbZoyE0yXYcZfw28-uBv+zuQ@mail.gmail.com>
 Subject: Re: [PATCH v2] mm/memblock: Add memblock_alloc_or_panic interface
-To: Guo Weikang <guoweikang.kernel@gmail.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: Andrew Morton <akpm@linux-foundation.org>, Mike Rapoport <rppt@kernel.org>, 
 	Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>, 
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Sam Creasey <sammy@sammy.net>, 
@@ -111,8 +111,8 @@ Cc: Andrew Morton <akpm@linux-foundation.org>, Mike Rapoport <rppt@kernel.org>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241221_060918_961409_19251D96 
-X-CRM114-Status: GOOD (  21.89  )
+X-CRM114-CacheID: sfid-20241221_165225_904549_0815503B 
+X-CRM114-Status: GOOD (  25.19  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -127,65 +127,77 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Guo,
-
-On Sat, Dec 21, 2024 at 11:43=E2=80=AFAM Guo Weikang
-<guoweikang.kernel@gmail.com> wrote:
-> Before SLUB initialization, various subsystems used memblock_alloc to
-> allocate memory. In most cases, when memory allocation fails, an immediat=
-e
-> panic is required. To simplify this behavior and reduce repetitive checks=
-,
-> introduce `memblock_alloc_or_panic`. This function ensures that memory
-> allocation failures result in a panic automatically, improving code
-> readability and consistency across subsystems that require this behavior.
+Geert Uytterhoeven <geert@linux-m68k.org> wrote on Saturday, 21
+December 2024 at 22:10
 >
-> Signed-off-by: Guo Weikang <guoweikang.kernel@gmail.com>
-
-Thanks for your patch!
-
-> --- a/include/linux/memblock.h
-> +++ b/include/linux/memblock.h
-> @@ -417,6 +417,20 @@ static __always_inline void *memblock_alloc(phys_add=
-r_t size, phys_addr_t align)
->                                       MEMBLOCK_ALLOC_ACCESSIBLE, NUMA_NO_=
-NODE);
->  }
+> Hi Guo,
 >
-> +static __always_inline void *__memblock_alloc_or_panic(phys_addr_t size,
-> +                                                      phys_addr_t align,
-> +                                                      const char *func)
-> +{
-> +       void *addr =3D memblock_alloc(size, align);
-> +
-> +       if (unlikely(!addr))
-> +               panic("%s: Failed to allocate %llu bytes\n", func, size);
-> +       return addr;
-> +}
+> On Sat, Dec 21, 2024 at 11:43=E2=80=AFAM Guo Weikang
+> <guoweikang.kernel@gmail.com> wrote:
+> > Before SLUB initialization, various subsystems used memblock_alloc to
+> > allocate memory. In most cases, when memory allocation fails, an immedi=
+ate
+> > panic is required. To simplify this behavior and reduce repetitive chec=
+ks,
+> > introduce `memblock_alloc_or_panic`. This function ensures that memory
+> > allocation failures result in a panic automatically, improving code
+> > readability and consistency across subsystems that require this behavio=
+r.
+> >
+> > Signed-off-by: Guo Weikang <guoweikang.kernel@gmail.com>
+>
+> Thanks for your patch!
+>
+> > --- a/include/linux/memblock.h
+> > +++ b/include/linux/memblock.h
+> > @@ -417,6 +417,20 @@ static __always_inline void *memblock_alloc(phys_a=
+ddr_t size, phys_addr_t align)
+> >                                       MEMBLOCK_ALLOC_ACCESSIBLE, NUMA_N=
+O_NODE);
+> >  }
+> >
+> > +static __always_inline void *__memblock_alloc_or_panic(phys_addr_t siz=
+e,
+> > +                                                      phys_addr_t alig=
+n,
+> > +                                                      const char *func=
+)
+> > +{
+> > +       void *addr =3D memblock_alloc(size, align);
+> > +
+> > +       if (unlikely(!addr))
+> > +               panic("%s: Failed to allocate %llu bytes\n", func, size=
+);
+> > +       return addr;
+> > +}
+>
+> Please make this out-of-line, and move it to mm/memblock.c, so we have
+> just a single copy in the final binary.
+>
+Got it, I'll make the change
+> > +
+> > +#define memblock_alloc_or_panic(size, align)    \
+> > +        __memblock_alloc_or_panic(size, align, __func__)
+> > +
+> >  static inline void *memblock_alloc_raw(phys_addr_t size,
+> >                                                phys_addr_t align)
+> >  {
+> > diff --git a/init/main.c b/init/main.c
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
+8k.org
+>
+> In personal conversations with technical people, I call myself a hacker. =
+But
+> when I'm talking to journalists I just say "programmer" or something like=
+ that.
+>                                 -- Linus Torvalds
 
-Please make this out-of-line, and move it to mm/memblock.c, so we have
-just a single copy in the final binary.
-
-> +
-> +#define memblock_alloc_or_panic(size, align)    \
-> +        __memblock_alloc_or_panic(size, align, __func__)
-> +
->  static inline void *memblock_alloc_raw(phys_addr_t size,
->                                                phys_addr_t align)
->  {
-> diff --git a/init/main.c b/init/main.c
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Best regards
+             Guo
 
