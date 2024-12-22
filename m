@@ -4,68 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDDD7E7718D
-	for <linux-um@archiver.kernel.org>; Sun, 22 Dec 2024 03:04:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F7FBE7718D
+	for <linux-um@archiver.kernel.org>; Sun, 22 Dec 2024 05:44:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=bLwIVhlTf1b/URUp5p09XK9G7aK+ploAUOErazD1ENw=; b=JZ+AR+bTMpis3CiQ/DwX2Hv26W
-	v50a/HhOA0O5v7uGEsJdoFH3LS/b9lFdxoik4/Q5iuFPRg3sf0W7LON5f/JB+kxV+jPrMq6c2sRhc
-	LuMXVNEYpuPjBI9snJRWO1F9WS1OhSqi1oLdYQr+JCUBnSviAhcEiIX4Q/QDQDgEscwv1AKK/6+CI
-	xaLNuBGS7PWLuKmCTliagxWkRbya65yHpuBJRPklM3TeyWb9PhKmri5qBB6UVp0nnPOPyxtjCNApr
-	Aj/GLUhG46DjPZs4dTfw+HK3Unogb3bqY/yCMzmT3cQhADj//IBEoM4+UuP413stb3LqgnxNWwYvQ
-	r2kajGCA==;
+	bh=NxCBSVvegpL4AXRrmCU+1dMPv/7znzdJDLKT63dDMTk=; b=hvZ1TFuYisul+gmxO9hqnHl/qC
+	ogxkQqWsEEz7TQU0ilN37o/aVHFQCnpS5BWRPwCUJxtPL4qxnPEspkoALrOrlLYp56ame27jK/NeP
+	AKGGNDdC+lrm2H+bysPGK77+G2oKt3RXL8CdNpyh1MzoYW0fw3ggW9uqlS6JU8deowQJy+7frD7dc
+	gm7ml3OVqzAkEms4dxXQGCPUZhCBmYUZu2ntYM3DKGZtfwdqvuNhC5xxc9kVXuBisdl16CeXUdtsP
+	EIU3wEu9O+m0sKVWrfoKcSZWB9mS76aoGSurIQpoAq3CL3KhE2ENxjo4CPTE+PR7H5a3AcfjURt7Q
+	O5YxFRPQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tPCGK-00000007igK-1EaK;
-	Sun, 22 Dec 2024 03:04:12 +0000
-Received: from mail-pf1-x42a.google.com ([2607:f8b0:4864:20::42a])
+	id 1tPEl3-00000007rGw-1LQu;
+	Sun, 22 Dec 2024 05:44:05 +0000
+Received: from mail-pj1-x1032.google.com ([2607:f8b0:4864:20::1032])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tPCGF-00000007if7-1fzM;
-	Sun, 22 Dec 2024 03:04:09 +0000
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-728ea1e0bdbso2926750b3a.0;
-        Sat, 21 Dec 2024 19:04:06 -0800 (PST)
+	id 1tPEky-00000007rFz-2oWo;
+	Sun, 22 Dec 2024 05:44:03 +0000
+Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-2f44353649aso2407374a91.0;
+        Sat, 21 Dec 2024 21:44:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734836646; x=1735441446; darn=lists.infradead.org;
+        d=gmail.com; s=20230601; t=1734846239; x=1735451039; darn=lists.infradead.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=bLwIVhlTf1b/URUp5p09XK9G7aK+ploAUOErazD1ENw=;
-        b=hZQwK+tpjwdznNDome8BFfGugNUYGSQ7p3JCtjrhd94JhBwWNzT7081XmJ0/2xS5Zz
-         3Ln3IBmdSSINWO4OBblXDSOYXjxopii7ZvorpLOcUbJ211BDwYZE2oxTCQugLG7eu8EC
-         J8ZVgnyCqcfe8fKYEE05EUwacBJOHdycvMF4GfcAbRzagqgzCeH6uYIxRyxGQa7JQYDu
-         ev+lFiTA75kkW9mF2hnwQp9v48iL6D3REUCcduAsGU5JwPhHVJZmhkQ4R3GPti+EIxLk
-         Ez63zOclSAEc8hXypMqlkG/VUjtZcfvCEipfI8DO2MYQKlaCL7wZwGydsslUbLZAkXIl
-         Osow==
+        bh=NxCBSVvegpL4AXRrmCU+1dMPv/7znzdJDLKT63dDMTk=;
+        b=jGUGTDUeelSE5hhuovfF02uW3wFSe18/3GIffY+2wwy2FqDmzcOOdDQV0ZUm6HdH+1
+         MC1i2Wf6ovEFJFaNjL8atC+ai1c8rk+3q7klRyS/7G6LPfxtff8jnFUWBEfYlplVE0T2
+         jqDNwfZMsdFCW9G9I+ZAkXiq3OJGgU9SF3vQcUAuGny878Q/1Gn7hLQIbiAPHXXfFWuQ
+         c/x9wYlInxwdbkHt8ZfiKdy/IvZYFWNbHI1jNFauh1E6SfNrL3Ox/wzQGMFYiI6UHGuo
+         N0YeaLgeHNtGgaW8DCtqwy9Dej32P0QN4Zd1Lap1LTOhXHod7CwbVgiGw9fmJMvYCjoe
+         F3Kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734836646; x=1735441446;
+        d=1e100.net; s=20230601; t=1734846239; x=1735451039;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=bLwIVhlTf1b/URUp5p09XK9G7aK+ploAUOErazD1ENw=;
-        b=wQUSUaholxDpbzm39ThjzQBwZ+PFEdZWAqhZRKsW4Vbl/+6nRdM0bBI/MbGMM4TGOv
-         m8tJ2afhCv9nlkw2t8fiFUQfC7NRkk5a+tbQ4KyKSDwQeIuORZQHZhB+c0Bf/xa++s2r
-         ulCuJgxw8At5zWnc7CWMMZivah0dmX241A4+pH3kPQybYWjeilusGGt4REeROhXI0gSB
-         Viuh7i/Y37qJb79SIC0AeMj3+K9M+jInxwUkCtqoI6aLKK6f1qluLkMELQx7/JGtHI7l
-         /5Unwe7zBLCfBVamDclomUFbOeqM6jQd8RioAVNbOaOiEubf5cWYy2LKezqY9cxE7YNf
-         DJPA==
-X-Forwarded-Encrypted: i=1; AJvYcCUxOdqeZ3IOOAAeEGRDHa2MEKaIDU8fkeFSVGkDbWlNnL7rT+nYFJbSCDRtYSl4aa9JrrOPI6+zBkhp4/D5XRjT@lists.infradead.org, AJvYcCXEgwI5/LLozsIr9Ccgd7N1Pvw3GypUEotb2orxhIgAYHf0vzAia9vVa/SAlwomJwv3Hzdicv0fWTg=@lists.infradead.org, AJvYcCXnvihXyTI+e0p/mMkXfS/QXg1dB9JjSJWQhbfoEnUxD8B6yZAfOQpwu50PUmHXVE6Sk19DJqvrX+72zUI=@lists.infradead.org
-X-Gm-Message-State: AOJu0YyFfDjg9fWAFZvcSnpSEqbLK5Kg115On2oKJebxc+QyRA+abisJ
-	VFDymSjjbxn3YuHLI5ILHWb58oAmthXTgQeZ4DywiZZL8GAdJrsR
-X-Gm-Gg: ASbGnctZf366afw3U6dyprSHjZ5LO3dW1DqTyHrzSbB2LNr9w8tkqgSfyXs3ZLijQ4d
-	BehPjcRlcj28GjhKCEkRseakqA/LpkytfHsyN9MRBWF6VG0cvkxP2JaZl/WTXEbMGMaRmfuh1Jg
-	AJDeRWZRczTDn8Bts4Sigzhvq4FDbWgFyVs/e+Qlz4WDEcDbU/C/Ut5ZN2IRCKfdUf38K+nkq5H
-	2qSlezVQBWC0lwZy5NnGJQPx3GYIAMe66toOoOoy0Ae1UCR4W33cJqlJsB45g0/9NGOCcYYb7we
-	kMsJ
-X-Google-Smtp-Source: AGHT+IGEIrG1JtXc5z5cMox7Uha9/g1RZbcpsJzVDo5QUHRN78eE18poKknQIYmVHIO9ksCE0JNJKQ==
-X-Received: by 2002:a05:6a20:2443:b0:1e1:ace6:c98 with SMTP id adf61e73a8af0-1e5e081cb7dmr14215452637.43.1734836645740;
-        Sat, 21 Dec 2024 19:04:05 -0800 (PST)
+        bh=NxCBSVvegpL4AXRrmCU+1dMPv/7znzdJDLKT63dDMTk=;
+        b=PLObJX96jlr0vqBRQ3RKKAaVrzBcIByel7NXchaXIZh9cXXIcLBUExEii6jPwg0a4r
+         7op4VWyoJN4EbHrghIdcGLqBJzgaEmXGTeRhz8iLpbVChHrzOxnAPsBjUt+uMaQfriFY
+         eYkX5p8fkFoNwsZanHqo+b+nEkZ2KMWzO4R/qtgFdEhRoQEWjW+WoMb1CEZLfkyuhoqM
+         gLi/h/pmToh1q3hHrwIC3EWOlWn4HWyBmp4l4PQkubtxpYm/BAaXPPIRbTftNEzzxnLs
+         6MJbnLYKYwRQCzN9vY1pxC/yLEBzYHL3nO8cPfs8xkw5sNqEAXAD2Z39cAFFwTLhLriR
+         eGtA==
+X-Forwarded-Encrypted: i=1; AJvYcCU2J+8bjMa5Y2L+gZRxJmm5d78U3XtRooTj9gWS4Wq7l+q7ymZHK4Qr2GT2KwlXaQplP/8TzRdcusmqIks=@lists.infradead.org, AJvYcCWG+7uiPpfbyDY2qBF6Hv/TjATtj8rfj0s/107HbaWPOQkoSy08jkTxKKY0oP+Y1/viO7TfYOLeA8AnSHD7CMIk@lists.infradead.org, AJvYcCXQ4vLmViYlSf5BczPUZ5xY7rmSSJzSLkc7D/WSuK/foHNsXiBN+3fk3ArNgRydCTGWhNF280w8/fY=@lists.infradead.org
+X-Gm-Message-State: AOJu0YzKo8l8na31+2tJaneWG1cLMfBVgHEEeYUwR9+1cRR1ZJYG19fN
+	me2XddSIIzNs2DbZUNRoIoAZfWz+RIWTzFhCqBlkk1OTyTxOg4h4
+X-Gm-Gg: ASbGncumLVnfSNIdZNeQRolPLYQYRgIYGNeTbGhhWyVhjVaeY3B2cs0PhcAhdalmVUw
+	Oh6ORqrR4NUSX9S4T8bIR756XSpDyormsT4BfBjB5uAaQDOkeHbaOajPQFfpiyl6Jf0k+VDLDvm
+	3kifqA7EaVemGiHxwxMGpBrn0Lhmdb2wRnKfGE9x7XBwrcd7KTPMFOVoXYGAJQ3MRNUPLDZjF+u
+	WkcjiKOdFJPtwcO0roXJxDizQ7cmNHY/OmZKVI3e8aXoxVmdK/GfvG/aiiAaivlXBybYJPBRcM3
+	/H4v
+X-Google-Smtp-Source: AGHT+IE+f2wCNJicI2gTq3QVgpOdJtxfo8EYzaCZmYJXjsha0SzX5BS7lYqO8XSYzVbjevSjja++gA==
+X-Received: by 2002:a17:90b:1b47:b0:2ee:bbd8:2b9d with SMTP id 98e67ed59e1d1-2f452eeb6c0mr11427615a91.34.1734846238978;
+        Sat, 21 Dec 2024 21:43:58 -0800 (PST)
 Received: from localhost.localdomain ([36.110.106.149])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72aad90c112sm5415064b3a.198.2024.12.21.19.03.38
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f454f58087sm4443412a91.11.2024.12.21.21.43.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Dec 2024 19:04:05 -0800 (PST)
+        Sat, 21 Dec 2024 21:43:57 -0800 (PST)
 From: Guo Weikang <guoweikang.kernel@gmail.com>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	Mike Rapoport <rppt@kernel.org>,
@@ -149,15 +149,15 @@ Cc: Dennis Zhou <dennis@kernel.org>,
 	devicetree@vger.kernel.org,
 	linux-mm@kvack.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH v5] mm/memblock: Add memblock_alloc_or_panic interface
-Date: Sun, 22 Dec 2024 11:03:31 +0800
-Message-Id: <20241222030331.2704579-1-guoweikang.kernel@gmail.com>
+Subject: [PATCH v6] mm/memblock: Add memblock_alloc_or_panic interface
+Date: Sun, 22 Dec 2024 13:43:31 +0800
+Message-Id: <20241222054331.2705948-1-guoweikang.kernel@gmail.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20241221_190407_496499_0200C79F 
-X-CRM114-Status: GOOD (  15.88  )
+X-CRM114-CacheID: sfid-20241221_214400_775867_EDEDDC91 
+X-CRM114-Status: GOOD (  15.67  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -1606,7 +1606,7 @@ index 9c58f081d84f..1bb505a08415 100644
  	for (u64 addr = 0; addr < size; addr += PAGE_SIZE) {
  		page = virt_to_page_or_null((char *)start + addr);
 diff --git a/mm/memblock.c b/mm/memblock.c
-index 095c18b5c430..762eadd07d88 100644
+index 095c18b5c430..95af35fd1389 100644
 --- a/mm/memblock.c
 +++ b/mm/memblock.c
 @@ -1691,6 +1691,26 @@ void * __init memblock_alloc_try_nid(
@@ -1617,7 +1617,7 @@ index 095c18b5c430..762eadd07d88 100644
 + * __memblock_alloc_or_panic - Try to allocate memory and panic on failure
 + * @size: size of memory block to be allocated in bytes
 + * @align: alignment of the region and block's size
-+ * @fuc: caller func name
++ * @func: caller func name
 + *
 + * This function attempts to allocate memory using memblock_alloc,
 + * and in case of failure, it calls panic with the formatted message.
