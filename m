@@ -4,40 +4,40 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D7C4CE77188
-	for <linux-um@archiver.kernel.org>; Thu,  2 Jan 2025 16:55:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5D9AE77188
+	for <linux-um@archiver.kernel.org>; Thu,  2 Jan 2025 16:56:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=sCBzV52clRZewxzKvyJND6V/O+edFzGisB1HLVdLyCA=; b=lI+IiPuQXjbOErVfAILpJgEU9W
-	/Qjn8Zcuqv6D47XgEmUkV+BQm+zV7b4eqgfLEcui7fjSFAi+NVUkKVNqCVm5rCKtZAkckPf7AU1ad
-	eKme3nJNzeLwURMYPFD5hVmqhqcZtFtn2eUaMN+XXhy49EO1pC+j656xjIu30xtkmmcZhNN86Ic+2
-	blShDZNPVoIUevagenohWYsngagdA5+fWDHdNnshOrHUT6DpZkVemQt9RYwvRZierajaFJ+KhuCAJ
-	iH+NDWRNdGS64uo+uPB0YSGGwE62+3w20iubNykuB0P7SYnIJjpda9LWzgM1E+OUzPfFdL82qy/3j
-	i4WyKGfw==;
+	bh=KVwKHyu8Gg+zMPltZA366Kn5pjCmCCo125yHAly9hf8=; b=GGeLc4SZ/E3AmXMu+K3tRkkVHL
+	X4DU9eLrF29XaiXCCBHaUrk0u3ypnS5fn5z2xx3hOVRUVEi7ATfcKRlBr4Q9nCB5VIvk7AWe+Kc9k
+	9Am55LpkRYpxZ9OuHYuhKJMMmNNJb7TZ7V5eF2TFd3RSfmQ4bzD/F2qKT3+PzUoJwEAuoLka1Rd9X
+	nym4tC/TqGMFAWDbL/Hlug9MWBKDFJ6vH0NppmY/I9Xw+X9gR5zO/2A50sZFzX6xnFUnM4izjcaNN
+	00w6AswGYp6zXwQ5GwNLO4GCLlgZPjz1Ke6ZE89gDgZ4pTQzWg49BzM13iP3tF8tj4XAdo5eUSlJ9
+	+dhov8tw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tTOTj-0000000AuFJ-0FL0;
-	Thu, 02 Jan 2025 16:55:23 +0000
+	id 1tTOUv-0000000AuRI-2nN8;
+	Thu, 02 Jan 2025 16:56:37 +0000
 Received: from foss.arm.com ([217.140.110.172])
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tTOST-0000000Atwv-09cH;
-	Thu, 02 Jan 2025 16:54:06 +0000
+	id 1tTOSZ-0000000AtzS-3d8B;
+	Thu, 02 Jan 2025 16:54:13 +0000
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E835A11FB;
-	Thu,  2 Jan 2025 08:54:30 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AA569153B;
+	Thu,  2 Jan 2025 08:54:39 -0800 (PST)
 Received: from [10.57.91.208] (unknown [10.57.91.208])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3632B3F673;
-	Thu,  2 Jan 2025 08:53:54 -0800 (PST)
-Message-ID: <237a3bf6-c24f-4feb-8d3d-bb3beb2fd18e@arm.com>
-Date: Thu, 2 Jan 2025 17:53:52 +0100
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 23C923F673;
+	Thu,  2 Jan 2025 08:54:02 -0800 (PST)
+Message-ID: <1b09335c-f0b6-4ccb-9800-5fb22f7e8083@arm.com>
+Date: Thu, 2 Jan 2025 17:53:58 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 04/15] mm: pgtable: add statistics for P4D level page
- table
+Subject: Re: [PATCH v4 10/15] riscv: pgtable: move pagetable_dtor() to
+ __tlb_remove_table()
 To: Qi Zheng <zhengqi.arch@bytedance.com>, peterz@infradead.org,
  agordeev@linux.ibm.com, palmer@dabbelt.com, tglx@linutronix.de,
  david@redhat.com, jannh@google.com, hughd@google.com, yuzhao@google.com,
@@ -55,15 +55,15 @@ Cc: linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
  linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
  linux-sh@vger.kernel.org, linux-um@lists.infradead.org
 References: <cover.1735549103.git.zhengqi.arch@bytedance.com>
- <2fa644e37ab917292f5c342e40fa805aa91afbbd.1735549103.git.zhengqi.arch@bytedance.com>
+ <0e8f0b3835c15e99145e0006ac1020ae45a2b166.1735549103.git.zhengqi.arch@bytedance.com>
 Content-Language: en-GB
 From: Kevin Brodsky <kevin.brodsky@arm.com>
-In-Reply-To: <2fa644e37ab917292f5c342e40fa805aa91afbbd.1735549103.git.zhengqi.arch@bytedance.com>
+In-Reply-To: <0e8f0b3835c15e99145e0006ac1020ae45a2b166.1735549103.git.zhengqi.arch@bytedance.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250102_085405_170496_12A8C7A9 
-X-CRM114-Status: UNSURE (   8.93  )
+X-CRM114-CacheID: sfid-20250102_085411_952368_A0CBCDD6 
+X-CRM114-Status: UNSURE (   7.81  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -80,23 +80,23 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On 30/12/2024 10:07, Qi Zheng wrote:
-> diff --git a/arch/riscv/include/asm/pgalloc.h b/arch/riscv/include/asm/pgalloc.h
-> index 551d614d3369c..3466fbe2e508d 100644
-> --- a/arch/riscv/include/asm/pgalloc.h
-> +++ b/arch/riscv/include/asm/pgalloc.h
-> @@ -108,8 +108,12 @@ static inline void __pud_free_tlb(struct mmu_gather *tlb, pud_t *pud,
->  static inline void __p4d_free_tlb(struct mmu_gather *tlb, p4d_t *p4d,
->  				  unsigned long addr)
+>  static inline void riscv_tlb_remove_ptdesc(struct mmu_gather *tlb, void *pt)
 >  {
-> -	if (pgtable_l5_enabled)
-> +	if (pgtable_l5_enabled) {
-> +		struct ptdesc *ptdesc = virt_to_ptdesc(p4d);
-> +
-> +		pagetable_p4d_dtor(ptdesc);
->  		riscv_tlb_remove_ptdesc(tlb, virt_to_ptdesc(p4d));
+> -	if (riscv_use_sbi_for_rfence())
+> +	if (riscv_use_sbi_for_rfence()) {
+>  		tlb_remove_ptdesc(tlb, pt);
+> -	else
+> +	} else {
+> +		pagetable_dtor(pt);
+>  		tlb_remove_page_ptdesc(tlb, pt);
 
-Nit: could use the new ptdesc variable here instead of calling
-virt_to_ptdesc().
+I find the imbalance pretty confusing: pagetable_dtor() is called
+explicitly before using tlb_remove_page() but not tlb_remove_ptdesc().
+Doesn't that assume that CONFIG_MMU_GATHER_HAVE_TABLE_FREE is selected?
+Could we not call pagetable_dtor() from __tlb_batch_free_encoded_pages()
+to ensure that the dtor is always called just before freeing, and remove
+the extra handling from arch code? I may well be missing something, I'm
+not super familiar with the tlb handling code.
 
 - Kevin
 
