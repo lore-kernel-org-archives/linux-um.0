@@ -4,88 +4,71 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D0EFBE77188
-	for <linux-um@archiver.kernel.org>; Fri,  3 Jan 2025 11:25:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CF81E77188
+	for <linux-um@archiver.kernel.org>; Fri,  3 Jan 2025 13:28:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=+e20JDJu3VwrmlmlVVpxrvFlU6CuxSxftw52pQXGnog=; b=fWUSTg/gYlnMY3XmaLf5A5whoP
-	k0zN+89IxCPPSqJLlCRPowUszA3p6Csa+n93PcAVUNwRqnJxaWRN6TyRGpMbVqDaU1ZTnNHHn35P/
-	346dhqJiulbu1mZWrKoefcrM1r2bMwPvfn1kJE4YmdEO1Xxfv67nlVlAsUobK0uNcbJyzkXWdNT6f
-	KEpxHM9N92JUIdW9q1CsELXn6WpRvNo43q4OLmQuA0lCbAS4c+gO9WVV7dyRZGJm/q+3XPHaqPYmo
-	C4fyQz0alGNjqC9efh2BmXFjIV27xfyYFhTQrjkyX1LHTYNjQJPK7cFQs+UcENjy0vNAuB+EoI3pW
-	dvoarcXA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=+8G2mn5XjC+6BvOgDwIaLzTXtQekFe6X8F8stkKVxBA=; b=qiU2GV7PxoKRbRlFIb17m/3Cp7
+	ttiOLHpL8dQjzMklZGUkGLHLg3nzCkg3QDYlyO6VFlyJBsjLN4F5t4QL33LzaQAWpCjqnBHJWeTGw
+	joaDhcnPWhMq42dtTgMJxDqmnS5MqTjcuxajv9BWhhZjvJVboTo26UuI01mpOtYi25CX6TJ2P3daa
+	JJL5S97e4AbMC11ZCvZbrPCWP2w9AZaTiOsbTHO+BUVLKxws+zcte4tK72el1s4Vc4DUcsKNC6QKY
+	I9LjLac/8fiT+OdvBl4Womn1W8COfM5aDifrZh3ncZuinexCmKiJizK1uFwODEm+Yg7t3mkGn+hpk
+	5nJM/C2g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tTfnc-0000000CpR8-2LoM;
-	Fri, 03 Jan 2025 11:25:04 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tTfip-0000000CokT-3ctV
-	for linux-um@bombadil.infradead.org;
-	Fri, 03 Jan 2025 11:20:07 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=+e20JDJu3VwrmlmlVVpxrvFlU6CuxSxftw52pQXGnog=; b=DaRgJ6ZeouUFnjZ11up8spR4oW
-	o3qngr9xYj85lxVEWvhjfekmFNWYSpBpnDXfgrnmBcXz21BVnbWSjwF7FJpVqC3515Zz7xoNghOSN
-	DH+Y2PmIRLQ12UwBno8GZvcaEK1tyJyBcOeuOEqZZDyo61EUcCWq7+pFRb99cLZH0ChNWFaY8ue4g
-	z8w5w37xbByYWZ1U79CbSnvZ1WHPtTWr6jtlQX4rjTXRfc9uIqBUMMP6yizCWyO7qbPQ54fvQbCrO
-	XqWipiJzxMZluWZYjJQzRjkUSapDbZoOBeoCu74phuj0VrMCuywG6Sfo3qD6+BsfXkShHAV3onqo/
-	yYIJfPJw==;
-Received: from 77-249-17-89.cable.dynamic.v4.ziggo.nl ([77.249.17.89] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1tTfih-00000008NOv-2fvw;
-	Fri, 03 Jan 2025 11:19:59 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 3A6C93003AF; Fri,  3 Jan 2025 12:19:59 +0100 (CET)
-Date: Fri, 3 Jan 2025 12:19:59 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Andy Lutomirski <luto@kernel.org>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Brendan Higgins <brendan.higgins@linux.dev>,
-	Daniel Gomez <da.gomez@samsung.com>,
-	Daniel Thompson <danielt@kernel.org>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	David Gow <davidgow@google.com>,
-	Douglas Anderson <dianders@chromium.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Jason Wessel <jason.wessel@windriver.com>,
-	Jiri Kosina <jikos@kernel.org>,
-	Joe Lawrence <joe.lawrence@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Miroslav Benes <mbenes@suse.cz>, "H. Peter Anvin" <hpa@zytor.com>,
-	Petr Mladek <pmladek@suse.com>, Petr Pavlu <petr.pavlu@suse.com>,
-	Rae Moar <rmoar@google.com>, Richard Weinberger <richard@nod.at>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Shuah Khan <shuah@kernel.org>, Song Liu <song@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	kgdb-bugreport@lists.sourceforge.net, kunit-dev@googlegroups.com,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-mm@kvack.org, linux-modules@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	live-patching@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH 1/8] x86/mm/pat: cpa-test: fix length for CPA_ARRAY test
-Message-ID: <20250103111959.GD22934@noisy.programming.kicks-ass.net>
-References: <20241227072825.1288491-1-rppt@kernel.org>
- <20241227072825.1288491-2-rppt@kernel.org>
+	id 1tThj4-0000000D0Hi-0UAb;
+	Fri, 03 Jan 2025 13:28:30 +0000
+Received: from foss.arm.com ([217.140.110.172])
+	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
+	id 1tThhp-0000000D055-0T7N;
+	Fri, 03 Jan 2025 13:27:15 +0000
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 330911480;
+	Fri,  3 Jan 2025 05:27:39 -0800 (PST)
+Received: from [10.44.160.93] (e126510-lin.lund.arm.com [10.44.160.93])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CB2C23F673;
+	Fri,  3 Jan 2025 05:27:02 -0800 (PST)
+Message-ID: <d9a14211-4bbd-4fb6-ba87-a555a40bb67a@arm.com>
+Date: Fri, 3 Jan 2025 14:27:00 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241227072825.1288491-2-rppt@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 10/15] riscv: pgtable: move pagetable_dtor() to
+ __tlb_remove_table()
+To: Qi Zheng <zhengqi.arch@bytedance.com>, peterz@infradead.org
+Cc: agordeev@linux.ibm.com, palmer@dabbelt.com, tglx@linutronix.de,
+ david@redhat.com, jannh@google.com, hughd@google.com, yuzhao@google.com,
+ willy@infradead.org, muchun.song@linux.dev, vbabka@kernel.org,
+ lorenzo.stoakes@oracle.com, akpm@linux-foundation.org, rientjes@google.com,
+ vishal.moola@gmail.com, arnd@arndb.de, will@kernel.org,
+ aneesh.kumar@kernel.org, npiggin@gmail.com, dave.hansen@linux.intel.com,
+ rppt@kernel.org, ryan.roberts@arm.com, linux-mm@kvack.org,
+ linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+ linux-arch@vger.kernel.org, linux-csky@vger.kernel.org,
+ linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+ linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org,
+ linux-um@lists.infradead.org
+References: <cover.1735549103.git.zhengqi.arch@bytedance.com>
+ <0e8f0b3835c15e99145e0006ac1020ae45a2b166.1735549103.git.zhengqi.arch@bytedance.com>
+ <1b09335c-f0b6-4ccb-9800-5fb22f7e8083@arm.com>
+ <ebce5e05-5e46-4c6e-94a0-bcf3655a862b@bytedance.com>
+ <7e2c26c8-f5df-4833-a93f-3409b00b58fd@arm.com>
+ <e9fe97d4-99d5-443e-b722-43903655a76e@bytedance.com>
+ <31e1a033-00a7-4953-81e7-0caedd0227a9@bytedance.com>
+Content-Language: en-GB
+From: Kevin Brodsky <kevin.brodsky@arm.com>
+In-Reply-To: <31e1a033-00a7-4953-81e7-0caedd0227a9@bytedance.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20250103_052713_243707_AF58B286 
+X-CRM114-Status: GOOD (  19.56  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,14 +83,95 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, Dec 27, 2024 at 09:28:18AM +0200, Mike Rapoport wrote:
-> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
-> 
-> The CPA_ARRAY test always uses len[1] as numpages argument to
-> change_page_attr_set() although the addresses array is different each
-> iteration of the test loop.
-> 
-> Replace len[1] with len[i] to have numpages matching the addresses array.
+On 03/01/2025 10:35, Qi Zheng wrote:
+> On 2025/1/3 17:13, Qi Zheng wrote:
+>> On 2025/1/3 16:02, Kevin Brodsky wrote:
+>>> On 03/01/2025 04:48, Qi Zheng wrote:
+>>>> [...]
+>>>>
+>>>> In __tlb_batch_free_encoded_pages(), we can indeed detect PageTable()
+>>>> and call pagetable_dtor() to dtor the page table pages.
+>>>> But __tlb_batch_free_encoded_pages() is also used to free normal pages
+>>>> (not page table pages), so I don't want to add overhead there.
+>>>
+>>> Interesting, can a tlb batch refer to pages than are not PTPs then?
+>>
+>> Yes, you can see the caller of __tlb_remove_folio_pages() or
+>> tlb_remove_page_size().
 
-D'oh..
+I had a brief look but clearly not a good enough one! I hadn't realised
+that "table" in tlb_remove_table() means PTP, while "page" in
+tlb_remove_page() can mean any page, and it's making more sense now.
+
+[...]
+
+>>
+>> For arm, the call to pagetable_dtor() is indeed missed in the
+>> non-MMU_GATHER_RCU_TABLE_FREE case. This needs to be fixed. But we
+>> can't fix this by adding pagetable_dtor() to tlb_remove_table(),
+>> because some architectures call tlb_remove_table() but don't support
+>> page table statistics, like sparc.
+
+When I investigated this for my own series, I found that the only case
+where ctor/dtor are not called for page-sized page tables is 32-bit
+sparc (see table at the end of [1]). However only 64-bit sparc makes use
+of tlb_remove_table() (at PTE level, where ctor/dtor are already called).
+
+So really calling pagetable_dtor() from tlb_remove_table() in the
+non-MMU_GATHER_TABLE_FREE case seems to be the obvious thing to do.
+
+Once this is done, we should be able to replace all those confusing
+calls to tlb_remove_page() on PTPs with tlb_remove_table() and remove
+the explicit call to pagetable_dtor(). AIUI this is essentially what
+Peter suggested on v3 [2].
+
+[1]
+https://lore.kernel.org/linux-mm/20241219164425.2277022-1-kevin.brodsky@arm.com/
+[2]
+https://lore.kernel.org/linux-mm/20250103111457.GC22934@noisy.programming.kicks-ass.net/
+
+[...]
+
+> Or can we just not let tlb_remove_table() fall back to
+> tlb_remove_page()? Like the following:
+>
+> diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
+> index a59205863f431..354ffaa4bd120 100644
+> --- a/include/asm-generic/tlb.h
+> +++ b/include/asm-generic/tlb.h
+> @@ -195,8 +195,6 @@
+>   *  various ptep_get_and_clear() functions.
+>   */
+>
+> -#ifdef CONFIG_MMU_GATHER_TABLE_FREE
+> -
+>  struct mmu_table_batch {
+>  #ifdef CONFIG_MMU_GATHER_RCU_TABLE_FREE
+>         struct rcu_head         rcu;
+> @@ -219,16 +217,6 @@ static inline void __tlb_remove_table(void *table)
+>
+>  extern void tlb_remove_table(struct mmu_gather *tlb, void *table);
+>
+> -#else /* !CONFIG_MMU_GATHER_HAVE_TABLE_FREE */
+> -
+> -/*
+> - * Without MMU_GATHER_TABLE_FREE the architecture is assumed to have
+> page based
+> - * page directories and we can use the normal page batching to free
+> them.
+> - */
+> -#define tlb_remove_table(tlb, page) tlb_remove_page((tlb), (page))
+
+We still need a different implementation of tlb_remove_table() in this
+case. We could define it inline here:
+
+static inline void tlb_remove_table(struct mmu_gather *tlb, void *table)
+{
+    struct page *page = table;
+
+    pagetable_dtor(page_ptdesc(page));
+    tlb_remove_page(page);
+}
+
+- Kevin
 
