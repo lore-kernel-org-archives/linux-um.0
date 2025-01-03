@@ -4,71 +4,74 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5CF81E77188
-	for <linux-um@archiver.kernel.org>; Fri,  3 Jan 2025 13:28:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 64340E77198
+	for <linux-um@archiver.kernel.org>; Fri,  3 Jan 2025 18:45:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=+8G2mn5XjC+6BvOgDwIaLzTXtQekFe6X8F8stkKVxBA=; b=qiU2GV7PxoKRbRlFIb17m/3Cp7
-	ttiOLHpL8dQjzMklZGUkGLHLg3nzCkg3QDYlyO6VFlyJBsjLN4F5t4QL33LzaQAWpCjqnBHJWeTGw
-	joaDhcnPWhMq42dtTgMJxDqmnS5MqTjcuxajv9BWhhZjvJVboTo26UuI01mpOtYi25CX6TJ2P3daa
-	JJL5S97e4AbMC11ZCvZbrPCWP2w9AZaTiOsbTHO+BUVLKxws+zcte4tK72el1s4Vc4DUcsKNC6QKY
-	I9LjLac/8fiT+OdvBl4Womn1W8COfM5aDifrZh3ncZuinexCmKiJizK1uFwODEm+Yg7t3mkGn+hpk
-	5nJM/C2g==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=ZontuwCoinBEbae73Q0bAKKpV+MGIErfthpPUUzIUcI=; b=46ztPuEt1zdF4SK+wtw2gCD0VP
+	FnhlMdgyS7fwYD0sp2bWLZYSEWGvVkfFdBp4tvj2PDw+TLgDykY3ie+wlhFEWY5vUqf5hzPc1gCbS
+	R15HZAKfCvo18vHHlnB37/LGSMl7n3r5U1MneF/GWKwSBL+EzqatLcsqU4NHNWMoB1wzH1RVi/BZI
+	YH8yKWj5BlETXDKLj7szpW+AXREdzu2p3f5QEp2RfKAvKlRlOMjnyRUhYpmYsHr8vucGaRSHB71qh
+	kTvpFHwPkNTIHrCxF9J7GBz57Rm0EUZ4y/d8mzNTAAPu4mjReF+cIpArCyrAG+rZ6JuJJD3FJpExP
+	2lESaV3Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tThj4-0000000D0Hi-0UAb;
-	Fri, 03 Jan 2025 13:28:30 +0000
+	id 1tTmg8-0000000DjzB-2DLu;
+	Fri, 03 Jan 2025 18:45:48 +0000
 Received: from foss.arm.com ([217.140.110.172])
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tThhp-0000000D055-0T7N;
-	Fri, 03 Jan 2025 13:27:15 +0000
+	id 1tTmet-0000000DjGU-3rcu;
+	Fri, 03 Jan 2025 18:44:33 +0000
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 330911480;
-	Fri,  3 Jan 2025 05:27:39 -0800 (PST)
-Received: from [10.44.160.93] (e126510-lin.lund.arm.com [10.44.160.93])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CB2C23F673;
-	Fri,  3 Jan 2025 05:27:02 -0800 (PST)
-Message-ID: <d9a14211-4bbd-4fb6-ba87-a555a40bb67a@arm.com>
-Date: Fri, 3 Jan 2025 14:27:00 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 10/15] riscv: pgtable: move pagetable_dtor() to
- __tlb_remove_table()
-To: Qi Zheng <zhengqi.arch@bytedance.com>, peterz@infradead.org
-Cc: agordeev@linux.ibm.com, palmer@dabbelt.com, tglx@linutronix.de,
- david@redhat.com, jannh@google.com, hughd@google.com, yuzhao@google.com,
- willy@infradead.org, muchun.song@linux.dev, vbabka@kernel.org,
- lorenzo.stoakes@oracle.com, akpm@linux-foundation.org, rientjes@google.com,
- vishal.moola@gmail.com, arnd@arndb.de, will@kernel.org,
- aneesh.kumar@kernel.org, npiggin@gmail.com, dave.hansen@linux.intel.com,
- rppt@kernel.org, ryan.roberts@arm.com, linux-mm@kvack.org,
- linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
- linux-arch@vger.kernel.org, linux-csky@vger.kernel.org,
- linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
- linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
- linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org,
- linux-um@lists.infradead.org
-References: <cover.1735549103.git.zhengqi.arch@bytedance.com>
- <0e8f0b3835c15e99145e0006ac1020ae45a2b166.1735549103.git.zhengqi.arch@bytedance.com>
- <1b09335c-f0b6-4ccb-9800-5fb22f7e8083@arm.com>
- <ebce5e05-5e46-4c6e-94a0-bcf3655a862b@bytedance.com>
- <7e2c26c8-f5df-4833-a93f-3409b00b58fd@arm.com>
- <e9fe97d4-99d5-443e-b722-43903655a76e@bytedance.com>
- <31e1a033-00a7-4953-81e7-0caedd0227a9@bytedance.com>
-Content-Language: en-GB
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 561C61480;
+	Fri,  3 Jan 2025 10:44:57 -0800 (PST)
+Received: from e123572-lin.arm.com (e123572-lin.cambridge.arm.com [10.1.194.54])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1D3DB3F673;
+	Fri,  3 Jan 2025 10:44:24 -0800 (PST)
 From: Kevin Brodsky <kevin.brodsky@arm.com>
-In-Reply-To: <31e1a033-00a7-4953-81e7-0caedd0227a9@bytedance.com>
-Content-Type: text/plain; charset=UTF-8
+To: linux-mm@kvack.org
+Cc: Kevin Brodsky <kevin.brodsky@arm.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	"Mike Rapoport (IBM)" <rppt@kernel.org>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Will Deacon <will@kernel.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Qi Zheng <zhengqi.arch@bytedance.com>,
+	linux-alpha@vger.kernel.org,
+	linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-um@lists.infradead.org,
+	loongarch@lists.linux.dev,
+	x86@kernel.org
+Subject: [PATCH v2 0/6] Account page tables at all levels
+Date: Fri,  3 Jan 2025 18:44:09 +0000
+Message-ID: <20250103184415.2744423-1-kevin.brodsky@arm.com>
+X-Mailer: git-send-email 2.47.0
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250103_052713_243707_AF58B286 
-X-CRM114-Status: GOOD (  19.56  )
+X-CRM114-CacheID: sfid-20250103_104432_058405_C4699145 
+X-CRM114-Status: GOOD (  11.51  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,95 +86,107 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 03/01/2025 10:35, Qi Zheng wrote:
-> On 2025/1/3 17:13, Qi Zheng wrote:
->> On 2025/1/3 16:02, Kevin Brodsky wrote:
->>> On 03/01/2025 04:48, Qi Zheng wrote:
->>>> [...]
->>>>
->>>> In __tlb_batch_free_encoded_pages(), we can indeed detect PageTable()
->>>> and call pagetable_dtor() to dtor the page table pages.
->>>> But __tlb_batch_free_encoded_pages() is also used to free normal pages
->>>> (not page table pages), so I don't want to add overhead there.
->>>
->>> Interesting, can a tlb batch refer to pages than are not PTPs then?
->>
->> Yes, you can see the caller of __tlb_remove_folio_pages() or
->> tlb_remove_page_size().
+v1: https://lore.kernel.org/linux-mm/20241219164425.2277022-1-kevin.brodsky@arm.com/
 
-I had a brief look but clearly not a good enough one! I hadn't realised
-that "table" in tlb_remove_table() means PTP, while "page" in
-tlb_remove_page() can mean any page, and it's making more sense now.
+This series should be considered in conjunction with Qi's series [1].
+Together, they ensure that page table ctor/dtor are called at all levels
+(PTE to PGD) and all architectures, where page tables are regular pages.
+Besides the improvement in accounting and general cleanup, this also
+create a single place where construction/destruction hooks can be called
+for all page tables, namely the now-generic pagetable_dtor() introduced
+by Qi, and __pagetable_ctor() introduced in this series.
 
-[...]
+v2 is essentially v1 rebased on top of mm-unstable, which includes Qi's
+v4 series. A number of patches from v1 were dropped:
 
->>
->> For arm, the call to pagetable_dtor() is indeed missed in the
->> non-MMU_GATHER_RCU_TABLE_FREE case. This needs to be fixed. But we
->> can't fix this by adding pagetable_dtor() to tlb_remove_table(),
->> because some architectures call tlb_remove_table() but don't support
->> page table statistics, like sparc.
+* v1 patch 4 is superseded by patch 6 in Qi's series.
+* v1 patch 5 and 6 moved to Qi's series from v3 onwards.
+* v1 patch 7 is superseded by patch 4 in Qi's series.
 
-When I investigated this for my own series, I found that the only case
-where ctor/dtor are not called for page-sized page tables is 32-bit
-sparc (see table at the end of [1]). However only 64-bit sparc makes use
-of tlb_remove_table() (at PTE level, where ctor/dtor are already called).
+Changes from v1 in the remaining patches:
 
-So really calling pagetable_dtor() from tlb_remove_table() in the
-non-MMU_GATHER_TABLE_FREE case seems to be the obvious thing to do.
+* Patch 1 only introduces __pagetable_ctor() as there is now a single
+  generic pagetable_dtor(). 
 
-Once this is done, we should be able to replace all those confusing
-calls to tlb_remove_page() on PTPs with tlb_remove_table() and remove
-the explicit call to pagetable_dtor(). AIUI this is essentially what
-Peter suggested on v3 [2].
+* Patch 3 and 6: in arch/m68k/mm/motorola.c, free_pointer_table() can
+  now unconditionally call pagetable_dtor() since it is the same for all
+  levels.
 
-[1]
-https://lore.kernel.org/linux-mm/20241219164425.2277022-1-kevin.brodsky@arm.com/
-[2]
-https://lore.kernel.org/linux-mm/20250103111457.GC22934@noisy.programming.kicks-ass.net/
+* Patch 6 just uses pagetable_dtor() instead of introducing
+  pagetable_pgd_dtor().
 
-[...]
-
-> Or can we just not let tlb_remove_table() fall back to
-> tlb_remove_page()? Like the following:
->
-> diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
-> index a59205863f431..354ffaa4bd120 100644
-> --- a/include/asm-generic/tlb.h
-> +++ b/include/asm-generic/tlb.h
-> @@ -195,8 +195,6 @@
->   *  various ptep_get_and_clear() functions.
->   */
->
-> -#ifdef CONFIG_MMU_GATHER_TABLE_FREE
-> -
->  struct mmu_table_batch {
->  #ifdef CONFIG_MMU_GATHER_RCU_TABLE_FREE
->         struct rcu_head         rcu;
-> @@ -219,16 +217,6 @@ static inline void __tlb_remove_table(void *table)
->
->  extern void tlb_remove_table(struct mmu_gather *tlb, void *table);
->
-> -#else /* !CONFIG_MMU_GATHER_HAVE_TABLE_FREE */
-> -
-> -/*
-> - * Without MMU_GATHER_TABLE_FREE the architecture is assumed to have
-> page based
-> - * page directories and we can use the normal page batching to free
-> them.
-> - */
-> -#define tlb_remove_table(tlb, page) tlb_remove_page((tlb), (page))
-
-We still need a different implementation of tlb_remove_table() in this
-case. We could define it inline here:
-
-static inline void tlb_remove_table(struct mmu_gather *tlb, void *table)
-{
-    struct page *page = table;
-
-    pagetable_dtor(page_ptdesc(page));
-    tlb_remove_page(page);
-}
+* Added Dave Hansen's Acked-by to all patches.
 
 - Kevin
+
+[1] https://lore.kernel.org/linux-mm/cover.1735549103.git.zhengqi.arch@bytedance.com/
+---
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: "Mike Rapoport (IBM)" <rppt@kernel.org>
+Cc: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Will Deacon <will@kernel.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Qi Zheng <zhengqi.arch@bytedance.com>
+Cc: linux-alpha@vger.kernel.org
+Cc: linux-arch@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-csky@vger.kernel.org
+Cc: linux-hexagon@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-mips@vger.kernel.org
+Cc: linux-openrisc@vger.kernel.org
+Cc: linux-parisc@vger.kernel.org
+Cc: linux-riscv@lists.infradead.org
+Cc: linux-s390@vger.kernel.org
+Cc: linux-snps-arc@lists.infradead.org
+Cc: linux-um@lists.infradead.org
+Cc: loongarch@lists.linux.dev
+Cc: x86@kernel.org
+---
+Kevin Brodsky (6):
+  mm: Move common part of pagetable_*_ctor to helper
+  parisc: mm: Ensure pagetable_pmd_[cd]tor are called
+  m68k: mm: Add calls to pagetable_pmd_[cd]tor
+  ARM: mm: Rename PGD helpers
+  asm-generic: pgalloc: Provide generic __pgd_{alloc,free}
+  mm: Introduce ctor/dtor at PGD level
+
+ arch/alpha/mm/init.c                     |  2 +-
+ arch/arc/include/asm/pgalloc.h           |  9 ++----
+ arch/arm/mm/pgd.c                        | 16 +++++-----
+ arch/arm64/mm/pgd.c                      |  4 +--
+ arch/csky/include/asm/pgalloc.h          |  2 +-
+ arch/hexagon/include/asm/pgalloc.h       |  2 +-
+ arch/loongarch/mm/pgtable.c              |  7 ++---
+ arch/m68k/include/asm/mcf_pgalloc.h      |  3 +-
+ arch/m68k/include/asm/motorola_pgalloc.h |  6 ++--
+ arch/m68k/include/asm/sun3_pgalloc.h     |  2 +-
+ arch/m68k/mm/motorola.c                  | 21 +++++++++----
+ arch/microblaze/include/asm/pgalloc.h    |  7 +----
+ arch/mips/include/asm/pgalloc.h          |  6 ----
+ arch/mips/mm/pgtable.c                   |  8 ++---
+ arch/nios2/mm/pgtable.c                  |  3 +-
+ arch/openrisc/include/asm/pgalloc.h      |  6 ++--
+ arch/parisc/include/asm/pgalloc.h        | 39 ++++++++----------------
+ arch/riscv/include/asm/pgalloc.h         |  3 +-
+ arch/s390/include/asm/pgalloc.h          |  9 +++++-
+ arch/um/kernel/mem.c                     |  7 ++---
+ arch/x86/mm/pgtable.c                    | 24 +++++++--------
+ arch/xtensa/include/asm/pgalloc.h        |  2 +-
+ include/asm-generic/pgalloc.h            | 28 ++++++++++++++++-
+ include/linux/mm.h                       | 31 ++++++++++---------
+ 24 files changed, 126 insertions(+), 121 deletions(-)
+
+
+base-commit: e2ce19225db5818f5dc22864cd225f8c425c3775
+-- 
+2.47.0
+
 
