@@ -4,145 +4,103 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BDAA9E77188
-	for <linux-um@archiver.kernel.org>; Fri,  3 Jan 2025 02:07:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C52FCE77188
+	for <linux-um@archiver.kernel.org>; Fri,  3 Jan 2025 03:48:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:Subject:References:Cc:To:MIME-Version:Date:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=6XxDgsDh63Hd8YUnQX8bX7YEs2+jNWGRYTJCUK51Cww=; b=F3dQZ1s+DKlfuSU2QqDJH79qJT
-	d1+VU5aXJT95odpHC49EBaA0n/cBSJta4vsU1/xFKJUAeSU1l1KAtQl9g3CGU1EvOBZHfHfhvoyae
-	FqR8SUP1h2EUqaiMzTQ2FMBqSK68fvAegjC7EEqRCCCC0X4yNFNE0iumX5yrGs91UrPUF4ix24tiV
-	wmSMsns1BOR2DNwDZiEFzvqrULyiHo3vNIJqoMyW5cSXYewDh7XXZR3esQOiKyeOmmWJ3Duq77SWT
-	JNHzZqvUw7NsfaXpw0c+UkPqzJx0mmql/W7u0KEZR/UV8LTyx6wv4ZiWfN/VvBm9m/hpmVfuD+mTm
-	XD2HfHXw==;
+	bh=oBhK1CXUGm9csX2RzVpIIXFvov7I6iYRPJ+9MZcmeVs=; b=1pa+/qrDsND2oRmSl7+dvkeUCa
+	b5DOOolCHBX0ylchsCPwsyyxLKMuhTWbD8/C4/H2n4aRDbC3gdLW2FBWU/LM/HPTMuUGMVTAyveGM
+	+O+XvOuTRgYT4lu9sOgyi9Htyx4WA8HBPXZV9i/GZDc7OXyKb8uVzJGzSvJeTpvy24vdY2RyNufSI
+	a1AN04DHWyUqRwoSZMGEqNQg2l3pk/sz5vtWPAfYl9E001hVI25s4jr9ZEPjpqhSx3df5bMxGnD/b
+	Asfe7XSNMPvWgb9MT+ttPNkACUfRFrpMdXD2UeiCVqBDdQySlQh5SzdJv7zBtr0dvmwWKznYV2iE9
+	1vvTPlOg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tTX5i-0000000BtHa-2lmU;
-	Fri, 03 Jan 2025 02:07:10 +0000
-Received: from mail-wm1-x342.google.com ([2a00:1450:4864:20::342])
+	id 1tTYg4-0000000C2Io-2KgP;
+	Fri, 03 Jan 2025 03:48:48 +0000
+Received: from mail-pj1-x102c.google.com ([2607:f8b0:4864:20::102c])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tTX4p-0000000Bt6m-09af
+	id 1tTYg2-0000000C2Gz-2hFT
 	for linux-um@lists.infradead.org;
-	Fri, 03 Jan 2025 02:06:16 +0000
-Received: by mail-wm1-x342.google.com with SMTP id 5b1f17b1804b1-4361815b96cso78224975e9.1
-        for <linux-um@lists.infradead.org>; Thu, 02 Jan 2025 18:06:14 -0800 (PST)
+	Fri, 03 Jan 2025 03:48:48 +0000
+Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-2f44353649aso13428729a91.0
+        for <linux-um@lists.infradead.org>; Thu, 02 Jan 2025 19:48:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1735869973; x=1736474773; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:subject:references:cc:to:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=6XxDgsDh63Hd8YUnQX8bX7YEs2+jNWGRYTJCUK51Cww=;
-        b=OV/bSFUlYa1bYsI+VzAJ2nHrsqjwOjqg+VDXxashQmohgRl/yODC2wb1bCd+Bfp3Xd
-         0sgyuMBhw6zJDF5P99x8KT9uvcVvYt2gwUcD3/lpZugMIp12HAgdvZHcETlIJ5o9tJMm
-         /XKhLOOPFn76A9cGA72FO9Is6rjsZhgB5jJ7M=
+        d=bytedance.com; s=google; t=1735876122; x=1736480922; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=oBhK1CXUGm9csX2RzVpIIXFvov7I6iYRPJ+9MZcmeVs=;
+        b=BJGde7YoTNrUTlt1B5LWCYxyDaB0MF0I8Iy2VsnqTgthYQrO2kJWkKIQpd4Tu9Wuc+
+         ky9AVRBW5XPSWPmMsJ+sBP5X/coOMeWgarAZ2ixfPpH9OSHgG5CK3xXixD5oic2PYPoy
+         AZu/dggDyNRmq/rpNXzxtAwWbcSzny/9Np/tOqq6DUQ+b2mENnaysHKW/ypDoKLS33VX
+         vvWWpwD6k8YcAyEUEAGQLAKftmOrwJnqErak7fjopi7FjgdANHy4Z6IjRBNUz3DAyaPJ
+         5jbxhgm4/q7Ej4PXchQEWW6wPlxo0Wb5dnjlDIzlNEACZrBukcQlmPQQppJvhLCwftiz
+         1fEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735869973; x=1736474773;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:subject:references:cc:to:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6XxDgsDh63Hd8YUnQX8bX7YEs2+jNWGRYTJCUK51Cww=;
-        b=JvKs28NKWP51NwwPxVMRhjGR1oJAimPzp72yDxZ5yuDqkBBU9hU0XvGrpsZj3AlQ7X
-         SlBP5NascydLtwjO6TZOZ2ZNV51tZylgb3ASDdoN6s6lHJltousNFdz7ikB6TYxPFORi
-         eX4kCYxoI/3d5jYTt0yV0DYIrpTx2x3iBleOzarBL0s0L0Wzq/HEzjHPkDVRzxkC9QPQ
-         aBizb3fGu7LtB4tMeoOCToXQMGzL9ipnrYC67VNOMgMNxnKPT/yPOaqdojTiqzTp8HHy
-         G7hmCJsmvTvjyXlAYRTmN5ZTGnmqZrM+Xa2jdk+MxJZup82NaiLiGlwZaGFFW7t5mrJE
-         W1WA==
-X-Forwarded-Encrypted: i=1; AJvYcCWTAt3WFdSYF9vtxQNrYLdrr8nGBl1pV53gVXNJSwBNVcrfD/oB6oG+cAO8759WZkmc78+AyMS2IA==@lists.infradead.org
-X-Gm-Message-State: AOJu0YzYrjih2auYCI1J8oWa3ZZl1EpdsTE8bJuKKwrdU78lj4VKkZpO
-	8iU4PeCAxKW/zO+En/Qgr+AWZjTTTnzRekMmG2AfDuPoJO3OlKYI0asKkthYvtg=
-X-Gm-Gg: ASbGncs+yWTFgkh+Z6tLVTqik3Ix/YKwXf2/XU0i6E++KZPJiz7gV7Fhj7MatC/P0gU
-	oH2bt16wC9X4gvUq/8KteKl4edkshAPG4iWvnIK36e0pjYGOZNCDGRw4jplhKre5Qgx/j94JY2R
-	9BCKM0UtX4r56NwocLSZMPE8+LyAmdU3spXftU+vFjye0q+jtUQwprgc9Bv2QtlX219Oz7ncFlJ
-	vZ12+N7KCmMNzPf4xLIgj4IjJtQVA3LUhhjD+YHSPUvNljUlzW3umlc8DJiCKe2MTOXDD5b2iJS
-	y2OmqTNcy9t1F5Uob8/3
-X-Google-Smtp-Source: AGHT+IFX7s7OIdyOwqMqiHQ7Dij0fiev/6kDOgtgCa70BnwOXZiReSdRdJxFbmyfksFhQWRa5CI5/Q==
-X-Received: by 2002:a05:600c:1c09:b0:434:9e46:5bc with SMTP id 5b1f17b1804b1-43668643750mr507478795e9.10.1735869972697;
-        Thu, 02 Jan 2025 18:06:12 -0800 (PST)
-Received: from [192.168.1.10] (host-92-26-98-202.as13285.net. [92.26.98.202])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4366127c508sm468771585e9.33.2025.01.02.18.06.10
+        d=1e100.net; s=20230601; t=1735876122; x=1736480922;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oBhK1CXUGm9csX2RzVpIIXFvov7I6iYRPJ+9MZcmeVs=;
+        b=O/XtOQmtKqTmQ/eA6Bt32JLUZKmWOy3Napp6i+o8hlVoMfXhY22MM5KLW7uAwNwCuZ
+         Nd/wTmfjg4Sx7C4JD94gpxLjlGyxy30tseNb/PNRwq1AXBt6QziTOKTRG2lnDh9/G2Ze
+         bhuQdNp6ddkAbZhbKMiqBH9MmHS6dizYqm6bdqhKvt6wFQaP0e/bUZgRPP0QUWjeOpds
+         iJEPiVr3ZxWDXtPB3GSm179USuhHYbLaTZ4Mahf5/7y2aszN8Xp91Yd+UeCXS6A2mIfK
+         0f/a/Fgq2ctvvkr6cmD2YlJoogkxupLRxYLoaarFCrQw/KHwdWzu2Ogxve6PWtiXWPlw
+         oQ1A==
+X-Forwarded-Encrypted: i=1; AJvYcCUV217bKa2VIMPqxRbHTjaxvQ/1uifjvRBoT3Bo6YM3EY+qGah3vbSKJR2FGc3lkDaa1UAV6LRAEg==@lists.infradead.org
+X-Gm-Message-State: AOJu0YxGZCZ0oCaA8FvqsO2P2smNao2nyNmLn/8+8cLXLTfRUIdj51vJ
+	ClRLA8tMW2leN1LYZL4lfobtlsm8ifJC2ECjgBIcn+dcRcBqfjxGE0ixhEbvCpY=
+X-Gm-Gg: ASbGncvmjmZMoO4/evQb2IktN6k1If+iSFeCNOx2Vrtd16zHSJjl65gBJCuwFO6JA8V
+	8xcxFIMa4GIkq50QfUJJnN14gnWKjWz3LXwbRZ3x9zsdDCvEIOnIUlyWBJhGSrLQPEqBAup0yaM
+	/U0xliVk8m5ZBVSLuINELxclWzNRDigCvt0WTUYYW5ISqQGgy5hHQrgMZMXJASzXGumtyrAW9iA
+	rKz+ApNiFMjvPF2yrKtpRaJ2V0ZpbzRiuDl493DijmwamHfUfeq/cBVNpE4Mngs2nNSZdlOFey2
+	D09mgQ==
+X-Google-Smtp-Source: AGHT+IGYgpZrnqPiPCHLxVCKQrrsZq8D5LYrHf09cYbjj5EwfNYfddJqRahKvm2mW4f56s0g/0EfTw==
+X-Received: by 2002:a05:6a00:2449:b0:728:e906:e45a with SMTP id d2e1a72fcca58-72abdecdbfdmr70684623b3a.24.1735876121963;
+        Thu, 02 Jan 2025 19:48:41 -0800 (PST)
+Received: from [10.84.148.23] ([203.208.167.150])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72aad84eb50sm25233750b3a.90.2025.01.02.19.48.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Jan 2025 18:06:12 -0800 (PST)
-Message-ID: <d48193a3-65fe-4aa9-98f6-dd5869bd9127@citrix.com>
-Date: Fri, 3 Jan 2025 02:06:10 +0000
+        Thu, 02 Jan 2025 19:48:41 -0800 (PST)
+Message-ID: <ebce5e05-5e46-4c6e-94a0-bcf3655a862b@bytedance.com>
+Date: Fri, 3 Jan 2025 11:48:27 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: lorenzo.stoakes@oracle.com
-Cc: akpm@linux-foundation.org, anton.ivanov@cambridgegreys.com, bp@alien8.de,
- brendan.higgins@linux.dev, da.gomez@samsung.com, danielt@kernel.org,
- dave.hansen@linux.intel.com, davidgow@google.com, dianders@chromium.org,
- hpa@zytor.com, jason.wessel@windriver.com, jikos@kernel.org,
- joe.lawrence@redhat.com, johannes@sipsolutions.net, jpoimboe@kernel.org,
- kgdb-bugreport@lists.sourceforge.net, kirill.shutemov@linux.intel.com,
- kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-um@lists.infradead.org, live-patching@vger.kernel.org,
- luto@kernel.org, mark.rutland@arm.com, mbenes@suse.cz, mcgrof@kernel.org,
- mhiramat@kernel.org, mingo@redhat.com, peterz@infradead.org,
- petr.pavlu@suse.com, pmladek@suse.com, richard@nod.at, rmoar@google.com,
- rostedt@goodmis.org, rppt@kernel.org, samitolvanen@google.com,
- shuah@kernel.org, song@kernel.org, tglx@linutronix.de, x86@kernel.org,
- Juergen Gross <jgross@suse.com>,
- =?UTF-8?Q?Marek_Marczykowski-G=C3=B3recki?= <marmarek@invisiblethingslab.com>
-References: <86eba318-464b-4b9b-a79e-64039b17be34@lucifer.local>
-Subject: Re: [PATCH 6/8] modules: switch to execmem API for remapping as RW
- and restoring ROX
-Content-Language: en-GB
-From: Andrew Cooper <andrew.cooper3@citrix.com>
-Autocrypt: addr=andrew.cooper3@citrix.com; keydata=
- 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
- 6+ahAA==
-In-Reply-To: <86eba318-464b-4b9b-a79e-64039b17be34@lucifer.local>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH v4 10/15] riscv: pgtable: move pagetable_dtor() to
+ __tlb_remove_table()
+Content-Language: en-US
+To: Kevin Brodsky <kevin.brodsky@arm.com>
+Cc: peterz@infradead.org, agordeev@linux.ibm.com, palmer@dabbelt.com,
+ tglx@linutronix.de, david@redhat.com, jannh@google.com, hughd@google.com,
+ yuzhao@google.com, willy@infradead.org, muchun.song@linux.dev,
+ vbabka@kernel.org, lorenzo.stoakes@oracle.com, akpm@linux-foundation.org,
+ rientjes@google.com, vishal.moola@gmail.com, arnd@arndb.de, will@kernel.org,
+ aneesh.kumar@kernel.org, npiggin@gmail.com, dave.hansen@linux.intel.com,
+ rppt@kernel.org, ryan.roberts@arm.com, linux-mm@kvack.org,
+ linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+ linux-arch@vger.kernel.org, linux-csky@vger.kernel.org,
+ linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+ linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org,
+ linux-um@lists.infradead.org
+References: <cover.1735549103.git.zhengqi.arch@bytedance.com>
+ <0e8f0b3835c15e99145e0006ac1020ae45a2b166.1735549103.git.zhengqi.arch@bytedance.com>
+ <1b09335c-f0b6-4ccb-9800-5fb22f7e8083@arm.com>
+From: Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <1b09335c-f0b6-4ccb-9800-5fb22f7e8083@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250102_180615_104392_E4272E24 
-X-CRM114-Status: UNSURE (   7.88  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250102_194846_838763_1A2A4E7F 
+X-CRM114-Status: GOOD (  17.65  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -157,21 +115,215 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-> Hi Mike,
->
-> This commit is making my intel box not boot in mm-unstable :>) I bisected it to
-> this commit.
+Hi Kevin,
 
-For what it's worth, we've found the same under Xen too.
+On 2025/1/3 00:53, Kevin Brodsky wrote:
+> On 30/12/2024 10:07, Qi Zheng wrote:
+>>   static inline void riscv_tlb_remove_ptdesc(struct mmu_gather *tlb, void *pt)
+>>   {
+>> -	if (riscv_use_sbi_for_rfence())
+>> +	if (riscv_use_sbi_for_rfence()) {
+>>   		tlb_remove_ptdesc(tlb, pt);
+>> -	else
+>> +	} else {
+>> +		pagetable_dtor(pt);
+>>   		tlb_remove_page_ptdesc(tlb, pt);
+> 
+> I find the imbalance pretty confusing: pagetable_dtor() is called
+> explicitly before using tlb_remove_page() but not tlb_remove_ptdesc().
+> Doesn't that assume that CONFIG_MMU_GATHER_HAVE_TABLE_FREE is selected?
+> Could we not call pagetable_dtor() from __tlb_batch_free_encoded_pages()
+> to ensure that the dtor is always called just before freeing, and remove
 
-There's one concrete bug in the series, failing to cope with the absence
-of superpages (fix in
-https://lore.kernel.org/xen-devel/6bb03333-74ca-4c2c-85a8-72549b85a5b4@suse.com/
-but not formally posted yet AFAICT).
+In __tlb_batch_free_encoded_pages(), we can indeed detect PageTable()
+and call pagetable_dtor() to dtor the page table pages.
+But __tlb_batch_free_encoded_pages() is also used to free normal pages
+(not page table pages), so I don't want to add overhead there.
 
-The rest of the thread then found a crash looking to be the same as
-reported here, but you've made better progress narrowing it down than we
-have.
+But now I think maybe we can do this in tlb_remove_page_ptdesc(), like
+this:
 
-~Andrew
+diff --git a/arch/csky/include/asm/pgalloc.h 
+b/arch/csky/include/asm/pgalloc.h
+index f1ce5b7b28f22..e45c7e91dcbf9 100644
+--- a/arch/csky/include/asm/pgalloc.h
++++ b/arch/csky/include/asm/pgalloc.h
+@@ -63,7 +63,6 @@ static inline pgd_t *pgd_alloc(struct mm_struct *mm)
+
+  #define __pte_free_tlb(tlb, pte, address)              \
+  do {                                                   \
+-       pagetable_dtor(page_ptdesc(pte));               \
+         tlb_remove_page_ptdesc(tlb, page_ptdesc(pte));  \
+  } while (0)
+
+diff --git a/arch/hexagon/include/asm/pgalloc.h 
+b/arch/hexagon/include/asm/pgalloc.h
+index 40e42a0e71673..9903449f45cff 100644
+--- a/arch/hexagon/include/asm/pgalloc.h
++++ b/arch/hexagon/include/asm/pgalloc.h
+@@ -89,7 +89,6 @@ static inline void pmd_populate_kernel(struct 
+mm_struct *mm, pmd_t *pmd,
+
+  #define __pte_free_tlb(tlb, pte, addr)                         \
+  do {                                                           \
+-       pagetable_dtor((page_ptdesc(pte)));                     \
+         tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)));      \
+  } while (0)
+
+diff --git a/arch/loongarch/include/asm/pgalloc.h 
+b/arch/loongarch/include/asm/pgalloc.h
+index 7211dff8c969e..de5b3f5c85d1c 100644
+--- a/arch/loongarch/include/asm/pgalloc.h
++++ b/arch/loongarch/include/asm/pgalloc.h
+@@ -57,7 +57,6 @@ static inline pte_t *pte_alloc_one_kernel(struct 
+mm_struct *mm)
+
+  #define __pte_free_tlb(tlb, pte, address)                      \
+  do {                                                           \
+-       pagetable_dtor(page_ptdesc(pte));                       \
+         tlb_remove_page_ptdesc((tlb), page_ptdesc(pte));        \
+  } while (0)
+
+diff --git a/arch/m68k/include/asm/sun3_pgalloc.h 
+b/arch/m68k/include/asm/sun3_pgalloc.h
+index 2b626cb3ad0ae..731cc8f0731d3 100644
+--- a/arch/m68k/include/asm/sun3_pgalloc.h
++++ b/arch/m68k/include/asm/sun3_pgalloc.h
+@@ -19,7 +19,6 @@ extern const char bad_pmd_string[];
+
+  #define __pte_free_tlb(tlb, pte, addr)                         \
+  do {                                                           \
+-       pagetable_dtor(page_ptdesc(pte));                       \
+         tlb_remove_page_ptdesc((tlb), page_ptdesc(pte));        \
+  } while (0)
+
+diff --git a/arch/mips/include/asm/pgalloc.h 
+b/arch/mips/include/asm/pgalloc.h
+index 36d9805033c4b..964ad514be281 100644
+--- a/arch/mips/include/asm/pgalloc.h
++++ b/arch/mips/include/asm/pgalloc.h
+@@ -56,7 +56,6 @@ static inline void pgd_free(struct mm_struct *mm, 
+pgd_t *pgd)
+
+  #define __pte_free_tlb(tlb, pte, address)                      \
+  do {                                                           \
+-       pagetable_dtor(page_ptdesc(pte));                       \
+         tlb_remove_page_ptdesc((tlb), page_ptdesc(pte));        \
+  } while (0)
+
+diff --git a/arch/nios2/include/asm/pgalloc.h 
+b/arch/nios2/include/asm/pgalloc.h
+index 12a536b7bfbd4..ef6b4b8301ac6 100644
+--- a/arch/nios2/include/asm/pgalloc.h
++++ b/arch/nios2/include/asm/pgalloc.h
+@@ -30,7 +30,6 @@ extern pgd_t *pgd_alloc(struct mm_struct *mm);
+
+  #define __pte_free_tlb(tlb, pte, addr)                                 \
+         do {                                                            \
+-               pagetable_dtor(page_ptdesc(pte));                       \
+                 tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)));      \
+         } while (0)
+
+diff --git a/arch/openrisc/include/asm/pgalloc.h 
+b/arch/openrisc/include/asm/pgalloc.h
+index 596e2355824e3..9361205610910 100644
+--- a/arch/openrisc/include/asm/pgalloc.h
++++ b/arch/openrisc/include/asm/pgalloc.h
+@@ -68,7 +68,6 @@ extern pte_t *pte_alloc_one_kernel(struct mm_struct *mm);
+
+  #define __pte_free_tlb(tlb, pte, addr)                         \
+  do {                                                           \
+-       pagetable_dtor(page_ptdesc(pte));                       \
+         tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)));      \
+  } while (0)
+
+diff --git a/arch/riscv/include/asm/pgalloc.h 
+b/arch/riscv/include/asm/pgalloc.h
+index c8907b8317115..61c26576614da 100644
+--- a/arch/riscv/include/asm/pgalloc.h
++++ b/arch/riscv/include/asm/pgalloc.h
+@@ -25,12 +25,10 @@
+   */
+  static inline void riscv_tlb_remove_ptdesc(struct mmu_gather *tlb, 
+void *pt)
+  {
+-       if (riscv_use_sbi_for_rfence()) {
++       if (riscv_use_sbi_for_rfence())
+                 tlb_remove_ptdesc(tlb, pt);
+-       } else {
+-               pagetable_dtor(pt);
++       else
+                 tlb_remove_page_ptdesc(tlb, pt);
+-       }
+  }
+
+  static inline void pmd_populate_kernel(struct mm_struct *mm,
+diff --git a/arch/sh/include/asm/pgalloc.h b/arch/sh/include/asm/pgalloc.h
+index 96d938fdf2244..5b5c73e9fdb4b 100644
+--- a/arch/sh/include/asm/pgalloc.h
++++ b/arch/sh/include/asm/pgalloc.h
+@@ -34,7 +34,6 @@ static inline void pmd_populate(struct mm_struct *mm, 
+pmd_t *pmd,
+
+  #define __pte_free_tlb(tlb, pte, addr)                         \
+  do {                                                           \
+-       pagetable_dtor(page_ptdesc(pte));                       \
+         tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)));      \
+  } while (0)
+
+diff --git a/arch/um/include/asm/pgalloc.h b/arch/um/include/asm/pgalloc.h
+index f0af23c3aeb2b..4fd59fb184818 100644
+--- a/arch/um/include/asm/pgalloc.h
++++ b/arch/um/include/asm/pgalloc.h
+@@ -27,7 +27,6 @@ extern pgd_t *pgd_alloc(struct mm_struct *);
+
+  #define __pte_free_tlb(tlb, pte, address)                      \
+  do {                                                           \
+-       pagetable_dtor(page_ptdesc(pte));                       \
+         tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)));      \
+  } while (0)
+
+@@ -35,7 +34,6 @@ do { 
+        \
+
+  #define __pmd_free_tlb(tlb, pmd, address)                      \
+  do {                                                           \
+-       pagetable_dtor(virt_to_ptdesc(pmd));                    \
+         tlb_remove_page_ptdesc((tlb), virt_to_ptdesc(pmd));     \
+  } while (0)
+
+@@ -43,7 +41,6 @@ do { 
+        \
+
+  #define __pud_free_tlb(tlb, pud, address)                      \
+  do {                                                           \
+-       pagetable_dtor(virt_to_ptdesc(pud));            \
+         tlb_remove_page_ptdesc((tlb), virt_to_ptdesc(pud));     \
+  } while (0)
+
+diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
+index a96d4b440f3da..a59205863f431 100644
+--- a/include/asm-generic/tlb.h
++++ b/include/asm-generic/tlb.h
+@@ -506,6 +506,7 @@ static inline void tlb_remove_ptdesc(struct 
+mmu_gather *tlb, void *pt)
+  /* Like tlb_remove_ptdesc, but for page-like page directories. */
+  static inline void tlb_remove_page_ptdesc(struct mmu_gather *tlb, 
+struct ptdesc *pt)
+  {
++       pagetable_dtor(pt);
+         tlb_remove_page(tlb, ptdesc_page(pt));
+  }
+
+This avoids explicitly calling pagetable_dtor() in the architecture
+code. If that makes sense, I can send a formal separate patch to do
+this.
+
+Thanks,
+Qi
+
+
+> the extra handling from arch code? I may well be missing something, I'm
+> not super familiar with the tlb handling code >
+> - Kevin
 
