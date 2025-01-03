@@ -4,122 +4,73 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78048E77198
-	for <linux-um@archiver.kernel.org>; Fri,  3 Jan 2025 10:57:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5339CE77188
+	for <linux-um@archiver.kernel.org>; Fri,  3 Jan 2025 11:16:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=423Vj5fZsGV5eJGSXq4heFmx7126IRBdG9xAKxYQ7SM=; b=j3HaLxgnWm9EsD1TdtUOudxjJ6
-	gu9RWW1Xsbv0/joFHCumaBuWk2xGX500MCI1jNeEFR/BNlh8gine4TlPCYY9GgESzHYlKUONpfii1
-	KRk2VBGDVibkpDkjhGqYTxPLZ0P8h65ZtuiAPl11JSAiUujWJpK52VKJWdVkO26HNHRvkV5OAPX/i
-	nDILKE8tvR8SpNJzd9PIJ9qMu7V5kMk9Px/9Ov9cxluOaGQfDNJRqJWDQHvyymq11KU7SbwcA9qwh
-	xI+gkt88ntzTvZst+yZ5HGcc0OgHixmnDLWfR3HSeOkqR8XQgjiRtjJm+pjbaPc6y1Nm/dfJ10eft
-	hAXtnhoQ==;
+	bh=CPGOdr/jsXJNO5Wu3fEBGF99GP73lSQF/IKxQW4k0R4=; b=WoSEv1SGe8UhXlhwVjUZKWDyDz
+	spQUNRIVkLt6XdBlGjXv7TSu4ShrhalSHh2EUYAdn3dlnaMj/L/uFLHMPzO2Y38aPkY5jpp7vQXhi
+	Z63euG95EmnyTJ6s1v6wW/KtJP5q0a2mQBU+9rWpv58dNXlGWkJ7tZHU8P3u+6T0KzbEQoyIHRUUv
+	xtRu7g061qZNUBdlncCLg5a6GE2MVp1XMZIn5N4qK+60vBnwDbCknPGw9ZS4R1sLjaDUDfi8PkxpK
+	t5GtA29ohL0rR+bTCuuZYr+HMntWOXDtjqs50Sq9vQSayMPCRfBvcDHKJeRrtTiDGnlDhjZehFFyo
+	o0ESqSAw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tTfN9-0000000CmCd-0NYQ;
-	Fri, 03 Jan 2025 10:57:43 +0000
-Received: from flow-b5-smtp.messagingengine.com ([202.12.124.140])
+	id 1tTff9-0000000CnyC-2XKi;
+	Fri, 03 Jan 2025 11:16:19 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tTfN6-0000000CmAz-1GKX
-	for linux-um@lists.infradead.org;
-	Fri, 03 Jan 2025 10:57:42 +0000
-Received: from phl-compute-06.internal (phl-compute-06.phl.internal [10.202.2.46])
-	by mailflow.stl.internal (Postfix) with ESMTP id E13981D40AB0;
-	Fri,  3 Jan 2025 05:57:35 -0500 (EST)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-06.internal (MEProxy); Fri, 03 Jan 2025 05:57:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	invisiblethingslab.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1735901855; x=1735909055; bh=423Vj5fZsG
-	V5eJGSXq4heFmx7126IRBdG9xAKxYQ7SM=; b=JuerdEJ1tAgll50QlC4YxQajBf
-	DkgtwccDxlugt0VAiPqTYmOx3GXlMhMKhInAHOhPHtCUJNVjyBIs8RCY6PmlgpPd
-	xjLcTrvjispwERy/WyDFaFCq44v2e9hYfmST5JDKKoCtNQAdDxPM7g2pWmcNIY8l
-	u+d1SFw9C0Oj8nBwS58aWGssWJC174PqAvBZ++Jl35N2Rp2ST42JS/1xPQuCWGuB
-	uzNHPEZbLVOj3JElOSs4/va2bTWToNKvpCgV1oXlORCOrAs+PBSaquoBLoELmm6k
-	qrzyAnzURUQhidmjBnTvvLUKfN6MZru2w/B99p4zUHA0t9IyaG3GOmEd0mMg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1735901855; x=
-	1735909055; bh=423Vj5fZsGV5eJGSXq4heFmx7126IRBdG9xAKxYQ7SM=; b=G
-	cajOF2vlD6eM2BhItchNYObDe20cSKdE7QdHWS3S4zXB201VqahnXDUkhhCiI/Oa
-	7boz+JhhU+xUc3f9Q61PUJi6PCNy6gHu5Vy2AE8TMXwUJepQ7OTHmO6nHbXzqhXP
-	5wZKIRsd8h43f2+M6Aa0K5COGyPslerP3NPAAvnLWzj418SzIl/c4Cn02vLT/6t9
-	MH8LJjiuaiadIx1iLE1XEKOPBtX76ZhMcmqtgzG18nTj7HPNwkKJKR8uTQvLV5pj
-	dnUeUPcA3zIoiLlzyomyZAG/83zl83w6LcvXKdit3G8TtXQReL8yXf7vFJaeKZqa
-	vDZZtBKg6qDqRt+mQBlPw==
-X-ME-Sender: <xms:ncJ3Z6CXVWyExCYlgmBZdOs6uG3V0GYZ8GxhhWzgeULLUuScarTgMw>
-    <xme:ncJ3Z0hrIdZeHDl9chKR8qX0FAfe0xnC3zbnBZ_BynCHY7kuWJTtSbb--5j1pW28u
-    XAOmloVnrT0Ig>
-X-ME-Received: <xmr:ncJ3Z9m1XYDfuQmpOwos3HoM0I0-2Se522cNPFJ64z61BySOCJsFCJqnGXKgktMJqPuZQuYkJaArSpfl_gEKUjXrvRlAkRFMwg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrudefgedgvddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnecujfgurhepfffhvfevuffkfhggtgfgjgesthekredttddtjeen
-    ucfhrhhomhepofgrrhgvkhcuofgrrhgtiiihkhhofihskhhiqdfikphrvggtkhhiuceomh
-    grrhhmrghrvghksehinhhvihhsihgslhgvthhhihhnghhslhgrsgdrtghomheqnecuggft
-    rfgrthhtvghrnhepveeuheffhedtffeivdffudehieekkeelleehhfevgefggffgjeejtd
-    ffheejgfegnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhi
-    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrghrmhgrrhgvkhesihhnvhhish
-    hisghlvghthhhinhhgshhlrggsrdgtohhmpdhnsggprhgtphhtthhopeegiedpmhhouggv
-    pehsmhhtphhouhhtpdhrtghpthhtoheprghkphhmsehlihhnuhigqdhfohhunhgurghtih
-    honhdrohhrghdprhgtphhtthhopegrnhgurhgvfidrtghoohhpvghrfeestghithhrihig
-    rdgtohhmpdhrtghpthhtoheplhhorhgvnhiiohdrshhtohgrkhgvshesohhrrggtlhgvrd
-    gtohhmpdhrtghpthhtoheprghnthhonhdrihhvrghnohhvsegtrghmsghrihgughgvghhr
-    vgihshdrtghomhdprhgtphhtthhopegsphesrghlihgvnhekrdguvgdprhgtphhtthhope
-    gsrhgvnhgurghnrdhhihhgghhinhhssehlihhnuhigrdguvghvpdhrtghpthhtohepuggr
-    rdhgohhmvgiisehsrghmshhunhhgrdgtohhmpdhrtghpthhtohepuggrnhhivghltheskh
-    gvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrvhgvrdhhrghnshgvnheslhhinhhugidr
-    ihhnthgvlhdrtghomh
-X-ME-Proxy: <xmx:ncJ3Z4zPNvCOjmc1oKkrAYZ9xaG0fyawlsfb_9ujyU1cR20qR2SiHQ>
-    <xmx:ncJ3Z_TqIX8N6jwrirsSXns9bdjWEmxb5qLaSpMfRfKmd7zOLSLvpw>
-    <xmx:ncJ3ZzbeXkzGZLYn9eDgxNT7PS59Rmxit9htXHx6_ndO8uaxw3OOgQ>
-    <xmx:ncJ3Z4SybuD-tbCQ01TzhidgZIEhKMy9QHnKqhApQ2nSmKbYzzUrHw>
-    <xmx:n8J3Z28oyn0Vw20TlJT55P_RAeGNO_Dj-NJTH4vhK9jKgcdUPujFBW6n>
-Feedback-ID: i1568416f:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 3 Jan 2025 05:57:27 -0500 (EST)
-Date: Fri, 3 Jan 2025 11:57:25 +0100
-From: Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= <marmarek@invisiblethingslab.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Andrew Cooper <andrew.cooper3@citrix.com>, lorenzo.stoakes@oracle.com,
-	anton.ivanov@cambridgegreys.com, bp@alien8.de,	brendan.higgins@linux.dev,
- da.gomez@samsung.com, danielt@kernel.org,	dave.hansen@linux.intel.com,
- davidgow@google.com,	dianders@chromium.org, hpa@zytor.com,
- jason.wessel@windriver.com,	jikos@kernel.org, joe.lawrence@redhat.com,
-	johannes@sipsolutions.net, jpoimboe@kernel.org,
-	kgdb-bugreport@lists.sourceforge.net,	kirill.shutemov@linux.intel.com,
- kunit-dev@googlegroups.com,	linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org,	linux-mm@kvack.org,
- linux-modules@vger.kernel.org,	linux-trace-kernel@vger.kernel.org,
- linux-um@lists.infradead.org,	live-patching@vger.kernel.org,
- luto@kernel.org,	mark.rutland@arm.com, mbenes@suse.cz, mcgrof@kernel.org,
-	mhiramat@kernel.org, mingo@redhat.com, peterz@infradead.org,
-	petr.pavlu@suse.com, pmladek@suse.com, richard@nod.at,	rmoar@google.com,
- rostedt@goodmis.org, rppt@kernel.org,	samitolvanen@google.com,
- shuah@kernel.org, song@kernel.org,	tglx@linutronix.de, x86@kernel.org,
- Juergen Gross <jgross@suse.com>
-Subject: Re: [PATCH 6/8] modules: switch to execmem API for remapping as RW
- and restoring ROX
-Message-ID: <Z3fClUqJ_sMp1HL9@mail-itl>
-References: <86eba318-464b-4b9b-a79e-64039b17be34@lucifer.local>
- <d48193a3-65fe-4aa9-98f6-dd5869bd9127@citrix.com>
- <20250102215714.a37e828cf073ea6a14d30559@linux-foundation.org>
+	id 1tTfdw-0000000CnoI-1ZoD;
+	Fri, 03 Jan 2025 11:15:04 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=CPGOdr/jsXJNO5Wu3fEBGF99GP73lSQF/IKxQW4k0R4=; b=Tf96QP1nI5zee8m+i5u3CA94h9
+	3PVNNoLdvhSBk2t6LZQP6KHn1+Y/Ig9kK3lwT2hFjHWgZiqq3VK4SzqQBmD6A0e29acKD8NJDsAzp
+	PBklhel75TRoOCf5VTzc00lXza1eWj1sW19Tjleo1fc/L5i9P5juDXyKQY9kHKExje/1wAmmZkrHj
+	FdESUWBGwWEamk3EA3c0+gwV4EPoveBGXJo3r+051uO72Cz+2Bir5nMUbKQ2FfpEvF0r1gyVxRelx
+	Ro4i1hRHlfJmHnjxqwmbD1SaYDgPeAH7HhcAneWE1IcOwP7nCEbEkp2xJxpa8O/6L3gNZJN11KFqb
+	fYAj5NUQ==;
+Received: from 77-249-17-89.cable.dynamic.v4.ziggo.nl ([77.249.17.89] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1tTfdp-00000005j4l-1npS;
+	Fri, 03 Jan 2025 11:14:57 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 3EDFC3003AF; Fri,  3 Jan 2025 12:14:57 +0100 (CET)
+Date: Fri, 3 Jan 2025 12:14:57 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Qi Zheng <zhengqi.arch@bytedance.com>, agordeev@linux.ibm.com,
+	kevin.brodsky@arm.com, tglx@linutronix.de, david@redhat.com,
+	jannh@google.com, hughd@google.com, yuzhao@google.com,
+	willy@infradead.org, muchun.song@linux.dev, vbabka@kernel.org,
+	lorenzo.stoakes@oracle.com, akpm@linux-foundation.org,
+	rientjes@google.com, vishal.moola@gmail.com, arnd@arndb.de,
+	will@kernel.org, aneesh.kumar@kernel.org, npiggin@gmail.com,
+	dave.hansen@linux.intel.com, ryan.roberts@arm.com,
+	linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+	linux-kernel@vger.kernel.org, x86@kernel.org,
+	linux-arch@vger.kernel.org, linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org,
+	linux-um@lists.infradead.org
+Subject: Re: [PATCH v3 15/17] mm: pgtable: remove tlb_remove_page_ptdesc()
+Message-ID: <20250103111457.GC22934@noisy.programming.kicks-ass.net>
+References: <cover.1734945104.git.zhengqi.arch@bytedance.com>
+ <b37435768345e0fcf7ea358f69b4a71767f0f530.1734945104.git.zhengqi.arch@bytedance.com>
+ <Z2_EPmOTUHhcBegW@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; x-action=pgp-signed
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250102215714.a37e828cf073ea6a14d30559@linux-foundation.org>
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250103_025740_781249_777333EC 
-X-CRM114-Status: GOOD (  17.06  )
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Z2_EPmOTUHhcBegW@kernel.org>
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -134,47 +85,39 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
-
-On Thu, Jan 02, 2025 at 09:57:14PM -0800, Andrew Morton wrote:
-> On Fri, 3 Jan 2025 02:06:10 +0000 Andrew Cooper <andrew.cooper3@citrix.com> wrote:
+On Sat, Dec 28, 2024 at 11:26:22AM +0200, Mike Rapoport wrote:
+> On Mon, Dec 23, 2024 at 05:41:01PM +0800, Qi Zheng wrote:
+> > Here we are explicitly dealing with struct page, and the following logic
+> > semms strange:
+> > 
+> > tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)));
+> > 
+> > tlb_remove_page_ptdesc
+> > --> tlb_remove_page(tlb, ptdesc_page(pt));
+> > 
+> > So remove tlb_remove_page_ptdesc() and make callers call tlb_remove_page()
+> > directly.
 > 
-> > > Hi Mike,
-> > >
-> > > This commit is making my intel box not boot in mm-unstable :>) I bisected it to
-> > > this commit.
-> > 
-> > For what it's worth, we've found the same under Xen too.
-> > 
-> > There's one concrete bug in the series, failing to cope with the absence
-> > of superpages (fix in
-> > https://lore.kernel.org/xen-devel/6bb03333-74ca-4c2c-85a8-72549b85a5b4@suse.com/
-> > but not formally posted yet AFAICT).
-> > 
-> > The rest of the thread then found a crash looking to be the same as
-> > reported here, but you've made better progress narrowing it down than we
-> > have.
-> > 
+> Please don't. The ptdesc wrappers are there as a part of reducing the size
+> of struct page project [1]. 
 > 
-> Thanks.  I removed this series from mm.git while this is worked on.
+> For now struct ptdesc overlaps struct page, but the goal is to have them
+> separate and always operate on struct ptdesc when working with page tables.
 
-The issue under Xen that Andrew linked happens on 6.13-rc5 which AFAICT
-doesn't this series yet. So, it's probably a different issue.
+I don't see how the current idiotic code helps with that at all.
 
-- -- 
-Best Regards,
-Marek Marczykowski-Górecki
-Invisible Things Lab
------BEGIN PGP SIGNATURE-----
+Fundamentally tlb_remove_page() is about removing *pages* as from a PTE,
+there should not be a page-table anywhere near here *ever*.
 
-iQEzBAEBCAAdFiEEhrpukzGPukRmQqkK24/THMrX1ywFAmd3wpUACgkQ24/THMrX
-1yzmigf/XurIB/pN9J44SKwSeCWCQMVu3ZjFfeQ7XiAl3IpiALExuGFtEiAX8sY/
-BqA3MWs9AKpBz7qfUQGU3+tRUbEVQz/rHh8FBo3OBwZQJuxntlT291E4/FzIHUzN
-JZ0b6AAgU9MaSdOC0A0XGwFDbhTPbbqbHanyaVyCf+2QVCEW4OFcgnlUVBdIs6sW
-tXzKWNr70Jkq/XguvrWVBHgg5C3E/SfXZzoRIFCKfMuXfpqVVpa35X/Zf3+V8my/
-n0Di7xZXQaXMSv72tQayI+/y2dT4PbLqTE+lhLf2UCXDn15WBHpmyppX9Nn3huEG
-L0NRHVLneeo25kRQuzGj04vWFem6MQ==
-=0Iqv
------END PGP SIGNATURE-----
+Yes, some architectures use tlb_remove_page() for page-tables too, but
+that is more or less an implementation detail that can be fixed.
+
+So no, please keep these patches and kill this utterly idiotic code.
+
+The only thing that should eventually care about page-tables is
+tlb_remove_table(), and that takes a 'void *' and is expected to match
+whatever __tlb_remove_table() does.
+
+Flipping those to pgdesc, once its actually a thing, should be fairly
+straight forward.
 
