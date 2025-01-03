@@ -4,68 +4,122 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C9F2FE77198
-	for <linux-um@archiver.kernel.org>; Fri,  3 Jan 2025 10:37:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78048E77198
+	for <linux-um@archiver.kernel.org>; Fri,  3 Jan 2025 10:57:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=KqzYXTStRwHdA2r44yWtS6M9tFw/JByatD25oVsaaPw=; b=eY/vlWGLoTaVXunUc6rzbTUfwh
-	KFvHh0fkIFtP+lVOMmtzsL6yK+4nX0lF6BI3TREgYuJ4t/tf3JZRE2hewUmZaCPMoVVotzmzPVm0k
-	85zxP7taFL9/DC2dlUyBRR6+qr4+z4GY1AqRkdmlnRGXPMIdvblmziTlFkx8mtdVnfOC9cYSwAPC9
-	ZhpdPoBZdFJvao7zppFhzhywNN8zy9Mer3X7jjvcXZB9shvIYdgI9T7gTZlqZomn3kNe7DjEezMI3
-	shC05spAzgOCrr9k/2x5SmpEggi+QWXIZk/sDXPcADVGlRx+9IG6lxees0CgMo4WLPEses2No0avq
-	aQbTinaQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=423Vj5fZsGV5eJGSXq4heFmx7126IRBdG9xAKxYQ7SM=; b=j3HaLxgnWm9EsD1TdtUOudxjJ6
+	gu9RWW1Xsbv0/joFHCumaBuWk2xGX500MCI1jNeEFR/BNlh8gine4TlPCYY9GgESzHYlKUONpfii1
+	KRk2VBGDVibkpDkjhGqYTxPLZ0P8h65ZtuiAPl11JSAiUujWJpK52VKJWdVkO26HNHRvkV5OAPX/i
+	nDILKE8tvR8SpNJzd9PIJ9qMu7V5kMk9Px/9Ov9cxluOaGQfDNJRqJWDQHvyymq11KU7SbwcA9qwh
+	xI+gkt88ntzTvZst+yZ5HGcc0OgHixmnDLWfR3HSeOkqR8XQgjiRtjJm+pjbaPc6y1Nm/dfJ10eft
+	hAXtnhoQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tTf3b-0000000Ck26-1q1U;
-	Fri, 03 Jan 2025 10:37:31 +0000
-Received: from foss.arm.com ([217.140.110.172])
-	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tTf2M-0000000Cjvn-0ioI;
-	Fri, 03 Jan 2025 10:36:16 +0000
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 45A1D150C;
-	Fri,  3 Jan 2025 02:36:41 -0800 (PST)
-Received: from [10.44.160.93] (e126510-lin.lund.arm.com [10.44.160.93])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8736A3F6A8;
-	Fri,  3 Jan 2025 02:36:06 -0800 (PST)
-Message-ID: <39925677-4619-411d-b0b1-40f9db09374f@arm.com>
-Date: Fri, 3 Jan 2025 11:36:03 +0100
+	id 1tTfN9-0000000CmCd-0NYQ;
+	Fri, 03 Jan 2025 10:57:43 +0000
+Received: from flow-b5-smtp.messagingengine.com ([202.12.124.140])
+	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tTfN6-0000000CmAz-1GKX
+	for linux-um@lists.infradead.org;
+	Fri, 03 Jan 2025 10:57:42 +0000
+Received: from phl-compute-06.internal (phl-compute-06.phl.internal [10.202.2.46])
+	by mailflow.stl.internal (Postfix) with ESMTP id E13981D40AB0;
+	Fri,  3 Jan 2025 05:57:35 -0500 (EST)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-06.internal (MEProxy); Fri, 03 Jan 2025 05:57:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	invisiblethingslab.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1735901855; x=1735909055; bh=423Vj5fZsG
+	V5eJGSXq4heFmx7126IRBdG9xAKxYQ7SM=; b=JuerdEJ1tAgll50QlC4YxQajBf
+	DkgtwccDxlugt0VAiPqTYmOx3GXlMhMKhInAHOhPHtCUJNVjyBIs8RCY6PmlgpPd
+	xjLcTrvjispwERy/WyDFaFCq44v2e9hYfmST5JDKKoCtNQAdDxPM7g2pWmcNIY8l
+	u+d1SFw9C0Oj8nBwS58aWGssWJC174PqAvBZ++Jl35N2Rp2ST42JS/1xPQuCWGuB
+	uzNHPEZbLVOj3JElOSs4/va2bTWToNKvpCgV1oXlORCOrAs+PBSaquoBLoELmm6k
+	qrzyAnzURUQhidmjBnTvvLUKfN6MZru2w/B99p4zUHA0t9IyaG3GOmEd0mMg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1735901855; x=
+	1735909055; bh=423Vj5fZsGV5eJGSXq4heFmx7126IRBdG9xAKxYQ7SM=; b=G
+	cajOF2vlD6eM2BhItchNYObDe20cSKdE7QdHWS3S4zXB201VqahnXDUkhhCiI/Oa
+	7boz+JhhU+xUc3f9Q61PUJi6PCNy6gHu5Vy2AE8TMXwUJepQ7OTHmO6nHbXzqhXP
+	5wZKIRsd8h43f2+M6Aa0K5COGyPslerP3NPAAvnLWzj418SzIl/c4Cn02vLT/6t9
+	MH8LJjiuaiadIx1iLE1XEKOPBtX76ZhMcmqtgzG18nTj7HPNwkKJKR8uTQvLV5pj
+	dnUeUPcA3zIoiLlzyomyZAG/83zl83w6LcvXKdit3G8TtXQReL8yXf7vFJaeKZqa
+	vDZZtBKg6qDqRt+mQBlPw==
+X-ME-Sender: <xms:ncJ3Z6CXVWyExCYlgmBZdOs6uG3V0GYZ8GxhhWzgeULLUuScarTgMw>
+    <xme:ncJ3Z0hrIdZeHDl9chKR8qX0FAfe0xnC3zbnBZ_BynCHY7kuWJTtSbb--5j1pW28u
+    XAOmloVnrT0Ig>
+X-ME-Received: <xmr:ncJ3Z9m1XYDfuQmpOwos3HoM0I0-2Se522cNPFJ64z61BySOCJsFCJqnGXKgktMJqPuZQuYkJaArSpfl_gEKUjXrvRlAkRFMwg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrudefgedgvddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhepfffhvfevuffkfhggtgfgjgesthekredttddtjeen
+    ucfhrhhomhepofgrrhgvkhcuofgrrhgtiiihkhhofihskhhiqdfikphrvggtkhhiuceomh
+    grrhhmrghrvghksehinhhvihhsihgslhgvthhhihhnghhslhgrsgdrtghomheqnecuggft
+    rfgrthhtvghrnhepveeuheffhedtffeivdffudehieekkeelleehhfevgefggffgjeejtd
+    ffheejgfegnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhi
+    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrghrmhgrrhgvkhesihhnvhhish
+    hisghlvghthhhinhhgshhlrggsrdgtohhmpdhnsggprhgtphhtthhopeegiedpmhhouggv
+    pehsmhhtphhouhhtpdhrtghpthhtoheprghkphhmsehlihhnuhigqdhfohhunhgurghtih
+    honhdrohhrghdprhgtphhtthhopegrnhgurhgvfidrtghoohhpvghrfeestghithhrihig
+    rdgtohhmpdhrtghpthhtoheplhhorhgvnhiiohdrshhtohgrkhgvshesohhrrggtlhgvrd
+    gtohhmpdhrtghpthhtoheprghnthhonhdrihhvrghnohhvsegtrghmsghrihgughgvghhr
+    vgihshdrtghomhdprhgtphhtthhopegsphesrghlihgvnhekrdguvgdprhgtphhtthhope
+    gsrhgvnhgurghnrdhhihhgghhinhhssehlihhnuhigrdguvghvpdhrtghpthhtohepuggr
+    rdhgohhmvgiisehsrghmshhunhhgrdgtohhmpdhrtghpthhtohepuggrnhhivghltheskh
+    gvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrvhgvrdhhrghnshgvnheslhhinhhugidr
+    ihhnthgvlhdrtghomh
+X-ME-Proxy: <xmx:ncJ3Z4zPNvCOjmc1oKkrAYZ9xaG0fyawlsfb_9ujyU1cR20qR2SiHQ>
+    <xmx:ncJ3Z_TqIX8N6jwrirsSXns9bdjWEmxb5qLaSpMfRfKmd7zOLSLvpw>
+    <xmx:ncJ3ZzbeXkzGZLYn9eDgxNT7PS59Rmxit9htXHx6_ndO8uaxw3OOgQ>
+    <xmx:ncJ3Z4SybuD-tbCQ01TzhidgZIEhKMy9QHnKqhApQ2nSmKbYzzUrHw>
+    <xmx:n8J3Z28oyn0Vw20TlJT55P_RAeGNO_Dj-NJTH4vhK9jKgcdUPujFBW6n>
+Feedback-ID: i1568416f:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 3 Jan 2025 05:57:27 -0500 (EST)
+Date: Fri, 3 Jan 2025 11:57:25 +0100
+From: Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= <marmarek@invisiblethingslab.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Andrew Cooper <andrew.cooper3@citrix.com>, lorenzo.stoakes@oracle.com,
+	anton.ivanov@cambridgegreys.com, bp@alien8.de,	brendan.higgins@linux.dev,
+ da.gomez@samsung.com, danielt@kernel.org,	dave.hansen@linux.intel.com,
+ davidgow@google.com,	dianders@chromium.org, hpa@zytor.com,
+ jason.wessel@windriver.com,	jikos@kernel.org, joe.lawrence@redhat.com,
+	johannes@sipsolutions.net, jpoimboe@kernel.org,
+	kgdb-bugreport@lists.sourceforge.net,	kirill.shutemov@linux.intel.com,
+ kunit-dev@googlegroups.com,	linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org,	linux-mm@kvack.org,
+ linux-modules@vger.kernel.org,	linux-trace-kernel@vger.kernel.org,
+ linux-um@lists.infradead.org,	live-patching@vger.kernel.org,
+ luto@kernel.org,	mark.rutland@arm.com, mbenes@suse.cz, mcgrof@kernel.org,
+	mhiramat@kernel.org, mingo@redhat.com, peterz@infradead.org,
+	petr.pavlu@suse.com, pmladek@suse.com, richard@nod.at,	rmoar@google.com,
+ rostedt@goodmis.org, rppt@kernel.org,	samitolvanen@google.com,
+ shuah@kernel.org, song@kernel.org,	tglx@linutronix.de, x86@kernel.org,
+ Juergen Gross <jgross@suse.com>
+Subject: Re: [PATCH 6/8] modules: switch to execmem API for remapping as RW
+ and restoring ROX
+Message-ID: <Z3fClUqJ_sMp1HL9@mail-itl>
+References: <86eba318-464b-4b9b-a79e-64039b17be34@lucifer.local>
+ <d48193a3-65fe-4aa9-98f6-dd5869bd9127@citrix.com>
+ <20250102215714.a37e828cf073ea6a14d30559@linux-foundation.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 05/10] riscv: mm: Skip pgtable level check in
- {pud,p4d}_alloc_one
-To: Alexandre Ghiti <alex@ghiti.fr>, linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- Linus Walleij <linus.walleij@linaro.org>, Andy Lutomirski <luto@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, "Mike Rapoport (IBM)"
- <rppt@kernel.org>, Ryan Roberts <ryan.roberts@arm.com>,
- Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
- Matthew Wilcox <willy@infradead.org>, linux-alpha@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
- linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- linux-um@lists.infradead.org, loongarch@lists.linux.dev, x86@kernel.org,
- Qi Zheng <zhengqi.arch@bytedance.com>
-References: <20241219164425.2277022-1-kevin.brodsky@arm.com>
- <20241219164425.2277022-6-kevin.brodsky@arm.com>
- <2aed338a-97a4-40e3-8a95-99458756ca28@ghiti.fr>
-Content-Language: en-GB
-From: Kevin Brodsky <kevin.brodsky@arm.com>
-In-Reply-To: <2aed338a-97a4-40e3-8a95-99458756ca28@ghiti.fr>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8; x-action=pgp-signed
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250102215714.a37e828cf073ea6a14d30559@linux-foundation.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250103_023614_303221_0C0F016B 
-X-CRM114-Status: GOOD (  13.85  )
+X-CRM114-CacheID: sfid-20250103_025740_781249_777333EC 
+X-CRM114-Status: GOOD (  17.06  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -80,83 +134,47 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-+Qi
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-On 03/01/2025 11:31, Alexandre Ghiti wrote:
-> Hi Kevin,
->
-> On 19/12/2024 17:44, Kevin Brodsky wrote:
->> {pmd,pud,p4d}_alloc_one() is never called if the corresponding page
->> table level is folded, as {pmd,pud,p4d}_alloc() already does the
->> required check. We can therefore remove the runtime page table level
->> checks in {pud,p4d}_alloc_one. The PUD helper becomes equivalent to
->> the generic version, so we remove it altogether.
->>
->> This is consistent with the way arm64 and x86 handle this situation
->> (runtime check in p4d_free() only).
->>
->> Signed-off-by: Kevin Brodsky <kevin.brodsky@arm.com>
->> ---
->>   arch/riscv/include/asm/pgalloc.h | 22 ++++------------------
->>   1 file changed, 4 insertions(+), 18 deletions(-)
->>
->> diff --git a/arch/riscv/include/asm/pgalloc.h
->> b/arch/riscv/include/asm/pgalloc.h
->> index f52264304f77..8ad0bbe838a2 100644
->> --- a/arch/riscv/include/asm/pgalloc.h
->> +++ b/arch/riscv/include/asm/pgalloc.h
->> @@ -12,7 +12,6 @@
->>   #include <asm/tlb.h>
->>     #ifdef CONFIG_MMU
->> -#define __HAVE_ARCH_PUD_ALLOC_ONE
->>   #define __HAVE_ARCH_PUD_FREE
->>   #include <asm-generic/pgalloc.h>
->>   @@ -88,15 +87,6 @@ static inline void pgd_populate_safe(struct
->> mm_struct *mm, pgd_t *pgd,
->>       }
->>   }
->>   -#define pud_alloc_one pud_alloc_one
->> -static inline pud_t *pud_alloc_one(struct mm_struct *mm, unsigned
->> long addr)
->> -{
->> -    if (pgtable_l4_enabled)
->> -        return __pud_alloc_one(mm, addr);
->> -
->> -    return NULL;
->> -}
->> -
->>   #define pud_free pud_free
->>   static inline void pud_free(struct mm_struct *mm, pud_t *pud)
->>   {
->> @@ -118,15 +108,11 @@ static inline void __pud_free_tlb(struct
->> mmu_gather *tlb, pud_t *pud,
->>   #define p4d_alloc_one p4d_alloc_one
->>   static inline p4d_t *p4d_alloc_one(struct mm_struct *mm, unsigned
->> long addr)
->>   {
->> -    if (pgtable_l5_enabled) {
->> -        gfp_t gfp = GFP_PGTABLE_USER;
->> -
->> -        if (mm == &init_mm)
->> -            gfp = GFP_PGTABLE_KERNEL;
->> -        return (p4d_t *)get_zeroed_page(gfp);
->> -    }
->> +    gfp_t gfp = GFP_PGTABLE_USER;
->>   -    return NULL;
->> +    if (mm == &init_mm)
->> +        gfp = GFP_PGTABLE_KERNEL;
->> +    return (p4d_t *)get_zeroed_page(gfp);
->>   }
->>     static inline void __p4d_free(struct mm_struct *mm, p4d_t *p4d)
->
->
-> Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+On Thu, Jan 02, 2025 at 09:57:14PM -0800, Andrew Morton wrote:
+> On Fri, 3 Jan 2025 02:06:10 +0000 Andrew Cooper <andrew.cooper3@citrix.com> wrote:
+> 
+> > > Hi Mike,
+> > >
+> > > This commit is making my intel box not boot in mm-unstable :>) I bisected it to
+> > > this commit.
+> > 
+> > For what it's worth, we've found the same under Xen too.
+> > 
+> > There's one concrete bug in the series, failing to cope with the absence
+> > of superpages (fix in
+> > https://lore.kernel.org/xen-devel/6bb03333-74ca-4c2c-85a8-72549b85a5b4@suse.com/
+> > but not formally posted yet AFAICT).
+> > 
+> > The rest of the thread then found a crash looking to be the same as
+> > reported here, but you've made better progress narrowing it down than we
+> > have.
+> > 
+> 
+> Thanks.  I removed this series from mm.git while this is worked on.
 
-Thanks for the review! Just FYI this patch is now part of Qi's series
-[1], I will drop it when posting the next version of this series.
+The issue under Xen that Andrew linked happens on 6.13-rc5 which AFAICT
+doesn't this series yet. So, it's probably a different issue.
 
-- Kevin
+- -- 
+Best Regards,
+Marek Marczykowski-Górecki
+Invisible Things Lab
+-----BEGIN PGP SIGNATURE-----
 
-[1]
-https://lore.kernel.org/linux-mm/84ddf857508b98a195a790bc6ff6ab8849b44633.1735549103.git.zhengqi.arch@bytedance.com/
+iQEzBAEBCAAdFiEEhrpukzGPukRmQqkK24/THMrX1ywFAmd3wpUACgkQ24/THMrX
+1yzmigf/XurIB/pN9J44SKwSeCWCQMVu3ZjFfeQ7XiAl3IpiALExuGFtEiAX8sY/
+BqA3MWs9AKpBz7qfUQGU3+tRUbEVQz/rHh8FBo3OBwZQJuxntlT291E4/FzIHUzN
+JZ0b6AAgU9MaSdOC0A0XGwFDbhTPbbqbHanyaVyCf+2QVCEW4OFcgnlUVBdIs6sW
+tXzKWNr70Jkq/XguvrWVBHgg5C3E/SfXZzoRIFCKfMuXfpqVVpa35X/Zf3+V8my/
+n0Di7xZXQaXMSv72tQayI+/y2dT4PbLqTE+lhLf2UCXDn15WBHpmyppX9Nn3huEG
+L0NRHVLneeo25kRQuzGj04vWFem6MQ==
+=0Iqv
+-----END PGP SIGNATURE-----
 
