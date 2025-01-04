@@ -4,76 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F7B3E77198
-	for <linux-um@archiver.kernel.org>; Fri,  3 Jan 2025 18:53:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 88177E77188
+	for <linux-um@archiver.kernel.org>; Sat,  4 Jan 2025 02:12:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=bDYv+lD8IINsE762iomZ4bq5tahQltx5gkKZxMzCtrk=; b=Xz1EdcvTyjE1rDIjuuftXLCXd0
-	OldWB2f/7ZRvgTYmnWjfIlpFXwcniqJDe6TxAl14hPveu6BfvYyqo1E7/I5TUgrQAirUeciyl0s8D
-	DWPs1ItdIhQDVNrhmgqB/XvEqStOuzFlzFbsjpQCaMzIwEEBUDY2DTXrGLaxhzURjIi/wE/6jU640
-	eOArwOsTl8puZZ3/2GWWNcr15N23nkU1vgWZWFXrNXHo7sLlMg2yMf4TFt2QJvnj9Zi/vkD6Pf0Ig
-	zYosaXBNnw0TrFSfFb0bi3SCytypHjkO12PQj7dy6puzS9An/LgXPIQUPbS6uI7fAseS2wtJhkqEa
-	mUTfpj/g==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=MTyz2BPeDLlTIHhsSWuHdu+mofZpbwj9qrtZn/7HLec=; b=Jy4N5ib3GVa2v4WcTlr62kJOg8
+	6xw1mXch0fPsl2G8umaizFTHYIMcW5cosHBPyVCb4Ib5GI4MVvvhO7QKsZKOl0iMxAkirKEZlYvio
+	0ohEy575mP7NqjBfSlzLejr/oBjBWxX0pmTOcJ/rkBidSkdOHQGzHcklLROuOisKwHDx6FI45uqKM
+	5DhVBWUg7zcrad9+fjf8XQJ31wXGrrmAR64rVJejVzsRA4vveVKLn2CxYwyrYbD4qRM401eQd3Pq0
+	f64CLiwyEJM1+YNNEuC3E6lER7jZb0zM7Mi5P7egZ/w07yhvKKcXjWoYKyYoivZ3MrXiOjH2h4Byu
+	z6Tnh2aw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tTmn9-0000000DltT-3T0D;
-	Fri, 03 Jan 2025 18:53:03 +0000
-Received: from foss.arm.com ([217.140.110.172])
-	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tTmfH-0000000Djbt-3Tif;
-	Fri, 03 Jan 2025 18:44:57 +0000
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 575781C14;
-	Fri,  3 Jan 2025 10:45:23 -0800 (PST)
-Received: from e123572-lin.arm.com (e123572-lin.cambridge.arm.com [10.1.194.54])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2191A3F673;
-	Fri,  3 Jan 2025 10:44:51 -0800 (PST)
-From: Kevin Brodsky <kevin.brodsky@arm.com>
-To: linux-mm@kvack.org
-Cc: Kevin Brodsky <kevin.brodsky@arm.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	"Mike Rapoport (IBM)" <rppt@kernel.org>,
-	Ryan Roberts <ryan.roberts@arm.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Will Deacon <will@kernel.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Qi Zheng <zhengqi.arch@bytedance.com>,
-	linux-alpha@vger.kernel.org,
-	linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org,
-	linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org,
-	linux-snps-arc@lists.infradead.org,
-	linux-um@lists.infradead.org,
-	loongarch@lists.linux.dev,
-	x86@kernel.org
-Subject: [PATCH v2 6/6] mm: Introduce ctor/dtor at PGD level
-Date: Fri,  3 Jan 2025 18:44:15 +0000
-Message-ID: <20250103184415.2744423-7-kevin.brodsky@arm.com>
-X-Mailer: git-send-email 2.47.0
-In-Reply-To: <20250103184415.2744423-1-kevin.brodsky@arm.com>
-References: <20250103184415.2744423-1-kevin.brodsky@arm.com>
+	id 1tTteq-0000000ELvu-0IeW;
+	Sat, 04 Jan 2025 02:12:56 +0000
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tTtZY-0000000ELJA-2Xoo
+	for linux-um@lists.infradead.org;
+	Sat, 04 Jan 2025 02:07:29 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 79CED5C5E2D;
+	Sat,  4 Jan 2025 02:06:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56E24C4CED6;
+	Sat,  4 Jan 2025 02:07:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1735956445;
+	bh=5+k5XIDfmklKhyQNZnytCq6Wbtr3vAtBCZfKfKHl6CA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=joD0NAbRBPE0lezKTTDP1O/kr2E6iJf9COWb+q26eFjVoffuI5L/uXxAbsoYlryoQ
+	 fYP/yaVyXmntFcDd1a3Fy5BzamjHbURSTyP3IdaXyhV79hmDEblPiZtS6iVgzwGlo3
+	 Kx4vTa/nHoqIBT7WaRKz0y7zXQ0mNg/SZWWNqb701SX3cdNH0ZRCTN14xhyhSGJ8Pg
+	 cXiLSChUUEnHpXT+4yMfzWCREm/wGuuwBvwu0rahfPZ8BSGvXEuUhX3QReboXWGoBI
+	 95VoZXg6cVJmIgpcGSWX14DR8XQkeIf/4vXIKDW+eMgmO5cxqmChke6AdKsiTp7rM/
+	 m8eDNhFD+TAEA==
+Date: Fri, 3 Jan 2025 18:07:22 -0800
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: =?iso-8859-1?Q?J=FCrgen_Gro=DF?= <jgross@suse.com>,
+	Marek =?utf-8?B?TWHFm2xhbmth?= <mmaslanka@google.com>,
+	Adam Williamson <awilliam@redhat.com>
+Cc: Andrew Cooper <andrew.cooper3@citrix.com>, lorenzo.stoakes@oracle.com,
+	akpm@linux-foundation.org, anton.ivanov@cambridgegreys.com,
+	bp@alien8.de, brendan.higgins@linux.dev, da.gomez@samsung.com,
+	danielt@kernel.org, dave.hansen@linux.intel.com,
+	davidgow@google.com, dianders@chromium.org, hpa@zytor.com,
+	jason.wessel@windriver.com, jikos@kernel.org,
+	joe.lawrence@redhat.com, johannes@sipsolutions.net,
+	jpoimboe@kernel.org, kgdb-bugreport@lists.sourceforge.net,
+	kirill.shutemov@linux.intel.com, kunit-dev@googlegroups.com,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-mm@kvack.org, linux-modules@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+	live-patching@vger.kernel.org, luto@kernel.org,
+	mark.rutland@arm.com, mbenes@suse.cz, mhiramat@kernel.org,
+	mingo@redhat.com, peterz@infradead.org, petr.pavlu@suse.com,
+	pmladek@suse.com, richard@nod.at, rmoar@google.com,
+	rostedt@goodmis.org, rppt@kernel.org, samitolvanen@google.com,
+	shuah@kernel.org, song@kernel.org, tglx@linutronix.de,
+	x86@kernel.org,
+	Marek =?iso-8859-1?Q?Marczykowski-G=F3recki?= <marmarek@invisiblethingslab.com>
+Subject: Re: [PATCH 6/8] modules: switch to execmem API for remapping as RW
+ and restoring ROX
+Message-ID: <Z3iX2mNtqSYrvYPT@bombadil.infradead.org>
+References: <86eba318-464b-4b9b-a79e-64039b17be34@lucifer.local>
+ <d48193a3-65fe-4aa9-98f6-dd5869bd9127@citrix.com>
+ <9878d90f-faf3-4853-9a79-a21b4f58ab4c@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <9878d90f-faf3-4853-9a79-a21b4f58ab4c@suse.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250103_104455_955623_232B8B04 
-X-CRM114-Status: GOOD (  13.05  )
+X-CRM114-CacheID: sfid-20250103_180728_687365_3B4C6F03 
+X-CRM114-Status: GOOD (  12.13  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,133 +95,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Following on from the introduction of P4D-level ctor/dtor, let's
-finish the job and introduce ctor/dtor at PGD level. The incurred
-improvement in page accounting is minimal - the main motivation is
-to create a single, generic place where construction/destruction
-hooks can be added for all page table pages.
+On Fri, Jan 03, 2025 at 07:58:13AM +0100, J=FCrgen Gro=DF wrote:
+> On 03.01.25 03:06, Andrew Cooper wrote:
+> > > Hi Mike,
+> > >=20
+> > > This commit is making my intel box not boot in mm-unstable :>) I bise=
+cted it to
+> > > this commit.
+> >=20
+> > For what it's worth, we've found the same under Xen too.
+> >=20
+> > There's one concrete bug in the series, failing to cope with the absence
+> > of superpages (fix in
+> > https://lore.kernel.org/xen-devel/6bb03333-74ca-4c2c-85a8-72549b85a5b4@=
+suse.com/
+> > but not formally posted yet AFAICT).
+>=20
+> Now sent out:
+>=20
+> https://lore.kernel.org/lkml/20250103065631.26459-1-jgross@suse.com/T/#u
 
-This patch should cover all architectures and all configurations
-where PGDs are one or more regular pages. This excludes any
-configuration where PGDs are allocated from a kmem_cache object.
+Thanks,=20
 
-Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
-Signed-off-by: Kevin Brodsky <kevin.brodsky@arm.com>
----
- arch/m68k/include/asm/mcf_pgalloc.h | 3 ++-
- arch/m68k/mm/motorola.c             | 6 ++++--
- arch/s390/include/asm/pgalloc.h     | 9 ++++++++-
- include/asm-generic/pgalloc.h       | 3 ++-
- include/linux/mm.h                  | 5 +++++
- 5 files changed, 21 insertions(+), 5 deletions(-)
+Marek, Adam, can you try this patch? Although the reply here is for
+another future series being worked on the fix is for commit
+2e45474ab14f ("execmem: add support for cache of large ROX pages").
 
-diff --git a/arch/m68k/include/asm/mcf_pgalloc.h b/arch/m68k/include/asm/mcf_pgalloc.h
-index 22d6c1fcabfb..4c648b51e7fd 100644
---- a/arch/m68k/include/asm/mcf_pgalloc.h
-+++ b/arch/m68k/include/asm/mcf_pgalloc.h
-@@ -73,7 +73,7 @@ static inline void pte_free(struct mm_struct *mm, pgtable_t pgtable)
- 
- static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
- {
--	pagetable_free(virt_to_ptdesc(pgd));
-+	pagetable_dtor_free(virt_to_ptdesc(pgd));
- }
- 
- static inline pgd_t *pgd_alloc(struct mm_struct *mm)
-@@ -84,6 +84,7 @@ static inline pgd_t *pgd_alloc(struct mm_struct *mm)
- 
- 	if (!ptdesc)
- 		return NULL;
-+	pagetable_pgd_ctor(ptdesc);
- 	new_pgd = ptdesc_address(ptdesc);
- 
- 	memcpy(new_pgd, swapper_pg_dir, PTRS_PER_PGD * sizeof(pgd_t));
-diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
-index 6c09ccb72e8b..73651e093c4d 100644
---- a/arch/m68k/mm/motorola.c
-+++ b/arch/m68k/mm/motorola.c
-@@ -169,6 +169,9 @@ void *get_pointer_table(int type)
- 		case TABLE_PMD:
- 			pagetable_pmd_ctor(virt_to_ptdesc(page));
- 			break;
-+		case TABLE_PGD:
-+			pagetable_pgd_ctor(virt_to_ptdesc(page));
-+			break;
- 		}
- 
- 		mmu_page_ctor(page);
-@@ -207,8 +210,7 @@ int free_pointer_table(void *table, int type)
- 		/* all tables in page are free, free page */
- 		list_del(dp);
- 		mmu_page_dtor((void *)page);
--		if (type == TABLE_PTE || type == TABLE_PMD)
--			pagetable_dtor(virt_to_ptdesc((void *)page));
-+		pagetable_dtor(virt_to_ptdesc((void *)page));
- 		free_page (page);
- 		return 1;
- 	} else if (ptable_list[type].next != dp) {
-diff --git a/arch/s390/include/asm/pgalloc.h b/arch/s390/include/asm/pgalloc.h
-index 5fced6d3c36b..b19b6ed2ab53 100644
---- a/arch/s390/include/asm/pgalloc.h
-+++ b/arch/s390/include/asm/pgalloc.h
-@@ -130,11 +130,18 @@ static inline void pud_populate(struct mm_struct *mm, pud_t *pud, pmd_t *pmd)
- 
- static inline pgd_t *pgd_alloc(struct mm_struct *mm)
- {
--	return (pgd_t *) crst_table_alloc(mm);
-+	unsigned long *table = crst_table_alloc(mm);
-+
-+	if (!table)
-+		return NULL;
-+	pagetable_pgd_ctor(virt_to_ptdesc(table));
-+
-+	return (pgd_t *) table;
- }
- 
- static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
- {
-+	pagetable_dtor(virt_to_ptdesc(pgd));
- 	crst_table_free(mm, (unsigned long *) pgd);
- }
- 
-diff --git a/include/asm-generic/pgalloc.h b/include/asm-generic/pgalloc.h
-index de4df14158e6..892ece4558a2 100644
---- a/include/asm-generic/pgalloc.h
-+++ b/include/asm-generic/pgalloc.h
-@@ -271,6 +271,7 @@ static inline pgd_t *__pgd_alloc_noprof(struct mm_struct *mm, unsigned int order
- 	if (!ptdesc)
- 		return NULL;
- 
-+	pagetable_pgd_ctor(ptdesc);
- 	return ptdesc_address(ptdesc);
- }
- #define __pgd_alloc(...)	alloc_hooks(__pgd_alloc_noprof(__VA_ARGS__))
-@@ -280,7 +281,7 @@ static inline void __pgd_free(struct mm_struct *mm, pgd_t *pgd)
- 	struct ptdesc *ptdesc = virt_to_ptdesc(pgd);
- 
- 	BUG_ON((unsigned long)pgd & (PAGE_SIZE-1));
--	pagetable_free(ptdesc);
-+	pagetable_dtor_free(ptdesc);
- }
- 
- #ifndef __HAVE_ARCH_PGD_FREE
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 065fa9449d03..486638d22fc6 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -3243,6 +3243,11 @@ static inline void pagetable_p4d_ctor(struct ptdesc *ptdesc)
- 	__pagetable_ctor(ptdesc);
- }
- 
-+static inline void pagetable_pgd_ctor(struct ptdesc *ptdesc)
-+{
-+	__pagetable_ctor(ptdesc);
-+}
-+
- extern void __init pagecache_init(void);
- extern void free_initmem(void);
- 
--- 
-2.47.0
-
+  Luis
 
