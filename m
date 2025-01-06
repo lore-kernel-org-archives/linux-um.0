@@ -4,115 +4,104 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B904AE77188
-	for <linux-um@archiver.kernel.org>; Mon,  6 Jan 2025 13:12:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7DAE1E77198
+	for <linux-um@archiver.kernel.org>; Mon,  6 Jan 2025 13:23:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=7dUprz6iii0nxv85hIGsJCS0ldBed9AvdLxve3ElZ/g=; b=35t60ci/tlHnUn3uLRYaDOCqbv
-	E9xxp6Qu6Nd78Br/9G/kUsAc9CN62nSqeivUHjMeNZ4vYP3wWYuEQsf8U1/kYp6x7IUuVsAnlJPiF
-	LqoGBt/JdfWaz2tHpcPX6bypKOHaqikrTBXIWD3ueTpKc4WohT3ZuRt6EbHYjIc/uuga5gB7jJ/bH
-	MB4Y062LJUK47H0Trv5KOK8kI2swCU/oevD+9njB2LrFXwoIG/o+FQ4dIk7ycSCnJ5UG93gf08cJm
-	R7nLvyBR6S6X79w/L2R9LajQ5dGY7iwqcoTpAxCE3UK4VOOUo97SrUo0Ft69pnSkuxbVA2YXbtUBD
-	Lav21WWQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=af8Jbj+kqP+p1W8uyVyt9V0YBDVs6Wu8XxDGXWv1rDo=; b=A4Ocgl2ikRMyu5CEl7jlauRPs/
+	GZh37gt9uQJ0MJe1uOrMrrjG2QtnrPDqPMT7bVEBI9rgG5x3Mnd3uFFW6VHcbN4FtnVXrHdzshGuY
+	GQW2hhBTAmPiMkMuWgCRm8cbt8q34d1/0+4VB3bCs5LY6TQ8ggLNNCNOjX+MGP+l8x4Dgv6MRu4b7
+	prGQxvaKsypzTohfdfGyFmaFZq8AxFK/RP3BUuPBf6PsXG4u2wCpgOitjJE/qBsXfZq/CTT02B+as
+	+yDSZ6+Rs+yj2hl/1dNfozBzv0QH2cdFOK/OtG337NT9rF5zQMmNIoax52Io8c5LQgWaUXIu9SlBr
+	pMwWdAag==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tUmu8-00000001Lvw-2Avb;
-	Mon, 06 Jan 2025 13:12:24 +0000
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
+	id 1tUn55-00000001O5K-0ubc;
+	Mon, 06 Jan 2025 13:23:43 +0000
+Received: from mail-pl1-x62b.google.com ([2607:f8b0:4864:20::62b])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tUmTV-00000001Gh1-3ArO;
-	Mon, 06 Jan 2025 12:44:54 +0000
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5063rt7j001311;
-	Mon, 6 Jan 2025 12:44:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=7dUprz6iii0nxv85hIGsJCS0ldBed9
-	AvdLxve3ElZ/g=; b=ntA6zIAKwr9Ctlh/HzpfWqu3gi5wcUsghUZNPFXuLj0M4/
-	H59jMkbloFNTwWtw8o3p5H9IXi19JHU6qAvfVSyB+YTGOngkEj6Cc+a3/HTR+dEJ
-	5N3VFJ1yuZxAjVA4jisoUbzEW44BALuxI7AOwkwV5G7BBneSzfErmPyFIpTPlfGT
-	Jd2ibzTcSOUZNGzTc7bFfQo1QnngQXav3TC6hBOETEpRQysN2/txlZoHa83gV4RP
-	IoUPw6Av6G2MNYhJFDL3ccAE/Uk3t1/EVkGFKiHM547FEUSOtiwDBvllCcSj2D9K
-	Iy6pIoI5cQzq68XtICzdJqRDLycaxkRSF74seOJw==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4407nbhxr7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 06 Jan 2025 12:44:21 +0000 (GMT)
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 506CgZ65013857;
-	Mon, 6 Jan 2025 12:44:21 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4407nbhxr4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 06 Jan 2025 12:44:20 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 506BbpxD026176;
-	Mon, 6 Jan 2025 12:44:19 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 43yj11wctt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 06 Jan 2025 12:44:19 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 506CiIS518219288
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 6 Jan 2025 12:44:18 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0877F20043;
-	Mon,  6 Jan 2025 12:44:18 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D881A20040;
-	Mon,  6 Jan 2025 12:44:15 +0000 (GMT)
-Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.179.15.34])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon,  6 Jan 2025 12:44:15 +0000 (GMT)
-Date: Mon, 6 Jan 2025 13:44:14 +0100
-From: Alexander Gordeev <agordeev@linux.ibm.com>
-To: Qi Zheng <zhengqi.arch@bytedance.com>
-Cc: peterz@infradead.org, kevin.brodsky@arm.com, palmer@dabbelt.com,
-        tglx@linutronix.de, david@redhat.com, jannh@google.com,
-        hughd@google.com, yuzhao@google.com, willy@infradead.org,
-        muchun.song@linux.dev, vbabka@kernel.org, lorenzo.stoakes@oracle.com,
-        akpm@linux-foundation.org, rientjes@google.com, vishal.moola@gmail.com,
-        arnd@arndb.de, will@kernel.org, aneesh.kumar@kernel.org,
-        npiggin@gmail.com, dave.hansen@linux.intel.com, rppt@kernel.org,
-        ryan.roberts@arm.com, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-arch@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-um@lists.infradead.org
-Subject: Re: [PATCH v4 12/15] s390: pgtable: also move pagetable_dtor() of
- PxD to __tlb_remove_table()
-Message-ID: <Z3vQHplZqtHf6Td8@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-References: <cover.1735549103.git.zhengqi.arch@bytedance.com>
- <ad21b9392096336cf15aee46f68f9989a9cf877e.1735549103.git.zhengqi.arch@bytedance.com>
- <Z3uyJ2BjslzsjkZI@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
- <2d16f0fe-9c7f-4229-b7b5-ffa3ab1b1143@bytedance.com>
+	id 1tUn4m-00000001Nwu-1tsb
+	for linux-um@lists.infradead.org;
+	Mon, 06 Jan 2025 13:23:25 +0000
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-21654fdd5daso191315085ad.1
+        for <linux-um@lists.infradead.org>; Mon, 06 Jan 2025 05:23:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1736169803; x=1736774603; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=af8Jbj+kqP+p1W8uyVyt9V0YBDVs6Wu8XxDGXWv1rDo=;
+        b=h9je9bnkJ1K58rmo3mSBqhalm02umZk1VXKIKRBynSte3n2WUgiyTcOIiSPptpo21H
+         YFKE/FruLpWnKeu34E8koURHHuofMbKF/SELtRHw4QpibjA0JsTuZcIrsdtZ8u7DVE8v
+         rTkYn387OP5F0u4RJiGU7tpgLPidWfh1rGjCeVgGoS0bxKJ5Avkrq45pw3razAO0fUyz
+         YMQPx0UrprOMxHIbUiHcKsPoiWKhuH8Z1mNUje/NZA4i5QwGnBgTQ1R0PiTgPwkxV8iO
+         0NZvASmMB23NHO6/Khq/JXAw5WaQHtc7xJ3JQwzL52b5oMeOoKt6p4eM+FGHqxkauUGE
+         eU4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736169803; x=1736774603;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=af8Jbj+kqP+p1W8uyVyt9V0YBDVs6Wu8XxDGXWv1rDo=;
+        b=abfSJFyz7kF0xYuUG7mjXYHXoZ+TSf9x82BsqHUo6TroGEm5RAleehX7TXAgIztKmf
+         4XstW37t1FviRsy8NWhzeehnzV4IbOCjdXa56w+3YWbnI2MkCTtBLXBbNnurwMAuj0+4
+         9BL0pUGpG0yOhHvjwEeJiCzlGTolvKKDBspnqteexVEtAf8yfBKQAlszRRnIwLCHtiOV
+         IHuqGT8IzAwR4dOv0oUWQJyXOfgz58byK/ICs+cFbx+CQ2LWS7/+8lF7l1MVzS94casl
+         dBq44IEHCf+8ah/FZmqaUUGQLyrFxlPuUEpCAkry68KrZSxp6MGZ8jKS5/ktYAJsbEwZ
+         3kIg==
+X-Forwarded-Encrypted: i=1; AJvYcCWiautw9gVQRP4i92ozx38ShnxK4aWR0Bcm9HYd7QXYsHuIti/jerutzJDS+sXJIULMyfOX+cqO6g==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yy1uIMtWk6rXtxP3wW/YMmUW8VYe0GGV6XeMlqd3y/6KoIffdHr
+	uhLJBIQkP4KF6Tmhc3b5bFTr5+ODXo/yyiAn2o7UBXxuHjpsCnWDxa/5c0zWNVY=
+X-Gm-Gg: ASbGncsH6buUympINgNx/EoyicTcTz9ecN4EQgA9sqlguF2d+Y0d2tVxUegZ4ecoT9j
+	mQd2OVu4UZZAbrtOxrqqojq9Sngo+M/qC1PPdRWitJjJiSFnytXW0IZZHxMxTfaKtOcA8sK+wbI
+	GobbofQjnuunvcRj7QxCa9e7q8u4H/ppryRplvCMozLeMIIeNWYl4AC3M4ZKXbyPv6WSAJxXNDF
+	GOujML/ys3BTjmy3WVc2gmi/xmZTTU8JhfuqJtmiKguUgJ5Qiu6eua27/2jBKodiML/mwsVGT8t
+	l5Ws61ibSc16ZvkkBFZ225gBnqwjqbEvweslSqmmMKbqBahqvXOh
+X-Google-Smtp-Source: AGHT+IE/ZrXmD5LZyqp5+IF7XucHWltqSucrfnZMLD6UEt/qaBj6OXgwMq9je0lWMbXPRWlni+TKWA==
+X-Received: by 2002:a05:6a20:2d07:b0:1e1:b44f:cff1 with SMTP id adf61e73a8af0-1e5e07f9c06mr81291446637.33.1736169803320;
+        Mon, 06 Jan 2025 05:23:23 -0800 (PST)
+Received: from ?IPV6:2409:8a28:f44:d64:296c:a8f3:f81e:f88b? ([2409:8a28:f44:d64:296c:a8f3:f81e:f88b])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72aad90c149sm31371677b3a.191.2025.01.06.05.23.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Jan 2025 05:23:22 -0800 (PST)
+Message-ID: <bce4bb4e-459a-44c8-945b-8889149377fd@bytedance.com>
+Date: Mon, 6 Jan 2025 21:23:10 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2d16f0fe-9c7f-4229-b7b5-ffa3ab1b1143@bytedance.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: pBEfcQBgF5vkTjfwUfa5dco3kr9lNTtL
-X-Proofpoint-GUID: kKTLJJdNiCahdOdrkZ96oEBulIRxKyk8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- suspectscore=0 mlxscore=0 mlxlogscore=520 impostorscore=0 clxscore=1015
- adultscore=0 phishscore=0 priorityscore=1501 lowpriorityscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2411120000 definitions=main-2501060110
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 07/15] mm: pgtable: introduce pagetable_dtor()
+Content-Language: en-US
+To: Alexander Gordeev <agordeev@linux.ibm.com>
+Cc: peterz@infradead.org, kevin.brodsky@arm.com, palmer@dabbelt.com,
+ tglx@linutronix.de, david@redhat.com, jannh@google.com, hughd@google.com,
+ yuzhao@google.com, willy@infradead.org, muchun.song@linux.dev,
+ vbabka@kernel.org, lorenzo.stoakes@oracle.com, akpm@linux-foundation.org,
+ rientjes@google.com, vishal.moola@gmail.com, arnd@arndb.de, will@kernel.org,
+ aneesh.kumar@kernel.org, npiggin@gmail.com, dave.hansen@linux.intel.com,
+ rppt@kernel.org, ryan.roberts@arm.com, linux-mm@kvack.org,
+ linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+ linux-arch@vger.kernel.org, linux-csky@vger.kernel.org,
+ linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+ linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+ linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org,
+ linux-um@lists.infradead.org
+References: <cover.1735549103.git.zhengqi.arch@bytedance.com>
+ <8ada95453180c71b7fca92b9a9f11fa0f92d45a6.1735549103.git.zhengqi.arch@bytedance.com>
+ <Z3uxwiEhYHDqdTh3@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+ <e1de887c-6193-48ee-a9b3-04c8a0cdda45@bytedance.com>
+ <Z3vOZ18jcCpHIcPD@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+From: Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <Z3vOZ18jcCpHIcPD@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250106_044453_797254_ECBA9302 
-X-CRM114-Status: GOOD (  16.66  )
+X-CRM114-CacheID: sfid-20250106_052324_508716_996B5940 
+X-CRM114-Status: GOOD (  12.31  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -127,25 +116,50 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jan 06, 2025 at 07:02:17PM +0800, Qi Zheng wrote:
-> > On Mon, Dec 30, 2024 at 05:07:47PM +0800, Qi Zheng wrote:
-> > > To unify the PxD and PTE TLB free path, also move the pagetable_dtor() of
-> > > PMD|PUD|P4D to __tlb_remove_table().
-> > 
-> > The above and Subject are still incorrect: pagetable_dtor() is
-> > called from pagetable_dtor_free(), not from __tlb_remove_table().
+
+
+On 2025/1/6 20:36, Alexander Gordeev wrote:
+> On Mon, Jan 06, 2025 at 06:55:58PM +0800, Qi Zheng wrote:
+>>>> +static inline void pagetable_dtor(struct ptdesc *ptdesc)
+>>>> +{
+>>>> +	struct folio *folio = ptdesc_folio(ptdesc);
+>>>> +
+>>>> +	ptlock_free(ptdesc);
+>>>> +	__folio_clear_pgtable(folio);
+>>>> +	lruvec_stat_sub_folio(folio, NR_PAGETABLE);
+>>>> +}
+>>>> +
+>>>
+>>> If I am not mistaken, it is just pagetable_pte_dtor() rename.
+>>> What is the point in moving the code around?
+>>
+>> No, this is to unify pagetable_p*_dtor() into pagetable_dtor(), so
+>> that we can move pagetable_dtor() to __tlb_remove_table(), and then
+>> ptlock and PTE page can be freed together through RCU, which is
+>> also the main purpose of this patch series.
 > 
-> Hmm, __tlb_remove_table() calls pagetable_dtor_free(), so moving to
-> pagetable_dtor_free() means moving to __tlb_remove_table(). Right?
+> I am only talking about this patch. pagetable_dtor() code above is
+> the same pagetable_pte_dtor() below - it is only the function name
+> that changed. So why to move the function body? Anyway, that is
 
-Right. But you Subject and description claim "... also move the
-pagetable_dtor()" not to pagetable_dtor_free() - which is another
-function.
-
-> And the main purpose of this patch is also to move pagetable_dtor()
-> to __tlb_remove_table(). So I think this description makes sense?
-
-The patch makes sense, but the description it is incorrect ;)
+Ah, I just don't want to put pagetable_dtor() in between
+pagetable_pte_ctor() and ___pte_offset_map(), so I moved it above
+pagetable_pte_ctor(). No other special reason. ;)
 
 Thanks!
+
+> just a nit.
+> 
+>> Thanks!
+> 
+>>>> -static inline void pagetable_pte_dtor(struct ptdesc *ptdesc)
+>>>> -{
+>>>> -	struct folio *folio = ptdesc_folio(ptdesc);
+>>>> -
+>>>> -	ptlock_free(ptdesc);
+>>>> -	__folio_clear_pgtable(folio);
+>>>> -	lruvec_stat_sub_folio(folio, NR_PAGETABLE);
+>>>> -}
+> 
+> Thank you!
 
