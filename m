@@ -4,72 +4,72 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AA78E77198
-	for <linux-um@archiver.kernel.org>; Mon,  6 Jan 2025 10:35:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 165EEE77188
+	for <linux-um@archiver.kernel.org>; Mon,  6 Jan 2025 10:36:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=T/dIATF0B0cb2CjV4kpJjZfFPga/hCk4zk30iJIHW7w=; b=bEbOY/nafdvpdlPW1sOGK8vseZ
-	zmvKBqMyxkh98auMq0bQ+g3mcy1PQV089ySZJmv7zaCb03Py3tsGi1o8qdNMryYXj4vQNkjHDKVuN
-	vlctGTIMGSmCpOV1siiQ5E/JO83L92Cl7UvYhG4GyA0vUrlkmN92S/hSO+6IiwvkZIcNvtvrYjDjJ
-	v36lFM9AFcMYGzrqWVPISpqku4KwnI6fc9Gi4+n6XxNg6uP+cAk+C0nYPLrKi8id2MyzuDwLNtn2U
-	BT6QvxWUJOjwM4SDeoKj+pqox9CSqkWTnZm73A0j7Sp/uMwW2gGSs+Gcq2tqbZUaduU582setmNnR
-	sxS5VZsg==;
+	bh=dnAi9vboNreX09uRn4QgN1f6lRQiYdckkGm/8S9k+Vc=; b=Wkey8ANZBU7VYaR/zlcSNfk1il
+	zVBMyZPRFb4WeagERL7v0qQWJ/wWD3FZ4udm9tlE51DZibn171Qr05B+Jv+tNxRuVQ1QkxQ16YaFi
+	6o48fW2turBZDGH2J7L5qYdRYpA6mGfscFwb7UEEnpQvJFQA+9WuSx3dITpUahnI6tyh9/afK5qIg
+	GMAcXib4SYdyQECfOf4+ijO1x/o6PNuynUr2mUzJbyYruDsX+ngfhb3Xa6mO0UL1XevLGF5RuQ2Hi
+	XetPbUBT30GehLcjsQl2Y9vFKsza8M6B3Frgo1g0TcUIAX1f7N+GQ8lp2N6r6D46v1bCo94GdNlrM
+	u14gGh0Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tUkS2-00000000sGh-3VZB;
-	Mon, 06 Jan 2025 10:35:14 +0000
+	id 1tUkTG-00000000scR-3ZNR;
+	Mon, 06 Jan 2025 10:36:30 +0000
 Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tUkQe-00000000rxs-35Yb;
-	Mon, 06 Jan 2025 10:33:49 +0000
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 505NaE33006668;
-	Mon, 6 Jan 2025 10:33:02 GMT
+	id 1tUkS1-00000000sFk-43P8;
+	Mon, 06 Jan 2025 10:35:15 +0000
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 505JvJen031175;
+	Mon, 6 Jan 2025 10:34:50 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=T/dIATF0B0cb2CjV4kpJjZfFPga/hC
-	k4zk30iJIHW7w=; b=UNSjWw3irJn0V+Dm8j5t3FNW5/wXx/WChR9S+1E2fwnee6
-	3YnxLlHQxOWH5zrs+0j3Lht+s4UrTI6g7Yg1KPB8FMCugDt75nNJJWZKMmbDbPht
-	aD4e1ztejD6AY9RigrcvvmP08x+kE9ZPTuYPeo60tFTmnQ8k4Cpe4cZrulHW0baX
-	bOFNUKH9z8P8+JW+mRFxmH7ld8nXAdzH+SB/wWVmxjkHXf+l7Q0PcRAwggyYoIXJ
-	RPu2iCOjOnvWnlY1gzTc7zEiBMqw+MBx8ifutL9cQhg4trkc8IU7fa53qIVbDErN
-	zLxsI17bxYOGqDtgLVqTsRSbTQbHdK5UUjCL9AUQ==
+	:references:subject:to; s=pp1; bh=dnAi9vboNreX09uRn4QgN1f6lRQiYd
+	ckkGm/8S9k+Vc=; b=lJjDdKQbHBAfb2paVM4758NXe1/08nF6JK3uPflEn31ywo
+	1C0/oBGvo+Ljgoc8PbS/JHw2VSdo16T40bu7fqXETUxwGPxIHe1vYQpzGB/IVJ/+
+	ILYsydLUu1DCIt7AGPJsrcByuGV5RY8fiD4Yd44lrKx9+HqXFnP9gd9cHbonHYbC
+	BJlVtgSazqQQEHcEXS23IfkMVxl57CRM9NGSfC3DnvIhpP4n/W/sv7O7sr43fum0
+	M8q7Sscq7ZMICtfmFQLksYfQNImyVC3WC29iJ+rIJHTum6ej9wbIdZUXURyvohT5
+	EmZwj35ZLWmpFz1qlcU0aEk9eaRHKtXv7XMrc4xQ==
 Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4403waj0t2-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43yuj535pe-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 06 Jan 2025 10:33:02 +0000 (GMT)
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 506AX1FB005709;
-	Mon, 6 Jan 2025 10:33:01 GMT
+	Mon, 06 Jan 2025 10:34:50 +0000 (GMT)
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 506AYna5006101;
+	Mon, 6 Jan 2025 10:34:49 GMT
 Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4403waj0sx-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43yuj535pb-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 06 Jan 2025 10:33:01 +0000 (GMT)
+	Mon, 06 Jan 2025 10:34:49 +0000 (GMT)
 Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 506A0LB9008869;
-	Mon, 6 Jan 2025 10:33:00 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 43yfpyndxu-1
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 5069LKLx008875;
+	Mon, 6 Jan 2025 10:34:48 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 43yfpyne4b-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 06 Jan 2025 10:33:00 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 506AWwE135127994
+	Mon, 06 Jan 2025 10:34:48 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 506AYkCL50004474
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 6 Jan 2025 10:32:58 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8AC1920049;
-	Mon,  6 Jan 2025 10:32:58 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 535C720040;
-	Mon,  6 Jan 2025 10:32:56 +0000 (GMT)
+	Mon, 6 Jan 2025 10:34:46 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9455920040;
+	Mon,  6 Jan 2025 10:34:46 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5C37F20043;
+	Mon,  6 Jan 2025 10:34:44 +0000 (GMT)
 Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.179.15.34])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon,  6 Jan 2025 10:32:56 +0000 (GMT)
-Date: Mon, 6 Jan 2025 11:32:54 +0100
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Mon,  6 Jan 2025 10:34:44 +0000 (GMT)
+Date: Mon, 6 Jan 2025 11:34:42 +0100
 From: Alexander Gordeev <agordeev@linux.ibm.com>
 To: Qi Zheng <zhengqi.arch@bytedance.com>
 Cc: peterz@infradead.org, kevin.brodsky@arm.com, palmer@dabbelt.com,
@@ -88,29 +88,28 @@ Cc: peterz@infradead.org, kevin.brodsky@arm.com, palmer@dabbelt.com,
         linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
         linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org,
         linux-um@lists.infradead.org
-Subject: Re: [PATCH v4 06/15] s390: pgtable: add statistics for PUD and P4D
- level page table
-Message-ID: <Z3uxVkg3i7zXI92e@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+Subject: Re: [PATCH v4 07/15] mm: pgtable: introduce pagetable_dtor()
+Message-ID: <Z3uxwiEhYHDqdTh3@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
 References: <cover.1735549103.git.zhengqi.arch@bytedance.com>
- <35be22a2b1666df729a9fc108c2da5cce266e4be.1735549103.git.zhengqi.arch@bytedance.com>
+ <8ada95453180c71b7fca92b9a9f11fa0f92d45a6.1735549103.git.zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <35be22a2b1666df729a9fc108c2da5cce266e4be.1735549103.git.zhengqi.arch@bytedance.com>
+In-Reply-To: <8ada95453180c71b7fca92b9a9f11fa0f92d45a6.1735549103.git.zhengqi.arch@bytedance.com>
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 3z7EZUf66yDmnmtJgcHtcRdfzcBMN59A
-X-Proofpoint-ORIG-GUID: jOq3BOzX-nfrjMJZAlUBmLDYevP81AVQ
+X-Proofpoint-GUID: EI5YeJeBWRmXu7KfUK8OQ8xMPr6rjfLI
+X-Proofpoint-ORIG-GUID: 1-ZrVK8NzjkPVWjFoOuBxf3mikBbpEnE
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
  definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=650
- lowpriorityscore=0 spamscore=0 suspectscore=0 bulkscore=0 mlxscore=0
- clxscore=1011 adultscore=0 impostorscore=0 priorityscore=1501
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2411120000 definitions=main-2501060093
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1011
+ malwarescore=0 priorityscore=1501 bulkscore=0 spamscore=0 impostorscore=0
+ mlxlogscore=571 phishscore=0 suspectscore=0 mlxscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2411120000
+ definitions=main-2501060093
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250106_023348_892441_04992112 
-X-CRM114-Status: GOOD (  20.97  )
+X-CRM114-CacheID: sfid-20250106_023514_160466_8875D05C 
+X-CRM114-Status: GOOD (  21.49  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -125,71 +124,59 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, Dec 30, 2024 at 05:07:41PM +0800, Qi Zheng wrote:
-> Like PMD and PTE level page table, also add statistics for PUD and P4D
-> page table.
+On Mon, Dec 30, 2024 at 05:07:42PM +0800, Qi Zheng wrote:
+> The pagetable_p*_dtor() are exactly the same except for the handling of
+> ptlock. If we make ptlock_free() handle the case where ptdesc->ptl is
+> NULL and remove VM_BUG_ON_PAGE() from pmd_ptlock_free(), we can unify
+> pagetable_p*_dtor() into one function. Let's introduce pagetable_dtor()
+> to do this.
+> 
+> Later, pagetable_dtor() will be moved to tlb_remove_ptdesc(), so that
+> ptlock and page table pages can be freed together (regardless of whether
+> RCU is used). This prevents the use-after-free problem where the ptlock
+> is freed immediately but the page table pages is freed later via RCU.
+> 
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> Originally-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ...
-> diff --git a/arch/s390/include/asm/tlb.h b/arch/s390/include/asm/tlb.h
-> index e95b2c8081eb8..b946964afce8e 100644
-> --- a/arch/s390/include/asm/tlb.h
-> +++ b/arch/s390/include/asm/tlb.h
-> @@ -110,24 +110,6 @@ static inline void pmd_free_tlb(struct mmu_gather *tlb, pmd_t *pmd,
->  	tlb_remove_ptdesc(tlb, pmd);
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 5d82f42ddd5cc..cad11fa10c192 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -2992,6 +2992,15 @@ static inline bool ptlock_init(struct ptdesc *ptdesc) { return true; }
+>  static inline void ptlock_free(struct ptdesc *ptdesc) {}
+>  #endif /* defined(CONFIG_SPLIT_PTE_PTLOCKS) */
+>  
+> +static inline void pagetable_dtor(struct ptdesc *ptdesc)
+> +{
+> +	struct folio *folio = ptdesc_folio(ptdesc);
+> +
+> +	ptlock_free(ptdesc);
+> +	__folio_clear_pgtable(folio);
+> +	lruvec_stat_sub_folio(folio, NR_PAGETABLE);
+> +}
+> +
+
+If I am not mistaken, it is just pagetable_pte_dtor() rename.
+What is the point in moving the code around?
+
+>  static inline bool pagetable_pte_ctor(struct ptdesc *ptdesc)
+>  {
+>  	struct folio *folio = ptdesc_folio(ptdesc);
+> @@ -3003,15 +3012,6 @@ static inline bool pagetable_pte_ctor(struct ptdesc *ptdesc)
+>  	return true;
 >  }
 >  
-> -/*
-> - * p4d_free_tlb frees a pud table and clears the CRSTE for the
-> - * region second table entry from the tlb.
-> - * If the mm uses a four level page table the single p4d is freed
-> - * as the pgd. p4d_free_tlb checks the asce_limit against 8PB
-> - * to avoid the double free of the p4d in this case.
-> - */
-> -static inline void p4d_free_tlb(struct mmu_gather *tlb, p4d_t *p4d,
-> -				unsigned long address)
+> -static inline void pagetable_pte_dtor(struct ptdesc *ptdesc)
 > -{
-> -	if (mm_p4d_folded(tlb->mm))
-> -		return;
-> -	__tlb_adjust_range(tlb, address, PAGE_SIZE);
-> -	tlb->mm->context.flush_mm = 1;
-> -	tlb->freed_tables = 1;
-> -	tlb_remove_ptdesc(tlb, p4d);
+> -	struct folio *folio = ptdesc_folio(ptdesc);
+> -
+> -	ptlock_free(ptdesc);
+> -	__folio_clear_pgtable(folio);
+> -	lruvec_stat_sub_folio(folio, NR_PAGETABLE);
 > -}
 > -
->  /*
->   * pud_free_tlb frees a pud table and clears the CRSTE for the
->   * region third table entry from the tlb.
-> @@ -140,11 +122,30 @@ static inline void pud_free_tlb(struct mmu_gather *tlb, pud_t *pud,
->  {
->  	if (mm_pud_folded(tlb->mm))
->  		return;
-> +	pagetable_pud_dtor(virt_to_ptdesc(pud));
->  	tlb->mm->context.flush_mm = 1;
->  	tlb->freed_tables = 1;
->  	tlb->cleared_p4ds = 1;
->  	tlb_remove_ptdesc(tlb, pud);
->  }
->  
-> +/*
-> + * p4d_free_tlb frees a p4d table and clears the CRSTE for the
-> + * region second table entry from the tlb.
-> + * If the mm uses a four level page table the single p4d is freed
-> + * as the pgd. p4d_free_tlb checks the asce_limit against 8PB
-> + * to avoid the double free of the p4d in this case.
-> + */
-> +static inline void p4d_free_tlb(struct mmu_gather *tlb, p4d_t *p4d,
-> +				unsigned long address)
-> +{
-> +	if (mm_p4d_folded(tlb->mm))
-> +		return;
-> +	pagetable_p4d_dtor(virt_to_ptdesc(p4d));
-> +	__tlb_adjust_range(tlb, address, PAGE_SIZE);
-> +	tlb->mm->context.flush_mm = 1;
-> +	tlb->freed_tables = 1;
-> +	tlb_remove_ptdesc(tlb, p4d);
-> +}
-
-I understand that you want to sort p.._free_tlb() routines, but please
-do not move the code around or make a separate follow-up patch.
-
-Thanks!
+>  pte_t *___pte_offset_map(pmd_t *pmd, unsigned long addr, pmd_t *pmdvalp);
+>  static inline pte_t *__pte_offset_map(pmd_t *pmd, unsigned long addr,
+>  			pmd_t *pmdvalp)
 
