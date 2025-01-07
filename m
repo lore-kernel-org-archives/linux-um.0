@@ -4,145 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC7BCE77199
-	for <linux-um@archiver.kernel.org>; Tue,  7 Jan 2025 15:03:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42CBCE77197
+	for <linux-um@archiver.kernel.org>; Tue,  7 Jan 2025 21:08:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=nGMTr1inoVWG3ARe8QoGoEOSwdCntuqZy8bhdK6O/ME=; b=VHqd6/XNPKqxb0T1PvZHef0/w3
-	EzvbeTNhsJnRLQWAvxCnuQGGKvC10C6NVtJLJ+w2KD6wnqsogw2ZuRllN9aaShE5lYRKNg/lwgx86
-	nEVGB/beWyHVFQ+bXuUkB0KzFrckIth9htwi6Za15c9Am2fVyDksGEE1cED9v7ZyYDkD3O//OLWK1
-	yhQ5Z2c9CdkvvGGGkYQ3ojxOGpl2S62bQU6AUPL2dpudvR2ROpqxnuLqbnrtQIYjKCrsgHhnx6lg0
-	/bflM95m5kSY1r4G41/P0cAncZkf3AyrdTZikbDDNB82TLQqtQ/td3YwQv9Gm2+YAJy0mnSb3mOLs
-	BLpB2Z6A==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=F0W0PeuiyfBVSBBJFcPSxl1EJHKd/sfkxZP/U8feEIc=; b=0cpU+Nj8v70NuMRMGn0nTX82OV
+	5fqMGqMMFJ7oBk2oDj0SWB07WPdIrs8LLErwbTkvTCKNPRl2eAyvX+5qFMPWjWu/q2nr1OVExpD/K
+	MFMNr4iXUlcmqGI6PM9K3tizNdGRioCXzrCARokGEAvV0FL/Q8nDCnlIExoiPyAYWupnCpjAcUG1l
+	Gu2qAo8XPwwTd8q4Ggzw4RVCVZj/wM/zg18fOWOMygcbpEfYl9q9ixks59uxdaJXlZVqBDFFS2RFw
+	V5Ok0dv95ySwRDX5KcDBXcTrRabCIp6ujfnnwYifADrofgy4yGF5iNqFiel+o89yZQl6htXYeHpmj
+	Hlc5BWRA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tVB7L-00000005Lki-2WZD;
-	Tue, 07 Jan 2025 15:03:39 +0000
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5])
+	id 1tVGo2-00000006IfI-1wIt;
+	Tue, 07 Jan 2025 21:08:06 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tVB70-00000005Lcm-2iCj;
-	Tue, 07 Jan 2025 15:03:19 +0000
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 50785q0m018311;
-	Tue, 7 Jan 2025 15:02:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=nGMTr1inoVWG3ARe8QoGoEOSwdCntu
-	qZy8bhdK6O/ME=; b=rdj4BTKquX38fA+V7vs9vGrg6z7HxUyoh1JCIFg2qPrBrc
-	ovRrqMTxob92ukiN9TlpZCs7CVUaqv6rh4Mi5tAIkhlcCaduaExoYeYLzmHkaH1C
-	S0jV8pQzj2Q2N++he2cxLihvsXN9Ws2JTtsztsnqZdNHB0F+gy5J9PuEu1tgZtJk
-	XpYyXE/McfMm5JLsDDKSEa0f3gOdZvqdAytY6OUzDZe71qUCT9y2i1ZigqqwPHmx
-	1mK+SyY6FXGKya5ump+AzYcnbek4K8yEjS0n+sKJkfNM1URBoiNo/3Sb4PjRN+s0
-	zgkOb4fRUrznizbOxQ8cOjfYiVbiPNEGSmJygikg==
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4410f39tfg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 07 Jan 2025 15:02:55 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 507E2w4n027938;
-	Tue, 7 Jan 2025 15:02:54 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 43yhhk2t7y-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 07 Jan 2025 15:02:54 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 507F2nAY55837076
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 7 Jan 2025 15:02:50 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C602420043;
-	Tue,  7 Jan 2025 15:02:49 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 683182004D;
-	Tue,  7 Jan 2025 15:02:48 +0000 (GMT)
-Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.155.204.135])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Tue,  7 Jan 2025 15:02:48 +0000 (GMT)
-Date: Tue, 7 Jan 2025 16:02:47 +0100
-From: Alexander Gordeev <agordeev@linux.ibm.com>
-To: Guo Weikang <guoweikang.kernel@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Mike Rapoport <rppt@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sam Creasey <sammy@sammy.net>, Huacai Chen <chenhuacai@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Oreoluwa Babatunde <quic_obabatun@quicinc.com>,
-        rafael.j.wysocki@intel.com, Palmer Dabbelt <palmer@rivosinc.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Easwar Hariharan <eahariha@linux.microsoft.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Ingo Molnar <mingo@kernel.org>, Dave Hansen <dave.hansen@intel.com>,
-        Christian Brauner <brauner@kernel.org>, KP Singh <kpsingh@kernel.org>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Matt Turner <mattst88@gmail.com>, Russell King <linux@armlinux.org.uk>,
-        WANG Xuerui <kernel@xen0n.name>, Michael Ellerman <mpe@ellerman.id.au>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>, Helge Deller <deller@gmx.de>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Naveen N Rao <naveen@kernel.org>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Geoff Levand <geoff@infradead.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Andreas Larsson <andreas@gaisler.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        kasan-dev@googlegroups.com, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-acpi@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-omap@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mm@kvack.org, linux-pm@vger.kernel.org,
-        Xi Ruoyao <xry111@xry111.site>
-Subject: Re: [PATCH v7] mm/memblock: Add memblock_alloc_or_panic interface
-Message-ID: <Z31CF9f//ZD+VH59@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-References: <20241222111537.2720303-1-guoweikang.kernel@gmail.com>
+	id 1tVGo0-00000006Ieq-0Atm
+	for linux-um@lists.infradead.org;
+	Tue, 07 Jan 2025 21:08:05 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id 455255C42B7;
+	Tue,  7 Jan 2025 21:07:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE716C4CED6;
+	Tue,  7 Jan 2025 21:08:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736284082;
+	bh=FsQ9rVojwWSNItZQx3DH9iKfZiN5ugoQFXCHmx/YGs4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=ahYA9h4/5faYWYask1/nxKmAo5pgfhc6McbePC0zE/yH7diy68r2ySjtzFjIRM6+H
+	 PcpNp6dvXy4s4ZZRU6aAEEJKCl06Durs6E9t6YOP3Xr2xZfOYp0XcOFVh8TMUJPUJJ
+	 JV9CUye45CTcLdYlWtQKHgKDAabz0MvYwWhNQBf92o0m0i27SI+qa1GnKvWCUYyc54
+	 R0vyiOdQQaaQkMOlU0fJhenifxe0RGCRF8XLo+GPfEAg0WhmaQadyxJp7aLYBuxXBR
+	 T+7wly1ZSgnRrG1wDYU75zQQsgf4BL4R/eF1x5J4m6XhtEDpoNs6L7oYOq1DR1ih5Q
+	 aXcASeqiamoMA==
+From: SeongJae Park <sj@kernel.org>
+To: Benjamin Berg <benjamin@sipsolutions.net>
+Cc: SeongJae Park <sj@kernel.org>,
+	linux-um@lists.infradead.org,
+	Benjamin Berg <benjamin.berg@intel.com>
+Subject: Re: [PATCH] um: add back support for FXSAVE registers
+Date: Tue,  7 Jan 2025 13:07:58 -0800
+Message-Id: <20250107210758.80762-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.5
+In-Reply-To: <20241204074827.1582917-1-benjamin@sipsolutions.net>
+References: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241222111537.2720303-1-guoweikang.kernel@gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: by_phAXyWBB4rrGUxAvoGmZnyCdgAMa_
-X-Proofpoint-ORIG-GUID: by_phAXyWBB4rrGUxAvoGmZnyCdgAMa_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=985
- spamscore=0 lowpriorityscore=0 adultscore=0 malwarescore=0 impostorscore=0
- bulkscore=0 phishscore=0 suspectscore=0 priorityscore=1501 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2411120000
- definitions=main-2501070126
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250107_070318_801479_58D2202B 
-X-CRM114-Status: GOOD (  24.65  )
+X-CRM114-CacheID: sfid-20250107_130804_124450_0CE8ECDC 
+X-CRM114-Status: GOOD (  13.32  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -157,155 +72,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Sun, Dec 22, 2024 at 07:15:37PM +0800, Guo Weikang wrote:
+Hello,
 
-Hi Guo,
+On Wed, 4 Dec 2024 08:48:27 +0100 Benjamin Berg <benjamin@sipsolutions.net> wrote:
 
-> Before SLUB initialization, various subsystems used memblock_alloc to
-> allocate memory. In most cases, when memory allocation fails, an immediate
-> panic is required. To simplify this behavior and reduce repetitive checks,
-> introduce `memblock_alloc_or_panic`. This function ensures that memory
-> allocation failures result in a panic automatically, improving code
-> readability and consistency across subsystems that require this behavior.
+> From: Benjamin Berg <benjamin.berg@intel.com>
+> 
+> It was reported that qemu may not enable the XSTATE CPU extension, which
+> is a requirement after commit 3f17fed21491 ("um: switch to regset API
+> and depend on XSTATE"). Add a fallback to use FXSAVE (FP registers on
+> x86_64 and XFP on i386) which is just a shorter version of the same
+> data. The only difference is that the XSTATE magic should not be set in
+> the signal frame.
+> 
+> Note that this still drops support for the older i386 FP register layout
+> as supporting this would require more backward compatibility to build a
+> correct signal frame.
+> 
+> Fixes: 3f17fed21491 ("um: switch to regset API and depend on XSTATE")
+> Reported-by: SeongJae Park <sj@kernel.org>
+> Closes: https://lore.kernel.org/r/20241203070218.240797-1-sj@kernel.org
+> Tested-by: SeongJae Park <sj@kernel.org>
+> Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
 
-I believe, you also want to make similar function against memblock_alloc_low().
+Seems this patch is not yet merged into uml/next or uml/fixes.  May I ask the
+timeline or blockers for this patch?
 
-Please, find s390 comments below.
 
-...
+Thanks,
+SJ
 
-> diff --git a/arch/s390/kernel/numa.c b/arch/s390/kernel/numa.c
-> index ddc1448ea2e1..a33e20f73330 100644
-> --- a/arch/s390/kernel/numa.c
-> +++ b/arch/s390/kernel/numa.c
-> @@ -22,10 +22,7 @@ void __init numa_setup(void)
->  	node_set(0, node_possible_map);
->  	node_set_online(0);
->  	for (nid = 0; nid < MAX_NUMNODES; nid++) {
-> -		NODE_DATA(nid) = memblock_alloc(sizeof(pg_data_t), 8);
-> -		if (!NODE_DATA(nid))
-> -			panic("%s: Failed to allocate %zu bytes align=0x%x\n",
-> -			      __func__, sizeof(pg_data_t), 8);
-> +		NODE_DATA(nid) = memblock_alloc_or_panic(sizeof(pg_data_t), 8);
->  	}
-
-Please, also remove the cycle body brackets.
-
->  	NODE_DATA(0)->node_spanned_pages = memblock_end_of_DRAM() >> PAGE_SHIFT;
->  	NODE_DATA(0)->node_id = 0;
-> diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
-> index 0ce550faf073..1298f0860733 100644
-> --- a/arch/s390/kernel/setup.c
-> +++ b/arch/s390/kernel/setup.c
-> @@ -376,11 +376,7 @@ static unsigned long __init stack_alloc_early(void)
->  {
->  	unsigned long stack;
->  
-> -	stack = (unsigned long)memblock_alloc(THREAD_SIZE, THREAD_SIZE);
-> -	if (!stack) {
-> -		panic("%s: Failed to allocate %lu bytes align=0x%lx\n",
-> -		      __func__, THREAD_SIZE, THREAD_SIZE);
-> -	}
-> +	stack = (unsigned long)memblock_alloc_or_panic(THREAD_SIZE, THREAD_SIZE);
->  	return stack;
->  }
->  
-> @@ -504,10 +500,7 @@ static void __init setup_resources(void)
->  	bss_resource.end = __pa_symbol(__bss_stop) - 1;
->  
->  	for_each_mem_range(i, &start, &end) {
-> -		res = memblock_alloc(sizeof(*res), 8);
-> -		if (!res)
-> -			panic("%s: Failed to allocate %zu bytes align=0x%x\n",
-> -			      __func__, sizeof(*res), 8);
-> +		res = memblock_alloc_or_panic(sizeof(*res), 8);
->  		res->flags = IORESOURCE_BUSY | IORESOURCE_SYSTEM_RAM;
->  
->  		res->name = "System RAM";
-> @@ -526,10 +519,7 @@ static void __init setup_resources(void)
->  			    std_res->start > res->end)
->  				continue;
->  			if (std_res->end > res->end) {
-> -				sub_res = memblock_alloc(sizeof(*sub_res), 8);
-> -				if (!sub_res)
-> -					panic("%s: Failed to allocate %zu bytes align=0x%x\n",
-> -					      __func__, sizeof(*sub_res), 8);
-> +				sub_res = memblock_alloc_or_panic(sizeof(*sub_res), 8);
->  				*sub_res = *std_res;
->  				sub_res->end = res->end;
->  				std_res->start = res->end + 1;
-> @@ -816,9 +806,7 @@ static void __init setup_randomness(void)
->  {
->  	struct sysinfo_3_2_2 *vmms;
->  
-> -	vmms = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
-> -	if (!vmms)
-> -		panic("Failed to allocate memory for sysinfo structure\n");
-> +	vmms = memblock_alloc_or_panic(PAGE_SIZE, PAGE_SIZE);
->  	if (stsi(vmms, 3, 2, 2) == 0 && vmms->count)
->  		add_device_randomness(&vmms->vm, sizeof(vmms->vm[0]) * vmms->count);
->  	memblock_free(vmms, PAGE_SIZE);
-> diff --git a/arch/s390/kernel/smp.c b/arch/s390/kernel/smp.c
-> index 822d8e6f8717..d77aaefb59bd 100644
-> --- a/arch/s390/kernel/smp.c
-> +++ b/arch/s390/kernel/smp.c
-> @@ -611,9 +611,9 @@ void __init smp_save_dump_ipl_cpu(void)
->  	if (!dump_available())
->  		return;
->  	sa = save_area_alloc(true);
-> -	regs = memblock_alloc(512, 8);
-> -	if (!sa || !regs)
-> +	if (!sa)
->  		panic("could not allocate memory for boot CPU save area\n");
-
-Please, replace memblock_alloc() with memblock_alloc_or_panic() in
-save_area_alloc() and remove the error handling here and also in
-smp_save_dump_secondary_cpus().
-
-> +	regs = memblock_alloc_or_panic(512, 8);
->  	copy_oldmem_kernel(regs, __LC_FPREGS_SAVE_AREA, 512);
->  	save_area_add_regs(sa, regs);
->  	memblock_free(regs, 512);
-> @@ -792,10 +792,7 @@ void __init smp_detect_cpus(void)
->  	u16 address;
->  
->  	/* Get CPU information */
-> -	info = memblock_alloc(sizeof(*info), 8);
-> -	if (!info)
-> -		panic("%s: Failed to allocate %zu bytes align=0x%x\n",
-> -		      __func__, sizeof(*info), 8);
-> +	info = memblock_alloc_or_panic(sizeof(*info), 8);
->  	smp_get_core_info(info, 1);
->  	/* Find boot CPU type */
->  	if (sclp.has_core_type) {
-> diff --git a/arch/s390/kernel/topology.c b/arch/s390/kernel/topology.c
-> index 0fd56a1cadbd..cf5ee6032c0b 100644
-> --- a/arch/s390/kernel/topology.c
-> +++ b/arch/s390/kernel/topology.c
-> @@ -548,10 +548,7 @@ static void __init alloc_masks(struct sysinfo_15_1_x *info,
->  		nr_masks *= info->mag[TOPOLOGY_NR_MAG - offset - 1 - i];
->  	nr_masks = max(nr_masks, 1);
->  	for (i = 0; i < nr_masks; i++) {
-> -		mask->next = memblock_alloc(sizeof(*mask->next), 8);
-> -		if (!mask->next)
-> -			panic("%s: Failed to allocate %zu bytes align=0x%x\n",
-> -			      __func__, sizeof(*mask->next), 8);
-> +		mask->next = memblock_alloc_or_panic(sizeof(*mask->next), 8);
->  		mask = mask->next;
->  	}
->  }
-> @@ -569,10 +566,7 @@ void __init topology_init_early(void)
->  	}
->  	if (!MACHINE_HAS_TOPOLOGY)
->  		goto out;
-> -	tl_info = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
-> -	if (!tl_info)
-> -		panic("%s: Failed to allocate %lu bytes align=0x%lx\n",
-> -		      __func__, PAGE_SIZE, PAGE_SIZE);
-> +	tl_info = memblock_alloc_or_panic(PAGE_SIZE, PAGE_SIZE);
->  	info = tl_info;
->  	store_topology(info);
->  	pr_info("The CPU configuration topology of the machine is: %d %d %d %d %d %d / %d\n",
-
-Thanks!
+[...]
 
