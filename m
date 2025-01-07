@@ -4,41 +4,78 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9EAB2E77197
-	for <linux-um@archiver.kernel.org>; Tue,  7 Jan 2025 12:07:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id EF0C6E77198
+	for <linux-um@archiver.kernel.org>; Tue,  7 Jan 2025 12:32:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=TGGJkJPzJ/ul/QAPsmtmQeMD95tQCTIq4WEnha2ywd0=; b=OUND99TKF+ej8C0KtpqNNlxHWP
-	L59pLAqJXCna7sD8OlNOyIOEwQedApgLLkg73YaBiY/yHmj94PnSdWRqC8cr4oqRLnq6FtIfEIgiu
-	lgJt8mdmfrPqPecGCnjp3W5aAVumJwCR15o9HSD7I2I5yDqR7xXjFcwc1mpv39DIU50QSW0TqCPam
-	o+SLsXPRwiCdxcvjDrtGvLuzo4msnbBalTWBrPoFZxpBjGCW7jQbR9Fbq0FmVn4H3iwgqvf3hq8Qd
-	iscYjbHFio3KdJ8Rdiv46QsXI4zeW05NJNSrqb9guyYenrkZ9xCfFUTdPdtHnXnYzXGb+y/ky7Hwh
-	VsOU8oQw==;
+	bh=j2Sg0kNPwV4gGCFeUvrc0oDDUwUGkE4XjlNGrPro8W4=; b=WbVGLhSnVUaeVPVNpkAzhjoFCb
+	TauqQrEpz44yWhsyOudPDuQRDB6bMtEB7EZn72BMsflNQ4ogiywbrN+Nbt5m/5NZVM3XdawfVmo5P
+	r8u7ibTsrdY0n8/YWJD0Zxecue5MlEOIKQfAHum/v023PwEpBu8Hmbhass3m5ExUvHSVweEoqcn6F
+	iEzD/VcpzeB+zVPYLSxVRa9V6vWLvL7Ip3Wog7fbQhAyHv8veczoH541SHP3TVUjZyGxwfuXJ1uNm
+	nfrExYgwsqHBK0gqZ/NYjdkZry23Aw6qmSBH9xf1QNgUBZjRayMy9Uw6O6yEe35o6p+WnFe1N716G
+	SlGhL3Dg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tV8N6-00000004hGp-2fWG;
-	Tue, 07 Jan 2025 12:07:44 +0000
-Received: from foss.arm.com ([217.140.110.172])
-	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tV8Dz-00000004f0V-0tl7;
-	Tue, 07 Jan 2025 11:58:21 +0000
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E9DC6143D;
-	Tue,  7 Jan 2025 03:58:45 -0800 (PST)
-Received: from [10.44.160.93] (e126510-lin.lund.arm.com [10.44.160.93])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 187FC3F673;
-	Tue,  7 Jan 2025 03:58:09 -0800 (PST)
-Message-ID: <4a0b5edb-6fc7-4df4-93d9-ca834e6a760b@arm.com>
-Date: Tue, 7 Jan 2025 12:58:08 +0100
+	id 1tV8lQ-00000004mQg-125W;
+	Tue, 07 Jan 2025 12:32:52 +0000
+Received: from mail-pl1-x629.google.com ([2607:f8b0:4864:20::629])
+	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tV8k5-00000004m6s-10GR
+	for linux-um@lists.infradead.org;
+	Tue, 07 Jan 2025 12:31:37 +0000
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-2165cb60719so229299745ad.0
+        for <linux-um@lists.infradead.org>; Tue, 07 Jan 2025 04:31:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1736253088; x=1736857888; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=j2Sg0kNPwV4gGCFeUvrc0oDDUwUGkE4XjlNGrPro8W4=;
+        b=Tuumc6bTuLFON+vU/KMMCkkGo3ivZjdxJj3VDcd4+sPb9s4x8fEv/S33kUyGTnG218
+         QrmdHN9yj1OSWQjEXVJ+TRTte7kLZKcAP97llVKouQO0/H1gSXP7ZMZzc/HOdTvmDSrS
+         oMaV2U/WwYaI+kKxq2lOVqj23jbVEH2vm0AGHDDwyljpA/mSs+lN2MCEBbi2Jt+uFZJl
+         cXcnqW4Mu5Qf7ActvOEisPp8EowSd2C02HrCOkCkYjcmulnlv06M83bMjVVgWlEhk5oP
+         FgccGVuZ9ym8qewiNvKbPXiegM4Wq2z1uz4YbQgmph13U+skgJUQ3dXWuxV74rR4qd46
+         UDpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736253088; x=1736857888;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=j2Sg0kNPwV4gGCFeUvrc0oDDUwUGkE4XjlNGrPro8W4=;
+        b=au4C6aPbkvuKOr0s2MSWwczSA82rxECS9hcLE6yedPPTOzsjovRvTwJc6srfw9bu29
+         Lx73A28mY+AaNsm4gOTm7+s1qB+kuyZq1LKQvDbwSfQb0ocaQTMya+UMy3KKIxMzD1YY
+         94WRj1WpCGizEz9AFlODauAQ7pJLpXgmXxbI6FSly5SqFSSydvETZnbJSzvUD+OTbQY3
+         /IUlhoW3ShVjQtWcw1h9oorAlZIygNrCRnhBY6xIAtmKN05sw7LL0+K7u8luxIM7doiz
+         M+jy87sWUCRypep+5tZ2uq8uhas8goAkRj3wOrX3ty5ImxbkP1u56xfh8oq4WGWfO9Ae
+         UZSw==
+X-Forwarded-Encrypted: i=1; AJvYcCWjvo//+cARAX84BzmXPJPzdLINReuVyoAdr59uJXu9SiyybomAFaHQ5pYhxd7kTER+Qa24jtvG4w==@lists.infradead.org
+X-Gm-Message-State: AOJu0YyXsyT1D9x6B1o1zSHLd56Mq58WdrDmO9wB+msT05ovJ1K/ICzj
+	j53mQtZrf+nMcR7gSHxGko5uAlojIGUo8U8518cO0Oj2WvCp11CWMVczLQhTShg=
+X-Gm-Gg: ASbGncuKhkSpCV6cBcGj8dbxT+p0xa49L0jR3Av/OY66fVM5EgDRvzXGutJ7a4WP08h
+	1GFijDb4GDd3isuMxaIuGKz6BXpiwS4Xz+Iml/TbtPC4AZVrpBAnuamZn4LInBSh11oLJoFfcdt
+	8NkOYoISxp3cdOraybFdSxGwPHjsiznxZp0vkT4ziMpfkRkrZUF2Ed/1B1Ouleg7U86zN9rRcAC
+	BnnkrrZN0503xxCaVRxCPrj0V4f/UQE9jh6J2U3vYW9s87ZGCsQJVswcQMQ+pI4Kw7JtYtWXlnT
+	dxee
+X-Google-Smtp-Source: AGHT+IHdrC/g0o4yqle0rmLjmhkyYNUhmDJ4pfXjCTmOvwgBk4798gzhlJqtML37UPom2J/Tnd9DQg==
+X-Received: by 2002:a17:902:ce81:b0:216:282d:c692 with SMTP id d9443c01a7336-219e6ec1499mr788151455ad.34.1736253087824;
+        Tue, 07 Jan 2025 04:31:27 -0800 (PST)
+Received: from [10.4.33.153] ([139.177.225.247])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dca006fasm309326755ad.227.2025.01.07.04.31.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Jan 2025 04:31:27 -0800 (PST)
+Message-ID: <fca0d7de-b563-4d11-9ed8-c6b8290c4cf9@bytedance.com>
+Date: Tue, 7 Jan 2025 20:31:10 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v4 10/15] riscv: pgtable: move pagetable_dtor() to
  __tlb_remove_table()
-To: Qi Zheng <zhengqi.arch@bytedance.com>
+Content-Language: en-US
+To: Kevin Brodsky <kevin.brodsky@arm.com>
 Cc: agordeev@linux.ibm.com, palmer@dabbelt.com, tglx@linutronix.de,
  david@redhat.com, jannh@google.com, hughd@google.com, yuzhao@google.com,
  willy@infradead.org, muchun.song@linux.dev, vbabka@kernel.org,
@@ -65,14 +102,14 @@ References: <cover.1735549103.git.zhengqi.arch@bytedance.com>
  <de8756aa-dbf7-4f6f-91f0-934270397192@bytedance.com>
  <ee393a7f-d01e-4e5d-9bf8-779795613af1@arm.com>
  <07e0c05f-cb69-4263-885d-6d20d4442152@bytedance.com>
-Content-Language: en-GB
-From: Kevin Brodsky <kevin.brodsky@arm.com>
-In-Reply-To: <07e0c05f-cb69-4263-885d-6d20d4442152@bytedance.com>
-Content-Type: text/plain; charset=UTF-8
+ <4a0b5edb-6fc7-4df4-93d9-ca834e6a760b@arm.com>
+From: Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <4a0b5edb-6fc7-4df4-93d9-ca834e6a760b@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250107_035819_344021_134F1E8B 
-X-CRM114-Status: GOOD (  17.42  )
+X-CRM114-CacheID: sfid-20250107_043129_280909_A342B7A5 
+X-CRM114-Status: GOOD (  19.02  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -87,101 +124,121 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On 07/01/2025 11:51, Qi Zheng wrote:
-> [...]
->
-> Author: Qi Zheng <zhengqi.arch@bytedance.com>
-> Date:   Fri Dec 13 17:13:48 2024 +0800
->
->     mm: pgtable: completely move pagetable_dtor() to generic
-> tlb_remove_table()
->
->     For the generic tlb_remove_table(), it is implemented in the
-> following two
->     forms:
->
->     1) CONFIG_MMU_GATHER_TABLE_FREE is enabled
->
->     tlb_remove_table
->     --> generic __tlb_remove_table()
->
->     2) CONFIG_MMU_GATHER_TABLE_FREE is disabled
->
->     tlb_remove_table
->     --> tlb_remove_page
->
->     For case 1), the pagetable_dtor() has already been moved to generic
->     __tlb_remove_table().
->
->     For case 2), now only arm will call
-> tlb_remove_table()/tlb_remove_ptdesc()
->     when CONFIG_MMU_GATHER_TABLE_FREE is disabled. Let's move
-> pagetable_dtor()
->     completely to generic tlb_remove_table(), so that the
-> architectures can
->     follow more easily.
->
->     Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->
-> diff --git a/arch/arm/include/asm/tlb.h b/arch/arm/include/asm/tlb.h
-> index b8eebdb598631..ea4fbe7b17f6f 100644
-> --- a/arch/arm/include/asm/tlb.h
-> +++ b/arch/arm/include/asm/tlb.h
-> @@ -34,10 +34,6 @@ __pte_free_tlb(struct mmu_gather *tlb, pgtable_t
-> pte, unsigned long addr)
->  {
->         struct ptdesc *ptdesc = page_ptdesc(pte);
->
-> -#ifndef CONFIG_MMU_GATHER_TABLE_FREE
-> -       pagetable_dtor(ptdesc);
-> -#endif
 
-I guess this hunk will disappear since this call isn't present to start
-with.
 
-> -
->  #ifndef CONFIG_ARM_LPAE
->         /*
->          * With the classic ARM MMU, a pte page has two corresponding pmd
-> diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
-> index 69de47c7ef3c5..53ae7748f555b 100644
-> --- a/include/asm-generic/tlb.h
-> +++ b/include/asm-generic/tlb.h
-> @@ -220,14 +220,20 @@ static inline void __tlb_remove_table(void *table)
->
->  extern void tlb_remove_table(struct mmu_gather *tlb, void *table);
->
-> -#else /* !CONFIG_MMU_GATHER_HAVE_TABLE_FREE */
-> +#else /* !CONFIG_MMU_GATHER_TABLE_FREE */
+On 2025/1/7 19:58, Kevin Brodsky wrote:
+> On 07/01/2025 11:51, Qi Zheng wrote:
+>> [...]
+>>
+>> Author: Qi Zheng <zhengqi.arch@bytedance.com>
+>> Date:   Fri Dec 13 17:13:48 2024 +0800
+>>
+>>      mm: pgtable: completely move pagetable_dtor() to generic
+>> tlb_remove_table()
+>>
+>>      For the generic tlb_remove_table(), it is implemented in the
+>> following two
+>>      forms:
+>>
+>>      1) CONFIG_MMU_GATHER_TABLE_FREE is enabled
+>>
+>>      tlb_remove_table
+>>      --> generic __tlb_remove_table()
+>>
+>>      2) CONFIG_MMU_GATHER_TABLE_FREE is disabled
+>>
+>>      tlb_remove_table
+>>      --> tlb_remove_page
+>>
+>>      For case 1), the pagetable_dtor() has already been moved to generic
+>>      __tlb_remove_table().
+>>
+>>      For case 2), now only arm will call
+>> tlb_remove_table()/tlb_remove_ptdesc()
+>>      when CONFIG_MMU_GATHER_TABLE_FREE is disabled. Let's move
+>> pagetable_dtor()
+>>      completely to generic tlb_remove_table(), so that the
+>> architectures can
+>>      follow more easily.
+>>
+>>      Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 
-Good catch!
+I missed your Suggested-by, will add it in v5.
 
->
-> +static inline void tlb_remove_page(struct mmu_gather *tlb, struct
-> page *page);
+>>
+>> diff --git a/arch/arm/include/asm/tlb.h b/arch/arm/include/asm/tlb.h
+>> index b8eebdb598631..ea4fbe7b17f6f 100644
+>> --- a/arch/arm/include/asm/tlb.h
+>> +++ b/arch/arm/include/asm/tlb.h
+>> @@ -34,10 +34,6 @@ __pte_free_tlb(struct mmu_gather *tlb, pgtable_t
+>> pte, unsigned long addr)
+>>   {
+>>          struct ptdesc *ptdesc = page_ptdesc(pte);
+>>
+>> -#ifndef CONFIG_MMU_GATHER_TABLE_FREE
+>> -       pagetable_dtor(ptdesc);
+>> -#endif
+> 
+> I guess this hunk will disappear since this call isn't present to start
+> with.
 
-Nit: might be better to move the declaration up, e.g. above #ifdef
-CONFIG_MMU_GATHER_TABLE_FREE.
+Yes, I plan to add this in the patch #8, and remove it in this patch.
 
->  /*
->   * Without MMU_GATHER_TABLE_FREE the architecture is assumed to have
-> page based
->   * page directories and we can use the normal page batching to free
-> them.
->   */
-> -#define tlb_remove_table(tlb, page) tlb_remove_page((tlb), (page))
-> +static inline void tlb_remove_table(struct mmu_gather *tlb, void *table)
-> +{
-> +       struct page *page = (struct page *)table;
->
-> +       pagetable_dtor(page_ptdesc(page));
-> +       tlb_remove_page(tlb, page);
-> +}
->  #endif /* CONFIG_MMU_GATHER_TABLE_FREE */
->
->  #ifdef CONFIG_MMU_GATHER_RCU_TABLE_FREE
+> 
+>> -
+>>   #ifndef CONFIG_ARM_LPAE
+>>          /*
+>>           * With the classic ARM MMU, a pte page has two corresponding pmd
+>> diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
+>> index 69de47c7ef3c5..53ae7748f555b 100644
+>> --- a/include/asm-generic/tlb.h
+>> +++ b/include/asm-generic/tlb.h
+>> @@ -220,14 +220,20 @@ static inline void __tlb_remove_table(void *table)
+>>
+>>   extern void tlb_remove_table(struct mmu_gather *tlb, void *table);
+>>
+>> -#else /* !CONFIG_MMU_GATHER_HAVE_TABLE_FREE */
+>> +#else /* !CONFIG_MMU_GATHER_TABLE_FREE */
+> 
+> Good catch!
+> 
+>>
+>> +static inline void tlb_remove_page(struct mmu_gather *tlb, struct
+>> page *page);
+> 
+> Nit: might be better to move the declaration up, e.g. above #ifdef
+> CONFIG_MMU_GATHER_TABLE_FREE.
 
-Looks good to me otherwise.
+Now only the tlb_remove_table() below calls it, maybe it's better to
+keep the impact to minimum?
 
-- Kevin
+> 
+>>   /*
+>>    * Without MMU_GATHER_TABLE_FREE the architecture is assumed to have
+>> page based
+>>    * page directories and we can use the normal page batching to free
+>> them.
+>>    */
+>> -#define tlb_remove_table(tlb, page) tlb_remove_page((tlb), (page))
+>> +static inline void tlb_remove_table(struct mmu_gather *tlb, void *table)
+>> +{
+>> +       struct page *page = (struct page *)table;
+>>
+>> +       pagetable_dtor(page_ptdesc(page));
+>> +       tlb_remove_page(tlb, page);
+>> +}
+>>   #endif /* CONFIG_MMU_GATHER_TABLE_FREE */
+>>
+>>   #ifdef CONFIG_MMU_GATHER_RCU_TABLE_FREE
+> 
+> Looks good to me otherwise.
+
+I will add your Reviewed-by to all patches (except yours) in v5, can
+I also add it to this new added patch? (if we agree with the discussion
+above) ;)
+
+Thanks!
+
+> 
+> - Kevin
 
