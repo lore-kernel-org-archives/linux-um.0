@@ -4,126 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7C72DE7719A
-	for <linux-um@archiver.kernel.org>; Wed,  8 Jan 2025 08:37:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13066E77199
+	for <linux-um@archiver.kernel.org>; Wed,  8 Jan 2025 10:58:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=x40aCfPUIT+7f+SOGlgpQ1mZ5+3GERu3xGzgSvQpPds=; b=FZDK4j3mt6Yavks5qKlIgcq0Qj
-	pyWbk2Y7s3NAVFQGke+598lv4uznc61lJy5qirw70/+WmLrQc8IOtboabf4ICSHqRRPXjzXWnBshC
-	JgVy7VE83DpV4ZDMOiXYpC3+ld7JeThonIGXMr7+gCV3bR8JnD3z5Qj0er2g5aLni9y4WnkIuVxYo
-	UC6VGBbqXHZj5kyDYLgpxCsxzD4bDsYjr6XAE+pD6555WjJ7PnbqhD7Xg4opeRD3oSTVihBPFHL9+
-	xyUGknRWUeHQS/lsVpKgTlTgKKS3nYKbpXiMIRc7Q7Xo1iWGs45i4juAbRkK2Pd48je1aui0GQ/3a
-	mDtUwPOg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=ANUvPJPmCwfnSIifNyQzf/CqpAfBelwQQUJ3KUaRJ3k=; b=AREQNAlxZPA3axTmI1M4buybfE
+	Th33HwcEsU+qTtEe+d/7syifcum6n4FIyMAt+sUSeFQZcrBJY5hbspKARLQub4HHSFYjrxjw21Um1
+	Hskk03E31lvaq8tfbDFoivqB55llFFLAvoVFES+4OozPdNPFjH4SeiO8iipQ6ShwKtSjMqSL7DadI
+	CAE9hDq2h9vD7HpDeDpqkKzBoRCotfuGt9hLFJ2bAFVW7CnxraRP4BuagbrtKkQ9ZoSrNXV6lxtSZ
+	YU+N3xTRBjeF8zPFgXFGo1rXaah6GrcnRJ85G3JqyOFGsJYfWifmqYD+23f93kub1fwE/UY9k49M+
+	kFt8b6oQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tVRYs-00000007adp-14ab;
-	Wed, 08 Jan 2025 08:37:10 +0000
-Received: from mail-pl1-x631.google.com ([2607:f8b0:4864:20::631])
+	id 1tVTlX-000000086AW-0wpY;
+	Wed, 08 Jan 2025 10:58:23 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tVQ69-00000007MEK-03dq
+	id 1tVTaH-0000000831n-3Php
 	for linux-um@lists.infradead.org;
-	Wed, 08 Jan 2025 07:03:27 +0000
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-2166360285dso245990035ad.1
-        for <linux-um@lists.infradead.org>; Tue, 07 Jan 2025 23:03:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1736319804; x=1736924604; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x40aCfPUIT+7f+SOGlgpQ1mZ5+3GERu3xGzgSvQpPds=;
-        b=cErJa+dcoSJE/mn/pazulzWYx2uXaXj9Xlj2o9i9WZdxRON7ez0TOFJip6ALSYd/qu
-         Cdagq2A/hvRvp08ol/qzWvjJing3yqVfi1JYMzOS+uAiU9ogaoaHME81b9hzPnJXJOGT
-         f45zqDCdBnjDkpk8H5hagzryUskT3OMg9nao20IJ2QaUvyFkDODzVHlQQbtWpyZt8SM9
-         gs0aIAYCCZ9kVUURemUEgBlMH/4IZOpwuwNw5PMhP0OtYyiYnEnnpGlbLC3i8xL4d2QX
-         qz6zHafA8VIu4Wrul7beWcHdX42Cxe390v5vIWt5LMJXgrRP4zSMuuyQXMRfjl5NoPIk
-         QQag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736319804; x=1736924604;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x40aCfPUIT+7f+SOGlgpQ1mZ5+3GERu3xGzgSvQpPds=;
-        b=STSlWHQx1xs3RhLjaNYf7Ssr8IXDgR1L3Iz/7iU+VKUpay0GMlqh/w4411c4Vw9q9Q
-         x/gOTzJWa8Ly/6SUaO0CwZeHeqfs3j70MdaTlua3+RUu1J/2xpKtHhvVkuOVh6dmYNqa
-         wVq5utnqZpEMKgOidDjsLRppTMjYAbn28AUBns7F+D4KhaXQGkasg7qOqX3Tezg/2tjl
-         36Ydm63+yQTI2Li1Op2WFWidfR63zlNfraZlRlS/gCjAfOgyJZTdCKy+gTJYRWCm87Zf
-         AKu/E4ryFTK8EjThjD0adpGpu+CdfH7UxvE5QfuHfeU9FJq2R+E9Npb5tR+YjrB0MgtS
-         Eo+w==
-X-Forwarded-Encrypted: i=1; AJvYcCVD+w7zeAhBRIF2a5FyhHPZFCgcEsuu58hykj3Nqb+XChFbEsPnKC4TBvziTGrqBV/Cs6AyCeoVwQ==@lists.infradead.org
-X-Gm-Message-State: AOJu0YywZz23jXGz2Zz7YfTEJUU9swqEwNL8/8T70FKUW3FXb+2z2qdD
-	CSerK0SWlY3v5X/Ej0Uk19lzowufPxwsUhsqolg4j8Za3VeU3ZPU3f01hEaV/eM=
-X-Gm-Gg: ASbGncuoiUi0NRoCfxLX6KFJzpkswt8JzsusNsB9aPDFOuw6Ogu6Gy8lwhxPlQ1Ii6k
-	uPluCoAt2a4piBlKL3rFwsuQildyO7TniIyrCbKi/wvYLNMDXtkzpGVwet9LzQaYWGIgM+r4dyK
-	23pikdOXGSuip1kNWKZGAephfeknUblypCmhuce2ARuCHtNHROTaecPentyhv8uOYhiX5WYVZth
-	OkSG8y8XmGe9eQSSOmPcGKuqgYk4/MjhVHuSKiutGs9Tgz1lbOuFTrLfKuqXP/hEZANaekrFGcb
-	2hIuUlhPq1bH0AbDvxjmVMMhZko=
-X-Google-Smtp-Source: AGHT+IH8IKObAIjKqBGW3XQDBdiOawtDgYf1Tuj1urKOF9Kp4Be/TSELj5l2Ma8a+iBaK6i0ld/PMQ==
-X-Received: by 2002:a17:902:da8e:b0:216:410d:4c67 with SMTP id d9443c01a7336-21a83fb1395mr28350885ad.41.1736319804422;
-        Tue, 07 Jan 2025 23:03:24 -0800 (PST)
-Received: from C02DW0BEMD6R.bytedance.net ([139.177.225.244])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dca023a3sm320067275ad.250.2025.01.07.23.03.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jan 2025 23:03:23 -0800 (PST)
-From: Qi Zheng <zhengqi.arch@bytedance.com>
-To: peterz@infradead.org,
-	agordeev@linux.ibm.com,
-	kevin.brodsky@arm.com,
-	alex@ghiti.fr,
-	andreas@gaisler.com,
-	palmer@dabbelt.com,
-	tglx@linutronix.de,
-	david@redhat.com,
-	jannh@google.com,
-	hughd@google.com,
-	yuzhao@google.com,
-	willy@infradead.org,
-	muchun.song@linux.dev,
-	vbabka@kernel.org,
-	lorenzo.stoakes@oracle.com,
-	akpm@linux-foundation.org,
-	rientjes@google.com,
-	vishal.moola@gmail.com,
-	arnd@arndb.de,
-	will@kernel.org,
-	aneesh.kumar@kernel.org,
-	npiggin@gmail.com,
-	dave.hansen@linux.intel.com,
-	rppt@kernel.org,
-	ryan.roberts@arm.com
-Cc: linux-mm@kvack.org,
-	linux-arm-kernel@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org,
-	sparclinux@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	x86@kernel.org,
-	linux-arch@vger.kernel.org,
-	linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org,
-	linux-openrisc@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v5 16/17] mm: pgtable: move __tlb_remove_table_one() in x86 to generic file
-Date: Wed,  8 Jan 2025 14:57:32 +0800
-Message-Id: <aab8a449bc67167943fd2cb5aab0a3a23b7b1cd7.1736317725.git.zhengqi.arch@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <cover.1736317725.git.zhengqi.arch@bytedance.com>
-References: <cover.1736317725.git.zhengqi.arch@bytedance.com>
+	Wed, 08 Jan 2025 10:46:46 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=ANUvPJPmCwfnSIifNyQzf/CqpAfBelwQQUJ3KUaRJ3k=;
+	t=1736333205; x=1737542805; b=qDZ+/jSwLhDoFMCnxfzrBqxGGEmtS5lH889+7L0ePNAFBeC
+	9414dhQEyyUWjEujDRJ8NJfjbJg/xMkS482GC7bO4IMI9Q6pcYfoIFW+Qnecckra1m1t5i1m8E7NB
+	L7kBCvnEGgcGN+UhYe71Vuo8Qo5kyZbtBngWsawHL/ymsCmPtWsTOhzqLOEM35Kyy41Cls3LFY6jM
+	0cPw3l50l+hCS9IHu0VXern3Ay8ywQEzmSgD4fnOxMkFycMwlLMAlBTlga1kuHoBUOBuNK29bXZJW
+	t5qkkJWOmzjsGv0NaW7Rf/bx+ts0WBxcTfRT/4oVl5C4FnzCmf1Az3bYmTxvpy7w==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98)
+	(envelope-from <benjamin@sipsolutions.net>)
+	id 1tVTaC-00000008DOx-0Drd;
+	Wed, 08 Jan 2025 11:46:40 +0100
+Message-ID: <01be0810b37628a4f8cd6e4b64b68ff7bf9d4ace.camel@sipsolutions.net>
+Subject: Re: close_range is not available on older systems, preventing the
+ building of a UML kernel
+From: Benjamin Berg <benjamin@sipsolutions.net>
+To: development@efficientek.com, linux-um <linux-um@lists.infradead.org>
+Cc: Richard Weinberger <richard@nod.at>, Johannes Berg
+	 <johannes@sipsolutions.net>, Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Date: Wed, 08 Jan 2025 11:46:37 +0100
+In-Reply-To: <20250108022404.05e0de1e@crass-HP-ZBook-15-G2>
+References: <20250108022404.05e0de1e@crass-HP-ZBook-15-G2>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.2 (3.54.2-1.fc41) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250107_230325_096055_6CE256BC 
-X-CRM114-Status: UNSURE (   8.69  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250108_024645_847911_3319D49A 
+X-CRM114-Status: GOOD (  18.08  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -138,83 +74,45 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-The __tlb_remove_table_one() in x86 does not contain architecture-specific
-content, so move it to the generic file.
+Hi,
 
-Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-Reviewed-by: Kevin Brodsky <kevin.brodsky@arm.com>
----
- arch/x86/include/asm/tlb.h | 19 -------------------
- mm/mmu_gather.c            | 20 ++++++++++++++++++--
- 2 files changed, 18 insertions(+), 21 deletions(-)
+On Wed, 2025-01-08 at 02:24 -0600, Glenn Washburn wrote:
+> I'm wanting to build a UML kernel on Debian bullseye, which is at
+> kernel version 5.10, which does not support close_range(). It appears
+> as though close_range() support is required on the host since commit
+> 32e8eaf263d ("um: use execveat to create userspace MMs"). Was there a
+> conscious decision to break support for kernels less than 5.11, when
+> close_range() was added. What is the policy on support of the host
+> kernel? Since 5.4 is still supported as a longterm release. I think it
+> would be nice to at least support 5.4. Is there any interest in
+> removing this restriction?
+>=20
+> Also, this system is at glibc 2.31, which does not have execveat()
+> support, which is required by that same commit above. Since execveat()
+> has been supported since 3.19, this kernel should support it. Perhaps
+> the issue can be resolved by defining a syscall wrapper in the UM
+> headers if support is not found in glibc.
 
-diff --git a/arch/x86/include/asm/tlb.h b/arch/x86/include/asm/tlb.h
-index 3858dbf75880e..77f52bc1578a7 100644
---- a/arch/x86/include/asm/tlb.h
-+++ b/arch/x86/include/asm/tlb.h
-@@ -20,25 +20,6 @@ static inline void tlb_flush(struct mmu_gather *tlb)
- 	flush_tlb_mm_range(tlb->mm, start, end, stride_shift, tlb->freed_tables);
- }
- 
--#ifdef CONFIG_PT_RECLAIM
--static inline void __tlb_remove_table_one_rcu(struct rcu_head *head)
--{
--	struct ptdesc *ptdesc;
--
--	ptdesc = container_of(head, struct ptdesc, pt_rcu_head);
--	__tlb_remove_table(ptdesc);
--}
--
--static inline void __tlb_remove_table_one(void *table)
--{
--	struct ptdesc *ptdesc;
--
--	ptdesc = table;
--	call_rcu(&ptdesc->pt_rcu_head, __tlb_remove_table_one_rcu);
--}
--#define __tlb_remove_table_one __tlb_remove_table_one
--#endif /* CONFIG_PT_RECLAIM */
--
- static inline void invlpg(unsigned long addr)
- {
- 	asm volatile("invlpg (%0)" ::"r" (addr) : "memory");
-diff --git a/mm/mmu_gather.c b/mm/mmu_gather.c
-index 1e21022bcf339..7aa6f18c500b2 100644
---- a/mm/mmu_gather.c
-+++ b/mm/mmu_gather.c
-@@ -311,13 +311,29 @@ static inline void tlb_table_invalidate(struct mmu_gather *tlb)
- 	}
- }
- 
--#ifndef __tlb_remove_table_one
-+#ifdef CONFIG_PT_RECLAIM
-+static inline void __tlb_remove_table_one_rcu(struct rcu_head *head)
-+{
-+	struct ptdesc *ptdesc;
-+
-+	ptdesc = container_of(head, struct ptdesc, pt_rcu_head);
-+	__tlb_remove_table(ptdesc);
-+}
-+
-+static inline void __tlb_remove_table_one(void *table)
-+{
-+	struct ptdesc *ptdesc;
-+
-+	ptdesc = table;
-+	call_rcu(&ptdesc->pt_rcu_head, __tlb_remove_table_one_rcu);
-+}
-+#else
- static inline void __tlb_remove_table_one(void *table)
- {
- 	tlb_remove_table_sync_one();
- 	__tlb_remove_table(table);
- }
--#endif
-+#endif /* CONFIG_PT_RECLAIM */
- 
- static void tlb_remove_table_one(void *table)
- {
--- 
-2.20.1
+Yeah, we need the CLOSE_RANGE_CLOEXEC flag, which was added in 5.11.
 
+On the one hand, there is no real alternative. This is a relatively hot
+path (fork/exec), so I wouldn't want to replace the call with a loop.
+
+On the other, this is "only" an extra safety measure. It is acceptable
+for this to fail (the result is not even checked currently). As such,
+the biggest issue seems to be that your libc does not yet have the
+symbol.
+
+Said differently, we could just replace the call with:
+
+#ifndef CLOSE_RANGE_CLOEXEC
+#define CLOSE_RANGE_CLOEXEC    (1U << 2)
+#endif
+
+  syscall(__NR_close_range, 0, ~0U, CLOSE_RANGE_CLOEXEC);
+
+
+I am not sure whether we would want to do this in the upstream code.
+
+Benjamin
 
