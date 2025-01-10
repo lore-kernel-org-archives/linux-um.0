@@ -4,163 +4,130 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 45BA1E7719E
-	for <linux-um@archiver.kernel.org>; Fri, 10 Jan 2025 07:39:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 29DCCE77188
+	for <linux-um@archiver.kernel.org>; Fri, 10 Jan 2025 10:37:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	Message-ID:Date:References:In-Reply-To:Subject:Cc:To:From:Reply-To:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=2WLKmmEPE7uT96J0bnuWzAWEZ+Ks9Ue/uzhm9byypE8=; b=C+/QCYCDE+Kbk0Sqm/pwAqw7Ak
-	CcJcwgJXu/69Bc+Hc/NAaextE/3DUTYsvrU7QMtnuSW4BgKCSOT2QY719rvk3Q/ZmG30xBfnkBJNB
-	B8xdqIFVJgUIYYGjcInsTGa0B6EdrAiEFsUEjhOa+YviVnm0j5b1Avi8lRIe35qtf6kFfZSOjqgAw
-	PojvcUq87N7NTpul/JBH8oNVVJJdY5gpN8YKL6uDiXGOrgmkgHZB6r+26pFFOINq/ACo+LhzWaWJ9
-	3Ga7CJ73BWkJo3ebZUu+ROjHjAepoke7Iz9CVAVlIQ6rBdgdgAK8PPnEf5cBXD9Fg5oHnEkmLk5zV
-	R/Jkv4+g==;
+	bh=Km4XzsnzHBTNNJzmGN8m2TrMMSFreEGVyXvVDroQ2DY=; b=4M78o4CKAhNKbnGoTSPQC3eqUM
+	62Cd3dRJxhv2q9XKDsvGtbS5u2NL+dWND1GG6n/v3PSVoTylEoiOAUiUXVsWtf4qd8TGFkXTTtIm3
+	iJUyPkPxEctLqfb0DwAuLrtOTPaS0uYgoYPpRm+dPt7919jYomzzvA/avs9mFXvIbEUUwlqHj8xX3
+	JY3sC832U8cEGrOSiomxrVZ/tIkNwbcKe1mDYI+DZRTZ0hW8K6QAh8XojgsmkXb1Xx/Rmr9R2JRCl
+	KEHJZZkLI0a+x4JeMPS8ljzGB/vGcMYzAIp5iOncjxdweo4db9iHtJX6tbtsxMJvLRYKSLxtwKXYY
+	XisP4Rtg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tW9cD-0000000EOrs-2JCQ;
-	Fri, 10 Jan 2025 07:39:33 +0000
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
+	id 1tWCOK-0000000Eyjd-3iLj;
+	Fri, 10 Jan 2025 10:37:24 +0000
+Received: from flow-a1-smtp.messagingengine.com ([103.168.172.136])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tW9ax-0000000EOUy-0YPq;
-	Fri, 10 Jan 2025 07:38:16 +0000
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 509Nx3H2001639;
-	Fri, 10 Jan 2025 07:37:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=2WLKmmEPE7uT96J0bnuWzAWEZ+Ks9U
-	e/uzhm9byypE8=; b=oRQpF/U/6grcr4Snq1iRk/I9GYPWsewmz147QsJg3tlJpp
-	Sm/UeyETvgjJAENQaWXaSd8cfqXr/0vuRhl8N3wtL6grgFwp/aIijZOMmhsN47FV
-	f5jNMRsdgk7yT4y+tHRFOoWJtkEWYjhp56XaA02mxcT8qNb30IwNF63MXXQkZAEl
-	UIlk8MTqRCqzy91KOcrwItqlnQdxp2B2h/5xAgUKTct76fC0NSNLcVTVxD2ZYQ7X
-	9rxhSluh+DwsIN5cVsDEsi/dxgg4ADMCRoXyhv5xzciWSwH6XZkvVHoOuULqD2BA
-	tjfE3Xo8v5ux7lwgyBH9IJOGKqLEpFGzYgoJwZfA==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 442rkhsd0u-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 10 Jan 2025 07:37:54 +0000 (GMT)
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 50A7YWLB014523;
-	Fri, 10 Jan 2025 07:37:53 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 442rkhsd0p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 10 Jan 2025 07:37:53 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 50A5a76b015805;
-	Fri, 10 Jan 2025 07:37:51 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 43ygtm930f-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 10 Jan 2025 07:37:51 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 50A7bmZl54264154
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 10 Jan 2025 07:37:48 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id DCF1520049;
-	Fri, 10 Jan 2025 07:37:47 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2113920040;
-	Fri, 10 Jan 2025 07:37:47 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Fri, 10 Jan 2025 07:37:47 +0000 (GMT)
-From: Sven Schnelle <svens@linux.ibm.com>
-To: "Dmitry V. Levin" <ldv@strace.io>
-Cc: Oleg Nesterov <oleg@redhat.com>, Eugene Syromyatnikov
- <evgsyr@gmail.com>,
-        Mike Frysinger <vapier@gentoo.org>, Renzo Davoli
- <renzo@cs.unibo.it>,
-        Davide Berardi <berardi.dav@gmail.com>, strace-devel@lists.strace.io,
-        Vineet Gupta <vgupta@kernel.org>,
-        Russell
- King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Brian Cain <bcain@quicinc.com>,
-        Huacai
- Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>,
-        Geert
- Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dinh Nguyen
- <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>,
-        Stefan
- Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne
- <shorne@gmail.com>,
-        "James E.J. Bottomley"
- <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin
- <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Naveen N Rao <naveen@kernel.org>,
-        Madhavan Srinivasan
- <maddy@linux.ibm.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer
- Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Heiko
- Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger
- <borntraeger@linux.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        John Paul Adrian Glaubitz
- <glaubitz@physik.fu-berlin.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andreas Larsson <andreas@gaisler.com>,
-        Richard Weinberger
- <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Thomas Gleixner
- <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov
- <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Chris Zankel
- <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, Arnd Bergmann
- <arnd@arndb.de>,
-        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-hexagon@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-arch@vger.kernel.org
-Subject: Re: [PATCH 3/6] syscall.h: introduce syscall_set_nr()
-In-Reply-To: <20250107230438.GC30633@strace.io> (Dmitry V. Levin's message of
-	"Wed, 8 Jan 2025 01:04:38 +0200")
-References: <20250107230438.GC30633@strace.io>
-Date: Fri, 10 Jan 2025 08:37:46 +0100
-Message-ID: <yt9dzfjz6rw5.fsf@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	id 1tWCOH-0000000Eyh0-1M20
+	for linux-um@lists.infradead.org;
+	Fri, 10 Jan 2025 10:37:23 +0000
+Received: from phl-compute-08.internal (phl-compute-08.phl.internal [10.202.2.48])
+	by mailflow.phl.internal (Postfix) with ESMTP id D91B32010D6;
+	Fri, 10 Jan 2025 05:37:17 -0500 (EST)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-08.internal (MEProxy); Fri, 10 Jan 2025 05:37:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=shutemov.name;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm1; t=1736505437; x=
+	1736512637; bh=Km4XzsnzHBTNNJzmGN8m2TrMMSFreEGVyXvVDroQ2DY=; b=l
+	F9l1OxgwNCSVpVzHNp2jvRIgcZtfmBz/E4/CO27dbRnPpywlZHXNuQhSufjq09iR
+	0Q1ceb1IRZSS/fN6814PVfVlDFZc/EVLYl2vi58mWFhJp18o89cYZreU1XtVLRmD
+	19T4xnFzlXyyyMJOMNOqGvLHe6C60LN2xggK+JESVtgZPwAH5HJRI5xPshZSfrlZ
+	GcMXvirGEd1tDeBMy5m8L171rno7Opv+KWlrx+H6cbu757OIulT2KyrYFRI4HfHI
+	IeQFsKKAHooUKWsb04Ck1WkK+W3OgtdvrKfxU53JSObu8cpzKureitBsWxKiHuto
+	y3zwRAmHw1P1k+RSkV1RQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1736505437; x=1736512637; bh=Km4XzsnzHBTNNJzmGN8m2TrMMSFreEGVyXv
+	VDroQ2DY=; b=rD9VT4L+x6wScm0MmUZeIMvpHgMx8qAL83gowQ/aifn4QOfo3nw
+	18acnJdLdQvErdaVPbYP4SqjyKSQJGLB3E5eZzuJ9Dtxvp3QeH2dP/hfVmiAoRmf
+	GWim3pv96frkdHzWOHix2M5qmmBHHkE2E9qlP4U6LV/Ha5ZxKqk10JuNAvA27n30
+	qdxMfQmD+i4hm5mNMNftbXsWI4fysYE9pymAWInDaeeeVJifSUXB3JzOL2PwBEE2
+	azJQJpPCW1nC9N+YVplzgJm6rVTgPozOzsC1XEmejWeWoA3KkM4A98S8XvWF96jp
+	o69S196+kqgvwK+y07aXY0dqMcuZxp6uqiQ==
+X-ME-Sender: <xms:W_iAZ00nxgJw64svIet4IdZP3JkbK1OhjQjIlVOQzlhHOwiSX9jkow>
+    <xme:W_iAZ_EFoH6iwh3lMqZ8MhM0WyE1LksqHeyql6hCcSzFXriLt6zgQj9KcqBOVeqFR
+    14FSvtmUagZUhrYj1g>
+X-ME-Received: <xmr:W_iAZ85lBR8fS3KVrpwwP-tcfcdKyK7KrEupA9vygKO6KEH9a87CckaGqhGuGKt21qAemA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrudegkedgudejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtsfdttddtvden
+    ucfhrhhomhepfdfmihhrihhllhcutedrucfuhhhuthgvmhhovhdfuceokhhirhhilhhlse
+    hshhhuthgvmhhovhdrnhgrmhgvqeenucggtffrrghtthgvrhhnpeeltedugedtgfehuddu
+    hfetleeiuedvtdehieejjedufeejfeegteetuddtgefgudenucffohhmrghinhepkhgvrh
+    hnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhf
+    rhhomhepkhhirhhilhhlsehshhhuthgvmhhovhdrnhgrmhgvpdhnsggprhgtphhtthhope
+    egfedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheprhhpphhtsehkvghrnhgvlhdr
+    ohhrghdprhgtphhtthhopegrkhhpmheslhhinhhugidqfhhouhhnuggrthhiohhnrdhorh
+    hgpdhrtghpthhtoheplhhuthhosehkvghrnhgvlhdrohhrghdprhgtphhtthhopegrnhht
+    ohhnrdhivhgrnhhovhestggrmhgsrhhiughgvghgrhgvhihsrdgtohhmpdhrtghpthhtoh
+    epsghpsegrlhhivghnkedruggvpdhrtghpthhtohepsghrvghnuggrnhdrhhhighhgihhn
+    sheslhhinhhugidruggvvhdprhgtphhtthhopegurgdrghhomhgviiesshgrmhhsuhhngh
+    drtghomhdprhgtphhtthhopegurghnihgvlhhtsehkvghrnhgvlhdrohhrghdprhgtphht
+    thhopegurghvvgdrhhgrnhhsvghnsehlihhnuhigrdhinhhtvghlrdgtohhm
+X-ME-Proxy: <xmx:W_iAZ93YjtGqyQ_KhyMe78rNVusaOBrYpJoPXwMLehTvKhN1WUbxyg>
+    <xmx:W_iAZ3GoqF6B8L2mTflFziY9ijfyGAomHfUPxnFZQ_ui45RQ_ik4tw>
+    <xmx:W_iAZ2_aN5wdvfhDfYaCp4mM9S-7Ff2DFoYQYHii7uiepbjsstVyLA>
+    <xmx:W_iAZ8lM-cSB7BXqi74IqSxpaazEX5g3lCuiI9gwh0GEiOvb_BC0bg>
+    <xmx:XfiAZ17mYS2-77H8F-lcSSO9soujJP_-GYVn8onu-R3c3sOdSsV828s5>
+Feedback-ID: ie3994620:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 10 Jan 2025 05:37:03 -0500 (EST)
+Date: Fri, 10 Jan 2025 12:36:59 +0200
+From: "Kirill A. Shutemov" <kirill@shutemov.name>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ 	Andy Lutomirski <luto@kernel.org>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ 	Borislav Petkov <bp@alien8.de>,
+ Brendan Higgins <brendan.higgins@linux.dev>,
+ 	Daniel Gomez <da.gomez@samsung.com>,
+ Daniel Thompson <danielt@kernel.org>,
+ 	Dave Hansen <dave.hansen@linux.intel.com>,
+ David Gow <davidgow@google.com>,
+ 	Douglas Anderson <dianders@chromium.org>,
+ Ingo Molnar <mingo@redhat.com>,
+ 	Jason Wessel <jason.wessel@windriver.com>,
+ Jiri Kosina <jikos@kernel.org>, 	Joe Lawrence <joe.lawrence@redhat.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ 	Josh Poimboeuf <jpoimboe@kernel.org>,
+ "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ 	Luis Chamberlain <mcgrof@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ 	Masami Hiramatsu <mhiramat@kernel.org>, Miroslav Benes <mbenes@suse.cz>,
+ 	"H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>,
+ 	Petr Mladek <pmladek@suse.com>, Petr Pavlu <petr.pavlu@suse.com>,
+ Rae Moar <rmoar@google.com>, 	Richard Weinberger <richard@nod.at>,
+ Sami Tolvanen <samitolvanen@google.com>, 	Shuah Khan <shuah@kernel.org>,
+ Song Liu <song@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+ 	Thomas Gleixner <tglx@linutronix.de>,
+ kgdb-bugreport@lists.sourceforge.net, kunit-dev@googlegroups.com,
+ 	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-mm@kvack.org, 	linux-modules@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+ 	live-patching@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH 3/8] x86/mm/pat: Restore large pages after fragmentation
+Message-ID: <jut35igb2kstpz24apqdeubv5rvyl3vmp2s43xtivpz54uiedj@wmd2onulv4xw>
+References: <20241227072825.1288491-1-rppt@kernel.org>
+ <20241227072825.1288491-4-rppt@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: oQL9q4Cm2OlRS0avVKS0GOik26TaXbjd
-X-Proofpoint-GUID: v26jL7-Nw4XZK-M8Nskiprqug0sq7Zhb
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
- mlxscore=0 suspectscore=0 phishscore=0 impostorscore=0 adultscore=0
- malwarescore=0 priorityscore=1501 mlxlogscore=723 lowpriorityscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2411120000 definitions=main-2501100061
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241227072825.1288491-4-rppt@kernel.org>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250109_233815_195244_2B215CF1 
-X-CRM114-Status: GOOD (  21.23  )
+X-CRM114-CacheID: sfid-20250110_023721_625698_64536427 
+X-CRM114-Status: GOOD (  20.30  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -175,65 +142,56 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-"Dmitry V. Levin" <ldv@strace.io> writes:
+On Fri, Dec 27, 2024 at 09:28:20AM +0200, Mike Rapoport wrote:
+> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+> 
+> Change of attributes of the pages may lead to fragmentation of direct
+> mapping over time and performance degradation as result.
+> 
+> With current code it's one way road: kernel tries to avoid splitting
+> large pages, but it doesn't restore them back even if page attributes
+> got compatible again.
+> 
+> Any change to the mapping may potentially allow to restore large page.
+> 
+> Hook up into cpa_flush() path to check if there's any pages to be
+> recovered in PUD_SIZE range around pages we've just touched.
+> 
+> CPUs don't like[1] to have to have TLB entries of different size for the
+> same memory, but looks like it's okay as long as these entries have
+> matching attributes[2]. Therefore it's critical to flush TLB before any
+> following changes to the mapping.
+> 
+> Note that we already allow for multiple TLB entries of different sizes
+> for the same memory now in split_large_page() path. It's not a new
+> situation.
+> 
+> set_memory_4k() provides a way to use 4k pages on purpose. Kernel must
+> not remap such pages as large. Re-use one of software PTE bits to
+> indicate such pages.
+> 
+> [1] See Erratum 383 of AMD Family 10h Processors
+> [2] https://lore.kernel.org/linux-mm/1da1b025-cabc-6f04-bde5-e50830d1ecf0@amd.com/
+> 
+> [rppt@kernel.org:
+>  * s/restore/collapse/
+>  * update formatting per peterz
+>  * use 'struct ptdesc' instead of 'struct page' for list of page tables to
+>    be freed
+>  * try to collapse PMD first and if it succeeds move on to PUD as peterz
+>    suggested
+>  * flush TLB twice: for changes done in the original CPA call and after
+>    collapsing of large pages
+> ]
+> 
+> Link: https://lore.kernel.org/all/20200416213229.19174-1-kirill.shutemov@linux.intel.com
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Co-developed-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 
-> Similar to syscall_set_arguments() that complements
-> syscall_get_arguments(), introduce syscall_set_nr()
-> that complements syscall_get_nr().
->
-> syscall_set_nr() is going to be needed along with
-> syscall_set_arguments() on all HAVE_ARCH_TRACEHOOK
-> architectures to implement PTRACE_SET_SYSCALL_INFO API.
->
-> Signed-off-by: Dmitry V. Levin <ldv@strace.io>
-> ---
->  arch/arc/include/asm/syscall.h        |  6 ++++++
->  arch/arm/include/asm/syscall.h        | 12 ++++++++++++
->  arch/arm64/include/asm/syscall.h      |  7 +++++++
->  arch/hexagon/include/asm/syscall.h    |  7 +++++++
->  arch/loongarch/include/asm/syscall.h  |  7 +++++++
->  arch/m68k/include/asm/syscall.h       |  7 +++++++
->  arch/microblaze/include/asm/syscall.h |  7 +++++++
->  arch/mips/include/asm/syscall.h       |  7 +++++++
->  arch/nios2/include/asm/syscall.h      |  5 +++++
->  arch/openrisc/include/asm/syscall.h   |  6 ++++++
->  arch/parisc/include/asm/syscall.h     |  7 +++++++
->  arch/powerpc/include/asm/syscall.h    |  5 +++++
->  arch/riscv/include/asm/syscall.h      |  7 +++++++
->  arch/s390/include/asm/syscall.h       |  7 +++++++
->  arch/sh/include/asm/syscall_32.h      |  7 +++++++
->  arch/sparc/include/asm/syscall.h      |  7 +++++++
->  arch/um/include/asm/syscall-generic.h |  5 +++++
->  arch/x86/include/asm/syscall.h        |  7 +++++++
->  arch/xtensa/include/asm/syscall.h     |  7 +++++++
->  include/asm-generic/syscall.h         | 14 ++++++++++++++
->  20 files changed, 144 insertions(+)
->
-> diff --git a/arch/s390/include/asm/syscall.h b/arch/s390/include/asm/syscall.h
-> index b3dd883699e7..1c0e349fd5c9 100644
-> --- a/arch/s390/include/asm/syscall.h
-> +++ b/arch/s390/include/asm/syscall.h
-> @@ -24,6 +24,13 @@ static inline long syscall_get_nr(struct task_struct *task,
->  		(regs->int_code & 0xffff) : -1;
->  }
->  
-> +static inline void syscall_set_nr(struct task_struct *task,
-> +				  struct pt_regs *regs,
-> +				  int nr)
-> +{
+When I originally attempted this, the patch was dropped because of
+performance regressions. Was it addressed somehow?
 
-I think there should be a
-
-	if (!test_pt_regs_flags(regs, PIF_SYSCALL))
-		return;
-
-before the modification so a user can't accidentally change int_code
-when ptrace stopped in a non-syscall path.
-
-> +	regs->int_code = (regs->int_code & ~0xffff) | (nr & 0xffff);
-> +}
-> +
->  static inline void syscall_rollback(struct task_struct *task,
->  				    struct pt_regs *regs)
->  {
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
 
