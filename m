@@ -4,84 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 46E0EC02181
-	for <linux-um@archiver.kernel.org>; Fri, 10 Jan 2025 20:25:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E33D6E7719E
+	for <linux-um@archiver.kernel.org>; Fri, 10 Jan 2025 20:25:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:From:
 	Subject:Message-ID:References:Mime-Version:In-Reply-To:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=WaFp0TOYaWSuGPhKgfBnenMecO/UsWYRxmgXZ26ETaU=; b=hOWoyDL6ZtsoTouUGKHOa4pwIA
-	eBUjE85CNIv7SNzPGG3CaOgKHLV+YqfFs9g2pJGjufWX16oW2stWPeGc86zxX9oMCDMhaZsDQhpn0
-	qeQLKYYkc29OZLLZoJXufSLJK+wI1vrFFOKHNu7WpHCKm4Hu8QOU0MMQk/dLgpfYFTz/KPKIW4m16
-	z3YYmqRoELQbDOAGX0SmZNzIvTNCis7Hj1LPnm6AYkYff6cFyo4lZYzVdDixa4xequP63jK66dV0X
-	Nn4+kNnug+KoDb5NdWYeWKgfbKJzfxf7sH3xx3bSIQ8n7g2hwArpcaUIJsblVLpHs/uTsqDSKZAXQ
-	VL6HMmuA==;
+	bh=/j+RB8/lAgzqGTtPca+XTmsHyqC3ld9qGwXYbAsCbQ0=; b=HC+KO/31/kxg42tgczdAKHK109
+	a2WaXkrjvDq/i7Uiugo7N4ySHHoDaptm2wZVRKKZ9zwSJGyTilWp1dZ1FfIYujU6bRrn9SvPgtJ7d
+	gCNtNII4symJydQAvd7gU+Kt4YIVvPpKUauHZXKEQ+BYixZdu3Bu+Mg1ZQmjK5t3un1bDsj7Zcsgv
+	YBbArGU9NO3i1VtvW5O1LiqCkYL+DLvn8ShZVgGTFkfPZQ9QoVsIrV5KtD14PyRDBbqcX23k5VX7c
+	8vDsYOnkWDrqKGlZH30patGSZNesd7Ef9Wpcg43VP6L5SgG1gJYRY9C7xBVRQAZ+AbX7+Q7WI3GVx
+	GXR4RUrw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWLZ1-0000000Gt4b-053M;
-	Fri, 10 Jan 2025 20:25:03 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1tWLZ0-0000000Gt41-2t8R;
+	Fri, 10 Jan 2025 20:25:02 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWJwW-0000000GbRg-35Ge
+	id 1tWJwT-0000000GbP3-1niF
 	for linux-um@bombadil.infradead.org;
-	Fri, 10 Jan 2025 18:41:12 +0000
+	Fri, 10 Jan 2025 18:41:09 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Type:Cc:To:From:Subject:
+	d=infradead.org; s=desiato.20200630; h=Content-Type:Cc:To:From:Subject:
 	Message-ID:References:Mime-Version:In-Reply-To:Date:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=WaFp0TOYaWSuGPhKgfBnenMecO/UsWYRxmgXZ26ETaU=; b=ihB9y3DPVBTVH9wJXl03PtPKt5
-	lVZ1qzVBUKYK6dKXSJBqft4/DYQze2K8MiDAYyt8xmNLMeb4xh83WAWyScrGNsB/x2xs78uOvSHxa
-	3Jvo/Gw86agqLZZPnVHfGNN5J00GnbhL6JL+Fgsuj9K5+gvxAy0TMj0jXNSeF27TsC6Tb/EYsExHE
-	53B2+dmaEop+iBJZB4xUtzq1FGp1INz/SeyUz1K/VbZ1k3wYUlk5FaK6vylUoityUQuWAGUJefEkm
-	hcM8N21Dvg1YfjscPk/SuBieS0OC89SnyZ3cerdGWZEu47Xv+3WTMIiAyGT1REMcGwpkWK1Tpdygi
-	v3B7DKiA==;
-Received: from mail-wm1-x349.google.com ([2a00:1450:4864:20::349])
-	by casper.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWJwR-0000000EBH6-2Q3S
+	bh=/j+RB8/lAgzqGTtPca+XTmsHyqC3ld9qGwXYbAsCbQ0=; b=Uzg/paeyiFHSouf/QKk8XwHwF3
+	bbgdFYcmr8cLEd1s5VeVef1PCL0fT5ERwSi0PmWMVo2bv1ZAM4c9ObzAL5qJg6Ss1BP2F7mz7szTT
+	PN9JAN3kWYmthyYzC3gY4M6EeduVEEvcyuZz93jz0IV9yiNsQYFIUo6Dr8Df9A5n0/aY8welrwAWw
+	JYPDkwZjT9/OL6xy8JnwUSsTHOaD3ph7AB5RlaUTZtqGJJ6lYibkgEPYCcb0yFWnT4q4itctRn0LX
+	k7dFruk7mmUGhMXSoQA0kwAoZH/kBfwF3zv9p7nVjdiGimBtVN1VnDvQNVGJrJXJbb07rc6EHxJde
+	NHIGUTWw==;
+Received: from mail-wr1-x44a.google.com ([2a00:1450:4864:20::44a])
+	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tWJwQ-00000009sNb-1fZA
 	for linux-um@lists.infradead.org;
-	Fri, 10 Jan 2025 18:41:11 +0000
-Received: by mail-wm1-x349.google.com with SMTP id 5b1f17b1804b1-436289a570eso19446305e9.0
-        for <linux-um@lists.infradead.org>; Fri, 10 Jan 2025 10:41:07 -0800 (PST)
+	Fri, 10 Jan 2025 18:41:08 +0000
+Received: by mail-wr1-x44a.google.com with SMTP id ffacd0b85a97d-38a9118c486so1465378f8f.1
+        for <linux-um@lists.infradead.org>; Fri, 10 Jan 2025 10:41:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1736534466; x=1737139266; darn=lists.infradead.org;
+        d=google.com; s=20230601; t=1736534462; x=1737139262; darn=lists.infradead.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WaFp0TOYaWSuGPhKgfBnenMecO/UsWYRxmgXZ26ETaU=;
-        b=VEAQxMPFpxhBEZTqoqlDOf6y8oieYRZ6DfiXEI/4X1AVjiUAscjWIriFM6s9e9EAZJ
-         V2OlwEFmOkm9vR0ss42jzqCI0wRVWeN1dDZ7gOJ9sNnHrnRp8+XJ7NFNn5Hw3dZ4XhHh
-         Z/UCxx/f3hnRw47al8rIdqbZC5P49kpCFEjB8jOJLOvQ47+ErdoEknTdkw9QvjNh2Cc5
-         46pQo7DMl43auDI5yWQpNdtLVG4DCzvyeNzfxdYNZkuU2HBLF+Tu04fujWxk1N+StBNF
-         kK4cdATEnHfCGX8mUWSV0Ezd12eS7QZ81nVYZLx+PY+Da4SzMU5FfcuK55O8qwrDZv5G
-         2AyQ==
+        bh=/j+RB8/lAgzqGTtPca+XTmsHyqC3ld9qGwXYbAsCbQ0=;
+        b=bs/6TkwdSdvhkOXOrFUPjxi46IU/OI1oRkXNPg5zhsh4RwOQBAYfN1/6hCyNhDiB72
+         xbDjKd2XyxJiVAGoUMRGVuanB1PwvRFmySlOetd4eMV2z7R5+Vou0UkGMTJsReGLheWr
+         zSbV7pVqGm2OCQiXiehTrDBiYYKYmsIJoqV2XhpCuSLxo1c42k8ivisdy4ft0zqFAuZP
+         auE3Fih8B9ryEqNnmETEvIXZL1ARumah2DJiiFAOSWFwri39iL/1FrQEjJuNaAf22E/Z
+         Ahkjf3TfFXBW9Zea/kE7ioS1R3MpeuNrsZhERRohkEMUcXS4+9CbGlJ9R/JgpfqQPpYk
+         1bPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736534466; x=1737139266;
+        d=1e100.net; s=20230601; t=1736534462; x=1737139262;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WaFp0TOYaWSuGPhKgfBnenMecO/UsWYRxmgXZ26ETaU=;
-        b=lrdjT1gpIhiQgBKO6g5izNoVcyDj+UiwwtpdtZlSOlYJriheqwip0e+EWSyMGRzKq6
-         BKbWZ5hF8GeL8ronJf8ra/tq/I0m0Nrr7joDaxdRLITV6QV2uFtfzbign+FcN8C3rh7p
-         3dqbY8Bpc1u0uuf8jjhN1uS6NFfSIcdNaJwxpG88/KQ0JtHEYVDgS1TysD6eJplEkbxu
-         VTaNZLZyKs4U33ohhYTXhdPokGwX3z9AlKLBsrwaBKE0CTiGiCUyp4MZ/VeBuqOxOlPG
-         qdutTUrzHYyQKAyn28MctQf96jzeymlT4DdhZUs5eC2uT41p5ue7eEPHm87Uiazi9AP8
-         T+ZA==
-X-Forwarded-Encrypted: i=1; AJvYcCWdu72WhE/FMO/t1f8mfKYDgb+MQe181ek4xuRka/KBiPQntcHSA9VKo47bAcHtv0HaGPFLMJIsQQ==@lists.infradead.org
-X-Gm-Message-State: AOJu0YweoH/6sOzsxzpOaGqpPPA8nKWt9v2d1DDvlkWdu8tKdtFQo/Tz
-	qIXyY49Gupu1hx3osK0kVamIPr+fsx3JGKvKboU6nbet/7/2f9L3Mrk5K75PIZ2ETt8+gDPhGAK
-	qZ+zhCFu59g==
-X-Google-Smtp-Source: AGHT+IEE4az+Oz6XpM1h3immNPii0BZQy1AjHZ6Oe5B/in2qx8QsaCvn5PLTDmCUbo/W1PshFIv+Soo2Sqz9XA==
-X-Received: from wmrn35.prod.google.com ([2002:a05:600c:5023:b0:434:f2eb:aa72])
+        bh=/j+RB8/lAgzqGTtPca+XTmsHyqC3ld9qGwXYbAsCbQ0=;
+        b=RVfmTRRex41wQalVDZrMw55ywslo1NRtUtTQU0YurOyE6tuzR1DUT6eqyYFqXoBhb1
+         Rulv0UthOoQyCPILsuXQeld4zUFMYsU5BMDb4Oe6acvXiEZFHgX7bk1kyjXpYxPk9CPr
+         2wb1KiwDsK4+ti28Fm0rn4tQmYRPVftIro592CrP85oXxMw5feXxPJfKHM4hIjLmeqOC
+         ykpNiA5rGVIzJOnHt+Gpcac8FYnskZkfOCvrA7MyG2+8e0x5pMNUSy6n9WYldfOtWBce
+         n7EbTMTQnUUzSzIvWERSirh+w3s6rRDuPzAG5+B8eMtIU9BodvILP1qk8fThySp1lPVn
+         QlWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWdZIYqj0kmCH0p+lC7kaPbfucy7ULsNBiA1hRbtlwqoqLcFhxj29MSNx/bz8gpauF9cmJ39WcGiQ==@lists.infradead.org
+X-Gm-Message-State: AOJu0YyfAfOTjKO+/9OVVXaIL7TiMfzO5qKmw8lVnmBz0ClqCPqn3+fV
+	UpH6sQkLDCZvmVLHsOOd5VduVzmjD7Tpdzxmtbrsgjj72YuJ1wUHz9NYFsBhj9jBFqTbrzqDgGC
+	shviaSC3swQ==
+X-Google-Smtp-Source: AGHT+IEaBJ4kVsH9fdlEpqyA1vEXALZVlXyRkre6Nr4itvNL2JHwYHaMyiaIiF1xr8efeWfazalHNzAFq1Ad7A==
+X-Received: from wrbfi1.prod.google.com ([2002:a05:6000:4401:b0:386:333e:ad16])
  (user=jackmanb job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:600c:3ca4:b0:434:a26c:8291 with SMTP id 5b1f17b1804b1-436e26e203emr101768035e9.24.1736534465947;
- Fri, 10 Jan 2025 10:41:05 -0800 (PST)
-Date: Fri, 10 Jan 2025 18:40:35 +0000
+ 2002:a05:6000:470d:b0:385:dedb:a156 with SMTP id ffacd0b85a97d-38a872cfdffmr10312148f8f.6.1736534461506;
+ Fri, 10 Jan 2025 10:41:01 -0800 (PST)
+Date: Fri, 10 Jan 2025 18:40:33 +0000
 In-Reply-To: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
 Mime-Version: 1.0
 References: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
 X-Mailer: b4 0.15-dev
-Message-ID: <20250110-asi-rfc-v2-v2-9-8419288bc805@google.com>
-Subject: [PATCH RFC v2 09/29] mm: asi: ASI page table allocation functions
+Message-ID: <20250110-asi-rfc-v2-v2-7-8419288bc805@google.com>
+Subject: [PATCH RFC v2 07/29] mm: asi: Make __get_current_cr3_fast() ASI-aware
 From: Brendan Jackman <jackmanb@google.com>
 To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
 	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
@@ -135,8 +135,8 @@ Cc: x86@kernel.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
 	Brendan Jackman <jackmanb@google.com>, Junaid Shahid <junaids@google.com>
 Content-Type: text/plain; charset="utf-8"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250110_184107_646791_5BD78771 
-X-CRM114-Status: GOOD (  17.22  )
+X-CRM114-CacheID: sfid-20250110_184106_739034_5F123064 
+X-CRM114-Status: GOOD (  19.24  )
 X-Mailman-Approved-At: Fri, 10 Jan 2025 12:24:52 -0800
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -154,94 +154,88 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Junaid Shahid <junaids@google.com>
 
-This adds custom allocation and free functions for ASI page tables.
+When ASI is active, __get_current_cr3_fast() adjusts the returned CR3
+value accordingly to reflect the actual ASI CR3.
 
-The alloc functions support allocating memory using different GFP
-reclaim flags, in order to be able to support non-sensitive allocations
-from both standard and atomic contexts. They also install the page
-tables locklessly, which makes it slightly simpler to handle
-non-sensitive allocations from interrupts/exceptions.
-
-checkpatch.pl MACRO_ARG_UNUSED,SPACING is false positive. COMPLEX_MACRO - I
-dunno, suggestions welcome.
-
-Checkpatch-args: --ignore=MACRO_ARG_UNUSED,SPACING,COMPLEX_MACRO
 Signed-off-by: Junaid Shahid <junaids@google.com>
 Signed-off-by: Brendan Jackman <jackmanb@google.com>
 ---
- arch/x86/mm/asi.c | 59 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 59 insertions(+)
+ arch/x86/mm/tlb.c | 37 +++++++++++++++++++++++++++++++------
+ 1 file changed, 31 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/mm/asi.c b/arch/x86/mm/asi.c
-index 8d060c633be68b508847e2c1c111761df1da92af..b15d043acedc9f459f17e86564a15061650afc3a 100644
---- a/arch/x86/mm/asi.c
-+++ b/arch/x86/mm/asi.c
-@@ -73,6 +73,65 @@ const char *asi_class_name(enum asi_class_id class_id)
- 	return asi_class_names[class_id];
+diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
+index 2601beed83aef182d88800c09d70e4c5e95e7ed0..b2a13fdab0c6454c1d9d4e3338801f3402da4191 100644
+--- a/arch/x86/mm/tlb.c
++++ b/arch/x86/mm/tlb.c
+@@ -20,6 +20,7 @@
+ #include <asm/cache.h>
+ #include <asm/cacheflush.h>
+ #include <asm/apic.h>
++#include <asm/asi.h>
+ #include <asm/perf_event.h>
+ 
+ #include "mm_internal.h"
+@@ -197,8 +198,8 @@ static inline unsigned long build_cr3_noflush(pgd_t *pgd, u16 asid,
+ 	return build_cr3(pgd, asid, lam) | CR3_NOFLUSH;
  }
  
-+#ifndef mm_inc_nr_p4ds
-+#define mm_inc_nr_p4ds(mm)	do {} while (false)
-+#endif
-+
-+#ifndef mm_dec_nr_p4ds
-+#define mm_dec_nr_p4ds(mm)	do {} while (false)
-+#endif
-+
-+#define pte_offset		pte_offset_kernel
-+
-+/*
-+ * asi_p4d_alloc, asi_pud_alloc, asi_pmd_alloc, asi_pte_alloc.
-+ *
-+ * These are like the normal xxx_alloc functions, but:
-+ *
-+ *  - They use atomic operations instead of taking a spinlock; this allows them
-+ *    to be used from interrupts. This is necessary because we use the page
-+ *    allocator from interrupts and the page allocator ultimately calls this
-+ *    code.
-+ *  - They support customizing the allocation flags.
-+ *
-+ * On the other hand, they do not use the normal page allocation infrastructure,
-+ * that means that PTE pages do not have the PageTable type nor the PagePgtable
-+ * flag and we don't increment the meminfo stat (NR_PAGETABLE) as they do.
-+ */
-+static_assert(!IS_ENABLED(CONFIG_PARAVIRT));
-+#define DEFINE_ASI_PGTBL_ALLOC(base, level)				\
-+__maybe_unused								\
-+static level##_t * asi_##level##_alloc(struct asi *asi,			\
-+				       base##_t *base, ulong addr,	\
-+				       gfp_t flags)			\
-+{									\
-+	if (unlikely(base##_none(*base))) {				\
-+		ulong pgtbl = get_zeroed_page(flags);			\
-+		phys_addr_t pgtbl_pa;					\
-+									\
-+		if (!pgtbl)						\
-+			return NULL;					\
-+									\
-+		pgtbl_pa = __pa(pgtbl);					\
-+									\
-+		if (cmpxchg((ulong *)base, 0,				\
-+			    pgtbl_pa | _PAGE_TABLE) != 0) {		\
-+			free_page(pgtbl);				\
-+			goto out;					\
-+		}							\
-+									\
-+		mm_inc_nr_##level##s(asi->mm);				\
-+	}								\
-+out:									\
-+	VM_BUG_ON(base##_leaf(*base));					\
-+	return level##_offset(base, addr);				\
+-noinstr unsigned long build_cr3_pcid_noinstr(pgd_t *pgd, u16 pcid,
+-					     unsigned long lam, bool noflush)
++static __always_inline unsigned long build_cr3_pcid(pgd_t *pgd, u16 pcid,
++						    unsigned long lam, bool noflush)
+ {
+ 	u64 noflush_bit = 0;
+ 
+@@ -210,6 +211,12 @@ noinstr unsigned long build_cr3_pcid_noinstr(pgd_t *pgd, u16 pcid,
+ 	return __build_cr3(pgd, pcid, lam) | noflush_bit;
+ }
+ 
++noinstr unsigned long build_cr3_pcid_noinstr(pgd_t *pgd, u16 pcid,
++					     unsigned long lam, bool noflush)
++{
++	return build_cr3_pcid(pgd, pcid, lam, noflush);
 +}
 +
-+DEFINE_ASI_PGTBL_ALLOC(pgd, p4d)
-+DEFINE_ASI_PGTBL_ALLOC(p4d, pud)
-+DEFINE_ASI_PGTBL_ALLOC(pud, pmd)
-+DEFINE_ASI_PGTBL_ALLOC(pmd, pte)
-+
- void __init asi_check_boottime_disable(void)
+ /*
+  * We get here when we do something requiring a TLB invalidation
+  * but could not go invalidate all of the contexts.  We do the
+@@ -1133,14 +1140,32 @@ void flush_tlb_kernel_range(unsigned long start, unsigned long end)
+  */
+ noinstr unsigned long __get_current_cr3_fast(void)
  {
- 	bool enabled = IS_ENABLED(CONFIG_MITIGATION_ADDRESS_SPACE_ISOLATION_DEFAULT_ON);
+-	unsigned long cr3 =
+-		build_cr3(this_cpu_read(cpu_tlbstate.loaded_mm)->pgd,
+-			  this_cpu_read(cpu_tlbstate.loaded_mm_asid),
+-			  tlbstate_lam_cr3_mask());
++	unsigned long cr3;
++	pgd_t *pgd;
++	u16 asid = this_cpu_read(cpu_tlbstate.loaded_mm_asid);
++	struct asi *asi = asi_get_current();
++	u16 pcid;
++
++	if (asi) {
++		pgd = asi_pgd(asi);
++		pcid = asi_pcid(asi, asid);
++	} else {
++		pgd = this_cpu_read(cpu_tlbstate.loaded_mm)->pgd;
++		pcid = kern_pcid(asid);
++	}
++
++	cr3 = build_cr3_pcid(pgd, pcid, tlbstate_lam_cr3_mask(), false);
+ 
+ 	/* For now, be very restrictive about when this can be called. */
+ 	VM_WARN_ON(in_nmi() || preemptible());
+ 
++	/*
++	 * Outside of the ASI critical section, an ASI-restricted CR3 is
++	 * unstable because an interrupt (including an inner interrupt, if we're
++	 * already in one) could cause a persistent asi_exit.
++	 */
++	VM_WARN_ON_ONCE(asi && asi_in_critical_section());
++
+ 	VM_BUG_ON(cr3 != __read_cr3());
+ 	return cr3;
+ }
 
 -- 
 2.47.1.613.gc27f4b7a9f-goog
