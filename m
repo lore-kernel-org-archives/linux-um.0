@@ -4,85 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FE10E7719D
-	for <linux-um@archiver.kernel.org>; Fri, 10 Jan 2025 20:25:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C2C1BC02186
+	for <linux-um@archiver.kernel.org>; Fri, 10 Jan 2025 20:25:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:From:
 	Subject:Message-ID:References:Mime-Version:In-Reply-To:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=DPVLK2dGaKuBzLzuN4/iPTz64M+48MZ0VyD4n5dtrVo=; b=izxdvG7rg7mbequEjanYC1RvZB
-	IUocNYGrDi92kxzz1NYeCnu1w0utwKqTSFKc26krXblQuND4W/rK1Yfxe2cWaKxcM8vQXievnCD8+
-	hXYp3zJ/3rEhURTKvzoti+DZk1ArOybsvOxDwPgC0GjniiAVclM9p+hxrPpBM5g6AujEefbOGzZ95
-	V91xrwFKk4/6baJKkiTnzCeFL3+NBxBLoFUfBOXTSJMJXFRYx3bgTrOd+VzD+2ALs4SZ1LxAANN0p
-	qjVZMz6rYt7duslSajw4gTIEFpxSv7f4Z7YydWrOKgRyFqIXXrWJKhdmlPfeZ6Y9e3LQDsf/yzeNK
-	/NZUBQhQ==;
+	bh=t56obMWOlMyKyO7q6Si1cnEbfn2qyXwrpnzxR+4ONcI=; b=j+ympHku8UTozBqykhaJvxmlK5
+	rYXR3EI0jyBj2OfEkpfJyYPM5bMua9+Mdz9/m5qZlwu+/SOgpu+8pzkTW/UC3e4Y/UmFcN5HXty5G
+	ceuhR7BQ4InJv7DT8xMMXHSMP+Mh2wHYHDf2+cPFDAy+3LL/QumfwtgGlVyQA5/ma/X7uKe3ZxQUD
+	reB7y8Qop6Y5k/QwRdYt6e009gzKAroV6b/R4bsmlbRUSJ4iSlVD4TN4yLhX4gapCeILgKdIecfkQ
+	IcbLwP3oyFLJxN6K4ZejqRWvpTQSbNBz4g+G3CceZz/YxsVcZcSdhcTPwAYehCnpUnbLPc6B3q0dN
+	6q+YLfhg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWLZE-0000000GtKs-2O9K;
-	Fri, 10 Jan 2025 20:25:17 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1tWLZG-0000000GtOX-25e3;
+	Fri, 10 Jan 2025 20:25:18 +0000
+Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWJx0-0000000GbtR-1Aws
+	id 1tWJxD-0000000Gc38-3Vc9
 	for linux-um@bombadil.infradead.org;
-	Fri, 10 Jan 2025 18:41:42 +0000
+	Fri, 10 Jan 2025 18:41:55 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Type:Cc:To:From:Subject:
+	d=infradead.org; s=casper.20170209; h=Content-Type:Cc:To:From:Subject:
 	Message-ID:References:Mime-Version:In-Reply-To:Date:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=DPVLK2dGaKuBzLzuN4/iPTz64M+48MZ0VyD4n5dtrVo=; b=jJ18AxxK67D2FsKTgZLoBObYdz
-	O0/aTAvH/GpTN+nev8p3jQYKdG8t9XKi+UBeTL3soymy3BJfMk4d12s1n9P34J98dd8OTc85mkrOt
-	h3ZI6L0bK3LkGb/H0ZsPjYoRLeoEWkerexnOM7mdNP3ZapRLJCA+OUVB39pfjZz5RKqNb7tqeRvfz
-	UvJjjzSU2ZAdi9vErDHRJDclApnZKlZDFl0tBW2/qPai7LT2wVsbVrvWDOQmgOUHToKvR7N4dG1qH
-	Q8oxyVvQyXLVktbXWmdWGrvHmPVLh3nxroVOIe4CfGVzkddPBXU+e2BA9WiZD/7cqKdAdQ2AO5eAr
-	28JAewdg==;
-Received: from mail-wm1-x34a.google.com ([2a00:1450:4864:20::34a])
-	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWJwv-00000009smr-07CL
+	bh=t56obMWOlMyKyO7q6Si1cnEbfn2qyXwrpnzxR+4ONcI=; b=hSpQDkQDGOjfdvifojSIiuY5Bd
+	aBJQfDre1afrujOxRCuEeaU2+UonPEYUiO9nr72pC8vq1GenE0SVBfYypYc14xZ3GyAwnFkaf2AlI
+	tz0//v/wpD4g16GUGyjiNRLhXPxn+gBiGuxJvp0S7ru2khz5WZVqhi7N6sRmVfNtlz8k3QvjeDTlc
+	A0QBGdn9zjIICLmflhULluIrZlKBdVTu0HTC09CGeTZQ/EtCWWVZkpYIVB4GZo6r4zg3hT2gFzbmM
+	/JlFvzGv3bVyVlkCjljBnubA2qp4poGUd7oh18HCmNiuFJoInVe/ZbSQ+H3tIRtLRH5nzrPMX23tx
+	2v0VF28A==;
+Received: from mail-wr1-x449.google.com ([2a00:1450:4864:20::449])
+	by casper.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tWJxA-0000000EBY7-49U0
 	for linux-um@lists.infradead.org;
-	Fri, 10 Jan 2025 18:41:40 +0000
-Received: by mail-wm1-x34a.google.com with SMTP id 5b1f17b1804b1-4361efc9dc6so12656585e9.3
-        for <linux-um@lists.infradead.org>; Fri, 10 Jan 2025 10:41:36 -0800 (PST)
+	Fri, 10 Jan 2025 18:41:54 +0000
+Received: by mail-wr1-x449.google.com with SMTP id ffacd0b85a97d-3862be3bfc9so1407904f8f.3
+        for <linux-um@lists.infradead.org>; Fri, 10 Jan 2025 10:41:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1736534495; x=1737139295; darn=lists.infradead.org;
+        d=google.com; s=20230601; t=1736534511; x=1737139311; darn=lists.infradead.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DPVLK2dGaKuBzLzuN4/iPTz64M+48MZ0VyD4n5dtrVo=;
-        b=XZAPbGna/cU/h89WTD2pcQjbI78MTue+pl+HpCwMQjN9WT20MFTi8W++KSbPfcrE9w
-         rPgtF3bSHhuWZ/YRYaEh4oB/I8u9cCUuh6/gpoXgSAHOBDy8y5b76BOPRsKXDNzuSvEJ
-         FSEtT0Oi0mtvcGEh+9+huUOSdIrT/4aUGu7DA2rRUWxI7Lw86Ev6ZQsrX58MJfV1kxd5
-         0ikTUwuD7CRD+PDkMgAJQooz1Xt3P5v/tBrdb6jaapWrr22gCm299Tw/3erUI10g6N/f
-         OL4OJD1ckgGUnKeAO3kZMDD2NOnXdcZmtWlpY73cSl7brXPDDFZO3NM5KojL+yIRmPuo
-         12Ww==
+        bh=t56obMWOlMyKyO7q6Si1cnEbfn2qyXwrpnzxR+4ONcI=;
+        b=iqgBYshtD8GWwIf/nvQbEXu9FOquhQvGgiUyDKZPcTaANtqEfE/JbmfWixMhPeUkBp
+         sjxAYT3AwkTEPDVE4wk8uZUv7libglHHgUULBFoKlhDZeQ0wLGDyJIqAi30+ivj1RPWo
+         9muoA4/OnERlgJVLCgD3q7cJR5gqYJMgolIM50tcOldkG9ob5dJpB5NS3ei+JRQu78nv
+         yDYSkAyBHSaKhiB6yOOxSY74MnqisrYRE0kJC9FQbz/aAfK4qA4uGbs4V8TQQXnZL7VW
+         a4fyjppmYkOjpfW/LYcZECxRO/1fRAXGgKFbQhmNaFyVh9oNPMoZoFvUKZv3lCx4eis4
+         3hZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736534495; x=1737139295;
+        d=1e100.net; s=20230601; t=1736534511; x=1737139311;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DPVLK2dGaKuBzLzuN4/iPTz64M+48MZ0VyD4n5dtrVo=;
-        b=JQSvOaRvI+3SfUIVvTmnrE/MBON+SoUgpJeXTnHGMe5QwnsdyFE2vsX31m1km+jMjo
-         Lp5qO8cyNeicIgmrJ2veImEKQgFIm+iGUqcEmSNYKU9/dZeJBmyXRqPtTLBp5vlBvR2C
-         PRQUGyaRUFt3FDhwcso9fD7iirE+UKPDka4wdMoIZFVhhQXo2973uu8cBXZI+ul7GytJ
-         zPEwMsAKDAmVwRL6jTQKJ9xCWLFZheWCMfcALfd3IY08d+jHS5JAcnmspa11TfanSJ5L
-         kDqS0oiLN2NtNfWA8kGCX+kVTPJ6dcUxBmZEARvZugOUcjaOu6kngh4ctsJhaWP746kH
-         xMDw==
-X-Forwarded-Encrypted: i=1; AJvYcCXDomaBTJkrJogdsDlQMezGB5DPToFwZCjUr4Y533yTzJz+ObJwKYz7txc/Gqu/qxHYmOqLQWL/Zg==@lists.infradead.org
-X-Gm-Message-State: AOJu0YzvMWkveid+7wPz3r6CblWtb5NkPK5s+NTcfiJ3LRrIM733vQIX
-	tsx+Ii7QV/Km+ZNt/JIBNUlhQKaBz8RDq7Oenja1KT6Z6apErrYboeoLbcrcFoSLYTm99tSKrWU
-	BGSzywMrzwA==
-X-Google-Smtp-Source: AGHT+IGa4COP7j9J4GokCTwr7XdO0ZTV5zuQPMzgfz+JYaXuU8H1oEoG9KOP7c/HjvN6cC1FzOnvXoWDhc/niQ==
-X-Received: from wmbbd12.prod.google.com ([2002:a05:600c:1f0c:b0:434:fd41:173c])
+        bh=t56obMWOlMyKyO7q6Si1cnEbfn2qyXwrpnzxR+4ONcI=;
+        b=g9YQV79ZurSXgqxLzwHnc1qWCS5TX1ecDnfiUaair7eWPbBL3F/fgzrfNdhbg2z1L6
+         8Lv+EVpffOrSxE1dVhUACrl9QVrJrzjhir/Wkwr/PhKqWSX1y8M3kzkQ88gX0F6l/zZA
+         i21yZX2sQ7E0lKxh4Mu/SvOqJWkX4d8oMQiBWiLUisen/jVKrrkIgJ+oqzAHLZW+S8iZ
+         3EjZDg0qWxSslIE6pR8KWACxeFqSKh/op7XIIrl6ulx3VLeGBD7J70l0nW5WnhFKijFr
+         ljdyVd+ez0F9/gzG9iQ6S2GqOBtq54foddxPAAAI42cz09pRz5bWyAOS6W2727qL8Vhh
+         s9ig==
+X-Forwarded-Encrypted: i=1; AJvYcCUgh+jKILZNH+UtoSMtTh58um+tYHS9hhgT0Yt97WclAjwHDwJNbzMcJTcyr+Kro6mC+ifi+ObGcQ==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yw2FNsswRVjgg5z0T/gAXcGA99ZNkhtbDc8RxyXZju1q46V3HHN
+	tOb2+fDDyI4P+Zc8QcYxWJkSugil0ZS8iIycyE41IiIRdJVXjSqAWLeqP1H8q50QFEEw9WBhFSZ
+	kWtUPB+KuUw==
+X-Google-Smtp-Source: AGHT+IHNze04KHr3mNrPu4oWzk1uJr6kUgfUG8uUPvBwU8SZTj2uxyjbDaOwELGdGilpgEGrHE3bExV1JNVQyA==
+X-Received: from wmba16.prod.google.com ([2002:a05:600c:6dd0:b0:434:f350:9fc])
  (user=jackmanb job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:600c:25a:b0:431:547e:81d0 with SMTP id 5b1f17b1804b1-436ee0a061emr59243545e9.11.1736534495189;
- Fri, 10 Jan 2025 10:41:35 -0800 (PST)
-Date: Fri, 10 Jan 2025 18:40:48 +0000
+ 2002:a05:6000:70a:b0:38a:4184:1519 with SMTP id ffacd0b85a97d-38a873051e1mr10550801f8f.23.1736534511095;
+ Fri, 10 Jan 2025 10:41:51 -0800 (PST)
+Date: Fri, 10 Jan 2025 18:40:55 +0000
 In-Reply-To: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
 Mime-Version: 1.0
 References: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
 X-Mailer: b4 0.15-dev
-Message-ID: <20250110-asi-rfc-v2-v2-22-8419288bc805@google.com>
-Subject: [PATCH RFC v2 22/29] mm: asi: exit ASI before accessing CR3 from C
- code where appropriate
+Message-ID: <20250110-asi-rfc-v2-v2-29-8419288bc805@google.com>
+Subject: [PATCH RFC v2 29/29] mm: asi: Stop ignoring asi=on cmdline flag
 From: Brendan Jackman <jackmanb@google.com>
 To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
 	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
@@ -133,11 +132,11 @@ Cc: x86@kernel.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
 	linux-um@lists.infradead.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, 
 	linux-trace-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
 	kvm@vger.kernel.org, linux-efi@vger.kernel.org, 
-	Brendan Jackman <jackmanb@google.com>, Yosry Ahmed <yosryahmed@google.com>
+	Brendan Jackman <jackmanb@google.com>
 Content-Type: text/plain; charset="utf-8"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250110_184137_224312_3E0E54CC 
-X-CRM114-Status: GOOD (  31.76  )
+X-CRM114-CacheID: sfid-20250110_184153_060081_2D9E49DA 
+X-CRM114-Status: GOOD (  15.39  )
 X-Mailman-Approved-At: Fri, 10 Jan 2025 12:24:52 -0800
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -153,481 +152,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Because asi_exit()s can be triggered by NMIs, CR3 is unstable when in
-the ASI restricted address space. (Exception: code in the ASI critical
-section can treat it as stable, because if an asi_exit() occurs during
-an exception it will be undone before the critical section resumes).
+At this point the minimum requirements are in place for the kernel to
+operate correctly with ASI enabled.
 
-Code that accesses CR3 needs to become aware of this. Most importantly:
-if code reads CR3 and then writes a derived value back, if concurrent
-asi_exit() occurred in between then the address space switch would be
-undone, which would totally break ASI.
-
-So, make sure that an asi_exit() is performed before accessing CR3.
-Exceptions are made for cases that need to access the current CR3 value,
-restricted or not, without exiting ASI.
-
-(An alternative approach would be to enter an ASI critical section when
-a stable CR3 is needed. This would be worth exploring if the ASI exits
-introduced by this patch turned out to cause performance issues).
-
-Add calls to asi_exit() to __native_read_cr3() and native_write_cr3(),
-and introduce 'raw' variants that do not perform an ASI exit. Introduce
-similar variants for wrappers: __read_cr3(), read_cr3_pa(), and
-write_cr3(). A forward declaration of asi_exit(), because the one in
-asm-generic/asi.h is only declared when !CONFIG_ADDRESS_SPACE_ISOLATION,
-and arch/x86/asm/asi.h cannot be included either as it would cause a
-circular dependency.
-
-The 'raw' variants are used in the following cases:
-- In __show_regs() where the actual values of registers are dumped for
-  debugging.
-- In dump_pagetable() and show_fault_oops() where the active page tables
-  during a page fault are dumped for debugging.
-- In switch_mm_verify_cr3() and cr3_matches_current_mm() where the
-  actual value of CR3 is needed for a debug check, and the code
-  explicitly checks for ASI-restricted CR3.
-- In exc_page_fault() for ASI faults. The code is ASI-aware and
-  explicitly performs an ASI exit before reading CR3.
-- In load_new_mm_cr3() where a new CR3 is loaded during context
-  switching. At this point, it is guaranteed that ASI already exited.
-  Calling asi_exit() at that point, where loaded_mm ==
-  LOADED_MM_SWITCHING, will cause VM_BUG_ON in asi_exit() to fire
-  mistakenly even though loaded_mm is never accessed.
-- In __get_current_cr3_fast(), as it is called from an ASI critical
-  section and the value is only used for debug checking.
-  In nested_vmx_check_vmentry_hw(), do an explicit asi_exit() before
-  calling __get_current_cr3_fast(), since in that case we are not in a
-  critical section and do need a stable CR3 value.
-- In __asi_enter() and asi_exit() for obvious reasons.
-
-- In vmx_set_constant_host_state() when CR3 is initialized in the VMCS
-  with the most likely value. Preemption is enabled, so once ASI
-  supports context switching exiting ASI will not be reliable as
-  rescheduling may cause re-entering ASI. It doesn't matter if the wrong
-  value of CR3 is used in this context, before entering the guest, ASI
-  is either explicitly entered or exited, and CR3 is updated again in
-  the VMCS if needed.
-- In efi_5level_switch(), as it is called from startup_64_mixed_mode()
-  during boot before ASI can be entered. startup_64_mixed_mode() is
-  under arch/x86/boot/compressed/* and it cannot call asi_exit() anyway
-  (see below).
-
-Finally, code in arch/x86/boot/compressed/ident_map_64.c and
-arch/x86/boot/compressed/pgtable_64.c extensively accesses CR3 during
-boot. This code under arch/x86/boot/compressed/* cannot call asi_exit()
-due to restriction on its compilation (it cannot use functions defined
-in .c files outside the directory).
-
-Instead of changing all CR3 accesses to use 'raw' variants, undefine
-CONFIG_MITIGATION_ADDRESS_SPACE_ISOLATION in these files. This will make
-the asi_exit() calls in CR3 helpers use the noop variant defined in
-include/asm-generic/asi.h. This is fine because the code is executed
-early in boot where asi_exit() would be noop anyway.
-
-With this change, the number of existing *_cr3() calls are 44, and the
-number of *_cr3_raw() are 22. The choice was made to make the existing
-functions exit ASI by default and adding new variants that do not exit
-ASI, because most call sites that use the new *_cr3_raw() variants are
-either ASI-aware code or debugging code.
-
-On the contrary, code that uses the existing variants is usually in
-important code paths (e.g. TLB flushes) and is ignorant of ASI. Hence,
-new code is most likely to be correct and less risky by using the
-variants that exit ASI by default.
-
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 Signed-off-by: Brendan Jackman <jackmanb@google.com>
 ---
- arch/x86/Kconfig                        |  2 +-
- arch/x86/boot/compressed/ident_map_64.c | 10 ++++++++
- arch/x86/boot/compressed/pgtable_64.c   | 11 +++++++++
- arch/x86/include/asm/processor.h        |  5 ++++
- arch/x86/include/asm/special_insns.h    | 41 +++++++++++++++++++++++++++++++--
- arch/x86/kernel/process_32.c            |  2 +-
- arch/x86/kernel/process_64.c            |  2 +-
- arch/x86/kvm/vmx/nested.c               |  6 +++++
- arch/x86/kvm/vmx/vmx.c                  |  8 ++++++-
- arch/x86/mm/asi.c                       |  4 ++--
- arch/x86/mm/fault.c                     |  8 +++----
- arch/x86/mm/tlb.c                       | 16 +++++++++----
- arch/x86/virt/svm/sev.c                 |  2 +-
- drivers/firmware/efi/libstub/x86-5lvl.c |  2 +-
- include/asm-generic/asi.h               |  1 +
- 15 files changed, 101 insertions(+), 19 deletions(-)
+ arch/x86/mm/asi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 1fcb52cb8cd5084ac3cef04af61b7d1653162bdb..ae31f36ce23d7c29d1e90b726c5a2e6ea5a63c8d 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -2531,7 +2531,7 @@ config MITIGATION_ADDRESS_SPACE_ISOLATION
- 	  The !PARAVIRT dependency is only because of lack of testing; in theory
- 	  the code is written to work under paravirtualization. In practice
- 	  there are likely to be unhandled cases, in particular concerning TLB
--	  flushes.
-+	  flushes and CR3 manipulation.
- 
- 
- config ADDRESS_SPACE_ISOLATION_DEFAULT_ON
-diff --git a/arch/x86/boot/compressed/ident_map_64.c b/arch/x86/boot/compressed/ident_map_64.c
-index dfb9c2deb77cfc4e9986976bf2fd1652666f8f15..957b6f818aec361191432b420b61ba6ae017cf6c 100644
---- a/arch/x86/boot/compressed/ident_map_64.c
-+++ b/arch/x86/boot/compressed/ident_map_64.c
-@@ -11,6 +11,16 @@
- /* No MITIGATION_PAGE_TABLE_ISOLATION support needed either: */
- #undef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
- 
-+/*
-+ * CR3 access helpers (e.g. write_cr3()) will call asi_exit() to exit the
-+ * restricted address space first. We cannot call the version defined in
-+ * arch/x86/mm/asi.c here, so make sure we always call the noop version in
-+ * asm-generic/asi.h. It does not matter because early during boot asi_exit()
-+ * would be a noop anyway. The alternative is spamming the code with *_raw()
-+ * variants of the CR3 helpers.
-+ */
-+#undef CONFIG_MITIGATION_ADDRESS_SPACE_ISOLATION
-+
- #include "error.h"
- #include "misc.h"
- 
-diff --git a/arch/x86/boot/compressed/pgtable_64.c b/arch/x86/boot/compressed/pgtable_64.c
-index c882e1f67af01c50a20bfe00a32138dc771ee88c..034ad7101126c19864cfacc7c363fd31fedecd2b 100644
---- a/arch/x86/boot/compressed/pgtable_64.c
-+++ b/arch/x86/boot/compressed/pgtable_64.c
-@@ -1,4 +1,15 @@
- // SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * CR3 access helpers (e.g. write_cr3()) will call asi_exit() to exit the
-+ * restricted address space first. We cannot call the version defined in
-+ * arch/x86/mm/asi.c here, so make sure we always call the noop version in
-+ * asm-generic/asi.h. It does not matter because early during boot asi_exit()
-+ * would be a noop anyway. The alternative is spamming the code with *_raw()
-+ * variants of the CR3 helpers.
-+ */
-+#undef CONFIG_MITIGATION_ADDRESS_SPACE_ISOLATION
-+
- #include "misc.h"
- #include <asm/bootparam.h>
- #include <asm/e820/types.h>
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index a32a53405f45e4c0473fe081e216029cf5bd0cdd..9375a7f877d60e8f556dedefbe74593c1a5a6e10 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -226,6 +226,11 @@ static __always_inline unsigned long read_cr3_pa(void)
- 	return __read_cr3() & CR3_ADDR_MASK;
- }
- 
-+static __always_inline unsigned long read_cr3_pa_raw(void)
-+{
-+	return __read_cr3_raw() & CR3_ADDR_MASK;
-+}
-+
- static inline unsigned long native_read_cr3_pa(void)
- {
- 	return __native_read_cr3() & CR3_ADDR_MASK;
-diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
-index 6e103358966f6f1333aa07be97aec5f8af794120..1c886b3f04a56893b7408466a2c94d23f5d11857 100644
---- a/arch/x86/include/asm/special_insns.h
-+++ b/arch/x86/include/asm/special_insns.h
-@@ -5,6 +5,7 @@
- #ifdef __KERNEL__
- #include <asm/nops.h>
- #include <asm/processor-flags.h>
-+#include <asm-generic/asi.h>
- 
- #include <linux/errno.h>
- #include <linux/irqflags.h>
-@@ -42,18 +43,32 @@ static __always_inline void native_write_cr2(unsigned long val)
- 	asm volatile("mov %0,%%cr2": : "r" (val) : "memory");
- }
- 
--static __always_inline unsigned long __native_read_cr3(void)
-+void asi_exit(void);
-+
-+static __always_inline unsigned long __native_read_cr3_raw(void)
- {
- 	unsigned long val;
- 	asm volatile("mov %%cr3,%0\n\t" : "=r" (val) : __FORCE_ORDER);
- 	return val;
- }
- 
--static __always_inline void native_write_cr3(unsigned long val)
-+static __always_inline unsigned long __native_read_cr3(void)
-+{
-+	asi_exit();
-+	return __native_read_cr3_raw();
-+}
-+
-+static __always_inline void native_write_cr3_raw(unsigned long val)
- {
- 	asm volatile("mov %0,%%cr3": : "r" (val) : "memory");
- }
- 
-+static __always_inline void native_write_cr3(unsigned long val)
-+{
-+	asi_exit();
-+	native_write_cr3_raw(val);
-+}
-+
- static inline unsigned long native_read_cr4(void)
- {
- 	unsigned long val;
-@@ -152,17 +167,39 @@ static __always_inline void write_cr2(unsigned long x)
- /*
-  * Careful!  CR3 contains more than just an address.  You probably want
-  * read_cr3_pa() instead.
-+ *
-+ * The implementation interacts with ASI to ensure that the returned value is
-+ * stable as long as preemption is disabled.
-  */
- static __always_inline unsigned long __read_cr3(void)
- {
- 	return __native_read_cr3();
- }
- 
-+/*
-+ * The return value of this is unstable under ASI, even with preemption off.
-+ * Call __read_cr3 instead unless you have a good reason not to.
-+ */
-+static __always_inline unsigned long __read_cr3_raw(void)
-+{
-+	return __native_read_cr3_raw();
-+}
-+
-+/* This interacts with ASI like __read_cr3. */
- static __always_inline void write_cr3(unsigned long x)
- {
- 	native_write_cr3(x);
- }
- 
-+/*
-+ * Like __read_cr3_raw, this doesn't interact with ASI. It's very unlikely that
-+ * this should be called from outside ASI-specific code.
-+ */
-+static __always_inline void write_cr3_raw(unsigned long x)
-+{
-+	native_write_cr3_raw(x);
-+}
-+
- static inline void __write_cr4(unsigned long x)
- {
- 	native_write_cr4(x);
-diff --git a/arch/x86/kernel/process_32.c b/arch/x86/kernel/process_32.c
-index 0917c7f25720be91372bacddb1a3032323b8996f..14828a867b713a50297953c5a0ccfd03d83debc0 100644
---- a/arch/x86/kernel/process_32.c
-+++ b/arch/x86/kernel/process_32.c
-@@ -79,7 +79,7 @@ void __show_regs(struct pt_regs *regs, enum show_regs_mode mode,
- 
- 	cr0 = read_cr0();
- 	cr2 = read_cr2();
--	cr3 = __read_cr3();
-+	cr3 = __read_cr3_raw();
- 	cr4 = __read_cr4();
- 	printk("%sCR0: %08lx CR2: %08lx CR3: %08lx CR4: %08lx\n",
- 		log_lvl, cr0, cr2, cr3, cr4);
-diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
-index 226472332a70dd02902f81c21207d770e698aeed..ca135731b54b7f5f1123c2b8b27afdca7b868bcc 100644
---- a/arch/x86/kernel/process_64.c
-+++ b/arch/x86/kernel/process_64.c
-@@ -113,7 +113,7 @@ void __show_regs(struct pt_regs *regs, enum show_regs_mode mode,
- 
- 	cr0 = read_cr0();
- 	cr2 = read_cr2();
--	cr3 = __read_cr3();
-+	cr3 = __read_cr3_raw();
- 	cr4 = __read_cr4();
- 
- 	printk("%sFS:  %016lx(%04x) GS:%016lx(%04x) knlGS:%016lx\n",
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index 931a7361c30f2da28073eb832efce0b378e3b325..7eb033dabe4a606947c4d7e5b96be2e42d8f2478 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -3214,6 +3214,12 @@ static int nested_vmx_check_vmentry_hw(struct kvm_vcpu *vcpu)
- 	 */
- 	vmcs_writel(GUEST_RFLAGS, 0);
- 
-+	/*
-+	 * Stabilize CR3 to ensure the VM Exit returns to the correct address
-+	 * space. This is costly, we wouldn't do this in hot-path code.
-+	 */
-+	asi_exit();
-+
- 	cr3 = __get_current_cr3_fast();
- 	if (unlikely(cr3 != vmx->loaded_vmcs->host_state.cr3)) {
- 		vmcs_writel(HOST_CR3, cr3);
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 181d230b1c057fed33f7b29b7b0e378dbdfeb174..0e90463f1f2183b8d716f85d5c8a8af8958fef0b 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -4323,8 +4323,14 @@ void vmx_set_constant_host_state(struct vcpu_vmx *vmx)
- 	/*
- 	 * Save the most likely value for this task's CR3 in the VMCS.
- 	 * We can't use __get_current_cr3_fast() because we're not atomic.
-+	 *
-+	 * Use __read_cr3_raw() to avoid exiting ASI if we are in the restrict
-+	 * address space. Preemption is enabled, so rescheduling could make us
-+	 * re-enter ASI anyway. It's okay to avoid exiting ASI here because
-+	 * vmx_vcpu_enter_exit() and nested_vmx_check_vmentry_hw() will
-+	 * explicitly enter or exit ASI and update CR3 in the VMCS if needed.
- 	 */
--	cr3 = __read_cr3();
-+	cr3 = __read_cr3_raw();
- 	vmcs_writel(HOST_CR3, cr3);		/* 22.2.3  FIXME: shadow tables */
- 	vmx->loaded_vmcs->host_state.cr3 = cr3;
- 
 diff --git a/arch/x86/mm/asi.c b/arch/x86/mm/asi.c
-index bc2cf0475a0e7344a66d81453f55034b2fc77eef..a9f9bfbf85eb47d16ef8d0bfbc7713f07052d3ed 100644
+index f10f6614b26148e5ba423d8a44f640674573ee40..3e3956326936ea8550308ad004dbbb3738546f9f 100644
 --- a/arch/x86/mm/asi.c
 +++ b/arch/x86/mm/asi.c
-@@ -488,7 +488,7 @@ noinstr void __asi_enter(void)
+@@ -207,14 +207,14 @@ void __init asi_check_boottime_disable(void)
+ 		pr_info("ASI disabled through kernel command line.\n");
+ 	} else if (ret == 2 && !strncmp(arg, "on", 2)) {
+ 		enabled = true;
+-		pr_info("Ignoring asi=on param while ASI implementation is incomplete.\n");
++		pr_info("ASI enabled through kernel command line.\n");
+ 	} else {
+ 		pr_info("ASI %s by default.\n",
+ 			enabled ? "enabled" : "disabled");
+ 	}
  
- 	pcid = asi_pcid(target, this_cpu_read(cpu_tlbstate.loaded_mm_asid));
- 	asi_cr3 = build_cr3_pcid_noinstr(target->pgd, pcid, tlbstate_lam_cr3_mask(), false);
--	write_cr3(asi_cr3);
-+	write_cr3_raw(asi_cr3);
- 
- 	maybe_flush_data(target);
- 	/*
-@@ -559,7 +559,7 @@ noinstr void asi_exit(void)
- 
- 		/* Tainting first makes reentrancy easier to reason about.  */
- 		this_cpu_or(asi_taints, ASI_TAINT_KERNEL_DATA);
--		write_cr3(unrestricted_cr3);
-+		write_cr3_raw(unrestricted_cr3);
- 		/*
- 		 * Must not update curr_asi until after CR3 write, otherwise a
- 		 * re-entrant call might not enter this branch. (This means we
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index ee8f5417174e2956391d538f41e2475553ca4972..ca48e4f5a27be30ff93d1c3d194aad23d99ae43c 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -295,7 +295,7 @@ static bool low_pfn(unsigned long pfn)
- 
- static void dump_pagetable(unsigned long address)
- {
--	pgd_t *base = __va(read_cr3_pa());
-+	pgd_t *base = __va(read_cr3_pa_raw());
- 	pgd_t *pgd = &base[pgd_index(address)];
- 	p4d_t *p4d;
- 	pud_t *pud;
-@@ -351,7 +351,7 @@ static int bad_address(void *p)
- 
- static void dump_pagetable(unsigned long address)
- {
--	pgd_t *base = __va(read_cr3_pa());
-+	pgd_t *base = __va(read_cr3_pa_raw());
- 	pgd_t *pgd = base + pgd_index(address);
- 	p4d_t *p4d;
- 	pud_t *pud;
-@@ -519,7 +519,7 @@ show_fault_oops(struct pt_regs *regs, unsigned long error_code, unsigned long ad
- 		pgd_t *pgd;
- 		pte_t *pte;
- 
--		pgd = __va(read_cr3_pa());
-+		pgd = __va(read_cr3_pa_raw());
- 		pgd += pgd_index(address);
- 
- 		pte = lookup_address_in_pgd_attr(pgd, address, &level, &nx, &rw);
-@@ -1578,7 +1578,7 @@ DEFINE_IDTENTRY_RAW_ERRORCODE(exc_page_fault)
- 		 * be losing some stats here. However for now this keeps ASI
- 		 * page faults nice and fast.
- 		 */
--		pgd = (pgd_t *)__va(read_cr3_pa()) + pgd_index(address);
-+		pgd = (pgd_t *)__va(read_cr3_pa_raw()) + pgd_index(address);
- 		if (!user_mode(regs) && kernel_access_ok(error_code, address, pgd)) {
- 			warn_if_bad_asi_pf(error_code, address);
- 			return;
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index 07b1657bee8e4cf17452ea57c838823e76f482c0..0c9f477a44a4da971cb7744d01d9101900ead1a5 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -331,8 +331,14 @@ static void load_new_mm_cr3(pgd_t *pgdir, u16 new_asid, unsigned long lam,
- 	 * Caution: many callers of this function expect
- 	 * that load_cr3() is serializing and orders TLB
- 	 * fills with respect to the mm_cpumask writes.
-+	 *
-+	 * The context switching code will explicitly exit ASI when needed, do
-+	 * not use write_cr3() as it has an implicit ASI exit. Calling
-+	 * asi_exit() here, where loaded_mm == LOADED_MM_SWITCHING, will cause
-+	 * the VM_BUG_ON() in asi_exit() to fire mistakenly even though
-+	 * loaded_mm is never accessed.
- 	 */
--	write_cr3(new_mm_cr3);
-+	write_cr3_raw(new_mm_cr3);
+ 	if (enabled)
+-		pr_info("ASI enablement ignored due to incomplete implementation.\n");
++		setup_force_cpu_cap(X86_FEATURE_ASI);
  }
  
- void leave_mm(void)
-@@ -559,11 +565,11 @@ void switch_mm_irqs_off(struct mm_struct *unused, struct mm_struct *next,
- 	 * without going through leave_mm() / switch_mm_irqs_off() or that
- 	 * does something like write_cr3(read_cr3_pa()).
- 	 *
--	 * Only do this check if CONFIG_DEBUG_VM=y because __read_cr3()
-+	 * Only do this check if CONFIG_DEBUG_VM=y because __read_cr3_raw()
- 	 * isn't free.
- 	 */
- #ifdef CONFIG_DEBUG_VM
--	if (WARN_ON_ONCE(__read_cr3() != build_cr3(prev->pgd, prev_asid,
-+	if (WARN_ON_ONCE(__read_cr3_raw() != build_cr3(prev->pgd, prev_asid,
- 						   tlbstate_lam_cr3_mask()))) {
- 		/*
- 		 * If we were to BUG here, we'd be very likely to kill
-@@ -1173,7 +1179,7 @@ noinstr unsigned long __get_current_cr3_fast(void)
- 	 */
- 	VM_WARN_ON_ONCE(asi && asi_in_critical_section());
- 
--	VM_BUG_ON(cr3 != __read_cr3());
-+	VM_BUG_ON(cr3 != __read_cr3_raw());
- 	return cr3;
- }
- EXPORT_SYMBOL_GPL(__get_current_cr3_fast);
-@@ -1373,7 +1379,7 @@ static inline bool cr3_matches_current_mm(void)
- 	 * find a current ASI domain.
- 	 */
- 	barrier();
--	pgd_cr3 = __va(read_cr3_pa());
-+	pgd_cr3 = __va(read_cr3_pa_raw());
- 	return pgd_cr3 == current->mm->pgd || pgd_cr3 == pgd_asi;
- }
- 
-diff --git a/arch/x86/virt/svm/sev.c b/arch/x86/virt/svm/sev.c
-index 9a6a943d8e410c0289200adb9deafe8e45d33a4b..63d391395a5c7f4ddec28116814ccd6c52bbb428 100644
---- a/arch/x86/virt/svm/sev.c
-+++ b/arch/x86/virt/svm/sev.c
-@@ -379,7 +379,7 @@ void snp_dump_hva_rmpentry(unsigned long hva)
- 	pgd_t *pgd;
- 	pte_t *pte;
- 
--	pgd = __va(read_cr3_pa());
-+	pgd = __va(read_cr3_pa_raw());
- 	pgd += pgd_index(hva);
- 	pte = lookup_address_in_pgd(pgd, hva, &level);
- 
-diff --git a/drivers/firmware/efi/libstub/x86-5lvl.c b/drivers/firmware/efi/libstub/x86-5lvl.c
-index 77359e802181fd82b6a624cf74183e6a318cec9b..3b97a5aea983a109fbdc6d23a219e4a04024c512 100644
---- a/drivers/firmware/efi/libstub/x86-5lvl.c
-+++ b/drivers/firmware/efi/libstub/x86-5lvl.c
-@@ -66,7 +66,7 @@ void efi_5level_switch(void)
- 	bool have_la57 = native_read_cr4() & X86_CR4_LA57;
- 	bool need_toggle = want_la57 ^ have_la57;
- 	u64 *pgt = (void *)la57_toggle + PAGE_SIZE;
--	u64 *cr3 = (u64 *)__native_read_cr3();
-+	u64 *cr3 = (u64 *)__native_read_cr3_raw();
- 	u64 *new_cr3;
- 
- 	if (!la57_toggle || !need_toggle)
-diff --git a/include/asm-generic/asi.h b/include/asm-generic/asi.h
-index 7867b8c23449058a1dd06308ab5351e0d210a489..4f033d3ef5929707fd280f74fc800193e45143c1 100644
---- a/include/asm-generic/asi.h
-+++ b/include/asm-generic/asi.h
-@@ -71,6 +71,7 @@ static inline pgd_t *asi_pgd(struct asi *asi) { return NULL; }
- 
- static inline void asi_handle_switch_mm(void) { }
- 
-+struct thread_struct;
- static inline void asi_init_thread_state(struct thread_struct *thread) { }
- 
- static inline void asi_intr_enter(void) { }
+ /*
 
 -- 
 2.47.1.613.gc27f4b7a9f-goog
