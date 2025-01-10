@@ -4,84 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65AD5C02185
-	for <linux-um@archiver.kernel.org>; Fri, 10 Jan 2025 20:25:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94773C02188
+	for <linux-um@archiver.kernel.org>; Fri, 10 Jan 2025 20:25:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:From:
 	Subject:Message-ID:References:Mime-Version:In-Reply-To:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=CAllTjvu+aeRJsuZfnIbaARP70yHbpTXyh5BDwNTLpw=; b=PGFmjM303prUEr+jyoq4EoeIrK
-	0/3r5PQP02xpWkygcR/wcRqVGZ/bPVf6s3n1HXe2eG1TbHbt73g42Nk1/xKZ56FxQFtOeI0sXRk6z
-	SYiSZmIIzp5bWDhbbTvvuARr2dHGbcJbKRbp/rhX4DiktFT8atDogwBP8wMTJEklRnIAYIYPqlaVh
-	DmuaKH83vfryoKuGO2wBZvnfTz0Y7J7oZrq0PzY3w7XFSwPvoO2LdfXNBQgp6gtVn7uqqoVnYXAJd
-	C9kLW4bPrxiN09LBTamV1JPDEA0W/478UwZl8w1MgpYkK0dh/8rDe4Kq5uHFTkAG7/4nE7lZcesrP
-	cjYBSkPQ==;
+	bh=49F9KmkByYRspQkaSYzsGBFq+GnQYA+RnfOGnAD1TNs=; b=jedhf/hopBSpSNH79vawRGQqp5
+	kMq1ar2Di1KVGsGqXEfU49NZMH2IhQZ5PSKS8dk+31o1nU8ESpp9AyBcBtZBkFXlyXtvLJ1EzIkwf
+	Hws6maW5XRBhVxwYxmt49pbcWxmwkBZpjoviznfxQdZbAO4yHRrOJakzaFXtOSHCrAYXmEBEPCDwA
+	Afb5IREyUvZWiuHRDHLjeRNeR5+RDRCRMZXGQDFrFue1Ae1pmbwVkH0pP9HTsM+/8D23o1WhjHCb/
+	Z/ZcOuFoZprByUwzqsKeizK6+MdV7WRPc+XCMxhqvLNDzW2W9J9jjGVLq+aKhbQnGvZMdynjVlfvR
+	8qTFV64Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWLZG-0000000GtNf-0eoS;
-	Fri, 10 Jan 2025 20:25:18 +0000
+	id 1tWLZH-0000000GtQZ-1DrF;
+	Fri, 10 Jan 2025 20:25:19 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWJxB-0000000Gc1T-1gS7
+	id 1tWJxG-0000000Gc4R-0sG8
 	for linux-um@bombadil.infradead.org;
-	Fri, 10 Jan 2025 18:41:53 +0000
+	Fri, 10 Jan 2025 18:41:58 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=desiato.20200630; h=Content-Type:Cc:To:From:Subject:
 	Message-ID:References:Mime-Version:In-Reply-To:Date:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=CAllTjvu+aeRJsuZfnIbaARP70yHbpTXyh5BDwNTLpw=; b=M5OJwz71x+E209KhhTWSCJSPC+
-	rTQnQlevcRMyA4dzFH1fHdoszJrRe0PA/sN4hqR71PyoZQmNQzGP0ZLQXhrn32DyEYg8SO7yY9GmE
-	kFunVuraNhTvt4C7/wgDidF4ja2EuhsGbLMVuZHt1CT9W54VnnQ70Gw04fIsc3Rr3AuWcJYbGqAek
-	mQP4BUuNSpHj9SFRSYN6CItRW+YmfUJEolh9qR8w9EN/rJ/cl8sTugvECZjvMlsHooMs1ve+5TBya
-	IPNu+clEAOgW1qqjo01dRdYhUiG9Ok+KCbdpOkw79yOrZaSlPvfvtgJWerhnsYQKPyXtf5kSmk+Iv
-	mGL3U+lA==;
+	bh=49F9KmkByYRspQkaSYzsGBFq+GnQYA+RnfOGnAD1TNs=; b=ZGPX86UQr0X9VJBrdJq4NBBZ9x
+	IkqvzCCHiG3sLaROS+eh0FCWeBD/k4XYYRZBVRmLAK6Wah1KEWe9Zmex6ZSj+2KKs8wTn1ZDFzev+
+	n/W2Jl4xYg1yXfhaB0+CYzQn30emcvgc4aluVFwH1sAvZHL2Oz0Ox57HfxuSW4dX5noZlW8chI9gI
+	fg8O0zYviRkb1AclHCnBgzP6uAlaAtHWDJNE0jVMYfWhrzeWH3W6TxJ6Vi362i0CzCgS5+AqtqpUB
+	/ptjZ7Q1o9q4i/II3O86TASO/MasfOu19+gNLtQ57VH4mGaKiFBBpnF+IC4178mnoBvim/tD5607j
+	uz4RcBkQ==;
 Received: from mail-wm1-x349.google.com ([2a00:1450:4864:20::349])
 	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWJx4-00000009ssW-23E4
+	id 1tWJx9-00000009suL-2ucr
 	for linux-um@lists.infradead.org;
-	Fri, 10 Jan 2025 18:41:50 +0000
-Received: by mail-wm1-x349.google.com with SMTP id 5b1f17b1804b1-4359206e1e4so19292535e9.2
-        for <linux-um@lists.infradead.org>; Fri, 10 Jan 2025 10:41:45 -0800 (PST)
+	Fri, 10 Jan 2025 18:41:56 +0000
+Received: by mail-wm1-x349.google.com with SMTP id 5b1f17b1804b1-4361eb83f46so20341805e9.3
+        for <linux-um@lists.infradead.org>; Fri, 10 Jan 2025 10:41:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1736534505; x=1737139305; darn=lists.infradead.org;
+        d=google.com; s=20230601; t=1736534509; x=1737139309; darn=lists.infradead.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CAllTjvu+aeRJsuZfnIbaARP70yHbpTXyh5BDwNTLpw=;
-        b=rqaSIbFEaRsw1XLV5/Y9dwc/CINHbljVbDhmf2YGrl4CMKhk9l/gZfcBRgbi/xD48J
-         Ms3mWypknpNEdCsHMbIiQxC0xEhGdx5rW9cuWToeDAAPRNKFD1eIgFAygXocaWn/AZBV
-         yLPEVTUKQ67c4O5AYT9vl8HZw7TLB3bs8YzRuB3fWtgDIe4xiNt3bwLoawLS3BJ1ysbT
-         u8Xa+0hg4dQ1N0lSZmTu6HjHiL2HeL8P6A2DOXHByWvh4oCjyTaedhyHlkXyx4rhadOS
-         8sk7//6/1IeZWmPcSJl2iFLaKArjCdWlQ/Q8nyO6jrw9nbqMx21im7U5GwrMj0njDies
-         Lqiw==
+        bh=49F9KmkByYRspQkaSYzsGBFq+GnQYA+RnfOGnAD1TNs=;
+        b=tDVCq9we3SKR3ixrUjhqHqcUdE9VaneseBUzlFxy42OdQt/tGZT93O00OwWibhlJ82
+         7Ja3MfKZk2PcyiDADRzdkXgGwg6RSaVelkBmsAf8KISrrBDR7xwufLB7tjnacXaGen55
+         gHnsKYGbhbNiTIRtIEtgk86BvoQVr+Alk0nfCQu1ZTjaORnAEm9msd32Vc1fQ6DHcQ3v
+         xPBOVpdsFHyZg4nwU5nlRAFZTM3VhIFIlJD3ArlgGqXPFlXmpBXGh0TdNHBHiaGQ6LAf
+         MJlZCDFnoIH/Dd4pTbKOfAzcDPDt43tF/tQwR6V3Fk2BKJDcQWXSAr+X1u5ex8pQUiyM
+         wbvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736534505; x=1737139305;
+        d=1e100.net; s=20230601; t=1736534509; x=1737139309;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CAllTjvu+aeRJsuZfnIbaARP70yHbpTXyh5BDwNTLpw=;
-        b=bbVgmZ0YRL+QYPVnuXCsmLCJ1RxdB51ntsWhtN4rkKp1svzSMOMRq6So1NQUoLLOZ8
-         CYJlzEUaJcQe0PqKoMD35fbSdu4/iicZRSWd4tRQNmjUKXja+P4tgJMapoF+P7PvwUl2
-         D8A4qpqn9aGb1bZofLk4GA0ltTqcyj0cw3cxLWtDRm7NvD80iFu3aEhAbd1tH7CMLjLU
-         lHcE90+Xnb9MRkPpZhuGRj8maRG1VtVeSCfkWJCpzQxvaFLVNJZf5A2ZYijLY3556xVt
-         iQE5SMrwwdDBndXqwqk+LwSdNNfYwZ83sEZNXnIEoxULMpFONBDBbL6j71GPBcz93Acx
-         xcRA==
-X-Forwarded-Encrypted: i=1; AJvYcCWA768MdO5oiBd3PHbWKLaKQlhWKk4g19J0+bPd1ER+Cy7ca74NqeujVyhgVdOd2TOzJzPUYuOWfA==@lists.infradead.org
-X-Gm-Message-State: AOJu0YzHb28N3rxne1fCqC20LwPUgm4JeSiafl/8mExd8/zmf3pDJy/l
-	6pAdShYOBfjXQ3yXUBkfMoWlRRqMkzzEQPS8kt6MpqdJW0JHyTyZGMon33J7icvpJQCu+EqMyrL
-	C5/89NIEl4w==
-X-Google-Smtp-Source: AGHT+IFbu2VfquZETrYawBwFSqjLwW/Qzimn4MDKfCetEVKQSMACYt32ELZsfcDoj+dSkmxIf50qY6QNFb/+Xg==
-X-Received: from wmqe1.prod.google.com ([2002:a05:600c:4e41:b0:434:a050:ddcf])
+        bh=49F9KmkByYRspQkaSYzsGBFq+GnQYA+RnfOGnAD1TNs=;
+        b=Qjyd1DHZzhV8tBs6tkvHFNPXlz9y1czxh3Plmc6kl2eFAVhn5fsBLzacD3MChg0cB4
+         vblOI3aF2c6JOrcN2IW3zEW3usZL46tdTheK0H+2uzUqu5UZM0/FzVJDKUIiGngcIb37
+         dY7ymHwF4cva4Xqeoaa9YcEX3XjxwM+jM1seG7+WrLdgXYeCUoMTTgOtluoojb7/MczQ
+         ItxZG789SSJ5tcwcTCN0Qsa0B2ryIdIy5Ka7EgMB07KKAOwiEyADQCjMRsh10HMmy3fI
+         g5eiNL5qFNLNYSzYH5PyQGZXzhgYY/3BPsA9Z+PA0jV9QdDZ094jf8COGMpBh16g7agU
+         K7uw==
+X-Forwarded-Encrypted: i=1; AJvYcCXqTWNoDSdIg7t2osacqtNWKEGG6050Icn93xCtlyys0Y9t2+XM1Hj5dOPjnd8vVtvFr9A/GkDY6Q==@lists.infradead.org
+X-Gm-Message-State: AOJu0YwcTtRn/BfZu9URTZWvJcXx4ltFuPI49ZHVrc+ZBQpT0+f7lirP
+	xXmuiJsHNq4H5qo40IuybvzwuyIpPQJ5h7eiqDMAclM4uOAPCrEedIKZh1dOJBttXtDIP/7wf9u
+	YxgEuyeN4xg==
+X-Google-Smtp-Source: AGHT+IFKWz0raFavEVPdqLi0m3c/SgK/uJNRKjAz6M2EuA2Ei6coxzOA0we1XFhGSIskVPMsumh+r4On/rf0kg==
+X-Received: from wmrn35.prod.google.com ([2002:a05:600c:5023:b0:434:f2eb:aa72])
  (user=jackmanb job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:600c:3c85:b0:436:18d0:aa6e with SMTP id 5b1f17b1804b1-436e2679a7cmr125841955e9.5.1736534504638;
- Fri, 10 Jan 2025 10:41:44 -0800 (PST)
-Date: Fri, 10 Jan 2025 18:40:52 +0000
+ 2002:a05:600c:1d07:b0:434:fa73:a907 with SMTP id 5b1f17b1804b1-436e269a5f5mr112362055e9.13.1736534508901;
+ Fri, 10 Jan 2025 10:41:48 -0800 (PST)
+Date: Fri, 10 Jan 2025 18:40:54 +0000
 In-Reply-To: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
 Mime-Version: 1.0
 References: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
 X-Mailer: b4 0.15-dev
-Message-ID: <20250110-asi-rfc-v2-v2-26-8419288bc805@google.com>
-Subject: [PATCH RFC v2 26/29] x86: Create library for flushing L1D for L1TF
+Message-ID: <20250110-asi-rfc-v2-v2-28-8419288bc805@google.com>
+Subject: [PATCH RFC v2 28/29] x86/pti: Disable PTI when ASI is on
 From: Brendan Jackman <jackmanb@google.com>
 To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
 	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
@@ -135,8 +135,8 @@ Cc: x86@kernel.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
 	Brendan Jackman <jackmanb@google.com>
 Content-Type: text/plain; charset="utf-8"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250110_184146_663550_A0D64DCC 
-X-CRM114-Status: GOOD (  36.95  )
+X-CRM114-CacheID: sfid-20250110_184152_484333_0B91919D 
+X-CRM114-Status: GOOD (  21.47  )
 X-Mailman-Approved-At: Fri, 10 Jan 2025 12:24:52 -0800
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -152,315 +152,95 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-ASI will need to use this L1D flushing logic so put it in a library
-where it can be used independently of KVM.
+Now that ASI has support for sandboxing userspace, although userspace
+now has much more mapped than it would under KPTI, in theory none of
+that data is important to protect.
 
-Since we're creating this library, it starts to look messy if we don't
-also use it in the double-opt-in (both kernel cmdline and prctl)
-mm-switching flush logic which is there for mitigating Snoop-Assisted L1
-Data Sampling ("SAL1DS"). However, that logic doesn't use any
-software-based fallback for flushing on CPUs without the L1D_FLUSH
-command. In that case the prctl opt-in will fail.
+Note that one particular impact of this is it makes locally defeating
+KASLR easier. I don't think this is a great loss given [1] etc.
 
-One option would be to just start using the software fallback sequence
-currently done by VMX code, but Linus didn't seem happy with a similar
-sequence being used here [1]. CPUs affected by SAL1DS are a subset of
-those affected by L1TF, so it wouldn't be completely insane to assume
-that the same sequence works for both cases, but I'll err on the side of
-caution and avoid risk of giving users a false impression that the
-kernel has really flushed L1D for them.
+Why do we pass in an argument instead of just having
+pti_check_boottime_disable() check boot_cpu_has(X86_FEATURE_ASI)? Just
+for clarity: I wanted it to be at least _sort of_ visible that it would
+break if you reordered asi_check_boottime_disable() afterwards.
 
-[1] https://lore.kernel.org/linux-kernel/CAHk-=whC4PUhErcoDhCbTOdmPPy-Pj8j9ytsdcyz9TorOb4KUw@mail.gmail.com/
+[1]:  https://gruss.cc/files/prefetch.pdf
+      and https://dl.acm.org/doi/pdf/10.1145/3623652.3623669
 
-Instead, create this awkward library that is scoped specifically to L1TF,
-which will be used only by VMX and ASI, and has an annoying "only
-sometimes works" doc-comment. Users of the library can then infer from
-that comment whether they have flushed L1D.
-
-No functional change intended.
-
-Checkpatch-args: --ignore=COMMIT_LOG_LONG_LINE
 Signed-off-by: Brendan Jackman <jackmanb@google.com>
 ---
- arch/x86/Kconfig            |  4 ++
- arch/x86/include/asm/l1tf.h | 11 ++++++
- arch/x86/kvm/Kconfig        |  1 +
- arch/x86/kvm/vmx/vmx.c      | 66 +++----------------------------
- arch/x86/lib/Makefile       |  1 +
- arch/x86/lib/l1tf.c         | 94 +++++++++++++++++++++++++++++++++++++++++++++
- 6 files changed, 117 insertions(+), 60 deletions(-)
+ arch/x86/include/asm/pti.h |  6 ++++--
+ arch/x86/mm/init.c         |  2 +-
+ arch/x86/mm/pti.c          | 14 +++++++++++++-
+ 3 files changed, 18 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index ae31f36ce23d7c29d1e90b726c5a2e6ea5a63c8d..ca984dc7ee2f2b68c3ce1bcb5055047ca4f2a65d 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -2523,6 +2523,7 @@ config MITIGATION_ADDRESS_SPACE_ISOLATION
- 	bool "Allow code to run with a reduced kernel address space"
- 	default n
- 	depends on X86_64 && !PARAVIRT && !UML
-+	select X86_L1TF_FLUSH_LIB
- 	help
- 	  This feature provides the ability to run some kernel code
- 	  with a reduced kernel address space. This can be used to
-@@ -3201,6 +3202,9 @@ config HAVE_ATOMIC_IOMAP
- 	def_bool y
- 	depends on X86_32
+diff --git a/arch/x86/include/asm/pti.h b/arch/x86/include/asm/pti.h
+index ab167c96b9ab474b33d778453db0bb550f42b0ac..79b9ba927db9b76ac3cc72cdda6f8b5fc413d352 100644
+--- a/arch/x86/include/asm/pti.h
++++ b/arch/x86/include/asm/pti.h
+@@ -3,12 +3,14 @@
+ #define _ASM_X86_PTI_H
+ #ifndef __ASSEMBLY__
  
-+config X86_L1TF_FLUSH_LIB
-+	def_bool n
++#include <linux/types.h>
 +
- source "arch/x86/kvm/Kconfig"
+ #ifdef CONFIG_MITIGATION_PAGE_TABLE_ISOLATION
+ extern void pti_init(void);
+-extern void pti_check_boottime_disable(void);
++extern void pti_check_boottime_disable(bool asi_enabled);
+ extern void pti_finalize(void);
+ #else
+-static inline void pti_check_boottime_disable(void) { }
++static inline void pti_check_boottime_disable(bool asi_enabled) { }
+ #endif
  
- source "arch/x86/Kconfig.assembler"
-diff --git a/arch/x86/include/asm/l1tf.h b/arch/x86/include/asm/l1tf.h
-new file mode 100644
-index 0000000000000000000000000000000000000000..e0be19c588bb5ec5c76a1861492e48b88615b4b8
---- /dev/null
-+++ b/arch/x86/include/asm/l1tf.h
-@@ -0,0 +1,11 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_L1TF_FLUSH_H
-+#define _ASM_L1TF_FLUSH_H
-+
-+#ifdef CONFIG_X86_L1TF_FLUSH_LIB
-+int l1tf_flush_setup(void);
-+void l1tf_flush(void);
-+#endif /* CONFIG_X86_L1TF_FLUSH_LIB */
-+
-+#endif
-+
-diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
-index f09f13c01c6bbd28fa37fdf50547abf4403658c9..81c71510e33e52447882ab7b22682199c57b492e 100644
---- a/arch/x86/kvm/Kconfig
-+++ b/arch/x86/kvm/Kconfig
-@@ -92,6 +92,7 @@ config KVM_SW_PROTECTED_VM
- config KVM_INTEL
- 	tristate "KVM for Intel (and compatible) processors support"
- 	depends on KVM && IA32_FEAT_CTL
-+	select X86_L1TF_FLUSH_LIB
- 	help
- 	  Provides support for KVM on processors equipped with Intel's VT
- 	  extensions, a.k.a. Virtual Machine Extensions (VMX).
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 0e90463f1f2183b8d716f85d5c8a8af8958fef0b..b1a02f27b3abce0ef6ac448b66bef2c653a52eef 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -42,6 +42,7 @@
- #include <asm/idtentry.h>
- #include <asm/io.h>
- #include <asm/irq_remapping.h>
-+#include <asm/l1tf.h>
- #include <asm/reboot.h>
- #include <asm/perf_event.h>
- #include <asm/mmu_context.h>
-@@ -250,9 +251,6 @@ static void *vmx_l1d_flush_pages;
- 
- static int vmx_setup_l1d_flush(enum vmx_l1d_flush_state l1tf)
+ #endif /* __ASSEMBLY__ */
+diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
+index ded3a47f2a9c1f554824d4ad19f3b48bce271274..4ccf6d60705652805342abefc5e71cd00c563207 100644
+--- a/arch/x86/mm/init.c
++++ b/arch/x86/mm/init.c
+@@ -754,8 +754,8 @@ void __init init_mem_mapping(void)
  {
--	struct page *page;
--	unsigned int i;
--
- 	if (!boot_cpu_has_bug(X86_BUG_L1TF)) {
- 		l1tf_vmx_mitigation = VMENTER_L1D_FLUSH_NOT_REQUIRED;
- 		return 0;
-@@ -288,26 +286,11 @@ static int vmx_setup_l1d_flush(enum vmx_l1d_flush_state l1tf)
- 		l1tf = VMENTER_L1D_FLUSH_ALWAYS;
+ 	unsigned long end;
+ 
+-	pti_check_boottime_disable();
+ 	asi_check_boottime_disable();
++	pti_check_boottime_disable(boot_cpu_has(X86_FEATURE_ASI));
+ 	probe_page_size_mask();
+ 	setup_pcid();
+ 
+diff --git a/arch/x86/mm/pti.c b/arch/x86/mm/pti.c
+index 851ec8f1363a8b389ea4579cc68bf3300a4df27c..b7132080d3c9b6962a0252383190335e171bafa6 100644
+--- a/arch/x86/mm/pti.c
++++ b/arch/x86/mm/pti.c
+@@ -76,7 +76,7 @@ static enum pti_mode {
+ 	PTI_FORCE_ON
+ } pti_mode;
+ 
+-void __init pti_check_boottime_disable(void)
++void __init pti_check_boottime_disable(bool asi_enabled)
+ {
+ 	if (hypervisor_is_type(X86_HYPER_XEN_PV)) {
+ 		pti_mode = PTI_FORCE_OFF;
+@@ -91,6 +91,18 @@ void __init pti_check_boottime_disable(void)
+ 		return;
  	}
  
--	if (l1tf != VMENTER_L1D_FLUSH_NEVER && !vmx_l1d_flush_pages &&
--	    !boot_cpu_has(X86_FEATURE_FLUSH_L1D)) {
--		/*
--		 * This allocation for vmx_l1d_flush_pages is not tied to a VM
--		 * lifetime and so should not be charged to a memcg.
--		 */
--		page = alloc_pages(GFP_KERNEL, L1D_CACHE_ORDER);
--		if (!page)
--			return -ENOMEM;
--		vmx_l1d_flush_pages = page_address(page);
-+	if (l1tf != VMENTER_L1D_FLUSH_NEVER) {
-+		int err = l1tf_flush_setup();
- 
--		/*
--		 * Initialize each page with a different pattern in
--		 * order to protect against KSM in the nested
--		 * virtualization case.
--		 */
--		for (i = 0; i < 1u << L1D_CACHE_ORDER; ++i) {
--			memset(vmx_l1d_flush_pages + i * PAGE_SIZE, i + 1,
--			       PAGE_SIZE);
--		}
-+		if (err)
-+			return err;
- 	}
- 
- 	l1tf_vmx_mitigation = l1tf;
-@@ -6652,20 +6635,8 @@ int vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
- 	return ret;
- }
- 
--/*
-- * Software based L1D cache flush which is used when microcode providing
-- * the cache control MSR is not loaded.
-- *
-- * The L1D cache is 32 KiB on Nehalem and later microarchitectures, but to
-- * flush it is required to read in 64 KiB because the replacement algorithm
-- * is not exactly LRU. This could be sized at runtime via topology
-- * information but as all relevant affected CPUs have 32KiB L1D cache size
-- * there is no point in doing so.
-- */
- static noinstr void vmx_l1d_flush(struct kvm_vcpu *vcpu)
- {
--	int size = PAGE_SIZE << L1D_CACHE_ORDER;
--
- 	/*
- 	 * This code is only executed when the flush mode is 'cond' or
- 	 * 'always'
-@@ -6695,32 +6666,7 @@ static noinstr void vmx_l1d_flush(struct kvm_vcpu *vcpu)
- 
- 	vcpu->stat.l1d_flush++;
- 
--	if (static_cpu_has(X86_FEATURE_FLUSH_L1D)) {
--		native_wrmsrl(MSR_IA32_FLUSH_CMD, L1D_FLUSH);
--		return;
--	}
--
--	asm volatile(
--		/* First ensure the pages are in the TLB */
--		"xorl	%%eax, %%eax\n"
--		".Lpopulate_tlb:\n\t"
--		"movzbl	(%[flush_pages], %%" _ASM_AX "), %%ecx\n\t"
--		"addl	$4096, %%eax\n\t"
--		"cmpl	%%eax, %[size]\n\t"
--		"jne	.Lpopulate_tlb\n\t"
--		"xorl	%%eax, %%eax\n\t"
--		"cpuid\n\t"
--		/* Now fill the cache */
--		"xorl	%%eax, %%eax\n"
--		".Lfill_cache:\n"
--		"movzbl	(%[flush_pages], %%" _ASM_AX "), %%ecx\n\t"
--		"addl	$64, %%eax\n\t"
--		"cmpl	%%eax, %[size]\n\t"
--		"jne	.Lfill_cache\n\t"
--		"lfence\n"
--		:: [flush_pages] "r" (vmx_l1d_flush_pages),
--		    [size] "r" (size)
--		: "eax", "ebx", "ecx", "edx");
-+	l1tf_flush();
- }
- 
- void vmx_update_cr8_intercept(struct kvm_vcpu *vcpu, int tpr, int irr)
-diff --git a/arch/x86/lib/Makefile b/arch/x86/lib/Makefile
-index 98583a9dbab337e09a2e58905e5200499a496a07..b0a45bd70b40743a3fccb352b9641caacac83275 100644
---- a/arch/x86/lib/Makefile
-+++ b/arch/x86/lib/Makefile
-@@ -37,6 +37,7 @@ lib-$(CONFIG_INSTRUCTION_DECODER) += insn.o inat.o insn-eval.o
- lib-$(CONFIG_RANDOMIZE_BASE) += kaslr.o
- lib-$(CONFIG_FUNCTION_ERROR_INJECTION)	+= error-inject.o
- lib-$(CONFIG_MITIGATION_RETPOLINE) += retpoline.o
-+lib-$(CONFIG_X86_L1TF_FLUSH_LIB) += l1tf.o
- 
- obj-y += msr.o msr-reg.o msr-reg-export.o hweight.o
- obj-y += iomem.o
-diff --git a/arch/x86/lib/l1tf.c b/arch/x86/lib/l1tf.c
-new file mode 100644
-index 0000000000000000000000000000000000000000..c474f18ae331c8dfa7a029c457dd3cf75bebf808
---- /dev/null
-+++ b/arch/x86/lib/l1tf.c
-@@ -0,0 +1,94 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/gfp.h>
-+#include <linux/mm.h>
-+#include <linux/string.h>
-+
-+#include <asm/cpufeature.h>
-+#include <asm/l1tf.h>
-+#include <asm/msr.h>
-+
-+#define L1D_CACHE_ORDER 4
-+static void *l1tf_flush_pages;
-+
-+int l1tf_flush_setup(void)
-+{
-+	struct page *page;
-+	unsigned int i;
-+
-+	if (l1tf_flush_pages || boot_cpu_has(X86_FEATURE_FLUSH_L1D))
-+		return 0;
-+
-+	page = alloc_pages(GFP_KERNEL, L1D_CACHE_ORDER);
-+	if (!page)
-+		return -ENOMEM;
-+	l1tf_flush_pages = page_address(page);
-+
-+	/*
-+	 * Initialize each page with a different pattern in
-+	 * order to protect against KSM in the nested
-+	 * virtualization case.
-+	 */
-+	for (i = 0; i < 1u << L1D_CACHE_ORDER; ++i) {
-+		memset(l1tf_flush_pages + i * PAGE_SIZE, i + 1,
-+			 PAGE_SIZE);
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(l1tf_flush_setup);
-+
-+/*
-+ * Flush L1D in a way that:
-+ *
-+ *  - definitely works on CPUs X86_FEATURE_FLUSH_L1D (because the SDM says so).
-+ *  - almost definitely works on other CPUs with L1TF (because someone on LKML
-+ *    said someone from Intel said so).
-+ *  - may or may not work on other CPUs.
-+ *
-+ * Don't call unless l1tf_flush_setup() has returned successfully.
-+ */
-+noinstr void l1tf_flush(void)
-+{
-+	int size = PAGE_SIZE << L1D_CACHE_ORDER;
-+
-+	if (static_cpu_has(X86_FEATURE_FLUSH_L1D)) {
-+		native_wrmsrl(MSR_IA32_FLUSH_CMD, L1D_FLUSH);
++	if (asi_enabled) {
++		/*
++		 * Having both ASI and PTI enabled is not a totally ridiculous
++		 * thing to do; if you want ASI but you are not confident in the
++		 * sensitivity annotations then it provides useful
++		 * defence-in-depth. But, the implementation doesn't support it.
++		 */
++		if (pti_mode != PTI_FORCE_OFF)
++			pti_print_if_insecure("disabled by ASI");
 +		return;
 +	}
 +
-+	if (WARN_ON(!l1tf_flush_pages))
-+		return;
-+
-+	/*
-+	 * This sequence was provided by Intel for the purpose of mitigating
-+	 * L1TF on VMX.
-+	 *
-+	 * The L1D cache is 32 KiB on Nehalem and some later microarchitectures,
-+	 * but to flush it is required to read in 64 KiB because the replacement
-+	 * algorithm is not exactly LRU. This could be sized at runtime via
-+	 * topology information but as all relevant affected CPUs have 32KiB L1D
-+	 * cache size there is no point in doing so.
-+	 */
-+	asm volatile(
-+		/* First ensure the pages are in the TLB */
-+		"xorl	%%eax, %%eax\n"
-+		".Lpopulate_tlb:\n\t"
-+		"movzbl	(%[flush_pages], %%" _ASM_AX "), %%ecx\n\t"
-+		"addl	$4096, %%eax\n\t"
-+		"cmpl	%%eax, %[size]\n\t"
-+		"jne	.Lpopulate_tlb\n\t"
-+		"xorl	%%eax, %%eax\n\t"
-+		"cpuid\n\t"
-+		/* Now fill the cache */
-+		"xorl	%%eax, %%eax\n"
-+		".Lfill_cache:\n"
-+		"movzbl	(%[flush_pages], %%" _ASM_AX "), %%ecx\n\t"
-+		"addl	$64, %%eax\n\t"
-+		"cmpl	%%eax, %[size]\n\t"
-+		"jne	.Lfill_cache\n\t"
-+		"lfence\n"
-+		:: [flush_pages] "r" (l1tf_flush_pages),
-+		    [size] "r" (size)
-+		: "eax", "ebx", "ecx", "edx");
-+}
-+EXPORT_SYMBOL(l1tf_flush);
+ 	if (pti_mode == PTI_FORCE_ON)
+ 		pti_print_if_secure("force enabled on command line.");
+ 
 
 -- 
 2.47.1.613.gc27f4b7a9f-goog
