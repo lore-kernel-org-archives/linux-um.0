@@ -4,87 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3408CE7719C
-	for <linux-um@archiver.kernel.org>; Fri, 10 Jan 2025 20:24:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id D2E00E7719D
+	for <linux-um@archiver.kernel.org>; Fri, 10 Jan 2025 20:24:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:From:Subject:Message-ID:Mime-Version:Date:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=jjtB5lRt7h5DA7GIgQanvF90WYFKTK1R3LPSOzDiibI=; b=w47YQB4EnHNWGeqkvgwwjx9T8M
-	qXRZDUwCIB4hRppx8wnQsaShVgGsg4aflFlha6oArvd87pO41pIRvDkkfBlS3O1AdvfVkjvE0WJIN
-	jq7GPiaK2wf3snktAyfnuKzaRPE1wqf1MgM3cBt4z8A47NpCzy5ASgVFz2fT5hJsOP/5cN63OPobN
-	MEoi2CRaLlQlbROE1Xl/BlmCG1m5jm+14tgnjrFx0DAOaBNKdaS2o/ICfCa+/3+G/CERhE98HP5TM
-	MmOM8mG+yTpOYAXzz+60zCX3mWujo7UWlBNK9EccTdG9C0StYCJDvZNaFe+zSlpGrg6n12Hs/U6d3
-	uaXspFEQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:From:
+	Subject:Message-ID:References:Mime-Version:In-Reply-To:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=LLeVb0ZgyFkqRQqFmxHZC1txeWSVEDEElINoAb1GRXw=; b=EYf1zLFZ384/6A1AonouVW9Bjr
+	OEmRnjTMjUpnzsoDkaDc/ZArvRnlVBlJIxvq2Km/f+kUquklvypzHX/kbUAECiiLAJBs5W6kh4YPw
+	a2b6/P7WUCnuTHcy+XF36Wm7tPk4zoJaXzxWSVsSE1yMo9nDFUK5a47V57/MlnzOakXJzwLMn/bn6
+	gdCjntkn9LruGqhqZHokoAWduY7qn+drvEXOHcrSo/atBwqKP0aPI/v7vtyXyzJfs+vIt+gwqfdCM
+	lmoqIAbCJpli7/UehabK/Fq6PGwnx9UjmR+bm2Z3CmWQPt0k9WTZQwZvse65Nxx8Kyp6WGSyCIUig
+	tF1pP5oA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWLYr-0000000Gsy4-3s0X;
-	Fri, 10 Jan 2025 20:24:53 +0000
+	id 1tWLYv-0000000GsyL-2AVA;
+	Fri, 10 Jan 2025 20:24:57 +0000
 Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWJwD-0000000Gb9g-2QP1
+	id 1tWJwH-0000000GbCD-1jXz
 	for linux-um@bombadil.infradead.org;
-	Fri, 10 Jan 2025 18:40:53 +0000
+	Fri, 10 Jan 2025 18:40:57 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:Cc:To:From:Subject:Message-ID:Mime-Version:Date:Sender:Reply-To:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=jjtB5lRt7h5DA7GIgQanvF90WYFKTK1R3LPSOzDiibI=; b=DZiZXIUaO7z4pU8KDwqRQBpnjc
-	16kaWB8FJEwOB9bAmehqS1R0rV0WWwgQJrqu3PpA7+fOcEOwzjmISRN9n63iv0BQzWBMDHEikwsvJ
-	zgE4VyL7MSLqSH3Foa1Fg2bIAif0C2pMjElI9o2+uTN+ffg56yfg0/AJZ/f4yucOjWIcymtt1ld9O
-	U44IeqCniojyLoswwQtYko4okBlV+aNmjxYJcWfCx7UMnQ80GaWfNlOf5FO6KWNDNm8odAeyQxlJz
-	p6nQWiOWhxZyMKUMjFzUPOZTl74pqjzvMV6A8VKshTXddCEBOSULjHpvgqybwHs0Rbt5/a4vR/JyY
-	B7t+EM5g==;
+	d=infradead.org; s=desiato.20200630; h=Content-Type:Cc:To:From:Subject:
+	Message-ID:References:Mime-Version:In-Reply-To:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=LLeVb0ZgyFkqRQqFmxHZC1txeWSVEDEElINoAb1GRXw=; b=V32c/Hoxvwnq2zYHh3cuNpdook
+	op1DQrbtIpFMrC/LMh9DnmbWY3WnKsn8YwtYSWFgOGvrjZioY5tILbRp7CN9DkDvce47AnP7JrKB/
+	y++isn59gRwrvnI/Vmrv62AqkN4RmhnYhGnDaIwTOtyNKSgikLaRrJQSqDmjzArLef+yH5ixxQ/VU
+	zR+tUtwFBpBdcRVCxPP+0JuPf9xE0XG/mg5kXBwKHb98vs3xkuDTVXhc0ujWJ1DUyPie8n2Va8oPU
+	7RE8+4YXT/6yGra0N+Wmy8TjQ4qN2BjqeFuxJkLk7rxkuRmPFU5HswjcVqoMUhFLIAYBBmuWRodfs
+	M2n8MJ9g==;
 Received: from mail-wm1-x34a.google.com ([2a00:1450:4864:20::34a])
 	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWJw9-00000009sDD-3Ka5
+	id 1tWJwC-00000009sEt-0EdZ
 	for linux-um@lists.infradead.org;
-	Fri, 10 Jan 2025 18:40:52 +0000
-Received: by mail-wm1-x34a.google.com with SMTP id 5b1f17b1804b1-43623bf2a83so20551095e9.0
-        for <linux-um@lists.infradead.org>; Fri, 10 Jan 2025 10:40:46 -0800 (PST)
+	Fri, 10 Jan 2025 18:40:55 +0000
+Received: by mail-wm1-x34a.google.com with SMTP id 5b1f17b1804b1-4362b9c15d8so12044615e9.3
+        for <linux-um@lists.infradead.org>; Fri, 10 Jan 2025 10:40:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1736534446; x=1737139246; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jjtB5lRt7h5DA7GIgQanvF90WYFKTK1R3LPSOzDiibI=;
-        b=ICj2h6stw07YTJWNUDAwFkZQFU9YW8G/ZQRRIeIdZ6dqjayXe+CpCkMcD+DMhS9XhF
-         YHVDn+Q3pLy8LuS0Ywuybdx3eWBNX+KB6okZsq8sbZdx1G/DBGzdpoYxq23cXNakr6L7
-         UW5gGI4oX/FwH9Ybj6UVg553znV4lLwnJHH8VzPDbwoNLLJlMigsQkNdztH9Hm0O3Dxo
-         20gFi+Bx8IMueD3u0xDXQiFVQe6aOPw8ogZFvq1GA+yHQr4nVj+gN2/66CiN42SURthp
-         DKctH/lVqcQ58Uaxf0vjmopElmNRgIU5FB7U+CVirTkH6PDkXwP2Cm6JK0TJJ/mc9MXO
-         RAqw==
+        d=google.com; s=20230601; t=1736534450; x=1737139250; darn=lists.infradead.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=LLeVb0ZgyFkqRQqFmxHZC1txeWSVEDEElINoAb1GRXw=;
+        b=VzuE1vMALJ/7YjtBOvu71mn5o23XkdQBVxkm/1q64oMXiJV6VdfXD0vcmbWO3Onl2e
+         KuJxBAB9et7Yn8YNQZrMPExRhx/k7sDBl2yvZX/oO06rBG29MtmzfaLeK2HPGYDb2QcZ
+         ioaoBlFG2ISt3QTflx+Hv/mz43hF8/VvPeW+W1x+Oq4B/NjUl/P7J/c78yG35qAUEN0c
+         UK6xO3mlM47SDnb9urGtV0ttqapvfso4GOKr5ENbbR+Tn7l4/qNMmhnPlOZY/qu1G62j
+         qgMMcYx6QJeleGON/ItSXJFTrtisQdgKs72His00OejZHpeVGFydaXGdRk2Fv+laLevu
+         RkGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736534446; x=1737139246;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jjtB5lRt7h5DA7GIgQanvF90WYFKTK1R3LPSOzDiibI=;
-        b=Y1egHTnVEVKsEQWXZtUiWxktGOXoXGbzBOxsU6pfn3XtEYomR/1hVBoNWMAiv6Y/LH
-         KIdhASGOAzvAYs4gbdq2izB5o9PUlPS9hHsqwgfrEJSRKIq3w7366s9VxNi9+DCGrfHh
-         oW0Im2MU1qn4vH/fAbq8w18u3J6FTYeZHlJqQYBaEtFbxGeUYtiTKIpbX8SPbn2/sgR1
-         SVUss4RhZuUVzRIHO7QiGX29+1XEUSUcLxxTdUgzRx96/JGtC8gv8Iq+jpGPGJOMeGFb
-         dCKUO86gNeh0dmIztEPNdf0o0LizlnhH59zxzHeRjn3n0cypuZxsp9qBvbAsxEPINdrx
-         h5pg==
-X-Forwarded-Encrypted: i=1; AJvYcCUzPakEj2qewoau5tzH058ghcKpweWvIryZZGmdwu+3Rm19H1OWVWZuq25tqu3EzVbdZLcLFgTeng==@lists.infradead.org
-X-Gm-Message-State: AOJu0YydDY51BszPw5kit4A1lOQqGp/8cdR6Zwr2xLiwJ0ULABbcrteq
-	4Qza3shi7gPxqUVlBwrPhceEKBYxObYbKKJiewYqkQbg4HBEWzGp/5GrCMsJ9tA5HEM/TjcvkeI
-	LviqIM6drAQ==
-X-Google-Smtp-Source: AGHT+IGn62s/zpmNlw6cS/dnEppCTrQbKdqDl7tm1TqotCpul8Aao0CteIYxi5s8bW0nJPjX7qZkFnpNt2sQAQ==
-X-Received: from wmbjw19.prod.google.com ([2002:a05:600c:5753:b0:434:a4bc:534f])
+        d=1e100.net; s=20230601; t=1736534450; x=1737139250;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LLeVb0ZgyFkqRQqFmxHZC1txeWSVEDEElINoAb1GRXw=;
+        b=PLtIxkRXr+sMvrpHWSA22YEkhR60q9bYu1Ze8rusEPj0R7jcMJMwFqyLAfmb8p/5ir
+         k/OTtbe5/WyiJkGRKNLTcb3P2r8NdfSkU65HbK5KB4oKT2ZJBr7KduznExfUQODEPDVb
+         C0kFuSPUKljgju72typ+xIwojjO+VU5wC1IHB4EwRQ8/LzUavG1Kww55MqZtpme2OxDr
+         8ar5Y+gcW3u6ast1f8i+yZW7132xGJRRil69T1uWLywB81hFFBX6lI8fxYwZzvW6UtIz
+         Lo+aMg1hkbCPx3DzPfd/dcULF0m3M4LfCtiykqpZkTdRLRia9PYsjMCNQKw7EGKFC2iJ
+         /6Rg==
+X-Forwarded-Encrypted: i=1; AJvYcCW3Aqc7AX5iD63XQyOJR+t9xCOfVHJVri9rUsRDSHwhM4mmT9elxHh0eax515/pRHKw7VzaOm4PrA==@lists.infradead.org
+X-Gm-Message-State: AOJu0YwNf92AdauIhEClp1bGJbotDx7PC47JabExYv42g3k9QowlT78I
+	cQ5i/unoXdlc7XyLersOgn+Y3/zMr9wzhydHv0OghcKDA0gI2vhmC9yuUb9X1Gx921scNcCpVZt
+	HFHjDRjBIUA==
+X-Google-Smtp-Source: AGHT+IEYbvktq49LdsReUEtwVFMZ4u0AErNwMdQm9eBuwPrj68sv++2uU8TAXJvwJwbpoJD68/9N90LfrlOyOw==
+X-Received: from wmbay14.prod.google.com ([2002:a05:600c:1e0e:b0:434:a8d7:e59b])
  (user=jackmanb job=prod-delivery.src-stubby-dispatcher) by
- 2002:a7b:c315:0:b0:434:ffb2:f9df with SMTP id 5b1f17b1804b1-436e26adf94mr117996365e9.17.1736534445509;
- Fri, 10 Jan 2025 10:40:45 -0800 (PST)
-Date: Fri, 10 Jan 2025 18:40:26 +0000
+ 2002:a05:600c:1d07:b0:434:9934:575 with SMTP id 5b1f17b1804b1-436e26a8f4dmr128290085e9.16.1736534450259;
+ Fri, 10 Jan 2025 10:40:50 -0800 (PST)
+Date: Fri, 10 Jan 2025 18:40:28 +0000
+In-Reply-To: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
 Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAJtpgWcC/z2NwQrCMBBEf6Xs2ZVsTLX1JAh+gFfpIWnTdkEbS
- SQoJf9uzMHjvGHerBCsZxvgWK3gbeTAbslBbiroZ71MFnnIGaSQiohq1IHRjz1GifXQGmNU5s0
- e8uDp7cjvIrvB9XKGLsOZw8v5TzmIVKqfSxxI/l1SYSQUSEqZHbVaiaE5Tc5Nd7vt3QO6lNIXN mCbbqoAAAA=
-X-Change-Id: 20241115-asi-rfc-v2-5d9bbb441186
+References: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
 X-Mailer: b4 0.15-dev
-Message-ID: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
-Subject: [PATCH RFC v2 00/29] Address Space Isolation (ASI)
+Message-ID: <20250110-asi-rfc-v2-v2-2-8419288bc805@google.com>
+Subject: [PATCH RFC v2 02/29] x86: Create CONFIG_MITIGATION_ADDRESS_SPACE_ISOLATION
 From: Brendan Jackman <jackmanb@google.com>
 To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
 	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
@@ -135,14 +132,11 @@ Cc: x86@kernel.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
 	linux-um@lists.infradead.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, 
 	linux-trace-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
 	kvm@vger.kernel.org, linux-efi@vger.kernel.org, 
-	Brendan Jackman <jackmanb@google.com>, Junaid Shahid <junaids@google.com>, 
-	Ofir Weisse <oweisse@google.com>, Yosry Ahmed <yosryahmed@google.com>, 
-	Kevin Cheng <chengkev@google.com>, Reiji Watanabe <reijiw@google.com>
+	Brendan Jackman <jackmanb@google.com>, Junaid Shahid <junaids@google.com>
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250110_184050_323349_47389E0B 
-X-CRM114-Status: GOOD (  29.41  )
+X-CRM114-CacheID: sfid-20250110_184052_289576_ACC9F363 
+X-CRM114-Status: GOOD (  15.91  )
 X-Mailman-Approved-At: Fri, 10 Jan 2025 12:24:52 -0800
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -158,303 +152,266 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-ASI is a technique to mitigate a broad class of CPU vulnerabilities
-by unmapping sensitive data from the kernel address space. If no data
-is mapped that needs protecting, this class of exploits cannot leak
-that data and so the kernel can skip expensive mitigation actions.
-For a more detailed overview, see the v1 RFC (which was wrongly
-labeled as a PATCH) [0].
+Currently a nop config. Keeping as a separate commit for easy review of
+the boring bits. Later commits will use and enable this new config.
 
-This new iteration adds support for protecting against bare-metal
-processes as well as KVM guests. The basic principle is unchanged.
+This config is only added for non-UML x86_64 as other architectures do
+not yet have pending implementations. It also has somewhat artificial
+dependencies on !PARAVIRT and !KASAN which are explained in the Kconfig
+file.
 
-.:: Multi-class ASI
-
-So far ASI has been a KVM-only solution, although I've been claiming
-that in principle it can be extended to also sandbox userspace.
-Dave Hansen's most important feedback at LPC [1] was that he wanted
-some evidence to support this claim. If it can be shown that ASI is
-just as powerful for bare-metal as for KVM, it's much more likely to
-actually offer an escape path from maintaining and reactively
-developing per-exploit mitigations.
-
-v1 already supported a notion of "ASI classes", with the only class
-being KVM. This RFC introduces a second class for userspace. Each
-process has a separate restricted address space ("domain") for each
-class.
-
-In v1, the only possible ASI transitions were between the KVM
-restricted address space, and the unrestricted address space. Now
-that there are multiple classes, it's possible to transition directly
-between two restricted address spaces.
-
-(Could we dodge this complexity by just transitioning via the
- unrestricted address space? Yes, but experience from Google's
- internal deployment suggests there's a significant benefit in
- avoiding an asi_exit() when switching between userspace and KVM,
- despite all the optimizations that exist to avoid that switching).
-
-Compared to v1, this version has a new mechanism to determine
-what mitigation actions are required when switching between address
-spaces.  ASI classes provide a "taint policy" which describes what
-uarch state their sandboxee might leave behind, and what uarch state
-needs to be purged before their sandboxee can safely be run. The ASI
-core takes care of doing the actual flushes.
-
-This enables a reasonably advanced model of what flushes are needed
-when; for example the kernel is now able to model "when transitioning
-from a VMM to its KVM guest there is no point in flushing speculative
-control flow state, but if we _later_ exit to the unrestricted
-address space we do need to flush it". It's quite possible this is
-actually more advanced than what is needed so suggestions are
-welcome.
-
-.:: Performance issues: bogus mitigation costs
-
-Although this implementation of ASI is pretty generous in what it
-considers "nonsensitive", there remain unnecessary performance costs
-that need to be addressed. For example:
-
-- The entire page cache is removed from the direct map. Traditional
-  file operations will hit an asi_exit(), paying a pointless cost to
-  protect data from a process that obviously has the right to read
-  that data.
-- Anything that accesses guest or user memory via the direct map
-  instead of the user address space will hit an asi_exit().
-- Pages being zeroed in the page allocator
-
-Most of these issues existed in v1 too, but now that ASI sandboxes
-userspace processes, the page-cache issue becomes very significant.
-For FIO 4k read (I suppose this workload is maximally sensitive to
-this issue) I saw a 70% degradation in throughput, with a Sapphire
-Rapids machine hard-coded to perform IBPB and RSB-stuffing on
-asi_exit().
-
-Given a result like that I haven't gone into more detailed analysis.
-Note also that I ran with an unrealistic mitigation policy, results
-would be much different if ran with platform-appropriate flushes, but
-it would presumably lead to the same conclusion.
-
-There are some interesting discussions to be had about tackling that
-problem (e.g. reintroducing "local-nonsensitivity" from Junaid's 2022
-ASI implementation [2], or creating ephemeral CPU-local mappings),
-but for this RFC I prefer to focus on deciding if the overall
-framework makes sense.
-
-.:: Next steps
-
-Aside from lack of userspace support, all the other issues listed in
-RFCv1 remain. I'll also need a proof-of-concept solution for the
-page-cache issue before we can credibly claim to be reaching a
-[PATCH], but before that I want to develop a more complete page_alloc
-integration. I plan to propose a topic about that at LSF/MM/BPF.
-
-Anyway, despite the further research needed on my side I think
-there's still useful stuff to discuss here. For example:
-
- - Does the "tainting" model make intuitive sense? Is there a simpler
-   way to achieve something similar?
-
- - The taints offer a model for different parts of the kernel to
-   communicate with each other about what mitigations they've taken
-   care of. For example, KVM could clear ASI taints if it existing
-   conditional-L1D-flush logic fires. Does it make sense to take
-   advantage of this? (I think yes). How does this influence the
-   design of the bugs.c kernel arguments?
-
- - Suggestions on how to map file pages into processes that can read
-   them, while minimizing TLB management pain.
-
-Finally, a more extensive branch can be found at [3]. It has some tests
-and some of the lower-hanging fruit for optimising performance of KVM
-guests.
-
-[0] RFC v1:
-    https://lore.kernel.org/linux-mm/20240712-asi-rfc-24-v1-0-144b319a40d8@=
-google.com/
-
-[1] LPC session: https://lpc.events/event/18/contributions/1761/
-
-[2] Junaid=E2=80=99s RFC:
-    https://lore.kernel.org/all/20220223052223.1202152-1-junaids@google.com=
-/
-
-[3] GitHub branch:
-    https://github.com/googleprodkernel/linux-kvm/tree/asi-rfcv2-preview
-
+Co-developed-by: Junaid Shahid <junaids@google.com>
+Signed-off-by: Junaid Shahid <junaids@google.com>
 Signed-off-by: Brendan Jackman <jackmanb@google.com>
-
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	 Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	 Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	 Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	 Alexandre Chartre <alexandre.chartre@oracle.com>,
-	Liran Alon <liran.alon@oracle.com>,
-	 Jan Setje-Eilers <jan.setjeeilers@oracle.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	 Will Deacon <will@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	 Andrew Morton <akpm@linux-foundation.org>,
-	Mel Gorman <mgorman@suse.de>,
-	 Lorenzo Stoakes <lstoakes@gmail.com>,
-	David Hildenbrand <david@redhat.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	 Michal Hocko <mhocko@kernel.org>,
-	Khalid Aziz <khalid.aziz@oracle.com>,
-	 Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	 Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	 Valentin Schneider <vschneid@redhat.com>,
-	Paul Turner <pjt@google.com>, Reiji Watanabe <reijiw@google.com>,
-	 Junaid Shahid <junaids@google.com>,
-	Ofir Weisse <oweisse@google.com>,
-	 Yosry Ahmed <yosryahmed@google.com>,
-	Patrick Bellasi <derkling@google.com>,
-	 KP Singh <kpsingh@google.com>,
-	Alexandra Sandulescu <aesa@google.com>,
-	 Matteo Rizzo <matteorizzo@google.com>,
-	Jann Horn <jannh@google.com>
-	 kvm@vger.kernel.org, Brendan Jackman <jackmanb@google.com>,
-	Dennis Zhou <dennis@kernel.org>
-
 ---
-Changes in v2:
-- Added support for sandboxing userspace processes.
-- Link to v1: https://lore.kernel.org/r/20240712-asi-rfc-24-v1-0-144b319a40=
-d8@google.com
+ arch/alpha/include/asm/Kbuild      |  1 +
+ arch/arc/include/asm/Kbuild        |  1 +
+ arch/arm/include/asm/Kbuild        |  1 +
+ arch/arm64/include/asm/Kbuild      |  1 +
+ arch/csky/include/asm/Kbuild       |  1 +
+ arch/hexagon/include/asm/Kbuild    |  1 +
+ arch/loongarch/include/asm/Kbuild  |  3 +++
+ arch/m68k/include/asm/Kbuild       |  1 +
+ arch/microblaze/include/asm/Kbuild |  1 +
+ arch/mips/include/asm/Kbuild       |  1 +
+ arch/nios2/include/asm/Kbuild      |  1 +
+ arch/openrisc/include/asm/Kbuild   |  1 +
+ arch/parisc/include/asm/Kbuild     |  1 +
+ arch/powerpc/include/asm/Kbuild    |  1 +
+ arch/riscv/include/asm/Kbuild      |  1 +
+ arch/s390/include/asm/Kbuild       |  1 +
+ arch/sh/include/asm/Kbuild         |  1 +
+ arch/sparc/include/asm/Kbuild      |  1 +
+ arch/um/include/asm/Kbuild         |  2 +-
+ arch/x86/Kconfig                   | 14 ++++++++++++++
+ arch/xtensa/include/asm/Kbuild     |  1 +
+ include/asm-generic/asi.h          |  5 +++++
+ 22 files changed, 41 insertions(+), 1 deletion(-)
 
----
-Brendan Jackman (21):
-      mm: asi: Make some utility functions noinstr compatible
-      x86: Create CONFIG_MITIGATION_ADDRESS_SPACE_ISOLATION
-      mm: asi: Introduce ASI core API
-      mm: asi: Add infrastructure for boot-time enablement
-      mm: asi: ASI support in interrupts/exceptions
-      mm: asi: Avoid warning from NMI userspace accesses in ASI context
-      mm: Add __PAGEFLAG_FALSE
-      mm: asi: Map non-user buddy allocations as nonsensitive
-      [TEMP WORKAROUND] mm: asi: Workaround missing partial-unmap support
-      mm: asi: Map kernel text and static data as nonsensitive
-      mm: asi: Map vmalloc/vmap data as nonsensitive
-      mm: asi: Stabilize CR3 in switch_mm_irqs_off()
-      mm: asi: Make TLB flushing correct under ASI
-      KVM: x86: asi: Restricted address space for VM execution
-      mm: asi: exit ASI before accessing CR3 from C code where appropriate
-      mm: asi: Add infrastructure for mapping userspace addresses
-      mm: asi: Restricted execution fore bare-metal processes
-      x86: Create library for flushing L1D for L1TF
-      mm: asi: Add some mitigations on address space transitions
-      x86/pti: Disable PTI when ASI is on
-      mm: asi: Stop ignoring asi=3Don cmdline flag
+diff --git a/arch/alpha/include/asm/Kbuild b/arch/alpha/include/asm/Kbuild
+index 396caece6d6d99c7a428f439322a0a18452e1a42..ca72ce3baca13a32913ac9e01a8f86ef42180b1c 100644
+--- a/arch/alpha/include/asm/Kbuild
++++ b/arch/alpha/include/asm/Kbuild
+@@ -5,3 +5,4 @@ generic-y += agp.h
+ generic-y += asm-offsets.h
+ generic-y += kvm_para.h
+ generic-y += mcs_spinlock.h
++generic-y += asi.h
+diff --git a/arch/arc/include/asm/Kbuild b/arch/arc/include/asm/Kbuild
+index 49285a3ce2398cc7442bc44172de76367dc33dda..68604480864bbcb58d896da6bdf71591006ab2f6 100644
+--- a/arch/arc/include/asm/Kbuild
++++ b/arch/arc/include/asm/Kbuild
+@@ -6,3 +6,4 @@ generic-y += kvm_para.h
+ generic-y += mcs_spinlock.h
+ generic-y += parport.h
+ generic-y += user.h
++generic-y += asi.h
+diff --git a/arch/arm/include/asm/Kbuild b/arch/arm/include/asm/Kbuild
+index 03657ff8fbe3d202563184b8902aa181e7474a5e..1e2c3d8dbbd99bdf95dbc6b47c2c78092c68b808 100644
+--- a/arch/arm/include/asm/Kbuild
++++ b/arch/arm/include/asm/Kbuild
+@@ -6,3 +6,4 @@ generic-y += parport.h
+ 
+ generated-y += mach-types.h
+ generated-y += unistd-nr.h
++generic-y += asi.h
+diff --git a/arch/arm64/include/asm/Kbuild b/arch/arm64/include/asm/Kbuild
+index 4e350df9a02dd8de387b912740af69035da93e34..15f8aaaa96b80b5657b789ecf3529b1f18d16d80 100644
+--- a/arch/arm64/include/asm/Kbuild
++++ b/arch/arm64/include/asm/Kbuild
+@@ -14,6 +14,7 @@ generic-y += qrwlock.h
+ generic-y += qspinlock.h
+ generic-y += parport.h
+ generic-y += user.h
++generic-y += asi.h
+ 
+ generated-y += cpucap-defs.h
+ generated-y += sysreg-defs.h
+diff --git a/arch/csky/include/asm/Kbuild b/arch/csky/include/asm/Kbuild
+index 9a9bc65b57a9d73dadc9d597700d7229f8554ddf..4f497118fb172d1f2bf0f9e472479f24227f42f4 100644
+--- a/arch/csky/include/asm/Kbuild
++++ b/arch/csky/include/asm/Kbuild
+@@ -11,3 +11,4 @@ generic-y += qspinlock.h
+ generic-y += parport.h
+ generic-y += user.h
+ generic-y += vmlinux.lds.h
++generic-y += asi.h
+diff --git a/arch/hexagon/include/asm/Kbuild b/arch/hexagon/include/asm/Kbuild
+index 8c1a78c8f5271ebd47f1baad7b85e87220d1bbe8..b26f186bc03c2e135f8d125a4805b95a41513655 100644
+--- a/arch/hexagon/include/asm/Kbuild
++++ b/arch/hexagon/include/asm/Kbuild
+@@ -5,3 +5,4 @@ generic-y += extable.h
+ generic-y += iomap.h
+ generic-y += kvm_para.h
+ generic-y += mcs_spinlock.h
++generic-y += asi.h
+diff --git a/arch/loongarch/include/asm/Kbuild b/arch/loongarch/include/asm/Kbuild
+index 5b5a6c90e6e20771b1074a6262230861cc51bcb4..dd3d0c6891369a9dfa35ccfb8b81c8697c2a3e90 100644
+--- a/arch/loongarch/include/asm/Kbuild
++++ b/arch/loongarch/include/asm/Kbuild
+@@ -11,3 +11,6 @@ generic-y += ioctl.h
+ generic-y += mmzone.h
+ generic-y += statfs.h
+ generic-y += param.h
++generic-y += asi.h
++generic-y += posix_types.h
++generic-y += resource.h
+diff --git a/arch/m68k/include/asm/Kbuild b/arch/m68k/include/asm/Kbuild
+index 0dbf9c5c6faeb30eeb38bea52ab7fade99bbd44a..faf0f135df4ab946ef115f3a2fc363f370fc7491 100644
+--- a/arch/m68k/include/asm/Kbuild
++++ b/arch/m68k/include/asm/Kbuild
+@@ -4,3 +4,4 @@ generic-y += extable.h
+ generic-y += kvm_para.h
+ generic-y += mcs_spinlock.h
+ generic-y += spinlock.h
++generic-y += asi.h
+diff --git a/arch/microblaze/include/asm/Kbuild b/arch/microblaze/include/asm/Kbuild
+index a055f5dbe00a31616592c3a848b49bbf9ead5d17..012e4bf83c13497dc296b66cd5e0fd519274306b 100644
+--- a/arch/microblaze/include/asm/Kbuild
++++ b/arch/microblaze/include/asm/Kbuild
+@@ -8,3 +8,4 @@ generic-y += parport.h
+ generic-y += syscalls.h
+ generic-y += tlb.h
+ generic-y += user.h
++generic-y += asi.h
+diff --git a/arch/mips/include/asm/Kbuild b/arch/mips/include/asm/Kbuild
+index 7ba67a0d6c97b2879fb710aca05ae1e2d47c8ce2..3191699298d80735920481eecc64dd2d1dbd2e54 100644
+--- a/arch/mips/include/asm/Kbuild
++++ b/arch/mips/include/asm/Kbuild
+@@ -13,3 +13,4 @@ generic-y += parport.h
+ generic-y += qrwlock.h
+ generic-y += qspinlock.h
+ generic-y += user.h
++generic-y += asi.h
+diff --git a/arch/nios2/include/asm/Kbuild b/arch/nios2/include/asm/Kbuild
+index 0d09829ed14454f2f15a32bf713fa1eb213e85ea..03a5ec74e28b3679a5ef7271606af3c07bb7a198 100644
+--- a/arch/nios2/include/asm/Kbuild
++++ b/arch/nios2/include/asm/Kbuild
+@@ -7,3 +7,4 @@ generic-y += kvm_para.h
+ generic-y += mcs_spinlock.h
+ generic-y += spinlock.h
+ generic-y += user.h
++generic-y += asi.h
+diff --git a/arch/openrisc/include/asm/Kbuild b/arch/openrisc/include/asm/Kbuild
+index cef49d60d74c0f46f01cf46cc35e1e52404185f3..6a81a58bf59e20cafa563c422df4dfa6f9f791ec 100644
+--- a/arch/openrisc/include/asm/Kbuild
++++ b/arch/openrisc/include/asm/Kbuild
+@@ -9,3 +9,4 @@ generic-y += spinlock.h
+ generic-y += qrwlock_types.h
+ generic-y += qrwlock.h
+ generic-y += user.h
++generic-y += asi.h
+diff --git a/arch/parisc/include/asm/Kbuild b/arch/parisc/include/asm/Kbuild
+index 4fb596d94c8932dd1e12a765a21af5b5099fbafd..3cbb4eb14712c7bd6c248dd26ab91cc41da01825 100644
+--- a/arch/parisc/include/asm/Kbuild
++++ b/arch/parisc/include/asm/Kbuild
+@@ -5,3 +5,4 @@ generic-y += agp.h
+ generic-y += kvm_para.h
+ generic-y += mcs_spinlock.h
+ generic-y += user.h
++generic-y += asi.h
+diff --git a/arch/powerpc/include/asm/Kbuild b/arch/powerpc/include/asm/Kbuild
+index e5fdc336c9b22527f824ed30d06b5e8c0fa8a1ef..e86cc027f35564c7b301c283043bde0e5d2d3b6a 100644
+--- a/arch/powerpc/include/asm/Kbuild
++++ b/arch/powerpc/include/asm/Kbuild
+@@ -7,3 +7,4 @@ generic-y += kvm_types.h
+ generic-y += mcs_spinlock.h
+ generic-y += qrwlock.h
+ generic-y += early_ioremap.h
++generic-y += asi.h
+diff --git a/arch/riscv/include/asm/Kbuild b/arch/riscv/include/asm/Kbuild
+index 1461af12da6e2bbbff6cf737a7babf33bd298cdd..82060ed50d9beb1ea72d3570ad236d1e08d9d8c6 100644
+--- a/arch/riscv/include/asm/Kbuild
++++ b/arch/riscv/include/asm/Kbuild
+@@ -13,3 +13,4 @@ generic-y += qrwlock.h
+ generic-y += qrwlock_types.h
+ generic-y += user.h
+ generic-y += vmlinux.lds.h
++generic-y += asi.h
+diff --git a/arch/s390/include/asm/Kbuild b/arch/s390/include/asm/Kbuild
+index 297bf7157968907d6e4c4ff8b65deeef02dbd630..e15c2a138392b57b186633738ddda913474aa8c4 100644
+--- a/arch/s390/include/asm/Kbuild
++++ b/arch/s390/include/asm/Kbuild
+@@ -8,3 +8,4 @@ generic-y += asm-offsets.h
+ generic-y += kvm_types.h
+ generic-y += mcs_spinlock.h
+ generic-y += mmzone.h
++generic-y += asi.h
+diff --git a/arch/sh/include/asm/Kbuild b/arch/sh/include/asm/Kbuild
+index fc44d9c88b41915a7021042eb8b462517cfdbd2c..ea19e4515828552f436d67f764607dd5d15cb19f 100644
+--- a/arch/sh/include/asm/Kbuild
++++ b/arch/sh/include/asm/Kbuild
+@@ -3,3 +3,4 @@ generated-y += syscall_table.h
+ generic-y += kvm_para.h
+ generic-y += mcs_spinlock.h
+ generic-y += parport.h
++generic-y += asi.h
+diff --git a/arch/sparc/include/asm/Kbuild b/arch/sparc/include/asm/Kbuild
+index 43b0ae4c2c2112d4d4d3cb3c60e787b175172dea..cb9062c9be17fe276cc92d2ac99d8b165f6297bf 100644
+--- a/arch/sparc/include/asm/Kbuild
++++ b/arch/sparc/include/asm/Kbuild
+@@ -4,3 +4,4 @@ generated-y += syscall_table_64.h
+ generic-y += agp.h
+ generic-y += kvm_para.h
+ generic-y += mcs_spinlock.h
++generic-y += asi.h
+diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
+index 18f902da8e99769da857d34af43141ea97a0ca63..6054972f1babdaebae64040b05ab48893915cb04 100644
+--- a/arch/um/include/asm/Kbuild
++++ b/arch/um/include/asm/Kbuild
+@@ -27,4 +27,4 @@ generic-y += trace_clock.h
+ generic-y += kprobes.h
+ generic-y += mm_hooks.h
+ generic-y += vga.h
+-generic-y += video.h
++generic-y += asi.h
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 7b9a7e8f39acc8e9aeb7d4213e87d71047865f5c..5a50582eb210e9d1309856a737d32b76fa1bfc85 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -2519,6 +2519,20 @@ config MITIGATION_PAGE_TABLE_ISOLATION
+ 
+ 	  See Documentation/arch/x86/pti.rst for more details.
+ 
++config MITIGATION_ADDRESS_SPACE_ISOLATION
++	bool "Allow code to run with a reduced kernel address space"
++	default n
++	depends on X86_64 && !PARAVIRT && !UML
++	help
++	  This feature provides the ability to run some kernel code
++	  with a reduced kernel address space. This can be used to
++	  mitigate some speculative execution attacks.
++
++	  The !PARAVIRT dependency is only because of lack of testing; in theory
++	  the code is written to work under paravirtualization. In practice
++	  there are likely to be unhandled cases, in particular concerning TLB
++	  flushes.
++
+ config MITIGATION_RETPOLINE
+ 	bool "Avoid speculative indirect branches in kernel"
+ 	select OBJTOOL if HAVE_OBJTOOL
+diff --git a/arch/xtensa/include/asm/Kbuild b/arch/xtensa/include/asm/Kbuild
+index fa07c686cbcc2153776a478ac4093846f01eddab..07cea6902f98053be244d026ed594fe7246755a6 100644
+--- a/arch/xtensa/include/asm/Kbuild
++++ b/arch/xtensa/include/asm/Kbuild
+@@ -8,3 +8,4 @@ generic-y += parport.h
+ generic-y += qrwlock.h
+ generic-y += qspinlock.h
+ generic-y += user.h
++generic-y += asi.h
+diff --git a/include/asm-generic/asi.h b/include/asm-generic/asi.h
+new file mode 100644
+index 0000000000000000000000000000000000000000..c4d9a5ff860a96428422a15000c622aeecc2d664
+--- /dev/null
++++ b/include/asm-generic/asi.h
+@@ -0,0 +1,5 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __ASM_GENERIC_ASI_H
++#define __ASM_GENERIC_ASI_H
++
++#endif
 
-Junaid Shahid (4):
-      mm: asi: Make __get_current_cr3_fast() ASI-aware
-      mm: asi: ASI page table allocation functions
-      mm: asi: Functions to map/unmap a memory range into ASI page tables
-      mm: asi: Add basic infrastructure for global non-sensitive mappings
-
-Ofir Weisse (1):
-      mm: asi: asi_exit() on PF, skip handling if address is accessible
-
-Reiji Watanabe (1):
-      mm: asi: Map dynamic percpu memory as nonsensitive
-
-Yosry Ahmed (2):
-      mm: asi: Use separate PCIDs for restricted address spaces
-      mm: asi: exit ASI before suspend-like operations
-
- arch/alpha/include/asm/Kbuild            |    1 +
- arch/arc/include/asm/Kbuild              |    1 +
- arch/arm/include/asm/Kbuild              |    1 +
- arch/arm64/include/asm/Kbuild            |    1 +
- arch/csky/include/asm/Kbuild             |    1 +
- arch/hexagon/include/asm/Kbuild          |    1 +
- arch/loongarch/include/asm/Kbuild        |    3 +
- arch/m68k/include/asm/Kbuild             |    1 +
- arch/microblaze/include/asm/Kbuild       |    1 +
- arch/mips/include/asm/Kbuild             |    1 +
- arch/nios2/include/asm/Kbuild            |    1 +
- arch/openrisc/include/asm/Kbuild         |    1 +
- arch/parisc/include/asm/Kbuild           |    1 +
- arch/powerpc/include/asm/Kbuild          |    1 +
- arch/riscv/include/asm/Kbuild            |    1 +
- arch/s390/include/asm/Kbuild             |    1 +
- arch/sh/include/asm/Kbuild               |    1 +
- arch/sparc/include/asm/Kbuild            |    1 +
- arch/um/include/asm/Kbuild               |    2 +-
- arch/x86/Kconfig                         |   27 +
- arch/x86/boot/compressed/ident_map_64.c  |   10 +
- arch/x86/boot/compressed/pgtable_64.c    |   11 +
- arch/x86/include/asm/asi.h               |  306 +++++++++
- arch/x86/include/asm/cpufeatures.h       |    1 +
- arch/x86/include/asm/disabled-features.h |    8 +-
- arch/x86/include/asm/idtentry.h          |   50 +-
- arch/x86/include/asm/kvm_host.h          |    3 +
- arch/x86/include/asm/l1tf.h              |   11 +
- arch/x86/include/asm/nospec-branch.h     |    2 +
- arch/x86/include/asm/pgalloc.h           |    6 +
- arch/x86/include/asm/pgtable_64.h        |    4 +
- arch/x86/include/asm/processor-flags.h   |   24 +
- arch/x86/include/asm/processor.h         |   20 +-
- arch/x86/include/asm/pti.h               |    6 +-
- arch/x86/include/asm/special_insns.h     |   45 +-
- arch/x86/include/asm/tlbflush.h          |    6 +
- arch/x86/kernel/process.c                |    2 +
- arch/x86/kernel/process_32.c             |    2 +-
- arch/x86/kernel/process_64.c             |    2 +-
- arch/x86/kernel/traps.c                  |   22 +
- arch/x86/kvm/Kconfig                     |    1 +
- arch/x86/kvm/svm/svm.c                   |    2 +
- arch/x86/kvm/vmx/nested.c                |    6 +
- arch/x86/kvm/vmx/vmx.c                   |  113 ++--
- arch/x86/kvm/x86.c                       |   81 ++-
- arch/x86/lib/Makefile                    |    1 +
- arch/x86/lib/l1tf.c                      |   96 +++
- arch/x86/lib/retpoline.S                 |   10 +
- arch/x86/mm/Makefile                     |    1 +
- arch/x86/mm/asi.c                        | 1039 ++++++++++++++++++++++++++=
-++++
- arch/x86/mm/fault.c                      |  124 +++-
- arch/x86/mm/init.c                       |    7 +-
- arch/x86/mm/init_64.c                    |   25 +-
- arch/x86/mm/mm_internal.h                |    3 +
- arch/x86/mm/pti.c                        |   14 +-
- arch/x86/mm/tlb.c                        |  167 ++++-
- arch/x86/virt/svm/sev.c                  |    2 +-
- arch/xtensa/include/asm/Kbuild           |    1 +
- drivers/firmware/efi/libstub/x86-5lvl.c  |    2 +-
- include/asm-generic/asi.h                |  113 ++++
- include/asm-generic/vmlinux.lds.h        |   11 +
- include/linux/entry-common.h             |   11 +
- include/linux/gfp.h                      |    5 +
- include/linux/gfp_types.h                |   15 +-
- include/linux/mm_types.h                 |    7 +
- include/linux/page-flags.h               |   18 +
- include/linux/pgtable.h                  |    3 +
- include/trace/events/mmflags.h           |   12 +-
- init/main.c                              |    2 +
- kernel/entry/common.c                    |    1 +
- kernel/fork.c                            |    5 +
- kernel/sched/core.c                      |    9 +
- mm/init-mm.c                             |    4 +
- mm/internal.h                            |    2 +
- mm/mm_init.c                             |    1 +
- mm/page_alloc.c                          |  160 ++++-
- mm/percpu-vm.c                           |   50 +-
- mm/percpu.c                              |    4 +-
- mm/vmalloc.c                             |   53 +-
- tools/perf/builtin-kmem.c                |    1 +
- 80 files changed, 2582 insertions(+), 190 deletions(-)
----
-base-commit: ebd6ea9c6976c64ed5af3e6dce672616447e8e62
-change-id: 20241115-asi-rfc-v2-5d9bbb441186
-
-Best regards,
---=20
-Brendan Jackman <jackmanb@google.com>
+-- 
+2.47.1.613.gc27f4b7a9f-goog
 
 
