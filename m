@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5F4CC02184
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A98BE7719E
 	for <linux-um@archiver.kernel.org>; Fri, 10 Jan 2025 13:13:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,50 +12,50 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=S56GsRBFDZ2Dv0NEvtWPZ2gxzfO06DPYc7OAVheL4W0=; b=WY7E8qwfQB22rVpIOg7s5vWCbR
-	OxhhZaGw4Rr22VHejgJ+JafDVARnpx1MCtrSEf3m+bh718IzGEI/DCyM7yFaeD13KDCD3XjP73A/3
-	BU1NJIiWKptaN/SEiLgTq0+8UTOPNgqHZ+d/LRYDxzLMnsONFpmGm8ZeM/C6upVAZ8Cr6Q63rKcTb
-	Ir8xHqt4m1hpDp2u5u2RB0dOJNYpjg4/hBWH/K7N65b4sYDiNSiaz1fxTKfXaCIjuUOq+1Qb+eaQu
-	Dx4E0txBJD+mD2C4KWFFviGw1dh7npK+JdOxOi3jD4BKvblNvcN0edSg8cBbFy1ozWkrWLLSfOsbV
-	aKKaijvA==;
+	bh=vMcotGCTJ5mCs0tpmyw0WtqzRS3B5ghi9OSRt121Df4=; b=LDGxE3EFvDYIBUWTNbrnWRYVIq
+	AeOQZ2YGEhq++2/a49GVxxFM0FsewDZRE5xY62O3QhBh+7fkGvdhgPrBivvonxSWeln6LrjG82sT7
+	rYvjQBzY2zhZQt5wujm4mfkmkgkDbHiKGPB5QHdNJOr8dqGtq7R/q+i0DVdI0YHygT+ED8gWwOU+6
+	ziXpqP58n2CAEfWf8+e+DlD/6QEyJxKCv36hZCFYXUiEO327aAJ8WWGX2NvlzftXcGDTJmuxlDOFo
+	G4MV7rzlCoAECk/5J+ozeTQrtPGWJ9wrBLSZHeBVUjTVOydE7sTtWqawFOZZ9GiHLrcGMomdN4SLY
+	PZA+FVrA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWEpn-0000000FQhC-2mTQ;
-	Fri, 10 Jan 2025 13:13:55 +0000
+	id 1tWEpm-0000000FQg0-4310;
+	Fri, 10 Jan 2025 13:13:54 +0000
 Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWEYQ-0000000FMj2-3Q6q
+	id 1tWEYQ-0000000FMiy-1bW7
 	for linux-um@lists.infradead.org;
 	Fri, 10 Jan 2025 12:56:01 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=S56GsRBFDZ2Dv0NEvtWPZ2gxzfO06DPYc7OAVheL4W0=;
-	t=1736513757; x=1737723357; b=nxU0OLhuz5EsvekT+OhdYusx7bggQvNNhu7rg2M63mpdbk4
-	9/9LZvnrlzIbS+51ROzOWvFHs9igGWhuAAES46eLKrUyblHmtv5wgdOW+yUxoNngfF4F8h/UuzdyK
-	nDOCQH0041n9Rfw3Y9JFKHAwoAR0gM0ymc/VyAhhNW9zczUrwltECNWHlBGP9Uuik7Niorti+8dxQ
-	p+/c6eAQCUty0PKDST+CL73JTP+Zl3wo7IS8dQvciII9z/Ot5wn1ldblyZx7xiVpkJTwTV0Z9Qeib
-	+K0HnukqtdTHX+vNvLUj+/JiT7RL45QXw7tELGZzDojdS9SYHQTvdJtrFqL4CSYg==;
+	Resent-Cc:Resent-Message-ID; bh=vMcotGCTJ5mCs0tpmyw0WtqzRS3B5ghi9OSRt121Df4=;
+	t=1736513756; x=1737723356; b=heSDSSHfWqScoeHHv8O9w8MJmwfGo7vRSakni6Cri7rfuOB
+	rLbptM60cWr2sozlXhQq3a5IUIOmxFM1V0TUOL3Dee4JJxquVMy+pqA9S3SPbiEFsQ4oOvTXHp/lm
+	tjfSUSh9Cb4OuYSaiZLfkzKowD3W2NIC9gj0b6sOcDuqKNr70TtKb18zXpQNFQCNAYmiGO9EUbsJy
+	f8jK4iZoef7tILreiNNDtNh0CztR56IjCJNPyJuWDYEIkvVqPbInHgyPhrZPBnY+1SHiRUte91ktJ
+	hxafwQxd3GhoHfgiP8YVabMzQDFd5FjhLBtX+2jw7cWGaQxcD0XoxPsZtfIHzK4A==;
 Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.98)
 	(envelope-from <johannes@sipsolutions.net>)
-	id 1tWEYM-0000000Aaru-2sqh;
+	id 1tWEYL-0000000Aaru-3zPh;
 	Fri, 10 Jan 2025 13:55:54 +0100
 From: Johannes Berg <johannes@sipsolutions.net>
 To: linux-um@lists.infradead.org
 Cc: Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 2/3] um: virtio_uml: use raw spinlock
-Date: Fri, 10 Jan 2025 13:54:05 +0100
-Message-ID: <20250110125550.32479-7-johannes@sipsolutions.net>
+Subject: [PATCH 1/3] um: virt-pci: don't use kmalloc()
+Date: Fri, 10 Jan 2025 13:54:04 +0100
+Message-ID: <20250110125550.32479-6-johannes@sipsolutions.net>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250110125550.32479-5-johannes@sipsolutions.net>
 References: <20250110125550.32479-5-johannes@sipsolutions.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250110_045558_863352_7D4D542D 
-X-CRM114-Status: GOOD (  11.08  )
+X-CRM114-CacheID: sfid-20250110_045558_612222_CB051F7B 
+X-CRM114-Status: GOOD (  24.34  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,55 +72,377 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Johannes Berg <johannes.berg@intel.com>
 
-This is needed because at least in time-travel the code
-can be called directly from the deep architecture and
-IRQ handling code.
+This code can be called deep in the IRQ handling, for
+example, and then cannot normally use kmalloc(). Have
+its own pre-allocated memory and use from there instead
+so this doesn't occur. Only in the (very rare) case of
+memcpy_toio() we'd still need to allocate memory.
 
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 ---
- arch/um/drivers/virtio_uml.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/um/drivers/virt-pci.c | 196 +++++++++++++++++++------------------
+ 1 file changed, 101 insertions(+), 95 deletions(-)
 
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index 65df43fa9be5..ad8d78fb1d9a 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -52,7 +52,7 @@ struct virtio_uml_device {
- 	struct platform_device *pdev;
- 	struct virtio_uml_platform_data *pdata;
+diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
+index 744e7f31e8ef..dd5580f975cc 100644
+--- a/arch/um/drivers/virt-pci.c
++++ b/arch/um/drivers/virt-pci.c
+@@ -25,8 +25,10 @@
+ #define MAX_IRQ_MSG_SIZE (sizeof(struct virtio_pcidev_msg) + sizeof(u32))
+ #define NUM_IRQ_MSGS	10
  
--	spinlock_t sock_lock;
-+	raw_spinlock_t sock_lock;
- 	int sock, req_fd, irq;
- 	u64 features;
- 	u64 protocol_features;
-@@ -246,7 +246,7 @@ static int vhost_user_send(struct virtio_uml_device *vu_dev,
- 	if (request_ack)
- 		msg->header.flags |= VHOST_USER_FLAG_NEED_REPLY;
+-#define HANDLE_NO_FREE(ptr) ((void *)((unsigned long)(ptr) | 1))
+-#define HANDLE_IS_NO_FREE(ptr) ((unsigned long)(ptr) & 1)
++struct um_pci_message_buffer {
++	struct virtio_pcidev_msg hdr;
++	u8 data[8];
++};
  
--	spin_lock_irqsave(&vu_dev->sock_lock, flags);
-+	raw_spin_lock_irqsave(&vu_dev->sock_lock, flags);
- 	rc = full_sendmsg_fds(vu_dev->sock, msg, size, fds, num_fds);
- 	if (rc < 0)
- 		goto out;
-@@ -266,7 +266,7 @@ static int vhost_user_send(struct virtio_uml_device *vu_dev,
+ struct um_pci_device {
+ 	struct virtio_device *vdev;
+@@ -36,6 +38,11 @@ struct um_pci_device {
+ 
+ 	struct virtqueue *cmd_vq, *irq_vq;
+ 
++#define UM_PCI_WRITE_BUFS	20
++	struct um_pci_message_buffer bufs[UM_PCI_WRITE_BUFS + 1];
++	void *extra_ptrs[UM_PCI_WRITE_BUFS + 1];
++	DECLARE_BITMAP(used_bufs, UM_PCI_WRITE_BUFS);
++
+ #define UM_PCI_STAT_WAITING	0
+ 	unsigned long status;
+ 
+@@ -61,12 +68,40 @@ static unsigned long um_pci_msi_used[BITS_TO_LONGS(MAX_MSI_VECTORS)];
+ static unsigned int um_pci_max_delay_us = 40000;
+ module_param_named(max_delay_us, um_pci_max_delay_us, uint, 0644);
+ 
+-struct um_pci_message_buffer {
+-	struct virtio_pcidev_msg hdr;
+-	u8 data[8];
+-};
++static int um_pci_get_buf(struct um_pci_device *dev, bool *posted)
++{
++	int i;
+ 
+-static struct um_pci_message_buffer __percpu *um_pci_msg_bufs;
++	for (i = 0; i < UM_PCI_WRITE_BUFS; i++) {
++		if (!test_and_set_bit(i, dev->used_bufs))
++			return i;
++	}
++
++	*posted = false;
++	return UM_PCI_WRITE_BUFS;
++}
++
++static void um_pci_free_buf(struct um_pci_device *dev, void *buf)
++{
++	int i;
++
++	if (buf == &dev->bufs[UM_PCI_WRITE_BUFS]) {
++		kfree(dev->extra_ptrs[UM_PCI_WRITE_BUFS]);
++		dev->extra_ptrs[UM_PCI_WRITE_BUFS] = NULL;
++		return;
++	}
++
++	for (i = 0; i < UM_PCI_WRITE_BUFS; i++) {
++		if (buf == &dev->bufs[i]) {
++			kfree(dev->extra_ptrs[i]);
++			dev->extra_ptrs[i] = NULL;
++			WARN_ON(!test_and_clear_bit(i, dev->used_bufs));
++			return;
++		}
++	}
++
++	WARN_ON(1);
++}
+ 
+ static int um_pci_send_cmd(struct um_pci_device *dev,
+ 			   struct virtio_pcidev_msg *cmd,
+@@ -82,7 +117,9 @@ static int um_pci_send_cmd(struct um_pci_device *dev,
+ 	};
+ 	struct um_pci_message_buffer *buf;
+ 	int delay_count = 0;
++	bool bounce_out;
+ 	int ret, len;
++	int buf_idx;
+ 	bool posted;
+ 
+ 	if (WARN_ON(cmd_size < sizeof(*cmd) || cmd_size > sizeof(*buf)))
+@@ -101,26 +138,28 @@ static int um_pci_send_cmd(struct um_pci_device *dev,
+ 		break;
  	}
  
- out:
--	spin_unlock_irqrestore(&vu_dev->sock_lock, flags);
-+	raw_spin_unlock_irqrestore(&vu_dev->sock_lock, flags);
- 	return rc;
+-	buf = get_cpu_var(um_pci_msg_bufs);
+-	if (buf)
+-		memcpy(buf, cmd, cmd_size);
++	bounce_out = !posted && cmd_size <= sizeof(*cmd) &&
++		     out && out_size <= sizeof(buf->data);
+ 
+-	if (posted) {
+-		u8 *ncmd = kmalloc(cmd_size + extra_size, GFP_ATOMIC);
++	buf_idx = um_pci_get_buf(dev, &posted);
++	buf = &dev->bufs[buf_idx];
++	memcpy(buf, cmd, cmd_size);
+ 
+-		if (ncmd) {
+-			memcpy(ncmd, cmd, cmd_size);
+-			if (extra)
+-				memcpy(ncmd + cmd_size, extra, extra_size);
+-			cmd = (void *)ncmd;
+-			cmd_size += extra_size;
+-			extra = NULL;
+-			extra_size = 0;
+-		} else {
+-			/* try without allocating memory */
+-			posted = false;
+-			cmd = (void *)buf;
++	if (posted && extra && extra_size > sizeof(buf) - cmd_size) {
++		dev->extra_ptrs[buf_idx] = kmemdup(extra, extra_size,
++						   GFP_ATOMIC);
++
++		if (!dev->extra_ptrs[buf_idx]) {
++			um_pci_free_buf(dev, buf);
++			return -ENOMEM;
+ 		}
++		extra = dev->extra_ptrs[buf_idx];
++	} else if (extra && extra_size <= sizeof(buf) - cmd_size) {
++		memcpy((u8 *)buf + cmd_size, extra, extra_size);
++		cmd_size += extra_size;
++		extra_size = 0;
++		extra = NULL;
++		cmd = (void *)buf;
+ 	} else {
+ 		cmd = (void *)buf;
+ 	}
+@@ -128,39 +167,40 @@ static int um_pci_send_cmd(struct um_pci_device *dev,
+ 	sg_init_one(&out_sg, cmd, cmd_size);
+ 	if (extra)
+ 		sg_init_one(&extra_sg, extra, extra_size);
+-	if (out)
++	/* allow stack for small buffers */
++	if (bounce_out)
++		sg_init_one(&in_sg, buf->data, out_size);
++	else if (out)
+ 		sg_init_one(&in_sg, out, out_size);
+ 
+ 	/* add to internal virtio queue */
+ 	ret = virtqueue_add_sgs(dev->cmd_vq, sgs_list,
+ 				extra ? 2 : 1,
+ 				out ? 1 : 0,
+-				posted ? cmd : HANDLE_NO_FREE(cmd),
+-				GFP_ATOMIC);
++				cmd, GFP_ATOMIC);
+ 	if (ret) {
+-		if (posted)
+-			kfree(cmd);
+-		goto out;
++		um_pci_free_buf(dev, buf);
++		return ret;
+ 	}
+ 
+ 	if (posted) {
+ 		virtqueue_kick(dev->cmd_vq);
+-		ret = 0;
+-		goto out;
++		return 0;
+ 	}
+ 
+ 	/* kick and poll for getting a response on the queue */
+ 	set_bit(UM_PCI_STAT_WAITING, &dev->status);
+ 	virtqueue_kick(dev->cmd_vq);
++	ret = 0;
+ 
+ 	while (1) {
+ 		void *completed = virtqueue_get_buf(dev->cmd_vq, &len);
+ 
+-		if (completed == HANDLE_NO_FREE(cmd))
++		if (completed == buf)
+ 			break;
+ 
+-		if (completed && !HANDLE_IS_NO_FREE(completed))
+-			kfree(completed);
++		if (completed)
++			um_pci_free_buf(dev, completed);
+ 
+ 		if (WARN_ONCE(virtqueue_is_broken(dev->cmd_vq) ||
+ 			      ++delay_count > um_pci_max_delay_us,
+@@ -172,8 +212,11 @@ static int um_pci_send_cmd(struct um_pci_device *dev,
+ 	}
+ 	clear_bit(UM_PCI_STAT_WAITING, &dev->status);
+ 
+-out:
+-	put_cpu_var(um_pci_msg_bufs);
++	if (bounce_out)
++		memcpy(out, buf->data, out_size);
++
++	um_pci_free_buf(dev, buf);
++
+ 	return ret;
  }
  
-@@ -1239,7 +1239,7 @@ static int virtio_uml_probe(struct platform_device *pdev)
- 		goto error_free;
- 	vu_dev->sock = rc;
+@@ -187,20 +230,13 @@ static unsigned long um_pci_cfgspace_read(void *priv, unsigned int offset,
+ 		.size = size,
+ 		.addr = offset,
+ 	};
+-	/* buf->data is maximum size - we may only use parts of it */
+-	struct um_pci_message_buffer *buf;
+-	u8 *data;
+-	unsigned long ret = ULONG_MAX;
+-	size_t bytes = sizeof(buf->data);
++	/* max 8, we might not use it all */
++	u8 data[8];
  
--	spin_lock_init(&vu_dev->sock_lock);
-+	raw_spin_lock_init(&vu_dev->sock_lock);
+ 	if (!dev)
+ 		return ULONG_MAX;
  
- 	rc = vhost_user_init(vu_dev);
- 	if (rc)
+-	buf = get_cpu_var(um_pci_msg_bufs);
+-	data = buf->data;
+-
+-	if (buf)
+-		memset(data, 0xff, bytes);
++	memset(data, 0xff, sizeof(data));
+ 
+ 	switch (size) {
+ 	case 1:
+@@ -212,34 +248,26 @@ static unsigned long um_pci_cfgspace_read(void *priv, unsigned int offset,
+ 		break;
+ 	default:
+ 		WARN(1, "invalid config space read size %d\n", size);
+-		goto out;
++		return ULONG_MAX;
+ 	}
+ 
+-	if (um_pci_send_cmd(dev, &hdr, sizeof(hdr), NULL, 0, data, bytes))
+-		goto out;
++	if (um_pci_send_cmd(dev, &hdr, sizeof(hdr), NULL, 0, data, size))
++		return ULONG_MAX;
+ 
+ 	switch (size) {
+ 	case 1:
+-		ret = data[0];
+-		break;
++		return data[0];
+ 	case 2:
+-		ret = le16_to_cpup((void *)data);
+-		break;
++		return le16_to_cpup((void *)data);
+ 	case 4:
+-		ret = le32_to_cpup((void *)data);
+-		break;
++		return le32_to_cpup((void *)data);
+ #ifdef CONFIG_64BIT
+ 	case 8:
+-		ret = le64_to_cpup((void *)data);
+-		break;
++		return le64_to_cpup((void *)data);
+ #endif
+ 	default:
+-		break;
++		return ULONG_MAX;
+ 	}
+-
+-out:
+-	put_cpu_var(um_pci_msg_bufs);
+-	return ret;
+ }
+ 
+ static void um_pci_cfgspace_write(void *priv, unsigned int offset, int size,
+@@ -312,13 +340,8 @@ static void um_pci_bar_copy_from(void *priv, void *buffer,
+ static unsigned long um_pci_bar_read(void *priv, unsigned int offset,
+ 				     int size)
+ {
+-	/* buf->data is maximum size - we may only use parts of it */
+-	struct um_pci_message_buffer *buf;
+-	u8 *data;
+-	unsigned long ret = ULONG_MAX;
+-
+-	buf = get_cpu_var(um_pci_msg_bufs);
+-	data = buf->data;
++	/* 8 is maximum size - we may only use parts of it */
++	u8 data[8];
+ 
+ 	switch (size) {
+ 	case 1:
+@@ -330,33 +353,25 @@ static unsigned long um_pci_bar_read(void *priv, unsigned int offset,
+ 		break;
+ 	default:
+ 		WARN(1, "invalid config space read size %d\n", size);
+-		goto out;
++		return ULONG_MAX;
+ 	}
+ 
+ 	um_pci_bar_copy_from(priv, data, offset, size);
+ 
+ 	switch (size) {
+ 	case 1:
+-		ret = data[0];
+-		break;
++		return data[0];
+ 	case 2:
+-		ret = le16_to_cpup((void *)data);
+-		break;
++		return le16_to_cpup((void *)data);
+ 	case 4:
+-		ret = le32_to_cpup((void *)data);
+-		break;
++		return le32_to_cpup((void *)data);
+ #ifdef CONFIG_64BIT
+ 	case 8:
+-		ret = le64_to_cpup((void *)data);
+-		break;
++		return le64_to_cpup((void *)data);
+ #endif
+ 	default:
+-		break;
++		return ULONG_MAX;
+ 	}
+-
+-out:
+-	put_cpu_var(um_pci_msg_bufs);
+-	return ret;
+ }
+ 
+ static void um_pci_bar_copy_to(void *priv, unsigned int offset,
+@@ -523,11 +538,8 @@ static void um_pci_cmd_vq_cb(struct virtqueue *vq)
+ 	if (test_bit(UM_PCI_STAT_WAITING, &dev->status))
+ 		return;
+ 
+-	while ((cmd = virtqueue_get_buf(vq, &len))) {
+-		if (WARN_ON(HANDLE_IS_NO_FREE(cmd)))
+-			continue;
+-		kfree(cmd);
+-	}
++	while ((cmd = virtqueue_get_buf(vq, &len)))
++		um_pci_free_buf(dev, cmd);
+ }
+ 
+ static void um_pci_irq_vq_cb(struct virtqueue *vq)
+@@ -1006,10 +1018,6 @@ static int __init um_pci_init(void)
+ 		 "No virtio device ID configured for PCI - no PCI support\n"))
+ 		return 0;
+ 
+-	um_pci_msg_bufs = alloc_percpu(struct um_pci_message_buffer);
+-	if (!um_pci_msg_bufs)
+-		return -ENOMEM;
+-
+ 	bridge = pci_alloc_host_bridge(0);
+ 	if (!bridge) {
+ 		err = -ENOMEM;
+@@ -1070,7 +1078,6 @@ static int __init um_pci_init(void)
+ 		pci_free_resource_list(&bridge->windows);
+ 		pci_free_host_bridge(bridge);
+ 	}
+-	free_percpu(um_pci_msg_bufs);
+ 	return err;
+ }
+ module_init(um_pci_init);
+@@ -1082,6 +1089,5 @@ static void __exit um_pci_exit(void)
+ 	irq_domain_remove(um_pci_inner_domain);
+ 	pci_free_resource_list(&bridge->windows);
+ 	pci_free_host_bridge(bridge);
+-	free_percpu(um_pci_msg_bufs);
+ }
+ module_exit(um_pci_exit);
 -- 
 2.47.1
 
