@@ -4,84 +4,84 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0218DE7719E
-	for <linux-um@archiver.kernel.org>; Fri, 10 Jan 2025 20:25:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4FDA7E7719D
+	for <linux-um@archiver.kernel.org>; Fri, 10 Jan 2025 20:25:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:From:
 	Subject:Message-ID:References:Mime-Version:In-Reply-To:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=HFKS9He99X0lK3xnnbI99ZyULyVP6qmX2/a79HHV3Mw=; b=Zp9fZyqzKQ9ef/IXcs44iWVDG/
-	VAKROXnvIG72PujKctfL6ThqwM24oI9YEAi0tVVn0XAsg7SkIq7j0JoM++pusqHL0dX/gDgIzFS5w
-	H0NOPZjfZy0wTcvZVTYOAbTnr+uyzaniPNDGekpCFUHgxcQmxOD5jRI8um0rgnoR9ddshnxdwLCR+
-	DtWslxlThNeN8xEEj1+RfgLT7IkFl3bhtPH5k5qUXsl0ajo4lOqGC3/W8EKwURvTJauIB5MEbbEx6
-	woIo1FamzIEs5kl3aQuB4LfvnMyWbUw+VDB89xCc6JstVC1p0y1/n+dHK49oNU1BdHhKwm6oIapG2
-	3skapkLg==;
+	bh=+fqV4f6s/Eo+EZ+PE2OCyE0kBm/vfnsLcFKRz+1otrE=; b=Dtse05SkwcwaO5LxkOlhcDq52i
+	foXcAguErmPgpIkzC27oYP+G6y3bJu011Vyprm5B4V+eK7DpdOLhzRJMJF2E1y4j7aoXizt2vrvxm
+	pteRlwkpb7JsZHUB4XKowyzP5bF44oE1jr4HqVQ6sC16CT0qrwP+gsScD0pnVkeAJxSa9LatIbKRA
+	DpJgUw8SVYAXuxDGfSSA4Ahwi7EeiZhqdnuCFBzWwHqDP4CLqBjwVI/KZNuFtEidB6gfOQbLOx0Fv
+	THyf6+h0bQb8FiigMN5dIL0vFWHYI3bifGmpdep77xiVN5kgjD6bIU/M3Rytv0xngRUVOWYRVImRO
+	i4VQn5Kw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWLZB-0000000GtFn-3Bk3;
-	Fri, 10 Jan 2025 20:25:13 +0000
+	id 1tWLZC-0000000GtGD-0FBh;
+	Fri, 10 Jan 2025 20:25:14 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWJwn-0000000GbhQ-1eoX
+	id 1tWJwo-0000000GbiY-3krR
 	for linux-um@bombadil.infradead.org;
 	Fri, 10 Jan 2025 18:41:32 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Type:Cc:To:From:Subject:
 	Message-ID:References:Mime-Version:In-Reply-To:Date:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=HFKS9He99X0lK3xnnbI99ZyULyVP6qmX2/a79HHV3Mw=; b=m81/k4+RSCYLefk/bmCSJBzI6S
-	7XrmatHV2EycH5dD8ZTH5Kt1omwPgqOQXtmc297k82Gdmk3RuDeVXpbthIxlQMBMGhMIIvnQHc8Ic
-	WJyt/22adqMcKC/rvazJk0pQKoPtbH93yaBWF4NTqoWXhTUqBMwLs8zEkWbKKMorKqOU2ga0CS/EW
-	3WlLuKXL5FEZ40lMZd9WwWbmUUo9/XUX1G1zEy3KNPAdMCPaj82RgQOA3q02YD+de1oCddfhTlqBm
-	ghIBkDBo/CHcnC1RE0k8vbqZWq1yTGvZkzNQv6ARw9dpiGT97CGU4HHC5tf4DDmQ2rNqQcRCKFmSJ
-	yFvOTGtg==;
-Received: from mail-wm1-x34a.google.com ([2a00:1450:4864:20::34a])
+	bh=+fqV4f6s/Eo+EZ+PE2OCyE0kBm/vfnsLcFKRz+1otrE=; b=qFmCiq4cmQJA0eQGQavshFGcmT
+	p/t3LPYbwmqV4gmJVEHLAMrOAmee10IdJGhOVvS1uxMFqjDjxWvGVFwtvgu4yS/jBEWwQpzF0cnav
+	G0iIhZbgM31+w2XRAv+Rd/eWIBE8pDN5QK+bLTbHyqFPBdm/kRUQKyDWvBevPcuKyAFypFyTeE52K
+	J6ddXOoacYo0nmzY0vYTAtPoMOQ97acQROSpwo2pWU9oetVhvlqvMxApz9wBKL4Vl93dOHg5VJ5+B
+	Lev/eoeeask4UBL4QHG5lncFb00vLoI7PXIuVDWCZyqxkZGkKvYPpV/kWJZvCKi4vGJ+vmazdSznU
+	lajkJhzQ==;
+Received: from mail-wr1-x44a.google.com ([2a00:1450:4864:20::44a])
 	by casper.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWJwk-0000000EBNe-1Fkg
+	id 1tWJwl-0000000EBPO-3bsw
 	for linux-um@lists.infradead.org;
-	Fri, 10 Jan 2025 18:41:28 +0000
-Received: by mail-wm1-x34a.google.com with SMTP id 5b1f17b1804b1-436723bf7ffso19279215e9.3
-        for <linux-um@lists.infradead.org>; Fri, 10 Jan 2025 10:41:25 -0800 (PST)
+	Fri, 10 Jan 2025 18:41:29 +0000
+Received: by mail-wr1-x44a.google.com with SMTP id ffacd0b85a97d-38a684a096eso995699f8f.2
+        for <linux-um@lists.infradead.org>; Fri, 10 Jan 2025 10:41:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1736534484; x=1737139284; darn=lists.infradead.org;
+        d=google.com; s=20230601; t=1736534486; x=1737139286; darn=lists.infradead.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HFKS9He99X0lK3xnnbI99ZyULyVP6qmX2/a79HHV3Mw=;
-        b=acJKGZDtuBUMClBPkewJWxO/JWk1nf0iRcmUR7veI5O7dBxSqJPSMijRjunF1BHvqI
-         iDhC72IrCN0wfFvHGgTJFPBJdQII6ceA/EbX0KgiD+u1678ivnEgU3plQdJcO1lceyq4
-         9vu3uwx8v13itzWD1Nf3D+JtAt80A5zJTnuIuTZBvwFmeXq1ylhiJnxpTZtPiC9NrtcL
-         J0l07yAClMJPDKKqmUA0+ANE3+jm3gfSliMpd1ZC5JTcdKFtw8UuF+04eZK+ApUr4vnz
-         duJnD6CCegwvJf4yjfW7S2X5PJ3nF22NiyrJ6DQWSg9CtAgntD6PxzTRy5V1HCYhRA7Q
-         BQ5w==
+        bh=+fqV4f6s/Eo+EZ+PE2OCyE0kBm/vfnsLcFKRz+1otrE=;
+        b=EavjCIYG0dDEOr3FhAz1S0PJOpbg5+xopl3JoU7RHAMpSjBt02AHaVfJV5NCnZdx4J
+         GBvEfWJoV5jwnFH3ltm40pNX9jMvW9Y3uGXzxMElmv1rt+lTAhCQuvqswJUAFFdmZ6sJ
+         Bjjh8nwLxcqJQRz0t/62Z2VBZDkX3e9fy5WpLpqe7zPYzU5dyYCqD0bglHXwnY2zRM0h
+         6FFPcWIj3pX2JABqkynPof4fBg5CyvvumxMmzOl2DYHoKrNtbOLH3kDjkJddzFVhzZX0
+         FJ7CEBMDOXpGrqIOlkawhzvmhRWQtWGB68dRWwutCbPhLTzgSSs/KMJ8PJFpX2c1rsWn
+         p/fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736534484; x=1737139284;
+        d=1e100.net; s=20230601; t=1736534486; x=1737139286;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HFKS9He99X0lK3xnnbI99ZyULyVP6qmX2/a79HHV3Mw=;
-        b=pgtju7kg7zj8r6PLiMfI7+C/AQDQS20qEI17IIHQhCPd70gkBUpmTNNR/Mg5rldSZM
-         tvSqnhNrObSr76HwXZJo1kRkJAGxuZ6ob061BtlrZ7hrXvR1wzNkzzrk3IZ0Lyf9h1sA
-         jeLuv+n2dZxdiJInYljV/Ccp5m9+uGhWwh4Zrl2FvKsJpZqIhRPAOMyoNX6sPoC8pIVw
-         /ahFTjZLFCtUBe4ZPmq4fIJk9L4zvm0/uvCWX6uwAVnLfSQrdvbYGiFDu69QnYAHSY6l
-         awOLpdAT7EfObtCowCOx4mQELySDNiNjaUsg+D52raKlysVUi8eJ3gRgDK+Y0mSX2wLV
-         NDNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU7Gpu/9vflHd+v/Z8Av8nOrDGitOQCHcuQFqVi4ldtiwj5LNMSvQG52uibHx/Sl8+QDVljLNAxKQ==@lists.infradead.org
-X-Gm-Message-State: AOJu0Ywfu+QwUH0HfV5tARI9EeaajUC4iXoDySQQUqelSv14JWyb7gFW
-	b6LQGL0S/T3SzKxd6lDgD7rQwl7JfiUAWOs5rWS7nWXjEdhYa5MX1sFaqZb7nmVmc6JQ/dPSk1b
-	iUdX188YqXg==
-X-Google-Smtp-Source: AGHT+IHb2tLJeEj/nhEIcvCueP11HP0tzz903p60s9RvGJF27LFwQlQKr5YD0ey6aPDR1IvAD0AJ740K8RZlJQ==
-X-Received: from wmbbh20.prod.google.com ([2002:a05:600c:3d14:b0:434:fd4d:ffad])
+        bh=+fqV4f6s/Eo+EZ+PE2OCyE0kBm/vfnsLcFKRz+1otrE=;
+        b=PYDhPNTP4tk/jB8FkJVP5S1YWR/GfqJrMsAuaw5JvMhBHmovXUik05MCD2y3rDTjEh
+         sIUYASmeGIMZFMDl3DXUBh+LRbj2SmTZGZwcQI5mJWvK/ZGNjqMk72Q3oM1ciD9Y7Udd
+         kujqtk5O5rpse7dQm9qf+yo3kHyuC5FztrhyvCvDaP402nzqeLLjvsq6+9eJ2Ea4T7tr
+         PUY/dZxdgQgiueksTsdW0lZ0TQ+9imSb8laGxvSAaSsSCPEgdE7O7ZhVGBHuu+bZ8Gjj
+         jTtVX+O39XmphaylgkHCIOL1IQS/f8MlFNMA5xAGBY7gmep1t6Jrkx2pFe+g+ygEHyH8
+         zYLg==
+X-Forwarded-Encrypted: i=1; AJvYcCU3KIGWFCP6lkU8jsxP0ngElCtii682/JGCnvC1BcNt2S3B/0Mt4/wvd8VeKq89dzDFGRb9ktHE4A==@lists.infradead.org
+X-Gm-Message-State: AOJu0YyBvgFBQ/6qN5aZH/3PElhacPjq5SrI37ulb/BI8lLIzwnfKfNq
+	4pjs+/AleNK1ak8xq69G/v2v0YminMwG6bAsGhZ72TR1gum1ByVobXXXKgOuuu5jfwsPo+OHDeJ
+	6/yzhOI+uYQ==
+X-Google-Smtp-Source: AGHT+IFgJUpClA++DtJe4xQ45Yc9kKsVSyJCXKqF0cxpPlCBfuMButRzIe/JLM7ynzshFcOsnG5hhjluySNsEA==
+X-Received: from wrbeh5.prod.google.com ([2002:a05:6000:4105:b0:382:4235:c487])
  (user=jackmanb job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:600c:3c85:b0:436:18d0:aa6e with SMTP id 5b1f17b1804b1-436e2679a7cmr125832515e9.5.1736534484149;
- Fri, 10 Jan 2025 10:41:24 -0800 (PST)
-Date: Fri, 10 Jan 2025 18:40:43 +0000
+ 2002:adf:8b5b:0:b0:38a:88bc:aea4 with SMTP id ffacd0b85a97d-38a88bcaebfmr7355114f8f.30.1736534486264;
+ Fri, 10 Jan 2025 10:41:26 -0800 (PST)
+Date: Fri, 10 Jan 2025 18:40:44 +0000
 In-Reply-To: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
 Mime-Version: 1.0
 References: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
 X-Mailer: b4 0.15-dev
-Message-ID: <20250110-asi-rfc-v2-v2-17-8419288bc805@google.com>
-Subject: [PATCH RFC v2 17/29] mm: asi: Map vmalloc/vmap data as nonsensitive
+Message-ID: <20250110-asi-rfc-v2-v2-18-8419288bc805@google.com>
+Subject: [PATCH RFC v2 18/29] mm: asi: Map dynamic percpu memory as nonsensitive
 From: Brendan Jackman <jackmanb@google.com>
 To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
 	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
@@ -132,11 +132,12 @@ Cc: x86@kernel.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
 	linux-um@lists.infradead.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, 
 	linux-trace-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
 	kvm@vger.kernel.org, linux-efi@vger.kernel.org, 
-	Brendan Jackman <jackmanb@google.com>
+	Brendan Jackman <jackmanb@google.com>, Reiji Watanabe <reijiw@google.com>, 
+	Junaid Shahid <junaids@google.com>
 Content-Type: text/plain; charset="utf-8"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250110_184126_391254_55A04DAB 
-X-CRM114-Status: GOOD (  20.12  )
+X-CRM114-CacheID: sfid-20250110_184127_909000_44AB423C 
+X-CRM114-Status: GOOD (  20.95  )
 X-Mailman-Approved-At: Fri, 10 Jan 2025 12:24:52 -0800
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -152,113 +153,156 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-We add new VM flags for sensitive and global-nonsensitive, parallel to
-the corresponding GFP flags.
+From: Reiji Watanabe <reijiw@google.com>
 
-__get_vm_area_node and friends will default to creating
-global-nonsensitive VM areas, and vmap then calls asi_map as necessary.
+Currently, all dynamic percpu memory is implicitly (and
+unintentionally) treated as sensitive memory.
 
-__vmalloc_node_range has additional logic to check and set defaults for
-the sensitivity of the underlying page allocation. It does this via an
-initial __set_asi_flags call - note that it then calls
-__get_vm_area_node which also calls __set_asi_flags. This second call
-is a NOP.
+Unconditionally map pages for dynamically allocated percpu
+memory as global nonsensitive memory, other than pages that
+are allocated for pcpu_{first,reserved}_chunk during early
+boot via memblock allocator (these will be taken care by the
+following patch).
 
-By default, we mark the underlying page allocation as sensitive, even
-if the VM area is global-nonsensitive. This is just an optimization to
-avoid unnecessary asi_map etc, since presumably most code has no reason
-to access vmalloc'd data through the direct map.
+We don't support sensitive percpu memory allocation yet.
 
-There are some details of the GFP-flag/VM-flag interaction that are not
-really obvious, for example: what should happen when callers of
-__vmalloc explicitly set GFP sensitivity flags? (That function has no VM
-flags argument). For the moment let's just not block on that and focus
-on adding the infrastructure, though.
-
-At the moment, the high-level vmalloc APIs doesn't actually provide a
-way to configure sensitivity, this commit just adds the infrastructure.
-We'll have to decide how to expose this to allocation sites as we
-implement more denylist logic. vmap does already allow configuring vm
-flags.
-
+Co-developed-by: Junaid Shahid <junaids@google.com>
+Signed-off-by: Junaid Shahid <junaids@google.com>
+Signed-off-by: Reiji Watanabe <reijiw@google.com>
 Signed-off-by: Brendan Jackman <jackmanb@google.com>
----
- mm/vmalloc.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
 
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 8d260f2174fe664b54dcda054cb9759ae282bf03..00745edf0b2c5f4c769a46bdcf0872223de5299d 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -3210,6 +3210,7 @@ struct vm_struct *remove_vm_area(const void *addr)
+WIP: Drop VM_SENSITIVE checks from percpu code
+---
+ mm/percpu-vm.c | 50 ++++++++++++++++++++++++++++++++++++++++++++------
+ mm/percpu.c    |  4 ++--
+ 2 files changed, 46 insertions(+), 8 deletions(-)
+
+diff --git a/mm/percpu-vm.c b/mm/percpu-vm.c
+index cd69caf6aa8d8eded2395eb4bc4051b78ec6aa33..2935d7fbac41548819a94dcc60566bd18cde819a 100644
+--- a/mm/percpu-vm.c
++++ b/mm/percpu-vm.c
+@@ -132,11 +132,20 @@ static void pcpu_pre_unmap_flush(struct pcpu_chunk *chunk,
+ 		pcpu_chunk_addr(chunk, pcpu_high_unit_cpu, page_end));
+ }
+ 
+-static void __pcpu_unmap_pages(unsigned long addr, int nr_pages)
++static void ___pcpu_unmap_pages(unsigned long addr, int nr_pages)
  {
- 	struct vmap_area *va;
- 	struct vm_struct *vm;
-+	unsigned long vm_addr;
- 
- 	might_sleep();
- 
-@@ -3221,6 +3222,7 @@ struct vm_struct *remove_vm_area(const void *addr)
- 	if (!va || !va->vm)
- 		return NULL;
- 	vm = va->vm;
-+	vm_addr = (unsigned long) READ_ONCE(vm->addr);
- 
- 	debug_check_no_locks_freed(vm->addr, get_vm_area_size(vm));
- 	debug_check_no_obj_freed(vm->addr, get_vm_area_size(vm));
-@@ -3352,6 +3354,7 @@ void vfree(const void *addr)
- 				addr);
- 		return;
- 	}
-+	asi_unmap(ASI_GLOBAL_NONSENSITIVE, vm->addr, get_vm_area_size(vm));
- 
- 	if (unlikely(vm->flags & VM_FLUSH_RESET_PERMS))
- 		vm_reset_perms(vm);
-@@ -3397,6 +3400,7 @@ void vunmap(const void *addr)
- 				addr);
- 		return;
- 	}
-+	asi_unmap(ASI_GLOBAL_NONSENSITIVE, vm->addr, get_vm_area_size(vm));
- 	kfree(vm);
+ 	vunmap_range_noflush(addr, addr + (nr_pages << PAGE_SHIFT));
  }
- EXPORT_SYMBOL(vunmap);
-@@ -3445,16 +3449,21 @@ void *vmap(struct page **pages, unsigned int count,
  
- 	addr = (unsigned long)area->addr;
- 	if (vmap_pages_range(addr, addr + size, pgprot_nx(prot),
--				pages, PAGE_SHIFT) < 0) {
--		vunmap(area->addr);
--		return NULL;
--	}
-+				pages, PAGE_SHIFT) < 0)
-+		goto err;
++static void __pcpu_unmap_pages(unsigned long addr, int nr_pages,
++			       unsigned long vm_flags)
++{
++	unsigned long size = nr_pages << PAGE_SHIFT;
 +
-+	if (asi_map(ASI_GLOBAL_NONSENSITIVE, area->addr,
-+		    get_vm_area_size(area)))
-+		goto err; /* The necessary asi_unmap() is in vunmap. */
++	asi_unmap(ASI_GLOBAL_NONSENSITIVE, (void *)addr, size);
++	___pcpu_unmap_pages(addr, nr_pages);
++}
++
+ /**
+  * pcpu_unmap_pages - unmap pages out of a pcpu_chunk
+  * @chunk: chunk of interest
+@@ -153,6 +162,8 @@ static void __pcpu_unmap_pages(unsigned long addr, int nr_pages)
+ static void pcpu_unmap_pages(struct pcpu_chunk *chunk,
+ 			     struct page **pages, int page_start, int page_end)
+ {
++	struct vm_struct **vms = (struct vm_struct **)chunk->data;
++	unsigned long vm_flags = vms ? vms[0]->flags : VM_ALLOC;
+ 	unsigned int cpu;
+ 	int i;
  
- 	if (flags & VM_MAP_PUT_PAGES) {
- 		area->pages = pages;
- 		area->nr_pages = count;
+@@ -165,7 +176,7 @@ static void pcpu_unmap_pages(struct pcpu_chunk *chunk,
+ 			pages[pcpu_page_idx(cpu, i)] = page;
+ 		}
+ 		__pcpu_unmap_pages(pcpu_chunk_addr(chunk, cpu, page_start),
+-				   page_end - page_start);
++				   page_end - page_start, vm_flags);
  	}
- 	return area->addr;
-+err:
-+	vunmap(area->addr);
-+	return NULL;
  }
- EXPORT_SYMBOL(vmap);
  
-@@ -3711,6 +3720,10 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
- 		goto fail;
- 	}
+@@ -190,13 +201,38 @@ static void pcpu_post_unmap_tlb_flush(struct pcpu_chunk *chunk,
+ 		pcpu_chunk_addr(chunk, pcpu_high_unit_cpu, page_end));
+ }
  
-+	if (asi_map(ASI_GLOBAL_NONSENSITIVE, area->addr,
-+		    get_vm_area_size(area)))
-+		goto fail; /* The necessary asi_unmap() is in vfree. */
+-static int __pcpu_map_pages(unsigned long addr, struct page **pages,
+-			    int nr_pages)
++/*
++ * __pcpu_map_pages() should not be called during the percpu initialization,
++ * as asi_map() depends on the page allocator (which isn't available yet
++ * during percpu initialization).  Instead, ___pcpu_map_pages() can be used
++ * during the percpu initialization. But, any pages that are mapped with
++ * ___pcpu_map_pages() will be treated as sensitive memory, unless
++ * they are explicitly mapped with asi_map() later.
++ */
++static int ___pcpu_map_pages(unsigned long addr, struct page **pages,
++			     int nr_pages)
+ {
+ 	return vmap_pages_range_noflush(addr, addr + (nr_pages << PAGE_SHIFT),
+ 					PAGE_KERNEL, pages, PAGE_SHIFT);
+ }
+ 
++static int __pcpu_map_pages(unsigned long addr, struct page **pages,
++			    int nr_pages, unsigned long vm_flags)
++{
++	unsigned long size = nr_pages << PAGE_SHIFT;
++	int err;
 +
- 	return area->addr;
++	err = ___pcpu_map_pages(addr, pages, nr_pages);
++	if (err)
++		return err;
++
++	/*
++	 * If this fails, pcpu_map_pages()->__pcpu_unmap_pages() will call
++	 * asi_unmap() and clean up any partial mappings.
++	 */
++	return asi_map(ASI_GLOBAL_NONSENSITIVE, (void *)addr, size);
++}
++
+ /**
+  * pcpu_map_pages - map pages into a pcpu_chunk
+  * @chunk: chunk of interest
+@@ -214,13 +250,15 @@ static int __pcpu_map_pages(unsigned long addr, struct page **pages,
+ static int pcpu_map_pages(struct pcpu_chunk *chunk,
+ 			  struct page **pages, int page_start, int page_end)
+ {
++	struct vm_struct **vms = (struct vm_struct **)chunk->data;
++	unsigned long vm_flags = vms ? vms[0]->flags : VM_ALLOC;
+ 	unsigned int cpu, tcpu;
+ 	int i, err;
  
- fail:
+ 	for_each_possible_cpu(cpu) {
+ 		err = __pcpu_map_pages(pcpu_chunk_addr(chunk, cpu, page_start),
+ 				       &pages[pcpu_page_idx(cpu, page_start)],
+-				       page_end - page_start);
++				       page_end - page_start, vm_flags);
+ 		if (err < 0)
+ 			goto err;
+ 
+@@ -232,7 +270,7 @@ static int pcpu_map_pages(struct pcpu_chunk *chunk,
+ err:
+ 	for_each_possible_cpu(tcpu) {
+ 		__pcpu_unmap_pages(pcpu_chunk_addr(chunk, tcpu, page_start),
+-				   page_end - page_start);
++				   page_end - page_start, vm_flags);
+ 		if (tcpu == cpu)
+ 			break;
+ 	}
+diff --git a/mm/percpu.c b/mm/percpu.c
+index da21680ff294cb53dfb42bf0d3b3bbd2654d2cfa..c2d913c579bf07892957ac7f601a6a71defadc4b 100644
+--- a/mm/percpu.c
++++ b/mm/percpu.c
+@@ -3273,8 +3273,8 @@ int __init pcpu_page_first_chunk(size_t reserved_size, pcpu_fc_cpu_to_node_fn_t
+ 			pcpu_populate_pte(unit_addr + (i << PAGE_SHIFT));
+ 
+ 		/* pte already populated, the following shouldn't fail */
+-		rc = __pcpu_map_pages(unit_addr, &pages[unit * unit_pages],
+-				      unit_pages);
++		rc = ___pcpu_map_pages(unit_addr, &pages[unit * unit_pages],
++				       unit_pages);
+ 		if (rc < 0)
+ 			panic("failed to map percpu area, err=%d\n", rc);
+ 
 
 -- 
 2.47.1.613.gc27f4b7a9f-goog
