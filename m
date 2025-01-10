@@ -4,114 +4,108 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6ED6EE77188
-	for <linux-um@archiver.kernel.org>; Wed,  8 Jan 2025 16:14:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2AFF9E77188
+	for <linux-um@archiver.kernel.org>; Fri, 10 Jan 2025 03:17:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=/0pEosJAtrrq7+AZfl2ID181pVMDXxvqRB1iDHPru/M=; b=P1KAQyNIPIz304hMGhdPYAYwkX
-	UMbgtaicbvIj8FG6RkgpnfTND5QT9JdcmXQgYFVsv0/ymZ8HaorbTV07G93BHVRbGAbd1rk4wJEU+
-	J3DFEvghI+MfK/82y9Infp3uDKBg5GPgTceMqhvb9/375fJHnTnEpUMPqi9JiPAJoAxJlCfLYBXfe
-	ab7cEi5naq8BYXt9fATqWj5CaGm0WWQ0eRLrjdDkp6MVyuw4GHFoJLZlF8SatR4ZoJSULnnwWxsSE
-	hy4tkVmVmrScAKsOk9CSWIM2TaqYT42WqchQxbtUn8MMpvSh1GPAPzF6ew5G0qA7t1xZs0+RdPABV
-	pwutZViw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=2Gsk7+JP3PoZg8VhoEWFUmet8fDEOviqEDX2siCLmXA=; b=1ZxHNUBa0+PUxdw488VPtR+CVb
+	EDgZ43AAFy9idUWgDXV54yCS2Ss4tHPkuqIeuRYgfwD1AfeimTC2tFho2hjqF5xU7b3KwpSwDyWVp
+	CvDr5o0HfTB1Hz02MTBm8bPNFoXU/r5DuGwMGdbzXUT8YUpzR3CBUeLAIlqcukmVJChzpq41G6tsF
+	k6wBukliJYNDAIYq86j7lJwc+FAs3pS6WmnPvq5bphmkz839KH3bUwrbHWY50KsB1Rsn29vCw1Rpn
+	3+9IcnaVgsGIfujp2x3GZKRGvO2IsGKARS2xDNdI4EDuGtlzXpfPxh8vmdv03494iGnxEMn9E/rPX
+	s8EZ3O/Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tVYhn-000000097r4-0arX;
-	Wed, 08 Jan 2025 16:14:51 +0000
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
+	id 1tW5WI-0000000DtiD-3kYJ;
+	Fri, 10 Jan 2025 03:17:10 +0000
+Received: from torg.zytor.com ([2607:7c80:54:3::138] helo=mail.zytor.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tVYgX-000000097Zd-2nsX;
-	Wed, 08 Jan 2025 16:13:34 +0000
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 508Ew0Hd008979;
-	Wed, 8 Jan 2025 16:13:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=/0pEosJAtrrq7+AZfl2ID181pVMDXx
-	vqRB1iDHPru/M=; b=Qc2i4Tp0uvBRyl+jGtaMLwYGZKKaztQUee3zrazLkmkths
-	BKjfeh5hc4DNF+FovJkBB/fHbU/DPDjRCbIEh/eMZyHyvXxayMqu9FBQFJOug4QH
-	iQGB7QT793mBW00g/2e5RWsTUnIRvzEqsPYZoZ1xrycOjY77mjmhxD3Tr58vKYfh
-	i5WI1PseA+GU3nr66lZ1WH05bULNRioNAgJgAm9VNeTRLQ4pRSeX+RYdvIB2cetS
-	GTBBs7NBz+M3Z6MiU02DQX/J9dzcrcbfHP6qZ8C6ajXXZ6zofEYRDTTx4bda1nof
-	mnWd9f4JhtWC7wiQ3TFYDev/txCoPQl/rsnDG/uQ==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 441hupu905-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 08 Jan 2025 16:13:02 +0000 (GMT)
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 508GD1K1025958;
-	Wed, 8 Jan 2025 16:13:01 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 441hupu901-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 08 Jan 2025 16:13:01 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 508CW5fH003630;
-	Wed, 8 Jan 2025 16:13:00 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 43yfat8qq7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 08 Jan 2025 16:13:00 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 508GCwru8061280
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 8 Jan 2025 16:12:58 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B38D720040;
-	Wed,  8 Jan 2025 16:12:58 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 1575720043;
-	Wed,  8 Jan 2025 16:12:58 +0000 (GMT)
-Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.155.204.135])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Wed,  8 Jan 2025 16:12:58 +0000 (GMT)
-Date: Wed, 8 Jan 2025 17:12:56 +0100
-From: Alexander Gordeev <agordeev@linux.ibm.com>
-To: Qi Zheng <zhengqi.arch@bytedance.com>
-Cc: peterz@infradead.org, kevin.brodsky@arm.com, alex@ghiti.fr,
-        andreas@gaisler.com, palmer@dabbelt.com, tglx@linutronix.de,
-        david@redhat.com, jannh@google.com, hughd@google.com,
-        yuzhao@google.com, willy@infradead.org, muchun.song@linux.dev,
-        vbabka@kernel.org, lorenzo.stoakes@oracle.com,
-        akpm@linux-foundation.org, rientjes@google.com, vishal.moola@gmail.com,
-        arnd@arndb.de, will@kernel.org, aneesh.kumar@kernel.org,
-        npiggin@gmail.com, dave.hansen@linux.intel.com, rppt@kernel.org,
-        ryan.roberts@arm.com, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-arch@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-um@lists.infradead.org
-Subject: Re: [PATCH v5 06/17] s390: pgtable: add statistics for PUD and P4D
- level page table
-Message-ID: <Z36kCF6tgnzkIRDM@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-References: <cover.1736317725.git.zhengqi.arch@bytedance.com>
- <4707dffce228ccec5c6662810566dd12b5741c4b.1736317725.git.zhengqi.arch@bytedance.com>
+	id 1tW5WG-0000000Dthk-2hCl;
+	Fri, 10 Jan 2025 03:17:09 +0000
+Received: from [IPV6:2601:646:8080:c1f1:e386:c572:17d3:6ddc] ([IPv6:2601:646:8080:c1f1:e386:c572:17d3:6ddc])
+	(authenticated bits=0)
+	by mail.zytor.com (8.18.1/8.17.1) with ESMTPSA id 50A3FGON981507
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Thu, 9 Jan 2025 19:15:22 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 50A3FGON981507
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2024121701; t=1736478939;
+	bh=2Gsk7+JP3PoZg8VhoEWFUmet8fDEOviqEDX2siCLmXA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=UI2PWbpd/173uf8ET7OhKCSxHMq3wIV9uPwlDabKLopTn4XQlVOW2UhdDhLNKQ2ou
+	 8eY5IkJPjKd/ufxYXpC3T7ngILIHHww7s3f/TxHKadq33uowsRPtdqvlulWYDcl4s8
+	 98gF9cD/iHRBhl+LkNR2Vz4dcuRwuyCMkzCPxTONo9GrePkGJYLa5vUD7mYV9L5Uos
+	 ee2fTgpV4TmVkm3/EnjzCs2Wh3is/8drjYQa4kdxx6i4NZ58BWsIW3fEOCUEzu/US4
+	 z0xQ+UHFUiZOJoDRJIqr/23SWWVPTNXl6Nb/6Jv9OAyLaNK9jKDb4DWbnzq60xty/Q
+	 X0SCgYzOXKJQw==
+Message-ID: <4536aca6-c430-4cf9-a98f-8282c7378955@zytor.com>
+Date: Thu, 9 Jan 2025 19:15:09 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4707dffce228ccec5c6662810566dd12b5741c4b.1736317725.git.zhengqi.arch@bytedance.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: KUhXNS6aArO_tUV9i1PAsm9yGShhoIw3
-X-Proofpoint-GUID: AEhKKtU-rxWzLnMSxQ4AI9AzMP3tXlSR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- clxscore=1011 mlxscore=0 malwarescore=0 priorityscore=1501
- lowpriorityscore=0 spamscore=0 bulkscore=0 impostorscore=0 mlxlogscore=890
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2411120000 definitions=main-2501080133
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/6] ptrace: introduce PTRACE_SET_SYSCALL_INFO API
+To: "Dmitry V. Levin" <ldv@strace.io>, Oleg Nesterov <oleg@redhat.com>
+Cc: Eugene Syromyatnikov <evgsyr@gmail.com>,
+        Mike Frysinger <vapier@gentoo.org>, Renzo Davoli <renzo@cs.unibo.it>,
+        Davide Berardi <berardi.dav@gmail.com>, strace-devel@lists.strace.io,
+        Vineet Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Brian Cain <bcain@quicinc.com>, Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Dinh Nguyen <dinguyen@kernel.org>, Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Naveen N Rao <naveen@kernel.org>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt
+ <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Yoshinori Sato <ysato@users.osdn.me>, Rich Felker <dalias@libc.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andreas Larsson <andreas@gaisler.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Shuah Khan <shuah@kernel.org>,
+        linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-m68k@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20250107230153.GA30560@strace.io>
+Content-Language: en-US
+From: "H. Peter Anvin" <hpa@zytor.com>
+In-Reply-To: <20250107230153.GA30560@strace.io>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250108_081333_717175_B816F42B 
-X-CRM114-Status: GOOD (  18.05  )
+X-CRM114-CacheID: sfid-20250109_191708_687581_C5B138C6 
+X-CRM114-Status: GOOD (  24.05  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -126,96 +120,93 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jan 08, 2025 at 02:57:22PM +0800, Qi Zheng wrote:
-> Like PMD and PTE level page table, also add statistics for PUD and P4D
-> page table.
-> 
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Reviewed-by: Kevin Brodsky <kevin.brodsky@arm.com>
-> Cc: linux-s390@vger.kernel.org
-> ---
->  arch/s390/include/asm/pgalloc.h | 29 +++++++++++++++++++++--------
->  arch/s390/include/asm/tlb.h     |  2 ++
->  2 files changed, 23 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/s390/include/asm/pgalloc.h b/arch/s390/include/asm/pgalloc.h
-> index 7b84ef6dc4b6d..a0c1ca5d8423c 100644
-> --- a/arch/s390/include/asm/pgalloc.h
-> +++ b/arch/s390/include/asm/pgalloc.h
-> @@ -53,29 +53,42 @@ static inline p4d_t *p4d_alloc_one(struct mm_struct *mm, unsigned long address)
->  {
->  	unsigned long *table = crst_table_alloc(mm);
->  
-> -	if (table)
-> -		crst_table_init(table, _REGION2_ENTRY_EMPTY);
-> +	if (!table)
-> +		return NULL;
-> +	crst_table_init(table, _REGION2_ENTRY_EMPTY);
-> +	pagetable_p4d_ctor(virt_to_ptdesc(table));
-> +
->  	return (p4d_t *) table;
->  }
->  
->  static inline void p4d_free(struct mm_struct *mm, p4d_t *p4d)
->  {
-> -	if (!mm_p4d_folded(mm))
-> -		crst_table_free(mm, (unsigned long *) p4d);
-> +	if (mm_p4d_folded(mm))
-> +		return;
-> +
-> +	pagetable_p4d_dtor(virt_to_ptdesc(p4d));
-> +	crst_table_free(mm, (unsigned long *) p4d);
->  }
->  
->  static inline pud_t *pud_alloc_one(struct mm_struct *mm, unsigned long address)
->  {
->  	unsigned long *table = crst_table_alloc(mm);
-> -	if (table)
-> -		crst_table_init(table, _REGION3_ENTRY_EMPTY);
-> +
-> +	if (!table)
-> +		return NULL;
-> +	crst_table_init(table, _REGION3_ENTRY_EMPTY);
-> +	pagetable_pud_ctor(virt_to_ptdesc(table));
-> +
->  	return (pud_t *) table;
->  }
->  
->  static inline void pud_free(struct mm_struct *mm, pud_t *pud)
->  {
-> -	if (!mm_pud_folded(mm))
-> -		crst_table_free(mm, (unsigned long *) pud);
-> +	if (mm_pud_folded(mm))
-> +		return;
-> +
-> +	pagetable_pud_dtor(virt_to_ptdesc(pud));
-> +	crst_table_free(mm, (unsigned long *) pud);
->  }
->  
->  static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long vmaddr)
-> diff --git a/arch/s390/include/asm/tlb.h b/arch/s390/include/asm/tlb.h
-> index e95b2c8081eb8..907d57a68145c 100644
-> --- a/arch/s390/include/asm/tlb.h
-> +++ b/arch/s390/include/asm/tlb.h
-> @@ -122,6 +122,7 @@ static inline void p4d_free_tlb(struct mmu_gather *tlb, p4d_t *p4d,
->  {
->  	if (mm_p4d_folded(tlb->mm))
->  		return;
-> +	pagetable_p4d_dtor(virt_to_ptdesc(p4d));
->  	__tlb_adjust_range(tlb, address, PAGE_SIZE);
->  	tlb->mm->context.flush_mm = 1;
->  	tlb->freed_tables = 1;
-> @@ -140,6 +141,7 @@ static inline void pud_free_tlb(struct mmu_gather *tlb, pud_t *pud,
->  {
->  	if (mm_pud_folded(tlb->mm))
->  		return;
-> +	pagetable_pud_dtor(virt_to_ptdesc(pud));
->  	tlb->mm->context.flush_mm = 1;
->  	tlb->freed_tables = 1;
->  	tlb->cleared_p4ds = 1;
+This would seem like a very good idea. However, it is perhaps important 
+to realize that it doesn't fully eliminate the problems with 64-bit 
+arguments on 32-bit ABIs being handled differently (never mind 
+inconsistencies in system call ABIs etc.) There isn't all that much that 
+can be done about that directly, though.
 
-Acked-by: Alexander Gordeev <agordeev@linux.ibm.com>
+	-hpa
 
-Thanks!
+
+On 1/7/25 15:01, Dmitry V. Levin wrote:
+> PTRACE_SET_SYSCALL_INFO is a generic ptrace API that complements
+> PTRACE_GET_SYSCALL_INFO by letting the ptracer modify details of
+> system calls the tracee is blocked in.
+> 
+> This API allows ptracers to obtain and modify system call details
+> in a straightforward and architecture-agnostic way.
+> 
+> Current implementation supports changing only those bits of system call
+> information that are used by strace, namely, syscall number, syscall
+> arguments, and syscall return value.
+> 
+> Support of changing additional details returned by PTRACE_GET_SYSCALL_INFO,
+> such as instruction pointer and stack pointer, could be added later
+> if needed, by re-using struct ptrace_syscall_info.reserved to specify
+> the additional details that should be set.  Currently, the reserved
+> field of struct ptrace_syscall_info must be initialized with zeroes;
+> arch, instruction_pointer, and stack_pointer fields are ignored.
+> 
+> PTRACE_SET_SYSCALL_INFO currently supports only PTRACE_SYSCALL_INFO_ENTRY,
+> PTRACE_SYSCALL_INFO_EXIT, and PTRACE_SYSCALL_INFO_SECCOMP operations.
+> Other operations could be added later if needed.
+> 
+> Ideally, PTRACE_SET_SYSCALL_INFO should have been introduced along with
+> PTRACE_GET_SYSCALL_INFO, but it didn't happen.  The last straw that
+> convinced me to implement PTRACE_SET_SYSCALL_INFO was apparent failure
+> to provide an API of changing the first system call argument on riscv
+> architecture [1].
+> 
+> ptrace(2) man page:
+> 
+> long ptrace(enum __ptrace_request request, pid_t pid, void *addr, void *data);
+> ...
+> PTRACE_SET_SYSCALL_INFO
+>         Modify information about the system call that caused the stop.
+>         The "data" argument is a pointer to struct ptrace_syscall_info
+>         that specifies the system call information to be set.
+>         The "addr" argument should be set to sizeof(struct ptrace_syscall_info)).
+> 
+> [1] https://lore.kernel.org/all/59505464-c84a-403d-972f-d4b2055eeaac@gmail.com/
+> 
+> Dmitry V. Levin (6):
+>    Revert "arch: remove unused function syscall_set_arguments()"
+>    syscall.h: add syscall_set_arguments() on remaining
+>      HAVE_ARCH_TRACEHOOK arches
+>    syscall.h: introduce syscall_set_nr()
+>    ptrace_get_syscall_info: factor out ptrace_get_syscall_info_op
+>    ptrace: introduce PTRACE_SET_SYSCALL_INFO request
+>    selftests/ptrace: add a test case for PTRACE_SET_SYSCALL_INFO
+> 
+>   arch/arc/include/asm/syscall.h                |  20 +
+>   arch/arm/include/asm/syscall.h                |  25 +
+>   arch/arm64/include/asm/syscall.h              |  20 +
+>   arch/csky/include/asm/syscall.h               |  13 +
+>   arch/hexagon/include/asm/syscall.h            |  14 +
+>   arch/loongarch/include/asm/syscall.h          |  15 +
+>   arch/m68k/include/asm/syscall.h               |   7 +
+>   arch/microblaze/include/asm/syscall.h         |   7 +
+>   arch/mips/include/asm/syscall.h               |  53 +++
+>   arch/nios2/include/asm/syscall.h              |  16 +
+>   arch/openrisc/include/asm/syscall.h           |  13 +
+>   arch/parisc/include/asm/syscall.h             |  19 +
+>   arch/powerpc/include/asm/syscall.h            |  15 +
+>   arch/riscv/include/asm/syscall.h              |  16 +
+>   arch/s390/include/asm/syscall.h               |  19 +
+>   arch/sh/include/asm/syscall_32.h              |  19 +
+>   arch/sparc/include/asm/syscall.h              |  17 +
+>   arch/um/include/asm/syscall-generic.h         |  19 +
+>   arch/x86/include/asm/syscall.h                |  43 ++
+>   arch/xtensa/include/asm/syscall.h             |  18 +
+>   include/asm-generic/syscall.h                 |  30 ++
+>   include/linux/ptrace.h                        |   3 +
+>   include/uapi/linux/ptrace.h                   |   3 +-
+>   kernel/ptrace.c                               | 154 ++++++-
+>   tools/testing/selftests/ptrace/Makefile       |   2 +-
+>   .../selftests/ptrace/set_syscall_info.c       | 436 ++++++++++++++++++
+>   26 files changed, 994 insertions(+), 22 deletions(-)
+>   create mode 100644 tools/testing/selftests/ptrace/set_syscall_info.c
+> 
+
 
