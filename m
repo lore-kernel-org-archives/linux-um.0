@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 19441E7719F
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B556C02181
 	for <linux-um@archiver.kernel.org>; Fri, 10 Jan 2025 20:25:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,76 +12,76 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	Subject:Message-ID:References:Mime-Version:In-Reply-To:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=z5b6fu2IPJ4vMWdeJyvKaXZwCsIFdjwPZGonrVH8VuY=; b=F21Qf3Uvn2wn3zFoGtQPnfLXN5
-	yA939ZfpGiKZyAJOBOI/0gXPRAOqutz6M6NO5APKZxDepPLnjgz7wVTQcqVRlH7ODTVOdTLe02BRu
-	cbGeA8khZWgxO2wX2v5to7jHoJpLiubzIZZ7TiVJglvLHCmKlgOb/9qoOZHwzB3rCl7X1sq9AiD8+
-	JdtkxRgSxNGol6y/G+QAemQD49ise2wz6LIUVYGs4d0lEk9aKNRSV6pT/rWOZimG77D1XSAau5L5M
-	3vsSGByJD2h879QzERd351Cbdf+WhzSe2UvYPMnxHGdCK1dniPwvqVDtb4M4t7mfQFjB6J7K2MTPN
-	ippufQGw==;
+	bh=0rBDGQyJzQ3zE+AnCN6b+fGLld6jYpPH9L4MwLLlvpM=; b=0eEaC4LKsulcjoImvdZ2bFDgcS
+	R6eKpDvjWTJdrd9UcTdUfO/qSbLLyGzSxGyg0y5B8sKD8Xz+ng3hTsv6u+teVnYpOpwJkRxsdjIqF
+	+wQHJFWe9tfTHnQ3GeRw4drdULN0ko6A+nypfxv0WW/QyrmYwP16i8jm4fd7ymRKLn9kFeqIxKMYB
+	GSCaZLXvPz9qqI4sM9npkbb88HpA86uWbnf7hhppJNCspS1mnjuuH1TTqzFU57RAvUtp5NfLIu3/w
+	3RQ3sTvNgp/U1DZ+RZ6fzfp35CIzt4vkiVVSpEDZBFxwTkJQCR6PwKG49XJoGQkTBAIcZhH0tCYPo
+	vg5CywOA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWLZC-0000000GtHK-3ZNb;
-	Fri, 10 Jan 2025 20:25:14 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1tWLZD-0000000GtHw-122W;
+	Fri, 10 Jan 2025 20:25:15 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWJwt-0000000GbmF-1MsA
+	id 1tWJwx-0000000Gbri-2rNx
 	for linux-um@bombadil.infradead.org;
-	Fri, 10 Jan 2025 18:41:35 +0000
+	Fri, 10 Jan 2025 18:41:39 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Type:Cc:To:From:Subject:
+	d=infradead.org; s=desiato.20200630; h=Content-Type:Cc:To:From:Subject:
 	Message-ID:References:Mime-Version:In-Reply-To:Date:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=z5b6fu2IPJ4vMWdeJyvKaXZwCsIFdjwPZGonrVH8VuY=; b=L9qB7j/GXMrZVQRy0mtOltmBC+
-	vKQTBqfUOknEsIsLokT+NzNB1Rw4xdlcARcgtSOpiPPxzhI6KIdNDkZeLcPXsgN0/z/BnYLDlhrHr
-	EvM+plN2X0YfwrJZeSIlJ7Jvlbm/3YyiYgp+9epujynbTPEq47NhdWT/otGRfpWW3oyuQTf0OfBCO
-	bR9AchQwtvEf9K4rs70mJRYOtOxiYC6cdvZoDvbDCtHV3xxpLeIjIhEnYq8WyWI0nEmmcigz600o7
-	IT1GQ3Yy7pAzDRX+H7H66GwjhHjVEkT9Y5VRLCCJTvYyAzIspLb9mHIoGeAN+YgUAOOPthFixhY2D
-	Wxl0rRIQ==;
-Received: from mail-wr1-x44a.google.com ([2a00:1450:4864:20::44a])
-	by casper.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWJwq-0000000EBRh-1cWx
+	bh=0rBDGQyJzQ3zE+AnCN6b+fGLld6jYpPH9L4MwLLlvpM=; b=ZXdQYIMR9IXGFHRWcdtieHb9qJ
+	Gm/CYMNuzq+kF6ROf6kVfdmZP9UWc7ZZLfKmgnYkzpXey6NJAuO5zYHIYqkHYh8VYa5eyUMJQdGJF
+	ScNb31i/MLAwIdKXgFit9r4WAFm19jny8/+uOLWsuwuZUxNJO5Ntfaex9+LuH01Hx/ztbyxzsjJe0
+	kDzRVfvkTD0p66GxHPmEUX2N/QFM4sGVycqvTIk3vOqt4WbyKTAcqwmeq9nZP4I8Rnc/o4YE5qsoZ
+	73AETEDp7DHhElHbzKhfrhdlh1KnBGM3+E05L+m5o6Wj+XK4GPTvP3+0NSaBcisE+J4oe+wo/o+g7
+	Y/tOjnWQ==;
+Received: from mail-wm1-x349.google.com ([2a00:1450:4864:20::349])
+	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tWJwt-00000009skf-1TaI
 	for linux-um@lists.infradead.org;
-	Fri, 10 Jan 2025 18:41:34 +0000
-Received: by mail-wr1-x44a.google.com with SMTP id ffacd0b85a97d-385d7611ad3so1372996f8f.2
-        for <linux-um@lists.infradead.org>; Fri, 10 Jan 2025 10:41:32 -0800 (PST)
+	Fri, 10 Jan 2025 18:41:38 +0000
+Received: by mail-wm1-x349.google.com with SMTP id 5b1f17b1804b1-4361ac8b25fso12664045e9.2
+        for <linux-um@lists.infradead.org>; Fri, 10 Jan 2025 10:41:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1736534491; x=1737139291; darn=lists.infradead.org;
+        d=google.com; s=20230601; t=1736534493; x=1737139293; darn=lists.infradead.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=z5b6fu2IPJ4vMWdeJyvKaXZwCsIFdjwPZGonrVH8VuY=;
-        b=ZN72pOmq+KvqGOJhTcKfI5pjf3mieqcwagJZT5fndr69QSc+dVM39+0K0lrhFrc04g
-         CzsSJ6Ns7fQNFHQ8GCAYDpXMwIMF3D2AhsI67rzHv2Vh/rR5NwXpZ6ESwkrSwSHnebLy
-         p6TieOue9f1d0XuUSRXQWTYbTJ6jklvEvFbhXfljrIlWSwyOy4K/vUsBDwzAZdQ3kqDi
-         dfNpOg39gu6ke8pCfd5PIe4yEMtp5fK7JZuEX/+67FNI8VslGyuPvHVWpmarafj2m85I
-         uqYCKfPm9Yhcxx1BVkLIIzYVnbUZ7dDCTxDKN4pq+xTqhg1gOoOenoHRsj+LFrVrR9kC
-         2X7Q==
+        bh=0rBDGQyJzQ3zE+AnCN6b+fGLld6jYpPH9L4MwLLlvpM=;
+        b=kwLmix+nflcEcEgGtEMrwIYJOWAh1UwArQNP/dd4gFMyn5tQW7DUNqMOGl8l5fCuM0
+         829yLg+f441uyJ/dokeYnIESiZ2RRmNgBXLYHzzOujrXBlQx8kvdNVnF/DgtqVxQWqAC
+         ivN5nTQ+TEOAYExHorIlDa6gC9oGmIJs4kdVmKvROzlJTxO6SWgMKs9ChLFnWd5jq0Lh
+         mLCZ6feOvozwnGMh9HXEDzsMlPkjoHgXS8rOyEngVpHmyRZ/POvqc5S/wZ6MzE/HYTHD
+         G2xHpUZGLGs7Ulub+h0HdKCJ4qOwP4Bq6yfpj1e+psw40K9j5mZvSx4Ii9Nqg3C9PE+a
+         U0wQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736534491; x=1737139291;
+        d=1e100.net; s=20230601; t=1736534493; x=1737139293;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=z5b6fu2IPJ4vMWdeJyvKaXZwCsIFdjwPZGonrVH8VuY=;
-        b=SWStMurxFN/C2u7rXIq6FkV5KdXsCpDPOh9Ova8LUfvaAaVc22EcD+1KTxKpSZrhSF
-         7/z8JBOvBQEGboUrlRbLWgVJFiMdPtC5fBRKDLgn4VS6LSXyWNWBam5ZEqvzQH/ftMk/
-         dTStUSumc8w1AQTzIa4Jkk8oxcDJVEZBgf1mZ8f3SeRa2BKBXzVzPIJf2HN4GOffquNN
-         o1UXDV68JxTC1OTWEETRMTS2SdiHh7/rrtDy5nRqgfTqoki7Tplf/CHZy++xtsRHj350
-         u5JQDrJ99yEGtwxqpOFL8V1JjFSplCYMVhkDXd5t0Jb+ocBbSgsEaC3ITBVvnTno0rjX
-         x7jA==
-X-Forwarded-Encrypted: i=1; AJvYcCXMl1gK2TCh2Nb3PJTdzY7qeATCiE69iBCNx/NbI1TsKfOyr0Ceayvh5Y3wRiG2TZvp3Qrfr9ekzw==@lists.infradead.org
-X-Gm-Message-State: AOJu0YxlwjJBi7EW/cQW6wLU6in+mfjcChpObv250uXe+wPRKmGyPzun
-	yr7WhWT2Hqc5ByRd7l96thgFFI4jn94TobI5dsPXWFwe6G5ZD8VsR5hCdF2HfYhvPUu39la/ePq
-	2KHCQOBo/0g==
-X-Google-Smtp-Source: AGHT+IEE74PFwgraC6zRNOcME3rOW4swKtJd/bKE4AIl8MRowFtdpWNq19ZBTTKPz5sLGPxmEc1GHABVlwipiQ==
-X-Received: from wmjv9.prod.google.com ([2002:a7b:cb49:0:b0:434:f173:a51])
+        bh=0rBDGQyJzQ3zE+AnCN6b+fGLld6jYpPH9L4MwLLlvpM=;
+        b=wNc6YNQK5Ma70e+ElYnRjev7ysMwVJ3cOSrxA+dbRLY6HhcAsTlJ6xwlnKCYKyputj
+         JD5JGukCCk6Tkc0Oyg0gth4Zv2M8134bGU81M7yCLbwDnsUJ+mGcWHNxQl+NFI0qGfMS
+         rF5noPQXcGZhTtRdTy5OaZSM0Lu+QHjw67PNlBbXiygmlmQIa8GKAUkJwe+gqEbbeURx
+         lqvrpXlUcsdDufrOql5U7WP/JfHGnUku71hPze1s6lnh6rt+kCXQZLbqT0UXMNTJDjha
+         80DW7UyI1588m0oGWM9Ozo/URgZqaPF7HkJTMRu+Urqdko/k+sALymchzvbBbD/zwMkP
+         tDzA==
+X-Forwarded-Encrypted: i=1; AJvYcCUuqtKBBJv5BvAGFn71oyk8irz+3RDS4WO3IdgHRm6OkPriLYOTHxRSJNgVc60MBGRmn2bUaIxOJQ==@lists.infradead.org
+X-Gm-Message-State: AOJu0YzSf2Aym1ml2d3uzNNmDywKEgApnjmbYzSq7uN5eR1pFLvilR4a
+	jwYDBLNnzDtJ0MSnwyLv+BvG1sDE8paMH5E83Ab4uCORp3qMUvExthJAJKA+oE5usbWgIfJvZCJ
+	3s620ZPjTTA==
+X-Google-Smtp-Source: AGHT+IGSdZ2gZJ+03Djx+zc677EB8kBOQn6jxeBFpWfFWpyM+wf7VvlfzHG8+toKsNSgpgcgyJMUn+Q1Gcn1Dw==
+X-Received: from wmbfc10.prod.google.com ([2002:a05:600c:524a:b0:434:e9fe:f913])
  (user=jackmanb job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:6000:1a85:b0:38a:4184:1520 with SMTP id ffacd0b85a97d-38a872eb1eamr9947778f8f.27.1736534490587;
- Fri, 10 Jan 2025 10:41:30 -0800 (PST)
-Date: Fri, 10 Jan 2025 18:40:46 +0000
+ 2002:a05:600c:3ba4:b0:431:3bf9:3ebb with SMTP id 5b1f17b1804b1-436e26f4805mr96359685e9.24.1736534492849;
+ Fri, 10 Jan 2025 10:41:32 -0800 (PST)
+Date: Fri, 10 Jan 2025 18:40:47 +0000
 In-Reply-To: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
 Mime-Version: 1.0
 References: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
 X-Mailer: b4 0.15-dev
-Message-ID: <20250110-asi-rfc-v2-v2-20-8419288bc805@google.com>
-Subject: [PATCH RFC v2 20/29] mm: asi: Make TLB flushing correct under ASI
+Message-ID: <20250110-asi-rfc-v2-v2-21-8419288bc805@google.com>
+Subject: [PATCH RFC v2 21/29] KVM: x86: asi: Restricted address space for VM execution
 From: Brendan Jackman <jackmanb@google.com>
 To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
 	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
@@ -135,8 +135,8 @@ Cc: x86@kernel.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
 	Brendan Jackman <jackmanb@google.com>
 Content-Type: text/plain; charset="utf-8"
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250110_184132_482114_C43A2987 
-X-CRM114-Status: GOOD (  23.56  )
+X-CRM114-CacheID: sfid-20250110_184135_589586_3C87669D 
+X-CRM114-Status: GOOD (  34.15  )
 X-Mailman-Approved-At: Fri, 10 Jan 2025 12:24:52 -0800
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -152,107 +152,300 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-This is the absolute minimum change for TLB flushing to be correct under
-ASI. There are two arguably orthogonal changes in here but they feel
-small enough for a single commit.
+An ASI restricted address space is added for KVM. This protects the
+userspace from attack by the guest, and the guest from attack by other
+processes. It doesn't attempt to prevent the guest from attack by the
+current process.
 
-.:: CR3 stabilization
-
-As noted in the comment ASI can destabilize CR3, but we can stabilize it
-again by calling asi_exit, this makes it safe to read CR3 and write it
-back.
-
-This is enough to be correct - we don't have to worry about invalidating
-the other ASI address space (i.e. we don't need to invalidate the
-restricted address space if we are currently unrestricted / vice versa)
-because we currently never set the noflush bit in CR3 for ASI
-transitions.
-
-Even without using CR3's noflush bit there are trivial optimizations
-still on the table here: on where invpcid_flush_single_context is
-available (i.e. with the INVPCID_SINGLE feature) we can use that in lieu
-of the CR3 read/write, and avoid the extremely costly asi_exit.
-
-.:: Invalidating kernel mappings
-
-Before ASI, with KPTI off we always either disable PCID or use global
-mappings for kernel memory. However ASI disables global kernel mappings
-regardless of factors. So we need to invalidate other address spaces to
-trigger a flush when we switch into them.
-
-Note that there is currently a pointless write of
-cpu_tlbstate.invalidate_other in the case of KPTI and !PCID. We've added
-another case of that (ASI, !KPTI and !PCID). I think that's preferable
-to expanding the conditional in flush_tlb_one_kernel.
+This change incorporates an extra asi_exit at the end of vcpu_run. We
+expect later iterations of ASI to drop that call as we gain the
+ability to context switch within the ASI domain.
 
 Signed-off-by: Brendan Jackman <jackmanb@google.com>
 ---
- arch/x86/mm/tlb.c | 27 ++++++++++++++++++++-------
- 1 file changed, 20 insertions(+), 7 deletions(-)
+ arch/x86/include/asm/kvm_host.h |  3 ++
+ arch/x86/kvm/svm/svm.c          |  2 ++
+ arch/x86/kvm/vmx/vmx.c          | 38 ++++++++++++--------
+ arch/x86/kvm/x86.c              | 77 ++++++++++++++++++++++++++++++++++++++++-
+ 4 files changed, 105 insertions(+), 15 deletions(-)
 
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index ce5598f96ea7a84dc0e8623022ab5bfbba401b48..07b1657bee8e4cf17452ea57c838823e76f482c0 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -231,7 +231,7 @@ static void clear_asid_other(void)
- 	 * This is only expected to be set if we have disabled
- 	 * kernel _PAGE_GLOBAL pages.
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 6d9f763a7bb9d5db422ea5625b2c28420bd14f26..00cda452dd6ca6ec57ff85ca194ee4aeb6af3be7 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -37,6 +37,7 @@
+ #include <asm/kvm_vcpu_regs.h>
+ #include <asm/hyperv-tlfs.h>
+ #include <asm/reboot.h>
++#include <asm/asi.h>
+ 
+ #define __KVM_HAVE_ARCH_VCPU_DEBUGFS
+ 
+@@ -1535,6 +1536,8 @@ struct kvm_arch {
  	 */
--	if (!static_cpu_has(X86_FEATURE_PTI)) {
-+	if (!static_cpu_has(X86_FEATURE_PTI) && !static_asi_enabled()) {
- 		WARN_ON_ONCE(1);
- 		return;
- 	}
-@@ -1040,7 +1040,6 @@ static void put_flush_tlb_info(void)
- noinstr u16 asi_pcid(struct asi *asi, u16 asid)
- {
- 	return kern_pcid(asid) | ((asi->class_id + 1) << X86_CR3_ASI_PCID_BITS_SHIFT);
--	// return kern_pcid(asid) | ((asi->index + 1) << X86_CR3_ASI_PCID_BITS_SHIFT);
+ #define SPLIT_DESC_CACHE_MIN_NR_OBJECTS (SPTE_ENT_PER_PAGE + 1)
+ 	struct kvm_mmu_memory_cache split_desc_cache;
++
++	struct asi *asi;
+ };
+ 
+ struct kvm_vm_stat {
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 9df3e1e5ae81a1346409632edd693cb7e0740f72..f2c3154292b4f6c960b490b0773f53bea43897bb 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -4186,6 +4186,7 @@ static noinstr void svm_vcpu_enter_exit(struct kvm_vcpu *vcpu, bool spec_ctrl_in
+ 	guest_state_enter_irqoff();
+ 
+ 	amd_clear_divider();
++	asi_enter(vcpu->kvm->arch.asi);
+ 
+ 	if (sev_es_guest(vcpu->kvm))
+ 		__svm_sev_es_vcpu_run(svm, spec_ctrl_intercepted,
+@@ -4193,6 +4194,7 @@ static noinstr void svm_vcpu_enter_exit(struct kvm_vcpu *vcpu, bool spec_ctrl_in
+ 	else
+ 		__svm_vcpu_run(svm, spec_ctrl_intercepted);
+ 
++	asi_relax();
+ 	guest_state_exit_irqoff();
  }
  
- void asi_flush_tlb_range(struct asi *asi, void *addr, size_t len)
-@@ -1192,15 +1191,19 @@ void flush_tlb_one_kernel(unsigned long addr)
- 	 * use PCID if we also use global PTEs for the kernel mapping, and
- 	 * INVLPG flushes global translations across all address spaces.
- 	 *
--	 * If PTI is on, then the kernel is mapped with non-global PTEs, and
--	 * __flush_tlb_one_user() will flush the given address for the current
--	 * kernel address space and for its usermode counterpart, but it does
--	 * not flush it for other address spaces.
-+	 * If PTI or ASI is on, then the kernel is mapped with non-global PTEs,
-+	 * and __flush_tlb_one_user() will flush the given address for the
-+	 * current kernel address space and, if PTI is on, for its usermode
-+	 * counterpart, but it does not flush it for other address spaces.
- 	 */
- 	flush_tlb_one_user(addr);
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index d28618e9277ede83ad2edc1b1778ea44123aa797..181d230b1c057fed33f7b29b7b0e378dbdfeb174 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -49,6 +49,7 @@
+ #include <asm/mwait.h>
+ #include <asm/spec-ctrl.h>
+ #include <asm/vmx.h>
++#include <asm/asi.h>
  
--	if (!static_cpu_has(X86_FEATURE_PTI))
-+	/* Nothing more to do if PTI and ASI are completely off. */
-+	if (!static_cpu_has(X86_FEATURE_PTI) && !static_asi_enabled()) {
-+		VM_WARN_ON_ONCE(static_cpu_has(X86_FEATURE_PCID) &&
-+				!(__default_kernel_pte_mask & _PAGE_GLOBAL));
- 		return;
+ #include <trace/events/ipi.h>
+ 
+@@ -7282,14 +7283,34 @@ static noinstr void vmx_vcpu_enter_exit(struct kvm_vcpu *vcpu,
+ 					unsigned int flags)
+ {
+ 	struct vcpu_vmx *vmx = to_vmx(vcpu);
++	unsigned long cr3;
+ 
+ 	guest_state_enter_irqoff();
++	asi_enter(vcpu->kvm->arch.asi);
++
++	/*
++	 * Refresh vmcs.HOST_CR3 if necessary.  This must be done immediately
++	 * prior to VM-Enter, as the kernel may load a new ASID (PCID) any time
++	 * it switches back to the current->mm, which can occur in KVM context
++	 * when switching to a temporary mm to patch kernel code, e.g. if KVM
++	 * toggles a static key while handling a VM-Exit.
++	 * Also, this must be done after asi_enter(), as it changes CR3
++	 * when switching address spaces.
++	 */
++	cr3 = __get_current_cr3_fast();
++	if (unlikely(cr3 != vmx->loaded_vmcs->host_state.cr3)) {
++		vmcs_writel(HOST_CR3, cr3);
++		vmx->loaded_vmcs->host_state.cr3 = cr3;
 +	}
  
  	/*
- 	 * See above.  We need to propagate the flush to all other address
-@@ -1289,6 +1292,16 @@ STATIC_NOPV void native_flush_tlb_local(void)
+ 	 * L1D Flush includes CPU buffer clear to mitigate MDS, but VERW
+ 	 * mitigation for MDS is done late in VMentry and is still
+ 	 * executed in spite of L1D Flush. This is because an extra VERW
+ 	 * should not matter much after the big hammer L1D Flush.
++	 *
++	 * This is only after asi_enter() for performance reasons.
++	 * RFC: This also needs to be integrated with ASI's tainting model.
+ 	 */
+ 	if (static_branch_unlikely(&vmx_l1d_should_flush))
+ 		vmx_l1d_flush(vcpu);
+@@ -7310,6 +7331,8 @@ static noinstr void vmx_vcpu_enter_exit(struct kvm_vcpu *vcpu,
  
- 	invalidate_user_asid(this_cpu_read(cpu_tlbstate.loaded_mm_asid));
+ 	vmx->idt_vectoring_info = 0;
+ 
++	asi_relax();
++
+ 	vmx_enable_fb_clear(vmx);
+ 
+ 	if (unlikely(vmx->fail)) {
+@@ -7338,7 +7361,7 @@ static noinstr void vmx_vcpu_enter_exit(struct kvm_vcpu *vcpu,
+ fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu, bool force_immediate_exit)
+ {
+ 	struct vcpu_vmx *vmx = to_vmx(vcpu);
+-	unsigned long cr3, cr4;
++	unsigned long cr4;
+ 
+ 	/* Record the guest's net vcpu time for enforced NMI injections. */
+ 	if (unlikely(!enable_vnmi &&
+@@ -7381,19 +7404,6 @@ fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu, bool force_immediate_exit)
+ 		vmcs_writel(GUEST_RIP, vcpu->arch.regs[VCPU_REGS_RIP]);
+ 	vcpu->arch.regs_dirty = 0;
+ 
+-	/*
+-	 * Refresh vmcs.HOST_CR3 if necessary.  This must be done immediately
+-	 * prior to VM-Enter, as the kernel may load a new ASID (PCID) any time
+-	 * it switches back to the current->mm, which can occur in KVM context
+-	 * when switching to a temporary mm to patch kernel code, e.g. if KVM
+-	 * toggles a static key while handling a VM-Exit.
+-	 */
+-	cr3 = __get_current_cr3_fast();
+-	if (unlikely(cr3 != vmx->loaded_vmcs->host_state.cr3)) {
+-		vmcs_writel(HOST_CR3, cr3);
+-		vmx->loaded_vmcs->host_state.cr3 = cr3;
+-	}
+-
+ 	cr4 = cr4_read_shadow();
+ 	if (unlikely(cr4 != vmx->loaded_vmcs->host_state.cr4)) {
+ 		vmcs_writel(HOST_CR4, cr4);
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 83fe0a78146fc198115aba0e76ba57ecfb1dd8d9..3e0811eb510650abc601e4adce1ce4189835a730 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -85,6 +85,7 @@
+ #include <asm/emulate_prefix.h>
+ #include <asm/sgx.h>
+ #include <clocksource/hyperv_timer.h>
++#include <asm/asi.h>
+ 
+ #define CREATE_TRACE_POINTS
+ #include "trace.h"
+@@ -9674,6 +9675,55 @@ static void kvm_x86_check_cpu_compat(void *ret)
+ 	*(int *)ret = kvm_x86_check_processor_compatibility();
+ }
+ 
++#ifdef CONFIG_MITIGATION_ADDRESS_SPACE_ISOLATION
++static inline int kvm_x86_init_asi_class(void)
++{
++	static struct asi_taint_policy policy = {
++		/*
++		 * Prevent going to the guest with sensitive data potentially
++		 * left in sidechannels by code running in the unrestricted
++		 * address space, or another MM.
++		 */
++		.protect_data =  ASI_TAINT_KERNEL_DATA | ASI_TAINT_OTHER_MM_DATA,
++		/*
++		 * Prevent going to the guest with branch predictor state
++		 * influenced by other processes. Note this bit is about
++		 * protecting the guest from other parts of the system, while
++		 * data_taints is about protecting other parts of the system
++		 * from the guest.
++		 */
++		.prevent_control = ASI_TAINT_OTHER_MM_CONTROL,
++		.set = ASI_TAINT_GUEST_DATA,
++	};
++
++	/*
++	 * Inform ASI that the guest will gain control of the branch predictor,
++	 * unless we're just unconditionally blasting it after VM Exit.
++	 *
++	 * RFC: This is a bit simplified - on some configurations we could avoid
++	 * a duplicated RSB-fill if we had a separate taint specifically for the
++	 * RSB.
++	 */
++	if (!cpu_feature_enabled(X86_FEATURE_IBPB_ON_VMEXIT) ||
++	    !IS_ENABLED(CONFIG_MITIGATION_RETPOLINE) ||
++	    !cpu_feature_enabled(X86_FEATURE_RSB_VMEXIT))
++		policy.set = ASI_TAINT_GUEST_CONTROL;
++
++	/*
++	 * And the same for data left behind by code in the userspace domain
++	 * (i.e. the VMM itself, plus kernel code serving its syscalls etc).
++	 * This should eventually be configurable: users whose VMMs contain
++	 * no secrets can disable it to avoid paying a mitigation cost on
++	 * transition between their guest and userspace.
++	 */
++	policy.protect_data |= ASI_TAINT_USER_DATA;
++
++	return asi_init_class(ASI_CLASS_KVM, &policy);
++}
++#else /* CONFIG_MITIGATION_ADDRESS_SPACE_ISOLATION */
++static inline int kvm_x86_init_asi_class(void) { return 0; }
++#endif /* CONFIG_MITIGATION_ADDRESS_SPACE_ISOLATION */
++
+ int kvm_x86_vendor_init(struct kvm_x86_init_ops *ops)
+ {
+ 	u64 host_pat;
+@@ -9737,6 +9787,10 @@ int kvm_x86_vendor_init(struct kvm_x86_init_ops *ops)
+ 	kvm_caps.supported_vm_types = BIT(KVM_X86_DEFAULT_VM);
+ 	kvm_caps.supported_mce_cap = MCG_CTL_P | MCG_SER_P;
+ 
++	r = kvm_x86_init_asi_class();
++	if (r < 0)
++		goto out_mmu_exit;
++
+ 	if (boot_cpu_has(X86_FEATURE_XSAVE)) {
+ 		kvm_host.xcr0 = xgetbv(XCR_XFEATURE_ENABLED_MASK);
+ 		kvm_caps.supported_xcr0 = kvm_host.xcr0 & KVM_SUPPORTED_XCR0;
+@@ -9754,7 +9808,7 @@ int kvm_x86_vendor_init(struct kvm_x86_init_ops *ops)
+ 
+ 	r = ops->hardware_setup();
+ 	if (r != 0)
+-		goto out_mmu_exit;
++		goto out_asi_uninit;
+ 
+ 	kvm_ops_update(ops);
+ 
+@@ -9810,6 +9864,8 @@ int kvm_x86_vendor_init(struct kvm_x86_init_ops *ops)
+ out_unwind_ops:
+ 	kvm_x86_ops.enable_virtualization_cpu = NULL;
+ 	kvm_x86_call(hardware_unsetup)();
++out_asi_uninit:
++	asi_uninit_class(ASI_CLASS_KVM);
+ out_mmu_exit:
+ 	kvm_mmu_vendor_module_exit();
+ out_free_percpu:
+@@ -9841,6 +9897,7 @@ void kvm_x86_vendor_exit(void)
+ 	cancel_work_sync(&pvclock_gtod_work);
+ #endif
+ 	kvm_x86_call(hardware_unsetup)();
++	asi_uninit_class(ASI_CLASS_KVM);
+ 	kvm_mmu_vendor_module_exit();
+ 	free_percpu(user_return_msrs);
+ 	kmem_cache_destroy(x86_emulator_cache);
+@@ -11574,6 +11631,13 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
+ 
+ 	r = vcpu_run(vcpu);
  
 +	/*
-+	 * Restricted ASI CR3 is unstable outside of critical section, so we
-+	 * couldn't flush via a CR3 read/write. asi_exit() stabilizes it.
-+	 * We don't expect any flushes in a critical section.
++	 * At present ASI doesn't have the capability to transition directly
++	 * from the restricted address space to the user address space. So we
++	 * just return to the unrestricted address space in between.
 +	 */
-+	if (WARN_ON(asi_in_critical_section()))
-+		native_flush_tlb_global();
-+	else
-+		asi_exit();
++	asi_exit();
 +
- 	/* If current->mm == NULL then the read_cr3() "borrows" an mm */
- 	native_write_cr3(__native_read_cr3());
- }
+ out:
+ 	kvm_put_guest_fpu(vcpu);
+ 	if (kvm_run->kvm_valid_regs)
+@@ -12705,6 +12769,14 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
+ 	if (ret)
+ 		goto out_uninit_mmu;
+ 
++	ret = asi_init(kvm->mm, ASI_CLASS_KVM, &kvm->arch.asi);
++	if (ret)
++		goto out_uninit_mmu;
++
++	ret = static_call(kvm_x86_vm_init)(kvm);
++	if (ret)
++		goto out_asi_destroy;
++
+ 	INIT_HLIST_HEAD(&kvm->arch.mask_notifier_list);
+ 	atomic_set(&kvm->arch.noncoherent_dma_count, 0);
+ 
+@@ -12742,6 +12814,8 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
+ 
+ 	return 0;
+ 
++out_asi_destroy:
++	asi_destroy(kvm->arch.asi);
+ out_uninit_mmu:
+ 	kvm_mmu_uninit_vm(kvm);
+ 	kvm_page_track_cleanup(kvm);
+@@ -12883,6 +12957,7 @@ void kvm_arch_destroy_vm(struct kvm *kvm)
+ 	kvm_destroy_vcpus(kvm);
+ 	kvfree(rcu_dereference_check(kvm->arch.apic_map, 1));
+ 	kfree(srcu_dereference_check(kvm->arch.pmu_event_filter, &kvm->srcu, 1));
++	asi_destroy(kvm->arch.asi);
+ 	kvm_mmu_uninit_vm(kvm);
+ 	kvm_page_track_cleanup(kvm);
+ 	kvm_xen_destroy_vm(kvm);
 
 -- 
 2.47.1.613.gc27f4b7a9f-goog
