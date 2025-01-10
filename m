@@ -4,59 +4,92 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8E5E6E7719F
-	for <linux-um@archiver.kernel.org>; Fri, 10 Jan 2025 16:23:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4C3B4E7719D
+	for <linux-um@archiver.kernel.org>; Fri, 10 Jan 2025 19:18:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=gOllue6l5sNOAYiCW+Cp5tTwc+re6WiezM8i21g+rsA=; b=0OuPy21ejVEIlvccs/Wr0GhEUM
-	h/PfJPPCzEbyQ2SMbPexM+mH1g7ccdoEWSoq+7hkuv2diQQk8ni7wPepexa++XNZbWUI2QBKkRnwA
-	i6/tCRner6+RKw7+9gcU1H6+t5UXn9eDkeJMO01dPm/7vkznH1/0a8rnLGG+54NtTLXHf6FnGiw2M
-	f3yBmJa7A2KZCkrMnOhkIwk6JqLWNUj7bIoggLmvoeeDc+AN5ApS1PoOIuXlqAeRuGZY0anQ2eb8u
-	M6G6DuByUkzXa/7zkDNvyyxmpyr7Ay6t0pNJy5mzy+/s24TQsgYharJmOFYDbCw8/RcXIc0o9fxst
-	KsDct4Dg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=MmNW7y3eqsd92Gzg8gEtV3OkdUAt4QIGvUyRb4/YY3Y=; b=SbDmFhto6skl2TRtnRvdvqTK9c
+	nFsk8QQNf8C6laS4f5wlWQTa5PR/5HUa0t5piajliqM+Swx73PB5ZDQywTpxN7LKbzCtLlwjup4bp
+	OlbT6Nqg76+BPLtqVOGRSmTFn7KmPiuR1FLNQYh49SS2/yXOdaBU/3Ncqs2Ve+rTmxRubc4X2r9ec
+	8/lHuX+DcP8217SoRp4BXZRCKcq7MHagE3NU0eegxJnK2M8gN3JvDjxFpIpS8isT1A1Hq6LBXIv/Z
+	29cwaFeAyXeu/938w5ag9EPhqSnj0Tk9VTXwfV0KoRCrZo1bAayh7Wqj+PG8+KAElaAIQIEPwi9O2
+	Li83VOSA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWHnh-0000000GEA3-1N2q;
-	Fri, 10 Jan 2025 16:23:57 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1tWKWl-0000000GjvE-1GH8;
+	Fri, 10 Jan 2025 19:18:39 +0000
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tWHdf-0000000GAn4-1PIk
+	id 1tWKWi-0000000GjtQ-2ZhF
 	for linux-um@lists.infradead.org;
-	Fri, 10 Jan 2025 16:13:36 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
-	Resent-Message-ID:In-Reply-To:References;
-	bh=gOllue6l5sNOAYiCW+Cp5tTwc+re6WiezM8i21g+rsA=; t=1736525615; x=1737735215; 
-	b=Uqi7QepM5ggqj8GVats2q1e9RQd5w+8Es0HadY0vtcbsHv2iaL/70Um/vaIoX/qeuKWD+LOoKPf
-	4i2Td59Soq/llPJyQsAl/m/LgbzcTRzPlHf8rCpHczV5rjGGtZs8i1O8saWN4mWjUr5MXuWkiD09o
-	ii2P/LAOlyGucYofBUVNedAtJlq+dxltgh/putfBlrp66EWa4jCg9XH+ZSY8e9hv9n1kHbwldWza6
-	edoagzOab9c2dXsSUFOBYNeiGNe64iJuzq/zT9lNshbpGrn9nLXW+IG/EpMpGTrO42j8Ojas3u2QL
-	nzhtObxycafo9nPw5pgcR8jmJGpz3bCfgLVQ==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98)
-	(envelope-from <benjamin@sipsolutions.net>)
-	id 1tWHdc-0000000AhcU-3RuC;
-	Fri, 10 Jan 2025 17:13:33 +0100
-From: Benjamin Berg <benjamin@sipsolutions.net>
-To: linux-um@lists.infradead.org
-Cc: Benjamin Berg <benjamin.berg@intel.com>,
-	Glenn Washburn <development@efficientek.com>
-Subject: [PATCH] um: fix execve stub execution on old host OSs
-Date: Fri, 10 Jan 2025 17:13:05 +0100
-Message-ID: <20250110161305.558223-1-benjamin@sipsolutions.net>
-X-Mailer: git-send-email 2.47.1
+	Fri, 10 Jan 2025 19:18:37 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id 8EF1EA4292D;
+	Fri, 10 Jan 2025 19:16:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D2BDC4CED6;
+	Fri, 10 Jan 2025 19:18:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736536714;
+	bh=2qtn/yN8KGnvKM4Be6ymIMRepfChNk260BsIzmavFNU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lVSbNBfBgiPxfs3j9J4+Q/Mm+va0HnyJJvJ511BIZPHoPIheFgi517TCooWsbBMUd
+	 WSTmKdJWe1UfTSlATsW95ACeJ+2Ll0h4BtuuaSFwVIFk0Wv0zZu3LZGeJRFeQJn0qe
+	 lg2p9xQs3O5V2HOaVWmRlOJx02Yzw7s7vpvz4fokLmZ7ey61g0GQZuRvribH6nHyqr
+	 xDH3Wpe0L5t74rdpA5UINqI4Hxxsp6lB+b5KVRB/rten4cAybUcKdl/88Oc2pCe2TE
+	 6b7kfjQEJbS5HJyWvsAtyyHoKwfXfP3N4KXgVgUwkJm645MDTdxDa3wPAeEVyf6U26
+	 meOgl0uiogQDw==
+Date: Fri, 10 Jan 2025 11:18:32 -0800
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc: Mike Rapoport <rppt@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Andy Lutomirski <luto@kernel.org>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Brendan Higgins <brendan.higgins@linux.dev>,
+	Daniel Gomez <da.gomez@samsung.com>,
+	Daniel Thompson <danielt@kernel.org>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	David Gow <davidgow@google.com>,
+	Douglas Anderson <dianders@chromium.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Jason Wessel <jason.wessel@windriver.com>,
+	Jiri Kosina <jikos@kernel.org>,
+	Joe Lawrence <joe.lawrence@redhat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Miroslav Benes <mbenes@suse.cz>, "H. Peter Anvin" <hpa@zytor.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Petr Mladek <pmladek@suse.com>, Petr Pavlu <petr.pavlu@suse.com>,
+	Rae Moar <rmoar@google.com>, Richard Weinberger <richard@nod.at>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Shuah Khan <shuah@kernel.org>, Song Liu <song@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	kgdb-bugreport@lists.sourceforge.net, kunit-dev@googlegroups.com,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-mm@kvack.org, linux-modules@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+	live-patching@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH 3/8] x86/mm/pat: Restore large pages after fragmentation
+Message-ID: <Z4FyiALKwX-AIWtF@bombadil.infradead.org>
+References: <20241227072825.1288491-1-rppt@kernel.org>
+ <20241227072825.1288491-4-rppt@kernel.org>
+ <jut35igb2kstpz24apqdeubv5rvyl3vmp2s43xtivpz54uiedj@wmd2onulv4xw>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <jut35igb2kstpz24apqdeubv5rvyl3vmp2s43xtivpz54uiedj@wmd2onulv4xw>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250110_081335_380401_1C33D682 
-X-CRM114-Status: UNSURE (   9.94  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250110_111836_777400_8B5823A9 
+X-CRM114-Status: GOOD (  25.77  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,67 +104,67 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Benjamin Berg <benjamin.berg@intel.com>
+On Fri, Jan 10, 2025 at 12:36:59PM +0200, Kirill A. Shutemov wrote:
+> On Fri, Dec 27, 2024 at 09:28:20AM +0200, Mike Rapoport wrote:
+> > From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+> > 
+> > Change of attributes of the pages may lead to fragmentation of direct
+> > mapping over time and performance degradation as result.
+> > 
+> > With current code it's one way road: kernel tries to avoid splitting
+> > large pages, but it doesn't restore them back even if page attributes
+> > got compatible again.
+> > 
+> > Any change to the mapping may potentially allow to restore large page.
+> > 
+> > Hook up into cpa_flush() path to check if there's any pages to be
+> > recovered in PUD_SIZE range around pages we've just touched.
+> > 
+> > CPUs don't like[1] to have to have TLB entries of different size for the
+> > same memory, but looks like it's okay as long as these entries have
+> > matching attributes[2]. Therefore it's critical to flush TLB before any
+> > following changes to the mapping.
+> > 
+> > Note that we already allow for multiple TLB entries of different sizes
+> > for the same memory now in split_large_page() path. It's not a new
+> > situation.
+> > 
+> > set_memory_4k() provides a way to use 4k pages on purpose. Kernel must
+> > not remap such pages as large. Re-use one of software PTE bits to
+> > indicate such pages.
+> > 
+> > [1] See Erratum 383 of AMD Family 10h Processors
+> > [2] https://lore.kernel.org/linux-mm/1da1b025-cabc-6f04-bde5-e50830d1ecf0@amd.com/
+> > 
+> > [rppt@kernel.org:
+> >  * s/restore/collapse/
+> >  * update formatting per peterz
+> >  * use 'struct ptdesc' instead of 'struct page' for list of page tables to
+> >    be freed
+> >  * try to collapse PMD first and if it succeeds move on to PUD as peterz
+> >    suggested
+> >  * flush TLB twice: for changes done in the original CPA call and after
+> >    collapsing of large pages
+> > ]
+> > 
+> > Link: https://lore.kernel.org/all/20200416213229.19174-1-kirill.shutemov@linux.intel.com
+> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > Co-developed-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+> > Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+> 
+> When I originally attempted this, the patch was dropped because of
+> performance regressions. Was it addressed somehow?
+> 
 
-The stub execution uses the somewhat new close_range and execveat
-syscalls. Of these two, the execveat call is essential, but the
-close_range call is more about stub process hygiene rather than safety
-(and its result is ignored).
+Also, the statement:
 
-Replace both calls with a raw syscall as older machines might not have a
-recent enough kernel for close_range (with CLOSE_RANGE_CLOEXEC) or a
-libc that does not yet expose both of the syscalls.
+"Change of attributes of the pages may lead to fragmentation of
+direct mapping over time and performance degradation as result.  "
 
-Fixes: 32e8eaf263d9 ("um: use execveat to create userspace MMs")
-Reported-by: Glenn Washburn <development@efficientek.com>
-Closes: https://lore.kernel.org/20250108022404.05e0de1e@crass-HP-ZBook-15-G2
-Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
----
- arch/um/os-Linux/skas/process.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+Seems to contradict the findings reported at LSFMM by Mike before
+that direct map fragmentation does not incur performance penalty,
+so I don't see a point in contradicing those findings and confusing
+people further.
 
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index f683cfc9e51a..64e89921bc7f 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -181,6 +181,10 @@ extern char __syscall_stub_start[];
- 
- static int stub_exe_fd;
- 
-+#ifndef CLOSE_RANGE_CLOEXEC
-+#define CLOSE_RANGE_CLOEXEC	(1U << 2)
-+#endif
-+
- static int userspace_tramp(void *stack)
- {
- 	char *const argv[] = { "uml-userspace", NULL };
-@@ -202,8 +206,12 @@ static int userspace_tramp(void *stack)
- 	init_data.stub_data_fd = phys_mapping(uml_to_phys(stack), &offset);
- 	init_data.stub_data_offset = MMAP_OFFSET(offset);
- 
--	/* Set CLOEXEC on all FDs and then unset on all memory related FDs */
--	close_range(0, ~0U, CLOSE_RANGE_CLOEXEC);
-+	/*
-+	 * Avoid leaking unneeded FDs to the stub by setting CLOEXEC on all FDs
-+	 * and then unsetting it on all memory related FDs.
-+	 * This is not strictly necessary from a safety perspective.
-+	 */
-+	syscall(__NR_close_range, 1, ~0U, CLOSE_RANGE_CLOEXEC);
- 
- 	fcntl(init_data.stub_data_fd, F_SETFD, 0);
- 	for (iomem = iomem_regions; iomem; iomem = iomem->next)
-@@ -224,7 +232,9 @@ static int userspace_tramp(void *stack)
- 	if (ret != sizeof(init_data))
- 		exit(4);
- 
--	execveat(stub_exe_fd, "", argv, NULL, AT_EMPTY_PATH);
-+	/* Raw execveat for compatibility with older libc versions */
-+	syscall(__NR_execveat, stub_exe_fd, (unsigned long)"",
-+		(unsigned long)argv, NULL, AT_EMPTY_PATH);
- 
- 	exit(5);
- }
--- 
-2.47.1
-
+  Luis
 
