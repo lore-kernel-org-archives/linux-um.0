@@ -4,59 +4,115 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C63B9C0219E
-	for <linux-um@archiver.kernel.org>; Mon, 10 Feb 2025 16:10:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 59A9BC02182
+	for <linux-um@archiver.kernel.org>; Tue, 21 Jan 2025 16:07:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Pyemu5RgLgXyo+Kw4NE2aqsevitUB2cTl0J7g7IyFaw=; b=pEeAEWNE0XZxknJIRJ98ji1h59
-	zWv7dsGTC/jnbUXYhy7rk1XWqgi2oVHEbTBbKbrpjPSpOb95eP1h5DdHKv8EFtOzmGQ5HEDItOF03
-	m5uUfUeQQaNzO8xdKZeSwq0PbFUSmWS0GRsI+BIEQs8nocofX3JHjDLPjb3+2pFxVHyQyW2HXwKvv
-	HgZfXDJcSoKGDnQN+DskLG5E4nRnkwtb40jM1J6oM4YilaKn80BCEeHQSF+LlvNX8jdi4kYSbAvkE
-	Kta86AipKY/0k5dHV6yo6ewmgO9U/WWbL0N8z7h9Zhqnr0M78mY/UmYlKgVxnkHSz5V9UByNOboJi
-	z6p4/FIw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=tdTlc/XFe97BaoasIyxjUjqvcp7zfHXxj6AYwEKsX38=; b=SZF2FNWcDBFOhfAomva2WJPwnj
+	DjaNKgdAYpdwor/hT+38aIk2ZYiq8dBeXUyalLxBh4IPhxE/eJ6Q+z6CzbzPAvSzW3tIOKoGEKCUJ
+	C2ZCVr6r0vZA+X/iCHpPRk0ZKWbvEEcCq3+1s0HWjvzUBpd1CRVMg7otJcLN4zthkUeQqr1pmsU2M
+	PL2v4/qec3DKb7Flf+wJwjjp4cQj1H/xe/sD8y7LbaRJfZFI9nvaPKzloNds3690VtRPseDVhGqWL
+	y7s1IdDa9A/zvWUykwNVYZ8eCE+ydLJgFRPVSMqn5McPaIkQDfCSpqX0Izy73hxZKJ0n2jU3vfGOe
+	BUtxmYww==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1thWMf-00000000RiW-1MSs;
-	Mon, 10 Feb 2025 16:10:29 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1taGn5-00000008Jo5-1sET;
+	Tue, 21 Jan 2025 16:07:47 +0000
+Received: from [198.175.65.12] (helo=mgamail.intel.com)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1thWLw-00000000Ra8-1CNK
-	for linux-um@lists.infradead.org;
-	Mon, 10 Feb 2025 16:09:45 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=Pyemu5RgLgXyo+Kw4NE2aqsevitUB2cTl0J7g7IyFaw=;
-	t=1739203782; x=1740413382; b=CvBeMGsMt4uo/A6rzY9TV3sSGXO69mL9EHliaImm6dLeILr
-	/w4qG9y1SCvayce96UTTG1tlxerYrYg6Jb1n5rirSjKoV8LtYi4aiY3ZaLWjkH/CGqrLpiNpP2LiL
-	E8aeufR350LJKYtZEmxqAIRDZ/5f8nYkKphSdy5fjV6zQBPDvo1xHMkIG1JmjCoNj4ZIuW6Imt13f
-	MK1D7UBI0FzmsQizD6TeZQ7Uq6GvyESwTs5LnMhS2yHLFCeXWsslfz2tshU2gfxbI+S6i2WqGDOtw
-	yBLuDb61aghD4eg6zzOHU+iMnmvczYduQHpHvxbPkLyHwxO9mecH+Zeg++CemC2g==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98)
-	(envelope-from <benjamin@sipsolutions.net>)
-	id 1thWLr-00000009rY9-448K;
-	Mon, 10 Feb 2025 17:09:40 +0100
-From: Benjamin Berg <benjamin@sipsolutions.net>
-To: linux-um@lists.infradead.org
-Cc: Johannes Berg <johannes.berg@intel.com>,
-	Benjamin Berg <benjamin.berg@intel.com>
-Subject: [PATCH 1/2] um: mark rodata read-only and implement _nofault accesses
-Date: Mon, 10 Feb 2025 17:09:25 +0100
-Message-ID: <20250210160926.420133-2-benjamin@sipsolutions.net>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250210160926.420133-1-benjamin@sipsolutions.net>
-References: <20250210160926.420133-1-benjamin@sipsolutions.net>
+	id 1tX2ul-00000003GvY-2XPj;
+	Sun, 12 Jan 2025 18:42:24 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1736707344; x=1768243344;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=yIaBS7LkmzUat2OFaATD2kGBTQNP/h49/H3lTPBbro8=;
+  b=lHW+9QQWYKyPIOUybZasOa3J1OQFOuOMtjrwe0ueLIte6P+JPA6r8FCO
+   d3tiOtwHwdEfikamTWzBJdMQ7R5mVqcGw5FdiTmHyK8FT4iJ6tXiqKEJj
+   TwUv05RYnQ6733g8s37xC+/nAD9nDARvdvhYWyEYQhhHpHpLvK9+RS8Zd
+   Mt8wiecN89gQH1W4TtaTmSk9Y13zx8VOXA7wJFnDVhmn83moK56pI1JOR
+   j2MFgjmrUvkeUZ9ixGN38hnhmPiz0+frtb6lXTlmIENVV3JjTqgPuQ89b
+   pvGhgtm7RPx+nfEz9Ej+sGPgBVSsIQzRTV6I3FPT2JSSZFX0zpQ4ivsMU
+   A==;
+X-CSE-ConnectionGUID: AS+JXUvsSc2jOD0l4SrVAw==
+X-CSE-MsgGUID: NkWtkabvT3KgBrRTa9gsLw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11313"; a="48304990"
+X-IronPort-AV: E=Sophos;i="6.12,309,1728975600"; 
+   d="scan'208";a="48304990"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2025 10:42:21 -0800
+X-CSE-ConnectionGUID: ATBPUUgvRE6sx2qYcVZXpw==
+X-CSE-MsgGUID: s4iONW0iTDay0Hxof3O8IA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,309,1728975600"; 
+   d="scan'208";a="104396986"
+Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.74])
+  by fmviesa008.fm.intel.com with SMTP; 12 Jan 2025 10:42:06 -0800
+Received: by stinkbox (sSMTP sendmail emulation); Sun, 12 Jan 2025 20:42:05 +0200
+Date: Sun, 12 Jan 2025 20:42:05 +0200
+From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+	Brian Cain <bcain@quicinc.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+	Stafford Horne <shorne@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
+	linux-parisc@vger.kernel.or
+Subject: [REGRESSION] Re: [PATCH v7 8/8] x86/module: enable ROX caches for
+ module text on 64 bit
+Message-ID: <Z4QM_RFfhNX_li_C@intel.com>
+References: <20241023162711.2579610-1-rppt@kernel.org>
+ <20241023162711.2579610-9-rppt@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20241023162711.2579610-9-rppt@kernel.org>
+X-Patchwork-Hint: comment
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250210_080944_630657_C43D7EAD 
-X-CRM114-Status: GOOD (  28.84  )
+X-CRM114-CacheID: sfid-20250112_104223_752153_4F36DF25 
+X-CRM114-Status: GOOD (  25.13  )
+X-Mailman-Approved-At: Tue, 21 Jan 2025 08:07:46 -0800
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -71,442 +127,253 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+On Wed, Oct 23, 2024 at 07:27:11PM +0300, Mike Rapoport wrote:
+> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+>=20
+> Enable execmem's cache of PMD_SIZE'ed pages mapped as ROX for module
+> text allocations on 64 bit.
 
-Mark read-only data actually read-only (simple mprotect), and
-to be able to test it also implement _nofault accesses. This
-works by setting up a new "segv_continue" pointer in current,
-and then when we hit a segfault we change the signal return
-context so that we continue at that address. The code using
-this sets it up so that it jumps to a label and then aborts
-the access that way, returning -EFAULT.
+Hi,
 
-It's possible to optimize the ___backtrack_faulted() thing by
-using asm goto (compiler version dependent) and/or gcc's (not
-sure if clang has it) &&label extension, but at least in one
-attempt I made the && caused the compiler to not load -EFAULT
-into the register in case of jumping to the &&label from the
-fault handler. So leave it like this for now.
+This breaks resume from hibernation on my Alderlake laptop.
 
-Co-developed-by: Benjamin Berg <benjamin.berg@intel.com>
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
----
- arch/um/Kconfig                          |  1 +
- arch/um/include/asm/processor-generic.h  |  2 ++
- arch/um/include/asm/uaccess.h            | 20 ++++++++++++-----
- arch/um/include/shared/arch.h            |  2 ++
- arch/um/include/shared/as-layout.h       |  2 +-
- arch/um/include/shared/irq_user.h        |  3 ++-
- arch/um/include/shared/kern_util.h       | 12 ++++++----
- arch/um/kernel/irq.c                     |  3 ++-
- arch/um/kernel/mem.c                     | 10 +++++++++
- arch/um/kernel/trap.c                    | 28 +++++++++++++++++++-----
- arch/um/os-Linux/signal.c                |  4 ++--
- arch/um/os-Linux/skas/process.c          |  8 +++----
- arch/x86/um/os-Linux/mcontext.c          | 12 ++++++++++
- arch/x86/um/shared/sysdep/faultinfo_32.h | 12 ++++++++++
- arch/x86/um/shared/sysdep/faultinfo_64.h | 12 ++++++++++
- 15 files changed, 108 insertions(+), 23 deletions(-)
+Fortunately this still reverts cleanly.
 
-diff --git a/arch/um/Kconfig b/arch/um/Kconfig
-index 18051b1cfce0..79509c7f39de 100644
---- a/arch/um/Kconfig
-+++ b/arch/um/Kconfig
-@@ -12,6 +12,7 @@ config UML
- 	select ARCH_HAS_KCOV
- 	select ARCH_HAS_STRNCPY_FROM_USER
- 	select ARCH_HAS_STRNLEN_USER
-+	select ARCH_HAS_STRICT_KERNEL_RWX
- 	select HAVE_ARCH_AUDITSYSCALL
- 	select HAVE_ARCH_KASAN if X86_64
- 	select HAVE_ARCH_KASAN_VMALLOC if HAVE_ARCH_KASAN
-diff --git a/arch/um/include/asm/processor-generic.h b/arch/um/include/asm/processor-generic.h
-index 5d6356eafffe..8a789c17acd8 100644
---- a/arch/um/include/asm/processor-generic.h
-+++ b/arch/um/include/asm/processor-generic.h
-@@ -31,6 +31,8 @@ struct thread_struct {
- 		} thread;
- 	} request;
- 
-+	void *segv_continue;
-+
- 	/* Contains variable sized FP registers */
- 	struct pt_regs regs;
- };
-diff --git a/arch/um/include/asm/uaccess.h b/arch/um/include/asm/uaccess.h
-index 1d4b6bbc1b65..3a08f9029a3f 100644
---- a/arch/um/include/asm/uaccess.h
-+++ b/arch/um/include/asm/uaccess.h
-@@ -9,6 +9,7 @@
- 
- #include <asm/elf.h>
- #include <linux/unaligned.h>
-+#include <sysdep/faultinfo.h>
- 
- #define __under_task_size(addr, size) \
- 	(((unsigned long) (addr) < TASK_SIZE) && \
-@@ -44,19 +45,28 @@ static inline int __access_ok(const void __user *ptr, unsigned long size)
- 		 __access_ok_vsyscall(addr, size));
- }
- 
--/* no pagefaults for kernel addresses in um */
- #define __get_kernel_nofault(dst, src, type, err_label)			\
- do {									\
--	*((type *)dst) = get_unaligned((type *)(src));			\
--	if (0) /* make sure the label looks used to the compiler */	\
-+	int __faulted;							\
-+									\
-+	___backtrack_faulted(__faulted);				\
-+	if (__faulted) {						\
-+		*((type *)dst) = (type) 0;				\
- 		goto err_label;						\
-+	}								\
-+	*((type *)dst) = get_unaligned((type *)(src));			\
-+	current->thread.segv_continue = NULL;				\
- } while (0)
- 
- #define __put_kernel_nofault(dst, src, type, err_label)			\
- do {									\
--	put_unaligned(*((type *)src), (type *)(dst));			\
--	if (0) /* make sure the label looks used to the compiler */	\
-+	int __faulted;							\
-+									\
-+	___backtrack_faulted(__faulted);				\
-+	if (__faulted)							\
- 		goto err_label;						\
-+	put_unaligned(*((type *)src), (type *)(dst));			\
-+	current->thread.segv_continue = NULL;				\
- } while (0)
- 
- #endif
-diff --git a/arch/um/include/shared/arch.h b/arch/um/include/shared/arch.h
-index 880ee42a3329..cc398a21ad96 100644
---- a/arch/um/include/shared/arch.h
-+++ b/arch/um/include/shared/arch.h
-@@ -12,4 +12,6 @@ extern void arch_check_bugs(void);
- extern int arch_fixup(unsigned long address, struct uml_pt_regs *regs);
- extern void arch_examine_signal(int sig, struct uml_pt_regs *regs);
- 
-+void mc_set_rip(void *_mc, void *target);
-+
- #endif
-diff --git a/arch/um/include/shared/as-layout.h b/arch/um/include/shared/as-layout.h
-index ea65f151bf48..4f44dcce8a7c 100644
---- a/arch/um/include/shared/as-layout.h
-+++ b/arch/um/include/shared/as-layout.h
-@@ -50,7 +50,7 @@ extern int linux_main(int argc, char **argv, char **envp);
- extern void uml_finishsetup(void);
- 
- struct siginfo;
--extern void (*sig_info[])(int, struct siginfo *si, struct uml_pt_regs *);
-+extern void (*sig_info[])(int, struct siginfo *si, struct uml_pt_regs *, void *);
- 
- #endif
- 
-diff --git a/arch/um/include/shared/irq_user.h b/arch/um/include/shared/irq_user.h
-index da0f6eea30d0..88835b52ae2b 100644
---- a/arch/um/include/shared/irq_user.h
-+++ b/arch/um/include/shared/irq_user.h
-@@ -15,7 +15,8 @@ enum um_irq_type {
- };
- 
- struct siginfo;
--extern void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
-+extern void sigio_handler(int sig, struct siginfo *unused_si,
-+			  struct uml_pt_regs *regs, void *mc);
- void sigio_run_timetravel_handlers(void);
- extern void free_irq_by_fd(int fd);
- extern void deactivate_fd(int fd, int irqnum);
-diff --git a/arch/um/include/shared/kern_util.h b/arch/um/include/shared/kern_util.h
-index f21dc8517538..00ca3e12fd9a 100644
---- a/arch/um/include/shared/kern_util.h
-+++ b/arch/um/include/shared/kern_util.h
-@@ -24,10 +24,12 @@ extern void free_stack(unsigned long stack, int order);
- struct pt_regs;
- extern void do_signal(struct pt_regs *regs);
- extern void interrupt_end(void);
--extern void relay_signal(int sig, struct siginfo *si, struct uml_pt_regs *regs);
-+extern void relay_signal(int sig, struct siginfo *si, struct uml_pt_regs *regs,
-+			 void *mc);
- 
- extern unsigned long segv(struct faultinfo fi, unsigned long ip,
--			  int is_user, struct uml_pt_regs *regs);
-+			  int is_user, struct uml_pt_regs *regs,
-+			  void *mc);
- extern int handle_page_fault(unsigned long address, unsigned long ip,
- 			     int is_write, int is_user, int *code_out);
- 
-@@ -59,8 +61,10 @@ extern unsigned long from_irq_stack(int nested);
- 
- extern int singlestepping(void);
- 
--extern void segv_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
--extern void winch(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs);
-+extern void segv_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs,
-+			 void *mc);
-+extern void winch(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs,
-+		  void *mc);
- extern void fatal_sigsegv(void) __attribute__ ((noreturn));
- 
- void um_idle_sleep(void);
-diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index 338450741aac..185664215814 100644
---- a/arch/um/kernel/irq.c
-+++ b/arch/um/kernel/irq.c
-@@ -236,7 +236,8 @@ static void _sigio_handler(struct uml_pt_regs *regs,
- 		free_irqs();
- }
- 
--void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
-+void sigio_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs,
-+		   void *mc)
- {
- 	preempt_disable();
- 	_sigio_handler(regs, irqs_suspended);
-diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
-index befed230aac2..05ffceb555b4 100644
---- a/arch/um/kernel/mem.c
-+++ b/arch/um/kernel/mem.c
-@@ -9,6 +9,8 @@
- #include <linux/mm.h>
- #include <linux/swap.h>
- #include <linux/slab.h>
-+#include <linux/init.h>
-+#include <asm/sections.h>
- #include <asm/page.h>
- #include <asm/pgalloc.h>
- #include <as-layout.h>
-@@ -241,3 +243,11 @@ static const pgprot_t protection_map[16] = {
- 	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_SHARED
- };
- DECLARE_VM_GET_PAGE_PROT
-+
-+void mark_rodata_ro(void)
-+{
-+	unsigned long rodata_start = PFN_ALIGN(__start_rodata);
-+	unsigned long rodata_end = PFN_ALIGN(__end_rodata);
-+
-+	os_protect_memory((void *)rodata_start, rodata_end - rodata_start, 1, 0, 0);
-+}
-diff --git a/arch/um/kernel/trap.c b/arch/um/kernel/trap.c
-index cdaee3e94273..ce073150dc20 100644
---- a/arch/um/kernel/trap.c
-+++ b/arch/um/kernel/trap.c
-@@ -16,6 +16,7 @@
- #include <kern_util.h>
- #include <os.h>
- #include <skas.h>
-+#include <arch.h>
- 
- /*
-  * Note this is constrained to return 0, -EFAULT, -EACCES, -ENOMEM by
-@@ -175,12 +176,14 @@ void fatal_sigsegv(void)
-  * @sig:	the signal number
-  * @unused_si:	the signal info struct; unused in this handler
-  * @regs:	the ptrace register information
-+ * @mc:		the mcontext of the signal
-  *
-  * The handler first extracts the faultinfo from the UML ptrace regs struct.
-  * If the userfault did not happen in an UML userspace process, bad_segv is called.
-  * Otherwise the signal did happen in a cloned userspace process, handle it.
-  */
--void segv_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
-+void segv_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs,
-+		  void *mc)
- {
- 	struct faultinfo * fi = UPT_FAULTINFO(regs);
- 
-@@ -189,7 +192,7 @@ void segv_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
- 		bad_segv(*fi, UPT_IP(regs));
- 		return;
- 	}
--	segv(*fi, UPT_IP(regs), UPT_IS_USER(regs), regs);
-+	segv(*fi, UPT_IP(regs), UPT_IS_USER(regs), regs, mc);
- }
- 
- /*
-@@ -199,7 +202,7 @@ void segv_handler(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
-  * give us bad data!
-  */
- unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
--		   struct uml_pt_regs *regs)
-+		   struct uml_pt_regs *regs, void *mc)
- {
- 	int si_code;
- 	int err;
-@@ -223,6 +226,19 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
- 		goto out;
- 	}
- 	else if (current->mm == NULL) {
-+		if (current->pagefault_disabled) {
-+			if (!mc) {
-+				show_regs(container_of(regs, struct pt_regs, regs));
-+				panic("Segfault with pagefaults disabled but no mcontext");
-+			}
-+			if (!current->thread.segv_continue) {
-+				show_regs(container_of(regs, struct pt_regs, regs));
-+				panic("Segfault without recovery target");
-+			}
-+			mc_set_rip(mc, current->thread.segv_continue);
-+			current->thread.segv_continue = NULL;
-+			goto out;
-+		}
- 		show_regs(container_of(regs, struct pt_regs, regs));
- 		panic("Segfault with no mm");
- 	}
-@@ -274,7 +290,8 @@ unsigned long segv(struct faultinfo fi, unsigned long ip, int is_user,
- 	return 0;
- }
- 
--void relay_signal(int sig, struct siginfo *si, struct uml_pt_regs *regs)
-+void relay_signal(int sig, struct siginfo *si, struct uml_pt_regs *regs,
-+		  void *mc)
- {
- 	int code, err;
- 	if (!UPT_IS_USER(regs)) {
-@@ -302,7 +319,8 @@ void relay_signal(int sig, struct siginfo *si, struct uml_pt_regs *regs)
- 	}
- }
- 
--void winch(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs)
-+void winch(int sig, struct siginfo *unused_si, struct uml_pt_regs *regs,
-+	   void *mc)
- {
- 	do_IRQ(WINCH_IRQ, regs);
- }
-diff --git a/arch/um/os-Linux/signal.c b/arch/um/os-Linux/signal.c
-index 9ea7269ffb77..e71e5b4878d1 100644
---- a/arch/um/os-Linux/signal.c
-+++ b/arch/um/os-Linux/signal.c
-@@ -21,7 +21,7 @@
- #include <sys/ucontext.h>
- #include <timetravel.h>
- 
--void (*sig_info[NSIG])(int, struct siginfo *, struct uml_pt_regs *) = {
-+void (*sig_info[NSIG])(int, struct siginfo *, struct uml_pt_regs *, void *mc) = {
- 	[SIGTRAP]	= relay_signal,
- 	[SIGFPE]	= relay_signal,
- 	[SIGILL]	= relay_signal,
-@@ -47,7 +47,7 @@ static void sig_handler_common(int sig, struct siginfo *si, mcontext_t *mc)
- 	if ((sig != SIGIO) && (sig != SIGWINCH))
- 		unblock_signals_trace();
- 
--	(*sig_info[sig])(sig, si, &r);
-+	(*sig_info[sig])(sig, si, &r, mc);
- 
- 	errno = save_errno;
- }
-diff --git a/arch/um/os-Linux/skas/process.c b/arch/um/os-Linux/skas/process.c
-index f683cfc9e51a..2bd3d796bc55 100644
---- a/arch/um/os-Linux/skas/process.c
-+++ b/arch/um/os-Linux/skas/process.c
-@@ -166,7 +166,7 @@ static void get_skas_faultinfo(int pid, struct faultinfo *fi)
- static void handle_segv(int pid, struct uml_pt_regs *regs)
- {
- 	get_skas_faultinfo(pid, &regs->faultinfo);
--	segv(regs->faultinfo, 0, 1, NULL);
-+	segv(regs->faultinfo, 0, 1, NULL, NULL);
- }
- 
- static void handle_trap(int pid, struct uml_pt_regs *regs)
-@@ -515,7 +515,7 @@ void userspace(struct uml_pt_regs *regs)
- 					get_skas_faultinfo(pid,
- 							   &regs->faultinfo);
- 					(*sig_info[SIGSEGV])(SIGSEGV, (struct siginfo *)&si,
--							     regs);
-+							     regs, NULL);
- 				}
- 				else handle_segv(pid, regs);
- 				break;
-@@ -523,7 +523,7 @@ void userspace(struct uml_pt_regs *regs)
- 				handle_trap(pid, regs);
- 				break;
- 			case SIGTRAP:
--				relay_signal(SIGTRAP, (struct siginfo *)&si, regs);
-+				relay_signal(SIGTRAP, (struct siginfo *)&si, regs, NULL);
- 				break;
- 			case SIGALRM:
- 				break;
-@@ -533,7 +533,7 @@ void userspace(struct uml_pt_regs *regs)
- 			case SIGFPE:
- 			case SIGWINCH:
- 				block_signals_trace();
--				(*sig_info[sig])(sig, (struct siginfo *)&si, regs);
-+				(*sig_info[sig])(sig, (struct siginfo *)&si, regs, NULL);
- 				unblock_signals_trace();
- 				break;
- 			default:
-diff --git a/arch/x86/um/os-Linux/mcontext.c b/arch/x86/um/os-Linux/mcontext.c
-index e80ab7d28117..d2f3a595b4ef 100644
---- a/arch/x86/um/os-Linux/mcontext.c
-+++ b/arch/x86/um/os-Linux/mcontext.c
-@@ -4,6 +4,7 @@
- #include <asm/ptrace.h>
- #include <sysdep/ptrace.h>
- #include <sysdep/mcontext.h>
-+#include <arch.h>
- 
- void get_regs_from_mc(struct uml_pt_regs *regs, mcontext_t *mc)
- {
-@@ -31,3 +32,14 @@ void get_regs_from_mc(struct uml_pt_regs *regs, mcontext_t *mc)
- 	regs->gp[CS / sizeof(unsigned long)] |= 3;
- #endif
- }
-+
-+void mc_set_rip(void *_mc, void *target)
-+{
-+	mcontext_t *mc = _mc;
-+
-+#ifdef __i386__
-+	mc->gregs[REG_EIP] = (unsigned long)target;
-+#else
-+	mc->gregs[REG_RIP] = (unsigned long)target;
-+#endif
-+}
-diff --git a/arch/x86/um/shared/sysdep/faultinfo_32.h b/arch/x86/um/shared/sysdep/faultinfo_32.h
-index b6f2437ec29c..ab5c8e47049c 100644
---- a/arch/x86/um/shared/sysdep/faultinfo_32.h
-+++ b/arch/x86/um/shared/sysdep/faultinfo_32.h
-@@ -29,4 +29,16 @@ struct faultinfo {
- 
- #define PTRACE_FULL_FAULTINFO 0
- 
-+#define ___backtrack_faulted(_faulted)					\
-+	asm volatile (							\
-+		"mov $0, %0\n"						\
-+		"movl $__get_kernel_nofault_faulted_%=,%1\n"		\
-+		"jmp _end_%=\n"						\
-+		"__get_kernel_nofault_faulted_%=:\n"			\
-+		"mov $1, %0;"						\
-+		"_end_%=:"						\
-+		: "=r" (_faulted),					\
-+		  "=m" (current->thread.segv_continue) ::		\
-+	)
-+
- #endif
-diff --git a/arch/x86/um/shared/sysdep/faultinfo_64.h b/arch/x86/um/shared/sysdep/faultinfo_64.h
-index ee88f88974ea..26fb4835d3e9 100644
---- a/arch/x86/um/shared/sysdep/faultinfo_64.h
-+++ b/arch/x86/um/shared/sysdep/faultinfo_64.h
-@@ -29,4 +29,16 @@ struct faultinfo {
- 
- #define PTRACE_FULL_FAULTINFO 1
- 
-+#define ___backtrack_faulted(_faulted)					\
-+	asm volatile (							\
-+		"mov $0, %0\n"						\
-+		"movq $__get_kernel_nofault_faulted_%=,%1\n"		\
-+		"jmp _end_%=\n"						\
-+		"__get_kernel_nofault_faulted_%=:\n"			\
-+		"mov $1, %0;"						\
-+		"_end_%=:"						\
-+		: "=r" (_faulted),					\
-+		  "=m" (current->thread.segv_continue) ::		\
-+	)
-+
- #endif
--- 
-2.48.1
+pstore managed to catch the following oops (seems to blow up on
+bringing up the second ht of the second pcore for whatever reason):
 
+<6>[   33.993727] PM: hibernation: hibernation entry
+<6>[   34.154410] Filesystems sync: 0.006 seconds
+<6>[   34.154418] Freezing user space processes
+<6>[   34.156019] Freezing user space processes completed (elapsed 0.001 se=
+conds)
+<6>[   34.156026] OOM killer disabled.
+<6>[   34.160470] PM: hibernation: Preallocating image memory
+<6>[   34.330327] PM: hibernation: Allocated 387861 pages for snapshot
+<6>[   34.330328] PM: hibernation: Allocated 1551444 kbytes in 0.16 seconds=
+ (9696.52 MB/s)
+<6>[   34.330330] Freezing remaining freezable tasks
+<6>[   34.331499] Freezing remaining freezable tasks completed (elapsed 0.0=
+01 seconds)
+<6>[   34.351602] printk: Suspending console(s) (use no_console_suspend to =
+debug)
+<6>[   34.836184] ACPI: EC: interrupt blocked
+<6>[   34.858903] ACPI: PM: Preparing to enter system sleep state S4
+<6>[   34.868434] ACPI: EC: event blocked
+<6>[   34.868434] ACPI: EC: EC stopped
+<6>[   34.868435] ACPI: PM: Saving platform NVS memory
+<6>[   34.872538] Disabling non-boot CPUs ...
+<6>[   34.874012] smpboot: CPU 15 is now offline
+<6>[   34.875511] smpboot: CPU 14 is now offline
+<6>[   34.877209] smpboot: CPU 13 is now offline
+<6>[   34.879173] smpboot: CPU 12 is now offline
+<6>[   34.881117] smpboot: CPU 11 is now offline
+<6>[   34.882952] smpboot: CPU 10 is now offline
+<6>[   34.885175] smpboot: CPU 9 is now offline
+<6>[   34.886844] smpboot: CPU 8 is now offline
+<6>[   34.889056] smpboot: CPU 7 is now offline
+<6>[   34.891866] smpboot: CPU 6 is now offline
+<6>[   34.893685] smpboot: CPU 5 is now offline
+<6>[   34.896856] smpboot: CPU 4 is now offline
+<6>[   34.900015] smpboot: CPU 3 is now offline
+<6>[   34.902355] smpboot: CPU 2 is now offline
+<6>[   34.906162] smpboot: CPU 1 is now offline
+<6>[   34.914835] PM: hibernation: Creating image:
+<6>[   35.074645] PM: hibernation: Need to copy 348072 pages
+<6>[   34.915076] ACPI: PM: Restoring platform NVS memory
+<6>[   34.916499] ACPI: EC: EC started
+<6>[   34.918228] Enabling non-boot CPUs ...
+<6>[   34.918248] smpboot: Booting Node 0 Processor 1 APIC 0x1
+<6>[   34.920121] CPU1 is up
+<6>[   34.920132] smpboot: Booting Node 0 Processor 2 APIC 0x8
+<6>[   34.923737] CPU2 is up
+<6>[   34.923746] smpboot: Booting Node 0 Processor 3 APIC 0x9
+<1>[   34.927019] BUG: kernel NULL pointer dereference, address: 0000000000=
+000008
+<1>[   34.927023] #PF: supervisor write access in kernel mode
+<1>[   34.927024] #PF: error_code(0x0002) - not-present page
+<6>[   34.927026] PGD 0 P4D 0=20
+<4>[   34.927028] Oops: Oops: 0002 [#1] PREEMPT SMP NOPTI
+<4>[   34.927030] CPU: 3 UID: 0 PID: 93 Comm: cpuhp/3 Not tainted 6.13.0-rc=
+5+ #406
+<4>[   34.927033] Hardware name: LENOVO 21AJS29M0Q/21AJS29M0Q, BIOS N3MET18=
+W (1.17 ) 10/24/2023
+<4>[   34.927033] RIP: 0010:__rmqueue_pcplist+0x1c9/0x6f0
+<4>[   34.927039] Code: 00 00 48 39 f0 0f 84 7c 01 00 00 49 89 c6 49 83 ee =
+08 0f 84 6f 01 00 00 48 8b 78 08 41 b8 01 00 00 00 89 ce 4c 8b 08 41 d3 e0 =
+<49> 89 79 08 4c 89 0f 48 bf 00 01 00 00 00 00 ad de 48 89 38 48 83
+<4>[   34.927041] RSP: 0000:ffffc90000457840 EFLAGS: 00010082
+<4>[   34.927042] RAX: ffffea000427af48 RBX: ffff88844e2f0720 RCX: 00000000=
+00000000
+<4>[   34.927043] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff=
+827f0f00
+<4>[   34.927043] RBP: 0000000000000000 R08: 0000000000000001 R09: 00000000=
+00000000
+<4>[   34.927044] R10: ffff88844e2f0700 R11: 0000000000000001 R12: 00000000=
+00000000
+<4>[   34.927044] R13: ffffffff827f0e40 R14: ffffea000427af40 R15: ffffffff=
+ffffffff
+<4>[   34.927045] FS:  0000000000000000(0000) GS:ffff88844e2c0000(0000) knl=
+GS:0000000000000000
+<4>[   34.927046] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+<4>[   34.927046] CR2: 0000000000000008 CR3: 000000000402e001 CR4: 00000000=
+00372ef0
+<4>[   34.927047] Call Trace:
+<4>[   34.927048]  <TASK>
+<4>[   34.927049]  ? __die+0x1a/0x60
+<4>[   34.927053]  ? page_fault_oops+0x157/0x440
+<4>[   34.927055]  ? exc_page_fault+0x444/0x710
+<4>[   34.927058]  ? asm_exc_page_fault+0x22/0x30
+<4>[   34.927060]  ? __rmqueue_pcplist+0x1c9/0x6f0
+<4>[   34.927061]  get_page_from_freelist+0x20f/0xf00
+<4>[   34.927063]  __alloc_pages_noprof+0x111/0x240
+<4>[   34.927065]  allocate_slab+0x24f/0x3c0
+<4>[   34.927066]  ? get_page_from_freelist+0x21a/0xf00
+<4>[   34.927067]  ___slab_alloc+0x42a/0xb80
+<4>[   34.927069]  ? __kernfs_new_node.isra.0+0x59/0x1e0
+<4>[   34.927071]  ? get_nohz_timer_target+0x29/0x140
+<4>[   34.927073]  ? timerqueue_add+0x62/0xb0
+<4>[   34.927074]  kmem_cache_alloc_noprof+0x17a/0x220
+<4>[   34.927076]  __kernfs_new_node.isra.0+0x59/0x1e0
+<4>[   34.927077]  ? dl_server_stop+0x26/0x30
+<4>[   34.927079]  ? dequeue_entities+0x33b/0x5f0
+<4>[   34.927080]  kernfs_new_node+0x3b/0x60
+<4>[   34.927081]  kernfs_create_dir_ns+0x22/0x80
+<4>[   34.927083]  sysfs_create_dir_ns+0x6b/0xd0
+<4>[   34.927085]  kobject_add_internal+0x9e/0x270
+<4>[   34.927087]  kobject_add+0x79/0xe0
+<4>[   34.927088]  ? __kmalloc_cache_noprof+0x105/0x240
+<4>[   34.927090]  device_add+0xb7/0x7d0
+<4>[   34.927092]  ? complete_all+0x1b/0x80
+<4>[   34.927095]  cpu_device_create+0xea/0x100
+<4>[   34.927097]  ? __pfx_smpboot_thread_fn+0x10/0x10
+<4>[   34.927099]  ? __set_cpus_allowed_ptr+0x47/0x90
+<4>[   34.927100]  ? detect_cache_attributes+0xd2/0x330
+<4>[   34.927102]  ? __pfx_cacheinfo_cpu_online+0x10/0x10
+<4>[   34.927104]  cacheinfo_cpu_online+0x94/0x270
+<4>[   34.927105]  ? __pfx_cacheinfo_cpu_online+0x10/0x10
+<4>[   34.927107]  ? __pfx_smpboot_thread_fn+0x10/0x10
+<4>[   34.927108]  cpuhp_invoke_callback+0x10e/0x4b0
+<4>[   34.927110]  ? __pfx_smpboot_thread_fn+0x10/0x10
+<4>[   34.927111]  cpuhp_thread_fun+0xcf/0x150
+<4>[   34.927112]  smpboot_thread_fn+0xd1/0x1c0
+<4>[   34.927113]  kthread+0xc6/0x100
+<4>[   34.927115]  ? __pfx_kthread+0x10/0x10
+<4>[   34.927115]  ret_from_fork+0x28/0x40
+<4>[   34.927117]  ? __pfx_kthread+0x10/0x10
+<4>[   34.927118]  ret_from_fork_asm+0x1a/0x30
+<4>[   34.927120]  </TASK>
+<4>[   34.927120] Modules linked in: fuse ctr ccm sch_fq_codel cmac xt_mult=
+iport xt_tcpudp xt_state iptable_filter xt_MASQUERADE iptable_nat nf_nat nf=
+_conntrack nf_defrag_ipv4 ip_tables x_tables bnep btusb uvcvideo btrtl btin=
+tel videobuf2_vmalloc btbcm videobuf2_memops btmtk uvc videobuf2_v4l2 bluet=
+ooth videodev videobuf2_common ecdh_generic mc ecc binfmt_misc snd_hda_code=
+c_hdmi mousedev snd_hda_codec_realtek snd_hda_codec_generic snd_hda_scodec_=
+component snd_ctl_led iwlmvm mac80211 libarc4 i915 snd_hda_intel snd_intel_=
+dspcfg i2c_algo_bit snd_hda_codec drm_buddy xhci_pci intel_tcc_cooling mei_=
+hdcp snd_hwdep ttm mei_pxp mei_wdt processor_thermal_device_pci snd_hda_cor=
+e x86_pkg_temp_thermal processor_thermal_device xhci_hcd thinkpad_acpi inte=
+l_powerclamp 8250_pci processor_thermal_wt_hint drm_display_helper snd_pcm =
+processor_thermal_rfim i2c_hid_acpi coretemp 8250 processor_thermal_rapl nv=
+ram i2c_hid iwlwifi kvm_intel drm_kms_helper usbcore intel_rapl_msr 8250_ba=
+se iTCO_wdt intel_rapl_common platform_profile hid snd_timer
+<4>[   34.927180]  intel_gtt mei_me serial_mctrl_gpio led_class processor_t=
+hermal_wt_req cfg80211 kvm thunderbolt e1000e snd efi_pstore intel_lpss_pci=
+ serial_base usb_common agpgart processor_thermal_power_floor spi_intel_pci=
+ i2c_i801 intel_lpss mei soundcore processor_thermal_mbox drm rfkill pstore=
+ spi_intel mfd_core tpm_tis i2c_smbus psmouse tpm_tis_core zlib_deflate pcs=
+pkr evdev tpm think_lmi video intel_pmc_core firmware_attributes_class inte=
+l_hid sparse_keymap int3403_thermal intel_vsec pinctrl_tigerlake int3400_th=
+ermal wmi int340x_thermal_zone pmt_telemetry i2c_core backlight pinctrl_int=
+el pmt_class acpi_thermal_rel efivarfs
+<4>[   34.927209] CR2: 0000000000000008
+<4>[   34.927210] ---[ end trace 0000000000000000 ]---
+
+>=20
+> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+> Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
+> Tested-by: kdevops <kdevops@lists.linux.dev>
+> ---
+>  arch/x86/Kconfig   |  1 +
+>  arch/x86/mm/init.c | 37 ++++++++++++++++++++++++++++++++++++-
+>  2 files changed, 37 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 2852fcd82cbd..ff71d18253ba 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -83,6 +83,7 @@ config X86
+>  	select ARCH_HAS_DMA_OPS			if GART_IOMMU || XEN
+>  	select ARCH_HAS_EARLY_DEBUG		if KGDB
+>  	select ARCH_HAS_ELF_RANDOMIZE
+> +	select ARCH_HAS_EXECMEM_ROX		if X86_64
+>  	select ARCH_HAS_FAST_MULTIPLIER
+>  	select ARCH_HAS_FORTIFY_SOURCE
+>  	select ARCH_HAS_GCOV_PROFILE_ALL
+> diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
+> index eb503f53c319..c2e4f389f47f 100644
+> --- a/arch/x86/mm/init.c
+> +++ b/arch/x86/mm/init.c
+> @@ -1053,18 +1053,53 @@ unsigned long arch_max_swapfile_size(void)
+>  #ifdef CONFIG_EXECMEM
+>  static struct execmem_info execmem_info __ro_after_init;
+> =20
+> +#ifdef CONFIG_ARCH_HAS_EXECMEM_ROX
+> +void execmem_fill_trapping_insns(void *ptr, size_t size, bool writeable)
+> +{
+> +	/* fill memory with INT3 instructions */
+> +	if (writeable)
+> +		memset(ptr, INT3_INSN_OPCODE, size);
+> +	else
+> +		text_poke_set(ptr, INT3_INSN_OPCODE, size);
+> +}
+> +#endif
+> +
+>  struct execmem_info __init *execmem_arch_setup(void)
+>  {
+>  	unsigned long start, offset =3D 0;
+> +	enum execmem_range_flags flags;
+> +	pgprot_t pgprot;
+> =20
+>  	if (kaslr_enabled())
+>  		offset =3D get_random_u32_inclusive(1, 1024) * PAGE_SIZE;
+> =20
+>  	start =3D MODULES_VADDR + offset;
+> =20
+> +	if (IS_ENABLED(CONFIG_ARCH_HAS_EXECMEM_ROX)) {
+> +		pgprot =3D PAGE_KERNEL_ROX;
+> +		flags =3D EXECMEM_KASAN_SHADOW | EXECMEM_ROX_CACHE;
+> +	} else {
+> +		pgprot =3D PAGE_KERNEL;
+> +		flags =3D EXECMEM_KASAN_SHADOW;
+> +	}
+> +
+>  	execmem_info =3D (struct execmem_info){
+>  		.ranges =3D {
+> -			[EXECMEM_DEFAULT] =3D {
+> +			[EXECMEM_MODULE_TEXT] =3D {
+> +				.flags	=3D flags,
+> +				.start	=3D start,
+> +				.end	=3D MODULES_END,
+> +				.pgprot	=3D pgprot,
+> +				.alignment =3D MODULE_ALIGN,
+> +			},
+> +			[EXECMEM_KPROBES ... EXECMEM_BPF] =3D {
+> +				.flags	=3D EXECMEM_KASAN_SHADOW,
+> +				.start	=3D start,
+> +				.end	=3D MODULES_END,
+> +				.pgprot	=3D PAGE_KERNEL,
+> +				.alignment =3D MODULE_ALIGN,
+> +			},
+> +			[EXECMEM_MODULE_DATA] =3D {
+>  				.flags	=3D EXECMEM_KASAN_SHADOW,
+>  				.start	=3D start,
+>  				.end	=3D MODULES_END,
+> --=20
+> 2.43.0
+>=20
+
+--=20
+Ville Syrj=E4l=E4
+Intel
 
