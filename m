@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A3423C02183
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A34C4C02184
 	for <linux-um@archiver.kernel.org>; Mon, 13 Jan 2025 16:05:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,27 +12,27 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=HFXNeldDkGWtQVQ/tfJq9J/93pUAthD1bKWnJqq0KuA=; b=OYpLC+thD/TNFnEjqvGd84pMNf
-	nsIFeJL27cQXyzYJ/3HU65CsW0fXQiVy6naAP55/e89C3VMJOdbL1uOhlVLqjXOpXqRDyruM3IX77
-	muR5/CREEnFoBqrDfW6+2qoX941/te//8/PZvaf2d08aZFO2Vs/Uk6J/mxMW/aa6+y9pnMvNUOnAJ
-	8tEJSQQPgq5xIzSpT9CQ0TB+1/CHXX41QGzHF5oqub6Ktjr5fNR32tDq2hFA+tkFgdcRkChGrVkSd
-	jLbDlpVEkAghW4+r0bj7Se1xEcP+rE70/vtCfubl8kpEKM2zjp5GLK5uLSHd6REYpzrLQtEXcsEDA
-	sHK2o43g==;
+	bh=fj+aXkWMZW3QH/dX6l64hmhfkptpcfLcjdl9WWJzH2A=; b=HJ9mbLDx8xQ3lovRWDeqUgCjQ0
+	2wtonH2928EQb798Psk7qZf78oz/t96kGdwyXG79Gg2pKrUdFOE0bg03KdOcjSu8AD0j8WUox0e0u
+	JK/thbI31Zoc13uVUXJ5R8lFbI7mPV7JZxen4EKYGoM94XB4yQbzQKNyA75g0rr7osWgR+7UUSx7X
+	0ZM/1Bk9cB5ynx2T9Duu8OenGRYakIEW/Y0rwWQkYpq7rJLCNDTmMhtBFst4ojWcgNpq4bQbkx5Qv
+	ZPVoxp81TEVqDkF7XPA6PFzupbW357TS7pGb9AELJkoavkRDwrB4Lj7ah1glnN5z6Sw+GxbrQGWH9
+	25ZxO8nw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tXMwK-00000005mV0-1B7n;
+	id 1tXMwJ-00000005mUY-4BgB;
 	Mon, 13 Jan 2025 16:05:20 +0000
-Received: from out0-220.mail.aliyun.com ([140.205.0.220])
+Received: from out0-215.mail.aliyun.com ([140.205.0.215])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tXMQh-00000005en9-0WMO
+	id 1tXMQh-00000005enB-0RmY
 	for linux-um@lists.infradead.org;
-	Mon, 13 Jan 2025 15:32:41 +0000
+	Mon, 13 Jan 2025 15:32:40 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=antgroup.com; s=default;
-	t=1736782352; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=HFXNeldDkGWtQVQ/tfJq9J/93pUAthD1bKWnJqq0KuA=;
-	b=AeKEt4634ygECqnKoE2r8Pbs4an58/JfYFdrMhlYNjkO5vNBYqnlrOwzoLqS+s/FRaJRY9khrpR1qI5AQfcKd+SP6cMQEs1HKP6EFN1KNpeP3Vlw75TLfJPqDTNBV0S/Cb4tDjkeHHLbejy9I0q1iVMk0HMUaszsLkHekEQHw2M=
-Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.b1pVbjq_1736782350 cluster:ay29)
+	t=1736782353; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=fj+aXkWMZW3QH/dX6l64hmhfkptpcfLcjdl9WWJzH2A=;
+	b=vbnhd09C8USgx5HD1X4SQZqXiIxVXRLjRcCOZu35ggZpuvV1brk+B/OEAFoaxP1ZktUPAGLJaSt8TLLEFZmi1AYk4UiDtpV/f4qI+NEd3RhT4EOU6kQcqYZtyLELN37d9/fPMxmxpmmTASKzxuKfyqOvW/eZd+3LyJJ29of3yOk=
+Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.b1pVbjt_1736782350 cluster:ay29)
           by smtp.aliyun-inc.com;
           Mon, 13 Jan 2025 23:32:30 +0800
 From: "Tiwei Bie" <tiwei.btw@antgroup.com>
@@ -40,19 +40,18 @@ To: richard@nod.at,
 	anton.ivanov@cambridgegreys.com,
 	johannes@sipsolutions.net
 Cc: <linux-um@lists.infradead.org>,
-  "Tiwei Bie" <tiwei.btw@antgroup.com>,
-  "kernel test robot" <lkp@intel.com>
-Subject: [PATCH 1/2] um: Include missing headers in asm/pgtable.h
-Date: Mon, 13 Jan 2025 23:32:17 +0800
-Message-Id: <20250113153218.3331321-2-tiwei.btw@antgroup.com>
+  "Tiwei Bie" <tiwei.btw@antgroup.com>
+Subject: [PATCH 2/2] um: Remove unused asm/archparam.h header
+Date: Mon, 13 Jan 2025 23:32:18 +0800
+Message-Id: <20250113153218.3331321-3-tiwei.btw@antgroup.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250113153218.3331321-1-tiwei.btw@antgroup.com>
 References: <20250113153218.3331321-1-tiwei.btw@antgroup.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250113_073239_689604_55EFD9B4 
-X-CRM114-Status: UNSURE (   5.31  )
+X-CRM114-CacheID: sfid-20250113_073239_687394_41B91439 
+X-CRM114-Status: UNSURE (   5.46  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -68,32 +67,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Formerly, asm/pgtable.h relied on the implicit inclusion of asm/page.h
-and linux/mm_types.h via asm/fixmap.h. With the removal of asm/fixmap.h,
-these headers need to be included explicitly in asm/pgtable.h now.
+This header is no longer used after the removal of fixmap support
+in commit 5bfc4a3a0af3 ("um: Remove obsolete fixmap support").
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202501131814.E6CxjulL-lkp@intel.com/
-Fixes: 5bfc4a3a0af3 ("um: Remove obsolete fixmap support")
 Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
 ---
- arch/um/include/asm/pgtable.h | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/x86/um/asm/archparam.h | 20 --------------------
+ 1 file changed, 20 deletions(-)
+ delete mode 100644 arch/x86/um/asm/archparam.h
 
-diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.h
-index 9be6daca95be..5601ca98e8a6 100644
---- a/arch/um/include/asm/pgtable.h
-+++ b/arch/um/include/asm/pgtable.h
-@@ -8,6 +8,9 @@
- #ifndef __UM_PGTABLE_H
- #define __UM_PGTABLE_H
- 
-+#include <asm/page.h>
-+#include <linux/mm_types.h>
-+
- #define _PAGE_PRESENT	0x001
- #define _PAGE_NEEDSYNC	0x002
- #define _PAGE_RW	0x020
+diff --git a/arch/x86/um/asm/archparam.h b/arch/x86/um/asm/archparam.h
+deleted file mode 100644
+index c17cf68dda0f..000000000000
+--- a/arch/x86/um/asm/archparam.h
++++ /dev/null
+@@ -1,20 +0,0 @@
+-/* 
+- * Copyright (C) 2000 - 2003 Jeff Dike (jdike@addtoit.com)
+- * Copyright 2003 PathScale, Inc.
+- * Licensed under the GPL
+- */
+-
+-#ifndef __UM_ARCHPARAM_H
+-#define __UM_ARCHPARAM_H
+-
+-#ifdef CONFIG_X86_32
+-
+-#ifdef CONFIG_X86_PAE
+-#define LAST_PKMAP 512
+-#else
+-#define LAST_PKMAP 1024
+-#endif
+-
+-#endif
+-
+-#endif
 -- 
 2.34.1
 
