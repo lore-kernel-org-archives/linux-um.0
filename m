@@ -4,104 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2855CC02183
-	for <linux-um@archiver.kernel.org>; Tue, 14 Jan 2025 02:28:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13CDBC02183
+	for <linux-um@archiver.kernel.org>; Tue, 14 Jan 2025 11:02:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Q3uCzTDF/NUXWi9pKun3Q1ZeVpbVlQmIUTgvJ2reRXQ=; b=nfNDjfpsarHdoaC96jCGRbmdwH
-	l88VYbf1nx9l/wLJrQvpqioDfLiLmTTniC04hJDyEZ5p6ho6Hz5/P7i/jn3jEteP+jX8OmLV3EVoq
-	yqyGxxu+QVjggVgPuzKM2zKYd5SuGqSVC2uFj/WdDXc9VDx/1KUTfDx2+PLA8TN5vyFxSUYEdm5en
-	JBGf4ko8DKcmfG7Afnu8bre2di9lLRK6wEysayX9xPWCPzRtPlZfWvLLw343x9fj1EDQVntOgUdHM
-	EWUY0q1oqT/uGscbFGLWK7e2xPRgHUiOA9VqXBEJ+rg4CDhsPXfFagRoSHYSdetWyd8zx8m4apiTv
-	3pGuoKpQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=+JInSN26cxQi/MBr6S+TUtqFx1X6dz/kqWvfZ53znrY=; b=U9FR/y1O0wq0G+Nv0GlbJGVaUU
+	+phJLVy1F8ylkgTgK/iQTxpI0YkwfSEpYMIMHE7gVP8eibdbX5lAc1Bb3umYheR3kGfTNaexGx9fd
+	lDQbnA8/19xRVVUBdxbmxbRJDycHn9phhwoPSkaT6jwYtGBGdhf8Y8Rgs4xUmzt7xJejLDf5t4RJW
+	5AejqAR4sqViwA3dGK5xEtALj6o8QNxepIlAXB+qkLjbJ9kEPbxKOerfnE1JToWWAbUNIWFla3+jR
+	dJWnX/nydcH2Ih+Ty7MwLDi4a54Kzc86EQgamDGWN6gt0OGFcFDVQuh4moE+WxBk4Ru2idq/UP5i/
+	Fk4ZvLRA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tXWfR-00000007Fcn-1QPP;
-	Tue, 14 Jan 2025 02:28:33 +0000
-Received: from mail-pl1-x631.google.com ([2607:f8b0:4864:20::631])
+	id 1tXegQ-00000008Buq-1Mun;
+	Tue, 14 Jan 2025 11:02:06 +0000
+Received: from nyc.source.kernel.org ([147.75.193.91])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tXWeC-00000007FFI-0XID
+	id 1tXefs-00000008BkJ-2wDY
 	for linux-um@lists.infradead.org;
-	Tue, 14 Jan 2025 02:27:17 +0000
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-21a7ed0155cso85186515ad.3
-        for <linux-um@lists.infradead.org>; Mon, 13 Jan 2025 18:27:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1736821632; x=1737426432; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Q3uCzTDF/NUXWi9pKun3Q1ZeVpbVlQmIUTgvJ2reRXQ=;
-        b=K8aFXw7gyJhWX0ZBNHlubOLIyYeZADf7IRPumXDNCzaApV1dG46yEU2I1D87/q3gwc
-         srhCA0xEEMcYalOoXcZnxIJxvEJIzdTwYP6m6g5b7g4cbkUxD+t6+RKFCjn735RnPelR
-         qtQq7mlAfQ7NAF95IifDQz3IbLAZKqUGk0CicxngD/MjebqfLMaKaQBU3RnjOy58mBkq
-         f0g3xr0RFFmBUoTtG9a1raVhnDVswyKqZb/eSlkxfWc6qwn0hL1mXi4mvDVQRnlM6IYm
-         AX1Jdhm+JmSDI2s4wdU5S5ZXU9i2HCUuzm+ns+vwLuRUT9keuRyh8dv7Qjqp467G+kAQ
-         OtMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736821632; x=1737426432;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q3uCzTDF/NUXWi9pKun3Q1ZeVpbVlQmIUTgvJ2reRXQ=;
-        b=a/LQF1tD1k284wMUnSc8NFtt6B3zA+UD5pTfaBlqLS61mVHVA0LKjvO+rcg82fL7e2
-         Y/DNeb1cwTSeTfvYz4QKjTvhebzK6/UZ5/13E80/LSuBZCVa9mY2uaGaqERvNhqa2UQo
-         +eyHQkwyCXiXIMBx5EN8EDfWwc8NitCl2Gn0n40hw7F34k092DON0cdBLfr5Xomax5AV
-         1VF9okbqRTdIOAHvrXyDNfTOBtv1L24yBw4X0sTw5lXzojCdblZqgyKwsNqRweYT5qEV
-         +KXD7KTD0jglXH5l11sA8hcJO1BPrws1P7NITjxsX23I8v206BNIg7btkI+yksC7o9zy
-         G/Bg==
-X-Forwarded-Encrypted: i=1; AJvYcCXKHc+nov6bwlaD/cugtIj68XKaC4S2Du7DpRE0iI1CVf7Lc067VNFSHlhUV3VeN5cEnbKzSArS2A==@lists.infradead.org
-X-Gm-Message-State: AOJu0YztM8P7/pwyCnD10CjCtjOZCITbYKaHpOlH5OzbF2xr6irO7k/j
-	LSpGpVV1rrIECr2xjW90JQ+G75Gc09bY8MfCi7FFD+xQNjMTr9FTGZYAXblRKG0=
-X-Gm-Gg: ASbGncuQgZ0OGXETFJH+U7FzPoqk8meCTtK2q49tusSHprGugvLBKPtf4zASKnM5lMc
-	5Qd2PMvNrqtMqRXm2zPxpDSlYrs9TXv0TZhup0Cv2jNQno76CvAzmhGNTDPa9z2lUQ8jxzJOTTJ
-	zsZUt4IIp2bsG5QijS5TB+VmnXXN2+PoiS8biDyL4iqeuIv9YvjaYFCJMargB/SQlef4XczqEeC
-	jmt64g+itIMYO3ZrS2bHfCqwMFkE0gtQ+d3lONYgV+uQTWrUKa8jn7MNSuzL512AGqXcRfX8aQ2
-	HlHy
-X-Google-Smtp-Source: AGHT+IFszANM2ttg3bHXqwu4kokOxCLHcRwKXlC7FRtBmzrGdqYoySfArdJur+xTrJx3xY86w59zAA==
-X-Received: by 2002:a05:6a20:7f8a:b0:1db:de38:294b with SMTP id adf61e73a8af0-1e88d2f6820mr38362107637.38.1736821632027;
-        Mon, 13 Jan 2025 18:27:12 -0800 (PST)
-Received: from [10.84.148.23] ([63.216.146.178])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72d4056a5e8sm6847007b3a.53.2025.01.13.18.26.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Jan 2025 18:27:11 -0800 (PST)
-Message-ID: <a017d072-943f-4008-bb1d-7be438804a44@bytedance.com>
-Date: Tue, 14 Jan 2025 10:26:54 +0800
+	Tue, 14 Jan 2025 11:01:34 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by nyc.source.kernel.org (Postfix) with ESMTP id 4A4A2A41273;
+	Tue, 14 Jan 2025 10:59:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 165CBC4CEDD;
+	Tue, 14 Jan 2025 11:01:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736852491;
+	bh=mbHS99/jEJpIbZomuQgs7L8z3N8P/BZq6eKT12MfMQ4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MI/OnrdpyPjreb29TH1K7V92pcHREffE7EWvZPPD/CQnZx1Z2V//mN5/XO4rnjbEe
+	 woLKU+r4vDndmePFt/UZIgxmh04ThYr+z9+zfQj21ZNN0sl7KCp2Vl8WVb5SvZllou
+	 4etv5w5vUXrxnghs9U7tvjY3Mc+wDwzBs1zXG7Rvuizz8c5KbCSfqZS819UY64k+/Q
+	 H31n0Pp7yvSpueyJuMPlw2CrvcLTpEOUxOjLbaOuXtftRTndUinQPNSWPDgB+/nHR9
+	 1M3LhDFViqSxB+C7+9/3HG8tin4pDD8Gja9UlC/e1cGrVOu9nP1kn14oZvA5k7neLT
+	 OIf9MZ4k/uWTA==
+Date: Tue, 14 Jan 2025 13:01:09 +0200
+From: Mike Rapoport <rppt@kernel.org>
+To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: "Kirill A. Shutemov" <kirill@shutemov.name>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Andy Lutomirski <luto@kernel.org>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Brendan Higgins <brendan.higgins@linux.dev>,
+	Daniel Gomez <da.gomez@samsung.com>,
+	Daniel Thompson <danielt@kernel.org>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	David Gow <davidgow@google.com>,
+	Douglas Anderson <dianders@chromium.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Jason Wessel <jason.wessel@windriver.com>,
+	Jiri Kosina <jikos@kernel.org>,
+	Joe Lawrence <joe.lawrence@redhat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Miroslav Benes <mbenes@suse.cz>, "H. Peter Anvin" <hpa@zytor.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Petr Mladek <pmladek@suse.com>, Petr Pavlu <petr.pavlu@suse.com>,
+	Rae Moar <rmoar@google.com>, Richard Weinberger <richard@nod.at>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Shuah Khan <shuah@kernel.org>, Song Liu <song@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	kgdb-bugreport@lists.sourceforge.net, kunit-dev@googlegroups.com,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-mm@kvack.org, linux-modules@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+	live-patching@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH 3/8] x86/mm/pat: Restore large pages after fragmentation
+Message-ID: <Z4ZD9exBt-JQiuS6@kernel.org>
+References: <20241227072825.1288491-1-rppt@kernel.org>
+ <20241227072825.1288491-4-rppt@kernel.org>
+ <jut35igb2kstpz24apqdeubv5rvyl3vmp2s43xtivpz54uiedj@wmd2onulv4xw>
+ <Z4ODVmnC4fDnIUSN@kernel.org>
+ <sivhweds7p5sst2jpxanrj6qc7wlonqkod64nsr5cgttma7ntp@bhqespo3jdqz>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 05/17] arm64: pgtable: use mmu gather to free p4d level
- page table
-To: Will Deacon <will@kernel.org>
-Cc: peterz@infradead.org, agordeev@linux.ibm.com, kevin.brodsky@arm.com,
- alex@ghiti.fr, andreas@gaisler.com, palmer@dabbelt.com, tglx@linutronix.de,
- david@redhat.com, jannh@google.com, hughd@google.com, yuzhao@google.com,
- willy@infradead.org, muchun.song@linux.dev, vbabka@kernel.org,
- lorenzo.stoakes@oracle.com, akpm@linux-foundation.org, rientjes@google.com,
- vishal.moola@gmail.com, arnd@arndb.de, aneesh.kumar@kernel.org,
- npiggin@gmail.com, dave.hansen@linux.intel.com, rppt@kernel.org,
- ryan.roberts@arm.com, linux-mm@kvack.org,
- linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
- linux-arch@vger.kernel.org, linux-csky@vger.kernel.org,
- linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
- linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
- linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org,
- linux-um@lists.infradead.org
-References: <cover.1736317725.git.zhengqi.arch@bytedance.com>
- <3fd48525397b34a64f7c0eb76746da30814dc941.1736317725.git.zhengqi.arch@bytedance.com>
- <20250113162600.GA14101@willie-the-truck>
-Content-Language: en-US
-From: Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <20250113162600.GA14101@willie-the-truck>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <sivhweds7p5sst2jpxanrj6qc7wlonqkod64nsr5cgttma7ntp@bhqespo3jdqz>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250113_182716_159367_6AD29366 
-X-CRM114-Status: GOOD (  13.97  )
+X-CRM114-CacheID: sfid-20250114_030132_863774_ED6D7769 
+X-CRM114-Status: GOOD (  34.85  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -116,64 +106,85 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Will,
-
-On 2025/1/14 00:26, Will Deacon wrote:
-> On Wed, Jan 08, 2025 at 02:57:21PM +0800, Qi Zheng wrote:
->> Like other levels of page tables, also use mmu gather mechanism to free
->> p4d level page table.
->>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->> Originally-by: Peter Zijlstra (Intel) <peterz@infradead.org>
->> Reviewed-by: Kevin Brodsky <kevin.brodsky@arm.com>
->> Cc: linux-arm-kernel@lists.infradead.org
->> ---
->>   arch/arm64/include/asm/pgalloc.h |  1 -
->>   arch/arm64/include/asm/tlb.h     | 14 ++++++++++++++
->>   2 files changed, 14 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/arm64/include/asm/pgalloc.h b/arch/arm64/include/asm/pgalloc.h
->> index 2965f5a7e39e3..1b4509d3382c6 100644
->> --- a/arch/arm64/include/asm/pgalloc.h
->> +++ b/arch/arm64/include/asm/pgalloc.h
->> @@ -85,7 +85,6 @@ static inline void pgd_populate(struct mm_struct *mm, pgd_t *pgdp, p4d_t *p4dp)
->>   	__pgd_populate(pgdp, __pa(p4dp), pgdval);
->>   }
->>   
->> -#define __p4d_free_tlb(tlb, p4d, addr)  p4d_free((tlb)->mm, p4d)
->>   #else
->>   static inline void __pgd_populate(pgd_t *pgdp, phys_addr_t p4dp, pgdval_t prot)
->>   {
->> diff --git a/arch/arm64/include/asm/tlb.h b/arch/arm64/include/asm/tlb.h
->> index a947c6e784ed2..445282cde9afb 100644
->> --- a/arch/arm64/include/asm/tlb.h
->> +++ b/arch/arm64/include/asm/tlb.h
->> @@ -111,4 +111,18 @@ static inline void __pud_free_tlb(struct mmu_gather *tlb, pud_t *pudp,
->>   }
->>   #endif
->>   
->> +#if CONFIG_PGTABLE_LEVELS > 4
->> +static inline void __p4d_free_tlb(struct mmu_gather *tlb, p4d_t *p4dp,
->> +				  unsigned long addr)
->> +{
->> +	struct ptdesc *ptdesc = virt_to_ptdesc(p4dp);
->> +
->> +	if (!pgtable_l5_enabled())
->> +		return;
->> +
->> +	pagetable_p4d_dtor(ptdesc);
->> +	tlb_remove_ptdesc(tlb, ptdesc);
->> +}
+On Mon, Jan 13, 2025 at 10:01:13AM +0200, Kirill A. Shutemov wrote:
+> On Sun, Jan 12, 2025 at 10:54:46AM +0200, Mike Rapoport wrote:
+> > Hi Kirill,
+> > 
+> > On Fri, Jan 10, 2025 at 12:36:59PM +0200, Kirill A. Shutemov wrote:
+> > > On Fri, Dec 27, 2024 at 09:28:20AM +0200, Mike Rapoport wrote:
+> > > > From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+> > > > 
+> > > > Change of attributes of the pages may lead to fragmentation of direct
+> > > > mapping over time and performance degradation as result.
+> > > > 
+> > > > With current code it's one way road: kernel tries to avoid splitting
+> > > > large pages, but it doesn't restore them back even if page attributes
+> > > > got compatible again.
+> > > > 
+> > > > Any change to the mapping may potentially allow to restore large page.
+> > > > 
+> > > > Hook up into cpa_flush() path to check if there's any pages to be
+> > > > recovered in PUD_SIZE range around pages we've just touched.
+> > > > 
+> > > > CPUs don't like[1] to have to have TLB entries of different size for the
+> > > > same memory, but looks like it's okay as long as these entries have
+> > > > matching attributes[2]. Therefore it's critical to flush TLB before any
+> > > > following changes to the mapping.
+> > > > 
+> > > > Note that we already allow for multiple TLB entries of different sizes
+> > > > for the same memory now in split_large_page() path. It's not a new
+> > > > situation.
+> > > > 
+> > > > set_memory_4k() provides a way to use 4k pages on purpose. Kernel must
+> > > > not remap such pages as large. Re-use one of software PTE bits to
+> > > > indicate such pages.
+> > > > 
+> > > > [1] See Erratum 383 of AMD Family 10h Processors
+> > > > [2] https://lore.kernel.org/linux-mm/1da1b025-cabc-6f04-bde5-e50830d1ecf0@amd.com/
+> > > > 
+> > > > [rppt@kernel.org:
+> > > >  * s/restore/collapse/
+> > > >  * update formatting per peterz
+> > > >  * use 'struct ptdesc' instead of 'struct page' for list of page tables to
+> > > >    be freed
+> > > >  * try to collapse PMD first and if it succeeds move on to PUD as peterz
+> > > >    suggested
+> > > >  * flush TLB twice: for changes done in the original CPA call and after
+> > > >    collapsing of large pages
+> > > > ]
+> > > > 
+> > > > Link: https://lore.kernel.org/all/20200416213229.19174-1-kirill.shutemov@linux.intel.com
+> > > > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > > > Co-developed-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+> > > > Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+> > > 
+> > > When I originally attempted this, the patch was dropped because of
+> > > performance regressions. Was it addressed somehow?
+> > 
+> > I didn't realize the patch was dropped because of performance regressions,
+> > so I didn't address it.
+> > 
+> > Do you remember where did the regressions show up?
 > 
-> Should we update p4d_free() to call the destructor, too? It looks like
-> it just does free_page() atm.
-
-The patch #3 introduces the generic p4d_free() and lets arm64 to use it.
-The patch #4 adds the destructor to generic p4d_free(). So IIUC, there
-is no problem here.
-
-Thanks!
-
+> https://github.com/zen-kernel/zen-kernel/issues/169
 > 
-> Will
+> My understanding is if userspace somewhat frequently triggers set_memory_*
+> codepath we will get a performance hit.
+
+This version of the patch will cause smaller performance hit because it
+does not scan an entire PUD every time collapse_large_pages() is called.
+
+Still, when I tweaked cpa-test to take some time measurements I see about
+60% increase in the time it takes to perform set_memory operations.
+
+Since we only really care about restoring large pages for ROX mapping, I'm
+going to update the patch so that we'll try to collapse large pages only
+from set_memory_rox().
+ 
+> -- 
+>   Kiryl Shutsemau / Kirill A. Shutemov
+
+-- 
+Sincerely yours,
+Mike.
 
