@@ -4,94 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 13CDBC02183
-	for <linux-um@archiver.kernel.org>; Tue, 14 Jan 2025 11:02:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 72B38C02183
+	for <linux-um@archiver.kernel.org>; Tue, 14 Jan 2025 11:32:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=+JInSN26cxQi/MBr6S+TUtqFx1X6dz/kqWvfZ53znrY=; b=U9FR/y1O0wq0G+Nv0GlbJGVaUU
-	+phJLVy1F8ylkgTgK/iQTxpI0YkwfSEpYMIMHE7gVP8eibdbX5lAc1Bb3umYheR3kGfTNaexGx9fd
-	lDQbnA8/19xRVVUBdxbmxbRJDycHn9phhwoPSkaT6jwYtGBGdhf8Y8Rgs4xUmzt7xJejLDf5t4RJW
-	5AejqAR4sqViwA3dGK5xEtALj6o8QNxepIlAXB+qkLjbJ9kEPbxKOerfnE1JToWWAbUNIWFla3+jR
-	dJWnX/nydcH2Ih+Ty7MwLDi4a54Kzc86EQgamDGWN6gt0OGFcFDVQuh4moE+WxBk4Ru2idq/UP5i/
-	Fk4ZvLRA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=0J6A0PvieWE1aUVMRXHIYqqGpYk2ToPavpJigmE4/rI=; b=CyC61JesbSYY2Ibh3A+YBBJOru
+	Z3ihvGHOjmlvN2azblF844IKu8+WrFggolRFPAQbHI8aljYK+NVcqhtXhXKWYJG5t47VFWrkF40lR
+	3vN7Si/f91D3Av/c515RH+sc482fT/jxhLOV2kA3Ks+nKd3ympdalIrEY2V4Lss8iSwWE+5YHOZ6f
+	va4EbpB8IC5tANEf4Cse7n8tGKHiOI8l06e5r+spREcmIqEe0gzj6/nHdWVoDcrIM01iTmgGgaVgo
+	sX7nm3nblp3FxhqZv7gyUxoHJ53sEPsRtMnM1wdtqliKMahb8IPynDVmP7Lqwpx1ogttuLKddNEuT
+	6OiskOSQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tXegQ-00000008Buq-1Mun;
-	Tue, 14 Jan 2025 11:02:06 +0000
-Received: from nyc.source.kernel.org ([147.75.193.91])
+	id 1tXf9a-00000008GJ6-0Rw0;
+	Tue, 14 Jan 2025 11:32:14 +0000
+Received: from mail-pl1-x635.google.com ([2607:f8b0:4864:20::635])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tXefs-00000008BkJ-2wDY
+	id 1tXf8Q-00000008G1G-3fcu
 	for linux-um@lists.infradead.org;
-	Tue, 14 Jan 2025 11:01:34 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 4A4A2A41273;
-	Tue, 14 Jan 2025 10:59:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 165CBC4CEDD;
-	Tue, 14 Jan 2025 11:01:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736852491;
-	bh=mbHS99/jEJpIbZomuQgs7L8z3N8P/BZq6eKT12MfMQ4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MI/OnrdpyPjreb29TH1K7V92pcHREffE7EWvZPPD/CQnZx1Z2V//mN5/XO4rnjbEe
-	 woLKU+r4vDndmePFt/UZIgxmh04ThYr+z9+zfQj21ZNN0sl7KCp2Vl8WVb5SvZllou
-	 4etv5w5vUXrxnghs9U7tvjY3Mc+wDwzBs1zXG7Rvuizz8c5KbCSfqZS819UY64k+/Q
-	 H31n0Pp7yvSpueyJuMPlw2CrvcLTpEOUxOjLbaOuXtftRTndUinQPNSWPDgB+/nHR9
-	 1M3LhDFViqSxB+C7+9/3HG8tin4pDD8Gja9UlC/e1cGrVOu9nP1kn14oZvA5k7neLT
-	 OIf9MZ4k/uWTA==
-Date: Tue, 14 Jan 2025 13:01:09 +0200
-From: Mike Rapoport <rppt@kernel.org>
-To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc: "Kirill A. Shutemov" <kirill@shutemov.name>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Andy Lutomirski <luto@kernel.org>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Brendan Higgins <brendan.higgins@linux.dev>,
-	Daniel Gomez <da.gomez@samsung.com>,
-	Daniel Thompson <danielt@kernel.org>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	David Gow <davidgow@google.com>,
-	Douglas Anderson <dianders@chromium.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Jason Wessel <jason.wessel@windriver.com>,
-	Jiri Kosina <jikos@kernel.org>,
-	Joe Lawrence <joe.lawrence@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Miroslav Benes <mbenes@suse.cz>, "H. Peter Anvin" <hpa@zytor.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Petr Mladek <pmladek@suse.com>, Petr Pavlu <petr.pavlu@suse.com>,
-	Rae Moar <rmoar@google.com>, Richard Weinberger <richard@nod.at>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Shuah Khan <shuah@kernel.org>, Song Liu <song@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	kgdb-bugreport@lists.sourceforge.net, kunit-dev@googlegroups.com,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-mm@kvack.org, linux-modules@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	live-patching@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH 3/8] x86/mm/pat: Restore large pages after fragmentation
-Message-ID: <Z4ZD9exBt-JQiuS6@kernel.org>
-References: <20241227072825.1288491-1-rppt@kernel.org>
- <20241227072825.1288491-4-rppt@kernel.org>
- <jut35igb2kstpz24apqdeubv5rvyl3vmp2s43xtivpz54uiedj@wmd2onulv4xw>
- <Z4ODVmnC4fDnIUSN@kernel.org>
- <sivhweds7p5sst2jpxanrj6qc7wlonqkod64nsr5cgttma7ntp@bhqespo3jdqz>
+	Tue, 14 Jan 2025 11:31:04 +0000
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-2163b0c09afso97027325ad.0
+        for <linux-um@lists.infradead.org>; Tue, 14 Jan 2025 03:31:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1736854262; x=1737459062; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0J6A0PvieWE1aUVMRXHIYqqGpYk2ToPavpJigmE4/rI=;
+        b=nC6DH+T/dS0fvsZeuX2mBldo8IAtxhPyAaicvHZcVsg0EcxkDJCb/hLQIYAO1DwzQ1
+         sRuta8DAmOpXXCqL9g/VF6iFaRZTAzoUPX8JkVulp/+wfuQS1x4TW3/KX1PbjlK50RKb
+         aaThOnNPCDeLGcvvnFYMUkQ+uxjKV7TtcZXsOU4KCTZ5AUofmNQao0tSUVKelf+9G5N2
+         kqHIcnoXzwmyX3hIAHcpyvsUG754jNufUq8P9t1TKJ11/NqmqKawcnvQOHs9lQ989v8Y
+         rT/nljGL8WmriMMUARvYZD6LWkkT4udxRIB9bFAjRLCKFhmRFWyeQaJRLM/Xf3JWtf4n
+         Z2VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736854262; x=1737459062;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0J6A0PvieWE1aUVMRXHIYqqGpYk2ToPavpJigmE4/rI=;
+        b=IlJnWPKIU/ykqyn8iPtMjBQkFZysxWYpE025KZ1FXzCi1BMWkK73Asb8eLj8cXYtkx
+         6BIgzAJ0pCkIS4SpKvJfmROVqaPCiyUd0pw8IPFRAGkX6P7KrsnvtTM/ZyaOvFiPoyT9
+         8hLDyZsDEKyI/XdAgDO+2wTfc6yIiA8OriSO1SBQGyhUrINwdz+BWOTlAactZ5PDciw+
+         dMyRl8IeeJMTKxyRrPsef/e0f2nw88xo9IzSdAdPxuxGM7Bj7VoOt5+qBjHJAZzTOPO8
+         moeUa0LJ0jV2hllXPtwUz6rCdgdRbVgBsJTWhzGEFEE8tQ/Bwv27XLQyNMcwmSDXrUT1
+         lUkw==
+X-Gm-Message-State: AOJu0YxtglG5NkqCoRP33Zt4wi/gysH33uNl3JwRbTUWrPVLKx8sonKW
+	4oTH0NPsE0khLMg2XpmSyTzbhFYeTAyKhqVLSWgKidu6iYq0gV0W
+X-Gm-Gg: ASbGnctktHP9l0YH8k6Sw9Dfwg+GVpSgalZHe7rZ6wplHKzKIyZPTicxyxZ/bGGU9DK
+	vXvasDDUE4SHtDWth1ee+g3vYuTjgpC9o2nshIJTIgOrISm1J+Exk32nztjlF42XB3tmV9ZdgMC
+	6dpEDpaRv4Y5cKitoA5yOHpgh9MEw6gJrIzK1Oirg5vCmgvfPUYdeulaS90Lq/87lz1P3uMq8tp
+	D52U/QWsUZamUoIuaw1riuzim+awbTBy2cJJ86jGIJzv5oRs5Nj46IsmaL/Sz0Cwa+dmjOpgKLc
+	FCmpEatGI3NUOgJTKRDB5EwSpgCK
+X-Google-Smtp-Source: AGHT+IGXnPXUgjJlh0MYremwfJy6xH6bFlnytH9bj/gAX+3RKKaTQVPdMfHtdh9wvc2EvbF19aSUtQ==
+X-Received: by 2002:a05:6a00:4603:b0:728:e745:23cd with SMTP id d2e1a72fcca58-72d21f113a1mr37843067b3a.3.1736854261808;
+        Tue, 14 Jan 2025 03:31:01 -0800 (PST)
+Received: from ikb-h07-29-noble.in.iijlab.net ([202.214.97.5])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72d405489e2sm7239338b3a.32.2025.01.14.03.31.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jan 2025 03:31:01 -0800 (PST)
+Received: by ikb-h07-29-noble.in.iijlab.net (Postfix, from userid 1010)
+	id B06C9E1AB4E; Tue, 14 Jan 2025 20:30:58 +0900 (JST)
+From: Hajime Tazaki <thehajime@gmail.com>
+To: linux-um@lists.infradead.org
+Cc: thehajime@gmail.com,
+	ricarkol@google.com,
+	Liam.Howlett@oracle.com
+Subject: [PATCH v6 01/13] x86/um: clean up elf specific definitions
+Date: Tue, 14 Jan 2025 20:30:39 +0900
+Message-ID: <2d70a0ed79ee0a0bef80ad4790063f4833dd9bed.1736853926.git.thehajime@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <cover.1736853925.git.thehajime@gmail.com>
+References: <cover.1736853925.git.thehajime@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <sivhweds7p5sst2jpxanrj6qc7wlonqkod64nsr5cgttma7ntp@bhqespo3jdqz>
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250114_030132_863774_ED6D7769 
-X-CRM114-Status: GOOD (  34.85  )
+X-CRM114-CacheID: sfid-20250114_033102_928314_C2F47892 
+X-CRM114-Status: GOOD (  10.03  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -106,85 +99,59 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, Jan 13, 2025 at 10:01:13AM +0200, Kirill A. Shutemov wrote:
-> On Sun, Jan 12, 2025 at 10:54:46AM +0200, Mike Rapoport wrote:
-> > Hi Kirill,
-> > 
-> > On Fri, Jan 10, 2025 at 12:36:59PM +0200, Kirill A. Shutemov wrote:
-> > > On Fri, Dec 27, 2024 at 09:28:20AM +0200, Mike Rapoport wrote:
-> > > > From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-> > > > 
-> > > > Change of attributes of the pages may lead to fragmentation of direct
-> > > > mapping over time and performance degradation as result.
-> > > > 
-> > > > With current code it's one way road: kernel tries to avoid splitting
-> > > > large pages, but it doesn't restore them back even if page attributes
-> > > > got compatible again.
-> > > > 
-> > > > Any change to the mapping may potentially allow to restore large page.
-> > > > 
-> > > > Hook up into cpa_flush() path to check if there's any pages to be
-> > > > recovered in PUD_SIZE range around pages we've just touched.
-> > > > 
-> > > > CPUs don't like[1] to have to have TLB entries of different size for the
-> > > > same memory, but looks like it's okay as long as these entries have
-> > > > matching attributes[2]. Therefore it's critical to flush TLB before any
-> > > > following changes to the mapping.
-> > > > 
-> > > > Note that we already allow for multiple TLB entries of different sizes
-> > > > for the same memory now in split_large_page() path. It's not a new
-> > > > situation.
-> > > > 
-> > > > set_memory_4k() provides a way to use 4k pages on purpose. Kernel must
-> > > > not remap such pages as large. Re-use one of software PTE bits to
-> > > > indicate such pages.
-> > > > 
-> > > > [1] See Erratum 383 of AMD Family 10h Processors
-> > > > [2] https://lore.kernel.org/linux-mm/1da1b025-cabc-6f04-bde5-e50830d1ecf0@amd.com/
-> > > > 
-> > > > [rppt@kernel.org:
-> > > >  * s/restore/collapse/
-> > > >  * update formatting per peterz
-> > > >  * use 'struct ptdesc' instead of 'struct page' for list of page tables to
-> > > >    be freed
-> > > >  * try to collapse PMD first and if it succeeds move on to PUD as peterz
-> > > >    suggested
-> > > >  * flush TLB twice: for changes done in the original CPA call and after
-> > > >    collapsing of large pages
-> > > > ]
-> > > > 
-> > > > Link: https://lore.kernel.org/all/20200416213229.19174-1-kirill.shutemov@linux.intel.com
-> > > > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > > > Co-developed-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
-> > > > Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
-> > > 
-> > > When I originally attempted this, the patch was dropped because of
-> > > performance regressions. Was it addressed somehow?
-> > 
-> > I didn't realize the patch was dropped because of performance regressions,
-> > so I didn't address it.
-> > 
-> > Do you remember where did the regressions show up?
-> 
-> https://github.com/zen-kernel/zen-kernel/issues/169
-> 
-> My understanding is if userspace somewhat frequently triggers set_memory_*
-> codepath we will get a performance hit.
+The file arch/x86/um/asm/module.h is equivalent to the definition of
+asm-generic.  Thus this commit cleans up to use it.
 
-This version of the patch will cause smaller performance hit because it
-does not scan an entire PUD every time collapse_large_pages() is called.
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+---
+ arch/um/include/asm/Kbuild |  1 +
+ arch/x86/um/asm/module.h   | 24 ------------------------
+ 2 files changed, 1 insertion(+), 24 deletions(-)
+ delete mode 100644 arch/x86/um/asm/module.h
 
-Still, when I tweaked cpa-test to take some time measurements I see about
-60% increase in the time it takes to perform set_memory operations.
-
-Since we only really care about restoring large pages for ROX mapping, I'm
-going to update the patch so that we'll try to collapse large pages only
-from set_memory_rox().
- 
-> -- 
->   Kiryl Shutsemau / Kirill A. Shutemov
-
+diff --git a/arch/um/include/asm/Kbuild b/arch/um/include/asm/Kbuild
+index 428f2c5158c2..04ab3b653a48 100644
+--- a/arch/um/include/asm/Kbuild
++++ b/arch/um/include/asm/Kbuild
+@@ -13,6 +13,7 @@ generic-y += irq_work.h
+ generic-y += kdebug.h
+ generic-y += mcs_spinlock.h
+ generic-y += mmiowb.h
++generic-y += module.h
+ generic-y += module.lds.h
+ generic-y += param.h
+ generic-y += parport.h
+diff --git a/arch/x86/um/asm/module.h b/arch/x86/um/asm/module.h
+deleted file mode 100644
+index a3b061d66082..000000000000
+--- a/arch/x86/um/asm/module.h
++++ /dev/null
+@@ -1,24 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef __UM_MODULE_H
+-#define __UM_MODULE_H
+-
+-/* UML is simple */
+-struct mod_arch_specific
+-{
+-};
+-
+-#ifdef CONFIG_X86_32
+-
+-#define Elf_Shdr Elf32_Shdr
+-#define Elf_Sym Elf32_Sym
+-#define Elf_Ehdr Elf32_Ehdr
+-
+-#else
+-
+-#define Elf_Shdr Elf64_Shdr
+-#define Elf_Sym Elf64_Sym
+-#define Elf_Ehdr Elf64_Ehdr
+-
+-#endif
+-
+-#endif
 -- 
-Sincerely yours,
-Mike.
+2.43.0
+
 
