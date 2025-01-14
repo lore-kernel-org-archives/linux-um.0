@@ -4,84 +4,87 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3541CE77188
-	for <linux-um@archiver.kernel.org>; Tue, 14 Jan 2025 11:32:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 471AFC02186
+	for <linux-um@archiver.kernel.org>; Tue, 14 Jan 2025 11:32:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=KzIoqUFnfn18Jicgrsuc63i7gGyP5+jCxoMSmhVj+0s=; b=L+scFWjjOzyj47Gil92lXaqp/8
-	WB7I1ukHp38c7uTfOSbc48fCDVP6uCrSMY7BdnQF15p7CJC49/C434U9JLyf6u5zkJLL/22eCObVZ
-	1rIaFmJfJNIvYbzGhkSkHHJbctqQ6eputBleYJqTNXC2aN0Zd4rzoZX8bepRlzQ0v5lkwgvMB1AnI
-	yaO+wcvE6ODixdRoF0IjO7e/ks6JxMAagBbjBgAtMqO2qwf2nDEBAeq0HuRBTwQ4tx7Jxa6bG8AQU
-	v9y4q2C/f/2b8ApLbS+MxvigcewzXrDjsqQt7OAcy8nSjiK5iVAtOaTo5khZl0kVWUNQEjLiOU0b7
-	xxod11Wg==;
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=a4qzPlb3D9VCFUyuRjUxUUJ/e3JRyLtND6gaWf9vBJo=; b=CWAQ84ECTC+Z6iVMTHR6Jc+F/p
+	SINrJN7yrtP1o7EDru376o33QGOQlkgccOsfo1ZLO71XuUPcrNFhJG5PUPp3hokrt/ZbzAyAR/apY
+	d+A3wgsyKU3Tx663URlsC7XuBsCqxoGfmMbiX0Iav1IQSNPh8ZOebZumQlZj5XJcVzvFtfAs8p7Wi
+	YWT2a26DSBVohSWr55Ofd1bOF8mkMYOQKFqRgo3asq/553SjztEg09+ZdLrPmtTG9XfXzk3Jws2YI
+	1uBLOCdgFyrrhmce8/lho/srBPB+myRd8Ba+aaIQMldxiW2K2ZljbGnLqguW7TZ/CIBpXdcXCZDV3
+	bUItRBEw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tXf9Z-00000008GIj-3OTG;
-	Tue, 14 Jan 2025 11:32:13 +0000
+	id 1tXf9b-00000008GJz-0Ak6;
+	Tue, 14 Jan 2025 11:32:15 +0000
 Received: from mail-pl1-x631.google.com ([2607:f8b0:4864:20::631])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tXf8N-00000008G0K-1at4
+	id 1tXf8X-00000008G2t-0ejE
 	for linux-um@lists.infradead.org;
-	Tue, 14 Jan 2025 11:31:00 +0000
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-21661be2c2dso91382305ad.1
-        for <linux-um@lists.infradead.org>; Tue, 14 Jan 2025 03:30:58 -0800 (PST)
+	Tue, 14 Jan 2025 11:31:10 +0000
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-2163bd70069so96334205ad.0
+        for <linux-um@lists.infradead.org>; Tue, 14 Jan 2025 03:31:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736854258; x=1737459058; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KzIoqUFnfn18Jicgrsuc63i7gGyP5+jCxoMSmhVj+0s=;
-        b=V4YOzJ5Agmj+76mS4v4S7UGGa+yk5A2lFiLDHfZYtbccP3Fl6j/UjVLAe3pdq4zgb9
-         Ve3WfAhZGP+q9wBUcheJKNo54uSpQ0K4C5f6Lm712/oYGamqN4nUEqIPwPArMVp6XHKO
-         sYalUF1+RbclDTn9IEHv/Lh2KRjO8XOVF75o1gzcP124ypPNeGptsFxlMp9rlYa6z+jr
-         QbqdfIANQ/ov5nZS+xVJpbPtp5OfN8TgGiDLC9gEnIQv/e6OK/N2EXn9/Y0RjreCiwOO
-         A1rjn55Zv/kdmuiKia2GABYUIE5rvkLAmOQet5ArmwDA3BblcE+1hi5tZCOq8QdzyDcZ
-         9EEQ==
+        d=gmail.com; s=20230601; t=1736854268; x=1737459068; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a4qzPlb3D9VCFUyuRjUxUUJ/e3JRyLtND6gaWf9vBJo=;
+        b=TN3Ih4xBwq12imuQ3PJtI10w2JncFVrz3kDAyJ3Rs0y7wCY1o4njtCEM4j7o6lXVMv
+         T9aUamvQcQBjkpDvxoVCak8xpNwZiCqh1SyIDyoNiqe5WmpRiv5GwPNhtx1pwvCcWQQ8
+         jnd9fhnRB93Uk8RsmZP36Ohg8fPYOzaM0Qo3QFgzD7Zn4arGldJTcD+WCUCiJ9c0yM8X
+         CMMw31JBXFOt0TnE2RLWhc2us9YhMzKMuwtP0WNXT2bg8S2QoofqTj/bjtxY+nv2sjZm
+         nDnez9WgHtF8mK4qJFu9zEcaUZ7k6VpbbVXIYVHssYRgh6SYKONnGUwA3Aq5xzOZi9Wa
+         2HIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736854258; x=1737459058;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KzIoqUFnfn18Jicgrsuc63i7gGyP5+jCxoMSmhVj+0s=;
-        b=Yi7cSnCIRCNh/CZrYVL7omDC8/iTcmm1sh++mXDEgmw4+Se05ns2i9LvQpVtGTlDdh
-         2hiUM1mN8J+VM1EpDBCv4ujtS9jYbYPSj2DaWWG1twmCAs6k8GX8K1229b6iaKEQXD4N
-         hgDEqnKb/HhqgWsTucWNaXaHGdsK+Se0thS7gzls2i/qudkqHLaQ7/fMNRx9wzwr3ldH
-         EQIUxuvc7+x0KZVWfdRzVfhospd4Ph0ZLQ+9wsd/mlA9r5FIATgThtuYAK6m/t18To+G
-         GzP2VCIvzA9+Lqi4cfRS50f7Qe3vhfPgEOpAqtePBnT8ottlrfz8xhJsksVHXZqF7vA9
-         4V6g==
-X-Gm-Message-State: AOJu0Yx/2f84bl/8RMaE56spZM5oQroKTxU9t/LOBSxDviY3v5d4SMZE
-	lVynTfhSxGVR6RFcLZKrAGDlPYwCQUQVfJRJp9Vx32DO8DSrV3mb0pGoqA==
-X-Gm-Gg: ASbGncuWzI8EUIIYtp9clgfie5c8bLAGAVNBKwvN8vcK01X3mW4WKb4xVUi0kwe31f4
-	hpl8iljH0jtMSMEYolqH7tI1xSFOnqvXlGkJgAlrPExW1DCahdr/sM4Zxx0/5HE8D3iKK4ikz2Y
-	zNpv9oX6Jjehw1m6W3xBTDLtQGwIWT6HYuoutI4+nieZoLLFoMdp4jz/vgkIu6nTzNxMkB3uAI2
-	u/I+qPb2g2f5l+nUetzfUhlZWqUNi/NOdfBRGzPdbwVzoRpS6mNpOfzE+HCAwtOjj8yQ8cgUnoh
-	f9M7lAb4z70ScYIQQdTo6SLCMbMR
-X-Google-Smtp-Source: AGHT+IFI1+uYb2igIIeMpX95sd+zTjjUC5QdNsIbrTr4VY+eGboabpM2sMABN3hEUG1R1Mt1lg8DsQ==
-X-Received: by 2002:a17:90b:35c7:b0:2ee:e961:303d with SMTP id 98e67ed59e1d1-2f548f3f994mr34768335a91.35.1736854257849;
-        Tue, 14 Jan 2025 03:30:57 -0800 (PST)
+        d=1e100.net; s=20230601; t=1736854268; x=1737459068;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=a4qzPlb3D9VCFUyuRjUxUUJ/e3JRyLtND6gaWf9vBJo=;
+        b=hQseeKvNkZpLERUPBeDVeKHUQOiGgalWd5qU1PxY72tBBC4jFsiNtCoXcBDCyU/ZfJ
+         68fqP4daOWQ+ieFzfho81M7Fpf8tzS6TxWBTUqP0NdTKjfqv44MP+DLTb8/vUQ551vbm
+         QQCkNVH7XTq4qrHfnZ39BrUZVIl3NW65oinWQSEXiJbRXaw0n8ed0PNQmtIV2f1PybT0
+         pg3/l+LkDVt/Mm4G/G9bwsWvgbnG2STyFGDmBrc3OoOkHr8GTP3yJKS9LDblvyajTxPR
+         q3G0rqnGCOBpZKz5CEZTWDVdY+5BVCtCnAUCgUWroDGnRhb4GJZ0YeIeutbFlO1kwRTH
+         ACMA==
+X-Gm-Message-State: AOJu0YyCT5eJZZPh3Jj0heiPKcLXziSUSMr8oBX89rXe/rJnQn1gzHuL
+	PqiO1eEnfjMNX/Yydbrg7s0Ff+wS6S917lIuZ8W+15I/Vhs+SLQP
+X-Gm-Gg: ASbGncsnuBr3ZlZGMrgO6xuzj8tsCinFqXhtyeAicMJ6FLVaDYShhwnP2NwPMMsKTh3
+	w7g2neKXzmBxI6nnxKU5tXXtnwb++ifjGWYvqul2wjCvJBMkCgX0Uzvil8u1Pcg9ozL3rAq2fa9
+	TvGBzkhF+YXk0kRgjio06VdDpCS2Xpg2qmrO0EgPFcSs6ENJy1viuYDgNivq7fXGGdaqI05cFAp
+	C06mXUlt/rfiP168JQFxlRsTMGrp5exxA3498BI+fY5jFtku/nw9Bw+OKW4+/WMhOkftLEZ8k95
+	INVnuAOlK5YuspBuNOqsZokdixpY
+X-Google-Smtp-Source: AGHT+IE0QuYawLNCogBA64/LJltqIjKpuHT/KSyZidcToRYglT0fhktKjutvxT3Q66aGl88GXcTGwg==
+X-Received: by 2002:a17:902:d2d2:b0:216:2bd7:1c4a with SMTP id d9443c01a7336-21a83f88f24mr367658565ad.26.1736854268370;
+        Tue, 14 Jan 2025 03:31:08 -0800 (PST)
 Received: from ikb-h07-29-noble.in.iijlab.net ([202.214.97.5])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f5593feaebsm9285747a91.13.2025.01.14.03.30.56
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21a9f21b4c2sm66598325ad.137.2025.01.14.03.31.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jan 2025 03:30:57 -0800 (PST)
+        Tue, 14 Jan 2025 03:31:07 -0800 (PST)
 Received: by ikb-h07-29-noble.in.iijlab.net (Postfix, from userid 1010)
-	id 1162AE1AB4C; Tue, 14 Jan 2025 20:30:54 +0900 (JST)
+	id 203AEE1AB54; Tue, 14 Jan 2025 20:31:05 +0900 (JST)
 From: Hajime Tazaki <thehajime@gmail.com>
 To: linux-um@lists.infradead.org
 Cc: thehajime@gmail.com,
 	ricarkol@google.com,
 	Liam.Howlett@oracle.com
-Subject: [PATCH v6 00/13] nommu UML
-Date: Tue, 14 Jan 2025 20:30:38 +0900
-Message-ID: <cover.1736853925.git.thehajime@gmail.com>
+Subject: [PATCH v6 04/13] um: nommu: memory handling
+Date: Tue, 14 Jan 2025 20:30:42 +0900
+Message-ID: <740b3b0f1a28115eeb709924b0c5cfc80bed52c7.1736853926.git.thehajime@gmail.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <cover.1736853925.git.thehajime@gmail.com>
+References: <cover.1736853925.git.thehajime@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250114_033059_425517_D6EC0519 
-X-CRM114-Status: GOOD (  19.63  )
+X-CRM114-CacheID: sfid-20250114_033109_195241_8EB3C6A4 
+X-CRM114-Status: GOOD (  16.10  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,150 +99,170 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-This patchset is another spin of nommu mode addition to UML.  It doesn't
-change a lot since the last version (v5), but contain clean ups.  It would
-be nice to hear about your opinions on that.
+This commit adds memory operations on UML under !MMU environment.
 
-There are still several limitations/issues which we already found;
-here is the list of those issues.
+Some part of the original UML code relying on CONFIG_MMU are excluded
+from compilation when !CONFIG_MMU.  Additionally, generic functions such as
+uaccess, futex, memcpy/strnlen/strncpy can be used as user- and
+kernel-space share the address space in !CONFIG_MMU mode.
 
-- memory mapped by loadable modules are not distinguished from
-  userspace memory.
+Signed-off-by: Hajime Tazaki <thehajime@gmail.com>
+Signed-off-by: Ricardo Koller <ricarkol@google.com>
+---
+ arch/um/Makefile                  | 4 ++++
+ arch/um/include/asm/futex.h       | 4 ++++
+ arch/um/include/asm/mmu.h         | 3 +++
+ arch/um/include/asm/mmu_context.h | 2 ++
+ arch/um/include/asm/uaccess.h     | 7 ++++---
+ arch/um/kernel/mem.c              | 3 ++-
+ arch/um/os-Linux/mem.c            | 4 ++++
+ arch/um/os-Linux/process.c        | 4 ++--
+ 8 files changed, 25 insertions(+), 6 deletions(-)
 
--- Hajime
-
-v6:
-- rebase to the latest uml/next tree
-- more clean up on mmu/nommu for signal handling [10/13]
-- rename functions of mcontext routines [06,10/13]
-- added Acked-by tag for binfmt_elf_fdpic [02/13]
-
-v5:
-- clean up stack manipulation code [05,06,07,10/13]
-- https://lore.kernel.org/linux-um/cover.1733998168.git.thehajime@gmail.com/
-
-v4:
-- add arch/um/nommu, arch/x86/um/nommu to contain !MMU specific codes
-- remove zpoline patch
-- drop binfmt_elf_fdpic patch
-- reduce ifndef CONFIG_MMU if possible
-- split to elf header cleanup patch [01/13]
-- fix kernel test robot warnings [06/13]
-- fix coding styles [07/13]
-- move task_top_of_stack definition [05/13]
-- https://lore.kernel.org/linux-um/cover.1733652929.git.thehajime@gmail.com/
-
-v3:
-- https://lore.kernel.org/linux-um/cover.1733199769.git.thehajime@gmail.com/
-- add seccomp-based syscall hook in addition to zpoline [06/13]
-- remove RFC, add a line to MAINTAINERS file
-- fix kernel test robot warnings [02/13,08/13,10/13]
-- add base-commit tag to cover letter
-- pull the latest uml/next
-- clean up SIGSEGV handling [10/13]
-- detect fsgsbase availability with elf aux vector [08/13]
-- simplify vdso code with macros [09/13]
-
-RFC v2:
-- https://lore.kernel.org/linux-um/cover.1731290567.git.thehajime@gmail.com/
-- base branch is now uml/linux.git instead of torvalds/linux.git.
-- reorganize the patch series to clean up
-- fixed various coding styles issues
-- clean up exec code path [07/13]
-- fixed the crash/SIGSEGV case on userspace programs [10/13]
-- add seccomp filter to limit syscall caller address [06/13]
-- detect fsgsbase availability with sigsetjmp/siglongjmp [08/13]
-- removes unrelated changes
-- removes unneeded ifndef CONFIG_MMU
-- convert UML_CONFIG_MMU to CONFIG_MMU as using uml/linux.git
-- proposed a patch of maple-tree issue (resolving a limitation in RFC v1)
-  https://lore.kernel.org/linux-mm/20241108222834.3625217-1-thehajime@gmail.com/
-
-RFC:
-- https://lore.kernel.org/linux-um/cover.1729770373.git.thehajime@gmail.com/
-
-Hajime Tazaki (13):
-  x86/um: clean up elf specific definitions
-  x86/um: nommu: elf loader for fdpic
-  um: decouple MMU specific code from the common part
-  um: nommu: memory handling
-  x86/um: nommu: syscall handling
-  um: nommu: seccomp syscalls hook
-  x86/um: nommu: process/thread handling
-  um: nommu: configure fs register on host syscall invocation
-  x86/um/vdso: nommu: vdso memory update
-  x86/um: nommu: signal handling
-  um: change machine name for uname output
-  um: nommu: add documentation of nommu UML
-  um: nommu: plug nommu code into build system
-
- Documentation/virt/uml/nommu-uml.rst    | 177 ++++++++++++++++++++++
- MAINTAINERS                             |   1 +
- arch/um/Kconfig                         |  14 +-
- arch/um/Makefile                        |  10 ++
- arch/um/configs/x86_64_nommu_defconfig  |  64 ++++++++
- arch/um/include/asm/Kbuild              |   1 +
- arch/um/include/asm/futex.h             |   4 +
- arch/um/include/asm/mmu.h               |   8 +
- arch/um/include/asm/mmu_context.h       |   2 +
- arch/um/include/asm/ptrace-generic.h    |   6 +
- arch/um/include/asm/uaccess.h           |   7 +-
- arch/um/include/shared/kern_util.h      |  12 ++
- arch/um/include/shared/os.h             |  16 ++
- arch/um/kernel/Makefile                 |   5 +-
- arch/um/kernel/mem-pgtable.c            |  55 +++++++
- arch/um/kernel/mem.c                    |  39 +----
- arch/um/kernel/process.c                |  25 ++++
- arch/um/kernel/skas/process.c           |  27 ----
- arch/um/kernel/um_arch.c                |   3 +
- arch/um/nommu/Makefile                  |   3 +
- arch/um/nommu/os-Linux/Makefile         |   7 +
- arch/um/nommu/os-Linux/signal.c         |  28 ++++
- arch/um/nommu/trap.c                    | 188 ++++++++++++++++++++++++
- arch/um/os-Linux/Makefile               |   8 +-
- arch/um/os-Linux/internal.h             |   5 +
- arch/um/os-Linux/mem.c                  |   4 +
- arch/um/os-Linux/process.c              | 149 ++++++++++++++++++-
- arch/um/os-Linux/seccomp.c              |  87 +++++++++++
- arch/um/os-Linux/signal.c               |  31 +++-
- arch/um/os-Linux/skas/process.c         | 132 -----------------
- arch/um/os-Linux/start_up.c             |  20 +++
- arch/um/os-Linux/util.c                 |   3 +-
- arch/x86/um/Makefile                    |   7 +-
- arch/x86/um/asm/elf.h                   |   8 +-
- arch/x86/um/asm/module.h                |  24 ---
- arch/x86/um/nommu/Makefile              |   8 +
- arch/x86/um/nommu/do_syscall_64.c       |  74 ++++++++++
- arch/x86/um/nommu/entry_64.S            | 113 ++++++++++++++
- arch/x86/um/nommu/os-Linux/Makefile     |   6 +
- arch/x86/um/nommu/os-Linux/mcontext.c   |  24 +++
- arch/x86/um/nommu/syscalls.h            |  16 ++
- arch/x86/um/nommu/syscalls_64.c         | 115 +++++++++++++++
- arch/x86/um/shared/sysdep/mcontext.h    |   4 +
- arch/x86/um/shared/sysdep/syscalls_64.h |   6 +
- arch/x86/um/signal.c                    |   7 +
- arch/x86/um/vdso/vma.c                  |  17 ++-
- fs/Kconfig.binfmt                       |   2 +-
- 47 files changed, 1328 insertions(+), 244 deletions(-)
- create mode 100644 Documentation/virt/uml/nommu-uml.rst
- create mode 100644 arch/um/configs/x86_64_nommu_defconfig
- create mode 100644 arch/um/kernel/mem-pgtable.c
- create mode 100644 arch/um/nommu/Makefile
- create mode 100644 arch/um/nommu/os-Linux/Makefile
- create mode 100644 arch/um/nommu/os-Linux/signal.c
- create mode 100644 arch/um/nommu/trap.c
- create mode 100644 arch/um/os-Linux/seccomp.c
- delete mode 100644 arch/x86/um/asm/module.h
- create mode 100644 arch/x86/um/nommu/Makefile
- create mode 100644 arch/x86/um/nommu/do_syscall_64.c
- create mode 100644 arch/x86/um/nommu/entry_64.S
- create mode 100644 arch/x86/um/nommu/os-Linux/Makefile
- create mode 100644 arch/x86/um/nommu/os-Linux/mcontext.c
- create mode 100644 arch/x86/um/nommu/syscalls.h
- create mode 100644 arch/x86/um/nommu/syscalls_64.c
-
-
-base-commit: 2d2b61ae38bd91217ea7cc5bc700a2b9e75b3937
+diff --git a/arch/um/Makefile b/arch/um/Makefile
+index 1d36a613aad8..fcf4bb915a31 100644
+--- a/arch/um/Makefile
++++ b/arch/um/Makefile
+@@ -46,6 +46,10 @@ ARCH_INCLUDE	:= -I$(srctree)/$(SHARED_HEADERS)
+ ARCH_INCLUDE	+= -I$(srctree)/$(HOST_DIR)/um/shared
+ KBUILD_CPPFLAGS += -I$(srctree)/$(HOST_DIR)/um
+ 
++ifneq ($(CONFIG_MMU),y)
++core-y += $(ARCH_DIR)/nommu/
++endif
++
+ # -Dvmap=kernel_vmap prevents anything from referencing the libpcap.o symbol so
+ # named - it's a common symbol in libpcap, so we get a binary which crashes.
+ #
+diff --git a/arch/um/include/asm/futex.h b/arch/um/include/asm/futex.h
+index 780aa6bfc050..785fd6649aa2 100644
+--- a/arch/um/include/asm/futex.h
++++ b/arch/um/include/asm/futex.h
+@@ -7,8 +7,12 @@
+ #include <asm/errno.h>
+ 
+ 
++#ifdef CONFIG_MMU
+ int arch_futex_atomic_op_inuser(int op, u32 oparg, int *oval, u32 __user *uaddr);
+ int futex_atomic_cmpxchg_inatomic(u32 *uval, u32 __user *uaddr,
+ 			      u32 oldval, u32 newval);
++#else
++#include <asm-generic/futex.h>
++#endif
+ 
+ #endif
+diff --git a/arch/um/include/asm/mmu.h b/arch/um/include/asm/mmu.h
+index 01422b761aa0..d4087f9499e2 100644
+--- a/arch/um/include/asm/mmu.h
++++ b/arch/um/include/asm/mmu.h
+@@ -15,10 +15,13 @@ typedef struct mm_context {
+ 	unsigned long sync_tlb_range_from;
+ 	unsigned long sync_tlb_range_to;
+ 
++#ifndef CONFIG_MMU
++	unsigned long   end_brk;
+ #ifdef CONFIG_BINFMT_ELF_FDPIC
+ 	unsigned long   exec_fdpic_loadmap;
+ 	unsigned long   interp_fdpic_loadmap;
+ #endif
++#endif /* !CONFIG_MMU */
+ } mm_context_t;
+ 
+ #endif
+diff --git a/arch/um/include/asm/mmu_context.h b/arch/um/include/asm/mmu_context.h
+index 23dcc914d44e..033a70166066 100644
+--- a/arch/um/include/asm/mmu_context.h
++++ b/arch/um/include/asm/mmu_context.h
+@@ -36,11 +36,13 @@ static inline void switch_mm(struct mm_struct *prev, struct mm_struct *next,
+ 	}
+ }
+ 
++#ifdef CONFIG_MMU
+ #define init_new_context init_new_context
+ extern int init_new_context(struct task_struct *task, struct mm_struct *mm);
+ 
+ #define destroy_context destroy_context
+ extern void destroy_context(struct mm_struct *mm);
++#endif
+ 
+ #include <asm-generic/mmu_context.h>
+ 
+diff --git a/arch/um/include/asm/uaccess.h b/arch/um/include/asm/uaccess.h
+index 1d4b6bbc1b65..9bfee12cb6b7 100644
+--- a/arch/um/include/asm/uaccess.h
++++ b/arch/um/include/asm/uaccess.h
+@@ -22,6 +22,7 @@
+ #define __addr_range_nowrap(addr, size) \
+ 	((unsigned long) (addr) <= ((unsigned long) (addr) + (size)))
+ 
++#ifdef CONFIG_MMU
+ extern unsigned long raw_copy_from_user(void *to, const void __user *from, unsigned long n);
+ extern unsigned long raw_copy_to_user(void __user *to, const void *from, unsigned long n);
+ extern unsigned long __clear_user(void __user *mem, unsigned long len);
+@@ -33,9 +34,6 @@ static inline int __access_ok(const void __user *ptr, unsigned long size);
+ 
+ #define INLINE_COPY_FROM_USER
+ #define INLINE_COPY_TO_USER
+-
+-#include <asm-generic/uaccess.h>
+-
+ static inline int __access_ok(const void __user *ptr, unsigned long size)
+ {
+ 	unsigned long addr = (unsigned long)ptr;
+@@ -43,6 +41,9 @@ static inline int __access_ok(const void __user *ptr, unsigned long size)
+ 		(__under_task_size(addr, size) ||
+ 		 __access_ok_vsyscall(addr, size));
+ }
++#endif
++
++#include <asm-generic/uaccess.h>
+ 
+ /* no pagefaults for kernel addresses in um */
+ #define __get_kernel_nofault(dst, src, type, err_label)			\
+diff --git a/arch/um/kernel/mem.c b/arch/um/kernel/mem.c
+index 767b9b05d6bb..beab40bc9f30 100644
+--- a/arch/um/kernel/mem.c
++++ b/arch/um/kernel/mem.c
+@@ -62,7 +62,8 @@ void __init mem_init(void)
+ 	 * to be turned on.
+ 	 */
+ 	brk_end = (unsigned long) UML_ROUND_UP(sbrk(0));
+-	map_memory(brk_end, __pa(brk_end), uml_reserved - brk_end, 1, 1, 0);
++	map_memory(brk_end, __pa(brk_end), uml_reserved - brk_end, 1, 1,
++		   !IS_ENABLED(CONFIG_MMU));
+ 	memblock_free((void *)brk_end, uml_reserved - brk_end);
+ 	uml_reserved = brk_end;
+ 
+diff --git a/arch/um/os-Linux/mem.c b/arch/um/os-Linux/mem.c
+index 72f302f4d197..4f5d9a94f8e2 100644
+--- a/arch/um/os-Linux/mem.c
++++ b/arch/um/os-Linux/mem.c
+@@ -213,6 +213,10 @@ int __init create_mem_file(unsigned long long len)
+ {
+ 	int err, fd;
+ 
++	/* NOMMU kernel uses -1 as a fd for further use (e.g., mmap) */
++	if (!IS_ENABLED(CONFIG_MMU))
++		return -1;
++
+ 	fd = create_tmp_file(len);
+ 
+ 	err = os_set_exec_close(fd);
+diff --git a/arch/um/os-Linux/process.c b/arch/um/os-Linux/process.c
+index 6df378639880..e2dc00fc84c0 100644
+--- a/arch/um/os-Linux/process.c
++++ b/arch/um/os-Linux/process.c
+@@ -70,8 +70,8 @@ int os_map_memory(void *virt, int fd, unsigned long long off, unsigned long len,
+ 	prot = (r ? PROT_READ : 0) | (w ? PROT_WRITE : 0) |
+ 		(x ? PROT_EXEC : 0);
+ 
+-	loc = mmap64((void *) virt, len, prot, MAP_SHARED | MAP_FIXED,
+-		     fd, off);
++	loc = mmap64((void *) virt, len, prot, MAP_SHARED | MAP_FIXED |
++		     (!IS_ENABLED(CONFIG_MMU) ? MAP_ANONYMOUS : 0), fd, off);
+ 	if (loc == MAP_FAILED)
+ 		return -errno;
+ 	return 0;
 -- 
 2.43.0
 
