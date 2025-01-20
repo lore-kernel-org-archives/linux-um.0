@@ -4,64 +4,68 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F940C02188
-	for <linux-um@archiver.kernel.org>; Mon, 20 Jan 2025 09:59:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7A20C02181
+	for <linux-um@archiver.kernel.org>; Mon, 20 Jan 2025 13:36:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=GifyBYqwhbXXiciRpSVP6GZLq9+XbKa4YYeydloaZ78=; b=dtPUn50ynerAJbtH685wbvTByZ
-	SUlXGVnH1Nkcy+E5SUZP+J48TfgLOdNrpNDPmmSNqb0rkMLD5ruA4kVxY/kTEqoQkv2LrmLT/A3v7
-	dRTp6nVU4o2vgC4SA93aXbucLpj38wwr2Qw2ddl0kzi0wd7FX30Hz8UXTO9oelaI4Qp4LC4f9ybj0
-	GV2Uq6f+9zGxVXrgnsDFULuxDhGptAI22qB8gCbJuH4sYiuoSkXr0M/ISGeGMUXrYjfN4cJZ8ktEE
-	AuzNKXvS/ys80T0vdCwN3/6d40MgcZLBeC70Ux8BGkQkgjMlJ0ISwvL368R0aDrKOX9yP/opuxkQd
-	0bOb7J9Q==;
+	bh=t0Y1ype3ppnk0OeLhlW6Fo6oGTzJOolSI9eUh0ZWOLg=; b=S23Hith7XrV9WwDmkvEgrG9axv
+	IG7t/BauSGuv98g8rXC7xG0uh7ujR7+YJvon5U4EpSeu/vwRaNtM8lzvjGT6DR/illkU/sKMaHWaQ
+	SVwL0P6Cj+AmwWZ7nyoTeDjxZfnNC3y0kCa7ywCWuh+oNJSkJk5XnWn6RbfjnvpzGvmyZcK0IrTNu
+	UVC3Itg7j0BXi+7r3tCP9wlfegLq/crSYbXZVWx6f+sf/+5Pq0R5lw3MdY5gcO9dToY6woD7DU6Vg
+	MrA3MzCsZVMxg7s/vtCogl9cgVsjuiR4hTEK8c2hyIPebOJueBBoYZcaz0tiu04HDseTeY4P672YN
+	R6JYs0pg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tZoZ9-00000005Ged-3xnU;
-	Mon, 20 Jan 2025 09:59:31 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1tZrwy-00000005gFR-2JHn;
+	Mon, 20 Jan 2025 13:36:20 +0000
+Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tZoWU-00000005FxU-3nRa
+	id 1tZrww-00000005gF2-2ZmX
 	for linux-um@lists.infradead.org;
-	Mon, 20 Jan 2025 09:56:48 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=GifyBYqwhbXXiciRpSVP6GZLq9+XbKa4YYeydloaZ78=;
-	t=1737367004; x=1738576604; b=CKyttcI6OUNWqnhH7vmIhJfMiH+1HkEHhvNMURahAi6IeO5
-	63kJVBUONoMBx9fjfUrrS/fXNzxgQ2BD7fvPprp7MRbQF6Ebw9yECyp1GJ0pZBPZYG+0z+36qjS6C
-	3+pFQDfiFP5KnBJd90qGtLf3ihsbnZMuDIBgfgjAGIegCp/FYh2qC2ltVKpJxI8UrDsUqSr46K2XU
-	DNYLWzRd2WtWQCOft44CN7Y+Xsug7cUMYOtKWdkXecYoVoxu/e+ND5UbTDzvrY9eTwMRP0Kqg+LaA
-	9WRUU7oeRrju9yCZ3EM3y7OOx/UL+k6IllGtm2OMYBxqvNR7yAcrO3NXSdFqMd8g==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98)
-	(envelope-from <benjamin@sipsolutions.net>)
-	id 1tZoWL-00000003SKL-3y65;
-	Mon, 20 Jan 2025 10:56:38 +0100
-Message-ID: <3ab03a41da31bd20a0c386559c102a153db86ff1.camel@sipsolutions.net>
-Subject: Re: UML failing at "Failed to initialize default registers" on
- kernel 5.10
-From: Benjamin Berg <benjamin@sipsolutions.net>
-To: Thomas Meyer <thomas@m3y3r.de>, development@efficientek.com, linux-um
-	 <linux-um@lists.infradead.org>
-Cc: Richard Weinberger <richard@nod.at>, Johannes Berg
-	 <johannes@sipsolutions.net>, Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
-Date: Mon, 20 Jan 2025 10:56:36 +0100
-In-Reply-To: <74506C86-D705-4B68-8779-BB839B305B9B@m3y3r.de>
-References: <20250119172535.42b4bca5@crass-HP-ZBook-15-G2>
-	 <74506C86-D705-4B68-8779-BB839B305B9B@m3y3r.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+	Mon, 20 Jan 2025 13:36:20 +0000
+Date: Mon, 20 Jan 2025 14:36:13 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1737380174;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=t0Y1ype3ppnk0OeLhlW6Fo6oGTzJOolSI9eUh0ZWOLg=;
+	b=ucadM5bOVbfdvZCnRWtmy+aDeTh37dAelp+eIEo03lbXyp9t8rzHFm4M+J2pnUVkwxX7xn
+	z5LSbxYY6Iv/XEIRYfq4UV+oJ8u5XKGPmKophcyFqcNT6ZG/CTpzJB+x2iHN54IR7whTh/
+	wj/oAIs8dt5dEXV8E9LRyPUORpBS88Kk3YJX7kQoNkDZVWaabl7N230Qqi9lRNUyCuslVH
+	OSmWEzwWqfHcPzS4Y7C5VaKpzCq6EKLqfb/AM5N4WyVAu055qu2Muz4lixXOLqVfjUMpdA
+	BdehfMeW3YloV5jWITXEmlMi3sOJwjKyhEgjVl98KoFEgIsI54WXHOtieK0BNw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1737380174;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=t0Y1ype3ppnk0OeLhlW6Fo6oGTzJOolSI9eUh0ZWOLg=;
+	b=O9o4F5V46TdLOi2N39ZpjQB39vyvKSyb0ubc96CpLkE6yHaZDWDffzOiUqFO1NZpxJo2vn
+	rnLIlrIrptM6C7Cw==
+From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+To: Benjamin Berg <benjamin@sipsolutions.net>
+Cc: linux-arch@vger.kernel.org, linux-um@lists.infradead.org, 
+	x86@kernel.org, briannorris@chromium.org, linux-kernel@vger.kernel.org, 
+	kasan-dev@googlegroups.com, Benjamin Berg <benjamin.berg@intel.com>
+Subject: Re: [PATCH 2/3] um: avoid copying FP state from init_task
+Message-ID: <20250120142855-9d570200-cef7-4cfb-9ee5-81c8005a99d8@linutronix.de>
+References: <20241217202745.1402932-1-benjamin@sipsolutions.net>
+ <20241217202745.1402932-3-benjamin@sipsolutions.net>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20241217202745.1402932-3-benjamin@sipsolutions.net>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250120_015646_954061_C691736D 
-X-CRM114-Status: GOOD (  17.76  )
+X-CRM114-CacheID: sfid-20250120_053618_798345_501C8DAB 
+X-CRM114-Status: GOOD (  18.87  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -76,41 +80,57 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, 2025-01-20 at 07:07 +0100, Thomas Meyer wrote:
->=20
->=20
-> Am 20. Januar 2025 00:25:35 MEZ schrieb Glenn Washburn
-> <development@efficientek.com>:
-> > Hi Benjamin,
-> >=20
-> > After applying the close_range patch, I'm now getting a failure at
-> > runtime where the last line printed from UML is "Failed to
-> > initialize
-> > default registers". The host is on Debian 11 at kernel 5.10.216.
-> > I've
-> > bisected the issue and it looks like the bad commit is: 3f17fed2149
-> > ("um: switch to regset API and depend on XSTATE").
-> >=20
-> > On another machine which is on Debian 12 and kernel 6.1.119 the UML
-> > binary compiled from v6.13-rc1 runs fine.
-> >=20
-> > I notice that the bad commit appears to be using ptrace in a
-> > different
-> > way. Perhaps there is a difference in how ptrace operate from 5.10
-> > to
-> > 6.1 kernels. I've tried debugging this without much success, as GDB
-> > can't be used. Any idea on what's going on here?
->=20
-> What processor does those machines have?
+On Tue, Dec 17, 2024 at 09:27:44PM +0100, Benjamin Berg wrote:
+> From: Benjamin Berg <benjamin.berg@intel.com>
+> 
+> The init_task instance of struct task_struct is statically allocated and
+> does not contain the dynamic area for the userspace FP registers. As
+> such, limit the copy to the valid area of init_task and fill the rest
+> with zero.
+> 
+> Note that the FP state is only needed for userspace, and as such it is
+> entirely reasonable for init_task to not contain it.
+> 
+> Reported-by: Brian Norris <briannorris@chromium.org>
+> Closes: https://lore.kernel.org/Z1ySXmjZm-xOqk90@google.com
+> Fixes: 3f17fed21491 ("um: switch to regset API and depend on XSTATE")
 
-Some relatively old CPU or maybe inside a VM?
+No stable backport? The broken commit is now in the 6.13 release.
 
-I would guess it is the same problem as reported by
-https://lore.kernel.org/all/20241203070218.240797-1-sj@kernel.org/
+> Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
 
-Please try applying
-https://patch.msgid.link/20241204074827.1582917-1-benjamin@sipsolutions.net
-and check whether that fixes it.
+Tested-by: Thomas Weiﬂschuh <thomas.weissschuh@linutronix.de>
 
-Benjamin
+> ---
+>  arch/um/kernel/process.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+> index 30bdc0a87dc8..3a67ba8aa62d 100644
+> --- a/arch/um/kernel/process.c
+> +++ b/arch/um/kernel/process.c
+> @@ -191,7 +191,15 @@ void initial_thread_cb(void (*proc)(void *), void *arg)
+>  int arch_dup_task_struct(struct task_struct *dst,
+>  			 struct task_struct *src)
+>  {
+> -	memcpy(dst, src, arch_task_struct_size);
+> +	/* init_task is not dynamically sized (missing FPU state) */
+> +	if (unlikely(src == &init_task)) {
+> +		memcpy(dst, src, sizeof(init_task));
+> +		memset((void *)dst + sizeof(init_task), 0,
+> +		       arch_task_struct_size - sizeof(init_task));
+> +	} else {
+> +		memcpy(dst, src, arch_task_struct_size);
+> +	}
+
+Nitpick:
+This could make use of memcpy_and_pad() in various forms.
+
+> +
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.47.1
+> 
 
