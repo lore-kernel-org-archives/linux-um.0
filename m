@@ -4,68 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7A20C02181
-	for <linux-um@archiver.kernel.org>; Mon, 20 Jan 2025 13:36:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C58BCC02182
+	for <linux-um@archiver.kernel.org>; Tue, 21 Jan 2025 04:21:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=t0Y1ype3ppnk0OeLhlW6Fo6oGTzJOolSI9eUh0ZWOLg=; b=S23Hith7XrV9WwDmkvEgrG9axv
-	IG7t/BauSGuv98g8rXC7xG0uh7ujR7+YJvon5U4EpSeu/vwRaNtM8lzvjGT6DR/illkU/sKMaHWaQ
-	SVwL0P6Cj+AmwWZ7nyoTeDjxZfnNC3y0kCa7ywCWuh+oNJSkJk5XnWn6RbfjnvpzGvmyZcK0IrTNu
-	UVC3Itg7j0BXi+7r3tCP9wlfegLq/crSYbXZVWx6f+sf/+5Pq0R5lw3MdY5gcO9dToY6woD7DU6Vg
-	MrA3MzCsZVMxg7s/vtCogl9cgVsjuiR4hTEK8c2hyIPebOJueBBoYZcaz0tiu04HDseTeY4P672YN
-	R6JYs0pg==;
+	d=lists.infradead.org; s=bombadil.20210309; h=Sender:Reply-To:List-Subscribe:
+	List-Help:List-Post:List-Archive:List-Unsubscribe:List-Id:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:Cc:To:From:Date:Content-ID:Content-Description:Resent-Date
+	:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=lt2+fspcWCaxIpsRpP1sJZkCVdUNx58apRxZ3UC+NEc=; b=M8scMEVXpY64SDMJDWtdmBFX6x
+	+PNlxGmRNTFk+80LmbxAmel1RWzEgpVbugl5euz0lWqiyD5my9n6N2BeeKwvq0qlhOoIpph8tBn/X
+	PkCzZ0oVUNG+dkorvzGBgRtzaIe6V/vYqegjMXxxwHbsCaMp3pvzgdq2I/ylTkq5FTrVrMAWPR4XK
+	6pB8aCvKeK27mTojzHovnzHAWQ6ulK+AT8Vb1Pco0JU0iLW/J6pNaqjf483u3tt+RgANfNtlkk5bL
+	RGF0YbQtbi70Uvw1AJKIRgFXfEyoKDWE+b+zptutQ5bfxnssS7Vr+9faqti5+ewlWOl1F9YQgM0Vn
+	HY7QvpXw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tZrwy-00000005gFR-2JHn;
-	Mon, 20 Jan 2025 13:36:20 +0000
-Received: from galois.linutronix.de ([2a0a:51c0:0:12e:550::1])
+	id 1ta5li-00000006rP1-1cUU;
+	Tue, 21 Jan 2025 04:21:38 +0000
+Received: from mail-qv1-xf2f.google.com ([2607:f8b0:4864:20::f2f])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tZrww-00000005gF2-2ZmX
+	id 1ta5lf-00000006rOc-2O2B
 	for linux-um@lists.infradead.org;
-	Mon, 20 Jan 2025 13:36:20 +0000
-Date: Mon, 20 Jan 2025 14:36:13 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1737380174;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=t0Y1ype3ppnk0OeLhlW6Fo6oGTzJOolSI9eUh0ZWOLg=;
-	b=ucadM5bOVbfdvZCnRWtmy+aDeTh37dAelp+eIEo03lbXyp9t8rzHFm4M+J2pnUVkwxX7xn
-	z5LSbxYY6Iv/XEIRYfq4UV+oJ8u5XKGPmKophcyFqcNT6ZG/CTpzJB+x2iHN54IR7whTh/
-	wj/oAIs8dt5dEXV8E9LRyPUORpBS88Kk3YJX7kQoNkDZVWaabl7N230Qqi9lRNUyCuslVH
-	OSmWEzwWqfHcPzS4Y7C5VaKpzCq6EKLqfb/AM5N4WyVAu055qu2Muz4lixXOLqVfjUMpdA
-	BdehfMeW3YloV5jWITXEmlMi3sOJwjKyhEgjVl98KoFEgIsI54WXHOtieK0BNw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1737380174;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=t0Y1ype3ppnk0OeLhlW6Fo6oGTzJOolSI9eUh0ZWOLg=;
-	b=O9o4F5V46TdLOi2N39ZpjQB39vyvKSyb0ubc96CpLkE6yHaZDWDffzOiUqFO1NZpxJo2vn
-	rnLIlrIrptM6C7Cw==
-From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>
+	Tue, 21 Jan 2025 04:21:37 +0000
+Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-6dd43b08674so45924106d6.3
+        for <linux-um@lists.infradead.org>; Mon, 20 Jan 2025 20:21:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=efficientek-com.20230601.gappssmtp.com; s=20230601; t=1737433294; x=1738038094; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:reply-to:references
+         :in-reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=lt2+fspcWCaxIpsRpP1sJZkCVdUNx58apRxZ3UC+NEc=;
+        b=UBNSDQH4JiI/T1Et1V3Y2lJOUFc7RXZiFGwYXVpKOZw1w4lubMOBvxLgywBBrpPUcm
+         +fg8yBWqZZwpTDDuGjvQvCzMfA1MzRd0s7pCKbLUIXi7bGQ4+aCGesQ47NYgRjkGaoJT
+         BiZgFA6AJOvm8p3jTMt67NpwXwm3vKJe0Tn5VNLsfhZ5QFOnCVVzHX00lxGVt1GPNTOb
+         J9+C+fQAbX/azVPdC/kcpU7atmYQ4xU2JPWX2SE/lJs1nfLL4l6S9Lb6xjT30CMlrfv1
+         sJLLO656iWBIuFuMfsMhxc4nRrY9cxKumvpwTHzKaw7A2Tjlv64ZFZdK0w2axJTgy644
+         9JSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737433294; x=1738038094;
+        h=content-transfer-encoding:mime-version:reply-to:references
+         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lt2+fspcWCaxIpsRpP1sJZkCVdUNx58apRxZ3UC+NEc=;
+        b=GaRAwtY2SpTR4rRnmwy1I+70oOnV6ewN9Ecxxr11Jd5CmDkuZw8bv8a2U2yh2a0tKq
+         tbiv8sLg2nF7kmkoQQ5/6LqX1JQMsYsARhFAMtotFN3X9FVPM3DOO19fJnI6hZ6O/byQ
+         oeJjnzUkluES4wkqb9E0dT35el7b/HrJBLCzDjDlrJiFbsZ7GCym1pS8HIJdl0OjCIGR
+         qQZaOEw2QNDFUQ1IYDrP0DOK4eAbrixZOiRWeQcYUYvmU6+zaT2bi3RkBO/Z8/+cTygO
+         MXajMIL+tRwf3rZKE3hyjzMFxxgWWYFk9/8r6Ei3M/eOaOEVBuMttkEPFYwh8QSSCUWc
+         tOig==
+X-Forwarded-Encrypted: i=1; AJvYcCWdR05OVXtek54yhAn0XixQptHyygwW9bznFv6BE5krMAEWG66gZt15syUZXuFTnunNNZoAhSnl9g==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yxk/T+OSr7f82dEeWliXywbQLucVViGDhwZcT3FLYBrLGL6B1ew
+	ghYoPbJZ9HXkRd/QZvZocj5w8ns3dZLuqqozfLfEIgT1xIUCssJNAk46r7MZpg==
+X-Gm-Gg: ASbGncsuZxpFXytia4uRAOOMG04i1io1fz8gkb0Vo0FavpWTA4xxgfChWmANDmo86Uv
+	F2RjI8iVH5kVun3geKa2ZkmtPCrp6brPCxA+j/KdLLybxVKUvWIP5WL1d12BuCuBd3EDehxUWoK
+	/goIEpqXuWMx1x7Fx9QbuxMrRDw2GtF6sTXAAGooeAkJck1j09k+3yM0+O1N7YDRs57sZppL0eD
+	a8AhTk7r9j2Xh6wlrLLsXfm45/d2ExX8lgLPWmmUAYPLapu9btvzjQqvxCmuFTGRhDlCvMrqPLd
+	D24zpUwu0scTew==
+X-Google-Smtp-Source: AGHT+IHeyD7Yud2Pn3YgBX4MERDKxUBlBzBDAl1P4h+nzWDkUkdTF0BETAXg9JqVmZsWRyqX87p+nA==
+X-Received: by 2002:a05:6214:430a:b0:6dc:d101:2baf with SMTP id 6a1803df08f44-6e1b218687amr247057316d6.17.1737433293765;
+        Mon, 20 Jan 2025 20:21:33 -0800 (PST)
+Received: from crass-HP-ZBook-15-G2 ([199.58.83.12])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6e1afcd3895sm47757326d6.83.2025.01.20.20.21.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Jan 2025 20:21:32 -0800 (PST)
+Date: Mon, 20 Jan 2025 22:21:20 -0600
+From: Glenn Washburn <development@efficientek.com>
 To: Benjamin Berg <benjamin@sipsolutions.net>
-Cc: linux-arch@vger.kernel.org, linux-um@lists.infradead.org, 
-	x86@kernel.org, briannorris@chromium.org, linux-kernel@vger.kernel.org, 
-	kasan-dev@googlegroups.com, Benjamin Berg <benjamin.berg@intel.com>
-Subject: Re: [PATCH 2/3] um: avoid copying FP state from init_task
-Message-ID: <20250120142855-9d570200-cef7-4cfb-9ee5-81c8005a99d8@linutronix.de>
-References: <20241217202745.1402932-1-benjamin@sipsolutions.net>
- <20241217202745.1402932-3-benjamin@sipsolutions.net>
+Cc: Thomas Meyer <thomas@m3y3r.de>, linux-um <linux-um@lists.infradead.org>,
+ Richard Weinberger <richard@nod.at>, Johannes Berg 
+ <johannes@sipsolutions.net>, Anton Ivanov <anton.ivanov@kot-begemot.co.uk>
+Subject: Re: UML failing at "Failed to initialize default registers" on
+ kernel 5.10
+Message-ID: <20250120222120.3cb1b064@crass-HP-ZBook-15-G2>
+In-Reply-To: <3ab03a41da31bd20a0c386559c102a153db86ff1.camel@sipsolutions.net>
+References: <20250119172535.42b4bca5@crass-HP-ZBook-15-G2>
+	<74506C86-D705-4B68-8779-BB839B305B9B@m3y3r.de>
+	<3ab03a41da31bd20a0c386559c102a153db86ff1.camel@sipsolutions.net>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.41; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20241217202745.1402932-3-benjamin@sipsolutions.net>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250120_053618_798345_501C8DAB 
-X-CRM114-Status: GOOD (  18.87  )
+X-CRM114-CacheID: sfid-20250120_202135_881929_B8245F43 
+X-CRM114-Status: GOOD (  25.74  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -77,60 +99,89 @@ List-Post: <mailto:linux-um@lists.infradead.org>
 List-Help: <mailto:linux-um-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
  <mailto:linux-um-request@lists.infradead.org?subject=subscribe>
+Reply-To: development@efficientek.com
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Dec 17, 2024 at 09:27:44PM +0100, Benjamin Berg wrote:
-> From: Benjamin Berg <benjamin.berg@intel.com>
+On Mon, 20 Jan 2025 10:56:36 +0100
+Benjamin Berg <benjamin@sipsolutions.net> wrote:
+
+> On Mon, 2025-01-20 at 07:07 +0100, Thomas Meyer wrote:
+> > 
+> > 
+> > Am 20. Januar 2025 00:25:35 MEZ schrieb Glenn Washburn
+> > <development@efficientek.com>:
+> > > Hi Benjamin,
+> > > 
+> > > After applying the close_range patch, I'm now getting a failure at
+> > > runtime where the last line printed from UML is "Failed to
+> > > initialize
+> > > default registers". The host is on Debian 11 at kernel 5.10.216.
+> > > I've
+> > > bisected the issue and it looks like the bad commit is: 3f17fed2149
+> > > ("um: switch to regset API and depend on XSTATE").
+> > > 
+> > > On another machine which is on Debian 12 and kernel 6.1.119 the UML
+> > > binary compiled from v6.13-rc1 runs fine.
+> > > 
+> > > I notice that the bad commit appears to be using ptrace in a
+> > > different
+> > > way. Perhaps there is a difference in how ptrace operate from 5.10
+> > > to
+> > > 6.1 kernels. I've tried debugging this without much success, as GDB
+> > > can't be used. Any idea on what's going on here?
+> > 
+> > What processor does those machines have?
 > 
-> The init_task instance of struct task_struct is statically allocated and
-> does not contain the dynamic area for the userspace FP registers. As
-> such, limit the copy to the valid area of init_task and fill the rest
-> with zero.
+> Some relatively old CPU or maybe inside a VM?
+
+The failing 5.10 host is not in a VM, infact the 6.1 is in a proxmox
+VM. The processor looks like its 15 years old. I suppose that's
+relatively old.
+
+Here is the cpuinfo for processor 0:
+vendor_id       : GenuineIntel
+cpu family      : 6
+model           : 44
+model name      : Intel(R) Xeon(R) CPU           X5670  @ 2.93GHz
+stepping        : 2
+microcode       : 0x1f
+cpu MHz         : 2926.218
+cache size      : 12288 KB
+physical id     : 1
+siblings        : 12
+core id         : 0
+cpu cores       : 6
+apicid          : 32
+initial apicid  : 32
+fpu             : yes
+fpu_exception   : yes
+cpuid level     : 11
+wp              : yes
+flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge
+mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ht tm pbe syscall
+nx pdpe1gb rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl
+xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor
+ds_cpl vmx smx est tm2 ssse3 cx16 xtpr pdcm pcid dca sse4_1 sse4_2
+popcnt aes lahf_lm epb pti ssbd ibrs ibpb stibp tpr_shadow vnmi
+flexpriority ept vpid dtherm ida arat flush_l1d vmx flags       : vnmi
+preemption_timer invvpid ept_x_only ept_1gb flexpriority tsc_offset
+vtpr mtf vapic ept vpid unrestricted_guest ple bugs            :
+cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs
+itlb_multihit mmio_unknown bogomips        : 5852.43 clflush size    :
+64 cache_alignment : 64 address sizes   : 40 bits physical, 48 bits
+virtual power management:
+
 > 
-> Note that the FP state is only needed for userspace, and as such it is
-> entirely reasonable for init_task to not contain it.
+> I would guess it is the same problem as reported by
+> https://lore.kernel.org/all/20241203070218.240797-1-sj@kernel.org/
 > 
-> Reported-by: Brian Norris <briannorris@chromium.org>
-> Closes: https://lore.kernel.org/Z1ySXmjZm-xOqk90@google.com
-> Fixes: 3f17fed21491 ("um: switch to regset API and depend on XSTATE")
+> Please try applying
+> https://patch.msgid.link/20241204074827.1582917-1-benjamin@sipsolutions.net
+> and check whether that fixes it.
 
-No stable backport? The broken commit is now in the 6.13 release.
+This does indeed fix the issue. Hope this gets picked up in the next
+release candidate.
 
-> Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
-
-Tested-by: Thomas Weiﬂschuh <thomas.weissschuh@linutronix.de>
-
-> ---
->  arch/um/kernel/process.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
-> index 30bdc0a87dc8..3a67ba8aa62d 100644
-> --- a/arch/um/kernel/process.c
-> +++ b/arch/um/kernel/process.c
-> @@ -191,7 +191,15 @@ void initial_thread_cb(void (*proc)(void *), void *arg)
->  int arch_dup_task_struct(struct task_struct *dst,
->  			 struct task_struct *src)
->  {
-> -	memcpy(dst, src, arch_task_struct_size);
-> +	/* init_task is not dynamically sized (missing FPU state) */
-> +	if (unlikely(src == &init_task)) {
-> +		memcpy(dst, src, sizeof(init_task));
-> +		memset((void *)dst + sizeof(init_task), 0,
-> +		       arch_task_struct_size - sizeof(init_task));
-> +	} else {
-> +		memcpy(dst, src, arch_task_struct_size);
-> +	}
-
-Nitpick:
-This could make use of memcpy_and_pad() in various forms.
-
-> +
->  	return 0;
->  }
->  
-> -- 
-> 2.47.1
-> 
+Glenn
 
