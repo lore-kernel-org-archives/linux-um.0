@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D4EB9C02182
-	for <linux-um@archiver.kernel.org>; Tue, 21 Jan 2025 09:58:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 25820C02182
+	for <linux-um@archiver.kernel.org>; Tue, 21 Jan 2025 09:58:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=KIFxGxnvBKihw4fTbFCPK+DYQ7uljyxljs0IBYR0gFM=; b=dXAfzrZ1gFy3dhwDwfH79/r8y+
-	I0oPyay4RhWpWKVNLjpYiuyX9Vg/GIFQFsZgsaB5XWKsDqy2JAaFoOMU1HOSci8CFT+8WcYxYknpn
-	jPVNwAOMpAIMGaYNMJiWcLURB/eg+9UPpjOS8CKqRVxCP6ceIopysekyM+MlLguh+AaKKbbvhKEFF
-	dYwAiiJaZRTDhlo6U/K8eWk+sFCHhT0c3DtmIuKTZ+Zqg8zK3f1TjbDD/U5wVrhFEoGQOhpdevCWq
-	p39RhnMQNpE7H9RfGACyQ0i8ca/lVsigW5FhnKokybX/bNmGXXdHvw1xlepo0sUgzcfnDZKGcsYk4
-	GGPvHaag==;
+	bh=NfiOldQuoBsOca6bai8743RJBuvry8sUliN14rP7yPw=; b=aVTHc9ZxonTdiTJLXZUc2/rsJP
+	VCogTVVXxKeEx5WTZbZ/orgip+Mk1YvFDmzApOSIlyPf3SYuL9YpxT96sCyPYpMCBTmpa26Nvuh6C
+	fmUYzqBB8TpjIs94IbpLwlm3TV6PQ0E4eA7rCiC0oIhVLFuWCCnGhRVulomQ4dVpbkYnNgQNIQ5xI
+	EEUCyjsnQRIwHdfWizIyxm1eDDT4coqh72bmRxxBcBUCn51hIRdrTa7UnM70RtLLrJy2FmrQ6LNTW
+	FO41QRdbnrEyitk6rlKCApFp4GIGKwM4A2xhV6AKiSiW6DwdWqr3IiAjdQ5Bak16hG/DOgz9JoVsX
+	XquMjBmg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1taB24-00000007UxR-1pT9;
-	Tue, 21 Jan 2025 09:58:52 +0000
+	id 1taB27-00000007V2A-2MVL;
+	Tue, 21 Jan 2025 09:58:55 +0000
 Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1taB1r-00000007Umm-3cho
+	id 1taB21-00000007Uu4-3cVM
 	for linux-um@lists.infradead.org;
-	Tue, 21 Jan 2025 09:58:41 +0000
+	Tue, 21 Jan 2025 09:58:51 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id C80885C5542;
-	Tue, 21 Jan 2025 09:57:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77818C4CEEB;
-	Tue, 21 Jan 2025 09:58:29 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id C96385C57C1;
+	Tue, 21 Jan 2025 09:58:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73BD0C4CEE5;
+	Tue, 21 Jan 2025 09:58:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737453519;
-	bh=WqNu22Xx50tarZUt/SmRrxy/7e4ez9U96yWXlx51zT4=;
+	s=k20201202; t=1737453528;
+	bh=mjWwPz12D8IuXSas4rcsP8ghTqzzxxLYwZNdxRHbGuE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FoJDZOnleAZwQIodwpQ5Ij7X645HWLirwOfQ0PhgbtrAeGgWm0F1BXmNxBMxNOwHb
-	 BDgECe3T1RZ/O+9XVPcSbALd53EQ/PlnqBfdQBdMhcXcZ+XXMzcLKMhHhdcZtfJpkQ
-	 lvZ+7uhS8+o8oy4nUgdHZsuP0yWdBRXAQZqs+NOswDcGekMvmFjYb/p3oM9oZLjscE
-	 ODzHCzjWAHlUfeWSzGBEWwQ7S2LmdR+XTiDwEsXBXcAVr05ZGnWSHBHO5NprCQ7JQH
-	 9e0Wc/fjy9kaqfaasO/7S8ssSjD4RHcmUTWiXWg8YtQu/ZrYdH7nv7nO1DVVQfGz7j
-	 awdEEf3waopQw==
+	b=Tph63LwihacCRZdg3/KoXRXy/L8AEtUnxQkyTo32q1HWh2AdKzVUCfdT4rNz4dVjq
+	 Uv4xokrygxNH5zuKByyprdx7K9MGUClZEw98LpFNi9DGq1AeEI9urWLO16DE8FCydn
+	 MB+GzWkdUS5ylBIb8pvzI7nmdNLQefTvXwvnjRMO5efH8KnRrrazKBkaJ/CCm6zth/
+	 cdwCt2pktttCf5JCsGO3f3zrex39RCF8Mnj7/5AD2T54mQvWaqDwzhSsBwDWy+H4v0
+	 sa5AuN1ZYYZvtmMB5CDOjglr2nV8Tt1tyIuB8pqeOrHWhJajf65QoJYARxpi7qVP/+
+	 OuIH4NaKXIiqw==
 From: Mike Rapoport <rppt@kernel.org>
 To: x86@kernel.org
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -87,17 +87,17 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	linux-trace-kernel@vger.kernel.org,
 	linux-um@lists.infradead.org,
 	live-patching@vger.kernel.org
-Subject: [PATCH v2 04/10] execmem: don't remove ROX cache from the direct map
-Date: Tue, 21 Jan 2025 11:57:33 +0200
-Message-ID: <20250121095739.986006-5-rppt@kernel.org>
+Subject: [PATCH v2 05/10] execmem: add API for temporal remapping as RW and restoring ROX afterwards
+Date: Tue, 21 Jan 2025 11:57:34 +0200
+Message-ID: <20250121095739.986006-6-rppt@kernel.org>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20250121095739.986006-1-rppt@kernel.org>
 References: <20250121095739.986006-1-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250121_015840_102757_AEDB8E0B 
-X-CRM114-Status: GOOD (  14.16  )
+X-CRM114-CacheID: sfid-20250121_015850_100294_93A4A16B 
+X-CRM114-Status: GOOD (  15.55  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -114,63 +114,98 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 
-The memory allocated for the ROX cache was removed from the direct map to
-reduce amount of direct map updates, however this cannot be tolerated by
-/proc/kcore that accesses module memory using vread_iter() and the latter
-does vmalloc_to_page() and copy_page_to_iter_nofault().
+Using a writable copy for ROX memory is cumbersome and error prone.
 
-Instead of removing ROX cache memory from the direct map and mapping it as
-ROX in vmalloc space, simply call set_memory_rox() that will take care of
-proper permissions on both vmalloc and in the direct map.
+Add API that allow temporarily remapping of ranges in the ROX cache as
+writable  and then restoring their read-only-execute permissions.
+
+This API will be later used in modules code and will allow removing nasty
+games with writable copy in alternatives patching on x86.
+
+The restoring of the ROX permissions relies on the ability of architecture
+to reconstruct large pages in its set_memory_rox() method.
 
 Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 ---
- mm/execmem.c | 17 ++++-------------
- 1 file changed, 4 insertions(+), 13 deletions(-)
+ include/linux/execmem.h | 31 +++++++++++++++++++++++++++++++
+ mm/execmem.c            | 22 ++++++++++++++++++++++
+ 2 files changed, 53 insertions(+)
 
+diff --git a/include/linux/execmem.h b/include/linux/execmem.h
+index 64130ae19690..65655a5d1be2 100644
+--- a/include/linux/execmem.h
++++ b/include/linux/execmem.h
+@@ -65,6 +65,37 @@ enum execmem_range_flags {
+  * Architectures that use EXECMEM_ROX_CACHE must implement this.
+  */
+ void execmem_fill_trapping_insns(void *ptr, size_t size, bool writable);
++
++/**
++ * execmem_make_temp_rw - temporarily remap region with read-write
++ *			  permissions
++ * @ptr:	address of the region to remap
++ * @size:	size of the region to remap
++ *
++ * Remaps a part of the cached large page in the ROX cache in the range
++ * [@ptr, @ptr + @size) as writable and not executable. The caller must
++ * have exclusive ownership of this range and ensure nothing will try to
++ * execute code in this range.
++ *
++ * Return: 0 on success or negative error code on failure.
++ */
++int execmem_make_temp_rw(void *ptr, size_t size);
++
++/**
++ * execmem_restore_rox - restore read-only-execute permissions
++ * @ptr:	address of the region to remap
++ * @size:	size of the region to remap
++ *
++ * Restores read-only-execute permissions on a range [@ptr, @ptr + @size)
++ * after it was temporarily remapped as writable. Relies on architecture
++ * implementation of set_memory_rox() to restore mapping using large pages.
++ *
++ * Return: 0 on success or negative error code on failure.
++ */
++int execmem_restore_rox(void *ptr, size_t size);
++#else
++static inline int execmem_make_temp_rw(void *ptr, size_t size) { return 0; }
++static inline int execmem_restore_rox(void *ptr, size_t size) { return 0; }
+ #endif
+ 
+ /**
 diff --git a/mm/execmem.c b/mm/execmem.c
-index 317b6a8d35be..04b0bf1b5025 100644
+index 04b0bf1b5025..e6c4f5076ca8 100644
 --- a/mm/execmem.c
 +++ b/mm/execmem.c
-@@ -257,7 +257,6 @@ static void *__execmem_cache_alloc(struct execmem_range *range, size_t size)
- static int execmem_cache_populate(struct execmem_range *range, size_t size)
+@@ -335,6 +335,28 @@ static bool execmem_cache_free(void *ptr)
+ 
+ 	return true;
+ }
++
++int execmem_make_temp_rw(void *ptr, size_t size)
++{
++	unsigned int nr = PAGE_ALIGN(size) >> PAGE_SHIFT;
++	unsigned long addr = (unsigned long)ptr;
++	int ret;
++
++	ret = set_memory_nx(addr, nr);
++	if (ret)
++		return ret;
++
++	return set_memory_rw(addr, nr);
++}
++
++int execmem_restore_rox(void *ptr, size_t size)
++{
++	unsigned int nr = PAGE_ALIGN(size) >> PAGE_SHIFT;
++	unsigned long addr = (unsigned long)ptr;
++
++	return set_memory_rox(addr, nr);
++}
++
+ #else /* CONFIG_ARCH_HAS_EXECMEM_ROX */
+ static void *execmem_cache_alloc(struct execmem_range *range, size_t size)
  {
- 	unsigned long vm_flags = VM_ALLOW_HUGE_VMAP;
--	unsigned long start, end;
- 	struct vm_struct *vm;
- 	size_t alloc_size;
- 	int err = -ENOMEM;
-@@ -275,26 +274,18 @@ static int execmem_cache_populate(struct execmem_range *range, size_t size)
- 	/* fill memory with instructions that will trap */
- 	execmem_fill_trapping_insns(p, alloc_size, /* writable = */ true);
- 
--	start = (unsigned long)p;
--	end = start + alloc_size;
--
--	vunmap_range(start, end);
--
--	err = execmem_set_direct_map_valid(vm, false);
--	if (err)
--		goto err_free_mem;
--
--	err = vmap_pages_range_noflush(start, end, range->pgprot, vm->pages,
--				       PMD_SHIFT);
-+	err = set_memory_rox((unsigned long)p, vm->nr_pages);
- 	if (err)
- 		goto err_free_mem;
- 
- 	err = execmem_cache_add(p, alloc_size);
- 	if (err)
--		goto err_free_mem;
-+		goto err_reset_direct_map;
- 
- 	return 0;
- 
-+err_reset_direct_map:
-+	execmem_set_direct_map_valid(vm, true);
- err_free_mem:
- 	vfree(p);
- 	return err;
 -- 
 2.45.2
 
