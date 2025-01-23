@@ -4,114 +4,111 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 00858C0218B
-	for <linux-um@archiver.kernel.org>; Thu, 23 Jan 2025 13:29:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0CF6AC0218B
+	for <linux-um@archiver.kernel.org>; Thu, 23 Jan 2025 14:17:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=8C94XB4BAC98f0nzKDfhip6ZZIJjZtAIgTVlkxB/zEY=; b=HgdjVcD+qEGhJhX1pswa+IYSMW
-	abh3IB32F6hYINY+JAl+5yqbgk+gteUqZTYf30mbEzzI7tRIN6p3jOfg/f0cZhrv8ICK96iWpEmoR
-	bJg/kCTSSAFobPJuwksCMgCYM1guxfdvzkbqqZrCOdXw8TpGEJGQF+mqe0z8nxKbJ5sRF3BS9KEKA
-	MQICi8Jz2VWHjb69H3pAPYvX8JizIGzqI+teUUZZ5CyfOW1A4Q52iJ9cxHI5+NojW3PpBcxpzKr7G
-	fJuZoWolYIrN3GijuYkHbyHd83Pdxx9P49SiN60cIttgbYvU1uPWIYbP33vhVuY7yR/BvmZ1JnD2E
-	FYHyDWzg==;
+	bh=QDz8608lNaW0P9BTT1X9DLek8Kcys+jnF/tb6a9Lcbw=; b=c0/K//czHrw7XtJuYf/EeWPT8+
+	Q1GQdigDqdbfBiDdpjPpluuuBSKpmu/HBwKkAENandX8iPMWjgab2XPfBQxFRg16MFlywSiFmCxOC
+	z39zDpo83EVqjsaX6Z8rIjb1G8goI+Py/XiFFnmb9uLbFpt5Qu1SQKht7ekAtX1SIlHwcYovK8GFP
+	lL2NB5WgYc8+xf9r0YotbyAtwNfr4Yql+B+lSRWzpdgKaE0OIQmVt1VWpXc6PltsO6D0gxDZfBFww
+	CY1f3i1z6v140BOQs6058PJ+0gCobcTkKgqF/p6oOA/rSwmQyT2VCMnVLtEkIXAdjHb1l8GeWiod5
+	nGQmvVOg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1taxGh-0000000CWcb-3669;
-	Thu, 23 Jan 2025 13:29:11 +0000
-Received: from mail-pl1-x632.google.com ([2607:f8b0:4864:20::632])
+	id 1tay15-0000000CaeC-33oV;
+	Thu, 23 Jan 2025 14:17:07 +0000
+Received: from mail-wm1-x32d.google.com ([2a00:1450:4864:20::32d])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1taxGe-0000000CWa0-3VYc
+	id 1tay0X-0000000CaYW-2mbZ
 	for linux-um@lists.infradead.org;
-	Thu, 23 Jan 2025 13:29:09 +0000
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-2166022c5caso13618455ad.2
-        for <linux-um@lists.infradead.org>; Thu, 23 Jan 2025 05:29:08 -0800 (PST)
+	Thu, 23 Jan 2025 14:16:34 +0000
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-436345cc17bso7128575e9.0
+        for <linux-um@lists.infradead.org>; Thu, 23 Jan 2025 06:16:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1737638948; x=1738243748; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8C94XB4BAC98f0nzKDfhip6ZZIJjZtAIgTVlkxB/zEY=;
-        b=dZmriKqVdLkRsJYb9RCNJZvdzO+mo/QpnmTqNckodE2SQ78rkhe9QBZpfsIvf3Me8f
-         TBJOiSuOz7b0eI3AK6bGiGH2GCLt9HCEAB20eemNpl9YTyc1T5y7TjGYjzw//f1CPP4Y
-         AaKOzNwS+hAOYLA1r/91+tgXaGH4eKBB3D+wGcaOwR7HZDMmQn6lpeGOy5Z/tFVYIOcJ
-         rwEfkss2axLRmk68Q8+rZr6+TgWPL9tqUkHcGgyRtLNc0l2miyUYVgjeZn+8mHo59vfu
-         QBRhJDAEa7Tr0y6ilaMF23T1RD/oAvMfkmStftu9v8MzJ7c82UO7SAwJF022hJMU3dnw
-         dYgw==
+        d=suse.com; s=google; t=1737641791; x=1738246591; darn=lists.infradead.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QDz8608lNaW0P9BTT1X9DLek8Kcys+jnF/tb6a9Lcbw=;
+        b=OzMl0BImbNi8R4T/9M7YbAPBH48gmUybx5pYQ5jRXmwX1K7T3Wp4bHnfP9WACU/AKp
+         Dfbfyd6FLRYZn/rKt4mzGLsL2zr3wHINwS1aeZrWz2oWPeZ8YWY8kfyNUV5QkStkrYam
+         xeqHnyy+0JV/kVZ+UCbkX8l/CO8jIamZA4rFeWYsGiatpGpwcpQW7S+BuPi8lp3IgqTX
+         1eMVsIKABngNx3h23HI/6gJusSEvEamlS6NOVbgaErF8cu/IvQRfEToRcma5OcgLS8Xk
+         L0WrlxMHxNdnxqHldtOWV2fw8vEIGwyaeKjBfcrWXhjl3vINzumyYTVKRzU1RyiJzK0t
+         1Kaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1737638948; x=1738243748;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8C94XB4BAC98f0nzKDfhip6ZZIJjZtAIgTVlkxB/zEY=;
-        b=lLzK7Y6FNMlIZ/Ta0stPm/1wslR8vG20h8cGGuhYhZayF7tpTAYeei8foBHbQtSA3V
-         yAy0TfHhbaIvgw2qRrriBQCG4iIuA+9m8BSzaXHr/OvKgKwBPz7jk4Msi893ykXX8ufD
-         I/hVpIgghm+Ac9sHt6QwfVgLcZ9OPzh5T1T6W+Zg/atRj0KoZRPKaUAJiiLienG78skZ
-         xIYU0E2dbv62pRrrOrS1Pp2blg7S+Y0VejzLkSdpaC7z0cpPu2BhCLDucpSHw3N/RzIl
-         MvCgyIlZ3D7u+iF/HKJr7XwTIyYjGeun2585Vl45J+/xoedxEVd7t7i/BdUfRzk0l0Zd
-         KmDw==
-X-Forwarded-Encrypted: i=1; AJvYcCWB7RTLw4jIfZQ6UvWnbUXf4slxA0XrIy/npzfYwR+DR/Ev8r1hQeuyxumHmcaUFXpRi5J0992vNA==@lists.infradead.org
-X-Gm-Message-State: AOJu0YwRbtyIfhaL3rcjMP6KceMLVPfaJWA6IJsdqYGQg1q2u+deOcYt
-	e+drsVRQxlvgxS1GCxpCT9428JsHlaSTKhrhrVisUnSMoU4qwxYidkzCoEZgZv0=
-X-Gm-Gg: ASbGnctp4BxVeazv/kErsqKr6fF2Nh2D4pQaKlgQkx9cBVOfnjHP5JkYWGvp/9S4esT
-	N++AJUgSTfBGxKQez2/q9ruY0IuxoaeAH4dx3UEiMyekWq/+xem/FHTydK4RBm6Ufw2WBUPBaxW
-	3SzyH+RpGx52TCs5MVphpP3Yr20PSLFHwrfkuWkfIvIKWV0cYcmJmaUdShlnMPIlAS7txGcFRVM
-	B7BQwZqUSxhYUwJ8YO3yARG6MtwNeO4WyTQD3JQDgRh5LY6luAjDuvQAxfdib/Qxw8tSTxw13CK
-	4ULOnsIb+kvi1Q2QNw6mhcwWR42kbnmD6gLDTfThP6mf
-X-Google-Smtp-Source: AGHT+IFkSdO3UtmG5jKkAJtanqQZSHufZoNoVtMFPHl42HZUz79kP6iB5Pw4LWGczfrtYHtt4kZUXA==
-X-Received: by 2002:a17:902:f54f:b0:215:b468:1a33 with SMTP id d9443c01a7336-21c351c67acmr376126085ad.4.1737638948337;
-        Thu, 23 Jan 2025 05:29:08 -0800 (PST)
-Received: from C02DW0BEMD6R.bytedance.net ([63.216.146.178])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21c2d3ac3e2sm111583655ad.139.2025.01.23.05.28.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Jan 2025 05:29:07 -0800 (PST)
-From: Qi Zheng <zhengqi.arch@bytedance.com>
-To: peterz@infradead.org,
-	kevin.brodsky@arm.com,
-	riel@surriel.com,
-	vishal.moola@gmail.com,
-	david@redhat.com,
-	jannh@google.com,
-	hughd@google.com,
-	willy@infradead.org,
-	yuzhao@google.com,
-	muchun.song@linux.dev,
-	akpm@linux-foundation.org,
-	will@kernel.org,
-	aneesh.kumar@kernel.org,
-	npiggin@gmail.com,
-	arnd@arndb.de,
-	dave.hansen@linux.intel.com,
-	rppt@kernel.org,
-	alexghiti@rivosinc.com
-Cc: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org,
-	linux-openrisc@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	x86@kernel.org,
-	linux-riscv@lists.infradead.org,
-	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH 5/5] mm: pgtable: remove tlb_remove_page_ptdesc()
-Date: Thu, 23 Jan 2025 21:26:18 +0800
-Message-Id: <62d6a04c3a0e70efd435cc2c8a4d9d07d94e7ece.1737637631.git.zhengqi.arch@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <cover.1737637631.git.zhengqi.arch@bytedance.com>
-References: <cover.1737637631.git.zhengqi.arch@bytedance.com>
+        d=1e100.net; s=20230601; t=1737641791; x=1738246591;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QDz8608lNaW0P9BTT1X9DLek8Kcys+jnF/tb6a9Lcbw=;
+        b=jt1dFhRoeHJvtz5DkYFirnu8DeAn9LaeHIpvRVJW4LHwi6P/uKVS70pTXz1szieGtz
+         QzFkSPfehqMYh1HOyszBnUUnF8fTqdtbfIuV5dPbl8UEBLKS8SeLx0wnGs4kf0VH5pgP
+         vvLjdUh6xETlNCLsM7a9jiUL7ZS3xJ3J66MX2wn7YxAF6yy82t+330MbGGKScyvv05n6
+         HmtleahlSQ4fpCTnYw0jgbp0ZLNCQc5QvIv4DFokoNzbKM6YIhy8zgynwLlg9fdOkvxM
+         gzEQOyn8GgpkxLgnN9KRPr02gsvu5NehZJ9nwa+N29kbBREpGW/LNU/qMks4SyMYTX9C
+         W7vg==
+X-Forwarded-Encrypted: i=1; AJvYcCVvGpAgwrp/vYSF39f7hcFAcUneUXTtG8inm4deo+GwTnJg4OzgpK7j/UGQ9dcGfA33VZuhJEwiGA==@lists.infradead.org
+X-Gm-Message-State: AOJu0YxGRsTkf32jRnW9tuexShtXKubBfWSeddEEPE5MwXbp4055iqKv
+	5089p88KccHEA81Ou2CwqqN0AiNngML3qJoq+imG8Mdc3/Z/OFKYyERg5BkAhS8=
+X-Gm-Gg: ASbGncushkNIowOHJ8UGOs8d/zGZaJ/c3UK0p7D16d0+pvvCpNIg+o57HDK11CfYN+d
+	7ayVPq3r8nESvWujjsofCMGXpt5UA9WdAfustmFQ8QV1quXFAZ4LysccSre3KQv6l50+uSnHVxS
+	VUeGk0fltX3tpfHxTCl00Lbzuu63GhEBZWQGo50HbJlv7rJrWIJa79dd9lVGNJbPrkLPdjW8LGT
+	WwhiqWJbnXQl/rKLPdPgbwVG2+lxNIZo3JoRN8GxQXWSd4v5PUXDVRynCtdbZpg9v1c+WeRqhRY
+	mqH3prla
+X-Google-Smtp-Source: AGHT+IEZ3PnxYGUvf8/rU964wji50OH+SsshrvGk6eo7bEmtZzJZRo7kuLNRZ25HdqIFvqguWQOL1A==
+X-Received: by 2002:a5d:4243:0:b0:386:2a3b:8aa with SMTP id ffacd0b85a97d-38bf57b3f56mr16813575f8f.37.1737641791528;
+        Thu, 23 Jan 2025 06:16:31 -0800 (PST)
+Received: from [10.100.51.161] ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38bf3275595sm19543698f8f.67.2025.01.23.06.16.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Jan 2025 06:16:31 -0800 (PST)
+Message-ID: <4a9ca024-fc25-4fe0-94d5-65899b2cec6b@suse.com>
+Date: Thu, 23 Jan 2025 15:16:28 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 06/10] module: introduce MODULE_STATE_GONE
+To: Mike Rapoport <rppt@kernel.org>
+Cc: x86@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ Andy Lutomirski <luto@kernel.org>,
+ Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+ Borislav Petkov <bp@alien8.de>, Brendan Higgins <brendan.higgins@linux.dev>,
+ Daniel Gomez <da.gomez@samsung.com>, Daniel Thompson <danielt@kernel.org>,
+ Dave Hansen <dave.hansen@linux.intel.com>, David Gow <davidgow@google.com>,
+ Douglas Anderson <dianders@chromium.org>, Ingo Molnar <mingo@redhat.com>,
+ Jason Wessel <jason.wessel@windriver.com>, Jiri Kosina <jikos@kernel.org>,
+ Joe Lawrence <joe.lawrence@redhat.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ Josh Poimboeuf <jpoimboe@kernel.org>,
+ "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+ Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+ Luis Chamberlain <mcgrof@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Miroslav Benes <mbenes@suse.cz>,
+ "H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>,
+ Petr Mladek <pmladek@suse.com>, Petr Pavlu <petr.pavlu@suse.com>,
+ Rae Moar <rmoar@google.com>, Richard Weinberger <richard@nod.at>,
+ Sami Tolvanen <samitolvanen@google.com>, Shuah Khan <shuah@kernel.org>,
+ Song Liu <song@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+ Thomas Gleixner <tglx@linutronix.de>, kgdb-bugreport@lists.sourceforge.net,
+ kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+ linux-modules@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-um@lists.infradead.org, live-patching@vger.kernel.org
+References: <20250121095739.986006-1-rppt@kernel.org>
+ <20250121095739.986006-7-rppt@kernel.org>
+Content-Language: en-US
+From: Petr Pavlu <petr.pavlu@suse.com>
+In-Reply-To: <20250121095739.986006-7-rppt@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250123_052908_872611_6D895C0C 
-X-CRM114-Status: UNSURE (   6.79  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250123_061633_713511_C061DE07 
+X-CRM114-Status: GOOD (  16.57  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -126,35 +123,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-The tlb_remove_ptdesc()/tlb_remove_table() is specially designed for page
-table pages, and now all architectures have been converted to use it to
-remove page table pages. So let's remove tlb_remove_page_ptdesc(), it
-currently has no users and should not be used for page table pages.
+On 1/21/25 10:57, Mike Rapoport wrote:
+> In order to use execmem's API for temporal remapping of the memory
+> allocated from ROX cache as writable, there is a need to distinguish
+> between the state when the module is being formed and the state when it is
+> deconstructed and freed so that when module_memory_free() is called from
+> error paths during module loading it could restore ROX mappings.
+> 
+> Replace open coded checks for MODULE_STATE_UNFORMED with a helper
+> function module_is_formed() and add a new MODULE_STATE_GONE that will be
+> set when the module is deconstructed and freed.
 
-Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- include/asm-generic/tlb.h | 6 ------
- 1 file changed, 6 deletions(-)
+I don't fully follow why this case requires a new module state. My
+understanding it that the function load_module() has the necessary
+context that after calling layout_and_allocate(), the updated ROX
+mappings need to be restored. I would then expect the function to be
+appropriately able to unwind this operation in case of an error. It
+could be done by having a helper that walks the mappings and calls
+execmem_restore_rox(), or if you want to keep it in module_memory_free()
+as done in the patch #7 then a flag could be passed down to
+module_deallocate() -> free_mod_mem() -> module_memory_free()?
 
-diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
-index 10cdbe0e7adfe..dec030cb12108 100644
---- a/include/asm-generic/tlb.h
-+++ b/include/asm-generic/tlb.h
-@@ -509,12 +509,6 @@ static inline void tlb_remove_ptdesc(struct mmu_gather *tlb, void *pt)
- 	tlb_remove_table(tlb, pt);
- }
- 
--/* Like tlb_remove_ptdesc, but for page-like page directories. */
--static inline void tlb_remove_page_ptdesc(struct mmu_gather *tlb, struct ptdesc *pt)
--{
--	tlb_remove_page(tlb, ptdesc_page(pt));
--}
--
- static inline void tlb_change_page_size(struct mmu_gather *tlb,
- 						     unsigned int page_size)
- {
+It is at least good that MODULE_STATE_GONE is only set in free_module()
+past the sysfs teardown, so it never shows in
+/sys/module/<mod>/initstate. Otherwise, this would require teaching kmod
+about this state as well.
+
 -- 
-2.20.1
-
+Thanks,
+Petr
 
