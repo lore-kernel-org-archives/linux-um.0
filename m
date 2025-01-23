@@ -4,111 +4,110 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C56E3C0218C
-	for <linux-um@archiver.kernel.org>; Wed, 22 Jan 2025 21:19:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3D518C02182
+	for <linux-um@archiver.kernel.org>; Thu, 23 Jan 2025 13:28:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=esFAzaN6g7njZiCCkaClyDhZIQCDyBL4ZttyeT6NCzw=; b=0iIBnhVEEGQjUxFGDS5QcXg9M/
-	jRG365nyMN5Z43eTmkzOzfj4T//DYLXZDzpz0j2ItQU87xsm1bRi2zmnPoMLVpolhsgXX6+tEjwtd
-	3TWaRVQhRh41uY22roPWtHRTXthscMQyi1n5voQQEmI6DnukDXJ5Lxws/Ws3gzvw1x12r7qaRovEE
-	6hxtDEUmGdJg2N8zxhz8FVYE13Jbs7zw6xhZQRd0q73pHU0n17EDd/3EffOvtUc3VQB4WaJc+Jpz6
-	0s4PZo4ErfpHOfPTrE0PIK2pnZf+0RZg0nROdTn5UjHXQjs+yR5m1ZywmKlL1P8jEGroL35W9FdLT
-	GiWv1OHQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=fcMJmKKEtX+iYg+m7hTSfwAHD3Zpn1mRc3DXgtsxucU=; b=OfiMSnVJj9R5juPrO/I3HemtbH
+	FsGeFQ3DG1wsddvn/QK3nwnFIqIyHqf9k5fpEF0j5+pWP2wET7Gah+30b9uFh+hep4pTYfbaFOk19
+	2JaOV0uNKP5e/V205HNvGUybVaF5afktUDR6HRPvP1/nzZvoPvBJSpmOPTpJq3Z0LCO5IKXvFei3y
+	KnKgjeBneQgOGRUBcvx5k1IJ4CD1oRiNGK4GQb1xxq5yj8LRQxTVyAVdyP3K0CxwVBPJ1igUvnh5e
+	XaW1rQv2MDzMbRKY5vK5NWumUBkCrtWoVRLtiTqnU9Hbs7aztW99hHncVSBGMPvc8gXjI5DQ04czm
+	A6ISZXuQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tai8X-0000000BE9i-1yoO;
-	Wed, 22 Jan 2025 21:19:45 +0000
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5])
+	id 1taxFz-0000000CW8j-45um;
+	Thu, 23 Jan 2025 13:28:27 +0000
+Received: from mail-pl1-x62c.google.com ([2607:f8b0:4864:20::62c])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tai8U-0000000BE99-424h;
-	Wed, 22 Jan 2025 21:19:44 +0000
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 50MHQxkg012829;
-	Wed, 22 Jan 2025 21:17:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=esFAzaN6g7njZiCCkaClyDhZIQCDyB
-	L4ZttyeT6NCzw=; b=MD/1i4r7lMchVZDMxCd4+OmTL+gqvz4EsoCc3lhjzl61q/
-	dWCbk7Dc9E+/mkxibxIfcO+5M2miNjCQj+Zb6N7aFJSgK9pEAqx6PGNDi1udxJ2D
-	5GRkpG+GUOuS40Gu4kk1nLVzuQ6b0Ms8Wu06boltLFfDgJ845roakAZxLi7ece1K
-	21P0Y61Gf0j8zaE10R3dSPAxGJBBECX5J1pPuXnnL27yt6dWzGu7RpbRMXnWFft4
-	1i9lfntcbQEcz44pnsvGFWB7JR/kgZ5jistInR187FAC2imqV46/9k08iOuxZ7q0
-	9o0IVrdT0Bd2ZHNbMuzwATcn0fOtey6n4VrpyBow==
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44avcp3s7s-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 22 Jan 2025 21:17:07 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 50MKlol5019223;
-	Wed, 22 Jan 2025 21:17:06 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 448pmsjk01-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 22 Jan 2025 21:17:06 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 50MLH4Kc13697392
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 22 Jan 2025 21:17:04 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6C62A2004D;
-	Wed, 22 Jan 2025 21:17:04 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A40CD20043;
-	Wed, 22 Jan 2025 21:17:00 +0000 (GMT)
-Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.171.77.114])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Wed, 22 Jan 2025 21:17:00 +0000 (GMT)
-Date: Wed, 22 Jan 2025 22:16:58 +0100
-From: Alexander Gordeev <agordeev@linux.ibm.com>
-To: Heiko Carstens <hca@linux.ibm.com>, Kevin Brodsky <kevin.brodsky@arm.com>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Mike Rapoport (IBM)" <rppt@kernel.org>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Qi Zheng <zhengqi.arch@bytedance.com>, linux-alpha@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        linux-um@lists.infradead.org, loongarch@lists.linux.dev,
-        x86@kernel.org
-Subject: Re: [PATCH v2 6/6] mm: Introduce ctor/dtor at PGD level
-Message-ID: <Z5FgSn0y/c9pItED@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-References: <20250103184415.2744423-1-kevin.brodsky@arm.com>
- <20250103184415.2744423-7-kevin.brodsky@arm.com>
- <Z4/NTRDBXEEimdvc@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
- <20250122074954.8685-A-hca@linux.ibm.com>
- <Z5D7TSR3AttkC0Jf@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+	id 1taxFw-0000000CW6K-0EY2
+	for linux-um@lists.infradead.org;
+	Thu, 23 Jan 2025 13:28:26 +0000
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-21636268e43so18733015ad.2
+        for <linux-um@lists.infradead.org>; Thu, 23 Jan 2025 05:28:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1737638899; x=1738243699; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fcMJmKKEtX+iYg+m7hTSfwAHD3Zpn1mRc3DXgtsxucU=;
+        b=Nd1qLPzLmeotT+GA7VU03xVY/KwyWRkCe6lbDiKtCJiLoqD5fSdkt//X2CQwO4zslw
+         3K+UOXvaruQiLq9HBXXn0Fgxb8Kbcw3Km8a2qe3XTPxS7Vxj8RuvMIchkN34qS4B2qau
+         Q966UoH95M4fuASnWrbFonMprH8kCzKZuTsZXMHcQcHwMJ4IjfOkEfPfQ4Y6TZ7bjgh6
+         1kQpFpDTTUHpB3j4H5siEkhRLQoO8jxN88gLepGiGebPZLeW0/GYA6GL3mfryboXadKN
+         w33RLRJgZjoi7JyKmP2iK+z8FQp1Z9uOpN9HIMAnemcVau9ITzcGQW8IYRrz1OBBsRRq
+         NbTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1737638899; x=1738243699;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fcMJmKKEtX+iYg+m7hTSfwAHD3Zpn1mRc3DXgtsxucU=;
+        b=uZGyYR3LUsD7sDXpHYrSDmklUXAetuaAwEJrINFXeLOyfc3KaQrOKkQ/aSAIRv7dNp
+         uEWHjRY4SZeGXGdlxXDdHtAQRcmY0UZX4F7uUNBz46U0jvQL7E+pARocbMvdQR3hJAH1
+         DNZvQ3XTrTLfV+YIyu+geEiswCRcZtuNvlpY6P7TTsvlTzz4JGquakN4CQyVqhAi5oc5
+         1p/oY9mLFHncI1afC9N5nsRA3OJfzzXEmkANwan6QfcrIMcyGkjk4LQqwBT5vvwKkxfa
+         YbP0NkmB8KR1stE53V4HoAeojz29Ro5Zzwx87EzNQuVPHXuWCHiGXknQiKk8QDqLLQSy
+         x3pw==
+X-Forwarded-Encrypted: i=1; AJvYcCUf9kvxpv+oQd77cPHa1qv2Rgg9Mx2TLJUL4+sQokiL55fJ++j8dT2llL1rTvvzWybx6LaOzkhYSQ==@lists.infradead.org
+X-Gm-Message-State: AOJu0YxY1+MDAekZvcDuKka2Zt58cqeZ/VdM2vnHi4KjBxhNiWS3IsPR
+	AlTLl2COeQ7JUvHwRiUWcWg7Zz3YJBfzhRtktUHLtG2eSc7nIc6kdoUMhlArjFg=
+X-Gm-Gg: ASbGncsRQJ6Zm7szbUp4asriXgIJIfEss62BS3c7joAR8WHbTMRBGUi5f+kK/+Jsv/b
+	OJT80thDsAfGbXygz8thJnaLwzekhpujADZ8vsH30T0hRYBO74Zts4LmMyh0AagpZ59nEszw23N
+	Wu8BY/kgZWuR3eMg5Jsk6ihDadbs4zg3XMyMeZwGtejTK+HWYAHc7iL4JUURsM+DL60UF/K9Jee
+	l7qx+8/BkxiW0lcSfhZcgeGdmMymlKJ2kzkHG8ohXufUcHzxTrcYxLczEZQdLWKL+W4ECmB2sP9
+	YAoruiOSoTwLvLYLTWEfdGk39AXxmY0ZuBJhkY+NsQ1+
+X-Google-Smtp-Source: AGHT+IEganAe939WGDJlfH9nAWVZpA3TvM5SaYn7UYpmBsqsQlG5HSrZSGt5JfnUpmvzTx71ZR7Ekg==
+X-Received: by 2002:a17:902:f545:b0:215:6e01:ad19 with SMTP id d9443c01a7336-21c35587f37mr410676135ad.29.1737638898793;
+        Thu, 23 Jan 2025 05:28:18 -0800 (PST)
+Received: from C02DW0BEMD6R.bytedance.net ([63.216.146.178])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21c2d3ac3e2sm111583655ad.139.2025.01.23.05.28.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Jan 2025 05:28:18 -0800 (PST)
+From: Qi Zheng <zhengqi.arch@bytedance.com>
+To: peterz@infradead.org,
+	kevin.brodsky@arm.com,
+	riel@surriel.com,
+	vishal.moola@gmail.com,
+	david@redhat.com,
+	jannh@google.com,
+	hughd@google.com,
+	willy@infradead.org,
+	yuzhao@google.com,
+	muchun.song@linux.dev,
+	akpm@linux-foundation.org,
+	will@kernel.org,
+	aneesh.kumar@kernel.org,
+	npiggin@gmail.com,
+	arnd@arndb.de,
+	dave.hansen@linux.intel.com,
+	rppt@kernel.org,
+	alexghiti@rivosinc.com
+Cc: linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-m68k@lists.linux-m68k.org,
+	linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	x86@kernel.org,
+	linux-riscv@lists.infradead.org,
+	Qi Zheng <zhengqi.arch@bytedance.com>
+Subject: [PATCH 0/5] remove tlb_remove_page_ptdesc()
+Date: Thu, 23 Jan 2025 21:26:13 +0800
+Message-Id: <cover.1737637631.git.zhengqi.arch@bytedance.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Z5D7TSR3AttkC0Jf@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: lJbHIFaitD84VbMmVKAwv1LP_Khu2fra
-X-Proofpoint-GUID: lJbHIFaitD84VbMmVKAwv1LP_Khu2fra
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-01-22_09,2025-01-22_02,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
- bulkscore=0 mlxlogscore=925 spamscore=0 phishscore=0 mlxscore=0
- suspectscore=0 lowpriorityscore=0 priorityscore=1501 clxscore=1015
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2411120000 definitions=main-2501220151
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250122_131943_113079_A2F084A2 
-X-CRM114-Status: GOOD (  32.09  )
+X-CRM114-CacheID: sfid-20250123_052824_294308_9AC4BDB9 
+X-CRM114-Status: GOOD (  10.53  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -123,90 +122,60 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Jan 22, 2025 at 03:06:05PM +0100, Alexander Gordeev wrote:
+Hi all,
 
-Hi Kevin,
+As suggested by Peter Zijlstra below [1], this series aims to remove
+tlb_remove_page_ptdesc().
 
-> On Wed, Jan 22, 2025 at 08:49:54AM +0100, Heiko Carstens wrote:
-> > > >  static inline pgd_t *pgd_alloc(struct mm_struct *mm)
-> > > >  {
-> > > > -	return (pgd_t *) crst_table_alloc(mm);
-> > > > +	unsigned long *table = crst_table_alloc(mm);
-> > > > +
-> > > > +	if (!table)
-> > > > +		return NULL;
-> > > 
-> > > I do not know status of this series, but FWIW, this call is missed:
-> > > 
-> > > 	crst_table_init(table, _REGION1_ENTRY_EMPTY); 
-> > 
-> > Why is that missing?
-> 
-> Because the follow-up pagetable_pgd_ctor() is called against uninitialized
-> page table, while other pagetable_pXd_ctor() variants are called against
-> initialized one. I could imagine complications as result of that.
-> 
-> Whether Region1 table is the right choice is a big question though, as you
-> noticed below.
+: Fundamentally tlb_remove_page() is about removing *pages* as from a PTE,
+: there should not be a page-table anywhere near here *ever*.
+:
+: Yes, some architectures use tlb_remove_page() for page-tables too, but
+: that is more or less an implementation detail that can be fixed.
 
-As discussed with Heiko, we do not want to add the extra crst_table_init() call
-at least due to performance impact. So please ignore my comment.
+After this series, all architectures use tlb_remove_table() or tlb_remove_ptdesc()
+to remove the page table pages. In the future, once all architectures using
+tlb_remove_table() have also converted to using struct ptdesc (eg. powerpc), it
+may be possible to use only tlb_remove_ptdesc().
 
-> > A pgd table can be a Region1, Region2, or Region3 table. The only caller of
-> > this function is mm_init() via mm_alloc_pgd(); and right after mm_alloc_pgd()
-> > there is a call to init_new_context() which will initialize the pgd correctly.
-> 
-> init_new_context() is in a way a constructor as well, so whole thing looks odd
-> to me. But I do not immedeately see a better way :(
-> 
-> > I guess what really gets odd, and might be broken (haven't checked yet) is
-> > what happens on dynamic upgrade of page table levels (->crst_table_upgrade()).
-> 
-> Hmm, that is a good point.
-> 
-> > With that a pgd may become a pud, and with that we get an imbalance with
-> > the ctor/dtor calls for the various page table levels when they get freed
-> 
-> The ctor/dtor mismatch should not be a problem, as pagetable_pgd|p4d|pud_ctor()
-> are the same and there is one pagetable_dtor() for all top levels as of now.
-> But if it ever comes to separate implementations, then we are in the world
-> of pain.
-> 
-> > again. Plus, at first glance, it looks also broken that we have open-coded
-> > crst_alloc() calls instead of using the "proper" page table allocation API
-> > within crst_table_upgrade(), which again would cause an imbalance.
-> 
-> This is a good point too.
+Note: there will be some overlap between my patch #4 and Rik van Riel's patch #1 [2],
+      once his patch is merged into the next branch, I can rebase onto his patch.
+      And patch #4 can actually make x86 use tlb_remove_ptdesc(), but due to the
+      above situation, I have not done so yet.
 
-The below bits are seems to be missed. We will test it and send a patch.
+This series is based on next-20250122.
 
-diff --git a/arch/s390/mm/pgalloc.c b/arch/s390/mm/pgalloc.c
-index a4e761902093..d33f55b7ee98 100644
---- a/arch/s390/mm/pgalloc.c
-+++ b/arch/s390/mm/pgalloc.c
-@@ -88,12 +88,14 @@ int crst_table_upgrade(struct mm_struct *mm, unsigned long end)
- 		if (unlikely(!p4d))
- 			goto err_p4d;
- 		crst_table_init(p4d, _REGION2_ENTRY_EMPTY);
-+		pagetable_p4d_ctor(virt_to_ptdesc(p4d));
- 	}
- 	if (end > _REGION1_SIZE) {
- 		pgd = crst_table_alloc(mm);
- 		if (unlikely(!pgd))
- 			goto err_pgd;
- 		crst_table_init(pgd, _REGION1_ENTRY_EMPTY);
-+		pagetable_pgd_ctor(virt_to_ptdesc(pgd));
- 	}
- 
- 	spin_lock_bh(&mm->page_table_lock);
-@@ -130,6 +132,7 @@ int crst_table_upgrade(struct mm_struct *mm, unsigned long end)
- 	return 0;
- 
- err_pgd:
-+	pagetable_dtor(virt_to_ptdesc(p4d));
- 	crst_table_free(mm, p4d);
- err_p4d:
- 	return -ENOMEM;
+Comments and suggestions are welcome!
 
-Thanks!
+Thanks,
+Qi
+
+[1]. https://lore.kernel.org/linux-mm/20250103111457.GC22934@noisy.programming.kicks-ass.net/
+[2]. https://lore.kernel.org/lkml/20250123042447.2259648-2-riel@surriel.com/
+
+Qi Zheng (5):
+  mm: pgtable: make generic tlb_remove_table() use struct ptdesc
+  mm: pgtable: convert some architectures to use tlb_remove_ptdesc()
+  riscv: pgtable: unconditionally use tlb_remove_ptdesc()
+  x86: pgtable: unconditionally use tlb_remove_table()
+  mm: pgtable: remove tlb_remove_page_ptdesc()
+
+ arch/csky/include/asm/pgalloc.h      |  3 +--
+ arch/hexagon/include/asm/pgalloc.h   |  3 +--
+ arch/loongarch/include/asm/pgalloc.h |  3 +--
+ arch/m68k/include/asm/sun3_pgalloc.h |  3 +--
+ arch/mips/include/asm/pgalloc.h      |  3 +--
+ arch/nios2/include/asm/pgalloc.h     |  9 ++++-----
+ arch/openrisc/include/asm/pgalloc.h  |  3 +--
+ arch/riscv/include/asm/pgalloc.h     | 26 ++++----------------------
+ arch/sh/include/asm/pgalloc.h        |  3 +--
+ arch/um/include/asm/pgalloc.h        |  9 +++------
+ arch/x86/kernel/paravirt.c           | 17 +----------------
+ arch/x86/mm/pgtable.c                | 11 -----------
+ include/asm-generic/tlb.h            | 12 +++---------
+ 13 files changed, 22 insertions(+), 83 deletions(-)
+
+-- 
+2.20.1
+
 
