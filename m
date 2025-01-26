@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73206C02181
-	for <linux-um@archiver.kernel.org>; Sun, 26 Jan 2025 07:49:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id BFCE2C02181
+	for <linux-um@archiver.kernel.org>; Sun, 26 Jan 2025 07:49:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=SXKx4LPXiF70wUws9XsZRFp3yakIdcF2/aoPSR49yGo=; b=BYFPz3RIYf6i6qH7QB8EhxfWjy
-	CNg/eWPCIwwNazxXpO7c8pcq7YIHd9dAQ4h008iThKV++PvjIw4ENSZ6j/9TrJ7YxWz2bNwGx6AkI
-	Tjj4raneOyRLEVnLu2cPCqx9sctfS20gKPlpvEb3NkEQDeYL/Xh0msOYhVyMPRUC6dxQP6Mu9K2ut
-	1yMfDnkMXfr2Z4dzuKRTHP5RYuAEtE06eIKes7oklCRkwtgawKuf7lMyLhrSiolQLgK1rI+kp+dkY
-	xLkTCFoG3Zna+iZqVp2gNiaa0isn836kqK+EWvyAUIeFREGthbML4TMQZfTWZy3SfWvBhEEuSMGMS
-	2/UcHk7A==;
+	bh=aMCcoKmYu2iXUwJbQTVGV2jsmkWbYCGb/CE1d3c5aKw=; b=kXrdG51QQl0mMKh/KeCZUfRDhC
+	QVoEq5GtxPntJ6L9d7CV61VzGYVFNtQsIoaxGstIwn+ht323f5JyZksRK6kxnDL+BJg49mFlyMMPH
+	3ZKVcyNGVH3g4DbMNxbctwr//O1Xc6dNTaU+5DkKj7HfMWeMsoWGdbz8ZUpYVsvudT03Zt9cbTHee
+	m7YmaZdkA0nzm5sxx3YL5Sv/VaCzJn2rXtJS6uwYR/NFZzn2a5X0MNPkd5PtkzfaHP6dqev0KHpRe
+	kPc7SZbYWozGWjM9iClY2jB6SUA8UFTHT/5McM8ZBAOz4c7bR+T6hBgUQjGXuwfdsyYYx5j/R+WX7
+	b7jxx2zQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tbxOQ-0000000HDLE-0u6t;
-	Sun, 26 Jan 2025 07:49:18 +0000
+	id 1tbxOZ-0000000HDQr-2EWN;
+	Sun, 26 Jan 2025 07:49:27 +0000
 Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tbxON-0000000HDIQ-0qdh
+	id 1tbxOX-0000000HDOM-1kWE
 	for linux-um@lists.infradead.org;
-	Sun, 26 Jan 2025 07:49:16 +0000
+	Sun, 26 Jan 2025 07:49:26 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 7C71A5C56D4;
-	Sun, 26 Jan 2025 07:48:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6817C4CEE4;
-	Sun, 26 Jan 2025 07:49:04 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id AFF8B5C0706;
+	Sun, 26 Jan 2025 07:48:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1B87C4CED3;
+	Sun, 26 Jan 2025 07:49:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1737877754;
-	bh=ojukvsVbrsOautblNhkpoP7wuqi3ozWbxIf3p0+h6f0=;
+	s=k20201202; t=1737877764;
+	bh=iCOJADJJ/sFPbuOid5OXzq1M+MQ1WlHyV9KAisT6QLU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WptzH7YdSogdAkUSZLvcqplIdwp+MBY+laOzNuHQ78GWRSBBOknbXpAk7uYSnJrMz
-	 wp2yZtsEj4Ft7cNz7tQlCeN1KsCLqDz9mqnl+TnipPcoTYtEO+sXiQJQboHjiChfNL
-	 vA3aEX4vPp8wpDbDReIBYoQLGzjtwfHwBMvGsAAMDNHt03hVTP8VPftd6hLurGej+P
-	 AsbRuca4pr2+C6v3mt4e73OWtBqd80b+EHsrPFjsLsq4grSJSpFTAnEyDf77cnhJcr
-	 sx71WcZSLvCbmLvRIC86nvUK0DVK2x50qb/+CGX6umGCycAkK1HmtBx/EyszcSrn67
-	 bHDc6aXclkXIg==
+	b=K4s+daeo5ZtRx6Gu4vJ/P5va2/Zc1aBNvpydz9rKkSVitnt5s4tQ4p7lT4T7koHi2
+	 wvqpFOfNIJ4JvEi6mI2AH0DeuLwKbVe3rJ5HBW4E9DuKwRa24y9nMYZzZEoMxFBPuj
+	 r3lfMvP/zDLkxMw27lf06oOh8SETm1Dsfzs9boTj7kyerxd4kK4XYTdJQnf5NnqRU7
+	 2nOaBRt/YCtwpuvvVDC9No5WR+kbAukE44WO5GnFFgtxx9m3AtHPGru2xrot7i52tK
+	 my4z9DG0wF6kJFGXr/ty1oVp9XX+EnLvBW/nOKu6f8wEe7Q70aCehyXls3uZlat3aP
+	 plrNoZEvAzEAA==
 From: Mike Rapoport <rppt@kernel.org>
 To: x86@kernel.org
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -87,17 +87,17 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	linux-trace-kernel@vger.kernel.org,
 	linux-um@lists.infradead.org,
 	live-patching@vger.kernel.org
-Subject: [PATCH v3 8/9] module: drop unused module_writable_address()
-Date: Sun, 26 Jan 2025 09:47:32 +0200
-Message-ID: <20250126074733.1384926-9-rppt@kernel.org>
+Subject: [PATCH v3 9/9] x86: re-enable EXECMEM_ROX support
+Date: Sun, 26 Jan 2025 09:47:33 +0200
+Message-ID: <20250126074733.1384926-10-rppt@kernel.org>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20250126074733.1384926-1-rppt@kernel.org>
 References: <20250126074733.1384926-1-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250125_234915_298406_BCFF480E 
-X-CRM114-Status: UNSURE (   9.60  )
+X-CRM114-CacheID: sfid-20250125_234925_497526_E44AA2E0 
+X-CRM114-Status: UNSURE (   9.59  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -115,41 +115,25 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 
-module_writable_address() is unused and can be removed.
+after rework of execmem ROX caches
 
 Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 ---
- include/linux/module.h | 10 ----------
- 1 file changed, 10 deletions(-)
+ arch/x86/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/module.h b/include/linux/module.h
-index 6a24e9395cb2..d2cf30be10cc 100644
---- a/include/linux/module.h
-+++ b/include/linux/module.h
-@@ -768,11 +768,6 @@ static inline bool is_livepatch_module(struct module *mod)
- 
- void set_module_sig_enforced(void);
- 
--static inline void *module_writable_address(struct module *mod, void *loc)
--{
--	return loc;
--}
--
- #else /* !CONFIG_MODULES... */
- 
- static inline struct module *__module_address(unsigned long addr)
-@@ -880,11 +875,6 @@ static inline bool module_is_coming(struct module *mod)
- {
- 	return false;
- }
--
--static inline void *module_writable_address(struct module *mod, void *loc)
--{
--	return loc;
--}
- #endif /* CONFIG_MODULES */
- 
- #ifdef CONFIG_SYSFS
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index ef6cfea9df73..9d7bd0ae48c4 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -83,6 +83,7 @@ config X86
+ 	select ARCH_HAS_DMA_OPS			if GART_IOMMU || XEN
+ 	select ARCH_HAS_EARLY_DEBUG		if KGDB
+ 	select ARCH_HAS_ELF_RANDOMIZE
++	select ARCH_HAS_EXECMEM_ROX		if X86_64
+ 	select ARCH_HAS_FAST_MULTIPLIER
+ 	select ARCH_HAS_FORTIFY_SOURCE
+ 	select ARCH_HAS_GCOV_PROFILE_ALL
 -- 
 2.45.2
 
