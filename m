@@ -4,165 +4,62 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 77F16C02190
-	for <linux-um@archiver.kernel.org>; Thu, 30 Jan 2025 11:38:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0927DC0218D
+	for <linux-um@archiver.kernel.org>; Thu, 30 Jan 2025 22:12:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
-	Message-ID:Date:References:In-Reply-To:Subject:Cc:To:From:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=BpEfUaBr1Cw8QWsiOsJ1W6pndXsaAOxt2vlVbbXMbZU=; b=W4j+gCnrGadE3clLumWR37j7Ia
-	28po17MXBBNpjmOQjFdnUuD7NAWgsnGSg/u/eHIQGcOjv05AbtGqm0I96Ybqa0nxM9ZAxSDdjvEPO
-	TbkrTMUTgO8LvV25VIcG80O9iY9TnSV9Ra9haQVRStzs4nNxVhLKmt5ECzOx47prG6SekexqO8n3q
-	vcr+59xOCzwNd/C6Ictkc2+cKqk62OhjHzqhjWVH3/ZUQ2WSGgG9wkimBawX7c6g9L+AM69spuMkf
-	2o301c9uiPdyPSnN08AOcMAYpVAK2QD22aO6zXGHCmcpw0fjEtAnutqCI2p9kY1NmhaqVbkfyvnyn
-	anaAgysQ==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Subject:Message-ID:Cc:To:From:Date:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=eE8choOtGSm23imAMW/HRzSNN12/Idqteap2hE9+piQ=; b=zCPifQ2QYF5gkpS4u6wOt75nMQ
+	hyeirsrwyGrnYQotclkxLITrIslAMIlWqX2WKUa3D+pgyk4PqbX+rmgQPitG3rvO4nMYvMlxBZBC9
+	7JNjeqVVqloRLmBzvcwQnWKsicNu8EdqHPZ9/79UUnd7u1tTWen2Y4LVyu4SvC8EJeCFn1OW14qK9
+	ssVjqMnZOkQ+ECISmVzMxYEaBTzdYeGtB1e0RWRc/xYA6zschjiTO/2/e5ZtOJlhpkCOUXPMJZvcl
+	wQoh5U4fRsXPWH+iPMeWIYWZGbgjLXJ34il1//fL8DMIlKh28Vqnlw6PMfnW2iCR3L5DR+OHu9u0G
+	y22qoVjQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tdSsq-00000008iZV-0gZ7;
-	Thu, 30 Jan 2025 11:38:56 +0000
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5])
+	id 1tdclW-00000009hNk-28F8;
+	Thu, 30 Jan 2025 22:12:02 +0000
+Received: from mailout.nod.at ([116.203.167.152] helo=lithops.sigma-star.at)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tdSrz-00000008iVp-0lq0;
-	Thu, 30 Jan 2025 11:38:04 +0000
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 50U3S03G009805;
-	Thu, 30 Jan 2025 11:36:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=BpEfUaBr1Cw8QWsiOsJ1W6pndXsaAO
-	xt2vlVbbXMbZU=; b=py0si/7i7sYpYpgY+Cd85pkVNtrLlOqwSMEhmRUcKRZj7F
-	AdWm9g97BBEh/k1QMz1gyW8k5eUcYgkXR7GTOMktSJAFpG3LMbyg98XYXGPU8sUo
-	eqeaQ4p53wCU0NhpBpfouxy1ummA3PnohqoCPPT9kZK6xXqL8bMd1HPK3stTNTCc
-	i9hgrzpbOa8Oy7fd/8G+IJIcqiisWNhctW460864Z4NJPiiQN3G8K0UqP+6d4dzH
-	cmzmA7ITybYy/TOKFRbQlq2Z27a5FDfLohiHJU8VcETS6330kiMTctNfd+g/5c0g
-	zhFPjq0jgTlDsz9Dp+ySr7XDG4pHCTnnLQrHeZDw==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44fq5tvqhw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 30 Jan 2025 11:36:36 +0000 (GMT)
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 50UBWjRY023426;
-	Thu, 30 Jan 2025 11:36:35 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44fq5tvqhs-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 30 Jan 2025 11:36:35 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 50U947Bm022193;
-	Thu, 30 Jan 2025 11:36:34 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 44dcgjwkcf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 30 Jan 2025 11:36:34 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 50UBaU8D29491780
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 30 Jan 2025 11:36:30 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B3743200BB;
-	Thu, 30 Jan 2025 11:36:30 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2B194200BC;
-	Thu, 30 Jan 2025 11:36:30 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Thu, 30 Jan 2025 11:36:30 +0000 (GMT)
-From: Sven Schnelle <svens@linux.ibm.com>
-To: "Dmitry V. Levin" <ldv@strace.io>
-Cc: linux-snps-arc@lists.infradead.org, Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andreas Larsson
- <andreas@gaisler.com>,
-        John Paul Adrian Glaubitz
- <glaubitz@physik.fu-berlin.de>,
-        x86@kernel.org, Arnd Bergmann
- <arnd@arndb.de>,
-        linux-kernel@vger.kernel.org,
-        "James E.J. Bottomley"
- <James.Bottomley@HansenPartnership.com>,
-        Guo Ren <guoren@kernel.org>, linux-csky@vger.kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, WANG Xuerui
- <kernel@xen0n.name>,
-        Will Deacon <will@kernel.org>,
-        Eugene Syromyatnikov
- <evgsyr@gmail.com>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Jonas Bonn <jonas@southpole.se>, linux-s390@vger.kernel.org,
-        Alexander
- Gordeev <agordeev@linux.ibm.com>,
-        Madhavan Srinivasan
- <maddy@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Yoshinori Sato
- <ysato@users.sourceforge.jp>, linux-sh@vger.kernel.org,
-        Michael Ellerman
- <mpe@ellerman.id.au>, Helge Deller <deller@gmx.de>,
-        Huacai Chen
- <chenhuacai@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Dave Hansen
- <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Vineet
- Gupta <vgupta@kernel.org>,
-        Christian Borntraeger
- <borntraeger@linux.ibm.com>,
-        strace-devel@lists.strace.io, linux-arch@vger.kernel.org,
-        Albert Ou <aou@eecs.berkeley.edu>, Mike
- Frysinger <vapier@gentoo.org>,
-        Davide Berardi <berardi.dav@gmail.com>,
-        Renzo Davoli <renzo@cs.unibo.it>, linux-um@lists.infradead.org,
-        Heiko
- Carstens <hca@linux.ibm.com>,
-        Charlie Jenkins <charlie@rivosinc.com>,
-        Naveen N Rao <naveen@kernel.org>, Nicholas Piggin <npiggin@gmail.com>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Borislav Petkov
- <bp@alien8.de>, loongarch@lists.linux.dev,
-        Paul Walmsley
- <paul.walmsley@sifive.com>,
-        Stafford Horne <shorne@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, Brian Cain <bcain@quicinc.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-parisc@vger.kernel.org, linux-openrisc@vger.kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Oleg
- Nesterov <oleg@redhat.com>, Dinh Nguyen <dinguyen@kernel.org>,
-        linux-riscv@lists.infradead.org, Palmer Dabbelt <palmer@dabbelt.com>,
-        Richard Weinberger <richard@nod.at>,
-        Johannes Berg
- <johannes@sipsolutions.net>,
-        Alexey Gladkov <legion@kernel.org>,
-        "David
- S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v3 2/6] syscall.h: add syscall_set_arguments() and
- syscall_set_return_value()
-In-Reply-To: <20250130112207.GA6617@strace.io> (Dmitry V. Levin's message of
-	"Thu, 30 Jan 2025 13:22:07 +0200")
-References: <20250128091626.GB8601@strace.io> <yt9dwmecya4g.fsf@linux.ibm.com>
-	<20250130112207.GA6617@strace.io>
-Date: Thu, 30 Jan 2025 12:36:29 +0100
-Message-ID: <yt9dsep0y1mq.fsf@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	id 1tdclT-00000009hN9-3c6a
+	for linux-um@lists.infradead.org;
+	Thu, 30 Jan 2025 22:12:01 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id B30762D99A1;
+	Thu, 30 Jan 2025 23:11:58 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+	with ESMTP id T4gBdwkU6e-S; Thu, 30 Jan 2025 23:11:58 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 55B9F2D99A3;
+	Thu, 30 Jan 2025 23:11:58 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id CiQBvjWkWIkJ; Thu, 30 Jan 2025 23:11:58 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by lithops.sigma-star.at (Postfix) with ESMTP id 3460F2D99A1;
+	Thu, 30 Jan 2025 23:11:58 +0100 (CET)
+Date: Thu, 30 Jan 2025 23:11:58 +0100 (CET)
+From: Richard Weinberger <richard@nod.at>
+To: torvalds <torvalds@linux-foundation.org>
+Cc: linux-um <linux-um@lists.infradead.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <1821733080.304331864.1738275118129.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] UML changes for v6.14
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 3aUZNse446PGQfVafhK1HcR2G4gnMUaQ
-X-Proofpoint-ORIG-GUID: 64WUIlsja2UYCCT0QvJj0Ow022g8u5FP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2025-01-30_06,2025-01-30_01,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=982 lowpriorityscore=0 impostorscore=0 phishscore=0
- adultscore=0 priorityscore=1501 clxscore=1015 mlxscore=0 malwarescore=0
- spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2411120000 definitions=main-2501300089
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF133 (Linux)/8.8.12_GA_3809)
+Thread-Index: v88nChWzqiiR35i8gNV/Qi+JAxAQgQ==
+Thread-Topic: UML changes for v6.14
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250130_033803_336335_9505D5CF 
-X-CRM114-Status: GOOD (  28.99  )
+X-CRM114-CacheID: sfid-20250130_141200_047700_09640744 
+X-CRM114-Status: UNSURE (   4.71  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -177,77 +74,60 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-"Dmitry V. Levin" <ldv@strace.io> writes:
+Linus,
 
-> On Thu, Jan 30, 2025 at 09:33:03AM +0100, Sven Schnelle wrote:
->> "Dmitry V. Levin" <ldv@strace.io> writes:
->> 
->> > These functions are going to be needed on all HAVE_ARCH_TRACEHOOK
->> > architectures to implement PTRACE_SET_SYSCALL_INFO API.
->> >
->> > This partially reverts commit 7962c2eddbfe ("arch: remove unused
->> > function syscall_set_arguments()") by reusing some of old
->> > syscall_set_arguments() implementations.
->> >
->> > Signed-off-by: Dmitry V. Levin <ldv@strace.io>
->> > Tested-by: Charlie Jenkins <charlie@rivosinc.com>
->> > Reviewed-by: Charlie Jenkins <charlie@rivosinc.com>
->> > ---
->> >  arch/arc/include/asm/syscall.h        | 14 +++++++++++
->> >  arch/arm/include/asm/syscall.h        | 13 ++++++++++
->> >  arch/arm64/include/asm/syscall.h      | 13 ++++++++++
->> >  arch/csky/include/asm/syscall.h       | 13 ++++++++++
->> >  arch/hexagon/include/asm/syscall.h    | 14 +++++++++++
->> >  arch/loongarch/include/asm/syscall.h  |  8 ++++++
->> >  arch/mips/include/asm/syscall.h       | 32 ++++++++++++++++++++++++
->> >  arch/nios2/include/asm/syscall.h      | 11 ++++++++
->> >  arch/openrisc/include/asm/syscall.h   |  7 ++++++
->> >  arch/parisc/include/asm/syscall.h     | 12 +++++++++
->> >  arch/powerpc/include/asm/syscall.h    | 10 ++++++++
->> >  arch/riscv/include/asm/syscall.h      |  9 +++++++
->> >  arch/s390/include/asm/syscall.h       | 12 +++++++++
->> >  arch/sh/include/asm/syscall_32.h      | 12 +++++++++
->> >  arch/sparc/include/asm/syscall.h      | 10 ++++++++
->> >  arch/um/include/asm/syscall-generic.h | 14 +++++++++++
->> >  arch/x86/include/asm/syscall.h        | 36 +++++++++++++++++++++++++++
->> >  arch/xtensa/include/asm/syscall.h     | 11 ++++++++
->> >  include/asm-generic/syscall.h         | 16 ++++++++++++
->> >  19 files changed, 267 insertions(+)
->> >
->> > diff --git a/arch/s390/include/asm/syscall.h b/arch/s390/include/asm/syscall.h
->> > index 27e3d804b311..b3dd883699e7 100644
->> > --- a/arch/s390/include/asm/syscall.h
->> > +++ b/arch/s390/include/asm/syscall.h
->> > @@ -78,6 +78,18 @@ static inline void syscall_get_arguments(struct task_struct *task,
->> >  	args[0] = regs->orig_gpr2 & mask;
->> >  }
->> >  
->> > +static inline void syscall_set_arguments(struct task_struct *task,
->> > +					 struct pt_regs *regs,
->> > +					 const unsigned long *args)
->> > +{
->> > +	unsigned int n = 6;
->> > +
->> > +	while (n-- > 0)
->> > +		if (n > 0)
->> > +			regs->gprs[2 + n] = args[n];
->> > +	regs->orig_gpr2 = args[0];
->> > +}
->> 
->> Could that be changed to something like:
->> 
->> for (int n = 1; n < 6; n++)
->>         regs->gprs[2 + n] = args[n];
->> regs->orig_gpr2 = args[0];
->> 
->> I think this is way easier to parse.
->
-> I don't mind changing syscall_set_arguments() this way, but it just
-> mirrors syscall_get_arguments(), so I think it would be better if these
-> two functions were written in the same style.  Would you like to change
-> syscall_get_arguments() as well?
+The following changes since commit fc033cf25e612e840e545f8d5ad2edd6ba613ed5:
 
-Oh. I'll prepare a patch for syscall_get_arguments(), wasn't aware
-that this function looks the same. I'll send this via the s390 tree, so
-it's independent of your patch series. Thanks!
+  Linux 6.13-rc5 (2024-12-29 13:15:45 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-linus-6.14-rc1
+
+for you to fetch changes up to 2d2b61ae38bd91217ea7cc5bc700a2b9e75b3937:
+
+  um: Remove unused asm/archparam.h header (2025-01-13 17:19:43 +0100)
+
+----------------------------------------------------------------
+This pull request contains the following changes for UML:
+
+- hostfs: Convert to writepages
+- Many cleanups: Removal of dead macros, missing __init
+
+----------------------------------------------------------------
+Benjamin Berg (1):
+      um: rtc: use RTC time when calculating the alarm
+
+Matthew Wilcox (Oracle) (1):
+      hostfs: Convert to writepages
+
+Tiwei Bie (14):
+      um: Remove unused MODULES_LEN macro
+      um: Remove obsolete fixmap support
+      um: Count iomem_size only once in physmem calculation
+      um: Mark parse_host_cpu_flags as __init
+      um: Mark parse_cache_line as __init
+      um: Mark get_top_address as __init
+      um: Mark set_stklim as __init
+      um: Mark install_fatal_handler as __init
+      um: Mark setup_env_path as __init
+      um: Remove unused PGD_BOUND macro
+      um: Remove unused THREAD_NAME_LEN macro
+      um: Remove unused user_context function
+      um: Include missing headers in asm/pgtable.h
+      um: Remove unused asm/archparam.h header
+
+ arch/um/drivers/rtc_kern.c         |  7 +++--
+ arch/um/include/asm/fixmap.h       | 56 --------------------------------------
+ arch/um/include/asm/pgtable.h      |  7 ++---
+ arch/um/kernel/mem.c               | 15 +++-------
+ arch/um/kernel/process.c           |  8 ------
+ arch/um/kernel/um_arch.c           | 12 ++++----
+ arch/um/os-Linux/main.c            |  8 ++----
+ arch/x86/um/asm/archparam.h        | 20 --------------
+ arch/x86/um/shared/sysdep/ptrace.h |  2 --
+ fs/hostfs/hostfs_kern.c            | 54 +++++++++++++++++-------------------
+ 10 files changed, 46 insertions(+), 143 deletions(-)
+ delete mode 100644 arch/um/include/asm/fixmap.h
+ delete mode 100644 arch/x86/um/asm/archparam.h
 
