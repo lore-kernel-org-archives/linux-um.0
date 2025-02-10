@@ -4,84 +4,90 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0EB8DC02198
-	for <linux-um@archiver.kernel.org>; Mon, 10 Feb 2025 11:11:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 076B2C0219D
+	for <linux-um@archiver.kernel.org>; Mon, 10 Feb 2025 11:18:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:From:
-	Subject:Message-ID:Mime-Version:Date:Reply-To:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=LQhJyhQWjxv+Zy6zdPYkWUMUnHGtnz45HWDSo6oMzGY=; b=r/DQwe9QPdfsmVqaNEWeX90iYW
-	JOLgJ8BpVA6mfl4pr0hlvQ5SsMKbYMcmkwqFrXfUQqem/oGrEh76i4UY925tUrc1PbFzuEn0FOr/+
-	nxCmWJKRHuVppniF8qrbpVhEhf/JKffbjs60cyEL+MySzDEHWHSzHsosjItZtuUS3q09enOT4MT3q
-	kT8ZO7Gviha6BB7NirNTGHz1EEzJX/TRw4fmdIC3Df/Kh09kT+TFxjXGdBrjEuQbdD4GPWTSKV37k
-	vknYzTBPcx9Uodf5/UBBi3ZkXNsEGn6L/XfVy2d4nbsoLRhXHLQBvQpf5hoPH08KZs1yNN78rgCb7
-	zcXJKtQA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=7PP3w+vTVYydNJ1RlabO4o815qYqNgmeRSTRCNdNosM=; b=evqY/97Od7xQ1E+e7/Xn0h4iKr
+	GtZVpWGq26NproATpZpn00DPG82lQjJr3kAnLNd9c7sgIx4rn0hszeZ5wGnbcbVOQpmt6JkbOVewO
+	1elMWwS5wjfc2uRvFoWjulMajFhv3f5fOfOJ4eUZV47UwwrzZObyKL3qDRiqqDvr1+Q63l17G+DSb
+	gptztZiOx/Xj0iQETHQom49D+3soYaT9KpmUBXGo0AO+EC5ORfcJ+pm61V5NTzBpB4sysdSIA+h5A
+	n2d+SRFGVfGXuISFafaczjEs0HLJACgpBYiWxkdi9eDYSjUV+uhwMsVkPUpfqXPzZ6rlvTbcpz+5/
+	EmGgKA2Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1thRhe-0000000HAM1-0pjH;
-	Mon, 10 Feb 2025 11:11:50 +0000
-Received: from mail-pj1-x1049.google.com ([2607:f8b0:4864:20::1049])
+	id 1thRoQ-0000000HBkF-3C6v;
+	Mon, 10 Feb 2025 11:18:50 +0000
+Received: from mail-qv1-xf2b.google.com ([2607:f8b0:4864:20::f2b])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1thRQc-0000000H69I-1545
+	id 1thRSH-0000000H6bL-0lNW
 	for linux-um@lists.infradead.org;
-	Mon, 10 Feb 2025 10:54:15 +0000
-Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-2fa6610fe70so2400886a91.1
-        for <linux-um@lists.infradead.org>; Mon, 10 Feb 2025 02:54:13 -0800 (PST)
+	Mon, 10 Feb 2025 10:56:00 +0000
+Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-6dd049b5428so34311336d6.2
+        for <linux-um@lists.infradead.org>; Mon, 10 Feb 2025 02:55:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1739184853; x=1739789653; darn=lists.infradead.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=LQhJyhQWjxv+Zy6zdPYkWUMUnHGtnz45HWDSo6oMzGY=;
-        b=aAurAMBuAXWsOtZKXB4ZOpzTJpMghIJvB35YHK/sohh7CKrhONXdrt1nATSprgbMXb
-         r0qjN6J6c2kRtgixacrxNN4pWdQ0TGqwi1BDaabsxaWX3BFdgfm92h0A230+adkM6Q2Z
-         zYdf7RAZvwuKi902yiuDpNHGC5fm12F2AwfHmSijBhl5cdR6ltHWFLfWzCJoEL1m7gNQ
-         NB+2sduHNMG0S2zx0hzDG7AIaikuXkWJTMcQuFwl+qm+r9rqreej04Lzv7j2qXxrFWLm
-         a+esSnheXG7/KkRQWrXCbWJzG7j74hnBVQvH1eMOJFhg8AbYeF2qkT5I4CRsIyTvtbOj
-         55Qw==
+        d=google.com; s=20230601; t=1739184955; x=1739789755; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7PP3w+vTVYydNJ1RlabO4o815qYqNgmeRSTRCNdNosM=;
+        b=MCR2igv5xE9z2nfEhqShHmrNjeU08taO99IogHW22ivM17+WyqaoSqWVY92S97GWw1
+         x//V6bsZgMoNGg25Lr4dAc32ehQ5nhLgcS3A+5VdKtoBaJAfpvelO1+diKc8ZpHMiwZm
+         ODFhSrDmylfbItPKxHyu54pp0B0KpsLFCjrOrIXiEEqZPuheh0VFA+uRE+Gg+ret1qJ2
+         8weXQ0im3ma2WLdM986n73+bchqhS4SRmfvCXRHoZ3q9FdDIib4KWlm7XkTPNZkvWcKd
+         ld8V1B2tRV9aZzik2WlFBnotPCWfXmSjrat96Xn2kzp/rrwGm0w8/dWk4QnUVHTuR3RH
+         rM1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739184853; x=1739789653;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LQhJyhQWjxv+Zy6zdPYkWUMUnHGtnz45HWDSo6oMzGY=;
-        b=aAGPu2GjyemyqK6EaGl/M/lWzh5TS5tLjzAY1lDzij6O1RxaBRkcR0t4t2IaiGtghF
-         YlVVBcmbBtQTWN5S1ZatfFmq7yfIjcaSCLNqUHLJTKrUNJ7Mtd5njZwi6QR7NIqR2Ot3
-         kPenN+xen26z0ggI5aN1AoY3r6L00E1q2aZivvGGVkBufuYxIUKQ3pFbhP2K+6h/7JLj
-         rGJk3Ype/kv60jSQfwJnMH+5UBpIzT2zPAbDHqUVlf2Zaw2P/fxBDvdaei1xljkl2C/p
-         ILpMTLyXckaDKG/ryilAPPw7eGPw2Xs1qtj6lceJZGbS5DsNrDhmzNYQsyAAUIOrlCma
-         bQfA==
-X-Forwarded-Encrypted: i=1; AJvYcCVXJrinymkQmOF8TgFCS2ThK7HmNkC/FtaKN09M59EmmVyPBFmGOqPh9X5gmGD2Wr51fPcsF1cSIw==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yz7ZUxNSMrtJjHVu6mhIcTeCP6MkM1BFXfB0Siyxa9UnO9MtFjf
-	ZHV0cITusiTsXepmhAmM3SM4nmqLOq4SVN+Xe73GDZ/zjPsyQioGxyZpwbo+QAtrfbTy2KBrt6v
-	+pIV0EVMudQ==
-X-Google-Smtp-Source: AGHT+IEvW+/sOqnBG/VAtH/2gdqFYMC0pJvpIBft12t8qfeTZRUBDUmiUgXHCCq/urY4SSKI4OrQQQksWUjU5Q==
-X-Received: from pjboi14.prod.google.com ([2002:a17:90b:3a0e:b0:2ef:d283:5089])
- (user=davidgow job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:90b:4b0b:b0:2f4:49d8:e718 with SMTP id 98e67ed59e1d1-2fa23f6d51cmr20575597a91.9.1739184852968;
- Mon, 10 Feb 2025 02:54:12 -0800 (PST)
-Date: Mon, 10 Feb 2025 18:53:51 +0800
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.48.1.502.g6dc24dfdaf-goog
-Message-ID: <20250210105353.2238769-2-davidgow@google.com>
-Subject: [PATCH] arch: um: Pass the correct Rust target and options with gcc
+        d=1e100.net; s=20230601; t=1739184955; x=1739789755;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7PP3w+vTVYydNJ1RlabO4o815qYqNgmeRSTRCNdNosM=;
+        b=jA0RnAuRWX7fEa0Y3o94m3KPJ325t40EaNHx5pUZoV6XriX1lVOtFYh5QCa5sm+z9b
+         4L3DZ5NdCBjaVhPlLM1JjyDf8cVIeAG57l2hijUlFgb5nOfKbAS4Zir6en8gifOD2ZZ/
+         u1Ci7pdZQYvX+eJCQSsV4ZFLZJvH7JxKQSZgU5P5iMf9Hj5ohbmMH6ja+KVKG4E1PpC7
+         1WDX3WJJ3p61R9YrZ7SqwxfeD6kWJUYJFywiO2D3PtuwVwXzqiGBKrQ4riwFACjrJJpj
+         ydCxHj+gHxKA0TgqcgNxoXFKRECuihcGUKzLRZYTuWIIUYMo70e+NMWM1uDABIguIJuM
+         UYNw==
+X-Forwarded-Encrypted: i=1; AJvYcCUK69qEEjZcQQhhvb/nzmNPZiBzptmVNC557/PDW5wcfoCHCXKpIDRTQJOwK/F7CrxWPK0Rso4bfg==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yxu7NJLW/rMGWjV0nJRJpvHdkzH0wjoV0GiIRQYxW/Q20XMG2K9
+	Nq2CfRJfFKrqey7jgIPKwqCQO2cU1rcSuEK4GnT33+N3cG4EvC7j4nfVVk5kiAvgbSjGjCo53+Q
+	Jnu6amECS3OTMQ4soGvTg3AXKXtY8FsgYvn1R
+X-Gm-Gg: ASbGncvYgtaLviH0hWQvJX2nOuMFb/BjIrN9wTgBSnk5WZqbJN/GqBtNfwyK9mxuzBQ
+	esew+wddx9BIvEiVxcexR8xA6BcsDpfkMuvqL12HiQ1bVwH6yNSBBB+n5RqfZwUCaovBQBQoX8w
+	==
+X-Google-Smtp-Source: AGHT+IGbyeQ6k7fTxoDJJzi7UjIgV6Ed+wDw9pNMs0X4k3lIOqkog+znGoY1veJl/t7QLUdG1EyukBv6t6QGtJ4uJ3I=
+X-Received: by 2002:a05:6214:240b:b0:6d8:890c:1f08 with SMTP id
+ 6a1803df08f44-6e44569d333mr178824946d6.26.1739184955157; Mon, 10 Feb 2025
+ 02:55:55 -0800 (PST)
+MIME-Version: 1.0
+References: <20250208-rust-kunit-v1-0-94a026be6d72@weissschuh.net> <20250208-rust-kunit-v1-1-94a026be6d72@weissschuh.net>
+In-Reply-To: <20250208-rust-kunit-v1-1-94a026be6d72@weissschuh.net>
 From: David Gow <davidgow@google.com>
-To: "=?UTF-8?q?Thomas=20Wei=C3=9Fschuh?=" <linux@weissschuh.net>, Miguel Ojeda <ojeda@kernel.org>, 
-	Richard Weinberger <richard@nod.at>, Johannes Berg <johannes@sipsolutions.net>, 
-	Roberto Sassu <roberto.sassu@huaweicloud.com>, 
-	Vincenzo Palazzo <vincenzopalazzodev@gmail.com>
-Cc: David Gow <davidgow@google.com>, x86@kernel.org, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
+Date: Mon, 10 Feb 2025 18:55:42 +0800
+X-Gm-Features: AWEUYZnLrdE820e1YCxGYIPmD7_zxAEMVcFxHPATm37BvJ0XwCqWLuIDtdgVRBk
+Message-ID: <CABVgOSmZEowbLCJepA0bkTHMnt5xhXE5sHoQz2kNhmMo3N9vwg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] rust: pass correct target to bindgen on Usermode Linux
+To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
 	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	"=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?=" <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>, 
-	Andreas Hindborg <a.hindborg@kernel.org>, Alice Ryhl <aliceryhl@google.com>, 
-	Trevor Gross <tmgross@umich.edu>, rust-for-linux@vger.kernel.org, llvm@lists.linux.dev, 
-	linux-um@lists.infradead.org, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
-	kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@kernel.org>, 
+	Alice Ryhl <aliceryhl@google.com>, Trevor Gross <tmgross@umich.edu>, 
+	Danilo Krummrich <dakr@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
+	Justin Stitt <justinstitt@google.com>, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, 
+	linux-um <linux-um@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250210_025414_314154_66FE0FEC 
-X-CRM114-Status: GOOD (  16.97  )
+X-CRM114-CacheID: sfid-20250210_025557_225903_E3171C98 
+X-CRM114-Status: GOOD (  17.68  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -96,70 +102,63 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-In order to work around some issues with disabling SSE on older versions
-of gcc (compilation would fail upon seeing a function declaration
-containing a float, even if it was never called or defined), the
-corresponding CFLAGS and RUSTFLAGS were only set when using clang.
+On Sat, 8 Feb 2025 at 21:32, Thomas Wei=C3=9Fschuh <linux@weissschuh.net> w=
+rote:
+>
+> Usermode Linux uses "um" as primary architecture name and the underlying
+> physical architecture is provided in "SUBARCH".
+> Resolve the target architecture flags through that underlying architectur=
+e.
+> This is the same pattern as used by scripts/Makefile.clang from which
+> the bindgen flags are derived.
+>
+> Signed-off-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
+> ---
 
-However, this led to two problems:
-- Newer gcc versions also wouldn't get the correct flags, despite not
-  having the bug.
-- The RUSTFLAGS for setting the rust target definition were not set,
-  despite being unrelated. This works by chance for x86_64, as the
-  built-in default target is close enough, but not for 32-bit x86.
+(+cc linux-um, but I assume this will probably go in via the Rust tree, any=
+way.)
 
-Move the target definition outside the conditional block, and update the
-condition to take into account the gcc version.
+Thanks very much: this is enough to get Rust-for-Linux working with
+gcc under 64-bit UML on my system.
 
-Fixes: a3046a618a28 ("um: Only disable SSE on clang to work around old GCC bugs")
-Signed-off-by: David Gow <davidgow@google.com>
----
+However, this is actually a bit of a coincidence -- and there are
+still some issues with 32-bit UML -- as the UML Rust flags are
+currently conditionally set if CC_IS_CLANG. This is my fault (it was
+to work around some bugs with older gcc), and I've sent a patch[1] to
+fix it. (Though note that 32-bit UML/Rust still hits issues with
+atomics in the block driver, so you'll need to disable that for now.)
 
-When combined with Thomas' patch [1], this gets Rust/UML building
-correctly with gcc. (Indeed, Thomas' patch works fine by itself for the
-64-bit case, and the 32-bit build is broken anyway due to the Rust block
-driver not supporting 64-bit atomics on 32-bit systems.)
+Regardless, this is a significant improvement, thanks!
 
-Given the other patches will probably go in via the rust-for-linux tree,
-I'd be happy for this to do so as well (given it mostly affects Rust),
-but it's not a disaster if they go in independently: there shouldn't be
-any merge conflicts, and they work independently.
+Reviewed-by: David Gow <davidgow@googl.ecom>
 
-Note also that I don't actually have an old enough gcc nearby, so
-haven't actually tested this on gcc < 11. So please let me know if this
-breaks for you.
-
-Cheers,
+Thanks,
 -- David
 
-[1]: https://lore.kernel.org/rust-for-linux/20250208-rust-kunit-v1-1-94a026be6d72@weissschuh.net/
+[1]: https://lore.kernel.org/rust-for-linux/20250210105353.2238769-2-davidg=
+ow@google.com/
 
----
- arch/x86/Makefile.um | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/Makefile.um b/arch/x86/Makefile.um
-index a46b1397ad01..c86cbd9cbba3 100644
---- a/arch/x86/Makefile.um
-+++ b/arch/x86/Makefile.um
-@@ -7,12 +7,13 @@ core-y += arch/x86/crypto/
- # GCC versions < 11. See:
- # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99652
- #
--ifeq ($(CONFIG_CC_IS_CLANG),y)
--KBUILD_CFLAGS += -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx
--KBUILD_RUSTFLAGS += --target=$(objtree)/scripts/target.json
-+ifeq ($(call gcc-min-version, 110000)$(CONFIG_CC_IS_CLANG),y)
-+KBUILD_CFLAGS +=  -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx
- KBUILD_RUSTFLAGS += -Ctarget-feature=-sse,-sse2,-sse3,-ssse3,-sse4.1,-sse4.2,-avx,-avx2
- endif
- 
-+KBUILD_RUSTFLAGS += --target=$(objtree)/scripts/target.json
-+
- ifeq ($(CONFIG_X86_32),y)
- START := 0x8048000
- 
--- 
-2.48.1.502.g6dc24dfdaf-goog
-
+>  rust/Makefile | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/rust/Makefile b/rust/Makefile
+> index 8fcfd60447bc89ba2c66a4f341288db2387b0956..a94fafb91d7d743c6c1b22484=
+79c0d723964e5c4 100644
+> --- a/rust/Makefile
+> +++ b/rust/Makefile
+> @@ -245,6 +245,7 @@ bindgen_skip_c_flags :=3D -mno-fp-ret-in-387 -mprefer=
+red-stack-boundary=3D% \
+>  # Derived from `scripts/Makefile.clang`.
+>  BINDGEN_TARGET_x86     :=3D x86_64-linux-gnu
+>  BINDGEN_TARGET_arm64   :=3D aarch64-linux-gnu
+> +BINDGEN_TARGET_um      :=3D $(BINDGEN_TARGET_$(SUBARCH))
+>  BINDGEN_TARGET         :=3D $(BINDGEN_TARGET_$(SRCARCH))
+>
+>  # All warnings are inhibited since GCC builds are very experimental,
+>
+> --
+> 2.48.1
+>
+>
 
