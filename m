@@ -4,60 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7B8C2C0219E
-	for <linux-um@archiver.kernel.org>; Tue, 11 Feb 2025 07:04:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4D6D1C021A1
+	for <linux-um@archiver.kernel.org>; Tue, 11 Feb 2025 07:50:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=H1VXqZ9lKzRZadC9U5vq7bvgRxGL6+7Trovsrml9/kQ=; b=TEPqlDAZQ67AkZbB53lT4zP2cR
-	uwdN4BnKT7W8wJfOcsWRS+qa1N39hFJOF7HILn9JjOcp/ruqzAOAxM1Za1rkxxR7KCG3/gX19re2w
-	r9yH9oJNX0svKs0hrdwagjRoOv8YF8f8iR3K5dH2zF0vBKuNu9svrqLvlyITaz48ZE/XJVvQh8bvV
-	j9NBd0ILZfWURA6zm3XlPYEpCu8Kw0LkD3qka9aLA8xoPj0n+Vt6Y+xsV4hc32daneO8ooc25E1g+
-	M5mH5w1ZplbiPBcqFai8k2YfqJrdJlZh4aDi2DQ65EtpsPOymkhUc1TQPRE7/+8TKCcGqk0jXZc4D
-	cBJRzegA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=6bocx5Ym7QTSMeZGh79SRg4afEQ9iVNTRYQCSpeNKOs=; b=hb6LdpKLikLcL31gAkwGiiDEs4
+	FJ3s0w3oMX2bTc4dos7CRd/PisklM/a60BR6Lbh5U7B52bvX7X8oNOcpgjyDpQpNfOR4pPF9Ukp77
+	0YQ+OBV6Do7BIbSezwVbGK48VWb070vtv/gbwqYtSPK42qU17WB15gMEe0bIjLKox7cicV4T4iQ7N
+	DqOePXdlP8mmYddEb1R5y4fWEdpTwj+8QOuww3jhPK8NndyG88f1+gns+UkofR+Bv407Xy3vtM0IT
+	MXvymAThw/bzbGh0wkQrD6cpRi+iMv+reG/Rh5EgncL3DiLeNecUMq7plmW3fz2cH8wbbWX9hAu+P
+	P7ooNN8A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1thkJd-00000002maV-44uC;
-	Tue, 11 Feb 2025 07:04:17 +0000
-Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+	id 1thl2N-00000002t5A-3Dcm;
+	Tue, 11 Feb 2025 07:50:31 +0000
+Received: from mail.avm.de ([212.42.244.94])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1thkJb-00000002ma9-2QxA
+	id 1thl0a-00000002scz-0wRu
 	for linux-um@lists.infradead.org;
-	Tue, 11 Feb 2025 07:04:16 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 3252AA401F5;
-	Tue, 11 Feb 2025 07:02:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40338C4CEDD;
-	Tue, 11 Feb 2025 07:04:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739257454;
-	bh=ispQSxpSJ6PQTb5p81umW3SK6UvzxW/oSGK2MzXk3IA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=B4SZB6RFiRZZwZ/QoiHowoLw1B3Ab2rGCF6gtZS6Sw3kAMFIpvd+PRX2c0wVrq86x
-	 +Xb6mK9wzjfkuAklOGaSyzFwRp/s/oeBLtuvuEDgrHEtc92hHzzU7Iq3Py8EntNkO5
-	 9OQDjuwPwmgkKwtYOG6zcaXZtbULwBKFH2SNXe13bV0Q5QGUUlIteYM5c4h3lGPyEt
-	 vG3cUHxb/18HctNpSjywrKcQO2chiqXzDR6UXe4Bru5GEAhMgqBYLxVFhGIE9d1flv
-	 1U0JdWtwqpymv43MH80YU70zh76U4u/+3ixxWBnPN8fS9ODO4vJc2Laqrd9QkEa7XZ
-	 qh8gafpi2GK5w==
-From: SeongJae Park <sj@kernel.org>
-To: SeongJae Park <sj@kernel.org>
-Cc: Benjamin Berg <benjamin@sipsolutions.net>,
-	linux-um@lists.infradead.org,
-	Benjamin Berg <benjamin.berg@intel.com>
-Subject: Re: [PATCH] um: add back support for FXSAVE registers
-Date: Mon, 10 Feb 2025 23:04:11 -0800
-Message-Id: <20250211070411.6235-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250107210758.80762-1-sj@kernel.org>
-References: 
+	Tue, 11 Feb 2025 07:48:42 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
+	t=1739260113; bh=zeYqsmy3zOjGEu/ZNTX027ncYMz1t9krEA8HwArBA2s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cjWTWyqXIm4qG5RQ+weSzjFX/zpNVo8yMker3i+OKmCeYtRqnn+7lR7PDR4xtcLW0
+	 fgpJMjw3322dNPiI0TdLAgFpg2H24nQSlnDEjSVVb6CXD/OppknmJ3i/yaCyA8vVfU
+	 u/IoC1SHMD2fFL6gnuYn+ltvhT6e2PVlLJFUoLPE=
+Received: from [2001:bf0:244:244::71] (helo=mail.avm.de)
+	by mail.avm.de with ESMTP (eXpurgate 4.52.1)
+	(envelope-from <n.schier@avm.de>)
+	id 67ab00d1-714a-7f0000032729-7f00000187f2-1
+	for <multiple-recipients>; Tue, 11 Feb 2025 08:48:33 +0100
+Received: from mail-auth.avm.de (dovecot-mx-01.avm.de [IPv6:2001:bf0:244:244::71])
+	by mail.avm.de (Postfix) with ESMTPS;
+	Tue, 11 Feb 2025 08:48:33 +0100 (CET)
+Received: from buildd.core.avm.de (buildd-sv-01.avm.de [172.16.0.225])
+	by mail-auth.avm.de (Postfix) with ESMTPA id B249C80230;
+	Tue, 11 Feb 2025 08:48:32 +0100 (CET)
+Received: from l-nschier-z2.ads.avm.de (unknown [IPv6:fde4:4c1b:acd5:7792::1])
+	by buildd.core.avm.de (Postfix) with ESMTP id A293E181681;
+	Tue, 11 Feb 2025 08:48:32 +0100 (CET)
+Received: from nicolas by l-nschier-z2.ads.avm.de with local (Exim 4.98)
+	(envelope-from <n.schier@avm.de>)
+	id 1thl0S-00000004hMe-1bBr;
+	Tue, 11 Feb 2025 08:48:32 +0100
+Date: Tue, 11 Feb 2025 08:48:32 +0100
+From: Nicolas Schier <n.schier@avm.de>
+To: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+Cc: linux-kbuild@vger.kernel.org, linux-um@lists.infradead.org,
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+	=?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Richard Weinberger <richard@nod.at>,
+	Nicolas Schier <nicolas@fjasle.eu>
+Subject: Re: [PATCH v1] kbuild: Allow building of samples with UML
+Message-ID: <20250211-holistic-gentle-moth-c90edb@l-nschier-z2>
+References: <20241218115126.264342-1-mic@digikod.net>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20241218115126.264342-1-mic@digikod.net>
+X-purgate-ID: 149429::1739260113-C7F3ACDC-FBB69494/0/0
+X-purgate-type: clean
+X-purgate-size: 1114
+X-purgate-Ad: Categorized by eleven eXpurgate (R) https://www.eleven.de
+X-purgate: This mail is considered clean (visit https://www.eleven.de for further information)
+X-purgate: clean
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250210_230415_680261_4DDBAE33 
-X-CRM114-Status: GOOD (  17.04  )
+X-CRM114-CacheID: sfid-20250210_234840_682085_188B5E53 
+X-CRM114-Status: GOOD (  10.89  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,39 +94,32 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue,  7 Jan 2025 13:07:58 -0800 SeongJae Park <sj@kernel.org> wrote:
-
-> Hello,
+On Wed, Dec 18, 2024 at 12:51:23PM +0100, Mickaël Salaün wrote:
+> It's useful to build samples/* with UML and the only blocker is the
+> artificial incompatibility with CONFIG_HEADERS_INSTALL.
 > 
-> On Wed, 4 Dec 2024 08:48:27 +0100 Benjamin Berg <benjamin@sipsolutions.net> wrote:
+> Allow the headers_install target with ARCH=um, which then allow building
+> samples (and tests using them) with UML too:
 > 
-> > From: Benjamin Berg <benjamin.berg@intel.com>
-> > 
-> > It was reported that qemu may not enable the XSTATE CPU extension, which
-> > is a requirement after commit 3f17fed21491 ("um: switch to regset API
-> > and depend on XSTATE"). Add a fallback to use FXSAVE (FP registers on
-> > x86_64 and XFP on i386) which is just a shorter version of the same
-> > data. The only difference is that the XSTATE magic should not be set in
-> > the signal frame.
-> > 
-> > Note that this still drops support for the older i386 FP register layout
-> > as supporting this would require more backward compatibility to build a
-> > correct signal frame.
-> > 
-> > Fixes: 3f17fed21491 ("um: switch to regset API and depend on XSTATE")
-> > Reported-by: SeongJae Park <sj@kernel.org>
-> > Closes: https://lore.kernel.org/r/20241203070218.240797-1-sj@kernel.org
-> > Tested-by: SeongJae Park <sj@kernel.org>
-> > Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
+>   printf 'CONFIG_SAMPLES=y\nCONFIG_HEADERS_INSTALL=y\nCONFIG_SAMPLE_LANDLOCK=y\n' >.config
+>   make ARCH=um olddefconfig headers_install
+>   make ARCH=um samples/landlock/
 > 
-> Seems this patch is not yet merged into uml/next or uml/fixes.  May I ask the
-> timeline or blockers for this patch?
+> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> Cc: Johannes Berg <johannes@sipsolutions.net>
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Cc: Nathan Chancellor <nathan@kernel.org>
+> Cc: Nicolas Schier <nicolas@fjasle.eu>
+> Cc: Richard Weinberger <richard@nod.at>
+> Fixes: 1b620d539ccc ("kbuild: disable header exports for UML in a straightforward way")
+> Signed-off-by: Mickaël Salaün <mic@digikod.net>
+> ---
+>  Makefile          | 1 -
+>  lib/Kconfig.debug | 1 -
+>  2 files changed, 2 deletions(-)
+> 
 
-A gentle reminder. :)
+Thanks, looks good to me.
 
-
-Thanks,
-SJ
-
-[...]
+Reviewed-by: Nicolas Schier <n.schier@avm.de>
 
