@@ -4,53 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 809D6C02198
-	for <linux-um@archiver.kernel.org>; Wed, 12 Feb 2025 04:58:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4773BC02198
+	for <linux-um@archiver.kernel.org>; Fri, 14 Feb 2025 09:33:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
 	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
 	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=l3cySQwtW2L6IPLiAVn50hsL87KnNvGabd4tA/yuZJk=; b=YcdgXv/giVKfydM/LMOFaLZ2VQ
-	zZYPnZq0xmODpx8990LV+imZFwpWO/fn4xDt6Ecsxmalv0A8EGpFIkx78WalHx4Pi9V2k5VnHDcpg
-	UOfCJ7enUfnBe5dx8bB7Uk5HNvl9L+g2ZVPWRCObvUODaiBaMKK2evzbq+NLIJiDM9TOSovflNWCN
-	3Qc3gibcw3uIgubNB7aZReoWaGeLrpCqfbjF2pLqltb68lw+zLAnqLBUzwcSCTR9/LbvjgRP8HWYr
-	9prVHANWQJKcapvT+F04tNafBUJPVZmY9QFBu2BQbFXxdCn+ogAMg2RsEz5g6NVSFZzstdvoTIZ91
-	nfdDDw9g==;
+	bh=P/OQ891V2BD7/eDP5GjiLxp+/TS9wn+tMazuDp+lj1c=; b=mHEwnsWc+6nWeuq3o9IGV8cd+7
+	S3vp3rblfrKTbGihtQRTEUoawYc0UCsHJErKt72UTL+9xulXYQWMc0SbgBjwxcgj116G2hz+fU/ml
+	H7JQuxuUIgpdKkxT7U34P36d0BIPlXb8Uu71uPrSdKn1wkas2xcJuNLCOYDJR3yZwO/55S3MYmhpT
+	1pHfBK5FyaFR4Ch/K+uHQuYrPbGEr1+7h/mDItaQcpcEIu0fNwREV5jrbg8SRfsrP1o8iCnTDLxcw
+	moB7GPwgjR2WgURd08G083JwPgJ6nwdCd+qJMTopvTR5pkdcDnVLy2dSDrkIZfsILNb6PijiXMC3V
+	Lun8d6lg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1ti4pF-00000006CCV-1cCT;
-	Wed, 12 Feb 2025 04:58:17 +0000
-Received: from out0-195.mail.aliyun.com ([140.205.0.195])
+	id 1tis4i-0000000ELT3-3tXN;
+	Fri, 14 Feb 2025 09:33:32 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1ti4pC-00000006CBI-2g1T
+	id 1tis21-0000000EKNn-0yMi
 	for linux-um@lists.infradead.org;
-	Wed, 12 Feb 2025 04:58:16 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=antgroup.com; s=default;
-	t=1739336287; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=l3cySQwtW2L6IPLiAVn50hsL87KnNvGabd4tA/yuZJk=;
-	b=JhhvGA/pwo/ha8SJPp+n3pVEs/D0Pyc0Yk1mBy/6bEibRqdX9QyYlCyYT75/7DfI7RvWg576+9cBJzjRk2exBRyNCyC/O29JblRml7yjdvSy6PFWlwJ8VKBDJTe2aVEWPVMfO9vP1g79sT7wWXb49bzwFgJw1H+IHLYqBfvCcpw=
-Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.bNm9VfJ_1739336279 cluster:ay29)
-          by smtp.aliyun-inc.com;
-          Wed, 12 Feb 2025 12:58:05 +0800
-From: "Tiwei Bie" <tiwei.btw@antgroup.com>
-To: richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net
-Cc: <linux-um@lists.infradead.org>,
-  "Tiwei Bie" <tiwei.btw@antgroup.com>
-Subject: [PATCH] um: Allocate vdso page pointer statically
-Date: Wed, 12 Feb 2025 12:57:56 +0800
-Message-Id: <20250212045756.164977-1-tiwei.btw@antgroup.com>
-X-Mailer: git-send-email 2.34.1
+	Fri, 14 Feb 2025 09:30:46 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Content-Type:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-To:Resent-Cc:
+	Resent-Message-ID:In-Reply-To:References;
+	bh=P/OQ891V2BD7/eDP5GjiLxp+/TS9wn+tMazuDp+lj1c=; t=1739525442; x=1740735042; 
+	b=lzmLD3hj5gsvJM3wgilm+YwvLRy9MJcLbCqYmXbmyBIhSp6zyTaRWOT81ueZGZ5yeQZfl6+hW5Z
+	3uSXWjkno4wvBGY8R1CwkZJQkXDPLN0Yd7rDNy81tuXp1PO86o5MeVkz9QwVKeF5cokKGPJaw0B+a
+	ItMp7SJDYzMwENH0JhfkA6vI0QiIhKKqTCWtcJgopLs2pC0KfIy93HvJ80Uru6qK3BUhFOEySyV+p
+	bBnSD//qiCL/umW1RW9nRywq7kjgT1FuHsCZ1Udp19LKPfU2T2V+YDB//1I/YS0wn3YspjrrSxiIs
+	pBqm8xZHNCGM6eOgzSErzr6czwV+U3d5iSNA==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98)
+	(envelope-from <benjamin@sipsolutions.net>)
+	id 1tis1n-0000000EPJa-2kk0;
+	Fri, 14 Feb 2025 10:30:32 +0100
+From: Benjamin Berg <benjamin@sipsolutions.net>
+To: linux-um@lists.infradead.org
+Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+	Benjamin Berg <benjamin.berg@intel.com>
+Subject: [PATCH] um: hostfs: avoid issues on inode number reuse by host
+Date: Fri, 14 Feb 2025 10:28:22 +0100
+Message-ID: <20250214092822.1241575-1-benjamin@sipsolutions.net>
+X-Mailer: git-send-email 2.48.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250211_205815_209343_A973D331 
-X-CRM114-Status: UNSURE (   9.84  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250214_013045_284598_67A5C3A4 
+X-CRM114-Status: GOOD (  17.68  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -65,72 +70,161 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Instead of dynamically allocating the pointer to the vdso page during
-boot, we can just allocate it statically. Doing so will reduce error
-handling and make the code slightly more readable.
+From: Benjamin Berg <benjamin.berg@intel.com>
 
-Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
+Some file systems (e.g. ext4) may reuse inode numbers once the inode is
+not in use anymore. Usually hostfs will keep an FD open for each inode,
+but this is not always the case. In the case of sockets, this cannot
+even be done properly.
+
+As such, the following sequence of events was possible:
+ * application creates and deletes a socket
+ * hostfs creates/deletes the socket on the host
+ * inode is still in the hostfs cache
+ * hostfs creates a new file
+ * ext4 on the outside reuses the inode number
+ * hostfs finds the socket inode for the newly created file
+ * application receives -ENXIO when opening the file
+
+As mentioned, this can only happen if the deleted file is a special file
+that is never opened on the host (i.e. no .open fop).
+
+As such, to prevent issues, it is sufficient to check that the inode
+has the expected type. That said, also add a check for the inode birth
+time, just to be on the safe side.
+
+Fixes: 74ce793bcbde ("hostfs: Fix ephemeral inodes")
+Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
 ---
- arch/x86/um/vdso/vma.c | 17 +++--------------
- 1 file changed, 3 insertions(+), 14 deletions(-)
+ fs/hostfs/hostfs.h      |  2 +-
+ fs/hostfs/hostfs_kern.c |  7 ++++-
+ fs/hostfs/hostfs_user.c | 59 ++++++++++++++++++++++++-----------------
+ 3 files changed, 41 insertions(+), 27 deletions(-)
 
-diff --git a/arch/x86/um/vdso/vma.c b/arch/x86/um/vdso/vma.c
-index f238f7b33cdd..dc8dfb2abd80 100644
---- a/arch/x86/um/vdso/vma.c
-+++ b/arch/x86/um/vdso/vma.c
-@@ -12,33 +12,22 @@
+diff --git a/fs/hostfs/hostfs.h b/fs/hostfs/hostfs.h
+index 8b39c15c408c..15b2f094d36e 100644
+--- a/fs/hostfs/hostfs.h
++++ b/fs/hostfs/hostfs.h
+@@ -60,7 +60,7 @@ struct hostfs_stat {
+ 	unsigned int uid;
+ 	unsigned int gid;
+ 	unsigned long long size;
+-	struct hostfs_timespec atime, mtime, ctime;
++	struct hostfs_timespec atime, mtime, ctime, btime;
+ 	unsigned int blksize;
+ 	unsigned long long blocks;
+ 	struct {
+diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+index e0741e468956..e6e247235728 100644
+--- a/fs/hostfs/hostfs_kern.c
++++ b/fs/hostfs/hostfs_kern.c
+@@ -33,6 +33,7 @@ struct hostfs_inode_info {
+ 	struct inode vfs_inode;
+ 	struct mutex open_mutex;
+ 	dev_t dev;
++	struct hostfs_timespec btime;
+ };
  
- static unsigned int __read_mostly vdso_enabled = 1;
- unsigned long um_vdso_addr;
-+static struct page *um_vdso;
+ static inline struct hostfs_inode_info *HOSTFS_I(struct inode *inode)
+@@ -547,6 +548,7 @@ static int hostfs_inode_set(struct inode *ino, void *data)
+ 	}
  
- extern unsigned long task_size;
- extern char vdso_start[], vdso_end[];
+ 	HOSTFS_I(ino)->dev = dev;
++	HOSTFS_I(ino)->btime = st->btime;
+ 	ino->i_ino = st->ino;
+ 	ino->i_mode = st->mode;
+ 	return hostfs_inode_update(ino, st);
+@@ -557,7 +559,10 @@ static int hostfs_inode_test(struct inode *inode, void *data)
+ 	const struct hostfs_stat *st = data;
+ 	dev_t dev = MKDEV(st->dev.maj, st->dev.min);
  
--static struct page **vdsop;
--
- static int __init init_vdso(void)
+-	return inode->i_ino == st->ino && HOSTFS_I(inode)->dev == dev;
++	return inode->i_ino == st->ino && HOSTFS_I(inode)->dev == dev &&
++	       (inode->i_mode & S_IFMT) == (st->mode & S_IFMT) &&
++	       HOSTFS_I(inode)->btime.tv_sec == st->btime.tv_sec &&
++	       HOSTFS_I(inode)->btime.tv_nsec == st->btime.tv_nsec;
+ }
+ 
+ static struct inode *hostfs_iget(struct super_block *sb, char *name)
+diff --git a/fs/hostfs/hostfs_user.c b/fs/hostfs/hostfs_user.c
+index 97e9c40a9448..3bcd9f35e70b 100644
+--- a/fs/hostfs/hostfs_user.c
++++ b/fs/hostfs/hostfs_user.c
+@@ -18,39 +18,48 @@
+ #include "hostfs.h"
+ #include <utime.h>
+ 
+-static void stat64_to_hostfs(const struct stat64 *buf, struct hostfs_stat *p)
++static void statx_to_hostfs(const struct statx *buf, struct hostfs_stat *p)
  {
--	struct page *um_vdso;
--
- 	BUG_ON(vdso_end - vdso_start > PAGE_SIZE);
+-	p->ino = buf->st_ino;
+-	p->mode = buf->st_mode;
+-	p->nlink = buf->st_nlink;
+-	p->uid = buf->st_uid;
+-	p->gid = buf->st_gid;
+-	p->size = buf->st_size;
+-	p->atime.tv_sec = buf->st_atime;
+-	p->atime.tv_nsec = 0;
+-	p->ctime.tv_sec = buf->st_ctime;
+-	p->ctime.tv_nsec = 0;
+-	p->mtime.tv_sec = buf->st_mtime;
+-	p->mtime.tv_nsec = 0;
+-	p->blksize = buf->st_blksize;
+-	p->blocks = buf->st_blocks;
+-	p->rdev.maj = os_major(buf->st_rdev);
+-	p->rdev.min = os_minor(buf->st_rdev);
+-	p->dev.maj = os_major(buf->st_dev);
+-	p->dev.min = os_minor(buf->st_dev);
++	p->ino = buf->stx_ino;
++	p->mode = buf->stx_mode;
++	p->nlink = buf->stx_nlink;
++	p->uid = buf->stx_uid;
++	p->gid = buf->stx_gid;
++	p->size = buf->stx_size;
++	p->atime.tv_sec = buf->stx_atime.tv_sec;
++	p->atime.tv_nsec = buf->stx_atime.tv_nsec;
++	p->ctime.tv_sec = buf->stx_ctime.tv_sec;
++	p->ctime.tv_nsec = buf->stx_ctime.tv_nsec;
++	p->mtime.tv_sec = buf->stx_mtime.tv_sec;
++	p->mtime.tv_nsec = buf->stx_mtime.tv_nsec;
++	if (buf->stx_mask & STATX_BTIME) {
++		p->btime.tv_sec = buf->stx_btime.tv_sec;
++		p->btime.tv_nsec = buf->stx_btime.tv_nsec;
++	} else {
++		memset(&p->btime, 0, sizeof(p->btime));
++	}
++	p->blksize = buf->stx_blksize;
++	p->blocks = buf->stx_blocks;
++	p->rdev.maj = buf->stx_rdev_major;
++	p->rdev.min = buf->stx_rdev_minor;
++	p->dev.maj = buf->stx_dev_major;
++	p->dev.min = buf->stx_dev_minor;
+ }
  
- 	um_vdso_addr = task_size - PAGE_SIZE;
+ int stat_file(const char *path, struct hostfs_stat *p, int fd)
+ {
+-	struct stat64 buf;
++	struct statx buf;
++	int flags = AT_SYMLINK_NOFOLLOW;
  
--	vdsop = kmalloc(sizeof(struct page *), GFP_KERNEL);
--	if (!vdsop)
--		goto oom;
--
- 	um_vdso = alloc_page(GFP_KERNEL);
--	if (!um_vdso) {
--		kfree(vdsop);
--
-+	if (!um_vdso)
- 		goto oom;
--	}
- 
- 	copy_page(page_address(um_vdso), vdso_start);
--	*vdsop = um_vdso;
- 
+ 	if (fd >= 0) {
+-		if (fstat64(fd, &buf) < 0)
+-			return -errno;
+-	} else if (lstat64(path, &buf) < 0) {
+-		return -errno;
++		flags |= AT_EMPTY_PATH;
++		path = "";
+ 	}
+-	stat64_to_hostfs(&buf, p);
++
++	if ((statx(fd, path, flags, STATX_BASIC_STATS | STATX_BTIME, &buf)) < 0)
++		return -errno;
++
++	statx_to_hostfs(&buf, p);
  	return 0;
+ }
  
-@@ -56,6 +45,7 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
- 	struct mm_struct *mm = current->mm;
- 	static struct vm_special_mapping vdso_mapping = {
- 		.name = "[vdso]",
-+		.pages = &um_vdso,
- 	};
- 
- 	if (!vdso_enabled)
-@@ -64,7 +54,6 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
- 	if (mmap_write_lock_killable(mm))
- 		return -EINTR;
- 
--	vdso_mapping.pages = vdsop;
- 	vma = _install_special_mapping(mm, um_vdso_addr, PAGE_SIZE,
- 		VM_READ|VM_EXEC|
- 		VM_MAYREAD|VM_MAYWRITE|VM_MAYEXEC,
 -- 
-2.34.1
+2.48.1
 
 
