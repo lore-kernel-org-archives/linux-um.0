@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E89D0C021AA
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id E5926C021AD
 	for <linux-um@archiver.kernel.org>; Mon, 17 Feb 2025 19:10:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,34 +12,34 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=irsUPCJDDf9sWPbOR5tfnHLkyAVI2ujQHmur4Rc6/5I=; b=ykQqp9Xe4gK2dKv27AnnzIf+NW
-	8izuw17dWws3Plxb7WUuWvHRmkWQVoiO9R7nyvvAV217rlGgIB1obQNSuw5SP6mSnys7CvW2/2NTu
-	wezKuBvovuvULQThW44NHGxHObmVElPaxcMG0+x/QeF95o+xPxo22mqj3fh/uuYH9TPAcdR+li/5k
-	E/Ml3Z5RX2WzN4lMOX8d0eNnAgWvuzaycY1VsaplDUEsuD0NJUYFbLs7auAMcQYIpb0VC1iy5HYax
-	KaHttXORrEDN/sqa2V8KiiMJ8eTbyg3+VxzFr0IoOMd9fekGkQnWRDE9GQAE3JknDY6km9YiwcTzQ
-	Z9gyNSag==;
+	bh=j0C36cwE02tcp83xir3MVAFQIG4vvurnU5t2AtfKn0w=; b=m5JQqNwlXxvC2UoF4b6CIwutUZ
+	ewpc2qDhJokjF4Bo6u/VxrhvR9CcMWJH9HCqof1hZz5+nLpLpAVQc0QuIXaSDBnJKdtPzhFNFPMN2
+	v2A+3EGdpupn+KmVijhYzLQv61qopqGa/tocLowRpQ+HZSAggDPMm8R+SKv4FqX2Y56yOvx7cZRRd
+	eKhk4vj4W9krWuj2pH0Bx5p5v0SY4LnmVmEuJz00yJx0txDIAgqFs6jNW8eZm1njd0TBhITa082Mz
+	oHRx9PQDNxYwZLjIAyg0FRjLMaSf/LGbKPodLDyK5tcUA9SZRjMZpAHk01VKsgHIlwFqSryMcogxC
+	42/MvRSg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tk6W1-00000005iLc-0v9q;
-	Mon, 17 Feb 2025 19:10:49 +0000
+	id 1tk6W0-00000005iLV-3qzJ;
+	Mon, 17 Feb 2025 19:10:48 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tk6Tw-00000005hwP-0feR
+	id 1tk6Tw-00000005hwN-0fft
 	for linux-um@bombadil.infradead.org;
 	Mon, 17 Feb 2025 19:08:40 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description;
-	bh=irsUPCJDDf9sWPbOR5tfnHLkyAVI2ujQHmur4Rc6/5I=; b=YXhaJWKLYm+FmviTMlIhMOBmPJ
-	PdTTcuf/M3ukyskR8HsQNa9WRzD5eyRz2Y8U5uC+ZBVNLRmB/zBDIZriJnVP4mUqtZLb8CrAPmfbw
-	r1jHXZk3tuoSZ+tMoN/W7PZnxDKajMvW+2F7/ap+qB8onNjw2rwB4S3+Zp6LbX9wAkbFZQly0p7Xm
-	wKAjrJYQrOzYpalnDopo1OtWgGHqxi0cPxuHXbDMxHMAGmv1cCuh7GpDCZjDsCTfhtqUYInwMM3cN
-	oXU4pgZO6LzJ4Pht2G+33kYABnQ6jUlUv6v3ogxyM8XV+Zub6EQJCrLrvMKMbmtFQeZMRgquxNLIC
-	NZu0XKhA==;
+	bh=j0C36cwE02tcp83xir3MVAFQIG4vvurnU5t2AtfKn0w=; b=QnkS/IDlpFNbxP+1NPSLKrdsh0
+	W3YPFFdUYdE5bv+IkKv1DttNFhjdfeK3JoNCcH2tDcwHkIiWvg/C2a4wH/u3IHTb4YM/lxTlMkakQ
+	MgeRGI7FcqDMPeId+YYyjBB4W86R7pZIdHQq7dYEXsK1M2u2KGFAQTokc2mFFTRlaoenqS0bKIjqZ
+	aJ6NzWzfDrjw12g+GkzYADGVkGEOfzkaxmBopCBOeVfBtOQq/NWVXjDBWokSfk0bSXo2D78KbAe3A
+	Xdwcq0TaABahPOiqCpI7JbV5wN8PwHPqxR0WfXpLKmBzkFD+B3iU+27xyl7mm17JJpUaSP1DZgs8B
+	tKN5k9xw==;
 Received: from willy by casper.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1tk6Tv-00000001pBP-01vp;
-	Mon, 17 Feb 2025 19:08:39 +0000
+	id 1tk6Tu-00000001pBH-3P3E;
+	Mon, 17 Feb 2025 19:08:38 +0000
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To: linux-mm@kvack.org
 Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
@@ -48,9 +48,9 @@ Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
 	linux-s390@vger.kernel.org,
 	sparclinux@vger.kernel.org,
 	linux-um@lists.infradead.org
-Subject: [PATCH 5/7] um: Remove custom definition of mk_pte()
-Date: Mon, 17 Feb 2025 19:08:32 +0000
-Message-ID: <20250217190836.435039-6-willy@infradead.org>
+Subject: [PATCH 3/7] sparc32: Remove custom definition of mk_pte()
+Date: Mon, 17 Feb 2025 19:08:30 +0000
+Message-ID: <20250217190836.435039-4-willy@infradead.org>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250217190836.435039-1-willy@infradead.org>
 References: <20250217190836.435039-1-willy@infradead.org>
@@ -70,81 +70,47 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Move the pfn_pte() definitions from the 2level and 4level files to the
-generic pgtable.h and delete the custom definition of mk_pte() so that
-we use the central definition.
+Instead of defining pfn_pte() in terms of mk_pte(), make pfn_pte() the
+base implementation.  That lets us use the generic definition of mk_pte().
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- arch/um/include/asm/pgtable-2level.h |  1 -
- arch/um/include/asm/pgtable-4level.h |  9 ---------
- arch/um/include/asm/pgtable.h        | 18 ++++++++----------
- 3 files changed, 8 insertions(+), 20 deletions(-)
+ arch/sparc/include/asm/pgtable_32.h | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
 
-diff --git a/arch/um/include/asm/pgtable-2level.h b/arch/um/include/asm/pgtable-2level.h
-index ab0c8dd86564..14ec16f92ce4 100644
---- a/arch/um/include/asm/pgtable-2level.h
-+++ b/arch/um/include/asm/pgtable-2level.h
-@@ -37,7 +37,6 @@ static inline void pgd_mkuptodate(pgd_t pgd)	{ }
- #define set_pmd(pmdptr, pmdval) (*(pmdptr) = (pmdval))
- 
- #define pte_pfn(x) phys_to_pfn(pte_val(x))
--#define pfn_pte(pfn, prot) __pte(pfn_to_phys(pfn) | pgprot_val(prot))
- #define pfn_pmd(pfn, prot) __pmd(pfn_to_phys(pfn) | pgprot_val(prot))
- 
- #endif
-diff --git a/arch/um/include/asm/pgtable-4level.h b/arch/um/include/asm/pgtable-4level.h
-index 0d279caee93c..7a271b7b83d2 100644
---- a/arch/um/include/asm/pgtable-4level.h
-+++ b/arch/um/include/asm/pgtable-4level.h
-@@ -102,15 +102,6 @@ static inline unsigned long pte_pfn(pte_t pte)
- 	return phys_to_pfn(pte_val(pte));
+diff --git a/arch/sparc/include/asm/pgtable_32.h b/arch/sparc/include/asm/pgtable_32.h
+index 62bcafe38b1f..1454ebe91539 100644
+--- a/arch/sparc/include/asm/pgtable_32.h
++++ b/arch/sparc/include/asm/pgtable_32.h
+@@ -255,7 +255,11 @@ static inline pte_t pte_mkyoung(pte_t pte)
  }
  
--static inline pte_t pfn_pte(unsigned long page_nr, pgprot_t pgprot)
--{
--	pte_t pte;
--	phys_t phys = pfn_to_phys(page_nr);
--
--	pte_set_val(pte, phys, pgprot);
--	return pte;
--}
--
- static inline pmd_t pfn_pmd(unsigned long page_nr, pgprot_t pgprot)
+ #define PFN_PTE_SHIFT			(PAGE_SHIFT - 4)
+-#define pfn_pte(pfn, prot)		mk_pte(pfn_to_page(pfn), prot)
++
++static inline pte_t pfn_pte(unsigned long pfn, pgprot_t pgprot)
++{
++	return __pte((pfn << PFN_PTE_SHIFT) | pgprot_val(pgprot));
++}
+ 
+ static inline unsigned long pte_pfn(pte_t pte)
  {
- 	return __pmd((page_nr << PAGE_SHIFT) | pgprot_val(pgprot));
-diff --git a/arch/um/include/asm/pgtable.h b/arch/um/include/asm/pgtable.h
-index 5601ca98e8a6..ca2a519d53ab 100644
---- a/arch/um/include/asm/pgtable.h
-+++ b/arch/um/include/asm/pgtable.h
-@@ -260,19 +260,17 @@ static inline int pte_same(pte_t pte_a, pte_t pte_b)
- 	return !((pte_val(pte_a) ^ pte_val(pte_b)) & ~_PAGE_NEEDSYNC);
- }
+@@ -272,15 +276,6 @@ static inline unsigned long pte_pfn(pte_t pte)
+ 
+ #define pte_page(pte)	pfn_to_page(pte_pfn(pte))
  
 -/*
 - * Conversion functions: convert a page and protection to a page entry,
 - * and a page entry and page directory to the page they refer to.
 - */
+-static inline pte_t mk_pte(struct page *page, pgprot_t pgprot)
+-{
+-	return __pte((page_to_pfn(page) << (PAGE_SHIFT-4)) | pgprot_val(pgprot));
+-}
 -
- #define __virt_to_page(virt) phys_to_page(__pa(virt))
- #define virt_to_page(addr) __virt_to_page((const unsigned long) addr)
- 
--#define mk_pte(page, pgprot) \
--	({ pte_t pte;					\
--							\
--	pte_set_val(pte, page_to_phys(page), (pgprot));	\
--	pte;})
-+static inline pte_t pfn_pte(unsigned long pfn, pgprot_t pgprot)
-+{
-+	pte_t pte;
-+
-+	pte_set_val(pte, pfn_to_phys(pfn), pgprot);
-+
-+	return pte;
-+}
- 
- static inline pte_t pte_modify(pte_t pte, pgprot_t newprot)
+ static inline pte_t mk_pte_phys(unsigned long page, pgprot_t pgprot)
  {
+ 	return __pte(((page) >> 4) | pgprot_val(pgprot));
 -- 
 2.47.2
 
