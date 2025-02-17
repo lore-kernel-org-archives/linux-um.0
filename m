@@ -4,42 +4,42 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1954AC021AE
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CFABBC021B0
 	for <linux-um@archiver.kernel.org>; Mon, 17 Feb 2025 19:10:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=OumVES33M5Q6KKLjsks+HzN6mA4d4PgrDi4hyJXhstQ=; b=5EiqzpCEZENpfYJm0iP4PyAYLs
-	TwP4kxj1odcQLkXEMWANrRPtg4Uu8omeRiRn2WH2xdf83P1HB2EC0RLTZ+BCkLWNtW2kGSLCbBgGw
-	MHDR+8e385NkRLbYsH2UwKIiAlY3aRyxRn2tS4fZOndlC/gvjuUEzTcu1ap/mxBaH7Utaz/kHN2/B
-	PumxLiMWDHnbDRHc6BHCZh5xQGPBEjAt17rQ6LXCGot6X8aZftA0di59BU27CkQ5dGGqusIZXwqde
-	h/Q1DkdLOPLpbY0Ui8v01uP/d/MoGZTQR/rRll8xQcjQ6N5NKV+sqyleKPaTrFCVbtK7l+ezrKyUO
-	aHM0cliA==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=xPK3eVt9+7xzyAPyUDSt55ICTTIrX4D95c1avul6TRk=; b=NO9ipjdzTJVo+bdLtwrAF+nkNS
+	ktZiDSp6kbSTQ7nl49UF7/c/Oc3u4H5pibk94LALSN54LF2yb8Og98vzDnZZH6G6LtBx76nYWjEsS
+	Kt4JH0J0AgK3fKDGU3aHmS9SCv4DN++Crz4t3QZgbTWG/DVuORYpOZRhCPcHyhxp5am7ov0MrPIH5
+	T4ihsD8vtWVBqFEH+Xh57l33hUzCe4iFOPMu7mebnTJK07PTCGpajenD2/w05OfZsyQAZjhpfTXPp
+	ORFVdgWhfXZBBISTuqGtXCltfHMTE4dmrNxTyy2GISYEA7lZ8eiMBnYNha1C7hKrDQ+goZ5SL56K0
+	0JueKWIA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tk6W1-00000005iMI-3Z9o;
-	Mon, 17 Feb 2025 19:10:49 +0000
+	id 1tk6W2-00000005iN8-2AlZ;
+	Mon, 17 Feb 2025 19:10:50 +0000
 Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tk6Tw-00000005hwR-1emp
+	id 1tk6U1-00000005hyJ-3nPX
 	for linux-um@bombadil.infradead.org;
-	Mon, 17 Feb 2025 19:08:40 +0000
+	Mon, 17 Feb 2025 19:08:45 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=OumVES33M5Q6KKLjsks+HzN6mA4d4PgrDi4hyJXhstQ=; b=StCMnrt6vOSAYjFMqqQquk050o
-	hn1znvvg9gYx0AwLbFVElug1d1bW6SEWC5H6dYMk8J4C7mg0KKFEgL/HFVJvoA99AQ/0JSkSUErr2
-	TtcqV5Ev5F8iW4alNv2SNQPl6S01DglwDe5jooRarQpgbJ/l/ZVAqSfnmiymy+RfLGQx4SSUgETnn
-	TzhasKCnq5rTeSL7GLZAICQkeu663hIrRckIbtwLo9icbmZqKxQSO+kiWs4EGAl7Z15/lwEfa3F4Y
-	L5EvDNIT5UdATOp5oZB+3Y/6WYY/Q5HETXGUent6CVnm3bZ/1K5o8X6f6yqK63/mHxlPMryWUmXdG
-	kBG41KUw==;
+	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=xPK3eVt9+7xzyAPyUDSt55ICTTIrX4D95c1avul6TRk=; b=Jz34MUBk12WoNx3nG8DYnhoKOG
+	5TdzeRiHmtpKkxk3YXdh4WT9xz/u9O9dg4xXajm73CZ4nwIf4hXUUIxmUVzFDLLEyA49LyHVhFg/9
+	jU6cGlj48Pp3AWlNkp0kOGJcYR/oBWOnJAzuGrKSBapUz5885RV7u33SS6rGZosC/WoLJ7AznBLb/
+	EZvh5DXpj7mTNzZeCv/ZM98Mo2dpj/YL54x3ceiSxdjzRgT8zbBhqErxpxXc0wRy2tCqrBVz6bvp+
+	cPfmrAjIb2VvaLUmvPF5AYOczpX9oO0vXS9N0GfX3WQ14h4ExIX+z2eRJHTarDPAnImAruOehyCzZ
+	6W7zMzMw==;
 Received: from willy by casper.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1tk6Tv-00000001pBk-19SY;
-	Mon, 17 Feb 2025 19:08:39 +0000
+	id 1tk6Tu-00000001pBB-2EX9;
+	Mon, 17 Feb 2025 19:08:38 +0000
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To: linux-mm@kvack.org
 Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
@@ -48,12 +48,10 @@ Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
 	linux-s390@vger.kernel.org,
 	sparclinux@vger.kernel.org,
 	linux-um@lists.infradead.org
-Subject: [PATCH 7/7] mm: Add folio_mk_pte()
-Date: Mon, 17 Feb 2025 19:08:34 +0000
-Message-ID: <20250217190836.435039-8-willy@infradead.org>
+Subject: [PATCH 0/7] Add folio_mk_pte() and simplify mk_pte()
+Date: Mon, 17 Feb 2025 19:08:27 +0000
+Message-ID: <20250217190836.435039-1-willy@infradead.org>
 X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250217190836.435039-1-willy@infradead.org>
-References: <20250217190836.435039-1-willy@infradead.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-BeenThere: linux-um@lists.infradead.org
@@ -70,85 +68,75 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Removes a cast from folio to page in four callers of mk_pte().
+The intent is to add folio_mk_pte() to remove the conversion from folio
+to page necessary to call mk_pte().  Eventually we might end up removing
+mk_pte(), but that's not what's being proposed today.
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- include/linux/mm.h | 15 +++++++++++++++
- mm/memory.c        |  6 +++---
- mm/userfaultfd.c   |  2 +-
- 3 files changed, 19 insertions(+), 4 deletions(-)
+I didn't want to add folio_mk_pte() to each architecture, and I didn't
+want to lose any optimisations that architectures have from their own
+implementation of mk_pte().  Fortunately, most architectures have by
+now turned their mk_pte() into a fairly bland variant of pfn_pte(),
+but s390 is different.
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 62dccde9c561..b1e311bae6b7 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1921,6 +1921,21 @@ static inline pte_t mk_pte(struct page *page, pgprot_t pgprot)
- {
- 	return pfn_pte(page_to_pfn(page), pgprot);
- }
-+
-+/**
-+ * folio_mk_pte - Create a PTE for this folio
-+ * @folio: The folio to create a PTE for
-+ * @pgprot: The page protection bits to use
-+ *
-+ * Create a page table entry for the first page of this folio.
-+ * This is suitable for passing to set_ptes().
-+ *
-+ * Return: A page table entry suitable for mapping this folio.
-+ */
-+static inline pte_t folio_mk_pte(struct folio *folio, pgprot_t pgprot)
-+{
-+	return pfn_pte(folio_pfn(folio), pgprot);
-+}
- #endif
- 
- /**
-diff --git a/mm/memory.c b/mm/memory.c
-index 4330560eee55..72411a6d696f 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -936,7 +936,7 @@ copy_present_page(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma
- 	rss[MM_ANONPAGES]++;
- 
- 	/* All done, just insert the new page copy in the child */
--	pte = mk_pte(&new_folio->page, dst_vma->vm_page_prot);
-+	pte = folio_mk_pte(new_folio, dst_vma->vm_page_prot);
- 	pte = maybe_mkwrite(pte_mkdirty(pte), dst_vma);
- 	if (userfaultfd_pte_wp(dst_vma, ptep_get(src_pte)))
- 		/* Uffd-wp needs to be delivered to dest pte as well */
-@@ -3480,7 +3480,7 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
- 			inc_mm_counter(mm, MM_ANONPAGES);
- 		}
- 		flush_cache_page(vma, vmf->address, pte_pfn(vmf->orig_pte));
--		entry = mk_pte(&new_folio->page, vma->vm_page_prot);
-+		entry = folio_mk_pte(new_folio, vma->vm_page_prot);
- 		entry = pte_sw_mkyoung(entry);
- 		if (unlikely(unshare)) {
- 			if (pte_soft_dirty(vmf->orig_pte))
-@@ -4892,7 +4892,7 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
- 	 */
- 	__folio_mark_uptodate(folio);
- 
--	entry = mk_pte(&folio->page, vma->vm_page_prot);
-+	entry = folio_mk_pte(folio, vma->vm_page_prot);
- 	entry = pte_sw_mkyoung(entry);
- 	if (vma->vm_flags & VM_WRITE)
- 		entry = pte_mkwrite(pte_mkdirty(entry), vma);
-diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-index af3dfc3633db..507a9e3caec7 100644
---- a/mm/userfaultfd.c
-+++ b/mm/userfaultfd.c
-@@ -1066,7 +1066,7 @@ static int move_present_pte(struct mm_struct *mm,
- 	folio_move_anon_rmap(src_folio, dst_vma);
- 	src_folio->index = linear_page_index(dst_vma, dst_addr);
- 
--	orig_dst_pte = mk_pte(&src_folio->page, dst_vma->vm_page_prot);
-+	orig_dst_pte = folio_mk_pte(src_folio, dst_vma->vm_page_prot);
- 	/* Follow mremap() behavior and treat the entry dirty after the move */
- 	orig_dst_pte = pte_mkwrite(pte_mkdirty(orig_dst_pte), dst_vma);
- 
+So patch 1 hoists the optimisation of calling pte_mkdirty() from s390
+to generic code.  I'd appreciate some eyes on this from mm people who
+understand this better than I do.  I originally had
+
+-	if (write)
++	if (write || folio_test_dirty(folio))
+		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
+
+and I think that broke COW under some circumstances that 01.org could
+reproduce and I couldn't.
+
+The various architecture maintainers might care to make sure that what
+I've done is an equivalent transformation.  x86 was particularly tricky.
+The build bots say it works ... at least now I've dealt with the pesky
+!MMU problem.
+
+The last patch to actually use folio_mk_pte() ought to be the least likely
+to have a problem  since it's equivalent to calling mk_pte(&folio->page).
+
+Matthew Wilcox (Oracle) (7):
+  mm: Set the pte dirty if the folio is already dirty
+  mm: Introduce a common definition of mk_pte()
+  sparc32: Remove custom definition of mk_pte()
+  x86: Remove custom definition of mk_pte()
+  um: Remove custom definition of mk_pte()
+  mm: Make mk_pte() definition unconditional
+  mm: Add folio_mk_pte()
+
+ arch/alpha/include/asm/pgtable.h         |  7 -------
+ arch/arc/include/asm/pgtable-levels.h    |  1 -
+ arch/arm/include/asm/pgtable.h           |  1 -
+ arch/arm64/include/asm/pgtable.h         |  6 ------
+ arch/csky/include/asm/pgtable.h          |  5 -----
+ arch/hexagon/include/asm/pgtable.h       |  3 ---
+ arch/loongarch/include/asm/pgtable.h     |  6 ------
+ arch/m68k/include/asm/mcf_pgtable.h      |  6 ------
+ arch/m68k/include/asm/motorola_pgtable.h |  6 ------
+ arch/m68k/include/asm/sun3_pgtable.h     |  6 ------
+ arch/microblaze/include/asm/pgtable.h    |  8 --------
+ arch/mips/include/asm/pgtable.h          |  6 ------
+ arch/nios2/include/asm/pgtable.h         |  6 ------
+ arch/openrisc/include/asm/pgtable.h      |  2 --
+ arch/parisc/include/asm/pgtable.h        |  6 ------
+ arch/powerpc/include/asm/pgtable.h       |  3 +--
+ arch/riscv/include/asm/pgtable.h         |  2 --
+ arch/s390/include/asm/pgtable.h          | 10 ----------
+ arch/sh/include/asm/pgtable_32.h         |  8 --------
+ arch/sparc/include/asm/pgtable_32.h      | 15 +++++----------
+ arch/sparc/include/asm/pgtable_64.h      |  1 -
+ arch/um/include/asm/pgtable-2level.h     |  1 -
+ arch/um/include/asm/pgtable-4level.h     |  9 ---------
+ arch/um/include/asm/pgtable.h            | 18 ++++++++----------
+ arch/x86/include/asm/pgtable.h           | 19 +++----------------
+ arch/xtensa/include/asm/pgtable.h        |  6 ------
+ include/linux/mm.h                       | 22 ++++++++++++++++++++++
+ mm/memory.c                              |  8 +++++---
+ mm/userfaultfd.c                         |  2 +-
+ 29 files changed, 45 insertions(+), 154 deletions(-)
+
 -- 
 2.47.2
 
