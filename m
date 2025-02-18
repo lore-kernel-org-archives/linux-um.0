@@ -4,82 +4,145 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C641DC02198
-	for <linux-um@archiver.kernel.org>; Tue, 18 Feb 2025 08:18:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 23119C02198
+	for <linux-um@archiver.kernel.org>; Tue, 18 Feb 2025 10:36:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
-	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=K6Hz8bZDs78uyXHgQQ8oUf4o6rHFlSQuKCrUj7YwByY=; b=xcr4Vf/MgTmJYDmgx/ec7mIBIb
-	futxP8dn0OxXgkh1B93QZ0J5fLLobzGIvGYCxtOK8N6tRYL5NiGoaH/i/UOJcwpPvq42YGgcFP02G
-	YUKtTJmeDIL/yb1JQGNfcFtytyAcePqr8jdzEBI7ZVinpNwKTIUkOpd0kZpDTqf1G6In5Qq8m+5O+
-	R4+/sE38hcgdi4cefQuSYseWGoldiAW9/zzQG7Ck7zVNtREOEMSEGvCixhpbrLJuqGDcAPYlCKSs/
-	uVNvNajxLve+fwtb/nWGZ/TUqkVyCifaMKU2OBQm86zgcdJdxxDB/le/XMkAvoKf9ZMjom+d08Rhn
-	nOgmV0cA==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=bYHwcLVWT7ViqDSplojxQnlqWrz/ZE/8JhhVM+wg4bQ=; b=ac2I5rklYg/cKHGnTB4vJaNt0/
+	N0TAQXnQv5PtzqFlVhMezg++HqbM6yTntY24CWL88fA2LtVPnTh2eJub7LJaukQCcdwbxOrcRi8Df
+	ORzBXhLsGP0gErQhfW8P+7eMkFNFQVUaGtI5eVOLIcDJ8Lgt0uT+9XBBcdcpVn1844dpd5LdmFmus
+	vGYpNyCQ6GTAe80P5NHoZuCRndGTK5Mltaw1EWS7A9jik5qOZCZGfHopYkudVvUZfjM44cNBg110e
+	FHUNAyklMq6FHH0V99Rh9ai7o0tW6YRuV5ba8ehyctoNN+N7vo0N5bYJSFIz9GsxkaQoCpNjbV8C/
+	w51Z5GeA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tkIns-00000007E9i-28zp;
-	Tue, 18 Feb 2025 08:18:04 +0000
-Received: from mail-ua1-f44.google.com ([209.85.222.44])
+	id 1tkKyA-00000007nDf-3kYs;
+	Tue, 18 Feb 2025 10:36:50 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tkIlh-00000007DTC-3uqR
+	id 1tkKsk-00000007lYN-34g9
 	for linux-um@lists.infradead.org;
-	Tue, 18 Feb 2025 08:15:51 +0000
-Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-868ddc4c6b6so1879866241.2
-        for <linux-um@lists.infradead.org>; Tue, 18 Feb 2025 00:15:49 -0800 (PST)
+	Tue, 18 Feb 2025 10:31:15 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1739874673;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=bYHwcLVWT7ViqDSplojxQnlqWrz/ZE/8JhhVM+wg4bQ=;
+	b=dGHJGA5+veMCAHQzd2qJZE1c6v72hHxr1HXmGBVtXXsi5rVuUkzgcvjAsed49KVUBJTOy6
+	D5eQ6a/A0BkM0ynXso1bNqalZXFHmidUhYCMsic2pADDm7k+X0VwLfmi1BjWj7q+eywH4/
+	Q2FV/JTbgssD+gBP6podK58+1VEY6Iw=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-668-Z4RtMBG4OH2lE0z_HAsy8g-1; Tue, 18 Feb 2025 05:31:11 -0500
+X-MC-Unique: Z4RtMBG4OH2lE0z_HAsy8g-1
+X-Mimecast-MFC-AGG-ID: Z4RtMBG4OH2lE0z_HAsy8g_1739874671
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-43943bd1409so44729695e9.3
+        for <linux-um@lists.infradead.org>; Tue, 18 Feb 2025 02:31:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739866547; x=1740471347;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=K6Hz8bZDs78uyXHgQQ8oUf4o6rHFlSQuKCrUj7YwByY=;
-        b=EbLt6r+xFXg03bzUjllebtGc10q2iixsrkiQqgMipPhI+5tgHwA1UvJz3vr8x94qXJ
-         AvYYFZaMguKTfDlsqPKNpvdCLBu0CZT1kF2IshWTYyj5MW4Rk/uD3JhOrk/7l1QFOyhG
-         Ov8eP6Gz/NcCVhhzhUEom2s8GBvrx4cY7bHoHCL4rGhsq0LGV48nkQ41R96dWFZ1klzy
-         /Wr5mgLxD6JusaGZ3R8NtVK/cybGc8khE3f15mP2Ri3fIf5DdqINIQv/qRf/zbQlDFIN
-         YGHD9fLm4RfUMedOj6AM2iXNWR4LVXUxd9UXt4zSQyP4kIJSEb0bjG01ciXWhehNZHBS
-         D+wQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUff1cUK0ABYzvZm56hGJwZLTB7aABBGLUI4yXM4ZJfs2uCvyNOsiMxxMsv7FYEHknHVIrd7Zx8hw==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yzf98eZjQJ4yxSU8D5WOdZhRlq/ns3KlYMOKek8tDoUj3me+bCm
-	T0XqhiQA2gkKAo7hDHQz2r1RM+TvdFK/bHdSr8YKaBtf8k0/i/sExxJzjUneg04=
-X-Gm-Gg: ASbGncvTyqOuQaC3GX6y3fC5RorF0wVpRy+HbRhNyz+pFPpAE8zWBpeb9sUwyT8YsL0
-	o7h2YtWXf6eeeolu3IRohvEw5jlh+NYmCga+Za2jGNVuU/zMc+LK9OtWc46p2T2vCXg13pX3KnE
-	mix0NGjqaGeQl6ZoCxhqbezpwitiLkHLcK0xdue+5Wpbbwlegg7aPHfODqiN9P1yd9yGyFRofvp
-	i0nbrHA7ErNW1BP1FiFpMFJhrq8x8Rbjh9+7Bq/ydVjZE5QWCd6+03uG6JS2HDYqer5iwsbdbwx
-	pxJ9BgXb9tEbz/RRbWXKCKFkffhmiFqmKb0xsxF+xGbSg2VlEWd6tw==
-X-Google-Smtp-Source: AGHT+IE0C775gUw99duXSqI22/iHt3EcbUt8wRqaapQitjKAmgpcHlH9a7AB12GQl3Hh6joq+u4uXg==
-X-Received: by 2002:a05:6102:419f:b0:4bb:edc9:f949 with SMTP id ada2fe7eead31-4bd3fcc7f1cmr6594261137.10.1739866547007;
-        Tue, 18 Feb 2025 00:15:47 -0800 (PST)
-Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com. [209.85.222.43])
-        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-4bc68dd766bsm2019950137.20.2025.02.18.00.15.46
-        for <linux-um@lists.infradead.org>
+        d=1e100.net; s=20230601; t=1739874670; x=1740479470;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=bYHwcLVWT7ViqDSplojxQnlqWrz/ZE/8JhhVM+wg4bQ=;
+        b=Xn99qmNW/wcyEG4WXjqBZdSgTs+4U4YTuS2Lmeu0WN5Npc3OBajnAvolKnHRy3Q3t6
+         tkGxhaqSrfN1ODOnz+bb9cHPrrqrhNHowC2lZrqibZ/dn8WWvXdBumE3bvk1+GevFnKu
+         VlWhPXVKcwEliPuu1h9g/XI2mIzbkZJiBi2wElhXB3C/smnXkh9ZUMJVz3nznphc67+1
+         yIF7Ys1Y4MC5MeJAKgls4M+Rh7gqcTQLQJAqar0mLGLbLt8gopCV41vBbqI7K8PIVrSN
+         i3X4OrFFg3esc/gIS/T0oZgHDbK2duvTkA3Q9HkQBvjc9qSx1N0+u37WTCdGdGe+EltC
+         V/JQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUQ3TF6KHizFiU5iiLVfeRsWPu/btQ/eZKgW5GvvXWYJrcd3qCdMOkcLGumbmOS+c3GCooFXJBUqg==@lists.infradead.org
+X-Gm-Message-State: AOJu0YyIg57zZSDxsNoCbFr8R0pqTXEocD7gps7nEbY8cN1bE0g7mWxF
+	IBIqdf5tXySNTqTXMjacXWU21nvmakG7/bHsc1RX4BboXbMZ4ZCOSIx1NfARn8j3505btgBhMNt
+	WuKxDzjKkj8fNgrNT5gpF8DREzuLl4IwIlN3m9T58SY5L7ncsEyTsFix93iTOUg==
+X-Gm-Gg: ASbGncs0KA2MW1TmwP7uJRPWKkkxDwj+WXnMIgCEpLQdm57gsdaUC3VTUyuIFf2tg32
+	fHLuFsyhaBPInOX8DA/EqxSj9fUOJi5ilMxnWvynhZSfV3liUs2inyf2qY1gjnWOuOq4G6D/YgM
+	IiwCwhzlZ2hT7fUyFPV9wIIFJdgVgEdmpxNiTTi9MmSLd0Y+MzpK6JCRSIU1T/NEWpKpZtlGI2o
+	SYdz07XXaO1BkJ21YRX391y9aYKz+fP9/nmNrS4cTE2dz7pq5AmDtK/vKZogF4V1J3dGq+oXsD8
+	fAeIJSSnytfRkTxQ9b13O5dzvI+a9TOBh3oFNKT/YVVgGv0SSS81vt5PfQ17oaSHgujofpIDCej
+	Rf1xJz9AB21sLW3NtEB3x6vYe61yECA3T
+X-Received: by 2002:a05:600c:1912:b0:439:6925:4d42 with SMTP id 5b1f17b1804b1-4396e69a291mr145157665e9.5.1739874670502;
+        Tue, 18 Feb 2025 02:31:10 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEKK/d9jTwRaJ76UZdUAwdd23rNzlgGNUJjR7HWeCisU6/6HAcioR2Kkp6B8p+CFTIAPK1yIw==
+X-Received: by 2002:a05:600c:1912:b0:439:6925:4d42 with SMTP id 5b1f17b1804b1-4396e69a291mr145157155e9.5.1739874669914;
+        Tue, 18 Feb 2025 02:31:09 -0800 (PST)
+Received: from ?IPV6:2003:cb:c70d:fb00:d3ed:5f44:1b2d:12af? (p200300cbc70dfb00d3ed5f441b2d12af.dip0.t-ipconnect.de. [2003:cb:c70d:fb00:d3ed:5f44:1b2d:12af])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4395a1b824dsm176854065e9.34.2025.02.18.02.31.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Feb 2025 00:15:46 -0800 (PST)
-Received: by mail-ua1-f43.google.com with SMTP id a1e0cc1a2514c-867120d67baso1771397241.0
-        for <linux-um@lists.infradead.org>; Tue, 18 Feb 2025 00:15:46 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVQV3Oi6rS0V/OoSYVCoPraq9iFtY7RCKSH8TXkVUSesXYSzRFZAttLuFCLClJp0J3o8YU4Z8LXXQ==@lists.infradead.org
-X-Received: by 2002:a05:6102:d94:b0:4bb:b843:95e6 with SMTP id
- ada2fe7eead31-4bd3fc9869amr6525145137.7.1739866546228; Tue, 18 Feb 2025
- 00:15:46 -0800 (PST)
+        Tue, 18 Feb 2025 02:31:08 -0800 (PST)
+Message-ID: <65da326f-96a0-42ed-95e9-932c598b40f4@redhat.com>
+Date: Tue, 18 Feb 2025 11:31:06 +0100
 MIME-Version: 1.0
-References: <20250217190836.435039-1-willy@infradead.org> <20250217190836.435039-3-willy@infradead.org>
-In-Reply-To: <20250217190836.435039-3-willy@infradead.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 18 Feb 2025 09:15:34 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVGGPVxz6spuFhqZV5YONji+hOi2ALjBkD2Yt-xrb8R9w@mail.gmail.com>
-X-Gm-Features: AWEUYZlUk2UQkMyt8RR6rg-cBVbuU2v1FebOMuVIYEMfkPb3IlGZ86jcKmJ0Nps
-Message-ID: <CAMuHMdVGGPVxz6spuFhqZV5YONji+hOi2ALjBkD2Yt-xrb8R9w@mail.gmail.com>
-Subject: Re: [PATCH 2/7] mm: Introduce a common definition of mk_pte()
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc: linux-mm@kvack.org, linux-arch@vger.kernel.org, x86@kernel.org, 
-	linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, 
-	linux-um@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/7] mm: Set the pte dirty if the folio is already dirty
+To: "Matthew Wilcox (Oracle)" <willy@infradead.org>, linux-mm@kvack.org
+Cc: linux-arch@vger.kernel.org, x86@kernel.org, linux-s390@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-um@lists.infradead.org
+References: <20250217190836.435039-1-willy@infradead.org>
+ <20250217190836.435039-2-willy@infradead.org>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20250217190836.435039-2-willy@infradead.org>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-MFC-PROC-ID: lUdOEuuA7lLgsLSxx62SgEeJhfTsdpcJ_jqFYCRIU50_1739874671
+X-Mimecast-Originator: redhat.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250218_001549_969445_C02DF4AA 
-X-CRM114-Status: GOOD (  15.42  )
+X-CRM114-CacheID: sfid-20250218_023114_847272_68217D6A 
+X-CRM114-Status: GOOD (  17.50  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -94,28 +157,57 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Mon, 17 Feb 2025 at 20:09, Matthew Wilcox (Oracle)
-<willy@infradead.org> wrote:
-> Most architectures simply call pfn_pte().  Centralise that as the normal
-> definition and remove the definition of mk_pte() from the architectures
-> which have either that exact definition or something similar.
->
+On 17.02.25 20:08, Matthew Wilcox (Oracle) wrote:
+> If the first access to a folio is a read that is then followed by a
+> write, we can save a page fault.  s390 implemented this in their
+> mk_pte() in commit abf09bed3cce ("s390/mm: implement software dirty
+> bits"), but other architectures can also benefit from this.
+> 
 > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>   arch/s390/include/asm/pgtable.h | 7 +------
+>   mm/memory.c                     | 2 ++
+>   2 files changed, 3 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
+> index 3ca5af4cfe43..3ee495b5171e 100644
+> --- a/arch/s390/include/asm/pgtable.h
+> +++ b/arch/s390/include/asm/pgtable.h
+> @@ -1451,12 +1451,7 @@ static inline pte_t mk_pte_phys(unsigned long physpage, pgprot_t pgprot)
+>   
+>   static inline pte_t mk_pte(struct page *page, pgprot_t pgprot)
+>   {
+> -	unsigned long physpage = page_to_phys(page);
+> -	pte_t __pte = mk_pte_phys(physpage, pgprot);
+> -
+> -	if (pte_write(__pte) && PageDirty(page))
+> -		__pte = pte_mkdirty(__pte);
+> -	return __pte;
+> +	return mk_pte_phys(page_to_phys(page), pgprot);
+>   }
+>   
+>   #define pgd_index(address) (((address) >> PGDIR_SHIFT) & (PTRS_PER_PGD-1))
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 539c0f7c6d54..4330560eee55 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -5124,6 +5124,8 @@ void set_pte_range(struct vm_fault *vmf, struct folio *folio,
+>   
+>   	if (write)
+>   		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
+> +	else if (pte_write(entry) && folio_test_dirty(folio))
+> +		entry = pte_mkdirty(entry);
+>   	if (unlikely(vmf_orig_pte_uffd_wp(vmf)))
+>   		entry = pte_mkuffd_wp(entry);
+>   	/* copy-on-write page */
 
->  arch/m68k/include/asm/mcf_pgtable.h      | 6 ------
->  arch/m68k/include/asm/motorola_pgtable.h | 6 ------
->  arch/m68k/include/asm/sun3_pgtable.h     | 6 ------
+Yes, that looks sane
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
-
-Gr{oetje,eeting}s,
-
-                        Geert
+Acked-by: David Hildenbrand <david@redhat.com>
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Cheers,
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+David / dhildenb
+
 
