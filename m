@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E82EDC021AF
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C7D0CC021AA
 	for <linux-um@archiver.kernel.org>; Tue, 18 Feb 2025 20:58:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,36 +12,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=QCor5b195CnlwC8OlD+p+mf8/lOWohia/utTcqpGrQs=; b=zLnUylu0SwoqKsTk4jfXSuXA7t
-	O5F/E/oyljsfxCbfWoQ2TM3lHv0CnNUFgm2/yY2OaLXBy6sqxZOYlxz+ldAdu6I+TXecIM1Tllvpn
-	lvHqfEQ5cUELYzPZzvF+t4XXPRVt9rXKqMyANu7Z/MXHPk2tIvaw0TAo5lIfxa6U0aHgHgaeUW2YL
-	YII0DKCyNbXkHVARacpE9vqNprKhmc/dQIVoRNpqptoj9Jr/4TxBnRrwzZRnGTjniswj16keeNG8L
-	2WLrzV95iMM1nMhNW4o0Gjyf44TAUnLFxGZ/yU7ojZ+379lqbjlO4WKNbeQWffBfuux3rIQGpJXZs
-	nN3+lXtQ==;
+	bh=OIg0d3na4PeDZj4qCAcfrnp6VjI2m85p032ZmCYCz2k=; b=2udFY6iMYw1IIZ9VvbG3rVLIkV
+	mFSXQbfy6sgh135qZzjchCO3FQIghH7lY1f/32kHHvXA8kmqlcR6fcpFMLcMeTh4SYoe34ZvNFncr
+	mbTtI/DyUHtGw9FWBVc27wJRY/yAH8c5994gFMBnv3KDEzTe+MMPIPmGg2TMT40Jm2YayYpqMxmuJ
+	EGIumaVUKu3i5htxrAwJoSuD9lvlRZd/RZ9GcL684jn4tHYIWwhS3YH6bxTvqVNv2490OgtVNOv85
+	fBdoWw+P6IVbPAAkSWUo8Y+p6oX9K4jLtsr5g4SW/6lZdiu0sUmF8HXAQXHwQ1dGN0xieud50c6Tl
+	2qjCmkFw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tkUfO-00000009tbF-2ESC;
+	id 1tkUfO-00000009tav-10zu;
 	Tue, 18 Feb 2025 20:58:06 +0000
-Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tkUBP-00000009lIN-17kp
+	id 1tkUBM-00000009lH8-2PTr
 	for linux-um@lists.infradead.org;
-	Tue, 18 Feb 2025 20:27:08 +0000
+	Tue, 18 Feb 2025 20:27:06 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id B0EF0A41B38;
-	Tue, 18 Feb 2025 20:25:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E632AC4CEE2;
-	Tue, 18 Feb 2025 20:27:04 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id B7CB85C6292;
+	Tue, 18 Feb 2025 20:26:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39435C4CEE2;
+	Tue, 18 Feb 2025 20:27:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739910426;
-	bh=wOAL4Oqj9IeI2buYcEwBIqcYqke3ieKR71XPdXq3GHc=;
+	s=k20201202; t=1739910423;
+	bh=gtGYIe4wvniWB1i4pb3RuCpZTsMnNuaS/FXX5l0Wnow=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OoL3qxMIT3VwI76PFpXkjVypuiPwzPHrdr/TxrPOt1GWFs44hcUsGPfHMwcFLdX5W
-	 0zJQ9r6Mj8RvofjeHx6kG7ajwd4Z74+EsX0kwcOnauyxW2eTV7TSGUrp/ymUzgrtXV
-	 XcfqawlEiqriR2lhqKJq4kNiZlCc+GA0mK3BXN6xwf/0t4nLzkA0zcugZExlFFRfhW
-	 MLGXhScjpq1/JiKe/NYezV5TfZX5+914hHELVf0eavyubW1sEXXWy54pfyJ1c9imn6
-	 4yUbQRnBxr1ge5yP3xb7VU36omdlfSTrM0Jz/rwMu7T92gnNSmV8RsWnslDddqIxpT
-	 7wG31Apbyhg9g==
+	b=nJNo6K5MfXj7kxwrUCnGREU2dNzmep6Ym+NN5VIYkEKWXn42SfZZqHWXi1cx/nycI
+	 FLDQewK3AWrj9EWSgYJjF3Wl6EV+ON29gMT3jXqwl1HQ1zDfvGXkUESOieRF1/3bYL
+	 EblQ5Sr3Z3CoJh7JWWPLvv75oI7PBqklM6yGKf7jlRqPtd1faIJ1+Q7BOGbhFS79pw
+	 LyBzpEydHtK4OZWHw+6jecTCZ+cshrYxC3LRYsf800yCWX69iik0YNsN0EX4rXnn/f
+	 7IrmNvJ9Lh70WYWLz7+CICeRimIQduLRw9D2+w4Io8zLAaerUEgj1QDWrFURtfLrRr
+	 3WunGiMq3DoSg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -50,15 +50,16 @@ Cc: Johannes Berg <johannes.berg@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
 	anton.ivanov@cambridgegreys.com,
 	johannes@sipsolutions.net,
-	benjamin.berg@intel.com,
 	mst@redhat.com,
-	tiwei.btw@antgroup.com,
 	jiri@resnulli.us,
-	u.kleine-koenig@pengutronix.de,
+	tglx@linutronix.de,
+	krzysztof.kozlowski@linaro.org,
+	herve.codina@bootlin.com,
+	viro@zeniv.linux.org.uk,
 	linux-um@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.12 22/31] um: virtio_uml: use raw spinlock
-Date: Tue, 18 Feb 2025 15:26:08 -0500
-Message-Id: <20250218202619.3592630-22-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.12 21/31] um: virt-pci: don't use kmalloc()
+Date: Tue, 18 Feb 2025 15:26:07 -0500
+Message-Id: <20250218202619.3592630-21-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250218202619.3592630-1-sashal@kernel.org>
 References: <20250218202619.3592630-1-sashal@kernel.org>
@@ -68,8 +69,8 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.12.15
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250218_122707_374786_9459777F 
-X-CRM114-Status: GOOD (  10.86  )
+X-CRM114-CacheID: sfid-20250218_122704_722179_508EA0E1 
+X-CRM114-Status: GOOD (  23.75  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,60 +87,383 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit daa1a05ba431540097ec925d4e01d53ef29a98f1 ]
+[ Upstream commit 5b166b782d327f4b66190cc43afd3be36f2b3b7a ]
 
-This is needed because at least in time-travel the code
-can be called directly from the deep architecture and
-IRQ handling code.
+This code can be called deep in the IRQ handling, for
+example, and then cannot normally use kmalloc(). Have
+its own pre-allocated memory and use from there instead
+so this doesn't occur. Only in the (very rare) case of
+memcpy_toio() we'd still need to allocate memory.
 
-Link: https://patch.msgid.link/20250110125550.32479-7-johannes@sipsolutions.net
+Link: https://patch.msgid.link/20250110125550.32479-6-johannes@sipsolutions.net
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/drivers/virtio_uml.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/um/drivers/virt-pci.c | 198 +++++++++++++++++++------------------
+ 1 file changed, 102 insertions(+), 96 deletions(-)
 
-diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index 2b6e701776b6b..f0020e7c908d0 100644
---- a/arch/um/drivers/virtio_uml.c
-+++ b/arch/um/drivers/virtio_uml.c
-@@ -52,7 +52,7 @@ struct virtio_uml_device {
- 	struct platform_device *pdev;
- 	struct virtio_uml_platform_data *pdata;
+diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
+index 744e7f31e8ef1..dd5580f975cc0 100644
+--- a/arch/um/drivers/virt-pci.c
++++ b/arch/um/drivers/virt-pci.c
+@@ -25,8 +25,10 @@
+ #define MAX_IRQ_MSG_SIZE (sizeof(struct virtio_pcidev_msg) + sizeof(u32))
+ #define NUM_IRQ_MSGS	10
  
--	spinlock_t sock_lock;
-+	raw_spinlock_t sock_lock;
- 	int sock, req_fd, irq;
- 	u64 features;
- 	u64 protocol_features;
-@@ -247,7 +247,7 @@ static int vhost_user_send(struct virtio_uml_device *vu_dev,
- 	if (request_ack)
- 		msg->header.flags |= VHOST_USER_FLAG_NEED_REPLY;
+-#define HANDLE_NO_FREE(ptr) ((void *)((unsigned long)(ptr) | 1))
+-#define HANDLE_IS_NO_FREE(ptr) ((unsigned long)(ptr) & 1)
++struct um_pci_message_buffer {
++	struct virtio_pcidev_msg hdr;
++	u8 data[8];
++};
  
--	spin_lock_irqsave(&vu_dev->sock_lock, flags);
-+	raw_spin_lock_irqsave(&vu_dev->sock_lock, flags);
- 	rc = full_sendmsg_fds(vu_dev->sock, msg, size, fds, num_fds);
- 	if (rc < 0)
- 		goto out;
-@@ -267,7 +267,7 @@ static int vhost_user_send(struct virtio_uml_device *vu_dev,
+ struct um_pci_device {
+ 	struct virtio_device *vdev;
+@@ -36,6 +38,11 @@ struct um_pci_device {
+ 
+ 	struct virtqueue *cmd_vq, *irq_vq;
+ 
++#define UM_PCI_WRITE_BUFS	20
++	struct um_pci_message_buffer bufs[UM_PCI_WRITE_BUFS + 1];
++	void *extra_ptrs[UM_PCI_WRITE_BUFS + 1];
++	DECLARE_BITMAP(used_bufs, UM_PCI_WRITE_BUFS);
++
+ #define UM_PCI_STAT_WAITING	0
+ 	unsigned long status;
+ 
+@@ -61,12 +68,40 @@ static unsigned long um_pci_msi_used[BITS_TO_LONGS(MAX_MSI_VECTORS)];
+ static unsigned int um_pci_max_delay_us = 40000;
+ module_param_named(max_delay_us, um_pci_max_delay_us, uint, 0644);
+ 
+-struct um_pci_message_buffer {
+-	struct virtio_pcidev_msg hdr;
+-	u8 data[8];
+-};
++static int um_pci_get_buf(struct um_pci_device *dev, bool *posted)
++{
++	int i;
++
++	for (i = 0; i < UM_PCI_WRITE_BUFS; i++) {
++		if (!test_and_set_bit(i, dev->used_bufs))
++			return i;
++	}
+ 
+-static struct um_pci_message_buffer __percpu *um_pci_msg_bufs;
++	*posted = false;
++	return UM_PCI_WRITE_BUFS;
++}
++
++static void um_pci_free_buf(struct um_pci_device *dev, void *buf)
++{
++	int i;
++
++	if (buf == &dev->bufs[UM_PCI_WRITE_BUFS]) {
++		kfree(dev->extra_ptrs[UM_PCI_WRITE_BUFS]);
++		dev->extra_ptrs[UM_PCI_WRITE_BUFS] = NULL;
++		return;
++	}
++
++	for (i = 0; i < UM_PCI_WRITE_BUFS; i++) {
++		if (buf == &dev->bufs[i]) {
++			kfree(dev->extra_ptrs[i]);
++			dev->extra_ptrs[i] = NULL;
++			WARN_ON(!test_and_clear_bit(i, dev->used_bufs));
++			return;
++		}
++	}
++
++	WARN_ON(1);
++}
+ 
+ static int um_pci_send_cmd(struct um_pci_device *dev,
+ 			   struct virtio_pcidev_msg *cmd,
+@@ -82,7 +117,9 @@ static int um_pci_send_cmd(struct um_pci_device *dev,
+ 	};
+ 	struct um_pci_message_buffer *buf;
+ 	int delay_count = 0;
++	bool bounce_out;
+ 	int ret, len;
++	int buf_idx;
+ 	bool posted;
+ 
+ 	if (WARN_ON(cmd_size < sizeof(*cmd) || cmd_size > sizeof(*buf)))
+@@ -101,26 +138,28 @@ static int um_pci_send_cmd(struct um_pci_device *dev,
+ 		break;
  	}
  
- out:
--	spin_unlock_irqrestore(&vu_dev->sock_lock, flags);
-+	raw_spin_unlock_irqrestore(&vu_dev->sock_lock, flags);
- 	return rc;
+-	buf = get_cpu_var(um_pci_msg_bufs);
+-	if (buf)
+-		memcpy(buf, cmd, cmd_size);
++	bounce_out = !posted && cmd_size <= sizeof(*cmd) &&
++		     out && out_size <= sizeof(buf->data);
+ 
+-	if (posted) {
+-		u8 *ncmd = kmalloc(cmd_size + extra_size, GFP_ATOMIC);
+-
+-		if (ncmd) {
+-			memcpy(ncmd, cmd, cmd_size);
+-			if (extra)
+-				memcpy(ncmd + cmd_size, extra, extra_size);
+-			cmd = (void *)ncmd;
+-			cmd_size += extra_size;
+-			extra = NULL;
+-			extra_size = 0;
+-		} else {
+-			/* try without allocating memory */
+-			posted = false;
+-			cmd = (void *)buf;
++	buf_idx = um_pci_get_buf(dev, &posted);
++	buf = &dev->bufs[buf_idx];
++	memcpy(buf, cmd, cmd_size);
++
++	if (posted && extra && extra_size > sizeof(buf) - cmd_size) {
++		dev->extra_ptrs[buf_idx] = kmemdup(extra, extra_size,
++						   GFP_ATOMIC);
++
++		if (!dev->extra_ptrs[buf_idx]) {
++			um_pci_free_buf(dev, buf);
++			return -ENOMEM;
+ 		}
++		extra = dev->extra_ptrs[buf_idx];
++	} else if (extra && extra_size <= sizeof(buf) - cmd_size) {
++		memcpy((u8 *)buf + cmd_size, extra, extra_size);
++		cmd_size += extra_size;
++		extra_size = 0;
++		extra = NULL;
++		cmd = (void *)buf;
+ 	} else {
+ 		cmd = (void *)buf;
+ 	}
+@@ -128,39 +167,40 @@ static int um_pci_send_cmd(struct um_pci_device *dev,
+ 	sg_init_one(&out_sg, cmd, cmd_size);
+ 	if (extra)
+ 		sg_init_one(&extra_sg, extra, extra_size);
+-	if (out)
++	/* allow stack for small buffers */
++	if (bounce_out)
++		sg_init_one(&in_sg, buf->data, out_size);
++	else if (out)
+ 		sg_init_one(&in_sg, out, out_size);
+ 
+ 	/* add to internal virtio queue */
+ 	ret = virtqueue_add_sgs(dev->cmd_vq, sgs_list,
+ 				extra ? 2 : 1,
+ 				out ? 1 : 0,
+-				posted ? cmd : HANDLE_NO_FREE(cmd),
+-				GFP_ATOMIC);
++				cmd, GFP_ATOMIC);
+ 	if (ret) {
+-		if (posted)
+-			kfree(cmd);
+-		goto out;
++		um_pci_free_buf(dev, buf);
++		return ret;
+ 	}
+ 
+ 	if (posted) {
+ 		virtqueue_kick(dev->cmd_vq);
+-		ret = 0;
+-		goto out;
++		return 0;
+ 	}
+ 
+ 	/* kick and poll for getting a response on the queue */
+ 	set_bit(UM_PCI_STAT_WAITING, &dev->status);
+ 	virtqueue_kick(dev->cmd_vq);
++	ret = 0;
+ 
+ 	while (1) {
+ 		void *completed = virtqueue_get_buf(dev->cmd_vq, &len);
+ 
+-		if (completed == HANDLE_NO_FREE(cmd))
++		if (completed == buf)
+ 			break;
+ 
+-		if (completed && !HANDLE_IS_NO_FREE(completed))
+-			kfree(completed);
++		if (completed)
++			um_pci_free_buf(dev, completed);
+ 
+ 		if (WARN_ONCE(virtqueue_is_broken(dev->cmd_vq) ||
+ 			      ++delay_count > um_pci_max_delay_us,
+@@ -172,8 +212,11 @@ static int um_pci_send_cmd(struct um_pci_device *dev,
+ 	}
+ 	clear_bit(UM_PCI_STAT_WAITING, &dev->status);
+ 
+-out:
+-	put_cpu_var(um_pci_msg_bufs);
++	if (bounce_out)
++		memcpy(out, buf->data, out_size);
++
++	um_pci_free_buf(dev, buf);
++
+ 	return ret;
  }
  
-@@ -1220,7 +1220,7 @@ static int virtio_uml_probe(struct platform_device *pdev)
- 		goto error_free;
- 	vu_dev->sock = rc;
+@@ -187,20 +230,13 @@ static unsigned long um_pci_cfgspace_read(void *priv, unsigned int offset,
+ 		.size = size,
+ 		.addr = offset,
+ 	};
+-	/* buf->data is maximum size - we may only use parts of it */
+-	struct um_pci_message_buffer *buf;
+-	u8 *data;
+-	unsigned long ret = ULONG_MAX;
+-	size_t bytes = sizeof(buf->data);
++	/* max 8, we might not use it all */
++	u8 data[8];
  
--	spin_lock_init(&vu_dev->sock_lock);
-+	raw_spin_lock_init(&vu_dev->sock_lock);
+ 	if (!dev)
+ 		return ULONG_MAX;
  
- 	rc = vhost_user_init(vu_dev);
- 	if (rc)
+-	buf = get_cpu_var(um_pci_msg_bufs);
+-	data = buf->data;
+-
+-	if (buf)
+-		memset(data, 0xff, bytes);
++	memset(data, 0xff, sizeof(data));
+ 
+ 	switch (size) {
+ 	case 1:
+@@ -212,34 +248,26 @@ static unsigned long um_pci_cfgspace_read(void *priv, unsigned int offset,
+ 		break;
+ 	default:
+ 		WARN(1, "invalid config space read size %d\n", size);
+-		goto out;
++		return ULONG_MAX;
+ 	}
+ 
+-	if (um_pci_send_cmd(dev, &hdr, sizeof(hdr), NULL, 0, data, bytes))
+-		goto out;
++	if (um_pci_send_cmd(dev, &hdr, sizeof(hdr), NULL, 0, data, size))
++		return ULONG_MAX;
+ 
+ 	switch (size) {
+ 	case 1:
+-		ret = data[0];
+-		break;
++		return data[0];
+ 	case 2:
+-		ret = le16_to_cpup((void *)data);
+-		break;
++		return le16_to_cpup((void *)data);
+ 	case 4:
+-		ret = le32_to_cpup((void *)data);
+-		break;
++		return le32_to_cpup((void *)data);
+ #ifdef CONFIG_64BIT
+ 	case 8:
+-		ret = le64_to_cpup((void *)data);
+-		break;
++		return le64_to_cpup((void *)data);
+ #endif
+ 	default:
+-		break;
++		return ULONG_MAX;
+ 	}
+-
+-out:
+-	put_cpu_var(um_pci_msg_bufs);
+-	return ret;
+ }
+ 
+ static void um_pci_cfgspace_write(void *priv, unsigned int offset, int size,
+@@ -312,13 +340,8 @@ static void um_pci_bar_copy_from(void *priv, void *buffer,
+ static unsigned long um_pci_bar_read(void *priv, unsigned int offset,
+ 				     int size)
+ {
+-	/* buf->data is maximum size - we may only use parts of it */
+-	struct um_pci_message_buffer *buf;
+-	u8 *data;
+-	unsigned long ret = ULONG_MAX;
+-
+-	buf = get_cpu_var(um_pci_msg_bufs);
+-	data = buf->data;
++	/* 8 is maximum size - we may only use parts of it */
++	u8 data[8];
+ 
+ 	switch (size) {
+ 	case 1:
+@@ -330,33 +353,25 @@ static unsigned long um_pci_bar_read(void *priv, unsigned int offset,
+ 		break;
+ 	default:
+ 		WARN(1, "invalid config space read size %d\n", size);
+-		goto out;
++		return ULONG_MAX;
+ 	}
+ 
+ 	um_pci_bar_copy_from(priv, data, offset, size);
+ 
+ 	switch (size) {
+ 	case 1:
+-		ret = data[0];
+-		break;
++		return data[0];
+ 	case 2:
+-		ret = le16_to_cpup((void *)data);
+-		break;
++		return le16_to_cpup((void *)data);
+ 	case 4:
+-		ret = le32_to_cpup((void *)data);
+-		break;
++		return le32_to_cpup((void *)data);
+ #ifdef CONFIG_64BIT
+ 	case 8:
+-		ret = le64_to_cpup((void *)data);
+-		break;
++		return le64_to_cpup((void *)data);
+ #endif
+ 	default:
+-		break;
++		return ULONG_MAX;
+ 	}
+-
+-out:
+-	put_cpu_var(um_pci_msg_bufs);
+-	return ret;
+ }
+ 
+ static void um_pci_bar_copy_to(void *priv, unsigned int offset,
+@@ -523,11 +538,8 @@ static void um_pci_cmd_vq_cb(struct virtqueue *vq)
+ 	if (test_bit(UM_PCI_STAT_WAITING, &dev->status))
+ 		return;
+ 
+-	while ((cmd = virtqueue_get_buf(vq, &len))) {
+-		if (WARN_ON(HANDLE_IS_NO_FREE(cmd)))
+-			continue;
+-		kfree(cmd);
+-	}
++	while ((cmd = virtqueue_get_buf(vq, &len)))
++		um_pci_free_buf(dev, cmd);
+ }
+ 
+ static void um_pci_irq_vq_cb(struct virtqueue *vq)
+@@ -1006,10 +1018,6 @@ static int __init um_pci_init(void)
+ 		 "No virtio device ID configured for PCI - no PCI support\n"))
+ 		return 0;
+ 
+-	um_pci_msg_bufs = alloc_percpu(struct um_pci_message_buffer);
+-	if (!um_pci_msg_bufs)
+-		return -ENOMEM;
+-
+ 	bridge = pci_alloc_host_bridge(0);
+ 	if (!bridge) {
+ 		err = -ENOMEM;
+@@ -1070,7 +1078,6 @@ static int __init um_pci_init(void)
+ 		pci_free_resource_list(&bridge->windows);
+ 		pci_free_host_bridge(bridge);
+ 	}
+-	free_percpu(um_pci_msg_bufs);
+ 	return err;
+ }
+ module_init(um_pci_init);
+@@ -1082,6 +1089,5 @@ static void __exit um_pci_exit(void)
+ 	irq_domain_remove(um_pci_inner_domain);
+ 	pci_free_resource_list(&bridge->windows);
+ 	pci_free_host_bridge(bridge);
+-	free_percpu(um_pci_msg_bufs);
+ }
+ module_exit(um_pci_exit);
 -- 
 2.39.5
 
