@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id EB480C021B0
-	for <linux-um@archiver.kernel.org>; Tue, 18 Feb 2025 20:58:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 2A830C021AD
+	for <linux-um@archiver.kernel.org>; Tue, 18 Feb 2025 22:11:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=gcNDnYJThlJOmj/T61HFmAWqujk785+9Soz8B7mvAt4=; b=zauiAMtWwoeE+0ICclKRsll5ux
-	FG5tFWVbfdG6+cpxzoUS6f4BWiQ1dUJHG8Dk01inuRtL5OxKHp14RxNbjj5jZt1E0MM2+LMy/imBh
-	qJUjunUubKjySAO7w3pLTgis5JsieZrJrgqwOc2zcCNrzdOKkpFmzs52HvEJmeyEH4I2rW9/O872v
-	hhazAxHyH2Jgi7fbS3FcJzE8FuInfHh2Q9Er9aMwdpSOh2lJYirzgCox22A9fZbXr1J+hyenj6qnf
-	zWBlNiJpw/E7YCPWLGCtmRjEUCLORH3DIVaXcLR60eMxgPy8MvYigMaShN6lVnjh2ZHwTea6X9Mgz
-	pQGJ1pIA==;
+	bh=lKUUc5XrJmahddA421iPxbE7JK1Oq9aYb9aZvyO+kwc=; b=zSWtlCeVNoHkVHnFSPyxLpxjSa
+	zdHhLWTW60gt7KIt4WVgxZKMPNzcIwiy5t89umirOlB93ognR8E/L3gx3iAxO8z0fRzYw9BmcVxFv
+	5opSbv36CxGcNElg/dX+nOarTWD0bzyz5ThR5H4WhC+eHun+GmC9F9h+LZYFI4PWWI/Z9/WOrrotO
+	j8wJxbK5RB36lJ+RkTJuEV7NankJyBTAf01vOXQNb9eLMOQRqAO061fIk1P+uinNazms4ma6U3rZA
+	hXJUTIG3/qw6jGIjqGaIGC3iYAcGDUexYnIlDGOx2EkbBDnFrPDCaNSX/qgY7CjX6CLuGgkgnfdZ2
+	Y3MqbxSA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tkUfO-00000009tbW-3QpS;
-	Tue, 18 Feb 2025 20:58:06 +0000
+	id 1tkVo4-0000000A6d6-1wqz;
+	Tue, 18 Feb 2025 22:11:08 +0000
 Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tkUBR-00000009lJ7-2nV4
+	id 1tkUD0-00000009lss-0Z4T
 	for linux-um@lists.infradead.org;
-	Tue, 18 Feb 2025 20:27:11 +0000
+	Tue, 18 Feb 2025 20:28:47 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id D37CB5C61ED;
-	Tue, 18 Feb 2025 20:26:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4626C4CEE2;
-	Tue, 18 Feb 2025 20:27:07 +0000 (UTC)
+	by dfw.source.kernel.org (Postfix) with ESMTP id 4DE865C065B;
+	Tue, 18 Feb 2025 20:28:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAD16C4CEE2;
+	Tue, 18 Feb 2025 20:28:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739910428;
-	bh=2sohyi4xEaTC1NwXXc7Lqb9YoGirX8UCnEFaPIM4CvM=;
+	s=k20201202; t=1739910525;
+	bh=sYERlul87AXhhSQUHbZpMDP0T12IZn5GGQDnr+ED6cU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bMVYB0No8vuUs/c2IoJS1UPeFhxRLp+5e/+5RrmW7OYTxf1RFCnm57ILm3Cs4eK0q
-	 y/iai5Q7uMI2HiFAL/c4dY1I4sCQTvkNFYzKaHicdsiEvw07kqar895v5Pa65dQIK2
-	 lUOM8HAQdKA9SZm7lOF+ujOGYvXPiaHEMAmBIOjWiXoamlurGkhnQqgTIuuLG7hAYM
-	 dk+pkrtEf0KWWafhQEskDx8bbb9UCQ1wlIm/CCAHPtv+bDKFZQnftdkaNgd5YCA2HD
-	 y0YinMNdqA2SLtPUykm3noJCMLc5wzg1lChDCjbwtrZ0xEVdfckbNbV8DfW6yJzKji
-	 zIyjWAqscnp1A==
+	b=DoF8Y1MAR39I9V6124/vkaOUXVJHls8JZtJyCOyezRSCNXkrXR/644cpOk72X2xIr
+	 1zeXafp6uZ0aLm4+830RGIfVvsHPX/SKx7jhVACCXXR7AR62ajwLksx7ueYP5gxhUf
+	 UBXnb7HqNDriLJXylxWzCj6+LWbzkNHhl+8e1Bp6T7Ycv+DF5BgTuo4YI2eijMOfRL
+	 tOeJp3wra+/GsZFf6kcYnyqHpIyEUGOQCVQ7FwPITDpF2+3fkvgs6s2oafpDNU8xNU
+	 Zb0oe8wALh0Augan2sykYaSD5Fdx0gdRXW6MFbMpdXaacWxNyQzWgeaE+YmvA8YNkE
+	 6Y/KvnijCDl1Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -51,22 +51,25 @@ Cc: Johannes Berg <johannes.berg@intel.com>,
 	anton.ivanov@cambridgegreys.com,
 	johannes@sipsolutions.net,
 	benjamin.berg@intel.com,
-	thehajime@gmail.com,
+	mst@redhat.com,
+	jiri@resnulli.us,
+	tiwei.btw@antgroup.com,
+	u.kleine-koenig@pengutronix.de,
 	linux-um@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.12 23/31] um: convert irq_lock to raw spinlock
-Date: Tue, 18 Feb 2025 15:26:09 -0500
-Message-Id: <20250218202619.3592630-23-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 12/13] um: virtio_uml: use raw spinlock
+Date: Tue, 18 Feb 2025 15:28:16 -0500
+Message-Id: <20250218202819.3593598-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250218202619.3592630-1-sashal@kernel.org>
-References: <20250218202619.3592630-1-sashal@kernel.org>
+In-Reply-To: <20250218202819.3593598-1-sashal@kernel.org>
+References: <20250218202819.3593598-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.12.15
+X-stable-base: Linux 6.1.128
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250218_122709_817455_A0BC68A6 
-X-CRM114-Status: GOOD (  17.93  )
+X-CRM114-CacheID: sfid-20250218_122846_232115_A65B2FDD 
+X-CRM114-Status: GOOD (  10.67  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -83,247 +86,60 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 96178631c3f53398044ed437010f7632ad764bf8 ]
+[ Upstream commit daa1a05ba431540097ec925d4e01d53ef29a98f1 ]
 
-Since this is deep in the architecture, and the code is
-called nested into other deep management code, this really
-needs to be a raw spinlock. Convert it.
+This is needed because at least in time-travel the code
+can be called directly from the deep architecture and
+IRQ handling code.
 
-Link: https://patch.msgid.link/20250110125550.32479-8-johannes@sipsolutions.net
+Link: https://patch.msgid.link/20250110125550.32479-7-johannes@sipsolutions.net
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/kernel/irq.c | 79 ++++++++++++++++++++++++++------------------
- 1 file changed, 47 insertions(+), 32 deletions(-)
+ arch/um/drivers/virtio_uml.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
-index 534e91797f892..ebf8012bbec45 100644
---- a/arch/um/kernel/irq.c
-+++ b/arch/um/kernel/irq.c
-@@ -52,7 +52,7 @@ struct irq_entry {
- 	bool sigio_workaround;
- };
+diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
+index ddd080f6dd82e..64e8cd59014fb 100644
+--- a/arch/um/drivers/virtio_uml.c
++++ b/arch/um/drivers/virtio_uml.c
+@@ -52,7 +52,7 @@ struct virtio_uml_device {
+ 	struct platform_device *pdev;
+ 	struct virtio_uml_platform_data *pdata;
  
--static DEFINE_SPINLOCK(irq_lock);
-+static DEFINE_RAW_SPINLOCK(irq_lock);
- static LIST_HEAD(active_fds);
- static DECLARE_BITMAP(irqs_allocated, UM_LAST_SIGNAL_IRQ);
- static bool irqs_suspended;
-@@ -257,7 +257,7 @@ static struct irq_entry *get_irq_entry_by_fd(int fd)
- 	return NULL;
- }
+-	spinlock_t sock_lock;
++	raw_spinlock_t sock_lock;
+ 	int sock, req_fd, irq;
+ 	u64 features;
+ 	u64 protocol_features;
+@@ -247,7 +247,7 @@ static int vhost_user_send(struct virtio_uml_device *vu_dev,
+ 	if (request_ack)
+ 		msg->header.flags |= VHOST_USER_FLAG_NEED_REPLY;
  
--static void free_irq_entry(struct irq_entry *to_free, bool remove)
-+static void remove_irq_entry(struct irq_entry *to_free, bool remove)
- {
- 	if (!to_free)
- 		return;
-@@ -265,7 +265,6 @@ static void free_irq_entry(struct irq_entry *to_free, bool remove)
- 	if (remove)
- 		os_del_epoll_fd(to_free->fd);
- 	list_del(&to_free->list);
--	kfree(to_free);
- }
- 
- static bool update_irq_entry(struct irq_entry *entry)
-@@ -286,17 +285,19 @@ static bool update_irq_entry(struct irq_entry *entry)
- 	return false;
- }
- 
--static void update_or_free_irq_entry(struct irq_entry *entry)
-+static struct irq_entry *update_or_remove_irq_entry(struct irq_entry *entry)
- {
--	if (!update_irq_entry(entry))
--		free_irq_entry(entry, false);
-+	if (update_irq_entry(entry))
-+		return NULL;
-+	remove_irq_entry(entry, false);
-+	return entry;
- }
- 
- static int activate_fd(int irq, int fd, enum um_irq_type type, void *dev_id,
- 		       void (*timetravel_handler)(int, int, void *,
- 						  struct time_travel_event *))
- {
--	struct irq_entry *irq_entry;
-+	struct irq_entry *irq_entry, *to_free = NULL;
- 	int err, events = os_event_mask(type);
- 	unsigned long flags;
- 
-@@ -304,9 +305,10 @@ static int activate_fd(int irq, int fd, enum um_irq_type type, void *dev_id,
- 	if (err < 0)
+-	spin_lock_irqsave(&vu_dev->sock_lock, flags);
++	raw_spin_lock_irqsave(&vu_dev->sock_lock, flags);
+ 	rc = full_sendmsg_fds(vu_dev->sock, msg, size, fds, num_fds);
+ 	if (rc < 0)
  		goto out;
+@@ -267,7 +267,7 @@ static int vhost_user_send(struct virtio_uml_device *vu_dev,
+ 	}
  
--	spin_lock_irqsave(&irq_lock, flags);
-+	raw_spin_lock_irqsave(&irq_lock, flags);
- 	irq_entry = get_irq_entry_by_fd(fd);
- 	if (irq_entry) {
-+already:
- 		/* cannot register the same FD twice with the same type */
- 		if (WARN_ON(irq_entry->reg[type].events)) {
- 			err = -EALREADY;
-@@ -316,11 +318,22 @@ static int activate_fd(int irq, int fd, enum um_irq_type type, void *dev_id,
- 		/* temporarily disable to avoid IRQ-side locking */
- 		os_del_epoll_fd(fd);
- 	} else {
--		irq_entry = kzalloc(sizeof(*irq_entry), GFP_ATOMIC);
--		if (!irq_entry) {
--			err = -ENOMEM;
--			goto out_unlock;
-+		struct irq_entry *new;
-+
-+		/* don't restore interrupts */
-+		raw_spin_unlock(&irq_lock);
-+		new = kzalloc(sizeof(*irq_entry), GFP_ATOMIC);
-+		if (!new) {
-+			local_irq_restore(flags);
-+			return -ENOMEM;
- 		}
-+		raw_spin_lock(&irq_lock);
-+		irq_entry = get_irq_entry_by_fd(fd);
-+		if (irq_entry) {
-+			to_free = new;
-+			goto already;
-+		}
-+		irq_entry = new;
- 		irq_entry->fd = fd;
- 		list_add_tail(&irq_entry->list, &active_fds);
- 		maybe_sigio_broken(fd);
-@@ -339,12 +352,11 @@ static int activate_fd(int irq, int fd, enum um_irq_type type, void *dev_id,
- #endif
- 
- 	WARN_ON(!update_irq_entry(irq_entry));
--	spin_unlock_irqrestore(&irq_lock, flags);
--
--	return 0;
-+	err = 0;
- out_unlock:
--	spin_unlock_irqrestore(&irq_lock, flags);
-+	raw_spin_unlock_irqrestore(&irq_lock, flags);
  out:
-+	kfree(to_free);
- 	return err;
+-	spin_unlock_irqrestore(&vu_dev->sock_lock, flags);
++	raw_spin_unlock_irqrestore(&vu_dev->sock_lock, flags);
+ 	return rc;
  }
  
-@@ -358,19 +370,20 @@ void free_irq_by_fd(int fd)
- 	struct irq_entry *to_free;
- 	unsigned long flags;
+@@ -1218,7 +1218,7 @@ static int virtio_uml_probe(struct platform_device *pdev)
+ 		goto error_free;
+ 	vu_dev->sock = rc;
  
--	spin_lock_irqsave(&irq_lock, flags);
-+	raw_spin_lock_irqsave(&irq_lock, flags);
- 	to_free = get_irq_entry_by_fd(fd);
--	free_irq_entry(to_free, true);
--	spin_unlock_irqrestore(&irq_lock, flags);
-+	remove_irq_entry(to_free, true);
-+	raw_spin_unlock_irqrestore(&irq_lock, flags);
-+	kfree(to_free);
- }
- EXPORT_SYMBOL(free_irq_by_fd);
+-	spin_lock_init(&vu_dev->sock_lock);
++	raw_spin_lock_init(&vu_dev->sock_lock);
  
- static void free_irq_by_irq_and_dev(unsigned int irq, void *dev)
- {
--	struct irq_entry *entry;
-+	struct irq_entry *entry, *to_free = NULL;
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&irq_lock, flags);
-+	raw_spin_lock_irqsave(&irq_lock, flags);
- 	list_for_each_entry(entry, &active_fds, list) {
- 		enum um_irq_type i;
- 
-@@ -386,12 +399,13 @@ static void free_irq_by_irq_and_dev(unsigned int irq, void *dev)
- 
- 			os_del_epoll_fd(entry->fd);
- 			reg->events = 0;
--			update_or_free_irq_entry(entry);
-+			to_free = update_or_remove_irq_entry(entry);
- 			goto out;
- 		}
- 	}
- out:
--	spin_unlock_irqrestore(&irq_lock, flags);
-+	raw_spin_unlock_irqrestore(&irq_lock, flags);
-+	kfree(to_free);
- }
- 
- void deactivate_fd(int fd, int irqnum)
-@@ -402,7 +416,7 @@ void deactivate_fd(int fd, int irqnum)
- 
- 	os_del_epoll_fd(fd);
- 
--	spin_lock_irqsave(&irq_lock, flags);
-+	raw_spin_lock_irqsave(&irq_lock, flags);
- 	entry = get_irq_entry_by_fd(fd);
- 	if (!entry)
- 		goto out;
-@@ -414,9 +428,10 @@ void deactivate_fd(int fd, int irqnum)
- 			entry->reg[i].events = 0;
- 	}
- 
--	update_or_free_irq_entry(entry);
-+	entry = update_or_remove_irq_entry(entry);
- out:
--	spin_unlock_irqrestore(&irq_lock, flags);
-+	raw_spin_unlock_irqrestore(&irq_lock, flags);
-+	kfree(entry);
- 
- 	ignore_sigio_fd(fd);
- }
-@@ -546,7 +561,7 @@ void um_irqs_suspend(void)
- 
- 	irqs_suspended = true;
- 
--	spin_lock_irqsave(&irq_lock, flags);
-+	raw_spin_lock_irqsave(&irq_lock, flags);
- 	list_for_each_entry(entry, &active_fds, list) {
- 		enum um_irq_type t;
- 		bool clear = true;
-@@ -579,7 +594,7 @@ void um_irqs_suspend(void)
- 				!__ignore_sigio_fd(entry->fd);
- 		}
- 	}
--	spin_unlock_irqrestore(&irq_lock, flags);
-+	raw_spin_unlock_irqrestore(&irq_lock, flags);
- }
- 
- void um_irqs_resume(void)
-@@ -588,7 +603,7 @@ void um_irqs_resume(void)
- 	unsigned long flags;
- 
- 
--	spin_lock_irqsave(&irq_lock, flags);
-+	raw_spin_lock_irqsave(&irq_lock, flags);
- 	list_for_each_entry(entry, &active_fds, list) {
- 		if (entry->suspended) {
- 			int err = os_set_fd_async(entry->fd);
-@@ -602,7 +617,7 @@ void um_irqs_resume(void)
- 			}
- 		}
- 	}
--	spin_unlock_irqrestore(&irq_lock, flags);
-+	raw_spin_unlock_irqrestore(&irq_lock, flags);
- 
- 	irqs_suspended = false;
- 	send_sigio_to_self();
-@@ -613,7 +628,7 @@ static int normal_irq_set_wake(struct irq_data *d, unsigned int on)
- 	struct irq_entry *entry;
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&irq_lock, flags);
-+	raw_spin_lock_irqsave(&irq_lock, flags);
- 	list_for_each_entry(entry, &active_fds, list) {
- 		enum um_irq_type t;
- 
-@@ -628,7 +643,7 @@ static int normal_irq_set_wake(struct irq_data *d, unsigned int on)
- 		}
- 	}
- unlock:
--	spin_unlock_irqrestore(&irq_lock, flags);
-+	raw_spin_unlock_irqrestore(&irq_lock, flags);
- 	return 0;
- }
- #else
+ 	rc = vhost_user_init(vu_dev);
+ 	if (rc)
 -- 
 2.39.5
 
