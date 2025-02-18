@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 423B4C021B1
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 500A6C021AF
 	for <linux-um@archiver.kernel.org>; Tue, 18 Feb 2025 22:11:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,36 +12,36 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=tWZCxdS10lFqC5XMH9hiXu0Z3/LKsVH7k4SX8xwnoMo=; b=XbSvbeeH9ytiFGMZTAO5VAhZoQ
-	vjKCaiZuKuB+62Dq9HUn0AZQSuB9PJ5teRy2Ewpxs75Dg5Ioy2xYBecFfUFEkIfPwde6w1lnApW0X
-	/xrdmK2Q21fsl9kLEQJcsGhO4rKV9AgQ28+TiV81lLqJeOG7Ow1koL9pNFYF4+oJXjtXAlwl4VL1F
-	OP5h9EUd/mCUqtETontU/HjtEYppTCaXuD6a4/0yPIYCcSN7MPmKeK3gABuO+Z07682cGkllelnNK
-	ofzdW9jPwBjlyZpk0zh56Zf9PjVlKAESQiB2wvQxqDnQgRax/ViDpV9Ro+LUI8RFMxJlF/bjSR/QV
-	AX1O09zQ==;
+	bh=w7Iuwqlzn/2Em3pIlVjWMLbVU7KKowHlqCMiMxEZjcI=; b=NFGNLnsbDqokyCYYZsvjoxeiTW
+	ycy1/I2BkJVCkI2rSUmLRMcaaiV535CbZ0Mh5BqXBiIDozx5FInEkR/FHxD5DAtgjbhutzAxRLd62
+	bgVJfuOFAnLiJbOkL2fWC6hmZrYg6thKgZy4GLuQy6xShoyUk7O63d/WETXfW5jl7h0ycjBmU0uXU
+	MrIxk2Gjg4Nq5JocX6bDPBrRSHf7zBTyUljG7w4jIEZn6R2s9dAX5ewrkO5lMoAusmrVvuZ0Pqh3S
+	Ifji2GuOF84lnPe9GJk7tVuMMa25uBe+xrfMK7diTdVFyJ7+YZj++NrrH/4bdP8yHIP1HFHg5g1DO
+	99G3/kpw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tkVo3-0000000A6cn-3gPN;
-	Tue, 18 Feb 2025 22:11:07 +0000
+	id 1tkVo4-0000000A6dJ-3EeM;
+	Tue, 18 Feb 2025 22:11:08 +0000
 Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tkUCV-00000009lgO-2KLU
+	id 1tkUDG-00000009lw1-2csW
 	for linux-um@lists.infradead.org;
-	Tue, 18 Feb 2025 20:28:16 +0000
+	Tue, 18 Feb 2025 20:29:03 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 084E1A41B7D;
-	Tue, 18 Feb 2025 20:26:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52793C4CEE2;
-	Tue, 18 Feb 2025 20:28:13 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id 1997DA41B00;
+	Tue, 18 Feb 2025 20:27:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D69AC4CEE2;
+	Tue, 18 Feb 2025 20:29:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739910494;
-	bh=VAaHtQogXFI6AWVVI5hzOC+YB4VvcvUJ/rY8FZFCQbo=;
+	s=k20201202; t=1739910541;
+	bh=+MCfZ3PiDMVDawojJv/00MM2ynUpq/aZUXJ5oFf0hjA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FRm/5Je5TmibJ+UrPEeJ3SDefLdOdO00LbCVTlI2jMpLRwhdOtj4CWC5RlFWNXA6U
-	 omp+CcX4NpKDffuFTbj/QFzq9NrXzTqGguXUiBxObWN6i1ThlI0wqDlvT2NRKmgmgE
-	 8E2t5hivfb1gtvvlf7NsDX//pPYbUIkxp8GNHCTiAu0N025qsAb7xBczI0Mvenwk7i
-	 rcRZJA2VSI/ADqT0AAF5ap+s6nt3tViF6PtQ+UUFMnvKwY4r++UH7TsgtPbz2BRI6a
-	 duwxYptEYTdoZKxwA/nZ/AwNGTThXsu0UgHo05nLqNL6FLkThDASXyrt4ODxt/GEU4
-	 QRSIMKpj/xdlg==
+	b=Cn2Z3Rz7G6VRtNkX5E7uHB+MHQZ/eOVcZbsOH7xYJ4dhUvoTVARYw6X1HlcVDYbLK
+	 Rrxp59OYk8DjkiNv8oztr+XXRACMb+2+okIXUwEE5Ys3zPJgdwHZgI/QmOc3t2NyrM
+	 n1LvRgNKLQIh9AQlHcD3nTiVT6Lkqx36E2SvxK1FBFcwlI8S9xFRG4BpTjN9Hj5Byz
+	 AGd97Jph6NeuYvr37dK4PTxf7eG+HYdgc2cZve6uJc4tzIsCMGPqOSqJwa9sV2AO5x
+	 M2vRIkjHXJoXCUfPXQXa3soktoThnKPWMWMZP02aFFdbugemKe2nEHKGO2V5nUCrQC
+	 GVDQ1FOrhgWJA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -51,24 +51,25 @@ Cc: Johannes Berg <johannes.berg@intel.com>,
 	anton.ivanov@cambridgegreys.com,
 	johannes@sipsolutions.net,
 	benjamin.berg@intel.com,
-	jiri@resnulli.us,
+	mst@redhat.com,
 	tiwei.btw@antgroup.com,
+	jiri@resnulli.us,
 	u.kleine-koenig@pengutronix.de,
 	linux-um@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.6 15/17] um: virtio_uml: use raw spinlock
-Date: Tue, 18 Feb 2025 15:27:39 -0500
-Message-Id: <20250218202743.3593296-15-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 6/6] um: virtio_uml: use raw spinlock
+Date: Tue, 18 Feb 2025 15:28:47 -0500
+Message-Id: <20250218202848.3593863-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250218202743.3593296-1-sashal@kernel.org>
-References: <20250218202743.3593296-1-sashal@kernel.org>
+In-Reply-To: <20250218202848.3593863-1-sashal@kernel.org>
+References: <20250218202848.3593863-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.78
+X-stable-base: Linux 5.15.178
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250218_122815_666334_D7DB2B4D 
-X-CRM114-Status: GOOD (  10.77  )
+X-CRM114-CacheID: sfid-20250218_122902_728707_516DC5E9 
+X-CRM114-Status: GOOD (  10.67  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -100,7 +101,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-index 8adca2000e519..7e46c6abbc3fb 100644
+index 204e9dfbff1a0..19fe003932f71 100644
 --- a/arch/um/drivers/virtio_uml.c
 +++ b/arch/um/drivers/virtio_uml.c
 @@ -52,7 +52,7 @@ struct virtio_uml_device {
@@ -130,7 +131,7 @@ index 8adca2000e519..7e46c6abbc3fb 100644
  	return rc;
  }
  
-@@ -1218,7 +1218,7 @@ static int virtio_uml_probe(struct platform_device *pdev)
+@@ -1214,7 +1214,7 @@ static int virtio_uml_probe(struct platform_device *pdev)
  		goto error_free;
  	vu_dev->sock = rc;
  
