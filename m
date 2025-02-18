@@ -4,44 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 65AC7C021AA
-	for <linux-um@archiver.kernel.org>; Tue, 18 Feb 2025 20:56:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 42B7AC021AF
+	for <linux-um@archiver.kernel.org>; Tue, 18 Feb 2025 20:56:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=OIg0d3na4PeDZj4qCAcfrnp6VjI2m85p032ZmCYCz2k=; b=vBd8+AbgZiK5TEokEFqfv65T4N
-	jkuzM/2pAeHvcfrDLrTLP0VC5aVQxF2keXMOhEpRpC1M+8Mu9N8ZeatMD7FDnxPQcuS2DUmejaHpd
-	184jWfLE8rBAM5mWYstnKyRn0vRZg5WtOIjszeS2dIox3KqoPf93ubkTSSDKoxRtI7M90EYvWxwqF
-	b9KoS4skzXYy09t7/Tw6wulyXQHqjjMXQyLuow88xIKQwGPTDseLx2VNaQb3T6oWqXAY0iHUnLy9b
-	+Dq+3qoHHAwyffEOLKBPcBtIFZnVnV9IVaG1SjMeGZh79ftuMQA6xZfJFBROh6B09Gst+8GG8VqQI
-	QosEchzA==;
+	bh=eOopf0AvVJxk4ZRhEzOImQdjgM3H/7760KpDX8vKTCE=; b=U0jxo/T8uf4hwOgJBoqk990AKz
+	S1VTGNKbZhHMccVcoVheZmGZqGxHrjiuu4iLNyT85pZCRUU9un283xHPiKvHJXnKo8Tz494YUv1uw
+	XAtBFKID3vDeeo0qzQMrW010NCetIftpbEwJp4nUXsPfg20HPSCTerA+HSQaW/VVxPcvF+3cLpLOR
+	oQ8izWuC+y5VFJSXNt8aqtgCBJYs6p5oqP3GNkJ9al7Vyvf2+cMOp4Tx5Qu3FUKljkf1DzqrjtiSL
+	l624I3i9wJIgAsCacP56uGcnLyMluYp+zGJHzc8pniPUpMyqNJj9eJQdwiHHAy/dxvG9KoZd78bp+
+	esA5gQyg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tkUdx-00000009t55-0XS9;
+	id 1tkUdx-00000009t5z-3n6m;
 	Tue, 18 Feb 2025 20:56:37 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tkU9y-00000009kry-3W7Z
+	id 1tkUA3-00000009ktX-3t5o
 	for linux-um@lists.infradead.org;
-	Tue, 18 Feb 2025 20:25:40 +0000
+	Tue, 18 Feb 2025 20:25:45 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 00AAD5C6291;
-	Tue, 18 Feb 2025 20:24:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 774F6C4CEE2;
-	Tue, 18 Feb 2025 20:25:36 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id 594EEA41A8D;
+	Tue, 18 Feb 2025 20:23:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFACBC4CEE2;
+	Tue, 18 Feb 2025 20:25:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739910337;
-	bh=gtGYIe4wvniWB1i4pb3RuCpZTsMnNuaS/FXX5l0Wnow=;
+	s=k20201202; t=1739910342;
+	bh=WNNhE2WjWbugSWpUig/VINXaGNZcKMK+I1LbSf73fRg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jwSHkY/AqBNNz4EFPTM2LIq9PfOFsVTzCXdT8di62Qb7VC2pa+6Aho45+r7eTTHdP
-	 3xKyto8xT0iZ4yYrNpZdzTPY1dqpX/OLFJPQwCntGjdofCm8JlQJvGqo5afASs7/NY
-	 CNOAfyOFSLplhAEMEgV129/Rjtli0MfI+KMWRiC0UlO8nJ29m6Fhpd41IGJ5XJQErW
-	 EN+2cDAnfXu520pdx6zZiQfhnn1MH7nK/QdIy3rZQjSr1l2qkLgOz/2QQ119tqua91
-	 hCoo7ir+6hJn+VrIv8junPYb1lB1G8jPhwlLUJxmIVm5OjmdfUQOjAE/s2Arcr10QK
-	 N3fUks6nKPRNA==
+	b=kCKedpD9m4rr3pf1059Ig+n1XBs5Iorr5ZbU0Lr385hc0BUS7MQZ+M8tRge/DAa4q
+	 c0JLuyV6rLxcOdUelSbuxRwwddywYvDS93L7mee9RvpcRlQeis1BOAqzqqEpHdwU4S
+	 1YcL5wKx0qyM6vWaO3rzZ2qCX+2vLNRfKQPlXGRHMNHT4HRqwTD/ERWxFUFGyVaNNl
+	 F6R0SJnnQFuj5PkZfDusnYMuGflsK7X8EN8zZ9uKQcBUudicEl1gf26aNCdlnLbXuN
+	 F5oqR3/Ex4Trrs+PYcIOJ3KjARt5ThKRgydcljcOBk38luDXKoigZzESeUzSm9RU1j
+	 vBl84fHFcR2pw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -50,15 +50,12 @@ Cc: Johannes Berg <johannes.berg@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
 	anton.ivanov@cambridgegreys.com,
 	johannes@sipsolutions.net,
-	mst@redhat.com,
-	jiri@resnulli.us,
-	krzysztof.kozlowski@linaro.org,
-	herve.codina@bootlin.com,
-	viro@zeniv.linux.org.uk,
+	benjamin.berg@intel.com,
+	thehajime@gmail.com,
 	linux-um@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.13 21/31] um: virt-pci: don't use kmalloc()
-Date: Tue, 18 Feb 2025 15:24:41 -0500
-Message-Id: <20250218202455.3592096-21-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.13 23/31] um: convert irq_lock to raw spinlock
+Date: Tue, 18 Feb 2025 15:24:43 -0500
+Message-Id: <20250218202455.3592096-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.5
 In-Reply-To: <20250218202455.3592096-1-sashal@kernel.org>
 References: <20250218202455.3592096-1-sashal@kernel.org>
@@ -68,8 +65,8 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.13.3
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250218_122538_990621_7E3792C4 
-X-CRM114-Status: GOOD (  23.94  )
+X-CRM114-CacheID: sfid-20250218_122544_093517_E70AB0D2 
+X-CRM114-Status: GOOD (  17.93  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,383 +83,247 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 5b166b782d327f4b66190cc43afd3be36f2b3b7a ]
+[ Upstream commit 96178631c3f53398044ed437010f7632ad764bf8 ]
 
-This code can be called deep in the IRQ handling, for
-example, and then cannot normally use kmalloc(). Have
-its own pre-allocated memory and use from there instead
-so this doesn't occur. Only in the (very rare) case of
-memcpy_toio() we'd still need to allocate memory.
+Since this is deep in the architecture, and the code is
+called nested into other deep management code, this really
+needs to be a raw spinlock. Convert it.
 
-Link: https://patch.msgid.link/20250110125550.32479-6-johannes@sipsolutions.net
+Link: https://patch.msgid.link/20250110125550.32479-8-johannes@sipsolutions.net
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/drivers/virt-pci.c | 198 +++++++++++++++++++------------------
- 1 file changed, 102 insertions(+), 96 deletions(-)
+ arch/um/kernel/irq.c | 79 ++++++++++++++++++++++++++------------------
+ 1 file changed, 47 insertions(+), 32 deletions(-)
 
-diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
-index 744e7f31e8ef1..dd5580f975cc0 100644
---- a/arch/um/drivers/virt-pci.c
-+++ b/arch/um/drivers/virt-pci.c
-@@ -25,8 +25,10 @@
- #define MAX_IRQ_MSG_SIZE (sizeof(struct virtio_pcidev_msg) + sizeof(u32))
- #define NUM_IRQ_MSGS	10
+diff --git a/arch/um/kernel/irq.c b/arch/um/kernel/irq.c
+index 338450741aac5..a4991746f5eac 100644
+--- a/arch/um/kernel/irq.c
++++ b/arch/um/kernel/irq.c
+@@ -52,7 +52,7 @@ struct irq_entry {
+ 	bool sigio_workaround;
+ };
  
--#define HANDLE_NO_FREE(ptr) ((void *)((unsigned long)(ptr) | 1))
--#define HANDLE_IS_NO_FREE(ptr) ((unsigned long)(ptr) & 1)
-+struct um_pci_message_buffer {
-+	struct virtio_pcidev_msg hdr;
-+	u8 data[8];
-+};
+-static DEFINE_SPINLOCK(irq_lock);
++static DEFINE_RAW_SPINLOCK(irq_lock);
+ static LIST_HEAD(active_fds);
+ static DECLARE_BITMAP(irqs_allocated, UM_LAST_SIGNAL_IRQ);
+ static bool irqs_suspended;
+@@ -257,7 +257,7 @@ static struct irq_entry *get_irq_entry_by_fd(int fd)
+ 	return NULL;
+ }
  
- struct um_pci_device {
- 	struct virtio_device *vdev;
-@@ -36,6 +38,11 @@ struct um_pci_device {
+-static void free_irq_entry(struct irq_entry *to_free, bool remove)
++static void remove_irq_entry(struct irq_entry *to_free, bool remove)
+ {
+ 	if (!to_free)
+ 		return;
+@@ -265,7 +265,6 @@ static void free_irq_entry(struct irq_entry *to_free, bool remove)
+ 	if (remove)
+ 		os_del_epoll_fd(to_free->fd);
+ 	list_del(&to_free->list);
+-	kfree(to_free);
+ }
  
- 	struct virtqueue *cmd_vq, *irq_vq;
+ static bool update_irq_entry(struct irq_entry *entry)
+@@ -286,17 +285,19 @@ static bool update_irq_entry(struct irq_entry *entry)
+ 	return false;
+ }
  
-+#define UM_PCI_WRITE_BUFS	20
-+	struct um_pci_message_buffer bufs[UM_PCI_WRITE_BUFS + 1];
-+	void *extra_ptrs[UM_PCI_WRITE_BUFS + 1];
-+	DECLARE_BITMAP(used_bufs, UM_PCI_WRITE_BUFS);
+-static void update_or_free_irq_entry(struct irq_entry *entry)
++static struct irq_entry *update_or_remove_irq_entry(struct irq_entry *entry)
+ {
+-	if (!update_irq_entry(entry))
+-		free_irq_entry(entry, false);
++	if (update_irq_entry(entry))
++		return NULL;
++	remove_irq_entry(entry, false);
++	return entry;
+ }
+ 
+ static int activate_fd(int irq, int fd, enum um_irq_type type, void *dev_id,
+ 		       void (*timetravel_handler)(int, int, void *,
+ 						  struct time_travel_event *))
+ {
+-	struct irq_entry *irq_entry;
++	struct irq_entry *irq_entry, *to_free = NULL;
+ 	int err, events = os_event_mask(type);
+ 	unsigned long flags;
+ 
+@@ -304,9 +305,10 @@ static int activate_fd(int irq, int fd, enum um_irq_type type, void *dev_id,
+ 	if (err < 0)
+ 		goto out;
+ 
+-	spin_lock_irqsave(&irq_lock, flags);
++	raw_spin_lock_irqsave(&irq_lock, flags);
+ 	irq_entry = get_irq_entry_by_fd(fd);
+ 	if (irq_entry) {
++already:
+ 		/* cannot register the same FD twice with the same type */
+ 		if (WARN_ON(irq_entry->reg[type].events)) {
+ 			err = -EALREADY;
+@@ -316,11 +318,22 @@ static int activate_fd(int irq, int fd, enum um_irq_type type, void *dev_id,
+ 		/* temporarily disable to avoid IRQ-side locking */
+ 		os_del_epoll_fd(fd);
+ 	} else {
+-		irq_entry = kzalloc(sizeof(*irq_entry), GFP_ATOMIC);
+-		if (!irq_entry) {
+-			err = -ENOMEM;
+-			goto out_unlock;
++		struct irq_entry *new;
 +
- #define UM_PCI_STAT_WAITING	0
- 	unsigned long status;
- 
-@@ -61,12 +68,40 @@ static unsigned long um_pci_msi_used[BITS_TO_LONGS(MAX_MSI_VECTORS)];
- static unsigned int um_pci_max_delay_us = 40000;
- module_param_named(max_delay_us, um_pci_max_delay_us, uint, 0644);
- 
--struct um_pci_message_buffer {
--	struct virtio_pcidev_msg hdr;
--	u8 data[8];
--};
-+static int um_pci_get_buf(struct um_pci_device *dev, bool *posted)
-+{
-+	int i;
-+
-+	for (i = 0; i < UM_PCI_WRITE_BUFS; i++) {
-+		if (!test_and_set_bit(i, dev->used_bufs))
-+			return i;
-+	}
- 
--static struct um_pci_message_buffer __percpu *um_pci_msg_bufs;
-+	*posted = false;
-+	return UM_PCI_WRITE_BUFS;
-+}
-+
-+static void um_pci_free_buf(struct um_pci_device *dev, void *buf)
-+{
-+	int i;
-+
-+	if (buf == &dev->bufs[UM_PCI_WRITE_BUFS]) {
-+		kfree(dev->extra_ptrs[UM_PCI_WRITE_BUFS]);
-+		dev->extra_ptrs[UM_PCI_WRITE_BUFS] = NULL;
-+		return;
-+	}
-+
-+	for (i = 0; i < UM_PCI_WRITE_BUFS; i++) {
-+		if (buf == &dev->bufs[i]) {
-+			kfree(dev->extra_ptrs[i]);
-+			dev->extra_ptrs[i] = NULL;
-+			WARN_ON(!test_and_clear_bit(i, dev->used_bufs));
-+			return;
-+		}
-+	}
-+
-+	WARN_ON(1);
-+}
- 
- static int um_pci_send_cmd(struct um_pci_device *dev,
- 			   struct virtio_pcidev_msg *cmd,
-@@ -82,7 +117,9 @@ static int um_pci_send_cmd(struct um_pci_device *dev,
- 	};
- 	struct um_pci_message_buffer *buf;
- 	int delay_count = 0;
-+	bool bounce_out;
- 	int ret, len;
-+	int buf_idx;
- 	bool posted;
- 
- 	if (WARN_ON(cmd_size < sizeof(*cmd) || cmd_size > sizeof(*buf)))
-@@ -101,26 +138,28 @@ static int um_pci_send_cmd(struct um_pci_device *dev,
- 		break;
- 	}
- 
--	buf = get_cpu_var(um_pci_msg_bufs);
--	if (buf)
--		memcpy(buf, cmd, cmd_size);
-+	bounce_out = !posted && cmd_size <= sizeof(*cmd) &&
-+		     out && out_size <= sizeof(buf->data);
- 
--	if (posted) {
--		u8 *ncmd = kmalloc(cmd_size + extra_size, GFP_ATOMIC);
--
--		if (ncmd) {
--			memcpy(ncmd, cmd, cmd_size);
--			if (extra)
--				memcpy(ncmd + cmd_size, extra, extra_size);
--			cmd = (void *)ncmd;
--			cmd_size += extra_size;
--			extra = NULL;
--			extra_size = 0;
--		} else {
--			/* try without allocating memory */
--			posted = false;
--			cmd = (void *)buf;
-+	buf_idx = um_pci_get_buf(dev, &posted);
-+	buf = &dev->bufs[buf_idx];
-+	memcpy(buf, cmd, cmd_size);
-+
-+	if (posted && extra && extra_size > sizeof(buf) - cmd_size) {
-+		dev->extra_ptrs[buf_idx] = kmemdup(extra, extra_size,
-+						   GFP_ATOMIC);
-+
-+		if (!dev->extra_ptrs[buf_idx]) {
-+			um_pci_free_buf(dev, buf);
++		/* don't restore interrupts */
++		raw_spin_unlock(&irq_lock);
++		new = kzalloc(sizeof(*irq_entry), GFP_ATOMIC);
++		if (!new) {
++			local_irq_restore(flags);
 +			return -ENOMEM;
  		}
-+		extra = dev->extra_ptrs[buf_idx];
-+	} else if (extra && extra_size <= sizeof(buf) - cmd_size) {
-+		memcpy((u8 *)buf + cmd_size, extra, extra_size);
-+		cmd_size += extra_size;
-+		extra_size = 0;
-+		extra = NULL;
-+		cmd = (void *)buf;
- 	} else {
- 		cmd = (void *)buf;
- 	}
-@@ -128,39 +167,40 @@ static int um_pci_send_cmd(struct um_pci_device *dev,
- 	sg_init_one(&out_sg, cmd, cmd_size);
- 	if (extra)
- 		sg_init_one(&extra_sg, extra, extra_size);
--	if (out)
-+	/* allow stack for small buffers */
-+	if (bounce_out)
-+		sg_init_one(&in_sg, buf->data, out_size);
-+	else if (out)
- 		sg_init_one(&in_sg, out, out_size);
- 
- 	/* add to internal virtio queue */
- 	ret = virtqueue_add_sgs(dev->cmd_vq, sgs_list,
- 				extra ? 2 : 1,
- 				out ? 1 : 0,
--				posted ? cmd : HANDLE_NO_FREE(cmd),
--				GFP_ATOMIC);
-+				cmd, GFP_ATOMIC);
- 	if (ret) {
--		if (posted)
--			kfree(cmd);
--		goto out;
-+		um_pci_free_buf(dev, buf);
-+		return ret;
- 	}
- 
- 	if (posted) {
- 		virtqueue_kick(dev->cmd_vq);
--		ret = 0;
--		goto out;
-+		return 0;
- 	}
- 
- 	/* kick and poll for getting a response on the queue */
- 	set_bit(UM_PCI_STAT_WAITING, &dev->status);
- 	virtqueue_kick(dev->cmd_vq);
-+	ret = 0;
- 
- 	while (1) {
- 		void *completed = virtqueue_get_buf(dev->cmd_vq, &len);
- 
--		if (completed == HANDLE_NO_FREE(cmd))
-+		if (completed == buf)
- 			break;
- 
--		if (completed && !HANDLE_IS_NO_FREE(completed))
--			kfree(completed);
-+		if (completed)
-+			um_pci_free_buf(dev, completed);
- 
- 		if (WARN_ONCE(virtqueue_is_broken(dev->cmd_vq) ||
- 			      ++delay_count > um_pci_max_delay_us,
-@@ -172,8 +212,11 @@ static int um_pci_send_cmd(struct um_pci_device *dev,
- 	}
- 	clear_bit(UM_PCI_STAT_WAITING, &dev->status);
- 
--out:
--	put_cpu_var(um_pci_msg_bufs);
-+	if (bounce_out)
-+		memcpy(out, buf->data, out_size);
-+
-+	um_pci_free_buf(dev, buf);
-+
- 	return ret;
- }
- 
-@@ -187,20 +230,13 @@ static unsigned long um_pci_cfgspace_read(void *priv, unsigned int offset,
- 		.size = size,
- 		.addr = offset,
- 	};
--	/* buf->data is maximum size - we may only use parts of it */
--	struct um_pci_message_buffer *buf;
--	u8 *data;
--	unsigned long ret = ULONG_MAX;
--	size_t bytes = sizeof(buf->data);
-+	/* max 8, we might not use it all */
-+	u8 data[8];
- 
- 	if (!dev)
- 		return ULONG_MAX;
- 
--	buf = get_cpu_var(um_pci_msg_bufs);
--	data = buf->data;
--
--	if (buf)
--		memset(data, 0xff, bytes);
-+	memset(data, 0xff, sizeof(data));
- 
- 	switch (size) {
- 	case 1:
-@@ -212,34 +248,26 @@ static unsigned long um_pci_cfgspace_read(void *priv, unsigned int offset,
- 		break;
- 	default:
- 		WARN(1, "invalid config space read size %d\n", size);
--		goto out;
-+		return ULONG_MAX;
- 	}
- 
--	if (um_pci_send_cmd(dev, &hdr, sizeof(hdr), NULL, 0, data, bytes))
--		goto out;
-+	if (um_pci_send_cmd(dev, &hdr, sizeof(hdr), NULL, 0, data, size))
-+		return ULONG_MAX;
- 
- 	switch (size) {
- 	case 1:
--		ret = data[0];
--		break;
-+		return data[0];
- 	case 2:
--		ret = le16_to_cpup((void *)data);
--		break;
-+		return le16_to_cpup((void *)data);
- 	case 4:
--		ret = le32_to_cpup((void *)data);
--		break;
-+		return le32_to_cpup((void *)data);
- #ifdef CONFIG_64BIT
- 	case 8:
--		ret = le64_to_cpup((void *)data);
--		break;
-+		return le64_to_cpup((void *)data);
++		raw_spin_lock(&irq_lock);
++		irq_entry = get_irq_entry_by_fd(fd);
++		if (irq_entry) {
++			to_free = new;
++			goto already;
++		}
++		irq_entry = new;
+ 		irq_entry->fd = fd;
+ 		list_add_tail(&irq_entry->list, &active_fds);
+ 		maybe_sigio_broken(fd);
+@@ -339,12 +352,11 @@ static int activate_fd(int irq, int fd, enum um_irq_type type, void *dev_id,
  #endif
- 	default:
--		break;
-+		return ULONG_MAX;
- 	}
+ 
+ 	WARN_ON(!update_irq_entry(irq_entry));
+-	spin_unlock_irqrestore(&irq_lock, flags);
 -
--out:
--	put_cpu_var(um_pci_msg_bufs);
--	return ret;
- }
- 
- static void um_pci_cfgspace_write(void *priv, unsigned int offset, int size,
-@@ -312,13 +340,8 @@ static void um_pci_bar_copy_from(void *priv, void *buffer,
- static unsigned long um_pci_bar_read(void *priv, unsigned int offset,
- 				     int size)
- {
--	/* buf->data is maximum size - we may only use parts of it */
--	struct um_pci_message_buffer *buf;
--	u8 *data;
--	unsigned long ret = ULONG_MAX;
--
--	buf = get_cpu_var(um_pci_msg_bufs);
--	data = buf->data;
-+	/* 8 is maximum size - we may only use parts of it */
-+	u8 data[8];
- 
- 	switch (size) {
- 	case 1:
-@@ -330,33 +353,25 @@ static unsigned long um_pci_bar_read(void *priv, unsigned int offset,
- 		break;
- 	default:
- 		WARN(1, "invalid config space read size %d\n", size);
--		goto out;
-+		return ULONG_MAX;
- 	}
- 
- 	um_pci_bar_copy_from(priv, data, offset, size);
- 
- 	switch (size) {
- 	case 1:
--		ret = data[0];
--		break;
-+		return data[0];
- 	case 2:
--		ret = le16_to_cpup((void *)data);
--		break;
-+		return le16_to_cpup((void *)data);
- 	case 4:
--		ret = le32_to_cpup((void *)data);
--		break;
-+		return le32_to_cpup((void *)data);
- #ifdef CONFIG_64BIT
- 	case 8:
--		ret = le64_to_cpup((void *)data);
--		break;
-+		return le64_to_cpup((void *)data);
- #endif
- 	default:
--		break;
-+		return ULONG_MAX;
- 	}
--
--out:
--	put_cpu_var(um_pci_msg_bufs);
--	return ret;
- }
- 
- static void um_pci_bar_copy_to(void *priv, unsigned int offset,
-@@ -523,11 +538,8 @@ static void um_pci_cmd_vq_cb(struct virtqueue *vq)
- 	if (test_bit(UM_PCI_STAT_WAITING, &dev->status))
- 		return;
- 
--	while ((cmd = virtqueue_get_buf(vq, &len))) {
--		if (WARN_ON(HANDLE_IS_NO_FREE(cmd)))
--			continue;
--		kfree(cmd);
--	}
-+	while ((cmd = virtqueue_get_buf(vq, &len)))
-+		um_pci_free_buf(dev, cmd);
- }
- 
- static void um_pci_irq_vq_cb(struct virtqueue *vq)
-@@ -1006,10 +1018,6 @@ static int __init um_pci_init(void)
- 		 "No virtio device ID configured for PCI - no PCI support\n"))
- 		return 0;
- 
--	um_pci_msg_bufs = alloc_percpu(struct um_pci_message_buffer);
--	if (!um_pci_msg_bufs)
--		return -ENOMEM;
--
- 	bridge = pci_alloc_host_bridge(0);
- 	if (!bridge) {
- 		err = -ENOMEM;
-@@ -1070,7 +1078,6 @@ static int __init um_pci_init(void)
- 		pci_free_resource_list(&bridge->windows);
- 		pci_free_host_bridge(bridge);
- 	}
--	free_percpu(um_pci_msg_bufs);
+-	return 0;
++	err = 0;
+ out_unlock:
+-	spin_unlock_irqrestore(&irq_lock, flags);
++	raw_spin_unlock_irqrestore(&irq_lock, flags);
+ out:
++	kfree(to_free);
  	return err;
  }
- module_init(um_pci_init);
-@@ -1082,6 +1089,5 @@ static void __exit um_pci_exit(void)
- 	irq_domain_remove(um_pci_inner_domain);
- 	pci_free_resource_list(&bridge->windows);
- 	pci_free_host_bridge(bridge);
--	free_percpu(um_pci_msg_bufs);
+ 
+@@ -358,19 +370,20 @@ void free_irq_by_fd(int fd)
+ 	struct irq_entry *to_free;
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&irq_lock, flags);
++	raw_spin_lock_irqsave(&irq_lock, flags);
+ 	to_free = get_irq_entry_by_fd(fd);
+-	free_irq_entry(to_free, true);
+-	spin_unlock_irqrestore(&irq_lock, flags);
++	remove_irq_entry(to_free, true);
++	raw_spin_unlock_irqrestore(&irq_lock, flags);
++	kfree(to_free);
  }
- module_exit(um_pci_exit);
+ EXPORT_SYMBOL(free_irq_by_fd);
+ 
+ static void free_irq_by_irq_and_dev(unsigned int irq, void *dev)
+ {
+-	struct irq_entry *entry;
++	struct irq_entry *entry, *to_free = NULL;
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&irq_lock, flags);
++	raw_spin_lock_irqsave(&irq_lock, flags);
+ 	list_for_each_entry(entry, &active_fds, list) {
+ 		enum um_irq_type i;
+ 
+@@ -386,12 +399,13 @@ static void free_irq_by_irq_and_dev(unsigned int irq, void *dev)
+ 
+ 			os_del_epoll_fd(entry->fd);
+ 			reg->events = 0;
+-			update_or_free_irq_entry(entry);
++			to_free = update_or_remove_irq_entry(entry);
+ 			goto out;
+ 		}
+ 	}
+ out:
+-	spin_unlock_irqrestore(&irq_lock, flags);
++	raw_spin_unlock_irqrestore(&irq_lock, flags);
++	kfree(to_free);
+ }
+ 
+ void deactivate_fd(int fd, int irqnum)
+@@ -402,7 +416,7 @@ void deactivate_fd(int fd, int irqnum)
+ 
+ 	os_del_epoll_fd(fd);
+ 
+-	spin_lock_irqsave(&irq_lock, flags);
++	raw_spin_lock_irqsave(&irq_lock, flags);
+ 	entry = get_irq_entry_by_fd(fd);
+ 	if (!entry)
+ 		goto out;
+@@ -414,9 +428,10 @@ void deactivate_fd(int fd, int irqnum)
+ 			entry->reg[i].events = 0;
+ 	}
+ 
+-	update_or_free_irq_entry(entry);
++	entry = update_or_remove_irq_entry(entry);
+ out:
+-	spin_unlock_irqrestore(&irq_lock, flags);
++	raw_spin_unlock_irqrestore(&irq_lock, flags);
++	kfree(entry);
+ 
+ 	ignore_sigio_fd(fd);
+ }
+@@ -546,7 +561,7 @@ void um_irqs_suspend(void)
+ 
+ 	irqs_suspended = true;
+ 
+-	spin_lock_irqsave(&irq_lock, flags);
++	raw_spin_lock_irqsave(&irq_lock, flags);
+ 	list_for_each_entry(entry, &active_fds, list) {
+ 		enum um_irq_type t;
+ 		bool clear = true;
+@@ -579,7 +594,7 @@ void um_irqs_suspend(void)
+ 				!__ignore_sigio_fd(entry->fd);
+ 		}
+ 	}
+-	spin_unlock_irqrestore(&irq_lock, flags);
++	raw_spin_unlock_irqrestore(&irq_lock, flags);
+ }
+ 
+ void um_irqs_resume(void)
+@@ -588,7 +603,7 @@ void um_irqs_resume(void)
+ 	unsigned long flags;
+ 
+ 
+-	spin_lock_irqsave(&irq_lock, flags);
++	raw_spin_lock_irqsave(&irq_lock, flags);
+ 	list_for_each_entry(entry, &active_fds, list) {
+ 		if (entry->suspended) {
+ 			int err = os_set_fd_async(entry->fd);
+@@ -602,7 +617,7 @@ void um_irqs_resume(void)
+ 			}
+ 		}
+ 	}
+-	spin_unlock_irqrestore(&irq_lock, flags);
++	raw_spin_unlock_irqrestore(&irq_lock, flags);
+ 
+ 	irqs_suspended = false;
+ 	send_sigio_to_self();
+@@ -613,7 +628,7 @@ static int normal_irq_set_wake(struct irq_data *d, unsigned int on)
+ 	struct irq_entry *entry;
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&irq_lock, flags);
++	raw_spin_lock_irqsave(&irq_lock, flags);
+ 	list_for_each_entry(entry, &active_fds, list) {
+ 		enum um_irq_type t;
+ 
+@@ -628,7 +643,7 @@ static int normal_irq_set_wake(struct irq_data *d, unsigned int on)
+ 		}
+ 	}
+ unlock:
+-	spin_unlock_irqrestore(&irq_lock, flags);
++	raw_spin_unlock_irqrestore(&irq_lock, flags);
+ 	return 0;
+ }
+ #else
 -- 
 2.39.5
 
