@@ -4,58 +4,82 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 1D919C021B1
-	for <linux-um@archiver.kernel.org>; Mon, 17 Feb 2025 19:10:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C641DC02198
+	for <linux-um@archiver.kernel.org>; Tue, 18 Feb 2025 08:18:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=DQ8pEjsubtBd0+r7ArW3+Pwnui7gFm3cbKmo8d222fI=; b=FiX0pJkX9xROya5Zz/5UzjhaLs
-	xb3nS7AI6i816PRQ+inXUf+FGsChinZJ81vnUVXVUkpUKjWvAqR0NxENNZ5fdgS/nTIuR007mHPd8
-	DLDhRmlgTmydJwZJdIyZaInu8TwghDjzgIt55+7TnsUhfI4SgcKIE3c4h7+YGTQ4eP+cJ0EUMdLS4
-	YYSzb5Us3Rwxm39PgsFOJPlZ3r67CfjGLMD6NN/VxRRy9o+xbDG/WQhCXtFrpq9ru3NkznhVRgHni
-	jW5TQol86WkIjg0xieNvZNFy7LSXoNAK9tIWiruOCk8ZPvRWgaJ9TR9pbtwJIlezyNOW1P6AvFEwz
-	TkQcGK0A==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:Cc:To:Subject:
+	Message-ID:Date:From:In-Reply-To:References:MIME-Version:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=K6Hz8bZDs78uyXHgQQ8oUf4o6rHFlSQuKCrUj7YwByY=; b=xcr4Vf/MgTmJYDmgx/ec7mIBIb
+	futxP8dn0OxXgkh1B93QZ0J5fLLobzGIvGYCxtOK8N6tRYL5NiGoaH/i/UOJcwpPvq42YGgcFP02G
+	YUKtTJmeDIL/yb1JQGNfcFtytyAcePqr8jdzEBI7ZVinpNwKTIUkOpd0kZpDTqf1G6In5Qq8m+5O+
+	R4+/sE38hcgdi4cefQuSYseWGoldiAW9/zzQG7Ck7zVNtREOEMSEGvCixhpbrLJuqGDcAPYlCKSs/
+	uVNvNajxLve+fwtb/nWGZ/TUqkVyCifaMKU2OBQm86zgcdJdxxDB/le/XMkAvoKf9ZMjom+d08Rhn
+	nOgmV0cA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tk6W2-00000005iNN-3h1R;
-	Mon, 17 Feb 2025 19:10:50 +0000
-Received: from casper.infradead.org ([2001:8b0:10b:1236::1])
+	id 1tkIns-00000007E9i-28zp;
+	Tue, 18 Feb 2025 08:18:04 +0000
+Received: from mail-ua1-f44.google.com ([209.85.222.44])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tk6U4-00000005hzR-4AsC
-	for linux-um@bombadil.infradead.org;
-	Mon, 17 Feb 2025 19:08:48 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=DQ8pEjsubtBd0+r7ArW3+Pwnui7gFm3cbKmo8d222fI=; b=VviXey2+gk7RQlHla7fyP62RbI
-	TWt5oMDGkBP4sH/ZbqUgWk8bfKkMHOigOck3TrdZiCNDAVRbOYFTGqv5DDvX6UgttQFSlvwPw9TsP
-	NLCPz9fidRWT/lWflrucyZKu1lXBP23nJGb0UafoScOJ+2xcIjlAcbGJMsM2zrZXqcmVXIjmeSe70
-	VL1w0cEd8G7h/4R9o4P/G74QbYHA+UQJmatysUlnLAXoPic8p1UTx+k06XYAUa5hXp5ikTZ/C8t5t
-	ckJWGnG7IdVoN3DVdUN95CMcdnIYHnW+v4WLn46jowGmawC3q3v17uKqvUt3MTrWYlS4Vm4MxDull
-	HBNOJXwg==;
-Received: from willy by casper.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1tk6Tu-00000001pBD-2cvi;
-	Mon, 17 Feb 2025 19:08:38 +0000
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To: linux-mm@kvack.org
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	linux-arch@vger.kernel.org,
-	x86@kernel.org,
-	linux-s390@vger.kernel.org,
-	sparclinux@vger.kernel.org,
-	linux-um@lists.infradead.org
-Subject: [PATCH 1/7] mm: Set the pte dirty if the folio is already dirty
-Date: Mon, 17 Feb 2025 19:08:28 +0000
-Message-ID: <20250217190836.435039-2-willy@infradead.org>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250217190836.435039-1-willy@infradead.org>
-References: <20250217190836.435039-1-willy@infradead.org>
+	id 1tkIlh-00000007DTC-3uqR
+	for linux-um@lists.infradead.org;
+	Tue, 18 Feb 2025 08:15:51 +0000
+Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-868ddc4c6b6so1879866241.2
+        for <linux-um@lists.infradead.org>; Tue, 18 Feb 2025 00:15:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739866547; x=1740471347;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=K6Hz8bZDs78uyXHgQQ8oUf4o6rHFlSQuKCrUj7YwByY=;
+        b=EbLt6r+xFXg03bzUjllebtGc10q2iixsrkiQqgMipPhI+5tgHwA1UvJz3vr8x94qXJ
+         AvYYFZaMguKTfDlsqPKNpvdCLBu0CZT1kF2IshWTYyj5MW4Rk/uD3JhOrk/7l1QFOyhG
+         Ov8eP6Gz/NcCVhhzhUEom2s8GBvrx4cY7bHoHCL4rGhsq0LGV48nkQ41R96dWFZ1klzy
+         /Wr5mgLxD6JusaGZ3R8NtVK/cybGc8khE3f15mP2Ri3fIf5DdqINIQv/qRf/zbQlDFIN
+         YGHD9fLm4RfUMedOj6AM2iXNWR4LVXUxd9UXt4zSQyP4kIJSEb0bjG01ciXWhehNZHBS
+         D+wQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUff1cUK0ABYzvZm56hGJwZLTB7aABBGLUI4yXM4ZJfs2uCvyNOsiMxxMsv7FYEHknHVIrd7Zx8hw==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yzf98eZjQJ4yxSU8D5WOdZhRlq/ns3KlYMOKek8tDoUj3me+bCm
+	T0XqhiQA2gkKAo7hDHQz2r1RM+TvdFK/bHdSr8YKaBtf8k0/i/sExxJzjUneg04=
+X-Gm-Gg: ASbGncvTyqOuQaC3GX6y3fC5RorF0wVpRy+HbRhNyz+pFPpAE8zWBpeb9sUwyT8YsL0
+	o7h2YtWXf6eeeolu3IRohvEw5jlh+NYmCga+Za2jGNVuU/zMc+LK9OtWc46p2T2vCXg13pX3KnE
+	mix0NGjqaGeQl6ZoCxhqbezpwitiLkHLcK0xdue+5Wpbbwlegg7aPHfODqiN9P1yd9yGyFRofvp
+	i0nbrHA7ErNW1BP1FiFpMFJhrq8x8Rbjh9+7Bq/ydVjZE5QWCd6+03uG6JS2HDYqer5iwsbdbwx
+	pxJ9BgXb9tEbz/RRbWXKCKFkffhmiFqmKb0xsxF+xGbSg2VlEWd6tw==
+X-Google-Smtp-Source: AGHT+IE0C775gUw99duXSqI22/iHt3EcbUt8wRqaapQitjKAmgpcHlH9a7AB12GQl3Hh6joq+u4uXg==
+X-Received: by 2002:a05:6102:419f:b0:4bb:edc9:f949 with SMTP id ada2fe7eead31-4bd3fcc7f1cmr6594261137.10.1739866547007;
+        Tue, 18 Feb 2025 00:15:47 -0800 (PST)
+Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com. [209.85.222.43])
+        by smtp.gmail.com with ESMTPSA id ada2fe7eead31-4bc68dd766bsm2019950137.20.2025.02.18.00.15.46
+        for <linux-um@lists.infradead.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Feb 2025 00:15:46 -0800 (PST)
+Received: by mail-ua1-f43.google.com with SMTP id a1e0cc1a2514c-867120d67baso1771397241.0
+        for <linux-um@lists.infradead.org>; Tue, 18 Feb 2025 00:15:46 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVQV3Oi6rS0V/OoSYVCoPraq9iFtY7RCKSH8TXkVUSesXYSzRFZAttLuFCLClJp0J3o8YU4Z8LXXQ==@lists.infradead.org
+X-Received: by 2002:a05:6102:d94:b0:4bb:b843:95e6 with SMTP id
+ ada2fe7eead31-4bd3fc9869amr6525145137.7.1739866546228; Tue, 18 Feb 2025
+ 00:15:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20250217190836.435039-1-willy@infradead.org> <20250217190836.435039-3-willy@infradead.org>
+In-Reply-To: <20250217190836.435039-3-willy@infradead.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 18 Feb 2025 09:15:34 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVGGPVxz6spuFhqZV5YONji+hOi2ALjBkD2Yt-xrb8R9w@mail.gmail.com>
+X-Gm-Features: AWEUYZlUk2UQkMyt8RR6rg-cBVbuU2v1FebOMuVIYEMfkPb3IlGZ86jcKmJ0Nps
+Message-ID: <CAMuHMdVGGPVxz6spuFhqZV5YONji+hOi2ALjBkD2Yt-xrb8R9w@mail.gmail.com>
+Subject: Re: [PATCH 2/7] mm: Introduce a common definition of mk_pte()
+To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: linux-mm@kvack.org, linux-arch@vger.kernel.org, x86@kernel.org, 
+	linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, 
+	linux-um@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20250218_001549_969445_C02DF4AA 
+X-CRM114-Status: GOOD (  15.42  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -70,49 +94,28 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-If the first access to a folio is a read that is then followed by a
-write, we can save a page fault.  s390 implemented this in their
-mk_pte() in commit abf09bed3cce ("s390/mm: implement software dirty
-bits"), but other architectures can also benefit from this.
+On Mon, 17 Feb 2025 at 20:09, Matthew Wilcox (Oracle)
+<willy@infradead.org> wrote:
+> Most architectures simply call pfn_pte().  Centralise that as the normal
+> definition and remove the definition of mk_pte() from the architectures
+> which have either that exact definition or something similar.
+>
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- arch/s390/include/asm/pgtable.h | 7 +------
- mm/memory.c                     | 2 ++
- 2 files changed, 3 insertions(+), 6 deletions(-)
+>  arch/m68k/include/asm/mcf_pgtable.h      | 6 ------
+>  arch/m68k/include/asm/motorola_pgtable.h | 6 ------
+>  arch/m68k/include/asm/sun3_pgtable.h     | 6 ------
 
-diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
-index 3ca5af4cfe43..3ee495b5171e 100644
---- a/arch/s390/include/asm/pgtable.h
-+++ b/arch/s390/include/asm/pgtable.h
-@@ -1451,12 +1451,7 @@ static inline pte_t mk_pte_phys(unsigned long physpage, pgprot_t pgprot)
- 
- static inline pte_t mk_pte(struct page *page, pgprot_t pgprot)
- {
--	unsigned long physpage = page_to_phys(page);
--	pte_t __pte = mk_pte_phys(physpage, pgprot);
--
--	if (pte_write(__pte) && PageDirty(page))
--		__pte = pte_mkdirty(__pte);
--	return __pte;
-+	return mk_pte_phys(page_to_phys(page), pgprot);
- }
- 
- #define pgd_index(address) (((address) >> PGDIR_SHIFT) & (PTRS_PER_PGD-1))
-diff --git a/mm/memory.c b/mm/memory.c
-index 539c0f7c6d54..4330560eee55 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -5124,6 +5124,8 @@ void set_pte_range(struct vm_fault *vmf, struct folio *folio,
- 
- 	if (write)
- 		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
-+	else if (pte_write(entry) && folio_test_dirty(folio))
-+		entry = pte_mkdirty(entry);
- 	if (unlikely(vmf_orig_pte_uffd_wp(vmf)))
- 		entry = pte_mkuffd_wp(entry);
- 	/* copy-on-write page */
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.47.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
