@@ -4,88 +4,89 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3F3FEC021AA
-	for <linux-um@archiver.kernel.org>; Tue, 18 Feb 2025 10:36:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8EF7AC02198
+	for <linux-um@archiver.kernel.org>; Tue, 18 Feb 2025 10:38:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=G+HjwJ9mJ5Ava/YF/RbVKXd+QR18qcRDmZfeajdLUu8=; b=NLbmUsxkjW4ZqXwXudgW3m0WOt
-	wRAPqWkShUVSnmvBH1ZQbAvCnRe0zj4tfAC8Ry71UagsoNjyKnFBejf5xBDp2rbfiF3/tfHSi8Aau
-	4iD+/wrEcfrhrGHzsd5UG1WGlNpqsL5TjqmY8bv0VjWEwuMrBMoIctOfK94fIVN+40TinRF04Oqns
-	vIrcNfXxX6yCKxk9QT0MvxYS6r6Z3VCOCnH5f3VDqD7OR0XL8riLUuR+CrECUMFs1bPNoquAfdUTe
-	9CHbMrnAWKmQvl/+o7bevUYsmJbIjDK+ldSwIpX3q+O5JR87btXoU1QptqYuw2m6xZTz6MWlP0FfM
-	JaQIoRug==;
+	bh=6qQSUzHgCyxJavo98b2ypHiPRZXpN9/8Rj9BOTux8BQ=; b=TUkYhfpDfOJAMjxRzuQHVCWPX9
+	CaO4F6WjZrGQeMTGgNbxOoVEnNGCa/OCXxSA0Sdn7zNbrKC1F1lMxrprX2Uh7QLQxnKShGzGpQbDz
+	oIItV4QwvQPqsXmFGTscm7q7ww/ms5D+9//F679PjR+hZ0K2SMP1KjP+d7+S0CsQQrZcPICN+x5xN
+	kkSOrIhgRozPiNP9qJQBwPOmapEyCmbgI8uvKR7av/Y/dauZfQQAcPKY8zsfCbHQRq0bn5Gqfrbsw
+	GnibF7+D9wn945t7mG+Vf2jFqC8s2faDkGO8MY6uRwV7eiTlaULorWbJ3DC8xP2dghuKCEWx3m3Qd
+	JHRCwZsQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tkKyA-00000007nDU-2UKz;
-	Tue, 18 Feb 2025 10:36:50 +0000
+	id 1tkKzc-00000007nYv-0gk3;
+	Tue, 18 Feb 2025 10:38:20 +0000
 Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tkKr8-00000007l8B-3u6x
+	id 1tkKti-00000007loT-1iwF
 	for linux-um@lists.infradead.org;
-	Tue, 18 Feb 2025 10:29:36 +0000
+	Tue, 18 Feb 2025 10:32:15 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1739874573;
+	s=mimecast20190719; t=1739874733;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=G+HjwJ9mJ5Ava/YF/RbVKXd+QR18qcRDmZfeajdLUu8=;
-	b=NkkKIOXfuoC3JDxSWjfTtwCu2FO2cnuh1sXjqzwmws8YZJORZ40dKkoMLRKWU28UGlMfoz
-	ewU3s/docihZ+ibEdyfEPZSZXg6wJRTOEv6NqUE/JyRSeQqVIztALYJfAYOqUqC6+Nq4pI
-	SmjfGtTTWLicS7LiAEcKRt3HxkHRpE4=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=6qQSUzHgCyxJavo98b2ypHiPRZXpN9/8Rj9BOTux8BQ=;
+	b=Y861E9qHfSDuSSfMHWV4ucsl5YMkDhjAsxVxgHHSlSzUGPFlmB7GGAstUXTBhF7VfRGGcb
+	6D4ENnERYCetZfdpWw/O1OG3XjpEjCmQiW0xB7P7wTyu4eLTOzEe3ZC9OOip7noMox2Xtf
+	VVg4DpsKU02nnCjqktON/4m6mXVluwY=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-237-49iUcc_CP6eEzvk0fddvPQ-1; Tue, 18 Feb 2025 05:29:31 -0500
-X-MC-Unique: 49iUcc_CP6eEzvk0fddvPQ-1
-X-Mimecast-MFC-AGG-ID: 49iUcc_CP6eEzvk0fddvPQ_1739874570
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-38f2f78aee1so2254417f8f.0
-        for <linux-um@lists.infradead.org>; Tue, 18 Feb 2025 02:29:31 -0800 (PST)
+ us-mta-73-b9AqueCOMGS8RiP72q_p2g-1; Tue, 18 Feb 2025 05:32:11 -0500
+X-MC-Unique: b9AqueCOMGS8RiP72q_p2g-1
+X-Mimecast-MFC-AGG-ID: b9AqueCOMGS8RiP72q_p2g_1739874730
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-38f45a86efdso1056805f8f.2
+        for <linux-um@lists.infradead.org>; Tue, 18 Feb 2025 02:32:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1739874570; x=1740479370;
+        d=1e100.net; s=20230601; t=1739874730; x=1740479530;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :content-language:from:references:cc:to:subject:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=G+HjwJ9mJ5Ava/YF/RbVKXd+QR18qcRDmZfeajdLUu8=;
-        b=CpVTf5xOVSAa32qoE2wmxnpiwLVT/7wMDk4xZ7IzafPJ2mL0YL+qi34P/6WeTRFPxs
-         fmd1c+w3lOa72K0W+yJpu8vVuA3LWP2qn3FubbHSVq4LX23+go/bTCqOhVQ4P3Go0Wsk
-         vtuPLnV21EzKaRhLL8RTIBWcf9keAElEA60w3k2s9fur5SbMsO4Sct2BV/nXEUvRhy+u
-         IO4Y7NZrO7dbunw5kKmZRW8i3Crde5+IL4I/uhSeZPMh5yLMY8oIYGtyGXKAO9DbsuMK
-         0OMWJ+tRcUvBdEkEZoUMZyTVRqRGvWSQ0BFlsmtPkBZSid2HPGjg/RmBBTJMug6u2mKd
-         NJTg==
-X-Forwarded-Encrypted: i=1; AJvYcCXaXj3iXOAKS4OgINbbtFkk1I09CSEVT9RCZgIRU2A/FlkXtbIK5+FGuls5hI3Px6c2w8azejKUXg==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yy0wKNu9ws7ace+r2breDQA6ogLEBlfTcNE5TgRsiE5zXIhyqoQ
-	O8RCbBkuHSu3NhsUk9eykYObz2AYmzTkBLiVrUSsCDCtua57qB6TfeiIYKZEHzAHD7CHlpn3CSP
-	Qn8NxUJIszf2OtEWLwcqCKU8dll6SptqepRK/5lSUZpSiY1HB7RLfodV02VH5Dw==
-X-Gm-Gg: ASbGncvTiacz2to5Q29AvL2RJX2vBzuIYZkVpDgshG6wzerl4f67gItVfZLVqj9dfZf
-	6AAyhwyNiYYELr5/xgmum4vDjNHyF3aOn6vMfVFGj5k9iWqcspUVyAxjQ5XTYxL2XUW5T3R38WA
-	pDDaaKPZBAUhK4nG8QmcmSL9EPEb9UlQLUjn7BGEd6cNRnlyekQUxLFgIdieGT3IjGEVnTbIhzg
-	7Cp1WPq6FwKhFQpnMWbcE8PIvKnrgr1wQZyQTP9e0xth1qub9X5IBvh7ZHMb/ZgjXwZyJo09ts6
-	LAUhZ8d/siqPKrDNJgVLCjwMph8hSS8HODowgu06K03ktpNlxBnsA0gjH0P+K3LksIa/9lj0a5q
-	plIXu4RkeOVnVbc+eGarSA6AovoopHguu
-X-Received: by 2002:a5d:64aa:0:b0:38f:4f37:7504 with SMTP id ffacd0b85a97d-38f4f377bb4mr3195055f8f.16.1739874570266;
-        Tue, 18 Feb 2025 02:29:30 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFN693UNj3uMUwWwlf2ctNsjDwCDYZ2rQpAw3Q3z51pqfxfutoeEP1sMGNfu8iSj0Dl+e27fA==
-X-Received: by 2002:a5d:64aa:0:b0:38f:4f37:7504 with SMTP id ffacd0b85a97d-38f4f377bb4mr3195027f8f.16.1739874569894;
-        Tue, 18 Feb 2025 02:29:29 -0800 (PST)
+        bh=6qQSUzHgCyxJavo98b2ypHiPRZXpN9/8Rj9BOTux8BQ=;
+        b=VVPFZh1jOWRiFOUzNCHDIEbpTi7Sz9atj6SHEZ0oex5M798e9L3li0JAw3Ce9sr/cE
+         ldL1oGLlPYb6cq0ddGYlcjvuROLTgAsgjXe5hJZezRZOSOAZeiATlSTnop8HFiziCDrW
+         Vqe2nm2VeEHQGQgNLee9YbUuENcy1e6S0LLeqvB/EA730YcaS1q9pSfE6unO0gtkqnR3
+         WCJq4kgVtVIVIkecz0Y3Rxdamu0T4mgB72/4+SmppXWr9QAxO5Rt7re3zWmQGC6r4An/
+         P/GrQiQGRMLxO/2jA69MVBX7zI4LtaECOgTojwIY0g7qE4np3haw2rEtnr7HOBht0DiN
+         np/w==
+X-Forwarded-Encrypted: i=1; AJvYcCW3+iy3vTdy/nuARyq40MYP4WmFU5H1WesbZzjqB3FXwEF85wbSqCkRtt0Ja+LlTy8xTZxPptQmzw==@lists.infradead.org
+X-Gm-Message-State: AOJu0YzdXly8LoSA0dJpDCqcQZ1TH6r/zRIGc0XWgndTEkVhin5xUJSy
+	ywqrLesLVwxlnP2sb2SoV+2xZDfxnv/LYqOU4lyo/+ytTCKE5CL5xYriViaxu15Dl3hDb6F78ju
+	7caxmjakWYodKVsf3eB5f5BZolTy8OScpDPV3TOd/7WudiHIyUu93PsRcPWkV+g==
+X-Gm-Gg: ASbGncvZUPOrB7FH06IStq6VCfMKVb9Y5Zje3VEA/UOB74HPudxfKnb3B/vJdEzGN6q
+	mNjkvAJViFFTdv+sVIvo/PdcBuoKdNuZ8RrmgO+bMtuO6Co25NvaxkOIKubJjbQ1amDgx5Egz1l
+	adNp8vSpuAxipwGblS1n9cJR5P+B0aghgRHzxeUxIlIWe1nklrtPm/6PJfAsbcuAuGXZ+AzW0hG
+	w+mMNxstNUIhNps2WbQ6ZxzvO0Nz2Pwh1OsOtBcRzsKQHHFPB82BGr4SzUP/BDJVm2pbe896z3U
+	MMJUXdoJf8sb6bzamlEFo1Ux6WiqW4/nsc1xPQBH1xoA9ktXrD3BerxdZArDzy53FNYDsX6dvtD
+	j1SgKBwSp98GXG9aJ6iEjyFXjXvFlJC2p
+X-Received: by 2002:a5d:5888:0:b0:38f:287a:43e2 with SMTP id ffacd0b85a97d-38f33f11a6amr10019560f8f.11.1739874729865;
+        Tue, 18 Feb 2025 02:32:09 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEHcoLtTGItTBQVw2jJchMRekN6vG0iQZFBlCtfZJTgat4RtCXNKhMX84MbQAT4tMgdFIp+iA==
+X-Received: by 2002:a5d:5888:0:b0:38f:287a:43e2 with SMTP id ffacd0b85a97d-38f33f11a6amr10019525f8f.11.1739874729381;
+        Tue, 18 Feb 2025 02:32:09 -0800 (PST)
 Received: from ?IPV6:2003:cb:c70d:fb00:d3ed:5f44:1b2d:12af? (p200300cbc70dfb00d3ed5f441b2d12af.dip0.t-ipconnect.de. [2003:cb:c70d:fb00:d3ed:5f44:1b2d:12af])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43994f0c10csm12319315e9.26.2025.02.18.02.29.29
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38f259d94acsm14844177f8f.75.2025.02.18.02.32.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Feb 2025 02:29:29 -0800 (PST)
-Message-ID: <dcc74d17-9e5c-468a-a248-e4cddca2b1dc@redhat.com>
-Date: Tue, 18 Feb 2025 11:29:28 +0100
+        Tue, 18 Feb 2025 02:32:09 -0800 (PST)
+Message-ID: <d3f1692f-3e80-495e-a39d-fc665732e0d6@redhat.com>
+Date: Tue, 18 Feb 2025 11:32:07 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/7] Add folio_mk_pte() and simplify mk_pte()
+Subject: Re: [PATCH 2/7] mm: Introduce a common definition of mk_pte()
 To: "Matthew Wilcox (Oracle)" <willy@infradead.org>, linux-mm@kvack.org
 Cc: linux-arch@vger.kernel.org, x86@kernel.org, linux-s390@vger.kernel.org,
  sparclinux@vger.kernel.org, linux-um@lists.infradead.org
 References: <20250217190836.435039-1-willy@infradead.org>
+ <20250217190836.435039-3-willy@infradead.org>
 From: David Hildenbrand <david@redhat.com>
 Autocrypt: addr=david@redhat.com; keydata=
  xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
@@ -132,16 +133,17 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <20250217190836.435039-1-willy@infradead.org>
+In-Reply-To: <20250217190836.435039-3-willy@infradead.org>
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: MJ7_QyVeaxEEvp3zqeo32uXPzsCxXjDNi3cqYCfWc_o_1739874570
+X-Mimecast-MFC-PROC-ID: TLcnTy-b7X3nxtxhjCd9fbXs5B5kffIO94PeF3uoRg4_1739874730
 X-Mimecast-Originator: redhat.com
 Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250218_022935_049346_75160431 
-X-CRM114-Status: GOOD (  15.90  )
+X-CRM114-CacheID: sfid-20250218_023214_544278_E36698D3 
+X-CRM114-Status: UNSURE (   6.71  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -157,36 +159,14 @@ Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 On 17.02.25 20:08, Matthew Wilcox (Oracle) wrote:
-> The intent is to add folio_mk_pte() to remove the conversion from folio
-> to page necessary to call mk_pte().  Eventually we might end up removing
-> mk_pte(), but that's not what's being proposed today.
+> Most architectures simply call pfn_pte().  Centralise that as the normal
+> definition and remove the definition of mk_pte() from the architectures
+> which have either that exact definition or something similar.
 > 
-> I didn't want to add folio_mk_pte() to each architecture, and I didn't
-> want to lose any optimisations that architectures have from their own
-> implementation of mk_pte().  Fortunately, most architectures have by
-> now turned their mk_pte() into a fairly bland variant of pfn_pte(),
-> but s390 is different.
-> 
-> So patch 1 hoists the optimisation of calling pte_mkdirty() from s390
-> to generic code.  I'd appreciate some eyes on this from mm people who
-> understand this better than I do.  I originally had
-> 
-> -	if (write)
-> +	if (write || folio_test_dirty(folio))
-> 		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
-> 
-> and I think that broke COW under some circumstances that 01.org could
-> reproduce and I couldn't.
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
 
-If it's an anon folio that logic would be broken, yes (anon CoW). We do 
-have can_change_pte_writable() that tells you when it is safe to upgrade 
-write permissions for a PTE.
-
-Looking at can_change_pte_writable(), I don't know if filesystems with 
-writenotify might have a problem when setting the PTE dirty and allowing 
-for write access, just because the folio is dirty.
-
-So I assume that it would break fs-level CoW indeed.
+Acked-by: David Hildenbrand <david@redhat.com>
 
 -- 
 Cheers,
