@@ -4,65 +4,94 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0F449C021AA
-	for <linux-um@archiver.kernel.org>; Wed, 19 Feb 2025 07:44:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C094BC021AA
+	for <linux-um@archiver.kernel.org>; Wed, 19 Feb 2025 09:14:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=IYZV4DKyRp83gdcIJ59Kj8qWqMhJv05T8ZY9PYuaYMU=; b=miqScXmzZAHRRAVEJwr5Mjw776
-	yx0lUcQNV3vHEATo/VeotkB3t/F4uru+OEDybloEOmSpo4M56LtUJJaXMYVRXV3AdUTXwVoD4tTlF
-	319LmYcxvIalf6ThcEFq/P0QRsk82fWCzB33A/GUHgJlCikVVxj8AdLU/ly2FRxy0qtdv4nf9Oh95
-	8f92tzxWu9PYWqodUN2y4RBcw9CVGaLY41qKZ1lvj/acGzyIlmtCz7Gbli20amztL7OouqaCg2OhW
-	ew83HNCXArh6lhmeE2FpKrpbDrb8FIqXiJg7ySeZM2jmH1EjYQE84Gn+d87TmJf5pfbT4s4qsS3d9
-	s+mZTs6w==;
+	bh=tnUmi/+GDTm7yWualJNQl5++GpWqIIggR47W1xDCCK0=; b=fVQWXNLwPBBPjILforGHM+4In+
+	HBP8BSvZvdMPyoBRnsL3HSxPSMdrbTul1XMxs3IX24bk5ogQUzG9LbI67D4bjri9LIR3bGmSj2nui
+	Fv0KGkOs62aLTRLGDDKZjuzDnxqlpz/2ZQ8PY67Kxx1Mbz7HIH8OzCDXoflKRzTmsa5sKg+aWysV1
+	i6R9ZxB9pKD6G20tZtZU9Mzh/wVkkvwCdVxw7UKkFqUf2IyE2p9Yk+1oxE+hQsff7ARKPxwxMroN3
+	Wa1xKP6h6r5AE55l964gtcMVBl1YAUdss1M7HBVpiaUqCNQ8jR+g3GK9w7h18VRHF78kb3MwRC6P0
+	Rbd3/b/A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tkekj-0000000BJvN-3QhO;
-	Wed, 19 Feb 2025 07:44:17 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1tkgAS-0000000Bm1q-1i1w;
+	Wed, 19 Feb 2025 09:14:56 +0000
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tkej0-0000000BJOG-3r2w
+	id 1tkfj7-0000000Bcmh-34fl
 	for linux-um@lists.infradead.org;
-	Wed, 19 Feb 2025 07:42:32 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=IYZV4DKyRp83gdcIJ59Kj8qWqMhJv05T8ZY9PYuaYMU=;
-	t=1739950948; x=1741160548; b=tVi7mKEEjT997yD7Zs3v+Q+I6ZGSJ5GIfOzOCYiTOSPSlkH
-	a/4eZhEcTAfnRpnGWNlaCJCtJAhUYwt7UoHZ/EY1iQ9S++kBngAAXLDBIZrIv4RPLxshoy7sJzpty
-	jFGCqg5hJAco+nlqnu0iqHzOGqaQiz/cjIoyvTqP1xeVRklQHyGd9boGq8G9o0YNluhIERaSPMA4Y
-	uIWN+ALb/sbhSFhrzFbEhOKKWZWxl/jTKvfha/sulk7JtXr9i2sKC7VYqrTWijLz4GSgNdCseu0Yo
-	2LG/FGkCovpvz3XW9k7HGflulu7U+Oykl5on0EsQzFqM66PRKnWAvRf8UkTWL6yA==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1tkeiZ-00000002TFX-0bSF;
-	Wed, 19 Feb 2025 08:42:03 +0100
-Message-ID: <c993aa3a8e86e429d2135974929283a33d0f34ca.camel@sipsolutions.net>
-Subject: Re: [PATCH AUTOSEL 6.6 14/17] um: virt-pci: don't use kmalloc()
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org, 
-	stable@vger.kernel.org
-Cc: Richard Weinberger <richard@nod.at>, anton.ivanov@cambridgegreys.com, 
-	mst@redhat.com, jiri@resnulli.us, tglx@linutronix.de,
- viro@zeniv.linux.org.uk, 	krzysztof.kozlowski@linaro.org,
- herve.codina@bootlin.com, 	linux-um@lists.infradead.org
-Date: Wed, 19 Feb 2025 08:42:01 +0100
-In-Reply-To: <20250218202743.3593296-14-sashal@kernel.org>
-References: <20250218202743.3593296-1-sashal@kernel.org>
-	 <20250218202743.3593296-14-sashal@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+	Wed, 19 Feb 2025 08:46:42 +0000
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51J75CS5019820;
+	Wed, 19 Feb 2025 08:46:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=tnUmi/+GDTm7yWualJNQl5++GpWqII
+	ggR47W1xDCCK0=; b=Ug04kj8iMYHe7BiulyxakjeqvhE5vGWEcPq1sZxyUUiMpV
+	L96GGlP4zARNaJAQWTwAIzJ7EYyj0/fLOO/eEeUz1Qm6PfyohszWQLhfigjhHJuO
+	9pkGDOD9Duvtl78Z15h0FvDq7LS487A6ZFmo8kLD6G82ubP/YDeq9iB1rUmZRZhV
+	Acyq1Urx+Hj4DKgbBOSfp73Oe9aQ9jKG9rh3AJoHS80RUjKxZQa0+nlkm+JhwtlT
+	46b85K1laetS/QWKGHZ9udfq6tm95YB6oytrzPAwgmJLUzssI8GbBT28E9SPsn4S
+	P1ZDUi46KCB2gRarv3/+GEPtr7ZabhTbY890Zxrw==
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44vyyq2vp3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 19 Feb 2025 08:46:30 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 51J6YC18009702;
+	Wed, 19 Feb 2025 08:46:29 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 44w03y33kv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 19 Feb 2025 08:46:29 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 51J8kREv49545472
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 19 Feb 2025 08:46:28 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D4C172004B;
+	Wed, 19 Feb 2025 08:46:27 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5CB2B20040;
+	Wed, 19 Feb 2025 08:46:27 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.179.14.227])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Wed, 19 Feb 2025 08:46:27 +0000 (GMT)
+Date: Wed, 19 Feb 2025 09:46:25 +0100
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: linux-mm@kvack.org, linux-arch@vger.kernel.org, x86@kernel.org,
+        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org
+Subject: Re: [PATCH 1/7] mm: Set the pte dirty if the folio is already dirty
+Message-ID: <Z7WaYRjS/VW2aKJN@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <20250217190836.435039-1-willy@infradead.org>
+ <20250217190836.435039-2-willy@infradead.org>
+ <Z7WJL+sgPLB3dboi@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Z7WJL+sgPLB3dboi@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 0vOIzLJ4HxK9oV3CqviyzbQJOr99MTrw
+X-Proofpoint-ORIG-GUID: 0vOIzLJ4HxK9oV3CqviyzbQJOr99MTrw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-02-19_03,2025-02-18_01,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 adultscore=0 bulkscore=0 mlxscore=0 clxscore=1015
+ spamscore=0 suspectscore=0 phishscore=0 mlxlogscore=414 priorityscore=1501
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2502100000 definitions=main-2502190066
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250218_234230_957406_974E9598 
-X-CRM114-Status: UNSURE (   8.92  )
+X-CRM114-CacheID: sfid-20250219_004641_882148_D060D307 
+X-CRM114-Status: UNSURE (   8.72  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,25 +107,8 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, 2025-02-18 at 15:27 -0500, Sasha Levin wrote:
-> From: Johannes Berg <johannes.berg@intel.com>
->=20
-> [ Upstream commit 5b166b782d327f4b66190cc43afd3be36f2b3b7a ]
->=20
-> This code can be called deep in the IRQ handling, for
-> example, and then cannot normally use kmalloc(). Have
-> its own pre-allocated memory and use from there instead
-> so this doesn't occur. Only in the (very rare) case of
-> memcpy_toio() we'd still need to allocate memory.
+> Reviewed-by: Alexander Gordeev <agordeev@linux.ibm.com>
 
-I don't believe this patch, "um: convert irq_lock to raw spinlock" and
-"um: virtio_uml: use raw spinlock", are relevant to anything older than
-6.12. I don't see how applying them would _hurt_, but I didn't have them
-before 6.12 and had no lockdep complaints about it; I believe some other
-internal IRQ rework caused the issues to pop up.
-
-Never mind that we (Intel WiFi stuff) are probably the only ones ever
-running this virtio_uml/virt-pci with lockdep :)
-
-johannes
+Sorry, I meant for s390.
+Can not judge the other archs impact.
 
