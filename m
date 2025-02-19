@@ -4,73 +4,95 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 275AFC021AA
-	for <linux-um@archiver.kernel.org>; Tue, 18 Feb 2025 22:11:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FF80C021AA
+	for <linux-um@archiver.kernel.org>; Wed, 19 Feb 2025 07:28:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=TsmTzYzOA/h2nBvEn/GmishOA6WlMy+9II2XUP0uX6Q=; b=b34hNX+gnhsQG6hGr1sEH4KpD5
-	H9gOIOhGOY+UqS6bqcmFweNMc+jjIHpu9mNvxqqNoqKMdySFWb6cSLzVm0XDfpebqavTJ80HXiiiV
-	vD3o3RiTQGAZWGLffT3H5L3mH21m0P0MjUgP4gFCNxoNWhUB56QM8Qbat58d5iWu0mm66dmNrFPyY
-	szwvLF5aTJn5OmOZEtS2JiaaPURx+XNKLnLCAeVvE7jNKr4GXfbqFJGHVt3A57tKui5xEXiOc8qYy
-	w0Tk3SVkmg2lkWu8Go0//T/buJAwLa0ffr6dpFxMFo1CiwUKfjkTcntGsOhWbf+CQd3n3s4hEV5g4
-	nQ1XMW0Q==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=7cnvWzA7RfaVCOT66pTUOghWekuaZgxsFcMzX2h0QBE=; b=ImrDnSqi9T0upvelh3htI7Yedt
+	xRSkbFQnoj9hAulGmumCIpdQnId0c31H1K5cLehRUx4CW10oSOm3wuPYYLvFbkTlB5sr45ziCiPU5
+	m4/pVocoCuXD5aqQNRew+S6CUbcXOwmrXkjhODSxzc9+CV+SoSq2gRARTGWvCw4nqcp+RYkLJmpzQ
+	2TUsanBfG30atxuotiJHSI2SCvchjoTyeIZRpIl1Wq8GNlgwOM7PxV+X3CJ8Zktc90QABMEWuyl2z
+	iuKpdMs0mkQ88+oE4AN6k/3LPy1XkCfKkkOb/ga6NJZp7+C6OXKb20xt74/Z7UbXZQ4UTm3f/OsAT
+	HPmUk2xQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tkVo3-0000000A6ch-2UEq;
-	Tue, 18 Feb 2025 22:11:07 +0000
-Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+	id 1tkeVB-0000000BF8s-0uHF;
+	Wed, 19 Feb 2025 07:28:13 +0000
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tkUCT-00000009let-0ZZH
+	id 1tkeUa-0000000BExX-0Z4h
 	for linux-um@lists.infradead.org;
-	Tue, 18 Feb 2025 20:28:14 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 8A990A41B00;
-	Tue, 18 Feb 2025 20:26:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85831C4CEE4;
-	Tue, 18 Feb 2025 20:28:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1739910492;
-	bh=DFWtttygelaZtQfN6lEq/ZJlHYl+TAZeqCnSmLKij5g=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MA17id+ePHujI2SSpECMNk7ivzIZlRT24l32EapKmDDHIwD8Lu64JlxvadFigVQ4d
-	 H5iOYcDxW9T/LfnfPzNS3wIu5uUo+k4cI0tANBAMo3wq9Z1lpLFumjtk//Da/hmtEE
-	 T001zqN3q7Q8v/uVUsX8CiRy/BlNmtcd+KyVp61/RlnLodGrGgIBU4G8y9oYLuSv0K
-	 ioPx5SFIrttrDTzgHmg6vXklN+rvQENU5avSN2u1NdeIZR7boohMMoutG+fikLb0WZ
-	 zuFXSoM4uN/+RLNaId5BLjyV7JNen0/ZDD5shMLSz2rOcON703RO6DT23+G23bnuTR
-	 1AyKNOsFaeysg==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Johannes Berg <johannes.berg@intel.com>,
-	Richard Weinberger <richard@nod.at>,
-	Sasha Levin <sashal@kernel.org>,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net,
-	mst@redhat.com,
-	jiri@resnulli.us,
-	tglx@linutronix.de,
-	viro@zeniv.linux.org.uk,
-	krzysztof.kozlowski@linaro.org,
-	herve.codina@bootlin.com,
-	linux-um@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.6 14/17] um: virt-pci: don't use kmalloc()
-Date: Tue, 18 Feb 2025 15:27:38 -0500
-Message-Id: <20250218202743.3593296-14-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20250218202743.3593296-1-sashal@kernel.org>
-References: <20250218202743.3593296-1-sashal@kernel.org>
+	Wed, 19 Feb 2025 07:27:37 +0000
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 51J75IAE001899;
+	Wed, 19 Feb 2025 07:27:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=7cnvWzA7RfaVCOT66pTUOghWekuaZg
+	xsFcMzX2h0QBE=; b=R7iIvY16LPJs0SC10eTbpwjNLhVbolsSaxD1XsJbVDUqmu
+	j4aNluI6Y1sE0K+zEiv+hGEYnp0ZLBp6q53QAlxiBhjkdesvKL1K0ElytuHPKi0n
+	WbRK5AYvW3AlKsWQE4yXqn6SstVjzpQ3wldstJeOkCSTZ7xTwjdyMDOdWlPmtWsT
+	ReuIq8iltTpXJtI2o+ZHhbPNvUJ9YscNhq55EeiKZp2boaLjcz1R/049dXNPAbLA
+	6TO9/wW9TSwevn9l4JL2JQ/Q885FhOWw511FosvgHbEM4zjCrvOthqydWnv0h+Kk
+	gse7GpwQ29bhz9qD3tX8hc6MY/G5BAYdFLw8PdrQ==
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 44vyyptgrs-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 19 Feb 2025 07:27:27 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 51J6bfxa030158;
+	Wed, 19 Feb 2025 07:27:26 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 44w01x2spq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 19 Feb 2025 07:27:26 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 51J7RNGk50594202
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 19 Feb 2025 07:27:24 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 63ADA2004E;
+	Wed, 19 Feb 2025 07:27:23 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E17AA20043;
+	Wed, 19 Feb 2025 07:27:22 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.179.14.227])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Wed, 19 Feb 2025 07:27:22 +0000 (GMT)
+Date: Wed, 19 Feb 2025 08:27:21 +0100
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: linux-mm@kvack.org, linux-arch@vger.kernel.org, x86@kernel.org,
+        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org
+Subject: Re: [PATCH 1/7] mm: Set the pte dirty if the folio is already dirty
+Message-ID: <Z7WH2VPdFvX6reij@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <20250217190836.435039-1-willy@infradead.org>
+ <20250217190836.435039-2-willy@infradead.org>
+ <Z7SzTHQGFXreZ6zd@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+ <Z7S-HgdXls65goJx@casper.infradead.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.78
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Z7S-HgdXls65goJx@casper.infradead.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Qw4yE85lztD2877JVVqO7QrP47WEM6hu
+X-Proofpoint-ORIG-GUID: Qw4yE85lztD2877JVVqO7QrP47WEM6hu
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-02-19_03,2025-02-18_01,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=332 clxscore=1015
+ suspectscore=0 bulkscore=0 lowpriorityscore=0 adultscore=0 malwarescore=0
+ phishscore=0 spamscore=0 impostorscore=0 priorityscore=1501 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2502100000
+ definitions=main-2502190053
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250218_122813_310399_B12A0F2D 
-X-CRM114-Status: GOOD (  24.05  )
+X-CRM114-CacheID: sfid-20250218_232736_281625_584DA235 
+X-CRM114-Status: GOOD (  17.16  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -85,386 +107,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+On Tue, Feb 18, 2025 at 05:06:38PM +0000, Matthew Wilcox wrote:
+...
+> > With the above the implicit dirtifying of hugetlb PTEs (as result of
+> > mk_huge_pte() -> mk_pte()) in make_huge_pte() is removed:
+> > 
+> > static pte_t make_huge_pte(struct vm_area_struct *vma, struct page *page,
+> > 		bool try_mkwrite)
+> > {
+> > 	...
+> > 	if (try_mkwrite && (vma->vm_flags & VM_WRITE)) {
+> > 		entry = huge_pte_mkwrite(huge_pte_mkdirty(mk_huge_pte(page,
+> > 					 vma->vm_page_prot)));
+> > 	} else {
+> > 		entry = huge_pte_wrprotect(mk_huge_pte(page,
+> > 					   vma->vm_page_prot));
+> > 	}
+> 
+> Took me a moment to spot how this was getting invoked; for anyone else
+> playing along, it's mk_huge_pte() which calls mk_pte().
+> 
+> But I'm not sure how you lose out on the PTE being marked dirty.  In
+> the first arm that you've quoted, the pte is made dirty anyway.  In the
+> second arm, it's being writeprotected, so marking it dirty isn't a
+> helpful thing to do because writing to it will cause a fault anyway?
+> 
+> I know s390 is a little different, so there's probably something I'm
+> missing.
 
-[ Upstream commit 5b166b782d327f4b66190cc43afd3be36f2b3b7a ]
-
-This code can be called deep in the IRQ handling, for
-example, and then cannot normally use kmalloc(). Have
-its own pre-allocated memory and use from there instead
-so this doesn't occur. Only in the (very rare) case of
-memcpy_toio() we'd still need to allocate memory.
-
-Link: https://patch.msgid.link/20250110125550.32479-6-johannes@sipsolutions.net
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/um/drivers/virt-pci.c | 198 +++++++++++++++++++------------------
- 1 file changed, 102 insertions(+), 96 deletions(-)
-
-diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
-index 97a37c0629972..3a02b5e2f78ba 100644
---- a/arch/um/drivers/virt-pci.c
-+++ b/arch/um/drivers/virt-pci.c
-@@ -25,8 +25,10 @@
- #define MAX_IRQ_MSG_SIZE (sizeof(struct virtio_pcidev_msg) + sizeof(u32))
- #define NUM_IRQ_MSGS	10
- 
--#define HANDLE_NO_FREE(ptr) ((void *)((unsigned long)(ptr) | 1))
--#define HANDLE_IS_NO_FREE(ptr) ((unsigned long)(ptr) & 1)
-+struct um_pci_message_buffer {
-+	struct virtio_pcidev_msg hdr;
-+	u8 data[8];
-+};
- 
- struct um_pci_device {
- 	struct virtio_device *vdev;
-@@ -36,6 +38,11 @@ struct um_pci_device {
- 
- 	struct virtqueue *cmd_vq, *irq_vq;
- 
-+#define UM_PCI_WRITE_BUFS	20
-+	struct um_pci_message_buffer bufs[UM_PCI_WRITE_BUFS + 1];
-+	void *extra_ptrs[UM_PCI_WRITE_BUFS + 1];
-+	DECLARE_BITMAP(used_bufs, UM_PCI_WRITE_BUFS);
-+
- #define UM_PCI_STAT_WAITING	0
- 	unsigned long status;
- 
-@@ -61,12 +68,40 @@ static unsigned long um_pci_msi_used[BITS_TO_LONGS(MAX_MSI_VECTORS)];
- static unsigned int um_pci_max_delay_us = 40000;
- module_param_named(max_delay_us, um_pci_max_delay_us, uint, 0644);
- 
--struct um_pci_message_buffer {
--	struct virtio_pcidev_msg hdr;
--	u8 data[8];
--};
-+static int um_pci_get_buf(struct um_pci_device *dev, bool *posted)
-+{
-+	int i;
-+
-+	for (i = 0; i < UM_PCI_WRITE_BUFS; i++) {
-+		if (!test_and_set_bit(i, dev->used_bufs))
-+			return i;
-+	}
- 
--static struct um_pci_message_buffer __percpu *um_pci_msg_bufs;
-+	*posted = false;
-+	return UM_PCI_WRITE_BUFS;
-+}
-+
-+static void um_pci_free_buf(struct um_pci_device *dev, void *buf)
-+{
-+	int i;
-+
-+	if (buf == &dev->bufs[UM_PCI_WRITE_BUFS]) {
-+		kfree(dev->extra_ptrs[UM_PCI_WRITE_BUFS]);
-+		dev->extra_ptrs[UM_PCI_WRITE_BUFS] = NULL;
-+		return;
-+	}
-+
-+	for (i = 0; i < UM_PCI_WRITE_BUFS; i++) {
-+		if (buf == &dev->bufs[i]) {
-+			kfree(dev->extra_ptrs[i]);
-+			dev->extra_ptrs[i] = NULL;
-+			WARN_ON(!test_and_clear_bit(i, dev->used_bufs));
-+			return;
-+		}
-+	}
-+
-+	WARN_ON(1);
-+}
- 
- static int um_pci_send_cmd(struct um_pci_device *dev,
- 			   struct virtio_pcidev_msg *cmd,
-@@ -82,7 +117,9 @@ static int um_pci_send_cmd(struct um_pci_device *dev,
- 	};
- 	struct um_pci_message_buffer *buf;
- 	int delay_count = 0;
-+	bool bounce_out;
- 	int ret, len;
-+	int buf_idx;
- 	bool posted;
- 
- 	if (WARN_ON(cmd_size < sizeof(*cmd) || cmd_size > sizeof(*buf)))
-@@ -101,26 +138,28 @@ static int um_pci_send_cmd(struct um_pci_device *dev,
- 		break;
- 	}
- 
--	buf = get_cpu_var(um_pci_msg_bufs);
--	if (buf)
--		memcpy(buf, cmd, cmd_size);
-+	bounce_out = !posted && cmd_size <= sizeof(*cmd) &&
-+		     out && out_size <= sizeof(buf->data);
- 
--	if (posted) {
--		u8 *ncmd = kmalloc(cmd_size + extra_size, GFP_ATOMIC);
--
--		if (ncmd) {
--			memcpy(ncmd, cmd, cmd_size);
--			if (extra)
--				memcpy(ncmd + cmd_size, extra, extra_size);
--			cmd = (void *)ncmd;
--			cmd_size += extra_size;
--			extra = NULL;
--			extra_size = 0;
--		} else {
--			/* try without allocating memory */
--			posted = false;
--			cmd = (void *)buf;
-+	buf_idx = um_pci_get_buf(dev, &posted);
-+	buf = &dev->bufs[buf_idx];
-+	memcpy(buf, cmd, cmd_size);
-+
-+	if (posted && extra && extra_size > sizeof(buf) - cmd_size) {
-+		dev->extra_ptrs[buf_idx] = kmemdup(extra, extra_size,
-+						   GFP_ATOMIC);
-+
-+		if (!dev->extra_ptrs[buf_idx]) {
-+			um_pci_free_buf(dev, buf);
-+			return -ENOMEM;
- 		}
-+		extra = dev->extra_ptrs[buf_idx];
-+	} else if (extra && extra_size <= sizeof(buf) - cmd_size) {
-+		memcpy((u8 *)buf + cmd_size, extra, extra_size);
-+		cmd_size += extra_size;
-+		extra_size = 0;
-+		extra = NULL;
-+		cmd = (void *)buf;
- 	} else {
- 		cmd = (void *)buf;
- 	}
-@@ -128,39 +167,40 @@ static int um_pci_send_cmd(struct um_pci_device *dev,
- 	sg_init_one(&out_sg, cmd, cmd_size);
- 	if (extra)
- 		sg_init_one(&extra_sg, extra, extra_size);
--	if (out)
-+	/* allow stack for small buffers */
-+	if (bounce_out)
-+		sg_init_one(&in_sg, buf->data, out_size);
-+	else if (out)
- 		sg_init_one(&in_sg, out, out_size);
- 
- 	/* add to internal virtio queue */
- 	ret = virtqueue_add_sgs(dev->cmd_vq, sgs_list,
- 				extra ? 2 : 1,
- 				out ? 1 : 0,
--				posted ? cmd : HANDLE_NO_FREE(cmd),
--				GFP_ATOMIC);
-+				cmd, GFP_ATOMIC);
- 	if (ret) {
--		if (posted)
--			kfree(cmd);
--		goto out;
-+		um_pci_free_buf(dev, buf);
-+		return ret;
- 	}
- 
- 	if (posted) {
- 		virtqueue_kick(dev->cmd_vq);
--		ret = 0;
--		goto out;
-+		return 0;
- 	}
- 
- 	/* kick and poll for getting a response on the queue */
- 	set_bit(UM_PCI_STAT_WAITING, &dev->status);
- 	virtqueue_kick(dev->cmd_vq);
-+	ret = 0;
- 
- 	while (1) {
- 		void *completed = virtqueue_get_buf(dev->cmd_vq, &len);
- 
--		if (completed == HANDLE_NO_FREE(cmd))
-+		if (completed == buf)
- 			break;
- 
--		if (completed && !HANDLE_IS_NO_FREE(completed))
--			kfree(completed);
-+		if (completed)
-+			um_pci_free_buf(dev, completed);
- 
- 		if (WARN_ONCE(virtqueue_is_broken(dev->cmd_vq) ||
- 			      ++delay_count > um_pci_max_delay_us,
-@@ -172,8 +212,11 @@ static int um_pci_send_cmd(struct um_pci_device *dev,
- 	}
- 	clear_bit(UM_PCI_STAT_WAITING, &dev->status);
- 
--out:
--	put_cpu_var(um_pci_msg_bufs);
-+	if (bounce_out)
-+		memcpy(out, buf->data, out_size);
-+
-+	um_pci_free_buf(dev, buf);
-+
- 	return ret;
- }
- 
-@@ -187,20 +230,13 @@ static unsigned long um_pci_cfgspace_read(void *priv, unsigned int offset,
- 		.size = size,
- 		.addr = offset,
- 	};
--	/* buf->data is maximum size - we may only use parts of it */
--	struct um_pci_message_buffer *buf;
--	u8 *data;
--	unsigned long ret = ULONG_MAX;
--	size_t bytes = sizeof(buf->data);
-+	/* max 8, we might not use it all */
-+	u8 data[8];
- 
- 	if (!dev)
- 		return ULONG_MAX;
- 
--	buf = get_cpu_var(um_pci_msg_bufs);
--	data = buf->data;
--
--	if (buf)
--		memset(data, 0xff, bytes);
-+	memset(data, 0xff, sizeof(data));
- 
- 	switch (size) {
- 	case 1:
-@@ -212,34 +248,26 @@ static unsigned long um_pci_cfgspace_read(void *priv, unsigned int offset,
- 		break;
- 	default:
- 		WARN(1, "invalid config space read size %d\n", size);
--		goto out;
-+		return ULONG_MAX;
- 	}
- 
--	if (um_pci_send_cmd(dev, &hdr, sizeof(hdr), NULL, 0, data, bytes))
--		goto out;
-+	if (um_pci_send_cmd(dev, &hdr, sizeof(hdr), NULL, 0, data, size))
-+		return ULONG_MAX;
- 
- 	switch (size) {
- 	case 1:
--		ret = data[0];
--		break;
-+		return data[0];
- 	case 2:
--		ret = le16_to_cpup((void *)data);
--		break;
-+		return le16_to_cpup((void *)data);
- 	case 4:
--		ret = le32_to_cpup((void *)data);
--		break;
-+		return le32_to_cpup((void *)data);
- #ifdef CONFIG_64BIT
- 	case 8:
--		ret = le64_to_cpup((void *)data);
--		break;
-+		return le64_to_cpup((void *)data);
- #endif
- 	default:
--		break;
-+		return ULONG_MAX;
- 	}
--
--out:
--	put_cpu_var(um_pci_msg_bufs);
--	return ret;
- }
- 
- static void um_pci_cfgspace_write(void *priv, unsigned int offset, int size,
-@@ -312,13 +340,8 @@ static void um_pci_bar_copy_from(void *priv, void *buffer,
- static unsigned long um_pci_bar_read(void *priv, unsigned int offset,
- 				     int size)
- {
--	/* buf->data is maximum size - we may only use parts of it */
--	struct um_pci_message_buffer *buf;
--	u8 *data;
--	unsigned long ret = ULONG_MAX;
--
--	buf = get_cpu_var(um_pci_msg_bufs);
--	data = buf->data;
-+	/* 8 is maximum size - we may only use parts of it */
-+	u8 data[8];
- 
- 	switch (size) {
- 	case 1:
-@@ -330,33 +353,25 @@ static unsigned long um_pci_bar_read(void *priv, unsigned int offset,
- 		break;
- 	default:
- 		WARN(1, "invalid config space read size %d\n", size);
--		goto out;
-+		return ULONG_MAX;
- 	}
- 
- 	um_pci_bar_copy_from(priv, data, offset, size);
- 
- 	switch (size) {
- 	case 1:
--		ret = data[0];
--		break;
-+		return data[0];
- 	case 2:
--		ret = le16_to_cpup((void *)data);
--		break;
-+		return le16_to_cpup((void *)data);
- 	case 4:
--		ret = le32_to_cpup((void *)data);
--		break;
-+		return le32_to_cpup((void *)data);
- #ifdef CONFIG_64BIT
- 	case 8:
--		ret = le64_to_cpup((void *)data);
--		break;
-+		return le64_to_cpup((void *)data);
- #endif
- 	default:
--		break;
-+		return ULONG_MAX;
- 	}
--
--out:
--	put_cpu_var(um_pci_msg_bufs);
--	return ret;
- }
- 
- static void um_pci_bar_copy_to(void *priv, unsigned int offset,
-@@ -523,11 +538,8 @@ static void um_pci_cmd_vq_cb(struct virtqueue *vq)
- 	if (test_bit(UM_PCI_STAT_WAITING, &dev->status))
- 		return;
- 
--	while ((cmd = virtqueue_get_buf(vq, &len))) {
--		if (WARN_ON(HANDLE_IS_NO_FREE(cmd)))
--			continue;
--		kfree(cmd);
--	}
-+	while ((cmd = virtqueue_get_buf(vq, &len)))
-+		um_pci_free_buf(dev, cmd);
- }
- 
- static void um_pci_irq_vq_cb(struct virtqueue *vq)
-@@ -1000,10 +1012,6 @@ static int __init um_pci_init(void)
- 		 "No virtio device ID configured for PCI - no PCI support\n"))
- 		return 0;
- 
--	um_pci_msg_bufs = alloc_percpu(struct um_pci_message_buffer);
--	if (!um_pci_msg_bufs)
--		return -ENOMEM;
--
- 	bridge = pci_alloc_host_bridge(0);
- 	if (!bridge) {
- 		err = -ENOMEM;
-@@ -1065,7 +1073,6 @@ static int __init um_pci_init(void)
- 		pci_free_resource_list(&bridge->windows);
- 		pci_free_host_bridge(bridge);
- 	}
--	free_percpu(um_pci_msg_bufs);
- 	return err;
- }
- module_init(um_pci_init);
-@@ -1077,6 +1084,5 @@ static void __exit um_pci_exit(void)
- 	irq_domain_remove(um_pci_inner_domain);
- 	pci_free_resource_list(&bridge->windows);
- 	pci_free_host_bridge(bridge);
--	free_percpu(um_pci_msg_bufs);
- }
- module_exit(um_pci_exit);
--- 
-2.39.5
-
+No, it is just me missing the obvious.
 
