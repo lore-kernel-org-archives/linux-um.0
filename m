@@ -4,77 +4,142 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id E2325C021B4
-	for <linux-um@archiver.kernel.org>; Thu, 20 Feb 2025 22:41:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 97FE0C021B4
+	for <linux-um@archiver.kernel.org>; Thu, 20 Feb 2025 23:47:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Cc:To:Message-Id:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=DA3uhlCDI1A8BDotF0N5GRp5MWr0V4pEHmnZHzSGNPE=; b=YC//KjX0ZISGMMstQO4MEvUEjv
-	+iOLDOKubKqkqe/I7pJd70x0AbemOpGeWrI1UwAMAxpKuhd8wCs0LHyrDENvMmKr/wSRAk7cpKiPb
-	XPDPvBz0IsAuYgs+m+yLp94KIVz++AEG8y/IyrQVJ6hfnZQDGol46xhTCWqcwsG4iekJimhzhtPXP
-	53BNHFyd0EDVPMvycdb3jaL4yP4PrR9SZMkJ0hb/wrX/nftDsCp7hsAdbXA6/VHdCvDBVM8w4peZO
-	9BW4PozgnVGF+Lw869yrx0pWhIN92lAk3RZgXFdUdWmMGaKvC2neL4OGYbU80H55V2D1KMcg+YR1r
-	t/KQbTVg==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=NKmjAFBT7eSImzI2Bx6YtHkPCpS652+riXhLoV4+ieA=; b=ndp40KXRZilVWJJE4Tsk/I5wYM
+	XZ+gbGpn94wTxRYV0t5GDNGcn9LvIP1BPlJowd6V00cuxrGmKffnA0mnaYpCUJMs5N7+ruc5N19Xf
+	3I7GCJjoBwRzRTP1PLUm+FmKbGSlrl2e3KfVtewjrM/S52QbLyc1o84beLUO5ijD1Qk8UVywZrwPd
+	vcBTijP7XRj58gFiuCobpKPbkW2kTzIV7qVc4XA9RQPJUMBFk99XEbHjuFCxUCgLvx3NTkEv5OqdX
+	a54jDqVSz6Gh17DoigSLyzmmzMF2TAdFG4ShICt9axpvkDbtRSkuedLOuR/pElGQQ3AI79EvxphHE
+	J+PDrJIw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tlFEn-00000003BKW-1gln;
-	Thu, 20 Feb 2025 22:41:45 +0000
-Received: from mout-p-103.mailbox.org ([2001:67c:2050:0:465::103])
+	id 1tlGFv-00000003NxP-3Q4E;
+	Thu, 20 Feb 2025 23:46:59 +0000
+Received: from smtp-out1.suse.de ([195.135.223.130])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tlFD9-00000003Amx-24zO
+	id 1tlGFt-00000003Nv9-1Ype
 	for linux-um@lists.infradead.org;
-	Thu, 20 Feb 2025 22:40:05 +0000
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:b231:465::202])
+	Thu, 20 Feb 2025 23:46:58 +0000
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4YzSqz1hl1z9tDy;
-	Thu, 20 Feb 2025 23:39:43 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ethancedwards.com;
-	s=MBO0001; t=1740091183;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=DA3uhlCDI1A8BDotF0N5GRp5MWr0V4pEHmnZHzSGNPE=;
-	b=f//Vi9u/xq6akrnJWV4SMJm4ueQB4UZlcbQa3xbXHzlyKLZEGAQz5GOx0W1xoDwPY4Kk9y
-	Tph0I7lxGu6YAlY4Vky1I5k5LOBTMSgQ8U4TGn1al2n6TyvnEvfmKxgZSdxnb7RTsNDjzn
-	Ac0QP0q6IfRwjP7l1+QJ/v/aF1Le6BxR/b3NX587g4vCT4JOlImK7mozPKp4GzKiEOHS04
-	UqvPjGGcFFastPKxjSK7p437yw6nru/GBcOyd3sZIdAt2l8hO9cRtxHVVYX0f+/iE13K7G
-	97jNVI5sqImx72rfBRgG8HdI9BSGFUwJ54gU9x5gP2E7rqOgtUCL7AZXYkmeLQ==
-From: Ethan Carter Edwards <ethan@ethancedwards.com>
-Date: Thu, 20 Feb 2025 17:39:40 -0500
-Subject: [PATCH] um: use str_yes_no() to remove hardcoded "yes" and "no"
+	by smtp-out1.suse.de (Postfix) with ESMTPS id BA8BC2118F;
+	Thu, 20 Feb 2025 23:46:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1740095214; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=NKmjAFBT7eSImzI2Bx6YtHkPCpS652+riXhLoV4+ieA=;
+	b=rrngyKDTIuVUlFfElLWo7EhzXkEtalhEyykIKpJMYDFXIgHMC40fjWd7PAGLhVU9Q0kGBd
+	FInwcvn3bFD97Pkh9vJbEGjgepUrs756C19rVt0qbdeMfolM5/h3OdCGV2688S9WlYFVET
+	pwEr+yvuQn8Eiwsq0z4Dx+u0fCjOHrY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1740095214;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=NKmjAFBT7eSImzI2Bx6YtHkPCpS652+riXhLoV4+ieA=;
+	b=7cAjpZsquc/3J3Xjl/gvkGvsoco+0TIJPIX2X9Uq29Q8/arLiv7r3qTk5CJSKRugXjOB9F
+	/l5qQU3ayirmD/AQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=dBnjMwlA;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=ywLnnzUG
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1740095212; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=NKmjAFBT7eSImzI2Bx6YtHkPCpS652+riXhLoV4+ieA=;
+	b=dBnjMwlAct0U3lEFzWEOOKSD+aGq6HdY4tK4XOlKziuZX8ECWwgJ5RlGxjK28sO2a1TfC5
+	pu4zrPTuSCYbCuAJm4DEFUeiQ4ft8//oGa5imuR3g33yodtMUcZsUhBErCa9CrNkaCrbwm
+	r+UDoSLT4Mi5KMAF8BQla1598Prgwt8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1740095212;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=NKmjAFBT7eSImzI2Bx6YtHkPCpS652+riXhLoV4+ieA=;
+	b=ywLnnzUGae02JEL6IHG/zhEGMHmegAa7EKCPR2yFjqpGzupyG1sbSTo0V4EboTO/RaUzKp
+	w7whJyxUsDr+yxAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 58C6913301;
+	Thu, 20 Feb 2025 23:46:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 07ZuBOW+t2f+AgAAD6G6ig
+	(envelope-from <neilb@suse.de>); Thu, 20 Feb 2025 23:46:45 +0000
+From: NeilBrown <neilb@suse.de>
+To: Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Jan Kara <jack@suse.cz>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Xiubo Li <xiubli@redhat.com>,
+	Ilya Dryomov <idryomov@gmail.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Trond Myklebust <trondmy@kernel.org>,
+	Anna Schumaker <anna@kernel.org>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Jeff Layton <jlayton@kernel.org>,
+	Olga Kornievskaia <okorniev@redhat.com>,
+	Dai Ngo <Dai.Ngo@oracle.com>,
+	Tom Talpey <tom@talpey.com>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-cifs@vger.kernel.org,
+	linux-nfs@vger.kernel.org,
+	linux-um@lists.infradead.org,
+	ceph-devel@vger.kernel.org,
+	netfs@lists.linux.dev
+Subject: [PATCH 0/6] Change ->mkdir() and vfs_mkdir() to return a dentry.
+Date: Fri, 21 Feb 2025 10:36:29 +1100
+Message-ID: <20250220234630.983190-1-neilb@suse.de>
+X-Mailer: git-send-email 2.47.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20250220-um_yes_no-v1-1-2a355ed2d225@ethancedwards.com>
-X-B4-Tracking: v=1; b=H4sIACuvt2cC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI1MDIyMD3dLc+MrU4vi8fF2T1DRDgyRTo1SzVAMloPqCotS0zAqwWdGxtbU
- ATLVp01sAAAA=
-X-Change-ID: 20250220-um_yes_no-4ef10b52e6e0
-To: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
- Johannes Berg <johannes@sipsolutions.net>, linux-um@lists.infradead.org, 
- linux-kernel@vger.kernel.org, 
- Ethan Carter Edwards <ethan@ethancedwards.com>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1418;
- i=ethan@ethancedwards.com; h=from:subject:message-id;
- bh=J57RcTCyWAxFm2umO0g+4bB4ISjq2IYkSSr7ajlq/gA=;
- b=LS0tLS1CRUdJTiBQR1AgTUVTU0FHRS0tLS0tCgpvd0o0bkp2QXk4ekFKWGJEOXFoNThlVGp6e
- GhQcXlVeHBHOWZyMk1TS3JEb0FVdjA4cTZkOVVlVU4ycFZjMisrCnVsUDExbzBzaGJ0ZTkvS2tH
- bWQybExJd2lIRXh5SW9wc3Z6UFVVNTdxRGxEWWVkZmx5YVlPYXhNSUVNWXVEZ0YKWUNLZlN4a1o
- zaWpXQ1p4amY5disvdmxXRGIxTmlSZFRxczRkL2ErWjl6V3ZVTXQrOWRVZGhnei9ETTkva1BmYg
- pOZjJVeDlhcG9WNXZ1TitGUFpqbXhiRHhpRm1tMXFUNVJSYXJXUUdwQ2s3Rwo9QTFqbAotLS0tL
- UVORCBQR1AgTUVTU0FHRS0tLS0tCg==
-X-Developer-Key: i=ethan@ethancedwards.com; a=openpgp;
- fpr=2E51F61839D1FA947A7300C234C04305D581DBFE
-X-Rspamd-Queue-Id: 4YzSqz1hl1z9tDy
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: BA8BC2118F
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	RCPT_COUNT_TWELVE(0.00)[24];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FREEMAIL_TO(0.00)[zeniv.linux.org.uk,kernel.org,suse.cz,szeredi.hu,redhat.com,gmail.com,nod.at,cambridgegreys.com,sipsolutions.net,oracle.com,talpey.com,chromium.org];
+	MIME_TRACE(0.00)[0:+];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.de:+];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.de:mid,suse.de:dkim];
+	R_RATELIMIT(0.00)[from(RLewrxuus8mos16izbn)];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250220_144003_679827_021DF0A6 
-X-CRM114-Status: UNSURE (   9.41  )
+X-CRM114-CacheID: sfid-20250220_154657_563630_7FCEE518 
+X-CRM114-Status: UNSURE (   9.51  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -90,42 +155,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Remove hard-coded strings by using the str_yes_no() helper function
-provided by <linux/string_choices.h>.
+I'm posting this to a wider audience now as I think it is close to its final form.
+I have not included every fs maintainer explicitly (though this patch touches every writable FS)
+but hope that fsdevel will catch enough of those).  I have included the affected clients
+of vfs_mkdir: nfsd, smb/server, cachefiles, and the filesystems with non-trivial changes:
+nfs, cephfs, hostfs, fuse.
 
-Signed-off-by: Ethan Carter Edwards <ethan@ethancedwards.com>
----
- arch/um/kernel/um_arch.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+mkdir is unique among object creation interfaces as there can only be
+one dentry for an directory inode.  There is a possibilty of races which
+could result in the inode created by mkdir already having a dentry when
+mkdir comes to attach one.  To cope with this, three users of
+vfs_mkdir() sometimes do a lookup to find the correct dentry when the
+one that was passed in wasn't used.  This lookup is clumsy and racy.
 
-diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
-index 79ea97d4797ecc9c157ee948ae0505bcdef84da5..7f050783885a0faed0a4f334716d2532b982bb91 100644
---- a/arch/um/kernel/um_arch.c
-+++ b/arch/um/kernel/um_arch.c
-@@ -12,6 +12,7 @@
- #include <linux/panic_notifier.h>
- #include <linux/seq_file.h>
- #include <linux/string.h>
-+#include <linux/string_choices.h>
- #include <linux/utsname.h>
- #include <linux/sched.h>
- #include <linux/sched/task.h>
-@@ -78,7 +79,7 @@ static int show_cpuinfo(struct seq_file *m, void *v)
- 	seq_printf(m, "model name\t: UML\n");
- 	seq_printf(m, "mode\t\t: skas\n");
- 	seq_printf(m, "host\t\t: %s\n", host_info);
--	seq_printf(m, "fpu\t\t: %s\n", cpu_has(&boot_cpu_data, X86_FEATURE_FPU) ? "yes" : "no");
-+	seq_printf(m, "fpu\t\t: %s\n", str_yes_no(cpu_has(&boot_cpu_data, X86_FEATURE_FPU)));
- 	seq_printf(m, "flags\t\t:");
- 	for (i = 0; i < 32*NCAPINTS; i++)
- 		if (cpu_has(&boot_cpu_data, i) && (x86_cap_flags[i] != NULL))
+This patch set changes mkdir interface so that the filesystem can
+provide the correct dentry.  Some times this still requires a look-up
+which can be racey, but having the filesystem do it limits this to only
+when it is absolutely necessary.
 
----
-base-commit: 27eddbf3449026a73d6ed52d55b192bfcf526a03
-change-id: 20250220-um_yes_no-4ef10b52e6e0
+So this series changes ->mkdir and vfs_mkdir() to allow a dentry to be
+returned, changes a few filesystems to actually return a dentry
+sometimes, and changes the callers of vfs_mkdir() to use the returned dentry.
 
-Best regards,
--- 
-Ethan Carter Edwards <ethan@ethancedwards.com>
+I think it best if this could all land through the VFS tree as ask maitainers of:
+ cachefiles nfsd smb/server
+ hostfs ceph nfs fuse
+to provide a Reviewed-by.
+
+Thanks,
+NeilBrown
+
 
 
