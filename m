@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 400B9C021B3
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3C4F4C021AA
 	for <linux-um@archiver.kernel.org>; Fri, 21 Feb 2025 08:41:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,27 +12,27 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=VryS9Koa85q3UfdP5krPn+J74Yu4B3FcC0RT5qQpTk8=; b=4qUgMuHT8aC+op0/QtFeoKHp7c
-	09QzmzeOcgmOP089KLh1A8+BgPOe8vnc+ErdR37l1FccpuGxC9QC/e3zaPy2Mvg3C8NdqJbAJxGNh
-	/cfOeAbHAdB2yriUSI0F9NzDImEiRL54KEcEQURai1t4YBe93AmvCBARlSD5LcXnLCIz3h6CvacI/
-	A1oNeeX17hlz1LLaD8Tzwrq4QAL4kz6Q3bagsFZdUmcTccF4+BqVfsflSynBrF/I7gL9NS3KHnmF+
-	k5qCcqlBCRQpJm6d/MH/lFeZBfwbOBzPcBl7PnD1AykivA/HQnoDYnobwLBpYMwcseEZ7gHouVqBS
-	ismF4KYQ==;
+	bh=hbPH9YmXF2sSugcYogcprtVveICkEHIEi2QKojte4fw=; b=cSMq9o2XY0XFtaA3/XogJlFS5D
+	li8VReUkHnPsEFor9CTI0Ba1MLlWHu884QDYgy/WFghbFHvq03PCfDOCuHA9oUeLwWtdyR1JVjsmI
+	0CnsxSqPifbD+0RTzkjhD1YT8/SbZ/RPC2f08GilBKw9kspFgeGnclOjDgVtIOxDTV5o9a7eNlXi6
+	EhmGbhtddyhOFqh7Wgg98/jD0KVGUt0a9FVNPfaBqdMTFPcD9P9TV/ShAbg8DSM8m9OPHU03WACuq
+	yCopURz3yCwx4w/7j941Rz5ktBR01gr7jm9/vCtjbYI+HuA3JV/9HhZ/o9uL2KuEK50TUNUvPHOTb
+	U18EK4iA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tlOan-00000004kYG-3hCO;
+	id 1tlOan-00000004kY5-2Ncm;
 	Fri, 21 Feb 2025 08:41:05 +0000
 Received: from out0-203.mail.aliyun.com ([140.205.0.203])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tlOak-00000004kVQ-1fiZ
+	id 1tlOak-00000004kUs-1f0g
 	for linux-um@lists.infradead.org;
 	Fri, 21 Feb 2025 08:41:04 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=antgroup.com; s=default;
-	t=1740127260; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=VryS9Koa85q3UfdP5krPn+J74Yu4B3FcC0RT5qQpTk8=;
-	b=MhlhghgHfQ599f2s7q0ToSDOKj32y65WUpbhY98pDARg3OtYBgWkwRCuJBaJ4DPdwZ8VNsuyGuE9C5zwoZSbREVYNKRYbiK7gQYCjma4pt7w2kV44rygiWqXmWTR/s/+ZGsU8RtvLTsjST97B4gXOPZZiCXDOsKia8EooioqEGI=
-Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.bYJdX6L_1740127258 cluster:ay29)
+	t=1740127259; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=hbPH9YmXF2sSugcYogcprtVveICkEHIEi2QKojte4fw=;
+	b=W+dI4NeCKrXZNAqPEONqMr7dUXBztANnuH0+wrMV0BoamIcBSwjBiDoKPmHEeoqDeh5nn3OksgZXSA6iyC850tuX1AKjjF0y/6g6kWeM4cXWiXMBh6xswyC57EqThSdZ2fugAnA2wo56VnTrmSEI5u/MqARoegMrz2JeDNAfbLQ=
+Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.bYJdX67_1740127257 cluster:ay29)
           by smtp.aliyun-inc.com;
           Fri, 21 Feb 2025 16:40:58 +0800
 From: "Tiwei Bie" <tiwei.btw@antgroup.com>
@@ -41,17 +41,17 @@ To: richard@nod.at,
 	johannes@sipsolutions.net
 Cc: <linux-um@lists.infradead.org>,
   "Tiwei Bie" <tiwei.btw@antgroup.com>
-Subject: [PATCH 2/4] um: ubd: Switch to the pthread-based helper
-Date: Fri, 21 Feb 2025 16:40:47 +0800
-Message-Id: <20250221084049.1332318-3-tiwei.btw@antgroup.com>
+Subject: [PATCH 1/4] um: Add the pthread-based helper support
+Date: Fri, 21 Feb 2025 16:40:46 +0800
+Message-Id: <20250221084049.1332318-2-tiwei.btw@antgroup.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250221084049.1332318-1-tiwei.btw@antgroup.com>
 References: <20250221084049.1332318-1-tiwei.btw@antgroup.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250221_004102_954623_DF9D4FA6 
-X-CRM114-Status: GOOD (  13.75  )
+X-CRM114-CacheID: sfid-20250221_004102_953938_5A6C4410 
+X-CRM114-Status: GOOD (  10.41  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,137 +66,105 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-The ubd io thread and UML kernel thread share the same errno, which
-can lead to conflicts when both call syscalls concurrently. Switch to
-the pthread-based helper to address this issue.
+Introduce a new set of utility functions that can be used to create
+pthread-based helpers. Helper threads created in this way will ensure
+thread safety for errno while sharing memory address space.
 
 Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
 ---
- arch/um/drivers/ubd.h      |  4 ++--
- arch/um/drivers/ubd_kern.c | 25 +++++++++++--------------
- arch/um/drivers/ubd_user.c | 13 ++++++-------
- 3 files changed, 19 insertions(+), 23 deletions(-)
+ arch/um/include/shared/os.h |  3 ++
+ arch/um/os-Linux/helper.c   | 60 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 63 insertions(+)
 
-diff --git a/arch/um/drivers/ubd.h b/arch/um/drivers/ubd.h
-index f016fe15499f..b5fae85a6b04 100644
---- a/arch/um/drivers/ubd.h
-+++ b/arch/um/drivers/ubd.h
-@@ -7,8 +7,8 @@
- #ifndef __UM_UBD_USER_H
- #define __UM_UBD_USER_H
+diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
+index 5babad8c5f75..1f62e793bce3 100644
+--- a/arch/um/include/shared/os.h
++++ b/arch/um/include/shared/os.h
+@@ -225,6 +225,9 @@ extern int run_helper_thread(int (*proc)(void *), void *arg,
+ 			     unsigned int flags, unsigned long *stack_out);
+ extern int helper_wait(int pid);
  
--extern int start_io_thread(unsigned long sp, int *fds_out);
--extern int io_thread(void *arg);
-+int start_io_thread(void **handle_out, int *fds_out);
-+void *io_thread(void *arg);
- extern int kernel_fd;
++int os_run_helper_thread(void *(*routine)(void *), void *arg, void **handle_out);
++void os_kill_helper_thread(void *);
++void os_fix_helper_thread_signals(void);
  
- extern int ubd_read_poll(int timeout);
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 0b1e61f72fb3..43be5d5a1ed9 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -474,12 +474,12 @@ static irqreturn_t ubd_intr(int irq, void *dev)
- }
- 
- /* Only changed by ubd_init, which is an initcall. */
--static int io_pid = -1;
-+static void *io_td;
- 
- static void kill_io_thread(void)
- {
--	if(io_pid != -1)
--		os_kill_process(io_pid, 1);
-+	if (io_td)
-+		os_kill_helper_thread(io_td);
- }
- 
- __uml_exitcall(kill_io_thread);
-@@ -1104,8 +1104,8 @@ static int __init ubd_init(void)
- 
- late_initcall(ubd_init);
- 
--static int __init ubd_driver_init(void){
--	unsigned long stack;
-+static int __init ubd_driver_init(void)
-+{
- 	int err;
- 
- 	/* Set by CONFIG_BLK_DEV_UBD_SYNC or ubd=sync.*/
-@@ -1114,13 +1114,11 @@ static int __init ubd_driver_init(void){
- 		/* Letting ubd=sync be like using ubd#s= instead of ubd#= is
- 		 * enough. So use anyway the io thread. */
- 	}
--	stack = alloc_stack(0, 0);
--	io_pid = start_io_thread(stack + PAGE_SIZE, &thread_fd);
--	if(io_pid < 0){
-+	err = start_io_thread(&io_td, &thread_fd);
-+	if (err < 0) {
- 		printk(KERN_ERR
- 		       "ubd : Failed to start I/O thread (errno = %d) - "
--		       "falling back to synchronous I/O\n", -io_pid);
--		io_pid = -1;
-+		       "falling back to synchronous I/O\n", -err);
+ /* umid.c */
+ extern int umid_file_name(char *name, char *buf, int len);
+diff --git a/arch/um/os-Linux/helper.c b/arch/um/os-Linux/helper.c
+index 3cb8ac63be6e..c6a0ef8beb29 100644
+--- a/arch/um/os-Linux/helper.c
++++ b/arch/um/os-Linux/helper.c
+@@ -8,6 +8,7 @@
+ #include <unistd.h>
+ #include <errno.h>
+ #include <sched.h>
++#include <pthread.h>
+ #include <linux/limits.h>
+ #include <sys/socket.h>
+ #include <sys/wait.h>
+@@ -167,3 +168,62 @@ int helper_wait(int pid)
+ 	} else
  		return 0;
- 	}
- 	err = um_request_irq(UBD_IRQ, thread_fd, IRQ_READ, ubd_intr,
-@@ -1496,12 +1494,11 @@ int kernel_fd = -1;
- /* Only changed by the io thread. XXX: currently unused. */
- static int io_count;
- 
--int io_thread(void *arg)
-+void *io_thread(void *arg)
- {
- 	int n, count, written, res;
- 
--	os_set_pdeathsig();
--	os_fix_helper_signals();
-+	os_fix_helper_thread_signals();
- 
- 	while(1){
- 		n = bulk_req_safe_read(
-@@ -1543,5 +1540,5 @@ int io_thread(void *arg)
- 		} while (written < n);
- 	}
- 
--	return 0;
-+	return NULL;
  }
-diff --git a/arch/um/drivers/ubd_user.c b/arch/um/drivers/ubd_user.c
-index b4f8b8e60564..985f6eb27f03 100644
---- a/arch/um/drivers/ubd_user.c
-+++ b/arch/um/drivers/ubd_user.c
-@@ -25,9 +25,9 @@
- 
- static struct pollfd kernel_pollfd;
- 
--int start_io_thread(unsigned long sp, int *fd_out)
-+int start_io_thread(void **handle_out, int *fd_out)
- {
--	int pid, fds[2], err;
-+	int fds[2], err;
- 
- 	err = os_pipe(fds, 1, 1);
- 	if(err < 0){
-@@ -47,14 +47,13 @@ int start_io_thread(unsigned long sp, int *fd_out)
- 		goto out_close;
- 	}
- 
--	pid = clone(io_thread, (void *) sp, CLONE_FILES | CLONE_VM, NULL);
--	if(pid < 0){
--		err = -errno;
--		printk("start_io_thread - clone failed : errno = %d\n", errno);
-+	err = os_run_helper_thread(io_thread, NULL, handle_out);
-+	if (err < 0) {
-+		printk("start_io_thread - failed to run helper thread, err = %d\n", -err);
- 		goto out_close;
- 	}
- 
--	return(pid);
-+	return 0;
- 
-  out_close:
- 	os_close_file(fds[0]);
++
++int os_run_helper_thread(void *(*routine)(void *), void *arg, void **handle_out)
++{
++	pthread_t *td;
++	sigset_t sigset, oset;
++	int err, flags;
++
++	flags = __uml_cant_sleep() ? UM_GFP_ATOMIC : UM_GFP_KERNEL;
++	td = uml_kmalloc(sizeof(*td), flags);
++	if (!td)
++		return -ENOMEM;
++
++	sigfillset(&sigset);
++	if (sigprocmask(SIG_SETMASK, &sigset, &oset) < 0) {
++		err = -errno;
++		kfree(td);
++		return err;
++	}
++
++	err = pthread_create(td, NULL, routine, arg);
++
++	if (sigprocmask(SIG_SETMASK, &oset, NULL) < 0)
++		panic("Failed to restore the signal mask: %d", errno);
++
++	if (err != 0)
++		kfree(td);
++	else
++		*handle_out = td;
++
++	return -err;
++}
++
++void os_kill_helper_thread(void *handle)
++{
++	pthread_t *td = handle;
++
++	pthread_kill(*td, SIGKILL);
++	CATCH_EINTR(pthread_join(*td, NULL));
++	kfree(td);
++}
++
++void os_fix_helper_thread_signals(void)
++{
++	sigset_t sigset;
++
++	sigemptyset(&sigset);
++
++	sigaddset(&sigset, SIGWINCH);
++	sigaddset(&sigset, SIGPIPE);
++	sigaddset(&sigset, SIGPROF);
++	sigaddset(&sigset, SIGINT);
++	sigaddset(&sigset, SIGTERM);
++	sigaddset(&sigset, SIGCHLD);
++	sigaddset(&sigset, SIGALRM);
++	sigaddset(&sigset, SIGIO);
++	sigaddset(&sigset, SIGUSR1);
++
++	pthread_sigmask(SIG_SETMASK, &sigset, NULL);
++}
 -- 
 2.34.1
 
