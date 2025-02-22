@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id D5805C021B2
-	for <linux-um@archiver.kernel.org>; Sat, 22 Feb 2025 04:20:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EBF1C021B2
+	for <linux-um@archiver.kernel.org>; Sat, 22 Feb 2025 04:24:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=qfUBrmsjEzlreUx4AXwJcqcuev0D4ASn1NvBbAj8CU0=; b=ixJtTlm2pRkRVEfRn4ShHOIOSv
-	AR1f6JK9EL0sdWmWsFnqjbjNXj5apq4bXtBx+ijdg5GFg2GG5u5WfcUf5jP3ryQGt76WAFS3uHD8k
-	JDdaHf6ghyiUKoDy/+Ya9vTv0sXV6p9+m2o4jDyDD4ERzYqnzVT0nTC5EoMvg5u06rkJ+pUqPT1Ej
-	Vw+yOn5TDKPPgCuc78hYEQH/GAY4j5BsUboGFDUWXuG+w0lOwn1vZFB3qq0CFoSWraqH8Q0xeMrMt
-	93ro1qqYzago3/kbb3mU3wym3xGGrDV94AJ2IeXOEV12JmAt1OBBYhrtilEATi4Xeprvu988TiXw6
-	RkOBvBpQ==;
+	bh=kBorF+lu9MOKjw9Zu9aJHBKvFxgx/GsLywDagfgLFsk=; b=alfRu/vNrhFsOdyimcoEfs2mXU
+	4kdMrsOWi+w70fM1cMDMtXF39CcVxWC6fKBxh0DstKuWQWyjPkPHFnq+Ji5tKKooZ+ak0yR3DqoKt
+	BnCJ/h/AskzInHK7aaVPe5m8dqHGLDHtwhZVZyNteLj6JY5bojLDppeW0uDny4sUewwb6vLU76Pvw
+	V1FV2DSijW6pw3iRrxzXElRtoc/1yuxlq+dyCM+VQT5CiEMxQT0GFy+3gvAZOmy7OuQGPyXbBhbQ7
+	lkZ1O3Wpe0C0qx4tNYj/G8BrD7jUGAwt/sSjrmNgUJpyzVDA42j+YeIjaX7fET8Xhx1h+KUtLS5Oo
+	47lUDm0A==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tlgzh-00000007R8R-1ypx;
-	Sat, 22 Feb 2025 04:20:01 +0000
+	id 1tlh3j-00000007RJB-0DAy;
+	Sat, 22 Feb 2025 04:24:11 +0000
 Received: from zeniv.linux.org.uk ([2a03:a000:7:0:5054:ff:fe1c:15ff])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tlgze-00000007R7h-1yl6
+	id 1tlh3g-00000007RIo-2nkN
 	for linux-um@lists.infradead.org;
-	Sat, 22 Feb 2025 04:20:00 +0000
+	Sat, 22 Feb 2025 04:24:09 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=qfUBrmsjEzlreUx4AXwJcqcuev0D4ASn1NvBbAj8CU0=; b=EHqfOfLP9VxWQT6m6l+8Kqb+8D
-	Y/KlagZgn9RkQHu9FwnQ5H6MelwTA+wmY44O9vuFq41lY+jB0bC36GC1iMXRJBRN5nrcgug2Pki70
-	kISTP+dD1MJozKroh0sH6AxxkYUketYRci+k66PXl7v7R/q58wlNyzcJeLqL7zbuhIYXf/csxKnN4
-	VH5IkAClhhCxx5OMw2kXfDGs5prmq+kxor8YRBDndqLLzqeUYg4jelxYLnkQLVnHuc/ktsHneeuWG
-	goVu6wB/tCfwmkMw8ROOkrtvNgMawXX1O5CyNh8VqurD56b+GRJheL0VZa2hI9FdXXK90vEbfwK6c
-	uN4g9LKw==;
+	bh=kBorF+lu9MOKjw9Zu9aJHBKvFxgx/GsLywDagfgLFsk=; b=N7KmNtyNyy18k2f5aXEQzFXbBc
+	Sk9hBBz+sLj6HF6d6GP7Kw7D0jUrI0Xbk6up5O5pRCfCOaSKOitMRHUx4G5diKUe/WLV4uCgelBse
+	N4/i/r1S2T+H7WReVvhM4ZD+nVE/GVndldfzR5o4o7P9Y6KvNwc7lW7twaWiDw1creTAe+PNfRGal
+	ORODDU07dnHmbj9B15OH5pMN4bwZlFu7oHKdZFBTpRNMftCyUG9pGPr9aQAkZeUKpZ8/jl1CGFoHR
+	Q9J+xAKKo8yxXb7clIWokRa2Tqf4lzQaAQ+sqF4j70goOWLX0kKKpubH+VriThS2oVagP7I3TSc4+
+	mEtLQQXA==;
 Received: from viro by zeniv.linux.org.uk with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1tlgzJ-00000004dod-0CaC;
-	Sat, 22 Feb 2025 04:19:37 +0000
-Date: Sat, 22 Feb 2025 04:19:37 +0000
+	id 1tlh3a-00000004e23-30tr;
+	Sat, 22 Feb 2025 04:24:02 +0000
+Date: Sat, 22 Feb 2025 04:24:02 +0000
 From: Al Viro <viro@zeniv.linux.org.uk>
 To: NeilBrown <neilb@suse.de>
 Cc: Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
@@ -60,18 +60,17 @@ Cc: Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
 	linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
 	linux-um@lists.infradead.org, ceph-devel@vger.kernel.org,
 	netfs@lists.linux.dev
-Subject: Re: [PATCH 1/6] Change inode_operations.mkdir to return struct
- dentry *
-Message-ID: <20250222041937.GM1977892@ZenIV>
+Subject: Re: [PATCH 4/6] fuse: return correct dentry for ->mkdir
+Message-ID: <20250222042402.GN1977892@ZenIV>
 References: <20250220234630.983190-1-neilb@suse.de>
- <20250220234630.983190-2-neilb@suse.de>
+ <20250220234630.983190-5-neilb@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250220234630.983190-2-neilb@suse.de>
+In-Reply-To: <20250220234630.983190-5-neilb@suse.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250221_201958_508406_A417F42A 
-X-CRM114-Status: UNSURE (   7.44  )
+X-CRM114-CacheID: sfid-20250221_202408_715381_924BCFE5 
+X-CRM114-Status: UNSURE (   8.65  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -87,17 +86,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, Feb 21, 2025 at 10:36:30AM +1100, NeilBrown wrote:
+On Fri, Feb 21, 2025 at 10:36:33AM +1100, NeilBrown wrote:
 
-> +In general, filesystems which use d_instantiate_new() to install the new
-> +inode can safely return NULL.  Filesystems which may not have an I_NEW inode
-> +should use d_drop();d_splice_alias() and return the result of the latter.
+> @@ -871,7 +870,12 @@ static int fuse_mknod(struct mnt_idmap *idmap, struct inode *dir,
+>  	args.in_args[0].value = &inarg;
+>  	args.in_args[1].size = entry->d_name.len + 1;
+>  	args.in_args[1].value = entry->d_name.name;
+> -	return create_new_entry(idmap, fm, &args, dir, entry, mode);
+> +	de = create_new_entry(idmap, fm, &args, dir, entry, mode);
+> +	if (IS_ERR(de))
+> +		return PTR_ERR(de);
+> +	if (de)
+> +		dput(de);
+> +	return 0;
 
-IMO that's a bad pattern, _especially_ if you want to go for "in-update"
-kind of stuff later.
+Can that really happen?
 
-That's pretty much the same thing as d_drop()/d_rehash() window.
+> @@ -934,7 +939,12 @@ static int fuse_symlink(struct mnt_idmap *idmap, struct inode *dir,
+>  	args.in_args[1].value = entry->d_name.name;
+>  	args.in_args[2].size = len;
+>  	args.in_args[2].value = link;
+> -	return create_new_entry(idmap, fm, &args, dir, entry, S_IFLNK);
+> +	de = create_new_entry(idmap, fm, &args, dir, entry, S_IFLNK);
+> +	if (IS_ERR(de))
+> +		return PTR_ERR(de);
+> +	if (de)
+> +		dput(de);
+> +	return 0;
 
-We'd be better off dropping that BUG_ON() in d_splice_alias() and teaching
-__d_add() to handle the "it's a hashed negative" case.
+Same question.
+
+> +	de = create_new_entry(&invalid_mnt_idmap, fm, &args, newdir, newent, inode->i_mode);
+> +	if (!IS_ERR(de)) {
+> +		if (de)
+> +			dput(de);
+> +		de = NULL;
+
+Whoa...  Details, please.  What's going on here?
 
