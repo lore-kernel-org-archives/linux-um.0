@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3EBF1C021B2
-	for <linux-um@archiver.kernel.org>; Sat, 22 Feb 2025 04:24:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 03416C021B2
+	for <linux-um@archiver.kernel.org>; Sat, 22 Feb 2025 04:43:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=kBorF+lu9MOKjw9Zu9aJHBKvFxgx/GsLywDagfgLFsk=; b=alfRu/vNrhFsOdyimcoEfs2mXU
-	4kdMrsOWi+w70fM1cMDMtXF39CcVxWC6fKBxh0DstKuWQWyjPkPHFnq+Ji5tKKooZ+ak0yR3DqoKt
-	BnCJ/h/AskzInHK7aaVPe5m8dqHGLDHtwhZVZyNteLj6JY5bojLDppeW0uDny4sUewwb6vLU76Pvw
-	V1FV2DSijW6pw3iRrxzXElRtoc/1yuxlq+dyCM+VQT5CiEMxQT0GFy+3gvAZOmy7OuQGPyXbBhbQ7
-	lkZ1O3Wpe0C0qx4tNYj/G8BrD7jUGAwt/sSjrmNgUJpyzVDA42j+YeIjaX7fET8Xhx1h+KUtLS5Oo
-	47lUDm0A==;
+	bh=ak81sfwQs82rWCjc8icmSjWD6hQCZp6KEAR3SJKFhos=; b=UipG9WG8iIwF88ZNinMtyRmG27
+	WOqsGSTwCHENLoOTROjKv6M6ZQuq3vKMn+DAuQTDruPJnlZWEdYiTAaQvYhQtYzhyWbjY800A4Nlh
+	gUwd/pV5tBj3Ty0A6lnRsgAyMWc+lKSk/1uH4/jy7r3V3zvJxcS+3r8LaZfqPkqc/d46CAMSOgnOr
+	SLPZtDRX6WNOA+gBIXz9UWP5fIMYvJLZf6DiUYLRK+PoLou0BVo7hi3zTT8FR6IiGlX/WDtBXjbMd
+	Swu820FzmWD8He1HIXD10+3R1oLWV1Qe44pDQ5ilF14BSbA7IrHJao6JZOI3wO0Dry9RIRvp9c7mb
+	RLQ+lWVw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tlh3j-00000007RJB-0DAy;
-	Sat, 22 Feb 2025 04:24:11 +0000
+	id 1tlhM1-00000007SCr-1dNP;
+	Sat, 22 Feb 2025 04:43:05 +0000
 Received: from zeniv.linux.org.uk ([2a03:a000:7:0:5054:ff:fe1c:15ff])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tlh3g-00000007RIo-2nkN
+	id 1tlhKe-00000007S2i-2mw0
 	for linux-um@lists.infradead.org;
-	Sat, 22 Feb 2025 04:24:09 +0000
+	Sat, 22 Feb 2025 04:41:41 +0000
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=kBorF+lu9MOKjw9Zu9aJHBKvFxgx/GsLywDagfgLFsk=; b=N7KmNtyNyy18k2f5aXEQzFXbBc
-	Sk9hBBz+sLj6HF6d6GP7Kw7D0jUrI0Xbk6up5O5pRCfCOaSKOitMRHUx4G5diKUe/WLV4uCgelBse
-	N4/i/r1S2T+H7WReVvhM4ZD+nVE/GVndldfzR5o4o7P9Y6KvNwc7lW7twaWiDw1creTAe+PNfRGal
-	ORODDU07dnHmbj9B15OH5pMN4bwZlFu7oHKdZFBTpRNMftCyUG9pGPr9aQAkZeUKpZ8/jl1CGFoHR
-	Q9J+xAKKo8yxXb7clIWokRa2Tqf4lzQaAQ+sqF4j70goOWLX0kKKpubH+VriThS2oVagP7I3TSc4+
-	mEtLQQXA==;
+	bh=ak81sfwQs82rWCjc8icmSjWD6hQCZp6KEAR3SJKFhos=; b=V0RNI5qUK23YrR10htyClgF4V1
+	qbXhwFxOWEZeIRkIxGTlZvEx1MsiaQslQ7SENgBpE1twBEHKwbdzwv9bjaN+PsLSh+XhhiarJVJ1E
+	OfjrFVZ+ATFjsP7YmWYyl1Og8hyiW0eqoCE1QPKxYwYXA7kcq46Ch17j5HhZyyCtmYB2coproXOCC
+	ZL4NLdAPFNF1606559N3t7cbLUempsnl4t6V9SEiJAn8lQOlrFkJt3zualaWxqLJM2Go9F+cC9P0a
+	VU5rCX08UcXjnbuOdSlwkQrXJPPxrpgRDnrwxt3RJ+b0jhecTdIm1fHEzF9shodT3fNMRHV7Trc5E
+	IkW2Vu7g==;
 Received: from viro by zeniv.linux.org.uk with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1tlh3a-00000004e23-30tr;
-	Sat, 22 Feb 2025 04:24:02 +0000
-Date: Sat, 22 Feb 2025 04:24:02 +0000
+	id 1tlhKU-00000004ese-2hS3;
+	Sat, 22 Feb 2025 04:41:30 +0000
+Date: Sat, 22 Feb 2025 04:41:30 +0000
 From: Al Viro <viro@zeniv.linux.org.uk>
 To: NeilBrown <neilb@suse.de>
 Cc: Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
@@ -60,18 +60,18 @@ Cc: Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
 	linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
 	linux-um@lists.infradead.org, ceph-devel@vger.kernel.org,
 	netfs@lists.linux.dev
-Subject: Re: [PATCH 4/6] fuse: return correct dentry for ->mkdir
-Message-ID: <20250222042402.GN1977892@ZenIV>
+Subject: Re: [PATCH 5/6] nfs: change mkdir inode_operation to return
+ alternate dentry if needed.
+Message-ID: <20250222044130.GO1977892@ZenIV>
 References: <20250220234630.983190-1-neilb@suse.de>
- <20250220234630.983190-5-neilb@suse.de>
+ <20250220234630.983190-6-neilb@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250220234630.983190-5-neilb@suse.de>
+In-Reply-To: <20250220234630.983190-6-neilb@suse.de>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250221_202408_715381_924BCFE5 
-X-CRM114-Status: UNSURE (   8.65  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250221_204140_702495_C9F63819 
+X-CRM114-Status: GOOD (  11.27  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -86,41 +86,43 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, Feb 21, 2025 at 10:36:33AM +1100, NeilBrown wrote:
+On Fri, Feb 21, 2025 at 10:36:34AM +1100, NeilBrown wrote:
 
-> @@ -871,7 +870,12 @@ static int fuse_mknod(struct mnt_idmap *idmap, struct inode *dir,
->  	args.in_args[0].value = &inarg;
->  	args.in_args[1].size = entry->d_name.len + 1;
->  	args.in_args[1].value = entry->d_name.name;
-> -	return create_new_entry(idmap, fm, &args, dir, entry, mode);
-> +	de = create_new_entry(idmap, fm, &args, dir, entry, mode);
-> +	if (IS_ERR(de))
-> +		return PTR_ERR(de);
-> +	if (de)
-> +		dput(de);
-> +	return 0;
+>  nfs3_proc_mkdir(struct inode *dir, struct dentry *dentry, struct iattr *sattr)
+>  {
+>  	struct posix_acl *default_acl, *acl;
+> @@ -612,15 +612,18 @@ nfs3_proc_mkdir(struct inode *dir, struct dentry *dentry, struct iattr *sattr)
+>  		dentry = d_alias;
+>  
+>  	status = nfs3_proc_setacls(d_inode(dentry), acl, default_acl);
+> +	if (status && d_alias)
+> +		dput(d_alias);
+>  
+> -	dput(d_alias);
+>  out_release_acls:
+>  	posix_acl_release(acl);
+>  	posix_acl_release(default_acl);
+>  out:
+>  	nfs3_free_createdata(data);
+>  	dprintk("NFS reply mkdir: %d\n", status);
+> -	return status;
+> +	if (status)
+> +		return ERR_PTR(status);
+> +	return d_alias;
 
-Can that really happen?
+Ugh...  That's really hard to follow - you are leaving a dangling
+reference in d_alias textually upstream of using that variable.
+The only reason it's not a bug is that dput() is reachable only
+with status && d_alias and that guarantees that we'll
+actually go away on if (status) return ERR_PTR(status).
 
-> @@ -934,7 +939,12 @@ static int fuse_symlink(struct mnt_idmap *idmap, struct inode *dir,
->  	args.in_args[1].value = entry->d_name.name;
->  	args.in_args[2].size = len;
->  	args.in_args[2].value = link;
-> -	return create_new_entry(idmap, fm, &args, dir, entry, S_IFLNK);
-> +	de = create_new_entry(idmap, fm, &args, dir, entry, S_IFLNK);
-> +	if (IS_ERR(de))
-> +		return PTR_ERR(de);
-> +	if (de)
-> +		dput(de);
-> +	return 0;
+Worse, you can reach 'out:' with d_alias uninitialized.  Yes,
+all such branches happen with status either still unmodified
+since it's initialization (which is non-zero) or under
+if (status), so again, that return d_alias; is unreachable.
 
-Same question.
+So the code is correct, but it's really asking for trouble down
+the road.
 
-> +	de = create_new_entry(&invalid_mnt_idmap, fm, &args, newdir, newent, inode->i_mode);
-> +	if (!IS_ERR(de)) {
-> +		if (de)
-> +			dput(de);
-> +		de = NULL;
-
-Whoa...  Details, please.  What's going on here?
+BTW, dput(NULL) is guaranteed to be a no-op...
 
