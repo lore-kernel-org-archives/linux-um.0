@@ -4,69 +4,70 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7851FC021B8
-	for <linux-um@archiver.kernel.org>; Tue, 25 Feb 2025 03:46:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CD934C021B2
+	for <linux-um@archiver.kernel.org>; Tue, 25 Feb 2025 03:46:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
-	bh=28rhiB/GEX2aHidRfZsL1f1ynE4sxX3e1xrVD+t+cg0=; b=BvAPOszOGdN14vqVjqFeHbhqhN
-	PdAQlyjJjTBuLBzX6tnZNd5/h5np683T6+8Im+kwPp6GoKgzyGGGlNLwFQ1e58MU556tyFdaJ2ljd
-	JLecOqukGkhJSmc9b9zaBAbt2XtjDMuzSRqo+7yOlJpQfsoAVJ5ABr4hYzuV2OaNhPs3CBRmCtuSw
-	Q0MBCtVij06HN+3QZ4IY/gn+CfYw6OcUlWRQPanQSVsq9XK7gD84XroDOjMOvnG0n/4s2dPUaZ/Ng
-	huPPVTJv7YXQA1zl+Lhg3OrNM0APmGyM5Sck6aRK+p1+DYoBlFkh07isEALwCqwbAPyVubG5yRZLX
-	vcE4S/Jg==;
+	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=g0Ocxe5/W3x8AaSNUp1nmQA6Ns9xuyK5JD/uD9z0OJg=; b=Y15IMwFlKTIw9MUrv8ec7YdhGN
+	Su1qXJgwcyJkCxYqYRgoxngGFiT+AYvvvuzbf+jeAr+CQHlEyHRxeAf5bcR786h2k+i4bpnZtQkIc
+	+o5ANlCOczfVKSbCwTZ0yEYD8g0+utKbPxASJTJXx4tjw/HPsV3xI71BLOu0zaocFcnIHa3QUBG05
+	3pdj7KLyoBFyAknNfj2dbmSNUQqrLDN8CXia6OuAj9e2/P/B4ul9j7UEK0w2CfH6dC+VkHi+FjOUJ
+	WjKen7u/eAQd2RHXAI/ouDBRBssJTZsbfd+zVTjLCXaOOCdaoH69huONo4E6eZA70nbqKsJiFXv6Z
+	61ZWxpeA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tmltq-0000000FtMb-2bRR;
-	Tue, 25 Feb 2025 03:46:26 +0000
-Received: from mail-pl1-x62c.google.com ([2607:f8b0:4864:20::62c])
+	id 1tmltw-0000000FtQ6-258m;
+	Tue, 25 Feb 2025 03:46:32 +0000
+Received: from mail-pl1-x62d.google.com ([2607:f8b0:4864:20::62d])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tmlto-0000000FtL4-06Wu
+	id 1tmltt-0000000FtNR-2zGv
 	for linux-um@lists.infradead.org;
-	Tue, 25 Feb 2025 03:46:25 +0000
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-220d398bea9so81286075ad.3
-        for <linux-um@lists.infradead.org>; Mon, 24 Feb 2025 19:46:19 -0800 (PST)
+	Tue, 25 Feb 2025 03:46:30 +0000
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-220bff984a0so108512005ad.3
+        for <linux-um@lists.infradead.org>; Mon, 24 Feb 2025 19:46:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1740455179; x=1741059979; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=28rhiB/GEX2aHidRfZsL1f1ynE4sxX3e1xrVD+t+cg0=;
-        b=ib4kereh7XZSWkn56GvXSgdzBH5otbsgbe5YzVDNUamW6GUNQUl98D4eoOfXlaQ1vU
-         kF4N80812ChJ1miSLnmDFZkYbK+px6fFEJmUYHkPn+ZjeI3AQ0wr4PM6mxM30cOXWMNA
-         ZvDUJRq0jtMMahaAX+xuJeQylnq5Fdcim4/cf9SNfyy9eI297uJCtsYwtlZKU0C9RFBK
-         DCp8ieSe3OceFArfDWCLtu9FefES3BCRF5oIrF2FL2cT1lZRGpavT7pWa8geWw2LeB2A
-         voGNmZ9jJ1ZCANmylwRxVG1Ma4vnm861t56SyY4UssB9AcBS6/H8MWWzUdMlmcVCA79L
-         fOdg==
+        d=bytedance.com; s=google; t=1740455189; x=1741059989; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g0Ocxe5/W3x8AaSNUp1nmQA6Ns9xuyK5JD/uD9z0OJg=;
+        b=Meeg67WWgsTYxId/dV0z+bFKgOuH5m59vap9//IP9UPVHXbSKkNJZMk6h2j+OsqAoQ
+         sd0pezCI5LCpnHkQQ846Gq61vMwvpUX0wCxQ7CmKum6FQI/Kh/Luxy4Zm71xf9/5QeDr
+         ALSIFxVt8XaFxdSrPXbxAsT03DbM5oday/XsHPm5rvJEKvZCoryuBpIg3iVGvyv7QgIW
+         BKkBdce5xKXJlEj/Rliy0Gav/Hro0ISpasnQ9KOpeNzH2KhLBVfi1T+FX1J5Aly6jZ80
+         tE4v53NLg0UApqNrU14DNiEu5O+blR+/hlfZhXQFjugFWLIh+viOUDqHmHPPadPJrIyG
+         Z1XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740455179; x=1741059979;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=28rhiB/GEX2aHidRfZsL1f1ynE4sxX3e1xrVD+t+cg0=;
-        b=heEDL9VTns8A6juOvACuQOV7QIZyiyKwN5/SZhIwH0wN2LcJsBPOb1L3/wcg4ho3S6
-         BdT36b+BCmMXLEikxvzucFs1pCsYPBU0h4C4VzWGtPZPq+ASoj/7CZ+rOzL5EcyaG4oS
-         mebEQdPzWJkXvFInwuqR10X2ieGy42TXsDbZwIL6ApgP0JiF0mXTbvGewmWGlqJJr4T0
-         orew2pItd+9IOrWinyGbTLLKDSuxP0OaSXpX0hgLLRurItKrPGDsTMPvDUwKdbOD2kKp
-         PFxs2cqme1Bn3I0klGJ6FH7NEDLksWolLog54w4p8wE5mREdyTVrlCqa8TdrW3/q2evd
-         poRw==
-X-Forwarded-Encrypted: i=1; AJvYcCXoFzcXEv0QfUD7s3FYtcUgFqPk583Aml6ZtbAiR2mmgjb+g/LvHHURiUB3ejbedPYCilMlIgmAMQ==@lists.infradead.org
-X-Gm-Message-State: AOJu0YzXZLGvHtIvLCNIoNT6uDgkTRFiYrS12GEfsJhDeWExGmjlUYTV
-	/Pwe99hY0zSusQ5TvMcKBzv37ghHUB198JM5wcKfdi56zCu7v9m09Typl84aOyE=
-X-Gm-Gg: ASbGncstST2Xv9X8AJFykBTEc5S60lbYwulO5070FdquOXG7duLE8LdzQ6WT+Ya1GbV
-	u381q+lk+5jp9EqgSK2pItKQkW5kmBAlHk5hlIgi6ffRKRjQo27QNASV/lkrM0cHyfpikgr+qKM
-	4Bg/0TtQXpzr/R1y+rS6jZlt/lEgup5X1FCorKzEWM3Asr15lkI71C4KMB8Kq6EgiP8n+Ndb3Gr
-	kxm8z1awZAR1eqIDATpfAcgXbbY8NvSiA+BFnk1hEiWV48rbEKo92lAuZlnlZB/1RlAkRvFAZmI
-	GkI4rTmb4DLTbUrMaGBV1AmI8dYgExw+mZ3YKkZhEx8UEoiuBGeRsLwp4EjhXSCquw==
-X-Google-Smtp-Source: AGHT+IGCQV+aaAngRw7XrsDoRTV1d2A5MeKYpMO11TDMI4tHHu1SHT60kqvv/nxGByOS3x+4jf7H6Q==
-X-Received: by 2002:a17:902:e744:b0:21f:89e5:2715 with SMTP id d9443c01a7336-221a0edd8cbmr248196785ad.19.1740455178926;
-        Mon, 24 Feb 2025 19:46:18 -0800 (PST)
+        d=1e100.net; s=20230601; t=1740455189; x=1741059989;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g0Ocxe5/W3x8AaSNUp1nmQA6Ns9xuyK5JD/uD9z0OJg=;
+        b=bSM5XtTf6KiDnRvMidcDWgho48LMHBjxGOSFc8j+qAHj4KiS6Y9eZ27tbriUtBCaJm
+         SEODyidplGQlz/6gLwTvblR8mZO1cCIrthU0YUU2oq/HPK/2uyECymq2qHWo1v98Mout
+         /WDPLgN1UHu9CpZJl11TiZzZg53Ie2G4r+STpOQkJsxJUaN4c/+UUWZoD/18J9qFuMmM
+         uKpe+SwkwAI5fHCYepapMZ8R8P5K/9hVUl9/JzeZYBhqetUrbF7zwQo2iFxdmU78d0Mz
+         HXMb2mv6I3porDKshmfl/LJcDu9RWVVTetYNNV1O2Fawc4ptIfzskYeygAkM5YexmScX
+         tPDg==
+X-Forwarded-Encrypted: i=1; AJvYcCUvvz7kBmJ0Q5qgnwwNZtXF6a4SMROuFPGZga5ZWVmZUHfLXPKSk9Omoaeh5CMj72HFP3QLQSMZug==@lists.infradead.org
+X-Gm-Message-State: AOJu0YxBaIO/FQwAPN+oAQHVRMcXCXhzR0nAwyg07sduKwk6ahhbymBx
+	gUO/P35i1QR6GkL68EdDeglmhapIdRtWHEQzHCAPtyCWvhhUyDi06524WbwBbCk=
+X-Gm-Gg: ASbGncspEffXWf9+WmqqoFutVKQ7Hpb4VwEgxyQEZi2X4NvaFqxGjnm/G+eyp+w66By
+	DCGa616aw3N4EJRFtcKPa9YO5nczFrRdCsx5Mc/9FN8nPkW5mnDkPiElolSgtgihPt8pB3PC/Ks
+	dgTvUT8E9Hh4kW7n6Pn14zJhdKWkS64ODldI9LQY310J8FjI5vfH6QfMhhZfusR1/senlgV+4wf
+	yKaJTiM2j54FsD7gBpQiBTewP5VxdLAoGQbTtCtFACj0EjY2WcF+A8wKp6is/8DU+9/QJ+JFC51
+	/g9dbuj5xab88fI4g6pi4Ibco6oEz0evZsRR7my08aKIoSPKj6TwH9eFrSLQnALHWQ==
+X-Google-Smtp-Source: AGHT+IGBfXw23ytiI6FvQDqnu6HA+6X81xKlY5Cdi/AJkyrR2YGvsG8wye6vZ+K3tNu1qHLJYKOiEg==
+X-Received: by 2002:a05:6a00:22c9:b0:731:771:38f2 with SMTP id d2e1a72fcca58-734790de607mr3427312b3a.8.1740455188892;
+        Mon, 24 Feb 2025 19:46:28 -0800 (PST)
 Received: from C02DW0BEMD6R.bytedance.net ([63.216.146.179])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7347a81f014sm409429b3a.156.2025.02.24.19.46.09
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7347a81f014sm409429b3a.156.2025.02.24.19.46.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Feb 2025 19:46:18 -0800 (PST)
+        Mon, 24 Feb 2025 19:46:28 -0800 (PST)
 From: Qi Zheng <zhengqi.arch@bytedance.com>
 To: peterz@infradead.org,
 	kevin.brodsky@arm.com,
@@ -99,15 +100,17 @@ Cc: linux-mm@kvack.org,
 	x86@kernel.org,
 	linux-riscv@lists.infradead.org,
 	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v2 0/6] remove tlb_remove_page_ptdesc()
-Date: Tue, 25 Feb 2025 11:45:50 +0800
-Message-Id: <cover.1740454179.git.zhengqi.arch@bytedance.com>
+Subject: [PATCH v2 1/6] mm: pgtable: make generic tlb_remove_table() use struct ptdesc
+Date: Tue, 25 Feb 2025 11:45:51 +0800
+Message-Id: <5be8c3ab7bd68510bf0db4cf84010f4dfe372917.1740454179.git.zhengqi.arch@bytedance.com>
 X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+In-Reply-To: <cover.1740454179.git.zhengqi.arch@bytedance.com>
+References: <cover.1740454179.git.zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250224_194624_240179_50FB4818 
-X-CRM114-Status: GOOD (  10.27  )
+X-CRM114-CacheID: sfid-20250224_194629_760553_68439B01 
+X-CRM114-Status: GOOD (  11.98  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -122,59 +125,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Changes in v2:
- - add [PATCH v2 2/6] (Peter Zijlstra)
- - remove [PATCH 4/5] and add [PATCH v2 5/6]
- - rebase onto the next-20250224
+Now only arm will call tlb_remove_ptdesc()/tlb_remove_table() when
+CONFIG_MMU_GATHER_TABLE_FREE is disabled. In this case, the type of the
+table parameter is actually struct ptdesc * instead of struct page *.
 
-Hi all,
+Since struct ptdesc still overlaps with struct page and has not been
+separated from it, forcing the table parameter to struct page * will not
+cause any problems at this time. But this is definitely incorrect and
+needs to be fixed. So just like the generic __tlb_remove_table(), let
+generic tlb_remove_table() use struct ptdesc by default when
+CONFIG_MMU_GATHER_TABLE_FREE is disabled.
 
-As suggested by Peter Zijlstra below [1], this series aims to remove
-tlb_remove_page_ptdesc().
+Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+---
+ include/asm-generic/tlb.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-: Fundamentally tlb_remove_page() is about removing *pages* as from a PTE,
-: there should not be a page-table anywhere near here *ever*.
-:
-: Yes, some architectures use tlb_remove_page() for page-tables too, but
-: that is more or less an implementation detail that can be fixed.
-
-After this series, all architectures use tlb_remove_table() or tlb_remove_ptdesc()
-to remove the page table pages. In the future, once all architectures using
-tlb_remove_table() have also converted to using struct ptdesc (eg. powerpc), it
-may be possible to use only tlb_remove_ptdesc().
-
-This series is based on next-20250224.
-
-Comments and suggestions are welcome!
-
-Thanks,
-Qi
-
-[1]. https://lore.kernel.org/linux-mm/20250103111457.GC22934@noisy.programming.kicks-ass.net/
-
-Qi Zheng (6):
-  mm: pgtable: make generic tlb_remove_table() use struct ptdesc
-  mm: pgtable: change pt parameter of tlb_remove_ptdesc() to struct
-    ptdesc *
-  mm: pgtable: convert some architectures to use tlb_remove_ptdesc()
-  riscv: pgtable: unconditionally use tlb_remove_ptdesc()
-  x86: pgtable: convert to use tlb_remove_ptdesc()
-  mm: pgtable: remove tlb_remove_page_ptdesc()
-
- arch/csky/include/asm/pgalloc.h      |  3 +--
- arch/hexagon/include/asm/pgalloc.h   |  3 +--
- arch/loongarch/include/asm/pgalloc.h |  3 +--
- arch/m68k/include/asm/sun3_pgalloc.h |  3 +--
- arch/mips/include/asm/pgalloc.h      |  3 +--
- arch/nios2/include/asm/pgalloc.h     |  9 ++++-----
- arch/openrisc/include/asm/pgalloc.h  |  3 +--
- arch/riscv/include/asm/pgalloc.h     | 26 ++++----------------------
- arch/sh/include/asm/pgalloc.h        |  3 +--
- arch/um/include/asm/pgalloc.h        |  9 +++------
- arch/x86/mm/pgtable.c                |  8 ++++----
- include/asm-generic/tlb.h            | 14 ++++----------
- 12 files changed, 26 insertions(+), 61 deletions(-)
-
+diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
+index b35b36fa7aabf..54f579750c8e5 100644
+--- a/include/asm-generic/tlb.h
++++ b/include/asm-generic/tlb.h
+@@ -232,10 +232,10 @@ static inline void tlb_remove_page(struct mmu_gather *tlb, struct page *page);
+  */
+ static inline void tlb_remove_table(struct mmu_gather *tlb, void *table)
+ {
+-	struct page *page = (struct page *)table;
++	struct ptdesc *ptdesc = (struct ptdesc *)table;
+ 
+-	pagetable_dtor(page_ptdesc(page));
+-	tlb_remove_page(tlb, page);
++	pagetable_dtor(ptdesc);
++	tlb_remove_page(tlb, ptdesc_page(ptdesc));
+ }
+ #endif /* CONFIG_MMU_GATHER_TABLE_FREE */
+ 
 -- 
 2.20.1
 
