@@ -4,129 +4,147 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id DC6F3C021BC
-	for <linux-um@archiver.kernel.org>; Tue, 25 Feb 2025 04:52:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 67693C021BE
+	for <linux-um@archiver.kernel.org>; Wed, 26 Feb 2025 02:10:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Message-id:Date:References:
+	In-reply-to:Subject:Cc:To:From:MIME-Version:Content-Transfer-Encoding:
+	Content-Type:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=Y+AOLMBHyoEBsAHQDRMLfrp+DU3rIi9C1hjH+u4umGY=; b=tr+4y0WQu7TWlGlcVGRn2PylC4
-	u/77/01cx7nFHRALR+W2KFtN99l/Cq3eon+DX8NiZnmmM5ravgSYnh6rVBSy6ddV1oQzeON6tbrsU
-	KQhguQcywoVsNLSgJWUxOhIP8SVeJyPuoE3PtfDf54m1iZ7UMpKGE5qao4GkS7YqvW+UahpNkgxol
-	LWrqyL/tn7t1brVq98g93xQogpxHHcRinIL8rDbhgdncI5+aSqsoFVwK15u0fzNmNQ4jwZ2k9Xj6h
-	APlsE6aQJktA9a7srKtztjVeiuyyHyv1tL+aBo/p60mr1CtY/aN9mKF3Q40NONXGHbUha4KAy/5eY
-	/Eeqz49Q==;
+	bh=NSHYMvLkdyKWlrJ8TUrBFvBlFGqXUq8fzgDW+/N42tQ=; b=ayhMOKgc8uEgJR3Oqpq6+U5GWn
+	4YlSBBXUkwQ0sCxC0PPHaJbzArSsXxIs00Ac0zx0KDZWCTS7D0PIN2ZK9557nrQTxy+GGy0MMOFUB
+	PPEVJ5JYKZ0TrRAgK1E1utWGdLdhkg5j43f6oR4ElniDJikFhwbcguXC11h10BREtnGGoI3bNS3kn
+	IdppAvwTygV3bbaXQWc35+a9nDZF9JnYVdc3qb3GlY//I057nLph7Ncuywc6hKtSaCbqX2j4bjSD/
+	/kOWNzz1BBuq9wreei7rkCwziAkLtLnhK2mwIyNyQrRMWrBo1G2+q09NwBowEnJb8HjE2D5pmJPTc
+	fhXfPerw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tmmw9-0000000FyTq-1xJS;
-	Tue, 25 Feb 2025 04:52:53 +0000
-Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	id 1tn6sy-000000027Nt-2kBS;
+	Wed, 26 Feb 2025 02:10:56 +0000
+Received: from smtp-out2.suse.de ([2a07:de40:b251:101:10:150:64:2])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tmlux-0000000Fu1M-2vxn
-	for linux-um@bombadil.infradead.org;
-	Tue, 25 Feb 2025 03:47:35 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-	:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=Y+AOLMBHyoEBsAHQDRMLfrp+DU3rIi9C1hjH+u4umGY=; b=fvKgqXEjWVU+kgzLwExkYCqVua
-	VHOHQuDZsPDSNnfPROXtrf1xszDEw0CR0i1kdB4AWHizLhrAl1k2H8cnDEqeoqLkwGXQJYF8ZTDf8
-	5SpMg5Qox/fnL2EGktq5s/Zb5sdyAV8JutJLqXEmHEMxSWM/JGTHGiKP7UUZgucpmZ9x3p8aw+7MD
-	bT/Ef4F6nnpL/3lvXuoGSh39koEQtc+U4tPdvBou/8zL7s7gpmpBH2V4JYA33YGkkJmowBYKoJqP+
-	lvwjfm3HxVeG/JVQbMV0bAobYi6zJW2rXB3FwfqxFzHC0MTeese9FKM9Kgo47MkPijmdS009fYJNy
-	hdAABthA==;
-Received: from mail-pl1-x631.google.com ([2607:f8b0:4864:20::631])
-	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tmluh-00000003Hvp-3lnb
+	id 1tn6re-000000027Ai-2fC0
 	for linux-um@lists.infradead.org;
-	Tue, 25 Feb 2025 03:47:34 +0000
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-22185cddbffso103442525ad.1
-        for <linux-um@lists.infradead.org>; Mon, 24 Feb 2025 19:47:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1740455238; x=1741060038; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y+AOLMBHyoEBsAHQDRMLfrp+DU3rIi9C1hjH+u4umGY=;
-        b=GgvCjSq4Gc+YxCcULbNUSwIy1K+bzuxO+D+2uNQdFxpG4NU46lBD4LHmwV/k/8Ihvp
-         o876JKEM3MDlCQpi0V3b1bEf2/t8z2ad2dLO3SEPSbYwkvQWdmSI84HGfXrUJSxIUWrs
-         YK1qu1U8OiKniXuPXefl2L6tzfl8KFA1/Qe/a98Pom2Nsj/KQNjtkYq09jPP0DcNcgC+
-         0Af1hhSYw6jEW337/r0bUy//n+NnrWhWBi9KkTmRH/rvPrHiYQErR2R2xHwFiXTS9QkF
-         hgckEs4QO1FWSS2lq3kdo9UW24Ju+r8PonvS+r3mDPynVKZccsC+9+waMVpPgL4APbGP
-         fIbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740455238; x=1741060038;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Y+AOLMBHyoEBsAHQDRMLfrp+DU3rIi9C1hjH+u4umGY=;
-        b=HgnKoXC7Dbol+RDOWMuL8U5hB4xJwTolT5hQ7yq74iIDlIVAKw7faOxy6UxAO8AQBj
-         hjj7phEWrycrzgvUfV2SZ/eLd0qp1B+WvSmt4C7TEg/LjI+iZOVuMOWh0fcb6XHGsP4r
-         KIICTiTczJ+Yt2I98nzriLTq++xpXIXQLoHZVkrCDiTYFstmKjg+/a1Ms5hesMV+o5st
-         alZWshu1Hu11TelBMj2aK1ZtlPISnOi81CBn3cr8Lc6/73LaLLxzc/BtmYmH0K/pHzcL
-         Ji4/5zA521LWG4+Bk8Rw6Morlnz/lbw7EZigtgdPo6KXGUSAgoxLqAJwoc/hpmFLOOlw
-         DsxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV1Tsp8twMeYltZv/9brmc936qllolmPI/un+M1S8F9ofcng6HDzuVGsSwpVR0uL3x7hQgdQ07+4Q==@lists.infradead.org
-X-Gm-Message-State: AOJu0Yx8PNNGXkl/CuX1f66O60jWwa/BMLIlyh2G8LUX4J5xqhTlLDFT
-	GVHVSv9HGyhn1bOl8nJX45kPVZKKTqo3LSGJt5fubionltN2QeRcGZStIOAo6Rc=
-X-Gm-Gg: ASbGncv5mNZSRXhZ5BjNrQKKIwGOuSHogiaw1184XsNn25vga2ZpcMC7kwWtu4MPXgS
-	uLbCxcK7CqnnS1Rm6ShxTIkQusAwd/Uy419hEowHvuV/t1u1uYXAnglGdqdMl9x+wTyggw4Sc46
-	0/wVKowq94IyPBY7OW8qi08hapvS3uUl/O004gdxosrcwEUzgfl3zrLo7LHXREyccrCAAeCS86R
-	T1SA/MTO+lweKDFCk9b80tiKQ4jfhpj3v2bBhOPDtoV8MI2YbxNT8QzXx+DKJr7uj3Of5Klr8OF
-	iC4qryO2Npoo4TncRRuKdAZZ5qveH/PpcIkue/0HCtUWxo5MxYK2T5Sc3Yj0+HUToA==
-X-Google-Smtp-Source: AGHT+IHDwvQZzbKv24vEjKNvLJNI+R1iJ4OqsIlmXN9p1d6u9OWq0+ZfVfD6gOTuv6xGQ3OntwSRRg==
-X-Received: by 2002:a05:6a00:6f0e:b0:734:26c6:26d3 with SMTP id d2e1a72fcca58-73426c62969mr26062579b3a.5.1740455238550;
-        Mon, 24 Feb 2025 19:47:18 -0800 (PST)
-Received: from C02DW0BEMD6R.bytedance.net ([63.216.146.179])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7347a81f014sm409429b3a.156.2025.02.24.19.47.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Feb 2025 19:47:18 -0800 (PST)
-From: Qi Zheng <zhengqi.arch@bytedance.com>
-To: peterz@infradead.org,
-	kevin.brodsky@arm.com,
-	riel@surriel.com,
-	vishal.moola@gmail.com,
-	david@redhat.com,
-	jannh@google.com,
-	hughd@google.com,
-	willy@infradead.org,
-	yuzhao@google.com,
-	muchun.song@linux.dev,
-	akpm@linux-foundation.org,
-	will@kernel.org,
-	aneesh.kumar@kernel.org,
-	npiggin@gmail.com,
-	arnd@arndb.de,
-	dave.hansen@linux.intel.com,
-	rppt@kernel.org,
-	alexghiti@rivosinc.com
-Cc: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org,
-	linux-openrisc@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	x86@kernel.org,
-	linux-riscv@lists.infradead.org,
-	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v2 6/6] mm: pgtable: remove tlb_remove_page_ptdesc()
-Date: Tue, 25 Feb 2025 11:45:56 +0800
-Message-Id: <3df04c8494339073b71be4acb2d92e108ecd1b60.1740454179.git.zhengqi.arch@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <cover.1740454179.git.zhengqi.arch@bytedance.com>
-References: <cover.1740454179.git.zhengqi.arch@bytedance.com>
+	Wed, 26 Feb 2025 02:09:36 +0000
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id EA1BB1F387;
+	Wed, 26 Feb 2025 02:09:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1740535771; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NSHYMvLkdyKWlrJ8TUrBFvBlFGqXUq8fzgDW+/N42tQ=;
+	b=u0yVGzYiNkzoEPIVHZee60sXFj3ne+Wb8tPzwZ/NcZWX1ofnfNRGRJwIXcAb9D/IDMGyb/
+	usUaRMHuPkFExNna4bYaKzoK+yUhpgWHHy3u+WOTuKI/FFaPgHGWzE79KiJGQruftUWdpU
+	x83Pz3gK8Sl5gqJalcZ0usKWFh24ZfY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1740535771;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NSHYMvLkdyKWlrJ8TUrBFvBlFGqXUq8fzgDW+/N42tQ=;
+	b=eet465dcLupY2TpMQbmmQdvX+TDfghJ8aIFuG7/Cr1OyR05t8xUbytdq1Ic3lU5zNdpoai
+	tKqVPW+naUF6X/Dg==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=XtO52lJP;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=k0wvKTl8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1740535770; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NSHYMvLkdyKWlrJ8TUrBFvBlFGqXUq8fzgDW+/N42tQ=;
+	b=XtO52lJPWuBEyOccT4EnXjjeFJ8fOtInDyKUUA+yznmb22nEwsuDzq0wTYEAhVOWZ4Ej4n
+	c81NWXZ7ui/GzQeXRfXCxgGwwyVF1wx9qjPBVvVe7ThQ7GrTCxaP31V4kPpim4xu6ClB1C
+	fST4cM1wVZ+Udh/RiZIS+H0sLKady7Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1740535770;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NSHYMvLkdyKWlrJ8TUrBFvBlFGqXUq8fzgDW+/N42tQ=;
+	b=k0wvKTl8JYtMrGy37fuIOg7D7oNXeJY52zKjSvtUfDhxeGoKL9/5A72/9kHcQIhk4UAB76
+	Ioq34eDDLVWaC1AQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E0BC213404;
+	Wed, 26 Feb 2025 02:09:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id C85nJNJ3vmdDXgAAD6G6ig
+	(envelope-from <neilb@suse.de>); Wed, 26 Feb 2025 02:09:22 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From: "NeilBrown" <neilb@suse.de>
+To: "Trond Myklebust" <trondmy@hammerspace.com>
+Cc: "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+ "brauner@kernel.org" <brauner@kernel.org>,
+ "xiubli@redhat.com" <xiubli@redhat.com>,
+ "idryomov@gmail.com" <idryomov@gmail.com>,
+ "okorniev@redhat.com" <okorniev@redhat.com>,
+ "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
+ "Dai.Ngo@oracle.com" <Dai.Ngo@oracle.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "johannes@sipsolutions.net" <johannes@sipsolutions.net>,
+ "chuck.lever@oracle.com" <chuck.lever@oracle.com>,
+ "jlayton@kernel.org" <jlayton@kernel.org>,
+ "anna@kernel.org" <anna@kernel.org>, "miklos@szeredi.hu" <miklos@szeredi.hu>,
+ "anton.ivanov@cambridgegreys.com" <anton.ivanov@cambridgegreys.com>,
+ "jack@suse.cz" <jack@suse.cz>, "tom@talpey.com" <tom@talpey.com>,
+ "richard@nod.at" <richard@nod.at>,
+ "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ "netfs@lists.linux.dev" <netfs@lists.linux.dev>,
+ "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+ "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
+ "senozhatsky@chromium.org" <senozhatsky@chromium.org>
+Subject: Re: [PATCH 1/6] Change inode_operations.mkdir to return struct dentry *
+In-reply-to: <d4aaba8c09f68d8a8264474ce81b9e818eaa60d7.camel@hammerspace.com>
+References: <>, <d4aaba8c09f68d8a8264474ce81b9e818eaa60d7.camel@hammerspace.com>
+Date: Wed, 26 Feb 2025 13:09:19 +1100
+Message-id: <174053575968.102979.1033896985966452059@noble.neil.brown.name>
+X-Rspamd-Queue-Id: EA1BB1F387
+X-Spamd-Result: default: False [-4.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[24];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[zeniv.linux.org.uk,kernel.org,redhat.com,gmail.com,vger.kernel.org,oracle.com,sipsolutions.net,szeredi.hu,cambridgegreys.com,suse.cz,talpey.com,nod.at,lists.infradead.org,lists.linux.dev,chromium.org];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	R_RATELIMIT(0.00)[from(RLewrxuus8mos16izbn)];
+	MISSING_XM_UA(0.00)[];
+	DKIM_TRACE(0.00)[suse.de:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250225_034726_218023_7DB8AD95 
-X-CRM114-Status: UNSURE (   7.41  )
-X-CRM114-Notice: Please train this message.
+X-CRM114-CacheID: sfid-20250225_180935_047257_B990E988 
+X-CRM114-Status: GOOD (  42.19  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -141,35 +159,119 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-The tlb_remove_ptdesc()/tlb_remove_table() is specially designed for page
-table pages, and now all architectures have been converted to use it to
-remove page table pages. So let's remove tlb_remove_page_ptdesc(), it
-currently has no users and should not be used for page table pages.
+On Tue, 25 Feb 2025, Trond Myklebust wrote:
+> On Mon, 2025-02-24 at 14:09 +1100, NeilBrown wrote:
+> > On Mon, 24 Feb 2025, Al Viro wrote:
+> > > On Mon, Feb 24, 2025 at 12:34:06PM +1100, NeilBrown wrote:
+> > > > On Sat, 22 Feb 2025, Al Viro wrote:
+> > > > > On Fri, Feb 21, 2025 at 10:36:30AM +1100, NeilBrown wrote:
+> > > > >=20
+> > > > > > +In general, filesystems which use d_instantiate_new() to
+> > > > > > install the new
+> > > > > > +inode can safely return NULL.=C2=A0 Filesystems which may not
+> > > > > > have an I_NEW inode
+> > > > > > +should use d_drop();d_splice_alias() and return the result
+> > > > > > of the latter.
+> > > > >=20
+> > > > > IMO that's a bad pattern, _especially_ if you want to go for
+> > > > > "in-update"
+> > > > > kind of stuff later.
+> > > >=20
+> > > > Agreed.=C2=A0 I have a draft patch to change d_splice_alias() and
+> > > > d_exact_alias() to work on hashed dentrys.=C2=A0 I thought it should
+> > > > go after
+> > > > these mkdir patches rather than before.
+> > >=20
+> > > Could you give a braindump on the things d_exact_alias() is needed
+> > > for?
+> > > It's a recurring headache when doing ->d_name/->d_parent audits;
+> > > see e.g.
+> > > https://lore.kernel.org/all/20241213080023.GI3387508@ZenIV/=C2=A0for
+> > > related
+> > > mini-rant from the latest iteration.
+> > >=20
+> > > Proof of correctness is bloody awful; it feels like the primitive
+> > > itself
+> > > is wrong, but I'd never been able to write anything concise
+> > > regarding
+> > > the things we really want there ;-/
+> > >=20
+> >=20
+> > As I understand it, it is needed (or wanted) to handle the
+> > possibility
+> > of an inode becoming "stale" and then recovering.=C2=A0 This could happen,
+> > for example, with a temporarily misconfigured NFS server.
+> >=20
+> > If ->d_revalidate gets a NFSERR_STALE from the server it will return
+> > '0'
+> > so lookup_fast() and others will call d_invalidate() which will
+> > d_drop()
+> > the dentry.=C2=A0 There are other paths on which -ESTALE can result in
+> > d_drop().
+> >=20
+> > If a subsequent attempt to "open" the name successfully finds the
+> > same
+> > inode we want to reuse the old dentry rather than create a new one.
+> >=20
+> > I don't really understand why.=C2=A0 This code was added 20 years ago
+> > before
+> > git.
+> > It was introduced by
+> >=20
+> > commit 89a45174b6b32596ea98fa3f89a243e2c1188a01
+> > Author: Trond Myklebust <trond.myklebust@fys.uio.no>
+> > Date:=C2=A0=C2=A0 Tue Jan 4 21:41:37 2005 +0100
+> >=20
+> > =C2=A0=C2=A0=C2=A0=C2=A0 VFS: Avoid dentry aliasing problems in filesyste=
+ms like NFS,
+> > where
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 inodes may be mark=
+ed as stale in one instance (causing the
+> > dentry
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 to be dropped) the=
+n re-enabled in the next instance.
+> > =C2=A0=C2=A0=C2=A0=20
+> > =C2=A0=C2=A0=C2=A0=C2=A0 Signed-off-by: Trond Myklebust <trond.myklebust@=
+fys.uio.no>
+> >=20
+> > in history.git
+> >=20
+> > Trond: do you have any memory of this?=C2=A0 Can you explain what the
+> > symptom
+> > was that you wanted to fix?
+> >=20
+> > The original patch used d_add_unique() for lookup and atomic_open and
+> > readdir prime-dcache.=C2=A0 We now only use it for v4 atomic_open.=C2=A0 =
+Maybe
+> > we
+> > don't need it at all?=C2=A0 Or maybe we need to restore it to those other
+> > callers?=20
+> >=20
+>=20
+> 2005? That looks like it was trying to deal with the userspace NFS
+> server. I can't remember when it was given the ability to use the inode
+> generation counter, but I'm pretty sure that in 2005 there were plenty
+> of setups out there that had the older version that reused filehandles
+> (due to inode number reuse). So you would get spurious ESTALE errors
+> sometimes due to inode number reuse, sometimes because the filehandle
+> fell out of the userspace NFS server's cache.
 
-Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- include/asm-generic/tlb.h | 6 ------
- 1 file changed, 6 deletions(-)
+So this was likely done to work-around known weaknesses in NFS servers
+at the time.
 
-diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
-index 18bf499ef8801..dd292c6d3ce88 100644
---- a/include/asm-generic/tlb.h
-+++ b/include/asm-generic/tlb.h
-@@ -511,12 +511,6 @@ static inline void tlb_remove_ptdesc(struct mmu_gather *tlb, struct ptdesc *pt)
- 	tlb_remove_table(tlb, pt);
- }
- 
--/* Like tlb_remove_ptdesc, but for page-like page directories. */
--static inline void tlb_remove_page_ptdesc(struct mmu_gather *tlb, struct ptdesc *pt)
--{
--	tlb_remove_page(tlb, ptdesc_page(pt));
--}
--
- static inline void tlb_change_page_size(struct mmu_gather *tlb,
- 						     unsigned int page_size)
- {
--- 
-2.20.1
+The original d_add_unique() was used in nfs_lookup() nfs_atomic_lookup()
+and nfs_readdir_lookup() but the current descendent d_exact_alias() is
+only used in _nfs4_open_and_get_state() called only by nfs4_do_open()
+which is only used in nfs4_atomic_open() and nfs4_proc_create().
+
+So the usage in 'lookup' and 'readdir' have fallen by the wayside with
+no apparent negative consequences. =20
+The old NFS servers have probably been fixed.
+
+So do you have any concerns with us discarding d_exact_alias() and only
+using d_splice_alias() in _nfs4_open_get_state() ??
+
+Thanks,
+NeilBrown
 
 
