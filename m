@@ -4,83 +4,83 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0AC6C021B8
-	for <linux-um@archiver.kernel.org>; Thu, 27 Feb 2025 01:40:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 150ECC19776
+	for <linux-um@archiver.kernel.org>; Thu, 27 Feb 2025 01:40:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=sqlgJrRfFfOStNHDiZ1evU6ja72lhQY7pRBIMD+Gk1o=; b=Tsc1u82c7YaWUXXB5rZt1xmadH
-	t6cKZwaATJ4R3Yr1UCBlLqoxXm8lVsRQDlOD/eYDa60tMqpAFe6uta0YyBaGm+SMmF4nBPwikQRqp
-	4SzB7mYW7aFSKs9h463gtbiLBujwAmf1HNWbSIcAWhV4ESMSN0cawvXGpapllBdDUYbIWD7tZqSTl
-	LdfOg6+9EgV36jNRd2VGOp4PY6YGXMz9fARg20Ltky/2i9lwur95rxvX2S2VzKeKNU0YpeE3X5Fqy
-	sESRnN/PZrrloOTh3h4AywOD6ncYM+3XG2jifrfBz4VCDRoomD6jQ7E464gE/u8KbQZRfJxnDBVrG
-	mehL0DMw==;
+	bh=HpsssM3bSMTiY4nGx2PiIOfNYtj975+x+AQWsDXV3Ac=; b=G+iTvGPPWi4Ma82JXkR9fXQrlm
+	NMW4r6q5cct8gYsQIGVn71xDzQn1BQGVjQ3d+g3OWKMvd7tKqsLIAuMjMegey/0nk1fb3untTHIAV
+	AcBMngQ8R4tuVdlWjKZ90pQcvH0q1csy6V9SXarM4qwIRxzbjbX5gedusycMMb0si+IdSeOkR8WgH
+	y61Q7w5+oBLzQjVCkc6uZrReHNikN1Q3hsN34kbkEQ0eA5glezFw7WImcAB6RYKIrpyehOQq5nrRP
+	dNUc64XPkMmvsiJWw4jYGrRUoY0VPa7rPMbTwvHos0mcRbhJ/t2irc95Q7toz4fXb30Fh9zAlhiUq
+	7LxDmWdQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tnStE-00000005y7x-2HAT;
-	Thu, 27 Feb 2025 01:40:40 +0000
-Received: from smtp-out2.suse.de ([2a07:de40:b251:101:10:150:64:2])
+	id 1tnStN-00000005yBA-3WHA;
+	Thu, 27 Feb 2025 01:40:49 +0000
+Received: from smtp-out1.suse.de ([195.135.223.130])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tnStB-00000005y75-3LuS
+	id 1tnStL-00000005yAL-27kF
 	for linux-um@lists.infradead.org;
-	Thu, 27 Feb 2025 01:40:39 +0000
+	Thu, 27 Feb 2025 01:40:48 +0000
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E27161F387;
-	Thu, 27 Feb 2025 01:40:35 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B44ED21186;
+	Thu, 27 Feb 2025 01:40:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1740620435; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1740620445; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=sqlgJrRfFfOStNHDiZ1evU6ja72lhQY7pRBIMD+Gk1o=;
-	b=uEvueHF4nkSgnjrPw+Upej5yrG03aOEaiAMrBeGdRiHQsMgbCDWhjHsPAn5PFrSav43LjM
-	0VSOd69ZTVuXDGMLo1hU+3toKe/BS6om1s6PhBfe8fo1nGLhlYM0LM7H4fk9KuSkY2sPdR
-	LU1dqDutdbUyvb4HluZPdPmdnGplMTo=
+	bh=HpsssM3bSMTiY4nGx2PiIOfNYtj975+x+AQWsDXV3Ac=;
+	b=SHyroeTVlvqnzjfvZrVeCxtsLmigWd4IggPE+WI2Bkxq7SI5eO4R2XgRaMZrWy+9VcQhqA
+	KpTbaLjGsd+PD+iutmN8lRSXzI65zpYAPJvL5/WZC4+pJZuhN7WF92jD7jOkV+m5tQela2
+	EmfAn/QE4thkAv/LJTCS/GF/ZlXLOCE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1740620435;
+	s=susede2_ed25519; t=1740620445;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=sqlgJrRfFfOStNHDiZ1evU6ja72lhQY7pRBIMD+Gk1o=;
-	b=tQ+YLCmPx6s51q6fgfH/Ge15LzwEIjaGCuw30NRYR+Ya58VwxYj1M6p8oj+FffLFPV0gJ/
-	lIbEOCuiDGG+j8DQ==
-Authentication-Results: smtp-out2.suse.de;
+	bh=HpsssM3bSMTiY4nGx2PiIOfNYtj975+x+AQWsDXV3Ac=;
+	b=4ZPSS4K1c4jTVduJLmMbptL9zrth0ZhPl5JCSPS9Dxqdn6uI9mDnlqNpZbMObVyIW36blD
+	KBUmnZaiojPNRaAQ==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1740620435; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1740620445; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=sqlgJrRfFfOStNHDiZ1evU6ja72lhQY7pRBIMD+Gk1o=;
-	b=uEvueHF4nkSgnjrPw+Upej5yrG03aOEaiAMrBeGdRiHQsMgbCDWhjHsPAn5PFrSav43LjM
-	0VSOd69ZTVuXDGMLo1hU+3toKe/BS6om1s6PhBfe8fo1nGLhlYM0LM7H4fk9KuSkY2sPdR
-	LU1dqDutdbUyvb4HluZPdPmdnGplMTo=
+	bh=HpsssM3bSMTiY4nGx2PiIOfNYtj975+x+AQWsDXV3Ac=;
+	b=SHyroeTVlvqnzjfvZrVeCxtsLmigWd4IggPE+WI2Bkxq7SI5eO4R2XgRaMZrWy+9VcQhqA
+	KpTbaLjGsd+PD+iutmN8lRSXzI65zpYAPJvL5/WZC4+pJZuhN7WF92jD7jOkV+m5tQela2
+	EmfAn/QE4thkAv/LJTCS/GF/ZlXLOCE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1740620435;
+	s=susede2_ed25519; t=1740620445;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=sqlgJrRfFfOStNHDiZ1evU6ja72lhQY7pRBIMD+Gk1o=;
-	b=tQ+YLCmPx6s51q6fgfH/Ge15LzwEIjaGCuw30NRYR+Ya58VwxYj1M6p8oj+FffLFPV0gJ/
-	lIbEOCuiDGG+j8DQ==
+	bh=HpsssM3bSMTiY4nGx2PiIOfNYtj975+x+AQWsDXV3Ac=;
+	b=4ZPSS4K1c4jTVduJLmMbptL9zrth0ZhPl5JCSPS9Dxqdn6uI9mDnlqNpZbMObVyIW36blD
+	KBUmnZaiojPNRaAQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9EC07134A0;
-	Thu, 27 Feb 2025 01:40:29 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 85409134A0;
+	Thu, 27 Feb 2025 01:40:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id uvqnE43Cv2fqEQAAD6G6ig
-	(envelope-from <neilb@suse.de>); Thu, 27 Feb 2025 01:40:29 +0000
+	id UcubDpfCv2f+EQAAD6G6ig
+	(envelope-from <neilb@suse.de>); Thu, 27 Feb 2025 01:40:39 +0000
 From: NeilBrown <neilb@suse.de>
 To: Alexander Viro <viro@zeniv.linux.org.uk>,
 	Christian Brauner <brauner@kernel.org>,
@@ -100,9 +100,9 @@ Cc: Chuck Lever <chuck.lever@oracle.com>,
 	Johannes Berg <johannes@sipsolutions.net>,
 	linux-um@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 3/6] ceph: return the correct dentry on mkdir
-Date: Thu, 27 Feb 2025 12:32:55 +1100
-Message-ID: <20250227013949.536172-4-neilb@suse.de>
+Subject: [PATCH 4/6] fuse: return correct dentry for ->mkdir
+Date: Thu, 27 Feb 2025 12:32:56 +1100
+Message-ID: <20250227013949.536172-5-neilb@suse.de>
 X-Mailer: git-send-email 2.48.1
 In-Reply-To: <20250227013949.536172-1-neilb@suse.de>
 References: <20250227013949.536172-1-neilb@suse.de>
@@ -128,12 +128,12 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 	RCVD_COUNT_TWO(0.00)[2];
 	FROM_HAS_DN(0.00)[];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
-	R_RATELIMIT(0.00)[from(RLewrxuus8mos16izbn),to_ip_from(RL99f7qjgz3j4qaff4fhggowz5)];
+	R_RATELIMIT(0.00)[to_ip_from(RL99f7qjgz3j4qaff4fhggowz5),from(RLewrxuus8mos16izbn)];
 	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
 	FREEMAIL_ENVRCPT(0.00)[gmail.com]
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250226_174037_999876_0C7D85B7 
-X-CRM114-Status: GOOD (  15.40  )
+X-CRM114-CacheID: sfid-20250226_174047_692264_0A396A2E 
+X-CRM114-Status: GOOD (  16.76  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -148,100 +148,167 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-ceph already splices the correct dentry (in splice_dentry()) from the
-result of mkdir but does nothing more with it.
+fuse already uses d_splice_alias() to ensure an appropriate dentry is
+found for a newly created dentry.  Now that ->mkdir can return that
+dentry we do so.
 
-Now that ->mkdir can return a dentry, return the correct dentry.
+This requires changing create_new_entry() to return a dentry and
+handling that change in all callers.
 
-Note that previously ceph_mkdir() could call
-   ceph_init_inode_acls()
-on the inode from the wrong dentry, which would be NULL.  This
-is safe as ceph_init_inode_acls() checks for NULL, but is not
-strictly correct.  With this patch, the inode for the returned dentry
-is passed to ceph_init_inode_acls().
+Note that when create_new_entry() is asked to create anything other than
+a directory we can be sure it will NOT return an alternate dentry as
+d_splice_alias() only returns an alternate dentry for directories.
+So we don't need to check for that case when passing one the result.
 
-Reviewed-by: Viacheslav Dubeyko <Slava.Dubeyko@ibm.com>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
 Signed-off-by: NeilBrown <neilb@suse.de>
 ---
- fs/ceph/dir.c | 24 ++++++++++++++++--------
- 1 file changed, 16 insertions(+), 8 deletions(-)
+ fs/fuse/dir.c | 48 +++++++++++++++++++++++++++---------------------
+ 1 file changed, 27 insertions(+), 21 deletions(-)
 
-diff --git a/fs/ceph/dir.c b/fs/ceph/dir.c
-index 39e0f240de06..5e98394e2dca 100644
---- a/fs/ceph/dir.c
-+++ b/fs/ceph/dir.c
-@@ -1099,6 +1099,7 @@ static struct dentry *ceph_mkdir(struct mnt_idmap *idmap, struct inode *dir,
- 	struct ceph_client *cl = mdsc->fsc->client;
- 	struct ceph_mds_request *req;
- 	struct ceph_acl_sec_ctx as_ctx = {};
-+	struc dentry *ret;
- 	int err;
- 	int op;
+diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
+index d0289ce068ba..2779ebf2b3b9 100644
+--- a/fs/fuse/dir.c
++++ b/fs/fuse/dir.c
+@@ -781,9 +781,9 @@ static int fuse_atomic_open(struct inode *dir, struct dentry *entry,
+ /*
+  * Code shared between mknod, mkdir, symlink and link
+  */
+-static int create_new_entry(struct mnt_idmap *idmap, struct fuse_mount *fm,
+-			    struct fuse_args *args, struct inode *dir,
+-			    struct dentry *entry, umode_t mode)
++static struct dentry *create_new_entry(struct mnt_idmap *idmap, struct fuse_mount *fm,
++				       struct fuse_args *args, struct inode *dir,
++				       struct dentry *entry, umode_t mode)
+ {
+ 	struct fuse_entry_out outarg;
+ 	struct inode *inode;
+@@ -792,11 +792,11 @@ static int create_new_entry(struct mnt_idmap *idmap, struct fuse_mount *fm,
+ 	struct fuse_forget_link *forget;
  
-@@ -1116,32 +1117,32 @@ static struct dentry *ceph_mkdir(struct mnt_idmap *idmap, struct inode *dir,
- 		      ceph_vinop(dir), dentry, dentry, mode);
- 		op = CEPH_MDS_OP_MKDIR;
- 	} else {
--		err = -EROFS;
-+		ret = ERR_PTR(-EROFS);
- 		goto out;
- 	}
+ 	if (fuse_is_bad(dir))
+-		return -EIO;
++		return ERR_PTR(-EIO);
  
- 	if (op == CEPH_MDS_OP_MKDIR &&
- 	    ceph_quota_is_max_files_exceeded(dir)) {
--		err = -EDQUOT;
-+		ret = ERR_PTR(-EDQUOT);
- 		goto out;
- 	}
- 	if ((op == CEPH_MDS_OP_MKSNAP) && IS_ENCRYPTED(dir) &&
- 	    !fscrypt_has_encryption_key(dir)) {
--		err = -ENOKEY;
-+		ret = ERR_PTR(-ENOKEY);
- 		goto out;
- 	}
+ 	forget = fuse_alloc_forget();
+ 	if (!forget)
+-		return -ENOMEM;
++		return ERR_PTR(-ENOMEM);
  
- 
- 	req = ceph_mdsc_create_request(mdsc, op, USE_AUTH_MDS);
- 	if (IS_ERR(req)) {
--		err = PTR_ERR(req);
-+		ret = ERR_CAST(req);
- 		goto out;
+ 	memset(&outarg, 0, sizeof(outarg));
+ 	args->nodeid = get_node_id(dir);
+@@ -826,29 +826,27 @@ static int create_new_entry(struct mnt_idmap *idmap, struct fuse_mount *fm,
+ 			  &outarg.attr, ATTR_TIMEOUT(&outarg), 0, 0);
+ 	if (!inode) {
+ 		fuse_queue_forget(fm->fc, forget, outarg.nodeid, 1);
+-		return -ENOMEM;
++		return ERR_PTR(-ENOMEM);
  	}
+ 	kfree(forget);
  
- 	mode |= S_IFDIR;
- 	req->r_new_inode = ceph_new_inode(dir, dentry, &mode, &as_ctx);
- 	if (IS_ERR(req->r_new_inode)) {
--		err = PTR_ERR(req->r_new_inode);
-+		ret = ERR_CAST(req->r_new_inode);
- 		req->r_new_inode = NULL;
- 		goto out_req;
- 	}
-@@ -1165,15 +1166,22 @@ static struct dentry *ceph_mkdir(struct mnt_idmap *idmap, struct inode *dir,
- 	    !req->r_reply_info.head->is_target &&
- 	    !req->r_reply_info.head->is_dentry)
- 		err = ceph_handle_notrace_create(dir, dentry);
-+	ret = ERR_PTR(err);
- out_req:
-+	if (!IS_ERR(ret) && req->r_dentry != dentry)
-+		/* Some other dentry was spliced in */
-+		ret = dget(req->r_dentry);
- 	ceph_mdsc_put_request(req);
- out:
--	if (!err)
-+	if (!IS_ERR(ret)) {
-+		if (ret)
-+			dentry = ret;
- 		ceph_init_inode_acls(d_inode(dentry), &as_ctx);
--	else
-+	} else {
- 		d_drop(dentry);
-+	}
- 	ceph_release_acl_sec_ctx(&as_ctx);
--	return ERR_PTR(err);
-+	return ret;
+ 	d_drop(entry);
+ 	d = d_splice_alias(inode, entry);
+ 	if (IS_ERR(d))
+-		return PTR_ERR(d);
++		return d;
+ 
+-	if (d) {
++	if (d)
+ 		fuse_change_entry_timeout(d, &outarg);
+-		dput(d);
+-	} else {
++	else
+ 		fuse_change_entry_timeout(entry, &outarg);
+-	}
+ 	fuse_dir_changed(dir);
+-	return 0;
++	return d;
+ 
+  out_put_forget_req:
+ 	if (err == -EEXIST)
+ 		fuse_invalidate_entry(entry);
+ 	kfree(forget);
+-	return err;
++	return ERR_PTR(err);
  }
  
- static int ceph_link(struct dentry *old_dentry, struct inode *dir,
+ static int fuse_mknod(struct mnt_idmap *idmap, struct inode *dir,
+@@ -856,6 +854,7 @@ static int fuse_mknod(struct mnt_idmap *idmap, struct inode *dir,
+ {
+ 	struct fuse_mknod_in inarg;
+ 	struct fuse_mount *fm = get_fuse_mount(dir);
++	struct dentry *de;
+ 	FUSE_ARGS(args);
+ 
+ 	if (!fm->fc->dont_mask)
+@@ -871,7 +870,10 @@ static int fuse_mknod(struct mnt_idmap *idmap, struct inode *dir,
+ 	args.in_args[0].value = &inarg;
+ 	args.in_args[1].size = entry->d_name.len + 1;
+ 	args.in_args[1].value = entry->d_name.name;
+-	return create_new_entry(idmap, fm, &args, dir, entry, mode);
++	de = create_new_entry(idmap, fm, &args, dir, entry, mode);
++	if (IS_ERR(de))
++		return PTR_ERR(de);
++	return 0;
+ }
+ 
+ static int fuse_create(struct mnt_idmap *idmap, struct inode *dir,
+@@ -917,7 +919,7 @@ static struct dentry *fuse_mkdir(struct mnt_idmap *idmap, struct inode *dir,
+ 	args.in_args[0].value = &inarg;
+ 	args.in_args[1].size = entry->d_name.len + 1;
+ 	args.in_args[1].value = entry->d_name.name;
+-	return ERR_PTR(create_new_entry(idmap, fm, &args, dir, entry, S_IFDIR));
++	return create_new_entry(idmap, fm, &args, dir, entry, S_IFDIR);
+ }
+ 
+ static int fuse_symlink(struct mnt_idmap *idmap, struct inode *dir,
+@@ -925,6 +927,7 @@ static int fuse_symlink(struct mnt_idmap *idmap, struct inode *dir,
+ {
+ 	struct fuse_mount *fm = get_fuse_mount(dir);
+ 	unsigned len = strlen(link) + 1;
++	struct dentry *de;
+ 	FUSE_ARGS(args);
+ 
+ 	args.opcode = FUSE_SYMLINK;
+@@ -934,7 +937,10 @@ static int fuse_symlink(struct mnt_idmap *idmap, struct inode *dir,
+ 	args.in_args[1].value = entry->d_name.name;
+ 	args.in_args[2].size = len;
+ 	args.in_args[2].value = link;
+-	return create_new_entry(idmap, fm, &args, dir, entry, S_IFLNK);
++	de = create_new_entry(idmap, fm, &args, dir, entry, S_IFLNK);
++	if (IS_ERR(de))
++		return PTR_ERR(de);
++	return 0;
+ }
+ 
+ void fuse_flush_time_update(struct inode *inode)
+@@ -1117,7 +1123,7 @@ static int fuse_rename2(struct mnt_idmap *idmap, struct inode *olddir,
+ static int fuse_link(struct dentry *entry, struct inode *newdir,
+ 		     struct dentry *newent)
+ {
+-	int err;
++	struct dentry *de;
+ 	struct fuse_link_in inarg;
+ 	struct inode *inode = d_inode(entry);
+ 	struct fuse_mount *fm = get_fuse_mount(inode);
+@@ -1131,13 +1137,13 @@ static int fuse_link(struct dentry *entry, struct inode *newdir,
+ 	args.in_args[0].value = &inarg;
+ 	args.in_args[1].size = newent->d_name.len + 1;
+ 	args.in_args[1].value = newent->d_name.name;
+-	err = create_new_entry(&invalid_mnt_idmap, fm, &args, newdir, newent, inode->i_mode);
+-	if (!err)
++	de = create_new_entry(&invalid_mnt_idmap, fm, &args, newdir, newent, inode->i_mode);
++	if (!IS_ERR(de))
+ 		fuse_update_ctime_in_cache(inode);
+-	else if (err == -EINTR)
++	else if (PTR_ERR(de) == -EINTR)
+ 		fuse_invalidate_attr(inode);
+ 
+-	return err;
++	return PTR_ERR(de);
+ }
+ 
+ static void fuse_fillattr(struct mnt_idmap *idmap, struct inode *inode,
 -- 
 2.48.1
 
