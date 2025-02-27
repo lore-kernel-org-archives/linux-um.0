@@ -4,136 +4,88 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 39173C19776
-	for <linux-um@archiver.kernel.org>; Thu, 27 Feb 2025 01:41:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 78B93C1B087
+	for <linux-um@archiver.kernel.org>; Thu, 27 Feb 2025 11:28:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=IrzpEdv6H+V/XBJ3PfuAGSd0vpBUw8fdMVRSOzs/o7E=; b=jukEwqF+ptDks884bPL5H2TiaT
-	jwEVWGLtJKke/YRXPnGDoM4zf+QkAIqk6L3xhlbJEqUS9hLaUHyGVmTGahmszgs7KDYjY1sPsUldr
-	crSTqa/mNRO891nyfRCrf/2whJPBadMyUCsMBwW2mRDndT7wA9vDnElU0GaKs/4VHLgf9+TI30MbR
-	dSy13pcgtXAu35HFI7lADlMWYcnkzw7/jQBhH4Xqyw5TkjKiy2AtPtiExmAQKnNzOm2JSFND+8pB6
-	qIYcJJC4yq93OgkIGI+UwQB3Hg/z8glTR52C8QEO1r7dG3h6WU8Jk3c0EQ1Vsz4VSVWCDUbh3J+lf
-	fpAhEVtw==;
+	bh=Xs5+klIHUgwyyyEQRPQsx98Pc5etma9f9hiPcjrGdko=; b=rEM8MQ5KAeyzp3cuxb+wQnRbc1
+	yUG1niuUsj5SgxF1+8wt0E8amTqSUDhwB14NHa3bBYJNqQn4pXTxKfXjpOD98pD0/7+ffRA+zZAdc
+	5mHiFbKLfKEiAQp0t67Km0G3UsWJynhj7IMZC56sCv7xzw7vwK2Y7QNkwREq/lGDnKIsGJIT7ci1/
+	OZeiDZ+i03kbSeEMDHUYgEjcPz3IHb+LG8uhvnSXLZ5JOT1uiju8ZakFUuJmAQEWn03U5YJaCVNPV
+	4xBWafx0tJikS/ggFInoyX5zCcNXEkPt3Fz0l5qX+Egh/HzkrghzjdB216vgdUtWCCnFlmNFFFj+P
+	KIXbdmkg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tnStq-00000005yIj-2uT8;
-	Thu, 27 Feb 2025 01:41:18 +0000
-Received: from smtp-out2.suse.de ([2a07:de40:b251:101:10:150:64:2])
-	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tnSto-00000005yI1-0CEf
-	for linux-um@lists.infradead.org;
-	Thu, 27 Feb 2025 01:41:17 +0000
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 9DF261F387;
-	Thu, 27 Feb 2025 01:41:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1740620474; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IrzpEdv6H+V/XBJ3PfuAGSd0vpBUw8fdMVRSOzs/o7E=;
-	b=awweg0fwzXtASNy5NYNIoGH7N41PzvSVgONg7kUikPJ2jU5EVbvu9SVT2z4FO2Q14O/qol
-	K0+Cf167S0AOZ0WiRycnemSpknyQoDz55IUNQ/FZsiRDNZvN68wa7kGLiMQbIs9BdmS1bc
-	IXW9WkflkzqBnj4zAEjftinxomqpbVQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1740620474;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IrzpEdv6H+V/XBJ3PfuAGSd0vpBUw8fdMVRSOzs/o7E=;
-	b=0Wj9u0ctiZhRTTpbKvKIaBYlXqTDZLzkOSOVuaX3svw+MxYF3z1gMJeZWUmUbDlAket+k6
-	qzA7ysjEy1JzFjCA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1740620474; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IrzpEdv6H+V/XBJ3PfuAGSd0vpBUw8fdMVRSOzs/o7E=;
-	b=awweg0fwzXtASNy5NYNIoGH7N41PzvSVgONg7kUikPJ2jU5EVbvu9SVT2z4FO2Q14O/qol
-	K0+Cf167S0AOZ0WiRycnemSpknyQoDz55IUNQ/FZsiRDNZvN68wa7kGLiMQbIs9BdmS1bc
-	IXW9WkflkzqBnj4zAEjftinxomqpbVQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1740620474;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IrzpEdv6H+V/XBJ3PfuAGSd0vpBUw8fdMVRSOzs/o7E=;
-	b=0Wj9u0ctiZhRTTpbKvKIaBYlXqTDZLzkOSOVuaX3svw+MxYF3z1gMJeZWUmUbDlAket+k6
-	qzA7ysjEy1JzFjCA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2D255134A0;
-	Thu, 27 Feb 2025 01:41:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id EdQhNLPCv2ccEgAAD6G6ig
-	(envelope-from <neilb@suse.de>); Thu, 27 Feb 2025 01:41:07 +0000
-From: NeilBrown <neilb@suse.de>
-To: Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Jan Kara <jack@suse.cz>
-Cc: Chuck Lever <chuck.lever@oracle.com>,
-	Jeff Layton <jlayton@kernel.org>,
-	Trond Myklebust <trondmy@kernel.org>,
-	Anna Schumaker <anna@kernel.org>,
-	linux-nfs@vger.kernel.org,
-	Ilya Dryomov <idryomov@gmail.com>,
-	Xiubo Li <xiubli@redhat.com>,
-	ceph-devel@vger.kernel.org,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	linux-fsdevel@vger.kernel.org,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	linux-um@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 6/6] VFS: Change vfs_mkdir() to return the dentry.
-Date: Thu, 27 Feb 2025 12:32:58 +1100
-Message-ID: <20250227013949.536172-7-neilb@suse.de>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <20250227013949.536172-1-neilb@suse.de>
-References: <20250227013949.536172-1-neilb@suse.de>
+	id 1tnc3e-00000007BIN-3HVJ;
+	Thu, 27 Feb 2025 11:28:02 +0000
+Received: from foss.arm.com ([217.140.110.172])
+	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
+	id 1tnbpm-000000077ee-1WOO;
+	Thu, 27 Feb 2025 11:13:43 +0000
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B356E2C1C;
+	Thu, 27 Feb 2025 03:13:56 -0800 (PST)
+Received: from [10.57.85.134] (unknown [10.57.85.134])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6FF103F6A8;
+	Thu, 27 Feb 2025 03:13:31 -0800 (PST)
+Message-ID: <16863478-2195-435e-a899-559df097bc59@arm.com>
+Date: Thu, 27 Feb 2025 11:13:29 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FREEMAIL_CC(0.00)[oracle.com,kernel.org,vger.kernel.org,gmail.com,redhat.com,szeredi.hu,nod.at,cambridgegreys.com,sipsolutions.net,lists.infradead.org];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
-	RCVD_TLS_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	R_RATELIMIT(0.00)[from(RLewrxuus8mos16izbn),to_ip_from(RL99f7qjgz3j4qaff4fhggowz5)];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com]
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 7/8] execmem: add support for cache of large ROX pages
+Content-Language: en-GB
+To: Mike Rapoport <rppt@kernel.org>, Andrew Morton
+ <akpm@linux-foundation.org>, Luis Chamberlain <mcgrof@kernel.org>,
+ Dev Jain <dev.jain@arm.com>
+Cc: Andreas Larsson <andreas@gaisler.com>, Andy Lutomirski <luto@kernel.org>,
+ Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@quicinc.com>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Christoph Hellwig <hch@infradead.org>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Dave Hansen <dave.hansen@linux.intel.com>, Dinh Nguyen
+ <dinguyen@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
+ Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Kent Overstreet <kent.overstreet@linux.dev>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Mark Rutland <mark.rutland@arm.com>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
+ Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>,
+ Oleg Nesterov <oleg@redhat.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>,
+ Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
+ Stafford Horne <shorne@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Suren Baghdasaryan <surenb@google.com>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Thomas Gleixner <tglx@linutronix.de>, Uladzislau Rezki <urezki@gmail.com>,
+ Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
+ bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
+ linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, linux-mm@kvack.org,
+ linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+ linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+ sparclinux@vger.kernel.org, x86@kernel.org
+References: <20241023162711.2579610-1-rppt@kernel.org>
+ <20241023162711.2579610-8-rppt@kernel.org>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20241023162711.2579610-8-rppt@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250226_174116_392421_5F66BA9A 
-X-CRM114-Status: GOOD (  31.48  )
+X-CRM114-CacheID: sfid-20250227_031342_495427_7DEEA47A 
+X-CRM114-Status: GOOD (  21.62  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -148,556 +100,103 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-vfs_mkdir() does not guarantee to leave the child dentry hashed or make
-it positive on success, and in many such cases the filesystem had to use
-a different dentry which it can now return.
+Hi Mike,
 
-This patch changes vfs_mkdir() to return the dentry provided by the
-filesystems which is hashed and positive when provided.  This reduces
-the number of cases where the resulting dentry is not positive to a
-handful which don't deserve extra efforts.
+Drive by review comments below...
 
-The only callers of vfs_mkdir() which are interested in the resulting
-inode are in-kernel filesystem clients: cachefiles, nfsd, smb/server.
-The only filesystems that don't reliably provide the inode are:
-- kernfs, tracefs which these clients are unlikely to be interested in
-- cifs in some configurations would need to do a lookup to find the
-  created inode, but doesn't.  cifs cannot be exported via NFS, is
-  unlikely to be used by cachefiles, and smb/server only has a soft
-  requirement for the inode, so this is unlikely to be a problem in
-  practice.
-- hostfs, nfs, cifs may need to do a lookup (rarely for NFS) and it is
-  possible for a race to make that lookup fail.  Actual failure
-  is unlikely and providing callers handle negative dentries graceful
-  they will fail-safe.
 
-So this patch removes the lookup code in nfsd and smb/server and adjusts
-them to fail safe if a negative dentry is provided:
-- cache-files already fails safe by restarting the task from the
-  top - it still does with this change, though it no longer calls
-  cachefiles_put_directory() as that will crash if the dentry is
-  negative.
-- nfsd reports "Server-fault" which it what it used to do if the lookup
-  failed. This will never happen on any file-systems that it can actually
-  export, so this is of no consequence.  I removed the fh_update()
-  call as that is not needed and out-of-place.  A subsequent
-  nfsd_create_setattr() call will call fh_update() when needed.
-- smb/server only wants the inode to call ksmbd_smb_inherit_owner()
-  which updates ->i_uid (without calling notify_change() or similar)
-  which can be safely skipping on cifs (I hope).
+On 23/10/2024 17:27, Mike Rapoport wrote:
+> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+> 
+> Using large pages to map text areas reduces iTLB pressure and improves
+> performance.
+> 
+> Extend execmem_alloc() with an ability to use huge pages with ROX
+> permissions as a cache for smaller allocations.
+> 
+> To populate the cache, a writable large page is allocated from vmalloc with
+> VM_ALLOW_HUGE_VMAP, filled with invalid instructions and then remapped as
+> ROX.
+> 
+> The direct map alias of that large page is exculded from the direct map.
+> 
+> Portions of that large page are handed out to execmem_alloc() callers
+> without any changes to the permissions.
+> 
+> When the memory is freed with execmem_free() it is invalidated again so
+> that it won't contain stale instructions.
+> 
+> An architecture has to implement execmem_fill_trapping_insns() callback
+> and select ARCH_HAS_EXECMEM_ROX configuration option to be able to use
+> the ROX cache.
+> 
+> The cache is enabled on per-range basis when an architecture sets
+> EXECMEM_ROX_CACHE flag in definition of an execmem_range.
+> 
+> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+> Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
+> Tested-by: kdevops <kdevops@lists.linux.dev>
+> ---
 
-If a different dentry is returned, the first one is put.  If necessary
-the fact that it is new can be determined by comparing pointers.  A new
-dentry will certainly have a new pointer (as the old is put after the
-new is obtained).
-Similarly if an error is returned (via ERR_PTR()) the original dentry is
-put.
+[...]
 
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: NeilBrown <neilb@suse.de>
----
- drivers/base/devtmpfs.c  |  7 +++----
- fs/cachefiles/namei.c    | 16 +++++++-------
- fs/ecryptfs/inode.c      | 14 +++++++++----
- fs/init.c                |  7 +++++--
- fs/namei.c               | 45 ++++++++++++++++++++++++++--------------
- fs/nfsd/nfs4recover.c    |  7 +++++--
- fs/nfsd/vfs.c            | 31 ++++++++++-----------------
- fs/overlayfs/dir.c       | 37 ++++-----------------------------
- fs/overlayfs/overlayfs.h | 15 +++++++-------
- fs/overlayfs/super.c     |  7 ++++---
- fs/smb/server/vfs.c      | 32 +++++++++-------------------
- fs/xfs/scrub/orphanage.c |  9 ++++----
- include/linux/fs.h       |  4 ++--
- 13 files changed, 104 insertions(+), 127 deletions(-)
+> +
+> +static int execmem_cache_populate(struct execmem_range *range, size_t size)
+> +{
+> +	unsigned long vm_flags = VM_ALLOW_HUGE_VMAP;
+> +	unsigned long start, end;
+> +	struct vm_struct *vm;
+> +	size_t alloc_size;
+> +	int err = -ENOMEM;
+> +	void *p;
+> +
+> +	alloc_size = round_up(size, PMD_SIZE);
+> +	p = execmem_vmalloc(range, alloc_size, PAGE_KERNEL, vm_flags);
 
-diff --git a/drivers/base/devtmpfs.c b/drivers/base/devtmpfs.c
-index 7a101009bee7..6dd1a8860f1c 100644
---- a/drivers/base/devtmpfs.c
-+++ b/drivers/base/devtmpfs.c
-@@ -175,18 +175,17 @@ static int dev_mkdir(const char *name, umode_t mode)
- {
- 	struct dentry *dentry;
- 	struct path path;
--	int err;
- 
- 	dentry = kern_path_create(AT_FDCWD, name, &path, LOOKUP_DIRECTORY);
- 	if (IS_ERR(dentry))
- 		return PTR_ERR(dentry);
- 
--	err = vfs_mkdir(&nop_mnt_idmap, d_inode(path.dentry), dentry, mode);
--	if (!err)
-+	dentry = vfs_mkdir(&nop_mnt_idmap, d_inode(path.dentry), dentry, mode);
-+	if (!IS_ERR(dentry))
- 		/* mark as kernel-created inode */
- 		d_inode(dentry)->i_private = &thread;
- 	done_path_create(&path, dentry);
--	return err;
-+	return PTR_ERR_OR_ZERO(dentry);
- }
- 
- static int create_path(const char *nodepath)
-diff --git a/fs/cachefiles/namei.c b/fs/cachefiles/namei.c
-index 7cf59713f0f7..83a60126de0f 100644
---- a/fs/cachefiles/namei.c
-+++ b/fs/cachefiles/namei.c
-@@ -128,18 +128,19 @@ struct dentry *cachefiles_get_directory(struct cachefiles_cache *cache,
- 		ret = security_path_mkdir(&path, subdir, 0700);
- 		if (ret < 0)
- 			goto mkdir_error;
--		ret = cachefiles_inject_write_error();
--		if (ret == 0)
--			ret = vfs_mkdir(&nop_mnt_idmap, d_inode(dir), subdir, 0700);
--		if (ret < 0) {
-+		subdir = ERR_PTR(cachefiles_inject_write_error());
-+		if (!IS_ERR(subdir))
-+			subdir = vfs_mkdir(&nop_mnt_idmap, d_inode(dir), subdir, 0700);
-+		ret = PTR_ERR(subdir);
-+		if (IS_ERR(subdir)) {
- 			trace_cachefiles_vfs_error(NULL, d_inode(dir), ret,
- 						   cachefiles_trace_mkdir_error);
- 			goto mkdir_error;
- 		}
- 		trace_cachefiles_mkdir(dir, subdir);
- 
--		if (unlikely(d_unhashed(subdir))) {
--			cachefiles_put_directory(subdir);
-+		if (unlikely(d_unhashed(subdir) || d_is_negative(subdir))) {
-+			dput(subdir);
- 			goto retry;
- 		}
- 		ASSERT(d_backing_inode(subdir));
-@@ -195,7 +196,8 @@ struct dentry *cachefiles_get_directory(struct cachefiles_cache *cache,
- 
- mkdir_error:
- 	inode_unlock(d_inode(dir));
--	dput(subdir);
-+	if (!IS_ERR(subdir))
-+		dput(subdir);
- 	pr_err("mkdir %s failed with error %d\n", dirname, ret);
- 	return ERR_PTR(ret);
- 
-diff --git a/fs/ecryptfs/inode.c b/fs/ecryptfs/inode.c
-index 6315dd194228..51a5c54eb740 100644
---- a/fs/ecryptfs/inode.c
-+++ b/fs/ecryptfs/inode.c
-@@ -511,10 +511,16 @@ static struct dentry *ecryptfs_mkdir(struct mnt_idmap *idmap, struct inode *dir,
- 	struct inode *lower_dir;
- 
- 	rc = lock_parent(dentry, &lower_dentry, &lower_dir);
--	if (!rc)
--		rc = vfs_mkdir(&nop_mnt_idmap, lower_dir,
--			       lower_dentry, mode);
--	if (rc || d_really_is_negative(lower_dentry))
-+	if (rc)
-+		goto out;
-+
-+	lower_dentry = vfs_mkdir(&nop_mnt_idmap, lower_dir,
-+				 lower_dentry, mode);
-+	rc = PTR_ERR(lower_dentry);
-+	if (IS_ERR(lower_dentry))
-+		goto out;
-+	rc = 0;
-+	if (d_unhashed(lower_dentry))
- 		goto out;
- 	rc = ecryptfs_interpose(lower_dentry, dentry, dir->i_sb);
- 	if (rc)
-diff --git a/fs/init.c b/fs/init.c
-index e9387b6c4f30..eef5124885e3 100644
---- a/fs/init.c
-+++ b/fs/init.c
-@@ -230,9 +230,12 @@ int __init init_mkdir(const char *pathname, umode_t mode)
- 		return PTR_ERR(dentry);
- 	mode = mode_strip_umask(d_inode(path.dentry), mode);
- 	error = security_path_mkdir(&path, dentry, mode);
--	if (!error)
--		error = vfs_mkdir(mnt_idmap(path.mnt), path.dentry->d_inode,
-+	if (!error) {
-+		dentry = vfs_mkdir(mnt_idmap(path.mnt), path.dentry->d_inode,
- 				  dentry, mode);
-+		if (IS_ERR(dentry))
-+			error = PTR_ERR(dentry);
-+	}
- 	done_path_create(&path, dentry);
- 	return error;
- }
-diff --git a/fs/namei.c b/fs/namei.c
-index e26574651a28..d00443e38d3a 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -4125,7 +4125,8 @@ EXPORT_SYMBOL(kern_path_create);
- 
- void done_path_create(struct path *path, struct dentry *dentry)
- {
--	dput(dentry);
-+	if (!IS_ERR(dentry))
-+		dput(dentry);
- 	inode_unlock(path->dentry->d_inode);
- 	mnt_drop_write(path->mnt);
- 	path_put(path);
-@@ -4271,7 +4272,7 @@ SYSCALL_DEFINE3(mknod, const char __user *, filename, umode_t, mode, unsigned, d
- }
- 
- /**
-- * vfs_mkdir - create directory
-+ * vfs_mkdir - create directory returning correct dentry if possible
-  * @idmap:	idmap of the mount the inode was found from
-  * @dir:	inode of the parent directory
-  * @dentry:	dentry of the child directory
-@@ -4284,9 +4285,15 @@ SYSCALL_DEFINE3(mknod, const char __user *, filename, umode_t, mode, unsigned, d
-  * care to map the inode according to @idmap before checking permissions.
-  * On non-idmapped mounts or if permission checking is to be performed on the
-  * raw inode simply pass @nop_mnt_idmap.
-+ *
-+ * In the event that the filesystem does not use the *@dentry but leaves it
-+ * negative or unhashes it and possibly splices a different one returning it,
-+ * the original dentry is dput() and the alternate is returned.
-+ *
-+ * In case of an error the dentry is dput() and an ERR_PTR() is returned.
-  */
--int vfs_mkdir(struct mnt_idmap *idmap, struct inode *dir,
--	      struct dentry *dentry, umode_t mode)
-+struct dentry *vfs_mkdir(struct mnt_idmap *idmap, struct inode *dir,
-+			 struct dentry *dentry, umode_t mode)
- {
- 	int error;
- 	unsigned max_links = dir->i_sb->s_max_links;
-@@ -4294,31 +4301,35 @@ int vfs_mkdir(struct mnt_idmap *idmap, struct inode *dir,
- 
- 	error = may_create(idmap, dir, dentry);
- 	if (error)
--		return error;
-+		goto err;
- 
-+	error = -EPERM;
- 	if (!dir->i_op->mkdir)
--		return -EPERM;
-+		goto err;
- 
- 	mode = vfs_prepare_mode(idmap, dir, mode, S_IRWXUGO | S_ISVTX, 0);
- 	error = security_inode_mkdir(dir, dentry, mode);
- 	if (error)
--		return error;
-+		goto err;
- 
-+	error = -EMLINK;
- 	if (max_links && dir->i_nlink >= max_links)
--		return -EMLINK;
-+		goto err;
- 
- 	de = dir->i_op->mkdir(idmap, dir, dentry, mode);
-+	error = PTR_ERR(de);
- 	if (IS_ERR(de))
--		return PTR_ERR(de);
-+		goto err;
- 	if (de) {
--		fsnotify_mkdir(dir, de);
--		/* Cannot return de yet */
--		dput(de);
--	} else {
--		fsnotify_mkdir(dir, dentry);
-+		dput(dentry);
-+		dentry = de;
- 	}
-+	fsnotify_mkdir(dir, dentry);
-+	return dentry;
- 
--	return 0;
-+err:
-+	dput(dentry);
-+	return ERR_PTR(error);
- }
- EXPORT_SYMBOL(vfs_mkdir);
- 
-@@ -4338,8 +4349,10 @@ int do_mkdirat(int dfd, struct filename *name, umode_t mode)
- 	error = security_path_mkdir(&path, dentry,
- 			mode_strip_umask(path.dentry->d_inode, mode));
- 	if (!error) {
--		error = vfs_mkdir(mnt_idmap(path.mnt), path.dentry->d_inode,
-+		dentry = vfs_mkdir(mnt_idmap(path.mnt), path.dentry->d_inode,
- 				  dentry, mode);
-+		if (IS_ERR(dentry))
-+			error = PTR_ERR(dentry);
- 	}
- 	done_path_create(&path, dentry);
- 	if (retry_estale(error, lookup_flags)) {
-diff --git a/fs/nfsd/nfs4recover.c b/fs/nfsd/nfs4recover.c
-index 28f4d5311c40..c1d9bd07285f 100644
---- a/fs/nfsd/nfs4recover.c
-+++ b/fs/nfsd/nfs4recover.c
-@@ -233,9 +233,12 @@ nfsd4_create_clid_dir(struct nfs4_client *clp)
- 		 * as well be forgiving and just succeed silently.
- 		 */
- 		goto out_put;
--	status = vfs_mkdir(&nop_mnt_idmap, d_inode(dir), dentry, S_IRWXU);
-+	dentry = vfs_mkdir(&nop_mnt_idmap, d_inode(dir), dentry, S_IRWXU);
-+	if (IS_ERR(dentry))
-+		status = PTR_ERR(dentry);
- out_put:
--	dput(dentry);
-+	if (!status)
-+		dput(dentry);
- out_unlock:
- 	inode_unlock(d_inode(dir));
- 	if (status == 0) {
-diff --git a/fs/nfsd/vfs.c b/fs/nfsd/vfs.c
-index 1035010f1198..34d7aa531662 100644
---- a/fs/nfsd/vfs.c
-+++ b/fs/nfsd/vfs.c
-@@ -1461,7 +1461,7 @@ nfsd_create_locked(struct svc_rqst *rqstp, struct svc_fh *fhp,
- 	struct inode	*dirp;
- 	struct iattr	*iap = attrs->na_iattr;
- 	__be32		err;
--	int		host_err;
-+	int		host_err = 0;
- 
- 	dentry = fhp->fh_dentry;
- 	dirp = d_inode(dentry);
-@@ -1488,25 +1488,15 @@ nfsd_create_locked(struct svc_rqst *rqstp, struct svc_fh *fhp,
- 			nfsd_check_ignore_resizing(iap);
- 		break;
- 	case S_IFDIR:
--		host_err = vfs_mkdir(&nop_mnt_idmap, dirp, dchild, iap->ia_mode);
--		if (!host_err && unlikely(d_unhashed(dchild))) {
--			struct dentry *d;
--			d = lookup_one_len(dchild->d_name.name,
--					   dchild->d_parent,
--					   dchild->d_name.len);
--			if (IS_ERR(d)) {
--				host_err = PTR_ERR(d);
--				break;
--			}
--			if (unlikely(d_is_negative(d))) {
--				dput(d);
--				err = nfserr_serverfault;
--				goto out;
--			}
-+		dchild = vfs_mkdir(&nop_mnt_idmap, dirp, dchild, iap->ia_mode);
-+		if (IS_ERR(dchild)) {
-+			host_err = PTR_ERR(dchild);
-+		} else if (d_is_negative(dchild)) {
-+			err = nfserr_serverfault;
-+			goto out;
-+		} else if (unlikely(dchild != resfhp->fh_dentry)) {
- 			dput(resfhp->fh_dentry);
--			resfhp->fh_dentry = dget(d);
--			dput(dchild);
--			dchild = d;
-+			resfhp->fh_dentry = dget(dchild);
- 		}
- 		break;
- 	case S_IFCHR:
-@@ -1527,7 +1517,8 @@ nfsd_create_locked(struct svc_rqst *rqstp, struct svc_fh *fhp,
- 	err = nfsd_create_setattr(rqstp, fhp, resfhp, attrs);
- 
- out:
--	dput(dchild);
-+	if (!IS_ERR(dchild))
-+		dput(dchild);
- 	return err;
- 
- out_nfserr:
-diff --git a/fs/overlayfs/dir.c b/fs/overlayfs/dir.c
-index 21c3aaf7b274..fe493f3ed6b6 100644
---- a/fs/overlayfs/dir.c
-+++ b/fs/overlayfs/dir.c
-@@ -138,37 +138,6 @@ int ovl_cleanup_and_whiteout(struct ovl_fs *ofs, struct inode *dir,
- 	goto out;
- }
- 
--int ovl_mkdir_real(struct ovl_fs *ofs, struct inode *dir,
--		   struct dentry **newdentry, umode_t mode)
--{
--	int err;
--	struct dentry *d, *dentry = *newdentry;
--
--	err = ovl_do_mkdir(ofs, dir, dentry, mode);
--	if (err)
--		return err;
--
--	if (likely(!d_unhashed(dentry)))
--		return 0;
--
--	/*
--	 * vfs_mkdir() may succeed and leave the dentry passed
--	 * to it unhashed and negative. If that happens, try to
--	 * lookup a new hashed and positive dentry.
--	 */
--	d = ovl_lookup_upper(ofs, dentry->d_name.name, dentry->d_parent,
--			     dentry->d_name.len);
--	if (IS_ERR(d)) {
--		pr_warn("failed lookup after mkdir (%pd2, err=%i).\n",
--			dentry, err);
--		return PTR_ERR(d);
--	}
--	dput(dentry);
--	*newdentry = d;
--
--	return 0;
--}
--
- struct dentry *ovl_create_real(struct ovl_fs *ofs, struct inode *dir,
- 			       struct dentry *newdentry, struct ovl_cattr *attr)
- {
-@@ -191,7 +160,8 @@ struct dentry *ovl_create_real(struct ovl_fs *ofs, struct inode *dir,
- 
- 		case S_IFDIR:
- 			/* mkdir is special... */
--			err =  ovl_mkdir_real(ofs, dir, &newdentry, attr->mode);
-+			newdentry =  ovl_do_mkdir(ofs, dir, newdentry, attr->mode);
-+			err = PTR_ERR_OR_ZERO(newdentry);
- 			break;
- 
- 		case S_IFCHR:
-@@ -219,7 +189,8 @@ struct dentry *ovl_create_real(struct ovl_fs *ofs, struct inode *dir,
- 	}
- out:
- 	if (err) {
--		dput(newdentry);
-+		if (!IS_ERR(newdentry))
-+			dput(newdentry);
- 		return ERR_PTR(err);
- 	}
- 	return newdentry;
-diff --git a/fs/overlayfs/overlayfs.h b/fs/overlayfs/overlayfs.h
-index 0021e2025020..6f2f8f4cfbbc 100644
---- a/fs/overlayfs/overlayfs.h
-+++ b/fs/overlayfs/overlayfs.h
-@@ -241,13 +241,14 @@ static inline int ovl_do_create(struct ovl_fs *ofs,
- 	return err;
- }
- 
--static inline int ovl_do_mkdir(struct ovl_fs *ofs,
--			       struct inode *dir, struct dentry *dentry,
--			       umode_t mode)
-+static inline struct dentry *ovl_do_mkdir(struct ovl_fs *ofs,
-+					  struct inode *dir,
-+					  struct dentry *dentry,
-+					  umode_t mode)
- {
--	int err = vfs_mkdir(ovl_upper_mnt_idmap(ofs), dir, dentry, mode);
--	pr_debug("mkdir(%pd2, 0%o) = %i\n", dentry, mode, err);
--	return err;
-+	dentry = vfs_mkdir(ovl_upper_mnt_idmap(ofs), dir, dentry, mode);
-+	pr_debug("mkdir(%pd2, 0%o) = %i\n", dentry, mode, PTR_ERR_OR_ZERO(dentry));
-+	return dentry;
- }
- 
- static inline int ovl_do_mknod(struct ovl_fs *ofs,
-@@ -838,8 +839,6 @@ struct ovl_cattr {
- 
- #define OVL_CATTR(m) (&(struct ovl_cattr) { .mode = (m) })
- 
--int ovl_mkdir_real(struct ovl_fs *ofs, struct inode *dir,
--		   struct dentry **newdentry, umode_t mode);
- struct dentry *ovl_create_real(struct ovl_fs *ofs,
- 			       struct inode *dir, struct dentry *newdentry,
- 			       struct ovl_cattr *attr);
-diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
-index 61e21c3129e8..b63474d1b064 100644
---- a/fs/overlayfs/super.c
-+++ b/fs/overlayfs/super.c
-@@ -327,9 +327,10 @@ static struct dentry *ovl_workdir_create(struct ovl_fs *ofs,
- 			goto retry;
- 		}
- 
--		err = ovl_mkdir_real(ofs, dir, &work, attr.ia_mode);
--		if (err)
--			goto out_dput;
-+		work = ovl_do_mkdir(ofs, dir, work, attr.ia_mode);
-+		err = PTR_ERR(work);
-+		if (IS_ERR(work))
-+			goto out_err;
- 
- 		/* Weird filesystem returning with hashed negative (kernfs)? */
- 		err = -EINVAL;
-diff --git a/fs/smb/server/vfs.c b/fs/smb/server/vfs.c
-index fe29acef5872..8554aa5a1059 100644
---- a/fs/smb/server/vfs.c
-+++ b/fs/smb/server/vfs.c
-@@ -206,8 +206,8 @@ int ksmbd_vfs_mkdir(struct ksmbd_work *work, const char *name, umode_t mode)
- {
- 	struct mnt_idmap *idmap;
- 	struct path path;
--	struct dentry *dentry;
--	int err;
-+	struct dentry *dentry, *d;
-+	int err = 0;
- 
- 	dentry = ksmbd_vfs_kern_path_create(work, name,
- 					    LOOKUP_NO_SYMLINKS | LOOKUP_DIRECTORY,
-@@ -222,27 +222,15 @@ int ksmbd_vfs_mkdir(struct ksmbd_work *work, const char *name, umode_t mode)
- 
- 	idmap = mnt_idmap(path.mnt);
- 	mode |= S_IFDIR;
--	err = vfs_mkdir(idmap, d_inode(path.dentry), dentry, mode);
--	if (!err && d_unhashed(dentry)) {
--		struct dentry *d;
--
--		d = lookup_one(idmap, dentry->d_name.name, dentry->d_parent,
--			       dentry->d_name.len);
--		if (IS_ERR(d)) {
--			err = PTR_ERR(d);
--			goto out_err;
--		}
--		if (unlikely(d_is_negative(d))) {
--			dput(d);
--			err = -ENOENT;
--			goto out_err;
--		}
--
--		ksmbd_vfs_inherit_owner(work, d_inode(path.dentry), d_inode(d));
--		dput(d);
--	}
-+	d = dentry;
-+	dentry = vfs_mkdir(idmap, d_inode(path.dentry), dentry, mode);
-+	if (IS_ERR(dentry))
-+		err = PTR_ERR(dentry);
-+	else if (d_is_negative(dentry))
-+		err = -ENOENT;
-+	if (!err && dentry != d)
-+		ksmbd_vfs_inherit_owner(work, d_inode(path.dentry), d_inode(dentry));
- 
--out_err:
- 	done_path_create(&path, dentry);
- 	if (err)
- 		pr_err("mkdir(%s): creation failed (err:%d)\n", name, err);
-diff --git a/fs/xfs/scrub/orphanage.c b/fs/xfs/scrub/orphanage.c
-index c287c755f2c5..3537f3cca6d5 100644
---- a/fs/xfs/scrub/orphanage.c
-+++ b/fs/xfs/scrub/orphanage.c
-@@ -167,10 +167,11 @@ xrep_orphanage_create(
- 	 * directory to control access to a file we put in here.
- 	 */
- 	if (d_really_is_negative(orphanage_dentry)) {
--		error = vfs_mkdir(&nop_mnt_idmap, root_inode, orphanage_dentry,
--				0750);
--		if (error)
--			goto out_dput_orphanage;
-+		orphanage_dentry = vfs_mkdir(&nop_mnt_idmap, root_inode,
-+					     orphanage_dentry, 0750);
-+		error = PTR_ERR(orphanage_dentry);
-+		if (IS_ERR(orphanage_dentry))
-+			goto out_unlock_root;
- 	}
- 
- 	/* Not a directory? Bail out. */
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 4962f4a4e603..4c545c875efe 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -1971,8 +1971,8 @@ bool inode_owner_or_capable(struct mnt_idmap *idmap,
-  */
- int vfs_create(struct mnt_idmap *, struct inode *,
- 	       struct dentry *, umode_t, bool);
--int vfs_mkdir(struct mnt_idmap *, struct inode *,
--	      struct dentry *, umode_t);
-+struct dentry *vfs_mkdir(struct mnt_idmap *, struct inode *,
-+			 struct dentry *, umode_t);
- int vfs_mknod(struct mnt_idmap *, struct inode *, struct dentry *,
-               umode_t, dev_t);
- int vfs_symlink(struct mnt_idmap *, struct inode *,
--- 
-2.48.1
+Shouldn't this be passing PAGE_KERNEL_ROX? Otherwise I don't see how the
+allocated memory is ROX? I don't see any call below where you change the permission.
+
+Given the range has the pgprot in it, you could just drop passing the pgprot
+explicitly here and have execmem_vmalloc() use range->pgprot directly?
+
+Thanks,
+Ryan
+
+> +	if (!p)
+> +		return err;
+> +
+> +	vm = find_vm_area(p);
+> +	if (!vm)
+> +		goto err_free_mem;
+> +
+> +	/* fill memory with instructions that will trap */
+> +	execmem_fill_trapping_insns(p, alloc_size, /* writable = */ true);
+> +
+> +	start = (unsigned long)p;
+> +	end = start + alloc_size;
+> +
+> +	vunmap_range(start, end);
+> +
+> +	err = execmem_set_direct_map_valid(vm, false);
+> +	if (err)
+> +		goto err_free_mem;
+> +
+> +	err = vmap_pages_range_noflush(start, end, range->pgprot, vm->pages,
+> +				       PMD_SHIFT);
+> +	if (err)
+> +		goto err_free_mem;
+> +
+> +	err = execmem_cache_add(p, alloc_size);
+> +	if (err)
+> +		goto err_free_mem;
+> +
+> +	return 0;
+> +
+> +err_free_mem:
+> +	vfree(p);
+> +	return err;
+> +}
+
+[...]
 
 
