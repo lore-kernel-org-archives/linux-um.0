@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 403AEC19F2E
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9666CC19F32
 	for <linux-um@archiver.kernel.org>; Thu, 27 Feb 2025 13:30:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,48 +12,48 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=fzmVeMolHHfNK8MWJfns5nr6CAxpqySaRGO9y0S6Ies=; b=jCfMCtdEBpr9hw4Jez/lf5DlTn
-	g+Ecd/aKmYLFpoP43zuEcGZDL2dDT36s0CgsbdbnUs/tXqA9ycR+DUc4qqh8EuqEIwB5drCf/itnh
-	E5+qJBm8DBVgmcLfWSUEw9F4StAXQFHoimsIDJ0jQtobFtTO5HQ6uZ1Ugo2i1IHrwnMIrqxfzB5WK
-	D32LNTjgQOjEchaVA1cn+gIIECJ87CSCIwZPdledbMqeGJmUXAp08kNEr/68FfKGGzvM0xdgN5ID3
-	D7T+hvQCQ4q+OG4faPg+iPjLuXij+NYmXpWXPafYsaPLZjTdnhDT9EC8vwiNoUu69CogfdaBpTvoA
-	FsKT85aA==;
+	bh=klXDwLNu+GdgxiSQ4cKCu+o7Hgj9jWo4+xGGDdoiKyM=; b=KafIW7+qvKKV/8xOX9peEaVkSX
+	JYCjEZRrVRC6IPlyM2/4iZlGuQldO0epGW0xtYaW9ZbXdn/MwUOXqZ57MqS6DKHIECPiKBKO/OvRi
+	eiM7Z3nGwdI0tzPfA0uS2MpJmLj98gO1g01Fw172qcDsV/+DpDsE+eZvc0MBtiBHqN8ayQZds+Sq5
+	/p+xAPubsOaYj7xmGda4X+QiMk32yFRpkN/6Vl6Q2djGzqmMHz3Zz+hTPZBRLexvcKQOoop/QncCF
+	lAfwTdQ4ysHpwWxOOKW041jTgzHP9qDAst8zBKowRbBEpYiw5RwvjJqqxU3SO2Etce3HQKf0mTl/8
+	qkKT2Y1g==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tndxl-00000007XTe-2Hjy;
-	Thu, 27 Feb 2025 13:30:05 +0000
+	id 1tndxm-00000007XU0-1RNu;
+	Thu, 27 Feb 2025 13:30:06 +0000
 Received: from mail.alien8.de ([2a01:4f9:3051:3f93::2])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tkhlG-0000000CHAU-05Iu;
-	Wed, 19 Feb 2025 10:57:03 +0000
+	id 1tncgN-00000007IP8-40aV;
+	Thu, 27 Feb 2025 12:08:07 +0000
 Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 1C20F40E01AD;
-	Wed, 19 Feb 2025 10:57:00 +0000 (UTC)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 1CEF740E0202;
+	Thu, 27 Feb 2025 12:08:01 +0000 (UTC)
 X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
 Received: from mail.alien8.de ([127.0.0.1])
 	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id MuhRjJG8dSVG; Wed, 19 Feb 2025 10:56:57 +0000 (UTC)
+	with ESMTP id iN0oCAlGWdj8; Thu, 27 Feb 2025 12:07:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1739962615; bh=fzmVeMolHHfNK8MWJfns5nr6CAxpqySaRGO9y0S6Ies=;
+	t=1740658078; bh=klXDwLNu+GdgxiSQ4cKCu+o7Hgj9jWo4+xGGDdoiKyM=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RfHqzYxeNSeAwm0yBKkt3BFRT6WwRDtGptKKmYYtod2NbMtpM8bqaE4Am0115gKQq
-	 s6bzbi/QMuXqHH4rIsMbHnfyyDb/DMMnBqunn967EXG3HP4Vb787URNEAt2Jv4Wifz
-	 hjADK77YpGhp1s3RFjOLF/gYxWNONBAJagKefBNWITn6NJ0eYEU+ES1M54R+UHBl+2
-	 tFDb3vrO8d8gT/XUbWKLkelvkoUjHlGjcwLDD+3cyHcjf+qnaJ3xttjJD6YWMTsdic
-	 vLr5uy9kU/QcukaM9vg1ms3QLHmluggCCZkpJoPXOlSFrkZl6XiCR30lPvPnaiFo6Z
-	 gjzm0Lu9Sg2EN/W5nk9YuCgx01RXkLTj+B+bpR/wf2WkzodbKQao7sGsqbLQ6cHO5e
-	 lL5eYSFUOjHcUY7n0QWvEwe1q+pEZDIdy1LBMdgHOIP5xag8eQ49lWbSaBmCtqLpgO
-	 v0mj9+AWqeSta32LTtksTU3GcwgPcoNromU5+0ig0J1hp54vI0TNhPIbaiBUE/yxCx
-	 RByGXppWJ5Mz1zYQdan4Qc1DV2UoBXp+Yofox8o/3u74nyLd4cP9bb/l1FrGM8W9FD
-	 nOpA/QHPNBj0NZ6ejfAJrlH/EWHRG4iJHNVkYORtCbb3pumsRXfRjCOC1BU0BGCnZ0
-	 uvBdPPgX8OStzakizKy8yHUU=
+	b=BMe+FVpYcnybJXXM2DdS37JwfSoPjAjvLDkEei7ZnqXysLs4iK+doGH7m/kT0gYh7
+	 ++DAAp3QJBrwYKZDWMkcrgrTUol6djyrM3PAJLTG5gwHcjuWEVB8zNoukan/C/PQ11
+	 VBeOyvhKkj6uHDj32a7Vl0dKvIogDTdExZn6ec3gXiNFsTi+RwX2Vi4pQDzZVNTgHZ
+	 ZxQKdTlmVprEPa0V7BJX6GypLd04/lkwSOyDPqwnLOi4ISZjn0WbRawbQ+HbKLji+v
+	 2nr/ZmneryOruZtGuC9hKOSlT8Qmj0ks+9xX+oUwgVHadfc6UNYe9EDSWRKyFsmqcQ
+	 fH5+662Bb9j7+crgFmGFms2EFfEwKBW416LJ3uC/q8CeBjMKIWr+A4nt6CzMP9lOXn
+	 Z02/yORitAPE040Sg3gv+PjB2rD2WmrOLlcsTWfgfRltYkWm3z7o52Hn5LPPVQ4JVo
+	 in/A7jJlP3/Z1XOb8F5WC/dnYg1y0mm5oNrg7k3EtHqcOn4Yfs2XAscnEr0T+ky2O1
+	 Nap2xfrlYXyJvYDw5LNMmUSVqYjSMSWbxCSUtNERR+0ekVMQKOKCsJ6Q+8F8HrrIqr
+	 7ubOOnDQNwweaU76vvfKs8TK4hKox8lItZKO9Nh3aofHkBlHoJzNjbCoK3ke/kT4xj
+	 A0pA8X13r5RWpUZJZYjU738s=
 Received: from zn.tnic (pd95303ce.dip0.t-ipconnect.de [217.83.3.206])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
 	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7F08F40E0220;
-	Wed, 19 Feb 2025 10:55:10 +0000 (UTC)
-Date: Wed, 19 Feb 2025 11:55:03 +0100
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3CE2240E01AE;
+	Thu, 27 Feb 2025 12:06:13 +0000 (UTC)
+Date: Thu, 27 Feb 2025 13:06:07 +0100
 From: Borislav Petkov <bp@alien8.de>
 To: Brendan Jackman <jackmanb@google.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
@@ -137,16 +137,18 @@ Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
 	linux-efi@vger.kernel.org, Ofir Weisse <oweisse@google.com>,
 	Junaid Shahid <junaids@google.com>
 Subject: Re: [PATCH RFC v2 03/29] mm: asi: Introduce ASI core API
-Message-ID: <20250219105503.GKZ7W4h6QW1CNj48U9@fat_crate.local>
+Message-ID: <20250227120607.GPZ8BVL2762we1j3uE@fat_crate.local>
 References: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
  <20250110-asi-rfc-v2-v2-3-8419288bc805@google.com>
+ <20250219105503.GKZ7W4h6QW1CNj48U9@fat_crate.local>
+ <CA+i-1C2xK8hzMQ8Y-=-7iYy+27nnouQZu1NdWG0qa35t+OQLqw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20250110-asi-rfc-v2-v2-3-8419288bc805@google.com>
+In-Reply-To: <CA+i-1C2xK8hzMQ8Y-=-7iYy+27nnouQZu1NdWG0qa35t+OQLqw@mail.gmail.com>
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250219_025702_369217_FBC54C54 
-X-CRM114-Status: GOOD (  54.62  )
+X-CRM114-CacheID: sfid-20250227_040805_397504_E99FE316 
+X-CRM114-Status: GOOD (  50.10  )
 X-Mailman-Approved-At: Thu, 27 Feb 2025 05:26:27 -0800
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -162,363 +164,166 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, Jan 10, 2025 at 06:40:29PM +0000, Brendan Jackman wrote:
-> Subject: Re: [PATCH RFC v2 03/29] mm: asi: Introduce ASI core API
+On Wed, Feb 19, 2025 at 02:53:03PM +0100, Brendan Jackman wrote:
+> Argh, sorry, GMail switched back to HTML mode somehow. Maybe I have to
+> get a proper mail client after all.
 
-x86/asi: ...
+Yap, wouldn't be such a bad idea. And yes, it ain't easy - we have a whole doc
+about it:
 
-> Introduce core API for Address Space Isolation (ASI).  Kernel address
-> space isolation provides the ability to run some kernel
-> code with a restricted kernel address space.
+Documentation/process/email-clients.rst
+
+> OK, sounds like I need to rewrite this explanation! It's only been
+> read before by people who already knew how this thing worked so this
+> might take a few attempts to make it clear.
 > 
-> There can be multiple classes of such restricted kernel address spaces
-> (e.g. KPTI, KVM-PTI etc.). Each ASI class is identified by an index.
-> The ASI class can register some hooks to be called when
-> entering/exiting the restricted address space.
+> Maybe the best way to make it clear is to explain this with reference
+> to KVM. At a super high level, That looks like:
 > 
-> Currently, there is a fixed maximum number of ASI classes supported.
-> In addition, each process can have at most one restricted address space
-> from each ASI class. Neither of these are inherent limitations and
-> are merely simplifying assumptions for the time being.
+> ioctl(KVM_RUN) {
+>     enter_from_user_mode()
+>     while !need_userspace_handling() {
+>         asi_enter();  // part 1
+>         vmenter();  // part 2
+>         asi_relax(); // part 3
+>     }
+>     asi _exit(); // part 4b
+>     exit_to_user_mode()
+> }
 > 
-> To keep things simpler for the time being, we disallow context switches
-
-Please use passive voice in your commit message: no "we" or "I", etc,
-and describe your changes in imperative mood.
-
-Also, see section "Changelog" in
-Documentation/process/maintainer-tip.rst
-
-> within the restricted address space. In the future, we would be able to
-> relax this limitation for the case of context switches to different
-> threads within the same process (or to the idle thread and back).
+> So part 4a is just referring to continuation of the loop.
 > 
-> Note that this doesn't really support protecting sibling VM guests
-> within the same VMM process from one another. From first principles
-> it seems unlikely that anyone who cares about VM isolation would do
-> that, but there could be a use-case to think about. In that case need
-> something like the OTHER_MM logic might be needed, but specific to
-> intra-process guest separation.
+> This explanation was written when that was the only user of this API
+> so it was probably clearer, now we have userspace it seems a bit odd.
 > 
-> [0]:
-> https://lore.kernel.org/kvm/1562855138-19507-1-git-send-email-alexandre.chartre@oracle.com
+> With my pseudocode above, does it make more sense? If so I'll try to
+> think of a better way to explain it.
+
+Well, it is still confusing. I would expect to see:
+
+ioctl(KVM_RUN) {
+    enter_from_user_mode()
+    while !need_userspace_handling() {
+        asi_enter();  // part 1
+        vmenter();  // part 2
+        asi_exit(); // part 3
+    }
+    asi_switch(); // part 4b
+    exit_to_user_mode()
+}
+
+Because then it is ballanced: you enter the restricted address space, do stuff
+and then you exit it without switching address space. But then you need to
+switch address space so you have to do asi_exit or asi_switch or wnatnot. And
+that's still unbalanced.
+
+So from *only* looking at the usage, it'd be a lot more balanced if all calls
+were paired:
+
+ioctl(KVM_RUN) {
+    enter_from_user_mode()
+    asi_switch_to();			<-------+
+    while !need_userspace_handling() {		|
+        asi_enter();  // part 1		<---+	|
+        vmenter();  // part 2		    |	|
+        asi_exit(); // part 3		<---+	|
+    }						|
+    asi_switch_back(); // part 4b	<-------+
+    exit_to_user_mode()
+}
+
+(look at me doing ascii paintint :-P)
+
+Naming is awful but it should illustrate what I mean:
+
+	asi_switch_to
+	  asi_enter
+	  asi_exit
+	asi_switch_back
+
+Does that make more sense?
+
+> asi_enter() is actually balanced with asi_relax(). The comment says
+> "if we are in it" because technically if you call this asi_relax()
+> outside of the critical section, it's a nop. But, there's no reason to
+> do that, so we could definitely change the comment and WARN if that
+> happens.
+
+See above.
+
 > 
-> Notes about RFC-quality implementation details:
+> >
+> > > +#define ASI_TAINT_OTHER_MM_CONTROL   ((asi_taints_t)BIT(6))
+> > > +#define ASI_NUM_TAINTS                       6
+> > > +static_assert(BITS_PER_BYTE * sizeof(asi_taints_t) >= ASI_NUM_TAINTS);
+> >
+> > Why is this a typedef at all to make the code more unreadable than it needs to
+> > be? Why not a simple unsigned int or char or whatever you need?
 > 
->  - Ignoring checkpatch.pl AVOID_BUG.
->  - The dynamic registration of classes might be pointless complexity.
->    This was kept from RFCv1 without much thought.
->  - The other-mm logic is also perhaps overly complex, suggestions are
->    welcome for how best to tackle this (or we could just forget about
->    it for the moment, and rely on asi_exit() happening in process
->    switch).
->  - The taint flag definitions would probably be clearer with an enum or
->    something.
 > 
-> Checkpatch-args: --ignore=AVOID_BUG,COMMIT_LOG_LONG_LINE,EXPORT_SYMBOL
-> Co-developed-by: Ofir Weisse <oweisse@google.com>
-> Signed-off-by: Ofir Weisse <oweisse@google.com>
-> Co-developed-by: Junaid Shahid <junaids@google.com>
-> Signed-off-by: Junaid Shahid <junaids@google.com>
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> ---
->  arch/x86/include/asm/asi.h       | 208 +++++++++++++++++++++++
->  arch/x86/include/asm/processor.h |   8 +
->  arch/x86/mm/Makefile             |   1 +
->  arch/x86/mm/asi.c                | 350 +++++++++++++++++++++++++++++++++++++++
->  arch/x86/mm/init.c               |   3 +-
->  arch/x86/mm/tlb.c                |   1 +
->  include/asm-generic/asi.h        |  67 ++++++++
->  include/linux/mm_types.h         |   7 +
->  kernel/fork.c                    |   3 +
->  kernel/sched/core.c              |   9 +
->  mm/init-mm.c                     |   4 +
->  11 files changed, 660 insertions(+), 1 deletion(-)
+> My thinking was just that it's nicer to see asi_taints_t and know that
+> it means "it holds taint flags and it's big enough" instead of having
+> to remember the space needed for these flags. But yeah I'm fine with
+> making it a raw integer type.
+
+You're thinking of some of those rules here perhaps?
+
+https://kernel.org/doc/html/latest/process/coding-style.html#typedefs
+
+Probably but then you're using casts (asi_taints_t) to put in integers in it.
+Does it matter then?
+
+Might as well use a plain int and avoid the casts, no? Unless there's a real
+good reason to have a special type and it is really really good this way...?
+
+> Well it needs to be disambiguated from the field below (currently
+> protect_data) but it could be control_to_flush (and data_to_flush).
 > 
-> diff --git a/arch/x86/include/asm/asi.h b/arch/x86/include/asm/asi.h
-> new file mode 100644
-> index 0000000000000000000000000000000000000000..7cc635b6653a3970ba9dbfdc9c828a470e27bd44
-> --- /dev/null
-> +++ b/arch/x86/include/asm/asi.h
-> @@ -0,0 +1,208 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_X86_ASI_H
-> +#define _ASM_X86_ASI_H
-> +
-> +#include <linux/sched.h>
-> +
-> +#include <asm-generic/asi.h>
-> +
-> +#include <asm/pgtable_types.h>
-> +#include <asm/percpu.h>
-> +#include <asm/processor.h>
-> +
-> +#ifdef CONFIG_MITIGATION_ADDRESS_SPACE_ISOLATION
-> +
-> +/*
-> + * Overview of API usage by ASI clients:
-> + *
-> + * Setup: First call asi_init() to create a domain. At present only one domain
-> + * can be created per mm per class, but it's safe to asi_init() this domain
-> + * multiple times. For each asi_init() call you must call asi_destroy() AFTER
-> + * you are certain all CPUs have exited the restricted address space (by
-> + * calling asi_exit()).
-> + *
-> + * Runtime usage:
-> + *
-> + * 1. Call asi_enter() to switch to the restricted address space. This can't be
-> + *    from an interrupt or exception handler and preemption must be disabled.
-> + *
-> + * 2. Execute untrusted code.
-> + *
-> + * 3. Call asi_relax() to inform the ASI subsystem that untrusted code execution
-> + *    is finished. This doesn't cause any address space change. This can't be
-> + *    from an interrupt or exception handler and preemption must be disabled.
-> + *
-> + * 4. Either:
-> + *
-> + *    a. Go back to 1.
-> + *
-> + *    b. Call asi_exit() before returning to userspace. This immediately
-> + *       switches to the unrestricted address space.
+> The downside of that is that having one say "prevent" and one say
+> "protect" is quite meaningful. prevent_control is describing things we
+> need to do to protect the system from this domain, protect_data is
+> about protecting the domain from the system. However, while that
+> difference is meaningful it might not actually be helpful for the
+> reader of the code so I'm not wed to it.
+> 
+> Also worth noting that we could just combine these fields. At present
+> they should have disjoint bits set. But, they're used in separate
+> contexts and have separate (although conceptually very similar)
+> meanings, so I think that would reduce clarity.
 
-So only from reading this, it does sound weird. Maybe the code does it
-differently - I'll see soon - but this basically says:
+Ok, I guess it'll tell us what is better once we stare at that code more. :)
 
-I asi_enter(), do something, asi_relax() and then I decide to do something
-more and to asi_enter() again!? And then I can end it all with a *single*
-asi_exit() call?
+> Ack, I've set up a local thingy to spellcheck all my commits so
+> hopefully you should encounter less of that noise in future.
 
-Hm, definitely weird API. Why?
+Yeah, I use the default vim spellchecker and it simply works.
+ 
+> For the pronouns stuff I will do my best but you might still spot
+> violations in older text, sorry about that.
 
-/*
- * Leave the "tense" state if we are in it, i.e. end the critical section. We
- * will stay relaxed until the next asi_enter.
- */
-void asi_relax(void);
+No worries.
 
-Yeah, so there's no API functions balance between enter() and relax()...
+> What this field is describing is: when we run the untrusted code, what
+> happens? I don't mean "what does the kernel do" but what physically
+> happens on the CPU from an exploit point of view.
+> 
+> For example setting ASI_TAINT_USER_DATA in this field means "when we
+> run the untrusted code (i.e. userspace), userspace data gets left
+> behind in sidechannels".
+> 
+> "Should be set" in the comment means "this field should be set to
+> record that a thing has happened" not "this field being set is a
+> requirement for some API" or something. So I don't think "required" is
+> right but this is hard to name.
+> 
+> That commentary should also be expanded I think, since "should be set"
+> is pretty ambiguous. And maybe if we called it "to_set" it would be
+> more obvious that "set" is a verb? I'm very open to suggestions.
 
-> + *
-> + * The region between 1 and 3 is called the "ASI critical section". During the
-> + * critical section, it is a bug to access any sensitive data, and you mustn't
-> + * sleep.
-> + *
-> + * The restriction on sleeping is not really a fundamental property of ASI.
-> + * However for performance reasons it's important that the critical section is
-> + * absolutely as short as possible. So the ability to do sleepy things like
-> + * taking mutexes oughtn't to confer any convenience on API users.
-> + *
-> + * Similarly to the issue of sleeping, the need to asi_exit in case 4b is not a
-> + * fundamental property of the system but a limitation of the current
-> + * implementation. With further work it is possible to context switch
-> + * from and/or to the restricted address space, and to return to userspace
-> + * directly from the restricted address space, or _in_ it.
-> + *
-> + * Note that the critical section only refers to the direct execution path from
-> + * asi_enter to asi_relax: it's fine to access sensitive data from exceptions
-> + * and interrupt handlers that occur during that time. ASI will re-enter the
-> + * restricted address space before returning from the outermost
-> + * exception/interrupt.
-> + *
-> + * Note: ASI does not modify KPTI behaviour; when ASI and KPTI run together
-> + * there are 2+N address spaces per task: the unrestricted kernel address space,
-> + * the user address space, and one restricted (kernel) address space for each of
-> + * the N ASI classes.
-> + */
-> +
-> +/*
-> + * ASI uses a per-CPU tainting model to track what mitigation actions are
-> + * required on domain transitions. Taints exist along two dimensions:
-> + *
-> + *  - Who touched the CPU (guest, unprotected kernel, userspace).
-> + *
-> + *  - What kind of state might remain: "data" means there might be data owned by
-> + *    a victim domain left behind in a sidechannel. "Control" means there might
-> + *    be state controlled by an attacker domain left behind in the branch
-> + *    predictor.
-> + *
-> + *    In principle the same domain can be both attacker and victim, thus we have
-> + *    both data and control taints for userspace, although there's no point in
-> + *    trying to protect against attacks from the kernel itself, so there's no
-> + *    ASI_TAINT_KERNEL_CONTROL.
-> + */
-> +#define ASI_TAINT_KERNEL_DATA		((asi_taints_t)BIT(0))
-> +#define ASI_TAINT_USER_DATA		((asi_taints_t)BIT(1))
-> +#define ASI_TAINT_GUEST_DATA		((asi_taints_t)BIT(2))
-> +#define ASI_TAINT_OTHER_MM_DATA		((asi_taints_t)BIT(3))
-> +#define ASI_TAINT_USER_CONTROL		((asi_taints_t)BIT(4))
-> +#define ASI_TAINT_GUEST_CONTROL		((asi_taints_t)BIT(5))
-> +#define ASI_TAINT_OTHER_MM_CONTROL	((asi_taints_t)BIT(6))
-> +#define ASI_NUM_TAINTS			6
-> +static_assert(BITS_PER_BYTE * sizeof(asi_taints_t) >= ASI_NUM_TAINTS);
+I think the explanations you give here should be condensed into comments over
+those things. They're really helpful.
 
-Why is this a typedef at all to make the code more unreadable than it needs to
-be? Why not a simple unsigned int or char or whatever you need?
-
-> +
-> +#define ASI_TAINTS_CONTROL_MASK \
-> +	(ASI_TAINT_USER_CONTROL | ASI_TAINT_GUEST_CONTROL | ASI_TAINT_OTHER_MM_CONTROL)
-> +
-> +#define ASI_TAINTS_DATA_MASK \
-> +	(ASI_TAINT_KERNEL_DATA | ASI_TAINT_USER_DATA | ASI_TAINT_OTHER_MM_DATA)
-> +
-> +#define ASI_TAINTS_GUEST_MASK (ASI_TAINT_GUEST_DATA | ASI_TAINT_GUEST_CONTROL)
-> +#define ASI_TAINTS_USER_MASK (ASI_TAINT_USER_DATA | ASI_TAINT_USER_CONTROL)
-> +
-> +/* The taint policy tells ASI how a class interacts with the CPU taints */
-> +struct asi_taint_policy {
-> +	/*
-> +	 * What taints would necessitate a flush when entering the domain, to
-> +	 * protect it from attack by prior domains?
-> +	 */
-> +	asi_taints_t prevent_control;
-
-So if those necessitate a flush, why isn't this var called "taints_to_flush"
-or whatever which exactly explains what it is?
-
-> +	/*
-> +	 * What taints would necessetate a flush when entering the domain, to
-
-+	 * What taints would necessetate a flush when entering the domain, to
-Unknown word [necessetate] in comment.
-Suggestions: ['necessitate',
-
-Spellchecker please. Go over your whole set.
-
-> +	 * protect former domains from attack by this domain?
-> +	 */
-> +	asi_taints_t protect_data;
-
-Same.
-
-> +	/* What taints should be set when entering the domain? */
-> +	asi_taints_t set;
-
-
-So "required_taints" or so... hm?
-
-> +};
-> +
-> +/*
-> + * An ASI domain (struct asi) represents a restricted address space. The
-
-no need for "(struct asi)" - it is right below :).
-
-> + * unrestricted address space (and user address space under PTI) are not
-> + * represented as a domain.
-> + */
-> +struct asi {
-> +	pgd_t *pgd;
-> +	struct mm_struct *mm;
-> +	int64_t ref_count;
-> +	enum asi_class_id class_id;
-> +};
-> +
-> +DECLARE_PER_CPU_ALIGNED(struct asi *, curr_asi);
-
-Or simply "asi" - this per-CPU var will be so prominent so that when you do
-"per_cpu(asi)" you know what exactly it is
-
-
-
-> +
-> +void asi_init_mm_state(struct mm_struct *mm);
-> +
-> +int asi_init_class(enum asi_class_id class_id, struct asi_taint_policy *taint_policy);
-> +void asi_uninit_class(enum asi_class_id class_id);
-
-"uninit", meh. "exit" perhaps? or "destroy"?
-
-And you have "asi_destroy" already so I guess you can do:
-
-asi_class_init()
-asi_class_destroy()
-
-to have the namespace correct.
-
-> +const char *asi_class_name(enum asi_class_id class_id);
-> +
-> +int asi_init(struct mm_struct *mm, enum asi_class_id class_id, struct asi **out_asi);
-> +void asi_destroy(struct asi *asi);
-> +
-> +/* Enter an ASI domain (restricted address space) and begin the critical section. */
-> +void asi_enter(struct asi *asi);
-> +
-> +/*
-> + * Leave the "tense" state if we are in it, i.e. end the critical section. We
-> + * will stay relaxed until the next asi_enter.
-> + */
-> +void asi_relax(void);
-> +
-> +/* Immediately exit the restricted address space if in it */
-> +void asi_exit(void);
-> +
-> +/* The target is the domain we'll enter when returning to process context. */
-> +static __always_inline struct asi *asi_get_target(struct task_struct *p)
-> +{
-> +	return p->thread.asi_state.target;
-> +}
-> +
-> +static __always_inline void asi_set_target(struct task_struct *p,
-> +					   struct asi *target)
-> +{
-> +	p->thread.asi_state.target = target;
-> +}
-> +
-> +static __always_inline struct asi *asi_get_current(void)
-> +{
-> +	return this_cpu_read(curr_asi);
-> +}
-> +
-> +/* Are we currently in a restricted address space? */
-> +static __always_inline bool asi_is_restricted(void)
-> +{
-> +	return (bool)asi_get_current();
-> +}
-> +
-> +/* If we exit/have exited, can we stay that way until the next asi_enter? */
-> +static __always_inline bool asi_is_relaxed(void)
-> +{
-> +	return !asi_get_target(current);
-> +}
-> +
-> +/*
-> + * Is the current task in the critical section?
-> + *
-> + * This is just the inverse of !asi_is_relaxed(). We have both functions in order to
-> + * help write intuitive client code. In particular, asi_is_tense returns false
-> + * when ASI is disabled, which is judged to make user code more obvious.
-> + */
-> +static __always_inline bool asi_is_tense(void)
-> +{
-> +	return !asi_is_relaxed();
-> +}
-
-So can we tone down the silly helpers above? You don't really need
-asi_is_tense() for example. It is still very intuitive if I read
-
-	if (!asi_is_relaxed())
-
-...
-
-> +
-> +static __always_inline pgd_t *asi_pgd(struct asi *asi)
-> +{
-> +	return asi ? asi->pgd : NULL;
-> +}
-> +
-> +#define INIT_MM_ASI(init_mm) \
-> +	.asi_init_lock = __MUTEX_INITIALIZER(init_mm.asi_init_lock),
-> +
-> +void asi_handle_switch_mm(void);
-> +
-> +#endif /* CONFIG_MITIGATION_ADDRESS_SPACE_ISOLATION */
-> +
-> +#endif
-
-Splitting the patch here and will continue with the next one as this one is
-kinda big for one mail.
+Thx.
 
 -- 
 Regards/Gruss,
