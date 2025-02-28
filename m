@@ -4,100 +4,76 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B7D16C282C6
-	for <linux-um@archiver.kernel.org>; Fri, 28 Feb 2025 13:58:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0DF3C282D0
+	for <linux-um@archiver.kernel.org>; Fri, 28 Feb 2025 15:54:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
 	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=K5dC4M0uKWanXMtJeRUcRRbAkI8ByFAAwVDEOW9S+3k=; b=J/KEm2Np0PbZVT/Srf6CrgTz4Z
-	Spdi+iswT2qiG0fk4qaQBcOLVq0rDTt9PkGuNYw7ywmxNuU2xsNAhHl1aGDmrz7+zsvgwYdtJikNX
-	41OpSiH4zaushNknwxug1l2QZDH2rjxsHGVcDm6AFRqokmaoKxtpQpzc36jaDtJH8WTkLOLEOMSy/
-	SqTFgClhrqGyXPsvOUfnWKGirrHyLz4H56dRB1SzopLr1GQF74GvCxQe3202Fk9Dod9FyRXpdjNsr
-	3xJmCOMgJ3ibA4vds5HBuEz4/CQc/flkGCyiBHPzlPlyOYbLPg2pW59irIsupK+w48Ewe3lAgilmN
-	bRwEWQOA==;
+	bh=n9eLJrzvCc/jZ3rhdLc/8pJEkV1JMKG56goBetbpxb4=; b=40mFb+/7xn2TM6+VAxO4Hbgxun
+	gy5iqLqVoF8Yv7ZZov8PYlQJNrCCa71EvbI+1eNBnghuTlvLnnBMZN8CNyBKK/B6WAKLO/BmnEv+O
+	RyEV+bdDWATAfg+ArR5GAhmG+ibKf6fVba+EA07XSACA1chOvSVB3Lu08tmFV8/N92tTWMQH1U995
+	M2FTqopQMNRIibFJgi+I8tBhbAE7MamslMyXdyPsNEzPIcuI5hlzL6V0iPmxnziGa4PSniKZbD9IA
+	uXgpmN0Cgy5OkgsDUfDJGB0HByQo3rRixgbpU/6GhXCq8Eks38Gy5m1dBwnAPyORZs2Ca+s2wlCq5
+	k70HgFPw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1to0sj-0000000B9jq-3Omb;
-	Fri, 28 Feb 2025 13:58:25 +0000
-Received: from tor.source.kernel.org ([2600:3c04::f03c:95ff:fe5e:7468])
+	id 1to2ge-0000000BYQd-1kmZ;
+	Fri, 28 Feb 2025 15:54:04 +0000
+Received: from out-173.mta1.migadu.com ([95.215.58.173])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1to0qX-0000000B9L4-1vzq;
-	Fri, 28 Feb 2025 13:56:09 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 05E9A61F51;
-	Fri, 28 Feb 2025 13:56:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8EA8C4CEE2;
-	Fri, 28 Feb 2025 13:55:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1740750968;
-	bh=1IRowyiOxlD3aJXg1mzDgOLSKDvuTpO5rwTj3G6RUt0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NnH7vM73Zjpr8yZOH5QgfgQiSw0pmBWJwyV6oH4lnUx6KcNNLgBYYJulfb/SOKw4i
-	 Zkm3msW661FidfCoi/ar4s+MKouda8UuOKQJVozVEXvAvSibmI7k9WxUPFNYkImrpm
-	 nMJqrfmWsggXRbny/dSvcLd6O/w5mYI7U35gabE5OMAnP119A+B9Z9gcS1udwYaPDT
-	 haSivt5w98I2lC6hpiCjEl3HQRzpovHqj3M+6AQ/d9NOf1QW57gfgkHOWFS4Y8Iwt4
-	 dVExS2M99VzccMzDPnxcN2Fshmin/V/WHUi6c8awMapcLOMc4QlOWwdQMyM3HZ2OR4
-	 n0uklzJCb+JTQ==
-Date: Fri, 28 Feb 2025 15:55:38 +0200
-From: Mike Rapoport <rppt@kernel.org>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Luis Chamberlain <mcgrof@kernel.org>, Dev Jain <dev.jain@arm.com>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-	Brian Cain <bcain@quicinc.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	id 1to2Ma-0000000BU5s-36f5
+	for linux-um@lists.infradead.org;
+	Fri, 28 Feb 2025 15:33:22 +0000
+Date: Fri, 28 Feb 2025 15:32:54 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1740756788;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=n9eLJrzvCc/jZ3rhdLc/8pJEkV1JMKG56goBetbpxb4=;
+	b=vKo+YcgI7v6lDON+yTHR9woNAvbankK+1SDMyOP89t52IYlLrAIepafV5H3+8AgeYWL/pp
+	TS1LqRGd7URb1EH84E98UhU8R08SptbuJvlIbJ9mZtK4wuupGbI0JiYANqWOM+DDaj9sTC
+	yy53IqVA9z5qtTyqinZcyR4dcB12SbQ=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yosry Ahmed <yosry.ahmed@linux.dev>
+To: Brendan Jackman <jackmanb@google.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
 	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>, Oleg Nesterov <oleg@redhat.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
 	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Stafford Horne <shorne@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org, linux-um@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v7 7/8] execmem: add support for cache of large ROX pages
-Message-ID: <Z8HAWu4zQFeg19KR@kernel.org>
-References: <20241023162711.2579610-1-rppt@kernel.org>
- <20241023162711.2579610-8-rppt@kernel.org>
- <16863478-2195-435e-a899-559df097bc59@arm.com>
+	Andrew Morton <akpm@linux-foundation.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, x86@kernel.org,
+	linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+	linux-arch@vger.kernel.org, linux-mm@kvack.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org, kvm@vger.kernel.org,
+	linux-efi@vger.kernel.org
+Subject: Re: [PATCH RFC v2 25/29] mm: asi: Restricted execution fore
+ bare-metal processes
+Message-ID: <Z8HXJnhMPFPyDJW5@google.com>
+References: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
+ <20250110-asi-rfc-v2-v2-25-8419288bc805@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <16863478-2195-435e-a899-559df097bc59@arm.com>
+In-Reply-To: <20250110-asi-rfc-v2-v2-25-8419288bc805@google.com>
+X-Migadu-Flow: FLOW_OUT
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20250228_073321_201612_74B2BB5D 
+X-CRM114-Status: GOOD (  49.54  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -112,116 +88,345 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi Ryan,
+(Trimming the CC list as my email server refuses the number of CCs)
 
-On Thu, Feb 27, 2025 at 11:13:29AM +0000, Ryan Roberts wrote:
-> Hi Mike,
+On Fri, Jan 10, 2025 at 06:40:51PM +0000, Brendan Jackman wrote:
+> Now userspace gets a restricted address space too. The critical section
+> begins on exit to userspace and ends when it makes a system call.
+> Other entries from userspace just interrupt the critical section via
+> asi_intr_enter().
 > 
-> Drive by review comments below...
+> The reason why system calls have to actually asi_relax() (i.e. fully
+> terminate the critical section instead of just interrupting it) is that
+> system calls are the type of kernel entry that can lead to transition
+> into a _different_ ASI domain, namely the KVM one: it is not supported
+> to transition into a different domain while a critical section exists
+> (i.e. while asi_state.target is not NULL), even if it has been paused by
+> asi_intr_enter() (i.e. even if asi_state.intr_nest_depth is nonzero) -
+> there must be an asi_relax() between any two asi_enter()s.
 > 
+> The restricted address space for bare-metal tasks naturally contains the
+> entire userspace address region, although the task's own memory is still
+> missing from the direct map.
 > 
-> On 23/10/2024 17:27, Mike Rapoport wrote:
-> > From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
-> > 
-> > Using large pages to map text areas reduces iTLB pressure and improves
-> > performance.
-> > 
-> > Extend execmem_alloc() with an ability to use huge pages with ROX
-> > permissions as a cache for smaller allocations.
-> > 
-> > To populate the cache, a writable large page is allocated from vmalloc with
-> > VM_ALLOW_HUGE_VMAP, filled with invalid instructions and then remapped as
-> > ROX.
-> > 
-> > The direct map alias of that large page is exculded from the direct map.
-> > 
-> > Portions of that large page are handed out to execmem_alloc() callers
-> > without any changes to the permissions.
-> > 
-> > When the memory is freed with execmem_free() it is invalidated again so
-> > that it won't contain stale instructions.
-> > 
-> > An architecture has to implement execmem_fill_trapping_insns() callback
-> > and select ARCH_HAS_EXECMEM_ROX configuration option to be able to use
-> > the ROX cache.
-> > 
-> > The cache is enabled on per-range basis when an architecture sets
-> > EXECMEM_ROX_CACHE flag in definition of an execmem_range.
-> > 
-> > Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
-> > Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
-> > Tested-by: kdevops <kdevops@lists.linux.dev>
-> > ---
+> This implementation creates new userspace-specific APIs for asi_init(),
+> asi_destroy() and asi_enter(), which seems a little ugly, maybe this
+> suggest a general rework of these APIs given that the "generic" version
+> only has one caller. For RFC code this seems good enough though.
 > 
-> [...]
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> ---
+>  arch/x86/include/asm/asi.h   |  8 ++++++--
+>  arch/x86/mm/asi.c            | 49 ++++++++++++++++++++++++++++++++++++++++----
+>  include/asm-generic/asi.h    |  9 +++++++-
+>  include/linux/entry-common.h | 11 ++++++++++
+>  init/main.c                  |  2 ++
+>  kernel/entry/common.c        |  1 +
+>  kernel/fork.c                |  4 +++-
+>  7 files changed, 76 insertions(+), 8 deletions(-)
 > 
-> > +
-> > +static int execmem_cache_populate(struct execmem_range *range, size_t size)
-> > +{
-> > +	unsigned long vm_flags = VM_ALLOW_HUGE_VMAP;
-> > +	unsigned long start, end;
-> > +	struct vm_struct *vm;
-> > +	size_t alloc_size;
-> > +	int err = -ENOMEM;
-> > +	void *p;
-> > +
-> > +	alloc_size = round_up(size, PMD_SIZE);
-> > +	p = execmem_vmalloc(range, alloc_size, PAGE_KERNEL, vm_flags);
-> 
-> Shouldn't this be passing PAGE_KERNEL_ROX? Otherwise I don't see how the
-> allocated memory is ROX? I don't see any call below where you change the permission.
+> diff --git a/arch/x86/include/asm/asi.h b/arch/x86/include/asm/asi.h
+> index e925d7d2cfc85bca8480c837548654e7a5a7009e..c3c1a57f0147ae9bd11d89c8bf7c8a4477728f51 100644
+> --- a/arch/x86/include/asm/asi.h
+> +++ b/arch/x86/include/asm/asi.h
+> @@ -140,19 +140,23 @@ DECLARE_PER_CPU_ALIGNED(struct asi *, curr_asi);
+>  
+>  void asi_check_boottime_disable(void);
+>  
+> -void asi_init_mm_state(struct mm_struct *mm);
+> +int asi_init_mm_state(struct mm_struct *mm);
+>  
+>  int asi_init_class(enum asi_class_id class_id, struct asi_taint_policy *taint_policy);
+> +void asi_init_userspace_class(void);
+>  void asi_uninit_class(enum asi_class_id class_id);
+>  const char *asi_class_name(enum asi_class_id class_id);
+>  
+>  int asi_init(struct mm_struct *mm, enum asi_class_id class_id, struct asi **out_asi);
+>  void asi_destroy(struct asi *asi);
+> +void asi_destroy_userspace(struct mm_struct *mm);
+>  void asi_clone_user_pgtbl(struct mm_struct *mm, pgd_t *pgdp);
+>  
+>  /* Enter an ASI domain (restricted address space) and begin the critical section. */
+>  void asi_enter(struct asi *asi);
+>  
+> +void asi_enter_userspace(void);
+> +
+>  /*
+>   * Leave the "tense" state if we are in it, i.e. end the critical section. We
+>   * will stay relaxed until the next asi_enter.
+> @@ -294,7 +298,7 @@ void asi_handle_switch_mm(void);
+>   */
+>  static inline bool asi_maps_user_addr(enum asi_class_id class_id)
+>  {
+> -	return false;
+> +	return class_id == ASI_CLASS_USERSPACE;
+>  }
+>  
+>  #endif /* CONFIG_MITIGATION_ADDRESS_SPACE_ISOLATION */
+> diff --git a/arch/x86/mm/asi.c b/arch/x86/mm/asi.c
+> index 093103c1bc2677c81d68008aca064fab53b73a62..1e9dc568e79e8686a4dbf47f765f2c2535d025ec 100644
+> --- a/arch/x86/mm/asi.c
+> +++ b/arch/x86/mm/asi.c
+> @@ -25,6 +25,7 @@ const char *asi_class_names[] = {
+>  #if IS_ENABLED(CONFIG_KVM)
+>  	[ASI_CLASS_KVM] = "KVM",
+>  #endif
+> +	[ASI_CLASS_USERSPACE] = "userspace",
+>  };
+>  
+>  DEFINE_PER_CPU_ALIGNED(struct asi *, curr_asi);
+> @@ -67,6 +68,32 @@ int asi_init_class(enum asi_class_id class_id, struct asi_taint_policy *taint_po
+>  }
+>  EXPORT_SYMBOL_GPL(asi_init_class);
+>  
+> +void __init asi_init_userspace_class(void)
+> +{
+> +	static struct asi_taint_policy policy = {
+> +		/*
+> +		 * Prevent going to userspace with sensitive data potentially
+> +		 * left in sidechannels by code running in the unrestricted
+> +		 * address space, or another MM. Note we don't check for guest
+> +		 * data here. This reflects the assumption that the guest trusts
+> +		 * its VMM (absent fancy HW features, which are orthogonal).
+> +		 */
+> +		.protect_data = ASI_TAINT_KERNEL_DATA | ASI_TAINT_OTHER_MM_DATA,
+> +		/*
+> +		 * Don't go into userspace with control flow state controlled by
+> +		 * other processes, or any KVM guest the process is running.
+> +		 * Note this bit is about protecting userspace from other parts
+> +		 * of the system, while data_taints is about protecting other
+> +		 * parts of the system from the guest.
+> +		 */
+> +		.prevent_control = ASI_TAINT_GUEST_CONTROL | ASI_TAINT_OTHER_MM_CONTROL,
+> +		.set = ASI_TAINT_USER_CONTROL | ASI_TAINT_USER_DATA,
+> +	};
+> +	int err = asi_init_class(ASI_CLASS_USERSPACE, &policy);
+> +
+> +	WARN_ON(err);
+> +}
+> +
+>  void asi_uninit_class(enum asi_class_id class_id)
+>  {
+>  	if (!boot_cpu_has(X86_FEATURE_ASI))
+> @@ -385,7 +412,8 @@ int asi_init(struct mm_struct *mm, enum asi_class_id class_id, struct asi **out_
+>  	int err = 0;
+>  	uint i;
+>  
+> -	*out_asi = NULL;
+> +	if (out_asi)
+> +		*out_asi = NULL;
+>  
+>  	if (!boot_cpu_has(X86_FEATURE_ASI))
+>  		return 0;
+> @@ -424,7 +452,7 @@ int asi_init(struct mm_struct *mm, enum asi_class_id class_id, struct asi **out_
+>  exit_unlock:
+>  	if (err)
+>  		__asi_destroy(asi);
+> -	else
+> +	else if (out_asi)
+>  		*out_asi = asi;
+>  
+>  	__asi_init_user_pgds(mm, asi);
+> @@ -515,6 +543,12 @@ static __always_inline void maybe_flush_data(struct asi *next_asi)
+>  	this_cpu_and(asi_taints, ~ASI_TAINTS_DATA_MASK);
+>  }
+>  
+> +void asi_destroy_userspace(struct mm_struct *mm)
+> +{
+> +	VM_BUG_ON(!asi_class_initialized(ASI_CLASS_USERSPACE));
+> +	asi_destroy(&mm->asi[ASI_CLASS_USERSPACE]);
+> +}
+> +
+>  noinstr void __asi_enter(void)
+>  {
+>  	u64 asi_cr3;
+> @@ -584,6 +618,11 @@ noinstr void asi_enter(struct asi *asi)
+>  }
+>  EXPORT_SYMBOL_GPL(asi_enter);
+>  
+> +noinstr void asi_enter_userspace(void)
+> +{
+> +	asi_enter(&current->mm->asi[ASI_CLASS_USERSPACE]);
+> +}
+> +
+>  noinstr void asi_relax(void)
+>  {
+>  	if (static_asi_enabled()) {
+> @@ -633,13 +672,15 @@ noinstr void asi_exit(void)
+>  }
+>  EXPORT_SYMBOL_GPL(asi_exit);
+>  
+> -void asi_init_mm_state(struct mm_struct *mm)
+> +int asi_init_mm_state(struct mm_struct *mm)
+>  {
+>  	if (!boot_cpu_has(X86_FEATURE_ASI))
+> -		return;
+> +		return 0;
+>  
+>  	memset(mm->asi, 0, sizeof(mm->asi));
+>  	mutex_init(&mm->asi_init_lock);
+> +
+> +	return asi_init(mm, ASI_CLASS_USERSPACE, NULL);
 
-The memory is allocated RW, filled with invalid instructions, unammped in
-vmalloc space, removed from the direct map and then mapped as ROX in
-vmalloc address space.
- 
-> Given the range has the pgprot in it, you could just drop passing the pgprot
-> explicitly here and have execmem_vmalloc() use range->pgprot directly?
+I think this call here is problematic. This can be called from
+asi_global_init().
 
-Here range->prprot and the prot passed to vmalloc are different.
- 
-> Thanks,
-> Ryan
-> 
-> > +	if (!p)
-> > +		return err;
-> > +
-> > +	vm = find_vm_area(p);
-> > +	if (!vm)
-> > +		goto err_free_mem;
-> > +
-> > +	/* fill memory with instructions that will trap */
-> > +	execmem_fill_trapping_insns(p, alloc_size, /* writable = */ true);
-> > +
-> > +	start = (unsigned long)p;
-> > +	end = start + alloc_size;
-> > +
-> > +	vunmap_range(start, end);
-> > +
-> > +	err = execmem_set_direct_map_valid(vm, false);
-> > +	if (err)
-> > +		goto err_free_mem;
-> > +
-> > +	err = vmap_pages_range_noflush(start, end, range->pgprot, vm->pages,
-> > +				       PMD_SHIFT);
-> > +	if (err)
-> > +		goto err_free_mem;
-> > +
-> > +	err = execmem_cache_add(p, alloc_size);
-> > +	if (err)
-> > +		goto err_free_mem;
-> > +
-> > +	return 0;
-> > +
-> > +err_free_mem:
-> > +	vfree(p);
-> > +	return err;
-> > +}
-> 
-> [...]
-> 
+An example is:
 
--- 
-Sincerely yours,
-Mike.
+start_kernel()
+poking_init()
+mm_alloc()
+mm_init()
+asi_init_mm_state()
+
+But the same also happen through dup_mm(), for example:
+
+kernel_thread()
+kernel_clone()
+copy_process()
+copy_mm()
+dup_mm()
+
+asi_global_init() is called later from do_initcalls() (run in a kthread
+by kernel_init()). In this case, asi_init() copies the kernel PGDs from
+asi_global_nonsensitive_pgd, but those PGDs won't be initialized yet.
+
+It could be fine for the current code because all these threads created
+during init never enter userspace, but I am not sure if that's always
+true. It also makes me a bit nervous to have partially initialized ASI
+domains hanging around.
+
+I'd rather we either:
+- Move asi_global_init() earlier, but we have to be careful not to move
+  it too early before some of the mappings it clones are created (or
+  before we can make allocations). In this case, we should also add a
+  warning in asi_init() in case the code changes and it is ever called
+  before asi_global_init().
+
+- Explicitly avoid calling asi_init_mm_state() or asi_init() in these
+  cases. This may be easy-ish in the case of kthreads, but for things
+  like poking_init() we would need to plump more context through.
+  Alternatively we can just make asi_init() a noop if asi_global_init()
+  isn't called yet, but the silent failure makes me a bit worried too.
+
+>  }
+>  
+>  void asi_handle_switch_mm(void)
+> diff --git a/include/asm-generic/asi.h b/include/asm-generic/asi.h
+> index d103343292fad567dcd73e45e986fb3974e59898..c93f9e779ce1fa61e3df7835f5ab744cce7d667b 100644
+> --- a/include/asm-generic/asi.h
+> +++ b/include/asm-generic/asi.h
+> @@ -15,6 +15,7 @@ enum asi_class_id {
+>  #if IS_ENABLED(CONFIG_KVM)
+>  	ASI_CLASS_KVM,
+>  #endif
+> +	ASI_CLASS_USERSPACE,
+>  	ASI_MAX_NUM_CLASSES,
+>  };
+>  static_assert(order_base_2(X86_CR3_ASI_PCID_BITS) <= ASI_MAX_NUM_CLASSES);
+> @@ -37,8 +38,10 @@ int asi_init_class(enum asi_class_id class_id,
+>  
+>  static inline void asi_uninit_class(enum asi_class_id class_id) { }
+>  
+> +static inline void asi_init_userspace_class(void) { }
+> +
+>  struct mm_struct;
+> -static inline void asi_init_mm_state(struct mm_struct *mm) { }
+> +static inline int asi_init_mm_state(struct mm_struct *mm) { return 0; }
+>  
+>  static inline int asi_init(struct mm_struct *mm, enum asi_class_id class_id,
+>  			   struct asi **out_asi)
+> @@ -48,8 +51,12 @@ static inline int asi_init(struct mm_struct *mm, enum asi_class_id class_id,
+>  
+>  static inline void asi_destroy(struct asi *asi) { }
+>  
+> +static inline void asi_destroy_userspace(struct mm_struct *mm) { }
+> +
+>  static inline void asi_enter(struct asi *asi) { }
+>  
+> +static inline void asi_enter_userspace(void) { }
+> +
+>  static inline void asi_relax(void) { }
+>  
+>  static inline bool asi_is_relaxed(void) { return true; }
+> diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
+> index 1e50cdb83ae501467ecc30ee52f1379d409f962e..f04c4c038556f84ddf3bc09b6c1dd22a9dbd2f6b 100644
+> --- a/include/linux/entry-common.h
+> +++ b/include/linux/entry-common.h
+> @@ -191,6 +191,16 @@ static __always_inline long syscall_enter_from_user_mode(struct pt_regs *regs, l
+>  {
+>  	long ret;
+>  
+> +	/*
+> +	 * End the ASI critical section for userspace. Syscalls are the only
+> +	 * place this happens - all other entry from userspace is handled via
+> +	 * ASI's interrupt-tracking. The reason syscalls are special is that's
+> +	 * where it's possible to switch to another ASI domain within the same
+> +	 * task (i.e. KVM_RUN), an asi_relax() is required here in case of an
+> +	 * upcoming asi_enter().
+> +	 */
+> +	asi_relax();
+> +
+>  	enter_from_user_mode(regs);
+>  
+>  	instrumentation_begin();
+> @@ -355,6 +365,7 @@ static __always_inline void exit_to_user_mode_prepare(struct pt_regs *regs)
+>   */
+>  static __always_inline void exit_to_user_mode(void)
+>  {
+> +
+>  	instrumentation_begin();
+>  	trace_hardirqs_on_prepare();
+>  	lockdep_hardirqs_on_prepare();
+> diff --git a/init/main.c b/init/main.c
+> index c4778edae7972f512d5eefe8400075ac35a70d1c..d19e149d385e8321d2f3e7c28aa75802af62d09c 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -953,6 +953,8 @@ void start_kernel(void)
+>  	/* Architectural and non-timekeeping rng init, before allocator init */
+>  	random_init_early(command_line);
+>  
+> +	asi_init_userspace_class();
+> +
+>  	/*
+>  	 * These use large bootmem allocations and must precede
+>  	 * initalization of page allocator
+> diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+> index 5b6934e23c21d36a3238dc03e391eb9e3beb4cfb..874254ed5958d62eaeaef4fe3e8c02e56deaf5ed 100644
+> --- a/kernel/entry/common.c
+> +++ b/kernel/entry/common.c
+> @@ -218,6 +218,7 @@ __visible noinstr void syscall_exit_to_user_mode(struct pt_regs *regs)
+>  	__syscall_exit_to_user_mode_work(regs);
+>  	instrumentation_end();
+>  	exit_to_user_mode();
+> +	asi_enter_userspace();
+>  }
+>  
+>  noinstr void irqentry_enter_from_user_mode(struct pt_regs *regs)
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index bb73758790d08112265d398b16902ff9a4c2b8fe..54068d2415939b92409ca8a45111176783c6acbd 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -917,6 +917,7 @@ void __mmdrop(struct mm_struct *mm)
+>  	/* Ensure no CPUs are using this as their lazy tlb mm */
+>  	cleanup_lazy_tlbs(mm);
+>  
+> +	asi_destroy_userspace(mm);
+>  	WARN_ON_ONCE(mm == current->active_mm);
+>  	mm_free_pgd(mm);
+>  	destroy_context(mm);
+> @@ -1297,7 +1298,8 @@ static struct mm_struct *mm_init(struct mm_struct *mm, struct task_struct *p,
+>  	if (mm_alloc_pgd(mm))
+>  		goto fail_nopgd;
+>  
+> -	asi_init_mm_state(mm);
+> +	if (asi_init_mm_state(mm))
+> +		goto fail_nocontext;
+>  
+>  	if (init_new_context(p, mm))
+>  		goto fail_nocontext;
+> 
+> -- 
+> 2.47.1.613.gc27f4b7a9f-goog
+> 
 
