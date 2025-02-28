@@ -4,99 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B4404C19F32
-	for <linux-um@archiver.kernel.org>; Fri, 28 Feb 2025 02:44:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5BA45C19776
+	for <linux-um@archiver.kernel.org>; Fri, 28 Feb 2025 09:01:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=KrHEppDznEYNt+aFJHMFnsD9ySUlfKEU8kXo3t7+HP0=; b=VvqQFPKeGv4i2tXuFWPdGyg8t0
-	Ribk8HSne/OKnYtnN1UZ8HBr0ZUBLVxwdB5bbHY5kO10f8so41U3Ic6MXq2CpEGwjj4Ypz+g2C60z
-	JquFVbmJ4WaE3TUUJkoFB67LACzWrO4+WKiyskJUox2FapwPz29RZUNOtwMRlHVHk8QS66VAfKfGM
-	CzjnDRHC+pPe1zTBKnKSxA3PykO5Lt4L6Lb+CUG8ESOxa+A2QXo2rFgjid3XErccM4ukt8TD6SpTb
-	TCr1nq6qmPTy0zaPhp2fSA4460zanIy8Cz4I5+e99+mA7TQfd/TBZA3ew+2NlyURKta7kN2y/stEO
-	k/NdinZA==;
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=LiR3Q3Hzx+LFjLqooUrXeDrXwUS05trGGD2104VPDY8=; b=Wv1nYsse543HBrfDA30pd43Wlx
+	kPkjUQzg3cQwWXiO3PdrG0xKfI4Vug9cufHweLBX+3oDgzmL+atC8j1nKRblAuRyv+C5lJCqtuGOq
+	wnpsyx4R3ZfH0FhzZqN7nhDT9Zt8j5kzYXuN/6Xf83jijla/FL4jHluOQjX0WHx/mqXlLwuld458R
+	MMc4wgDwzKWv0b3sWdcZU8KezByFoxclP4wzplR4ID/+3317Bq+qIVSAXL/VpI/MA934s/+sjpaFD
+	6aljkHxCMHZnzCx1kFfaEjyHOySWc+dPX/86+eMT9fLLBsfNJiHcEl0vojPUePvQNGISv7P/Je7yw
+	uGQgPuVQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tnqMg-00000009WBD-0TL2;
-	Fri, 28 Feb 2025 02:44:38 +0000
-Received: from mail-pj1-x1035.google.com ([2607:f8b0:4864:20::1035])
+	id 1tnwFO-0000000AHLc-3Nyp;
+	Fri, 28 Feb 2025 09:01:30 +0000
+Received: from mail-ed1-x536.google.com ([2a00:1450:4864:20::536])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tnqMc-00000009W9x-24fZ
+	id 1tnwFM-0000000AHKw-4BI4
 	for linux-um@lists.infradead.org;
-	Fri, 28 Feb 2025 02:44:35 +0000
-Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-2fe96dd93b4so3639683a91.0
-        for <linux-um@lists.infradead.org>; Thu, 27 Feb 2025 18:44:33 -0800 (PST)
+	Fri, 28 Feb 2025 09:01:30 +0000
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-5e04064af07so3375753a12.0
+        for <linux-um@lists.infradead.org>; Fri, 28 Feb 2025 01:01:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1740710673; x=1741315473; darn=lists.infradead.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KrHEppDznEYNt+aFJHMFnsD9ySUlfKEU8kXo3t7+HP0=;
-        b=SFMkUn2tP+coX5ljIHaBjr7iXerXaEH6ucIaRGNYdMeveB05kdHgBxH1ya1Qsxsvj3
-         dsFgX7w3DBWhPg8nvQmwZtRnZxC69/wLdQIqBhdyWfYTynVU+lm5ymMpiPhYW5NpsBNo
-         ZfbJSseUHpmfM63kZstC1bYJTGrr2/IcQA4bjAKs6jBNpQyz85bAv2XyVU++m2q0ZqkH
-         ztFbCsAP64jfPe3GhY/ujXgT5UuBqVKunvLbPpoV/GeK3oDqxGSCJrRQuAMqlZdJux5/
-         J6b5HY9Wr7Gs33mZFxDFvha/C2xEUrbN1Pbjdi4uUyUtskYriR1aAQ5jguv7qzIO30+/
-         EflQ==
+        d=gmail.com; s=20230601; t=1740733287; x=1741338087; darn=lists.infradead.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LiR3Q3Hzx+LFjLqooUrXeDrXwUS05trGGD2104VPDY8=;
+        b=lRC6uXT+iN4RnSU889iUBXS62vg2yRyU871m7zugrrw15HnodKGluMP1hj66pPx26v
+         i3FRh9gdKva0ShkuhHtaK8zt88vbA/IPOh3MQnfEAuoLL4H9ypm7t5tJOkHZH52A4Mlo
+         bWSYkGfmMBE5fMUq0wmqoaeOUavEbXLSP6ChVxZ8bS37pCuxVzPc0tk2NcglYDYhrLdi
+         vB/1xXF/BpV7LWCI7LgggfLHxXdHBUAQ2pwD4rKAv0RI1yW3eU4hbcmZT9UFWMnczAYR
+         7ufptQAogwmAW7G6IxI0icXtmpJeq2G8ODaldVLOwG0JZmk5B6/tuXMkYqv7XNw7yoBt
+         6gOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740710673; x=1741315473;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=KrHEppDznEYNt+aFJHMFnsD9ySUlfKEU8kXo3t7+HP0=;
-        b=l+YA/X6R4PotJHlzKbM4x/92on2Uub45PgMuo0+8pXmWx7KSnv+el6iAjB/SPLni97
-         dNlH02CwwrAOI36QSYhkwIGM3xrcEHt29Iiakk/W1HDL4x3au6ODocyg7h2QFNkGq1A8
-         D/ezWxWTJt1ryT99GvcVByYsYRw6Vy/5RKhSaDNV/s4sBD5JFJtuomXEmHzv84p57jXz
-         lHiVTeJ9ng3DG+DeesXa6cqHIRysD7z6cT3uP/VNp+S4BBqyi5ZacAmVU3ks5pKHZmX7
-         JYLktTO0xyM0Ve5nGTBhHC7ehx0WhnCWh5bP+Yz4dzR4sVPneXAMT9UjmSQhRDoliqwY
-         YH+g==
-X-Forwarded-Encrypted: i=1; AJvYcCX1GBAKy+m8/urN2qeivproc33gZMHCvOZBIVZRIRiDTqqXXzHB89SUoyYAdqG/NRprhXdGSObcTg==@lists.infradead.org
-X-Gm-Message-State: AOJu0YwWzEuP3BvHbh3ZB2jYEO2V45i6N6TnyWvLnNw6gTkYr26nEyzw
-	jb/25RVXaZwJc0QDhi2z0O3PB715+ydDNAmQJHxPd69nBn65C+TyhdzH0+YPSic=
-X-Gm-Gg: ASbGnctkLQp8slRd2quHguPj4s9CgaOY0NFlwuWpNbDeuhh+90aJ9grLbcwrEqQg5Zr
-	23o3XfyJDKrn0ZHDd2zsWx7uSVA66qdY+BJ8OAHZ4jMd95dk1BiNZ2poLxg2Jc2/frfrxTIowel
-	d6eDh00UiE3dqxeuYUPaaX9XZ0Pa+J6uzYkmE4Dv+dpxXkEkFKZH/N3eIkuMvgZ+iccBnERXOEa
-	c+BJfaoqCOd/xhzEIJc0qo9zzyDFIDq7rTzpsqtNfyS7kjEwhrl/4jRXbKqj4INA6MlJSjTOIHE
-	Rwg4Y8Os+ustvGUVK9SuIUmp6ourGL+hcMIBMlsTBmO+UXrOkQ==
-X-Google-Smtp-Source: AGHT+IF4hsdZRiz/aSbemK655CZrsY9ZUuvu4Xu2ENST8y9hxHTSO7PJo35OmCgDgimYWycuvOakGg==
-X-Received: by 2002:a05:6a20:1591:b0:1ee:d19c:45f9 with SMTP id adf61e73a8af0-1f2f3e11f86mr2902815637.19.1740710672736;
-        Thu, 27 Feb 2025 18:44:32 -0800 (PST)
-Received: from [10.68.122.90] ([63.216.146.179])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7349fe514besm2559832b3a.71.2025.02.27.18.44.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Feb 2025 18:44:32 -0800 (PST)
-Message-ID: <e5f4e310-5bcd-4901-8ec3-757cf55dfa64@bytedance.com>
-Date: Fri, 28 Feb 2025 10:44:21 +0800
+        d=1e100.net; s=20230601; t=1740733287; x=1741338087;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LiR3Q3Hzx+LFjLqooUrXeDrXwUS05trGGD2104VPDY8=;
+        b=E1RQpCM+a2iZC0Uv0Us9otNsWds0DD0MrJuPs1X6FkPKrv8Yon43i49uC8XHQ4FCeh
+         iPQJ1P3z6DvsGE319LJeR0E0fsIQ6hsp6XSw9i/6we2Y2QyPqWcTJznrOGjP0K8galEi
+         IfNnbSEDtDTR67EK0AIPp0D8HJ8vaJcn/1bVmX/aatsKGRGMsE1Od9omEx356LkLbSnD
+         c+1yLruFg7gHCtfC7yxwBpznazyzR4vkQLdOAahoucXrU1svZJFmOC/ijQG+/TPHoEHk
+         ZYkabizMpoRIu1RGBAHKHSry0l46mCiABLWz+5jVbmabO1uEJWcYGoG+i0Zpf81mdk1Q
+         jnqw==
+X-Forwarded-Encrypted: i=1; AJvYcCXX3HNWKipgS4BpYtkcph1XrWeNbKje7/h6wMLx//pczHLdesAkjSo5CHvcChKn4cb1Bxb1cl2/Nw==@lists.infradead.org
+X-Gm-Message-State: AOJu0YwDMqiH6mcF1aIXqJg9yxPVfJNyePDxVPhSsiaO2qx0ylcUNZSV
+	5iuRtlgzcSLFwv5EnrUSPjokS9B5PNSVcJk9imFQBbgh7VU+Z2c0sxVl0iwOsA0=
+X-Gm-Gg: ASbGncsLuR6y47H0EzWqy6dO08c3X9p5rqQnS3zwRPHM+/1MWUodY3oD4g6r8M0NJv+
+	HceNpIXisS0dglrh5OncFoNggdWvvl80E3vHm1Ikj8EQ0vPZ/8PFDxqu+jpLfbuEdzuwg9uzyTk
+	YrdQzw09pczLoDuGWwt1xqPEnPuEz9by0blFVgvuFvFdasb17REETfCeOff3b7whHJH16Ayv8ba
+	Ho71f8xd9wQUyjILLs8SYxsMV8y1vGWTwAjKA6rTqFOGeewa+DoZy9kgMb8S+kA9K+KBKZ73BWE
+	3r3fXzLyStipqhBs/A==
+X-Google-Smtp-Source: AGHT+IH7wl9bSRrHP5kWST85mxMZuYKEPvcz8cnXAvDNj4PvbvFgz3YSLxbx/1/EH0xeGLaoKUTfsw==
+X-Received: by 2002:a17:907:2d90:b0:ab7:8930:5669 with SMTP id a640c23a62f3a-abf25fbb482mr252696366b.18.1740733285896;
+        Fri, 28 Feb 2025 01:01:25 -0800 (PST)
+Received: from fedora.. ([193.77.86.199])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-abf0c0dd9f1sm261651366b.62.2025.02.28.01.01.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Feb 2025 01:01:25 -0800 (PST)
+From: Uros Bizjak <ubizjak@gmail.com>
+To: x86@kernel.org,
+	linux-um@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Uros Bizjak <ubizjak@gmail.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@kernel.org>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH] um/locking: Remove semicolon from "lock" prefix
+Date: Fri, 28 Feb 2025 10:00:08 +0100
+Message-ID: <20250228090058.2499163-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.48.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/6] mm: pgtable: convert some architectures to use
- tlb_remove_ptdesc()
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: peterz@infradead.org, kevin.brodsky@arm.com, riel@surriel.com,
- vishal.moola@gmail.com, david@redhat.com, jannh@google.com,
- hughd@google.com, willy@infradead.org, yuzhao@google.com,
- muchun.song@linux.dev, akpm@linux-foundation.org, will@kernel.org,
- aneesh.kumar@kernel.org, npiggin@gmail.com, arnd@arndb.de,
- dave.hansen@linux.intel.com, rppt@kernel.org, alexghiti@rivosinc.com,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
- loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
- linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
- linux-sh@vger.kernel.org, linux-um@lists.infradead.org, x86@kernel.org,
- linux-riscv@lists.infradead.org
-References: <cover.1740454179.git.zhengqi.arch@bytedance.com>
- <19db3e8673b67bad2f1df1ab37f1c89d99eacfea.1740454179.git.zhengqi.arch@bytedance.com>
- <CAMuHMdU8ttibKCiUPxSNBpJyrtBbrt1CqLa++jq6CpJFbFCwAg@mail.gmail.com>
-From: Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <CAMuHMdU8ttibKCiUPxSNBpJyrtBbrt1CqLa++jq6CpJFbFCwAg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250227_184434_685826_1BC3440D 
-X-CRM114-Status: GOOD (  14.02  )
+X-CRM114-CacheID: sfid-20250228_010129_032899_0F7A5C42 
+X-CRM114-Status: GOOD (  12.76  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -111,57 +103,52 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
+Minimum version of binutils required to compile the kernel is 2.25.
+This version correctly handles the "lock" prefix, so it is possible
+to remove the semicolon, which was used to support ancient versions
+of GNU as.
 
+Due to the semicolon, the compiler considers "lock; insn" as two
+separate instructions. Removing the semicolon makes asm length
+calculations more accurate, consequently making scheduling and
+inlining decisions of the compiler more accurate.
 
-On 2/27/25 9:21 PM, Geert Uytterhoeven wrote:
-> Hi Qi,
-> 
-> On Tue, 25 Feb 2025 at 04:46, Qi Zheng <zhengqi.arch@bytedance.com> wrote:
->> Now, the nine architectures of csky, hexagon, loongarch, m68k, mips,
->> nios2, openrisc, sh and um do not select CONFIG_MMU_GATHER_RCU_TABLE_FREE,
->> and just call pagetable_dtor() + tlb_remove_page_ptdesc() (the wrapper of
->> tlb_remove_page()). This is the same as the implementation of
->> tlb_remove_{ptdesc|table}() under !CONFIG_MMU_GATHER_TABLE_FREE, so
->> convert these architectures to use tlb_remove_ptdesc().
->>
->> The ultimate goal is to make the architecture only use tlb_remove_ptdesc()
->> or tlb_remove_table() for page table pages.
->>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->> Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> 
-> Thanks for your patch!
-> 
->>   arch/m68k/include/asm/sun3_pgalloc.h | 3 +--
-> 
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
+Removing the semicolon also enables assembler checks involving lock
+prefix. Trying to assemble e.g. "lock andl %eax, %ebx" results in:
 
-Thanks for your review.
+  Error: expecting lockable instruction after `lock'
 
-> 
->> --- a/arch/m68k/include/asm/sun3_pgalloc.h
->> +++ b/arch/m68k/include/asm/sun3_pgalloc.h
->> @@ -19,8 +19,7 @@ extern const char bad_pmd_string[];
->>
->>   #define __pte_free_tlb(tlb, pte, addr)                         \
->>   do {                                                           \
->> -       pagetable_dtor(page_ptdesc(pte));                       \
->> -       tlb_remove_page_ptdesc((tlb), page_ptdesc(pte));        \
->> +       tlb_remove_ptdesc((tlb), page_ptdesc(pte));             \
->>   } while (0)
->>
-> 
-> With only a single statement remaining, you can remove the do { ... }
-> while construct, too.
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+---
+ arch/x86/um/asm/barrier.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Ah, right. Will do in the next version.
-
-Thanks!
-
-> 
-> Gr{oetje,eeting}s,
-> 
->                          Geert
-> 
+diff --git a/arch/x86/um/asm/barrier.h b/arch/x86/um/asm/barrier.h
+index 4da336965698..b51aefd6ec2b 100644
+--- a/arch/x86/um/asm/barrier.h
++++ b/arch/x86/um/asm/barrier.h
+@@ -12,9 +12,9 @@
+  */
+ #ifdef CONFIG_X86_32
+ 
+-#define mb()	alternative("lock; addl $0,0(%%esp)", "mfence", X86_FEATURE_XMM2)
+-#define rmb()	alternative("lock; addl $0,0(%%esp)", "lfence", X86_FEATURE_XMM2)
+-#define wmb()	alternative("lock; addl $0,0(%%esp)", "sfence", X86_FEATURE_XMM)
++#define mb()	alternative("lock addl $0,0(%%esp)", "mfence", X86_FEATURE_XMM2)
++#define rmb()	alternative("lock addl $0,0(%%esp)", "lfence", X86_FEATURE_XMM2)
++#define wmb()	alternative("lock addl $0,0(%%esp)", "sfence", X86_FEATURE_XMM)
+ 
+ #else /* CONFIG_X86_32 */
+ 
+-- 
+2.48.1
 
 
