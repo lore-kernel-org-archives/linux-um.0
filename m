@@ -4,113 +4,96 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6C4C4C282C6
-	for <linux-um@archiver.kernel.org>; Mon,  3 Mar 2025 07:26:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0F38C282CD
+	for <linux-um@archiver.kernel.org>; Mon,  3 Mar 2025 12:10:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=wKqMp2ldkM6onLRqmB7AQD5dXslJ0Fc9YwwNhjL6y0w=; b=kQ46hz3rDOXyBq1tvTEDR9Vn1A
-	zzLQg8nk1czfS+BtrbQJPYe7lk0uCL/2hU2dRMlgI3zV6W4+Dt+525iM1h0R0M9nnozjIkyc1DCA9
-	F/oA4P8G+VtFsXv8ruWswnrz0L8ZOtHiqlNdHbYNZ2pld7ehQk0/RWC+DNMtKcna3YMVEfeRvRuIO
-	KhOGQasGyE5pFCyH3eZGvmMKkGMZDILwnSGCSKcrCSqH/ceNY9aC8zxoPhGttzptIML3c5uTcIqiz
-	OoHcUXqecSxG6BarfkXMab9eoZcI0X2yMvGqn6vUHG4e+v/JULTui9rCjRBPwnf5i4RBf4fTvomWJ
-	kX1TWJxw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Type:MIME-Version:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=T7Hhiapw2mmxFdPBFgQ0Pi8GGY5rvQkPmyRPXzrBd2Q=; b=B1ceNFN3K0igUKDQOv6M83Do/O
+	pYTPKVQgpG2N+lIm0BaBKbMSuUX4mm3TXq+2BWJLorcDkoNW8BDhMrmwZzJXq8GJc9ELqBmChPuSx
+	jO6IYqlbQDAo+8Q2K3swDiXBYxxPd/5yrJ0z+PHbxoGhYidbgo+VpuHPKG7ywOGHl3AZ4LKS9WRrh
+	HgQIdNDIEWLs5164Of6M8nS4n8eKhoTpBdwD/JLOQ39+aEWBNpgoR+5NOrOrxQLjkuelTBmrAw0Zp
+	XxsI+/ngniHrc4Uqr111+cXXfuu7x1n7JNvoXALtsvuKYmloHk4kYaBYF+cneKCkRbXlpKcbBkS6Q
+	eufdFbjA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tp0CI-0000000HQgJ-02X5;
-	Mon, 03 Mar 2025 07:26:42 +0000
-Received: from mail-pj1-x1030.google.com ([2607:f8b0:4864:20::1030])
-	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tp0CE-0000000HQfC-3Ubk
-	for linux-um@lists.infradead.org;
-	Mon, 03 Mar 2025 07:26:40 +0000
-Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-2fce3b01efcso5800430a91.3
-        for <linux-um@lists.infradead.org>; Sun, 02 Mar 2025 23:26:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1740986797; x=1741591597; darn=lists.infradead.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wKqMp2ldkM6onLRqmB7AQD5dXslJ0Fc9YwwNhjL6y0w=;
-        b=B8JuW/eGYGlfUmv7lK81h32ZStWhTWWYmWgnwbLb6+smAkOtXG4I/9Z3cHXgYth3UF
-         8FotqAIOwLsDq1zok75sKp8+h38GsVe3Kbdez5LcX6G9zVazybTuY4Gkv3o+L3M4Nfor
-         oAcPlbgzyF+ToMRF2YLJtdArv8JZ3IpUmDJ2z/IxLbFHmcZ15CEmHnrx8Sre6pQMBm2z
-         c/ynetBv+1A9D8jQ7Kvly9ihJm+DgBKqc4AmUZeSkh84PjlK+dofosLyAqXISq2+1WoS
-         oruw8BrGxpPn277NwRFlRp8zNioqbMsI80CMTr8IIlZ4GHuL6U8Zh9c/8jVv/aXVGQX2
-         Yf3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1740986797; x=1741591597;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wKqMp2ldkM6onLRqmB7AQD5dXslJ0Fc9YwwNhjL6y0w=;
-        b=pz7UiriJmVSurw0SosOnKT0kNdPrEF2vagVZzTV35IjYs5fWAfE0Ayu+ZIlZlvHL7I
-         qMPSk+ZktyCYRTSov5Ul+z6oc58bEnpaua7dkL+Q0VWloy0J0sdz5eCrnI4qVh+7i0Na
-         PdwiR+ltcur/UMR7GD79xm1fnfjHbQuUTSxdEA9E4YHVCzQHFwlOfUw0wP/w47jfudFb
-         IvZeophujguGu7tzaXZiqjVBene/Nwnq0aSFFn4a1jl+NGt9cJMgEjDRcGQS8ANGRPca
-         3JSI5V0OROrNx3ZP1yutUPO5EuhCNnpynEh71EDAYoZyx35bxjB4xVvYzhcQSxpnVriF
-         dCxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVWJ1VQQgxFEkwqplpelOV+Ba9hxX6Lss+fBx52WBFeraSGwCMKHbcJ43UX0i8ugfE6gCwyI3mG1A==@lists.infradead.org
-X-Gm-Message-State: AOJu0YyqQizRR1V9yHQ8TU4cOj9ATyeAgGBP4+pjg5i3G6fHJKtEIDUA
-	Dqiw59T+rJikAheRa7FIo84Y13fcR5wVfVCosgPjsVyhWjbZxfCclAFLOya4DLY=
-X-Gm-Gg: ASbGncvYdt3otxnXo8R2qOYuufDgkc12e0heVRUwa+xkaUO8k+8tHwYguAik0rzFYSv
-	i1RuFtgoZFTjtFcX4VxEbQEOCHvsRyMV2M/CoeRxkY+xKgbl7q2nWqxmGCfzPfr6IGQcI62SqPI
-	FtE57b2t2LttNwjtiMeHZJnprAD1H1i9sgV/ceiTwmOlu4oqjMElqX7WPzGqUrdhJ0zsrvcE8GR
-	3LQKpH+hK0PPsdpkCVpXDiAqGs9TgBhNetHORo8bpyr1T1csm/BnNgcCJLXhXqJvWTdE858ksKD
-	sw8hKwi9x8yfUA5lyes7qeQ7Z9j2rLEnrwR5xK4FQXvC7YuMXuxEwUPtV4/OV553KlWdsmS8LON
-	iCaw3Kg==
-X-Google-Smtp-Source: AGHT+IHY/mguPL5YJZdh+hkpdyJ3sc0BaAvd1rDPiW9eR/qaACJ5BQlxWj/zL9j3Gfy9PeYzz+4/5A==
-X-Received: by 2002:a17:90a:f948:b0:2fe:d766:ad87 with SMTP id 98e67ed59e1d1-2fed766af9cmr12568619a91.7.1740986796693;
-        Sun, 02 Mar 2025 23:26:36 -0800 (PST)
-Received: from G7HT0H2MK4.bytedance.net ([63.216.146.178])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2fea676c06asm8211638a91.16.2025.03.02.23.26.26
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sun, 02 Mar 2025 23:26:35 -0800 (PST)
-From: Qi Zheng <zhengqi.arch@bytedance.com>
-To: peterz@infradead.org,
-	kevin.brodsky@arm.com,
-	riel@surriel.com,
-	vishal.moola@gmail.com,
-	david@redhat.com,
-	jannh@google.com,
-	hughd@google.com,
-	willy@infradead.org,
-	yuzhao@google.com,
-	muchun.song@linux.dev,
-	akpm@linux-foundation.org,
-	will@kernel.org,
-	aneesh.kumar@kernel.org,
-	npiggin@gmail.com,
-	arnd@arndb.de,
-	dave.hansen@linux.intel.com,
-	rppt@kernel.org,
-	alexghiti@rivosinc.com
-Cc: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org,
-	linux-openrisc@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	Qi Zheng <zhengqi.arch@bytedance.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 3/6 update] mm: pgtable: convert some architectures to use tlb_remove_ptdesc()
-Date: Mon,  3 Mar 2025 15:26:03 +0800
-Message-ID: <20250303072603.45423-1-zhengqi.arch@bytedance.com>
-X-Mailer: git-send-email 2.48.1
-In-Reply-To: <19db3e8673b67bad2f1df1ab37f1c89d99eacfea.1740454179.git.zhengqi.arch@bytedance.com>
-References: <19db3e8673b67bad2f1df1ab37f1c89d99eacfea.1740454179.git.zhengqi.arch@bytedance.com>
+	id 1tp4dH-00000000h92-46Yh;
+	Mon, 03 Mar 2025 12:10:51 +0000
+Received: from vmicros1.altlinux.org ([194.107.17.57])
+	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
+	id 1tp3pM-00000000W81-1U8i;
+	Mon, 03 Mar 2025 11:19:19 +0000
+Received: from mua.local.altlinux.org (mua.local.altlinux.org [192.168.1.14])
+	by vmicros1.altlinux.org (Postfix) with ESMTP id 324F672C8CC;
+	Mon,  3 Mar 2025 14:19:11 +0300 (MSK)
+Received: by mua.local.altlinux.org (Postfix, from userid 508)
+	id 01EDE7CCB3B; Mon,  3 Mar 2025 13:19:10 +0200 (IST)
+Date: Mon, 3 Mar 2025 13:19:10 +0200
+From: "Dmitry V. Levin" <ldv@strace.io>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Oleg Nesterov <oleg@redhat.com>, Alexey Gladkov <legion@kernel.org>,
+	Eugene Syromyatnikov <evgsyr@gmail.com>,
+	Charlie Jenkins <charlie@rivosinc.com>,
+	Helge Deller <deller@gmx.de>,
+	"Maciej W. Rozycki" <macro@orcam.me.uk>,
+	Mike Frysinger <vapier@gentoo.org>,
+	Renzo Davoli <renzo@cs.unibo.it>,
+	Davide Berardi <berardi.dav@gmail.com>,
+	Vineet Gupta <vgupta@kernel.org>,
+	Russell King <linux@armlinux.org.uk>, Will Deacon <will@kernel.org>,
+	Guo Ren <guoren@kernel.org>, Brian Cain <bcain@quicinc.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Michal Simek <monstr@monstr.eu>, Dinh Nguyen <dinguyen@kernel.org>,
+	Jonas Bonn <jonas@southpole.se>,
+	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+	Stafford Horne <shorne@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Naveen N Rao <naveen@kernel.org>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Yoshinori Sato <ysato@users.sourceforge.jp>,
+	Rich Felker <dalias@libc.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
+	Max Filippov <jcmvbkbc@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+	Shuah Khan <shuah@kernel.org>, strace-devel@lists.strace.io,
+	linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-api@vger.kernel.org
+Subject: [PATCH v7 0/6] ptrace: introduce PTRACE_SET_SYSCALL_INFO API
+Message-ID: <20250303111910.GA24170@strace.io>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250302_232639_032267_BE6E7465 
-X-CRM114-Status: GOOD (  10.77  )
+X-CRM114-CacheID: sfid-20250303_031916_777566_B96B3161 
+X-CRM114-Status: GOOD (  22.07  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -125,215 +108,155 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Now, the nine architectures of csky, hexagon, loongarch, m68k, mips,
-nios2, openrisc, sh and um do not select CONFIG_MMU_GATHER_RCU_TABLE_FREE,
-and just call pagetable_dtor() + tlb_remove_page_ptdesc() (the wrapper of
-tlb_remove_page()). This is the same as the implementation of
-tlb_remove_{ptdesc|table}() under !CONFIG_MMU_GATHER_TABLE_FREE, so
-convert these architectures to use tlb_remove_ptdesc().
+PTRACE_SET_SYSCALL_INFO is a generic ptrace API that complements
+PTRACE_GET_SYSCALL_INFO by letting the ptracer modify details of
+system calls the tracee is blocked in.
 
-The ultimate goal is to make the architecture only use tlb_remove_ptdesc()
-or tlb_remove_table() for page table pages.
+This API allows ptracers to obtain and modify system call details in a
+straightforward and architecture-agnostic way, providing a consistent way
+of manipulating the system call number and arguments across architectures.
 
-Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Kevin Brodsky <kevin.brodsky@arm.com>
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> # m68k
----
-Changes in v2 update:
- - remove the do { ... } while construct. (Geert Uytterhoeven)
- - collect the Reviewed-by and Acked-by.
+As in case of PTRACE_GET_SYSCALL_INFO, PTRACE_SET_SYSCALL_INFO also
+does not aim to address numerous architecture-specific system call ABI
+peculiarities, like differences in the number of system call arguments
+for such system calls as pread64 and preadv.
 
- arch/csky/include/asm/pgalloc.h      |  7 ++-----
- arch/hexagon/include/asm/pgalloc.h   |  7 ++-----
- arch/loongarch/include/asm/pgalloc.h |  7 ++-----
- arch/m68k/include/asm/sun3_pgalloc.h |  7 ++-----
- arch/mips/include/asm/pgalloc.h      |  7 ++-----
- arch/nios2/include/asm/pgalloc.h     |  7 ++-----
- arch/openrisc/include/asm/pgalloc.h  |  7 ++-----
- arch/sh/include/asm/pgalloc.h        |  7 ++-----
- arch/um/include/asm/pgalloc.h        | 21 ++++++---------------
- 9 files changed, 22 insertions(+), 55 deletions(-)
+The current implementation supports changing only those bits of system call
+information that are used by strace system call tampering, namely, syscall
+number, syscall arguments, and syscall return value.
 
-diff --git a/arch/csky/include/asm/pgalloc.h b/arch/csky/include/asm/pgalloc.h
-index bf8400c28b5a3..11055c5749686 100644
---- a/arch/csky/include/asm/pgalloc.h
-+++ b/arch/csky/include/asm/pgalloc.h
-@@ -61,11 +61,8 @@ static inline pgd_t *pgd_alloc(struct mm_struct *mm)
- 	return ret;
- }
- 
--#define __pte_free_tlb(tlb, pte, address)		\
--do {							\
--	pagetable_dtor(page_ptdesc(pte));		\
--	tlb_remove_page_ptdesc(tlb, page_ptdesc(pte));	\
--} while (0)
-+#define __pte_free_tlb(tlb, pte, address)	\
-+	tlb_remove_ptdesc((tlb), page_ptdesc(pte))
- 
- extern void pagetable_init(void);
- extern void mmu_init(unsigned long min_pfn, unsigned long max_pfn);
-diff --git a/arch/hexagon/include/asm/pgalloc.h b/arch/hexagon/include/asm/pgalloc.h
-index 1ee5f5f157ca7..937a11ef4c33c 100644
---- a/arch/hexagon/include/asm/pgalloc.h
-+++ b/arch/hexagon/include/asm/pgalloc.h
-@@ -87,10 +87,7 @@ static inline void pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd,
- 		max_kernel_seg = pmdindex;
- }
- 
--#define __pte_free_tlb(tlb, pte, addr)				\
--do {								\
--	pagetable_dtor((page_ptdesc(pte)));			\
--	tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)));	\
--} while (0)
-+#define __pte_free_tlb(tlb, pte, addr)	\
-+	tlb_remove_ptdesc((tlb), page_ptdesc(pte))
- 
- #endif
-diff --git a/arch/loongarch/include/asm/pgalloc.h b/arch/loongarch/include/asm/pgalloc.h
-index 7211dff8c969e..73629c1b8328e 100644
---- a/arch/loongarch/include/asm/pgalloc.h
-+++ b/arch/loongarch/include/asm/pgalloc.h
-@@ -55,11 +55,8 @@ static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm)
- 	return pte;
- }
- 
--#define __pte_free_tlb(tlb, pte, address)			\
--do {								\
--	pagetable_dtor(page_ptdesc(pte));			\
--	tlb_remove_page_ptdesc((tlb), page_ptdesc(pte));	\
--} while (0)
-+#define __pte_free_tlb(tlb, pte, address)	\
-+	tlb_remove_ptdesc((tlb), page_ptdesc(pte));
- 
- #ifndef __PAGETABLE_PMD_FOLDED
- 
-diff --git a/arch/m68k/include/asm/sun3_pgalloc.h b/arch/m68k/include/asm/sun3_pgalloc.h
-index 80afc3a187249..1e21c758b774e 100644
---- a/arch/m68k/include/asm/sun3_pgalloc.h
-+++ b/arch/m68k/include/asm/sun3_pgalloc.h
-@@ -17,11 +17,8 @@
- 
- extern const char bad_pmd_string[];
- 
--#define __pte_free_tlb(tlb, pte, addr)				\
--do {								\
--	pagetable_dtor(page_ptdesc(pte));			\
--	tlb_remove_page_ptdesc((tlb), page_ptdesc(pte));	\
--} while (0)
-+#define __pte_free_tlb(tlb, pte, addr)	\
-+	tlb_remove_ptdesc((tlb), page_ptdesc(pte))
- 
- static inline void pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd, pte_t *pte)
- {
-diff --git a/arch/mips/include/asm/pgalloc.h b/arch/mips/include/asm/pgalloc.h
-index 26c7a6ede983c..bbca420c96d3c 100644
---- a/arch/mips/include/asm/pgalloc.h
-+++ b/arch/mips/include/asm/pgalloc.h
-@@ -48,11 +48,8 @@ static inline void pud_populate(struct mm_struct *mm, pud_t *pud, pmd_t *pmd)
- extern void pgd_init(void *addr);
- extern pgd_t *pgd_alloc(struct mm_struct *mm);
- 
--#define __pte_free_tlb(tlb, pte, address)			\
--do {								\
--	pagetable_dtor(page_ptdesc(pte));			\
--	tlb_remove_page_ptdesc((tlb), page_ptdesc(pte));	\
--} while (0)
-+#define __pte_free_tlb(tlb, pte, address)	\
-+	tlb_remove_ptdesc((tlb), page_ptdesc(pte))
- 
- #ifndef __PAGETABLE_PMD_FOLDED
- 
-diff --git a/arch/nios2/include/asm/pgalloc.h b/arch/nios2/include/asm/pgalloc.h
-index 12a536b7bfbd4..db122b093a8be 100644
---- a/arch/nios2/include/asm/pgalloc.h
-+++ b/arch/nios2/include/asm/pgalloc.h
-@@ -28,10 +28,7 @@ static inline void pmd_populate(struct mm_struct *mm, pmd_t *pmd,
- 
- extern pgd_t *pgd_alloc(struct mm_struct *mm);
- 
--#define __pte_free_tlb(tlb, pte, addr)					\
--	do {								\
--		pagetable_dtor(page_ptdesc(pte));			\
--		tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)));	\
--	} while (0)
-+#define __pte_free_tlb(tlb, pte, addr)	\
-+	tlb_remove_ptdesc((tlb), page_ptdesc(pte))
- 
- #endif /* _ASM_NIOS2_PGALLOC_H */
-diff --git a/arch/openrisc/include/asm/pgalloc.h b/arch/openrisc/include/asm/pgalloc.h
-index 3372f4e6ab4b5..3f110931d8f6e 100644
---- a/arch/openrisc/include/asm/pgalloc.h
-+++ b/arch/openrisc/include/asm/pgalloc.h
-@@ -64,10 +64,7 @@ extern inline pgd_t *pgd_alloc(struct mm_struct *mm)
- 
- extern pte_t *pte_alloc_one_kernel(struct mm_struct *mm);
- 
--#define __pte_free_tlb(tlb, pte, addr)				\
--do {								\
--	pagetable_dtor(page_ptdesc(pte));			\
--	tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)));	\
--} while (0)
-+#define __pte_free_tlb(tlb, pte, addr)	\
-+	tlb_remove_ptdesc((tlb), page_ptdesc(pte))
- 
- #endif
-diff --git a/arch/sh/include/asm/pgalloc.h b/arch/sh/include/asm/pgalloc.h
-index 96d938fdf2244..6fe7123d38fa9 100644
---- a/arch/sh/include/asm/pgalloc.h
-+++ b/arch/sh/include/asm/pgalloc.h
-@@ -32,10 +32,7 @@ static inline void pmd_populate(struct mm_struct *mm, pmd_t *pmd,
- 	set_pmd(pmd, __pmd((unsigned long)page_address(pte)));
- }
- 
--#define __pte_free_tlb(tlb, pte, addr)				\
--do {								\
--	pagetable_dtor(page_ptdesc(pte));			\
--	tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)));	\
--} while (0)
-+#define __pte_free_tlb(tlb, pte, addr)	\
-+	tlb_remove_ptdesc((tlb), page_ptdesc(pte))
- 
- #endif /* __ASM_SH_PGALLOC_H */
-diff --git a/arch/um/include/asm/pgalloc.h b/arch/um/include/asm/pgalloc.h
-index f0af23c3aeb2b..826ec44b58cdb 100644
---- a/arch/um/include/asm/pgalloc.h
-+++ b/arch/um/include/asm/pgalloc.h
-@@ -25,27 +25,18 @@
-  */
- extern pgd_t *pgd_alloc(struct mm_struct *);
- 
--#define __pte_free_tlb(tlb, pte, address)			\
--do {								\
--	pagetable_dtor(page_ptdesc(pte));			\
--	tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)));	\
--} while (0)
-+#define __pte_free_tlb(tlb, pte, address)	\
-+	tlb_remove_ptdesc((tlb), page_ptdesc(pte))
- 
- #if CONFIG_PGTABLE_LEVELS > 2
- 
--#define __pmd_free_tlb(tlb, pmd, address)			\
--do {								\
--	pagetable_dtor(virt_to_ptdesc(pmd));			\
--	tlb_remove_page_ptdesc((tlb), virt_to_ptdesc(pmd));	\
--} while (0)
-+#define __pmd_free_tlb(tlb, pmd, address)	\
-+	tlb_remove_ptdesc((tlb), virt_to_ptdesc(pmd))
- 
- #if CONFIG_PGTABLE_LEVELS > 3
- 
--#define __pud_free_tlb(tlb, pud, address)			\
--do {								\
--	pagetable_dtor(virt_to_ptdesc(pud));		\
--	tlb_remove_page_ptdesc((tlb), virt_to_ptdesc(pud));	\
--} while (0)
-+#define __pud_free_tlb(tlb, pud, address)	\
-+	tlb_remove_ptdesc((tlb), virt_to_ptdesc(pud))
- 
- #endif
- #endif
+Support of changing additional details returned by PTRACE_GET_SYSCALL_INFO,
+such as instruction pointer and stack pointer, could be added later if
+needed, by using struct ptrace_syscall_info.flags to specify the additional
+details that should be set.  Currently, "flags" and "reserved" fields of
+struct ptrace_syscall_info must be initialized with zeroes; "arch",
+"instruction_pointer", and "stack_pointer" fields are currently ignored.
+
+PTRACE_SET_SYSCALL_INFO currently supports only PTRACE_SYSCALL_INFO_ENTRY,
+PTRACE_SYSCALL_INFO_EXIT, and PTRACE_SYSCALL_INFO_SECCOMP operations.
+Other operations could be added later if needed.
+
+Ideally, PTRACE_SET_SYSCALL_INFO should have been introduced along with
+PTRACE_GET_SYSCALL_INFO, but it didn't happen.  The last straw that
+convinced me to implement PTRACE_SET_SYSCALL_INFO was apparent failure
+to provide an API of changing the first system call argument on riscv
+architecture [1].
+
+ptrace(2) man page:
+
+long ptrace(enum __ptrace_request request, pid_t pid, void *addr, void *data);
+...
+PTRACE_SET_SYSCALL_INFO
+       Modify information about the system call that caused the stop.
+       The "data" argument is a pointer to struct ptrace_syscall_info
+       that specifies the system call information to be set.
+       The "addr" argument should be set to sizeof(struct ptrace_syscall_info)).
+
+[1] https://lore.kernel.org/all/59505464-c84a-403d-972f-d4b2055eeaac@gmail.com/
+
+Notes:
+    v7:
+    * csky: Fix typo in comment
+    * mips: syscall_set_arguments: Remove mips_syscall_is_indirect check
+    * mips: syscall_set_nr: Reword comment
+    * mips: Add Reviewed-by
+    * v6: https://lore.kernel.org/all/20250217090834.GA18175@strace.io/
+
+    v6:
+    * mips: Submit mips_get_syscall_arg() o32 fix via mips tree
+      to get it merged into v6.14-rc3
+    * Rebase to v6.14-rc3
+    * v5: https://lore.kernel.org/all/20250210113336.GA887@strace.io/
+
+    v5:
+    * ptrace: Extend the commit message to say that the new API does not aim
+      to address numerous architecture-specific syscall ABI peculiarities
+    * selftests: Add a workaround for s390 16-bit syscall numbers
+    * parisc: Add Acked-by
+    * v4: https://lore.kernel.org/all/20250203065849.GA14120@strace.io/
+
+    v4:
+    * Split out syscall_set_return_value() for hexagon into a separate patch
+    * s390: Change the style of syscall_set_arguments() implementation as
+      requested
+    * ptrace: Add Reviewed-by
+    * v3: https://lore.kernel.org/all/20250128091445.GA8257@strace.io/
+
+    v3:
+    * powerpc: Submit syscall_set_return_value() fix for "sc" case separately
+    * mips: Do not introduce erroneous argument truncation on mips n32,
+      add a detailed description to the commit message of the
+      mips_get_syscall_arg() change
+    * ptrace: Add explicit padding to the end of struct ptrace_syscall_info,
+      simplify obtaining of user ptrace_syscall_info,
+      do not introduce PTRACE_SYSCALL_INFO_SIZE_VER0
+    * ptrace: Change the return type of ptrace_set_syscall_info_* functions
+      from "unsigned long" to "int"
+    * ptrace: Add -ERANGE check to ptrace_set_syscall_info_exit(),
+      add comments to -ERANGE checks
+    * ptrace: Update comments about supported syscall stops
+    * selftests: Extend set_syscall_info test, fix for mips n32
+    * riscv: Add Tested-by and Reviewed-by
+
+    v2:
+    * Add patch to fix syscall_set_return_value() on powerpc
+    * Add patch to fix mips_get_syscall_arg() on mips
+    * Add syscall_set_return_value() implementation on hexagon
+    * Add syscall_set_return_value() invocation to syscall_set_nr()
+      on arm and arm64.
+    * Fix syscall_set_nr() and mips_set_syscall_arg() on mips
+    * Add a comment to syscall_set_nr() on arc, powerpc, s390, sh,
+      and sparc
+    * Remove redundant ptrace_syscall_info.op assignments in
+      ptrace_get_syscall_info_*
+    * Minor style tweaks in ptrace_get_syscall_info_op()
+    * Remove syscall_set_return_value() invocation from
+      ptrace_set_syscall_info_entry()
+    * Skip syscall_set_arguments() invocation in case of syscall number -1
+      in ptrace_set_syscall_info_entry() 
+    * Split ptrace_syscall_info.reserved into ptrace_syscall_info.reserved
+      and ptrace_syscall_info.flags
+    * Use __kernel_ulong_t instead of unsigned long in set_syscall_info test
+
+Dmitry V. Levin (6):
+  hexagon: add syscall_set_return_value()
+  syscall.h: add syscall_set_arguments()
+  syscall.h: introduce syscall_set_nr()
+  ptrace_get_syscall_info: factor out ptrace_get_syscall_info_op
+  ptrace: introduce PTRACE_SET_SYSCALL_INFO request
+  selftests/ptrace: add a test case for PTRACE_SET_SYSCALL_INFO
+
+ arch/arc/include/asm/syscall.h                |  25 +
+ arch/arm/include/asm/syscall.h                |  37 ++
+ arch/arm64/include/asm/syscall.h              |  29 +
+ arch/csky/include/asm/syscall.h               |  13 +
+ arch/hexagon/include/asm/syscall.h            |  21 +
+ arch/loongarch/include/asm/syscall.h          |  15 +
+ arch/m68k/include/asm/syscall.h               |   7 +
+ arch/microblaze/include/asm/syscall.h         |   7 +
+ arch/mips/include/asm/syscall.h               |  43 ++
+ arch/nios2/include/asm/syscall.h              |  16 +
+ arch/openrisc/include/asm/syscall.h           |  13 +
+ arch/parisc/include/asm/syscall.h             |  19 +
+ arch/powerpc/include/asm/syscall.h            |  20 +
+ arch/riscv/include/asm/syscall.h              |  16 +
+ arch/s390/include/asm/syscall.h               |  21 +
+ arch/sh/include/asm/syscall_32.h              |  24 +
+ arch/sparc/include/asm/syscall.h              |  22 +
+ arch/um/include/asm/syscall-generic.h         |  19 +
+ arch/x86/include/asm/syscall.h                |  43 ++
+ arch/xtensa/include/asm/syscall.h             |  18 +
+ include/asm-generic/syscall.h                 |  30 +
+ include/uapi/linux/ptrace.h                   |   7 +-
+ kernel/ptrace.c                               | 179 +++++-
+ tools/testing/selftests/ptrace/Makefile       |   2 +-
+ .../selftests/ptrace/set_syscall_info.c       | 519 ++++++++++++++++++
+ 25 files changed, 1138 insertions(+), 27 deletions(-)
+ create mode 100644 tools/testing/selftests/ptrace/set_syscall_info.c
+
+
+base-commit: 7eb172143d5508b4da468ed59ee857c6e5e01da6
+
 -- 
-2.20.1
-
+ldv
 
