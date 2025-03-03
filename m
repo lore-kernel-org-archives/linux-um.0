@@ -4,76 +4,91 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id B0DF3C282D0
-	for <linux-um@archiver.kernel.org>; Fri, 28 Feb 2025 15:54:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 3A758C282C6
+	for <linux-um@archiver.kernel.org>; Mon,  3 Mar 2025 01:46:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=n9eLJrzvCc/jZ3rhdLc/8pJEkV1JMKG56goBetbpxb4=; b=40mFb+/7xn2TM6+VAxO4Hbgxun
-	gy5iqLqVoF8Yv7ZZov8PYlQJNrCCa71EvbI+1eNBnghuTlvLnnBMZN8CNyBKK/B6WAKLO/BmnEv+O
-	RyEV+bdDWATAfg+ArR5GAhmG+ibKf6fVba+EA07XSACA1chOvSVB3Lu08tmFV8/N92tTWMQH1U995
-	M2FTqopQMNRIibFJgi+I8tBhbAE7MamslMyXdyPsNEzPIcuI5hlzL6V0iPmxnziGa4PSniKZbD9IA
-	uXgpmN0Cgy5OkgsDUfDJGB0HByQo3rRixgbpU/6GhXCq8Eks38Gy5m1dBwnAPyORZs2Ca+s2wlCq5
-	k70HgFPw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
+	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=W8SnZDZRbvLSaoNIXAx3tJOrDKr8WC27+4Kk8dOe4BE=; b=dAJiZ+FVY9HUGv6PIHhtuxceXp
+	4ajaRZnOxEpr2o7fMdojzVr4b6I97s467SSV92xdzgy3iCNCszFY+n/27S1qjaR1dLPfFHRc9k3o2
+	oqJ6lrQQ81J/l1KqJ8IwVxlb44rzZGpqTOvz0KA/0oT4Wiow4RsH+ZPOm0M7GvdikEi6Zs9Mkl+8F
+	v8lTgyuZQGXFOKBDBMbTKKGMsunKnxWlQpg6ezkVFI4HeQ0SV0sRMWV52q+Rwa5dtKTCAgzqzDi95
+	43d0Ht3OjJHaTgwfgXLX8ehUMefSUgOmCv/2F0RvtZntcY+6c2KV05oyu0/l2+ZS9SIjOeHHAU0ER
+	uh1GK5JQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1to2ge-0000000BYQd-1kmZ;
-	Fri, 28 Feb 2025 15:54:04 +0000
-Received: from out-173.mta1.migadu.com ([95.215.58.173])
+	id 1tousZ-0000000Guxw-02c5;
+	Mon, 03 Mar 2025 01:45:59 +0000
+Received: from mail-oa1-x31.google.com ([2001:4860:4864:20::31])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1to2Ma-0000000BU5s-36f5
+	id 1tousU-0000000Guvp-2Sc9
 	for linux-um@lists.infradead.org;
-	Fri, 28 Feb 2025 15:33:22 +0000
-Date: Fri, 28 Feb 2025 15:32:54 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1740756788;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=n9eLJrzvCc/jZ3rhdLc/8pJEkV1JMKG56goBetbpxb4=;
-	b=vKo+YcgI7v6lDON+yTHR9woNAvbankK+1SDMyOP89t52IYlLrAIepafV5H3+8AgeYWL/pp
-	TS1LqRGd7URb1EH84E98UhU8R08SptbuJvlIbJ9mZtK4wuupGbI0JiYANqWOM+DDaj9sTC
-	yy53IqVA9z5qtTyqinZcyR4dcB12SbQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yosry Ahmed <yosry.ahmed@linux.dev>
-To: Brendan Jackman <jackmanb@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, x86@kernel.org,
-	linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-snps-arc@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-	linux-arch@vger.kernel.org, linux-mm@kvack.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, kvm@vger.kernel.org,
-	linux-efi@vger.kernel.org
-Subject: Re: [PATCH RFC v2 25/29] mm: asi: Restricted execution fore
- bare-metal processes
-Message-ID: <Z8HXJnhMPFPyDJW5@google.com>
-References: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
- <20250110-asi-rfc-v2-v2-25-8419288bc805@google.com>
+	Mon, 03 Mar 2025 01:45:57 +0000
+Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-2bd2218ba4fso1015676fac.1
+        for <linux-um@lists.infradead.org>; Sun, 02 Mar 2025 17:45:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1740966349; x=1741571149; darn=lists.infradead.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W8SnZDZRbvLSaoNIXAx3tJOrDKr8WC27+4Kk8dOe4BE=;
+        b=cW9wnI8ssPLASxnYCDGNBlVrI4PKG2zvk3v7CZ3SsrrIHYoM3oPdVqrL0cxA23ud4u
+         rNy5xMWTpuycHBY94lSTaYci/CSzn2TTzxy4sdyLpmv/JFx/3/Q9TIxa2Pshg+rv0IaH
+         yVpCQzo/G9eaCqBp/neO32jIR/frrY+riVjFycjut8OePnW4cWq8YQ/1BEMxzVbwE1EC
+         lyDZQPOU+JqXN9z4mXcTJqysFsidg3ABXXrm9R+rGXIbfwa6i0scY0xbgNXtmtBq8zrk
+         AEUBvxfNGKlQ9Yh46C6qHx8Kx3iGIutkGdX9BVaRiKQSWcU75x6+ZZJmMaSAfi3gSlbC
+         /5hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1740966349; x=1741571149;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=W8SnZDZRbvLSaoNIXAx3tJOrDKr8WC27+4Kk8dOe4BE=;
+        b=XY5E/j6ElLzkOJE5hzPrSnxbBU7xHTX8+HKc/O0E0YadY6vbDkpzJXxE8Nd72uqeLR
+         74CwKh7CLijx0NzUDii26JFnEbY3aZOXmcvtLXLwDs9AYBB879W5wHZqwlOITiMcDqHK
+         1QqzXMClUYuZCQwrfDqffruBDZFHC3XImmXjE9GaGjIRkE7IjwY40jzMdnzDUm2kJs01
+         eBHsjF0NxETbwrHg/Wl9fOhchOHrqwtmatlKLuIbr+apMbJqti5pEEPO8tpSjmTMB18b
+         XXNDFV7faTFGZsjf87G+JfTZAuKROKUPDIOUzhMBGOZ2KXJmwLzjaD/E+8zIZEYeNLSO
+         sjRw==
+X-Forwarded-Encrypted: i=1; AJvYcCXjkZYu/KD7SqK7tecB3SI8ErsQAtjIzL8eVskk7aeyw+3g1g2FNDKxKERzcH0q/uWRvjPqe6Ma6w==@lists.infradead.org
+X-Gm-Message-State: AOJu0Yz74AS7ypVvbDz+rW0orh9G/aTMEic8wVX1JF9lFntmTykvZqOe
+	vLFpK22KC8+ftIxTXPYzC+A5rCUd9qfW6L9YdcNL1GLPCscSDglFV7ZatNvItxyqiAQuPoGnaWy
+	XhWc/HS0IV4JcMJh02IW3v47Wn5DndFl13eGe+A==
+X-Gm-Gg: ASbGncugwE2yTlOoqNR6R2Z9w6XZi5usxFOWVqWzi05/mlCJmQWRZN4wGTtDaoojRrv
+	2UqTjxhOVm8G8uqmDVEorM9DYROa0I7ow/9tt91Uivjdm6jvyirZMV5ewSvk8U3d2SV0bMkn7eq
+	4LY7sRClmzlwRPmbwNbN547NiVX3Bm
+X-Google-Smtp-Source: AGHT+IGOWIRMroQZxbRNJcNH5tnmnGD/bIDamuPKwa3GDm5B/gWkRsBelrb1kdvpy/ijW+hukYwC4esnzOdnOPSB3MY=
+X-Received: by 2002:a05:6871:aa16:b0:2b8:3d1c:772 with SMTP id
+ 586e51a60fabf-2c178335be6mr6945276fac.5.1740966349475; Sun, 02 Mar 2025
+ 17:45:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250110-asi-rfc-v2-v2-25-8419288bc805@google.com>
-X-Migadu-Flow: FLOW_OUT
+References: <cover.1740454179.git.zhengqi.arch@bytedance.com> <9025595e895515515c95e48db54b29afa489c41d.1740454179.git.zhengqi.arch@bytedance.com>
+In-Reply-To: <9025595e895515515c95e48db54b29afa489c41d.1740454179.git.zhengqi.arch@bytedance.com>
+From: yunhui cui <cuiyunhui@bytedance.com>
+Date: Mon, 3 Mar 2025 09:45:37 +0800
+X-Gm-Features: AQ5f1Jrb5nkY3jTSkwu3MIgtit28ISDfNBjj4Qwj5SXBUXKwFnVTECUIEIzLwQo
+Message-ID: <CAEEQ3wnvgX=Bq=oAQV6wfg5a7H2jiG7f8P6trbC9agJ8D6t4pA@mail.gmail.com>
+Subject: Re: [External] [PATCH v2 4/6] riscv: pgtable: unconditionally use tlb_remove_ptdesc()
+To: Qi Zheng <zhengqi.arch@bytedance.com>
+Cc: peterz@infradead.org, kevin.brodsky@arm.com, riel@surriel.com, 
+	vishal.moola@gmail.com, david@redhat.com, jannh@google.com, hughd@google.com, 
+	willy@infradead.org, yuzhao@google.com, muchun.song@linux.dev, 
+	akpm@linux-foundation.org, will@kernel.org, aneesh.kumar@kernel.org, 
+	npiggin@gmail.com, arnd@arndb.de, dave.hansen@linux.intel.com, 
+	rppt@kernel.org, alexghiti@rivosinc.com, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org, 
+	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev, 
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org, 
+	linux-openrisc@vger.kernel.org, linux-sh@vger.kernel.org, 
+	linux-um@lists.infradead.org, x86@kernel.org, linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250228_073321_201612_74B2BB5D 
-X-CRM114-Status: GOOD (  49.54  )
+X-CRM114-CacheID: sfid-20250302_174554_902433_4183E74B 
+X-CRM114-Status: GOOD (  33.04  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -88,345 +103,164 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-(Trimming the CC list as my email server refuses the number of CCs)
+Hi Qi,
 
-On Fri, Jan 10, 2025 at 06:40:51PM +0000, Brendan Jackman wrote:
-> Now userspace gets a restricted address space too. The critical section
-> begins on exit to userspace and ends when it makes a system call.
-> Other entries from userspace just interrupt the critical section via
-> asi_intr_enter().
-> 
-> The reason why system calls have to actually asi_relax() (i.e. fully
-> terminate the critical section instead of just interrupting it) is that
-> system calls are the type of kernel entry that can lead to transition
-> into a _different_ ASI domain, namely the KVM one: it is not supported
-> to transition into a different domain while a critical section exists
-> (i.e. while asi_state.target is not NULL), even if it has been paused by
-> asi_intr_enter() (i.e. even if asi_state.intr_nest_depth is nonzero) -
-> there must be an asi_relax() between any two asi_enter()s.
-> 
-> The restricted address space for bare-metal tasks naturally contains the
-> entire userspace address region, although the task's own memory is still
-> missing from the direct map.
-> 
-> This implementation creates new userspace-specific APIs for asi_init(),
-> asi_destroy() and asi_enter(), which seems a little ugly, maybe this
-> suggest a general rework of these APIs given that the "generic" version
-> only has one caller. For RFC code this seems good enough though.
-> 
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+On Tue, Feb 25, 2025 at 11:48=E2=80=AFAM Qi Zheng <zhengqi.arch@bytedance.c=
+om> wrote:
+>
+> To support fast gup, the commit 69be3fb111e7 ("riscv: enable
+> MMU_GATHER_RCU_TABLE_FREE for SMP && MMU") did the following:
+>
+> 1) use tlb_remove_page_ptdesc() for those platforms which use IPI to
+>    perform TLB shootdown
+>
+> 2) use tlb_remove_ptdesc() for those platforms which use SBI to perform
+>    TLB shootdown
+>
+> The tlb_remove_page_ptdesc() is the wrapper of the tlb_remove_page(). By
+> design, the tlb_remove_page() should be used to remove a normal page from
+> a page table entry, and should not be used for page table pages.
+>
+> The tlb_remove_ptdesc() is the wrapper of the tlb_remove_table(), which i=
+s
+> designed specifically for freeing page table pages. If the
+> CONFIG_MMU_GATHER_TABLE_FREE is enabled, the tlb_remove_table() will use
+> semi RCU to free page table pages, that is:
+>
+>  - batch table freeing: asynchronous free by RCU
+>  - single table freeing: IPI + synchronous free
+>
+> If the CONFIG_MMU_GATHER_TABLE_FREE is disabled, the tlb_remove_table()
+> will fall back to pagetable_dtor() + tlb_remove_page().
+>
+> For case 1), since we need to perform TLB shootdown before freeing the
+> page table page, the local_irq_save() in fast gup can block the freeing
+> and protect the fast gup page walker. Therefore we can ensure safety by
+> just using tlb_remove_page_ptdesc(). In addition, we can also the
+> tlb_remove_ptdesc()/tlb_remove_table() to achieve it, and it doesn't
+> matter whether CONFIG_MMU_GATHER_RCU_TABLE_FREE is selected. And in
+> theory, the performance of freeing pages asynchronously via RCU will not
+> be lower than synchronous free.
+>
+> For case 2), since local_irq_save() only disable S-privilege IPI irq but
+> not M-privilege's, which is used by the SBI implementation to perform TLB
+> shootdown, so we must select CONFIG_MMU_GATHER_RCU_TABLE_FREE and use
+> tlb_remove_ptdesc() to ensure safety. The riscv selects this config for
+> SMP && MMU, the CONFIG_RISCV_SBI is dependent on MMU. Therefore, only the
+> UP system may have the situation where CONFIG_MMU_GATHER_RCU_TABLE_FREE i=
+s
+> disabled but CONFIG_RISCV_SBI is enabled. But there is no freeing vs fast
+> gup race in the UP system.
+>
+> So, in summary, we can use tlb_remove_ptdesc() to support fast gup in all
+> cases, and this interface is specifically designed for page table pages.
+> So let's use it unconditionally.
+>
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 > ---
->  arch/x86/include/asm/asi.h   |  8 ++++++--
->  arch/x86/mm/asi.c            | 49 ++++++++++++++++++++++++++++++++++++++++----
->  include/asm-generic/asi.h    |  9 +++++++-
->  include/linux/entry-common.h | 11 ++++++++++
->  init/main.c                  |  2 ++
->  kernel/entry/common.c        |  1 +
->  kernel/fork.c                |  4 +++-
->  7 files changed, 76 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/asi.h b/arch/x86/include/asm/asi.h
-> index e925d7d2cfc85bca8480c837548654e7a5a7009e..c3c1a57f0147ae9bd11d89c8bf7c8a4477728f51 100644
-> --- a/arch/x86/include/asm/asi.h
-> +++ b/arch/x86/include/asm/asi.h
-> @@ -140,19 +140,23 @@ DECLARE_PER_CPU_ALIGNED(struct asi *, curr_asi);
->  
->  void asi_check_boottime_disable(void);
->  
-> -void asi_init_mm_state(struct mm_struct *mm);
-> +int asi_init_mm_state(struct mm_struct *mm);
->  
->  int asi_init_class(enum asi_class_id class_id, struct asi_taint_policy *taint_policy);
-> +void asi_init_userspace_class(void);
->  void asi_uninit_class(enum asi_class_id class_id);
->  const char *asi_class_name(enum asi_class_id class_id);
->  
->  int asi_init(struct mm_struct *mm, enum asi_class_id class_id, struct asi **out_asi);
->  void asi_destroy(struct asi *asi);
-> +void asi_destroy_userspace(struct mm_struct *mm);
->  void asi_clone_user_pgtbl(struct mm_struct *mm, pgd_t *pgdp);
->  
->  /* Enter an ASI domain (restricted address space) and begin the critical section. */
->  void asi_enter(struct asi *asi);
->  
-> +void asi_enter_userspace(void);
-> +
->  /*
->   * Leave the "tense" state if we are in it, i.e. end the critical section. We
->   * will stay relaxed until the next asi_enter.
-> @@ -294,7 +298,7 @@ void asi_handle_switch_mm(void);
->   */
->  static inline bool asi_maps_user_addr(enum asi_class_id class_id)
+>  arch/riscv/include/asm/pgalloc.h | 26 ++++----------------------
+>  1 file changed, 4 insertions(+), 22 deletions(-)
+>
+> diff --git a/arch/riscv/include/asm/pgalloc.h b/arch/riscv/include/asm/pg=
+alloc.h
+> index 3e2aebea6312d..770ce18a7328b 100644
+> --- a/arch/riscv/include/asm/pgalloc.h
+> +++ b/arch/riscv/include/asm/pgalloc.h
+> @@ -15,24 +15,6 @@
+>  #define __HAVE_ARCH_PUD_FREE
+>  #include <asm-generic/pgalloc.h>
+>
+> -/*
+> - * While riscv platforms with riscv_ipi_for_rfence as true require an IP=
+I to
+> - * perform TLB shootdown, some platforms with riscv_ipi_for_rfence as fa=
+lse use
+> - * SBI to perform TLB shootdown. To keep software pagetable walkers safe=
+ in this
+> - * case we switch to RCU based table free (MMU_GATHER_RCU_TABLE_FREE). S=
+ee the
+> - * comment below 'ifdef CONFIG_MMU_GATHER_RCU_TABLE_FREE' in include/asm=
+-generic/tlb.h
+> - * for more details.
+> - */
+> -static inline void riscv_tlb_remove_ptdesc(struct mmu_gather *tlb, void =
+*pt)
+> -{
+> -       if (riscv_use_sbi_for_rfence()) {
+> -               tlb_remove_ptdesc(tlb, pt);
+> -       } else {
+> -               pagetable_dtor(pt);
+> -               tlb_remove_page_ptdesc(tlb, pt);
+> -       }
+> -}
+> -
+>  static inline void pmd_populate_kernel(struct mm_struct *mm,
+>         pmd_t *pmd, pte_t *pte)
 >  {
-> -	return false;
-> +	return class_id == ASI_CLASS_USERSPACE;
->  }
->  
->  #endif /* CONFIG_MITIGATION_ADDRESS_SPACE_ISOLATION */
-> diff --git a/arch/x86/mm/asi.c b/arch/x86/mm/asi.c
-> index 093103c1bc2677c81d68008aca064fab53b73a62..1e9dc568e79e8686a4dbf47f765f2c2535d025ec 100644
-> --- a/arch/x86/mm/asi.c
-> +++ b/arch/x86/mm/asi.c
-> @@ -25,6 +25,7 @@ const char *asi_class_names[] = {
->  #if IS_ENABLED(CONFIG_KVM)
->  	[ASI_CLASS_KVM] = "KVM",
->  #endif
-> +	[ASI_CLASS_USERSPACE] = "userspace",
->  };
->  
->  DEFINE_PER_CPU_ALIGNED(struct asi *, curr_asi);
-> @@ -67,6 +68,32 @@ int asi_init_class(enum asi_class_id class_id, struct asi_taint_policy *taint_po
->  }
->  EXPORT_SYMBOL_GPL(asi_init_class);
->  
-> +void __init asi_init_userspace_class(void)
-> +{
-> +	static struct asi_taint_policy policy = {
-> +		/*
-> +		 * Prevent going to userspace with sensitive data potentially
-> +		 * left in sidechannels by code running in the unrestricted
-> +		 * address space, or another MM. Note we don't check for guest
-> +		 * data here. This reflects the assumption that the guest trusts
-> +		 * its VMM (absent fancy HW features, which are orthogonal).
-> +		 */
-> +		.protect_data = ASI_TAINT_KERNEL_DATA | ASI_TAINT_OTHER_MM_DATA,
-> +		/*
-> +		 * Don't go into userspace with control flow state controlled by
-> +		 * other processes, or any KVM guest the process is running.
-> +		 * Note this bit is about protecting userspace from other parts
-> +		 * of the system, while data_taints is about protecting other
-> +		 * parts of the system from the guest.
-> +		 */
-> +		.prevent_control = ASI_TAINT_GUEST_CONTROL | ASI_TAINT_OTHER_MM_CONTROL,
-> +		.set = ASI_TAINT_USER_CONTROL | ASI_TAINT_USER_DATA,
-> +	};
-> +	int err = asi_init_class(ASI_CLASS_USERSPACE, &policy);
-> +
-> +	WARN_ON(err);
-> +}
-> +
->  void asi_uninit_class(enum asi_class_id class_id)
+> @@ -108,14 +90,14 @@ static inline void __pud_free_tlb(struct mmu_gather =
+*tlb, pud_t *pud,
+>                                   unsigned long addr)
 >  {
->  	if (!boot_cpu_has(X86_FEATURE_ASI))
-> @@ -385,7 +412,8 @@ int asi_init(struct mm_struct *mm, enum asi_class_id class_id, struct asi **out_
->  	int err = 0;
->  	uint i;
->  
-> -	*out_asi = NULL;
-> +	if (out_asi)
-> +		*out_asi = NULL;
->  
->  	if (!boot_cpu_has(X86_FEATURE_ASI))
->  		return 0;
-> @@ -424,7 +452,7 @@ int asi_init(struct mm_struct *mm, enum asi_class_id class_id, struct asi **out_
->  exit_unlock:
->  	if (err)
->  		__asi_destroy(asi);
-> -	else
-> +	else if (out_asi)
->  		*out_asi = asi;
->  
->  	__asi_init_user_pgds(mm, asi);
-> @@ -515,6 +543,12 @@ static __always_inline void maybe_flush_data(struct asi *next_asi)
->  	this_cpu_and(asi_taints, ~ASI_TAINTS_DATA_MASK);
+>         if (pgtable_l4_enabled)
+> -               riscv_tlb_remove_ptdesc(tlb, virt_to_ptdesc(pud));
+> +               tlb_remove_ptdesc(tlb, virt_to_ptdesc(pud));
 >  }
->  
-> +void asi_destroy_userspace(struct mm_struct *mm)
-> +{
-> +	VM_BUG_ON(!asi_class_initialized(ASI_CLASS_USERSPACE));
-> +	asi_destroy(&mm->asi[ASI_CLASS_USERSPACE]);
-> +}
-> +
->  noinstr void __asi_enter(void)
+>
+>  static inline void __p4d_free_tlb(struct mmu_gather *tlb, p4d_t *p4d,
+>                                   unsigned long addr)
 >  {
->  	u64 asi_cr3;
-> @@ -584,6 +618,11 @@ noinstr void asi_enter(struct asi *asi)
+>         if (pgtable_l5_enabled)
+> -               riscv_tlb_remove_ptdesc(tlb, virt_to_ptdesc(p4d));
+> +               tlb_remove_ptdesc(tlb, virt_to_ptdesc(p4d));
 >  }
->  EXPORT_SYMBOL_GPL(asi_enter);
->  
-> +noinstr void asi_enter_userspace(void)
-> +{
-> +	asi_enter(&current->mm->asi[ASI_CLASS_USERSPACE]);
-> +}
-> +
->  noinstr void asi_relax(void)
+>  #endif /* __PAGETABLE_PMD_FOLDED */
+>
+> @@ -143,7 +125,7 @@ static inline pgd_t *pgd_alloc(struct mm_struct *mm)
+>  static inline void __pmd_free_tlb(struct mmu_gather *tlb, pmd_t *pmd,
+>                                   unsigned long addr)
 >  {
->  	if (static_asi_enabled()) {
-> @@ -633,13 +672,15 @@ noinstr void asi_exit(void)
+> -       riscv_tlb_remove_ptdesc(tlb, virt_to_ptdesc(pmd));
+> +       tlb_remove_ptdesc(tlb, virt_to_ptdesc(pmd));
 >  }
->  EXPORT_SYMBOL_GPL(asi_exit);
->  
-> -void asi_init_mm_state(struct mm_struct *mm)
-> +int asi_init_mm_state(struct mm_struct *mm)
+>
+>  #endif /* __PAGETABLE_PMD_FOLDED */
+> @@ -151,7 +133,7 @@ static inline void __pmd_free_tlb(struct mmu_gather *=
+tlb, pmd_t *pmd,
+>  static inline void __pte_free_tlb(struct mmu_gather *tlb, pgtable_t pte,
+>                                   unsigned long addr)
 >  {
->  	if (!boot_cpu_has(X86_FEATURE_ASI))
-> -		return;
-> +		return 0;
->  
->  	memset(mm->asi, 0, sizeof(mm->asi));
->  	mutex_init(&mm->asi_init_lock);
-> +
-> +	return asi_init(mm, ASI_CLASS_USERSPACE, NULL);
-
-I think this call here is problematic. This can be called from
-asi_global_init().
-
-An example is:
-
-start_kernel()
-poking_init()
-mm_alloc()
-mm_init()
-asi_init_mm_state()
-
-But the same also happen through dup_mm(), for example:
-
-kernel_thread()
-kernel_clone()
-copy_process()
-copy_mm()
-dup_mm()
-
-asi_global_init() is called later from do_initcalls() (run in a kthread
-by kernel_init()). In this case, asi_init() copies the kernel PGDs from
-asi_global_nonsensitive_pgd, but those PGDs won't be initialized yet.
-
-It could be fine for the current code because all these threads created
-during init never enter userspace, but I am not sure if that's always
-true. It also makes me a bit nervous to have partially initialized ASI
-domains hanging around.
-
-I'd rather we either:
-- Move asi_global_init() earlier, but we have to be careful not to move
-  it too early before some of the mappings it clones are created (or
-  before we can make allocations). In this case, we should also add a
-  warning in asi_init() in case the code changes and it is ever called
-  before asi_global_init().
-
-- Explicitly avoid calling asi_init_mm_state() or asi_init() in these
-  cases. This may be easy-ish in the case of kthreads, but for things
-  like poking_init() we would need to plump more context through.
-  Alternatively we can just make asi_init() a noop if asi_global_init()
-  isn't called yet, but the silent failure makes me a bit worried too.
-
+> -       riscv_tlb_remove_ptdesc(tlb, page_ptdesc(pte));
+> +       tlb_remove_ptdesc(tlb, page_ptdesc(pte));
 >  }
->  
->  void asi_handle_switch_mm(void)
-> diff --git a/include/asm-generic/asi.h b/include/asm-generic/asi.h
-> index d103343292fad567dcd73e45e986fb3974e59898..c93f9e779ce1fa61e3df7835f5ab744cce7d667b 100644
-> --- a/include/asm-generic/asi.h
-> +++ b/include/asm-generic/asi.h
-> @@ -15,6 +15,7 @@ enum asi_class_id {
->  #if IS_ENABLED(CONFIG_KVM)
->  	ASI_CLASS_KVM,
->  #endif
-> +	ASI_CLASS_USERSPACE,
->  	ASI_MAX_NUM_CLASSES,
->  };
->  static_assert(order_base_2(X86_CR3_ASI_PCID_BITS) <= ASI_MAX_NUM_CLASSES);
-> @@ -37,8 +38,10 @@ int asi_init_class(enum asi_class_id class_id,
->  
->  static inline void asi_uninit_class(enum asi_class_id class_id) { }
->  
-> +static inline void asi_init_userspace_class(void) { }
-> +
->  struct mm_struct;
-> -static inline void asi_init_mm_state(struct mm_struct *mm) { }
-> +static inline int asi_init_mm_state(struct mm_struct *mm) { return 0; }
->  
->  static inline int asi_init(struct mm_struct *mm, enum asi_class_id class_id,
->  			   struct asi **out_asi)
-> @@ -48,8 +51,12 @@ static inline int asi_init(struct mm_struct *mm, enum asi_class_id class_id,
->  
->  static inline void asi_destroy(struct asi *asi) { }
->  
-> +static inline void asi_destroy_userspace(struct mm_struct *mm) { }
-> +
->  static inline void asi_enter(struct asi *asi) { }
->  
-> +static inline void asi_enter_userspace(void) { }
-> +
->  static inline void asi_relax(void) { }
->  
->  static inline bool asi_is_relaxed(void) { return true; }
-> diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
-> index 1e50cdb83ae501467ecc30ee52f1379d409f962e..f04c4c038556f84ddf3bc09b6c1dd22a9dbd2f6b 100644
-> --- a/include/linux/entry-common.h
-> +++ b/include/linux/entry-common.h
-> @@ -191,6 +191,16 @@ static __always_inline long syscall_enter_from_user_mode(struct pt_regs *regs, l
->  {
->  	long ret;
->  
-> +	/*
-> +	 * End the ASI critical section for userspace. Syscalls are the only
-> +	 * place this happens - all other entry from userspace is handled via
-> +	 * ASI's interrupt-tracking. The reason syscalls are special is that's
-> +	 * where it's possible to switch to another ASI domain within the same
-> +	 * task (i.e. KVM_RUN), an asi_relax() is required here in case of an
-> +	 * upcoming asi_enter().
-> +	 */
-> +	asi_relax();
-> +
->  	enter_from_user_mode(regs);
->  
->  	instrumentation_begin();
-> @@ -355,6 +365,7 @@ static __always_inline void exit_to_user_mode_prepare(struct pt_regs *regs)
->   */
->  static __always_inline void exit_to_user_mode(void)
->  {
-> +
->  	instrumentation_begin();
->  	trace_hardirqs_on_prepare();
->  	lockdep_hardirqs_on_prepare();
-> diff --git a/init/main.c b/init/main.c
-> index c4778edae7972f512d5eefe8400075ac35a70d1c..d19e149d385e8321d2f3e7c28aa75802af62d09c 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -953,6 +953,8 @@ void start_kernel(void)
->  	/* Architectural and non-timekeeping rng init, before allocator init */
->  	random_init_early(command_line);
->  
-> +	asi_init_userspace_class();
-> +
->  	/*
->  	 * These use large bootmem allocations and must precede
->  	 * initalization of page allocator
-> diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-> index 5b6934e23c21d36a3238dc03e391eb9e3beb4cfb..874254ed5958d62eaeaef4fe3e8c02e56deaf5ed 100644
-> --- a/kernel/entry/common.c
-> +++ b/kernel/entry/common.c
-> @@ -218,6 +218,7 @@ __visible noinstr void syscall_exit_to_user_mode(struct pt_regs *regs)
->  	__syscall_exit_to_user_mode_work(regs);
->  	instrumentation_end();
->  	exit_to_user_mode();
-> +	asi_enter_userspace();
->  }
->  
->  noinstr void irqentry_enter_from_user_mode(struct pt_regs *regs)
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index bb73758790d08112265d398b16902ff9a4c2b8fe..54068d2415939b92409ca8a45111176783c6acbd 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -917,6 +917,7 @@ void __mmdrop(struct mm_struct *mm)
->  	/* Ensure no CPUs are using this as their lazy tlb mm */
->  	cleanup_lazy_tlbs(mm);
->  
-> +	asi_destroy_userspace(mm);
->  	WARN_ON_ONCE(mm == current->active_mm);
->  	mm_free_pgd(mm);
->  	destroy_context(mm);
-> @@ -1297,7 +1298,8 @@ static struct mm_struct *mm_init(struct mm_struct *mm, struct task_struct *p,
->  	if (mm_alloc_pgd(mm))
->  		goto fail_nopgd;
->  
-> -	asi_init_mm_state(mm);
-> +	if (asi_init_mm_state(mm))
-> +		goto fail_nocontext;
->  
->  	if (init_new_context(p, mm))
->  		goto fail_nocontext;
-> 
-> -- 
-> 2.47.1.613.gc27f4b7a9f-goog
-> 
+>  #endif /* CONFIG_MMU */
+>
+> --
+> 2.20.1
+>
+>
+
+This set of patches mainly refactors the remove page table function
+interfaces. The comment "riscv_ipi_for_rfence" has been removed, as it
+was no longer needed, and this patch handles that.
+
+Additionally, whether riscv_use_sbi_for_rfence is true or false, page
+tables can now be released using RCU. This patch changes the previous
+synchronous release logic (for !riscv_use_sbi_for_rfence) to an
+RCU-based release.
+
+So, Reviewed-by: Yunhui Cui <cuiyunhui@bytedance.com>
+
+Based on qemu-system-riscv64, I tested this patch. The log is as follows:
+./gup_test
+TAP version 13
+1..1
+# GUP_FAST_BENCHMARK: Time: get:663365 put:117 us
+# ok 1 ioctl status 0
+# Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
+
+So, Tested-by: Yunhui Cui <cuiyunhui@bytedance.com>
+
+Thanks,
+Yunhui
 
