@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6D82FC282DE
-	for <linux-um@archiver.kernel.org>; Thu,  6 Mar 2025 18:52:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 6A135C28B26
+	for <linux-um@archiver.kernel.org>; Thu,  6 Mar 2025 18:53:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=muwizWukvEQXWCdPpr52z13tn84CGBwjdggEEowg38M=; b=o1gNAc1quRj4IuJWSrJBtz9yVD
-	Fh7jp3j3FWIynHw8x48svzeNPDmfVk0PuVxNPnm442tY0hUW28CGFvIPAqZ7KEOgUcBAUOG/os/B3
-	l/r5fyfIptDLoHn4s9VQ9DUF3N6sXMlHB0ob4Xov/PsWJiUew9/BIyflYZLLWvBg9BEImQsk1OgoM
-	v/oCfztSh5De9GMPsi/5oPJia3ogD8j4LergTzdya0JanpDwiuHwLBesav5vrdbITsw3RPNPvmKmz
-	HDkKYbFAIiTcloAZb1On8ZfG4FXtOjnE/cTZW/2+rjNsKESEmxAJ8p8hj2f9QY4KtOLNINTj5M0dU
-	jfGgpV0A==;
+	bh=EqEJoM4rgtKrOS/V5SDQTOhmiMYuUlj1yWrv5iY9ngQ=; b=1qmPbss8Xd0wyjxnOZ3u73ky2q
+	Cblruh16STDCJQNG0387+6WP6DCst3eSJp9jdcz81/P7Ptt/qm/6Fve+BmA+k64+pLXk0wnBIJEYC
+	DPzAFzMXGr1YU+HKAUsB9bHQljYoqW0g+hFb3ExrQnsAti6rm/UE9j+94ARyRMZUJRiBKP4FO9ZYM
+	aYWWavH4hddQL0kNnjjy6MVpd+Ar4jkCpbNzZTP3dFPUTi8LD9EROH1MJ6fhzz6QqJGJQONTCmMd1
+	zRH8GsXBepNx1QRu0ZeNcPTsOHEgbqMNNnyx7mPxh3qMHxPjVZwkYIyrVg/8zCvMZdoAW/2NqJepU
+	3ZXMd4CQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqGL1-0000000BvG2-0doK;
-	Thu, 06 Mar 2025 18:52:55 +0000
+	id 1tqGLg-0000000Bvhy-0idZ;
+	Thu, 06 Mar 2025 18:53:36 +0000
 Received: from nyc.source.kernel.org ([147.75.193.91])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqGKy-0000000BvDA-0PxM;
-	Thu, 06 Mar 2025 18:52:53 +0000
+	id 1tqGLb-0000000BveL-2Eq9;
+	Thu, 06 Mar 2025 18:53:33 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id 8CE09A45015;
-	Thu,  6 Mar 2025 18:47:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3777BC4CEE4;
-	Thu,  6 Mar 2025 18:52:38 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id 02A25A44F0F;
+	Thu,  6 Mar 2025 18:48:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2766C4CEE4;
+	Thu,  6 Mar 2025 18:53:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741287170;
-	bh=zHkXxvTCym0KhjWbRn9ukBtTCkXKX0nK77Ga6+2Q1YQ=;
+	s=k20201202; t=1741287210;
+	bh=Af9gKlZIDExjo3NK0sfX49tiYlvs18loCfa3z4qCS4k=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sU7/prHNQYg50lA7Hgqj0K1JV1oudrxegE/7Yx9axrVAFFToyFBUGUG74ycwlXmZO
-	 aq0XBTYCBQmpUJCkwEU/Dntqz+qE3P71BesMhHmp+sBEjPmFo7vSnZ1AiTchdUe70i
-	 DuW4Y+bWiYoNGCgn5z3IrutQmgNDmAGNn+R5Q7kZGJZMIg21W1EcBEi7sD7/iGD9UL
-	 Ke2xqsg+DakqZUrIVCcLXoVSSNTU6Qc9K22RHZSnsQwI+wRQEE/KhepO8LXgXyv5ig
-	 o7R10Dqr4mttjq4pi8tkEwtM4iS1U3Oolo7BJkl6KzqCiWI4vyw/wcu4aZDHmjHKeg
-	 JTD2x/pwRnwNg==
+	b=ACHI6rfL1CccB57sU6MHDnuoRg3jMkyFyeeJlXxk8uRHYT/lbOYh1q5kA3v8+SoBx
+	 /rcC9SXjhDCUt02EMaLZCrUKfOk4h0oLxAT+jnDZad4CATtsjvmD8EjF6oqwbdQeEY
+	 lec4vL01J8O4/qZP9ogTuxjIICQ/nPBl4pvJ44MoLU18PCfW1pW/JGbUMlIRkJlmQt
+	 6fBGVqdQnog5dPeP0hV9MmrP+bGVIxIvFvQUgN6hZKnvRwCNYzS1uButYr6dHJ9Qv2
+	 LukeOxx9dFnYJScdzXYrIbXP+iFHUqdhlT2i8EDd+xbfsULozwofW4yz7qQY5SvlsQ
+	 dE7dgY38/JZiw==
 From: Mike Rapoport <rppt@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
@@ -99,17 +99,17 @@ Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
 	linux-arch@vger.kernel.org,
 	linux-mm@kvack.org,
 	x86@kernel.org
-Subject: [PATCH 05/13] MIPS: make setup_zero_pages() use memblock
-Date: Thu,  6 Mar 2025 20:51:15 +0200
-Message-ID: <20250306185124.3147510-6-rppt@kernel.org>
+Subject: [PATCH 08/13] xtensa: split out printing of virtual memory layout to a function
+Date: Thu,  6 Mar 2025 20:51:18 +0200
+Message-ID: <20250306185124.3147510-9-rppt@kernel.org>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250306185124.3147510-1-rppt@kernel.org>
 References: <20250306185124.3147510-1-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250306_105252_264519_8DCDC48C 
-X-CRM114-Status: GOOD (  15.58  )
+X-CRM114-CacheID: sfid-20250306_105331_702959_FD75BA1E 
+X-CRM114-Status: GOOD (  10.58  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -126,83 +126,136 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 
-Allocating the zero pages from memblock is simpler because the memory is
-already reserved.
-
-This will also help with pulling out memblock_free_all() to the generic
+This will help with pulling out memblock_free_all() to the generic
 code and reducing code duplication in arch::mem_init().
 
 Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 ---
- arch/mips/include/asm/mmzone.h |  2 --
- arch/mips/mm/init.c            | 16 +++++-----------
- 2 files changed, 5 insertions(+), 13 deletions(-)
+ arch/xtensa/mm/init.c | 97 ++++++++++++++++++++++---------------------
+ 1 file changed, 50 insertions(+), 47 deletions(-)
 
-diff --git a/arch/mips/include/asm/mmzone.h b/arch/mips/include/asm/mmzone.h
-index 14226ea42036..602a21aee9d4 100644
---- a/arch/mips/include/asm/mmzone.h
-+++ b/arch/mips/include/asm/mmzone.h
-@@ -20,6 +20,4 @@
- #define nid_to_addrbase(nid) 0
+diff --git a/arch/xtensa/mm/init.c b/arch/xtensa/mm/init.c
+index b2587a1a7c46..01577d33e602 100644
+--- a/arch/xtensa/mm/init.c
++++ b/arch/xtensa/mm/init.c
+@@ -66,6 +66,55 @@ void __init bootmem_init(void)
+ 	memblock_dump_all();
+ }
+ 
++static void __init print_vm_layout(void)
++{
++	pr_info("virtual kernel memory layout:\n"
++#ifdef CONFIG_KASAN
++		"    kasan   : 0x%08lx - 0x%08lx  (%5lu MB)\n"
++#endif
++#ifdef CONFIG_MMU
++		"    vmalloc : 0x%08lx - 0x%08lx  (%5lu MB)\n"
++#endif
++#ifdef CONFIG_HIGHMEM
++		"    pkmap   : 0x%08lx - 0x%08lx  (%5lu kB)\n"
++		"    fixmap  : 0x%08lx - 0x%08lx  (%5lu kB)\n"
++#endif
++		"    lowmem  : 0x%08lx - 0x%08lx  (%5lu MB)\n"
++		"    .text   : 0x%08lx - 0x%08lx  (%5lu kB)\n"
++		"    .rodata : 0x%08lx - 0x%08lx  (%5lu kB)\n"
++		"    .data   : 0x%08lx - 0x%08lx  (%5lu kB)\n"
++		"    .init   : 0x%08lx - 0x%08lx  (%5lu kB)\n"
++		"    .bss    : 0x%08lx - 0x%08lx  (%5lu kB)\n",
++#ifdef CONFIG_KASAN
++		KASAN_SHADOW_START, KASAN_SHADOW_START + KASAN_SHADOW_SIZE,
++		KASAN_SHADOW_SIZE >> 20,
++#endif
++#ifdef CONFIG_MMU
++		VMALLOC_START, VMALLOC_END,
++		(VMALLOC_END - VMALLOC_START) >> 20,
++#ifdef CONFIG_HIGHMEM
++		PKMAP_BASE, PKMAP_BASE + LAST_PKMAP * PAGE_SIZE,
++		(LAST_PKMAP*PAGE_SIZE) >> 10,
++		FIXADDR_START, FIXADDR_END,
++		(FIXADDR_END - FIXADDR_START) >> 10,
++#endif
++		PAGE_OFFSET, PAGE_OFFSET +
++		(max_low_pfn - min_low_pfn) * PAGE_SIZE,
++#else
++		min_low_pfn * PAGE_SIZE, max_low_pfn * PAGE_SIZE,
++#endif
++		((max_low_pfn - min_low_pfn) * PAGE_SIZE) >> 20,
++		(unsigned long)_text, (unsigned long)_etext,
++		(unsigned long)(_etext - _text) >> 10,
++		(unsigned long)__start_rodata, (unsigned long)__end_rodata,
++		(unsigned long)(__end_rodata - __start_rodata) >> 10,
++		(unsigned long)_sdata, (unsigned long)_edata,
++		(unsigned long)(_edata - _sdata) >> 10,
++		(unsigned long)__init_begin, (unsigned long)__init_end,
++		(unsigned long)(__init_end - __init_begin) >> 10,
++		(unsigned long)__bss_start, (unsigned long)__bss_stop,
++		(unsigned long)(__bss_stop - __bss_start) >> 10);
++}
+ 
+ void __init zones_init(void)
+ {
+@@ -77,6 +126,7 @@ void __init zones_init(void)
  #endif
- 
--extern void setup_zero_pages(void);
--
- #endif /* _ASM_MMZONE_H_ */
-diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
-index 3db6082c611e..f51cd97376df 100644
---- a/arch/mips/mm/init.c
-+++ b/arch/mips/mm/init.c
-@@ -59,25 +59,19 @@ EXPORT_SYMBOL(zero_page_mask);
- /*
-  * Not static inline because used by IP27 special magic initialization code
-  */
--void setup_zero_pages(void)
-+static void __init setup_zero_pages(void)
- {
--	unsigned int order, i;
--	struct page *page;
-+	unsigned int order;
- 
- 	if (cpu_has_vce)
- 		order = 3;
- 	else
- 		order = 0;
- 
--	empty_zero_page = __get_free_pages(GFP_KERNEL | __GFP_ZERO, order);
-+	empty_zero_page = (unsigned long)memblock_alloc(PAGE_SIZE << order, PAGE_SIZE);
- 	if (!empty_zero_page)
- 		panic("Oh boy, that early out of memory?");
- 
--	page = virt_to_page((void *)empty_zero_page);
--	split_page(page, order);
--	for (i = 0; i < (1 << order); i++, page++)
--		mark_page_reserved(page);
--
- 	zero_page_mask = ((PAGE_SIZE << order) - 1) & PAGE_MASK;
+ 	};
+ 	free_area_init(max_zone_pfn);
++	print_vm_layout();
  }
  
-@@ -470,9 +464,9 @@ void __init mem_init(void)
- 	BUILD_BUG_ON(IS_ENABLED(CONFIG_32BIT) && (PFN_PTE_SHIFT > PAGE_SHIFT));
+ static void __init free_highpages(void)
+@@ -118,53 +168,6 @@ void __init mem_init(void)
+ 	high_memory = (void *)__va(max_low_pfn << PAGE_SHIFT);
  
- 	maar_init();
--	memblock_free_all();
- 	setup_zero_pages();	/* Setup zeroed pages.  */
- 	mem_init_free_highmem();
-+	memblock_free_all();
- 
- #ifdef CONFIG_64BIT
- 	if ((unsigned long) &_text > (unsigned long) CKSEG0)
-@@ -486,8 +480,8 @@ void __init mem_init(void)
- void __init mem_init(void)
- {
- 	high_memory = (void *) __va(get_num_physpages() << PAGE_SHIFT);
--	memblock_free_all();
- 	setup_zero_pages();	/* This comes from node 0 */
-+	memblock_free_all();
+ 	memblock_free_all();
+-
+-	pr_info("virtual kernel memory layout:\n"
+-#ifdef CONFIG_KASAN
+-		"    kasan   : 0x%08lx - 0x%08lx  (%5lu MB)\n"
+-#endif
+-#ifdef CONFIG_MMU
+-		"    vmalloc : 0x%08lx - 0x%08lx  (%5lu MB)\n"
+-#endif
+-#ifdef CONFIG_HIGHMEM
+-		"    pkmap   : 0x%08lx - 0x%08lx  (%5lu kB)\n"
+-		"    fixmap  : 0x%08lx - 0x%08lx  (%5lu kB)\n"
+-#endif
+-		"    lowmem  : 0x%08lx - 0x%08lx  (%5lu MB)\n"
+-		"    .text   : 0x%08lx - 0x%08lx  (%5lu kB)\n"
+-		"    .rodata : 0x%08lx - 0x%08lx  (%5lu kB)\n"
+-		"    .data   : 0x%08lx - 0x%08lx  (%5lu kB)\n"
+-		"    .init   : 0x%08lx - 0x%08lx  (%5lu kB)\n"
+-		"    .bss    : 0x%08lx - 0x%08lx  (%5lu kB)\n",
+-#ifdef CONFIG_KASAN
+-		KASAN_SHADOW_START, KASAN_SHADOW_START + KASAN_SHADOW_SIZE,
+-		KASAN_SHADOW_SIZE >> 20,
+-#endif
+-#ifdef CONFIG_MMU
+-		VMALLOC_START, VMALLOC_END,
+-		(VMALLOC_END - VMALLOC_START) >> 20,
+-#ifdef CONFIG_HIGHMEM
+-		PKMAP_BASE, PKMAP_BASE + LAST_PKMAP * PAGE_SIZE,
+-		(LAST_PKMAP*PAGE_SIZE) >> 10,
+-		FIXADDR_START, FIXADDR_END,
+-		(FIXADDR_END - FIXADDR_START) >> 10,
+-#endif
+-		PAGE_OFFSET, PAGE_OFFSET +
+-		(max_low_pfn - min_low_pfn) * PAGE_SIZE,
+-#else
+-		min_low_pfn * PAGE_SIZE, max_low_pfn * PAGE_SIZE,
+-#endif
+-		((max_low_pfn - min_low_pfn) * PAGE_SIZE) >> 20,
+-		(unsigned long)_text, (unsigned long)_etext,
+-		(unsigned long)(_etext - _text) >> 10,
+-		(unsigned long)__start_rodata, (unsigned long)__end_rodata,
+-		(unsigned long)(__end_rodata - __start_rodata) >> 10,
+-		(unsigned long)_sdata, (unsigned long)_edata,
+-		(unsigned long)(_edata - _sdata) >> 10,
+-		(unsigned long)__init_begin, (unsigned long)__init_end,
+-		(unsigned long)(__init_end - __init_begin) >> 10,
+-		(unsigned long)__bss_start, (unsigned long)__bss_stop,
+-		(unsigned long)(__bss_stop - __bss_start) >> 10);
  }
- #endif /* !CONFIG_NUMA */
  
+ static void __init parse_memmap_one(char *p)
 -- 
 2.47.2
 
