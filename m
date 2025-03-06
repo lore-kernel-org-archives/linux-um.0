@@ -4,35 +4,35 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8DE2DC28B26
-	for <linux-um@archiver.kernel.org>; Thu,  6 Mar 2025 15:08:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 86B7BC282D1
+	for <linux-um@archiver.kernel.org>; Thu,  6 Mar 2025 15:08:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=LO55YnJPL63/5LkQVrpMrZ7iNo6O82vjLztXQCcsOWU=; b=xucoKdnuWy2MSxqoP4fSaEZLDK
-	TiMsqckvUHknuyVUt1nc39EMqALLtiwY8bI1WAqAcyWcDD6PLq5xKW1PZ5oJBXYzl1PNSQuRqngq2
-	PHpJ6PyFiYpV9G0yCwueQhL7FleUtmCtrF7FA4l3A2bfEzaNtuIss/M0PLQKL65bQvy1+thIY5F4T
-	YNPotffjiDC5tFZIaz6v8uta6wGFqgmXaU/THxFZjhApNXf17oJM71Jr7x+IpW//Y+08vewQF9nmR
-	aXeNIxhYvhxViQRrMDQsICSDicnNXqfbXxqolaVP+9yIXf1nYVqqGcRNBI33VIrK5X6K6ccz8ydnW
-	pcdSLbMA==;
+	bh=yLD2eDsHScWzoc++hy0wPvCMEB6k8Y9b9/+bzI6FCa4=; b=17UstRFX2vtM/zww10seltUeGj
+	9v8nXfEv11RGeV9DtBMFZ1SThuLRZO4tkvOWy1H6cHMgiARFtnnlV922zp52D9l99KvwgMzBlruVy
+	yeycg6x0Q5N8PfBWFdmpX4vWoUfor7nK6iZrD65/tj12bzkFpwfxxxz0AjSMjtJ6N20hA1Nz6EP2w
+	dUPeVvTekq/A9Xju+Hh73m1r1pXLD8OPZNw84RNJVMqilHvKWh+uf8MVK/fGhRlhuB6k92rhB3f+c
+	9dFFN/qwmDn2VIXr2MhqqEW0Y9jvaviP7hPrj3jznCWUtrEaEA2Yr2ovXEySv8USLgvZYgHjsYtCp
+	l5rwiBig==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqCpT-0000000BHQu-1QK2;
-	Thu, 06 Mar 2025 15:08:07 +0000
-Received: from out0-200.mail.aliyun.com ([140.205.0.200])
-	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqCpQ-0000000BHNj-1cSw
-	for linux-um@lists.infradead.org;
+	id 1tqCpR-0000000BHPx-36qK;
 	Thu, 06 Mar 2025 15:08:05 +0000
+Received: from out0-207.mail.aliyun.com ([140.205.0.207])
+	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tqCpO-0000000BHNk-1d0c
+	for linux-um@lists.infradead.org;
+	Thu, 06 Mar 2025 15:08:04 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=antgroup.com; s=default;
 	t=1741273679; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=LO55YnJPL63/5LkQVrpMrZ7iNo6O82vjLztXQCcsOWU=;
-	b=dB1gdIjfRDJ6AskNuxcQMzE4S9TN3qGKwfbr1sMITyrfxVlpdHKGXK0KKnpwoo1kAiuKOCWT5JRTLRhy+oEZYpaJxKzekMzd6U0oVeK3eFXEPL8CAJfZSc3QCe5inDa7Wj1jBbOQGcPSNggyFXmakanohRjHetE0NJivP1cwCb4=
-Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.blx0wDE_1741273676 cluster:ay29)
+	bh=yLD2eDsHScWzoc++hy0wPvCMEB6k8Y9b9/+bzI6FCa4=;
+	b=PwiseJWJVOR2yVgwil9y92NY5sr0HRPIpQK+Dr+9eQSNBSzV7rQ3FPVtbt9wGXGh1AWd3tawWtfmiv4/KD06fq2i6cUY+XAupAzWi2obehqfd5WoHFs3RqioBGdET3OeTy4PgpI3J3CUlMX4Dp3H4iy0OjxRiBd2PJIOypHSMEI=
+Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.blx0wDI_1741273676 cluster:ay29)
           by smtp.aliyun-inc.com;
           Thu, 06 Mar 2025 23:07:56 +0800
 From: "Tiwei Bie" <tiwei.btw@antgroup.com>
@@ -41,17 +41,17 @@ To: richard@nod.at,
 	johannes@sipsolutions.net
 Cc: <linux-um@lists.infradead.org>,
   "Tiwei Bie" <tiwei.btw@antgroup.com>
-Subject: [PATCH v2 2/4] um: ubd: Switch to the pthread-based helper
-Date: Thu, 06 Mar 2025 23:07:45 +0800
-Message-Id: <20250306150747.2926434-3-tiwei.btw@antgroup.com>
+Subject: [PATCH v2 3/4] um: Switch to the pthread-based helper in sigio workaround
+Date: Thu, 06 Mar 2025 23:07:46 +0800
+Message-Id: <20250306150747.2926434-4-tiwei.btw@antgroup.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250306150747.2926434-1-tiwei.btw@antgroup.com>
 References: <20250306150747.2926434-1-tiwei.btw@antgroup.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250306_070804_749317_A862DD3D 
-X-CRM114-Status: GOOD (  13.24  )
+X-CRM114-CacheID: sfid-20250306_070802_742364_EC7A7A3B 
+X-CRM114-Status: GOOD (  16.91  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,140 +66,146 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-The ubd io thread and UML kernel thread share the same errno, which
-can lead to conflicts when both call syscalls concurrently. Switch to
-the pthread-based helper to address this issue.
+The write_sigio thread and UML kernel thread share the same errno,
+which can lead to conflicts when both call syscalls concurrently.
+Switch to the pthread-based helper to address this issue.
 
 Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
 ---
- arch/um/drivers/ubd.h      |  6 ++++--
- arch/um/drivers/ubd_kern.c | 25 +++++++++++--------------
- arch/um/drivers/ubd_user.c | 14 +++++++-------
- 3 files changed, 22 insertions(+), 23 deletions(-)
+ arch/um/os-Linux/sigio.c | 44 +++++++++++++++++-----------------------
+ 1 file changed, 19 insertions(+), 25 deletions(-)
 
-diff --git a/arch/um/drivers/ubd.h b/arch/um/drivers/ubd.h
-index f016fe15499f..2985c14661f4 100644
---- a/arch/um/drivers/ubd.h
-+++ b/arch/um/drivers/ubd.h
-@@ -7,8 +7,10 @@
- #ifndef __UM_UBD_USER_H
- #define __UM_UBD_USER_H
+diff --git a/arch/um/os-Linux/sigio.c b/arch/um/os-Linux/sigio.c
+index 9aac8def4d63..61b348a2ea97 100644
+--- a/arch/um/os-Linux/sigio.c
++++ b/arch/um/os-Linux/sigio.c
+@@ -21,8 +21,7 @@
+  * Protected by sigio_lock(), also used by sigio_cleanup, which is an
+  * exitcall.
+  */
+-static int write_sigio_pid = -1;
+-static unsigned long write_sigio_stack;
++static struct os_helper_thread *write_sigio_td;
  
--extern int start_io_thread(unsigned long sp, int *fds_out);
--extern int io_thread(void *arg);
-+#include <os.h>
-+
-+int start_io_thread(struct os_helper_thread **td_out, int *fd_out);
-+void *io_thread(void *arg);
- extern int kernel_fd;
+ /*
+  * These arrays are initialized before the sigio thread is started, and
+@@ -48,15 +47,15 @@ static struct pollfds current_poll;
+ static struct pollfds next_poll;
+ static struct pollfds all_sigio_fds;
  
- extern int ubd_read_poll(int timeout);
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 0b1e61f72fb3..4de6613e7468 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -474,12 +474,12 @@ static irqreturn_t ubd_intr(int irq, void *dev)
- }
- 
- /* Only changed by ubd_init, which is an initcall. */
--static int io_pid = -1;
-+static struct os_helper_thread *io_td;
- 
- static void kill_io_thread(void)
+-static int write_sigio_thread(void *unused)
++static void *write_sigio_thread(void *unused)
  {
--	if(io_pid != -1)
--		os_kill_process(io_pid, 1);
-+	if (io_td)
-+		os_kill_helper_thread(io_td);
- }
- 
- __uml_exitcall(kill_io_thread);
-@@ -1104,8 +1104,8 @@ static int __init ubd_init(void)
- 
- late_initcall(ubd_init);
- 
--static int __init ubd_driver_init(void){
--	unsigned long stack;
-+static int __init ubd_driver_init(void)
-+{
- 	int err;
- 
- 	/* Set by CONFIG_BLK_DEV_UBD_SYNC or ubd=sync.*/
-@@ -1114,13 +1114,11 @@ static int __init ubd_driver_init(void){
- 		/* Letting ubd=sync be like using ubd#s= instead of ubd#= is
- 		 * enough. So use anyway the io thread. */
- 	}
--	stack = alloc_stack(0, 0);
--	io_pid = start_io_thread(stack + PAGE_SIZE, &thread_fd);
--	if(io_pid < 0){
-+	err = start_io_thread(&io_td, &thread_fd);
-+	if (err < 0) {
- 		printk(KERN_ERR
- 		       "ubd : Failed to start I/O thread (errno = %d) - "
--		       "falling back to synchronous I/O\n", -io_pid);
--		io_pid = -1;
-+		       "falling back to synchronous I/O\n", -err);
- 		return 0;
- 	}
- 	err = um_request_irq(UBD_IRQ, thread_fd, IRQ_READ, ubd_intr,
-@@ -1496,12 +1494,11 @@ int kernel_fd = -1;
- /* Only changed by the io thread. XXX: currently unused. */
- static int io_count;
- 
--int io_thread(void *arg)
-+void *io_thread(void *arg)
- {
- 	int n, count, written, res;
+ 	struct pollfds *fds, tmp;
+ 	struct pollfd *p;
+ 	int i, n, respond_fd;
+ 	char c;
  
 -	os_set_pdeathsig();
 -	os_fix_helper_signals();
 +	os_fix_helper_thread_signals();
- 
- 	while(1){
- 		n = bulk_req_safe_read(
-@@ -1543,5 +1540,5 @@ int io_thread(void *arg)
- 		} while (written < n);
++
+ 	fds = &current_poll;
+ 	while (1) {
+ 		n = poll(fds->poll, fds->used, -1);
+@@ -98,7 +97,7 @@ static int write_sigio_thread(void *unused)
+ 		}
  	}
  
 -	return 0;
 +	return NULL;
  }
-diff --git a/arch/um/drivers/ubd_user.c b/arch/um/drivers/ubd_user.c
-index b4f8b8e60564..c5e6545f6fcf 100644
---- a/arch/um/drivers/ubd_user.c
-+++ b/arch/um/drivers/ubd_user.c
-@@ -25,9 +25,9 @@
  
- static struct pollfd kernel_pollfd;
+ static int need_poll(struct pollfds *polls, int n)
+@@ -152,11 +151,10 @@ static void update_thread(void)
+ 	return;
+  fail:
+ 	/* Critical section start */
+-	if (write_sigio_pid != -1) {
+-		os_kill_process(write_sigio_pid, 1);
+-		free_stack(write_sigio_stack, 0);
++	if (write_sigio_td) {
++		os_kill_helper_thread(write_sigio_td);
++		write_sigio_td = NULL;
+ 	}
+-	write_sigio_pid = -1;
+ 	close(sigio_private[0]);
+ 	close(sigio_private[1]);
+ 	close(write_sigio_fds[0]);
+@@ -220,7 +218,7 @@ int __ignore_sigio_fd(int fd)
+ 	 * sigio_cleanup has already run, then update_thread will hang
+ 	 * or fail because the thread is no longer running.
+ 	 */
+-	if (write_sigio_pid == -1)
++	if (!write_sigio_td)
+ 		return -EIO;
  
--int start_io_thread(unsigned long sp, int *fd_out)
-+int start_io_thread(struct os_helper_thread **td_out, int *fd_out)
+ 	for (i = 0; i < current_poll.used; i++) {
+@@ -279,14 +277,14 @@ static void write_sigio_workaround(void)
+ 	int err;
+ 	int l_write_sigio_fds[2];
+ 	int l_sigio_private[2];
+-	int l_write_sigio_pid;
++	struct os_helper_thread *l_write_sigio_td;
+ 
+ 	/* We call this *tons* of times - and most ones we must just fail. */
+ 	sigio_lock();
+-	l_write_sigio_pid = write_sigio_pid;
++	l_write_sigio_td = write_sigio_td;
+ 	sigio_unlock();
+ 
+-	if (l_write_sigio_pid != -1)
++	if (l_write_sigio_td)
+ 		return;
+ 
+ 	err = os_pipe(l_write_sigio_fds, 1, 1);
+@@ -312,7 +310,7 @@ static void write_sigio_workaround(void)
+ 	 * Did we race? Don't try to optimize this, please, it's not so likely
+ 	 * to happen, and no more than once at the boot.
+ 	 */
+-	if (write_sigio_pid != -1)
++	if (write_sigio_td)
+ 		goto out_free;
+ 
+ 	current_poll = ((struct pollfds) { .poll 	= p,
+@@ -325,18 +323,15 @@ static void write_sigio_workaround(void)
+ 	memcpy(write_sigio_fds, l_write_sigio_fds, sizeof(l_write_sigio_fds));
+ 	memcpy(sigio_private, l_sigio_private, sizeof(l_sigio_private));
+ 
+-	write_sigio_pid = run_helper_thread(write_sigio_thread, NULL,
+-					    CLONE_FILES | CLONE_VM,
+-					    &write_sigio_stack);
+-
+-	if (write_sigio_pid < 0)
++	err = os_run_helper_thread(&write_sigio_td, write_sigio_thread, NULL);
++	if (err < 0)
+ 		goto out_clear;
+ 
+ 	sigio_unlock();
+ 	return;
+ 
+ out_clear:
+-	write_sigio_pid = -1;
++	write_sigio_td = NULL;
+ 	write_sigio_fds[0] = -1;
+ 	write_sigio_fds[1] = -1;
+ 	sigio_private[0] = -1;
+@@ -394,12 +389,11 @@ void maybe_sigio_broken(int fd)
+ 
+ static void sigio_cleanup(void)
  {
--	int pid, fds[2], err;
-+	int fds[2], err;
+-	if (write_sigio_pid == -1)
++	if (!write_sigio_td)
+ 		return;
  
- 	err = os_pipe(fds, 1, 1);
- 	if(err < 0){
-@@ -47,14 +47,14 @@ int start_io_thread(unsigned long sp, int *fd_out)
- 		goto out_close;
- 	}
+-	os_kill_process(write_sigio_pid, 1);
+-	free_stack(write_sigio_stack, 0);
+-	write_sigio_pid = -1;
++	os_kill_helper_thread(write_sigio_td);
++	write_sigio_td = NULL;
+ }
  
--	pid = clone(io_thread, (void *) sp, CLONE_FILES | CLONE_VM, NULL);
--	if(pid < 0){
--		err = -errno;
--		printk("start_io_thread - clone failed : errno = %d\n", errno);
-+	err = os_run_helper_thread(td_out, io_thread, NULL);
-+	if (err < 0) {
-+		printk("%s - failed to run helper thread, err = %d\n",
-+		       __func__, -err);
- 		goto out_close;
- 	}
- 
--	return(pid);
-+	return 0;
- 
-  out_close:
- 	os_close_file(fds[0]);
+ __uml_exitcall(sigio_cleanup);
 -- 
 2.34.1
 
