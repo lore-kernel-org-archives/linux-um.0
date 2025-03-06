@@ -4,112 +4,145 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4239BC28B25
-	for <linux-um@archiver.kernel.org>; Thu,  6 Mar 2025 18:54:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id C3A45C28B25
+	for <linux-um@archiver.kernel.org>; Thu,  6 Mar 2025 19:37:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=AffMQ7ljFjpLsTTVg/bxvH33kM4ia0OdgPO5JjcQ3e4=; b=c4H66LCIHbdC5e6P+S3WrIct/+
-	PFzonHe4kixn77XBksO22IFjoMqcJ2xf39j20+knlFne8tbozp3mswfBZvEOkUZQZagOeriejOmqp
-	/11v4NELmH8RWqjPTDsvhUOepHSKDRwFk5Ma/T5veWbngfTnKvMxKdRu6A541vkLsgF1u3+T1gDMH
-	+aomxZo83pHueM38++xWejgFaRB6/QQtdb/CrYL6+mblcNXBDHgW3KiYLrknZWjtmkf1YYRK66bT7
-	1gX/Bj1yhdHwT6UMnQOwCunFXqz82hi2EYLsuRv9h/xBlMaX7mcJ9oCJ3gUeaAm+dHCBejS2i1yNv
-	GXOHQQYQ==;
+	bh=JUoTYqJSraCOQMGFgHDLpg1Ji+s6alTx+vvA+S4Xfic=; b=FOv02qw3bzVj0ZJNNVN4sVJIF1
+	5cO1vL4RZBewuFSehSoKGXY+uO0wnbJBhGtneVi8SQZz9Ng+gcRpupcezAQ6v0UJ2qBbIXZUeAGSE
+	jvIealof/Scn7E4zkFfyVQ7ExytgV35KXVZuTOOhpaOlCcllTcOUz0ZqRkTk1CBQZXBsJYF0LNz1Y
+	uLLpEKW/h9nlX08wvw4/InupO/q1jM5NMNneyj+OD67e4zhmTVAq2xrLO5q8TVB1zhQxtXiFGrNz+
+	0njhM98fSo7SeAZbqBy0gRsHlrHQer9eLgVYqqJFj9ql1ONQxqWNVtyu2RBke9lP12397SsdIpLeM
+	5hWJn2Lw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqGMJ-0000000Bw9k-06hQ;
-	Thu, 06 Mar 2025 18:54:15 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1tqH2U-0000000C22g-0IHx;
+	Thu, 06 Mar 2025 19:37:50 +0000
+Received: from mgamail.intel.com ([192.198.163.11])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqGME-0000000Bw6f-3sF2;
-	Thu, 06 Mar 2025 18:54:12 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 3D0535C18B4;
-	Thu,  6 Mar 2025 18:51:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 161A0C4CEE9;
-	Thu,  6 Mar 2025 18:53:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741287249;
-	bh=DneiROlCoHGV4ifZ5RS2tqXbkizidYqYiepJ/XJs4u8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CjFBQxFugxhbXU3Nj7ff8bsxbfYqlFC6eLvUFcovxhCEXxdfqomIndh6uyghPN5Zh
-	 K51wVzOKZXwQN+w8tL9srsjWFP3caoZKVo8xzX+Rv6SjCTBNoKEDsLPwrFviZyG3sj
-	 kkkCpMi8x4815tM0IDh+mckBYDEQPYUBxVB89B8KxYsuSRBmXeCfjvLWKKI+sYGzcQ
-	 Clh/Vw6CDp0Owls0KUmQEC1AN6ZEJ7ffWWzbnL+olKNGOIy8yv8oAqrZmniATfsXll
-	 J0l9GdHpOZ9jrEQab2d0IkZceZqtUXTqIbr4t+LYSk2U/u99shMVz2ordAgMNBmeNT
-	 zy2CFySHPRbVQ==
-From: Mike Rapoport <rppt@kernel.org>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Borislav Petkov <bp@alien8.de>,
-	Brian Cain <bcain@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-	Guo Ren <guoren@kernel.org>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Matt Turner <mattst88@gmail.com>,
-	Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>,
-	Mike Rapoport <rppt@kernel.org>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Russell King <linux@armlinux.org.uk>,
-	Stafford Horne <shorne@gmail.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Vineet Gupta <vgupta@kernel.org>,
-	Will Deacon <will@kernel.org>,
-	linux-alpha@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-snps-arc@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org,
-	linux-openrisc@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	sparclinux@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	linux-arch@vger.kernel.org,
-	linux-mm@kvack.org,
-	x86@kernel.org
-Subject: [PATCH 11/13] arch, mm: streamline HIGHMEM freeing
-Date: Thu,  6 Mar 2025 20:51:21 +0200
-Message-ID: <20250306185124.3147510-12-rppt@kernel.org>
-X-Mailer: git-send-email 2.47.2
-In-Reply-To: <20250306185124.3147510-1-rppt@kernel.org>
-References: <20250306185124.3147510-1-rppt@kernel.org>
+	id 1tqH2P-0000000C214-40cf;
+	Thu, 06 Mar 2025 19:37:47 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1741289866; x=1772825866;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Koeuz5ZXlB1/U5aBCNcFQSm7CBaqDpCzuvHfyPrx7nY=;
+  b=H9QLb9SJr7WbGzd1eIzl0M8XhWfb8sKqQYwjBJcEKCU/foUj98p+5kFD
+   PfzfZvUE/Z0u55SruTcYFptSv2JxgzIOYkaejLQ2i/Y3YO5KIHVEHmdkw
+   iTFjr28FLP7zUUh8XAhUuMavXP0cZ5DJI0MnXuFEqiOjvK7nVUyrmyiCA
+   QFQ3oC+W+H7yI/Op+G8Nn+oqZz+yvH3AGJTCEzTF+hF6Evluh5s+hhJBo
+   QdWDJ25POp45IniuL9wESulodYNyPx8xjUgd2eq2NIVHwrY6q8nkEZhE4
+   PXgl6WOr0GHn/BWhxcm5jngRu3gOMOkfyZINNew+XPcGL5WAuLv9NRaLn
+   A==;
+X-CSE-ConnectionGUID: Zd0euLN7S2eGI9vOr3PwNw==
+X-CSE-MsgGUID: /HOcXop4QUe9qmi7sSVo9w==
+X-IronPort-AV: E=McAfee;i="6700,10204,11365"; a="52967942"
+X-IronPort-AV: E=Sophos;i="6.14,227,1736841600"; 
+   d="scan'208";a="52967942"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2025 11:37:44 -0800
+X-CSE-ConnectionGUID: jtUCN+0ERJKOiuT891wUKA==
+X-CSE-MsgGUID: BhyG0YZCS02zwlxq4/E1Nw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.14,227,1736841600"; 
+   d="scan'208";a="119128122"
+Received: from vverma7-desk1.amr.corp.intel.com (HELO [10.125.110.31]) ([10.125.110.31])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Mar 2025 11:37:42 -0800
+Message-ID: <b8922286-cfb9-4071-942c-b90d03d36b13@intel.com>
+Date: Thu, 6 Mar 2025 11:38:02 -0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 00/13] arch, mm: reduce code duplication in mem_init()
+To: Mike Rapoport <rppt@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
+ Andreas Larsson <andreas@gaisler.com>, Andy Lutomirski <luto@kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+ Brian Cain <bcain@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>,
+ "David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>, Guo Ren
+ <guoren@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+ Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
+ Ingo Molnar <mingo@redhat.com>, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+ Johannes Berg <johannes@sipsolutions.net>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Madhavan Srinivasan <maddy@linux.ibm.com>, Matt Turner <mattst88@gmail.com>,
+ Max Filippov <jcmvbkbc@gmail.com>, Michael Ellerman <mpe@ellerman.id.au>,
+ Michal Simek <monstr@monstr.eu>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Peter Zijlstra <peterz@infradead.org>, Richard Weinberger <richard@nod.at>,
+ Russell King <linux@armlinux.org.uk>, Stafford Horne <shorne@gmail.com>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Thomas Gleixner <tglx@linutronix.de>, Vasily Gorbik <gor@linux.ibm.com>,
+ Vineet Gupta <vgupta@kernel.org>, Will Deacon <will@kernel.org>,
+ linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-um@lists.infradead.org, linux-arch@vger.kernel.org,
+ linux-mm@kvack.org, x86@kernel.org
+References: <20250306185124.3147510-1-rppt@kernel.org>
+From: Dave Hansen <dave.hansen@intel.com>
+Content-Language: en-US
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <20250306185124.3147510-1-rppt@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250306_105411_070130_AA05C466 
-X-CRM114-Status: GOOD (  27.52  )
+X-CRM114-CacheID: sfid-20250306_113746_030144_42EDF97E 
+X-CRM114-Status: UNSURE (   5.68  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -124,500 +157,13 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+On 3/6/25 10:51, Mike Rapoport wrote:
+>  53 files changed, 151 insertions(+), 618 deletions(-)
+>  delete mode 100644 arch/x86/include/asm/numa_32.h
+>  delete mode 100644 arch/x86/mm/highmem_32.c
 
-All architectures that support HIGHMEM have their code that frees high
-memory pages to the buddy allocator while __free_memory_core() is limited
-to freeing only low memory.
+Holy cow, nice work. For the x86 bits:
 
-There is no actual reason for that. The memory map is completely ready
-by the time memblock_free_all() is called and high pages can be released to
-the buddy allocator along with low memory.
-
-Remove low memory limit from __free_memory_core() and drop per-architecture
-code that frees high memory pages.
-
-Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
----
- arch/arc/mm/init.c             |  6 +-----
- arch/arm/mm/init.c             | 29 -----------------------------
- arch/csky/mm/init.c            | 14 --------------
- arch/microblaze/mm/init.c      | 16 ----------------
- arch/mips/mm/init.c            | 20 --------------------
- arch/powerpc/mm/mem.c          | 14 --------------
- arch/sparc/mm/init_32.c        | 25 -------------------------
- arch/x86/include/asm/highmem.h |  3 ---
- arch/x86/include/asm/numa.h    |  4 ----
- arch/x86/include/asm/numa_32.h | 13 -------------
- arch/x86/mm/Makefile           |  2 --
- arch/x86/mm/highmem_32.c       | 34 ----------------------------------
- arch/x86/mm/init_32.c          | 28 ----------------------------
- arch/xtensa/mm/init.c          | 29 -----------------------------
- include/linux/mm.h             |  1 -
- mm/memblock.c                  |  3 +--
- 16 files changed, 2 insertions(+), 239 deletions(-)
- delete mode 100644 arch/x86/include/asm/numa_32.h
- delete mode 100644 arch/x86/mm/highmem_32.c
-
-diff --git a/arch/arc/mm/init.c b/arch/arc/mm/init.c
-index 05025122e965..11ce638731c9 100644
---- a/arch/arc/mm/init.c
-+++ b/arch/arc/mm/init.c
-@@ -160,11 +160,7 @@ void __init setup_arch_memory(void)
- static void __init highmem_init(void)
- {
- #ifdef CONFIG_HIGHMEM
--	unsigned long tmp;
--
- 	memblock_phys_free(high_mem_start, high_mem_sz);
--	for (tmp = min_high_pfn; tmp < max_high_pfn; tmp++)
--		free_highmem_page(pfn_to_page(tmp));
- #endif
- }
- 
-@@ -176,8 +172,8 @@ static void __init highmem_init(void)
-  */
- void __init mem_init(void)
- {
--	memblock_free_all();
- 	highmem_init();
-+	memblock_free_all();
- 
- 	BUILD_BUG_ON((PTRS_PER_PGD * sizeof(pgd_t)) > PAGE_SIZE);
- 	BUILD_BUG_ON((PTRS_PER_PUD * sizeof(pud_t)) > PAGE_SIZE);
-diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
-index d4bcc745a044..7bb5ce02b9b5 100644
---- a/arch/arm/mm/init.c
-+++ b/arch/arm/mm/init.c
-@@ -237,33 +237,6 @@ static inline void poison_init_mem(void *s, size_t count)
- 		*p++ = 0xe7fddef0;
- }
- 
--static void __init free_highpages(void)
--{
--#ifdef CONFIG_HIGHMEM
--	unsigned long max_low = max_low_pfn;
--	phys_addr_t range_start, range_end;
--	u64 i;
--
--	/* set highmem page free */
--	for_each_free_mem_range(i, NUMA_NO_NODE, MEMBLOCK_NONE,
--				&range_start, &range_end, NULL) {
--		unsigned long start = PFN_UP(range_start);
--		unsigned long end = PFN_DOWN(range_end);
--
--		/* Ignore complete lowmem entries */
--		if (end <= max_low)
--			continue;
--
--		/* Truncate partial highmem entries */
--		if (start < max_low)
--			start = max_low;
--
--		for (; start < end; start++)
--			free_highmem_page(pfn_to_page(start));
--	}
--#endif
--}
--
- /*
-  * mem_init() marks the free areas in the mem_map and tells us how much
-  * memory is free.  This is done after various parts of the system have
-@@ -283,8 +256,6 @@ void __init mem_init(void)
- 	/* this will put all unused low memory onto the freelists */
- 	memblock_free_all();
- 
--	free_highpages();
--
- 	/*
- 	 * Check boundaries twice: Some fundamental inconsistencies can
- 	 * be detected at build time already.
-diff --git a/arch/csky/mm/init.c b/arch/csky/mm/init.c
-index a22801aa503a..3914c2b873da 100644
---- a/arch/csky/mm/init.c
-+++ b/arch/csky/mm/init.c
-@@ -44,21 +44,7 @@ EXPORT_SYMBOL(empty_zero_page);
- 
- void __init mem_init(void)
- {
--#ifdef CONFIG_HIGHMEM
--	unsigned long tmp;
--#endif
--
- 	memblock_free_all();
--
--#ifdef CONFIG_HIGHMEM
--	for (tmp = highstart_pfn; tmp < highend_pfn; tmp++) {
--		struct page *page = pfn_to_page(tmp);
--
--		/* FIXME not sure about */
--		if (!memblock_is_reserved(tmp << PAGE_SHIFT))
--			free_highmem_page(page);
--	}
--#endif
- }
- 
- void free_initmem(void)
-diff --git a/arch/microblaze/mm/init.c b/arch/microblaze/mm/init.c
-index 7e2e342e84c5..3e664e0efc33 100644
---- a/arch/microblaze/mm/init.c
-+++ b/arch/microblaze/mm/init.c
-@@ -52,19 +52,6 @@ static void __init highmem_init(void)
- 	map_page(PKMAP_BASE, 0, 0);	/* XXX gross */
- 	pkmap_page_table = virt_to_kpte(PKMAP_BASE);
- }
--
--static void __meminit highmem_setup(void)
--{
--	unsigned long pfn;
--
--	for (pfn = max_low_pfn; pfn < max_pfn; ++pfn) {
--		struct page *page = pfn_to_page(pfn);
--
--		/* FIXME not sure about */
--		if (!memblock_is_reserved(pfn << PAGE_SHIFT))
--			free_highmem_page(page);
--	}
--}
- #endif /* CONFIG_HIGHMEM */
- 
- /*
-@@ -122,9 +109,6 @@ void __init mem_init(void)
- {
- 	/* this will put all memory onto the freelists */
- 	memblock_free_all();
--#ifdef CONFIG_HIGHMEM
--	highmem_setup();
--#endif
- 
- 	mem_init_done = 1;
- }
-diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
-index 99cefb58fba3..e7882874ba2f 100644
---- a/arch/mips/mm/init.c
-+++ b/arch/mips/mm/init.c
-@@ -427,25 +427,6 @@ void __init paging_init(void)
- static struct kcore_list kcore_kseg0;
- #endif
- 
--static inline void __init mem_init_free_highmem(void)
--{
--#ifdef CONFIG_HIGHMEM
--	unsigned long tmp;
--
--	if (cpu_has_dc_aliases)
--		return;
--
--	for (tmp = highstart_pfn; tmp < highend_pfn; tmp++) {
--		struct page *page = pfn_to_page(tmp);
--
--		if (!memblock_is_memory(PFN_PHYS(tmp)))
--			SetPageReserved(page);
--		else
--			free_highmem_page(page);
--	}
--#endif
--}
--
- void __init mem_init(void)
- {
- 	/*
-@@ -456,7 +437,6 @@ void __init mem_init(void)
- 
- 	maar_init();
- 	setup_zero_pages();	/* Setup zeroed pages.  */
--	mem_init_free_highmem();
- 	memblock_free_all();
- 
- #ifdef CONFIG_64BIT
-diff --git a/arch/powerpc/mm/mem.c b/arch/powerpc/mm/mem.c
-index c7708c8fad29..1bc94bca9944 100644
---- a/arch/powerpc/mm/mem.c
-+++ b/arch/powerpc/mm/mem.c
-@@ -297,20 +297,6 @@ void __init mem_init(void)
- 
- 	memblock_free_all();
- 
--#ifdef CONFIG_HIGHMEM
--	{
--		unsigned long pfn, highmem_mapnr;
--
--		highmem_mapnr = lowmem_end_addr >> PAGE_SHIFT;
--		for (pfn = highmem_mapnr; pfn < max_mapnr; ++pfn) {
--			phys_addr_t paddr = (phys_addr_t)pfn << PAGE_SHIFT;
--			struct page *page = pfn_to_page(pfn);
--			if (memblock_is_memory(paddr) && !memblock_is_reserved(paddr))
--				free_highmem_page(page);
--		}
--	}
--#endif /* CONFIG_HIGHMEM */
--
- #if defined(CONFIG_PPC_E500) && !defined(CONFIG_SMP)
- 	/*
- 	 * If smp is enabled, next_tlbcam_idx is initialized in the cpu up
-diff --git a/arch/sparc/mm/init_32.c b/arch/sparc/mm/init_32.c
-index 81a468a9c223..043e9b6fadd0 100644
---- a/arch/sparc/mm/init_32.c
-+++ b/arch/sparc/mm/init_32.c
-@@ -232,18 +232,6 @@ static void __init taint_real_pages(void)
- 	}
- }
- 
--static void map_high_region(unsigned long start_pfn, unsigned long end_pfn)
--{
--	unsigned long tmp;
--
--#ifdef CONFIG_DEBUG_HIGHMEM
--	printk("mapping high region %08lx - %08lx\n", start_pfn, end_pfn);
--#endif
--
--	for (tmp = start_pfn; tmp < end_pfn; tmp++)
--		free_highmem_page(pfn_to_page(tmp));
--}
--
- void __init mem_init(void)
- {
- 	int i;
-@@ -276,19 +264,6 @@ void __init mem_init(void)
- 	taint_real_pages();
- 
- 	memblock_free_all();
--
--	for (i = 0; sp_banks[i].num_bytes != 0; i++) {
--		unsigned long start_pfn = sp_banks[i].base_addr >> PAGE_SHIFT;
--		unsigned long end_pfn = (sp_banks[i].base_addr + sp_banks[i].num_bytes) >> PAGE_SHIFT;
--
--		if (end_pfn <= highstart_pfn)
--			continue;
--
--		if (start_pfn < highstart_pfn)
--			start_pfn = highstart_pfn;
--
--		map_high_region(start_pfn, end_pfn);
--	}
- }
- 
- void sparc_flush_page_to_ram(struct page *page)
-diff --git a/arch/x86/include/asm/highmem.h b/arch/x86/include/asm/highmem.h
-index 731ee7cc40a5..585bdadba47d 100644
---- a/arch/x86/include/asm/highmem.h
-+++ b/arch/x86/include/asm/highmem.h
-@@ -69,9 +69,6 @@ extern unsigned long highstart_pfn, highend_pfn;
- 		arch_flush_lazy_mmu_mode();		\
- 	} while (0)
- 
--extern void add_highpages_with_active_regions(int nid, unsigned long start_pfn,
--					unsigned long end_pfn);
--
- #endif /* __KERNEL__ */
- 
- #endif /* _ASM_X86_HIGHMEM_H */
-diff --git a/arch/x86/include/asm/numa.h b/arch/x86/include/asm/numa.h
-index 5469d7a7c40f..53ba39ce010c 100644
---- a/arch/x86/include/asm/numa.h
-+++ b/arch/x86/include/asm/numa.h
-@@ -41,10 +41,6 @@ static inline int numa_cpu_node(int cpu)
- }
- #endif	/* CONFIG_NUMA */
- 
--#ifdef CONFIG_X86_32
--# include <asm/numa_32.h>
--#endif
--
- #ifdef CONFIG_NUMA
- extern void numa_set_node(int cpu, int node);
- extern void numa_clear_node(int cpu);
-diff --git a/arch/x86/include/asm/numa_32.h b/arch/x86/include/asm/numa_32.h
-deleted file mode 100644
-index 9c8e9e85be77..000000000000
---- a/arch/x86/include/asm/numa_32.h
-+++ /dev/null
-@@ -1,13 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _ASM_X86_NUMA_32_H
--#define _ASM_X86_NUMA_32_H
--
--#ifdef CONFIG_HIGHMEM
--extern void set_highmem_pages_init(void);
--#else
--static inline void set_highmem_pages_init(void)
--{
--}
--#endif
--
--#endif /* _ASM_X86_NUMA_32_H */
-diff --git a/arch/x86/mm/Makefile b/arch/x86/mm/Makefile
-index 690fbf48e853..52fbf0a60858 100644
---- a/arch/x86/mm/Makefile
-+++ b/arch/x86/mm/Makefile
-@@ -42,8 +42,6 @@ obj-$(CONFIG_HUGETLB_PAGE)	+= hugetlbpage.o
- obj-$(CONFIG_PTDUMP_CORE)	+= dump_pagetables.o
- obj-$(CONFIG_PTDUMP_DEBUGFS)	+= debug_pagetables.o
- 
--obj-$(CONFIG_HIGHMEM)		+= highmem_32.o
--
- KASAN_SANITIZE_kasan_init_$(BITS).o := n
- obj-$(CONFIG_KASAN)		+= kasan_init_$(BITS).o
- 
-diff --git a/arch/x86/mm/highmem_32.c b/arch/x86/mm/highmem_32.c
-deleted file mode 100644
-index d9efa35711ee..000000000000
---- a/arch/x86/mm/highmem_32.c
-+++ /dev/null
-@@ -1,34 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
--#include <linux/highmem.h>
--#include <linux/export.h>
--#include <linux/swap.h> /* for totalram_pages */
--#include <linux/memblock.h>
--#include <asm/numa.h>
--
--void __init set_highmem_pages_init(void)
--{
--	struct zone *zone;
--	int nid;
--
--	/*
--	 * Explicitly reset zone->managed_pages because set_highmem_pages_init()
--	 * is invoked before memblock_free_all()
--	 */
--	reset_all_zones_managed_pages();
--	for_each_zone(zone) {
--		unsigned long zone_start_pfn, zone_end_pfn;
--
--		if (!is_highmem(zone))
--			continue;
--
--		zone_start_pfn = zone->zone_start_pfn;
--		zone_end_pfn = zone_start_pfn + zone->spanned_pages;
--
--		nid = zone_to_nid(zone);
--		printk(KERN_INFO "Initializing %s for node %d (%08lx:%08lx)\n",
--				zone->name, nid, zone_start_pfn, zone_end_pfn);
--
--		add_highpages_with_active_regions(nid, zone_start_pfn,
--				 zone_end_pfn);
--	}
--}
-diff --git a/arch/x86/mm/init_32.c b/arch/x86/mm/init_32.c
-index 801b659ead0c..9ee8ec2bc5d1 100644
---- a/arch/x86/mm/init_32.c
-+++ b/arch/x86/mm/init_32.c
-@@ -394,23 +394,6 @@ static void __init permanent_kmaps_init(pgd_t *pgd_base)
- 
- 	pkmap_page_table = virt_to_kpte(vaddr);
- }
--
--void __init add_highpages_with_active_regions(int nid,
--			 unsigned long start_pfn, unsigned long end_pfn)
--{
--	phys_addr_t start, end;
--	u64 i;
--
--	for_each_free_mem_range(i, nid, MEMBLOCK_NONE, &start, &end, NULL) {
--		unsigned long pfn = clamp_t(unsigned long, PFN_UP(start),
--					    start_pfn, end_pfn);
--		unsigned long e_pfn = clamp_t(unsigned long, PFN_DOWN(end),
--					      start_pfn, end_pfn);
--		for ( ; pfn < e_pfn; pfn++)
--			if (pfn_valid(pfn))
--				free_highmem_page(pfn_to_page(pfn));
--	}
--}
- #else
- static inline void permanent_kmaps_init(pgd_t *pgd_base)
- {
-@@ -715,17 +698,6 @@ void __init mem_init(void)
- #ifdef CONFIG_FLATMEM
- 	BUG_ON(!mem_map);
- #endif
--	/*
--	 * With CONFIG_DEBUG_PAGEALLOC initialization of highmem pages has to
--	 * be done before memblock_free_all(). Memblock use free low memory for
--	 * temporary data (see find_range_array()) and for this purpose can use
--	 * pages that was already passed to the buddy allocator, hence marked as
--	 * not accessible in the page tables when compiled with
--	 * CONFIG_DEBUG_PAGEALLOC. Otherwise order of initialization is not
--	 * important here.
--	 */
--	set_highmem_pages_init();
--
- 	/* this will put all low memory onto the freelists */
- 	memblock_free_all();
- 
-diff --git a/arch/xtensa/mm/init.c b/arch/xtensa/mm/init.c
-index 9b662477b3d4..47ecbe28263e 100644
---- a/arch/xtensa/mm/init.c
-+++ b/arch/xtensa/mm/init.c
-@@ -129,41 +129,12 @@ void __init zones_init(void)
- 	print_vm_layout();
- }
- 
--static void __init free_highpages(void)
--{
--#ifdef CONFIG_HIGHMEM
--	unsigned long max_low = max_low_pfn;
--	phys_addr_t range_start, range_end;
--	u64 i;
--
--	/* set highmem page free */
--	for_each_free_mem_range(i, NUMA_NO_NODE, MEMBLOCK_NONE,
--				&range_start, &range_end, NULL) {
--		unsigned long start = PFN_UP(range_start);
--		unsigned long end = PFN_DOWN(range_end);
--
--		/* Ignore complete lowmem entries */
--		if (end <= max_low)
--			continue;
--
--		/* Truncate partial highmem entries */
--		if (start < max_low)
--			start = max_low;
--
--		for (; start < end; start++)
--			free_highmem_page(pfn_to_page(start));
--	}
--#endif
--}
--
- /*
-  * Initialize memory pages.
-  */
- 
- void __init mem_init(void)
- {
--	free_highpages();
--
- 	memblock_free_all();
- }
- 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index fdf20503850e..6fccd3b3248c 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -3172,7 +3172,6 @@ extern void reserve_bootmem_region(phys_addr_t start,
- 
- /* Free the reserved page into the buddy system, so it gets managed. */
- void free_reserved_page(struct page *page);
--#define free_highmem_page(page) free_reserved_page(page)
- 
- static inline void mark_page_reserved(struct page *page)
- {
-diff --git a/mm/memblock.c b/mm/memblock.c
-index 95af35fd1389..64ae678cd1d1 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -2164,8 +2164,7 @@ static unsigned long __init __free_memory_core(phys_addr_t start,
- 				 phys_addr_t end)
- {
- 	unsigned long start_pfn = PFN_UP(start);
--	unsigned long end_pfn = min_t(unsigned long,
--				      PFN_DOWN(end), max_low_pfn);
-+	unsigned long end_pfn = PFN_DOWN(end);
- 
- 	if (start_pfn >= end_pfn)
- 		return 0;
--- 
-2.47.2
+Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
 
 
