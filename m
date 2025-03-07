@@ -4,63 +4,133 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C872EC19F32
-	for <linux-um@archiver.kernel.org>; Fri,  7 Mar 2025 10:28:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 73319C19F32
+	for <linux-um@archiver.kernel.org>; Fri,  7 Mar 2025 15:33:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
-	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
-	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=9Ur9qS/1GAOuKdkposMVo8MkyCbee5glWvahiWz6zfw=; b=bpszjyj8y/1qBF86gQFWUhpdXj
-	Llt3s8B+m++EtC2bHuePNufuZKlbdWFmqb/byLU+c3UV38m9oLbifmwa6SQhJgmtH0BH+cZMeeYVk
-	jdh1JYRwo8ZiVhCqjAccO2nl7wZjHExANeNoaoutdBGYCwe5B89IvlQP76JTEOC7l3F4hSJ5yNdY3
-	z3wHadLUCnzfHXr0v+yNaybPU++3RuSaCzXjptBmbBPh7CIG++l7gALklqbutRYGYXhdPgq9Oaxh0
-	6Ty+pzWJJeYtSMi3pFjUz00Nz6reSupUs06LEv42ZwXtuNDV03wcEmkEKiZC7pDHKRGeCb3YsUydL
-	gqBSZ4Xw==;
+	bh=Y0KvhWxi6k4smjT1a6uHtK0WLe6VaKHOV2hSoWFI5bI=; b=RM3QbxRFRRcopH4ENe/1DjuxP9
+	4Plls1Jj/zlWUpWVUKmuZGcI+H/wH1EU5flWPjqM7QU7LNfkJExsDMB97hSy48Vyc3AlTkVXGTHwl
+	qKE+QNxZPlnLcLJCuCM2BViZgBbgOHOwmZYR1wgGYX86LB9Vp7xzDeZQMfLFj8RAtZh6dU452A5BZ
+	bJnb4i/5ZOVZowOTlJkN3Elu69+oTfMrxjCB268oWfjNijA5Cf0taKG4NChNuijM9UqZUvHCz5l+Z
+	WIU6sX42AW23xDdkIeRExxXD6vfYPQXPw85g+PR5Holj2KfHlND5VDmOUw8S+zREl3+RzXRW0WGqk
+	D8mIWfiA==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqUwJ-0000000Ds2i-18De;
-	Fri, 07 Mar 2025 10:28:23 +0000
-Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
+	id 1tqZhN-0000000EgL3-2mZY;
+	Fri, 07 Mar 2025 15:33:17 +0000
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tqUvo-0000000DrxO-0gRD
-	for linux-um@lists.infradead.org;
-	Fri, 07 Mar 2025 10:27:53 +0000
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=9Ur9qS/1GAOuKdkposMVo8MkyCbee5glWvahiWz6zfw=;
-	t=1741343270; x=1742552870; b=Bw0/K6GWcP1ovmntAaiBSsGamOSRKFGjUHkDsv/JYgWirh2
-	bCHDU8XD8VBbU1LOH6MiT3n/vA4Z7oCx+qsn453RFVXaqKL8PcQ0DPWV3J8/vOB5jFCMn7kRhv8rP
-	gCcve6YFQTatodNqbm/P/WeNSAZSZfbK63e2jOK61DX0EQCNkuibQH5JB/ePJgYwxRszlA1gkHL8z
-	+GtQPHXjw8cy8nWezS/PYchwi2DnfUnro8hyvPlc1q3Zq+qCMnqELHzKnayzZCDAfEwDVra5jN7a2
-	cEsBZXvZ354wwACRyrTmf44XFdXm36Ma8yyqf4ViEKmYz48fiOY/yxdgJtnAzlyQ==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98)
-	(envelope-from <benjamin@sipsolutions.net>)
-	id 1tqUvg-00000003pKT-3PjS;
-	Fri, 07 Mar 2025 11:27:45 +0100
-Message-ID: <7d709b34a3add55481c822204e148b28b5e29f81.camel@sipsolutions.net>
-Subject: Re: [PATCH 7/9] um: Implement kernel side of SECCOMP based process
- handling
-From: Benjamin Berg <benjamin@sipsolutions.net>
-To: Hajime Tazaki <thehajime@gmail.com>
-Cc: linux-um@lists.infradead.org, johannes@sipsolutions.net
-Date: Fri, 07 Mar 2025 11:27:43 +0100
-In-Reply-To: <m2wmd1z5gt.wl-thehajime@gmail.com>
-References: <20250224181827.647129-1-benjamin@sipsolutions.net>
-		<20250224181827.647129-8-benjamin@sipsolutions.net>
-	 <m2wmd1z5gt.wl-thehajime@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
+	id 1tqZdI-0000000EezN-2ef6;
+	Fri, 07 Mar 2025 15:29:05 +0000
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 527E3AWH028905;
+	Fri, 7 Mar 2025 15:28:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=Y0KvhWxi6k4smjT1a6uHtK0WLe6VaK
+	HOV2hSoWFI5bI=; b=qKQQC8sCg9pR0Rgf2U4SjNR+davwX5FjEufMomgRsB00fg
+	zyRoTfxYxXh4Y8vuiZOJjrJtRUBqHxyVXsqcdfStADiDsVoEhvGXke2IzKBOI/hb
+	WiESqINaMWZlctFARnqnvnWiPTNBO/qTgrLVOx+veNXvwWI6SMXfFRzUxY07Dh9Y
+	p4E9rDCnukHT+Y6EVG26BlOZ16mHO3x7KhgMU6qM64BlKcUlVNv2REetqaorOfxE
+	Hv9tuR0tLZlF0MsbPIllc5+326ZsUeYtZPM3HYRousN2gYIQuhJdn4OFhBw8Ldam
+	BqYL6oneEKifef2Z24hvK1SLIU1JVnxU0/X7HqUg==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45827p8e9e-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 07 Mar 2025 15:28:26 +0000 (GMT)
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 527FOGZe009112;
+	Fri, 7 Mar 2025 15:28:26 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 45827p8e9b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 07 Mar 2025 15:28:25 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 527CW0hk013724;
+	Fri, 7 Mar 2025 15:28:24 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 454e2m7eh2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 07 Mar 2025 15:28:24 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 527FSKc034669078
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 7 Mar 2025 15:28:20 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4BC592004D;
+	Fri,  7 Mar 2025 15:28:20 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 6CBC420040;
+	Fri,  7 Mar 2025 15:28:17 +0000 (GMT)
+Received: from osiris (unknown [9.171.2.237])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Fri,  7 Mar 2025 15:28:17 +0000 (GMT)
+Date: Fri, 7 Mar 2025 16:28:15 +0100
+From: Heiko Carstens <hca@linux.ibm.com>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Andreas Larsson <andreas@gaisler.com>,
+        Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
+        Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Richard Weinberger <richard@nod.at>,
+        Russell King <linux@armlinux.org.uk>,
+        Stafford Horne <shorne@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>, Vineet Gupta <vgupta@kernel.org>,
+        Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org
+Subject: Re: [PATCH 07/13] s390: make setup_zero_pages() use memblock
+Message-ID: <20250307152815.9880Gbd-hca@linux.ibm.com>
+References: <20250306185124.3147510-1-rppt@kernel.org>
+ <20250306185124.3147510-8-rppt@kernel.org>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250306185124.3147510-8-rppt@kernel.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: A6EZhWyKm6a7TATSJL5pnfOrX3P29DY0
+X-Proofpoint-GUID: Cc95RTw9axkwgZElLQM4IM54NfQR-ck-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1093,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2025-03-07_06,2025-03-06_04,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 bulkscore=0 clxscore=1011 spamscore=0 mlxlogscore=334
+ malwarescore=0 lowpriorityscore=0 phishscore=0 adultscore=0 suspectscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2502100000 definitions=main-2503070115
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250307_022752_381031_DB236A3B 
-X-CRM114-Status: GOOD (  33.48  )
+X-CRM114-CacheID: sfid-20250307_072904_673588_FBDFBC0D 
+X-CRM114-Status: GOOD (  19.48  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -75,253 +145,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Hi,
+On Thu, Mar 06, 2025 at 08:51:17PM +0200, Mike Rapoport wrote:
+> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
+> 
+> Allocating the zero pages from memblock is simpler because the memory is
+> already reserved.
+> 
+> This will also help with pulling out memblock_free_all() to the generic
+> code and reducing code duplication in arch::mem_init().
+> 
+> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
+> ---
+>  arch/s390/mm/init.c | 14 +++-----------
+>  1 file changed, 3 insertions(+), 11 deletions(-)
 
-On Fri, 2025-03-07 at 16:04 +0900, Hajime Tazaki wrote:
-> thanks for the update; was waiting for this.
->=20
-> On Tue, 25 Feb 2025 03:18:25 +0900,
-> Benjamin Berg wrote:
-> >=20
-> > This adds the kernel side of the seccomp based process handling.
-> >=20
-> > Co-authored-by: Johannes Berg <johannes@sipsolutions.net>
-> > Signed-off-by: Benjamin Berg <benjamin@sipsolutions.net>
-> > Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
-> (snip)
-> > diff --git a/arch/um/kernel/skas/mmu.c b/arch/um/kernel/skas/mmu.c
-> > index f8ee5d612c47..0abc509e3f4c 100644
-> > --- a/arch/um/kernel/skas/mmu.c
-> > +++ b/arch/um/kernel/skas/mmu.c
-> > @@ -38,14 +38,11 @@ int init_new_context(struct task_struct *task, stru=
-ct mm_struct *mm)
-> > =C2=A0	scoped_guard(spinlock_irqsave, &mm_list_lock) {
-> > =C2=A0		/* Insert into list, used for lookups when the child dies */
-> > =C2=A0		list_add(&mm->context.list, &mm_list);
-> > -
->=20
-> maybe this is not needed.
+Acked-by: Heiko Carstens <hca@linux.ibm.com>
 
-Oh, that is a mistake from amending patches. I changed the code and
-removed this line in the wrong patch.
+> -	empty_zero_page = __get_free_pages(GFP_KERNEL | __GFP_ZERO, order);
+> +	empty_zero_page = (unsigned long)memblock_alloc(PAGE_SIZE << order, order);
+>  	if (!empty_zero_page)
+>  		panic("Out of memory in setup_zero_pages");
 
-> > =C2=A0	}
-> > =C2=A0
-> > -	new_id->pid =3D start_userspace(stack);
-> > -	if (new_id->pid < 0) {
-> > -		ret =3D new_id->pid;
-> > +	ret =3D start_userspace(new_id);
-> > +	if (ret < 0)
-> > =C2=A0		goto out_free;
-> > -	}
-> > =C2=A0
-> > =C2=A0	/* Ensure the new MM is clean and nothing unwanted is mapped */
-> > =C2=A0	unmap(new_id, 0, STUB_START);
-> > diff --git a/arch/um/kernel/skas/stub_exe.c b/arch/um/kernel/skas/stub_=
-exe.c
-> > index 23c99b285e82..f40f2332b676 100644
-> > --- a/arch/um/kernel/skas/stub_exe.c
-> > +++ b/arch/um/kernel/skas/stub_exe.c
-> > @@ -3,6 +3,9 @@
-> > =C2=A0#include <asm/unistd.h>
-> > =C2=A0#include <sysdep/stub.h>
-> > =C2=A0#include <stub-data.h>
-> > +#include <linux/filter.h>
-> > +#include <linux/seccomp.h>
-> > +#include <generated/asm-offsets.h>
-> > =C2=A0
-> > =C2=A0void _start(void);
-> > =C2=A0
-> > @@ -25,8 +28,6 @@ noinline static void real_init(void)
-> > =C2=A0	} sa =3D {
-> > =C2=A0		/* Need to set SA_RESTORER (but the handler never returns) */
-> > =C2=A0		.sa_flags =3D SA_ONSTACK | SA_NODEFER | SA_SIGINFO | 0x04000000=
-,
-> > -		/* no need to mask any signals */
-> > -		.sa_mask =3D 0,
-> > =C2=A0	};
-> > =C2=A0
-> > =C2=A0	/* set a nice name */
-> > @@ -35,6 +36,9 @@ noinline static void real_init(void)
-> > =C2=A0	/* Make sure this process dies if the kernel dies */
-> > =C2=A0	stub_syscall2(__NR_prctl, PR_SET_PDEATHSIG, SIGKILL);
-> > =C2=A0
-> > +	/* Needed in SECCOMP mode (and safe to do anyway) */
-> > +	stub_syscall5(__NR_prctl, PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
-> > +
-> > =C2=A0	/* read information from STDIN and close it */
-> > =C2=A0	res =3D stub_syscall3(__NR_read, 0,
-> > =C2=A0			=C2=A0=C2=A0=C2=A0 (unsigned long)&init_data, sizeof(init_data=
-));
-> > @@ -63,18 +67,133 @@ noinline static void real_init(void)
-> > =C2=A0	stack.ss_sp =3D (void *)init_data.stub_start + UM_KERN_PAGE_SIZE=
-;
-> > =C2=A0	stub_syscall2(__NR_sigaltstack, (unsigned long)&stack, 0);
-> > =C2=A0
-> > -	/* register SIGSEGV handler */
-> > -	sa.sa_handler_ =3D (void *) init_data.segv_handler;
-> > -	res =3D stub_syscall4(__NR_rt_sigaction, SIGSEGV, (unsigned long)&sa,=
- 0,
-> > -			=C2=A0=C2=A0=C2=A0 sizeof(sa.sa_mask));
-> > -	if (res !=3D 0)
-> > -		stub_syscall1(__NR_exit, 13);
-> > +	/* register signal handlers */
-> > +	sa.sa_handler_ =3D (void *) init_data.signal_handler;
-> > +	sa.sa_restorer =3D (void *) init_data.signal_restorer;
-> > +	if (!init_data.seccomp) {
-> > +		/* In ptrace mode, the SIGSEGV handler never returns */
-> > +		sa.sa_mask =3D 0;
-> > +
-> > +		res =3D stub_syscall4(__NR_rt_sigaction, SIGSEGV,
-> > +				=C2=A0=C2=A0=C2=A0 (unsigned long)&sa, 0, sizeof(sa.sa_mask));
-> > +		if (res !=3D 0)
-> > +			stub_syscall1(__NR_exit, 13);
-> > +	} else {
-> > +		/* SECCOMP mode uses rt_sigreturn, need to mask all signals */
-> > +		sa.sa_mask =3D ~0ULL;
-> > +
-> > +		res =3D stub_syscall4(__NR_rt_sigaction, SIGSEGV,
-> > +				=C2=A0=C2=A0=C2=A0 (unsigned long)&sa, 0, sizeof(sa.sa_mask));
-> > +		if (res !=3D 0)
-> > +			stub_syscall1(__NR_exit, 14);
-> > +
-> > +		res =3D stub_syscall4(__NR_rt_sigaction, SIGSYS,
-> > +				=C2=A0=C2=A0=C2=A0 (unsigned long)&sa, 0, sizeof(sa.sa_mask));
-> > +		if (res !=3D 0)
-> > +			stub_syscall1(__NR_exit, 15);
-> > +
-> > +		res =3D stub_syscall4(__NR_rt_sigaction, SIGALRM,
-> > +				=C2=A0=C2=A0=C2=A0 (unsigned long)&sa, 0, sizeof(sa.sa_mask));
-> > +		if (res !=3D 0)
-> > +			stub_syscall1(__NR_exit, 16);
-> > +
-> > +		res =3D stub_syscall4(__NR_rt_sigaction, SIGTRAP,
-> > +				=C2=A0=C2=A0=C2=A0 (unsigned long)&sa, 0, sizeof(sa.sa_mask));
-> > +		if (res !=3D 0)
-> > +			stub_syscall1(__NR_exit, 17);
-> > +
-> > +		res =3D stub_syscall4(__NR_rt_sigaction, SIGILL,
-> > +				=C2=A0=C2=A0=C2=A0 (unsigned long)&sa, 0, sizeof(sa.sa_mask));
-> > +		if (res !=3D 0)
-> > +			stub_syscall1(__NR_exit, 18);
-> > +
-> > +		res =3D stub_syscall4(__NR_rt_sigaction, SIGFPE,
-> > +				=C2=A0=C2=A0=C2=A0 (unsigned long)&sa, 0, sizeof(sa.sa_mask));
-> > +		if (res !=3D 0)
-> > +			stub_syscall1(__NR_exit, 19);
-> > +	}
-> > +
-> > +	/*
-> > +	 * If in seccomp mode, install the SECCOMP filter and trigger a sysca=
-ll.
-> > +	 * Otherwise set PTRACE_TRACEME and do a SIGSTOP.
-> > +	 */
-> > +	if (init_data.seccomp) {
-> > +		struct sock_filter filter[] =3D {
-> > +#if __BITS_PER_LONG > 32
-> > +			/* [0] Load upper 32bit of instruction pointer from seccomp_data */
-> > +			BPF_STMT(BPF_LD | BPF_W | BPF_ABS,
-> > +				 (offsetof(struct seccomp_data, instruction_pointer) + 4)),
-> > +
-> > +			/* [1] Jump forward 3 instructions if the upper address is not iden=
-tical */
-> > +			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, (init_data.stub_start) >> 32, 0=
-, 3),
-> > +#endif
-> > +			/* [2] Load lower 32bit of instruction pointer from seccomp_data */
-> > +			BPF_STMT(BPF_LD | BPF_W | BPF_ABS,
-> > +				 (offsetof(struct seccomp_data, instruction_pointer))),
-> > +
-> > +			/* [3] Mask out lower bits */
-> > +			BPF_STMT(BPF_ALU | BPF_AND | BPF_K, 0xfffff000),
-> > +
-> > +			/* [4] Jump to [6] if the lower bits are not on the expected page *=
-/
-> > +			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, (init_data.stub_start) & 0xffff=
-f000, 1, 0),
-> > +
-> > +			/* [5] Trap call, allow */
-> > +			BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_TRAP),
-> > +
-> > +			/* [6,7] Check architecture */
-> > +			BPF_STMT(BPF_LD | BPF_W | BPF_ABS,
-> > +				 offsetof(struct seccomp_data, arch)),
-> > +			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K,
-> > +				 UM_SECCOMP_ARCH_NATIVE, 1, 0),
-> > +
-> > +			/* [8] Kill (for architecture check) */
-> > +			BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_KILL_PROCESS),
-> > +
-> > +			/* [9] Load syscall number */
-> > +			BPF_STMT(BPF_LD | BPF_W | BPF_ABS,
-> > +				 offsetof(struct seccomp_data, nr)),
-> > +
-> > +			/* [10-14] Check against permitted syscalls */
-> > +			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, __NR_futex,
-> > +				 5, 0),
-> > +			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, STUB_MMAP_NR,
-> > +				 4, 0),
-> > +			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, __NR_munmap,
-> > +				 3, 0),
-> > +#ifdef __i386__
-> > +			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, __NR_set_thread_area,
-> > +				 2, 0),
-> > +#else
-> > +			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, __NR_arch_prctl,
-> > +				 2, 0),
-> > +#endif
-> > +			BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, __NR_rt_sigreturn,
-> > +				 1, 0),
->=20
-> I was trying to understand what you mean 'permitted syscalls' here.
-> Is this a list of syscall used by UML itself, or something else ?
->=20
-> and should the list be maintained/updated if UML expands the permitted
-> syscalls ?
-
-"permitted" are the legitimate syscalls that the stub code needs. So
-yes, this is what UML itself uses (see "stub_signal_interrupt"). The
-userspace process itself is not allowed to do any host syscalls.
-
-> > +			/* [15] Not one of the permitted syscalls */
-> > +			BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_KILL_PROCESS),
-> > +
-> > +			/* [16] Permitted call for the stub */
-> > +			BPF_STMT(BPF_RET | BPF_K, SECCOMP_RET_ALLOW),
-> > +		};
-> > +		struct sock_fprog prog =3D {
-> > +			.len =3D sizeof(filter) / sizeof(filter[0]),
-> > +			.filter =3D filter,
-> > +		};
-> > +
-> > +		if (stub_syscall3(__NR_seccomp, SECCOMP_SET_MODE_FILTER,
-> > +				=C2=A0 SECCOMP_FILTER_FLAG_TSYNC,
-> > +				=C2=A0 (unsigned long)&prog) !=3D 0)
-> > +			stub_syscall1(__NR_exit, 20);
-> > =C2=A0
-> > -	stub_syscall4(__NR_ptrace, PTRACE_TRACEME, 0, 0, 0);
-> > +		/* Fall through, the exit syscall will cause SIGSYS */
-> > +	} else {
-> > +		stub_syscall4(__NR_ptrace, PTRACE_TRACEME, 0, 0, 0);
-> > =C2=A0
-> > -	stub_syscall2(__NR_kill, stub_syscall0(__NR_getpid), SIGSTOP);
-> > +		stub_syscall2(__NR_kill, stub_syscall0(__NR_getpid), SIGSTOP);
-> > +	}
-> > =C2=A0
-> > -	stub_syscall1(__NR_exit, 14);
-> > +	stub_syscall1(__NR_exit, 30);
-> > =C2=A0
-> > =C2=A0	__builtin_unreachable();
-> > =C2=A0}
->=20
-> I was thinking that if I can clean up (or share) the seccomp filter
-> code of nommu UML with this, but it is not likely as the memory layout
-> is different.=C2=A0 I would think that the detection part might be useful
-> as well for nommu.
-
-I would guess there is not much overlap. You might also need a 64 bit
-pointer comparison to check which memory range the code is in, but that
-is probably about it.
-
-Benjamin
+This could have been converted to memblock_alloc_or_panic(), but I
+guess this can also be done at a later point in time.
 
