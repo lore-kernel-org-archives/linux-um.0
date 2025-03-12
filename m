@@ -4,60 +4,142 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DA85C28B28
-	for <linux-um@archiver.kernel.org>; Wed, 12 Mar 2025 13:09:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8AC21C35FF1
+	for <linux-um@archiver.kernel.org>; Wed, 12 Mar 2025 15:26:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=d/Fav/LCh9m71nPnVBm8/MdlP4cPzwHobh78/c6qUbg=; b=RZX5hLA2RCaHpsKysjYZ8eMr5/
-	tih3VCoM1Hf3fMDJowWP05q1U/r5SWX8KqO0IRyz7DBCw3otbAEVDfaoLp9ntYGh/2BmoFnqTYHHU
-	96Cd60iYMYJ0DWVufHTyQJncvG19wGvH2Ar3HMA1lLinEKzfJajbqao1sAJAebiFqQ9aD2NUhrRMu
-	fPxUc/g2Y+sOzx3QJfRrsGyT0fOgsQMh7BH+QtwQFkmlu8F3kodzTDrYqvXiExE5+Je+9LE8L3j7y
-	lRTOYhjireiHvk3RQLr2YltHslBA/BAbYn3zr1cseAd6dvFqd3zrzUY3vQcd91y67CWYM4lHNJNHG
-	Kre21Ysg==;
+	bh=gPKo082yYXn8UUzxXlH3asgsU6wE3IkGu0gkxnGj20w=; b=GvH/z6kfaLZtdDAosSg68XhVb8
+	TU4Afm75zuzchKO7hHxcqJMRm1URUtIv55c7WMyKmqLfm63K6XqSTjyZ6+GqXUNKXr1DrTTbbSta1
+	qwkEv78dkeOjm22tuQ+Fr+iWxtAN3eeCdlKLa8sDtqVsYB7E+VYf/6I4WOPIeYoaDNfddgEpRMG7m
+	4gERWJAhCvrBCg3s3tlFRijhEb6TuC5yecVJmJx5Ge9i+WV1p3wXfAXyN/juEEVcEPSV+gjATA2ZK
+	AqK0b9tz2wjLgtAPgAbkpRiYZFGJQZwJqADZQNgxPnbjUorempoSJgt1jq+7hLWuGn2oWPgFHQ5rZ
+	2ykl1nAg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tsLpe-00000008WUH-18zA;
-	Wed, 12 Mar 2025 13:09:10 +0000
-Received: from smtp-1909.mail.infomaniak.ch ([2001:1600:7:10::1909])
+	id 1tsNyS-00000008rXC-0qfq;
+	Wed, 12 Mar 2025 15:26:24 +0000
+Received: from dfw.source.kernel.org ([139.178.84.217])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tsLar-00000008THm-1cyb
-	for linux-um@lists.infradead.org;
-	Wed, 12 Mar 2025 12:53:55 +0000
-Received: from smtp-4-0000.mail.infomaniak.ch (unknown [IPv6:2001:1600:7:10:40ca:feff:fe05:0])
-	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4ZCVth3M6fz157x;
-	Wed, 12 Mar 2025 13:53:48 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digikod.net;
-	s=20191114; t=1741784028;
-	bh=d/Fav/LCh9m71nPnVBm8/MdlP4cPzwHobh78/c6qUbg=;
+	id 1tsNyO-00000008rVC-1FCu;
+	Wed, 12 Mar 2025 15:26:22 +0000
+Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
+	by dfw.source.kernel.org (Postfix) with ESMTP id D5E355C5AEC;
+	Wed, 12 Mar 2025 15:24:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E2A9C4CEDD;
+	Wed, 12 Mar 2025 15:26:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1741793179;
+	bh=Q7awIL7HKUND4G5BgT8sxgfvPYxZ5dldw9MgDhs69ls=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XuY1ZjZWO8HfyqvMytnouBx4dzX5kwQwsbbivtTrke9BhUQsD9tqZ1rwpAI65HNPd
-	 NoSRY3SJlxOY8i0UDY1FtKTSvfxCSeuDNNFxq6FH2A0ZNmFzwMWQrxjllyWIR3XlFe
-	 C5L2kQglQRxzFZ9ENLUdJZXROwDFTRdcdnAn12hQ=
-Received: from unknown by smtp-4-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4ZCVtg45d1zLXf;
-	Wed, 12 Mar 2025 13:53:47 +0100 (CET)
-Date: Wed, 12 Mar 2025 13:53:46 +0100
-From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-To: Benjamin Berg <benjamin@sipsolutions.net>, 
-	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
-	Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-um@lists.infradead.org, Benjamin Berg <benjamin.berg@intel.com>, 
-	=?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, Al Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] um: hostfs: avoid issues on inode number reuse by host
-Message-ID: <20250312.iph3EFiu5eef@digikod.net>
-References: <20250214092822.1241575-1-benjamin@sipsolutions.net>
+	b=ky/BCax3DFeowvZEZBaSvHz/FRjz1Ff2w3mZvorveefBQ9QItq7spH+9lPk04kMHc
+	 XFcWV+q8BLDxTsMg3kWEEMrJvLlM02Ov9qT4y5J6eushhPAVsWOV5ed7v5on6xpI5H
+	 t1Jida96hvmMXnQmaaYU62DS/XhHnkqgw1xy5aAbcXTY7h92ihBZ7RpuPzMnvvZIID
+	 4Llux6n6amMPvoDVic/J1BHmAr19Dq0COPgBWULz9Gberd6x0wlqoRfavURfSg5lJv
+	 0Xm3eB6wpryKJveHw8pu/I7JXnt8N5CGgjBp/ANgLyo/AFa/GXs+sbZv0RiHoWV9rf
+	 Q6NAbrOOruTNw==
+Date: Wed, 12 Mar 2025 15:26:05 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+	Guo Ren <guoren@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+	Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>,
+	Stafford Horne <shorne@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Vasily Gorbik <gor@linux.ibm.com>, Vineet Gupta <vgupta@kernel.org>,
+	Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+	linux-arch@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+	Mike Rapoport <rppt@kernel.org>
+Subject: Re: [PATCH 10/13] arch, mm: set high_memory in free_area_init()
+Message-ID: <6d3be692-3dc3-400c-8eeb-3d378adc8dbe@sirena.org.uk>
+Mail-Followup-To: Geert Uytterhoeven <geert@linux-m68k.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+	Guo Ren <guoren@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+	Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <monstr@monstr.eu>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Russell King <linux@armlinux.org.uk>,
+	Stafford Horne <shorne@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Vasily Gorbik <gor@linux.ibm.com>, Vineet Gupta <vgupta@kernel.org>,
+	Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+	linux-arch@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+	Mike Rapoport <rppt@kernel.org>
+References: <20250306185124.3147510-1-rppt@kernel.org>
+ <20250306185124.3147510-11-rppt@kernel.org>
+ <cee346ec-5fa5-4d0b-987b-413ee585dbaa@sirena.org.uk>
+ <Z9Cl8JKkRGhaRrgM@kernel.org>
+ <5e40219b-f149-4e0f-aa10-c09fa183945e@sirena.org.uk>
+ <CAMuHMdUGnBeo69NkYsv35YHp6H9GJSu-hoES2A8_0WhpX1zFhQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="auPMsTU3HApbt9PI"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20250214092822.1241575-1-benjamin@sipsolutions.net>
-X-Infomaniak-Routing: alpha
+In-Reply-To: <CAMuHMdUGnBeo69NkYsv35YHp6H9GJSu-hoES2A8_0WhpX1zFhQ@mail.gmail.com>
+X-Cookie: You will outgrow your usefulness.
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250312_055353_710856_6ED1740F 
-X-CRM114-Status: GOOD (  32.60  )
+X-CRM114-CacheID: sfid-20250312_082620_416411_5C7E9B90 
+X-CRM114-Status: GOOD (  14.71  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -72,175 +154,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Fri, Feb 14, 2025 at 10:28:22AM +0100, Benjamin Berg wrote:
-> From: Benjamin Berg <benjamin.berg@intel.com>
-> 
-> Some file systems (e.g. ext4) may reuse inode numbers once the inode is
-> not in use anymore. Usually hostfs will keep an FD open for each inode,
-> but this is not always the case. In the case of sockets, this cannot
-> even be done properly.
-> 
-> As such, the following sequence of events was possible:
->  * application creates and deletes a socket
->  * hostfs creates/deletes the socket on the host
->  * inode is still in the hostfs cache
->  * hostfs creates a new file
->  * ext4 on the outside reuses the inode number
->  * hostfs finds the socket inode for the newly created file
->  * application receives -ENXIO when opening the file
-> 
-> As mentioned, this can only happen if the deleted file is a special file
-> that is never opened on the host (i.e. no .open fop).
-> 
-> As such, to prevent issues, it is sufficient to check that the inode
-> has the expected type. That said, also add a check for the inode birth
-> time, just to be on the safe side.
-> 
-> Fixes: 74ce793bcbde ("hostfs: Fix ephemeral inodes")
-> Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
 
-Thanks!  This indeed fix an issue that is at least visible when running
-Landlock kselftests with an UML kernel built with Landlock audit support
-(probably because of a race condition now being more consistent):
-https://lore.kernel.org/all/20250308184422.2159360-1-mic@digikod.net/
-FYI, I plan to merge this patch series with v6.15
+--auPMsTU3HApbt9PI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I guess this patch should fix some other use of UML anyway.  Please
-merge it, if possible before v6.15 .
+On Tue, Mar 11, 2025 at 10:41:28PM +0100, Geert Uytterhoeven wrote:
+> On Tue, 11 Mar 2025 at 22:33, Mark Brown <broonie@kernel.org> wrote:
 
-Reviewed-by: Mickaël Salaün <mic@digikod.net>
-Tested-by: Mickaël Salaün <mic@digikod.net>
+> > [    0.000000] efi: UEFI not found.
+> > [    0.000000] cma: Reserved 64 MiB at 0x00000000
 
-> ---
->  fs/hostfs/hostfs.h      |  2 +-
->  fs/hostfs/hostfs_kern.c |  7 ++++-
->  fs/hostfs/hostfs_user.c | 59 ++++++++++++++++++++++++-----------------
->  3 files changed, 41 insertions(+), 27 deletions(-)
-> 
-> diff --git a/fs/hostfs/hostfs.h b/fs/hostfs/hostfs.h
-> index 8b39c15c408c..15b2f094d36e 100644
-> --- a/fs/hostfs/hostfs.h
-> +++ b/fs/hostfs/hostfs.h
-> @@ -60,7 +60,7 @@ struct hostfs_stat {
->  	unsigned int uid;
->  	unsigned int gid;
->  	unsigned long long size;
-> -	struct hostfs_timespec atime, mtime, ctime;
-> +	struct hostfs_timespec atime, mtime, ctime, btime;
->  	unsigned int blksize;
->  	unsigned long long blocks;
->  	struct {
-> diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-> index e0741e468956..e6e247235728 100644
-> --- a/fs/hostfs/hostfs_kern.c
-> +++ b/fs/hostfs/hostfs_kern.c
-> @@ -33,6 +33,7 @@ struct hostfs_inode_info {
->  	struct inode vfs_inode;
->  	struct mutex open_mutex;
->  	dev_t dev;
-> +	struct hostfs_timespec btime;
->  };
->  
->  static inline struct hostfs_inode_info *HOSTFS_I(struct inode *inode)
-> @@ -547,6 +548,7 @@ static int hostfs_inode_set(struct inode *ino, void *data)
->  	}
->  
->  	HOSTFS_I(ino)->dev = dev;
-> +	HOSTFS_I(ino)->btime = st->btime;
->  	ino->i_ino = st->ino;
->  	ino->i_mode = st->mode;
->  	return hostfs_inode_update(ino, st);
-> @@ -557,7 +559,10 @@ static int hostfs_inode_test(struct inode *inode, void *data)
->  	const struct hostfs_stat *st = data;
->  	dev_t dev = MKDEV(st->dev.maj, st->dev.min);
->  
-> -	return inode->i_ino == st->ino && HOSTFS_I(inode)->dev == dev;
-> +	return inode->i_ino == st->ino && HOSTFS_I(inode)->dev == dev &&
-> +	       (inode->i_mode & S_IFMT) == (st->mode & S_IFMT) &&
-> +	       HOSTFS_I(inode)->btime.tv_sec == st->btime.tv_sec &&
-> +	       HOSTFS_I(inode)->btime.tv_nsec == st->btime.tv_nsec;
->  }
->  
->  static struct inode *hostfs_iget(struct super_block *sb, char *name)
-> diff --git a/fs/hostfs/hostfs_user.c b/fs/hostfs/hostfs_user.c
-> index 97e9c40a9448..3bcd9f35e70b 100644
-> --- a/fs/hostfs/hostfs_user.c
-> +++ b/fs/hostfs/hostfs_user.c
-> @@ -18,39 +18,48 @@
->  #include "hostfs.h"
->  #include <utime.h>
->  
-> -static void stat64_to_hostfs(const struct stat64 *buf, struct hostfs_stat *p)
-> +static void statx_to_hostfs(const struct statx *buf, struct hostfs_stat *p)
->  {
-> -	p->ino = buf->st_ino;
-> -	p->mode = buf->st_mode;
-> -	p->nlink = buf->st_nlink;
-> -	p->uid = buf->st_uid;
-> -	p->gid = buf->st_gid;
-> -	p->size = buf->st_size;
-> -	p->atime.tv_sec = buf->st_atime;
-> -	p->atime.tv_nsec = 0;
-> -	p->ctime.tv_sec = buf->st_ctime;
-> -	p->ctime.tv_nsec = 0;
-> -	p->mtime.tv_sec = buf->st_mtime;
-> -	p->mtime.tv_nsec = 0;
-> -	p->blksize = buf->st_blksize;
-> -	p->blocks = buf->st_blocks;
-> -	p->rdev.maj = os_major(buf->st_rdev);
-> -	p->rdev.min = os_minor(buf->st_rdev);
-> -	p->dev.maj = os_major(buf->st_dev);
-> -	p->dev.min = os_minor(buf->st_dev);
-> +	p->ino = buf->stx_ino;
-> +	p->mode = buf->stx_mode;
-> +	p->nlink = buf->stx_nlink;
-> +	p->uid = buf->stx_uid;
-> +	p->gid = buf->stx_gid;
-> +	p->size = buf->stx_size;
-> +	p->atime.tv_sec = buf->stx_atime.tv_sec;
-> +	p->atime.tv_nsec = buf->stx_atime.tv_nsec;
-> +	p->ctime.tv_sec = buf->stx_ctime.tv_sec;
-> +	p->ctime.tv_nsec = buf->stx_ctime.tv_nsec;
-> +	p->mtime.tv_sec = buf->stx_mtime.tv_sec;
-> +	p->mtime.tv_nsec = buf->stx_mtime.tv_nsec;
-> +	if (buf->stx_mask & STATX_BTIME) {
-> +		p->btime.tv_sec = buf->stx_btime.tv_sec;
-> +		p->btime.tv_nsec = buf->stx_btime.tv_nsec;
-> +	} else {
-> +		memset(&p->btime, 0, sizeof(p->btime));
-> +	}
-> +	p->blksize = buf->stx_blksize;
-> +	p->blocks = buf->stx_blocks;
-> +	p->rdev.maj = buf->stx_rdev_major;
-> +	p->rdev.min = buf->stx_rdev_minor;
-> +	p->dev.maj = buf->stx_dev_major;
-> +	p->dev.min = buf->stx_dev_minor;
->  }
->  
->  int stat_file(const char *path, struct hostfs_stat *p, int fd)
->  {
-> -	struct stat64 buf;
-> +	struct statx buf;
-> +	int flags = AT_SYMLINK_NOFOLLOW;
->  
->  	if (fd >= 0) {
-> -		if (fstat64(fd, &buf) < 0)
-> -			return -errno;
-> -	} else if (lstat64(path, &buf) < 0) {
-> -		return -errno;
-> +		flags |= AT_EMPTY_PATH;
-> +		path = "";
->  	}
-> -	stat64_to_hostfs(&buf, p);
-> +
-> +	if ((statx(fd, path, flags, STATX_BASIC_STATS | STATX_BTIME, &buf)) < 0)
-> +		return -errno;
-> +
-> +	statx_to_hostfs(&buf, p);
->  	return 0;
->  }
->  
-> -- 
-> 2.48.1
-> 
+> > - I'd only been sampling the logs for the physical platforms, none of
+> > which had shown anything.
+
+> Hangs that early need "earlycon", which the qemu boot above does have.
+
+Indeed, the physical platforms either don't support earlycon or I just
+don't wire it up as standard in my CI.  I see a fix should already be on
+the way, but FWIW the physical platforms do seem to have bisected to the
+same commit.
+
+--auPMsTU3HApbt9PI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmfRp40ACgkQJNaLcl1U
+h9ClrAf9FHrCQNmJXN4iyTK9lTj/btaMWsS34HTwQo5atjLix3MlaM4Oe1X8wWdQ
+rSJgppPAE2cv7YjUDvJGyXeNJEiBsMtnourIYIcXwHIlSknwUTW93aLuOShlc+KF
+iC2gJoynMVm1M0mcCvUSxVXjQXN1rxY3pcXLx99UJqFnR+uWkHqfKq18AdWJzzrD
+MwKz6EmBguL6eE0EstxjYPLlpJ3iYWORVdj2/2h3DYrRMLDlV+dm/xW9xGlq5sxJ
+c/3bxdgHyKWQqTxjQsPQKSz99U2Amjx1VloV+6yG9htGbdo+yNQv+tUP20dHw9c8
+ECZ91Jtf4LTcMPjk/IfIVIr0Hu3V3w==
+=0Ulf
+-----END PGP SIGNATURE-----
+
+--auPMsTU3HApbt9PI--
 
