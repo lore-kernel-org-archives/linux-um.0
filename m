@@ -4,98 +4,60 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 257BDC35FF1
-	for <linux-um@archiver.kernel.org>; Wed, 12 Mar 2025 06:35:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4DA85C28B28
+	for <linux-um@archiver.kernel.org>; Wed, 12 Mar 2025 13:09:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=L01F4tka81VK1WGhlNJbg+RT6azDphkZ5PvXfllUquU=; b=TzfcPly8P63zATiwfwhTLC+qhT
-	bOIcR2QRZdGfkhyp2yE7IqoH1EwC3iRf6FBIMV7k2IOlQPq5/OikO+04mTce9K25yjjwowADj4iAD
-	AWjffrDmW5Qkbw9t0FvXvGhiDpWvGABQnl+9bOfChTVxkzW0G34FtlOO2lBo1QYqI+xS7q5pV1r/O
-	vT8a6S2yB+g7GqBBZ6Q/6OupmcBhTpV5+3tgw+h6Dt7XhcEd5cemfDzlYDPNm/+CC3+OO6JglsIf5
-	1YIKwHkNxyE7dUgSpmEOxZhqWPWO/vct5hwCDbpjnMrxDu24Kxd4e6gBKU9rrehDgmo31uGhFhl6v
-	VUvYhYIQ==;
+	bh=d/Fav/LCh9m71nPnVBm8/MdlP4cPzwHobh78/c6qUbg=; b=RZX5hLA2RCaHpsKysjYZ8eMr5/
+	tih3VCoM1Hf3fMDJowWP05q1U/r5SWX8KqO0IRyz7DBCw3otbAEVDfaoLp9ntYGh/2BmoFnqTYHHU
+	96Cd60iYMYJ0DWVufHTyQJncvG19wGvH2Ar3HMA1lLinEKzfJajbqao1sAJAebiFqQ9aD2NUhrRMu
+	fPxUc/g2Y+sOzx3QJfRrsGyT0fOgsQMh7BH+QtwQFkmlu8F3kodzTDrYqvXiExE5+Je+9LE8L3j7y
+	lRTOYhjireiHvk3RQLr2YltHslBA/BAbYn3zr1cseAd6dvFqd3zrzUY3vQcd91y67CWYM4lHNJNHG
+	Kre21Ysg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tsFga-00000007bFm-1SvJ;
-	Wed, 12 Mar 2025 06:35:24 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1tsLpe-00000008WUH-18zA;
+	Wed, 12 Mar 2025 13:09:10 +0000
+Received: from smtp-1909.mail.infomaniak.ch ([2001:1600:7:10::1909])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tsFgW-00000007bDt-2adL;
-	Wed, 12 Mar 2025 06:35:21 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id A9EFC5C47AF;
-	Wed, 12 Mar 2025 06:33:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 407D8C4CEE3;
-	Wed, 12 Mar 2025 06:35:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741761319;
-	bh=5mdaPZVI9H0/LV5hmobVgKrUIL2iuMSKhSTxPs81fPU=;
+	id 1tsLar-00000008THm-1cyb
+	for linux-um@lists.infradead.org;
+	Wed, 12 Mar 2025 12:53:55 +0000
+Received: from smtp-4-0000.mail.infomaniak.ch (unknown [IPv6:2001:1600:7:10:40ca:feff:fe05:0])
+	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4ZCVth3M6fz157x;
+	Wed, 12 Mar 2025 13:53:48 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digikod.net;
+	s=20191114; t=1741784028;
+	bh=d/Fav/LCh9m71nPnVBm8/MdlP4cPzwHobh78/c6qUbg=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=s5OTgyGpaumshikTp+iDDuLZlaDN5ZFNt0xhyxhEjxDoGdrRr5fCFJqupGsQ1e9mc
-	 x5+ujh1N69RbM6sMUkTLS3DxQMtFw4J494229H1wYU5SpwxEIdYz9MdPy8mIFSl7pw
-	 l37VuFqhXXoOyw7aw+nwsTVBrmtEviGrZHfYnDThjgKfYUlSm8F0VvgI37TsJEXPQg
-	 Z/TS0S2P3vKV4E8YK2hLZIT0IUPWeSPBaDZrgP63fW1/ioeooSw+E437KEQCfrER7m
-	 3bE2KZoye8/AcR9u24hQHDyQiTnD+Psif0K5SR2GQnCkTLYx0lBk09w8YpbQLP/phf
-	 PvVxVGjqV5khg==
-Date: Wed, 12 Mar 2025 08:34:56 +0200
-From: Mike Rapoport <rppt@kernel.org>
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: Mark Brown <broonie@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-	Guo Ren <guoren@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
-	Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Matt Turner <mattst88@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Stafford Horne <shorne@gmail.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vasily Gorbik <gor@linux.ibm.com>, Vineet Gupta <vgupta@kernel.org>,
-	Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-	linux-arch@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org
-Subject: Re: [PATCH 10/13] arch, mm: set high_memory in free_area_init()
-Message-ID: <Z9ErEBuMMvd6i2n9@kernel.org>
-References: <20250306185124.3147510-1-rppt@kernel.org>
- <20250306185124.3147510-11-rppt@kernel.org>
- <cee346ec-5fa5-4d0b-987b-413ee585dbaa@sirena.org.uk>
- <Z9CyRHewqfZlmgIo@shell.armlinux.org.uk>
+	b=XuY1ZjZWO8HfyqvMytnouBx4dzX5kwQwsbbivtTrke9BhUQsD9tqZ1rwpAI65HNPd
+	 NoSRY3SJlxOY8i0UDY1FtKTSvfxCSeuDNNFxq6FH2A0ZNmFzwMWQrxjllyWIR3XlFe
+	 C5L2kQglQRxzFZ9ENLUdJZXROwDFTRdcdnAn12hQ=
+Received: from unknown by smtp-4-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4ZCVtg45d1zLXf;
+	Wed, 12 Mar 2025 13:53:47 +0100 (CET)
+Date: Wed, 12 Mar 2025 13:53:46 +0100
+From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+To: Benjamin Berg <benjamin@sipsolutions.net>, 
+	Richard Weinberger <richard@nod.at>, Anton Ivanov <anton.ivanov@cambridgegreys.com>, 
+	Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-um@lists.infradead.org, Benjamin Berg <benjamin.berg@intel.com>, 
+	=?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, Al Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] um: hostfs: avoid issues on inode number reuse by host
+Message-ID: <20250312.iph3EFiu5eef@digikod.net>
+References: <20250214092822.1241575-1-benjamin@sipsolutions.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <Z9CyRHewqfZlmgIo@shell.armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20250214092822.1241575-1-benjamin@sipsolutions.net>
+X-Infomaniak-Routing: alpha
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250311_233520_764401_BC850909 
-X-CRM114-Status: GOOD (  35.00  )
+X-CRM114-CacheID: sfid-20250312_055353_710856_6ED1740F 
+X-CRM114-Status: GOOD (  32.60  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -110,127 +72,175 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Tue, Mar 11, 2025 at 09:59:32PM +0000, Russell King (Oracle) wrote:
-> On Tue, Mar 11, 2025 at 05:51:06PM +0000, Mark Brown wrote:
-> > On Thu, Mar 06, 2025 at 08:51:20PM +0200, Mike Rapoport wrote:
-> > > From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
-> > > 
-> > > high_memory defines upper bound on the directly mapped memory.
-> > > This bound is defined by the beginning of ZONE_HIGHMEM when a system has
-> > > high memory and by the end of memory otherwise.
-> > > 
-> > > All this is known to generic memory management initialization code that
-> > > can set high_memory while initializing core mm structures.
-> > > 
-> > > Remove per-architecture calculation of high_memory and add a generic
-> > > version to free_area_init().
-> > 
-> > This patch appears to be causing breakage on a number of 32 bit arm
-> > platforms, including qemu's virt-2.11,gic-version=3.  Affected platforms
-> > die on boot with no output, a bisect with qemu points at this commit and
-> > those for physical platforms appear to be converging on the same place.
+On Fri, Feb 14, 2025 at 10:28:22AM +0100, Benjamin Berg wrote:
+> From: Benjamin Berg <benjamin.berg@intel.com>
 > 
-> I'm not convinced that the old and the new code is doing the same
-> thing.
+> Some file systems (e.g. ext4) may reuse inode numbers once the inode is
+> not in use anymore. Usually hostfs will keep an FD open for each inode,
+> but this is not always the case. In the case of sockets, this cannot
+> even be done properly.
 > 
-> The new code:
+> As such, the following sequence of events was possible:
+>  * application creates and deletes a socket
+>  * hostfs creates/deletes the socket on the host
+>  * inode is still in the hostfs cache
+>  * hostfs creates a new file
+>  * ext4 on the outside reuses the inode number
+>  * hostfs finds the socket inode for the newly created file
+>  * application receives -ENXIO when opening the file
 > 
-> +       phys_addr_t highmem = memblock_end_of_DRAM();
+> As mentioned, this can only happen if the deleted file is a special file
+> that is never opened on the host (i.e. no .open fop).
+> 
+> As such, to prevent issues, it is sufficient to check that the inode
+> has the expected type. That said, also add a check for the inode birth
+> time, just to be on the safe side.
+> 
+> Fixes: 74ce793bcbde ("hostfs: Fix ephemeral inodes")
+> Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
+
+Thanks!  This indeed fix an issue that is at least visible when running
+Landlock kselftests with an UML kernel built with Landlock audit support
+(probably because of a race condition now being more consistent):
+https://lore.kernel.org/all/20250308184422.2159360-1-mic@digikod.net/
+FYI, I plan to merge this patch series with v6.15
+
+I guess this patch should fix some other use of UML anyway.  Please
+merge it, if possible before v6.15 .
+
+Reviewed-by: Mickaël Salaün <mic@digikod.net>
+Tested-by: Mickaël Salaün <mic@digikod.net>
+
+> ---
+>  fs/hostfs/hostfs.h      |  2 +-
+>  fs/hostfs/hostfs_kern.c |  7 ++++-
+>  fs/hostfs/hostfs_user.c | 59 ++++++++++++++++++++++++-----------------
+>  3 files changed, 41 insertions(+), 27 deletions(-)
+> 
+> diff --git a/fs/hostfs/hostfs.h b/fs/hostfs/hostfs.h
+> index 8b39c15c408c..15b2f094d36e 100644
+> --- a/fs/hostfs/hostfs.h
+> +++ b/fs/hostfs/hostfs.h
+> @@ -60,7 +60,7 @@ struct hostfs_stat {
+>  	unsigned int uid;
+>  	unsigned int gid;
+>  	unsigned long long size;
+> -	struct hostfs_timespec atime, mtime, ctime;
+> +	struct hostfs_timespec atime, mtime, ctime, btime;
+>  	unsigned int blksize;
+>  	unsigned long long blocks;
+>  	struct {
+> diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+> index e0741e468956..e6e247235728 100644
+> --- a/fs/hostfs/hostfs_kern.c
+> +++ b/fs/hostfs/hostfs_kern.c
+> @@ -33,6 +33,7 @@ struct hostfs_inode_info {
+>  	struct inode vfs_inode;
+>  	struct mutex open_mutex;
+>  	dev_t dev;
+> +	struct hostfs_timespec btime;
+>  };
+>  
+>  static inline struct hostfs_inode_info *HOSTFS_I(struct inode *inode)
+> @@ -547,6 +548,7 @@ static int hostfs_inode_set(struct inode *ino, void *data)
+>  	}
+>  
+>  	HOSTFS_I(ino)->dev = dev;
+> +	HOSTFS_I(ino)->btime = st->btime;
+>  	ino->i_ino = st->ino;
+>  	ino->i_mode = st->mode;
+>  	return hostfs_inode_update(ino, st);
+> @@ -557,7 +559,10 @@ static int hostfs_inode_test(struct inode *inode, void *data)
+>  	const struct hostfs_stat *st = data;
+>  	dev_t dev = MKDEV(st->dev.maj, st->dev.min);
+>  
+> -	return inode->i_ino == st->ino && HOSTFS_I(inode)->dev == dev;
+> +	return inode->i_ino == st->ino && HOSTFS_I(inode)->dev == dev &&
+> +	       (inode->i_mode & S_IFMT) == (st->mode & S_IFMT) &&
+> +	       HOSTFS_I(inode)->btime.tv_sec == st->btime.tv_sec &&
+> +	       HOSTFS_I(inode)->btime.tv_nsec == st->btime.tv_nsec;
+>  }
+>  
+>  static struct inode *hostfs_iget(struct super_block *sb, char *name)
+> diff --git a/fs/hostfs/hostfs_user.c b/fs/hostfs/hostfs_user.c
+> index 97e9c40a9448..3bcd9f35e70b 100644
+> --- a/fs/hostfs/hostfs_user.c
+> +++ b/fs/hostfs/hostfs_user.c
+> @@ -18,39 +18,48 @@
+>  #include "hostfs.h"
+>  #include <utime.h>
+>  
+> -static void stat64_to_hostfs(const struct stat64 *buf, struct hostfs_stat *p)
+> +static void statx_to_hostfs(const struct statx *buf, struct hostfs_stat *p)
+>  {
+> -	p->ino = buf->st_ino;
+> -	p->mode = buf->st_mode;
+> -	p->nlink = buf->st_nlink;
+> -	p->uid = buf->st_uid;
+> -	p->gid = buf->st_gid;
+> -	p->size = buf->st_size;
+> -	p->atime.tv_sec = buf->st_atime;
+> -	p->atime.tv_nsec = 0;
+> -	p->ctime.tv_sec = buf->st_ctime;
+> -	p->ctime.tv_nsec = 0;
+> -	p->mtime.tv_sec = buf->st_mtime;
+> -	p->mtime.tv_nsec = 0;
+> -	p->blksize = buf->st_blksize;
+> -	p->blocks = buf->st_blocks;
+> -	p->rdev.maj = os_major(buf->st_rdev);
+> -	p->rdev.min = os_minor(buf->st_rdev);
+> -	p->dev.maj = os_major(buf->st_dev);
+> -	p->dev.min = os_minor(buf->st_dev);
+> +	p->ino = buf->stx_ino;
+> +	p->mode = buf->stx_mode;
+> +	p->nlink = buf->stx_nlink;
+> +	p->uid = buf->stx_uid;
+> +	p->gid = buf->stx_gid;
+> +	p->size = buf->stx_size;
+> +	p->atime.tv_sec = buf->stx_atime.tv_sec;
+> +	p->atime.tv_nsec = buf->stx_atime.tv_nsec;
+> +	p->ctime.tv_sec = buf->stx_ctime.tv_sec;
+> +	p->ctime.tv_nsec = buf->stx_ctime.tv_nsec;
+> +	p->mtime.tv_sec = buf->stx_mtime.tv_sec;
+> +	p->mtime.tv_nsec = buf->stx_mtime.tv_nsec;
+> +	if (buf->stx_mask & STATX_BTIME) {
+> +		p->btime.tv_sec = buf->stx_btime.tv_sec;
+> +		p->btime.tv_nsec = buf->stx_btime.tv_nsec;
+> +	} else {
+> +		memset(&p->btime, 0, sizeof(p->btime));
+> +	}
+> +	p->blksize = buf->stx_blksize;
+> +	p->blocks = buf->stx_blocks;
+> +	p->rdev.maj = buf->stx_rdev_major;
+> +	p->rdev.min = buf->stx_rdev_minor;
+> +	p->dev.maj = buf->stx_dev_major;
+> +	p->dev.min = buf->stx_dev_minor;
+>  }
+>  
+>  int stat_file(const char *path, struct hostfs_stat *p, int fd)
+>  {
+> -	struct stat64 buf;
+> +	struct statx buf;
+> +	int flags = AT_SYMLINK_NOFOLLOW;
+>  
+>  	if (fd >= 0) {
+> -		if (fstat64(fd, &buf) < 0)
+> -			return -errno;
+> -	} else if (lstat64(path, &buf) < 0) {
+> -		return -errno;
+> +		flags |= AT_EMPTY_PATH;
+> +		path = "";
+>  	}
+> -	stat64_to_hostfs(&buf, p);
 > +
-> +#ifdef CONFIG_HIGHMEM
-> +       unsigned long pfn = arch_zone_lowest_possible_pfn[ZONE_HIGHMEM];
+> +	if ((statx(fd, path, flags, STATX_BASIC_STATS | STATX_BTIME, &buf)) < 0)
+> +		return -errno;
 > +
-> +       if (arch_has_descending_max_zone_pfns() || highmem > PFN_PHYS(pfn))
-> +               highmem = PFN_PHYS(pfn);
-> +#endif
-> +
-> +       high_memory = phys_to_virt(highmem - 1) + 1;
+> +	statx_to_hostfs(&buf, p);
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.48.1
 > 
-> First, when CONFIG_HIGHMEM is disabled, this code assumes that the last
-> byte of DRAM declared to memblock is the highmem limit. This _could_
-> overflow phys_to_virt() and lead to an invalid value for high_memory.
-> 
-> Second, arch_zone_lowest_possible_pfn[ZONE_HIGHMEM] is the _start_ of
-> highmem. This is not what arch code sets high_memory to - because
-> the start of highmem may not contiguously follow on from lowmem.
-> 
-> In arch/arm/mm/mmu.c, lowmem_limit is computed to be the highest + 1
-> physical address that lowmem can possibly be, taking into account the
-> amount of vmalloc memory that is required. This is used to set
-> high_memory.
-> 
-> We also limit the amount of usable RAM via memblock_set_current_limit()
-> which memblock_end_of_DRAM() doesn't respect.
-> 
-> I don't think the proposed generic version is suitable for 32-bit arm.
-
-Unless I'm missing something, both memblock.current_limit and start of
-ZONE_HIGHMEM are set to arm_lowmem_limit which will be different from
-memblock_end_of_DRAM() only for machines with more than nearly 4GiB of RAM
-and those will supposedly use HIGHMEM anyway.
-
-But this does not matter anyway because failures Mark reported happen
-because 32-bit arm uses high_memory before mem_init() and that what causes
-the hangs. 
-
-Here's the fix I have, I'll send v2 shortly.
-
-diff --git a/arch/arm/mm/mmu.c b/arch/arm/mm/mmu.c
-index e492d58a0386..f02f872ea8a9 100644
---- a/arch/arm/mm/mmu.c
-+++ b/arch/arm/mm/mmu.c
-@@ -1250,6 +1250,8 @@ void __init adjust_lowmem_bounds(void)
- 
- 	arm_lowmem_limit = lowmem_limit;
- 
-+	high_memory = __va(arm_lowmem_limit - 1) + 1;
-+
- 	if (!memblock_limit)
- 		memblock_limit = arm_lowmem_limit;
- 
-diff --git a/arch/arm/mm/nommu.c b/arch/arm/mm/nommu.c
-index 65903ed5e80d..1a8f6914ee59 100644
---- a/arch/arm/mm/nommu.c
-+++ b/arch/arm/mm/nommu.c
-@@ -146,6 +146,7 @@ void __init adjust_lowmem_bounds(void)
- 	phys_addr_t end;
- 	adjust_lowmem_bounds_mpu();
- 	end = memblock_end_of_DRAM();
-+	high_memory = __va(end - 1) + 1;
- 	memblock_set_current_limit(end);
- }
- 
-diff --git a/mm/mm_init.c b/mm/mm_init.c
-index 545e11f1a3ba..0aef4bef93c4 100644
---- a/mm/mm_init.c
-+++ b/mm/mm_init.c
-@@ -1765,14 +1765,20 @@ static bool arch_has_descending_max_zone_pfns(void)
- 
- static void set_high_memory(void)
- {
-+	unsigned long pfn = arch_zone_lowest_possible_pfn[ZONE_HIGHMEM];
- 	phys_addr_t highmem = memblock_end_of_DRAM();
- 
--#ifdef CONFIG_HIGHMEM
--	unsigned long pfn = arch_zone_lowest_possible_pfn[ZONE_HIGHMEM];
-+	/*
-+	 * Some architectures (e.g. ARM) set high_memory very early and
-+	 * use it in arch setup code.
-+	 * If an architecture already set high_memory don't overwrite it
-+	 */
-+	if (high_memory)
-+		return;
- 
--	if (arch_has_descending_max_zone_pfns() || highmem > PFN_PHYS(pfn))
-+	if (IS_ENABLED(CONFIG_HIGHMEM) &&
-+	    (arch_has_descending_max_zone_pfns() || highmem > PFN_PHYS(pfn)))
- 		highmem = PFN_PHYS(pfn);
--#endif
- 
- 	high_memory = phys_to_virt(highmem - 1) + 1;
- }
-
--- 
-Sincerely yours,
-Mike.
 
