@@ -4,43 +4,43 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id F0714C282DE
-	for <linux-um@archiver.kernel.org>; Thu, 13 Mar 2025 13:53:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id A48A5C35FF8
+	for <linux-um@archiver.kernel.org>; Thu, 13 Mar 2025 13:53:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=HLWO0CMiutRC/UaFKgn3zaOpEPV2sObAb62rg+W+5EI=; b=na9UxDtF9A8Q9H8buoqv0kgYvi
-	3ckC//yMyun+aqYf5jHj9COWGQa1mXp86jbYCoi1d8pfxeJId63ZUS65+aReTBxZSiGis1Oh5VwBo
-	3DHXfH2CGYORTcc2lg14+WQ0AQlGDE6kSysjKXf6i+hPdEwQXTbB3XiuJLqeHeWqJraPE+fQOyy3S
-	sVSjWFfzqtSCLMLH0JirS3CCEiuTpkpdx2IPF5g0KuvbFHEn6k/z5N3e9yb/x78KG6uIzYpLdYhbs
-	ANY+Z4UT4exM7tYdqoGZ/TZ1dT+DOy/f1jSFOuVN2QlE4uQW5H0JsT7J5CplUaYUKALNV2wNnPwb7
-	MohOTfww==;
+	bh=f/Tjv7nZ1RGU38sSJe49qG5HH8eeGxe0gmVd2kGHllo=; b=EC64eNtJqrLj0E2NeKIlXx/QsJ
+	yQ3HMuI0LvnYS9XkZs3CPu6Nw2ravG75FKs5M07GXVgsKqy2RzqGeR/G59haxqHAxk+iECJU/5vV/
+	MASXjK56eh7mXMd1fnQ5s4fwn2JBF8WOaLQqfVTVsG8rI0JBrdQwn/+9t+EhUzkb4vmUfq+yDay1M
+	5oDN3PWAixWEhT3xSdFH5jJrhVTpM4yFijW4aGptuMriLVfFYsabOhm8XIE4ZR0NXGCHdXPPu1Ogz
+	jfpVv45npi6KFBTgcBgaL8gIEEWy8TJSh9diRJc+P2KhXuFY90+Le1gw0AEdw2CRerU4G9s92c14w
+	CZjUuNeQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tsizn-0000000BRit-2PjW;
-	Thu, 13 Mar 2025 13:53:11 +0000
-Received: from dfw.source.kernel.org ([2604:1380:4641:c500::1])
+	id 1tsizp-0000000BRlq-1A7L;
+	Thu, 13 Mar 2025 13:53:13 +0000
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tsixk-0000000BQr7-0e5j;
-	Thu, 13 Mar 2025 13:51:05 +0000
+	id 1tsixx-0000000BQus-3QjL;
+	Thu, 13 Mar 2025 13:51:19 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 8E6815C5E36;
-	Thu, 13 Mar 2025 13:48:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 233FDC4CEEB;
-	Thu, 13 Mar 2025 13:50:49 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id ECF71A474BF;
+	Thu, 13 Mar 2025 13:45:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BA2EC4CEF2;
+	Thu, 13 Mar 2025 13:51:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741873863;
-	bh=3f2PL8+tvQz4kqOX8BsTM2Qrh30qjoJp6oFsaw3/420=;
+	s=k20201202; t=1741873876;
+	bh=nkBe6+9DINra8ChNyXeYcesTu6mPwjeTN1yq3Y1szbM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Rfg04cX8uRvlfnBvZ49PtoBxznACelq74wTMIN8qaGJSvGheiS5WY6EK6llc1XTtF
-	 6gfjK8h75FHHUhNF68dOsS/oFtjdkjJ/UdR0JOkjjNhf5t/t1YN6tT6GfUQu20OxSn
-	 sbuSoNpq+VCYRnQZPmaeVNtJCUjqNbpq4ZSW1ecITC7ukkhURcBZHswtmqwfq9PUxP
-	 RWxubMbulZgriXyglKo2XBY7VMr6SwCl2LDKXrjFYY2eYuzUNOABYWueIt6T5V5EjL
-	 Sgo45wepOzt0oGbaLtKllAiqkUdgwedzAj+a3s0rcnt1uUTdhMjbsGZmC+q9b9/wNZ
-	 UK2vqcKRO6tkw==
+	b=DUZeqivFJ9EYP9Zy5Yb5dJalUE7Sb9X9atTVUnHZ/8j5kxTnIcryI91Lg+eLahCch
+	 +4/sfT0f6PJUfGIy2IFanNG6A/SLgSjazaFTA527QDMKz4pRayRywROhwmKdm3JxlH
+	 Uaj0ch2Iv70h6kezQtFA/9UBiPtXqykcVjOMdYtmACBIyWki5ZD6vyT7Dwybtv0ic7
+	 n9LWmVF+6qTkSWN3/DV0+azu4ZrNZg6SffekFyWnjGKFnrFNUttXXpQq00r7GYSixQ
+	 2oLgogEMVsNX2bHppECFrGmjyvZM4fH0hNySDtDwvQnL1mRuqs8UADBKrepv0pyUKk
+	 bQ1hkzIwD6VDQ==
 From: Mike Rapoport <rppt@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
@@ -101,17 +101,17 @@ Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
 	linux-arch@vger.kernel.org,
 	linux-mm@kvack.org,
 	x86@kernel.org
-Subject: [PATCH v2 03/13] hexagon: move initialization of init_mm.context init to paging_init()
-Date: Thu, 13 Mar 2025 15:49:53 +0200
-Message-ID: <20250313135003.836600-4-rppt@kernel.org>
+Subject: [PATCH v2 04/13] MIPS: consolidate mem_init() for NUMA machines
+Date: Thu, 13 Mar 2025 15:49:54 +0200
+Message-ID: <20250313135003.836600-5-rppt@kernel.org>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250313135003.836600-1-rppt@kernel.org>
 References: <20250313135003.836600-1-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250313_065104_305867_8028D04E 
-X-CRM114-Status: GOOD (  15.10  )
+X-CRM114-CacheID: sfid-20250313_065117_980532_C5B77F55 
+X-CRM114-Status: GOOD (  10.96  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -128,46 +128,79 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 
-This will help with pulling out memblock_free_all() to the generic
-code and reducing code duplication in arch::mem_init().
+Both MIPS systems that support numa (loongsoon3 and sgi-ip27) have
+identical mem_init() for NUMA case.
+
+Move that into arch/mips/mm/init.c and drop duplicate per-machine
+definitions.
 
 Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 ---
- arch/hexagon/mm/init.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ arch/mips/loongson64/numa.c      | 7 -------
+ arch/mips/mm/init.c              | 7 +++++++
+ arch/mips/sgi-ip27/ip27-memory.c | 9 ---------
+ 3 files changed, 7 insertions(+), 16 deletions(-)
 
-diff --git a/arch/hexagon/mm/init.c b/arch/hexagon/mm/init.c
-index 3458f39ca2ac..508bb6a8dcc9 100644
---- a/arch/hexagon/mm/init.c
-+++ b/arch/hexagon/mm/init.c
-@@ -59,14 +59,6 @@ void __init mem_init(void)
- 	 *  To-Do:  someone somewhere should wipe out the bootmem map
- 	 *  after we're done?
- 	 */
--
--	/*
--	 * This can be moved to some more virtual-memory-specific
--	 * initialization hook at some point.  Set the init_mm
--	 * descriptors "context" value to point to the initial
--	 * kernel segment table's physical address.
--	 */
--	init_mm.context.ptbase = __pa(init_mm.pgd);
+diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
+index 8388400d052f..95d5f553ce19 100644
+--- a/arch/mips/loongson64/numa.c
++++ b/arch/mips/loongson64/numa.c
+@@ -164,13 +164,6 @@ void __init paging_init(void)
+ 	free_area_init(zones_size);
  }
  
- void sync_icache_dcache(pte_t pte)
-@@ -103,6 +95,12 @@ static void __init paging_init(void)
+-void __init mem_init(void)
+-{
+-	high_memory = (void *) __va(get_num_physpages() << PAGE_SHIFT);
+-	memblock_free_all();
+-	setup_zero_pages();	/* This comes from node 0 */
+-}
+-
+ /* All PCI device belongs to logical Node-0 */
+ int pcibus_to_node(struct pci_bus *bus)
+ {
+diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
+index 4583d1a2a73e..3db6082c611e 100644
+--- a/arch/mips/mm/init.c
++++ b/arch/mips/mm/init.c
+@@ -482,6 +482,13 @@ void __init mem_init(void)
+ 				0x80000000 - 4, KCORE_TEXT);
+ #endif
+ }
++#else  /* CONFIG_NUMA */
++void __init mem_init(void)
++{
++	high_memory = (void *) __va(get_num_physpages() << PAGE_SHIFT);
++	memblock_free_all();
++	setup_zero_pages();	/* This comes from node 0 */
++}
+ #endif /* !CONFIG_NUMA */
  
- 	free_area_init(max_zone_pfn);  /*  sets up the zonelists and mem_map  */
+ void free_init_pages(const char *what, unsigned long begin, unsigned long end)
+diff --git a/arch/mips/sgi-ip27/ip27-memory.c b/arch/mips/sgi-ip27/ip27-memory.c
+index 1963313f55d8..2b3e46e2e607 100644
+--- a/arch/mips/sgi-ip27/ip27-memory.c
++++ b/arch/mips/sgi-ip27/ip27-memory.c
+@@ -406,8 +406,6 @@ void __init prom_meminit(void)
+ 	}
+ }
  
-+	/*
-+	 * Set the init_mm descriptors "context" value to point to the
-+	 * initial kernel segment table's physical address.
-+	 */
-+	init_mm.context.ptbase = __pa(init_mm.pgd);
-+
- 	/*
- 	 * Start of high memory area.  Will probably need something more
- 	 * fancy if we...  get more fancy.
+-extern void setup_zero_pages(void);
+-
+ void __init paging_init(void)
+ {
+ 	unsigned long zones_size[MAX_NR_ZONES] = {0, };
+@@ -416,10 +414,3 @@ void __init paging_init(void)
+ 	zones_size[ZONE_NORMAL] = max_low_pfn;
+ 	free_area_init(zones_size);
+ }
+-
+-void __init mem_init(void)
+-{
+-	high_memory = (void *) __va(get_num_physpages() << PAGE_SHIFT);
+-	memblock_free_all();
+-	setup_zero_pages();	/* This comes from node 0 */
+-}
 -- 
 2.47.2
 
