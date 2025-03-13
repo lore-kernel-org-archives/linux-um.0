@@ -4,43 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 5ECC5C35FF4
-	for <linux-um@archiver.kernel.org>; Thu, 13 Mar 2025 13:53:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 95FEDC28B2E
+	for <linux-um@archiver.kernel.org>; Thu, 13 Mar 2025 13:55:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=U1P6C6yM63AogMuHE2GRwhThOWgbajmcPUTFZpTW0zk=; b=ZgH8weZvndG843CU/wNX4WJpdV
-	dMNYqVZwFrG1TGK8eDxwDYgO7fY1XctvSJ01zw1WexUIV0KYUVCRZnIWX/d1CrlNmqH4/FQo6Qzrn
-	sVu4vi708SomYBsqwPCI2UQH5um5gWV7w9BFbEmlW6tdNQoQ/rr4JrvmBh3C6ZO42C1PjlgIFdsTj
-	axyTsFOwt/WPZKw/gGdn1m+KqKC6hpI2gh0T6Z4UkbU1NVIvi7x5gwJap07zR1U3yMqp4nkuDmOSm
-	Hgrfk3ylrUr8R+quh0EliOfM0rxrN9ERAyeOS46avzzMebZX+cdTyJViapg+j6sWzvT80+rP1E408
-	LO5H997w==;
+	bh=ZNj7h8u0pOiIML/dRxYqt5eMpZiM9S+9YHykRZRQqAg=; b=fS2ESipdDGgDbgsGXLM//JkQkQ
+	4N9zI5wOACucEMt1U9nBgsgBNhMsA2zjhO9H2BQmPbpzoIfX6YE3DvrtURywwzS0RpiUc0V7rRU6f
+	fqmZL+okSQhNWxb7U5EM++0PCESOCSiTeoQyo08Bcp3qckYcLcHnFE9/BipXN/IFMzp4Z1z3u6HDY
+	l2J4EyJyytaWB8ryVDzaN6ROCmMoqLzU0h4mMgeP9c0Cp9rgKzmjujDUseiPIDp4zkwgVd1dQTngT
+	aw5G8rnSFxzuS0TLhCK56AGtoBkQV57zCEPILMMysiE4lpNYUvBMalWxnOG3n7NWM7/q9kiwJRaMs
+	F52d77aw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tsizs-0000000BRs0-3qoD;
-	Thu, 13 Mar 2025 13:53:16 +0000
-Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+	id 1tsj1b-0000000BSbd-1PiY;
+	Thu, 13 Mar 2025 13:55:03 +0000
+Received: from desiato.infradead.org ([2001:8b0:10b:1:d65d:64ff:fe57:4e05])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tsiyO-0000000BR7m-2J3z;
-	Thu, 13 Mar 2025 13:51:46 +0000
+	id 1tsizJ-0000000BRVP-3YnI;
+	Thu, 13 Mar 2025 13:52:42 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+	:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-Type:Content-ID:Content-Description;
+	bh=ZNj7h8u0pOiIML/dRxYqt5eMpZiM9S+9YHykRZRQqAg=; b=is282B1SW5tCNZjb+dwUB5LrAI
+	spSjgNDc7yqXqLw+3UJb06FGPV0NcAEmqDaceKkefpwdFLm6U4hmT3UEOn92yqDcgZd5k0y+MbK4H
+	bE5jPskUpWc+mewf9rzu96YNT/50GyavmTxB7VObHs5/GQNElvM0hW1ZzOQxVVTLpYDBwtyljumxP
+	AKXuRU31GE0ES8poOgprA16HxlawpeDchbr8E3jd5Y6vLdG4BRtHCfCv+MM6SEevQKC08hC1q3FRh
+	Drzd+WUGBlNIoRdItBDrL+33GSG+22swrctx5MXFhlZndGvRdaViq6hZHODkvHsBlsSmUag1nHWRK
+	TlXoRcUw==;
+Received: from nyc.source.kernel.org ([2604:1380:45d1:ec00::3])
+	by desiato.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
+	id 1tsizG-00000002eeH-3L66;
+	Thu, 13 Mar 2025 13:52:40 +0000
 Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by nyc.source.kernel.org (Postfix) with ESMTP id C8BB0A474DA;
-	Thu, 13 Mar 2025 13:46:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A398C4CEEA;
-	Thu, 13 Mar 2025 13:51:30 +0000 (UTC)
+	by nyc.source.kernel.org (Postfix) with ESMTP id 87B2BA474E4;
+	Thu, 13 Mar 2025 13:47:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 252EEC4CEEF;
+	Thu, 13 Mar 2025 13:52:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1741873903;
-	bh=uD5faVqJ7G6OTY8H5Svd8uEX7wWQ143lrl+QSf2xljc=;
+	s=k20201202; t=1741873957;
+	bh=AJy7soDO62Dzi3ius9ZjscPriJ9EidlW3P37gpc6oBk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tAvAkADl38NVbSZKILqjquMXN3H24XBk/B6I41lcVbP00o/57lseGod9pdeTReVMs
-	 cGwlYVhuGgyWlrhDCI2daJ1ZuH+VeJ81cIRRK9frKmoiVueFr/N/mjUPeYtEx8wJ8T
-	 nBs3CkwbMReqveisUvVZBC22mbfZgYYmTbCh29QOQKxl3NVOzvvN3jvxoRqmAwnVch
-	 0ZqbY3ubQTUgmI2m+/Okv6ac4OZYKAK3inE5/1A+FzyXOEE0bOdUpCjBHuKjnqgp9K
-	 6yHOo0+C4guHPMqoX35CH+VdOKq/D8Ff1oyIUB7Oo0RhP3dSOBxqfGBVfIxIiCRB+o
-	 mLZqPSEOGfNGg==
+	b=b8Dew2qCwikkr9LKylOdLOo1BePD6vBt84quP1/KvYoZxzxlZRcB3i/RExMqjS3Vy
+	 YMWXLgyGaheY1cCgEwrhW+5HdX99rZqqWo2leOAFfBYEa7B9A/QOmY05M9pc6BMjfp
+	 fD5RSO7BJvp7ghHODdMxkxYIwWZc3VxaLqmS3Np48/dp+vRCehkW2TdkTliOvI1CVF
+	 a1HmWddzs5ZTUdEOfnWUq/WsgMmZJUvfW1csWM8pi0gurR8CfzpwvjEBHADErqJT1i
+	 wkHhCAuNw/YklaxM7TWdU0myoqMm9rsk8wAetp9u1U8Q8q2uav4/D/uqPSXyCwQ3Hk
+	 eZVrApQmrACkQ==
 From: Mike Rapoport <rppt@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
@@ -101,17 +115,17 @@ Cc: Alexander Gordeev <agordeev@linux.ibm.com>,
 	linux-arch@vger.kernel.org,
 	linux-mm@kvack.org,
 	x86@kernel.org
-Subject: [PATCH v2 06/13] nios2: move pr_debug() about memory start and end to setup_arch()
-Date: Thu, 13 Mar 2025 15:49:56 +0200
-Message-ID: <20250313135003.836600-7-rppt@kernel.org>
+Subject: [PATCH v2 10/13] arch, mm: set high_memory in free_area_init()
+Date: Thu, 13 Mar 2025 15:50:00 +0200
+Message-ID: <20250313135003.836600-11-rppt@kernel.org>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <20250313135003.836600-1-rppt@kernel.org>
 References: <20250313135003.836600-1-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250313_065144_710618_A41A08CC 
-X-CRM114-Status: GOOD (  12.16  )
+X-CRM114-CacheID: sfid-20250313_135239_162765_9244D5C6 
+X-CRM114-Status: GOOD (  21.71  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -128,41 +142,435 @@ Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
 From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
 
-This will help with pulling out memblock_free_all() to the generic
-code and reducing code duplication in arch::mem_init().
+high_memory defines upper bound on the directly mapped memory.
+This bound is defined by the beginning of ZONE_HIGHMEM when a system has
+high memory and by the end of memory otherwise.
 
+All this is known to generic memory management initialization code that
+can set high_memory while initializing core mm structures.
+
+Add a generic calculation of high_memory to free_area_init() and remove
+per-architecture calculation except for the architectures that set and
+use high_memory earlier than that.
+
+Acked-by: Dave Hansen <dave.hansen@linux.intel.com>	# x86
 Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
 ---
- arch/nios2/kernel/setup.c | 2 ++
- arch/nios2/mm/init.c      | 2 --
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/alpha/mm/init.c         |  1 -
+ arch/arc/mm/init.c           |  2 --
+ arch/arm64/mm/init.c         |  2 --
+ arch/csky/mm/init.c          |  1 -
+ arch/hexagon/mm/init.c       |  6 ------
+ arch/loongarch/kernel/numa.c |  1 -
+ arch/loongarch/mm/init.c     |  2 --
+ arch/microblaze/mm/init.c    |  2 --
+ arch/mips/mm/init.c          |  2 --
+ arch/nios2/mm/init.c         |  6 ------
+ arch/openrisc/mm/init.c      |  2 --
+ arch/parisc/mm/init.c        |  1 -
+ arch/riscv/mm/init.c         |  1 -
+ arch/s390/mm/init.c          |  2 --
+ arch/sh/mm/init.c            |  7 -------
+ arch/sparc/mm/init_32.c      |  1 -
+ arch/sparc/mm/init_64.c      |  2 --
+ arch/um/kernel/um_arch.c     |  1 -
+ arch/x86/kernel/setup.c      |  2 --
+ arch/x86/mm/init_32.c        |  3 ---
+ arch/x86/mm/numa_32.c        |  3 ---
+ arch/xtensa/mm/init.c        |  2 --
+ mm/memory.c                  |  8 --------
+ mm/mm_init.c                 | 30 ++++++++++++++++++++++++++++++
+ mm/nommu.c                   |  2 --
+ 25 files changed, 30 insertions(+), 62 deletions(-)
 
-diff --git a/arch/nios2/kernel/setup.c b/arch/nios2/kernel/setup.c
-index da122a5fa43b..a4cffbfc1399 100644
---- a/arch/nios2/kernel/setup.c
-+++ b/arch/nios2/kernel/setup.c
-@@ -149,6 +149,8 @@ void __init setup_arch(char **cmdline_p)
- 	memory_start = memblock_start_of_DRAM();
- 	memory_end = memblock_end_of_DRAM();
+diff --git a/arch/alpha/mm/init.c b/arch/alpha/mm/init.c
+index ec0eeae9c653..3ab2d2f3c917 100644
+--- a/arch/alpha/mm/init.c
++++ b/arch/alpha/mm/init.c
+@@ -276,7 +276,6 @@ srm_paging_stop (void)
+ void __init
+ mem_init(void)
+ {
+-	high_memory = (void *) __va(max_low_pfn * PAGE_SIZE);
+ 	memblock_free_all();
+ }
  
-+	pr_debug("%s: start=%lx, end=%lx\n", __func__, memory_start, memory_end);
-+
- 	setup_initial_init_mm(_stext, _etext, _edata, _end);
- 	init_task.thread.kregs = &fake_regs;
+diff --git a/arch/arc/mm/init.c b/arch/arc/mm/init.c
+index 7ef883d58dc1..05025122e965 100644
+--- a/arch/arc/mm/init.c
++++ b/arch/arc/mm/init.c
+@@ -150,8 +150,6 @@ void __init setup_arch_memory(void)
+ 	 */
+ 	max_zone_pfn[ZONE_HIGHMEM] = max_high_pfn;
  
+-	high_memory = (void *)(min_high_pfn << PAGE_SHIFT);
+-
+ 	arch_pfn_offset = min(min_low_pfn, min_high_pfn);
+ 	kmap_init();
+ #endif /* CONFIG_HIGHMEM */
+diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+index 9c0b8d9558fc..a48fcccd67fa 100644
+--- a/arch/arm64/mm/init.c
++++ b/arch/arm64/mm/init.c
+@@ -314,8 +314,6 @@ void __init arm64_memblock_init(void)
+ 	}
+ 
+ 	early_init_fdt_scan_reserved_mem();
+-
+-	high_memory = __va(memblock_end_of_DRAM() - 1) + 1;
+ }
+ 
+ void __init bootmem_init(void)
+diff --git a/arch/csky/mm/init.c b/arch/csky/mm/init.c
+index ba6694d6170a..a22801aa503a 100644
+--- a/arch/csky/mm/init.c
++++ b/arch/csky/mm/init.c
+@@ -47,7 +47,6 @@ void __init mem_init(void)
+ #ifdef CONFIG_HIGHMEM
+ 	unsigned long tmp;
+ #endif
+-	high_memory = (void *) __va(max_low_pfn << PAGE_SHIFT);
+ 
+ 	memblock_free_all();
+ 
+diff --git a/arch/hexagon/mm/init.c b/arch/hexagon/mm/init.c
+index 508bb6a8dcc9..d412c2314509 100644
+--- a/arch/hexagon/mm/init.c
++++ b/arch/hexagon/mm/init.c
+@@ -100,12 +100,6 @@ static void __init paging_init(void)
+ 	 * initial kernel segment table's physical address.
+ 	 */
+ 	init_mm.context.ptbase = __pa(init_mm.pgd);
+-
+-	/*
+-	 * Start of high memory area.  Will probably need something more
+-	 * fancy if we...  get more fancy.
+-	 */
+-	high_memory = (void *)((bootmem_lastpg + 1) << PAGE_SHIFT);
+ }
+ 
+ #ifndef DMA_RESERVE
+diff --git a/arch/loongarch/kernel/numa.c b/arch/loongarch/kernel/numa.c
+index 84fe7f854820..8eb489725b1a 100644
+--- a/arch/loongarch/kernel/numa.c
++++ b/arch/loongarch/kernel/numa.c
+@@ -389,7 +389,6 @@ void __init paging_init(void)
+ 
+ void __init mem_init(void)
+ {
+-	high_memory = (void *) __va(max_low_pfn << PAGE_SHIFT);
+ 	memblock_free_all();
+ }
+ 
+diff --git a/arch/loongarch/mm/init.c b/arch/loongarch/mm/init.c
+index 00449df50db1..6affa3609188 100644
+--- a/arch/loongarch/mm/init.c
++++ b/arch/loongarch/mm/init.c
+@@ -78,8 +78,6 @@ void __init paging_init(void)
+ 
+ void __init mem_init(void)
+ {
+-	high_memory = (void *) __va(max_low_pfn << PAGE_SHIFT);
+-
+ 	memblock_free_all();
+ }
+ #endif /* !CONFIG_NUMA */
+diff --git a/arch/microblaze/mm/init.c b/arch/microblaze/mm/init.c
+index 857cd2b44bcf..7e2e342e84c5 100644
+--- a/arch/microblaze/mm/init.c
++++ b/arch/microblaze/mm/init.c
+@@ -120,8 +120,6 @@ void __init setup_memory(void)
+ 
+ void __init mem_init(void)
+ {
+-	high_memory = (void *)__va(memory_start + lowmem_size - 1);
+-
+ 	/* this will put all memory onto the freelists */
+ 	memblock_free_all();
+ #ifdef CONFIG_HIGHMEM
+diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
+index eb61a73520a0..ed9dde6a00f7 100644
+--- a/arch/mips/mm/init.c
++++ b/arch/mips/mm/init.c
+@@ -417,7 +417,6 @@ void __init paging_init(void)
+ 		max_zone_pfns[ZONE_HIGHMEM] = max_low_pfn;
+ 	}
+ #endif
+-	high_memory = (void *) __va(max_low_pfn << PAGE_SHIFT);
+ 
+ 	free_area_init(max_zone_pfns);
+ }
+@@ -469,7 +468,6 @@ void __init mem_init(void)
+ #else  /* CONFIG_NUMA */
+ void __init mem_init(void)
+ {
+-	high_memory = (void *) __va(get_num_physpages() << PAGE_SHIFT);
+ 	setup_zero_pages();	/* This comes from node 0 */
+ 	memblock_free_all();
+ }
 diff --git a/arch/nios2/mm/init.c b/arch/nios2/mm/init.c
-index a2278485de19..aa692ad30044 100644
+index 3cafa87ead9e..4ba8dfa0d238 100644
 --- a/arch/nios2/mm/init.c
 +++ b/arch/nios2/mm/init.c
-@@ -65,8 +65,6 @@ void __init mem_init(void)
- 	unsigned long end_mem   = memory_end; /* this must not include
- 						kernel stack at top */
+@@ -62,12 +62,6 @@ void __init paging_init(void)
  
--	pr_debug("mem_init: start=%lx, end=%lx\n", memory_start, memory_end);
+ void __init mem_init(void)
+ {
+-	unsigned long end_mem   = memory_end; /* this must not include
+-						kernel stack at top */
 -
- 	end_mem &= PAGE_MASK;
- 	high_memory = __va(end_mem);
+-	end_mem &= PAGE_MASK;
+-	high_memory = __va(end_mem);
+-
+ 	/* this will put all memory onto the freelists */
+ 	memblock_free_all();
+ }
+diff --git a/arch/openrisc/mm/init.c b/arch/openrisc/mm/init.c
+index 9093c336e158..72c5952607ac 100644
+--- a/arch/openrisc/mm/init.c
++++ b/arch/openrisc/mm/init.c
+@@ -193,8 +193,6 @@ void __init mem_init(void)
+ {
+ 	BUG_ON(!mem_map);
  
+-	high_memory = (void *)__va(max_low_pfn * PAGE_SIZE);
+-
+ 	/* clear the zero-page */
+ 	memset((void *)empty_zero_page, 0, PAGE_SIZE);
+ 
+diff --git a/arch/parisc/mm/init.c b/arch/parisc/mm/init.c
+index 2cdfc0b1195c..4fbe354dc9b4 100644
+--- a/arch/parisc/mm/init.c
++++ b/arch/parisc/mm/init.c
+@@ -562,7 +562,6 @@ void __init mem_init(void)
+ 	BUILD_BUG_ON(TMPALIAS_MAP_START >= 0x80000000);
+ #endif
+ 
+-	high_memory = __va((max_pfn << PAGE_SHIFT));
+ 	memblock_free_all();
+ 
+ #ifdef CONFIG_PA11
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index 157c9ca51541..ac6d41e86243 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -295,7 +295,6 @@ static void __init setup_bootmem(void)
+ 	phys_ram_end = memblock_end_of_DRAM();
+ 	min_low_pfn = PFN_UP(phys_ram_base);
+ 	max_low_pfn = max_pfn = PFN_DOWN(phys_ram_end);
+-	high_memory = (void *)(__va(PFN_PHYS(max_low_pfn)));
+ 
+ 	dma32_phys_limit = min(4UL * SZ_1G, (unsigned long)PFN_PHYS(max_low_pfn));
+ 
+diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
+index 36fed6dffb38..0c485884d373 100644
+--- a/arch/s390/mm/init.c
++++ b/arch/s390/mm/init.c
+@@ -159,8 +159,6 @@ void __init mem_init(void)
+ 	cpumask_set_cpu(0, &init_mm.context.cpu_attach_mask);
+ 	cpumask_set_cpu(0, mm_cpumask(&init_mm));
+ 
+-        high_memory = (void *) __va(max_low_pfn * PAGE_SIZE);
+-
+ 	pv_init();
+ 	kfence_split_mapping();
+ 
+diff --git a/arch/sh/mm/init.c b/arch/sh/mm/init.c
+index 72aea5cd1b85..6d459ffba4bc 100644
+--- a/arch/sh/mm/init.c
++++ b/arch/sh/mm/init.c
+@@ -330,13 +330,6 @@ unsigned int mem_init_done = 0;
+ 
+ void __init mem_init(void)
+ {
+-	pg_data_t *pgdat;
+-
+-	high_memory = NULL;
+-	for_each_online_pgdat(pgdat)
+-		high_memory = max_t(void *, high_memory,
+-				    __va(pgdat_end_pfn(pgdat) << PAGE_SHIFT));
+-
+ 	memblock_free_all();
+ 
+ 	/* Set this up early, so we can take care of the zero page */
+diff --git a/arch/sparc/mm/init_32.c b/arch/sparc/mm/init_32.c
+index 6b58da14edc6..81a468a9c223 100644
+--- a/arch/sparc/mm/init_32.c
++++ b/arch/sparc/mm/init_32.c
+@@ -275,7 +275,6 @@ void __init mem_init(void)
+ 
+ 	taint_real_pages();
+ 
+-	high_memory = __va(max_low_pfn << PAGE_SHIFT);
+ 	memblock_free_all();
+ 
+ 	for (i = 0; sp_banks[i].num_bytes != 0; i++) {
+diff --git a/arch/sparc/mm/init_64.c b/arch/sparc/mm/init_64.c
+index 05882bca5b73..34d46adb9571 100644
+--- a/arch/sparc/mm/init_64.c
++++ b/arch/sparc/mm/init_64.c
+@@ -2505,8 +2505,6 @@ static void __init register_page_bootmem_info(void)
+ }
+ void __init mem_init(void)
+ {
+-	high_memory = __va(last_valid_pfn << PAGE_SHIFT);
+-
+ 	memblock_free_all();
+ 
+ 	/*
+diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
+index 6414cbf00572..f24a3ce37ab7 100644
+--- a/arch/um/kernel/um_arch.c
++++ b/arch/um/kernel/um_arch.c
+@@ -385,7 +385,6 @@ int __init linux_main(int argc, char **argv, char **envp)
+ 
+ 	high_physmem = uml_physmem + physmem_size;
+ 	end_iomem = high_physmem + iomem_size;
+-	high_memory = (void *) end_iomem;
+ 
+ 	start_vm = VMALLOC_START;
+ 
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index cebee310e200..5c9ec876915e 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -972,8 +972,6 @@ void __init setup_arch(char **cmdline_p)
+ 		max_low_pfn = e820__end_of_low_ram_pfn();
+ 	else
+ 		max_low_pfn = max_pfn;
+-
+-	high_memory = (void *)__va(max_pfn * PAGE_SIZE - 1) + 1;
+ #endif
+ 
+ 	/* Find and reserve MPTABLE area */
+diff --git a/arch/x86/mm/init_32.c b/arch/x86/mm/init_32.c
+index 6d2f8cb9451e..801b659ead0c 100644
+--- a/arch/x86/mm/init_32.c
++++ b/arch/x86/mm/init_32.c
+@@ -643,9 +643,6 @@ void __init initmem_init(void)
+ 		highstart_pfn = max_low_pfn;
+ 	printk(KERN_NOTICE "%ldMB HIGHMEM available.\n",
+ 		pages_to_mb(highend_pfn - highstart_pfn));
+-	high_memory = (void *) __va(highstart_pfn * PAGE_SIZE - 1) + 1;
+-#else
+-	high_memory = (void *) __va(max_low_pfn * PAGE_SIZE - 1) + 1;
+ #endif
+ 
+ 	memblock_set_node(0, PHYS_ADDR_MAX, &memblock.memory, 0);
+diff --git a/arch/x86/mm/numa_32.c b/arch/x86/mm/numa_32.c
+index 65fda406e6f2..442ef3facff0 100644
+--- a/arch/x86/mm/numa_32.c
++++ b/arch/x86/mm/numa_32.c
+@@ -41,9 +41,6 @@ void __init initmem_init(void)
+ 		highstart_pfn = max_low_pfn;
+ 	printk(KERN_NOTICE "%ldMB HIGHMEM available.\n",
+ 	       pages_to_mb(highend_pfn - highstart_pfn));
+-	high_memory = (void *) __va(highstart_pfn * PAGE_SIZE - 1) + 1;
+-#else
+-	high_memory = (void *) __va(max_low_pfn * PAGE_SIZE - 1) + 1;
+ #endif
+ 	printk(KERN_NOTICE "%ldMB LOWMEM available.\n",
+ 			pages_to_mb(max_low_pfn));
+diff --git a/arch/xtensa/mm/init.c b/arch/xtensa/mm/init.c
+index 9f1b0d5fccc7..9b662477b3d4 100644
+--- a/arch/xtensa/mm/init.c
++++ b/arch/xtensa/mm/init.c
+@@ -164,8 +164,6 @@ void __init mem_init(void)
+ {
+ 	free_highpages();
+ 
+-	high_memory = (void *)__va(max_low_pfn << PAGE_SHIFT);
+-
+ 	memblock_free_all();
+ }
+ 
+diff --git a/mm/memory.c b/mm/memory.c
+index 126fdd3001e3..2351f3f6b9ed 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -113,14 +113,6 @@ static __always_inline bool vmf_orig_pte_uffd_wp(struct vm_fault *vmf)
+ 	return pte_marker_uffd_wp(vmf->orig_pte);
+ }
+ 
+-/*
+- * A number of key systems in x86 including ioremap() rely on the assumption
+- * that high_memory defines the upper bound on direct map memory, then end
+- * of ZONE_NORMAL.
+- */
+-void *high_memory;
+-EXPORT_SYMBOL(high_memory);
+-
+ /*
+  * Randomize the address space (stacks, mmaps, brk, etc.).
+  *
+diff --git a/mm/mm_init.c b/mm/mm_init.c
+index 50a93714e1c6..61ac0cea711a 100644
+--- a/mm/mm_init.c
++++ b/mm/mm_init.c
+@@ -44,6 +44,13 @@ struct page *mem_map;
+ EXPORT_SYMBOL(mem_map);
+ #endif
+ 
++/*
++ * high_memory defines the upper bound on direct map memory, then end
++ * of ZONE_NORMAL.
++ */
++void *high_memory;
++EXPORT_SYMBOL(high_memory);
++
+ #ifdef CONFIG_DEBUG_MEMORY_INIT
+ int __meminitdata mminit_loglevel;
+ 
+@@ -1756,6 +1763,27 @@ static bool arch_has_descending_max_zone_pfns(void)
+ 	return IS_ENABLED(CONFIG_ARC) && !IS_ENABLED(CONFIG_ARC_HAS_PAE40);
+ }
+ 
++static void set_high_memory(void)
++{
++	phys_addr_t highmem = memblock_end_of_DRAM();
++
++	/*
++	 * Some architectures (e.g. ARM) set high_memory very early and
++	 * use it in arch setup code.
++	 * If an architecture already set high_memory don't overwrite it
++	 */
++	if (high_memory)
++		return;
++
++#ifdef CONFIG_HIGHMEM
++	if (arch_has_descending_max_zone_pfns() ||
++	    highmem > PFN_PHYS(arch_zone_lowest_possible_pfn[ZONE_HIGHMEM]))
++		highmem = PFN_PHYS(arch_zone_lowest_possible_pfn[ZONE_HIGHMEM]);
++#endif
++
++	high_memory = phys_to_virt(highmem - 1) + 1;
++}
++
+ /**
+  * free_area_init - Initialise all pg_data_t and zone data
+  * @max_zone_pfn: an array of max PFNs for each zone
+@@ -1875,6 +1903,8 @@ void __init free_area_init(unsigned long *max_zone_pfn)
+ 
+ 	/* disable hash distribution for systems with a single node */
+ 	fixup_hashdist();
++
++	set_high_memory();
+ }
+ 
+ /**
+diff --git a/mm/nommu.c b/mm/nommu.c
+index f0209dd26dfa..b9783638fbd4 100644
+--- a/mm/nommu.c
++++ b/mm/nommu.c
+@@ -42,8 +42,6 @@
+ #include <asm/mmu_context.h>
+ #include "internal.h"
+ 
+-void *high_memory;
+-EXPORT_SYMBOL(high_memory);
+ unsigned long highest_memmap_pfn;
+ int sysctl_nr_trim_pages = CONFIG_NOMMU_INITIAL_TRIM_EXCESS;
+ int heap_stack_gap = 0;
 -- 
 2.47.2
 
