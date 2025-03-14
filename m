@@ -4,106 +4,75 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id A668DC35FF3
-	for <linux-um@archiver.kernel.org>; Thu, 13 Mar 2025 18:52:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 4F03CC28B2F
+	for <linux-um@archiver.kernel.org>; Fri, 14 Mar 2025 07:13:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	Content-Type:Cc:To:Subject:Message-ID:Date:From:In-Reply-To:References:
-	MIME-Version:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=n3DVX2jUUT8USovuBtaAWfLwoCZG/vTo0soqbEn/R/c=; b=GKr9WOS7WXV1D6sSWuFcvQYPGg
-	kER5F3StKCJHqCy+66Kgq8KWMo9FDt3BTpF1eEUV98z4aSzF2+6UgjB8kEgvrWtjxmWHHsxF8d64Y
-	mDNsJ/pBssgFoy+MoFUvuzbNIj5ONdgKjGay1SMxWC/LcOmQ7KIECDC3dpvH7AEh+zqIqJ0q/uit/
-	+O2lZ9zZWxdJg4GVbgO3BaZUYnoGhQUYNjemSfpymWDX0vlvwMuxa+RlfR1wAlKjhvTBP0W2vrho7
-	b6luK6+3rCx7ljEVBIvT4i9V4ZQ0Z5DPgkyp20ZVEz2hoDCQZJHmS8/JAdJ5Q1r5FcnJJqr179wuZ
-	7Uk9LNBA==;
+	bh=XgJ3xmVB8Q+Qlov1OOwzrPoA5VYL2CgjG+ZWo4y/fRM=; b=5Dj9BfA4gxNYSGgmCmpd0g06ix
+	NB2nAcTqAEhH0ogErBJQjotgHdfbLh4daqd0NLUw2l6HCXKtvlhunsnlLP3jFqB3TXrawp+UewtWZ
+	y3YjCuDFn3IuzAw4xsCFSmJyYCLkLN+ULsRaS3s+KRETSllARHki06jH86S49N+T5v8RLN868TeJq
+	Y7byJ8RAfX4X9/0GIPj/YJ8vIfmnk5Ge78KlpjwIeoZq3Kq4OHzEY9BrsIFHGppWNlR+SWFt5eX83
+	5lM8b5gY4t753QYeuQRQRBuOPm+ZT54hLVYgUtjFA4EXKNYUlPYbf/I+IYHi/dCGDyl/Uiuq0SHWb
+	N8sKxLjw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tsnfN-0000000CETu-3Ysj;
-	Thu, 13 Mar 2025 18:52:25 +0000
-Received: from mail-pj1-x1034.google.com ([2607:f8b0:4864:20::1034])
+	id 1tszEA-0000000DHHA-1xkC;
+	Fri, 14 Mar 2025 07:13:06 +0000
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tsm8z-0000000BxZq-16qG;
-	Thu, 13 Mar 2025 17:14:54 +0000
-Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-2ff6e91cff5so2202728a91.2;
-        Thu, 13 Mar 2025 10:14:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741886092; x=1742490892; darn=lists.infradead.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n3DVX2jUUT8USovuBtaAWfLwoCZG/vTo0soqbEn/R/c=;
-        b=fuAlenHWcZRaMs56E9QcHHK7bWc+EU7oy/WUYbrZ/QsT0va1cIyv/3GaVdvJhduBbN
-         URUdQk9NJhwZZS29iC6LAJVgXhCaKcEaEn2WR87Yox9NpXsMwDyh4q0ht6ewsnNElEIo
-         ReChVBkQkt1+PveprCvwIwbPPHw/8gYFHdmhwzwtm+0R9FtofxbOvzJXeJgjx7GF8bko
-         b6bi1j+FoAeeOzNxX9tRkgi16Fu/5H4vtNeGIO7wPLH6A3OYeUFkWTQUf2K0J6QZbGU4
-         vqiGYe4YUIBDT/OGZpG6zBh3IfmWM4nAKc3WPORb9dblOemhLRDHxr1ofiJNts+O8sBK
-         RBfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741886092; x=1742490892;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=n3DVX2jUUT8USovuBtaAWfLwoCZG/vTo0soqbEn/R/c=;
-        b=BT9T3PGjYJ2pavm4Gfd7/vJHQ42XHinzVmqEDiW0YctTUHltd5wV6+YVHIICJq1P4k
-         Kw7qIfETZY6sFDYxF9thbmOqobD2FSsshUmtyDW9NFNGNOav+4Qv52iFvjX0qVAJsM6G
-         X9mEkfIQHiY/EhgTascnvP9bk8aI0GmLjtZBybcfHoPYR5mNeivzKPzA1X0kQ3HLSQ5X
-         PXOaXpfSo3gUP90xtAopJYjL8CuuipMtdQUtqzhv4y6A4KXnxqkHzAOqWRUJMKPMyP3v
-         9LQRJHU04i66gnBj2JI0JufudT+MhvoJfREMqjmr5ix2F2Gf2WgqMTR2RyM72om2LYOK
-         VeRg==
-X-Forwarded-Encrypted: i=1; AJvYcCUrTEwX6qpXVmn4+q2L3TOmExyCRES6+9FzhlGSXjyPN/jGBE8RVBXLzxpI+xte1k3pnNkcsHMEXF11zjsK+mi4@lists.infradead.org, AJvYcCUtsKn827xdrhem+rmbnSPY2l4OH2olDdO1NjZXniOT0henUebpPpaizkhnFN0OlggzosGHKpF3f2r7VRb/izw=@lists.infradead.org, AJvYcCVRA7HjtxyirAfOyuE+XD0vfJZ7SFwDE7GYL8eIe/XV0CD54yxTVPS2n83tqswE1p+Meq5o+65Chn2z7es=@lists.infradead.org, AJvYcCW+bILCKki+pnmloSgkp7e1/hqFiTrF+RZ36W448i7m4aSiNSPPHvK1To2gv5yyODerNIl3KoVvg2g=@lists.infradead.org
-X-Gm-Message-State: AOJu0Yx8y0AAipLwbsoPd3xBkvfEhP7dcaR2NAlncQA4QiF7pX7o24Wk
-	Aiv9HvLsyQS8LS/w0epjj9ekTvpOPvIi+hUgGigl32izDEuPkJGjWK386hYDe00budP1PPTyali
-	FCc762anii1Oz1EtbSUbR6CyCbpY=
-X-Gm-Gg: ASbGncshH2juEdKso4+SpsQToq4XQZePd1HV9VIKwIDUEhq5tesV4PMOAb0L7c2BPKF
-	HZAjXSun7fHBD4vW48QY4ebMEGzpKe9qvcgZ1jqtfmXVYdKOfsmyRvIQTKiyyoUi1S2pFpJfoE0
-	zNlfWUDsatKZqWbcnxW5rVTjd4JbE=
-X-Google-Smtp-Source: AGHT+IE1qRePjrPlGe/k7DXmrY+KtJaOvGWQ1A7tyU5eLBTz7VxuSMi4hxEC/EMElopjpnT6L0bRBsC6lDv+GByhQbc=
-X-Received: by 2002:a17:90b:5608:b0:2fe:b8ba:62e1 with SMTP id
- 98e67ed59e1d1-3014ea24aa4mr365923a91.28.1741886091572; Thu, 13 Mar 2025
- 10:14:51 -0700 (PDT)
+	id 1tszE8-0000000DHG6-1I7i
+	for linux-um@lists.infradead.org;
+	Fri, 14 Mar 2025 07:13:05 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1741936383;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XgJ3xmVB8Q+Qlov1OOwzrPoA5VYL2CgjG+ZWo4y/fRM=;
+	b=fPsCjNMfF2J0+9vVJ863KbduA9HiNYE8z5kyyE5955CFBo1tiuR8Q0bezS7ZxVXsWKRjZj
+	jShRCE6vzFg+1WLDfzFD7v4ozHqv7ZSg+rGyzpN7gMDIHXkkJnNX0AnjG0x0fW/LOI489L
+	E3phcMzQCtV2CCIQnOuI9CgNhfR8eiM=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-657-PKxp5eKfMNKY2P031irecA-1; Fri,
+ 14 Mar 2025 03:12:59 -0400
+X-MC-Unique: PKxp5eKfMNKY2P031irecA-1
+X-Mimecast-MFC-AGG-ID: PKxp5eKfMNKY2P031irecA_1741936378
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 94D53195608B;
+	Fri, 14 Mar 2025 07:12:58 +0000 (UTC)
+Received: from thuth-p1g4.redhat.com (unknown [10.44.32.82])
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id A6F9A18001DE;
+	Fri, 14 Mar 2025 07:12:54 +0000 (UTC)
+From: Thomas Huth <thuth@redhat.com>
+To: linux-kernel@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	linux-arch@vger.kernel.org,
+	Thomas Huth <thuth@redhat.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	linux-um@lists.infradead.org
+Subject: [PATCH 35/41] um: Replace __ASSEMBLY__ with __ASSEMBLER__ in the usermode headers
+Date: Fri, 14 Mar 2025 08:10:06 +0100
+Message-ID: <20250314071013.1575167-36-thuth@redhat.com>
+In-Reply-To: <20250314071013.1575167-1-thuth@redhat.com>
+References: <20250314071013.1575167-1-thuth@redhat.com>
 MIME-Version: 1.0
-References: <20250313135003.836600-1-rppt@kernel.org> <20250313135003.836600-9-rppt@kernel.org>
-In-Reply-To: <20250313135003.836600-9-rppt@kernel.org>
-From: Max Filippov <jcmvbkbc@gmail.com>
-Date: Thu, 13 Mar 2025 20:14:39 +0300
-X-Gm-Features: AQ5f1JpOtVR6fLnH8b4t6Wo35MeP6GXSndMXHGPmpker_QqVMpVf1FbK9Hm_3_Y
-Message-ID: <CAMo8Bf+_8QdcWmk-k6dpUUnvVtVsYCgcviK+fF=CsKjT3nFxHg@mail.gmail.com>
-Subject: Re: [PATCH v2 08/13] xtensa: split out printing of virtual memory
- layout to a function
-To: Mike Rapoport <rppt@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Alexander Gordeev <agordeev@linux.ibm.com>, 
-	Andreas Larsson <andreas@gaisler.com>, Andy Lutomirski <luto@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@kernel.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	"David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, Gerald Schaefer <gerald.schaefer@linux.ibm.com>, 
-	Guo Ren <guoren@kernel.org>, Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, 
-	Huacai Chen <chenhuacai@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
-	Jiaxun Yang <jiaxun.yang@flygoat.com>, Johannes Berg <johannes@sipsolutions.net>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Madhavan Srinivasan <maddy@linux.ibm.com>, 
-	Mark Brown <broonie@kernel.org>, Matt Turner <mattst88@gmail.com>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>, 
-	Stafford Horne <shorne@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	Thomas Gleixner <tglx@linutronix.de>, Vasily Gorbik <gor@linux.ibm.com>, Vineet Gupta <vgupta@kernel.org>, 
-	Will Deacon <will@kernel.org>, linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
-	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, 
-	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
-	linux-um@lists.infradead.org, linux-arch@vger.kernel.org, linux-mm@kvack.org, 
-	x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250313_101453_401239_D1A08E0E 
-X-CRM114-Status: GOOD (  11.44  )
+X-CRM114-CacheID: sfid-20250314_001304_416022_DCA05DD6 
+X-CRM114-Status: GOOD (  15.43  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -118,22 +87,133 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Thu, Mar 13, 2025 at 4:52=E2=80=AFPM Mike Rapoport <rppt@kernel.org> wro=
-te:
->
-> From: "Mike Rapoport (Microsoft)" <rppt@kernel.org>
->
-> This will help with pulling out memblock_free_all() to the generic
-> code and reducing code duplication in arch::mem_init().
->
-> Signed-off-by: Mike Rapoport (Microsoft) <rppt@kernel.org>
-> ---
->  arch/xtensa/mm/init.c | 97 ++++++++++++++++++++++---------------------
->  1 file changed, 50 insertions(+), 47 deletions(-)
+While the GCC and Clang compilers already define __ASSEMBLER__
+automatically when compiling assembly code, __ASSEMBLY__ is a
+macro that only gets defined by the Makefiles in the kernel.
+This can be very confusing when switching between userspace
+and kernelspace coding, so let's standardize on the __ASSEMBLER__
+macro that is provided by the compilers now.
 
-Reviewed-by: Max Filippov <jcmvbkbc@gmail.com>
+This is a completely mechanical patch (done with a simple "sed -i"
+statement).
 
---=20
-Thanks.
--- Max
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-um@lists.infradead.org
+Signed-off-by: Thomas Huth <thuth@redhat.com>
+---
+ arch/um/include/asm/cpufeature.h     | 4 ++--
+ arch/um/include/asm/current.h        | 4 ++--
+ arch/um/include/asm/page.h           | 4 ++--
+ arch/um/include/asm/ptrace-generic.h | 2 +-
+ arch/um/include/asm/thread_info.h    | 2 +-
+ arch/um/include/shared/as-layout.h   | 2 +-
+ 6 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/arch/um/include/asm/cpufeature.h b/arch/um/include/asm/cpufeature.h
+index 1eb8b834fbec3..4354f6984271c 100644
+--- a/arch/um/include/asm/cpufeature.h
++++ b/arch/um/include/asm/cpufeature.h
+@@ -4,7 +4,7 @@
+ 
+ #include <asm/processor.h>
+ 
+-#if defined(__KERNEL__) && !defined(__ASSEMBLY__)
++#if defined(__KERNEL__) && !defined(__ASSEMBLER__)
+ 
+ #include <asm/asm.h>
+ #include <linux/bitops.h>
+@@ -137,5 +137,5 @@ static __always_inline bool _static_cpu_has(u16 bit)
+ #define CPU_FEATURE_TYPEVAL		boot_cpu_data.x86_vendor, boot_cpu_data.x86, \
+ 					boot_cpu_data.x86_model
+ 
+-#endif /* defined(__KERNEL__) && !defined(__ASSEMBLY__) */
++#endif /* defined(__KERNEL__) && !defined(__ASSEMBLER__) */
+ #endif /* _ASM_UM_CPUFEATURE_H */
+diff --git a/arch/um/include/asm/current.h b/arch/um/include/asm/current.h
+index de64e032d66c1..8accc6d6f5026 100644
+--- a/arch/um/include/asm/current.h
++++ b/arch/um/include/asm/current.h
+@@ -5,7 +5,7 @@
+ #include <linux/compiler.h>
+ #include <linux/threads.h>
+ 
+-#ifndef __ASSEMBLY__
++#ifndef __ASSEMBLER__
+ 
+ struct task_struct;
+ extern struct task_struct *cpu_tasks[NR_CPUS];
+@@ -18,6 +18,6 @@ static __always_inline struct task_struct *get_current(void)
+ 
+ #define current get_current()
+ 
+-#endif /* __ASSEMBLY__ */
++#endif /* __ASSEMBLER__ */
+ 
+ #endif /* __ASM_CURRENT_H */
+diff --git a/arch/um/include/asm/page.h b/arch/um/include/asm/page.h
+index 3d516f3ca9c74..6f54254aaf443 100644
+--- a/arch/um/include/asm/page.h
++++ b/arch/um/include/asm/page.h
+@@ -11,7 +11,7 @@
+ 
+ #include <vdso/page.h>
+ 
+-#ifndef __ASSEMBLY__
++#ifndef __ASSEMBLER__
+ 
+ struct page;
+ 
+@@ -94,7 +94,7 @@ extern unsigned long uml_physmem;
+ #include <asm-generic/memory_model.h>
+ #include <asm-generic/getorder.h>
+ 
+-#endif	/* __ASSEMBLY__ */
++#endif	/* __ASSEMBLER__ */
+ 
+ #ifdef CONFIG_X86_32
+ #define __HAVE_ARCH_GATE_AREA 1
+diff --git a/arch/um/include/asm/ptrace-generic.h b/arch/um/include/asm/ptrace-generic.h
+index 4696f24d14920..86d74f9d33cf2 100644
+--- a/arch/um/include/asm/ptrace-generic.h
++++ b/arch/um/include/asm/ptrace-generic.h
+@@ -6,7 +6,7 @@
+ #ifndef __UM_PTRACE_GENERIC_H
+ #define __UM_PTRACE_GENERIC_H
+ 
+-#ifndef __ASSEMBLY__
++#ifndef __ASSEMBLER__
+ 
+ #include <sysdep/ptrace.h>
+ 
+diff --git a/arch/um/include/asm/thread_info.h b/arch/um/include/asm/thread_info.h
+index f9ad06fcc991a..398e86fe3d051 100644
+--- a/arch/um/include/asm/thread_info.h
++++ b/arch/um/include/asm/thread_info.h
+@@ -9,7 +9,7 @@
+ #define THREAD_SIZE_ORDER CONFIG_KERNEL_STACK_ORDER
+ #define THREAD_SIZE ((1 << CONFIG_KERNEL_STACK_ORDER) * PAGE_SIZE)
+ 
+-#ifndef __ASSEMBLY__
++#ifndef __ASSEMBLER__
+ 
+ #include <asm/types.h>
+ #include <asm/page.h>
+diff --git a/arch/um/include/shared/as-layout.h b/arch/um/include/shared/as-layout.h
+index ea65f151bf484..07721d7210b1f 100644
+--- a/arch/um/include/shared/as-layout.h
++++ b/arch/um/include/shared/as-layout.h
+@@ -26,7 +26,7 @@
+ #define STUB_DATA_PAGES 2 /* must be a power of two */
+ #define STUB_END (STUB_DATA + STUB_DATA_PAGES * UM_KERN_PAGE_SIZE)
+ 
+-#ifndef __ASSEMBLY__
++#ifndef __ASSEMBLER__
+ 
+ #include <sysdep/ptrace.h>
+ 
+-- 
+2.48.1
+
 
