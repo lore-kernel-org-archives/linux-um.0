@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 7E55EC28B28
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id B18EEC28B2F
 	for <linux-um@archiver.kernel.org>; Sat, 15 Mar 2025 16:19:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,27 +12,27 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=CJgQ2wkIHHKa0Q8MgZh2TPJk4iofmtw/zlYvQMvYp8E=; b=lSQbiL9DHLRhl6riUZ6LKGbx2K
-	aPY6bMcg1/beV0AL5Ntzl3I+h1K+Mi9fUKfUnN89XzYwD3eQ68aawaLMkaCjNJKrrt+K8JH1ldkO9
-	lf86ISXCYTtv3Ei0ewmJSXGAwtpneA3HcrLKf63dbB1fK0VyojBSZ/UYCg5IJf2iriAGxr5rwarT9
-	SUcEHh5iFc07z3SXRtR2XHaQoTTNX48TybA7EAIWfgCtRNN8KubgjCHw452s3meFKZDtyK1Gbpf8r
-	TMISljgfKlvZNwcHSPmt5CyP9A5b7eDhZr9ad9nCp4CRj16btOevCsH12tJkSySR24eyn3bkl+e8e
-	hNLzCqHg==;
+	bh=xL96vBX1FAZ486BADfZdwybMpXTOWKB1EeLr7E6bT6o=; b=UeGUgMhd5nQbp20q3YbGz05gtE
+	F4jYVP2XNy/kQFnqIjjQopPgqjm9K/5TLb3D4SFFkGhA6nbUCL9QaEpOB+v73kQtPujR0axvxNa9+
+	9Fi5+2pIx62Jkkopc1uQTnrMJlRG3UAobZs9FTg8gaj5mTfGbxVJxe7UvZxGyhNMPbAutyC4eQ94J
+	S3FKivHa2xQ0PnAfcR3nUMbq5aH0ENqMCjWyQdAVR7RiYtyru3pczjmvKMKKl6LUS+Pydok9U2c/r
+	FvRlbXTW1UchUQ8AnY4/wpMcKbemEk4ktkMpvG72HQTn0IqoSr+09V5AbAPWYDiMsoPWIXFbGH9LV
+	Mvo/IWfQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1ttUEd-0000000Gaxr-0Seg;
-	Sat, 15 Mar 2025 16:19:39 +0000
-Received: from out0-216.mail.aliyun.com ([140.205.0.216])
+	id 1ttUEe-0000000GayK-0sKF;
+	Sat, 15 Mar 2025 16:19:40 +0000
+Received: from out0-221.mail.aliyun.com ([140.205.0.221])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1ttUEa-0000000GawS-0BvH
+	id 1ttUEa-0000000GawR-0DOb
 	for linux-um@lists.infradead.org;
-	Sat, 15 Mar 2025 16:19:37 +0000
+	Sat, 15 Mar 2025 16:19:39 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=antgroup.com; s=default;
-	t=1742055570; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=CJgQ2wkIHHKa0Q8MgZh2TPJk4iofmtw/zlYvQMvYp8E=;
-	b=jk1yhCybq4xdK+L/4tEdDoaoJfjehnH7ChEfpkDmLm+kpMO/R0BllL4IOy03MiuJ+l2Wpwp1k1VDzjekxkObxPH/AfJnGZOTOkzVUJnVoXx1OZXjFFIwNVOZfGMTGMwztRsw5Yoru9qFCTms9FihMk0Lh04yVPvsSNgHfpbxmkE=
-Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.buVCVML_1742055565 cluster:ay29)
+	t=1742055568; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=xL96vBX1FAZ486BADfZdwybMpXTOWKB1EeLr7E6bT6o=;
+	b=w93XvpTwuLBALrOejRWUIN+lbBrF8FRa3BbrXeui21aiqj3d9aqINWojuPp8ugL3v22dtuv+l6A/jbu7FqWB4GRh5jwa6URFkjZGY9jnueAMDY+3mjIZxTzaZLvz3FGxCQ+O3ooryzR1E5y8AXpKXqdZF8hjhulzGWPGuO6wGMs=
+Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.buVCVMN_1742055566 cluster:ay29)
           by smtp.aliyun-inc.com;
           Sun, 16 Mar 2025 00:19:26 +0800
 From: "Tiwei Bie" <tiwei.btw@antgroup.com>
@@ -41,17 +41,17 @@ To: richard@nod.at,
 	johannes@sipsolutions.net
 Cc: <linux-um@lists.infradead.org>,
   "Tiwei Bie" <tiwei.btw@antgroup.com>
-Subject: [PATCH 1/3] um: Rewrite the sigio workaround based on epoll and tgkill
-Date: Sun, 16 Mar 2025 00:19:08 +0800
-Message-Id: <20250315161910.4082396-2-tiwei.btw@antgroup.com>
+Subject: [PATCH 2/3] um: virt-pci: Refactor virtio_pcidev into its own module
+Date: Sun, 16 Mar 2025 00:19:09 +0800
+Message-Id: <20250315161910.4082396-3-tiwei.btw@antgroup.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250315161910.4082396-1-tiwei.btw@antgroup.com>
 References: <20250315161910.4082396-1-tiwei.btw@antgroup.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250315_091936_529887_58A96E1D 
-X-CRM114-Status: GOOD (  27.43  )
+X-CRM114-CacheID: sfid-20250315_091936_536118_FD18D245 
+X-CRM114-Status: GOOD (  25.33  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,518 +66,1624 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-The existing sigio workaround implementation removes FDs from the
-poll when events are triggered, requiring users to re-add them via
-add_sigio_fd() after processing. This introduces a potential race
-condition between FD removal in write_sigio_thread() and next_poll
-update in __add_sigio_fd(), and is inefficient due to frequent FD
-removal and re-addition. Rewrite the implementation based on epoll
-and tgkill for improved efficiency and reliability.
+Decouple virt-pci and virtio_pcidev, refactoring virtio_pcidev into
+its own module. Define a set of APIs for virt-pci. This allows for
+future addition of more PCI emulation implementations.
 
 Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
 ---
- arch/um/drivers/random.c       |   2 +-
- arch/um/drivers/rtc_user.c     |   2 +-
- arch/um/include/shared/os.h    |   2 +-
- arch/um/include/shared/sigio.h |   1 -
- arch/um/kernel/sigio.c         |  26 ---
- arch/um/os-Linux/sigio.c       | 330 +++++----------------------------
- 6 files changed, 47 insertions(+), 316 deletions(-)
+ arch/um/drivers/Kconfig         |  12 +-
+ arch/um/drivers/Makefile        |   3 +-
+ arch/um/drivers/virt-pci.c      | 699 ++++++--------------------------
+ arch/um/drivers/virt-pci.h      |  41 ++
+ arch/um/drivers/virtio_pcidev.c | 628 ++++++++++++++++++++++++++++
+ 5 files changed, 794 insertions(+), 589 deletions(-)
+ create mode 100644 arch/um/drivers/virt-pci.h
+ create mode 100644 arch/um/drivers/virtio_pcidev.c
 
-diff --git a/arch/um/drivers/random.c b/arch/um/drivers/random.c
-index da985e0dc69a..ca08c91f47a3 100644
---- a/arch/um/drivers/random.c
-+++ b/arch/um/drivers/random.c
-@@ -79,7 +79,7 @@ static int __init rng_init (void)
- 	if (err < 0)
- 		goto err_out_cleanup_hw;
+diff --git a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
+index ede40a160c5e..9cb196070614 100644
+--- a/arch/um/drivers/Kconfig
++++ b/arch/um/drivers/Kconfig
+@@ -345,16 +345,20 @@ config UML_RTC
+ 	  by providing a fake RTC clock that causes a wakeup at the right
+ 	  time.
  
--	sigio_broken(random_fd);
-+	sigio_broken();
- 	hwrng.name = RNG_MODULE_NAME;
- 	hwrng.read = rng_dev_read;
+-config UML_PCI_OVER_VIRTIO
+-	bool "Enable PCI over VIRTIO device simulation"
+-	# in theory, just VIRTIO is enough, but that causes recursion
+-	depends on VIRTIO_UML
++config UML_PCI
++	bool
+ 	select FORCE_PCI
+ 	select UML_IOMEM_EMULATION
+ 	select UML_DMA_EMULATION
+ 	select PCI_MSI
+ 	select PCI_LOCKLESS_CONFIG
  
-diff --git a/arch/um/drivers/rtc_user.c b/arch/um/drivers/rtc_user.c
-index 7c3cec4c68cf..51e79f3148cd 100644
---- a/arch/um/drivers/rtc_user.c
-+++ b/arch/um/drivers/rtc_user.c
-@@ -39,7 +39,7 @@ int uml_rtc_start(bool timetravel)
- 		}
++config UML_PCI_OVER_VIRTIO
++	bool "Enable PCI over VIRTIO device simulation"
++	# in theory, just VIRTIO is enough, but that causes recursion
++	depends on VIRTIO_UML
++	select UML_PCI
++
+ config UML_PCI_OVER_VIRTIO_DEVICE_ID
+ 	int "set the virtio device ID for PCI emulation"
+ 	default -1
+diff --git a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
+index 57882e6bc215..0a5820343ad3 100644
+--- a/arch/um/drivers/Makefile
++++ b/arch/um/drivers/Makefile
+@@ -60,7 +60,8 @@ obj-$(CONFIG_BLK_DEV_COW_COMMON) += cow_user.o
+ obj-$(CONFIG_UML_RANDOM) += random.o
+ obj-$(CONFIG_VIRTIO_UML) += virtio_uml.o
+ obj-$(CONFIG_UML_RTC) += rtc.o
+-obj-$(CONFIG_UML_PCI_OVER_VIRTIO) += virt-pci.o
++obj-$(CONFIG_UML_PCI) += virt-pci.o
++obj-$(CONFIG_UML_PCI_OVER_VIRTIO) += virtio_pcidev.o
  
- 		/* apparently timerfd won't send SIGIO, use workaround */
--		sigio_broken(uml_rtc_irq_fds[0]);
-+		sigio_broken();
- 		err = add_sigio_fd(uml_rtc_irq_fds[0]);
- 		if (err < 0) {
- 			close(uml_rtc_irq_fds[0]);
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index c4f8f990ffb8..9a146912dd75 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -315,7 +315,7 @@ extern void um_irqs_resume(void);
- extern int add_sigio_fd(int fd);
- extern int ignore_sigio_fd(int fd);
- extern void maybe_sigio_broken(int fd);
--extern void sigio_broken(int fd);
-+extern void sigio_broken(void);
- /*
-  * unlocked versions for IRQ controller code.
-  *
-diff --git a/arch/um/include/shared/sigio.h b/arch/um/include/shared/sigio.h
-index e60c8b227844..c6c2edce1f6d 100644
---- a/arch/um/include/shared/sigio.h
-+++ b/arch/um/include/shared/sigio.h
-@@ -6,7 +6,6 @@
- #ifndef __SIGIO_H__
- #define __SIGIO_H__
- 
--extern int write_sigio_irq(int fd);
- extern void sigio_lock(void);
- extern void sigio_unlock(void);
- 
-diff --git a/arch/um/kernel/sigio.c b/arch/um/kernel/sigio.c
-index 5085a50c3b8c..4fc04742048a 100644
---- a/arch/um/kernel/sigio.c
-+++ b/arch/um/kernel/sigio.c
-@@ -8,32 +8,6 @@
- #include <os.h>
- #include <sigio.h>
- 
--/* Protected by sigio_lock() called from write_sigio_workaround */
--static int sigio_irq_fd = -1;
--
--static irqreturn_t sigio_interrupt(int irq, void *data)
--{
--	char c;
--
--	os_read_file(sigio_irq_fd, &c, sizeof(c));
--	return IRQ_HANDLED;
--}
--
--int write_sigio_irq(int fd)
--{
--	int err;
--
--	err = um_request_irq(SIGIO_WRITE_IRQ, fd, IRQ_READ, sigio_interrupt,
--			     0, "write sigio", NULL);
--	if (err < 0) {
--		printk(KERN_ERR "write_sigio_irq : um_request_irq failed, "
--		       "err = %d\n", err);
--		return -1;
--	}
--	sigio_irq_fd = fd;
--	return 0;
--}
--
- /* These are called from os-Linux/sigio.c to protect its pollfds arrays. */
- static DEFINE_MUTEX(sigio_mutex);
- 
-diff --git a/arch/um/os-Linux/sigio.c b/arch/um/os-Linux/sigio.c
-index 61b348a2ea97..a05a6ecee756 100644
---- a/arch/um/os-Linux/sigio.c
-+++ b/arch/um/os-Linux/sigio.c
-@@ -11,6 +11,7 @@
- #include <sched.h>
- #include <signal.h>
- #include <string.h>
-+#include <sys/epoll.h>
- #include <kern_util.h>
- #include <init.h>
- #include <os.h>
-@@ -23,180 +24,49 @@
+ # pcap_user.o must be added explicitly.
+ USER_OBJS := fd.o null.o pty.o tty.o xterm.o slip_common.o vde_user.o vector_user.o
+diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
+index dd5580f975cc..b83b5a765d4e 100644
+--- a/arch/um/drivers/virt-pci.c
++++ b/arch/um/drivers/virt-pci.c
+@@ -5,52 +5,19 @@
   */
- static struct os_helper_thread *write_sigio_td;
+ #include <linux/module.h>
+ #include <linux/pci.h>
+-#include <linux/virtio.h>
+-#include <linux/virtio_config.h>
+ #include <linux/logic_iomem.h>
+ #include <linux/of_platform.h>
+ #include <linux/irqdomain.h>
+-#include <linux/virtio_pcidev.h>
+-#include <linux/virtio-uml.h>
+-#include <linux/delay.h>
+ #include <linux/msi.h>
+ #include <linux/unaligned.h>
+ #include <irq_kern.h>
  
--/*
-- * These arrays are initialized before the sigio thread is started, and
-- * the descriptors closed after it is killed.  So, it can't see them change.
-- * On the UML side, they are changed under the sigio_lock.
-- */
--#define SIGIO_FDS_INIT {-1, -1}
++#include "virt-pci.h"
++
+ #define MAX_DEVICES 8
+ #define MAX_MSI_VECTORS 32
+ #define CFG_SPACE_SIZE 4096
+ 
+-/* for MSI-X we have a 32-bit payload */
+-#define MAX_IRQ_MSG_SIZE (sizeof(struct virtio_pcidev_msg) + sizeof(u32))
+-#define NUM_IRQ_MSGS	10
 -
--static int write_sigio_fds[2] = SIGIO_FDS_INIT;
--static int sigio_private[2] = SIGIO_FDS_INIT;
-+static int epollfd = -1;
- 
--struct pollfds {
--	struct pollfd *poll;
--	int size;
--	int used;
+-struct um_pci_message_buffer {
+-	struct virtio_pcidev_msg hdr;
+-	u8 data[8];
 -};
-+#define MAX_EPOLL_EVENTS 64
- 
--/*
-- * Protected by sigio_lock().  Used by the sigio thread, but the UML thread
-- * synchronizes with it.
-- */
--static struct pollfds current_poll;
--static struct pollfds next_poll;
--static struct pollfds all_sigio_fds;
-+static struct epoll_event epoll_events[MAX_EPOLL_EVENTS];
- 
- static void *write_sigio_thread(void *unused)
- {
--	struct pollfds *fds, tmp;
--	struct pollfd *p;
--	int i, n, respond_fd;
--	char c;
-+	int pid = getpid();
-+	int r;
- 
- 	os_fix_helper_thread_signals();
- 
--	fds = &current_poll;
- 	while (1) {
--		n = poll(fds->poll, fds->used, -1);
--		if (n < 0) {
-+		r = epoll_wait(epollfd, epoll_events, MAX_EPOLL_EVENTS, -1);
-+		if (r < 0) {
- 			if (errno == EINTR)
- 				continue;
--			printk(UM_KERN_ERR "write_sigio_thread : poll returned "
--			       "%d, errno = %d\n", n, errno);
-+			printk(UM_KERN_ERR "%s: epoll_wait failed, errno = %d\n",
-+			       __func__, errno);
- 		}
--		for (i = 0; i < fds->used; i++) {
--			p = &fds->poll[i];
--			if (p->revents == 0)
--				continue;
--			if (p->fd == sigio_private[1]) {
--				CATCH_EINTR(n = read(sigio_private[1], &c,
--						     sizeof(c)));
--				if (n != sizeof(c))
--					printk(UM_KERN_ERR
--					       "write_sigio_thread : "
--					       "read on socket failed, "
--					       "err = %d\n", errno);
--				tmp = current_poll;
--				current_poll = next_poll;
--				next_poll = tmp;
--				respond_fd = sigio_private[1];
--			}
--			else {
--				respond_fd = write_sigio_fds[1];
--				fds->used--;
--				memmove(&fds->poll[i], &fds->poll[i + 1],
--					(fds->used - i) * sizeof(*fds->poll));
--			}
 -
--			CATCH_EINTR(n = write(respond_fd, &c, sizeof(c)));
--			if (n != sizeof(c))
--				printk(UM_KERN_ERR "write_sigio_thread : "
--				       "write on socket failed, err = %d\n",
--				       errno);
+-struct um_pci_device {
+-	struct virtio_device *vdev;
+-
+-	/* for now just standard BARs */
+-	u8 resptr[PCI_STD_NUM_BARS];
+-
+-	struct virtqueue *cmd_vq, *irq_vq;
+-
+-#define UM_PCI_WRITE_BUFS	20
+-	struct um_pci_message_buffer bufs[UM_PCI_WRITE_BUFS + 1];
+-	void *extra_ptrs[UM_PCI_WRITE_BUFS + 1];
+-	DECLARE_BITMAP(used_bufs, UM_PCI_WRITE_BUFS);
+-
+-#define UM_PCI_STAT_WAITING	0
+-	unsigned long status;
+-
+-	int irq;
+-
+-	bool platform;
+-};
+-
+ struct um_pci_device_reg {
+ 	struct um_pci_device *dev;
+ 	void __iomem *iomem;
+@@ -65,179 +32,15 @@ static struct irq_domain *um_pci_inner_domain;
+ static struct irq_domain *um_pci_msi_domain;
+ static unsigned long um_pci_msi_used[BITS_TO_LONGS(MAX_MSI_VECTORS)];
+ 
+-static unsigned int um_pci_max_delay_us = 40000;
+-module_param_named(max_delay_us, um_pci_max_delay_us, uint, 0644);
+-
+-static int um_pci_get_buf(struct um_pci_device *dev, bool *posted)
+-{
+-	int i;
+-
+-	for (i = 0; i < UM_PCI_WRITE_BUFS; i++) {
+-		if (!test_and_set_bit(i, dev->used_bufs))
+-			return i;
+-	}
+-
+-	*posted = false;
+-	return UM_PCI_WRITE_BUFS;
+-}
+-
+-static void um_pci_free_buf(struct um_pci_device *dev, void *buf)
+-{
+-	int i;
+-
+-	if (buf == &dev->bufs[UM_PCI_WRITE_BUFS]) {
+-		kfree(dev->extra_ptrs[UM_PCI_WRITE_BUFS]);
+-		dev->extra_ptrs[UM_PCI_WRITE_BUFS] = NULL;
+-		return;
+-	}
+-
+-	for (i = 0; i < UM_PCI_WRITE_BUFS; i++) {
+-		if (buf == &dev->bufs[i]) {
+-			kfree(dev->extra_ptrs[i]);
+-			dev->extra_ptrs[i] = NULL;
+-			WARN_ON(!test_and_clear_bit(i, dev->used_bufs));
+-			return;
 -		}
 -	}
 -
--	return NULL;
+-	WARN_ON(1);
 -}
 -
--static int need_poll(struct pollfds *polls, int n)
+-static int um_pci_send_cmd(struct um_pci_device *dev,
+-			   struct virtio_pcidev_msg *cmd,
+-			   unsigned int cmd_size,
+-			   const void *extra, unsigned int extra_size,
+-			   void *out, unsigned int out_size)
 -{
--	struct pollfd *new;
+-	struct scatterlist out_sg, extra_sg, in_sg;
+-	struct scatterlist *sgs_list[] = {
+-		[0] = &out_sg,
+-		[1] = extra ? &extra_sg : &in_sg,
+-		[2] = extra ? &in_sg : NULL,
+-	};
+-	struct um_pci_message_buffer *buf;
+-	int delay_count = 0;
+-	bool bounce_out;
+-	int ret, len;
+-	int buf_idx;
+-	bool posted;
 -
--	if (n <= polls->size)
+-	if (WARN_ON(cmd_size < sizeof(*cmd) || cmd_size > sizeof(*buf)))
+-		return -EINVAL;
+-
+-	switch (cmd->op) {
+-	case VIRTIO_PCIDEV_OP_CFG_WRITE:
+-	case VIRTIO_PCIDEV_OP_MMIO_WRITE:
+-	case VIRTIO_PCIDEV_OP_MMIO_MEMSET:
+-		/* in PCI, writes are posted, so don't wait */
+-		posted = !out;
+-		WARN_ON(!posted);
+-		break;
+-	default:
+-		posted = false;
+-		break;
+-	}
+-
+-	bounce_out = !posted && cmd_size <= sizeof(*cmd) &&
+-		     out && out_size <= sizeof(buf->data);
+-
+-	buf_idx = um_pci_get_buf(dev, &posted);
+-	buf = &dev->bufs[buf_idx];
+-	memcpy(buf, cmd, cmd_size);
+-
+-	if (posted && extra && extra_size > sizeof(buf) - cmd_size) {
+-		dev->extra_ptrs[buf_idx] = kmemdup(extra, extra_size,
+-						   GFP_ATOMIC);
+-
+-		if (!dev->extra_ptrs[buf_idx]) {
+-			um_pci_free_buf(dev, buf);
+-			return -ENOMEM;
+-		}
+-		extra = dev->extra_ptrs[buf_idx];
+-	} else if (extra && extra_size <= sizeof(buf) - cmd_size) {
+-		memcpy((u8 *)buf + cmd_size, extra, extra_size);
+-		cmd_size += extra_size;
+-		extra_size = 0;
+-		extra = NULL;
+-		cmd = (void *)buf;
+-	} else {
+-		cmd = (void *)buf;
+-	}
+-
+-	sg_init_one(&out_sg, cmd, cmd_size);
+-	if (extra)
+-		sg_init_one(&extra_sg, extra, extra_size);
+-	/* allow stack for small buffers */
+-	if (bounce_out)
+-		sg_init_one(&in_sg, buf->data, out_size);
+-	else if (out)
+-		sg_init_one(&in_sg, out, out_size);
+-
+-	/* add to internal virtio queue */
+-	ret = virtqueue_add_sgs(dev->cmd_vq, sgs_list,
+-				extra ? 2 : 1,
+-				out ? 1 : 0,
+-				cmd, GFP_ATOMIC);
+-	if (ret) {
+-		um_pci_free_buf(dev, buf);
+-		return ret;
+-	}
+-
+-	if (posted) {
+-		virtqueue_kick(dev->cmd_vq);
 -		return 0;
--
--	new = uml_kmalloc(n * sizeof(struct pollfd), UM_GFP_ATOMIC);
--	if (new == NULL) {
--		printk(UM_KERN_ERR "need_poll : failed to allocate new "
--		       "pollfds\n");
--		return -ENOMEM;
 -	}
 -
--	memcpy(new, polls->poll, polls->used * sizeof(struct pollfd));
--	kfree(polls->poll);
+-	/* kick and poll for getting a response on the queue */
+-	set_bit(UM_PCI_STAT_WAITING, &dev->status);
+-	virtqueue_kick(dev->cmd_vq);
+-	ret = 0;
 -
--	polls->poll = new;
--	polls->size = n;
--	return 0;
+-	while (1) {
+-		void *completed = virtqueue_get_buf(dev->cmd_vq, &len);
+-
+-		if (completed == buf)
+-			break;
+-
+-		if (completed)
+-			um_pci_free_buf(dev, completed);
+-
+-		if (WARN_ONCE(virtqueue_is_broken(dev->cmd_vq) ||
+-			      ++delay_count > um_pci_max_delay_us,
+-			      "um virt-pci delay: %d", delay_count)) {
+-			ret = -EIO;
+-			break;
+-		}
+-		udelay(1);
+-	}
+-	clear_bit(UM_PCI_STAT_WAITING, &dev->status);
+-
+-	if (bounce_out)
+-		memcpy(out, buf->data, out_size);
+-
+-	um_pci_free_buf(dev, buf);
+-
+-	return ret;
 -}
 -
--/*
-- * Must be called with sigio_lock held, because it's needed by the marked
-- * critical section.
-- */
--static void update_thread(void)
--{
--	unsigned long flags;
--	int n;
--	char c;
--
--	flags = um_set_signals_trace(0);
--	CATCH_EINTR(n = write(sigio_private[0], &c, sizeof(c)));
--	if (n != sizeof(c)) {
--		printk(UM_KERN_ERR "update_thread : write failed, err = %d\n",
--		       errno);
--		goto fail;
--	}
+ static unsigned long um_pci_cfgspace_read(void *priv, unsigned int offset,
+ 					  int size)
+ {
+ 	struct um_pci_device_reg *reg = priv;
+ 	struct um_pci_device *dev = reg->dev;
+-	struct virtio_pcidev_msg hdr = {
+-		.op = VIRTIO_PCIDEV_OP_CFG_READ,
+-		.size = size,
+-		.addr = offset,
+-	};
+-	/* max 8, we might not use it all */
+-	u8 data[8];
  
--	CATCH_EINTR(n = read(sigio_private[0], &c, sizeof(c)));
--	if (n != sizeof(c)) {
--		printk(UM_KERN_ERR "update_thread : read failed, err = %d\n",
--		       errno);
--		goto fail;
-+		CATCH_EINTR(r = tgkill(pid, pid, SIGIO));
-+		if (r < 0)
-+			printk(UM_KERN_ERR "%s: tgkill failed, errno = %d\n",
-+			       __func__, errno);
+ 	if (!dev)
+ 		return ULONG_MAX;
+ 
+-	memset(data, 0xff, sizeof(data));
+-
+ 	switch (size) {
+ 	case 1:
+ 	case 2:
+@@ -251,23 +54,7 @@ static unsigned long um_pci_cfgspace_read(void *priv, unsigned int offset,
+ 		return ULONG_MAX;
  	}
  
--	um_set_signals_trace(flags);
--	return;
-- fail:
--	/* Critical section start */
--	if (write_sigio_td) {
--		os_kill_helper_thread(write_sigio_td);
--		write_sigio_td = NULL;
+-	if (um_pci_send_cmd(dev, &hdr, sizeof(hdr), NULL, 0, data, size))
+-		return ULONG_MAX;
+-
+-	switch (size) {
+-	case 1:
+-		return data[0];
+-	case 2:
+-		return le16_to_cpup((void *)data);
+-	case 4:
+-		return le32_to_cpup((void *)data);
+-#ifdef CONFIG_64BIT
+-	case 8:
+-		return le64_to_cpup((void *)data);
+-#endif
+-	default:
+-		return ULONG_MAX;
 -	}
--	close(sigio_private[0]);
--	close(sigio_private[1]);
--	close(write_sigio_fds[0]);
--	close(write_sigio_fds[1]);
--	/* Critical section end */
--	um_set_signals_trace(flags);
-+	return NULL;
++	return dev->ops->cfgspace_read(dev, offset, size);
  }
  
- int __add_sigio_fd(int fd)
+ static void um_pci_cfgspace_write(void *priv, unsigned int offset, int size,
+@@ -275,42 +62,24 @@ static void um_pci_cfgspace_write(void *priv, unsigned int offset, int size,
  {
--	struct pollfd *p;
--	int err, i, n;
--
--	for (i = 0; i < all_sigio_fds.used; i++) {
--		if (all_sigio_fds.poll[i].fd == fd)
--			break;
--	}
--	if (i == all_sigio_fds.used)
--		return -ENOSPC;
--
--	p = &all_sigio_fds.poll[i];
--
--	for (i = 0; i < current_poll.used; i++) {
--		if (current_poll.poll[i].fd == fd)
--			return 0;
--	}
--
--	n = current_poll.used;
--	err = need_poll(&next_poll, n + 1);
--	if (err)
--		return err;
--
--	memcpy(next_poll.poll, current_poll.poll,
--	       current_poll.used * sizeof(struct pollfd));
--	next_poll.poll[n] = *p;
--	next_poll.used = n + 1;
--	update_thread();
--
--	return 0;
-+	struct epoll_event event = {
-+		.data.fd = fd,
-+		.events = EPOLLIN | EPOLLET,
-+	};
-+	int r;
-+
-+	CATCH_EINTR(r = epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &event));
-+	return r < 0 ? -errno : 0;
- }
+ 	struct um_pci_device_reg *reg = priv;
+ 	struct um_pci_device *dev = reg->dev;
+-	struct {
+-		struct virtio_pcidev_msg hdr;
+-		/* maximum size - we may only use parts of it */
+-		u8 data[8];
+-	} msg = {
+-		.hdr = {
+-			.op = VIRTIO_PCIDEV_OP_CFG_WRITE,
+-			.size = size,
+-			.addr = offset,
+-		},
+-	};
  
--
- int add_sigio_fd(int fd)
- {
- 	int err;
-@@ -210,38 +80,11 @@ int add_sigio_fd(int fd)
- 
- int __ignore_sigio_fd(int fd)
- {
--	struct pollfd *p;
--	int err, i, n = 0;
--
--	/*
--	 * This is called from exitcalls elsewhere in UML - if
--	 * sigio_cleanup has already run, then update_thread will hang
--	 * or fail because the thread is no longer running.
--	 */
--	if (!write_sigio_td)
--		return -EIO;
--
--	for (i = 0; i < current_poll.used; i++) {
--		if (current_poll.poll[i].fd == fd)
--			break;
--	}
--	if (i == current_poll.used)
--		return -ENOENT;
--
--	err = need_poll(&next_poll, current_poll.used - 1);
--	if (err)
--		return err;
-+	struct epoll_event event;
-+	int r;
- 
--	for (i = 0; i < current_poll.used; i++) {
--		p = &current_poll.poll[i];
--		if (p->fd != fd)
--			next_poll.poll[n++] = *p;
--	}
--	next_poll.used = current_poll.used - 1;
--
--	update_thread();
--
--	return 0;
-+	CATCH_EINTR(r = epoll_ctl(epollfd, EPOLL_CTL_DEL, fd, &event));
-+	return r < 0 ? -errno : 0;
- }
- 
- int ignore_sigio_fd(int fd)
-@@ -255,122 +98,37 @@ int ignore_sigio_fd(int fd)
- 	return err;
- }
- 
--static struct pollfd *setup_initial_poll(int fd)
--{
--	struct pollfd *p;
--
--	p = uml_kmalloc(sizeof(struct pollfd), UM_GFP_KERNEL);
--	if (p == NULL) {
--		printk(UM_KERN_ERR "setup_initial_poll : failed to allocate "
--		       "poll\n");
--		return NULL;
--	}
--	*p = ((struct pollfd) { .fd		= fd,
--				.events 	= POLLIN,
--				.revents 	= 0 });
--	return p;
--}
--
- static void write_sigio_workaround(void)
- {
--	struct pollfd *p;
- 	int err;
--	int l_write_sigio_fds[2];
--	int l_sigio_private[2];
--	struct os_helper_thread *l_write_sigio_td;
--
--	/* We call this *tons* of times - and most ones we must just fail. */
--	sigio_lock();
--	l_write_sigio_td = write_sigio_td;
--	sigio_unlock();
--
--	if (l_write_sigio_td)
--		return;
--
--	err = os_pipe(l_write_sigio_fds, 1, 1);
--	if (err < 0) {
--		printk(UM_KERN_ERR "write_sigio_workaround - os_pipe 1 failed, "
--		       "err = %d\n", -err);
--		return;
--	}
--	err = os_pipe(l_sigio_private, 1, 1);
--	if (err < 0) {
--		printk(UM_KERN_ERR "write_sigio_workaround - os_pipe 2 failed, "
--		       "err = %d\n", -err);
--		goto out_close1;
--	}
--
--	p = setup_initial_poll(l_sigio_private[1]);
--	if (!p)
--		goto out_close2;
- 
- 	sigio_lock();
--
--	/*
--	 * Did we race? Don't try to optimize this, please, it's not so likely
--	 * to happen, and no more than once at the boot.
--	 */
- 	if (write_sigio_td)
--		goto out_free;
--
--	current_poll = ((struct pollfds) { .poll 	= p,
--					   .used 	= 1,
--					   .size 	= 1 });
--
--	if (write_sigio_irq(l_write_sigio_fds[0]))
--		goto out_clear_poll;
-+		goto out;
- 
--	memcpy(write_sigio_fds, l_write_sigio_fds, sizeof(l_write_sigio_fds));
--	memcpy(sigio_private, l_sigio_private, sizeof(l_sigio_private));
-+	epollfd = epoll_create(MAX_EPOLL_EVENTS);
-+	if (epollfd < 0) {
-+		printk(UM_KERN_ERR "%s: epoll_create failed, errno = %d\n",
-+		       __func__, errno);
-+		goto out;
-+	}
- 
- 	err = os_run_helper_thread(&write_sigio_td, write_sigio_thread, NULL);
--	if (err < 0)
--		goto out_clear;
--
--	sigio_unlock();
--	return;
-+	if (err < 0) {
-+		printk(UM_KERN_ERR "%s: os_run_helper_thread failed, errno = %d\n",
-+		       __func__, -err);
-+		close(epollfd);
-+		epollfd = -1;
-+		goto out;
-+	}
- 
--out_clear:
--	write_sigio_td = NULL;
--	write_sigio_fds[0] = -1;
--	write_sigio_fds[1] = -1;
--	sigio_private[0] = -1;
--	sigio_private[1] = -1;
--out_clear_poll:
--	current_poll = ((struct pollfds) { .poll	= NULL,
--					   .size	= 0,
--					   .used	= 0 });
--out_free:
-+out:
- 	sigio_unlock();
--	kfree(p);
--out_close2:
--	close(l_sigio_private[0]);
--	close(l_sigio_private[1]);
--out_close1:
--	close(l_write_sigio_fds[0]);
--	close(l_write_sigio_fds[1]);
- }
- 
--void sigio_broken(int fd)
-+void sigio_broken(void)
- {
--	int err;
--
- 	write_sigio_workaround();
--
--	sigio_lock();
--	err = need_poll(&all_sigio_fds, all_sigio_fds.used + 1);
--	if (err) {
--		printk(UM_KERN_ERR "maybe_sigio_broken - failed to add pollfd "
--		       "for descriptor %d\n", fd);
--		goto out;
--	}
--
--	all_sigio_fds.poll[all_sigio_fds.used++] =
--		((struct pollfd) { .fd  	= fd,
--				   .events 	= POLLIN,
--				   .revents 	= 0 });
--out:
--	sigio_unlock();
- }
- 
- /* Changed during early boot */
-@@ -384,7 +142,7 @@ void maybe_sigio_broken(int fd)
- 	if (pty_output_sigio)
+ 	if (!dev)
  		return;
  
--	sigio_broken(fd);
-+	sigio_broken();
+ 	switch (size) {
+ 	case 1:
+-		msg.data[0] = (u8)val;
+-		break;
+ 	case 2:
+-		put_unaligned_le16(val, (void *)msg.data);
+-		break;
+ 	case 4:
+-		put_unaligned_le32(val, (void *)msg.data);
+-		break;
+ #ifdef CONFIG_64BIT
+ 	case 8:
+-		put_unaligned_le64(val, (void *)msg.data);
+-		break;
+ #endif
++		break;
+ 	default:
+ 		WARN(1, "invalid config space write size %d\n", size);
+ 		return;
+ 	}
+ 
+-	WARN_ON(um_pci_send_cmd(dev, &msg.hdr, sizeof(msg), NULL, 0, NULL, 0));
++	dev->ops->cfgspace_write(dev, offset, size, val);
  }
  
- static void sigio_cleanup(void)
+ static const struct logic_iomem_ops um_pci_device_cfgspace_ops = {
+@@ -318,30 +87,14 @@ static const struct logic_iomem_ops um_pci_device_cfgspace_ops = {
+ 	.write = um_pci_cfgspace_write,
+ };
+ 
+-static void um_pci_bar_copy_from(void *priv, void *buffer,
+-				 unsigned int offset, int size)
++static unsigned long um_pci_bar_read(void *priv, unsigned int offset,
++				     int size)
+ {
+ 	u8 *resptr = priv;
+ 	struct um_pci_device *dev = container_of(resptr - *resptr,
+ 						 struct um_pci_device,
+ 						 resptr[0]);
+-	struct virtio_pcidev_msg hdr = {
+-		.op = VIRTIO_PCIDEV_OP_MMIO_READ,
+-		.bar = *resptr,
+-		.size = size,
+-		.addr = offset,
+-	};
+-
+-	memset(buffer, 0xff, size);
+-
+-	um_pci_send_cmd(dev, &hdr, sizeof(hdr), NULL, 0, buffer, size);
+-}
+-
+-static unsigned long um_pci_bar_read(void *priv, unsigned int offset,
+-				     int size)
+-{
+-	/* 8 is maximum size - we may only use parts of it */
+-	u8 data[8];
++	u8 bar = *resptr;
+ 
+ 	switch (size) {
+ 	case 1:
+@@ -352,72 +105,60 @@ static unsigned long um_pci_bar_read(void *priv, unsigned int offset,
+ #endif
+ 		break;
+ 	default:
+-		WARN(1, "invalid config space read size %d\n", size);
++		WARN(1, "invalid bar read size %d\n", size);
+ 		return ULONG_MAX;
+ 	}
+ 
+-	um_pci_bar_copy_from(priv, data, offset, size);
++	return dev->ops->bar_read(dev, bar, offset, size);
++}
++
++static void um_pci_bar_write(void *priv, unsigned int offset, int size,
++			     unsigned long val)
++{
++	u8 *resptr = priv;
++	struct um_pci_device *dev = container_of(resptr - *resptr,
++						 struct um_pci_device,
++						 resptr[0]);
++	u8 bar = *resptr;
+ 
+ 	switch (size) {
+ 	case 1:
+-		return data[0];
+ 	case 2:
+-		return le16_to_cpup((void *)data);
+ 	case 4:
+-		return le32_to_cpup((void *)data);
+ #ifdef CONFIG_64BIT
+ 	case 8:
+-		return le64_to_cpup((void *)data);
+ #endif
++		break;
+ 	default:
+-		return ULONG_MAX;
++		WARN(1, "invalid bar write size %d\n", size);
++		return;
+ 	}
++
++	dev->ops->bar_write(dev, bar, offset, size, val);
+ }
+ 
+-static void um_pci_bar_copy_to(void *priv, unsigned int offset,
+-			       const void *buffer, int size)
++static void um_pci_bar_copy_from(void *priv, void *buffer,
++				 unsigned int offset, int size)
+ {
+ 	u8 *resptr = priv;
+ 	struct um_pci_device *dev = container_of(resptr - *resptr,
+ 						 struct um_pci_device,
+ 						 resptr[0]);
+-	struct virtio_pcidev_msg hdr = {
+-		.op = VIRTIO_PCIDEV_OP_MMIO_WRITE,
+-		.bar = *resptr,
+-		.size = size,
+-		.addr = offset,
+-	};
++	u8 bar = *resptr;
+ 
+-	um_pci_send_cmd(dev, &hdr, sizeof(hdr), buffer, size, NULL, 0);
++	dev->ops->bar_copy_from(dev, bar, buffer, offset, size);
+ }
+ 
+-static void um_pci_bar_write(void *priv, unsigned int offset, int size,
+-			     unsigned long val)
++static void um_pci_bar_copy_to(void *priv, unsigned int offset,
++			       const void *buffer, int size)
+ {
+-	/* maximum size - we may only use parts of it */
+-	u8 data[8];
+-
+-	switch (size) {
+-	case 1:
+-		data[0] = (u8)val;
+-		break;
+-	case 2:
+-		put_unaligned_le16(val, (void *)data);
+-		break;
+-	case 4:
+-		put_unaligned_le32(val, (void *)data);
+-		break;
+-#ifdef CONFIG_64BIT
+-	case 8:
+-		put_unaligned_le64(val, (void *)data);
+-		break;
+-#endif
+-	default:
+-		WARN(1, "invalid config space write size %d\n", size);
+-		return;
+-	}
++	u8 *resptr = priv;
++	struct um_pci_device *dev = container_of(resptr - *resptr,
++						 struct um_pci_device,
++						 resptr[0]);
++	u8 bar = *resptr;
+ 
+-	um_pci_bar_copy_to(priv, offset, data, size);
++	dev->ops->bar_copy_to(dev, bar, offset, buffer, size);
+ }
+ 
+ static void um_pci_bar_set(void *priv, unsigned int offset, u8 value, int size)
+@@ -426,20 +167,9 @@ static void um_pci_bar_set(void *priv, unsigned int offset, u8 value, int size)
+ 	struct um_pci_device *dev = container_of(resptr - *resptr,
+ 						 struct um_pci_device,
+ 						 resptr[0]);
+-	struct {
+-		struct virtio_pcidev_msg hdr;
+-		u8 data;
+-	} msg = {
+-		.hdr = {
+-			.op = VIRTIO_PCIDEV_OP_CFG_WRITE,
+-			.bar = *resptr,
+-			.size = size,
+-			.addr = offset,
+-		},
+-		.data = value,
+-	};
++	u8 bar = *resptr;
+ 
+-	um_pci_send_cmd(dev, &msg.hdr, sizeof(msg), NULL, 0, NULL, 0);
++	dev->ops->bar_set(dev, bar, offset, value, size);
+ }
+ 
+ static const struct logic_iomem_ops um_pci_device_bar_ops = {
+@@ -486,76 +216,6 @@ static void um_pci_rescan(void)
+ 	pci_unlock_rescan_remove();
+ }
+ 
+-static void um_pci_irq_vq_addbuf(struct virtqueue *vq, void *buf, bool kick)
+-{
+-	struct scatterlist sg[1];
+-
+-	sg_init_one(sg, buf, MAX_IRQ_MSG_SIZE);
+-	if (virtqueue_add_inbuf(vq, sg, 1, buf, GFP_ATOMIC))
+-		kfree(buf);
+-	else if (kick)
+-		virtqueue_kick(vq);
+-}
+-
+-static void um_pci_handle_irq_message(struct virtqueue *vq,
+-				      struct virtio_pcidev_msg *msg)
+-{
+-	struct virtio_device *vdev = vq->vdev;
+-	struct um_pci_device *dev = vdev->priv;
+-
+-	if (!dev->irq)
+-		return;
+-
+-	/* we should properly chain interrupts, but on ARCH=um we don't care */
+-
+-	switch (msg->op) {
+-	case VIRTIO_PCIDEV_OP_INT:
+-		generic_handle_irq(dev->irq);
+-		break;
+-	case VIRTIO_PCIDEV_OP_MSI:
+-		/* our MSI message is just the interrupt number */
+-		if (msg->size == sizeof(u32))
+-			generic_handle_irq(le32_to_cpup((void *)msg->data));
+-		else
+-			generic_handle_irq(le16_to_cpup((void *)msg->data));
+-		break;
+-	case VIRTIO_PCIDEV_OP_PME:
+-		/* nothing to do - we already woke up due to the message */
+-		break;
+-	default:
+-		dev_err(&vdev->dev, "unexpected virt-pci message %d\n", msg->op);
+-		break;
+-	}
+-}
+-
+-static void um_pci_cmd_vq_cb(struct virtqueue *vq)
+-{
+-	struct virtio_device *vdev = vq->vdev;
+-	struct um_pci_device *dev = vdev->priv;
+-	void *cmd;
+-	int len;
+-
+-	if (test_bit(UM_PCI_STAT_WAITING, &dev->status))
+-		return;
+-
+-	while ((cmd = virtqueue_get_buf(vq, &len)))
+-		um_pci_free_buf(dev, cmd);
+-}
+-
+-static void um_pci_irq_vq_cb(struct virtqueue *vq)
+-{
+-	struct virtio_pcidev_msg *msg;
+-	int len;
+-
+-	while ((msg = virtqueue_get_buf(vq, &len))) {
+-		if (len >= sizeof(*msg))
+-			um_pci_handle_irq_message(vq, msg);
+-
+-		/* recycle the message buffer */
+-		um_pci_irq_vq_addbuf(vq, msg, true);
+-	}
+-}
+-
+ #ifdef CONFIG_OF
+ /* Copied from arch/x86/kernel/devicetree.c */
+ struct device_node *pcibios_get_phb_of_node(struct pci_bus *bus)
+@@ -577,200 +237,6 @@ struct device_node *pcibios_get_phb_of_node(struct pci_bus *bus)
+ }
+ #endif
+ 
+-static int um_pci_init_vqs(struct um_pci_device *dev)
+-{
+-	struct virtqueue_info vqs_info[] = {
+-		{ "cmd", um_pci_cmd_vq_cb },
+-		{ "irq", um_pci_irq_vq_cb },
+-	};
+-	struct virtqueue *vqs[2];
+-	int err, i;
+-
+-	err = virtio_find_vqs(dev->vdev, 2, vqs, vqs_info, NULL);
+-	if (err)
+-		return err;
+-
+-	dev->cmd_vq = vqs[0];
+-	dev->irq_vq = vqs[1];
+-
+-	virtio_device_ready(dev->vdev);
+-
+-	for (i = 0; i < NUM_IRQ_MSGS; i++) {
+-		void *msg = kzalloc(MAX_IRQ_MSG_SIZE, GFP_KERNEL);
+-
+-		if (msg)
+-			um_pci_irq_vq_addbuf(dev->irq_vq, msg, false);
+-	}
+-
+-	virtqueue_kick(dev->irq_vq);
+-
+-	return 0;
+-}
+-
+-static void __um_pci_virtio_platform_remove(struct virtio_device *vdev,
+-					    struct um_pci_device *dev)
+-{
+-	virtio_reset_device(vdev);
+-	vdev->config->del_vqs(vdev);
+-
+-	mutex_lock(&um_pci_mtx);
+-	um_pci_platform_device = NULL;
+-	mutex_unlock(&um_pci_mtx);
+-
+-	kfree(dev);
+-}
+-
+-static int um_pci_virtio_platform_probe(struct virtio_device *vdev,
+-					struct um_pci_device *dev)
+-{
+-	int ret;
+-
+-	dev->platform = true;
+-
+-	mutex_lock(&um_pci_mtx);
+-
+-	if (um_pci_platform_device) {
+-		mutex_unlock(&um_pci_mtx);
+-		ret = -EBUSY;
+-		goto out_free;
+-	}
+-
+-	ret = um_pci_init_vqs(dev);
+-	if (ret) {
+-		mutex_unlock(&um_pci_mtx);
+-		goto out_free;
+-	}
+-
+-	um_pci_platform_device = dev;
+-
+-	mutex_unlock(&um_pci_mtx);
+-
+-	ret = of_platform_default_populate(vdev->dev.of_node, NULL, &vdev->dev);
+-	if (ret)
+-		__um_pci_virtio_platform_remove(vdev, dev);
+-
+-	return ret;
+-
+-out_free:
+-	kfree(dev);
+-	return ret;
+-}
+-
+-static int um_pci_virtio_probe(struct virtio_device *vdev)
+-{
+-	struct um_pci_device *dev;
+-	int i, free = -1;
+-	int err = -ENOSPC;
+-
+-	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+-	if (!dev)
+-		return -ENOMEM;
+-
+-	dev->vdev = vdev;
+-	vdev->priv = dev;
+-
+-	if (of_device_is_compatible(vdev->dev.of_node, "simple-bus"))
+-		return um_pci_virtio_platform_probe(vdev, dev);
+-
+-	mutex_lock(&um_pci_mtx);
+-	for (i = 0; i < MAX_DEVICES; i++) {
+-		if (um_pci_devices[i].dev)
+-			continue;
+-		free = i;
+-		break;
+-	}
+-
+-	if (free < 0)
+-		goto error;
+-
+-	err = um_pci_init_vqs(dev);
+-	if (err)
+-		goto error;
+-
+-	dev->irq = irq_alloc_desc(numa_node_id());
+-	if (dev->irq < 0) {
+-		err = dev->irq;
+-		goto err_reset;
+-	}
+-	um_pci_devices[free].dev = dev;
+-	vdev->priv = dev;
+-
+-	mutex_unlock(&um_pci_mtx);
+-
+-	device_set_wakeup_enable(&vdev->dev, true);
+-
+-	/*
+-	 * In order to do suspend-resume properly, don't allow VQs
+-	 * to be suspended.
+-	 */
+-	virtio_uml_set_no_vq_suspend(vdev, true);
+-
+-	um_pci_rescan();
+-	return 0;
+-err_reset:
+-	virtio_reset_device(vdev);
+-	vdev->config->del_vqs(vdev);
+-error:
+-	mutex_unlock(&um_pci_mtx);
+-	kfree(dev);
+-	return err;
+-}
+-
+-static void um_pci_virtio_remove(struct virtio_device *vdev)
+-{
+-	struct um_pci_device *dev = vdev->priv;
+-	int i;
+-
+-	if (dev->platform) {
+-		of_platform_depopulate(&vdev->dev);
+-		__um_pci_virtio_platform_remove(vdev, dev);
+-		return;
+-	}
+-
+-	device_set_wakeup_enable(&vdev->dev, false);
+-
+-	mutex_lock(&um_pci_mtx);
+-	for (i = 0; i < MAX_DEVICES; i++) {
+-		if (um_pci_devices[i].dev != dev)
+-			continue;
+-
+-		um_pci_devices[i].dev = NULL;
+-		irq_free_desc(dev->irq);
+-
+-		break;
+-	}
+-	mutex_unlock(&um_pci_mtx);
+-
+-	if (i < MAX_DEVICES) {
+-		struct pci_dev *pci_dev;
+-
+-		pci_dev = pci_get_slot(bridge->bus, i);
+-		if (pci_dev)
+-			pci_stop_and_remove_bus_device_locked(pci_dev);
+-	}
+-
+-	/* Stop all virtqueues */
+-	virtio_reset_device(vdev);
+-	dev->cmd_vq = NULL;
+-	dev->irq_vq = NULL;
+-	vdev->config->del_vqs(vdev);
+-
+-	kfree(dev);
+-}
+-
+-static struct virtio_device_id id_table[] = {
+-	{ CONFIG_UML_PCI_OVER_VIRTIO_DEVICE_ID, VIRTIO_DEV_ANY_ID },
+-	{ 0 },
+-};
+-MODULE_DEVICE_TABLE(virtio, id_table);
+-
+-static struct virtio_driver um_pci_virtio_driver = {
+-	.driver.name = "virtio-pci",
+-	.id_table = id_table,
+-	.probe = um_pci_virtio_probe,
+-	.remove = um_pci_virtio_remove,
+-};
+-
+ static struct resource virt_cfgspace_resource = {
+ 	.name = "PCI config space",
+ 	.start = 0xf0000000 - MAX_DEVICES * CFG_SPACE_SIZE,
+@@ -889,7 +355,7 @@ static void um_pci_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
+ }
+ 
+ static struct irq_chip um_pci_msi_bottom_irq_chip = {
+-	.name = "UM virtio MSI",
++	.name = "UM virtual MSI",
+ 	.irq_compose_msi_msg = um_pci_compose_msi_msg,
+ };
+ 
+@@ -939,7 +405,7 @@ static const struct irq_domain_ops um_pci_inner_domain_ops = {
+ };
+ 
+ static struct irq_chip um_pci_msi_irq_chip = {
+-	.name = "UM virtio PCIe MSI",
++	.name = "UM virtual PCIe MSI",
+ 	.irq_mask = pci_msi_mask_irq,
+ 	.irq_unmask = pci_msi_unmask_irq,
+ };
+@@ -998,6 +464,78 @@ static struct resource virt_platform_resource = {
+ 	.flags = IORESOURCE_MEM,
+ };
+ 
++int um_pci_device_register(struct um_pci_device *dev)
++{
++	int i, free = -1;
++	int err = 0;
++
++	mutex_lock(&um_pci_mtx);
++	for (i = 0; i < MAX_DEVICES; i++) {
++		if (um_pci_devices[i].dev)
++			continue;
++		free = i;
++		break;
++	}
++
++	if (free < 0) {
++		err = -ENOSPC;
++		goto out;
++	}
++
++	dev->irq = irq_alloc_desc(numa_node_id());
++	if (dev->irq < 0) {
++		err = dev->irq;
++		goto out;
++	}
++
++	um_pci_devices[free].dev = dev;
++
++out:
++	mutex_unlock(&um_pci_mtx);
++	if (!err)
++		um_pci_rescan();
++	return err;
++}
++
++void um_pci_device_unregister(struct um_pci_device *dev)
++{
++	int i;
++
++	mutex_lock(&um_pci_mtx);
++	for (i = 0; i < MAX_DEVICES; i++) {
++		if (um_pci_devices[i].dev != dev)
++			continue;
++		um_pci_devices[i].dev = NULL;
++		irq_free_desc(dev->irq);
++		break;
++	}
++	mutex_unlock(&um_pci_mtx);
++
++	if (i < MAX_DEVICES) {
++		struct pci_dev *pci_dev;
++
++		pci_dev = pci_get_slot(bridge->bus, i);
++		if (pci_dev)
++			pci_stop_and_remove_bus_device_locked(pci_dev);
++	}
++}
++
++int um_pci_platform_device_register(struct um_pci_device *dev)
++{
++	guard(mutex)(&um_pci_mtx);
++	if (um_pci_platform_device)
++		return -EBUSY;
++	um_pci_platform_device = dev;
++	return 0;
++}
++
++void um_pci_platform_device_unregister(struct um_pci_device *dev)
++{
++	guard(mutex)(&um_pci_mtx);
++	if (um_pci_platform_device == dev)
++		um_pci_platform_device = NULL;
++}
++
+ static int __init um_pci_init(void)
+ {
+ 	struct irq_domain_info inner_domain_info = {
+@@ -1014,10 +552,6 @@ static int __init um_pci_init(void)
+ 	WARN_ON(logic_iomem_add_region(&virt_platform_resource,
+ 				       &um_pci_platform_ops));
+ 
+-	if (WARN(CONFIG_UML_PCI_OVER_VIRTIO_DEVICE_ID < 0,
+-		 "No virtio device ID configured for PCI - no PCI support\n"))
+-		return 0;
+-
+ 	bridge = pci_alloc_host_bridge(0);
+ 	if (!bridge) {
+ 		err = -ENOMEM;
+@@ -1065,10 +599,8 @@ static int __init um_pci_init(void)
+ 	if (err)
+ 		goto free;
+ 
+-	err = register_virtio_driver(&um_pci_virtio_driver);
+-	if (err)
+-		goto free;
+ 	return 0;
++
+ free:
+ 	if (!IS_ERR_OR_NULL(um_pci_inner_domain))
+ 		irq_domain_remove(um_pci_inner_domain);
+@@ -1080,11 +612,10 @@ static int __init um_pci_init(void)
+ 	}
+ 	return err;
+ }
+-module_init(um_pci_init);
++device_initcall(um_pci_init);
+ 
+ static void __exit um_pci_exit(void)
+ {
+-	unregister_virtio_driver(&um_pci_virtio_driver);
+ 	irq_domain_remove(um_pci_msi_domain);
+ 	irq_domain_remove(um_pci_inner_domain);
+ 	pci_free_resource_list(&bridge->windows);
+diff --git a/arch/um/drivers/virt-pci.h b/arch/um/drivers/virt-pci.h
+new file mode 100644
+index 000000000000..b20d1475d1eb
+--- /dev/null
++++ b/arch/um/drivers/virt-pci.h
+@@ -0,0 +1,41 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __UM_VIRT_PCI_H
++#define __UM_VIRT_PCI_H
++
++#include <linux/pci.h>
++
++struct um_pci_device {
++	const struct um_pci_ops *ops;
++
++	/* for now just standard BARs */
++	u8 resptr[PCI_STD_NUM_BARS];
++
++	int irq;
++};
++
++struct um_pci_ops {
++	unsigned long (*cfgspace_read)(struct um_pci_device *dev,
++				       unsigned int offset, int size);
++	void (*cfgspace_write)(struct um_pci_device *dev, unsigned int offset,
++			       int size, unsigned long val);
++
++	unsigned long (*bar_read)(struct um_pci_device *dev, int bar,
++				  unsigned int offset, int size);
++	void (*bar_write)(struct um_pci_device *dev, int bar,
++			  unsigned int offset, int size, unsigned long val);
++
++	void (*bar_copy_from)(struct um_pci_device *dev, int bar, void *buffer,
++			      unsigned int offset, int size);
++	void (*bar_copy_to)(struct um_pci_device *dev, int bar,
++			    unsigned int offset, const void *buffer, int size);
++	void (*bar_set)(struct um_pci_device *dev, int bar,
++			unsigned int offset, u8 value, int size);
++};
++
++int um_pci_device_register(struct um_pci_device *dev);
++void um_pci_device_unregister(struct um_pci_device *dev);
++
++int um_pci_platform_device_register(struct um_pci_device *dev);
++void um_pci_platform_device_unregister(struct um_pci_device *dev);
++
++#endif /* __UM_VIRT_PCI_H */
+diff --git a/arch/um/drivers/virtio_pcidev.c b/arch/um/drivers/virtio_pcidev.c
+new file mode 100644
+index 000000000000..3c4c4c928fdd
+--- /dev/null
++++ b/arch/um/drivers/virtio_pcidev.c
+@@ -0,0 +1,628 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2020 Intel Corporation
++ * Author: Johannes Berg <johannes@sipsolutions.net>
++ */
++#include <linux/module.h>
++#include <linux/pci.h>
++#include <linux/virtio.h>
++#include <linux/virtio_config.h>
++#include <linux/logic_iomem.h>
++#include <linux/of_platform.h>
++#include <linux/irqdomain.h>
++#include <linux/virtio_pcidev.h>
++#include <linux/virtio-uml.h>
++#include <linux/delay.h>
++#include <linux/msi.h>
++#include <linux/unaligned.h>
++#include <irq_kern.h>
++
++#include "virt-pci.h"
++
++#define to_virtio_pcidev(_pdev) \
++	container_of(_pdev, struct virtio_pcidev_device, pdev)
++
++/* for MSI-X we have a 32-bit payload */
++#define MAX_IRQ_MSG_SIZE (sizeof(struct virtio_pcidev_msg) + sizeof(u32))
++#define NUM_IRQ_MSGS	10
++
++struct virtio_pcidev_message_buffer {
++	struct virtio_pcidev_msg hdr;
++	u8 data[8];
++};
++
++struct virtio_pcidev_device {
++	struct um_pci_device pdev;
++	struct virtio_device *vdev;
++
++	struct virtqueue *cmd_vq, *irq_vq;
++
++#define VIRTIO_PCIDEV_WRITE_BUFS	20
++	struct virtio_pcidev_message_buffer bufs[VIRTIO_PCIDEV_WRITE_BUFS + 1];
++	void *extra_ptrs[VIRTIO_PCIDEV_WRITE_BUFS + 1];
++	DECLARE_BITMAP(used_bufs, VIRTIO_PCIDEV_WRITE_BUFS);
++
++#define UM_PCI_STAT_WAITING	0
++	unsigned long status;
++
++	bool platform;
++};
++
++static unsigned int virtio_pcidev_max_delay_us = 40000;
++module_param_named(max_delay_us, virtio_pcidev_max_delay_us, uint, 0644);
++
++static int virtio_pcidev_get_buf(struct virtio_pcidev_device *dev, bool *posted)
++{
++	int i;
++
++	for (i = 0; i < VIRTIO_PCIDEV_WRITE_BUFS; i++) {
++		if (!test_and_set_bit(i, dev->used_bufs))
++			return i;
++	}
++
++	*posted = false;
++	return VIRTIO_PCIDEV_WRITE_BUFS;
++}
++
++static void virtio_pcidev_free_buf(struct virtio_pcidev_device *dev, void *buf)
++{
++	int i;
++
++	if (buf == &dev->bufs[VIRTIO_PCIDEV_WRITE_BUFS]) {
++		kfree(dev->extra_ptrs[VIRTIO_PCIDEV_WRITE_BUFS]);
++		dev->extra_ptrs[VIRTIO_PCIDEV_WRITE_BUFS] = NULL;
++		return;
++	}
++
++	for (i = 0; i < VIRTIO_PCIDEV_WRITE_BUFS; i++) {
++		if (buf == &dev->bufs[i]) {
++			kfree(dev->extra_ptrs[i]);
++			dev->extra_ptrs[i] = NULL;
++			WARN_ON(!test_and_clear_bit(i, dev->used_bufs));
++			return;
++		}
++	}
++
++	WARN_ON(1);
++}
++
++static int virtio_pcidev_send_cmd(struct virtio_pcidev_device *dev,
++				  struct virtio_pcidev_msg *cmd,
++				  unsigned int cmd_size,
++				  const void *extra, unsigned int extra_size,
++				  void *out, unsigned int out_size)
++{
++	struct scatterlist out_sg, extra_sg, in_sg;
++	struct scatterlist *sgs_list[] = {
++		[0] = &out_sg,
++		[1] = extra ? &extra_sg : &in_sg,
++		[2] = extra ? &in_sg : NULL,
++	};
++	struct virtio_pcidev_message_buffer *buf;
++	int delay_count = 0;
++	bool bounce_out;
++	int ret, len;
++	int buf_idx;
++	bool posted;
++
++	if (WARN_ON(cmd_size < sizeof(*cmd) || cmd_size > sizeof(*buf)))
++		return -EINVAL;
++
++	switch (cmd->op) {
++	case VIRTIO_PCIDEV_OP_CFG_WRITE:
++	case VIRTIO_PCIDEV_OP_MMIO_WRITE:
++	case VIRTIO_PCIDEV_OP_MMIO_MEMSET:
++		/* in PCI, writes are posted, so don't wait */
++		posted = !out;
++		WARN_ON(!posted);
++		break;
++	default:
++		posted = false;
++		break;
++	}
++
++	bounce_out = !posted && cmd_size <= sizeof(*cmd) &&
++		     out && out_size <= sizeof(buf->data);
++
++	buf_idx = virtio_pcidev_get_buf(dev, &posted);
++	buf = &dev->bufs[buf_idx];
++	memcpy(buf, cmd, cmd_size);
++
++	if (posted && extra && extra_size > sizeof(buf) - cmd_size) {
++		dev->extra_ptrs[buf_idx] = kmemdup(extra, extra_size,
++						   GFP_ATOMIC);
++
++		if (!dev->extra_ptrs[buf_idx]) {
++			virtio_pcidev_free_buf(dev, buf);
++			return -ENOMEM;
++		}
++		extra = dev->extra_ptrs[buf_idx];
++	} else if (extra && extra_size <= sizeof(buf) - cmd_size) {
++		memcpy((u8 *)buf + cmd_size, extra, extra_size);
++		cmd_size += extra_size;
++		extra_size = 0;
++		extra = NULL;
++		cmd = (void *)buf;
++	} else {
++		cmd = (void *)buf;
++	}
++
++	sg_init_one(&out_sg, cmd, cmd_size);
++	if (extra)
++		sg_init_one(&extra_sg, extra, extra_size);
++	/* allow stack for small buffers */
++	if (bounce_out)
++		sg_init_one(&in_sg, buf->data, out_size);
++	else if (out)
++		sg_init_one(&in_sg, out, out_size);
++
++	/* add to internal virtio queue */
++	ret = virtqueue_add_sgs(dev->cmd_vq, sgs_list,
++				extra ? 2 : 1,
++				out ? 1 : 0,
++				cmd, GFP_ATOMIC);
++	if (ret) {
++		virtio_pcidev_free_buf(dev, buf);
++		return ret;
++	}
++
++	if (posted) {
++		virtqueue_kick(dev->cmd_vq);
++		return 0;
++	}
++
++	/* kick and poll for getting a response on the queue */
++	set_bit(UM_PCI_STAT_WAITING, &dev->status);
++	virtqueue_kick(dev->cmd_vq);
++	ret = 0;
++
++	while (1) {
++		void *completed = virtqueue_get_buf(dev->cmd_vq, &len);
++
++		if (completed == buf)
++			break;
++
++		if (completed)
++			virtio_pcidev_free_buf(dev, completed);
++
++		if (WARN_ONCE(virtqueue_is_broken(dev->cmd_vq) ||
++			      ++delay_count > virtio_pcidev_max_delay_us,
++			      "um virt-pci delay: %d", delay_count)) {
++			ret = -EIO;
++			break;
++		}
++		udelay(1);
++	}
++	clear_bit(UM_PCI_STAT_WAITING, &dev->status);
++
++	if (bounce_out)
++		memcpy(out, buf->data, out_size);
++
++	virtio_pcidev_free_buf(dev, buf);
++
++	return ret;
++}
++
++static unsigned long virtio_pcidev_cfgspace_read(struct um_pci_device *pdev,
++						 unsigned int offset, int size)
++{
++	struct virtio_pcidev_device *dev = to_virtio_pcidev(pdev);
++	struct virtio_pcidev_msg hdr = {
++		.op = VIRTIO_PCIDEV_OP_CFG_READ,
++		.size = size,
++		.addr = offset,
++	};
++	/* max 8, we might not use it all */
++	u8 data[8];
++
++	memset(data, 0xff, sizeof(data));
++
++	/* size has been checked in um_pci_cfgspace_read() */
++	if (virtio_pcidev_send_cmd(dev, &hdr, sizeof(hdr), NULL, 0, data, size))
++		return ULONG_MAX;
++
++	switch (size) {
++	case 1:
++		return data[0];
++	case 2:
++		return le16_to_cpup((void *)data);
++	case 4:
++		return le32_to_cpup((void *)data);
++#ifdef CONFIG_64BIT
++	case 8:
++		return le64_to_cpup((void *)data);
++#endif
++	default:
++		return ULONG_MAX;
++	}
++}
++
++static void virtio_pcidev_cfgspace_write(struct um_pci_device *pdev,
++					 unsigned int offset, int size,
++					 unsigned long val)
++{
++	struct virtio_pcidev_device *dev = to_virtio_pcidev(pdev);
++	struct {
++		struct virtio_pcidev_msg hdr;
++		/* maximum size - we may only use parts of it */
++		u8 data[8];
++	} msg = {
++		.hdr = {
++			.op = VIRTIO_PCIDEV_OP_CFG_WRITE,
++			.size = size,
++			.addr = offset,
++		},
++	};
++
++	/* size has been checked in um_pci_cfgspace_write() */
++	switch (size) {
++	case 1:
++		msg.data[0] = (u8)val;
++		break;
++	case 2:
++		put_unaligned_le16(val, (void *)msg.data);
++		break;
++	case 4:
++		put_unaligned_le32(val, (void *)msg.data);
++		break;
++#ifdef CONFIG_64BIT
++	case 8:
++		put_unaligned_le64(val, (void *)msg.data);
++		break;
++#endif
++	}
++
++	WARN_ON(virtio_pcidev_send_cmd(dev, &msg.hdr, sizeof(msg), NULL, 0, NULL, 0));
++}
++
++static void virtio_pcidev_bar_copy_from(struct um_pci_device *pdev,
++					int bar, void *buffer,
++					unsigned int offset, int size)
++{
++	struct virtio_pcidev_device *dev = to_virtio_pcidev(pdev);
++	struct virtio_pcidev_msg hdr = {
++		.op = VIRTIO_PCIDEV_OP_MMIO_READ,
++		.bar = bar,
++		.size = size,
++		.addr = offset,
++	};
++
++	memset(buffer, 0xff, size);
++
++	virtio_pcidev_send_cmd(dev, &hdr, sizeof(hdr), NULL, 0, buffer, size);
++}
++
++static unsigned long virtio_pcidev_bar_read(struct um_pci_device *pdev, int bar,
++					    unsigned int offset, int size)
++{
++	/* 8 is maximum size - we may only use parts of it */
++	u8 data[8];
++
++	/* size has been checked in um_pci_bar_read() */
++	virtio_pcidev_bar_copy_from(pdev, bar, data, offset, size);
++
++	switch (size) {
++	case 1:
++		return data[0];
++	case 2:
++		return le16_to_cpup((void *)data);
++	case 4:
++		return le32_to_cpup((void *)data);
++#ifdef CONFIG_64BIT
++	case 8:
++		return le64_to_cpup((void *)data);
++#endif
++	default:
++		return ULONG_MAX;
++	}
++}
++
++static void virtio_pcidev_bar_copy_to(struct um_pci_device *pdev,
++				      int bar, unsigned int offset,
++				      const void *buffer, int size)
++{
++	struct virtio_pcidev_device *dev = to_virtio_pcidev(pdev);
++	struct virtio_pcidev_msg hdr = {
++		.op = VIRTIO_PCIDEV_OP_MMIO_WRITE,
++		.bar = bar,
++		.size = size,
++		.addr = offset,
++	};
++
++	virtio_pcidev_send_cmd(dev, &hdr, sizeof(hdr), buffer, size, NULL, 0);
++}
++
++static void virtio_pcidev_bar_write(struct um_pci_device *pdev, int bar,
++				    unsigned int offset, int size,
++				    unsigned long val)
++{
++	/* maximum size - we may only use parts of it */
++	u8 data[8];
++
++	/* size has been checked in um_pci_bar_write() */
++	switch (size) {
++	case 1:
++		data[0] = (u8)val;
++		break;
++	case 2:
++		put_unaligned_le16(val, (void *)data);
++		break;
++	case 4:
++		put_unaligned_le32(val, (void *)data);
++		break;
++#ifdef CONFIG_64BIT
++	case 8:
++		put_unaligned_le64(val, (void *)data);
++		break;
++#endif
++	}
++
++	virtio_pcidev_bar_copy_to(pdev, bar, offset, data, size);
++}
++
++static void virtio_pcidev_bar_set(struct um_pci_device *pdev, int bar,
++				  unsigned int offset, u8 value, int size)
++{
++	struct virtio_pcidev_device *dev = to_virtio_pcidev(pdev);
++	struct {
++		struct virtio_pcidev_msg hdr;
++		u8 data;
++	} msg = {
++		.hdr = {
++			.op = VIRTIO_PCIDEV_OP_CFG_WRITE,
++			.bar = bar,
++			.size = size,
++			.addr = offset,
++		},
++		.data = value,
++	};
++
++	virtio_pcidev_send_cmd(dev, &msg.hdr, sizeof(msg), NULL, 0, NULL, 0);
++}
++
++static const struct um_pci_ops virtio_pcidev_um_pci_ops = {
++	.cfgspace_read	= virtio_pcidev_cfgspace_read,
++	.cfgspace_write	= virtio_pcidev_cfgspace_write,
++	.bar_read	= virtio_pcidev_bar_read,
++	.bar_write	= virtio_pcidev_bar_write,
++	.bar_copy_from	= virtio_pcidev_bar_copy_from,
++	.bar_copy_to	= virtio_pcidev_bar_copy_to,
++	.bar_set	= virtio_pcidev_bar_set,
++};
++
++static void virtio_pcidev_irq_vq_addbuf(struct virtqueue *vq, void *buf, bool kick)
++{
++	struct scatterlist sg[1];
++
++	sg_init_one(sg, buf, MAX_IRQ_MSG_SIZE);
++	if (virtqueue_add_inbuf(vq, sg, 1, buf, GFP_ATOMIC))
++		kfree(buf);
++	else if (kick)
++		virtqueue_kick(vq);
++}
++
++static void virtio_pcidev_handle_irq_message(struct virtqueue *vq,
++					     struct virtio_pcidev_msg *msg)
++{
++	struct virtio_device *vdev = vq->vdev;
++	struct virtio_pcidev_device *dev = vdev->priv;
++
++	if (!dev->pdev.irq)
++		return;
++
++	/* we should properly chain interrupts, but on ARCH=um we don't care */
++
++	switch (msg->op) {
++	case VIRTIO_PCIDEV_OP_INT:
++		generic_handle_irq(dev->pdev.irq);
++		break;
++	case VIRTIO_PCIDEV_OP_MSI:
++		/* our MSI message is just the interrupt number */
++		if (msg->size == sizeof(u32))
++			generic_handle_irq(le32_to_cpup((void *)msg->data));
++		else
++			generic_handle_irq(le16_to_cpup((void *)msg->data));
++		break;
++	case VIRTIO_PCIDEV_OP_PME:
++		/* nothing to do - we already woke up due to the message */
++		break;
++	default:
++		dev_err(&vdev->dev, "unexpected virt-pci message %d\n", msg->op);
++		break;
++	}
++}
++
++static void virtio_pcidev_cmd_vq_cb(struct virtqueue *vq)
++{
++	struct virtio_device *vdev = vq->vdev;
++	struct virtio_pcidev_device *dev = vdev->priv;
++	void *cmd;
++	int len;
++
++	if (test_bit(UM_PCI_STAT_WAITING, &dev->status))
++		return;
++
++	while ((cmd = virtqueue_get_buf(vq, &len)))
++		virtio_pcidev_free_buf(dev, cmd);
++}
++
++static void virtio_pcidev_irq_vq_cb(struct virtqueue *vq)
++{
++	struct virtio_pcidev_msg *msg;
++	int len;
++
++	while ((msg = virtqueue_get_buf(vq, &len))) {
++		if (len >= sizeof(*msg))
++			virtio_pcidev_handle_irq_message(vq, msg);
++
++		/* recycle the message buffer */
++		virtio_pcidev_irq_vq_addbuf(vq, msg, true);
++	}
++}
++
++static int virtio_pcidev_init_vqs(struct virtio_pcidev_device *dev)
++{
++	struct virtqueue_info vqs_info[] = {
++		{ "cmd", virtio_pcidev_cmd_vq_cb },
++		{ "irq", virtio_pcidev_irq_vq_cb },
++	};
++	struct virtqueue *vqs[2];
++	int err, i;
++
++	err = virtio_find_vqs(dev->vdev, 2, vqs, vqs_info, NULL);
++	if (err)
++		return err;
++
++	dev->cmd_vq = vqs[0];
++	dev->irq_vq = vqs[1];
++
++	virtio_device_ready(dev->vdev);
++
++	for (i = 0; i < NUM_IRQ_MSGS; i++) {
++		void *msg = kzalloc(MAX_IRQ_MSG_SIZE, GFP_KERNEL);
++
++		if (msg)
++			virtio_pcidev_irq_vq_addbuf(dev->irq_vq, msg, false);
++	}
++
++	virtqueue_kick(dev->irq_vq);
++
++	return 0;
++}
++
++static void __virtio_pcidev_virtio_platform_remove(struct virtio_device *vdev,
++						   struct virtio_pcidev_device *dev)
++{
++	um_pci_platform_device_unregister(&dev->pdev);
++
++	virtio_reset_device(vdev);
++	vdev->config->del_vqs(vdev);
++
++	kfree(dev);
++}
++
++static int virtio_pcidev_virtio_platform_probe(struct virtio_device *vdev,
++					       struct virtio_pcidev_device *dev)
++{
++	int err;
++
++	dev->platform = true;
++
++	err = virtio_pcidev_init_vqs(dev);
++	if (err)
++		goto err_free;
++
++	err = um_pci_platform_device_register(&dev->pdev);
++	if (err)
++		goto err_reset;
++
++	err = of_platform_default_populate(vdev->dev.of_node, NULL, &vdev->dev);
++	if (err)
++		goto err_unregister;
++
++	return 0;
++
++err_unregister:
++	um_pci_platform_device_unregister(&dev->pdev);
++err_reset:
++	virtio_reset_device(vdev);
++	vdev->config->del_vqs(vdev);
++err_free:
++	kfree(dev);
++	return err;
++}
++
++static int virtio_pcidev_virtio_probe(struct virtio_device *vdev)
++{
++	struct virtio_pcidev_device *dev;
++	int err;
++
++	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
++	if (!dev)
++		return -ENOMEM;
++
++	dev->vdev = vdev;
++	vdev->priv = dev;
++
++	dev->pdev.ops = &virtio_pcidev_um_pci_ops;
++
++	if (of_device_is_compatible(vdev->dev.of_node, "simple-bus"))
++		return virtio_pcidev_virtio_platform_probe(vdev, dev);
++
++	err = virtio_pcidev_init_vqs(dev);
++	if (err)
++		goto err_free;
++
++	err = um_pci_device_register(&dev->pdev);
++	if (err)
++		goto err_reset;
++
++	device_set_wakeup_enable(&vdev->dev, true);
++
++	/*
++	 * In order to do suspend-resume properly, don't allow VQs
++	 * to be suspended.
++	 */
++	virtio_uml_set_no_vq_suspend(vdev, true);
++
++	return 0;
++
++err_reset:
++	virtio_reset_device(vdev);
++	vdev->config->del_vqs(vdev);
++err_free:
++	kfree(dev);
++	return err;
++}
++
++static void virtio_pcidev_virtio_remove(struct virtio_device *vdev)
++{
++	struct virtio_pcidev_device *dev = vdev->priv;
++
++	if (dev->platform) {
++		of_platform_depopulate(&vdev->dev);
++		__virtio_pcidev_virtio_platform_remove(vdev, dev);
++		return;
++	}
++
++	device_set_wakeup_enable(&vdev->dev, false);
++
++	um_pci_device_unregister(&dev->pdev);
++
++	/* Stop all virtqueues */
++	virtio_reset_device(vdev);
++	dev->cmd_vq = NULL;
++	dev->irq_vq = NULL;
++	vdev->config->del_vqs(vdev);
++
++	kfree(dev);
++}
++
++static struct virtio_device_id id_table[] = {
++	{ CONFIG_UML_PCI_OVER_VIRTIO_DEVICE_ID, VIRTIO_DEV_ANY_ID },
++	{ 0 },
++};
++MODULE_DEVICE_TABLE(virtio, id_table);
++
++static struct virtio_driver virtio_pcidev_virtio_driver = {
++	.driver.name = "virtio-pci",
++	.id_table = id_table,
++	.probe = virtio_pcidev_virtio_probe,
++	.remove = virtio_pcidev_virtio_remove,
++};
++
++static int __init virtio_pcidev_init(void)
++{
++	if (WARN(CONFIG_UML_PCI_OVER_VIRTIO_DEVICE_ID < 0,
++		 "No virtio device ID configured for PCI - no PCI support\n"))
++		return 0;
++
++	return register_virtio_driver(&virtio_pcidev_virtio_driver);
++}
++late_initcall(virtio_pcidev_init);
++
++static void __exit virtio_pcidev_exit(void)
++{
++	unregister_virtio_driver(&virtio_pcidev_virtio_driver);
++}
++module_exit(virtio_pcidev_exit);
 -- 
 2.34.1
 
