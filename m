@@ -4,65 +4,52 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 426E2C35FF1
-	for <linux-um@archiver.kernel.org>; Sat, 15 Mar 2025 01:29:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 9B361C35FF3
+	for <linux-um@archiver.kernel.org>; Sat, 15 Mar 2025 16:19:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=7kvJA5J2TZczMX5j3W0+0Uj/BEd1sOJcH3MzCy03gSc=; b=zj/bCKGynBnDOwbtHNEY3chNkm
-	tK3tbW6XptgIguaYRR4MkA9QnS9QwGKyGbzw0g7aZOBP4G6PndCGqwwKmZ2O3Y1IxIjrEpU4XLb8r
-	h3VCSKt7nNMqNc9gvgGcLgxrGFt+M8WGjg22Ge6dO5dzPRh3GwB3VfOOIzk1wOpsmOjsFmL9RIuSi
-	e/M4BalheU1Qq8iSy90DcdmOA3uRG+AW54KaFZWNefqMRrEvMNqv98nnXjRRZa4KSXfzMO/8elU7J
-	tsqSL88Xel2tACVadOEEyQbdKX/QtIEyfgCIUbBG3BpJvZlWJY+qcrOTM5w989DRK4+cThSYzK17q
-	1qx+a9fw==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Owner;
+	bh=xvTDNWCr1bMNnKENyAX+tMPkf6SKgIIgvshxR2S18NU=; b=nyDCNk0XYgjrXv8FSQLorXoqAJ
+	FYsoLK5M+94TYTkPZGL2gcCPjsiSG2F6j8WucqUB+FmurUGYkHeqHQknvrF2GB7IMNtri24urtjLg
+	BuzSgXvhOvndQMxb3J/ah5sGXh8ZhJpwkKD5Wbmb3qpZeWR0pnWhei5K/E+yvpxXaUi0txy2QRuYT
+	6HLHb4QtnyTenEHu10lgpgf+Zlm238msOQaIvh/8wys7OJFaMbpSbdJ96snQWnGGrarKpZtjuTFXz
+	rH6MP/YQJG99681EIKhSiVwe4mpb3yMynEqv/tGSy2QFybgajJGPt6SbUUYZvQ4EKBE5GvcjkPqC1
+	NNzKL+Gg==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1ttGL5-0000000FemR-123P;
-	Sat, 15 Mar 2025 01:29:23 +0000
-Received: from dfw.source.kernel.org ([139.178.84.217])
+	id 1ttUEc-0000000Gaxf-3Pg8;
+	Sat, 15 Mar 2025 16:19:38 +0000
+Received: from out0-199.mail.aliyun.com ([140.205.0.199])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1ttGL3-0000000Fem3-27tw
+	id 1ttUEZ-0000000GawP-0iL8
 	for linux-um@lists.infradead.org;
-	Sat, 15 Mar 2025 01:29:22 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by dfw.source.kernel.org (Postfix) with ESMTP id 9477B5C5627;
-	Sat, 15 Mar 2025 01:27:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD195C4CEE3;
-	Sat, 15 Mar 2025 01:29:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742002160;
-	bh=8a6cudezYN/0qR1pL7XJ08PJlQfplrgDXzVya/SnALQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RIrG5u4ftpB176s1kEmxAORX/BkabYCDhX5MqOyQLYgBDE/NcSyWbDJusUpkEUH7O
-	 aD4buzVX0OxT5jm7zTuEMiPKG9UaZGZpEy05zyjr5ytRHEOmFN3BtFsFP7WC7RMt+d
-	 ku0zJ9gNCxwarMhceDv4A1oPw8PPQy2URSbv9nS6FRhQdgjOsRyc+swIuehKzyMluz
-	 xDD+fPwPQo7xOeYy1n/OLPZWWh9BJSSGTcApvCVe/kDIHUHHO5qlO9joPc1+QcLaH+
-	 SLNoMCKec75dCA+tIY+sLRp4OrjNuoPCR2hF6p5VIZPKLwLTHjFYPCOSIuZGvlFoyG
-	 XEIqcriCcjEnA==
-Date: Fri, 14 Mar 2025 21:29:18 -0400
-From: Sasha Levin <sashal@kernel.org>
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	Richard Weinberger <richard@nod.at>,
-	anton.ivanov@cambridgegreys.com, mst@redhat.com, jiri@resnulli.us,
-	tglx@linutronix.de, viro@zeniv.linux.org.uk,
-	krzysztof.kozlowski@linaro.org, herve.codina@bootlin.com,
-	linux-um@lists.infradead.org
-Subject: Re: [PATCH AUTOSEL 6.6 14/17] um: virt-pci: don't use kmalloc()
-Message-ID: <Z9TX7vadBvxcrbf9@lappy>
-References: <20250218202743.3593296-1-sashal@kernel.org>
- <20250218202743.3593296-14-sashal@kernel.org>
- <c993aa3a8e86e429d2135974929283a33d0f34ca.camel@sipsolutions.net>
+	Sat, 15 Mar 2025 16:19:37 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=antgroup.com; s=default;
+	t=1742055567; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=xvTDNWCr1bMNnKENyAX+tMPkf6SKgIIgvshxR2S18NU=;
+	b=HSepvHDtiy14yQsEL94+lF5tasGu4WSkv/utY3RPeESgaMO+s1BE431pHupAEPXTrjrwR2p6p5bA/v7JOYWuUyAQwZ86D7/Y32uuP3fppnpgfFRqnje2ugZH3mZgG/yOe8WBsz0H826cQcODXns5v4n3GekXTTVUe9CURzECYqs=
+Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.buVCVLq_1742055559 cluster:ay29)
+          by smtp.aliyun-inc.com;
+          Sun, 16 Mar 2025 00:19:25 +0800
+From: "Tiwei Bie" <tiwei.btw@antgroup.com>
+To: richard@nod.at,
+	anton.ivanov@cambridgegreys.com,
+	johannes@sipsolutions.net
+Cc: <linux-um@lists.infradead.org>,
+  "Tiwei Bie" <tiwei.btw@antgroup.com>
+Subject: [PATCH 0/3] um: Add VFIO-based PCI passthrough support
+Date: Sun, 16 Mar 2025 00:19:07 +0800
+Message-Id: <20250315161910.4082396-1-tiwei.btw@antgroup.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <c993aa3a8e86e429d2135974929283a33d0f34ca.camel@sipsolutions.net>
+Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250314_182921_585836_48731EE1 
-X-CRM114-Status: UNSURE (   9.13  )
+X-CRM114-CacheID: sfid-20250315_091935_733662_F766238F 
+X-CRM114-Status: UNSURE (   9.77  )
 X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
@@ -78,30 +65,66 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Feb 19, 2025 at 08:42:01AM +0100, Johannes Berg wrote:
->On Tue, 2025-02-18 at 15:27 -0500, Sasha Levin wrote:
->> From: Johannes Berg <johannes.berg@intel.com>
->>
->> [ Upstream commit 5b166b782d327f4b66190cc43afd3be36f2b3b7a ]
->>
->> This code can be called deep in the IRQ handling, for
->> example, and then cannot normally use kmalloc(). Have
->> its own pre-allocated memory and use from there instead
->> so this doesn't occur. Only in the (very rare) case of
->> memcpy_toio() we'd still need to allocate memory.
->
->I don't believe this patch, "um: convert irq_lock to raw spinlock" and
->"um: virtio_uml: use raw spinlock", are relevant to anything older than
->6.12. I don't see how applying them would _hurt_, but I didn't have them
->before 6.12 and had no lockdep complaints about it; I believe some other
->internal IRQ rework caused the issues to pop up.
->
->Never mind that we (Intel WiFi stuff) are probably the only ones ever
->running this virtio_uml/virt-pci with lockdep :)
+This patchset adds a new virt-pci driver to UML that allows users to
+pass through host PCI devices to UML via VFIO. Currently, only MSI-X
+capable devices are supported, and drivers are assumed to use MSI-X.
 
-I'll drop it, thanks!
+This driver has been tested with virtio-net-pci, virtio-blk-pci and
+nvme in a QEMU virtual machine with virtual IOMMU enabled. Regression
+testing for virtio_pcidev has only covered compile tests and partial
+virtio probe/remove tests with a dummy vhost-user backend.
+
+Here are some steps to try out this driver:
+
+1. Enable IOMMU and bind PCI devices to the vfio-pci driver.
+
+2. Launch a UML instance directly (assuming that the PCI devices to
+   be passed through to UML are 0000:02:00.0 and 0000:03:00.0).
+
+ $ ./linux mem=2G init=/bin/sh ubd0=$your_rootfs_image \
+           vfio_uml.device=0000:02:00.0 \
+           vfio_uml.device=0000:03:00.0
+
+Note that, currently, it's not possible to allocate a large amount of
+"physical" memory to the UML instance; otherwise, it may overlap with
+IOMMU-reserved IOVA ranges (e.g. [0xfee00000, 0xfef00000)), causing
+DMA mapping failures.
+
+This patchset is based on the following patchset:
+https://lore.kernel.org/all/20250306150747.2926434-1-tiwei.btw@antgroup.com/
+
+v1:
+- Add more details in the commit log;
+
+RFC: https://lore.kernel.org/all/20250310074057.3977758-1-tiwei.btw@antgroup.com/
+
+Tiwei Bie (3):
+  um: Rewrite the sigio workaround based on epoll and tgkill
+  um: virt-pci: Refactor virtio_pcidev into its own module
+  um: Add VFIO-based virtual PCI driver
+
+ arch/um/drivers/Kconfig         |  20 +-
+ arch/um/drivers/Makefile        |   5 +-
+ arch/um/drivers/random.c        |   2 +-
+ arch/um/drivers/rtc_user.c      |   2 +-
+ arch/um/drivers/vfio_kern.c     | 648 +++++++++++++++++++++++++++++
+ arch/um/drivers/vfio_user.c     | 323 +++++++++++++++
+ arch/um/drivers/vfio_user.h     |  44 ++
+ arch/um/drivers/virt-pci.c      | 699 ++++++--------------------------
+ arch/um/drivers/virt-pci.h      |  41 ++
+ arch/um/drivers/virtio_pcidev.c | 628 ++++++++++++++++++++++++++++
+ arch/um/include/shared/os.h     |   2 +-
+ arch/um/include/shared/sigio.h  |   1 -
+ arch/um/kernel/sigio.c          |  26 --
+ arch/um/os-Linux/sigio.c        | 330 ++-------------
+ 14 files changed, 1866 insertions(+), 905 deletions(-)
+ create mode 100644 arch/um/drivers/vfio_kern.c
+ create mode 100644 arch/um/drivers/vfio_user.c
+ create mode 100644 arch/um/drivers/vfio_user.h
+ create mode 100644 arch/um/drivers/virt-pci.h
+ create mode 100644 arch/um/drivers/virtio_pcidev.c
 
 -- 
-Thanks,
-Sasha
+2.34.1
+
 
