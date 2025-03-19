@@ -4,61 +4,57 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 0302AC36000
-	for <linux-um@archiver.kernel.org>; Wed, 19 Mar 2025 09:30:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 8FCF6C35FFA
+	for <linux-um@archiver.kernel.org>; Wed, 19 Mar 2025 12:07:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
 	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=mXk+rbdkCySZh9NaOpuGTIHouTFUF1MyKJDDbU28nxU=; b=tg5asacEwD/NXqEg4jKWS42AEw
-	f6ErzLqrUoXmlzUsFZGC0Te93nJqoPxrFZvXoAQA0VLqqFNbXroTzpuvudgoGPljyGyEKQKECVPik
-	vyvQ3bTR2n2oLQh7iFLTPbUKsqeG8szOJnScy72/oZS3aqSR3lPDn5JmCvDNz2+Wi4Mf2pIEcic55
-	taOLZZBeX2eTs1VWaXgiGxcho0QZNvofR0mLP7K/BHas1Qcig3A06mnEtFtLVI4q+3LreRrfhfxG8
-	tNBOOeIw/ldJdnIsFTJAKkPPYwnDZ4+6ZLmis7jOpZKmfdTXrbQRoMeiebUijulMtxV/yjQq2SFUg
-	s//d01kQ==;
+	bh=58t17/FryLoihx7IbQO2JGVhfBBJ0/DHODS/xHkbCMs=; b=OfOkjEQ1pJGHJSNPm7kI6IXvMV
+	tcKwLE53cLhmb/5U774KjOZ/51haR0DhXZV3zfGinDXcR43ulZD20E8JM1fW97Ai9OWBSWGXm/NX2
+	RVnocWqtdLO/LZIrBLLNjVpe0omJPB8bDy2KUCOSa4Yv4dIa30lDgNJ0/Z/nwrqVLkfpbWgTVh+Qr
+	vkbYnIF40mQdXc1ztTgpLsgZ96HhTs85C94LGc2QYjwrohLr0B/s25zjkO1TvbBzDU4qejM5rRTxj
+	SBE9C0531pYk5tqWqS6ZG3uordr3ocjkyMo90zWOR/zvNRLoVbfFimvschYG+3TYOTYtSEbuJ6qYE
+	HgTSNKxQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tupl7-00000008UIZ-1xJJ;
-	Wed, 19 Mar 2025 09:30:45 +0000
-Received: from tor.source.kernel.org ([172.105.4.254])
+	id 1tusCk-00000008vOZ-0nR1;
+	Wed, 19 Mar 2025 12:07:26 +0000
+Received: from out0-206.mail.aliyun.com ([140.205.0.206])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tupl3-00000008UFt-48PF
+	id 1tusCg-00000008vNJ-3dEJ
 	for linux-um@lists.infradead.org;
-	Wed, 19 Mar 2025 09:30:42 +0000
-Received: from smtp.kernel.org (transwarp.subspace.kernel.org [100.75.92.58])
-	by tor.source.kernel.org (Postfix) with ESMTP id 437EB61631;
-	Wed, 19 Mar 2025 09:30:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 775FFC116C6;
-	Wed, 19 Mar 2025 09:30:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1742376640;
-	bh=NNs8SEwDfc9wDIxk1Dn/+q1ci77lX4vcEi1aTxU5XiQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MSOdQhrgk5hmkbWksclyMaCrFyjiMd812BBwfN6ygHz7ED8jGGeyMaZTbtLXe5n8O
-	 KEvcYqkwKDn39WFsQTWmkyuFLVtijGqcDK+K/6TlZECVAyq5V+YhZbMpXvrpY6iiJF
-	 pG3WX0U8wTJjrq2yEiPbM788lCU2S+X8n08DhxZIeMHaChZ5gIW8ZMt5qiujKnP0y4
-	 xa/bhcUCI4F4gFJ6U/m7OPpqDLAJ+xEzAzyjhOKcfhxYuUvbZNNXsqEbUy61tgQv1B
-	 NP5KiW2AMmsIu7itr9LOqIvX9Dw66V8asl5OKb3KPJjzJ9WlmzkIhV0ZUP14s96rMo
-	 eHpBMcf4K7FkA==
-From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-To: tglx@linutronix.de
-Cc: maz@kernel.org,
-	linux-kernel@vger.kernel.org,
-	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	linux-um@lists.infradead.org
-Subject: [PATCH v2 01/57] irqdomain: um: use irq_domain_create_linear() helper
-Date: Wed, 19 Mar 2025 10:28:54 +0100
-Message-ID: <20250319092951.37667-2-jirislaby@kernel.org>
-X-Mailer: git-send-email 2.49.0
-In-Reply-To: <20250319092951.37667-1-jirislaby@kernel.org>
-References: <20250319092951.37667-1-jirislaby@kernel.org>
+	Wed, 19 Mar 2025 12:07:25 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=antgroup.com; s=default;
+	t=1742386039; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=58t17/FryLoihx7IbQO2JGVhfBBJ0/DHODS/xHkbCMs=;
+	b=WpwanDNGe0BV0puZNR6Al+4a9K+gDHWMf6OdqoCtlOf1HWjMUVckouNwRHLntdN7bYo+fMPNtGsO3ueX0OcBuMj1KY7+xD1qN/wIifjNB5KL7C7Al/i+VuPswtDupFzONF20sVGePrQ4n/JWNpuWBgUpUdyg+aOzi1tw8uVuGYg=
+Received: from 30.230.84.1(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.bxzuehh_1742386030 cluster:ay29)
+          by smtp.aliyun-inc.com;
+          Wed, 19 Mar 2025 20:07:17 +0800
+Message-ID: <3df3cd48-e409-4cd6-8dae-d8062c84bf3d@antgroup.com>
+Date: Wed, 19 Mar 2025 20:07:08 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/4] um: Add pthread-based helper support
+To: Johannes Berg <johannes@sipsolutions.net>, richard@nod.at,
+ anton.ivanov@cambridgegreys.com
+Cc: linux-um@lists.infradead.org
+References: <20250306150747.2926434-1-tiwei.btw@antgroup.com>
+ <20250306150747.2926434-2-tiwei.btw@antgroup.com>
+ <91bdd4a1200950bf26d3cbe1a42cf1beb913a153.camel@sipsolutions.net>
+Content-Language: en-US
+From: "Tiwei Bie" <tiwei.btw@antgroup.com>
+In-Reply-To: <91bdd4a1200950bf26d3cbe1a42cf1beb913a153.camel@sipsolutions.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
+X-CRM114-CacheID: sfid-20250319_050723_402136_13790459 
+X-CRM114-Status: UNSURE (   7.78  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -73,64 +69,32 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-um_pci_init() open-codes what the irq_domain_create_linear() helper
-does already. Use the helper instead of open-coding it.
+On 2025/3/19 17:11, Johannes Berg wrote:
+> On Thu, 2025-03-06 at 23:07 +0800, Tiwei Bie wrote:
+>> +void os_kill_helper_thread(struct os_helper_thread *td)
+>> +{
+>> +	pthread_kill(td->handle, SIGKILL);
+> 
+> This ends up killing everything.
+> 
+[...]
+> 
+> Anyway, the issue is I cannot shut down, I get:
+> 
+> reboot: Power down
+> Killed
+> 
+> and the terminal isn't cleaned up, i.e. shutdown code isn't run.
 
-This needs retval checking modification.
+Whoops, I completely missed that.. :(
 
-Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-um@lists.infradead.org
+Thanks a lot for the test and analysis!
 
-[v2]
-This is new in v2.
----
- arch/um/drivers/virt-pci.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+It seems that SIGKILL will always take the process down [1]. We cannot
+use SIGKILL to kill helper threads anymore after switching to pthread.
 
-diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
-index dd5580f975cc..efe8b474c07b 100644
---- a/arch/um/drivers/virt-pci.c
-+++ b/arch/um/drivers/virt-pci.c
-@@ -1000,11 +1000,6 @@ static struct resource virt_platform_resource = {
- 
- static int __init um_pci_init(void)
- {
--	struct irq_domain_info inner_domain_info = {
--		.size		= MAX_MSI_VECTORS,
--		.hwirq_max	= MAX_MSI_VECTORS,
--		.ops		= &um_pci_inner_domain_ops,
--	};
- 	int err, i;
- 
- 	WARN_ON(logic_iomem_add_region(&virt_cfgspace_resource,
-@@ -1030,10 +1025,10 @@ static int __init um_pci_init(void)
- 		goto free;
- 	}
- 
--	inner_domain_info.fwnode = um_pci_fwnode;
--	um_pci_inner_domain = irq_domain_instantiate(&inner_domain_info);
--	if (IS_ERR(um_pci_inner_domain)) {
--		err = PTR_ERR(um_pci_inner_domain);
-+	um_pci_inner_domain = irq_domain_create_linear(um_pci_fwnode, MAX_MSI_VECTORS,
-+						       &um_pci_inner_domain_ops, NULL);
-+	if (!um_pci_inner_domain) {
-+		err = -ENOMEM;
- 		goto free;
- 	}
- 
-@@ -1070,7 +1065,7 @@ static int __init um_pci_init(void)
- 		goto free;
- 	return 0;
- free:
--	if (!IS_ERR_OR_NULL(um_pci_inner_domain))
-+	if (um_pci_inner_domain)
- 		irq_domain_remove(um_pci_inner_domain);
- 	if (um_pci_fwnode)
- 		irq_domain_free_fwnode(um_pci_fwnode);
--- 
-2.49.0
+[1] https://web.git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/signal.c?h=v6.14-rc7#n1005
 
+Regards,
+Tiwei
 
