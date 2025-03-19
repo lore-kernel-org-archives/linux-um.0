@@ -4,7 +4,7 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id BF578C35FFA
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id CAA2FC3DA4A
 	for <linux-um@archiver.kernel.org>; Wed, 19 Mar 2025 13:55:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
@@ -12,46 +12,47 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
 	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=6dp817P02CEgbm+ak2ponlxXzfEwYBQTmCWdq5Cu3dk=; b=4S7w2wiZtlJ1Js3+6XHQCnjbUB
-	Y5Z0s+abc/Iv6TyCBsOBLPb/R5YVqO/HotuvqldS7kNaIHykcd2VraedD2I6wZFOY/f/XXeGCY8JY
-	M1Q4n3m93PciTuUmiXpM9Xqr2UiA9rgjlJGbwmNxq0ZE3vg3tWIDvSGq4b4akNdy/+q89cKoTBddM
-	2UZbKRcVMlJNCVSlcsu7htRyD1V/A6Wvd20kFyesa3kvsVAVBf8MuNPhqO9Yq3irDg37+xsbYuEoV
-	XRRuksLooSjx8+nfjQdVprnt4PS87groSF/O0xb46L3ohOKHBDX8GwA0BF/pF6cBcPoLUj7P2p7Jg
-	u6aN1wMg==;
+	bh=ijBkvYaNuTQuCxovsWjSE2B1z792CEUqkR3boHR6SXA=; b=1P0cFsyU5EBaUEQEXuY+V9a5oK
+	8XYY18Miy9sMJ95ZYPRn6gQ/ICupuMIzakRtvX/JlY0DBcG7YsTDc8fMatzCBWDTQ22wjf15P2q6i
+	UswzamcBISSxzOXSQ/nmLPydWrfomXT+BOHe0yyRq9sPQooX4Uq9zF3qfNxXJRSPAtjiFk/aqkM1v
+	lxEuzIqVV4YwYQcY2tXeaeqjl9ejGDZk6O66GjILHkbN/sHmmNMgt41OFNxFTwflHakplF1/sYdgd
+	4XfUDZgdirtsqAw4wmRJy3EfGAogTkrXYLFAZRngCGk2n49ONFMuOfgMGRitcn95j5gyGdl0onT12
+	w5vh6m/Q==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tuttX-000000098VM-3yqV;
+	id 1tuttX-000000098V4-0GQf;
 	Wed, 19 Mar 2025 13:55:43 +0000
-Received: from out0-218.mail.aliyun.com ([140.205.0.218])
+Received: from out0-213.mail.aliyun.com ([140.205.0.213])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tuttT-000000098St-1SS9
+	id 1tuttT-000000098Sy-1fjX
 	for linux-um@lists.infradead.org;
-	Wed, 19 Mar 2025 13:55:42 +0000
+	Wed, 19 Mar 2025 13:55:41 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=antgroup.com; s=default;
-	t=1742392534; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=6dp817P02CEgbm+ak2ponlxXzfEwYBQTmCWdq5Cu3dk=;
-	b=ev3kkl5IYxna05UKIY4+a3b+zdUfHvekaGANVpkd2ipkjhKlng7epMY5KKr8EdJ+uh5HC9T9INzzu2W9pjXbJXMX1XggLiMmzIuY49xNNHcgJLRh1uhq0uJUZ1pzO7mr6kLl6ti0Dk96FeNzEaWGpaaQwr8o6GscDjSTAoCfvCY=
-Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.byXmrjr_1742392533 cluster:ay29)
+	t=1742392535; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=ijBkvYaNuTQuCxovsWjSE2B1z792CEUqkR3boHR6SXA=;
+	b=jjKACbGbtXuLOFDVr6ZZzqInIYEBTEOTm7vPaeRaXhQfgkAQdojgZFeUAAnCYw0nJnk0EUSgdUNbWdoUuY+b3QoOpT24yD62b9Vmg7veq0zqJK3ZHdSns3eVJi55VgdrQNUFfGXfKIQ145F9NWz/BT3GVoivKodIUuvVFJ0a3lg=
+Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.byXmrkG_1742392534 cluster:ay29)
           by smtp.aliyun-inc.com;
-          Wed, 19 Mar 2025 21:55:33 +0800
+          Wed, 19 Mar 2025 21:55:34 +0800
 From: "Tiwei Bie" <tiwei.btw@antgroup.com>
 To: richard@nod.at,
 	anton.ivanov@cambridgegreys.com,
 	johannes@sipsolutions.net
 Cc: <linux-um@lists.infradead.org>,
   "Tiwei Bie" <tiwei.btw@antgroup.com>
-Subject: [PATCH v3 1/4] um: Add pthread-based helper support
-Date: Wed, 19 Mar 2025 21:55:20 +0800
-Message-Id: <20250319135523.97050-2-tiwei.btw@antgroup.com>
+Subject: [PATCH v3 4/4] um: Prohibit the VM_CLONE flag in run_helper_thread()
+Date: Wed, 19 Mar 2025 21:55:23 +0800
+Message-Id: <20250319135523.97050-5-tiwei.btw@antgroup.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20250319135523.97050-1-tiwei.btw@antgroup.com>
 References: <20250319135523.97050-1-tiwei.btw@antgroup.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250319_065539_904703_20FF9556 
-X-CRM114-Status: GOOD (  11.48  )
+X-CRM114-CacheID: sfid-20250319_065539_904997_A14E3C26 
+X-CRM114-Status: UNSURE (   7.67  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,110 +67,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-Introduce a new set of utility functions that can be used to create
-pthread-based helpers. Helper threads created in this way will ensure
-thread safety for errno while sharing the same memory space.
+Directly creating helper threads with VM_CLONE using clone can
+compromise the thread safety of errno. Since all these helper
+threads have been converted to use os_run_helper_thread(), let's
+prevent using this flag in run_helper_thread().
 
 Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
 ---
- arch/um/include/shared/os.h |  5 +++
- arch/um/os-Linux/helper.c   | 63 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 68 insertions(+)
+ arch/um/os-Linux/helper.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/um/include/shared/os.h b/arch/um/include/shared/os.h
-index bc02767f0639..d0ae42911cb5 100644
---- a/arch/um/include/shared/os.h
-+++ b/arch/um/include/shared/os.h
-@@ -224,6 +224,11 @@ extern int run_helper_thread(int (*proc)(void *), void *arg,
- 			     unsigned int flags, unsigned long *stack_out);
- extern int helper_wait(int pid);
- 
-+struct os_helper_thread;
-+int os_run_helper_thread(struct os_helper_thread **td_out,
-+			 void *(*routine)(void *), void *arg);
-+void os_kill_helper_thread(struct os_helper_thread *td);
-+void os_fix_helper_thread_signals(void);
- 
- /* umid.c */
- extern int umid_file_name(char *name, char *buf, int len);
 diff --git a/arch/um/os-Linux/helper.c b/arch/um/os-Linux/helper.c
-index 3cb8ac63be6e..df22cba24d82 100644
+index df22cba24d82..89c2ad2a4e3a 100644
 --- a/arch/um/os-Linux/helper.c
 +++ b/arch/um/os-Linux/helper.c
-@@ -8,6 +8,7 @@
- #include <unistd.h>
- #include <errno.h>
- #include <sched.h>
-+#include <pthread.h>
- #include <linux/limits.h>
- #include <sys/socket.h>
- #include <sys/wait.h>
-@@ -167,3 +168,65 @@ int helper_wait(int pid)
- 	} else
- 		return 0;
- }
+@@ -122,6 +122,10 @@ int run_helper_thread(int (*proc)(void *), void *arg, unsigned int flags,
+ 	unsigned long stack, sp;
+ 	int pid, status, err;
+ 
++	/* To share memory space, use os_run_helper_thread() instead. */
++	if (flags & CLONE_VM)
++		return -EINVAL;
 +
-+struct os_helper_thread {
-+	pthread_t handle;
-+};
-+
-+int os_run_helper_thread(struct os_helper_thread **td_out,
-+			 void *(*routine)(void *), void *arg)
-+{
-+	struct os_helper_thread *td;
-+	sigset_t sigset, oset;
-+	int err, flags;
-+
-+	flags = __uml_cant_sleep() ? UM_GFP_ATOMIC : UM_GFP_KERNEL;
-+	td = uml_kmalloc(sizeof(*td), flags);
-+	if (!td)
-+		return -ENOMEM;
-+
-+	sigfillset(&sigset);
-+	if (sigprocmask(SIG_SETMASK, &sigset, &oset) < 0) {
-+		err = -errno;
-+		kfree(td);
-+		return err;
-+	}
-+
-+	err = pthread_create(&td->handle, NULL, routine, arg);
-+
-+	if (sigprocmask(SIG_SETMASK, &oset, NULL) < 0)
-+		panic("Failed to restore the signal mask: %d", errno);
-+
-+	if (err != 0)
-+		kfree(td);
-+	else
-+		*td_out = td;
-+
-+	return -err;
-+}
-+
-+void os_kill_helper_thread(struct os_helper_thread *td)
-+{
-+	pthread_cancel(td->handle);
-+	pthread_join(td->handle, NULL);
-+	kfree(td);
-+}
-+
-+void os_fix_helper_thread_signals(void)
-+{
-+	sigset_t sigset;
-+
-+	sigemptyset(&sigset);
-+
-+	sigaddset(&sigset, SIGWINCH);
-+	sigaddset(&sigset, SIGPIPE);
-+	sigaddset(&sigset, SIGPROF);
-+	sigaddset(&sigset, SIGINT);
-+	sigaddset(&sigset, SIGTERM);
-+	sigaddset(&sigset, SIGCHLD);
-+	sigaddset(&sigset, SIGALRM);
-+	sigaddset(&sigset, SIGIO);
-+	sigaddset(&sigset, SIGUSR1);
-+
-+	pthread_sigmask(SIG_SETMASK, &sigset, NULL);
-+}
+ 	stack = alloc_stack(0, __uml_cant_sleep());
+ 	if (stack == 0)
+ 		return -ENOMEM;
 -- 
 2.34.1
 
