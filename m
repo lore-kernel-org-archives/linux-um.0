@@ -4,54 +4,77 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id C0EC9C35FFC
-	for <linux-um@archiver.kernel.org>; Wed, 19 Mar 2025 13:55:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 970FAC35FFA
+	for <linux-um@archiver.kernel.org>; Wed, 19 Mar 2025 18:47:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=LO55YnJPL63/5LkQVrpMrZ7iNo6O82vjLztXQCcsOWU=; b=ARZ1NFyLh81NIrwPRdMtIBhxJV
-	Y2HLFdgGoM60hlB21jWGBOfR5MBfxbhpn5ONm7HKsFz3pSM0RPWkLonbCX4Cm1EMX2+IK+HrWgY0F
-	LX1C/GHxMnBfLQHgZHUzDka8JZnJevoGAN+RREyhgqUEc3hRDDqz/zp6DNrlHwwEqaw63m2C1qG02
-	HkBV7dDit1bsDSUli2g+5MGP8pWim1x8bBn4tdpsDh1xvUI/PMibP7s8F8s5dGoropoR9247Mcvn5
-	LhIQq4V5YrpzUl6p6gxOyn8xNCQ3ulu4uTVtDCQrVetmayvnWeNdPhQE+vtV28uQeIQLhMiQ9jz5a
-	kTAR5e7Q==;
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
+	bh=zqyBVaYb9ts4lSaXiElKMyansdaMcGaJGQGVhzkplWo=; b=2hXe5jt+Y2h5o046A15/e3JAFE
+	0RNObxi/Yz4oc73SA4xvopGViZ4h6gVMjfXx5l0Z8mtWn/WuqpSv9q0TbXmIjB+oS+ABETsNdT3xl
+	1XCex9PUZW2t6xzMrQGHSmsL9Any5sKIq4lwXtYPBe7AxuejTMFNsRk5w6T37Mr6MGAWLAAn2hjts
+	cDcJiTyK+skkOvlVUN7mbfVP0iO1VO+7a/0PHR/dKRUr5Qte4jBzGdq5l+FaN6q/wWLrxfpkNhwra
+	Tr7tczuz+EfaQ4BDrM5G0DRYuGy0tP3uM6vX5uO2qnMlvRGHANEuwqNzZug36Y1xDPU1i5HhyFHVB
+	KIAq3heQ==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tuttX-000000098VG-2gfZ;
-	Wed, 19 Mar 2025 13:55:43 +0000
-Received: from out0-198.mail.aliyun.com ([140.205.0.198])
+	id 1tuySL-00000009sCr-1us6;
+	Wed, 19 Mar 2025 18:47:57 +0000
+Received: from out-181.mta0.migadu.com ([2001:41d0:1004:224b::b5])
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tuttT-000000098Sz-1UJ7
+	id 1tuySI-00000009sAm-1PPX
 	for linux-um@lists.infradead.org;
-	Wed, 19 Mar 2025 13:55:42 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=antgroup.com; s=default;
-	t=1742392536; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=LO55YnJPL63/5LkQVrpMrZ7iNo6O82vjLztXQCcsOWU=;
-	b=l4nYxjUGh5fxpTIZSDFL0z+kb96EW3sq7gM+t//y5NTdavs0Z009i+lXjnODFe1oYL4tubCBBoeyaKfgbtV9+zbXQscpMZoNDvNYsRw1eEweVJq3uRxTpeVqTamV5j053hk0C4tiUuzibnogUFVt2DSj/UHEwhAuuFM8IxQqnzc=
-Received: from ubuntu..(mailfrom:tiwei.btw@antgroup.com fp:SMTPD_---.byXmrk._1742392533 cluster:ay29)
-          by smtp.aliyun-inc.com;
-          Wed, 19 Mar 2025 21:55:33 +0800
-From: "Tiwei Bie" <tiwei.btw@antgroup.com>
-To: richard@nod.at,
-	anton.ivanov@cambridgegreys.com,
-	johannes@sipsolutions.net
-Cc: <linux-um@lists.infradead.org>,
-  "Tiwei Bie" <tiwei.btw@antgroup.com>
-Subject: [PATCH v3 2/4] um: ubd: Switch to the pthread-based helper
-Date: Wed, 19 Mar 2025 21:55:21 +0800
-Message-Id: <20250319135523.97050-3-tiwei.btw@antgroup.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250319135523.97050-1-tiwei.btw@antgroup.com>
-References: <20250319135523.97050-1-tiwei.btw@antgroup.com>
+	Wed, 19 Mar 2025 18:47:56 +0000
+Date: Wed, 19 Mar 2025 18:47:31 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1742410061;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zqyBVaYb9ts4lSaXiElKMyansdaMcGaJGQGVhzkplWo=;
+	b=xaQi4Ef4746B+A1AJBeekKoem5X9BsU2Zv43rk34K1b57B9N/UUB0WB7+ebMMyAm4dfIwQ
+	po8r8m5IqUgNRKUb/IkSMFPDZP7ikmojvJbVFmFRwuujjWoxhQaSwuSjM3plvtnggGTY0s
+	MOiuRmYvVaZE3dOZtPg1/9XMdLYCzcU=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yosry Ahmed <yosry.ahmed@linux.dev>
+To: Borislav Petkov <bp@alien8.de>
+Cc: Brendan Jackman <jackmanb@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, x86@kernel.org,
+	linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-snps-arc@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+	linux-arch@vger.kernel.org, linux-mm@kvack.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org, kvm@vger.kernel.org,
+	linux-efi@vger.kernel.org, Junaid Shahid <junaids@google.com>
+Subject: Re: [PATCH RFC v2 04/29] mm: asi: Add infrastructure for boot-time
+ enablement
+Message-ID: <Z9sRQ0cK0rupEiT-@google.com>
+References: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
+ <20250110-asi-rfc-v2-v2-4-8419288bc805@google.com>
+ <20250319172935.GMZ9r-_zzXhyhHBLfj@fat_crate.local>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20250319172935.GMZ9r-_zzXhyhHBLfj@fat_crate.local>
+X-Migadu-Flow: FLOW_OUT
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250319_065539_904274_770580D6 
-X-CRM114-Status: GOOD (  13.89  )
+X-CRM114-CacheID: sfid-20250319_114754_651366_D3BE7EA1 
+X-CRM114-Status: GOOD (  37.77  )
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -66,141 +89,132 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-The ubd io thread and UML kernel thread share the same errno, which
-can lead to conflicts when both call syscalls concurrently. Switch to
-the pthread-based helper to address this issue.
+On Wed, Mar 19, 2025 at 06:29:35PM +0100, Borislav Petkov wrote:
+> On Fri, Jan 10, 2025 at 06:40:30PM +0000, Brendan Jackman wrote:
+> > Add a boot time parameter to control the newly added X86_FEATURE_ASI.
+> > "asi=on" or "asi=off" can be used in the kernel command line to enable
+> > or disable ASI at boot time. If not specified, ASI enablement depends
+> > on CONFIG_ADDRESS_SPACE_ISOLATION_DEFAULT_ON, which is off by default.
+> 
+> I don't know yet why we need this default-on thing...
 
-Signed-off-by: Tiwei Bie <tiwei.btw@antgroup.com>
----
- arch/um/drivers/ubd.h      |  6 ++++--
- arch/um/drivers/ubd_kern.c | 25 +++++++++++--------------
- arch/um/drivers/ubd_user.c | 14 +++++++-------
- 3 files changed, 22 insertions(+), 23 deletions(-)
+It's a convenience to avoid needing to set asi=on if you want ASI to be
+on by default. It's similar to HUGETLB_PAGE_OPTIMIZE_VMEMMAP_DEFAULT_ON
+or ZSWAP_DEFAULT_ON.
 
-diff --git a/arch/um/drivers/ubd.h b/arch/um/drivers/ubd.h
-index f016fe15499f..2985c14661f4 100644
---- a/arch/um/drivers/ubd.h
-+++ b/arch/um/drivers/ubd.h
-@@ -7,8 +7,10 @@
- #ifndef __UM_UBD_USER_H
- #define __UM_UBD_USER_H
- 
--extern int start_io_thread(unsigned long sp, int *fds_out);
--extern int io_thread(void *arg);
-+#include <os.h>
-+
-+int start_io_thread(struct os_helper_thread **td_out, int *fd_out);
-+void *io_thread(void *arg);
- extern int kernel_fd;
- 
- extern int ubd_read_poll(int timeout);
-diff --git a/arch/um/drivers/ubd_kern.c b/arch/um/drivers/ubd_kern.c
-index 0b1e61f72fb3..4de6613e7468 100644
---- a/arch/um/drivers/ubd_kern.c
-+++ b/arch/um/drivers/ubd_kern.c
-@@ -474,12 +474,12 @@ static irqreturn_t ubd_intr(int irq, void *dev)
- }
- 
- /* Only changed by ubd_init, which is an initcall. */
--static int io_pid = -1;
-+static struct os_helper_thread *io_td;
- 
- static void kill_io_thread(void)
- {
--	if(io_pid != -1)
--		os_kill_process(io_pid, 1);
-+	if (io_td)
-+		os_kill_helper_thread(io_td);
- }
- 
- __uml_exitcall(kill_io_thread);
-@@ -1104,8 +1104,8 @@ static int __init ubd_init(void)
- 
- late_initcall(ubd_init);
- 
--static int __init ubd_driver_init(void){
--	unsigned long stack;
-+static int __init ubd_driver_init(void)
-+{
- 	int err;
- 
- 	/* Set by CONFIG_BLK_DEV_UBD_SYNC or ubd=sync.*/
-@@ -1114,13 +1114,11 @@ static int __init ubd_driver_init(void){
- 		/* Letting ubd=sync be like using ubd#s= instead of ubd#= is
- 		 * enough. So use anyway the io thread. */
- 	}
--	stack = alloc_stack(0, 0);
--	io_pid = start_io_thread(stack + PAGE_SIZE, &thread_fd);
--	if(io_pid < 0){
-+	err = start_io_thread(&io_td, &thread_fd);
-+	if (err < 0) {
- 		printk(KERN_ERR
- 		       "ubd : Failed to start I/O thread (errno = %d) - "
--		       "falling back to synchronous I/O\n", -io_pid);
--		io_pid = -1;
-+		       "falling back to synchronous I/O\n", -err);
- 		return 0;
- 	}
- 	err = um_request_irq(UBD_IRQ, thread_fd, IRQ_READ, ubd_intr,
-@@ -1496,12 +1494,11 @@ int kernel_fd = -1;
- /* Only changed by the io thread. XXX: currently unused. */
- static int io_count;
- 
--int io_thread(void *arg)
-+void *io_thread(void *arg)
- {
- 	int n, count, written, res;
- 
--	os_set_pdeathsig();
--	os_fix_helper_signals();
-+	os_fix_helper_thread_signals();
- 
- 	while(1){
- 		n = bulk_req_safe_read(
-@@ -1543,5 +1540,5 @@ int io_thread(void *arg)
- 		} while (written < n);
- 	}
- 
--	return 0;
-+	return NULL;
- }
-diff --git a/arch/um/drivers/ubd_user.c b/arch/um/drivers/ubd_user.c
-index b4f8b8e60564..c5e6545f6fcf 100644
---- a/arch/um/drivers/ubd_user.c
-+++ b/arch/um/drivers/ubd_user.c
-@@ -25,9 +25,9 @@
- 
- static struct pollfd kernel_pollfd;
- 
--int start_io_thread(unsigned long sp, int *fd_out)
-+int start_io_thread(struct os_helper_thread **td_out, int *fd_out)
- {
--	int pid, fds[2], err;
-+	int fds[2], err;
- 
- 	err = os_pipe(fds, 1, 1);
- 	if(err < 0){
-@@ -47,14 +47,14 @@ int start_io_thread(unsigned long sp, int *fd_out)
- 		goto out_close;
- 	}
- 
--	pid = clone(io_thread, (void *) sp, CLONE_FILES | CLONE_VM, NULL);
--	if(pid < 0){
--		err = -errno;
--		printk("start_io_thread - clone failed : errno = %d\n", errno);
-+	err = os_run_helper_thread(td_out, io_thread, NULL);
-+	if (err < 0) {
-+		printk("%s - failed to run helper thread, err = %d\n",
-+		       __func__, -err);
- 		goto out_close;
- 	}
- 
--	return(pid);
-+	return 0;
- 
-  out_close:
- 	os_close_file(fds[0]);
--- 
-2.34.1
+[..]
+> > @@ -175,7 +184,11 @@ static __always_inline bool asi_is_restricted(void)
+> >  	return (bool)asi_get_current();
+> >  }
+> >  
+> > -/* If we exit/have exited, can we stay that way until the next asi_enter? */
+> > +/*
+> > + * If we exit/have exited, can we stay that way until the next asi_enter?
+> 
+> What is that supposed to mean here?
 
+asi_is_relaxed() checks if the thread is outside an ASI critical
+section.
+
+I say "the thread" because it will also return true if we are executing
+an interrupt that arrived during the critical section, even though the
+interrupt handler is not technically part of the critical section.
+
+Now the reason it says "if we exit we stay that way" is probably
+referring to the fact that an asi_exit() when interrupting a critical
+section will be undone in the interrupt epilogue by re-entering ASI.
+
+I agree the wording here is confusing. We should probably describe this
+more explicitly and probably rename the function after the API
+discussions you had in the previous patch.
+
+> 
+> > + *
+> > + * When ASI is disabled, this returns true.
+> > + */
+> >  static __always_inline bool asi_is_relaxed(void)
+> >  {
+> >  	return !asi_get_target(current);
+[..]
+> > @@ -66,10 +73,36 @@ const char *asi_class_name(enum asi_class_id class_id)
+> >  	return asi_class_names[class_id];
+> >  }
+> >  
+> > +void __init asi_check_boottime_disable(void)
+> > +{
+> > +	bool enabled = IS_ENABLED(CONFIG_MITIGATION_ADDRESS_SPACE_ISOLATION_DEFAULT_ON);
+> > +	char arg[4];
+> > +	int ret;
+> > +
+> > +	ret = cmdline_find_option(boot_command_line, "asi", arg, sizeof(arg));
+> > +	if (ret == 3 && !strncmp(arg, "off", 3)) {
+> > +		enabled = false;
+> > +		pr_info("ASI disabled through kernel command line.\n");
+> > +	} else if (ret == 2 && !strncmp(arg, "on", 2)) {
+> > +		enabled = true;
+> > +		pr_info("Ignoring asi=on param while ASI implementation is incomplete.\n");
+> > +	} else {
+> > +		pr_info("ASI %s by default.\n",
+> > +			enabled ? "enabled" : "disabled");
+> > +	}
+> > +
+> > +	if (enabled)
+> > +		pr_info("ASI enablement ignored due to incomplete implementation.\n");
+> 
+> Incomplete how?
+
+This is referring to the fact that ASI is still not fully/correctly
+functional, but it will be after the following patches.
+
+I think it will be clearer if we just add the feature flag here so that
+we have something to check for in the following patches, but add the
+infrastructure for boot-time enablement at the end of the series when
+the impelemntation is complete.
+
+Basically start by a feature flag that has no way of being enabled, use
+it in the implmentation, then add means of enabling it.
+
+> 
+> > +}
+> > +
+> >  static void __asi_destroy(struct asi *asi)
+> >  {
+> > -	lockdep_assert_held(&asi->mm->asi_init_lock);
+> > +	WARN_ON_ONCE(asi->ref_count <= 0);
+> > +	if (--(asi->ref_count) > 0)
+> 
+> Switch that to
+> 
+> include/linux/kref.h
+> 
+> It gives you a sanity-checking functionality too so you don't need the WARN...
+
+I think we hve internal changes that completely get rid of this
+ref_count and simplifies the lifetime handling that we can squash here.
+We basically keep ASI objects around until the process is torn down,
+which makes this simpler and avoids the need for complex synchronization
+when we try to context switch or run userspace without exiting ASI
+(spoiler alert :) ).
+
+> 
+> > +		return;
+> >  
+> > +	free_pages((ulong)asi->pgd, PGD_ALLOCATION_ORDER);
+> > +	memset(asi, 0, sizeof(struct asi));
+> 
+> And then you can do:
+> 
+> 	if (kref_put())
+> 		free_pages...
+> 
+> and so on.
+> 
+> Thx.
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
+> 
 
