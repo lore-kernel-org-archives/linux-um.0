@@ -4,77 +4,64 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 970FAC35FFA
-	for <linux-um@archiver.kernel.org>; Wed, 19 Mar 2025 18:47:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 159DBC28B30
+	for <linux-um@archiver.kernel.org>; Thu, 20 Mar 2025 08:38:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=lists.infradead.org; s=bombadil.20210309; h=Sender:List-Subscribe:List-Help
-	:List-Post:List-Archive:List-Unsubscribe:List-Id:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	:List-Post:List-Archive:List-Unsubscribe:List-Id:MIME-Version:
+	Content-Transfer-Encoding:Content-Type:References:In-Reply-To:Date:Cc:To:From
+	:Subject:Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:
 	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Owner;
-	bh=zqyBVaYb9ts4lSaXiElKMyansdaMcGaJGQGVhzkplWo=; b=2hXe5jt+Y2h5o046A15/e3JAFE
-	0RNObxi/Yz4oc73SA4xvopGViZ4h6gVMjfXx5l0Z8mtWn/WuqpSv9q0TbXmIjB+oS+ABETsNdT3xl
-	1XCex9PUZW2t6xzMrQGHSmsL9Any5sKIq4lwXtYPBe7AxuejTMFNsRk5w6T37Mr6MGAWLAAn2hjts
-	cDcJiTyK+skkOvlVUN7mbfVP0iO1VO+7a/0PHR/dKRUr5Qte4jBzGdq5l+FaN6q/wWLrxfpkNhwra
-	Tr7tczuz+EfaQ4BDrM5G0DRYuGy0tP3uM6vX5uO2qnMlvRGHANEuwqNzZug36Y1xDPU1i5HhyFHVB
-	KIAq3heQ==;
+	bh=YXHUUCcMVDbV1PXh/DTVkKQw7IhiVSSu5lO+/Mz07wg=; b=xqq4tPWSxl5ugpN4lRXBdPRNfp
+	A2oCKPyy7L09c0lI3epR2rzgjIhJJt0qWdnPk4y5I60GWAqayjkEkzSoK3CvZtz4Lembydkv9GDxb
+	Ufk8kfno7fE17IvyA9biBt8XqABtw2Y+9wq4aoxOqITqJc1DB9KSUcBCLhneUHro0Fvq2ANp7QJZq
+	DekpD4iBjpe2Iq0IxRaebtamgG/kxmp/+1TmdVB10MuhNz3zTuSCeYRnuYC6cJZgnNJ3c5ORNKDxM
+	RCEXiMgvR6tf+YiMNeMJBKrcD2wAL0nVm/jGrEr8g2yRo15Tn0o038HUqgoObB1qj8oJxWSm5iXgu
+	eW11oXJw==;
 Received: from localhost ([::1] helo=bombadil.infradead.org)
 	by bombadil.infradead.org with esmtp (Exim 4.98 #2 (Red Hat Linux))
-	id 1tuySL-00000009sCr-1us6;
-	Wed, 19 Mar 2025 18:47:57 +0000
-Received: from out-181.mta0.migadu.com ([2001:41d0:1004:224b::b5])
+	id 1tvBPi-0000000BYwE-0l3d;
+	Thu, 20 Mar 2025 08:38:06 +0000
+Received: from s3.sipsolutions.net ([2a01:4f8:242:246e::2] helo=sipsolutions.net)
 	by bombadil.infradead.org with esmtps (Exim 4.98 #2 (Red Hat Linux))
-	id 1tuySI-00000009sAm-1PPX
+	id 1tvBKb-0000000BXgS-0Ouw
 	for linux-um@lists.infradead.org;
-	Wed, 19 Mar 2025 18:47:56 +0000
-Date: Wed, 19 Mar 2025 18:47:31 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1742410061;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zqyBVaYb9ts4lSaXiElKMyansdaMcGaJGQGVhzkplWo=;
-	b=xaQi4Ef4746B+A1AJBeekKoem5X9BsU2Zv43rk34K1b57B9N/UUB0WB7+ebMMyAm4dfIwQ
-	po8r8m5IqUgNRKUb/IkSMFPDZP7ikmojvJbVFmFRwuujjWoxhQaSwuSjM3plvtnggGTY0s
-	MOiuRmYvVaZE3dOZtPg1/9XMdLYCzcU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yosry Ahmed <yosry.ahmed@linux.dev>
-To: Borislav Petkov <bp@alien8.de>
-Cc: Brendan Jackman <jackmanb@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, x86@kernel.org,
-	linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-snps-arc@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-	linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
-	linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-	linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-	linux-arch@vger.kernel.org, linux-mm@kvack.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, kvm@vger.kernel.org,
-	linux-efi@vger.kernel.org, Junaid Shahid <junaids@google.com>
-Subject: Re: [PATCH RFC v2 04/29] mm: asi: Add infrastructure for boot-time
- enablement
-Message-ID: <Z9sRQ0cK0rupEiT-@google.com>
-References: <20250110-asi-rfc-v2-v2-0-8419288bc805@google.com>
- <20250110-asi-rfc-v2-v2-4-8419288bc805@google.com>
- <20250319172935.GMZ9r-_zzXhyhHBLfj@fat_crate.local>
+	Thu, 20 Mar 2025 08:32:50 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=YXHUUCcMVDbV1PXh/DTVkKQw7IhiVSSu5lO+/Mz07wg=;
+	t=1742459566; x=1743669166; b=g6CNUpRDcjxZGeTlpyJwT/2PLo+uYrZKsVIZ+R5Ds3iOYMO
+	BmyxDE1daNyckTflVSBU9UgQCMsCVoTHaVnLXOkUxdmVp8QvrcDtdHYP6+3CXrFs8lPyfI9chrZkd
+	LGdE6Pjk7ZVkliMWe89e5UBhL8RUyzKkGoVJuUu++dI+6Qf6ENuircwTybKloH5++6lD/2uXDWywf
+	+S7hyXWlbvnpa/m1+K1tsjTh7rIT9GLjev1kYCQFpJHMtVJp59Wjs8viQuN0OIycA+DAe00qWG872
+	/LPtBwPWmcIidIhw8XeN+6S78EPxGnMRot75awNTu+kzp7zVMhaM6X55+nHWwFzA==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.98)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1tvBKK-0000000HKc1-0cwL;
+	Thu, 20 Mar 2025 09:32:32 +0100
+Message-ID: <495e4b66edcc65ba9630cf1bbbb119b971af2df6.camel@sipsolutions.net>
+Subject: Re: [PATCH v3 4/4] um: Prohibit the VM_CLONE flag in
+ run_helper_thread()
+From: Johannes Berg <johannes@sipsolutions.net>
+To: Tiwei Bie <tiwei.btw@antgroup.com>, richard@nod.at, 
+	anton.ivanov@cambridgegreys.com
+Cc: linux-um@lists.infradead.org
+Date: Thu, 20 Mar 2025 09:32:31 +0100
+In-Reply-To: <20250319135523.97050-5-tiwei.btw@antgroup.com>
+References: <20250319135523.97050-1-tiwei.btw@antgroup.com>
+	 <20250319135523.97050-5-tiwei.btw@antgroup.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.3 (3.54.3-1.fc41) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250319172935.GMZ9r-_zzXhyhHBLfj@fat_crate.local>
-X-Migadu-Flow: FLOW_OUT
+X-malware-bazaar: not-scanned
 X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-646709E3 
-X-CRM114-CacheID: sfid-20250319_114754_651366_D3BE7EA1 
-X-CRM114-Status: GOOD (  37.77  )
+X-CRM114-CacheID: sfid-20250320_013249_145648_5EB3C4D8 
+X-CRM114-Status: UNSURE (   5.68  )
+X-CRM114-Notice: Please train this message.
 X-BeenThere: linux-um@lists.infradead.org
 X-Mailman-Version: 2.1.34
 Precedence: list
@@ -89,132 +76,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-um>,
 Sender: "linux-um" <linux-um-bounces@lists.infradead.org>
 Errors-To: linux-um-bounces+linux-um=archiver.kernel.org@lists.infradead.org
 
-On Wed, Mar 19, 2025 at 06:29:35PM +0100, Borislav Petkov wrote:
-> On Fri, Jan 10, 2025 at 06:40:30PM +0000, Brendan Jackman wrote:
-> > Add a boot time parameter to control the newly added X86_FEATURE_ASI.
-> > "asi=on" or "asi=off" can be used in the kernel command line to enable
-> > or disable ASI at boot time. If not specified, ASI enablement depends
-> > on CONFIG_ADDRESS_SPACE_ISOLATION_DEFAULT_ON, which is off by default.
-> 
-> I don't know yet why we need this default-on thing...
+On Wed, 2025-03-19 at 21:55 +0800, Tiwei Bie wrote:
+> Directly creating helper threads with VM_CLONE using clone can
+> compromise the thread safety of errno. Since all these helper
+> threads have been converted to use os_run_helper_thread(), let's
+> prevent using this flag in run_helper_thread().
+>=20
 
-It's a convenience to avoid needing to set asi=on if you want ASI to be
-on by default. It's similar to HUGETLB_PAGE_OPTIMIZE_VMEMMAP_DEFAULT_ON
-or ZSWAP_DEFAULT_ON.
+I notice that now there's only one user left, the SIGWINCH handler,
+maybe we could change that too? Anyway not related to this patch, of
+course.
 
-[..]
-> > @@ -175,7 +184,11 @@ static __always_inline bool asi_is_restricted(void)
-> >  	return (bool)asi_get_current();
-> >  }
-> >  
-> > -/* If we exit/have exited, can we stay that way until the next asi_enter? */
-> > +/*
-> > + * If we exit/have exited, can we stay that way until the next asi_enter?
-> 
-> What is that supposed to mean here?
-
-asi_is_relaxed() checks if the thread is outside an ASI critical
-section.
-
-I say "the thread" because it will also return true if we are executing
-an interrupt that arrived during the critical section, even though the
-interrupt handler is not technically part of the critical section.
-
-Now the reason it says "if we exit we stay that way" is probably
-referring to the fact that an asi_exit() when interrupting a critical
-section will be undone in the interrupt epilogue by re-entering ASI.
-
-I agree the wording here is confusing. We should probably describe this
-more explicitly and probably rename the function after the API
-discussions you had in the previous patch.
-
-> 
-> > + *
-> > + * When ASI is disabled, this returns true.
-> > + */
-> >  static __always_inline bool asi_is_relaxed(void)
-> >  {
-> >  	return !asi_get_target(current);
-[..]
-> > @@ -66,10 +73,36 @@ const char *asi_class_name(enum asi_class_id class_id)
-> >  	return asi_class_names[class_id];
-> >  }
-> >  
-> > +void __init asi_check_boottime_disable(void)
-> > +{
-> > +	bool enabled = IS_ENABLED(CONFIG_MITIGATION_ADDRESS_SPACE_ISOLATION_DEFAULT_ON);
-> > +	char arg[4];
-> > +	int ret;
-> > +
-> > +	ret = cmdline_find_option(boot_command_line, "asi", arg, sizeof(arg));
-> > +	if (ret == 3 && !strncmp(arg, "off", 3)) {
-> > +		enabled = false;
-> > +		pr_info("ASI disabled through kernel command line.\n");
-> > +	} else if (ret == 2 && !strncmp(arg, "on", 2)) {
-> > +		enabled = true;
-> > +		pr_info("Ignoring asi=on param while ASI implementation is incomplete.\n");
-> > +	} else {
-> > +		pr_info("ASI %s by default.\n",
-> > +			enabled ? "enabled" : "disabled");
-> > +	}
-> > +
-> > +	if (enabled)
-> > +		pr_info("ASI enablement ignored due to incomplete implementation.\n");
-> 
-> Incomplete how?
-
-This is referring to the fact that ASI is still not fully/correctly
-functional, but it will be after the following patches.
-
-I think it will be clearer if we just add the feature flag here so that
-we have something to check for in the following patches, but add the
-infrastructure for boot-time enablement at the end of the series when
-the impelemntation is complete.
-
-Basically start by a feature flag that has no way of being enabled, use
-it in the implmentation, then add means of enabling it.
-
-> 
-> > +}
-> > +
-> >  static void __asi_destroy(struct asi *asi)
-> >  {
-> > -	lockdep_assert_held(&asi->mm->asi_init_lock);
-> > +	WARN_ON_ONCE(asi->ref_count <= 0);
-> > +	if (--(asi->ref_count) > 0)
-> 
-> Switch that to
-> 
-> include/linux/kref.h
-> 
-> It gives you a sanity-checking functionality too so you don't need the WARN...
-
-I think we hve internal changes that completely get rid of this
-ref_count and simplifies the lifetime handling that we can squash here.
-We basically keep ASI objects around until the process is torn down,
-which makes this simpler and avoids the need for complex synchronization
-when we try to context switch or run userspace without exiting ASI
-(spoiler alert :) ).
-
-> 
-> > +		return;
-> >  
-> > +	free_pages((ulong)asi->pgd, PGD_ALLOCATION_ORDER);
-> > +	memset(asi, 0, sizeof(struct asi));
-> 
-> And then you can do:
-> 
-> 	if (kref_put())
-> 		free_pages...
-> 
-> and so on.
-> 
-> Thx.
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
-> 
+johannes
 
